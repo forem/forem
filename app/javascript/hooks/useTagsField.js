@@ -2,10 +2,6 @@ import { useEffect, useState } from 'preact/hooks';
 import algoliasearch from 'algoliasearch/lite'
 import { fetchSearch } from '@utilities/search';
 
-const env = document.querySelector('meta[name="environment"]')?.content;
-const {algoliaId, algoliaSearchKey} = document.body.dataset;
-const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
-const algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
 
 /**
  * Custom hook to manage the logic for the tags-fields based on the `MultiSelectAutocomplete` component
@@ -16,9 +12,17 @@ const algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
  * An object containing `defaultSelections` list, `fetchSuggestions` function, and `syncSelections` function
  */
 export const useTagsField = ({ defaultValue, onInput }) => {
+  const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
+  let algoliaIndex;
+  if (!useFetchSearch) {
+    const env = document.querySelector('meta[name="environment"]')?.content;
+    const {algoliaId, algoliaSearchKey} = document.body.dataset;
+    const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
+    algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
+  }
+
   const [defaultSelections, setDefaultSelections] = useState([]);
   const [defaultsLoaded, setDefaultsLoaded] = useState(false);
-  const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
 
   useEffect(() => {
     // Previously selected tags are passed as a plain comma separated string

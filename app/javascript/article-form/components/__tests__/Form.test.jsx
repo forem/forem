@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render, waitFor } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { Form } from '../Form';
 
@@ -18,6 +18,11 @@ jest.mock('algoliasearch/lite', () => {
   return jest.fn(() => searchClient);
 });
 
+let bodyMarkdown;
+let mainImage;
+
+// Axe flags an error for the multi-line combobox we use for Autosuggest, since a combobox should be a single line input.
+// This is a known issue documented on https://github.com/forem/forem/pull/13044, and these custom rules only apply to the two tests referencing them below.
 const customAxeRules = {
   'aria-allowed-role': { enabled: false },
   'aria-required-children': { enabled: false },
@@ -25,8 +30,6 @@ const customAxeRules = {
 
 describe('<Form />', () => {
   beforeEach(() => {
-    fetch.resetMocks();
-
     global.Runtime = {
       isNativeIOS: jest.fn(() => {
         return false;
@@ -42,24 +45,6 @@ describe('<Form />', () => {
         removeListener: jest.fn(),
       };
     });
-
-    document.body.dataset.algoliaId = 'testAlgoliaId';
-    document.body.dataset.algoliaSearchKey = 'testAlgoliaSearchKey';
-    const meta = document.createElement('meta');
-    meta.name = 'environment';
-    meta.content = 'testEnv';
-    document.head.appendChild(meta);
-
-    window.fetch = fetch;
-    window.getCsrfToken = async () => 'this-is-a-csrf-token';
-
-    fetch.mockResponse((req) =>
-      Promise.resolve(
-        req.url.includes('/tags/suggest')
-          ? '[]'
-          : JSON.stringify({ result: [] }),
-      ),
-    );
   });
 
   describe('v1', () => {
@@ -123,10 +108,23 @@ describe('<Form />', () => {
 
   describe('v2', () => {
     beforeEach(() => {
+      fetch.resetMocks();
+
       bodyMarkdown =
         '---↵title: Test Title v2↵published: false↵description: some description↵tags: javascript, career↵cover_image: https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png↵---↵↵Lets do this v2 changes↵↵![Alt Text](/i/12qpyywb0jlj6hksp9fn.png)';
       mainImage =
         'https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png';
+
+      window.fetch = fetch;
+      window.getCsrfToken = async () => 'this-is-a-csrf-token';
+
+      fetch.mockResponse((req) =>
+        Promise.resolve(
+          req.url.includes('/tags/suggest')
+            ? '[]'
+            : JSON.stringify({ result: [] }),
+        ),
+      );
     });
 
     it('should have no a11y violations', async () => {
