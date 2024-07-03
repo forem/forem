@@ -10,7 +10,9 @@ module AlgoliaSearchable
 
         attribute :badge do
           { badge_image: {
-            url: ApplicationController.helpers.optimized_image_url(badge&.badge_image_url, width: 64)
+            url: if badge&.badge_image_url
+                   ApplicationController.helpers.optimized_image_url(badge&.badge_image_url, width: 64)
+                 end
           } }
         end
 
