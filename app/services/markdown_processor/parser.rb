@@ -50,7 +50,29 @@ module MarkdownProcessor
         html = e.message
       end
 
+      html = add_target_blank_to_outbound_links(html)
       parse_html(html, prefix_images_options)
+    end
+
+    def add_target_blank_to_outbound_links(html)
+      app_domain = Settings::General.app_domain
+      doc = Nokogiri::HTML.fragment(html)
+      doc.css('a[href^="http"]').each do |link|
+        href = link["href"]
+        next unless href&.exclude?(app_domain)
+
+        link[:target] = "_blank"
+        existing_rel = link[:rel]
+        new_rel = %w[noopener noreferrer]
+        if existing_rel
+          existing_rel_values = existing_rel.split
+          new_rel = (existing_rel_values + new_rel).uniq.join(" ")
+        else
+          new_rel = new_rel.join(" ")
+        end
+        link[:rel] = new_rel
+      end
+      doc.to_html
     end
 
     def calculate_reading_time

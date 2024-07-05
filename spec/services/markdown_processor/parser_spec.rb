@@ -154,13 +154,15 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "renders properly if protocol http is included" do
       code_span = "[github](http://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"http://github.com\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"http://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol https is included" do
       code_span = "[github](https://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"https://github.com\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol is not included" do
@@ -250,7 +252,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(result).to eq(expected_result)
     end
 
-    it "will not work in code tag" do
+    it "does not work in code tag" do
       mention = "this is a chunk of text `@#{user.username}`"
       result = generate_and_parse_markdown(mention)
       expect(result).to include "<code"
@@ -375,7 +377,8 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "does not generated nested link tags" do
       nested_links = generate_and_parse_markdown("[[](http://b)](http://a)")
       nested_links = Nokogiri::HTML(nested_links).at("p").inner_html
-      expect(nested_links).to eq('[<a href="http://b"></a>](<a href="http://a">http://a</a>)')
+      attrs = "target=\"_blank\" rel=\"noopener noreferrer\""
+      expect(nested_links).to eq("[<a href=\"http://b\" #{attrs}></a>](<a href=\"http://a\" #{attrs}>http://a</a>)")
     end
   end
 

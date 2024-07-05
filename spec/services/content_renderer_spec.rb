@@ -29,6 +29,38 @@ RSpec.describe ContentRenderer do
         expect(parser).to have_received(:finalize).with(finalize_attrs)
       end
     end
+
+    context "when processing links" do
+      let(:markdown) { "[Google](https://www.google.com)" }
+      let(:result) { described_class.new(markdown, source: build(:article), user: build(:user)).process }
+
+      it "adds target='_blank' and rel='noopener noreferrer' for outbound links" do
+        processed_html = result.processed_html
+        p processed_html
+        expect(processed_html).to include('rel="noopener noreferrer"')
+        expect(processed_html).to include('target="_blank"')
+      end
+
+      it "does not add target='_blank' and rel='noopener noreferrer' for internal links" do
+        internal_markdown = "[Home](/home)"
+        internal_renderer = described_class.new(internal_markdown, source: nil, user: nil,
+                                                                   fixer: MarkdownProcessor::Fixer::FixAll)
+        processed_html = internal_renderer.process_article.processed_html
+        expect(processed_html).to include("href=\"http://#{Settings::General.app_domain}/home")
+        expect(processed_html).not_to include('target="_blank"')
+        expect(processed_html).not_to include('rel="noopener noreferrer"')
+      end
+
+      it "does not add target='_blank' and rel='noopener noreferrer' for internal links with full domain" do
+        internal_domain = "[Home](http://#{Settings::General.app_domain}/home)"
+        internal_full_domain_renderer = described_class.new(internal_domain, source: nil, user: nil,
+                                                                             fixer: MarkdownProcessor::Fixer::FixAll)
+        processed_html = internal_full_domain_renderer.process_article.processed_html
+        expect(processed_html).to include("href=\"http://#{Settings::General.app_domain}/home")
+        expect(processed_html).not_to include('target="_blank"')
+        expect(processed_html).not_to include('rel="noopener noreferrer"')
+      end
+    end
   end
 
   describe "#process_article" do

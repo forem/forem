@@ -145,7 +145,7 @@ RSpec.describe Comment do
       it "adds rel=nofollow to links" do
         comment.body_markdown = "this is a comment with a link: http://dev.to"
         comment.validate!
-        expect(comment.processed_html.include?('rel="nofollow"')).to be(true)
+        expect(comment.processed_html.include?('rel="nofollow')).to be(true)
       end
 
       it "adds a mention url if user is mentioned like @mention" do
