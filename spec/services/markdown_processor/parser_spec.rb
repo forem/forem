@@ -154,13 +154,15 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "renders properly if protocol http is included" do
       code_span = "[github](http://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol https is included" do
       code_span = "[github](https://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"http://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"http://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol is not included" do
