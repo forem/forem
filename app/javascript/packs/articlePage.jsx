@@ -19,7 +19,17 @@ function backfillLinkTarget() {
 
     if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(appDomain)) {
       link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
+      
+      const existingRel = link.getAttribute('rel');
+      const newRelValues = ["noopener", "noreferrer"];
+
+      if (existingRel) {
+        const existingRelValues = existingRel.split(" ");
+        const mergedRelValues = [...new Set([...existingRelValues, ...newRelValues])].join(" ");
+        link.setAttribute('rel', mergedRelValues);
+      } else {
+        link.setAttribute('rel', newRelValues.join(" "));
+      }
     }
   });
 }

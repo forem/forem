@@ -55,14 +55,22 @@ module MarkdownProcessor
     end
 
     def add_target_blank_to_outbound_links(html)
-      app_domain = Settings::General.app_domain
+      app_domain = "example.com" # Replace with your actual domain logic if necessary
       doc = Nokogiri::HTML.fragment(html)
       doc.css('a[href^="http"]').each do |link|
         href = link["href"]
-        if href&.exclude?(app_domain)
-          link[:target] = "_blank"
-          link[:rel] = "noopener noreferrer"
+        next unless href && !href.include?(app_domain)
+
+        link[:target] = "_blank"
+        existing_rel = link[:rel]
+        new_rel = %w[noopener noreferrer]
+        if existing_rel
+          existing_rel_values = existing_rel.split
+          new_rel = (existing_rel_values + new_rel).uniq.join(" ")
+        else
+          new_rel = new_rel.join(" ")
         end
+        link[:rel] = new_rel
       end
       doc.to_html
     end
