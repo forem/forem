@@ -8,6 +8,22 @@ import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSu
 import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
 import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
 
+// Open in new tab backfill
+// We added this behavior on rendering, so this is a backfill for the existing articles
+function backfillLinkTarget() {
+  const links = document.querySelectorAll('a[href]');
+  const appDomain = window.location.hostname;
+
+  links.forEach((link) => {
+    const href = link.getAttribute('href');
+
+    if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(appDomain)) {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+}
+
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
 if (animatedImages.length > 0) {
   import('@utilities/animatedImageUtils').then(
@@ -164,3 +180,4 @@ initializeUserSubscriptionLiquidTagContent();
 focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls
 trackCommentClicks('comments');
+backfillLinkTarget();
