@@ -108,6 +108,7 @@ Rails.application.routes.draw do
     namespace :incoming_webhooks do
       get "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#index", as: :mailchimp_unsubscribe_check
       post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
+      resources :stripe_events, only: [:create]
     end
 
     resources :messages, only: [:create]
@@ -158,6 +159,7 @@ Rails.application.routes.draw do
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
+    resources :stripe_subscriptions, only: :new
     resources :github_repos, only: %i[index] do
       collection do
         post "/update_or_create", to: "github_repos#update_or_create"

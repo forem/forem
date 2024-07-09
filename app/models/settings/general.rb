@@ -80,7 +80,6 @@ module Settings
     }
 
     # Monetization
-    setting :payment_pointer, type: :string
     setting :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     setting :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
     # Billboard-related. Not sure this is the best place for it, but it's a start.

@@ -15,14 +15,6 @@
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
-      <% if Settings::General.payment_pointer.present? %>
-        <!-- Experimental web monetization payment pointer for micropayments -->
-        <!-- It lets readers make micropayments to websites they visit. -->
-        <!-- This is step 1: Get live in production to test for platform-wide payment pointer. -->
-        <!-- Step 2: Allow authors to set their payment pointer so they can directly monetize their content based on visitors. -->
-        <!-- Step 3: Enable further functionality based on what we learn from this experimentation and how the ecosystem evolves. -->
-        <meta name="monetization" content="<%= Settings::General.payment_pointer %>">
-      <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
       <%= javascript_include_tag "base", "application", "baseInitializers", "Search", "baseTracking", defer: true %>
@@ -91,9 +83,6 @@
         <div id="active-broadcast" class="broadcast-wrapper"></div>
     <% end %>
   <% end %>
-<% if Settings::General.payment_pointer.present? %>
-  <div id="base-payment-pointer" data-payment-pointer="<%= Settings::General.payment_pointer %>"></div>
-<% end %>
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" id="setup-banner" aria-live="polite">

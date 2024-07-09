@@ -24,15 +24,6 @@
                            placeholder: Constants::Settings::General.details[:stripe_publishable_key][:placeholder] %>
         </div>
 
-        <div class="crayons-field">
-          <%= admin_config_label :payment_pointer %>
-          <%= admin_config_description Constants::Settings::General.details[:payment_pointer][:description] %>
-          <%= f.text_field :payment_pointer,
-                           class: "crayons-textfield",
-                           value: Settings::General.payment_pointer,
-                           placeholder: Constants::Settings::General.details[:payment_pointer][:placeholder] %>
-        </div>
-
         <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
           <div class="crayons-field">
             <%= admin_config_label :billboard_enabled_countries %>
