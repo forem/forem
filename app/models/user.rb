@@ -448,7 +448,6 @@ class User < ApplicationRecord
     :administrative_access_to?,
     :any_admin?,
     :auditable?,
-    :augmented?,
     :banished?,
     :comment_suspended?,
     :limited?,
@@ -469,6 +468,7 @@ class User < ApplicationRecord
     :user_subscription_tag_available?,
     :vomited_on?,
     :warned?,
+    :base_subscriber?,
     to: :authorizer,
   )
   alias suspended suspended?

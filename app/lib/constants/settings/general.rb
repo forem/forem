@@ -113,10 +113,6 @@ module Constants
             description: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.description"),
             placeholder: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.placeholder")
           },
-          payment_pointer: {
-            description: I18n.t("lib.constants.settings.general.payment.description"),
-            placeholder: "$pay.somethinglikethis.co/value"
-          },
           periodic_email_digest: {
             description: I18n.t("lib.constants.settings.general.periodic.description"),
             placeholder: 2

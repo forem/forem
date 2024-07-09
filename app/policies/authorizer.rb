@@ -137,8 +137,8 @@ module Authorizer
       has_role?(:spam)
     end
 
-    def augmented?
-      has_role?(:augmented)
+    def base_subscriber?
+      has_role?(:base_subscriber)
     end
 
     def spam_or_suspended?

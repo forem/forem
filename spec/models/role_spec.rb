@@ -8,7 +8,7 @@ RSpec.describe Role do
   describe "::ROLES" do
     it "contains the correct values" do
       expected_roles = %w[
-        admin augmented codeland_admin comment_suspended limited podcast_admin
+        admin base_subscriber codeland_admin comment_suspended limited podcast_admin
         restricted_liquid_tag single_resource_admin super_admin support_admin suspended spam tag_moderator tech_admin
         trusted warned creator super_moderator
       ]

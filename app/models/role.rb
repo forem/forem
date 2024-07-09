@@ -1,7 +1,6 @@
 class Role < ApplicationRecord
   ROLES = %w[
     admin
-    augmented
     codeland_admin
     comment_suspended
     creator
@@ -18,6 +17,7 @@ class Role < ApplicationRecord
     trusted
     warned
     limited
+    base_subscriber
   ].freeze
 
   ROLES.each do |role|
