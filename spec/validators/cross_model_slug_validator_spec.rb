@@ -8,6 +8,7 @@ RSpec.describe CrossModelSlugValidator do
       def self.name
         "Validatable"
       end
+
       include ActiveModel::Validations
       attr_accessor :name
 
@@ -68,8 +69,8 @@ RSpec.describe CrossModelSlugValidator do
   end
 
   context "when name exists in Page model" do
-    let(:org) { create(:page) }
-    let(:name) { org.slug }
+    let(:page) { create(:page) }
+    let(:name) { page.slug }
 
     it { is_expected.not_to be_valid }
   end
@@ -94,6 +95,22 @@ RSpec.describe CrossModelSlugValidator do
 
     it "is valid" do
       expect(organization).to be_valid
+    end
+  end
+
+  context "when user's slug contains a plus sign" do
+    let(:user) { build(:user, username: "user+name") }
+
+    it "is invalid" do
+      expect(user).not_to be_valid
+    end
+  end
+
+  context "when page's slug contains a plus sign" do
+    let(:page) { build(:page, slug: "page+slug") }
+
+    it "is valid" do
+      expect(page).to be_valid
     end
   end
 end

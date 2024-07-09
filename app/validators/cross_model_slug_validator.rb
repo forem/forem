@@ -2,7 +2,7 @@ class CrossModelSlugValidator < ActiveModel::EachValidator
   FORMAT_REGEX = /\A[0-9a-z\-_]+\z/
   ORGANIZATION_FORMAT_REGEX = /\A(?![0-9]+\z)[0-9a-z\-_]+\z/
   ## allow / in page slugs
-  PAGE_FORMAT_REGEX = /\A[0-9a-z\-_\/]+\z/
+  PAGE_FORMAT_REGEX = %r{\A[0-9a-z\-_/+]+\z}
   PAGE_DIRECTORY_LIMIT = 6
 
   def validate_each(record, attribute, value)
