@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "IncomingWebhooks::StripeEventsController", type: :request do
+RSpec.describe "IncomingWebhooks::StripeEventsController" do
   let(:stripe_endpoint_secret) { "whsec_test_secret" }
   let(:headers) { { "HTTP_STRIPE_SIGNATURE" => stripe_signature } }
   let(:user) { create(:user) }
@@ -25,51 +25,51 @@ RSpec.describe "IncomingWebhooks::StripeEventsController", type: :request do
         end
       end
 
-      context "when invoice.payment_succeeded" do
-        let(:payload) { { "type" => "invoice.payment_succeeded", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json }
+      context "when invoice.payment_succeeded" do # rubocop:disable RSpec/NestedGroups
+        let(:payload) { { "type" => "invoice.payment_succeeded","data" =>{ "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
 
         it "adds the base_subscriber role to the user" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(user.reload.base_subscriber?).to be_truthy
+          expect(user.reload).to be_base_subscriber
         end
       end
 
-      context "when customer.subscription.created" do
-        let(:payload) { { "type" => "customer.subscription.created", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json }
+      context "when customer.subscription.created" do # rubocop:disable RSpec/NestedGroups
+        let(:payload) { { "type" => "customer.subscription.created", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
 
         it "adds the base_subscriber role to the user" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(user.reload.base_subscriber?).to be_truthy
+          expect(user.reload).to be_base_subscriber
         end
       end
 
-      context "when customer.subscription.updated" do
-        let(:payload) { { "type" => "customer.subscription.updated", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json }
+      context "when customer.subscription.updated" do # rubocop:disable RSpec/NestedGroups
+        let(:payload) { { "type" => "customer.subscription.updated", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
 
         it "adds the base_subscriber role to the user" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(user.reload.base_subscriber?).to be_truthy
+          expect(user.reload).to be_base_subscriber
         end
       end
 
-      context "when customer.subscription.deleted" do
-        let(:payload) { { "type" => "customer.subscription.deleted", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json }
+      context "when customer.subscription.deleted" do # rubocop:disable RSpec/NestedGroups
+        let(:payload) { { "type" => "customer.subscription.deleted", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
 
         it "removes the base_subscriber role from the user" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(user.reload.base_subscriber?).to be_falsey
+          expect(user.reload).not_to be_base_subscriber
         end
       end
     end
@@ -90,10 +90,11 @@ RSpec.describe "IncomingWebhooks::StripeEventsController", type: :request do
 
     context "with an invalid signature" do
       before do
-        allow(Stripe::Webhook).to receive(:construct_event).and_raise(Stripe::SignatureVerificationError.new("Invalid signature", "sig"))
+        allow(Stripe::Webhook).to receive(:construct_event)
+          .and_raise(Stripe::SignatureVerificationError.new("Invalid signature", "sig"))
       end
 
-      let(:payload) { { "type" => "invoice.payment_succeeded", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json }
+      let(:payload) { { "type" => "invoice.payment_succeeded", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
 
       it "returns status :bad_request" do
         post "/incoming_webhooks/stripe_events", params: payload, headers: headers

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "StripeSubscriptions", type: :request do
+RSpec.describe "StripeSubscriptions" do
   let(:user) { create(:user) }
   let(:stripe_helper) { StripeMock.create_test_helper }
   let(:stripe_api_key) { Settings::General.stripe_api_key }
