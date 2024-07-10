@@ -1389,25 +1389,54 @@ RSpec.describe Article do
   end
 
   describe "#update_score" do
+    before do
+      allow(article).to receive(:reactions).and_return(reactions)
+      allow(article).to receive_messages(reactions: reactions, comments: comments)
+      allow(BlackBox).to receive(:article_hotness_score).and_return(100)
+    end
+
+    let(:reactions) { double("reactions", sum: 10, privileged_category: double("privileged_category", sum: 5)) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:comments) { double("comments", sum: 3) } # rubocop:disable RSpec/VerifiedDoubles
+
     it "stably sets the correct blackbox values" do
-      create(:reaction, reactable: article, points: 1)
 
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
     end
 
     it "caches the privileged score values" do
-      user = create(:user, :trusted)
-
-      create(:thumbsdown_reaction, reactable: article, user: user)
 
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
 
     it "includes user marked as spam punishment" do
-      article.user.add_role(:spam)
+      allow(article).to receive(:user).and_return(double(spam?: true)) # rubocop:disable RSpec/VerifiedDoubles
+
       article.update_score
-      expect(article.reload.score).to eq(-500)
+      expect(article.reload.score).to eq(-490)
+    end
+
+    context "when max_score is set" do
+      it "uses the max score if the natural score exceeds max_score" do
+        article.update_column(:max_score, 2)
+
+        article.update_score
+        expect(article.reload.score).to eq(2)
+      end
+
+      it "uses the natural score if it is lower than max_score" do
+        article.update_column(:max_score, 25)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "uses the natural score if max_score is 0" do
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
     end
   end
 

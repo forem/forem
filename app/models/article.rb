@@ -370,7 +370,7 @@ class Article < ApplicationRecord
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at,
+           :main_image, :main_image_background_hex_color, :updated_at, :max_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at,
@@ -596,6 +596,8 @@ class Article < ApplicationRecord
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
+    self.score = max_score if max_score.positive? && max_score < score
+
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
