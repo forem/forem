@@ -152,6 +152,8 @@ fr:
         comments: commentaires
         contains_video: Contient une vidéo
         co_author_ids: ID de co-auteur
+        max_score: Score maximum
+        no_max_if_zero: Pas de maximum si défini à zéro
         edit: Modifier
         featured: Mis en exergue
         likes: aime

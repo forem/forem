@@ -153,6 +153,8 @@ en:
         comments: comments
         contains_video: Contains video
         co_author_ids: Co-Author IDs
+        max_score: Max score
+        no_max_if_zero: No max if set to zero
         edit: Edit
         featured: Featured
         likes: likes
