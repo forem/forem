@@ -16,7 +16,6 @@ RSpec.describe "PageViews" do
     context "when user signed in" do
       before do
         sign_in user
-        allow_any_instance_of(AlgoliaInsightsService).to receive(:track_event)
       end
 
       it "creates a new page view", :aggregate_failures do
@@ -41,10 +40,22 @@ RSpec.describe "PageViews" do
       end
 
       it "sends Algolia insight event" do
-        page_views_post(article_id: article.id)
-
-        expect_any_instance_of(AlgoliaInsightsService).to have_received(:track_event)
-          .with("view", "Article Viewed", user.id, article.id, "Article_#{Rails.env}", instance_of(Integer))
+        article = create(:article)    
+        # Set up the expectation before making the request
+        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
+        allow(algolia_service_instance).to receive(:track_event)
+    
+        post "/page_views", params: { article_id: article.id }
+    
+        expect(algolia_service_instance).to have_received(:track_event).with(
+          "view",
+          "Article Viewed",
+          user.id,
+          article.id,
+          "Article_#{Rails.env}",
+          instance_of(Integer)
+        )
       end
     end
 
@@ -110,6 +121,19 @@ RSpec.describe "PageViews" do
 
         expect(PageView.last.user_agent).to eq("test")
       end
+
+      it "does not send Algolia insight event" do
+        article = create(:article)    
+        # Set up the expectation before making the request
+        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
+        allow(algolia_service_instance).to receive(:track_event)
+    
+        post "/page_views", params: { article_id: article.id }
+    
+        expect(algolia_service_instance).not_to have_received(:track_event)
+      end
+
     end
   end
 
