@@ -231,7 +231,7 @@ RSpec.describe "Reactions" do
           user.id,
           article.id,
           "Article_#{Rails.env}",
-          instance_of(Integer)
+          instance_of(Integer),
         )
       end
     end
