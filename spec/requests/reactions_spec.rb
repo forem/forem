@@ -222,7 +222,6 @@ RSpec.describe "Reactions" do
         algolia_service_instance = instance_double("AlgoliaInsightsService")
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
-    
         post "/reactions", params: article_params
         expect(algolia_service_instance).to have_received(:track_event).with(
           "conversion",
