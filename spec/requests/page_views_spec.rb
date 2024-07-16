@@ -40,7 +40,7 @@ RSpec.describe "PageViews" do
       end
 
       it "sends Algolia insight event" do
-        article = create(:article)    
+        article = create(:article)
         # Set up the expectation before making the request
         algolia_service_instance = instance_double("AlgoliaInsightsService")
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
