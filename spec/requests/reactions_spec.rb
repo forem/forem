@@ -224,7 +224,6 @@ RSpec.describe "Reactions" do
         allow(algolia_service_instance).to receive(:track_event)
     
         post "/reactions", params: article_params
-    
         expect(algolia_service_instance).to have_received(:track_event).with(
           "conversion",
           "Reaction Created",
