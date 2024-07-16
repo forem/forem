@@ -133,7 +133,6 @@ RSpec.describe "PageViews" do
     
         expect(algolia_service_instance).not_to have_received(:track_event)
       end
-
     end
   end
 
