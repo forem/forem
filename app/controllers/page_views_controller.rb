@@ -46,7 +46,7 @@ class PageViewsController < ApplicationMetalController
       Settings::General.algolia_application_id.present? &&
       Settings::General.algolia_api_key.present?
 
-      AlgoliaInsightsService.new.track_event(
+    AlgoliaInsightsService.new.track_event(
         "view",
       "Article Viewed",
       session_current_user_id,
