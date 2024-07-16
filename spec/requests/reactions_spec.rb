@@ -219,7 +219,7 @@ RSpec.describe "Reactions" do
 
       it "sends Algolia insight event" do
         # Set up the expectation before making the request
-        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
         post "/reactions", params: article_params
