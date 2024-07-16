@@ -30,7 +30,7 @@ class AlgoliaInsightsService
     if response.success?
       Rails.logger.debug "Event tracked: #{response.body}"
     else
-      puts "Failed to track event: #{response.body}"
+      Rails.logger.debug "Failed to track event: #{response.body}"
     end
   end
 
