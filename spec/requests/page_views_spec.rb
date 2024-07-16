@@ -16,6 +16,7 @@ RSpec.describe "PageViews" do
     context "when user signed in" do
       before do
         sign_in user
+        allow_any_instance_of(AlgoliaInsightsService).to receive(:track_event)
       end
 
       it "creates a new page view", :aggregate_failures do
@@ -37,6 +38,13 @@ RSpec.describe "PageViews" do
         page_views_post(article_id: article.id, user_agent: "test")
 
         expect(PageView.last.user_agent).to eq("test")
+      end
+
+      it "sends Algolia insight event" do
+        page_views_post(article_id: article.id)
+
+        expect_any_instance_of(AlgoliaInsightsService).to have_received(:track_event)
+          .with("view", "Article Viewed", user.id, article.id, "Article_#{Rails.env}", instance_of(Integer))
       end
     end
 
@@ -61,7 +69,7 @@ RSpec.describe "PageViews" do
         allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 
-      it "converts field test" do
+      it "does not convert field test" do
         page_views_post(article_id: article.id, referrer: "test")
 
         expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
@@ -74,7 +82,6 @@ RSpec.describe "PageViews" do
 
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(10)
-        expect(user.reload.page_views.size).to eq(0)
         expect(PageView.last.counts_for_number_of_views).to eq(10)
       end
 

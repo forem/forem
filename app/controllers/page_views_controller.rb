@@ -27,6 +27,19 @@ class PageViewsController < ApplicationMetalController
       page_view_create_params,
     )
 
+    if session_current_user_id &&
+        Settings::General.algolia_application_id.present? &&
+        Settings::General.algolia_api_key.present?
+      AlgoliaInsightsService.new.track_event(
+        "view",
+        "Article Viewed",
+        session_current_user_id,
+        params[:article_id],
+        "Article_#{Rails.env}",
+        Time.current.to_i * 1000,
+      )
+    end
+
     head :ok
   end
 

@@ -49,6 +49,20 @@ class ReactionsController < ApplicationController
 
     result = ReactionHandler.toggle(params, current_user: current_user)
 
+    if session_current_user_id &&
+        params[:reactable_type] == "Article" &&
+        Settings::General.algolia_application_id.present? &&
+        Settings::General.algolia_api_key.present?
+      AlgoliaInsightsService.new.track_event(
+        "conversion",
+        "Reaction Created",
+        current_user.id,
+        params[:reactable_id],
+        "Article_#{Rails.env}",
+        Time.current.to_i * 1000,
+      )
+    end
+
     if result.success?
       render json: { result: result.action, category: result.category }
     else
