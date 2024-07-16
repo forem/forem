@@ -28,7 +28,7 @@ class AlgoliaInsightsService
 
     response = self.class.post("/events", headers: headers, body: payload.to_json)
     if response.success?
-      Rails.logger.debug "Event tracked: #{response.body}"
+      Rails.logger.debug { "Event tracked: #{response.body}" }
     else
       Rails.logger.debug { "Failed to track event: #{response.body}" }
     end
