@@ -45,17 +45,30 @@ RSpec.describe "PageViews" do
         algolia_service_instance = instance_double("AlgoliaInsightsService")
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
-    
+
         post "/page_views", params: { article_id: article.id }
-    
+
         expect(algolia_service_instance).to have_received(:track_event).with(
           "view",
           "Article Viewed",
           user.id,
           article.id,
           "Article_#{Rails.env}",
-          instance_of(Integer)
+          instance_of(Integer),
         )
+      end
+
+      it "Does not send an Algolia event if Algolia setting not present" do
+        allow(Settings::General).to receive(:algolia_application_id).and_return(nil)
+        article = create(:article)
+        # Set up the expectation before making the request
+        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
+        allow(algolia_service_instance).to receive(:track_event)
+
+        post "/page_views", params: { article_id: article.id }
+
+        expect(algolia_service_instance).not_to have_received(:track_event)
       end
     end
 
@@ -123,14 +136,14 @@ RSpec.describe "PageViews" do
       end
 
       it "does not send Algolia insight event" do
-        article = create(:article)    
+        article = create(:article)
         # Set up the expectation before making the request
         algolia_service_instance = instance_double("AlgoliaInsightsService")
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
-    
+
         post "/page_views", params: { article_id: article.id }
-    
+
         expect(algolia_service_instance).not_to have_received(:track_event)
       end
     end
