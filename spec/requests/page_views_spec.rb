@@ -16,6 +16,7 @@ RSpec.describe "PageViews" do
     context "when user signed in" do
       before do
         sign_in user
+        allow(Settings::General).to receive_messages(algolia_application_id: "test", algolia_api_key: "test")
       end
 
       it "creates a new page view", :aggregate_failures do
@@ -42,7 +43,7 @@ RSpec.describe "PageViews" do
       it "sends Algolia insight event" do
         article = create(:article)
         # Set up the expectation before making the request
-        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
 
@@ -62,7 +63,7 @@ RSpec.describe "PageViews" do
         allow(Settings::General).to receive(:algolia_application_id).and_return(nil)
         article = create(:article)
         # Set up the expectation before making the request
-        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
 
@@ -138,7 +139,7 @@ RSpec.describe "PageViews" do
       it "does not send Algolia insight event" do
         article = create(:article)
         # Set up the expectation before making the request
-        algolia_service_instance = instance_double("AlgoliaInsightsService")
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
 
