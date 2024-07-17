@@ -217,6 +217,9 @@ RSpec.configure do |config|
     stub_request(:post, "http://www.google-analytics.com/collect")
       .to_return(status: 200, body: "", headers: {})
 
+    stub_request(:post, /insights.algolia.io/)
+      .to_return(status: 200, body: "", headers: {})
+
     stub_request(:any, /robohash.org/)
       .with(headers:
             {
