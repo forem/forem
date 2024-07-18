@@ -18,21 +18,7 @@ class SidebarsController < ApplicationController
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
-    order_variant = field_test(:active_discussion_ordering_07_03, participant: @user)
-    order = case order_variant
-            when "base"
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 100)) DESC")
-            when "last_comment_plus_comment_score_capped_25"
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 25)) DESC")
-            when "last_comment_plus_comment_score_capped_50"
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC")
-            when "last_comment_plus_comment_score_capped_80"
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 80)) DESC")
-            when "last_comment_plus_comment_score_capped_120"
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 120)) DESC")
-            else
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 100)) DESC")
-            end
+    order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC") # Determined via field test
     @active_discussions = Article.published
       .where("published_at > ?", 1.week.ago)
       .where("comments_count > ?", 0)
