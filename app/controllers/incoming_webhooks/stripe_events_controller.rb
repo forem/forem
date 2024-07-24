@@ -48,9 +48,9 @@ module IncomingWebhooks
     private
 
     def handle_invoice_payment_succeeded(invoice)
-      return unless invoice["metadata"].key?("user_id")
+      return unless invoice.metadata["user_id"]
 
-      user_id = invoice["metadata"]["user_id"]
+      user_id = invoice.metadata["user_id"]
       user = User.find_by(id: user_id)
       return unless user
 
