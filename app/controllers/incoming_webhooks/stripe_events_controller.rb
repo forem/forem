@@ -3,7 +3,7 @@ module IncomingWebhooks
     skip_before_action :verify_authenticity_token
 
     # Your Stripe CLI webhook secret for testing your endpoint locally.
-    STRIPE_ENDPOINT_SECRET = ApplicationConfig[:STRIPE_SIGNING_SECRET]
+    STRIPE_ENDPOINT_SECRET = ApplicationConfig["STRIPE_SIGNING_SECRET"]
 
     def create
       payload = request.body.read
