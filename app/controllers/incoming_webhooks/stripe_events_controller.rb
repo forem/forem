@@ -3,20 +3,28 @@ module IncomingWebhooks
     skip_before_action :verify_authenticity_token
 
     # Your Stripe CLI webhook secret for testing your endpoint locally.
-    STRIPE_ENDPOINT_SECRET = Settings::General.stripe_api_key
+    STRIPE_ENDPOINT_SECRET = ApplicationConfig["STRIPE_SIGNING_SECRET"]
 
     def create
       payload = request.body.read
       sig_header = request.env["HTTP_STRIPE_SIGNATURE"]
       event = nil
 
+      # Log all headers for debugging
+      Rails.logger.info "Request Headers: #{request.headers.to_h.inspect}"
+      Rails.logger.info "Payload: #{payload}"
+      Rails.logger.info "Signature Header: #{sig_header}"
+      Rails.logger.info "Stripe Endpoint Secret: #{STRIPE_ENDPOINT_SECRET}"
+
       begin
         event = Stripe::Webhook.construct_event(
           payload, sig_header, STRIPE_ENDPOINT_SECRET
         )
       rescue JSON::ParserError => e
+        Rails.logger.error "JSON::ParserError: #{e.message}"
         render json: { error: "Invalid payload (#{e.message})" }, status: :bad_request and return
       rescue Stripe::SignatureVerificationError => e
+        Rails.logger.error "Stripe::SignatureVerificationError: #{e.message}"
         render json: { error: "Invalid signature (#{e.message})" }, status: :bad_request and return
       end
 
