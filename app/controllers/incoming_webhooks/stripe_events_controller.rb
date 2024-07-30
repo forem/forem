@@ -30,8 +30,8 @@ module IncomingWebhooks
 
       # Handle the event
       case event["type"]
-      when "invoice.payment_succeeded"
-        handle_invoice_payment_succeeded(event["data"]["object"])
+      when "checkout.session.completed"
+        handle_checkout_session_completed(event["data"]["object"])
       when "customer.subscription.created"
         handle_subscription_created(event["data"]["object"])
       when "customer.subscription.updated"
@@ -47,7 +47,7 @@ module IncomingWebhooks
 
     private
 
-    def handle_invoice_payment_succeeded(invoice)
+    def handle_checkout_session_completed(invoice)
       return unless invoice.metadata["user_id"]
 
       user_id = invoice.metadata["user_id"]
