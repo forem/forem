@@ -25,8 +25,8 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
         end
       end
 
-      context "when invoice.payment_succeeded" do # rubocop:disable RSpec/NestedGroups
-        let(:payload) { { "type" => "invoice.payment_succeeded","data" =>{ "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
+      context "when checkout.session.completed" do # rubocop:disable RSpec/NestedGroups
+        let(:payload) { { "type" => "checkout.session.completed", "data" => { "object" => { "metadata" => { "user_id" => user.id.to_s } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
@@ -38,7 +38,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
       end
 
       context "when customer.subscription.created" do # rubocop:disable RSpec/NestedGroups
-        let(:payload) { { "type" => "customer.subscription.created", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
+        let(:payload) { { "type" => "customer.subscription.created", "data" => { "object" => { "metadata" => { "user_id" => user.id.to_s } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
@@ -50,7 +50,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
       end
 
       context "when customer.subscription.updated" do # rubocop:disable RSpec/NestedGroups
-        let(:payload) { { "type" => "customer.subscription.updated", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
+        let(:payload) { { "type" => "customer.subscription.updated", "data" => { "object" => { "metadata" => { "user_id" => user.id.to_s } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
@@ -62,7 +62,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
       end
 
       context "when customer.subscription.deleted" do # rubocop:disable RSpec/NestedGroups
-        let(:payload) { { "type" => "customer.subscription.deleted", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
+        let(:payload) { { "type" => "customer.subscription.deleted", "data" => { "object" => { "metadata" => { "user_id" => user.id.to_s } } } }.to_json } # rubocop:disable Layout/LineLength
         let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
@@ -94,7 +94,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
           .and_raise(Stripe::SignatureVerificationError.new("Invalid signature", "sig"))
       end
 
-      let(:payload) { { "type" => "invoice.payment_succeeded", "data" => { "object" => { "metadata" => { "user_id" => user.id } } } }.to_json } # rubocop:disable Layout/LineLength
+      let(:payload) { { "type" => "checkout.session.completed", "data" => { "object" => { "metadata" => { "user_id" => user.id.to_s } } } }.to_json } # rubocop:disable Layout/LineLength
 
       it "returns status :bad_request" do
         post "/incoming_webhooks/stripe_events", params: payload, headers: headers
