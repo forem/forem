@@ -49,7 +49,7 @@ module IncomingWebhooks
 
     def handle_checkout_session_completed(invoice)
       metadata = extract_metadata(invoice)
-      return unless metadata&.key?("user_id")
+      return unless metadata["user_id"]
 
       user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
@@ -60,7 +60,7 @@ module IncomingWebhooks
 
     def handle_subscription_created(subscription)
       metadata = extract_metadata(subscription)
-      return unless metadata&.key?("user_id")
+      return unless metadata["user_id"]
 
       user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
@@ -71,7 +71,7 @@ module IncomingWebhooks
 
     def handle_subscription_updated(subscription)
       metadata = extract_metadata(subscription)
-      return unless metadata&.key?("user_id")
+      return unless metadata["user_id"]
 
       user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
@@ -82,7 +82,7 @@ module IncomingWebhooks
 
     def handle_subscription_deleted(subscription)
       metadata = extract_metadata(subscription)
-      return unless metadata&.key?("user_id")
+      return unless metadata["user_id"]
 
       user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
