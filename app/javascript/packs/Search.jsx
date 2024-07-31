@@ -5,4 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('header-search');
 
   render(<SearchFormSync />, root);
+  window.InstantClick.on('change', () => {
+    render(<SearchFormSync />, root);
+  });  
 });
