@@ -46,17 +46,16 @@ export const SearchForm = forwardRef(
 
     // Fetch initial recommendations
     const fetchRecommendations = useCallback(() => {
-      if (recommendClient) {
+      if (recommendClient && articleContainer?.dataset?.articleId) {
         recommendClient.getRelatedProducts([
           {
             indexName: `Article_${env}`,
-            objectID: articleContainer.dataset.articleId,
+            objectID: articleContainer?.dataset?.articleId,
             maxRecommendations: 5,
             threshold: 10,
           },
         ]).then(({ results }) => {
           setSuggestions(results[0].hits);
-
         })
       }
     }, [recommendClient]);
