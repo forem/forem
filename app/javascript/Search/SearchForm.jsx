@@ -50,7 +50,7 @@ export const SearchForm = forwardRef(
         recommendClient.getRelatedProducts([
           {
             indexName: `Article_${env}`,
-            objectID: '1941785',//articleContainer.dataset.articleId,
+            objectID: articleContainer.dataset.articleId,
             maxRecommendations: 5,
             threshold: 10,
           },
@@ -58,9 +58,6 @@ export const SearchForm = forwardRef(
           setSuggestions(results[0].hits);
 
         })
-        .catch(err => {
-          console.log(err);
-        });
       }
     }, [recommendClient]);
 
