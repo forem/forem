@@ -15,6 +15,7 @@ class Billboard < ApplicationRecord
                                feed_second
                                feed_third
                                home_hero
+                               footer
                                page_fixed_bottom
                                post_fixed_bottom
                                post_body_bottom
@@ -32,6 +33,7 @@ class Billboard < ApplicationRecord
                                             "Home Feed Second",
                                             "Home Feed Third",
                                             "Home Hero",
+                                            "Footer",
                                             "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
                                             "Below the post body",
