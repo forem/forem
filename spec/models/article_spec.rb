@@ -1408,15 +1408,14 @@ RSpec.describe Article do
     end
 
     it "includes user marked as spam punishment" do
-      allow(article).to receive(:user).and_return(double(spam?: true)) # rubocop:disable RSpec/VerifiedDoubles
-
+      user.add_role(:spam)
       article.update_score
       expect(article.reload.score).to eq(-490)
     end
 
     it "includes the user_subscriber? baseline bonus" do
       allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
-      user.add_role(:base_subscriber?)
+      user.add_role(:base_subscriber)
       article.update_score
       expect(article.reload.score).to eq(22)
     end
