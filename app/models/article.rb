@@ -593,9 +593,10 @@ class Article < ApplicationRecord
   end
 
   def update_score
+    base_subscriber_adjustment = user.base_subscriber? ? Settings::UserExperience.index_minimum_score : 0
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment
     self.score = max_score if max_score.positive? && max_score < score
 
     update_columns(score: score,

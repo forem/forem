@@ -1399,13 +1399,11 @@ RSpec.describe Article do
     let(:comments) { double("comments", sum: 3) } # rubocop:disable RSpec/VerifiedDoubles
 
     it "stably sets the correct blackbox values" do
-
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
     end
 
     it "caches the privileged score values" do
-
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
 
@@ -1414,6 +1412,13 @@ RSpec.describe Article do
 
       article.update_score
       expect(article.reload.score).to eq(-490)
+    end
+
+    it "includes the user_subscriber? baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      allow(article).to receive(:user).and_return(double(base_subscriber?: true, spam?: false)) # rubocop:disable RSpec/VerifiedDoubles
+      article.update_score
+      expect(article.reload.score).to eq(22)
     end
 
     context "when max_score is set" do
