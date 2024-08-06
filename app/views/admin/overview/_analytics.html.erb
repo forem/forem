@@ -20,6 +20,10 @@
               <%= radio_button_tag :period, 30, params[:period].to_i == 30, class: "crayons-radio", id: "30days" %>
               <label for="30days" class="crayons-field__label">Last 30 days</label>
             </li>
+            <li class="crayons-field crayons-field--radio">
+  <%= radio_button_tag :period, 90, params[:period].to_i == 90, class: "crayons-radio", id: "90days" %>
+  <label for="90days" class="crayons-field__label">Last 90 days</label>
+</li>
           </ul>
         </fieldset>
         <button type="submit" class="c-btn c-btn--secondary w-100">Submit</button>
