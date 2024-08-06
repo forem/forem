@@ -25,10 +25,10 @@
         <%= render partial: "articles/multireaction_button",
                    locals: {
                      category: reaction_type.slug.to_sym,
-                     description: reaction_type.name,
+                     description: t("views.reactions.#{reaction_type.slug}.title", default: reaction_type.name),
                      image_path: "#{reaction_type.icon}.svg",
                      image_active_path: "#{reaction_type.icon}.svg",
-                     aria_label: reaction_type.name
+                     aria_label: t("views.reactions.#{reaction_type.slug}.title", default: reaction_type.name)
                    } %>
       <% end %>
     </div>
