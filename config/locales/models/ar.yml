@@ -1,0 +1,140 @@
+---
+ar:
+  models:
+    api_secret:
+      api_limit_reached: تم بلوغ الحد الأقصى لواجهة برمجة التطبيقات (API) من 10 مفاتيح سرية لكل مستخدم.
+    application_record:
+      uninferrable: لا يمكن تحديد الديكور لـ %{class}.
+    article:
+      a_post_by: مقالة بواسطة %{user_name}
+      video_unpermitted: غير مسموح بإضافة فيديو من قبل عضو غير مُصرح له
+      video_processing: غير ممكن تعيينه إلى true إذا كان الفيديو لا يزال قيد المعالجة
+      cannot_search_tags_for: 'لا يمكن البحث عن الوسوم لـ: %{tag}'
+      cannot_search_tags_for_tags: 'لا يمكن البحث عن الوسوم لـ: %{tags}'
+      unique_coauthor: يجب أن تكون معرفات المشاركين المشتركين فريدة
+      too_many_tags: تجاوز الحد الأقصى لـ 4 وسوم
+      is_too_long: طويل جداً.
+      invalid_date: يجب أن يكون التاريخ في الشكل يوم/شهر/سنة مع التاريخ الحالي أو الماضي
+      series_unpermitted: يجب أن يكون لديك الإذن للنشر على
+      invalid_coauthor: يجب أن تكون معرفات المشاركين صالحة
+      same_author: لا يجب أن يكون نفس المستخدم كمؤلف
+      must_not_have_spaces: يجب ألا يحتوي على مسافات
+      published: تم النشر
+      unique_url: تم اختياره بالفعل. يرجى إرسال بريد إلكتروني إلى %{email} لمزيد من التفاصيل.
+      future_or_current_published_at: يُسمح فقط بالتاريخ المستقبلي أو الحالي لـ published_at عند نشر المقالة
+      immutable_published_at: غير مسموح بتحديث published_at للمقالات التي تم نشرها بالفعل
+      mention_too_many:
+        one: لا يمكنك الإشارة إلى أكثر من %{count} مستخدم في مقال واحد!
+        other: لا يمكنك الإشارة إلى أكثر من %{count} مستخدم في تعليق واحد!
+    audience_segment:
+      type_ofs:
+        manual: تمت إدارتها في مكان آخر
+        trusted: موثوق بها
+        posted: لديهم على الأقل منشور واحد
+        no_posts_yet: لم ينشروا بعد
+        dark_theme: قاموا بتمكين الوضع الداكن
+        light_theme: قاموا بتمكين الوضوء الساطع
+        no_experience: لم يقموا بتعيين مستوى تجربة
+        experience1: لديهم مستوى تجربة واحد
+        experience2: لديهم مستوى تجربة اثنان
+        experience3: لديهم مستوى تجربة ثلاثة
+        experience4: لديهم مستوى تجربة أربعة
+        experience5: لديهم مستوى تجربة خمسة
+    billboard:
+      invalid_location: "%{location} ليس رمز مستهدف صالح من المعيار الدولي ISO 3166-2"
+    broadcast:
+      single_active: لا يمكنك إنشاء بث إعلاني واحد فقط
+    comment:
+      deleted: '[حُذِف]'
+      has_been_deleted: تم حذف %{type}
+      hidden: "[مخفي بواسطة مؤلف الرسالة]"
+      image_only: '[صورة فقط]'
+      is_not_valid: غير صالح.
+      locked: تم قفل المناقشة على هذه الرسالة
+      published_article: ليس مقال منشور
+      type:
+        Article: مقال
+        item: عنصر
+        PodcastEpisode: حلقة بودكاست
+      suspended_too_many: تم تعليق المستخدم بسبب الكثير من التفاعلات المزعجة، المُشغلة تلقائيًا.
+      mention_too_many:
+        one: لا يمكنك الإشارة إلى أكثر من %{count} مستخدم في تعليق واحد!
+        other: لا يمكنك الإشارة إلى أكثر من %{count} مستخدم في تعليق واحد!
+    feedback_message:
+      reported: "(أنت) قمت بالفعل بالإبلاغ عن هذا الرابط."
+    github_issue:
+      issue_comment_not_found: تعليق المشكلة %{issue_id} غير موجود
+      issue_not_found: المشكلة %{issue_id} غير موجودة
+    html_variant:
+      no_edits: لا يمكن تعديله بمجرد النشر والموافقة عليه
+    identity:
+      no_email_msg: لا يوجد بريد إلكتروني مُعثور عليه. يرجى ربط حسابك %{provider} لتجنب الأخطاء.
+    listing:
+      too_many_tags: تجاوز الحد الأقصى لـ 8 وسوم.
+      too_many_linebreaks: يحتوي على الكثير من الفواصل. لا يُسمح بأكثر من 12.
+      image_not_allowed: غير مسموح بتضمين الصور.
+      liquid_not_allowed: غير مسموح بتضمين السوائل.
+    mention:
+      is_not_valid: غير صالح.
+    organization:
+      integer_only: فقط أرقام صحيحة. لا يُسمح بأي رموز.
+      reserved_word: "%<value>s كلمة محجوزة. يرجى الاتصال بمسؤول الموقع للمساعدة في تسجيل منظمتك."
+    page:
+      body_must_exist: يجب أن يكون موجوداً إذا لم يكن body_html أو body_json موجودًا.
+    podcast_episode_appearance:
+      provided_role_is_not_valid: الدور المُقدم غير صالح.
+    poll_skip:
+      cannot_vote_more_than_once: لا يمكن التصويت أكثر من مرة في استطلاع
+    poll_vote:
+      cannot_vote_more_than_once: لا يمكن التصويت أكثر من مرة في استطلاع.
+    profile_pin:
+      only_five: لا يمكن أن يكون لديك أكثر من خمس رسائل مثبتة بالإجمالي
+      pin_unpermitted: يجب أن يكون لديك الأذونات المناسبة للتثبيت
+    rating_vote:
+      not_permitted: غير مسموح به لأداء هذا الإجراء.
+    reaction:
+      is_not_valid: غير صالح.
+    response_template:
+      user_nil_only: لا يمكن أن يكون لديك معرف مستخدم مرتبط.
+      comment_markdown: يجب أن تستخدم قوالب التعليقات Markdown كنوع محتوى.
+      email_text: يجب أن تستخدم قوالب البريد الإلكتروني النصية أو HTML كنوع محتوى.
+      limit_reached: تم بلوغ الحد الأقصى لـ 30 قالب رد لكل مستخدم.
+    settings:
+      campaign:
+        share_your_project: شارك مشروعك
+      community:
+        message: لا يمكن أن يحتوي على "<" أو ">".
+        new_forem: فورم جديد
+        user: مستخدم
+      general:
+        community_sponsors: رعاة المجتمع
+        the_community_mascot: شعار المجتمع
+      user_experience:
+        message: 'يجب أن يكون سداسي الزوايا مكونًا من 3 أو 6 أحرف (يبدأ بـ #)'
+    tag:
+      alias_for: alias_for يجب أن يشير إلى وسم موجود بالفعل
+    tag_adjustment:
+      too_many_tags: الحد الأقصى 4 وسوم لكل مقال.
+      unpermitted: ليس لديه الامتياز لضبط هذه الوسوم
+      not_live: الوسم المحدد للحذف ليس وسمًا نشطًا.
+      unique: لا يمكن أن يكون وسمًا مضبوطًا بالفعل.
+    tweet:
+      tweet_not_found: التغريدة غير موجودة
+      authentication_error: خطأ في المصادقة؛ يرجى الاتصال بمسؤول Forem حول أي مفاتيح Twitter مفقودة.
+    user:
+      could_not_send: لم يتمكن من إرسال التأكيد. %{e_message}
+      password_not_matched: لا يتطابق مع تأكيد كلمة المرور.
+      has_been_banished: تم طرده.
+      user_could_not_be_saved: تعذر حفظ المستخدم. %{e_message}
+    user_block:
+      cant_be_the_same: لا يمكن أن يكون نفس الممنوع عنه.
+    user_subscription:
+      non_apple: لا يمكن الاشتراك باستخدام رمز تحويل خاص بـ Apple. يرجى تحديث البريد الإلكتروني.
+      source_not_found: الأصل غير موجود. يرجى التأكد من أن مصدرك %{source} نشط!
+      not_enabled: لم يتم تفعيل اشتراكات المستخدمين للمصدر.
+    users:
+      deleted_user:
+        name: '[مستخدم محذوف]'
+      setting:
+        invalid_hex: ليس لون هكس صالحًا
+        invalid_rss: ليس مدخل RSS/Atom صالحًا
