@@ -132,7 +132,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
         expected_result = %w[
           light-theme sans-serif-article-body mod-status-false
-          trusted-status-true default-header
+          trusted-status-true default-header user-role--trusted
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end
