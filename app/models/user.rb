@@ -371,6 +371,13 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_role_names
+    cache_key = "user-#{id}/role_names"
+    Rails.cache.fetch(cache_key, expires_in: 200.hours) do
+      roles.pluck(:name)
+    end
+  end
+
   def processed_website_url
     profile.website_url.to_s.strip if profile.website_url.present?
   end
@@ -704,6 +711,7 @@ class User < ApplicationRecord
   def update_user_roles_cache(...)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
+    Rails.cache.delete("user-#{id}/role_names")
     refresh_auto_audience_segments
     trusted?
   end
