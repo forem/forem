@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# /billboard_events and /bb_tabulations are aliases for the same controller
+
 RSpec.describe "BillboardEvents" do
   let(:user) { create(:user, :trusted) }
   let(:organization) { create(:organization) }
@@ -12,7 +14,7 @@ RSpec.describe "BillboardEvents" do
       end
 
       it "creates a billboard click event" do
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           billboard_event: {
             billboard_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
@@ -23,7 +25,7 @@ RSpec.describe "BillboardEvents" do
       end
 
       it "creates a billboard click event with old params" do
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           display_ad_event: {
             display_ad_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
@@ -34,7 +36,7 @@ RSpec.describe "BillboardEvents" do
       end
 
       it "creates a billboard impression event" do
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           billboard_event: {
             billboard_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
@@ -50,7 +52,7 @@ RSpec.describe "BillboardEvents" do
         create_list(:billboard_event, 4, impression_params)
 
         post(
-          "/billboard_events",
+          "/bb_tabulations",
           params: { billboard_event: ad_event_params.merge(category: BillboardEvent::CATEGORY_CLICK) },
         )
 
@@ -65,7 +67,7 @@ RSpec.describe "BillboardEvents" do
         create_list(:billboard_event, 4, impression_params)
 
         post(
-          "/billboard_events",
+          "/bb_tabulations",
           params: { billboard_event: ad_event_params.merge(category: BillboardEvent::CATEGORY_SIGNUP) },
         )
 
@@ -74,7 +76,7 @@ RSpec.describe "BillboardEvents" do
       end
 
       it "assigns event to current user" do
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           billboard_event: {
             billboard_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
@@ -86,7 +88,7 @@ RSpec.describe "BillboardEvents" do
 
       it "assigns event to passed article_id" do
         article = create(:article)
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           billboard_event: {
             billboard_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
@@ -100,7 +102,7 @@ RSpec.describe "BillboardEvents" do
 
       it "assigns event to passed current geolocation" do
         article = create(:article)
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           billboard_event: {
             billboard_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
@@ -112,7 +114,7 @@ RSpec.describe "BillboardEvents" do
       end
 
       it "uses a ThrottledCall for data updates" do
-        post "/billboard_events", params: {
+        post "/bb_tabulations", params: {
           billboard_event: {
             billboard_id: billboard.id,
             context_type: BillboardEvent::CONTEXT_TYPE_HOME,
