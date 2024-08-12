@@ -80,7 +80,7 @@ export class Onboarding extends Component {
 
       const tokenMeta = document.querySelector("meta[name='csrf-token']");
       const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-      window.fetch('/billboard_events', {
+      window.fetch('/bb_tabulations', {
         method: 'POST',
         headers: {
           'X-CSRF-Token': csrfToken,

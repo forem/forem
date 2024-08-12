@@ -125,7 +125,7 @@ function trackAdImpression(adBox) {
   };
 
   window
-    .fetch('/billboard_events', {
+    .fetch('/bb_tabulations', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -171,7 +171,7 @@ function trackAdClick(adBox, event, currentPath) {
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
-  window.fetch('/billboard_events', {
+  window.fetch('/bb_tabulations', {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrfToken,

@@ -3,8 +3,8 @@
 @import '_mixins';
 
 .crayons-layout__comments-billboard {
-  .crayons-bb, .crayons-sponsorship {
-    .c-indicator.crayons-bb__indicator, .c-indicator.crayons-sponsorship__indicator {
+  .crayons-bb, .crayons-unit {
+    .c-indicator.crayons-bb__indicator, .c-indicator.crayons-unit__indicator {
       line-height: 15px;
     }
 
@@ -68,7 +68,7 @@
   }
   @media (min-width: $breakpoint-xl) {
     .crayons-bb__header,
-    .crayons-sponsorship__header,
+    .crayons-unit__header,
     .text-styles {
       margin-left: calc(54% - (var(--site-width) / 2));
     }
