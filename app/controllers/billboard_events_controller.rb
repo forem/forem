@@ -1,6 +1,7 @@
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
   SIGNUP_SUCCESS_MODIFIER = 25 # One signup is worth 25 clicks
+  THROTTLE_TIME = 25
   # No policy needed. All views are for all users
 
   def create
@@ -17,9 +18,11 @@ class BillboardEventsController < ApplicationMetalController
 
   def update_billboards_data
     billboard_event_id = billboard_event_params[:billboard_id]
+    throttle_time = ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME
 
-    ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 25.minutes) do
+    ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: throttle_time.minutes) do
       @billboard = Billboard.find(billboard_event_id)
+      next if rand(2).zero? && @billboard.impressions_count > 100_000
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
