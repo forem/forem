@@ -137,6 +137,7 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
+  validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validates :reputation_modifier, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 },
                                   presence: true
 

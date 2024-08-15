@@ -1442,6 +1442,24 @@ RSpec.describe Article do
         expect(article.reload.score).to eq(10)
       end
     end
+
+    context "when user.max_score is set" do
+      it "uses the user's max score if it is lower than the article's max score" do
+        user.update_column(:max_score, 5)
+        article.update_column(:max_score, 10)
+
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
+
+      it "uses the article's max score if it is lower than the user's max score" do
+        user.update_column(:max_score, 10)
+        article.update_column(:max_score, 5)
+
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
+    end
   end
 
   describe "#feed_source_url and canonical_url must be unique for published articles" do

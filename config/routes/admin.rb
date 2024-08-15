@@ -49,6 +49,7 @@ namespace :admin do
       member do
         post "banish"
         patch "reputation_modifier"
+        patch "max_score"
         post "export_data"
         post "full_delete"
         patch "user_status"
