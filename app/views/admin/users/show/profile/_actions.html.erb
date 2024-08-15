@@ -30,6 +30,7 @@
           <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.social.heading") %>" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts"><%= t("views.admin.users.profile.options.remove_social") %></button></li>
         <% end %>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.reputation.heading") %>" data-modal-size="medium" data-modal-content-selector="#change-reputation"><%= t("views.admin.users.reputation.change") %></button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.max_score.heading") %>" data-modal-size="medium" data-modal-content-selector="#change-max-score"><%= t("views.admin.users.max_score.change") %></button></li>
         <li>
           <button type="button"
             class="c-btn c-btn--destructive w-100 align-left"
@@ -53,6 +54,7 @@
   <%= render "admin/users/modals/unpublish_modal" %>
   <%= render "admin/users/show/profile/actions/social_accounts" %>
   <%= render "admin/users/show/profile/actions/change_reputation" %>
+  <%= render "admin/users/show/profile/actions/change_max_score" %>
   <%= render "admin/users/modals/banish_modal" %>
   <%= render "admin/users/show/profile/actions/delete" %>
 </div>

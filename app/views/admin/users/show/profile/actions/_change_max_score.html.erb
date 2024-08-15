@@ -1,0 +1,17 @@
+<div id="change-max-score">
+  <%= form_for(@user, url: max_score_admin_user_path(@user),
+                      html: { class: "flex flex-col gap-4", method: :patch }) do |f| %>
+    <p><%= t("views.admin.users.max_score.desc_html", max_score: @user.max_score) %></p>
+    <div class="crayons-field mb-4">
+      <%= f.label :max_score, t("views.admin.users.max_score.max_score"), class: "crayons-field__label" %>
+      <%= f.text_field :max_score, placeholder: @user.max_score, class: "crayons-textfield", type: "number", inputmode: "numeric", step: "1", min: 0, aria: { describedby: "reputation_modifier" } %>
+    </div>
+    <div class="crayons-field mb-4">
+      <%= f.label :new_note, t("views.admin.users.max_score.change_note"), class: "crayons-field__label" %>
+      <%= f.text_area :new_note, size: 50, required: true, class: "crayons-textfield", id: "new_note" %>
+    </div>
+    <div>
+      <%= f.button t("views.admin.users.max_score.submit"), class: "c-btn c-btn--primary", type: "submit" %>
+    </div>
+  <% end %>
+</div>

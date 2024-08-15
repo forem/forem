@@ -14,7 +14,10 @@
           <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.not_verified.subtitle") %></h2>
           <p class="color-secondary"><%= t("views.admin.users.emails.not_verified.desc", user: @user.name) %></p>
         </div>
-        <%= f.button t("views.admin.users.emails.verify"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
+        <% if false # Not yet designed to be visible %>
+          <%= f.button t("views.admin.users.emails.manually_verify"), class: "c-btn c-btn--secondary whitespace-nowrap", value: "manual_verify" %>
+        <% end %>
+        <%= f.button t("views.admin.users.emails.verify"), class: "c-btn c-btn--secondary whitespace-nowrap", value: "send_verification_email" %>
       <% else %>
         <p>
           <%= t("views.admin.users.emails.verified_html", time: tag.time(l(@last_email_verification_date, format: :email_verified), datetime: @last_email_verification_date.strftime("%Y-%m-%dT%H:%M:%S%z"), class: "fw-medium whitespace-nowrap")) %>

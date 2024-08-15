@@ -130,6 +130,7 @@ en:
       email_sent: Email sent!
       confirm_sent: Confirmation email sent!
       verify_sent: Verification email sent!
+      manual_verification_sent: Email manually verified!
       full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
       no_email: no email
       parameter_missing: Both subject and body are required!

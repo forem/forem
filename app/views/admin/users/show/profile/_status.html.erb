@@ -15,4 +15,8 @@
   <% else %>
     <span data-testid="user-status" class="c-indicator c-indicator--relaxed"><%= t("views.admin.users.statuses.Good standing") %></span>
   <% end %>
+  <% if user.max_score > 0 %>
+      <span class="screen-reader-only"><%= t("views.admin.users.max_score_reader") %></span>
+      <span data-testid="user-max-score" class="c-indicator c-indicator--relaxed">Max: <%= user.max_score %></span>
+  <% end %>
 </span>

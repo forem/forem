@@ -216,6 +216,7 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
+  validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -597,7 +598,9 @@ class Article < ApplicationRecord
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment
-    self.score = max_score if max_score.positive? && max_score < score
+    accepted_max = [max_score, user&.max_score.to_i].min
+    accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
+    self.score = accepted_max if accepted_max.positive? && accepted_max < score
 
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
