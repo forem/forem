@@ -43,6 +43,10 @@ export function setupBillboardInteractivity() {
       });
       if (sponsorshipCloseButton.closest('.popover-billboard')) {
         document.addEventListener('click', (event) => {
+          // If the event target is the article header and .popover-billboard does not have display none, don't follow that link
+          if (event.target.closest('.crayons-article__header') && document.querySelector('.popover-billboard').style.display !== 'none'){
+            event.preventDefault();
+          }          
           if (!event.target.closest('.js-billboard')) {
             dismissBillboard(sponsorshipCloseButton);
           }

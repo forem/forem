@@ -18,6 +18,8 @@ class EmailDigest
         else
           Emails::SendUserDigestWorker.perform_async(user.id)
         end
+      rescue StandardError => e
+        Honeybadger.notify(e)
       end
     end
   end

@@ -81,6 +81,13 @@ RSpec.describe "UserProfiles" do
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
     end
 
+    it "creates profile on the fly if doesn't exist" do
+      user.profile.destroy
+      expect(user.reload.profile).to be_nil
+      get "/#{user.username}"
+      expect(user.reload.profile).not_to be_nil
+    end
+
     context "when has comments" do
       before do
         create(:comment, user: user, body_markdown: "nice_comment")

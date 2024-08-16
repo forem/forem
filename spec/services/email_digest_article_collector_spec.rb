@@ -25,6 +25,25 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
+    context "when the user has no follows, but does have a few pageviews" do
+      it "provides featured 3 articles and articles tagged with their viewed articles" do
+        user.page_views.create(article: create(:article, tag_list: "ruby"))
+        create_list(:article, 2, public_reactions_count: 40, featured: true, score: 40)
+        create_list(:article, 2, tag_list: "ruby", public_reactions_count: 40, score: 40)
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to eq(4)
+      end
+
+      it "also provides articles tagged with career in addition to featured and viewed" do
+        user.page_views.create(article: create(:article, tag_list: "ruby"))
+        create_list(:article, 2, public_reactions_count: 40, featured: true, score: 40)
+        create_list(:article, 2, tag_list: "ruby", public_reactions_count: 40, score: 40)
+        create_list(:article, 2, tag_list: "career", public_reactions_count: 40, score: 40)
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to eq(6)
+      end
+    end
+
     context "when it's been less than the set number of digest email days" do
       before do
         author = create(:user)
@@ -51,6 +70,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         user.follow(author)
         user.update(following_users_count: 1)
         create_list(:article, 3, user_id: author.id, public_reactions_count: 40, score: 40)
+        user.follow(Article.last.tags.first)
       end
 
       it "evaluates that user is ready to receive an email" do

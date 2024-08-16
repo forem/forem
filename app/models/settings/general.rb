@@ -55,6 +55,7 @@ module Settings
 
     setting :original_logo, type: :string
     setting :resized_logo, type: :string
+    setting :resized_logo_aspect_ratio, type: :string
 
     setting :enable_video_upload, type: :boolean, default: false
 
@@ -79,7 +80,6 @@ module Settings
     }
 
     # Monetization
-    setting :payment_pointer, type: :string
     setting :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     setting :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
     # Billboard-related. Not sure this is the best place for it, but it's a start.

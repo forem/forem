@@ -224,7 +224,8 @@ fr:
           not_confirmed:
             subtitle: E-mail non confirmé
             desc: "L'e-mail de %{user} n'a pas encore été confirmé."
-          verify: Verify email address
+          verify: Envoyer un nouvel e-mail de vérification
+          manually_verify: Vérifier manuellement l'e-mail
           verified_html: Last verified on %{time}
           reverify: Reverify
         flags:
@@ -375,6 +376,15 @@ fr:
           submit: Changer le modificateur de réputation
           success: Modification réussie du modificateur de réputation de l'utilisateur en %{reputation_modifier}.
           error: Échec de la modification du modificateur de réputation de l'utilisateur (sélectionnez entre 0 et 5).
+        max_score:
+          change: Changer le score maximum
+          change_note: Raison du changement
+          desc_html: Cela modifie le score maximum qu'un utilisateur peut atteindre. 0 signifie illimité. Le score maximum actuel de l'utilisateur est <strong>%{max_score}</strong>.
+          heading: Changer le score maximum
+          max_score: Nouveau score maximum
+          submit: Changer le score maximum
+          success: Modification réussie du score maximum de l'utilisateur en %{max_score}.
+          error: Échec de la modification du score maximum de l'utilisateur (sélectionnez entre 0 et 100)
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -423,6 +433,8 @@ fr:
           Good Standing: Good Standing
           Good standing: Good standing
           Trusted: Trusted
+        max_score_title: Maximum score
+        max_score_reader: "Maximum score:"
         identities:
           facebook: Facebook
           github: GitHub

@@ -8,6 +8,16 @@ import '@testing-library/jest-dom';
 
 fetch.enableMocks();
 
+// Mock Algolia
+jest.mock('algoliasearch/lite', () => {
+  const searchClient = {
+    initIndex: jest.fn(() => ({
+      search: jest.fn().mockResolvedValue({ hits: [] })
+    }))
+  };
+  return jest.fn(() => searchClient);
+});
+
 let renderResult;
 const csrfToken = 'this-is-a-csrf-token';
 jest.mock('../../utilities/http/csrfToken', () => ({

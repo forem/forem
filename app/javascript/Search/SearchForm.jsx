@@ -1,11 +1,13 @@
 import { h } from 'preact';
-import { forwardRef, useState, useEffect, useRef, useMemo } from 'preact/compat';
+import { forwardRef, useState, useEffect, useRef, useMemo, useCallback } from 'preact/compat';
 import PropTypes from 'prop-types';
 import algoliasearch from 'algoliasearch/lite';
+import recommend from '@algolia/recommend'; // Ensure this is the correct import
 import { locale } from '../utilities/locale';
 import { ButtonNew as Button } from '@crayons';
 import SearchIcon from '@images/search.svg';
 import AlgoliaIcon from '@images/algolia.svg';
+import { debounceAction } from '@utilities/debounceAction';
 
 export const SearchForm = forwardRef(
   (
@@ -15,27 +17,72 @@ export const SearchForm = forwardRef(
     const env = 'production';
     const client = useMemo(() => (algoliaId ? algoliasearch(algoliaId, algoliaSearchKey) : null), [algoliaId, algoliaSearchKey]);
     const index = useMemo(() => (client ? client.initIndex(`Article_${env}`) : null), [client]);
+    const recommendClient = useMemo(() => (algoliaId ? recommend(algoliaId, algoliaSearchKey) : null), [algoliaId, algoliaSearchKey]);
+    const articleContainer = document.getElementById('article-show-container');
+
     const [inputValue, setInputValue] = useState(searchTerm);
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const suggestionsRef = useRef();
 
+    // Handle clicks outside the dropdown
+    const handleClickOutside = useCallback((event) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target) &&
+        !ref.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    }, [ref]);
+
     useEffect(() => {
-      if (inputValue && index) {
-        index.search(inputValue, { hitsPerPage: 5 }).then(({ hits }) => {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [handleClickOutside]);
+
+    // Fetch initial recommendations
+    const fetchRecommendations = useCallback(() => {
+      if (recommendClient && articleContainer?.dataset?.articleId) {
+        recommendClient.getRelatedProducts([
+          {
+            indexName: `Article_${env}`,
+            objectID: articleContainer?.dataset?.articleId,
+            maxRecommendations: 5,
+            threshold: 10,
+          },
+        ]).then(({ results }) => {
+          setSuggestions(results[0].hits);
+        })
+      }
+    }, [recommendClient]);
+
+    // Debounced search function
+    const debouncedSearch = useCallback(debounceAction((value) => {
+      if (value && index) {
+        index.search(value, { hitsPerPage: 5 }).then(({ hits }) => {
           setSuggestions(hits); // Assuming 'title' is the field to display
         });
-      } else {
+      } else if (!articleContainer?.dataset?.articleId) {
         setSuggestions([]);
       }
-    }, [inputValue, index]);
+    }, 200), [index]);
+
+    useEffect(() => {
+      debouncedSearch(inputValue);
+    }, [inputValue, debouncedSearch]);
 
     // Handle input changes
     const handleInputChange = (e) => {
       setInputValue(e.target.value);
       setShowSuggestions(true);
       setActiveSuggestionIndex(-1);
+      if (e.target.value.length === 0 && articleContainer) {
+        fetchRecommendations();
+      }
     };
 
     // Handle keyboard navigation and selection
@@ -66,24 +113,6 @@ export const SearchForm = forwardRef(
       }
     };
 
-    // Handle clicks outside the dropdown
-    const handleClickOutside = (event) => {
-      if (
-        suggestionsRef.current &&
-        !suggestionsRef.current.contains(event.target) &&
-        !ref.current.contains(event.target)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-
-    useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, []);
-
     return (
       <form
         action="/search"
@@ -104,7 +133,7 @@ export const SearchForm = forwardRef(
               className="crayons-header--search-input crayons-textfield"
               type="text"
               name="q"
-              placeholder={`${locale('core.search')}...`}
+              placeholder={articleContainer?.dataset?.articleId ? 'Find related posts...' : `${locale('core.search')}...`}
               autoComplete="off"
               aria-label="Search term"
               value={inputValue}
@@ -115,6 +144,9 @@ export const SearchForm = forwardRef(
                   typeahead.classList.remove('hidden');
                 }
                 setShowSuggestions(true);
+                if (articleContainer) {
+                  fetchRecommendations();
+                }
               }}
               onKeyDown={handleKeyDown}
             />
@@ -150,8 +182,8 @@ export const SearchForm = forwardRef(
                   ))}
                   <div class="crayons-header--search-typeahead-footer">
                     <span>
-                      Displaying Posts — Submit search to filter by Users,
-                      Comments, etc.
+                      { inputValue.length > 0 ? 'Submit search for advanced filtering.' : 'Displaying Algolia Recommendations — Start typing to search' }
+                      
                     </span>
                     <a
                       href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral"

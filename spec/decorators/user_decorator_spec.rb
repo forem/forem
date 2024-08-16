@@ -82,6 +82,17 @@ RSpec.describe UserDecorator, type: :decorator do
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
+    it "includes user role names in body class" do
+      user.add_role(:tag_moderator)
+      expected_result = %W[
+        light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
+        user-role--tag_moderator
+      ].join(" ")
+      expect(user.decorate.config_body_class).to eq(expected_result)
+    end
+
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
       expected_result = %W[
@@ -121,7 +132,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
         expected_result = %w[
           light-theme sans-serif-article-body mod-status-false
-          trusted-status-true default-header
+          trusted-status-true default-header user-role--trusted
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end

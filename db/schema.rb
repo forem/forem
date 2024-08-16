@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_14_184735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -121,6 +121,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.boolean "main_image_from_frontmatter", default: false
     t.integer "main_image_height", default: 420
+    t.integer "max_score", default: 0
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
@@ -171,6 +172,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["language"], name: "index_articles_on_language"
+    t.index ["organic_page_views_past_month_count"], name: "index_articles_on_organic_page_views_past_month_count"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
@@ -1311,6 +1313,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
     t.inet "last_sign_in_ip"
     t.datetime "latest_article_updated_at", precision: nil
     t.datetime "locked_at", precision: nil
+    t.integer "max_score", default: 0
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"

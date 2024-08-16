@@ -130,6 +130,12 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(billboard.processed_html)
     end
 
+    it "renders a footer billboard" do
+      billboard = create(:billboard, published: true, approved: true, placement_area: "footer", organization: org)
+      get "/"
+      expect(response.body).to include(billboard.processed_html)
+    end
+
     it "does not set cache-related headers if private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
       get "/"

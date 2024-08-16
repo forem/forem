@@ -211,7 +211,7 @@ class StoriesController < ApplicationController
     assign_user_github_repositories
 
     @grouped_badges = @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id)
-    @profile = @user&.profile&.decorate
+    @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header "articles-user-#{@user.id}"

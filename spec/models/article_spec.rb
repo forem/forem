@@ -1389,25 +1389,76 @@ RSpec.describe Article do
   end
 
   describe "#update_score" do
-    it "stably sets the correct blackbox values" do
-      create(:reaction, reactable: article, points: 1)
+    before do
+      allow(article).to receive(:reactions).and_return(reactions)
+      allow(article).to receive_messages(reactions: reactions, comments: comments)
+      allow(BlackBox).to receive(:article_hotness_score).and_return(100)
+    end
 
+    let(:reactions) { double("reactions", sum: 10, privileged_category: double("privileged_category", sum: 5)) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:comments) { double("comments", sum: 3) } # rubocop:disable RSpec/VerifiedDoubles
+
+    it "stably sets the correct blackbox values" do
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
     end
 
     it "caches the privileged score values" do
-      user = create(:user, :trusted)
-
-      create(:thumbsdown_reaction, reactable: article, user: user)
-
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
 
     it "includes user marked as spam punishment" do
-      article.user.add_role(:spam)
+      user.add_role(:spam)
       article.update_score
-      expect(article.reload.score).to eq(-500)
+      expect(article.reload.score).to eq(-490)
+    end
+
+    it "includes the user_subscriber? baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      user.add_role(:base_subscriber)
+      article.update_score
+      expect(article.reload.score).to eq(22)
+    end
+
+    context "when max_score is set" do
+      it "uses the max score if the natural score exceeds max_score" do
+        article.update_column(:max_score, 2)
+
+        article.update_score
+        expect(article.reload.score).to eq(2)
+      end
+
+      it "uses the natural score if it is lower than max_score" do
+        article.update_column(:max_score, 25)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "uses the natural score if max_score is 0" do
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+    end
+
+    context "when user.max_score is set" do
+      it "uses the user's max score if it is lower than the article's max score" do
+        user.update_column(:max_score, 5)
+        article.update_column(:max_score, 10)
+
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
+
+      it "uses the article's max score if it is lower than the user's max score" do
+        user.update_column(:max_score, 10)
+        article.update_column(:max_score, 5)
+
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
     end
   end
 

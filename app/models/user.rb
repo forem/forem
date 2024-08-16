@@ -137,6 +137,7 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
+  validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validates :reputation_modifier, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 },
                                   presence: true
 
@@ -328,6 +329,20 @@ class User < ApplicationRecord
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
+  def cached_followed_tag_names_or_recent_tags
+    followed_tags = cached_followed_tag_names
+    return followed_tags if followed_tags.any?
+
+    ### pluck cached_tag_list for articles with most recent page views. Page views have a user_id and article_id
+    ### cached_tag_list is a comma-separated string of tag names on the article
+
+    cached_recent_pageview_article_ids = page_views.order("created_at DESC").limit(6).pluck(:article_id)
+    tags = Article.where(id: cached_recent_pageview_article_ids).pluck(:cached_tag_list)
+      .map { |list| list.split(", ") }
+      .flatten.uniq.reject(&:empty?)
+    tags + %w[career productivity ai git] # These are highly DEV-specific. Should be refactored later to be config'd
+  end
+
   def cached_following_users_ids
     cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
@@ -354,6 +369,13 @@ class User < ApplicationRecord
       readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
       published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
       readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
+    end
+  end
+
+  def cached_role_names
+    cache_key = "user-#{id}/role_names"
+    Rails.cache.fetch(cache_key, expires_in: 200.hours) do
+      roles.pluck(:name)
     end
   end
 
@@ -434,7 +456,6 @@ class User < ApplicationRecord
     :administrative_access_to?,
     :any_admin?,
     :auditable?,
-    :augmented?,
     :banished?,
     :comment_suspended?,
     :limited?,
@@ -455,6 +476,7 @@ class User < ApplicationRecord
     :user_subscription_tag_available?,
     :vomited_on?,
     :warned?,
+    :base_subscriber?,
     to: :authorizer,
   )
   alias suspended suspended?
@@ -690,6 +712,7 @@ class User < ApplicationRecord
   def update_user_roles_cache(...)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
+    Rails.cache.delete("user-#{id}/role_names")
     refresh_auto_audience_segments
     trusted?
   end

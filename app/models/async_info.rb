@@ -78,10 +78,8 @@ class AsyncInfo
   end
 
   def feed_style_preference_variable(user)
-    unwrapped_user = user.object # user here is actually a UserDecorator before. Need to unwrap.
-    after_date = unwrapped_user.registered_at >= Time.zone.parse("2024-02-20")
-    flag_on = FeatureFlag.enabled?(:feed_style_test_running)
-    return field_test(:feed_style_20240220, participant: unwrapped_user) if after_date && flag_on
+    # TODO: Let users set their own feed style preference
+    # Currently only at app level
 
     feed_style_preference
   end

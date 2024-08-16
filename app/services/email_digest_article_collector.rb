@@ -12,25 +12,11 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
-    order_variant = field_test(:digest_article_ordering_05_31, participant: @user)
-    order = case order_variant
-            when "base"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 1.1)) DESC")
-            when "more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 2)) DESC")
-            when "much_more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 4)) DESC")
-            when "much_much_more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 6)) DESC")
-            when "much_much_much_more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 8)) DESC")
-            else
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 1.1) DESC")
-            end
+    order = Arel.sql("((score * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
-      articles = if user_has_followings?
+      articles = if @user.cached_followed_tag_names.any?
                    experience_level_rating = @user.setting.experience_level || 5
                    experience_level_rating_min = experience_level_rating - 4
                    experience_level_rating_max = experience_level_rating + 4
@@ -47,16 +33,32 @@ class EmailDigestArticleCollector
                      .order(order)
                      .limit(RESULTS_COUNT)
                  else
+                   tags = @user.cached_followed_tag_names_or_recent_tags
                    Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
-                     .featured
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
-                     .where("score > ?", 15)
+                     .where("score > ?", 11)
                      .order(order)
                      .limit(RESULTS_COUNT)
+                     .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
                  end
+
+      # Fallback if there are not enough articles
+      if articles.length < 3
+        articles = Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
+          .published
+          .where("published_at > ?", cutoff_date)
+          .where(email_digest_eligible: true)
+          .where("score > ?", 11)
+          .not_authored_by(@user.id)
+          .order(order)
+          .limit(RESULTS_COUNT)
+        if @user.cached_antifollowed_tag_names.any?
+          articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
+        end
+      end
 
       # Pop second article to front if the first article is the same as the last email
       if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
