@@ -8,58 +8,35 @@ RSpec.describe "StripeSubscriptions" do
   let(:subscription_success_url) { ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing" }
   let(:session_url) { "https://checkout.stripe.com/pay/test_session_id" }
 
-  before do
-    StripeMock.start
-    sign_in user
-    allow(Stripe::Checkout::Session).to receive(:create).and_return(OpenStruct.new(url: session_url))
-  end
-
-  after { StripeMock.stop }
-
   describe "GET /stripe_subscriptions/new" do
-    it "creates a new Stripe Checkout Session and redirects to the session URL" do
-      get new_stripe_subscription_path, params: { item: default_item_code }
+    context "when the user is not signed in" do
+      it "redirects to the sign in page" do
+        get new_stripe_subscription_path
 
-      expect(Stripe::Checkout::Session).to have_received(:create).with(
-        line_items: [
-          {
-            price: default_item_code,
-            quantity: 1
-          },
-        ],
-        mode: "subscription",
-        success_url: URL.url(subscription_success_url),
-        cancel_url: URL.url("/settings/billing"),
-        customer_email: user.email,
-        metadata: {
-          user_id: user.id
-        },
-      )
-
-      expect(response).to redirect_to(session_url)
+        expect(response).to redirect_to("/enter")
+      end
     end
 
-    it "allows other host redirection" do
-      get new_stripe_subscription_path, params: { item: default_item_code }
-      expect(response).to have_http_status(302)
-      expect(response.headers["Location"]).to eq(session_url)
-    end
+    context "when the user is signed in" do
+      before do
+        StripeMock.start
+        sign_in user
+        allow(Stripe::Checkout::Session).to receive(:create).and_return(OpenStruct.new(url: session_url))
+      end
 
-    context "with custom parameters" do
-      let(:custom_item_code) { "custom_item_code" }
-      let(:custom_mode) { "payment" }
+      after { StripeMock.stop }
 
-      it "creates a Stripe Checkout Session with custom parameters" do
-        get new_stripe_subscription_path, params: { item: custom_item_code, mode: custom_mode }
+      it "creates a new Stripe Checkout Session and redirects to the session URL" do
+        get new_stripe_subscription_path, params: { item: default_item_code }
 
         expect(Stripe::Checkout::Session).to have_received(:create).with(
           line_items: [
             {
-              price: custom_item_code,
+              price: default_item_code,
               quantity: 1
             },
           ],
-          mode: custom_mode,
+          mode: "subscription",
           success_url: URL.url(subscription_success_url),
           cancel_url: URL.url("/settings/billing"),
           customer_email: user.email,
@@ -69,6 +46,39 @@ RSpec.describe "StripeSubscriptions" do
         )
 
         expect(response).to redirect_to(session_url)
+      end
+
+      it "allows other host redirection" do
+        get new_stripe_subscription_path, params: { item: default_item_code }
+        expect(response).to have_http_status(:found)
+        expect(response.headers["Location"]).to eq(session_url)
+      end
+
+      context "with custom parameters" do
+        let(:custom_item_code) { "custom_item_code" }
+        let(:custom_mode) { "payment" }
+
+        it "creates a Stripe Checkout Session with custom parameters" do
+          get new_stripe_subscription_path, params: { item: custom_item_code, mode: custom_mode }
+
+          expect(Stripe::Checkout::Session).to have_received(:create).with(
+            line_items: [
+              {
+                price: custom_item_code,
+                quantity: 1
+              },
+            ],
+            mode: custom_mode,
+            success_url: URL.url(subscription_success_url),
+            cancel_url: URL.url("/settings/billing"),
+            customer_email: user.email,
+            metadata: {
+              user_id: user.id
+            },
+          )
+
+          expect(response).to redirect_to(session_url)
+        end
       end
     end
   end
