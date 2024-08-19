@@ -46,17 +46,54 @@ RSpec.describe "BillboardEvents" do
         expect(billboard.reload.impressions_count).to eq(1)
       end
 
-      it "creates a billboard success rate" do
+      it "creates a billboard conversion event" do
+        # Create some impressions first
+        create_list(:billboard_event, 1, billboard_id: billboard.id, category: BillboardEvent::CATEGORY_IMPRESSION)
+
+        # Now create the conversion event
+        post "/bb_tabulations", params: {
+          billboard_event: {
+            billboard_id: billboard.id,
+            context_type: BillboardEvent::CONTEXT_TYPE_HOME,
+            category: BillboardEvent::CATEGORY_CONVERSION
+          }
+        }
+
+        expect(billboard.reload.success_rate).to eq(25)
+      end
+
+      it "creates a conversion category event when there has already been a signup event" do
+        # Create some impressions first
+        create_list(:billboard_event, 1, billboard_id: billboard.id, category: BillboardEvent::CATEGORY_IMPRESSION)
+        # Create the signup event
+        create(:billboard_event, billboard_id: billboard.id, category: BillboardEvent::CATEGORY_SIGNUP)
+
+        # Now create the conversion event
+        post "/bb_tabulations", params: {
+          billboard_event: {
+            billboard_id: billboard.id,
+            context_type: BillboardEvent::CONTEXT_TYPE_HOME,
+            category: BillboardEvent::CATEGORY_CONVERSION
+          }
+        }
+
+        expect(billboard.reload.success_rate).to eq(50)
+      end
+
+      it "creates a billboard success rate with conversion" do
         ad_event_params = { billboard_id: billboard.id, context_type: BillboardEvent::CONTEXT_TYPE_HOME }
         impression_params = ad_event_params.merge(category: BillboardEvent::CATEGORY_IMPRESSION, user: user)
+        click_params = ad_event_params.merge(category: BillboardEvent::CATEGORY_CLICK, user: user)
         create_list(:billboard_event, 4, impression_params)
+        create_list(:billboard_event, 3, click_params)
 
         post(
           "/bb_tabulations",
-          params: { billboard_event: ad_event_params.merge(category: BillboardEvent::CATEGORY_CLICK) },
+          params: { billboard_event: ad_event_params.merge(category: BillboardEvent::CATEGORY_CONVERSION) },
         )
 
-        expect(billboard.reload.success_rate).to eq(0.25)
+        # Success rate should be (3 clicks + 25 from conversion) / 4 impressions = 7
+        expect(billboard.reload.success_rate).to eq(7)
       end
 
       it "accounts for signups in the success rate" do
