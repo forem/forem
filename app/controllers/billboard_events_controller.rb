@@ -1,6 +1,6 @@
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
-  SIGNUP_SUCCESS_MODIFIER = 25 # One signup is worth 25 clicks
+  CONVERSION_SUCCESS_MODIFIER = 25 # One signup is worth 25 clicks
   THROTTLE_TIME = 25
   # No policy needed. All views are for all users
 
@@ -26,8 +26,8 @@ class BillboardEventsController < ApplicationMetalController
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
-      signup_success = @billboard.billboard_events.signups.sum(:counts_for) * SIGNUP_SUCCESS_MODIFIER
-      rate = (num_clicks + signup_success).to_f / num_impressions
+      conversion_success = @billboard.billboard_events.all_conversion_types.sum(:counts_for) * CONVERSION_SUCCESS_MODIFIER
+      rate = (num_clicks + conversion_success).to_f / num_impressions
 
       @billboard.update_columns(
         success_rate: rate,

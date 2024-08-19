@@ -56,6 +56,16 @@ module IncomingWebhooks
       return unless user
 
       user.add_role("base_subscriber") unless user.base_subscriber?
+
+      last_billboard_event = BillboardEvent
+        .where(user_id: user.id, category: %w[click signup]).where("created_at > ?", 1.hour.ago).last
+      return unless last_billboard_event
+
+      BillboardEvent.create(user_id: user.id,
+                            category: "conversion",
+                            geolocation: last_billboard_event.geolocation,
+                            context_type: last_billboard_event.context_type,
+                            billboard_id: last_billboard_event.billboard_id)
     end
 
     def handle_subscription_created(subscription)

@@ -7,7 +7,7 @@ class BillboardEvent < ApplicationRecord
   # We also have an article_id param, but not belongs_to because it is not indexed and not designed to be
   # consistently referenced within the application.
 
-  validate :unique_on_user_if_signup_conversion, on: :create
+  validate :unique_on_user_if_type_of_conversion_category, on: :create
   validate :only_recent_registrations, on: :create
 
   self.table_name = "display_ad_events"
@@ -17,7 +17,8 @@ class BillboardEvent < ApplicationRecord
   CATEGORY_IMPRESSION = "impression".freeze
   CATEGORY_CLICK = "click".freeze
   CATEGORY_SIGNUP = "signup".freeze
-  VALID_CATEGORIES = [CATEGORY_CLICK, CATEGORY_IMPRESSION, CATEGORY_SIGNUP].freeze
+  CATEGORY_CONVERSION = "conversion".freeze
+  VALID_CATEGORIES = [CATEGORY_CLICK, CATEGORY_IMPRESSION, CATEGORY_SIGNUP, CATEGORY_CONVERSION].freeze
 
   CONTEXT_TYPE_HOME = "home".freeze
   CONTEXT_TYPE_ARTICLE = "article".freeze
@@ -30,12 +31,14 @@ class BillboardEvent < ApplicationRecord
   scope :impressions, -> { where(category: CATEGORY_IMPRESSION) }
   scope :clicks, -> { where(category: CATEGORY_CLICK) }
   scope :signups, -> { where(category: CATEGORY_SIGNUP) }
+  scope :conversions, -> { where(category: CATEGORY_CONVERSION) }
+  scope :all_conversion_types, -> { where(category: [CATEGORY_SIGNUP, CATEGORY_CONVERSION]) }
 
-  def unique_on_user_if_signup_conversion
-    return unless category == CATEGORY_SIGNUP && user_id.present?
-    return unless self.class.exists?(user_id: user_id, category: CATEGORY_SIGNUP)
+  def unique_on_user_if_type_of_conversion_category
+    return unless [CATEGORY_SIGNUP, CATEGORY_CONVERSION].include?(category) && user_id.present?
+    return unless self.class.exists?(user_id: user_id, category: category)
 
-    errors.add(:user_id, "has already converted a signup")
+    errors.add(:user_id, "has already converted")
   end
 
   def only_recent_registrations
