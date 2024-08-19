@@ -379,6 +379,10 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_base_subscriber?
+    cached_role_names.include?("base_subscriber")
+  end
+
   def processed_website_url
     profile.website_url.to_s.strip if profile.website_url.present?
   end

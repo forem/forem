@@ -68,6 +68,7 @@
           <div class="items-center js-username-container mb-2">
             <h1 class="crayons-title lh-tight">
               <%= @user.name %>
+              <span class="ml-2"><%= subscription_icon(@user) %></span>
               <% if @user.spam? %>
                 &nbsp;<span class="c-indicator c-indicator--danger">Spam</span>
               <% end %>

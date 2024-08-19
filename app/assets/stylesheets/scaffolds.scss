@@ -111,3 +111,12 @@ body.trusted-status-true .trusted-visible-block {
     bottom: calc(var(--header-height) + var(--su-3));
   }
 }
+
+.subscription-icon {
+  height: 0.95em;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 0.05em;
+  max-height:22px;
+  aspect-ratio: 166 / 102;
+}

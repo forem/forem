@@ -224,6 +224,17 @@ module ApplicationHelper
     )
   end
 
+  def subscription_icon(user, modifier = nil)
+    return unless user.instance_of?(User)
+    return unless FeatureFlag.enabled?("subscriber_icon") && user.cached_base_subscriber?
+    return image_tag("subscription-icon.png", class: "subscription-icon") if modifier == "no_link"
+
+    link_to image_tag("subscription-icon.png",
+                      class: "subscription-icon"),
+            "/++",
+            style: "display: inline;"
+  end
+
   def user_colors_style(user)
     "border: 2px solid #{user.decorate.darker_color}; \
     box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
