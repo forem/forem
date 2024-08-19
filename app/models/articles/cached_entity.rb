@@ -10,6 +10,7 @@ module Articles
         object.respond_to?(:slug) ? object.slug : object.username,
         object.profile_image_90,
         object.profile_image_url,
+        object.cached_base_subscriber?,
       )
     end
   end
