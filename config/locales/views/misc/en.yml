@@ -58,6 +58,7 @@ en:
       settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
       welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
       write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
+      join_subscription_html: "<span class=\"emoji\">🚀</span>Join DEV++"
     pins:
       article: Pinned
       pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
