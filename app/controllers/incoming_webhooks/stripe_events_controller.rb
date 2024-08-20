@@ -2,7 +2,6 @@ module IncomingWebhooks
   class StripeEventsController < ApplicationController
     skip_before_action :verify_authenticity_token
 
-    # Your Stripe CLI webhook secret for testing your endpoint locally.
     STRIPE_ENDPOINT_SECRET = ApplicationConfig["STRIPE_SIGNING_SECRET"]
 
     def create
@@ -10,7 +9,6 @@ module IncomingWebhooks
       sig_header = request.env["HTTP_STRIPE_SIGNATURE"]
       event = nil
 
-      # Log all headers for debugging
       Rails.logger.info "Request Headers: #{request.headers.to_h.inspect}"
       Rails.logger.info "Payload: #{payload}"
       Rails.logger.info "Signature Header: #{sig_header}"
@@ -28,10 +26,12 @@ module IncomingWebhooks
         render json: { error: "Invalid signature (#{e.message})" }, status: :bad_request and return
       end
 
-      # Handle the event
+      Rails.logger.info "Event: #{event.inspect}"
+      Rails.logger.info "Event Data: #{event['data'].inspect}"
+
       case event["type"]
-      when "invoice.payment_succeeded"
-        handle_invoice_payment_succeeded(event["data"]["object"])
+      when "checkout.session.completed"
+        handle_checkout_session_completed(event["data"]["object"])
       when "customer.subscription.created"
         handle_subscription_created(event["data"]["object"])
       when "customer.subscription.updated"
@@ -47,20 +47,32 @@ module IncomingWebhooks
 
     private
 
-    def handle_invoice_payment_succeeded(invoice)
-      return unless invoice.metadata["user_id"]
+    def handle_checkout_session_completed(invoice)
+      metadata = extract_metadata(invoice)
+      return unless metadata["user_id"]
 
-      user_id = invoice.metadata["user_id"]
+      user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
       return unless user
 
       user.add_role("base_subscriber") unless user.base_subscriber?
+
+      last_billboard_event = BillboardEvent
+        .where(user_id: user.id, category: %w[click signup]).where("created_at > ?", 1.hour.ago).last
+      return unless last_billboard_event
+
+      BillboardEvent.create(user_id: user.id,
+                            category: "conversion",
+                            geolocation: last_billboard_event.geolocation,
+                            context_type: last_billboard_event.context_type,
+                            billboard_id: last_billboard_event.billboard_id)
     end
 
     def handle_subscription_created(subscription)
-      return unless subscription["metadata"].key?("user_id")
+      metadata = extract_metadata(subscription)
+      return unless metadata["user_id"]
 
-      user_id = subscription["metadata"]["user_id"]
+      user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
       return unless user
 
@@ -68,9 +80,10 @@ module IncomingWebhooks
     end
 
     def handle_subscription_updated(subscription)
-      return unless subscription["metadata"].key?("user_id")
+      metadata = extract_metadata(subscription)
+      return unless metadata["user_id"]
 
-      user_id = subscription["metadata"]["user_id"]
+      user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
       return unless user
 
@@ -78,13 +91,21 @@ module IncomingWebhooks
     end
 
     def handle_subscription_deleted(subscription)
-      return unless subscription["metadata"].key?("user_id")
+      metadata = extract_metadata(subscription)
+      return unless metadata["user_id"]
 
-      user_id = subscription["metadata"]["user_id"]
+      user_id = metadata["user_id"]
       user = User.find_by(id: user_id)
       return unless user
 
       user.remove_role("base_subscriber")
+    end
+
+    def extract_metadata(obj)
+      return obj.metadata if obj.respond_to?(:metadata)
+      return obj["metadata"] if obj.is_a?(Hash) && obj.key?("metadata")
+
+      nil
     end
   end
 end

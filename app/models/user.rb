@@ -137,6 +137,7 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
+  validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validates :reputation_modifier, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 },
                                   presence: true
 
@@ -369,6 +370,17 @@ class User < ApplicationRecord
       published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
       readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
     end
+  end
+
+  def cached_role_names
+    cache_key = "user-#{id}/role_names"
+    Rails.cache.fetch(cache_key, expires_in: 200.hours) do
+      roles.pluck(:name)
+    end
+  end
+
+  def cached_base_subscriber?
+    cached_role_names.include?("base_subscriber")
   end
 
   def processed_website_url
@@ -704,6 +716,7 @@ class User < ApplicationRecord
   def update_user_roles_cache(...)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
+    Rails.cache.delete("user-#{id}/role_names")
     refresh_auto_audience_segments
     trusted?
   end

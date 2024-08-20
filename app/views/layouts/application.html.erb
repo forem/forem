@@ -46,7 +46,7 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
-    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
+    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{@article.present?}")) do %>
       <body
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-user-status="<%= j(user_logged_in_status) %>"

@@ -130,6 +130,7 @@ fr:
       email_sent: Courriel envoyé !
       confirm_sent: Courriel de Confirmation Envoyé!
       verify_sent: E-mail de vérification envoyé !
+      manual_verification_sent: E-mail vérifié manuellement !
       full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) a été entièrement supprimé. S'il s'agit d'une suppression GDPR, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
       no_email: Aucun e-mail
       parameter_missing: Le sujet et le corps sont tous deux requis !

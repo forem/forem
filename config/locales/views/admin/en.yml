@@ -225,7 +225,8 @@ en:
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
-          verify: Verify email address
+          verify: Send new verification email email
+          manually_verify: Manually verify email
           verified_html: Last verified on %{time}
           reverify: Reverify
         flags:
@@ -378,6 +379,15 @@ en:
           submit: Change reputation modifier
           success: Successfully changed user's reputation modifier to %{reputation_modifier}.
           error: Failed to change user's reptuation modifier (select between 0 and 5)
+        max_score:
+          change: Change maximum score
+          change_note: Reason for change
+          desc_html: This changes the maximum score a user can achieve. 0 means unlimited. The user's current maximum score is <strong>%{max_score}</strong>.
+          heading: Change maximum score
+          max_score: New maximum score
+          submit: Change maximum score
+          success: Successfully changed user's maximum score to %{max_score}.
+          error: Failed to change user's maximum score (select between 0 and 100)
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -426,6 +436,8 @@ en:
           Good Standing: Good Standing
           Good standing: Good standing
           Trusted: Trusted
+        max_score_title: Maximum score
+        max_score_reader: "Maximum score:"
         identities:
           facebook: Facebook
           github: GitHub

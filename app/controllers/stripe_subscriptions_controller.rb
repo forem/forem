@@ -1,4 +1,6 @@
 class StripeSubscriptionsController < ApplicationController
+  before_action :authenticate_user!
+
   def new
     Stripe.api_key = Settings::General.stripe_api_key
     session = Stripe::Checkout::Session.create(

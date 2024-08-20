@@ -10,6 +10,7 @@ module Admin
       organization_id identity_id
       credit_action credit_amount
       reputation_modifier
+      max_score
       tag_name
     ].freeze
 
@@ -100,6 +101,30 @@ module Admin
         flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
       else
         flash[:error] = I18n.t("views.admin.users.reputation.error")
+      end
+      redirect_to admin_user_path(@user)
+    end
+
+    def max_score
+      @user = User.find(params[:id])
+      max_score_value = user_params[:max_score]
+      note_content = if user_params[:new_note].present?
+                       "Changed user's maximum score to #{max_score_value}. " \
+                         "Reason: #{user_params[:new_note]}"
+                     else
+                       "Changed user's maximum score to #{max_score_value}."
+                     end
+      if @user.update(max_score: max_score_value)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "max_score_change",
+          content: note_content,
+        )
+        flash[:success] = I18n.t("views.admin.users.max_score.success", max_score: max_score_value)
+      else
+        flash[:error] = I18n.t("views.admin.users.max_score.error")
       end
       redirect_to admin_user_path(@user)
     end

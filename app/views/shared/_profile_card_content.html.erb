@@ -3,7 +3,10 @@
     <span class="<% if actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">
       <img src="<%= actor.profile_image_url_for(length: 90) %>" class="<% if actor.class.name == "User" %>crayons-avatar__image<% elsif actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="" loading="lazy" />
     </span>
-    <span class="crayons-link crayons-subtitle-2 mt-5"><%= actor.name %></span>
+    <span class="crayons-link crayons-subtitle-2 mt-5">
+      <%= actor.name %>
+      <%= subscription_icon(actor, "no_link") %>
+    </span>
   </a>
 </div>
 

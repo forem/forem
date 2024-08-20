@@ -182,6 +182,9 @@ Rails.application.routes.draw do
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
     resources :display_ad_events, only: [:create], controller: :billboard_events
     resources :billboard_events, only: [:create]
+    # Alias for reporting in case "events" triggers spam filters
+    post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
