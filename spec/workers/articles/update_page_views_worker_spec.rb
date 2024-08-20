@@ -41,15 +41,52 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
 
   context "when the article exists" do
     let(:user) { create(:user) }
-    let(:referrer) { nil }
     let(:article) { create(:article) }
 
-    it "creates a page view" do
-      expect do
+    context "and the referrer is Google" do
+      let(:referrer) { "https://www.google.com/" }
+
+      it "creates a page view" do
+        expect do
+          worker.perform("article_id" => article.id,
+                         "user_id" => user.id,
+                         "referrer" => referrer)
+        end.to change(PageView, :count).by(1)
+      end
+
+      it "calls UpdateOrganicPageViewsWorker" do
+        allow(Articles::UpdateOrganicPageViewsWorker).to receive(:perform_at)
+
         worker.perform("article_id" => article.id,
                        "user_id" => user.id,
                        "referrer" => referrer)
-      end.to change(PageView, :count).by(1)
+
+        expect(Articles::UpdateOrganicPageViewsWorker).to have_received(:perform_at).with(
+          be_within(2.seconds).of(25.minutes.from_now), article.id
+        )
+      end
+    end
+
+    context "and the referrer is not Google" do
+      let(:referrer) { "https://www.otherwebsite.com/" }
+
+      it "creates a page view" do
+        expect do
+          worker.perform("article_id" => article.id,
+                         "user_id" => user.id,
+                         "referrer" => referrer)
+        end.to change(PageView, :count).by(1)
+      end
+
+      it "does not call UpdateOrganicPageViewsWorker" do
+        allow(Articles::UpdateOrganicPageViewsWorker).to receive(:perform_at)
+
+        worker.perform("article_id" => article.id,
+                       "user_id" => user.id,
+                       "referrer" => referrer)
+
+        expect(Articles::UpdateOrganicPageViewsWorker).not_to have_received(:perform_at)
+      end
     end
   end
 end
