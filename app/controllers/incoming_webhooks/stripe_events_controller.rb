@@ -55,7 +55,10 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.add_role("base_subscriber") unless user.base_subscriber?
+      unless user.base_subscriber? # Don't add role if user is already a subscriber
+        user.add_role("base_subscriber")
+        NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
+      end
 
       last_billboard_event = BillboardEvent
         .where(user_id: user.id, category: %w[click signup]).where("created_at > ?", 1.hour.ago).last

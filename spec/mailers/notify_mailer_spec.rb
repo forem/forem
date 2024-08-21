@@ -391,4 +391,19 @@ RSpec.describe NotifyMailer do
       expect(email.to).to eq([user.email])
     end
   end
+
+  describe "#base_subscriber_role_email" do
+    let(:email) { described_class.with(user: user).base_subscriber_role_email }
+
+    include_examples "#renders_proper_email_headers"
+
+    it "renders proper subject" do
+      expected_subject = "Congrats! You're now subscribed to DEV++"
+      expect(email.subject).to eq(expected_subject)
+    end
+
+    it "renders proper receiver" do
+      expect(email.to).to eq([user.email])
+    end
+  end
 end
