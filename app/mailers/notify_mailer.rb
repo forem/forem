@@ -148,6 +148,14 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: subject)
   end
 
+  def base_subscriber_role_email
+    @user = params[:user]
+
+    subject = I18n.t("mailers.notify_mailer.base_subscriber",
+                     community: Settings::Community.community_name)
+    mail(to: @user.email, subject: subject)
+  end
+
   def subjects
     {
       new_follower_email: I18n.t("mailers.notify_mailer.new_follower",
