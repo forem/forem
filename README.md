@@ -56,7 +56,8 @@ within our community. ❤️
 ## Community
 
 For a place to have open discussions on features, voice your ideas, or get help
-with general questions please visit the [discussions](https://github.com/forem/forem/discussions) section.
+with general questions please visit the
+[discussions](https://github.com/forem/forem/discussions) section.
 
 ## Contributing
 
@@ -124,7 +125,8 @@ Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
 Any questions, please refer to our
-[license FAQ](https://developers.forem.com/licensing/) doc or email yo@dev.to.
+[license FAQ](https://developers.forem.com/licensing/) doc or email
+support@dev.to.
 
 <br>
 
