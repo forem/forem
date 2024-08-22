@@ -10,7 +10,7 @@
   <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
     <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger p-1 -my-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details", user: comment.user.name) %>">
       <%= comment.user.name %>
-      <%= subscription_icon(@user) %>
+      <%= subscription_icon(comment.user) %>
     </button>
     <%= render "/shared/profile_preview_card", actor: comment.user, id: "comment-profile-preview-content-#{comment.id}" %>
     <% if commentable_author_is_op?(commentable, comment) %>
