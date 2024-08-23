@@ -106,14 +106,14 @@ module Authentication
 
     def proper_user(identity)
       if current_user
-        Rails.logger.debug "Current user exists: #{current_user.id}"
+        Rails.logger.debug { "Current user exists: #{current_user.id}" }
         current_user
       elsif identity.user
-        Rails.logger.debug "Identity user found: #{identity.user.id}"
+        Rails.logger.debug { "Identity user found: #{identity.user.id}" }
         identity.user
       elsif provider.user_email.present?
         user = User.find_by(email: provider.user_email)
-        Rails.logger.debug "User found by email: #{user&.id}"
+        Rails.logger.debug { "User found by email: #{user&.id}" }
         user
       end
     end
