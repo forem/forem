@@ -19,7 +19,7 @@ class User < ApplicationRecord
       attr_accessor :_skip_creating_profile
 
       # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
+      after_create_commit -> { Profile.find_or_create_by(user: self) }, unless: :_skip_creating_profile
     end
   end
 
