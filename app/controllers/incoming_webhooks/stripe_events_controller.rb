@@ -58,6 +58,7 @@ module IncomingWebhooks
       unless user.base_subscriber? # Don't add role if user is already a subscriber
         user.add_role("base_subscriber")
         user.touch
+        user.profile&.touch
         NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
       end
 
