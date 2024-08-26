@@ -43,6 +43,13 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection
+          if ApplicationConfig["AWS_BUCKET_NAME"].present? && src.exclude?(ApplicationConfig["AWS_BUCKET_NAME"])
+            begin
+              MediaStore.where(original_url: src).first_or_create
+            rescue StandardError => e
+              Rails.logger.error("Error storing images: #{e.message}")
+            end
+          end
           header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
           img["width"], img["height"] = FastImage.size(src, timeout: 10, http_header: header)
         end
