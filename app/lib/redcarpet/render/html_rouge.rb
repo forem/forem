@@ -26,9 +26,9 @@ module Redcarpet
         end
       end
 
-      def link(link, _title, content)
+      def link(link, _title, content) # rubocop:disable Metrics/PerceivedComplexity
         # Regex to capture src, alt, and title attributes from an img tag
-        if content.include?("<img") && (doc = Nokogiri::HTML(content))
+        if content&.include?("<img") && (doc = Nokogiri::HTML(content))
           image_url = doc.at_css("img")["src"]
           alt_text = doc.at_css("img")["alt"] || nil
           title = doc.at_css("img")["title"] || nil
