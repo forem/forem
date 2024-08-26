@@ -28,7 +28,7 @@ module Redcarpet
 
       def link(link, _title, content)
         # Regex to capture src, alt, and title attributes from an img tag
-        if content.include?("<img") && doc = Nokogiri::HTML(content)
+        if content.include?("<img") && (doc = Nokogiri::HTML(content))
           image_url = doc.at_css("img")["src"]
           alt_text = doc.at_css("img")["alt"] || nil
           title = doc.at_css("img")["title"] || nil

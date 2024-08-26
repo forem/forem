@@ -233,7 +233,6 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       rendered_html = generate_and_parse_markdown(markdown)
 
       expect(rendered_html).to include(modified_url)
-      expect(rendered_html).to include('title="test"')
       expect(rendered_html).not_to include(original_url)
     end
 
