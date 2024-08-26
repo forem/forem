@@ -70,7 +70,7 @@ module Articles
     private_class_method :default_image_height
 
     def self.store_image_if_appropriate(article)
-      return unless ApplicationConfig['AWS_BUCKET_NAME'].present?
+      return if ApplicationConfig["AWS_BUCKET_NAME"].blank?
 
       markdown_text = article.body_markdown
       markdown_pattern = /!\[.*?\]\((.*?)\)/
@@ -84,8 +84,8 @@ module Articles
       filtered_urls.uniq.each do |url|
         store = MediaStore.where(original_url: url).first_or_create
         images_converted << store.output_url
-      rescue => e
-        puts e.message
+      rescue StandardError => e
+        Rails.logger.error("Error storing images: #{e.message}")
       end
       # This just updates the processed HTML based on new state (now has media stores)
       article.evaluate_and_update_column_from_markdown
