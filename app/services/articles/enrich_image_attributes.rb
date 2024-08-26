@@ -80,13 +80,15 @@ module Articles
       all_urls = markdown_urls + html_urls
       stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
       filtered_urls = all_urls.reject { |url| url.include?(stored_image_url) }
+      images_converted = []
       filtered_urls.uniq.each do |url|
-        MediaStore.where(original_url: url).first_or_create
+        store = MediaStore.where(original_url: url).first_or_create
+        images_converted << store.output_url if store&.created_at&.> 1.minute.ago
       rescue StandardError => e
         Rails.logger.error("Error storing images: #{e.message}")
       end
       # This just updates the processed HTML based on new state (now has media stores)
-      article.evaluate_and_update_column_from_markdown
+      article.evaluate_and_update_column_from_markdown if images_converted.any?
     rescue StandardError => e
       Rails.logger.error("Error storing images: #{e.message}")
     end
