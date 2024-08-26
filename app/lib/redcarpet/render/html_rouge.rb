@@ -27,22 +27,30 @@ module Redcarpet
       end
 
       def link(link, _title, content)
-        # Probably not the best fix but it does it's job of preventing
-        # a nested links.
-        return if %r{<a\s.+/a>}.match?(content)
-
-        link_attributes = ""
-        @options[:link_attributes]&.each do |attribute, value|
-          link_attributes += %( #{attribute}="#{value}")
-        end
-        if (%r{https?://\S+}.match? link) || link.nil?
-          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
-        elsif /\.{1}/.match? link
-          %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
-        elsif link.start_with?("#")
-          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+        # Regex to capture src, alt, and title attributes from an img tag
+        if content.include?("<img") && (doc = Nokogiri::HTML(content))
+          image_url = doc.at_css("img")["src"]
+          alt_text = doc.at_css("img")["alt"] || nil
+          title = doc.at_css("img")["title"] || nil
+          modified_content = image(image_url, title, alt_text) # Call your image method with title and alt text
+          %(<a href="#{link}">#{modified_content}</a>)
         else
-          %(<a href="#{app_protocol}#{app_domain}#{link}"#{link_attributes}>#{content}</a>)
+          # Proceed with normal link rendering if no image is detected
+          return if %r{<a\s.+/a>}.match?(content)
+
+          link_attributes = ""
+          @options[:link_attributes]&.each do |attribute, value|
+            link_attributes += %( #{attribute}="#{value}")
+          end
+          if (%r{https?://\S+}.match? link) || link.nil?
+            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+          elsif /\.{1}/.match? link
+            %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
+          elsif link.start_with?("#")
+            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+          else
+            %(<a href="#{app_protocol}#{app_domain}#{link}"#{link_attributes}>#{content}</a>)
+          end
         end
       end
 

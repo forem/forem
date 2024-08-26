@@ -210,6 +210,40 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(markdown).to include(original_url)
     end
 
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has alt and title" do
+      markdown = "[<img src='#{original_url}' alt='test' title='test' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).to include('alt="test"')
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has alt and no title" do
+      markdown = "[<img src='#{original_url}' alt='test' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).to include('alt="test"')
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has no alt or title" do
+      markdown = "[<img src='#{original_url}' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "does not replace image if malformed <img" do
+      markdown = "[<img src='#{original_url}](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      p rendered_html
+      expect(rendered_html).not_to include(modified_url)
+    end
+
     it "falls back to the original URL if no modified URL is found" do
       allow(MediaStore).to receive(:find_by).with(original_url: original_url)
         .and_return(nil)
@@ -437,6 +471,19 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
 
   context "when an image is used" do
     let(:markdown_with_img) { "![](https://image.com/image.jpg)" }
+
+    it "wraps image in link" do
+      expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
+    end
+
+    it "wraps the image with Cloudinary", :cloudinary do
+      expect(generate_and_parse_markdown(markdown_with_img))
+        .to include("https://res.cloudinary.com")
+    end
+  end
+
+  context "when plain html image is used" do
+    let(:markdown_with_img) { "<img src='https://image.com/image.jpg' />" }
 
     it "wraps image in link" do
       expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
