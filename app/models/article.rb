@@ -668,6 +668,14 @@ class Article < ApplicationRecord
     Articles::ScoreCalcWorker.perform_async(id)
   end
 
+  def evaluate_and_update_column_from_markdown
+    content_renderer = processed_content
+    return unless content_renderer
+
+    result = content_renderer.process_article
+    self.update_column(:processed_html, result.processed_html)
+  end
+
   private
 
   def collection_cleanup

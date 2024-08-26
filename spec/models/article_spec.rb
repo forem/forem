@@ -1724,6 +1724,16 @@ RSpec.describe Article do
     end
   end
 
+  describe "#evaluate_and_update_column_from_markdown" do
+    let(:article) { create(:article) }
+
+    it "updates the processed_html column" do
+      article.body_markdown = "## Hello World!"
+      article.evaluate_and_update_column_from_markdown
+      expect(article.processed_html).to include("Hello World!")
+    end
+  end
+
   context "when indexing with Algolia", :algolia do
     it "indexes the article" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
