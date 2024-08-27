@@ -63,7 +63,7 @@ module Authentication
           [
             info.first_name&.downcase,
             info.last_name&.downcase,
-            Digest::SHA512.hexdigest(info.email),
+            Digest::SHA512.hexdigest(nil.to_s),
           ].join("_")[0...25]
         else
           # This covers an edge case where the Apple Id has already given
