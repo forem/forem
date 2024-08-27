@@ -50,6 +50,9 @@ RSpec.describe "StripeSubscriptions" do
             mode: "subscription",
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
+            consent_collection: {
+              terms_of_service: "required"
+            },
             customer_email: user.email,
             metadata: {
               user_id: user.id
@@ -77,6 +80,9 @@ RSpec.describe "StripeSubscriptions" do
             mode: "subscription",
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
+            consent_collection: {
+              terms_of_service: "required"
+            },
             customer_email: user.email,
             metadata: {
               user_id: user.id
@@ -99,6 +105,9 @@ RSpec.describe "StripeSubscriptions" do
             mode: "subscription",
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
+            consent_collection: {
+              terms_of_service: "required"
+            },
             customer_email: user.email,
             metadata: {
               user_id: user.id
