@@ -223,7 +223,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
         user = described_class.call(auth_payload)
 
-        expect(user.apple_username).to eq(new_username)
+        expect(user.apple_username).to include("#{new_username}_lname_")
       end
 
       it "does not update the username when the first_name is nil" do
