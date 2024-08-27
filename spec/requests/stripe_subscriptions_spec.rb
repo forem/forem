@@ -10,6 +10,11 @@ RSpec.describe "StripeSubscriptions" do
   let(:session_url) { "https://checkout.stripe.com/pay/test_session_id" }
 
   describe "GET /stripe_subscriptions/new" do
+    before do
+      ENV["STRIPE_BASE_ITEM_CODE"] = "default_code"
+      ENV["STRIPE_TAG_MODERATOR_ITEM_CODE"] = "tag_moderator_code"
+    end
+
     context "when the user is not signed in" do
       it "redirects to the sign in page" do
         get new_stripe_subscription_path
@@ -30,8 +35,6 @@ RSpec.describe "StripeSubscriptions" do
       context "when the user is a tag moderator" do
         before do
           allow(user).to receive(:tag_moderator?).and_return(true)
-          allow(ENV).to receive(:fetch).with("STRIPE_TAG_MODERATOR_ITEM_CODE",
-                                             nil).and_return(tag_moderator_item_code)
         end
 
         it "uses the tag moderator item code" do
