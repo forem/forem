@@ -63,13 +63,13 @@ module Authentication
           [
             info.first_name&.downcase,
             info.last_name&.downcase,
-            Digest::SHA512.hexdigest(nil.to_s),
+            Digest::SHA512.hexdigest(info.email.to_s),
           ].join("_")[0...25]
         else
           # This covers an edge case where the Apple Id has already given
           # permissions to the forem auth and we don't have anything else
           # to work with other than the email
-          ["user", Digest::SHA512.hexdigest(info.email)].join("_")[0...15]
+          ["user", Digest::SHA512.hexdigest(info.email.to_s)].join("_")[0...15]
         end
       end
 
