@@ -22,6 +22,9 @@ class StripeSubscriptionsController < ApplicationController
       mode: params[:mode] || "subscription",
       success_url: URL.url(ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing"),
       cancel_url: URL.url(ENV["SUBSCRIPTION_CANCEL_URL"] || "/settings/billing"),
+      consent_collection: {
+        terms_of_service: "required"
+      },
       customer_email: current_user.email,
       metadata: {
         user_id: current_user.id
