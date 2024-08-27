@@ -5,10 +5,16 @@ RSpec.describe "StripeSubscriptions" do
   let(:stripe_helper) { StripeMock.create_test_helper }
   let(:stripe_api_key) { Settings::General.stripe_api_key }
   let(:default_item_code) { ENV.fetch("STRIPE_BASE_ITEM_CODE", "default_code") }
+  let(:tag_moderator_item_code) { ENV.fetch("STRIPE_TAG_MODERATOR_ITEM_CODE", "tag_moderator_code") }
   let(:subscription_success_url) { ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing" }
   let(:session_url) { "https://checkout.stripe.com/pay/test_session_id" }
 
   describe "GET /stripe_subscriptions/new" do
+    before do
+      ENV["STRIPE_BASE_ITEM_CODE"] = "default_code"
+      ENV["STRIPE_TAG_MODERATOR_ITEM_CODE"] = "tag_moderator_code"
+    end
+
     context "when the user is not signed in" do
       it "redirects to the sign in page" do
         get new_stripe_subscription_path
@@ -26,30 +32,85 @@ RSpec.describe "StripeSubscriptions" do
 
       after { StripeMock.stop }
 
-      it "creates a new Stripe Checkout Session and redirects to the session URL" do
-        get new_stripe_subscription_path, params: { item: default_item_code }
+      context "when the user is a tag moderator" do
+        before do
+          allow(user).to receive(:tag_moderator?).and_return(true)
+        end
 
-        expect(Stripe::Checkout::Session).to have_received(:create).with(
-          line_items: [
-            {
-              price: default_item_code,
-              quantity: 1
+        it "uses the tag moderator item code" do
+          get new_stripe_subscription_path
+
+          expect(Stripe::Checkout::Session).to have_received(:create).with(
+            line_items: [
+              {
+                price: tag_moderator_item_code,
+                quantity: 1
+              },
+            ],
+            mode: "subscription",
+            success_url: URL.url(subscription_success_url),
+            cancel_url: URL.url("/settings/billing"),
+            customer_email: user.email,
+            metadata: {
+              user_id: user.id
             },
-          ],
-          mode: "subscription",
-          success_url: URL.url(subscription_success_url),
-          cancel_url: URL.url("/settings/billing"),
-          customer_email: user.email,
-          metadata: {
-            user_id: user.id
-          },
-        )
+          )
 
-        expect(response).to redirect_to(session_url)
+          expect(response).to redirect_to(session_url)
+        end
+      end
+
+      context "when the user is not a tag moderator" do
+        before { allow(user).to receive(:tag_moderator?).and_return(false) }
+
+        it "uses the provided item code if it is different from the tag moderator item code" do
+          custom_item_code = "custom_item_code"
+          get new_stripe_subscription_path, params: { item: custom_item_code }
+
+          expect(Stripe::Checkout::Session).to have_received(:create).with(
+            line_items: [
+              {
+                price: custom_item_code,
+                quantity: 1
+              },
+            ],
+            mode: "subscription",
+            success_url: URL.url(subscription_success_url),
+            cancel_url: URL.url("/settings/billing"),
+            customer_email: user.email,
+            metadata: {
+              user_id: user.id
+            },
+          )
+
+          expect(response).to redirect_to(session_url)
+        end
+
+        it "falls back to the default item code if no valid item code is provided" do
+          get new_stripe_subscription_path
+
+          expect(Stripe::Checkout::Session).to have_received(:create).with(
+            line_items: [
+              {
+                price: default_item_code,
+                quantity: 1
+              },
+            ],
+            mode: "subscription",
+            success_url: URL.url(subscription_success_url),
+            cancel_url: URL.url("/settings/billing"),
+            customer_email: user.email,
+            metadata: {
+              user_id: user.id
+            },
+          )
+
+          expect(response).to redirect_to(session_url)
+        end
       end
 
       it "allows other host redirection" do
-        get new_stripe_subscription_path, params: { item: default_item_code }
+        get new_stripe_subscription_path
         expect(response).to have_http_status(:found)
         expect(response.headers["Location"]).to eq(session_url)
       end
