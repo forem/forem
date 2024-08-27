@@ -19,7 +19,11 @@ class User < ApplicationRecord
       attr_accessor :_skip_creating_profile
 
       # All new users should automatically have a profile
-      after_create_commit -> { Profile.find_or_create_by(user: self) }, unless: :_skip_creating_profile
+      after_create_commit unless: :_skip_creating_profile do
+        Profile.find_or_create_by(user: self)
+      rescue ActiveRecord::RecordNotUnique
+        Rails.logger.warn("Profile already exists for user #{id}")
+      end
     end
   end
 
