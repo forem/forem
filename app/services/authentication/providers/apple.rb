@@ -46,10 +46,9 @@ module Authentication
         # the first login. To cover the case where a user disconnects their
         # Apple authorization, signs in again and then changes their name,
         # we update the username only if the name is not nil
-        apple_username = info.first_name&.downcase
-        return {} unless apple_username
+        return {} unless info.first_name&.downcase
 
-        { apple_username: apple_username }
+        { apple_username: user_nickname }
       end
 
       # For Apple we override this method because the `info` payload doesn't
