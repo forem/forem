@@ -155,4 +155,99 @@ RSpec.describe "StripeSubscriptions" do
       end
     end
   end
+
+  describe "DELETE /stripe_subscriptions/destroy" do
+    before do
+      StripeMock.start
+      sign_in user
+      Stripe.api_key = stripe_api_key
+    end
+
+    after { StripeMock.stop }
+
+    context "when the user is not signed in" do
+      before { sign_out user }
+
+      it "redirects to the sign in page" do
+        delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
+        expect(response).to redirect_to("/enter")
+      end
+    end
+
+    context "when the user is signed in" do
+      context "when the verification parameter is correct and the user has a Stripe customer ID" do
+        before do
+          # Create a mock product and price
+          price = Stripe::Price.create(
+            unit_amount: 2000,
+            currency: "usd",
+            product: stripe_helper.create_product.id,
+          )
+
+          # Create a mock customer
+          customer = Stripe::Customer.create(email: user.email)
+
+          # Add a mock payment source to the customer
+          Stripe::Customer.create_source(
+            customer.id,
+            { source: stripe_helper.generate_card_token },
+          )
+
+          user.update(stripe_id_code: customer.id)
+
+          # Create a mock subscription using the created price
+          subscription = Stripe::Subscription.create(
+            customer: customer.id,
+            items: [{ price: price.id }],
+          )
+        end
+
+        it "cancels the subscription and removes the base subscriber role" do
+          expect(Stripe::Subscription).to receive(:update).and_call_original
+          expect(user).to receive(:remove_role).with("base_subscriber").and_call_original
+
+          delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
+
+          expect(response).to redirect_to(user_settings_path(user))
+          expect(flash[:notice]).to eq("Your subscription has been canceled.")
+        end
+      end
+
+      context "when the verification parameter is incorrect" do
+        before { user.update(stripe_id_code: "fake_customer_id") }
+
+        it "does not cancel the subscription and shows an alert" do
+          expect(Stripe::Subscription).not_to receive(:update)
+
+          delete stripe_subscription_path("me"), params: { verification: "wrong_verification" }
+
+          expect(response).to redirect_to(user_settings_path(user))
+          expect(flash[:alert]).to eq("Invalid verification parameter. Subscription was not canceled.")
+        end
+      end
+
+      context "when the user does not have a Stripe customer ID" do
+        it "does not cancel the subscription and shows an alert" do
+          delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
+
+          expect(response).to redirect_to(user_settings_path(user))
+          expect(flash[:alert]).to eq("No active subscription found. Please contact us if you believe this is an error.")
+        end
+      end
+
+      context "when there is no active subscription for the user" do
+        before do
+          customer = Stripe::Customer.create(email: user.email)
+          user.update(stripe_id_code: customer.id)
+        end
+
+        it "does not cancel the subscription and shows an alert" do
+          delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
+
+          expect(response).to redirect_to(user_settings_path(user))
+          expect(flash[:alert]).to eq("No active subscription found.")
+        end
+      end
+    end
+  end
 end

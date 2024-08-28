@@ -48,6 +48,7 @@ module IncomingWebhooks
     private
 
     def handle_checkout_session_completed(invoice)
+      # This is the one we're using to verify completion
       metadata = extract_metadata(invoice)
       return unless metadata["user_id"]
 
@@ -57,6 +58,7 @@ module IncomingWebhooks
 
       unless user.base_subscriber? # Don't add role if user is already a subscriber
         user.add_role("base_subscriber")
+        user.stripe_id_code = extract_customer(invoice)
         user.touch
         user.profile&.touch
         NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
@@ -74,6 +76,7 @@ module IncomingWebhooks
     end
 
     def handle_subscription_created(subscription)
+      # This can likely be deleted.
       metadata = extract_metadata(subscription)
       return unless metadata["user_id"]
 
@@ -104,12 +107,20 @@ module IncomingWebhooks
       return unless user
 
       user.remove_role("base_subscriber")
+      user.touch
+      user.profile&.touch
     end
 
     def extract_metadata(obj)
       return obj.metadata if obj.respond_to?(:metadata)
       return obj["metadata"] if obj.is_a?(Hash) && obj.key?("metadata")
 
+      nil
+    end
+
+    def extract_customer(obj)
+      obj.customer if obj.respond_to?(:customer)
+    rescue StandardError
       nil
     end
   end
