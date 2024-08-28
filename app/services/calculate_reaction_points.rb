@@ -28,6 +28,7 @@ class CalculateReactionPoints
     base_points = POINTS["invalid"] if status == "invalid"
     base_points /= POINTS["User"] if reactable_type == "User"
     base_points *= POINTS["confirmed"] if status == "confirmed"
+    base_points += Settings::UserExperience.index_minimum_score if user&.base_subscriber? && reactable&.user_id != user_id
 
     unless persisted? # Actions we only want to apply upon initial creation
       # Author's comment reaction counts for more weight on to their own posts. (5.0 vs 1.0)

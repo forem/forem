@@ -11,6 +11,7 @@ module Comments
     def call
       score = BlackBox.comment_quality_score(comment)
       score -= 500 if comment.user&.spam?
+      score += Settings::UserExperience.index_minimum_score if comment.user&.base_subscriber?
       comment.update_columns(score: score, updated_at: Time.current)
 
       comment.user&.touch(:last_comment_at)
