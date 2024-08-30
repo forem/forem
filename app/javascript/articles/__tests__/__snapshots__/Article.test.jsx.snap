@@ -124,7 +124,7 @@ Object {
                         class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
                         id="story-author-preview-trigger-62407"
                       >
-                        Stella Macejkovic
+                        Stella Macejkovic 
                       </button>
                       <div
                         class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
@@ -393,7 +393,7 @@ Object {
                       class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
                       id="story-author-preview-trigger-62407"
                     >
-                      Stella Macejkovic
+                      Stella Macejkovic 
                     </button>
                     <div
                       class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
