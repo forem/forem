@@ -42,6 +42,7 @@
               <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details",
                                                                                                                                                                                                                                                  user: story.cached_user.name) %>">
                 <%= story.cached_user.name %>
+                <%= subscription_icon(story.cached_user) %>
               </button>
               <div
                 id="story-author-preview-content-<%= story.id %>"

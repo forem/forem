@@ -49,12 +49,12 @@ RSpec.describe "UserShow" do
     it "includes a subscription icon if user is subscribed" do
       user.add_role("base_subscriber")
       get user.path
-      expect(response.body).to include("subscription-icon")
+      expect(response.body).to include('class="subscription-icon"')
     end
 
     it "does not include a subscription icon if user is not subscribed" do
       get user.path
-      expect(response.body).not_to include("subscription-icon")
+      expect(response.body).not_to include('class="subscription-icon"')
     end
 
     it "does not render a key if no value is given" do

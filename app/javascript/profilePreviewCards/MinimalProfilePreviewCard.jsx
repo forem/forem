@@ -8,6 +8,7 @@ export const MinimalProfilePreviewCard = ({
   name,
   profileImage,
   userId,
+  subscriber,
 }) => (
   <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
     <button
@@ -16,7 +17,7 @@ export const MinimalProfilePreviewCard = ({
       class="profile-preview-card__trigger fs-s p-1 crayons-btn crayons-btn--ghost -ml-1 -my-2"
       aria-label={`${name} profile details`}
     >
-      {name}
+      {name} {subscriber === 'true' ? <img class='subscription-icon' src={document.body.dataset.subscriptionIcon} alt='Subscriber' /> : ''}
     </button>
 
     <div
