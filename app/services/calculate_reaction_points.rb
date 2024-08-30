@@ -28,7 +28,7 @@ class CalculateReactionPoints
     base_points = POINTS["invalid"] if status == "invalid"
     base_points /= POINTS["User"] if reactable_type == "User"
     base_points *= POINTS["confirmed"] if status == "confirmed"
-    if user&.base_subscriber? && reactable.respond_to?(:user_id) && reactable&.user_id != user_id
+    if base_points.positive? && user&.base_subscriber? && reactable.respond_to?(:user_id) && reactable&.user_id != user_id
       base_points += Settings::UserExperience.index_minimum_score
     end
 
