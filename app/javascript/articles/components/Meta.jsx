@@ -52,8 +52,7 @@ export const Meta = ({ article, organization }) => {
                 ? article.user.username
                 : article.user.name,
             )}
-          </a>
-
+          </a>          
           <MinimalProfilePreviewCard
             triggerId={`story-author-preview-trigger-${article.id}`}
             contentId={`story-author-preview-content-${article.id}`}
@@ -61,6 +60,7 @@ export const Meta = ({ article, organization }) => {
             name={article.user.name}
             profileImage={article.user.profile_image_90}
             userId={article.user_id}
+            subscriber={article.user.cached_base_subscriber ? 'true' : 'false'}
           />
           {organization &&
             !document.getElementById('organization-article-index') && (

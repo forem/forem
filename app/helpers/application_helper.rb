@@ -225,11 +225,12 @@ module ApplicationHelper
   end
 
   def subscription_icon(user, modifier = nil)
-    return unless user.instance_of?(User)
+    return unless user.respond_to?(:cached_base_subscriber?)
     return unless FeatureFlag.enabled?("subscriber_icon") && user.cached_base_subscriber?
     return image_tag("subscription-icon.png", class: "subscription-icon") if modifier == "no_link"
 
     link_to image_tag("subscription-icon.png",
+                      alt: "Subscriber",
                       class: "subscription-icon"),
             "/++",
             style: "display: inline;"

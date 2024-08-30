@@ -12,7 +12,10 @@ article_methods_to_include = %i[
 
 json.array!(@stories) do |article|
   json.extract! article, *article_attributes_to_include
-  json.user article.cached_user.as_json
+  # Make both cached_user_subscriber and cached_user_subscriber? valid
+  cached_user = article.cached_user.as_json
+  cached_user[:cached_base_subscriber] = cached_user["cached_base_subscriber?"]
+  json.user cached_user
 
   if article.cached_organization?
     json.organization article.cached_organization.as_json
