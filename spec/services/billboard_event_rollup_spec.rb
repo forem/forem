@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe BillboardEventRollup, type: :service do
   let(:billboard1) { create(:billboard) }
+  let(:billboard2) { create(:billboard) }
   let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
 
   def override_timestamps
     BillboardEvent.record_timestamps = false
