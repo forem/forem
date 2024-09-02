@@ -31,7 +31,12 @@ async function generateBillboard(element) {
     try {
       // When context is digest we don't show this billboard
       // This is a hardcoded feature which should become more dynamic later.
-      if (asyncUrl?.includes('post_fixed_bottom') && currentParams?.includes('context=digest')) {
+      const contentElement = document.getElementById('page-content-inner');
+      const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true'
+      if (
+        asyncUrl?.includes('post_fixed_bottom') &&
+        (currentParams?.includes('context=digest') || isInternalNav)
+      ) {     
         return;
       }
 
