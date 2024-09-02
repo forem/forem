@@ -17,7 +17,7 @@ RSpec.describe "Billboards" do
     create(:billboard, **options.reverse_merge(defaults))
   end
 
-  describe "GET /:username/:slug/billboards/:placement_area" do
+  describe "GET /:username/:slug/billboards/:color" do
     context "when placement_area includes 'fixed_'" do
       let!(:billboard) { create_billboard(placement_area: "post_fixed_bottom") }
 
