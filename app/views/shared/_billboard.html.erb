@@ -1,5 +1,6 @@
 <% if billboard.template == "plain" %>
   <div
+    style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -11,6 +12,7 @@
   </div>
 <% elsif billboard.placement_area.start_with?("feed_") %>
   <div class="crayons-story crayons-story__billboard billboard js-billboard"
+    style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -38,6 +40,7 @@
   </div>
 <% elsif billboard.placement_area == "home_hero" %>
   <div class="crayons-card crayons-card--secondary crayons-bb crayons-story__billboard hero-billboard js-billboard"
+    style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -59,6 +62,7 @@
   </div>
 <% elsif billboard.placement_area == "post_fixed_bottom" || billboard.placement_area == "page_fixed_bottom" %>
   <div class="crayons-card crayons-card--secondary crayons-bb popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
+    style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -84,6 +88,7 @@
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
   <div class="crayons-card crayons-card--secondary crayons-bb billboard js-billboard body-billboard mb-2 mt-6"
+    style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -98,6 +103,7 @@
   </div>
 <% else %>
   <div class="crayons-card crayons-card--secondary crayons-bb billboard js-billboard"
+    style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"

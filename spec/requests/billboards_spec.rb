@@ -11,9 +11,46 @@ RSpec.describe "Billboards" do
     defaults = {
       approved: true,
       published: true,
-      display_to: :all
+      display_to: :all,
+      color: "#FF5733"
     }
     create(:billboard, **options.reverse_merge(defaults))
+  end
+
+  describe "GET /:username/:slug/billboards/:color" do
+    context "when placement_area includes 'fixed_'" do
+      let!(:billboard) { create_billboard(placement_area: "post_fixed_bottom") }
+
+      it "includes the correct style string" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("border-top: calc(9px + 0.5vw) solid #{billboard.color}")
+      end
+    end
+
+    context "when placement_area does not include 'fixed_'" do
+      let!(:billboard) { create_billboard(placement_area: "post_comments") }
+
+      it "includes the correct style string" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("border: 5px solid #{billboard.color}")
+      end
+    end
+
+    context "when color is blank" do
+      let!(:billboard) { create_billboard(placement_area: "post_comments", color: "") }
+
+      it "returns an empty style string" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("border-top: calc(9px + 0.5vw) solid")
+        expect(response.body).not_to include("border: 5px solid")
+      end
+    end
   end
 
   describe "GET /:username/:slug/billboards/:placement_area" do

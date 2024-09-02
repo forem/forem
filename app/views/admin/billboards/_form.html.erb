@@ -38,6 +38,17 @@
     </div>
 
     <div class="crayons-field">
+      <%# styles below are a hack to line this up properly%>
+      <%= label_tag :color, "Border hex color:", class: "crayons-field__label" %>
+      <div class="flex items-center w-100" style="margin-top: -26px;">
+        <style>
+          #color-popover-btn-color { top: 36px; }
+        </style>
+        <%= text_field_tag :color, @billboard.color, class: "crayons-textfield", placeholder: "#000000", data: { color_picker: true, label_text: "Border color" } %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
       <%= label_tag :placement_area, "Placement Area:", class: "crayons-field__label" %>
       <%= select_tag :placement_area, options_for_select(billboards_placement_area_options_array, selected: @billboard.placement_area), include_blank: "Select...", class: "crayons-select js-placement-area" %>
     </div>
@@ -142,7 +153,7 @@
     </div>
   </div>
   <div>
-    <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard">
+    <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard" style="<%= @billboard.style_string %>">
       <% if @billboard.persisted? %>
         <%= @billboard.processed_html.html_safe %>
       <% else %>
@@ -163,3 +174,4 @@
 </div>
 
 <%= javascript_include_tag "admin/billboards", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>
