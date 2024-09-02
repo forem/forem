@@ -19,12 +19,15 @@ class NotificationsController < ApplicationController
       num = @initial_page_size
     end
 
+    logger.debug "notification setting: #{@user.notification_setting.inspect}"
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
                        organization_notifications
                      elsif params[:org_id].blank? && params[:filter].present?
                        filtered_notifications
-                     else
+                     elsif @user.notification_setting.new_post_notifications?
                        @user.notifications
+                     else
+                       @user.notifications.no_published_articles
                      end
 
     @notifications = @notifications.order(notified_at: :desc)

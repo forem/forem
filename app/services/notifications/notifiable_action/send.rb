@@ -36,7 +36,14 @@ module Notifications
         # We don't want to notify authors about their own articles, e.g. when
         # they post under an organization.
         article_followers -= [notifiable.user]
-
+        Rails.logger.debug { "article_followers before: #{article_followers}" }
+        # remove users where new_post_notification setting = false
+        exclude_users = Users::NotificationSetting.users_where_new_post_notification(
+          article_followers.map(&:id),
+          false,
+        ).map { |notif| User.new({ id: notif.id }) }
+        exclude_users.each { |u| article_followers -= [u] }
+        Rails.logger.debug { "article_followers after: #{article_followers}"}
         # TODO: If article.followers were refactored to be scope-based, this could
         # update to use User.recently_active (which was originally based on this)
         article_followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
