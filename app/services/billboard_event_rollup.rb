@@ -1,6 +1,7 @@
 class BillboardEventRollup
   ATTRIBUTES_PRESERVED = %i[user_id display_ad_id category context_type created_at].freeze
   ATTRIBUTES_DESTROYED = %i[id counts_for updated_at article_id geolocation].freeze
+  STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 10_000).to_i.seconds / 1_000.to_f
 
   class EventAggregator
     Compact = Struct.new(:events, :user_id, :billboard_id, :category, :context_type) do
@@ -79,6 +80,8 @@ class BillboardEventRollup
   def compact_records(date, compacted)
     result = nil
 
+    relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+
     relation.transaction do
       result = relation.create!(compacted.to_h) do |event|
         event.created_at = date
@@ -88,5 +91,7 @@ class BillboardEventRollup
     end
 
     result
+  ensure
+    relation.connection.execute("RESET statement_timeout") # Reset to the default timeout
   end
 end
