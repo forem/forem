@@ -2,9 +2,7 @@ require "rails_helper"
 
 RSpec.describe BillboardEventRollup, type: :service do
   let(:billboard1) { create(:billboard) }
-  let(:billboard2) { create(:billboard) }
   let(:user1) { create(:user) }
-  let(:user2) { create(:user) }
 
   def override_timestamps
     BillboardEvent.record_timestamps = false
@@ -14,6 +12,22 @@ RSpec.describe BillboardEventRollup, type: :service do
 
   def days_ago_as_range(num)
     (Date.current - num.days).all_day
+  end
+
+  it "handles statement timeout when compacting records" do
+    override_timestamps do
+      create_list(:billboard_event, 10, created_at: Date.current - 2, billboard: billboard1, user_id: user1.id,
+                                        updated_at: Date.current)
+    end
+
+    allow(BillboardEvent.connection).to receive(:execute).and_call_original
+
+    expect do
+      described_class.rollup(Date.current - 2)
+    end.not_to raise_error
+
+    expect(BillboardEvent.connection).to have_received(:execute).with("SET LOCAL statement_timeout = '#{BillboardEventRollup::STATEMENT_TIMEOUT}s'")
+    expect(BillboardEvent.connection).to have_received(:execute).with("RESET statement_timeout")
   end
 
   it "fails if new attributes would be lost" do
