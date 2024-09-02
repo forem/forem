@@ -58,7 +58,7 @@ module Admin
 
     def billboard_params
       params.permit(:organization_id, :body_markdown, :placement_area, :target_geolocations,
-                    :published, :approved, :name, :display_to, :tag_list, :type_of,
+                    :published, :approved, :name, :display_to, :tag_list, :type_of, :color,
                     :exclude_article_ids, :audience_segment_id, :priority, :browser_context,
                     :render_mode, :template, :custom_display_label, :requires_cookies)
     end

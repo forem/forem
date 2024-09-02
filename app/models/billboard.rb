@@ -45,6 +45,8 @@ class Billboard < ApplicationRecord
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
 
+  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+
   MAX_TAG_LIST_SIZE = 25
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
@@ -72,6 +74,7 @@ class Billboard < ApplicationRecord
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
+  validates :color, format: COLOR_HEX_REGEXP, allow_blank: true
   validate :valid_audience_segment_match,
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
@@ -276,6 +279,16 @@ class Billboard < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :preferred_article_ids, (adjusted_input || [])
+  end
+
+  def style_string
+    return "" if color.blank?
+
+    if placement_area.include?("fixed_")
+      "border-top: calc(9px + 0.5vw) solid #{color}"
+    else
+      "border: 5px solid #{color}"
+    end
   end
 
   private
