@@ -38,8 +38,14 @@
     </div>
 
     <div class="crayons-field">
-      <%= label_tag :color, "Border hex:", class: "crayons-field__label" %>
-      <%= text_field_tag :color, @billboard.color, class: "crayons-textfield", placeholder: "#000000", autocomplete: "off" %>
+      <%# styles below are a hack to line this up properly%>
+      <%= label_tag :color, "Border hex color:", class: "crayons-field__label" %>
+      <div class="flex items-center w-100" style="margin-top: -26px;">
+        <style>
+          #color-popover-btn-color { top: 36px; }
+        </style>
+        <%= text_field_tag :color, @billboard.color, class: "crayons-textfield", placeholder: "#000000", data: { color_picker: true, label_text: "Border color" } %>
+      </div>
     </div>
 
     <div class="crayons-field">
@@ -168,3 +174,4 @@
 </div>
 
 <%= javascript_include_tag "admin/billboards", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>
