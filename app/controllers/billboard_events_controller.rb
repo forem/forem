@@ -18,7 +18,7 @@ class BillboardEventsController < ApplicationMetalController
 
   def update_billboards_data
     billboard_event_id = billboard_event_params[:billboard_id]
-    throttle_time = ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME
+    throttle_time = (ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME).to_i
 
     ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: throttle_time.minutes) do
       @billboard = Billboard.find(billboard_event_id)
