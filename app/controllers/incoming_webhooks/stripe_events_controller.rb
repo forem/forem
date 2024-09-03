@@ -64,15 +64,18 @@ module IncomingWebhooks
         NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
       end
 
-      last_billboard_event = BillboardEvent
-        .where(user_id: user.id, category: %w[click signup]).where("created_at > ?", 1.hour.ago).last
-      return unless last_billboard_event
+      last_billboard_events = BillboardEvent
+        .where(user_id: user.id, category: "click")
+        .where("created_at > ?", 3.hours.ago).order("created_at DESC").limit(3)
+      return unless last_billboard_events.any?
 
-      BillboardEvent.create(user_id: user.id,
-                            category: "conversion",
-                            geolocation: last_billboard_event.geolocation,
-                            context_type: last_billboard_event.context_type,
-                            billboard_id: last_billboard_event.billboard_id)
+      last_billboard_events.each do |event|
+        BillboardEvent.create(user_id: user.id,
+                              category: "conversion",
+                              geolocation: event.geolocation,
+                              context_type: event.context_type,
+                              billboard_id: event.billboard_id)
+      end
     end
 
     def handle_subscription_created(subscription)

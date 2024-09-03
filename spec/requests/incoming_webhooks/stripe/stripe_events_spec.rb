@@ -73,7 +73,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
         end
 
         it "does not create a BillboardEvent if there is no recent click event" do
-          last_billboard_event.update(created_at: 2.hours.ago) # Make it too old
+          last_billboard_event.update(created_at: 4.hours.ago) # Make it too old
 
           expect do
             post "/incoming_webhooks/stripe_events", params: payload, headers: headers
