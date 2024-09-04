@@ -38,10 +38,8 @@ module Notifications
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
           .where(follows: { subscription_status: "all_articles" })
           .where.not(id: (user_ids_with_article_mentions + [notifiable.user]))
-          .order("users.updated_at DESC").limit(FOLLOWER_SEND_LIMIT)
+          .recently_active(FOLLOWER_SEND_LIMIT)
 
-        # TODO: If article.followers were refactored to be scope-based, this could
-        # update to use User.recently_active (which was originally based on this)
         article_followers.find_each do |follower|
           now = Time.current
           notifications_attributes.push(
