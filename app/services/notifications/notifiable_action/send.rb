@@ -38,7 +38,7 @@ module Notifications
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
           .where(follows: { subscription_status: "all_articles" })
           .where.not(id: (user_ids_with_article_mentions + [notifiable.user]))
-          .recently_active(FOLLOWER_SEND_LIMIT)
+          .recently_active(FOLLOWER_SEND_LIMIT).distinct
 
         article_followers.find_each do |follower|
           now = Time.current
