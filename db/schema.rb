@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_02_163808) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_09_155030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -487,6 +487,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_02_163808) do
     t.string "dismissal_sku"
     t.integer "display_to", default: 0, null: false
     t.integer "exclude_article_ids", default: [], array: true
+    t.string "exclude_role_names", default: [], array: true
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
@@ -501,16 +502,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_02_163808) do
     t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
     t.ltree "target_geolocations", default: [], array: true
+    t.string "target_role_names", default: [], array: true
     t.integer "template", default: 0
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
+    t.index ["exclude_role_names"], name: "index_display_ads_on_exclude_role_names", using: :gin
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
+    t.index ["target_role_names"], name: "index_display_ads_on_target_role_names", using: :gin
   end
 
   create_table "email_authorizations", force: :cascade do |t|

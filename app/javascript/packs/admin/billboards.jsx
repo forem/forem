@@ -91,30 +91,24 @@ function defaultTagValues() {
 }
 
 function displayUserTargets() {
-  const userTargetField = document.getElementsByClassName(
-    'js-audience-segment',
-  )[0].parentElement;
-  if (userTargetField) {
-    userTargetField.classList.remove('hidden');
-  }
+  const userTargetFields = document.getElementsByClassName('js-user-target');
+  Array.from(userTargetFields).forEach((field) => {
+    field.parentElement.classList.remove('hidden');
+  });
 }
 
 function hideUserTargets() {
-  const userTargetField = document.getElementsByClassName(
-    'js-audience-segment',
-  )[0].parentElement;
-  if (userTargetField) {
-    userTargetField.classList.add('hidden');
-  }
+  const userTargetFields = document.getElementsByClassName('js-user-target');
+  Array.from(userTargetFields).forEach((field) => {
+    field.parentElement.classList.add('hidden');
+  });
 }
 
 function clearUserTargetSelection() {
-  const userTargetSelect = document.getElementsByClassName(
-    'js-audience-segment',
-  )[0];
-  if (userTargetSelect) {
-    userTargetSelect.value = '';
-  }
+  const userTargetSelects = document.getElementsByClassName('js-user-target');
+  Array.from(userTargetSelects).forEach((select) => {
+    select.value = '';
+  });
 }
 
 /**

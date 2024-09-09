@@ -98,7 +98,8 @@ class Billboard < ApplicationRecord
   self.table_name = "display_ads"
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
-                       location: nil, cookies_allowed: false, page_id: nil, user_agent: nil)
+                       location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
+                       role_names: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -115,6 +116,7 @@ class Billboard < ApplicationRecord
       location: location,
       cookies_allowed: cookies_allowed,
       user_agent: user_agent,
+      role_names: role_names,
     )
 
     case rand(99) # output integer from 0-99
@@ -279,6 +281,16 @@ class Billboard < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :preferred_article_ids, (adjusted_input || [])
+  end
+
+  def exclude_role_names=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    write_attribute :exclude_role_names, (adjusted_input || [])
+  end
+
+  def target_role_names=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    write_attribute :target_role_names, (adjusted_input || [])
   end
 
   def style_string
