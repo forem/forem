@@ -22,6 +22,7 @@ class BillboardEventsController < ApplicationMetalController
 
     ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: throttle_time.minutes) do
       @billboard = Billboard.find(billboard_event_id)
+      return if rand(3) > 0 && @billboard.impressions_count > 500_000
       return if rand(2).zero? && @billboard.impressions_count > 100_000
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
