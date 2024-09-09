@@ -28,8 +28,9 @@ RSpec.describe BillboardEventRollup, type: :service do
       described_class.rollup(Date.current - 2)
     end.not_to raise_error
 
-    expect(BillboardEvent.connection).to have_received(:execute).with("SET LOCAL statement_timeout = '#{BillboardEventRollup::STATEMENT_TIMEOUT}s'")
-    expect(BillboardEvent.connection).to have_received(:execute).with("RESET statement_timeout")
+    expect(BillboardEvent.connection).to have_received(:execute)
+      .with("SET LOCAL statement_timeout = '#{BillboardEventRollup::STATEMENT_TIMEOUT}s'").thrice
+    expect(BillboardEvent.connection).to have_received(:execute).with("RESET statement_timeout").thrice
   end
 
   it "fails if new attributes would be lost" do
