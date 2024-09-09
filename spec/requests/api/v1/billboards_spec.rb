@@ -53,6 +53,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at", "color",
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id",
+                          "exclude_role_names", "target_role_names",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
@@ -73,6 +74,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at", "color",
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id",
+                          "exclude_role_names", "target_role_names",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
@@ -139,6 +141,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at", "browser_context",
                           "creator_id", "exclude_article_ids", "requires_cookies", "page_id",
                           "audience_segment_type", "audience_segment_id", "special_behavior",
+                          "exclude_role_names", "target_role_names",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations")
       end

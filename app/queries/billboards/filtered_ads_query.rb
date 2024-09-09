@@ -11,7 +11,8 @@ module Billboards
     # @param location [Geolocation|String] the visitor's geographic location
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [], page_id: nil,
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
-                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil)
+                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil,
+                   role_names: nil)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -25,6 +26,7 @@ module Billboards
       @user_agent = user_agent
       @location = Geolocation.from_iso3166(location)
       @cookies_allowed = cookies_allowed
+      @role_names = role_names
     end
 
     def call
@@ -58,6 +60,7 @@ module Billboards
       end
 
       @filtered_billboards = user_targeting_ads
+      @filtered_billboards = role_filtered_ads if @user_signed_in
 
       @filtered_billboards = if @user_signed_in
                                authenticated_ads(%w[all logged_in])
@@ -131,6 +134,14 @@ module Billboards
       else
         @filtered_billboards.where(audience_segment_id: nil)
       end
+    end
+
+    def role_filtered_ads
+      @filtered_billboards.where(
+        "(cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
+        AND (cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+        role_names: @role_names,
+      )
     end
 
     def location_targeted_ads
