@@ -56,33 +56,41 @@ class BillboardEventRollup
 
   attr_reader :aggregator, :relation
 
-  def rollup(date)
+  def rollup(date, batch_size: 1000)
     created = []
 
-    rows = relation.where(created_at: date.all_day)
-    aggregate_into_groups(rows).each do |compacted_events|
-      created << compact_records(date, compacted_events)
+    relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+
+    relation.where(created_at: date.all_day).in_batches(of: batch_size) do |rows_batch|
+      aggregate_into_groups(rows_batch).each do |compacted_events|
+        created << compact_records(date, compacted_events)
+      end
     end
 
     created
+  ensure
+    relation.connection.execute("RESET statement_timeout") # Reset after fetching batches
   end
 
   private
 
   def aggregate_into_groups(rows)
+    relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+
     rows.in_batches.each_record do |event|
       aggregator << event
     end
 
     aggregator
+  ensure
+    relation.connection.execute("RESET statement_timeout") # Reset after aggregation
   end
 
   def compact_records(date, compacted)
     result = nil
 
-    relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
-
     relation.transaction do
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
       result = relation.create!(compacted.to_h) do |event|
         event.created_at = date
       end
