@@ -60,7 +60,7 @@ module Billboards
       end
 
       @filtered_billboards = user_targeting_ads
-      @filtered_billboards = role_filtered_ads
+      @filtered_billboards = role_filtered_ads if @user_signed_in
 
       @filtered_billboards = if @user_signed_in
                                authenticated_ads(%w[all logged_in])
