@@ -139,6 +139,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at", "browser_context",
                           "creator_id", "exclude_article_ids", "requires_cookies", "page_id",
                           "audience_segment_type", "audience_segment_id", "special_behavior",
+                          "exclude_role_names", "target_role_names",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations")
       end
