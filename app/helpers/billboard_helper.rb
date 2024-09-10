@@ -37,7 +37,8 @@ module BillboardHelper
     common_params = {
       user_signed_in: user_signed_in?,
       user_id: current_user&.id,
-      user_tags: user_tags
+      user_tags: user_tags,
+      role_names: current_user&.cached_role_names
     }
     common_params[:location] = client_geolocation if user_signed_in? && FeatureFlag.enabled?(Geolocation::FEATURE_FLAG)
     billboards = []
