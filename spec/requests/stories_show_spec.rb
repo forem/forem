@@ -120,18 +120,6 @@ RSpec.describe "StoriesShow" do
       expect(response.body).not_to include "date-no-year"
     end
 
-    it "renders user payment pointer if set" do
-      article.user.update_column(:payment_pointer, "this-is-a-pointer")
-      get article.path
-      expect(response.body).to include "author-payment-pointer"
-      expect(response.body).to include "this-is-a-pointer"
-    end
-
-    it "does not render payment pointer if not set" do
-      get article.path
-      expect(response.body).not_to include "author-payment-pointer"
-    end
-
     it "renders second and third users if present" do
       # 3rd user doesn't seem to get rendered for some reason
       user2 = create(:user)

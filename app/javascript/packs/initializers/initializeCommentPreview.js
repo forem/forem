@@ -64,5 +64,6 @@ export function initializeCommentPreview() {
     return;
   }
 
+  window.handleCommentPreview = handleCommentPreview;
   previewButton.addEventListener('click', handleCommentPreview);
 }

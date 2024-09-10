@@ -2,10 +2,15 @@ module Authentication
   module Providers
     # Twitter authentication provider, uses omniauth-twitter as backend
     class Twitter < Provider
+      OFFICIAL_NAME = "Twitter (X)".freeze
       SETTINGS_URL = "https://twitter.com/settings/applications".freeze
 
       def self.settings_url
         SETTINGS_URL
+      end
+
+      def self.official_name
+        OFFICIAL_NAME
       end
 
       def self.sign_in_path(**kwargs)

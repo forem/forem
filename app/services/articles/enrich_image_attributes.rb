@@ -17,6 +17,7 @@ module Articles
 
     def self.call(article)
       fast_image_headers = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
+      store_image_if_appropriate(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
       main_image_height = default_image_height
 
@@ -67,5 +68,30 @@ module Articles
       Settings::UserExperience.cover_image_fit == "limit" ? 300 : Settings::UserExperience.cover_image_height
     end
     private_class_method :default_image_height
+
+    def self.store_image_if_appropriate(article)
+      return if ApplicationConfig["AWS_BUCKET_NAME"].blank?
+
+      markdown_text = article.body_markdown
+      markdown_pattern = /!\[.*?\]\((.*?)\)/
+      html_pattern = /<img.*?src=["'](.*?)["']/
+      markdown_urls = markdown_text.scan(markdown_pattern).flatten
+      html_urls = markdown_text.scan(html_pattern).flatten
+      all_urls = markdown_urls + html_urls
+      stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
+      filtered_urls = all_urls.reject { |url| url.include?(stored_image_url) }
+      images_converted = []
+      filtered_urls.uniq.each do |url|
+        store = MediaStore.where(original_url: url).first_or_create
+        images_converted << store.output_url if store&.created_at&.> 1.minute.ago
+      rescue StandardError => e
+        Rails.logger.error("Error storing images: #{e.message}")
+      end
+      # This just updates the processed HTML based on new state (now has media stores)
+      article.evaluate_and_update_column_from_markdown if images_converted.any?
+    rescue StandardError => e
+      Rails.logger.error("Error storing images: #{e.message}")
+    end
+    private_class_method :store_image_if_appropriate
   end
 end

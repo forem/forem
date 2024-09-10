@@ -9,25 +9,31 @@ module Billboards
     # @param user_signed_in [Boolean] whether or not the visitor is signed-in
     # @param billboards [Billboard] can be a filtered scope or Arel relationship
     # @param location [Geolocation|String] the visitor's geographic location
-    def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
+    def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [], page_id: nil,
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
-                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false)
+                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil,
+                   role_names: nil)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
       @user_id = user_signed_in ? user_id : nil
+      @page_id = page_id
       @organization_id = organization_id
       @article_tags = article_tags
       @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
       @user_tags = user_tags
+      @user_agent = user_agent
       @location = Geolocation.from_iso3166(location)
       @cookies_allowed = cookies_allowed
+      @role_names = role_names
     end
 
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+      @filtered_billboards = browser_context_ads if @user_agent.present?
+      @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
 
       if @article_id.present?
@@ -54,6 +60,7 @@ module Billboards
       end
 
       @filtered_billboards = user_targeting_ads
+      @filtered_billboards = role_filtered_ads if @user_signed_in
 
       @filtered_billboards = if @user_signed_in
                                authenticated_ads(%w[all logged_in])
@@ -81,6 +88,23 @@ module Billboards
 
     def placement_area_ads
       @filtered_billboards.where(placement_area: @area)
+    end
+
+    def browser_context_ads
+      case @user_agent
+      when /DEV-Native-ios|DEV-Native-android|ForemWebView/
+        @filtered_billboards.where(browser_context: %i[all_browsers mobile_in_app])
+      when /Mobile|iPhone|Android/
+        @filtered_billboards.where(browser_context: %i[all_browsers mobile_web])
+      when /Windows|Macintosh|Mac OS X|Linux/
+        @filtered_billboards.where(browser_context: %i[all_browsers desktop])
+      else
+        @filtered_billboards
+      end
+    end
+
+    def page_ads
+      @filtered_billboards.where(page_id: @page_id)
     end
 
     def tagged_ads(tag_type)
@@ -112,6 +136,14 @@ module Billboards
       end
     end
 
+    def role_filtered_ads
+      @filtered_billboards.where(
+        "(cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
+        AND (cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+        role_names: @role_names,
+      )
+    end
+
     def location_targeted_ads
       geo_query = "cardinality(target_geolocations) = 0" # Empty array
       if @location&.valid?
@@ -134,10 +166,8 @@ module Billboards
       # Always match in-house-type ads
       types_matching << :in_house
 
-      # If the article is an organization's article (non-nil organization_id),
-      # or if the current_user has opted-out of sponsors,
-      # then do not show external ads
-      if @organization_id.blank? && @permit_adjacent_sponsors
+      # If the author or current_user has opted out of seeing adjacent sponsors, do not show them
+      if @permit_adjacent_sponsors
         types_matching << :external
       end
 

@@ -5,8 +5,6 @@
   </div>
   <div class="ltag__wikipedia--extract"><%= (HTML_Truncator.truncate extract, 150).html_safe %></div>
   <div class="ltag__wikipedia--btn--container">
-    <button class="ltag__wikipedia--btn" type="button">
-      <a href="<%= url %>" target="_blank" rel="noopener noreferrer"><%= t("views.liquids.wikipedia.view") %></a>
-    </button>
+      <a class="ltag__wikipedia--btn" href="<%= url %>" target="_blank" rel="noopener noreferrer"><%= t("views.liquids.wikipedia.view") %></a>>
   </div>
 </div>

@@ -83,7 +83,7 @@ RSpec.describe "UserSettings" do
         get user_settings_path(:extensions)
 
         feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
-        titles = ["Comment templates", feed_section, "Web monetization", "API Keys"]
+        titles = ["Comment templates", feed_section, "API Keys"]
         expect(response.body).to include(*titles)
       end
 

@@ -30,6 +30,7 @@ module Settings
     # Analytics and tracking
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
     setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
+    setting :ga_api_secret, type: :string, default: ApplicationConfig["GA_API_SECRET"]
     setting :cookie_banner_user_context, type: :string, default: "off", validates: {
       inclusion: { in: BANNER_USER_CONFIGS }
     }
@@ -54,6 +55,7 @@ module Settings
 
     setting :original_logo, type: :string
     setting :resized_logo, type: :string
+    setting :resized_logo_aspect_ratio, type: :string
 
     setting :enable_video_upload, type: :boolean, default: false
 
@@ -78,7 +80,6 @@ module Settings
     }
 
     # Monetization
-    setting :payment_pointer, type: :string
     setting :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     setting :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
     # Billboard-related. Not sure this is the best place for it, but it's a start.
@@ -143,6 +144,16 @@ module Settings
 
     setting :default_content_language, type: :string, default: "en",
                                        validates: { inclusion: Languages::Detection.codes }
+
+    # Algolia
+    setting :algolia_application_id, type: :string, default: ApplicationConfig["ALGOLIA_APPLICATION_ID"]
+    setting :algolia_api_key, type: :string, default: ApplicationConfig["ALGOLIA_API_KEY"]
+    setting :algolia_search_only_api_key, type: :string, default: ApplicationConfig["ALGOLIA_SEARCH_ONLY_API_KEY"]
+    setting :display_algolia_branding, type: :boolean, default: ApplicationConfig["ALGOLIA_DISPLAY_BRANDING"] == "true"
+
+    def self.algolia_search_enabled?
+      algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
+    end
 
     def self.custom_newsletter_configured?
       onboarding_newsletter_content_processed_html.present? &&

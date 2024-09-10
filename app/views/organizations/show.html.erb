@@ -2,6 +2,10 @@
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
+  <% unless @stories.sum(&:score).positive? %>
+      <meta name="robots" content="noindex">
+      <meta name="robots" content="nofollow">
+  <% end %>
 <% end %>
 <%= render "organizations/header" %>
 <div

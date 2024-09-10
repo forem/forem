@@ -7,6 +7,7 @@ class FeedEvent < ApplicationRecord
   belongs_to :user, optional: true
 
   after_save :update_article_counters_and_scores
+  after_create_commit :record_field_test_event
 
   enum category: {
     impression: 0,
@@ -19,10 +20,12 @@ class FeedEvent < ApplicationRecord
   CONTEXT_TYPE_HOME = "home".freeze
   CONTEXT_TYPE_SEARCH = "search".freeze
   CONTEXT_TYPE_TAG = "tag".freeze
+  CONTEXT_TYPE_EMAIL = "email".freeze
   VALID_CONTEXT_TYPES = [
     CONTEXT_TYPE_HOME,
     CONTEXT_TYPE_SEARCH,
     CONTEXT_TYPE_TAG,
+    CONTEXT_TYPE_EMAIL,
   ].freeze
   DEFAULT_TIMEBOX = 5.minutes.freeze
 
@@ -100,5 +103,16 @@ class FeedEvent < ApplicationRecord
     return unless article
 
     self.class.update_single_article_counters(article_id)
+  end
+
+  # @see AbExperiment::GoalConversionHandler
+  def record_field_test_event
+    return if FieldTest.config["experiments"].nil?
+    return if category.to_s == "impression"
+    return unless user_id
+    return unless context_type == CONTEXT_TYPE_EMAIL # We are only doing this for email at the moment
+
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_EMAIL_FEED_EVENT_GOAL)
   end
 end

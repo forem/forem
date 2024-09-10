@@ -43,7 +43,7 @@
           </div>
         </div>
       </header>
-
+      <div id="billboard_delay_trigger"></div>
       <div
         id="comments-container"
         data-testid="comments-container"
@@ -59,6 +59,7 @@
 
         <div class="comments" id="comment-trees-container">
           <% if @article.comments_count > 0 %>
+            <% @current_comment_index = 0 %>
             <%= render partial: "articles/comment_tree",
                        collection: article_comment_tree(@article, @comments_to_show_count, @comments_order),
                        as: :comment_node,

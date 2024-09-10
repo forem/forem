@@ -1,6 +1,6 @@
 class TweetTag < LiquidTagBase
   PARTIAL = "liquids/tweet".freeze
-  REGISTRY_REGEXP = %r{https://twitter\.com/\w{1,15}/status/(?<id>\d{10,20})}
+  REGISTRY_REGEXP = %r{https://(?:twitter\.com|x\.com)/\w{1,15}/status/(?<id>\d{10,20})}
   VALID_ID_REGEXP = /\A(?<id>\d{10,20})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 

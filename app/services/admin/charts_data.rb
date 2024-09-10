@@ -6,7 +6,7 @@ module Admin
 
     def call
       period = (@length + 1).days.ago..1.day.ago
-      previous_period = (@length * 2).days.ago..@length.days.ago
+      previous_period = (@length * 2).days.ago..(@length + 1).days.ago
 
       grouped_posts = Article.where(published_at: period).group("DATE(published_at)").size
       grouped_comments = Comment.where(created_at: period).group("DATE(created_at)").size

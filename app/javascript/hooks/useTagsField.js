@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
+import algoliasearch from 'algoliasearch/lite'
 import { fetchSearch } from '@utilities/search';
+
 
 /**
  * Custom hook to manage the logic for the tags-fields based on the `MultiSelectAutocomplete` component
@@ -10,6 +12,15 @@ import { fetchSearch } from '@utilities/search';
  * An object containing `defaultSelections` list, `fetchSuggestions` function, and `syncSelections` function
  */
 export const useTagsField = ({ defaultValue, onInput }) => {
+  const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
+  let algoliaIndex;
+  if (!useFetchSearch) {
+    const env = document.querySelector('meta[name="environment"]')?.content;
+    const {algoliaId, algoliaSearchKey} = document.body.dataset;
+    const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
+    algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
+  }
+
   const [defaultSelections, setDefaultSelections] = useState([]);
   const [defaultsLoaded, setDefaultsLoaded] = useState(false);
 
@@ -20,13 +31,21 @@ export const useTagsField = ({ defaultValue, onInput }) => {
     if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
       const tagNames = defaultValue.split(', ');
 
-      const tagRequests = tagNames.map((tagName) =>
-        fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
-          const [potentialMatch = {}] = result;
-          return potentialMatch.name === tagName
-            ? potentialMatch
-            : { name: tagName };
-        }),
+      const tagRequests = tagNames.map((tagName) => 
+        (useFetchSearch ? 
+          fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
+            const [potentialMatch = {}] = result;
+            return potentialMatch.name === tagName
+              ? potentialMatch
+              : { name: tagName };
+          }) :
+          algoliaIndex.search(tagName).then(({ hits }) => {
+            const [potentialMatch = {}] = hits;
+            return potentialMatch.name === tagName
+              ? potentialMatch
+              : { name: tagName };
+          })
+        )
       );
 
       Promise.all(tagRequests).then((data) => {
@@ -34,7 +53,7 @@ export const useTagsField = ({ defaultValue, onInput }) => {
       });
     }
     setDefaultsLoaded(true);
-  }, [defaultValue, defaultsLoaded]);
+  }, [defaultValue, defaultsLoaded, useFetchSearch]);
 
   /**
    * Converts the array of selected items into a plain string,
@@ -54,9 +73,16 @@ export const useTagsField = ({ defaultValue, onInput }) => {
    * @param {string} searchTerm The text to search for
    * @returns {Promise} Promise which resolves to the tag search results
    */
-  const fetchSuggestions = (searchTerm) =>
-    fetchSearch('tags', { name: searchTerm }).then(
-      (response) => response.result,
+  const fetchSuggestions = (searchTerm) => 
+    (useFetchSearch ? 
+      fetchSearch('tags', { name: searchTerm }).then(
+        (response) => response.result,
+      ) : 
+      algoliaIndex.search(searchTerm, {
+        facetFilters: ["supported:true"]
+      }).then(
+        (response) => response.hits,
+      )
     );
 
   return {

@@ -41,6 +41,29 @@ RSpec.describe "Sidebars" do
         expect(response.body).to include(CGI.escapeHTML(second_article.title))
       end
 
+      it "includes article without the proper tags if recently viewed and has over 1 comment" do
+        second_article = create(:article, comments_count: 2)
+        create(:page_view, user_id: user.id, article_id: second_article.id)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "does not include recently-viewed page if only one comment" do
+        second_article = create(:article, comments_count: 1)
+        create(:page_view, user_id: user.id, article_id: second_article.id)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "does not include a 2 comment article if not recently viewed" do
+        second_article = create(:article, comments_count: 2)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+
       it "does not include non-featured non-tagg-followed article" do
         second_article = create(:article, language: "en")
         sign_in user

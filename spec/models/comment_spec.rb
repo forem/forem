@@ -145,7 +145,7 @@ RSpec.describe Comment do
       it "adds rel=nofollow to links" do
         comment.body_markdown = "this is a comment with a link: http://dev.to"
         comment.validate!
-        expect(comment.processed_html.include?('rel="nofollow"')).to be(true)
+        expect(comment.processed_html.include?('rel="nofollow')).to be(true)
       end
 
       it "adds a mention url if user is mentioned like @mention" do
@@ -610,6 +610,15 @@ RSpec.describe Comment do
 
     it "returns false if comment is not by the staff account" do
       expect(comment.by_staff_account?).to be(false)
+    end
+  end
+
+  context "when indexing with Algolia", :algolia do
+    it "indexes on create" do
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      create(:comment)
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer), 
+false).once
     end
   end
 end

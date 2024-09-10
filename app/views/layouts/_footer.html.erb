@@ -5,8 +5,18 @@
      }
    end %>
 
+
 <footer id="footer" class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-footer__container">
+
+
+    <% cache "footer-billboard-#{user_signed_in?}", expires_in: 30.minutes do %>
+      <% footer_billboard = Billboard.for_display(area: "footer", user_signed_in: user_signed_in?) %>
+      <% if footer_billboard %>
+        <%= render partial: "shared/billboard", locals: { billboard: footer_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+      <% end %>
+    <% end %>
+
     <p class="fs-s crayons-footer__description">
       <%= t("views.main.footer.desc_html", community: link_to(community_name, root_path, class: "c-link c-link--branded fw-medium", "aria-label": t("views.main.aria_home", community: community_name)), desc: Settings::Community.community_description) %>
     </p>

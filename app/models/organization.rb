@@ -1,6 +1,7 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
   include PgSearch::Model
+  include AlgoliaSearchable
 
   include Images::Profile.for(:profile_image_url)
 
@@ -129,6 +130,10 @@ class Organization < ApplicationRecord
   # don't have profiles we return self instead.
   def profile
     self
+  end
+
+  def cached_base_subscriber?
+    false
   end
 
   private

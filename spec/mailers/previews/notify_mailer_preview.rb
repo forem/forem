@@ -45,6 +45,10 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.with(user: User.first).trusted_role_email
   end
 
+  def base_subscriber_role_email
+    NotifyMailer.with(user: User.first).base_subscriber_role_email
+  end
+
   def feedback_message_resolution_email
     # change email_body text when you need to see a different version
     @user = User.first

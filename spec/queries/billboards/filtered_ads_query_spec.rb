@@ -37,13 +37,13 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:no_tags) { create_billboard cached_tag_list: "" }
     let!(:mismatched) { create_billboard cached_tag_list: "career" }
 
-    it "will show no-tag billboards if the article tags do not contain matching tags" do
+    it "shows no-tag billboards if the article tags do not contain matching tags" do
       filtered = filter_billboards(article_id: 11, article_tags: %w[javascript])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
 
-    it "will show billboards with no tags set if there are no article tags" do
+    it "shows billboards with no tags set if there are no article tags" do
       filtered = filter_billboards(article_id: 11, article_tags: [])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
@@ -52,7 +52,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     context "when available ads have matching tags" do
       let!(:matching) { create_billboard cached_tag_list: "linux, git, go" }
 
-      it "will show the billboards that contain tags that match any of the article tags" do
+      it "shows the billboards that contain tags that match any of the article tags" do
         filtered = filter_billboards article_id: 11, article_tags: %w[linux productivity]
         expect(filtered).not_to include(mismatched)
         expect(filtered).to include(matching)
@@ -65,13 +65,13 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:no_tags) { create_billboard placement_area: "feed_first", cached_tag_list: "" }
     let!(:mismatched) { create_billboard placement_area: "feed_first", cached_tag_list: "career" }
 
-    it "will show no-tag billboards if the user tags do not contain matching tags" do
+    it "shows no-tag billboards if the user tags do not contain matching tags" do
       filtered = filter_billboards(area: "feed_first", user_tags: %w[javascript])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
 
-    it "will show billboards with no tags set if there are no user tags" do
+    it "shows billboards with no tags set if there are no user tags" do
       filtered = filter_billboards(area: "feed_first", user_tags: [])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
@@ -80,7 +80,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     context "when available ads have matching tags" do
       let!(:matching) { create_billboard placement_area: "feed_first", cached_tag_list: "linux, git, go" }
 
-      it "will show the billboards that contain tags that match any of the user tags" do
+      it "shows the billboards that contain tags that match any of the user tags" do
         filtered = filter_billboards area: "feed_first", user_tags: %w[linux productivity]
         expect(filtered).not_to include(mismatched)
         expect(filtered).to include(matching)
@@ -108,7 +108,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:another_ex_article2) { create_billboard exclude_article_ids: "12,13" }
     let!(:no_excludes) { create_billboard }
 
-    it "will show billboards that exclude articles appropriately" do
+    it "shows billboards that exclude articles appropriately" do
       filtered = filter_billboards article_id: 11
       expect(filtered).to contain_exactly(another_ex_article2, no_excludes)
 
@@ -146,6 +146,18 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     end
   end
 
+  context "when considering page_id" do
+    let(:page) { create(:page) }
+    let(:page_bb) { create_billboard page_id: page.id }
+    let(:non_page_bb) { create_billboard page_id: nil }
+
+    it "shows page billboard if page is passed" do
+      filtered = filter_billboards page_id: page.id
+      expect(filtered).to contain_exactly(page_bb)
+      expect(filtered).not_to include(non_page_bb)
+    end
+  end
+
   context "when considering ads with organization_id" do
     let!(:in_house_ad) { create_billboard type_of: :in_house }
 
@@ -164,7 +176,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(other_community)
 
       filtered = filter_billboards organization_id: no_ads_org.id
-      expect(filtered).to contain_exactly(in_house_ad)
+      expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_billboards organization_id: nil
@@ -337,6 +349,40 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         expect(filtered).not_to include(requires_cookies_ad)
         expect(filtered).to include(no_cookies_required_ad)
       end
+    end
+  end
+
+  context "when considering browser context" do
+    let!(:all_browsers_ad) { create_billboard browser_context: :all_browsers }
+    let!(:mobile_in_app_ad) { create_billboard browser_context: :mobile_in_app }
+    let!(:mobile_web_ad) { create_billboard browser_context: :mobile_web }
+    let!(:desktop_ad) { create_billboard browser_context: :desktop }
+
+    it "filters ads based on user_agent string for mobile in-app context" do
+      filtered = filter_billboards(user_agent: "DEV-Native-ios")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+
+      filtered = filter_billboards(user_agent: "DEV-Native-android")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+    end
+
+    it "filters ads based on user_agent string for mobile web context" do
+      filtered = filter_billboards(user_agent: "Mobile Safari")
+      expect(filtered).to include(all_browsers_ad, mobile_web_ad)
+      expect(filtered).not_to include(mobile_in_app_ad, desktop_ad)
+    end
+
+    it "filters ads based on user_agent string for desktop context" do
+      filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
+      expect(filtered).to include(all_browsers_ad, desktop_ad)
+      expect(filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
+    end
+
+    it "includes all ads for unknown user_agent contexts" do
+      filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
     end
   end
 end

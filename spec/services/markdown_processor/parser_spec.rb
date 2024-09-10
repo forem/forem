@@ -154,13 +154,15 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "renders properly if protocol http is included" do
       code_span = "[github](http://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"http://github.com\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"http://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol https is included" do
       code_span = "[github](https://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"https://github.com\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol is not included" do
@@ -187,6 +189,68 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(generate_and_parse_markdown("<center class=\"w-100\"></center>"))
         .to exclude("class")
         .and exclude("w-100")
+    end
+  end
+
+  describe "image URL processing" do
+    let(:original_url) { "https://example.com/image.jpg" }
+    let(:modified_url) { "https://modified.com/image.jpg" }
+
+    before do
+      allow(MediaStore).to receive(:find_by).with(original_url: original_url)
+        .and_return(double(output_url: modified_url)) # rubocop:disable RSpec/VerifiedDoubles
+    end
+
+    it "replaces the image URL in the HTML but not in the Markdown" do
+      markdown = "![alt text](#{original_url})"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).not_to include(original_url)
+      expect(markdown).to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has alt and title" do
+      markdown = "[<img src='#{original_url}' alt='test' title='test' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).to include('alt="test"')
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has alt and no title" do
+      markdown = "[<img src='#{original_url}' alt='test' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).to include('alt="test"')
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has no alt or title" do
+      markdown = "[<img src='#{original_url}' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "does not replace image if malformed <img" do
+      markdown = "[<img src='#{original_url}](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      p rendered_html
+      expect(rendered_html).not_to include(modified_url)
+    end
+
+    it "falls back to the original URL if no modified URL is found" do
+      allow(MediaStore).to receive(:find_by).with(original_url: original_url)
+        .and_return(nil)
+      markdown = "![alt text](#{original_url})"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(original_url)
     end
   end
 
@@ -222,7 +286,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(result).to eq(expected_result)
     end
 
-    it "will not work in code tag" do
+    it "does not work in code tag" do
       mention = "this is a chunk of text `@#{user.username}`"
       result = generate_and_parse_markdown(mention)
       expect(result).to include "<code"
@@ -347,7 +411,8 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "does not generated nested link tags" do
       nested_links = generate_and_parse_markdown("[[](http://b)](http://a)")
       nested_links = Nokogiri::HTML(nested_links).at("p").inner_html
-      expect(nested_links).to eq('[<a href="http://b"></a>](<a href="http://a">http://a</a>)')
+      attrs = "target=\"_blank\" rel=\"noopener noreferrer\""
+      expect(nested_links).to eq("[<a href=\"http://b\" #{attrs}></a>](<a href=\"http://a\" #{attrs}>http://a</a>)")
     end
   end
 
@@ -406,6 +471,19 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
 
   context "when an image is used" do
     let(:markdown_with_img) { "![](https://image.com/image.jpg)" }
+
+    it "wraps image in link" do
+      expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
+    end
+
+    it "wraps the image with Cloudinary", :cloudinary do
+      expect(generate_and_parse_markdown(markdown_with_img))
+        .to include("https://res.cloudinary.com")
+    end
+  end
+
+  context "when plain html image is used" do
+    let(:markdown_with_img) { "<img src='https://image.com/image.jpg' />" }
 
     it "wraps image in link" do
       expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")

@@ -9,6 +9,9 @@ module Admin
       add_org_credits remove_org_credits
       organization_id identity_id
       credit_action credit_amount
+      reputation_modifier
+      max_score
+      tag_name
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -78,18 +81,65 @@ module Admin
       redirect_to admin_user_path(params[:id])
     end
 
+    def reputation_modifier
+      @user = User.find(params[:id])
+      reputation_modifier_value = user_params[:reputation_modifier]
+      note_content = if user_params[:new_note].present?
+                       "Changed user's reputation modifier to #{reputation_modifier_value}. " \
+                         "Reason: #{user_params[:new_note]}"
+                     else
+                       "Changed user's reputation modifier to #{reputation_modifier_value}."
+                     end
+      if @user.update(reputation_modifier: reputation_modifier_value)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "reputation_modifier_change",
+          content: note_content,
+        )
+        flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
+      else
+        flash[:error] = I18n.t("views.admin.users.reputation.error")
+      end
+      redirect_to admin_user_path(@user)
+    end
+
+    def max_score
+      @user = User.find(params[:id])
+      max_score_value = user_params[:max_score]
+      note_content = if user_params[:new_note].present?
+                       "Changed user's maximum score to #{max_score_value}. " \
+                         "Reason: #{user_params[:new_note]}"
+                     else
+                       "Changed user's maximum score to #{max_score_value}."
+                     end
+      if @user.update(max_score: max_score_value)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "max_score_change",
+          content: note_content,
+        )
+        flash[:success] = I18n.t("views.admin.users.max_score.success", max_score: max_score_value)
+      else
+        flash[:error] = I18n.t("views.admin.users.max_score.error")
+      end
+      redirect_to admin_user_path(@user)
+    end
+
     def destroy
       role = Role.find(params[:role_id])
       authorize(role, :remove_role?)
-
-      resource_type = params[:resource_type]
 
       @user = User.find(params[:user_id])
 
       response = ::Users::RemoveRole.call(
         user: @user,
         role: role.name,
-        resource_type: resource_type,
+        resource_type: params[:resource_type],
+        resource_id: params[:resource_id],
       )
 
       if response.success
@@ -147,6 +197,29 @@ module Admin
         end
       end
       Credits::Manage.call(@user, credit_params)
+    end
+
+    def add_tag_mod_role
+      user = User.find(params[:id])
+      tag = Tag.find_by(name: user_params[:tag_name])
+
+      unless tag
+        flash[:error] = I18n.t("errors.messages.general",
+                               errors: I18n.t("admin.users_controller.tag_not_found",
+                                              tag_name: user_params[:tag_name]))
+        return redirect_to admin_user_path(user.id)
+      end
+
+      result = TagModerators::Add.call(user.id, tag.id)
+      if result.success?
+        flash[:success] = I18n.t("admin.tags.moderators_controller.added", username: user.username)
+      else
+        flash[:error] = I18n.t("errors.messages.general", errors:
+          I18n.t("admin.tags.moderators_controller.not_found_or",
+                 user_id: user.id,
+                 errors: result.errors))
+      end
+      redirect_to admin_user_path(user.id)
     end
 
     def export_data
@@ -283,6 +356,33 @@ module Admin
           render json: { error: I18n.t("admin.users_controller.parameter_missing") },
                  content_type: "application/json",
                  status: :unprocessable_entity
+        end
+      end
+    end
+
+    def send_email_confirmation
+      @user = User.find(params[:id])
+      if @user.send_confirmation_instructions
+        respond_to do |format|
+          message = I18n.t("admin.users_controller.confirm_sent")
+
+          format.html do
+            flash[:success] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { result: message }, content_type: "application/json" }
+        end
+      else
+        message = I18n.t("admin.users_controller.email_fail")
+
+        respond_to do |format|
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
         end
       end
     end

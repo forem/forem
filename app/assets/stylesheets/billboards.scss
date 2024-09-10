@@ -3,8 +3,8 @@
 @import '_mixins';
 
 .crayons-layout__comments-billboard {
-  .crayons-sponsorship {
-    .c-indicator.crayons-sponsorship__indicator {
+  .crayons-bb, .crayons-unit {
+    .c-indicator.crayons-bb__indicator, .c-indicator.crayons-unit__indicator {
       line-height: 15px;
     }
 
@@ -67,9 +67,10 @@
     max-height: calc(100vh - var(--header-height) - var(--su-8));
   }
   @media (min-width: $breakpoint-xl) {
-    .crayons-sponsorship__header,
+    .crayons-bb__header,
+    .crayons-unit__header,
     .text-styles {
-      margin-left: calc(50% - (var(--site-width) / 2));
+      margin-left: calc(54% - (var(--site-width) / 2));
     }
     .text-styles {
       font-size: 1.22em;
@@ -86,6 +87,17 @@
 
 .hide-popover-billboard .popover-billboard {
   display: none;
+}
+
+.body-billboard {
+  @media (max-width: $breakpoint-s) {
+    margin: 0 -4px 0;
+    padding: 7px 6px !important;
+  }
+  @media (min-width: $breakpoint-m) {
+    margin: 0 -14px 0;
+  }
+
 }
 
 .hero-billboard {

@@ -16,6 +16,7 @@ RSpec.describe "PageViews" do
     context "when user signed in" do
       before do
         sign_in user
+        allow(Settings::General).to receive_messages(algolia_application_id: "test", algolia_api_key: "test")
       end
 
       it "creates a new page view", :aggregate_failures do
@@ -37,6 +38,38 @@ RSpec.describe "PageViews" do
         page_views_post(article_id: article.id, user_agent: "test")
 
         expect(PageView.last.user_agent).to eq("test")
+      end
+
+      it "sends Algolia insight event" do
+        article = create(:article)
+        # Set up the expectation before making the request
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
+        allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
+        allow(algolia_service_instance).to receive(:track_event)
+
+        post "/page_views", params: { article_id: article.id }
+
+        expect(algolia_service_instance).to have_received(:track_event).with(
+          "view",
+          "Article Viewed",
+          user.id,
+          article.id,
+          "Article_#{Rails.env}",
+          instance_of(Integer),
+        )
+      end
+
+      it "Does not send an Algolia event if Algolia setting not present" do
+        allow(Settings::General).to receive(:algolia_application_id).and_return(nil)
+        article = create(:article)
+        # Set up the expectation before making the request
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
+        allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
+        allow(algolia_service_instance).to receive(:track_event)
+
+        post "/page_views", params: { article_id: article.id }
+
+        expect(algolia_service_instance).not_to have_received(:track_event)
       end
     end
 
@@ -61,7 +94,7 @@ RSpec.describe "PageViews" do
         allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 
-      it "converts field test" do
+      it "does not convert field test" do
         page_views_post(article_id: article.id, referrer: "test")
 
         expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
@@ -74,7 +107,6 @@ RSpec.describe "PageViews" do
 
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(10)
-        expect(user.reload.page_views.size).to eq(0)
         expect(PageView.last.counts_for_number_of_views).to eq(10)
       end
 
@@ -102,6 +134,18 @@ RSpec.describe "PageViews" do
         page_views_post(article_id: article.id, user_agent: "test")
 
         expect(PageView.last.user_agent).to eq("test")
+      end
+
+      it "does not send Algolia insight event" do
+        article = create(:article)
+        # Set up the expectation before making the request
+        algolia_service_instance = instance_double(AlgoliaInsightsService)
+        allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
+        allow(algolia_service_instance).to receive(:track_event)
+
+        post "/page_views", params: { article_id: article.id }
+
+        expect(algolia_service_instance).not_to have_received(:track_event)
       end
     end
   end

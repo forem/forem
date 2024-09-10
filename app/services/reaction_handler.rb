@@ -85,12 +85,16 @@ class ReactionHandler
     reaction = build_reaction(category)
     result = result(reaction, nil)
 
-    if reaction.save
-      rate_limit_reaction_creation
-      sink_articles(reaction)
-      send_notifications(reaction)
-      record_feed_event(reaction)
-      update_last_reacted_at(reaction)
+    begin
+      if reaction.save
+        rate_limit_reaction_creation
+        sink_articles(reaction)
+        send_notifications(reaction)
+        record_feed_event(reaction)
+        update_last_reacted_at(reaction)
+      end
+    rescue ActiveRecord::RecordNotUnique
+      Rails.logger.error "Reaction already exists: #{reaction.inspect}"
     end
 
     result.action = "create"

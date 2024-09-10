@@ -106,11 +106,15 @@ module Authentication
 
     def proper_user(identity)
       if current_user
+        Rails.logger.debug { "Current user exists: #{current_user.id}" }
         current_user
       elsif identity.user
+        Rails.logger.debug { "Identity user found: #{identity.user.id}" }
         identity.user
       elsif provider.user_email.present?
-        User.find_by(email: provider.user_email)
+        user = User.find_by(email: provider.user_email)
+        Rails.logger.debug { "User found by email: #{user&.id}" }
+        user
       end
     end
 
@@ -133,7 +137,7 @@ module Authentication
 
         # The user must be saved in the database before
         # we assign the user to a new identity.
-        user.save!
+        user.new_record? ? user.save! : user.save # Throw excption if new record.
       end
     end
 

@@ -117,9 +117,14 @@ var instantClick
 
   function changePage(title, body, newUrl, scrollY, pop) {
     var pageContentDiv = document.getElementById("page-content");
-    var memberMenuButton = document.getElementById("member-menu-button")
+    var memberMenuButton = document.getElementById("member-menu-button");
+    var searchTypeahead = document.getElementById("search-typeahead");
     if (memberMenuButton) {
       memberMenuButton.classList.remove('showing')
+    }
+    if (searchTypeahead) {
+      document.getElementById('search-input').value = ''
+      searchTypeahead.classList.add('hidden');
     }
     document.body.replaceChild(body, pageContentDiv)
 

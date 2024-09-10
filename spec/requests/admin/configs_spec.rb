@@ -355,13 +355,6 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Monetization" do
-        it "updates payment pointer" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { payment_pointer: "$pay.yo" }
-          }
-          expect(Settings::General.payment_pointer).to eq("$pay.yo")
-        end
-
         it "updates stripe configs" do
           post admin_settings_general_settings_path, params: {
             settings_general: {

@@ -16,4 +16,5 @@ json.user do
   json.profile_pic current_user.profile_image_url_for(length: 50)
   json.twitter_username current_user.twitter_username
   json.github_username current_user.github_username
+  json.cached_base_subscriber current_user.cached_base_subscriber?
 end

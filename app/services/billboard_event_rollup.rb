@@ -1,6 +1,7 @@
 class BillboardEventRollup
   ATTRIBUTES_PRESERVED = %i[user_id display_ad_id category context_type created_at].freeze
   ATTRIBUTES_DESTROYED = %i[id counts_for updated_at article_id geolocation].freeze
+  STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 10_000).to_i.seconds / 1_000.to_f
 
   class EventAggregator
     Compact = Struct.new(:events, :user_id, :billboard_id, :category, :context_type) do
@@ -55,31 +56,47 @@ class BillboardEventRollup
 
   attr_reader :aggregator, :relation
 
-  def rollup(date)
+  def rollup(date, batch_size: 1000)
     created = []
 
-    rows = relation.where(created_at: date.all_day)
-    aggregate_into_groups(rows).each do |compacted_events|
-      created << compact_records(date, compacted_events)
+    # Ensure SET LOCAL is done within a transaction block
+    relation.transaction do
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+
+      relation.where(created_at: date.all_day).in_batches(of: batch_size) do |rows_batch|
+        aggregate_into_groups(rows_batch).each do |compacted_events|
+          created << compact_records(date, compacted_events)
+        end
+      end
     end
 
     created
+  ensure
+    relation.connection.execute("RESET statement_timeout") # Reset after fetching batches
   end
 
   private
 
   def aggregate_into_groups(rows)
-    rows.in_batches.each_record do |event|
-      aggregator << event
+    # SET LOCAL inside transaction
+    relation.transaction do
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+
+      rows.in_batches.each_record do |event|
+        aggregator << event
+      end
     end
 
     aggregator
+  ensure
+    relation.connection.execute("RESET statement_timeout") # Reset after aggregation
   end
 
   def compact_records(date, compacted)
     result = nil
 
     relation.transaction do
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
       result = relation.create!(compacted.to_h) do |event|
         event.created_at = date
       end
@@ -88,5 +105,7 @@ class BillboardEventRollup
     end
 
     result
+  ensure
+    relation.connection.execute("RESET statement_timeout") # Reset to the default timeout
   end
 end

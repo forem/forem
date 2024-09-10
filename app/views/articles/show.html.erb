@@ -1,7 +1,5 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
-<%= render "shared/payment_pointer", user: @article.user %>
-
 <style>
   .html-variant-wrapper { display: none}
 </style>
@@ -122,6 +120,10 @@
                 </div>
                 <div class="pl-3 flex-1">
                   <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
+                  <%= subscription_icon(@user) %>
+                  <% if @user.spam? %>
+                    <span class="c-indicator c-indicator--danger">Spam</span>
+                  <% end %>
                   <% if @organization %>
                     <%= t("views.articles.for_org_html",
                           start: tag("span", { class: "color-base-60" }, true),
@@ -191,6 +193,9 @@
                        rendered_article: @article,
                        collection: @collection,
                        articles: @collection_articles %>
+          <% end %>
+          <% if @article.long_markdown? %>
+            <div class="js-billboard-container body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
           <% end %>
         </div>
         <%= render "articles/full_comment_area" %>

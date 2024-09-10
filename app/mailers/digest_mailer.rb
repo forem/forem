@@ -4,6 +4,7 @@ class DigestMailer < ApplicationMailer
   def digest_email
     @user = params[:user]
     @articles = params[:articles]
+    @billboards = params[:billboards]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
 
     subject = generate_title
@@ -21,7 +22,12 @@ class DigestMailer < ApplicationMailer
   private
 
   def generate_title
-    "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
+    # Winner of digest_title_03_11
+    if ForemInstance.dev_to?
+      "#{@articles.first.title} | DEV Digest"
+    else
+      @articles.first.title
+    end
   end
 
   def adjusted_title(article)

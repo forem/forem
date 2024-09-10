@@ -48,13 +48,17 @@ namespace :admin do
 
       member do
         post "banish"
+        patch "reputation_modifier"
+        patch "max_score"
         post "export_data"
         post "full_delete"
         patch "user_status"
+        post "add_tag_mod_role"
         post "merge"
         delete "remove_identity"
         post "send_email"
         post "verify_email_ownership"
+        post "send_email_confirmation"
         patch "unlock_access"
         post "unpublish_all_articles"
       end

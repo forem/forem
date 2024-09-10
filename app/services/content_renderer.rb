@@ -24,6 +24,21 @@ class ContentRenderer
   # @return [ContentRenderer::Result]
   def process(link_attributes: {},
               prefix_images_options: { width: 800, synchronous_detail_detection: false })
+    if prefix_images_options[:synchronous_detail_detection] && ApplicationConfig["AWS_BUCKET_NAME"].present? && FeatureFlag.enabled?(:store_images) # rubocop:disable Layout/LineLength
+      markdown_text = input
+      markdown_pattern = /!\[.*?\]\((.*?)\)/
+      html_pattern = /<img.*?src=["'](.*?)["']/
+      markdown_urls = markdown_text.scan(markdown_pattern).flatten
+      html_urls = markdown_text.scan(html_pattern).flatten
+      all_urls = markdown_urls + html_urls
+      stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
+      filtered_urls = all_urls.reject { |url| url.include?(stored_image_url) }
+      filtered_urls.uniq.each do |url|
+        MediaStore.where(original_url: url).first_or_create
+      rescue StandardError => e
+        Rails.logger.error("Error storing images: #{e.message}")
+      end
+    end
     fixed = fixer.call(input)
     processed = processor.new(fixed, source: source, user: user)
 

@@ -13,6 +13,7 @@ module Admin
                                  email_digest_eligible
                                  main_image_background_hex_color
                                  user_id
+                                 max_score
                                  co_author_ids_list
                                  published_at].freeze
 

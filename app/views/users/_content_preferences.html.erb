@@ -1,0 +1,31 @@
+<%= javascript_include_tag "userProfileSettings", defer: true %>
+
+
+<div class="crayons-card crayons-card--content-rows" id="content-preferences">
+  <header>
+    <h2 class="crayons-subtitle-1">
+      Augmented Content Preferences
+    </h2>
+    <p class="color-base-70">In plain english, please tell us what you want to see more of and see less of on DEV.</p>
+    </p>
+  </header>
+  <%= form_with model: @users_setting, url: users_settings_path, html: { id: "user-profile-form" } do |f| %>
+    <div class="crayons-field">
+      <%= f.label :content_preferences_input, "Content preferences (Plain text)", class: "crayons-field__label" %>
+      <%= f.text_area :content_preferences_input,
+          class: "crayons-textfield",
+          style: "height: 180px;",
+          maxlength: 750,
+          aria: { describedby: "content-preferences-description" },
+          data: { character_span_id: "content-preferences-characters" } %>
+      <p id="content-preferences-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
+        <span id="content-preferences-characters"><%=[@users_setting.content_preferences_input.to_s.size, 750].min %></span>/750
+      </p>
+    </div>
+
+    <div class="pt-2">
+      <button type="submit" class="crayons-btn"><%= t("views.settings.extensions.comment.save") %></button>
+    </div>
+  <% end %>
+  </div>

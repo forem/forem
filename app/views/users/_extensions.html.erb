@@ -1,8 +1,8 @@
+<%= render partial: "content_preferences" if current_user.base_subscriber? %>
+
 <%= render partial: "response_templates" %>
 
 <%= render partial: "publishing_from_rss" %>
-
-<%= render partial: "web_monetization" %>
 
 <%= render partial: "users/integrations_github_repositories", locals: { show_integration: @github_repositories_show } %>
 

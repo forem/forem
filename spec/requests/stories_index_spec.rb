@@ -119,13 +119,19 @@ RSpec.describe "StoriesIndex" do
 
       get "/"
       expect(response.body).to include(billboard.processed_html).or(include(second_billboard.processed_html))
-      expect(response.body).to include("crayons-card crayons-card--secondary crayons-sponsorship").once
+      expect(response.body).to include("crayons-card crayons-card--secondary crayons-bb").once
       expect(response.body).to include("sponsorship-dropdown-trigger-").once
     end
 
     it "renders a hero billboard" do
       allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
       billboard = create(:billboard, published: true, approved: true, placement_area: "home_hero", organization: org)
+      get "/"
+      expect(response.body).to include(billboard.processed_html)
+    end
+
+    it "renders a footer billboard" do
+      billboard = create(:billboard, published: true, approved: true, placement_area: "footer", organization: org)
       get "/"
       expect(response.body).to include(billboard.processed_html)
     end

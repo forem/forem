@@ -17,10 +17,11 @@ class Role < ApplicationRecord
     trusted
     warned
     limited
+    base_subscriber
   ].freeze
 
   ROLES.each do |role|
-    define_method("#{role}?") do
+    define_method(:"#{role}?") do
       name == role
     end
   end

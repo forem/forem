@@ -17,6 +17,16 @@ Rails.application.routes.draw do
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
+  # This route makes default Ahoy Email redirect URLs available to us
+  # However, we monkeypatch this behavior in config/initializers/ahoy_email.rb so this
+  # routes is not currently where emails pass through.
+  mount AhoyEmail::Engine => "/ahoy"
+
+  # Custom controller for tracking clicks asynchronously
+  namespace :ahoy do
+    post "email_clicks", to: "email_clicks#create"
+  end
+
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
 
@@ -98,6 +108,7 @@ Rails.application.routes.draw do
     namespace :incoming_webhooks do
       get "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#index", as: :mailchimp_unsubscribe_check
       post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
+      resources :stripe_events, only: [:create]
     end
 
     resources :messages, only: [:create]
@@ -116,6 +127,10 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index show], defaults: { format: :json } do # internal API
+      member do
+        put "spam", to: "users#toggle_spam"
+        delete "spam", to: "users#toggle_spam"
+      end
       collection do
         resources :devices, only: %i[create destroy]
       end
@@ -144,6 +159,7 @@ Rails.application.routes.draw do
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
+    resources :stripe_subscriptions, only: %i[new destroy]
     resources :github_repos, only: %i[index] do
       collection do
         post "/update_or_create", to: "github_repos#update_or_create"
@@ -166,6 +182,9 @@ Rails.application.routes.draw do
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
     resources :display_ad_events, only: [:create], controller: :billboard_events
     resources :billboard_events, only: [:create]
+    # Alias for reporting in case "events" triggers spam filters
+    post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
@@ -245,6 +264,10 @@ Rails.application.routes.draw do
     post "users/api_secrets", to: "api_secrets#create", as: :users_api_secrets
     delete "users/api_secrets/:id", to: "api_secrets#destroy", as: :users_api_secret
     post "users/update_password", to: "users#update_password", as: :user_update_password
+
+    # Internal Admin API
+    # put "/users/:id/spam", to: "users#toggle_spam", as: :user_toggle_spam
+    # delete "/users/:id/spam", to: "users#toggle_spam", as: :user_toggle_spam
 
     # The priority is based upon order of creation: first created -> highest priority.
     # See how all your routes lay out with "rake routes".

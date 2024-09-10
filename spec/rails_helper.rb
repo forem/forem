@@ -128,6 +128,12 @@ RSpec.configure do |config|
     end
   end
 
+  config.before(:each, :algolia) do
+    allow(Settings::General).to receive_messages(
+      algolia_application_id: "on", algolia_search_only_api_key: "on", algolia_api_key: "on",
+    )
+  end
+
   config.before(:suite) do
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
@@ -209,6 +215,9 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, "http://www.google-analytics.com/collect")
+      .to_return(status: 200, body: "", headers: {})
+
+    stub_request(:post, /insights.algolia.io/)
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /robohash.org/)

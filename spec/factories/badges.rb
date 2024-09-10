@@ -5,5 +5,6 @@ FactoryBot.define do
     sequence(:title) { |n| "#{Faker::Book.title}-#{n}" }
     description { Faker::Lorem.sentence }
     badge_image { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
+    allow_multiple_awards { false }
   end
 end

@@ -8,10 +8,20 @@ class NotifyMailer < ApplicationMailer
 
   def new_reply_email
     @comment = params[:comment]
+    sanitized_comment = ApplicationController.helpers.sanitize(@comment.processed_html,
+                                                               scrubber: CommentEmailScrubber.new)
+    @truncated_comment = ApplicationController.helpers.truncate(sanitized_comment, length: 500, separator: " ",
+                                                                                   omission: "...", escape: false)
+
     @user = @comment.parent_user
+    return if @user.email.blank?
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_comment_notifications)
+
+    # Don't send the email if there's no visible contents
+    # Placed here to allow the preview to continue to work
+    return if @truncated_comment.blank?
 
     mail(to: @user.email,
          subject: I18n.t("mailers.notify_mailer.new_reply", name: @comment.user.name, type: @comment.parent_type))
@@ -135,6 +145,14 @@ class NotifyMailer < ApplicationMailer
     @user = params[:user]
 
     subject = I18n.t("mailers.notify_mailer.trusted",
+                     community: Settings::Community.community_name)
+    mail(to: @user.email, subject: subject)
+  end
+
+  def base_subscriber_role_email
+    @user = params[:user]
+
+    subject = I18n.t("mailers.notify_mailer.base_subscriber",
                      community: Settings::Community.community_name)
     mail(to: @user.email, subject: subject)
   end
