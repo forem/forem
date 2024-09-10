@@ -72,7 +72,7 @@
     <% if billboard.placement_area == "post_fixed_bottom" && @article.present? %>
       data-article-id="<%= @article&.id %>"
     <% else %>
-      data-page-id="<%= @page&.id %>"
+      data-page-id="<%= billboard.page_id %>"
     <% end %>
     data-type-of="<%= billboard.type_of %>">
     <div class="flex">
