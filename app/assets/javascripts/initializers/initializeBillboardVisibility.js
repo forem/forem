@@ -106,7 +106,7 @@ function observeBillboards() {
           if (entry.intersectionRatio >= 0.25) {
             setTimeout(function () {
               trackAdImpression(elem);
-            }, 1);
+            }, 200);
           }
         }
       });

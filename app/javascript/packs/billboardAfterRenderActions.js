@@ -48,15 +48,9 @@ export function implementSpecialBehavior(element) {
     element.querySelector('.js-billboard').dataset.special === 'delayed'
   ) {
     element.classList.add('hidden');
-    const observerOptions = {
-      root: null,
-      rootMargin: '-150px',
-      threshold: 0.2,
-    };
-
-    const observer = new IntersectionObserver(showDelayed, observerOptions);
-    const target = document.getElementById('billboard_delay_trigger');
-    observer.observe(target);    
+    setTimeout(() => {
+      showDelayed();
+    }, 10000);
   }
 }
 
@@ -69,7 +63,7 @@ export function observeBillboards() {
           if (entry.intersectionRatio >= 0.25) {
             setTimeout(() => {
               trackAdImpression(elem);
-            }, 1);
+            }, 200);
           }
         }
       });
@@ -89,16 +83,9 @@ export function observeBillboards() {
   });
 }
 
-function showDelayed(entries) {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      // The target element has come into the viewport
-      // Place the behavior you want to trigger here
-      // query for data-special "delayed"
-      document.querySelectorAll("[data-special='delayed']").forEach((el) => {
-        el.closest('.hidden').classList.remove('hidden');
-      });
-    }
+function showDelayed() {
+  document.querySelectorAll("[data-special='delayed']").forEach((el) => {
+    el.closest('.hidden').classList.remove('hidden');
   });
 }
 
