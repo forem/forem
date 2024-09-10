@@ -319,15 +319,13 @@ export const ImageUploader = ({
   }
 
   function formatUploadedImages(links) {
-    let articleImageLinks = "";
+    let articleImageLinks = [];
+    links.forEach(link => {
+      const formattedLink = `![Image description](${link})`;
+      articleImageLinks.push(formattedLink);
+    });
 
-        links.forEach(link => {
-          const formattedLink = `![Image description](${link}) \n`;
-
-          articleImageLinks = articleImageLinks + formattedLink;
-        });
-    
-        onImageUploadSuccess?.(articleImageLinks);
+    onImageUploadSuccess?.(articleImageLinks.join("\n"));
   }
 
   function handleInsertImageUploadSuccess(response) {
