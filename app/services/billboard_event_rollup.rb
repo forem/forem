@@ -59,11 +59,14 @@ class BillboardEventRollup
   def rollup(date, batch_size: 1000)
     created = []
 
-    relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+    # Ensure SET LOCAL is done within a transaction block
+    relation.transaction do
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
 
-    relation.where(created_at: date.all_day).in_batches(of: batch_size) do |rows_batch|
-      aggregate_into_groups(rows_batch).each do |compacted_events|
-        created << compact_records(date, compacted_events)
+      relation.where(created_at: date.all_day).in_batches(of: batch_size) do |rows_batch|
+        aggregate_into_groups(rows_batch).each do |compacted_events|
+          created << compact_records(date, compacted_events)
+        end
       end
     end
 
@@ -75,10 +78,13 @@ class BillboardEventRollup
   private
 
   def aggregate_into_groups(rows)
-    relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
+    # SET LOCAL inside transaction
+    relation.transaction do
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
 
-    rows.in_batches.each_record do |event|
-      aggregator << event
+      rows.in_batches.each_record do |event|
+        aggregator << event
+      end
     end
 
     aggregator
