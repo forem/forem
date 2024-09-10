@@ -366,12 +366,14 @@ export const ImageUploader = ({
         });
         break;
       case 'success':
-        if (message?.links?.length > 0) {
-          formatUploadedImages(message?.links)
+        const links = (message.link) ? [message.link] : message.links
+
+        if (links.length > 0) {
+          formatUploadedImages(links)
 
           dispatch({
             type: 'upload_image_success',
-            payload: { insertionImageUrls: [message.link] },
+            payload: { insertionImageUrls: links },
           });
         }
         break;
