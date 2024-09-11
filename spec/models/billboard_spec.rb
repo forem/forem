@@ -7,6 +7,72 @@ RSpec.describe Billboard do
 
   it_behaves_like "Taggable"
 
+  describe "#update_links_with_bb_param" do
+    let(:billboard) do
+      create(:billboard,
+             body_markdown: "Some content with [a link](https://example.com).",
+             processed_html: '<p>Some content with <a href="https://example.com">a link</a>.</p>')
+    end
+
+    it "modifies links to include the bb param with the model id" do
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= (URL encoded format)
+      expect(billboard.processed_html).to include("href=\"https://example.com?bb=#{billboard.id}")
+    end
+
+    it "does not modify the processed_html if no links are present" do
+      no_links_html = "<p>Some content with no links.</p>"
+      billboard.update(processed_html: no_links_html)
+      billboard.update_links_with_bb_param
+      expect(billboard.processed_html).to eq(no_links_html)
+    end
+
+    it "Modifies instead of appending when bb already exists" do
+      html_with_bb = "<p>Check this <a href='https://example.com?bb=123'>link</a>.</p>"
+      billboard.update(processed_html: html_with_bb)
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= and 123, encoded format for &
+      expect(billboard.processed_html).to include("href=\"https://example.com?bb=#{billboard.id}\"")
+    end
+
+    it "properly appends the bb param when the URL already contains query params" do
+      html_with_query = "<p>Check this <a href='https://example.com?foo=bar'>link</a>.</p>"
+      billboard.update(processed_html: html_with_query)
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= and foo=bar, encoded format for &
+      expect(billboard.processed_html).to include('href="https://example.com?foo=bar&bb=')
+    end
+
+    it "does not modify non-http/https links" do
+      non_http_html = "<p>Check this <a href='mailto:test@example.com'>email link</a>.</p>"
+      billboard.update(processed_html: non_http_html)
+      billboard.update_links_with_bb_param
+      expect(billboard.processed_html).to eq("<p>Check this <a href=\"mailto:test@example.com\">email link</a>.</p>")
+    end
+
+    it "modifies relative links" do
+      html_with_query = "<p>Check this <a href='/example.com?foo=bar'>link</a>.</p>"
+      billboard.update(processed_html: html_with_query)
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= and foo=bar, encoded format for &
+      expect(billboard.processed_html).to include('href="/example.com?foo=bar&bb=')
+    end
+  end
+
+  describe "after_save callback" do
+    it "calls #update_links_with_bb_param after save" do
+      # Set up the expectation
+      allow(billboard).to receive(:update_links_with_bb_param).and_call_original
+
+      # Update the markdown (which triggers processing of processed_html)
+      new_markdown = "Some content with [a new link](https://newexample.com)"
+      billboard.update(body_markdown: new_markdown)
+
+      # Check if the method was called
+      expect(billboard).to have_received(:update_links_with_bb_param).twice
+    end
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { billboard }
@@ -135,10 +201,11 @@ RSpec.describe Billboard do
   end
 
   context "when render_mode is set to raw" do
-    it "outputs processed html that matches the body input" do
-      raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
+    it "outputs processed html that matches the body input with appended param for links" do
+      raw_input = "<style>.billyb { color: red }</style><div class=\"billyb\">This is a raw div <a href=\"https://example.com\">hello</a></div>"
       raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
-      expect(raw_billboard.processed_html).to eq raw_input
+      changed_input = "<style>.billyb { color: red }</style>\n<div class=\"billyb\">This is a raw div <a href=\"https://example.com?bb=#{raw_billboard.id}\">hello</a>\n</div>"
+      expect(raw_billboard.processed_html).to eq changed_input
     end
 
     it "still processes images in raw mode" do
