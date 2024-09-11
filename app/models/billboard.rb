@@ -84,6 +84,7 @@ class Billboard < ApplicationRecord
   before_save :process_markdown
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
+  after_save :update_links_with_bb_param
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -301,6 +302,36 @@ class Billboard < ApplicationRecord
     else
       "border: 5px solid #{color}"
     end
+  end
+
+  def update_links_with_bb_param
+    # Parse the processed_html with Nokogiri
+    doc = Nokogiri::HTML(processed_html)
+
+    # Iterate over all the <a> tags
+    doc.css("a").each do |link|
+      href = link["href"]
+
+      next unless href.present? && href.start_with?("http")
+
+      # Parse the URL manually to avoid Nokogiri's automatic encoding
+      uri = URI.parse(href)
+      existing_params = URI.decode_www_form(uri.query || "")
+      existing_params << ["bb", id] # Add or update the bb param
+      uri.query = URI.encode_www_form(existing_params)
+
+      # Manually set the href to avoid Nokogiri's &amp; encoding
+      link["href"] = uri.to_s
+    end
+
+    # Extract and save only the inner HTML of the body
+    modified_html = doc.at("body").inner_html
+
+    # Early return if the new HTML is the same as the old one
+    return if modified_html == processed_html
+
+    # Update the processed_html column with the new HTML
+    update_column(:processed_html, modified_html)
   end
 
   private
