@@ -1,5 +1,8 @@
 <%= stylesheet_link_tag "minimal", media: "all" %>
-<h1 class="crayons-title mb-6">Edit Billboard:</h1>
+<h1 class="crayons-title mb-6 flex justify-between">
+  Edit Billboard: <%= @billboard.name %>
+  <%= link_to "Details and Data", admin_billboard_path(@billboard), class: "crayons-btn crayons-btn--secondary" %>
+</h1>
 <div class="crayons-card p-6">
   <%= form_for([:admin, @billboard], url: admin_billboard_path(@billboard), method: :patch) do %>
     <%= render "form" %>

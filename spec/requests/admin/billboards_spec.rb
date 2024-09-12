@@ -46,6 +46,24 @@ RSpec.describe "/admin/customization/billboards" do
       end
     end
 
+    describe "GET /admin/customization/billboards/:id/edit" do
+      let!(:billboard) { create(:billboard) }
+
+      it "allows the request" do
+        get edit_admin_billboard_path(billboard.id)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    describe "GET /admin/customization/billboards/:id" do
+      let!(:billboard) { create(:billboard) }
+
+      it "allows the request" do
+        get admin_billboard_path(billboard.id)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
     describe "POST /admin/customization/billboards" do
       it "creates a new billboard" do
         expect do
