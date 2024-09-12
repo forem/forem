@@ -11,6 +11,12 @@ module Admin
       @billboards = @billboards.search_ads(params[:search])
     end
 
+    def show
+      @billboard = Billboard.find(params[:id])
+      @events = @billboard.billboard_events.order("created_at DESC").where.not(user_id: nil)
+        .where.not(category: "impression").includes(:user).limit(25)
+    end
+
     def new
       @billboard = Billboard.new
     end
