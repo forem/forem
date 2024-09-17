@@ -126,16 +126,102 @@ module MarkdownProcessor
     end
 
     def escape_liquid_tags_in_codeblock(content)
-      # Escape codeblocks, code spans, and inline code
-      content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
-        codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
-        codeblock.gsub!("{% raw %}", "{----% raw %----}")
-        if codeblock.match?(/[[:space:]]*`{3}/)
-          "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
-        else
-          "{% raw %}#{codeblock}{% endraw %}"
+      # Create a new string to build the result
+      result = ""
+      pos = 0
+      # Open refers to "whilst parsing, no closing ticks/tildes have been come across yet"
+      isOpenStateTilde = false
+      isOpenStateTick = false
+      openGroupTilde = {}
+      openGroupTick = {}
+
+      # Define the regex for code blocks and inline code
+      regex = /[[:space:]]*(~{3,}.*?~{3,})|[[:space:]]*(`{3,}.*?`{3,})|(`{2}.+?`{2})|(`{1}.+?`{1})/m
+
+      content.scan(regex) do |group1, group2, group3, group4|
+        match_data = Regexp.last_match
+        start_pos = match_data.begin(0)
+        end_pos = match_data.end(0)
+
+        # Subsitute already raw and endraw
+        if group1
+          group1.gsub!("{% endraw %}", "{----% endraw %----}")
+          group1.gsub!("{% raw %}", "{----% raw %----}")
         end
+        if group2
+          group2.gsub!("{% endraw %}", "{----% endraw %----}")
+          group2.gsub!("{% raw %}", "{----% raw %----}")
+        end
+        if group3
+          group3.gsub!("{% endraw %}", "{----% endraw %----}")
+          group3.gsub!("{% raw %}", "{----% raw %----}")
+        end
+        if group4
+          group4.gsub!("{% endraw %}", "{----% endraw %----}")
+          group4.gsub!("{% raw %}", "{----% raw %----}")
+        end
+
+        # Add content before the match to the result
+        result << content[pos...start_pos]
+        innerRegexTilde = /[[:space:]]*(~{3,})(.*?)(~{3,})/m
+        innerRegexTick = /[[:space:]]*(`{3,})(.*?)(`{3,})/m
+        # Determine which group matched and escape it
+        # RULE: CLOSING TICKS/TILDES HAVE TO HAVE A LENGTH GREATER THAN
+        # THE LENGTH OF OPENING TICKS/TILDES
+        if group1
+          group1.scan(innerRegexTilde) do |g1, g2, g3|
+            if !isOpenStateTilde && g3.length < g1.length
+              result << "\n{% raw %}\n#{group1}"
+              isOpenStateTilde = true
+              openGroupTilde[0] = g1
+              openGroupTilde[1] = g2
+              openGroupTilde[2] = g3
+            elsif !isOpenStateTilde && g3.length >= g1.length
+              result << "\n{% raw %}\n#{group1}\n{% endraw %}\n"
+            elsif isOpenStateTilde
+              if g1.length >= openGroupTilde[0].length
+                result << "\n#{g1}\n{% endraw %}\n#{g2}\n#{g3}\n"
+                isOpenStateTilde = false
+              elsif g3.length >= openGroupTilde[0].length
+                result << "\n#{g1}\n#{g2}\n#{g3}\n{% endraw %}\n"
+                isOpenStateTilde = false
+              end
+            end
+          end
+        elsif group2
+          group2.scan(innerRegexTick) do |g1, g2, g3|
+            if !isOpenStateTick && g3.length < g1.length
+              result << "\n{% raw %}\n#{group2}"
+              isOpenStateTick = true
+              openGroupTick[0] = g1
+              openGroupTick[1] = g2
+              openGroupTick[2] = g3
+            elsif !isOpenStateTick && g3.length >= g1.length
+              result << "\n{% raw %}\n#{group2}\n{% endraw %}\n"
+            elsif isOpenStateTick
+              if g1.length >= openGroupTick[0].length
+                result << "\n#{g1}\n{% endraw %}\n#{g2}\n#{g3}\n"
+                isOpenStateTick = false
+              elsif g3.length >= openGroupTick[0].length
+                result << "\n#{g1}\n#{g2}\n#{g3}\n{% endraw %}\n"
+                isOpenStateTick = false
+              end
+            end
+          end
+        elsif group3
+          result << "{% raw %}#{group3}{% endraw %}"
+        elsif group4
+          result << "{% raw %}#{group4}{% endraw %}"
+        end
+
+        # Update position for the next iteration
+        pos = end_pos
       end
+
+      # Add the remaining content after the last match
+      result << content[pos..-1]
+
+      result
     end
 
     def convert_code_tags_to_triple_backticks(content)
