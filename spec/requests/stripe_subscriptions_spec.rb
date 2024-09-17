@@ -208,7 +208,7 @@ RSpec.describe "StripeSubscriptions" do
 
           delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
 
-          expect(response).to redirect_to(user_settings_path(user))
+          expect(response).to redirect_to(user_settings_path)
           expect(flash[:notice]).to eq("Your subscription has been canceled.")
         end
       end
@@ -221,8 +221,8 @@ RSpec.describe "StripeSubscriptions" do
 
           delete stripe_subscription_path("me"), params: { verification: "wrong_verification" }
 
-          expect(response).to redirect_to(user_settings_path(user))
-          expect(flash[:alert]).to eq("Invalid verification parameter. Subscription was not canceled.")
+          expect(response).to redirect_to(user_settings_path)
+          expect(flash[:error]).to eq("Invalid verification parameter. Subscription was not canceled.")
         end
       end
 
@@ -230,8 +230,8 @@ RSpec.describe "StripeSubscriptions" do
         it "does not cancel the subscription and shows an alert" do
           delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
 
-          expect(response).to redirect_to(user_settings_path(user))
-          expect(flash[:alert]).to eq("No active subscription found. Please contact us if you believe this is an error.")
+          expect(response).to redirect_to(user_settings_path)
+          expect(flash[:error]).to eq("No active subscription found. Please contact us if you believe this is an error.")
         end
       end
 
@@ -244,8 +244,8 @@ RSpec.describe "StripeSubscriptions" do
         it "does not cancel the subscription and shows an alert" do
           delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
 
-          expect(response).to redirect_to(user_settings_path(user))
-          expect(flash[:alert]).to eq("No active subscription found.")
+          expect(response).to redirect_to(user_settings_path)
+          expect(flash[:error]).to eq("No active subscription found.")
         end
       end
     end

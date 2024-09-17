@@ -50,14 +50,14 @@ class StripeSubscriptionsController < ApplicationController
         current_user.profile&.touch
         flash[:notice] = "Your subscription has been canceled."
       else
-        flash[:alert] = "No active subscription found."
+        flash[:error] = "No active subscription found."
       end
     elsif current_user.stripe_id_code.present?
-      flash[:alert] = "Invalid verification parameter. Subscription was not canceled."
+      flash[:error] = "Invalid verification parameter. Subscription was not canceled."
     else
-      flash[:alert] = "No active subscription found. Please contact us if you believe this is an error."
+      flash[:error] = "No active subscription found. Please contact us if you believe this is an error."
     end
 
-    redirect_to user_settings_path(current_user)
+    redirect_back(fallback_location: user_settings_path)
   end
 end
