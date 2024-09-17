@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="<%= @page.description %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
-
+<%= javascript_include_tag "homePage", defer: true %>
 <main id="main-content">
   <% if @page.template == "contained" %>
     <div class="crayons-layout crayons-layout--limited-l">

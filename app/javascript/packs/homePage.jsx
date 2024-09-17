@@ -88,8 +88,9 @@ function renderSidebar() {
 }
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
+const currentPage = document.getElementById('page-content')?.dataset.currentPage;
 
-if (!document.getElementById('featured-story-marker')) {
+if (currentPage === 'stories-index' && !document.getElementById('featured-story-marker')) {
   const waitingForDataLoad = setInterval(() => {
     const { user = null, userStatus } = document.body.dataset;
     if (userStatus === 'logged-out') {
