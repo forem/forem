@@ -223,6 +223,10 @@ class Billboard < ApplicationRecord
     selected_number.to_i
   end
 
+  def type_of_display
+    type_of.gsub("external", "partner")
+  end
+
   def human_readable_placement_area
     ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[ALLOWED_PLACEMENT_AREAS.find_index(placement_area)]
   end
