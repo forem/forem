@@ -18,7 +18,7 @@
         <h1 class="crayons-title lh-tight">
           <%= @user.name %>
         </h1>
-        <%= render partial: "admin/users/show/profile/status", locals: { user: @user} %>
+        <%= render partial: "admin/users/show/profile/status", locals: { user: @user } %>
       </div>
       <%= render "admin/users/show/profile/actions" %>
     </div>
@@ -33,10 +33,10 @@
     <div>
       <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
         <li>
-          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank">
-            <%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %>
-            <%= @user.email %>
-          </a>
+          <%= form_with(model: [:admin, @user], local: true, class: "c-link c-link--icon-left inline-block") do |f| %>
+            <%= f.email_field :email, class: "crayons-textfield", placeholder: t("helpers.placeholder.user.email") %>
+            <%= f.submit t("admin.users.update_email", default: t("views.admin.users.profile.update_email", default: "Update Email")), class: "c-btn c-btn--primary mt-2" %>
+          <% end %>
         </li>
         <% if @user.github_username %>
           <li>

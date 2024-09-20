@@ -12,6 +12,7 @@ module Admin
       reputation_modifier
       max_score
       tag_name
+      email
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -75,10 +76,14 @@ module Admin
     def update
       @user = User.find(params[:id])
 
+      if user_params[:email].present? && @user.email != user_params[:email]
+        update_email
+      end
+
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
-      redirect_to admin_user_path(params[:id])
+      redirect_to admin_user_path(@user)
     end
 
     def reputation_modifier
@@ -552,6 +557,15 @@ module Admin
         countable_flags += 1 if reaction.status != "invalid"
       end
       countable_flags
+    end
+
+    def update_email
+      new_email = user_params[:email]
+      if @user.update_columns(email: new_email, confirmed_at: Time.current)
+        flash[:success] = I18n.t("admin.users_controller.email_updated")
+      else
+        flash[:error] = @user.errors.full_messages.join(", ")
+      end
     end
   end
 end

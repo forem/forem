@@ -205,3 +205,17 @@ en:
       short_with_yy: "%b %-d '%y"
       short_with_year: "%b %-e, %Y"
       stackexchange: "%b %e '%y"
+  admin:
+    users_controller:
+      email_updated: "User email has been updated successfully."
+    views:
+      admin:
+        users:
+          profile:
+            update_email: "Update Email"
+    users:
+      update_email: "Update Email"
+  helpers:
+    submit:
+      user:
+        update: "Update Email"
