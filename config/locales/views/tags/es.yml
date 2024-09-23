@@ -1,0 +1,65 @@
+---
+es:
+  views:
+    tags:
+      meta:
+        title: Etiquetas
+        description: Etiquetas para seguir en %{community}
+        og:
+          description: ¡%{community} es genial!
+      heading:
+        default: Etiquetas
+        search_results: Resultados de búsqueda para %{q}
+      search:
+        aria_labels:
+          search_input: Término de búsqueda de etiquetas
+          submit: Buscar etiquetas
+        placeholder: Buscar etiqueta
+      edit:
+        meta:
+          title: Editar %{tag}
+        admin: "Admin"
+        help: "Ayuda"
+        view: "Ver"
+        form:
+          pretty_name:
+            label: Nombre agradable
+            placeholder: Este es el nombre en la parte superior de la página del programa.
+          bg_color_hex:
+            label: Color de la etiqueta
+          short_summary:
+            label: Resumen corto
+            placeholder: Breve descripción general de qué trata esta etiqueta.
+          wiki_body_markdown:
+            label: Cuerpo de la wiki en formato markdown
+            placeholder: Esta es una sección de 'acerca de'. Siéntete libre de agregar un FAQ, recursos adicionales, etc.
+          rules_markdown:
+            label: Reglas en formato markdown
+            placeholder: Opcional: se puede utilizar para desafíos, es decir, pautas de presentación.
+          submit: Guardar
+      follow: Seguir
+      hide: Ocultar
+      aria_labels:
+        follow: "Seguir etiqueta: %{tag_name}"
+        hide: "Ocultar etiqueta: %{tag_name}"
+      following_tags: Etiquetas seguidas
+      hidden_tags: Etiquetas ocultas
+      moderator:
+        text_html: "separados por comas, el espacio es opcional. Ejemplo: %{code}"
+        code: 123
+        placeholder: "separados por comas, el espacio es opcional. Ejemplo: 1,2,3"
+      published:
+        one: 1 publicación
+        other: "%{count} publicaciones"
+      sidebar:
+        about: 'acerca de #%{tag}'
+        admin: Admin
+        edit: Editar
+        guidelines: pautas de presentación
+        moderate: Moderar
+        mods: moderadores de etiquetas
+        new: Crear publicación
+        older: 'Publicaciones más antiguas de #%{tag}'
+        published:
+          one: 1 publicación publicada
+          other: "%{count} publicaciones publicadas"

@@ -1,0 +1,124 @@
+---
+es:
+  api_secrets_controller:
+    generated: 'Tu clave API ha sido generada: %{secret}'
+    revoked: Tu clave API ha sido revocada.
+  application_controller:
+    bad_request: 'Error: Solicitud incorrecta'
+    not_authorized: 'Error: no autorizado'
+    please_sign_in: Por favor, inicia sesión
+  articles_controller:
+    deleted: El artículo se eliminó correctamente.
+  comments_controller:
+    create:
+      success: creado
+      failure: el comentario ya existe
+      authorization_error: Se han suspendido tus privilegios.
+    delete:
+      error: Algo salió mal; Comentario NO eliminado.
+      notice: El comentario se eliminó correctamente.
+    markdown: 'Hubo un error en tu markdown: %{error}'
+    markdown_html: "<p>😔 Hubo un error en tu markdown</p><hr><p>%{error}</p>"
+    moderated: No permitido debido a una acción de moderación
+  confirmations_controller:
+    email_sent: ¡Correo electrónico enviado! Por favor, contacta al soporte en %{email} si tienes problemas para recibir tus instrucciones de confirmación.
+  credits_controller:
+    done:
+      one: "¡%{count} nuevos créditos comprados!"
+      other: "¡%{count} nuevos créditos comprados!"
+  devices_controller:
+    not_found: No encontrado
+  discussion_locks_controller:
+    locked: ¡La discusión se bloqueó con éxito!
+    unlocked: ¡La discusión se desbloqueó con éxito!
+  email_subscriptions_controller:
+    badge_notifications: notificaciones de insignias
+    comment_notifications: notificaciones de comentarios
+    digest_emails: correos electrónicos de resumen de %{community}
+    follower_notifications: notificaciones de seguidores
+    mention_notifications: notificaciones de menciones
+    this_list: esta lista
+    unread_notifications: notificaciones no leídas
+  feedback_messages_controller:
+    error_fill: "Asegúrate de completar los formularios. 🤖 Otros posibles errores: %{errors}"
+    n_a: N/A
+    submitted: Tu informe ha sido enviado
+  follows_controller:
+    already_followed: ya seguido
+    daily_limit: ¡Límite diario de seguimiento de cuenta alcanzado!
+    followed: seguido
+    unfollowed: no seguido
+  github_repos_controller:
+    repo_not_found: Repositorio de GitHub no encontrado
+    github_unauthorized: 'GitHub No autorizado: %{e_message}'
+  image_uploads_controller:
+    server_error: ¡Se ha producido un error del servidor!
+  listings_controller:
+    deleted: La publicación se eliminó correctamente.
+    no_credit: No hay suficientes créditos disponibles
+  omniauth_callbacks_controller:
+    log_in_error: 'Error de inicio de sesión: %{e}'
+    username_taken: el nombre de usuario ya ha sido tomado
+  organizations_controller:
+    secret_updated: Tu secreto de organización ha sido actualizado
+    deletion_scheduled: 'La eliminación de tu organización: "%{organization_name}" está programada. Te notificarán cuando se haya eliminado.'
+    not_deleted: Tu organización no se eliminó; debes ser un administrador, el único miembro en la organización y no tener artículos vinculados a la organización.
+    created: Tu organización se creó correctamente y eres un administrador.
+    updated: Tu organización se actualizó correctamente.
+  podcasts_controller:
+    podcast_suggested: Podcast sugerido
+  profiles_controller:
+    updated: Tu perfil ha sido actualizado
+  rating_votes_controller:
+    not_upserted_successfully: No se actualizó correctamente
+  registrations_controller:
+    error:
+      recaptcha: Debes completar el recaptcha ✅
+      domain: no está incluido en los dominios permitidos.
+  response_templates_controller:
+    response_template_error: 'Error en la plantilla de respuesta: %{errors}'
+    created: Tu plantilla de respuesta "%{title}" se creó.
+    deleted: Tu plantilla de respuesta "%{title}" se eliminó.
+    updated: Tu plantilla de respuesta "%{title}" se actualizó.
+  social_previews_controller:
+    fonts: Roboto|Roboto+Condensed
+  stories:
+    pinned_articles_controller:
+      not_found: no encontrado
+  stories_controller:
+    404_bio_not_found: 404 biografía no encontrada
+    searching: "...buscando"
+  stripe_active_cards_controller:
+    cannot_remove: No se puede quitar la tarjeta si tienes una membresía activa. Por favor, cancela tu membresía primero.
+    cannot_update: Hubo un problema al actualizar tu información de facturación.
+    updated: Tu información de facturación ha sido actualizada
+    removed: Tu tarjeta se ha eliminado correctamente.
+  tag_adjustments_controller:
+    failure: 'Error: %{errors}'
+    destroyed: Ajuste de etiqueta destruido
+  tags_controller:
+    tag_successfully_updated: "¡Etiqueta actualizada con éxito! 👍 "
+  users_controller:
+    removed_admin: "%{name} ya no es un administrador."
+    removed_member: "%{name} ya no forma parte de tu organización."
+    added_admin: "%{name} ahora es un administrador."
+    provide_email: Por favor, proporciona un correo electrónico para eliminar tu cuenta.
+    provide_email_delete: Por favor, proporciona un correo electrónico para eliminar tu cuenta
+    send_export: "La exportación se enviará por correo electrónico en breve."
+    invalid_secret: El secreto de la organización proporcionado no es válido.
+    username_blank: El nombre de usuario no puede estar en blanco.
+    deletion_in_progress: Ya has solicitado la eliminación de la cuenta. Por favor, revisa tu correo electrónico para obtener más instrucciones.
+    joined_org: Te has unido a la organización %{organization_name}.
+    left_org: Has dejado tu organización.
+    deletion_requested: Has solicitado la eliminación de la cuenta. Por favor, revisa tu correo electrónico para obtener más instrucciones.
+    log_in_to_delete: Debes iniciar sesión para proceder con la eliminación de la cuenta.
+    deletion_scheduled: La eliminación de tu cuenta está programada. Se te notificará cuando se complete.
+    removed_identity: Tu cuenta de %{provider} se eliminó correctamente.
+    updated_config: Tu configuración se ha actualizado. Actualiza para ver todos los cambios.
+    updated_profile: Tu perfil se actualizó correctamente.
+    token_expired: Tu token ha caducado, por favor solicita uno nuevo. Los tokens solo duran 12 horas después de que se inicia la eliminación de la cuenta.
+    notifications_settings_updated: Se han actualizado tus configuraciones de notificaciones.
+  video_states_controller:
+    related_article_not_found: Artículo relacionado no encontrado
+    video_state_updated: Estado del video actualizado
+
