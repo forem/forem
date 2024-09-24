@@ -126,12 +126,14 @@ module MarkdownProcessor
 
     def escape_liquid_tags_in_codeblock(content)
       pos = 0
+      # arrays regarding positioning of tildes, ticks, and sin
       arrTilde = []
       arrTick = []
-      arrDoubleTick = []
+      arr1Or2Ticks = []
       firstTick = true
       firstTilde = true
-      highest_ticks = {}
+
+      highest_ticks = {} # if number of ticks is 3+ then we opened a codeblock
       highest_tildes = {}
       contentDup = content.dup
       contentDup.gsub!("{% endraw %}", "{----% endraw %----}")
@@ -141,27 +143,34 @@ module MarkdownProcessor
         match_data = Regexp.last_match
         start_pos = match_data.begin(0)
         end_pos = match_data.end(0)
+        # It should be as
+        # ```
+        # {% raw %}
+        # blah blah blah
+        # {% endraw %}
+        # ```... (3+ ticks)
         if ::Regexp.last_match(1)
           tilde = {}
           tilde[0] = ::Regexp.last_match(1).length
           tilde[1] = "\n{% raw %}\n"
           index1 = contentDup.index("~", start_pos)
-          index2 = contentDup.index(/\s/, index1)
+          index2 = contentDup.index(/\s/, index1) # find the position of the nearest whitespace after the tildes
           tilde[2] = index2
           if firstTick
-            if firstTilde
+            if firstTilde # if there is already are 3+ ticks that hasn't been closed, then no {% raw %} should be added with the tildes
               firstTilde = false
               arrTilde.push(tilde)
               highest_tildes = tilde
             elsif !firstTilde
               if tilde[0] >= highest_tildes[0]
                 tilde[1] = "\n{% endraw %}\n"
-                tilde[2] = end_pos - tilde[0]
+                tilde[2] = end_pos - tilde[0] # because we want to put the {% endraw %} before the tildes
                 arrTilde.push(tilde)
                 firstTilde = true
               end
             end
           end
+          # same stuff here but using ticks instead of tildes
         elsif ::Regexp.last_match(2)
           tick = {}
           tick[0] = ::Regexp.last_match(2).length
@@ -187,7 +196,7 @@ module MarkdownProcessor
           doubleTick = {}
           doubleTick[2] = start_pos
           doubleTick[1] = end_pos
-          arrDoubleTick.push(doubleTick)
+          arr1Or2Ticks.push(doubleTick)
         elsif ::Regexp.last_match(4)
           # p $4
           # p start_pos
@@ -195,7 +204,7 @@ module MarkdownProcessor
           doubleTick = {}
           doubleTick[2] = start_pos
           doubleTick[1] = end_pos
-          arrDoubleTick.push(doubleTick)
+          arr1Or2Ticks.push(doubleTick)
         end
         pos = end_pos
       end
@@ -207,14 +216,17 @@ module MarkdownProcessor
       arrTilde.each do |tilde|
         arr.push(tilde)
       end
-      arrDoubleTick.each do |dbTick|
+      arr1Or2Ticks.each do |dbTick|
         arr.push(dbTick)
       end
+      # pushing into one array to sort by position.
+      # Addition of escaped liquid tags alters the positioning of subsequent escaped liquid tags
+      # Therefore, it is best to start from the first positiion to the last
       arr.sort_by! { |a| a[2] }
       arr.each do |item|
-        if item.key?(0)
+        if item.key?(0) # if it is a 3+ tilde or tick
           contentDup.insert(item[2] + count, item[1])
-          count += item[1].length
+          count += item[1].length # keeps track of the shift
         else
           contentDup.insert(item[2] + count, "{% raw %}")
           count += "{% raw %}".length
