@@ -9,6 +9,10 @@ module Redcarpet
       # method we can allow the hint language to be specified with other casings
       # eg. `Ada` instead of `ada`
       def block_code(code, language)
+        if language
+          code.gsub!("{% raw %}", "")
+          code.gsub!("{% endraw %}", "")
+        end
         super(code, language.to_s.downcase)
       end
 
