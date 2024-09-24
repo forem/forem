@@ -38,6 +38,18 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(number_of_triple_backticks).to eq(2)
   end
 
+  it "allows more than 1 codeblock written seperately" do
+    code_block = "~~~\n Hello my name is  \n~~~   \n ```\n whatever too \n```"
+    number_of_code_blocks = generate_and_parse_markdown(code_block).scan("<code>").count
+    expect(number_of_code_blocks).to eq(2)
+  end
+
+  it "does not throw an error if code in codeblock does not match language" do
+    code_block = "```javascript\n print(123) \n```"
+    generated_code_block = generate_and_parse_markdown(code_block)
+    expect(generated_code_block).to include("print", "123")
+  end
+
   it "does not remove the non-'raw tag related' four dashes" do
     code_block = "```\n----\n```"
     expect(generate_and_parse_markdown(code_block)).to include("----")
