@@ -13,47 +13,83 @@ module AhoyEmail
   class Processor
     protected
 
-    # rubocop:disable Metrics/CyclomaticComplexity
-    def track_links # rubocop:disable Metrics/PerceivedComplexity
+    def track_links
       return unless html_part?
 
       part = message.html_part || message
 
       doc = Nokogiri::HTML::Document.parse(part.body.raw_source)
       doc.css("a[href]").each do |link|
-        uri = parse_uri(link["href"])
-        next unless trackable?(uri)
-
-        if options[:utm_params] && !skip_attribute?(link, "utm-params")
-          existing_params = uri.query_values(Array) || []
-          UTM_PARAMETERS.each do |key|
-            next if existing_params.any? { |k, _v| k == key } || !options[key.to_sym]
-            existing_params << [key, options[key.to_sym]]
-          end
-          uri.query_values = existing_params
-        end
-
-        if options[:click] && !skip_attribute?(link, "click")
-          signature = Utils.signature(token: token, campaign: campaign, url: link["href"])
-          tracking_params = {
-            "ahoy_click" => true,
-            "t" => token,
-            "s" => signature,
-            "u" => CGI.escape(link["href"]),
-            "c" => campaign
-          }.reject { |_k, v| v.nil? || v.to_s.empty? }
-
-          # Merge the existing and new tracking params
-          all_params = (uri.query_values(Array) || []) + tracking_params.to_a
-          uri.query_values = all_params
-
-          # Preserve the port if present, especially for localhost in development
-          port_part = uri.port ? ":#{uri.port}" : ""
-          link["href"] = "#{uri.scheme}://#{uri.host}#{port_part}#{uri.path}"
-          link["href"] += "?#{uri.query}" unless uri.query.nil? || uri.query.empty?
-        end
+        process_link(link)
       end
+
       part.body = doc.to_s.gsub("&amp;", "&")
+    end
+
+    private
+
+    def process_link(link)
+      uri = parse_uri(link["href"])
+      return unless trackable?(uri)
+
+      add_utm_params(uri, link) if options[:utm_params] && !skip_attribute?(link, "utm-params")
+
+      return unless options[:click] && !skip_attribute?(link, "click")
+
+      signature = Utils.signature(token: token, campaign: campaign, url: link["href"])
+
+      if internal_link?(uri)
+        handle_internal_link(uri, link, signature)
+      else
+        handle_external_link(uri, link, signature)
+      end
+    end
+
+    def add_utm_params(uri, link)
+      existing_params = uri.query_values(Array) || []
+      UTM_PARAMETERS.each do |key|
+        next if existing_params.any? { |k, _v| k == key } || !options[key.to_sym]
+
+        existing_params << [key, options[key.to_sym]]
+      end
+      uri.query_values = existing_params
+
+      # Update the href for external links after adding UTM parameters
+      link["href"] = uri.to_s unless internal_link?(uri)
+    end
+
+    def internal_link?(uri)
+      uri.host == Settings::General.app_domain
+    end
+
+    def handle_internal_link(uri, link, signature)
+      tracking_params = {
+        "ahoy_click" => true,
+        "t" => token,
+        "s" => signature,
+        "u" => CGI.escape(link["href"]),
+        "c" => campaign
+      }.reject { |_k, v| v.nil? || v.to_s.empty? }
+
+      # Merge existing and tracking params
+      all_params = (uri.query_values(Array) || []) + tracking_params.to_a
+      uri.query_values = all_params
+
+      # Reconstruct the href with updated parameters
+      port_part = uri.port ? ":#{uri.port}" : ""
+      link["href"] = "#{uri.scheme}://#{uri.host}#{port_part}#{uri.path}"
+      link["href"] += "?#{uri.query}" unless uri.query.nil? || uri.query.empty?
+    end
+
+    def handle_external_link(uri, link, signature)
+      link["href"] = url_for(
+        controller: "ahoy/messages",
+        action: "click",
+        t: token,
+        c: campaign,
+        u: link["href"],
+        s: signature,
+      )
     end
   end
 end

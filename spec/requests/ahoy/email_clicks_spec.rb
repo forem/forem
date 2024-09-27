@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "AhoyEmails" do
+RSpec.describe "AhoyEmailClicks" do
   describe "POST /email_clicks" do
     let(:token) { "test_token" }
     let(:campaign) { "test_campaign" }
