@@ -1,0 +1,66 @@
+---
+ar:
+  views:
+    tags:
+      meta:
+        title: المواضيع
+        description: المواضيع في %{community}
+        og:
+          description: "%{community} رائع"
+      heading:
+        default: المواضيع
+        search_results: نتائج البحث عن %{q}
+      search:
+        aria_labels:
+          search_input: مصطلح البحث عن الموضوع
+          submit: البحث عن المواضيع
+        placeholder: البحث عن موضوع
+      edit:
+        meta:
+          title: تعديل %{tag}
+        admin: "المسؤول"
+        help: "المساعدة"
+        view: "عرض"
+        form:
+          pretty_name:
+            label: الاسم الظاهر
+            placeholder: هذا هو الاسم في أعلى صفحة العرض.
+          bg_color_hex:
+            label: لون الموضوع
+          short_summary:
+            label: ملخص مختصر
+            placeholder: لمحة موجزة عما يتعلق بهذا الموضوع.
+          wiki_body_markdown:
+            label: النص التعريفي
+            placeholder: هذا هو الجزء "حول". لا تتردد في إضافة أسئلة شائعة، موارد إضافية، إلخ.
+          rules_markdown:
+            label: قواعد التحديد
+            placeholder: اختياري - يمكن استخدامه للتحديات، على سبيل المثال، إرشادات التقديم.
+          submit: حفظ
+        markdown_html: "%{tag} هو اسم الموضوع المستخدم في Markdown."
+      follow: متابعة
+      aria_labels:
+        follow: "متابعة الموضوع: %{tag_name}"
+        hide: "إخفاء الموضوع: %{tag_name}"
+      hide: إخفاء
+      following_tags: المواضيع المتابَعة
+      hidden_tags: المواضيع المخفية
+      moderator:
+        text_html: "مفصولة بالفواصل، مع اختيارية للمسافة. مثال: %{code}"
+        code: 123
+        placeholder: "مفصولة بالفواصل، مع اختيارية للمسافة. مثال: 1،2،3"
+      published:
+        one: مشاركة واحدة
+        other: "%{count} مشاركات"
+      sidebar:
+        about: 'حول #%{tag}'
+        admin: المشرف
+        edit: تعديل
+        guidelines: إرشادات التقديم
+        moderate: التحكم
+        mods: مشرفو الموضوع
+        new: إنشاء مشاركة
+        older: 'مشاركات أقدم لـ #%{tag}'
+        published:
+          one: 1 مشاركة نشرت
+          other: "%{count} مشاركة نشرت"
