@@ -31,10 +31,10 @@ module Images
       sign_url: true
     }.freeze
 
-    CLOUDFLARE_DIRECTORY = (ApplicationConfig["CLOUDFLARE_IMAGES_DIRECTORY"] || "cdn-cgi/image").freeze
+    CLOUDFLARE_DIRECTORY = (ApplicationConfig["CLOUDFLARE_IMAGES_DIRECTORY"] || "cdn-cgi").freeze
 
     def self.cloudflare(img_src, **kwargs)
-      template = Addressable::Template.new("https://{domain}/{directory}/{options*}/{src}")
+      template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
       fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
@@ -142,7 +142,7 @@ module Images
     end
 
     def self.cloudflare_prefix
-      "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/#{CLOUDFLARE_DIRECTORY}/"
+      "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/#{CLOUDFLARE_DIRECTORY}/image"
     end
   end
 end
