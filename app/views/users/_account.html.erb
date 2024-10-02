@@ -27,6 +27,20 @@
   <% end %>
 </div>
 
+  <% if @user.base_subscriber? %>
+    <div class="crayons-card crayons-card--content-rows">
+      <h3 class="crayons-subtitle-2">
+        Cancel DEV++ Subscription
+      </h3>
+
+      <%= form_with(url: stripe_subscription_path("me"), method: :delete) do |f| %>
+        <%= f.label :verification, 'Verify with phrase "pleasecancelmyplusplus"', class: "crayons-field__label" %>
+        <%= f.text_field :verification, class: "crayons-textfield mt-1", placeholder: "Put verification phrase here" %>
+        <%= f.submit "Delete Subscription", class: "crayons-btn crayon-btn--secondary mt-2" %>
+      <% end %>
+    </div>
+  <% end %>
+
 <div class="crayons-card crayons-card--content-rows">
   <h2 class="crayons-subtitle-1 color-accent-danger">
     <%= t("views.settings.danger") %>

@@ -7,7 +7,7 @@
     data-context-type="<%= data_context_type %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
-    data-type-of="<%= billboard.type_of %>">
+    data-type-of="<%= billboard.type_of_display %>">
       <%= billboard.processed_html.html_safe %>
   </div>
 <% elsif billboard.placement_area.start_with?("feed_") %>
@@ -20,7 +20,7 @@
     data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
-    data-type-of="<%= billboard.type_of %>">
+    data-type-of="<%= billboard.type_of_display %>">
     <div class="crayons-story__body">
       <div class="crayons-story__top flex">
         <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
@@ -48,7 +48,7 @@
     data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
-    data-type-of="<%= billboard.type_of %>">
+    data-type-of="<%= billboard.type_of_display %>">
     <div class="flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
@@ -74,7 +74,7 @@
     <% else %>
       data-page-id="<%= billboard.page_id %>"
     <% end %>
-    data-type-of="<%= billboard.type_of %>">
+    data-type-of="<%= billboard.type_of_display %>">
     <div class="flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
@@ -96,7 +96,7 @@
     data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
-    data-type-of="<%= billboard.type_of %>">
+    data-type-of="<%= billboard.type_of_display %>">
     <div class="crayons-story__top flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <% if billboard.dismissal_sku.present? %>
@@ -119,7 +119,7 @@
     data-context-type="<%= data_context_type %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
-    data-type-of="<%= billboard.type_of %>">
+    data-type-of="<%= billboard.type_of_display %>">
     <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
     <div class="p-1 pt-3 text-styles text-styles--billboard">
       <%= billboard.processed_html.html_safe %>

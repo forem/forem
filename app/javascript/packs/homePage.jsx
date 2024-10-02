@@ -89,7 +89,7 @@ function renderSidebar() {
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
-if (!document.getElementById('featured-story-marker')) {
+if (document.getElementById('sidebar-nav-followed-tags')) {
   const waitingForDataLoad = setInterval(() => {
     const { user = null, userStatus } = document.body.dataset;
     if (userStatus === 'logged-out') {
