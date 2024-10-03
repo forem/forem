@@ -1,5 +1,7 @@
 <div id="response-templates-data" class="hidden"></div>
-<%= javascript_include_tag "validateFileInputs", defer: true %>
+<% if user_signed_in? %>
+  <%= javascript_include_tag "validateFileInputs", defer: true %>
+<% end %>
 
 <% if @comment.errors.any? %>
   <div class="crayons-notice crayons-notice--danger" role="alert">
