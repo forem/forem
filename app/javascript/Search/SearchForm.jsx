@@ -1,8 +1,6 @@
 import { h } from 'preact';
 import { forwardRef, useState, useEffect, useRef, useMemo, useCallback } from 'preact/compat';
 import PropTypes from 'prop-types';
-import algoliasearch from 'algoliasearch/lite';
-import recommend from '@algolia/recommend'; // Ensure this is the correct import
 import { locale } from '../utilities/locale';
 import { ButtonNew as Button } from '@crayons';
 import SearchIcon from '@images/search.svg';
@@ -15,9 +13,8 @@ export const SearchForm = forwardRef(
     ref,
   ) => {
     const env = 'production';
-    const client = useMemo(() => (algoliaId ? algoliasearch(algoliaId, algoliaSearchKey) : null), [algoliaId, algoliaSearchKey]);
-    const index = useMemo(() => (client ? client.initIndex(`Article_${env}`) : null), [client]);
-    const recommendClient = useMemo(() => (algoliaId ? recommend(algoliaId, algoliaSearchKey) : null), [algoliaId, algoliaSearchKey]);
+    const [algoliaClient, setAlgoliaClient] = useState(null);
+    const [recommendClient, setRecommendClient] = useState(null);
     const articleContainer = document.getElementById('article-show-container');
 
     const [inputValue, setInputValue] = useState(searchTerm);
@@ -25,6 +22,32 @@ export const SearchForm = forwardRef(
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const suggestionsRef = useRef();
+
+    // Load Algolia and recommend dynamically
+    const loadAlgoliaClients = useCallback(async () => {
+      if (algoliaId && algoliaSearchKey && !algoliaClient) {
+        try {
+          const [algoliasearchModule, recommendModule] = await Promise.all([
+            import('algoliasearch/lite'),
+            import('@algolia/recommend'),
+          ]);
+    
+          // Check whether to use .default or the direct import for algoliasearch
+          const algoliasearch = algoliasearchModule.default || algoliasearchModule;
+          const recommend = recommendModule.default || recommendModule;
+    
+          const client = algoliasearch(algoliaId, algoliaSearchKey);
+          const recommendClientInstance = recommend(algoliaId, algoliaSearchKey);
+    
+          setAlgoliaClient(client);
+          setRecommendClient(recommendClientInstance);
+        } catch (error) {
+          console.error("Error loading Algolia or Recommend modules: ", error);
+        }
+      }
+    }, [algoliaId, algoliaSearchKey, algoliaClient]);
+
+    const index = useMemo(() => (algoliaClient ? algoliaClient.initIndex(`Article_${env}`) : null), [algoliaClient]);
 
     // Handle clicks outside the dropdown
     const handleClickOutside = useCallback((event) => {
@@ -56,7 +79,7 @@ export const SearchForm = forwardRef(
           },
         ]).then(({ results }) => {
           setSuggestions(results[0].hits);
-        })
+        });
       }
     }, [recommendClient]);
 
@@ -81,6 +104,19 @@ export const SearchForm = forwardRef(
       setShowSuggestions(true);
       setActiveSuggestionIndex(-1);
       if (e.target.value.length === 0 && articleContainer) {
+        fetchRecommendations();
+      }
+    };
+
+    // Load Algolia clients on focus
+    const handleFocus = () => {
+      loadAlgoliaClients();
+      const typeahead = document.getElementById('search-typeahead');
+      if (typeahead) {
+        typeahead.classList.remove('hidden');
+      }
+      setShowSuggestions(true);
+      if (articleContainer) {
         fetchRecommendations();
       }
     };
@@ -138,16 +174,7 @@ export const SearchForm = forwardRef(
               aria-label="Search term"
               value={inputValue}
               onChange={handleInputChange}
-              onFocus={() => {
-                const typeahead = document.getElementById('search-typeahead');
-                if (typeahead) {
-                  typeahead.classList.remove('hidden');
-                }
-                setShowSuggestions(true);
-                if (articleContainer) {
-                  fetchRecommendations();
-                }
-              }}
+              onFocus={handleFocus}
               onKeyDown={handleKeyDown}
             />
             {showSuggestions &&
@@ -160,7 +187,6 @@ export const SearchForm = forwardRef(
                   ref={suggestionsRef}
                 >
                   {suggestions.map((suggestion, index) => (
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                     <li
                       key={index}
                       className={
@@ -183,7 +209,6 @@ export const SearchForm = forwardRef(
                   <div class="crayons-header--search-typeahead-footer">
                     <span>
                       { inputValue.length > 0 ? 'Submit search for advanced filtering.' : 'Displaying Algolia Recommendations — Start typing to search' }
-                      
                     </span>
                     <a
                       href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral"
