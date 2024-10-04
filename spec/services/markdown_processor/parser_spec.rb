@@ -515,11 +515,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   context "when using Liquid variables" do
-    it "prevents Liquid variables" do
-      expect { generate_and_parse_markdown("{{ 'something' }}") }.to raise_error(StandardError)
+    it "allows Liquid variables syntax outside of codeblocks, but does not render them" do
+      expect { generate_and_parse_markdown("{{ 'something' }}") }.not_to raise_error
     end
 
-    it "allows Liquid variables in codeblocks" do
+    it "allows Liquid variables syntax in codeblocks, but does not render them" do
       expect { generate_and_parse_markdown("```\n{{ 'something' }}\n```") }.not_to raise_error
     end
 
