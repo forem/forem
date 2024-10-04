@@ -1,28 +1,5 @@
 require "active_support/core_ext/integer/time"
 
-# MultiStoreCache is defined here to ensure it is available in production.
-class MultiStoreCache < ActiveSupport::Cache::Store
-  def initialize(*stores)
-    @stores = stores
-  end
-
-  def read(name, options = nil)
-    @stores.first.read(name, options)
-  end
-
-  def write(name, value, options = nil)
-    @stores.each { |store| store.write(name, value, options) }
-  end
-
-  def delete(name, options = nil)
-    @stores.each { |store| store.delete(name, options) }
-  end
-
-  def clear(options = nil)
-    @stores.each { |store| store.clear(options) }
-  end
-end
-
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Allow the app to know when booted up in context where we haven't set ENV vars
@@ -94,29 +71,10 @@ Rails.application.configure do
 
   # We have the option of a secondary cache store, but it is not required.
   # The secondary store could be used for redundancy or to be used for swapping stores.
-  redis_url = ENV.fetch("REDISCLOUD_URL", nil) || ENV.fetch("REDIS_URL", nil)
-  redis_secondary_url = ENV.fetch("REDIS_SECONDARY_CACHE_URL", nil)
+  redis_url = ENV.fetch("REDISCLOUD_URL", nil)
+  redis_url ||= ENV.fetch("REDIS_URL", nil)
   default_expiration = 24.hours.to_i
-  
-  # Primary Redis cache configuration
-  redis_primary_cache = ActiveSupport::Cache::RedisCacheStore.new(
-    url: redis_url,
-    expires_in: default_expiration
-  )
-  
-  # Optional secondary Redis cache configuration
-  redis_secondary_cache = redis_secondary_url.present? ? ActiveSupport::Cache::RedisCacheStore.new(
-    url: redis_secondary_url,
-    expires_in: default_expiration
-  ) : nil
-  
-  if redis_secondary_cache && (redis_url != redis_secondary_url)
-    # Use MultiStoreCache with both Redis stores if URLs are different
-    config.cache_store = MultiStoreCache.new(redis_primary_cache, redis_secondary_cache)
-  else
-    # Fallback to single Redis cache if only one URL is provided or both are the same
-    config.cache_store = redis_primary_cache
-  end
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
 
   config.action_mailer.perform_caching = false
 
