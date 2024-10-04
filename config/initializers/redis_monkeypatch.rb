@@ -12,7 +12,7 @@ class ActiveSupport::Cache::RedisCacheStore
 
     # Write to the secondary store if it's defined and different from the primary
     secondary_redis_url = ENV["REDIS_SECONDARY_CACHE_URL"]
-    if secondary_redis_url.present? && secondary_redis_url != self.redis.id
+    if secondary_redis_url.present? && secondary_redis_url != ENV["REDIS_URL"]
       secondary_store = ActiveSupport::Cache::RedisCacheStore.new(url: secondary_redis_url)
       secondary_store.write(name, value, options)
     end
