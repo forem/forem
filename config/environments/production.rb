@@ -76,26 +76,23 @@ Rails.application.configure do
   default_expiration = 24.hours.to_i
   
   # Primary Redis cache configuration
-  redis_primary_cache = {
+  redis_primary_cache = ActiveSupport::Cache::RedisCacheStore.new(
     url: redis_url,
     expires_in: default_expiration
-  }
+  )
   
   # Optional secondary Redis cache configuration
-  redis_secondary_cache = redis_secondary_url.present? ? {
+  redis_secondary_cache = redis_secondary_url.present? ? ActiveSupport::Cache::RedisCacheStore.new(
     url: redis_secondary_url,
     expires_in: default_expiration
-  } : nil
+  ) : nil
   
-  # Check if both URLs are provided and different
   if redis_secondary_cache && (redis_url != redis_secondary_url)
-    # Use multi_store with both Redis caches if URLs are different
-    config.cache_store = :multi_store,
-      [:redis_cache_store, redis_primary_cache,
-       :redis_cache_store, redis_secondary_cache]
+    # Use MultiStoreCache with both Redis stores if URLs are different
+    config.cache_store = MultiStoreCache.new(redis_primary_cache, redis_secondary_cache)
   else
     # Fallback to single Redis cache if only one URL is provided or both are the same
-    config.cache_store = :redis_cache_store, redis_primary_cache
+    config.cache_store = redis_primary_cache
   end
 
   config.action_mailer.perform_caching = false
