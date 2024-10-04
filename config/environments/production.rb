@@ -1,4 +1,5 @@
 require "active_support/core_ext/integer/time"
+require_relative "../lib/multi_store_cache"
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
