@@ -1,5 +1,27 @@
 require "active_support/core_ext/integer/time"
-require_relative "../lib/multi_store_cache"
+
+# MultiStoreCache is defined here to ensure it is available in production.
+class MultiStoreCache < ActiveSupport::Cache::Store
+  def initialize(*stores)
+    @stores = stores
+  end
+
+  def read(name, options = nil)
+    @stores.first.read(name, options)
+  end
+
+  def write(name, value, options = nil)
+    @stores.each { |store| store.write(name, value, options) }
+  end
+
+  def delete(name, options = nil)
+    @stores.each { |store| store.delete(name, options) }
+  end
+
+  def clear(options = nil)
+    @stores.each { |store| store.clear(options) }
+  end
+end
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
