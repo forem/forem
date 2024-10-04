@@ -1,5 +1,28 @@
 require "active_support/core_ext/integer/time"
 
+# MultiStoreCache is defined here to ensure it is available in production.
+class MultiStoreCache < ActiveSupport::Cache::Store
+  def initialize(*stores)
+    @stores = stores
+  end
+
+  def read(name, options = nil)
+    @stores.first.read(name, options)
+  end
+
+  def write(name, value, options = nil)
+    @stores.each { |store| store.write(name, value, options) }
+  end
+
+  def delete(name, options = nil)
+    @stores.each { |store| store.delete(name, options) }
+  end
+
+  def clear(options = nil)
+    @stores.each { |store| store.clear(options) }
+  end
+end
+
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Allow the app to know when booted up in context where we haven't set ENV vars
