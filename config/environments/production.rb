@@ -69,12 +69,34 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
-  redis_url = ENV.fetch("REDISCLOUD_URL", nil)
-  redis_url ||= ENV.fetch("REDIS_URL", nil)
+  # We have the option of a secondary cache store, but it is not required.
+  # The secondary store could be used for redundancy or to be used for swapping stores.
+  redis_url = ENV.fetch("REDISCLOUD_URL", nil) || ENV.fetch("REDIS_URL", nil)
+  redis_secondary_url = ENV["REDIS_SECONDARY_CACHE_URL"]
   default_expiration = 24.hours.to_i
-  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
+  
+  # Primary Redis cache configuration
+  redis_primary_cache = {
+    url: redis_url,
+    expires_in: default_expiration
+  }
+  
+  # Optional secondary Redis cache configuration
+  redis_secondary_cache = redis_secondary_url.present? ? {
+    url: redis_secondary_url,
+    expires_in: default_expiration
+  } : nil
+  
+  # Check if both URLs are provided and different
+  if redis_secondary_cache && (redis_url != redis_secondary_url)
+    # Use multi_store with both Redis caches if URLs are different
+    config.cache_store = :multi_store,
+      [:redis_cache_store, redis_primary_cache,
+       :redis_cache_store, redis_secondary_cache]
+  else
+    # Fallback to single Redis cache if only one URL is provided or both are the same
+    config.cache_store = :redis_cache_store, redis_primary_cache
+  end
 
   config.action_mailer.perform_caching = false
 
