@@ -72,7 +72,7 @@ Rails.application.configure do
   # We have the option of a secondary cache store, but it is not required.
   # The secondary store could be used for redundancy or to be used for swapping stores.
   redis_url = ENV.fetch("REDISCLOUD_URL", nil) || ENV.fetch("REDIS_URL", nil)
-  redis_secondary_url = ENV["REDIS_SECONDARY_CACHE_URL"]
+  redis_secondary_url = ENV.fetch("REDIS_SECONDARY_CACHE_URL", nil)
   default_expiration = 24.hours.to_i
   
   # Primary Redis cache configuration
