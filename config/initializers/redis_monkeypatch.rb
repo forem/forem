@@ -6,15 +6,22 @@
 class ActiveSupport::Cache::RedisCacheStore
   alias_method :original_write, :write
 
+  if ENV["REDIS_SECONDARY_CACHE_URL"].present?
+    SECONDARY_STORE = ActiveSupport::Cache::RedisCacheStore.new(url: ENV["REDIS_SECONDARY_CACHE_URL"])
+  end
+
   def write(name, value, options = nil)
     # Write to the primary store as usual
     original_write(name, value, options)
 
     # Write to the secondary store if it's defined and different from the primary
-    secondary_redis_url = ENV["REDIS_SECONDARY_CACHE_URL"]
-    if secondary_redis_url.present? && secondary_redis_url != ENV["REDIS_URL"]
-      secondary_store = ActiveSupport::Cache::RedisCacheStore.new(url: secondary_redis_url)
-      secondary_store.write(name, value, options)
+    if defined?(SECONDARY_STORE) && ENV["REDIS_SECONDARY_CACHE_URL"] != ENV["REDIS_URL"]
+      begin
+        SECONDARY_STORE.write(name, value, options)
+      rescue => e
+        Rails.logger.error "Secondary Redis write failed: #{e.message}"
+        # Optionally, implement retry logic or alerting here
+      end
     end
   end
 end
