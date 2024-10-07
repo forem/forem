@@ -44,6 +44,7 @@ module MarkdownProcessor
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.
         # See <https://github.com/Shopify/liquid/issues/1390>
         parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, @liquid_tag_options)
+
         html = markdown.render(parsed_liquid.render)
       rescue NoMethodError => e
         if e.message.include?('line_number')
@@ -58,18 +59,8 @@ module MarkdownProcessor
       end
 
       html = add_target_blank_to_outbound_links(html)
-      html = parse_html(html, prefix_images_options)
-
-      # Strip zero-width spaces before returning the final HTML
-      html = strip_zero_width_spaces(html)
-
-      html
+      parse_html(html, prefix_images_options)
     end
-
-    def strip_zero_width_spaces(str)
-      str.gsub("\u200B", '')
-    end
-
 
     def add_target_blank_to_outbound_links(html)
       app_domain = Settings::General.app_domain
@@ -143,16 +134,14 @@ module MarkdownProcessor
     end
 
     def escape_liquid_tags_in_codeblock(content)
-      # Escape code blocks, code spans, and inline code
+      # Escape codeblocks, code spans, and inline code
       content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
         codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         codeblock.gsub!("{% raw %}", "{----% raw %----}")
-        
-        # Ensure consistent newlines before and after the raw block for both types of blocks
-        if codeblock.match?(/[[:space:]]*`{3}/) || codeblock.match?(/[[:space:]]*~{3}/)
-          "\n{% raw %}\n#{codeblock.strip}\n{% endraw %}\n"
+        if codeblock.match?(/[[:space:]]*`{3}/)
+          "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
         else
-          "{% raw %}#{codeblock.strip}{% endraw %}"
+          "{% raw %}#{codeblock}{% endraw %}"
         end
       end
     end
