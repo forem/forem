@@ -6,7 +6,7 @@ RSpec.describe "StripeSubscriptions" do
   let(:stripe_api_key) { Settings::General.stripe_api_key }
   let(:default_item_code) { ENV.fetch("STRIPE_BASE_ITEM_CODE", "default_code") }
   let(:tag_moderator_item_code) { ENV.fetch("STRIPE_TAG_MODERATOR_ITEM_CODE", "tag_moderator_code") }
-  let(:subscription_success_url) { ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings" }
+  let(:subscription_success_url) { ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing" }
   let(:billing_portal_return_url) { ENV["BILLING_PORTAL_RETURN_URL"] || "/settings/billing" }
   let(:session_url) { "https://checkout.stripe.com/pay/test_session_id" }
   let(:portal_session_url) { "https://billing.stripe.com/session/test_portal_session_id" }
@@ -51,7 +51,7 @@ RSpec.describe "StripeSubscriptions" do
             ],
             mode: "subscription",
             success_url: URL.url(subscription_success_url),
-            cancel_url: URL.url("/settings"),
+            cancel_url: URL.url("/settings/billing"),
             consent_collection: {
               terms_of_service: "required"
             },
@@ -81,7 +81,7 @@ RSpec.describe "StripeSubscriptions" do
             ],
             mode: "subscription",
             success_url: URL.url(subscription_success_url),
-            cancel_url: URL.url("/settings"),
+            cancel_url: URL.url("/settings/billing"),
             consent_collection: {
               terms_of_service: "required"
             },
@@ -106,7 +106,7 @@ RSpec.describe "StripeSubscriptions" do
             ],
             mode: "subscription",
             success_url: URL.url(subscription_success_url),
-            cancel_url: URL.url("/settings"),
+            cancel_url: URL.url("/settings/billing"),
             consent_collection: {
               terms_of_service: "required"
             },
@@ -142,7 +142,7 @@ RSpec.describe "StripeSubscriptions" do
             ],
             mode: custom_mode,
             success_url: URL.url(subscription_success_url),
-            cancel_url: URL.url("/settings"),
+            cancel_url: URL.url("/settings/billing"),
             consent_collection: {
               terms_of_service: "required"
             },
