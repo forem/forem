@@ -165,6 +165,18 @@ RSpec.describe Search::Article, type: :service do
         expect(result.length).to eq(1)
       end
     end
+
+    context "when filtering by archived" do
+      it "returns archived articles belonging to a specific user", :aggregate_failures do
+        user = create(:user)
+        articles = create_list(:article, 2, user: user, archived: true)
+        article = create(:article, user: user, archived: false)
+
+        results = described_class.search_documents(user_id: user.id, archived: true).pluck(:id)
+        expect(results).not_to include(article.id)
+        expect(results).to match_array(articles.pluck(:id))
+      end
+    end
   end
 end
 
