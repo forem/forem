@@ -143,76 +143,19 @@ module MarkdownProcessor
     end
 
     def escape_liquid_tags_in_codeblock(content)
-      content_dup = content.dup
-    
-      # Define the zero-width space character
-      zero_width_space = "\u200B"
-    
-      # Escape Liquid tags inside code blocks
-      # Match fenced code blocks
-      content_dup.gsub!(/
-        (
-          ^[ \t]*           # Start of a line, optional indentation
-          (```|~~~)         # Opening code fence
-          .*?               # Optional language specifier
-          \r?\n             # Line break
-          (?:.*?\n)*?       # Code block content (non-greedy)
-          ^[ \t]*           # Start of a line, optional indentation
-          \2                # Closing code fence matching opening fence
-          [ \t]*            # Optional spaces or tabs
-          (\r?\n|$)         # Line break or end of string
-        )
-      /mx) do |match|
-        code_block = $1
-    
-        # Replace Liquid tag delimiters inside the code block
-        code_block = code_block.gsub('{%', "{#{zero_width_space}%")
-        code_block = code_block.gsub('{{', "{#{zero_width_space}{")
-        code_block = code_block.gsub('%}', "%#{zero_width_space}}")
-        code_block = code_block.gsub('}}', "}#{zero_width_space}}")
-    
-        code_block
-      end
-    
-      # Match indented code blocks
-      content_dup.gsub!(/
-        (
-          (?:^[ ]{4}.*\n)+  # Lines starting with four spaces
-        )
-      /m) do |match|
-        code_block = $1
-    
-        # Replace Liquid tag delimiters inside the code block
-        code_block = code_block.gsub('{%', "{#{zero_width_space}%")
-        code_block = code_block.gsub('{{', "{#{zero_width_space}{")
-        code_block = code_block.gsub('%}', "%#{zero_width_space}}")
-        code_block = code_block.gsub('}}', "}#{zero_width_space}}")
-    
-        code_block
-      end
-    
-      # Escape Liquid tags inside inline code spans
-      content_dup.gsub!(/
-        (`+)          # Opening backticks
-        (\s*.+?\s*)   # Code content, allowing surrounding spaces
-        \1            # Matching closing backticks
-      /mx) do |match|
-        backticks = $1
-        code_content = $2
-    
-        # Replace Liquid tag delimiters inside the code content
-        code_content = code_content.gsub('{%', "{#{zero_width_space}%")
-        code_content = code_content.gsub('{{', "{#{zero_width_space}{")
-        code_content = code_content.gsub('%}', "%#{zero_width_space}}")
-        code_content = code_content.gsub('}}', "}#{zero_width_space}}")
-    
-        "#{backticks}#{code_content}#{backticks}"
-      end
-    
-      content_dup
-    end
-    
+      # Escape code blocks, code spans, and inline code
+      content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+        codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+        codeblock.gsub!("{% raw %}", "{----% raw %----}")
         
+        # Ensure consistent newlines before and after the raw block for both types of blocks
+        if codeblock.match?(/[[:space:]]*`{3}/) || codeblock.match?(/[[:space:]]*~{3}/)
+          "\n{% raw %}\n#{codeblock.strip}\n{% endraw %}\n"
+        else
+          "{% raw %}#{codeblock.strip}{% endraw %}"
+        end
+      end
+    end
 
     def convert_code_tags_to_triple_backticks(content)
       # return content if there is not a <code> tag
