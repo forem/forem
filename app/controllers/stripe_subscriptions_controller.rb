@@ -33,6 +33,22 @@ class StripeSubscriptionsController < ApplicationController
     redirect_to session.url, allow_other_host: true
   end
 
+  def edit
+    Stripe.api_key = Settings::General.stripe_api_key
+
+    if current_user.stripe_id_code.present?
+      portal_session = Stripe::BillingPortal::Session.create({
+        customer: current_user.stripe_id_code,
+        return_url: URL.url(ENV["SUBSCRIPTION_CANCEL_URL"] || "/settings/billing"),
+      })
+
+      redirect_to portal_session.url, allow_other_host: true
+    else
+      flash[:error] = "Unable to edit subscription self-serve. Please contact support."
+      redirect_back(fallback_location: user_settings_path)
+    end
+  end
+
   def destroy
     if params[:verification] == "pleasecancelmyplusplus" && current_user.stripe_id_code.present?
       Stripe.api_key = Settings::General.stripe_api_key
