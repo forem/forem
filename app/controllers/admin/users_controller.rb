@@ -62,6 +62,7 @@ module Admin
       set_banishable_user
       set_feedback_messages
       set_related_reactions
+      @articles = @user.articles.order(created_at: :desc)
       set_user_details
     end
 
