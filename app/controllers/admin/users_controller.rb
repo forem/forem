@@ -63,6 +63,8 @@ module Admin
       set_feedback_messages
       set_related_reactions
       @articles = @user.articles.order(created_at: :desc)
+      # Remove the .includes(:commentable)
+      @comments = @user.comments.order(created_at: :desc)
       set_user_details
     end
 

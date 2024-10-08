@@ -7,6 +7,7 @@ module Constants
       Reports
       Flags
       Articles
+      Comments
       UnpublishLogs
     ].freeze
   end

@@ -1,0 +1,18 @@
+<div class="flex flex-col h-100">
+  <h2>All Comments</h2>
+  <% if @comments.empty? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      No Comments
+    </div>
+  <% else %>
+    <div class="pt-3">
+      <ul>
+        <% @comments.each do |comment| %>
+          <li>
+            <%= link_to truncate(comment.body_markdown, length: 200), comment.path, target: "_blank", rel: "noopener" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>

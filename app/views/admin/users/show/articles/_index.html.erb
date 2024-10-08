@@ -8,12 +8,14 @@
     </div>
   <% else %>
     <div class="pt-3">
-      <% published_articles.each do |article| %>
-        <p>
-          <%= link_to article.title, article.path, target: "_blank", rel: "noopener" %>
-          <small>(<%= article.published_at.to_date %>)</small>
-        </p>
-      <% end %>
+      <ul>
+        <% published_articles.each do |article| %>
+          <li>
+            <%= link_to article.title, article.path, target: "_blank", rel: "noopener" %>
+            <small>(<%= article.published_at.to_date %>)</small>
+          </li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 </div>
