@@ -27,6 +27,7 @@ require "datadog/ci"
 
 if ENV["DD_ENV"] == "ci"
   Datadog.configure do |c|
+    c.service = "forem"
     c.ci.enabled = true
     c.ci.instrument :rspec
   end
