@@ -127,3 +127,5 @@ doc/
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+test.rb
