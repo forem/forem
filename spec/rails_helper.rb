@@ -23,6 +23,14 @@ KnapsackPro::Hooks::Queue.after_subset_queue do |_queue_id, _subset_queue_id|
 end
 
 require "spec_helper"
+require "datadog/ci"
+
+if ENV["DD_ENV"] == "ci"
+  Datadog.configure do |c|
+    c.ci.enabled = true
+    c.ci.instrument :rspec
+  end
+end
 
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
