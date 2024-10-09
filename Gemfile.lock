@@ -1,10 +1,29 @@
 GIT
+  remote: https://github.com/DataDog/dd-trace-rb.git
+  revision: c893523afea5fee7f6a043d3bfffbcf82c1fcc7f
+  ref: master
+  specs:
+    datadog (2.3.0)
+      debase-ruby_core_source (= 3.3.1)
+      libdatadog (~> 12.0.0.1.0)
+      libddwaf (~> 1.14.0.0.0)
+      msgpack
+
+GIT
   remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
   specs:
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
+
+PATH
+  remote: ../../p/datadog-ci-rb
+  specs:
+    datadog-ci (1.7.0)
+      datadog (~> 2.3)
+      msgpack
+      rake
 
 GEM
   remote: https://rubygems.org/
@@ -198,17 +217,9 @@ GEM
       puma (>= 3.8.0)
       railties (>= 5.2.0)
     dante (0.2.0)
-    datadog-ci (0.3.0)
-      msgpack
     date (3.3.4)
-    ddtrace (1.16.2)
-      datadog-ci (~> 0.3.0)
-      debase-ruby_core_source (= 3.2.2)
-      libdatadog (~> 5.0.0.1.0)
-      libddwaf (~> 1.14.0.0.0)
-      msgpack
     dead_end (4.0.0)
-    debase-ruby_core_source (3.2.2)
+    debase-ruby_core_source (3.3.1)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -474,8 +485,8 @@ GEM
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
-    libdatadog (5.0.0.1.0)
-    libdatadog (5.0.0.1.0-x86_64-linux)
+    libdatadog (12.0.0.1.0)
+    libdatadog (12.0.0.1.0-x86_64-linux)
     libddwaf (1.14.0.0.0)
       ffi (~> 1.0)
     libddwaf (1.14.0.0.0-arm64-darwin)
@@ -1018,7 +1029,8 @@ DEPENDENCIES
   countries (~> 5.5)
   cuprite (~> 0.13)
   cypress-rails (~> 0.5)
-  ddtrace (~> 1.16.2)
+  datadog!
+  datadog-ci!
   debug (>= 1.0.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
