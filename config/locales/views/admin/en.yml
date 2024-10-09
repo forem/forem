@@ -402,6 +402,8 @@ en:
           emails: Emails
           reports: Reports
           flags: Flags
+          articles: Articles
+          comments: Comments
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
