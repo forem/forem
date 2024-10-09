@@ -36,10 +36,10 @@ development:
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
   # the same name as the operating system user that initialized the database.
-  #username: PracticalDeveloper
+  username: postgres
 
   # The password associated with the postgres role (username).
-  #password:
+  password: postgres
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -66,6 +66,8 @@ test:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL_TEST", "postgres:///Forem_test") %>
   database: <%= ENV.fetch("DATABASE_NAME_TEST", "Forem_test") %><%= ENV["TEST_ENV_NUMBER"] %>
+  username: postgres
+  password: postgres
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i %>
 

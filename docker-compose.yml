@@ -101,7 +101,7 @@ services:
       PSQL_HISTFILE: /usr/local/hist/.psql_history
       POSTGRES_PASSWORD: postgres
     ports:
-      - 5432
+      - "54323:5432"
     healthcheck:
       test: pg_isready -U postgres -h 127.0.0.1
       interval: 5s
@@ -111,7 +111,7 @@ services:
     volumes:
       - redis:/data
     ports:
-      - 6379
+      - "63754:6379"
     healthcheck:
       test: redis-cli ping
       interval: 1s
@@ -160,4 +160,5 @@ volumes:
   redis:
   assets:
   builds:
+
 
