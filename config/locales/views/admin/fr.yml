@@ -433,6 +433,7 @@ fr:
           Good Standing: Good Standing
           Good standing: Good standing
           Trusted: Trusted
+          Base Subscriber: Subscriber
         max_score_title: Maximum score
         max_score_reader: "Maximum score:"
         identities:
