@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Fastly tasks", type: :task do
   before do
+    allow(ENV).to receive(:[]).and_call_original
     Rake.application["fastly:update_configs"].reenable
     allow(FastlyConfig::Update).to receive(:call)
   end
