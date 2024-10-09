@@ -51,7 +51,7 @@ module Stories
                )
              end
       Datadog::Tracing.trace("feed.query",
-                             span_type: "db",
+                             type: "db",
                              resource: "#{self.class}.#{__method__}",
                              tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
@@ -77,7 +77,7 @@ module Stories
                )
              end
       Datadog::Tracing.trace("feed.query",
-                             span_type: "db",
+                             type: "db",
                              resource: "#{self.class}.#{__method__}",
                              tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
