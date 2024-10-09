@@ -162,6 +162,10 @@ en:
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Only Super Admins are allowed to delete users.
           submit: Delete now
+        update_email:
+          heading: Update User Email
+          desc_html: User's current email is %{email}.
+          new_email: New email
         export:
           heading: Export %{user}'s data
           desc1_html: Choose between sending the exported data to either your Admin contact email, %{contact}, or to %{user}'s %{user_email} directly.
@@ -349,6 +353,7 @@ en:
           visit: Visit profile
           options:
             icon: Options
+            update_email: Update User Email
             export: Export data
             merge: Merge users
             unpublish: Unpublished all posts
