@@ -2,8 +2,6 @@ module Articles
   class SocialImage
     include Rails.application.routes.url_helpers
 
-    SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
-
     def initialize(article, height: 500, width: 1000)
       @article = article
       @height = height
@@ -15,30 +13,14 @@ module Articles
       if image.present?
         image = image.split("w_1000/").last if image.include?("w_1000/https://")
         return Images::Optimizer.call(image, width: width, height: height, crop: "crop")
+      else
+        return Settings::General.main_social_image.to_s
       end
-      return legacy_article_social_image unless use_new_social_url?
-
-      article_social_preview_url(article, format: :png, host: Settings::General.app_domain)
     end
 
     private
 
     attr_reader :article, :height, :width
-
-    def legacy_article_social_image
-      cache_key = "article-social-img-#{article}-#{article.updated_at.rfc3339}-#{article.comments_count}"
-
-      Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-        src = Images::GenerateSocialImage.call(article)
-        return src if src.start_with? "https://res.cloudinary.com/"
-
-        Images::Optimizer.call(src, width: "1000", height: "500", crop: "crop")
-      end
-    end
-
-    def use_new_social_url?
-      article.updated_at > SOCIAL_PREVIEW_MIGRATION_DATETIME
-    end
 
     def user_defined_image
       return article.main_image if article.main_image.present?

@@ -235,8 +235,6 @@ Rails.application.routes.draw do
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
-    get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
-
     get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", to: "async_info#navigation_links"
 
