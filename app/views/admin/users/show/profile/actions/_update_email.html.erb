@@ -1,0 +1,13 @@
+<div id="update-email">
+  <%= form_for(@user, url: update_email_admin_user_path(@user),
+                      html: { class: "flex flex-col gap-4", method: :patch }) do |f| %>
+  <p><%= t("views.admin.users.update_email.desc_html", email: @user.email) %></p>
+  <div class="crayons-field mb-4">
+  <%= f.label :new_email, t("views.admin.users.update_email.new_email"), class: "crayons-field__label" %>
+  <%= f.email_field :email, class: "crayons-textfield", required: true %>
+  </div>
+  <div>
+  <%= f.button t("views.admin.users.update_email.submit"), class: "c-btn c-btn--primary", type: "submit" %>
+  </div>
+  <% end %>
+</div>
