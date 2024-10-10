@@ -166,6 +166,9 @@ en:
           heading: Update User Email
           desc_html: User's current email is %{email}.
           new_email: New email
+          submit: Update email
+          success: Email updated successfully.
+          error: Failed to update email.
         export:
           heading: Export %{user}'s data
           desc1_html: Choose between sending the exported data to either your Admin contact email, %{contact}, or to %{user}'s %{user_email} directly.
