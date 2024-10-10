@@ -12,8 +12,6 @@ module Admin
       reputation_modifier
       max_score
       tag_name
-      new_email
-      update_email
       email
     ].freeze
 
