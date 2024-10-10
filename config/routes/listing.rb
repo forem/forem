@@ -29,5 +29,4 @@ get "/listings/:category/:slug", to: "listings#index", as: :listing_slug
 get "/listings/:category/:slug/:view", to: "listings#index", constraints: { view: /moderate/ }
 get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
 delete "/listings/:category/:slug", to: "listings#destroy"
-get "/social_previews/listing/:id", to: "social_previews#listing", as: :listing_social_preview
 get "/about-listings", to: "pages#about_listings"
