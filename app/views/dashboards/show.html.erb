@@ -1,15 +1,7 @@
 <% title t("views.dashboard.heading") %>
 <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
-  <header class="crayons-page-header block">
-    <h1 class="crayons-title"><%= t("views.dashboard.heading") %></h1>
-    <%= render "actions_mobile" %>
-    <%= render "analytics" %>
-  </header>
-
-  <div class="crayons-layout__sidebar-left">
-    <%= render "actions" %>
-  </div>
-
+  <%= render("header_and_action", page_title: t("views.dashboard.heading")) %>
+  
   <div class="crayons-layout__content">
     <div class="flex items-center justify-between mt-3">
       <h2 class="hidden m:block crayons-subtitle-2"><%= t("views.dashboard.posts.heading") %></h2>
