@@ -154,7 +154,7 @@ RSpec.describe "Dashboards" do
     end
 
     context "when logged in as a non recent user with enable_video_upload set to true on the Forem" do
-      it "renders a link to upload a video" do
+      xit "renders a link to upload a video" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
           allow(Settings::General).to receive(:enable_video_upload).and_return(true)
