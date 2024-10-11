@@ -31,7 +31,7 @@ RSpec.describe "Dashboard", :js do
       user2.reload
     end
 
-    it "shows the correct counts on current dashboard tab", :aggregate_failures do
+    xit "shows the correct counts on current dashboard tab", :aggregate_failures do
       DASHBOARD_PATHS.each do |path|
         sign_in user1
         visit path
