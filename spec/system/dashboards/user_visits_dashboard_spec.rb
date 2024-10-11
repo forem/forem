@@ -36,7 +36,7 @@ RSpec.describe "Dashboard", :js do
         sign_in user1
         visit path
 
-        within "main#main-content nav" do
+        within "#main-dashboard-side-nav" do
           # the collection contains 3 posts
           expect(page).to have_text(/Posts\n3/)
           expect(page).to have_text(/Series\n1/)
