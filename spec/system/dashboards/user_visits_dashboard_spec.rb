@@ -14,12 +14,12 @@ RSpec.describe "Dashboard", :js do
       stub_const(
         "DASHBOARD_PATHS",
         [
-          dashboard_path,
-          dashboard_following_path,
-          dashboard_following_tags_path,
-          dashboard_following_users_path,
-          dashboard_following_organizations_path,
-          dashboard_following_podcasts_path,
+          "/dashboard/sidebar?state=show",
+          "/dashboard/sidebar?state=following",
+          "/dashboard/sidebar?state=following_tags",
+          "/dashboard/sidebar?state=following_users",
+          "/dashboard/sidebar?state=following_organizations",
+          "/dashboard/sidebar?state=following_podcasts",
         ],
       )
       [user2, tag, organization, podcast].each do |item|
