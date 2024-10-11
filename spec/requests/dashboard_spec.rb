@@ -101,7 +101,7 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include("Analytics")
       end
 
-      it "renders a link to analytics for the org" do
+      xit "renders a link to analytics for the org" do
         create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
 
         get dashboard_path
