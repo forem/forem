@@ -1,15 +1,15 @@
 <div class="block m:hidden pt-3">
   <select id="mobile_nav_dashboard" class="crayons-select">
-    <option value="/dashboard" <%= "selected" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>><%= t("views.dashboard.actions.mobile.posts", num: @user.articles_count) %></option>
-    <option value="/dashboard/user_followers" <%= "selected" if params[:action] == "followers" %>><%= t("views.dashboard.actions.mobile.followers", num: @user.good_standing_followers_count) %></option>
-    <option value="/dashboard/following_tags" <%= "selected" if params[:action] == "following_tags" %>><%= t("views.dashboard.actions.mobile.following_tags", num: @user.cached_followed_tag_names.size) %></option>
-    <option value="/dashboard/following_users" <%= "selected" if params[:action] == "following_users" %>><%= t("views.dashboard.actions.mobile.following_users", num: @user.following_users_count) %></option>
-    <option value="/dashboard/following_organizations" <%= "selected" if params[:action] == "following_organizations" %>><%= t("views.dashboard.actions.mobile.following_orgs", num: @user.following_organizations_count) %></option>
-    <option value="/dashboard/following_podcasts" <%= "selected" if params[:action] == "following_podcasts" %>><%= t("views.dashboard.actions.mobile.following_pods", num: @user.following_podcasts_count) %></option>
+    <option value="/dashboard" <%= "selected" if @action == "show" && (params[:which] == "organization" || params[:which].blank?) %>><%= t("views.dashboard.actions.mobile.posts", num: @user.articles_count) %></option>
+    <option value="/dashboard/user_followers" <%= "selected" if @action == "followers" %>><%= t("views.dashboard.actions.mobile.followers", num: @user.good_standing_followers_count) %></option>
+    <option value="/dashboard/following_tags" <%= "selected" if @action == "following_tags" %>><%= t("views.dashboard.actions.mobile.following_tags", num: @user.cached_followed_tag_names.size) %></option>
+    <option value="/dashboard/following_users" <%= "selected" if @action == "following_users" %>><%= t("views.dashboard.actions.mobile.following_users", num: @user.following_users_count) %></option>
+    <option value="/dashboard/following_organizations" <%= "selected" if @action == "following_organizations" %>><%= t("views.dashboard.actions.mobile.following_orgs", num: @user.following_organizations_count) %></option>
+    <option value="/dashboard/following_podcasts" <%= "selected" if @action == "following_podcasts" %>><%= t("views.dashboard.actions.mobile.following_pods", num: @user.following_podcasts_count) %></option>
 
     <option value="<%= dashboard_analytics_path %>"><%= t("views.dashboard.actions.analytics") %></option>
 
-    <option value="/dashboard/hidden_tags" <%= "selected" if params[:action] == "hidden_tags" %>><%= t("views.dashboard.actions.mobile.hidden_tags", num: @user.cached_antifollowed_tag_names.size) %></option>
+    <option value="/dashboard/hidden_tags" <%= "selected" if @action == "hidden_tags" %>><%= t("views.dashboard.actions.mobile.hidden_tags", num: @user.cached_antifollowed_tag_names.size) %></option>
 
     <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
       <% @organizations.each do |org| %>
