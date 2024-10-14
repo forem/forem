@@ -21,6 +21,27 @@ export function fieldCharacterLimits() {
       ...event.target.value,
     ].length;
   });
+
+  const imageInput = userSettingForm.querySelector('[id="user[profile_image]"');
+
+  const previewPhoto = () => {
+    const file = imageInput.files;
+
+    if (!file) return;
+
+    const fileReader = new FileReader();
+
+    const preview = userSettingForm.querySelector(
+      '#user-profile-image-preview',
+    );
+
+    fileReader.onload = function (event) {
+      preview.setAttribute('src', event.target.result);
+    };
+    fileReader.readAsDataURL(file[0]);
+  };
+
+  imageInput.addEventListener('change', previewPhoto);
 }
 
 fieldCharacterLimits();
