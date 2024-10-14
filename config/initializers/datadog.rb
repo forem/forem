@@ -19,22 +19,8 @@ Datadog.configure do |c|
   c.tracing.instrument :http, service_name: unified_service_name
   c.tracing.instrument :faraday, service_name: unified_service_name
 
-  # Multiple Redis integrations to split Redis usage per-instance to
-  # accommodate having a different Redis instance for each use case.
-  c.tracing.instrument :redis, service_name: "#{service_name}-redis-rpush",
-                               describes: { url: ENV.fetch("REDIS_RPUSH_URL", nil) }
-  c.tracing.instrument :redis, service_name: "#{service_name}-redis-sessions",
-                               describes: { url: ENV.fetch("REDIS_SESSIONS_URL", nil) }
-  # Sidekiq jobs that spin up thousands of other jobs end up consuming a
-  # *lot* of memory on instrumentation alone. This env var allows us to
-  # enable it only when needed.
-  if ENV["DD_ENABLE_REDIS_SIDEKIQ"] == "true"
-    c.tracing.instrument :redis, service_name: "#{service_name}-redis-sidekiq",
-                                 describes: { url: ENV.fetch("REDIS_SIDEKIQ_URL", nil) }
-  end
-  # Generic REDIS_URL comes last, allowing it to overwrite any of the
-  # above when multiple Redis use cases are backed by the same Redis URL.
-  c.tracing.instrument :redis, service_name: "#{service_name}-redis", describes: { url: ENV.fetch("REDIS_URL", nil) }
+  # Instrument all Redis calls (excluding cache) under "#{service_name}-redis"
+  c.tracing.instrument :redis, service_name: "#{service_name}-redis"
 end
 
 ForemStatsClient = Datadog::Statsd.new
