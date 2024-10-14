@@ -11,10 +11,13 @@ Datadog.configure do |c|
   c.tracing.instrument :active_record, service_name: "#{service_name}-db"
   c.tracing.instrument :sidekiq, service_name: "#{service_name}-sidekiq"
   c.tracing.instrument :concurrent_ruby
-  c.tracing.instrument :excon, service_name: "#{service_name}-excon"
-  c.tracing.instrument :httprb, service_name: "#{service_name}-httprb"
-  c.tracing.instrument :http, service_name: "#{service_name}-net_http"
-  c.tracing.instrument :faraday, service_name: "#{service_name}-faraday"
+
+  # All HTTP clients roll up to one
+  unified_service_name = "#{service_name}-http_clients"
+  c.tracing.instrument :excon, service_name: unified_service_name
+  c.tracing.instrument :httprb, service_name: unified_service_name
+  c.tracing.instrument :http, service_name: unified_service_name
+  c.tracing.instrument :faraday, service_name: unified_service_name
 
   # Multiple Redis integrations to split Redis usage per-instance to
   # accommodate having a different Redis instance for each use case.
