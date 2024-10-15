@@ -17,7 +17,12 @@
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "base", "application", "baseInitializers", "Search", "baseTracking", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", defer: true %>
+      <% if controller_name == "articles_search" %>
+        <%= javascript_include_tag "Search", defer: true %>
+      <% else %>
+        <meta name="search-script" content="<%= asset_path 'Search.js' %>">
+      <% end %>
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -59,9 +64,9 @@
         data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
         data-cookie-banner-user-context="<%= j(Settings::General.cookie_banner_user_context) %>"
         data-cookie-banner-platform-context="<%= j(Settings::General.coolie_banner_platform_context) %>"
-        data-algolia-id="<%= j(Settings::General.algolia_application_id) if feature_flag_enabled?(:algolia_frontend) %>"
-        data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) if feature_flag_enabled?(:algolia_frontend) %>"
-        data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
+        data-algolia-id="PRSOBFP46H"
+        data-algolia-search-key="9aa7d31610cba78851c9b1f63776a9dd"
+        data-algolia-display="true"
         data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
