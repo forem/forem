@@ -1,0 +1,95 @@
+---
+es:
+  views:
+    notifications:
+      meta:
+        description: Bandeja de entrada de notificaciones para %{community}
+        og:
+          title: Notificaciones - %{community}
+      heading: Notificaciones
+      article:
+        published_html: "%{user} publicó %{title}"
+        mod_greeting: "Hola %{user} 👋"
+        welcome_html: "%{user} es nuevo en la comunidad. Por favor, revisa su publicación y deja una respuesta amable para hacerlo sentir bienvenido."
+        mod_opt_out: ¿No quieres recibir estas notificaciones?
+        change_settings: Cambiar configuración
+      badge:
+        heading_html: Has recibido la insignia %{badge}
+        awarded_html: "También recibes %{credits} para usar en %{listings} si tienes algo que te gustaría promocionar. 🎉"
+        credits:
+          one: "%{count} nuevos créditos"
+          other: "%{count} nuevos créditos"
+        listings: anuncios de la comunidad
+        more: Más información sobre los anuncios
+        profile: Visita tu perfil
+      broadcast:
+        visit_html: Visita %{settings} para gestionar tus notificaciones.
+        settings: Configuración
+      comment:
+        commented_html: "%{user} comentó en %{title}"
+        first_html: "%{user} escribió su primer comentario en %{title}"
+        first_reply: "¡Dales su primera respuesta! 🎉"
+        left_html: "%{user} acaba de dejar un comentario en %{title}."
+        replied_html: "%{user} respondió a un hilo en %{title}"
+        mod_greeting: "Hola %{user} 👋"
+        welcome_html: "%{user} es nuevo en la comunidad. Por favor, deja una respuesta amable para hacerlo sentir bienvenido."
+        mod_opt_out: ¿No quieres recibir estas notificaciones?
+        change_settings: Cambiar configuración
+      error:
+        subtitle: ¡Se produjo un error!
+        desc: Esto se ha registrado y lo estamos rastreando.
+      follow:
+        and_html: "%{first} y %{second} te siguieron."
+        and_other_html:
+          one: "%{first} y %{others} te siguieron."
+          other: "%{first} y %{others} te siguieron."
+        others:
+          one: "%{count} otros"
+          other: "%{count} otros"
+        single_html: "%{name} te siguió."
+      load: Cargar más
+      mention:
+        article_html: "%{user} te mencionó en una publicación%{if_org}"
+        comment_html: "%{user} te mencionó en un comentario"
+        article_mobile: "%{user} te mencionó en la publicación %{title}"
+        comment_mobile: "%{user} te mencionó en un comentario en %{title}"
+        if_org_html: " bajo %{org}"
+      milestone:
+        heading_html: ¡Tu publicación %{title} superó %{type}!
+        check: Revisa tu tablero
+        intro: "🎉🎉🎉🎉🎉🎉🎉🎉"
+        type:
+          View:
+            one: "%{count} vistas"
+            other: "%{count} vistas"
+          Reaction:
+            one: "%{count} reacción"
+            other: "%{count} reacciones"
+      nav:
+        aria_label: Notificaciones
+        all: Todas
+        comments: Comentarios
+        posts: Publicaciones
+      new_post:
+        if_org_html: " bajo %{org}"
+        verb_html: "%{user} hizo una nueva publicación%{if_org}"
+      reacted:
+        and_html: "%{first} y %{last}"
+        and_other_html:
+          one: "%{first} y %{count} otros"
+          other: "%{first} y %{count} otros"
+        verb_html:
+          one: "%{start}%{actors} reaccionaron a %{title} con%{end} %{reactions}"
+          other: "%{start}%{actors} reaccionaron a %{title} con%{end} %{reactions}"
+        your:
+          article: tu artículo
+          comment: tu comentario
+      settings: Configuración
+      tag:
+        heading: "Hola 👋"
+        add_html: Los moderadores agregaron la etiqueta <strong>%{tag}</strong> a tu publicación %{title}. Los moderadores consideraron que esta etiqueta representaba mejor tu artículo.
+        check_html: Revisa %{other}, que puede ser más apropiado
+        other: otras etiquetas populares
+        reason: 'Motivo de la acción:'
+        remove_html: Los moderadores eliminaron la etiqueta <strong>%{tag}</strong> de tu publicación %{title}. Algunas etiquetas tienen pautas especiales para su envío y los moderadores deben ajustarlas para que se adapten mejor a la comunidad.
+        support_html: "¡Gracias por ser parte de %{community}! %{email} 🤗"

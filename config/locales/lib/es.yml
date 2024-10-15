@@ -1,0 +1,224 @@
+---
+es:
+  lib:
+    constants:
+      settings:
+        authentication:
+          allowed:
+            description: ¿Restringir el registro solo a ciertos correos electrónicos? (lista separada por comas)
+            placeholder: dev.to, forem.com, codenewbie.org
+          apple_client:
+            description: Código "App Bundle" para el Servicio de Autenticación configurado en el Portal de Desarrolladores de Apple
+          apple_key:
+            description: ID "Key" del Servicio de Autenticación configurado en el Portal de Desarrolladores de Apple
+          apple_pem:
+            description: Clave "PEM" del Servicio de Autenticación configurado en el Portal de Desarrolladores de Apple
+          apple_team:
+            description: ID "Team" de tu cuenta de Desarrollador de Apple
+          blocked:
+            description: ¿Bloquear el registro desde dominios especificados? (lista separada por comas)
+          display_list:
+            description: ¿Quieres mostrar la lista de dominios permitidos o mantenerla privada?
+          facebook_key:
+            description: Parte "App ID" de la sección de Configuración Básica de la página de la aplicación en el Portal de Desarrolladores de Facebook
+          facebook_secret:
+            description: Parte "App Secret" de la sección de Configuración Básica de la página de la aplicación en el Portal de Desarrolladores de Facebook
+          forem_key:
+            description: Clave de Forem
+          forem_secret:
+            description: Secreto de Forem
+          github_key:
+            description: Parte "Client ID" de la página de Aplicaciones OAuth de GitHub
+          github_secret:
+            description: Parte "Client Secret" de la página de Aplicaciones OAuth de GitHub
+          google_key:
+            description: Parte "Client ID" de la página OAuth 2.0 en el portal de Google Cloud Platform
+          google_secret:
+            description: Parte "Client Secret" de la página OAuth 2.0 en el portal de Google Cloud Platform
+          invite_only:
+            description: Solo los usuarios invitados por correo pueden unirse a esta comunidad.
+          new_user_status:
+            description: ¿Qué estado deseas aplicar a los nuevos usuarios?
+            placeholder: Buen comportamiento
+          providers:
+            description: ¿Cómo pueden iniciar sesión los usuarios?
+          recaptcha_secret:
+            description: Agregar la clave secreta de Google reCAPTCHA, que se utiliza para informar abusos
+            placeholder: ¿Cuál es la clave secreta de Google reCAPTCHA?
+          recaptcha_site:
+            description: Agregar la clave del sitio de Google reCAPTCHA, que se utiliza para informar abusos
+            placeholder: ¿Cuál es la clave del sitio de Google reCAPTCHA?
+          require_recaptcha:
+            description: Se requerirá que las personas completen un captcha al crear una cuenta nueva en tu comunidad
+          twitter_key:
+            description: Parte "API key" de las claves de consumidor en el portal de desarrollo de Twitter.
+          twitter_secret:
+            description: Parte "API secret key" de las claves de consumidor en el portal de desarrollo de Twitter.
+        campaign:
+          articles_approval:
+            placeholder: ¿Los artículos de la campaña aparecen en la barra lateral con aprobación?
+          articles_expiry:
+            description: Establece el tiempo de caducidad para que los artículos (en semanas) se muestren en la barra lateral de la campaña
+          call_to_action:
+            description: Este texto se utiliza para el botón de llamada a la acción en la barra lateral de la campaña
+            placeholder: Comparte tu proyecto
+          display_name:
+            description: Este texto se muestra en referencia a la campaña en títulos, etc.
+            placeholder: Mi gran campaña
+          featured:
+            description: ¿Qué etiquetas destacarán en la barra lateral de la campaña? (separadas por comas, solo letras)
+            placeholder: 'Lista de etiquetas de la campaña: separadas por comas, solo letras, por ejemplo, shecoded,theycoded'
+          hero_html:
+            description: Nombre de la variante HTML del héroe
+          sidebar_enabled:
+            placeholder: ¿Barra lateral de la campaña habilitada o no?
+          sidebar_image:
+            placeholder: Utilizado en la parte superior de la barra lateral de la campaña
+          url:
+            description: https://url.com/lander
+            placeholder: URL a la que se vinculará la imagen de la barra lateral de la campaña
+        community:
+          copyright:
+            description: Se utiliza para marcar el año en que se inició este Forem.
+          description:
+            description: Se utiliza en las etiquetas de descripción meta, etc.
+            placeholder: Una fabulosa comunidad de personas amables y acogedoras.
+          emoji:
+            description: Se utiliza en las etiquetas de título en todo el sitio junto al nombre de la comunidad
+          member:
+            description: Se utiliza para determinar cómo se llamará a un miembro, por ejemplo, desarrollador, aficionado, etc.
+            placeholder: usuario
+          name:
+            description: Se utiliza como nombre principal para tu Forem, por ejemplo, DEV, Comunidad DEV, La Comunidad DEV, etc.
+            placeholder: Nuevo Forem
+          staff:
+            description: Cuenta que actúa como 'personal' automatizado, utilizado principalmente para el hilo de bienvenida.
+          tagline:
+            description: Se utiliza en el modal de registro.
+            placeholder: Somos un lugar donde los programadores comparten, se mantienen actualizados y desarrollan sus carreras.
+        general:
+          ahoy_tracking:
+            description: Seguir visitas y eventos - los datos se almacenan en tu base de datos. Es necesario reiniciar para que los cambios en esta configuración surtan efecto.
+          billboard_enabled_countries:
+            description: Países que pueden ser objeto de geolocalización por vallas publicitarias. Haz clic en un país seleccionado para activar la orientación a nivel de subpaís.
+          contact_email:
+            description: Utilizado para enlaces de contacto. Proporciona una dirección de correo electrónico donde los usuarios pueden ponerse en contacto contigo o con tu equipo.
+          credit:
+            large:
+              description: Precio para la compra de créditos grandes (100 - 999 créditos).
+            medium:
+              description: Precio para la compra de créditos medianos (10 - 99 créditos).
+            small:
+              description: Precio para la compra de créditos pequeños (<10 créditos).
+            xlarge:
+              description: Precio para la compra de créditos extra grandes (1000 créditos o más).
+          favicon:
+            description: Utilizado como favicon del sitio.
+          ga_tracking:
+            description: ID de seguimiento de Google Universal Analytics, por ejemplo, UA-XXXXXXXX-1
+          ga_analytics_4:
+            description: ID de medición de Google Analytics 4, por ejemplo, G-XXXXXXXXX
+          hashtag:
+            description: Se utiliza como hashtag de Twitter de la comunidad
+            placeholder: '#ComunidadDEV'
+          health:
+            description: Se utiliza para autenticarse con tus puntos finales de comprobación de salud.
+            placeholder: un token seguro
+          logo_png:
+            description: Utilizado como logo secundario en lugares como los modales de inicio de sesión, incorporación, iconos táctiles de Apple. Se recomienda un mínimo de 512x512 píxeles.
+          logo_svg:
+            description: Este es el logo que se utiliza actualmente en la esquina superior izquierda de tu Forem. Sin embargo, después del lanzamiento, se eliminará en favor del Logotipo anterior.
+          mailchimp_api:
+            description: Clave API utilizada para conectar la cuenta de Mailchimp. Se encuentra en el backend de Mailchimp.
+          mailchimp_mod:
+            description: ID del boletín de los moderadores de la comunidad
+          mailchimp_news:
+            description: ID del boletín principal, también conocido como ID de la audiencia
+          mailchimp_tag_mod:
+            description: ID del boletín de los moderadores de etiquetas
+          main_social:
+            description: Utilizado como imagen principal en redes sociales y OpenGraph. Relación de aspecto recomendada de 16:9 (600x337 píxeles, 1200x675 píxeles)
+          mascot_image:
+            description: Utilizado como imagen de la mascota.
+          mascot_user:
+            description: La cuenta de la mascota
+          meta_keywords:
+            description: 'Lista de palabras clave válidas: separadas por comas, solo letras, por ejemplo, ingeniería, desarrollo'
+          onboarding_newsletter_content:
+            description: "Usa este campo para establecer el título y el subtítulo para tu paso de oferta de boletín. Mantenlo conciso."
+            placeholder: "Puedes configurar la imagen, el título y el subtítulo mediante markdown"
+          onboarding_newsletter_opt_in_head:
+            description: "Encabezado del cuadro de verificación del boletín"
+            placeholder: "Por ejemplo, Sí, suscríbeme al boletín semanal"
+          onboarding_newsletter_opt_in_subhead:
+            description: "Subencabezado del cuadro de verificación del boletín"
+            placeholder: "Por ejemplo, Ten la seguridad, respetamos tu privacidad. Tu correo electrónico solo se utilizará para nuestro boletín y no se compartirá con otros."
+          payment:
+            description: 'Utilizado para la monetización web en todo el sitio. Consulta: https://github.com/forem/forem/pull/6345'
+          periodic:
+            description: Determina con qué frecuencia se envían los resúmenes periódicos por correo electrónico (en días)
+          sidebar:
+            description: Determina qué etiquetas se muestran en la barra lateral derecha de la página de inicio
+            placeholder: Lista de etiquetas válidas separadas por comas, por ejemplo, ayuda, discusión, explicalo-como-si-tuviera-cinco-años, meta
+          stripe_api:
+            description: 'Clave secreta de Stripe para recibir pagos. Consulta: https://stripe.com/docs/keys'
+          stripe_key:
+            description: 'Clave pública de Stripe para recibir pagos. Consulta: https://stripe.com/docs/keys'
+          tags:
+            description: Determina qué etiquetas se sugieren a los nuevos usuarios durante el proceso de incorporación (separadas por comas, solo letras)
+            placeholder: 'Lista de etiquetas válidas separadas por comas, solo letras, por ejemplo, principiantes, javascript, ruby, swift, kotlin'
+          video:
+            description: Clave secreta utilizada para permitir la codificación de videos de AWS a través de VideoStatesController
+        rate_limit:
+          new_days:
+            description: La cantidad de días que se considera a un usuario como nuevo. El valor predeterminado es 3 días, pero puedes desactivarlo completamente ingresando 0.
+          spam:
+            description: Frases individuales (insensibles a mayúsculas y minúsculas) que activan alertas de spam, separadas por comas.
+            placeholder: autos usados cerca de ti, truco para pokemon go
+        smtp:
+          address:
+            description: Dirección del servidor de correo remoto
+            placeholder: es decir, smtp.gmail.com
+          authentication:
+            description: Si tu servidor de correo requiere autenticación, debes especificar aquí el tipo de autenticación
+            placeholder: es decir, plain, login o cram_md5
+          domain:
+            description: Si necesitas especificar un dominio HELO, puedes hacerlo aquí
+          password:
+            description: Si tu servidor de correo requiere autenticación, copia la contraseña de tu servidor
+          port:
+            description: El puerto en el que se ejecuta tu servidor de correo
+            placeholder: '25'
+          user_name:
+            description: Si tu servidor de correo requiere autenticación, copia el nombre de usuario de tu servidor
+          from_email:
+            description: La dirección de correo electrónico desde la cual se deben enviar los correos electrónicos
+          reply_to:
+            description: La dirección de correo electrónico a la que los usuarios pueden responder
+        user_experience:
+          default_font:
+            description: Determina la fuente de lectura predeterminada (los usuarios registrados pueden cambiar esto en su configuración de experiencia de usuario)
+          default_locale:
+            description: Determina el idioma y la localización predeterminados para el Forem (actualmente en versión beta experimental)
+          feed_strategy:
+            description: 'Determina el enfoque del algoritmo principal del feed de la aplicación: basic o large_forem_experimental (que solo debería usarse para comunidades con más de 10,000 miembros)'
+            placeholder: básico
+          feed_style:
+            description: Determina qué feed predeterminado ve el usuario (contenido rico, más minimalista, etc.)
+            placeholder: básico, rico o compacto
+          cover_image_height:
+            description: Determina la altura de las imágenes de portada, en relación con un ancho de 1000 píxeles
+            placeholder: '420'
+          cover_image_fit:
+            description: Determina la estrategia de recorte para las imágenes de portada
+            placeholder: recortar, limitar
+          home_feed:
+            description: Puntuación mínima necesaria para que una publicación aparezca en la página de inicio no autenticada.
+          index_minimum_date:
+            description: Fecha mínima necesaria para que una publicación sea indexada por los motores de búsqueda (Marca de tiempo de Unix).
+          index_minimum_score:
+            description: Puntuación mínima necesaria para que una publicación sea indexada por los motores de búsqueda.
+          primary_hex:
+            description: Determina el fondo/borde de los botones, etc. Debe ser lo suficientemente oscuro para contrastar con el texto blanco.
+          tag_feed:
+            description: Puntuación mínima necesaria para que una publicación aparezca en la página de etiquetas predeterminada.
