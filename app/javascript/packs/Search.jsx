@@ -1,8 +1,6 @@
 import { h, render } from 'preact';
 import { SearchFormSync } from '../Search/SearchFormSync';
 
-console.log('Search!')
-
 if (document.readyState === "interactive" || document.readyState === "complete") {
   // DOMContentLoaded has already been triggered
   const root = document.getElementById('header-search');
