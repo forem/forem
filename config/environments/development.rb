@@ -128,6 +128,8 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  config.logger = ActiveSupport::Logger.new("log/development.log", 1, 3.megabytes)
+
   config.after_initialize do
     # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
     Bullet.enable = true
