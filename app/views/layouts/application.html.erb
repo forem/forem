@@ -18,7 +18,9 @@
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
       <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", defer: true %>
-      <% if controller_name == "articles_search" %>
+
+      <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
+      <% if controller_name == "articles_search" || Rails.env.test? %>
         <%= javascript_include_tag "Search", defer: true %>
       <% else %>
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
