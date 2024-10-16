@@ -63,9 +63,6 @@ class UsersController < ApplicationController
         format.html { redirect_to "/settings/#{@tab}" }
       end
     else
-      Honeycomb.add_field("error", @user.errors.messages.compact_blank)
-      Honeycomb.add_field("errored", true)
-
       error_message = @user.errors.full_messages.join(", ")
 
       respond_to do |format|
