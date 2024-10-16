@@ -21,7 +21,7 @@
             end: "",
             reactions: tag.span(image_tag(reaction_image(notification.reaction_category),
                                           class: "reaction-image mx-1 reaction-icon--#{notification.reaction_category}",
-                                          title: t("views.reactions.category.#{notification.reaction_category}")))) %>
+                                          title: t("views.notifications.reacted.reaction.#{notification.reaction_category}", default: notification.reaction_category)))) %>
     </div>
   </div>
 </div>
