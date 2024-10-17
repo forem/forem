@@ -379,7 +379,7 @@ function insertArticles(articles) {
 
 function paginate(tag, params, requiresApproval) {
   const searchHash = Object.assign(
-    { per_page: 15, page: nextPage },
+    { per_page: 15, page: nextPage, archived: false },
     JSON.parse(params),
   );
 

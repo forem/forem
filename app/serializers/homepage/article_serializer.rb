@@ -28,6 +28,7 @@ module Homepage
       :title,
       :user_id,
       :public_reaction_categories,
+      :archived
     )
 
     # return displayed_comments_count (excluding low score comments) if it was calculated earlier
