@@ -111,20 +111,16 @@ class StoriesController < ApplicationController
     @organization = Organization.find_by(slug: params[:username])
     @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
-      Honeycomb.add_field("stories_route", "podcast")
       handle_podcast_index
     elsif @organization
-      Honeycomb.add_field("stories_route", "org")
       handle_organization_index
     elsif @page
       if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
-        Honeycomb.add_field("stories_route", "page")
         handle_page_display
       else
         not_found
       end
     else
-      Honeycomb.add_field("stories_route", "user")
       handle_user_index
     end
   end
@@ -294,7 +290,7 @@ class StoriesController < ApplicationController
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
-    @comments_to_show_count = 15 unless user_signed_in?
+    @comments_to_show_count = 10 unless user_signed_in?
     set_article_json_ld
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)

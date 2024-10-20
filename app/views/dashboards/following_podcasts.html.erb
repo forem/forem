@@ -4,14 +4,7 @@
   data-params="<%= params.to_json(only: %i[action per_page]) %>"
   data-which="following">
   <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
-    <header class="crayons-page-header block">
-      <h1 class="crayons-title"><%= t("views.dashboard.following_pods.heading") %></h1>
-      <%= render "actions_mobile" %>
-    </header>
-
-    <div class="crayons-layout__sidebar-left">
-      <%= render "actions" %>
-    </div>
+    <%= render("header_and_action", page_title: t("views.dashboard.following_pods.heading")) %>
     <div class="crayons-layout__content" id="user-dashboard">
       <% if @followed_podcasts.any? %>
         <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">

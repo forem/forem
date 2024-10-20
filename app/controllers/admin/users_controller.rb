@@ -12,6 +12,7 @@ module Admin
       reputation_modifier
       max_score
       tag_name
+      email
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -62,6 +63,9 @@ module Admin
       set_banishable_user
       set_feedback_messages
       set_related_reactions
+      @articles = @user.articles.order(created_at: :desc)
+      # Remove the .includes(:commentable)
+      @comments = @user.comments.order(created_at: :desc)
       set_user_details
     end
 
@@ -101,6 +105,25 @@ module Admin
         flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
       else
         flash[:error] = I18n.t("views.admin.users.reputation.error")
+      end
+      redirect_to admin_user_path(@user)
+    end
+
+    def update_email
+      @user = User.find(params[:id])
+      old_email = @user.email
+      new_email = user_params[:email]
+      if @user.update_columns(email: new_email)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "Update Email",
+          content: "Updated email from #{old_email} to #{new_email}",
+        )
+        flash[:success] = I18n.t("views.admin.users.update_email.success")
+      else
+        flash[:error] = I18n.t("views.admin.users.update_email.error")
       end
       redirect_to admin_user_path(@user)
     end

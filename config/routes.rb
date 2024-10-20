@@ -159,7 +159,7 @@ Rails.application.routes.draw do
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
-    resources :stripe_subscriptions, only: %i[new destroy]
+    resources :stripe_subscriptions, only: %i[new edit destroy]
     resources :github_repos, only: %i[index] do
       collection do
         post "/update_or_create", to: "github_repos#update_or_create"
@@ -234,8 +234,6 @@ Rails.application.routes.draw do
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
-
-    get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
 
     get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", to: "async_info#navigation_links"
@@ -325,6 +323,7 @@ Rails.application.routes.draw do
     get "/settings/:tab/:id", to: "users#edit", constraints: { tab: /response-templates/ }
     get "/signout_confirm", to: "users#signout_confirm"
     get "/dashboard", to: "dashboards#show"
+    get "/dashboard/sidebar", to: "dashboards#sidebar"
     get "/dashboard/analytics", to: "dashboards#analytics"
     get "dashboard/analytics/org/:org_id", to: "dashboards#analytics", as: :dashboard_analytics_org
     get "dashboard/following", to: "dashboards#following_tags"

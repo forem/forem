@@ -196,6 +196,26 @@ document.ready.then(() => {
     'js-hamburger-trigger',
   )[0];
   hamburgerTrigger.addEventListener('click', getNavigation);
+
+  // Dynamically loading the script.js.
+  // We don't currently have dynamic insert working, so using this
+  // method instead.
+  const hoverElement = document.querySelector("#search-input");
+
+  const scriptElement = document.querySelector('meta[name="search-script"]');
+  if (scriptElement) {
+    hoverElement.addEventListener("mouseenter", function() {
+      const scriptPath = scriptElement.getAttribute("content");
+
+      // Check if the script is already added to the head
+      if (scriptPath && !document.querySelector(`script[src="${scriptPath}"]`)) {
+        const script = document.createElement("script");
+        script.src = scriptPath;
+        script.defer = true; // Optional, if you want it to load in deferred mode
+        document.head.appendChild(script);
+      }
+    }, { once: true }); // Ensures the hover event only triggers once
+  }
 });
 
 trackCreateAccountClicks('authentication-hamburger-actions');

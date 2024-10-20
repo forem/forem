@@ -86,11 +86,6 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :suggested_for_onboarding, -> { where(suggested: true) }
 
-  # possible social previews templates for articles with a particular tag
-  def self.social_preview_templates
-    Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
-  end
-
   def self.valid_categories
     ALLOWED_CATEGORIES
   end

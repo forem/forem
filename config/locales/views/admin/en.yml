@@ -162,6 +162,13 @@ en:
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Only Super Admins are allowed to delete users.
           submit: Delete now
+        update_email:
+          heading: Update User Email
+          desc_html: User's current email is %{email}.
+          new_email: New email
+          submit: Update email
+          success: Email updated successfully.
+          error: Failed to update email.
         export:
           heading: Export %{user}'s data
           desc1_html: Choose between sending the exported data to either your Admin contact email, %{contact}, or to %{user}'s %{user_email} directly.
@@ -349,6 +356,7 @@ en:
           visit: Visit profile
           options:
             icon: Options
+            update_email: Update User Email
             export: Export data
             merge: Merge users
             unpublish: Unpublished all posts
@@ -402,6 +410,8 @@ en:
           emails: Emails
           reports: Reports
           flags: Flags
+          articles: Articles
+          comments: Comments
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
@@ -436,6 +446,7 @@ en:
           Good Standing: Good Standing
           Good standing: Good standing
           Trusted: Trusted
+          Base Subscriber: Base Subscriber
         max_score_title: Maximum score
         max_score_reader: "Maximum score:"
         identities:

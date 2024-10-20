@@ -273,10 +273,8 @@ class ArticlesController < ApplicationController
 
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
-      Honeycomb.add_field("articles_route", "user")
       @articles = @articles.where(user_id: @user.id)
     elsif (@user = Organization.find_by(slug: params[:username]))
-      Honeycomb.add_field("articles_route", "org")
       @articles = @articles.where(organization_id: @user.id).includes(:user)
     end
   end
@@ -297,7 +295,6 @@ class ArticlesController < ApplicationController
                       Article.includes(:user).find(params[:id])
                     end
     @article = found_article || not_found
-    Honeycomb.add_field("article_id", @article.id)
   end
 
   # TODO: refactor all of this update logic into the Articles::Updater possibly,

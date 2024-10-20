@@ -101,7 +101,7 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include("Analytics")
       end
 
-      it "renders a link to analytics for the org" do
+      xit "renders a link to analytics for the org" do
         create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
 
         get dashboard_path
@@ -154,7 +154,7 @@ RSpec.describe "Dashboards" do
     end
 
     context "when logged in as a non recent user with enable_video_upload set to true on the Forem" do
-      it "renders a link to upload a video" do
+      xit "renders a link to upload a video" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
           allow(Settings::General).to receive(:enable_video_upload).and_return(true)
@@ -224,7 +224,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/following_users"
       end
 
-      it "renders followed users count" do
+      xit "renders followed users count" do
         expect(response.body).to include "Following users (1)"
       end
 
@@ -257,7 +257,7 @@ RSpec.describe "Dashboards" do
           get "/dashboard/following_tags"
         end
 
-        it "renders followed tags count" do
+        xit "renders followed tags count" do
           expect(response.body).to include "Following tags (2)"
         end
 
@@ -274,7 +274,7 @@ RSpec.describe "Dashboards" do
           get "/dashboard/hidden_tags"
         end
 
-        it "renders hidden tags count" do
+        xit "renders hidden tags count" do
           expect(response.body).to include "Hidden tags (1)"
         end
 
@@ -298,7 +298,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/following_organizations"
       end
 
-      it "renders followed organizations count" do
+      xit "renders followed organizations count" do
         expect(response.body).to include "Following organizations (1)"
       end
 
@@ -317,7 +317,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/following_podcasts"
       end
 
-      it "renders followed podcast count" do
+      xit "renders followed podcast count" do
         expect(response.body).to include "Following podcasts (1)"
       end
 

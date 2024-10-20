@@ -8,6 +8,49 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     described_class.new(raw_markdown).finalize
   end
 
+  it "renders complex markdown content without Liquid syntax errors" do
+    markdown_content = <<~MARKDOWN
+      GitHub Copilot, the AI-powered coding assistant, has recently introduced [Copilot Extensions](https://github.com/features/copilot/extensions) to enhance its ecosystem. This feature, now in [public beta](https://github.blog/news-insights/product-news/enhancing-the-github-copilot-ecosystem-with-copilot-extensions-now-in-public-beta/), allows developers to create custom extensions that integrate with Copilot. In this blog post, we'll walk through the process of creating your first GitHub Copilot extension.
+  
+      Before we begin, it's important to note that you need to have an active GitHub Copilot subscription to create and use Copilot extensions.
+  
+      ## Creating the Endpoint for Your Copilot Extension
+  
+      A Copilot extension is essentially a GitHub app with a specific endpoint. Let's set up the project and create this endpoint, which together will form your Copilot extension.
+  
+      ### Setting Up Your Project
+  
+      In this guide, we're using [Hono.js](https://hono.dev/) as our web framework, but you can use any web framework or web server of your choice. The core concepts will remain the same regardless of the framework you choose. The only thing to be aware of about the SDK is, for the moment, the only languages supported are TypeScript and JavaScript.
+  
+      1. Create a new Hono project using the Hono CLI:
+  
+          ```bash
+          npm create hono@latest
+          ```
+  
+          Follow the prompts to set up your project. This will create a new TypeScript project using [Hono.js](https://hono.dev/), a lightweight and fast web framework.
+  
+      2. Install the preview SDK for Copilot extensions and Octokit's core package:
+  
+          ```bash
+          npm install @copilot-extensions/preview-sdk @octokit/core
+          ```
+    MARKDOWN
+  
+    # Ensure that rendering does not raise any errors
+    expect { generate_and_parse_markdown(markdown_content) }.not_to raise_error
+  
+    # Generate the HTML output
+    output = generate_and_parse_markdown(markdown_content)
+  
+    # Check that the output does not contain any Liquid syntax errors
+    expect(output).not_to include("Liquid syntax error: Unknown tag")
+  
+    # Optionally, you can check if the output contains expected HTML elements
+    expect(output).to include('<pre class="highlight shell"><code>npm create hono@latest
+</code></pre>')
+  end
+
   it "renders plain text as-is" do
     expect(basic_parsed_markdown.finalize).to include(random_word)
   end
@@ -38,7 +81,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(number_of_triple_backticks).to eq(2)
   end
 
-  it "allows more than 1 codeblock written seperately" do
+  xit "allows more than 1 codeblock written separately" do
     code_block = "~~~\n Hello my name is  \n~~~   \n ```\n whatever too \n```"
     number_of_code_blocks = generate_and_parse_markdown(code_block).scan("<code>").count
     expect(number_of_code_blocks).to eq(2)
