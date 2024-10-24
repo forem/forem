@@ -201,5 +201,13 @@ FactoryBot.define do
           .update_columns(email_newsletter: true, email_digest_periodic: true)
       end
     end
+
+    trait :without_newsletters do
+      after(:create) do |user|
+        Users::NotificationSetting.find_by(user_id: user.id)
+          .update_columns(email_newsletter: false, email_digest_periodic: true)
+      end
+    end
+
   end
 end

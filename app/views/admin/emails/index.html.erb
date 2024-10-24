@@ -1,0 +1,56 @@
+<h1 class="crayons-title mb-3">Emails</h1>
+
+<div
+  data-controller="confirmation-modal"
+  data-confirmation-modal-root-selector-value="#confirmation-modal-root"
+  data-confirmation-modal-content-selector-value="#confirmation-modal"
+  data-confirmation-modal-title-value="Confirm changes"
+  data-confirmation-modal-size-value="m">
+  
+  <nav class="flex mb-4" aria-label="Emails navigation">
+    <%= form_tag(admin_emails_path, method: "get") do %>
+      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search", autocomplete: "off") %>
+    <% end %>
+    <div class="ml-auto">
+      <div class="justify-end">
+        <%= link_to "Compose New Email", new_admin_email_path, class: "crayons-btn" %>
+      </div>
+    </div>
+  </nav>
+
+  <%= paginate @emails %>
+
+
+  <table class="crayons-table" width="100%">
+    <thead>
+      <tr>
+        <th scope="col">Subject</th>
+        <th scope="col">Sent At</th>
+        <th scope="col">Segment</th>
+        <th scope="col">Body</th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @emails.each do |email| %>
+        <tr data-row-id="<%= email.id %>">
+          <td><%= link_to email.subject, admin_email_path(email) %></td>
+          <td><%= email.created_at %></td>
+          <td><%= email.audience_segment&.name || email.audience_segment&.type_of || "All" %></td>
+          <td><%= truncate(email.body, length: 100) %></td>
+          <td><%= link_to "Details", admin_email_path(email), class: "crayons-btn" %></td>
+          <td>
+            <button
+              class="crayons-btn crayons-btn--danger"
+              data-item-id="<%= email.id %>"
+              data-endpoint="/admin/emails"
+              data-username="<%= current_user.username %>"
+              data-action="click->confirmation-modal#openModal">Destroy</button>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= render partial: "admin/shared/destroy_confirmation_modal" %>
+  <%= paginate @emails %>
+</div>
