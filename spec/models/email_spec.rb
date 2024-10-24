@@ -14,15 +14,15 @@ RSpec.describe Email, type: :model do
   end
 
   describe "#deliver_to_users" do
-    let(:user_with_notifications) { create(:user, :registered, :with_newsletters) }
-    let(:user_without_notifications) { create(:user, :registered, :without_newsletters) }
+    let(:user_with_notifications) { create(:user, :with_newsletters) }
+    let(:user_without_notifications) { create(:user, :without_newsletters) }
 
     context "when there is an audience segment" do
       let(:audience_segment) { create(:audience_segment) }
       let(:email) { create(:email, audience_segment: audience_segment) }
 
       before do
-        allow(audience_segment).to receive_message_chain(:users, :registered, :joins, :where, :where_not).and_return([user_with_notifications])
+        allow(audience_segment).to receive_message_chain(:users, :joins, :where, :where_not).and_return([user_with_notifications])
       end
 
       it "sends the emails to the users in the audience segment with email newsletters enabled" do
@@ -62,8 +62,8 @@ RSpec.describe Email, type: :model do
 
       it "processes users in batches" do
         batch_size = Email::BATCH_SIZE
-        users_batch_1 = create_list(:user, batch_size, :registered, :with_newsletters)
-        users_batch_2 = create_list(:user, batch_size, :registered, :with_newsletters)
+        users_batch_1 = create_list(:user, batch_size, :with_newsletters)
+        users_batch_2 = create_list(:user, batch_size, :with_newsletters)
 
         allow(User).to receive_message_chain(:registered, :joins, :where, :where_not).and_return(users_batch_1 + users_batch_2)
 
