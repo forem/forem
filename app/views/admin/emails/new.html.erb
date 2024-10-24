@@ -1,0 +1,7 @@
+<h1 class="crayons-title mb-4">Make a new Email</h1>
+<div class="crayons-card p-6">
+  <%= form_for([:admin, @email], url: admin_emails_path, method: :post) do %>
+    <%= render "form" %>
+    <%= submit_tag "Send Billboard", class: "c-btn c-btn--primary" %>
+  <% end %>
+</div>

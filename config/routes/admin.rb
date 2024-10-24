@@ -96,6 +96,7 @@ namespace :admin do
         patch "update_org_credits"
       end
     end
+    resources :emails
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :fetch
