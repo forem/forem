@@ -1,5 +1,5 @@
 class CustomMailer < ApplicationMailer
-  default from: -> { email_from(I18n.t("mailers.digest_mailer.from")) }
+  default from: -> { email_from(I18n.t("mailers.custom_mailer.from")) }
 
   def custom_email
     @user = params[:user]

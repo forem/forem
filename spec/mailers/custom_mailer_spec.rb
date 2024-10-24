@@ -13,7 +13,7 @@ RSpec.describe CustomMailer, type: :mailer do
     before do
       allow_any_instance_of(CustomMailer).to receive(:generate_unsubscribe_token).and_return(unsubscribe_token)
       allow_any_instance_of(CustomMailer).to receive(:email_from).and_return("no-reply@example.com")
-      allow(I18n).to receive(:t).with("mailers.digest_mailer.from").and_return("From Name")
+      allow(I18n).to receive(:t).with("mailers.custom_mailer.from").and_return("From Name")
     end
 
     context "when SendGrid is enabled" do
