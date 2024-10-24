@@ -22,7 +22,9 @@ RSpec.describe Email, type: :model do
       let(:email) { create(:email, audience_segment: audience_segment) }
 
       before do
-        allow(audience_segment).to receive_message_chain(:users, :joins, :where, :where_not).and_return([user_with_notifications])
+        # Allow audience_segment.users to return users that belong to the segment
+        allow(audience_segment).to receive(:users).and_return(User.where(id: user_with_notifications.id))
+        # Alternatively, you could also populate the database with relevant users
       end
 
       it "sends the emails to the users in the audience segment with email newsletters enabled" do
@@ -35,7 +37,8 @@ RSpec.describe Email, type: :model do
       let(:email) { create(:email, audience_segment: nil) }
 
       before do
-        allow(User).to receive_message_chain(:registered, :joins, :where, :where_not).and_return([user_with_notifications])
+        # Mock User.registered scope to return only users with newsletters enabled
+        allow(User).to receive(:registered).and_return(User.where(id: user_with_notifications.id))
       end
 
       it "sends the emails to all registered users with email newsletters enabled" do
@@ -48,7 +51,8 @@ RSpec.describe Email, type: :model do
       let(:email) { create(:email) }
 
       before do
-        allow(User).to receive_message_chain(:registered, :joins, :where, :where_not).and_return([])
+        # Mock User.registered scope to return no users
+        allow(User).to receive(:registered).and_return(User.none)
       end
 
       it "does not enqueue any jobs" do
@@ -65,7 +69,8 @@ RSpec.describe Email, type: :model do
         users_batch_1 = create_list(:user, batch_size, :with_newsletters)
         users_batch_2 = create_list(:user, batch_size, :with_newsletters)
 
-        allow(User).to receive_message_chain(:registered, :joins, :where, :where_not).and_return(users_batch_1 + users_batch_2)
+        # Mock User.registered scope to return all users in two batches
+        allow(User).to receive(:registered).and_return(User.where(id: users_batch_1.pluck(:id) + users_batch_2.pluck(:id)))
 
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(users_batch_1.map(&:id))
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(users_batch_2.map(&:id))
