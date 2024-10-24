@@ -14,8 +14,8 @@ RSpec.describe Email, type: :model do
   end
 
   describe "#deliver_to_users" do
-    let(:user_with_notifications) { create(:user, :registered, notification_setting: create(:notification_setting, email_newsletter: true)) }
-    let(:user_without_notifications) { create(:user, :registered, notification_setting: create(:notification_setting, email_newsletter: false)) }
+    let(:user_with_notifications) { create(:user, :registered, :with_newsletters) }
+    let(:user_without_notifications) { create(:user, :registered, :without_newsletters) }
 
     context "when there is an audience segment" do
       let(:audience_segment) { create(:audience_segment) }
@@ -62,8 +62,8 @@ RSpec.describe Email, type: :model do
 
       it "processes users in batches" do
         batch_size = Email::BATCH_SIZE
-        users_batch_1 = create_list(:user, batch_size, :registered, notification_setting: create(:notification_setting, email_newsletter: true))
-        users_batch_2 = create_list(:user, batch_size, :registered, notification_setting: create(:notification_setting, email_newsletter: true))
+        users_batch_1 = create_list(:user, batch_size, :registered, :with_newsletters)
+        users_batch_2 = create_list(:user, batch_size, :registered, :with_newsletters)
 
         allow(User).to receive_message_chain(:registered, :joins, :where, :where_not).and_return(users_batch_1 + users_batch_2)
 
