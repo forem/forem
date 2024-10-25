@@ -984,16 +984,6 @@ class Article < ApplicationRecord
     self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
 
-  Article.published.where("score > 3").where("cached_user like ?", "%res.cloudinary%").where("published_at > ?", 40.weeks.ago).limit(2).each do |a|
-    p a.cached_user.profile_image_90
-    a.update_column(:cached_organization, Articles::CachedEntity.from_object(a.organization)) if a.organization_id.present?
-    a.update_column(:cached_user, Articles::CachedEntity.from_object(a.user))
-    p a.reload.cached_user.profile_image_90
-    p "************"
-  rescue => e
-    p e.message
-  end
-
   def set_all_dates
     set_crossposted_at
     set_last_comment_at
