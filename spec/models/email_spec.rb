@@ -28,7 +28,11 @@ RSpec.describe Email, type: :model do
       end
 
       it "sends the emails to the users in the audience segment with email newsletters enabled" do
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with([user_with_notifications.id])
+        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+          [user_with_notifications.id],
+          email.subject,
+          email.body
+        )
         email.send(:deliver_to_users)
       end
     end
@@ -42,7 +46,11 @@ RSpec.describe Email, type: :model do
       end
 
       it "sends the emails to all registered users with email newsletters enabled" do
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with([user_with_notifications.id])
+        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+          [user_with_notifications.id],
+          email.subject,
+          email.body
+        )
         email.send(:deliver_to_users)
       end
     end
@@ -72,8 +80,16 @@ RSpec.describe Email, type: :model do
         # Mock User.registered scope to return all users in two batches
         allow(User).to receive(:registered).and_return(User.where(id: users_batch_1.pluck(:id) + users_batch_2.pluck(:id)))
 
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(users_batch_1.map(&:id))
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(users_batch_2.map(&:id))
+        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+          users_batch_1.map(&:id),
+          email.subject,
+          email.body
+        )
+        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+          users_batch_2.map(&:id),
+          email.subject,
+          email.body
+        )
 
         email.send(:deliver_to_users)
       end
