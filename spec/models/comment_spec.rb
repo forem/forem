@@ -627,9 +627,10 @@ false).once
   let(:new_domain) { "https://new.cdn.com" }
 
   before do
+    allow(ApplicationConfig).to receive(:[]).and_call_original # allow all real calls by default
     allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
     allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
-  end
+    end
 
   context "when the prior domain and new domain are both present" do
     it "replaces instances of the prior domain with the new domain" do
