@@ -474,6 +474,17 @@ class Article < ApplicationRecord
     end
   end
 
+  def processed_html_final
+    # This is a final non-database-driven step to adjust processed html
+    # It is sort of a hack to avoid having to reprocess all articles
+    # It is currently only for this one cloudflare domain change
+    # It is duplicated across article, bullboard and comment where it is most needed
+    # In the future this could be made more customizable. For now it's just this one thing.
+    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
+
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+  end
+
   def scheduled?
     published_at? && published_at.future?
   end
@@ -971,6 +982,16 @@ class Article < ApplicationRecord
   def set_cached_entities
     self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
     self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
+  end
+
+  Article.published.where("score > 3").where("cached_user like ?", "%res.cloudinary%").where("published_at > ?", 40.weeks.ago).limit(2).each do |a|
+    p a.cached_user.profile_image_90
+    a.update_column(:cached_organization, Articles::CachedEntity.from_object(a.organization)) if a.organization_id.present?
+    a.update_column(:cached_user, Articles::CachedEntity.from_object(a.user))
+    p a.reload.cached_user.profile_image_90
+    p "************"
+  rescue => e
+    p e.message
   end
 
   def set_all_dates
