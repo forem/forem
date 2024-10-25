@@ -172,7 +172,7 @@ class Comment < ApplicationRecord
   end
 
   def safe_processed_html
-    processed_html.html_safe # rubocop:disable Rails/OutputSafety
+    processed_html_final.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def root_exists?
@@ -189,6 +189,17 @@ class Comment < ApplicationRecord
 
   def calculate_score
     Comments::CalculateScoreWorker.perform_async(id)
+  end
+
+  def processed_html_final
+    # This is a final non-database-driven step to adjust processed html
+    # It is sort of a hack to avoid having to reprocess all articles
+    # It is currently only for this one cloudflare domain change
+    # It is duplicated across article, bullboard and comment where it is most needed
+    # In the future this could be made more customizable. For now it's just this one thing.
+    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
+
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   private
