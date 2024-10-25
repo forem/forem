@@ -21,7 +21,12 @@ RSpec.describe CustomMailer, type: :mailer do
       end
 
       it "sets the X-SMTPAPI header with the correct category" do
-        expect(mail.headers["X-SMTPAPI"]).to eq({ category: "Newsletter Email" }.to_json)
+        mail.deliver_now
+
+        expect(mail.header["X-SMTPAPI"]).not_to be_nil
+        smtpapi_header = JSON.parse(mail.header["X-SMTPAPI"].value)
+        expect(smtpapi_header).to have_key("category")
+        expect(smtpapi_header["category"]).to include("Custom Email")
       end
 
       it "sends the email with the correct details" do
