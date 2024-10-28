@@ -12,6 +12,8 @@ en:
       other_community_posts: other %{community} posts you might like
       other_top_posts: other top %{community} posts
       other_trending_posts: other trending %{community} posts
+    custom_mailer:
+      from: Newsletter
     notify_mailer:
       account_deleted: "%{community} - Account Deletion Confirmation"
       deletion_requested: "%{community} - Account Deletion Requested"

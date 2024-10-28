@@ -8,7 +8,7 @@
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of_display %>">
-      <%= billboard.processed_html.html_safe %>
+      <%= billboard.processed_html_final.html_safe %>
   </div>
 <% elsif billboard.placement_area.start_with?("feed_") %>
   <div class="crayons-story crayons-story__billboard billboard js-billboard"
@@ -33,7 +33,7 @@
       </div>
       <div class="crayons-story__indention-billboard">
         <div class="text-styles text-styles--billboard">
-          <%= billboard.processed_html.html_safe %>
+          <%= billboard.processed_html_final.html_safe %>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
-      <%= billboard.processed_html.html_safe %>
+      <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
 <% elsif billboard.placement_area == "post_fixed_bottom" || billboard.placement_area == "page_fixed_bottom" %>
@@ -83,7 +83,7 @@
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
-      <%= billboard.processed_html.html_safe %>
+      <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
@@ -107,7 +107,7 @@
       <% end %>
     </div>
     <div class="p-1 pt-3 text-styles text-styles--billboard">
-      <%= billboard.processed_html.html_safe %>
+      <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
 <% else %>
@@ -122,7 +122,7 @@
     data-type-of="<%= billboard.type_of_display %>">
     <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
     <div class="p-1 pt-3 text-styles text-styles--billboard">
-      <%= billboard.processed_html.html_safe %>
+      <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
 <% end %>

@@ -1,0 +1,46 @@
+<div class="grid l:grid-cols-2 gap-6 mb-4">
+  <div class="flex flex-col gap-4">
+
+    <div class="crayons-field">
+      <%= label_tag :audience_segment_id, "Audience Segment:", class: "crayons-field__label" %>
+      <%= select_tag :audience_segment_id, options_for_select([["Entire list", nil]] + @audience_segments.map { |s| [s.name || s.type_of, s.id]}), class: "crayons-textfield", autocomplete: "off" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :subject, "Subject:", class: "crayons-field__label" %>
+      <%= text_field_tag :subject, @email.subject, class: "crayons-textfield", autocomplete: "off" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :body, "Body Content:", class: "crayons-field__label" %>
+      <%= text_area_tag :body, @email.body, size: "100x5", class: "crayons-textfield" %>
+    </div>
+  </div>
+
+  <div>
+    <div class="crayons-card crayons-card--secondary">
+      <% if @email.persisted? %>
+        <h2 class="crayons-title mb-2">Preview</h2>
+        <p><strong>Subject:</strong> <%= @email.subject %></p>
+        <p><strong>Body:</strong></p>
+        <div class="crayons-article__body text-styles">
+          <%= simple_format(@email.body) %>
+        </div>
+      <% else %>
+        <div class="flex flex-col gap-3">
+          <p>
+            Use this form to compose a new email. Fill in the subject, body, and specify the recipients.
+          </p>
+          <p>
+            You can choose to send the email immediately or schedule it for a later time.
+          </p>
+          <p>
+            Select the appropriate recipient group or provide a custom list of email addresses.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%#= javascript_include_tag "admin/emails", defer: true %>

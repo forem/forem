@@ -189,7 +189,7 @@
           <% end %>
 
           <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
-            <%= @article.processed_html.html_safe %>
+            <%= @article.processed_html_final.html_safe %>
           </div>
 
           <% if @article.long_markdown? && @collection %>

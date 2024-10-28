@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_09_155030) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_23_131302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -184,6 +184,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_09_155030) do
 
   create_table "audience_segments", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "name"
     t.integer "type_of"
     t.datetime "updated_at", null: false
   end
@@ -526,6 +527,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_09_155030) do
     t.bigint "user_id"
     t.datetime "verified_at", precision: nil
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
+  end
+
+  create_table "emails", force: :cascade do |t|
+    t.bigint "audience_segment_id"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
   end
 
   create_table "feed_events", force: :cascade do |t|
@@ -1478,6 +1488,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_09_155030) do
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "emails", "audience_segments"
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
