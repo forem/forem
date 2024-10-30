@@ -64,38 +64,32 @@ class BillboardEventRollup
 
   def rollup(date, batch_size: 1000)
     created = []
-
-    # Wrap the entire method in a transaction and set statement timeout
-    relation.transaction do
-      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'")
-
-      # Get list of display_ad_ids for the date within the transaction
-      display_ad_ids = relation.where(created_at: date.all_day).distinct.pluck(:display_ad_id)
-
-      display_ad_ids.each do |display_ad_id|
-        aggregator = EventAggregator.new
-
-        # Process events for each display_ad_id within a transaction
-        relation.transaction(requires_new: true) do
-          relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'")
-
-          relation.where(display_ad_id: display_ad_id, created_at: date.all_day).in_batches(of: batch_size) do |batch|
-            batch.each do |event|
-              aggregator << event
-            end
+    # Set statement_timeout for the initial query and then reset it
+    relation.connection.execute("SET statement_timeout = '#{STATEMENT_TIMEOUT}s'")
+    display_ad_ids = relation.where(created_at: date.all_day).distinct.pluck(:display_ad_id)
+    relation.connection.execute("RESET statement_timeout")
+  
+    display_ad_ids.each do |display_ad_id|
+      aggregator = EventAggregator.new
+  
+      # Each billboard is processed in its own transaction
+      relation.transaction(requires_new: true) do
+        relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'")
+  
+        relation.where(display_ad_id: display_ad_id, created_at: date.all_day).in_batches(of: batch_size) do |batch|
+          batch.each do |event|
+            aggregator << event
           end
-
-          aggregator.each do |compacted_events|
-            created << compact_records(compacted_events)
-          end
-        ensure
-          relation.connection.execute("RESET statement_timeout")
         end
+  
+        aggregator.each do |compacted_events|
+          created << compact_records(compacted_events)
+        end
+      ensure
+        relation.connection.execute("RESET statement_timeout")
       end
-    ensure
-      relation.connection.execute("RESET statement_timeout")
     end
-
+  
     created
   end
 
