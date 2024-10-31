@@ -23,6 +23,15 @@
             data-info='<%= DataInfo.to_json(object: @user) %>'>
             <%= t("views.organizations.follow") %>
           </button>
+          <div class="profile-dropdown ml-2 s:relative" data-organizationname="<%= @organization.name %>">
+              <button id="organization-profile-dropdown" aria-expanded="false" aria-controls="organization-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
+                <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: t("views.organizations.dropdown")) %>
+              </button>
+
+              <div id="organization-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
+                <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= organization_url(@organization) %>"></span>
+              </div>
+            </div>
         </div>
       </div>
 
@@ -75,3 +84,6 @@
     </header>
   </div>
 </div>
+
+<%= javascript_include_tag "organizationDropdown",
+                           defer: true %>
