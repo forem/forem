@@ -251,9 +251,17 @@
 
 <script>
   <%# we consider these scripts safe for embedding as they come from our code %>
-  <%== PodcastTag.script %>
-  <%== PollTag.script %>
-  <%== RunkitTag.script %>
-  <%== TweetTag.script %>
+  <% if @article.processed_html.include?("podcastliquidtag") %>
+    <%== PodcastTag.script %>
+  <% end %>
+  <% if @article.processed_html.include?("ltag-poll") %>
+    <%== PollTag.script %>
+  <% end %>
+  <% if @article.processed_html.include?("runkit-element") %>
+    <%== RunkitTag.script %>
+  <% end %>
+  <% if @article.processed_html.include?("tweet-embed") %>
+    <%== TweetTag.script %>
+  <% end %>
 </script>
 <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_fixed_bottom) %>"></div>
