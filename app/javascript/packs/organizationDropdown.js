@@ -1,7 +1,5 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
-/* global initButtons */
-
 function initDropdown() {
   const profileDropdownDiv = document.querySelector('.profile-dropdown');
 
@@ -24,7 +22,6 @@ function initDropdown() {
   );
   reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
 
-  initButtons();
   profileDropdownDiv.dataset.dropdownInitialized = true;
 }
 
