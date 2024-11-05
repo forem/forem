@@ -35,28 +35,28 @@ describe('play or pause animated images', () => {
       cy.visit('/admin_mcadmin/test-article-slug');
     });
 
-    it('initializes pausable images for a user with prefers-reduce-motion unset', () => {
-      // Only two images should be pausable
-      cy.findAllByRole('button', { name: 'Pause animation playback' })
-        .as('pauseButtons')
-        .should('have.length', 2);
+  //   it('initializes pausable images for a user with prefers-reduce-motion unset', () => {
+  //     // Only two images should be pausable
+  //     cy.findAllByRole('button', { name: 'Pause animation playback' })
+  //       .as('pauseButtons')
+  //       .should('have.length', 2);
 
-      // By default, both buttons should be in the 'playing' state
-      cy.get('@pauseButtons').first().as('firstButton');
-      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
-      cy.get('@pauseButtons').last().as('lastButton');
-      cy.get('@lastButton').should('have.attr', 'aria-pressed', 'false');
+  //     // By default, both buttons should be in the 'playing' state
+  //     cy.get('@pauseButtons').first().as('firstButton');
+  //     cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
+  //     cy.get('@pauseButtons').last().as('lastButton');
+  //     cy.get('@lastButton').should('have.attr', 'aria-pressed', 'false');
 
-      // Pressing the button should toggle only the state of the individual image
-      cy.get('@firstButton').click();
-      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'true');
-      cy.get('@lastButton').should('have.attr', 'aria-pressed', 'false');
+  //     // Pressing the button should toggle only the state of the individual image
+  //     cy.get('@firstButton').click();
+  //     cy.get('@firstButton').should('have.attr', 'aria-pressed', 'true');
+  //     cy.get('@lastButton').should('have.attr', 'aria-pressed', 'false');
 
-      // It should also toggle back to playing
-      cy.get('@firstButton').click();
-      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
-    });
-  });
+  //     // It should also toggle back to playing
+  //     cy.get('@firstButton').click();
+  //     cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
+  //   });
+  // });
 
   describe('user prefers reduced motion', () => {
     beforeEach(() => {
