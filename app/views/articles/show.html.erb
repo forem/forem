@@ -257,11 +257,10 @@
   <% if @article.processed_html.include?("ltag-poll") %>
     <%== PollTag.script %>
   <% end %>
-  <% if @article.processed_html.include?("runkit-element") %>
-    <%== RunkitTag.script %>
-  <% end %>
   <% if @article.processed_html.include?("tweet-embed") %>
     <%== TweetTag.script %>
   <% end %>
+  <%# We should be able to make this conditional in future, but defines a global variable for now %>
+  <%== RunkitTag.script %>
 </script>
 <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_fixed_bottom) %>"></div>

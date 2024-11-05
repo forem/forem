@@ -48,9 +48,6 @@
       <% if comment.processed_html.include?("podcastliquidtag") %>
         <%== PodcastTag.script %>
       <% end %>
-      <% if comment.processed_html.include?("runkit-element") %>
-        <%== RunkitTag.script %>
-      <% end %>
       <% if comment.processed_html.include?("tweet-embed") %>
         <%== TweetTag.script %>
       <% end %>
