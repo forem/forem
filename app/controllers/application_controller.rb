@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
   before_action :determine_locale
+  after_action  :clear_request_store
 
   include SessionCurrentUser
   include ValidRequest
@@ -320,5 +321,10 @@ class ApplicationController < ActionController::Base
     return "" unless params[:i] == "i"
 
     "?i=i"
+  end
+
+  def clear_request_store
+    # Clear RequestStore in development/test to avoid lingering. Not important in prod. 
+    RequestStore.clear! unless Rails.env.production?
   end
 end
