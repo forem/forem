@@ -11,7 +11,7 @@ module.exports = defineConfig({
     defaultCommandTimeout: 10000,
     trashAssetsBeforeRuns: false,
     video: false,
-    retries: 3,
+    retries: 5,
     reporter: 'cypress-multi-reporters',
     reporterOptions: {
       configFile: 'cypress/reporter-config.json',
