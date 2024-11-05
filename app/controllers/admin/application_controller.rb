@@ -35,9 +35,5 @@ module Admin
     def assign_help_url
       @help_url = HELP_URLS[controller_name.to_sym]
     end
-
-    def current_user
-      super # This will skip the "edge cache safety check" in the ApplicationController because admin doesn't need it
-    end  
   end
 end

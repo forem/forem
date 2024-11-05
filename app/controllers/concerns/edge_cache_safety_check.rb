@@ -13,6 +13,7 @@ module EdgeCacheSafetyCheck
 
     return if session_current_user_id.blank?
 
+    puts "HEY THERE: current_user called in edge-cached code path!"
     CANNOT_USE_CURRENT_USER
   end
 end
