@@ -9,7 +9,7 @@ class CustomMailer < ApplicationMailer
     # set sendgrid category in the header using smtp api
     # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header
     if ForemInstance.sendgrid_enabled?
-      smtpapi_header = { category: "Custom Email" }.to_json
+      smtpapi_header = { category: "#{params[:type_of] || "Custom"} Email" }.to_json
       headers["X-SMTPAPI"] = smtpapi_header
     end
 

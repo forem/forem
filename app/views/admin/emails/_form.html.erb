@@ -1,5 +1,9 @@
 <div class="grid l:grid-cols-2 gap-6 mb-4">
-  <div class="flex flex-col gap-4">
+    <div class="crayons-field">
+    <div class="crayons-field">
+      <%= label_tag :type_of, "Type:", class: "crayons-field__label" %>
+      <%= select_tag :type_of, options_for_select(Email.type_ofs.keys, selected: @email.type_of), class: "crayons-textfield", autocomplete: "off" %>
+    </div>
 
     <div class="crayons-field">
       <%= label_tag :audience_segment_id, "Audience Segment:", class: "crayons-field__label" %>
@@ -9,6 +13,11 @@
     <div class="crayons-field">
       <%= label_tag :subject, "Subject:", class: "crayons-field__label" %>
       <%= text_field_tag :subject, @email.subject, class: "crayons-textfield", autocomplete: "off" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :drip_day, "Drip Day (onboarding drip only):", class: "crayons-field__label" %>
+      <%= number_field_tag :drip_day, @email.drip_day, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">

@@ -24,6 +24,7 @@
   <table class="crayons-table" width="100%">
     <thead>
       <tr>
+        <th scope="col">Type</th>
         <th scope="col">Subject</th>
         <th scope="col">Sent At</th>
         <th scope="col">Segment</th>
@@ -33,6 +34,7 @@
     <tbody class="crayons-card">
       <% @emails.each do |email| %>
         <tr data-row-id="<%= email.id %>">
+          <td><%= email.type_of %> <%= "(#{email.drip_day})" if email.type_of == "onboarding_drip" %></td>
           <td><%= link_to email.subject, admin_email_path(email) %></td>
           <td><%= email.created_at %></td>
           <td><%= email.audience_segment&.name || email.audience_segment&.type_of || "All" %></td>
