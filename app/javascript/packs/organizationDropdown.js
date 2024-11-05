@@ -1,5 +1,7 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
+/* global initButtons */
+
 function initDropdown() {
   const profileDropdownDiv = document.querySelector('.profile-dropdown');
 
