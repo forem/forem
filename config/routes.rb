@@ -238,6 +238,9 @@ Rails.application.routes.draw do
     get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", to: "async_info#navigation_links"
 
+    get "auth_pass/iframe", to: "auth_pass#iframe", as: :auth_pass_iframe
+    post "auth_pass/token_login", to: "auth_pass#token_login", as: :auth_pass_token_login
+
     # Billboards
     scope "/:username/:slug" do
       get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard
