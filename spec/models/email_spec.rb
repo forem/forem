@@ -17,6 +17,15 @@ RSpec.describe Email, type: :model do
     let(:user_with_notifications) { create(:user, :with_newsletters) }
     let(:user_without_notifications) { create(:user, :without_newsletters) }
 
+    context "when type_of equals 'onboarding_drip'" do
+      let(:email) { create(:email, type_of: "onboarding_drip") }
+
+      it "does not enqueue any jobs" do
+        expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
+        email.send(:deliver_to_users)
+      end
+    end
+
     context "when there is an audience segment" do
       let(:audience_segment) { create(:audience_segment) }
       let(:email) { create(:email, audience_segment: audience_segment) }
@@ -31,7 +40,8 @@ RSpec.describe Email, type: :model do
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           [user_with_notifications.id],
           email.subject,
-          email.body
+          email.body,
+          email.type_of
         )
         email.send(:deliver_to_users)
       end
@@ -49,7 +59,8 @@ RSpec.describe Email, type: :model do
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           [user_with_notifications.id],
           email.subject,
-          email.body
+          email.body,
+          email.type_of
         )
         email.send(:deliver_to_users)
       end
@@ -83,12 +94,14 @@ RSpec.describe Email, type: :model do
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           users_batch_1.map(&:id),
           email.subject,
-          email.body
+          email.body,
+          email.type_of
         )
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           users_batch_2.map(&:id),
           email.subject,
-          email.body
+          email.body,
+          email.type_of
         )
 
         email.send(:deliver_to_users)

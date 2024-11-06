@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_23_131302) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_05_210116) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -533,7 +533,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_23_131302) do
     t.bigint "audience_segment_id"
     t.text "body", null: false
     t.datetime "created_at", null: false
+    t.integer "drip_day", default: 0
+    t.integer "status", default: 0
     t.string "subject", null: false
+    t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
   end
