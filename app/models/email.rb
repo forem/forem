@@ -12,6 +12,8 @@ class Email < ApplicationRecord
   BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
   def deliver_to_users
+    return if type_of == "onboarding_drip"
+
     user_scope = if audience_segment
                    audience_segment.users.registered.joins(:notification_setting)
                                    .where(notification_setting: { email_newsletter: true })
@@ -23,7 +25,7 @@ class Email < ApplicationRecord
                  end
 
     user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
-      Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), subject, body)
+      Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), subject, body, type_of)
     end
   end
 end
