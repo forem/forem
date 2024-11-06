@@ -43,12 +43,14 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       expect(CustomMailer).to have_received(:with).with(
         user: @user_day_1_in_window,
         subject: email_template_day_1.subject,
-        content: email_template_day_1.body
+        content: email_template_day_1.body,
+        type_of: email_template_day_1.type_of
       ).once
       expect(CustomMailer).to have_received(:with).with(
         user: @user_day_2_in_window,
         subject: email_template_day_2.subject,
-        content: email_template_day_2.body
+        content: email_template_day_2.body,
+        type_of: email_template_day_2.type_of
       ).once
 
       expect(mailer).to have_received(:custom_email).twice
@@ -61,12 +63,14 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       expect(CustomMailer).not_to have_received(:with).with(
         user: @user_day_1_out_of_window,
         subject: email_template_day_1.subject,
-        content: email_template_day_1.body
+        content: email_template_day_1.body,
+        type_of: email_template_day_1.type_of
       )
       expect(CustomMailer).not_to have_received(:with).with(
         user: @user_day_2_out_of_window,
         subject: email_template_day_2.subject,
-        content: email_template_day_2.body
+        content: email_template_day_2.body,
+        type_of: email_template_day_2.type_of
       )
     end
 
@@ -85,7 +89,8 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       expect(CustomMailer).not_to have_received(:with).with(
         user: @user_recent_email,
         subject: email_template_day_1.subject,
-        content: email_template_day_1.body
+        content: email_template_day_1.body,
+        type_of: email_template_day_1.type_of
       )
     end
 
@@ -99,7 +104,8 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       expect(CustomMailer).to have_received(:with).with(
         user: user_old_email,
         subject: email_template_day_1.subject,
-        content: email_template_day_1.body
+        content: email_template_day_1.body,
+        type_of: email_template_day_1.type_of
       )
       expect(mailer).to have_received(:custom_email).exactly(3).times
       expect(message_delivery).to have_received(:deliver_now).exactly(3).times
@@ -112,12 +118,14 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       expect(CustomMailer).to have_received(:with).with(
         user: @user_day_1_in_window,
         subject: email_template_day_1.subject,
-        content: email_template_day_1.body
+        content: email_template_day_1.body,
+        type_of: email_template_day_1.type_of
       ).once
       expect(CustomMailer).to have_received(:with).with(
         user: @user_day_2_in_window,
         subject: email_template_day_2.subject,
-        content: email_template_day_2.body
+        content: email_template_day_2.body,
+        type_of: email_template_day_2.type_of
       ).once
 
       # Ensure no emails are sent for drip day 3 (no email template)
