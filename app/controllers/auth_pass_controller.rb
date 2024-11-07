@@ -97,7 +97,7 @@ class AuthPassController < ApplicationController
     allowed_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].split(",") + [Settings::General.app_domain]
     requesting_origin = request.headers["Origin"]
 
-    if allowed_domains.include?(requesting_origin.gsub(/https?:\/\//, ""))
+    if allowed_domains && allowed_domains.include?(requesting_origin&.gsub(/https?:\/\//, ""))
       headers["Access-Control-Allow-Origin"] = requesting_origin
       headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
       headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
