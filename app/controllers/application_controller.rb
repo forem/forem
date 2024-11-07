@@ -263,11 +263,42 @@ class ApplicationController < ActionController::Base
 
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
-    if user_signed_in? &&
-        cookies[:remember_user_token].blank?
+    if user_signed_in? && cookies[:remember_user_token].blank?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
+
+      # Now, reset the remember_user_token cookie with the correct domain
+      if cookies.signed["remember_user_token"].present?
+        # Retrieve the cookie value
+        token = cookies.signed["remember_user_token"]
+
+        # Determine the domain based on the request
+        domain = if Rails.env.production?
+                   # List of your secondary domains
+                   secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
+                   if secondary_domains.include?(request.host)
+                     # For secondary domains, set domain to nil (cookie for current domain)
+                     nil
+                   else
+                     # For main domain, set to ApplicationConfig["APP_DOMAIN"]
+                     ApplicationConfig["APP_DOMAIN"]
+                   end
+                 else
+                   # In non-production environments, don't set the domain
+                   nil
+                 end
+
+        # Reset the cookie with the adjusted domain
+        cookies.signed["remember_user_token"] = {
+          value: token,
+          expires: current_user.remember_expires_at,
+          path: "/",
+          domain: domain,
+          secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
+          httponly: true
+        }
+      end
     end
   end
 
