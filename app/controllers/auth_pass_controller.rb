@@ -4,7 +4,7 @@ class AuthPassController < ApplicationController
 
   # Use the iframe session store for specific actions
   before_action :allow_cross_origin_requests, only: [:iframe, :token_login]
-  before_action :use_iframe_session_store, only: [:iframe, :token_login]
+  before_action :use_iframe_session_store, only: [:iframe]
 
   def iframe
     if user_signed_in?
@@ -67,11 +67,9 @@ class AuthPassController < ApplicationController
   def use_iframe_session_store
     return if Rails.env.test? # Skip Redis session setup in test environment
 
-    # Production configuration for Redis-backed session
     request.session_options[:key] = Rails.application.config.iframe_session_options[:key]
     request.session_options[:same_site] = Rails.application.config.iframe_session_options[:same_site]
     request.session_options[:secure] = Rails.application.config.iframe_session_options[:secure]
-    request.session_options[:domain] = Rails.application.config.iframe_session_options[:domain]
     request.session_options[:path] = Rails.application.config.iframe_session_options[:path]
     request.session_options[:expire_after] = Rails.application.config.iframe_session_options[:expire_after]
     request.session_options[:httponly] = Rails.application.config.iframe_session_options[:httponly]
@@ -94,10 +92,10 @@ class AuthPassController < ApplicationController
   end
 
   def allow_cross_origin_requests
-    allowed_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].split(",") + [Settings::General.app_domain]
+    allowed_domains = (ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",") + [Settings::General.app_domain]).compact
     requesting_origin = request.headers["Origin"]
 
-    if allowed_domains && allowed_domains.include?(requesting_origin&.gsub(/https?:\/\//, ""))
+    if allowed_domains.present? && allowed_domains.include?(requesting_origin&.gsub(/https?:\/\//, ""))
       headers["Access-Control-Allow-Origin"] = requesting_origin
       headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
       headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"

@@ -8,7 +8,6 @@ expires_after = app_config_expires_after.positive? ? app_config_expires_after : 
 # See https://github.com/redis-store/redis-rails#session-storage for configuration options
 servers = ApplicationConfig["REDIS_SESSIONS_URL"] || ApplicationConfig["REDIS_URL"]
 
-# Domain property should only be set in production
 domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
 
 # Main session store

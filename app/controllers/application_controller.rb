@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
+  before_action :set_session_domain
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :remember_cookie_sync
@@ -315,6 +316,23 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
+  end
+
+  def set_session_domain
+    if Rails.env.production?
+      # List of your secondary domains
+      secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
+      if secondary_domains.include?(request.host)
+
+        request.session_options[:domain] = request.host
+      else
+        # For main domain, set to ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] = ApplicationConfig["APP_DOMAIN"]
+      end
+    else
+      # In non-production environments, don't set the domain
+      request.session_options[:domain] = nil
+    end
   end
 
   def internal_nav_param
