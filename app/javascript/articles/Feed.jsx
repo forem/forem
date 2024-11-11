@@ -397,7 +397,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 };
 
 function initializeMainStatusForm() {
-  console.log('main form')
   let lastClickedElement = null;
   document.addEventListener("mousedown", (event) => {
     lastClickedElement = event.target;
@@ -407,16 +406,22 @@ function initializeMainStatusForm() {
     return;
   }
 
+  let waitingForCSRF = setInterval(() => {
+    if (window.csrfToken !== undefined) {
+      mainForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
+      clearInterval(waitingForCSRF);
+    }
+  }, 25);
+
   document.getElementById('article_title').onfocus = function (e) {
     let textarea = e.target;
     textarea.classList.add('element-focused')
     document.getElementById('main-status-form-controls').classList.add('flex');
     document.getElementById('main-status-form-controls').classList.remove('hidden');
     textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
+    
   }
   document.getElementById('article_title').onblur = function (e) {
-    console.log(lastClickedElement)
-    console.log(mainForm.contains(lastClickedElement))
     if (mainForm.contains(lastClickedElement)) {
       e.preventDefault();
       e.target.focus();
@@ -426,14 +431,6 @@ function initializeMainStatusForm() {
       document.getElementById('main-status-form-controls').classList.remove('flex');
       document.getElementById('main-status-form-controls').classList.add('hidden');
     }
-    // console.log('article_title onblur');
-    // console.log(mainForm.contains(e.target))
-    // if (!mainForm.contains(e.target)) {
-    //   console.log('article_title onblur if');  
-    //   e.target.classList.add('element-focused')
-    //   document.getElementById('main-status-form-controls').classList.remove('flex');
-    //   document.getElementById('main-status-form-controls').classList.add('hidden');
-    // }
   }
   // Prevent return element from creating linebreak
 

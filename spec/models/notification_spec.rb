@@ -456,75 +456,76 @@ RSpec.describe Notification do
   end
 
   describe "#send_to_followers" do
-  context "when the notifiable is an article from a user" do
-    it "sends a notification to the author's followers if article is not status" do
-      article.update!(type_of: "tutorial") # ensure it's not a status
-      user2.follow(user)
+    context "when the notifiable is an article from a user" do
+      it "sends a notification to the author's followers if article is not status" do
+        article.update!(type_of: "tutorial") # ensure it's not a status
+        user2.follow(user)
 
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_to_followers(article, "Published") unless skip_notifications_for_status_article?(article)
-        end
-      end.to change(user2.notifications, :count).by(1)
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_followers(article, "Published") unless skip_notifications_for_status_article?(article)
+          end
+        end.to change(user2.notifications, :count).by(1)
+      end
+
+      it "does not send a notification to the author's followers if article is of type status" do
+        article.update!(type_of: "status")
+        user2.follow(user)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_followers(article, "Published") unless skip_notifications_for_status_article?(article)
+          end
+        end.not_to change(user2.notifications, :count)
+      end
     end
 
-    it "does not send a notification to the author's followers if article is of type status" do
-      article.update!(type_of: "status")
-      user2.follow(user)
+    context "when the notifiable is an article from an organization" do
+      let(:org_article) { create(:article, organization: organization, user: user) }
 
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_to_followers(article, "Published") unless skip_notifications_for_status_article?(article)
-        end
-      end.not_to change(user2.notifications, :count)
-    end
-  end
+      it "sends a notification to the author's followers if article is not status" do
+        org_article.update!(type_of: "tutorial") # ensure it's not a status
+        user2.follow(user)
 
-  context "when the notifiable is an article from an organization" do
-    let(:org_article) { create(:article, organization: organization, user: user) }
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+          end
+        end.to change(user2.notifications, :count).by(1)
+      end
 
-    it "sends a notification to the author's followers if article is not status" do
-      org_article.update!(type_of: "tutorial") # ensure it's not a status
-      user2.follow(user)
+      it "does not send a notification to the author's followers if article is of type status" do
+        org_article.update!(type_of: "status")
+        user2.follow(user)
 
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
-        end
-      end.to change(user2.notifications, :count).by(1)
-    end
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+          end
+        end.not_to change(user2.notifications, :count)
+      end
 
-    it "does not send a notification to the author's followers if article is of type status" do
-      org_article.update!(type_of: "status")
-      user2.follow(user)
+      it "sends a notification to the organization's followers if article is not status" do
+        org_article.update!(type_of: "tutorial") # ensure it's not a status
+        user3.follow(organization)
 
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
-        end
-      end.not_to change(user2.notifications, :count)
-    end
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+          end
+        end.to change(user3.notifications, :count).by(1)
+      end
 
-    it "sends a notification to the organization's followers if article is not status" do
-      org_article.update!(type_of: "tutorial") # ensure it's not a status
-      user3.follow(organization)
+      it "does not send a notification to the organization's followers if article is of type status" do
+        org_article.update!(type_of: "status")
+        user3.follow(organization)
 
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
-        end
-      end.to change(user3.notifications, :count).by(1)
-    end
-
-    it "does not send a notification to the organization's followers if article is of type status" do
-      org_article.update!(type_of: "status")
-      user3.follow(organization)
-
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
-        end
-      end.not_to change(user3.notifications, :count)
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+          end
+        end.not_to change(user3.notifications, :count)
+      end
     end
   end
 
