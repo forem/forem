@@ -1,5 +1,5 @@
 <a class="crayons-link crayons-link--contentful" href="<%= plucked_article[0] %>">
-  <%= plucked_article[1] %>
+  <%= truncate(plucked_article[1], length: 100) %>
   <% if show_comment_count %>
     <div class="crayons-link__secondary">
       <% if plucked_article[2] > 0 %>

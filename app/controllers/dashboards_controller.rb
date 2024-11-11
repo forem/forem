@@ -42,6 +42,7 @@ class DashboardsController < ApplicationController
 
       # if the target is a user, we need to eager load the organization
       @articles = target.articles.includes(:organization)
+      @articles = params[:state] == "status" ? @articles.statuses : @articles.full_posts
     end
 
     @reactions_count = @articles.sum(&:public_reactions_count)

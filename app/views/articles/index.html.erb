@@ -43,6 +43,25 @@
 
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
+      <%= form_with model: Article.new, id: "main-status-form" do |form| %>
+        <div class="crayons-card p-2">
+          <%= form.text_area :title, class: "crayons-textfield", placeholder: t("views.stories.status_placeholder"), aria: { label: t("views.stories.status_placeholder") }, maxlength: 256, rows: 1 %>
+          <%= form.hidden_field :body_markdown, value: "" %>
+          <%= form.hidden_field :type_of, value: "status" %>
+          <%= form.hidden_field :published, value: "1" %>
+          <div id="main-status-form-controls" class="justify-between items-center pt-2 hidden">
+            <div class="fs-s color-base-60">
+              <%= t("views.stories.status_hint_html") %>
+            </div>
+            <div class="flex items-center">
+              <div class="fs-s color-base-60 pr-2 align-right pr-1" style="min-width:65px">
+                <span id="main-status-form-char-count">0</span>/256
+              </div>
+              <%= form.submit t("views.stories.submit"), class: "crayons-btn crayons-btn--primary py-1" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">

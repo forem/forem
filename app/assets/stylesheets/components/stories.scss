@@ -9,6 +9,17 @@
   min-width: 0;
 }
 
+#main-status-form {
+  line-height: 0;
+  #main-status-form-controls {
+    line-height: 24px;
+  }
+}
+#article_title {
+  height: auto;
+  resize: none;
+}
+
 .crayons-story {
   background: var(--card-bg);
   box-shadow: 0 0 0 1px var(--card-secondary-border);
@@ -91,6 +102,10 @@
 
   &__body {
     padding: var(--story-padding);
+  }
+
+  &__body-status {
+    padding: var(--su-3) var(--story-padding) var(--su-2);
   }
 
   &__indention {
@@ -183,6 +198,16 @@
 
       &:hover {
         color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &__title-status {
+    font-weight: var(--fw-normal);
+    font-size: var(--fs-l);
+    a {
+      &:hover {
+        color: var(--card-color);
       }
     }
   }

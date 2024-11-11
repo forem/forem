@@ -312,6 +312,55 @@ RSpec.describe Article do
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
     end
+
+    describe "#title_length_based_on_type_of" do
+      it "validates title length for 'full_post' articles" do
+        article = build(:article, type_of: "full_post", title: "A" * 129)
+        expect(article).not_to be_valid
+        expect(article.errors[:title]).to include("is too long (maximum is 128 characters for full_post)")
+      end
+
+      it "validates title length for 'status' articles" do
+        article = build(:article, type_of: "status", title: "A" * 257)
+        expect(article).not_to be_valid
+        expect(article.errors[:title]).to include("is too long (maximum is 256 characters for status)")
+      end
+
+      it "allows title length within limits for specified type" do
+        article = build(:article, type_of: "status", title: "A" * 256)
+        expect(article).to be_valid
+      end
+    end
+
+    describe "#no_body_with_status_types" do
+      it "adds an error if body is present for 'status' articles" do
+        article = build(:article, type_of: "status", body_markdown: "This should not be allowed")
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+      end
+
+      it "does not add an error if body is absent for 'status' articles" do
+        article = build(:article, type_of: "status", body_markdown: nil)
+        expect(article).to be_valid
+      end
+    end
+
+    describe "#title_unique_for_user_past_five_minutes" do
+      it "adds an error if the same title is used by the same user within five minutes" do
+        create(:article, user: user, title: "Unique Title", created_at: 2.minutes.ago)
+        duplicate_article = build(:article, user: user, title: "Unique Title")
+
+        expect(duplicate_article).not_to be_valid
+        expect(duplicate_article.errors[:title]).to include("has already been used in the last five minutes")
+      end
+
+      it "does not add an error if the same title is used by the same user after five minutes" do
+        create(:article, user: user, title: "Unique Title", created_at: 6.minutes.ago)
+        duplicate_article = build(:article, user: user, title: "Unique Title")
+
+        expect(duplicate_article).to be_valid
+      end
+    end
   end
 
   context "when data is extracted from evaluation of the front matter during validation" do

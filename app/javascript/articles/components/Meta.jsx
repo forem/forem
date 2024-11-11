@@ -4,6 +4,8 @@ import { articlePropTypes } from '../../common-prop-types';
 import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
+/* global timeAgo */
+
 export const Meta = ({ article, organization }) => {
   const orgArticleIndexClassAbsent = !document.getElementById(
     'organization-article-index',
@@ -76,14 +78,19 @@ export const Meta = ({ article, organization }) => {
                 </a>
               </span>
             )}
+          {article.type_of === 'status' && (<div class='color-base-60 pl-1 inline-block fs-xs'>{timeAgo({
+              oldTimeInSeconds: article.published_at_int,
+              formatter: (x) => x,
+              maxDisplayedAge: 60 * 60 * 24 * 7,
+            })}</div>)}
         </div>
-        <a href={article.path} className="crayons-story__tertiary fs-xs">
+        {article.type_of === 'full_post' && (<a href={article.path} className="crayons-story__tertiary fs-xs">
           <PublishDate
             readablePublishDate={article.readable_publish_date}
             publishedTimestamp={article.published_timestamp}
             publishedAtInt={article.published_at_int}
           />
-        </a>
+        </a>)}
       </div>
     </div>
   );

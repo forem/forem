@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_05_210116) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -152,6 +152,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_05_210116) do
     t.text "slug"
     t.string "social_image"
     t.string "title"
+    t.integer "type_of", default: 0
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.integer "user_subscriptions_count", default: 0, null: false
@@ -179,6 +180,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_05_210116) do
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
+    t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
