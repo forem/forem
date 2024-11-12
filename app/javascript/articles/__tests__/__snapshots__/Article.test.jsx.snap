@@ -84,7 +84,7 @@ Object {
             </a>
           </div>
           <div
-            class="crayons-story__body"
+            class="crayons-story__body crayons-story__body-"
           >
             <div
               class="crayons-story__top"
@@ -199,7 +199,7 @@ Object {
               class="crayons-story__indention"
             >
               <h3
-                class="crayons-story__title"
+                class="crayons-story__title crayons-story__title-"
               >
                 <a
                   href="/some-post/path"
@@ -355,7 +355,7 @@ Object {
           </a>
         </div>
         <div
-          class="crayons-story__body"
+          class="crayons-story__body crayons-story__body-"
         >
           <div
             class="crayons-story__top"
@@ -470,7 +470,7 @@ Object {
             class="crayons-story__indention"
           >
             <h3
-              class="crayons-story__title"
+              class="crayons-story__title crayons-story__title-"
             >
               <a
                 href="/some-post/path"
