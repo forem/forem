@@ -226,7 +226,7 @@ class Article < ApplicationRecord
 
   validate :title_length_based_on_type_of
   validate :title_unique_for_user_past_five_minutes
-  validate :no_body_with_status_types
+  validate :restrict_attributes_with_status_types
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
   validate :validate_tag
@@ -776,9 +776,9 @@ class Article < ApplicationRecord
     end
   end
 
-  def no_body_with_status_types
+  def restrict_attributes_with_status_types
     # For now, there is no body allowed for status types
-    if type_of == "status" && body_markdown.present?
+    if type_of == "status" && (body_markdown.present? || main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end
