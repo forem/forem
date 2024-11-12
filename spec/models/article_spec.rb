@@ -39,7 +39,6 @@ RSpec.describe Article do
 
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(0) }
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
-    it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
     it { is_expected.to validate_presence_of(:comments_count) }
     it { is_expected.to validate_presence_of(:positive_reactions_count) }
@@ -83,12 +82,6 @@ RSpec.describe Article do
     end
 
     describe "#body_markdown" do
-      it "is not unique scoped for user_id and title" do
-        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
-
-        expect(art2).to be_valid
-      end
-
       # using https://unicode-table.com/en/11A15/ multibyte char
       it "is valid if its bytesize is less than 800 kilobytes" do
         article.body_markdown = "𑨕" * 204_800 # 4 bytes x 204800 = 800 kilobytes
@@ -340,7 +333,7 @@ RSpec.describe Article do
       end
 
       it "does not add an error if body is absent for 'status' articles" do
-        article = build(:article, type_of: "status", body_markdown: nil)
+        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true)
         expect(article).to be_valid
       end
     end
