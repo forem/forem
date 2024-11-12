@@ -433,7 +433,7 @@ RSpec.describe Notification do
       end
   
       it "does not send a notification to mentioned user if article is of type status" do
-        article.update!(type_of: "status")
+        article.update!(type_of: "status", body_markdown: "")
         expect do
           sidekiq_perform_enqueued_jobs do
             described_class.send_to_mentioned_users_and_followers(article) unless skip_notifications_for_status_article?(article)
@@ -469,7 +469,7 @@ RSpec.describe Notification do
       end
 
       it "does not send a notification to the author's followers if article is of type status" do
-        article.update!(type_of: "status")
+        article.update!(type_of: "status", body_markdown: "")
         user2.follow(user)
 
         expect do
@@ -495,7 +495,7 @@ RSpec.describe Notification do
       end
 
       it "does not send a notification to the author's followers if article is of type status" do
-        org_article.update!(type_of: "status")
+        org_article.update!(type_of: "status", body_markdown: "")
         user2.follow(user)
 
         expect do
@@ -517,7 +517,7 @@ RSpec.describe Notification do
       end
 
       it "does not send a notification to the organization's followers if article is of type status" do
-        org_article.update!(type_of: "status")
+        org_article.update!(type_of: "status", body_markdown: "")
         user3.follow(organization)
 
         expect do

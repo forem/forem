@@ -23,7 +23,7 @@ RSpec.describe "UserProfiles" do
     context "when has articles" do
       before do
         create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")
-        create(:article, user: user, title: "Status Update", published: true, type_of: "status")
+        create(:article, user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "")
       end
 
       it "displays only 'full_post' articles and excludes 'status' articles", :aggregate_failures do
