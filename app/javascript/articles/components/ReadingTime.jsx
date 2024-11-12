@@ -5,7 +5,7 @@ export const ReadingTime = ({ readingTime, typeOf }) => {
   // we have ` ... || null` for the case article.reading_time is undefined
   return (
     <small className="crayons-story__tertiary mr-2 fs-xs">
-      {typeOf === 'status' ? `status` : `${readingTime < 1 ? 1 : readingTime} min read`}
+      {typeOf === 'status' ? '' : `${readingTime < 1 ? 1 : readingTime} min read`}
     </small>
   );
 };
