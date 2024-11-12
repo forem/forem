@@ -8,7 +8,7 @@ fr:
         rss: "%{name} RSS Feed"
       status_placeholder: "What's on your mind?"
       submit: "Post"
-      status_hint_html: "<strong>Status Posts (beta)</strong> are simple posts that don't show up on your profile — <a href='/new'>Open Full Editor</a>"
+      status_hint_html: "<strong>Quickie Posts (beta)</strong> show up in the feed but not notifications or your profile — <a href='/new'>Open Full Editor</a>"
       heading: Posts
       discuss: "#discuss"
       follow: Suivre
