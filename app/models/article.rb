@@ -770,7 +770,7 @@ class Article < ApplicationRecord
                    128 # Default length if type_of is nil or another value
                  end
 
-    if title.length > max_length
+    if title.to_s.length > max_length
       errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
     end
   end

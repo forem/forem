@@ -423,7 +423,7 @@ RSpec.describe Notification do
       end
   
       it "sends a single notification to mentioned user", :aggregate_failures do
-        article.update!(type_of: "tutorial") # ensure it's not a status
+        article.update!(type_of: "full_post") # ensure it's not a status
         expect do
           sidekiq_perform_enqueued_jobs do
             described_class.send_to_mentioned_users_and_followers(article) unless skip_notifications_for_status_article?(article)
@@ -442,7 +442,7 @@ RSpec.describe Notification do
       end
   
       it "sends a notification to the organization's followers (who were not mentioned)", :aggregate_failures do
-        article.update!(type_of: "tutorial") # ensure it's not a status
+        article.update!(type_of: "full_post") # ensure it's not a status
         user3.follow(user)
   
         expect do
@@ -458,7 +458,7 @@ RSpec.describe Notification do
   describe "#send_to_followers" do
     context "when the notifiable is an article from a user" do
       it "sends a notification to the author's followers if article is not status" do
-        article.update!(type_of: "tutorial") # ensure it's not a status
+        article.update!(type_of: "full_post") # ensure it's not a status
         user2.follow(user)
 
         expect do
@@ -484,7 +484,7 @@ RSpec.describe Notification do
       let(:org_article) { create(:article, organization: organization, user: user) }
 
       it "sends a notification to the author's followers if article is not status" do
-        org_article.update!(type_of: "tutorial") # ensure it's not a status
+        org_article.update!(type_of: "full_post") # ensure it's not a status
         user2.follow(user)
 
         expect do
@@ -506,7 +506,7 @@ RSpec.describe Notification do
       end
 
       it "sends a notification to the organization's followers if article is not status" do
-        org_article.update!(type_of: "tutorial") # ensure it's not a status
+        org_article.update!(type_of: "full_post") # ensure it's not a status
         user3.follow(organization)
 
         expect do
