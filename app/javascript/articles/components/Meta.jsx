@@ -83,6 +83,7 @@ export const Meta = ({ article, organization }) => {
               formatter: (x) => x,
               maxDisplayedAge: 60 * 60 * 24 * 7,
             })}</div>)}
+          {article.type_of === 'status' && article.edited_at > article.published_timestamp && (<div class='color-base-60 pl-1 inline-block fs-xs'>(Edited)</div>)}
         </div>
         {article.type_of === 'full_post' && (<a href={article.path} className="crayons-story__tertiary fs-xs">
           <PublishDate
