@@ -75,7 +75,7 @@ RSpec.describe "Api::V0::Videos" do
     it "supports pagination" do
       create_list(
         :article, 3,
-        user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video"
+        user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video-#{rand(10_000)}"
       )
 
       get api_videos_path, params: { page: 1, per_page: 2 }
@@ -92,7 +92,7 @@ RSpec.describe "Api::V0::Videos" do
 
       create_list(
         :article, 3,
-        user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video"
+        user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video-#{rand(10_000)}"
       )
 
       get api_tags_path, params: { per_page: 10 }
