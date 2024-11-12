@@ -464,4 +464,9 @@ Feed.propTypes = {
 
 Feed.displayName = 'Feed';
 
+window.InstantClick.on('change', () => {
+  initializeMainStatusForm();
+});
+
 initializeMainStatusForm();
+

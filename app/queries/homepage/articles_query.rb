@@ -66,6 +66,7 @@ module Homepage
                 :sort_by, :sort_direction, :page, :per_page
 
     def filter
+      @relation = @relation.full_posts
       @relation = @relation.where(approved: approved) unless approved.nil?
       @relation = @relation.where(published_at: published_at) if published_at.present?
       @relation = @relation.where(user_id: user_id) if user_id.present?
