@@ -621,7 +621,7 @@ RSpec.describe "Api::V1::Articles" do
     end
 
     describe "when authorized" do
-      let(:default_params) { { body_markdown: "" } }
+      let(:default_params) { { body_markdown: "", main_image: "" } }
       let(:tomorrow) { Date.tomorrow }
       let(:formatted_date) { tomorrow.strftime("%Y-%m-%d") }
 

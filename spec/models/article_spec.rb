@@ -320,7 +320,7 @@ RSpec.describe Article do
       end
 
       it "allows title length within limits for specified type" do
-        article = Article.create(type_of: "status", title: "A" * 256, body_markdown: "", user: user)
+        article = Article.create(type_of: "status", title: "A" * 256, body_markdown: "", user: user, main_image: "")
         expect(article).to be_valid
       end
     end
@@ -333,7 +333,7 @@ RSpec.describe Article do
       end
 
       it "does not add an error if body is absent for 'status' articles" do
-        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true)
+        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true, main_image: "")
         expect(article).to be_valid
       end
     end
