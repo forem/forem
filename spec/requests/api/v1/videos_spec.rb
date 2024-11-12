@@ -77,7 +77,7 @@ RSpec.describe "Api::V1::Videos" do
     it "supports pagination" do
       3.times do
         create(
-          :article, 3,
+          :article,
           user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video-#{rand(10_000)}"
         )
       end
@@ -96,7 +96,7 @@ RSpec.describe "Api::V1::Videos" do
 
       3.times do
         create(
-          :article, 3,
+          :article,
           user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video-#{rand(10_000)}"
         )
       end
