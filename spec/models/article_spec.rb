@@ -315,13 +315,13 @@ RSpec.describe Article do
 
     describe "#title_length_based_on_type_of" do
       it "validates title length for 'full_post' articles" do
-        article = build(:article, type_of: "full_post", title: "A" * 129, body_markdown: "")
+        article = build(:article, type_of: "full_post", title: "A" * 129)
         expect(article).not_to be_valid
         expect(article.errors[:title]).to include("is too long (maximum is 128 characters for full_post)")
       end
 
       it "validates title length for 'status' articles" do
-        article = build(:article, type_of: "status", title: "A" * 257, body_markdown: "")
+        article = build(:article, type_of: "status", title: "A" * 257, body_markdown: "xxxx")
         expect(article).not_to be_valid
         expect(article.errors[:title]).to include("is too long (maximum is 256 characters for status)")
       end
