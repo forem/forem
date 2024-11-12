@@ -58,6 +58,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
+      stories = stories.full_posts
       @stories = stories.decorate
     end
 

@@ -49,7 +49,7 @@ class Notification < ApplicationRecord
     end
 
     def send_to_mentioned_users_and_followers(notifiable, _action = nil)
-      return unless notifiable.is_a?(Article) && notifiable.published?
+      return unless notifiable.is_a?(Article) && notifiable.published? && notifiable.type_of == "full_post"
 
       # We need to create associated mentions inline because they need to exist _before_ creating any
       # other Article-related notifications. This ensures that users will not receive a second notification for the

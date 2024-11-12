@@ -119,6 +119,11 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
+  enum type_of: {
+    full_post: 0,
+    status: 1,
+}
+
   has_one :discussion_lock, dependent: :delete
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
@@ -207,7 +212,6 @@ class Article < ApplicationRecord
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
-  validates :title, presence: true, length: { maximum: 128 }
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -220,6 +224,9 @@ class Article < ApplicationRecord
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
+  validate :title_length_based_on_type_of
+  validate :title_unique_for_user_past_five_minutes
+  validate :restrict_attributes_with_status_types
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
   validate :validate_tag
@@ -328,6 +335,9 @@ class Article < ApplicationRecord
   }
   scope :unpublished, -> { where(published: false) }
 
+  scope :full_posts, -> { where(type_of: :full_post) }
+  scope :statuses, -> { where(type_of: :status) }
+
   scope :not_authored_by, ->(user_id) { where.not(user_id: user_id) }
 
   # [@jeremyf] For approved articles is there always an assumption of
@@ -365,7 +375,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height)
+           :last_comment_at, :main_image_height, :type_of, :edited_at)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -374,8 +384,8 @@ class Article < ApplicationRecord
            :main_image, :main_image_background_hex_color, :updated_at, :max_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-           :published_from_feed, :crossposted_at, :published_at, :created_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score)
+           :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
   }
 
   scope :sorting, lambda { |value|
@@ -749,6 +759,40 @@ class Article < ApplicationRecord
 
     @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
   end
+
+  def title_length_based_on_type_of
+    max_length = case type_of
+                 when "full_post"
+                   128
+                 when "status"
+                   256
+                 else
+                   128 # Default length if type_of is nil or another value
+                 end
+    if title.blank?
+      errors.add(:title, "can't be blank")
+    elsif title.to_s.length > max_length
+      errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
+    end
+  end
+
+  def restrict_attributes_with_status_types
+    # For now, there is no body allowed for status types
+    if type_of == "status" && (body_markdown.present? || main_image.present? || collection_id.present?)
+      errors.add(:body_markdown, "is not allowed for status types")
+    end
+  end
+
+  def title_unique_for_user_past_five_minutes
+    # Validates that the user did not create an article with the same title in the last five minutes
+    return unless user_id && title
+    return unless new_record?
+
+    if Article.where(user_id: user_id, title: title).where("created_at > ?", 5.minutes.ago).exists?
+      errors.add(:title, "has already been used in the last five minutes")
+    end
+  end
+
 
   def evaluate_markdown
     content_renderer = processed_content

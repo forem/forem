@@ -149,7 +149,11 @@ class ArticlesController < ApplicationController
     article = Articles::Creator.call(@user, article_params_json)
 
     if article.persisted?
-      render json: { id: article.id, current_state_path: article.decorate.current_state_path }, status: :ok
+      if article.type_of == "status"
+        redirect_to article.path
+      else
+        render json: { id: article.id, current_state_path: article.decorate.current_state_path }, status: :ok
+      end
     else
       render json: article.errors.to_json, status: :unprocessable_entity
     end
@@ -312,7 +316,7 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time
+                         published_at_date published_at_time type_of
                        ]
                      end
 

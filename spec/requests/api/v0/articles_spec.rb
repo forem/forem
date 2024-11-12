@@ -617,7 +617,7 @@ RSpec.describe "Api::V0::Articles" do
     end
 
     describe "when authorized" do
-      let(:default_params) { { body_markdown: "" } }
+      let(:default_params) { { body_markdown: "", main_image: "" } }
 
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }

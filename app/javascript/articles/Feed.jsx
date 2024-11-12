@@ -396,6 +396,63 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   );
 };
 
+function initializeMainStatusForm() {
+  let lastClickedElement = null;
+  document.addEventListener("mousedown", (event) => {
+    lastClickedElement = event.target;
+  });
+  const mainForm = document.getElementById('main-status-form');
+  if (!mainForm) {
+    return;
+  }
+
+  let waitingForCSRF = setInterval(() => {
+    if (window.csrfToken !== undefined) {
+      mainForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
+      clearInterval(waitingForCSRF);
+    }
+  }, 25);
+
+  document.getElementById('article_title').onfocus = function (e) {
+    let textarea = e.target;
+    textarea.classList.add('element-focused')
+    document.getElementById('main-status-form-controls').classList.add('flex');
+    document.getElementById('main-status-form-controls').classList.remove('hidden');
+    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
+    
+  }
+  document.getElementById('article_title').onblur = function (e) {
+    if (mainForm.contains(lastClickedElement)) {
+      e.preventDefault();
+      e.target.focus();
+    }
+    else {
+      e.target.classList.remove('element-focused')
+      document.getElementById('main-status-form-controls').classList.remove('flex');
+      document.getElementById('main-status-form-controls').classList.add('hidden');
+    }
+  }
+  // Prevent return element from creating linebreak
+
+  const ENTER_KEY_CODE = 13;
+  document.getElementById('article_title').onkeydown = function (e) {
+    if (window.Forem.Runtime.hasOSSpecificModifier(e) && e.keyCode === ENTER_KEY_CODE) {
+      document.getElementById('main-status-form').submit();
+    }
+    else if (e.keyCode === ENTER_KEY_CODE) {
+      e.preventDefault();
+    }
+
+  }
+
+  document.getElementById('article_title').onkeyup = function (e) {
+    let textarea = e.target;
+    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
+    console.log('article_title onkeyup');
+    document.getElementById('main-status-form-char-count').innerText = document.getElementById('article_title').value.length;
+  }
+}
+
 Feed.defaultProps = {
   timeFrame: '',
 };
@@ -406,3 +463,5 @@ Feed.propTypes = {
 };
 
 Feed.displayName = 'Feed';
+
+initializeMainStatusForm();

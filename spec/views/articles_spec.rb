@@ -63,7 +63,7 @@ RSpec.describe "articles/show" do
     render
     expect(rendered).to have_text("Originally published at")
     expect(rendered).to have_text("example.com")
-    expect(rendered).to have_text("Updated on")
+    expect(rendered).to have_text("Edited on")
   end
 
   it "shows the original publication time for crossposts" do

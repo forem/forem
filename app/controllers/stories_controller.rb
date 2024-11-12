@@ -318,10 +318,10 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_stories
-    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id))
+    @pinned_stories = Article.published.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
       .order(published_at: :desc).decorate
-    @stories = ArticleDecorator.decorate_collection(@user.articles.published
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.full_posts
       .includes(:distinct_reaction_categories)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))

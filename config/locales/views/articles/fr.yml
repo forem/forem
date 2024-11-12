@@ -99,8 +99,8 @@ fr:
       crossposted:
         text_html: Originally published at %{url} %{on}
         on_html: on %{date}
-      edited: Updated on %{date}
-      edited_html: Updated on %{date}
+      edited: Edited on %{date}
+      edited_html: Edited on %{date}
       for_org_html: "%{start} for %{end}%{org}"
       missing: Article No Longer Available
       published_html: Posted on %{date}

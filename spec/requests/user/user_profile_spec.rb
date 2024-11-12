@@ -20,6 +20,20 @@ RSpec.describe "UserProfiles" do
       expect(response.body).to include "Pinned"
     end
 
+    context "when has articles" do
+      before do
+        create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")
+        Article.create(user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "", main_image: "")
+      end
+
+      it "displays only 'full_post' articles and excludes 'status' articles", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("Super Article")
+        expect(response.body).not_to include("Status Update")
+      end
+    end
+
     it "calls user by their username in the 'more info' area" do
       get "/#{user.username}"
       expect(response.body).to include "More info about @#{user.username}"

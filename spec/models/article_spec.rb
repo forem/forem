@@ -39,7 +39,6 @@ RSpec.describe Article do
 
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(0) }
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
-    it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
     it { is_expected.to validate_presence_of(:comments_count) }
     it { is_expected.to validate_presence_of(:positive_reactions_count) }
@@ -83,12 +82,6 @@ RSpec.describe Article do
     end
 
     describe "#body_markdown" do
-      it "is not unique scoped for user_id and title" do
-        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
-
-        expect(art2).to be_valid
-      end
-
       # using https://unicode-table.com/en/11A15/ multibyte char
       it "is valid if its bytesize is less than 800 kilobytes" do
         article.body_markdown = "𑨕" * 204_800 # 4 bytes x 204800 = 800 kilobytes
@@ -310,6 +303,55 @@ RSpec.describe Article do
 
         expect(test_article).not_to be_valid
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
+      end
+    end
+
+    describe "#title_length_based_on_type_of" do
+      it "validates title length for 'full_post' articles" do
+        article = Article.create(type_of: "full_post", title: "A" * 129, user: user)
+        expect(article).not_to be_valid
+        expect(article.errors[:title]).to include("is too long (maximum is 128 characters for full_post)")
+      end
+
+      it "validates title length for 'status' articles" do
+        article = Article.create(type_of: "status", title: "A" * 257, body_markdown: "xxxx", user: user)
+        expect(article).not_to be_valid
+        expect(article.errors[:title]).to include("is too long (maximum is 256 characters for status)")
+      end
+
+      it "allows title length within limits for specified type" do
+        article = Article.create(type_of: "status", title: "A" * 256, body_markdown: "", user: user, main_image: "")
+        expect(article).to be_valid
+      end
+    end
+
+    describe "#no_body_with_status_types" do
+      it "adds an error if body is present for 'status' articles" do
+        article = build(:article, type_of: "status", body_markdown: "This should not be allowed")
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+      end
+
+      it "does not add an error if body is absent for 'status' articles" do
+        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true, main_image: "")
+        expect(article).to be_valid
+      end
+    end
+
+    describe "#title_unique_for_user_past_five_minutes" do
+      it "adds an error if the same title is used by the same user within five minutes" do
+        create(:article, user: user, title: "Unique Title", created_at: 2.minutes.ago)
+        duplicate_article = build(:article, user: user, title: "Unique Title")
+
+        expect(duplicate_article).not_to be_valid
+        expect(duplicate_article.errors[:title]).to include("has already been used in the last five minutes")
+      end
+
+      it "does not add an error if the same title is used by the same user after five minutes" do
+        create(:article, user: user, title: "Unique Title", created_at: 6.minutes.ago)
+        duplicate_article = build(:article, user: user, title: "Unique Title")
+
+        expect(duplicate_article).to be_valid
       end
     end
   end

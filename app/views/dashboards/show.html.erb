@@ -8,6 +8,11 @@
 
       <div class="flex flex-wrap px-3 gap-2">
         <% if params[:which] != "organization" %>
+          <% if params[:state] == "status" %>
+            <%= link_to t("views.dashboard.posts.full"), "/dashboard", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+          <% else %>
+            <%= link_to t("views.dashboard.posts.statuses"), "/dashboard?state=status", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+          <% end %>
           <% if @articles.any?(&:archived) %>
             <%= link_to t("views.dashboard.posts.archived"), "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
           <% end %>
