@@ -8,7 +8,7 @@ module ValidRequest
     # HTTP Origin header (https://dev.to) didn't match request.base_url (http://dev.to)
     # Not sure why, but once we work it out, we can delete this method.
     # We are at least secure for now.
-    return if Rails.env.test?
+    return false if Rails.env.test?
 
     if (referer = request.referer).present?
       referer.start_with?(URL.url)
