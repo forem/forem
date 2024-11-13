@@ -91,6 +91,7 @@ module Images
     end
 
     def add_text(result, title, date, author_name)
+      title = title.truncate(128)
       title = wrap_text(title)
       font_size = calculate_font_size(title)
 
