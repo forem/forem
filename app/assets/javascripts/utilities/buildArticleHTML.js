@@ -447,7 +447,7 @@ function buildArticleHTML(article, currentUserId = null) {
                 </a>
               </h3>\
               <div class="crayons-story__tags">
-                ${article.type_of === 'full_post' ? tagString : ''}
+                ${article.type_of !== 'status' ? tagString : ''}
               </div>\
               ${searchSnippetHTML}\
               <div class="crayons-story__bottom">\
