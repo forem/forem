@@ -230,7 +230,7 @@ function buildArticleHTML(article, currentUserId = null) {
       profileUsername = article.user.username;
       userName = filterXSS(article.user.name);
       if (article.user.cached_base_subscriber) {
-        userName = userName + ' <img class="subscription-icon" src="' + document.body.dataset.subscriptionIcon + '" alt="Subscriber" /> MAGOO';
+        userName = userName + ' <img class="subscription-icon" src="' + document.body.dataset.subscriptionIcon + '" alt="Subscriber" />';
       }
     }
     var orgHeadline = '';
