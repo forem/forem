@@ -436,18 +436,18 @@ function buildArticleHTML(article, currentUserId = null) {
         ${navigationLink}\
         <div role="presentation">\
           ${videoHTML}\
-          <div class="crayons-story__body">\
+          <div class="crayons-story__body crayons-story__body-${article.type_of}">\
             <div class="crayons-story__top">\
               ${meta}
             </div>\
             <div class="crayons-story__indention">
-              <h3 class="crayons-story__title">
+              <h3 class="crayons-story__title crayons-story__title-${article.type_of}">
                 <a href="${article.path}" id="article-link-${article.id}">
                   ${filterXSS(article.title)}
                 </a>
               </h3>\
               <div class="crayons-story__tags">
-                ${tagString}
+                ${article.type_of !== 'status' ? tagString : ''}
               </div>\
               ${searchSnippetHTML}\
               <div class="crayons-story__bottom">\

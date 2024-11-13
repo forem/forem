@@ -128,7 +128,7 @@ fr:
       posts:
         heading: Publications
         archived: Show archived
-        statuses: Show status posts
+        statuses: Show quickie posts
         full: Show full posts
         option:
           creation-desc: Recently Created
