@@ -1060,7 +1060,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    truncated_title = title[0..100].split[0...-1].join(" ")
+    truncated_title = title.size > 100 ? title[0..100].split[0...-1].join(" ") : title
     "#{Sterile.sluggerize(truncated_title)}-#{rand(100_000).to_s(26)}"
   end
 
