@@ -1060,7 +1060,8 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
+    truncated_title = title[0..100].split[0...-1].join(" ")
+    "#{Sterile.sluggerize(truncated_title)}-#{rand(100_000).to_s(26)}"
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)
