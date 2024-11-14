@@ -322,7 +322,7 @@ class ApplicationController < ActionController::Base
       # If the app domain config has now been set, let's go there instead.
       ENV["APP_DOMAIN"] != Settings::General.app_domain
 
-    redirect_to URL.url(request.fullpath)
+    redirect_to URL.url(request.fullpath), allow_other_host: true
   end
 
   def bust_content_change_caches

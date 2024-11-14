@@ -373,6 +373,12 @@ RSpec.describe Article do
       it "produces a proper slug similar to the title" do
         expect(test_article.slug).to start_with(slug)
       end
+
+      it "truncates a long slug" do
+        long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "", published: true)
+        p long_title_article.slug
+        expect(long_title_article.slug.length).to be <= 106
+      end
     end
 
     describe "#tag" do

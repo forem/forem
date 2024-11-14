@@ -129,7 +129,7 @@ en:
       posts:
         heading: Posts
         archived: Show archived
-        statuses: Show status posts
+        statuses: Show quickie posts
         full: Show full posts
         option:
           creation-desc: Recently Created

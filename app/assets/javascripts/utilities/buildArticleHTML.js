@@ -230,7 +230,7 @@ function buildArticleHTML(article, currentUserId = null) {
       profileUsername = article.user.username;
       userName = filterXSS(article.user.name);
       if (article.user.cached_base_subscriber) {
-        userName = userName + ' <img class="subscription-icon" src="' + document.body.dataset.subscriptionIcon + '" alt="Subscriber" /> MAGOO';
+        userName = userName + ' <img class="subscription-icon" src="' + document.body.dataset.subscriptionIcon + '" alt="Subscriber" />';
       }
     }
     var orgHeadline = '';
@@ -330,7 +330,7 @@ function buildArticleHTML(article, currentUserId = null) {
     }">${userName}</a>
     ${
       isArticle
-        ? `<div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"><button id="story-author-preview-trigger-${article.id}" aria-controls="story-author-preview-content-${article.id}" class="profile-preview-card__trigger fs-s crayons-btn crayons-btn--ghost p-1 -ml-1 -my-2" aria-label="${userName} profile details">${userName}</button>${previewCardContent}</div>`
+        ? `<div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block"><button id="story-author-preview-trigger-${article.id}" aria-controls="story-author-preview-content-${article.id}" class="profile-preview-card__trigger fs-s crayons-btn crayons-btn--ghost p-1 -ml-1 -my-2" aria-label="profile details">${userName}</button>${previewCardContent}</div>`
         : ''
     }
             ${forOrganization}
@@ -436,18 +436,18 @@ function buildArticleHTML(article, currentUserId = null) {
         ${navigationLink}\
         <div role="presentation">\
           ${videoHTML}\
-          <div class="crayons-story__body">\
+          <div class="crayons-story__body crayons-story__body-${article.type_of}">\
             <div class="crayons-story__top">\
               ${meta}
             </div>\
             <div class="crayons-story__indention">
-              <h3 class="crayons-story__title">
+              <h3 class="crayons-story__title crayons-story__title-${article.type_of}">
                 <a href="${article.path}" id="article-link-${article.id}">
                   ${filterXSS(article.title)}
                 </a>
               </h3>\
               <div class="crayons-story__tags">
-                ${tagString}
+                ${article.type_of !== 'status' ? tagString : ''}
               </div>\
               ${searchSnippetHTML}\
               <div class="crayons-story__bottom">\
