@@ -110,7 +110,7 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             <ContentTitle article={article} />
-            <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
+            {article.type_of !== 'status' && (<TagList tags={article.tag_list} flare_tag={article.flare_tag} />)}
 
             {isArticle && (
               // eslint-disable-next-line no-underscore-dangle
