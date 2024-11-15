@@ -107,7 +107,7 @@
 
   &__body-status {
     padding-top: var(--su-3);
-    padding-bottom: var(--su-2);
+    padding-bottom: var(--su-3);
   }
 
   &__indention {
@@ -235,6 +235,7 @@
     align-items: center;
     font-size: var(--fs-s);
     line-height: var(--lh-tight);
+    margin-left: -2px;
   }
 
   &__details {
