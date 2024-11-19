@@ -1,0 +1,156 @@
+<% if FeatureFlag.enabled?("discover_and_following_tabs") && user_signed_in? %>
+  <% params[:feed_type] ||= "discover" %>
+  <nav class="-mx-3 m:mx-0 s:flex items-center justify-between" aria-label="<%= t("views.stories.sort.aria_label") %>">
+  <ul class="flex justify-between items-center w-100">
+    <div class="flex gap-1">
+      <li>
+        <a data-feed-nav="discover" href="/discover" class="crayons-navigation__item p-1 px-4 <%= "crayons-navigation__item--current" if params[:feed_type] == "discover" %>">
+          Discover
+        </a>
+      </li>
+      <li>
+        <a data-feed-nav="following" href="/following" class="crayons-navigation__item p-1 px-4 <%= "crayons-navigation__item--current" if params[:feed_type] == "following" %>">
+          Following
+        </a>
+      </li>
+    </div>
+    <div class="flex gap-1 relative">
+      <li>
+        <button id="feed-dropdown-trigger" aria-controls="feed-dropdown" aria-expanded="false" aria-haspopup="true"
+          class="dropBtn crayons-bb__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
+          aria-label="<%= t("billboard.menu.aria_label") %>">
+            <%= crayons_icon_tag("small-overflow-horizontal", class: "pointer-events-none", style: "height:32px;width:32px;", title: t("billboard.menu.icon")) %>
+        </button>
+      </li>
+      <ul id="feed-dropdown-menu" class="crayons-dropdown feed-dropdown right-0">
+        <li data-feed-submenu-item="following" class="<%= params[:feed_type] == "following" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.latest") %>" href="/following" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if params[:timeframe].blank? %>">
+            Relevant
+          </a>
+        </li>
+        <li data-feed-submenu-item="following" class="<%= params[:feed_type] == "following" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.latest") %>" href="/following/latest" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.latest") %>
+          </a>
+        </li>
+
+
+        <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.week") %>" href="/discover" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if params[:timeframe].blank? %>">
+            Relevant
+          </a>
+        </li>
+        <hr data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+        <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.week") %>" href="/top/week" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
+            Top this <%= t("views.stories.sort.week") %>
+          </a>
+        </li>
+        <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.month") %>" href="/top/month" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
+            Top this<%= t("views.stories.sort.month") %>
+          </a>
+        </li>
+        <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.year") %>" href="/top/year" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
+            Top this<%= t("views.stories.sort.year") %>
+          </a>
+        </li>
+        <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.infinity") %>" href="/top/infinity" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+          Top this<%= t("views.stories.sort.infinity") %>
+          </a>
+        </li>
+        <hr data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+        <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
+          <a data-text="<%= t("views.stories.sort.latest") %>" href="/latest" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.latest") %>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </ul>
+  <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
+    <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
+    </ul>
+  <% end %>
+  </nav>
+  <script>
+    var currentPath = window.location.pathname;
+    var currentFeedNav = "";
+
+    if (currentPath === "/following" || currentPath === "/discover") {
+      currentFeedNav = currentPath.substring(1);
+      localStorage.setItem("current_feed", currentFeedNav);
+    } else if (currentPath === "/" && localStorage.getItem("current_feed") === null) {
+      currentFeedNav = "discover";
+    } else {
+      currentFeedNav = localStorage.getItem("current_feed");
+    }
+
+    var feedNavItems = document.querySelectorAll("[data-feed-nav]");
+    feedNavItems.forEach(function(item) {
+      if (item.getAttribute("data-feed-nav") === currentFeedNav) {
+        item.classList.add("crayons-navigation__item--current");
+      } else {
+        item.classList.remove("crayons-navigation__item--current");
+      }
+    });
+
+    var subMenuItems = document.querySelectorAll("[data-feed-submenu-item]");
+    subMenuItems.forEach(function(item) {
+      if (item.getAttribute("data-feed-submenu-item") === currentFeedNav) {
+        item.classList.add("showing");
+        item.classList.remove("hidden");
+      } else {
+        item.classList.add("hidden");
+        item.classList.remove("showing");
+      }
+    });
+  </script>
+<% else %>
+  <nav class="-mx-3 m:mx-0 s:flex items-center justify-between" aria-label="<%= t("views.stories.sort.aria_label") %>">
+    <ul class="crayons-navigation crayons-navigation--horizontal">
+      <li>
+        <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path.presence || "/" %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
+          <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("views.stories.sort.relevant") %></a>
+      </li>
+      <li>
+        <a data-text="<%= t("views.stories.sort.latest") %>" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
+          <%= t("views.stories.sort.latest") %>
+        </a>
+      </li>
+      <li>
+        <a data-text="<%= t("views.stories.sort.top") %>" href="<%= list_path %>/top/week"
+          class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>"
+          <%= timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.top") %>
+        </a>
+      </li>
+    </ul>
+    <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
+      <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
+        <li>
+          <a data-text="<%= t("views.stories.sort.week") %>" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.week") %>
+          </a>
+        </li>
+        <li>
+          <a data-text="<%= t("views.stories.sort.month") %>" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.month") %>
+          </a>
+        </li>
+        <li>
+          <a data-text="<%= t("views.stories.sort.year") %>" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.year") %>
+          </a>
+        </li>
+        <li>
+          <a data-text="<%= t("views.stories.sort.infinity") %>" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.sort.infinity") %>
+          </a>
+        </li>
+      </ul>
+    <% end %>
+  </nav>
+<% end %>

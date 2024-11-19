@@ -214,5 +214,141 @@ RSpec.describe "Stories::Feeds" do
         expect(response_array).not_to include(article_with_low_score.title)
       end
     end
+
+    context "when user is signed in and requests 'latest following' feed" do
+      let(:followed_user) { create(:user) }
+      let(:unfollowed_user) { create(:user) }
+      let!(:followed_article) { create(:article, user: followed_user) }
+      let!(:unfollowed_article) { create(:article, user: unfollowed_user) }
+
+      before do
+        sign_in user
+        user.follow(followed_user)
+      end
+
+      it "returns articles from followed users only" do
+        get stories_feed_path(type_of: "following", timeframe: "latest")
+
+        response_article_ids = response.parsed_body.map { |a| a["id"] }
+        expect(response_article_ids).to include(followed_article.id)
+        expect(response_article_ids).not_to include(unfollowed_article.id)
+      end
+
+      it "returns empty array if no followed users have articles" do
+        Article.delete_all
+        get stories_feed_path(type_of: "following", timeframe: "latest")
+
+        expect(response.parsed_body).to be_empty
+      end
+
+      it "does not return articles if user is not following anyone" do
+        user.stop_following(followed_user)
+        get stories_feed_path(type_of: "following", timeframe: "latest")
+
+        expect(response.parsed_body).to be_empty
+      end
+
+      it "does not return articles from unfollowed users" do
+        get stories_feed_path(type_of: "following", timeframe: "latest")
+
+        response_article_ids = response.parsed_body.map { |a| a["id"] }
+        expect(response_article_ids).not_to include(unfollowed_article.id)
+      end
+    end
+
+    context "when user is not signed in and requests 'latest following' feed" do
+      let(:followed_user) { create(:user) }
+      let!(:followed_article) { create(:article, user: followed_user) }
+
+      it "returns default latest feed" do
+        get stories_feed_path(type_of: "following", timeframe: "latest")
+
+        response_article_ids = response.parsed_body.map { |a| a["id"] }
+        expect(response_article_ids).to include(article.id)
+        expect(response_article_ids).to include(followed_article.id)
+      end
+    end
+
+    context "when user is signed in and requests 'following' feed" do
+      let(:followed_user) { create(:user) }
+      let(:unfollowed_user) { create(:user) }
+      let!(:followed_article) { create(:article, user: followed_user) }
+      let!(:unfollowed_article) { create(:article, user: unfollowed_user) }
+
+      before do
+        sign_in user
+        user.follow(followed_user)
+      end
+
+      context "and timeframe is not 'latest'" do
+        it "returns articles from followed users only" do
+          get stories_feed_path(type_of: "following")
+
+          response_article_ids = response.parsed_body.map { |a| a["id"] }
+          expect(response_article_ids).to include(followed_article.id)
+          expect(response_article_ids).not_to include(unfollowed_article.id)
+        end
+
+        it "returns empty array if no followed users have articles" do
+          Article.delete(followed_article.id)
+          get stories_feed_path(type_of: "following")
+
+          expect(response.parsed_body).to be_empty
+        end
+
+        it "does not return articles if user is not following anyone" do
+          user.stop_following(followed_user)
+          get stories_feed_path(type_of: "following")
+
+          expect(response.parsed_body).to be_empty
+        end
+
+        it "does not return articles from unfollowed users" do
+          get stories_feed_path(type_of: "following")
+
+          response_article_ids = response.parsed_body.map { |a| a["id"] }
+          expect(response_article_ids).not_to include(unfollowed_article.id)
+        end
+      end
+
+      context "and timeframe is 'latest'" do
+        it "returns articles from followed users only" do
+          get stories_feed_path(type_of: "following", timeframe: "latest")
+
+          response_article_ids = response.parsed_body.map { |a| a["id"] }
+          expect(response_article_ids).to include(followed_article.id)
+          expect(response_article_ids).not_to include(unfollowed_article.id)
+        end
+      end
+    end
+
+    context "when user is signed in and requests 'following' feed with 'discover' type_of" do
+      let(:another_user) { create(:user) }
+      let!(:another_article) { create(:article, user: another_user) }
+
+      before do
+        sign_in user
+        user.follow(another_user)
+      end
+
+      it "returns articles from followed users and others when type_of is 'discover'" do
+        get stories_feed_path(type_of: "discover")
+
+        response_article_ids = response.parsed_body.map { |a| a["id"] }
+        expect(response_article_ids).to include(article.id, another_article.id)
+      end
+    end
+
+    context "when user is not signed in and requests 'following' feed" do
+      let(:followed_user) { create(:user) }
+      let!(:followed_article) { create(:article, user: followed_user) }
+
+      it "returns default signed-out feed" do
+        get stories_feed_path(type_of: "following")
+
+        response_article_ids = response.parsed_body.map { |a| a["id"] }
+        expect(response_article_ids).to include(article.id, followed_article.id)
+      end
+    end
   end
 end
