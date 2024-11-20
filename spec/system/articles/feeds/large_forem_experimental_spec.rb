@@ -18,6 +18,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, js: true do
     expect(page).to have_selector(selector, visible: :visible)
     create(:user_block, blocker: user, blocked: hot_story.user, config: "default")
     visit root_path
-    expect(page).not_to have_selector(selector)
+    expect(page).to have_selector(selector, visible: :hidden)
   end
 end

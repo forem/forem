@@ -41,7 +41,7 @@ module Stories
     end
 
     def signed_in_base_feed
-      feed = if Settings::UserExperience.feed_strategy == "basic" && params[:type_of] == "discover"
+      feed = if Settings::UserExperience.feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              else
                Articles::Feeds.feed_for(
