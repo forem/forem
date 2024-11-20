@@ -107,6 +107,7 @@ module Stories
     def latest_following_feed
       Article.where(user_id: current_user.cached_following_users_ids + current_user.cached_following_organizations_ids)
         .published
+        .where("score > -10")
         .order("published_at DESC")
         .page(@page)
         .per(25)
@@ -115,6 +116,7 @@ module Stories
     def relevant_following_feed
       Article.where(user_id: current_user.cached_following_users_ids + current_user.cached_following_organizations_ids)
         .published
+        .where("score > -10")
         .order("hotness_score DESC")
         .page(@page)
         .per(25)
