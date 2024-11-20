@@ -105,8 +105,20 @@ module Stories
     end
 
     def latest_following_feed
-      Article.where(user_id: current_user.cached_following_users_ids + current_user.cached_following_organizations_ids)
-        .published
+      Article.where(
+          "user_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'User'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          ) OR organization_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'Organization'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          )",
+          user_id: current_user.id
+        ).published
         .where("score > -10")
         .order("published_at DESC")
         .page(@page)
@@ -114,8 +126,20 @@ module Stories
     end
 
     def relevant_following_feed
-      Article.where(user_id: current_user.cached_following_users_ids + current_user.cached_following_organizations_ids)
-        .published
+      Article.where(
+          "user_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'User'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          ) OR organization_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'Organization'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          )",
+          user_id: current_user.id
+        ).published
         .where("score > -10")
         .order("hotness_score DESC")
         .page(@page)
