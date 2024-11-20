@@ -399,6 +399,12 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 };
 
 function initializeMainStatusForm() {
+
+  initializeDropdown({
+    triggerElementId: 'feed-dropdown-trigger',
+    dropdownContentId: 'feed-dropdown-menu',
+  });  
+
   let lastClickedElement = null;
   document.addEventListener("mousedown", (event) => {
     lastClickedElement = event.target;
@@ -473,9 +479,3 @@ if (window && window.InstantClick) {
 }
 
 initializeMainStatusForm();
-initializeDropdown({
-  triggerElementId: 'feed-dropdown-trigger',
-  dropdownContentId: 'feed-dropdown-menu',
-});
-
-

@@ -48,6 +48,7 @@ module Articles
       #        seed.  This parameter allows the caller (and debugger) to use the same randomization
       #        order in the queries; the hope being that this might help in any debugging.
       def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil, seed: nil, type_of: "discover")
+        p type_of
         @user = user
         @number_of_articles = number_of_articles
         @page = page

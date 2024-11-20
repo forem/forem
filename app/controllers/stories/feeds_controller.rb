@@ -27,7 +27,7 @@ module Stories
     def assign_feed_stories
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
-                elsif params[:type_of] == "following" && user_signed_in?  && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+                elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_following_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_feed
@@ -41,7 +41,7 @@ module Stories
     end
 
     def signed_in_base_feed
-      feed = if Settings::UserExperience.feed_strategy == "basic"
+      feed = if Settings::UserExperience.feed_strategy == "basic" && params[:type_of] == "discover"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              else
                Articles::Feeds.feed_for(
@@ -77,6 +77,7 @@ module Stories
                  page: @page,
                  tag: params[:tag],
                  number_of_articles: 25,
+                 type_of: "discover",
                )
              end
       Datadog::Tracing.trace("feed.query",
@@ -101,7 +102,11 @@ module Stories
     end
 
     def latest_following_feed
-      Article.where(user_id: current_user.cached_following_users_ids).published.order("published_at DESC").page(@page).per(25)
+      Article.where(user_id: current_user.cached_following_users_ids)
+        .published
+        .order("published_at DESC")
+        .page(@page)
+        .per(25)
     end
   end
 end
