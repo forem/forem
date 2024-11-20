@@ -28,7 +28,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     //  * @returns {Promise} A promise containing the JSON response for the feed data.
     //  */
     async function fetchFeedItems(timeFrame = '', page = 1) {
-      const feedTypeOf = localStorage?.getItem('current_feed') || '';
+      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const promises = [
         fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
           method: 'GET',

@@ -434,7 +434,7 @@ function paginate(tag, params, requiresApproval) {
   // And if we do, we need to change the URL and adjust some misalignment with the API
   // And the nextpage incrementing.
   let useStoriesFeed = (homeEl.dataset.feed === 'base-feed' || homeEl.dataset.feed === 'latest') && homeEl.dataset.feedContextType === 'home' && homeEl.dataset.feedUseStoriesEndpoint === 'true';
-  let feedTypeOf = localStorage?.getItem('current_feed') || '';
+  let feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
   let latestString = homeEl.dataset.feed === 'latest' ? '/latest' : '';
   let url = useStoriesFeed ? `stories/feed${latestString}/?page=${nextPage + 2}&type_of=${feedTypeOf}` : `/search/feed_content?${searchParams.toString()}`;
   fetch(url, {
