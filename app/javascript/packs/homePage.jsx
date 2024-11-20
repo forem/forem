@@ -18,6 +18,8 @@ const frontPageFeedPathNames = new Map([
   ['/top/year', 'year'],
   ['/top/infinity', 'infinity'],
   ['/latest', 'latest'],
+  ['/following', ''],
+  ['/following/latest', 'latest']
 ]);
 
 /**

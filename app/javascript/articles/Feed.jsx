@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
+import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
@@ -27,8 +28,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     //  * @returns {Promise} A promise containing the JSON response for the feed data.
     //  */
     async function fetchFeedItems(timeFrame = '', page = 1) {
+      const feedTypeOf = localStorage?.getItem('current_feed') || '';
       const promises = [
-        fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -397,6 +399,12 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 };
 
 function initializeMainStatusForm() {
+
+  initializeDropdown({
+    triggerElementId: 'feed-dropdown-trigger',
+    dropdownContentId: 'feed-dropdown-menu',
+  });  
+
   let lastClickedElement = null;
   document.addEventListener("mousedown", (event) => {
     lastClickedElement = event.target;
@@ -471,4 +479,3 @@ if (window && window.InstantClick) {
 }
 
 initializeMainStatusForm();
-

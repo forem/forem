@@ -380,13 +380,17 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
                               constraints: { timeframe: /latest/ }
 
+
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 
     get "/top/:timeframe", to: "stories#index"
 
+    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest/  }
+
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
+    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/}
 
     get "/:username/series", to: "collections#index", as: "user_series"
     get "/:username/series/:id", to: "collections#show"

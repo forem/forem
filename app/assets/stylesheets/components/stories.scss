@@ -16,6 +16,16 @@
     line-height: 24px;
   }
 }
+
+.feed-dropdown {
+  font-size: var(--fs-base);
+  padding: var(--su-4);
+  hr {
+    border: 0.5px solid var(--divider);
+    margin: 8px;
+  }
+}
+
 #article_title {
   height: auto;
   resize: none;

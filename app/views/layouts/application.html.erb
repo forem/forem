@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <% if user_signed_in? && current_page?(root_path) %>
-      <link rel="prefetch" href="/stories/feed/?page=1">
+      <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
+      <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
       <link rel="prefetch" href="/billboards/feed_first">
       <link rel="prefetch" href="/billboards/feed_second">
       <link rel="prefetch" href="/billboards/feed_third">
