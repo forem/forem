@@ -60,7 +60,7 @@ module Articles
     # @param tag [NilClass, String] not used but carried forward for interface conformance
     #
     # @return [Articles::Feeds::VariantQuery]
-    def self.feed_for(controller:, user:, number_of_articles:, page:, tag:, type_of:)
+    def self.feed_for(controller:, user:, number_of_articles:, page:, tag:, type_of: "discover")
       variant = AbExperiment.get_feed_variant_for(controller: controller, user: user)
 
       VariantQuery.build_for(
