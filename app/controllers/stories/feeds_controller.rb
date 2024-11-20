@@ -25,10 +25,13 @@ module Stories
     end
 
     def assign_feed_stories
+      params[:type_of] = "discover" if params[:type_of].blank?
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
                 elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_following_feed
+                elsif params[:type_of] == "following" && user_signed_in?
+                  relevant_following_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_feed
                 elsif user_signed_in?
@@ -102,9 +105,19 @@ module Stories
     end
 
     def latest_following_feed
-      Article.where(user_id: current_user.cached_following_users_ids)
+      Article.where(user_id: current_user.cached_following_users_ids + current_user.cached_following_organizations_ids)
         .published
+        .where("score > -10")
         .order("published_at DESC")
+        .page(@page)
+        .per(25)
+    end
+
+    def relevant_following_feed
+      Article.where(user_id: current_user.cached_following_users_ids + current_user.cached_following_organizations_ids)
+        .published
+        .where("score > -10")
+        .order("hotness_score DESC")
         .page(@page)
         .per(25)
     end
