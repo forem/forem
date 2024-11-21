@@ -24,6 +24,12 @@
     border: 0.5px solid var(--divider);
     margin: 8px;
   }
+  a {
+    display: block !important;
+    &:hover {
+      color: var(--accent-brand);
+    }  
+  }
 }
 
 #article_title {

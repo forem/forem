@@ -48,17 +48,17 @@
         </li>
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.month") %>" href="/top/month" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
-            Top this<%= t("views.stories.sort.month") %>
+            Top this <%= t("views.stories.sort.month") %>
           </a>
         </li>
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.year") %>" href="/top/year" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
-            Top this<%= t("views.stories.sort.year") %>
+            Top this <%= t("views.stories.sort.year") %>
           </a>
         </li>
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.infinity") %>" href="/top/infinity" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-          Top this<%= t("views.stories.sort.infinity") %>
+          Top this <%= t("views.stories.sort.infinity") %>
           </a>
         </li>
         <hr data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
