@@ -32,6 +32,7 @@ class Article < ApplicationRecord
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series
+  attr_accessor :body_url
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -236,6 +237,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
+  before_validation :set_markdown_from_body_url, if: :body_url?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
   before_validation :remove_prohibited_unicode_characters
@@ -656,6 +658,10 @@ class Article < ApplicationRecord
     followers.uniq.compact
   end
 
+  def body_url?
+    body_url.present?  # Returns true if body_url is not nil or an empty string
+  end  
+
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
     # true if unpublished, or spammy,
@@ -698,6 +704,12 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def set_markdown_from_body_url
+    return unless body_url.present?
+
+    self.body_markdown = "{% embed #{body_url} %}"
+  end
 
   def collection_cleanup
     # Should only check to cleanup if Article was removed from collection
@@ -778,7 +790,7 @@ class Article < ApplicationRecord
 
   def restrict_attributes_with_status_types
     # For now, there is no body allowed for status types
-    if type_of == "status" && (body_markdown.present? || main_image.present? || collection_id.present?)
+    if type_of == "status" && body_url.blank? && (body_markdown.present? || main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end

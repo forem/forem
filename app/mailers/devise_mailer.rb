@@ -11,6 +11,18 @@ class DeviseMailer < Devise::Mailer
     ActionMailer::Base.default_url_options[:host] = Settings::General.app_domain
   end
 
+  # Handles passwordless magic link email
+  def magic_link(record, token, opts = {})
+    @token = token
+    opts[:subject] = "Log in to #{Settings::Community.community_name} with a magic link"
+    mail(
+      to: record.email,
+      subject: opts[:subject],
+      template_name: "magic_link" # You can create a view for this
+    )
+  end
+
+  # Existing custom methods
   # rubocop:disable Style/OptionHash
   def invitation_instructions(record, token, opts = {})
     @message = opts[:custom_invite_message]

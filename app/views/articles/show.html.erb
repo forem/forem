@@ -191,7 +191,19 @@
           <% end %>
 
           <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
-            <%= @article.processed_html_final.html_safe %>
+            <% if @article.type_of == "status" && @article.processed_html_final.present? %>
+              <% if user_signed_in? %>
+                <div class="pt-2">
+                  <%= @article.processed_html_final.html_safe %>
+                </div>
+              <% else %>
+                <a href="/enter?state=new-user" class="crayons-card p-4 fs-s block mt-2">
+                  Sign in to view linked content
+                </a>
+              <% end %>
+            <% else %>
+              <%= @article.processed_html_final.html_safe %>
+            <% end %>
           </div>
 
           <% if @article.long_markdown? && @collection %>
