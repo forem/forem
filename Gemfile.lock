@@ -231,6 +231,9 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise-passwordless (1.0.3)
+      devise
+      globalid
     devise_invitable (2.0.9)
       actionmailer (>= 5.0)
       devise (>= 4.6)
@@ -1022,6 +1025,7 @@ DEPENDENCIES
   debug (>= 1.0.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
+  devise-passwordless (~> 1.0)
   devise_invitable (~> 2.0.6)
   dogstatsd-ruby (~> 5.6)
   dotenv-rails (~> 2.8.1)
