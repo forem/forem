@@ -3,8 +3,8 @@
   Click the link below to log in to your account:
 </p>
 <p>
-  <%= link_to "Log in now", magic_link_url(@token) %>
+  <%= link_to "Log in now", magic_link_url(@resource, @scope_name => {email: @resource.email, token: @token, remember_me: true}) %>
 </p>
 <p>
-  This link will expire in <%= Devise.passwordless_token_expiration_time / 60 %> minutes.
+  This link will expire in 20 minutes.
 </p>

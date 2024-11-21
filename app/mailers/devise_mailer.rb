@@ -1,4 +1,7 @@
 class DeviseMailer < Devise::Mailer
+  include Rails.application.routes.url_helpers
+  self.mailer_name = 'devise/mailer'
+
   default reply_to: proc { ForemInstance.reply_to_email_address }
 
   include Deliverable
@@ -12,13 +15,16 @@ class DeviseMailer < Devise::Mailer
   end
 
   # Handles passwordless magic link email
-  def magic_link(record, token, opts = {})
+  def magic_link(record, token, remember_me = false, opts = {})
     @token = token
-    opts[:subject] = "Log in to #{Settings::Community.community_name} with a magic link"
+    @resource = record
+    opts[:subject] ||= "Log in to #{Settings::Community.community_name} with a magic link"
     mail(
       to: record.email,
       subject: opts[:subject],
-      template_name: "magic_link" # You can create a view for this
+      from: "#{Settings::Community.community_name} <#{ForemInstance.from_email_address}>",
+      reply_to: ForemInstance.reply_to_email_address,
+      template_name: "magic_link"
     )
   end
 
