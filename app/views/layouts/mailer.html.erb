@@ -6,7 +6,7 @@
           <%= yield %>
         </td>
       </tr>
-      <% if @user %>
+      <% if @user && action_name != "magic_link" %>
         <% last_page_view = @user.page_views.last %>
         <% unless last_page_view && last_page_view.created_at > 4.weeks.ago %>
           <tr>

@@ -1,12 +1,10 @@
-# spec/mailers/custom_mailer_spec.rb
-
 require "rails_helper"
 
 RSpec.describe CustomMailer, type: :mailer do
   describe "#custom_email" do
     let(:user) { create(:user) }
-    let(:content) { "Hello, this is a test email." }
-    let(:subject) { "Test Email Subject" }
+    let(:content) { "Hello *|name|*, this is a test email." }
+    let(:subject) { "Test Email Subject for *|name|*" }
     let(:unsubscribe_token) { "unsubscribe_token" }
     let(:mail) { described_class.with(user: user, content: content, subject: subject).custom_email }
 
@@ -29,11 +27,14 @@ RSpec.describe CustomMailer, type: :mailer do
         expect(smtpapi_header["category"]).to include("Custom Email")
       end
 
-      it "sends the email with the correct details" do
+      it "replaces the *|name|* merge tag in content and subject" do
+        expected_content = "Hello #{user.name}, this is a test email."
+        expected_subject = "Test Email Subject for #{user.name}"
+
         expect(mail.to).to eq([user.email])
-        expect(mail.subject).to eq(subject)
+        expect(mail.subject).to eq(expected_subject)
         expect(mail.from).to eq(["no-reply@example.com"])
-        expect(mail.body.encoded).to include(content)
+        expect(mail.body.encoded).to include(expected_content)
         expect(mail.body.encoded).to include(unsubscribe_token)
       end
     end
@@ -47,11 +48,14 @@ RSpec.describe CustomMailer, type: :mailer do
         expect(mail.headers["X-SMTPAPI"]).to be_nil
       end
 
-      it "sends the email with the correct details" do
+      it "replaces the *|name|* merge tag in content and subject" do
+        expected_content = "Hello #{user.name}, this is a test email."
+        expected_subject = "Test Email Subject for #{user.name}"
+
         expect(mail.to).to eq([user.email])
-        expect(mail.subject).to eq(subject)
+        expect(mail.subject).to eq(expected_subject)
         expect(mail.from).to eq(["no-reply@example.com"])
-        expect(mail.body.encoded).to include(content)
+        expect(mail.body.encoded).to include(expected_content)
         expect(mail.body.encoded).to include(unsubscribe_token)
       end
     end
