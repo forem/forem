@@ -414,7 +414,7 @@ function initializeMainStatusForm() {
     return;
   }
 
-  let waitingForCSRF = setInterval(() => {
+  const waitingForCSRF = setInterval(() => {
     if (window.csrfToken !== undefined) {
       mainForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
       clearInterval(waitingForCSRF);
@@ -422,7 +422,7 @@ function initializeMainStatusForm() {
   }, 25);
 
   document.getElementById('article_title').onfocus = function (e) {
-    let textarea = e.target;
+    const textarea = e.target;
     textarea.classList.add('element-focused')
     document.getElementById('main-status-form-controls').classList.add('flex');
     document.getElementById('main-status-form-controls').classList.remove('hidden');
@@ -454,9 +454,8 @@ function initializeMainStatusForm() {
   }
 
   document.getElementById('article_title').onkeyup = function (e) {
-    let textarea = e.target;
+    const textarea = e.target;
     textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
-    console.log('article_title onkeyup');
     document.getElementById('main-status-form-char-count').innerText = document.getElementById('article_title').value.length;
   }
 }
