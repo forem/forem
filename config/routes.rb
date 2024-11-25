@@ -8,8 +8,7 @@ Rails.application.routes.draw do
     registrations: "registrations",
     invitations: "invitations",
     passwords: "passwords",
-    confirmations: "confirmations",
-    passwordless: "devise/passwordless/sessions"
+    confirmations: "confirmations"
   }
 
   devise_scope :user do
@@ -112,7 +111,7 @@ Rails.application.routes.draw do
       resources :stripe_events, only: [:create]
     end
 
-    resources :magic_links, only: [:create]
+    resources :magic_links, only: [:show, :create, :new]
 
     resources :messages, only: [:create]
     resources :articles, only: %i[update create destroy] do

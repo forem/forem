@@ -120,7 +120,7 @@ class User < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
-         :recoverable, :lockable, :magic_link_authenticatable
+         :recoverable, :lockable
 
   validates :articles_count, presence: true
   validates :badge_achievements_count, presence: true
@@ -624,6 +624,18 @@ class User < ApplicationRecord
 
   def has_no_published_content?
     articles.published.empty? && comments_count.zero?
+  end
+
+  def send_magic_link!
+    # Generate random string
+    self.sign_in_token = SecureRandom.hex(20)
+    self.sign_in_token_sent_at = Time.now.utc
+    if self.save
+      VerificationMailer.with(user_id: id).magic_link.deliver_now
+    else
+      errors.add(:email, "Error sending magic link")
+      Rails.logger.error("Error sending magic link for user #{id}")
+    end
   end
 
   protected
