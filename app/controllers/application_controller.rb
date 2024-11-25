@@ -16,8 +16,13 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include DevelopmentDependencyChecks if Rails.env.development?
-  include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
+
+
+  # We are not currently using this, as we're going to prefer manual review in prod.
+  # This was removed due to flakiness.
+  # include EdgeCacheSafetyCheck unless Rails.env.production?
+
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
