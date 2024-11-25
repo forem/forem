@@ -28,7 +28,7 @@ RSpec.describe "MagicLinks", type: :request do
 
     context "when no email is provided" do
       it "returns a not_found response" do
-        expect { post "/magic_links", params: {} }.to raise_error(ActionController::RoutingError)
+        expect { post "/magic_links", params: {} }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

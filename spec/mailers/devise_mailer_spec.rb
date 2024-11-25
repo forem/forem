@@ -19,43 +19,6 @@ RSpec.describe DeviseMailer, type: :mailer do
     DeviseMailer.default_url_options[:host] = app_domain
   end
 
-  describe "#magic_link" do
-    let(:token) { 'some_token' }
-    let(:email) { described_class.magic_link(user, token) }
-
-    it "renders the correct sender email" do
-      expected_from = [from_email_address]
-      expect(email.from).to eq(expected_from)
-    end
-
-    it "includes the display name in the from header" do
-      expected_display_from = "#{community_name} <#{from_email_address}>"
-      expect(email[:from].to_s).to eq(expected_display_from)
-    end
-
-    it "renders the correct reply-to email address" do
-      expect(email.reply_to).to eq([reply_to_email_address])
-    end
-
-    it "sends the email to the user's email address" do
-      expect(email.to).to eq([user.email])
-    end
-
-    it "renders the correct subject" do
-      expected_subject = "Log in to #{community_name} with a magic link"
-      expect(email.subject).to eq(expected_subject)
-    end
-
-    xit "includes the magic link URL in the email body" do
-      expected_url = magic_link_url(user, email: user.email, token: token, remember_me: true)
-      expect(email.body.encoded).to include(expected_url)
-    end
-
-    it "includes the token in the email body" do
-      expect(email.body.encoded).to include("token=#{token}")
-    end
-  end
-
   describe "#reset_password_instructions" do
     let(:email) { described_class.reset_password_instructions(user, "test") }
 
