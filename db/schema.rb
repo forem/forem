@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_22_200310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1355,6 +1355,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
     t.integer "score", default: 0
     t.string "secret"
     t.integer "sign_in_count", default: 0, null: false
+    t.string "sign_in_token"
+    t.datetime "sign_in_token_sent_at"
     t.string "signup_cta_variant"
     t.integer "spent_credits_count", default: 0, null: false
     t.string "stripe_id_code"

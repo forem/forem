@@ -28,9 +28,10 @@ module AuthenticationHelper
     # rubocop:disable Layout/LineLength
     auth_method = providers.any? ? providers.map(&:official_name).to_sentence : I18n.t("helpers.authentication_helper.email_password")
     demonstrative = providers.size > 1 ? I18n.t("helpers.authentication_helper.any_of_those") : I18n.t("helpers.authentication_helper.that")
+    link = new_magic_link_url(email: user.email)
     # rubocop:enable Layout/LineLength
 
-    I18n.t("helpers.authentication_helper.reminder", method: auth_method, dem: demonstrative)
+    I18n.t("helpers.authentication_helper.reminder", method: auth_method, dem: demonstrative, link: link)
   end
 
   def available_providers_array
