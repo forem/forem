@@ -27,6 +27,22 @@ module Admin
       end
     end
 
+    def edit
+      @audience_segments = AudienceSegment.all
+      @email = Email.find(params[:id])
+    end
+
+    def update
+      @email = Email.find(params[:id])
+      if @email.update(email_params)
+        flash[:success] = I18n.t("admin.emails_controller.updated")
+        redirect_to admin_email_path(@email.id)
+      else
+        flash[:danger] = email.errors_as_sentence
+        render :edit
+      end
+    end
+
     private
 
     def email_params

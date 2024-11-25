@@ -61,10 +61,28 @@ RSpec.describe "/admin/content_manager/emails" do
   end
 
   describe "GET /admin/emails/:id" do
-    it "renders the show template for the email" do
-      email = create(:email, subject: "Show Email")
+    it "renders the show template for the email and replaces merge tags" do
+      admin_user.update_column(:name, "Simple Admin Name")
+      email = create(
+        :email,
+        subject: "Hello *|name|*",
+        body: "<p>Dear *|name|*, welcome to our service.</p>"
+      )
+
       get admin_email_path(email)
-      expect(response.body).to include("Show Email")
+
+      # Ensure the response is successful
+      expect(response).to have_http_status(:ok)
+
+      # Check that the merge tags in the subject are replaced
+      expect(response.body).to include("Hello #{admin_user.name}")
+
+      # Check that the merge tags in the body are replaced
+      expect(response.body).to include("<p>Dear #{admin_user.name}, welcome to our service.</p>")
+
+      # Optionally, check that the raw subject and body still contain the merge tags
+      expect(response.body).to include CGI.escapeHTML(email.subject)
+      expect(response.body).to include CGI.escapeHTML(email.body)
     end
   end
 end

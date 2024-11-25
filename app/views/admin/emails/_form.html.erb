@@ -27,13 +27,13 @@
   </div>
 
   <div>
-    <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card crayons-card--secondary p-4">
       <% if @email.persisted? %>
         <h2 class="crayons-title mb-2">Preview</h2>
-        <p><strong>Subject:</strong> <%= @email.subject %></p>
+        <p><strong>Subject:</strong><%= Email.replace_merge_tags(@email.subject, current_user) %> </p>
         <p><strong>Body:</strong></p>
         <div class="crayons-article__body text-styles">
-          <%= simple_format(@email.body) %>
+          <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
         </div>
       <% else %>
         <div class="flex flex-col gap-3">
@@ -41,10 +41,10 @@
             Use this form to compose a new email. Fill in the subject, body, and specify the recipients.
           </p>
           <p>
-            You can choose to send the email immediately or schedule it for a later time.
+            You can use the following merge tags:
           </p>
           <p>
-            Select the appropriate recipient group or provide a custom list of email addresses.
+            <code>*|name|*</code>, <code>*|username|*</code>, <code>*|email|*</code>
           </p>
         </div>
       <% end %>

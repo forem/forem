@@ -3,7 +3,8 @@ class CustomMailer < ApplicationMailer
 
   def custom_email
     @user = params[:user]
-    @content = params[:content]
+    @content = Email.replace_merge_tags(params[:content], @user)
+    @subject = Email.replace_merge_tags(params[:subject], @user)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_newsletter)
 
     # set sendgrid category in the header using smtp api
@@ -13,6 +14,6 @@ class CustomMailer < ApplicationMailer
       headers["X-SMTPAPI"] = smtpapi_header
     end
 
-    mail(to: @user.email, subject: params[:subject])
+    mail(to: @user.email, subject: @subject)
   end
 end

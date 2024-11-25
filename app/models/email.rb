@@ -11,6 +11,23 @@ class Email < ApplicationRecord
 
   BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
+  def self.replace_merge_tags(content, user)
+    return content unless user
+  
+    # Define the mapping of merge tags to user attributes
+    merge_tags = {
+      "name" => user.name,
+      "username" => user.username,
+      "email" => user.email
+    }
+  
+    # Replace merge tags in the content
+    content.gsub(/\*\|(\w+)\|\*/) do |match|
+      tag = Regexp.last_match(1).downcase
+      merge_tags[tag] || match # Leave the tag untouched if not found
+    end
+  end
+
   def deliver_to_users
     return if type_of == "onboarding_drip"
 

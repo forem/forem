@@ -1,4 +1,20 @@
-<h1 class="crayons-title mb-4"><%= @email.subject %></h1>
+<h1 class="crayons-title mb-4">
+  <%= Email.replace_merge_tags(@email.subject, current_user) %>
+  <%= link_to "Edit", edit_admin_email_path(@email), class: "crayons-btn ml-3" %>
+</h1>
+<div class="crayons-card p-6 mb-4">
+  <h2 class="crayons-title mb-4">Rendered Email</h2>
+  <div>
+    <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
+  </div>
+</div>
+
 <div class="crayons-card p-6">
-  <%= @email.body %>
+  <h2 class="crayons-title mb-4">Raw HTML</h2>
+  <div class="mb-4">
+    <%= @email.subject %>
+  </div>
+  <pre>
+    <%= @email.body %>
+  </pre>
 </div>
