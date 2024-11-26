@@ -48,6 +48,8 @@ module Articles
       time_of_second_latest_page_view = user&.page_views&.second_to_last&.created_at
       return days_since_published.days.ago unless time_of_second_latest_page_view
 
+      # If they have a page view *well in the past*, let's go max 18 days look back.
+      time_of_second_latest_page_view = 18.days.ago if time_of_second_latest_page_view < 18.days.ago
       time_of_second_latest_page_view - number_of_hours_to_offset_users_latest_article_views.hours
     end
 
