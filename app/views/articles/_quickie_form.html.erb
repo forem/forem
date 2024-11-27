@@ -33,10 +33,10 @@
 
 <script defer>
 
-let mainForm = document.getElementById('main-status-form');
+let statusForm = document.getElementById('main-status-form');
 let loopingForCSRF = setInterval(() => {
   if (window.csrfToken !== undefined) {
-    mainForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
+    statusForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
     clearInterval(loopingForCSRF);
   }
 }, 25);

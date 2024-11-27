@@ -409,7 +409,7 @@ function initializeMainStatusForm() {
   document.addEventListener("mousedown", (event) => {
     lastClickedElement = event.target;
   });
-  let mainForm = document.getElementById('main-status-form');
+  const mainForm = document.getElementById('main-status-form');
   if (!mainForm) {
     return;
   }
