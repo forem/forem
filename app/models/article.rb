@@ -240,6 +240,7 @@ class Article < ApplicationRecord
   before_validation :set_markdown_from_body_url, if: :body_url?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
+  before_validation :replace_blank_title_for_status
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
   before_save :set_cached_entities
@@ -377,7 +378,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -702,6 +703,12 @@ class Article < ApplicationRecord
     result = content_renderer.process_article
     self.update_column(:processed_html, result.processed_html)
   end
+  
+  def body_preview
+    return unless type_of == "status"
+
+    processed_html_final
+  end
 
   private
 
@@ -786,6 +793,11 @@ class Article < ApplicationRecord
     elsif title.to_s.length > max_length
       errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
     end
+  end
+
+  def replace_blank_title_for_status
+    # Get content within H2 tags via regex
+    self.title = "[Boost]" if title.blank? && type_of == "status"
   end
 
   def restrict_attributes_with_status_types

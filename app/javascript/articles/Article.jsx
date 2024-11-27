@@ -112,6 +112,8 @@ export const Article = ({
             <ContentTitle article={article} />
             {article.type_of !== 'status' && (<TagList tags={article.tag_list} flare_tag={article.flare_tag} />)}
 
+            {article.type_of === 'status' && (<div className='text-styles' dangerouslySetInnerHTML={{__html: article.body_preview}} />)}
+
             {isArticle && (
               // eslint-disable-next-line no-underscore-dangle
               <SearchSnippet highlightText={article.highlight} />
