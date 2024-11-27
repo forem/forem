@@ -7,12 +7,14 @@
   <input value="status" autocomplete="off" type="hidden" name="article[type_of]" id="article_type_of">
   <input value="1" autocomplete="off" type="hidden" name="article[published]" id="article_published">
   <% if @article && @article.published == true && @user && !Rails.env.test? %>
-    <%= Liquid::Template
-        .parse("{% embed #{article_url(@article)} %}")
-        .root
-        .nodelist
-        .first
-        .render({}) %>
+    <% cache "article-share-content-#{@article.id}-#{@article.updated_at}-#{@article.edited_at}", expires_in: 36.hours do %>
+      <%= Liquid::Template
+          .parse("{% embed #{article_url(@article)} %}")
+          .root
+          .nodelist
+          .first
+          .render({}) %>
+    <% end %>
     <input value="<%= article_url(@article) %>" autocomplete="off" type="hidden" name="article[body_url]" id="article_body_url">
   <% else %>
     <input value="" autocomplete="off" type="hidden" name="article[body_markdown]" id="article_body_markdown">
