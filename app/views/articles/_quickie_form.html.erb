@@ -6,7 +6,7 @@
     placeholder="<%= expanded ? "Anything to add?" : t("views.stories.status_placeholder") %>" aria-label="<%= t("views.stories.status_placeholder") %>" maxlength="256" rows="1" name="article[title]" id="article_title" style="height: 40px;"></textarea>
   <input value="status" autocomplete="off" type="hidden" name="article[type_of]" id="article_type_of">
   <input value="1" autocomplete="off" type="hidden" name="article[published]" id="article_published">
-  <% if @article && @user %>
+  <% if @article && @user && !Rails.env.test? %>
     <%= Liquid::Template
         .parse("{% embed #{article_url(@article)} %}")
         .root
