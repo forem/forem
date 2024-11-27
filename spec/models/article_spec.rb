@@ -314,6 +314,7 @@ RSpec.describe Article do
           article = build(:article, body_url: url, body_markdown: nil)
           article.valid?
           expect(article.body_markdown).to eq("{% embed #{url} %}")
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_call_original
         end
 
         it "overwrites existing body_markdown with embedded body_url" do
@@ -322,6 +323,7 @@ RSpec.describe Article do
           article = build(:article, body_url: url, body_markdown: "Existing content")
           article.valid?
           expect(article.body_markdown).to eq("{% embed #{url} %}")
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_call_original
         end
       end
 
