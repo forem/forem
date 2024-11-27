@@ -39,6 +39,7 @@ fr:
     mention_notifications: notifications de mentions
     this_list: cette liste
     unread_notifications: notifications non lues
+    newsletter: bulletin d'information
   feedback_messages_controller:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
     n_a: NON DISPONIBLE
