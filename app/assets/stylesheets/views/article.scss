@@ -252,6 +252,12 @@
       --reaction-bg: var(--reaction-comment-bg);
     }
   }
+  &--boost {
+    // No display for small screens for the moment
+    @media (max-width: $breakpoint-m) {
+      display: none;
+    }
+  }
 }
 
 // This overrides some of the styles for the temporarily feature-flaged
