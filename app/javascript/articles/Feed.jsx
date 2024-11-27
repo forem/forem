@@ -442,22 +442,6 @@ function initializeMainStatusForm() {
   }
   // Prevent return element from creating linebreak
 
-  const ENTER_KEY_CODE = 13;
-  document.getElementById('article_title').onkeydown = function (e) {
-    if (window.Forem.Runtime.hasOSSpecificModifier(e) && e.keyCode === ENTER_KEY_CODE) {
-      document.getElementById('main-status-form').submit();
-    }
-    else if (e.keyCode === ENTER_KEY_CODE) {
-      e.preventDefault();
-    }
-
-  }
-
-  document.getElementById('article_title').onkeyup = function (e) {
-    const textarea = e.target;
-    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
-    document.getElementById('main-status-form-char-count').innerText = document.getElementById('article_title').value.length;
-  }
 }
 
 Feed.defaultProps = {

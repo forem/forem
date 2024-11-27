@@ -306,6 +306,67 @@ RSpec.describe Article do
       end
     end
 
+    describe "before_validation :set_markdown_from_body_url" do
+      context "when body_url is present" do
+        it "sets body_markdown to '{% embed body_url %}'" do
+          url = article_url(article)
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+          article = build(:article, body_url: url, body_markdown: nil)
+          article.valid?
+          expect(article.body_markdown).to eq("{% embed #{url} %}")
+        end
+
+        it "overwrites existing body_markdown with embedded body_url" do
+          url = article_url(article)
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+          article = build(:article, body_url: url, body_markdown: "Existing content")
+          article.valid?
+          expect(article.body_markdown).to eq("{% embed #{url} %}")
+        end
+      end
+
+      context "when body_url is not present" do
+        it "does not change body_markdown" do
+          article = build(:article, body_url: nil, body_markdown: "Existing content")
+          article.valid?
+          expect(article.body_markdown).to eq("Existing content")
+        end
+      end
+    end
+
+    # Tests for replace_blank_title_for_status functionality
+    describe "before_validation :replace_blank_title_for_status" do
+      context "when title is blank and type_of is 'status'" do
+        it "sets title to '[Boost]'" do
+          article = build(:article, title: nil, type_of: "status")
+          article.valid?
+          expect(article.title).to eq("[Boost]")
+        end
+
+        it "sets title to '[Boost]' when title is an empty string" do
+          article = build(:article, title: "", type_of: "status")
+          article.valid?
+          expect(article.title).to eq("[Boost]")
+        end
+      end
+
+      context "when title is present and type_of is 'status'" do
+        it "does not change the title" do
+          article = build(:article, title: "Some title", type_of: "status")
+          article.valid?
+          expect(article.title).to eq("Some title")
+        end
+      end
+
+      context "when title is blank and type_of is not 'status'" do
+        it "does not change the title" do
+          article = build(:article, title: nil, type_of: "full_post")
+          article.valid?
+          expect(article.title).to be_nil
+        end
+      end
+    end
+
     describe "#title_length_based_on_type_of" do
       it "validates title length for 'full_post' articles" do
         article = Article.create(type_of: "full_post", title: "A" * 129, user: user)

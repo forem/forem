@@ -278,3 +278,27 @@
   <%== RunkitTag.script %>
 </script>
 <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_fixed_bottom) %>"></div>
+
+<% if user_signed_in? %>
+  <div id="quickie-wrapper" class="hidden">
+    <div data-testid="modal-container" class="crayons-modal">
+      <div role="dialog" aria-modal="true" aria-label="modal" class="crayons-modal__box" style="max-width:800px">
+        <header class="crayons-modal__box__header">
+          <h2 class="crayons-subtitle-2">Boost Post to Your Feed</h2>
+          <button id="quickie-modal-close" type="button" aria-label="Close" class="c-btn c-btn--icon-alone crayons-modal__dismiss">
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="crayons-icon c-btn__icon"><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"></path></svg>
+          </button>
+        </header><div class="crayons-modal__box__body">
+        <div class="h-100 w-100">
+          <%= render "articles/quickie_form", expanded: true %>
+        </div>
+      </div>
+    </div>
+    <div data-testid="modal-overlay" class="crayons-modal__backdrop"></div></div>
+  </div>
+  <script>
+    document.getElementById("quickie-modal-close").addEventListener("click", () => {
+      document.getElementById("quickie-wrapper").classList.add("hidden");
+    });
+  </script>
+<% end %>

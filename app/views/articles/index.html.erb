@@ -45,28 +45,7 @@
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
       <% if user_signed_in? %>
-        <form id="main-status-form" action="/articles" accept-charset="UTF-8" data-remote="true" method="post">
-          <input name="utf8" type="hidden" value="✓" autocomplete="off">
-          <input type="hidden" name="authenticity_token" value="NOTHING" autocomplete="off">
-          <div class="crayons-card p-2">
-            <textarea class="crayons-textfield element-focused"
-              placeholder="<%= t("views.stories.status_placeholder") %>" aria-label="<%= t("views.stories.status_placeholder") %>" maxlength="256" rows="1" name="article[title]" id="article_title" style="height: 40px;"></textarea>
-            <input value="" autocomplete="off" type="hidden" name="article[body_markdown]" id="article_body_markdown">
-            <input value="status" autocomplete="off" type="hidden" name="article[type_of]" id="article_type_of">
-            <input value="1" autocomplete="off" type="hidden" name="article[published]" id="article_published">
-            <div id="main-status-form-controls" class="justify-between items-center pt-2 hidden">
-              <div class="fs-xs color-base-60">
-                <%= t("views.stories.status_hint_html") %>
-              </div>
-              <div class="flex items-center">
-                <div class="fs-s color-base-60 pr-2 align-right pr-1" style="min-width:65px">
-                  <span id="main-status-form-char-count">0</span>/256
-                </div>
-                <input type="submit" name="commit" value="<%= t("views.stories.submit") %>" class="crayons-btn crayons-btn--primary py-1" data-disable-with="Post">
-              </div>
-            </div>
-          </div>
-        </form>
+        <%= render "articles/quickie_form", expanded: false %>
       <% end %>
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
