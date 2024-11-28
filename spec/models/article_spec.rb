@@ -186,6 +186,81 @@ RSpec.describe Article do
       end
     end
 
+    describe "#restrict_attributes_with_status_types" do
+      context "when the article is persisted and body_markdown hasn't changed" do
+        it "does not run validation" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.title = "Updated Title"
+          expect(article).to be_valid
+        end
+    
+        it "runs validation if body_markdown has changed" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.body_markdown = "New body content"
+          expect(article).not_to be_valid
+          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+        end
+      end
+    
+      context "when type_of is not 'status'" do
+        it "does not add an error" do
+          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content", main_image: nil, user: user)
+          expect(article).to be_valid
+        end
+      end
+    
+      context "when body_url is present" do
+        it "does not add an error even if other attributes are present" do
+          stub_request(:any, /example.com/) # Stubbing the HTTP request
+    
+          article = build(
+            :article,
+            type_of: "status",
+            body_url: "http://example.com",
+            body_markdown: "Content",
+            main_image: "http://image.com/img.png",
+            collection_id: 1,
+            user: user,
+          )
+          expect(article).to be_valid
+        end
+      end
+    
+      context "when body_url is blank" do
+        context "and body_markdown is present" do
+          it "adds an error" do
+            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil, user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and main_image is present" do
+          it "adds an error" do
+            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png", user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and collection_id is present" do
+          it "adds an error" do
+            collection = create(:collection)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, collection_id: collection.id, user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and body_markdown, main_image, and collection_id are blank" do
+          it "does not add an error" do
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+            expect(article).to be_valid
+          end
+        end
+      end
+    end  
+
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
         article.main_image_background_hex_color = "hello"
