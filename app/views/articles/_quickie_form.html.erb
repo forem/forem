@@ -28,29 +28,40 @@
 
 <script defer>
 
-let statusForm = document.getElementById('main-status-form');
-let loopingForCSRF = setInterval(() => {
-  if (window.csrfToken !== undefined) {
-    statusForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
-    clearInterval(loopingForCSRF);
-  }
-}, 25);
+  var statusForm = document.getElementById('main-status-form');
+  var loopingForCSRF = setInterval(() => {
+    if (window.csrfToken !== undefined) {
+      statusForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
+      clearInterval(loopingForCSRF);
+    }
+  }, 25);
 
-let enterKey = 13;
-document.getElementById('article_title').onkeydown = function (e) {
-  if (window.Forem.Runtime.hasOSSpecificModifier(e) && e.keyCode === enterKey) {
-    document.getElementById('main-status-form').submit();
-  }
-  else if (e.keyCode === enterKey) {
-    e.preventDefault();
+  var enterKey = 13;
+  document.getElementById('article_title').onkeydown = function (e) {
+    if (window.Forem.Runtime.hasOSSpecificModifier(e) && e.keyCode === enterKey) {
+      document.getElementById('main-status-form').submit();
+    }
+    else if (e.keyCode === enterKey) {
+      e.preventDefault();
+    }
+
   }
 
-}
+  document.getElementById('article_title').onkeyup = function (e) {
+    var textarea = e.target;
+    textarea.style.height = 'auto'; // Reset the height
+    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set the new height
+    document.getElementById('main-status-form-char-count').innerText = textarea.value.length;
+  }
 
-document.getElementById('article_title').onkeyup = function (e) {
-  let textarea = e.target;
-  textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
-  document.getElementById('main-status-form-char-count').innerText = document.getElementById('article_title').value.length;
-}
+  document.getElementById('article_title').onkeydown = function (e) {
+    setTimeout(() => {
+      var textarea = e.target;
+      textarea.style.height = 'auto'; // Reset the height
+      textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set the new height
+      document.getElementById('main-status-form-char-count').innerText = textarea.value.length;
+    }, 1);
+  }
+
 
 </script>

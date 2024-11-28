@@ -446,9 +446,8 @@ function buildArticleHTML(article, currentUserId = null) {
                   ${filterXSS(article.title)}
                 </a>
               </h3>\
-              <div class="crayons-story__tags">
-                ${article.type_of !== 'status' ? tagString : ''}
-              </div>\
+              ${article.type_of !== 'status' ? `<div class="crayons-story__tags">${tagString}</div>` : ''}\
+              ${(article.type_of === 'status' && article.body_preview && article.body_preview.length > 10) ? `<div class="crayons-story__contentpreview text-styles">${article.body_preview}</div>` : '' }\
               ${searchSnippetHTML}\
               <div class="crayons-story__bottom">\
                 <div class="crayons-story__details">

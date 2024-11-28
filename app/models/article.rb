@@ -801,6 +801,9 @@ class Article < ApplicationRecord
   end
 
   def restrict_attributes_with_status_types
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted? && !body_markdown_changed?
+
     # For now, there is no body allowed for status types
     if type_of == "status" && body_url.blank? && (body_markdown.present? || main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
