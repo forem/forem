@@ -326,6 +326,7 @@ class Article < ApplicationRecord
                     }
                   },
                   ignoring: :accents
+                  ranked_by: ":tsearch + (1.0 / (NOW() - published_at))"
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
@@ -391,28 +392,47 @@ class Article < ApplicationRecord
            :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
   }
 
-  scope :sorting, lambda { |value|
-    value ||= "creation-desc"
-    kind, dir = value.split("-")
-
-    dir = "desc" unless %w[asc desc].include?(dir)
-
-    case kind
-    when "creation"
-      order(created_at: dir)
-    when "views"
-      order(page_views_count: dir)
-    when "reactions"
-      order(public_reactions_count: dir)
-    when "comments"
-      order(comments_count: dir)
-    when "published"
-      # NOTE: For recently published, we further filter to only published posts
-      order(published_at: dir).published
-    else
-      order(created_at: dir)
-    end
+  scope :search_and_sort, lambda { |query, sort_option|
+  articles = search_articles(query).published
+  case sort_option
+  when "newest"
+    articles.order(published_at: :desc)
+  when "oldest"
+    articles.order(published_at: :asc)
+  when "relevance"
+    articles
+  else
+    articles.order(created_at: :desc)
+  end
   }
+
+  scope :sorting, lambda { |value|
+  value ||= "creation-desc"
+  kind, dir = value.split("-")
+
+  dir = "desc" unless %w[asc desc].include?(dir)
+
+  case kind
+  when "creation"
+    order(created_at: dir)
+  when "views"
+    order(page_views_count: dir)
+  when "reactions"
+    order(public_reactions_count: dir)
+  when "comments"
+    order(comments_count: dir)
+  when "published"
+    order(published_at: dir).published
+  when "search_newest"
+    order(published_at: :desc).search_articles
+  else
+    order(created_at: dir)
+  end
+  }
+
+  def self.search_with_sort(query:, sort_option:)
+    search_and_sort(query, sort_option).limit(DEFAULT_FEED_PAGINATION_WINDOW_SIZE)
+  end
 
   # @note This includes the `featured` scope, which may or may not be
   #       something we expose going forward.  However, it was

@@ -2,7 +2,8 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
-  before_action :authenticate_user!, except: %i[feed new]
+  # before_action :authenticate_user!, except: %i[feed new]
+  before_action :authenticate_user!, except: %i[feed new search]
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
   # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
   #       different error which we could then rescue as part of our exception handling.
@@ -65,6 +66,20 @@ class ArticlesController < ApplicationController
     }
   end
 
+  def search
+    skip_authorization
+
+    query = params[:query].to_s.strip
+    sort_option = params[:sort] || "relevance" # Default to relevance if no sort option is provided
+
+    @articles = Article.search_with_sort(query: query, sort_option: sort_option)
+
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render json: @articles }
+    end
+  end
+  
   # @note The /new path is a unique creature.  We want to ensure that folks coming to the /new with
   #       a prefill of information are first prompted to sign-in, and then given a form that
   #       prepopulates with that pre-fill information.  This is a feature that StackOverflow and

@@ -6,6 +6,28 @@
         </div>
         <p id="filters-description" class="mt-4 crayons-field__description"><%= t("views.admin.users.filters.desc") %></p>
         <div class="py-4">
+            <!-- Added Keyword Filter Section -->
+            <details data-section="keyword" class="admin-details">
+            <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
+                <span class="flex">
+                <%= t("views.admin.users.filters.summary.keyword") %>
+                <span class="js-filtered-indicator-keyword relative ml-2 <%= params[:search].blank? ? "hidden" : "" %>">
+                    <span class="block absolute c-indicator c-indicator--info"></span>
+                </span>
+                </span>
+                <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
+            </summary>
+            <fieldset class="js-keyword-fieldset pb-4 flex flex-col items-start">
+                <legend class="screen-reader-only"><%= t("views.admin.users.filters.legend.keyword") %></legend>
+                <div class="crayons-field crayons-field--text">
+                <%= f.text_field :search, placeholder: t("views.admin.users.filters.keyword.placeholder"), class: "crayons-textfield", value: params[:search] %>
+                </div>
+                <button type="button" class="js-clear-filter-btn c-btn <%= params[:search].blank? ? "hidden" : "" %>" data-textfield-selector=".js-keyword-fieldset" data-filter-indicator-selector=".js-filtered-indicator-keyword"
+                aria-label="<%= t("views.admin.users.filters.clear_filter.aria_keyword") %>">
+                <%= t("views.admin.users.filters.clear_filter.text") %>
+                </button>
+            </fieldset>
+            </details>
             <details data-section="roles" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
                     <span class="flex">

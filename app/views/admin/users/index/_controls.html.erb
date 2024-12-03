@@ -13,6 +13,7 @@
         <div class="m:hidden">
           <%= render "admin/users/controls/expand_search_button" %>
         </div>
+        <%= f.text_field :search, placeholder: t("views.admin.users.search.placeholder"), class: "crayons-textfield crayons-textfield--sm ml-2" if params[:search].present? %>
         <button type="button" aria-label="<%= t("views.admin.users.filters.aria_label") %>" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
         <%= render "admin/users/controls/export" %>
       </div>

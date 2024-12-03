@@ -65,6 +65,18 @@ module Articles
     def self.feed_for(controller:, user:, number_of_articles:, page:, tag:, type_of: "discover")
       variant = AbExperiment.get_feed_variant_for(controller: controller, user: user)
 
+      # Ensure relevancy and recency sorting for "Newest"
+      if type_of == "search_sort_newest"
+        return VariantQuery.build_for(
+          variant: :relevancy_score_and_publication_date,
+          user: user,
+          number_of_articles: number_of_articles,
+          page: page,
+          tag: tag,
+          type_of: type_of
+        )
+      end
+
       VariantQuery.build_for(
         variant: variant,
         user: user,
