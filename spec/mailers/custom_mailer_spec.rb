@@ -39,6 +39,21 @@ RSpec.describe CustomMailer, type: :mailer do
       end
     end
 
+    context "when there is an email passed" do
+      let(:email) { create(:email, type_of: "onboarding_drip") }
+      let(:second_user) { create(:user) }
+
+      before do
+
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+      end
+
+      it "tracks the email_id after delivery" do
+        described_class.with(user: second_user, content: content, subject: subject, email_id: email.id).custom_email.deliver_now
+        expect(email.reload.email_messages.count).to eq(1)
+      end
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)

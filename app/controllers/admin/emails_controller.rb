@@ -46,7 +46,7 @@ module Admin
     private
 
     def email_params
-      params.permit(:subject, :body, :audience_segment_id, :type_of, :drip_day)
+      params.permit(:subject, :body, :audience_segment_id, :type_of, :drip_day, :status)
     end
   end
 end

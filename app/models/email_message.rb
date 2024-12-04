@@ -1,5 +1,6 @@
 class EmailMessage < Ahoy::Message
   belongs_to :feedback_message, optional: true
+  belongs_to :email, optional: true
 
   def self.find_for_reports(feedback_message_ids)
     select(:to, :subject, :content, :utm_campaign, :feedback_message_id)

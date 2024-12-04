@@ -26,6 +26,15 @@ RSpec.describe Email, type: :model do
       end
     end
 
+    context "when status is not 'active'" do
+      let(:email) { create(:email, status: "draft") }
+
+      it "does not enqueue any jobs" do
+        expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
+        email.send(:deliver_to_users)
+      end
+    end
+
     context "when there is an audience segment" do
       let(:audience_segment) { create(:audience_segment) }
       let(:email) { create(:email, audience_segment: audience_segment) }
@@ -41,7 +50,8 @@ RSpec.describe Email, type: :model do
           [user_with_notifications.id],
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
         email.send(:deliver_to_users)
       end
@@ -60,7 +70,8 @@ RSpec.describe Email, type: :model do
           [user_with_notifications.id],
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
         email.send(:deliver_to_users)
       end
@@ -95,13 +106,15 @@ RSpec.describe Email, type: :model do
           users_batch_1.map(&:id),
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           users_batch_2.map(&:id),
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
 
         email.send(:deliver_to_users)
