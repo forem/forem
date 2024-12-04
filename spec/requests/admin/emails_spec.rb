@@ -40,7 +40,7 @@ RSpec.describe "/admin/content_manager/emails" do
         }.to change(Email, :count).by(1)
         expect(response).to redirect_to(admin_email_path(Email.last))
         follow_redirect!
-        expect(flash[:success]).to eq(I18n.t("admin.emails_controller.created"))
+        expect(flash[:success]).to eq(I18n.t("admin.emails_controller.drafted"))
       end
     end
 
