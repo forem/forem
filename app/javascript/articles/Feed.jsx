@@ -30,7 +30,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     async function fetchFeedItems(timeFrame = '', page = 1) {
       const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const promises = [
-        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
+        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}&search_fields=${searchFields}&sort_by=${sortBy}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
