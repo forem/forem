@@ -2,7 +2,7 @@ class Email < ApplicationRecord
   belongs_to :audience_segment, optional: true
   has_many :email_messages
 
-  after_create :deliver_to_users
+  after_save :deliver_to_users
 
   validates :subject, presence: true
   validates :body, presence: true
@@ -56,7 +56,6 @@ class Email < ApplicationRecord
                                  .where(notification_setting: { email_newsletter: true })
                                  .where.not(email: "")
                  end
-
     user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
       Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), subject, body, type_of, id)
     end
