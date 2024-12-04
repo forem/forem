@@ -20,6 +20,12 @@
       <%= number_field_tag :drip_day, @email.drip_day, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
+    <%# status select %>
+    <div class="crayons-field">
+      <%= label_tag :status, "Status:", class: "crayons-field__label" %>
+      <%= select_tag :status, options_for_select(Email.statuses.keys, selected: @email.status), class: "crayons-textfield", autocomplete: "off" %>
+    </div>
+
     <div class="crayons-field">
       <%= label_tag :body, "Body Content:", class: "crayons-field__label" %>
       <%= text_area_tag :body, @email.body, size: "100x5", class: "crayons-textfield" %>
@@ -45,6 +51,11 @@
           </p>
           <p>
             <code>*|name|*</code>, <code>*|username|*</code>, <code>*|email|*</code>
+          </p>
+          <p>
+            <strong>
+              One-off and newsletter emails will be sent immediately once marked as "Active". Onboarding drip emails will be sent on the specified day when marked "Active".
+            </strong>
           </p>
         </div>
       <% end %>

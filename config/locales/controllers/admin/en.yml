@@ -34,7 +34,9 @@ en:
       updated: Billboard has been updated!
       wrong: Something went wrong with deleting the Billboard.
     emails_controller:
-      created: Emails are being sent!
+      created: Emails has been created!
+      drafted: Email has been drafted!
+      activated: Email has been activated!
       deleted: Email has been deleted!
       updated: Email has been updated!
       wrong: Something went wrong with deleting the Email.
