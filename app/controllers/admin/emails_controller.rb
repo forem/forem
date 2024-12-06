@@ -18,7 +18,7 @@ module Admin
     def create
       @email = Email.new(email_params)
       if @email.save
-        flash[:success] = I18n.t("admin.emails_controller.created")
+        flash[:success] = @email.status == "active" ? I18n.t("admin.emails_controller.activated") :  I18n.t("admin.emails_controller.drafted")
         redirect_to admin_email_path(@email.id)
       else
         @audience_segments = AudienceSegment.all
@@ -46,7 +46,7 @@ module Admin
     private
 
     def email_params
-      params.permit(:subject, :body, :audience_segment_id, :type_of, :drip_day)
+      params.permit(:subject, :body, :audience_segment_id, :type_of, :drip_day, :status)
     end
   end
 end

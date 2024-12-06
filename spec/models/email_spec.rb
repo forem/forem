@@ -14,8 +14,12 @@ RSpec.describe Email, type: :model do
   end
 
   describe "#deliver_to_users" do
-    let(:user_with_notifications) { create(:user, :with_newsletters) }
-    let(:user_without_notifications) { create(:user, :without_newsletters) }
+    let!(:user_with_notifications) { create(:user, :with_newsletters) }
+    let!(:user_without_notifications) { create(:user, :without_newsletters) }
+
+    before do
+      allow(Emails::BatchCustomSendWorker).to receive(:perform_async).and_return(true)
+    end
 
     context "when type_of equals 'onboarding_drip'" do
       let(:email) { create(:email, type_of: "onboarding_drip") }
@@ -23,6 +27,41 @@ RSpec.describe Email, type: :model do
       it "does not enqueue any jobs" do
         expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
         email.send(:deliver_to_users)
+      end
+    end
+
+    context "when status is not 'active'" do
+      let(:email) { create(:email, status: "draft") }
+
+      it "does not enqueue any jobs" do
+        expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
+      end
+    end
+
+    context "when status is changed from 'draft' to 'active'" do
+      let(:email) { create(:email, status: "draft") }
+
+      it "enqueues jobs" do
+        email.update(status: "active")
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [user_with_notifications.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id
+        )
+      end
+
+      it "Only enqueues once even if re-saved" do
+        email.update(status: "active")
+        email.reload.save
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [user_with_notifications.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id
+        ).once
       end
     end
 
@@ -37,13 +76,14 @@ RSpec.describe Email, type: :model do
       end
 
       it "sends the emails to the users in the audience segment with email newsletters enabled" do
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+        email.send(:deliver_to_users)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
           [user_with_notifications.id],
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
-        email.send(:deliver_to_users)
       end
     end
 
@@ -56,13 +96,14 @@ RSpec.describe Email, type: :model do
       end
 
       it "sends the emails to all registered users with email newsletters enabled" do
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+        email.send(:deliver_to_users)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
           [user_with_notifications.id],
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
-        email.send(:deliver_to_users)
       end
     end
 
@@ -90,21 +131,22 @@ RSpec.describe Email, type: :model do
 
         # Mock User.registered scope to return all users in two batches
         allow(User).to receive(:registered).and_return(User.where(id: users_batch_1.pluck(:id) + users_batch_2.pluck(:id)))
+        email.send(:deliver_to_users)
 
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
           users_batch_1.map(&:id),
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
-        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
           users_batch_2.map(&:id),
           email.subject,
           email.body,
-          email.type_of
+          email.type_of,
+          email.id
         )
-
-        email.send(:deliver_to_users)
       end
     end
   end

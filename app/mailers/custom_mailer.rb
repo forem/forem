@@ -1,6 +1,13 @@
 class CustomMailer < ApplicationMailer
   default from: -> { email_from(I18n.t("mailers.custom_mailer.from")) }
 
+  has_history extra: lambda {
+    {
+      email_id: params[:email_id]
+    }
+  }, only: :custom_email
+
+
   def custom_email
     @user = params[:user]
     @content = Email.replace_merge_tags(params[:content], @user)

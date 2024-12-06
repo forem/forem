@@ -1,5 +1,5 @@
 <h1 class="crayons-title mb-4">
-  <%= Email.replace_merge_tags(@email.subject, current_user) %>
+  <%= Email.replace_merge_tags(@email.subject, current_user) %> [<%= @email.type_of %>] [<%= @email.status %>]
   <%= link_to "Edit", edit_admin_email_path(@email), class: "crayons-btn ml-3" %>
 </h1>
 <div class="crayons-card p-6 mb-4">
