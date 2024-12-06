@@ -67,6 +67,7 @@ module Homepage
 
     def filter
       @relation = @relation.full_posts
+      @relation = @relation.where("title ILIKE ?", "%#{@search_fields}%") if @search_fields.present?
       @relation = @relation.where(approved: approved) unless approved.nil?
       @relation = @relation.where(published_at: published_at) if published_at.present?
       @relation = @relation.where(user_id: user_id) if user_id.present?
