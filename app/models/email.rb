@@ -43,6 +43,17 @@ class Email < ApplicationRecord
     end
   end
 
+  def default_from_name_based_on_type
+    case type_of
+    when "one_off"
+      ""
+    when "newsletter"
+      "Newsletter"
+    when "onboarding_drip"
+      "Onboarding"
+    end
+  end
+
   def deliver_to_users
     return if type_of == "onboarding_drip"
     return if status != "active"

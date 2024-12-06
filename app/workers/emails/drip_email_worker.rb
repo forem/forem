@@ -25,6 +25,8 @@ module Emails
 
           CustomMailer.with(user: user, subject: email_template.subject, content: email_template.body, type_of: email_template.type_of, email_id: email_template.id)
             .custom_email.deliver_now
+        rescue StandardError => e
+          Rails.logger.error("Error sending drip email to user #{user.id}: #{e.message}")
         end
       end
     end
