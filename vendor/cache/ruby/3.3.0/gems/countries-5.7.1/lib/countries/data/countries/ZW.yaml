@@ -1,0 +1,56 @@
+---
+ZW:
+  alpha2: ZW
+  alpha3: ZWE
+  continent: Africa
+  country_code: '263'
+  currency_code: USD
+  distance_unit: KM
+  gec: ZI
+  geo:
+    latitude: -19.015438
+    longitude: 29.154857
+    max_latitude: -15.6093188
+    max_longitude: 33.068236
+    min_latitude: -22.4219117
+    min_longitude: 25.237368
+    bounds:
+      northeast:
+        lat: -15.6093188
+        lng: 33.068236
+      southwest:
+        lat: -22.4219117
+        lng: 25.237368
+  international_prefix: '00'
+  ioc: ZIM
+  iso_long_name: The Republic of Zimbabwe
+  iso_short_name: Zimbabwe
+  languages_official:
+  - en
+  - sn
+  - nd
+  languages_spoken:
+  - en
+  - sn
+  - nd
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  - 10
+  - 11
+  national_prefix: '0'
+  nationality: Zimbabwean
+  number: '716'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: ZW
+  unofficial_names:
+  - Zimbabwe
+  - Simbabwe
+  - Zimbabue
+  - ジンバブエ
+  world_region: EMEA

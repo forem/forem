@@ -1,0 +1,31 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "balance.available",
+  "object": "event",
+  "data": {
+    "object": {
+      "pending": [
+        {
+          "amount": 2217,
+          "currency": "usd"
+        }
+      ],
+      "available": [
+        {
+          "amount": 0,
+          "currency": "usd"
+        }
+      ],
+      "instant_available": [
+        {
+          "amount": 0,
+          "currency": "usd"
+        }
+      ],
+      "livemode": false,
+      "object": "balance"
+    }
+  }
+}

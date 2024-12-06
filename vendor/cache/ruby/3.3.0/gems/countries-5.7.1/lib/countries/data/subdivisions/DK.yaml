@@ -1,0 +1,372 @@
+---
+'81':
+  name: Nordjylland
+  code: '81'
+  unofficial_names:
+  - North Jutland
+  - North Denmark Region
+  - North Denmark
+  geo:
+    latitude: 56.8307416
+    longitude: 9.4930528
+    min_latitude: 56.550334
+    min_longitude: 8.2120049
+    max_latitude: 57.7518131
+    max_longitude: 11.200088
+  translations:
+    'no': Region Nordjylland
+    ar: مقاطعة نورييلاند
+    be: Вобласць Паўночная Ютландыя
+    bg: Северна Ютландия
+    bn: নর্থ ডেনমার্ক অঞ্চল
+    bs: Sjeverna Danska
+    ca: Regió de Nordjylland
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011113\U0001112C\U0001111A\U00011134\U0001111F\U00011122\U00011134\U00011107\U00011134"
+    ceb: North Denmark Region
+    cs: Nordjylland
+    da: Region Nordjylland
+    de: Region Nordjylland
+    el: Περιφέρεια Βόρειας Δανίας
+    en: Northern Denmark
+    es: Jutlandia Septentrional
+    et: Põhja-Jüütimaa piirkond
+    eu: Ipar Jutlandia
+    fa: نوردیولند
+    fi: Pohjois-Jyllanti
+    fr: Jutland-du-Nord
+    gu: ઉત્તર ડેનમાર્ક પ્રાંત
+    hi: उत्तरी डेनमार्क क्षेत्र
+    hr: Sjeverni Jutland
+    hu: Nordjylland régió
+    hy: Հյուսիսային Դանիա տարածաշրջան
+    id: Region Nordjylland
+    it: Jutland settentrionale
+    ja: 北ユラン地域
+    ka: ჩრდილოეთ იუტლანდიის რეგიონი
+    kk: Солтүстік Ютландия (облыс)
+    kn: ಉತ್ತರ ಡೆನ್ಮಾರ್ಕ್ ಪ್ರದೇಶ
+    ko: 북윌란 지역
+    lt: Šiaurės Jutlandijos regionas
+    lv: Ziemeļjitlandes reģions
+    mk: Северна Данска
+    mr: उत्तर डेन्मार्क प्रदेश
+    ms: Region Nordjylland
+    nb: Region Nordjylland
+    nl: Noord-Jutland
+    pl: Jutlandia Północna
+    pt: Jutlândia do Norte
+    ro: Regiunea Nordjylland
+    ru: Северная Ютландия
+    si: උතුරු ඩෙන්මාර්ක් කලාපය
+    sk: Severné Jutsko (administratívny región)
+    sr_Latn: Severna Danska
+    sr: Северна Данска
+    sv: Region Nordjylland
+    ta: வடக்கு டென்மார்க் பகுதி
+    te: ఉత్తర డెన్మార్క్ ప్రాంతం
+    th: เขตการปกครองเดนมาร์กเหนือ
+    tr: Kuzey Danimarka Bölgesi
+    uk: Північна Ютландія
+    ur: شمالی ڈنمارک علاقہ
+    vi: Bắc Jutland
+    zh: 北日德兰大区
+    sq: Rajoni i Danimarkës Veriore
+  comments:
+  type: region
+'82':
+  name: Midtjylland
+  code: '82'
+  unofficial_names:
+  - Central Denmark
+  - Central Jutland Region
+  - Central Jutland
+  - Mid Jutland
+  geo:
+    latitude: 56.302139
+    longitude: 9.3027769
+    min_latitude: 55.668859
+    min_longitude: 8.0976872
+    max_latitude: 56.846539
+    max_longitude: 11.6613
+  translations:
+    'no': Region Midtjylland
+    ar: إقليم ميديولند
+    be: Цэнтральная Ютландыя
+    bg: Централна Ютландия
+    bn: কেন্দ্রিয় ডেনমার্ক অঞ্চল
+    bs: Centralna Danska
+    ca: Regió de Midtjylland
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011113\U0001112C\U0001111A\U00011134\U0001111F\U00011122\U00011134\U00011107\U00011134"
+    ceb: Region Midtjylland
+    cs: Midtjylland
+    da: Region Midtjylland
+    de: Region Midtjylland
+    el: Περιφέρεια Κεντρικής Δανίας
+    en: Central Denmark
+    es: Jutlandia Central
+    et: Kesk-Jüütimaa
+    eu: Erdialdeko Jutlandia
+    fa: میدیولند
+    fi: Keski-Jyllanti
+    fr: Jutland-Central
+    gu: સેન્ટ્રલ ડેનમાર્ક પ્રાંત
+    hi: मध्य डेनमार्क प्रदेश
+    hr: Središnji Jutland
+    hu: Midtjylland régió
+    hy: Կենտրոնական Յուտլանդիա տարածաշրջան
+    id: Region Midtjylland
+    it: Jutland centrale
+    ja: 中央ユラン地域
+    ka: ცენტრალური იუტლანდიის რეგიონი
+    kk: Орталық Ютландия (облыс)
+    kn: ಸೆಂಟ್ರಲ್ ಡೆನ್ಮಾರ್ಕ್ ಪ್ರದೇಶ
+    ko: 중앙윌란 지역
+    lt: Vidurio Jutlandijos regionas
+    lv: Vidusjitlandes reģions
+    mk: Средна Данска
+    mr: सेंट्रल डेनमार्क प्रदेश
+    ms: Region Midtjylland
+    nb: Region Midtjylland
+    nl: Midden-Jutland
+    pl: Jutlandia Środkowa
+    pt: Jutlândia Central
+    ro: Regiunea Midtjylland
+    ru: Центральная Ютландия
+    si: මද්‍යම ඩෙන්මාර්ක් කලාපය
+    sk: Region Midtjylland
+    sr_Latn: Središnja Danska
+    sr: Средишња Данска
+    sv: Region Mittjylland
+    ta: சென்ட்ரல் டென்மார்க் பகுதி
+    te: సెంట్ర్రల్ డెన్మార్క్ ప్రాంతం
+    th: เขตเซนทรัลเดนหมาก
+    tr: Merkezi Danimarka Bölgesi
+    uk: Центральна Ютландія
+    ur: وسطی ڈنمارک علاقہ
+    vi: Trung Jutland
+    zh: 中日德兰大区
+    az: Mərkəzi Yutlandiya
+    sq: Rajoni i Danimarkës Qendrore
+  comments:
+  type: region
+'83':
+  name: Syddanmark
+  code: '83'
+  unofficial_names:
+  - South Denmark
+  geo:
+    latitude: 56.26392
+    longitude: 9.501785
+    min_latitude: 54.5591211
+    min_longitude: 8.072240899999999
+    max_latitude: 57.8794382
+    max_longitude: 15.1972813
+  translations:
+    'no': Region Syddanmark
+    ar: إقليم سيد دنمارك
+    az: Cənubi Danimarka
+    be: Паўднёвая Данія
+    bg: Южна Дания
+    bn: অঞ্চলঅফ সাউদার্ন ডেরমার্ক
+    bs: Južna Danska
+    ca: Regió de Syddanmark
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011113\U0001112C\U0001111A\U00011134\U0001111F\U00011122\U00011134\U00011107\U00011134"
+    ceb: Region Syddanmark
+    cs: Syddanmark
+    da: Region Syddanmark
+    de: Region Syddanmark
+    el: Περιφέρεια Νότιας Δανίας
+    en: Southern Denmark
+    es: Dinamarca Meridional
+    et: Lõuna-Taani piirkond
+    eu: Hegoaldeko Danimarka
+    fa: سیددانمارک
+    fi: Etelä-Tanska
+    fr: Danemark-du-Sud
+    gu: દક્ષિણી ડેનમાર્ક પ્રદેશ
+    hi: दक्षिणी डेनमार्क क्षेत्र
+    hr: Južna Danska
+    hu: Syddanmark régió
+    hy: Հարավային Դանիա տարածաշրջան
+    id: Region Syddanmark
+    it: Danimarca meridionale
+    ja: 南デンマーク地域
+    ka: სამხრეთ დანიის რეგიონი
+    kk: Оңтүстік Дания
+    kn: ದಕ್ಷಿಣ ಡೆನ್ಮಾರ್ಕ್ನ ಪ್ರದೇಶ
+    ko: 남덴마크 지역
+    lt: Pietų Danijos regionas
+    lv: Dienviddānijas reģions
+    mk: Јужна Данска
+    mr: दक्षिणी डेन्मार्कचा प्रदेश
+    ms: Region Syddanmark
+    nb: Region Syddanmark
+    nl: Zuid-Denemarken
+    pl: Dania Południowa
+    pt: Dinamarca do Sul
+    ro: Regiunea Syddanmark
+    ru: Южная Дания
+    si: දකුණු ඩෙන්මාර්ක් කලාපය
+    sk: Južné Dánsko
+    sr_Latn: Južna Danska
+    sr: Јужна Данска
+    sv: Region Syddanmark
+    ta: டென்மார்க் தெற்கு பகுதி
+    te: దక్షిణ డెన్మార్క్ ప్రాంతం
+    th: รีเจน ออฟ เซาท์เทิร์น
+    tr: Güney Danimarka Bölgesi
+    uk: Південна Данія
+    ur: جنوبی ڈنمارک علاقہ
+    vi: Nam Đan Mạch
+    zh: 南丹麦大区
+    mn: Өмнөд Дани
+    sq: Rajoni i Danimarkës Jugore
+  comments:
+  type: region
+'84':
+  name: Hovedstaden
+  code: '84'
+  unofficial_names:
+  - Capital Region
+  - Region Hovedstaden
+  geo:
+    latitude: 55.6751812
+    longitude: 12.5493261
+    min_latitude: 54.98718119999999
+    min_longitude: 11.694833
+    max_latitude: 56.200283
+    max_longitude: 15.157218
+  translations:
+    'no': Region Hovedstaden
+    ar: إقليم هوفدستادن
+    be: Сталічная вобласць
+    bg: Столична област
+    bn: কেপিটাল অঞ্চলঅফ ডেরমার্ক
+    bs: Regija glavnog grada
+    ca: Regió de Hovedstaden
+    ccp: "\U00011122\U0001110C\U00011134\U00011119\U0001111A\U00011129 \U00011122\U0001112C\U0001110E\U00011133\U00011120\U00011127"
+    ceb: Region Hovedstaden
+    cs: Hovedstaden
+    da: Region Hovedstaden
+    de: Region Hovedstaden
+    el: Περιφέρεια Πρωτεύουσας της Δανίας
+    en: Capital Region
+    es: Región Capital
+    et: Pealinna piirkond
+    eu: Hovedstaden
+    fa: هوودستادن
+    fi: Pääkaupunkialue
+    fr: Hovedstaden
+    gu: ડેનમાર્કનો કેપિટલ પ્રદેશ
+    hi: डेनमार्क राजधानी क्षेत्र
+    hr: Hovedstaden
+    hu: Hovedstaden régió
+    hy: Մայրաքաղաքային տարածաշրջան
+    id: Region Hovedstaden
+    is: Höfuðborgarsvæði Danmerkur
+    it: Hovedstaden
+    ja: デンマーク首都地域
+    ka: დედაქალაქის რეგიონი
+    kk: Астаналық облыс
+    kn: ಡೆನ್ಮಾರ್ಕ್ನ ರಾಜಧಾನಿ ಪ್ರದೇಶ
+    ko: 덴마크 수도 지역
+    lt: Sostinės regionas
+    lv: Galvaspilsētas reģions
+    mk: Голем Копенхаген
+    mr: डेन्मार्कचा राजधानी प्रदेश
+    ms: Region Hovedstaden
+    nb: Region Hovedstaden
+    nl: Hoofdstad
+    pl: Region Stołeczny
+    pt: Região da Capital
+    ro: Regiunea Hovedstaden
+    ru: Ховедстаден
+    si: ඩෙන්මාර්ක් අග නගරය
+    sk: Hovedstaden
+    sr_Latn: Veliki Kopenhagen
+    sr: Велики Копенхаген
+    sv: Region Hovedstaden
+    ta: கேப்பிடல் பகுதி டென்மார்க்
+    te: డెన్మార్క్ రాజధాని ప్రాంతం
+    th: ราชอาณาจักรเดนมาร์ก
+    tr: Danimarka Capital Bölgesi
+    uk: Столичний регіон
+    ur: دارالحکومت علاقہ ڈنمارک
+    vi: Vùng thủ đô Đan Mạch
+    zh: 首都大区
+    az: Danimarka paytaxt bölgəsi
+    ga: Réigiún Phríomhchathair na Danmhairge
+    ky: Ховедстаден
+    mn: Ховедстаден
+    sq: Rajoni i Madh i Danimarkës
+  comments:
+  type: region
+'85':
+  name: Sjælland
+  code: '85'
+  unofficial_names:
+  - Zeeland
+  geo:
+    latitude: 55.4632518
+    longitude: 11.7214979
+    min_latitude: 54.962158
+    min_longitude: 10.8682958
+    max_latitude: 56.129846
+    max_longitude: 12.6244919
+  translations:
+    'no': Region Sjælland
+    ar: إقليم شيلندا
+    be: Зеландыя
+    bg: Зеландия
+    bs: Zealand (regija)
+    ca: Regió de Sjælland
+    ccp: "\U0001110E\U00011129\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ceb: Region Sjælland
+    cs: Sjælland
+    da: Region Sjælland
+    de: Region Sjælland
+    el: Σγιέλαν
+    en: Zealand
+    es: Región de Selandia
+    et: Sjællandi piirkond
+    eu: Seelandia eskualdea
+    fa: استان شیلند
+    fi: Sjælland
+    fr: Sjælland
+    he: קטגוריה:שלן
+    hr: Zeland
+    hu: Sjælland régió
+    hy: Զելանդիա տարածաշրջան
+    id: Region Sjælland
+    it: Selandia
+    ja: シェラン地域
+    ka: ზელანდიის რეგიონი
+    kk: Зеландия
+    ko: 셸란 지역
+    lt: Zelandijos regionas
+    mk: Сјеланд
+    ms: Region Sjælland
+    nb: Region Sjælland
+    nl: Seeland
+    pl: Zelandia
+    pt: Zelândia
+    ro: Regiunea Sjælland
+    ru: Зеландия
+    sk: Sjælland (región)
+    sr_Latn: Sjeland (pokrajina)
+    sr: Сјеланд (покрајина)
+    sv: Region Själland
+    tr: Zealand Bölgesi
+    uk: Зеландія
+    vi: Zealand
+    yue_Hans: 舍兰大区
+    yue: 舍蘭大區
+    zh: 西兰大区
+    lv: Kategorija:Zēlandes reģions
+    sq: Rajoni Zelanda
+    ur: زیلینڈ علاقہ
+  comments:
+  type: region

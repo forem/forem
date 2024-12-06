@@ -1,0 +1,8 @@
+(* Fibonacci numbers with memoization *)
+
+fib::usage = "f[n] calculates the n'th Fibonacci number.";
+fib[0] = fib[1] = 1;
+fib[n_Integer?Positive]:= fib[n] = fib[n-1] + fib[n-2];
+
+In[4]:= fib[42]
+Out[4]= 433494437

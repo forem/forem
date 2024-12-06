@@ -1,0 +1,20 @@
+<p class="tag_title"><%= (defined?(@label) && @label) ? @label : YARD::Tags::Library.labels[@name] %>:</p>
+<ul class="<%= @name %>">
+  <% object.tags(@name).each do |tag| %>
+    <li>
+      <% unless @no_names %>
+        <span class='name'><%= h tag.name %></span>
+      <% end %>
+      <% unless @no_types %>
+        <span class='type'><%= format_types(tag.types) %></span>
+      <% end %>
+      <% if @name == :param && (o=object.parameters.find {|a| [tag.name.to_s, tag.name.to_s + ":"].include?(a[0]) }) && o[1] %>
+        <em class="default">(defaults to: <tt><%= h o[1] %></tt>)</em>
+      <% end %>
+      <% if tag.text && !tag.text.empty? %>
+        <% unless (@no_types || tag.types.nil? || tag.types.empty?) && @no_names %>&mdash;<% end %>
+        <%= htmlify_line(tag.text) %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

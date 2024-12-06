@@ -1,0 +1,5 @@
+# <!-- rdoc-file=ext/socket/init.c -->
+# SocketError is the error class for socket.
+#
+class SocketError < StandardError
+end

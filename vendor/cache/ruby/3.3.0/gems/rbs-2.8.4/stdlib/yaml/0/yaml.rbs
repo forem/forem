@@ -1,0 +1,199 @@
+# <!-- rdoc-file=lib/yaml.rb -->
+# YAML Ain't Markup Language
+#
+# This module provides a Ruby interface for data serialization in YAML format.
+#
+# The YAML module is an alias of Psych, the YAML engine for Ruby.
+#
+# ## Usage
+#
+# Working with YAML can be very simple, for example:
+#
+#     require 'yaml'
+#     # Parse a YAML string
+#     YAML.load("--- foo") #=> "foo"
+#
+#     # Emit some YAML
+#     YAML.dump("foo")     # => "--- foo\n...\n"
+#     { :a => 'b'}.to_yaml  # => "---\n:a: b\n"
+#
+# As the implementation is provided by the Psych library, detailed documentation
+# can be found in that library's docs (also part of standard library).
+#
+# ## Security
+#
+# Do not use YAML to load untrusted data. Doing so is unsafe and could allow
+# malicious input to execute arbitrary code inside your application. Please see
+# doc/security.rdoc for more information.
+#
+# ## History
+#
+# Syck was the original YAML implementation in Ruby's standard library developed
+# by why the lucky stiff.
+#
+# You can still use Syck, if you prefer, for parsing and emitting YAML, but you
+# must install the 'syck' gem now in order to use it.
+#
+# In older Ruby versions, ie. <= 1.9, Syck is still provided, however it was
+# completely removed with the release of Ruby 2.0.0.
+#
+# ## More info
+#
+# For more advanced details on the implementation see Psych, and also check out
+# http://yaml.org for spec details and other helpful information.
+#
+# Psych is maintained by Aaron Patterson on github:
+# https://github.com/ruby/psych
+#
+# Syck can also be found on github: https://github.com/ruby/syck
+#
+module YAML
+  # <!--
+  #   rdoc-file=ext/psych/lib/psych.rb
+  #   - Psych.dump(o)               -> string of yaml
+  #   - Psych.dump(o, options)      -> string of yaml
+  #   - Psych.dump(o, io)           -> io object passed in
+  #   - Psych.dump(o, io, options)  -> io object passed in
+  # -->
+  # Dump Ruby object `o` to a YAML string.  Optional `options` may be passed in to
+  # control the output format.  If an IO object is passed in, the YAML will be
+  # dumped to that IO object.
+  #
+  # Currently supported options are:
+  #
+  # `:indentation`
+  # :   Number of space characters used to indent. Acceptable value should be in
+  #     `0..9` range, otherwise option is ignored.
+  #
+  #     Default: `2`.
+  # `:line_width`
+  # :   Max character to wrap line at.
+  #
+  #     Default: `0` (meaning "wrap at 81").
+  # `:canonical`
+  # :   Write "canonical" YAML form (very verbose, yet strictly formal).
+  #
+  #     Default: `false`.
+  # `:header`
+  # :   Write `%YAML [version]` at the beginning of document.
+  #
+  #     Default: `false`.
+  #
+  #
+  # Example:
+  #
+  #     # Dump an array, get back a YAML string
+  #     Psych.dump(['a', 'b'])  # => "---\n- a\n- b\n"
+  #
+  #     # Dump an array to an IO object
+  #     Psych.dump(['a', 'b'], StringIO.new)  # => #<StringIO:0x000001009d0890>
+  #
+  #     # Dump an array with indentation set
+  #     Psych.dump(['a', ['b']], indentation: 3) # => "---\n- a\n-  - b\n"
+  #
+  #     # Dump an array to an IO with indentation set
+  #     Psych.dump(['a', ['b']], StringIO.new, indentation: 3)
+  #
+  %a{annotate:rdoc:copy:Psych.dump}
+  def self.dump: (untyped o, ?indentation: Integer, ?line_width: Integer, ?canonical: bool, ?header: bool) -> String
+               | [IO] (untyped o, IO, ?indentation: Integer, ?line_width: Integer, ?canonical: bool, ?header: bool) -> IO
+
+  # <!--
+  #   rdoc-file=ext/psych/lib/psych.rb
+  #   - load(yaml, permitted_classes: [Symbol], permitted_symbols: [], aliases: false, filename: nil, fallback: nil, symbolize_names: false, freeze: false, strict_integer: false)
+  # -->
+  # Load `yaml` in to a Ruby data structure.  If multiple documents are provided,
+  # the object contained in the first document will be returned. `filename` will
+  # be used in the exception message if any exception is raised while parsing.  If
+  # `yaml` is empty, it returns the specified `fallback` return value, which
+  # defaults to `false`.
+  #
+  # Raises a Psych::SyntaxError when a YAML syntax error is detected.
+  #
+  # Example:
+  #
+  #     Psych.load("--- a")             # => 'a'
+  #     Psych.load("---\n - a\n - b")   # => ['a', 'b']
+  #
+  #     begin
+  #       Psych.load("--- `", filename: "file.txt")
+  #     rescue Psych::SyntaxError => ex
+  #       ex.file    # => 'file.txt'
+  #       ex.message # => "(file.txt): found character that cannot start any token"
+  #     end
+  #
+  # When the optional `symbolize_names` keyword argument is set to a true value,
+  # returns symbols for keys in Hash objects (default: strings).
+  #
+  #     Psych.load("---\n foo: bar")                         # => {"foo"=>"bar"}
+  #     Psych.load("---\n foo: bar", symbolize_names: true)  # => {:foo=>"bar"}
+  #
+  # Raises a TypeError when `yaml` parameter is NilClass.  This method is similar
+  # to `safe_load` except that `Symbol` objects are allowed by default.
+  #
+  %a{annotate:rdoc:copy:Psych.load}
+  def self.load: (String yaml, ?filename: String | _ToStr | _ToS?, ?fallback: untyped, ?symbolize_names: bool, ?freeze: bool) -> untyped
+
+  # <!--
+  #   rdoc-file=ext/psych/lib/psych.rb
+  #   - load_file(filename, **kwargs)
+  # -->
+  # Loads the document contained in `filename`.  Returns the yaml contained in
+  # `filename` as a Ruby object, or if the file is empty, it returns the specified
+  # `fallback` return value, which defaults to `false`. See load for options.
+  #
+  %a{annotate:rdoc:copy:Psych.load_file}
+  def self.load_file: (string | _ToPath, ?fallback: untyped, ?symbolize_names: bool, ?freeze: bool) -> untyped
+
+  # <!--
+  #   rdoc-file=ext/psych/lib/psych.rb
+  #   - safe_load(yaml, permitted_classes: [], permitted_symbols: [], aliases: false, filename: nil, fallback: nil, symbolize_names: false, freeze: false, strict_integer: false)
+  # -->
+  # Safely load the yaml string in `yaml`.  By default, only the following classes
+  # are allowed to be deserialized:
+  #
+  # *   TrueClass
+  # *   FalseClass
+  # *   NilClass
+  # *   Integer
+  # *   Float
+  # *   String
+  # *   Array
+  # *   Hash
+  #
+  #
+  # Recursive data structures are not allowed by default.  Arbitrary classes can
+  # be allowed by adding those classes to the `permitted_classes` keyword
+  # argument.  They are additive.  For example, to allow Date deserialization:
+  #
+  #     Psych.safe_load(yaml, permitted_classes: [Date])
+  #
+  # Now the Date class can be loaded in addition to the classes listed above.
+  #
+  # Aliases can be explicitly allowed by changing the `aliases` keyword argument.
+  # For example:
+  #
+  #     x = []
+  #     x << x
+  #     yaml = Psych.dump x
+  #     Psych.safe_load yaml               # => raises an exception
+  #     Psych.safe_load yaml, aliases: true # => loads the aliases
+  #
+  # A Psych::DisallowedClass exception will be raised if the yaml contains a class
+  # that isn't in the `permitted_classes` list.
+  #
+  # A Psych::BadAlias exception will be raised if the yaml contains aliases but
+  # the `aliases` keyword argument is set to false.
+  #
+  # `filename` will be used in the exception message if any exception is raised
+  # while parsing.
+  #
+  # When the optional `symbolize_names` keyword argument is set to a true value,
+  # returns symbols for keys in Hash objects (default: strings).
+  #
+  #     Psych.safe_load("---\n foo: bar")                         # => {"foo"=>"bar"}
+  #     Psych.safe_load("---\n foo: bar", symbolize_names: true)  # => {:foo=>"bar"}
+  #
+  %a{annotate:rdoc:copy:Psych.safe_load}
+  def self.safe_load: (String yaml, ?permitted_classes: Array[Class], ?permitted_symbols: Array[Symbol], ?aliases: bool, ?filename: String | _ToStr | _ToS?, ?fallback: untyped, ?symbolize_names: bool, ?freeze: bool) -> untyped
+end

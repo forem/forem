@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Content-Type: text/html
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 4987
+X-Varnish: 2000423390
+Age: 0
+Via: 1.1 varnish
+
+<html>
+  <head>
+    <title>An example page</title>
+  </head>
+  <body>
+    <img src="/too_narrow" width="10"  height="100" />
+    <img src="/smaller"    width="10"  height="10"  />
+    <img src="/largest"    width="100" height="100" />
+    <img                   width="100" height="10"  />
+    <img src="/smallest"   width="1"   height="1"   />
+  </body>
+</html>

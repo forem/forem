@@ -1,0 +1,6 @@
+# prints "hello, world" to the screen
+~# echo Hello, World
+Hello, World
+
+# don't run this
+~# rm -rf --no-preserve-root /

@@ -1,0 +1,138 @@
+---
+en:
+  i18n_tasks:
+    add_missing:
+      added:
+        one: Added %{count} key
+        other: Added %{count} keys
+    cmd:
+      args:
+        default_text: 'Default: %{value}'
+        desc:
+          all_locales: Do not expect key patterns to start with a locale, instead apply them to all
+            locales implicitly.
+          config: Override config location
+          confirm: Confirm automatically
+          data_format: 'Data format: %{valid_text}.'
+          keep_order: Keep the order of the keys
+          key_pattern: Filter by key pattern (e.g. 'common.*')
+          key_pattern_to_rename: Full key (pattern) to rename. Required
+          locale: :i18n_tasks.common.locale
+          locale_to_translate_from: Locale to translate from
+          locales_filter: 'Locale(s) to process. Special: base'
+          missing_types: 'Filter by types: %{valid}'
+          new_key_name: New name, interpolates original name as %{key}. Required
+          nostdin: Do not read from stdin
+          out_format: 'Output format: %{valid_text}'
+          pattern_router: 'Use pattern router: keys moved per config data.write'
+          strict: >-
+            Avoid inferring dynamic key usages such as t("cats.#{cat}.name"). Takes precedence over
+            the config setting if set.
+          translation_backend: Translation backend (google or deepl)
+          value: >-
+            Value. Interpolates: %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
+            %{value_or_default_or_human_key}
+      desc:
+        add_missing: add missing keys to locale data, optionally match a pattern
+        check_consistent_interpolations: verify that all translations use correct interpolation variables
+        check_normalized: verify that all translation data is normalized
+        config: display i18n-tasks configuration
+        data: show locale data
+        data_merge: merge locale data with trees
+        data_remove: remove keys present in tree from data
+        data_write: replace locale data with tree
+        eq_base: show translations equal to base value
+        find: show where keys are used in the code
+        gem_path: show path to the gem
+        health: is everything OK?
+        irb: start REPL session within i18n-tasks context
+        missing: show missing translations, optionally match a pattern
+        mv: rename/merge the keys in locale data that match the given pattern
+        normalize: 'normalize translation data: sort and move to the right files'
+        remove_unused: remove unused keys
+        rm: remove the keys in locale data that match the given pattern
+        translate_missing: translate missing keys with Google Translate or DeepL Pro, optionally match
+          a pattern
+        tree_convert: convert tree between formats
+        tree_filter: filter tree by key pattern
+        tree_merge: merge trees
+        tree_mv_key: rename/merge/remove the keys matching the given pattern
+        tree_set_value: set values of keys, optionally match a pattern
+        tree_subtract: tree A minus the keys in tree B
+        tree_translate: Google Translate a tree to root locales
+        unused: show unused translations
+      encourage:
+      - Good job!
+      - Well done!
+      - Perfect!
+      enum_list_opt:
+        invalid: "%{invalid} is not in: %{valid}."
+      enum_opt:
+        invalid: "%{invalid} is not one of: %{valid}."
+      errors:
+        invalid_format: 'invalid format: %{invalid}. valid: %{valid}.'
+        invalid_locale: 'invalid locale: %{invalid}'
+        invalid_missing_type:
+          one: 'invalid type: %{invalid}. valid: %{valid}.'
+          other: 'unknown types: %{invalid}. valid: %{valid}.'
+        pass_forest: pass locale forest
+    common:
+      continue_q: Continue?
+      key: Key
+      locale: Locale
+      n_more: "%{count} more"
+      value: Value
+    data_stats:
+      text: >-
+        has %{key_count} keys across %{locale_count} locales. On average, values are %{value_chars_avg}
+        characters long, keys have %{key_segments_avg} segments, a locale has %{per_locale_avg} keys.
+      text_single_locale: >-
+        has %{key_count} keys in total. On average, values are %{value_chars_avg} characters long,
+        keys have %{key_segments_avg} segments.
+      title: Forest (%{locales})
+    deepl_translate:
+      errors:
+        no_api_key: >-
+          Setup DeepL Pro API key via DEEPL_AUTH_KEY environment variable or translation.deepl_api_key
+          in config/i18n-tasks.yml. Get the key at https://www.deepl.com/pro.
+        no_results: DeepL returned no results.
+        specific_target_missing: You must supply a specific variant for the given target language
+          e.g. en-us instead of en.
+    google_translate:
+      errors:
+        no_api_key: >-
+          Set Google API key via GOOGLE_TRANSLATE_API_KEY environment variable or translation.google_translate_api_key
+          in config/i18n-tasks.yml. Get the key at https://code.google.com/apis/console.
+        no_results: >-
+          Google Translate returned no results. Make sure billing information is set at https://code.google.com/apis/console.
+    health:
+      no_keys_detected: No keys detected. Check data.read in config/i18n-tasks.yml.
+    inconsistent_interpolations:
+      none: No inconsistent interpolations found.
+    missing:
+      details_title: Value in other locales or source
+      none: No translations are missing.
+    openai_translate:
+      errors:
+        no_api_key: >-
+          Set OpenAI API key via OPENAI_API_KEY environment variable or translation.openai_api_key
+          in config/i18n-tasks.yml. Get the key at https://openai.com/.
+        no_results: OpenAI returned no results.
+    remove_unused:
+      confirm:
+        one: "%{count} translation will be removed from %{locales}."
+        other: "%{count} translation will be removed from %{locales}."
+      noop: No unused keys to remove
+      removed: Removed %{count} keys
+    translate_missing:
+      translated: Translated %{count} keys
+    unused:
+      none: Every translation is in use.
+    usages:
+      none: No key usages found.
+    yandex_translate:
+      errors:
+        no_api_key: >-
+          Set Yandex API key via YANDEX_API_KEY environment variable or translation.yandex_api_key
+          in config/i18n-tasks.yml. Get the key at https://tech.yandex.com/translate.
+        no_results: Yandex returned no results.

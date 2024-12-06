@@ -1,0 +1,34 @@
+<div class="content">
+  <p id="periods">
+    <% @periods.each do |name, options| %>
+      <%= link_to name, system_path(params: options) %>
+    <% end %>
+  </p>
+  <% path_options = {params: {duration: @duration, period: @period}} %>
+
+  <h1>CPU</h1>
+  <div id="chart-1" class="chart" style="margin-bottom: 20px;">Loading...</div>
+  <script>
+    new Chartkick.LineChart("chart-1", <%= pghero_js_value(cpu_usage_path(path_options)) %>, {max: 100, colors: ["#5bc0de"], suffix: "%", library: {plugins: {tooltip: {intersect: false, mode: "index"}}}})
+  </script>
+
+  <h1>Load</h1>
+  <div id="chart-2" class="chart" style="margin-bottom: 20px;">Loading...</div>
+  <script>
+    new Chartkick.LineChart("chart-2", <%= pghero_js_value(load_stats_path(path_options)) %>, {colors: ["#5bc0de", "#d9534f"], library: {plugins: {tooltip: {intersect: false, mode: "nearest"}}}})
+  </script>
+
+  <h1>Connections</h1>
+  <div id="chart-3" class="chart" style="margin-bottom: 20px;">Loading...</div>
+  <script>
+    new Chartkick.LineChart("chart-3", <%= pghero_js_value(connection_stats_path(path_options)) %>, {colors: ["#5bc0de"], library: {plugins: {tooltip: {intersect: false, mode: "index"}}}})
+  </script>
+
+  <% if @database.replica? %>
+    <h1>Replication Lag</h1>
+    <div id="chart-4" class="chart" style="margin-bottom: 20px;">Loading...</div>
+    <script>
+      new Chartkick.LineChart("chart-4", <%= pghero_js_value(replication_lag_stats_path(path_options)) %>, {colors: ["#5bc0de"], library: {plugins: {tooltip: {intersect: false, mode: "index"}}}})
+    </script>
+  <% end %>
+</div>

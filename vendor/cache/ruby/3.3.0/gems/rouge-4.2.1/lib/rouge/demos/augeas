@@ -1,0 +1,16 @@
+(*
+  This is a comment
+*)
+module Foo =
+autoload xfm
+
+let a = b | c . d
+
+let lns = a*
+
+let filter = incl "/path/to/file"
+           . incl "/path/to/other_file"
+           . Util.stdexcl
+
+(* xmf is the transform *)
+let xmf = transform lns filter

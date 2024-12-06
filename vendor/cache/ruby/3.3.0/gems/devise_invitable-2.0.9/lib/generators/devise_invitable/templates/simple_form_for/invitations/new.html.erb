@@ -1,0 +1,15 @@
+<h2><%= t "devise.invitations.new.header" %></h2>
+
+<%= simple_form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post }) do |f| %>
+  <%= f.error_notification %>
+
+  <% resource.class.invite_key_fields.each do |field| -%>
+    <div class="form-inputs">
+      <%= f.input field %>
+    </div>
+  <% end -%>
+
+  <div class="form-actions">
+    <%= f.button :submit, t("devise.invitations.new.submit_button") %>
+  </div>
+<% end %>

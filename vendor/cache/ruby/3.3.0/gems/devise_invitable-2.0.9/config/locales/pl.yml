@@ -1,0 +1,31 @@
+pl:
+  devise:
+    failure:
+      invited: "Posiadasz oczekujące zaproszenie, zaakceptuj je aby ukończyć proces rejestracji."
+    invitations:
+      send_instructions: "E-mail z zaproszeniem został wysłany do %{email}."
+      invitation_token_invalid: "Kod zaproszenia jest nieprawidłowy."
+      updated: "Twoje hasło zostało pomyślnie ustawione. Jesteś teraz zalogowany."
+      updated_not_active: "Twoje hasło zostało ustawione."
+      no_invitations_remaining: "Brak oczekujących zaproszeń"
+      invitation_removed: "Twoje zaproszenie zostało usunięte."
+      new:
+        header: "Wyślij zaproszenie"
+        submit_button: "Wyślij zaproszenie"
+      edit:
+        header: "Ustaw swoje hasło"
+        submit_button: "Zapisz moje hasło"
+    mailer:
+      invitation_instructions:
+        subject: "Instrukcja do zaproszenia"
+        hello: "Cześć %{email}"
+        someone_invited_you: "Ktoś zaprosił Cię do %{url}. Zaproszenie możesz zaakceptować przez podany link."
+        accept: "Przyjmij zaproszenie"
+        accept_until: "Zaprosze będzie ważne do %{due_date}."
+        ignore: "Jeśli nie chcesz przyjąć zaproszenia, zignoruj tę wiadomość.<br />Twoje konto nie zostanie utworzone do momentu ustawienia przez Ciebie hasła."
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"

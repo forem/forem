@@ -1,0 +1,1287 @@
+---
+'00':
+  name: Ariatholhu Dhekunuburi
+  code: '00'
+  unofficial_names:
+  - Alif Dhaal
+  - Alif Dhaalu
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: أليف دال أتول
+    bn: আলিফ ধাল আতোল
+    cs: Alif Dál
+    da: Alif Dhaal Atoll
+    de: Alif Dhaal
+    dv: Ariatholhu Dhekunuburi
+    el: Αλίφ Ντχάαλ Ατόλ
+    en: South Ari Atoll
+    es: Atolón Alif Dhaal
+    fi: Alif Dhaal Atoll
+    fr: Alif Dhaal
+    gu: અલિફ ઢાલ એટોલ
+    hi: अलिफ ढाल एटोल
+    hu: Déli-Ari-atoll
+    id: Atol Alif Dhaal
+    it: Atollo Alif Dhaal
+    ja: アリフ・ダール環礁区
+    kn: ಅಲಿಫ್ ಧಾಲ್ ಅಟಾಲ್
+    ko: 알리프달 환초
+    mr: अलिफ ढळ एटोल
+    ms: Alif Dhaal Atoll
+    nb: Alif Dhaal Atoll
+    nl: Alif Dhaal-atol
+    pl: Alif Dhaal
+    pt: Alif Dhaal Atoll
+    ru: Атолл Алифу-Даалу
+    si: අලිෆ් ඩාල් දුපත් සමූහය
+    sk: Alif Dál
+    sv: Ari Atholhu Dhekunuburi
+    ta: அளிப் தால் அடால்
+    te: అలిఫ్ ఢాల్ అటోల్
+    th: อลิฟ ดาฮ์ อโทล
+    tr: Alif Dhaal Atoll
+    ur: الف ڈھال اتول
+    vi: Alif Dhaal Atoll
+    zh: 阿利夫達爾環礁
+    lv: Alifu Daalu atols
+    ceb: Southern Ari Atoll
+    lt: Alif Daalo atolas
+    ccp: "\U00011103\U00011123\U00011128\U0001111B\U00011134 \U00011119\U00011123\U00011134"
+    uk: Атол Аліф-Даал
+    'no': Alif Dhaal Atoll
+    fa: آبسنگ حلقوی الیف
+  comments:
+  type: administrative_atoll
+'01':
+  name: Addu
+  code: '01'
+  unofficial_names:
+  - Addu Atholhu
+  - Addu Atoll
+  - Seenu
+  - Sîn
+  geo:
+    latitude: -0.6413
+    longitude: 73.158
+    min_latitude: -0.7036652
+    min_longitude: 73.0761462
+    max_latitude: -0.5765364
+    max_longitude: 73.2395624
+  translations:
+    en: Addu City
+    ca: Atol d’Addu
+    cs: Addu (atol)
+    de: Addu-Atoll
+    dv: Addu
+    es: Seenu
+    eu: Seenu
+    fr: Atoll Addu
+    hu: Addu-atoll
+    it: Atollo Seenu
+    ja: アッドゥ環礁
+    ko: 아두 환초
+    lt: Adū atolas
+    nl: Seenu-atol
+    pl: Addu
+    ru: Сиину
+    sk: Sínu
+    sv: Seenu Atholhu
+    ta: அட்டு பவளத்தீவு
+    ceb: Seenu Atholhu
+    zh: 阿杜環礁
+    ccp: "\U00011103\U00011113\U00011133\U00011126\U0001112A"
+    id: Atol Addu
+    mk: Аду
+  comments:
+  type: city
+'02':
+  name: Ariatholhu Uthuruburi
+  code: '02'
+  unofficial_names:
+  - Alif Atoll Dhekunu
+  - Alifu Alifu
+  - North Ari Atoll
+  geo:
+    latitude: 6.8974984
+    longitude: 73.22851190000002
+    min_latitude: 6.8074339
+    min_longitude: 72.8088748
+    max_latitude: 7.1063277
+    max_longitude: 73.23589319999999
+  translations:
+    en: Alif Alif
+    ar: أليف أليف أتول
+    bn: আলিফ আলিফ এটল
+    cs: Alif Alif
+    da: Alif Alif Atoll
+    de: Alif Alif
+    dv: Ariatholhu Uthuruburi
+    el: Αλίφ Αλίφ Ατόλ
+    es: Atolón Alif Alif
+    fi: Alif Alif Atoll
+    fr: Alif Alif
+    gu: અલિફ અલિફ એટોલ
+    hi: अलिफ अलीफ एटोल
+    hu: Északi-Ari-atoll
+    id: Atol Alif Alif
+    it: Atollo Alif Alif
+    ja: アリフ・アリフ・アトル
+    kn: ಅಲಿಫ್ ಅಲಿಫ್ ಅಟಾಲ್
+    ko: 알리프알리프 환초
+    mr: अलिफ अलीफ एटॉल
+    ms: Alif Alif Atoll
+    nb: Alif Alif Atoll
+    nl: Alif Alif-atol
+    pl: Alif Alif
+    pt: Alif Alif Atoll
+    ru: Алиф-Алиф
+    si: ", අලිෆ් අලිෆ් දුපත් සමූහය"
+    sk: Alif Alif
+    sv: Alifu Atholhu
+    ta: அலிப் அளிப் அடால்
+    te: అలిఫ్ అలిఫ్ అటోల్
+    th: อัลลิฟ อัลลิฟ อัลทอยล์
+    tr: Alif Alif Atoll
+    ur: الف الف اتول
+    vi: Alif Alif Atoll
+    lv: Alif Alifas atols
+    ceb: Alifu Atholhu
+    lt: Alif Alifo atolas
+    zh: 阿利夫阿利夫環礁
+    ccp: "\U00011103\U00011123\U00011128\U0001111B\U00011134 \U00011103\U00011123\U00011128\U0001111B\U00011134"
+    uk: Атол Аліф-Аліф
+    'no': Alif Alif Atoll
+    he: אטול אליף אליף
+  comments:
+  type: administrative_atoll
+'03':
+  name: Faadhippolhu
+  code: '03'
+  unofficial_names:
+  - Fadiffolu
+  - Laviyani
+  geo:
+    latitude: 5.4039702
+    longitude: 73.6444762
+    min_latitude: 5.2431393
+    min_longitude: 73.3307469
+    max_latitude: 5.5575245
+    max_longitude: 73.6577511
+  translations:
+    en: Faadhippolhu
+    ar: لافياني أتول
+    bn: হ্লাভিয়ানি আতোল
+    cs: Lavijani
+    da: Lhaviyani Atoll
+    de: Faadhippolhu-Atoll
+    dv: Faadhippolhu
+    el: Λαβιγιάνι Ατόλ
+    es: Atolón Lhaviyani
+    fi: Lhaviyani Atoll
+    fr: Atoll Faadhippolhu
+    gu: લ્હાવિયાની એટોલ
+    he: אטול לביאני
+    hi: लवियानी एटोल
+    hu: Fadiffolu-atoll
+    id: Atol Lhaviyani
+    it: Atollo Lhaviyani
+    ja: ラビアニ環礁
+    kn: ಲವಿಯನಿ ಅಟಾಲ್
+    ko: 라비야니 환초
+    mr: लुवियानी अटॉल
+    ms: Lhaviyani Atoll
+    nb: Lhaviyani Atoll
+    nl: Lhaviyani-atol
+    pl: Lhaviyani
+    pt: Lhaviyani Atoll
+    ru: Лхавийани
+    si: ලවියානි දුපත් සමූහය
+    sk: Lavijani
+    sv: Lhaviyani Atholhu
+    ta: ல்ஹவியணி அடால்
+    te: లావియాని అటోల్
+    th: ลยวิยนิ
+    tr: Lhayviyani Atoll
+    ur: لحاویانی اتول
+    vi: Lhaviyani Atoll
+    lv: Lavijani atols
+    ceb: Lhaviyani Atholhu
+    lt: Lchavijanio atolas
+    zh: 拉黑比亞尼環礁
+    ccp: "\U00011126\U00011133\U00011123\U0001111E\U00011128\U00011120\U0001111A\U00011128"
+    uk: Атол Лхавійані
+    'no': Lhaviyani Atoll
+    fa: آبسنگ حلقوی لهاویانی
+  comments:
+  type: administrative_atoll
+'04':
+  name: Felidheatholhu
+  code: '04'
+  unofficial_names:
+  - Felidhe Atholhu
+  - Felidhu Atoll
+  - Felidu
+  - Vaafu
+  - Vaavu
+  - Vâv
+  geo:
+    latitude: 3.6846389
+    longitude: 73.4002915
+    min_latitude: 3.3134959
+    min_longitude: 73.36392049999999
+    max_latitude: 3.687583399999999
+    max_longitude: 73.7596537
+  translations:
+    en: Felidhu Atoll
+    ar: فافو أتول
+    bn: ভাভু আতোল
+    da: Vaavu Atoll
+    de: Vaavu
+    dv: Felidheatholhu
+    el: Βαάβου Ατόλ
+    es: Atolón Vaavu
+    fi: Vaavu Atoll
+    fr: Vaavu
+    gu: વાવુ એટોલ
+    hi: वावू एटोल
+    hu: Felidu-atoll
+    id: Atol Vaavu
+    it: Atollo Vaavu
+    ja: フェリデ環礁
+    kn: ವಾವು ಅಟಾಲ್
+    ko: 바부 환초
+    mr: वॅव एटोल
+    ms: Vaavu Atoll
+    nb: Vaavu Atoll
+    nl: Vaavu-atol
+    pl: Vaavu
+    pt: Vaavu Atoll
+    ru: Вааву
+    si: වාවු දූපත් සමූහය
+    sk: Vávu
+    sv: Vaavu Atholhu
+    ta: வாவு அடால்
+    te: వావు అటోల్
+    th: จังหวัดซอร์โซกอน
+    tr: Vaavu Atoll
+    ur: واوو اتول
+    vi: Vaavu Atoll
+    lv: Vaavu atols
+    ceb: Vaavu Atholhu
+    lt: Vaavu atolas
+    zh: 瓦夫環礁
+    ccp: "\U0001111E\U0001111E\U0001112A"
+    uk: Атол Вааву
+    'no': Vaavu Atoll
+  comments:
+  type: administrative_atoll
+'05':
+  name: Hahdhunmathi
+  code: '05'
+  unofficial_names:
+  - Haddumati
+  - Hadhdhunmathi
+  - Hadhunmathi
+  - Laamu
+  - Lâm
+  geo:
+    latitude: 1.9772276
+    longitude: 73.536101
+    min_latitude: 1.7791128
+    min_longitude: 73.2375483
+    max_latitude: 2.1331721
+    max_longitude: 73.58596229999999
+  translations:
+    en: Hahdhunmathi
+    ar: لامو أتول
+    bn: লামু আতোল
+    da: Laamu Atoll
+    de: Laamu
+    dv: Hahdhunmathi
+    el: Λαάμου Ατόλ
+    es: Atolón Laamu
+    fi: Laamu Atoll
+    fr: Atoll Hadhdhunmathi
+    gu: લામુ એટોલ
+    hi: लामू एटोल
+    hu: Haddunmati-atoll
+    id: Atol Laamu
+    it: Atollo Laamu
+    ja: ラーム環礁
+    kn: ಲಾಮು ಅಟಾಲ್
+    ko: 라무 환초
+    lt: Lamu atolas
+    mr: लामा एटोल
+    ms: Laamu Atoll
+    nb: Laamu Atoll
+    nl: Laamu-atol
+    pl: Laamu
+    pt: Atol Laamu
+    ru: Лааму
+    si: ලාමු දුපත් සමූහය
+    sk: Lámu
+    sv: Laamu Atholhu
+    ta: லாமு அடால்
+    te: లాము అటోల్
+    th: ดินแดนคาบารอฟสค์
+    tr: Laamu Atoll
+    ur: لامو اتول
+    vi: Laamu Atoll
+    lv: Laamu atols
+    ceb: Laamu Atholhu
+    zh: 拉穆環礁
+    ccp: "\U00011123\U00011133\U00011103\U0001111F\U0001112A"
+    uk: Атол Лааму
+    'no': Laamu Atoll
+    ca: Atol Laamu
+  comments:
+  type: administrative_atoll
+'07':
+  name: Thiladhunmathee Uthuruburi
+  code: '07'
+  unofficial_names:
+  - Haa Alifu
+  - Hâ Alif
+  - North Thiladhunmathi
+  - Thiladhunmathi Uthuruburi
+  - Tiladummati-North
+  geo:
+    latitude: 6.8974984
+    longitude: 73.22851190000002
+    min_latitude: 6.8074339
+    min_longitude: 72.8088748
+    max_latitude: 7.1063277
+    max_longitude: 73.23589319999999
+  translations:
+    en: North Thiladhunmathi
+    ar: آتول ها ألف
+    bn: হা আলিফ এটল
+    cs: Há Alif
+    da: Haa Alif Atoll
+    de: Haa Alif
+    dv: Thiladhunmathee Uthuruburi
+    el: Χαά Αλίφ Ατόλ
+    es: Atolón Haa Alif
+    fi: Haa Alif Atoll
+    fr: Haa Alifu
+    gu: હા અલીફ એટોલ
+    he: אטול הא אליף
+    hi: हा अलिफ एटोल
+    hu: Északi-Tiladummati-atoll
+    id: Atol Haa Alif
+    it: Atollo Haa Alif
+    ja: ハーアリフ環礁
+    kn: ಹಾ ಅಲಿಫ್ ಅಟಾಲ್
+    ko: 하알리프 환초
+    mr: हा अल्फ एटॉल
+    ms: Haa Alif Atoll
+    nb: Haa Alif Atoll
+    nl: Haa Alif-atol
+    pl: Haa Alif
+    pt: Haa Alif Atoll
+    ru: Хаа-Алиф
+    si: හා අලිෆ් දුපත් සමුහය
+    sk: Há Alif
+    sv: Haa Alifu Atholhu
+    ta: ஹா அளிப் அடால்
+    te: హా ఆలిఫ్ అటోల్
+    th: ฮา อลิฟ อโทล
+    tr: Haa Alif Atoll
+    ur: ہاں الف اتول
+    vi: Haa Alif Atoll
+    lv: Haa Alifas atols
+    ceb: Haa Alifu Atholhu
+    lt: Ha Atifo atolas
+    zh: 哈阿里夫環礁
+    ccp: "\U00011126\U00011133\U00011103 \U00011103\U00011123\U00011128\U0001111B\U00011134"
+    uk: Атол Хаа-Аліф
+    'no': Haa Alif Atoll
+  comments:
+  type: administrative_atoll
+'08':
+  name: Kolhumadulu
+  code: '08'
+  unofficial_names:
+  - Kolhumadhulu
+  - Kolumadulu
+  - Thaa
+  - Thâ
+  geo:
+    latitude: 2.209209
+    longitude: 73.1494617
+    min_latitude: 2.1634586
+    min_longitude: 72.9074181
+    max_latitude: 2.5602977
+    max_longitude: 73.3696136
+  translations:
+    en: Kolhumadulu
+    cs: Tá
+    es: Atolón Thaa
+    dv: Kolhumadulu
+    fr: Atoll Kolhumadulu
+    hu: Kolumadulu-atoll
+    it: Atollo Thaa
+    ja: コルマドゥル環礁
+    ko: 타 환초
+    nl: Thaa-atol
+    pl: Thaa
+    ru: Тхаа
+    sk: Tá
+    zh: 塔亞環礁
+    ccp: "\U00011117\U00011133\U00011103"
+    ceb: Thaa Atholhu
+    de: Kolhumadulu
+    sv: Thaa Atholhu
+    th: กอลูมาดูลู
+  comments:
+  type: administrative_atoll
+'12':
+  name: Mulakatholhu
+  code: '12'
+  unofficial_names:
+  - Meemu
+  - Mimu
+  - Mulakatholhu
+  - Mulaku
+  - Mulaku Atholhu
+  - Mîm
+  geo:
+    latitude: 2.7854064
+    longitude: 73.42621419999999
+    min_latitude: 2.7635105
+    min_longitude: 73.3577339
+    max_latitude: 3.0929022
+    max_longitude: 73.6417058
+  translations:
+    en: Mulaku Atoll
+    ar: ميمو أتول
+    bn: মেমো আটল
+    da: Meemu Atoll
+    de: Mulaku-Atoll
+    dv: Mulakatholhu
+    el: Μέμου Ατόλ
+    es: Atolón Meemu
+    fi: Meemu Atoll
+    fr: Atoll Mulaku
+    gu: અબખાઝિયા
+    hi: मीमु एटोल
+    hu: Mulaku-atoll
+    id: Atol Meemu
+    it: Atollo Meemu
+    ja: ミーム環礁
+    kn: ಮೀಮು ಅಟಾಲ್
+    ko: 미무 환초
+    mr: मेमू एटोल
+    ms: Meemu Atoll
+    nb: Meemu Atoll
+    nl: Meemu-atol
+    pl: Meemu
+    pt: Meemu Atoll
+    ru: Меему
+    si: මීමු දුපත් සමුහය
+    sk: Mímu
+    sv: Meemu Atholhu
+    ta: மீமு அடோல்
+    te: మీము ఆటోల్
+    th: มีมุ มัลดีฟส์
+    tr: Meemu Atoll
+    ur: مییمو اتول
+    vi: Meemu Atoll
+    lv: Meemu atols
+    ceb: Meemu Atholhu
+    lt: Memu atolas
+    zh: 美慕環礁
+    ccp: "\U0001111F\U00011128\U0001111F\U0001112A"
+    uk: Атол Меему
+    'no': Meemu Atoll
+  comments:
+  type: administrative_atoll
+'13':
+  name: Maalhosmadulu Uthuruburi
+  code: '13'
+  unofficial_names:
+  - Maalhosmadhulu Uthuruburi
+  - Malosmadulu-North
+  - North Maalhosmadhulu
+  - Raa
+  - Râ
+  geo:
+    latitude: 5.4633655
+    longitude: 73.03472719999999
+    min_latitude: 5.3587017
+    min_longitude: 72.8025126
+    max_latitude: 5.980543099999999
+    max_longitude: 73.0479349
+  translations:
+    en: North Maalhosmadulu
+    ar: را أتول
+    bn: রা এটল
+    cs: Rá
+    da: Raa Atoll
+    de: Raa
+    dv: Maalhosmadulu Uthuruburi
+    el: Ραά Ατόλ
+    es: Atolón Raa
+    fi: Raa Atoll
+    fr: Raa
+    gu: રા એટોલ
+    he: אטול ראה
+    hi: रा एटोल
+    hu: Északi-Malosmadulu-atoll
+    id: Atol Raa
+    it: Atollo Raa
+    ja: ラー環礁
+    kn: ರಾ ಅಟಾಲ್
+    ko: 라 환초
+    mr: रा एटॉल्स
+    ms: Raa Atoll
+    nb: Raa Atoll
+    nl: Raa-atol
+    pl: Raa
+    pt: Raa Atoll
+    ru: Раа
+    si: රා දූපත් සමූහය
+    sk: Rá
+    sv: Raa Atholhu
+    ta: ரா அடொல்
+    te: రా అటోల్
+    th: รา อุทุรุ
+    tr: Raa Atoll
+    ur: را اتول
+    vi: Raa Atoll
+    lv: Rā atols
+    ceb: Raa Atholhu
+    lt: Ra atolas
+    zh: 拉環礁
+    ccp: "\U00011122\U00011133\U00011103"
+    uk: Атол Раа
+    'no': Raa Atoll
+  comments:
+  type: administrative_atoll
+'14':
+  name: Nilandheatholhu Uthuruburi
+  code: '14'
+  unofficial_names:
+  - Faafu
+  - Faafu Atoll
+  - Fâf
+  - Nilandhe Atholhu Uthuruburi
+  - Nilandu-North
+  - North Nilandhe
+  - North Nilandhe Atoll
+  geo:
+    latitude: 3.0558963
+    longitude: 72.8889301
+    min_latitude: 3.0521718
+    min_longitude: 72.8165155
+    max_latitude: 3.3167972
+    max_longitude: 73.0419406
+  translations:
+    en: North Nilandhe Atoll
+    ar: فافو أتول²
+    bn: ফাফু আতোল
+    da: Faafu Atoll
+    de: Nord-Nilandhe-Atoll
+    dv: Nilandheatholhu Uthuruburi
+    el: Φαάφου Ατόλ
+    es: Atolón Faafu
+    fi: Faafu Atoll
+    fr: Atoll Nilandhe Nord
+    gu: ફાફુ એટોલ
+    hi: फाफू एटोल
+    id: Atol Faafu
+    it: Atollo Faafu
+    ja: 北ニランデ環礁区
+    kn: ಫಾಫು ಅಟಾಲ್
+    ko: 파푸 환초
+    mr: फॅफू एटोल
+    ms: Kepulauan Faafu
+    nb: Faafu Atoll
+    nl: Faafu-atol
+    pl: Faafu
+    pt: Faafu Atoll
+    ru: Фаафу
+    si: ෆාෆු අටොල්
+    sk: Fáfu
+    sv: Faafu Atholhu
+    ta: பாபியூ அடோல்
+    te: ఫాఫు అటోల్
+    th: ฟาฟู อาทอลล์
+    tr: Faafu Atoll
+    ur: فافو اتول
+    vi: Faafu Atoll
+    lv: Faafu atols
+    ceb: Faafu Atholhu
+    lt: Faafu Atolas
+    zh: 法夫環礁
+    ccp: "\U0001111C\U0001111C\U0001112A"
+    uk: Атол Фаафу
+    'no': Faafu Atoll
+    fa: فافو اتول
+  comments:
+  type: administrative_atoll
+'17':
+  name: Nilandheatholhu Dhekunuburi
+  code: '17'
+  unofficial_names:
+  - Dhaalu
+  - Dhâl
+  - Nilandhe Atholhu Dhekunuburi
+  - Nilandu-South
+  - South Nilandhe Atoll
+  geo:
+    latitude: 2.6965009
+    longitude: 72.8630855
+    min_latitude: 2.6672333
+    min_longitude: 72.8351612
+    max_latitude: 3.0002184
+    max_longitude: 73.0348726
+  translations:
+    en: South Nilandhe Atoll
+    ar: دالو أتول
+    bn: দধালু আতোল
+    da: Dhaalu Atoll
+    de: Süd-Nilandhe-Atoll
+    dv: Nilandheatholhu Dhekunuburi
+    el: Ντααλού Ατόλ
+    es: Atolón Dhaalu
+    fi: Dhaalu Atoll
+    fr: Atoll Nilandhe Sud
+    gu: દહાલુ એટોલ
+    hi: धालु एटोल
+    id: Atol Dhaalu
+    it: Atollo Dhaalu
+    ja: ダァール環礁
+    kn: ಧಾಲು ಅಟಾಲ್
+    ko: 달루 환초
+    mr: धालु एटव्हल
+    ms: Dhaalu Atoll
+    nb: Dhaalu Atoll
+    nl: Dhaalu-atol
+    pl: Dhaalu
+    pt: Dhaalu Atoll
+    ru: Дхаалу
+    si: ඩාලු දූපත් සමූහය
+    sk: Dálu
+    sv: Dhaalu Atholhu
+    ta: தாளு அடால்
+    te: ఢాలు అటోల్
+    th: ดาห์ลู
+    tr: Dhaalu Atoll
+    ur: دحاالو اتول
+    vi: Dhaalu Atoll
+    lv: Dālu atols
+    ceb: Dhaalu Atholhu
+    lt: Dchalo atolas
+    zh: 達魯環礁
+    ccp: "\U00011119\U00011123\U0001112A"
+    uk: Атол Дхаалу
+    'no': Dhaalu Atoll
+    fa: آبسنگ حلقوی دهالو
+  comments:
+  type: administrative_atoll
+'20':
+  name: Maalhosmadulu Dhekunuburi
+  code: '20'
+  unofficial_names:
+  - Baa
+  - Bâ
+  - Maalhosmadhulu Dhekunuburi
+  - Malosmadulu-South
+  - South Maalhosmadhulu
+  geo:
+    latitude: 4.8709599
+    longitude: 72.99982109999999
+    min_latitude: 4.861320099999999
+    min_longitude: 72.8362762
+    max_latitude: 5.3591829
+    max_longitude: 73.169557
+  translations:
+    en: South Maalhosmadulu
+    ar: با اتول
+    bn: বাআ আতোল
+    cs: Bá
+    da: Baa Atoll
+    de: Baa
+    dv: Maalhosmadulu Dhekunuburi
+    el: Μπάα Ατόλ
+    es: Atolón Baa
+    fi: Baa Atoll
+    fr: Baa
+    gu: બા એટોલ
+    he: אטול באה
+    hi: बा एटोल
+    hy: Բաա ատոլ
+    id: Atol Baa
+    it: Atollo Baa
+    ja: バア環礁
+    kn: ಬಾ ಅಟಾಲ್
+    ko: 바 환초
+    lt: Ba atolas
+    mr: बा एटॉल
+    ms: Kepulauan Baa
+    nb: Baa Atoll
+    nl: Baa-atol
+    pl: Baa
+    pt: Baa Atoll
+    ru: Баа
+    si: බා දුපත් සමුහය
+    sk: Bá
+    sv: Baa Atoll
+    ta: பா அடால்
+    te: బా అటోల్
+    th: บา อะทอล
+    tr: Baa Atoll
+    ur: با اتول
+    vi: Baa Atoll
+    lv: Bā atols
+    zh: 芭環礁
+    ccp: "\U0001111D\U00011133\U00011103"
+    uk: Атол Баа
+    'no': Baa Atoll
+    ca: Atoll Baa
+    ceb: Baa Atholhu (administratibo nga pulong kagaangan sa Maldibs)
+    fa: آبسنگ حلقوی با
+  comments:
+  type: administrative_atoll
+'23':
+  name: Thiladhunmathee Dhekunuburi
+  code: '23'
+  unofficial_names:
+  - Haa Dhaalu
+  - Hâ Dhâl
+  - South Thiladhunmathi
+  - Thiladhunmathi Dhekunuburi
+  - Tiladummati-South
+  geo:
+    latitude: 6.751373699999999
+    longitude: 73.16608339999999
+    min_latitude: 6.3155278
+    min_longitude: 72.6385815
+    max_latitude: 6.7876622
+    max_longitude: 73.1847811
+  translations:
+    en: South Thiladhunmathi
+    ar: ها دالو أتول
+    bn: হা ধালু আতোল
+    cs: Há Dálu
+    da: Haa Dhaalu Atoll
+    de: Haa Dhaalu
+    dv: Thiladhunmathee Dhekunuburi
+    el: Χαά Νταάλου Ατόλ
+    es: Atolón Haa Dhaalu
+    fi: Haa Dhaalu Atoll
+    fr: Haa Dhaalu
+    gu: હા ધાલુ એટોલ
+    he: אטול הא דאלו
+    hi: हा धालू एटोल
+    hu: Déli-Tiladummati-atoll
+    id: Atol Haa Dhaalu
+    it: Atollo Haa Dhaalu
+    ja: 南ティラドゥンマティー環礁区
+    kn: ಹಾ ಧಾಲು ಅಟಾಲ್
+    ko: 하달루 환초
+    mr: हा धायाल एटवला
+    ms: Haa Dhaalu Atoll
+    nb: Haa Dhaalu Atoll
+    nl: Haa Dhaalu-atol
+    pl: Haa Dhaalu
+    pt: Haa Dhaalu Atoll
+    ru: Хаа-Дхаалу
+    si: හා ඩාලු දූපත් සමූහය
+    sk: Há Dálu
+    sv: Haa Dhaalu-atollen
+    ta: ஹா தாளு அடால்
+    te: హా ఢాలు అటోల్
+    th: ฮาฮ์ ดาฮ์ลู อทอลล์
+    tr: Haa Dhaalu Atoll
+    ur: ہاں دحاالو اتول
+    vi: Haa Dhaalu Atoll
+    lv: Haa Daalu atols
+    ceb: Haa Dhaalu Atholhu
+    lt: Haa Daalu atolas
+    zh: 阿魯環礁
+    ccp: "\U00011126\U00011133\U00011103 \U00011119\U00011133\U00011103\U00011123\U0001112A"
+    uk: Атол Хаа-Дхаалу
+    'no': Haa Dhaalu Atoll
+    fa: آبسنگ حلقوی هائو
+  comments:
+  type: administrative_atoll
+'24':
+  name: Miladhunmadulu Uthuruburi
+  code: '24'
+  unofficial_names:
+  - Miladhunmadhulu Uthuruburi
+  - Miladummadulu-North
+  - North Miladhunmadhulu
+  - Shaviyani
+  geo:
+    latitude: 6.2869456
+    longitude: 73.2445073
+    min_latitude: 5.966799399999999
+    min_longitude: 72.9068712
+    max_latitude: 6.452543700000001
+    max_longitude: 73.3011246
+  translations:
+    en: North Miladhunmadulu
+    ar: شافياني أتول
+    bn: স্যাভিয়ানি আতোল
+    cs: Šavijani
+    da: Shaviyani Atoll
+    de: Shaviyani
+    dv: Miladhunmadulu Uthuruburi
+    el: Σαβιγιάνι Ατόλ
+    es: Atolón Shaviyani
+    fi: Shaviyani Atoll
+    fr: Shaviyani
+    gu: શાવિયાની એટોલ
+    he: אטול שאביאני
+    hi: शावियानी एटोल
+    hu: Északi-Miladummadulu-atoll
+    id: Atol Shaviyani
+    it: Atollo Shaviyani
+    ja: 北ミラドゥンマドゥル環礁区
+    kn: ಶವಿಯನಿ ಅಟಾಲ್
+    ko: 샤비야니 환초
+    mr: श्व्याणी एटॉल
+    ms: Shaviyani Atoll
+    nb: Shaviyani Atoll
+    nl: Shaviyani-atol
+    pl: Shaviyani
+    pt: Shaviyani Atoll
+    ru: Шавийани
+    si: ශවියානි දුපත් සමුහය
+    sk: Šavijani
+    sv: Shaviyani Atholhu
+    ta: ஷவியணி அடால்
+    te: షావియాని అటోల్
+    th: เกาะชวิยนิ
+    tr: Shayviyani Atoll
+    ur: شاویانی اتول
+    vi: Shaviyani Atoll
+    lv: Šavijani atols
+    ceb: Shaviyani Atholhu
+    lt: Šavjano atolas
+    zh: 沙維亞尼環礁
+    ccp: "\U00011125\U0001111E\U00011128\U00011120\U0001111A\U00011128"
+    uk: Атол Шавійані
+    'no': Shaviyani Atoll
+  comments:
+  type: administrative_atoll
+'25':
+  name: Miladhunmadulu Dhekunuburi
+  code: '25'
+  unofficial_names:
+  - Miladhunmadhulu Dhekunuburi
+  - Miladummadulu-South
+  - Mulakatholhu
+  - Noonu
+  - Nûn
+  - South Miladhunmadhulu
+  geo:
+    latitude: 5.9523854
+    longitude: 73.4151346
+    min_latitude: 5.6440025
+    min_longitude: 73.1310586
+    max_latitude: 6.0033134
+    max_longitude: 73.4822166
+  translations:
+    en: South Miladhunmadulu
+    ar: نونو أتول
+    bn: নুনু এটল
+    cs: Núnu
+    da: Noonu Atoll
+    de: Noonu
+    dv: Miladhunmadulu Dhekunuburi
+    el: Νοόνου Ατόλ
+    es: Atolón Noonu
+    fi: Noonu Atoll
+    fr: Noonu
+    gu: નૂનુ એટોલ
+    he: אטול נונו
+    hi: नूनू एटोल
+    hu: Déli-Miladummadulu-atoll
+    id: Atol Noonu
+    it: Atollo Noonu
+    ja: ヌーヌ環礁
+    kn: ನೂನ್ ಅಟಾಲ್
+    ko: 누누 환초
+    mr: नोओनू एटॉल
+    ms: Noonu Atoll
+    nb: Noonu Atoll
+    nl: Noonu-atol
+    pl: Noonu
+    pt: Noonu Atoll
+    ru: Ноону
+    si: නූනු දුපත් සමූහය
+    sk: Núnu
+    sv: Noonu Atoll
+    ta: நூனு அடால்
+    te: నూను అటోల్
+    th: นูนุ
+    tr: Noonu Atoll
+    ur: نونو اتول
+    vi: Noonu Atoll
+    lv: Noonu atols
+    ceb: Noonu Atoll
+    lt: Nunu atolas
+    zh: 諾努環礁
+    ccp: "\U0001111A\U0001112B\U0001111A\U0001112A"
+    uk: Атол Ноону
+    'no': Noonu Atoll
+  comments:
+  type: administrative_atoll
+'26':
+  name: Maaleatholhu
+  code: '26'
+  unofficial_names:
+  - Kaafu
+  - Kâf
+  - Maleʿ Atholhu
+  - Malé Atoll
+  geo:
+    latitude: 4.9570016
+    longitude: 73.4595787
+    min_latitude: 3.8099492
+    min_longitude: 73.3509493
+    max_latitude: 4.9728929
+    max_longitude: 73.71927020000001
+  translations:
+    en: Male Atoll
+    ar: كافو أتول
+    az: Kaafu atollu
+    bn: কাফু আটল
+    cs: Káfu
+    da: Kaafu Atoll
+    de: Kaafu
+    dv: Maaleatholhu
+    el: Καάφου Ατόλ
+    es: Atolón Kaafu
+    fi: Kaafu Atoll
+    fr: Kaafu
+    gu: કાફુ એટોલ
+    he: אטול קאפו
+    hi: काफू एटोल
+    hu: Male-atoll
+    id: Atol Kaafu
+    it: Atollo Kaafu
+    ja: カーフ環礁
+    kn: ಕಾಫು ಅಟಾಲ್
+    ko: 카푸 환초
+    mr: काफ़ू अटॉल
+    ms: Kaafu Atoll
+    nb: Kaafu Atoll
+    nl: Kaafu-atol
+    pl: Kaafu
+    pt: Kaafu Atoll
+    ru: Каафу
+    si: කාෆු දුපත් සමුහය
+    sk: Káfu
+    sv: Kaafu Atoll
+    ta: காஃபு அடோல்
+    te: కాఫు అటోల్
+    th: หมู่เกาะคาฟุ
+    tr: Kaafu Atoll
+    ur: کافو اتول
+    vi: Kaafu Atoll
+    lv: Kāfu atols
+    ceb: Kaafu Atoll
+    lt: Kaafo atolas
+    zh: 卡夫環礁
+    ccp: "\U00011107\U0001111C\U0001112A"
+    uk: Атол Каафу
+    'no': Kaafu Atoll
+    fa: آبسنگ حلقوی کافو
+  comments:
+  type: administrative_atoll
+'27':
+  name: Huvadhuatholhu Uthuruburi
+  code: '27'
+  unofficial_names:
+  - Gaafu Alifu
+  - Gâf Alif
+  - Gaaf Alif
+  - Huvadhu Atholhu Uthuruburi
+  - North Huvadhu Atoll
+  - Suvadiva-Huvadu-North
+  geo:
+    latitude: 0.7593605
+    longitude: 73.4330865
+    min_latitude: 0.3470336
+    min_longitude: 73.092454
+    max_latitude: 0.8975593000000001
+    max_longitude: 73.5735378
+  translations:
+    en: North Huvadhu Atoll
+    ar: غافو أليف أتول
+    bn: গোফু আলিফ আতোল
+    cs: Gáfu Alif
+    da: Gaafu Alif Atoll
+    de: Gaafu Alif
+    dv: Huvadhuatholhu Uthuruburi
+    el: Γκαάφου Αλίφ Ατόλ
+    es: Atolón Gaafu Alif
+    fi: Gaafu Alif Atoll
+    fr: Gaafu Alif
+    gu: ગાફુ અલિફ એટોલ
+    hi: गाफु अलिफ एटोल
+    id: Atol Gaafu Alif
+    it: Atollo Gaafu Alif
+    ja: ガーフ・アリフ環礁
+    kn: ಗಾಫು ಅಲಿಫ್ ಅಟಾಲ್
+    ko: 가푸알리프 환초
+    mr: गाफू अलिफ अटॉल
+    ms: Gaafu Alif Atoll
+    nb: Gaafu Alif Atoll
+    nl: Gaafu Alif-atol
+    pl: Gaafu Alif
+    pt: Gaafu Alif Atoll
+    ru: Гаафу-Алиф
+    si: ගාෆු අලිෆ් දුපත් සමූහය
+    sk: Gáfu Alif
+    sv: Gaafu Alifu Atholhu
+    ta: காபியூ அளிப் அடால்
+    te: గాఫు అలీఫ్ అటోల్
+    th: การ์ฟู อลิฟ อโทล
+    tr: Gaafu Alif Atoll
+    ur: گافو الف اتول
+    vi: Gaafu Alif Atoll
+    lv: Gaafu Alifas atols
+    ceb: Gaafu Alifu Atholhu
+    lt: Gaafu Alifo atolas
+    zh: 奧利弗蓋夫環礁
+    ccp: "\U00011109\U00011133\U00011103\U0001111C\U0001112A \U00011103\U00011123\U00011128\U0001111B\U00011134"
+    uk: Атол Гаафу-Аліф
+    'no': Gaafu Alif Atoll
+    fa: آبسنگ حلقوی گافو الیف
+  comments:
+  type: administrative_atoll
+'28':
+  name: Huvadhuatholhu Dhekunuburi
+  code: '28'
+  unofficial_names:
+  - Gaafu Dhaalu
+  - Gâf Dhâl
+  - Huvadhu Atholhu Dhekunuburi
+  - South Huvadhu
+  - Suvadiva-Huvadu-South
+  geo:
+    latitude: 0.2751533
+    longitude: 73.435831
+    min_latitude: 0.1880678
+    min_longitude: 72.987068
+    max_latitude: 0.5438472999999999
+    max_longitude: 73.5213636
+  translations:
+    en: South Huvadhu Atoll
+    ar: غافو دالو أتول
+    bn: গাফু ধালু আতোল
+    cs: Gáfu Dálu
+    da: Gaafu Dhaalu Atoll ( South Huvadhoo)
+    de: Gaafu Dhaalu
+    dv: Huvadhuatholhu Dhekunuburi
+    el: Γκααφού Ντααλού Ατόλ
+    es: Atolón Gaafu Dhaalu
+    fi: Gaafu Dhaalu Atoll
+    fr: Gaafu Dhaalu
+    gu: ગાફુ ધાલુ એટોલ
+    hi: गाफू धालू अटोल
+    id: Atol Gaafu Dhaalu
+    it: Atollo Gaafu Dhaalu
+    ja: ガーフ・ダール環礁
+    kn: ಗಾಫು ಧಾಲು ಅಟಾಲ್
+    ko: 가푸달루 환초
+    mr: गेफू धालु एटोल
+    ms: Kepulauan Gaafu Dhaalu
+    nb: Gaafu Dhaaky Atoll
+    nl: Gaafu Dhaalu-atol
+    pl: Gaafu Dhaalu
+    pt: Gaafu Dhaalu Atoll
+    ru: Гаафу-Дхаалу
+    si: ගාෆු දාලු දූපත් සමූහය
+    sk: Gáfu Dálu
+    sv: Gaafu Dhaalu Atholhu
+    ta: காபியூ தயாளு அடோல்
+    te: గాఫు ధాలూ అటోల్
+    th: กาฟู ดาลู อตอลล์
+    tr: Gaafu Dhaalu Atoll
+    ur: گافو دحاالو اتول
+    vi: Gaafu Dhaalu Atoll
+    lv: Gaafu Dhaalu atols
+    ceb: Gaafu Dhaalu Atholhu
+    lt: Gaafo Daalo atolas
+    zh: 南蘇瓦迪瓦環礁
+    ccp: "\U00011109\U00011133\U00011103\U0001111C\U0001112A \U00011119\U00011133\U00011103\U00011123\U0001112A"
+    uk: Атол Гаафу-Дхаалу
+    'no': Gaafu Dhaaky Atoll
+    fa: آبسنگ حلقوی غافو
+  comments:
+  type: administrative_atoll
+'29':
+  name: Fuvammulah
+  code: '29'
+  unofficial_names:
+  - Foah Mulah
+  - Foahmulah
+  - Foammulah
+  - Foamulah
+  - Fua Mulak
+  - Fuamulaku
+  - Fuvahmulah
+  - Gnyaviani
+  - Gnaviyani
+  geo:
+    latitude: -0.3006425
+    longitude: 73.42391429999999
+    min_latitude: -0.3118643
+    min_longitude: 73.4100436
+    max_latitude: -0.2771461
+    max_longitude: 73.44141479999999
+  translations:
+    en: Fuvammulah
+    ar: غنافياني أتول
+    bn: গ্নাভিয়ানি আতোল
+    cs: Gnavijani
+    da: Gnaviyani Atoll
+    de: Gnaviyani
+    dv: Fuvammulah
+    el: Γκναβιγιάνι Ατόλ
+    es: Atolón Gnaviyani
+    fi: Gnaviyani Atoll
+    fr: Atoll de Gnaviyani
+    gu: ગ્નાવિયાની એટોલ
+    hi: नावियानी एटोल
+    id: Gnaviyani Atoll
+    it: Atollo Gnaviyani
+    ja: ニヤヴィヤニ環礁
+    kn: ಗ್ವಾನವಿಣಿ ಅಟಾಲ್
+    ko: 그나비야니 환초
+    mr: ग्यानियानी एटोल
+    ms: Gnaviyani Atoll
+    nb: Gnaviyani Atoll
+    nl: Gnaviyani-atol
+    pl: Gnaviyani
+    pt: Gnaviyani Atoll
+    ru: Гнавийани
+    si: ග්නාවියානු දුපත් සමුහය
+    sk: Gnavijani
+    sv: Gnaviyani Atholhu
+    ta: குணவியணி அடோல்
+    te: గ్నావియాని అటోల్
+    th: กนาวอยานีอทอลล์
+    tr: Gnaviyani Atoll
+    ur: جناویانی اتول
+    vi: Gnaviyani Atoll
+    lv: Gnavijani atols
+    ceb: Gnaviyani Atholhu
+    lt: Gnavijanio atolas
+    zh: 加納維雅尼環礁
+    ccp: "\U0001111A\U0001111E\U00011128\U00011120\U0001111A\U00011128"
+    uk: Гнавійані атол
+    'no': Gnaviyani Atoll
+    fa: آبسنگ گناویانی
+  comments:
+  type: administrative_atoll
+MLE:
+  name: Male
+  code: MLE
+  unofficial_names:
+  - Maale
+  - Mâle
+  geo:
+    latitude: 4.1754959
+    longitude: 73.5093474
+    min_latitude: 4.1694754
+    min_longitude: 73.4821147
+    max_latitude: 4.202356
+    max_longitude: 73.5313615
+  translations:
+    en: Malé
+    af: Malé
+    am: ማሌ
+    ar: ماليه
+    az: Male
+    be: Горад Мале
+    bg: Мале
+    bn: মালে
+    ca: Malé
+    cs: Male
+    da: Malé
+    de: Malé
+    el: Μαλέ
+    es: Malé
+    et: Male
+    eu: Malé
+    fa: ماله
+    fi: Malé
+    fr: Malé
+    gl: Malé
+    gu: માલે
+    he: מאלה
+    hi: माले
+    hr: Malé
+    hu: Malé
+    hy: Մալե
+    id: Malé
+    is: Malé
+    it: Malé
+    ja: マレ
+    ka: მალე
+    kn: ಮಾಲೆ
+    ko: 말레
+    lt: Malė
+    lv: Male
+    ml: മാലി
+    mn: Мале
+    mr: माले
+    ms: Malé
+    nb: Malé
+    ne: माले
+    nl: Malé
+    or: ମାଲେ
+    pl: Male
+    pt: Malé
+    ro: Malé
+    ru: Мале
+    si: මාලේ
+    sk: Male
+    sl: Male
+    sr: Мале
+    sv: Malé
+    sw: Malé
+    ta: மாலே
+    te: మాలే
+    th: มาเล
+    tk: Male
+    tr: Malé
+    uk: Мале
+    ur: مالے
+    vi: Malé
+    cy: Malé
+    ceb: Male
+    sr_Latn: Male
+    zh: 馬累
+    yue_Hans: 马累
+    sq: Malé
+    ccp: "\U0001111F\U00011123\U00011128"
+    ga: Malé
+    ps: ماله
+    ky: Мале
+    pa: ਮਾਲੇ
+    kk: Мале
+    yue: 馬累
+    yo: Malé
+    uz: Male
+    bs: Malé
+    mk: Мале
+    'no': Malé
+    yo_BJ: Malé
+    my: မာလေမြို့
+  comments:
+  type: city

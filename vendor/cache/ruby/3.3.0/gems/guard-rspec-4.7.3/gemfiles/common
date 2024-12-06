@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+group :test do
+  gem "bundler", "~> 1.12", "< 2.0"
+  gem "rake", "~> 11.1"
+  gem 'coveralls', require: false
+  gem "launchy", "~> 2.4"
+  gem "gem_isolator", '~> 0.2', '>= 0.2.1'
+end

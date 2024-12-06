@@ -1,0 +1,20 @@
+name: rubocop
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.1
+      - name: Install gems
+        run: bundle install --jobs 4 --retry 3
+      - name: Run RuboCop
+        run: bundle exec rubocop --parallel

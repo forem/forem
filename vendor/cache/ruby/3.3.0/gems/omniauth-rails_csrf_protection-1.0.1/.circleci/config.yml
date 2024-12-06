@@ -1,0 +1,241 @@
+version: 2.1
+
+build_steps: &build_steps
+  steps:
+    - checkout
+    - run:
+        name: Install dependencies
+        command: bundle update
+    - run:
+        command: |-
+          echo "Ruby version:" $(ruby -v)
+          echo "Rails version: " $(rails -v)
+        name: Show build information
+    - run:
+        name: Run tests
+        command: rake
+
+ruby-2-4: &ruby-2-4
+  docker:
+    - image: circleci/ruby:2.4
+
+ruby-2-5: &ruby-2-5
+  docker:
+    - image: cimg/ruby:2.5
+
+ruby-2-6: &ruby-2-6
+  docker:
+    - image: cimg/ruby:2.6
+
+ruby-2-7: &ruby-2-7
+  docker:
+    - image: cimg/ruby:2.7
+
+ruby-3-0: &ruby-3-0
+  docker:
+    - image: cimg/ruby:3.0
+
+ruby-3-1: &ruby-3-1
+  docker:
+    - image: cimg/ruby:3.1
+
+rails-4-2: &rails-4-2
+  environment:
+      RAILS_VERSION: "~> 4.2.0"
+
+rails-5-0: &rails-5-0
+  environment:
+      RAILS_VERSION: "~> 5.0.0"
+
+rails-5-1: &rails-5-1
+  environment:
+      RAILS_VERSION: "~> 5.1.0"
+
+rails-5-2: &rails-5-2
+  environment:
+      RAILS_VERSION: "~> 5.2.0"
+
+rails-6-0: &rails-6-0
+  environment:
+      RAILS_VERSION: "~> 6.0.0"
+
+rails-6-1: &rails-6-1
+  environment:
+      RAILS_VERSION: "~> 6.1.0"
+
+rails-7-0: &rails-7-0
+  environment:
+      RAILS_VERSION: "~> 7.0.0"
+
+rails-edge: &rails-edge
+  environment:
+      RAILS_BRANCH: "main"
+
+jobs:
+  "ruby-2-4-rails-4-2":
+    <<: *ruby-2-4
+    <<: *rails-4-2
+    <<: *build_steps
+  "ruby-2-4-rails-5-0":
+    <<: *ruby-2-4
+    <<: *rails-5-0
+    <<: *build_steps
+  "ruby-2-4-rails-5-1":
+    <<: *ruby-2-4
+    <<: *rails-5-1
+    <<: *build_steps
+  "ruby-2-4-rails-5-2":
+    <<: *ruby-2-4
+    <<: *rails-5-2
+    <<: *build_steps
+
+  "ruby-2-5-rails-5-0":
+    <<: *ruby-2-5
+    <<: *rails-5-0
+    <<: *build_steps
+  "ruby-2-5-rails-5-1":
+    <<: *ruby-2-5
+    <<: *rails-5-1
+    <<: *build_steps
+  "ruby-2-5-rails-5-2":
+    <<: *ruby-2-5
+    <<: *rails-5-2
+    <<: *build_steps
+  "ruby-2-5-rails-6-0":
+    <<: *ruby-2-5
+    <<: *rails-6-0
+    <<: *build_steps
+  "ruby-2-5-rails-6-1":
+    <<: *ruby-2-5
+    <<: *rails-6-1
+    <<: *build_steps
+  "ruby-2-5-rails-edge":
+    <<: *ruby-2-5
+    <<: *rails-edge
+    <<: *build_steps
+
+  "ruby-2-6-rails-5-0":
+    <<: *ruby-2-6
+    <<: *rails-5-0
+    <<: *build_steps
+  "ruby-2-6-rails-5-1":
+    <<: *ruby-2-6
+    <<: *rails-5-1
+    <<: *build_steps
+  "ruby-2-6-rails-5-2":
+    <<: *ruby-2-6
+    <<: *rails-5-2
+    <<: *build_steps
+  "ruby-2-6-rails-6-0":
+    <<: *ruby-2-6
+    <<: *rails-6-0
+    <<: *build_steps
+  "ruby-2-6-rails-6-1":
+    <<: *ruby-2-6
+    <<: *rails-6-1
+    <<: *build_steps
+  "ruby-2-6-rails-edge":
+    <<: *ruby-2-6
+    <<: *rails-edge
+    <<: *build_steps
+
+  "ruby-2-7-rails-5-0":
+    <<: *ruby-2-7
+    <<: *rails-5-0
+    <<: *build_steps
+  "ruby-2-7-rails-5-1":
+    <<: *ruby-2-7
+    <<: *rails-5-1
+    <<: *build_steps
+  "ruby-2-7-rails-5-2":
+    <<: *ruby-2-7
+    <<: *rails-5-2
+    <<: *build_steps
+  "ruby-2-7-rails-6-0":
+    <<: *ruby-2-7
+    <<: *rails-6-0
+    <<: *build_steps
+  "ruby-2-7-rails-6-1":
+    <<: *ruby-2-7
+    <<: *rails-6-1
+    <<: *build_steps
+  "ruby-2-7-rails-7-0":
+    <<: *ruby-2-7
+    <<: *rails-7-0
+    <<: *build_steps
+  "ruby-2-7-rails-edge":
+    <<: *ruby-2-7
+    <<: *rails-edge
+    <<: *build_steps
+
+  "ruby-3-0-rails-6-0":
+    <<: *ruby-3-0
+    <<: *rails-6-0
+    <<: *build_steps
+  "ruby-3-0-rails-6-1":
+    <<: *ruby-3-0
+    <<: *rails-6-1
+    <<: *build_steps
+  "ruby-3-0-rails-7-0":
+    <<: *ruby-3-0
+    <<: *rails-7-0
+    <<: *build_steps
+  "ruby-3-0-rails-edge":
+    <<: *ruby-3-0
+    <<: *rails-edge
+    <<: *build_steps
+
+  "ruby-3-1-rails-6-0":
+    <<: *ruby-3-1
+    <<: *rails-6-0
+    <<: *build_steps
+  "ruby-3-1-rails-6-1":
+    <<: *ruby-3-1
+    <<: *rails-6-1
+    <<: *build_steps
+  "ruby-3-1-rails-7-0":
+    <<: *ruby-3-1
+    <<: *rails-7-0
+    <<: *build_steps
+  "ruby-3-1-rails-edge":
+    <<: *ruby-3-1
+    <<: *rails-edge
+    <<: *build_steps
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "ruby-2-4-rails-4-2"
+      - "ruby-2-4-rails-5-1"
+      - "ruby-2-4-rails-5-2"
+
+      - "ruby-2-5-rails-5-0"
+      - "ruby-2-5-rails-5-1"
+      - "ruby-2-5-rails-5-2"
+      - "ruby-2-5-rails-6-0"
+      - "ruby-2-5-rails-6-1"
+
+      - "ruby-2-6-rails-5-0"
+      - "ruby-2-6-rails-5-1"
+      - "ruby-2-6-rails-5-2"
+      - "ruby-2-6-rails-6-0"
+      - "ruby-2-6-rails-6-1"
+
+      - "ruby-2-7-rails-5-0"
+      - "ruby-2-7-rails-5-1"
+      - "ruby-2-7-rails-5-2"
+      - "ruby-2-7-rails-6-0"
+      - "ruby-2-7-rails-6-1"
+      - "ruby-2-7-rails-7-0"
+      - "ruby-2-7-rails-edge"
+
+      - "ruby-3-0-rails-6-0"
+      - "ruby-3-0-rails-6-1"
+      - "ruby-3-0-rails-7-0"
+      - "ruby-3-0-rails-edge"
+
+      - "ruby-3-1-rails-6-0"
+      - "ruby-3-1-rails-6-1"
+      - "ruby-3-1-rails-7-0"
+      - "ruby-3-1-rails-edge"

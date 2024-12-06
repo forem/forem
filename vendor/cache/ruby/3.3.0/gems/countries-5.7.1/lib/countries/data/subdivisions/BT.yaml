@@ -1,0 +1,1218 @@
+---
+'11':
+  name: Paro
+  code: '11'
+  unofficial_names:
+  - Paro
+  - Rinpung
+  geo:
+    latitude: 27.4285949
+    longitude: 89.4166516
+    min_latitude: 27.1771741
+    min_longitude: 89.131271
+    max_latitude: 27.7510569
+    max_longitude: 89.563836
+  translations:
+    en: Paro
+    ar: مقاطعة بارو
+    bg: Паро
+    bn: পারো জেলা
+    da: Paro District
+    de: Paro
+    el: Πάρο
+    es: Distrito de Paro
+    et: Paro ringkond
+    fa: استان پارو
+    fi: Paro
+    fr: Paro
+    gu: પારો જિલ્લો
+    hi: पारो जिला
+    hu: Paro körzet
+    id: Distrik Paro
+    it: distretto di Paro
+    ja: パロ県
+    kn: ಪ್ಯಾರೊ ಜಿಲ್ಲೆ
+    ko: 파로 현
+    mr: पारो जिल्हा
+    ms: Paro District
+    nb: Paro
+    nl: Paro
+    pl: Dystrykt Paro
+    pt: Paro
+    ro: Paro
+    ru: Паро
+    si: පාරෝ දිස්ත්‍රික්කය
+    sl: Okraj Paro
+    sr: Паро
+    sv: Paro
+    ta: பாரோ மாவட்டம்
+    te: పారో జిల్లా
+    th: มณฑลพาโร
+    tr: Paro
+    uk: Паро
+    ur: پارو ضلع
+    vi: Paro
+    zh: 帕罗宗
+    lv: Paro distrikts
+    ceb: Paro Dzongkhag
+    sr_Latn: Paro
+    lt: Paro apskritis
+    ccp: "\U0001111B\U00011122\U0001112E"
+    ps: پارو ولسوالۍ
+    pa: ਪਾਰੋ ਜ਼ਿਲ੍ਹਾ
+    ml: പാറോ ജില്ല
+    ca: Districte de Paro
+    'no': Paro
+  comments:
+  type: district
+'12':
+  name: Chhukha
+  code: '12'
+  unofficial_names:
+  - Chhuka
+  - Chuka
+  - Chukha
+  geo:
+    latitude: 27.0522919
+    longitude: 89.5756987
+    min_latitude: 27.0483479
+    min_longitude: 89.5604609
+    max_latitude: 27.0611895
+    max_longitude: 89.5806313
+  translations:
+    en: Chukha
+    ar: مقاطعة تشوخا
+    bg: Чукха
+    bn: চুখা জেলা
+    cs: Chhukha
+    da: Chukha
+    de: Chukha
+    el: Τσούκα
+    es: Distrito de Chukha
+    et: Chhukha ringkond
+    fa: استان چوخا
+    fi: Chukha
+    fr: Chukha
+    gu: ચુખા જિલ્લો
+    hi: चुखा जिला
+    hu: Chukha körzet
+    id: Distrik Chukha
+    it: distretto di Chukha
+    ja: チュカ県
+    kn: ಚುಖಾ ಜಿಲ್ಲೆ
+    ko: 추카 현
+    mr: चुखा जिल्हा
+    ms: Chukha District
+    nb: Chukha
+    nl: Chukha
+    pl: Dystrykt Chukha
+    ps: چوکها ولسوالۍ
+    pt: Chukha
+    ro: Districtul Chukha
+    ru: Чукха
+    si: චුන්ඛා දිස්ත්‍රික්කය
+    sk: Čhukha
+    sr: Чукха
+    sv: Chukha
+    ta: சுக்கா மாவட்டம்
+    te: చుఖా జిల్లా
+    th: เจคชูคาร์
+    tr: Chuka District
+    uk: Чукха
+    ur: چوکہا ضلع
+    vi: Quận Chukha
+    lv: Čhukhas distrikts
+    ceb: Chhukha Dzongkhag
+    sr_Latn: Čukha
+    lt: Čukos apskritis
+    zh: 楚卡宗
+    ccp: "\U0001110C\U0001112A\U00011108"
+    ca: Districte de Chukha
+    'no': Chukha
+    he: צ׳וקה
+  comments:
+  type: district
+'13':
+  name: Ha
+  code: '13'
+  unofficial_names:
+  - Ha
+  - Haa
+  geo:
+    latitude: 27.2651669
+    longitude: 89.1705998
+    min_latitude: 27.0723781
+    min_longitude: 88.89505199999999
+    max_latitude: 27.6211449
+    max_longitude: 89.39598099999999
+  translations:
+    en: Haa
+    ar: مقاطعة ها
+    bg: Хаа
+    bn: হা জেলা
+    da: Haa District
+    de: Haa
+    el: Χαά
+    es: Distrito de Haa
+    et: Ha ringkond
+    fa: استان ها
+    fi: Haa
+    fr: Haa
+    gu: હા જિલ્લો
+    hi: हा जिला
+    hu: Haa körzet
+    id: Distrik Haa
+    it: distretto di Haa
+    ja: ハ県
+    kn: ಹಾ ಜಿಲ್ಲೆ
+    ko: 하 현
+    mr: हा जिल्हा
+    ms: Haa District
+    nb: Haa
+    nl: Haa
+    pl: Dystrykt Haa
+    ps: ها ولسوالۍ
+    pt: Haa
+    ro: Haa
+    ru: Ха
+    si: හා දිස්ත්‍රික්කය
+    sr: Ха
+    sv: Haa
+    ta: ஹா மாவட்டம்
+    te: హా జిల్లా
+    th: เขตฮา
+    tr: Haa District
+    uk: Хаа
+    ur: ہا ضلع
+    vi: Quận Haa
+    lv: Ha distrikts
+    ceb: Haa Dzongkhag
+    sr_Latn: Ha
+    lt: Haa apskritis
+    zh: 哈阿宗
+    ccp: "\U00011126"
+    ca: Districte de Haa
+    'no': Haa
+  comments:
+  type: district
+'14':
+  name: Samtse
+  code: '14'
+  unofficial_names:
+  - Samchi
+  - Samtse
+  geo:
+    latitude: 26.9131041
+    longitude: 89.08360189999999
+    min_latitude: 26.9078347
+    min_longitude: 89.0766335
+    max_latitude: 26.9162536
+    max_longitude: 89.090538
+  translations:
+    en: Samtse
+    ar: مقاطعة سامتسي
+    bg: Самце
+    bn: সামটসে জেলা
+    da: Samtse District
+    de: Samtse
+    el: Σάμτσε
+    es: Distrito de Samtse
+    et: Samtse ringkond
+    fa: استان سامتس
+    fi: Samtse
+    fr: Samtse
+    gu: સમત્સે જિલ્લો
+    hi: साम्त्से जिला
+    hu: Samtse körzet
+    id: Distrik Samtse
+    it: distretto di Samtse
+    ja: サムツェ県
+    kn: ಸ್ಯಾಮ್ಸೆ ಜಿಲ್ಲೆ
+    ko: 삼체 현
+    mr: समष्टी जिल्हा
+    ms: Samtse District
+    nb: Samtse
+    nl: Samtse
+    pl: Dystrykt Samtse
+    ps: سامتسی ولسوالۍ
+    pt: Samtse
+    ro: Districtul Samtse
+    ru: Самце
+    si: සම්ට්සේ දිස්ත්‍රික්කය
+    sr: Самце
+    sv: Samtse
+    ta: சமட்ஸ் மாவட்டம்
+    te: సామ్ట్సే జిల్లా
+    th: มณฑลซัมชิ
+    tr: Samtse District
+    uk: Самце
+    ur: سامتسے ضلع
+    vi: Quận Samtse
+    lv: Samcī distrikts
+    ceb: Samtse Dzongkhag
+    sr_Latn: Samce
+    lt: Samtsės apskritis
+    zh: 萨姆宗
+    ccp: "\U00011125\U0001111F\U00011134\U00011125\U0001112C"
+    ca: Districte de Samtse
+    'no': Samtse
+    mk: Самце (џонгхаг)
+  comments:
+  type: district
+'15':
+  name: Thimphu
+  code: '15'
+  unofficial_names:
+  - Thimbu
+  - Thimphu
+  - Thimpu
+  - Timbhu
+  - Timbu
+  - Timphu
+  geo:
+    latitude: 27.4727924
+    longitude: 89.6392863
+    min_latitude: 27.4251092
+    min_longitude: 89.60414879999999
+    max_latitude: 27.5336949
+    max_longitude: 89.6726418
+  translations:
+    en: Thimphu
+    ar: مقاطعة ثيمفو
+    bg: Тхимпху
+    bn: থিম্পো জেলা
+    ca: Districte de Thimphu
+    da: Thimphu District
+    de: Thimphu
+    el: Τίμφου
+    es: Distrito de Timbu
+    et: Thimphu ringkond
+    fa: استان تیمفو
+    fi: Thimphu
+    fr: Thimphou
+    gu: થિમ્ફુ જિલ્લો
+    hi: थिम्फू जिला
+    hu: Thimphu körzet
+    id: Distrik Thimphu
+    it: distretto di Thimphu
+    ja: ティンプー県
+    kn: ತಿಮ್ಮು ಜಿಲ್ಲೆ
+    ko: 팀부 현
+    mn: Тхимпху зонкаг
+    mr: थिंपू जिल्हा
+    ms: Thimphu District
+    nb: Thimphu distrikt
+    ne: थिम्फू जिल्ला
+    nl: Thimphu
+    pl: Thimphu
+    ps: تھمپھو ولسوالۍ
+    pt: Thimphu
+    ro: Districtul Thimphu
+    ru: Тхимпху
+    si: තිම්පු දිස්ත්‍රික්කය
+    sl: Okraj Thimphu
+    sr: Тимбу
+    sv: Thimphu
+    ta: தீம்ப்ஹு மாவட்டம்
+    te: థింపు జిల్లా
+    th: ทิมพู
+    tr: Thimpu District
+    uk: Тхімпху
+    ur: تھمپھو ضلع
+    vi: Quận Thimphu
+    lv: Thimphu distrikts
+    ceb: Thimphu Dzongkhag
+    sr_Latn: Timbu
+    lt: Timfu regionas
+    zh: 廷布宗
+    ccp: "\U00011117\U00011128\U0001111F\U00011134\U0001111C\U0001112A"
+    'no': Thimphu distrikt
+  comments:
+  type: district
+'21':
+  name: Tsirang
+  code: '21'
+  unofficial_names:
+  - Chirang
+  - Tsirang
+  geo:
+    latitude: 27.032207
+    longitude: 90.1869644
+    min_latitude: 26.8187539
+    min_longitude: 90.00392509999999
+    max_latitude: 27.177361
+    max_longitude: 90.357412
+  translations:
+    en: Tsirang
+    bg: Циранг
+    de: Tsirang
+    es: Distrito de Tsirang
+    et: Tsirangi ringkond
+    fi: Tsirang
+    fr: Tsirang
+    hu: Tsirang körzet
+    it: distretto di Tsirang
+    ja: チラン県
+    ko: 치랑 현
+    nb: Tsirang
+    nl: Tsirang
+    pl: Dystrykt Tsirang
+    ps: تسيرانگ ولسوالۍ
+    pt: Tsirang
+    ro: Tsirang
+    ru: Циранг
+    sv: Tsirang
+    uk: Ціранг
+    ur: تسیرانگ ضلع
+    ceb: Tsirang
+    zh: 奇朗宗
+    ccp: "\U00011125\U00011128\U00011122\U00011127\U00011101"
+    ca: Districte de Tsirang
+    'no': Tsirang
+    bn: সিরাং জেলা
+    he: מחוז טסירנג
+    id: Distrik Tsirang
+  comments:
+  type: district
+'22':
+  name: Dagana
+  code: '22'
+  unofficial_names:
+  - Daga
+  - Dagana
+  geo:
+    latitude: 27.0322861
+    longitude: 89.8879304
+    min_latitude: 26.808901
+    min_longitude: 89.648614
+    max_latitude: 27.26369
+    max_longitude: 90.08144100000001
+  translations:
+    en: Dagana
+    bg: Дагана
+    de: Dagana
+    es: Distrito de Dagana
+    et: Dagana ringkond
+    fa: استان داگانا
+    fi: Dagana
+    fr: Dagana
+    hu: Dagana körzet
+    it: distretto di Dagana
+    ja: ダガナ県
+    ko: 다가나 현
+    nb: Dagana
+    nl: Dagana
+    pl: Dystrykt Dagana
+    ps: داگانا ولسوالۍ
+    pt: Dagana
+    ro: Dagana
+    ru: Дагана
+    sv: Dagana
+    uk: Дагана
+    ur: داگانا ضلع
+    ceb: Dagana Dzongkhag
+    zh: 达加纳宗
+    ccp: "\U00011113\U00011109\U0001111A"
+    or: ଦାଗନା ଜିଲ୍ଲା , ଭୁଟାନ
+    ca: Districte de Dagana
+    'no': Dagana
+    bn: দাগানা জেলা
+    id: Distrik Dagana
+  comments:
+  type: district
+'23':
+  name: Punakha
+  code: '23'
+  unofficial_names: Punakha
+  geo:
+    latitude: 27.5920869
+    longitude: 89.87974589999999
+    min_latitude: 27.5877193
+    min_longitude: 89.8721123
+    max_latitude: 27.5961249
+    max_longitude: 89.88554479999999
+  translations:
+    en: Punakha
+    ar: مقاطعة بوناخا
+    bg: Пунака
+    bn: পোনাকা জেলা
+    ca: Districte de Punakha
+    da: Punakha District
+    de: Punakha
+    el: Πουνάκχα
+    es: Distrito de Punakha
+    et: Punakha ringkond
+    fi: Punakha
+    fr: Punakha
+    gu: પનાખા જિલ્લો
+    hi: पुनाखा जिला
+    hu: Punakha körzet
+    id: Distrik Punakha
+    it: distretto di Punakha
+    ja: プナカ県
+    kn: ಪುನಾಖ ಜಿಲ್ಲೆ
+    ko: 푸나카 현
+    mr: पन्हाखा जिल्हा
+    ms: Punakha District
+    nb: Punakha
+    nl: Punakha
+    pl: Dystrykt Punakha
+    ps: پوناخا ولسوالۍ
+    pt: Punakha
+    ro: Punakha
+    ru: Пунакха
+    si: පූනකා දිස්ත්‍රික්කය
+    sr: Пунака
+    sv: Punakha
+    ta: புனகா மாவட்டம்
+    te: పునాఖా జిల్లా
+    th: มณฑลพูนาคา
+    tr: Punakha District
+    uk: Пунакха
+    ur: پوناخا ضلع
+    vi: Quận Punakha
+    lv: Punakhas distrikts
+    ceb: Punakha Dzongkhag
+    sr_Latn: Punaka
+    lt: Punakos apskritis
+    zh: 普那卡宗
+    ccp: "\U0001111B\U0001112A\U0001111A\U00011107\U00011134"
+    sl: Okraj Punaka
+    'no': Punakha
+    fa: ناحیه پوناخا
+    he: פונקה
+  comments:
+  type: district
+'24':
+  name: Wangdue Phodrang
+  code: '24'
+  unofficial_names:
+  - Wangdi Phodrang
+  - Wangdiphodrang
+  - Wangdue
+  - Wangdue Phodrang
+  geo:
+    latitude: 27.4879018
+    longitude: 89.8996196
+    min_latitude: 27.474542
+    min_longitude: 89.8926686
+    max_latitude: 27.4991359
+    max_longitude: 89.9055432
+  translations:
+    en: Wangdue Phodrang
+    ar: مقاطعة وانغدو فودرانغ
+    bg: Вангдуе Пходранг
+    bn: ওয়াংডু পোড্রাং জেলা
+    da: Wangdue Phodrang District
+    de: Wangdue Phodrang
+    el: Γουάνγκντουε Φόντρανγκ
+    es: Distrito de Wangdue Phodrang
+    et: Wangdue Phodrangi ringkond
+    fi: Wangdue Phodrang
+    fr: Wangdue Phodrang
+    gu: વાંગડુ ફોડ્રાંગ જિલ્લો
+    hi: वांगद्यू फोद्रांग जिला
+    hu: Wangdue Phodrang körzet
+    id: Distrik Wangdue Phodrang
+    it: distretto di Wangdue Phodrang
+    ja: ワンデュ・ポダン県
+    kn: ವಾಂಗ್ಡು ಫೊಡ್ರಾಂಗ್ ಜಿಲ್ಲೆ
+    ko: 왕두에포드랑 현
+    mr: वांगदु फोडरंग जिल्हा
+    ms: Wangdue Phodrang District
+    nb: Wangdue Phodrang
+    nl: Wangdue Phodrang
+    pl: Dystrykt Wangdue Phodrang
+    ps: وانگدو پھودرانگ ولسوالۍ
+    pt: Wangdue Phodrang
+    ro: Wangdue Phodrang
+    ru: Вангди-Пходранг
+    si: වන්ග්ඩු පොඩ්රාන්ග් දිස්ත්‍රික්කය
+    sr: Вангдуе Пходранг
+    sv: Wangdue Phodrang
+    ta: வாங்கித்தேயு போட்ரங் மாவட்டம்
+    te: వాంగ్డ్యూ ఫోడ్రాంగ్ జిల్లా
+    th: เขตวังดีโพดรัง
+    tr: Wangdue Phodrang
+    uk: Вангді-Пходранг
+    ur: وانگدو پھودرانگ ضلع
+    vi: Quận Wangdue Phodrang
+    lv: Vangdi-Podrangas distrikts
+    ceb: Wangdue Phodrang Dzongkhag
+    sr_Latn: Vangdue Phodrang
+    lt: Vangde Podrango apskritis
+    zh: 旺杜波德朗宗
+    ccp: "\U00011103\U00011127\U00011120\U00011101\U00011113\U0001112A\U00011120\U0001112C
+      \U0001111C\U00011127\U00011116\U00011134\U00011122\U00011127\U00011101"
+    sl: Okraj Vangdi Fodrang
+    ca: Districte de Wangdue Phodrang
+    'no': Wangdue Phodrang
+    fa: ناحیه وانگدودودرنگ
+  comments:
+  type: district
+'31':
+  name: Sarpang
+  code: '31'
+  unofficial_names:
+  - Gaylegphug
+  - Geylegphug
+  - Sarbhang
+  - Sarpang
+  geo:
+    latitude: 26.9373041
+    longitude: 90.4879916
+    min_latitude: 26.7076319
+    min_longitude: 89.734461
+    max_latitude: 27.209321
+    max_longitude: 90.96380099999999
+  translations:
+    en: Sarpang
+    bg: Сарпанг
+    de: Sarpang
+    es: Distrito de Sarpang
+    et: Sarpangi ringkond
+    fi: Sarpang
+    fr: Sarpang
+    hu: Sarpang körzet
+    it: distretto di Sarpang
+    ja: サルパン県
+    ko: 사르팡 현
+    nb: Sarpang
+    nl: Sarpang
+    pl: Dystrykt Sarpang
+    ps: سارپانگ ولسوالۍ
+    pt: Sarpang
+    ro: Sarpang
+    ru: Сарпанг
+    sr: Сарпанг
+    sv: Sarpang
+    uk: Сарпанг
+    ur: سارپانگ ضلع
+    ceb: Sarpang Dzongkhag
+    sr_Latn: Sarpang
+    zh: 盖莱普宗
+    ccp: "\U00011125\U00011122\U00011134\U0001111B\U00011127\U00011101"
+    ca: Districte de Sarpang
+    'no': Sarpang
+    bn: সার্পাং জেলা
+    fa: ناحیه سرپانگ
+    id: Distrik Sarpang
+    ml: സർപംഗ് ജില്ല
+  comments:
+  type: district
+'32':
+  name: Trongsa
+  code: '32'
+  unofficial_names:
+  - Tongsa
+  - Trongsa
+  geo:
+    latitude: 27.5002269
+    longitude: 90.5080634
+    min_latitude: 27.4940347
+    min_longitude: 90.5036116
+    max_latitude: 27.508043
+    max_longitude: 90.51571369999999
+  translations:
+    en: Trongsa
+    ar: مقاطعة ترونغزا
+    bg: Тронгса
+    bn: ট্রোনসা জেলা
+    da: Trongsa District
+    de: Trongsa
+    el: Τρόνγκσα
+    es: Distrito de Trongsa
+    et: Trongsa ringkond
+    fi: Trongsa
+    fr: Trongsa
+    gu: ટ્રોન્ગ્સા જિલ્લો
+    hi: ट्रोंगसा जिला
+    hu: Trongsa körzet
+    id: Distrik Trongsa
+    it: distretto di Trongsa
+    ja: トンサ県
+    kn: ಟ್ರಾಂಗ್ಸಾ ಜಿಲ್ಲೆ
+    ko: 트롱사 현
+    mr: ट्रॉन्ज जिल्हा
+    ms: Trongsa District
+    nb: Trongsa
+    nl: Trongsa
+    pl: Dystrykt Trongsa
+    ps: ترونگسا ولسوالۍ
+    pt: Trongsa
+    ro: Trongsa
+    ru: Тронгса
+    si: ට්‍රොන්ග්සා දිස්ත්‍රික්කය
+    sv: Trongsa
+    ta: ட்ரோங்ஸ்சா மாவட்டம்
+    te: ట్రాంగ్సా జిల్లా
+    th: มณฑลตงซา
+    tr: Trongsa District
+    uk: Тронгса
+    ur: ترونگسا ضلع
+    vi: Quận Trongsa
+    lv: Tongsā distrikts
+    ceb: Trongsa Dzongkhag
+    lt: Trongsos apskritis
+    zh: 通萨宗
+    ccp: "\U00011111\U00011133\U00011122\U00011127\U00011101\U00011125"
+    'no': Trongsa
+    ca: Districte de Trongsa
+    he: טונגסה
+  comments:
+  type: district
+'33':
+  name: Bumthang
+  code: '33'
+  unofficial_names: Bumthang
+  geo:
+    latitude: 27.641839
+    longitude: 90.6773046
+    min_latitude: 27.320946
+    min_longitude: 90.48443499999999
+    max_latitude: 28.090851
+    max_longitude: 91.0160089
+  translations:
+    en: Bumthang
+    ar: مقاطعة بامثانغ
+    be: Бумтанг
+    bg: Бумтанг
+    bn: বোমতাং জেলা
+    cs: Bumthang
+    da: Bumthang District
+    de: Bumthang
+    el: Μπουμθάνγκ
+    es: Distrito de Bumthang
+    et: Bumthangi ringkond
+    fa: استان بومتهنگ
+    fi: Bumthang
+    fr: Bumthang
+    gu: બંથાંગ જિલ્લો
+    hi: बुमथांग जिला
+    hu: Bumthang körzet
+    id: Distrik Bumthang
+    it: distretto di Bumthang
+    ja: ブムタン県
+    kn: ಬುಮ್ತಂಗ್ ಜಿಲ್ಲೆ
+    ko: 붐탕 현
+    lt: Bumtango rajonas
+    mr: बमथांग जिल्हा
+    ms: Bumthang District
+    nb: Bumthang
+    nl: Bumthang
+    pl: Dystrykt Bumthang
+    ps: بومتھانگ ولسوالۍ
+    pt: Bumthang
+    ro: Bhumthang
+    ru: Бумтанг
+    si: බුම්තාන්ග් දිස්ත්‍රික්කය
+    sk: Bumthang
+    sr: Бумтанг
+    sv: Bumthang
+    ta: பும்தாங் மாவட்டம்
+    te: బుమ్తాంగ్ జిల్లా
+    th: มณฑลบุมทัง
+    tr: Bumthang District
+    uk: Бумтанг
+    ur: بومتھانگ ضلع
+    vi: Bumthang
+    lv: Bumtangas distrikts
+    ceb: Bumthang Dzongkhag
+    sr_Latn: Bumtang
+    zh: 布姆唐宗
+    ccp: "\U0001111D\U0001112A\U0001111F\U00011134\U00011117\U00011101"
+    ca: Districte de Bumthang
+    'no': Bumthang
+    sl: Okraj Bumtang
+  comments:
+  type: district
+'34':
+  name: Zhemgang
+  code: '34'
+  unofficial_names:
+  - Shemgang
+  - Zhemgang
+  geo:
+    latitude: 27.1439047
+    longitude: 90.6903529
+    min_latitude: 27.1353061
+    min_longitude: 90.6856155
+    max_latitude: 27.1492833
+    max_longitude: 90.69565779999999
+  translations:
+    en: Zhemgang
+    ar: مقاطعة زيمغانغ
+    bg: Зхемганг
+    bn: জেমগাং জেলা
+    da: Zhemgang District
+    de: Zhemgang
+    el: Ζεμγκάνγκ
+    es: Distrito de Zhemgang
+    et: Zhemgangi ringkond
+    fi: Zhemgang
+    fr: Zhemgang
+    gu: ઝેમગાંગ જિલ્લો
+    hi: ज़ेमगैंग जिला
+    hu: Zhemgang körzet
+    id: Distrik Zhemgang
+    it: distretto di Zhemgang
+    ja: シェムガン県
+    kn: ಝೆಮೆಗಾಂಗ್ ಜಿಲ್ಲೆ
+    ko: 젬강 현
+    mr: झहेमगांग जिल्हा
+    ms: Zhemgang District
+    nb: Zhemgang
+    nl: Zhemgang
+    pl: Dystrykt Zhemgang
+    pt: Zhemgang
+    ro: Districtul Zhemgang
+    ru: Жемганг
+    si: සෙම්ගාන්ග් දිස්ත්‍රික්කය
+    sv: Zhemgang
+    ta: ஸிங்கங் மாவட்டம்
+    te: జెంగాంగ్ జిల్లా
+    th: มณฑลเชมกัง
+    tr: Zhemgang
+    uk: Жемганг (дзонгхаг)
+    ur: ژیمگانگ ضلع
+    vi: Zhemgang
+    lv: Žemgas distrikts
+    ceb: Zhemgang Dzongkhag
+    lt: Džemgchango apskritis
+    zh: 谢姆冈宗
+    ccp: "\U0001110F\U0001112C\U0001111F\U00011134\U00011109\U00011127\U00011101"
+    ca: Districte de Zhemgang
+    'no': Zhemgang
+    fa: ناحیه ژهمگانگ
+    ml: ഴെംഗാങ്
+  comments:
+  type: district
+'41':
+  name: Trashigang
+  code: '41'
+  unofficial_names:
+  - Tashigang
+  - Trashigang
+  geo:
+    latitude: 27.2566795
+    longitude: 91.7538817
+    min_latitude: 27.0165199
+    min_longitude: 91.378786
+    max_latitude: 27.482902
+    max_longitude: 92.12519789999999
+  translations:
+    en: Trashigang
+    ar: مقاطعة تراشيغانغ
+    bg: Трасхиганг
+    bn: ট্রাশিগাং জেলা
+    da: Trashigang District
+    de: Trashigang
+    el: Τρασιγκάνγκ
+    es: Distrito de Trashigang
+    et: Trashigangi ringkond
+    fi: Trashigang
+    fr: Trashigang
+    gu: ટ્રેશીગાંગ જિલ્લો
+    hi: ट्रैशीगैंग जिला
+    hu: Trashigang körzet
+    id: Distrik Trashigang
+    it: distretto di Trashigang
+    ja: タシガン県
+    kn: ಟ್ರಾಶಿಗಂಗ್ ಜಿಲ್ಲೆ
+    ko: 트라시강 현
+    mr: कचरागड जिल्हा
+    ms: Trashigang District
+    nb: Trashigang
+    nl: Trashigang
+    pl: Dystrykt Trashigang
+    pt: Trashigang
+    ro: Districtul Trashigang
+    ru: Трашиганг
+    si: ට්‍රැෂිගැන්ග් දිස්ත්‍රික්කය
+    sv: Trashigang
+    ta: டர்ஷிகங் மாவட்டம்
+    te: ట్రాషిగాంగ్ జిల్లా
+    th: เขตทราชิเกง
+    tr: Trashigang District
+    uk: Трашіганг
+    ur: تراشیگانگ ضلع
+    vi: Quận Trashigang
+    lv: Trašigas distrikts
+    ceb: Trashigang Dzongkhag
+    lt: Trašigango apskritis
+    zh: 塔希冈宗
+    ccp: "\U00011111\U00011133\U00011122\U00011125\U00011128\U00011109\U00011127\U00011101"
+    ca: Districte de Trashigang
+    'no': Trashigang
+    fa: ناحیه تراشیگانگ
+    he: טשיגנג
+    my: တြာရှီဂန်ခရိုင်
+  comments:
+  type: district
+'42':
+  name: Monggar
+  code: '42'
+  unofficial_names:
+  - Monggar
+  - Mongor
+  geo:
+    latitude: 27.275
+    longitude: 91.24
+    min_latitude: 27.2708807
+    min_longitude: 91.23415949999999
+    max_latitude: 27.280493
+    max_longitude: 91.2454034
+  translations:
+    en: Mongar
+    ar: مقاطعة مونغار
+    bg: Монгар
+    bn: মনগার জেলা
+    da: Mongar District
+    de: Mongar
+    el: Μονγκάρ
+    es: Distrito de Mongar
+    et: Mongari ringkond
+    fi: Mongar
+    fr: Mongar
+    gu: મોંગર જિલ્લો
+    hi: मोंगार जिला
+    hu: Mongar körzet
+    id: Distrik Mongar
+    it: distretto di Mongar
+    ja: モンガル県
+    kn: ಮೊಂಗಾರ್ ಜಿಲ್ಲೆ
+    ko: 몽가르 현
+    mr: मोंगार जिल्हा
+    ms: Mongar District
+    nb: Mongar
+    nl: Mongar
+    pl: Dystrykt Mongar
+    ps: مونگار ولسوالۍ
+    pt: Mongar
+    ro: Mongar
+    ru: Монгар
+    si: මොන්ගාර් දිස්ත්‍රික්කය
+    sv: Mongar
+    ta: மோன்கர் மாவட்டம்
+    te: మోంగార్ జిల్లా
+    th: ซาลฟิท โกเวอโนเรท
+    tr: Mongar District
+    uk: Монгар
+    ur: مونگار ضلع
+    vi: Quận Mongar
+    lv: Mongā distrikts
+    ceb: Mongar
+    lt: Mongaro apskritis
+    zh: 蒙加尔宗
+    ccp: "\U0001111F\U00011127\U00011101\U00011109\U00011122\U00011134"
+    ca: Districte de Mongar
+    'no': Mongar
+  comments:
+  type: district
+'43':
+  name: Pemagatshel
+  code: '43'
+  unofficial_names:
+  - Pema Gatshel
+  - Pemagatsel
+  geo:
+    latitude: 27.002382
+    longitude: 91.3469247
+    min_latitude: 26.8459449
+    min_longitude: 91.17381700000001
+    max_latitude: 27.1670959
+    max_longitude: 91.517646
+  translations:
+    en: Pemagatshel
+    ar: مقاطعة بيماغاتشيل
+    bg: Помагачел
+    bn: পেমাগাটসেল জেলা
+    da: Pemagatshel District
+    de: Pemagatshel
+    el: Πεμαγκάτσελ
+    es: Distrito de Pemagatshel
+    et: Pemagatsheli ringkond
+    fi: Pemagatshel
+    fr: Pemagatshel
+    gu: પેમાગાશેલ જિલ્લો
+    hi: पेमेगात्सेल जिला
+    hu: Pemagatshel körzet
+    id: Distrik Pemagatshel
+    it: distretto di Pemagatshel
+    ja: ペマガツェル県
+    kn: ಪೆಮಗತ್ಶೆಲ್ ಜಿಲ್ಲೆ
+    ko: 페마가첼 현
+    mr: पेमगट्हेळ जिल्हा
+    ms: Pemagatshel District
+    nb: Pemagatshel
+    nl: Pemagatshel
+    pl: Dystrykt Pemagatshel
+    ps: پيماگاتشل ولسوالۍ
+    pt: Pemagatshel
+    ro: Pemagatshel
+    ru: Пемагацел
+    si: පෙමගට්ෂෙල් දිස්ත්‍රික්කය
+    sv: Pemagatshel
+    ta: பேமகட்ஷெல் மாவட்டம்
+    te: పెమాగాట్షెల్ జిల్లా
+    th: เมืองพีมาเกจเชล
+    tr: Pemagatshe District
+    uk: Пемагацел
+    ur: پیماگاتشل ضلع
+    vi: Quận Pemagatshel
+    lv: Pemagačeles distrikts
+    ceb: Pemagatshel Dzongkhag
+    lt: Pemagačelo apskritis
+    zh: 佩马加策尔宗
+    ccp: "\U0001111B\U0001112C\U0001111F\U00011109\U00011116\U00011134\U00011125\U0001112C\U00011123\U00011134"
+    ca: Districte de Pemagatshel
+    'no': Pemagatshel
+    ml: പെമാഗാറ്റ്ഷെൽ
+  comments:
+  type: district
+'44':
+  name: Lhuentse
+  code: '44'
+  unofficial_names:
+  - Lhuentse
+  - Lhun Tshi
+  - Lhuntshi
+  - Lhuntsi
+  geo:
+    latitude: 27.6649208
+    longitude: 91.1761004
+    min_latitude: 27.6492443
+    min_longitude: 91.1688424
+    max_latitude: 27.677438
+    max_longitude: 91.1892156
+  translations:
+    en: Lhuntse
+    ar: مقاطعة لانتس
+    bg: Лунтсе
+    bn: লোন্সে জেলা
+    da: Lhuntse District
+    de: Lhuntse
+    el: Λχάντσε
+    es: Distrito de Lhuntse
+    et: Lhuentse ringkond
+    fi: Lhuntse
+    fr: Lhuntse
+    gu: લુન્તસે જિલ્લો
+    hi: लुन्त्से जिला
+    hu: Lhuntse körzet
+    id: Distrik Lhuntse
+    it: distretto di Lhuntse
+    ja: ルンツェ県
+    kn: ಲುಂಡ್ಸೆ ಜಿಲ್ಲೆ
+    ko: 룬체 현
+    mr: लुनुचे जिल्हा
+    ms: Lhuntse District
+    nb: Lhuntse
+    nl: Lhuntse
+    pl: Dystrykt Lhuntse
+    ps: لهنتسی ولسوالۍ
+    pt: Lhuntse
+    ro: Lhuntse
+    ru: Лхунце
+    si: ලුන්ට්සේ දිස්ත්‍රික්කය
+    sv: Lhuntse
+    ta: லஹன்ட்ஸ் மாவட்டம்
+    te: లూంట్సె జిల్లా
+    th: เขตลฮุนซี
+    tr: Lhuntse District
+    uk: Лхунце
+    ur: لہنتسے ضلع
+    vi: Tỉnh Lhuntse
+    lv: Lhunci distrikts
+    ceb: Lhuentse Dzongkhag
+    lt: Luncės apskritis
+    zh: 伦奇宗
+    ccp: "\U00011123\U0001112A\U00011101\U00011125\U0001112C"
+    ca: Districte de Lhuntse
+    'no': Lhuntse
+  comments:
+  type: district
+'45':
+  name: Samdrup Jongkha
+  code: '45'
+  unofficial_names:
+  - Samdruk Jongkhar
+  - Samdrup
+  - Samdrup Jongkha
+  geo:
+    latitude: 26.928696
+    longitude: 91.63721500000001
+    min_latitude: 26.777367
+    min_longitude: 90.995525
+    max_latitude: 27.2464701
+    max_longitude: 92.1221539
+  translations:
+    en: Samdrup Jongkhar
+    ar: مقاطعة سامدروب جونغخار
+    bg: Самдруп Джонгхар
+    bn: সামড্রোপ জাংকার জেলা
+    da: Samdrup Jongkhar District
+    de: Samdrup Jongkhar
+    el: Σαμντρούπ Τζόνγκχαρ
+    es: Distrito de Samdrup Jongkhar
+    et: Samdrup Jongkhari ringkond
+    fi: Samdrup Jongkhar
+    fr: Samdrup Jongkhar
+    gu: સાંડરૂપ જોંગખાર જિલ્લો
+    hi: समद्रप जोंगखार जिला
+    hu: Samdrup Jongkhar körzet
+    id: Distrik Samdrup Jongkhar
+    it: distretto di Samdrup Jongkhar
+    ja: サムドゥプ・ジョンカル県
+    kn: ಸ್ಯಾಮ್ಡ್ರಪ್ ಜೊಂಗ್ಖರ್ ಜಿಲ್ಲೆ
+    ko: 삼드룹종카르 현
+    mr: सॅमद्रुप जोंगखार जिल्हा
+    ms: Samdrup Jongkhar District
+    nb: Samdrup Jongkhar
+    nl: Samdrup Jongkhar
+    pl: Dystrykt Samdrup Jongkhar
+    ps: سامدروپ جونگخار ولسوالۍ
+    pt: Samdrup Jongkhar
+    ro: Samdrup Jongkhar
+    ru: Самдруп-Джонгхар
+    si: සම්ඩ්රප් ජෝන්ග්ඛාර් දිස්ත්‍රික්කය
+    sv: Samdrup Jongkhar
+    ta: சம்டருப் ஜொங்க்ஹ்ர் மாவட்டம்
+    te: సామడ్రప్ జాంగ్కార్ జిల్లా
+    th: เขตแซมดรัป จองตาฮ์
+    tr: Samdrup Jonkh District
+    uk: Самдруп-Джонгхар
+    ur: سامدروپ جونگخار ضلع
+    vi: Quận Samdrup Jongkhar
+    lv: Samdzupdzonkhā distrikts
+    ceb: Samdrup Jongkhar Dzongkhag
+    lt: Samdrupo Džongcharo apskritis
+    zh: 萨姆德鲁琼卡尔宗
+    ccp: "\U00011125\U00011133\U00011120\U0001111F\U00011134\U00011113\U00011133\U00011122\U0001112A\U0001111B\U00011134
+      \U0001110E\U00011127\U00011101\U00011108\U00011122\U00011134"
+    ca: Districte de Samdrup Jongkhar
+    'no': Samdrup Jongkhar
+    my: ဆမ်ဒြပ်ဂျုံခါရ် ခရိုင်
+  comments:
+  type: district
+GA:
+  name: Gasa
+  code: GA
+  unofficial_names:
+  - Gaza
+  geo:
+    latitude: 28.0185886
+    longitude: 89.9253233
+    min_latitude: 27.687483
+    min_longitude: 89.43694289999999
+    max_latitude: 28.323778
+    max_longitude: 90.617648
+  translations:
+    en: Gasa
+    ar: مقاطعة غاسا
+    bg: Гаса
+    bn: গাসা জেলা
+    da: Gasa
+    de: Gasa
+    el: Γκάσα
+    es: Distrito de Gasa
+    et: Gasa ringkond
+    fa: استان گاسا
+    fi: Gasa
+    fr: Gasa
+    gu: ગાસા જિલ્લો
+    hi: गासा जिला
+    hu: Gasa körzet
+    id: Distrik Gasa
+    it: distretto di Gasa
+    ja: ガサ県
+    kn: ಗಾಸಾ ಜಿಲ್ಲೆ
+    ko: 가사 현
+    lt: Gasos rajonas
+    mr: गसा जिल्हा
+    ms: Gasa District
+    nb: Gasa
+    nl: Gasa
+    pl: Dystrykt Gasa
+    ps: گاسا ولسوالۍ
+    pt: Gasa
+    ro: Gasa
+    ru: Гаса
+    si: ගසා දිස්ත්‍රික්කය
+    sv: Gasa
+    ta: காசா மாவட்டம்
+    te: గాసా జిల్లా
+    th: เขตกาซา
+    tr: Gasa District
+    uk: Гаса
+    ur: گاسا ضلع
+    vi: Quận Gasa
+    lv: Gasas distrikts
+    ceb: Gasa
+    zh: 加萨宗
+    ccp: "\U00011109\U00011125"
+    ca: Districte de Gasa
+    'no': Gasa
+  comments:
+  type: district
+TY:
+  name: Trashi Yangtse
+  code: TY
+  unofficial_names:
+  - Tashiyangtse
+  geo:
+    latitude: 27.583333
+    longitude: 91.466667
+    min_latitude: 27.383962
+    min_longitude: 91.31767270000002
+    max_latitude: 28.050773
+    max_longitude: 91.73789980000001
+  translations:
+    en: Trashiyangtse
+    ar: مقاطعة تراشيانغتس
+    bg: Трасхиянсте
+    bn: ট্রাশিইয়াংসে জেলা
+    da: Trashiyangtse District
+    de: Trashiyangtse
+    el: Τρασιγιάνγκτσε
+    es: Distrito de Trashiyangste
+    et: Trashi Yangtse ringkond
+    fa: استان تراشیانگتس
+    fi: Trashiyangste
+    fr: Trashiyangtse
+    gu: ત્રાશિયાંગત્સે જિલ્લો
+    hi: ट्रैशियांगत्से जिला
+    hu: Trashiyangtse körzet
+    id: Distrik Trashiyangtse
+    it: distretto di Trashiyangtse
+    ja: タシ・ヤンツェ県
+    kn: ಟ್ರಾಶಿಯಾಂಗ್ಸೆ ಜಿಲ್ಲೆ
+    ko: 트라시양체 현
+    mr: तुशियांगत्शी जिल्हा
+    ms: Trashiyangtse District
+    nb: Trashiyangtse
+    nl: Trashiyangste
+    pl: Dystrykt Trashiyangste
+    ps: تراشييانگتسی ولسوالۍ
+    pt: Trashiyangste
+    ro: Trashiyangtse
+    ru: Трашиянгце
+    si: ට්‍රශියන්ග්ස්ටේ දිස්ත්‍රික්කය
+    sv: Trashiyangste
+    ta: டிரஷியாங்ட்ஸே மாவட்டம்
+    te: ట్రాషియాంగ్‌త్సే జిల్లా
+    th: ทราชิยังเจอ
+    tr: Trashiyangste
+    uk: Трашіянгце
+    ur: تراشییانگتسے ضلع
+    vi: Trashiyangste
+    lv: Trašijanci distrikts
+    ceb: Trashi Yangste
+    lt: Trašijangstės apskritis
+    zh: 塔希央奇宗
+    ccp: "\U00011111\U00011133\U00011122\U00011125\U00011128\U00011120\U00011101\U00011125\U0001112C"
+    sl: Okraj Trašijangce
+    ca: Districte de Trashiyamgtse
+    'no': Trashiyangtse
+  comments:
+  type: district

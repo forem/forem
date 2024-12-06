@@ -1,0 +1,14 @@
+language: ruby
+bundler_args: --without=tool development
+rvm:
+  - 2.2.5
+  - 2.3.1
+  - jruby-9.1.1.0
+gemfile:
+  - gemfiles/Gemfile.rspec-2.99
+  - gemfiles/Gemfile.rspec-3.4
+matrix:
+  allow_failures:
+    - rvm: jruby-9.1.1.0
+sudo: false
+cache: bundler

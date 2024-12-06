@@ -1,0 +1,53 @@
+---
+CF:
+  alpha2: CF
+  alpha3: CAF
+  continent: Africa
+  country_code: '236'
+  currency_code: XAF
+  distance_unit: KM
+  gec: CT
+  geo:
+    latitude: 6.611110999999999
+    longitude: 20.939444
+    max_latitude: 11.0179569
+    max_longitude: 27.4583049
+    min_latitude: 2.2230529
+    min_longitude: 14.4150981
+    bounds:
+      northeast:
+        lat: 11.0179569
+        lng: 27.4583049
+      southwest:
+        lat: 2.2230529
+        lng: 14.4150981
+  international_prefix: '00'
+  ioc: CAF
+  iso_long_name: The Central African Republic
+  iso_short_name: Central African Republic
+  languages_official:
+  - fr
+  - sg
+  languages_spoken:
+  - fr
+  - sg
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Central African
+  number: '140'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Middle Africa
+  un_locode: CF
+  unofficial_names:
+  - Central African Republic
+  - Zentralafrikanische Republik
+  - République Centrafricaine
+  - República Centroafricana
+  - 中央アフリカ共和国
+  - Centraal-Afrikaanse Republiek
+  world_region: EMEA

@@ -1,0 +1,53 @@
+---
+CM:
+  alpha2: CM
+  alpha3: CMR
+  continent: Africa
+  country_code: '237'
+  currency_code: XAF
+  distance_unit: KM
+  gec: CM
+  geo:
+    latitude: 7.369721999999999
+    longitude: 12.354722
+    max_latitude: 13.083335
+    max_longitude: 16.1944081
+    min_latitude: 1.6559
+    min_longitude: 8.3936001
+    bounds:
+      northeast:
+        lat: 13.083335
+        lng: 16.1944081
+      southwest:
+        lat: 1.6559
+        lng: 8.3936001
+  international_prefix: '00'
+  ioc: CMR
+  iso_long_name: The Republic of Cameroon
+  iso_short_name: Cameroon
+  languages_official:
+  - en
+  - fr
+  languages_spoken:
+  - en
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Cameroonian
+  number: '120'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Middle Africa
+  un_locode: CM
+  unofficial_names:
+  - Cameroon
+  - Kamerun
+  - Cameroun
+  - Camerún
+  - カメルーン
+  - Kameroen
+  world_region: EMEA

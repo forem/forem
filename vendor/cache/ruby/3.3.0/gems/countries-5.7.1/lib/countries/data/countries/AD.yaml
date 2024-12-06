@@ -1,0 +1,52 @@
+---
+AD:
+  alpha2: AD
+  alpha3: AND
+  continent: Europe
+  country_code: '376'
+  currency_code: EUR
+  distance_unit: KM
+  gec: AN
+  geo:
+    latitude: 42.506285
+    longitude: 1.521801
+    max_latitude: 42.655791
+    max_longitude: 1.786639
+    min_latitude: 42.4287488
+    min_longitude: 1.4087052
+    bounds:
+      northeast:
+        lat: 42.655791
+        lng: 1.786639
+      southwest:
+        lat: 42.4287488
+        lng: 1.4087052
+  international_prefix: '00'
+  ioc: AND
+  iso_long_name: The Principality of Andorra
+  iso_short_name: Andorra
+  languages_official:
+  - ca
+  languages_spoken:
+  - ca
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  - 7
+  - 8
+  - 9
+  national_prefix: None
+  nationality: Andorran
+  number: '020'
+  postal_code: true
+  postal_code_format: AD[1-7]0\d
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: AD
+  unofficial_names:
+  - Andorre
+  - Andorra
+  - アンドラ
+  world_region: EMEA

@@ -1,0 +1,166 @@
+<div id="queries">
+  <div id="header">
+    <div class="pull-right" style="line-height: 34px;">
+      <% if blazer_user %>
+        <%= link_to "All", root_path, class: !params[:filter] ? "active" : nil, style: "margin-right: 40px;" %>
+
+        <% if Blazer.audit %>
+          <%= link_to "Viewed", root_path(filter: "viewed"), class: params[:filter] == "viewed" ? "active" : nil, style: "margin-right: 40px;" %>
+        <% end %>
+
+        <%= link_to "Mine", root_path(filter: "mine"), class: params[:filter] == "mine" ? "active" : nil, style: "margin-right: 40px;" %>
+      <% end %>
+
+      <div class="btn-group">
+        <%= link_to "New Query", new_query_path, class: "btn btn-info" %>
+        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="caret"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><%= link_to "Checks", checks_path %></li>
+          <% if Blazer.uploads? %>
+            <li><%= link_to "Uploads", uploads_path %></li>
+          <% end %>
+          <li role="separator" class="divider"></li>
+          <li><%= link_to "New Dashboard", new_dashboard_path %></li>
+          <li><%= link_to "New Check", new_check_path %></li>
+        </ul>
+      </div>
+    </div>
+    <input type="text" v-model="searchTerm" placeholder="Start typing a query, dashboard, or person" style="width: 300px; display: inline-block;" v-focus class="search form-control" />
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <% if Blazer.user_class %>
+          <th style="width: 20%; text-align: right;">Mastermind</th>
+        <% end%>
+      </tr>
+    </thead>
+    <tbody class="list" v-cloak>
+      <tr v-for="query in visibleItems">
+        <td>
+          <a :href="itemPath(query)" :class="{ dashboard: query.dashboard }">{{ query.name }}</a>
+          <span class="vars">{{ query.vars }}</span>
+        </td>
+        <% if Blazer.user_class %>
+          <td class="creator">{{ query.creator }}</td>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+
+  <p v-if="more" class="text-muted">Loading...</p>
+</div>
+
+<script>
+  <%= blazer_js_var "dashboards", @dashboards %>
+  <%= blazer_js_var "queries", @queries %>
+  <%= blazer_js_var "more", @more %>
+
+  var prepareSearch = function (list) {
+    var i, q, searchStr
+    for (i = 0; i < list.length; i++) {
+      q = list[i]
+      searchStr = q.name + q.creator
+      if (q.creator === "You") {
+        searchStr += "mine me"
+      }
+      q.searchStr = prepareQuery(searchStr)
+    }
+  }
+
+  var prepareQuery = function (str) {
+    return str.toLowerCase()
+  }
+
+  var app = new Vue({
+    el: "#queries",
+    data: {
+      searchTerm: "",
+      more: more,
+      updateCounter: 0
+    },
+    created: function() {
+      this.listItems = dashboards.concat(queries)
+
+      prepareSearch(this.listItems)
+
+      this.queryIds = {}
+      for (i = 0; i < queries.length; i++) {
+        this.queryIds[queries[i].id] = true
+      }
+
+      if (this.more) {
+        var _this = this
+
+        $.getJSON(Routes.queries_path(), function (data) {
+          var i, j, newValues, val, size = 500;
+
+          var newValues = []
+          for (j = 0; j < data.length; j++) {
+            val = data[j]
+            if (val && !_this.queryIds[val.id]) {
+              newValues.push(val)
+            }
+          }
+
+          prepareSearch(newValues)
+
+          _this.listItems = _this.listItems.concat(newValues)
+          _this.more = false
+          // hack to get to update
+          _this.updateCounter++
+        })
+      }
+    },
+    computed: {
+      visibleItems: function () {
+        // hack to get to update
+        this.updateCounter
+
+        var pageSize = 200
+        var q, i
+
+        if (this.searchTerm.length > 0) {
+          var term = prepareQuery(this.searchTerm)
+          var items = []
+          var fuzzyItems = []
+          for (i = 0; i < this.listItems.length; i++) {
+            q = this.listItems[i]
+            if (q.searchStr.indexOf(term) !== -1) {
+              items.push(q)
+              if (items.length == pageSize) {
+                break
+              }
+            } else if (fuzzysearch(term, q.searchStr)) {
+              fuzzyItems.push(q)
+            }
+          }
+          return items.concat(fuzzyItems).slice(0, pageSize)
+        } else {
+          return this.listItems.slice(0, pageSize)
+        }
+      }
+    },
+    methods: {
+      itemPath: function (item) {
+        if (item.dashboard) {
+          return Routes.dashboard_path(item.to_param)
+        } else {
+          return Routes.query_path(item.to_param)
+        }
+      }
+    },
+    directives: {
+      focus: {
+        inserted: function (el) {
+          el.focus()
+        }
+      }
+    }
+  })
+</script>

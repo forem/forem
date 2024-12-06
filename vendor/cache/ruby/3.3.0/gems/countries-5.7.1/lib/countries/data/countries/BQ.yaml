@@ -1,0 +1,49 @@
+---
+BQ:
+  alpha2: BQ
+  alpha3: BES
+  continent: North America
+  country_code: '599'
+  currency_code: USD
+  distance_unit: KM
+  geo:
+    latitude: 12.1783611
+    longitude: -68.2385339
+    max_latitude: 17.6606999
+    max_longitude: -62.9228
+    min_latitude: 11.9641
+    min_longitude: -68.5149
+    bounds:
+      northeast:
+        lat: 17.6606999
+        lng: -62.9228
+      southwest:
+        lat: 11.9641
+        lng: -68.5149
+  international_prefix: '00'
+  iso_long_name: Bonaire, Sint Eustatius and Saba
+  iso_short_name: Bonaire, Sint Eustatius and Saba
+  languages_official:
+  - nl
+  - en
+  languages_spoken:
+  - nl
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: '0'
+  nationality: Dutch
+  number: '535'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: BQ
+  unofficial_names:
+  - Bonaire, Sint Eustatius and Saba
+  - Caribbean Netherlands
+  - Caribisch Nederland
+  - ボネール、シント・ユースタティウスおよびサバ
+  world_region: APAC

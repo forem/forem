@@ -1,0 +1,54 @@
+---
+MN:
+  alpha2: MN
+  alpha3: MNG
+  continent: Asia
+  country_code: '976'
+  currency_code: MNT
+  distance_unit: KM
+  gec: MG
+  geo:
+    latitude: 46.862496
+    longitude: 103.846656
+    max_latitude: 52.148355
+    max_longitude: 119.9315098
+    min_latitude: 41.581833
+    min_longitude: 87.7344789
+    bounds:
+      northeast:
+        lat: 52.148355
+        lng: 119.9315098
+      southwest:
+        lat: 41.581833
+        lng: 87.7344789
+  international_prefix: '001'
+  ioc: MGL
+  iso_long_name: Mongolia
+  iso_short_name: Mongolia
+  languages_official:
+  - mn
+  languages_spoken:
+  - mn
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  - 9
+  - 10
+  national_prefix: '0'
+  nationality: Mongolian
+  number: '496'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: Eastern Asia
+  un_locode: MN
+  unofficial_names:
+  - Mongolia
+  - Mongolei
+  - Mongolie
+  - モンゴル
+  - Mongolië
+  world_region: APAC

@@ -1,0 +1,6 @@
+
+sort_translation_keys: true
+
+translations:
+  - file: "tmp/i18n-js/%{locale}.js"
+    only: '*'

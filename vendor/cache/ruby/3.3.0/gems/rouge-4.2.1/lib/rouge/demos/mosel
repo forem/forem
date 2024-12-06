@@ -1,0 +1,10 @@
+(!******************************************************
+   Mosel Example Problems
+*******************************************************!)
+
+! Objective function: total daily cost
+ Cost:= sum(p in TYPES, t in TIME) (CSTART(p)*start(p,t) +
+          LEN(t)*(CMIN(p)*work(p,t) + CADD(p)*padd(p,t)))
+
+! Limit on power production above minimum level
+ forall(p in TYPES, t in TIME) padd(p,t) <= (PMAX(p)-PMIN(p))*work(p,t)

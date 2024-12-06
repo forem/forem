@@ -1,0 +1,62 @@
+---
+KR:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}} {{region_short}}
+    {{postalcode}}
+    {{country}}
+  alpha2: KR
+  alpha3: KOR
+  continent: Asia
+  country_code: '82'
+  currency_code: KRW
+  distance_unit: KM
+  g20_member: true
+  gec: KS
+  geo:
+    latitude: 35.907757
+    longitude: 127.766922
+    max_latitude: 38.63400000000001
+    max_longitude: 131.1603
+    min_latitude: 33.0041
+    min_longitude: 124.5863
+    bounds:
+      northeast:
+        lat: 38.63400000000001
+        lng: 131.1603
+      southwest:
+        lat: 33.0041
+        lng: 124.5863
+  international_prefix: '001'
+  ioc: KOR
+  iso_long_name: The Republic of Korea
+  iso_short_name: Korea (Republic of)
+  languages_official:
+  - ko
+  languages_spoken:
+  - ko
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: South Korean
+  number: '410'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: Eastern Asia
+  un_locode: KR
+  unofficial_names:
+  - South Korea
+  - Korea (South)
+  - Südkorea
+  - Corée du Sud
+  - Corea del Sur
+  - 大韓民国
+  - Zuid-Korea
+  - Korea (Republic of)
+  world_region: APAC

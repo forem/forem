@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require "guard"
+
+begin
+  require "guard/aruba_adapter"
+rescue LoadError => e
+  abort "#{e.inspect} - perhaps you need to run using `bundle exec`?"
+end
+
+Guard::ArubaAdapter.new(ARGV.dup).execute!

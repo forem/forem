@@ -1,0 +1,52 @@
+databases:
+  primary:
+    # Database URL (defaults to app database)
+    # url: <%%= ENV["DATABASE_URL"] %>
+
+    # System stats
+    # aws_db_instance_identifier: my-instance
+    # gcp_database_id: my-project:my-instance
+    # azure_resource_id: my-resource-id
+
+  # Add more databases
+  # other:
+  #   url: <%%= ENV["OTHER_DATABASE_URL"] %>
+
+# Minimum time for long running queries
+# long_running_query_sec: 60
+
+# Minimum average time for slow queries
+# slow_query_ms: 20
+
+# Minimum calls for slow queries
+# slow_query_calls: 100
+
+# Minimum connections for high connections warning
+# total_connections_threshold: 500
+
+# Explain functionality
+# explain: true / false / analyze
+
+# Statement timeout for explain
+# explain_timeout_sec: 10
+
+# Visualize URL for explain
+# visualize_url: https://...
+
+# Time zone (defaults to app time zone)
+# time_zone: "Pacific Time (US & Canada)"
+
+# Basic authentication
+# username: admin
+# password: <%%= ENV["PGHERO_PASSWORD"] %>
+
+# Stats database URL (defaults to app database)
+# stats_database_url: <%%= ENV["PGHERO_STATS_DATABASE_URL"] %>
+
+# AWS configuration (defaults to app AWS config)
+# aws_access_key_id: <%%= ENV["AWS_ACCESS_KEY_ID"] %>
+# aws_secret_access_key: <%%= ENV["AWS_SECRET_ACCESS_KEY"] %>
+# aws_region: us-east-1
+
+# Filter data from queries (experimental)
+# filter_data: true

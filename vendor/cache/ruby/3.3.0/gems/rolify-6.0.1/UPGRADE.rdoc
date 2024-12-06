@@ -1,0 +1,44 @@
+= Upgrade instructions for Rolify library
+
+== From a previous rolify installation (1.x or 2.x)
+
+The easiest way is to re-run the generator using <tt>rails g Rolify:Role</tt> command, and overwrite the initializer file. Both the migration file and the <tt>role.rb</tt> haven't changed.
+In the <tt>config/initializers/rolify.rb</tt> file, here are the deprecated settings:
+* <tt>role_cname</tt>
+* <tt>user_cname</tt>
+By default, these settings were commented out, so you can safely remove them. 
+If you changed them, you can remove them in the initializer file too. <tt>user_cname</tt> is no longer used in 3.x, you don't need it anymore.
+Add your custom <tt>role_cname</tt> setting as argument of the rolify method you use in your User class. 
+For instance, if you use <tt>Privilege</tt> as <tt>Role</tt> class, you should add this to your whatever your <tt>User</tt> class is, let's say <tt>Client</tt> for the sake of example: 
+   class Client < ActiveRecord::Base
+     rolify :role_cname => "Privilege"
+   end
+If you use the default <tt>Role</tt> class name, you don't have to specify the <tt>:role_cname</tt> argument.
+
+If you use <i>dynamic methods</i> (<tt>user.is_admin?</tt> like methods), you should turn it on using <tt>use_dynamic_shortcuts</tt> method starting from rolify 3.0:
+   Rolify.configure do |c|
+      c.use_dynamic_shortcuts
+   end
+The old fashion way still works though, but won't work anymore if the setter method name is changed in a possible future. You've been warned :-)
+
+== From a rolify installation 3.x
+
+=== Dependencies: 
+
+Starting from 3.3 release, rolify supports Rails 3.2 and newer.
+
+Mongoid callbacks are supported if Mongoid 3.1 and newer is installed.
+
+=== Rails Generators
+
+Role model template when using Mongoid has been changed, you should re-run the generator.
+
+Rails generator has been renamed to: <tt>rails g rolify</tt> and arguments have been changed: 
+* Role class name is now mandatory, User class name remains optional and its default is still <tt>User</tt>
+* ORM optional argument is now <tt>-o</tt> or <tt>--orm=</tt>
+For instance, here is a new rolify generator command example: <tt>rails g rolify Role</tt>
+You can use <tt>rails g rolify --help</tt> to see all available options.
+
+=== Testing
+
+Starting from rolify 3.3, to run the specs you should run: <tt>rake spec</tt> or simply <tt>rake</tt>.

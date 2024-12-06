@@ -1,0 +1,35 @@
+<div class="content">
+  <% if @query_stats_enabled && !@historical_query_stats_enabled %>
+    <%= button_to "Reset", reset_query_stats_path, class: "btn btn-danger", style: "float: right;" %>
+  <% end %>
+
+  <% if !@historical_query_stats_enabled %>
+    <h1 style="float: left;">Queries</h1>
+  <% end %>
+
+  <% if @historical_query_stats_enabled %>
+    <%= render partial: "query_stats_slider" %>
+  <% elsif @database.query_stats_table_exists? && (columns = @database.missing_query_stats_columns).any? %>
+    <div style="clear: both;">
+      <p>Add missing columns to re-enable historical query stats.</p>
+      <pre><code><% @database.missing_query_stats_columns.each do |column| %>ALTER TABLE pghero_query_stats ADD COLUMN "<%= column %>" <%= column == "query_hash" ? "bigint" : "text" %>;
+<% end %></code></pre>
+      <p>Then restart the web server.</p>
+    </div>
+  <% end %>
+
+  <% if @query_stats_enabled %>
+    <% if @error %>
+      <div class="alert alert-danger">Cannot understand start or end time.</div>
+    <% elsif @query_stats.any? || @historical_query_stats_enabled %>
+      <%= render partial: "queries_table", locals: {queries: @query_stats, sort_headers: true} %>
+      <script>
+        highlightQueries();
+      </script>
+    <% else %>
+      <p>Stats are not available yet. Come back soon!</p>
+    <% end %>
+  <% else %>
+    <p>Query stats are not enabled.</p>
+  <% end %>
+</div>

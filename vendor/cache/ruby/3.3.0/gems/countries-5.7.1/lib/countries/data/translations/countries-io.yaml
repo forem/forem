@@ -1,0 +1,254 @@
+# Country name translations for locale io
+#
+# alpha2: localized_name
+#
+---
+AD: Andora
+AE: Unionita Araba Emirati
+AF: Afganistan
+AG: Antigua e Barbuda
+AI: Anguila
+AL: Albania
+AM: Armenia
+AO: Angola
+AQ: Antarctica
+AR: Arjentinia
+AS: Usana Samoa
+AT: Austria
+AU: Australia
+AW: Aruba
+AX: Alando
+AZ: Azerbaijan
+BA: Bosnia e Herzegovina
+BB: Barbados
+BD: Bangladesh
+BE: Belgia
+BF: Burkina Faso
+BG: Bulgaria
+BH: Bahrain
+BI: Burundi
+BJ: Benin
+BL: Saint Barthélemy
+BM: Bermuda
+BN: Brunei Darussalam
+BO: Bolivia
+BQ: Bonaire, Sint Eustatius and Saba
+BR: Brazilia
+BS: Bahamas
+BT: Bhutan
+BV: Bouvet Insulo
+BW: Botswana
+BY: Bielorusia
+BZ: Belize
+CA: Kanada
+CC: Cocos (Keeling) Islands
+CD: Congo, The Democratic Republic of the
+CF: Centrafrika
+CG: Congo
+CH: Suisia
+CI: Côte d'Ivoire
+CK: Cook-Insuli
+CL: Chili
+CM: Kamerun
+CN: China
+CO: Kolumbia
+CR: Kosta Rika
+CU: Kuba
+CV: Cabo Verde
+CW: Curaçao
+CX: Christmas Island
+CY: Chipro
+CZ: Czechia
+DE: Germania
+DJ: Djibuti
+DK: Dania
+DM: Dominika
+DO: Dominikana Republiko
+DZ: Aljeria
+EC: Equador
+EE: Estonia
+EG: Egiptia
+EH: Western Sahara
+ER: Eritrea
+ES: Hispania
+ET: Etiopia
+FI: Finlando
+FJ: Fidji
+FK: Falkland Islands (Malvinas)
+FM: Micronesia, Federated States of
+FO: Faero
+FR: Francia
+GA: Gabon
+GB: Unionita Rejio
+GD: Grenada
+GE: Gruzia
+GF: French Guiana
+GG: Guernsey
+GH: Ghana
+GI: Gibraltar
+GL: Grenlando
+GM: Gambia
+GN: Guinea
+GP: Guadelupa
+GQ: Equatorala Guinea
+GR: Grekia
+GS: South Georgia and the South Sandwich Islands
+GT: Guatemala
+GU: Guam
+GW: Guinea Bisau
+GY: Guyana
+HK: Hong Kong
+HM: Heard Island and McDonald Islands
+HN: Honduras
+HR: Kroatia
+HT: Haiti
+HU: Hungaria
+ID: Indonezia
+IE: Republiko di Irlando
+IL: Israel
+IM: Man-Insulo
+IN: India
+IO: Britaniana teritorio en Indiana Oceano
+IQ: Irak
+IR: Iran, Islamic Republic of
+IS: Islando
+IT: Italia
+JE: Jersey
+JM: Jamaika
+JO: Jordania
+JP: Japonia
+KE: Kenia
+KG: Kirgizistan
+KH: Kambodja
+KI: Kiribati
+KM: Komori
+KN: Santa Kitts e Nevis
+KP: North Korea
+KR: South Korea
+KW: Kuwait
+KY: Kaiman-Insuli
+KZ: Kazakstan
+LA: Lao People's Democratic Republic
+LB: Libano
+LC: Santa Lucia
+LI: Liechtenstein
+LK: Sri-Lanka
+LR: Liberia
+LS: Lesotho
+LT: Lituania
+LU: Luxemburgia
+LV: Latvia
+LY: Libia
+MA: Maroko
+MC: Monako
+MD: Moldova
+ME: Montenegro
+MF: Saint Martin (French part)
+MG: Madagaskar
+MH: Marshall Islands
+MK: North Macedonia
+ML: Mali
+MM: Myanmar
+MN: Mongolia
+MO: Macao
+MP: Norda Mariani
+MQ: Martinik
+MR: Mauritania
+MS: Montserrat
+MT: Malta
+MU: Maurico
+MV: Maldivi
+MW: Malawi
+MX: Mexikia
+MY: Malaizia
+MZ: Mozambik
+NA: Namibia
+NC: Nova-Kaledonia
+NE: Nijer
+NF: Norfolk-insulo
+NG: Nigeria
+NI: Nikaragua
+NL: Nederlando
+'NO': Norvegia
+NP: Nepal
+NR: Nauru
+NU: Niue
+NZ: Nova-Zelando
+OM: Oman
+PA: Panama
+PE: Peru
+PF: Franca Polinezia
+PG: Papua-Nova-Guinea
+PH: Filipini
+PK: Pakistan
+PL: Polonia
+PM: Santa Pierre e Mikelon
+PN: Pitcairn
+PR: Portuo Riko
+PS: Palestine, State of
+PT: Portugal
+PW: Palau
+PY: Paraguay
+QA: Katar
+RE: Reunion
+RO: Rumania
+RS: Serbia
+RU: Russian Federation
+RW: Ruanda
+SA: Saudi-Arabia
+SB: Insuli Salomon
+SC: Seycheli
+SD: Sudan
+SE: Suedia
+SG: Singapur
+SH: Saint Helena, Ascension and Tristan da Cunha
+SI: Slovenia
+SJ: Svalbard and Jan Mayen
+SK: Slovakia
+SL: Sierra Leone
+SM: San-Marino
+SN: Senegal
+SO: Somalia
+SR: Surinam
+SS: Sud-Sudan
+ST: San-Tome e Principe
+SV: Salvador
+SX: Sint Maarten (Dutch part)
+SY: Syrian Arab Republic
+SZ: Eswatini
+TC: Turks e Kaikos-Insuli
+TD: Chad
+TF: French Southern Territories
+TG: Togo
+TH: Tailando
+TJ: Tajikistan
+TK: Tokelau
+TL: Timor-Leste
+TM: Turkmenistan
+TN: Tunizia
+TO: Tonga
+TR: Turkia
+TT: Trinidad e Tobago
+TV: Tuvalu
+TW: Republiko di Chinia
+TZ: Tanzania
+UA: Ukrainia
+UG: Uganda
+UM: United States Minor Outlying Islands
+US: United States
+UY: Uruguay
+UZ: Uzbekistan
+VA: Holy See (Vatican City State)
+VC: Santa Vincent e Grenadini
+VE: Venezuela
+VG: Virgin Islands, British
+VI: Virgin Islands, U.S.
+VN: Vietnam
+VU: Vanuatu
+WF: Wallis e Futuna Insuli
+WS: Samoa
+YE: Yemen
+YT: Mayotte
+ZA: Sudafrika
+ZM: Zambia
+ZW: Zimbabwe

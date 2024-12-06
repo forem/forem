@@ -1,0 +1,31 @@
+fa:
+  devise:
+    failure:
+      invited: "شما یک دعوت نامه در حال انتظار دارید، با قبول آن حساب خود را بسازید."
+    invitations:
+      send_instructions: "یک ایمیل دعوت نامه به %{email} ارسال شد."
+      invitation_token_invalid: "کد دعوت نامه معتبر نیست!"
+      updated: "رمز عبور شما ذخیره شد. شما وارد سایت شدید!"
+      updated_not_active: "رمز عبور شما ذخیره شد."
+      no_invitations_remaining: "دعوت نامه ای نمانده"
+      invitation_removed: "دعوت نامه شما حذف شده."
+      new:
+        header: "فرستادن دعوت نامه"
+        submit_button: "فرستادن دعوت نامه"
+      edit:
+        header: "رمز عبور انتخاب کنید"
+        submit_button: "رمز عبور ذخیره کن"
+    mailer:
+      invitation_instructions:
+        subject: "شما دعوت شدید!"
+        hello: "سلام %{email}"
+        someone_invited_you: "شما به %{url} دعوت شدید. لینک زیر را استفاده کنید تا حساب شما فعال شود."
+        accept: "قبول دعوت"
+        accept_until: "این دعوت نامه تا تاریخ %{due_date} اعتبار دارد."
+        ignore: "اگر نمی خواهید این دعوت را قبول کنید, لطفا این ایمیل را نادیده بگیرید.<br />تا وقتی که بر روی لینک بالا کلیک نکنید، حساب شما ساخته نخواهد شد."
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"

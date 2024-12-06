@@ -1,0 +1,914 @@
+---
+AB:
+  name: Abkhazia
+  code: AB
+  unofficial_names:
+  - Abhasia
+  geo:
+    latitude: 43.0015544
+    longitude: 41.023407
+    min_latitude: 42.4124548
+    min_longitude: 40.0075855
+    max_latitude: 43.586627
+    max_longitude: 42.149976
+  translations:
+    en: Abkhazia
+    af: Abchasië
+    am: አብካዝያ
+    ar: أبخازيا
+    az: Abxaziya
+    be: Абхазія
+    bg: Абхазия
+    bn: আবখাজিয়া
+    ca: Abkhàzia
+    cs: Abcházie
+    da: Abkhasien
+    de: Abchasien
+    el: Αμπχαζία
+    es: Abjasia
+    et: Abhaasia
+    eu: Abkhazia
+    fa: آبخاز
+    fi: Abhasia
+    fr: Abkhazie
+    gl: Abkhazia
+    gu: અબખાઝિયા
+    he: אבחזיה
+    hi: अबख़ाज़िया
+    hr: Abhazija
+    hu: Abházia
+    hy: Աբխազիա
+    id: Abkhazia
+    is: Abkasía
+    it: Abcasia
+    ja: アブハジア
+    ka: აფხაზეთი
+    kn: ಅಬ್ಖಾಜಿಯ
+    ko: 압하지야
+    lt: Abchazija
+    lv: Abhāzija
+    ml: അബ്ഖാസിയ
+    mn: Абхаз
+    mr: अबखाझिया
+    ms: Abkhazia
+    nb: Abkhasia
+    nl: Abchazië
+    or: ଆବାଖାଜିଆ
+    pl: Abchazja
+    pt: Abecásia
+    ro: Abhazia
+    ru: Абхазия
+    si: අබ්ගාසියාව
+    sk: Abcházsko
+    sl: Abhazija
+    sr: Абхазија
+    sv: Abchazien
+    sw: Abkhazia
+    ta: அப்காசியா
+    te: అబ్‌ఖజియా
+    th: อับคาเซีย
+    tk: Abhaziýa
+    tr: Abhazya
+    uk: Абхазія
+    ur: ابخازيا
+    vi: Abkhazia
+    zh: 阿布哈茲
+    sr_Latn: Abhazija
+    ccp: "\U00011103\U0001111B\U00011134\U00011108\U0001110E\U00011128\U00011120"
+    sd: ابخازيہ
+    kk: Абхазия Автономиялық Республикасы
+    'no': Abkhasia
+    cy: Gweriniaeth Ymreolaethol Abchasia
+  comments:
+  type: autonomous_republic
+AJ:
+  name: Ajaria
+  code: AJ
+  unofficial_names:
+  - Achara
+  - Adzharia
+  - Adžaria
+  geo:
+    latitude: 41.6005626
+    longitude: 42.0688383
+    min_latitude: 41.4344289
+    min_longitude: 41.54839399999999
+    max_latitude: 41.9110457
+    max_longitude: 42.602322
+  translations:
+    en: Adjara
+    af: Adzjarië
+    ar: أجاريا
+    az: Acarıstan Muxtar Respublikası
+    be: Аджарыя
+    bg: Аджария
+    bn: আদজারা স্বায়ত্তশাসিত প্রজাতন্ত্র
+    ca: Adjària
+    cs: Adžárie
+    da: Adjarien
+    de: Adscharien
+    el: Αζαρία
+    es: Ayaria
+    et: Adžaaria
+    eu: Adjaria
+    fa: آجارستان
+    fi: Adžaria
+    fr: Adjarie
+    gl: Adjara
+    gu: એજારા ઓટોનોમસ રિપબ્લિક
+    he: אג׳ריה
+    hi: अद्जारा
+    hr: Adžarija
+    hu: Adzsaria
+    hy: Աջարիա
+    id: Ajaria
+    it: Agiaria
+    ja: アジャリア自治共和国
+    ka: აჭარის ავტონომიური რესპუბლიკა
+    kn: ಅಡ್ಜರಾ ಸ್ವಾಯತ್ತ ಗಣರಾಜ್ಯ
+    ko: 아자리야 공화국
+    lt: Adžarija
+    lv: Adžārija
+    ml: അജാറ
+    mr: आझारा ऑटोनॉमस रिपब्लिक
+    ms: Ajaria
+    nb: Adsjaria
+    nl: Adzjarië
+    pl: Adżaria
+    pt: Adjara
+    ro: Adjaria
+    ru: Аджария
+    si: අද්ජරා ස්වාධින රාජ්‍ය
+    sk: Adžarsko
+    sl: Adžarija
+    sr: Аџарија
+    sv: Adzjarien
+    ta: அடஜரா ஆடோனோமோஸ் ரிபப்லிக்
+    te: అడ్జారా అటానమస్ రిపబ్లిక్
+    th: อัดจารา
+    tr: Acara Özerk Cumhuriyeti
+    uk: Аджарія
+    ur: ایجارا
+    vi: Adjara
+    cy: Ajaria
+    ceb: Ajaria
+    sr_Latn: Adžarija
+    zh: 阿扎尔
+    yue_Hans: 阿查拉
+    jv: Ajaria
+    ccp: "\U00011103\U00011116\U00011134\U0001110E\U00011122"
+    ky: Ажария
+    yue: 阿查拉
+    yo: Adjara
+    uz: Ajariya
+    bs: Adžarija
+    mk: Аџарија
+    'no': Adsjaria
+    yo_BJ: Adjara
+    ha: Adjara
+    ha_NE: Adjara
+  comments:
+  type: autonomous_republic
+GU:
+  name: Guria
+  code: GU
+  unofficial_names: Guria
+  geo:
+    latitude: 41.9442736
+    longitude: 42.0458091
+    min_latitude: 41.78135
+    min_longitude: 41.7136319
+    max_latitude: 42.16825499999999
+    max_longitude: 42.667122
+  translations:
+    en: Guria
+    ar: غيوريا
+    az: Quriya
+    be: Гурыя
+    bg: Гурия
+    bn: গুরিয়া
+    ca: Gúria
+    cs: Gurie
+    da: Guria
+    de: Gurien
+    el: Γκούρια
+    es: Guria
+    et: Guria
+    fa: گوریا
+    fi: Guria
+    fr: Gourie
+    gu: ગુરિયા
+    he: גוריה
+    hi: गुरिया
+    hu: Guria
+    hy: Գուրիայի մարզ
+    id: Guria
+    it: Guria
+    ja: グリア州
+    ka: გურიის მხარე
+    kn: ಗುರಿಯಾ
+    ko: 구리아 주
+    lt: Gurija
+    mr: गुरीया
+    ms: Guria
+    nb: Guria
+    nl: Goeria
+    pl: Guria
+    pt: Guria
+    ru: Гурия
+    si: ගුරියා
+    sr: Гурија
+    sv: Gurien
+    ta: குறியா
+    te: గురియా
+    th: กูเรีย
+    tr: Guria
+    uk: Гурія
+    ur: گوریا
+    vi: Guria
+    lv: Gurija
+    ceb: Guria
+    sr_Latn: Gurija
+    zh: 古利亞州
+    ccp: "\U00011109\U0001112A\U00011122\U00011128\U00011120"
+    eu: Guria
+    ml: ഗുരിയ
+    mk: Гурија
+    'no': Guria
+    ha: Guria
+    ha_NE: Guria
+    hr: Gurija
+    uz: Guria
+  comments:
+  type: region
+IM:
+  name: Imereti
+  code: IM
+  unofficial_names: Imereti
+  geo:
+    latitude: 42.230108
+    longitude: 42.9008665
+    min_latitude: 41.808214
+    min_longitude: 42.2120039
+    max_latitude: 42.565433
+    max_longitude: 43.788536
+  translations:
+    en: Imereti
+    ar: إيميريتي
+    az: İmeretiya
+    be: Імерэція
+    bg: Имеретия
+    bn: ইমেরেতি
+    ca: Regió d’Imerètia
+    cs: Imeretie
+    da: Imereti
+    de: Imeretien
+    el: Ιμερετί
+    es: Imericia
+    et: Imerethi
+    fa: ایمرتی
+    fi: Imereti
+    fr: Iméréthie
+    gu: ઈમેરેટી
+    he: אימרתי
+    hi: इमेरेती
+    hu: Imereti
+    hy: Իմերեթի մարզ
+    id: Imereti
+    it: Imerezia
+    ja: イメレティ州
+    ka: იმერეთის მხარე
+    kn: ಇಮೆರೆಟಿ
+    ko: 이메레티 주
+    lt: Imeretija
+    ml: ഇമെറെതി
+    mr: इमेरती
+    ms: Imereti
+    nb: Imereti
+    nl: Imereti
+    pl: Imeretia
+    pt: Imereti
+    ru: Имеретия
+    si: ඉමේරෙටි
+    sl: Imereti
+    sr: Имеретија
+    sv: Imeretien
+    ta: இமெரிடி
+    te: ఇమెరెటి
+    th: อีเมเรตี
+    tr: İmereti
+    uk: Імереті
+    ur: ایمرتی
+    vi: Imereti
+    lv: Imeretija
+    ceb: Imereti
+    sr_Latn: Imeretija
+    zh: 伊梅列季亞州
+    ccp: "\U00011103\U00011128\U0001111F\U0001112C\U00011122\U0001112C\U00011111\U00011128"
+    eu: Imereti
+    kk: Имеретия патшалығы
+    mk: Имеретија
+    'no': Imereti
+    cy: Imereti
+    ha: Imereti
+    ha_NE: Imereti
+    hr: Imeretija
+    ro: Imeresia
+  comments:
+  type: region
+KA:
+  name: Kakheti
+  code: KA
+  unofficial_names:
+  - Kaheti
+  geo:
+    latitude: 41.6481602
+    longitude: 45.6905554
+    min_latitude: 41.03851299999999
+    min_longitude: 45.0147509
+    max_latitude: 42.564198
+    max_longitude: 46.7213589
+  translations:
+    en: Kakheti
+    ar: كاخيتي
+    az: Kaxetiya
+    be: Кахетыя
+    bg: Кахетия
+    bn: কাখেটি
+    ca: Kakhètia
+    cs: Kachetie
+    da: Kakheti
+    de: Kachetien
+    el: Κακχέτι
+    es: Kajetia
+    et: Kahhethi
+    eu: Kakheti
+    fa: کاختی
+    fi: Kakheti
+    fr: Kakhétie
+    gl: Kakheti
+    gu: કાખેટી
+    he: קאחתי
+    hi: ककेती
+    hu: Kaheti
+    hy: Կախեթի մարզ
+    id: Kakheti
+    it: Cachezia
+    ja: カヘティ州
+    ka: კახეთის მხარე
+    kn: ಕಾಖೆತಿ
+    ko: 카헤티 주
+    lt: Kachetija
+    mr: काखेंती
+    ms: Kakheti
+    nb: Kakheti
+    nl: Kacheti
+    pl: Kachetia
+    pt: Kakheti
+    ru: Кахетия
+    si: කකෙටි
+    sr: Кахетија
+    sv: Kachetien
+    ta: கஃஹெட்டி
+    te: కాఖేటి
+    th: กาเคติ
+    tr: Kaheti
+    uk: Кахеті
+    ur: کاختی
+    vi: Kakheti
+    lv: Kahetija
+    ceb: Kakheti
+    sr_Latn: Kahetija
+    zh: 卡赫季州
+    ccp: "\U00011107\U00011108\U0001112C\U00011111\U00011128"
+    ml: കാഖേറ്റി
+    mk: Кахетија
+    'no': Kakheti
+    hr: Kahetija
+    ro: Kakhesia
+    sl: Kaheti
+    uz: Kaxeti
+  comments:
+  type: region
+KK:
+  name: Kvemo Kartli
+  code: KK
+  unofficial_names: Kvemo Kartli
+  geo:
+    latitude: 41.4791833
+    longitude: 44.65604510000001
+    min_latitude: 41.15626109999999
+    min_longitude: 43.669065
+    max_latitude: 41.858702
+    max_longitude: 45.3102412
+  translations:
+    en: Kvemo Kartli
+    ar: كفيمو كارتلي
+    az: Aşağı Kartli
+    be: Квема Картлі
+    bg: Долна Картли
+    bn: কাভমো কার্তলি
+    ca: Kvemo Kartli
+    cs: Kvemo Kartli
+    da: Kvemo Kartli
+    de: Niederkartlien
+    el: Κβέμο Κάρτλι
+    es: Kvemo Kartli
+    et: Khvemo Kharthli
+    fa: کومو کارتلی
+    fi: Kvemo Kartli
+    fr: Basse Kartlie
+    gu: કેવેમો કાર્ટલી
+    he: כארתלי תחתית
+    hi: केवोमो कार्टली
+    hr: Kvemo Kartli
+    hu: Alsó-Kartli
+    hy: Քվեմո Քարթլիի մարզ
+    id: Kvemo Kartli
+    it: Kvemo Kartli
+    ja: クヴェモ・カルトリ州
+    ka: ქვემო ქართლის მხარე
+    kn: ಕ್ವೆಮೊ ಕಾರ್ಟ್ಲಿ
+    ko: 크베모카르틀리 주
+    lt: Kvemo Kartlis
+    mr: केवमो कार्ती
+    ms: Kvemo Kartli
+    nb: Kvemo Kartli
+    nl: Kvemo Kartli
+    pl: Dolna Kartlia
+    pt: Kvemo Kartli
+    ru: Квемо-Картли
+    si: ක්වෙමෝ කර්ට්ලි
+    sr: Доњи Картли
+    sv: Nedre Kartlien
+    ta: க்வேமா கார்ட்டலி
+    te: క్వెమో కార్టిలీ
+    th: คีฟโม คาทิล
+    tr: Kvemo Kartli
+    uk: Квемо Картлі
+    ur: کویمو کارتلی
+    vi: Kvemo Kartli
+    lv: Lejaskartlija
+    ceb: Kvemo Kartli
+    sr_Latn: Donji Kartli
+    zh: 克維莫-卡特利州
+    ccp: "\U0001111E\U0001112C\U0001111F\U0001112E \U00011107\U00011122\U00011134\U00011111\U00011134\U00011123\U00011128"
+    eu: Kvemo Kartli
+    mk: Долна Картли
+    'no': Kvemo Kartli
+    ml: ക്വെമോ കാർട്ട്ലി
+    ro: Kartli Inferior
+  comments:
+  type: region
+MM:
+  name: Mtskheta-Mtianeti
+  code: MM
+  unofficial_names:
+  - Mcheta-Mtianeti
+  geo:
+    latitude: 42.16821849999999
+    longitude: 44.6506057
+    min_latitude: 41.68722899999999
+    min_longitude: 44.21798709999999
+    max_latitude: 42.752689
+    max_longitude: 45.30156299999999
+  translations:
+    en: Mtskheta-Mtianeti
+    ar: متسخيتا-متيانيتي
+    az: Mtsxeta-Mtianeti
+    be: Мцхета-Мтыянеці
+    bg: Мцхетия-Мтианетия
+    bn: এম টি স্কেটা এমতিয়ানে
+    cs: Mccheta-Mtianetie
+    da: Mtskheta-Mtianeti
+    de: Mzcheta-Mtianeti
+    el: Μτσκέτα-Μτιανέτι
+    es: Mtsjeta-Mtianeti
+    et: Mtshetha-Mthianethi
+    fa: متسختا-متیانتی
+    fi: Mtskheta-Mtianeti
+    fr: Mtskheta-Mtianeti
+    gu: મત્સખેટા-મટિઆનેટી
+    he: מצחתה מתיאנתי
+    hi: मत्सखेता-मटियानेटी
+    hu: Mcheta-Mtianeti
+    hy: Մցխեթ-Մթիանեթ
+    id: Mtskheta-Mtianeti
+    it: Mtskheta-Mtianeti
+    ja: ムツヘタ＝ムティアネティ州
+    ka: მცხეთა-მთიანეთის მხარე
+    kn: ಮಿತ್ಸೆತಾ-ಮಿಟಿಯೆನಿ
+    ko: 므츠헤타므티아네티 주
+    lt: Mccheta-Mtianetija
+    mr: मत्सेखा-मतियांनी
+    ms: Mtskheta-Mtianeti
+    nb: Mtskheta-Mtianeti
+    nl: Mtscheta-Mtianeti
+    pl: Mccheta-Mtianetia
+    pt: Mtskheta-Mtianeti
+    ru: Мцхета-Мтианети
+    si: ම්ට්ස්කෙටා ම්ටයානෙටි
+    sr: Мцхета-Мтијанетија
+    sv: Mtscheta-Mtianeti
+    ta: மேட்ச்கஹெடா -மதினெட்டி
+    te: మిట్సికేటా-జియనేటి
+    th: มซเคตา-มเตียเนตี
+    tr: Mtsheta-Mtianeti
+    uk: Мцхета-Мтіанеті
+    ur: متسختا-متیانتی
+    vi: Mtskheta-Mtianeti
+    lv: Mcheta-Mtianeti
+    ceb: Mtskheta-Mtianeti
+    sr_Latn: Mcheta-Mtijanetija
+    zh: 姆茨赫塔-姆季阿涅季州
+    yue_Hans: 姆茨赫塔-姆季阿涅季州
+    ccp: "\U00011103\U0001112C\U0001111F\U00011134\U00011111\U00011128\U00011103\U0001112C\U0001110C\U00011134\U00011108\U0001112C\U00011111-\U00011111\U00011128\U00011120\U0001111A\U0001112C\U00011111\U00011128"
+    eu: Mtskheta-Mtianeti
+    ml: മ്റ്റിസ്ഖേറ്റ-മ്റ്റിയാനേറ്റി
+    yue: 姆茨赫塔-姆季阿涅季州
+    mk: Мцхета-Мтијанетија
+    'no': Mtskheta-Mtianeti
+    ca: Mtskheta-Mtianeti
+    ro: Mtskheta-Mtianeti
+  comments:
+  type: region
+RL:
+  name: Racha-Lechkhumi [and] Kvemo Svaneti
+  code: RL
+  unofficial_names:
+  - Racha
+  - Racha-Lechkumi and Kverno Svaneti
+  geo:
+    latitude: 42.67188729999999
+    longitude: 43.0562836
+    min_latitude: 42.366172
+    min_longitude: 42.35788900000001
+    max_latitude: 42.9666309
+    max_longitude: 43.948078
+  translations:
+    en: Racha-Lechkhumi and Kvemo Svaneti
+    ar: راتشا-ليخخومي وكفيمو سفانيتي
+    az: Raça-Leçxumi və Aşağı Svaneti diyarı
+    be: Рача-Лечхумі і Квема Сванеці
+    bg: Рача-Лечхуми и Долна Сванетия
+    bn: রচা- লেচুমি এবং কিভোম ভেনেটি
+    cs: Rača Lečchumi a Kvemo Svaneti
+    da: Racha-Lechkhumi and Kvemo Svaneti
+    de: Ratscha-Letschchumi und Niederswanetien
+    el: Ράτσα-Λετσκούμι και Κβέμο Σβανέτι
+    es: Racha-Lechjumi y Kvemo Svaneti
+    et: Ratša-Letšhumi ja Khvemo Svanethi
+    eu: Ratxa-Letxkhumi eta Kvemo Svaneti
+    fa: راچا-لچخومی و کومو سوانتی
+    fi: Ratša-Letškhumi ja Kvemo Svaneti
+    fr: Racha-Lechkhumi et Kvemo Svaneti
+    gu: રચા-લેચ્ખુમી એન્ડ ક્વેમો સ્વાનેતી
+    he: רצ׳ה-לצ׳חומי וסוואנתי תחתית
+    hi: रचा-लेचुखुमी और क्वेमो स्वानेती
+    hu: Racsa-Lecshumi és Alsó-Szvanéti
+    hy: Ռաճա-Լեչխում և Քվեմո Սվանեթ
+    id: Racha-Lechkhumi dan Kvemo Svaneti
+    it: Racha-Lechkhumi e Kvemo Svaneti
+    ja: ラチャ＝レチフミおよびクヴェモ・スヴァネティ州
+    ka: რაჭა-ლეჩხუმისა და ქვემო სვანეთის მხარე
+    kn: ರಾಚಾ-ಲೆಖುಕುಮಿ ಮತ್ತು ಕ್ವೆಮೊ ಸವೆಟ್ಟಿ
+    ko: 라차레츠후미크베모스바네티 주
+    lt: Rača-Lečchumis ir Kvemo Svanetija
+    mr: राखा-लेखखुमी अँड केवमो संवेत्सी
+    ms: Racha-Lechkhumi and Kvemo Svaneti
+    nb: Racha-Lechkhumi og Kvemo Svaneti
+    nl: Ratsja-Letsjchoemi en Kvemo Svaneti
+    pl: Racza-Leczchumi i Dolna Swanetia
+    pt: Racha-Lechkhumi e Kvemo Svaneti
+    ru: Рача-Лечхуми и Квемо-Сванети
+    si: රාචා-ලෙක්හුමී සහ ක්වෙමෝස්වාන්ති
+    sr: Рача-Лечхуми и Доња Сванетија
+    sv: Ratja-Letjchumi och Nedre Svanetien
+    ta: ராசா -லீச்க்ஹுமி அண்ட் க்வேமோ சிவனேடி
+    te: రాచా-లెచ్కుమి మరియు క్వెమో స్వనేటి
+    th: ราชา เลชคูมิ แอน ควีโม สวาเนทริ
+    tr: Raca-Leçhumi ve Kvemo Svaneti
+    uk: Рача-Лечхумі та Квемо Сванеті
+    ur: راچا-لچخومی و کومو سوانتی
+    vi: Racha-Lechkhumi và Kvemo Svaneti
+    lv: Rača-Lečhumi un Lejassventija
+    ceb: Racha-Lechkhumi and Kvemo Svaneti
+    sr_Latn: Rača-Lečhumi i Donja Svanetija
+    zh: 拉恰-列其呼米-下斯瓦涅季亞州
+    ccp: "\U00011122\U0001110C-\U00011123\U0001112C\U0001110C\U00011134\U00011108\U0001112A\U0001111F\U00011128
+      \U00011103\U00011133\U00011103 \U0001111E\U0001112C\U0001111F\U0001112E \U0001111E\U0001111A\U0001112C\U00011111\U00011128"
+    mk: Рача-Лечхуми и Долна Сванетија
+    'no': Racha-Lechkhumi og Kvemo Svaneti
+    ca: Ratxa-Letxkhumi i Baixa Svanètia
+    ml: റച്ച-ലെച്ച്കുമി ആൻഡ് ക്വെമൊ സ്വനെറ്റി
+    ro: Racia-Lecihumi și Svanesia Inferioară
+  comments:
+  type: region
+SJ:
+  name: Samtskhe-Javakheti
+  code: SJ
+  unofficial_names:
+  - Samche-Žavaheti
+  geo:
+    latitude: 41.5479296
+    longitude: 43.2776399
+    min_latitude: 41.111591
+    min_longitude: 42.492235
+    max_latitude: 41.941421
+    max_longitude: 43.9642531
+  translations:
+    en: Samtskhe-Javakheti
+    ar: سامتسخه-جافاخيتي
+    az: Samtsxe-Cavaxeti
+    be: Самцхе-Джавахеці
+    bg: Самцхе-Джавахети
+    bn: সাঁমটস্কে-জাভাকেটি
+    ca: Samtskhé
+    cs: Samcche-Džavachetie
+    da: Samtskhe-Javakheti
+    de: Samzche-Dschawachetien
+    el: Σάμτσκε-Τζαβακέτι
+    es: Samtsje-Yavajeti
+    et: Samtshe-Džavahhethi
+    fa: سامتسخه-جاواختی
+    fi: Samtskhe-Džavakheti
+    fr: Samtskhé-Djavakhétie
+    gu: સમ્ટસખે-જવાખેટી
+    he: סאמצחה-ג׳אוואחתי
+    hi: सम्सकी-जावखेती
+    hu: Szamche-Dzsavaheti
+    hy: Սամցխե-Ջավախք
+    id: Samtskhe-Javakheti
+    it: Samtskhe-Javakheti
+    ja: サムツヘ＝ジャヴァヘティ州
+    ka: სამცხე-ჯავახეთის მხარე
+    kn: ಸ್ಯಾಮ್ತ್ಕೆ-ಜಾವಾಖೆತಿ
+    ko: 삼츠헤자바헤티 주
+    lt: Samcchė-Džavachetija
+    mr: समष्टखे-जवखेती
+    ms: Samtskhe-Javakheti
+    nb: Samtskhe-Javakheti
+    nl: Samtsche-Dzjavacheti
+    pl: Samcche-Dżawachetia
+    pt: Samtskhe-Javakheti
+    ru: Самцхе-Джавахети
+    si: සම්ට්ස්කේ-ජවක්හෙටි
+    sr: Самцхе-Џавахетија
+    sv: Samtsche-Dzjavachetien
+    ta: சமட்ஸ்கேஹீ -ஜவக்ஹெட்டி
+    te: సాంస్ఖ్-జావాఖేడి
+    th: ซัมซเฮ-ยาวาเฮตี
+    tr: Samtshe-Cavaheti
+    uk: Самцхе-Джавахеті
+    ur: سامتسخے-جاواختی
+    vi: Samtskhe-Javakheti
+    lv: Samche-Džavahetija
+    ceb: Samtskhe-Javakheti
+    sr_Latn: Samche-Džavahetija
+    zh: 薩姆茨赫-扎瓦赫季州
+    ccp: "\U00011125\U00011133\U00011120\U0001111F\U00011134\U00011108\U0001112C-\U0001110E\U0001111E\U00011108\U0001112C\U00011111\U00011128"
+    eu: Samtskhe-Javakheti
+    ml: സാംറ്റ്സ്കെ ജവാഖേറ്റി
+    mk: Самцхе-Џавахетија
+    'no': Samtskhe-Javakheti
+    ro: Samtskhe-Javakheti
+  comments:
+  type: region
+SK:
+  name: Shida Kartli
+  code: SK
+  unofficial_names:
+  - Šida Kartli
+  geo:
+    latitude: 42.0756944
+    longitude: 43.9540462
+    min_latitude: 41.733082
+    min_longitude: 43.4199111
+    max_latitude: 42.633717
+    max_longitude: 44.569049
+  translations:
+    en: Shida Kartli
+    ar: شيدا كارتلي
+    az: Yuxarı Kartli
+    be: Шыда Картлі
+    bg: Вътрешна Картли
+    bn: সিদা কার্টলি
+    ca: Xida Kartli
+    cs: Šida Kartli
+    da: Shida Kartli
+    de: Innerkartlien
+    el: Σίντα Καρτλί
+    es: Shida Kartli
+    et: Šida Kharthli
+    eu: Xida Kartli
+    fa: شیدا کارتلی
+    fi: Šida Kartli
+    fr: Kartlie intérieure
+    gu: શિડા કાર્ટલી
+    he: כארתלי הפנימית
+    hi: शिडा कर्टली
+    hu: Felső-Kartli
+    hy: Շիդա Քարթլիի մարզ
+    id: Shida Kartli
+    it: Shida Kartli
+    ja: シダ・カルトリ州
+    ka: შიდა ქართლის მხარე
+    kn: ಶಿದಾ ಕಾರ್ಟ್ಲಿ
+    ko: 시다카르틀리 주
+    lt: Šida Kartlis
+    mr: शिडा कार्ती
+    ms: Shida Kartli
+    nb: Shida Kartli
+    nl: Sjida Kartli
+    pl: Wewnętrzna Kartlia
+    pt: Shida Kartli
+    ru: Верхняя Карталиния
+    si: ශිඩා කර්ට්ලි
+    sr: Унутрашњи Картли
+    sv: Inre Kartlien
+    ta: ஷிடா கர்ட்டலி
+    te: షిడా కార్టిలి
+    th: ิซิดา กราทิล
+    tr: Şida Kartli
+    uk: Шида Картлі
+    ur: شیدا کارتلی
+    vi: Shida Kartli
+    lv: Iekšējā Kartlija
+    ceb: Shida Kartli
+    sr_Latn: Unutrašnji Kartli
+    zh: 什達-卡特利州
+    ccp: "\U00011125\U00011128\U00011113 \U00011107\U00011122\U00011134\U00011111\U00011134\U00011123\U00011128"
+    ml: ഷിദ കാർട്‌ലി
+    mk: Внатрешен Картли
+    'no': Shida Kartli
+    hr: Unutarnji Kartli
+    ro: Kartli Interior
+  comments:
+  type: region
+SZ:
+  name: Samegrelo-Zemo Svaneti
+  code: SZ
+  unofficial_names: Samegrelo-Zemo Svaneti
+  geo:
+    latitude: 42.7352247
+    longitude: 42.1689362
+    min_latitude: 42.068348
+    min_longitude: 41.559906
+    max_latitude: 43.2542339
+    max_longitude: 43.152301
+  translations:
+    en: Samegrelo-Zemo Svaneti
+    ar: سامغريلو زيمو سفانيتي
+    az: Sameqrelo-Yuxarı Svaneti diyarı
+    be: Самегрэла-Зема Сванеці
+    bg: Мегрелия - Горна Сванетия
+    bn: সেমগ্রেলো-জেমো ভেনাতি
+    cs: Samegrelo-Zemo Svaneti
+    da: Samegrelo-Zemo Svaneti
+    de: Mingrelien und Oberswanetien
+    el: Σαμεγκρέλο-Ζέμο Σβανέτι
+    es: Samegrelo-Zemo Svaneti
+    eu: Samegrelo-Zemo Svaneti
+    fa: سامگرلو-زمو سوانتی
+    fi: Samegrelo ja Zemo Svaneti
+    fr: Mingrélie-Haute Svanétie
+    gu: સેમગ્રેલો-ઝેમો સ્વનેટી
+    he: סמגרלו וסוואנתי עילית
+    hi: समग्रेलो-ज़मो स्वानेती
+    hu: Szamegrelo-Felső-Szvanéti
+    hy: Սամեգրելո-Զեմո Սվանեթ
+    id: Samegrelo-Zemo Svaneti
+    it: Mingrelia-Alta Svanezia
+    ja: サメグレロ＝ゼモ・スヴァネティ州
+    ka: სამეგრელო-ზემო სვანეთის მხარე
+    kn: ಸಮ್ಮೆರೆಲೋ-ಝೆಮೊ ಸವೆಟ್ಟಿ
+    ko: 사메그렐로제모스바네티 주
+    lt: Samegrelas - Zemo Svanetija
+    mr: समग्रेलो-झेंमो स्वेव्हेटी
+    ms: Samegrelo-Zemo Svaneti
+    nb: Samegrelo-Zemo Svaneti
+    nl: Samegrelo-Zemo Svaneti
+    pl: Megrelia i Górna Swanetia
+    pt: Samegrelo-Zemo Svaneti
+    ru: Самегрело — Земо-Сванети
+    si: සමෙග්රේලෝ-සෙමෝ ස්වනෙටි
+    sr: Мегрелија-Горња Сванетија
+    sv: Megrelien-Övre Svanetien
+    ta: சமேக்ரேலோ -ஸிமோ சிவநெடி
+    te: సామెగ్రెలో-జెమో స్వానెటి
+    th: จังหวัดโคโม
+    tr: Samegrelo-Zemo Svaneti
+    uk: Самеґрело-Земо Сванеті
+    ur: سامگرلو-زمو سوانتی
+    vi: Samegrelo-Zemo Svaneti
+    lv: Megrelija-Augšvanetija
+    ceb: Samegrelo-Zemo Svanetis Mkhare
+    sr_Latn: Megrelija-Gornja Svanetija
+    zh: 薩梅格列羅-上斯瓦涅季亞州
+    ccp: "\U00011125\U00011133\U00011120\U0001111F\U00011134\U00011109\U00011133\U00011122\U0001112C\U00011123\U0001112E-\U0001110E\U0001112C\U0001111F\U0001112E
+      \U0001111E\U0001111A\U0001112C\U00011111\U00011128"
+    ml: സാമെഗ്രെലോ-സെമോ സ്വാനെറ്റി
+    mk: Мегрелија-Горна Сванетија
+    'no': Samegrelo-Zemo Svaneti
+    ca: Mingrèlia - Alta Svanètia
+    et: Samegrelo–Zemo Svanethi
+    ro: Megrelia-Svanesia Superioară
+  comments:
+  type: region
+TB:
+  name: Tbilisi
+  code: TB
+  unofficial_names:
+  - Tiflis
+  geo:
+    latitude: 41.716667
+    longitude: 44.783333
+    min_latitude: 41.6210248
+    min_longitude: 44.59650999999999
+    max_latitude: 41.8438937
+    max_longitude: 45.0176811
+  translations:
+    en: Tbilisi
+    af: Tbilisi
+    am: ትብሊሲ
+    ar: تبليسي
+    az: Tbilisi
+    be: Тбілісі
+    bg: Тбилиси
+    bn: তিবিলিসি
+    ca: Tbilisi
+    cs: Tbilisi
+    da: Tbilisi
+    de: Tiflis
+    el: Τιφλίδα
+    es: Tiflis
+    et: Thbilisi
+    eu: Tbilisi
+    fa: تفلیس
+    fi: Tbilisi
+    fr: Tbilissi
+    gl: Tbilisi
+    gu: ટિબિલિસિ
+    he: טביליסי
+    hi: थ्बिलिसि
+    hr: Tbilisi
+    hu: Tbiliszi
+    hy: Թբիլիսի
+    id: Tbilisi
+    is: Tíblisi
+    it: Tbilisi
+    ja: トビリシ
+    ka: თბილისი
+    kn: ಟಿಬಿಲಿಸಿ
+    ko: 트빌리시
+    lt: Tbilisis
+    lv: Tbilisi
+    ml: റ്റ്ബിലിസി
+    mn: Тбилис
+    mr: त्बिलिसी
+    ms: Tbilisi
+    nb: Tbilisi
+    ne: तिब्लिसी
+    nl: Tbilisi
+    or: ତିଲିସି
+    pl: Tbilisi
+    pt: Tbilisi
+    ro: Tbilisi
+    ru: Тбилиси
+    sd: تبليسي
+    si: ටිබිලිසි
+    sk: Tbilisi
+    sl: Tbilisi
+    sr: Тбилиси
+    sv: Tbilisi
+    sw: Tbilisi
+    ta: திபிலீசி
+    te: తిబిల్సి
+    th: ทบิลีซี
+    tk: Tbilisi
+    tr: Tiflis
+    uk: Тбілісі
+    ur: تبلیسی
+    vi: Tbilisi
+    cy: Tbilisi
+    ceb: K’alak’i T’bilisi
+    sr_Latn: Tbilisi
+    zh: 第比利斯
+    yue_Hans: 第比利斯
+    jv: Tbilisi
+    sq: Tbilisi
+    ccp: "\U0001111D\U00011128\U00011123\U00011128\U00011125\U00011128"
+    ga: Tbilisi
+    ky: Тбилиси
+    pa: ਤਬੀਲਿਸੀ
+    kk: Тбилиси
+    yue: 第比利斯
+    yo: Tbilisi
+    uz: Tbilisi
+    bs: Tbilisi
+    mk: Тбилиси
+    'no': Tbilisi
+    yo_BJ: Tbilisi
+    ps: تفلیس
+  comments:
+  type: city

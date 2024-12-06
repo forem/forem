@@ -1,0 +1,6 @@
+# Specify a default Code Owner by using a wildcard:
+* @default-codeowner
+
+/docs/ @all-docs
+
+[Development] @dev-team

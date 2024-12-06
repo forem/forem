@@ -1,0 +1,15 @@
+language: ruby
+rvm:
+  - 2.1
+  - 2.2
+  - 2.3
+  - 2.4
+  - 2.5
+  - 2.6
+gemfile:
+  - gemfiles/rspec_3.3.gemfile
+  - gemfiles/rspec_3.4.gemfile
+  - gemfiles/rspec_3.5.gemfile
+  - gemfiles/rspec_3.6.gemfile
+  - gemfiles/rspec_3.7.gemfile
+cache: bundler

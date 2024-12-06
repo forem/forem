@@ -1,0 +1,62 @@
+<h2>
+    Namespace:
+</h2>
+<p>
+    <a href="solargraph:/document?query=<%= CGI.escape object.namespace.path %>"><%= object.namespace %></a>
+</p>
+<h2>
+    Overview:
+</h2>
+<%= htmlify object.docstring %>
+<p class="document-section">
+    <big><strong>Visibility:</strong></big> <%= object.visibility %>
+</p>
+<% unless object.tags(:param).empty? %>
+    <h2>
+        Parameters:
+    </h2>
+    <ul>
+        <% object.tags(:param).each do |tag| %>
+            <li>
+                <%= erb :_name_type_tag, layout: false, locals: {tag: tag} %>
+            </li>
+        <% end %>
+    </ul>
+<% end %>
+<% unless object.tags(:raise).empty? %>
+<h2>
+    Raises:
+</h2>
+<ul>
+    <% object.tags(:raise).each do |tag| %>
+        <li>
+            <%= erb :_name_type_tag, layout: false, locals: {tag: tag} %>
+        </li>
+    <% end %>
+</ul>
+<% end %>
+<h2>
+    Returns:
+</h2>
+<% if object.tag(:return).nil? %>
+    <p>
+        Undefined/unknown
+    </p>
+<% else %>
+    <ul>
+        <% object.tags(:return).each do |tag| %>
+            <li>
+                <%= erb :_name_type_tag, layout: false, locals: {tag: tag} %>
+            </li>
+        <% end %>
+    </ul>
+<% end %>
+<% examples = object.tags(:example) %>
+<% unless examples.nil? %>
+    <% examples.each do |example| %>
+        <h2>
+            Example: <%= example.name %>
+        </h2>
+        <%= ruby_to_html example.text.strip %>
+    <% end %>
+<% end %>

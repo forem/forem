@@ -1,0 +1,155 @@
+aliases:
+  - &check_bundler
+    name: Which bundler?
+    command: bundle -v
+
+  - &restore_cache
+    name: Restore Bundler cache
+    keys:
+      - ruby-cache-<< parameters.version >>-{{ checksum "Gemfile" }}
+      - ruby-cache-<< parameters.version >>-
+
+  - &install_bundler
+    name: Bundle Install
+    command: bundle check || bundle install
+
+  - &save_cache
+    name: Save Bundler cache
+    key: ruby-cache-<< parameters.version >>-{{ checksum "Gemfile" }}
+    paths:
+      - vendor/bundle
+
+  - &run_lint
+    name: Run linting tool
+    command: bundle exec rake rubocop
+
+  - &credentials
+    name: Retrieve temporary Algolia credentials if needed
+    command: |
+      if [ "$CIRCLE_PR_REPONAME" ]; then
+        curl -s https://algoliasearch-client-keygen.herokuapp.com | sh >> $BASH_ENV
+      fi
+
+  - &run_tests
+     name: Run unit and integration tests
+     command: |
+       mkdir /tmp/test-results
+       bundle exec rake test:all
+
+references:
+  default_docker_ruby_executor: &default_docker_ruby_executor
+    image: circleci/ruby:<< parameters.version >>
+    environment:
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
+      BUNDLE_PATH: vendor/bundle
+
+  default_docker_jruby_executor: &default_docker_jruby_executor
+    image: circleci/jruby:<< parameters.version >>
+    environment:
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
+      BUNDLE_PATH: vendor/bundle
+
+version: 2.1
+
+jobs:
+  format:
+    description: Run our linter checks against the entire code base
+    parameters:
+      version:
+        type: string
+    docker:
+      - *default_docker_ruby_executor
+    steps:
+      - checkout
+      - run: *check_bundler
+      - run: *install_bundler
+      - run: *run_lint
+
+  test_ruby:
+    description: Build, unit and integration tests for Ruby
+    parameters:
+      version:
+        type: string
+    docker:
+      - *default_docker_ruby_executor
+    steps:
+      - checkout
+      - run: *check_bundler
+      - restore_cache: *restore_cache
+      - run: *install_bundler
+      - save_cache: *save_cache
+      - run: *credentials
+      - run: *run_tests
+
+  test_jruby:
+    description: Build, unit and integration tests for JRuby
+    parameters:
+      version:
+        type: string
+    docker:
+      - *default_docker_jruby_executor
+    steps:
+      - checkout
+      - run: *check_bundler
+      - restore_cache: *restore_cache
+      - run: *install_bundler
+      - save_cache: *save_cache
+      - run: *credentials
+      - run: *run_tests
+
+  release:
+    description: Release a new version of the Ruby client
+    parameters:
+      version:
+        type: string
+    docker:
+      - *default_docker_ruby_executor
+    steps:
+      - checkout
+      - run: *check_bundler
+      - run: *install_bundler
+      - run:
+          name: Build new gem
+          command: gem build algolia.gemspec
+      - run:
+          name: Publish new gem
+          command: |
+            if [[ -z "$RUBYGEMS_API_KEY" ]]; then echo '$RUBYGEMS_API_KEY is not set'; exit 1; fi
+            gem push --key $RUBYGEMS_API_KEY $(ls algolia-*.gem)
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - format:
+          version: '2.7'
+          filters:
+            tags:
+              only: /.*/
+      - test_ruby:
+          matrix:
+            parameters:
+              version: ['2.4', '2.5', '2.6', '2.7', '3.0']
+          filters:
+            tags:
+              only: /.*/
+      - test_jruby:
+          matrix:
+            parameters:
+              version: ['9.2']
+          filters:
+            tags:
+              only: /.*/
+      - release:
+          version: '2.7'
+          requires:
+            - format
+            - test_ruby
+            - test_jruby
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^[1-9]+.[0-9]+.[0-9]+.*/

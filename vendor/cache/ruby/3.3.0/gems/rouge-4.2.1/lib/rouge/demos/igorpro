@@ -1,0 +1,9 @@
+#pragma TextEncoding = "UTF-8"
+#pragma rtGlobals=3		// Use modern global access method and strict wave access.
+
+Function/WAVE MakeWave(name)
+	String name
+
+	Make/N=(8,8) root:$name/WAVE=wv = p^2 + q^2
+	return wv
+End

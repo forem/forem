@@ -1,0 +1,232 @@
+---
+KSA:
+  name: Kosrae
+  code: KSA
+  unofficial_names:
+  - Kosrae
+  geo:
+    latitude: 5.3095618
+    longitude: 162.9814877
+    min_latitude: 5.2598661
+    min_longitude: 162.9055629
+    max_latitude: 5.369902
+    max_longitude: 163.0340409
+  translations:
+    en: Kosrae
+    ar: كوسراي
+    be: Востраў Касрае
+    bg: Кошрай
+    bn: কসরে
+    ca: Kosrae
+    da: Kosrae
+    de: Bundesstaat Kosrae
+    el: Κόσραε
+    es: Kosrae
+    et: Kosrae
+    fa: کوسرائی
+    fi: Kosraen osavaltio
+    fr: Kosrae
+    gl: Kosrae
+    gu: કોસ્રાએ
+    hi: कोशराय राज्य
+    hu: Kosrae-sziget
+    id: Kosrae
+    it: Kosrae
+    ja: コスラエ州
+    ka: კოსრაე (შტატი)
+    kn: ಕೊಸ್ರೇ
+    ko: 코스라에 주
+    lt: Kosraė
+    mr: कोसरे
+    ms: Kosrae
+    nb: Kosrae
+    nl: Kosrae
+    pl: Kosrae
+    pt: Kosrae
+    ro: Kosrae
+    ru: Кусаие
+    si: කොස්රායි
+    sr: Косрај
+    sv: Kosrae
+    ta: கொஸ்ரே
+    te: కోస్రా
+    th: คอสไร
+    tr: Kosrae
+    uk: Косрае
+    ur: کوسرئی
+    vi: Kosrae
+    zh: 科斯雷
+    ceb: State of Kosrae
+    sr_Latn: Kosraj
+    ccp: "\U00011107\U0001112E\U0001110C\U00011134\U00011122\U0001112C"
+    'no': Kosrae
+    eu: Kosrae (estatua)
+  comments:
+  type: state
+PNI:
+  name: Pohnpei
+  code: PNI
+  unofficial_names:
+  - Ascension
+  - Ponape
+  geo:
+    latitude: 6.9257399
+    longitude: 158.1626343
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Pohnpei
+    ar: ولاية بوهنبي
+    bn: পোহেন্পি অঙ্গরাজ্য
+    ca: Pohnpei
+    da: Pohnpei State
+    de: Bundesstaat Pohnpei
+    el: Ποχνπέι
+    es: Pohnpei
+    fa: ایالت پوناپی
+    fi: Pohnpein osavaltio
+    fr: Pohnpei
+    gl: Estado de Pohnpei
+    gu: પોહ્નપેઇ સ્ટેટ
+    hi: पोह्नपेइ राज्य
+    id: Negara bagian Pohnpei
+    it: Pohnpei
+    ja: ポンペイ州
+    ka: პონპეი
+    kn: ಪೋನ್ಪೈ ರಾಜ್ಯ
+    ko: 폰페이 주
+    mr: पोह्नपेई राज्य
+    ms: Pohnpei State
+    nb: Pohnpei state
+    nl: Pohnpei
+    pl: Pohnpei
+    pt: Pohnpei
+    ru: Понпеи (штат)
+    si: පොන්පෙයි රාජ්‍යය
+    sv: Pohnpei State
+    ta: போஹ்ண்பேய் மாநிலம்
+    te: పోహెన్పీ రాష్ట్రం
+    th: เกาะโปนเป
+    tr: Pohnpei Eyaleti
+    ur: پوحنپیی اسٹیٹ
+    vi: Bang Pohnpei
+    lv: Ponpejas štats
+    lt: Ponpėjaus valstija
+    zh: 波纳佩州
+    ccp: "\U0001111B\U0001112E\U0001111A\U00011134\U0001111B\U0001112C\U0001112D"
+    uk: Понпеі
+    'no': Pohnpei state
+    eu: Pohnpei (estatua)
+    hr: Pohnpei
+  comments:
+  type: state
+TRK:
+  name: Chuuk
+  code: TRK
+  unofficial_names:
+  - Chuk
+  - Hogoley Islands
+  - Truk
+  geo:
+    latitude: 7.355421999999999
+    longitude: 151.5962883
+    min_latitude: 5.284722299999999
+    min_longitude: 149.296683
+    max_latitude: 8.6906948
+    max_longitude: 153.82193
+  translations:
+    en: Chuuk
+    ar: ولاية تشوك
+    be: Астравы Чуўк
+    bg: Чуюк
+    bn: চুুক রাজ্য
+    ca: Chuuk
+    cs: Chuuk
+    da: Chuuk
+    de: Bundesstaat Chuuk
+    el: Τσουούκ
+    es: Chuuk
+    et: Chuuki saared
+    fa: ایالت چوک
+    fi: Chuuk
+    fr: Chuuk
+    gl: Chuuk
+    gu: ચુક સ્ટેટ
+    hi: चूक राज्य
+    id: Chuuk
+    it: Chuuk
+    ja: チューク州
+    ka: ჩუუკი
+    kn: ಚುಕ್ ರಾಜ್ಯ
+    ko: 추크 주
+    lt: Čiukas
+    mr: चूक
+    ms: Chuuk State
+    nb: Chuuk
+    nl: Chuuk
+    pl: Chuuk
+    pt: Chuuk
+    ro: Chuuk
+    ru: Трук
+    si: චක් රාජ්‍ය
+    sr: Чук
+    sv: Chuuk
+    ta: சுருக் மாநிலம்
+    te: చూక్ రాష్ట్రం
+    th: รัฐชุก
+    tr: Chuuk
+    uk: Чуук
+    ur: ریاست چوک
+    vi: Chuuk
+    lv: Čuukas štats
+    sr_Latn: Čuk
+    zh: 楚克
+    yue_Hans: 楚克州
+    ccp: "\U0001110C\U0001112B\U00011107\U00011134"
+    yue: 楚克州
+    mk: Чук
+    'no': Chuuk
+    eu: Chuuk (estatua)
+    he: צ׳ואוק
+    hr: Chuuk
+  comments:
+  type: state
+YAP:
+  name: Yap
+  code: YAP
+  unofficial_names: Yap
+  geo:
+    latitude: 9.539137199999999
+    longitude: 138.1258916
+    min_latitude: 7.3238806
+    min_longitude: 138.0550362
+    max_latitude: 10.0220783
+    max_longitude: 143.9119613
+  translations:
+    en: Yap
+    de: Bundesstaat Yap
+    fi: Yapin osavaltio
+    fr: Yap (État)
+    gl: Estado de Yap
+    hi: याप राज्य
+    ja: ヤップ州
+    ka: იაპი
+    ko: 야프 주
+    pl: Yap
+    ru: Яп (штат)
+    uk: Яп
+    ur: ریاست یاپ
+    ceb: State of Yap
+    zh: 雅浦州
+    fa: ایالت یاپ
+    ccp: "\U00011103\U00011128\U00011120\U0001111B\U00011134"
+    ca: Estat de Yap
+    es: Estado de Yap
+    eu: Yap (estatua)
+    hr: Yap
+    it: Yap
+    tr: Yap
+  comments:
+  type: state

@@ -1,0 +1,188 @@
+
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/"
+  xmlns:docs="http://schemas.google.com/docs/2007" xmlns:batch="http://schemas.google.com/gdata/batch"
+  xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/&quot;DUMFR3YyfCt7ImA9WxNTFU0.&quot;">
+
+<!-- Unique identifier of this feed.  Not unique between users. -->
+<id>https://docs.google.com/feeds/default/private/full</id>
+
+<!-- Date this feed was last updated.  Do NOT use this, provided for Atom compliance only. -->
+<updated>2009-08-17T11:10:16.894Z</updated>
+
+<!-- Title of this feed result. -->
+<title>Available Documents - john.smith.example@gmail.com</title>
+
+<!-- Link at which a user could consume the same content given here, but in a web browser with a user interface. -->
+<link rel="alternate" type="text/html" href="https://docs.google.com"/>
+
+<!-- Link at which you can add documents or files using resumable upload. -->
+<link rel="http://schemas.google.com/g/2005#resumable-create-media" type="application/atom+xml"
+  href="https://docs.google.com/feeds/upload/create-session/default/private/full"/>
+
+<!-- Link at which you can fetch the next page of results from this feed. -->
+<link rel="next" type="application/atom+xml"
+  href="https://docs.google.com/feeds/default/private/full?start-key=EAEaFgoSCb2YGEPMAAACAG"/>
+
+<!-- Link at which you can fetch this same feed. -->
+<link rel="self" type="application/atom+xml"
+  href="https://docs.google.com/feeds/default/private/full/"/>
+
+<!-- Link at which you can fetch this same feed. -->
+<link rel="http://schemas.google.com/g/2005#feed" type="application/atom+xml"
+  href="https://docs.google.com/feeds/default/private/full"/>
+
+<!-- Deprecated.  Use resumable-create-media instead. -->
+<!-- Link at which you can POST new entries with metadata only to this feed. -->
+<link rel="http://schemas.google.com/g/2005#post" type="application/atom+xml"
+  href="https://docs.google.com/feeds/default/private/full"/>
+
+<!-- Link at which you can send batch requests to this feed. -->
+<link rel="http://schemas.google.com/g/2005#batch" type="application/atom+xml"
+  href="https://docs.google.com/feeds/default/private/full/batch"/>
+
+<!-- Information about the user who authorized this request. -->
+<author>
+  <name>John Smith</name>
+  <email>john.smith.example@gmail.com</email>
+</author>
+
+<!-- NOT supported, provided for protocol compliance only. -->
+<openSearch:startIndex>1</openSearch:startIndex>
+
+<!-- The ETag here is used to identify the version of this entry. -->
+<entry gd:etag="'EVJVTBICRit7ImBq'">
+  <!-- A unique, permanent identifier for this entry. -->
+  <id>https://docs.google.com/feeds/id/document%3A12345</id>
+
+  <!-- Title of this resource. -->
+  <title>2010 Income Tax Policy</title>
+
+  <!-- Description of this resource (currently visible in the preview pane in the UI). -->
+  <docs:description>Describes how to file income tax for 2010.</docs:description>
+
+  <!-- Resource ID of this document. -->
+  <gd:resourceId>document:12345</gd:resourceId>
+
+  <!-- Date this document was created (the "published" name of this element is mis-leading, but this is Atom standard). -->
+  <published>2009-07-22T19:02:57.616Z</published>
+
+  <!-- Information about the owner of this document (not necessarily the user authorizing this request). -->
+  <author>
+    <name>Jenna Dolsom</name>
+    <email>jenna.dolsom.example@gmail.com</email>
+  </author>
+
+  <!-- Date this entry was last updated (either by Google's systems, the API, or a user in a web browser). -->
+  <updated>2009-07-29T20:31:39.804Z</updated>
+
+  <!-- Date this document was last edited by a user in the document editor in a web browser. -->
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2009-07-31T17:21:26.497Z</app:edited>
+
+  <!-- Information about the user who last modified this entry (not necessarily the user authorizing this request). -->
+  <gd:lastModifiedBy>
+    <name>Aaron Jensen</name>
+    <email>aaron.jensen.example@gmail.com</email>
+  </gd:lastModifiedBy>
+
+  <!-- Date this document was last viewed in a web browser by any user. -->
+  <gd:lastViewed>2009-07-31T17:21:26.273Z</gd:lastViewed>
+
+  <!-- The "kind" of this entry.  In this case, a word processing document. -->
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/docs/2007#document" label="document"/>
+
+  <!-- This entry has been viewed by the user, so it has a "viewed" category. -->
+  <category scheme="http://schemas.google.com/g/2005/labels" term="http://schemas.google.com/g/2005/labels#viewed" label="viewed"/>
+
+  <!-- Link at which you can download the actual document this entry describes. -->
+  <content type="text/html" src="https://docs.google.com/feeds/download/documents/Export?docId=12345"/>
+
+  <!-- This document is in one collection, detailed here. -->
+  <link rel="http://schemas.google.com/docs/2007#parent" type="application/atom+xml"
+    href="https://docs.google.com/feeds/default/private/full/folder%3A12345" title="ACollectionName"/>
+
+  <!-- Link at which you can open this document in a web browser. -->
+  <link rel="alternate" type="text/html" href="https://docs.google.com/Doc?docid=12345&amp;hl=en"/>
+
+  <!-- Link at which you can fetch only this entry. -->
+  <link rel="self" type="application/atom+xml" href="https://docs.google.com/feeds/default/private/full/document%3A12345"/>
+
+  <!-- Link at which you can PUT updates to this entry. -->
+  <link rel="edit" type="application/atom+xml" href="https://docs.google.com/feeds/default/private/full/document%3A12345"/>
+
+  <!-- Link at which you can PUT updates to this entry's content (deprecated, use resumable below). -->
+  <link rel="edit-media" type="text/html" href="https://docs.google.com/feeds/default/media/document%3A12345"/>
+
+  <!-- Link at which you can PUT resumable updates to this entry's content. -->
+  <link rel="http://schemas.google.com/g/2005#resumable-edit-media" type="application/atom+xml"
+    href="https://docs.google.com/feeds/upload/create-session/default/private/full/document%3A12345"/>
+
+  <!-- Link at which you can fetch a thumbnail of this resource. -->
+  <link rel="http://schemas.google.com/docs/2007/thumbnail" type="image/jpeg" href="https://lh3.googleusercontent.com/TQRs812345=s220"/>
+
+  <!-- Link at which you can create, retrieve, update, and delete ACL entries for this document. -->
+  <gd:feedLink rel="http://schemas.google.com/acl/2007#accessControlList"
+    href="https://docs.google.com/feeds/default/private/full/document%3A12345/acl"/>
+
+  <!-- Link at which you can create, retrieve, update, and delete revisions of this document. -->
+  <gd:feedLink rel="http://schemas.google.com/docs/2007/revisions"
+    href="https://docs.google.com/feeds/default/private/full/document%3A12345/revisions"/>
+
+  <!-- Number of bytes of the owner's quota this document uses.  Native Google Docs currently use 0 bytes. -->
+  <gd:quotaBytesUsed>0</gd:quotaBytesUsed>
+
+  <!-- "true" if writers can invite other users to view and edit this document. -->
+  <docs:writersCanInvite value="true"/>
+
+  <!-- Given for files only. An MD5 checksum used to verify the contents of this file. -->
+  <!-- Some old files are being processed. Those files will not have this element yet. -->
+  <docs:md5Checksum>2b01142f7481c7b056c4b410d28f33cf</docs:md5Checksum>
+
+  <!-- Original filename of file at time of upload, if available. -->
+  <!-- Only available for resources of type file or pdf. -->
+  <!-- Shown here as example only. This element is not given for resources of type document. -->
+  <docs:filename>MyFile.pdf</docs:filename>
+
+  <!-- Current name of resource, with file extension from docs:filename appended, if available. -->
+  <!-- If the current name already has an extension, then the extension from docs:filename is not appended. -->
+  <!-- If docs:filename does not have an extension, then the current name is given unaltered. -->
+  <!-- Only available for resources of type file or pdf. -->
+  <!-- Shown here as example only. This element is not given for resources of type document. -->
+  <docs:suggestedFilename>TaxDocument.pdf</docs:suggestedFilename>
+</entry>
+<entry xmlns:gd="http://schemas.google.com/g/2005" gd:etag="'HhJSFgpeRyt7ImBq'">
+  <id>https://docs.google.com/feeds/id/pdf%3A12345</id>
+  <published>2009-04-09T18:23:09.035Z</published>
+  <updated>2009-04-09T18:23:09.035Z</updated>
+  <app:edited xmlns:app="http://www.w3.org/2007/app">2009-06-18T22:16:02.388Z</app:edited>
+  <category scheme="http://schemas.google.com/g/2005/labels" term="http://schemas.google.com/g/2005/labels#starred" label="starred"/>
+  <category scheme="http://schemas.google.com/g/2005/labels" term="http://schemas.google.com/g/2005/labels#viewed" label="viewed"/>
+  <category scheme="http://schemas.google.com/g/2005/labels" term="http://schemas.google.com/g/2005/labels#hidden" label="hidden"/>
+  <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/docs/2007#pdf" label="pdf"/>
+  <title>PDF's Title</title>
+  <content type="application/pdf"
+    src="https://doc-04-20-docs.googleusercontent.com/docs/secure/m71240...U1?h=1630126&amp;e=download&amp;gd=true"/>
+  <link rel="alternate" type="text/html" href="https://docs.google.com/fileview?id=12345&amp;hl=en"/>
+  <link rel="self" type="application/atom+xml" href="https://docs.google.com/feeds/default/private/full/pdf%3A12345"/>
+  <link rel="edit" type="application/atom+xml" href="https://docs.google.com/feeds/default/private/full/pdf%3A12345"/>
+  <link rel="edit-media" type="application/pdf" href="https://docs.google.com/feeds/default/media/pdf%3A12345"/>
+  <link rel="http://schemas.google.com/g/2005#resumable-edit-media" type="application/atom+xml"
+    href="https://docs.google.com/feeds/upload/create-session/default/private/full/pdf%3A12345"/>
+  <author>
+    <name>user</name>
+    <email>user@gmail.com</email>
+  </author>
+  <gd:resourceId>pdf:12345</gd:resourceId>
+  <gd:lastModifiedBy>
+    <name>user</name>
+    <email>user@gmail.com</email>
+  </gd:lastModifiedBy>
+  <gd:lastViewed>2009-06-18T22:16:02.384Z</gd:lastViewed>
+  <gd:quotaBytesUsed>108538</gd:quotaBytesUsed>
+  <docs:writersCanInvite value="false"/>
+  <docs:md5Checksum>2b01142f7481c7b056c4b410d28f33cf</docs:md5Checksum>
+  <gd:feedLink rel="http://schemas.google.com/acl/2007#accessControlList"
+    href="https://docs.google.com/feeds/default/private/full/pdf%3A12345/acl"/>
+  <gd:feedLink rel="http://schemas.google.com/docs/2007/revisions"
+    href="https://docs.google.com/feeds/default/private/full/document%3A12345/revisions"/>
+</entry>
+</feed>

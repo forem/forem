@@ -1,0 +1,376 @@
+---
+DU:
+  name: Dushanbe
+  code: DU
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Doesjanbe
+    am: ዱሻንቤ
+    ar: دوشانبي
+    az: Düşənbə
+    be: Горад Душанбэ
+    bg: Душанбе
+    bn: দুশান্‌বে
+    ca: Duixanbe
+    cs: Dušanbe
+    da: Dusjanbe
+    de: Duschanbe
+    el: Ντουσαμπέ
+    en: Dushanbe
+    es: Dusambé
+    et: Dušanbe
+    eu: Dushanbe
+    fa: دوشنبه
+    fi: Dušanbe
+    fr: Douchanbé
+    gl: Dushanbe
+    gu: દુશંબે
+    he: דושנבה
+    hi: दुशान्बे
+    hr: Dušanbe
+    hu: Dusanbe
+    hy: Դուշանբե
+    id: Dushanbe
+    is: Dúsjanbe
+    it: Dušanbe
+    ja: ドゥシャンベ
+    ka: დუშანბე
+    kn: ದುಶಾಂಬೆ
+    ko: 두샨베
+    lt: Dušanbė
+    lv: Dušanbe
+    ml: ദുഷാൻബെ
+    mn: Душанбе
+    mr: दुशांबे
+    ms: Dushanbe
+    nb: Dusjanbe
+    nl: Doesjanbe
+    pl: Duszanbe
+    ps: دوشنبه
+    pt: Duchambe
+    ro: Dușanbe
+    ru: Душанбе
+    si: ඩුෂන්බේ
+    sk: Dušanbe
+    sl: Dušanbe
+    sr: Душанбе
+    sv: Dusjanbe
+    sw: Dushanbe
+    ta: துசான்பே
+    te: దుశాన్బె
+    th: ดูชานเบ
+    tk: Duşenbe
+    tr: Duşanbe
+    uk: Душанбе
+    ur: دوشنبہ
+    vi: Dushanbe
+    zh: 杜尚别
+    cy: Dushanbe
+    ceb: Dushanbe
+    sr_Latn: Dušanbe
+    yue_Hans: 杜尚别
+    jv: Dushanbe
+    sq: Dushanbe
+    ccp: "\U00011113\U0001112A\U00011125\U0001111A\U00011134\U0001111D\U0001112C"
+    ga: Dushanbe
+    ky: Душанбе
+    pa: ਦੁਸ਼ੰਬੇ
+    kk: Душанбе
+    yue: 杜尚別
+    yo: Dushanbe
+    uz: Dushanbe
+    bs: Dušanbe
+    mk: Душанбе
+    ne: दुशान्वे
+    'no': Dusjanbe
+    yo_BJ: Dushanbe
+    my: ဒူရှန်ဘဲမြို့
+    sd: دوشنبي
+  comments:
+  type: capital_territory
+GB:
+  name: Gorno-Badakhshan
+  code: GB
+  unofficial_names:
+  - Gorno-Badahşan
+  geo:
+    latitude: 38.412732
+    longitude: 73.087749
+    min_latitude: 36.671535
+    min_longitude: 70.216537
+    max_latitude: 39.46881500000001
+    max_longitude: 75.1514831
+  translations:
+    en: Gorno-Badakhshan
+    ar: جورنو
+    az: Dağlıq Bədəxşan Muxtar Vilayəti
+    be: Горна-Бадахшанская аўтаномная вобласць
+    bg: Горнобадахшанска автономна област
+    bn: গর্নো-বাদাখোস স্বায়ত্তশাসিত প্রদেশ
+    ca: Gorno-Badakhxan
+    cs: Horský Badachšán
+    da: Gorno-Badakhshan Autonomous Province
+    de: Berg-Badachschan
+    el: Αυτόνομη επαρχία Γκόρνο-Μπανταχσάν
+    es: Provincia de Alto Badajshán
+    et: Mägi-Badahšan
+    fa: ولایت مختار کوهستان بدخشان
+    fi: Vuoristo-Badahšanin autonominen alue
+    fr: Haut-Badakhchan
+    gl: Provincia Autónoma do Badaghxán Montañoso
+    gu: ગોર્નો-બડખશન ઔટોનોમસ પ્રાંત
+    he: מחוז גורנו-בדחשאן
+    hi: कूहिस्तोनी-बदख़्शान स्वशासित प्रान्त
+    id: Provinsi Otonom Gorno-Badakhshan
+    it: provincia Autonoma di Gorno-Badachšan
+    ja: ゴルノ・バダフシャン自治州
+    ka: მთიანი ბადახშანის ავტონომიური ოლქი
+    kn: ಗೊರ್ನೊ-ಬದ್ಖ್ಶಾನ್ ಸ್ವಾಯತ್ತ ಪ್ರಾಂತ್ಯ
+    ko: 고르노바다흐샨 자치주
+    lt: Kalnų Badachšano autonominė provincija
+    lv: Kalnu Badahšāna
+    mr: गोर्नो-बदखशन स्वायत्त प्रांत
+    ms: Gorno-Badakhshan Autonomous Province
+    nb: Kuhistoni Badakhshon autonome provins
+    nl: Gorno-Badachsjan
+    pl: Górski Badachszan
+    pt: Gorno-Badakhshan
+    ru: Горно-Бадахшанская автономная область
+    si: ගොර්නෝ බඩක්ශාන් ස්වාධීන පළාත
+    sr: Горно-Бадахшан
+    sv: Gorno-Badachsjan
+    ta: கோர்னோ -படக்ஹ்ஷன் ஆடோனோமோஸ் மாகாணம்
+    te: గార్నో-బడాక్షన్ అటానమస్ ప్రావిన్స్
+    th: จังหวัดกอร์โน บาดาค์ชาน ออโตโนมัส
+    tr: Dağlık Badahşan
+    uk: Гірський Бадахшан
+    ur: گورنو بدخشاں خود مختار صوبہ
+    vi: Gorno-Badakhshan
+    ceb: Viloyati Mukhtori Kŭhistoni Badakhshon
+    sr_Latn: Gorno-Badahšan
+    zh: 戈爾諾—巴達赫尚自治州
+    ccp: "\U00011109\U0001112E\U00011122\U00011134\U0001111A\U0001112E-\U0001111D\U00011118\U00011128\U00011107\U00011134\U00011125\U0001111A\U00011134"
+    hy: Լեռնա-Բադախշանյան ինքնավար մարզ
+    ky: Тоолуу-Бадахшан автономиялуу облусу
+    uz: Togʻli-Badaxshon muxtor viloyati
+    'no': Kuhistoni Badakhshon autonome provins
+    eu: Badakhxan Garaiko Probintzia Autonomoa
+    kk: Тәжікстанның Таулы Бадахшан аймағы
+    mn: Горно-Бадахшан
+    ro: Gorno-Badahșan
+  comments:
+  type: autonomous_region
+KT:
+  name: Khatlon
+  code: KT
+  unofficial_names:
+  - Hatlon
+  geo:
+    latitude: 37.9113562
+    longitude: 69.097023
+    min_latitude: 36.9281721
+    min_longitude: 67.78614600000002
+    max_latitude: 38.783459
+    max_longitude: 70.34964699999999
+  translations:
+    en: Khatlon
+    ar: محافظة خاتلون
+    bg: Хатлонска област
+    bn: খাতলোন প্রদেশ
+    da: Khatlon Province
+    de: Chatlon
+    el: Κάτλον
+    es: Provincia de Khatlon
+    et: Hatloni vilajett
+    fa: ولایت ختلان
+    fi: Hatlon
+    fr: Khatlon
+    gu: ખતલોન પ્રાંત
+    he: מחוז חאטלון
+    hi: ख़तलोन प्रान्त
+    hy: Խալտոնի մարզ
+    id: Khatlon
+    it: Chatlon
+    ja: ハトロン州
+    ka: ხატლონის ოლქი
+    kn: ಖಟ್ಲಾನ್ ಪ್ರಾಂತ್ಯ
+    ko: 하틀론 주
+    lt: Chatlono provincija
+    lv: Hatlona
+    mr: खतलॉन प्रांत
+    ms: Khatlon Province
+    nb: Khatlon
+    nl: Khatlon
+    pl: Wilajet chatloński
+    pt: Khatlon
+    ru: Хатлонская область
+    si: කැට්ලෝන් පළාත
+    sv: Chatlon
+    ta: கடலோன் மாகாணம்
+    te: ఖాట్లాన్ ప్రావిన్స్
+    th: เขตปกครองคัทลอน
+    tr: Hatlon
+    uk: Хатлонський вілоят
+    ur: صوبہ ختلان
+    vi: Khatlon
+    ceb: Viloyati Khatlon
+    zh: 哈特隆州
+    ccp: "\U00011108\U00011116\U00011134\U00011123\U00011127\U0001111A\U00011134"
+    hu: Hatlon
+    cs: Chatlonský vilájet
+    be: Хатлонская вобласць
+    uz: Xatlon
+    'no': Khatlon
+    ca: Khatlon
+    cy: Talaith Khatlon
+    eu: Khatlon
+    ro: Hatlon
+  comments:
+  type: region
+RA:
+  name: Nohiyahoi Tobei Jumhurí
+  code: RA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعات التبعية الجمهوري
+    bg: Райони на централно подчинение в Таджикистан
+    bn: জেলা অফ রিপাবলিকান সাঅর্ডিনেশন
+    cs: Centrálně spravovaná oblast
+    da: Karotegin
+    de: Nohijahoi tobei dschumhurij
+    el: Επαρχίες της Δημοκρατικής Υποταγής
+    en: Nohiyahoi Tobei Jumhurí
+    es: Región bajo subordinación republicana
+    et: Tadžikistani vabariikliku alluvusega rajoonid
+    fa: ناحیه‌های تابع جمهوری
+    fi: Hallinnon alaiset piirit
+    fr: Nohiyahoi tobei Jumhurii
+    gu: રિપબ્લિકન , સબોર્ડિનેશન , જિલ્લો
+    he: נפות בכפיפות רפובליקנית
+    hi: गणतंत्र-अधीन ज़िले
+    id: Region Republik Subordinasi
+    it: distretti di Subordinazione Repubblicana
+    ja: 共和国直轄地
+    ka: ტაჯიკეთის რესპუბლიკური დაქვემდებარების რაიონები
+    kn: ರಿಪಬ್ಲಿಕನ್ ಅಧೀನದ ಜಿಲ್ಲೆಗಳು
+    ko: 공화국 직할구
+    lt: Tiesioginio pavaldumo regionas
+    lv: Tadžikistānas republikas pakļautības rajoni
+    mr: रिपब्लिकन तालुक्यांचे जिल्हे
+    ms: Districts of Republican Subordination
+    nb: Rebublican Subordination distrikt
+    nl: Regio ondergeordend aan de republiek
+    pl: Rejony Administrowane Centralnie
+    pt: Karotegin
+    ru: районы республиканского подчинения Таджикистана
+    si: යටත්විජිත ජනරජ දිස්ත්‍රික්ක
+    sv: Karotegin
+    ta: ரிபப்லிக்கன் சுபோர்டினேஷன் மாவட்டங்கள்
+    te: రిపబ్లికన్ సబార్డినేషన్ జిల్లాలు
+    th: เขค รีพลับบลิค เซอบอดิเนชั่น
+    tr: Karategin
+    uk: райони республіканського підпорядкування
+    ur: جمہوریہ ماتحتی اضلاع
+    vi: Các Quận của Republican Subordination
+    ceb: Region of Republican Subordination
+    zh: 國家直轄區
+    ccp: "\U0001111A\U0001112E\U00011126\U00011128\U00011120\U0001112E\U00011126\U00011130
+      \U00011111\U0001112E\U0001111D\U0001112C\U0001112D \U0001110E\U0001112A\U0001111F\U00011134\U00011126\U0001112A\U00011122\U00011128"
+    be: раёны рэспубліканскага падпарадкавання Таджыкістана
+    uz: Tojikistonning respublikaga boʻysunuvchi tumanlari
+    'no': Rebublican Subordination distrikt
+    ca: Districtes de la Subordinació Republicana
+    eu: Errepublikarekiko mendekotasunpeko barrutiak
+  comments:
+  type: districts_under_republic_administration
+SU:
+  name: Sughd
+  code: SU
+  unofficial_names:
+  - Chudjand
+  - Hucand
+  - Hudžand
+  - Hücand
+  - Khodzent
+  - Khodzhent
+  - Khudzhand
+  - Leninabad
+  geo:
+    latitude: 39.5155326
+    longitude: 69.097023
+    min_latitude: 38.926113
+    min_longitude: 67.3871309
+    max_latitude: 41.0422438
+    max_longitude: 70.984337
+  translations:
+    en: Sughd
+    ar: صغد
+    az: Sogd vilayəti
+    bg: Согдийска област
+    bn: সুগ্ধ প্রদেশ
+    ca: Província de Sughd
+    cs: Sogdijský vilájet
+    da: Sughd Province
+    de: Sughd
+    el: Σούγκχντ
+    es: Provincia de Sughd
+    et: Sugdi vilajett
+    fa: ولایت سغد
+    fi: Sugd
+    fr: Sughd
+    gl: Provincia de Sogdiana
+    gu: સુઘડ પ્રાંત
+    he: מחוז סוגד
+    hi: सुग़्द प्रान्त
+    hy: Սոգդիյան մարզ
+    id: Provinsi Sughd
+    it: Suǧd
+    ja: ソグド州
+    ka: სოღდის ოლქი
+    kn: ಸುಗ್ದ್ ಪ್ರಾಂತ್ಯ
+    ko: 수그드 주
+    lt: Sugdo provincija
+    lv: Sugda
+    mr: सुघड प्रांत
+    ms: Sughd Province
+    nb: Sughd
+    nl: Sughd
+    pl: Wilajet sogdyjski
+    pt: Sughd
+    ro: Sughd
+    ru: Согдийская область
+    si: සුග්ඩ් පළාත
+    sv: Sughd
+    ta: சுகட் மாகாணம்
+    te: సుగ్ధ్ ప్రావిన్స్
+    th: เขตซักฮัญ์
+    tk: Sogd welayaty
+    tr: Sogd
+    uk: Согдійська область
+    ur: صوبہ سغد
+    vi: Sughd
+    ceb: Viloyati Sughd
+    zh: 索格特州
+    ccp: "\U00011125\U0001112A\U00011107\U00011134\U00011126\U00011134"
+    be: Сагдыйская вобласць
+    uz: Sugʻd
+    'no': Sughd
+    cy: Talaith Sughd
+    eu: Sughd
+    ky: Согдий областы
+  comments:
+  type: region

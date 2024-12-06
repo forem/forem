@@ -1,0 +1,220 @@
+[
+    [0] #<User:placeholder_id
+        @_start_transaction_state = {},
+        @aggregation_cache = {},
+        @destroyed = false,
+        @marked_for_destruction = false,
+        @new_record = true,
+        @original_raw_attributes = {
+                 "admin" => false,
+            "created_at" => 1992-10-10 12:30:00 UTC,
+                  "name" => "Diana",
+                  "rank" => 1
+        },
+        @readonly = false,
+        @transaction_state = nil,
+        @txn = nil,
+        attr_accessor :attributes = #<ActiveRecord::AttributeSet:placeholder_id
+            @attributes = #<ActiveRecord::LazyAttributeHash:placeholder_id
+                @additional_types = {},
+                @delegate_hash = {
+                         "admin" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "admin",
+                        attr_reader :type = #<ActiveRecord::Type::Boolean:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = false,
+                        attr_reader :value_before_type_cast = false
+                    >,
+                    "created_at" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "created_at",
+                        attr_reader :type = #<ActiveRecord::Type::DateTime:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = 1992-10-10 12:30:00 UTC,
+                        attr_reader :value_before_type_cast = "1992-10-10 12:30:00"
+                    >,
+                          "name" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "name",
+                        attr_reader :type = #<ActiveRecord::Type::String:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = "Diana",
+                        attr_reader :value_before_type_cast = "Diana"
+                    >,
+                          "rank" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "rank",
+                        attr_reader :type = #<ActiveRecord::Type::Integer:placeholder_id
+                            @range = -2147483648...2147483648,
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = 1,
+                        attr_reader :value_before_type_cast = 1
+                    >
+                },
+                @materialized = false,
+                @types = {
+                         "admin" => #<ActiveRecord::Type::Boolean:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    "created_at" => #<ActiveRecord::Type::DateTime:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                            "id" => #<ActiveRecord::Type::Integer:placeholder_id
+                        @range = -2147483648...2147483648,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                          "name" => #<ActiveRecord::Type::String:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                          "rank" => #<ActiveRecord::Type::Integer:placeholder_id
+                        @range = -2147483648...2147483648,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >
+                },
+                @values = {
+                         "admin" => nil,
+                    "created_at" => nil,
+                            "id" => nil,
+                          "name" => nil,
+                          "rank" => nil
+                }
+            >
+        >,
+        attr_accessor :destroyed_by_association = nil,
+        attr_reader :association_cache = {},
+        attr_reader :changed_attributes = {
+                 "admin" => nil,
+            "created_at" => nil,
+                  "name" => nil,
+                  "rank" => nil
+        }
+    >,
+    [1] #<User:placeholder_id
+        @_start_transaction_state = {},
+        @aggregation_cache = {},
+        @destroyed = false,
+        @marked_for_destruction = false,
+        @new_record = true,
+        @original_raw_attributes = {
+                 "admin" => true,
+            "created_at" => 2003-05-26 14:15:00 UTC,
+                  "name" => "Laura",
+                  "rank" => 2
+        },
+        @readonly = false,
+        @transaction_state = nil,
+        @txn = nil,
+        attr_accessor :attributes = #<ActiveRecord::AttributeSet:placeholder_id
+            @attributes = #<ActiveRecord::LazyAttributeHash:placeholder_id
+                @additional_types = {},
+                @delegate_hash = {
+                         "admin" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "admin",
+                        attr_reader :type = #<ActiveRecord::Type::Boolean:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = true,
+                        attr_reader :value_before_type_cast = true
+                    >,
+                    "created_at" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "created_at",
+                        attr_reader :type = #<ActiveRecord::Type::DateTime:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = 2003-05-26 14:15:00 UTC,
+                        attr_reader :value_before_type_cast = "2003-05-26 14:15:00"
+                    >,
+                          "name" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "name",
+                        attr_reader :type = #<ActiveRecord::Type::String:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = "Laura",
+                        attr_reader :value_before_type_cast = "Laura"
+                    >,
+                          "rank" => #<ActiveRecord::Attribute::FromUser:placeholder_id
+                        attr_reader :name = "rank",
+                        attr_reader :type = #<ActiveRecord::Type::Integer:placeholder_id
+                            @range = -2147483648...2147483648,
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value = 2,
+                        attr_reader :value_before_type_cast = 2
+                    >
+                },
+                @materialized = false,
+                @types = {
+                         "admin" => #<ActiveRecord::Type::Boolean:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    "created_at" => #<ActiveRecord::Type::DateTime:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                            "id" => #<ActiveRecord::Type::Integer:placeholder_id
+                        @range = -2147483648...2147483648,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                          "name" => #<ActiveRecord::Type::String:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                          "rank" => #<ActiveRecord::Type::Integer:placeholder_id
+                        @range = -2147483648...2147483648,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >
+                },
+                @values = {
+                         "admin" => nil,
+                    "created_at" => nil,
+                            "id" => nil,
+                          "name" => nil,
+                          "rank" => nil
+                }
+            >
+        >,
+        attr_accessor :destroyed_by_association = nil,
+        attr_reader :association_cache = {},
+        attr_reader :changed_attributes = {
+                 "admin" => nil,
+            "created_at" => nil,
+                  "name" => nil,
+                  "rank" => nil
+        }
+    >
+]

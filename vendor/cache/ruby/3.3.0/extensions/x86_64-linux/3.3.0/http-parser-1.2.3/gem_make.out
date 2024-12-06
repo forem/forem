@@ -1,0 +1,5 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/http-parser-1.2.3/ext
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby -rrubygems /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/rake-13.2.1/exe/rake RUBYARCHDIR\=/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/extensions/x86_64-linux/3.3.0/http-parser-1.2.3 RUBYLIBDIR\=/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/extensions/x86_64-linux/3.3.0/http-parser-1.2.3
+gcc -fexceptions -O -fno-omit-frame-pointer -fno-strict-aliasing -Wall -Wextra -O3 -fPIC   -o x86_64-linux/http-parser/http_parser.o -c ./http-parser/http_parser.c
+mkdir -p x86_64-linux/http-parser
+gcc -shared -o x86_64-linux/libhttp-parser-ext.so x86_64-linux/http-parser/http_parser.o -fexceptions 

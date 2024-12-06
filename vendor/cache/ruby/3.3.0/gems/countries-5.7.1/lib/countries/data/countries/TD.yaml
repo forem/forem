@@ -1,0 +1,53 @@
+---
+TD:
+  alpha2: TD
+  alpha3: TCD
+  continent: Africa
+  country_code: '235'
+  currency_code: XAF
+  distance_unit: KM
+  gec: CD
+  geo:
+    latitude: 15.454166
+    longitude: 18.732207
+    max_latitude: 23.449228
+    max_longitude: 24.0000011
+    min_latitude: 7.442975
+    min_longitude: 13.4699999
+    bounds:
+      northeast:
+        lat: 23.449228
+        lng: 24.0000011
+      southwest:
+        lat: 7.442975
+        lng: 13.4699999
+  international_prefix: '15'
+  ioc: CHA
+  iso_long_name: The Republic of Chad
+  iso_short_name: Chad
+  languages_official:
+  - ar
+  - fr
+  languages_spoken:
+  - ar
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Chadian
+  number: '148'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Middle Africa
+  un_locode: TD
+  unofficial_names:
+  - Chad
+  - تشاد
+  - Tschad
+  - Tchad
+  - チャド
+  - Tsjaad
+  world_region: EMEA

@@ -1,0 +1,64 @@
+---
+AE:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: AE
+  alpha3: ARE
+  continent: Asia
+  country_code: '971'
+  currency_code: AED
+  distance_unit: KM
+  gec: AE
+  geo:
+    latitude: 23.424076
+    longitude: 53.847818
+    max_latitude: 26.0765
+    max_longitude: 56.4395001
+    min_latitude: 22.6315138
+    min_longitude: 51.4723
+    bounds:
+      northeast:
+        lat: 26.0765
+        lng: 56.4395001
+      southwest:
+        lat: 22.6315138
+        lng: 51.4723
+  international_prefix: '00'
+  ioc: UAE
+  iso_long_name: The United Arab Emirates
+  iso_short_name: United Arab Emirates
+  languages_official:
+  - ar
+  languages_spoken:
+  - ar
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Emirian
+  number: '784'
+  postal_code: false
+  region: Asia
+  start_of_week: monday
+  subregion: Western Asia
+  un_locode: AE
+  unofficial_names:
+  - United Arab Emirates
+  - الإمارات العربية المتحدة
+  - Vereinigte Arabische Emirate
+  - Émirats Arabes Unis
+  - Emiratos Árabes Unidos
+  - アラブ首長国連邦
+  - Verenigde Arabische Emiraten
+  vat_rates:
+    standard: 5
+    reduced: []
+    super_reduced:
+    parking:
+  world_region: EMEA

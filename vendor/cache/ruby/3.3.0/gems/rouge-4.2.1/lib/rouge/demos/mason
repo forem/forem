@@ -1,0 +1,22 @@
+<%doc>
+    This is a mason component.
+    # This is a comment.
+</%doc>
+
+<%args>
+    $color         # this argument is required!
+    $size => 20    # default size
+    $country => undef   # this argument is optional, default value is 'undef'
+    @items => (1, 2, 'something else')
+    %pairs => (name => "John", age => 29)
+</%args>
+
+% # A random block of Perl code
+<%perl>
+    my @people = ('mary' 'john' 'pete' 'david');
+</%perl>
+
+% # Note how each line of code begins with the mandatory %
+% foreach my $person (@people) {
+    Name: <% $person %>
+% }

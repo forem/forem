@@ -1,0 +1,25 @@
+{
+  "name": "i18n-js",
+  "version": "3.9.2",
+  "description": "A javascript library similar to Ruby on Rails i18n gem",
+  "author": "Nando Vieira",
+  "license": "MIT",
+  "keywords": [
+    "i18n"
+  ],
+  "devDependencies": {
+    "jasmine-node": "^3.0.0"
+  },
+  "main": "app/assets/javascripts/i18n.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine-node spec/js"
+  },
+  "homepage": "https://github.com/fnando/i18n-js",
+  "bugs": {
+    "url": "https://github.com/fnando/i18n-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fnando/i18n-js.git"
+  }
+}

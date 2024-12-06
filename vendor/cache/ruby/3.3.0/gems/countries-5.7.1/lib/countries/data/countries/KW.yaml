@@ -1,0 +1,57 @@
+---
+KW:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{region}}
+    {{country}}
+  alpha2: KW
+  alpha3: KWT
+  continent: Asia
+  country_code: '965'
+  currency_code: KWD
+  distance_unit: KM
+  gec: KU
+  geo:
+    latitude: 29.31166
+    longitude: 47.481766
+    max_latitude: 30.1036993
+    max_longitude: 48.5184
+    min_latitude: 28.5244463
+    min_longitude: 46.55303989999999
+    bounds:
+      northeast:
+        lat: 30.1036993
+        lng: 48.5184
+      southwest:
+        lat: 28.5244463
+        lng: 46.55303989999999
+  international_prefix: '00'
+  ioc: KUW
+  iso_long_name: The State of Kuwait
+  iso_short_name: Kuwait
+  languages_official:
+  - ar
+  languages_spoken:
+  - ar
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Kuwaiti
+  number: '414'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: sunday
+  subregion: Western Asia
+  un_locode: KW
+  unofficial_names:
+  - Kuwait
+  - الكويت
+  - Koweït
+  - クウェート
+  - Koeweit
+  world_region: EMEA

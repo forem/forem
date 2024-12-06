@@ -1,0 +1,115 @@
+# Avoid parameter lists longer than five parameters.
+ParameterLists:
+  Max: 3
+  CountKeywordArgs: true
+
+# Avoid more than `Max` levels of nesting.
+BlockNesting:
+  Max: 3
+
+# Align with the style guide.
+CollectionMethods:
+  PreferredMethods:
+    collect:  'map'
+    inject:   'reduce'
+    find:     'detect'
+    find_all: 'select'
+
+# Do not force public/protected/private keyword to be indented at the same
+# level as the def keyword. My personal preference is to outdent these keywords
+# because I think when scanning code it makes it easier to identify the
+# sections of code and visually separate them. When the keyword is at the same
+# level I think it sort of blends in with the def keywords and makes it harder
+# to scan the code and see where the sections are.
+AccessModifierIndentation:
+  Enabled: false
+
+# Limit line length
+LineLength:
+  Max: 106
+
+# Disable documentation checking until a class needs to be documented once
+Documentation:
+  Enabled: false
+
+# Do not always use &&/|| instead of and/or.
+AndOr:
+  Enabled: false
+
+# Do not favor modifier if/unless usage when you have a single-line body
+IfUnlessModifier:
+  Enabled: false
+
+# Allow case equality operator (in limited use within the specs)
+CaseEquality:
+  Enabled: false
+
+# Constants do not always have to use SCREAMING_SNAKE_CASE
+ConstantName:
+  Enabled: false
+
+# Not all trivial readers/writers can be defined with attr_* methods
+TrivialAccessors:
+  Enabled: false
+
+# Allow empty lines around class body
+EmptyLinesAroundClassBody:
+  Enabled: false
+
+# Allow empty lines around module body
+EmptyLinesAroundModuleBody:
+  Enabled: false
+
+# Allow empty lines around block body
+EmptyLinesAroundBlockBody:
+  Enabled: false
+
+# Allow multiple line operations to not require indentation
+MultilineOperationIndentation:
+  Enabled: false
+
+# Prefer String#% over Kernel#sprintf
+FormatString:
+  Enabled: false
+
+# Use square brackets for literal Array objects
+PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%':  '{}'
+    '%i': '[]'
+    '%q': ()
+    '%Q': ()
+    '%r': '{}'
+    '%s': ()
+    '%w': '[]'
+    '%W': '[]'
+    '%x': ()
+
+# Use %i[...] for arrays of symbols
+SymbolArray:
+  Enabled: true
+
+# Align if/else blocks with the variable assignment
+EndAlignment:
+  AlignWith: variable
+
+# Do not always align parameters when it is easier to read
+AlignParameters:
+  Exclude:
+    - spec/**/*_spec.rb
+
+# Prefer #kind_of? over #is_a?
+ClassCheck:
+  EnforcedStyle: kind_of?
+
+# Do not prefer double quotes to be used when %q or %Q is more appropriate
+UnneededPercentQ:
+  Enabled: false
+
+# Allow a maximum ABC score
+Metrics/AbcSize:
+  Max: 8.6
+
+# Do not prefer lambda.call(...) over lambda.(...)
+LambdaCall:
+  Enabled: false

@@ -1,0 +1,51 @@
+---
+TO:
+  alpha2: TO
+  alpha3: TON
+  continent: Australia
+  country_code: '676'
+  currency_code: TOP
+  distance_unit: KM
+  gec: TN
+  geo:
+    latitude: -21.178986
+    longitude: -175.198242
+    max_latitude: -15.4060236
+    max_longitude: -173.2543946
+    min_latitude: -21.8360059
+    min_longitude: -175.9570313
+    bounds:
+      northeast:
+        lat: -15.4060236
+        lng: -173.2543946
+      southwest:
+        lat: -21.8360059
+        lng: -175.9570313
+  international_prefix: '00'
+  ioc: TGA
+  iso_long_name: The Kingdom of Tonga
+  iso_short_name: Tonga
+  languages_official:
+  - en
+  - to
+  languages_spoken:
+  - en
+  - to
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 5
+  - 6
+  - 7
+  national_prefix: None
+  nationality: Tongan
+  number: '776'
+  postal_code: false
+  region: Oceania
+  start_of_week: monday
+  subregion: Polynesia
+  un_locode: TO
+  unofficial_names:
+  - Tonga
+  - トンガ
+  world_region: APAC

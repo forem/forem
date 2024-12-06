@@ -1,0 +1,20 @@
+require 'autotest/growl'
+
+Autotest.add_hook(:initialize) {|at|
+  at.add_exception %r{^\.git|\.yardoc}
+  at.add_exception %r{^./tmp}
+  at.add_exception %r{coverage}
+
+  at.clear_mappings
+
+  at.add_mapping(%r%^spec/.*_spec\.rb$%) { |filename, _|
+    filename
+  }
+  at.add_mapping(%r%^lib/(.*)\.rb$%) { |_, m|
+    ["spec/#{m[1].split('/').last}_spec.rb"]
+  }
+  at.add_mapping(%r%^spec/(spec_helper|shared/.*)\.rb$%) {
+    files_matching %r%^spec/.*_spec\.rb$%
+  }
+  nil
+}

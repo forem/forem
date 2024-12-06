@@ -1,0 +1,59 @@
+find_header: checking for rice/rice.hpp in /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/rice-4.1.0/include... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "g++ -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     conftest.cc  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return !!argv[argc];
+6: }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "g++ -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -std=c++17   -c conftest.cc"
+conftest.cc:3:10: fatal error: rice/rice.hpp: No such file or directory
+    3 | #include <rice/rice.hpp>
+      |          ^~~~~~~~~~~~~~~
+compilation terminated.
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <rice/rice.hpp>
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "g++ -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -std=c++17  -I/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/rice-4.1.0/include -c conftest.cc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <rice/rice.hpp>
+/* end */
+
+--------------------
+
+have_library: checking for -lstdc++... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "g++ -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I. -I/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/rice-4.1.0/include     conftest.cc  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lstdc++  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: 
+15: int t(void) { ; return 0; }
+/* end */
+
+--------------------
+

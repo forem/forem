@@ -1,0 +1,10 @@
+experiments:
+  button_color:
+    variants:
+      - red
+      - green
+      - blue
+    # winner: green
+
+exclude:
+  bots: true

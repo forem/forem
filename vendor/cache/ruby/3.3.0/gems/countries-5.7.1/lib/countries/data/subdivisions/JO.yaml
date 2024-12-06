@@ -1,0 +1,739 @@
+---
+AJ:
+  name: Ajlun
+  code: AJ
+  unofficial_names:
+  - Ajloan
+  - Ajlun
+  geo:
+    latitude: 32.2561926
+    longitude: 35.6969984
+    min_latitude: 32.158034
+    min_longitude: 35.606699
+    max_latitude: 32.40349
+    max_longitude: 35.904965
+  translations:
+    en: Ajloun
+    ar: عجلون
+    bn: আজলুন গভর্নোরেট
+    ca: Governació d’Ajlun
+    da: Ajloun Governorate
+    de: Gouvernement Adschlun
+    el: Ατζλούν Γκοβερνοράτε
+    es: Gobernación de Ajlun
+    eu: Ajlun Gobernazioa
+    fa: استان عجلون
+    fi: Ajlun
+    fr: subdivision d’Ajlun
+    gu: અજલોન ગવર્નોરેટ
+    he: עג׳לון
+    hi: अजलुन
+    hu: Adzslún kormányzóság
+    id: Kegubernuran Ajloun
+    it: governatorato di Ajlun
+    ja: アジュルン県
+    kn: ಅಜ್ಲೊನ್ ಗವರ್ನೇಟ್
+    ko: 아질룬 주
+    lt: Adžluno muchafaza
+    mr: अजलॉन गव्हर्नोरेट
+    ms: Ajloun Governorate
+    nb: Ailoun
+    nl: Ajlun
+    pl: Adżlun (muhafaza)
+    pt: Governorato de Ajloun
+    ro: Guvernoratul Ajloun
+    ru: Аджлун (мухафаза)
+    si: අජ්ලොඋන් පළාත
+    sv: Ajlun (guvernement)
+    ta: அஜலூன் கோவெர்னோரே
+    te: అజ్‌లౌన్ గవర్నరేట్
+    th: อัจลุน โกเวอโนเรท
+    tr: Ajloun Yönetimi
+    ur: محافظہ عجلون
+    vi: Tỉnh Ajloun
+    zh: 阿傑隆省
+    lv: Adžlūnas muhāfaza
+    sq: Governorati Ajloun
+    ccp: "\U00011103\U0001110C\U00011134\U00011123\U00011105\U0001112A\U0001111A\U00011134"
+    hy: Աջլունի մարզ
+    uk: Муніципалітет Аджлун
+    'no': Ailoun
+    ceb: Ajloun (lalawigan sa Hordan)
+    cy: Ardal Lywodraethol Ajlwn
+  comments:
+  type: governorate
+AM:
+  name: Amman
+  code: AM
+  unofficial_names:
+  - Amman
+  geo:
+    latitude: 31.9565783
+    longitude: 35.9456951
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Amman
+    ar: محافظة العاصمة
+    bn: আম্মান গভর্নোরেট
+    ca: Governació d’Amman
+    da: Amman Governorate
+    de: Gouvernement Amman
+    el: Αμάν
+    es: Gobernación de Ammán
+    eu: Amman Gobernazioa
+    fa: عمان (استان)
+    fi: Amman (kuvernoraatti)
+    fr: subdivision d’Amman
+    gu: અમ્માન ગવર્નોરેટ
+    he: מחוז עמאן
+    hi: अम्मान गवर्नरेट
+    hu: Főváros kormányzóság (Jordánia)
+    hy: Ամմանի մարզ
+    id: Amman Governorate
+    it: governatorato di Amman
+    ja: アンマン県
+    kn: ಅಮ್ಮನ್ ಗವರ್ನೇಟ್
+    ko: 암만 주
+    lt: Amano muchafaza
+    mr: अम्मन गव्हर्नोरेट
+    ms: Amman Governorate
+    nb: Amman Governorate
+    nl: Amman
+    pl: Amman (muhafaza)
+    pt: Amã (província)
+    ro: Guvernoratul Amman
+    ru: Амман
+    si: අම්මාන් පළාත
+    sv: Amman (guvernement)
+    ta: அம்மன் கோவெர்னோராட்
+    te: అమ్మన్ గవర్నరేట్
+    th: ทินห์ อัมมาน
+    tr: Başkent ili
+    ur: محافظہ عمان
+    vi: Tỉnh Amman
+    lv: Ammānas muhāfaza
+    zh: 安曼省
+    ccp: "\U00011103\U0001111F\U00011127\U0001111A\U00011134"
+    uk: Мугафаза Амман
+    be: Аман
+    'no': Amman Governorate
+    cy: Ardal Lywodraethol Amman
+    sd: امان گورنري
+  comments:
+  type: governorate
+AQ:
+  name: Aqaba
+  code: AQ
+  unofficial_names:
+  - Akaba
+  - Aqaba
+  - Aqqaba
+  - al-Aqaba
+  geo:
+    latitude: 29.5319199
+    longitude: 35.0060842
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Aqaba
+    ar: العقبة
+    bn: আকাবা গভর্নোরেট
+    da: Aqaba Governorate
+    de: Aqaba
+    el: Ακάμπα Γκοβερνοράτε
+    es: Gobernación de Aqaba
+    eu: Aqaba Gobernazioa
+    fa: استان عقبه
+    fr: subdivision d’Aqaba
+    gu: ઍકાબા ગવર્નરેટ
+    he: עקבה
+    hi: अकाबा गवर्नरेट
+    hu: Akaba kormányzóság
+    hy: Ակաբայի մարզ
+    id: Aqaba Governorate
+    it: governatorato di Aqaba
+    ja: アカバ県
+    kn: ಅಖಾಬಾ ಗವರ್ನೇಟ್
+    ko: 아카바 주
+    lt: Akabos muchafaza
+    mr: अकाबा गव्हर्नोरेट
+    ms: Aqaba Governorate
+    nb: Aqaba Givernorate
+    nl: Akaba
+    pl: Akaba
+    pt: Governorado de Aqaba
+    ro: Guvernoratul Aqaba
+    ru: Акаба
+    si: අකබා පළාත
+    sv: Akaba
+    ta: அகிஆபா கோவெர்னோரேட்
+    te: అకాబా గవర్నరేట్
+    th: เขตการปกครองอควาบา
+    tr: Aqaba Yönetimi
+    ur: محافظہ عقبہ
+    vi: Tỉnh Aqaba
+    lv: Akabas muhāfaza
+    ceb: Aqaba
+    zh: 亞喀巴省
+    ccp: "\U00011103\U00011107\U0001112A\U0001111D"
+    uk: Муніципалітет Акаба
+    'no': Aqaba Givernorate
+    cy: Ardal Lywodraethol Aqaba
+    ga: Gobharnóireacht Aqaba
+  comments:
+  type: governorate
+AT:
+  name: At Tafilah
+  code: AT
+  unofficial_names:
+  - Tafiela
+  - Tafileh
+  - at-Tafilah
+  geo:
+    latitude: 30.83583299999999
+    longitude: 35.612222
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Tafilah
+    ar: الطفيلة
+    bn: তাফিলাহ গভর্নোরেট
+    da: Tafilah Governorate
+    de: Gouvernement at-Tafila
+    el: Ταφιλάχ Γκοβερνοράτε
+    es: Gobernación de Tafila
+    eu: Tafilah Gobernazioa
+    fa: طفیله
+    fi: At Tafilah
+    fr: Gouvernorat de Tafilah
+    gu: તાફીલા ગવર્નોરેટ
+    he: טפילה
+    hi: तफिला गवर्नरेट
+    hu: Tafíla kormányzóság
+    hy: Ալ-Տաֆիլայի մարզ
+    id: Kegubernuran Tafilah
+    it: governatorato di al-Tafila
+    ja: タフィラ県
+    kn: ಟಫಿಲಾ ಗವರ್ನೇಟ್
+    ko: 타필라 주
+    lt: Tafilos muchafaza
+    mr: ताफीला गव्हर्नोरेट
+    ms: Tafilah Governorate
+    nb: Tafilah Governorate
+    nl: Tafilah
+    pl: At-Tafila
+    pt: Governamento de Tafilah
+    ro: Guvernoratul Tafilah
+    ru: Эт-Тафила
+    si: ටෆිලා පළාත
+    sv: Tafilah
+    ta: டபிலாஹ் கோவெர்னோகைட்
+    te: టాఫిలా గవర్నరేట్
+    th: ทาฟิล๊ะห์ กอฟเวอโนเลท
+    tr: Tafilah Yönetimi
+    ur: محافظہ طفیلہ
+    vi: Tỉnh Tafilah
+    lv: Tafilas muhāfaza
+    zh: 塔菲拉省
+    ccp: "\U00011111\U0001111C\U00011128\U00011123\U00011126\U00011134"
+    uk: Муніципалітет Тафіла
+    'no': Tafilah Governorate
+  comments:
+  type: governorate
+AZ:
+  name: Az Zarqa'
+  code: AZ
+  unofficial_names:
+  - Zarka
+  - Zarqa
+  - Zerka
+  geo:
+    latitude: 31.7515118
+    longitude: 36.8680791
+    min_latitude: 31.49364899999999
+    min_longitude: 35.8889939
+    max_latitude: 32.196324
+    max_longitude: 37.780864
+  translations:
+    en: Zarqa
+    ar: الزرقاء
+    bn: জারকা গভর্নোরেট
+    ca: Governació de Zarqa
+    da: Zarqa Governorate
+    de: Gouvernement Zarqa
+    el: Ζάρκα
+    es: Gobernación de Zarká
+    eu: Zarqa Gobernazioa
+    fa: زرقاء
+    fi: Az Zarqa
+    fr: subdivision de Zarqa
+    gu: ઝારકા ગવર્નોરેટ
+    he: מחוז זרקא
+    hi: ज़ारका गवर्नरेट
+    hu: Zarká kormányzóság
+    id: Kegubernuran Zarqa
+    it: governatorato di al-Zarqa
+    ja: ザルカ県
+    kn: ಝರ್ಖಾ ಗವರ್ನೇಟ್
+    ko: 자르카 주
+    lt: Zarkos muchafaza
+    mr: झर्क गव्हर्नोरेट
+    ms: Zarqa Governorate
+    nb: Zarqa
+    nl: Zarka
+    pl: Az-Zarka
+    pt: Governorado de Zarqa
+    ro: Guvernoratul Zarqa
+    ru: Эз-Зарка
+    si: සරකා පළාත
+    sv: Zarqa
+    ta: சார்கியா கோவெர்னோரே
+    te: జర్ఖా గవర్నరేట్
+    th: ซาร์กา
+    tr: Zarqa Yönetimi
+    ur: محافظہ زرقاء
+    vi: Tỉnh Zarqa
+    lv: Zerkas muhāfaza
+    zh: 扎爾卡省
+    ccp: "\U0001110E\U00011122\U00011134\U00011107"
+    uk: Муніципалітет Ез-Зарка
+    'no': Zarqa
+    cs: Zarká (guvernorát)
+    cy: Ardal Lywodraethol Zarqa
+    hy: Զարքայի մարզ
+  comments:
+  type: governorate
+BA:
+  name: Al Balqa'
+  code: BA
+  unofficial_names: Al Balqa'
+  geo:
+    latitude: 31.9676039
+    longitude: 35.6095474
+    min_latitude: 31.6735621
+    min_longitude: 35.519307
+    max_latitude: 32.183978
+    max_longitude: 35.934166
+  translations:
+    en: Balqa
+    ar: البلقاء
+    bn: বাল্কা গভর্নোরেট
+    ca: Al-Balqa
+    da: Balqa Governorate
+    de: Gouvernement al-Balqa
+    el: Μπάλγκα
+    es: Gobernación de Balqa’
+    eu: Balqa Gobernazioa
+    fa: بلقاء
+    fi: Al Balqa’
+    fr: subdivision de Balqa
+    gu: બાલ્કા ગવર્નોરેટ
+    he: בלקא
+    hi: बालका गवर्नरेट
+    hu: Balká kormányzóság
+    id: Balqa Governorate
+    it: governatorato di Balqa
+    ja: バルカ県
+    kn: ಬಲ್ಕಾ ಗವರ್ನೇಟ್
+    ko: 발카 주
+    lt: Balkos muchafaza
+    mr: बालका गव्हर्नोरेट
+    ms: Balqa Governorate
+    nb: Balqa
+    nl: Balka
+    pl: Al-Balka
+    pt: Balqa
+    ro: Guvernoratul Balqa
+    ru: Эль-Балка
+    si: බල්කා පරිපාලන කොට්ටාශය
+    sv: Balqa
+    ta: பாலகியா கோவெர்னோரே
+    te: బాల్ఖా గవర్నరేట్
+    th: เขตผู้ว่าบัลกา
+    tr: Balqa Yönetimi
+    ur: محافظہ بلقاء
+    vi: Tỉnh Balqa
+    lv: Balkas muhāfaza
+    zh: 拜勒加省
+    sq: Governorati Balqa
+    ccp: "\U0001111D\U00011127\U00011123\U00011134\U00011107"
+    uk: Муніципалітет Ель-Балка
+    'no': Balqa
+  comments:
+  type: governorate
+IR:
+  name: Irbid
+  code: IR
+  unofficial_names:
+  - Irbit
+  geo:
+    latitude: 32.5454418
+    longitude: 35.8571532
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Irbid
+    ar: إربد
+    bn: ইরবিদ গভর্নোরেট
+    ca: Governació d’Irbid
+    da: Irbid Governorate
+    de: Gouvernement Irbid
+    el: Ιρμπίντ Γκοβερνοράτε
+    es: Gobernación de Irbid
+    eu: Irbid Gobernazioa
+    fa: استان اربد
+    fi: Irbid
+    fr: subdivision d’Irbid
+    gu: ઇરબિડ ગવર્નોરેટ
+    he: מחוז אירביד
+    hi: आइरबिड गवर्नरेट
+    hu: Irbid kormányzóság
+    hy: Իրբիդի մարզ
+    id: Irbid Governorate
+    it: governatorato di Irbid
+    ja: イルビド県
+    kn: ಇರ್ಬಿಡ್ ಗವರ್ನೇಟ್
+    ko: 이르비드 주
+    lt: Irbido muchafaza
+    mr: इर्बिड गव्हर्नोरेट
+    ms: Irbid Governorate
+    nb: Irbid
+    nl: Irbid
+    pl: Irbid
+    pt: Governorado de Irbid
+    ro: Guvernoratul Irbid
+    ru: Ирбид
+    si: ඉර්බිඩ් පළාත
+    sv: Irbid
+    ta: இர்பிட் கோவெர்னோராட்
+    te: ఇర్బిడ్ గవర్నరేట్
+    th: อัลบิด ยันติมี
+    tr: Irbid Yönetimi
+    ur: محافظہ اربد
+    vi: Tỉnh Irbid
+    lv: Irbidas muhāfaza
+    ceb: Irbid
+    zh: 伊爾比德省
+    sq: Governorati i Irbidit
+    ccp: "\U00011103\U00011128\U00011122\U00011134\U0001111D\U00011128\U00011116\U00011134"
+    uk: Муніципалітет Ірбід
+    'no': Irbid
+    cy: Ardal Lywodraethol Irbid
+  comments:
+  type: governorate
+JA:
+  name: Jarash
+  code: JA
+  unofficial_names:
+  - Jarash
+  - Jerash
+  geo:
+    latitude: 32.2769016
+    longitude: 35.9055502
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Jerash
+    ar: جرش
+    bn: জারাশ গভর্নোরেট
+    da: Jerash Governorate
+    de: Gouvernement Dscharasch
+    el: Τζέρας
+    es: Gobernación de Gerasa
+    eu: Jerax Gobernazioa
+    fa: استان جرش
+    fi: Jarash
+    fr: subdivision de Jerash
+    gu: જરાશ ગવર્નોરેટ
+    he: מחוז ג׳רש
+    hi: जेराश
+    hu: Dzseras kormányzóság
+    hy: Ջարաշի մարզ
+    id: Kegubernuran Jerash
+    it: governatorato di Jerash
+    ja: ジェラシュ県
+    kn: ಜೆರಾಶ್ ಗವರ್ನೇಟ್
+    ko: 제라시 주
+    lt: Džarašo muchafaza
+    mr: जेरेश गव्हर्नोरेट
+    ms: Jerash Governorate
+    nb: Jerash
+    nl: Jerash
+    pl: Dżarasz (muhafaza)
+    pt: Governorado de Gérasa
+    ro: Guvernoratul Jerash
+    ru: Джараш
+    si: ජෙරාෂ් පළාත
+    sv: Jerash
+    ta: ஜெராஷ் கோவெர்னோரே
+    te: జెరాష్ గవర్నరేట్
+    th: เจราช โกเวอโนเรท
+    tr: Jerash Yönetimi
+    ur: محافظہ جرش
+    vi: Tỉnh Jerash
+    lv: Džerasas muhāfaza
+    ceb: Jarash
+    zh: 傑拉什省
+    sq: Governorati Jerash
+    ccp: "\U0001110E\U0001112C\U00011122\U0001110C\U00011134"
+    uk: Муніципалітет Джараш
+    'no': Jerash
+  comments:
+  type: governorate
+KA:
+  name: Al Karak
+  code: KA
+  unofficial_names:
+  - Karak
+  - Kerak
+  geo:
+    latitude: 31.1648059
+    longitude: 35.7618824
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Karak
+    ar: الكرك
+    bn: কারাক গভর্নোরেট
+    ca: Governació de Karak
+    da: Kerak
+    de: Gouvernement Karak
+    el: Καράκ Γκοβερνοράτε
+    es: Gobernación de Karak
+    eu: Karak Gobernazioa
+    fa: استان کرک
+    fi: Al Karak
+    fr: subdivision de Karak
+    gu: કરાક ગવર્નોરેટ
+    he: מחוז כרכ
+    hi: करक गवर्नरेट
+    hu: Karak kormányzóság
+    id: Karak Governorate
+    it: governatorato di al-Karak
+    ja: カラク県
+    kn: ಕರಾಕ್ ಗವರ್ನೇಟ್
+    ko: 카라크 주
+    lt: Karako muchafaza
+    mr: कराक गव्हर्नोरेट
+    ms: Karak Governorate
+    nb: Karak Governorate
+    nl: Kerak
+    pl: Al-Karak
+    pt: Karak
+    ro: Guvernoratul Karak
+    ru: Эль-Карак
+    si: කරක් පළාත
+    sv: Karak
+    ta: கரக் கோவெர்னோரேட்
+    te: కార్డ‌క్ గవర్నరేట్
+    th: เขตการปกครองการัก
+    tr: Karak Yönetimi
+    ur: محافظہ کرک
+    vi: Khu vực hành chính Karak
+    lv: Kerākas muhāfaza
+    ceb: Al Karak
+    zh: 卡拉克省
+    ccp: "\U00011107\U0001112C\U00011122\U00011127\U00011107\U00011134"
+    uk: Муніципалітет Карак
+    'no': Karak Governorate
+    cy: Ardal Lywodraethol Karak
+    hy: Քարաքի մարզ
+  comments:
+  type: governorate
+MA:
+  name: Al Mafraq
+  code: MA
+  unofficial_names:
+  - Mafraq
+  geo:
+    latitude: 32.3616821
+    longitude: 36.2193362
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Mafraq
+    ar: المفرق
+    bn: মাফ্রাক গভর্নোরেট
+    da: Mafraq Governorate
+    de: Gouvernement Mafraq
+    el: Μάφρακ
+    es: Gobernación de Mafraq
+    eu: Mafraq Gobernazioa
+    fa: مفرق
+    fi: Al Mafraq
+    fr: subdivision de Mafraq
+    gu: મફ્રાક ગવર્નોરેટ
+    he: מחוז מפרק
+    hi: माफराक गवर्नरेट
+    hu: Mafrak kormányzóság
+    id: Mafraq Governorate
+    it: governatorato di Mafraq
+    ja: マフラク県
+    kn: ಮಾಫ್ರಾಕ್ ಗವರ್ನೇಟ್
+    ko: 마프라크 주
+    lt: Mafrako muchafaza
+    mr: मफ्राक गव्हर्नोरेट
+    ms: Mafraq Governorate
+    nb: Magraq
+    nl: Mafrak
+    pl: Al-Mafrak
+    pt: Mafraq
+    ro: Guvernoratul Mafraq
+    ru: Эль-Мафрак
+    si: මෆ්රාක් පරිපාලන කොට්ටාශය
+    sv: Mafraq
+    ta: மபிராக் கோவெர்னோரே
+    te: మఫ్రాక్ గవర్నరేట్
+    th: เขตผู้ว่ามาฟราค
+    tr: Mafraq Yönetimi
+    ur: محافظہ مفرق
+    vi: Tỉnh Mafraq
+    lv: Mefrakas muhāfaza
+    ceb: Al Mafraq
+    zh: 馬弗拉克省
+    sq: Governorati Mafrak
+    ccp: "\U0001111F\U0001111C\U00011133\U00011122\U00011107\U00011134"
+    hy: Ալ-Մաֆրակի մարզ
+    uk: Муніципалітет Ель-Мафрак
+    'no': Magraq
+    cs: Mafrak (guvernorát)
+  comments:
+  type: governorate
+MD:
+  name: Madaba
+  code: MD
+  unofficial_names:
+  - Madaba
+  - Maʿdaba
+  - Maʿdabâ
+  geo:
+    latitude: 31.71954
+    longitude: 35.794109
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Madaba
+    ar: مادبا
+    bn: মাদাবা গভর্নোরেট
+    ca: Governació de Madaba
+    da: Madaba Governorate
+    de: Gouvernement Madaba
+    el: Μαντάμπα Γκοβερνοράτε
+    es: Gobernación de Madaba
+    eu: Madaba Gobernazioa
+    fa: استان مادبا
+    fi: Madaba
+    fr: subdivision de Madaba
+    gu: મડાબા ગવર્નોરેટ
+    he: מחוז מידבא
+    hi: मदाबा गवर्नरेट
+    hu: Mádaba kormányzóság
+    hy: Մադաբայի մարզ
+    id: Madaba Governorate
+    it: governatorato di Madaba
+    ja: マダバ県
+    kn: ಮಡಬಾ ಗವರ್ನೇಟ್
+    ko: 마다바 주
+    lt: Madabos muchafaza
+    mr: माडाबा गव्हर्नोरेट
+    ms: Madaba Governorate
+    nb: Madaba Governorate
+    nl: Madaba
+    pl: Madaba
+    pt: Madaba
+    ro: Guvernoratul Madaba
+    ru: Мадаба
+    si: මඩබා පළාත
+    sv: Madaba (guvernement)
+    ta: மதாபா கோவெர்னோகைட்
+    te: మడాబా గవర్నరేట్
+    th: มาดาบา กอฟเวอโนเลท
+    tr: Madaba Yönetimi
+    ur: محافظہ مادبا
+    vi: Tỉnh Madaba
+    lv: Mādebas muhāfaza
+    zh: 馬代巴省
+    ccp: "\U0001111F\U00011113\U0001111D"
+    uk: Муніципалітет Мадаба
+    'no': Madaba Governorate
+    cy: Ardal Lywodraethol Madaba
+  comments:
+  type: governorate
+MN:
+  name: Ma`an
+  code: MN
+  unofficial_names:
+  - Maan
+  - Maʿan
+  geo:
+    latitude: 30.1949577
+    longitude: 35.7342418
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Ma’an
+    ar: معان
+    da: Ma’in Governorate
+    de: Ma’an Governorate
+    el: Μαάν Γκοβερνοράτε
+    es: Gobernación de Ma’an
+    eu: Ma’an Gobernazioa
+    fa: استان معان
+    fi: Ma’an
+    fr: subdivision de Ma’an
+    gu: માંન ગવર્નોરેટ
+    he: מחוז מעאן
+    hi: मान गवर्नरेट
+    hu: Maán kormányzóság
+    hy: Մաանի մարզ
+    id: Ma’an
+    it: governatorato di Ma’an
+    ja: マアーン県
+    kn: ಮಾಯಾನ್ ಗವರ್ನೇಟ್
+    ko: 마안 주
+    lt: Maano muchafaza
+    mr: मान गोव्हर्नोरेट
+    ms: Pentadbiran Ma’an
+    nb: Maan Governorate
+    nl: Ma’an
+    pl: Ma’an
+    pt: Governadoria Maan
+    ro: Guvernoratul Ma’an
+    ru: Маан
+    si: මාන් පළාත
+    sv: Ma’an
+    ta: மான் கோவெர்னோரேட்
+    te: మాన్ గవర్నరేట్
+    th: เขตการปกครองมายัน
+    tr: Ma’an Valiliği
+    ur: محافظہ معان
+    vi: Tỉnh Ma’an
+    lv: Maānas muhāfaza
+    zh: 馬安省
+    bn: মা‘আন গভার্নোরেট
+    ccp: "\U0001111F\U00011133\U00011103\U0001111A\U00011134"
+    uk: Муніципалітет Маан
+    'no': Maan Governorate
+    ca: Governació de Maan
+    cy: Ardal Lywodraethol Ma’an
+  comments:
+  type: governorate

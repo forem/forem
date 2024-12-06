@@ -1,0 +1,64 @@
+---
+CY:
+  alpha2: CY
+  alpha3: CYP
+  continent: Asia
+  country_code: '357'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: CY
+  geo:
+    latitude: 35.126413
+    longitude: 33.429859
+    max_latitude: 35.7071999
+    max_longitude: 34.60450000000001
+    min_latitude: 34.6304001
+    min_longitude: 32.2459
+    bounds:
+      northeast:
+        lat: 35.7071999
+        lng: 34.60450000000001
+      southwest:
+        lat: 34.6304001
+        lng: 32.2459
+  international_prefix: '00'
+  ioc: CYP
+  iso_long_name: The Republic of Cyprus
+  iso_short_name: Cyprus
+  languages_official:
+  - el
+  - tr
+  - hy
+  languages_spoken:
+  - el
+  - tr
+  - hy
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Cypriot
+  number: '196'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Asia
+  start_of_week: monday
+  subregion: Western Asia
+  un_locode: CY
+  unofficial_names:
+  - Cyprus
+  - Zypern
+  - Chypre
+  - Chipre
+  - キプロス
+  vat_rates:
+    standard: 19
+    reduced:
+    - 5
+    - 9
+    super_reduced:
+    parking:
+  world_region: EMEA

@@ -1,0 +1,52 @@
+---
+ET:
+  alpha2: ET
+  alpha3: ETH
+  continent: Africa
+  country_code: '251'
+  currency_code: ETB
+  distance_unit: KM
+  gec: ET
+  geo:
+    latitude: 9.145000000000001
+    longitude: 40.489673
+    max_latitude: 14.8942141
+    max_longitude: 48.0010561
+    min_latitude: 3.4041369
+    min_longitude: 32.997734
+    bounds:
+      northeast:
+        lat: 14.8942141
+        lng: 48.0010561
+      southwest:
+        lat: 3.4041369
+        lng: 32.997734
+  international_prefix: '00'
+  ioc: ETH
+  iso_long_name: The Federal Democratic Republic of Ethiopia
+  iso_short_name: Ethiopia
+  languages_official:
+  - am
+  languages_spoken:
+  - am
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Ethiopian
+  number: '231'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: ET
+  unofficial_names:
+  - Ethiopia
+  - Äthiopien
+  - Éthiopie
+  - Etiopía
+  - エチオピア
+  - Ethiopië
+  world_region: EMEA

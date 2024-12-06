@@ -1,0 +1,50 @@
+---
+LK:
+  alpha2: LK
+  alpha3: LKA
+  continent: Asia
+  country_code: '94'
+  currency_code: LKR
+  distance_unit: KM
+  gec: CE
+  geo:
+    latitude: 7.873053999999999
+    longitude: 80.77179699999999
+    max_latitude: 10.03377
+    max_longitude: 82.14479999999999
+    min_latitude: 5.6816
+    min_longitude: 79.26769999999999
+    bounds:
+      northeast:
+        lat: 10.03377
+        lng: 82.14479999999999
+      southwest:
+        lat: 5.6816
+        lng: 79.26769999999999
+  international_prefix: '00'
+  ioc: SRI
+  iso_long_name: The Democratic Socialist Republic of Sri Lanka
+  iso_short_name: Sri Lanka
+  languages_official:
+  - si
+  - ta
+  languages_spoken:
+  - si
+  - ta
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: '0'
+  nationality: Sri Lankan
+  number: '144'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: Southern Asia
+  un_locode: LK
+  unofficial_names:
+  - Sri Lanka
+  - スリランカ
+  world_region: APAC

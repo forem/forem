@@ -1,0 +1,66 @@
+---
+GR:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: GR
+  alpha3: GRC
+  continent: Europe
+  country_code: '30'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: GR
+  geo:
+    latitude: 39.074208
+    longitude: 21.824312
+    max_latitude: 41.7488784
+    max_longitude: 29.6527999
+    min_latitude: 34.5428
+    min_longitude: 19.3098
+    bounds:
+      northeast:
+        lat: 41.7488784
+        lng: 29.6527999
+      southwest:
+        lat: 34.5428
+        lng: 19.3098
+  international_prefix: '00'
+  ioc: GRE
+  iso_long_name: The Hellenic Republic
+  iso_short_name: Greece
+  languages_official:
+  - el
+  languages_spoken:
+  - el
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: None
+  nationality: Greek
+  number: '300'
+  postal_code: true
+  postal_code_format: "\\d{3} ?\\d{2}"
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: GR
+  unofficial_names:
+  - Greece
+  - Griechenland
+  - Grèce
+  - Grecia
+  - ギリシャ
+  - Griekenland
+  vat_rates:
+    standard: 24
+    reduced:
+    - 6
+    - 13
+    super_reduced:
+    parking:
+  world_region: EMEA

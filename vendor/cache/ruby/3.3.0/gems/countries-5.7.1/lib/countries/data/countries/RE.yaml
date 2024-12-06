@@ -1,0 +1,52 @@
+---
+RE:
+  alpha2: RE
+  alpha3: REU
+  continent: Africa
+  country_code: '262'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: true
+  euvat_member: false
+  gec: RE
+  geo:
+    latitude: -21.115141
+    longitude: 55.536384
+    max_latitude: -20.8671529
+    max_longitude: 55.84487919999999
+    min_latitude: -21.4035321
+    min_longitude: 55.209732
+    bounds:
+      northeast:
+        lat: -20.8671529
+        lng: 55.84487919999999
+      southwest:
+        lat: -21.4035321
+        lng: 55.209732
+  international_prefix: '00'
+  ioc:
+  iso_long_name: Réunion
+  iso_short_name: Réunion
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: None
+  nationality: French
+  number: '638'
+  postal_code: true
+  postal_code_format: 9[78]4\d{2}
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: RE
+  unofficial_names:
+  - Réunion
+  - Reunión
+  - Reunion
+  - レユニオン
+  world_region: EMEA

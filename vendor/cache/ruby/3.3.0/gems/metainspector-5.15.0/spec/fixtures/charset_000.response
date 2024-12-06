@@ -1,0 +1,22 @@
+HTTP/1.1 200 OK
+Date: Mon, 30 May 2011 09:58:20 GMT
+Server: Microsoft-IIS/6.0
+X-Powered-By: PleskWin
+X-Powered-By: ASP.NET
+Cache-Control: private
+Content-Length: 25902
+Content-Type: text/html
+Expires: Sun, 29 May 2011 09:58:18 GMT
+Set-Cookie: ASPSESSIONIDCSBSQADC=AHENHHKBGGDIFJLHHCCJBHMP; path=/
+Cache-control: private
+
+
+
+<html>
+<head>
+  <title>A web</title>
+</head>
+<body>
+  <p>A sample web without a specified charset.</p>
+</body>
+</html>

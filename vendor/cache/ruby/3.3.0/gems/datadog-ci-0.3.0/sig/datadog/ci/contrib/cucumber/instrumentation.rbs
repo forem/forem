@@ -1,0 +1,16 @@
+module Datadog
+  module CI
+    module Contrib
+      module Cucumber
+        module Instrumentation
+          def self.included: (untyped base) -> untyped
+          module InstanceMethods : Cucumber::Runtime
+            attr_reader datadog_formatter: CI::Contrib::Cucumber::Formatter
+
+            def formatters: () -> untyped
+          end
+        end
+      end
+    end
+  end
+end

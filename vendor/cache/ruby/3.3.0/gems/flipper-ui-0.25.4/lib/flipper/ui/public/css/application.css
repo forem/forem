@@ -1,0 +1,38 @@
+html {
+  font-size: 0.8rem;
+}
+
+.flash {
+  margin-bottom: 15px;
+}
+
+.mw-600 {
+  max-width: 600px;
+}
+
+.bg-lightest {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.toggle-block-when-on {
+  display: none;
+}
+
+.toggle-block-when-off {
+  display: block;
+}
+
+.toggle-on .toggle-block-when-on {
+  display: block;
+}
+
+.toggle-on .toggle-block-when-off {
+  display: none;
+}
+
+.status {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}

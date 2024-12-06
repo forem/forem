@@ -1,0 +1,1521 @@
+---
+BB:
+  name: Brandenburg
+  code: BB
+  unofficial_names:
+  - Brandenbourg
+  - Brandenburgo
+  geo:
+    latitude: 52.4125287
+    longitude: 12.5316444
+    min_latitude: 52.3115782
+    min_longitude: 12.3610803
+    max_latitude: 52.5417764
+    max_longitude: 12.7259978
+  translations:
+    af: Brandenburg
+    am: ብራንደንቡርግ
+    ar: براندنبورغ
+    az: Brandenburq
+    be: Брандэнбург
+    bg: Бранденбург
+    bn: ব্র্যান্ডেনবুর্গ
+    ca: Brandenburg
+    cs: Braniborsko
+    da: Brandenburg
+    de: Brandenburg
+    el: Βραδεμβούργο
+    en: Brandenburg
+    es: Brandeburgo
+    et: Brandenburg
+    eu: Brandenburgo
+    fa: براندنبورگ
+    fi: Brandenburg
+    fr: Brandebourg
+    gl: Brandeburgo - Brandenburg
+    gu: બ્રાન્ડેનબર્ગ
+    he: ברנדנבורג
+    hi: ब्रैंडेनबर्ग
+    hr: Brandenburg
+    hu: Brandenburg
+    hy: Բրանդենբուրգ
+    id: Brandenburg
+    is: Brandenborg
+    it: Brandeburgo
+    ja: ブランデンブルク州
+    ka: ბრანდენბურგი
+    kn: ಬ್ರ್ಯಾಂಡನ್ಬರ್ಗ್
+    ko: 브란덴부르크 주
+    lt: Brandenburgas
+    lv: Brandenburga
+    mn: Бранденбург
+    mr: ब्रांडेनबुर्ग
+    ms: Brandenburg
+    nb: Brandenburg
+    ne: ब्रैंडेनबर्ग
+    nl: Brandenburg
+    pl: Brandenburgia
+    ps: براندنبورګ
+    pt: Brandemburgo
+    ro: Brandenburg
+    ru: Бранденбург
+    si: බ්‍රන්ඩෙන්බර්ග්
+    sk: Brandenbursko
+    sl: Brandenburg
+    sr: Бранденбург
+    sv: Brandenburg
+    sw: Brandenburg
+    ta: பிரான்டென்பர்க்
+    te: బ్రాండెన్బర్గ్
+    th: รัฐบรันเดินบวร์ค
+    tr: Brandenburg
+    uk: Бранденбург
+    ur: برندنبرگ
+    vi: Brandenburg
+    zh: 勃兰登堡
+    zu: Brandenburg
+    cy: Brandenburg
+    ceb: Brandenburg
+    sr_Latn: Brandenburg
+    yue_Hans: 勃兰登堡
+    jv: Brandenburg
+    sq: Brandenburg
+    ccp: "\U0001111D\U00011133\U00011122\U0001111A\U00011134\U00011113\U0001112C\U0001111A\U00011134\U0001111D\U00011122\U00011134\U00011109\U00011134"
+    sd: برانڊن برگ
+    ga: Brandenburg
+    pa: ਬ੍ਰਾਂਡਨਬੁਰਗ
+    kk: Бранденбург
+    yue: 勃蘭登堡
+    yo: Brandenburg
+    uz: Brandenburg
+    bs: Brandenburg
+    mk: Бранденбург
+    'no': Brandenburg
+    yo_BJ: Brandenburg
+    ml: ബ്രാൻഡൻബർഗ്
+  comments:
+  type: state
+BE:
+  name: Berlin
+  code: BE
+  unofficial_names:
+  - Berlín
+  geo:
+    latitude: 52.52000659999999
+    longitude: 13.404954
+    min_latitude: 52.33962959999999
+    min_longitude: 13.0891553
+    max_latitude: 52.6754542
+    max_longitude: 13.7611176
+  translations:
+    af: Berlyn
+    am: በርሊን
+    ar: برلين
+    az: Berlin
+    be: Берлін
+    bg: Берлин
+    bn: বার্লিন
+    ca: Berlín
+    cs: Berlín
+    da: Berlin
+    de: Berlin
+    el: Βερολίνο
+    en: Berlin
+    es: Berlín
+    et: Berliin
+    eu: Berlin
+    fa: برلین
+    fi: Berliini
+    fr: Berlin
+    gl: Berlín
+    gu: બર્લિન
+    he: ברלין
+    hi: बर्लिन
+    hr: Berlin
+    hu: Berlin
+    hy: Բեռլին
+    id: Berlin
+    is: Berlín
+    it: Berlino
+    ja: ベルリン
+    ka: ბერლინი
+    kn: ಬರ್ಲಿನ್
+    ko: 베를린
+    lt: Berlynas
+    lv: Berlīne
+    ml: ബെർലിൻ
+    mn: Берлин
+    mr: बर्लिन
+    ms: Berlin
+    nb: Berlin
+    ne: बर्लिन
+    nl: Berlijn
+    or: ବର୍ଲିନ
+    pl: Berlin
+    ps: برلين
+    pt: Berlim
+    ro: Berlin
+    ru: Берлин
+    si: බර්ලිනය
+    sk: Berlín
+    sl: Berlin
+    sr: Берлин
+    sv: Berlin
+    sw: Berlin
+    ta: பெர்லின்
+    te: బెర్లిన్
+    th: เบอร์ลิน
+    tk: Berlin
+    tr: Berlin
+    uk: Берлін
+    ur: برلن
+    vi: Berlin
+    zh: 柏林
+    cy: Berlin
+    ceb: Berlin
+    sr_Latn: Berlin
+    yue_Hans: 柏林
+    jv: Berlin
+    sq: Berlin
+    ccp: "\U0001111D\U00011122\U00011134\U00011123\U00011128\U0001111A\U00011134"
+    ga: Beirlín
+    ky: Берлин
+    ha: Berlin
+    so: Baarliin
+    pa: ਬਰਲਿਨ
+    kk: Берлин
+    yue: 柏林
+    my: ဘာလင်မြို့
+    yo: Berlin
+    zu: IBerlini
+    uz: Berlin
+    bs: Berlin
+    mk: Берлин
+    ha_NE: Berlin
+    'no': Berlin
+    yo_BJ: Berlin
+    km: ប៊ែរឡាំង
+  comments:
+  type: state
+BW:
+  name: Baden-Württemberg
+  code: BW
+  unofficial_names: Baden-Württemberg
+  geo:
+    latitude: 48.6616037
+    longitude: 9.3501336
+    min_latitude: 47.5323664
+    min_longitude: 7.511756799999999
+    max_latitude: 49.7913278
+    max_longitude: 10.495573
+  translations:
+    af: Baden-Württemberg
+    am: ባደን-ቩርተምቡርግ
+    ar: بادن-فورتمبيرغ
+    az: Baden-Vürtemberq
+    be: Бадэн-Вюртэмберг
+    bg: Баден-Вюртемберг
+    bn: বাডেন-ভুর্টেমবার্গ
+    ca: Baden-Württemberg
+    cs: Bádensko-Württembersko
+    da: Baden-Württemberg
+    de: Baden-Württemberg
+    el: Βάδη-Βυρτεμβέργη
+    en: Baden-Württemberg
+    es: Baden-Wurtemberg
+    et: Baden-Württemberg
+    eu: Baden-Württemberg
+    fa: بادن-وورتم‌برگ
+    fi: Baden-Württemberg
+    fr: Bade-Wurtemberg
+    gl: Baden-Württemberg
+    gu: બેડેન-વ્યુર્ટેમબર્ગ
+    he: באדן-וירטמברג
+    hi: बेडन-वुर्टमबर्ग
+    hr: Baden-Württemberg
+    hu: Baden-Württemberg
+    hy: Բադեն-Վյուրթեմբերգ
+    id: Baden-Württemberg
+    is: Baden-Württemberg
+    it: Baden-Württemberg
+    ja: バーデン＝ヴュルテンベルク州
+    ka: ბადენ-ვიურტემბერგი
+    kn: ಬಾಡೆನ್-ವುರ್ಟೆಂಬರ್ಗ್
+    ko: 바덴뷔르템베르크 주
+    lt: Badenas-Viurtembergas
+    lv: Bādene-Virtemberga
+    mn: Баден-Вюртемберг
+    mr: बाडेन-व्युर्टेंबर्ग
+    ms: Baden-Württemberg
+    nb: Baden-Württemberg
+    nl: Baden-Württemberg
+    pl: Badenia-Wirtembergia
+    ps: باډن ورټمبرګ
+    pt: Baden-Württemberg
+    ro: Baden-Württemberg
+    ru: Баден-Вюртемберг
+    si: බාඩෙන්-වුට්ටම්බර්ග්
+    sk: Bádensko-Württembersko
+    sl: Baden-Württemberg
+    sr: Баден-Виртемберг
+    sv: Baden-Württemberg
+    sw: Baden-Württemberg
+    ta: பேடன்-வர்ட்டென்பர்க்
+    te: బాడెన్-వుటెంబర్గ్
+    th: รัฐบาเดิน-เวือร์ทเทิมแบร์ค
+    tk: Baden-Württemberg
+    tr: Baden-Württemberg
+    uk: Баден-Вюртемберг
+    ur: بادن-وورتمبرگ
+    vi: Baden-Württemberg
+    zh: 巴登－符腾堡
+    cy: Baden-Württemberg
+    ceb: Baden-Württemberg Region
+    sr_Latn: Baden-Virtemberg
+    yue_Hans: 巴登－乌腾堡
+    jv: Baden-Württemberg
+    sq: Baden-Vyrtemberg
+    ccp: "\U0001111D\U00011113\U0001112C\U0001111A\U00011134-\U00011124\U00011122\U00011134\U00011111\U00011113\U0001111F\U00011134\U0001111D\U00011122\U00011134\U00011109\U00011134"
+    sd: بيڊن ورٽمبرگ
+    ga: Baden-Württemberg
+    pa: ਬਾਡਨ-ਵਰਟਮਬਰਕ
+    kk: Баден-Вюртемберг
+    yue: 巴登－烏騰堡
+    yo: Baden-Württemberg
+    zu: Baden-Württemberg
+    uz: Baden-Vyurtemberg
+    bs: Baden-Württemberg
+    mk: Баден-Виртемберг
+    'no': Baden-Württemberg
+    yo_BJ: Baden-Württemberg
+    ky: Баден-Вюртемберг
+    ml: ബാഡൻ-വ്യൂർട്ടംബർഗ്
+    ne: बाडेन-वुर्टेम्बर्ग
+  comments:
+  type: state
+BY:
+  name: Bayern
+  code: BY
+  unofficial_names:
+  - Bavière
+  - Bayern
+  - Bavaria
+  geo:
+    latitude: 48.7904472
+    longitude: 11.4978895
+    min_latitude: 47.2701115
+    min_longitude: 8.9763497
+    max_latitude: 50.5647142
+    max_longitude: 13.8396371
+  translations:
+    af: Beiere
+    am: ባቫሪያ
+    ar: بافاريا
+    az: Bavariya
+    be: Баварыя
+    bg: Бавария
+    bn: বাভারিয়া
+    ca: Baviera
+    cs: Bavorsko
+    da: Bayern
+    de: Bayern
+    el: Βαυαρία
+    en: Bavaria
+    es: Baviera
+    et: Baieri
+    eu: Bavaria
+    fa: بایرن
+    fi: Baijeri
+    fr: Bavière
+    gl: Baviera
+    gu: બાવેરિયા
+    he: בוואריה
+    hi: बायर्न
+    hr: Bavarska
+    hu: Bajorország
+    hy: Բավարիա
+    id: Bayern
+    is: Bæjaraland
+    it: Baviera
+    ja: バイエルン自由州
+    ka: ბავარია
+    kn: ಬವೇರಿಯಾ
+    ko: 바이에른 주
+    lt: Bavarija
+    lv: Bavārija
+    ml: ബവേറിയ
+    mn: Бавар
+    mr: बायर्न
+    ms: Bavaria
+    nb: Bayern
+    ne: बाभारिया
+    nl: Beieren
+    pl: Bawaria
+    pt: Baviera
+    ro: Bavaria
+    ru: Бавария
+    si: බවයිරා
+    sk: Bavorsko
+    sl: Bavarska
+    sr: Баварска
+    sv: Bayern
+    sw: Bavaria
+    ta: பவேரியா
+    te: బవేరియా
+    th: รัฐบาวาเรีย
+    tk: Bawariýa
+    tr: Bavyera
+    uk: Баварія
+    ur: بواریا
+    vi: Bayern
+    zh: 巴伐利亚
+    cy: Bafaria
+    ceb: Bavaria
+    sr_Latn: Bavarska
+    yue_Hans: 拜仁
+    jv: Bayern
+    sq: Bavaria
+    ccp: "\U0001111D\U00011127\U0001111E\U00011122\U00011128\U00011120"
+    sd: بويريا
+    ga: An Bhaváir
+    ky: Бавария
+    pa: ਬਾਈਆਨ
+    kk: Бавария
+    yue: 拜仁
+    yo: Bavaria
+    uz: Bavariya
+    bs: Bavarska
+    mk: Баварија
+    'no': Bayern
+    yo_BJ: Bavaria
+    my: ဘာဗေးရီးယားပြည်နယ်
+    ps: بایرن
+  comments:
+  type: state
+HB:
+  name: Bremen
+  code: HB
+  unofficial_names:
+  - Brème
+  geo:
+    latitude: 53.07929619999999
+    longitude: 8.8016937
+    min_latitude: 53.0116038
+    min_longitude: 8.4817585
+    max_latitude: 53.2289105
+    max_longitude: 8.9908131
+  translations:
+    af: Vrye Hansestad Bremen
+    ar: ولاية بريمن
+    az: Bremen əyaləti
+    be: Вольны ганзейскі горад Брэмен
+    bg: Бремен
+    bn: ব্রেমেনের ফ্রি হেনসিয়াটিক শহর
+    ca: Estat de Bremen
+    cs: Svobodné hanzovní město Brémy
+    da: Bremen
+    de: Bremen
+    el: Βρέμη
+    en: Bremen
+    es: Bremen
+    et: Bremeni liidumaa
+    eu: Bremen
+    fa: برمن
+    fi: Bremen
+    fr: Brême
+    gl: Estado de Bremen - Land Bremen
+    gu: બ્રેનનું ફ્રી હેન્સિયાટિક શહેર
+    he: ברמן
+    hi: ब्रेमेन
+    hr: Bremen
+    hu: Bréma
+    id: Bremen
+    it: Brema
+    ja: ブレーメン州
+    ka: ბრემენი
+    kn: ಬ್ರೆಮೆನ್ ಮುಕ್ತ ಹ್ಯಾನ್ಸಿಯಾಟಿಕ್ ನಗರ
+    ko: 브레멘 주
+    lt: Brėmenas
+    lv: Brēmene
+    mn: Бремен муж
+    mr: ब्रेमन (राज्य)
+    ms: Bremen
+    nb: Bremen
+    ne: ब्रेमेन (राज्य)
+    nl: Bremen
+    pl: Brema
+    ps: برېمن
+    pt: Bremen
+    ro: Brema
+    ru: Бремен
+    si: ෆ්‍රී හන්සියටික් බ්‍රිමෙන් නගරය
+    sk: Brémy
+    sl: Bremen
+    sr: Бремен
+    sv: Bremen
+    ta: பிரெமென்
+    te: ఫ్రీ హాన్సీటిక్ సిటీ ఆఫ్ బ్రెమెన్
+    th: รัฐเบรเมิน
+    tr: Bremen
+    uk: Бремен
+    ur: برمن (صوبہ)
+    vi: Bremen
+    zh: 不來梅州
+    cy: Bremen
+    ceb: Bremen
+    sr_Latn: Bremen
+    yue_Hans: 不来梅汉莎自由市
+    jv: Bremen
+    sq: Bremen
+    ccp: "\U0001111D\U00011133\U00011122\U0001112C\U0001111F\U0001112C\U0001111A\U00011134"
+    ga: Bremen
+    pa: ਬ੍ਰੈਮਨ
+    kk: Бремен
+    yue: 不來梅漢莎自由市
+    am: ብሬመን ክፍላገር
+    yo: Bremen
+    uz: Bremen
+    bs: Bremen
+    mk: Бремен
+    'no': Bremen
+    yo_BJ: Bremen
+    hy: Բրեմեն
+    is: Bremen (sambandsríki)
+    sw: Jimbo la Bremen
+  comments:
+  type: state
+HE:
+  name: Hessen
+  code: HE
+  unofficial_names:
+  - Hessen
+  - Hesse
+  geo:
+    latitude: 50.6520515
+    longitude: 9.162437599999999
+    min_latitude: 49.3952611
+    min_longitude: 7.7724675
+    max_latitude: 51.6575571
+    max_longitude: 10.2363207
+  translations:
+    af: Hesse
+    ar: هسن
+    az: Hessen
+    be: Гесэн
+    bg: Хесен
+    bn: হেসে
+    ca: Hessen
+    cs: Hesensko
+    da: Hessen
+    de: Hessen
+    el: Έσση
+    en: Hesse
+    es: Hasse
+    et: Hessen
+    eu: Hessen
+    fa: هسن
+    fi: Hessen
+    fr: Hesse
+    gl: Hessen
+    gu: હેસે
+    he: הסן
+    hi: हेसे
+    hr: Hessen
+    hu: Hessen
+    hy: Հեսսեն
+    id: Hessen
+    is: Hessen
+    it: Assia
+    ja: ヘッセン州
+    ka: ჰესენი
+    kn: ಹೆಸ್ಸೆ
+    ko: 헤센 주
+    lt: Hesenas
+    lv: Hesene
+    mn: Хессен
+    mr: हेसेन
+    ms: Hesse
+    nb: Hessen
+    ne: हेसे
+    nl: Hessen
+    pl: Hesja
+    pt: Hesse
+    ro: Hessa
+    ru: Гессен
+    si: හෙසේ
+    sk: Hesensko
+    sl: Hessen
+    sr: Хесен
+    sv: Hessen
+    sw: Hesse
+    ta: கெஸ்சன்
+    te: హెస్
+    th: รัฐเฮ็สเซิน
+    tk: Hessen
+    tr: Hessen
+    uk: Гессен
+    ur: ہیسے
+    vi: Hessen
+    zh: 黑森
+    cy: Hessen
+    ceb: Hessen
+    sr_Latn: Hesen
+    yue_Hans: 黑森
+    jv: Hessen
+    sq: Hesia
+    ccp: "\U00011126\U0001112C\U00011125\U0001112C"
+    sd: ھيسن
+    ga: Hessen
+    ky: Гессен
+    pa: ਹੈੱਸਨ
+    kk: Гессен
+    yue: 黑森
+    am: ሄሠ
+    yo: Hesse
+    uz: Hessen
+    bs: Hessen
+    mk: Хесен
+    'no': Hessen
+    yo_BJ: Hesse
+    ps: هسن
+  comments:
+  type: state
+HH:
+  name: Hamburg
+  code: HH
+  unofficial_names:
+  - Amburgo
+  - Hambourg
+  - Hamburgo
+  geo:
+    latitude: 53.5510846
+    longitude: 9.9936818
+    min_latitude: 53.3962857
+    min_longitude: 9.7301316
+    max_latitude: 53.7394338
+    max_longitude: 10.32528
+  translations:
+    af: Hamburg
+    am: ሃምቡርግ
+    ar: هامبورغ
+    az: Hamburq
+    be: Гамбург
+    bg: Хамбург
+    bn: হামবুর্গ
+    ca: Hamburg
+    cs: Hamburk
+    da: Hamborg
+    de: Hamburg
+    el: Αμβούργο
+    en: Hamburg
+    es: Hamburgo
+    et: Hamburg
+    eu: Hanburgo
+    fa: هامبورگ
+    fi: Hampuri
+    fr: Hambourg
+    gl: Hamburgo
+    gu: હેમ્બર્ગ
+    he: המבורג
+    hi: हैम्बर्ग
+    hr: Hamburg
+    hu: Hamburg
+    hy: Համբուրգ
+    id: Hamburg
+    is: Hamborg
+    it: Amburgo
+    ja: ハンブルク
+    ka: ჰამბურგი
+    kn: ಹ್ಯಾಂಬರ್ಗ್
+    ko: 함부르크
+    lt: Hamburgas
+    lv: Hamburga
+    ml: ഹാംബർഗ്
+    mn: Хамбург
+    mr: हांबुर्ग
+    ms: Hamburg
+    nb: Hamburg
+    ne: ह्याम्बर्ग
+    nl: Hamburg
+    pl: Hamburg
+    pt: Hamburgo
+    ro: Hamburg
+    ru: Гамбург
+    si: හැම්බර්ග්
+    sk: Hamburg
+    sl: Hamburg
+    sr: Хамбург
+    sv: Hamburg
+    sw: Hamburg
+    ta: ஹாம்பெர்க்
+    te: హ్యాంబర్గ్
+    th: ฮัมบวร์ค
+    tk: Gamburg
+    tr: Hamburg
+    uk: Гамбург
+    ur: ہامبرگ
+    vi: Hamburg
+    zh: 汉堡
+    cy: Hamburg
+    ceb: Free and Hanseatic City of Hamburg
+    sr_Latn: Hamburg
+    yue_Hans: 汉堡
+    jv: Hamburg
+    sq: Hamburgu
+    ccp: "\U00011126\U0001111F\U00011134\U0001111D\U00011122\U00011134\U00011109\U00011134"
+    sd: ھئمبرگ(شھر)
+    ga: Hamburg
+    ky: Гамбург
+    ha: Hamburg
+    pa: ਹਾਮਬੁਰਗ
+    kk: Гамбург
+    yue: 漢堡
+    my: ဟမ်းဗတ်မြို့
+    yo: Hamburg
+    zu: Hamburg
+    uz: Gamburg
+    bs: Hamburg
+    mk: Хамбург
+    ha_NE: Hamburg
+    'no': Hamburg
+    yo_BJ: Hamburg
+    ps: هامبورگ
+  comments:
+  type: state
+MV:
+  name: Mecklenburg-Vorpommern
+  code: MV
+  unofficial_names:
+  - Mecklenburg-Vorpommern
+  geo:
+    latitude: 53.6126505
+    longitude: 12.4295953
+    min_latitude: 53.1103197
+    min_longitude: 10.5936138
+    max_latitude: 54.68469
+    max_longitude: 14.412257
+  translations:
+    af: Mecklenburg-Voorpommere
+    ar: مكلنبورغ فوربومرن
+    az: Meklenburq-Ön Pomeraniya
+    be: Мекленбург-Пярэдняя Памеранія
+    bg: Мекленбург-Предна Померания
+    bn: মেকলেনবুর্গ-ভোপোমান
+    ca: Mecklenburg - Pomerània Occidental
+    cs: Meklenbursko-Přední Pomořansko
+    da: Mecklenburg-Vorpommern
+    de: Mecklenburg-Vorpommern
+    el: Μεκλεμβούργο-Δυτική Πομερανία
+    en: Mecklenburg-Vorpommern
+    es: Mecklemburgo-Pomerania Occidental
+    et: Mecklenburg-Vorpommern
+    eu: Mecklenburg-Aurrepomerania
+    fa: مکلنبورگ-فورپومرن
+    fi: Mecklenburg-Etu-Pommeri
+    fr: Mecklembourg-Poméranie-Occidentale
+    gl: Mecklemburgo-Antepomerania - Mecklenburg-Vorpommern
+    gu: મેક્લેનબર્ગ-વોર્પોમ્મેર્ન
+    he: מקלנבורג-מערב פומרניה
+    hi: मेक्लेनबर्ग-वोर्पोमेर्न
+    hr: Mecklenburg-Zapadno Pomorje
+    hu: Mecklenburg–Elő-Pomeránia
+    hy: Մեկլենբուրգ-Առաջավոր Պոմերանիա
+    id: Mecklenburg-Vorpommern
+    is: Mecklenborg-Vorpommern
+    it: Meclemburgo-Pomerania Anteriore
+    ja: メクレンブルク＝フォアポンメルン州
+    ka: მეკლენბურგ-წინა პომერანია
+    kn: ಮೆಕ್ಲೆನ್ಬರ್ಗ್-ವೋರ್ಪೊಮೆರ್ನ್
+    ko: 메클렌부르크포어포메른 주
+    lt: Meklenburgas-Pomeranija
+    lv: Mēklenburga-Priekšpomerānija
+    mn: Мекленбург – Өрнө Померан
+    mr: मेक्लेनबुर्ग-फोरपोमेर्न
+    ms: Mecklenburg-Vorpommern
+    nb: Mecklenburg-Vorpommern
+    nl: Mecklenburg-Voor-Pommeren
+    pl: Meklemburgia-Pomorze Przednie
+    pt: Mecklemburgo-Pomerânia Ocidental
+    ro: Mecklenburg-Pomerania Inferioară
+    ru: Мекленбург-Передняя Померания
+    si: මෙකෙලන්බර්ග් -වොර්පොම්මෙම්
+    sk: Meklenbursko-Predpomoransko
+    sl: Mecklenburg-Predpomorjanska
+    sr: Мекленбург-Западна Померанија
+    sv: Mecklenburg-Vorpommern
+    sw: Mecklenburg-Pomerini Magharibi
+    ta: மெக்லென்பர்க்-வொர்ப்பொம்மெர்ன்
+    te: మెక్లెన్బర్గ్-వోర్పెమెమ్
+    th: รัฐเมคเลินบวร์ค-ฟอร์พ็อมเมิร์น
+    tr: Mecklenburg-Vorpommern
+    uk: Мекленбург — Передня Померанія
+    ur: مکلنبرگ-ورپورمرن
+    vi: Mecklenburg-Vorpommern
+    zh: 梅克伦堡－前波美拉尼亚
+    cy: Mecklenburg-Vorpommern
+    ceb: Mecklenburg-Western Pomerania
+    sr_Latn: Meklenburg-Zapadna Pomeranija
+    yue_Hans: 美伦堡－前波玛恩
+    jv: Mecklenburg-Vorpommern
+    sq: Mecklenburg-Vorpommern
+    ccp: "\U0001111F\U0001112C\U00011107\U00011134\U00011123\U0001112C\U0001111A\U00011134\U0001111D\U00011122\U00011134\U00011109\U00011134-\U0001111E\U0001112E\U00011122\U00011134\U0001111B\U00011127\U0001111F\U0001112C\U0001111A\U00011134"
+    sd: ميڪلن برگ فرو پامرن
+    ga: Mecklenburg-Vorpommern
+    kk: Мекленбург-Алдыңғы Померания
+    yue: 美倫堡－前波瑪恩
+    am: መክለንቡርክ-ፎርፖመርን
+    yo: Mecklenburg-Vorpommern
+    uz: Meklenburg-Old Pomeraniya
+    bs: Mecklenburg-Zapadno Pomorje
+    mk: Мекленбург-Западна Померанија
+    ne: मेक्लेनबर्ग-वोर्पोमेर्न
+    'no': Mecklenburg-Vorpommern
+    yo_BJ: Mecklenburg-Vorpommern
+    ml: മെക്ക്ലെൻബുർഗ്-ഫൊർപ്പോമേൻ
+  comments:
+  type: state
+NI:
+  name: Niedersachsen
+  code: NI
+  unofficial_names:
+  - Niedersachsen
+  geo:
+    latitude: 52.6367036
+    longitude: 9.8450765
+    min_latitude: 51.29506740000001
+    min_longitude: 6.6539671
+    max_latitude: 53.89221329999999
+    max_longitude: 11.5982055
+  translations:
+    af: Nedersakse
+    ar: سكسونيا السفلى
+    az: Aşağı Saksoniya
+    be: Ніжняя Саксонія
+    bg: Долна Саксония
+    bn: নিডারজাখসেন
+    ca: Baixa Saxònia
+    cs: Dolní Sasko
+    da: Niedersachsen
+    de: Niedersachsen
+    el: Κάτω Σαξωνία
+    en: Lower Saxony
+    es: Baja Sajonia
+    et: Alam-Saksi
+    eu: Saxonia Beherea
+    fa: نیدرزاکسن
+    fi: Ala-Saksi
+    fr: Basse-Saxe
+    gl: Baixa Saxonia - Niedersachsen
+    gu: લોવર સેક્સોની
+    he: סקסוניה התחתונה
+    hi: निचला सैक्सोनी
+    hr: Donja Saska
+    hu: Alsó-Szászország
+    hy: Ստորին Սաքսոնիա
+    id: Niedersachsen
+    is: Neðra-Saxland
+    it: Bassa Sassonia
+    ja: ニーダーザクセン州
+    ka: ქვემო საქსონია
+    kn: ಲೋಯರ್ ಸ್ಯಾಕ್ಸೋನಿ
+    ko: 니더작센 주
+    lt: Žemutinė Saksonija
+    lv: Lejassaksija
+    mn: Доор Саксон
+    mr: नीडर जाक्सन
+    ms: Niedersachsen
+    nb: Niedersachsen
+    nl: Nedersaksen
+    pl: Dolna Saksonia
+    pt: Baixa Saxônia
+    ro: Saxonia Inferioară
+    ru: Нижняя Саксония
+    si: පහල සැක්සොනි
+    sk: Dolné Sasko
+    sl: Spodnja Saška
+    sr: Доња Саксонија
+    sv: Niedersachsen
+    sw: Saksonia Chini
+    ta: லோயர் சாக்ஸ்சனி
+    te: లోవర్ సాక్సోనీ
+    th: รัฐโลว์เออร์แซกโซนี
+    tr: Aşağı Saksonya
+    uk: Нижня Саксонія
+    ur: نیدرزاکسن
+    vi: Niedersachsen
+    zh: 下萨克森
+    cy: Niedersachsen
+    ceb: Lower Saxony
+    sr_Latn: Donja Saksonija
+    yue_Hans: 下萨克逊
+    jv: Niedersachsen
+    sq: Saksonia e Ulët
+    ccp: "\U00011123\U00011131\U00011122\U00011134 \U00011125\U0001112C\U00011107\U00011134\U00011125\U0001112E\U0001111A\U00011128"
+    sd: لوئر سئڪسني
+    ga: An tSacsain Íochtarach
+    so: Niedersachsen
+    kk: Төменгі Саксония
+    yue: 下薩克遜
+    am: ኒደርዛክስን
+    yo: Lower Saxony
+    uz: Niedersachsen
+    bs: Donja Saksonija
+    mk: Долна Саксонија
+    'no': Niedersachsen
+    yo_BJ: Lower Saxony
+    ml: ലോവർ സാക്സണി
+    ps: نیدرزاخسن
+  comments:
+  type: state
+NW:
+  name: Nordrhein-Westfalen
+  code: NW
+  unofficial_names:
+  - Nordrhein-Westfalen
+  - Rhénanie-Westphalie
+  geo:
+    latitude: 51.43323669999999
+    longitude: 7.661593799999999
+    min_latitude: 50.322701
+    min_longitude: 5.8663425
+    max_latitude: 52.53146959999999
+    max_longitude: 9.461634900000002
+  translations:
+    af: Noordryn-Wesfale
+    am: ኖርድራይን-ቬስትፋለን
+    ar: شمال الراين-وستفاليا
+    az: Şimali Reyn-Vestfaliya
+    be: Паўночны Рэйн-Вестфалія
+    bg: Северен Рейн-Вестфалия
+    bn: নর্থ রিনে-ভেস্টফালিয়া
+    ca: Rin del Nord - Westfàlia
+    cs: Severní Porýní-Vestfálsko
+    da: Nordrhein-Westfalen
+    de: Nordrhein-Westfalen
+    el: Βόρεια Ρηνανία-Βεστφαλία
+    en: North Rhine-Westphalia
+    es: Renania del Norte-Westfalia
+    et: Nordrhein-Westfalen
+    eu: Ipar Renania-Westfalia
+    fa: نوردراین-وستفالن
+    fi: Nordrhein-Westfalen
+    fr: Rhénanie-du-Nord-Westphalie
+    gl: Renania do Norte-Westfalia - Nordrhein-Westfalen
+    gu: નોર્થ રાઇન-વેસ્ટફાલિયા
+    he: נורדריין-וסטפאליה
+    hi: उत्तरी राइन
+    hr: Sjeverna Rajna-Vestfalija
+    hu: Észak-Rajna-Vesztfália
+    hy: Հյուսիսային Հռենոս-Վեստֆալիա
+    id: Nordrhein-Westfalen
+    is: Norðurrín-Vestfalía
+    it: Renania Settentrionale-Vestfalia
+    ja: ノルトライン＝ヴェストファーレン州
+    ka: ჩრდილოეთი რაინ-ვესტფალია
+    kn: ಉತ್ತರ ರೈನ್-ವೆಸ್ಟ್ಫಾಲಿಯಾ
+    ko: 노르트라인베스트팔렌 주
+    lt: Šiaurės Reinas-Vestfalija
+    lv: Ziemeļreina-Vestfālene
+    mn: Умар Райн-Вестфален
+    mr: नोर्डऱ्हाइन-वेस्टफालन
+    ms: Nordrhein-Westfalen
+    nb: Nordrhein-Westfalen
+    ne: उत्तरी राइन
+    nl: Noordrijn-Westfalen
+    pl: Nadrenia Północna-Westfalia
+    pt: Renânia do Norte-Vestfália
+    ro: Renania de Nord-Westfalia
+    ru: Северный Рейн-Вестфалия
+    si: උතුරු රයිනේ- වෙස්ට්ෆාලියා
+    sk: Severné Porýnie-Vestfálsko
+    sl: Severno Porenje-Vestfalija
+    sr: Северна Рајна-Вестфалија
+    sv: Nordrhein-Westfalen
+    sw: Rhine Kaskazini-Westfalia
+    ta: வட ரைன்-வெஸ்ட்ஃபாலியா
+    te: నార్త్‌ రైన్-వెస్ట్‌ఫాలియా
+    th: รัฐนอร์ทไรน์-เว็สท์ฟาเลิน
+    tr: Kuzey Ren-Vestfalya
+    uk: Північний Рейн-Вестфалія
+    ur: نوردرائن-ویسٹ فالیا
+    vi: Nordrhein-Westfalen
+    zh: 北莱茵－威斯特法伦
+    cy: Nordrhein-Westfalen
+    ceb: Nordrhein-Westfalen
+    sr_Latn: Severna Rajna-Vestfalija
+    yue_Hans: 北莱茵－西法伦
+    jv: Nordrhein-Westfalen
+    sq: Nordrhein-Westfalen
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011122\U0001112D\U0001111A\U00011134-\U00011124\U0001112C\U0001110C\U00011134\U0001111C\U00011123\U00011128\U00011120"
+    sd: نارٿ رائن وستڦيليا
+    ga: Tuaisceart na Réine agus an Viostfáil
+    pa: ਉੱਤਰੀ ਰਾਈਨ-ਪੱਛਮੀ ਫ਼ਾਲਨ
+    kk: Солтүстік Рейн-Вестфалия
+    yue: 北萊茵－西法倫
+    yo: Nordrhein-Westfalen
+    uz: Shimoliy Reyn-Vestfaliya
+    bs: Sjeverna Rajna-Vestfalija
+    mk: Северна Рајна-Вестфалија
+    'no': Nordrhein-Westfalen
+    yo_BJ: Nordrhein-Westfalen
+    ml: നോർത്ത് റൈൻ-വെസ്റ്റ്ഫാലിയ
+  comments:
+  type: state
+RP:
+  name: Rheinland-Pfalz
+  code: RP
+  unofficial_names:
+  - Rheinland-Pfalz
+  - Rhénanie-Palatinat
+  - Rhineland-Palatinate
+  geo:
+    latitude: 50.118346
+    longitude: 7.3089527
+    min_latitude: 48.9664186
+    min_longitude: 6.1122659
+    max_latitude: 50.9423053
+    max_longitude: 8.5083135
+  translations:
+    af: Rynland-Palts
+    ar: راينلند بالاتينات
+    az: Reynland-Pfalts
+    be: Рэйнланд-Пфальц
+    bg: Рейнланд-Пфалц
+    bn: রিনেল্যান্ড-প্যালাটিনাটা
+    ca: Renània-Palatinat
+    cs: Porýní-Falc
+    da: Rheinland-Pfalz
+    de: Rheinland-Pfalz
+    el: Ρηνανία-Παλατινάτο
+    en: Rhineland-Palatinate
+    es: Renania-Palatinado
+    et: Rheinland-Pfalz
+    eu: Renania-Palatinatua
+    fa: راینلاند-فالتس
+    fi: Rheinland-Pfalz
+    fr: Rhénanie-Palatinat
+    gl: Renania-Palatinado - Rheinland-Pfalz
+    gu: રાઈનલેન્ડ-પેલેટિનેટ
+    he: ריינלנד-פפאלץ
+    hi: राइनलैन्ड
+    hr: Falačko Porajnje
+    hu: Rajna-vidék–Pfalz
+    hy: Ռայնլանդ Պֆալց
+    id: Rheinland-Pfalz
+    is: Rínarland-Pfalz
+    it: Renania-Palatinato
+    ja: ラインラント＝プファルツ州
+    ka: რაინლანდ-პფალცი
+    kn: ರೈನ್ ಲ್ಯಾಂಡ್-ಪಲಟಿನೇಟ್
+    ko: 라인란트팔츠 주
+    lt: Reino kraštas-Pfalcas
+    lv: Reinzeme-Pfalca
+    mn: Райнланд-Пфальц
+    mr: र्‍हाइनलांड-फाल्त्स
+    ms: Rheinland-Pfalz
+    nb: Rheinland-Pfalz
+    ne: राइनल्यान्ड
+    nl: Rijnland-Palts
+    pl: Nadrenia-Palatynat
+    pt: Renânia-Palatinado
+    ro: Renania-Palatinat
+    ru: Рейнланд-Пфальц
+    si: රයින්ලන්ඩ් පිෆආල්ස්
+    sk: Porýnie-Falcko
+    sl: Porenje-Pfalška
+    sr: Рајна-Палатинат
+    sv: Rheinland-Pfalz
+    sw: Rhine-Palatino
+    ta: ரைன்லாந்து-பலென்டினேட்
+    te: రైన్లాండ్-పాలాటినేట్
+    th: รัฐไรน์ลันท์-ฟัลทซ์
+    tr: Renanya-Palatina
+    uk: Рейнланд-Пфальц
+    ur: رائن لینڈ-پلاتینیت
+    vi: Rheinland-Pfalz
+    zh: 莱茵兰－普法尔茨
+    cy: Rheinland-Pfalz
+    ceb: Rheinland-Pfalz
+    sr_Latn: Rajna-Palatinat
+    yue_Hans: 莱茵－普法茨
+    jv: Rheinland-Pfalz
+    sq: Rheinland-Pfalz
+    ccp: "\U00011122\U0001112D\U0001111A\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134-\U0001111B\U00011123\U00011111\U00011128\U0001111A\U0001112C\U00011116\U00011134"
+    sd: رائن لينڊ پئليٽينيٽ
+    ga: Tír na Réine agus an Phalaitíneacht
+    kk: Рейнланд-Пфальц
+    yue: 萊茵－普法茨
+    am: ራይንላንት-ፕፋልጽ
+    yo: Rhineland-Palatinate
+    bs: Porajnje-Falačka
+    mk: Рајнска област-Пфалц
+    'no': Rheinland-Pfalz
+    yo_BJ: Rhineland-Palatinate
+    ml: റൈൻലാൻഡ്-പലാറ്റിനേറ്റ്
+  comments:
+  type: state
+SH:
+  name: Schleswig-Holstein
+  code: SH
+  unofficial_names: Schleswig-Holstein
+  geo:
+    latitude: 54.21936720000001
+    longitude: 9.696116700000001
+    min_latitude: 53.3608263
+    min_longitude: 7.864961300000001
+    max_latitude: 55.05812359999999
+    max_longitude: 11.3129207
+  translations:
+    af: Sleeswyk-Holstein
+    ar: شليسفيغ هولشتاين
+    az: Şlezviq-Holşteyn
+    be: Шлезвіг-Гольштэйн
+    bg: Шлезвиг-Холщайн
+    bn: শ্লেসভিগ-হোলস্টাইন
+    ca: Slesvig-Holstein
+    cs: Šlesvicko-Holštýnsko
+    da: Slesvig-Holsten
+    de: Schleswig-Holstein
+    el: Σλέσβιχ-Χόλσταϊν
+    en: Schleswig-Holstein
+    es: Schleswig-Holstein
+    et: Schleswig-Holstein
+    eu: Schleswig-Holstein
+    fa: اشلسویگ-هولشتاین
+    fi: Schleswig-Holstein
+    fr: Schleswig-Holstein
+    gl: Schleswig-Holstein
+    gu: સ્કલેસ્વિગ-હોલસ્ટેઇન
+    he: שלזוויג-הולשטיין
+    hi: श्लेसविग-होल्सटीन
+    hr: Schleswig-Holstein
+    hu: Schleswig-Holstein
+    hy: Շլեզվիգ-Հոլշտայն
+    id: Schleswig-Holstein
+    is: Slésvík-Holtsetaland
+    it: Schleswig-Holstein
+    ja: シュレースヴィヒ＝ホルシュタイン州
+    ka: შლეზვიგ-ჰოლშტაინი
+    kn: ಶ್ಲೆಸ್ವಿಗ್-ಹೋಲ್ಸ್ಟೈನ್
+    ko: 슐레스비히홀슈타인 주
+    lt: Šlėzvigas-Holšteinas
+    lv: Šlēsviga-Holšteina
+    mn: Шлесвиг-Хольштайн
+    mr: श्लेस्विग-होल्श्टाइन
+    ms: Schleswig-Holstein
+    nb: Schleswig-Holstein
+    ne: श्लेसविग-होल्सटीन
+    nl: Sleeswijk-Holstein
+    pl: Szlezwik-Holsztyn
+    pt: Schleswig-Holstein
+    ro: Schleswig-Holstein
+    ru: Шлезвиг-Гольштейн
+    si: ශ්ලෙස්විග්-හොල්ස්ටයින්
+    sk: Šlezvicko-Holštajnsko
+    sl: Schleswig-Holstein
+    sr: Шлезвиг-Холштајн
+    sv: Schleswig-Holstein
+    sw: Schleswig-Holstein
+    ta: சிலெஸ்விக்-ஹொல்ஸ்டெயின்
+    te: ష్లెస్విగ్-హోల్‌స్టీన్
+    th: รัฐชเลสวิช-ฮ็อลชไตน์
+    tr: Schleswig-Holstein
+    uk: Шлезвіг-Гольштейн
+    ur: شلسویگ-ہولشتائن
+    vi: Schleswig-Holstein
+    zh: 石勒苏益格-荷尔斯泰因
+    cy: Schleswig-Holstein
+    ceb: Schleswig-Holstein
+    sr_Latn: Šlezvig-Holštajn
+    yue_Hans: 舒勒斯维－荷斯泰因
+    jv: Schleswig-Holstein
+    sq: Schleswig-Holstein
+    ccp: "\U0001110C\U00011133\U00011107\U0001112C\U0001110C\U00011134\U00011103\U0001112A\U00011103\U00011128\U00011107\U00011134-\U00011126\U0001112E\U00011123\U00011134\U0001110C\U00011133\U00011111\U0001112C\U00011103\U00011128\U0001111A\U00011134"
+    sd: شليس وگ ھوليسٽن
+    ga: Schleswig-Holstein
+    kk: Шлезвиг-Гольштейн
+    yue: 舒勒斯維－荷斯泰因
+    am: ሽለስቭክ-ሖልሽታይን
+    yo: Schleswig-Holstein
+    uz: Schleswig-Holstein
+    bs: Schleswig-Holstein
+    mk: Шлезвиг-Холштајн
+    'no': Schleswig-Holstein
+    yo_BJ: Schleswig-Holstein
+    ky: Шлесвик-Гөлштейн
+    ml: ഷ്ലെസ്വിഗ്-ഹോൾസ്റ്റൈൻ
+  comments:
+  type: state
+SL:
+  name: Saarland
+  code: SL
+  unofficial_names: Saarland
+  geo:
+    latitude: 49.3964234
+    longitude: 7.0229607
+    min_latitude: 49.1119452
+    min_longitude: 6.357608399999999
+    max_latitude: 49.6394088
+    max_longitude: 7.404583799999999
+  translations:
+    af: Saarland
+    ar: سارلاند
+    az: Saarland
+    be: Саар
+    bg: Саарланд
+    bn: জারল্যান্ড
+    ca: Saarland
+    cs: Sársko
+    da: Saarland
+    de: Saarland
+    el: Σάαρλαντ
+    en: Saarland
+    es: Sarre
+    et: Saarimaa
+    eu: Sarre
+    fa: زارلند
+    fi: Saarland
+    fr: Sarre
+    gl: Sarre - Saarland
+    gu: સારલેન્ડ
+    he: חבל הסאר
+    hi: सारलैंड
+    hr: Saarska
+    hu: Saar-vidék
+    hy: Սաարլանդ
+    id: Saarland
+    is: Saarland
+    it: Saarland
+    ja: ザールラント州
+    ka: ზაარლანდი
+    kn: ಸಾರ್ಲ್ಯಾಂಡ್
+    ko: 자를란트 주
+    lt: Saro kraštas
+    lv: Zāra
+    mn: Заарланд
+    mr: जारलांड
+    ms: Saarland
+    nb: Saarland
+    ne: सारल्यान्ड
+    nl: Saarland
+    pl: Saara
+    ps: زارلاند
+    pt: Sarre
+    ro: Saarland
+    ru: Саар
+    si: සාර්ලන්ඩ්
+    sk: Sársko
+    sl: Posarje
+    sr: Сарланд
+    sv: Saarland
+    sw: Saar
+    ta: சார்லாந்து
+    te: సార్లాండ్
+    th: รัฐซาร์ลันท์
+    tr: Saarland
+    uk: Саарланд
+    ur: سارلنڈ
+    vi: Saarland
+    zh: 萨尔
+    cy: Saarland
+    ceb: Saarland
+    sr_Latn: Sarland
+    yue_Hans: 沙亚
+    jv: Saarland
+    sq: Saarland
+    ccp: "\U00011125\U00011122\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    sd: سارلنڊ
+    ga: An tSárlainn
+    ky: Саар
+    pa: ਜ਼ਾਰਲਾਂਡ
+    kk: Саар
+    yue: 沙亞
+    am: ዛዓርላንት
+    yo: Saarland
+    uz: Saarland
+    bs: Saarland
+    mk: Сар
+    'no': Saarland
+    yo_BJ: Saarland
+    ml: സാർലാൻഡ്
+  comments:
+  type: state
+SN:
+  name: Sachsen
+  code: SN
+  unofficial_names:
+  - Sachsen
+  geo:
+    latitude: 51.1045407
+    longitude: 13.2017384
+    min_latitude: 50.1713633
+    min_longitude: 11.8714358
+    max_latitude: 51.6847089
+    max_longitude: 15.0418962
+  translations:
+    af: Sakse
+    ar: ساكسونيا
+    az: Saksoniya
+    be: Саксонія
+    bg: Саксония
+    bn: জ্যাক্সোনি
+    ca: Saxònia
+    cs: Sasko
+    da: Sachsen
+    de: Sachsen
+    el: Σαξωνία
+    en: Saxony
+    es: Sajonia
+    et: Saksimaa
+    eu: Saxonia
+    fa: زاکسن
+    fi: Saksi
+    fr: Saxe
+    gl: Saxonia - Sachsen
+    gu: સેક્સોની
+    he: סקסוניה
+    hi: सैक्सोनी
+    hr: Saska
+    hu: Szászország
+    hy: Սաքսոնիա
+    id: Sachsen
+    is: Saxland
+    it: Sassonia
+    ja: ザクセン州
+    ka: საქსონია
+    kn: ಸ್ಯಾಕ್ಸೋನಿ
+    ko: 작센 주
+    lt: Saksonija
+    lv: Saksija
+    mn: Саксон
+    mr: जाक्सन
+    ms: Sachsen
+    nb: Sachsen
+    ne: स्याक्सोनी
+    nl: Saksen
+    pl: Saksonia
+    pt: Saxónia
+    ro: Saxonia
+    ru: Саксония
+    si: සැක්සොනි
+    sk: Sasko
+    sl: Saška
+    sr: Саксонија
+    sv: Sachsen
+    sw: Saksonia
+    ta: சாக்ஸ்சனி
+    te: సాక్సోనీ
+    th: รัฐซัคเซิน
+    tr: Saksonya
+    uk: Вільна держава Саксонія
+    ur: زاکسن
+    vi: Sachsen
+    zh: 萨克森自由州
+    cy: Sachsen
+    ceb: Saxony
+    sr_Latn: Saksonija
+    yue_Hans: 萨克逊
+    jv: Sachsen
+    sq: Saksonia
+    ccp: "\U00011125\U0001112C\U00011107\U00011134\U00011125\U0001112E\U0001111A\U00011128"
+    sd: سئڪسني
+    ga: An tSacsain
+    pa: ਜ਼ਾਕਸਨ
+    kk: Саксония еркін мемлекеті
+    yue: 薩克遜
+    am: ዛክስን
+    yo: Saxony
+    uz: Saksoniya
+    bs: Saksonija
+    mk: Саксонија
+    'no': Sachsen
+    yo_BJ: Saxony
+    ml: സാക്സണി
+    ps: زاخسن
+  comments:
+  type: state
+ST:
+  name: Sachsen-Anhalt
+  code: ST
+  unofficial_names: Sachsen-Anhalt
+  geo:
+    latitude: 51.9502649
+    longitude: 11.6922735
+    min_latitude: 50.9378782
+    min_longitude: 10.5608391
+    max_latitude: 53.0404507
+    max_longitude: 13.1869875
+  translations:
+    af: Sakse-Anhalt
+    ar: ساكسونيا أنهالت
+    az: Saksoniya-Anhalt
+    be: Саксонія-Ангальт
+    bg: Саксония-Анхалт
+    bn: জ্যাক্সোনি-আনহাল্ট
+    ca: Saxònia-Anhalt
+    cs: Sasko-Anhaltsko
+    da: Sachsen-Anhalt
+    de: Sachsen-Anhalt
+    el: Σαξωνία-Άνχαλτ
+    en: Saxony-Anhalt
+    es: Sajonia-Anhalt
+    et: Saksi-Anhalt
+    eu: Saxonia-Anhalt
+    fa: زاکسن-آنهالت
+    fi: Saksi-Anhalt
+    fr: Saxe-Anhalt
+    gl: Saxonia-Anhalt - Sachsen-Anhalt
+    gu: સેક્સોની- એન્હાલ્ટ
+    he: סקסוניה-אנהלט
+    hi: सैक्सोनी-एन्हाल्ट
+    hr: Saska-Anhalt
+    hu: Szász-Anhalt
+    hy: Սաքսոնիա-Անհալթ
+    id: Sachsen-Anhalt
+    is: Saxland-Anhalt
+    it: Sassonia-Anhalt
+    ja: ザクセン＝アンハルト州
+    ka: საქსონია-ანჰალტი
+    kn: ಸ್ಯಾಕ್ಸೋನಿ-ಅನ್ಹಾಲ್ಟ್
+    ko: 작센안할트 주
+    lt: Saksonija-Anhaltas
+    lv: Saksija-Anhalte
+    mn: Саксон-Анхальт
+    mr: जाक्सन-आनहाल्ट
+    ms: Sachsen-Anhalt
+    nb: Sachsen-Anhalt
+    nl: Saksen-Anhalt
+    pl: Saksonia-Anhalt
+    pt: Saxônia-Anhalt
+    ro: Saxonia-Anhalt
+    ru: Саксония-Анхальт
+    si: සැක්සොනි-අන්හල්ට්
+    sk: Sasko-Anhaltsko
+    sl: Saška-Anhalt
+    sr: Саксонија-Анхалт
+    sv: Sachsen-Anhalt
+    sw: Saksonia-Anhalt
+    ta: சாக்ஸ்சனி-அன்ஹால்ட்
+    te: సాక్సోనీ-అన్హాల్ట్
+    th: รัฐแซกโซนี-อันฮัลต์
+    tr: Saksonya-Anhalt
+    uk: Саксонія-Ангальт
+    ur: زاکسن-آنہالت
+    vi: Sachsen-Anhalt
+    zh: 萨克森－安哈尔特
+    cy: Sachsen-Anhalt
+    ceb: Saxony-Anhalt
+    sr_Latn: Saksonija-Anhalt
+    yue_Hans: 萨克逊－雁候
+    jv: Sachsen-Anhalt
+    sq: Saksonia Anhalt
+    ccp: "\U00011125\U0001112C\U00011107\U00011134\U00011125\U0001112E\U0001111A\U00011128-\U00011131\U00011103\U0001111A\U00011134\U00011126\U00011123\U00011133\U00011111\U00011134"
+    sd: سئڪسني اينھالٽ
+    ga: An tSacsain-Anhalt
+    kk: Саксония-Анхальт
+    yue: 薩克遜－雁候
+    am: ዛክስን-አንሃልት
+    yo: Saxony-Anhalt
+    uz: Saksoniya-Anhalt
+    bs: Saksonija-Anhalt
+    mk: Саксонија-Анхалт
+    'no': Sachsen-Anhalt
+    yo_BJ: Saxony-Anhalt
+    ml: സാക്സണി-അൻഹാൾട്ട്
+  comments:
+  type: state
+TH:
+  name: Thüringen
+  code: TH
+  unofficial_names:
+  - Thüringen
+  geo:
+    latitude: 51.0109892
+    longitude: 10.845346
+    min_latitude: 50.20434669999999
+    min_longitude: 9.876984000000002
+    max_latitude: 51.6489359
+    max_longitude: 12.6539327
+  translations:
+    af: Thüringen
+    ar: تورينغن
+    az: Türingiya
+    be: Цюрынгія
+    bg: Тюрингия
+    bn: থুরিনগিয়া
+    ca: Turíngia
+    cs: Durynsko
+    da: Thüringen
+    de: Thüringen
+    el: Θουριγγία
+    en: Thuringia
+    es: Turingia
+    et: Tüüringi
+    eu: Turingia
+    fa: تورینگن
+    fi: Thüringen
+    fr: Thuringe
+    gl: Turinxia - Thüringen
+    gu: થુરિન્જિયા
+    he: תורינגיה
+    hi: ठुरुंगिया
+    hr: Tiringija
+    hu: Türingia
+    hy: Թուրինգիա
+    id: Thüringen
+    is: Þýringaland
+    it: Turingia
+    ja: テューリンゲン州
+    ka: თიურინგია
+    kn: ತುರಿಂಗಿಯ
+    ko: 튀링겐 주
+    lt: Tiuringija
+    lv: Tīringene
+    mn: Тюринг
+    mr: थ्युरिंगेन
+    ms: Thüringen
+    nb: Thüringen
+    ne: ठुरुंगिया
+    nl: Thüringen
+    pl: Turyngia
+    pt: Turíngia
+    ro: Turingia
+    ru: Тюрингия
+    si: තුරින්ජියා
+    sk: Durínsko
+    sl: Turingija
+    sr: Тирингија
+    sv: Thüringen
+    sw: Thuringia
+    ta: துரின்ஜியா
+    te: తురింగియా
+    th: รัฐทือริงเงิน
+    tr: Türingiya
+    uk: Тюрингія
+    ur: تورینگن
+    vi: Thüringen
+    zh: 图林根
+    cy: Thüringen
+    ceb: Thuringia
+    sr_Latn: Tiringija
+    yue_Hans: 脱灵根
+    jv: Thüringen
+    sq: Turingia
+    ccp: "\U00011117\U0001112A\U00011122\U00011128\U00011101\U00011109\U00011128\U00011120"
+    sd: ٿرينجيا
+    ga: Thüringen
+    ky: Тюрингия
+    kk: Тюрингия
+    yue: 脫靈根
+    am: ቲውሪንገን
+    yo: Thuringia
+    uz: Turingiya
+    bs: Tiringija
+    mk: Тирингија
+    'no': Thüringen
+    yo_BJ: Thuringia
+    ml: തുറിഞ്ചിയ
+    ps: تورینګن
+  comments:
+  type: state

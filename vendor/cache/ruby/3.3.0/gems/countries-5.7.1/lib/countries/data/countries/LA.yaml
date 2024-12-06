@@ -1,0 +1,49 @@
+---
+LA:
+  alpha2: LA
+  alpha3: LAO
+  continent: Asia
+  country_code: '856'
+  currency_code: LAK
+  distance_unit: KM
+  gec: LA
+  geo:
+    latitude: 19.85627
+    longitude: 102.495496
+    max_latitude: 22.5090449
+    max_longitude: 107.635094
+    min_latitude: 13.9097198
+    min_longitude: 100.0832139
+    bounds:
+      northeast:
+        lat: 22.5090449
+        lng: 107.635094
+      southwest:
+        lat: 13.9097198
+        lng: 100.0832139
+  international_prefix: '00'
+  ioc: LAO
+  iso_long_name: The Lao People's Democratic Republic
+  iso_short_name: Lao People's Democratic Republic
+  languages_official:
+  - lo
+  languages_spoken:
+  - lo
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Laotian
+  number: '418'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: LA
+  unofficial_names:
+  - Laos
+  - ラオス人民民主共和国
+  - Lao People s Democratic Republic
+  world_region: APAC

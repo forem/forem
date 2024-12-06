@@ -1,0 +1,50 @@
+---
+EC:
+  alpha2: EC
+  alpha3: ECU
+  continent: South America
+  country_code: '593'
+  currency_code: USD
+  distance_unit: KM
+  gec: EC
+  geo:
+    latitude: -1.831239
+    longitude: -78.18340599999999
+    max_latitude: 2.2955
+    max_longitude: -75.1887938
+    min_latitude: -5.0143509
+    min_longitude: -92.60379999999999
+    bounds:
+      northeast:
+        lat: 2.2955
+        lng: -75.1887938
+      southwest:
+        lat: -5.0143509
+        lng: -92.60379999999999
+  international_prefix: '00'
+  ioc: ECU
+  iso_long_name: The Republic of Ecuador
+  iso_short_name: Ecuador
+  languages_official:
+  - es
+  languages_spoken:
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Ecuadorean
+  number: '218'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: EC
+  unofficial_names:
+  - Ecuador
+  - Équateur
+  - エクアドル
+  world_region: AMER

@@ -1,0 +1,47 @@
+name: Integration Tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-branch: [rails5, rails6, rails7]
+    timeout-minutes: 20
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Checkout test app
+      uses: actions/checkout@v2
+      with:
+        repository: jamesmartin/inline_svg_test_app
+        ref: ${{ matrix.test-branch }}
+        path: test_app
+    - name: Set up Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.7
+    - name: Build local gem
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+        bundle exec rake build
+    - name: Use the local gem in the test App
+      id: uselocalgem
+      uses: jacobtomlinson/gha-find-replace@0.1.1
+      with:
+        find: "gem 'inline_svg'"
+        replace: "gem 'inline_svg', path: '${{github.workspace}}'"
+    - name: Check local gem in use
+      run: |
+        test "${{ steps.uselocalgem.outputs.modifiedFiles }}" != "0"
+        grep "inline_svg" $GITHUB_WORKSPACE/test_app/Gemfile
+    - name: Bundle
+      run: |
+        cd $GITHUB_WORKSPACE/test_app
+        bundle install --jobs 4 --retry 3
+    - name: Test
+      run: |
+        cd $GITHUB_WORKSPACE/test_app
+        bundle exec rake test

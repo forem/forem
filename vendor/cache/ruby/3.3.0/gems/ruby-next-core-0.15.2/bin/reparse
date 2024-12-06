@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path("../../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+$VERBOSE = nil
+
+require "bundler/setup"
+
+require "ruby-next/language"
+
+contents =
+  if File.exist?(ARGV[0])
+    File.read(ARGV[0])
+  else
+    ARGV[0]
+  end
+
+ast = RubyNext::Language.parse(contents)
+puts Unparser.unparse(ast)

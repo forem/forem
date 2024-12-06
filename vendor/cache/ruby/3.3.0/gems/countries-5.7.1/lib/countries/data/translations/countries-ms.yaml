@@ -1,0 +1,254 @@
+# Country name translations for locale ms
+#
+# alpha2: localized_name
+#
+---
+AD: Andorra
+AE: Emiriah Arab Bersatu
+AF: Afghanistan
+AG: Antigua dan Barbuda
+AI: Anguilla
+AL: Albania
+AM: Armenia
+AO: Angola
+AQ: Antartika
+AR: Argentina
+AS: Samoa Amerika
+AT: Austria
+AU: Australia
+AW: Aruba
+AX: Kepulauan Åland
+AZ: Azerbaijan
+BA: Bosnia dan Herzegovina
+BB: Barbados
+BD: Bangladesh
+BE: Belgium
+BF: Burkina Faso
+BG: Bulgaria
+BH: Bahrain
+BI: Burundi
+BJ: Benin
+BL: Saint Barthélemy
+BM: Bermuda
+BN: Brunei Darussalam
+BO: Bolivia
+BQ: Belanda Caribbean
+BR: Brazil
+BS: Bahamas
+BT: Bhutan
+BV: Kepulauan Bouvet
+BW: Botswana
+BY: Belarus
+BZ: Belize
+CA: Kanada
+CC: Kepulauan Cocos (Keeling)
+CD: Congo, The Democratic Republic of the
+CF: Republik Afrika Tengah
+CG: Kongo
+CH: Switzerland
+CI: Côte d'Ivoire
+CK: Kepulauan Cook
+CL: Chile
+CM: Kamerun
+CN: China
+CO: Colombia
+CR: Costa Rica
+CU: Cuba
+CV: Cabo Verde
+CW: Curaçao
+CX: Kepulauan Christmas
+CY: Cyprus
+CZ: Czechia
+DE: Jerman
+DJ: Djibouti
+DK: Denmark
+DM: Dominica
+DO: Republik Dominican
+DZ: Algeria
+EC: Ecuador
+EE: Estonia
+EG: Mesir
+EH: Sahara Barat
+ER: Eritrea
+ES: Sepanyol
+ET: Ethiopia
+FI: Finland
+FJ: Fiji
+FK: Kepulauan Falkland (Malvinas)
+FM: Micronesia, Federated States of
+FO: Kepulauan Faroe
+FR: Perancis
+GA: Gabon
+GB: United Kingdom
+GD: Grenada
+GE: Georgia
+GF: Guiana Perancis
+GG: Guernsey
+GH: Ghana
+GI: Gibraltar
+GL: Greenland
+GM: Gambia
+GN: Guinea
+GP: Guadeloupe
+GQ: Guinea Khatulistiwa
+GR: Yunani
+GS: Georgia Selatan dan Kepulauan Sandwich Selatan
+GT: Guatemala
+GU: Guam
+GW: Guinea Bissau
+GY: Guyana
+HK: Hong Kong
+HM: Pulau Heard dan Kepulauan McDonald
+HN: Honduras
+HR: Kroatia
+HT: Haiti
+HU: Hungari
+ID: Indonesia
+IE: Ireland
+IL: Israel
+IM: Isle of Man
+IN: Hindia
+IO: Wilayah Lautan Hindi British
+IQ: Iraq
+IR: Iran, Islamic Republic of
+IS: Iceland
+IT: Itali
+JE: Jersey
+JM: Jamaika
+JO: Jordan
+JP: Jepun
+KE: Kenya
+KG: Kyrgyzstan
+KH: Kemboja
+KI: Kiribati
+KM: Comoros
+KN: Saint Kitts dan Nevis
+KP: North Korea
+KR: South Korea
+KW: Kuwait
+KY: Kepulauan Cayman
+KZ: Kazakhstan
+LA: Lao People's Democratic Republic
+LB: Lubnan
+LC: Saint Lucia
+LI: Liechtenstein
+LK: Sri Lanka
+LR: Liberia
+LS: Lesotho
+LT: Lithuania
+LU: Luksembourg
+LV: Latvia
+LY: Libya
+MA: Maghribi
+MC: Monaco
+MD: Moldova
+ME: Montenegro
+MF: Saint Martin (French part)
+MG: Madagaskar
+MH: Kepulauan Marshall
+MK: North Macedonia
+ML: Mali
+MM: Myanmar
+MN: Mongolia
+MO: Macao
+MP: Kepulauan Mariana Utara
+MQ: Martinique
+MR: Mauritania
+MS: Montserrat
+MT: Malta
+MU: Mauritius
+MV: Maldiv
+MW: Malawi
+MX: Meksiko
+MY: Malaysia
+MZ: Mozambik
+NA: Namibia
+NC: New Caledonia
+NE: Niger
+NF: Pulau Norfolk
+NG: Nigeria
+NI: Nicaragua
+NL: Belanda
+'NO': Norway
+NP: Nepal
+NR: Nauru
+NU: Niue
+NZ: New Zealand
+OM: Oman
+PA: Panama
+PE: Peru
+PF: Polinesia Perancis
+PG: Papua New Guinea
+PH: Filipina
+PK: Pakistan
+PL: Poland
+PM: Saint Pierre dan Miquelon
+PN: Pitcairn
+PR: Puerto Rico
+PS: Palestine, State of
+PT: Feringgi
+PW: Palau
+PY: Paraguay
+QA: Qatar
+RE: Réunion
+RO: Romania
+RS: Serbia
+RU: Russian Federation
+RW: Rwanda
+SA: Arab Saudi
+SB: Kepulauan Solomon
+SC: Seychelles
+SD: Sudan
+SE: Sweden
+SG: Singapura
+SH: Saint Helena, Ascension and Tristan da Cunha
+SI: Slovenia
+SJ: Svalbard and Jan Mayen
+SK: Slovakia
+SL: Siera Leon
+SM: San Marino
+SN: Senegal
+SO: Somalia
+SR: Surinam
+SS: Sudan Selatan
+ST: Sao Tome dan Principe
+SV: El Salvador
+SX: Sint Maarten (Dutch part)
+SY: Syrian Arab Republic
+SZ: Eswatini
+TC: Kepulauan Turks dan Caicos
+TD: Cad
+TF: French Southern Territories
+TG: Togo
+TH: Thailand
+TJ: Tadjikistan
+TK: Tokelau
+TL: Timor-Leste
+TM: Turkmenistan
+TN: Tunisia
+TO: Tonga
+TR: Turki
+TT: Trinidad dan Tobago
+TV: Tuvalu
+TW: Taiwan
+TZ: Tanzania
+UA: Ukraine
+UG: Uganda
+UM: Kepulauan Terpencil Kecil Amerika Syarikat
+US: Amerika Syarikat
+UY: Uruguay
+UZ: Uzbekistan
+VA: Holy See (Vatican City State)
+VC: Saint Vincent dan Grenadines
+VE: Venezuela
+VG: Virgin Islands, British
+VI: Virgin Islands, U.S.
+VN: Vietnam
+VU: Vanuatu
+WF: Wallis dan Futuna
+WS: Samoa
+YE: Yaman
+YT: Mayotte
+ZA: Afrika Selatan
+ZM: Zambia
+ZW: Zimbabwe

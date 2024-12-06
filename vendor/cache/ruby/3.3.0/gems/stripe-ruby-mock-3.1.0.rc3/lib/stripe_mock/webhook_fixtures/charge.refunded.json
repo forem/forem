@@ -1,0 +1,69 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "charge.refunded",
+  "object": "event",
+  "data": {
+    "object": {
+      "id": "ch_00000000000000",
+      "object": "charge",
+      "created": 1380933505,
+      "livemode": false,
+      "paid": true,
+      "amount": 1000,
+      "currency": "usd",
+      "refunded": true,
+      "source": {
+        "id": "cc_00000000000000",
+        "object": "card",
+        "last4": "4242",
+        "type": "Visa",
+        "brand": "Visa",
+        "funding": "credit",
+        "exp_month": 12,
+        "exp_year": 2013,
+        "fingerprint": "wXWJT135mEK107G8",
+        "customer": "cus_00000000000000",
+        "country": "US",
+        "name": "Actual Nothing",
+        "address_line1": null,
+        "address_line2": null,
+        "address_city": null,
+        "address_state": null,
+        "address_zip": null,
+        "address_country": null,
+        "cvc_check": null,
+        "address_line1_check": null,
+        "address_zip_check": null
+      },
+      "captured": true,
+      "refunds": {
+        "object": "list",
+        "total_count": 1,
+        "has_more": false,
+        "data": [
+          {
+            "amount": 1000,
+            "currency": "usd",
+            "created": 1381080103,
+            "object": "refund",
+            "balance_transaction": "txn_2hkjgg43ucu7K1",
+            "id": "re_00000000000000"
+          }
+        ]
+      },
+      "balance_transaction": "txn_00000000000000",
+      "failure_message": null,
+      "failure_code": null,
+      "amount_refunded": 1000,
+      "customer": "cus_00000000000000",
+      "invoice": "in_00000000000000",
+      "description": null,
+      "dispute": null,
+      "metadata": {
+      },
+      "fee": 0
+    }
+  }
+}

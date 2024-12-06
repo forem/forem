@@ -1,0 +1,35 @@
+name: RBS Comments
+
+on:
+  push:
+    branches:
+      - master
+  pull_request: {}
+
+jobs:
+  test:
+    runs-on: "ubuntu-latest"
+    container:
+      image: rubylang/ruby:3.1-dev-focal
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y libdb-dev curl
+      - name: Update rubygems & bundler
+        run: |
+          ruby -v
+          gem update --system
+      - name: bundle config set with
+        run: |
+          echo "NO_MINITEST=true" >> $GITHUB_ENV
+          bundle config set --local without 'minitest'
+        if: "contains(matrix.container_tag, 'master-nightly')"
+      - name: bin/setup
+        run: |
+          bin/setup
+      - name: Check if `rake annotate` has been executed
+        run: |
+          git config --global --add safe.directory `pwd`
+          bundle exec rake annotate confirm_annotation

@@ -1,0 +1,110 @@
+<header class="row">
+  <div class="col-sm-5">
+    <h3>
+    <%= t('Lock information') %> <a class="btn btn-default btn-xs" href="<%= root_path %>locks"><%= t('GoBack') %></a>
+    </h3>
+  </div>
+  <div class="col-sm-7 table-responsive">
+    <% if @lock.info.none? %>
+    <h3>No Lock Information Available</h3>
+    <% unless SidekiqUniqueJobs.config.lock_info %>
+      <p>To use it turn the following setting on:
+        <code>SidekiqUniqueJobs.config.lock_info = true</code>
+      </p>
+    <% end %>
+    <% else %>
+    <table class="table table-striped table-bordered table-white table-hover">
+      <caption>Information about lock</caption>
+      <tbody>
+        <tr>
+          <th scope=row><%= t('Worker') %></td>
+          <td><%= @lock.info["worker"] %></td>
+        </tr>
+        <tr>
+          <th scope=row><%= t('Queue') %></td>
+          <td><%= @lock.info["queue"] %></td>
+        </tr>
+        <tr>
+          <th scope=row><%= t('Limit') %></td>
+          <td><%= @lock.info["limit"] %></td>
+        </tr>
+        <tr>
+          <th scope=row><%= t('TTL') %></td>
+          <td><%= @lock.info["ttl"] %></td>
+        </tr>
+        <tr>
+          <th scope=row><%= t('Timeout') %></td>
+          <td><%= @lock.info["timeout"] %></td>
+        </tr>
+        <tr>
+          <th scope=row><%= t('Args') %></td>
+          <td>
+            <code class="code-wrap">
+              <!-- We don't want to truncate any job arguments when viewing a single job's status page -->
+              <div class="args-extended"><%= display_lock_args(@lock.info["lock_args"], nil) %></div>
+            </code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <% end %>
+  </div>
+</header>
+<div class="row">
+  <div class="col-sm-6 table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+      <caption>Digest: <strong class="text-muted"><%= @lock.key %></strong></caption>
+      <thead>
+        <tr>
+          <th scope="col"><%= t('Locked JIDs') %></th>
+          <th scope="col"><%= t('Since') %></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @lock.locked_jids(with_values: true).each do |job_id, time| %>
+        <tr>
+          <td><%= job_id %></td>
+          <td><%= safe_relative_time(time.to_f) %></td>
+          <td>
+            <form action="<%= root_path %>locks/<%= @lock.key %>/jobs/<%= job_id %>/delete" method="get">
+              <%= csrf_tag %>
+              <input class="btn btn-danger btn-xs flip" type="submit" name="delete" value="<%= t('Unlock') %>" data-confirm="<%= t('AreYouSure') %>" />
+            </form>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-6 table-responsive">
+    <% if @lock.changelog.count.positive? %>
+    <table class="table table-striped table-bordered table-hover">
+      <caption>Changelogs</caption>
+      <thead>
+        <tr>
+          <th scope="col"><%= t('At') %></th>
+          <th scope="col"><%= t('JID') %></th>
+          <th scope="col"><%= t('Message') %></th>
+          <th scope="col"><%= t('Script') %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @lock.changelogs.each do |entry| %>
+        <tr>
+          <td scope="row"><%= safe_relative_time(entry["time"].to_f) %></td>
+          <td><%= entry["job_id"] %></td>
+          <td><%= entry["message"] %></td>
+          <td><%= entry["script"] %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% end %>
+  </div>
+</div>
+<form action="<%= root_path %>locks/<%= @lock.key %>/delete" method="get">
+  <%= csrf_tag %>
+  <a class="btn btn-default btn-xs" href="<%= root_path %>locks"><%= t('GoBack') %></a>
+  <input class="btn btn-danger btn-xs flip" type="submit" name="delete" value="<%= t('Delete') %>" data-confirm="<%= t('AreYouSure') %>" />
+</form>

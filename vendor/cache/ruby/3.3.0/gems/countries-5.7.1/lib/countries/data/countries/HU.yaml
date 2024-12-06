@@ -1,0 +1,68 @@
+---
+HU:
+  address_format: |-
+    {{recipient}}
+    {{city}}
+    {{street}}
+    {{postalcode}}
+    {{country}}
+  alpha2: HU
+  alpha3: HUN
+  continent: Europe
+  country_code: '36'
+  currency_code: HUF
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: HU
+  geo:
+    latitude: 47.162494
+    longitude: 19.5033041
+    max_latitude: 48.585234
+    max_longitude: 22.8965438
+    min_latitude: 45.7370889
+    min_longitude: 16.1133078
+    bounds:
+      northeast:
+        lat: 48.585234
+        lng: 22.8965438
+      southwest:
+        lat: 45.7370889
+        lng: 16.1133078
+  international_prefix: '00'
+  ioc: HUN
+  iso_long_name: Hungary
+  iso_short_name: Hungary
+  languages_official:
+  - hu
+  languages_spoken:
+  - hu
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '06'
+  nationality: Hungarian
+  number: '348'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Eastern Europe
+  un_locode: HU
+  unofficial_names:
+  - Hungary
+  - Ungarn
+  - Hongrie
+  - Hungría
+  - ハンガリー
+  - Hongarije
+  vat_rates:
+    standard: 27
+    reduced:
+    - 5
+    - 18
+    super_reduced:
+    parking:
+  world_region: EMEA

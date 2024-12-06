@@ -1,0 +1,14 @@
+<div class="content">
+  <h1>
+    <%= @relation %>
+    <% if @schema != "public" %>
+      <small><%= @schema %></small>
+    <% end %>
+  </h1>
+
+  <h1>Size</h1>
+  <div id="chart-1" class="chart" style="margin-bottom: 20px;">Loading...</div>
+  <script>
+    new Chartkick.LineChart("chart-1", <%= pghero_js_value(@chart_data) %>, {colors: ["#5bc0de"], legend: false, min: null, bytes: true, library: {plugins: {tooltip: {intersect: false, mode: "index"}}}})
+  </script>
+</div>

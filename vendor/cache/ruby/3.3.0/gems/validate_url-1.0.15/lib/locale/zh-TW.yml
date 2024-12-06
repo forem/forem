@@ -1,0 +1,4 @@
+zh-TW:
+  errors:
+    messages:
+      url: '網址格式不正確'

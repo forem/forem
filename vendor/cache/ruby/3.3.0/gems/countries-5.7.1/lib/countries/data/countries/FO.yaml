@@ -1,0 +1,52 @@
+---
+FO:
+  alpha2: FO
+  alpha3: FRO
+  continent: Europe
+  country_code: '298'
+  currency_code: DKK
+  distance_unit: KM
+  gec: FO
+  geo:
+    latitude: 61.89263500000001
+    longitude: -6.9118061
+    max_latitude: 62.4310742
+    max_longitude: -6.190796
+    min_latitude: 61.3677776
+    min_longitude: -7.7178956
+    bounds:
+      northeast:
+        lat: 62.4310742
+        lng: -6.190796
+      southwest:
+        lat: 61.3677776
+        lng: -7.7178956
+  international_prefix: '00'
+  ioc: FRO
+  iso_long_name: The Faroe Islands
+  iso_short_name: Faroe Islands
+  languages_official:
+  - fo
+  languages_spoken:
+  - fo
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  national_prefix: None
+  nationality: Faroese
+  number: '234'
+  postal_code: true
+  postal_code_format: "\\d{3}"
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: FO
+  unofficial_names:
+  - Faroe Islands
+  - Färöer-Inseln
+  - Îles Féroé
+  - Islas Faroe
+  - フェロー諸島
+  - Faeröer
+  world_region: EMEA

@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <title>Field Test</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.4;
+        color: #333;
+      }
+
+      a, a:visited, a:active {
+        color: #08c;
+        text-decoration: none;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+
+      th {
+        text-align: left;
+        border-bottom: solid 2px #ddd;
+      }
+
+      table td, table th {
+        padding: 8px;
+      }
+
+      td {
+        border-top: solid 1px #ddd;
+        vertical-align: top;
+      }
+
+      h2 small {
+        font-size: 16px;
+        font-weight: normal;
+      }
+
+      form {
+        margin: 0;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+      }
+
+      li {
+        margin-bottom: 0;
+      }
+
+      .description {
+        color: #999;
+      }
+
+      .check {
+        color: #5cb85c;
+      }
+
+      .closed {
+        color: orange;
+      }
+
+      .pagination {
+        text-align: center;
+      }
+
+      .pagination a {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>

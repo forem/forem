@@ -1,0 +1,52 @@
+---
+PG:
+  alpha2: PG
+  alpha3: PNG
+  continent: Australia
+  country_code: '675'
+  currency_code: PGK
+  distance_unit: KM
+  gec: PP
+  geo:
+    latitude: -6.314992999999999
+    longitude: 143.95555
+    max_latitude: -0.6702
+    max_longitude: 159.9609001
+    min_latitude: -12.0823
+    min_longitude: 140.8419695
+    bounds:
+      northeast:
+        lat: -0.6702
+        lng: 159.9609001
+      southwest:
+        lat: -12.0823
+        lng: 140.8419695
+  international_prefix: '05'
+  ioc: PNG
+  iso_long_name: The Independent State of Papua New Guinea
+  iso_short_name: Papua New Guinea
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Papua New Guinean
+  number: '598'
+  postal_code: true
+  postal_code_format: "\\d{3}"
+  region: Oceania
+  start_of_week: monday
+  subregion: Melanesia
+  un_locode: PG
+  unofficial_names:
+  - Papua New Guinea
+  - Papua-Neuguinea
+  - Papouasie Nouvelle-Guinée
+  - Papúa Nueva Guinea
+  - パプアニューギニア
+  - Papoea-Nieuw-Guinea
+  world_region: APAC

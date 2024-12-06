@@ -1,0 +1,4 @@
+<%- |
+    Optional[String] $title,
+| -%>
+<title><%= $title %></title>

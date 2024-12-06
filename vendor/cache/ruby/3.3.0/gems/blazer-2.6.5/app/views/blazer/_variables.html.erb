@@ -1,0 +1,127 @@
+<% if @bind_vars.any? %>
+  <% var_params = request.query_parameters %>
+  <script>
+    <%= blazer_js_var "timeZone", Blazer.time_zone.tzinfo.name %>
+    var now = moment.tz(timeZone)
+    var format = "YYYY-MM-DD"
+
+    function toDate(time) {
+      return moment.tz(time.format(format), timeZone)
+    }
+  </script>
+  <form id="bind" method="get" action="<%= action %>" class="form-inline" style="margin-bottom: 15px;">
+    <% date_vars = ["start_time", "end_time"] %>
+    <% if (date_vars - @bind_vars).empty? %>
+      <% @bind_vars = @bind_vars - date_vars %>
+    <% else %>
+      <% date_vars = nil %>
+    <% end %>
+
+    <% @bind_vars.each_with_index do |var, i| %>
+      <%= label_tag var, var %>
+      <% if (data = @smart_vars[var]) %>
+        <%= select_tag var, options_for_select([[nil, nil]] + data, selected: var_params[var]), style: "margin-right: 20px; width: 200px; display: none;" %>
+        <script>
+          $("#<%= var %>").selectize({
+            create: true
+          });
+        </script>
+      <% elsif var.end_with?("_at") || var == "start_time" || var == "end_time" %>
+        <%= hidden_field_tag var, var_params[var] %>
+
+        <div class="selectize-control single" style="width: 200px;">
+          <div id="<%= var %>-select" class="selectize-input" style="display: inline-block;">
+            <span>Select a date</span>
+          </div>
+        </div>
+
+        <script>
+          (function() {
+            var input = $("#<%= var %>")
+            var datePicker = $("#<%= var %>-select")
+            datePicker.daterangepicker({
+              singleDatePicker: true,
+              locale: {format: format},
+              autoUpdateInput: false,
+              autoApply: true,
+              startDate: input.val().length > 0 ? moment.tz(input.val(), timeZone) : now
+            })
+            // hack to start with empty date
+            datePicker.on("apply.daterangepicker", function(ev, picker) {
+              datePicker.find("span").html(toDate(picker.startDate).format("MMMM D, YYYY"))
+              input.val(toDate(picker.startDate).utc().format())
+              submitIfCompleted($("#<%= var %>").closest("form"))
+            })
+            if (input.val().length > 0) {
+              var picker = datePicker.data("daterangepicker")
+              datePicker.find("span").html(toDate(picker.startDate).format("MMMM D, YYYY"))
+            }
+          })()
+        </script>
+      <% else %>
+        <%= text_field_tag var, var_params[var], style: "width: 120px; margin-right: 20px;", autofocus: i == 0 && !var.end_with?("_at") && !var_params[var], class: "form-control" %>
+      <% end %>
+    <% end %>
+
+    <% if date_vars %>
+      <% date_vars.each do |var| %>
+        <%= hidden_field_tag var, var_params[var] %>
+      <% end %>
+
+      <%= label_tag nil, date_vars.join(" & ") %>
+      <div class="selectize-control single" style="width: 300px;">
+        <div id="reportrange" class="selectize-input" style="display: inline-block;">
+          <span>Select a time range</span>
+        </div>
+      </div>
+
+      <script>
+        function dateStr(daysAgo) {
+          return now.clone().subtract(daysAgo || 0, "days").format(format)
+        }
+
+        function setTimeInputs(start, end) {
+          $("#start_time").val(toDate(start).utc().format())
+          $("#end_time").val(toDate(end).endOf("day").utc().format())
+        }
+
+        $("#reportrange").daterangepicker(
+          {
+            ranges: {
+             "Today": [dateStr(), dateStr()],
+             "Last 7 Days": [dateStr(6), dateStr()],
+             "Last 30 Days": [dateStr(29), dateStr()]
+            },
+            locale: {
+              format: format
+            },
+            startDate: dateStr(29),
+            endDate: dateStr(),
+            opens: "right",
+            alwaysShowCalendars: true
+          },
+          function(start, end) {
+            setTimeInputs(start, end)
+            submitIfCompleted($("#start_time").closest("form"))
+          }
+        ).on("apply.daterangepicker", function(ev, picker) {
+          setTimeInputs(picker.startDate, picker.endDate)
+          $("#reportrange span").html(toDate(picker.startDate).format("MMMM D, YYYY") + " - " + toDate(picker.endDate).format("MMMM D, YYYY"))
+        })
+
+        if ($("#start_time").val().length > 0) {
+          var picker = $("#reportrange").data("daterangepicker")
+          picker.setStartDate(moment.tz($("#start_time").val(), timeZone))
+          picker.setEndDate(moment.tz($("#end_time").val(), timeZone))
+          $("#reportrange").trigger("apply.daterangepicker", picker)
+        } else {
+          var picker = $("#reportrange").data("daterangepicker")
+          $("#reportrange").trigger("apply.daterangepicker", picker)
+          submitIfCompleted($("#start_time").closest("form"))
+        }
+      </script>
+    <% end %>
+
+    <input type="submit" class="btn btn-success" value="Run" style="vertical-align: top;" />
+  </form>
+<% end %>

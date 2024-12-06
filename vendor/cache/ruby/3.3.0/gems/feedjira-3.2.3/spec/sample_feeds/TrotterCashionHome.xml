@@ -1,0 +1,611 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://feeds.feedburner.com/~d/styles/atom10full.xsl" type="text/xsl" media="screen"?><?xml-stylesheet href="http://feeds.feedburner.com/~d/styles/itemcontent.css" type="text/css" media="screen"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" xml:lang="en-US">
+  <title>TrotterCashion - Home</title>
+  <id>tag:trottercashion.com,2008:mephisto/</id>
+  <generator uri="http://mephistoblog.com" version="0.8.0">Mephisto Drax</generator>
+  
+  <link href="http://trottercashion.com/" rel="alternate" type="text/html" />
+  <updated>2008-12-13T17:48:58Z</updated>
+  <link rel="self" href="http://feeds.feedburner.com/trottercashion" type="application/atom+xml" /><entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-12-13:53</id>
+    <published>2008-12-13T17:43:00Z</published>
+    <updated>2008-12-13T17:48:58Z</updated>
+    <category term="dataurls" />
+    <category term="javascript" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/483840026/data-urls-and-document-domain" rel="alternate" type="text/html" />
+    <title>Data Urls and document.domain</title>
+<content type="html">
+            &lt;p&gt;Well this is a bummer. It turns out that all data urls share a common domain of ””. This is a problem in &lt;span class="caps"&gt;HTML5&lt;/span&gt;, because access to sqlite databases is based on the document.domain (This is true in safari at least). Therefore, all data urls will share a common sqlite db environment, meaning that a data url from Google,could look in the database created by a Yahoo data url, given that they were able to guess the name of the database. Since I see data urls as a better way to do offline web apps than google gears, this is a problem that pains me. Does anyone know if there is a solution?&lt;/p&gt;
+
+
+	&lt;p&gt;My main thought on how to fix this would be to require the domain for any data url that is a target of an link be set to the domain of the linker. The same would go for any data url that is loaded via a src=””, but this shouldn’t matter as all scripts use the document domain and not their own domain for security purposes. In cases where this is no linker, data urls get their domain set to an md5 hash of their data. Anyone see any problems with this solution?&lt;/p&gt;
+
+
+	&lt;p&gt;If you don’t know what data urls are, check out my &lt;a href="http://trottercashion.com/2008/12/12/data-urls-are-fun"&gt;previous post&lt;/a&gt;.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/12/13/data-urls-and-document-domain</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-12-12:48</id>
+    <published>2008-12-12T13:03:00Z</published>
+    <updated>2008-12-12T13:04:13Z</updated>
+    <category term="dataurls" />
+    <category term="iphone" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/482664882/data-urls-are-fun" rel="alternate" type="text/html" />
+    <title>Data Urls Are Fun!</title>
+<content type="html">
+            &lt;p&gt;Lately I’ve been playing with data urls in an effort to use them as an alternative way to build iPhone apps. W. Clawpaws wrote an interesting &lt;a href="http://blog.clawpaws.net/post/2007/07/16/Storing-iPhone-apps-locally-with-data-URLs"&gt;post&lt;/a&gt; on this a year ago, but it seems that not much has been done since. If it’s possible, I plan to have a simple library built by end of year that will allow you to write data url apps that connect to a central server when available. Basically, it’ll make the persistence and speed arguments for writing native apps null and void.&lt;/p&gt;
+
+
+	&lt;p&gt;Anyway, enough of what I plan to do and more about actual data urls. “Data urls”http://en.wikipedia.org/wiki/Data_URI_scheme allow you to store a single image, some javascript, or even an entire web page in a url. The browser will then render that information as if it were pulling it from a normal http:// url. So they will increase the initial payload of your web page, but result in faster interactions once the page is loaded.&lt;/p&gt;
+
+
+	&lt;p&gt;Data urls have a format of&lt;/p&gt;
+
+
+&lt;pre&gt;data:[&amp;lt;MIME-type&amp;gt;][;charset="&amp;lt;encoding&amp;gt;"][;base64],&amp;lt;data&amp;gt;&lt;/pre&gt;
+
+	&lt;p&gt;So if you see something like data:text/html;base64,PGh0bWw+, you’re looking at a data url. To see one in action, click the link below and have a look at the url in your navigation bar.&lt;/p&gt;
+
+
+&lt;p&gt;
+&lt;a&gt;Data url in action!&lt;/a&gt;
+&lt;/p&gt;
+
+	&lt;p&gt;Check back in the near future for progress on the iPhone idea. In the meantime, enjoy playing with data urls.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/12/12/data-urls-are-fun</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-12-11:44</id>
+    <published>2008-12-11T14:48:00Z</published>
+    <updated>2008-12-11T14:49:22Z</updated>
+    <category term="iphone" />
+    <category term="rails" />
+    <category term="speaking" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/481739351/iphone-on-rails-the-presentation" rel="alternate" type="text/html" />
+    <title>iPhone on Rails: The Presentation</title>
+<content type="html">
+            &lt;p&gt;Last night’s presentation went pretty well. I gave a fairly high level (except for the XCode part) overview of developing web and native apps for the iPhone. I hope to spruce this one up based on the questions asked during the talk last night and give it again some place else. Anyway, slides are below.&lt;/p&gt;
+
+
+&lt;div&gt;&lt;a href="http://www.slideshare.net/trotter/iphonerails-presentation?type=powerpoint" title="iPhone on Rails"&gt;iPhone on Rails&lt;/a&gt;&amp;lt;object height="355" width="425"&gt;&amp;lt;param /&gt;&amp;lt;param /&gt;&amp;lt;param /&gt;&amp;lt;embed src="http://static.slideshare.net/swf/ssplayer2.swf?doc=iphonerails-1229006573528763-1&amp;amp;#38;stripped_title=iphonerails-presentation" height="355" width="425"&gt;&amp;lt;/embed&gt;&amp;lt;/object&gt;&lt;div&gt;View SlideShare &lt;a href="http://www.slideshare.net/trotter/iphonerails-presentation?type=powerpoint" title="View iPhone on Rails on SlideShare"&gt;presentation&lt;/a&gt; or &lt;a href="http://www.slideshare.net/upload?type=powerpoint"&gt;Upload&lt;/a&gt; your own. (tags: &lt;a href="http://slideshare.net/tag/rails"&gt;rails&lt;/a&gt; &lt;a href="http://slideshare.net/tag/iphone"&gt;iphone&lt;/a&gt;)&lt;/div&gt;&lt;/div&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/12/11/iphone-on-rails-the-presentation</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-12-10:43</id>
+    <published>2008-12-10T16:17:00Z</published>
+    <updated>2008-12-10T16:17:37Z</updated>
+    <category term="iphone" />
+    <category term="speaking" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/480717107/iphone-on-rails" rel="alternate" type="text/html" />
+    <title>iPhone on Rails</title>
+<content type="html">
+            &lt;p&gt;I’m a little late to this party, but I’m speaking at &lt;a href="http://www.phillyonrails.org/events/3"&gt;philly.rb&lt;/a&gt; tonight. The talk is about making rails backed iPhone apps, both web and native. It should be a raucous good time, so come on over if you’re near Philly.&lt;/p&gt;
+
+
+	&lt;p&gt;As an aside, there’s a chance that this will be taped or that I’ll actually upload my slides for once. That said, if you miss the talk, you’re probably shit out of luck for my valuable knowledge.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/12/10/iphone-on-rails</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-10-01:39</id>
+    <published>2008-10-01T23:17:00Z</published>
+    <updated>2008-10-01T23:39:57Z</updated>
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/408719167/iphone-resources" rel="alternate" type="text/html" />
+    <title>iPhone Resources</title>
+<content type="html">
+            &lt;p&gt;I’m sure you’ve heard by now that the &lt;a href="http://www.tuaw.com/2008/10/01/iphone-nda-dropped/"&gt;iPhone &lt;span class="caps"&gt;NDA&lt;/span&gt; has been lifted&lt;/a&gt;. This is great news for those of us that pretend to be iPhone developers, because we’re going to start seeing a lot more resources at our fingertips.&lt;/p&gt;
+
+
+	&lt;p&gt;I’m going to start keeping a moderated page of &lt;a href="http://trottercashion.com/iphone-development"&gt;iPhone development resources&lt;/a&gt; including links to blog posts, books, and maybe even podcasts. If you see any blog posts (I’m sure there’ll be tons in the next few days). Let me know and I’ll add them to the list.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/10/1/iphone-resources</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-10-01:38</id>
+    <published>2008-10-01T23:10:00Z</published>
+    <updated>2008-10-01T23:11:49Z</updated>
+    <category term="javascript" />
+    <category term="rspec" />
+    <category term="screw-unit" />
+    <category term="testing" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/408699804/mocking-screw-unit-part-deux" rel="alternate" type="text/html" />
+    <title>Mocking Screw-Unit Part Deux</title>
+<content type="html">
+            &lt;p&gt;I &lt;a href="http://trottercashion.com/2008/8/8/mocking-screw-unit"&gt;wrote earlier&lt;/a&gt; about how &lt;a href="http://github.com/tobowers"&gt;Topper&lt;/a&gt; &lt;a href="http://blog.toppingdesign.com/2008/07/22/screw-unit-javascript-mocking/"&gt;mocked out the dom&lt;/a&gt; for screw-unit testing. Taking his lead, I started playing with screw-unit and adding some mocking and stubbing in the &lt;a href="http://rspec.info"&gt;rspec&lt;/a&gt; way. It’s not quite release worthy, but it’s on github now and I think it’s nearly usable. Basically, it lets you do things like this:&lt;/p&gt;
+
+
+&lt;pre class="javascript"&gt;
+user = {login: 'bob'};
+Screw.Stub.stub(user, 'login').andReturn('nancy');
+user.login; // =&amp;gt; 'nancy'
+Screw.Stub.reset(); // Called automatically after each spec
+user.login; // =&amp;gt; 'bob'
+
+// Will throw a spec failure if user.email() is never called.
+Screw.stub.shouldReceive(user, 'email');
+&lt;/pre&gt;
+
+	&lt;p&gt;Obviously shouldReceive is not quite complete. It’s missing with(), numberOfTimes(), and other things. Still, it’s good enough that others can start iterating on the model I’ve laid down. As I said earlier, my &lt;a href="http://github.com/trotter/screw-unit/tree/master"&gt;fork of screw-unit&lt;/a&gt; is available on github now, so have a look and feel free to leave questions in the comments.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/10/1/mocking-screw-unit-part-deux</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-09-27:33</id>
+    <published>2008-09-27T23:33:00Z</published>
+    <updated>2008-10-14T14:10:17Z</updated>
+    <category term="bugs" />
+    <category term="git" />
+    <category term="git-bisect" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/405022957/git-bisect-is-your-new-best-friend" rel="alternate" type="text/html" />
+    <title>git-bisect Is Your New Best Friend</title>
+<content type="html">
+            &lt;p&gt;To anyone not using &lt;a href="http://en.wikipedia.org/wiki/Git_(software)"&gt;git&lt;/a&gt;, jump to the bottom of the post then come back up.&lt;/p&gt;
+
+
+	&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; I’ve got an even faster method at the bottom now. Skip down there if you already know the basics of git-bisect.&lt;/p&gt;
+
+
+	&lt;p&gt;Ok, now let’s move on to the cool shit, &lt;a href="http://www.kernel.org/pub/software/scm/git/docs/git-bisect.html"&gt;git-bisect&lt;/a&gt;. Git-bisect helps you figure out exactly what code change broke a feature in your app, even when that code change was made months ago. It works by assisting you in a binary tree search through your commits, pausing at each one so that you can run a test and mark that commit as good or bad. This can remarkably decrease the amount of time you spend trying to figure out what is causing a new bug, because you quickly can find the exact code change that introduced it.&lt;/p&gt;
+
+
+	&lt;p&gt;To use git-bisect, you first need a good test to run. Though you &lt;em&gt;could&lt;/em&gt; do a manual test like loading a page in your browser and verifying that things look correct, you will be much happier if you write an &lt;strong&gt;automated test&lt;/strong&gt; that you can run for each commit. Since I usually live in Ruby land, I’m fairly partial to &lt;a href="http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html"&gt;TestUnit&lt;/a&gt; and &lt;a href="http://rspec.info"&gt;rSpec&lt;/a&gt; for my automated tests. If you’re in iPhone land, I strongly recommend using &lt;a href="http://code.google.com/p/google-toolbox-for-mac/"&gt;google-toolbox-for-mac&lt;/a&gt;.&lt;/p&gt;
+
+
+	&lt;p&gt;With automated test in hand, you can kick off git-bisect with &lt;code&gt;git bisect start&lt;/code&gt;. You then mark your current commit as bad using &lt;code&gt;git bisect bad&lt;/code&gt;. You then checkout a known good commit using &lt;code&gt;git checkout commit_hash&lt;/code&gt;. Run your test and mark it as good when it passes using &lt;code&gt;git bisect good&lt;/code&gt;. At this point, git-bisect takes over and starts moving you through commit after commit. At each stop, you run your test and then mark the commit using either &lt;code&gt;git bisect bad&lt;/code&gt; or &lt;code&gt;git bisect good&lt;/code&gt;. At the end, git-bisect will tell you which commit first caused your error. You can then use &lt;code&gt;git diff commit_hash&lt;/code&gt; to see what was changed in that commit. When you’re done, you run &lt;code&gt;git bisect reset&lt;/code&gt; to set everything back to normal.&lt;/p&gt;
+
+
+	&lt;p&gt;A typical git-bisect session looks somewhat like this:&lt;/p&gt;
+
+
+&lt;pre&gt;
+(master) $ git bisect start
+
+(master|BISECTING) $ git bisect bad
+
+(master|BISECTING) $ git checkout eb5eecbb8fc4e2a964e8d2043d8b95f4eb7b563a
+HEAD is now at eb5eecb... Add MainViewController
+
+... run test which passes ...
+
+(eb5eecb...|BISECTING) $ git bisect good
+Bisecting: 3 revisions left to test after this
+[d82c1595b6363484fe0d7f60f9ffa096d777bf17] First CompsView test
+
+... run test which fails ...
+
+(d82c159...|BISECTING) $ git bisect bad
+Bisecting: 1 revisions left to test after this
+[93af33167019fa039f5372dff602a76cbcbc99bb] Add first integration test
+
+... run test which passes ...
+
+(93af331...|BISECTING) $ git bisect good
+Bisecting: 0 revisions left to test after this
+[4f12091a287c363737ceb650df46196e5008d3f2] Add Comps target
+
+... run test which fails ...
+
+(4f12091...|BISECTING) $ git bisect bad
+4f12091a287c363737ceb650df46196e5008d3f2 is first bad commit
+commit 4f12091a287c363737ceb650df46196e5008d3f2
+Author: Trotter Cashion &amp;lt;cashion@example.com&amp;gt;
+Date:   Tue Sep 23 20:18:09 2008 -0400
+
+    Add Comps target
+
+:000000 100644 0000000000000000000000000000000000000000 789bf7877c6059a7f3ac8cb2b53fdb2c903e58ff A    Comps-Info.plist
+:040000 040000 d260571a48328d4a575a7395cd6ece3d651a93ac a622a23fdb80c915eaba49d1d53f7bf0dbf44a70 M    ShootAndSpeak.xcodeproj
+
+... Figure out what's wrong ...
+
+(4f12091...|BISECTING) $ git bisect reset
+Switched to branch "master" 
+
+&lt;/pre&gt;
+
+	&lt;p&gt;I hope you learn to use and love git-bisect. It’s really helped me when trying to find the cause of nasty bugs that seemingly came out of nowhere.&lt;/p&gt;
+
+
+	&lt;h3&gt;Update&lt;/h3&gt;
+
+
+	&lt;p&gt;The above is too much work. While searching the &lt;a href="http://desprofundis.blogspot.com/2008/06/git-bisect-instructions.html"&gt;net&lt;/a&gt;, I found something even easier and faster. You can start git-bisect with the commit hashes like so &lt;code&gt;git bisect start bad_commit good_commit&lt;/code&gt;. Even better, you can then tell git-bisect to run the tests itself… this is where things get awesome: &lt;code&gt;git bisect run some_test&lt;/code&gt;. It’ll iterate through your commits until it finds the bad one. Checkout the sample session below.&lt;/p&gt;
+
+
+&lt;pre&gt;
+/tmp/fake(master) $ git bisect start 68d5ab7a61a871fd097d8820e248cfd168395e4e 20cbc038973d6c78805bc8bfc3d187c2b537f183
+Bisecting: 1 revisions left to test after this
+[3da37ed0ee87c9129a61142ecefef17ab0de7f0f] Test works
+
+/tmp/fake(3da37ed...|BISECTING) $ git bisect run testrb test/unit/some_test.rb -n test_truth
+running testrb test/unit/some_test.rb -n test_truth
+Loaded suite some_test.rb
+Started
+.
+Finished in 0.000338 seconds.
+
+1 tests, 1 assertions, 0 failures, 0 errors
+Bisecting: 0 revisions left to test after this
+[765d7e5c4eba730078907fc00121b8b35ada64b0] Test fails
+running testrb test/unit/some_test.rb -n test_truth
+Loaded suite some_test.rb
+Started
+F
+Finished in 0.009607 seconds.
+
+  1) Failure:
+test_truth(ThisTest) [./test/unit/some_test.rb:5]:
+&amp;lt;false&amp;gt; is not true.
+
+1 tests, 1 assertions, 1 failures, 0 errors
+765d7e5c4eba730078907fc00121b8b35ada64b0 is first bad commit
+commit 765d7e5c4eba730078907fc00121b8b35ada64b0
+Author: Trotter Cashion &amp;lt;cashion@example.com&amp;gt;
+Date:   Sun Sep 28 13:13:09 2008 -0400
+
+    Test fails
+
+:040000 040000 167dd04f2b4101ea256a7a6525859bc03e5433d3 0b062d4b5b03e7ac51ac4050fc7397c8983a2f13 M    test
+bisect run success
+
+/tmp/fake(765d7e5...|BISECTING) $ 
+
+&lt;/pre&gt;
+
+	&lt;p&gt;As you can see above, I’m using ruby for this set of tests. My preferred method is to have git-bisect run testrb (or spec) and specify a single test for it to execute. This ensures that everything runs quite quickly.&lt;/p&gt;
+
+
+	&lt;h3&gt;Land Here!&lt;/h3&gt;
+
+
+	&lt;p&gt;If you jumped here from the top, I regret to inform you that this post will make you very sad. Turn back now before you’re stuck improving your life by &lt;a href="http://git.or.cz/#download"&gt;installing git&lt;/a&gt;. Once you’ve installed git, go check out &lt;a href="http://peepcode.com/"&gt;Peepcode&lt;/a&gt;. They’ve got a really good &lt;a href="https://peepcode.com/products/git"&gt;screencast&lt;/a&gt; and &lt;a href="https://peepcode.com/products/git-internals-pdf"&gt;pdf&lt;/a&gt; that explain git excellently.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/9/27/git-bisect-is-your-new-best-friend</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-08-08:31</id>
+    <published>2008-08-08T11:35:00Z</published>
+    <updated>2008-08-08T11:36:11Z</updated>
+    <category term="javascript" />
+    <category term="mocks" />
+    <category term="screw-unit" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/359351596/mocking-screw-unit" rel="alternate" type="text/html" />
+    <title>Mocking Screw-Unit</title>
+<content type="html">
+            &lt;p&gt;I’m big on tests. Unit testing helps me clarify my thinking on problems and ensure that my code works well. When writing tests, it’s essential to have a good mocking framework to separate the things you are testing from the things you are not. In Ruby, I like using flexmock for Test::Unit and rSpec’s built in mocking framework when using it. In Javascript though, screw-unit doesn’t really come with a way to mock by default. (As an aside, screw-unit totally rocks for testing js.)&lt;/p&gt;
+
+
+	&lt;p&gt;Thankfully, my coworker &lt;a href="http://github.com/tobowers"&gt;Topper&lt;/a&gt; (who’s a kickass dev, btw), has been playing around with adding mocking to screw-unit. He’s got a &lt;a href="http://github.com/tobowers/screw-unit/tree/master"&gt;fork&lt;/a&gt; on github, docs at the previous link, and a quick &lt;a href="http://blog.toppingdesign.com/2008/07/22/screw-unit-javascript-mocking/"&gt;example blog post&lt;/a&gt;. Click through and check this shit out, cause it’s hot.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/8/8/mocking-screw-unit</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-07-07:27</id>
+    <published>2008-07-07T17:19:00Z</published>
+    <updated>2008-07-07T17:21:30Z</updated>
+    <category term="floats" />
+    <category term="ruby" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/329041849/floating-pain" rel="alternate" type="text/html" />
+    <title>Floating Pain</title>
+<content type="html">
+            &lt;p&gt;&lt;a href="http://blog.toppingdesign.com/"&gt;Topper&lt;/a&gt; mentioned a tweet he saw to me in which someone asked why &lt;code&gt;(4.6 * 100).to_i #=&amp;gt; 459&lt;/code&gt;. Though this seems like a ruby bug, it’s really just one of the annoying things you hit with rounding errors and floats. At issue is that &lt;code&gt;#to_i&lt;/code&gt; floors the float, instead of rounding it. Since the value may be approximated at 459.999999, the &lt;code&gt;#to_i&lt;/code&gt; floors it to 459. To have things work like you’d expect, use &lt;code&gt;#round&lt;/code&gt; when converting &lt;code&gt;Float&lt;/code&gt; to &lt;code&gt;Fixnum&lt;/code&gt;. See below for some code examples:&lt;/p&gt;
+
+
+&lt;pre class="ruby"&gt;
+  4.6.to_i           # =&amp;gt; 4
+  4.6.round          # =&amp;gt; 5
+  (4.6 * 100).to_i   # =&amp;gt; 459
+  (4.6 * 100).round  # =&amp;gt; 460
+&lt;/pre&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/7/7/floating-pain</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-06-27:26</id>
+    <published>2008-06-27T03:06:00Z</published>
+    <updated>2008-06-27T03:07:05Z</updated>
+    <category term="programming" />
+    <category term="trotter cashion" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/321023468/how-i-got-started-programming" rel="alternate" type="text/html" />
+    <title>How I Got Started Programming</title>
+<content type="html">
+            &lt;p&gt;&lt;a href="http://www.pauldix.net/2008/06/how-i-got-start.html"&gt;Paul&lt;/a&gt; says I’ve got to do this, and I don’t want to let him
+down. &lt;a href="http://gilesbowkett.blogspot.com/2008/06/how-i-got-started-programming.html"&gt;Giles&lt;/a&gt; tagged him first, so you should probably read his too.&lt;/p&gt;
+
+
+	&lt;h3&gt;How old were you when you started programming?&lt;/h3&gt;
+
+
+	&lt;p&gt;In third grade (when I was 8) I started started taking super nerd math classes
+with other super nerds. As part of those classes, they had us programming a
+turtle to draw things on the screen. &lt;a href="http://en.wikipedia.org/wiki/Logo_(programming_language"&gt;Logo&lt;/a&gt;) was totally awesome and had me hooked
+on the magic of programming.&lt;/p&gt;
+
+
+	&lt;h3&gt;How did you get started programming?&lt;/h3&gt;
+
+
+	&lt;p&gt;After Logo, my dad (he was a &lt;span class="caps"&gt;CTO&lt;/span&gt; at the time) bought me Visual Studio and a few
+books on Visual Basic. It was lots of “Teach Yourself X in X days”, and I ran
+through VB, C++, and a little Delphi. Naturally, those books didn’t teach me to
+actually be good, though I did figure out how to make a few small games that I
+could play.&lt;/p&gt;
+
+
+	&lt;p&gt;My dad was a &lt;span class="caps"&gt;CTO&lt;/span&gt; at an investment bank, which is the kind of place that treats a
+&lt;span class="caps"&gt;CTO&lt;/span&gt; like crap. I didn’t want to be the guy that got shat on, so in high school I
+dropped programming and started learning businessy things. I even picked my
+college based on the strength of its business school. Once I showed up, I
+realized that I didn’t like anyone at the business school, that philosophy was
+fun, and that math/econ could make me money. I promptly switched my major.&lt;/p&gt;
+
+
+	&lt;p&gt;After college, I went to work at a job that I ended up hating, quit it, took a
+few months to figure out my life, and realized that I really loved programming.
+Thankfully I got lucky and read a &lt;a href="http://lifehacker.com/software/notag/ruby-on-rails-book-as-a-download-105594.php"&gt;blog post&lt;/a&gt; that tipped me to 
+the beta book of &lt;span class="caps"&gt;AWDWR&lt;/span&gt;, which taught me a lot about &lt;strong&gt;real&lt;/strong&gt; programming. I
+consider that the start of me becomming a real programmer, and not just some kid
+that can code.&lt;/p&gt;
+
+
+	&lt;h3&gt;What was your first language?&lt;/h3&gt;
+
+
+	&lt;p&gt;Logo! Drawing with turtles rocks so hard. After that it was VB, which let me
+push Windows around and made me a little cash.&lt;/p&gt;
+
+
+	&lt;h3&gt;What was the first real program you wrote?&lt;/h3&gt;
+
+
+	&lt;p&gt;I wrote my first useful program while working as an intern at a financial
+services firm. The company was using &lt;a href="http://www.advent.com/solutions/asset_managers/axys_platform"&gt;Axys&lt;/a&gt; (really bad website alert!) for portfolio analysis and had a
+tedious process for reconciling their branches with the back office. I wrote a
+VB program that helped them to perform these reconciliations more quickly, which
+I hear they still use.&lt;/p&gt;
+
+
+	&lt;h3&gt;What languages have you used since you started programming?&lt;/h3&gt;
+
+
+	&lt;p&gt;Logo, VB, C, C++, Delphi, Ruby, Objective-C, Erlang, Scheme, Javascript, Java, and maybe something else. Of those, I’d feel comfortable working on a project using Ruby, Javascript, Objective-C, or Erlang. I’m skilled enough in some of the others, but have vowed to never use them again. I’ll let you guess which.&lt;/p&gt;
+
+
+	&lt;h3&gt;What was your first professional programming gig?&lt;/h3&gt;
+
+
+	&lt;p&gt;2005 at the Nathan Kline Institute for Mental Health. There was a PhD there who
+needed &lt;a href="http://en.wikipedia.org/wiki/ImageJ"&gt;ImageJ&lt;/a&gt; to talk to his microscope over a serial port and to have a
+lot of old scripts from ObjectImage translated into ImageJ. It was a fun job
+that let me work at my own pace and play a lot with the art of programming.&lt;/p&gt;
+
+
+	&lt;h3&gt;If there is one thing you learned along the way that you would tell new
+developers, what would it be?&lt;/h3&gt;
+
+
+	&lt;p&gt;Surround yourself with great people, and never be the smartest guy in the room. If you’re lucky enough to work at a
+company with some great programmers, you’ll learn a whole lot that way. If
+your company is full of 9-5 coders, join a local developer group or start your
+own. &lt;a href="http://nycruby.org"&gt;Nyc.rb&lt;/a&gt; and &lt;a href="http://www.phillyonrails.org/"&gt;Philly On Rails&lt;/a&gt; totally rock, so you could always move to New York or Philly and learn from some of the best.&lt;/p&gt;
+
+
+	&lt;h3&gt;What’s the most fun you’ve ever had programming?&lt;/h3&gt;
+
+
+	&lt;p&gt;Logo. I used to love making that little turtle draw all sorts of fun things on
+the screen. There was no real need to make the turtle do things, I was doing it
+just for the joy of it. I managed to recreate some of that feeling when working
+on &lt;a href="http://rubyforge.org/projects/spec-unit/"&gt;spec-unit&lt;/a&gt;, which is really my only useful open source contribution to
+date. Unfortunately, it only has one release ever, and I haven’t messed with it in two years.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/6/27/how-i-got-started-programming</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-06-22:5</id>
+    <published>2008-06-22T22:23:00Z</published>
+    <updated>2008-06-22T22:44:05Z</updated>
+    <category term="business" />
+    <category term="working remotely" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/317690654/on-working-remotely" rel="alternate" type="text/html" />
+    <title>On Working Remotely</title>
+<content type="html">
+            &lt;p&gt;Being on my honeymoon in St. Barths has got me thinking a bit about working remotely. Don’t worry, I’m not working on this trip. I’m more trying to think if ways I could stay on this trip indefinitely, but still manage to make some cash.&lt;/p&gt;
+
+
+	&lt;p&gt;I’m no stranger to remote work. As some of you may know, I live in Philly but continue to work for &lt;a href="http://www.motionbox.com"&gt;Motionbox&lt;/a&gt; in New York. I commute two days per week, and spend the rest working from home in Philly. Over the past year, I’ve started to catalog my likes and dislikes with this arrangement, and I’m going to list some of my dislikes here along with some possible ways to improve things. For now, we’ll just look at the first problem I’ve encountered:&lt;/p&gt;
+
+
+	&lt;h3&gt;You’re out of touch&lt;/h3&gt;
+
+
+	&lt;p&gt;If you’re distributed while the rest of the team is collocated, you &lt;strong&gt;will&lt;/strong&gt; be out of the loop. When your boss is walking around the office and stopping at various desks, he won’t be stopping at yours. If you’re looking to be recognized for your accomplishments, this can be a major problem. It’s difficult to advance in the company if you’re not visible.&lt;/p&gt;
+
+
+	&lt;p&gt;To combat this problem, I’ve found getting everyone on IM and &lt;span class="caps"&gt;IRC&lt;/span&gt; to be very helpful. If your company uses an open office, you’re in luck. The noise from the floor plan typically causes people to use headphones, so they’ll be much more prone to use IM and &lt;span class="caps"&gt;IRC&lt;/span&gt; for all their communication (even with those people right next to them). Another good technique is to send copious amounts of email. If people are cataloging what should be done and who has done what through email (a good practice regardless), then it’s much easier for you to keep track of what is happening in the office.&lt;/p&gt;
+
+
+	&lt;p&gt;I don’t think that Skype or frequent phone calls help much in this regard. Typically, you’re only talking to one person and all the speaker phone arrangements I’ve seen aren’t that great. Voice is great for quickly hashing out the details of a plan with one other person, but is terrible as a mechanism for keeping up with the goings on of the company.&lt;/p&gt;
+
+
+	&lt;p&gt;Making time (and spending the money) to get to the office at least once a month is invaluable. Though email, IM, and &lt;span class="caps"&gt;IRC&lt;/span&gt; help, they’re not a real substitute for quality time in person. One of the most important things I’ve done at Motionbox is to know when people are going out for after work drinks to celebrate various accomplishments and made sure that I was able to be in town for them. Though it sounds silly to talk about drinking as an important part of work, the main thing you miss by being remote is the social component. It’s much more important to get in town to socialize than it is to do actual work. You’ll have plenty of time to work when you’re home alone the next day.&lt;/p&gt;
+
+
+	&lt;p&gt;Anyone have any thoughts on other ways to keep in touch while working remotely?&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/6/22/on-working-remotely</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-06-11:20</id>
+    <published>2008-06-11T02:30:00Z</published>
+    <updated>2008-06-11T02:46:16Z</updated>
+    <category term="belongstodemeter" />
+    <category term="rails" />
+    <category term="ruby" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/309293334/belongstodemeter" rel="alternate" type="text/html" />
+    <title>BelongsToDemeter</title>
+<content type="html">
+            &lt;p&gt;While playing with Rails the other day, I thought it would be fun if you could get at attributes of a belongs_to association without having to do the whole traverse association and check for nil thing.&lt;/p&gt;
+
+&lt;pre class="ruby"&gt;
+
+# Something like...
+@person.group_name  # =&gt; "Pizza Fans!" || nil
+
+# Instead of...
+@person.group ? @person.group.name : nil # =&gt; "Pizza Fans!" || nil
+
+&lt;/pre&gt;
+
+&lt;p&gt;Thinking this would be a fun chance to play with some meta, I threw together &lt;a href="http://github.com/trotter/belongs_to_demeter/tree/master"&gt;BelongsToDemeter&lt;/a&gt;, which you can find over on &lt;a href="http://github.com"&gt;GitHub&lt;/a&gt;. It's a rails plugin, but don't expect it to actually install using script/plugin. The code is complete and utter crap, so it's probably best that Rails won't install it. It is slow, and most likely prone to error. Still, it's a fun little thought experiment, and I may decide to clean it up then speed it up if someone tells me they like it.&lt;/p&gt;
+
+&lt;p&gt;It does what I explained above and also lets you do fun things like this, which I think are useful when assigning associations through a form:&lt;/p&gt;
+
+&lt;pre class="ruby"&gt;
+
+# Lookup the user 'Bob' by login and assign 
+# it to the user association
+@character.user               # =&gt; nil
+@character.user_login = "bob"
+@character.user.login         # =&gt; "bob"
+
+&lt;/pre&gt;
+
+&lt;p&gt;Anyway, go over to &lt;a href="http://github.com"&gt;GitHub&lt;/a&gt; and check out &lt;a href="http://github.com/trotter/belongs_to_demeter/tree/master"&gt;BelongsToDemeter&lt;/a&gt;. When you're done, let me know if you like the concept. After all that, go erase all memory of the implementation details from your mind, they're ugly.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/6/11/belongstodemeter</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-06-05:16</id>
+    <published>2008-06-05T02:22:00Z</published>
+    <updated>2008-06-11T02:48:00Z</updated>
+    <category term="macro tests" />
+    <category term="rspec" />
+    <category term="ruby" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/304990208/macro-tests" rel="alternate" type="text/html" />
+    <title>Macro Tests</title>
+<content type="html">
+            &lt;p&gt;I went to &lt;a href="http://blog.hasmanythrough.com/"&gt;Josh Susser&lt;/a&gt;'s talk at RailsConf last week, where he mentioned that no one really writes macro tests with rSpec. Naturally, I found this to be a true shame, since I think macro tests are a great way to clean up your code. What's a macro test you ask? Sit right there and I'll tell you.&lt;/p&gt;
+
+&lt;p&gt;A macro test is a test that defines other tests for you. It's a great way to reduce repetition in your test code, thereby making it easier to read. Take these three tests as an example:&lt;p&gt;
+
+&lt;pre class="ruby"&gt;
+describe 'GET /users/:user_id/posts/:post_id/comments' do
+  it 'should be a success' do
+    get :index, :user_id =&amp;gt; 2, :post_id =&amp;gt; 3
+    response.should be_success
+  end
+
+  it 'should 404 without a user id' do
+    get :index, :post_id =&amp;gt; 3
+    response.headers['Status'].to_i.should == 404
+  end
+
+  it 'should 404 without a post id' do
+    get :index, :user_id =&amp;gt; 2
+    response.headers['Status'].to_i.should == 404
+  end
+end
+&lt;/pre&gt;
+
+&lt;p&gt;Obviously there's a little bit of duplication in the 404's. Let's define macro tests to clean that up.&lt;/p&gt;
+
+&lt;pre class="ruby"&gt;
+describe 'GET /users/:user_id/posts/:post_id/comments' do
+  def self.should_404_without(param)
+    # Since you're calling this method within the describe block, 
+    # it is being called within the correct context.
+    it "should 404 without #{param}" do
+      get :index, paramz.merge(param.to_sym =&amp;gt; nil)
+      response.headers['Status'].to_i.should == 404
+    end
+  end
+
+  should_404_without "user_id"
+  should_404_without "post_id"
+
+  # Normally I put this at the bottom, only here to keep it close to the above.
+  # This method is called by the test the macro test defines to hand off the params.
+  def paramz
+    {:user_id =&amp;gt; 2, :post_id =&amp;gt; 3}
+  end
+
+  it 'should be a success' do
+    get :index, paramz
+    response.should be_success
+  end
+end
+&lt;/pre&gt;
+
+&lt;p&gt;Hmm... this doesn't really look any cleaner. The problem is that we did this for only one action. If we generalize should_404_without more, then we can put it into its own shared example set that we can include in any describe block. Let's look at that now.&lt;/p&gt;
+
+&lt;pre class="ruby"&gt;
+shared_examples_for "controllers" do
+  def self.should_normally_succeed
+    it 'should be a success' do
+      get @action, paramz
+      response.should be_success
+    end
+  end
+  
+  def self.should_404_without(param)
+    it "should 404 without #{param}" do
+      get @action, paramz.merge(param.to_sym =&amp;gt; nil)
+      response.headers['Status'].to_i.should == 404
+    end
+  end
+end
+
+describe 'GET /users/:user_id/posts/:post_id/comments' do
+  it_should_behave_like "controllers"
+  
+  before(:each) { @action = :index }
+
+  should_normally_succeed
+  should_404_without "user_id"
+  should_404_without "post_id"
+
+  def paramz
+    {:user_id =&amp;gt; 2, :post_id =&amp;gt; 3}
+  end
+end
+&lt;/pre&gt;
+
+&lt;p&gt;Oh snap! That describe block is a lot cleaner, and we can tuck the shared examples into spec_helper.rb to really clean things up. Using macro tests, you'll find it's very easy to create a lot of REST controllers very quickly. In fact, I plan on open sourcing something to help with that very soon...&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: See the comments for David's advice on pulling this out of shared examples and into a module that you can then add to rSpec. This cleans up the describe blocks even more. Mega win!&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/6/5/macro-tests</feedburner:origLink></entry>
+  <entry xml:base="http://trottercashion.com/">
+    <author>
+      <name>trotter</name>
+    </author>
+    <id>tag:trottercashion.com,2008-05-04:12</id>
+    <published>2008-05-04T04:14:00Z</published>
+    <updated>2008-05-04T14:39:31Z</updated>
+    <category term="moving" />
+    <category term="starting" />
+    <link href="http://feeds.feedburner.com/~r/trottercashion/~3/283393385/starting-the-car" rel="alternate" type="text/html" />
+    <title>Starting the Car</title>
+<content type="html">
+            &lt;p&gt;Well, it's not much of a start, but every trip must have a beginning. As I wake up and wipe my bleary eyes, I'm going to slowly pull this car out of the driveway and put it on the road. The tunes aren't yet cranking; no Allman Brothers is yet helping us greet the open road. Still, we've left that old home that is &lt;a href="http://lifecoding.com"&gt;lifecoding&lt;/a&gt; and are starting out on something new, something fresh. We're running on rubies with a comfortable walking shoe pushing the accelerator. I hope you enjoy this ride.&lt;/p&gt;
+          </content>  <feedburner:origLink>http://trottercashion.com/2008/5/4/starting-the-car</feedburner:origLink></entry>
+</feed>

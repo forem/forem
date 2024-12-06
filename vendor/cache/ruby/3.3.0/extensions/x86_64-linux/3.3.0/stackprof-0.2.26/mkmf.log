@@ -1,0 +1,181 @@
+have_func: checking for rb_postponed_job_register_one()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return !!argv[argc];
+6: }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+conftest.c: In function ‘t’:
+conftest.c:14:57: error: ‘rb_postponed_job_register_one’ undeclared (first use in this function)
+   14 | int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_postponed_job_register_one; return !p; }
+      |                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+conftest.c:14:57: note: each undeclared identifier is reported only once for each function it appears in
+conftest.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_postponed_job_register_one; return !p; }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: extern void rb_postponed_job_register_one();
+15: int t(void) { rb_postponed_job_register_one(); return 0; }
+/* end */
+
+--------------------
+
+have_func: checking for rb_profile_frames()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+conftest.c: In function ‘t’:
+conftest.c:14:57: error: ‘rb_profile_frames’ undeclared (first use in this function)
+   14 | int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_profile_frames; return !p; }
+      |                                                         ^~~~~~~~~~~~~~~~~
+conftest.c:14:57: note: each undeclared identifier is reported only once for each function it appears in
+conftest.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_profile_frames; return !p; }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: extern void rb_profile_frames();
+15: int t(void) { rb_profile_frames(); return 0; }
+/* end */
+
+--------------------
+
+have_func: checking for rb_tracepoint_new()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+conftest.c: In function ‘t’:
+conftest.c:14:57: error: ‘rb_tracepoint_new’ undeclared (first use in this function)
+   14 | int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_tracepoint_new; return !p; }
+      |                                                         ^~~~~~~~~~~~~~~~~
+conftest.c:14:57: note: each undeclared identifier is reported only once for each function it appears in
+conftest.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_tracepoint_new; return !p; }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: extern void rb_tracepoint_new();
+15: int t(void) { rb_tracepoint_new(); return 0; }
+/* end */
+
+--------------------
+
+have_const: checking for RUBY_INTERNAL_EVENT_NEWOBJ... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC   -c conftest.c"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: /*top*/
+4: typedef int conftest_type;
+5: conftest_type conftestval = (int)RUBY_INTERNAL_EVENT_NEWOBJ;
+/* end */
+
+--------------------
+

@@ -1,0 +1,79 @@
+AllCops:
+  TargetRubyVersion: 2.6
+  DisplayCopNames: true
+
+Bundler/DuplicatedGem:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Metrics/BlockNesting:
+  Max: 2
+
+Layout/LineLength:
+  AllowURI: true
+  Enabled: false
+
+Metrics/MethodLength:
+  CountComments: false
+  Max: 10
+
+Metrics/ParameterLists:
+  Max: 4
+  CountKeywordArgs: true
+
+Naming/FileName:
+  Exclude:
+    - "lib/simplecov-html.rb"
+    - "test/test_simple_cov-html.rb"
+
+Style/CollectionMethods:
+  PreferredMethods:
+    map: "collect"
+    reduce: "inject"
+    find: "detect"
+    find_all: "select"
+
+Style/Documentation:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/ExpandPathArguments:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Style/MutableConstant:
+  Exclude:
+    - "lib/simplecov-html/version.rb"
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: "comma"
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: "comma"

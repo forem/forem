@@ -1,0 +1,69 @@
+<script type="text/javascript" src="<%= root_path %>javascripts/chart.min.js"></script>
+<script type="text/javascript" src="<%= root_path %>javascripts/chartjs-plugin-annotation.min.js"></script>
+<script type="text/javascript" src="<%= root_path %>javascripts/metrics.js"></script>
+
+<h2>Total execution time</h2>
+
+<%
+  table_limit = 20
+  chart_limit = 5
+  job_results = @query_result.job_results.sort_by { |(kls, jr)| jr.totals["s"] }.reverse.first(table_limit)
+  visible_kls = job_results.first(chart_limit).map(&:first)
+%>
+
+<canvas id="job-metrics-overview-chart"></canvas>
+
+<script>
+  window.jobMetricsChart = new JobMetricsOverviewChart(
+    "job-metrics-overview-chart",
+    <%= Sidekiq.dump_json({
+      series: job_results.map { |(kls, jr)| [kls, jr.dig("series", "s")] }.to_h,
+      marks: @query_result.marks.map { |m| [m.bucket, m.label] },
+      visible: visible_kls,
+      labels: @query_result.buckets,
+    }) %>
+  )
+</script>
+
+<h2>Most Time-Consuming Jobs</h2>
+
+<div class="table_container">
+  <table class="table table-bordered table-striped table-hover">
+    <tbody>
+      <tr>
+        <th><%= t('Name') %></th>
+        <th><%= t('Processed') %></th>
+        <th><%= t('Failed') %></th>
+        <th><%= t('ExecutionTime') %></th>
+        <th><%= t('AvgExecutionTime') %></th>
+      </tr>
+      <% if job_results.any? %>
+        <% job_results.each_with_index do |(kls, jr), i| %>
+          <tr>
+            <td>
+              <div class="metrics-swatch-wrapper">
+                <% id = "metrics-swatch-#{kls}" %>
+                <input
+                  type="checkbox"
+                  id="<%= id %>"
+                  class="metrics-swatch"
+                  value="<%= kls %>"
+                />
+                <code><a href="<%= root_path %>metrics/<%= kls %>"><%= kls %></a></code>
+              </div>
+              <script>jobMetricsChart.registerSwatch("<%= id %>")</script>
+            </td>
+            <td><%= jr.dig("totals", "p") %></td>
+            <td><%= jr.dig("totals", "f") %></td>
+            <td><%= jr.dig("totals", "s").round(2) %> seconds</td>
+            <td><%= jr.total_avg("s").round(2) %> seconds</td>
+          </tr>
+        <% end %>
+      <% else %>
+          <tr><td colspan=5><%= t("NoDataFound") %></td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<p><small>Data from <%= @query_result.starts_at %> to <%= @query_result.ends_at %></small></p>

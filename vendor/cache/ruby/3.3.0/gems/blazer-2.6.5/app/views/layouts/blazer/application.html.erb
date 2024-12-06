@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= blazer_title ? blazer_title : "Blazer" %></title>
+
+    <meta charset="utf-8" />
+    <%= favicon_link_tag "blazer/favicon.png" %>
+    <% if defined?(Propshaft::Railtie) %>
+      <%= stylesheet_link_tag "blazer/bootstrap-propshaft", "blazer/bootstrap", "blazer/selectize", "blazer/github", "blazer/daterangepicker", "blazer/application" %>
+      <%= javascript_include_tag "blazer/jquery", "blazer/jquery-ujs", "blazer/stupidtable", "blazer/stupidtable-custom-settings", "blazer/jquery.stickytableheaders", "blazer/selectize", "blazer/highlight.min", "blazer/moment", "blazer/moment-timezone-with-data", "blazer/daterangepicker", "blazer/Chart.js", "blazer/chartkick", "blazer/ace/ace", "blazer/ace/ext-language_tools", "blazer/ace/theme-twilight", "blazer/ace/mode-sql", "blazer/ace/snippets/text", "blazer/ace/snippets/sql", "blazer/Sortable", "blazer/bootstrap", "blazer/vue", "blazer/routes", "blazer/queries", "blazer/fuzzysearch", "blazer/application" %>
+    <% else %>
+      <%= stylesheet_link_tag "blazer/application" %>
+      <%= javascript_include_tag "blazer/application" %>
+    <% end %>
+    <script>
+      <%= blazer_js_var "rootPath", root_path %>
+    </script>
+    <% if blazer_maps? %>
+      <%= stylesheet_link_tag "https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css", integrity: "sha384-vxzdEt+wZRPNQbhChjmiaFMLWg86IGuq1NGDehJHsD2mphYkxXll/eSs16WWi6Dq", crossorigin: "anonymous" %>
+      <%= javascript_include_tag "https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js", integrity: "sha384-CTBEiDLiZJ8gkAQ3fYGoeiRp81/ecNiBkGz11jXFALOZ6++rbnqmdo6OImkmr1MO", crossorigin: "anonymous" %>
+    <% end %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="container">
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,386 @@
+---
+'01':
+  name: Saint Andrew
+  code: '01'
+  unofficial_names: Saint Andrew
+  geo:
+    latitude: 12.1230598
+    longitude: -61.64211719999999
+    min_latitude: 12.048629
+    min_longitude: -61.701438
+    max_latitude: 12.17327
+    max_longitude: -61.59250969999999
+  translations:
+    en: Saint Andrew
+    ar: أبرشية سانت أندرو
+    bn: সেন্ট আন্ড্রু পারিশ
+    da: Saint Andrew Parish
+    de: Saint Andrew
+    el: Άγιος Ανδρέας, Γρενάδα
+    es: Parroquia de Saint Andrew
+    eu: Saint Andrew
+    fi: Saint Andrew
+    fr: Paroisse de Saint Andrew
+    gl: Saint Andrew
+    gu: સેન્ટ એન્ડ્રુ પૅરિશ
+    hi: सेंट एंड्रू पैरिश, जमाइका
+    id: Paroki Saint Andrew
+    it: Parrocchia di Saint Andrew
+    ja: セント・アンドリューズ
+    kn: ಸೇಂಟ್ ಆಂಡ್ರ್ಯೂ ಪ್ಯಾರಿಷ್
+    ko: 세인트앤드루 교구
+    lt: Šv. Andriaus parapija
+    mr: सेंट अँड्रू परश
+    ms: Saint Andrew Parish
+    nb: Saint Andrew prestegjeld
+    nl: Saint Andrew
+    pl: Saint Andrew
+    pt: Saint Andrew
+    ru: Приход Сент-Эндрю
+    si: ශාන්ත ඇන්ඩ්රූ ප්‍රාන්තය
+    sv: Saint Andrew (parish i Grenada)
+    ta: செயின்ட் அன்றெவ் பரிஷ்
+    te: సెయింట్ ఆండ్ర్యూ పారిష్
+    th: เซนต์แอนดรูว์
+    tr: Saint Andrew Parish
+    ur: سینٹ اینڈریو پریش، گریناڈا
+    vi: Giáo xứ Saint Andrew
+    zh: 聖安德魯區 (格林納達)
+    lv: Sentrendrū pagasts
+    ceb: Saint Andrew (parokya sa Grenada)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011133\U00011111\U00011134 \U00011103\U0001112C\U0001111A\U00011134\U00011113\U00011133\U00011122\U0001112A"
+    uk: Парафія Сент-Андру
+    'no': Saint Andrew prestegjeld
+    fa: پریش سنت اندرو (گرنادا)
+  comments:
+  type: parish
+'02':
+  name: Saint David
+  code: '02'
+  unofficial_names: Saint David
+  geo:
+    latitude: 12.0456435
+    longitude: -61.6888738
+    min_latitude: 12.0065127
+    min_longitude: -61.71738500000001
+    max_latitude: 12.07608
+    max_longitude: -61.6356962
+  translations:
+    en: Saint David
+    ar: أبرشية القديس ديفيد
+    bn: সেন্ট ডেভিড প্যারিশ
+    da: Saint David Parish
+    de: Saint David
+    el: Άγιος Δαβίδ (ενορία)
+    es: Parroquia de Saint David
+    eu: Saint David
+    fi: Saint David
+    fr: Paroisse de Saint David
+    gu: સેન્ટ ડેવિડ પૅરિશ
+    hi: सेंट डेविड पैरिश
+    id: Paroki Saint David
+    it: Parrocchia di Saint David
+    ja: セント・デイヴィッド郡 (ドミニカ国)
+    kn: ಸೇಂಟ್ ಡೇವಿಡ್ ಪ್ಯಾರಿಷ್
+    ko: 세인트데이비드 교구
+    lt: Šv. Dovydo parapija
+    mr: सेंट डेव्हिड पॅरीश
+    ms: Saint David Parish
+    nb: Saint David prestegjeld
+    nl: Saint David
+    pl: Saint David
+    pt: Saint David
+    ru: Приход Сент-Дэвид
+    si: ශාන්ත ඩේවිඩ් ප්‍රාන්තය
+    sv: Saint David
+    ta: செயின்ட் டேவிட் பரிஷ்
+    te: సెయింట్ డేవిడ్ పారిష్
+    th: เซนต์เดวิด
+    tr: Saint David Parish
+    ur: سینٹ ڈیوڈ پریش، گریناڈا
+    vi: Giáo xứ Saint David
+    lv: Sentdeivida pagasts
+    ceb: Saint David (parokya sa Grenada)
+    zh: 聖戴維區 (格林納達)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011133\U00011111\U00011134 \U00011113\U0001112C\U0001111E\U00011128\U00011116\U00011134"
+    uk: Парафія Сент-Девід
+    'no': Saint David prestegjeld
+    ca: Saint David
+    fa: پاریس سنت دیوید (گرنادا)
+  comments:
+  type: parish
+'03':
+  name: Saint George
+  code: '03'
+  unofficial_names: Saint George
+  geo:
+    latitude: 12.0714317
+    longitude: -61.73564330000001
+    min_latitude: 11.9852072
+    min_longitude: -61.80193610000001
+    max_latitude: 12.1108259
+    max_longitude: -61.6958989
+  translations:
+    en: Saint George
+    ar: أبرشية القديس جورج
+    bn: সেন্ট জর্জ প্যারিশ
+    da: Saint George Parish
+    de: Saint George
+    el: Άγιος Γεώργιος, Γρενάδα
+    es: Parroquia de Saint George
+    eu: Saint George parrokia
+    fi: Saint George
+    fr: Paroisse de Saint George
+    gl: Saint George
+    gu: સેન્ટ જ્યોર્જ પૅરિશ
+    hi: सेंट जॉर्ज पैरिश
+    id: Paroki Saint George
+    it: Parrocchia di Saint George
+    ja: セント・ジョージ郡 (グレナダ)
+    kn: ಸೇಂಟ್ ಜಾರ್ಜ್ ಪ್ಯಾರಿಷ್
+    ko: 세인트조지 교구
+    lt: Šv. Jurgio parapija
+    mr: सेंट जॉर्ज पॅरीश
+    ms: Saint George Parish
+    nb: Saint George prestegjeld
+    nl: Saint George
+    pl: Saint George
+    pt: Saint George
+    ru: Приход Сент-Джордж
+    si: ශාන්ත ජෝජ් ප්‍රාන්තය
+    sv: Saint George (parish i Grenada)
+    ta: செயின்ட் ஜார்ஜ் பரிஷ்
+    te: సెయింట్ జార్జ్ పారిష్
+    th: เซนต์จอร์จ
+    tr: Sain George Parish
+    ur: سینٹ جارج پریش، گریناڈا
+    vi: Giáo xứ Saint George
+    lv: Sentdžordža pagasts
+    ceb: Saint George
+    zh: 聖喬治區 (格林納達)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011133\U00011111\U00011134 \U0001110E\U00011127\U00011122\U00011134\U0001110E\U00011134"
+    uk: Парафія Сент-Джордж
+    'no': Saint George prestegjeld
+    az: Sent-Corc səmti
+    be: Прыход Сент-Джордж
+    fa: پریش سنت جورج (گرنادا)
+  comments:
+  type: parish
+'04':
+  name: Saint John
+  code: '04'
+  unofficial_names: Saint John
+  geo:
+    latitude: 12.130824
+    longitude: -61.71225699999999
+    min_latitude: 12.108849
+    min_longitude: -61.75262300000001
+    max_latitude: 12.177205
+    max_longitude: -61.682125
+  translations:
+    en: Saint John
+    ar: أبرشية القديس جون
+    bn: সেন্ট জন প্যারিশ
+    da: Saint John Parish
+    de: Saint John
+    el: Άγιος Ιωάννης
+    es: Parroquia de Saint John
+    eu: Saint John
+    fi: Saint John
+    fr: Paroisse de Saint John
+    gu: સેંટ જ્હોન પૅરિશ
+    hi: सेंट जॉन पैरिश
+    id: Paroki Saint John
+    it: Parrocchia di Saint John
+    ja: セント・ジョン郡 (ドミニカ国)
+    kn: ಸೇಂಟ್ ಜಾನ್ ಪ್ಯಾರಿಷ್
+    ko: 세인트존 교구
+    lt: Šv. Jono parapija
+    mr: सेंट जॉन पॅरीश
+    ms: Saint John Parish
+    nb: Saint John prestegjeld
+    nl: Saint John
+    pl: Saint John
+    pt: Saint John
+    ru: Приход Сент-Джон
+    si: ශාන්ත ජෝන් වසම
+    sv: Saint John
+    ta: செயின்ட் ஜான் பரிஷ்
+    te: సెయింట్ జాాన్ పారిష్
+    th: เซนต์ จอน เพลิส
+    tr: Saint John Parish
+    ur: سینٹ جان پریش، گریناڈا
+    vi: Giáo xứ Saint John
+    lv: Sentdžona pagasts
+    ceb: Saint John (parokya sa Grenada)
+    zh: 聖約翰區 (格林納達)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011133\U00011111\U00011134 \U0001110E\U00011127\U0001111A\U00011134"
+    uk: Парафія Сент-Джон
+    'no': Saint John prestegjeld
+    fa: پریش سنت جان (گرنادا)
+  comments:
+  type: parish
+'05':
+  name: Saint Mark
+  code: '05'
+  unofficial_names: Saint Mark
+  geo:
+    latitude: 12.19023
+    longitude: -61.6888738
+    min_latitude: 12.1516449
+    min_longitude: -61.72427709999999
+    max_latitude: 12.219914
+    max_longitude: -61.6701531
+  translations:
+    en: Saint Mark
+    ar: أبرشية القديس مارك
+    bn: সেন্ট মাার্ক পারিশ
+    da: Saint Mark Parish
+    de: Saint Mark
+    el: Άγιος Μάρκος, Γρενάδα
+    es: Parroquia de Saint Mark
+    eu: Saint Mark
+    fi: Saint Mark
+    fr: Paroisse de Saint Mark
+    gu: સેન્ટ માર્ક પૅરિશ
+    hi: सेंट मार्क पैरिश
+    id: Paroki Saint Mark
+    it: Parrocchia di Saint Mark
+    ja: セント・マーク (ドミニカ国)
+    kn: ಸೇಂಟ್ ಮಾರ್ಕ್ ಪ್ಯಾರಿಷ್
+    ko: 세인트마크 교구
+    lt: Šv. Morkaus parapija
+    mr: सेंट मार्क पॅरीश
+    ms: Saint Mark Parish
+    nb: Saint Mark Parish
+    nl: Saint Mark
+    pl: Saint Mark
+    pt: Saint Mark
+    ru: Приход Сент-Марка
+    si: ශාන්ත මාර්ක් ප්‍රාන්තය
+    sv: Saint Mark
+    ta: செயின்ட் மார்க் பரிஷ்
+    te: సెయింట్ మాార్క్ పారిష్
+    th: ตำบลเซนต์มาร์ค
+    tr: Saint Mark Parish
+    ur: سینٹ مارک پریش، گریناڈا
+    vi: Giáo xứ Saint Mark
+    lv: Sentmarka pagasts
+    ceb: Saint Mark (parokya sa Grenada)
+    zh: 聖馬克區 (格林納達)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011133\U00011111\U00011134 \U0001111F\U00011122\U00011134\U00011107\U00011134"
+    uk: Парафія Сент-Марк
+    'no': Saint Mark Parish
+    fa: پاریس سنت مارک (گرنادا)
+  comments:
+  type: parish
+'06':
+  name: Saint Patrick
+  code: '06'
+  unofficial_names: Saint Patrick
+  geo:
+    latitude: 12.2056921
+    longitude: -61.64211719999999
+    min_latitude: 12.1670921
+    min_longitude: -61.68279190000001
+    max_latitude: 12.3308232
+    max_longitude: -61.54397489999999
+  translations:
+    en: Saint Patrick
+    ar: أبرشية القديس باتريك
+    bn: সেন্ত প্যাট্রিক পারিশ
+    da: Saint Patrick Parish
+    de: Saint Patrick
+    el: Άγιος Πατρίκιος
+    es: Parroquia de Saint Patrick
+    eu: Saint Patrick
+    fi: Saint Patrick
+    fr: Paroisse de Saint Patrick
+    gu: સેન્ટ પેટ્રિક પૅરિશ
+    hi: सेंट पैट्रिक पैरिश
+    id: Paroki Saint Patrick
+    it: Parrocchia di Saint Patrick
+    ja: セント・パトリック郡 (グレナダ)
+    kn: ಸೇಂಟ್ ಪ್ಯಾಟ್ರಿಕ್ ಪ್ಯಾರಿಷ್
+    ko: 세인트패트릭 교구
+    lt: Šv. Patriko parapija
+    mr: सेंट पॅट्रिक पॅरीश
+    ms: Saint Patrick Parish
+    nb: Saint Patrick
+    nl: Saint Patrick
+    pl: Saint Patrick
+    pt: Saint Patrick
+    ru: Приход Сент-Патрик
+    si: ශාන්ත පැට්‍රික් ප්‍රාන්තය
+    sv: Saint Patrick
+    ta: செயின்ட் பேட்ரிக் பரிஷ்
+    te: సెయింంట్ పాట్రిక్ పారిష్
+    th: ตำบลเซนต์แพทริค
+    tr: Saint Patrick Parish
+    ur: سینٹ پیٹرک پریش، گریناڈا
+    vi: Giáo xứ Saint Patrick
+    lv: Sentpatrika pagasts
+    ceb: Saint Patrick (parokya sa Grenada)
+    zh: 聖帕特里克區 (格林納達)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011133\U00011111\U00011134 \U0001111B\U0001112C\U00011111\U00011133\U00011122\U00011128\U00011107\U00011134"
+    uk: Парафія Сент-Патрік
+    'no': Saint Patrick
+    fa: پریش سنت پاتریک (گرنادا)
+  comments:
+  type: parish
+'10':
+  name: Southern Grenadine Islands
+  code: '10'
+  unofficial_names: Southern Grenadine Islands
+  geo:
+    latitude: 12.4785888
+    longitude: -61.4493842
+    min_latitude: 12.401671
+    min_longitude: -61.4989469
+    max_latitude: 12.5298576
+    max_longitude: -61.378178
+  translations:
+    en: Carriacou and Petite Martinique
+    ar: كارياكو و بيتي مارتينيك
+    bn: ক্যারিয়ারাকু এবং পেতিট মার্টিনিক
+    da: Carriacou and Petite Martinique
+    de: Carriacou und Petite Martinique
+    el: Καρριακού και Μικρή Μαρτινίκα
+    es: Carriacou et Petite Martinique
+    eu: Carriacou eta Martinika Txikia
+    fi: Carriacou and Petite Martinique
+    fr: Carriacou et Petite Martinique
+    gu: કેરીઆકોઉ એન્ડ પેટીટ માર્ટિનીક
+    hi: कैरिकू और पेटाईट मार्टिनीक
+    id: Carriacou dan Petite Martinique
+    it: Carriacou e Petite Martinique
+    ja: カリアク島
+    kn: ಕ್ಯಾರಿಯಕೌ ಮತ್ತು ಪೆಟೈಟ್ ಮಾರ್ಟಿನಿಕ್
+    ko: 카리아쿠 프티마르티니크
+    mr: कॅरिएकॉ अँड प्युटाट मार्टिनिक
+    ms: Carriacou and Petite Martinique
+    nb: Carriacou og Petite Martinique
+    nl: Carriacou en Petite Martinique
+    pl: Carriacou i Mała Martynika
+    pt: Carriacou e Petite Martinique
+    ru: Карриаку и Малый Мартиник
+    si: කරියාකු සහ පෙටිටේ මර්ටින්ක්
+    sv: Carriacou och Petite Martinique
+    ta: காரியகோவு அண்ட் பெட்டிட் மார்டினியூ
+    te: కారియాకో పిటీట్ మార్టినిక్
+    th: กาเรียกู แอน พีไทร์ มาตินี่คิว
+    tr: Carriacou and Petite Martinique
+    ur: کاریاکو اور پیٹیٹے مارٹنیک
+    vi: Carriacou và Petite Martinique
+    lv: Kariaku un Mazā Martinika
+    ceb: Petite Martinique
+    lt: Karioka
+    zh: 卡里亞庫和小馬提尼克
+    ccp: "\U00011107\U00011133\U00011120\U00011122\U00011128\U00011120\U00011107\U0001112E
+      \U00011103\U00011133\U00011103 \U0001111B\U0001112C\U00011111\U00011128\U00011116\U00011134
+      \U0001111F\U00011122\U00011134\U00011111\U00011128\U0001111A\U00011128\U00011107\U00011134"
+    uk: Карріаку і Малий Мартінік
+    'no': Carriacou og Petite Martinique
+    ca: Carriacou i Petita Martinica
+  comments:
+  type: dependency

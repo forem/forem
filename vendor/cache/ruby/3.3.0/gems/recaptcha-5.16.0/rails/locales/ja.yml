@@ -1,0 +1,5 @@
+ja:
+  recaptcha:
+    errors:
+      verification_failed: reCAPTCHA認証に失敗しました。もう一度お試しください。
+      recaptcha_unreachable: reCAPTCHAのレスポンスを検証できませんでした。もう一度お試しください。

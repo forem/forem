@@ -1,0 +1,142 @@
+3.0.2 / 2021-09-19
+==================
+
+- fix align_column for nil values and colspan
+
+3.0.1 / 2021-05-10
+==================
+
+- Support for unicode-display_width 2.0
+- Fix issue where last row of an empty table changed format
+
+3.0.0 / 2020-01-27
+==================
+
+- Support for (optional) Unicode border styles on tables.  In order to support decent looking Unicode borders, different types of intersections get different types of intersection characters.  This has the side effect of subtle formatting differences even for the ASCII table border case due to removal of certain intersections near colspans.
+
+For example, previously the output of a table may be:
+        +------+-----+
+        |   Title    |
+        +------+-----+
+        | Char | Num |
+        +------+-----+
+        | a    | 1   |
+        | b    | 2   |
+        | c    | 3   |
+        +------+-----+
+
+And now the `+` character above the word Title is removed, as it is no longer considered an intersection:
+
+        +------------+
+        |   Title    |
+        +------+-----+
+        | Char | Num |
+        +------+-----+
+        | a    | 1   |
+        | b    | 2   |
+        +------+-----+
+
+- The default border remains an ASCII border for backwards compatibility, however multiple border classes are included / documented, and user defined border types can be applied as needed.
+
+In support of this update, the following issues were addressed:
+- colspan creates conflict with colorize (#95)
+- Use nice UTF box-drawing characters by default (#99)
+    - Note that `AsciiBorder` is stll the default
+- Border-left and border-right style (#100)
+- Helper function to style as Markdown (#111)
+    - Achieved using `MarkdownBorder`
+
+2.0.0 / 2020-10-28
+==================
+
+- Drops official support for Ruby 1.9.x with and of life on 2015-02-23
+- Drops official support for Ruby 2.0.x with and of life on 2016-02-24
+- Drops official support for Ruby 2.1.x with and of life on 2017-03-31
+- Drops official support for Ruby 2.2.x with and of life on 2018-03-31
+- Drops official support for Ruby 2.3.x with and of life on 2019-03-31
+
+1.8.0 / 2017-05-16
+==================
+
+* Top and bottom borders can be disabled (@kubakrzempek, #83)
+* `unicode-display-width` dependency relaxes (@mvz, #88)
+
+* Readme and docs fixes (@loualrid, #82 and @leoarnold, #86)
+* Fixed some test-related warnings (@juanitofatas, #81 and @mvz, #89)
+
+1.7.3 / 2016-09-21
+==================
+
+* Fixed compatibility issues for Ruby 1.9, 2.0, 2.1. (@vivekbisen, #80)
+
+1.7.2 / 2016-09-09
+==================
+
+* Fix packing table to a minimal width (@vizv, #76)
+
+1.7.1 / 2016-08-29
+==================
+
+* Update `unicode-display_width` to fix behavior with signal traps [#78, @jrmhaig]
+
+1.7.0 / 2016-08-29
+==================
+
+All props to @vizv for this release!
+
+  * Fixed some spec failures
+  * Added support for full-width characters (East Asian alphabets, etc)
+
+1.6.0 / 2016-06-06
+==================
+
+  * Added table styles - margin_left, all_separators.
+
+1.4.3 / 2011-10-13
+==================
+
+  * Optimize for faster table output.
+
+1.4.2 / 2010-01-14
+==================
+
+  * Fixed some bugs with colspan
+
+=== 1.4.1 / 2009-12-18
+
+* Fix column alignment with separators.
+
+=== 1.4.0 / 2009-12-18
+
+* Can now add :seperator arbitrarily in a table [thanks splattael]
+* Fix common typo: seperator -> separator [thanks splattael]
+
+=== 1.3.0 / 2009-10-16
+
+* Major refactoring (functionality remains the same)
+
+=== 1.2.0 / 2009-08-06
+
+* Added colspan support to table
+
+=== 1.1.0 / 2009-08-06
+
+* Added colspan support to table
+
+=== 1.1.0 / 2009-07-13
+
+* Added Table#==
+
+=== 1.0.5 / 2009-03-14
+
+* Allowing nil to be passed to table for headings
+* Revised doc to show that rows can be splatted now
+* Misc refactoring
+
+=== 1.0.3 / 2009-01-15
+
+* Moved yield or eval to Terminal::Table initialize where it belongs
+
+=== 1.0.0 / 2009-01-13
+
+* Initial release

@@ -1,0 +1,50 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ruby-version:
+          - head
+          - '3.2'
+          - '3.1'
+          - '3.0'
+          - '2.7'
+          - '2.6'
+          - '2.5'
+          - '2.4'
+          - '2.3'
+          - jruby
+          - jruby-head
+          - truffleruby
+          - truffleruby-head
+          - truffleruby+graalvm
+        include:
+          - os: windows-latest
+            ruby-version: head
+          - os: windows-latest
+            ruby-version: '3.1'
+          - os: windows-latest
+            ruby-version: mingw
+          - os: windows-latest
+            ruby-version: mswin
+          - os: windows-latest
+            ruby-version: ucrt
+          - os: macos-latest
+            ruby-version: 'head'
+          - os: macos-latest
+            ruby-version: '3.1'
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true # 'bundle install' and cache
+    - name: Run tests
+      run: bundle exec rake test

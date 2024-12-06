@@ -1,0 +1,55 @@
+---
+VA:
+  alpha2: VA
+  alpha3: VAT
+  continent: Europe
+  country_code: '39'
+  currency_code: EUR
+  distance_unit: KM
+  gec: VT
+  geo:
+    latitude: 41.902916
+    longitude: 12.453389
+    max_latitude: 41.90744309999999
+    max_longitude: 12.4583938
+    min_latitude: 41.9001896
+    min_longitude: 12.4457286
+    bounds:
+      northeast:
+        lat: 41.90744309999999
+        lng: 12.4583938
+      southwest:
+        lat: 41.9001896
+        lng: 12.4457286
+  international_prefix: '00'
+  ioc:
+  iso_long_name: The Holy See
+  iso_short_name: Holy See
+  languages_official:
+  - it
+  - la
+  languages_spoken:
+  - it
+  - la
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 9
+  national_prefix: None
+  nationality: Italian
+  number: '336'
+  postal_code: true
+  postal_code_format: '00120'
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: VA
+  unofficial_names:
+  - Vatican City
+  - Vatikan
+  - Cité du Vatican
+  - Ciudad del Vaticano
+  - バチカン市国
+  - Vaticaanstad
+  - Vatican City State (Holy See)
+  world_region: EMEA

@@ -1,0 +1,29 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/jaro_winkler-1.5.6/ext/jaro_winkler
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/jaro_winkler-1.5.6/ext/jaro_winkler
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hgp6zf sitelibdir\=./.gem.20241205-149352-hgp6zf clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/jaro_winkler-1.5.6/ext/jaro_winkler
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hgp6zf sitelibdir\=./.gem.20241205-149352-hgp6zf
+compiling adj_matrix.c
+adj_matrix.c: In function ‘adj_matrix_default’:
+adj_matrix.c:82:12: warning: old-style function definition [-Wold-style-definition]
+   82 | AdjMatrix *adj_matrix_default() {
+      |            ^~~~~~~~~~~~~~~~~~
+adj_matrix.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling codepoints.c
+compiling jaro.c
+compiling jaro_winkler.c
+linking shared-object jaro_winkler/jaro_winkler_ext.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/jaro_winkler-1.5.6/ext/jaro_winkler
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hgp6zf sitelibdir\=./.gem.20241205-149352-hgp6zf install
+/usr/bin/install -c -m 0755 jaro_winkler_ext.so ./.gem.20241205-149352-hgp6zf/jaro_winkler
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/jaro_winkler-1.5.6/ext/jaro_winkler
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hgp6zf sitelibdir\=./.gem.20241205-149352-hgp6zf clean

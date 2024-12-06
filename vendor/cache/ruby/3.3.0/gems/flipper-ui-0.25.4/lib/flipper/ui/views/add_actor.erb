@@ -1,0 +1,20 @@
+<% if params.key?("error") %>
+  <div class="alert alert-danger">
+    <%= params["error"] %>
+  </div>
+<% end %>
+
+<div class="card">
+  <h4 class="card-header">Enable Actor for <%= @feature.key %></h4>
+  <div class="card-body">
+    <p>
+      Turn on this feature for actors.
+    </p>
+    <form action="<%= script_name %>/features/<%= @feature.key %>/actors" method="post" class="form-inline">
+      <%== csrf_input_tag %>
+      <input type="hidden" name="operation" value="enable">
+      <input type="text" name="value" placeholder="<%= Flipper::UI.configuration.add_actor_placeholder %>" class="form-control mr-2">
+      <input type="submit" value="Add Actor" class="btn btn-primary">
+    </form>
+  </div>
+</div>

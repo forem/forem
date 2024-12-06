@@ -1,0 +1,583 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+  xmlns:thr="http://purl.org/syndication/thread/1.0">
+  <link rel="self" href="http://intertwingly.net/blog/index.atom"/>
+  <link rel="hub" href="http://pubsubhubbub.appspot.com/"/>
+  <id>http://intertwingly.net/blog/index.atom</id>
+  <icon>../favicon.ico</icon>
+
+  <title>Sam Ruby</title>
+  <subtitle>It’s just data</subtitle>
+  <author>
+    <name>Sam Ruby</name>
+    <email>rubys@intertwingly.net</email>
+    <uri>/blog/</uri>
+  </author>
+  <updated>2013-02-23T18:33:07-08:00</updated>
+  <link href="/blog/"/>
+  <link rel="license" href="http://creativecommons.org/licenses/BSD/"/>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3308</id>
+    <link href="/blog/2013/01/30/Plex"/>
+    <link rel="replies" href="3308.atom" thr:count="2" thr:updated="2013-01-30T13:58:47-08:00"/>
+    <title>Plex</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><a href="http://www.hanselman.com/blog/PlexIsTheMediaCenterSoftwareEcosystemIveBeenWaitingFor.aspx">Scott Hanselman</a>: <em>Plex is the media center software ecosystem I’ve been waiting for</em></p>
+<p>Unhappy with <a href="http://intertwingly.net/blog/2012/12/05/Time-Warner-Cables-idea-of-service">Time Warner Cable</a>, I’ve been exploring <a href="http://movies.netflix.com/WiHome">netflix</a>, <a href="http://www.dish.com/">dish</a>, <a href="http://www.slingbox.com/">sling</a>, <a href="http://www.roku.com/">roku</a>, <a href="http://www.samsung.com/smarttv">samsung</a>, <a href="http://fmpeg.org/">ffmpeg</a>, <a href="http://handbrake.fr/">handbrake</a>, and <a href="http://cclive.sourceforge.net/">cclive</a>.  Next up, some form of <a href="http://www.linuxtv.org/wiki/index.php/ATSC_USB_Devices">video capture device</a>... at the moment I’m leaning towards <a href="http://www.tigerdirect.com/applications/SearchTools/item-details.asp?EdpNo=4146195&amp;CatId=4546">Hauppauge</a>.</p>
+<p>I’m not quite prepared to declare Plex as the centerpiece of my home media center, but it certainly has become a key component.</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="plex1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#f8ce22" stop-opacity="0.9" ></stop>
+      <stop offset="100%" stop-color="rgb(0,0,0)" stop-opacity="0" ></stop>
+    </radialGradient>
+  </defs>
+  <rect width="100" height="100" rx="10"></rect>
+  <ellipse cx="54" cy="50" rx="38" ry="60" fill="url(#plex1)" ></ellipse>
+  <path d="M28,7h31l28,43l-28,43h-31l28-43Z" fill="#ff8e00" stroke="#f8ce22" stroke-width="2"></path>
+</svg>
+<p><a href="http://www.hanselman.com/blog/PlexIsTheMediaCenterSoftwareEcosystemIveBeenWaitingFor.aspx"><cite>Scott Hanselman</cite></a>: <em>Plex is the media center software ecosystem I’ve been waiting for</em></p>
+<p>Unhappy with <a href="http://intertwingly.net/blog/2012/12/05/Time-Warner-Cables-idea-of-service">Time Warner Cable</a>, I’ve been exploring <a href="http://movies.netflix.com/WiHome">netflix</a>, <a href="http://www.dish.com/">dish</a>, <a href="http://www.slingbox.com/">sling</a>, <a href="http://www.roku.com/">roku</a>, <a href="http://www.samsung.com/smarttv">samsung</a>, <a href="http://fmpeg.org/">ffmpeg</a>, <a href="http://handbrake.fr/">handbrake</a>, and <a href="http://cclive.sourceforge.net/">cclive</a>.  Next up, some form of <a href="http://www.linuxtv.org/wiki/index.php/ATSC_USB_Devices">video capture device</a>... at the moment I’m leaning towards <a href="http://www.tigerdirect.com/applications/SearchTools/item-details.asp?EdpNo=4146195&amp;CatId=4546">Hauppauge</a>.</p>
+<p>I’m not quite prepared to declare Plex as the centerpiece of my home media center, but it certainly has become a key component.</p>
+<p>Unlike Scott, I didn’t go with a dedicated NAS box.  Installation of a <a href="https://apps.ubuntu.com/cat/applications/precise/plexmediaserver/">Plex Media Server</a> on Ubuntu is a snap (though a <a href="https://bugs.launchpad.net/ubuntu/+source/software-center/+bug/647212">workaround</a> is needed if you happen to make use of an <a href="http://linuxexpresso.wordpress.com/2011/02/13/howto-apt-cacher-ng-on-ubuntu/">apt cacher</a>).</p>
+<p>Obligatory <a href="http://i.imgur.com/VCTCAS7.png">Cable Guy</a> reference.</p></div></content>
+    <updated>2013-01-30T10:12:03-08:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3307</id>
+    <link href="/blog/2012/12/22/RESTful-Web-APIs"/>
+    <link rel="replies" href="3307.atom" thr:count="0"/>
+    <title>RESTful Web APIs</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <path d="M10,90.1v-2h80V90.1zM10,70.1v-2h80V70.1zM10,50.1v-2h80V50.1zM10,30.1v-2h80V30.1zM10,10.1v-2h80V10.1z"></path>
+  <path d="M44.4,20.8c1.5,1.6,13,15.7,13,15.7s-6.4,6.1-6.4,12.5c0,7.5,8.6,14.3,8.6,14.3l-0.9,1.1c-3.3-1.9-8.9-2.1-11.4,0.8c-3.1,3.6,3.9,9.1,3.9,9.1l-0.8,1.1c-2.4-1.8-12.6-11.4-8.3-16.1c2.6-2.9,5.8-3.8,10.3-1.4l-12.1-12.5c7-8.6,8.2-11.1,8.2-13.4c0-4.8-3.4-8.2-5.1-10.4c-0.6-0.9-1.7-1.6-1-2.2C43.1,18.9,43.5,19.7,44.4,20.8z" fill="#F33"></path>
+</svg>
+<p><a href="http://amundsen.com/blog/archives/1139"><cite>Mike Amundsen</cite></a>: <em>I have the even greater privilege of working with Leonard and Sam on a new book - “RESTful Web APIs”. It’s scheduled for completion by the end of Q1 2013 and should be available soon after.</em></p>
+<p>While I’m formally on this project, I’m not planning on doing any writing beyond possibly an introduction.  As Mike put it, this book isn’t merely a 2nd edition, but rather <em>more of a “follow-up” seven years on.</em>  I’m very much looking forward to seeing where Mike can help Leonard take this work.</p></div></content>
+    <updated>2012-12-22T05:47:48-08:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3306</id>
+    <link href="/blog/2012/12/19/Feedvalidator-org-Hacked"/>
+    <link rel="replies" href="3306.atom" thr:count="5" thr:updated="2013-01-07T12:31:41-08:00"/>
+    <title>Feedvalidator.org Hacked?</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" stroke="#000" width="100" height="100" viewBox="0 0 100 100">
+  <path d="M8,80s-5,8,5,9l78,0s9,0,5-9l-40-71s-4-6-8,0z" stroke-width="2" fill="#fff"></path>
+  <path d="M52,10 L10,85 L93,85z" stroke-width="2" stroke-linejoin="round" fill="#fc0"></path>
+  <path d="M52,32l0,26" stroke-width="9" stroke-linecap="round"></path>
+  <circle r="6" cx="52" cy="73"></circle>
+</svg>
+<p>Google has reported <a href="http://feedvalidator.org/">feedvalidator.org</a> as being <a href="http://safebrowsing.clients.google.com/safebrowsing/diagnostic?client=Firefox&amp;hl=en-US&amp;site=http://feedvalidator.org/">hacked</a>, and people are tweeting and emailing me.</p>
+<p>I’ve looked at the markup being returned and it looks clean to me.  The <a href="https://raw.github.com/rubys/feedvalidator/master/.htaccess">.htaccess</a> file looks fine.  A <code>git status</code> command shows that none of the files on the server have been modified.</p>
+<p>Can somebody identify what is causing Google to be concerned?</p></div></content>
+    <updated>2012-12-19T03:33:01-08:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3305</id>
+    <link href="/blog/2012/12/13/Changing-the-TAG"/>
+    <link rel="replies" href="3305.atom" thr:count="4" thr:updated="2012-12-14T09:16:37-08:00"/>
+    <title>Changing the TAG</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><a href="https://blog.linss.com/2012/12/12/changing-the-tag-an-unexpected-opportunity/">Peter Linss</a>: <em>I really want to see the TAG be more involved with the rest of the working groups at the W3C</em></p>
+<p>I’ll come out and say it.  I’m a skeptic.  I’ll note that the three out of the four of the “TAG reformists” statements do NOT list getting involved with the rest of the working groups at the W3C as a goal.  What am I missing?</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="131" height="76" viewBox="0 0 131 76">
+  <path d="M36,5l12,41l12-41h33v4l-13,21c30,10,2,69-21,28l7-2c15,27,33,-22,3,-19v-4l12-20h-15l-17,59h-1l-13-42l-12,42h-1l-20-67h9l12,41l8-28l-4-13h9" fill='#005A9C'></path>
+  <path d="M94,53c15,32,30,14,35,7l-1-7c-16,26-32,3-34,0M122,16c-10-21-34,0-21,30c-5-30 16,-38 23,-21l5-10l-2-9"></path>
+</svg>
+<p><a href="https://blog.linss.com/2012/12/12/changing-the-tag-an-unexpected-opportunity/"><cite>Peter Linss</cite></a>: <em>I really want to see the TAG be more involved with the rest of the working groups at the W3C</em></p>
+<p>I’ll come out and say it.  I’m a skeptic.  Each of the <a href="http://www.w3.org/2012/12/03-tag-nominations">nominees</a> are good people.</p>
+<p>I’ll note that the three out of the four of the “TAG reformists” statements do NOT list getting involved with the rest of the working groups at the W3C as a goal: <a href="http://infrequently.org/2012/12/reforming-the-w3c-tag/">Alex Russell</a>, <a href="http://marcosc.com/2012/12/w3c-tag-elections/">Marcos Cáceres</a>, <a href="http://annevankesteren.nl/2012/12/w3c-tag">Anne van Kesteren</a>, and <a href="http://yehudakatz.com/2012/12/07/im-running-to-reform-the-w3cs-tag/">Yehuda Katz</a>.</p>
+<p>And outside of Anne, none of them have significantly been involved in the <a href="http://www.w3.org/html/wg/">HTML WG</a>.  As to Anne, I don’t see being on the TAG as resolving his <a href="http://annevankesteren.nl/2012/11/copyright">concern</a>.</p>
+<p>What am I missing?</p></div></content>
+    <updated>2012-12-13T07:54:49-08:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3304</id>
+    <link href="/blog/2012/12/05/Time-Warner-Cables-idea-of-service"/>
+    <link rel="replies" href="3304.atom" thr:count="15" thr:updated="2012-12-20T14:47:52-08:00"/>
+    <title>Time Warner Cable’s idea of “service”</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>It started with two notifications we received via postal mail.  First Time Warner was going to start charging us rent for an outdated cable modem.  Second they were going to drop a number of cable channels, but if I acted now, I could request a digital adapter which would allow me to watch these channels on exactly one TV.</p>
+<p>This process has turned a fairly complacent Time Warner customer into one that is actively seeking alternatives.  In looking around, I see plenty of promo offers of more service than I have (basic cable and basic internet) for considerably less than I am currently paying.  I am OK with waiting an hour or more for an answer, but I am not OK with having to be on hold for that entire time.  And I’m definitely not OK with renting a separate box per device simply to get access.</p>
+<p>This process has turned a fairly complacent Time Warner customer into one that is actively seeking alternatives.  So I am beginning my research: starting with looking for alternatives to cable TV.  What I want is a single plan that allows me to watch whatever I want wherever I want.  I am OK with upgrading my devices as long as we are talking about a purchase not a lease.</p>
+<p>Any pointers people might leave in comments would be appreciated.</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="108" height="93" viewBox="0 0 108 93">
+  <path d='M17,27c-3,3-5,6-10,11c-2,1-3,1-5,0c-4-4-2-7,8-17c11-11,24-19,36-20c13-2,30,1,43,11c7,6,15,14,19,21c-4,7-9,13-14,17c-5,5-11,8-16,10c-13,4-28,3-36-10c-2-4-2-8,0-12c2-5,8-9,13-9c4,0,9,2,11,7c1,2,1,6-1,8c-1,1-6,2-7-2c0-2-0-4-2-4c-4,0-7,3-6,8c1,3,4,6,11,7c3,0,7-1,11-6c3-4,3-11,0-15c-4-7-10-10-18-10c-9,0-17,5-21,14c-3,7-5,17,0,28c4,8,11,13,17,16c5,3,16,4,17,8c0,3-2,5-4,5c-17-3-31-11-37-25c-7-13-6-30,2-41c5-7,13-12,20-13c19-5,38,9,35,28c-1,3-2,6-4,8c0,1,0,1-1,1l2-1c7-4,13-10,17-17c-10-18-32-27-49-24c-14,2-23,10-31,18' fill='#0056a2'></path>
+</svg>
+<p>It started with two notifications we received via postal mail.  First Time Warner was going to start charging us rent for an outdated cable modem.  Second they were going to drop a number of cable channels, but if I acted now, I could request a digital adapter which would allow me to watch these channels on exactly one TV.</p>
+<p>So I did some research and purchased a DOCSIS 3.0 compatible modem that can do IP V6, figuring that would future proof me for a while, and connected it up.  I actually managed to get an IP address assigned, but everything I tried after that was redirected to a site saying that I needed to be “provisioned” and to call a number.  Upon calling that number, I got connected with a person whose sole purpose seemed to be to upsell me to a higher plan.  After I politely but firmly refused, I was transferred and placed on hold for about 30 minutes.  The woman that tried to help me get connected couldn’t get it to work so she transferred me to level 3.  Another 5 minutes later, a gentleman picked up and also had trouble.  It took him about 30 minutes to get it to work — apparently they didn’t give him instructions on how to deal with DOCSIS 3.0 modems despite my picking one of the options on the list they provided to me.  But he was pleasant and apologetic throughout, and eventually did manage to get it working.</p>
+<p>The next day I drove 15 minutes to stand in a 20 minute line to do what amounted to a 60 second transaction: here’s a box, here’s a receipt.  Thank you and goodbye.</p>
+<p>As to the dropped channels... I dutifully filled out an online form requesting a digital adapter, and got first a confirmation and subsequently a notification that the order was “complete”... where the latter merely indicated that something would be shipping in 3-5 business days, giving me a confirmation number.  That was 18 November.</p>
+<p>The box never showed up.</p>
+<p>Yesterday, the channels went dark, and I went online.  After using Chrome to override my User Agent so that I could make use of their chat system, I waited over 20 minutes for a representative.  After checking, he said that there was nothing he could do for me, and gave me a number I could call.  I called that number and was told that the wait time would be more than 30 minutes.  As the chat window was still open, I asked if there was anything else I could do.  He said call back late in the evening when the wait times would be less.  I was not happy and closed the chat window.  I was then presented with a survey, in which I responded that the person was not able to solve my problem and that I was not happy.</p>
+<p>I <a href="https://twitter.com/samruby">tweeted to TWCableHelp</a> and got <strike>no response</strike> a DM five hours later asking me for my phone number.  Before I went to bed, I sent an email.  When I woke up I got a response indicating that the email had been forwarded to “our regional contacts”, who would be contacting me.  They have not.</p>
+<p>I called again, and was told that there would be a 20 to 25 minute wait time.  It was closer to 30.  I was told that another digital adapter had been placed on order.  I asked for a confirmation number, and was told that she didn’t have one.  I asked for an email, and she said that one would be sent within 48 hours.  I was given a case number.  And that was all she could do for me.</p>
+<p>At this point, I have nobody I can contact, no tracking number, and no confidence that this time will turn out any different.  And a number of black channels.</p>
+<p>This process has turned a fairly complacent Time Warner customer into one that is actively seeking alternatives.  In looking around, I see plenty of promo offers of more service than I have (basic cable and basic internet) for considerably less than I am currently paying.  I am OK with waiting an hour or more for an answer, but I am not OK with having to be on hold for that entire time.  And I’m definitely not OK with renting a separate box per device simply to get access.</p>
+<p>So I am beginning my research: starting with looking for alternatives to cable TV.  What I want is a single plan that allows me to watch whatever I want wherever I want.  I am OK with upgrading my devices as long as we are talking about a purchase not a lease.</p>
+<p>Any pointers people might leave in comments would be appreciated.</p></div></content>
+    <updated>2012-12-05T08:54:58-08:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3303</id>
+    <link href="/blog/2012/11/09/In-defence-of-Polyglot"/>
+    <link rel="replies" href="3303.atom" thr:count="21" thr:updated="2012-12-10T20:19:45-08:00"/>
+    <title>In defence of Polyglot</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>I see that <a href="http://hsivonen.iki.fi/author/">Henri Sivonen</a> is once again <a href="https://twitter.com/hsivonen/status/266535784050458624">being snarky</a> without <a href="https://twitter.com/hsivonen/status/266565956585795585">backing his position</a>.  I’ll state my position, namely that something like the <a href="http://dev.w3.org/html5/html-xhtml-author-guide/html-xhtml-authoring-guide.html">polyglot specification</a> needs to exist, and why I believe that to be the case.</p>
+<p>It makes sense for authors who may produce a handful of pages to be processed by an uncountable number of imperfect tools to agree on restrictions that may go well behond the <a href="http://lists.w3.org/Archives/Public/public-html/2012Nov/0006.html">minimal logical consequences from normative text elsewhere</a> if those restrictions increase the odds of the document produced being correctly processed.</p>
+<p>Such restrictions are not a bad thing.  In fact, such restrictions are very much a good thing.</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="86" height="116" viewBox="0 0 86 116">
+  <path d='M70,70c0,20-15,37-34,37c-18,0-33-17-32-37c0-21,14-54,33-55c18,0,34,34,33,55' fill='#0C0'></path>
+  <path d='M27,48a1,2,170,1,1-12,0a1,2,170,1,1,12,0M30,48a1,2,10,1,1,12,1a1,2,10,1,1-12-1M46,66l-5,4c-2,2-5,3-9,4c-4,1-8,1-12,0h-1c0,2,1,3,2,5c-1,0,4,5,7,5c4,0,6,0,10-1c2,0,5,1,7-1c1-1,1-8,1-10v-6' fill='#fff' stroke="#0A0"></path>
+  <path d='M30,25l13,4l-1,3l-12-5zM24,25l-12,4l2,3l11-5zM26,52a2,3,170,1,1-7,0a2,3,170,1,1,7,0M37,52a2,3,10,1,1-7,0a2,3,10,1,1,7,0'></path>
+  <path d='M34,48a1,1,0,1,1-1,0M23,48a1,1,0,1,1-1,0' fill='#999'></path>
+  <path stroke='#000' d='M31,20c-1,0-2-2-3-3c-1-1,2-3,3-3c3-6-2-9-7-6' fill='none'></path>
+</svg>
+<p>I see that <a href="http://hsivonen.iki.fi/author/">Henri Sivonen</a> is once again <a href="https://twitter.com/hsivonen/status/266535784050458624">being snarky</a> without <a href="https://twitter.com/hsivonen/status/266565956585795585">backing his position</a>.  I’ll state my position, namely that something like the <a href="http://dev.w3.org/html5/html-xhtml-author-guide/html-xhtml-authoring-guide.html">polyglot specification</a> needs to exist, and why I believe that to be the case.</p>
+<p>The short version is that I have developed a <a href="https://github.com/rubys/wunderbar">library</a> that I believe to be polyglot compatible, and by that I mean that if there are differences between what this library does and what polyglot specifies that one or both should be corrected to bring them into compliance.</p>
+<p>I didn’t write this library simply because I am loonie, but very much to solve a real problem.</p>
+<p>The problem is that HTML source files <a href="http://svn.whatwg.org/webapps/complete.html">exist</a> that contain artifacts like consecutive &lt;td&gt; elements; people process such documents using tools such as <a href="http://anolis.gsnedders.com/">anolis</a>; and such libraries often depend on — for good reasons — libraries such as <a href="http://www.xmlsoft.org/">libxml2</a> which do an imperfect job of parsing HTML correctly.  The output produced by such tools when combined with such libraries are incorrect.</p>
+<p>Note that I stop well short of recommending that others serve their content as <a href="http://www.w3.org/TR/xhtml-media-types/">application/xhtml+xml</a>.  Or that tools should <a href="http://docs.activestate.com/activepython/3.1/diveintopython3/html/xml.html#xml-custom-parser">halt and catch fire</a> if they are presented with incorrect input.  In fact, I would even be willing to say that in general people <a href="http://www.ietf.org/rfc/rfc2119.txt">SHOULD NOT</a> do either of these things.</p>
+<p>Now that I have provided instance proofs of the problem and the solution, I’ll proceed with the longer answer.  I will start by noting that <a href="http://en.wikipedia.org/wiki/Robustness_principle">Postel’s law</a> has two halves, and while the HTML WG has focused heavily on the second half of that law, the story should not stop there.</p>
+<p>To get HTML right involves a number of details that people often get wrong.  Details such as encoding and escaping.  Details that have consequences such as <a href="http://en.wikipedia.org/wiki/Cross-site_scripting">XSS vulnerabilities</a> when the scenario involves integrating content from untrusted sources.  Scenarios which include comments on blogs or feed aggregators.  Scenarios that lead people to write sanitizers and employ the use of imperfect HTML parsers.</p>
+<p>It is well and good that Henri maintains — on a best effort basis only — a <a href="http://about.validator.nu/htmlparser/">superior parser</a> for exactly one programming language.  <a href="https://twitter.com/hsivonen/status/263696331141431296">Advertising</a> this library more won’t solve the problem for people who code in languages such as C#, Perl, PHP, Python, or Ruby.  Fundamentally, a <a href="http://www.xml.com/pub/a/2004/07/21/dive.html">tools will save us</a> response is not an adequate response when the problem is imperfect tools.</p>
+<p>This problem that needs to be addressed is very much the flip side, and complement to, the parsing problem that HTML5 has competently solved.  Given a handful of browser vendors and an uncountable number of imperfect documents, it very much make sense for the browser vendors to get together and agree on how to handle error recovery.  By the very same token, it makes sense for authors who may produce a handful of pages to be processed by an uncountable number of imperfect tools to agree on restrictions that may go well beyond the <a href="http://lists.w3.org/Archives/Public/public-html/2012Nov/0006.html">minimal logical consequences from normative text elsewhere</a> if those restrictions increase the odds of the document produced being correctly processed.</p>
+<p>Yes, it would be great if this weren’t necessary and all tools were perfect.  Similarly, it would be great if browser vendors didn’t have to agree on error recovery as this makes the creation of streaming parsers more difficult.  The point is that while both would be great, neither will happen, at least not any time soon.</p>
+<p>These restrictions may indeed go beyond “always explicitly close all elements” and “always quote all attribute values”.  It may include such statements as “always use UTF-8”.</p>
+<p>Such restrictions are not a bad thing.  In fact, such restrictions are very much a good thing.</p></div></content>
+    <updated>2012-11-09T03:58:21-08:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3302</id>
+    <link href="/blog/2012/10/09/Web-Platform-Docs"/>
+    <link rel="replies" href="3302.atom" thr:count="0"/>
+    <title>Web Platform Docs</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="100" height="100" viewBox="0 0 100 100">
+  <path d='M73,55v-40c0-8,4-13,12-13c7,0,13,4,13,12v68c-7-10-25-27-25-27M85,10c-3,0-5,2-5,5c0,3,2,5,5,5c3,0,5-2,5-6c0-2-2-4-5-4' fill='#31B0BC'></path>
+  <path d='M2,77v-61c0-9,6-14,14-14c7,0,12,5,11,14v40l-25,24M15,9c-3,0-5,2-5,5c0,3,2,5,5,5c3,0,5-2,5-6c0-2-2-4-5-4' fill='#F19620'></path>
+  <path d='M4,77l23-21v35c-4,6-10,10-17,7c-8-3-11-16-6-21M15,91c3,0,5-2,5-5c0-3-2-5-5-5c-4,0-6,2-6,5c0,3,3,5,6,5' fill='#CC2D28'></path>
+  <path d='M73,55c0,0,23,22,25,27c1,7-1,13-8,16c-7,3-13,0-17-6v-37M90,86c0-3-2-5-5-5c-3,0-5,2-5,5c0,3,2,5,5,5c3,0,5-2,5-5' fill='#273C7D'></path>
+  <path d='M73,92l-24-22v-2l14-22l10,9l0,37' fill='#654D97'></path>
+  <path d='M50,67l-12-22l-11,11v1v34l22-21' fill='#D24839'></path>
+  <path d='M49,70c-7-8-14-14-12-24c9-12,17-11,26,0c1,11-7,17-14,24M50,55c3,0,5-2,5-5c0-3-2-5-5-5c-4,0-6,2-6,5c0,3,3,5,6,5' fill='#59152B'></path>
+</svg>
+<p><a href="http://blog.webplatform.org/2012/10/one-small-step/"><cite>Doug Sheppers</cite></a>: <em><a href="http://docs.webplatform.org/">WebPlatform.org</a> will have accurate, up-to-date, comprehensive references and tutorials for every part of client-side development and design, with quirks and bugs revealed and explained. It will have in-depth indicators of browser support and interoperability, with links to tests for specific features. It will feature discussions and script libraries for cutting-edge features at various states of implementation or standardization, with the opportunity to give feedback into the process before the features are locked down. It will have features to let you experiment with and share code snippets, examples, and solutions. It will have an API to access the structured information for easy reuse. It will have resources for teachers to help them train their students with critical skills. It will have information you just can’t get anywhere else, and it will have it all in one place.</em></p>
+<p><em>But it doesn’t. Not yet.</em></p></div></content>
+    <updated>2012-10-09T11:35:17-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3301</id>
+    <link href="/blog/2012/09/04/The-Flowing-Standard"/>
+    <link rel="replies" href="3301.atom" thr:count="1" thr:updated="2013-01-03T17:32:29-08:00"/>
+    <title>The Flowing Standard</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="131" height="76" viewBox="0 0 131 76">
+  <path d="M36,5l12,41l12-41h33v4l-13,21c30,10,2,69-21,28l7-2c15,27,33,-22,3,-19v-4l12-20h-15l-17,59h-1l-13-42l-12,42h-1l-20-67h9l12,41l8-28l-4-13h9" fill='#005A9C'></path>
+  <path d="M94,53c15,32,30,14,35,7l-1-7c-16,26-32,3-34,0M122,16c-10-21-34,0-21,30c-5-30 16,-38 23,-21l5-10l-2-9"></path>
+</svg>
+<a href="http://www.w3.org/QA/2012/09/the_flowing_standard.html"><cite>Robin Berjon</cite></a>: <em>Looking at it in terms of rebounds, plot twists, nurtured healing and abandonment, love and betrayal, strife, toil, stunning victories, dispersions and last minute rallies the only thing that distinguishes HTML’s history from a charts-topping teenage fantasy saga seems to be the lack of vampires. And even then, were vampires around I’m not sure we’d notice them for all the action.</em></div></content>
+    <updated>2012-09-04T16:10:12-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3300</id>
+    <link href="/blog/2012/08/25/Taming-the-wild-wild-web"/>
+    <link rel="replies" href="3300.atom" thr:count="3" thr:updated="2012-10-18T03:54:07-07:00"/>
+    <title>Taming the wild, wild web</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="100" height="100" viewBox="0 0 100 100">
+  <path fill='#85B916' d='M50,82l-31-31l31-31l10,10l-20,21l10,10l31-31l-27-27c-2-2-6-2-8,0l-43,44c-2,2-2,6,0,8l43,43c2,2,6,2,8,0l43-43c2-2,2-6,0-8l-6-7z'></path>
+</svg>
+<a href="http://toc.oreilly.com/2012/08/portable-documents-for-the-open-web-part-3.html"><cite>Bill McCoy</cite></a>: <em>EPUB in effect takes the Wild, Wild Web and tames it. EPUB for example requires use of the XML serialization of HTML5 (XHTML5), rather than “Tag Soup” aka “Street” HTML. This means that EPUB content, unlike arbitrary web pages, can be reliably created and manipulated with XML tool chains. EPUB defined Reading System conformance more tightly than HTML5 defines for browser User Agents, pinning down things that are under-specified in the union of W3C standards.</em> [via <a href="https://twitter.com/pmuellr/status/238664881308565504"><cite>Patrick Mueller</cite></a>]</div></content>
+    <updated>2012-08-25T12:32:40-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3299</id>
+    <link href="/blog/2012/07/16/Inhibiting-Suspend"/>
+    <link rel="replies" href="3299.atom" thr:count="1" thr:updated="2012-07-17T08:34:14-07:00"/>
+    <title>Inhibiting Suspend</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="109" height="92" viewBox="0 0 109 92">
+  <g style='fill:#FFFFFF;stroke:#3B80AE;stroke-width:3'>
+    <path d='M107,51c3,10-3,20-13,23l-60,15c-10,3-20-3-23-13l-9-36c-2-10,3-20,13-22l60-16c10-2,20,3,23,13z' style='stroke:#BABABA'></path>
+    <path d='M101,50c2,10-2,17-12,19l-53,14c-9,3-18-1-20-11l-8-30c-2-11,1-17,12-20l53-14c10-2,18,2,20,11z' style='fill:#3B80AE;stroke:none'></path>
+    <path d='M57,65l-27-26l48-5z' style='opacity:0.5;fill:none;stroke:#FFFFFF'></path>
+    <path d='M91,36c0,2-1,4-3,5l-15,4c-2,0-4-1-5-3l-3-11c0-2,1-4,3-5l15-4c2,0,4,1,5,3z'></path>
+    <path d='M46,42c0,3-1,5-3,6l-19,5c-3,0-5-1-6-4l-3-13c-1-3,0-5,3-6l19-5c2,0,5,1,5,4z'></path>
+    <path d='M66,67c0,1-1,3-2,3l-11,3c-1,0-2-1-3-2l-2-8c0-1,1-2,2-3l11-3c1,0,3,1,3,2z'></path>
+  </g>
+</svg>
+<p>The <a href="http://people.gnome.org/~mccann/gnome-session/docs/gnome-session.html#org.gnome.SessionManager.Inhibit">interface</a> is a bit low level, but workable:</p>
+<pre class="code">require 'dbus' # gem install ruby-dbus
+bus = DBus::SessionBus.instance
+sm = bus.service('org.gnome.SessionManager').object('/org/gnome/SessionManager')
+sm.introspect
+sm.default_iface = 'org.gnome.SessionManager'
+cookie = sm.Inhibit($0, 0, 'inhibiting', 4).first
+at_exit { cookie = sm.Uninhibit(cookie) if sm.IsInhibited(4).first }</pre>
+<p>Note: the call to <code>Uninhibit</code> is optional — it will occur on process exit anyway.</p>
+<p>Hat tip to <a href="http://www.lucidelectricdreams.com/2011/06/disabling-screensaverlock-screen-on.html">JanuZ</a>.</p></div></content>
+    <updated>2012-07-16T08:48:01-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3298</id>
+    <link href="/blog/2012/07/10/utf8mb4"/>
+    <link rel="replies" href="3298.atom" thr:count="7" thr:updated="2012-10-15T14:45:05-07:00"/>
+    <title>utf8mb4</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="115" height="87" viewBox="0 0 115 87">
+  <path d="M0,1v83h26c-10,0-22-11-22-21v-62zM22,1v53c0,16,22,16,22,0v-53zM41,84c10,0,22-11,22-21v-22l27,43zM60,1h30v20h19v-20h5v84h-5v-56h-19v18z" fill="#C60025"></path>
+</svg>
+<p><a href="http://golem.ph.utexas.edu/~distler/blog/archives/002539.html"><cite>Jacques Distler</cite></a>: <em>Remarkably, even after a decade of such pain, Unicode is, in 2012, still “cutting edge.”</em></p>
+<p>Ouch.</p></div></content>
+    <updated>2012-07-10T10:55:32-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3297</id>
+    <link href="/blog/2012/06/23/Ubuntu-12-04-and-Ruby-1-9-3"/>
+    <link rel="replies" href="3297.atom" thr:count="0"/>
+    <title>Ubuntu 12.04 and Ruby 1.9.3</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>I previously had installed Ubuntu 12.04 on a NetBook, and my overall impression was simply that it was more stable than its predecessor — particularly for Unity.</p>
+<p>For the first time I tried it on a desktop, and to my surprise the following worked:</p>
+<pre class="code">sudo apt-get install ruby1.9.3</pre>
+<p>And by worked, I mean not only did it install Ruby 1.9.3, but it made it (and gem, and irc) the default ruby.</p>
+<p>For those that still use <a href="https://rvm.io//">rvm</a>, (many of the ‘cool kids’ have moved on to <a href="https://github.com/sstephenson/rbenv/">rbenv</a>, I noticed a few niggles</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="140" height="140" viewBox="-70 -70 140 140">
+
+  <defs>
+    <path id="b" d="M 23,-20 A32,32 0,0,0 -23,-20 L -40,-30 A42,42 0,0,1 -14,-47 A17,17 0,0,0 14,-47 A42,42 0,0,1 40,-30 Z"></path>
+    <circle id="h" cx="0" cy="-57" r="12"></circle>
+  </defs>
+
+  <g transform="translate(5,5)" opacity="0.125">
+    <use xlink:href="#h" transform="rotate(30)"></use>
+    <use xlink:href="#b" transform="rotate(30)"></use>
+    <use xlink:href="#h" transform="rotate(150)"></use>
+    <use xlink:href="#b" transform="rotate(150)"></use>
+    <use xlink:href="#h" transform="rotate(-90)"></use>
+    <use xlink:href="#b" transform="rotate(-90)"></use>
+  </g>
+
+  <a xlink:href="http://www.ubuntu.com/">
+    <use xlink:href="#h" fill="#d00" transform="rotate(30)"></use>
+    <use xlink:href="#b" fill="#f40" transform="rotate(30)"></use>
+    <use xlink:href="#h" fill="#f80" transform="rotate(150)"></use>
+    <use xlink:href="#b" fill="#d00" transform="rotate(150)"></use>
+    <use xlink:href="#h" fill="#f40" transform="rotate(-90)"></use>
+    <use xlink:href="#b" fill="#f80" transform="rotate(-90)"></use>
+  </a>
+
+</svg>
+<p>I previously had installed Ubuntu 12.04 on a NetBook, and my overall impression was simply that it was more stable than its predecessor — particularly for Unity.</p>
+<p>For the first time I tried it on a desktop, and to my surprise the following worked:</p>
+<pre class="code">sudo apt-get install ruby1.9.3</pre>
+<p>And by worked, I mean not only did it install Ruby 1.9.3, but it made it (and gem, and irc) the default ruby.</p>
+<p>For those that still use <a href="https://rvm.io//">rvm</a>, (many of the ‘cool kids’ have moved on to <a href="https://github.com/sstephenson/rbenv/">rbenv</a>, I noticed a few niggles:</p>
+<ul>
+<li>Don’t follow the <a href="https://rvm.io//rvm/install/installation">instructions</a> and specify <code>--ruby</code> or <code>--rails</code>.  You will get a version of Ruby that can’t install gems.  Simply omit that parameter.</li>
+<li>Next set the <a href="https://rvm.io/integration/gnome-terminal/">‘Run command as login shell’</a> checkbox.</li>
+<li>Then run <code>rvm requirements</code> and install what it tells you to install.</li>
+<li>Finally, run <code>rvm install 1.9.3</code> to build the latest.</li>
+</ul>
+
+<p>Personally, I follow that up with <code>rvm --default system</code>.  That means that while I have other Rubies available at my finger-tips, the one I generally use is the one provided with Ubuntu.</p></div></content>
+    <updated>2012-06-23T15:45:50-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3296</id>
+    <link href="/blog/2012/06/07/Prefixed-no-more"/>
+    <link rel="replies" href="3296.atom" thr:count="0"/>
+    <title>Prefixed no more</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="133" height="78" viewBox="0 0 133 78">
+  <path d="M23,72c-2,0-3,2-5,2c-1-2,2-4,2-7c-3,0-4,4-6,4c1-6,9-12,4-12c0,0-10,7-11,6c2-2,10-14,7-14c-1,0-7,4-9,4c0-2,9-10,10-11c2,0,3-2,2-3c-5,0-11,8-15,6l2-2c1-1,16-14,16-16c-3-2-13,6-18,6c22-24,38-33,47-35c7,0,14,2,21,3c0,3,12-1,13-1c5,0,9,4,11,8c0,1,0,2,0,4c3,11,31,7,35,19c0,5,1,9,2,14c-2,4-2,12-6,13c-4,1-4,1-4,1c-3,2-7,5-10,6c0,0-16-6-20-3c-12,4-16,8-19,20l-49-3"></path>
+  <path fill="#FFF" d="M86,22l-1-2h3v2h-2M83,19l-2,1l-1-2h2l1,1M122,57l-1-2c-1,0-1,1-3,1c0-1,0-3,0-4h2l1,2c1-1,2-1,3-1c1,1,1,2,0,3l-2,1M113,56c0-1,0-2,0-3c0-1,1-2,3-2c0,4,0,4-3,5M109,55c0-1-1-3,0-4h2c1,2,0,4-2,4M106,54l-2-2c-1,0-2,1-3,0c-1,0-1-2,0-4c1,0,2,0,3,1v2c1,0,2-1,3-1c1,0,0,2,0,3l-1,1M96,50c-2-1-1-2-1-4c2,0,3,0,4,2c-1,1-2,2-3,2"></path>
+  <path fill="#ED1C24" d="M40,75v-2c-2,0-9,2-9-2c0-2,5-8,3-8c-3-6-7-11-10-17c2-1,0-3,2-6c3-1,2,4,5,3c-4-17,5-22,5-22c-3,0-4,0-6,1c1-7,11-14,17-15c5-1,15-3,18,2c0,1-1,2-1,3c4,0,10-4,15-5c2-1,4-1,7,0l1,2c-7-3-17,3-23,6c-1,0-2,1-3,1l1,1c3,1,4,2,8,2c1,1,2,2,3,3c1,1,2,2,3,2c0-2,0-2-1-4c1-2-1-3,2-5c2,0,2,1,3,1c-4,4-2,8,10,9c1,0,3,1,3-2c-2,0-2-2-2-3l2,1c1,3,27,7,31,12c1,2,0,3-4,5c0,2,2,5,3,6l2-2l1,1c0,2,0,3,0,5v1c-1,0-2,0-3,0c-4-1-9-1-13-1c-11-5-25-16-36-20c-2-1-1-1-4-1c0,2,1,2,3,3c3,4,6,6,5,11l-1,2c-4,0-1-8-4-9c-10,8,5,25,13,20c-4-2-4-4-4-5c10,5,31,10,33,11c0,1-4,1-4,2c-5,1-13-2-17-4c-5-1-11,7-22,4c-2-1-13-8-15-8c0,4,9,12,11,13l0,2c-2,2-5,5-5,7"></path>
+  <path d="M80,24c3,1,11,4,9,5c-3,0-8,0-9-3v-2m-36-4l-2,2c0-1,1-3,1-3c3-6,9-8,14-7l0,1c-8,2-6,12-7,12c-2-1-3-5-6-5m0,34c0-6-8-17,3-22c1,0-2,15,7,19v2c-2,0-3,0-5,0c-1-2-1-1-2-1c0,2,1,5,1,7c-1-1-3-3-4-5m14-26c0-2-2-3,0-4c2,0,3-2,3-4c2,0,5,2,6,3c0,2-1,2-2,4c1,2,1,2,1,4h-1c-2,0-8-1-8,1c-2,0-3,0-5,0c-1-1,1-2,1-3c2,0,3-1,5-1"></path>
+</svg>
+<p>Firefox 13 for developers: <em>Support for <a href="https://developer.mozilla.org/en/CSS/border-radius"><code>-moz-border-radius*</code></a>  and <a href="https://developer.mozilla.org/en/CSS/box-shadow"><code>-moz-box-shadow</code></a> has been removed. Authors should use unprefixed <code>border-radius</code> or <code>box-shadow</code> instead. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=693510">bug 693510</a></em></p>
+<p>+1</p></div></content>
+    <updated>2012-06-07T05:33:07-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3295</id>
+    <link href="/blog/2012/05/29/Twitter"/>
+    <link rel="replies" href="3295.atom" thr:count="0"/>
+    <title>Twitter -= #!</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" fill='black' xmlns='http://www.w3.org/2000/svg' width="95" height="105" viewBox="0 0 95 105">
+  <path d='M75,75h-21l-6,28h-10l6-28h-21l-6,28h-10l6-28h-11v-10h13l5-25h-18v-10h20l6-28h10l-6,28h21l6-28h10l-6,28h12v10h-14l-5,25h19zM51,40h-21l-5,25h21z'></path>
+  <path d='M93,25l-3,52h-8l-4-52v-22h15zM93,101h-14v-13h14z'></path>
+</svg>
+<a href="http://engineering.twitter.com/2012/05/improving-performance-on-twittercom.html"><cite>Dan Webb</cite></a>: <em>The first thing that you might notice is that permalink URLs are now simpler: they no longer use the hashbang (#!). While hashbang-style URLs have a <a href="http://danwebb.net/2011/5/28/it-is-about-the-hashbangs">handful of limitations</a>, our primary reason for this change is to improve initial page-load performance.</em></div></content>
+    <updated>2012-05-29T14:50:26-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3294</id>
+    <link href="/blog/2012/04/29/WebSocket-Demos"/>
+    <link rel="replies" href="3294.atom" thr:count="0"/>
+    <title>WebSocket Demos</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <path d="M4,14h92" stroke="#4682b4" stroke-width="5"></path> 
+  <text x="50" y="90" font-size="90" fill="#5f9ea0" font-family="serif" text-anchor="middle"><![CDATA[W]]></text>
+</svg>
+<p><a href="https://github.com/rubys/wunderbar/blob/master/demo/chat.rb">chat</a> implements a shared textarea field across multiple clients.  Demonstrates bi-directional communication.</p>
+<p><a href="https://github.com/rubys/wunderbar/blob/master/demo/diskusage.rb">diskusage</a> is more typical of my usage.  The <code>du</code> command produces tabular output that the user may want to sort different ways and yet is may take considerable time to complete.</p></div></content>
+    <updated>2012-04-29T18:33:49-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3293</id>
+    <link href="/blog/2012/04/24/Wunderbar-on-Rails"/>
+    <link rel="replies" href="3293.atom" thr:count="0"/>
+    <title>Wunderbar on Rails</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Usage: add <code>wunderbar</code> and <code>nokogiri</code> to your <code>Gemfile</code> and run <code>bundle install</code>.  Template extensions supported are <code>_html</code> and <code>_json</code>.  Examples: <a href="https://github.com/rubys/wunderbar/blob/master/test/views/rails_test/index.html._html">view</a>, <a href="https://github.com/rubys/wunderbar/blob/master/test/views/layouts/application.html._html">layout</a>, <a href="https://github.com/rubys/wunderbar/blob/master/test/views/rails_test/index.json._json">json</a>.</p>
+<p>Note that as Rails layouts and views are predicated on the assumption that output is produced by concatenating text, one must use <code>_ yield</code> instead of simply <code>yield</code>.  On the plus side, Wunderbar will note when the first argument to a call which creates an element is <code>html_safe?</code> and will treat it as markup.</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <path d="M4,14h92" stroke="#4682b4" stroke-width="5"></path> 
+  <text x="50" y="90" font-size="90" fill="#5f9ea0" font-family="serif" text-anchor="middle"><![CDATA[W]]></text>
+</svg>
+<p>Usage: add <code>wunderbar</code> and <code>nokogiri</code> to your <code>Gemfile</code> and run <code>bundle install</code>.  Template extensions supported are <code>_html</code> and <code>_json</code>.  Examples: <a href="https://github.com/rubys/wunderbar/blob/master/test/views/rails_test/index.html._html">view</a>, <a href="https://github.com/rubys/wunderbar/blob/master/test/views/layouts/application.html._html">layout</a>, <a href="https://github.com/rubys/wunderbar/blob/master/test/views/rails_test/index.json._json">json</a>.</p>
+<p>Note that as Rails layouts and views are predicated on the assumption that output is produced by concatenating text, one must use <code>_ yield</code> instead of simply <code>yield</code>.  I have noticed that this may lose blank lines in the process, which apparently is a <a href="http://groups.google.com/group/nokogiri-talk/browse_thread/thread/d332456737253631?pli=1">known</a> <a href="https://github.com/tenderlove/nokogiri/issues/575">issue</a> with Nokogiri.  Not a problem if the layout is erb, but then you lose the unified indentation that you get if you have a layout using <code>_html</code>.</p>
+<p>On the plus side, Wunderbar will note when the first argument to a call which creates an element is <code>html_safe?</code> and will treat it as markup.  An example of where this is useful would be in the <code>_td link_to</code> calls below. </p>
+<pre class="code">_h1_ 'Listing products'
+
+_table do
+  _tr do
+    _th 'Title'
+    _th
+    _th
+    _th
+  end
+
+  @products.each do |product|
+    _tr_ do
+      _td product.title
+      _td link_to 'Show', product
+      _td link_to 'Edit', edit_product_path(product)
+      _td link_to 'Destroy', product, confirm: 'Are you sure?', method: :delete 
+    end
+  end
+end
+
+_br_
+
+_ link_to 'New Product', new_product_path</pre></div></content>
+    <updated>2012-04-24T14:12:59-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3292</id>
+    <link href="/blog/2012/04/12/Wunderbar-now-does-Sinatra"/>
+    <link rel="replies" href="3292.atom" thr:count="2" thr:updated="2012-04-22T09:44:27-07:00"/>
+    <title>Wunderbar now does Sinatra</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p><a href="https://github.com/rubys/wunderbar/blob/master/demo/hellosinatra.rb">Demo</a></p>
+<p>The result is a lot like <a href="http://markaby.rubyforge.org/">Markaby</a>, except you get to be/have to be explicit when you are creating a tag.  In this demo, there is no logic, so the benefits of doing so are less clear, but include you being able to use tags that aren’t known to Markaby, like the ones that were <a href="http://www.w3.org/TR/html5-diff/#new-elements">added in HTML5</a>.  Both inline and views are supported, but support for layouts has yet to be added.</p>
+<p>Future plans include <a href="http://rubyonrails.org/">Rails</a>.</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <path d="M4,14h92" stroke="#4682b4" stroke-width="5"></path> 
+  <text x="50" y="90" font-size="90" fill="#5f9ea0" font-family="serif" text-anchor="middle"><![CDATA[W]]></text>
+</svg>
+<p><a href="https://github.com/rubys/wunderbar/blob/master/demo/hellosinatra.rb">Demo</a></p>
+<p>The result is a lot like <a href="http://markaby.rubyforge.org/">Markaby</a>, except you get to be/have to be explicit when you are creating a tag.  In this demo, there is no logic, so the benefits of doing so are less clear, but include you being able to use tags that aren’t known to Markaby, like the ones that were <a href="http://www.w3.org/TR/html5-diff/#new-elements">added in HTML5</a>.  Both inline and views are supported, but support for layouts has yet to be added.</p>
+<p>While the demos require Ruby 1.9.2+ (the Hash syntax is nicer), the library works equally well with Ruby 1.8.7.</p>
+<p>The progression is that you start from <a href="https://github.com/rubys/wunderbar/blob/master/demo/helloworld.rb">scripts</a> that you can run from the command line:</p>
+<pre class="code">ruby helloworld.rb</pre>
+<p>...can pass arguments to:</p>
+<pre class="code">ruby helloword.rb name=Sam</pre>
+<p>...can run as a standalone server:</p>
+<pre class="code">ruby helloworld.rb --port=3004</pre>
+<p>...can install as a CGI:</p>
+<pre class="code">ruby helloworld.rb --install="/Library/WebServer/Documents/helloworld.cgi"</pre>
+<p>.,. and can now run under Sinatra.  Future plans include <a href="http://rubyonrails.org/">Rails</a>.</p>
+<p>There even is a <a href="https://github.com/rubys/wunderbar/blob/master/tools/web2script.rb">tool</a> that will reverse engineer an existing web page into a script.</p></div></content>
+    <updated>2012-04-12T17:12:31-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3291</id>
+    <link href="/blog/2012/04/02/Hacked"/>
+    <link rel="replies" href="3291.atom" thr:count="5" thr:updated="2012-05-20T03:28:03-07:00"/>
+    <title>Hacked</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>This site was hacked.  A reader of the site noted that Google’s <a href="https://www.google.com/search?q=site%3Aintertwingly.net">index of this site</a> had been co-opted by dubious pharmaceutical offerings.  I’ll gladly thank that individual publicly if they give me permission to do so; but my email reply got bounced as spam.</p>
+<p>The immediate culprit was the addition of the following lines to a number of <code>.htaccess</code> files</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <g stroke="#000" stroke-linejoin="round">
+    <path fill="#DDD" d="M27,42c-8-53,55-53,47,0h-8 c10-41-40-41-30,0h-9z"></path>
+    <path fill="#CB9" d="M23,91v-50c18-3,36-2,55,0v50c-19,3-37,2-55,0z"></path>
+    <path fill="#EDA" d="M23,91v-50c18-3,36-2,55,0z"></path>
+    <path fill="#A87" d="M78,41v50c-19,3-37,2-55,0z"></path>
+  </g>
+  <path fill="#EEE" d="M30,21c5-10,7-17,23-16c-10,0-18,14-23,16"></path>
+  <path fill="#CB9" d="M78,41c-50,4-50,0-55,50c50-5,50,0,55-50z"></path>
+  <path fill="#000" d="M46,77h10l-3-11a6,6,0,1,0-5,0z"></path>
+</svg>
+<p>This site was hacked.  A reader of the site noted that Google’s <a href="https://www.google.com/search?q=site%3Aintertwingly.net">index of this site</a> had been co-opted by dubious pharmaceutical offerings.  I’ll gladly thank that individual publicly if they give me permission to do so; but my email reply got bounced as spam.</p>
+<p>The immediate culprit was the addition of the following lines to a number of <code>.htaccess</code> files:</p>
+<pre class="code">&lt;IfModule mod_rewrite.c&gt;
+RewriteEngine On
+RewriteCond %{HTTP_USER_AGENT} (google|yahoo) [OR]
+RewriteCond %{HTTP_REFERER} (google|aol|yahoo)
+RewriteCond %{REQUEST_URI} /$ [OR]
+RewriteCond %{REQUEST_FILENAME} (html|htm|php)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !common.php
+RewriteRule ^.*$    /common.php [L]
+&lt;/IfModule&gt;</pre>
+<p>I removed those lines, as well as the <code>common.php</code> file, and scanned any and all php files on my site.  I saw the addition of lines such as the following:</p>
+<pre class="code">$FYAqxDo='p'.'r'. 'eg_repl'. 'ace';...
+$IHxWfs=str_rot13('cert_ercynpr');...
+$DcNZVHCi="eW6DLAlbeAki"^"...
+$LYDmvYopCKSSSGcfCVNpsskU='ba'.'se64_'.'deco'.'de'...</pre>
+<p>I had old (vintage 2006) installations of PHP-openid-1.2.1 and PHP-yadis-1.0.2 that I am tentatively assuming were the ports of initial entry.</p>
+<p>I also wiped my .ssh directory.  It has a private key there that was generated for this site that presumably was legitimate, but unused by me and now presumed compromised.  I never initiate sessions from this host, nor do I have any passwords saved there, so any damage caused was isolated.</p>
+<p>I do daily backups of my site, which I keep for a week; as well as monthly backups that I basically keep forever.  In addition, as I recently <a href="http://intertwingly.net/blog/2012/02/13/On-The-Move">migrated hosts</a>, I have a hot backup.</p>
+<p>The PHP hacks were done after I migrated but before March 1st.  The htaccess hacks were done over a week ago, but after March 1st.</p>
+<p>Over the next few days, I’ll be looking at diffs of different snapshots of my site contents to see if there is anything else I missed.</p></div></content>
+    <updated>2012-04-02T04:16:43-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3290</id>
+    <link href="/blog/2012/04/01/Improved-Wunderbar-JSON-support"/>
+    <link rel="replies" href="3290.atom" thr:count="0"/>
+    <title>Improved Wunderbar JSON support</title>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <path d="M4,14h92" stroke="#4682b4" stroke-width="5"></path> 
+  <text x="50" y="90" font-size="90" fill="#5f9ea0" font-family="serif" text-anchor="middle"><![CDATA[W]]></text>
+</svg>
+<p>I’ve integrated <a href="https://github.com/rails/jbuilder">jbuilder</a> like functionality into <a href="https://github.com/rubys/wunderbar#readme">Wunderbar</a>.  Key differences?  A DSL that doesn’t suck, and output that isn’t ugly.</p>
+<p>To harsh?  You be the judge.  Compare <a href="https://github.com/rails/jbuilder/blob/master/test/jbuilder_test.rb#L176">jbuilder</a> ("json dot bar json bar json dot child bang") vs <a href="https://github.com/rubys/wunderbar/blob/master/test/test_jbuilder.rb#L154">Wunderbar</a> ("underbar underbar underbar underbar").</p>
+<p>As to the output?  Don’t be fooled by the jbuilder <a href="https://github.com/rails/jbuilder#readme">readme</a>.  In actuality is no unnecessary whitespace in the output.  That’s good if you are bandwidth limited.  Not so good when viewing the XHR traffic via firebug...</p></div></content>
+    <updated>2012-04-01T05:57:41-07:00</updated>
+  </entry>
+
+  <entry>
+    <id>tag:intertwingly.net,2004:3289</id>
+    <link href="/blog/2012/03/28/Keeping-it-on-the-Rails"/>
+    <link rel="replies" href="3289.atom" thr:count="0"/>
+    <title>Keeping it on the Rails</title>
+    <summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>It is increasingly becoming the case that <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> is being actively co-developed with <a href="http://rubyonrails.org/">Rails</a> itself.</p>
+<p>While <a href="http://intertwingly.net/projects/dashboard.html">my tests</a> have been an <a href="https://github.com/rails/rails/blob/master/RELEASING_RAILS.rdoc">official part of the release process</a> for a long time now, yesterday’s release of <a href="http://weblog.rubyonrails.org/2012/3/27/ann-rails-3-2-3-rc1-has-been-released/">3.2.3RC1</a> provides a number of examples that illustrate this.</p>
+<p>The intent is to prove an updated to the eBook free of charge which incorporates the necessary changes, either concurrent with the final release of 3.2.3 or shortly thereafter.</p></div></summary>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><svg style="float:right" xmlns='http://www.w3.org/2000/svg' width="100" height="100" viewBox="0 0 1000 1000">
+
+<!-- 5 -->
+<path d='M160,560c2-6-2-13-6-17l-6-9c-104-164,58-356,234-305c59,18,119,63,158,116c33,45,49,95,53,140c8,87-16,169-62,219c0,0-22,24,8,42c28,16,112-18,152-163c37-132-50-403-312-455c-190-37-302,124-304,268c0,58,30,125,63,159c14,14,21,11,22,5' fill='#17733B'></path>
+<radialGradient cx='651' cy='363' id='r5g1' r='257' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#E0EECF'></stop>
+	<stop offset='1' style='stop-color:#17753C'></stop>
+</radialGradient>
+<path d='M581,733c-20,9-31-2-31-2c107-75,132-334-31-471c-159-133-277-83-327-52c0,0,36-73,145-76c61-2,229,40,314,213c99,202-1,327-22,352c-13,17-37,31-48,36' fill='url(#r5g1)'></path>
+<radialGradient cx='477' cy='494' id='r5g2' r='247' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#DAECCE'></stop>
+	<stop offset='1' style='stop-color:#17733B'></stop>
+</radialGradient>
+<path d='M562,675c44-90,66-232-27-346c-93-114-198-113-198-113s156-14,250,175c73,147-25,284-25,284' fill='url(#r5g2)'></path>
+
+<!-- 1 -->
+<path d='M593,219c4,5,12,4,18,4c3-1,7-1,11-1c194-9,279,228,147,354c-45,43-115,72-180,80c-55,6-106-6-147-25c-79-36-139-97-159-163c0,0-10-31-40-14c-29,16-41,106,64,213c96,98,375,159,551-42c127-146,44-324-80-397c-51-30-123-37-169-25c-20,5-21,12-16,16' fill='#821C35'></path>
+<radialGradient cx='518' cy='742' id='r1g1' r='257' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#F7A8A9'></stop>
+	<stop offset='0.7178' style='stop-color:#821C35'></stop>
+</radialGradient>
+<path d='M232,497c3-22,18-25,18-25c12,129,224,280,424,208c195-71,210-198,208-257c0,0,45,67-7,164c-29,53-149,177-342,164c-223-14-282-164-294-194c-7-20-8-48-7-60' fill='url(#r1g1)'></path>
+<radialGradient cx='492' cy='526' id='r1g2' r='247' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#F2A5B7'></stop>
+	<stop offset='1' style='stop-color:#821C35'></stop>
+</radialGradient>
+<path d='M293,510c55,83,167,173,312,149c146-24,197-115,197-115s-66,143-276,130c-164-11-233-164-233-164' fill='url(#r1g2)'></path>
+
+<!-- 3 -->
+<clipPath id="r3c">
+	<path d="M999,999 L558,370 c-30-50-40-50-70-84h-400v700z" opacity="0"></path>
+</clipPath>
+<g clip-path="url(#r3c)">
+<path d='M677,766c-6,2-10,9-11,14c-2,3-4,7-5,11c-90,172-338,127-381-51c-14-60-5-135,21-195c23-51,58-89,95-115c71-50,154-71,220-56c0,0,32,7,33-28c0-33-71-88-217-51c-133,34-324,245-238,498c62,183,258,200,383,129c51-28,94-88,107-134c5-19-1-23-7-22' fill='#3564AF'></path>
+<radialGradient cx='262' cy='440' id='r3g1' r='364' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#EFF1F6'></stop>
+	<stop offset='1' style='stop-color:#3564AF'></stop>
+</radialGradient>
+<path d='M617,315c18,14,13,28,13,28c-118-54-355,54-392,263c-36,205,66,281,118,309c0,0-81,6-138-88c-32-51-79-217,28-378c125-186,283-162,316-157c21,3,45,16,55,23' fill='url(#r3g1)'></path>
+<radialGradient cx='462' cy='525' id='r3g2' r='350' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#EFF1F6'></stop>
+	<stop offset='1' style='stop-color:#3564AF'></stop>
+</radialGradient>
+<path d='M576,362c-100,6-234,58-286,195s1,228,1,228s-90-128,26-304c91-136,259-119,259-119' fill='url(#r3g2)'></path>
+</g>
+
+<!-- 6 -->
+<radialGradient cx='528' cy='251' id='r6g1' r='277' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#E2EFCF'></stop>
+	<stop offset='1' style='stop-color:#14743B'></stop>
+</radialGradient>
+<path d='M804,494c-16,4-38-12-43-43c-17-99-90-288-283-364c-176-69-252-6-252-6c-10,4-6-12,2-18c7-7,105-112,334-13c217,94,278,309,272,383c0,10-3,24-4,29c-5,21-15,28-26,32' fill='url(#r6g1)'></path>
+<radialGradient cx='748' cy='240' id='r6g2' r='312' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#E2EFCF'></stop>
+	<stop offset='1' style='stop-color:#14743B'></stop>
+</radialGradient>
+<path d='M800,488c-1-132-88-337-289-418c-193-78-256-19-256-19s73-91,293-4c208,82,265,267,278,321c12,52,4,94-4,108c-9,16-22,12-22,12' fill='url(#r6g2)'></path>
+<radialGradient cx='634' cy='302' id='r6g3' r='185' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#E2EFCF'></stop>
+	<stop offset='1' style='stop-color:#14743B'></stop>
+</radialGradient>
+<path d='M767,457c-16-90-50-158-87-212c-45-66-103-114-191-158c0,0,112,25,198,148c73,106,80,222,80,222' fill='url(#r6g3)'></path>
+
+<!-- 4 -->
+<path d='M298,243c12,11,9,38-15,58c-78,64-204,222-174,427c28,187,121,221,121,221c8,6-8,11-17,8s-150-35-178-283c-27-235,128-396,195-428c9-4,22-9,27-10c21-6,32-2,41,7' fill='#3564AF'></path>
+<radialGradient cx='107' cy='418' id='r4g1' r='441' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#D3DCE8'></stop>
+	<stop offset='1' style='stop-color:#3564AF'></stop>
+</radialGradient>
+<path d='M295,248c-114,68-248,245-217,459c29,207,111,232,111,232s-115-18-150-251c-33-221,99-364,140-402c38-36,78-50,95-50c18,0,21,12,21,12' fill='url(#r4g1)'></path>
+<radialGradient cx='217' cy='485' id='r4g2' r='261' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#F0F1F9'></stop>
+	<stop offset='1' style='stop-color:#3564AF'></stop>
+</radialGradient>
+<path d='M285,293c-70,59-112,121-141,182c-34,71-47,145-41,243c0,0-34-109,29-244c55-117,153-181,153-181' fill='url(#r4g2)'></path>
+
+<!-- 2 -->
+<radialGradient cx='661' cy='712' id='r2g1' r='275' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#E89EB0'></stop>
+	<stop offset='1' style='stop-color:#821C35'></stop>
+</radialGradient>
+<path d='M329,810c4-16,28-27,58-16c94,35,294,66,457-63c147-118,131-216,131-216c1-10,13,2,15,11c2,10,44,147-156,296c-190,141-407,87-468,45l-23-18c-15-16-17-27-14-39' fill='url(#r2g1)'></path>
+<radialGradient cx='576' cy='888' id='r2g2' r='312' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#CFA2AD'></stop>
+	<stop offset='1' style='stop-color:#821C35'></stop>
+</radialGradient>
+<path d='M335,810c116,64,336,92,506-42c164-128,145-212,145-212s43,108-142,255c-175,139-365,96-418,80c-50-15-83-42-91-57c-9-16,0-24,0-24' fill='url(#r2g2)'></path>
+<radialGradient cx='579' cy='758' id='r2g3' r='185' gradientUnits='userSpaceOnUse'>
+	<stop offset='0' style='stop-color:#DE95A7'></stop>
+	<stop offset='1' style='stop-color:#821C35'></stop>
+</radialGradient>
+<path d='M379,796c86,31,161,36,227,31c79-6,150-32,232-87c0,0-78,85-226,98c-129,11-233-42-233-42' fill='url(#r2g3)'></path>
+
+</svg>
+<p>It is increasingly becoming the case that <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> is being actively co-developed with <a href="http://rubyonrails.org/">Rails</a> itself.</p>
+<p>While <a href="http://intertwingly.net/projects/dashboard.html">my tests</a> have been an <a href="https://github.com/rails/rails/blob/master/RELEASING_RAILS.rdoc">official part of the release process</a> for a long time now, yesterday’s release of <a href="http://weblog.rubyonrails.org/2012/3/27/ann-rails-3-2-3-rc1-has-been-released/">3.2.3RC1</a> provides a number of examples that illustrate this.</p>
+<p>Within hours after the release, I got an excited IM from Santiago Pastorino that my tests were failing.  In particular, the failure was thus:</p>
+<pre class="code">rake db:migrate
+rake aborted!
+An error has occurred, this and all later migrations canceled:
+uninitialized constant Arel::Relation
+Tasks: TOP =&gt; db:migrate
+(See full trace by running task with --trace)</pre>
+<p>The root cause was quickly determined to be a recent change to <a href="https://github.com/rails/arel/commit/9978fc40a8a5a262670279129a335845ad647f48">arel</a>, and a number of corrective actions were promptly taken: first, <a href="https://github.com/rails/arel/commit/6e8d1587091e00a84ea24ab92d9e836c3c38bcb8">the change was backed out</a>, then <a href="https://github.com/rails/rails/commit/2fa7ccf7aee3696e99f1b528db848aff5a671f77">Rails 4.0 was updated</a> and <a href="https://github.com/rails/rails/commit/24208d9a8662e2e35afc9c64695c600b2e960418">Rails 3.2 was changed to point to a branch of arel</a>, and finally, the <a href="https://github.com/rails/arel/commit/d43ae586aab7092c6bf742609ff1dc3ebf6aff6a">original change was reapplied</a>.</p>
+<p>The previous error that was caught was <a href="https://github.com/rails/rails/commit/b700153507b7d539a57a6e3bcf03c84776795051"> connection pool of new applications have size 1</a>.  This demonstrates the unique value that my tests bring to the table.  Outside of my tests, the bulk of the test of Rails is an impressive array of unit tests (which verify that the connection pool setting does what it is supposed to do), and real world testing (using applications with highly tuned configurations), and my tests.  Only the latter is effectively testing that the defaults provided actually work together to provide a viable configuration to use as a starter set for new applications.</p>
+<p>One last example, this one shows the level cooperation involved.  The underlying security changes that were the raison d'être for the 3.2.3 release caused the following scenario to fail:</p>
+<pre class="code">rails generate scaffold Product title:string
+rake db:migrate
+rake test</pre>
+<p>The root cause was that the code generated as scaffolding used the very feature which is now being discouraged as it creates a security issue. The fix required both changes to Rails itself (to change the scaffolding generated) and to the scenario provided in the book (both in identifying the code that needs to be changed, and in the changes that need to be made).</p>
+<p>The intent is to prove an updated to the eBook free of charge which incorporates the necessary changes, either concurrent with the final release of 3.2.3 or shortly thereafter.</p></div></content>
+    <updated>2012-03-28T13:44:13-07:00</updated>
+  </entry>
+
+</feed>
+

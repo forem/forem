@@ -1,0 +1,8 @@
+open nat
+
+def add : nat → nat → nat
+| m zero := m
+| m (succ n) := succ (add m n)
+
+-- encode definition as an axiom
+axiom add_zero (n : nat) : n + 0 = n

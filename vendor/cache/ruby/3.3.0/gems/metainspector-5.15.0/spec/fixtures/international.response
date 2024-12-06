@@ -1,0 +1,35 @@
+HTTP/1.1 200 OK
+Date: Mon, 30 May 2011 09:58:20 GMT
+Server: Microsoft-IIS/6.0
+X-Powered-By: PleskWin
+X-Powered-By: ASP.NET
+Cache-Control: private
+Content-Length: 25902
+Content-Type: text/html
+Expires: Sun, 29 May 2011 09:58:18 GMT
+Set-Cookie: ASPSESSIONIDCSBSQADC=AHENHHKBGGDIFJLHHCCJBHMP; path=/
+Cache-control: private
+
+
+
+<html>
+<head>
+  <title>International chars</title>
+</head>
+<body>
+  <h1>Internal links:</h1>
+  <a href="/españa.asp">España</a>
+  <a href="/romanée">Romanée</a>
+  <a href="/faqs#camión">FAQs camión</a>
+  <a href="/search?q=camión">Search camión</a>
+  <a href="/search?q=españa#top">Search España at top</a>
+  <a href="/index.php?q=españa&url=aHR0zZQ%3D%3D&amp;cntnt01pageid=21">A link with an encoded param, %3D should not be double-escaped</a>
+
+  <h1>External links:</h1>
+  <a href="http://example.com/españa.asp">España</a>
+  <a href="http://example.com/romanée">Romanée</a>
+  <a href="http://example.com/faqs#camión">FAQs camión</a>
+  <a href="http://example.com/search?q=camión">Search camión</a>
+  <a href="http://example.com/search?q=españa#top">Search España at top</a>
+</body>
+</html>

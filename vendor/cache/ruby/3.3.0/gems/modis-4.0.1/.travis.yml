@@ -1,0 +1,42 @@
+language: ruby
+
+dist: bionic
+
+cache: bundler
+
+services:
+  - redis-server
+
+rvm:
+  - 2.3
+  - 2.4
+  - 2.5
+  - 2.6
+  - 2.7
+  - 3.0
+  - jruby-9.2.17.0
+
+gemfile:
+  - gemfiles/rails_5.2.gemfile
+  - gemfiles/rails_6.0.gemfile
+  - gemfiles/rails_6.1.gemfile
+
+matrix:
+  fast_finish: true
+  exclude:
+    # Rails 6 requires Ruby 2.5 or higher
+    - gemfile: gemfiles/rails_6.0.gemfile
+      rvm: 2.3
+    - gemfile: gemfiles/rails_6.1.gemfile
+      rvm: 2.3
+    - gemfile: gemfiles/rails_6.0.gemfile
+      rvm: 2.4
+    - gemfile: gemfiles/rails_6.1.gemfile
+      rvm: 2.4
+    # Rails 5.2 isn't compatible with Ruby 3.0 or higher
+    - gemfile: gemfiles/rails_5.2.gemfile
+      rvm: 3.0
+
+env:
+  global:
+    secure: LrTz0Pq2ibNZuKDhdzcrvEUSNxUpPopEq9aJeCxy3UpV0v4vpHBtWV0S6zofvf98g/RkZ6cGI1u+0H578dHgE6pWTo+iR8LAwqPKofrFIWRkeo+M77Vs5swahb3mQyPOcig1hfVWDm25MsojePYm70eBIcBU55NWImtdePXfiU0=

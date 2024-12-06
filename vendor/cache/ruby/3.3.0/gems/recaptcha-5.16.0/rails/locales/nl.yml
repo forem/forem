@@ -1,0 +1,5 @@
+nl:
+  recaptcha:
+    errors:
+      verification_failed: reCAPTCHA-verificatie mislukt, probeer het opnieuw.
+      recaptcha_unreachable: Oeps, we hebben uw reCAPTCHA-antwoord niet kunnen valideren. Probeer het opnieuw.

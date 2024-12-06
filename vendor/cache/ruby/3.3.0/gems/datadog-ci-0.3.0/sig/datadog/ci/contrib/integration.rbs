@@ -1,0 +1,44 @@
+module Datadog
+  module CI
+    module Contrib
+      module Integration
+        self.@registry: Hash[Symbol, untyped]
+
+        def self.included: (Module base) -> void
+
+        def self.register: (untyped integration, Symbol name) -> void
+
+        def self.registry: () -> Hash[Symbol, Struct[untyped]]
+
+        module ClassMethods
+          def register_as: (Symbol name) -> void
+
+          def version: () -> Gem::Version?
+
+          def available?: () -> bool
+
+          def loaded?: () -> bool
+
+          def compatible?: () -> bool
+
+          def patchable?: () -> bool
+        end
+
+        module InstanceMethods
+          extend ClassMethods
+          @configuration: Datadog::CI::Contrib::Settings?
+
+          def configuration: () -> Datadog::CI::Contrib::Settings
+
+          def configure: (?::Hash[Symbol, untyped] options) ?{ (Datadog::CI::Contrib::Settings) -> Datadog::CI::Contrib::Settings } -> Datadog::CI::Contrib::Settings
+
+          def reset_configuration!: () -> void
+
+          def patcher: () -> Datadog::Tracing::Contrib::Patcher?
+
+          def new_configuration: () -> Datadog::CI::Contrib::Settings
+        end
+      end
+    end
+  end
+end

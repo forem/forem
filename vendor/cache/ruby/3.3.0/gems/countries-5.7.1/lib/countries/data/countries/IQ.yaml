@@ -1,0 +1,52 @@
+---
+IQ:
+  alpha2: IQ
+  alpha3: IRQ
+  continent: Asia
+  country_code: '964'
+  currency_code: IQD
+  distance_unit: KM
+  gec: IZ
+  geo:
+    latitude: 33.223191
+    longitude: 43.679291
+    max_latitude: 37.380645
+    max_longitude: 48.6350999
+    min_latitude: 29.0612079
+    min_longitude: 38.7936741
+    bounds:
+      northeast:
+        lat: 37.380645
+        lng: 48.6350999
+      southwest:
+        lat: 29.0612079
+        lng: 38.7936741
+  international_prefix: '00'
+  ioc: IRQ
+  iso_long_name: The Republic of Iraq
+  iso_short_name: Iraq
+  languages_official:
+  - ar
+  languages_spoken:
+  - ar
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  - 10
+  national_prefix: None
+  nationality: Iraqi
+  number: '368'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: sunday
+  subregion: Western Asia
+  un_locode: IQ
+  unofficial_names:
+  - Iraq
+  - العراق
+  - Irak
+  - イラク
+  world_region: EMEA

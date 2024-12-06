@@ -1,0 +1,21 @@
+language: ruby
+bundler_args: --without yard guard benchmarks
+script: "bundle exec rake ci"
+cache: bundler
+sudo: false
+rvm:
+  - 2.0
+  - 2.1
+  - 2.2
+  - ruby-head
+  - rbx-2
+matrix:
+  include:
+    - rvm: jruby
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug --2.0"  # for simplecov
+    - rvm: jruby-head
+      env: JRUBY_OPTS="$JRUBY_OPTS --debug --2.0"  # for simplecov
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
+  fast_finish: true

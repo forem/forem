@@ -1,0 +1,36 @@
+class SimpleDelegator
+end
+
+module Datadog
+  module CI
+    module Transport
+      class HTTP
+        @adapter: Datadog::Core::Transport::HTTP::Adapters::Net
+
+        attr_reader host: String
+        attr_reader port: Integer?
+        attr_reader ssl: bool
+        attr_reader timeout: Integer
+        attr_reader compress: bool
+
+        DEFAULT_TIMEOUT: 30
+
+        def initialize: (host: String, ?port: Integer?, ?ssl: bool, ?timeout: Integer, ?compress: bool) -> void
+
+        def request: (?verb: String, payload: String, headers: Hash[String, String], path: String) -> ResponseDecorator
+
+        private
+
+        def adapter: () -> Datadog::Core::Transport::HTTP::Adapters::Net
+
+        def build_env: (payload: String, headers: Hash[String, String], path: String, verb: String) -> Datadog::Core::Transport::HTTP::Env
+
+        class ResponseDecorator < ::SimpleDelegator
+          def initialize: (untyped anything) -> void
+          def trace_count: () -> Integer
+        end
+      end
+    end
+  end
+end
+

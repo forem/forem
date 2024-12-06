@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:media="http://search.yahoo.com/mrss/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:podcast="https://podcastindex.org/namespace/1.0" version="2.0">
+  <channel>
+    <title>Welcome to Night Vale</title>
+    <link>http://welcometonightvale.com</link>
+    <pubDate>Fri, 22 Sep 2023 16:30:15 -0000</pubDate>
+    <lastBuildDate>Fri, 29 Sep 2023 15:05:26 -0000</lastBuildDate>
+    <ttl>60</ttl>
+    <language>en</language>
+    <copyright>2016, Night Vale Presents</copyright>
+    <webMaster>help@prx.org (PRX)</webMaster>
+    <description>
+      <![CDATA[<p>Twice-monthly community updates for the small desert town of Night Vale...</p>]]>
+    </description>
+    <managingEditor>info@welcometonightvale.com (info@welcometonightvale.com)</managingEditor>
+    <generator>PRX Feeder v1.0.0</generator>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <image>
+      <url>https://f.prxu.org/126/images/bc7d203a-c0dd-46ec-956b-03bad13ba85e/nightvalelogo-web4.jpg</url>
+      <title>Welcome to Night Vale</title>
+      <link>http://welcometonightvale.com</link>
+      <width>1400</width>
+      <height>1400</height>
+      <description>Twice-monthly community updates for the small desert town of Night Vale, where every conspiracy theory is true.</description>
+    </image>
+    <atom:link href="https://feeds.feedburner.com/welcometonightvalepodcast" rel="self" type="application/rss+xml"/>
+    <itunes:author>Night Vale Presents</itunes:author>
+    <itunes:type>episodic</itunes:type>
+    <itunes:category text="Fiction">
+      <itunes:category text="Science Fiction"/>
+    </itunes:category>
+    <itunes:image href="https://f.prxu.org/126/images/1f749c5d-c83a-4db9-8112-a3245da49c54/nightvalelogo-web4.jpg"/>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:owner>
+      <itunes:email>info@welcometonightvale.com</itunes:email>
+      <itunes:name>Welcome to Night Vale</itunes:name>
+    </itunes:owner>
+    <itunes:subtitle>Twice-monthly community updates for the small desert town of Night Vale, where every conspiracy theory is true.</itunes:subtitle>
+    <itunes:summary>
+      <![CDATA[Twice-monthly community updates for the small desert town of Night Vale...]]>
+    </itunes:summary>
+    <itunes:keywords>cecil,commonplace,cranor,fink,lovecraft,neofuturists,night,nightvale,nightvaleradio,radio,vale,welcome</itunes:keywords>
+    <media:copyright>2016, Night Vale Presents</media:copyright>
+    <media:thumbnail url="https://f.prxu.org/126/images/bc7d203a-c0dd-46ec-956b-03bad13ba85e/nightvalelogo-web4.jpg"/>
+    <media:keywords>cecil,commonplace,cranor,fink,lovecraft,neofuturists,night,nightvale,nightvaleradio,radio,vale,welcome</media:keywords>
+    <media:category scheme="http://www.itunes.com/dtds/podcast-1.0.dtd">Fiction</media:category>
+    <item>
+      <guid isPermaLink="false">prx_126_e3dafc45-a202-42d0-a55b-216e733a2d7a</guid>
+      <title>Patreon Preview: Behind the Scenes (September 2023)</title>
+      <pubDate>Fri, 22 Sep 2023 16:30:15 -0000</pubDate>
+      <link>https://play.prx.org/listen?ge=prx_126_e3dafc45-a202-42d0-a55b-216e733a2d7a&amp;uf=https%3A%2F%2Ffeeds.feedburner.com%2Fwelcometonightvalepodcast</link>
+      <description>
+        <![CDATA[<p>An excerpt from our most recent patreon Behind the Scenes episode...</p>]]>
+      </description>
+      <enclosure url="https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/_/126/e3dafc45-a202-42d0-a55b-216e733a2d7a/2023_09_17_BTS_Episode_EXCERPT_v2.mp3" type="audio/mpeg" length="7133938"/>
+      <itunes:subtitle>An excerpt from our most recent patreon Behind the Scenes episode</itunes:subtitle>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>04:57</itunes:duration>
+      <category>
+        <![CDATA[adfree]]>
+      </category>
+      <itunes:author>Night Vale Presents</itunes:author>
+      <itunes:summary>
+        <![CDATA[An excerpt from our most recent patreon Behind the Scenes episode...]]>
+      </itunes:summary>
+      <itunes:image href="https://f.prxu.org/126/e3dafc45-a202-42d0-a55b-216e733a2d7a/images/6e990c53-0f6d-4806-8716-18cba0fedc8a/nightvalelogo_web4.jpg"/>
+      <media:content fileSize="7133938" type="audio/mpeg" url="https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/_/126/e3dafc45-a202-42d0-a55b-216e733a2d7a/2023_09_17_BTS_Episode_EXCERPT_v2.mp3"/>
+      <content:encoded>
+        <![CDATA[<p>An excerpt from our most recent patreon Behind the Scenes episode...]]>
+      </content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">prx_126_e650b67a-a572-4302-81f4-6223331fa429</guid>
+      <title>234 - The Boy</title>
+      <pubDate>Fri, 15 Sep 2023 04:00:00 -0000</pubDate>
+      <link>https://play.prx.org/listen?ge=prx_126_e650b67a-a572-4302-81f4-6223331fa429&amp;uf=https%3A%2F%2Ffeeds.feedburner.com%2Fwelcometonightvalepodcast</link>
+      <description>
+        <![CDATA[<p>This morning we found a boy. He has no name, and no one knows who he is...</p>]]>
+      </description>
+      <enclosure url="https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/_/126/e650b67a-a572-4302-81f4-6223331fa429/nv234_intro.mp3" type="audio/mpeg" length="33024824"/>
+      <itunes:subtitle>This morning we found a boy. He has no name, and no one knows who he is.</itunes:subtitle>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>22:55</itunes:duration>
+      <itunes:author>Night Vale Presents</itunes:author>
+      <itunes:summary>
+        <![CDATA[This morning we found a boy. He has no name, and no one knows who he is...]]>
+      </itunes:summary>
+      <itunes:image href="https://f.prxu.org/126/e650b67a-a572-4302-81f4-6223331fa429/images/9b91ed0e-9e8c-4e4c-93f1-d4fbe8014ad0/episodes60.jpg"/>
+      <media:content fileSize="33024824" type="audio/mpeg" url="https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/_/126/e650b67a-a572-4302-81f4-6223331fa429/nv234_intro.mp3"/>
+      <content:encoded>
+        <![CDATA[<p>This morning we found a boy. He has no name, and no one knows who he is.</p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <guid isPermaLink="false">prx_126_ee85d62d-87cb-4abc-8f08-b66ccdd2c103</guid>
+      <title>233 - Citizen Spotlight: The Vampire of Lombardi Street</title>
+      <pubDate>Fri, 01 Sep 2023 04:00:00 -0000</pubDate>
+      <link>https://play.prx.org/listen?ge=prx_126_ee85d62d-87cb-4abc-8f08-b66ccdd2c103&amp;uf=https%3A%2F%2Ffeeds.feedburner.com%2Fwelcometonightvalepodcast</link>
+      <description>
+        <![CDATA[<p>Luca Albescu lives at 831 Lombardi Street, in a dilapidated Victorian mansion at the top of the hill.</p>]]>
+      </description>
+      <enclosure url="https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/_/126/ee85d62d-87cb-4abc-8f08-b66ccdd2c103/nv233_intro.mp3" type="audio/mpeg" length="41761016"/>
+      <itunes:subtitle>Luca Albescu lives at 831 Lombardi Street, in a dilapidated Victorian mansion at the top of the hill.</itunes:subtitle>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>28:59</itunes:duration>
+      <itunes:author>Night Vale Presents</itunes:author>
+      <itunes:summary>
+        <![CDATA[Luca Albescu lives at 831 Lombardi Street, in a dilapidated Victorian mansion at the top of the hill.]]>
+      </itunes:summary>
+      <itunes:image href="https://f.prxu.org/126/ee85d62d-87cb-4abc-8f08-b66ccdd2c103/images/ad5453f1-3ccc-4384-be03-9a4a7558370b/episodes58.jpg"/>
+      <media:content fileSize="41761016" type="audio/mpeg" url="https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/_/126/ee85d62d-87cb-4abc-8f08-b66ccdd2c103/nv233_intro.mp3"/>
+      <content:encoded>
+        <![CDATA[<p>Luca Albescu lives at 831 Lombardi Street, in a dilapidated Victorian mansion at the top of the hill.</p>]]>
+      </content:encoded>
+    </item>
+  </channel>
+</rss>

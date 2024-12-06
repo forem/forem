@@ -1,0 +1,66 @@
+---
+UA:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}} {{region_short}}
+    {{postalcode}}
+    {{country}}
+  alpha2: UA
+  alpha3: UKR
+  continent: Europe
+  country_code: '380'
+  currency_code: UAH
+  distance_unit: KM
+  gec: UP
+  geo:
+    latitude: 48.379433
+    longitude: 31.1655799
+    max_latitude: 52.3793713
+    max_longitude: 40.2204802
+    min_latitude: 44.2924
+    min_longitude: 22.137159
+    bounds:
+      northeast:
+        lat: 52.3793713
+        lng: 40.2204802
+      southwest:
+        lat: 44.2924
+        lng: 22.137159
+  international_prefix: '810'
+  ioc: UKR
+  iso_long_name: Ukraine
+  iso_short_name: Ukraine
+  languages_official:
+  - uk
+  languages_spoken:
+  - uk
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '8'
+  nationality: Ukrainian
+  number: '804'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Europe
+  start_of_week: monday
+  subregion: Eastern Europe
+  un_locode: UA
+  unofficial_names:
+  - Ukraine
+  - Ucrania
+  - ウクライナ
+  - Oekraïne
+  - Украина
+  - Україна
+  - Украіна
+  vat_rates:
+    standard: 20
+    reduced:
+    - 7
+    super_reduced:
+    parking:
+  world_region: EMEA

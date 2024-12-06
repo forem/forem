@@ -1,0 +1,51 @@
+---
+LI:
+  alpha2: LI
+  alpha3: LIE
+  continent: Europe
+  country_code: '423'
+  currency_code: CHF
+  distance_unit: KM
+  eea_member: true
+  esm_member: true
+  euvat_member: false
+  gec: LS
+  geo:
+    latitude: 47.166
+    longitude: 9.555373
+    max_latitude: 47.2705467
+    max_longitude: 9.6356501
+    min_latitude: 47.04828999999999
+    min_longitude: 9.47162
+    bounds:
+      northeast:
+        lat: 47.2705467
+        lng: 9.6356501
+      southwest:
+        lat: 47.04828999999999
+        lng: 9.47162
+  international_prefix: '00'
+  ioc: LIE
+  iso_long_name: The Principality of Liechtenstein
+  iso_short_name: Liechtenstein
+  languages_official:
+  - de
+  languages_spoken:
+  - de
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Liechtensteiner
+  number: '438'
+  postal_code: true
+  postal_code_format: 948[5-9]|949[0-8]
+  region: Europe
+  start_of_week: monday
+  subregion: Western Europe
+  un_locode: LI
+  unofficial_names:
+  - Liechtenstein
+  - リヒテンシュタイン
+  world_region: EMEA

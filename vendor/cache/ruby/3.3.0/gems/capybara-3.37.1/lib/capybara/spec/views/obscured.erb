@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>Obscured</title>
+    <style>
+      div {
+        width: 200px;
+        height: 200px;
+      }
+      #cover, #offscreen, #offscreen_wrapper {
+        position: absolute;
+      }
+      #obscured {
+        z-index: 1;
+        background-color: red;
+      }
+      #cover {
+        top: 0px;
+        z-index: 2;
+        background-color: blue;
+      }
+      #offscreen {
+        top: 2000px;
+        left: 2000px;
+        background-color: green;
+      }
+      #offscreen_wrapper {
+        top: 2000px;
+        left: 2000px;
+        overflow-x: scroll;
+        background-color: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="obscured">
+      <input id="obscured_input"/>
+    </div>
+    <div id="cover"></div>
+    <iframe id="frameOne" height="10px" src="/frame_one"></iframe>
+    <iframe id="nestedFrames" src="/frame_parent"></iframe>
+    <div id="offscreen_wrapper">
+      <div id="offscreen"></div>
+    </div>
+  </body>
+</html>

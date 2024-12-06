@@ -1,0 +1,1243 @@
+---
+AR:
+  name: Artigas
+  code: AR
+  unofficial_names: Artigas
+  geo:
+    latitude: -30.4880891
+    longitude: -57.10131879999999
+    min_latitude: -31.054585
+    min_longitude: -57.88818699999999
+    max_latitude: -30.082224
+    max_longitude: -55.9870069
+  translations:
+    en: Artigas
+    ar: إدارة أرتيغاس
+    bg: Артигас
+    bn: আর্টিগাস বিভাগ
+    ca: Departament d’Artigas
+    da: Artigas
+    de: Departamento Artigas
+    el: Αρτίγκας
+    es: Departamento de Artigas
+    eu: Artigas departamendua
+    fi: Artigas
+    fr: Artigas
+    gl: Departamento de Artigas
+    gu: આર્ટિગાસ વિભાગ
+    he: ארטיגס
+    hi: आर्टिगास विभाग
+    hr: Artigas
+    hu: Artigas megye
+    id: Departemen Artigas
+    it: dipartimento di Artigas
+    ja: アルティガス県
+    ka: არტიგასის დეპარტამენტი
+    kn: ಆರ್ಟಿಗಸ್ ಇಲಾಖೆ
+    ko: 아르티가스 주
+    lt: Artigaso departamentas
+    mr: आर्तीगॅस विभाग
+    ms: Artigas Department
+    nb: Artigas
+    nl: Artigas
+    pl: Artigas
+    pt: Artigas
+    ru: Артигас
+    si: අර්ටිගාස් දෙපාර්තමේන්තුව
+    sv: Artigas
+    ta: ஆர்ட்டிகஸ் துறை
+    te: ఆర్టిగాస్ డిపార్ట్మెంట్
+    th: กรมอาร์ติกัส
+    tr: Artigas Departmanı
+    uk: Артиґас
+    ur: آرتیگاس محکمہ
+    vi: Artigas
+    zh: 阿蒂加斯省
+    lv: Artigasas departaments
+    ceb: Departamento de Artigas
+    fa: بخش آرتیگاس
+    ccp: "\U00011103\U00011122\U00011134\U00011111\U00011128\U00011109\U0001110C\U00011134"
+    sk: Artigas
+    mk: Артигас
+    'no': Artigas
+    be: дэпартамент Артыгас
+    ro: Departamentul Artigas
+  comments:
+  type: department
+CA:
+  name: Canelones
+  code: CA
+  unofficial_names: Canelones
+  geo:
+    latitude: -34.721
+    longitude: -55.959
+    min_latitude: -34.52278
+    min_longitude: -56.27778
+    max_latitude: -34.5166646
+    max_longitude: -56.2833322
+  translations:
+    en: Canelones
+    ar: إدارة كانيلونيس
+    bg: Канелонес (департамент)
+    bn: কানেলোন্স বিভাগ
+    ca: Departament de Canelones
+    da: Canelones (departement)
+    de: Departamento Canelones
+    el: Κανελόνες
+    es: Departamento de Canelones
+    eu: Canelones departamendua
+    fi: Canelones (departementti)
+    fr: Canelones
+    gl: Departamento de Canelones
+    gu: કેનેલોનેસ વિભાગ
+    hi: कैनेलोंस विभाग
+    hr: Canelones
+    hu: Canelones megye
+    id: Departemen Canelones
+    it: dipartimento di Canelones
+    ja: カネロネス県
+    ka: კანელონესის დეპარტამენტი
+    kn: ಕ್ಯಾನೆಲೋನ್ಸ್ ಇಲಾಖೆ
+    ko: 카넬로네스 주
+    lt: Kaneloneso departamentas
+    mr: केनेल विभाग
+    ms: Canelones Department
+    nb: Canelones
+    nl: Canelones (departement)
+    pl: Canelones (departament)
+    pt: Canelones
+    ru: Канелонес
+    si: කේන්ලෝන්ස් දෙපාර්තම්න්තුව
+    sv: Canelones (departement)
+    ta: கானெல்லோன்ஸ் துறை
+    te: కేన్లోన్స్ డిపార్ట్మెంట్
+    th: คาเนโลน ดิพาร์ทเมนต์
+    tr: Canelones Departmanı
+    uk: Канелонес (департамент)
+    ur: کانیلونس محکمہ
+    vi: Khu vực hành chính Canelones
+    lv: Kanelonesas departaments
+    ceb: Departamento de Canelones
+    zh: 卡内洛内斯省
+    fa: بخش کنلونس
+    ccp: "\U00011107\U00011133\U00011120\U0001111A\U0001112C\U00011123\U0001112E\U0001111A\U00011128\U0001110C\U00011134"
+    sk: Canelones
+    be: дэпартамент Канелонес
+    mk: Канелонес (департман)
+    'no': Canelones
+    ro: Departamentul Canelones
+  comments:
+  type: department
+CL:
+  name: Cerro Lago
+  code: CL
+  unofficial_names: Cerro Lago
+  geo:
+    latitude: -32.3769
+    longitude: -54.1654
+    min_latitude: -32.36667
+    min_longitude: -53.517
+    max_latitude: -32.483
+    max_longitude: -54.18333
+  translations:
+    en: Cerro Largo
+    ar: سيرو لاغو
+    bg: Серо Ларго
+    bn: কেরু লারগু বিভাগ
+    ca: Departament de Cerro Largo
+    da: Cerro Largo
+    de: Departamento Cerro Largo
+    el: Κέρο Λάργκο
+    es: Departamento de Cerro Largo
+    eu: Cerro Largo departamendua
+    fi: Cerro Largo
+    fr: Cerro Largo
+    gl: Departamento de Cerro Largo
+    gu: સેરો લાર્ગો વિભાગ
+    hi: सेरो लार्गो विभाग
+    hr: Cerro Largo
+    hu: Cerro Largo megye
+    id: Departemen Cerro Largo
+    it: dipartimento di Cerro Largo
+    ja: セロ・ラルゴ県
+    ka: სერო-ლარგოს დეპარტამენტი
+    kn: ಸೆರೊ ಲಾರ್ಗೊ ಇಲಾಖೆ
+    ko: 세로라르고 주
+    lt: Sero Largo departamentas
+    mr: सेरो लार्गो विभाग
+    ms: Cerro Largo Department
+    nb: Cerro Largo
+    nl: Cerro Largo
+    pl: Cerro Largo
+    pt: Cerro Largo
+    ro: Cerro Largo
+    ru: Серро-Ларго
+    si: සෙරෝ ලාර්ගෝ දෙපාර්තමේන්තුව
+    sv: Cerro Largo
+    ta: செர்ரோ லார்கோ துறை
+    te: సెర్రో లార్గో డిపార్ట్మెంట్
+    th: เซอโร ลาร์โก ดีพามเม้น
+    tr: Cerro Largo
+    uk: Серро-Ларґо
+    ur: سیرو لارگو محکمہ
+    vi: Cerro Largo
+    lv: Serrolago departaments
+    ceb: Departamento de Cerro Largo
+    zh: 塞罗拉尔戈省
+    fa: بخش سرو لارگو
+    ccp: "\U00011107\U0001112C\U00011122\U0001112E \U00011123\U00011122\U00011134\U00011109\U0001112E"
+    sk: Cerro Largo
+    mk: Серо Ларго
+    'no': Cerro Largo
+  comments:
+  type: department
+CO:
+  name: Colonia
+  code: CO
+  unofficial_names: Colonia
+  geo:
+    latitude: -34.4607
+    longitude: -57.8339
+    min_latitude: -35.5012
+    min_longitude: -56.7844
+    max_latitude: -34.4517
+    max_longitude: -57.7667
+  translations:
+    en: Colonia
+    ar: إدارة كولونيا
+    be: дэпартамент Калонія
+    bg: Колония (департамент)
+    bn: কুলুনিয়া বিভাগ
+    ca: Departament de Colonia
+    da: Colonia (departement)
+    de: Departamento Colonia
+    el: Κολόνια
+    es: Departamento de Colonia
+    eu: Colonia departamendua
+    fi: Colonia (departementti)
+    fr: Colonia
+    gl: Departamento de Colonia
+    gu: કોલોનિયા વિભાગ
+    hi: कोलोनिया विभाग
+    hr: Colonia
+    hu: Colonia megye
+    id: Departemen Colonia
+    it: dipartimento di Colonia
+    ja: コロニア県
+    ka: კოლონიის დეპარტამენტი
+    kn: ಕಲೋನಿಯಾ ಇಲಾಖೆ
+    ko: 콜로니아 주
+    lt: Kolonijos departamentas
+    mr: कॉलोनिया विभाग
+    ms: Colonia Department
+    nb: Colonia (departement)
+    nl: Colonia (departement)
+    pl: Colonia (departament)
+    pt: Colonia
+    ru: Колония
+    si: කොලොනියා දෙපාර්තමේන්තුව
+    sv: Colonia (departement)
+    ta: கோலோனியா துறை
+    te: కొలోనియా డిపార్ట్మెంట్
+    th: โคโลเนีย
+    tr: Colonia Department
+    uk: Колонія
+    ur: کولونیا محکمہ
+    vi: Colonia (tỉnh)
+    lv: Kolonijas departaments
+    ceb: Departamento de Colonia
+    zh: 科洛尼亚省
+    fa: بخش کولونیا
+    ccp: "\U00011107\U00011133\U00011120\U00011123\U0001112E\U0001111A\U00011128\U00011120"
+    sk: Colonia
+    mk: Колонија (департман)
+    'no': Colonia (departement)
+    he: קולוניה (מחוז)
+    ro: Departmentul Colonia
+  comments:
+  type: department
+DU:
+  name: Durazno
+  code: DU
+  unofficial_names: Durazno
+  geo:
+    latitude: -33.3822982
+    longitude: -56.5275506
+    min_latitude: -33.413685
+    min_longitude: -56.6182749
+    max_latitude: -33.3566481
+    max_longitude: -56.4953762
+  translations:
+    en: Durazno
+    ar: إدارة دورازنو
+    bg: Дурасно
+    bn: দোরাজনো বিভাগ
+    ca: Departament de Durazno
+    da: Durazno
+    de: Departamento Durazno
+    el: Γεωγραφικό Διαμέρισμα Ντουράζνο
+    es: Departamento de Durazno
+    eu: Durazno departamendua
+    fi: Durazno
+    fr: Durazno
+    gl: Departamento de Durazno
+    gu: ડરાઝેનો વિભાગ
+    he: דורסנו
+    hi: ड्युराज़्नो विभाग
+    hr: Durazno
+    hu: Durazno megye
+    id: Departemen Durazno
+    it: dipartimento di Durazno
+    ja: ドゥラスノ県
+    ka: დურანსოს დეპარტამენტი
+    kn: ಡುರಾಜ್ನ ಇಲಾಖೆ
+    ko: 두라스노 주
+    lt: Durasno departamentas
+    mr: दुरानो विभाग
+    ms: Jabatan Durazno
+    nb: Durazno
+    nl: Durazno
+    pl: Durazno
+    pt: Durazno (departamento)
+    ru: Дурасно
+    si: ඩුරන්සෝ දෙපාර්තමේන්තුව
+    sv: Durazno
+    ta: டூரேநொ துறை
+    te: డూరాజ్నో డిపార్ట్మెంట్
+    th: เมืองดูราซโน
+    tr: Durazno Departmanı
+    uk: Дурасно
+    ur: دوراسنو محکمہ
+    vi: Durazno
+    lv: Durasno departaments
+    ceb: Departamento de Durazno
+    zh: 杜拉斯诺省
+    fa: بخش دورازنو
+    ccp: "\U00011113\U0001112A\U00011122\U0001110C\U00011134\U0001111A\U0001112E"
+    sk: Durazno
+    mk: Дурасно
+    'no': Durazno
+    ro: Departamentul Durazno
+  comments:
+  type: department
+FD:
+  name: Florida
+  code: FD
+  unofficial_names:
+  - FLorida
+  geo:
+    latitude: -34.1
+    longitude: -56.21666699999999
+    min_latitude: -34.11482950000001
+    min_longitude: -56.2453946
+    max_latitude: -34.0753834
+    max_longitude: -56.2004211
+  translations:
+    en: Florida
+    ar: إدارة فلوريدا
+    bg: Флорида
+    bn: ফ্লোরিডা বিভাগ
+    ca: Departament de Florida
+    da: Florida
+    de: Departamento Florida
+    el: Φλόριντα
+    es: Departamento de Florida
+    eu: Florida departamendua
+    fi: Florida
+    fr: Florida
+    gl: Departamento de Florida
+    gu: ફ્લોરિડા વિભાગ
+    hi: फ्लोरिडा विभाग
+    hr: Florida
+    hu: Florida megye
+    id: Departemen Florida
+    it: dipartimento di Florida
+    ja: フロリダ県
+    ka: ფლორიდის დეპარტამენტი
+    kn: ಫ್ಲೋರಿಡಾ ಇಲಾಖೆ
+    ko: 플로리다 주
+    lt: Floridos departamentas
+    mr: फ्लोरिडा विभाग
+    ms: Florida Department
+    nb: Florida
+    nl: Florida
+    pl: Florida
+    pt: Florida
+    ru: Флорида
+    si: ෆ්ලොරිඩා දෙපාර්තමේන්තුව
+    sv: Florida
+    ta: பிளோரிடா துறை
+    te: ఫ్లోరిడా డిపార్ట్మెంట్
+    th: ฟรอริด้า ดีพาทเม้น
+    tr: Florida Departmanı
+    uk: Флорида
+    ur: فلوریدا محکمہ
+    vi: Florida
+    lv: Floridas departaments
+    ceb: Departamento de Florida
+    zh: 佛罗里达省
+    fa: بخش فلوریدا
+    ccp: "\U0001111C\U00011133\U00011123\U0001112E\U00011122\U00011128\U00011113"
+    sk: Florida
+    mk: Флорида
+    'no': Florida
+    ro: Departamentul Florida
+  comments:
+  type: department
+FS:
+  name: Flores
+  code: FS
+  unofficial_names: Flores
+  geo:
+    latitude: -33.5629477
+    longitude: -56.83111169999999
+    min_latitude: -33.963974
+    min_longitude: -57.359303
+    max_latitude: -33.12822
+    max_longitude: -56.3974
+  translations:
+    en: Flores
+    ar: إدارة فلوريس
+    bg: Флорес
+    bn: ফ্লুরেস বিভাগ
+    ca: Departament de Flores
+    da: Flores
+    de: Departamento Flores
+    el: Φλόρες
+    es: Departamento de Flores
+    eu: Flores departamendua
+    fi: Flores
+    fr: Flores
+    gl: Departamento de Flores
+    gu: ફ્લોરેસ વિભાગ
+    hi: फ्लोरेस डिपार्टमेंट
+    hr: Flores
+    hu: Flores megye
+    id: Departemen Flores
+    it: dipartimento di Flores
+    ja: フロレス県
+    ka: ფლორესის დეპარტამენტი
+    kn: ಫ್ಲೋರ್ಸ್ ಇಲಾಖೆ
+    ko: 플로레스 주
+    lt: Floreso departamentas
+    mr: फ्लॉरेस विभाग
+    ms: Flores Department
+    nb: Flores
+    nl: Flores
+    pl: Flores
+    pt: Flores
+    ru: Флорес
+    si: ෆ්ලොරෙස් දෙපාර්තමේන්තුව
+    sv: Flores
+    ta: பிலாஸ் துறை
+    te: ఫ్లోరెస్ డిపార్ట్మెంట్
+    th: โฟลเรส
+    tr: Flores Departmanı
+    uk: Флорес
+    ur: فلوریس محکمہ
+    vi: Flores
+    lv: Floresas departaments
+    ceb: Departamento de Flores
+    zh: 弗洛雷斯省
+    fa: بخش فلورس
+    ccp: "\U0001111C\U00011133\U00011123\U0001112E\U00011122\U0001112C\U0001110C\U00011134"
+    sk: Flores
+    mk: Флорес
+    'no': Flores
+    ro: Departamentul Flores
+  comments:
+  type: department
+LA:
+  name: Lavalleja
+  code: LA
+  unofficial_names: Lavalleja
+  geo:
+    latitude: -34.0040354
+    longitude: -54.9611836
+    min_latitude: -34.6143989
+    min_longitude: -55.6264269
+    max_latitude: -33.296482
+    max_longitude: -54.126133
+  translations:
+    en: Lavalleja
+    ar: إدارة لافاليخا
+    bg: Лавалеха
+    bn: লাভেলেজা বিভাগ
+    ca: Departament de Lavalleja
+    da: Lavalleja
+    de: Departamento Lavalleja
+    el: Λαβαλέτζα
+    es: Departamento de Lavalleja
+    eu: Lavalleja departamendua
+    fi: Lavalleja
+    fr: Lavalleja
+    gl: Departamento de Lavalleja
+    gu: લવલેજા વિભાગ
+    hi: लावालिया विभाग
+    hr: Lavalleja
+    hu: Lavalleja megye
+    id: Departemen Lavalleja
+    it: dipartimento di Lavalleja
+    ja: ラバジェハ県
+    ka: ლავალიეხას დეპარტამენტი
+    kn: ಲವೆಲ್ಲೆಜಾ ಇಲಾಖೆ
+    ko: 라바예하 주
+    lt: Lavaljechos departamentas
+    mr: लावाललेजा विभाग
+    ms: Lavalleja Department
+    nb: Lavalleja
+    nl: Lavalleja
+    pl: Lavalleja
+    pt: Lavalleja
+    ru: Лавальеха
+    si: ලවලේජා දෙපාර්තමේන්තුව
+    sv: Lavalleja
+    ta: லெவல்லேஜா துறை
+    te: లావెలేజా డిపార్ట్మెంట్
+    th: ลาเวลเลจา ดีพาทเม้น
+    tr: Lavalleja Departmanı
+    uk: Лавальєха
+    ur: لاواشیخا محکمہ
+    vi: Lavalleja
+    lv: Lavaljehas departaments
+    ceb: Departamento de Lavalleja
+    zh: 拉瓦耶哈省
+    fa: بخش لاوایخا
+    ccp: "\U00011123\U0001111E\U00011123\U00011133\U00011126\U00011128\U0001110E"
+    sk: Lavalleja
+    cs: Lavalleja
+    'no': Lavalleja
+    ro: Departamentul Lavalleja
+  comments:
+  type: department
+MA:
+  name: Maldonado
+  code: MA
+  unofficial_names: Maldonado
+  geo:
+    latitude: -34.6277617
+    longitude: -54.9611836
+    min_latitude: -34.9733882
+    min_longitude: -55.48498189999999
+    max_latitude: -33.91334880000001
+    max_longitude: -54.4719539
+  translations:
+    en: Maldonado
+    ar: إدارة مالدونادو
+    be: Дэпартамент Мальданада
+    bg: Малдонадо
+    bn: মালদোনাদো ডিপার্টমেন্ট
+    ca: Departament de Maldonado
+    da: Maldonado
+    de: Departamento Maldonado
+    el: Μαλντονάντο
+    es: Departamento de Maldonado
+    eu: Maldonado departamendua
+    fi: Maldonado
+    fr: Maldonado
+    gl: Departamento de Maldonado
+    gu: માલ્ડોનાડો વિભાગ
+    hi: माल्दोनाडो विभाग
+    hr: Maldonado
+    hu: Maldonado megye
+    id: Departemen Maldonado
+    it: dipartimento di Maldonado
+    ja: マルドナド県
+    ka: მალდონადოს დეპარტამენტი
+    kn: ಮ್ಯಾಲ್ಡೊನಾಡೊ ಇಲಾಖೆ
+    ko: 말도나도 주
+    lt: Maldonado departamentas
+    mr: मॉल्डोनाडो विभाग
+    ms: Maldonado Department
+    nb: Maldonado
+    nl: Maldonado
+    pl: Maldonado
+    pt: Maldonado (departamento)
+    ru: Мальдонадо
+    si: මල්ඩොනාඩෝ දෙපාර්තමේන්තුව
+    sv: Maldonado
+    ta: மால்டொநாடோ துறை
+    te: మాల్డోనాడో డిపార్ట్మెంట్
+    th: จังหวัดดู
+    tr: Maldonado Departmanı
+    uk: Мальдонадо
+    ur: مالدونادو محکمہ
+    vi: Maldonado
+    lv: Maldonado departaments
+    ceb: Departamento de Maldonado
+    zh: 马尔多纳多省
+    fa: بخش مالدونادو
+    ccp: "\U0001111F\U00011123\U00011134\U00011113\U0001112E\U0001111A\U00011113\U0001112E"
+    sk: Maldonado
+    'no': Maldonado
+    ro: Departamentul Maldonado
+  comments:
+  type: department
+MO:
+  name: Montevideo
+  code: MO
+  unofficial_names: Montevideo
+  geo:
+    latitude: -34.9011127
+    longitude: -56.16453139999999
+    min_latitude: -34.9379555
+    min_longitude: -56.4311685
+    max_latitude: -34.70193
+    max_longitude: -56.0292436
+  translations:
+    en: Montevideo
+    ar: إدارة مونتيفيديو
+    be: Мантэвідэа
+    bg: Монтевидео
+    bn: মন্টেভিডিও বিভাগ
+    ca: Departament de Montevideo
+    da: Montevideo
+    de: Departamento Montevideo
+    el: Μοντεβιδέο
+    es: Departamento de Montevideo
+    eu: Montevideo departamendua
+    fa: ایالت مونته‌ویدئو
+    fi: Montevideo
+    fr: Montevideo
+    gl: Departamento de Montevideo
+    gu: મોન્ટેવિડીયો વિભાગ
+    hi: मोंटेवीडियो विभाग
+    hr: Montevideo
+    hu: Montevideo megye
+    id: Departemen Montevideo
+    it: dipartimento di Montevideo
+    ja: モンテビデオ県
+    ka: მონტევიდეოს დეპარტამენტი
+    kn: ಮಾಂಟೆವಿಡಿಯೊ ಇಲಾಖೆ
+    ko: 몬테비데오 주
+    lt: Montevidėjo departamentas
+    mr: मॉंटविडीओ विभाग
+    ms: Montevideo Department
+    nb: Montevideo
+    nl: Montevideo
+    pl: Montevideo
+    pt: Montevidéu
+    ru: Монтевидео
+    si: මොන්ටෙවිඩියෝ දෙපාර්තමේන්තුව
+    sv: Montevideo
+    ta: மான்டேவீடியோ துறை
+    te: మాంటివీడియో డిపార్ట్మెంట్
+    th: มอนเตวิเดโอ
+    tr: Montevideo Departmanı
+    uk: Монтевідео
+    ur: مونتیبیدیو محکمہ
+    vi: Montevideo
+    lv: Montevideo departaments
+    cy: Montevideo
+    af: Montevideo
+    ceb: Departamento de Montevideo
+    sr_Latn: Montevideo
+    zh: 蒙得維的亞省
+    sw: Montevideo
+    yue_Hans: 蒙特维多
+    sq: Montevideo
+    ccp: "\U0001111F\U00011127\U0001111A\U00011134\U00011111\U00011128\U0001111E\U00011128\U00011113\U00011128\U00011103\U0001112E"
+    sr: Монтевидео
+    ga: Montevideo
+    hy: Մոնտեվիդեո
+    ky: Монтевидео
+    is: Montevídeó
+    sk: Montevideo
+    ro: Montevideo
+    ha: Montevideo
+    he: מונטווידאו
+    et: Montevideo
+    sl: Montevideo
+    pa: ਮੋਂਤੇਵੀਦਿਓ
+    kk: Монтевидео
+    ml: മൊണ്ടേവീഡിയോ
+    or: ମଣ୍ଟିଭିଡ଼ିଓ
+    cs: Montevideo
+    yue: 蒙特維多
+    az: Montevideo
+    am: ሞንቴቪዴዎ
+    my: မွန်တီဗစ်ဒီအိုမြို့
+    mn: Монтевидео
+    yo: Montevideo
+    uz: Montevideo
+    bs: Montevideo
+    mk: Монтевидео
+    tk: Montowideo
+    ha_NE: Montevideo
+    'no': Montevideo
+    yo_BJ: Montevideo
+    ps: مونټي ویډو
+  comments:
+  type: department
+PA:
+  name: Paysandú
+  code: PA
+  unofficial_names: Paysandú
+  geo:
+    latitude: -32.2216595
+    longitude: -57.4627259
+    min_latitude: -32.572212
+    min_longitude: -58.205719
+    max_latitude: -31.4293369
+    max_longitude: -56.2413251
+  translations:
+    en: Paysandú
+    ar: إدارة بايساندو
+    bg: Пайсанду
+    bn: পেসান্ডো বিভাগ
+    ca: Departament de Paysandú
+    da: Paysandú
+    de: Departamento Paysandú
+    el: Παϊσαντού
+    es: Departamento de Paysandú
+    eu: Paysandú departamendua
+    fi: Paysandú
+    fr: Paysandú
+    gl: Departamento de Paysandú
+    gu: પેસંડુ વિભાગ
+    hi: पयसंदु विभाग
+    hr: Paysandú
+    hu: Paysandú megye
+    id: Departemen Paysandú
+    it: dipartimento di Paysandú
+    ja: パイサンドゥ県
+    ka: პაისანდუს დეპარტამენტი
+    kn: ಪಾಸುಂಡು ಇಲಾಖೆ
+    ko: 파이산두 주
+    lt: Paisandu departamentas
+    mr: पेसांडू विभाग
+    ms: Paysandu Department
+    nb: Paysandú
+    nl: Paysandú
+    pl: Paysandú
+    pt: Paysandú
+    ru: Пайсанду
+    si: පෙසන්දු දෙපාර්තමේන්තුව
+    sv: Paysandú
+    ta: பெசண்டு துறை
+    te: పేసాండు డిపార్ట్మెంట్
+    th: เพย์ซานดุ ดิพาทเม้น
+    tr: Paysandu Departmanı
+    uk: Пайсанду
+    ur: پایساندو محکمہ
+    vi: Paysandú
+    lv: Paisandu departaments
+    ceb: Departamento de Paysandú
+    zh: 派桑杜省
+    fa: بخش پایساندو
+    ccp: "\U0001111B\U0001112C\U00011125\U0001111A\U00011134\U00011113\U0001112A"
+    sk: Paysandú
+    'no': Paysandú
+    be: дэпартамент Пайсанду
+    ro: Departamentul Paysandú
+  comments:
+  type: department
+RN:
+  name: Río Negro
+  code: RN
+  unofficial_names: Río Negro
+  geo:
+    latitude: -32.7625409
+    longitude: -57.10131879999999
+    min_latitude: -33.4182849
+    min_longitude: -58.4203151
+    max_latitude: -32.3229219
+    max_longitude: -56.547501
+  translations:
+    en: Río Negro
+    ar: إدارة ريو نيغرو
+    bg: Рио Негро
+    bn: রিও নেগ্রো বিভাগ
+    ca: Departament de Río Negro
+    da: Río Negro
+    de: Departamento Río Negro
+    el: Ρίο Νέγκρο
+    es: Departamento de Río Negro
+    eu: Río Negro departamendua
+    fi: Río Negro
+    fr: Río Negro
+    gl: Departamento de Río Negro
+    gu: રિયો નેગ્રો વિભાગ
+    hi: रिओ निग्रो विभाग
+    hr: Río Negro
+    hu: Río Negro megye
+    id: Departemen Río Negro
+    it: dipartimento di Río Negro
+    ja: リオ・ネグロ県
+    ka: რიო-ნეგროს დეპარტამენტი
+    kn: ರಿಯೊ ನೀಗ್ರೊ ಇಲಾಖೆ
+    ko: 리오네그로 주
+    lt: Rio Negro departamentas
+    mr: रिओ निग्रो विभाग
+    ms: Rio Negro Department
+    nb: Río Negro
+    nl: Río Negro
+    pl: Río Negro
+    pt: Río Negro
+    ru: Рио-Негро
+    si: රියෝ නෙග්රෝ දෙපාර්තමේන්තුව
+    sv: Río Negro
+    ta: ரியோ நீக்ரோ துறை
+    te: రియో నెగ్రో డిపార్ట్మెంట్
+    th: รีโอเนโกร
+    tr: Río Negro Departmanı
+    uk: Ріо-Неґро
+    ur: ریو نیگرو محکمہ
+    vi: Río Negro
+    lv: Rionegro departaments
+    ceb: Departamento de Río Negro
+    zh: 内格罗河省
+    fa: بخش ریو نگرو
+    ccp: "\U00011122\U0001112D\U00011103\U0001112E \U0001111A\U0001112C\U00011109\U00011133\U00011122\U0001112E"
+    sk: Río Negro
+    be: дэпартамент Рыа-Негра
+    'no': Río Negro
+    he: ריו נגרו
+    ro: Departamentul Río Negro
+  comments:
+  type: department
+RO:
+  name: Rocha
+  code: RO
+  unofficial_names: Rocha
+  geo:
+    latitude: -33.9674948
+    longitude: -53.9106594
+    min_latitude: -34.7936294
+    min_longitude: -54.564964
+    max_latitude: -33.1358951
+    max_longitude: -53.3785147
+  translations:
+    en: Rocha
+    ar: إدارة روتشا
+    bg: Роча
+    bn: রোচা ডিপার্টমেন্ট
+    ca: Departament de Rocha
+    da: Rocha
+    de: Departamento Rocha
+    el: Ρότσα
+    es: Departamento de Rocha
+    eu: Rocha departamendua
+    fi: Rocha
+    fr: Rocha
+    gl: Departamento de Rocha
+    gu: રોચા વિભાગ
+    hi: रोचा विभाग
+    hr: Rocha
+    hu: Rocha megye
+    id: Departemen Rocha
+    it: dipartimento di Rocha
+    ja: ロチャ県
+    ka: როჩის დეპარტამენტი
+    kn: ರೊಚಾ ಇಲಾಖೆ
+    ko: 로차 주
+    lt: Ročos departamentas
+    mr: रोचा विभाग
+    ms: Rocha Department
+    nb: Rocha
+    nl: Rocha
+    pl: Rocha
+    pt: Rocha
+    ru: Роча
+    si: රෝචා දෙපාර්තමේන්තුව
+    sv: Rocha
+    ta: ரோசா துறை
+    te: రోచా డిపార్ట్మెంట్
+    th: โรชา
+    tr: Rocha Departmanı
+    uk: Роча
+    ur: روچا محکمہ
+    vi: Rocha
+    lv: Ročas departaments
+    ceb: Departamento de Rocha
+    zh: 罗恰省
+    fa: بخش روچا
+    ccp: "\U00011122\U0001112E\U0001110C"
+    sk: Rocha
+    'no': Rocha
+    ro: Departamentul Rocha
+  comments:
+  type: department
+RV:
+  name: Rivera
+  code: RV
+  unofficial_names: Rivera
+  geo:
+    latitude: -30.9025
+    longitude: -55.550556
+    min_latitude: -30.9871014
+    min_longitude: -55.61652660000001
+    max_latitude: -30.8566634
+    max_longitude: -55.4523149
+  translations:
+    en: Rivera
+    ar: إدارة ريفيرا
+    bg: Ривера
+    bn: রিভার বিভাগ
+    ca: Departament de Rivera
+    da: Rivera
+    de: Departamento Rivera
+    el: Ριβέρα
+    es: Departamento de Rivera
+    eu: Rivera departamendua
+    fi: Rivera
+    fr: Rivera
+    gl: Departamento de Rivera
+    gu: રિવેરા વિભાગ
+    hi: रिवेरा विभाग
+    hr: Rivera
+    hu: Rivera megye
+    id: Departemen Rivera
+    it: dipartimento di Rivera
+    ja: リベラ県
+    ka: რივერის დეპარტამენტი
+    kn: ರಿವೆರಾ ಡಿಪಾರ್ಟ್ಮೆಂಟ್
+    ko: 리베라 주
+    lt: Riveros departamentas
+    mr: रिवेरा विभाग
+    ms: Rivera Department
+    nb: Rivera
+    nl: Rivera
+    pl: Rivera
+    pt: Rivera
+    ru: Ривера
+    si: රිවෙරා දෙපාර්තමේන්තුව
+    sv: Rivera
+    ta: ரிவேரா துறை
+    te: రివేరా డిపార్ట్మెంట్
+    th: ริเวียรา
+    tr: Rivera Departmanı
+    uk: Рівера
+    ur: ریویرا محکمہ
+    vi: Rivera
+    lv: Riveras departaments
+    ceb: Departamento de Rivera
+    zh: 里韦拉省
+    fa: بخش ریورا
+    ccp: "\U00011122\U00011128\U0001111E\U00011122"
+    sk: Rivera
+    'no': Rivera
+    he: ריברה
+    ro: Departamentul Rivera
+  comments:
+  type: department
+SA:
+  name: Salto
+  code: SA
+  unofficial_names: Salto
+  geo:
+    latitude: -31.4679335
+    longitude: -57.10131879999999
+    min_latitude: -31.8470001
+    min_longitude: -58.0779601
+    max_latitude: -30.716536
+    max_longitude: -55.99990589999999
+  translations:
+    en: Salto
+    ar: إدارة سالتو
+    bg: Салто
+    bn: সালতো বিভাগ
+    ca: Departament de Salto
+    da: Salto
+    de: Departamento Salto
+    el: Γεωγραφικό Διαμέρισμα Σάλτο
+    es: Departamento de Salto
+    eu: Salto departamendua
+    fi: Salto
+    fr: Salto
+    gl: Departamento de Salto
+    gu: સાલ્ટો વિભાગ
+    hi: साल्टो विभाग
+    hr: Salto
+    hu: Salto megye
+    id: Departemen Salto
+    it: dipartimento di Salto
+    ja: サルト県
+    ka: სალტოს დეპარტამენტი
+    kn: ಸಾಲ್ಟೋ ಇಲಾಖೆ
+    ko: 살토 주
+    lt: Salto departamentas
+    mr: साल्टो विभाग
+    ms: Jabatan Salto
+    nb: Salto
+    nl: Salto
+    pl: Salto
+    pt: Salto
+    ru: Сальто
+    si: සල්ටෝ දෙපාතමේන්තුව
+    sv: Salto
+    ta: சால்டோ துறை
+    te: సాల్టో డిపార్ట్మెంట్
+    th: กรมซอลโต
+    tr: Salto Departmanı
+    uk: Сальто
+    ur: سالتو محکمہ
+    vi: Salto
+    lv: Salto departaments
+    ceb: Departamento de Salto
+    zh: 萨尔托省
+    fa: بخش سالتو
+    ccp: "\U00011125\U00011123\U00011134\U00011111\U0001112E"
+    sk: Salto
+    be: дэпартамент Сальта
+    'no': Salto
+    az: Salto departamenti
+    he: סלטו
+    ro: Departamentul Salto
+  comments:
+  type: department
+SJ:
+  name: San José
+  code: SJ
+  unofficial_names: San José
+  geo:
+    latitude: -34.250223
+    longitude: -56.741207
+    min_latitude: -34.78946
+    min_longitude: -57.1731299
+    max_latitude: -33.816353
+    max_longitude: -56.34363399999999
+  translations:
+    en: San José
+    ar: إدارة سان خوسيه
+    bg: Сан Хосе
+    bn: সানা জুসে বিভাগ
+    ca: Departament de San José
+    da: San José
+    de: Departamento San José
+    el: Σαν Χοσέ
+    es: Departamento de San José
+    eu: San José departamendua
+    fi: San José
+    fr: San José
+    gl: Departamento de San José
+    gu: સેન જોસ વિભાગ
+    hi: सैन जोस विभाग
+    hr: San José
+    hu: San José megye
+    id: Departemen San José
+    it: dipartimento di San José
+    ja: サン・ホセ県
+    ka: სან-ხოსეს დეპარტამენტი
+    kn: ಸ್ಯಾನ್ ಜೋಸ್ ಇಲಾಖೆ
+    ko: 산호세 주
+    lt: San Chosės departamentas
+    mr: सॅन जोस विभाग
+    ms: San Jose Department
+    nb: San José
+    nl: San José
+    pl: San José
+    pt: San José
+    ru: Сан-Хосе
+    si: සැන් ජොසේ දෙපාර්තමේන්තුව
+    sv: San José
+    ta: சான் ஜோஸ் துறை
+    te: సాన్ జోస్ డిపార్ట్మెంట్
+    th: ซาน โจเซ่ ดีพาทเม้น
+    tr: San Jose Departmanı
+    uk: Сан-Хосе
+    ur: سان خوسے محکمہ
+    vi: San José
+    lv: Sanhosē departaments
+    ceb: Departamento de San José
+    zh: 圣何塞省
+    fa: بخش سن خوزه
+    ccp: "\U00011125\U0001111A\U00011134 \U0001110E\U0001112E\U00011125\U0001112C"
+    sk: San José
+    he: סן חוסה (מחוז באורוגוואי)
+    'no': San José
+    cy: San José
+    ro: Departamentul San José
+  comments:
+  type: department
+SO:
+  name: Soriano
+  code: SO
+  unofficial_names: Soriano
+  geo:
+    latitude: -33.5103372
+    longitude: -57.7346113
+    min_latitude: -33.9466588
+    min_longitude: -58.442722
+    max_latitude: -33.006599
+    max_longitude: -57.0863759
+  translations:
+    en: Soriano
+    ar: إدارة سوريانو
+    bg: Сориано
+    bn: সরিয়ানো বিভাগ
+    ca: Departament de Soriano
+    da: Soriano
+    de: Departamento Soriano
+    el: Σοριάνο
+    es: Departamento de Soriano
+    eu: Soriano departamendua
+    fi: Soriano
+    fr: Soriano
+    gl: Departamento de Soriano
+    gu: સોરિઆનો વિભાગ
+    hi: सोरियानो विभाग
+    hr: Soriano
+    hu: Soriano megye
+    id: Departemen Soriano
+    it: dipartimento di Soriano
+    ja: ソリアノ県
+    ka: სორიანოს დეპარტამენტი
+    kn: ಸೋರಿಯಾನೊ ಇಲಾಖೆ
+    ko: 소리아노 주
+    lt: Sorjano departamentas
+    mr: सोरीअनो विभाग
+    ms: Soriano Department
+    nb: Soriano
+    nl: Soriano
+    pl: Soriano
+    pt: Soriano
+    ru: Сорьяно
+    si: සොරියානෝ දෙපාර්තමේන්තුව
+    sv: Soriano
+    ta: சொரியானோ துறை
+    te: సోరియానో డిపార్ట్మెంట్
+    th: เขตโซเรียโน่
+    tr: Soriana Department
+    uk: Соріано
+    ur: سوریانو محکمہ
+    vi: Soriano
+    lv: Sorjano departaments
+    ceb: Departamento de Soriano
+    zh: 索里亚诺省
+    fa: بخش سوریانو
+    ccp: "\U00011125\U0001112E\U00011122\U00011128\U00011120\U0001111A\U0001112E"
+    sk: Soriano
+    'no': Soriano
+    ro: Departamentul Soriano
+  comments:
+  type: department
+TA:
+  name: Tacuarembó
+  code: TA
+  unofficial_names: Tacuarembó
+  geo:
+    latitude: -32.0106717
+    longitude: -55.6689636
+    min_latitude: -32.872563
+    min_longitude: -56.663515
+    max_latitude: -31.210968
+    max_longitude: -54.651097
+  translations:
+    en: Tacuarembó
+    ar: إدارة تاكواريمبو
+    bg: Такуарембо
+    bn: তাকুরেম্বু বিভাগ
+    ca: Departament de Tacuarembó
+    da: Tacuarembó
+    de: Departamento Tacuarembó
+    el: Τακουαρεμπό
+    es: Departamento de Tacuarembó
+    eu: Tacuarembó departamendua
+    fi: Tacuarembó
+    fr: Tacuarembó
+    gl: Departamento de Tacuarembó
+    gu: ટાકુઆરેમ્બો વિભાગ
+    hi: टैकुआरेम्बो विभाग
+    hr: Tacuarembó
+    hu: Tacuarembó megye
+    hy: Տակուարեմբո
+    id: Departemen Tacuarembó
+    it: dipartimento di Tacuarembó
+    ja: タクアレンボー県
+    ka: ტაკუარემბოს დეპარტამენტი
+    kn: ಟ್ಯಾಕುರೆಂಬೊ ಇಲಾಖೆ
+    ko: 타쿠아렘보 주
+    lt: Takuarembo departamentas
+    mr: टाकरेम्बो विभाग
+    ms: Tacuarembo Department
+    nb: Tacuarembó
+    nl: Tacuarembó
+    pl: Tacuarembó
+    pt: Tacuarembó
+    ru: Такуарембо
+    si: ටකුඅරෙම්බෝ දෙපාර්තමේන්තුව
+    sl: Departma Tacuarembó
+    sv: Tacuarembó
+    ta: தகுணரெம்போ துறை
+    te: టాకువారెంబో డిపార్ట్మెంట్
+    th: จังหวัดตากวาเรมโบ
+    tr: Tacuarembo Departmanı
+    uk: Такуарембо
+    ur: تاکواریمبو محکمہ
+    vi: Khu vực hành chính Tacuarembó
+    lv: Takvarembo departaments
+    ceb: Departamento de Tacuarembó
+    zh: 塔夸伦博省
+    fa: بخش تاکوئارمبو
+    ccp: "\U00011111\U00011133\U00011120\U00011107\U0001112A\U00011120\U00011122\U0001112C\U0001111F\U00011134\U0001111D\U0001112E"
+    sk: Tacuarembó
+    'no': Tacuarembó
+    ro: Departamentul Tacuarembó
+  comments:
+  type: department
+TT:
+  name: Treinta y Tres
+  code: TT
+  unofficial_names: Treinta y Tres
+  geo:
+    latitude: -33.1476661
+    longitude: -54.25931180000001
+    min_latitude: -33.444572
+    min_longitude: -55.158798
+    max_latitude: -32.682854
+    max_longitude: -53.2823961
+  translations:
+    en: Treinta y Tres
+    ar: إدارة ترينتا ذا تريس
+    bg: Трейнта и Трес
+    bn: ট্রেইন্তাই ট্রেস বিভাগ
+    ca: Departament de Treinta y Tres
+    da: Treinta y Tres
+    de: Departamento Treinta y Tres
+    el: Τρεϊντά ι Τρες
+    es: Departamento de Treinta y Tres
+    eu: Treinta y Tres departamendua
+    fi: Treinta y Tres
+    fr: Treinta y Tres
+    gl: Departamento de Treinta y Tres
+    gu: ટ્રેઇન્ટા વાય ટ્રેસ વિભાગ
+    he: טריינטה אי טרס
+    hi: त्रिएन्ता वाई त्रेस विभाग
+    hr: Treinta y Tres
+    hu: Treinta y Tres megye
+    id: Departemen Treinta y Tres
+    it: dipartimento di Treinta y Tres
+    ja: トレインタ・イ・トレス県
+    ka: ტრეინტა-ი-ტრესის დეპარტამენტი
+    kn: ಟ್ರೆಂಟಾ ವೈ ಟ್ರೆಸ್ ಡಿಪಾರ್ಟ್ಮೆಂಟ್
+    ko: 트레인타이트레스 주
+    lt: Treinta i Treso departamentas
+    mr: ट्रेनिटा यु ट्रेस विभाग
+    ms: Treinta y Tres Department
+    nb: Treinta y Tres
+    nl: Treinta y Tres
+    pl: Treinta y Tres
+    pt: Treinta y Tres
+    ru: Трейнта-и-Трес
+    si: ට්‍රේනිටා වයි ට්‍රෙස් දෙපාර්තමේන්තුව
+    sv: Treinta y Tres
+    ta: ட்ரெய்ன்ட்டா ய் ட்ரெஸ் துறை
+    te: ట్రియెంటా ట్రెస్ డిపార్ట్మెంట్
+    th: เตรงไตย์ เตรส
+    tr: Treinta y Tres
+    uk: Трейнта-і-Трес
+    ur: ترینتا ی تریس محکمہ
+    vi: Treinta y Tres
+    lv: Treinta i Tresas departaments
+    ceb: Departamento de Treinta y Tres
+    zh: 三十三人省
+    fa: بخش ترینتا و ترس
+    ccp: "\U00011111\U00011133\U00011122\U0001112C\U00011103\U00011128\U0001111A\U00011134\U00011111
+      \U00011103\U0001112E\U00011120\U0001112D \U00011111\U00011133\U00011122\U0001112C\U0001110C\U00011134"
+    sk: Treinta y Tres
+    'no': Treinta y Tres
+    be: дэпартамент Трэйнта-і-Трэс
+    ro: Departamentul Treinta y Tres
+  comments:
+  type: department

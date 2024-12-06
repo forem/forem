@@ -1,0 +1,293 @@
+---
+C:
+  name: Centre
+  code: C
+  unofficial_names: Centre
+  geo:
+    latitude: 8.6586029
+    longitude: 1.0586135
+    min_latitude: 7.9023141
+    min_longitude: 0.3816739
+    max_latitude: 9.296292
+    max_longitude: 1.650187
+  translations:
+    en: Centrale
+    ar: الإقليم الأوسط
+    bg: Централен регион
+    bn: সেন্ট্রাল অঞ্চল
+    ca: Regió Central
+    da: Centrale
+    de: Region Centrale
+    el: Κεντρική Περιφέρεια
+    es: Central
+    fi: Centrale
+    fr: Région centrale
+    gu: સેન્ટ્રલ પ્રદેશ
+    hi: सेंट्रल क्षेत्र
+    id: Region Centrale
+    it: regione Centrale
+    ja: 中央州
+    kn: ಸೆಂಟ್ರೇಲ್ ಪ್ರದೇಶ
+    ko: 중앙 주
+    lt: Centrinis regionas
+    mr: मध्यवर्ती प्रदेश
+    ms: Centrale Region
+    nb: Centrale
+    nl: Centrale
+    pl: Region Centre
+    pt: Centrale
+    ro: Regiunea Centrale
+    ru: Центральная область
+    si: සෙන්ට්‍රලේ කලාපය
+    sv: Centrale (region)
+    ta: சென்றாலே பகுதி
+    te: సెంట్రేల్ ప్రాంతం
+    th: เขตเซนทราเล
+    tr: Centrale
+    uk: Центральний регіон
+    ur: سونترال علاقہ، ٹوگو
+    vi: Centrale
+    zh: 中部区
+    lv: Centrālais reģions
+    ceb: Centrale
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    'no': Centrale
+    fa: منطقه مرکزی، توگو
+    he: אזור המרכז
+    sw: Mkoa wa Kati, Togo
+  comments:
+  type: region
+K:
+  name: Kara
+  code: K
+  unofficial_names: Kara
+  geo:
+    latitude: 9.548888999999999
+    longitude: 1.190556
+    min_latitude: 9.534310099999999
+    min_longitude: 1.1657524
+    max_latitude: 9.5661352
+    max_longitude: 1.2201691
+  translations:
+    en: Kara
+    ar: إقليم كارا
+    bg: Кара
+    bn: কারা অঞ্চল
+    ca: Regió de la Kara
+    da: Kara
+    de: Region Kara
+    el: Περιφέρεια Καρά
+    es: Kara
+    fa: منطقه کارا
+    fi: Kara
+    fr: Région de la Kara
+    gu: કારા પ્રદેશ
+    hi: कारा प्रदेश
+    id: Region Kara
+    it: regione di Kara
+    ja: カラ州
+    kn: ಕಾರಾ ಪ್ರದೇಶ
+    ko: 카라 주
+    lt: Karos regionas
+    mr: कारा प्रदेश
+    ms: Kara Region
+    nb: Kara
+    nl: Kara
+    pl: Region Kara
+    pt: Kara
+    ro: Regiunea Kara
+    ru: Кара
+    si: කරා කලාපය
+    sv: Kara (region)
+    ta: காரா பகுதி
+    te: కారా ప్రాంతం
+    th: นอร์ทรีเจี้ยน, สิงคโปร์
+    tr: Kara
+    uk: Регіон Кари
+    ur: کارا علاقہ
+    vi: Kara
+    lv: Karas reģions
+    ceb: Kara
+    zh: 卡拉区
+    sq: Kara
+    ccp: "\U00011107\U00011122"
+    'no': Kara
+    he: קארה (מחוז)
+    sw: Mkoa wa Kara, Togo
+  comments:
+  type: region
+M:
+  name: Maritime (Région)
+  code: M
+  unofficial_names: Maritime (Région)
+  geo:
+    latitude: 6.4913504
+    longitude: 1.2891036
+    min_latitude: 6.109153399999999
+    min_longitude: 0.717368
+    max_latitude: 6.918175
+    max_longitude: 1.806693
+  translations:
+    en: Maritime
+    ar: إقليم البحرية
+    be: Прыморская вобласць
+    bg: Маритим
+    bn: মেরিটাইম অঞ্চল
+    ca: Regió Marítima
+    da: Maritime
+    de: Region Maritime
+    el: Μαριτίμ
+    es: Marítima
+    et: Rannikupiirkond
+    fa: منطقه ماریتیم
+    fi: Maritime
+    fr: Région maritime
+    gu: મેરીટાઈમ પ્રદેશ
+    hi: मेरीटाइम प्रांत
+    id: Region Maritime
+    it: regione Marittima
+    ja: 沿岸州
+    kn: ಕಡಲ ಪ್ರದೇಶ
+    ko: 마리팀 주
+    lt: Pajūrio regionas
+    mr: मेरीटाइम प्रदेश
+    ms: Maritime Region
+    nb: Maritime
+    nl: Maritime
+    pl: Region Maritime
+    pt: Maritime
+    ro: Regiunea Maritime
+    ru: Приморская область
+    si: මරිටයිම් කලාපය
+    sv: Maritime
+    ta: மாரிடைம் பகுதி
+    te: మారిటైమ్ ప్రాంతం
+    th: มาริไทม์
+    tr: Maritime
+    uk: Марітіме
+    ur: میری ٹائم علاقہ
+    vi: Maritime
+    lv: Piejūras reģions
+    ceb: Maritime
+    zh: 濱海區
+    ccp: "\U0001111F\U0001112C\U00011122\U00011128\U00011111\U0001112D\U0001111F\U00011134"
+    'no': Maritime
+    he: מאריטים
+    sw: Mkoa wa Maritime, Togo
+  comments:
+  type: region
+P:
+  name: Plateaux
+  code: P
+  unofficial_names: Plateaux
+  geo:
+    latitude: 7.6101378
+    longitude: 1.0586135
+    min_latitude: 6.542187
+    min_longitude: 0.501813
+    max_latitude: 8.368130899999999
+    max_longitude: 1.677525
+  translations:
+    en: Plateaux
+    ar: إقليم بلاتيوكس
+    bg: Плато
+    bn: প্লাতেঊ অঞ্চল
+    ca: Regió dels Altiplans
+    da: Plateaux
+    de: Region Plateaux
+    el: Πλατώ
+    es: Altiplano
+    fi: Plateaux
+    fr: Région des plateaux
+    gu: પ્લેટોક્સ પ્રદેશ
+    hi: प्लेटो क्षेत्र
+    id: Region Plateaux
+    it: regione degli Altopiani
+    ja: 高原州
+    kn: ಪ್ಲಾಟೆಯಾಕ್ಸ್ ಪ್ರದೇಶ
+    ko: 플라토 주
+    lt: Plynaukštės regionas
+    mr: प्लेटो प्रदेश
+    ms: Plateaux Region
+    nb: Plateaux
+    nl: Plateaux
+    pl: Region Plateaux
+    pt: Plateaux
+    ru: Плато
+    si: ප්ලටෙක්ස් කලාපය
+    sv: Plateaux
+    ta: பிலேடீஸ் பகுதி
+    te: ప్లాటూక్స్ ప్రాంతం
+    th: ปลาโต
+    tr: Plateaux
+    uk: Регіон Плато
+    ur: پلاٹوس علاقہ، ٹوگو
+    vi: Plateaux
+    lv: Plato reģions
+    ceb: Plateaux
+    zh: 高原區
+    ccp: "\U0001111B\U00011133\U00011123\U00011111\U00011128\U00011120\U00011107\U00011134"
+    'no': Plateaux
+    fa: ناحیه پلاتیوکس (توگو)
+    he: פלאטו (מחוז)
+    sw: Mkoa wa Plateaux, Togo
+  comments:
+  type: region
+S:
+  name: Savannes
+  code: S
+  unofficial_names: Savannes
+  geo:
+    latitude: 10.5291781
+    longitude: 0.5257822999999999
+    min_latitude: 9.879532
+    min_longitude: -0.1473239
+    max_latitude: 11.138977
+    max_longitude: 0.9969091000000001
+  translations:
+    en: Savanes
+    ar: إقليم سافانس
+    bg: Саван
+    bn: সাভানেস অঞ্চল
+    ca: Regió de les Sabanes
+    da: Savanes
+    de: Region Savanes
+    el: Σαβάν
+    es: Sabana
+    fi: Savanes
+    fr: Région des Savanes
+    gu: સાવાનેસ પ્રદેશ
+    hi: सावेनेस क्षेत्र, टोगो
+    id: Region Savanes
+    it: regione delle Savane
+    ja: サバナ州
+    kn: ಸವನೆಸ್ ಪ್ರದೇಶ
+    ko: 사반 주
+    lt: Savanų regionas
+    mr: सावेनेश प्रदेश
+    ms: Savanes Region
+    nb: Savanes
+    nl: Savanes
+    pl: Region Savanes
+    pt: Savanes
+    ro: Regiunea Savanes
+    ru: Область Саванн
+    si: සවනෙස් කලාපය
+    sv: Savanes (region)
+    ta: சவனேஸ் பகுதி
+    te: సవానెస్ ప్రాంతం
+    th: ซาวีเน
+    tr: Savanes
+    uk: Регіон Саванн
+    ur: ساوانیس علاقہ، ٹوگو
+    vi: Savanes
+    lv: Savanes reģions
+    ceb: Savanes
+    zh: 草原區
+    ccp: "\U00011125\U0001111D\U0001111A\U0001112C\U0001110C\U00011134"
+    'no': Savanes
+    fa: ناحیه ساوانس (توگو)
+    he: סאבאנס
+    sw: Mkoa wa Savanes, Togo
+  comments:
+  type: region

@@ -1,0 +1,191 @@
+---
+'01':
+  translations:
+    en: Água Grande
+    ar: مقاطعة أجوا غراندي
+    bg: Агуа Гранде
+    ca: Água Grande
+    ceb: Água Grande District
+    da: Água Grande
+    de: Água Grande
+    es: Distrito de Água Grande
+    fr: district d’Água Grande
+    gl: Distrito de Água Grande
+    id: Distrik Água Grande
+    it: Distretto di Água Grande
+    ja: アグア・グランデ県
+    ka: აგუა-გრანდე
+    ko: 아구아그란드현
+    mk: Агва Гранде
+    nl: Água Grande
+    pl: Água Grande
+    pt: Água Grande
+    ru: Агуа-Гранде
+    sr: Агва Гранде
+    sr_Latn: Agva Grande
+    sv: Água Grande
+    uk: Агуа-Гранде
+    zh: 阿瓜格蘭德縣
+  name: Água Grande
+  code: '01'
+  type: district
+'02':
+  translations:
+    en: Cantagalo
+    ar: مقاطعة كانتاغالو
+    bg: Кантагало
+    ca: Cantagalo
+    ceb: Cantagalo District
+    de: Cantagalo
+    es: Distrito de Cantagalo
+    fr: district de Cantagalo
+    id: Distrik Cantagalo
+    it: Distretto di Cantagalo
+    ja: カンタガロ県
+    ka: კანტაგალუ
+    ko: 칸타갈루현
+    mk: Кантагало
+    nl: Cantagalo
+    pt: Cantagalo (São Tomé e Príncipe)
+    ru: Кантагалу
+    sr: Кантагало
+    sr_Latn: Kantagalo
+    sv: Cantagalo
+    uk: Кантагалу
+  name: Cantagalo
+  code: '02'
+  type: district
+'03':
+  translations:
+    en: Caué
+    ar: مقاطعة كاوي
+    bg: Кауе
+    ca: Caué
+    de: Caué
+    es: Distrito de Caué
+    fr: district de Caué
+    id: Distrik Caué
+    it: Distretto di Caué
+    ja: カウエ県
+    ka: კაუი
+    ko: 카우에현
+    mk: Кауе
+    nl: Caué
+    pt: Caué
+    ru: Кауи
+    sr: Каје
+    sr_Latn: Kaje
+    sv: Caué
+    uk: Кауї
+  name: Caué
+  code: '03'
+  type: district
+'04':
+  translations:
+    en: Lembá
+    ar: مقاطعة ليمبا
+    bg: Лемба
+    ca: Lembá
+    ceb: Lemba District
+    de: Lembá
+    es: Distrito de Lembá
+    fr: district de Lembá
+    id: Distrik Lembá
+    it: Distretto di Lembá
+    ja: レンバ県
+    ka: ლემბა
+    ko: 렘바현
+    mk: Лемба
+    ml: ലെംബ ജില്ല
+    nl: Lembá
+    pl: Lembá
+    pt: Lembá
+    ru: Лемба
+    sr: Лемба
+    sr_Latn: Lemba
+    sv: Lembá
+    uk: Лемба
+  name: Lembá
+  code: '04'
+  type: district
+'05':
+  translations:
+    en: Lobata
+    ar: مقاطعة لوبانا
+    bg: Лобата
+    ca: Lobata
+    ceb: Lobata District
+    de: Lobata
+    es: Distrito de Lobata
+    fr: district de Lobata
+    id: Distrik Lobata
+    it: distretto di Lobata
+    ja: ロバタ県
+    ka: ლობატა
+    ko: 로바타현
+    mk: Лобата
+    nl: Lobata
+    pt: Lobata
+    ru: Лобата
+    sr: Лобата
+    sr_Latn: Lobata
+    sv: Lobata
+    uk: Лобата
+  name: Lobata
+  code: '05'
+  type: district
+'06':
+  translations:
+    en: Mé-Zóchi
+    ar: مقاطعة مي زوتشي
+    bg: Ме-Зоши
+    ca: Mé-Zóchi
+    ceb: Mé-Zóchi District
+    de: Mé-Zóchi
+    es: Distrito de Mé-Zóchi
+    fr: district de Mé-Zóchi
+    id: Distrik Mé-Zóchi
+    it: Distretto di Mé-Zóchi
+    ja: メ＝ゾシ県
+    ka: მი-სოჩი
+    ko: 메조시현
+    mk: Ме-Зочи
+    nl: Mé-Zóchi
+    pt: Mé-Zóchi
+    ru: Ми-Сочи
+    sr: Ме-Зочи
+    sr_Latn: Me-Zoči
+    sv: Mé-Zóchi
+    uk: Мі-Зочі
+  name: Mé-Zóchi
+  code: '06'
+  type: district
+P:
+  name: Príncipe
+  code: P
+  unofficial_names: Príncipe
+  geo:
+    latitude: 1.6139381
+    longitude: 7.4056928
+    min_latitude: 1.35852
+    min_longitude: 7.2647591
+    max_latitude: 1.6929356
+    max_longitude: 7.462463499999999
+  translations:
+    en: Príncipe
+    ca: Regió Autònoma de Príncipe
+    fi: Príncipe
+    fr: province de Principe
+    it: Provincia di Príncipe
+    ja: プリンシペ州
+    nb: Príncipe
+    pt: Príncipe
+    ur: پرنسپے صوبہ
+    ccp: "\U0001111B\U00011133\U00011122\U00011128\U0001111A\U00011134\U00011125\U00011128\U0001111B\U00011134"
+    ka: პრინსიპის პროვინცია
+    mk: Принсипе
+    'no': Príncipe
+    ceb: Príncipe
+    cy: Talaith Príncipe
+  comments:
+  type: autonomous_region

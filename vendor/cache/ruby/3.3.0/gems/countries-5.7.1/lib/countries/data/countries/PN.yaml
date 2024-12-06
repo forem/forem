@@ -1,0 +1,49 @@
+---
+PN:
+  alpha2: PN
+  alpha3: PCN
+  continent: Australia
+  country_code: '64'
+  currency_code: NZD
+  distance_unit: KM
+  gec: PC
+  geo:
+    latitude: -24.3767537
+    longitude: -128.3242376
+    max_latitude: -23.7928845
+    max_longitude: -124.5410156
+    min_latitude: -25.1776023
+    min_longitude: -130.9268188
+    bounds:
+      northeast:
+        lat: -23.7928845
+        lng: -124.5410156
+      southwest:
+        lat: -25.1776023
+        lng: -130.9268188
+  international_prefix: '00'
+  ioc:
+  iso_long_name: The Pitcairn, Henderson, Ducie and Oeno Islands
+  iso_short_name: Pitcairn
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths: []
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Pitcairn Islander
+  number: '612'
+  postal_code: true
+  postal_code_format: PCRN 1ZZ
+  region: Oceania
+  start_of_week: monday
+  subregion: Polynesia
+  un_locode: PN
+  unofficial_names:
+  - Pitcairn
+  - ピトケアン
+  - Pitcairneilanden
+  - Pitcairn Islands
+  world_region: APAC

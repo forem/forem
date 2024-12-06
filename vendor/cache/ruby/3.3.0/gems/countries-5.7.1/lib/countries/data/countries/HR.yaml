@@ -1,0 +1,67 @@
+---
+HR:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: HR
+  alpha3: HRV
+  continent: Europe
+  country_code: '385'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: HR
+  geo:
+    latitude: 45.1
+    longitude: 15.2000001
+    max_latitude: 46.5549857
+    max_longitude: 19.4480523
+    min_latitude: 42.3385087
+    min_longitude: 13.3649
+    bounds:
+      northeast:
+        lat: 46.5549857
+        lng: 19.4480523
+      southwest:
+        lat: 42.3385087
+        lng: 13.3649
+  international_prefix: '00'
+  ioc: CRO
+  iso_long_name: The Republic of Croatia
+  iso_short_name: Croatia
+  languages_official:
+  - hr
+  languages_spoken:
+  - hr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Croatian
+  number: '191'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: HR
+  unofficial_names:
+  - Croatia
+  - Kroatien
+  - Croatie
+  - Croacia
+  - クロアチア
+  - Kroatië
+  - Croatia (Hrvatska)
+  vat_rates:
+    standard: 25
+    reduced:
+    - 5
+    - 13
+    super_reduced:
+    parking:
+  world_region: EMEA

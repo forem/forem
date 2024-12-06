@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+unless File.respond_to? :realpath
+  class File #:nodoc:
+    def self.realpath path
+      return realpath(File.readlink(path)) if symlink?(path)
+      path
+    end
+  end
+end
+lib = File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib')
+$: << lib
+
+
+require File.join(lib, 'derailed_benchmarks.rb')
+
+Bundler.setup
+
+require 'thor'
+
+class DerailedBenchmarkCLI < Thor
+  def self.exit_on_failure?
+    true
+  end
+
+  desc "exec", "executes given derailed benchmark"
+  def exec(task = nil)
+    setup_bundler!
+    require 'derailed_benchmarks'
+    require 'rake'
+    Rake::TaskManager.record_task_metadata = true
+    require 'derailed_benchmarks/tasks'
+
+    perf_rakefile = File.expand_path(".", "perf.rake")
+    load perf_rakefile if File.exist?(perf_rakefile)
+
+    if task.nil? || task == "--help"
+      Rake.application.tasks.map do |task, n|
+        next unless task.comment
+        puts "  $ derailed exec #{task.name}  # #{task.comment}"
+      end
+    else
+      task = "perf:#{task}" unless Rake::Task.task_defined?(task)
+      Rake::Task[task].invoke
+    end
+  end
+
+  desc "bundle:objects", "measures objects created by gems"
+  define_method(:"bundle:objects") do |env = "production"|
+    setup_bundler!
+    env = [:default] + env.split(",")
+    puts "Measuring objects created by gems in groups #{ env.inspect }"
+    require 'memory_profiler'
+    report = MemoryProfiler.report do
+      Bundler.require(*env)
+    end
+    report.pretty_print
+  end
+
+  map :"bundler:objects" => :"bundle:objects"
+
+  desc "bundle:mem", "measures memory used by gems at boot time"
+  define_method(:"bundle:mem") do |env = "production"|
+    env = [:default] + env.split(",")
+    require 'get_process_mem'
+    mem    = GetProcessMem.new
+    require 'derailed_benchmarks/core_ext/kernel_require'
+    before = mem.mb
+    setup_bundler!
+    Bundler.require(*env)
+    after  = mem.mb
+    TOP_REQUIRE.print_sorted_children
+  end
+  map :"bundler:mem" => :"bundle:mem"
+
+  private
+    def setup_bundler!
+      ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+      require 'bundler/setup'
+
+      begin
+        if ENV["DERAILED_SKIP_RAILS_REQUIRES"]
+          # do nothing. your app will handle requiring Rails for booting.
+        elsif ENV["DERAILED_SKIP_ACTIVE_RECORD"]
+          require "action_controller/railtie"
+          require "sprockets/railtie"
+          require "rails/test_unit/railtie"
+        else
+          require 'rails/all'
+        end
+      rescue LoadError
+      end
+    end
+end
+
+DerailedBenchmarkCLI.start(ARGV)

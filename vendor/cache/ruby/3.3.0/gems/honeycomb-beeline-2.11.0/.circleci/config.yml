@@ -1,0 +1,238 @@
+version: 2.1
+commands:
+  ruby:
+    parameters:
+      ruby-version:
+        type: string
+      gemfile:
+        type: string
+      command:
+        type: string
+        default: bundle exec rake test
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - gems-v1-<< parameters.ruby-version >>-<< parameters.gemfile >>-{{ checksum "honeycomb-beeline.gemspec" }}
+            - gems-v1-<< parameters.ruby-version >>-<< parameters.gemfile >>
+            - gems-v1-<< parameters.ruby-version >>
+      - run: .circleci/bundler_version.sh
+      - run: bundle config set --local path $HOME/project/vendor/bundle
+      - run: bundle install --jobs=4 --retry=3
+      - run: bundle clean --force
+      - run: bundle env
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: gems-v1-<< parameters.ruby-version >>-<< parameters.gemfile >>-{{ checksum "honeycomb-beeline.gemspec" }}
+      - run: << parameters.command >>
+
+jobs:
+  build_artifacts:
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - checkout
+      - run: mkdir -p ~/artifacts
+      - run: gem build honeycomb-beeline.gemspec
+      - run: cp honeycomb-beeline-*.gem ~/artifacts/
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - artifacts
+      - store_artifacts:
+          path: ~/artifacts
+
+  publish_rubygems:
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: "Artifacts being published"
+          command: |
+            echo "about to publish to tag ${CIRCLE_TAG}"
+            ls -l ~/artifacts/*
+      - checkout
+      - run:
+          name: Setup Rubygems
+          command: bash .circleci/setup-rubygems.sh
+      - run: gem push ~/artifacts/honeycomb-beeline-*.gem
+
+  publish_github:
+    docker:
+      - image: cibuilds/github:0.13.0
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: "Artifacts being published"
+          command: |
+            echo "about to publish to tag ${CIRCLE_TAG}"
+            ls -l ~/artifacts/*
+      - run:
+          name: "GHR Draft"
+          command: ghr -draft -n ${CIRCLE_TAG} -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ~/artifacts
+
+  lint:
+    parameters:
+      ruby-version:
+        type: string
+        default: "2.6"
+    docker:
+        - image: circleci/ruby:<< parameters.ruby-version >>
+    environment:
+      BUNDLE_GEMFILE: ./Gemfile
+    steps:
+      - ruby:
+          ruby-version: << parameters.ruby-version >>
+          gemfile: root
+          command: bundle exec rake rubocop
+  test:
+    parameters:
+      gemfile:
+        type: string
+      ruby-version:
+        type: string
+    docker:
+        - image: circleci/ruby:<< parameters.ruby-version >>
+    environment:
+      BUNDLE_GEMFILE: gemfiles/<< parameters.gemfile >>.gemfile
+    steps:
+      - ruby:
+          ruby-version: << parameters.ruby-version >>
+          gemfile: << parameters.gemfile >>
+          command: bundle exec rake test
+      - store_test_results:
+          path: test/reports
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - coverage
+  coverage_report:
+    parameters:
+      ruby-version:
+        type: string
+        default: "2.6"
+    docker:
+        - image: circleci/ruby:<< parameters.ruby-version >>
+    environment:
+      BUNDLE_GEMFILE: ./Gemfile
+    steps:
+      - ruby:
+          ruby-version: << parameters.ruby-version >>
+          gemfile: root
+          command: echo "Get the project environment and cached dependencies prior to retrieving the coverage results."
+      - attach_workspace:
+          at: ./
+      - run: ls -l ./coverage
+      - run: bundle exec rake coverage:report
+      - store_artifacts:
+          path: coverage
+
+workflows:
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - lint
+      - test: &test
+          name: test-<< matrix.gemfile >>-ruby_<< matrix.ruby-version >>
+          requires:
+            - lint
+          matrix:
+            parameters:
+              ruby-version: ["2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "3.0"]
+              gemfile:
+                - aws_2
+                - aws_3
+                - faraday_0
+                - faraday_1
+                - sequel4
+                - sequel5
+                - sinatra
+                - rack
+                - rails_41
+                - rails_42
+                - rails_5
+                - rails_51
+                - rails_52
+                - rails_6
+                - rails_61
+                - redis_3
+                - redis_4
+            exclude:
+              - ruby-version: "2.2"
+                gemfile: faraday_1
+              - ruby-version: "2.2"
+                gemfile: rails_52
+              - ruby-version: "2.2"
+                gemfile: rails_6
+              - ruby-version: "2.3"
+                gemfile: rails_6
+              - ruby-version: "2.4"
+                gemfile: rails_6
+              - ruby-version: "2.2"
+                gemfile: rails_61
+              - ruby-version: "2.3"
+                gemfile: rails_61
+              - ruby-version: "2.4"
+                gemfile: rails_61
+              - ruby-version: "2.4"
+                gemfile: rails_41
+              - ruby-version: "2.5"
+                gemfile: rails_41
+              - ruby-version: "2.6"
+                gemfile: rails_41
+              - ruby-version: "2.7"
+                gemfile: rails_41
+              - ruby-version: "2.7"
+                gemfile: rails_42
+              - ruby-version: "3.0"
+                gemfile: rails_41
+              - ruby-version: "3.0"
+                gemfile: rails_42
+              - ruby-version: "3.0"
+                gemfile: rails_5
+              - ruby-version: "3.0"
+                gemfile: rails_51
+              - ruby-version: "3.0"
+                gemfile: rails_52
+              - ruby-version: "3.0"
+                gemfile: sequel4
+
+  beeline:
+    jobs:
+      - lint:
+          filters: &regular_filters
+              tags:
+                only: /.*/
+      - test:
+          <<: *test
+          filters: *regular_filters
+      - coverage_report:
+          filters: *regular_filters
+          requires:
+            - test
+      - build_artifacts:
+          filters: &tag_filters
+              tags:
+                only: /^v.*/
+              branches:
+                ignore: /.*/
+          requires:
+            - lint
+            - test
+      - publish_rubygems: &publish
+          filters: *tag_filters
+          requires:
+            - build_artifacts
+      - publish_github:
+          <<: *publish
+          context: Honeycomb Secrets for Public Repos

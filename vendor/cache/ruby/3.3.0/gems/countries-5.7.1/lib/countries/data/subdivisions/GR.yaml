@@ -1,0 +1,961 @@
+---
+'69':
+  name: Ágion Óros
+  unofficial_names:
+  - Aghion Oros
+  - Agion Oros
+  - Akte
+  - Aktí
+  - Athos
+  - Mount Athos
+  translations:
+    en: Mount Athos
+    af: Berg Athos
+    ar: جبل آثوس
+    az: Afon
+    be: Гара Афон
+    bg: Атон
+    ca: Athos
+    cs: Athos
+    da: Athos
+    de: Athos
+    el: Άγιο Όρος
+    es: Monte Athos
+    et: Áthos
+    eu: Athos
+    fa: کوه آثوس
+    fi: Athos
+    fr: Aktè
+    gl: Monte Athos
+    he: הר אתוס
+    hr: Sveta Gora
+    hu: Athosz-hegy
+    hy: Աֆոն
+    id: Gunung Athos
+    is: Aþos
+    it: Monte Athos
+    ja: アトス山
+    ka: აიონ-ოროსი
+    ko: 아토스 산
+    lt: Atonas
+    lv: Ajonora
+    ml: മൗണ്ട് ആഥോസ്
+    nb: Athos
+    nl: Oros Athos
+    pl: Athos
+    pt: Monte Atos
+    ro: Muntele Athos
+    ru: Афон
+    sk: Athos
+    sr: Света гора
+    sv: Athos
+    th: เขาแอทอส
+    tr: Aynoroz
+    uk: Афон
+    ur: کوہ آتھوس
+    vi: Núi Athos
+    zh: 阿索斯山
+    cy: Mynydd Athos
+    ceb: Mount Athos
+    sr_Latn: Sveta gora
+    hi: एथोस पर्वत
+    jv: Mount Athos
+    sq: Mali i Shenjtë
+    ccp: "\U0001111F\U00011105\U0001112A\U0001111A\U00011133\U00011111\U00011134 \U00011103\U00011117\U0001112E\U0001110C\U00011134"
+    kk: Афон тауы
+    bs: Sveta Gora
+    mk: Света Гора
+    'no': Athos
+    ga: Sliabh Athos
+    ky: Ыйык Тоо Республикасы
+    sl: Atos
+    yue: 阿索斯山
+    yue_Hans: 阿索斯山
+  geo:
+    latitude: 40.2644928
+    longitude: 24.2152731
+    min_latitude: 40.11453119999999
+    min_longitude: 23.993087
+    max_latitude: 40.451581
+    max_longitude: 24.3991418
+  code: '69'
+  type: self-governed_part
+A:
+  name: Anatolikí Makedonía kai Thráki
+  unofficial_names:
+  translations:
+    ar: مقدونيا الشرقية وتراقيا
+    az: Şərqi Makedoniya və Trakya
+    be: Усходняя Македонія і Фракія
+    bg: Източна Македония и Тракия
+    bn: পূর্ব ম্যাসেডোনিয়া এবং থ্রেস
+    ca: Macedònia Oriental i Tràcia
+    cs: Východní Makedonie a Thrákie
+    da: Østmakedonien og Thrakien
+    de: Ostmakedonien und Thrakien
+    el: Περιφέρεια Ανατολικής Μακεδονίας και Θράκης
+    en: East Macedonia and Thrace
+    es: Macedonia Oriental y Tracia
+    et: Ida-Makedoonia ja Traakia
+    eu: Ekialdeko Mazedonia eta Trazia
+    fa: مقدونیه شرقی و تراکیه
+    fi: Itä-Makedonia ja Traakia
+    fr: Macédoine-Orientale-et-Thrace
+    gl: Macedonia Oriental e Tracia
+    gu: ઇસ્ટ મેસેડોનિયા એન્ડ થ્રેસ
+    he: מזרח מקדוניה ותראקיה
+    hi: पूर्वी मैसेडोनिया और थ्रेस
+    hr: Periferija Istočna Makedonija i Trakija
+    hu: Kelet-Makedónia és Thrákia
+    hy: Արևելյան Մակեդոնիա և Թրակիա
+    id: Makedonia Timur dan Trasia
+    it: Macedonia Orientale e Tracia
+    ja: 東マケドニア・トラキア
+    ka: აღმოსავლეთი მაკედონია და თრაკია
+    kn: ಈಸ್ಟ್ ಮೆಸಿಡೋನಿಯಾ ಮತ್ತು ಥ್ರೇಸ್
+    ko: 동마케도니아 트라키 주
+    lt: Rytų Makedonijos ir Trakijos periferija
+    mr: ईस्ट मॅसिडोनिया अँड थ्रेस
+    ms: East Macedonia and Thrace
+    nb: Øst-Makedonia og Thrakia
+    nl: Oost-Macedonië en Thracië
+    pl: Region Macedonia Wschodnia i Tracja
+    pt: Macedônia Oriental e Trácia
+    ro: Macedonia de Est și Tracia
+    ru: Восточная Македония и Фракия
+    si: නැගෙනහිර මැසිඩෝනියා සහ ත්රේස්
+    sk: Východná Makedónia a Trácia
+    sr: Периферија Источна Македонија и Тракија
+    sv: Östra Makedonien och Thrakien
+    ta: கிழக்கு மாசிடோனியா அண்ட் த்ராஸ்
+    te: తూర్పు మెసడోనియా మరియు త్రేస్
+    th: มาซิโดเนียตะวันออกและเทรซ
+    tr: Doğu Makedonya ve Trakya
+    uk: Східна Македонія та Фракія
+    ur: مشرقی مقدونیہ اور تھریس
+    vi: Đông Macedonia và Thrace
+    lv: Austrumu Maķedonija un Trāķija
+    ceb: East Macedonia and Thrace
+    sr_Latn: Periferija Istočna Makedonija i Trakija
+    zh: 东马其顿-色雷斯
+    jv: Makedonia Wétan lan Trasia
+    sq: Maqedonia Lindore dhe Thrakia
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U0001111F\U00011125\U0001112C\U00011113\U0001112E\U0001111A\U00011128\U00011120
+      \U00011103\U00011133\U00011103 \U00011112\U00011133\U00011122\U0001110C\U00011134"
+    mk: Источна Македонија и Тракија
+    'no': Øst-Makedonia og Thrakia
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: A
+  type: administrative_region
+B:
+  name: Kentrikí Makedonía
+  unofficial_names:
+  translations:
+    ar: مقدونيا الوسطى
+    az: Orta Makedoniya
+    be: Цэнтральная Македонія
+    bg: Централна Македония
+    bn: সেন্ট্রাল মেসিডোনিয়া অঞ্চল
+    ca: Macedònia Central
+    cs: Střední Makedonie
+    da: Central Macedonia Region
+    de: Zentralmakedonien
+    el: Κεντρική Μακεδονία
+    en: Central Macedonia
+    es: Macedonia Central
+    et: Kesk-Makedoonia
+    eu: Erdialdeko Mazedonia
+    fa: مقدونیه مرکزی
+    fi: Keski-Makedonia
+    fr: Macédoine-Centrale
+    gl: Macedonia Central
+    gu: સેન્ટ્રલ મેસેડોનિયા પ્રદેશ
+    he: מרכז מקדוניה
+    hi: केंद्रीय मैसेडोनिया क्षेत्र
+    hr: Periferija Središnja Makedonija
+    hu: Közép-Makedónia
+    hy: Կենտրոնական Մակեդոնիա
+    id: Makedonia Tengah
+    it: Macedonia Centrale
+    ja: 中央マケドニア
+    ka: ცენტრალური მაკედონია
+    kn: ಮಧ್ಯ ಮಾಸೆಡೋನಿಯಾ ಪ್ರದೇಶ
+    ko: 중앙마케도니아 주
+    lt: Centrinės Makedonijos periferija
+    mr: मध्यवर्ती मॅसिडोनिया प्रदेश
+    ms: Macedonia Tengah
+    nb: Sentral-Makedonia
+    nl: Centraal-Macedonië
+    pl: Region Macedonia Środkowa
+    pt: Macedônia Central
+    ro: Macedonia Centrală
+    ru: Центральная Македония
+    si: මධ්‍යම මැසිඩෝනියා පළාත
+    sk: Stredná Makedónia
+    sr: Периферија Средишња Македонија
+    sv: Mellersta Makedonien
+    ta: சென்ட்ரல் மாசிடோனியா பகுதி
+    te: సెంట్రల్ మాసెడోనియా ప్రాంతం
+    th: มาเกโดเนียกลาง
+    tr: Orta Makedonya
+    uk: Центральна Македонія
+    ur: وسطی مقدونیہ
+    vi: Trung Macedonia
+    lv: Centrālās Maķedonijas perifērija
+    ceb: Central Macedonia
+    sr_Latn: Periferija Središnja Makedonija
+    zh: 中马其顿
+    jv: Makedonia Tengah
+    sq: Maqedonia Qendrore
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U0001111F\U00011125\U0001112C\U00011113\U0001112E\U0001111A\U00011128\U00011120"
+    mk: Централна Македонија
+    'no': Sentral-Makedonia
+    cy: Macedonia Canolog
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: B
+  type: administrative_region
+C:
+  name: Dytikí Makedonía
+  unofficial_names:
+  translations:
+    ar: مقدونيا الغربية
+    az: Qərbi Makedoniya
+    be: Заходняя Македонія
+    bg: Западна Македония
+    bn: ওয়েস্ট মেসিডোনিয়া অঞ্চল
+    ca: Macedònia Occidental
+    cs: Západní Makedonie
+    da: West Macedonia Region
+    de: Westmakedonien
+    el: Περιφέρεια Δυτικής Μακεδονίας
+    en: West Macedonia
+    es: Macedonia Occidental
+    et: Lääne-Makedoonia
+    eu: Mendebaldeko Mazedonia
+    fa: مقدونیه غربی
+    fi: Länsi-Makedonia
+    fr: Macédoine-Occidentale
+    gl: Macedonia Occidental
+    gu: પશ્ચિમ મેસેડોનિયા પ્રદેશ
+    he: מערב מקדוניה
+    hi: पश्चिमी मैसेडोनिया क्षेत्र
+    hr: Periferija Zapadna Makedonija
+    hu: Nyugat-Makedónia
+    id: Makedonia Barat
+    it: Macedonia Occidentale
+    ja: 西マケドニア
+    ka: დასავლეთი მაკედონია
+    kn: ಪಶ್ಚಿಮ ಮಾಸೆಡೋನಿಯಾ ಪ್ರದೇಶ
+    ko: 서마케도니아 주
+    lt: Vakarų Makedonijos periferija
+    mr: वेस्ट मॅसेडोनिया प्रदेश
+    ms: West Macedonia Region
+    nb: Vest-Makedonia
+    nl: West-Macedonië
+    pl: Region Macedonia Zachodnia
+    pt: Macedônia Ocidental
+    ro: Macedonia de Vest
+    ru: Западная Македония
+    si: බටහිර මැසිඩෝනියා පළාත
+    sk: Západná Makedónia
+    sr: Периферија Западна Македонија
+    sv: Västra Makedonien
+    ta: மேற்கு மாசிடோனியா பகுதி
+    te: పశ్చిమ మెసిడోనియా ప్రాంతం
+    th: เวส มาซิโดเนีย
+    tr: Batı Makedonya
+    uk: Західна Македонія
+    ur: مغربی مقدونیہ
+    vi: Tây Macedonia
+    lv: Rietummaķedonijas perifērija
+    ceb: West Macedonia
+    sr_Latn: Periferija Zapadna Makedonija
+    zh: 西马其顿
+    jv: Makedonia Kulon
+    sq: Maqedonia Perëndimore
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U0001111F\U00011125\U0001112C\U00011113\U0001112E\U0001111A\U00011128\U00011120"
+    mk: Западна Македонија
+    'no': Vest-Makedonia
+    hy: Արևմտյան Մակեդոնիա
+    ky: Батыш Македония
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: C
+  type: administrative_region
+D:
+  name: Ípeiros
+  unofficial_names:
+  translations:
+    ar: إبيروس
+    be: Эпір
+    bg: Епир
+    bn: এপিরাস অঞ্চল
+    ca: Regne de l’Epir
+    cs: Epirus
+    da: Epirus Region
+    de: Epirus
+    el: Περιφέρεια Ηπείρου
+    en: Epirus
+    es: Epiro
+    et: Ípeiros
+    eu: Epiro
+    fa: ایپیروس
+    fi: Epeiros
+    fr: Épire (périphérie)
+    gl: Épiro
+    gu: એપિરસસ પ્રદેશ
+    he: אפירוס
+    hi: एपिरस क्षेत्र
+    hr: Periferija Epir
+    hu: Epirusz
+    hy: Էպիրուս
+    id: Epirus
+    it: Epiro
+    ja: イピロス
+    ka: ეპირი
+    kn: ಎಪಿರಸ್ ಪ್ರದೇಶ
+    ko: 이피로스 주
+    lt: Epyro periferija
+    mr: एपिअरस प्रदेश
+    ms: Epirus
+    nb: Epirus
+    nl: Epirus
+    pl: Epir
+    pt: Epiro
+    ro: Epir
+    ru: Эпир
+    si: එපිරස් කලාපය
+    sk: Epirus
+    sl: Čamerija
+    sr: Периферија Епир
+    sv: Epirus
+    ta: எபிரோஸ் பகுதி
+    te: ఎపిరస్ ప్రాంతం
+    th: อิไพรัส
+    tr: Epir
+    uk: Епір
+    ur: اپیروس (علاقہ)
+    vi: Epirus
+    lv: Epīras perifērija
+    cy: Epiros
+    sr_Latn: Periferija Epir
+    zh: 伊庇鲁斯
+    jv: Epirus (periphery)
+    sq: Epiri (periferia)
+    ccp: "\U00011103\U00011128\U0001111B\U0001112D\U00011122\U0001110C\U00011134"
+    mk: Епир
+    'no': Epirus
+    az: Epir (periferiya)
+    ceb: Epirus
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: D
+  type: administrative_region
+E:
+  name: Thessalía
+  unofficial_names:
+  translations:
+    ar: ثيساليا
+    be: Фесалія
+    bg: Тесалия
+    bn: থেসালি
+    ca: Tessàlia
+    cs: Thesálie
+    da: Thessaly
+    de: Thessalien
+    el: Θεσσαλία
+    en: Thessaly
+    es: Tesalia
+    et: Tessaalia piirkond
+    eu: Tesalia
+    fa: تسالی
+    fi: Thessalia
+    fr: Thessalie
+    gl: Tesalia
+    gu: થેસાલી
+    he: תסליה
+    hi: थेसली
+    hr: Tesalija
+    hu: Thesszália
+    hy: Թեսալիա
+    id: Thessalia
+    is: Þessalía
+    it: Tessaglia
+    ja: テッサリア
+    ka: თესალია
+    kn: ಥೆಸ್ಸಲಿ
+    ko: 테살리아
+    lt: Tesalija
+    mr: थिसलीस
+    ms: Thessaly
+    nb: Thessalia
+    nl: Thessalië
+    pl: Tesalia
+    pt: Tessália
+    ro: Tesalia
+    ru: Фессалия
+    si: තෙසලේ
+    sk: Tesália
+    sl: Tesalija
+    sr: Тесалија
+    sv: Thessalien
+    ta: தெஸ்ஸாலி
+    te: తెసాలీ
+    th: เทสซาลี
+    tr: Tesalya
+    uk: Фессалія
+    ur: ثیسالیا
+    vi: Thessaly
+    lv: Tesālija
+    cy: Thessalia
+    sr_Latn: Tesalija
+    zh: 色萨利
+    jv: Tesalonika
+    sq: Thesalia
+    ccp: "\U00011117\U0001112C\U00011125\U00011123\U00011128"
+    ga: An Teasáil
+    az: Fessaliya
+    mk: Тесалија
+    'no': Thessalia
+    ceb: Thessaly
+    kk: Фессалия
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: E
+  type: administrative_region
+F:
+  name: Ionía Nísia
+  unofficial_names:
+  translations:
+    ar: الجزر الأيونية
+    be: Перыферыя Іанічныя астравы
+    cs: Jónské ostrovy (kraj)
+    de: Ionische Inseln
+    el: Περιφέρεια Ιονίων Νήσων
+    en: Ionian Islands
+    es: Periferia de Islas Jónicas
+    et: Joonia saarte piirkond
+    fa: استان جزایر ایونی
+    fi: Jooniansaaret
+    fr: Îles Ioniennes (périphérie)
+    he: האיים היוניים
+    hr: Periferija Jonski otoci
+    hy: Հոնիական կղզիներ
+    it: Isole Ionie
+    ja: イオニア諸島
+    lt: Jonijos salų periferija
+    nb: De joniske øyer
+    nl: Ionian Islands Region
+    pl: Region Wyspy Jońskie
+    pt: Ilhas Jónicas
+    ru: периферия Ионические острова
+    sr: Периферија Јонска острва
+    uk: Іонічні острови
+    ur: ایونی جزائر (علاقہ)
+    ceb: Ionian Islands
+    tr: İyonya Adaları
+    sr_Latn: Periferija Jonska ostrva
+    zh: 愛奧尼亞群島
+    sq: Ishujt e Jonit
+    ccp: "\U00011103\U00011128\U00011120\U0001112E\U0001111A\U00011128\U00011120\U00011127\U0001111A\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U0001110C\U00011134"
+    ko: 이오니아 제도주
+    ca: Regió de les Illes Jòniques
+    'no': De joniske øyer
+    az: İon adaları (periferiya)
+    eu: Joniako Uharteak (periferia)
+    mk: Јонски Острови
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: F
+  type: administrative_region
+G:
+  name: Dytikí Elláda
+  unofficial_names:
+  translations:
+    ar: غرب اليونان
+    be: Заходняя Грэцыя
+    bg: Западна Гърция
+    bn: ওয়েস্ট গ্রীস অঞ্চল
+    ca: Grècia Occidental
+    cs: Západní Řecko
+    da: West Greece Region
+    de: Westgriechenland
+    el: Περιφέρεια Δυτικής Ελλάδας
+    en: West Greece
+    es: Grecia Occidental
+    et: Lääne-Kreeka piirkond
+    fa: یونان غربی
+    fi: Länsi-Kreikka
+    fr: Grèce-Occidentale
+    gl: Grecia Occidental
+    gu: પશ્ચિમ ગ્રીસ પ્રદેશ
+    he: מערב יוון
+    hi: पश्चिमी ग्रीस क्षेत्र
+    hr: Periferija Zapadna Grčka
+    hu: Nyugat-Görögország
+    hy: Արևմտյան Հունաստան
+    id: Yunani Barat
+    it: Grecia Occidentale
+    ja: 西ギリシャ
+    ka: დასავლეთი საბერძნეთი
+    kn: ಪಶ್ಚಿಮ ಗ್ರೀಸ್ ಪ್ರದೇಶ
+    ko: 서그리스 주
+    lt: Vakarų Graikijos periferija
+    mr: वेस्ट ग्रीस प्रदेश
+    ms: West Greece Region
+    nb: Vest-Hellas
+    nl: West-Griekenland
+    pl: Region Grecja Zachodnia
+    pt: Grécia Ocidental
+    ro: Grecia de Vest
+    ru: Западная Греция
+    si: වෙස්ට් ග්‍රීස් කලාපය
+    sk: Západné Grécko
+    sr: Периферија Западна Грчка
+    sv: Västra Grekland
+    ta: மேற்கு கிரீஸ் பகுதி
+    te: పశ్చిమ గ్రీస్ ప్రాంతం
+    th: เวสเทิร์กรีซ
+    tr: Batı Yunanistan
+    uk: Західна Греція
+    ur: مغربی یونان
+    vi: Tây Hy Lạp
+    lv: Rietumgrieķijas perifērija
+    ceb: West Greece
+    sr_Latn: Periferija Zapadna Grčka
+    zh: 西希腊
+    jv: Yunani Kulon
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011109\U00011133\U00011122\U00011128\U0001110C\U00011134"
+    mk: Западна Грција
+    'no': Vest-Hellas
+    az: Qərbi Yunanıstan periferiyası
+    eu: Mendebaldeko Grezia
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: G
+  type: administrative_region
+H:
+  name: Stereá Elláda
+  unofficial_names:
+  translations:
+    ar: وسط اليونان
+    be: Цэнтральная Грэцыя
+    bg: Централна Гърция
+    ca: Grècia Central
+    cs: Střední Řecko
+    de: Mittelgriechenland
+    el: Περιφέρεια Στερεάς Ελλάδας
+    en: Central Greece
+    es: Grecia Central
+    et: Kesk-Kreeka piirkond
+    eu: Erdialdeko Grezia
+    fa: یونان مرکزی
+    fi: Keski-Kreikka
+    fr: Grèce-Centrale
+    gl: Grecia Central
+    he: מרכז יוון
+    hr: Periferija Središnja Grčka
+    hu: Közép-Görögország
+    hy: Կենտրոնական Հունաստան
+    id: Yunani Tengah
+    it: Grecia Centrale
+    ja: 中央ギリシャ
+    ko: 중앙그리스 주
+    lt: Centrinės Graikijos periferija
+    nb: Sentral-Hellas
+    nl: Centraal-Griekenland
+    pl: Region Grecja Środkowa
+    pt: Grécia Central
+    ro: Grecia Centrală
+    ru: Центральная Греция
+    sr: Периферија Средишња Грчка
+    sv: Grekiska fastlandet
+    tr: Orta Yunanistan
+    uk: Центральна Греція
+    ur: وسطی یونان (علاقہ)
+    vi: Trung Hy Lạp
+    lv: Centrālās Grieķijas perifērija
+    ceb: Central Greece
+    sr_Latn: Periferija Središnja Grčka
+    zh: 中希臘
+    hi: मध्य ग्रीस क्षेत्र
+    jv: Yunani Tengah
+    sq: Greqia Qendrore
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011109\U00011133\U00011122\U00011128\U0001110C\U00011134"
+    mk: Централна Грција
+    'no': Sentral-Hellas
+    az: Mərkəzi Yunanıstan
+    da: Centralgrækenland
+    ka: ცენტრალური საბერძნეთი
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: H
+  type: administrative_region
+I:
+  name: Attikí
+  unofficial_names:
+  translations:
+    ar: أتيكا
+    be: Атыка
+    bn: আটিকা অঞ্চল
+    ca: Àtica
+    cs: Attika (kraj)
+    da: Attica Region
+    de: Attika
+    el: Αττική
+    en: Attica
+    es: Región Attica
+    et: Atika piirkond
+    fa: آتیک (ناحیه)
+    fi: Attican maakunta
+    fr: Attique (périphérie)
+    gl: Periferia de Ática
+    gu: અટીકા પ્રદેશ
+    hi: अटिका क्षेत्र
+    hr: Periferija Atika
+    hy: Ատիկա
+    id: Wilayah Attica
+    it: Attica
+    ja: アッティキ
+    ka: ატიკა
+    kn: ಅಟ್ಟಿಕಾ ಪ್ರದೇಶ
+    ko: 아티카 주
+    lt: Atikos periferija
+    mr: अटिका प्रदेश
+    ms: Attica Region
+    nb: Attica region
+    nl: Attica
+    pl: Region Attyka
+    pt: Região Attica
+    ru: Аттика
+    si: අට්ටිකා කලාපය
+    sk: Atika
+    sl: Atika
+    sr: Периферија Атика
+    sv: Attica (region)
+    ta: அட்டிகா பகுதி
+    te: అట్టికా ప్రాంతం
+    th: ภูมิภาคอัตติกะ
+    tr: Attika
+    uk: периферія Аттика
+    ur: اتیکا (علاقہ)
+    vi: Khu vực Attica
+    lv: Atikas perifērija
+    ceb: Attica
+    sr_Latn: Periferija Atika
+    zh: 阿提卡 (地區)
+    sq: Atika
+    ccp: "\U00011103\U00011128\U00011111\U00011133\U00011126\U00011128\U00011107"
+    ro: Attica
+    eu: Atika
+    'no': Attica region
+    az: Attika
+    he: מחוז אטיקה
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: I
+  type: administrative_region
+J:
+  name: Pelopónnisos
+  unofficial_names:
+  translations:
+    ar: بيلوبونيز
+    be: Акруга Пелапанес
+    bg: Пелопонес
+    bn: পেলোপোনেসে অঞ্চল
+    ca: Regió del Peloponès
+    cs: Peloponés
+    da: Peloponnese Region
+    de: Peloponnes
+    el: Περιφέρεια Πελοποννήσου
+    en: Peloponnese
+    es: Periferia de Peloponeso
+    et: Peloponnesose piirkond
+    fa: استان پلپونز
+    fi: Peloponnesos
+    fr: Péloponnèse (périphérie)
+    gu: પેલોપોનિસિ પ્રદેશ
+    he: פלופונסוס
+    hi: पेलोपोनीज़ प्रदेश
+    hr: Periferija Peloponez
+    hu: Peloponnészosz
+    id: Peloponnesa
+    it: Peloponneso
+    ja: ペロポネソス
+    ka: პელოპონესის პერიფერია
+    kn: ಪೆಲೋಪೋನೀಸ್ ಪ್ರದೇಶ
+    ko: 펠로폰네소스 주
+    lt: Peloponeso periferija
+    mr: पेलोपोनिस प्रदेश
+    ms: Peloponnesa
+    nb: Peloponnes
+    nl: Peloponnesos
+    pl: Region Peloponez
+    pt: Região de Peloponnes
+    ru: Пелопоннес
+    si: පෙලොපොනිස් කලාපය
+    sr: Периферија Пелопонез
+    sv: Peloponnesos
+    ta: பெலோபொன்னெஸ் பகுதி
+    te: పెలెపోనెసీ ప్రాంతం
+    th: เขตเพโลพอนเนส
+    tr: Mora
+    uk: Пелопоннес
+    ur: پیلوپونیز (علاقہ)
+    vi: Khu vực Peloponnese
+    lv: Peloponesas perifērija
+    ceb: Peloponnese
+    sr_Latn: Periferija Peloponez
+    zh: 伯罗奔尼撒
+    jv: Peloponnesa
+    ccp: "\U0001111B\U0001112C\U00011123\U0001112E\U0001111B\U00011127\U0001111A\U00011128\U0001110C\U00011134"
+    hy: Պելոպոնես
+    gl: Periferia do Peloponeso
+    ro: Peloponez
+    mk: Пелопонез
+    'no': Peloponnes
+    az: Peloponnes
+    cy: Peloponnesos
+    eu: Peloponeso (periferia)
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: J
+  type: administrative_region
+K:
+  name: Vóreio Aigaío
+  unofficial_names:
+  translations:
+    ar: شمال إيجة
+    be: Паўночныя Эгейскія астравы
+    bg: Северен Егей
+    bn: নর্থ এজিয়ান অঞ্চল
+    ca: Egeu Septentrional
+    cs: Severní Egeis
+    da: North Aegean Region
+    de: Nördliche Ägäis
+    el: Περιφέρεια Βορείου Αιγαίου
+    en: North Aegean
+    es: Egeo Septentrional
+    et: Põhja-Egeus
+    fa: استان اژه شمالی
+    fi: Pohjois-Egean saaret
+    fr: Égée-Septentrionale
+    gl: Exeo Setentrional
+    gu: ઉત્તર એજીયન પ્રદેશ
+    he: צפון הים האגאי
+    hi: उत्तरी एजियन क्षेत्र
+    hr: Periferija Sjeverni Egej
+    hu: Észak-Égei-szigetek
+    hy: Հյուսիսային Եգեյան կղզիներ
+    id: Aegea Utara
+    it: Egeo Settentrionale
+    ja: 北エーゲ
+    ka: ჩრდილოეთ ეგეოსის კუნძულები
+    kn: ಉತ್ತರ ಏಜಿಯನ್ ಪ್ರದೇಶ
+    ko: 북에게 주
+    lt: Šiaurės Egėjo periferija
+    mr: नॉर्थ एजियन प्रदेश
+    ms: Aegea Utara
+    nb: Nordlige egeiske øyer
+    nl: Noord-Egeïsche Eilanden
+    pl: Region Wyspy Egejskie Północne
+    pt: Egeu Setentrional
+    ro: Egeea de Nord
+    ru: Северные Эгейские острова
+    si: උතුරු එයිජියන් කලාපය
+    sr: Периферија Северни Егеј
+    sv: Nordegeiska öarna
+    ta: வடக்கு ஏகன் பகுதி
+    te: ఉత్తర ఏజియన్ ప్రాంతం
+    th: อีเจียนเหนือ
+    tr: Kuzey Ege
+    uk: Північні Егейські острови
+    ur: شمالی ایجیئن
+    vi: Bắc Aegea
+    lv: Ziemeļegejas perifērija
+    ceb: North Aegean
+    sr_Latn: Periferija Severni Egej
+    zh: 北愛琴
+    jv: Aegea Lor
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011103\U00011103\U00011128\U0001110E\U00011129\U0001111A\U00011134"
+    mk: Северен Егеј
+    'no': Nordlige egeiske øyer
+    az: Şimali Egey adaları
+    cy: Gogledd Aegeaidd
+    eu: Ipar Egeo
+    sq: Egjeu Verior
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: K
+  type: administrative_region
+L:
+  name: Nótio Aigaío
+  unofficial_names:
+  translations:
+    ar: جنوب إيجة
+    be: Паўднёвыя Эгейскія астравы
+    bg: Южен Егей
+    bn: দক্ষিণ এজিয়েন
+    ca: Egeu Meridional
+    cs: Jižní Egeis
+    da: South Aegean
+    de: Südliche Ägäis
+    el: Περιφέρεια Νοτίου Αιγαίου
+    en: South Aegean
+    es: Egeo Meridional
+    et: Lõuna-Egeus
+    fa: استان اژه جنوبی
+    fi: Etelä-Egean saaret
+    fr: Égée-Méridionale
+    gl: Exeo Meridional
+    gu: સાઉથ એજીયન
+    he: דרום הים האגאי
+    hi: दक्षिण एजियन
+    hr: Periferija Južni Egej
+    hu: Dél-Égei-szigetek
+    hy: Հարավային Եգեյան կղզիներ
+    id: Aegea Selatan
+    it: Egeo Meridionale
+    ja: 南エーゲ
+    ka: სამხრეთ ეგეოსის კუნძულები
+    kn: ದಕ್ಷಿಣ ಏಜಿಯನ್
+    ko: 남에게 주
+    lt: Pietų Egėjo periferija
+    mr: दक्षिण एजियन
+    ms: Aegea Selatan
+    nb: Sørlige egeiske øyer
+    nl: Zuid-Egeïsche Eilanden
+    pl: Region Wyspy Egejskie Południowe
+    pt: Egeu Meridional
+    ro: Egeea de Sud
+    ru: Южные Эгейские острова
+    si: දකුණු අයිජියන්
+    sr: Периферија Јужни Егеј
+    sv: Sydegeiska öarna
+    ta: தெற்கு ஏஜென்
+    te: దక్షిణ ఆగియాన్
+    th: เซาร์ทอีเจียน
+    tr: Güney Ege
+    uk: Південні Егейські острови
+    ur: جنوبی ایجیئن
+    vi: Nam Aegea
+    lv: Dienvidegeja
+    ceb: South Aegean
+    sr_Latn: Periferija Južni Egej
+    zh: 南愛琴
+    jv: Aegea Kidul
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011103\U00011103\U00011128\U0001110E\U00011129\U0001111A\U00011134"
+    mk: Јужен Егеј
+    'no': Sørlige egeiske øyer
+    az: Cənubi Egey adaları
+    cy: De Aegeaidd
+    eu: Hego Egeo
+    sq: Egjeu Jugor
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: L
+  type: administrative_region
+M:
+  name: Kríti
+  unofficial_names:
+  translations:
+    be: Акруга Крыт
+    ca: Regió de Creta
+    cs: Kréta
+    el: Περιφέρεια Κρήτης
+    en: Crete
+    es: Periferia de Creta
+    et: Kreeta piirkond
+    fi: Kreeta
+    fr: Crète (périphérie)
+    hr: Periferija Kreta
+    ja: クレタ島
+    nl: Kreta
+    pl: Region Kreta
+    ru: Крит
+    sr: Периферија Крит
+    sr_Latn: Periferija Krit
+    ccp: "\U00011107\U00011133\U00011122\U0001112C\U00011116\U00011134"
+    ko: 크레타주
+    de: Kreta
+    ar: منطقة إقريطش
+    az: Krit (periferiya)
+    ceb: Crete
+    hy: Կրետեի շրջան
+    sv: Kreta
+    uk: Крит
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: M
+  type: administrative_region

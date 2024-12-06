@@ -1,0 +1,50 @@
+---
+BZ:
+  alpha2: BZ
+  alpha3: BLZ
+  continent: North America
+  country_code: '501'
+  currency_code: BZD
+  distance_unit: MI
+  gec: BH
+  geo:
+    latitude: 17.189877
+    longitude: -88.49765
+    max_latitude: 18.4959419
+    max_longitude: -87.41269989999999
+    min_latitude: 15.8856189
+    min_longitude: -89.22758789999999
+    bounds:
+      northeast:
+        lat: 18.4959419
+        lng: -87.41269989999999
+      southwest:
+        lat: 15.8856189
+        lng: -89.22758789999999
+  international_prefix: '00'
+  ioc: BIZ
+  iso_long_name: Belize
+  iso_short_name: Belize
+  languages_official:
+  - en
+  - es
+  languages_spoken:
+  - en
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: '0'
+  nationality: Belizean
+  number: '084'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Central America
+  un_locode: BZ
+  unofficial_names:
+  - Belize
+  - Belice
+  - ベリーズ
+  world_region: AMER

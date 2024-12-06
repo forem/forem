@@ -1,0 +1,98 @@
+#<User:placeholder_id
+    @_start_transaction_state = {},
+    @aggregation_cache = {},
+    @attributes_cache = {},
+    @column_types = {
+             "admin" => #<ActiveRecord::ConnectionAdapters::SQLite3Column:placeholder_id
+            attr_accessor :coder = nil,
+            attr_accessor :primary = false,
+            attr_reader :default = nil,
+            attr_reader :default_function = nil,
+            attr_reader :limit = nil,
+            attr_reader :name = "admin",
+            attr_reader :null = true,
+            attr_reader :precision = nil,
+            attr_reader :scale = nil,
+            attr_reader :sql_type = "boolean",
+            attr_reader :type = :boolean
+        >,
+        "created_at" => #<ActiveRecord::ConnectionAdapters::SQLite3Column:placeholder_id
+            attr_accessor :coder = nil,
+            attr_accessor :primary = false,
+            attr_reader :default = nil,
+            attr_reader :default_function = nil,
+            attr_reader :limit = nil,
+            attr_reader :name = "created_at",
+            attr_reader :null = true,
+            attr_reader :precision = nil,
+            attr_reader :scale = nil,
+            attr_reader :sql_type = "datetime",
+            attr_reader :type = :datetime
+        >,
+                "id" => #<ActiveRecord::ConnectionAdapters::SQLite3Column:placeholder_id
+            attr_accessor :coder = nil,
+            attr_accessor :primary = true,
+            attr_reader :default = nil,
+            attr_reader :default_function = nil,
+            attr_reader :limit = nil,
+            attr_reader :name = "id",
+            attr_reader :null = false,
+            attr_reader :precision = nil,
+            attr_reader :scale = nil,
+            attr_reader :sql_type = "INTEGER",
+            attr_reader :type = :integer
+        >,
+              "name" => #<ActiveRecord::ConnectionAdapters::SQLite3Column:placeholder_id
+            attr_accessor :coder = nil,
+            attr_accessor :primary = false,
+            attr_reader :default = nil,
+            attr_reader :default_function = nil,
+            attr_reader :limit = 255,
+            attr_reader :name = "name",
+            attr_reader :null = true,
+            attr_reader :precision = nil,
+            attr_reader :scale = nil,
+            attr_reader :sql_type = "varchar(255)",
+            attr_reader :type = :string
+        >,
+              "rank" => #<ActiveRecord::ConnectionAdapters::SQLite3Column:placeholder_id
+            attr_accessor :coder = nil,
+            attr_accessor :primary = false,
+            attr_reader :default = nil,
+            attr_reader :default_function = nil,
+            attr_reader :limit = nil,
+            attr_reader :name = "rank",
+            attr_reader :null = true,
+            attr_reader :precision = nil,
+            attr_reader :scale = nil,
+            attr_reader :sql_type = "integer",
+            attr_reader :type = :integer
+        >
+    },
+    @column_types_override = nil,
+    @destroyed = false,
+    @marked_for_destruction = false,
+    @new_record = true,
+    @previously_changed = {},
+    @readonly = false,
+    @reflects_state = [
+        [0] false
+    ],
+    @transaction_state = nil,
+    @txn = nil,
+    attr_accessor :attributes = {
+             "admin" => false,
+        "created_at" => "1992-10-10 12:30:00",
+                "id" => nil,
+              "name" => "Diana",
+              "rank" => 1
+    },
+    attr_accessor :destroyed_by_association = nil,
+    attr_reader :association_cache = {},
+    attr_reader :changed_attributes = {
+             "admin" => nil,
+        "created_at" => nil,
+              "name" => nil,
+              "rank" => nil
+    }
+>

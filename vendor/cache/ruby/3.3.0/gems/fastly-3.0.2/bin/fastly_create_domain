@@ -1,0 +1,67 @@
+#!/bin/env ruby
+
+##
+# fastly_create_domain - ruby script to quickly create a fastly domain
+#
+# Author::   Fastly Inc <support@fastly.com>
+# Copyright:: Copyright (c) 2014 Fastly Inc
+# License::   Distributes under the same terms as Ruby
+#
+# = USAGE
+# 
+#     fastly_create_domain <options> <service id> <domain name>
+# 
+# = CONFIGURATION
+# 
+# You can either have a config file in ~/.fastly or /etc/fastly with
+# 
+#     api_key = <api_key>
+# 
+# Alternatively you can pass in any of those options on the command line
+# 
+#     $ ruby fastly_create_domain --api_key=<key> <service id> <domain name>
+
+require 'rubygems'
+require 'fastly'
+
+def get_options(*files)
+  options = {}
+  files.each do |file|
+    next unless File.exist?(file)
+    options = load_config(file)
+    break
+  end
+
+  while (ARGV.size>0 && ARGV[0] =~ /^-+(\w+)\=(\w+)$/) do
+    options[$1.to_sym] = $2;
+    ARGV.shift;
+  end
+  raise"Couldn't find options from command line arguments or #{files.join(', ')}" unless options.size>0
+  options;
+end
+
+
+# :nodoc:
+def die(message)
+  warn message
+  exit -1
+end
+
+
+params = get_options("#{ENV['HOME']}/.fastly", "/etc/fastly")
+
+service_id  = ARGV.shift || die("You must pass in a service id")
+domain_name = ARGV.shift || die("You must pass in a domain name")
+
+die("Couldn't find any of the config files - #{configs.join(',')}") unless params.keys.size>0
+
+fastly = Fastly.new(params)
+
+service = fastly.get_service(service_id) || die("Couldn't find service #{service_id}")
+version = service.version
+cloned_version = version.clone
+domain = fastly.create_domain(:service_id => service.id, :version => cloned_version.number, :name => domain_name)
+cloned_version.activate!
+
+puts "Done! Created Domain: #{domain.name}. Active Version: #{domain.version.number}"
+

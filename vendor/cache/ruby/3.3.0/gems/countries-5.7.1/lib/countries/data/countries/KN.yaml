@@ -1,0 +1,54 @@
+---
+KN:
+  alpha2: KN
+  alpha3: KNA
+  continent: North America
+  country_code: '1'
+  currency_code: XCD
+  distance_unit: MI
+  gec: SC
+  geo:
+    latitude: 17.357822
+    longitude: -62.782998
+    max_latitude: 17.4205891
+    max_longitude: -62.52369989999999
+    min_latitude: 17.07861
+    min_longitude: -62.86949999999999
+    bounds:
+      northeast:
+        lat: 17.4205891
+        lng: -62.52369989999999
+      southwest:
+        lat: 17.07861
+        lng: -62.86949999999999
+  international_prefix: '011'
+  ioc: SKN
+  iso_long_name: Saint Kitts and Nevis
+  iso_short_name: Saint Kitts and Nevis
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1869'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Kittian and Nevisian
+  number: '659'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: KN
+  unofficial_names:
+  - Saint Kitts and Nevis
+  - Föderation St. Kitts und Nevis
+  - Saint Kitts et Nevis
+  - Saint Kitts y Nevis
+  - セントクリストファー・ネイビス
+  - Saint Kitts en Nevis
+  - St. Kitts and Nevis
+  - St Kitts and Nevis
+  world_region: AMER

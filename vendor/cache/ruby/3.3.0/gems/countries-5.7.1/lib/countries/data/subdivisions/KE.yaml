@@ -1,0 +1,1795 @@
+---
+'01':
+  name: Baringo
+  code: '01'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Baringo County
+    en: Baringo
+    es: Condado de Baringo
+    ja: バリンゴ (カウンティ)
+    ko: 바링고 현
+    nb: Baringo fylke
+    nl: Baringo
+    ru: Баринго
+    sv: Baringo
+    sw: Wilaya ya Baringo
+    ur: بارنگو کاؤنٹی
+    vi: Baringo
+    zh: 巴林戈郡
+    ceb: Baringo
+    fa: شهرستان بارینگو
+    ccp: "\U0001111D\U00011122\U00011128\U00011101\U00011109\U0001112E"
+    'no': Baringo fylke
+    ca: comtat de Baringo
+    cy: Sir Baringo
+    fr: Comté de Baringo
+    he: מחוז בארינגו
+    id: County Baringo
+    it: contea di Baringo
+    pl: Baringo (hrabstwo)
+    uk: Баринго (графство)
+    zu: Baringo County
+  comments:
+  type: county
+'02':
+  name: Bomet
+  code: '02'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Bomet County
+    en: Bomet
+    es: Condado de Bomet
+    ja: ボメット (カウンティ)
+    ko: 보메트 현
+    nb: Bomet (distrikt)
+    nl: Bomet
+    sv: Bomet (distrikt)
+    sw: Wilaya ya Bomet
+    ur: بومت کاؤنٹی
+    vi: Bomet
+    ceb: Bomet (lalawigan)
+    zh: 博美特郡
+    fa: شهرستان بومت
+    ccp: "\U0001111D\U00011127\U0001111F\U0001112C\U00011116\U00011134"
+    'no': Bomet (distrikt)
+    cy: Sir Bomet
+    fr: Bomet (comté du Kenya)
+    id: County Bomet
+    it: Contea di Bomet
+    pl: Bomet (hrabstwo)
+    ru: Бомет
+    uk: Бомет (графство)
+  comments:
+  type: county
+'03':
+  name: Bungoma
+  code: '03'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Bungoma County
+    en: Bungoma
+    es: Condado de Bungoma
+    fi: Bungoman piirikunta
+    fr: Bungoma (comté du Kenya)
+    ja: ブンゴマ (カウンティ)
+    ko: 붕고마 현
+    nb: Bungoma fylke
+    nl: Bungoma County
+    sv: Bungoma
+    sw: Wilaya ya Bungoma
+    ur: بونگوما کاؤنٹی
+    vi: Bungoma
+    zh: 邦戈馬郡
+    fa: شهرستان بونگوما
+    ccp: "\U0001111D\U0001111A\U00011134\U00011109\U0001112E\U0001111F"
+    'no': Bungoma fylke
+    cy: Sir Bungoma
+    id: County Bungoma
+    it: Contea di Bungoma
+    pl: Bungoma (hrabstwo)
+    ru: Бунгома
+    uk: Бунгома (графство)
+  comments:
+  type: county
+'04':
+  name: Busia
+  code: '04'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Busia County
+    en: Busia
+    es: Condado de Busia
+    fr: Busia
+    ja: ブシア (カウンティ)
+    ko: 부시아 현
+    nb: Busia fylke
+    nl: Busia
+    ru: Бусиа (округ, Кения)
+    sv: Busia (distrikt i Kenya)
+    sw: Wilaya ya Busia, Kenya
+    ur: بوسیا کاؤنٹی
+    vi: Busia
+    ceb: Busia
+    zh: 布希亞郡
+    fa: شهرستان بوسیا
+    ccp: "\U0001111D\U00011128\U00011105\U0001112A\U00011125\U00011128\U00011120"
+    ca: Busia
+    'no': Busia fylke
+    cy: Sir Busia
+    id: County Busia
+    it: Contea di Busia
+    pl: Busia (hrabstwo)
+    uk: Бусія (графство)
+  comments:
+  type: county
+'05':
+  name: Elgeyo/Marakwet
+  code: '05'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Elgeyo-Marakwet County
+    en: Elgeyo-Marakwet
+    es: Condado de Elgeyo-Marakwet
+    ko: 엘게요마라퀘트 현
+    nb: Elgeyo-Marakwet fylke
+    nl: Elgeyo-Marakwet County
+    ur: ایلگیو-ماراکوت کاؤنٹی
+    zh: 埃爾格約-馬拉奎特郡
+    ccp: "\U00011103\U0001112C\U00011123\U00011134\U00011109\U0001112C\U00011103\U0001112E-\U0001111F\U00011122\U00011107\U00011134\U00011124\U0001112C\U00011116\U00011134"
+    'no': Elgeyo-Marakwet fylke
+    cy: Sir Elgeyo-Marakwet
+    da: Elgeyo-Marakwet County
+    fa: شهرستان الگیو-ماراکوت
+    fi: Elgeyo-Marakwetin piirikunta
+    id: County Elgeyo-Marakwet
+    it: Contea di Elgeyo-Marakwet
+    ja: エルゲーヨ＝マラクウェト (カウンティ)
+    pl: Elgeyo-Marakwet
+    ru: Элгейо-Мараквет
+    sw: Kaunti ya Elgeyo-Marakwet
+  comments:
+  type: county
+'06':
+  name: Embu
+  code: '06'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Embu County
+    en: Embu
+    es: Condado de Embu
+    fi: Embun piirikunta
+    it: Contea di Embu
+    ja: エンブ (カウンティ)
+    ko: 엠부 현
+    nb: Embu fylke
+    nl: Embu
+    sv: Embu (distrikt)
+    sw: Wilaya ya Embu
+    ur: عمبو کاؤنٹی
+    vi: Embu
+    ceb: Embu (lalawigan)
+    zh: 恩布郡
+    fa: شهرستان امبو
+    ccp: "\U00011103\U0001112C\U0001111F\U00011134\U0001111D\U0001112A"
+    'no': Embu fylke
+    cy: Sir Embu
+    fr: Comté d’Embu
+    id: County Embu
+    pl: Embu (hrabstwo)
+    pt: Embu (condado)
+    ru: Эмбу
+  comments:
+  type: county
+'07':
+  name: Garissa
+  code: '07'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Comtat de Garissa
+    de: Garissa County
+    en: Garissa
+    es: Condado de Garissa
+    fr: Garissa
+    it: Contea di Garissa
+    ja: ガリッサ (カウンティ)
+    ko: 가리사 현
+    nb: Garissa (distrikt)
+    nl: Garissa
+    sv: Garissa (distrikt)
+    sw: Wilaya ya Garissa
+    ur: گاریسا کاؤنٹی
+    vi: Garissa
+    ceb: Garissa
+    zh: 加里薩郡
+    fa: شهرستان گاریسا
+    ru: Гарисса (округ)
+    ccp: "\U00011109\U00011122\U00011128\U00011125"
+    'no': Garissa (distrikt)
+    cy: Sir Garissa
+    id: County Garissa
+    pl: Garissa (hrabstwo)
+    pt: Garissa (condado)
+    uk: Округ Гарісса
+  comments:
+  type: county
+'08':
+  name: Homa Bay
+  code: '08'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Homa Bay County
+    en: Homa Bay
+    fr: Homa Bay (district du Kenya)
+    ja: ホマ・ベイ (カウンティ)
+    ko: 호마베이 현
+    nb: Homa Bay fylke
+    nl: Homa Bay
+    sv: Homa Bay (distrikt)
+    sw: Wilaya ya Homa Bay
+    ur: ہوما بے کاؤنٹی
+    vi: Homa Bay
+    ceb: Homa Bay (lalawigan)
+    zh: 霍馬灣郡
+    fa: شهرستان خلیج هوما
+    pl: Wilaya ya Homa Bay
+    ccp: "\U00011126\U0001112E\U0001111F \U0001111D\U0001112C"
+    es: Condado de Homa Bay
+    'no': Homa Bay fylke
+    cy: Sir Homa Bay
+    id: County Homa Bay
+    it: Contea di Homa Bay
+    ru: Хома-Бей
+  comments:
+  type: county
+'09':
+  name: Isiolo
+  code: '09'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Isiolo County
+    en: Isiolo
+    es: Condado de Isiolo
+    it: Contea di Isiolo
+    ja: イシオロ (カウンティ)
+    ko: 이시올로 현
+    nb: Isiolo fylke
+    nl: Isiolo
+    sv: Isiolo
+    sw: Wilaya ya Isiolo
+    ur: اسیولو کاؤنٹی
+    vi: Isiolo
+    ceb: Isiolo
+    zh: 伊希約洛郡
+    fa: شهرستان ایسیولو
+    ccp: "\U00011103\U0001112D\U00011125\U00011128\U00011103\U0001112E\U00011123\U0001112E"
+    'no': Isiolo fylke
+    cy: Sir Isiolo
+    fr: Comté d’Isiolo
+    id: County Isiolo
+    pl: Isiolo (hrabstwo)
+    ru: Исиоло (округ)
+    uk: Графство Ізіоло
+  comments:
+  type: county
+'10':
+  name: Kajiado
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kajiado County
+    en: Kajiado
+    es: Condado de Kajiado
+    ja: カジアド (カウンティ)
+    ko: 카지아도 현
+    nb: Kajiado fylke
+    nl: Kajiado
+    pt: Distrito de Kajiado
+    sv: Kajiado
+    sw: Wilaya ya Kajiado
+    ur: کاجیادو کاؤنٹی
+    vi: Kajiado
+    ceb: Kajiado (lalawigan)
+    zh: 卡耶亞多郡
+    fa: شهرستان کاجیادو
+    ccp: "\U00011107\U0001110E\U00011128\U00011120\U00011113\U0001112E"
+    fr: Kajiado (comté du Kenya)
+    'no': Kajiado fylke
+    ca: Comtat de Kajiado
+    cy: Sir Kajiado
+    fi: Kajiadon piirikunta
+    he: מחוז קאג׳יאדו
+    id: County Kajiado
+    it: Contea di Kajiado
+    pl: Kajiado (hrabstwo)
+    ru: Каджиадо
+    uk: Каджіадо (округ)
+  comments:
+  type: county
+'11':
+  name: Kakamega
+  code: '11'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kakamega County
+    en: Kakamega
+    es: Condado de Kakamega
+    fi: Kakamegan piirikunta
+    fr: Kakamega
+    ja: カカメガ (カウンティ)
+    ko: 카카메가 현
+    nb: Kakamega fylke
+    nl: Kakamega
+    sv: Kakamega (distrikt)
+    sw: Wilaya ya Kakamega
+    ur: کاکامیگا کاؤنٹی
+    vi: Kakamega
+    ceb: Kakamega
+    zh: 卡卡梅加郡
+    fa: شهرستان کاکامگا
+    ccp: "\U00011107\U00011107\U0001111F\U0001112C\U00011109"
+    'no': Kakamega fylke
+    cy: Sir Kakamega
+    id: County Kakamega
+    it: Contea di Kakamega
+    pl: Kakamega (hrabstwo)
+    ru: Какамега
+  comments:
+  type: county
+'12':
+  name: Kericho
+  code: '12'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kericho County
+    en: Kericho
+    es: Condado de Kericho
+    fi: Kerichon piirikunta
+    ja: ケリチョ (カウンティ)
+    ko: 케리초 현
+    nb: Kericho fylke
+    nl: Kericho
+    sv: Kericho (distrikt)
+    sw: Wilaya ya Kericho
+    ur: کیریچو کاؤنٹی
+    vi: Kericho
+    ceb: Kericho
+    zh: 凱里喬郡
+    fa: شهرستان کریچو
+    ccp: "\U00011107\U0001112C\U00011122\U00011128\U0001110C\U0001112E"
+    'no': Kericho fylke
+    cy: Sir Kericho
+    id: County Kericho
+    it: Contea di Kericho
+    pl: Kericho (hrabstwo)
+    ru: Керичо
+  comments:
+  type: county
+'13':
+  name: Kiambu
+  code: '13'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kiambu County
+    en: Kiambu
+    es: Condado de Kiambu
+    fi: Kiambun piirikunta
+    it: Distretto di Kiambu
+    ja: キアンブ (カウンティ)
+    ko: 키암부 현
+    nb: Kiambu fylke
+    nl: Kiambu
+    sv: Kiambu
+    sw: Wilaya ya Kiambu
+    ur: کیامبو کاؤنٹی
+    vi: Kiambu
+    ceb: Kiambu
+    zh: 基安布郡
+    fa: شهرستان کیامبو
+    ccp: "\U00011107\U00011128\U00011120\U0001111F\U00011134\U0001111D\U0001112A"
+    'no': Kiambu fylke
+    cy: Sir Kiambu
+    fr: Comté de Kiambu
+    ga: Contae Kiambu
+    id: County Kiambu
+    pl: Kiambu (hrabstwo)
+    ru: Киямбу
+  comments:
+  type: county
+'14':
+  name: Kilifi
+  code: '14'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kilifi County
+    en: Kilifi
+    es: Distrito de Kilifi
+    fi: Kilifin piirikunta
+    fr: Kilifi
+    it: Distretto di Kilifi
+    ja: キリフィ (カウンティ)
+    ko: 킬리피 현
+    nb: Kilifi fylke
+    nl: Kilifi
+    sv: Kilifi (distrikt)
+    sw: Wilaya ya Kilifi
+    ur: کیلیفی کاؤنٹی
+    vi: Kilifi
+    ceb: Kilifi
+    zh: 基利菲县
+    fa: شهرستان کیلیفی
+    ccp: "\U00011107\U00011128\U00011123\U00011128\U0001111C\U00011128"
+    'no': Kilifi fylke
+    cy: Sir Kilifi
+    id: County Kilifi
+    pl: Kilifi (hrabstwo)
+    ru: Килифи
+  comments:
+  type: county
+'15':
+  name: Kirinyaga
+  code: '15'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kirinyaga County
+    en: Kirinyaga
+    es: Condado de Kirinyaga
+    fi: Kirinyagan piirikunta
+    it: Distretto di Kirinyaga
+    ja: キリーニャガ (カウンティ)
+    ko: 키리니아가 현
+    nb: Kirinyaga fylke
+    nl: Kirinyaga
+    sv: Kirinyaga
+    sw: Wilaya ya Kirinyaga
+    ur: کیرینیاگا کاؤنٹی
+    ceb: Kirinyaga
+    zh: 基里尼亞加郡
+    fa: شهرستان کیرینیاگا
+    ccp: "\U00011107\U00011128\U00011122\U00011128\U0001111A\U00011128\U00011120\U00011109"
+    he: קריניאגה
+    'no': Kirinyaga fylke
+    cy: Sir Kirinyaga
+    fr: Comté de Kirinyaga
+    id: County Kirinyaga
+    pl: Kirinyaga (hrabstwo)
+    pt: Quiriniaga
+    ru: Кириняга
+    vi: Kirinyaga
+  comments:
+  type: county
+'16':
+  name: Kisii
+  code: '16'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kisii County
+    en: Kisii
+    fi: Kisiin piirikunta
+    fr: Kisii
+    ja: キシイ県
+    ko: 키시 현
+    nb: Kisii (distrikt)
+    nl: Kisii
+    pt: Kisii (distrito)
+    ro: Kisii
+    ru: Кисии
+    sv: Kisii (distrikt)
+    sw: Wilaya ya Kisii Kati
+    ur: کیسیی کاؤنٹی
+    ceb: Kisii
+    zh: 基西郡
+    fa: شهرستان کیسی
+    ccp: "\U00011107\U00011128\U00011125\U00011133\U00011126\U00011128"
+    es: Condado de Kisii
+    'no': Kisii (distrikt)
+    cy: Sir Kisii
+    id: County Kisii
+    it: Contea di Kisii
+    pl: Kisii (hrabstwo)
+    vi: Kisii Central
+  comments:
+  type: county
+'17':
+  name: Kisumu
+  code: '17'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة كيزيمو
+    de: Kisumu County
+    en: Kisumu
+    fr: Kisumu (district du Kenya)
+    ja: キスム (カウンティ)
+    ko: 키수무 현
+    nb: Kisumu fylke
+    nl: Kisumu
+    pt: Kisumu (distrito)
+    sv: Kisumu (distrikt)
+    sw: Wilaya ya Kisumu
+    ur: کسیمو کاؤنٹی
+    vi: Kisumu
+    ceb: Kisumu
+    zh: 基蘇木郡
+    fa: شهرستان کیسومو
+    ccp: "\U00011107\U00011128\U00011125\U0001112A\U0001111F\U0001112A"
+    es: Condado de Kisumu
+    'no': Kisumu fylke
+    cy: Sir Kisumu
+    he: קיסומו
+    id: County Kisumu
+    it: Contea di Kisumu
+    pl: Kisumu (hrabstwo)
+    ru: Кисуму
+  comments:
+  type: county
+'18':
+  name: Kitui
+  code: '18'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    da: Kitui
+    de: Kitui County
+    en: Kitui
+    es: Condado de Kitui
+    fi: Kituin piirikunta
+    ja: キツイ (カウンティ)
+    ko: 키투이 현
+    nb: Kitui fylke
+    nl: Kitui
+    sv: Kitui
+    sw: Wilaya ya Kitui
+    ur: کیتوئی کاؤنٹی
+    vi: Kitui
+    ceb: Kitui
+    zh: 基圖伊郡
+    fa: شهرستان کیتوی
+    ccp: "\U00011107\U00011128\U00011111\U0001112D\U0001112A"
+    fr: Comté de Kitui
+    'no': Kitui fylke
+    cy: Sir Kitui
+    id: County Kitui
+    it: Contea di Kitui
+    pl: Kitui (hrabstwo)
+    ru: Китуи
+  comments:
+  type: county
+'19':
+  name: Kwale
+  code: '19'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Kwale County
+    en: Kwale
+    es: Condado de Kwale
+    fr: Kwale
+    it: Distretto di Kwale
+    ja: クワレ (カウンティ)
+    ko: 콸레 현
+    nb: Kwale fylke
+    nl: Kwale
+    sv: Kwale
+    sw: Wilaya ya Kwale
+    ur: کوالے کاؤنٹی
+    vi: Kwale
+    ceb: Kwale
+    zh: 夸勒郡
+    fa: شهرستان کوالی
+    ccp: "\U00011107\U0001112C\U00011124\U00011123\U0001112C"
+    'no': Kwale fylke
+    cy: Sir Kwale
+    id: County Kwale
+    pl: Kwale (hrabstwo)
+    ru: Квале
+  comments:
+  type: county
+'20':
+  name: Laikipia
+  code: '20'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Лаикипиа
+    de: Laikipia County
+    en: Laikipia
+    es: Condado de Laikipia
+    it: Distretto di Laikipia
+    ja: ライキピア (カウンティ)
+    ko: 라이키피아 현
+    nb: Laikipia fylke
+    nl: Laikipia
+    ru: Лайкипиа
+    sv: Laikipia
+    sw: Wilaya ya Laikipia
+    ur: لائکی پیا کاؤنٹی
+    vi: Laikipia
+    ceb: Laikipia
+    zh: 萊基皮亞郡
+    fa: شهرستان لایکیپیا
+    ccp: "\U00011123\U0001112D\U00011107\U00011128\U0001111B\U00011128\U00011120"
+    hy: Լայկիպիա
+    'no': Laikipia fylke
+    ca: Comtat de Laikipia
+    cy: Sir Laikipia
+    fr: Laikipia
+    id: County Laikipia
+    pl: Laikipia
+    uk: Лайкіпія
+  comments:
+  type: county
+'21':
+  name: Lamu
+  code: '21'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte de Lamu
+    en: Lamu
+    es: Condado de Lamu
+    fr: Lamu
+    it: Contea di Lamu
+    ja: ラム (カウンティ)
+    ko: 라무 현
+    nb: Lamu fylke
+    nl: Lamu
+    sv: Lamu
+    sw: Wilaya ya Lamu
+    ur: لامو کاؤنٹی
+    vi: Lamu
+    ceb: Lamu District
+    zh: 拉穆郡
+    fa: شهرستان لامو
+    ccp: "\U00011123\U0001111F\U00011134\U0001111D\U0001112A"
+    'no': Lamu fylke
+    cy: Sir Lamu
+    de: Lamu County
+    fi: Lamun piirikunta
+    id: County Lamu
+    pl: Lamu (hrabstwo)
+    pt: Lamu (condado)
+    ru: Ламу
+  comments:
+  type: county
+'22':
+  name: Machakos
+  code: '22'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Machakos District
+    en: Machakos
+    es: Condado de Machakos
+    fi: Machakosin piirikunta
+    ja: マチャコス (カウンティ)
+    ko: 마차코스 현
+    nb: Machakos fylke
+    nl: Machakos
+    sv: Machakos (distrikt)
+    sw: Wilaya ya Machakos
+    ur: ماچاکوس کاؤنٹی
+    vi: Machakos
+    ceb: Machakos (kapital sa lalawigan)
+    zh: 馬查科斯郡
+    fa: شهرستان ماچاکوس
+    ccp: "\U0001111F\U00011133\U00011120\U0001110C\U00011107\U0001112E\U0001110C\U00011134"
+    'no': Machakos fylke
+    ca: comtat de Machakos
+    cy: Sir Machakos
+    fr: comté de Machakos
+    id: County Machakos
+    it: Contea di Machakos
+    pl: Machakos (hrabstwo)
+    ru: Мачакос
+    tr: Machakos ili
+  comments:
+  type: county
+'23':
+  name: Makueni
+  code: '23'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Makueni District
+    en: Makueni
+    es: Condado de Makueni
+    ja: マクエニ (カウンティ)
+    ko: 마쿠에니 현
+    nb: Makueni fylke
+    nl: Makueni
+    sv: Makueni
+    sw: Wilaya ya Makueni
+    ur: ماکوینی کاؤنٹی
+    vi: Makueni
+    ceb: Makueni
+    zh: 馬瓜尼郡
+    ccp: "\U0001111F\U00011107\U0001112A\U00011120\U0001112C\U0001111A\U00011128"
+    fr: Makueni
+    'no': Makueni fylke
+    cy: Sir Makueni
+    fa: شهرستان ماکونی
+    id: County Makueni
+    it: Contea di Makueni
+    pl: Makueni
+    ru: Макуени
+  comments:
+  type: county
+'24':
+  name: Mandera
+  code: '24'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Mandera District
+    en: Mandera
+    es: Condado de Mandera
+    fi: Manderan piirikunta
+    it: Contea di Mandera
+    ja: マンデラ (カウンティ)
+    ko: 만데라 현
+    nb: Mandera fylke
+    nl: Mandera
+    sv: Mandera
+    sw: Wilaya ya Mandera
+    ur: ماندیرا کاؤنٹی
+    vi: Mandera
+    ceb: Mandera (lalawigan)
+    zh: 曼德拉郡
+    ccp: "\U0001111F\U0001111A\U00011134\U00011113\U0001112C\U00011122"
+    'no': Mandera fylke
+    cy: Sir Mandera
+    fa: شهرستان ماندرا
+    id: County Mandera
+    pl: Mandera (hrabstwo)
+    ru: Мандера
+  comments:
+  type: county
+'25':
+  name: Marsabit
+  code: '25'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Marsabit District
+    en: Marsabit
+    es: Marsabit
+    it: Contea di Marsabit
+    ja: マルサビット (カウンティ)
+    ko: 마르사비트 현
+    nb: Marsabit fylke
+    nl: Marsabit
+    pl: Marsabit
+    sv: Marsabit
+    sw: Wilaya ya Marsabit
+    ur: مارسابیت کاؤنٹی
+    vi: Marsabit
+    ceb: Marsabit
+    zh: 馬薩比特郡
+    fa: شهرستان مارسابیت
+    ccp: "\U0001111F\U00011122\U00011134\U00011125\U0001111D\U00011128\U00011116\U00011134"
+    fr: Marsabit
+    'no': Marsabit fylke
+    ca: Marsabit
+    cy: Sir Marsabit
+    id: County Marsabit
+    ru: Марсабит
+  comments:
+  type: county
+'26':
+  name: Meru
+  code: '26'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Meru
+    es: Condado de Meru
+    fi: Merun piirikunta
+    it: Contea di Meru
+    ja: メルー (カウンティ)
+    ko: 메루 현
+    nb: Meru fylke
+    nl: Meru County
+    sv: Meru (län)
+    ur: میرو کاؤنٹی
+    ceb: Meru
+    zh: 梅魯郡
+    sw: Kaunti ya Meru
+    ccp: "\U0001111F\U0001112C\U00011122\U0001112A"
+    'no': Meru fylke
+    cy: Sir Meru
+    de: Meru County
+    fa: شهرستان مرو (کنیا)
+    fr: Comté de Meru
+    id: County Meru
+    pl: Meru (hrabstwo)
+    ru: Меру
+    vi: Meru (hạt)
+  comments:
+  type: county
+'27':
+  name: Migori
+  code: '27'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Migori District
+    en: Migori
+    fr: Migori
+    ja: ミゴリ (カウンティ)
+    ko: 미고리 현
+    nb: Migori fylke
+    nl: Migori
+    pt: Migori
+    sv: Migori
+    sw: Wilaya ya Migori
+    ur: میگوری کاؤنٹی
+    vi: Migori
+    ceb: Migori (lalawigan)
+    zh: 米戈利郡
+    ccp: "\U0001111F\U00011128\U00011109\U0001112E\U00011122\U00011128"
+    es: Condado de Migori
+    uk: Мігорі (округ)
+    'no': Migori fylke
+    cy: Sir Migori
+    fa: شهرستان میگوری
+    fi: Migorin piirikunta
+    id: County Migori
+    it: Contea di Migori
+    pl: Migori (hrabstwo)
+    ru: Мигори
+  comments:
+  type: county
+'28':
+  name: Mombasa
+  code: '28'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Mombasa District
+    en: Mombasa
+    es: Condado de Mombasa
+    fi: Mombasan piirikunta
+    fr: Mombasa District
+    it: Contea di Mombasa
+    ja: モンバサ (カウンティ)
+    ko: 몸바사 현
+    nb: Mombasa fylke
+    nl: Mombasa District
+    ru: Момбаса
+    sw: Wilaya ya Mombasa
+    ur: ممباسا کاؤنٹی
+    vi: Mombasa
+    ceb: Mombasa
+    zh: 蒙巴萨县
+    ccp: "\U0001111F\U00011127\U0001111F\U00011134\U0001111D\U00011125"
+    pt: Condado de Mombaça
+    be: Мамбаса
+    'no': Mombasa fylke
+    cy: Sir Mombasa
+    fa: شهرستان مومباسا
+    he: מומבסה
+    id: County Mombasa
+    pl: Mombasa (hrabstwo)
+    uk: Момбаса
+  comments:
+  type: county
+'29':
+  name: Murang’a
+  code: '29'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Murang’a District
+    en: Murang’a
+    es: Condado de Muranga
+    fi: Murangan piirikunta
+    it: Distretto di Muranga
+    ja: ムランガ (カウンティ)
+    ko: 무랑가 현
+    nl: Muranga
+    sv: Muranga
+    sw: Wilaya ya Murang’a
+    ur: مورانگا کاؤنٹی
+    vi: Murang’a
+    ceb: Murang’A
+    zh: 穆蘭卡郡
+    ru: Муранга
+    ccp: "\U0001111F\U0001112A\U00011122\U00011101‘\U00011103"
+    cy: Sir Muranga
+    fa: شهرستان مورانگا
+    fr: Comté de Muranga
+    id: County Murang’a
+    pl: Murang’a (hrabstwo)
+    pt: Muranga (condado)
+  comments:
+  type: county
+'30':
+  name: Nairobi City
+  code: '30'
+  unofficial_names: Nairobi Municipality
+  geo:
+    latitude: -1.286577
+    longitude: 36.82193669999999
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة نايروبي
+    be: Найробі
+    bn: নাইরোবি
+    da: Nairobi County
+    de: Nairobi
+    el: Ναϊρόμπι
+    en: Nairobi County
+    es: Nairobi
+    et: Nairobi maakond
+    fi: Nairobin piirikunta
+    fr: Nairobi
+    gu: નૈરોબી કાઉન્ટી
+    hi: नैरोबी काउंटी
+    id: Nairobi County
+    it: Contea di Nairobi
+    ja: ナイロビ (カウンティ)
+    kn: ನೈರೋಬಿ ಕೌಂಟಿ
+    ko: 나이로비 현
+    mr: नैरोबी काउंटी
+    ms: Nairobi County
+    nb: Nairobi fylke
+    nl: Nairobi County
+    pl: Powiat Nairobi
+    pt: Nairobi
+    ru: Найроби
+    si: නයිරෝබි ප්‍රාන්තය
+    sv: Nairobi County
+    ta: நைரோபி கவுண்டி
+    te: నైరోబి కౌంటీ
+    th: ไนโรบี
+    tr: Nairobi County
+    ur: نیروبی کاؤنٹی
+    vi: Hạt Nairobi
+    lv: Nairobi province
+    ceb: Nairobi
+    lt: Nairobio sritis
+    zh: 內羅畢郡
+    ccp: "\U0001111A\U0001112D\U00011122\U0001112E\U0001111D\U00011128 \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    uk: Округ Найробі
+    'no': Nairobi fylke
+    ca: Nairobi
+    cy: Sir Nairobi
+    fa: شهرستان نایروبی
+    hy: Նայրոբի
+    sw: Kaunti ya Nairobi
+  comments:
+  type: county
+'31':
+  name: Nakuru
+  code: '31'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Nakuru District
+    en: Nakuru
+    es: Condado de Nakuru
+    fi: Nakurun piirikunta
+    fr: Nakuru
+    ja: ナクル (カウンティ)
+    ko: 나쿠루 현
+    nb: Nakuru fylke
+    nl: Nakuru
+    sv: Nakuru
+    sw: Wilaya ya Nakuru
+    ur: ناکورو کاؤنٹی
+    vi: Nakuru
+    ceb: Nakuru (lalawigan)
+    zh: 納庫魯郡
+    ccp: "\U0001111A\U00011107\U0001112A\U00011122\U0001112A"
+    hy: Նակուրու շրջան
+    uk: округ Накуру
+    'no': Nakuru fylke
+    ca: Comtat de Nakuru
+    cy: Sir Nakuru
+    eu: Nakuru konderria
+    fa: شهرستان ناکورو
+    id: County Nakuru
+    it: Contea di Nakuru
+    pl: Nakuru (hrabstwo)
+    ru: Накуру
+  comments:
+  type: county
+'32':
+  name: Nandi
+  code: '32'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Nandi District
+    en: Nandi
+    es: Distrito Nandi
+    fi: Nandin piirikunta
+    fr: District de Nandi
+    ja: ナンディ (カウンティ)
+    ko: 난디 현
+    nb: Nandi fylke
+    nl: Nandi
+    ru: Нанди (округ)
+    sl: Kipsamo, Nandi
+    sv: Nandi (distrikt)
+    sw: Wilaya ya Nandi
+    ur: ناندی کاؤنٹی
+    vi: Nandi
+    ceb: Nandi North District
+    zh: 南迪郡
+    ccp: "\U0001111A\U0001111A\U00011134\U00011113\U00011128"
+    he: מחוז ננדי
+    'no': Nandi fylke
+    az: Nandi
+    be: акруга Нандзі
+    ca: Distrit Nandi
+    da: Nandi District
+    fa: شهرستان ناندی
+    id: County Nandi
+    it: Contea di Nandi
+    pl: Nandi (hrabstwo)
+  comments:
+  type: county
+'33':
+  name: Narok
+  code: '33'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Narok District
+    en: Narok
+    es: Condado de Narok
+    ja: ナロク (カウンティ)
+    ko: 나로크 현
+    nb: Narok fylke
+    nl: Narok
+    sv: Narok
+    sw: Wilaya ya Narok
+    ur: ناروک کاؤنٹی
+    vi: Narok
+    ceb: Narok
+    zh: 納羅克郡
+    ccp: "\U0001111A\U00011122\U0001112E\U00011107\U00011134"
+    'no': Narok fylke
+    cy: Sir Narok
+    fa: شهرستان ناروک
+    id: County Narok
+    it: Contea di Narok
+    ne: नारोक काउन्टी
+    pl: Narok (hrabstwo)
+    ru: Нарок (округ)
+  comments:
+  type: county
+'34':
+  name: Nyamira
+  code: '34'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Nyamira District
+    en: Nyamira
+    fr: Nyamira
+    ja: ニャミラ県
+    ko: 니아미라 현
+    nb: Nyamira fylke
+    nl: Nyamira
+    sv: Nyamira
+    sw: Wilaya ya Nyamira
+    ur: نیامیرا کاؤنٹی
+    vi: Nyamira
+    ceb: Nyamira (lalawigan)
+    zh: 尼亞米拉郡
+    ccp: "\U0001111A\U00011128\U00011120\U0001111F\U00011128\U00011122"
+    es: Condado de Nyamira
+    'no': Nyamira fylke
+    ca: comtat de Nyamira
+    fa: شهرستان نیامیرا
+    id: County Nyamira
+    it: Contea di Nyamira
+    pl: Nyamira (hrabstwo)
+    ru: Нямира
+  comments:
+  type: county
+'35':
+  name: Nyandarua
+  code: '35'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Nyandarua District
+    en: Nyandarua
+    es: Condado de Nyandarua
+    fi: Nyandaruan piirikunta
+    fr: District de Nyandarua
+    it: Distretto di Nyandarua
+    ja: ニャンダルア (カウンティ)
+    ko: 니안다루아 현
+    nb: Nyandarua fylke
+    nl: Nyandarua
+    sv: Nyandarua
+    sw: Wilaya ya Nyandarua
+    ur: نیانداروا کاؤنٹی
+    vi: Nyandarua
+    ceb: Nyandarua (lalawigan sa Kenya)
+    zh: 年達魯阿郡
+    ccp: "\U0001111A\U00011120\U0001111A\U00011134\U00011113\U00011122\U0001112A\U00011120"
+    'no': Nyandarua fylke
+    cy: Sir Nyandarua
+    fa: شهرستان نیانداروا
+    id: County Nyandarua
+    pl: Nyandarua
+    ru: Ньяндаруа
+  comments:
+  type: county
+'36':
+  name: Nyeri
+  code: '36'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Nyeri District
+    en: Nyeri
+    es: Condado de Nyeri
+    fi: Nyerin piirikunta
+    fr: Nyeri District
+    it: Distretto di Nyeri
+    ja: ニエリ (カウンティ)
+    ko: 니에리 현
+    nb: Nyeri fylke
+    nl: Nyeri
+    pt: Nyeri
+    sv: Nyeri
+    sw: Wilaya ya Nyeri
+    ur: نیئری کاؤنٹی
+    vi: Nyeri
+    ceb: Nyeri (lalawigan)
+    zh: 涅里郡
+    ccp: "\U0001111A\U00011128\U00011120\U00011122\U00011128"
+    be: акруга Ньеры
+    'no': Nyeri fylke
+    cy: Sir Nyeri
+    fa: شهرستان نیری
+    id: County Nyeri
+    pl: Nyeri
+    ru: Ньери
+  comments:
+  type: county
+'37':
+  name: Samburu
+  code: '37'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Самбуру
+    de: Samburu District
+    en: Samburu
+    es: Condado de Samburu
+    it: Distretto di Samburu
+    ja: サンブル (カウンティ)
+    ko: 삼부루 현
+    nb: Samburu fylke
+    nl: Samburu
+    sv: Samburu
+    sw: Wilaya ya Samburu
+    ur: سامبورو کاؤنٹی
+    vi: Samburu
+    ceb: Samburu
+    zh: 桑布盧郡
+    ccp: "\U00011125\U0001111F\U00011134\U0001111D\U0001112A\U00011122\U0001112A"
+    'no': Samburu fylke
+    cy: Sir Samburu
+    fa: شهرستان سامبورو
+    fr: Comté de Samburu
+    id: County Samburu
+    pl: Samburu (hrabstwo)
+    ru: Самбуру
+  comments:
+  type: county
+'38':
+  name: Siaya
+  code: '38'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Siaya County
+    en: Siaya
+    es: Distrito de Siaya
+    fr: Siaya
+    ja: シアヤ
+    ko: 시아야 현
+    nb: Siaya fylke
+    nl: Siaya
+    pt: Siaya (distrito)
+    sv: Siaya (distrikt)
+    sw: Wilaya ya Siaya
+    ur: سیایا کاؤنٹی
+    vi: Siaya
+    ceb: Siaya
+    zh: 夏亞郡
+    ccp: "\U00011125\U00011128\U00011120\U00011133\U00011126"
+    'no': Siaya fylke
+    cy: Sir Siaya
+    fa: شهرستان سیایا
+    id: County Siaya
+    it: Contea di Siaya
+    pl: Siaya (hrabstwo)
+    ru: Сиая
+    uk: Сіайя
+  comments:
+  type: county
+'39':
+  name: Taita-Taveta
+  code: '39'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Taita-Taveta
+    es: Taita-Taveta
+    fr: Taita-Taveta
+    it: Contea di Taita-Taveta
+    ja: タイタ＝タヴェタ
+    ko: 타이타타베타 현
+    nb: Taita-Taveta fylke
+    nl: Taita Taveta
+    sv: Taita-Taveta
+    sw: Wilaya ya Taita-Taveta
+    ur: تائتا-تاویتا کاؤنٹی
+    ceb: Taita Taveta
+    zh: 泰塔塔維塔郡
+    ccp: "\U00011111\U0001112D\U00011111-\U00011111\U0001111E\U0001112C\U00011111"
+    'no': Taita-Taveta fylke
+    cy: Sir Taita–Taveta
+    de: Taita-Taveta County
+    id: County Taita–Taveta
+    pl: Taita-Taveta
+    ru: Таита-Тавета
+    vi: Taita Taveta
+  comments:
+  type: county
+'40':
+  name: Tana River
+  code: '40'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Tana River District
+    en: Tana River
+    es: Condado del Río Tana
+    it: Contea di Tana River
+    ja: タナ・リバー (カウンティ)
+    ko: 타나리버 현
+    nb: Tana River fylke
+    nl: Tana River
+    sv: Tana River
+    sw: Wilaya ya Mto Tana
+    ur: دریائے تانا کاؤنٹی
+    vi: Tana River
+    ceb: Tana River
+    zh: 塔納河郡
+    ccp: "\U00011111\U0001111A\U00011134 \U00011122\U00011128\U0001111E\U00011122\U00011134"
+    'no': Tana River fylke
+    ca: comtat del riu Tana
+    fa: شهرستان رود تانا
+    fi: Tana Riverin piirikunta
+    fr: Comté de Tana River
+    id: County Tana River
+    pl: Tana River
+    ru: Река Тана (округ)
+  comments:
+  type: county
+'41':
+  name: Tharaka-Nithi
+  code: '41'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Tharaka-Nithi
+    es: Condado de Tharaka-Nithi
+    it: Contea di Tharaka-Nithi
+    ja: タラカ＝ニシ (カウンティ)
+    ko: 타라카니티 현
+    nb: Tharaka-Nithi fylke
+    nl: Tharaka-Nithi
+    sv: Tharaka
+    sw: Wilaya ya Tharaka
+    ur: تھاراکا-نیتھی کاؤنٹی
+    vi: Tharaka
+    ceb: Tharaka - Nithi
+    zh: 薩拉卡尼蒂郡
+    ccp: "\U00011117\U00011122\U00011107-\U0001111A\U00011128\U00011117\U00011128"
+    'no': Tharaka-Nithi fylke
+    cy: Sir Tharaka Nithi
+    de: Tharaka-Nithi County
+    fa: شهرستان تاراکا-نیتی
+    fr: Compté de Tharaka-Nithi
+    id: County Tharaka-Nithi
+    pl: Tharaka-Nithi
+    ru: Тарака
+  comments:
+  type: county
+'42':
+  name: Trans-Nzoia
+  code: '42'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Trans-Nzoia District
+    en: Trans Nzoia
+    es: Condado de Trans-Nzoia
+    et: Trans Nzoia
+    fr: District de Trans-Nzoia
+    ja: トランス・ンゾイア (カウンティ)
+    ko: 트랜스은조이아 현
+    nb: Trans-Nzoia fylke
+    nl: Trans-Nzoia
+    sv: Trans-Nzoia
+    sw: Wilaya ya Trans-Nzoia
+    ur: ٹرانس-نزویا کاؤنٹی
+    vi: Trans Nzoia
+    ceb: Trans Nzoia
+    zh: 特蘭斯-恩佐亞郡
+    ccp: "\U00011111\U00011133\U00011122\U0001111A\U00011134\U00011125\U00011134 \U0001110E\U0001112E\U00011103\U00011128\U00011120"
+    'no': Trans-Nzoia fylke
+    fa: شهرستان ترانس انزویا
+    id: County Trans-Nzoia
+    it: Contea di Trans Nzoia
+    pl: Trans Nzoia
+    ru: Занзойский округ
+  comments:
+  type: county
+'43':
+  name: Turkana
+  code: '43'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Turkana District
+    en: Turkana
+    es: Condado de Turkana
+    fa: شهرستان تورکانا
+    fi: Turkana
+    ja: トゥルカナ (カウンティ)
+    ko: 투르카나 현
+    nb: Turkana
+    nl: Turkana
+    sv: Turkana
+    sw: Wilaya ya Turkana
+    ur: ترکانا کاؤنٹی
+    vi: Turkana
+    ceb: Turkana
+    zh: 圖爾卡納郡
+    ccp: "\U00011111\U0001112A\U00011122\U00011134\U00011107\U0001111A"
+    fr: Turkana
+    id: Kabupaten Turkana
+    'no': Turkana
+    ar: توركانا
+    ca: Turkana
+    cy: Sir Turkana
+    he: טורקנה
+    it: Contea di Turkana
+    pl: Turkana (hrabstwo)
+    ru: Туркана
+  comments:
+  type: county
+'44':
+  name: Uasin Gishu
+  code: '44'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Uasin Gishu District
+    en: Uasin Gishu
+    es: Condado de Uasin Gishu
+    fa: یوسین گیشو
+    it: Distretto di Uasin Gishu
+    ja: ウアシン・ギシュ (カウンティ)
+    ko: 우아신기슈 현
+    nb: Uasin Gishu fylke
+    nl: Uasin Gishu
+    sv: Uasin Gishu
+    sw: Wilaya ya Uasin Gishu
+    ur: یواسین گیشو گاؤنٹی
+    vi: Uasin Gishu
+    ceb: Uasin Gishu
+    zh: 瓦辛基蘇郡
+    ccp: "\U00011105\U0001112A\U00011120\U00011125\U00011128\U0001111A\U00011134 \U00011109\U00011128\U00011125\U0001112A"
+    'no': Uasin Gishu fylke
+    az: Uazin-Qişu
+    eu: Uasin Gishu konderria
+    fr: Comté de Uasin Gishu
+    he: מישור גואס נגישו
+    id: County Uasin Gishu
+    pl: Uasin Gishu
+    ru: Уазин-Гишу
+  comments:
+  type: county
+'45':
+  name: Vihiga
+  code: '45'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Вихига
+    de: Vihiga District
+    en: Vihiga
+    es: Condado de Vihiga
+    ja: ヴィヒガ (カウンティ)
+    ko: 비히가 현
+    nb: Vihiga fylke
+    nl: Vihiga
+    sv: Vihiga
+    sw: Wilaya ya Vihiga
+    ur: ویہیگا کاؤنٹی
+    vi: Vihiga
+    ceb: Vihiga
+    zh: 韋希加郡
+    ccp: "\U0001111E\U00011128\U00011126\U00011128\U00011109"
+    'no': Vihiga fylke
+    ca: comtat de Vihiga
+    fa: شهرستان ویهیگا
+    fr: Vihiga
+    id: County Vihiga
+    it: Contea di Vihiga
+    pl: Vihiga (hrabstwo)
+    ru: Вихига
+    uk: Округ Віхіга
+  comments:
+  type: county
+'46':
+  name: Wajir
+  code: '46'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Wajir District
+    en: Wajir
+    es: Condado de Wajir
+    it: Contea di Wajir
+    ja: ワジール (カウンティ)
+    ko: 와지르 현
+    nb: Wajir fylke
+    nl: Wajir
+    sv: Wajir
+    sw: Wilaya ya Wajir
+    ur: واجیر کاؤنٹی
+    vi: Wajir
+    ceb: Wajir
+    zh: 瓦吉爾郡
+    ccp: "\U00011124\U0001110E\U00011128\U00011122\U00011134"
+    'no': Wajir fylke
+    ca: Comtat de Wajir
+    cy: Sir Wajir
+    fa: شهرستان واجیر
+    fr: Comté de Wajir
+    he: ואג׳יר
+    id: County Wajir
+    pl: Wajir (hrabstwo)
+    ru: Ваджир
+  comments:
+  type: county
+'47':
+  name: West Pokot
+  code: '47'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: West Pokot District
+    en: West Pokot
+    es: Condado de West Pokot
+    ja: ウェスト・ポコット (カウンティ)
+    ko: 서포코트 현
+    nb: West Pokot
+    nl: West-Pokot
+    sv: Västra Pokot
+    sw: Wilaya ya Pokot Magharibi
+    ur: مغربی پوکوت کاؤنٹی
+    vi: West Pokot
+    ceb: West Pokot
+    zh: 西波克特郡
+    ccp: "\U00011124\U00011120\U0001112C\U0001110C\U00011134 \U0001111B\U00011127\U00011107\U0001112E\U00011116\U00011134"
+    'no': West Pokot
+    cy: Sir West Pokot
+    fa: شهرستان پوکوت غربی
+    fi: Länsi-Pokotin piirikunta
+    id: County West Pokot
+    it: Contea di West Pokot
+    pl: West Pokot
+    ru: Западный покотский округ
+  comments:
+  type: county

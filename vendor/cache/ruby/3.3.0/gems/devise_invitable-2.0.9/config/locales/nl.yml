@@ -1,0 +1,32 @@
+nl:
+  devise:
+    failure:
+      invited: "U bent reeds uitgenodigd, accepteer de uitnodiging die u heeft ontvangen per mail om uw account te accepteren."
+    invitations:
+      send_instructions: "Een uitnodigingsmail aan %{email} is verstuurd."
+      invitation_token_invalid: "De uitnodigingscode is ongeldig!"
+      updated: "Uw wachtwoord is ingesteld. U bent nu ingelogd."
+      updated_not_active: "Uw wachtwoord is ingesteld."
+      no_invitations_remaining: "Geen uitnodigingen over."
+      invitation_removed: "Uw uitnodiging is verwijderd."
+      new:
+        header: "Verstuur uitnodiging"
+        submit_button: "Verstuur een uitnodiging"
+      edit:
+        header: "Stel Uw wachtwoord in"
+        submit_button: "Stel mijn wachtwoord in"
+    mailer:
+      invitation_instructions:
+        subject: "Instructies voor uitnodigingen"
+        hello: "Beste %{email}"
+        someone_invited_you: "Iemand heeft U uitgenodigd voor %{url}, U kunt de uitnodiging accepteren via onderstaande link."
+        accept: "Accepteer uitnodiging"
+        accept_until: "Deze uitnodoging vervalt per %{due_date}."
+        ignore: "Indien U de uitnodiging niet wenst te accepteren, negeer dan alstublieft deze email.<br />\nUw account wordt niet aangemaakt indien U niet via bovenstaande link uw wachtwoord aanmaakt."
+
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%a %d %b %Y %H:%M:%S %Z"

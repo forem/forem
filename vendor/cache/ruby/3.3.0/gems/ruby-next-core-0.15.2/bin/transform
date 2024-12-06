@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path("../../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require "bundler/setup"
+
+require "optparse"
+
+begin
+  require "pry-byebug"
+rescue LoadError
+end
+
+ENV["RUBY_NEXT_EDGE"] = "1"
+ENV["RUBY_NEXT_PROPOSED"] = "1"
+
+require "ruby-next/language"
+require "ruby-next/language/rewriters/runtime"
+
+contents =
+  if File.exist?(ARGV[0])
+    File.read(ARGV.shift)
+  else
+    ARGV.shift
+  end
+
+transform_opts = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: transform filepath_or_code [options]"
+
+  opts.on("--current", "Use rewriters for the current Ruby version only") do
+    transform_opts[:rewriters] = RubyNext::Language.current_rewriters
+  end
+
+  opts.on("--rewrite", "Use rewrite transpiling mode") do
+    RubyNext::Language.mode = :rewrite
+  end
+
+  opts.on("--ast", "Use AST transpiling mode") do
+    RubyNext::Language.mode = :ast
+  end
+end.parse!
+
+puts RubyNext::Language.transform(contents, **transform_opts)

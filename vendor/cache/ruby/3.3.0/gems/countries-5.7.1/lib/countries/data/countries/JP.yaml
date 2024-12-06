@@ -1,0 +1,58 @@
+---
+JP:
+  address_format: |-
+    〒{{postalcode}}
+    {{region_short}}{{city}}{{street}}
+    {{recipient}}
+    {{country}}
+  alpha2: JP
+  alpha3: JPN
+  continent: Asia
+  country_code: '81'
+  currency_code: JPY
+  distance_unit: KM
+  g7_member: true
+  g20_member: true
+  gec: JA
+  geo:
+    latitude: 36.204824
+    longitude: 138.252924
+    max_latitude: 45.6412626
+    max_longitude: 154.0031455
+    min_latitude: 20.3585295
+    min_longitude: 122.8554688
+    bounds:
+      northeast:
+        lat: 45.6412626
+        lng: 154.0031455
+      southwest:
+        lat: 20.3585295
+        lng: 122.8554688
+  international_prefix: '010'
+  ioc: JPN
+  iso_long_name: Japan
+  iso_short_name: Japan
+  languages_official:
+  - ja
+  languages_spoken:
+  - ja
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  - 10
+  national_prefix: '0'
+  nationality: Japanese
+  number: '392'
+  postal_code: true
+  postal_code_format: "\\d{3}-?\\d{4}"
+  region: Asia
+  start_of_week: monday
+  subregion: Eastern Asia
+  un_locode: JP
+  unofficial_names:
+  - Japan
+  - Japon
+  - Japón
+  - 日本
+  world_region: APAC

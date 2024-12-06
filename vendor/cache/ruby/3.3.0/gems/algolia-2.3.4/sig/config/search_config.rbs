@@ -1,0 +1,11 @@
+module Algolia
+  module Search
+    class Config < BaseConfig
+      include CallType
+
+      attr_accessor default_hosts: Array[untyped]
+
+      def initialize: (?::Hash[Symbol, String|[String]] opts) -> void
+    end
+  end
+end

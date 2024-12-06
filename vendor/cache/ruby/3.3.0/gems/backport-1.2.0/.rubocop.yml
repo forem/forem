@@ -1,0 +1,6 @@
+Style/MethodDefParentheses:
+  Enabled: false
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false

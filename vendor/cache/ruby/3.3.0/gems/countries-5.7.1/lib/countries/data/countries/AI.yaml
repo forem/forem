@@ -1,0 +1,49 @@
+---
+AI:
+  alpha2: AI
+  alpha3: AIA
+  continent: North America
+  country_code: '1'
+  currency_code: XCD
+  distance_unit: KM
+  gec: AV
+  geo:
+    latitude: 18.220554
+    longitude: -63.06861499999999
+    max_latitude: 18.6332326
+    max_longitude: -62.91999999999999
+    min_latitude: 18.1465043
+    min_longitude: -63.4803
+    bounds:
+      northeast:
+        lat: 18.6332326
+        lng: -62.91999999999999
+      southwest:
+        lat: 18.1465043
+        lng: -63.4803
+  international_prefix: '011'
+  ioc:
+  iso_long_name: Anguilla
+  iso_short_name: Anguilla
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1264'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Anguillian
+  number: '660'
+  postal_code: true
+  postal_code_format: "(?:AI-)?2640"
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: AI
+  unofficial_names:
+  - Anguilla
+  - アンギラ
+  world_region: AMER

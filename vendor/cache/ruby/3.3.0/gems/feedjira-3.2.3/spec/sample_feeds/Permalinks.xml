@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <item>
+            <title>Item 1</title>
+            <guid isPermaLink="false">http://example.com/1</guid>
+        </item>
+        <item>
+            <title>Item 2</title>
+            <guid isPermaLink="true">http://example.com/2</guid>
+        </item>
+        <item>
+            <title>Item 3</title>
+            <guid>http://example.com/3</guid>
+        </item>
+        <item>
+            <title>Item 4</title>
+            <link>http://example.com/4</link>
+            <guid>http://example.com/5</guid>
+        </item>
+    </channel>
+</rss>

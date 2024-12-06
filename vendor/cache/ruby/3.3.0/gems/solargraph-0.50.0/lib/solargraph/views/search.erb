@@ -1,0 +1,11 @@
+<h1>Search Results for <kbd><%= query %></kbd></h1>
+
+<% unless results.empty? %>
+    <ul class="doc-list">
+    <% results.each do |result| %>
+        <li>
+            <a href="solargraph:/document?query=<%= CGI.escape(result) %>"><%= result %></a>
+        </li>
+    <% end %>
+    </ul>
+<% end %>

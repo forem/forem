@@ -1,0 +1,55 @@
+---
+BY:
+  alpha2: BY
+  alpha3: BLR
+  continent: Europe
+  country_code: '375'
+  currency_code: BYN
+  distance_unit: KM
+  gec: BO
+  geo:
+    latitude: 53.709807
+    longitude: 27.953389
+    max_latitude: 56.1718719
+    max_longitude: 32.7768202
+    min_latitude: 51.26201100000001
+    min_longitude: 23.1783377
+    bounds:
+      northeast:
+        lat: 56.1718719
+        lng: 32.7768202
+      southwest:
+        lat: 51.26201100000001
+        lng: 23.1783377
+  international_prefix: '810'
+  ioc: BLR
+  iso_long_name: The Republic of Belarus
+  iso_short_name: Belarus
+  languages_official:
+  - be
+  - ru
+  languages_spoken:
+  - be
+  - ru
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '8'
+  nationality: Belarusian
+  number: '112'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Europe
+  start_of_week: monday
+  subregion: Eastern Europe
+  un_locode: BY
+  unofficial_names:
+  - Belarus
+  - Weißrussland
+  - Biélorussie
+  - Bielorrusia
+  - ベラルーシ
+  - Wit-Rusland
+  - Беларусь
+  world_region: EMEA

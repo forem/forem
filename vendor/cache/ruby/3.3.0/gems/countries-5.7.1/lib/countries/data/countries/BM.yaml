@@ -1,0 +1,51 @@
+---
+BM:
+  alpha2: BM
+  alpha3: BMU
+  continent: North America
+  country_code: '1'
+  currency_code: BMD
+  distance_unit: KM
+  gec: BD
+  geo:
+    latitude: 32.3078
+    longitude: -64.7505
+    max_latitude: 32.3961
+    max_longitude: -64.6413999
+    min_latitude: 32.2424975
+    min_longitude: -64.89139999999999
+    bounds:
+      northeast:
+        lat: 32.3961
+        lng: -64.6413999
+      southwest:
+        lat: 32.2424975
+        lng: -64.89139999999999
+  international_prefix: '011'
+  ioc: BER
+  iso_long_name: Bermuda
+  iso_short_name: Bermuda
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1441'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Bermudian
+  number: '060'
+  postal_code: true
+  postal_code_format: "[A-Z]{2} ?[A-Z0-9]{2}"
+  region: Americas
+  start_of_week: monday
+  subregion: Northern America
+  un_locode: BM
+  unofficial_names:
+  - Bermuda
+  - Bermudes
+  - Bermudas
+  - バミューダ
+  world_region: AMER

@@ -1,0 +1,4232 @@
+HTTP/1.1 200 OK
+Date: Mon, 23 Jul 2012 19:35:07 GMT
+Status: 200 OK
+Content-Length: 176377
+Expires: Tue, 31 Mar 1981 05:00:00 GMT
+X-Frame-Options: SAMEORIGIN
+X-Transaction: a63febd24c984977
+X-Runtime: 0.90010
+Strict-Transport-Security: max-age=631138519
+Last-Modified: Mon, 23 Jul 2012 19:35:06 GMT
+Cache-Control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+X-MID: edcd5fa94020af3680ab0ebd47958eb8d9392c3d
+Pragma: no-cache
+ETag: "f7cea221b15a856077e20263b7e580e8"
+Content-Type: text/html; charset=utf-8
+Set-Cookie: k=10.36.32.129.1343072106474113; path=/; expires=Mon, 30-Jul-12 19:35:06 GMT; domain=.twitter.com
+Set-Cookie: guest_id=v1%3A134307210648584308; domain=.twitter.com; path=/; expires=Thu, 24-Jul-2014 07:35:06 GMT
+Set-Cookie: fd=0120220201000000100-e417; path=/; expires=Mon, 23-Jul-2012 19:50:07 GMT
+Set-Cookie: _twitter_sess=BAh7CiIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCPb3VbU4AToMY3NyZl9p%250AZCIlOWU3YTMyNTkxZThhYzViZjNmOGY2ZTk2ZGI0YmIyOTE6DnJldHVybl90%250AbyIgaHR0cHM6Ly90d2l0dGVyLmNvbS93M2Nsb3ZlOgdpZCIlNTZkNTI4MjUw%250AOTJiNDQ2OTg5Y2I4MmFjYzdjZTQ5OWM%253D--c215baa469254d27524c4dba2d9db55f5c38a429; domain=.twitter.com; path=/; HttpOnly
+X-XSS-Protection: 1; mode=block
+Vary: Accept-Encoding
+Server: tfe
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+
+    <script>document.domain='twitter.com'</script>
+
+      <title>MarkupValidator App (MarkupValidator) en Twitter</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+      <meta name="description" content="Conecta instantáneamente con lo que es más importante para ti. Sigue a tus amigos, expertos, celebridades favoritas, y noticias de última hora.">
+
+
+      <link href="/favicons/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+          <link rel="stylesheet" href="https://twimg0-a.akamaihd.net/a/1342841381/t1/css/t1_core_logged_out.bundle.css" type="text/css" media="screen">
+
+        <link rel="stylesheet" href="https://twimg0-a.akamaihd.net/a/1342841381/t1/css/t1_more.bundle.css" type="text/css" media="screen">
+
+
+    <style id="user-style-MarkupValidator" class="js-user-style">
+
+
+
+
+
+
+
+
+
+    a,
+
+
+
+    .btn-link,
+
+
+
+
+
+
+
+    .pretty-link:hover s,
+    .pretty-link:hover b,
+    /* Account Group */
+    .metadata a:hover,
+
+    .account-group:hover .fullname,
+
+    .stats a:hover,
+    .stats a:hover strong,
+
+    .profile-modal-header .fullname a:hover,
+    .profile-modal-header .username a:hover,
+
+    .story-article:hover .metadata,
+
+    .find-friends-sources li:hover .source,
+
+
+
+
+
+    .stream-item a:hover .fullname,
+
+    .stream-item .view-all-supplements:hover,
+
+    .tweet .time a:hover,
+    .tweet:hover .user-dropdown .mark-as-spam-text,
+    .tweet-actions a,
+    .tweet .details.with-icn b,
+
+    .stream-item:hover .original-tweet .expand-action-wrapper,
+    .opened-tweet.original-tweet  .expand-action-wrapper,
+
+    .stream-item:hover .original-tweet .details b,
+    .stream-item.open .original-tweet .details b,
+
+    .simple-tweet:hover .details b,
+    .simple-tweet.open .details b,
+    .simple-tweet:hover .details .expand-action-wrapper,
+    .simple-tweet.open .details .collapse-action-wrapper,
+    .simple-tweet:hover .details .simple-details-link,
+
+    .client-and-actions a:hover,
+
+    .dismiss-promoted:hover b,
+
+    .tweet .context .pretty-link:hover s,
+    .tweet .context .pretty-link:hover b,
+
+    .list .username a:hover,
+    .list-membership-container .create-a-list,
+    .list-membership-container .create-a-list:hover,
+
+
+
+    .story-header:hover .view-tweets,
+    .card .list-details a:hover,
+    .card .card-body:hover .attribution,
+    .new-tweets-bar,
+    .onebox .soccer ul.ticker a:hover,
+
+
+
+    .discover-item-actions a,
+
+
+
+    .remove-background-btn,
+
+
+
+    .stream-item-activity-me .latest-tweet .tweet-row a:hover {
+        color: #0084B4;
+    }
+
+
+
+
+
+
+    s,
+    .pretty-link:hover s,
+    .stream-item-activity-me .latest-tweet .tweet-row a:hover s {
+        color: #66B5D2;
+    }
+
+
+
+
+
+    .tweet .sm-reply,
+    .tweet .sm-rt,
+    .tweet .sm-fav,
+    .tweet .sm-image,
+    .tweet .sm-video,
+    .tweet .sm-audio,
+    .tweet .sm-geo,
+    .tweet .sm-in,
+    .tweet .sm-trash,
+    .tweet .sm-page,
+    .tweet .sm-embed,
+    .tweet .sm-summary,
+    .tweet .sm-chat,
+
+    .tweet .mark-as-spam-flag,
+    .tweet .mark-as-spam-silhouette,
+
+    .timelines-navigation .active .profile-nav-icon,
+    .timelines-navigation .profile-nav-icon:hover,
+
+    .sm-top-tweet,
+
+
+    .discover-item .js-action-card-search:hover .sm-search {
+        background-color: #0084B4;
+    }
+
+    body {
+        background-position: left 40px;
+        background-attachment: fixed;
+        background-repeat: repeat;
+          background-repeat: no-repeat;
+        background-color: #C0DEED;
+    }
+    </style>
+
+    <style id="user-style-MarkupValidator-bg-img" class="js-user-style-bg-img">
+      body.user-style-MarkupValidator {
+              background-image: url(https://twimg0-a.akamaihd.net/images/themes/theme1/bg.png);
+      }
+    </style>
+
+    <script>
+
+      (function(){function a(){document.write="",window.top.location=window.self.location,setTimeout(function(){document.body.innerHTML=""},0),window.self.onload=function(a){document.body.innerHTML=""}}if(window.top!==window.self)try{window.top.location.host||a()}catch(b){a()}})();
+    </script>
+
+    <script>(function(){function f(a){a=a||window.event;if(!a)return;!a.target&&a.srcElement&&(a.target=a.srcElement);if(!j(a))return;if(!document.addEventListener){var b={};for(var c in a)b[c]=a[c];a=b}return a.preventDefault=a.stopPropagation=function(){},d.push(a),!1}function g($){i();for(var b=0,c;c=d[b];b++){var e=$(c.target);if(c.type=="click"&&c.target.tagName.toLowerCase()=="a"){var f=$.data(e.get(0),"events"),g=f&&f.click,j=!c.target.hostname.match(a)||!c.target.href.match(/#$/);if(!g&&j){window.location=c.target.href;continue}}e.trigger(c)}window.swiftActionQueue.wasFlushed=!0}function i(){e&&clearTimeout(e);for(var a=0;a<c.length;a++)document["on"+c[a]]=null}function j(c){var d=c.target.tagName.toLowerCase();if(d=="label")if(c.target.getAttribute("for")){var e=document.getElementById(c.target.getAttribute("for"));if(e.getAttribute("type")=="checkbox")return!1}else for(var f=0;f<c.target.childNodes.length;f++)if((c.target.childNodes[f].tagName||"").toLowerCase()=="input"&&c.target.childNodes[f].getAttribute("type")=="checkbox")return!1;if(d=="textarea"||d=="input"&&c.target.getAttribute("type")=="text")if(c.type.match(b))return!1;return c.metaKey?!1:c.clientX&&c.shiftKey&&d=="a"?!1:c.target&&c.target.hostname&&!c.target.hostname.match(a)?!1:!0}var a=/^([^\.]+\.)*twitter.com$/,b=/^key/,c=["click","keydown","keypress","keyup"],d=[],e=null;for(var k=0;k<c.length;k++)document["on"+c[k]]=f;setTimeout(i,1e4),window.swiftActionQueue={flush:g,wasFlushed:!1}})();</script>  </head>
+  <body class="t1 logged-out user-style-MarkupValidator western es"
+    >
+    <div id="doc" class="route-profile">
+        <div class="push-loader" id="pushStateSpinner"></div>
+
+        <div class="topbar js-topbar">
+          <div id="banners" class="js-banners">
+
+          </div>
+          <div class="global-nav" data-section-term="top_nav">
+            <div class="global-nav-inner">
+              <div class="container">
+
+
+                <ul class="nav js-global-actions">
+                  <li class="home" data-global-action="t1home">
+                      <a class="nav-logo-link" href="/" data-nav="front">
+                        <i class="bird-topbar-blue"></i>
+                      </a>
+                  </li>
+                </ul>
+                <ul class="nav secondary-nav session-dropdown " id="session">
+                  <li class="dropdown js-session">
+                    <a class="dropdown-toggle dropdown-signin" id="signin-link" href="#" data-nav="login">
+                      <small>¿Tienes cuenta?</small> Iniciar sesión <span class="caret"></span>
+                    </a>
+                    <a class="dropdown-signup" id="signup-link" href="https://twitter.com/signup?context=login" data-nav="signup">
+                      <small>¿Eres nuevo en Twitter?</small><span class="emphasize"> Únete Hoy &raquo;</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-form" id="signin-dropdown">
+                      <li class="dropdown-caret right">
+                        <span class="caret-outer"></span>
+                        <span class="caret-inner"></span>
+                      </li>
+                      <li>
+                        <form action="https://twitter.com/sessions" class="js-signin signin" method="post">
+                  <fieldset class="textbox">
+    <label class="username js-username">
+      <span>Nombre de usuario o correo electrónico</span>
+      <input class="js-username-field email-input" type="text" name="session[username_or_email]" autocomplete="on">
+    </label>
+    <label class="password js-password">
+      <span>Contraseña</span>
+      <input class="js-password-field" type="password" value="" name="session[password]">
+    </label>
+  </fieldset>
+  <fieldset class="subchck">
+    <label class="remember">
+      <input type="checkbox" value="1" name="remember_me" >
+      <span>Recordar mis datos</span>
+    </label>
+    <button type="submit" class="btn submit">Iniciar sesión</button>
+  </fieldset>
+
+  <input type="hidden" name="scribe_log">
+  <input type="hidden" name="redirect_after_login" value="">
+  <input type="hidden" value="fee7199505aff1976dbf75b780f4c04b3fd37937" name="authenticity_token"/>
+  <div class="divider"></div>
+                  <p>
+                    <a class="forgot" href="/account/resend_password">¿Olvidaste tu contraseña?</a><br />
+                    <a class="mobile has-sms" href="/account/complete">¿Ya usas Twitter por SMS?</a>
+                  </p>
+                </form>
+              </li>
+                    </ul>
+                  </li>
+                </ul>
+
+
+
+                <ul class="nav secondary-nav language-dropdown">
+                  <li class="dropdown js-language-dropdown">
+                    <a class="dropdown-toggle" href="javascript:;">
+                      <small>Idioma:</small>
+                      <span class="js-current-language">Español</span>
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li class="dropdown-caret right">
+                        <span class="caret-outer"></span>
+                        <span class="caret-inner"></span>
+                      </li>
+                        <li><a href="?lang=id" data-lang-code="id" title="Indonesio" class="js-language-link">Bahasa Indonesia</a></li>
+                        <li><a href="?lang=msa" data-lang-code="msa" title="Malayo" class="js-language-link">Bahasa Melayu</a></li>
+                        <li><a href="?lang=da" data-lang-code="da" title="Danés" class="js-language-link">Dansk</a></li>
+                        <li><a href="?lang=de" data-lang-code="de" title="Alemán" class="js-language-link">Deutsch</a></li>
+                        <li><a href="?lang=en" data-lang-code="en" title="Inglés" class="js-language-link">English</a></li>
+                        <li><a href="?lang=fil" data-lang-code="fil" title="Filipino" class="js-language-link">Filipino</a></li>
+                        <li><a href="?lang=it" data-lang-code="it" title="Italiano" class="js-language-link">Italiano</a></li>
+                        <li><a href="?lang=hu" data-lang-code="hu" title="Húngaro" class="js-language-link">Magyar</a></li>
+                        <li><a href="?lang=nl" data-lang-code="nl" title="Holandés" class="js-language-link">Nederlands</a></li>
+                        <li><a href="?lang=no" data-lang-code="no" title="Noruego" class="js-language-link">Norsk</a></li>
+                        <li><a href="?lang=pl" data-lang-code="pl" title="Polaco" class="js-language-link">Polski</a></li>
+                        <li><a href="?lang=pt" data-lang-code="pt" title="Portugués" class="js-language-link">Português</a></li>
+                        <li><a href="?lang=fi" data-lang-code="fi" title="Finlandés" class="js-language-link">Suomi</a></li>
+                        <li><a href="?lang=sv" data-lang-code="sv" title="Sueco" class="js-language-link">Svenska</a></li>
+                        <li><a href="?lang=tr" data-lang-code="tr" title="Turco" class="js-language-link">Türkçe</a></li>
+                        <li><a href="?lang=ca" data-lang-code="ca" title="Catalan" class="js-language-link">català</a></li>
+                        <li><a href="?lang=fr" data-lang-code="fr" title="Francés" class="js-language-link">français</a></li>
+                        <li><a href="?lang=ru" data-lang-code="ru" title="Ruso" class="js-language-link">Русский</a></li>
+                        <li><a href="?lang=uk" data-lang-code="uk" title="Ukrainian" class="js-language-link">Українська мова</a></li>
+                        <li><a href="?lang=he" data-lang-code="he" title="Hebreo" class="js-language-link">עִבְרִית</a></li>
+                        <li><a href="?lang=ur" data-lang-code="ur" title="Urdú" class="js-language-link">اردو</a></li>
+                        <li><a href="?lang=ar" data-lang-code="ar" title="Árabe" class="js-language-link">العربية</a></li>
+                        <li><a href="?lang=fa" data-lang-code="fa" title="Persa" class="js-language-link">فارسی</a></li>
+                        <li><a href="?lang=hi" data-lang-code="hi" title="Hindi" class="js-language-link">हिन्दी</a></li>
+                        <li><a href="?lang=th" data-lang-code="th" title="Tailandés" class="js-language-link">ภาษาไทย</a></li>
+                        <li><a href="?lang=ja" data-lang-code="ja" title="Japonés" class="js-language-link">日本語</a></li>
+                        <li><a href="?lang=zh-cn" data-lang-code="zh-cn" title="Chino Simplificado" class="js-language-link">简体中文</a></li>
+                        <li><a href="?lang=zh-tw" data-lang-code="zh-tw" title="Chino Tradicional" class="js-language-link">繁體中文</a></li>
+                        <li><a href="?lang=ko" data-lang-code="ko" title="Coreano" class="js-language-link">한국어</a></li>
+                    </ul>
+                    <div class="js-front-language">
+                      <form action="/sessions/change_locale" class="language" method="POST">
+                        <input type="hidden" name="lang">
+                        <input type="hidden" name="redirect">
+                        <input type="hidden" name="authenticity_token" value="fee7199505aff1976dbf75b780f4c04b3fd37937">
+                      </form>
+                    </div>
+                  </li>
+                </ul>
+
+                <div class="pull-right">
+                  <form class="form-search js-search-form " action="/search" id="global-nav-search">
+            <span class="search-icon js-search-action">
+              <i class="nav-search" tabindex="0"></i>
+            </span>
+            <label class="hidden-elements" for="search-query">Buscar</label>
+            <input class="search-input" type="text" id="search-query" placeholder="Buscar" name="q" autocomplete="off" spellcheck="false" tabindex="-1">
+            <input disabled="disabled" class="search-input search-hinting-input" type="text" id="search-query-hint" autocomplete="off" spellcheck="false">
+              <div class="dropdown-menu typeahead">
+      <div class="dropdown-caret">
+        <div class="caret-outer"></div>
+        <div class="caret-inner"></div>
+      </div>
+      <div class="dropdown-inner js-typeahead-results">
+        <ul class="typeahead-items saved-searches-list">
+
+      <li class="saved-search-item search-item"><a href="" data-search-query="" data-query-source="" data-ds="saved_search"><i class="generic-search"></i></a></li>
+    </ul>    <ul class="typeahead-items topics-list">
+
+      <li class="topics-item search-item"><a href="" data-search-query="" data-query-source="typeahead_click" data-ds="topics"><i class="generic-search"></i></a></li>
+    </ul>    <div class="typeahead-accounts js-typeahead-accounts">
+      <ul class="typeahead-items">
+
+        <li data-user-id="" data-user-screenname="" data-remote="true" data-score="" class="typeahead-item typeahead-account-item js-selectable">
+
+          <a data-query-source="typeahead_click" data-search-query="" data-ds="account">
+            <img src="" width="24" height="24" class="avatar size24">
+            <span class="fullname"></span>
+            <i class="verified hidden"></i>
+            <span class="username"><s>@</s><b></b></span>
+          </a>
+        </li>
+        <li class="js-selectable typeahead-accounts-shortcut js-shortcut"><a href="" data-search-query="" data-query-source="typeahead_click" data-shortcut="true" data-ds="account_search"></a></li>
+      </ul>
+    </div>  </div>
+    </div></form>
+        </div>
+
+
+                <a id="close-all-button" class="close-all-tweets js-close-all-tweets" href="#" title="Cerrar todos los Tweets abiertos">
+                  <i class="nav-breaker"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="alert-messages hidden" id="message-drawer">
+              <div class="message ">
+        <div class="message-inside">
+          <span class="message-text"></span
+          ><a class="dismiss" href="#">&times;</a>
+        </div>
+      </div>  </div>
+        </div>
+        <div id="page-outer">
+          <div id="page-container" class="wrapper wrapper-profile">
+              <div class="module profile-card component" data-component-term="profile_follow_card" >
+    <div class="flex-module clearfix ">
+
+
+      <a href="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq.png" class="profile-picture" target="_blank">
+        <img src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_reasonably_small.png" alt="MarkupValidator App" class="avatar size128">
+      </a>
+
+      <div class="profile-card-inner" data-screen-name="MarkupValidator" data-user-id="318431467">
+        <h1 class="fullname">
+          MarkupValidator App
+
+        </h1>
+        <h2 class="username">
+          <span class="screen-name"><s>@</s>MarkupValidator</span>
+
+        </h2>
+        <p class="bio ">Site-wide markup validation tool</p>
+        <p class="location-and-url">
+          <span class="location">
+
+          </span>
+              <span class="divider">&middot;</span>
+          <span class="url">
+            <a target="_blank" rel="me nofollow" href="http://markupvalidator.com">
+              http://markupvalidator.com
+            </a>
+          </span>
+        </p>
+      </div>
+      <div class="profile-card-actions">
+
+        <div class="user-actions btn-group not-following " data-user-id="318431467"
+            data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-protected="false">
+
+            <button class="js-follow-btn follow-button btn" type="button">
+              <span class="button-text follow-text"><i class="follow"></i> Seguir</span>
+              <span class="button-text following-text">Siguiendo</span>
+              <span class="button-text unfollow-text">Dejar de seguir</span>
+              <span class="button-text blocked-text">Bloqueado</span>
+              <span class="button-text unblock-text">Desbloquear</span>
+              <span class="button-text pending-text">Pendiente</span>
+              <span class="button-text cancel-text">Cancelar</span>
+            </button>
+
+        </div>
+          <ul class="stats js-mini-profile-stats">
+           <li><a href="/MarkupValidator" data-element-term="tweet_stats" data-nav='profile'>
+               <strong>298</strong> Tweets    </a></li>
+            <li><a href="/#!/MarkupValidator/following" data-element-term="following_stats" data-nav='following'><strong>190</strong> Siguiendo</a></li>
+            <li><a href="/#!/MarkupValidator/followers" data-element-term="follower_stats" data-nav='followers'><strong>197</strong> Seguidores</a></li>
+        </ul>
+    </div>
+    </div>
+  </div>
+  <div class="dashboard">
+      <div class="module signup-call-out profile-signup-call-out">
+      <div class="flex-module">
+        <div class="flex-module-header">
+          <h2>Sigue a MarkupValidator App</h2>
+        </div>
+        <form action="https://twitter.com/signup" class="clearfix signup" method="post">
+      <div class="holding name">
+        <input type="text" autocomplete="off" name="user[name]" maxlength="20">
+        <span class="holder">Nombre completo</span>
+      </div>
+      <div class="holding email">
+        <input class="email-input" type="text" autocomplete="off" name="user[email]">
+        <span class="holder">Correo electrónico</span>
+      </div>
+      <div class="holding password">
+        <input type="password" name="user[user_password]">
+        <span class="holder">Contraseña</span>
+      </div>
+        <input name="follow" type="hidden" value="MarkupValidator">
+      <input type="hidden" value="" name="context">
+      <input type="hidden" value="fee7199505aff1976dbf75b780f4c04b3fd37937" name="authenticity_token"/>
+      <input name="follows" type="hidden" value="">
+      <input type="submit" class="btn signup-btn js-submit js-signup-btn" value="Regístrate">
+    </form>
+  </div>
+    </div>
+
+      <div class="component">
+      <div class="module profile-nav">
+        <ul class="js-nav-links">
+          <li class="active">
+            <a class="list-link" href="/MarkupValidator" data-nav="profile">Tweets <i class="chev-right"></i></a>
+          </li>
+          <li class="">
+            <a class="list-link" href="/#!/MarkupValidator/following" data-nav="following">Siguiendo<i class="chev-right"></i></a>
+          </li>
+          <li class="">
+            <a class="list-link" href="/#!/MarkupValidator/followers" data-nav="followers">Seguidores<i class="chev-right"></i></a>
+          </li>
+          <li class="">
+            <a class="list-link" href="/#!/MarkupValidator/favorites" data-nav="favorites">Favoritos<i class="chev-right"></i></a>
+          </li>
+          <li class="">
+            <a class="list-link" href="/MarkupValidator/lists" data-nav="all_lists">Listas<i class="chev-right"></i></a>
+          </li>
+            <li class="media-thumbnails recent_photos ">
+          <a href="/#!/MarkupValidator/media/grid" class="list-link">
+            <div class="media-header">
+              Imágenes recientes
+              <i class="chev-right"></i>
+            </div>
+            <div class="media-row">
+              <div class="media-row-content">
+                    <span data-href="/#!/MarkupValidator/media/slideshow?url=pic.twitter.com%2FjkjukQ5f" data-url="https://p.twimg.com/AxxUMasCIAEzOMb.jpg:thumb" data-resolved-url-small="https://p.twimg.com/AxxUMasCIAEzOMb.jpg:thumb" class="media-thumbnail"></span>
+            <span data-href="/#!/MarkupValidator/media/slideshow?url=http%3A%2F%2Fmarkupvalidator.com" data-url="http://markupvalidator.com"  class="media-thumbnail"></span>
+            <span data-href="/#!/MarkupValidator/media/slideshow?url=pic.twitter.com%2FW4gc94HE" data-url="https://p.twimg.com/AsuO1tuCQAMCQ-m.jpg:thumb" data-resolved-url-small="https://p.twimg.com/AsuO1tuCQAMCQ-m.jpg:thumb" class="media-thumbnail"></span>
+            <span data-href="/#!/MarkupValidator/media/slideshow?url=http%3A%2F%2Frubygems.org%2Fgems%2Fhirefire" data-url="http://rubygems.org/gems/hirefire"  class="media-thumbnail"></span>
+            <span data-href="/#!/MarkupValidator/media/slideshow?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DUlVoZgM4fgI" data-url="http://www.youtube.com/watch?v=UlVoZgM4fgI"  class="media-thumbnail"></span>
+            <span data-href="/#!/MarkupValidator/media/slideshow?url=pic.twitter.com%2FGfNkcyxp" data-url="https://p.twimg.com/Ae5JXJyCIAAz-3S.jpg:thumb" data-resolved-url-small="https://p.twimg.com/Ae5JXJyCIAAz-3S.jpg:thumb" class="media-thumbnail"></span>
+      </div>
+            </div>
+          </a>
+        </li>    </ul>
+      </div>
+    </div>
+
+
+    <div class="module site-footer ">
+    <div class="flex-module">
+      <div class="flex-module-inner js-items-container">
+        <ul class="clearfix">
+          <li class="copyright">&copy; 2012 Twitter</li>
+          <li><a href="/about">Sobre nosotros</a></li>
+          <li><a href="//support.twitter.com">Ayuda</a></li>
+          <li><a href="/tos">Condiciones</a></li>
+          <li><a href="/privacy">Privacidad </a></li>
+          <li><a href="http://blog.es.twitter.com">Blog</a></li>
+          <li><a href="http://status.twitter.com">Estado</a></li>
+          <li><a href="/download">Aplicaciones</a></li>
+          <li><a href="/about/resources">Recursos</a></li>
+          <li><a href="/jobs">Trabajos</a></li>
+          <li><a href="//business.twitter.com/es/advertise/start">Publicidad</a></li>
+          <li><a href="//business.twitter.com/index_es.html">Negocios</a></li>
+          <li><a href="http://media.twitter.com">Media</a></li>
+          <li><a href="//dev.twitter.com">Desarrolladores</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="component" id="suggested-users"></div>
+  <div class="content-main" id="timeline">
+    <div class="content-header">
+      <div class="header-inner">
+        <h2 class="js-timeline-title">Tweets
+        </h2>
+      </div>
+    </div>
+        <div class="stream-container"
+        data-max-id="220643890242392064" data-since-id="225704790494162944"
+        >
+        <div class="stream profile-stream">
+          <div class="stream-items" id="stream-items-id"><div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="225704790494162944" data-item-type="tweet" id="stream-item-tweet-225704790494162944">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="225704790494162944"
+
+data-item-id="225704790494162944"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:33 pm - 18 jul 12&quot;&gt;2:33 pm - 18 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía &lt;a href=&quot;http://twitter.com/#!/download/ipad&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPad&lt;/a&gt;&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/225704790494162944&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/225704790494162944" class="tweet-timestamp js-permalink" title="2:33 pm - 18 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342647190" data-long-form="true">18 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              how many of you would like to sign up using email and password instead of twitter/google/facebook? And, why?
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/225704790494162944">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="224946521702014976" data-item-type="tweet" id="stream-item-tweet-224946521702014976">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="224946521702014976"
+
+data-item-id="224946521702014976"
+
+ data-retweet-id="225140800437231616"
+ data-screen-name="smashingmag" data-name="Smashing Magazine" data-user-id="15736190"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;12:20 pm - 16 jul 12&quot;&gt;12:20 pm - 16 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía &lt;a href=&quot;http://www.hootsuite.com&quot; rel=&quot;nofollow&quot;&gt;HootSuite&lt;/a&gt;&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/smashingmag/status/224946521702014976&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/smashingmag/status/224946521702014976" class="tweet-timestamp js-permalink" title="12:20 pm - 16 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342466404" data-long-form="true">16 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/smashingmag" data-user-id="15736190">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2293774732/v0pgo4xpdd9rou2xq5h0_normal.png" alt="Smashing Magazine">
+            <strong class="fullname js-action-profile-name show-popup-with-id">Smashing Magazine</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>smashingmag</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              Good to know: Top Validation Errors, according to MarkupValidator (500K pages validated) - <a href="http://t.co/REbGB84p" class="twitter-timeline-link" target="_blank" data-expanded-url="http://bit.ly/Mbt5lk" ><span class="invisible">http://</span><span class="js-display-url">bit.ly/Mbt5lk</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+
+                    <span class="with-icn"><i class="badge-retweeted"></i><span class="js-retweet-text">Retwitteado por <a class="pretty-link js-user-profile-link" href="/smashingmag" data-user-id="318431467"><b>MarkupValidator App</b></a></span></span>
+        </div>
+
+
+        <a class="details with-icn js-details" href="/smashingmag/status/224946521702014976">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="224394142090936320" data-item-type="tweet" id="stream-item-tweet-224394142090936320">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="224394142090936320"
+
+data-item-id="224394142090936320"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;11:45 pm - 14 jul 12&quot;&gt;11:45 pm - 14 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/224394142090936320&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/224394142090936320" class="tweet-timestamp js-permalink" title="11:45 pm - 14 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342334707" data-long-form="true">14 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              More than 500,000 web pages have now been validated through <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a> !!!
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/224394142090936320">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="224246988135346176" data-item-type="tweet" id="stream-item-tweet-224246988135346176">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="224246988135346176"
+
+data-item-id="224246988135346176"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:00 pm - 14 jul 12&quot;&gt;2:00 pm - 14 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/224246988135346176&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/224246988135346176" class="tweet-timestamp js-permalink" title="2:00 pm - 14 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342299622" data-long-form="true">14 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              the MarkupValidator forum is now open to all users through our Google group! Join the conversation and share your knowledge!  <a href="http://t.co/DfnobjLL" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com/forum" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com/forum</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/224246988135346176">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="224146653752467456" data-item-type="tweet" id="stream-item-tweet-224146653752467456">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+ has-native-media
+
+
+"
+data-tweet-id="224146653752467456"
+
+data-item-id="224146653752467456"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:36px&quot;&gt;
+        &lt;div class=&quot;tweet-media&quot;&gt;
+          &lt;div class=&quot;media-instance-container&quot;&gt;
+            &lt;div class=&quot;twimg&quot;&gt;
+              &lt;a target=&quot;_blank&quot; href=&quot;http://twitter.com/MarkupValidator/status/224146653752467456/photo/1/large&quot;&gt;
+                &lt;img src=&quot;https://p.twimg.com/AxxUMasCIAEzOMb.jpg&quot;&gt;
+              &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;span class=&quot;flag-container&quot;&gt;
+              &lt;button type=&quot;button&quot; class=&quot;flaggable btn-link&quot;&gt;
+                Reporta este archivo
+              &lt;/button&gt;
+              &lt;span class=&quot;flagged hidden&quot;&gt;
+                Reportado
+                &lt;span&gt;
+                  &lt;a target=&quot;_blank&quot; href=&quot;//support.twitter.com/articles/20069937&quot;&gt;
+                    (aprende más)
+                  &lt;/a&gt;
+                &lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/span&gt;
+            &lt;div class='media-attribution'&gt;
+              &lt;span&gt;con la tecnología de&lt;/span&gt; &lt;img src=&quot;/phoenix/img/turkey-icon.png&quot;/&gt; &lt;a target='_blank' data-media-type='Twimg' class='media-attribution-link' href='http://photobucket.com/twitter'&gt;Photobucket&lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;7:21 am - 14 jul 12&quot;&gt;7:21 am - 14 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/224146653752467456&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/224146653752467456" class="tweet-timestamp js-permalink" title="7:21 am - 14 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342275701" data-long-form="true">14 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              we&#39;re getting near the 500K frontier... will we break the records today? <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a> <a href="http://t.co/jkjukQ5f" class="twitter-timeline-link" data-pre-embedded="true" >pic.twitter.com/jkjukQ5f</a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/224146653752467456">
+          <span class="details-icon js-icon-container">
+              <i class="sm-image"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver foto
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar foto
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="224132695175860224" data-item-type="tweet" id="stream-item-tweet-224132695175860224">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="224132695175860224"
+
+data-item-id="224132695175860224"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;6:26 am - 14 jul 12&quot;&gt;6:26 am - 14 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/224132695175860224&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/224132695175860224" class="tweet-timestamp js-permalink" title="6:26 am - 14 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342272373" data-long-form="true">14 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              happy to see so many validations from the Australian Web Awards! Happy validation fixing everyone! <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a> <a href="/search/%23webawards" class="twitter-hashtag pretty-link" data-query-source="hashtag_click" ><s>#</s><b>webawards</b></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/224132695175860224">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="223904764159733760" data-item-type="tweet" id="stream-item-tweet-223904764159733760">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="223904764159733760"
+
+data-item-id="223904764159733760"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;3:20 pm - 13 jul 12&quot;&gt;3:20 pm - 13 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/223904764159733760&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/223904764159733760" class="tweet-timestamp js-permalink" title="3:20 pm - 13 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342218030" data-long-form="true">13 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              we&#39;ve simplified our home page! What do you think? <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/223904764159733760">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="223888105701257216" data-item-type="tweet" id="stream-item-tweet-223888105701257216">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="223888105701257216"
+
+data-item-id="223888105701257216"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:14 pm - 13 jul 12&quot;&gt;2:14 pm - 13 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/223888105701257216&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/223888105701257216" class="tweet-timestamp js-permalink" title="2:14 pm - 13 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342214058" data-long-form="true">13 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              we&#39;ve added authentication to the API. Contact us if you&#39;re a developer and want to use it! <a href="http://t.co/H36EpZRf" class="twitter-timeline-link" target="_blank" data-expanded-url="http://developer.markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">developer.markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/223888105701257216">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="223683874817974273" data-item-type="tweet" id="stream-item-tweet-223683874817974273">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="223683874817974273"
+
+data-item-id="223683874817974273"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;12:42 am - 13 jul 12&quot;&gt;12:42 am - 13 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/223683874817974273&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/223683874817974273" class="tweet-timestamp js-permalink" title="12:42 am - 13 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342165366" data-long-form="true">13 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              497,929 have been validated through our service so far... we&#39;re getting near the 500K frontier! <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/223683874817974273">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="223532412192301056" data-item-type="tweet" id="stream-item-tweet-223532412192301056">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="223532412192301056"
+
+data-item-id="223532412192301056"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to="true"
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:40 pm - 12 jul 12&quot;&gt;2:40 pm - 12 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/223532412192301056&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="RadiumThemes"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/223532412192301056" class="tweet-timestamp js-permalink" title="2:40 pm - 12 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342129254" data-long-form="true">12 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              <a href="/RadiumThemes" class="twitter-atreply pretty-link" ><s>@</s><b>RadiumThemes</b></a> thanks, glad you like the redesign! Still some improvements to come soon, though :)
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/223532412192301056">
+          <span class="details-icon js-icon-container">
+              <i class="sm-chat"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver conversación
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar conversación
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="223435262129221632" data-item-type="tweet" id="stream-item-tweet-223435262129221632">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="223435262129221632"
+
+data-item-id="223435262129221632"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;8:14 am - 12 jul 12&quot;&gt;8:14 am - 12 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/223435262129221632&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/223435262129221632" class="tweet-timestamp js-permalink" title="8:14 am - 12 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1342106092" data-long-form="true">12 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              now that we&#39;re running our own dedicated validation server, validations are super fast! Try it now: <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/223435262129221632">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="222259505692549120" data-item-type="tweet" id="stream-item-tweet-222259505692549120">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="222259505692549120"
+
+data-item-id="222259505692549120"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to="true"
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:22 am - 9 jul 12&quot;&gt;2:22 am - 9 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/222259505692549120&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="locks"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/222259505692549120" class="tweet-timestamp js-permalink" title="2:22 am - 9 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341825770" data-long-form="true">9 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              <a href="/locks" class="twitter-atreply pretty-link" ><s>@</s><b>locks</b></a> thanks!
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/222259505692549120">
+          <span class="details-icon js-icon-container">
+              <i class="sm-chat"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver conversación
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar conversación
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="222259433391128577" data-item-type="tweet" id="stream-item-tweet-222259433391128577">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="222259433391128577"
+
+data-item-id="222259433391128577"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to="true"
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:22 am - 9 jul 12&quot;&gt;2:22 am - 9 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/222259433391128577&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="dgilperez"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/222259433391128577" class="tweet-timestamp js-permalink" title="2:22 am - 9 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341825752" data-long-form="true">9 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              <a href="/dgilperez" class="twitter-atreply pretty-link" ><s>@</s><b>dgilperez</b></a> thanks!
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/222259433391128577">
+          <span class="details-icon js-icon-container">
+              <i class="sm-chat"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver conversación
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar conversación
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="222259380039589888" data-item-type="tweet" id="stream-item-tweet-222259380039589888">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="222259380039589888"
+
+data-item-id="222259380039589888"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to="true"
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:22 am - 9 jul 12&quot;&gt;2:22 am - 9 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/222259380039589888&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="TrevorBramble luishj MarkupValidator"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/222259380039589888" class="tweet-timestamp js-permalink" title="2:22 am - 9 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341825740" data-long-form="true">9 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              <a href="/TrevorBramble" class="twitter-atreply pretty-link" ><s>@</s><b>TrevorBramble</b></a> yeah, <a href="/luishj" class="twitter-atreply pretty-link" ><s>@</s><b>luishj</b></a> did a good job on <a href="/MarkupValidator" class="twitter-atreply pretty-link" ><s>@</s><b>MarkupValidator</b></a> :)
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/222259380039589888">
+          <span class="details-icon js-icon-container">
+              <i class="sm-chat"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver conversación
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar conversación
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="222060807289180161" data-item-type="tweet" id="stream-item-tweet-222060807289180161">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="222060807289180161"
+
+data-item-id="222060807289180161"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;1:13 pm - 8 jul 12&quot;&gt;1:13 pm - 8 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/222060807289180161&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/222060807289180161" class="tweet-timestamp js-permalink" title="1:13 pm - 8 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341778396" data-long-form="true">8 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              THANK YOU EVERYONE! <a href="http://t.co/ICDE8DP6" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com/thanks" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com/thanks</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/222060807289180161">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="222041303058362369" data-item-type="tweet" id="stream-item-tweet-222041303058362369">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="222041303058362369"
+
+data-item-id="222041303058362369"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;11:55 am - 8 jul 12&quot;&gt;11:55 am - 8 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/222041303058362369&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="luishj"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/222041303058362369" class="tweet-timestamp js-permalink" title="11:55 am - 8 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341773746" data-long-form="true">8 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              we&#39;ve got a brand new design on <a href="http://t.co/YIzXBTlD" class="twitter-timeline-link" target="_blank" data-expanded-url="http://markupvalidator.com" ><span class="invisible">http://</span><span class="js-display-url">markupvalidator.com</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a> , come visit! Thanks <a href="/luishj" class="twitter-atreply pretty-link" ><s>@</s><b>luishj</b></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/222041303058362369">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="221360578751496192" data-item-type="tweet" id="stream-item-tweet-221360578751496192">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="221360578751496192"
+
+data-item-id="221360578751496192"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to="true"
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:50 pm - 6 jul 12&quot;&gt;2:50 pm - 6 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/221360578751496192&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="mgifford"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/221360578751496192" class="tweet-timestamp js-permalink" title="2:50 pm - 6 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341611449" data-long-form="true">6 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              <a href="/mgifford" class="twitter-atreply pretty-link" ><s>@</s><b>mgifford</b></a> BTW, we&#39;re rolling out a new version next week. Join the newsletter if you want to be up to date! <a href="http://t.co/dtHqsedf" class="twitter-timeline-link" target="_blank" data-expanded-url="http://eepurl.com/i9J4z" ><span class="invisible">http://</span><span class="js-display-url">eepurl.com/i9J4z</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/221360578751496192">
+          <span class="details-icon js-icon-container">
+              <i class="sm-chat"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver conversación
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar conversación
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="221360164320710656" data-item-type="tweet" id="stream-item-tweet-221360164320710656">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+
+
+"
+data-tweet-id="221360164320710656"
+
+data-item-id="221360164320710656"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to="true"
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container &quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;2:49 pm - 6 jul 12&quot;&gt;2:49 pm - 6 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/221360164320710656&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="mgifford"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/221360164320710656" class="tweet-timestamp js-permalink" title="2:49 pm - 6 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341611350" data-long-form="true">6 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              <a href="/mgifford" class="twitter-atreply pretty-link" ><s>@</s><b>mgifford</b></a> glad you like the service! As for the validations, we run them using the official validator, which has an experimental html5 check
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/221360164320710656">
+          <span class="details-icon js-icon-container">
+              <i class="sm-chat"></i>
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+                Ver conversación
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Ocultar conversación
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="221152366878134272" data-item-type="tweet" id="stream-item-tweet-221152366878134272">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="221152366878134272"
+
+data-item-id="221152366878134272"
+
+ data-retweet-id="221152431210381312"
+ data-screen-name="jaimeiniesta" data-name="Jaime Iniesta" data-user-id="670653"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;1:03 am - 6 jul 12&quot;&gt;1:03 am - 6 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía web&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/jaimeiniesta/status/221152366878134272&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions=""
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/jaimeiniesta/status/221152366878134272" class="tweet-timestamp js-permalink" title="1:03 am - 6 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341561807" data-long-form="true">6 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/jaimeiniesta" data-user-id="670653">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/1538528659/jaime_nov_08_normal.jpg" alt="Jaime Iniesta">
+            <strong class="fullname js-action-profile-name show-popup-with-id">Jaime Iniesta</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>jaimeiniesta</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              we&#39;re trying to install the W3C Validator on Heroku - help us raise funds for this open source project! <a href="http://t.co/30LsSXxA" class="twitter-timeline-link" target="_blank" data-expanded-url="http://gun.io/open/61/" ><span class="invisible">http://</span><span class="js-display-url">gun.io/open/61/</span><span class="invisible"></span><span class="tco-ellipsis"><span class="invisible">&nbsp;</span></span></a>
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+
+                    <span class="with-icn"><i class="badge-retweeted"></i><span class="js-retweet-text">Retwitteado por <a class="pretty-link js-user-profile-link" href="/jaimeiniesta" data-user-id="318431467"><b>MarkupValidator App</b></a></span></span>
+        </div>
+
+
+        <a class="details with-icn js-details" href="/jaimeiniesta/status/221152366878134272">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="220643890242392065" data-item-type="tweet" id="stream-item-tweet-220643890242392065">
+
+
+
+
+
+  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet
+
+
+
+
+ with-social-proof
+
+"
+data-tweet-id="220643890242392065"
+
+data-item-id="220643890242392065"
+
+
+ data-screen-name="MarkupValidator" data-name="MarkupValidator App" data-user-id="318431467"
+
+
+
+
+data-is-reply-to=""
+
+data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
+    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
+  &lt;/div&gt;
+
+    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
+    &lt;/div&gt;
+  &lt;div class=&quot;client-and-actions&quot;&gt;
+    &lt;span class=&quot;metadata&quot;&gt;
+      &lt;span title=&quot;3:22 pm - 4 jul 12&quot;&gt;3:22 pm - 4 jul 12&lt;/span&gt;
+
+       &lt;span class=&quot;tweet-source&quot;&gt;vía &lt;a href=&quot;http://twitter.com/#!/download/ipad&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPad&lt;/a&gt;&lt;/span&gt;
+
+          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/MarkupValidator/status/220643890242392065&quot; &gt;Detalles&lt;/a&gt;
+
+
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+"
+
+
+ data-mentions="MarkupValidator"
+
+>
+
+
+    <i class="dogear"></i>
+
+
+    <div class="content">
+
+
+      <div class="stream-item-header">
+        <small class="time">
+            <a href="/MarkupValidator/status/220643890242392065" class="tweet-timestamp js-permalink" title="3:22 pm - 4 jul 12" ><span class="_timestamp js-short-timestamp " data-time="1341440577" data-long-form="true">4 jul</span></a>
+        </small>
+          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="/MarkupValidator" data-user-id="318431467">
+            <img class="avatar js-action-profile-avatar" src="https://twimg0-a.akamaihd.net/profile_images/2380086215/fcu46ozay5f5al9kdfvq_normal.png" alt="MarkupValidator App">
+            <strong class="fullname js-action-profile-name show-popup-with-id">MarkupValidator App</strong>
+            <span>&rlm;</span><span class="username js-action-profile-name"><s>@</s><b>MarkupValidator</b></span>
+          </a>
+              </div>
+
+
+        <p class="js-tweet-text">
+              the new version of <a href="/MarkupValidator" class="twitter-atreply pretty-link" ><s>@</s><b>MarkupValidator</b></a> that we&#39;re working on is able to validate 100 pages in 30 seconds. How cool is that?
+                  </p>
+
+
+      <div class="stream-item-footer">
+
+
+
+
+
+        <div class="context">
+        </div>
+
+
+        <a class="details with-icn js-details" href="/MarkupValidator/status/220643890242392065">
+          <span class="details-icon js-icon-container">
+          </span>
+          <b>
+            <span class="expand-stream-item js-view-details">
+
+                  <span class="expand-action-wrapper">
+                    Abrir
+                  </span>
+            </span>
+            <span class="collapse-stream-item js-hide-details">
+                Reducir
+            </span>
+          </b>
+        </a>
+
+
+
+
+
+         <ul class="tweet-actions js-actions">
+          <li class="action-reply-container">
+
+              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Responder">
+                <i class="sm-reply"></i>
+                <b>Responder</b>
+              </a>
+          </li>
+            <li class="action-rt-container">
+              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                <i class="sm-rt"></i>
+
+
+                  <b><span class="undo-retweet" title="Deshacer Retweet">Retwitteado</span><span class="retweet" title="Retwittear">Retwittear</span></b>
+              </a>
+            </li>
+          <li class="action-del-container">
+            <a class="with-icn js-action-del" href="#" title="Borrar">
+              <i class="sm-trash"></i>
+              <b>Borrar</b>
+            </a>
+          </li>
+          <li class="action-fav-container">
+            <a class="with-icn js-toggle-fav" href="#">
+              <i class="sm-fav"></i>
+
+
+                <b><span class="unfavorite" title="Desmarcar favorito">Favorito</span><span class="favorite" title="Favorito">Favorito</span></b>
+            </a>
+          </li>
+        </ul>      </div>
+
+
+      <div class="expanded-content js-tweet-details-dropdown">
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</div>
+          <div class="stream-footer"><div class='timeline-end has-items has-more-items'>
+  <div class="stream-end">
+    <div class="stream-end-inner">
+        <i class="bird-etched"></i>
+        <p class="empty-text">@MarkupValidator no ha twitteado todavía.</p>
+        <button type='button' class='btn-link back-to-top hidden'>Volver arriba &uarr;</button>  </div>
+  </div>
+  <div class="stream-loading">
+    <div class="stream-end-inner">
+      <span class="spinner" title="Cargando"></span>
+    </div>
+  </div>
+</div></div>
+          <div class="stream-fail-container">
+            <div class="js-stream-whale-end stream-whale-end stream-placeholder centered-placeholder">
+          <div class="stream-end-inner">
+            <h2 class="title">Parece que el contenido está tardando un poco en cargarse.</h2>
+            <p>
+              Twitter está saturado o no disponible temporalmente. <a href="#" class="try-again-after-whale">Inténtalo de nuevo</a> o visita <a target="_blank" href="http://status.twitter.com">Estado de Twitter</a> para más información.
+            </p>
+          </div>
+        </div>      </div>
+        </div>
+      </div>
+        <div id="sensitive_flag_dialog" class="modal-container">
+      <div class="close-modal-background-target"></div>
+      <div class="modal modal-small draggable">
+        <div class="modal-content">
+          <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+          <div class="modal-header">
+            <h3 class="modal-title">Reporta este archivo</h3>
+          </div>
+          <div class="modal-body">
+            <p class="sensitive-title">Esto ya ha sido marcado como contenido sensible.</p>
+
+            <label class="checkbox" for="sensitive-settings-checkbox">
+              <input type="checkbox" id="sensitive-settings-checkbox" value="settings">
+              Cambiar mi configuración para avisarme antes de mostrarme contenido multimedia que pueda contener material sensible.
+            </label>
+            <label class="checkbox" for="sensitive-illegal-checkbox">
+              <input type="checkbox" id="sensitive-illegal-checkbox" value="illegal">
+              Marca esto por incluir contenido ilegal.
+            </label>
+          </div>
+          <div class="modal-footer">
+            <button id="submit_flag_confirmation" type="button" class="btn">Enviar</button>
+            <button id="cancel_flag_confirmation" type="button" class="btn primary-btn">Cancelar</button>
+
+            <div class="sensitive-confirmation">
+              <a class="sensitive-learn-more" target="_blank" href="//support.twitter.com/articles/20069937">Aprende más acerca de etiquetar multimedia</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-overlay"></div>
+    </div>
+    </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="modal-overlay"></div>
+
+    <div class="hidden-elements">
+      <div id="flash-preload"></div>
+      <iframe class="tweet-post-iframe" name="tweet-post-iframe"></iframe>
+
+    </div>
+
+      <div id="dm_dialog" class="modal-container dm-conversation-list">
+    <div class="close-modal-background-target"></div>
+    <div class="modal draggable twttr-dialog dm-dialog">
+      <div id="dm_dialog_conversation_list" class="modal-content">
+
+      <div class="twttr-dialog-header modal-header">
+        <h3>Mensajes directos</h3>
+        <a class="btn dm-new-button dm-header-new" href="#">Mensaje nuevo</a>
+        <div class="twttr-dialog-close"><b>&times;</b></div>
+      </div>
+
+
+      <div class="twttr-dialog-inside">
+        <div class="twttr-dialog-body clearfix">
+          <div class="dm-error js-dm-error">
+        <a href="#" class="js-dismiss">
+          <i class="close"></i>
+        </a>
+        <span class="dm-error-text"></span>
+      </div>      <div class="twttr-dialog-content">
+            <div class="dm-threads js-dm-threads js-modal-scrollable js-twttr-dialog-not-draggable">
+              <ul class="dm-thread-list js-dm-thread-list">
+                <div class="dm-placeholder-empty dm-no-messages">
+              <p><strong>You don't have any messages yet.</strong></p>
+              <p>Direct messages are 140 characters, private, and can be sent to any user who follows you on Twitter.</p>
+            </div>          </ul>
+            </div>
+          </div>
+
+          <div class="twttr-dialog-footer">
+        Sugerencia: puedes enviar un mensaje a cualquiera que te siga. <a href="http://support.twitter.com/groups/31-twitter-basics/topics/109-tweets-messages/articles/14606-what-is-a-direct-message-dm" target="_blank" class="learn-more">Aprendé más</a>
+      </div>
+        </div>
+      </div>
+    </div>    <div id="dm_dialog_conversation" class="modal-content">
+
+      <div class="twttr-dialog-header modal-header">
+        <h3><a class="js-dm-header-title" href="#">Mensajes directos</a> › con <span class="dm_dialog_real_name"></span></h3>
+        <div class="twttr-dialog-close"><b>&times;</b></div>
+      </div>
+
+
+      <div class="twttr-dialog-inside">
+        <div class="twttr-dialog-body clearfix">
+            <div class="dm-error js-dm-error">
+          <a href="#" class="js-dismiss">
+            <i class="close"></i>
+          </a>
+          <span class="dm-error-text"></span>
+        </div>      <div class="twttr-dialog-content">
+          </div>
+          <form class="dm-tweetbox tweet-form">
+        <div class="tweet-content">
+            <label class="hidden-elements" for="tweet-box-1343067690">Texto del Tweet</label>
+            <textarea id="tweet-box-1343067690" class="tweet-box"></textarea>
+        </div>
+        <div class="tweet-button">
+          <span class="spinner"></span>
+          <span class="tweet-counter">140</span>
+          <button class="btn tweet-action primary-btn disabled" type="submit">Enviar mensaje</button>
+        </div>
+        <div class="dm-delete-confirm js-dm-delete-confirm">
+          <p>¿Estás seguro que quieres borrar este mensaje?</p>
+    <button type="button" class="btn caution-btn js-prompt-ok" data-message-id="">Eliminar mensaje</button>
+    <button type="button" class="btn js-prompt-cancel">Cancelar</button>
+  </div>
+      </form>    </div>
+
+        <div class="twttr-dialog-footer">
+      Sugerencia: puedes enviar un mensaje a cualquiera que te siga. <a href="http://support.twitter.com/groups/31-twitter-basics/topics/109-tweets-messages/articles/14606-what-is-a-direct-message-dm" target="_blank" class="learn-more">Aprendé más</a>
+    </div>
+      </div>
+    </div>    <div id="dm_dialog_new" class="modal-content">
+
+      <div class="twttr-dialog-header modal-header">
+        <h3><a href="#">Mensajes directos</a> › Nuevo</h3>
+        <div class="twttr-dialog-close"><b>&rsaquo;</b></div>
+      </div>
+
+
+      <div class="twttr-dialog-inside">
+        <div class="twttr-dialog-body clearfix">
+          <div class="dm-dialog-content">
+            <div class="dm-to">
+              <input class="dm-to-input twttr-directmessage-input" type="text"></input>
+              <img class="avatar size24 selected-profile" src="https://si0.twimg.com/sticky/default_profile_images/default_profile_6_mini.png" data-default-img="https://si0.twimg.com/sticky/default_profile_images/default_profile_6_mini.png">
+              <ul class="dropdown-menu autocomplete-results">
+            <li class="dropdown-link dropdown-account template-row autocomplete-item">
+              <img width="24" height="24" class="avatar size24">
+              <strong class="fullname"></strong>
+              <span class="pretty-link"><s>@</s><b class="username"></b></span>
+            </li>
+          </ul>        </div>
+
+            <div class="dm-convo-placeholder">
+              <div class="dm-error js-dm-error">
+            <a href="#" class="js-dismiss">
+              <i class="close"></i>
+            </a>
+            <span class="dm-error-text"></span>
+          </div>        </div>
+
+          </div>
+
+          <form class="dm-tweetbox tweet-form">
+        <div class="tweet-content">
+            <label class="hidden-elements" for="tweet-box-1343067691">Texto del Tweet</label>
+            <textarea id="tweet-box-1343067691" class="tweet-box"></textarea>
+        </div>
+        <div class="tweet-button">
+          <span class="spinner"></span>
+          <span class="tweet-counter">140</span>
+          <button class="btn tweet-action primary-btn disabled" type="submit">Enviar mensaje</button>
+        </div>
+        <div class="dm-delete-confirm js-dm-delete-confirm">
+          <p>¿Estás seguro que quieres borrar este mensaje?</p>
+    <button type="button" class="btn caution-btn js-prompt-ok" data-message-id="">Eliminar mensaje</button>
+    <button type="button" class="btn js-prompt-cancel">Cancelar</button>
+  </div>
+      </form>
+          <div class="twttr-dialog-footer">
+        Sugerencia: puedes enviar un mensaje a cualquiera que te siga. <a href="http://support.twitter.com/groups/31-twitter-basics/topics/109-tweets-messages/articles/14606-what-is-a-direct-message-dm" target="_blank" class="learn-more">Aprendé más</a>
+      </div>
+        </div>
+      </div>
+    </div>  </div>
+  </div>
+
+    <div id="goto-user-dialog" class="modal-container">
+  <div class="modal modal-small draggable">
+    <div class="modal-content">
+      <button type="button" class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+
+      <div class="modal-header">
+        <h3 class="modal-title">Ir al perfil de un usuario</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-inner">
+          <form class="goto-user-form">
+            <input class="username-input" type="text" placeholder="Start typing a name to jump to a profile">
+            <ul class="dropdown-menu autocomplete-results">
+              <li class="dropdown-link dropdown-account template-row autocomplete-item">
+                <img width="24" height="24" class="avatar size24">
+                <strong class="fullname"></strong>
+                <span class="pretty-link"><s>@</s><b class="username"></b></span>
+              </li>
+            </ul>          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  <div id="retweet-tweet-dialog" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal draggable">
+      <div class="modal-content">
+        <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+
+        <div class="modal-header">
+
+          <h3 class="modal-title">¿Retwittear a tus seguidores?</h3>
+
+        </div>
+
+        <div class="modal-body modal-tweet"></div>
+
+        <div class="modal-footer">
+          <button class="btn cancel-action">Cancelar</button>
+
+          <button class="btn primary-btn retweet-action">Retwittear</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="delete-tweet-dialog" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal draggable">
+      <div class="modal-content">
+        <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+
+        <div class="modal-header">
+          <h3 class="modal-title">¿Estás seguro de que quieres eliminar este Tweet?</h3>
+        </div>
+
+        <div class="modal-body modal-tweet"></div>
+
+        <div class="modal-footer">
+          <button class="btn cancel-action">Cancelar</button>
+          <button class="btn primary-btn delete-action">Borrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div id="keyboard-shortcut-dialog" class="modal-container">
+  <div class="close-modal-background-target"></div>
+  <div class="modal modal-large draggable">
+    <div class="modal-content">
+      <button type="button" class="modal-btn modal-close js-dimiss"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+
+
+      <div class="modal-header">
+        <h3 class="modal-title">Teclas rápidas</h3>
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="keyboard-shortcuts clearfix" id="keyboard-shortcut-menu">
+
+          <table class="modal-table">
+            <tbody>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">Enter</b>
+                </td>
+                <td class="shortcut-label">Abrir detalles del Tweet</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">G</b> <b class="sc-key">F</b>
+                </td>
+                <td class="shortcut-label">Ir a usuario...</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">?</b>
+                </td>
+                <td class="shortcut-label">Este menú</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">J</b>
+                </td>
+                <td class="shortcut-label">Siguiente Tweet</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">K</b>
+                </td>
+                <td class="shortcut-label">Tweet Anterior</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">Space</b>
+                </td>
+                <td class="shortcut-label">Página abajo</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">/</b>
+                </td>
+                <td class="shortcut-label">Buscar</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">.</b>
+                </td>
+                <td class="shortcut-label">Cargar nuevos Tweets</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+        <div id="geo-disabled-dropdown">
+          <ul class="dropdown-menu" tabindex="-1">
+        <li class="dropdown-caret">
+          <span class="caret-outer"></span>
+          <span class="caret-inner"></span>
+        </li>
+        <li class="geo-not-enabled-yet">
+          <h2>Añade una ubicación a tus Tweets</h2>
+          <p>
+            Cuando twitteas desde un lugar, Twitter guarda esa ubicación.&#32;
+             Puedes cambiar la opción de geo-ubicación antes de mandar un tweet y claro, siempre tienes la opción de borrar el historial de tus ubicaciones.
+            <a href="http://support.twitter.com/forums/26810/entries/78525" target="_blank">Más</a>
+          </p>
+          <div>
+            <button type="button" class="geo-turn-on btn primary-btn">Activar geo-ubicación</button>
+            <button type="button" class="geo-not-now btn-link">Por ahora no</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+      <div id="geo-enabled-dropdown">
+        <ul class="dropdown-menu" tabindex="-1">
+      <li class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+      </li>
+      <li class="geo-query-location">
+        <input type="text" autocomplete="off" placeholder="Buscar por barrio o ciudad">
+        <i class="generic-search"></i>
+      </li>
+      <li class="geo-dropdown-status"></li>
+      <li class="dropdown-link geo-turn-off-item geo-focusable">
+        <i class="close"></i>Desactivar ubicación
+      </li>
+    </ul>
+  </div>
+
+
+      <div id="profile_popup" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal modal-small draggable">
+      <div class="modal-content clearfix">
+        <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+        <div class="modal-header">
+          <h3 class="modal-title">Resumen del perfil</h3>
+        </div>
+
+        <div class="modal-body profile-modal">
+
+        </div>
+
+        <div class="loading">
+          <img src="https://twimg0-a.akamaihd.net/a/1342841381/images/bigger_spinner.gif">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="list-membership-dialog" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal modal-small draggable">
+      <div class="modal-content">
+        <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+        <div class="modal-header">
+          <h3 class="modal-title">Tus listas</h3>
+        </div>
+        <div class="modal-body">
+          <div class="list-membership-content"></div>
+          <span class="spinner lists-spinner" title="Loading&hellip;"></span>
+        </div>
+      </div>
+    </div>
+  </div>  <div id="list-create-dialog" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal modal-medium draggable">
+      <div class="modal-content">
+        <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+        <div class="modal-header">
+          <h3 class="modal-title">Crear nueva lista</h3>
+        </div>
+        <div class="modal-body">
+
+        <div class="list-editor">
+          <div class="field">
+            <label for="list-name">Nombre de la lista</label>
+            <input type="text" class="text" name="name" value="" />
+          </div>
+          <div class="field" style="display:none">
+            <label for="list-link">Enlace de la lista</label>
+            <span></span>
+          </div>
+          <hr/>
+
+          <div class="field">
+            <label for="description">Descripción</label>
+            <textarea name="description"></textarea>
+            <span class="help-text">Menos de 100 caracteres, opcional</span>
+          </div>
+          <hr/>
+
+          <div class="field">
+            <label for="mode">Privacidad</label>
+            <div class="options">
+              <label for="list-public-radio">
+                <input class="radio" type="radio" name="mode" id="list-public-radio" value="public" checked="checked"  />
+                <b>Pública</b> &middot; Cualquiera puede seguir esta lista
+              </label>
+              <label for="list-private-radio">
+                <input class="radio" type="radio" name="mode" id="list-private-radio" value="private"  />
+                <b>Privada</b> &middot; Solamente tú podrás ver esta lista
+              </label>
+            </div>
+          </div>
+          <hr/>
+
+          <div class="list-editor-save">
+            <div class="button btn btn-primary update-list-button" data-list-id="150619680">Guardar lista</div>
+          </div>
+
+        </div>      </div>
+      </div>
+    </div>
+  </div>
+      <div id="activity-popup-dialog" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal draggable">
+      <div class="modal-content clearfix">
+        <button type="button" class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+
+        <div class="modal-header">
+          <h3 class="modal-title"></h3>
+        </div>
+
+        <div class="modal-body">
+          <div class="activity-tweet clearfix"></div>
+          <div class="loading">
+            <img src="https://twimg0-a.akamaihd.net/a/1342841381/images/bigger_spinner.gif">
+          </div>
+          <div class="activity-content clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div id="confirm_dialog" class="modal-container">
+  <div class="close-modal-background-target"></div>
+  <div class="modal draggable">
+    <div class="modal-content">
+      <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+      <div class="modal-header">
+        <h3 class="modal-title"></h3>
+      </div>
+      <div class="modal-body">
+        <p class="modal-body-text"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="confirm_dialog_cancel_button"></button>
+        <button id="confirm_dialog_submit_button" class="btn primary-btn modal-submit"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div id="signin-or-signup-dialog">
+      <div id="signin-or-signup" class="modal-container">
+        <div class="close-modal-background-target"></div>
+        <div class="modal modal-medium draggable">
+          <div class="modal-content">
+            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+            <div class="modal-header">
+              <h3 class="modal-title modal-long-title signup-only">Únete a Twitter y sigue a @MarkupValidator</h3>
+              <h3 class="modal-title not-signup-only">Iniciar sesión en Twitter</h3>
+            </div>
+            <div class="modal-body signup-only">
+              <form action="https://twitter.com/signup" class="clearfix signup" method="post">
+              <div class="holding name">
+                <input type="text" autocomplete="off" name="user[name]" maxlength="20">
+                <span class="holder">Nombre completo</span>
+              </div>
+              <div class="holding email">
+                <input class="email-input" type="text" autocomplete="off" name="user[email]">
+                <span class="holder">Correo electrónico</span>
+              </div>
+              <div class="holding password">
+                <input type="password" name="user[user_password]">
+                <span class="holder">Contraseña</span>
+              </div>
+                <input name="follow" type="hidden" value="MarkupValidator">
+              <input type="hidden" value="" name="context">
+              <input type="hidden" value="fee7199505aff1976dbf75b780f4c04b3fd37937" name="authenticity_token"/>
+              <input name="follows" type="hidden" value="">
+              <input type="submit" class="btn signup-btn js-submit js-signup-btn" value="Regístrate">
+            </form>
+          </div>
+            <div class="modal-body not-signup-only">
+              <form action="https://twitter.com/sessions" class="signin" method="post">
+              <fieldset>
+
+    <div class="clearfix holding">
+      <span class="username js-username holder">Nombre de usuario o correo electrónico</span>
+      <input class="js-username-field email-input" type="text" name="session[username_or_email]" autocomplete="on" value="">
+      <p class="help-text-inline">¿Olvidaste tu <a href="/account/resend_password" title="" tabindex="-1">nombre de usuario</a>?</p>
+    </div>
+
+    <div class="clearfix holding">
+      <span class="password holder">Contraseña</span>
+      <input class="js-password-field" type="password" name="session[password]">
+      <p class="help-text-inline">¿Olvidaste tu <a href="/account/resend_password" tabindex="-1">contraseña</a>?</p>
+    </div>
+
+    <input type="hidden" value="fee7199505aff1976dbf75b780f4c04b3fd37937" name="authenticity_token"/>
+
+  </fieldset>
+  <div class="clearfix">
+
+    <input type="hidden" name="scribe_log">
+    <input type="hidden" name="redirect_after_login" value="">
+    <input type="hidden" value="fee7199505aff1976dbf75b780f4c04b3fd37937" name="authenticity_token"/>
+    <button type="submit" class="submit btn primary-btn">Iniciar sesión</button>
+
+    <fieldset class="subchck">
+      <label class="remember">
+        <input type="checkbox" value="1" name="remember_me" >
+        Recordar mis datos
+      </label>
+    </fieldset>
+
+  </div>
+  <div class="divider"></div>
+              <p>
+                <a class="forgot" href="/account/resend_password">¿Olvidaste tu contraseña?</a><br />
+                <a class="mobile has-sms" href="/account/complete">¿Ya usas Twitter por SMS?</a>
+              </p>
+            </form>
+            <div class="signup">
+                <h2>¿No estás en Twitter? Regístrate, ponte al día con las cosas que te importan, y recibe actualizaciones inmediatas.</h2>
+                <form action="https://twitter.com/signup" class="signup" method="get">
+                  <input name="follow" type="hidden" value="MarkupValidator">
+                <button class="btn promotional signup-btn" type="submit">Regístrate &raquo; </button>
+              </form>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="sms-codes-dialog" class="modal-container">
+    <div class="close-modal-background-target"></div>
+    <div class="modal modal-medium draggable">
+      <div class="modal-content">
+        <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Cerrar</span></i></button>
+        <div class="modal-header">
+          <h3 class="modal-title">Códigos cortos </h3>
+        </div>
+        <div class="modal-body">
+
+        <table id="sms_codes" cellpadding="0" cellspacing="0">
+          <thead>
+            <tr>
+              <th>País</th>
+              <th>Código</th>
+              <th>Para clientes de</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Estados Unidos</td>
+              <td>40404</td>
+              <td>(cualquiera)</td>
+            </tr>
+            <tr>
+              <td>Canadá</td>
+              <td>21212</td>
+              <td>(cualquiera)</td>
+            </tr>
+            <tr>
+              <td>Reino Unido</td>
+              <td>86444</td>
+              <td>Vodafone, Orange, 3, O2</td>
+            </tr>
+            <tr>
+              <td>Brasil</td>
+              <td>40404</td>
+              <td>Nextel, TIM</td>
+            </tr>
+            <tr>
+              <td>Haití</td>
+              <td>40404</td>
+              <td>Digicel, Voila</td>
+            </tr>
+            <tr>
+              <td>Irlanda</td>
+              <td>51210</td>
+              <td>Vodafone, O2</td>
+            </tr>
+            <tr>
+              <td>India</td>
+              <td>53000</td>
+              <td>Bharti Airtel, Videocon, Reliance</td>
+            </tr>
+            <tr>
+              <td>Indonesia</td>
+              <td>89887</td>
+              <td>AXIS, 3, Telkomsel, Indosat, XL Axiata</td>
+            </tr>
+            <tr>
+              <td rowspan="2">Italia</td>
+              <td>4880804</td>
+              <td>Wind</td>
+            </tr>
+            <tr>
+              <td>3424486444</td>
+              <td>Vodafone</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                &raquo; <a target="_blank" href="http://support.twitter.com/articles/14226-how-to-find-your-twitter-short-code-or-long-code">Ver códigos cortos de SMS para otros países</a>
+              </td>
+            </tr>
+          </tfoot>
+        </table>      </div>
+      </div>
+    </div>
+  </div>        <script src="https://si0.twimg.com/c/swift/prereqs.1a057f2e2c17cf5c21435693ad9213df.js"></script>
+        <script>
+          using.path = 'https://si0.twimg.com/c/swift/es';
+
+          using.bundles.push({"$bundle\/discover.c934f58529f92a28c0154e75e4d7d2cb.js":["app\/data\/trends","app\/data\/trends_scribe","app\/ui\/trends\/trends","app\/ui\/trends\/trends_dialog","app\/boot\/trends","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/discover_scribe","app\/data\/discover","app\/utils\/ellipsis","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/with_discover_expando","app\/ui\/with_discover_clicks","app\/ui\/discover","app\/ui\/expando\/close_all_button","app\/ui\/discover_nav","app\/pages\/discover\/discover"],"$bundle\/events.3e65c05652aec57d394e2f3465d78d83.js":["app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/media_thumbnails","app\/data\/media_thumbnails_scribe","app\/ui\/dashboard_tweetbox","app\/ui\/dialogs\/signin_or_signup","app\/ui\/forms\/input_with_placeholder","app\/ui\/signup_call_out","app\/data\/signup_click_scribe","app\/logged_out_boot","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/ui\/timelines\/event_timeline","app\/ui\/gallery\/gallery","app\/pages\/events\/hashtag"],"$bundle\/accounts.acb2207d490527a1aa20c912f5b217f6.js":["app\/ui\/account\/password_reset_controls","app\/ui\/password_match_pair","app\/ui\/with_password_strength","app\/ui\/password_strength","app\/pages\/account\/password_reset","app\/pages\/account\/password_reset_sent","app\/pages\/account\/password_reset_type","app\/ui\/captcha_dialog","app\/ui\/account\/resend_password_controls","app\/pages\/account\/resend_password","app\/ui\/account\/verify_personal_information_controls","app\/pages\/account\/verify_personal_information","app\/ui\/account\/verify_device_token_controls","app\/pages\/account\/verify_device_token","app\/pages\/account\/mobile_complete","app\/pages\/account\/mobile_sms_complete","app\/pages\/account\/mobile_verify"],"$bundle\/home.8d9383f60576e3383b8c23f30b4aa990.js":["app\/data\/trends","app\/data\/trends_scribe","app\/ui\/trends\/trends","app\/ui\/trends\/trends_dialog","app\/boot\/trends","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/ui\/who_to_follow_dashboard","app\/data\/who_to_follow","app\/data\/who_to_follow_scribe","app\/ui\/promptbird","app\/utils\/oauth_popup","app\/data\/promptbird","app\/data\/promptbird_scribe","app\/ui\/dashboard_tweetbox","app\/utils\/boomerang","app\/pages\/home"],"$bundle\/search.81c566ac7f7721d7b785f3b52b20f080.js":["app\/data\/trends","app\/data\/trends_scribe","app\/ui\/trends\/trends","app\/ui\/trends\/trends_dialog","app\/boot\/trends","app\/ui\/dialogs\/search_operators_dialog","app\/pages\/search\/home","app\/ui\/advanced_search","app\/pages\/search\/advanced"],"$bundle\/login.461661e75296ca05c612e3af0605c027.js":["app\/ui\/forms\/input_with_placeholder","app\/pages\/login"],"$bundle\/connect.2a2a53b512ac7484779018d12c558fc3.js":["app\/ui\/who_to_follow_dashboard","app\/data\/who_to_follow","app\/data\/who_to_follow_scribe","app\/boot\/connect","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/pages\/connect\/interactions","app\/pages\/connect\/mentions"],"$bundle\/signup.071d5810225ce77760b28efe4a2e0a70.js":["app\/ui\/signup\/with_captcha","app\/utils\/common_regexp","app\/ui\/signup\/signup_form","app\/ui\/with_password_strength","app\/data\/signup_data","app\/data\/settings","app\/data\/signup_scribe","app\/ui\/signup\/suggestions","app\/ui\/signup\/small_print_expander","app\/pages\/signup\/signup"],"$bundle\/mobile_gallery.cd0b1b3ad45fb9af263495930d379526.js":["app\/ui\/dialogs\/mobile_gallery_download_dialog","app\/ui\/mobile_gallery\/gallery_buttons","app\/ui\/forms\/mobile_gallery_email_form","app\/data\/mobile_gallery\/send_download_link","app\/pages\/mobile_gallery\/gallery","app\/pages\/mobile_gallery\/apps","app\/ui\/mobile_gallery\/firefox_tweet_button","app\/pages\/mobile_gallery\/firefox"],"$bundle\/vitonboarding.78df0c94855f3262834be7af0b0ca8ce.js":["app\/ui\/vit\/verification_step","app\/ui\/vit\/mobile_topbar","app\/pages\/vit\/onboarding"],"$bundle\/typeahead.c30cf835bdc22b8bd059e73828fe1f42.js":["app\/pages\/search\/swift_typeahead"],"$bundle\/boomerang.24a59a23201b496f7e7a68a52f6dd115.js":["$lib\/boomerang.js","app\/utils\/boomerang_lib"],"$bundle\/core.d5d98de21a8a68222299f095c150d6cc.js":["$lib\/jquery.js","$lib\/jquery.event.drag.js","core\/jquery","core\/utils","app\/utils\/is_ie","core\/compose","core\/fn","core\/registry","core\/component","core\/clock","core\/parameterize","core\/i18n","core\/logger","$lib\/mustache.js","debug\/mustache","debug\/debug","app\/utils\/querystring","app\/utils\/params","app\/utils\/auth_token","app\/data\/scribe_transport","app\/data\/client_event","app\/data\/with_scribe","app\/data\/scribe_monitor","app\/data\/ddg","app\/ui\/with_interaction_data","app\/utils\/scribe_item_types","app\/utils\/scribe_association_types","app\/data\/with_interaction_data_scribe","app\/data\/tweet_actions_scribe","app\/data\/user_actions_scribe","app\/data\/item_actions_scribe","app\/data\/navigation_scribe","app\/boot\/scribing","app\/data\/with_auth_token","app\/data\/with_data","app\/data\/promoted_logger","app\/ui\/keyboard_shortcuts","app\/ui\/navigation","app\/utils\/time","app\/data\/navigation","$lib\/jquery_autoellipsis.js","$lib\/jquery_color_picker.js","$lib\/jquery.swfobject.js","$lib\/jquery.hashchange.js","$lib\/bootstrap_tooltip.js","app\/jquery_with_plugins","app\/ui\/with_scrollbar_width","app\/ui\/with_dialog","app\/ui\/with_position","app\/ui\/dialogs\/keyboard_shortcuts_dialog","app\/ui\/dialogs\/with_modal_tweet","app\/ui\/dialogs\/retweet_dialog","app\/ui\/dialogs\/delete_tweet_dialog","app\/utils\/with_event_params","app\/ui\/dialogs\/confirm_dialog","app\/ui\/dialogs\/list_membership_dialog","app\/ui\/dialogs\/list_create_dialog","app\/data\/direct_messages","app\/data\/direct_messages_scribe","app\/utils\/levenshtein","app\/utils\/storage\/core","$lib\/gibberish-aes.js","app\/utils\/crypto\/aes","app\/utils\/storage\/with_crypto","app\/utils\/storage\/with_expiry","app\/utils\/storage\/array\/with_array","app\/utils\/storage\/array\/with_max_elements","app\/utils\/storage\/array\/with_unique_elements","app\/utils\/storage\/custom","app\/utils\/cached_ajax","app\/data\/autocomplete","app\/ui\/with_timestamp_updating","app\/ui\/direct_message_dialog","lib\/twitter-text","app\/ui\/with_character_counter","app\/utils\/caret","app\/ui\/with_rtl_tweet_box","app\/ui\/tweet_box","app\/ui\/with_autocomplete_helpers","app\/utils\/string","app\/ui\/autocomplete_dropdown","app\/boot\/direct_messages","app\/data\/profile_popup","app\/data\/profile_popup_scribe","app\/ui\/with_user_actions","app\/ui\/with_item_actions","app\/ui\/profile_popup","app\/data\/user","app\/data\/lists","app\/boot\/profile_popup","app\/ui\/message_drawer","app\/ui\/dialogs\/goto_user_dialog","app\/utils\/setup_polling_with_backoff","app\/ui\/page_title","app\/utils\/cookie","app\/data\/geo","app\/data\/tweet","app\/ui\/tweet_dialog","app\/ui\/new_tweet_button","app\/data\/tweet_box_scribe","app\/utils\/image","app\/utils\/image_thumbnail","app\/ui\/tweet_box_thumbnails","app\/utils\/image_resize","app\/ui\/with_image_selection","app\/ui\/image_selector","app\/ui\/with_click_outside","app\/ui\/geo_picker","app\/ui\/tweet_box_manager","app\/boot\/tweet_boxes","app\/ui\/with_dropdown","app\/ui\/user_dropdown","app\/ui\/signin_dropdown","app\/ui\/language_dropdown","app\/ui\/search_input","app\/ui\/global_nav","app\/ui\/navigation_links","app\/data\/typeahead\/with_cache","app\/utils\/typeahead_helpers","app\/data\/typeahead\/accounts_datasource","app\/data\/typeahead\/saved_searches_datasource","app\/data\/typeahead\/with_external_event_listeners","app\/data\/typeahead\/topics_datasource","app\/data\/typeahead\/typeahead","app\/ui\/typeahead\/with_accounts","app\/ui\/typeahead\/with_saved_searches","app\/ui\/typeahead\/with_topics","app\/ui\/typeahead\/typeahead_dropdown","app\/ui\/typeahead\/typeahead_input","app\/data\/typeahead_scribe","app\/boot\/top_bar","app\/ui\/google","app\/ui\/tooltips","app\/ui\/facebook_token_iframe","app\/ui\/impression_cookies","app\/ui\/banners\/email_banner","app\/ui\/search_query_source","app\/data\/email_banner","app\/boot","app\/utils\/ttft"],"$bundle\/permalink.a276281fa9ecdd640934c3245274b82b.js":["app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/permalink_keyboard_shortcuts","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/utils\/twt","app\/ui\/dialogs\/embed_tweet","app\/data\/tweet_actions","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/dialogs\/sms_codes","app\/ui\/dialogs\/signin_or_signup","app\/ui\/forms\/input_with_placeholder","app\/ui\/signup_call_out","app\/data\/signup_click_scribe","app\/logged_out_boot","app\/data\/url_resolver","app\/ui\/media\/phoenix_shim","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/pages\/permalink","app\/pages\/permalink_photo"],"$bundle\/settings.015aa65942897714d638cc9286ede735.js":["app\/data\/settings","app\/ui\/alert_banner","app\/boot\/settings","app\/data\/settings\/account_scribe","app\/data\/form_scribe","app\/ui\/with_forgot_password","app\/ui\/password_dialog","app\/ui\/protected_verified_dialog","app\/ui\/validating_fieldset","app\/ui\/email_confirmation","app\/ui\/timezone_detector","app\/ui\/deactivated","app\/ui\/geo_deletion","app\/ui\/settings_controls","app\/pages\/settings\/account","app\/data\/settings\/applications_scribe","app\/ui\/oauth_revoker","app\/pages\/settings\/applications","app\/data\/settings\/confirm_deactivation_scribe","app\/pages\/settings\/confirm_deactivation","app\/data\/settings\/design_scribe","app\/ui\/color_picker","app\/ui\/design","app\/ui\/theme_preview","app\/ui\/theme_picker","app\/ui\/image_uploader","app\/pages\/settings\/design","app\/data\/settings\/enhanced_profile_scribe","app\/ui\/capped_file_upload","app\/ui\/settings\/enhanced_profile_form","app\/pages\/settings\/enhanced_profile","app\/ui\/settings\/notifications","app\/pages\/settings\/notifications","app\/ui\/password","app\/ui\/password_match_pair","app\/ui\/with_password_strength","app\/ui\/password_strength","app\/pages\/settings\/password","app\/pages\/settings\/password_confirmation","app\/data\/settings\/profile_scribe","app\/ui\/facebook_button","app\/ui\/profile_image_monitor","app\/ui\/field_edit_warning","app\/ui\/dialogs\/in_product_help_dialog","app\/pages\/settings\/profile","app\/data\/settings\/sms_scribe","app\/ui\/forms\/select_box","app\/ui\/settings\/sms_phone_create_form","app\/ui\/forms\/element_group_toggler","app\/ui\/settings\/device_verified_form","app\/ui\/settings\/sms_phone_verify_form","app\/pages\/settings\/sms"],"$bundle\/profiles.d694aca443c45b4bdcff91ee78e16cf8.js":["app\/ui\/dialogs\/signin_or_signup","app\/ui\/forms\/input_with_placeholder","app\/ui\/signup_call_out","app\/data\/signup_click_scribe","app\/logged_out_boot","app\/ui\/profile\/head","app\/ui\/timelines\/profile_timeline","app\/ui\/dashboard_tweetbox","app\/ui\/who_to_follow_dashboard","app\/data\/who_to_follow","app\/data\/who_to_follow_scribe","app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/media_thumbnails","app\/data\/media_thumbnails_scribe","app\/ui\/suggested_users","app\/data\/suggested_users","app\/boot\/profile","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/pages\/profile\/favorites","app\/pages\/profile\/tweets","app\/ui\/timelines\/with_cursor_pagination","app\/ui\/timelines\/user_timeline","app\/boot\/user_timeline","app\/pages\/profile\/followers","app\/pages\/profile\/following"]});
+
+
+          using(
+            'app/pages/profile/tweets',
+            'core/jquery',
+
+          function(page, $) {
+
+            page({"smsDeviceVerified":null,"swiftRoutes":{"profile":"\/"},"pageName":"profile","initialState":{"module":"app\/pages\/profile\/tweets","cache_ttl":300,"section":null,"title":"MarkupValidator App (MarkupValidator) en Twitter"},"deviceEnabled":false,"pushState":false,"sectionName":"profile","loggedIn":false,"sandboxes":{"jsonp":"https:\/\/si0.twimg.com\/a\/1342841381\/jsonp_sandbox.html","detailsPane":"https:\/\/si0.twimg.com\/a\/1342841381\/details_pane_content_sandbox.html"},"hasPushDevice":null,"scribeMetrics":500,"timeline_url":"\/markupvalidator","geoEnabled":false,"experiments":{"mobile_redirect_to_signup_278":{"bucket":"redirect","experiment_key":"mobile_redirect_to_signup_278","bucket_names":["control","redirect"],"version":5}},"assetsBasePath":"https:\/\/si0.twimg.com\/a\/1342841381\/","profile_id":318431467,"internalReferer":null,"typeaheadData":{"savedSearches":{"items":[],"enabled":false},"accounts":{"remoteQueriesEnabled":false,"blockedIds":[],"enabled":false,"localQueriesEnabled":false},"showDebugInfo":false,"topics":{"remoteQueriesEnabled":false,"enabled":false,"localQueriesEnabled":false}},"scribeBufferSize":3,"periodicScribeFlush":0,"screenName":null,"environment":"production","wtf_options":{"screen_name":"MarkupValidator","limit":3,"small_avatar":true,"pc":true,"display_location":"st-component"},"formAuthenticityToken":"fee7199505aff1976dbf75b780f4c04b3fd37937","profile_user":{"id":318431467,"profile_image_url_https":"https:\/\/si0.twimg.com\/profile_images\/2380086215\/fcu46ozay5f5al9kdfvq_normal.png","geo_enabled":false,"default_profile_image":false,"profile_sidebar_border_color":"C0DEED","favourites_count":21,"following":null,"show_all_inline_media":false,"utc_offset":7200,"profile_background_tile":false,"profile_image_url":"http:\/\/a0.twimg.com\/profile_images\/2380086215\/fcu46ozay5f5al9kdfvq_normal.png","url":"http:\/\/markupvalidator.com","profile_sidebar_fill_color":"DDEEF6","name":"MarkupValidator App","followers_count":197,"created_at":"Thu Jun 16 13:44:48 +0000 2011","verified":false,"protected":false,"time_zone":"Athens","default_profile":true,"profile_background_color":"C0DEED","friends_count":190,"id_str":"318431467","location":"","description":"Site-wide markup validation tool","follow_request_sent":null,"profile_background_image_url":"http:\/\/a0.twimg.com\/images\/themes\/theme1\/bg.png","screen_name":"MarkupValidator","profile_background_image_url_https":"https:\/\/si0.twimg.com\/images\/themes\/theme1\/bg.png","listed_count":3,"profile_link_color":"0084B4","lang":"es","profile_use_background_image":true,"statuses_count":298,"status":{"in_reply_to_user_id":null,"in_reply_to_status_id_str":null,"id_str":"225704790494162944","in_reply_to_status_id":null,"favorited":false,"created_at":"Wed Jul 18 21:33:10 +0000 2012","in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"truncated":false,"coordinates":null,"geo":null,"place":null,"retweet_count":0,"source":"\u003Ca href=\"http:\/\/twitter.com\/#!\/download\/ipad\" rel=\"nofollow\"\u003ETwitter for iPad\u003C\/a\u003E","contributors":null,"retweeted":false,"id":225704790494162944,"text":"how many of you would like to sign up using email and password instead of twitter\/google\/facebook? And, why?"},"is_translator":false,"profile_text_color":"333333","notifications":null,"contributors_enabled":false}});
+            window.__swift_loaded = true;
+            window.swiftActionQueue && window.swiftActionQueue.flush($);
+            $(document).trigger('uiSwiftLoaded');
+          });
+        </script>
+        <script></script>  </body>
+</html>

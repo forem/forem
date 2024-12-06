@@ -1,0 +1,47 @@
+---
+NU:
+  alpha2: NU
+  alpha3: NIU
+  continent: Australia
+  country_code: '683'
+  currency_code: NZD
+  distance_unit: KM
+  gec: NE
+  geo:
+    latitude: -19.054445
+    longitude: -169.867233
+    max_latitude: -18.952625
+    max_longitude: -169.7743248
+    min_latitude: -19.1555668
+    min_longitude: -169.9500846
+    bounds:
+      northeast:
+        lat: -18.952625
+        lng: -169.7743248
+      southwest:
+        lat: -19.1555668
+        lng: -169.9500846
+  international_prefix: '00'
+  ioc:
+  iso_long_name: Niue
+  iso_short_name: Niue
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 4
+  national_prefix: None
+  nationality: Niuean
+  number: '570'
+  postal_code: false
+  region: Oceania
+  start_of_week: monday
+  subregion: Polynesia
+  un_locode: NU
+  unofficial_names:
+  - Niue
+  - ニウエ
+  world_region: APAC

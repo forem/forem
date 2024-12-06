@@ -1,0 +1,735 @@
+---
+ACT:
+  name: Australian Capital Territory
+  code: ACT
+  unofficial_names: Australian Capital Territory
+  geo:
+    latitude: -35.4734679
+    longitude: 149.0123679
+    min_latitude: -35.9205307
+    min_longitude: 148.7640971
+    max_latitude: -35.1245128
+    max_longitude: 149.3992848
+  translations:
+    en: Australian Capital Territory
+    af: Australiese Hoofstadgebied
+    ar: مقاطعة العاصمة الأسترالية
+    az: Avstraliya Paytaxt Ərazisi
+    be: Аўстралійская сталічная тэрыторыя
+    bg: Австралийска столична територия
+    bn: অস্ট্রেলিয়ান ক্যাপিটাল টেরিটরি
+    ca: Territori de la Capital Australiana
+    cs: Teritorium hlavního města Austrálie
+    da: Australian Capital Territory
+    de: Australian Capital Territory
+    el: Επικράτεια Αυστραλιανής Πρωτεύουσας
+    es: Territorio de la Capital Australiana
+    et: Austraalia pealinna ala
+    eu: Australiako Hiriburuaren Lurraldea
+    fa: قلمرو پایتختی استرالیا
+    fi: Australian pääkaupunkiterritorio
+    fr: Territoire de la capitale australienne
+    gl: Territorio da Capital Australiana
+    gu: ઓસ્ટ્રેલિયન કેપિટલ ટેરિટરી
+    he: טריטוריית הבירה האוסטרלית
+    hi: ऑस्ट्रेलियाई राजधानी क्षेत्र
+    hr: Teritorij australskog glavnog grada
+    hu: Ausztráliai fővárosi terület
+    hy: Ավստրալիական մայրաքաղաքային տարածք
+    id: Wilayah Ibu Kota Australia
+    is: Höfuðborgarsvæði Ástralíu
+    it: Territorio della Capitale Australiana
+    ja: オーストラリア首都特別地域
+    ka: ფედერალური ტერიტორია
+    kn: ಆಸ್ಟ್ರೇಲಿಯನ್ ಕ್ಯಾಪಿಟಲ್ ಟೆರಿಟರಿ
+    ko: 오스트레일리아 수도 준주
+    lt: Australijos sostinės teritorija
+    lv: Austrālijas galvaspilsētas teritorija
+    mn: Австралийн Нийслэлийн Нутаг Дэвсгэр
+    mr: ऑस्ट्रेलियन कॅपिटल टेरिटोरी
+    ms: Wilayah Ibu Negara Australia
+    nb: Australian Capital Territory
+    ne: अस्ट्रेलियन राजधानी क्षेत्र
+    nl: Australian Capital Territory
+    pl: Australijskie Terytorium Stołeczne
+    pt: Território da Capital Australiana
+    ro: Australian Capital Territory
+    ru: Австралийская столичная территория
+    si: ඕස්ට්‍රේලියානු ප්‍රධාන කලාපය
+    sk: Teritórium austrálskeho hlavného mesta
+    sr: Аустралијска престоничка територија
+    sv: Australian Capital Territory
+    ta: ஆத்திரேலியத் தலைநகர ஆட்புலம்
+    te: ఆస్ట్రేలియన్ క్యాపిటల్ టెరిటరీ
+    th: ออสเตรเลียนแคพิทอลเทร์ริทอรี
+    tk: Awstraliýanyň paýtagt territoriýasy
+    tr: Avustralya Başkent Bölgesi
+    uk: Австралійська столична територія
+    ur: آسٹریلوی دارالحکومت علاقہ
+    vi: Lãnh thổ Thủ đô Úc
+    zh: 澳大利亞首都特區
+    cy: Tiriogaeth Prifddinas Awstralia
+    ceb: Australian Capital Territory
+    sr_Latn: Australijska prestonička teritorija
+    yue_Hans: 澳洲首都地区
+    ccp: "\U00011103\U00011127\U0001110C\U00011134\U00011111\U00011133\U00011122\U0001112C\U00011123\U00011128\U00011120\U0001111A\U00011134
+      \U00011107\U00011133\U00011120\U0001111B\U00011128\U00011111\U00011123\U00011134
+      \U00011111\U0001112C\U00011122\U00011128\U00011111\U0001112E\U00011122\U00011128"
+    ga: Críoch Phríomhchathair na hAstráile
+    pa: ਆਸਟਰੇਲੀਆਈ ਰਾਜਧਾਨੀ ਰਾਜਖੇਤਰ
+    yue: 澳洲首都地區
+    bs: Teritorija australijskog glavnog grada
+    mk: Австралиска престолнинска територија
+    'no': Australian Capital Territory
+    ps: د اسټرالیا مرکزي سیمه
+    sd: آسٽريليا راڄڌاني علائقو
+    sq: Territori i Kryeqytetit Australian
+  comments:
+  type: territory
+NSW:
+  name: New South Wales
+  code: NSW
+  unofficial_names: New South Wales
+  geo:
+    latitude: -33.864174
+    longitude: 151.2052868
+    min_latitude: -37.5052772
+    min_longitude: 140.9992123
+    max_latitude: -28.156192
+    max_longitude: 153.6535617
+  translations:
+    en: New South Wales
+    af: Nieu-Suid-Wallis
+    ar: نيوساوث ويلز
+    az: Yeni Cənubi Uels
+    be: штат Новы Паўднёвы Уэльс
+    bg: Нови Южен Уелс
+    bn: নিউ সাউথ ওয়েল্স
+    ca: Nova Gal·les del Sud
+    cs: Nový Jižní Wales
+    da: New South Wales
+    de: New South Wales
+    el: Νέα Νότια Ουαλία
+    es: Nueva Gales del Sur
+    et: Uus-Lõuna-Wales
+    eu: Hegoaldeko Gales Berria
+    fa: نیو ساوت ولز
+    fi: Uusi Etelä-Wales
+    fr: Nouvelle-Galles du Sud
+    gl: Nova Gales do Sur
+    gu: ન્યૂ સાઉથ વેલ્સ
+    he: ניו סאות׳ ויילס
+    hi: न्यू साउथ वेल्स
+    hr: Novi Južni Wales
+    hu: Új-Dél-Wales
+    hy: Նոր Հարավային Ուելս
+    id: New South Wales
+    is: Nýja Suður-Wales
+    it: Nuovo Galles del Sud
+    ja: ニューサウスウェールズ州
+    ka: ახალი სამხრეთი უელსი
+    kn: ನ್ಯೂ ಸೌತ್ ವೇಲ್ಸ್
+    ko: 뉴사우스웨일스 주
+    lt: Naujasis Pietų Velsas
+    lv: Jaundienvidvelsa
+    ml: ന്യൂ സൗത്ത് വെയ്ൽസ്
+    mn: Шинэ Өмнөд Вэльс
+    mr: न्यू साउथ वेल्स
+    ms: New South Wales
+    nb: New South Wales
+    ne: न्यू साउथ वेल्स
+    nl: Nieuw-Zuid-Wales
+    pl: Nowa Południowa Walia
+    pt: Nova Gales do Sul
+    ro: Noul Wales de Sud
+    ru: Новый Южный Уэльс
+    si: නිව් සවුත් වේල්ස්
+    sk: Nový Južný Wales
+    sl: Novi Južni Wales
+    sr: Нови Јужни Велс
+    sv: New South Wales
+    sw: New South Wales
+    ta: நியூ சவுத் வேல்ஸ்
+    te: న్యూ సౌత్ వేల్స్
+    th: รัฐนิวเซาท์เวลส์
+    tk: Täze Günorta Wels
+    tr: Yeni Güney Galler
+    uk: Новий Південний Уельс
+    ur: نیو ساؤتھ ویلز
+    vi: New South Wales
+    cy: De Cymru Newydd
+    ceb: State of New South Wales
+    sr_Latn: Novi Južni Vels
+    zh: 新南威爾士州
+    yue_Hans: 新南威尔士
+    jv: New South Wales
+    sq: Uellsi i Ri Jugor
+    ccp: "\U0001111A\U00011131 \U00011118\U00011127\U00011109\U00011128\U0001111A\U00011134
+      \U00011103\U0001112E\U00011120\U0001112C\U00011123\U00011134"
+    ga: New South Wales
+    so: New South Wales
+    pa: ਨਿਊ ਸਾਊਥ ਵੇਲਜ਼
+    yue: 新南威爾士
+    am: ኑ ሳውስ ዌልስ
+    uz: Yangi janubiy uels
+    bs: Novi Južni Wales
+    mk: Нов Јужен Велс
+    'no': New South Wales
+    my: နယူးဆောက်ဝေးပြည်နယ်
+    ps: نیو ساوټ ولز
+    sd: نيو سائوٿ ويلز
+  comments:
+  type: state
+NT:
+  name: Northern Territory
+  code: NT
+  unofficial_names: Northern Territory
+  geo:
+    latitude: -19.4914108
+    longitude: 132.5509603
+    min_latitude: -26.0168698
+    min_longitude: 129.0004244
+    max_latitude: -10.9055196
+    max_longitude: 137.9990092
+  translations:
+    en: Northern Territory
+    af: Noordelike Gebied
+    ar: إقليم شمالي
+    az: Şimal ərazisi
+    be: Паўночная тэрыторыя, Аўстралія
+    bg: Северна територия
+    bn: নর্দান টেরিটরি
+    ca: Territori del Nord
+    cs: Severní teritorium
+    da: Northern Territory
+    de: Northern Territory
+    el: Βόρεια Επικράτεια
+    es: Territorio del Norte
+    et: Põhjaterritoorium
+    eu: Iparraldeko Lurraldea
+    fa: قلمرو شمالی
+    fi: Pohjoisterritorio
+    fr: Territoire du Nord
+    gl: Territorio do Norte
+    gu: નધર્ન રીજન
+    he: הטריטוריה הצפונית
+    hi: नॉर्थर्न टेरिटरी
+    hr: Sjeverni teritorij
+    hu: Északi terület
+    hy: Հյուսիսային տարածք
+    id: Wilayah Utara
+    is: Norður-svæðið
+    it: Territorio del Nord
+    ja: ノーザンテリトリー
+    ka: ჩრდილოეთი ტერიტორია
+    kn: ಉತ್ತರ ಪ್ರದೇಶ
+    ko: 노던 준주
+    lt: Šiaurinė Teritorija
+    lv: Ziemeļu teritorija
+    mn: Хойд Нутаг Дэвсгэр
+    mr: नॉर्दर्न टेरिटोरी
+    ms: Wilayah Utara
+    nb: Nordterritoriet
+    nl: Noordelijk Territorium
+    pl: Terytorium Północne
+    pt: Território do Norte
+    ro: Teritoriul de Nord
+    ru: Северная территория
+    si: උතුරු භූමිය
+    sk: Severné teritórium
+    sr: Северна територија
+    sv: Northern Territory
+    ta: வட ஆட்புலம்
+    te: ఉత్తర టెరిటరీ
+    th: นอร์เทิร์นเทร์ริทอรี
+    tk: Demirgazyk territoriýa
+    tr: Kuzey Toprakları
+    uk: Північна територія
+    ur: شمالی علاقہ
+    vi: Lãnh thổ Bắc Úc
+    cy: Tiriogaeth y Gogledd
+    ceb: Northern Territory
+    sr_Latn: Severna teritorija
+    zh: 北領地
+    sw: Northern Territory
+    yue_Hans: 北领地
+    sq: Northern Territory
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011118\U00011122\U00011134\U0001111A\U00011134
+      \U00011111\U0001112C\U00011122\U00011128\U00011111\U0001112E\U00011122\U00011128"
+    ga: Críoch an Tuaiscirt
+    pa: ਉੱਤਰੀ ਰਾਜਖੇਤਰ
+    yue: 北領地
+    my: မြောက်ဩစတြေးလျပြည်နယ်
+    bs: Sjeverna teritorija
+    mk: Северна Територија
+    'no': Nordterritoriet
+    ml: നോർത്തേൺ ടെറിട്ടറി
+    ps: د اسټرالیا شمالي سیمه
+    sd: نادرن خطو
+  comments:
+  type: territory
+QLD:
+  name: Queensland
+  code: QLD
+  unofficial_names: Queensland
+  geo:
+    latitude: -20.9175738
+    longitude: 142.7027956
+    min_latitude: -29.1785876
+    min_longitude: 137.9945748
+    max_latitude: -9.92973
+    max_longitude: 153.5529199
+  translations:
+    en: Queensland
+    af: Queensland
+    ar: كوينزلاند
+    az: Kvinslend
+    be: Штат Квінслэнд
+    bg: Куинсланд
+    bn: কুইন্সল্যান্ড
+    ca: Queensland
+    cs: Queensland
+    da: Queensland
+    de: Queensland
+    el: Κουΐνσλαντ
+    es: Queensland
+    et: Queensland
+    eu: Queensland
+    fa: کوئینزلند
+    fi: Queensland
+    fr: Queensland
+    gl: Queensland
+    gu: ક્વીન્સલેન્ડ
+    he: קווינסלנד
+    hi: क्वीन्सलैण्ड
+    hr: Queensland
+    hu: Queensland
+    hy: Քվինսլենդ
+    id: Queensland
+    is: Queensland
+    it: Queensland
+    ja: クイーンズランド州
+    ka: კუინზლენდი
+    kn: ಕ್ವೀನ್ಸ್‌ಲ್ಯಾಂಡ್‌
+    ko: 퀸즐랜드 주
+    lt: Kvinslandas
+    lv: Kvīnslenda
+    mn: Квийнслэнд
+    mr: क्वीन्सलंड
+    ms: Queensland
+    nb: Queensland
+    ne: क्विन्सल्याण्ड
+    nl: Queensland
+    pl: Queensland
+    pt: Queensland
+    ro: Queensland
+    ru: Квинсленд
+    si: ක්වින්ස්ලන්තය
+    sk: Queensland
+    sl: Queensland
+    sr: Квинсленд
+    sv: Queensland
+    ta: குயின்ஸ்லாந்து
+    te: క్వీన్స్‌లాండ్
+    th: รัฐควีนส์แลนด์
+    tk: Kwinslend
+    tr: Queensland
+    uk: Квінсленд
+    ur: کوئنزلینڈ
+    vi: Queensland
+    cy: Queensland
+    ceb: State of Queensland
+    sr_Latn: Kvinslend
+    zh: 昆士蘭州
+    sw: Queensland
+    yue_Hans: 昆士兰
+    jv: Queensland
+    sq: Queensland
+    ccp: "\U00011107\U0001112A\U00011103\U00011128\U0001111A\U00011134\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: Queensland
+    so: Queensland
+    pa: ਕਵੀਨਜ਼ਲੈਂਡ
+    kk: Квинсленд
+    ml: ക്വീൻസ്‌ലാൻഡ്
+    yue: 昆士蘭
+    am: ኲንዝላንድ
+    my: ကွင်းစလန်ပြည်နယ်
+    yo: Queensland
+    uz: Kvinslend
+    bs: Queensland
+    mk: Квинсленд
+    'no': Queensland
+    yo_BJ: Queensland
+    ps: کوینزلنډ
+    sd: ڪوئينزلينڊ
+  comments:
+  type: state
+SA:
+  name: South Australia
+  code: SA
+  unofficial_names: South Australia
+  geo:
+    latitude: -30.0002315
+    longitude: 136.2091547
+    min_latitude: -38.06121
+    min_longitude: 129.0005162
+    max_latitude: -25.996392
+    max_longitude: 141.0028804
+  translations:
+    en: South Australia
+    af: Suid-Australië
+    ar: جنوب أستراليا
+    az: Cənubi Avstraliya
+    be: Штат Паўднёвая Аўстралія
+    bg: Южна Австралия
+    bn: সাউথ অস্ট্রেলিয়া
+    ca: Austràlia Meridional
+    cs: Jižní Austrálie
+    da: South Australia
+    de: South Australia
+    el: Νότια Αυστραλία
+    es: Australia Meridional
+    et: Lõuna-Austraalia
+    eu: Hegoaldeko Australia
+    fa: استرالیای جنوبی
+    fi: Etelä-Australia
+    fr: Australie-Méridionale
+    gl: Australia Meridional
+    gu: સાઉથ ઓસ્ટ્રેલિયા
+    he: אוסטרליה הדרומית
+    hi: दक्षिण ऑस्ट्रेलिया
+    hr: Južna Australija
+    hu: Dél-Ausztrália
+    hy: Հարավային Ավստրալիա
+    id: Australia Selatan
+    is: Suður-Ástralía
+    it: Australia Meridionale
+    ja: 南オーストラリア州
+    ka: სამხრეთი ავსტრალია
+    kn: ದಕ್ಷಿಣ ಆಸ್ಟ್ರೇಲಿಯಾ
+    ko: 사우스오스트레일리아 주
+    lt: Pietų Australija
+    lv: Dienvidaustrālija
+    mn: Өмнөд Австрали
+    mr: साउथ ऑस्ट्रेलिया
+    ms: Australia Selatan
+    nb: Sør-Australia
+    ne: दक्षिण अस्ट्रेलिया
+    nl: Zuid-Australië
+    pl: Australia Południowa
+    pt: Austrália Meridional
+    ro: Australia de Sud
+    ru: Южная Австралия
+    si: දකුණු ඔස්ට්‍රේලියාව
+    sk: Južná Austrália
+    sl: Južna Avstralija
+    sr: Јужна Аустралија
+    sv: South Australia
+    sw: Australia Kusini
+    ta: தெற்கு ஆஸ்திரேலியா
+    te: దక్షిణ ఆస్ట్రేలియా
+    th: รัฐเซาท์ออสเตรเลีย
+    tk: Günorta Awstraliýa
+    tr: Güney Avustralya
+    uk: Південна Австралія
+    ur: جنوبی آسٹریلیا
+    vi: Nam Úc
+    cy: De Awstralia
+    ceb: State of South Australia
+    sr_Latn: Južna Australija
+    zh: 南澳大利亚州
+    yue_Hans: 南澳洲
+    sq: Australina Jugore
+    ccp: "\U00011118\U00011127\U00011109\U00011128\U0001111A\U00011134 \U00011103\U00011127\U0001110C\U00011134\U00011111\U00011133\U00011122\U0001112C\U00011123\U00011128\U00011120"
+    ga: Deisceart na hAstráile
+    so: Koonfur Australia
+    pa: ਸਾਊਥ ਆਸਟਰੇਲੀਆ
+    yue: 南澳洲
+    am: ደቡብ አውስትራሊያ
+    bs: Južna Australija
+    mk: Јужна Австралија
+    'no': Sør-Australia
+    ml: സൗത്ത് ഓസ്ട്രേലിയ
+    my: တောင်ဩစတြေးလီးယားပြည်နယ်
+    ps: سویلي اسټرالیا آیالات
+    sd: ڏکڻ آسٽريليا
+    uz: Janubiy avstraliya
+  comments:
+  type: state
+TAS:
+  name: Tasmania
+  code: TAS
+  unofficial_names: Tasmania
+  geo:
+    latitude: -41.3650419
+    longitude: 146.6284905
+    min_latitude: -43.8077261
+    min_longitude: 143.8182852
+    max_latitude: -39.4380355
+    max_longitude: 148.7283943
+  translations:
+    en: Tasmania
+    af: Tasmanië
+    ar: تسمانيا
+    az: Tasmaniya
+    be: Тасманія
+    bg: Тасмания
+    bn: তাসমানিয়া
+    ca: Tasmània
+    cs: Tasmánie
+    da: Tasmanien
+    de: Tasmanien
+    el: Τασμανία
+    es: Tasmania
+    et: Tasmaania
+    eu: Tasmania
+    fa: تاسمانی
+    fi: Tasmania
+    fr: Tasmanie
+    gl: Tasmania
+    gu: તાસ્માનિયા
+    he: טסמניה
+    hi: टासमानिया
+    hr: Tasmanija
+    hu: Tasmania
+    hy: Թասմանիա
+    id: Tasmania
+    is: Tasmanía
+    it: Tasmania
+    ja: タスマニア州
+    ka: ტასმანია
+    kn: ಟ್ಯಾಸ್ಮೆನಿಯಾ
+    ko: 태즈메이니아 주
+    lt: Tasmanija
+    lv: Tasmanija
+    ml: ടാസ്മേനിയ
+    mn: Тасмани
+    mr: टास्मानिया
+    ms: Tasmania
+    nb: Tasmania
+    ne: ट्याज्मानिया
+    nl: Tasmanië
+    or: ଟାସମାନିଆ
+    pl: Tasmania
+    pt: Tasmânia
+    ro: Tasmania
+    ru: Тасмания
+    si: ටස්මෙනියා
+    sk: Tasmánia
+    sl: Tasmanija
+    sr: Тасманија
+    sv: Tasmanien
+    sw: Tasmania
+    ta: தாசுமேனியா
+    te: టాస్మానియా
+    th: รัฐแทสเมเนีย
+    tk: Tasmaniýa
+    tr: Tasmanya
+    uk: Тасманія
+    ur: تسمانیا
+    vi: Tasmania
+    cy: Tasmania
+    ceb: State of Tasmania
+    sr_Latn: Tasmanija
+    zh: 塔斯馬尼亞州
+    yue_Hans: 塔斯曼尼亚省
+    sq: Tasmania
+    ccp: "\U00011111\U0001110C\U00011134\U0001111F\U0001111A\U00011128\U00011120"
+    ga: An Tasmáin
+    ky: Тасмания
+    so: Tasmaniya
+    pa: ਤਸਮਾਨੀਆ
+    kk: Тасман аралы
+    yue: 塔斯曼尼亞省
+    am: ታዝሜኒያ
+    uz: Tasmaniya
+    bs: Tasmanija
+    mk: Тасманија
+    'no': Tasmania
+    my: တက်စမေးနီးယားကျွန်း
+    ps: تاسماني
+    sd: تسمانيا
+  comments:
+  type: state
+VIC:
+  name: Victoria
+  code: VIC
+  unofficial_names: Victoria
+  geo:
+    latitude: -37.4713077
+    longitude: 144.7851531
+    min_latitude: -39.2247306
+    min_longitude: 140.9624773
+    max_latitude: -33.9810507
+    max_longitude: 149.9764882
+  translations:
+    en: Victoria
+    af: Victoria
+    ar: ولاية فيكتوريا
+    az: Viktoriya
+    be: штат Вікторыя
+    bg: Виктория
+    bn: ভিক্টোরিয়া
+    ca: Victoria
+    cs: Victoria
+    da: Victoria
+    de: Victoria
+    el: Βικτώρια
+    es: Victoria
+    et: Victoria
+    eu: Victoria
+    fa: ویکتوریا
+    fi: Victoria
+    fr: Victoria
+    gl: Victoria
+    gu: વિક્ટોરિયા
+    he: ויקטוריה
+    hi: विक्टोरिया
+    hr: Victoria
+    hu: Victoria
+    hy: Վիկտորիա
+    id: Victoria
+    is: Victoria
+    it: Victoria
+    ja: ビクトリア州
+    ka: ვიქტორია
+    kn: ವಿಕ್ಟೋರಿಯಾ
+    ko: 빅토리아 주
+    lt: Viktorija
+    lv: Viktorija
+    mn: Викториа
+    mr: व्हिक्टोरिया
+    ms: Victoria
+    nb: Victoria
+    ne: भिक्टोरिया
+    nl: Victoria
+    pl: Wiktoria
+    pt: Vitória
+    ro: Victoria
+    ru: Виктория
+    si: වික්ටෝරියා
+    sk: Viktória
+    sl: Viktorija
+    sr: Викторија
+    sv: Victoria
+    ta: விக்டோரியா
+    te: విక్టోరియా
+    th: รัฐวิกตอเรีย
+    tk: Wiktoriýa
+    tr: Victoria
+    uk: Вікторія
+    ur: وکٹوریہ (آسٹریلیا)
+    vi: Victoria
+    cy: Victoria
+    ceb: State of Victoria
+    sr_Latn: Viktorija
+    zh: 維多利亞州
+    sw: Victoria
+    yue_Hans: 维多利亚州
+    jv: Victoria
+    ccp: "\U0001111E\U00011128\U00011107\U00011134\U00011111\U0001112E\U00011122\U00011128\U00011120"
+    ga: Victoria
+    pa: ਵਿਕਟੋਰੀਆ
+    yue: 維多利亞州
+    my: ဝိတိုရိယ ပြည်နယ်
+    bs: Victoria
+    mk: Викторија
+    'no': Victoria
+    ml: വിക്ടോറിയ (ഓസ്ട്രേലിയ)
+    ps: ویکتوریا آیالات
+    sd: وڪٽوريا
+    sq: Viktoria
+    uz: Viktoriya (shtat)
+  comments:
+  type: state
+WA:
+  name: Western Australia
+  code: WA
+  unofficial_names: Western Australia
+  geo:
+    latitude: -27.6728168
+    longitude: 121.6283098
+    min_latitude: -35.1939944
+    min_longitude: 112.92145
+    max_latitude: -13.6894901
+    max_longitude: 129.0025979
+  translations:
+    en: Western Australia
+    af: Wes-Australië
+    ar: أستراليا الغربية
+    az: Qərbi Avstraliya
+    be: Штат Заходняя Аўстралія
+    bg: Западна Австралия
+    bn: ওয়েস্টার্ন অস্ট্রেলিয়া
+    ca: Austràlia Occidental
+    cs: Západní Austrálie
+    da: Western Australia
+    de: Western Australia
+    el: Δυτική Αυστραλία
+    es: Australia Occidental
+    et: Lääne-Austraalia
+    eu: Mendebaldeko Australia
+    fa: استرالیای غربی
+    fi: Länsi-Australia
+    fr: Australie-Occidentale
+    gl: Australia Occidental
+    gu: વેસ્ટર્ન ઑસ્ટ્રેલિયા
+    he: אוסטרליה המערבית
+    hi: पश्चिमी ऑस्ट्रेलिया
+    hr: Zapadna Australija
+    hu: Nyugat-Ausztrália
+    hy: Արևմտյան Ավստրալիա
+    id: Australia Barat
+    is: Vestur-Ástralía
+    it: Australia Occidentale
+    ja: 西オーストラリア州
+    ka: დასავლეთი ავსტრალია
+    kn: ಪಶ್ಚಿಮ ಆಸ್ಟ್ರೇಲಿಯಾ
+    ko: 웨스턴오스트레일리아 주
+    lt: Vakarų Australija
+    lv: Rietumaustrālija
+    mn: Баруун Австрали
+    mr: वेस्टर्न ऑस्ट्रेलिया
+    ms: Australia Barat
+    nb: Vest-Australia
+    ne: पश्चिमी अस्ट्रेलिया
+    nl: West-Australië
+    pl: Australia Zachodnia
+    pt: Austrália Ocidental
+    ro: Australia de Vest
+    ru: Западная Австралия
+    si: දකුණු ඔස්ට්‍රේලියාව²
+    sk: Západná Austrália
+    sl: Zahodna Avstralija
+    sr: Западна Аустралија
+    sv: Western Australia
+    sw: Australia ya Magharibi
+    ta: மேற்கு ஆஸ்திரேலியா
+    te: పశ్చిమ ఆస్ట్రేలియా
+    th: รัฐเวสเทิร์นออสเตรเลีย
+    tk: Günbatar Awstraliýa
+    tr: Batı Avustralya
+    uk: Західна Австралія
+    ur: مغربی آسٹریلیا
+    vi: Tây Úc
+    cy: Gorllewin Awstralia
+    ceb: State of Western Australia
+    sr_Latn: Zapadna Australija
+    zh: 西澳大利亚州
+    yue_Hans: 西澳洲
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011103\U00011127\U0001110C\U00011134\U00011111\U00011133\U00011122\U0001112C\U00011123\U00011128\U00011120"
+    ga: Iarthar na hAstráile
+    so: Galbeed Australia
+    pa: ਪੱਛਮੀ ਆਸਟਰੇਲੀਆ
+    yue: 西澳洲
+    my: အနောက်ဩစတြေးလျပြည်နယ်
+    bs: Zapadna Australija
+    mk: Западна Австралија
+    'no': Vest-Australia
+    ml: വെസ്റ്റേൺ ഓസ്ട്രേലിയ
+    ps: لویدیځه اسټرالیا
+    sd: اولهائون آسٽريليا
+    sq: Australia Perëndimore
+    uz: Gʻarbiy avstraliya
+  comments:
+  type: state

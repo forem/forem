@@ -1,0 +1,56 @@
+---
+GL:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: GL
+  alpha3: GRL
+  continent: North America
+  country_code: '299'
+  currency_code: DKK
+  distance_unit: KM
+  gec: GL
+  geo:
+    latitude: 71.706936
+    longitude: -42.604303
+    max_latitude: 83.9702561
+    max_longitude: -8.2617199
+    min_latitude: 58.26329
+    min_longitude: -73.8281196
+    bounds:
+      northeast:
+        lat: 83.9702561
+        lng: -8.2617199
+      southwest:
+        lat: 58.26329
+        lng: -73.8281196
+  international_prefix: '009'
+  ioc:
+  iso_long_name: Kalaallit Nunaat
+  iso_short_name: Greenland
+  languages_official:
+  - kl
+  languages_spoken:
+  - kl
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  national_prefix: None
+  nationality: Greenlandic
+  number: '304'
+  postal_code: true
+  postal_code_format: 39\d{2}
+  region: Americas
+  start_of_week: monday
+  subregion: Northern America
+  un_locode: GL
+  unofficial_names:
+  - Greenland
+  - Grönland
+  - Groenland
+  - Groenlandia
+  - グリーンランド
+  world_region: EMEA

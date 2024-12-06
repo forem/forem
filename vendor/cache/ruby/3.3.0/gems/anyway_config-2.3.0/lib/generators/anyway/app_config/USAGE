@@ -1,0 +1,9 @@
+Description:
+    Generates a config class with the given name and list of parameters
+    and put it into `app/configs` folder.
+
+Example:
+    rails generate app_config my_service param1 param2 ...
+
+    This will create:
+        app/configs/my_service_config.rb

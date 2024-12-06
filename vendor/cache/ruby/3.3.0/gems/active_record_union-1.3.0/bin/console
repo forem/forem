@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+# This is for development only.
+
+require "bundler/setup"
+
+Bundler.require(:development)
+require "active_record_union"
+
+ActiveRecord::Base.establish_connection(
+  adapter:  "sqlite3",
+  database: ":memory:"
+)
+
+require File.expand_path("../../spec/support/models.rb", __FILE__)
+
+# extensions over models.rb to help with making the README
+
+class User
+  has_and_belongs_to_many :favorited_posts,
+    class_name: "Post",
+    join_table: "user_favorited_posts"
+end
+
+class UserFavoritedPost < ActiveRecord::Base
+  connection.create_table :user_favorited_posts, force: true do |t|
+    t.integer :post_id
+    t.integer :user_id
+  end
+end
+
+class Post
+  scope :published, -> { where("published_at < ?", Time.now) }
+end
+
+binding.pry

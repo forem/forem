@@ -1,0 +1,52 @@
+---
+EH:
+  alpha2: EH
+  alpha3: ESH
+  continent: Africa
+  country_code: '212'
+  currency_code: MAD
+  distance_unit: KM
+  gec: WI
+  geo:
+    latitude: 24.215527
+    longitude: -12.885834
+    max_latitude: 27.7223999
+    max_longitude: -8.667525
+    min_latitude: 20.427
+    min_longitude: -17.4573001
+    bounds:
+      northeast:
+        lat: 27.7223999
+        lng: -8.667525
+      southwest:
+        lat: 20.427
+        lng: -17.4573001
+  international_prefix: ''
+  ioc:
+  iso_long_name: The Sahrawi Arab Democratic Republic
+  iso_short_name: Western Sahara
+  languages_official:
+  - es
+  - fr
+  languages_spoken:
+  - es
+  - fr
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Sahrawi
+  number: '732'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Africa
+  start_of_week: monday
+  subregion: Northern Africa
+  un_locode: EH
+  unofficial_names:
+  - Western Sahara
+  - الصحراء الغربية
+  - Westsahara
+  - Sahara Occidental
+  - 西サハラ
+  - Westelijke Sahara
+  world_region: EMEA

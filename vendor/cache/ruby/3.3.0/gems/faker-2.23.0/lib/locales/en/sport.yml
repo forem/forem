@@ -1,0 +1,121 @@
+en:
+  faker:
+    sport:
+      summer_olympics: # Source https://olympics.com/en/sports/summer-olympics
+        - 3x3 basketball
+        - Archery
+        - Artistic gymnastics
+        - Artistic swimming
+        - Athletics
+        - Badminton
+        - Baseball # Technically part of "Baseball Softball" according to IOC website
+        - Basketball
+        - Beach volleyball
+        - BMX freestyle
+        - BMX racing
+        - Boxing
+        - Canoe/kayak flatwater
+        - Canoe/kayak slalom
+        - Diving
+        - Equestrian
+        - Fencing
+        - Football
+        - Golf
+        - Handball
+        - Hockey
+        - Judo
+        - Karate
+        - Marathon swimming
+        - Modern pentathlon
+        - Mountain bike
+        - Rhythmic gymnastics
+        - Road cycling
+        - Rowing
+        - Rugby
+        - Sailing
+        - Shooting
+        - Skateboarding
+        - Softball # Technically part of "Baseball Softball" according to IOC website
+        - Sport climbing
+        - Surfing
+        - Swimming
+        - Table tennis
+        - Taekwondo
+        - Tennis
+        - Track cycling
+        - Trampoline
+        - Triathlon
+        - Volleyball
+        - Water polo
+        - Weight lifting
+        - Wrestling
+      winter_olympics: # Source https://olympics.com/en/sports/winter-olympics
+        - Alpine skiing
+        - Biathlon
+        - Bobsleigh
+        - Cross-country
+        - Curling
+        - Figure skating
+        - Freestyle skiing
+        - Ice hockey
+        - Luge
+        - Nordic combined
+        - Short track speed skating
+        - Skeleton
+        - Ski jumping
+        - Snowboard
+        - Speed skating
+      summer_paralympics: # Source https://www.paralympic.org/sports
+        - Archery
+        - Athletics
+        - Badminton
+        - Boccia
+        - Canoe
+        - Cycling
+        - Equestrian
+        - Football (5-a-side)
+        - Goalball
+        - Judo
+        - Powerlifting
+        - Rowing
+        - Shooting
+        - Sitting volleyball
+        - Swimming
+        - Table tennis
+        - Taekwondo
+        - Triathlon
+        - Wheelchair basketball
+        - Wheelchair fencing
+        - Wheelchair rugby
+        - Wheelchair tennis
+      winter_paralympics: # Source https://www.paralympic.org/sports
+        - Alpine skiing
+        - Biathlon
+        - Cross-country skiing
+        - Para ice hockey
+        - Snowboard
+        - Wheelchair curling
+      ancient_olympics: # Source https://olympics.com/ioc/ancient-olympic-games/the-sports-events
+        - Boxing
+        - Chariot racing
+        - Discus
+        - Horse racing
+        - Long jump
+        - Pankration
+        - Pentathlon
+        - Running
+        - Wrestling
+      unusual:
+        - Apple Racing
+        - Ban'ei
+        - Bathtubbing
+        - Bed racing
+        - Botaoshi
+        - Beer Can Regatta
+        - Black pudding throwing
+        - Bog snorkelling
+        - Bottle kicking
+        - Camel jumping
+        - Camel wrestling
+        - Flugtag/Birdman
+        - Kastenlauf (Beer crate running)

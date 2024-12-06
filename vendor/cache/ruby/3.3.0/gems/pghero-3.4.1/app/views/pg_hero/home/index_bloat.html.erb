@@ -1,0 +1,72 @@
+<div class="content">
+  <h1>Index Bloat</h1>
+
+  <% if @index_bloat.any? %>
+
+    <p>Indexes can become <%= link_to "bloated over time", "https://www.compose.com/articles/postgresql-bloat-origins-monitoring-and-managing/", target: "_blank" %>. Recreate them to remove bloat.</p>
+
+    <p>For each index, run:</p>
+    <pre><code>CREATE INDEX CONCURRENTLY new_index ...;
+ANALYZE table;
+DROP INDEX CONCURRENTLY index;
+ANALYZE table;
+ALTER INDEX new_index RENAME TO index;</code></pre>
+
+    <p>
+      <% if @show_sql %>
+        <%= link_to "Hide SQL", {} %>
+      <% else %>
+        <%= link_to "Show SQL", {sql: "t"} %>
+      <% end %>
+      for each index
+    </p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Index</th>
+          <th style="width: 15%;">Bloat</th>
+          <th style="width: 15%;">Size</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @index_bloat.each do |index| %>
+          <tr>
+            <td>
+              <span style="word-break: break-all;"><%= index[:index] %></span>
+              <% if index[:primary] %>
+                <span class="primary-key">PRIMARY</span>
+              <% end %>
+            </td>
+            <td><%= PgHero.pretty_size(index[:bloat_bytes]) %></td>
+            <td><%= PgHero.pretty_size(index[:index_bytes]) %></td>
+          </tr>
+          <% if @show_sql && !index[:primary] %>
+            <tr>
+              <td colspan="3" style="border-top: none; padding: 0;">
+                <% new_index = "new_#{index[:index]}".first(63) %>
+                <pre><code><%= index[:definition].sub(" INDEX ", " INDEX CONCURRENTLY \n    ").sub(index[:index], new_index) %>;
+
+ANALYZE <%= pghero_pretty_ident(index[:table], schema: index[:schema]) %>;
+
+DROP INDEX CONCURRENTLY
+    <%= pghero_pretty_ident(index[:index]) %>;
+
+ANALYZE <%= pghero_pretty_ident(index[:table], schema: index[:schema]) %>;
+
+ALTER INDEX <%= pghero_pretty_ident(new_index) %>
+    RENAME TO <%= pghero_pretty_ident(index[:index]) %>;</code></pre>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No significant index bloat!</p>
+  <% end %>
+</div>
+
+<script>
+  highlightQueries();
+</script>

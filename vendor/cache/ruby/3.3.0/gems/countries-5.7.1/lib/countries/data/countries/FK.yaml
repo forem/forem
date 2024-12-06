@@ -1,0 +1,52 @@
+---
+FK:
+  alpha2: FK
+  alpha3: FLK
+  continent: South America
+  country_code: '500'
+  currency_code: FKP
+  distance_unit: MI
+  gec: FK
+  geo:
+    latitude: -51.796253
+    longitude: -59.523613
+    max_latitude: -50.9809115
+    max_longitude: -57.6768495
+    min_latitude: -52.4744161
+    min_longitude: -61.3792419
+    bounds:
+      northeast:
+        lat: -50.9809115
+        lng: -57.6768495
+      southwest:
+        lat: -52.4744161
+        lng: -61.3792419
+  international_prefix: '00'
+  ioc:
+  iso_long_name: The Falkland Islands
+  iso_short_name: Falkland Islands (Malvinas)
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 5
+  national_prefix: None
+  nationality: Falkland Islander
+  number: '238'
+  postal_code: true
+  postal_code_format: FIQQ 1ZZ
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: FK
+  unofficial_names:
+  - Falkland Islands
+  - Falklandinseln
+  - Îles Malouines
+  - Islas Malvinas
+  - フォークランド（マルビナス）諸島
+  - Falklandeilanden [Islas Malvinas]
+  world_region: AMER

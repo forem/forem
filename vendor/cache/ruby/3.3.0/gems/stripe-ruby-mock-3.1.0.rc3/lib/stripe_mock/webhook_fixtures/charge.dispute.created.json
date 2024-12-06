@@ -1,0 +1,22 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "charge.dispute.created",
+  "object": "event",
+  "data": {
+    "object": {
+      "charge": "ch_00000000000000",
+      "amount": 1000,
+      "created": 1381080223,
+      "status": "needs_response",
+      "livemode": false,
+      "currency": "usd",
+      "object": "dispute",
+      "reason": "general",
+      "balance_transaction": "txn_00000000000000",
+      "evidence_due_by": 1382745599,
+      "evidence": null
+    }
+  }
+}

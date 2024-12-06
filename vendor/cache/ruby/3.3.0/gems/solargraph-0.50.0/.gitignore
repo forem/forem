@@ -1,0 +1,9 @@
+/Gemfile.lock
+.Gemfile
+.idea
+.vscode
+.yardoc
+.solargraph.yml
+doc
+coverage
+/tmp/

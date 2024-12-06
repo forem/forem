@@ -1,0 +1,48 @@
+---
+GY:
+  alpha2: GY
+  alpha3: GUY
+  continent: South America
+  country_code: '592'
+  currency_code: GYD
+  distance_unit: KM
+  gec: GY
+  geo:
+    latitude: 4.860416
+    longitude: -58.93018
+    max_latitude: 8.722199999999999
+    max_longitude: -56.49112
+    min_latitude: 1.164724
+    min_longitude: -61.414905
+    bounds:
+      northeast:
+        lat: 8.722199999999999
+        lng: -56.49112
+      southwest:
+        lat: 1.164724
+        lng: -61.414905
+  international_prefix: '00'
+  ioc: GUY
+  iso_long_name: The Co-operative Republic of Guyana
+  iso_short_name: Guyana
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  - 7
+  national_prefix: None
+  nationality: Guyanese
+  number: '328'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: GY
+  unofficial_names:
+  - Guyana
+  - ガイアナ
+  world_region: AMER

@@ -1,0 +1,8 @@
+*.gem
+pkg/*
+doc/*
+.yardoc
+.bundle
+.DS_Store
+make
+vendor

@@ -1,0 +1,55 @@
+<% blazer_title "Schema: #{@data_source.name}" %>
+
+<h1>Schema: <%= @data_source.name %></h1>
+
+<hr />
+
+<div id="header">
+  <input id="search" type="text" placeholder="Start typing a table or column" style="width: 300px; display: inline-block;" class="search form-control" />
+</div>
+
+<% @schema.each do |table| %>
+  <table class="table schema-table">
+    <thead>
+      <tr>
+        <th colspan="2">
+          <% if table[:schema] != "public" %><%= table[:schema] %>.<% end %><%= table[:table] %>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% table[:columns].each do |column| %>
+        <tr>
+          <td style="width: 60%;"><%= column[:name] %></td>
+          <td class="text-muted"><%= column[:data_type] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<script>
+  $("#search").on("keyup", function() {
+    var value = $(this).val().toLowerCase()
+    $(".schema-table").filter(function() {
+      // if found in table name, show entire table
+      // if just found in rows, show row
+
+      var found = $(this).find("thead").text().toLowerCase().indexOf(value) > -1
+
+      if (found) {
+        $(this).find("tbody tr").toggle(true)
+      } else {
+        $(this).find("tbody tr").filter(function() {
+          var found2 = $(this).text().toLowerCase().indexOf(value) > -1
+          $(this).toggle(found2)
+          if (found2) {
+            found = true
+          }
+        })
+      }
+
+      $(this).toggle(found)
+    })
+  }).focus()
+</script>

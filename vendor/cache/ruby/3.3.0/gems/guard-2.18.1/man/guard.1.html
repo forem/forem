@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>guard(1) - Guard keeps an eye on your file modifications.</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#COMMANDS">COMMANDS</a>
+    <a href="#EXAMPLES">EXAMPLES</a>
+    <a href="#AUTHORS-CONTRIBUTORS">AUTHORS / CONTRIBUTORS</a>
+    <a href="#CHANGELOG">CHANGELOG</a>
+    <a href="#WWW">WWW</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>guard(1)</li>
+    <li class='tc'></li>
+    <li class='tr'>guard(1)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>guard</code> - <span class="man-whatis">Guard keeps an eye on your file modifications.</span>
+</p>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p>Guard is a command line tool to easily handle events on file system modifications.</p>
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<p><code>guard &lt;COMMAND> &lt;OPTIONS></code></p>
+
+<h2 id="COMMANDS">COMMANDS</h2>
+
+<h3 id="start">start</h3>
+
+<p>Starts Guard. This is the default command if none is provided.</p>
+
+<p>The following options are available:</p>
+
+<p><code>-c</code>, <code>--clear</code>
+  Clears the Shell after each change.</p>
+
+<p><code>-n</code>, <code>--notify</code> <var>FLAG</var>
+  Disable notifications (Growl or Libnotify depending on your system).
+  Notifications can be disabled globally by setting a GUARD_NOTIFY environment variable to false.
+  FLAG can be <code>true</code>/<code>false</code> or <code>t</code>/<code>f</code>.</p>
+
+<p><code>-g</code>, <code>--group</code> <var>GROUP1</var> <var>GROUP2</var>...
+  Scopes the Guard actions to the groups specified by GROUP1, GROUP2, etc.
+  Group names should be separated by spaces.
+  Plugins that don't belong to a group are considered global and are always run.</p>
+
+<p><code>-P</code>, <code>--plugin</code> <var>PLUGIN1</var> <var>PLUGIN2</var>...
+  Scopes the Guard actions to the plugins specified by PLUGIN1, PLUGIN2, etc.
+  Plugin names should be separated by spaces.</p>
+
+<p><code>-d</code>, <code>--debug</code>
+  Runs Guard in debug mode.</p>
+
+<p><code>-w</code>, <code>--watchdir</code> <var>PATH</var>
+  Tells Guard to watch PATH instead of <code>./</code>.</p>
+
+<p><code>-G</code>, <code>--guardfile</code> <var>FILE</var>
+  Tells Guard to use FILE as its Guardfile instead of <code>./Guardfile</code> or <code>~/.Guardfile</code>.</p>
+
+<p><code>-i</code>, <code>--no-interactions</code>
+  Turn off completely any Guard terminal interactions.</p>
+
+<p><code>-B</code>, <code>--no-bundler-warning</code>
+  Turn off warning when Bundler is not present.</p>
+
+<p><code>-l</code>, <code>--latency</code>
+  Overwrite Listen's default latency.</p>
+
+<p><code>-p</code>, <code>--force-polling</code>
+  Force usage of the Listen polling listener.</p>
+
+<p><code>-y</code>, <code>--wait-for-delay</code>
+  Overwrite Listen's default <code>wait_for_delay</code>, useful for kate-like editors through ssh access.</p>
+
+<h3 id="init-GUARDS-">init [GUARDS]</h3>
+
+<p>If no Guardfile is present in the current directory, creates an empty Guardfile.</p>
+
+<p>If <var>GUARDS</var> are present, add their default Guardfile configuration to the current Guardfile.
+Note that <var>GUARDS</var> is a list of the Guard plugin names without the <code>guard-</code> prefix.
+For instance to initialize guard-rspec, run <code>guard init rspec</code>.</p>
+
+<h3 id="list">list</h3>
+
+<p>Lists Guard plugins that can be used with the <code>init</code> command.</p>
+
+<h3 id="-T-show">-T, show</h3>
+
+<p>List defined groups and Guard plugins for the current Guardfile.</p>
+
+<h3 id="-h-help-COMMAND-">-h, help [COMMAND]</h3>
+
+<p>List all of Guard's available commands.</p>
+
+<p>If <var>COMMAND</var> is given, displays a specific help for <var>TASK</var>.</p>
+
+<h2 id="EXAMPLES">EXAMPLES</h2>
+
+<p>Initialize Guard and a specific Guard plugin at the same time:</p>
+
+<p><code>[bundle exec] guard init [rspec]</code></p>
+
+<p>Run Guard:</p>
+
+<p><code>[bundle exec] guard [start] --watchdir ~/dev --guardfile ~/env/Guardfile --clear --group backend frontend --notify false --debug</code></p>
+
+<p>or in a more concise way:</p>
+
+<p><code>[bundle exec] guard [start] -w ~/dev -G ~/env/Guardfile -c -g backend frontend -n f -d</code></p>
+
+<h2 id="AUTHORS-CONTRIBUTORS">AUTHORS / CONTRIBUTORS</h2>
+
+<p>Thibaud Guillaume-Gentil is the main author.</p>
+
+<p>A list of contributors based on all commits can be found here:
+https://github.com/guard/guard/contributors</p>
+
+<h2 id="CHANGELOG">CHANGELOG</h2>
+
+<p>The changelog can be found at: https://github.com/guard/guard/blob/master/CHANGELOG.md</p>
+
+<p>This manual has been written by Remy Coutable.</p>
+
+<h2 id="WWW">WWW</h2>
+
+<p>http://guardgem.org/</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>November 2014</li>
+    <li class='tr'>guard(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>

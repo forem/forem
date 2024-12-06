@@ -1,0 +1,42 @@
+{
+  "created": 1326853478,
+  "data": {
+    "object": {
+      "account_balance": 0,
+      "active_card": {
+        "address_city": null,
+        "address_country": null,
+        "address_line1": null,
+        "address_line1_check": null,
+        "address_line2": null,
+        "address_state": null,
+        "address_zip": null,
+        "address_zip_check": null,
+        "country": "US",
+        "cvc_check": "pass",
+        "exp_month": 12,
+        "exp_year": 2013,
+        "fingerprint": "wXWJT135mEK107G8",
+        "last4": "4242",
+        "name": "1231",
+        "object": "card",
+        "type": "Visa",
+        "brand": "Visa",
+        "funding": "credit"
+      },
+      "created": 1359947599,
+      "delinquent": false,
+      "description": null,
+      "discount": null,
+      "email": "ajoe@mailinator.com",
+      "id": "cus_00000000000000",
+      "livemode": false,
+      "object": "customer",
+      "subscription": null
+    }
+  },
+  "id": "evt_00000000000000",
+  "livemode": false,
+  "object": "event",
+  "type": "customer.deleted"
+}

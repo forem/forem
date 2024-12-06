@@ -1,0 +1,15 @@
+module Algolia
+  class BaseIterator
+    include Helpers
+    #TODO: double check Enumerable
+    include Enumerable[Hash[Symbol, String|[String]], void]
+
+    # TODO: add Transporter
+    attr_reader transporter: untyped
+    attr_reader index_name: String
+    attr_reader opts: Hash[Symbol, String|[String]]
+
+    # TODO: add Transporter
+    def initialize: (untyped transporter, String index_name, Hash[Symbol, String|[String]] opts) -> void
+  end
+end

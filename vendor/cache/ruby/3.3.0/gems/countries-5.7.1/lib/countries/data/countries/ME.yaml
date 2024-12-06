@@ -1,0 +1,55 @@
+---
+ME:
+  alpha2: ME
+  alpha3: MNE
+  continent: Europe
+  country_code: '382'
+  currency_code: EUR
+  distance_unit: KM
+  gec: MJ
+  geo:
+    latitude: 42.708678
+    longitude: 19.37439
+    max_latitude: 43.558743
+    max_longitude: 20.352926
+    min_latitude: 41.8297
+    min_longitude: 18.4337921
+    bounds:
+      northeast:
+        lat: 43.558743
+        lng: 20.352926
+      southwest:
+        lat: 41.8297
+        lng: 18.4337921
+  international_prefix: '99'
+  ioc: MNE
+  iso_long_name: Montenegro
+  iso_short_name: Montenegro
+  languages_official:
+  - sr
+  - bs
+  - sq
+  - hr
+  languages_spoken:
+  - sr
+  - bs
+  - sq
+  - hr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Montenegrin
+  number: '499'
+  postal_code: true
+  postal_code_format: 8\d{4}
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: ME
+  unofficial_names:
+  - Crna Gora
+  - Montenegro
+  - モンテネグロ
+  world_region: EMEA

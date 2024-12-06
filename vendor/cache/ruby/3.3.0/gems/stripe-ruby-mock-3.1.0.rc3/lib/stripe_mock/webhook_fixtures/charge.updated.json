@@ -1,0 +1,58 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "charge.updated",
+  "object": "event",
+  "data": {
+    "object": {
+      "id": "ch_00000000000000",
+      "object": "charge",
+      "created": 1380933505,
+      "livemode": false,
+      "paid": true,
+      "amount": 1000,
+      "currency": "usd",
+      "refunded": false,
+      "source": {
+        "id": "cc_00000000000000",
+        "object": "card",
+        "last4": "4242",
+        "type": "Visa",
+        "brand": "Visa",
+        "exp_month": 12,
+        "exp_year": 2013,
+        "fingerprint": "wXWJT135mEK107G8",
+        "customer": "cus_00000000000000",
+        "country": "US",
+        "name": "Actual Nothing",
+        "address_line1": null,
+        "address_line2": null,
+        "address_city": null,
+        "address_state": null,
+        "address_zip": null,
+        "address_country": null,
+        "cvc_check": null,
+        "address_line1_check": null,
+        "address_zip_check": null
+      },
+      "captured": true,
+      "refunds": {
+
+      },
+      "balance_transaction": "txn_00000000000000",
+      "failure_message": null,
+      "failure_code": null,
+      "amount_refunded": 0,
+      "customer": "cus_00000000000000",
+      "invoice": "in_00000000000000",
+      "description": "Sample description" ,
+      "dispute": null,
+      "metadata": {
+      }
+    },
+    "previous_attributes": {
+      "description": null
+    }
+  }
+}

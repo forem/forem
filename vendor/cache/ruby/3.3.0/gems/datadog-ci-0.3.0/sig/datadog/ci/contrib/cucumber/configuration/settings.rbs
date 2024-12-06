@@ -1,0 +1,12 @@
+module Datadog
+  module CI
+    module Contrib
+      module Cucumber
+        module Configuration
+          class Settings < Datadog::CI::Contrib::Settings
+          end
+        end
+      end
+    end
+  end
+end

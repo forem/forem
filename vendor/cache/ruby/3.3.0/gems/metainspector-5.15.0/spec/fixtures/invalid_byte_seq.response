@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Content-Type: text/html
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 340
+
+<html>
+  <head>
+    <title>Sample file invalid byte sequence links</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="http://pagerankalert.posterous.com">blog</a></li>
+      <li><a href="http://element%b3wgarderoby.com/">invalid</a></li>
+      <li><a href="http://twitter.com/pagerankalert">twitter</a></li>
+    </ul>
+  </body>
+</html>

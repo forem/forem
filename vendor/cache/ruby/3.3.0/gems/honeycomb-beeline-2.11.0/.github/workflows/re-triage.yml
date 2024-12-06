@@ -1,0 +1,12 @@
+name: Re-triage issues with new comments
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  re-triage:
+    runs-on: ubuntu-latest
+    name: Re-triage issues with new comments
+    steps:
+      - uses: honeycombio/oss-management-actions/re-triage@v1
+        with:
+          ghprojects-token: ${{ secrets.GHPROJECTS_TOKEN }}

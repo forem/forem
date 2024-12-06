@@ -1,0 +1,58 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "customer.updated",
+  "object": "event",
+  "data": {
+    "object": {
+      "object": "customer",
+      "created": 1375148334,
+      "id": "cus_00000000000000",
+      "livemode": false,
+      "description": null,
+      "email": "bond@mailinator.com",
+      "delinquent": true,
+      "metadata": {
+      },
+      "preferred_locales": [],
+      "subscription": null,
+      "discount": null,
+      "account_balance": 0,
+      "sources": {
+        "object": "list",
+        "count": 1,
+        "url": "/v1/customers/cus_2I2AhGQOPmEFeu/cards",
+        "data": [
+          {
+            "id": "cc_2I2akIhmladin5",
+            "object": "card",
+            "last4": "0341",
+            "type": "Visa",
+            "brand": "Visa",
+            "funding": "credit",
+            "exp_month": 12,
+            "exp_year": 2013,
+            "fingerprint": "fWvZEzdbEIFF8QrK",
+            "customer": "cus_2I2AhGQOPmEFeu",
+            "country": "US",
+            "name": "Johnny Goodman",
+            "address_line1": null,
+            "address_line2": null,
+            "address_city": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_country": null,
+            "cvc_check": "pass",
+            "address_line1_check": null,
+            "address_zip_check": null
+          }
+        ]
+      },
+      "default_source": "cc_2I2akIhmladin5"
+    },
+    "previous_attributes": {
+      "description": "Old description"
+    }
+  }
+}

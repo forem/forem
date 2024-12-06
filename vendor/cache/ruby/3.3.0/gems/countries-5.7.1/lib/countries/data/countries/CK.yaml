@@ -1,0 +1,51 @@
+---
+CK:
+  alpha2: CK
+  alpha3: COK
+  continent: Australia
+  country_code: '682'
+  currency_code: NZD
+  distance_unit: KM
+  gec: CW
+  geo:
+    latitude: -21.236736
+    longitude: -159.777671
+    max_latitude: -8.1679932
+    max_longitude: -155.6982422
+    min_latitude: -23.0898384
+    min_longitude: -166.1791992
+    bounds:
+      northeast:
+        lat: -8.1679932
+        lng: -155.6982422
+      southwest:
+        lat: -23.0898384
+        lng: -166.1791992
+  international_prefix: '00'
+  ioc: COK
+  iso_long_name: The Cook Islands
+  iso_short_name: Cook Islands
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 5
+  national_prefix: '00'
+  nationality: Cook Islander
+  number: '184'
+  postal_code: false
+  region: Oceania
+  start_of_week: monday
+  subregion: Polynesia
+  un_locode: CK
+  unofficial_names:
+  - Cook Islands
+  - Cookinseln
+  - Îles Cook
+  - Islas Cook
+  - クック諸島
+  - Cookeilanden
+  world_region: APAC

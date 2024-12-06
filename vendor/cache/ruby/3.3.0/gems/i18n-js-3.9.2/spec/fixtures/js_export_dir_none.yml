@@ -1,0 +1,6 @@
+fallbacks: false
+export_i18n_js: false
+
+translations:
+  - file: "tmp/i18n-js/%{locale}.js"
+    only: '*'

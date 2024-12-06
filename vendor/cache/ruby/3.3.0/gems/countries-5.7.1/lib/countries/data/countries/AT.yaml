@@ -1,0 +1,72 @@
+---
+AT:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: AT
+  alpha3: AUT
+  continent: Europe
+  country_code: '43'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: AU
+  geo:
+    latitude: 47.516231
+    longitude: 14.550072
+    max_latitude: 49.0206081
+    max_longitude: 17.1607329
+    min_latitude: 46.37233579999999
+    min_longitude: 9.530783399999999
+    bounds:
+      northeast:
+        lat: 49.0206081
+        lng: 17.1607329
+      southwest:
+        lat: 46.37233579999999
+        lng: 9.530783399999999
+  international_prefix: '00'
+  ioc: AUT
+  iso_long_name: The Republic of Austria
+  iso_short_name: Austria
+  languages_official:
+  - de
+  languages_spoken:
+  - de
+  national_destination_code_lengths:
+  - 1
+  - 2
+  - 3
+  national_number_lengths:
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  national_prefix: '0'
+  nationality: Austrian
+  number: '040'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Western Europe
+  un_locode: AT
+  unofficial_names:
+  - Austria
+  - Österreich
+  - Autriche
+  - オーストリア
+  - Oostenrijk
+  vat_rates:
+    standard: 20
+    reduced:
+    - 10
+    super_reduced:
+    parking: 12
+  world_region: EMEA

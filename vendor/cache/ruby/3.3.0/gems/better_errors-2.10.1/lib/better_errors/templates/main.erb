@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= exception_type %> at <%= request_path %></title>
+    <link rel="icon" href="data:;base64,=" />
+</head>
+<body class="better-errors-javascript-not-loaded">
+    <%# Stylesheets are placed in the <body> for Turbolinks compatibility. %>
+    <%== ErrorPageStyle.style_tag(csp_nonce) %>
+
+    <%# IE8 compatibility crap %>
+    <script nonce="<%= csp_nonce %>">
+    (function() {
+        var elements = ["section", "nav", "header", "footer", "audio"];
+        for (var i = 0; i < elements.length; i++) {
+            document.createElement(elements[i]);
+        }
+    })();
+    </script>
+
+    <%#
+      If Rails's Turbolinks is used, the Better Errors page is probably
+      rendered in the host app's layout. Let's empty out the styles of the
+      host app.
+    %>
+    <script nonce="<%= csp_nonce %>">
+      if (window.Turbolinks) {
+          for(var i=0; i < document.styleSheets.length; i++) {
+              if(document.styleSheets[i].href)
+                  document.styleSheets[i].disabled = true;
+          }
+          if (window.Turbolinks.controller) {
+              // Turbolinks > 5 (see https://github.com/turbolinks/turbolinks/issues/6)
+              document.addEventListener("turbolinks:load", function restoreCSS(e) {
+                  for(var i=0; i < document.styleSheets.length; i++) {
+                      document.styleSheets[i].disabled = false;
+                  }
+                  document.removeEventListener("turbolinks:load", restoreCSS, false);
+              });
+          } else {
+              document.addEventListener("page:restore", function restoreCSS(e) {
+                  for(var i=0; i < document.styleSheets.length; i++) {
+                      document.styleSheets[i].disabled = false;
+                  }
+                  document.removeEventListener("page:restore", restoreCSS, false);
+              });
+          }
+      }
+    </script>
+
+    <p class='no-inline-style-notice'>
+        <strong>
+            Better Errors can't apply inline style<span class='no-javascript-notice'> (or run Javascript)</span>,
+            possibly because you have a Content Security Policy along with Turbolinks.
+            But you can
+            <a href='/__better_errors' target="_blank">open the interactive console in a new tab/window</a>.
+        </strong>
+    </p>
+
+    <div class='top'>
+        <header class="exception">
+            <h2><strong><%= exception_type %></strong> <span>at <%= request_path %></span></h2>
+            <p><%= exception_message %></p>
+            <% unless active_support_actions.empty? %>
+                <div class='fix-actions'>
+                    <% active_support_actions.each do |action, _| %>
+                        <form class="button_to" method="post" action="<%= action_dispatch_action_endpoint %>">
+                            <input type="submit" value="<%= action %>">
+                            <input type="hidden" name="action" value="<%= action %>">
+                            <input type="hidden" name="error" value="<%= exception_type %>">
+                            <input type="hidden" name="location" value="<%= request_path %>">
+                        </form>
+                    <% end %>
+                </div>
+            <% end %>
+            <% if exception_hint %>
+              <h2>Hint: <%= exception_hint %></h2>
+            <% end %>
+        </header>
+    </div>
+
+    <section class="backtrace">
+        <nav class="sidebar">
+            <nav class="tabs">
+                <a href="#" id="application_frames">Application Frames</a>
+                <a href="#" id="all_frames">All Frames</a>
+            </nav>
+            <ul class="frames">
+                <% backtrace_frames.each_with_index do |frame, index| %>
+                    <li class="<%= frame.context %>" data-context="<%= frame.context %>" data-index="<%= index %>">
+                        <span class='stroke'></span>
+                        <i class="icon <%= frame.context %>"></i>
+                        <div class="info">
+                            <div class="name">
+                                <strong><%= frame.class_name %></strong><span class='method'><%= frame.method_name %></span>
+                            </div>
+                            <div class="location">
+                                <span class="filename"><%= frame.pretty_path %></span>, line <span class="line"><%= frame.line %></span>
+                            </div>
+                        </div>
+                    </li>
+                <% end %>
+            </ul>
+        </nav>
+
+        <div class="frameInfos">
+            <div class="frame_info current" data-frame-idx="0">
+                <p class='no-javascript-notice'>
+                    Better Errors can't run Javascript here<span class='no-inline-style-notice'> (or apply inline style)</span>,
+                    possibly because you have a Content Security Policy along with Turbolinks.
+                    But you can
+                    <a href='/__better_errors' target="_blank">open the interactive console in a new tab/window</a>.
+                </p>
+                <!-- this is enough information to show something in case JS doesn't get to load -->
+                <%== ErrorPage.render_template('variable_info', first_frame_variable_info) %>
+            </div>
+        </div>
+    </section>
+</body>
+<script nonce="<%= csp_nonce %>">
+(function() {
+
+    var OID = "<%= id %>";
+    var csrfToken = "<%= csrf_token %>";
+
+    var previousFrame = null;
+    var allFrames = document.querySelectorAll("ul.frames li");
+    var frameInfos = document.querySelector(".frameInfos");
+
+    document.querySelector('body').classList.remove("better-errors-javascript-not-loaded");
+    document.querySelector('body').classList.add("better-errors-javascript-loaded");
+
+    var noJSNotices = document.querySelectorAll('.no-javascript-notice');
+    for(var i = 0; i < noJSNotices.length; i++) {
+        noJSNotices[i].remove();
+    }
+
+    function apiCall(method, opts, cb) {
+        var req = new XMLHttpRequest();
+        req.open("POST", "//" + window.location.host + <%== uri_prefix.gsub("<", "&lt;").inspect %> + "/__better_errors/" + OID + "/" + method, true);
+        req.setRequestHeader("Content-Type", "application/json");
+        opts.csrfToken = csrfToken;
+        req.send(JSON.stringify(opts));
+        req.onreadystatechange = function() {
+            if(req.readyState == 4) {
+                var res = JSON.parse(req.responseText);
+                cb(res);
+            }
+        };
+    }
+
+    function escapeHTML(html) {
+        return html.replace(/&/, "&amp;").replace(/</g, "&lt;");
+    }
+
+    function hasConsoleBeenUsedPreviously() {
+      return !!document.cookie.split('; ').find(function(cookie) {
+          return cookie.startsWith('BetterErrors-has-used-console=');
+      });
+    }
+
+    var consoleHasBeenUsed = hasConsoleBeenUsedPreviously();
+
+    function consoleWasJustUsed() {
+        if (consoleHasBeenUsed) {
+            return;
+        }
+
+        hideConsoleHint();
+        consoleHasBeenUsed = true;
+        document.cookie = "BetterErrors-has-used-console=true;path=/;max-age=31536000;samesite"
+    }
+
+    function hideConsoleHint() {
+        document.querySelector('body').className += " console-has-been-used";
+    }
+
+    function REPL(index) {
+        this.index = index;
+
+        var previousCommands = JSON.parse(localStorage.getItem("better_errors_previous_commands"));
+        if(previousCommands === null) {
+          localStorage.setItem("better_errors_previous_commands", JSON.stringify([]));
+          previousCommands = [];
+        }
+
+        this.previousCommandOffset = previousCommands.length;
+    }
+
+    REPL.all = [];
+
+    REPL.prototype.install = function(containerElement) {
+        this.container = containerElement;
+
+        this.promptElement  = this.container.querySelector(".command-line .prompt");
+        this.inputElement   = this.container.querySelector("input");
+        this.outputElement  = this.container.querySelector("pre");
+
+        if (consoleHasBeenUsed) {
+            hideConsoleHint();
+        }
+
+        var self = this;
+        this.inputElement.onkeydown = function(ev) {
+            self.onKeyDown(ev);
+            consoleWasJustUsed();
+        };
+
+        this.setPrompt(">>");
+
+        REPL.all[this.index] = this;
+    };
+
+    REPL.prototype.focus = function() {
+        this.inputElement.focus();
+    };
+
+    REPL.prototype.setPrompt = function(prompt) {
+        this._prompt = prompt;
+        this.promptElement.innerHTML = escapeHTML(prompt);
+    };
+
+    REPL.prototype.getInput = function() {
+        return this.inputElement.value;
+    };
+
+    REPL.prototype.setInput = function(text) {
+        this.inputElement.value = text;
+
+        if(this.inputElement.setSelectionRange) {
+            // set cursor to end of input
+            this.inputElement.setSelectionRange(text.length, text.length);
+        }
+    };
+
+    REPL.prototype.writeRawOutput = function(output) {
+        this.outputElement.innerHTML += output;
+        this.outputElement.scrollTop = this.outputElement.scrollHeight;
+    };
+
+    REPL.prototype.writeOutput = function(output) {
+        this.writeRawOutput(escapeHTML(output));
+    };
+
+    REPL.prototype.sendInput = function(line) {
+        var self = this;
+        apiCall("eval", { "index": this.index, source: line }, function(response) {
+            if(response.error) {
+                self.writeOutput(response.error + "\n");
+            }
+            self.writeOutput(self._prompt + " ");
+            self.writeRawOutput("<span class='syntax-highlighted'>" + response.highlighted_input + "</span>\n");
+            self.writeOutput(response.result);
+            self.setPrompt(response.prompt);
+            self.setInput(response.prefilled_input);
+        });
+    };
+
+    REPL.prototype.onEnterKey = function() {
+        var text = this.getInput();
+        if(text != "" && text !== undefined) {
+            var previousCommands = JSON.parse(localStorage.getItem("better_errors_previous_commands"));
+            this.previousCommandOffset = previousCommands.push(text);
+            if(previousCommands.length > 100) {
+              previousCommands.splice(0, 1);
+              this.previousCommandOffset -= 1;
+            }
+            localStorage.setItem("better_errors_previous_commands", JSON.stringify(previousCommands));
+        }
+        this.setInput("");
+        this.sendInput(text);
+    };
+
+    REPL.prototype.onNavigateHistory = function(direction) {
+        this.previousCommandOffset += direction;
+        var previousCommands = JSON.parse(localStorage.getItem("better_errors_previous_commands"));
+
+        if(this.previousCommandOffset < 0) {
+            this.previousCommandOffset = -1;
+            this.setInput("");
+            return;
+        }
+
+        if(this.previousCommandOffset >= previousCommands.length) {
+            this.previousCommandOffset = previousCommands.length;
+            this.setInput("");
+            return;
+        }
+
+        this.setInput(previousCommands[this.previousCommandOffset]);
+    };
+
+    REPL.prototype.onKeyDown = function(ev) {
+        if(ev.keyCode == 13) {
+            this.onEnterKey();
+        } else if(ev.keyCode == 38 || (ev.ctrlKey && ev.keyCode == 80)) {
+            // the user pressed the up arrow or Ctrl-P
+            this.onNavigateHistory(-1);
+            ev.preventDefault();
+            return false;
+        } else if(ev.keyCode == 40 || (ev.ctrlKey && ev.keyCode == 78)) {
+            // the user pressed the down arrow or Ctrl-N
+            this.onNavigateHistory(1);
+            ev.preventDefault();
+            return false;
+        }
+    };
+
+    function switchTo(el) {
+        var currentFrameInfo = document.querySelectorAll('.frame_info.current');
+        for(var i = 0; i < currentFrameInfo.length; i++) {
+            currentFrameInfo[i].className = "frame_info";
+        }
+
+        el.className = "frame_info current";
+
+        var replInput = el.querySelector('.be-console input');
+        if (replInput) replInput.focus();
+    }
+
+    function selectFrameInfo(index) {
+        var el = document.querySelector(".frame_info[data-frame-idx='" + index + "']")
+        if (!el) {
+          el = document.createElement("div");
+          el.className = "frame_info";
+          el.setAttribute('data-frame-idx', index);
+          frameInfos.appendChild(el);
+        }
+        if(el) {
+            if (el.loaded) {
+                return switchTo(el);
+            }
+
+            apiCall("variables", { "index": index }, function(response) {
+                el.loaded = true;
+                if(response.error) {
+                    el.innerHTML = "<h2 class='error'>" + escapeHTML(response.error) + "</h2>";
+                    if(response.explanation) {
+                      el.innerHTML += "<p class='explanation'>" + escapeHTML(response.explanation) + "</p>";
+                    }
+                    el.innerHTML += "<p><a target='_new' href='https://github.com/BetterErrors/better_errors'>More about Better Errors</a></p>";
+                } else {
+                    el.innerHTML = response.html;
+
+                    var repl = el.querySelector(".be-repl .be-console");
+                    if(repl) {
+                        new REPL(index).install(repl);
+                    }
+                }
+                switchTo(el);
+            });
+        }
+    }
+
+    for(var i = 0; i < allFrames.length; i++) {
+        (function(i, el) {
+            var el = allFrames[i];
+            el.onclick = function() {
+                if(previousFrame) {
+                    previousFrame.className = "";
+                }
+                el.className = "selected";
+                previousFrame = el;
+
+                selectFrameInfo(el.attributes["data-index"].value);
+            };
+        })(i);
+    }
+
+    // Click the first application frame
+    (
+      document.querySelector(".frames li.application") ||
+      document.querySelector(".frames li")
+    ).onclick();
+
+    // This is the second query performed for frames; maybe the 'allFrames' list
+    // currently used and this list can be better used to avoid the repetition:
+    var applicationFramesCount = document.querySelectorAll(
+        "ul.frames li[data-context=application]"
+    ).length;
+
+    var applicationFramesButtonIsInstalled = false;
+    var applicationFramesButton = document.getElementById("application_frames");
+    var allFramesButton = document.getElementById("all_frames");
+
+    // The application frames button only needs to be bound if
+    // there are actually any application frames to look at.
+    var installApplicationFramesButton = function() {
+        applicationFramesButton.onclick = function() {
+            allFramesButton.className = "";
+            applicationFramesButton.className = "selected";
+            for(var i = 0; i < allFrames.length; i++) {
+                if(allFrames[i].attributes["data-context"].value == "application") {
+                    allFrames[i].style.display = "block";
+                } else {
+                    allFrames[i].style.display = "none";
+                }
+            }
+            return false;
+        };
+
+        applicationFramesButtonIsInstalled = true;
+    }
+
+    allFramesButton.onclick = function() {
+        if(applicationFramesButtonIsInstalled) {
+            applicationFramesButton.className = "";
+        }
+
+        allFramesButton.className = "selected";
+        for(var i = 0; i < allFrames.length; i++) {
+            allFrames[i].style.display = "block";
+        }
+        return false;
+    };
+
+    // If there are no application frames, select the 'All Frames'
+    // tab by default.
+    if(applicationFramesCount > 0) {
+        installApplicationFramesButton();
+        applicationFramesButton.onclick();
+    } else {
+        applicationFramesButton.className = "disabled";
+        applicationFramesButton.title = "No application frames available";
+        allFramesButton.onclick();
+    }
+})();
+</script>
+</html>
+
+<!-- generated by Better Errors in <%= Time.now.to_f - @start_time %> seconds -->

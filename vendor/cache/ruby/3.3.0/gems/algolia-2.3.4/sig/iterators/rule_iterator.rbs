@@ -1,0 +1,5 @@
+module Algolia
+  class RuleIterator < PaginatorIterator
+    def get_endpoint: () -> String
+  end
+end

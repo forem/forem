@@ -1,0 +1,63 @@
+*.gem
+*.rbc
+/.config
+capybara-*.html
+.rspec
+/log
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/public/system
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/test/version_tmp/
+**/tmp/*
+**.orig
+rerun.txt
+pickle-email-*.html
+
+## Specific to RubyMotion:
+config/initializers/secret_token.rb
+config/secrets.yml
+
+.dat*
+.repl_history
+build/
+
+## Documentation cache and generated files:
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
+## Environment normalisation:
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# for a library or gem, you might want to ignore these files since the code is
+# intended to run in multiple environments; otherwise, check them in:
+Gemfile.lock
+.ruby-version*
+.ruby-gemset*
+.rvmrc*
+
+# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+.rvmrc
+
+# if using bower-rails ignore default bower_components path bower.json files
+/vendor/assets/bower_components
+*.bowerrc
+bower.json
+
+# Ignore pow environment settings
+.powenv
+
+!lib/
+cloudinary.yml
+configuration.yml
+
+# Developer env
+.idea
+.vscode

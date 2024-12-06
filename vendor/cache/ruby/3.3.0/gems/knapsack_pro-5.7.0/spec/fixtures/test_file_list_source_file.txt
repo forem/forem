@@ -1,0 +1,6 @@
+./spec/test1_spec.rb
+spec/test2_spec.rb[1]
+./spec/test3_spec.rb[1:2:3:4]
+./spec/test4_spec.rb:4
+./spec/test4_spec.rb:5
+

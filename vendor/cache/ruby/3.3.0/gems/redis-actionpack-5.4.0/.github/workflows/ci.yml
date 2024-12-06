@@ -1,0 +1,62 @@
+name: CI
+on:
+  push:
+    branches-ignore: [master]
+    tags-ignore: [v*]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    name: "test (ruby: ${{ matrix.ruby }}, redis.rb: ${{ matrix.redis }})"
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ contains(matrix.ruby, 'head') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.7"
+          - "3.0"
+          - "3.1"
+          # - 'head'
+          - "jruby"
+          # - 'jruby-head'
+          - "truffleruby"
+          # - 'truffleruby-head'
+        redis:
+          - 4_0_x
+          - 4_1_x
+          - 4_x
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/redis_${{ matrix.redis }}.gemfile
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+      distributed1:
+        image: redis
+        ports:
+          - 6380:6380
+      distributed2:
+        image: redis
+        ports:
+          - 6381:6381
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle exec rake
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+      - run: bundle exec rake lint

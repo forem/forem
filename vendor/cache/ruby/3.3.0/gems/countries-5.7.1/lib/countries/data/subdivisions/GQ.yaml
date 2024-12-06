@@ -1,0 +1,525 @@
+---
+AN:
+  name: Annobón
+  code: AN
+  unofficial_names: Annobón
+  geo:
+    latitude: -1.4221087
+    longitude: 5.6195112
+    min_latitude: -1.457793
+    min_longitude: 5.6119729
+    max_latitude: -1.4041375
+    max_longitude: 5.635208
+  translations:
+    en: Annobón
+    ar: محافظة أنوبون
+    bg: Анобон
+    bn: অ্যানোবোন প্রদেশ
+    ca: Província d’Annobón
+    da: Annobón Province
+    de: Provinz Annobón
+    el: Ανομπόν
+    es: Provincia de Annobón
+    et: Annobóni provints
+    eu: Annobongo probintzia
+    fa: استان آنوبون
+    fi: Annobónin provinssi
+    fr: province d’Annobón
+    gu: એનોબોન પ્રાંત
+    hi: एनोबोन प्रांत
+    id: Provinsi Annobón
+    it: Provincia di Annobón
+    ja: アンノボン県
+    ka: ანობონის პროვინცია
+    kn: ಅನ್ನೊಬಾನ್ ಪ್ರಾಂತ್ಯ
+    ko: 안노본 주
+    mr: ऍनोबोन प्रांत
+    ms: Annobon Province
+    nb: Annobón
+    nl: Annobón Province
+    pl: Prowincja Annobón
+    pt: Província de Annobón
+    ro: Provincia Annobón
+    ru: Провинция Аннобон
+    si: අන්නොබෝන් පළාත
+    sv: Annobón (provins)
+    ta: அந்நோபோன் மாகாணம்
+    te: అనోబిన్ ప్రావిన్స్
+    th: จังหวัดแอนโนบอน
+    tr: Annobón Province
+    ur: اننوبون صوبہ
+    vi: Tỉnh Annobón
+    lv: Annobonas province
+    ceb: Provincia de Annobón
+    lt: Anobono provincija
+    ccp: "\U00011103\U0001111A\U00011133\U00011126\U0001112E\U0001111D\U00011127\U0001111A\U00011134"
+    he: אנובון
+    ml: അന്നോബോൺ
+    uk: Провінція Анобон
+    'no': Annobón
+    af: Annobón
+    cy: Talaith Annobón
+    zh: 安诺本省
+    zu: Annobón
+  comments:
+  type: province
+BN:
+  name: Bioko Norte
+  code: BN
+  unofficial_names: Bioko Norte
+  geo:
+    latitude: 3.6595072
+    longitude: 8.7921836
+    min_latitude: 3.511882
+    min_longitude: 8.6119104
+    max_latitude: 3.7858361
+    max_longitude: 8.937981599999999
+  translations:
+    en: Bioko Norte
+    ar: محافظة بيوكو نورت
+    bg: Северна Биоко
+    bn: বিওকোঁ নর্টে প্রদেশ
+    ca: Bioko Nord
+    da: Bioko Norte Province
+    de: Bioko Norte
+    el: Μπιόκο Νόρτε
+    es: Provincia de Bioko Norte
+    eu: Iparraldeko Bioko
+    fi: Bioko Norten provinssi
+    fr: Bioko-Norte
+    gu: બાયોકો નોર્ટ પ્રાંત
+    hi: बियोको नॉर्ट प्रांत
+    hr: Sjeverni Bioko
+    hu: Bioko Norte tartomány
+    id: Provinsi Bioko Norte
+    it: provincia di Bioko Nord
+    ja: 北ビオコ県
+    ka: ჩრდილოეთ ბიოკოს პროვინცია
+    kn: ಬಯೋಕೊ ನಾರ್ಟೆ ಪ್ರಾಂತ್ಯ
+    ko: 북비오코 주
+    lt: Šiaurės Bioko provincija
+    mr: जैको नॉर्ट प्रांत
+    ms: Bioko Norte Province
+    nb: Bioko Norte
+    nl: Bioko Norte
+    pl: Bioko Północne
+    pt: Bioko Norte
+    ro: Provincia Bioko Norte
+    ru: Северный Биоко
+    si: බයොකො නොර්ටේ පළාත
+    sv: Provincia de Bioko Norte
+    ta: பியோகோ நோர்ட் மாகாணம்
+    te: బియోకో నార్టె ప్రావిన్స్
+    th: จังหวัดบีโอโกเหนือ
+    tr: Bioko Norte Province
+    uk: Бйоко Норте
+    ur: بیوکو نورتی صوبہ
+    vi: Tỉnh Bioko Norte
+    zh: 北比奥科省
+    lv: Ziemeļbioko province
+    ceb: Provincia de Bioko Norte
+    ccp: "\U0001111D\U0001112D\U00011107\U0001112E \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    'no': Bioko Norte
+    cy: Bioko Norte
+    fa: بیوکو نورت
+    gl: Bioko Norte
+  comments:
+  type: province
+BS:
+  name: Bioko Sur
+  code: BS
+  unofficial_names: Bioko Sur
+  geo:
+    latitude: 3.4209785
+    longitude: 8.6160674
+    min_latitude: 3.2099564
+    min_longitude: 8.423113899999999
+    max_latitude: 3.6476928
+    max_longitude: 8.850613899999999
+  translations:
+    en: Bioko Sur
+    ar: مقاطعة بيوكو سور
+    bg: Южна Биоко
+    bn: বিয়োকো সুর প্রদেশ
+    ca: Bioko Sud
+    da: Bioko Sur Province
+    de: Bioko Sur
+    el: Μπιόκο Σούρ
+    es: Provincia de Bioko Sur
+    eu: Hegoaldeko Bioko
+    fi: Bioko Surin provinssi
+    fr: Bioko-Sur
+    gu: બાઈકો સુર પ્રાંત
+    hi: बिओको-सुर प्रांत
+    hr: Južni Bioko
+    id: Provinsi Bioko Sur
+    it: provincia di Bioko Sud
+    ja: 南ビオコ県
+    ka: სამხრეთ ბიოკოს პროვინცია
+    kn: ಬಯೋಕೊ ಸುರ್ ಪ್ರಾಂತ್ಯ
+    ko: 남비오코 주
+    lt: Pietų Bioko provincija
+    mr: बीओवो सुर प्रांत
+    ms: Bioko Sur Province
+    nb: Bioko Sur
+    nl: Bioko Sur
+    pl: Bioko Południowe
+    pt: Bioko Sur
+    ro: Provincia Bioko Sur
+    ru: Южный Биоко
+    si: බියොකෝ සර් පළාත
+    sv: Provincia de Bioko Sur
+    ta: பியோகோ சூர் மாகாணம்
+    te: బయోకో సుర్ ప్రావిన్స్
+    th: จังหวัดไบโอโค เซอ
+    tr: Bioko Sur Province
+    uk: Бйоко Сур
+    ur: بیوکو سر صوبہ
+    vi: Tỉnh Bioko Sur
+    lv: Dienvidbioko province
+    ceb: Provincia de Bioko Sur
+    zh: 南比奥科省
+    fa: استان بیوکو سور
+    ccp: "\U0001111D\U0001112D\U00011107\U0001112E \U00011125\U00011122\U00011134"
+    'no': Bioko Sur
+    cy: Talaith Bioko Sur
+    gl: Bioko Sur
+  comments:
+  type: province
+C:
+  name: Región Continental
+  code: C
+  unofficial_names: Región Continental
+  geo:
+    latitude: 51.2798759
+    longitude: 8.8744572
+    min_latitude: 51.2798269
+    min_longitude: 8.873045399999999
+    max_latitude: 51.28056
+    max_longitude: 8.8745578
+  translations:
+    en: Río Muni
+    af: Rio Muni
+    bg: Мбини
+    ca: Mbini
+    cs: Río Muni
+    de: Mbini
+    es: Río Muni
+    et: Río Muni
+    eu: Río Muni
+    fi: Río Muni
+    fr: Région continentale
+    hr: Rijeka Muni
+    it: Rio Muni
+    ja: リオ・ムニ
+    ko: 리오무니
+    lt: Rio Munis
+    nb: Río Muni
+    nl: Mbini
+    pl: Mbini
+    pt: Rio Muni
+    ru: Рио-Муни
+    sv: Río Muni
+    uk: Ріо-Муні
+    vi: Río Muni
+    ceb: Woleu
+    zh: 木尼河区
+    ccp: "\U00011122\U00011128\U00011103\U0001112E \U0001111F\U0001112A\U0001111A\U00011128"
+    ka: რიო-მუნი
+    he: ריו מוני
+    'no': Río Muni
+    az: Rio-Muni
+    hy: Ռիո Մունի
+    th: ภูมิภาคริโอมูนิ
+    ur: ریو مونی
+  comments:
+  type: region
+CS:
+  name: Centro Sur
+  code: CS
+  unofficial_names: Centro Sur
+  geo:
+    latitude: 1.3436084
+    longitude: 10.439656
+    min_latitude: 0.9966689999999999
+    min_longitude: 9.9033
+    max_latitude: 2.1742861
+    max_longitude: 10.98445
+  translations:
+    en: Centro Sur
+    ar: مقاطعة سينترو سور
+    bg: Южна централна провинция
+    bn: সেন্ট্রো সুর প্রদেশ
+    ca: Centre Sud
+    da: Centro Sur Province
+    de: Centro Sur
+    el: Κέντρο Σούρ
+    es: Provincia Centro Sur
+    et: Kesk-Lõunaprovints
+    eu: Erdi-Hegoaldea
+    fi: Centro Surin provinssi
+    fr: Centro-Sur
+    gu: સેન્ટ્રો સુર પ્રાંત
+    hi: सेंट्रो सुर प्रांत
+    id: Provinsi Centro Sur
+    it: provincia Centro Sud
+    ja: 中南部県
+    ka: ცენტრო-სურის პროვინცია
+    kn: ಸೆಂಟ್ರೊ ಸುರ್ ಪ್ರಾಂತ್ಯ
+    ko: 중남부 주
+    lt: Centro Pietų provincija
+    mr: सेंट्रो सुर प्रांत
+    ms: Centro Sur Province
+    nb: Centro Sur
+    nl: Centro Sur
+    pl: Prowincja Środkowo-Południowa
+    pt: Centro Sur
+    ro: Provincia Centro Sur
+    ru: Центро-Сур
+    si: සෙන්ට්රෝ සර් පළාත
+    sv: Provincia de Centro Sur
+    ta: சென்ட்ரோ சூர் மாகாணம்
+    te: సెంట్రో సుర్ ప్రావిన్స్
+    th: เซนโตรซูร์
+    tr: Centro Sur Province
+    uk: Сентро-Сур
+    ur: سینترو سر صوبہ
+    vi: Tỉnh Centro Sur
+    lv: Centrālā Dienvidu province
+    ceb: Provincia de Centro Sur
+    zh: 中南省
+    fa: استان سنترو سور
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U0001112E
+      \U00011125\U00011122\U00011134"
+    'no': Centro Sur
+    cy: Talaith Centro Sur
+  comments:
+  type: province
+DJ:
+  translations:
+    en: Djibloho
+    de: Djibloho
+    es: Provincia de Djibloho
+    fa: دجیبلوهو
+    fr: Djibloho
+    he: ג׳יבלו
+    ja: ジブロホ県
+    ko: 지블로호
+    pl: Djibloho
+    ru: Джиблохо
+    th: จังหวัดจิโบลโอ
+    ur: جیبلوہو
+    zh: 吉布劳
+  name: Djibloho
+  code: DJ
+  type: province
+I:
+  name: Región Insular
+  code: I
+  unofficial_names: Región Insular
+  geo:
+    latitude: 49.662167
+    longitude: -125.746833
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Insular
+    ca: Illes de Guinea Equatorial
+    es: Islas de Guinea Ecuatorial
+    fr: Région insulaire
+    it: Regione Insulare
+    ja: 島嶼地方 (赤道ギニア)
+    nl: Insular Region
+    pt: Região Insular
+    ru: Инсуляр
+    zh: 海岛大区
+    ccp: "\U00011103\U00011128\U0001111A\U00011134\U00011125\U0001112A\U00011123\U00011122\U00011134"
+    ka: კუნძულოვანი რეგიონი
+    ko: 적도 기니 도서 지방
+    af: Insular-streek
+    de: Región Insular (Äquatorialguinea)
+    th: ภูมิภาคเกาะ
+    ur: جزیراتی علاقہ
+  comments:
+  type: region
+KN:
+  name: Kie-Ntem
+  code: KN
+  unofficial_names: Kie-Ntem
+  geo:
+    latitude: 2.028093
+    longitude: 11.0711758
+    min_latitude: 1.7260761
+    min_longitude: 10.401541
+    max_latitude: 2.187128
+    max_longitude: 11.3356839
+  translations:
+    en: Kié-Ntem
+    ar: محافظة كيي - نتم
+    bg: Кие-Нтем
+    bn: কিন্টেম প্রদেশ
+    ca: Kié-Ntem
+    da: Kié-Ntem Province
+    de: Kié-Ntem
+    el: Κιε-Ντεμ
+    es: Provincia Kié-Ntem
+    eu: Kié-Ntem
+    fi: Kié-Ntemin provinssi
+    fr: Kié-Ntem
+    gu: કિએ-એન્ટેમ પ્રાંત
+    hi: काई-टेम प्रांत
+    hu: Kié-Ntem tartomány
+    id: Provinsi Kié-Ntem
+    it: provincia Kié-Ntem
+    ja: キエンテム県
+    ka: კე-ნტემის პროვინცია
+    kn: ಕೀ-ಎನ್ಟೆಮ್ ಪ್ರಾಂತ್ಯ
+    ko: 키에은템 주
+    lt: Ke Ntemo provincija
+    mr: केए-न्टेम प्रांत
+    ms: Kie-Ntem Province
+    nb: Kié-Ntem
+    nl: Kié-Ntem
+    pl: Kié-Ntem
+    pt: Kié-Ntem
+    ro: Provincia Kié-Ntem
+    ru: Ке-Нтем
+    si: කයි-එන්ටෙම් පළාත
+    sv: Provincia de Kié-Ntem
+    ta: கிய -நட்டம் மாகாணம்
+    te: కై-ఎంటెమ్ ప్రావిన్స్
+    th: จังหวัดคี-นเท๋ม
+    tr: Kié-Ntem Province
+    uk: Ке-Нтем
+    ur: کیی-نتیم صوبہ
+    vi: Tỉnh Kié-Ntem
+    lv: Kē-Ntemas province
+    ceb: Provincia de Kié-Ntem
+    zh: 基埃恩特姆省
+    ccp: "\U00011107\U0001112D-\U00011111\U0001112C\U0001111F\U00011134"
+    'no': Kié-Ntem
+    cy: Kié-Ntem
+    fa: کاینتم
+  comments:
+  type: province
+LI:
+  name: Litoral
+  code: LI
+  unofficial_names: Litoral
+  geo:
+    latitude: 1.5750244
+    longitude: 9.8124935
+    min_latitude: 0.8891347
+    min_longitude: 9.302264
+    max_latitude: 2.346989
+    max_longitude: 10.263524
+  translations:
+    en: Litoral
+    ar: مقاطعة ليتورال
+    bg: Литорал
+    bn: লিটরাল প্রদেশ
+    ca: Província Litoral
+    da: Litoral Province
+    de: Litoral
+    el: Λίτοραλ
+    es: Provincia Litoral
+    eu: Kostaldea
+    fi: Litoralin provinssi
+    fr: Litoral
+    gu: લિટોરલ પ્રાંત
+    hi: लिटोरल प्रांत (इक्वेटोरियल गिनी)
+    hr: Primorje
+    id: Provinsi Litoral
+    it: provincia Litorale
+    ja: リトラル県
+    ka: ლიტორალის პროვინცია
+    kn: ಲಿಟೋರಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 리토랄 주
+    lt: Litoralės provincija
+    mr: लिटोरल प्रांत
+    ms: Litoral Province
+    nb: Litoral
+    nl: Litoral
+    pl: Prowincja Nadmorska
+    pt: Litoral
+    ro: Provincia Litoral, Guineea Ecuatorială
+    ru: Литорал
+    si: ලිටොරල් පළාත
+    sv: Litoral
+    ta: லிட்டோரால் மாகாணம்
+    te: లిటోరల్ ప్రావిన్స్
+    th: จังหวัดลิโทรอล
+    tr: Litoral Province
+    uk: Літорал
+    ur: لیتورال صوبہ
+    vi: Tỉnh Litoral
+    lv: Litorālā province
+    ceb: Provincia de Litoral
+    zh: 滨海省
+    ccp: "\U00011123\U00011128\U00011111\U0001112E\U00011122\U00011123\U00011134"
+    'no': Litoral
+    cy: Litoral
+  comments:
+  type: province
+WN:
+  name: Wele-Nzás
+  code: WN
+  unofficial_names: Wele-Nzás
+  geo:
+    latitude: 1.4166162
+    longitude: 11.0711758
+    min_latitude: 0.996211
+    min_longitude: 10.5228439
+    max_latitude: 1.994745
+    max_longitude: 11.3357239
+  translations:
+    en: Wele-Nzas
+    ar: مقاطعة ويلي-نزاس
+    bg: Уеле-Нзас
+    bn: ওয়েলে-জাস প্রদেশ
+    ca: Wele-Nzas
+    da: Wele-Nzas Province
+    de: Wele-Nzas
+    el: Βέλε-Νζας
+    es: Provincia Wele-Nzas
+    eu: Wele-Nzas
+    fi: Wele-Nzasin provinssi
+    fr: Wele-Nzas
+    gu: વેલે-નઝાસ પ્રાંત
+    hi: वेले-नज़ास प्रांत
+    id: Provinsi Wele-Nzas
+    it: provincia Wele-Nzas
+    ja: ウェレンザス県
+    ka: ველე-ნზასის პროვინცია
+    kn: ವೈಲ್-ಎನ್ಝಾ ಪ್ರಾಂತ್ಯ
+    ko: 웰레은사스 주
+    lt: Vele Nzaso provincija
+    mr: वेले-नझस प्रांत
+    ms: Wele-Nzas Province
+    nb: Wele-Nzás
+    nl: Wele-Nzas
+    pl: Wele-Nzas
+    pt: Wele-Nzas
+    ro: Provincia Wele-Nzas
+    ru: Веле-Нзас
+    si: වෙලේ -එන්සාස් පළාත
+    sv: Provincia de Wele-Nzas
+    ta: வெலே -ன்சஸ் மாகாணம்
+    te: వెలె-ఎన్జాస్ ప్రావిన్స్
+    th: จังหวัดเวเลแนสซ์
+    tr: Wele-Nzas Province
+    uk: Веле-Нзас
+    ur: ویلی-نزاس صوبہ
+    vi: Tỉnh Wele-Nzas
+    lv: Veles-Nzasas province
+    ceb: Provincia de Wele-Nzas
+    zh: 韦莱恩萨斯省
+    ccp: "\U00011124\U0001112C\U00011120\U0001112C \U0001111A\U0001110C\U00011134"
+    'no': Wele-Nzás
+    cy: Wele-Nzas
+    fa: وله نزا
+    hy: Վելե-Նզաս
+  comments:
+  type: province

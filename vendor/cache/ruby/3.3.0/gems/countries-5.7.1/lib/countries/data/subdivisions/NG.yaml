@@ -1,0 +1,2575 @@
+---
+AB:
+  name: Abia
+  code: AB
+  unofficial_names: Abia
+  geo:
+    latitude: 5.430892099999999
+    longitude: 7.524724300000001
+    min_latitude: 4.810874
+    min_longitude: 7.150823
+    max_latitude: 6.0191921
+    max_longitude: 7.9630091
+  translations:
+    en: Abia
+    ar: ولاية أبيا
+    bg: Абия
+    bn: আবিয়া অঙ্গরাজ্য
+    ca: Abia
+    da: Abia
+    de: Abia
+    el: Αμπία
+    es: Abia (estado)
+    et: Abia osariik
+    fa: اراضی ابیا
+    fi: Abia
+    fr: État d’Abia
+    gl: Estado de Abia
+    gu: અબિયા સ્ટેટ
+    hi: आबिया राज्य
+    hu: Abia állam
+    id: Abia (negara bagian Nigeria)
+    it: Abia
+    ja: アビア州
+    ka: აბიის შტატი
+    kn: ಅಬಿಯಾ ರಾಜ್ಯ
+    ko: 아비아 주
+    lt: Abija
+    lv: Abija
+    mr: अबिया राज्य
+    ms: Abia State
+    nb: Abia
+    nl: Abia
+    pl: Abia (stan)
+    pt: Abia (estado)
+    ro: Abia
+    ru: Абия (штат)
+    si: අබියා රාජ්‍ය
+    sr: Абија
+    sv: Abia
+    sw: Abia (jimbo)
+    ta: அபியா மாநிலம்
+    te: ఆబియా స్టేట్
+    th: รัฐอาเบีย
+    tr: Abia Eyaleti
+    uk: Абія
+    ur: ابیا ریاست
+    vi: Bang Abia
+    zh: 阿比亚州
+    ceb: Abia State
+    yo_BJ: Ìpínlɛ̀ Ábíá
+    sr_Latn: Abija
+    ccp: "\U00011103\U0001111D\U00011128\U00011120"
+    ig: Ȯra Abia
+    ha: Abiya
+    yo: Ìpínlẹ̀ Ábíá
+    ha_NE: Abiya
+    'no': Abia
+  comments:
+  type: state
+AD:
+  name: Adamawa
+  code: AD
+  unofficial_names:
+  - Adamaoua
+  - Gongola
+  geo:
+    latitude: 9.3250497
+    longitude: 12.4380581
+    min_latitude: 7.452592
+    min_longitude: 11.392936
+    max_latitude: 10.943588
+    max_longitude: 13.6924919
+  translations:
+    en: Adamawa
+    ar: ولاية آدماوة
+    bg: Адамауа
+    bn: আডামাওয়া অঙ্গরাজ্য
+    ca: Adamaua
+    da: Adamawa
+    de: Adamawa
+    el: Ανταμάβα
+    es: Adamawa
+    et: Adamawa osariik
+    fa: اراضی اداماوا
+    fi: Adamawa
+    fr: État d’Adamawa
+    gl: Adamawa
+    gu: અદામાવા સ્ટેટ
+    hi: अदामावा राज्य
+    id: Adamawa
+    it: Adamawa
+    ja: アダマワ州
+    ka: ადამავის შტატი
+    kn: ಆದಾಮಾ ರಾಜ್ಯ
+    ko: 아다마와 주
+    lt: Adamava
+    mr: आदामावा राज्य
+    ms: Adamawa State
+    nb: Adamawa
+    nl: Adamawa
+    pl: Adamawa
+    pt: Adamawa
+    ro: Statul Adamawa
+    ru: Адамава
+    si: අඩමාවා ප්‍රාන්තය
+    sr: Адамава
+    sv: Adamawa
+    sw: Adamawa
+    ta: அடமவா மாநிலம்
+    te: ఆడమావా స్టేట్
+    th: รัฐอาดามาวา
+    tr: Adamawa Eyaleti
+    uk: Адамава
+    ur: اداماوا ریاست
+    vi: Bang Adamawa
+    lv: Adamavas štats
+    ceb: Adamawa State
+    yo_BJ: Ìpínlɛ̀ Adámáwá
+    sr_Latn: Adamava
+    zh: 阿達馬瓦
+    ccp: "\U00011103\U00011113\U0001111F\U00011134\U00011124"
+    ig: Ȯra Adamawa
+    ha: Adamawa
+    yo: Ìpínlẹ̀ Adámáwá
+    ha_NE: Adamawa
+    'no': Adamawa
+    az: Adamava ştatı
+    he: אדמאווה
+  comments:
+  type: state
+AK:
+  name: Akwa Ibom
+  code: AK
+  unofficial_names: Akwa Ibom
+  geo:
+    latitude: 4.929986899999999
+    longitude: 7.872159999999999
+    min_latitude: 4.4780049
+    min_longitude: 7.4605409
+    max_latitude: 5.530245
+    max_longitude: 8.340371
+  translations:
+    en: Akwa Ibom
+    ar: ولاية اكوا ايبوم
+    bg: Аква Ибом
+    bn: আকিাউ আইবুম অঙ্গরাজ্য
+    ca: Akwa Ibom
+    da: Akwa Ibom
+    de: Akwa Ibom
+    el: Όκβα Ίμπορν
+    es: Akwa Ibom
+    et: Akwa Ibomi osariik
+    fa: اکوا ایبوم استیت
+    fi: Akwa Ibom
+    fr: État d’Akwa Ibom
+    gl: Akwa Ibom
+    gu: અકવા ઇબોમ સ્ટેટ
+    hi: अक्वा इबोम राज्य
+    id: Akwa Ibom
+    it: Akwa Ibom
+    ja: アクワ・イボム州
+    ka: აკვა-იბომის შტატი
+    kn: ಅಕ್ವಾ ಇಬೊಮ್ ರಾಜ್ಯ
+    ko: 아콰이봄 주
+    mr: अक्वा इबोम राज्य
+    ms: Negeri Akwa Ibom
+    nb: Akwa Ibom
+    nl: Akwa Ibom
+    pl: Akwa Ibom
+    pt: Akwa Ibom (estado)
+    ro: Statul Akwa Ibom
+    ru: Аква-Ибом
+    si: අක්වා ඉබොම් ප්‍රාන්තය
+    sr: Аква Ибом
+    sv: Akwa Ibom
+    sw: Akwa Ibom (jimbo)
+    ta: அகவ இபோம் மாநிலம்
+    te: అక్వా ఐబోమ్ స్టేట్
+    th: รัฐอะกวาอิบอม
+    tr: Akwa Ibom Eyaleti
+    uk: Аква-Ібом
+    ur: اکوا ایبوم ریاست
+    vi: Bang Akwa Ibom
+    lv: Akvas Ibomas štats
+    ceb: Akwa Ibom State
+    yo_BJ: Ìpínlɛ̀ Akwa Íbɔm
+    sr_Latn: Akva Ibom
+    lt: Ava Ibomo valstija
+    zh: 阿夸伊博姆州
+    ccp: "\U00011103\U00011127\U00011107\U00011134\U00011124 \U00011103\U00011128\U0001111D\U00011127\U0001111F\U00011134"
+    ig: Ȯra Akwa Ibom
+    ha: Akwa Ibom
+    yo: Ìpínlẹ̀ Akwa Íbọm
+    ha_NE: Akwa Ibom
+    'no': Akwa Ibom
+    az: Akva İbom ştatı
+    he: אקווה איבום סטייט
+  comments:
+  type: state
+AN:
+  name: Anambra
+  code: AN
+  unofficial_names: Anambra
+  geo:
+    latitude: 6.2757656
+    longitude: 7.0068393
+    min_latitude: 5.692615000000001
+    min_longitude: 6.613086
+    max_latitude: 6.7795999
+    max_longitude: 7.355934
+  translations:
+    en: Anambra
+    ar: ولاية أنمبرة
+    bg: Анамбра
+    bn: আনাম্ব্রা অঙ্গরাজ্য
+    ca: Anambra
+    da: Anambra
+    de: Anambra
+    el: Ανάμπρα
+    es: Anambra
+    et: Anambra osariik
+    fa: انامبرا استیت
+    fi: Anambra
+    fr: État d’Anambra
+    gl: Anambra
+    gu: અનામ્બ્રા સ્ટેટ
+    hi: अनम्ब्रा राज्य
+    id: Anambra
+    it: Anambra
+    ja: アナンブラ州
+    ka: ანამბრის შტატი
+    kn: ಅನಂಬ್ರಾ ರಾಜ್ಯ
+    ko: 아남브라 주
+    mr: अंंन्याब्रा राज्य
+    ms: Anambra State
+    nb: Anambra
+    nl: Anambra
+    pl: Anambra
+    pt: Anambra (estado)
+    ro: Statul Anambra
+    ru: Анамбра
+    si: අනම්බ්‍රා රාජ්‍ය
+    sr: Анамбра
+    sv: Anambra
+    sw: Jimbo la Anambra
+    ta: அநம்பறா மாநிலம்
+    te: అనాంబా రాష్ట్రం
+    th: รัฐอะนัมบรา
+    tr: Anambra Eyaleti
+    ur: انامبرا ریاست
+    vi: Bang Anambra
+    lv: Anambras štats
+    ceb: Anambra State
+    yo_BJ: Ìpínlɛ̀ Anámbra
+    sr_Latn: Anambra
+    lt: Anambros valstija
+    zh: 阿南布拉州
+    yue_Hans: 阿南布拉州
+    ccp: "\U00011103\U0001111A\U0001111F\U00011134\U0001111D\U00011133\U00011122"
+    ig: Ȯra Anambra
+    ha: Anambra
+    uk: Анамбра
+    yue: 阿南布拉州
+    yo: Ìpínlẹ̀ Anámbra
+    ha_NE: Anambra
+    'no': Anambra
+    az: Anambra ştatı
+    cy: Anambra
+    he: אנמברה
+    hu: Anambra állam
+    hy: Անամբրա
+  comments:
+  type: state
+BA:
+  name: Bauchi
+  code: BA
+  unofficial_names: Bauchi
+  geo:
+    latitude: 10.315833
+    longitude: 9.844166999999999
+    min_latitude: 10.255381
+    min_longitude: 9.779892
+    max_latitude: 10.3398292
+    max_longitude: 9.864006
+  translations:
+    en: Bauchi
+    ar: ولاية باوتشي
+    bg: Баучи
+    bn: বাউচি অঙ্গরাজ্য
+    ca: Estat de Bauchi
+    da: Bauchi
+    de: Bauchi
+    el: Μποτσί
+    es: Bauchi
+    et: Bauchi osariik
+    fa: ایالت باوچی
+    fi: Bauchi
+    fr: État de Bauchi
+    gl: Estado de Bauchi
+    gu: બાઉચી સ્ટેટ
+    hi: बाउची राज्य
+    id: Bauchi
+    it: Bauchi
+    ja: バウチ州
+    ka: ბაუჩის შტატი
+    kn: ಬಾಚು ರಾಜ್ಯ
+    ko: 바우치 주
+    mr: बाऊची राज्य
+    ms: Bauchi State
+    nb: Bauchi
+    nl: Bauchi
+    pl: Bauczi
+    pt: Bauchi
+    ro: Statul Bauchi
+    ru: Баучи
+    si: බවුචි රාජ්‍ය
+    sr: Баучи
+    sv: Bauchi
+    sw: Jimbo la Bauchi
+    ta: பாவ்ச்சி மாநிலம்
+    te: బౌచి రాష్ట్రం
+    th: รัฐเบาชี
+    tr: Bauchi Eyaleti
+    ur: باوچی ریاست
+    vi: Bang Bauchi
+    lv: Bauči štats
+    ceb: Bauchi State
+    yo_BJ: Ìpínlɛ̀ Bauchi
+    sr_Latn: Bauči
+    lt: Baučio valstija
+    zh: 包奇州
+    ccp: "\U0001111D\U0001112F\U0001110C\U00011128"
+    ig: Ȯra Bauchi
+    is: Bauchi-fylki
+    ha: Bauchi
+    uk: Баучі
+    yo: Ìpínlẹ̀ Bauchi
+    ha_NE: Bauchi
+    'no': Bauchi
+    az: Bauçi ştatı
+    he: באוצ׳י
+    hy: Բաուչի նահանգ
+  comments:
+  type: state
+BE:
+  name: Benue
+  code: BE
+  unofficial_names: Benue
+  geo:
+    latitude: 7.350825899999999
+    longitude: 8.8362755
+    min_latitude: 6.4427789
+    min_longitude: 7.4893301
+    max_latitude: 8.149299
+    max_longitude: 9.918301
+  translations:
+    en: Benue
+    ar: ولاية بينو
+    bg: Бенуе
+    bn: বেনু রাজ্য
+    ca: Estat de Benue
+    da: Benue
+    de: Benue
+    el: Μπένιου
+    es: Benue
+    et: Benue osariik
+    fa: ایالت بنوئه
+    fi: Benue
+    fr: État de Benue
+    gl: Estado de Benue
+    gu: બેન્યુ સ્ટેટ
+    hi: बेनुए राज्य
+    id: Benue
+    it: Benue
+    ja: ベヌエ州
+    ka: ბენუეს შტატი
+    kn: ಬೆನ್ಯು ರಾಜ್ಯ
+    ko: 베누에 주
+    mr: बेनू राज्य
+    ms: Benue State
+    nb: Benue
+    nl: Benue
+    pl: Benue
+    pt: Benue
+    ro: Statul Benue
+    ru: Бенуэ
+    si: බෙනුයි රාජ්‍ය
+    sr: Бенуе
+    sv: Benue
+    sw: Jimbo la Benue
+    ta: பேணுவே மாநிலம்
+    te: బెన్యూ రాష్ట్రం
+    th: เบนิว
+    tr: Benue Eyaleti
+    ur: بینوے ریاست
+    vi: Bang Benue
+    lv: Benue štats
+    ceb: Benue State
+    yo_BJ: Ìpínlɛ̀ Bɛ́núé
+    sr_Latn: Benue
+    lt: Benujės valstija
+    zh: 贝努埃州
+    ccp: "\U0001111D\U0001112C\U0001111A\U0001112A\U00011120\U00011128"
+    ig: Ȯra Benue
+    ha: Benue
+    uk: Бенуе
+    yo: Ìpínlẹ̀ Bẹ́núé
+    ha_NE: Benue
+    'no': Benue
+    az: Benue ştatı
+    he: בנו
+  comments:
+  type: state
+BO:
+  name: Borno
+  code: BO
+  unofficial_names: Borno
+  geo:
+    latitude: 11.5097479
+    longitude: 12.9789121
+    min_latitude: 10.0291549
+    min_longitude: 11.6286559
+    max_latitude: 13.7144441
+    max_longitude: 14.680073
+  translations:
+    en: Borno
+    ar: ولاية بورنو
+    bg: Борно
+    bn: বর্নো অঙ্গরাজ্য
+    ca: Estat de Borno
+    cs: Borno
+    da: Borno
+    de: Borno
+    el: Μπόρνο
+    es: Borno
+    et: Borno
+    eu: Borno
+    fa: ایالت بورنو
+    fi: Borno
+    fr: État de Borno
+    gl: Estado de Borno
+    gu: બોર્નો સ્ટેટ
+    he: בורנו
+    hi: बोरनो राज्य
+    id: Borno
+    it: Borno
+    ja: ボルノ州
+    ka: ბორნოს შტატი
+    kn: ಬೊರ್ನೊ ರಾಜ್ಯ
+    ko: 보르노 주
+    mr: बोर्नो राज्य
+    ms: Borno State
+    nb: Borno
+    nl: Borno
+    pl: Borno
+    pt: Borno
+    ro: Statul Borno
+    ru: Борно
+    si: බොර්නෝ රාජ්‍ය
+    sr: Борно
+    sv: Borno
+    sw: Borno
+    ta: போர்னோ மாநிலம்
+    te: బోర్నో రాష్ట్రం
+    th: รัฐโบร์โน
+    tr: Borno Eyaleti
+    ur: بورنو ریاست
+    vi: Borno
+    lv: Borno štats
+    ceb: Borno State
+    yo_BJ: Ìpínlɛ̀ Bɔ̀rnó
+    sr_Latn: Borno
+    lt: Borno valstija
+    zh: 博尔诺州
+    ccp: "\U0001111D\U00011127\U00011122\U00011134\U0001111A\U0001112E"
+    ig: Ȯra Borno
+    ha: jihar Borno
+    uk: Борно
+    yo: Ìpínlẹ̀ Bọ̀rnó
+    mk: Борно
+    ha_NE: jihar Borno
+    'no': Borno
+    az: Borno ştatı
+    cy: Borno
+    hy: Բորնո
+    ne: बोर्नो राज्य
+  comments:
+  type: state
+BY:
+  name: Bayelsa
+  code: BY
+  unofficial_names: Bayelsa
+  geo:
+    latitude: 4.867776699999999
+    longitude: 5.898713900000001
+    min_latitude: 4.2771439
+    min_longitude: 5.370120500000001
+    max_latitude: 5.3933139
+    max_longitude: 6.724865899999999
+  translations:
+    en: Bayelsa
+    ar: ولاية بايلسا
+    bg: Байелса
+    bn: বেলসা অঙ্গরাজ্য
+    ca: Bayelsa
+    da: Bayelsa
+    de: Bayelsa
+    el: Μπαγιέλσα
+    es: Bayelsa
+    et: Bayelsa
+    fa: ایالت بایلسا
+    fi: Bayelsa
+    fr: État de Bayelsa
+    gl: Bayelsa
+    gu: બાયલ્સા સ્ટેટ
+    hi: बायेल्सा राज्य
+    id: Bayelsa
+    it: Bayelsa
+    ja: バイエルサ州
+    ka: ბაიელსის შტატი
+    kn: ಬೇಯೆಲ್ಸಾ ರಾಜ್ಯ
+    ko: 바이엘사 주
+    mr: बायल्स राज्य
+    ms: Bayelsa State
+    nb: Bayelsa
+    nl: Bayelsa
+    pl: Bayelsa
+    pt: Bayelsa
+    ro: Statul Bayelsa
+    ru: Байельса
+    si: බයෙල්සා රාජ්‍ය
+    sr: Бајелса
+    sv: Bayelsa
+    sw: Jimbo la Bayelsa
+    ta: பஎல்ஸா மாநிலம்
+    te: బేయెల్సా రాష్ట్రం
+    th: เขตหงสาวดี
+    tr: Bayelsa Eyaleti
+    ur: بایلسا ریاست
+    vi: Bang Bayelsa
+    lv: Bajelsas štats
+    ceb: Bayelsa State
+    yo_BJ: Ìpínlɛ̀ Bàyélsà
+    sr_Latn: Bajelsa
+    lt: Bajelsos valstija
+    zh: 巴耶尔萨州
+    ccp: "\U0001111D\U0001112C\U00011120\U0001112C\U00011123\U00011134\U00011125"
+    ig: Ȯra Bayelsa
+    ha: Bayelsa
+    uk: Байельса
+    yo: Ìpínlẹ̀ Bàyélsà
+    ha_NE: Bayelsa
+    'no': Bayelsa
+    az: Bayelsa ştatı
+    he: ביילסה
+  comments:
+  type: state
+CR:
+  name: Cross River
+  code: CR
+  unofficial_names: Cross River
+  geo:
+    latitude: 6.167031499999999
+    longitude: 8.6600586
+    min_latitude: 4.690596000000001
+    min_longitude: 7.863165999999999
+    max_latitude: 6.899680999999999
+    max_longitude: 9.472486
+  translations:
+    en: Cross River
+    ar: ولاية كروس ريفر
+    bg: Крос Ривър
+    bn: ক্রস রিভার অঙ্গরাজ্য
+    ca: Cross River
+    da: Cross River
+    de: Cross River
+    el: Κρος Ρίβερ
+    es: Cross River
+    et: Cross Riveri osariik
+    fa: ایالت کراس ریور
+    fi: Cross River
+    fr: État de Cross River
+    gl: Cross River
+    gu: ક્રોસ રિવર સ્ટેટ
+    hi: क्रॉस रिवर राज्य
+    id: Cross River
+    it: Cross River
+    ja: クロスリバー州
+    kn: ಕ್ರಾಸ್ ರಿವರ್ ಸ್ಟೇಟ್
+    ko: 크로스리버 주
+    mr: क्रॉस रिवर राज्य
+    ms: Cross River State
+    nb: Cross River
+    nl: Cross River
+    pl: Cross River
+    pt: Cross River
+    ro: Statul Cross River
+    ru: Кросс-Ривер
+    si: ක්‍රොස් රිවර් රාජ්‍ය
+    sr: Крос Ривер
+    sv: Cross River
+    sw: Jimbo la Cross River
+    ta: கிராஸ் ரிவேர் மாநிலம்
+    te: క్రాస్ రివర్ స్టేట్
+    th: แม่น้ำครอส
+    tr: Cross River Eyaleti
+    uk: Крос-Рівер
+    ur: کراس ریور ریاست
+    vi: Bang Cross River
+    lv: Krosriveras štats
+    ceb: Cross River State
+    yo_BJ: Ìpínlɛ̀ Cross River
+    sr_Latn: Kros River
+    lt: Kros Riverso valstija
+    zh: 克里斯河州
+    ccp: "\U00011107\U00011133\U00011122\U00011127\U0001110C\U00011134 \U00011122\U00011128\U0001111E\U00011122\U00011134"
+    ka: კროს-რივერის შტატი
+    ig: Ȯra Cross River
+    ha: Cross River
+    yo: Ìpínlẹ̀ Cross River
+    ha_NE: Cross River
+    'no': Cross River
+    az: Kross River ştatı
+  comments:
+  type: state
+DE:
+  name: Delta
+  code: DE
+  unofficial_names: Delta
+  geo:
+    latitude: 5.5324624
+    longitude: 5.898713900000001
+    min_latitude: 5.024351999999999
+    min_longitude: 5.000000099999999
+    max_latitude: 6.5248195
+    max_longitude: 6.7653911
+  translations:
+    en: Delta
+    ar: ولاية دلتا
+    be: штат Дэльта
+    bg: Делта
+    bn: ডেল্টা অঙ্গরাজ্য
+    ca: Estat del Delta
+    da: Delta
+    de: Delta
+    el: Δέλτα (Ντέλτα)
+    es: Delta
+    et: Delta osariik
+    fa: ایالت دلتا
+    fi: Delta
+    fr: état du Delta
+    gl: Estado do Delta
+    gu: ડેલ્ટા સ્ટેટ
+    hi: डेल्टा राज्य
+    id: Delta
+    it: Delta
+    ja: デルタ州
+    ka: დელტის შტატი
+    kn: ಡೆಲ್ಟಾ ರಾಜ್ಯ
+    ko: 델타 주
+    mr: डेल्टा राज्य
+    ms: Delta State
+    nb: Delta
+    nl: Delta
+    pl: Delta
+    pt: Delta
+    ro: Statul Delta
+    ru: Дельта
+    si: ඩෙල්ටා රාජ්‍ය
+    sr: Делта
+    sv: Delta
+    sw: Delta
+    ta: டெல்டா மாநிலம்
+    te: డెల్టా స్టేట్
+    th: เดลทา สเตจ
+    tr: Delta Eyaleti
+    uk: Дельта
+    ur: ڈیلٹا ریاست
+    vi: Bang Delta
+    lv: Deltas štats
+    ceb: Delta State
+    yo_BJ: Ìpínlɛ̀ Dɛ́ltà
+    sr_Latn: Delta
+    lt: Deltos valstija
+    zh: 三角州
+    ccp: "\U00011113\U0001112C\U00011123\U00011134\U00011111"
+    hy: Դելտա
+    ig: Ȯra Delta
+    ha: Delta
+    he: מדינת דלתא
+    yo: Ìpínlẹ̀ Dẹ́ltà
+    ha_NE: Delta
+    'no': Delta
+    az: Delta ştatı
+  comments:
+  type: state
+EB:
+  name: Ebonyi
+  code: EB
+  unofficial_names: Ebonyi
+  geo:
+    latitude: 6.177973
+    longitude: 7.959286299999999
+    min_latitude: 5.6873539
+    min_longitude: 7.5251131
+    max_latitude: 6.807093
+    max_longitude: 8.4470269
+  translations:
+    en: Ebonyi
+    ar: ولاية إبونيه
+    bg: Ебони
+    bn: ইবনি অঙ্গরাজ্য
+    ca: Ebonyi
+    da: Ebonyi
+    de: Ebonyi
+    el: Εμπόνι
+    es: Ebonyi
+    et: Ebonyi osariik
+    fa: ایالت ابونیی
+    fi: Ebonyi
+    fr: État d’Ebonyi
+    gl: Estado de Ebonyi
+    gu: ઇબોની સ્ટેટ
+    hi: एबोन्यी राज्य
+    id: Ebonyi
+    it: Ebonyi
+    ja: エボニ州
+    ka: ებონიის შტატი
+    kn: ಎಬೊನಿ ರಾಜ್ಯ
+    ko: 에보니 주
+    mr: एबोनाई राज्य
+    ms: Negeri Ebonyi
+    nb: Ebonyi
+    nl: Ebonyi
+    pl: Ebonyi
+    pt: Ebonyi
+    ro: Statul Ebonyi
+    ru: Эбоньи
+    si: එබෝනි රාජ්‍ය
+    sr: Ебоњи
+    sv: Ebonyi
+    sw: Jimbo la Ebonyi
+    ta: எபோனியி மாநிலம்
+    te: ఇబోన్యీ స్టేట్
+    th: อีบอนยี
+    tr: Ebonyi Eyaleti
+    ur: عبونئی ریاست
+    vi: Bang Ebonyi
+    lv: Eboņi štats
+    ceb: Ebonyi State
+    sr_Latn: Ebonji
+    lt: Ebondžo valstija
+    zh: 埃邦伊州
+    ccp: "\U00011103\U00011128\U0001111D\U00011127\U0001111A\U00011128"
+    ig: Ȯra Ebonyi
+    ha: Ebonyi
+    uk: Ебоньі
+    ha_NE: Ebonyi
+    'no': Ebonyi
+    az: Ebonyi ştatı
+    he: אבוני
+    yo: Ebonyi State
+    yo_BJ: Ebonyi State
+  comments:
+  type: state
+ED:
+  name: Edo
+  code: ED
+  unofficial_names:
+  - Bendel
+  geo:
+    latitude: 6.5438101
+    longitude: 5.898713900000001
+    min_latitude: 5.7386799
+    min_longitude: 4.975229
+    max_latitude: 7.5721479
+    max_longitude: 6.707891000000001
+  translations:
+    en: Edo
+    ar: ولاية إدو
+    be: штат Эда
+    bg: Едо
+    bn: এদো অঙ্গরাজ্য
+    ca: Estat Edo
+    da: Edo
+    de: Edo
+    el: Έντο Στέιτ
+    es: Edo
+    et: Edo osariik
+    fa: ایالت ادو
+    fi: Edo
+    fr: état d’Edo
+    gl: Estado de Edo
+    gu: ઇડો સ્ટેટ
+    hi: एडो राज्य
+    id: Edo
+    is: Edo-fylki
+    it: Edo
+    ja: エド州
+    ka: ედოს შტატი
+    kn: ಎಡೊ ರಾಜ್ಯ
+    ko: 에도 주
+    mr: ईदो राज्य
+    ms: Edo State
+    nb: Edo
+    nl: Edo
+    pl: Edo
+    pt: Edo
+    ro: Statul Edo
+    ru: Эдо
+    si: එඩෝ ප්‍රාන්තය
+    sr: Едо
+    sv: Edo
+    sw: Jimbo la Edo
+    ta: எடோ மாநிலம்
+    te: ఎడో స్టేట్
+    th: รัฐอีโด
+    tr: Edo Eyaleti
+    ur: عدو ریاست
+    vi: Bang Edo
+    lv: Edo štats
+    ceb: Edo
+    yo_BJ: Ìpínlɛ̀ Ɛdó
+    sr_Latn: Edo
+    lt: Edo valstija
+    zh: 埃多州
+    ccp: "\U00011103\U00011128\U00011113\U0001112E"
+    ig: Ȯra Edo
+    ha: Edo
+    uk: Едо
+    yo: Ìpínlẹ̀ Ẹdó
+    ha_NE: Edo
+    'no': Edo
+    az: Edo ştatı
+    eu: Edo
+    ga: Stát Edo
+    he: מדינת אדו
+    hu: Edo
+    hy: Էդո նահանգ
+    mk: Едо (сојузна држава)
+  comments:
+  type: state
+EK:
+  name: Ekiti
+  code: EK
+  unofficial_names: Ekiti
+  geo:
+    latitude: 7.665581299999999
+    longitude: 5.3102505
+    min_latitude: 7.272215999999999
+    min_longitude: 4.9103081
+    max_latitude: 8.0674911
+    max_longitude: 5.8048959
+  translations:
+    en: Ekiti
+    ar: ولاية إكيتي
+    bg: Екити
+    bn: একি অঙ্গরাজ্য
+    ca: Estat Ekiti
+    da: Ekiti
+    de: Ekiti
+    el: Εκίτι
+    es: Ekiti
+    et: Ekiti osariik
+    fa: ایالت اکیتی
+    fi: Ekiti
+    fr: État d’Ekiti
+    gl: Estado de Ekiti
+    gu: એકિતી સ્ટેટ
+    hi: एकिटि राज्य
+    id: Ekiti
+    it: Ekiti
+    ja: エキティ州
+    kn: ಏಕಿಟಿ ರಾಜ್ಯ
+    ko: 에키티 주
+    mr: इकिती राज्य
+    ms: Negeri Ekiti
+    nb: Ekiti
+    nl: Ekiti
+    pl: Ekiti
+    pt: Ekiti
+    ro: Statul Ekiti
+    ru: Экити
+    si: එකිටි රාජ්‍ය
+    sr: Екити
+    sv: Ekiti
+    sw: Jimbo la Ekiti
+    ta: எகிடி மாநிலம்
+    te: ఇకిటి స్టేట్
+    th: เอกกิติ สเตจ
+    tr: Ekiti Eyaleti
+    ur: عکیتی ریاست
+    vi: Bang Ekiti
+    lv: Ekiti štats
+    ceb: Ekiti State
+    yo_BJ: Ìpínlɛ̀ Èkìtì
+    sr_Latn: Ekiti
+    lt: Ekičio valstija
+    zh: 埃基蒂州
+    ccp: "\U00011103\U00011128\U00011107\U00011128\U00011111\U00011128"
+    ka: ეკიტის შტატი
+    ig: Ȯra Ekiti
+    ha: Ekiti
+    uk: Екіті
+    yo: Ìpínlẹ̀ Èkìtì
+    ha_NE: Ekiti
+    'no': Ekiti
+    az: Ekiti ştatı
+    he: אקיטי
+  comments:
+  type: state
+EN:
+  name: Enugu
+  code: EN
+  unofficial_names: Enugu
+  geo:
+    latitude: 6.452667
+    longitude: 7.510332999999998
+    min_latitude: 6.360852
+    min_longitude: 7.458772700000001
+    max_latitude: 6.5155669
+    max_longitude: 7.618160199999999
+  translations:
+    en: Enugu
+    ar: ولاية إينوغو
+    bg: Енугу
+    bn: এনাুগু অঙ্গরাজ্য
+    ca: Estat d’Enugu
+    da: Enugu (delstat)
+    de: Enugu
+    el: Ενούγκου
+    es: Enugu
+    et: Enugu osariik
+    fa: ایالت انوگو
+    fi: Enugu
+    fr: État d’Enugu
+    gl: Estado de Enugu
+    gu: એનુગુ સ્ટેટ
+    hi: एनुगु राज्य
+    id: Enugu
+    it: Enugu
+    ja: エヌグ州
+    kn: ಎನ್ಯುಗು ರಾಜ್ಯ
+    ko: 에누구 주
+    mr: एनुगु राज्य
+    ms: Enugu State
+    nb: Enugu
+    nl: Enugu
+    pl: Enugu
+    pt: Enugu
+    ro: Statul Enugu
+    ru: Энугу
+    si: එනුගු රාජ්‍ය
+    sr: Енугу
+    sv: Enugu
+    sw: Jimbo la Enugu
+    ta: அணுகு மாநிலம்
+    te: ఇనుగు రాష్ట్రం
+    th: อินูกู
+    tr: Enugu Eyaleti
+    ur: عنوگو ریاست
+    vi: Bang Enugu
+    lv: Enugu štats
+    ceb: Enugu (kapital sa estado sa Nigeria)
+    yo_BJ: Ìpínlɛ̀ Ɛnúgu
+    sr_Latn: Enugu
+    lt: Enugo valstija
+    zh: 埃努古州
+    ccp: "\U00011103\U0001112C\U0001111A\U0001112A\U00011109\U0001112A"
+    ka: ენუგუს შტატი
+    ig: Ȯra Enugu
+    ha: Enugu
+    uk: Енугу
+    be: Энугу
+    yo: Ìpínlẹ̀ Ẹnúgu
+    ha_NE: Enugu
+    'no': Enugu
+    az: Enuqu ştatı
+    he: אנוגו
+    hy: Էնուգու
+  comments:
+  type: state
+FC:
+  name: Abuja Capital Territory
+  code: FC
+  unofficial_names: Abuja Capital Territory
+  geo:
+    latitude: 8.8556838
+    longitude: 7.179025999999999
+    min_latitude: 8.396675
+    min_longitude: 6.749135
+    max_latitude: 9.3574219
+    max_longitude: 7.617400000000001
+  translations:
+    en: Federal Capital Territory
+    ar: منطقة العاصمة الإتحادية لنيجيريا
+    bn: ফেডারেল ক্যাপিটাল টেরিটরি
+    ca: Territori de la Capital Federal
+    da: Federal Capital Territory
+    de: Federal Capital Territory
+    el: Φεουδαρχικό Καπιταλιστικό Έδαφος, Νιγηρία
+    es: Territorio de la Capital Federal
+    et: Föderaalne pealinnaala
+    fa: حوزه فدرال مرکزی
+    fi: Pääkaupunkiterritorio
+    fr: Territoire de la capitale fédérale du Nigeria
+    gl: Territorio da Capital Federal de Nixeria
+    gu: ફેડરલ કેપિટલ ટેરિટરી
+    hi: संघीय राजधानी क्षेत्र, नाइजीरिया
+    id: Wilayah Ibu Kota Federal
+    it: Abuja Federal Capital Territory
+    ja: 連邦首都地区
+    kn: ಫೆಡರಲ್ ಕ್ಯಾಪಿಟಲ್ ಟೆರಿಟರಿ
+    ko: 연방 수도 지구
+    mr: फेडरल कॅपिटल टेरिटरी
+    ms: Federal Capital Territory
+    nb: Federal Capital Territory
+    nl: Federal Capital Territory
+    pl: Federalne Terytorium Stołeczne
+    pt: Território da Capital Federal da Nigéria
+    ro: Teritoriul Capitalei Federale
+    ru: Федеральная столичная территория
+    si: ෆෙඩරල් ප්‍රධාන භූමිය
+    sv: Federal Capital Territory
+    sw: Federal Capital Territory
+    ta: பெடரல் கேப்பிடல் டெரிடாரி
+    te: ఫెడరల్ క్యాపిటల్ టెరిటరీ
+    th: หมู่เกาะแชทัม
+    tr: Federal Başkent Bölgesi
+    ur: وفاقی دارالحکومت علاقہ، نائجیریا
+    vi: Lãnh thổ Thủ đô liên bang
+    lv: Federālā galvaspilsētas teritorija
+    ceb: Federal Capital Territory
+    yo_BJ: Agbègbè Olú-ìlú Ìjɔba Àpapɔ̀ Nàíjíríà
+    lt: Federalinė sostinės teritorija
+    zh: 聯邦首都特區
+    ccp: "\U0001111C\U0001112C\U00011113\U00011122\U0001112C\U00011123\U00011134 \U00011107\U00011133\U00011120\U0001111B\U00011128\U00011111\U00011123\U00011134
+      \U00011111\U0001112C\U00011122\U00011128\U00011111\U0001112E\U00011122\U00011128"
+    ka: დედაქალაქის ფედერალური ტერიტორია
+    uk: Федеральна столична територія
+    be: Федэральная сталічная тэрыторыя
+    yo: Agbègbè Olú-ìlú Ìjọba Àpapọ̀ Nàíjíríà
+    'no': Federal Capital Territory
+    ha: Babban Birnin Tarayya, Najeriya
+    ha_NE: Babban Birnin Tarayya, Najeriya
+    he: שטח בירה הפדרלית
+    ig: Federal Capital Territory (Nigeria)
+  comments:
+  type: capital_territory
+GO:
+  name: Gombe
+  code: GO
+  unofficial_names: Gombe
+  geo:
+    latitude: 10.283333
+    longitude: 11.166667
+    min_latitude: 10.264117
+    min_longitude: 11.1424112
+    max_latitude: 10.3128497
+    max_longitude: 11.2147019
+  translations:
+    en: Gombe
+    ar: ولاية غومبي
+    bg: Гомбе
+    bn: গোম্বে অঙ্গরাজ্য
+    ca: Estat de Gombe
+    da: Gombe
+    de: Gombe
+    el: Γκόμπε
+    es: Gombe
+    et: Gombe osariik
+    fa: ایالت گومبه
+    fi: Gombe
+    fr: État de Gombe
+    gl: Estado de Gombe
+    gu: ગોમ્બે સ્ટેટ
+    hi: गोम्बे राज्य
+    hr: Gombe, nigerijska država
+    id: Gombe
+    it: Gombe
+    ja: ゴンベ州
+    ka: გომბეს შტატი
+    kn: ಗೊಂಬೆ ರಾಜ್ಯ
+    ko: 곰베 주
+    mr: गोमे राज्य
+    ms: Gombe State
+    nb: Gombe
+    nl: Gombe
+    pl: Gombe
+    pt: Gombe
+    ro: Statul Gombe
+    ru: Гомбе
+    si: ගොම්බෙ රාජ්‍ය
+    sr: Гомбе
+    sv: Gombe
+    sw: Jimbo la Gombe
+    ta: கொம்பே மாநிலம்
+    te: గోంబె స్టేట్
+    th: กอมเบ
+    tr: Gombe Eyaleti
+    ur: گومبے ریاست
+    vi: Bang Gombe
+    lv: Gombes štats
+    ceb: Gombe (kapital sa estado)
+    yo_BJ: Ìpínlɛ̀ Gòmbè
+    sr_Latn: Gombe
+    lt: Gombės valstija
+    zh: 贡贝州
+    ccp: "\U00011109\U0001112E\U0001111F\U00011134\U0001111D\U0001112C"
+    ig: Ȯra Gombe
+    ha: Gombe
+    uk: Гомбе
+    yo: Ìpínlẹ̀ Gòmbè
+    ha_NE: Gombe
+    'no': Gombe
+    az: Qombe ştatı
+  comments:
+  type: state
+IM:
+  name: Imo
+  code: IM
+  unofficial_names: Imo
+  geo:
+    latitude: 5.5214533
+    longitude: 6.920913499999999
+    min_latitude: 5.179824000000001
+    min_longitude: 6.622309899999999
+    max_latitude: 5.928465
+    max_longitude: 7.404109
+  translations:
+    en: Imo
+    ar: ولاية إيمو
+    bg: Имо
+    bn: ইমো অঙ্গরাজ্য
+    ca: Imo
+    da: Imo
+    de: Imo
+    el: Ίμο
+    es: Imo
+    et: Imo osariik
+    fa: ایالت ایمو
+    fi: Imo
+    fr: État d’Imo
+    gl: Estado de Imo
+    gu: ઇમો સ્ટેટ
+    hi: इमो राज्य
+    id: Imo
+    it: Imo
+    ja: イモ州
+    kn: ಇಮೋ ರಾಜ್ಯ
+    ko: 이모 주
+    mr: इमो राज्य
+    ms: Imo State
+    nb: Imo
+    nl: Imo
+    pl: Imo
+    pt: Imo
+    ro: Statul Imo
+    ru: Имо
+    si: ඉමෝ රාජ්‍ය
+    sr: Имо
+    sv: Imo
+    sw: Jimbo la Imo
+    ta: இமோ மாநிலம்
+    te: ఇమో స్టేట్
+    th: อีโม
+    tr: Imo Eyaleti
+    ur: امو ریاست
+    vi: Bang Imo
+    lv: Imo štats
+    ceb: Imo State
+    yo_BJ: Ìpínlɛ̀ Ímò
+    sr_Latn: Imo
+    lt: Imo valstija
+    zh: 伊莫州
+    ccp: "\U00011103\U00011128\U0001111F\U0001112E"
+    ka: იმოს შტატი
+    hy: Իմո
+    ig: Ȯra Imo
+    ha: Imo
+    he: אימו
+    uk: Імо
+    yo: Ìpínlẹ̀ Ímò
+    ha_NE: Imo
+    'no': Imo
+    az: İmo ştatı
+    hu: Imo állam
+  comments:
+  type: state
+JI:
+  name: Jigawa
+  code: JI
+  unofficial_names: Jigawa
+  geo:
+    latitude: 12.5700315
+    longitude: 8.9400589
+    min_latitude: 12.5688205
+    min_longitude: 8.9387779
+    max_latitude: 12.5708993
+    max_longitude: 8.9410364
+  translations:
+    en: Jigawa
+    ar: ولاية جيغاوة
+    bg: Джигава
+    bn: জিগাবা অঙ্গরাজ্য
+    ca: Jigawa
+    da: Jigawa
+    de: Jigawa
+    el: Τζιγκουάβα
+    es: Jigawa
+    et: Jigawa
+    fa: ایالت جیگاوا
+    fi: Jigawa
+    fr: État de Jigawa
+    gl: Jigawa
+    gu: જિગાવા સ્ટેટ
+    hi: जिगावा राज्य
+    id: Jigawa
+    it: Jigawa
+    ja: ジガワ州
+    kn: ಜಿಗಾವಾ ರಾಜ್ಯ
+    ko: 지가와 주
+    mr: जिगावा राज्य
+    ms: Jigawa State
+    nb: Jigawa
+    nl: Jigawa
+    pl: Jigawa
+    pt: Jigawa
+    ro: Statul Jigawa
+    ru: Джигава
+    si: ජිගවා රාජ්‍ය
+    sr: Џигава
+    sv: Jigawa
+    sw: Jigawa
+    ta: ஜிகவா மாநிலம்
+    te: జిగావా స్టేట్
+    th: จิกาวา
+    tr: Jigawa Eyaleti
+    ur: جیگاوا ریاست
+    vi: Bang Jigawa
+    lv: Džigavas štats
+    ceb: Jigawa State
+    yo_BJ: Ìpínlɛ̀ Jígàwà
+    sr_Latn: Džigava
+    lt: Džigavos valstija
+    zh: 吉加瓦州
+    ccp: "\U0001110E\U00011128\U00011109\U00011124"
+    ka: ჯიგავის შტატი
+    ig: Ȯra Jigawa
+    ha: Jigawa
+    uk: Джигава
+    yo: Ìpínlẹ̀ Jígàwà
+    ha_NE: Jigawa
+    'no': Jigawa
+    az: Ciqava
+    he: ג׳יגבה
+  comments:
+  type: state
+KD:
+  name: Kaduna
+  code: KD
+  unofficial_names: Kaduna
+  geo:
+    latitude: 10.516667
+    longitude: 7.433332999999999
+    min_latitude: 10.3971566
+    min_longitude: 7.349789099999999
+    max_latitude: 10.6169963
+    max_longitude: 7.508812000000001
+  translations:
+    en: Kaduna
+    ar: ولاية كادونا
+    bn: কাদুনা অঙ্গরাজ্য
+    ca: Estat de Kaduna
+    da: Kaduna
+    de: Kaduna
+    el: Καντούνα
+    es: Kaduna
+    et: Kaduna osariik
+    fa: ایالت کادونا
+    fi: Kaduna
+    fr: État de Kaduna
+    gl: Estado de Kaduna
+    gu: કડુના સ્ટેટ
+    hi: कडूना राज्य
+    id: Kaduna
+    it: Kaduna
+    ja: カドゥナ州
+    kn: ಕಡುನ ರಾಜ್ಯ
+    ko: 카두나 주
+    mr: कडुन राज्य
+    ms: Kaduna State
+    nb: Kaduna (delstat)
+    nl: Kaduna
+    pl: Kaduna
+    pt: Kaduna
+    ro: Statul Kaduna
+    ru: Кадуна
+    si: කඩුනා රාජ්‍ය
+    sr: Кадуна
+    sv: Kaduna
+    sw: Kaduna
+    ta: காட்டுனா மாநிலம்
+    te: కడూనా రాష్ట్రం
+    th: รัฐคาดูนา
+    tr: Kaduna Eyaleti
+    ur: کادونا اسٹیٹ
+    vi: Bang Kaduna
+    lv: Kadunas štats
+    ceb: Kaduna State
+    yo_BJ: Ìpínlɛ̀ Kàdúná
+    sr_Latn: Kaduna
+    lt: Kadunos valstija
+    zh: 卡杜纳州
+    ccp: "\U00011107\U00011113\U0001112A\U0001111A"
+    ka: კადუნის შტატი
+    ig: Ȯra Kaduna
+    ha: Kaduna
+    he: קדונה (מדינה)
+    uk: Кадуна
+    yo: Ìpínlẹ̀ Kàdúná
+    ha_NE: Kaduna
+    'no': Kaduna (delstat)
+    az: Kaduna ştatı
+    hy: Կադունա նահանգ
+  comments:
+  type: state
+KE:
+  name: Kebbi
+  code: KE
+  unofficial_names: Kebbi
+  geo:
+    latitude: 11.6781241
+    longitude: 4.0695454
+    min_latitude: 10.0931591
+    min_longitude: 3.4958741
+    max_latitude: 13.232542
+    max_longitude: 6.027123
+  translations:
+    en: Kebbi
+    ar: ولاية كبي
+    bg: Кебби
+    bn: কেব্বি অঙ্গরাজ্য
+    ca: Estat de Kebbi
+    da: Kebbi
+    de: Kebbi
+    el: Κέμπι
+    es: Kebbi
+    et: Kebbi osariik
+    fa: ایالت کبی
+    fi: Kebbi
+    fr: État de Kebbi
+    gl: Kebbi
+    gu: કેબી સ્ટેટ
+    hi: केबी राज्य
+    id: Kebbi
+    it: Kebbi
+    ja: ケビ州
+    kn: ಕೆಬಿಬಿ ರಾಜ್ಯ
+    ko: 케비 주
+    mr: केब्बी राज्य
+    ms: Kebbi State
+    nb: Kebbi
+    nl: Kebbi
+    pl: Kebbi
+    pt: Kebbi
+    ro: Statul Kebbi
+    ru: Кебби
+    si: කෙබි රාජ්‍ය
+    sr: Кеби
+    sv: Kebbi
+    sw: Kebbi
+    ta: கேப்பி மாநிலம்
+    te: కెబ్బీ స్టేట్
+    th: รัฐเคบบิ
+    tr: Kebbi Eyaleti
+    ur: کیبی ریاست
+    vi: Bang Kebbi
+    lv: Kebi štats
+    ceb: Kebbi State
+    yo_BJ: Ìpínlɛ̀ Kébbí
+    sr_Latn: Kebi
+    lt: Kebio valstija
+    zh: 凯比州
+    ccp: "\U00011107\U0001112C\U0001111D\U00011133\U00011126\U00011128"
+    ka: კების შტატი
+    ig: Ȯra Kebbi
+    ha: Kebbi
+    uk: Кеббі
+    yo: Ìpínlẹ̀ Kébbí
+    ha_NE: Kebbi
+    'no': Kebbi
+    az: Kebbi ştatı
+  comments:
+  type: state
+KN:
+  name: Kano
+  code: KN
+  unofficial_names: Kano
+  geo:
+    latitude: 12.0021794
+    longitude: 8.591956099999999
+    min_latitude: 11.912873
+    min_longitude: 8.411321599999999
+    max_latitude: 12.0829016
+    max_longitude: 8.6704765
+  translations:
+    en: Kano
+    ar: ولاية كانو
+    bn: কানো অঙ্গরাজ্য
+    ca: Estat de Kano
+    cs: Kano
+    da: Kano
+    de: Kano
+    el: Πολιτεία του Κάνο
+    es: Estado de Kano
+    et: Kano osariik
+    fa: ایالت کانو
+    fi: Kano
+    fr: État de Kano
+    gl: Estado de Kano
+    gu: કાનો સ્ટેટ
+    hi: कानो राज्य
+    id: Kano
+    it: Kano
+    ja: カノ州
+    kn: ಕ್ಯಾನೊ ರಾಜ್ಯ
+    ko: 카노 주
+    mr: कानो राज्य
+    ms: Negeri Kano
+    nb: Kano
+    nl: Kano
+    pl: Kano
+    pt: Kano
+    ro: Statul Kano
+    ru: Кано
+    si: කානෝ රාජ්‍යය
+    sr: Кано
+    sv: Kano
+    sw: Kano
+    ta: கனோ மாநிலம்
+    te: కానో స్టేట్
+    th: รัฐคาโน
+    tr: Kano Devleti
+    ur: کانو ریاست
+    vi: Bang Kano
+    lv: Kano štats
+    ceb: Kano State
+    yo_BJ: Ìpínlɛ̀ Kánò
+    sr_Latn: Kano
+    lt: Kano valstija
+    zh: 卡诺州
+    ccp: "\U00011107\U0001111A\U0001112E"
+    ka: კანოს შტატი
+    ig: Nkeji Ochíchííwu Kano
+    ha: jihar Kano
+    he: קנו (מדינה)
+    uk: Кано
+    yo: Ìpínlẹ̀ Kánò
+    ha_NE: jihar Kano
+    'no': Kano
+    az: Kano ştatı
+    be: штат Кано
+  comments:
+  type: state
+KO:
+  name: Kogi
+  code: KO
+  unofficial_names: Kogi
+  geo:
+    latitude: 7.561891
+    longitude: 6.5783387
+    min_latitude: 6.528274199999999
+    min_longitude: 5.340376
+    max_latitude: 8.7320238
+    max_longitude: 7.8822179
+  translations:
+    en: Kogi
+    ar: ولاية كوجي
+    bg: Коги
+    bn: কোজি অঙ্গরাজ্য
+    ca: Estat de Kogi
+    da: Kogi
+    de: Kogi
+    el: Κόγκι
+    es: Kogi
+    et: Kogi
+    fa: ایالت کوگی
+    fi: Kogi
+    fr: État de Kogi
+    gl: Estado de Kogi
+    gu: કોગી સ્ટેટ
+    hi: कोगी राज्य
+    id: Kogi
+    it: Kogi
+    ja: コギ州
+    kn: ಕೋಗಿ ರಾಜ್ಯ
+    ko: 코기 주
+    mr: कोगी राज्य
+    ms: Kogi State
+    nb: Kogi
+    nl: Kogi
+    pl: Kogi
+    pt: Kogi
+    ro: Statul Kogi
+    ru: Коги
+    si: කොගී රාජ්‍ය
+    sr: Коги
+    sv: Kogi
+    sw: Kogi
+    ta: கோகி மாநிலம்
+    te: కోగి రాష్ట్రం
+    th: รัฐโคกี
+    tr: Kogi Eyaleti
+    uk: Когі
+    ur: کوگی ریاست
+    vi: Bang Kogi
+    lv: Kogi štats
+    ceb: Kogi State
+    yo_BJ: Ìpínlɛ̀ Kogí
+    sr_Latn: Kogi
+    lt: Kogio valstija
+    zh: 科吉州
+    ccp: "\U00011107\U0001112E\U00011109\U00011128"
+    ka: კოგის შტატი
+    ig: Ȯra Kogi
+    ha: Kogi
+    yo: Ìpínlẹ̀ Kogí
+    ha_NE: Kogi
+    'no': Kogi
+    az: Kogi ştatı
+    he: מדינת קוגי
+  comments:
+  type: state
+KT:
+  name: Katsina
+  code: KT
+  unofficial_names: Katsina
+  geo:
+    latitude: 12.983333
+    longitude: 7.6
+    min_latitude: 12.934095
+    min_longitude: 7.5706298
+    max_latitude: 13.0357094
+    max_longitude: 7.676266000000001
+  translations:
+    en: Katsina
+    ar: ولاية كاتسينا
+    bg: Катсина
+    bn: ক্যাটসিনা অঙ্গরাজ্য
+    ca: Estat de Katsina
+    da: Katsina
+    de: Katsina
+    el: Κατσίνα
+    es: Katsina
+    et: Katsina osariik
+    fa: ایالت کاتسینا
+    fi: Katsina
+    fr: État de Katsina
+    gl: Estado de Katsina
+    gu: કાત્સિના સ્ટેટ
+    hi: कात्सिना राज्य
+    id: Katsina
+    it: Katsina
+    ja: カツィナ州
+    kn: ಕಟ್ಸಿನಾ ಸ್ಟೇಟ್
+    ko: 카치나 주
+    mr: कत्सीना राज्य
+    ms: Katsina State
+    nb: Katsina
+    nl: Katsina
+    pl: Katsina
+    pt: Katsina
+    ro: Statul Katsina
+    ru: Кацина
+    si: කට්සිනා රාජ්‍ය
+    sr: Кацина
+    sv: Katsina
+    sw: Katsina
+    ta: காட்ச்சினா மாநிலம்
+    te: కాట్సినా రాష్ట్రం
+    th: รัฐคัตซินา
+    tr: Katsina Eyaleti
+    ur: کاتسینا ریاست
+    vi: Bang Katsina
+    lv: Kacinas štats
+    ceb: Katsina State
+    yo_BJ: Ìpínlɛ̀ Kàtsínà
+    sr_Latn: Kacina
+    lt: Katsinos valstija
+    zh: 卡齐纳州
+    ccp: "\U00011107\U00011116\U00011134\U00011125\U00011128\U0001111A"
+    ka: კატსინის შტატი
+    ig: Ȯra Katsina
+    ha: Jihar Katsina
+    uk: Кацина
+    be: штат Кацына
+    yo: Ìpínlẹ̀ Kàtsínà
+    ha_NE: Jihar Katsina
+    'no': Katsina
+    az: Katsina ştatı
+  comments:
+  type: state
+KW:
+  name: Kwara
+  code: KW
+  unofficial_names: Kwara
+  geo:
+    latitude: 8.9847995
+    longitude: 4.5624426
+    min_latitude: 7.966079000000001
+    min_longitude: 2.728413
+    max_latitude: 10.152084
+    max_longitude: 6.2142591
+  translations:
+    en: Kwara
+    ar: ولاية كوارة
+    bg: Квара
+    bn: কওড়া রাজ্য
+    ca: Kwara
+    da: Kwara
+    de: Kwara
+    el: Κβάρα
+    es: Kwara
+    et: Kwara osariik
+    fa: ایالت کوارا
+    fi: Kwara
+    fr: État de Kwara
+    gl: Kwara
+    gu: કવારા સ્ટેટ
+    hi: क्वारा राज्य
+    id: Kwara
+    it: Kwara
+    ja: クワラ州
+    kn: ಕ್ವಾರಾ ರಾಜ್ಯ
+    ko: 콰라 주
+    mr: कुवा राज्य
+    ms: Kwara State
+    nb: Kwara
+    nl: Kwara
+    pl: Kwara
+    pt: Kwara
+    ro: Statul Kwara
+    ru: Квара
+    si: ක්වාරා රාජ්‍ය
+    sr: Квара
+    sv: Kwara
+    sw: Kwara
+    ta: கவரா மாநிலம்
+    te: క్వారా రాష్ట్రం
+    th: รัฐควารา
+    tr: Kwara Eyaleti
+    ur: کوارا ریاست
+    vi: Bang Kwara
+    lv: Kvaras štats
+    ceb: Kwara State
+    yo_BJ: Ìpínlɛ̀ Kúárà
+    sr_Latn: Kvara
+    lt: Kvaros valstija
+    zh: 夸拉州
+    ccp: "\U00011107\U00011127\U00011124\U00011122"
+    ka: კვარის შტატი
+    ig: Ȯra Kwara
+    ha: Kwara
+    he: מדינת קווארה
+    uk: Квара
+    yo: Ìpínlẹ̀ Kúárà
+    ha_NE: Kwara
+    'no': Kwara
+    az: Kvara ştatı
+    cs: Kwara
+    sk: Kwara
+  comments:
+  type: state
+LA:
+  name: Lagos
+  code: LA
+  unofficial_names: Lagos
+  geo:
+    latitude: 6.5243793
+    longitude: 3.3792057
+    min_latitude: 6.3936419
+    min_longitude: 3.0982732
+    max_latitude: 6.7027984
+    max_longitude: 3.696727799999999
+  translations:
+    en: Lagos
+    ar: ولاية لاغوس
+    be: штат Лагас
+    bg: Лагос
+    ca: Estat de Lagos
+    da: Lagos
+    de: Lagos
+    es: Estado de Lagos
+    et: Lagose osariik
+    fa: ایالت لاگوس
+    fi: Lagos
+    fr: État de Lagos
+    gl: Estado de Lagos
+    hi: लेगोस राज्य
+    id: Lagos
+    it: Lagos
+    ja: レゴス州
+    ko: 라고스 주
+    nb: Lagos
+    nl: Lagos
+    pl: Lagos
+    pt: Lagos
+    ro: Statul Lagos
+    ru: Лагос
+    sr: Лагос
+    sv: Lagos
+    sw: Jimbo la Lagos
+    tr: Lagos Eyaleti
+    ur: لاگوس ریاست
+    ceb: Lagos State
+    sr_Latn: Lagos
+    zh: 拉各斯州
+    ccp: "\U00011123\U00011109\U0001112E\U0001110C\U00011134"
+    ka: ლაგოსის შტატი
+    hy: Լագոս
+    ig: Ȯra Lagos
+    ha: Lagos
+    he: לאגוס (מדינה)
+    uk: Лагос
+    th: รัฐเลกอส
+    yo: Èkó
+    ha_NE: Lagos
+    'no': Lagos
+    yo_BJ: Èkó
+    az: Laqos ştatı
+    bn: লেগোস
+    eu: Lagos Estatua
+    ga: Lagos
+    lv: Lagosa
+    mk: Лагос (сојузна држава)
+  comments:
+  type: state
+NA:
+  name: Nassarawa
+  code: NA
+  unofficial_names:
+  - Nasarawa
+  geo:
+    latitude: 8.5705151
+    longitude: 8.3088441
+    min_latitude: 7.769181
+    min_longitude: 6.924008
+    max_latitude: 9.365964000000002
+    max_longitude: 9.605724
+  translations:
+    en: Nasarawa
+    ar: ولاية نصراوة
+    bg: Насарауа
+    bn: নাসারাও অঙ্গরাজ্য
+    ca: Estat de Nasarawa
+    da: Nassarawa
+    de: Nassarawa
+    el: Νασαράβα
+    es: Nasarawa
+    et: Nasarawa
+    fa: ایالت ناساراوا
+    fi: Nasarawa
+    fr: État de Nassarawa
+    gl: Estado de Nasarawa
+    gu: નાસારવા સ્ટેટ
+    hi: नासरवा राज्य
+    hu: Nasarawa
+    id: Nassarawa
+    it: Nassarawa
+    ja: ナサラワ州
+    kn: ನಸರಾವಾ ರಾಜ್ಯ
+    ko: 나사라와 주
+    mr: नासर्व राज्य
+    ms: Nasarawa State
+    nb: Nasarawa
+    nl: Nassarawa
+    pl: Nassarawa
+    pt: Nasarawa
+    ro: Statul Nassarawa
+    ru: Насарава
+    si: නසරවා රාජ්‍ය
+    sr: Насарава
+    sv: Nasarawa
+    sw: Jimbo la Nasarawa
+    ta: நசரவா மாநிலம்
+    te: నసరావా స్టేట్
+    th: นาซซาราวา
+    tr: Nasarawa Eyaleti
+    ur: نصراوا ریاست
+    vi: Bang Nasarawa
+    lv: Nasaravas štats
+    ceb: Nasarawa State
+    yo_BJ: Ìpínlɛ̀ Násáráwá
+    sr_Latn: Nasarava
+    lt: Nasaravos valstija
+    zh: 纳萨拉瓦州
+    ccp: "\U0001111A\U00011125\U00011122\U00011127\U00011124"
+    ka: ნასარავის შტატი
+    ig: Ȯra Nasarawa
+    ha: Nasarawa
+    uk: Насарава
+    yo: Ìpínlẹ̀ Násáráwá
+    ha_NE: Nasarawa
+    'no': Nasarawa
+    az: Nasarava ştatı
+    hy: Նասարավա նահանգ
+  comments:
+  type: state
+NI:
+  name: Niger
+  code: NI
+  unofficial_names: Niger
+  geo:
+    latitude: 9.081999
+    longitude: 8.675277
+    min_latitude: 4.269857099999999
+    min_longitude: 2.676932
+    max_latitude: 13.885645
+    max_longitude: 14.677982
+  translations:
+    en: Niger
+    ar: ولاية نيجر
+    bg: Нигер
+    bn: নাইজার অঙ্গরাজ্য
+    ca: Estat del Níger
+    da: Niger
+    de: Niger
+    el: Νίγκερ
+    es: Níger
+    et: Nigeri osariik
+    fa: ایالت نیجر
+    fi: Niger
+    fr: État de Niger
+    gl: Estado de Níxer
+    gu: નાઇજર સ્ટેટ
+    hi: नाइजर राज्य
+    id: Niger
+    it: Niger
+    ja: ナイジャ州
+    kn: ನೈಜರ್ ರಾಜ್ಯ
+    ko: 나이저 주
+    mr: नायजर राज्य
+    ms: Niger State
+    nb: Niger
+    nl: Niger
+    pl: Niger
+    pt: Níger
+    ro: Statul Niger
+    ru: Нигер
+    si: නයිජර් රාජ්‍ය
+    sr: Нигер
+    sv: Niger
+    sw: Jimbo la Niger
+    ta: நைஜர் மாநிலம்
+    te: నైగర్ స్టేట్
+    th: ไนเจอร
+    tr: Niger Eyaleti
+    ur: نائیجر ریاست
+    vi: Bang Niger
+    lv: Nigēras štats
+    ceb: Niger State
+    yo_BJ: Ìpínlɛ̀ Niger
+    sr_Latn: Niger
+    lt: Nigerio valstija
+    zh: 尼日尔州
+    ccp: "\U0001111A\U0001112D\U0001110E\U00011122\U00011134"
+    ka: ნიგერის შტატი
+    ig: Ȯra Niger
+    ha: Neja
+    uk: Нігер
+    yo: Ìpínlẹ̀ Niger
+    ha_NE: Neja
+    'no': Niger
+    az: Niger ştatı
+    hy: Նիգեր նահանգ
+  comments:
+  type: state
+OG:
+  name: Ogun
+  code: OG
+  unofficial_names: Ogun
+  geo:
+    latitude: 6.9098333
+    longitude: 3.2583626
+    min_latitude: 6.315346099999999
+    min_longitude: 2.668432
+    max_latitude: 7.974634999999999
+    max_longitude: 4.5990951
+  translations:
+    en: Ogun
+    ar: ولاية أوغون
+    bg: Огун
+    bn: ওগুন অঙ্গরাজ্য
+    ca: Ogun
+    da: Ogun
+    de: Ogun
+    el: Όγκουν
+    es: Ogun
+    et: Oguni osariik
+    fa: ایالت اوگون
+    fi: Ogun
+    fr: État d’Ogun
+    gl: Estado de Ogun
+    gu: ઓગુન સ્ટેટ
+    hi: ओगुन राज्य
+    id: Ogun
+    it: Ogun
+    ja: オグン州
+    kn: ಓಗುನ್ ರಾಜ್ಯ
+    ko: 오군 주
+    mr: ओगुन राज्य
+    ms: Ogun
+    nb: Ogun
+    nl: Ogun
+    pl: Ogun
+    pt: Ogun
+    ro: Statul Ogun
+    ru: Огун
+    si: ඔගුන් රාජ්‍ය
+    sr: Огун
+    sv: Ogun
+    sw: Jimbo la Ogun
+    ta: ஓகுன் மாநிலம்
+    te: ఓగున్ రాష్ట్రం
+    th: โอกัน
+    tr: Ogun Eyaleti
+    ur: اوگون ریاست
+    vi: Bang Ogun
+    lv: Oguno štats
+    ceb: Ogun State
+    yo_BJ: Ìpínlɛ̀ Ògùn
+    sr_Latn: Ogun
+    lt: Oguno valstija
+    zh: 奥贡州
+    ccp: "\U00011103\U0001112E\U00011109\U0001111A\U00011134"
+    ka: ოგუნის შტატი
+    hy: Օգուն
+    ig: Ȯra Ogun
+    ha: Ogun
+    he: אוגון
+    uk: Огун
+    yo: Ìpínlẹ̀ Ògùn
+    ha_NE: Ogun
+    'no': Ogun
+    az: Oqun ştatı
+  comments:
+  type: state
+'ON':
+  name: Ondo
+  code: 'ON'
+  unofficial_names: Ondo
+  geo:
+    latitude: 7.083333
+    longitude: 4.833333
+    min_latitude: 7.0529381
+    min_longitude: 4.7963046
+    max_latitude: 7.1249106
+    max_longitude: 4.871921599999999
+  translations:
+    en: Ondo
+    ar: ولاية أوندو
+    bg: Ондо
+    bn: অন্দো অঙ্গরাজ্য
+    ca: Estat d’Ondo
+    da: Ondo
+    de: Ondo
+    el: Πολιτεία Όντο
+    es: Ondo
+    et: Ondo osariik
+    fa: ایالت اوندو
+    fi: Ondo
+    fr: État d’Ondo
+    gl: Estado de Ondo
+    gu: ઓન્ડો સ્ટેટ
+    hi: ओन्दो राज्य
+    id: Ondo
+    it: Ondo
+    ja: オンド州
+    kn: ಒಂಡೋ ರಾಜ್ಯ
+    ko: 온도 주
+    lv: Ondo
+    mr: ओन्डो राज्य
+    ms: Ondo State
+    nb: Ondo
+    nl: Ondo
+    pl: Ondo
+    pt: Ondo
+    ro: Statul Ondo
+    ru: Ондо
+    si: ඕන්ඩෝ රාජ්‍ය
+    sr: Ондо
+    sv: Ondo
+    sw: Jimbo la Ondo
+    ta: ஒண்டோ மாநிலம்
+    te: ఓండో రాష్ట్రం
+    th: รัฐออนโด
+    tr: Ondo Eyaleti
+    ur: اوندو ریاست
+    vi: Bang Ondo
+    ceb: Ondo State
+    yo_BJ: Ìpínlɛ̀ Òndó
+    sr_Latn: Ondo
+    lt: Ondo valstija
+    zh: 翁多州
+    ccp: "\U00011103\U0001111A\U00011134\U00011113\U0001112E"
+    ka: ონდოს შტატი
+    ig: Ȯra Ondo
+    ha: Ondo
+    he: אונדו
+    uk: Ондо
+    yo: Ìpínlẹ̀ Òndó
+    ha_NE: Ondo
+    'no': Ondo
+    az: Ondo ştatı
+    mk: Ондо (сојузна држава)
+  comments:
+  type: state
+OS:
+  name: Osun
+  code: OS
+  unofficial_names: Osun
+  geo:
+    latitude: 7.5875843
+    longitude: 4.5624426
+    min_latitude: 6.969976
+    min_longitude: 4.020612
+    max_latitude: 8.088640999999999
+    max_longitude: 5.0647019
+  translations:
+    en: Osun
+    ar: ولاية أوشون
+    bg: Осун
+    bn: ওসুন অঙ্গরাজ্য
+    ca: Estat d’Osun
+    da: Osun
+    de: Osun
+    el: Οσούν
+    es: Osun
+    et: Osuni osariik
+    fa: ایالت اوسون
+    fi: Osun
+    fr: État d’Osun
+    gl: Estado de Osun
+    gu: ઓસુન સ્ટેટ
+    hi: ओशुन राज्य
+    id: Osun
+    it: Osun
+    ja: オスン州
+    kn: ಓಸ್ಸನ್ ರಾಜ್ಯ
+    ko: 오순 주
+    mr: ओसुन राज्य
+    ms: Osun State
+    nb: Osun
+    nl: Osun
+    pl: Osun
+    pt: Osun
+    ro: Statul Osun
+    ru: Осун
+    si: ඔසුන් රාජ්‍ය
+    sr: Осун
+    sv: Osun
+    sw: Jimbo la Osun
+    ta: ஓசன் மாநிலம்
+    te: ఓసున్ రాష్ట్రం
+    th: โอซุน
+    tr: Osun Eyaleti
+    ur: اوسون ریاست
+    vi: Bang Osun
+    lv: Osunas štats
+    ceb: Osun State
+    sr_Latn: Osun
+    lt: Osuno valstija
+    zh: 奥孙州
+    ccp: "\U00011103\U0001112E\U00011125\U0001111A\U00011134"
+    ka: ოსუნის შტატი
+    ig: Ȯra Osun
+    ha: Osun
+    he: מדינת אוסון
+    uk: Осун
+    ha_NE: Osun
+    'no': Osun
+    az: Osun ştatı
+    yo: Osun State
+    yo_BJ: Osun State
+  comments:
+  type: state
+OY:
+  name: Oyo
+  code: OY
+  unofficial_names: Oyo
+  geo:
+    latitude: 7.85
+    longitude: 3.933
+    min_latitude: 7.790425099999999
+    min_longitude: 3.8832377
+    max_latitude: 7.8899933
+    max_longitude: 3.9751624
+  translations:
+    en: Oyo
+    ar: ولاية أويو
+    bg: Ойо
+    ca: Oyo
+    da: Oyo
+    de: Oyo
+    el: πολιτεία Όγιο
+    es: Oyo
+    et: Oyo osariik
+    fa: ایالت اویو
+    fi: Oyo
+    fr: État d’Oyo
+    gl: Estado de Oyo
+    hi: ओयो राज्य
+    id: Oyo
+    it: Oyo
+    ja: オヨ州
+    ko: 오요 주
+    nb: Oyo
+    nl: Oyo
+    pl: Oyo
+    pt: Oyo
+    ro: Statul Oyo
+    ru: Ойо
+    sr: Ојо
+    sv: Oyo
+    sw: Jimbo la Oyo
+    tr: Oyo Eyaleti
+    uk: Ойо (штат)
+    ur: اویو ریاست
+    ceb: Oyo State
+    sr_Latn: Ojo
+    zh: 奥约州
+    ccp: "\U00011103\U0001112E\U00011120\U0001112E"
+    ka: ოიოს შტატი
+    ig: Ȯra Ọyọ
+    ha: Oyo
+    he: אויו
+    ha_NE: Oyo
+    'no': Oyo
+    az: Oyo ştatı
+    be: штат Оя
+    hy: Օյո նահանգ
+    yo: Oyo State
+    yo_BJ: Oyo State
+  comments:
+  type: state
+PL:
+  name: Plateau
+  code: PL
+  unofficial_names: Plateau
+  geo:
+    latitude: 9.2350817
+    longitude: 9.7232673
+    min_latitude: 8.350639
+    min_longitude: 8.544271
+    max_latitude: 10.3447241
+    max_longitude: 10.6606639
+  translations:
+    en: Plateau
+    ar: ولاية بلاتو
+    bg: Плато
+    bn: প্লেটু অঙ্গরাজ্য
+    ca: Estat de Plateau
+    cs: Plateau
+    da: Plateau
+    de: Plateau
+    el: Πλατό
+    es: Plateau
+    et: Plateau osariik
+    fa: ایالت پلاتو
+    fi: Plateau
+    fr: État du Plateau
+    gl: Plateau
+    gu: પ્લેટીઓ સ્ટેટ
+    hi: प्लैटो राज्य
+    id: Plateau
+    it: Plateau
+    ja: プラトー州
+    kn: ಪ್ರಸ್ಥಭೂಮಿ ರಾಜ್ಯ
+    ko: 플래토 주
+    mr: प्लॅटयू राज्य
+    ms: Plateau State
+    nb: Plateau
+    nl: Plateau
+    pl: Plateau
+    pt: Plateau
+    ro: Statul Plateau
+    ru: Плато
+    si: පලාටු රාජ්‍ය
+    sr: Плато
+    sv: Plateau
+    sw: Jimbo la Plateau
+    ta: பிளாட்டோ மாநிலம்
+    te: ప్లేటూ స్టేట్
+    th: รัฐแพทโท
+    tr: Plateau Eyaleti
+    uk: Плато
+    ur: پلیٹئو ریاست
+    vi: Bang Plateau
+    lv: Plato štats
+    ceb: Plateau State
+    yo_BJ: Ìpínlɛ̀ Plateau
+    sr_Latn: Plato
+    lt: Plato valstija
+    zh: 高原州
+    ccp: "\U0001111B\U00011133\U00011123\U00011111\U00011128\U00011105\U0001112A"
+    ka: პლატოს შტატი
+    ig: Ȯra Plateau
+    ha: Plateau
+    yo: Ìpínlẹ̀ Plateau
+    ha_NE: Plateau
+    'no': Plateau
+    az: Plato ştatı
+  comments:
+  type: state
+RI:
+  name: Rivers
+  code: RI
+  unofficial_names: Rivers
+  geo:
+    latitude: 4.8580767
+    longitude: 6.920913499999999
+    min_latitude: 4.347035099999999
+    min_longitude: 6.382472000000001
+    max_latitude: 5.694652899999999
+    max_longitude: 7.591592899999998
+  translations:
+    en: Rivers
+    ar: ولاية ريفرز
+    bg: Ривърс
+    bn: রিভার অঙ্গরাজ্য
+    ca: Rivers
+    cs: Rivers
+    da: Rivers
+    de: Rivers
+    el: Ρίβερς
+    es: Rivers
+    et: Riversi osariik
+    fa: ایالت ریورز
+    fi: Rivers
+    fr: État de Rivers
+    gl: Rivers
+    gu: રીવર્સ સ્ટેટ
+    hi: रिवर्ज़ राज्य
+    hu: Rivers állam
+    id: Rivers
+    it: Rivers
+    ja: リバーズ州
+    kn: ನದಿಗಳ ರಾಜ್ಯ
+    ko: 리버스 주
+    mr: रिव्हर्स राज्य
+    ms: Rivers State
+    nb: Rivers
+    nl: Rivers
+    pl: Rivers
+    pt: Rivers
+    ro: Statul Rivers
+    ru: Риверс
+    si: රිවර්ස් ස්ටේට්
+    sr: Риверс
+    sv: Rivers
+    sw: Rivers State
+    ta: ரிவர்ஸ் மாநிலம்
+    te: రివర్స్ స్టేట్
+    th: ริเวอส์
+    tr: Rivers Eyaleti
+    uk: Ріверс
+    ur: ریورز ریاست
+    vi: Bang Rivers
+    lv: Riversas štats
+    ceb: Rivers State
+    yo_BJ: Ìpínlɛ̀ Rivers
+    sr_Latn: Rivers
+    lt: Riverso valstija
+    zh: 河流州
+    ccp: "\U00011122\U00011128\U0001111E\U00011122\U00011134\U0001110C\U00011134"
+    ka: რივერსის შტატი
+    hy: Ռիվերս նահանգ
+    ig: Ȯra Rivers
+    ha: Rivers
+    yo: Ìpínlẹ̀ Rivers
+    ha_NE: Rivers
+    'no': Rivers
+    az: Rivers ştatı
+  comments:
+  type: state
+SO:
+  name: Sokoto
+  code: SO
+  unofficial_names: Sokoto
+  geo:
+    latitude: 13.066667
+    longitude: 5.233333
+    min_latitude: 12.9764148
+    min_longitude: 5.1676084
+    max_latitude: 13.0880893
+    max_longitude: 5.2881144
+  translations:
+    en: Sokoto
+    ar: ولاية صكتو
+    bg: Сокото
+    bn: সোকোটো অঙ্গরাজ্য
+    ca: Estat de Sokoto
+    da: Sokoto
+    de: Sokoto
+    el: Σοκότο
+    es: Sokoto
+    et: Sokoto osariik
+    eu: Sokoto
+    fa: ایالت سوکوتو
+    fi: Sokoto
+    fr: État de Sokoto
+    gl: Estado de Sokoto
+    gu: સોકોટો સ્ટેટ
+    hi: सोकोटो राज्य
+    id: Sokoto
+    it: Sokoto
+    ja: ソコト州
+    kn: ಸೊಕೊಟೊ ರಾಜ್ಯ
+    ko: 소코토 주
+    mr: सोकोटो राज्य
+    ms: Sokoto State
+    nb: Sokoto
+    nl: Sokoto
+    pl: Sokoto
+    pt: Sokoto
+    ro: Statul Sokoto
+    ru: Сокото
+    si: සොකොටෝ රාජ්‍ය
+    sr: Сокото
+    sv: Sokoto
+    sw: Jimbo la Sokoto
+    ta: சொகொட்டோ மாநிலம்
+    te: సోకోటో రాష్ట్రం
+    th: รัฐโซโกโตะ
+    tr: Sokoto Eyaleti
+    uk: Сокото
+    ur: سوکوتو ریاست
+    vi: Bang Sokoto
+    lv: Sokoto štats
+    ceb: Sokoto State
+    yo_BJ: Ìpínlɛ̀ Sókótó
+    sr_Latn: Sokoto
+    lt: Sokoto valstija
+    zh: 索科托州
+    ccp: "\U00011125\U0001112E\U00011107\U0001112E\U00011111\U0001112E"
+    ka: სოკოტოს შტატი
+    ig: Ȯra Sokoto
+    ha: jihar Sokoto
+    yo: Ìpínlẹ̀ Sókótó
+    ha_NE: jihar Sokoto
+    'no': Sokoto
+    az: Sokoto ştatı
+  comments:
+  type: state
+TA:
+  name: Taraba
+  code: TA
+  unofficial_names: Taraba
+  geo:
+    latitude: 7.9868755
+    longitude: 10.9807003
+    min_latitude: 6.502453999999999
+    min_longitude: 9.1043009
+    max_latitude: 9.604444899999999
+    max_longitude: 11.981274
+  translations:
+    en: Taraba
+    ar: ولاية ترابة
+    bg: Тараба
+    bn: তারাবা অঙ্গরাজ্য
+    ca: Estat de Taraba
+    da: Taraba
+    de: Taraba
+    el: Ταράμπα
+    es: Taraba
+    et: Taraba osariik
+    fa: ایالت تارابا
+    fi: Taraba
+    fr: État de Taraba
+    gl: Taraba
+    gu: ટરબા સ્ટેટ
+    hi: टराबा राज्य
+    id: Taraba
+    it: Taraba
+    ja: タラバ州
+    kn: ತಾರಾಬಾ ರಾಜ್ಯ
+    ko: 타라바 주
+    mr: ताराबा राज्य
+    ms: Taraba State
+    nb: Taraba
+    nl: Taraba
+    pl: Taraba
+    pt: Taraba
+    ro: Statul Taraba
+    ru: Тараба
+    si: ටරබා රාජ්‍ය
+    sr: Тараба
+    sv: Taraba
+    sw: Jimbo la Taraba
+    ta: தராபா மாநிலம்
+    te: టరాబా స్టేట్
+    th: แคว้นเรียซัน
+    tr: Taraba Eyaleti
+    uk: Тараба
+    ur: تارابا ریاست
+    vi: Taraba
+    lv: Tarabas štats
+    ceb: Taraba State
+    yo_BJ: Ìpínlɛ̀ Tàràbà
+    sr_Latn: Taraba
+    lt: Tarabos valstija
+    zh: 塔拉巴州
+    ccp: "\U00011111\U00011122\U0001111D"
+    ka: ტარაბის შტატი
+    ig: Ȯra Taraba
+    ha: Taraba
+    kk: Тараба
+    yo: Ìpínlẹ̀ Tàràbà
+    ha_NE: Taraba
+    'no': Taraba
+    az: Taraba ştatı
+    cs: Taraba
+    hy: Տարաբա նահանգ
+  comments:
+  type: state
+YO:
+  name: Yobe
+  code: YO
+  unofficial_names: Yobe
+  geo:
+    latitude: 12.1871412
+    longitude: 11.7068294
+    min_latitude: 10.5932052
+    min_longitude: 9.665973100000002
+    max_latitude: 13.376133
+    max_longitude: 12.494047
+  translations:
+    en: Yobe
+    ar: ولاية يوبي
+    bg: Йобе
+    bn: ইয়ব অঙ্গরাজ্য
+    ca: Yobe
+    da: Yobe
+    de: Yobe
+    el: Γιόμπε
+    es: Yobe
+    et: Yobe
+    fa: ایالت یوبه
+    fi: Yobe
+    fr: État de Yobe
+    gl: Yobe
+    gu: યોબે સ્ટેટ
+    hi: योबे राज्य
+    id: Yobe
+    it: Yobe
+    ja: ヨベ州
+    kn: ಯೊಬೆ ರಾಜ್ಯ
+    ko: 요베 주
+    mr: याबे राज्य
+    ms: Yobe State
+    nb: Yobe
+    nl: Yobe
+    pl: Yobe
+    pt: Yobe
+    ro: Statul Yobe
+    ru: Йобе
+    si: යෝබේ රාජ්‍ය
+    sr: Јобе
+    sv: Yobe
+    sw: Jimbo la Yobe
+    ta: யோபெ மாநிலம்
+    te: యోబ్ స్టేట్
+    th: โยบี
+    tr: Yobe Eyaleti
+    uk: Йобе
+    ur: یوبے اسٹیٹ
+    vi: Bang Yobe
+    lv: Jobes štats
+    ceb: Yobe State
+    yo_BJ: Ìpínlɛ̀ Yòbè
+    sr_Latn: Jobe
+    lt: Jobės valstija
+    zh: 约贝州
+    ccp: "\U00011103\U00011128\U00011120\U0001112E\U0001111D\U0001112C"
+    ka: იობეს შტატი
+    ig: Ȯra Yobe
+    ha: Yobe
+    cs: Yobe
+    yo: Ìpínlẹ̀ Yòbè
+    ha_NE: Yobe
+    'no': Yobe
+    az: Yobe ştatı
+    ne: योबे राज्य
+  comments:
+  type: state
+ZA:
+  name: Zamfara
+  code: ZA
+  unofficial_names: Zamfara
+  geo:
+    latitude: 12.1844159
+    longitude: 6.2375947
+    min_latitude: 10.854616
+    min_longitude: 5.021007099999999
+    max_latitude: 13.207291
+    max_longitude: 7.245729999999999
+  translations:
+    en: Zamfara
+    ar: ولاية زامفارة
+    bg: Замфара
+    bn: জাম্পারা অঙ্গরাজ্য
+    ca: Estat de Zamfara
+    da: Zamfara
+    de: Zamfara
+    el: Ζαμφάρα
+    es: Zamfara
+    et: Zamfara osariik
+    fa: ایالت زامفارا
+    fi: Zamfara
+    fr: État de Zamfara
+    gl: Zamfara
+    gu: ઝેમ્ફારા સ્ટેટ
+    hi: ज़ामफ़ारा राज्य
+    id: Zamfara
+    it: Zamfara
+    ja: ザムファラ州
+    kn: ಜಮ್ಫರಾ ಸ್ಟೇಟ್
+    ko: 잠파라 주
+    mr: जामफर राज्य
+    ms: Zamfara State
+    nb: Zamfara
+    nl: Zamfara
+    pl: Zamfara
+    pt: Zamfara (estado)
+    ro: Statul Zamfara
+    ru: Замфара
+    si: සම්ෆරා රාජ්‍ය
+    sr: Замфара
+    sv: Zamfara
+    sw: Jimbo la Zamfara
+    ta: சப்மபாரா மாநிலம்
+    te: జంఫారా స్టేట్
+    th: แซมฟารา
+    tr: Zamfara Eyaleti
+    uk: Замфара
+    ur: زمفارا ریاست
+    vi: Bang Zamfara
+    lv: Zamfaras štats
+    ceb: Zamfara State
+    yo_BJ: Ìpínlɛ̀ Zamfara
+    sr_Latn: Zamfara
+    lt: Zamfaros valstija
+    zh: 扎姆法拉州
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111C\U00011122"
+    ka: ზამფარის შტატი
+    ig: Ȯra Zamfara
+    ha: Zamfara
+    yo: Ìpínlẹ̀ Zamfara
+    ha_NE: Zamfara
+    'no': Zamfara
+    az: Zamfara ştatı
+    he: זמפרה
+  comments:
+  type: state

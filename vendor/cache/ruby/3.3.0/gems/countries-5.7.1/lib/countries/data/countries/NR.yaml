@@ -1,0 +1,49 @@
+---
+NR:
+  alpha2: NR
+  alpha3: NRU
+  continent: Australia
+  country_code: '674'
+  currency_code: AUD
+  distance_unit: KM
+  gec: NR
+  geo:
+    latitude: -0.522778
+    longitude: 166.931503
+    max_latitude: -0.4978976000000001
+    max_longitude: 166.9631767
+    min_latitude: -0.5580623
+    min_longitude: 166.9071293
+    bounds:
+      northeast:
+        lat: -0.4978976000000001
+        lng: 166.9631767
+      southwest:
+        lat: -0.5580623
+        lng: 166.9071293
+  international_prefix: '00'
+  ioc: NRU
+  iso_long_name: The Republic of Nauru
+  iso_short_name: Nauru
+  languages_official:
+  - en
+  - na
+  languages_spoken:
+  - en
+  - na
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: '0'
+  nationality: Nauruan
+  number: '520'
+  postal_code: false
+  region: Oceania
+  start_of_week: monday
+  subregion: Micronesia
+  un_locode: NR
+  unofficial_names:
+  - Nauru
+  - ナウル
+  world_region: APAC

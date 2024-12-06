@@ -1,0 +1,89 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "transfer.failed",
+  "object": "event",
+  "data": {
+    "object": {
+      "id": "tr_00000000000000",
+      "object": "transfer",
+      "date": 1381104000,
+      "livemode": false,
+      "amount": 67,
+      "currency": "usd",
+      "status": "failed",
+      "balance_transaction": "txn_00000000000000",
+      "summary": {
+        "charge_gross": 100,
+        "charge_fees": 33,
+        "charge_fee_details": [
+          {
+            "amount": 33,
+            "currency": "usd",
+            "type": "stripe_fee",
+            "description": null,
+            "application": null
+          }
+        ],
+        "refund_gross": 0,
+        "refund_fees": 0,
+        "refund_fee_details": [
+
+        ],
+        "adjustment_gross": 0,
+        "adjustment_fees": 0,
+        "adjustment_fee_details": [
+
+        ],
+        "validation_fees": 0,
+        "validation_count": 0,
+        "charge_count": 1,
+        "refund_count": 0,
+        "adjustment_count": 0,
+        "net": 67,
+        "currency": "usd",
+        "collected_fee_gross": 0,
+        "collected_fee_count": 0,
+        "collected_fee_refund_gross": 0,
+        "collected_fee_refund_count": 0
+      },
+      "transactions": {
+        "object": "list",
+        "count": 1,
+        "url": "/v1/transfers/tr_2h8RC13PPvwDZs/transactions",
+        "has_more": false,
+        "data": [
+          {
+            "id": "ch_2fb4RERw49oI8s",
+            "type": "charge",
+            "amount": 100,
+            "currency": "usd",
+            "net": 67,
+            "created": 1380582860,
+            "description": null,
+            "fee": 33,
+            "fee_details": [
+              {
+                "amount": 33,
+                "currency": "usd",
+                "type": "stripe_fee",
+                "description": "Stripe processing fees",
+                "application": null
+              }
+            ]
+          }
+        ]
+      },
+      "other_transfers": [
+        "tr_2h8RC13PPvwDZs"
+      ],
+      "account": null,
+      "description": "STRIPE TRANSFER",
+      "metadata": {
+      },
+      "statement_descriptor": null,
+      "recipient": null
+    }
+  }
+}

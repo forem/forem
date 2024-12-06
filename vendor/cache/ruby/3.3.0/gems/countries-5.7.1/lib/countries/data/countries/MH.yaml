@@ -1,0 +1,54 @@
+---
+MH:
+  alpha2: MH
+  alpha3: MHL
+  continent: Australia
+  country_code: '692'
+  currency_code: USD
+  distance_unit: KM
+  gec: RM
+  geo:
+    latitude: 7.131474
+    longitude: 171.184478
+    max_latitude: 15.0190749
+    max_longitude: 172.5732421
+    min_latitude: 4.1601583
+    min_longitude: 159.8840332
+    bounds:
+      northeast:
+        lat: 15.0190749
+        lng: 172.5732421
+      southwest:
+        lat: 4.1601583
+        lng: 159.8840332
+  international_prefix: '00'
+  ioc: MHL
+  iso_long_name: The Republic of the Marshall Islands
+  iso_short_name: Marshall Islands
+  languages_official:
+  - en
+  - mh
+  languages_spoken:
+  - en
+  - mh
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: '1'
+  nationality: Marshallese
+  number: '584'
+  postal_code: true
+  postal_code_format: "(969[67]\\d)(?:[ \\-](\\d{4}))?"
+  region: Oceania
+  start_of_week: monday
+  subregion: Micronesia
+  un_locode: MH
+  unofficial_names:
+  - Marshall Islands
+  - Marshallinseln
+  - Îles Marshall
+  - Islas Marshall
+  - マーシャル諸島
+  - Marshalleilanden
+  world_region: APAC

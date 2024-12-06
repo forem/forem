@@ -1,0 +1,54 @@
+---
+UZ:
+  alpha2: UZ
+  alpha3: UZB
+  continent: Asia
+  country_code: '998'
+  currency_code: UZS
+  distance_unit: KM
+  gec: UZ
+  geo:
+    latitude: 41.377491
+    longitude: 64.585262
+    max_latitude: 45.590075
+    max_longitude: 73.148946
+    min_latitude: 37.1722571
+    min_longitude: 55.9982179
+    bounds:
+      northeast:
+        lat: 45.590075
+        lng: 73.148946
+      southwest:
+        lat: 37.1722571
+        lng: 55.9982179
+  international_prefix: '810'
+  ioc: UZB
+  iso_long_name: The Republic of Uzbekistan
+  iso_short_name: Uzbekistan
+  languages_official:
+  - uz
+  - ru
+  languages_spoken:
+  - uz
+  - ru
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '8'
+  nationality: Uzbekistani
+  number: '860'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Asia
+  start_of_week: monday
+  subregion: Central Asia
+  un_locode: UZ
+  unofficial_names:
+  - Uzbekistan
+  - Usbekistan
+  - Ouzbékistan
+  - Uzbekistán
+  - ウズベキスタン
+  - Oezbekistan
+  world_region: EMEA

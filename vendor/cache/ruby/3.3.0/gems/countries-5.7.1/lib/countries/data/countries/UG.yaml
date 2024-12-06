@@ -1,0 +1,50 @@
+---
+UG:
+  alpha2: UG
+  alpha3: UGA
+  continent: Africa
+  country_code: '256'
+  currency_code: UGX
+  distance_unit: KM
+  gec: UG
+  geo:
+    latitude: 1.373333
+    longitude: 32.290275
+    max_latitude: 4.218628
+    max_longitude: 35.0330489
+    min_latitude: -1.4823178
+    min_longitude: 29.573433
+    bounds:
+      northeast:
+        lat: 4.218628
+        lng: 35.0330489
+      southwest:
+        lat: -1.4823178
+        lng: 29.573433
+  international_prefix: '000'
+  ioc: UGA
+  iso_long_name: The Republic of Uganda
+  iso_short_name: Uganda
+  languages_official:
+  - en
+  - sw
+  languages_spoken:
+  - en
+  - sw
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Ugandan
+  number: '800'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: UG
+  unofficial_names:
+  - Uganda
+  - ウガンダ
+  - Oeganda
+  world_region: EMEA

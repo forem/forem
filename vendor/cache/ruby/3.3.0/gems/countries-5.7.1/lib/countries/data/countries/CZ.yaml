@@ -1,0 +1,69 @@
+---
+CZ:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: CZ
+  alpha3: CZE
+  continent: Europe
+  country_code: '420'
+  currency_code: CZK
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: EZ
+  geo:
+    latitude: 49.81749199999999
+    longitude: 15.472962
+    max_latitude: 51.0557185
+    max_longitude: 18.8592361
+    min_latitude: 48.5518081
+    min_longitude: 12.090589
+    bounds:
+      northeast:
+        lat: 51.0557185
+        lng: 18.8592361
+      southwest:
+        lat: 48.5518081
+        lng: 12.090589
+  international_prefix: '00'
+  ioc: CZE
+  iso_long_name: The Czech Republic
+  iso_short_name: Czechia
+  languages_official:
+  - cs
+  - sk
+  languages_spoken:
+  - cs
+  - sk
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: None
+  nationality: Czech
+  number: '203'
+  postal_code: true
+  postal_code_format: "\\d{3} ?\\d{2}"
+  region: Europe
+  start_of_week: monday
+  subregion: Eastern Europe
+  un_locode: CZ
+  unofficial_names:
+  - Czech Republic
+  - Tschechische Republik
+  - République Tchèque
+  - República Checa
+  - チェコ
+  - Tsjechië
+  - Czechia
+  - Česká republika
+  vat_rates:
+    standard: 21
+    reduced:
+    - 15
+    super_reduced:
+    parking:
+  world_region: EMEA

@@ -1,0 +1,26 @@
+module Person = {
+  type t = Teacher | Director | Student(string)
+
+  let greeting = person =>
+    switch person {
+    | Teacher => "Hey Professor!"
+    | Director => "Hello Director."
+    | Student("Richard") => "Still here Ricky?"
+    | Student(other) => "Hey, " ++ other ++ "."
+    }
+}
+
+module Button = {
+  @react.component
+  let make = (~count: int, ~onClick) => {
+    let times = switch count {
+    | 1 => "once"
+    | 2 => "twice"
+    | n => Belt.Int.toString(n) ++ " times"
+    }
+
+    let msg = "Click me " ++ times
+
+    <button onClick> {msg->React.string} </button>
+  }
+}

@@ -1,0 +1,57 @@
+---
+TW:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}} {{region_short}} {{postalcode}}
+    {{country}}
+  alpha2: TW
+  alpha3: TWN
+  continent: Asia
+  country_code: "886"
+  currency_code: TWD
+  distance_unit: KM
+  gec: TW
+  geo:
+    latitude: 23.69781
+    longitude: 120.960515
+    max_latitude: 26.4545
+    max_longitude: 123.5021012
+    min_latitude: 20.5170001
+    min_longitude: 116.6665
+    bounds:
+      northeast:
+        lat: 26.4545
+        lng: 123.5021012
+      southwest:
+        lat: 20.5170001
+        lng: 116.6665
+  international_prefix: "002"
+  ioc: TPE
+  iso_long_name: Taiwan, Province of China
+  iso_short_name: Taiwan, Province of China
+  languages_official:
+    - zh
+  languages_spoken:
+    - zh
+  national_destination_code_lengths:
+    - 2
+  national_number_lengths:
+    - 7
+    - 8
+  national_prefix: "0"
+  nationality: Taiwanese
+  number: "158"
+  postal_code: true
+  postal_code_format: "\\d{3}(?:\\d{2,3})?"
+  region: Asia
+  start_of_week: monday
+  subregion: Eastern Asia
+  un_locode: TW
+  unofficial_names:
+    - Taiwan
+    - Taiwán
+    - 台灣
+    - 臺灣
+    - 台湾
+  world_region: APAC

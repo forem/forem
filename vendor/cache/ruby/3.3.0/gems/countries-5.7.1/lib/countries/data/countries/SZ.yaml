@@ -1,0 +1,52 @@
+---
+SZ:
+  alpha2: SZ
+  alpha3: SWZ
+  continent: Africa
+  country_code: '268'
+  currency_code: SZL
+  distance_unit: KM
+  gec: WZ
+  geo:
+    latitude: -26.522503
+    longitude: 31.465866
+    max_latitude: -25.71792
+    max_longitude: 32.1349067
+    min_latitude: -27.317402
+    min_longitude: 30.79064
+    bounds:
+      northeast:
+        lat: -25.71792
+        lng: 32.1349067
+      southwest:
+        lat: -27.317402
+        lng: 30.79064
+  international_prefix: '00'
+  ioc: SWZ
+  iso_long_name: The Kingdom of Eswatini
+  iso_short_name: Eswatini
+  languages_official:
+  - en
+  - ss
+  languages_spoken:
+  - en
+  - ss
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Swazi
+  number: '748'
+  postal_code: true
+  postal_code_format: "[HLMS]\\d{3}"
+  region: Africa
+  start_of_week: monday
+  subregion: Southern Africa
+  un_locode: SZ
+  unofficial_names:
+  - Swaziland
+  - Swasiland
+  - Suazilandia
+  - スワジランド
+  world_region: EMEA

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://feeds.feedburner.com/~d/styles/atom10full.xsl" type="text/xsl" media="screen"?><?xml-stylesheet href="http://feeds.feedburner.com/~d/styles/itemcontent.css" type="text/css" media="screen"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:thr="http://purl.org/syndication/thread/1.0" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0">
+    <title>Paul Dix Explains Nothing</title>
+
+    <link rel="alternate" type="text/html" href="http://www.pauldix.net/" />
+    <id>tag:typepad.com,2003:weblog-108605</id>
+    <updated>2008-09-04T16:07:19-04:00</updated>
+    <subtitle>Entrepreneurship, programming, software development, politics, NYC, and random thoughts.</subtitle>
+    <generator uri="http://www.typepad.com/">TypePad</generator>
+    <link rel="self" href="http://feeds.feedburner.com/PaulDixExplainsNothing" type="application/atom+xml" /><entry>
+        <title>Marshal data too short error with ActiveRecord</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/383536354/marshal-data-to.html?param1=1&amp;param2=2" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/09/marshal-data-to.html" thr:count="2" thr:updated="2008-11-17T14:40:06-05:00" />
+        <id>tag:typepad.com,2003:post-55147740</id>
+        <published>2008-09-04T16:07:19-04:00</published>
+        <updated>2008-11-17T14:40:06-05:00</updated>
+        <summary>In my previous post about the speed of serializing data, I concluded that Marshal was the quickest way to get things done. So I set about using Marshal to store some data in an ActiveRecord object. Things worked great at...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Tahiti" />
+
+
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">
+&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;In my previous &lt;a href="http://www.pauldix.net/2008/08/serializing-dat.html"&gt;post about the speed of serializing data&lt;/a&gt;, I concluded that Marshal was the quickest way to get things done. So I set about using Marshal to store some data in an ActiveRecord object. Things worked great at first, but on some test data I got this error: marshal data too short. Luckily, &lt;a href="http://www.brynary.com/"&gt;Bryan Helmkamp&lt;/a&gt; had helpfully pointed out that there were sometimes problems with storing marshaled data in the database. He said it was best to base64 encode the marshal dump before storing.&lt;/p&gt;
+
+&lt;p&gt;I was curious why it was working on some things and not others. It turns out that some types of data being marshaled were causing the error to pop up. Here's the test data I used in my specs:&lt;/p&gt;
+&lt;pre&gt;{ :foo =&amp;gt; 3, :bar =&amp;gt; 2 } # hash with symbols for keys and integer values&lt;br /&gt;[3, 2.1, 4, 8]&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; # array with integer and float values&lt;/pre&gt;
+&lt;p&gt;Everything worked when I switched the array values to all integers so it seems that floats were causing the problem. However, in the interest of keeping everything working regardless of data types, I base64 encoded before going into the database and decoded on the way out.&lt;/p&gt;
+
+&lt;p&gt;I also ran the benchmarks again to determine what impact this would have on speed. Here are the results for 100 iterations on a 10k element array and a 10k element hash with and without base64 encode/decode:&lt;/p&gt;
+&lt;pre&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; user&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; system&amp;nbsp; &amp;nbsp;&amp;nbsp; total&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; real&lt;br /&gt;array marshal&amp;nbsp; 0.200000&amp;nbsp; &amp;nbsp;0.010000&amp;nbsp; &amp;nbsp;0.210000 (&amp;nbsp; 0.214018) (without Base64)&lt;br /&gt;array marshal&amp;nbsp; 0.220000&amp;nbsp; &amp;nbsp;0.010000&amp;nbsp; &amp;nbsp;0.230000 (&amp;nbsp; 0.250260)&lt;br /&gt;&lt;br /&gt;hash marshal&amp;nbsp; &amp;nbsp;1.830000&amp;nbsp; &amp;nbsp;0.040000&amp;nbsp; &amp;nbsp;1.870000 (&amp;nbsp; 1.892874) (without Base64)&lt;br /&gt;hash marshal&amp;nbsp; &amp;nbsp;2.040000&amp;nbsp; &amp;nbsp;0.100000&amp;nbsp; &amp;nbsp;2.140000 (&amp;nbsp; 2.170405)&lt;/pre&gt;
+&lt;p&gt;As you can see the difference in speed is pretty negligible. I assume that the error has to do with AR cleaning the stuff that gets inserted into the database, but I'm not really sure. In the end it's just easier to use Base64.encode64 when serializing data into a text field in ActiveRecord using Marshal.&lt;/p&gt;
+
+&lt;p&gt;I've also read people posting about this error when using the database session store. I can only assume that it's because they were trying to store either way too much data in their session (too much for a regular text field) or they were storing float values or some other data type that would cause this to pop up. Hopefully this helps.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=rWfWO"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=rWfWO" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=RaCqo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=RaCqo" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=1CBLo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=1CBLo" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/383536354" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/09/marshal-data-to.html?param1=1&amp;param2=2</feedburner:origLink></entry>
+    <entry>
+        <title>Serializing data speed comparison: Marshal vs. JSON vs. Eval vs. YAML</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/376401099/serializing-dat.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/08/serializing-dat.html" thr:count="5" thr:updated="2008-10-14T01:26:31-04:00" />
+        <id>tag:typepad.com,2003:post-54766774</id>
+        <published>2008-08-27T14:31:41-04:00</published>
+        <updated>2008-10-14T01:26:31-04:00</updated>
+        <summary>Last night at the NYC Ruby hackfest, I got into a discussion about serializing data. Brian mentioned the Marshal library to me, which for some reason had completely escaped my attention until last night. He said it was wicked fast...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Tahiti" />
+
+
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">
+&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;Last night at the &lt;a href="http://nycruby.org"&gt;NYC Ruby hackfest&lt;/a&gt;, I got into a discussion about serializing data. Brian mentioned the Marshal library to me, which for some reason had completely escaped my attention until last night. He said it was wicked fast so we decided to run a quick benchmark comparison.&lt;/p&gt;
+&lt;p&gt;The test data is designed to roughly approximate what my &lt;a href="http://www.pauldix.net/2008/08/storing-many-cl.html"&gt;stored classifier data&lt;/a&gt; will look like. The different methods we decided to benchmark were Marshal, json, eval, and yaml. With each one we took the in-memory object and serialized it and then read it back in. With eval we had to convert the object to ruby code to serialize it then run eval against that. Here are the results for 100 iterations on a 10k element array and a hash with 10k key/value pairs run on my Macbook Pro 2.4 GHz Core 2 Duo:&lt;/p&gt;
+&lt;pre&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; user&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;system&amp;nbsp; &amp;nbsp;&amp;nbsp; total&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; real&lt;br /&gt;array marshal&amp;nbsp; 0.210000&amp;nbsp; &amp;nbsp;0.010000&amp;nbsp; &amp;nbsp;0.220000 (&amp;nbsp; 0.220701)&lt;br /&gt;array json&amp;nbsp; &amp;nbsp;&amp;nbsp; 2.180000&amp;nbsp; &amp;nbsp;0.050000&amp;nbsp; &amp;nbsp;2.230000 (&amp;nbsp; 2.288489)&lt;br /&gt;array eval&amp;nbsp; &amp;nbsp;&amp;nbsp; 2.090000&amp;nbsp; &amp;nbsp;0.060000&amp;nbsp; &amp;nbsp;2.150000 (&amp;nbsp; 2.240443)&lt;br /&gt;array yaml&amp;nbsp; &amp;nbsp; 26.650000&amp;nbsp; &amp;nbsp;0.350000&amp;nbsp; 27.000000 ( 27.810609)&lt;br /&gt;&lt;br /&gt;hash marshal&amp;nbsp; &amp;nbsp;2.000000&amp;nbsp; &amp;nbsp;0.050000&amp;nbsp; &amp;nbsp;2.050000 (&amp;nbsp; 2.114950)&lt;br /&gt;hash json&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;3.700000&amp;nbsp; &amp;nbsp;0.060000&amp;nbsp; &amp;nbsp;3.760000 (&amp;nbsp; 3.881716)&lt;br /&gt;hash eval&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;5.370000&amp;nbsp; &amp;nbsp;0.140000&amp;nbsp; &amp;nbsp;5.510000 (&amp;nbsp; 6.117947)&lt;br /&gt;hash yaml&amp;nbsp; &amp;nbsp;&amp;nbsp; 68.220000&amp;nbsp; &amp;nbsp;0.870000&amp;nbsp; 69.090000 ( 72.370784)&lt;/pre&gt;
+&lt;p&gt;The order in which I tested them is pretty much the order in which they ranked for speed. Marshal was amazingly fast. JSON and eval came out roughly equal on the array with eval trailing quite a bit for the hash. Yaml was just slow as all hell. A note on the json: I used the 1.1.3 library which uses c to parse. I assume it would be quite a bit slower if I used the pure ruby implementation. Here's &lt;a href="http://gist.github.com/7549"&gt;a gist of the benchmark code&lt;/a&gt; if you're curious and want to run it yourself.&lt;/p&gt;
+
+
+
+&lt;p&gt;If you're serializing user data, be super careful about using eval. It's probably best to avoid it completely. Finally, just for fun I took yaml out (it was too slow) and ran the benchmark again with 1k iterations:&lt;/p&gt;
+&lt;pre&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; user&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;system&amp;nbsp; &amp;nbsp;&amp;nbsp; total&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; real&lt;br /&gt;array marshal&amp;nbsp; 2.080000&amp;nbsp; &amp;nbsp;0.110000&amp;nbsp; &amp;nbsp;2.190000 (&amp;nbsp; 2.242235)&lt;br /&gt;array json&amp;nbsp; &amp;nbsp; 21.860000&amp;nbsp; &amp;nbsp;0.500000&amp;nbsp; 22.360000 ( 23.052403)&lt;br /&gt;array eval&amp;nbsp; &amp;nbsp; 20.730000&amp;nbsp; &amp;nbsp;0.570000&amp;nbsp; 21.300000 ( 21.992454)&lt;br /&gt;&lt;br /&gt;hash marshal&amp;nbsp; 19.510000&amp;nbsp; &amp;nbsp;0.500000&amp;nbsp; 20.010000 ( 20.794111)&lt;br /&gt;hash json&amp;nbsp; &amp;nbsp;&amp;nbsp; 39.770000&amp;nbsp; &amp;nbsp;0.670000&amp;nbsp; 40.440000 ( 41.689297)&lt;br /&gt;hash eval&amp;nbsp; &amp;nbsp;&amp;nbsp; 51.410000&amp;nbsp; &amp;nbsp;1.290000&amp;nbsp; 52.700000 ( 54.155711)&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=zombO"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=zombO" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=T3kqo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=T3kqo" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=aI6Oo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=aI6Oo" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/376401099" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/08/serializing-dat.html</feedburner:origLink></entry>
+    <entry>
+        <title>Gotcha with cache_fu and permalinks</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/369250462/gotcha-with-cac.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/08/gotcha-with-cac.html" thr:count="2" thr:updated="2008-11-20T13:58:38-05:00" />
+        <id>tag:typepad.com,2003:post-54411628</id>
+        <published>2008-08-19T14:26:24-04:00</published>
+        <updated>2008-11-20T13:58:38-05:00</updated>
+        <summary>This is an issue I had recently in a project with cache_fu. Models that I found and cached based on permalinks weren't expiring the cache correctly when getting updated. Here's an example scenario. Say you have a blog with posts....</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Ruby on Rails" />
+
+
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">
+&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;This is an issue I had recently in a project with &lt;a href="http://errtheblog.com/posts/57-kickin-ass-w-cachefu"&gt;cache_fu&lt;/a&gt;. Models that I found and cached based on permalinks weren't expiring the cache correctly when getting updated. Here's an example scenario.&lt;/p&gt;
+
+&lt;p&gt;Say you have a blog with posts. However, instead of using a url like http://paulscoolblog.com/posts/23 you want something that's more search engine friendly and readable for the user. So you use a permalink (maybe using the &lt;a href="http://github.com/github/permalink_fu/tree/master"&gt;permalink_fu plugin&lt;/a&gt;) that's auto-generated based on the title of the post. This post would have a url that looks something like http://paulscoolblog.com/posts/gotcha-with-cache_fu-and-permalinks.&lt;/p&gt;
+
+&lt;p&gt;In your controller's show method you'd probably find the post like this:&lt;/p&gt;
+&lt;pre&gt;@post = Post.find_by_permalink(params[:permalink])&lt;/pre&gt;
+&lt;p&gt;However, you'd want to do the caching thing so you'd actually do this:&lt;/p&gt;
+&lt;pre&gt;@post = Post.cached(:find_by_permalink, :with =&amp;gt; params[:permalink])&lt;/pre&gt;
+&lt;p&gt;The problem that I ran into, which is probably obvious to anyone familiar with cache_fu, was that when updating the post, it wouldn't expire the cache. That part of the post model looks like this:&lt;/p&gt;
+&lt;pre&gt;class Post &amp;lt; ActiveRecord::Base&lt;br /&gt;&amp;nbsp; before_save :expire_cache&lt;br /&gt;&amp;nbsp; ...&lt;br /&gt;end&lt;/pre&gt;
+&lt;p&gt;Do you see it? The issue is that when expire_cache gets called on the object, it expires the key &lt;strong&gt;Post:23&lt;/strong&gt; from the cache (assuming 23 was the id of the post). However, when the post was cached using the cached(:find_by_permalink ...) method, it put the post object into the cache with a key of &lt;strong&gt;Post:find_by_permalink:gotcha-with-cache_fu-and-permalinks&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Luckily, it's a fairly simple fix. If you have a model that is commonly accessed through permalinks, just write your own cache expiry method that looks for both keys and expires them.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=V1ojO"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=V1ojO" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=eu6Zo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=eu6Zo" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=ddUho"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=ddUho" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/369250462" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/08/gotcha-with-cac.html</feedburner:origLink></entry>
+    <entry>
+        <title>Non-greedy mode in regex</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/365673983/non-greedy-mode.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/08/non-greedy-mode.html" thr:count="0" />
+        <id>tag:typepad.com,2003:post-54227244</id>
+        <published>2008-08-15T09:32:11-04:00</published>
+        <updated>2008-08-27T09:33:15-04:00</updated>
+        <summary>I was writing a regular expression yesterday and this popped up. It's just a quick note about greedy vs. non-greedy mode in regular expression matching. Say I have a regular expression that looks something like this: /(\[.*\])/ In English that...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Ruby" />
+
+
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">&lt;p&gt;I was writing a regular expression yesterday and this popped up. It's just a quick note about greedy vs. non-greedy mode in regular expression matching. Say I have a regular expression that looks something like this:&lt;/p&gt;&#xD;
+&lt;pre&gt;/(\[.*\])/&lt;/pre&gt;&#xD;
+&lt;p&gt;In English that says something roughly like: find an opening bracket [ with 0 or more of any character followed by a closing bracket. The backslashes are to escape the brackets and the parenthesis specify grouping so we can later access that matched text.&lt;/p&gt;&#xD;
+&#xD;
+&lt;p&gt;The greedy mode comes up with the 0 or more characters part of the match (the .* part of the expression). The default mode of greedy means that the parser will gobble up as many characters as it can and match the very last closing bracket. So if you have text like this:&lt;/p&gt;&#xD;
+&#xD;
+&lt;pre&gt;a = [:foo, :bar]&lt;br&gt;b = [:hello, :world]&lt;/pre&gt;&#xD;
+&lt;p&gt;The resulting grouped match would be this:&lt;/p&gt;&#xD;
+&lt;pre&gt;[:foo, :bar]&lt;br&gt;b = [:hello, :world]&lt;/pre&gt;&#xD;
+&lt;p&gt;If you just wanted the [:foo, :bar] part, the solution is to parse in non-greedy mode. This means that it will match on the first closing bracket it sees. The modified regular expression looks like this:&lt;/p&gt;&#xD;
+&lt;pre&gt;/(\[.*?\])/&lt;/pre&gt;&#xD;
+&lt;p&gt;I love the regular expression engine in Ruby. It's one of the best things it ripped off from Perl. The one thing I don't like is the magic global variable that it places matched groups into. You can access that first match through the $1 variable. If you're unfamiliar with regular expressions, a good place to start is the &lt;a href="http://www.amazon.com/Programming-Perl-3rd-Larry-Wall/dp/0596000278/ref=pd_bbs_sr_1?ie=UTF8&amp;amp;s=books&amp;amp;qid=1218806755&amp;amp;sr=8-1"&gt;Camel book&lt;/a&gt;. It's about Perl, but the way they work is very similar. I actually haven't seen good coverage of regexes in a Ruby book.&lt;/p&gt;&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=OkVmO"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=OkVmO" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=iRpWo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=iRpWo" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=pjRCo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=pjRCo" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/365673983" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/08/non-greedy-mode.html</feedburner:origLink></entry>
+    <entry>
+        <title>Storing many classification models</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/358530158/storing-many-cl.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/08/storing-many-cl.html" thr:count="3" thr:updated="2008-08-08T11:40:28-04:00" />
+        <id>tag:typepad.com,2003:post-53888232</id>
+        <published>2008-08-07T12:01:38-04:00</published>
+        <updated>2008-08-27T16:58:18-04:00</updated>
+        <summary>One of the things I need to do in Filterly is keep many trained classifiers. These are the machine learning models that determine if a blog post is on topic (Filterly separates information by topic). At the very least I...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Tahiti" />
+
+
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">&lt;p&gt;One of the things I need to do in &lt;a href="http://filterly.com/"&gt;Filterly&lt;/a&gt; is keep many trained &lt;a href="http://en.wikipedia.org/wiki/Statistical_classification"&gt;classifiers&lt;/a&gt;. These are the machine learning models that determine if a blog post is on topic (Filterly separates information by topic). At the very least I need one per topic in the system. If I want to do something like &lt;a href="http://en.wikipedia.org/wiki/Boosting"&gt;boosting&lt;/a&gt; then I need even more. The issue I'm wrestling with is how to store this data. I'll outline a specific approach and what the storage needs are.&lt;/p&gt;&#xD;
+&#xD;
+&lt;p&gt;Let's say I go with boosting and 10 &lt;a href="http://en.wikipedia.org/wiki/Perceptron"&gt;perceptrons&lt;/a&gt;. I'll also limit my feature space to the 10,000 most statistically significant features. So the storage for each perceptron is a 10k element array. However, I'll also have to keep another data structure to store what the 10k features are and their position in the array. In code I use a hash for this where the feature name is the key and the value is its position. I just need to store one of these hashes per topic.&lt;/p&gt;&#xD;
+&#xD;
+&lt;p&gt;That's not really a huge amount of data. I'm more concerned about the best way to store it. I don't think this kind of thing maps well to a relational database. I don't need to store the features individually. Generally when I'm running the thing I'll want the whole perceptron and feature set in memory for quick access. For now I'm just using a big text field and serializing each using JSON.&lt;/p&gt;&#xD;
+&#xD;
+&lt;p&gt;I don't really like this approach. The whole serializing into the database seems really inelegant. Combined with the time that it takes to parse these things. Each time I want to see if a new post is on topic I'd need to load up the classifier and parse the 10 10k arrays and the 10k key hash. I could keep each classifier running as a service, but then I've got a pretty heavy process running for each topic.&lt;/p&gt;&#xD;
+&#xD;
+&lt;p&gt;I guess I'll just use the stupid easy solution for the time being and worry about performance later. Anyone have thoughts on the best approach?&lt;/p&gt;&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=DUT8O"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=DUT8O" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=ZGjFo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=ZGjFo" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=pH3Vo"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=pH3Vo" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/358530158" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/08/storing-many-cl.html</feedburner:origLink></entry>
+
+</feed>

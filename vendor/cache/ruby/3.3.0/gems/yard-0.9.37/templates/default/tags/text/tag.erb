@@ -1,0 +1,13 @@
+<% title = (defined?(@label) && @label) ? @label : YARD::Tags::Library.labels[@name] %>
+<%= title %>:
+<%= hr(title.length) %>-
+
+<% object.tags(@name).each do |tag| %>
+<% text = "" %>
+<% text += format_types(tag.types) + " " unless @no_types || tag.types.nil? %>
+<% text += tag.name.to_s + " " unless @no_names %>
+<% text += "- " unless @no_names && @no_types %>
+<% text += tag.text if tag.text && !tag.text.empty? %>
+<%= indent wrap(text) %>
+
+<% end %>

@@ -1,0 +1,13 @@
+default: &default
+<%- parameters.each do |param| -%>
+#  <%= param %>: ""
+<%- end -%>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

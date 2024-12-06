@@ -1,0 +1,11 @@
+class <%= migration_class_name %> < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :ahoy_messages do |t|
+      t.references :user, polymorphic: true
+      <%= to_column %>
+      t.string :mailer
+      t.text :subject
+      t.datetime :sent_at
+    end
+  end
+end

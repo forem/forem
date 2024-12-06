@@ -1,0 +1,84 @@
+<style>
+#honeybadger_feedback_form *, #honeybadger_feedback_form *:before, #honeybadger_feedback_form *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+#honeybadger_feedback_form h2 { font-size: 110%; line-height: 1.5em; }
+#honeybadger_feedback_form label { font-weight: bold; }
+#honeybadger_feedback_name, #honeybadger_feedback_email, #honeybadger_feedback_comment { width: 100%; padding: 0.5em; }
+#honeybadger_feedback_comment { height: 10em; }
+#honeybadger_feedback_form .honeybadger-feedback-phone { display: none; }
+#honeybadger_feedback_link { font-size: 90%; }
+</style>
+
+<script>
+function honeybadgerFeedbackResponse(data) {
+  if (data['result'] == 'OK') {
+    var form = document.getElementById('honeybadger_feedback_form');
+    var success = document.getElementById('honeybadger_feedback_success');
+
+    form.style.display = 'none';
+    success.style.display = 'block';
+  } else {
+    var message;
+
+    if (data['error']) {
+      message = data['error'];
+    } else {
+      message = 'An unknown error occurred. Please try again.';
+    }
+
+    alert(message);
+  }
+}
+
+function sendHoneybadgerFeedback() {
+  try {
+    var script = document.createElement('script');
+    var form = document.getElementById('honeybadger_feedback_form');
+    script.src = '<%= action %>?format=js&token=<%= error_id %>&name=' + encodeURIComponent(form.name.value) + '&email=' + encodeURIComponent(form.email.value) + '&comment=' + encodeURIComponent(form.comment.value);
+    form.appendChild(script);
+    return false;
+  } catch(e) {
+    if (window.console) {
+      console.log('Error caught while processing Honeybadger feedback form: ' + e);
+      console.log('Submitting form normally...');
+    }
+    return true;
+  }
+}
+</script>
+
+<div id="honeybadger_feedback_success" style="display:none;">
+  <p><strong><%= I18n.t('honeybadger.feedback.thanks', :default => 'Thanks for the feedback!') %></strong></p>
+</div>
+
+<form action="<%= action %>" method="POST" id="honeybadger_feedback_form" onsubmit="return sendHoneybadgerFeedback();">
+  <input type="hidden" name="token" id="honeybadger_feedback_token" value="<%= error_id %>">
+
+  <h2><%= I18n.t('honeybadger.feedback.heading', :default => 'Care to help us fix this?') %></h2>
+  <p><%= I18n.t('honeybadger.feedback.explanation', :default => 'Any information you can provide will help our technical team get to the bottom of this issue.') %></p>
+
+  <p class="honeybadger-feedback-name">
+    <label for="honeybadger_feedback_name"><%= I18n.t('honeybadger.feedback.labels.name', :default => 'Your name') %></label><br>
+    <input type="text" name="name" id="honeybadger_feedback_name" size="60">
+  </p>
+
+  <p class="honeybadger-feedback-phone">
+    <label for="honeybadger_feedback_phone"><%= I18n.t('honeybadger.feedback.labels.phone', :default => 'Your phone number') %></label><br>
+    <input type="text" name="phone" id="honeybadger_feedback_phone" size="60">
+  </p>
+
+  <p class="honeybadger-feedback-email">
+    <label for="honeybadger_feedback_email"><%= I18n.t('honeybadger.feedback.labels.email', :default => 'Your email address') %></label><br>
+    <input type="email" name="email" id="honeybadger_feedback_email" size="60">
+  </p>
+
+  <p class="honeybadger-feedback-comment">
+    <label for="honeybadger_feedback_comment"><%= I18n.t('honeybadger.feedback.labels.comment', :default => 'Comment (required)') %></label><br>
+    <textarea name="comment" id="honeybadger_feedback_comment" cols="50" rows="6" required></textarea>
+  </p>
+
+  <p class="honeybadger-feedback-submit">
+    <input type="submit" id="honeybadger_feedback_submit" value="<%= I18n.t('honeybadger.feedback.submit', :default => 'Send') %>">
+  </p>
+</form>
+
+<p><a id="honeybadger_feedback_link" href="https://www.honeybadger.io/" target="_blank" title="Exception, uptime, and performance monitoring for Ruby.">Powered by Honeybadger</a></p>

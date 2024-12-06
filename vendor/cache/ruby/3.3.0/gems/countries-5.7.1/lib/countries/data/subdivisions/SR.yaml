@@ -1,0 +1,560 @@
+---
+BR:
+  name: Brokopondo
+  code: BR
+  unofficial_names: Brokopondo
+  geo:
+    latitude: 4.7710247
+    longitude: -55.0493375
+    min_latitude: 4.016883000000001
+    min_longitude: -55.5210531
+    max_latitude: 5.364841999999999
+    max_longitude: -54.7262569
+  translations:
+    en: Brokopondo
+    ar: مقاطعة بروكوبوندو
+    bn: ব্রুকোপন্ডু জেলা
+    da: Brokopondo
+    de: Brokopondo
+    el: Μπροκοπόντο
+    es: Brokopondo
+    eu: Brokopondo
+    fa: ناحیه بروکوپوندو
+    fi: Brokopondo
+    fr: Brokopondo
+    gu: બ્રોકોપોંડો જિલ્લો
+    hi: ब्रोकोपोंडो जिला
+    hr: Brokopondo
+    id: Distrik Brokopondo
+    it: distretto di Brokopondo
+    ja: ブロコポンド
+    kn: ಬ್ರೋಕೊಪೋಂಡೋ ಡಿಸ್ಟ್ರಿಕ್ಟ್
+    ko: 브로코폰도 구
+    lt: Brokopondo apygarda
+    mr: ब्रोकोपोन्डो जिल्हा
+    ms: Daerah Brokopondo
+    nb: Brokopondo
+    nl: Brokopondo
+    pl: Brokopondo
+    pt: Brokopondo
+    ro: Brokopondo
+    ru: Брокопондо
+    si: බ්රෝකොපොන්ඩෝ දිස්ත්‍රික්කය
+    sv: Brokopondo
+    ta: ப்ரோகோபோண்டோ மாவட்டம்
+    te: బ్రోకోపాండో జిల్లా
+    th: เขตโบรโคพอนโด
+    tr: Brokopondo District
+    uk: Брокопондо
+    ur: بروکوپوندو ضلع
+    vi: Quận Brokopondo
+    zh: 布罗科蓬多区
+    lv: Brokopondo distrikts
+    ceb: Distrikt Brokopondo
+    ccp: "\U0001111D\U00011133\U00011122\U0001112E\U00011107\U00011128\U0001111B\U0001112E\U0001111A\U00011134\U00011113\U0001112E"
+    'no': Brokopondo
+    ca: Brokopondo
+    jv: Dhistrik Brokopondo
+    mk: Брокопондо (округ)
+  comments:
+  type: district
+CM:
+  name: Commewijne
+  code: CM
+  unofficial_names: Commewijne
+  geo:
+    latitude: 5.740211
+    longitude: -54.8731219
+    min_latitude: 5.4846897
+    min_longitude: -55.1600742
+    max_latitude: 5.9952576
+    max_longitude: -54.6201869
+  translations:
+    en: Commewijne
+    ar: مقاطعة كوميويجني
+    bn: কমেইউজনে জেলা
+    ca: Districte de Commewijne
+    da: Commewijne
+    de: Commewijne
+    el: Κομεγουίζνε
+    es: Commewijne
+    fi: Commewijne
+    fr: Commewijne
+    gu: કોમેવિજ્ને જિલ્લો
+    hi: कौमवेना जिला
+    hr: Commewijne
+    id: Distrik Commewijne
+    it: distretto del Commewijne
+    ja: コメウィン地方
+    kn: ಕಮ್ಯೂಯಿಜ್ನೆ ಜಿಲ್ಲೆ
+    ko: 코메베이너 구
+    lt: Komeveino apygarda
+    mr: कॉम्मेविंजे जिल्हा
+    ms: Daerah Commewijne
+    nb: Commewijne
+    nl: Commewijne
+    pl: Commewijne
+    pt: Commewijne
+    ro: Commewijne
+    ru: Коммевейне
+    si: කොමෙවිජ්නේ දිස්ත්‍රික්කය
+    sv: Commewijne
+    ta: கம்மேவிஜனே மாவட்டம்
+    te: కామావిజ్నే జిల్లా
+    th: เขตคอมเมวิชเน
+    tr: Commewjine District
+    uk: Коммевейне
+    ur: کوماوائنہ ضلع
+    vi: Quận Commewijne
+    lv: Kommeveines distrikts
+    ceb: Distrikt Commewijne
+    zh: 科默韦讷区
+    fa: ناحیه کوموینه
+    ccp: "\U00011107\U00011127\U0001111F\U0001112C\U00011105\U0001112A\U00011103\U00011128\U0001110C\U00011134\U0001111A\U0001112C"
+    'no': Commewijne
+  comments:
+  type: district
+CR:
+  name: Coronie
+  code: CR
+  unofficial_names: Coronie
+  geo:
+    latitude: 5.6943271
+    longitude: -56.2929381
+    min_latitude: 5.331499
+    min_longitude: -56.604008
+    max_latitude: 5.942436
+    max_longitude: -55.8880948
+  translations:
+    en: Coronie
+    ar: ضاحية كوروني
+    bn: করোনে জেলা
+    da: Coronie
+    de: Coronie
+    el: Κορονίε
+    es: Coronie
+    fi: Coronie
+    fr: Coronie
+    gu: કોરોની જિલ્લો
+    hi: कोरोनी ज़िला
+    hr: Coronie
+    id: Distrik Coronie
+    it: distretto di Coronie
+    ja: コロニー
+    kn: ಕೊರೊನಿ ಜಿಲ್ಲೆ
+    ko: 코로니 구
+    lt: Korono apygarda
+    mr: कॉरोनई जिल्हा
+    ms: Coronie District
+    nb: Coronie
+    nl: Coronie
+    pl: Coronie
+    pt: Coronie
+    ro: Coronie
+    ru: Корони
+    si: කොරොනි දිස්ත්‍රික්කය
+    sv: Coronie
+    ta: கோரோனியே மாவட்டம்
+    te: కొరోనీ జిల్లా
+    th: เขตโคโลนี
+    tr: Coronie
+    uk: Короні
+    ur: کورونی ضلع
+    vi: Quận Coronie
+    lv: Koroni distrikts
+    ceb: Distrikt Coronie
+    zh: 科罗尼区
+    fa: ناحیه کورونی
+    ccp: "\U00011107\U00011127\U0001112E\U00011122\U0001112E\U0001111A\U0001112D"
+    'no': Coronie
+    ca: Coronie
+    cs: Coronie
+  comments:
+  type: district
+MA:
+  name: Marowijne
+  code: MA
+  unofficial_names: Marowijne
+  geo:
+    latitude: 5.6268128
+    longitude: -54.25931180000001
+    min_latitude: 5.234248
+    min_longitude: -54.737735
+    max_latitude: 5.971927
+    max_longitude: -53.987011
+  translations:
+    en: Marowijne
+    ar: مقاطعة مارويجيني
+    bn: মারোভিজনে জেলা
+    da: Marowijne
+    de: Marowijne
+    el: Μαρογουίτζνε
+    es: Marowijne
+    fi: Marowijne
+    fr: Marowijne
+    gu: મારોવિંજે જિલ્લો
+    hi: मारोविएने जिला
+    hr: Marowijne
+    id: Distrik Marowijne
+    it: distretto del Marowijne
+    ja: マロウェイネ
+    kn: ಮರೋವಿಜೆನ್ ಜಿಲ್ಲೆ
+    ko: 마로베이너 구
+    lt: Maroveino apygarda
+    mr: मारोविंजे जिल्हा
+    ms: Marowijne District
+    nb: Marowijne
+    nl: Marowijne
+    pl: Marowijne
+    pt: Marowijne
+    ro: Marowijne
+    ru: Маровейне
+    si: මරෝවිජ්නේ දිස්ත්‍රික්කය
+    sv: Marowijne
+    ta: மராவிஜனே மாவட்டம்
+    te: మారోవిజ్నె జిల్లా
+    th: เขตมาโรววิจนี
+    tr: Marowjine District
+    uk: Маровейне
+    ur: مارووینہ ضلع
+    vi: Quận Marowijne
+    lv: Maroveines distrikts
+    ceb: Distrikt Marowijne
+    zh: 马罗韦讷区
+    fa: ناحیه مارووینه
+    ccp: "\U0001111F\U0001112C\U00011122\U0001112E\U00011103\U00011128\U0001110C\U00011134\U0001111A\U0001112C"
+    'no': Marowijne
+    ca: Marowijne
+  comments:
+  type: district
+NI:
+  name: Nickerie
+  code: NI
+  unofficial_names: Nickerie
+  geo:
+    latitude: 5.5855469
+    longitude: -56.83111169999999
+    min_latitude: 5.208519
+    min_longitude: -57.34862889999999
+    max_latitude: 6.00015
+    max_longitude: -56.45252499999999
+  translations:
+    en: Nickerie
+    ar: مقاطعة نيكيري
+    bn: নিকেরি জেলা
+    da: Nickerie
+    de: Nickerie
+    el: Επαρχία Νίκερι
+    es: Nickerie
+    fi: Nickerie
+    fr: Nickerie
+    gu: નિકેરી જિલ્લો
+    hi: निकेरी जिला
+    hr: Nickerie
+    id: Distrik Nickerie
+    it: distretto del Nickerie
+    ja: ニッケリ
+    kn: ನಿಕ್ಕೇರಿ ಜಿಲ್ಲೆ
+    ko: 니케리 구
+    lt: Nikerio apygarda
+    mr: निकेरी जिल्हा
+    ms: Daerah Nickerie
+    nb: Nickerie
+    nl: Nickerie
+    pl: Nickerie
+    pt: Nickerie
+    ro: Nickerie
+    ru: Никкери
+    si: නිකෙරි දිස්ත්‍රික්කය
+    sv: Nickerie
+    ta: நிக்கறியே மாவட்டம்
+    te: నికరీ జిల్లా
+    th: เขตนิคเครี
+    tr: Nickerie District
+    uk: Ніккері
+    ur: نیکاری ضلع
+    vi: Quận Nickerie
+    lv: Nikerio reģions
+    ceb: Distrikt Nickerie
+    zh: 尼克里区
+    fa: ناحیه نیکری
+    ccp: "\U0001111A\U00011128\U00011107\U0001112C\U00011122\U0001112D"
+    'no': Nickerie
+  comments:
+  type: district
+PM:
+  name: Paramaribo
+  code: PM
+  unofficial_names: Paramaribo
+  geo:
+    latitude: 5.8520355
+    longitude: -55.2038278
+    min_latitude: 5.7787709
+    min_longitude: -55.25811539999999
+    max_latitude: 5.9178787
+    max_longitude: -55.0982876
+  translations:
+    en: Paramaribo
+    ar: ضاحية باراماريبو
+    da: Paramaribo
+    de: Paramaribo
+    es: Paramaribo
+    et: Paramaribo ringkond
+    fa: استان پاراماریبو
+    fi: Paramaribon piiri
+    fr: Paramaribo
+    hi: पारामारिबो जिला
+    hr: Paramaribo
+    id: Distrik Paramaribo
+    it: distretto di Paramaribo
+    ja: パラマリボ地方
+    ko: 파라마리보 구
+    lt: Paramaribo apygarda
+    nb: Paramaribo
+    nl: Paramaribo
+    pl: Paramaribo
+    pt: Paramaribo
+    ro: Paramaribo
+    ru: Парамарибо
+    sv: Paramaribo
+    uk: Парамарибо
+    ur: پاراماریبو ضلع
+    ceb: Distrikt Paramaribo
+    zh: 帕拉马里博区
+    ccp: "\U0001111B\U00011133\U00011120\U00011122\U0001111F\U00011122\U00011128\U0001111D\U0001112E"
+    'no': Paramaribo
+    jv: Dhistrik Paramaribo
+    lv: Paramaribo apgabals
+    mk: Парамарибо (округ)
+  comments:
+  type: district
+PR:
+  name: Para
+  code: PR
+  unofficial_names: Para
+  geo:
+    latitude: 5.481731799999999
+    longitude: -55.2259207
+    min_latitude: 4.990305
+    min_longitude: -56.04478899999999
+    max_latitude: 5.700753
+    max_longitude: -54.6248351
+  translations:
+    en: Para
+    ar: ضاحية بارا
+    bn: পারা জেলা
+    da: Para
+    de: Para
+    el: Πάρα
+    es: Para
+    fi: Para
+    fr: Para
+    gu: પેરા જિલ્લો
+    hi: पारा जिला
+    hr: Para
+    id: Distrik Para
+    it: distretto del Para
+    ja: パラ
+    kn: ಪ್ಯಾರಾ ಜಿಲ್ಲೆ
+    ko: 파라 구
+    lt: Paros apygarda
+    mr: पेरा जिल्हा
+    ms: Para District
+    nb: Para
+    nl: Para
+    pl: Para
+    pt: Para
+    ro: Districtul Para
+    ru: Пара
+    si: පරා දිස්ත්‍රික්කය
+    sv: Para
+    ta: பரா மாவட்டம்
+    te: పారా జిల్లా
+    th: เขตปารา
+    tr: Para District
+    uk: Пара
+    ur: پارا ضلع
+    vi: Quận Para
+    lv: Paras distrikts
+    ceb: Distrikt Para
+    zh: 帕拉区
+    fa: ناحیه پارا
+    ccp: "\U0001111B\U00011133\U00011120\U00011122"
+    'no': Para
+    ca: Para
+    jv: Dhistrik Para
+    mk: Пара (округ)
+  comments:
+  type: district
+SA:
+  name: Saramacca
+  code: SA
+  unofficial_names: Saramacca
+  geo:
+    latitude: 5.7240813
+    longitude: -55.6689636
+    min_latitude: 5.4037231
+    min_longitude: -55.971144
+    max_latitude: 5.981152
+    max_longitude: -55.30576
+  translations:
+    en: Saramacca
+    ar: مقاطعة ساراماكا
+    bn: সারামাকা জেলা
+    da: Saramacca
+    de: Saramacca
+    el: Σαραμάκα
+    es: Saramacca
+    fi: Saramacca
+    fr: Saramacca
+    gu: સરમાકા જિલ્લો
+    hi: सरमक्का जिला
+    hr: Saramacca
+    id: Distrik Saramacca
+    it: distretto del Saramacca
+    ja: サラマッカ
+    kn: ಸರಮಾಕ್ಕಾ ಜಿಲ್ಲೆ
+    ko: 사라마카 구
+    lt: Saramakos apygarda
+    mr: सरमाका जिल्हा
+    ms: Saramacca District
+    nb: Saramacca
+    nl: Saramacca
+    pl: Saramacca
+    pt: Saramacca
+    ro: Saramacca (district)
+    ru: Сарамакка
+    si: සරමක්කා දිස්ත්‍රික්කය
+    sv: Saramacca
+    ta: சரமக்கா மாவட்டம்
+    te: సరామక్కా జిల్లా
+    th: จังหวัดบูร์กาส
+    tr: Saramacca District
+    uk: Сарамакка
+    ur: سارامکا ضلع
+    vi: Quận Saramacca
+    lv: Saramakas distrikts
+    ceb: Distrikt Saramacca
+    zh: 萨拉马卡区
+    fa: ناحیه ساراماکا
+    ccp: "\U00011125\U00011122\U0001111F\U00011107\U00011133\U00011126"
+    'no': Saramacca
+    ca: Saramacca
+    jv: Dhistrik Saramacca
+  comments:
+  type: district
+SI:
+  name: Sipaliwini
+  code: SI
+  unofficial_names: Sipaliwini
+  geo:
+    latitude: 2.0331027
+    longitude: -56.1337552
+    min_latitude: 2.0274126
+    min_longitude: -56.1407374
+    max_latitude: 2.0413084
+    max_longitude: -56.124773
+  translations:
+    en: Sipaliwini
+    ar: مقاطعة سيباليويني
+    bn: শিপালিওয়ানি জেলা
+    da: Sipaliwini
+    de: Sipaliwini
+    el: Σιπαλιβίνι
+    es: Sipaliwini
+    fi: Sipaliwini
+    fr: Sipaliwini
+    gu: સિપાલીવિની જિલ્લો
+    hi: सिपेलिविनी जिला
+    hr: Sipaliwini
+    id: Distrik Sipaliwini
+    it: distretto del Sipaliwini
+    ja: シパリウィニ
+    kn: ಸಿಪಾಲಿವಿನಿ ಜಿಲ್ಲೆ
+    ko: 시팔리비니 구
+    lt: Sipalivinio apygarda
+    mr: सिंपलीविनी जिल्हा
+    ms: Sipaliwini District
+    nb: Sipaliwini
+    nl: Sipaliwini
+    pl: Sipaliwini
+    pt: Sipaliwini
+    ro: Sipaliwini
+    ru: Сипаливини
+    si: සිපලිවිනි දිස්ත්‍රික්කය
+    sv: Sipaliwini
+    ta: சிபாலிவினி மாவட்டம்
+    te: సిపాలివిని జిల్లా
+    th: สิปาลิวินี
+    tr: Sipaliwini District
+    uk: Сипалівіні
+    ur: سیپالیوینی ضلع
+    vi: Quận Sipaliwini
+    lv: Sipalivini distrikts
+    ceb: Distrikt Sipaliwini
+    zh: 锡帕利维尼区
+    ccp: "\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011105\U0001112A\U00011103\U00011128\U0001111A\U00011128"
+    'no': Sipaliwini
+    fa: ناحیه سیپالیوینی
+    hy: Սիպալիվինի
+    jv: Dhistrik Sipaliwini
+  comments:
+  type: district
+WA:
+  name: Wanica
+  code: WA
+  unofficial_names: Wanica
+  geo:
+    latitude: 5.7323762
+    longitude: -55.2701235
+    min_latitude: 5.6584129
+    min_longitude: -55.35698799999999
+    max_latitude: 5.938986
+    max_longitude: -55.0799841
+  translations:
+    en: Wanica
+    ar: مقاطعة وانيكا
+    bn: ওয়ানিকা জেলা
+    da: Wanica
+    de: Wanica
+    el: Γουανίκα
+    es: Wanica
+    fi: Wanica
+    fr: Wanica
+    gu: વાનિકા જિલ્લો
+    hi: वानिका जिला
+    hr: Wanica
+    id: Distrik Wanica
+    it: distretto di Wanica
+    ja: ワニカ
+    kn: ವಾನಿಕಾ ಜಿಲ್ಲೆ
+    ko: 바니카 구
+    lt: Vanikos apygarda
+    mr: वानिका जिल्हा
+    ms: Wanica District
+    nb: Wanica
+    nl: Wanica
+    pl: Wanica
+    pt: Wanica
+    ro: Wanica
+    ru: Ваника
+    si: වනිකා කලාපය
+    sv: Wanica
+    ta: வனிக்கா மாவட்டம்
+    te: వానికా జిల్లా
+    th: วานิกา
+    tr: Wanica District
+    uk: Ваніка
+    ur: وانیکا ضلع
+    vi: Quận Wanica
+    lv: Vanikas distrikts
+    ceb: Distrikt Wanica
+    zh: 瓦尼卡区
+    fa: ناحیه وانیکا
+    ccp: "\U00011124\U0001111A\U00011128\U00011107"
+    he: וניקה
+    ml: വാനിക്ക ജില്ല
+    ca: Wanica
+    'no': Wanica
+  comments:
+  type: district

@@ -1,0 +1,32 @@
+<div class="content">
+  <h1>Connections</h1>
+
+  <p><%= pluralize(@total_connections, "connection") %></p>
+
+  <% if @total_connections > 0 %>
+    <h3>By Database</h3>
+
+    <div id="chart-1" class="chart pie-chart">Loading...</div>
+    <script>
+      new Chartkick.PieChart("chart-1", <%= pghero_js_value(@connections_by_database) %>);
+    </script>
+
+    <h3>By User</h3>
+
+    <div id="chart-2" class="chart pie-chart">Loading...</div>
+    <script>
+      new Chartkick.PieChart("chart-2", <%= pghero_js_value(@connections_by_user) %>);
+    </script>
+
+    <% if @connections_by_ssl_status %>
+      <h3>By Security</h3>
+
+      <div id="chart-3" class="chart pie-chart">Loading...</div>
+      <script>
+        new Chartkick.PieChart("chart-3", <%= pghero_js_value(@connections_by_ssl_status) %>);
+      </script>
+    <% end %>
+
+    <%= render partial: "connections_table", locals: {connection_sources: @connection_sources} %>
+  <% end %>
+</div>

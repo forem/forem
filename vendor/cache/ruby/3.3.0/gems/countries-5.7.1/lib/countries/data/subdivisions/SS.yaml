@@ -1,0 +1,638 @@
+---
+BN:
+  name: شمال بحر الغزال
+  code: BN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: شمال بحر الغزال
+    bg: Северен Бахър ал Газал
+    bn: নর্দান বাহ্র এল ঘেসাল
+    ca: Bahr al-Ghazal del nord
+    da: Northern Bahr el Ghazal
+    de: Northern Bahr el Ghazal
+    el: Βόρειο Μπαχρ ελ Γκαζάλ
+    en: Northern Bahr el Ghazal
+    es: Bahr al-Gazal del Norte
+    fi: Northern Bahr el-Ghazal
+    fr: Bahr el Ghazal du Nord
+    gu: નધર્ન બાહર અલ ગઝલ
+    he: צפון בחר אל-ע׳זאל
+    hi: उत्तरी बहर एल ग़ज़ल
+    id: Bahrul Ghazal Utara
+    it: Bahr al-Ghazal Settentrionale
+    ja: 北バハル・アル・ガザール州
+    ka: ჩრდილოეთი ბაჰრ-ელ-გაზალი
+    kn: ನಾರ್ದರ್ನ್ ಬಹರ್ ಎಲ್ ಘಝಲ್
+    ko: 북바르알가잘 주
+    lt: Šiaurės Bahr al Gazalis
+    mr: उत्तरी बह्र एल गझल
+    ms: Bahrul Ghazal Utara
+    nb: Northern Bahr el Ghazal
+    nl: Northern Bahr el Ghazal
+    pl: Bahr el Ghazal Północny
+    pt: Bahr al-Ghazal do Norte
+    ru: Северный Бахр-эль-Газаль
+    si: උතුරු බාහ්ර් එල් ගසාල්
+    sr: Северни Бахр ел Газал
+    sv: Northern Bahr el Ghazal
+    sw: Kaskazini Bahr al Ghazal
+    ta: வடக்கு பார் எல் கஜல்
+    te: ఉత్తర బహర్ ఎల్ గజల్
+    th: นอทเทิร์น บาฮ์ เอล กาฮ์เซล
+    tr: Kuzey Bahr el Ghazal
+    uk: Північний Бахр-ель-Газаль
+    ur: شمالی بحر الغزال
+    vi: Bắc Bahr el Ghazal
+    zh: 北加扎勒河省
+    lv: Ziemeļu Bahrelgazāla
+    ceb: Northern Bahr el Ghazal
+    sr_Latn: Severni Bahr el Gazal
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U0001111D\U00011127\U00011126\U00011127\U00011122\U00011134 \U00011103\U0001112C\U00011123\U00011134
+      \U0001110A\U0001110E\U00011127\U00011123\U00011134"
+    uz: Shimoliy Baxr-al-Gʼazal
+    mk: Северен Бахр ел-Газал
+    'no': Northern Bahr el Ghazal
+    ro: Statul Bahr al Ghazal de Nord
+    zu: Northern Bahr el Ghazal
+  comments:
+  type: state
+BW:
+  name: غرب بحر الغزال
+  code: BW
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: غرب بحر الغزال
+    bg: Западен Бахър ал Газал
+    bn: ওয়েস্টার্ন বাহ্র এল ঘাজাল
+    ca: Bahr al-Ghazal de l’oest
+    da: Western Bahr el Ghazal
+    de: Western Bahr el Ghazal
+    el: Γουέστερν Μπαχρ ελ Γκαζάλ
+    en: Western Bahr el Ghazal
+    es: Bahr al-Gazal Occidental
+    fi: Western Bahr el-Ghazal
+    fr: Bahr el Ghazal occidental
+    gu: વેસ્ટર્ન બાહર એલ ગઝલ
+    he: מערב בחר אל-ע׳זאל
+    hi: पश्चिमी बहर एल ग़ज़ल
+    id: Bahrul Ghazal Barat
+    it: Bahr al-Ghazal Occidentale
+    ja: 西バハル・アル・ガザール州
+    ka: დასავლეთი ბაჰრ-ელ-გაზალი
+    kn: ವೆಸ್ಟರ್ನ್ ಬಹರ್ ಎಲ್ ಘಝಲ್
+    ko: 서바르알가잘 주
+    lt: Vakarų Bahr al Gazalis
+    mr: वेस्टर्न बह्र एल गझल
+    ms: Bahrul Ghazal Barat
+    nb: Western Bahr el Ghazal
+    nl: Western Bahr el Ghazal
+    pl: Bahr el Ghazal Zachodni
+    pt: Bahr al-Ghazal Ocidental
+    ro: Statul Bahr al Ghazal de Vest
+    ru: Западный Бахр-эль-Газаль
+    si: බටහිර බහර් එල් ගසාල්
+    sr: Западни Бахр ел Газал
+    sv: Western Bahr el Ghazal
+    sw: Bahr al Ghazal ya Kimagharibi
+    ta: மேற்கு பார் எல் கஜல்
+    te: పశ్చిమ బహర్ ఎల్ గజల్
+    th: เวสเทิร์น บาฮ์ เอล การ์เซล
+    tr: Batı Bahr el Ghazal
+    uk: Західний Бахр-ель-Газаль
+    ur: مغربی بحر الغزال
+    vi: Tây Bahr el Ghazal
+    lv: Rietumbahrelgazāla
+    ceb: Western Bahr el Ghazal State
+    sr_Latn: Zapadni Bahr el Gazal
+    zh: 西加扎勒河省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U0001111D\U00011127\U00011126\U00011127\U00011122\U00011134 \U00011103\U0001112C\U00011123\U00011134
+      \U0001110A\U00011127\U0001110E\U00011127\U00011123\U00011134"
+    be: Заходні Бахр-эль-Газаль
+    mk: Западен Бахр ел-Газал
+    'no': Western Bahr el Ghazal
+  comments:
+  type: state
+EC:
+  name: وسط الاستوائية
+  code: EC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: وسط الاستوائية
+    bg: Централна Екватория
+    bn: সেন্টাল নিরক্ষীয়তা
+    ca: Equatòria Central
+    da: Central Equatoria
+    de: Central Equatoria
+    el: Κεντρική Εκουατόρια
+    en: Central Equatoria
+    es: Ecuatoria Central
+    fa: استوائیه وسطی
+    fi: Central Equatoria
+    fr: Équatoria-Central
+    gu: સેન્ટ્રલ ઇક્વેટોરિયા
+    he: אקווטוריה התיכונה
+    hi: मध्य इक्वेटोरिया
+    hy: Կենտրոնական Էկվատորիա
+    id: Khatulistiwa Tengah
+    it: Equatoria Centrale
+    ja: 中央エクアトリア州
+    ka: ცენტრალური ეკვატორია
+    kn: ಮಧ್ಯ ಇಕ್ವಟೋರಿಯಾ
+    ko: 중앙에콰토리아 주
+    lt: Centrinė Ekvatorija
+    mr: सेंट्रल इक्वेटोरिया
+    ms: Central Equatoria
+    nb: Central Equatoria
+    nl: Central Equatoria
+    pl: Ekwatoria Środkowa
+    pt: Equatória Central
+    ro: Statul Ecuatoria Centrală
+    ru: Центральная Экваториальная провинция
+    si: මධ්‍යම ඉක්වටෝරියා
+    sr: Централна Екваторија
+    sv: Central Equatoria
+    sw: Mashariki Equatoria
+    ta: சென்ட்ரல் ஏகுவடோரியா
+    te: మధ్య ఈక్వటోరియా
+    th: เซ็นทรัล อิเควทอเรียล
+    tr: Orta Equatoria
+    uk: Центральна Екваторія
+    ur: وسطی استوائی
+    vi: Trung Equatoria
+    lv: Centrālā Ekvatorija
+    ceb: Central Equatoria State
+    sr_Latn: Centralna Ekvatorija
+    zh: 中赤道省
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011103\U00011128\U00011107\U0001112A\U00011120\U0001112C\U00011111\U0001112E\U00011122\U00011128\U00011120"
+    be: Цэнтральная Экватарыяльная правінцыя
+    uz: Markaziy Ekvatoriya
+    mk: Централна Екваторија
+    'no': Central Equatoria
+  comments:
+  type: state
+EE:
+  name: شرق الاستوائية
+  code: EE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: شرق الاستوائية
+    bg: Източна Екватория
+    bn: ইস্টার্ন ইকুয়েটারিয়া
+    ca: Equatòria Oriental
+    da: Eastern Equatoria
+    de: Eastern Equatoria
+    el: Ίστερν Εκουατόρια
+    en: Eastern Equatoria
+    es: Ecuatoria Oriental
+    fa: استوائیه شرقی
+    fi: Eastern Equatoria
+    fr: Équatoria-Oriental
+    gu: ઇસ્ટર્ન ઇક્વેટોરિયા
+    he: אקווטוריה המזרחית
+    hi: पूर्वी इक्वेटोरिया
+    id: Khatulistiwa Timur
+    it: Equatoria Orientale
+    ja: 東エクアトリア州
+    ka: აღმოსავლეთი ეკვატორია
+    kn: ಪೂರ್ವ ಸಮಭಾಜಕ
+    ko: 동에콰토리아 주
+    lt: Rytų Ekvatorija
+    mr: इस्टर्न इक्वेटोरिया
+    ms: Eastern Equatoria
+    nb: Øst-Ekvatoria
+    nl: Eastern Equatoria
+    pl: Ekwatoria Wschodnia
+    pt: Equatória Oriental
+    ro: Statul Ecuatoria de Est
+    ru: Восточная Экваториальная провинция
+    si: නැගෙනහිර ඉක්වටෝරියා
+    sr: Источна Екваторија
+    sv: Eastern Equatoria
+    ta: கிழக்கு ஏகுவடோரிய
+    te: తూర్పు ఈక్వటోరియా
+    th: อีสเทิร์น อีควอโทเรีย
+    tr: Doğu Equatoria
+    uk: Східна Екваторія
+    ur: مشرقی استوائی
+    vi: Đông Equatoria
+    lv: Austrumu Ekvatorija
+    ceb: Eastern Equatoria
+    sr_Latn: Istočna Ekvatorija
+    zh: 东赤道省
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011103\U00011128\U00011107\U0001112A\U00011120\U0001112C\U00011111\U0001112E\U00011122\U00011128\U00011120"
+    uz: Gʼarbiy Ekvatoriya
+    mk: Источна Екваторија
+    'no': Øst-Ekvatoria
+  comments:
+  type: state
+EW:
+  name: غرب الاستوائية
+  code: EW
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: غرب الاستوائية
+    bg: Западна Екватория
+    bn: ওয়েস্টার্ন ইকুয়েটোরিয়া
+    ca: Equatòria Occidental
+    da: Western Equatoria
+    de: Western Equatoria
+    el: Γουέστερν Εκουατόρια
+    en: Western Equatoria
+    es: Ecuatoria Occidental
+    fi: Western Equatoria
+    fr: Équatoria-Occidental
+    gu: વેસ્ટર્ન ઇક્વેટોરિયા
+    he: אקווטוריה המערבית
+    hi: पश्चिमी इक्वेटोरिया
+    id: Khatulistiwa Barat
+    it: Equatoria Occidentale
+    ja: 西エクアトリア州
+    ka: დასავლეთი ეკვატორია
+    kn: ಪಾಶ್ಚಾತ್ಯ ಈಕ್ವಟೋರಿಯಾ
+    ko: 서에콰토리아 주
+    lt: Vakarų Ekvatorija
+    mr: वेस्टर्न इक्वेटोरिया
+    ms: Western Equatoria
+    nb: Western Equatoria
+    nl: Western Equatoria
+    pl: Ekwatoria Zachodnia
+    pt: Equatória Ocidental
+    ro: Statul Ecuatoria de Vest
+    ru: Западная Экваториальная провинция
+    si: බටහිර ඉක්වටෝරියා
+    sr: Западна Екваторија
+    sv: Western Equatoria
+    sw: Magharibi Equatoria
+    ta: மேற்கு ஏகுவடோரிஆ
+    te: పశ్చిమ ఈక్వెటోరియా
+    th: เวสเทิร์น อีกัวโทเรีย
+    tr: Batı Equatoria
+    uk: Західна Екваторія
+    ur: مغربی استوائی
+    vi: Tây Equatoria
+    lv: Rietumu Ekvatorija
+    ceb: Western Equatoria
+    sr_Latn: Zapadna Ekvatorija
+    zh: 西赤道省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011103\U00011128\U00011107\U0001112A\U00011120\U0001112C\U00011111\U0001112E\U00011122\U00011128\U00011120"
+    mk: Западна Екваторија
+    'no': Western Equatoria
+  comments:
+  type: state
+JG:
+  name: جونقلي
+  code: JG
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: جونقلي
+    bg: Джонглей
+    bn: জংলি
+    ca: Jonglei
+    da: Jonglei
+    de: Jonglei
+    el: Τζονγκλέι
+    en: Jonglei
+    es: Junqali
+    fa: جونقلی
+    fi: Jonglei
+    fr: Jonglei
+    gu: જોંગલેઇ
+    he: ג׳ונגליי
+    hi: जोंगली
+    id: Junqali
+    it: Jonglei
+    ja: ジョングレイ州
+    ka: ჯონგლი
+    kn: ಜೋಂಗ್ಲೀ
+    ko: 종글레이 주
+    lt: Džonglėjus
+    mr: जोंगली
+    ms: Jonglei
+    nb: Jonglei
+    nl: Jonglei
+    pl: Jonglei
+    pt: Juncáli
+    ro: Statul Jonglei
+    ru: Джонглий
+    si: ජොන්ග්ලෙයි
+    sr: Џонглеј
+    sv: Jonglei
+    sw: Junqali
+    ta: ஜொங்க்லெய்
+    te: జాంగ్లే
+    th: จงเหลย
+    tr: Jonglei
+    uk: Джонглей
+    ur: جونقلی
+    vi: Jonglei
+    lv: Džūnkalī
+    ceb: Jonglei
+    sr_Latn: Džonglej
+    zh: 琼莱省
+    ccp: "\U0001110E\U00011127\U00011101\U00011123\U0001112C\U0001112D"
+    uz: Jongli
+    mk: Џонглеј
+    'no': Jonglei
+    hy: Ջոնգլեյ
+  comments:
+  type: state
+LK:
+  name: البحيرات
+  code: LK
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: البحيرات
+    bg: Езерна провинция
+    bn: লেকস
+    ca: Llacs
+    da: Lakes
+    de: Lakes
+    el: Λέικς
+    en: Lakes
+    es: Lagos
+    et: Lakes
+    fi: Lakes
+    fr: Lacs
+    gu: લેક્સ
+    he: מדינת האגמים
+    hi: लेक्स
+    id: Lakes
+    it: Laghi
+    ja: レイク州
+    ka: ტბები (შტატი)
+    kn: ಸರೋವರಗಳು
+    ko: 레이크스 주
+    lt: Buhairatas
+    mr: लेक्स
+    ms: Lakes
+    nb: Lakes
+    nl: Lakes
+    pl: Lakes
+    pt: Lagos
+    ro: Statul Lacuri
+    ru: Озёрная провинция
+    si: ලේක්ස්
+    sr: Ел Бухајрат
+    sv: Lakes
+    sw: Ziwa
+    ta: லெக்ஸ்
+    te: లేక్స్
+    th: เลคส์
+    tr: Lakes
+    uk: Озерний
+    ur: جھیلیں (ریاست)
+    vi: Lakes
+    lv: Buheirāta
+    ceb: Lakes (estado)
+    sr_Latn: El Buhajrat
+    zh: 湖泊省
+    ccp: "\U00011123\U00011107\U0001112C\U0001110C\U00011134"
+    uz: Koʼl
+    mk: Езера
+    'no': Lakes
+  comments:
+  type: state
+NU:
+  name: أعالي النيل
+  code: NU
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: أعالي النيل
+    be: Штат Верхні Ніл
+    bg: Горни Нил
+    bn: আপার নীল
+    ca: Nil Superior
+    da: Upper Nile
+    de: Upper Nile
+    el: Άπερ Νάιλ
+    en: Upper Nile
+    es: Alto Nilo
+    fa: نیل بالا
+    fi: Upper Nile
+    fr: Nil Supérieur
+    gu: અપર નાઇલ
+    he: מדינת הנילוס העליון
+    hi: ऊपरी नील
+    id: Nil Hulu
+    it: Alto Nilo
+    ja: 上ナイル州
+    ka: ზემო ნილოსი
+    kn: ಅಪ್ಪರ್ ನೈಲ್
+    ko: 상나일 주
+    lt: Aukštutinis Nilas
+    mr: अप्पर नाईल
+    ms: Upper Nile
+    nb: Upper Nile
+    nl: Upper Nile
+    pl: Nil Górny
+    pt: Alto Nilo
+    ro: Statul Nilul Superior
+    ru: Верхний Нил
+    si: ඉහල නයිල්
+    sr: Горњи Нил
+    sv: Övre Nilen
+    sw: Jimbo la Nile ya Juu
+    ta: அப்பர் நில்
+    te: ఎగువ నైల్
+    th: ไนล์ตอนบน
+    tr: Yukarı Nil Eyaleti
+    uk: Верхній Ніл
+    ur: بالائی نیل (ریاست)
+    vi: Thượng Nin
+    lv: Augšnīla
+    ceb: Upper Nile
+    sr_Latn: Gornji Nil
+    zh: 上尼罗省
+    ccp: "\U00011103\U0001111B\U00011122\U00011134 \U0001111A\U0001112D\U00011123\U00011134"
+    uz: Yuqori Nil
+    mk: Горен Нил
+    'no': Upper Nile
+    hr: Gornji Nil
+  comments:
+  type: state
+UY:
+  name: الوحدة
+  code: UY
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: الوحدة
+    bg: Единство
+    bn: ইউনিটি
+    ca: Unitat
+    da: Unity
+    de: Unity
+    el: Γιούνιτι
+    en: Unity
+    es: Unidad
+    fi: Unity
+    fr: Unité
+    gu: યુનિટી
+    he: מדינת האיחוד
+    hi: यूनिटी स्टेट
+    hr: Unity
+    id: Wahdah
+    it: Unità
+    ja: ユニティ州
+    ka: ერთობა (შტატი)
+    kn: ಯೂನಿಟಿ
+    ko: 유니티 주
+    lt: Vakarų Aukštutinis Nilas
+    mr: युनिटी
+    ms: Unity
+    nb: Unity
+    nl: Unity
+    pl: Unity
+    pt: Unidade
+    ro: Statul Unitatea
+    ru: Эль-Вахда
+    si: යුනිටි
+    sr: Ел Вахда
+    sv: Unity
+    sw: Umoja
+    ta: யூனிட்டி
+    te: యూనిటీ
+    th: ยูนิตี้
+    tr: Unity
+    uk: Ель-Вахда
+    ur: وحدت (ریاست)
+    vi: Unity
+    lv: Vahdas vilājs
+    ceb: Unity
+    sr_Latn: El Vahda
+    zh: 猶尼提省
+    ccp: "\U00011103\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011111\U00011128"
+    mk: Единство
+    'no': Unity
+  comments:
+  type: state
+WR:
+  name: واراب
+  code: WR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: واراب
+    bg: Уараб
+    bn: ওয়ারর‍্যাপ
+    ca: Warrap
+    da: Warrap
+    de: Warrap
+    el: Γουαράπ
+    en: Warrap
+    es: Warab
+    fi: Warrap
+    fr: Warab
+    gu: વારપ
+    he: ואראפ
+    hi: वार्रप
+    id: Warab
+    it: Warrap
+    ja: ワラブ州
+    ka: ვარაბი
+    kn: ವಾರ್ರಾಪ್
+    ko: 와랍 주
+    lt: Varabas
+    mr: वाराप
+    ms: Warrap
+    nb: Warrap
+    nl: Warrap
+    pl: Warrap
+    pt: Warab
+    ro: Statul Warab
+    ru: Вараб
+    si: වර්රප්
+    sr: Вараб
+    sv: Warrap
+    sw: Warab
+    ta: வாரப்
+    te: వార్రప్
+    th: วาร์รัป
+    tr: Warrap
+    uk: Вараб
+    ur: واراب (ریاست)
+    vi: Warrap
+    lv: Vārāpa
+    ceb: Warrap State
+    sr_Latn: Varab
+    zh: 瓦拉布省
+    fa: واراب
+    ccp: "\U00011124\U00011122\U0001111B\U00011134"
+    uz: Varab
+    mk: Варап
+    'no': Warrap
+  comments:
+  type: state

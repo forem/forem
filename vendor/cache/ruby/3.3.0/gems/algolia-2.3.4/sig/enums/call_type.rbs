@@ -1,0 +1,5 @@
+module CallType
+  READ: ::Integer
+
+  WRITE: ::Integer
+end

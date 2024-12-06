@@ -1,0 +1,6 @@
+function main(args as dynamic) as void
+    screen = CreateObject("roSGScreen")
+    'Create a scene and load /components/helloworld.xml'
+    scene = screen.CreateScene("HelloWorld")
+    screen.show()
+end function

@@ -1,0 +1,3618 @@
+HTTP/1.1 200 OK
+Date: Mon, 30 May 2011 09:52:44 GMT
+Server: PWS/1.7.2.3
+X-Px: ms mad-agg-n11 ( mad-agg-n12), rf-ms mad-agg-n12 ( origin>CONN)
+Cache-Control: max-age=600
+Expires: Mon, 30 May 2011 10:02:45 GMT
+Age: 0
+Content-Length: 38752
+Content-Type: text/html; charset=utf-8
+Last-Modified: Mon, 30 May 2011 00:36:13 GMT
+Connection: keep-alive
+
+
+<!DOCTYPE html><html lang="en">
+
+<head>
+                                <script type="text/javascript" >
+                                        document.domain = "guardian.co.uk";
+                        </script>
+                      <meta charset="utf-8" />
+
+            <!------ OAS SETUP begin ------>
+    <script type="text/javascript">
+      //<![CDATA[
+        OAS_url = 'http://oas.guardian.co.uk/RealMedia/ads/';
+        OAS_sitepage = "www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups/oas.html";
+        OAS_listpos = 'Top,Middle2,Right1,x31,Position4';
+
+                OAS_query = 'k=startups&k=technology&k=media&k=digital-media&k=techcrunch&k=blogging&cf=digital+media&pid=&ct=article&pt=article&pt=blog&';
+        OAS_target = '_blank';
+
+        OAS_rn = '001234567890';
+        OAS_rns = '1234567890';
+        OAS_rn = new String (Math.random());
+        OAS_rns = OAS_rn.substring (2, 11);
+      //]]>
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link rel="canonical" href="http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups" />
+      <meta name="description" content="Despite claiming transparency, TechCrunch readers are not convinced that a 'Habbo Hotel for Facebook' was a deserving winner of a coveted award. By Jemima Kiss" />
+
+      <meta name="DC.date.issued" content="2011-09-15">
+
+
+        <meta property="og:title" content="More TechCrunch drama as Arrington-backed startup wins blog's contest"/>
+        <meta property="og:type" content="article"/>
+    <meta property="og:url" content="http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups"/>
+            <meta property="og:image" content="https://i.guim.co.uk/img/media/020bf03ae1d259626803b6c83ac57fd57382f285/0_102_5760_3456/master/5760.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&s=46e054247285bdf48a7621d371fc5070"/>
+        <meta property="og:site_name" content="the Guardian"/>
+    <meta property="fb:app_id" content="180444840287"/>
+    <meta property="og:description" content="Despite claiming transparency, TechCrunch readers are not convinced that a 'Habbo Hotel for Facebook' was a deserving winner of a coveted award. By Jemima Kiss"/>
+
+      <meta property="article:published_time" content="2011-09-15T13:57:36+01:00" />
+        <meta property="article:modified_time" content="2011-09-15T17:55:55+01:00" />
+
+      <meta property="article:author" content="http://www.guardian.co.uk/profile/jemimakiss" />
+
+      <meta property="article:tag" content="TechCrunch" />
+    <meta property="article:tag" content="Media" />
+    <meta property="article:tag" content="Blogging" />
+    <meta property="article:tag" content="Digital media" />
+    <meta property="article:tag" content="Technology" />
+    <meta property="article:tag" content="Technology startups" />
+
+    <meta property="og:section" content="Media" />
+    <meta property="og:language" content="en">
+
+<meta name="keywords" content="TechCrunch,Media,Blogging,Digital media,Technology,Technology startups,Media" />
+
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+  <link rel="shorturl" href="http://gu.com/p/32v5a" />
+        <title> More TechCrunch drama as Arrington-backed startup wins blog's contest | Media | guardian.co.uk </title>
+
+
+          <link href="http://feeds.guardian.co.uk/theguardian/media/rss" rel="alternate" type="application/rss+xml" title="Media RSS feed" />
+      <link href="http://www.guardian.co.uk/media/techcrunch/rss" rel="alternate" type="application/rss+xml" title="TechCrunch RSS feed" />
+      <link href="http://www.guardian.co.uk/media/blogging/rss" rel="alternate" type="application/rss+xml" title="Blogging RSS feed" />
+      <link href="http://www.guardian.co.uk/media/digital-media/rss" rel="alternate" type="application/rss+xml" title="Digital media RSS feed" />
+    <link href="http://feeds.guardian.co.uk/theguardian/technology/rss" rel="alternate" type="application/rss+xml" title="Technology RSS feed" />
+      <link href="http://www.guardian.co.uk/technology/startups/rss" rel="alternate" type="application/rss+xml" title="Technology startups RSS feed" />
+
+
+  <link href="http://www.guardian.co.uk/media/pda/rss" rel="alternate" type="application/rss+xml" title="PDA RSS feed" />
+
+    <script type="text/javascript">
+//<![CDATA[
+  if (!commonStaticRoot) {
+    var commonStaticRoot = "http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/";
+  }
+  if (!sectionStaticRoot) {
+    var sectionStaticRoot = "http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/media/";
+  }
+  if (!staticHost) {
+    var staticHost="http://www.guardian.co.uk/";
+  }
+  if (!sitePrefixUrl) {
+    var sitePrefixUrl = "http://www.guardian.co.uk";
+  }
+//]]>
+</script>
+        <link rel="alternate stylesheet" title="No layout" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/no-layout.css" media="screen" class="contrast" id="no-layout-sheet" />
+
+          <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/article-top.css" media="screen" />
+      <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/print.css" media="print" class="contrast" />
+
+    <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/zones/news/styles/zone-accent.css" media="screen" class="contrast" />
+
+      <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/base-typography.css" media="screen" />
+
+
+
+
+    <!--[if ie 7]>
+        <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/ie7.css" media="screen" class="ie" />
+    <![endif]-->
+
+    <!--[if ie 8]>
+      <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/ie8.css" media="screen" class="ie" />
+    <![endif]-->
+
+    <!--[if lte IE 6]>
+      <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/ie-scratch.css" media="screen" class="ie" />
+        <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/zones/news/styles/zone-navigation-ie.css" media="screen" class="contrast" />
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+      <script src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/external-scripts/html5enable.js"></script>
+    <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="http://combo.guim.co.uk/32b9600ebe43926107624a816c7870f8566f154f/badge+blog-internal-external-links+blog-navigation+blog-post+blogpost-byline+blogs-calendar+content-actions+default-ad-placeholders+header-local-info+page-toolbox+related-keywords+series-component+top-navigation+top-navigation-drop-down.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://combo.guim.co.uk/32b9600ebe43926107624a816c7870f8566f154f/m-324~css/rss-aggregator-promo+m-482~public/css/jobs-box-4+m-661~static/1734/comment-common+m-661~static/1734/comment-counts+m-661~static/1734/comment-list+m-661~static/1734/post-comment+m-661~static/1734/report-abuse+m-963~related-information/static/related-information-7.css" media="screen" />
+      <link rel="stylesheet" type="text/css" href="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/styles/article-page-typography.css" media="screen" />
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+if (typeof jQuery == 'undefined') {
+    document.write(unescape("%3Cscript src='http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/external-scripts/jquery-1.4.2.min.js' type='text/javascript'%3E%3C/script%3E"));
+}
+</script>
+
+<script type="text/javascript" src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/external-scripts/jquery-libraries/jquery.cookie.js"></script>
+<script type="text/javascript" src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/external-scripts/jquery-libraries/jquery.writeCapture-1.0.5-min.js"></script>
+
+<script type="text/javascript">
+ var jQ = jQuery.noConflict();
+</script>
+
+<script type="text/javascript">
+  //<![CDATA[
+  function insertStyleSheet(href) {
+    var styleObject = document.createElement('link');
+    styleObject.setAttribute('href', commonStaticRoot + href);
+    styleObject.setAttribute('type', 'text/css');
+    styleObject.setAttribute('media', 'screen');
+    styleObject.setAttribute('rel', 'stylesheet');
+    var head = document.getElementsByTagName('head')[0];
+    head.appendChild(styleObject);
+  }
+  insertStyleSheet('styles/js-on.css');
+  insertPluckStylesheet = true;
+  //]]>
+</script>
+<script src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/scripts/gu-core.js"></script>
+<script type="text/javascript">
+  //<![CDATA[
+  function init() {
+    urlStack.clearUrlStack();
+    var signOutLink = document.getElementById("sign-out");
+    if (signOutLink) {
+      signOutLink.onclick = signOut;
+    }
+  }
+
+    guardian.r2.resourceRoot = "http://resource.guim.co.uk/";
+    var pageUrl = "http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups";
+    var pageSignature =  "051c84e655be673661a86ae87a9637fa80bb2efe15b425ed0d94af0a059f194f";
+
+  var thirdPartyReferralCookieService = new guardian.r2.ThirdPartyReferralCookieService();
+  thirdPartyReferralCookieService.setThirdPartyReferralCookie();
+
+  var urlStack = new UrlStack(".guardian.co.uk");
+  var communitiesSite = false;
+
+
+
+
+  guardian.r2.signInListeners = new guardian.r2.SignInListeners();
+    (function () {
+    var signInView = new guardian.r2.SignInView("http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/scripts/md5.js", communitiesSite);
+    guardian.r2.signInController = new guardian.r2.SignInController(signInView, guardian.r2.signInListeners, "http://www.guardian.co.uk/tools/signin", pageUrl, pageSignature);
+
+  }) ();
+
+  (function () {
+    var profileLinkView = new guardian.r2.ProfileLinkView();
+    profileLinkController = new guardian.r2.ProfileLinkController(profileLinkView, "http://www.guardian.co.uk/discussion/user/");
+  }) ();
+
+  addSafeLoadEvent(init);
+  //]]>
+</script>
+<script type="text/javascript" src="http://combo.guim.co.uk/32b9600ebe43926107624a816c7870f8566f154f/common/scripts/convertJSONtoAd+common/scripts/formChecker+common/scripts/glossaryPopupView+common/scripts/sendtoafriend+common/scripts/shareCounts+common/scripts/tweet_button.js"></script>
+<script type="text/javascript" src="http://combo.guim.co.uk/32b9600ebe43926107624a816c7870f8566f154f/m-661~static/1734/comment-formatting+m-661~static/1734/comment-setup+m-661~static/1734/fill-comment-counts+m-661~static/1734/jquery-ui-1.7.3.custom.min+m-661~static/1734/redirect-pluck-permalink.js"></script>
+
+</head>
+
+
+
+
+<body class=" article blog-post   has-badge ">
+
+  <div id="wrapper">
+
+
+
+  <div id="header">
+
+              <div id="sub-header">
+
+
+
+
+
+
+
+
+<div id="fake-bar"></div>
+<div class="top-navigation twelve-col initially-off">
+
+  <div class="user-functions">
+    <div id="video-settings">
+    <div class="cookied">
+        <p class="on"><a class="autoplay-off" href="#skiplinks">Turn autoplay off</a></p>
+        <p class="off"><a class="autoplay-on" href="#skiplinks">Turn autoplay on</a></p>
+    </div>
+    <div class="not-cookied">
+        <p>Please activate cookies in order to turn autoplay off</p>
+    </div>
+</div>
+
+<div id="skiplinks">
+  <ul>
+    <li><a href="#box" accesskey="s">Jump to content [s]</a></li>
+          <li><a href="#start-of-comments" accesskey="c">Jump to comments [c]</a></li>
+        <li><a href="#global-nav" accesskey="0">Jump to site navigation [0]</a></li>
+    <li><a href="#searchbeta" accesskey="4">Jump to search [4]</a></li>
+    <li><a href="http://guardian.co.uk/Users/help/article/0,,933909,00.html" accesskey="8">Terms and conditions [8]</a></li>
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+      <div id="edition-selector">
+    <div id="drop-down-edition" class="drop-down">
+      <h2>Edition: <span class="current-edition">US</span></h2>
+      <ul class="initially-off">
+        <li><a href="http://www.guardiannews.com/uk-home">UK</a></li>
+      </ul>
+    </div>
+  </div>
+
+<div class="user-details">
+
+
+          <span><a class="same-page-login-required" href="http://www.guardian.co.uk/identity/signin?returnUrl=http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups&sig=051c84e655be673661a86ae87a9637fa80bb2efe15b425ed0d94af0a059f194f">Sign in</a></span>
+      <span><a href="http://m.guardian.co.uk" class="register-required">Mobile</a></span>
+
+</div>
+          <div id="drop-down-1" class="drop-down">
+          <h2>
+
+          About us
+    </h2>
+      <ul class="initially-off">
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/info"  class="link-text">About us</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/help/contact-us"  class="link-text">Contact us</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/gnm-press-office"  class="link-text">Press office</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/help/terms-of-service"  class="link-text">Terms of service</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/help/privacy-policy"  class="link-text">Privacy policy</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/subscription-services"  class="link-text">Subscribe</a>
+    </li>
+
+          </ul>
+    </div>
+    </div>
+
+  <div class="other-functions">
+                  <div id="drop-down-3" class="drop-down mirror">
+          <h2>
+
+          Subscribe
+    </h2>
+      <ul class="initially-off">
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/mobile/iphone/guardian"  class="link-text">Guardian iPhone</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.amazon.co.uk/The-Guardian-and-the-Observer/dp/B004MME3M8/ref=sr_1_2?ie=UTF8&m=A3TVV12T0I6NSM&s=digital-text&qid=1310129212&sr=1-2"  class="link-text">Kindle</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://guardian.newspaperdirect.com/epaper/viewer.aspx"  class="link-text">Digital edition</a>
+    </li>
+
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/subscription-services"  class="link-text">All our services</a>
+    </li>
+
+          </ul>
+    </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+  ensurePackage('guardian.r2');
+
+  guardian.r2.dropDownMenu = function () {
+
+    // bar set up
+    jQ('.top-navigation').show().addClass('top-navigation-js');
+    jQ('#fake-bar').remove();
+
+    // functionality
+    jQ('.drop-down').mouseover(function() {
+      jQ(this).find('ul').css('display', 'block');
+    });
+
+    jQ('.drop-down').mouseout(function() {
+      jQ(this).find('ul').css('display', 'none');
+    });
+
+  };
+
+  jQ(document).ready(function() {
+    var myDropDownMenu = new guardian.r2.dropDownMenu();
+  });
+</script>
+
+
+
+
+
+
+
+        <div id="Top" class=" hide-on-popup">
+
+
+            <div id="ad-placeholder-Top"></div>
+        </div>
+
+        </div>
+
+
+
+
+  <div id="guardian-logo">
+                        <a href="http://www.guardiannews.com"><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/logos/the-guardian/news.gif" width="115" height="22" alt="The Guardian home" /></a>
+                  </div>
+
+
+
+
+
+  <form id="searchbeta" method="get" action="http://www.guardian.co.uk/search" onsubmit="return searchWeb('http://www.guardian.co.uk/websearch', 'http://www.guardian.co.uk/search', 'http://www.guardian.co.uk/discussion/search/comments/');" >
+    <input type="text" name="q" placeholder="Your search terms..."/>
+     <select name="section" id="gu-site-search" style="z-index: 0 !important;">
+              <option value="" id="search-guardian">The Guardian</option>
+                                  <option value="media" id="search-section" selected="selected">Media</option>
+                            <option value="search-contributions" id="search-contributions">User comments</option>
+      <option value="web" id="search-web">Web</option>
+    </select>
+    <input type="submit" value="Search" />
+  </form>
+
+
+    <div id="zones-nav">
+
+
+  <div id="global-nav">
+    <ul>
+
+                                                <li class="first news">
+            <a href="http://www.guardiannews.com" >News</a>
+          </li>
+
+                                      <li class="news">
+            <a href="http://www.guardian.co.uk/world" >World</a>
+          </li>
+
+                                      <li class="sport">
+            <a href="http://www.guardian.co.uk/sport" >Sports</a>
+          </li>
+
+                                      <li class="comment">
+            <a href="http://www.guardian.co.uk/commentisfree/america" >Comment</a>
+          </li>
+
+                                      <li class="culture">
+            <a href="http://www.guardian.co.uk/culture" >Culture</a>
+          </li>
+
+                                      <li class="business">
+            <a href="http://www.guardian.co.uk/business" >Business</a>
+          </li>
+
+                                      <li class="environment">
+            <a href="http://www.guardian.co.uk/environment" >Environment</a>
+          </li>
+
+                                      <li class="news">
+            <a href="http://www.guardian.co.uk/science" >Science</a>
+          </li>
+
+                                      <li class="travel">
+            <a href="http://www.guardian.co.uk/travel" >Travel</a>
+          </li>
+
+                                      <li class="news">
+            <a href="http://www.guardian.co.uk/technology" >Tech</a>
+          </li>
+
+                                      <li class="life-and-style">
+            <a href="http://www.guardian.co.uk/lifeandstyle" >Life and style</a>
+          </li>
+
+                                      <li class="global">
+            <a href="http://www.guardian.co.uk/mobile/apps" >Mobile</a>
+          </li>
+
+                                                <li class="last news">
+            <a href="http://www.guardian.co.uk/data" >Data</a>
+          </li>
+                  </ul>
+  </div>
+
+
+
+
+
+
+
+
+<div class="crumb-wrapper">
+
+            <ul class="crumb-nav">
+                            <li id="crumb1">
+                    <a href="http://www.guardiannews.com">News</a>
+                </li>
+                            <li id="crumb2">
+                    <a href="http://www.guardian.co.uk/media">Media</a>
+                </li>
+                            <li id="crumb3">
+                    <a href="http://www.guardian.co.uk/media/pda">PDA</a>
+                </li>
+                    </ul>
+
+
+</div>
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+    <div id="box"                              >
+
+
+
+
+
+
+
+
+<div id="article-header">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div id="badge-medium">
+             <h1>               <a href="http://www.guardian.co.uk/media/pda">
+            <img src="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2009/2/26/1235669139363/Badge-PDA-blog-001.jpg" alt="Badge PDA blog" width="620" height="140" class="image-badge" />
+              </a>
+             </h1>
+                                            </div>
+
+
+
+
+
+<ul id="blog-nav-top" class="blog-navigation">
+      <li class="blog-next">
+      <a href="http://www.guardian.co.uk/media/pda/2011/sep/15/jemima-kiss" >Next</a>
+    </li>
+        <li class="blog-previous">
+      <a href="http://www.guardian.co.uk/media/pda/2011/sep/15/newsbucket" >Previous</a>
+    </li>
+
+  <li class="blog-home">
+              <a href="http://www.guardian.co.uk/media/pda" title="">Blog home</a>
+        </li>
+</ul>
+
+
+  <div id="main-article-info">
+
+
+
+      <h1
+                                                            >More TechCrunch drama as Arrington-backed startup wins blog's contest</h1>
+
+          <p id="stand-first"
+         class="stand-first-alone"                                                  >Despite claiming transparency, TechCrunch readers are not convinced that a 'Habbo Hotel for Facebook' was a deserving winner of a coveted award</p>
+
+
+    </div>
+
+                    <ul id="content-actions" class="share-links">
+
+
+
+
+
+
+
+
+
+    <li class="share-links">
+        <ul>
+
+
+
+
+  <li class="full-line tweet tweet_button">
+                        <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://gu.com/p/32v5a/tw" data-via="guardian" data-counturl="http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups" data-related="mediaguardian" data-text="More TechCrunch drama as Arrington-backed startup wins blog's contest">Tweet this</a>
+  </li>
+
+            <li class="third-party-tool full-line facebook">
+            <iframe src="http://www.facebook.com/plugins/like.php?app_id=178412055558267&amp;href=http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups&amp;send=false&amp;layout=button_count&amp;width=140&amp;show_faces=false&amp;action=recommend&amp;colorscheme=light&amp;font=arial&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:140px; height:21px;" allowTransparency="true"></iframe>
+        </li>
+
+                            <li class="third-party-tool last-line reddit">
+            <span class="reddit_button">
+                <a target="http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;amp;title=" href="http://www.reddit.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=">
+                    <img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_reddit.gif"/>
+                </a>
+                <a target="http://www.reddit.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;amp;title=" href="http://www.reddit.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=">reddit this</a>
+            </span>
+                        <script type="text/javascript">omnitracker.omniTrackEVarEvent( 12, 16, 'Media: Reddit', 'click', '.reddit a' );</script>
+                  </li>
+            </ul>
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <li class="b3">
+      <a href="http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups#start-of-comments" class="content-comment-count" short-url="-p-32v5a">Comments (<span class="comment-count-val">&hellip;</span>)</a>
+    </li>
+          </ul>
+
+            </div>
+
+
+<div id="content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="article-wrapper"
+                                                            >
+
+              <div id="main-content-picture">
+              <img src="http://static.guim.co.uk/sys-images/Media/Pix/pictures/2011/9/13/1315898717255/Michael-Arrington-007.jpg" width="460" height="276" alt="Michael Arrington"  />
+                    <div class="caption">Michael Arrington: new spat over TechCrunch</div>
+          </div>
+
+    <div id="article-body-blocks">
+      <p>If you were wondering what that rumbling, thunderous sound is, it could be the mighty <a href="http://www.guardian.co.uk/media/techcrunch" title="More from guardian.co.uk on TechCrunch">TechCrunch</a> empire finally crashing to the ground after a company funded by Mike Arrington won TechCrunch Disrupt and in-fighting continued among the blog's staff.</p><p>Last night the TechCrunch Disrupt conference climaxed with the&nbsp; announcement of the winning startup, the company who'd convinced a panel of five TechCrunch Disrupt judges – and Michael Arrington – that it was the most deserving winner among 31 promising but as-yet-unlaunched startups.</p><p>For background, Mike Arrington <a href="http://www.guardian.co.uk/technology/2011/sep/02/techcrunch-eidtor-michael-arrington-steps-down">has been removed</a> as editor of TechCrunch, the tech blog he founded, after a well-documented spat with the <a href="http://www.guardian.co.uk/media/pda/2010/nov/15/digital-media-blogging">site's owners AOL</a>. Head of content Arianna Huffington and chief executive Tim Armstrong finally terminated Arrington after a controversy around whether he could ethically be the editor of an influential tech site and head up an investment fund for those same startups.</p><p>There was some speculation that Arrington might not appear at Disrupt, the conference and startup contest started in 2007; he might graciously shun the limelight and avoid any awkward questions about <a href="http://www.guardian.co.uk/media/pda/2011/sep/07/techcrunch-mike-arrington-aol">Crunchgate</a>. Not so – Arrington opened the conference by talking about the spat and saying he wanted the <a href="http://www.zdnet.com/blog/btl/mike-arrington-addresses-aol-drama-at-start-of-techcrunch-expo/57876">focus to remain</a> on the startups taking the stage.</p><p>So who won the startup battlefield contest? Of seven finalists, <a href="http://techcrunch.com/2011/09/14/and-the-winner-of-techcrunch-disrupt-is-shaker/">overall winner</a> was an Israeli Second Life-meets-social network called <a href="http://www.atshaker.com/">Shaker</a>, with <a href="http://prismskylabs.com/">Prism Skylabs</a> and <a href="http://www.bitcasa.com/">Bitcasa</a> runners-up. And guess who's an investor in Prism Skylabs and Bitcasa, and a "pending investor" in Shaker? None other than Michael Arrington.</p><span class="inline embed embed-media">
+  <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" height="369" width="460">   <embed flashvars="vid=17275877&amp;autoplay=false" allowfullscreen="true" allowscriptaccess="always" src="http://www.ustream.tv/flash/viewer.swf" type="application/x-shockwave-flash" height="296" width="460"> </embed>  </object>
+  </span><p>Arrington's defence throughout the Crunchgate controversy has been that users would trust him to be transparent and disclose any conflict of interest. Consequently the TechCrunch post announcing the winner (even though Arrington isn't at TechCrunch any more... yet is still at Disrupt?!) includes the disclosure than Arrington is an investor. But is that enough?</p><p>TechCrunch writers Paul Carr and Sarah Lacy were tweeting the downfall, Carr describing newly promoted editor Erick Schonfeld on stage as zapping Carr's "own already limited stocks of charisma".</p><p><a href="https://twitter.com/#%21/sarahcuda/status/114113790093692928">@sarahcuda</a>: "Someone please tell me what the hell Shaker is disrupting?"</p><p><a href="https://twitter.com/#%21/sarahcuda/status/114170437482717185">@sarahcuda</a>: "Can't believe Shaker won. Now I might quit."</p><p><a href="https://twitter.com/#%21/paulcarr/status/114022460495642624">@paulcarr</a>: "Erick wrote that Mike had no input in selecting the final companies. That was untrue. <a href="http://t.co/7nfC6oh">See Mike's comment</a>.... And so <a href="https://twitter.com/#%21/paulcarr/status/114022460495642624">the new culture</a> of honesty and transparency begins."</p><p>(Arrington had explained that he'd talked for over an hour about the finalists, and concluded by saying that he might not disclose investments to TechCrunch in the future. Which could get even more complicated.)</p><p><a href="http://www.flickr.com/photos/techcrunch/6149173782/in/photostream"><img src="http://farm7.static.flickr.com/6075/6149173782_4eb92552a7_z.jpg" width="460" /></a><br /><em>Photo by <a href="http://flickr.com/photos/techcrunch/"><a href="http://www.flickr.com/photos/techcrunch/">TechCrunch</a></a> on Flickr. <a href="http://creativecommons.org/licenses/by/2.0/">Some rights reserved</a></em></p><p>What did TechCrunch readers make of all this? There had been a <a href="http://www.theatlanticwire.com/business/2011/09/techcrunch-promotes-arrington-funded-company-commenters-revolt/42415/">first wave of objection</a> when TechCrunch ran a glowing review of CrunchFund-funded Bitcasa before the winners were announced. "Reads like ad copy, then comes the disclaimer," <a href="https://twitter.com/#%21/ryantate/statuses/113636781970296832">tweeted Valleywag's Ryan Tate</a>, though writer Sarah Perez <a href="https://www.facebook.com/plugins/comments.php?channel_url=http%3A%2F%2Fstatic.ak.fbcdn.net%2Fconnect%2Fxd_proxy.php%3Fversion%3D3%23cb%3Df35bd6c7b%26origin%3Dhttp%253A%252F%252Ftechcrunch.com%252Ff174f6576%26relation%3Dparent.parent%26transport%3Dpostmessage&amp;fb_comment_id=fbc_10150289656058660_18576290_10150289666938660&amp;href=http%3A%2F%2Ftechcrunch.com%2F2011%2F09%2F12%2Fwith-bitcasa-the-entire-cloud-is-your-hard-drive-for-only-10-per-month%2F&amp;locale=en_US&amp;numposts=25&amp;sdk=joey&amp;width=630#">claimed</a> she didn't know about the investment when she did the interview.</p><p>Reader <a href="http://techcrunch.com/2011/09/14/and-the-winner-of-techcrunch-disrupt-is-shaker/">opinion on Shaker</a> was decidedly split. Though there was lots of support for an <a href="https://www.facebook.com/plugins/comments.php?channel_url=http%3A%2F%2Fstatic.ak.fbcdn.net%2Fconnect%2Fxd_proxy.php%3Fversion%3D3%23cb%3Df39e73a1a%26origin%3Dhttp%253A%252F%252Ftechcrunch.com%252Ff2429c989%26relation%3Dparent.parent%26transport%3Dpostmessage&amp;href=http%3A%2F%2Ftechcrunch.com%2F2011%2F09%2F14%2Fand-the-winner-of-techcrunch-disrupt-is-shaker%2F&amp;locale=en_US&amp;numposts=25&amp;sdk=joey&amp;width=630#">Israeli success</a>, several commenters dismissed it as <a href="https://www.facebook.com/plugins/comments.php?channel_url=http%3A%2F%2Fstatic.ak.fbcdn.net%2Fconnect%2Fxd_proxy.php%3Fversion%3D3%23cb%3Df39e73a1a%26origin%3Dhttp%253A%252F%252Ftechcrunch.com%252Ff2429c989%26relation%3Dparent.parent%26transport%3Dpostmessage&amp;href=http%3A%2F%2Ftechcrunch.com%2F2011%2F09%2F14%2Fand-the-winner-of-techcrunch-disrupt-is-shaker%2F&amp;locale=en_US&amp;numposts=25&amp;sdk=joey&amp;width=630#">Habbo Hotel for Facebook</a> and said a virtual bar just <a href="https://www.facebook.com/plugins/comments.php?channel_url=http%3A%2F%2Fstatic.ak.fbcdn.net%2Fconnect%2Fxd_proxy.php%3Fversion%3D3%23cb%3Df39e73a1a%26origin%3Dhttp%253A%252F%252Ftechcrunch.com%252Ff2429c989%26relation%3Dparent.parent%26transport%3Dpostmessage&amp;href=http%3A%2F%2Ftechcrunch.com%2F2011%2F09%2F14%2Fand-the-winner-of-techcrunch-disrupt-is-shaker%2F&amp;locale=en_US&amp;numposts=25&amp;sdk=joey&amp;width=630#">isn't a disruptive idea</a>.</p><p>The whole episode marks a giant loss in credibility for TechCrunch, a mangled, undignified departure, unprofessional personal scraps between colleagues and a decidedly fetid atmosphere around what has generally been a vibrant, inspiring and powerful brand. Ultimately, whatever the future of the writers and investors involved, this is a real shame for the entrepreneurs who've worked extremely hard to get this far.</p><p>Finalists who aren't apparently funded by CrunchFund, for the record, are healthcare-management tool <a href="https://cakehealth.com/">Cake Health</a>, local food finder <a href="http://www.farmigo.com/">Farmigo</a>, business response service <a href="http://talkto.com/">TalkTo</a> and project organisation tool <a href="https://trello.com/">Trello</a>.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+
+
+
+</div>
+
+
+<div id="related">
+
+
+
+
+
+
+
+
+
+
+
+<div class="blog-byline b4">
+
+
+
+  <span class="blog-byline-kick">
+                Posted by</span>
+                                                                      <a class='contributor'  rel='author' href='http://www.guardian.co.uk/profile/jemimakiss'>
+                                                            Jemima Kiss</a>
+
+      Thursday 15 September 2011
+
+  <span class="timestamp">08.57 EDT</span>
+
+      <span class="byline-publication">
+      <a href="http://www.guardian.co.uk/">guardian.co.uk</a>
+    </span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul id="article-toolbox-side" class="b4">
+
+
+              <li class="printable"><a href="http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups/print" rel="nofollow" id="printlink" class="printable rollover" title="Link to a printer-friendly version" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_print.gif" alt="Print this" class="trail-icon" /><span>Printable version</span></a></li>
+
+      <li><a class="rollover send-email" href="http://www.guardian.co.uk/email/1633834"  title="Opens an email form" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_email-friend.gif" alt="" class="trail-icon" /><span>Send to a friend</span></a></li>
+
+      <li><a class="rollover send-share"   href="http://www.guardian.co.uk/share/1633834" title="Opens a share this page in a new window" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_share.gif" alt="" class="trail-icon" /><span>Share</span></a></li>
+
+      <li><a href="http://www.guardian.co.uk/users/clippings/add?r2PageId=1633834" id="clippable" title="Sends this page to your clippings file" class="rollover anchor-based-login-required package-required-YCLD" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_clip.gif" alt="" class="trail-icon" /><span>Clip</span></a></li>
+
+      <li><a href="http://www.guardian.co.uk/contactus/1633834"  class="rollover contact-link" title="Displays contact data for guardian.co.uk"><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_email-us.gif" alt="" class="trail-icon" /><span>Contact us</span></a></li>
+
+
+      <li class="resize">
+
+      <img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_font.gif" alt="" class="trail-icon" />
+      <a href="/help/accessibility" id="larger-sidebar" title="Increase text size">larger</a> |
+      <a href="/help/accessibility" id="smaller-sidebar" title="Decrease text size">smaller</a>   </li>
+
+
+
+
+</ul>
+
+
+
+
+<div class="toolbox-popup" id="send-email-box">
+  <div class="send-inner">
+    <div class="share-top">
+      <h3>Email</h3>
+      <span><a class="close-toolbox" href="#send-email">Close</a></span>
+    </div>
+    <div>
+
+
+                <form method="post" name="emailthis" id="emailthis" action="http://www.guardian.co.uk/email/1633834">
+
+        <fieldset>
+          <div>
+            <label for="to">Recipient's email address</label>
+          </div>
+          <input type="text" name="to" maxlength="64" value="" />
+                  </fieldset>
+        <fieldset>
+          <div>
+            <label for="name">Your first name</label>
+          </div>
+           <input type="text" name="firstName" maxlength="64" value="" />
+        </fieldset>
+        <fieldset>
+          <div>
+            <label for="name">Your surname</label>
+          </div>
+           <input type="text" name="surname" maxlength="64" value="" />
+                  </fieldset>
+        <fieldset>
+          <div>
+            <label for="note">Add a note (optional)</label>
+            <br /><span id="warning-side"></span>
+          </div>
+           <textarea name="note" cols="25" rows="5" onkeyup="formCheckerSide(this,250)"></textarea>
+        </fieldset>
+        <div class="inputrow">
+          <input type="submit" onclick="if(true) {omnitureTrackShareLinks(this, 'Email', true)}"  value="Send" />
+        </div>
+        <p class="ip_logged">Your IP address will be logged</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="toolbox-popup" id="send-share-box">
+    <div class="send-inner">
+    <div class="share-top">
+            <h3>Share</h3>
+            <span><a class="close-toolbox" href="#send-share-box">Close</a></span>
+    </div>
+
+      <div class="shortlink">
+      Short link for this page:
+      <a rel="shortlink nofollow" href="http://gu.com/p/32v5a">
+         http://gu.com/p/32v5a
+      </a>
+    </div>
+         <ul>
+        <li><a class="digg" href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{Digg}" onclick="if(true) {omnitureTrackShareLinks(this, 'Digg');} return false;" >Digg</a></li>
+      <li>
+        <a class="reddit" href="http://reddit.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{reddit}" onclick="if(true) {omnitureTrackShareLinks(this, 'Reddit');} return false;" >reddit</a>
+      </li>
+       <li>
+        <a class="google" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{Google Bookmarks}" onclick="if(true) {omnitureTrackShareLinks(this, 'Google Bookmarks');} return false;" >Google Bookmarks</a>
+      </li>
+        <li>
+            <a class="twitter" href="http://twitter.com/home?status=http%3A%2F%2Fgu.com%2Fp%2F32v5a%2Ftw" name="lid={share}{Twitter}" onclick="if(true) {omnitureTrackShareLinks(this, 'Twitter');} return false;" >Twitter</a>
+        </li>
+      <li>
+        <a class="delicious" href="http://del.icio.us/post?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{del.icio.us}" onclick="if(true) {omnitureTrackShareLinks(this, 'del.icio.us');} return false;" >del.icio.us</a>
+      </li>
+      <li>
+        <a class="stumbleupon" href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" onclick="if(true) {omnitureTrackShareLinks(this, 'Stumbleupon');} return false;" >StumbleUpon</a>
+      </li>
+      <li>
+        <a class="newsvine" href="http://www.newsvine.com/_tools/seed&amp;save?popoff=0&amp;u=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;h=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" onclick="if(true) {omnitureTrackShareLinks(this, 'Newsvine');} return false;" >Newsvine</a>
+      </li>
+      <li>
+        <a class="livejournal" href="http://www.livejournal.com/update.bml?subject=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups" name="lid={share}{livejournal}" onclick="if(true) {omnitureTrackShareLinks(this, 'Livejournal');} return false;" >livejournal</a>
+      </li>
+      <li>
+        <a class="facebook" href="http://www.facebook.com/share.php?u=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups" name="lid={share}{Facebook}" onclick="if(true) {omnitureTrackShareLinks(this, 'Facebook');} return false;" >Facebook</a>
+      </li>
+      <li>
+        <a class="mixx" href="http://www.mixx.com/submit?page_url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups" name="lid={share}{Mixx}" onclick="if(true) {omnitureTrackShareLinks(this, 'Mixx');} return false;" >Mixx it!</a>
+      </li>
+   </ul>
+   <div class="clear"></div>
+   </div>
+</div>
+
+
+<div class="toolbox-popup" id="contact-link-box">
+  <div class="send-inner">
+    <div class="share-top">
+      <h3>Contact us</h3>
+            <span><a class="close-toolbox" href="#contact">Close</a></span>
+    </div>
+
+    <div class="col first">
+            <ul>
+                              <li>
+
+
+          Contact the Media editor<br><a href="mailto:editor@mediaguardian.co.uk">editor@mediaguardian.co.uk</a>
+                              </li>
+                          <li>
+                                                 Report errors or inaccuracies: <a href="mailto:reader@guardian.co.uk">reader@guardian.co.uk</a>
+                                                    </li>
+        <li>
+                      Letters for publication should be sent to: <a href="mailto:letters@guardian.co.uk">letters@guardian.co.uk</a>
+                  </li>
+      </ul>
+    </div>
+    <div class="col">
+      <ul>
+        <li>
+          If you need help using the site: <a href="mailto:userhelp@guardian.co.uk">userhelp@guardian.co.uk</a>
+        </li>
+        <li>
+          Call the main Guardian and Observer switchboard: <br /><span>+44 (0)20 3353 2000</span>
+        </li>
+        <li>
+          <ul>
+            <li>
+              <a href="http://adinfo-guardian.co.uk/">Advertising guide</a>
+            </li>
+            <li>
+              <a href="http://www.guardian.co.uk/syndication/">License/buy our content</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="related-keywords">
+
+
+          <h4 class="b4 t6"><a href="http://www.guardian.co.uk/media" >Media</a></h4>
+
+                  <ul>
+            <li>
+                                    <a href="http://www.guardian.co.uk/media/techcrunch"  rel="tag">TechCrunch</a> &middot;                             </li>
+                <li>
+                                    <a href="http://www.guardian.co.uk/media/blogging"  rel="tag">Blogging</a> &middot;                             </li>
+                <li>
+                                    <a href="http://www.guardian.co.uk/media/digital-media"  rel="tag">Digital media</a>                              </li>
+        </ul>
+
+          <h4 class="b3 t6"><a href="http://www.guardian.co.uk/technology" >Technology</a></h4>
+
+                  <ul>
+            <li>
+                                    <a href="http://www.guardian.co.uk/technology/startups"  rel="tag">Technology startups</a>                              </li>
+        </ul>
+
+
+                            <p class="b4 t6">More from <a href="http://www.guardian.co.uk/media/pda" >PDA</a> on</p>
+                                <h4 class="b3 t6">Media</h4>
+              <ul>
+            <li>
+                        <a href="http://www.guardian.co.uk/media/pda+techcrunch"  rel="tag">TechCrunch</a> &middot;                   </li>
+                <li>
+                        <a href="http://www.guardian.co.uk/media/pda+blogging"  rel="tag">Blogging</a> &middot;                   </li>
+                <li>
+                        <a href="http://www.guardian.co.uk/media/pda+digital-media"  rel="tag">Digital media</a>                    </li>
+        </ul>
+                                        <h4 class="b3 t6">Technology</h4>
+              <ul>
+            <li>
+                        <a href="http://www.guardian.co.uk/media/pda+technology/startups"  rel="tag">Technology startups</a>                    </li>
+        </ul>
+
+
+                                            <p class="t6 b4"><a href="http://www.guardian.co.uk/tone/blog" >More      blogposts
+  </a></p>
+                                        <p class="t6 b4"><a href="http://www.guardian.co.uk/tone/news" >More      news
+  </a></p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          <div class="related-content">
+
+    <div class="bd">
+        <div class="two-col edge">
+            <p class="b4 t6">See also</p>
+            <ul class="l1d">
+
+                <li>
+                    <p class="t6 web-publication-date">21 Feb 2008</p>
+                    <p class="t7">
+                        <a href="http://www.guardian.co.uk/media/pda/2008/feb/21/haveweallbeentootechcrunc?INTCMP=ILCNETTXT3487">Have we all been too TechCrunched?</a>
+                    </p>
+                </li><li>
+                    <p class="t6 web-publication-date">6 Oct 2010</p>
+                    <p class="t7">
+                        <a href="http://www.guardian.co.uk/technology/blog/audio/2010/oct/05/broadband-bt-fibre-calcanis-techcrunch?INTCMP=ILCNETTXT3487">Tech Weekly: Jason Calacanis hits back at TechCrunch, latest Startup Surgery</a>
+                    </p>
+                </li><li>
+                    <p class="t6 web-publication-date">17 Sep 2007</p>
+                    <p class="t7">
+                        <a href="http://www.guardian.co.uk/media/2007/sep/17/mondaymediasection.technology?INTCMP=ILCNETTXT3487">The crunch that could leave everyone in credit</a>
+                    </p>
+                </li><li>
+                    <p class="t6 web-publication-date">5 Oct 2010</p>
+                    <p class="t7">
+                        <a href="http://www.guardian.co.uk/media/pda/2010/oct/05/jason-calacanis?INTCMP=ILCNETTXT3487">Jason Calacanis: Revenge is a new editorial project to rival TechCrunch</a>
+                    </p>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+<ul id="blog-nav-bottom" class="blog-navigation">
+      <li class="blog-next">
+      <a href="http://www.guardian.co.uk/media/pda/2011/sep/15/jemima-kiss" >Next</a>
+    </li>
+        <li class="blog-previous">
+      <a href="http://www.guardian.co.uk/media/pda/2011/sep/15/newsbucket" >Previous</a>
+    </li>
+
+  <li class="blog-home">
+              <a href="http://www.guardian.co.uk/media/pda" title="">Blog home</a>
+        </li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+  <ul id="article-toolbox">
+
+
+              <li class="printable"><a href="http://www.guardian.co.uk/media/pda/2011/sep/15/techcrunch-arrington-startups/print" rel="nofollow" id="printlink" class="printable rollover" title="Link to a printer-friendly version" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_print.gif" alt="Print this" class="trail-icon" /><span>Printable version</span></a></li>
+
+      <li><a class="rollover send-email" href="http://www.guardian.co.uk/email/1633834"  title="Opens an email form" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_email-friend.gif" alt="" class="trail-icon" /><span>Send to a friend</span></a></li>
+
+      <li><a class="rollover send-share"   href="http://www.guardian.co.uk/share/1633834" title="Opens a share this page in a new window" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_share.gif" alt="" class="trail-icon" /><span>Share</span></a></li>
+
+      <li><a href="http://www.guardian.co.uk/users/clippings/add?r2PageId=1633834" id="clippable" title="Sends this page to your clippings file" class="rollover anchor-based-login-required package-required-YCLD" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_clip.gif" alt="" class="trail-icon" /><span>Clip</span></a></li>
+
+      <li><a href="http://www.guardian.co.uk/contactus/1633834"  class="rollover contact-link" title="Displays contact data for guardian.co.uk"><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_email-us.gif" alt="" class="trail-icon" /><span>Contact us</span></a></li>
+
+      <li class="article-history"><a href="#" title="View the history of this article" class="rollover history-link" ><img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/icon_history.gif" alt="" class="trail-icon" /><span>Article history</span></a></li>
+
+
+
+
+
+</ul>
+
+
+
+
+<div class="toolbox-popup" id="send-email-box">
+  <div class="send-inner">
+    <div class="share-top">
+      <h3>Email</h3>
+      <span><a class="close-toolbox" href="#send-email">Close</a></span>
+    </div>
+    <div>
+
+
+                <form method="post" name="emailthis" id="emailthis" action="http://www.guardian.co.uk/email/1633834">
+
+        <fieldset>
+          <div>
+            <label for="to">Recipient's email address</label>
+          </div>
+          <input type="text" name="to" maxlength="64" value="" />
+                  </fieldset>
+        <fieldset>
+          <div>
+            <label for="name">Your first name</label>
+          </div>
+           <input type="text" name="firstName" maxlength="64" value="" />
+        </fieldset>
+        <fieldset>
+          <div>
+            <label for="name">Your surname</label>
+          </div>
+           <input type="text" name="surname" maxlength="64" value="" />
+                  </fieldset>
+        <fieldset>
+          <div>
+            <label for="note">Add a note (optional)</label>
+            <br /><span id="warning-side"></span>
+          </div>
+           <textarea name="note" cols="25" rows="5" onkeyup="formCheckerSide(this,250)"></textarea>
+        </fieldset>
+        <div class="inputrow">
+          <input type="submit" onclick="if(true) {omnitureTrackShareLinks(this, 'Email', true)}"  value="Send" />
+        </div>
+        <p class="ip_logged">Your IP address will be logged</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="toolbox-popup" id="send-share-box">
+    <div class="send-inner">
+    <div class="share-top">
+            <h3>Share</h3>
+            <span><a class="close-toolbox" href="#send-share-box">Close</a></span>
+    </div>
+
+      <div class="shortlink">
+      Short link for this page:
+      <a rel="shortlink nofollow" href="http://gu.com/p/32v5a">
+         http://gu.com/p/32v5a
+      </a>
+    </div>
+         <ul>
+        <li><a class="digg" href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{Digg}" onclick="if(true) {omnitureTrackShareLinks(this, 'Digg');} return false;" >Digg</a></li>
+      <li>
+        <a class="reddit" href="http://reddit.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{reddit}" onclick="if(true) {omnitureTrackShareLinks(this, 'Reddit');} return false;" >reddit</a>
+      </li>
+       <li>
+        <a class="google" href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{Google Bookmarks}" onclick="if(true) {omnitureTrackShareLinks(this, 'Google Bookmarks');} return false;" >Google Bookmarks</a>
+      </li>
+        <li>
+            <a class="twitter" href="http://twitter.com/home?status=http%3A%2F%2Fgu.com%2Fp%2F32v5a%2Ftw" name="lid={share}{Twitter}" onclick="if(true) {omnitureTrackShareLinks(this, 'Twitter');} return false;" >Twitter</a>
+        </li>
+      <li>
+        <a class="delicious" href="http://del.icio.us/post?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" name="lid={share}{del.icio.us}" onclick="if(true) {omnitureTrackShareLinks(this, 'del.icio.us');} return false;" >del.icio.us</a>
+      </li>
+      <li>
+        <a class="stumbleupon" href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;title=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" onclick="if(true) {omnitureTrackShareLinks(this, 'Stumbleupon');} return false;" >StumbleUpon</a>
+      </li>
+      <li>
+        <a class="newsvine" href="http://www.newsvine.com/_tools/seed&amp;save?popoff=0&amp;u=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups&amp;h=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest" onclick="if(true) {omnitureTrackShareLinks(this, 'Newsvine');} return false;" >Newsvine</a>
+      </li>
+      <li>
+        <a class="livejournal" href="http://www.livejournal.com/update.bml?subject=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups" name="lid={share}{livejournal}" onclick="if(true) {omnitureTrackShareLinks(this, 'Livejournal');} return false;" >livejournal</a>
+      </li>
+      <li>
+        <a class="facebook" href="http://www.facebook.com/share.php?u=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups" name="lid={share}{Facebook}" onclick="if(true) {omnitureTrackShareLinks(this, 'Facebook');} return false;" >Facebook</a>
+      </li>
+      <li>
+        <a class="mixx" href="http://www.mixx.com/submit?page_url=http%3A%2F%2Fwww.guardian.co.uk%2Fmedia%2Fpda%2F2011%2Fsep%2F15%2Ftechcrunch-arrington-startups" name="lid={share}{Mixx}" onclick="if(true) {omnitureTrackShareLinks(this, 'Mixx');} return false;" >Mixx it!</a>
+      </li>
+   </ul>
+   <div class="clear"></div>
+   </div>
+</div>
+
+
+<div class="toolbox-popup" id="contact-link-box">
+  <div class="send-inner">
+    <div class="share-top">
+      <h3>Contact us</h3>
+            <span><a class="close-toolbox" href="#contact">Close</a></span>
+    </div>
+
+    <div class="col first">
+            <ul>
+                              <li>
+
+
+          Contact the Media editor<br><a href="mailto:editor@mediaguardian.co.uk">editor@mediaguardian.co.uk</a>
+                              </li>
+                          <li>
+                                                 Report errors or inaccuracies: <a href="mailto:reader@guardian.co.uk">reader@guardian.co.uk</a>
+                                                    </li>
+        <li>
+                      Letters for publication should be sent to: <a href="mailto:letters@guardian.co.uk">letters@guardian.co.uk</a>
+                  </li>
+      </ul>
+    </div>
+    <div class="col">
+      <ul>
+        <li>
+          If you need help using the site: <a href="mailto:userhelp@guardian.co.uk">userhelp@guardian.co.uk</a>
+        </li>
+        <li>
+          Call the main Guardian and Observer switchboard: <br /><span>+44 (0)20 3353 2000</span>
+        </li>
+        <li>
+          <ul>
+            <li>
+              <a href="http://adinfo-guardian.co.uk/">Advertising guide</a>
+            </li>
+            <li>
+              <a href="http://www.guardian.co.uk/syndication/">License/buy our content</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+      <div class="toolbox-popup" id="history-link-box" style="width: 460px">
+  <div class="send-inner">
+    <div class="share-top">
+      <h3>About this article</h3>
+            <span><a class="close-toolbox" href="#history-link-box">Close</a></span>
+    </div>
+
+
+
+
+
+      <div class="section">
+        <h1>More TechCrunch drama as Arrington-backed startup wins blog's contest</h1>
+                                This article was published on
+              <a href='http://www.guardian.co.uk/'>guardian.co.uk</a>
+              at <time datetime="2011-09-14T19:00EDT" pubdate>08.57 EDT on Thursday 15 September 2011</time>.
+              It was last modified at <time datetime="2011-09-15T12:55EDT">12.55 EDT on Thursday 15 September 2011</time>.
+                            </div>
+      </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="Middle2" class=" hide-on-popup">
+
+
+            <div id="ad-placeholder-Middle2"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="advertiser-container">
+
+      <script type="text/javascript">
+
+google_ad_client = 'ca-guardian_js';
+google_ad_channel = 'media';
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+google_max_num_ads = '3';
+
+</script>
+                  <div id="google-ads-container" class="eight-col edge component advertiser-links" style="display: none;"></div>
+    <script type="text/javascript">
+    //<![CDATA[
+      if (true) {
+            writeScript("http://pagead2.googlesyndication.com/pagead/show_ads.js", false, function(){});
+      }
+    // ]]>
+    </script>
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="eight-col discussion content-comment-list">
+    <div class="hd">
+           <!-- ID used for URLs with skiplink -->
+      <h2 id="start-of-comments">Comments in chronological order <span>(Total 3 comments)</span></h2>
+    </div>
+
+
+
+
+
+
+
+
+            <ul class="comment-legend two-col edge b2">
+                <li><img src="http://resource.guim.co.uk/discussion/static/1734/images/icons_staff_16.gif" alt="This symbol indicates that that person is The Guardian's staff" width="16" height="16" />Staff</li>
+                <li><img src="http://resource.guim.co.uk/discussion/static/1734/images/icons_contributor_16.gif" alt="This symbol indicates that that person is a contributor" width="16" height="16" />Contributor</li>
+            </ul>
+
+
+
+
+
+
+
+
+
+
+  <div id="discussion-comments">
+
+
+      <ul class="comment b2" id="comment-12423986">
+
+        <li class="comment-author" >
+
+                        <div class="badges">
+
+
+
+
+
+
+                        </div>
+                        <div class="profile" >
+
+
+
+<img class="author-profile-picture" src="http://static.guim.co.uk/sys-images/Guardian/Pix/site_furniture/2010/09/01/no-user-image.gif" height="60" width="60" alt="" />
+<a href="http://www.guardian.co.uk/discussion/user/nomster" title="User profile page">nomster</a>
+
+
+                            <p class="date">15 September 2011 7:55PM</p>
+                        </div>
+
+          <div class="comment-body">
+
+              <p>If Arrington's long-term aim had been to leave himself and his various ventures with zero credibility, he couldn't have done a better job.</p><p>Congrats.</p>
+
+          </div>
+        </li>
+
+        <li class="comment-tools">
+          <ul>
+            <li class="recomended">
+
+                <a title="Recommend this comment" class="recommend" onclick="recommendComment(12423986);return false;">Recommend?</a>
+
+              (<span class="recommended" id="recommended-count-12423986">14</span>)
+            </li>
+            <li class="abuse-report">
+              <a class="report-abuse " href="http://www.guardian.co.uk/discussion/report-abuse/comment/12423986">
+                Report abuse
+              </a>
+            </li>
+            <li class="clip">
+                            <form action="http://www.guardian.co.uk/users/clippings/add" method="get">
+                                <input type="hidden" name="microappName" value="discussion-main" />
+                                <input type="hidden" name="microappItemId" value="comment-12423986" />
+                                <input class="form-based-login-required package-required-RCO" type="submit" value="Clip" title="Add this comment to your profile bookmarks" />
+                            </form>
+            </li>
+            <li class="link">|
+              <a href="http://www.guardian.co.uk/discussion/comment-permalink/12423986" title="Permalink to this comment" alt="Permalink to this comment">
+                Link
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+
+      <ul class="comment b2" id="comment-12424220">
+
+        <li class="comment-author" >
+
+                        <div class="badges">
+
+
+
+
+
+
+                        </div>
+                        <div class="profile" >
+
+
+
+<img class="author-profile-picture" src="http://static.guim.co.uk/sys-images/Guardian/Pix/site_furniture/2010/09/01/no-user-image.gif" height="60" width="60" alt="" />
+<a href="http://www.guardian.co.uk/discussion/user/GlennFleishman" title="User profile page">GlennFleishman</a>
+
+
+                            <p class="date">15 September 2011 8:20PM</p>
+                        </div>
+
+          <div class="comment-body">
+
+              <p>Also, the Bitcasa description reads like a pile of technical nonsense to anyone who understands how such services work. The service only handles "1s and 0s", and apparently has the neat trick of de-duplicating backups across users (that is, only storing a single master copy of, say, a movie or music file) while encrypting all the data on the user's computer before it's transferred over to Bitcasa servers so that the service can't scan the contents of the data. </p><p>Dropbox and SpiderOak are two distinct services that offer separately what Bitcasa is alleged to offer together. Many features are mutually incompatible. And "infinite" storage predicated on an average of 25 GB of unique compressed data per user isn't precisely a business plan.</p><p>(On the flip side, I use CrashPlan for backups, which has an unlimited online storage option with optional private client-side encryption. They don't de-duplicate, but they aren't a sync/cloud service.)</p>
+
+          </div>
+        </li>
+
+        <li class="comment-tools">
+          <ul>
+            <li class="recomended">
+
+                <a title="Recommend this comment" class="recommend" onclick="recommendComment(12424220);return false;">Recommend?</a>
+
+              (<span class="recommended" id="recommended-count-12424220">1</span>)
+            </li>
+            <li class="abuse-report">
+              <a class="report-abuse " href="http://www.guardian.co.uk/discussion/report-abuse/comment/12424220">
+                Report abuse
+              </a>
+            </li>
+            <li class="clip">
+                            <form action="http://www.guardian.co.uk/users/clippings/add" method="get">
+                                <input type="hidden" name="microappName" value="discussion-main" />
+                                <input type="hidden" name="microappItemId" value="comment-12424220" />
+                                <input class="form-based-login-required package-required-RCO" type="submit" value="Clip" title="Add this comment to your profile bookmarks" />
+                            </form>
+            </li>
+            <li class="link">|
+              <a href="http://www.guardian.co.uk/discussion/comment-permalink/12424220" title="Permalink to this comment" alt="Permalink to this comment">
+                Link
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+
+      <ul class="comment b2" id="comment-12425802">
+
+        <li class="comment-author" id="end-of-comments">
+
+                        <div class="badges">
+
+
+
+
+
+
+                        </div>
+                        <div class="profile" >
+
+
+
+<img class="author-profile-picture" src="http://static.guim.co.uk/sys-images/Guardian/Pix/site_furniture/2010/09/01/no-user-image.gif" height="60" width="60" alt="" />
+<a href="http://www.guardian.co.uk/discussion/user/petedragon" title="User profile page">petedragon</a>
+
+
+                            <p class="date">15 September 2011 10:56PM</p>
+                        </div>
+
+          <div class="comment-body">
+
+              <p>What amazes me is that Cake didn't win.  Not only was it the only pitch that was truly disruptive but it's one I can see the majority of Americans wanting to use.  The negative is that it is US only with limited opportunity to go global.  </p><p>Bitcasa's only real claim to fame is virtual storage with a predictive pre-fetch that could fairly easily be re-engineered.  Not at all disruptive.   I'm also surprised that none on the judges asked about bandwidth management - sucking down lots of bits will hit data caps.  Help me manage that...</p><p>As for prism - I really don't get the point of that one.  Blurry shots of the interior of a cafe as a marketing advantage?</p>
+
+          </div>
+        </li>
+
+        <li class="comment-tools">
+          <ul>
+            <li class="recomended">
+
+                <a title="Recommend this comment" class="recommend" onclick="recommendComment(12425802);return false;">Recommend?</a>
+
+              (<span class="recommended" id="recommended-count-12425802">2</span>)
+            </li>
+            <li class="abuse-report">
+              <a class="report-abuse " href="http://www.guardian.co.uk/discussion/report-abuse/comment/12425802">
+                Report abuse
+              </a>
+            </li>
+            <li class="clip">
+                            <form action="http://www.guardian.co.uk/users/clippings/add" method="get">
+                                <input type="hidden" name="microappName" value="discussion-main" />
+                                <input type="hidden" name="microappItemId" value="comment-12425802" />
+                                <input class="form-based-login-required package-required-RCO" type="submit" value="Clip" title="Add this comment to your profile bookmarks" />
+                            </form>
+            </li>
+            <li class="link">|
+              <a href="http://www.guardian.co.uk/discussion/comment-permalink/12425802" title="Permalink to this comment" alt="Permalink to this comment">
+                Link
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p id="post-area">Comments on this page are now closed.</p>
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+  function fix_domain_for_careers(url){
+    var re, fixed_url;
+    var careers_length = "careers".length;
+
+    if (window.location.host.substr(0, careers_length) === "careers") {
+      re = /http:\/\/www\./;
+        fixed_url = url.replace(re, "http://careers.");
+    } else {
+      re = /http:\/\/careers\./;
+        fixed_url = url.replace(re, "http://www.");
+    }
+
+    return fixed_url;
+  }
+
+  jQ(function() {
+        fixPluckCommentUrl('http://www.guardian.co.uk/discussion/api/resolvePluckCommentKey?pluck-comment-keys=&amp;callback=');
+    var loading_box = jQ("<div class='report-form-loading'>Loading</div>");
+
+        jQ('a.report-abuse:not(.no-abuse-popup)').live('click', function(ev) {
+      ev.preventDefault();
+
+      loading_box.dialog({
+        title: "Abuse report",
+        draggable: false,
+        modal: true,
+        width: 400,
+        minHeight: 320,
+        resizable: false,
+        beforeclose: function(event, ui) {
+          var readOnly = jQ('.report-abuse-ajax-readonly').length;
+          if(readOnly == 1) return true;
+
+          var reason = jQ('.report-abuse-ajax-form textarea#id_reason').val();
+          var thanksPage = jQ('.report-form-loading p[data-abuse-report-accepted-for-comment]').length;
+          if (thanksPage == 0) {
+              thanksPage = jQ('.report-form-loading p[data-abuse-report-accepted-for-profile]').length;
+          }
+          if(thanksPage == 0) {
+            if(reason == 0) {
+              return true;
+            } else {
+              return confirm("Closing this window without pressing \"Report\" will result in your words being lost. Are you sure?");
+            }
+          }
+          else {
+            return true;
+          }
+            },
+        close: function(ev, ui) { loading_box.remove(); }
+      });
+
+      abuse_report_url = this.href.replace('report-abuse', 'report-abuse-ajax');
+      abuse_report_url = fix_domain_for_careers(abuse_report_url);
+
+      jQ.ajax({
+              url: abuse_report_url,
+              success: function(data){
+                  loading_box.html(data);
+              }
+            });
+    });
+
+    jQ('body').delegate('.report-abuse-ajax-form form', 'submit', function(ev) {
+      ev.preventDefault();
+      var form = jQ(this);
+      var url = fix_domain_for_careers(form.attr('action'));
+      jQ.post(url, form.serialize(), function(html) {
+        form.parents('.ui-dialog-content').html(html);
+        // Has the abuse report been accepted?
+        var el = jQ(html);
+        var comment_id = el.attr('data-abuse-report-accepted-for-comment');
+        var profile_id = el.attr('data-abuse-report-accepted-for-profile');
+        if (comment_id) {
+          jQ('ul#comment-' + comment_id).find('li.abuse-report').remove();
+        } else if (profile_id) {
+            jQ('p.report-abuse').remove();
+        }
+        var is_successful_submission = (comment_id || profile_id);
+        if (is_successful_submission) {
+            window.setTimeout(function() {
+              loading_box.dialog("close");
+            }, 3000);
+        }
+      });
+    });
+
+      //make sure submit button is enabled onReady.
+      jQ('#newcommenting-form input[type=submit]' ).attr('disabled','');
+
+      var newFormURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?#post-area';
+      jQ('div#login-container form.post-your-comments').attr('action', newFormURL);
+
+      jQ('div#signup-container input').click(function(){
+        urlStack.clearUrlStack();
+        urlStack.pushUrlOntoStack(newFormURL);
+        document.location = 'http://users.guardian.co.uk/signup/tr/1,,-720,00.html';
+      });
+
+
+      jQ('.recomended').show();
+
+        jQ('#newcommenting-form').submit(function(){
+            jQ('input[type=submit]', this).attr('disabled', 'disabled');
+        });
+  }); //end jQ ready
+
+  function openAbuseBox(commentId) {
+    jQ("#abuse-report-comment-id").val(commentId);
+    var loading_box = jQ('<div class="report-form-loading">Loading</div>');
+    loading_box.dialog({
+      title:"Abuse report",
+      draggable: false,
+      modal:true,
+      width:400,
+      minHeight:320,
+      resizable: false,
+      beforeclose: function(event, ui) {
+        var reason = jQ('textarea#id_reason').val();
+        if (reason != "") {
+          return confirm("Closing this window without pressing \"Report\" will result in your words being lost. Are you sure?");
+        } else {
+          return true;
+        }
+      }
+    });
+  }
+
+  function recommendComment(commentId) {
+      var post_url = "http://www.guardian.co.uk/discussion/handlers/recommendComment";
+      post_url = fix_domain_for_careers(post_url);
+
+    jQ.post(post_url, { comment_id: commentId }, function(data) {
+      if (data == "OK") {
+        var span = jQ("#recommended-count-" + commentId);
+        span.prev('a').contents().unwrap();
+        span.text(parseInt(span.text(), 10)+1);
+      }
+      else {
+        var span = jQ("#recommended-count-" + commentId);
+        span.prev('a').contents().unwrap();
+      }
+    });
+  }
+
+</script>
+
+
+
+
+    </div>
+
+    <div id="promo">
+          <!-- this is the third column -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="promo-component four-col edge jobs-box">
+  <div class="hd">
+    <a href="http://jobs.guardian.co.uk?INTCMP=JB2_MEDIA">
+      <img src="http://resource.guim.co.uk/global/jobsbox/public/images/guardianjobs.gif" alt="guardian jobs">
+    </a>
+      </div>
+
+
+  <div class="bd">
+      <!--Country code: UK-->
+
+
+              <!-- UK Jobs box version: 2-->
+
+
+                  <p class="jobs-categories-overview b2">Find the latest jobs in your sector:</p>
+
+<ul class="column first">
+  <li class="b3"><a href="http://jobs.guardian.co.uk/arts/?INTCMP=JB2_MEDIA">Arts & heritage</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/charity/?INTCMP=JB2_MEDIA">Charities</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/education/?INTCMP=JB2_MEDIA">Education</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/environment/?INTCMP=JB2_MEDIA">Environment</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/government/?INTCMP=JB2_MEDIA">Government</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/graduate/?INTCMP=JB2_MEDIA">Graduate</a></li>
+</ul>
+<ul class="column ">
+  <li class="b3"><a href="http://jobs.guardian.co.uk/jobs/health/?INTCMP=JB2_MEDIA">Health</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/marketing/?INTCMP=JB2_MEDIA">Marketing & PR</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/media/?INTCMP=JB2_MEDIA">Media</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/jobs/sales">Sales</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/jobs/senior-executive/?INTCMP=JB2_MEDIA">Senior executive</a></li>
+  <li class="b3"><a href="http://jobs.guardian.co.uk/social-care/?INTCMP=JB2_MEDIA">Social care</a></li>
+</ul>
+<p class="browse-all-jobs b3">
+  <a href="http://jobs.guardian.co.uk?INTCMP=JB2_MEDIA">Browse all jobs</a>
+</p>
+
+<form id="search-jobs-form" class="b2" action="http://jobs.guardian.co.uk/searchjobs/?INTCMP=JB2_MEDIA">
+  <fieldset>
+    <input type="text" onfocus="this.value='';" value="media" name="keyword" id="freetext-searchalljobs" class="text plain-search"/>
+    <input type="hidden" value="JB2_MEDIA" name="INTCMP"/>
+    <input type="submit" value="Search" name="go" class="submit"/>
+  </fieldset>
+</form>
+
+                        <div class="featured-job">
+          <a href="http://jobs.guardian.co.uk/job/4349912/online-magazine-editor/" class="featured-image">
+            <img src="http://resource.guim.co.uk/global/jobsbox/thumbnail/19002?u=1722647231" alt=""/>
+          </a>
+          <div>
+            <h4><a href="http://jobs.guardian.co.uk/job/4349912/online-magazine-editor/">Online Magazine Editor</a></h4>
+            <p>Stevenage, Hertfordshire  | Negotiable</p>
+            <p><a href="http://jobs.guardian.co.uk/employer/208250/pv-publications-ltd/">PV PUBLICATIONS LTD </a></p>
+          </div>
+        </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="Right1" class=" hide-on-popup">
+
+
+            <div id="ad-placeholder-Right1"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+<div class="promo-component rss-aggregator-promo">
+    <style type="text/css">
+.promo-component.rss-aggregator-promo h3 {
+  font-family:arial,sans-serif !important;
+  font-size:12px !important;
+  font-weight:bold !important;
+  line-height:15px !important;
+}
+.rss-aggregator-promo .hd h3, .rss-aggregator-promo .hd h3 a {
+    color: #CC3300 !important;
+    font-size: 18px !important;
+    line-height: 21px !important;
+    font-family: georgia !important;
+    font-weight: normal !important;
+}
+</style>
+
+<div class="hd">
+  <h3>Latest from the PDA reading list</h3>
+</div>
+
+<div class="bd">
+  <ul>
+          <li>
+
+        <ul>
+          <li class="rss-date">15 Sep 2011</li>
+          <li><h3><a href="http://www.techmeme.com/110914/p70#a110914p70">And The Winner Of TechCrunch Disrupt Is...Shaker (Leena Rao/TechCrunch)</a></h3></li>
+          <li>
+                            <div class="attribution">
+              <img src="http://www.techmeme.com/favicon.ico" class="favicon-image" width="16" height="16" rel="x8" />               From Techmeme
+            </div>
+          </li>
+        </ul>
+      </li>
+          <li>
+
+        <ul>
+          <li class="rss-date">15 Sep 2011</li>
+          <li><h3><a href="http://www.techmeme.com/110914/p69#a110914p69">AOL to launch NVIBE social network? Domain acquired, trademarks filed (J.B./Fusible.com)</a></h3></li>
+          <li>
+                            <div class="attribution">
+              <img src="http://www.techmeme.com/favicon.ico" class="favicon-image" width="16" height="16" rel="x8" />               From Techmeme
+            </div>
+          </li>
+        </ul>
+      </li>
+          <li>
+
+        <ul>
+          <li class="rss-date">15 Sep 2011</li>
+          <li><h3><a href="http://feedproxy.google.com/~r/Techcrunch/~3/GoQ3uxWQbrk/">A Year After “AngelGate”, More Angelic Angels Descend Upon Disrupt</a></h3></li>
+          <li>
+                            <div class="attribution">
+              <img src="http://s2.wp.com/wp-content/themes/vip/tctechcrunch2/images/favicon.ico?m=1310283189g" class="favicon-image" width="16" height="16" rel="x8" />               From TechCrunch
+            </div>
+          </li>
+        </ul>
+      </li>
+          <li>
+
+        <ul>
+          <li class="rss-date">15 Sep 2011</li>
+          <li><h3><a href="http://allthingsd.com/20110914/sony-designs-tablet-thats-not-an-ipad-wannabe/">Sony Designs Tablet That's Not an iPad Wannabe</a></h3></li>
+          <li>
+                            <div class="attribution">
+              <img src="http://allthingsd.com/favicon.ico" class="favicon-image" width="16" height="16" rel="x8" />               From AllThingsD
+            </div>
+          </li>
+        </ul>
+      </li>
+          <li>
+
+        <ul>
+          <li class="rss-date">15 Sep 2011</li>
+          <li><h3><a href="http://feeds.nytimes.com/click.phdo?i=0d411dbfb3bf79d3cb49d8383b89df01">Should Twitter Be Afraid of Facebook’s Subscribe Feature?</a></h3></li>
+          <li>
+                            <div class="attribution">
+              <img src="http://www.nytimes.com/favicon.ico" class="favicon-image" width="16" height="16" rel="x8" />              From NYT &gt; Start-Ups
+            </div>
+          </li>
+        </ul>
+      </li>
+      </ul>
+
+  <p class="ft"></p></div></div>
+
+
+
+
+
+
+
+                          <style>
+  .m-zeitgeist .bd { float: left } /* for the IE6 lols */
+  .m-zeitgeist .hd { padding-bottom: 0px; margin-bottom: -12px}
+  .m-zeitgeist .hd h2 { padding-bottom: 12px; }
+  .m-zeitgeist #att-panes { background-color: #fff; float: left; }
+  .m-zeitgeist .att-toggle-pane { min-width:280px; }
+  .m-zeitgeist ol { padding: 0 5px; }
+  .m-zeitgeist #most-zeitgeist ol { padding-left: 0; }
+  .m-zeitgeist .zg-date { color: #D61D00; padding-left:5px; padding-top: 5px; }
+  .m-zeitgeist ol li { clear: both; padding-left: 15px; }
+  .m-zeitgeist div#att-most-viewed ol li.l1,
+  .m-zeitgeist div#att-latest ol li.l1 { padding-bottom: 9px !important; }
+  .m-zeitgeist ol li.footer { clear: both; padding-left: 0px !important; padding-top: 5px !important; }
+  .m-zeitgeist .rank { float: left; margin-left: -15px; }
+  .m-zeitgeist .kicker { font-weight: bold; }
+  .m-zeitgeist ol li.thumb { padding-left: 0; }
+  .m-zeitgeist ol li.thumb .rank { margin-left: 0; }
+  .m-zeitgeist ol li img { float: left; margin: 0 10px 3px 0; }
+
+  .m-zeitgeist #most-zeitgeist ol li { border-top: none; padding: 0; border-top: none; }
+  .m-zeitgeist #most-zeitgeist ol li .zeit-link {background-color: #fff; padding: 5px 0 9px 5px; border-top: 1px dotted #999; margin-bottom: 0px;  }
+  .m-zeitgeist #most-zeitgeist ol li.footer { border-top:1px dotted #999; padding: 5px 0 9px 10px; margin-left: 5px }
+  .m-zeitgeist #most-zeitgeist .m-zeigeist ol { padding-left: 0}
+
+  /* zeit-up */
+  .m-zeitgeist #most-zeitgeist .what-is { float: none; padding: 0 3px; vertical-align: middle; cursor: pointer; }
+  .about-zeit { position: relative; }
+  .zeit-popup { position: absolute; display: none; background-color: #dbedf3; color: #333; padding: 6px; width: 200px; }
+
+.fade-1 { border-left: 5px solid #801100 !important;}
+.fade-2 { border-left: 5px solid #95382A !important;}
+.fade-3 { border-left: 5px solid #AA5F54 !important;}
+.fade-4 { border-left: 5px solid #BF867E !important;}
+.fade-5 { border-left: 5px solid #D4ADA8 !important;}
+
+.m-zeitgeist div.hd { padding-bottom: 0; }
+.m-zeitgeist.most-viewed div.hd { padding-bottom: 7px; }
+
+
+</style>
+
+<script type="text/javascript">
+jQ(function($){$('.about-zeit').each(function(){var distance=-10;var time=250;var hideDelay=500;var hideDelayTimer=null;var beingShown=false;var shown=false;var trigger=$('.what-is',this);var info=$('.zeit-popup',this).css('opacity',0);$([trigger.get(0),info.get(0)]).mouseover(function(){if(hideDelayTimer)clearTimeout(hideDelayTimer);if(beingShown||shown){return;}else{beingShown=true;info.css({top:-97,right:0,display:'block'}).animate({top:'-='+distance+'px',opacity:1},time,'swing',function(){beingShown=false;shown=true;});}return false;}).mouseout(function(){if(hideDelayTimer)clearTimeout(hideDelayTimer);hideDelayTimer=setTimeout(function(){hideDelayTimer=null;info.animate({top:'-='+distance+'px',opacity:0},time,'swing',function(){shown=false;info.css('display','none');});},hideDelay);return false;});});});
+</script>
+
+  <!------ widget old rhs: media : 2011-09-26 05:40:43.972471 ------>
+  <div class="m-zeitgeist promo-component four-col attention-data">
+
+    <div class="hd">
+      <h3>On Media</h3>
+    </div>
+
+    <div class="bd">
+      <div id="att-toggle">
+        <ul class="tabs">
+          <li>
+            <a class="active" href="#att-most-viewed">Most viewed</a>
+          </li>
+          <li>
+            <a class="inactive" href="#most-zeitgeist">Zeitgeist</a>
+          </li>
+
+          <li>
+            <a class="inactive" href="#att-latest">Latest</a>
+          </li>
+
+        </ul>
+
+        <div id="att-panes">
+          <div class="att-tabs att-toggle-pane" id="att-most-viewed">
+            <p class="b2 zg-date">Last 24 hours</p>
+            <ol>
+
+              <li class="l1 thumb">
+
+
+                    <img src="http://static.guim.co.uk/sys-images/Media/Pix/pictures/2011/9/23/1316809068187/Carl-Bernstein-and-Bob-Wo-003.jpg" />
+
+
+                <span class="rank">1.&nbsp;</span>
+
+                <a href="http://www.guardian.co.uk/media/2011/sep/25/carl-bernstein-rupert-murdoch-watergate">Carl Bernstein on Rupert Murdoch's Watergate</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">2. </span>
+
+                <a href="http://www.guardian.co.uk/media/2011/sep/25/mark-thompson-met-guardian-order">Mark Thompson: Met's order to Guardian part of 'disturbing trend'</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">3. </span>
+
+                <a href="http://www.guardian.co.uk/media/organgrinder/2011/sep/25/copyright-term-extended-music-recordings">Who benefits from extending the copyright term for sound recordings?</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">4. </span>
+
+                <a href="http://www.guardian.co.uk/media/2011/sep/23/neil-wallis-revelation-questions-met">Phone-hacking claims mount up at News International</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">5. </span>
+
+                <a href="http://www.guardian.co.uk/media/2011/sep/23/simon-cowell-interview-emma-brockes">Simon says</a>
+              </li>
+
+              <li class="more-most-viewed l1 footer">
+
+                  <a href="http://www.guardian.co.uk/most-viewed/media">More most viewed</a>
+
+              </li>
+            </ol>
+          </div>
+
+          <div class="att-tabs att-toggle-pane initially-off" id="most-zeitgeist">
+            <p class="b2 zg-date">Last 24 hours</p>
+            <ol>
+
+              <li class="l1 media fade-1">
+                <div class="zeit-link"><a href="http://www.guardian.co.uk/media/2011/sep/25/mark-thompson-met-guardian-order">Mark Thompson: Met's order to Guardian part of 'disturbing trend'</a></div>
+              </li>
+
+              <li class="l1 media fade-2">
+                <div class="zeit-link"><a href="http://www.guardian.co.uk/media/2011/sep/25/carl-bernstein-rupert-murdoch-watergate">Carl Bernstein on Rupert Murdoch's Watergate</a></div>
+              </li>
+
+              <li class="l1 media fade-3">
+                <div class="zeit-link"><a href="http://www.guardian.co.uk/media/2011/sep/23/neil-wallis-revelation-questions-met">Phone-hacking claims mount up at News International</a></div>
+              </li>
+
+              <li class="l1 media fade-4">
+                <div class="zeit-link"><a href="http://www.guardian.co.uk/media/2011/sep/24/alexander-lebedev-interview">Alexander Lebedev reveals his street fighting past after YouTube brawl</a></div>
+              </li>
+
+              <li class="l1 media fade-5">
+                <div class="zeit-link"><a href="http://www.guardian.co.uk/media/2011/sep/25/radio-four-today-humphreys-lansley">John Humphrys meets his match</a></div>
+              </li>
+
+              <li class="l1 footer about-zeit">
+                <a href="http://www.guardian.co.uk/zeitgeist">More zeitgeist</a>
+                <img class="what-is" alt="What is Zeigeist?"  title="" src="http://static.guim.co.uk/microapps/zeitgeist/about-zeitgeist.gif" />
+                <div id="zeit-popup" class="zeit-popup">
+                 <strong>What is Zeitgeist?</strong>
+                  <p>Zeitgeist is an experiment in showing trending news, topics and articles from the Guardian. Find out more in <a href="http://www.guardian.co.uk/help/insideguardian/2010/feb/03/zeitgeist">our blog post</a>.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+
+          <div class="att-tabs att-toggle-pane initially-off" id="att-latest">
+            <p class="b2 zg-date">Last 24 hours</p>
+            <ol>
+
+              <li class="l1 thumb">
+
+
+                    <img src="http://static.guim.co.uk/sys-images/Guardian/About/General/2011/9/25/1316977792001/Mark-Thompson-BBC-directo-003.jpg" />
+
+
+                <span class="rank">1.&nbsp;</span>
+                <a href="http://www.guardian.co.uk/media/2011/sep/25/mark-thompson-met-guardian-order">Mark Thompson: Met's order to Guardian part of 'disturbing trend'</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">2. </span>
+                <a href="http://www.guardian.co.uk/media/mediamonkeyblog/2011/sep/25/media-monkey-diary">Media Monkey's Diary</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">3. </span>
+                <a href="http://www.guardian.co.uk/media/organgrinder/2011/sep/25/copyright-term-extended-music-recordings">Who benefits from extending the copyright term for sound recordings?</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">4. </span>
+                <a href="http://www.guardian.co.uk/media/organgrinder/2011/sep/25/press-reform-redtops-challenge">How do we agree a model of press reform if the redtops won't join in?</a>
+              </li>
+
+              <li class="l1">
+
+                <span class="rank">5. </span>
+                <a href="http://www.guardian.co.uk/media/2011/sep/25/carl-bernstein-rupert-murdoch-watergate">Carl Bernstein on Rupert Murdoch's Watergate</a>
+              </li>
+
+              <li class="more-latest l1 footer">
+                <a href="http://www.guardian.co.uk/media/all">All today&#39;s stories</a>
+              </li>
+            </ol>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+                          <div class="simplify-digital-speed-checker">
+  <iframe src="http://www.simplifydigital.co.uk/tools/guardian/articlepages.aspx" width="300" height="400" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no"></iframe>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="reader-offers promo-component">
+          <div class="hd">
+                          <h3>Bestsellers from the Guardian shop</h3>
+              </div>
+
+      <div class="bd">
+        <ul>
+                      <li class="inline-pic"><a href="http://www.guardianoffers.co.uk/mall/productpage.cfm/GuardianOffers/TRUNTCD1B/119269" class="link-image">
+              <img src="http://www.guardianoffers.co.uk/mall/GOTruebellUKLtd/customerimages/products/t_TRUNTCD1B.jpg" alt="Neostar vinyl2CD turntable and accessories" />
+            </a></li>
+
+                      <li><p class="t6"><a href="http://www.guardianoffers.co.uk/mall/productpage.cfm/GuardianOffers/TRUNTCD1B/119269">Neostar vinyl2CD turntable and accessories</a></p></li>
+
+                      <li><p>No PC needed: play and record vinyl and tapes direct to CD at the touch of a button.</p></li>
+
+                      <li><p class="price">From: &pound;6.95</p></li>
+
+        </ul>
+
+      </div>
+      <div class="ft">
+                  <ul>
+                                          <li><a href="http://www.guardianoffers.co.uk/">Shop more reader offers</a></li>
+
+                                          <li><a href="http://www.guardian.co.uk/lifeandstyle/shopping">See all offers and services from the Guardian</a></li>
+                                    </ul>
+              </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="blog-related-links">
+
+
+
+
+
+
+
+
+  <div id="internal-links" class="  heading-vertical-links news">
+
+
+
+    <div class="bd">
+                              <ul class="two-col last">
+
+                <li class="b2">
+
+
+
+          <h4>
+
+          On this blog
+    </h4>
+
+                </li>
+                                                                              <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+technology/blogging"  class="link-text">Blogging</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+series/digitaldigest"  class="link-text">Digital digest</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+media/series/elevatorpitch"  class="link-text">Elevator Pitch</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+technology/mobilephones"  class="link-text">Mobile</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+music/netmusic"  class="link-text">Music</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+digitalmedia"  class="link-text">News sites</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+socialnetworking"  class="link-text">Social networking</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+television"  class="link-text">Video &amp; TV</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/technology/series/viralvideochart"  class="link-text">Viral video chart</a>
+    </p>
+
+                              </li>
+                                                                <li class="b3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <p>
+
+          <a      href="http://www.guardian.co.uk/media/pda+technology/internet"  class="link-text">Web giants</a>
+    </p>
+
+                              </li>
+                              </ul>
+          </div>
+          </div>
+
+
+
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="blogs-calendar component">
+      <h4 class="t6 b2">PDA weekly archives</h4>
+    <div id="calendar-container" class="bd">
+    <table title="Calendar for September" summary="Calendar for September" id="calendar">
+      <thead>
+        <tr>
+          <th colspan="7" scope="col">
+            <strong class="month">Sep 2011</strong>
+                          <a title="Previous month" href="http://www.guardian.co.uk/media/pda/2011/aug/29/week"  class="previous">
+              <img src="http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/images/calendar/arrow_left.png" alt="Previous" height="18" width="19" />
+              </a>
+
+                      </th>
+        </tr>
+        <tr class="month-nav">
+          <th scope="col" title="Monday" class="first">M</th>
+          <th scope="col" title="Tuesday">T</th>
+          <th scope="col" title="Wednesday">W</th>
+          <th scope="col" title="Thursday">T</th>
+          <th scope="col" title="Friday">F</th>
+          <th scope="col" title="Saturday">S</th>
+          <th scope="col" title="Sunday" class="last">S</th>
+        </tr>
+      </thead>
+      <tbody>
+
+                          <tr class="  has-links ">
+
+
+                                      <td class="not-this-month first">29</td>
+
+
+                                      <td class="not-this-month ">30</td>
+
+
+                                      <td class="not-this-month ">31</td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/aug/29/week"  >1</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/aug/29/week"  >2</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/aug/29/week"  >3</a></td>
+
+
+                                                                  <td  class="last" ><a href="http://www.guardian.co.uk/media/pda/2011/aug/29/week"  >4</a></td>
+                                                    </tr>
+
+                          <tr class="  has-links ">
+
+
+                                                      <td  class="first" ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >5</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >6</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >7</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >8</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >9</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >10</a></td>
+
+
+                                                                  <td  class="last" ><a href="http://www.guardian.co.uk/media/pda/2011/sep/05/week"  >11</a></td>
+                                                    </tr>
+
+                          <tr class="  has-links ">
+
+
+                                                      <td  class="first" ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"  >12</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"  >13</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"  >14</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"   class="today" >15</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"  >16</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"  >17</a></td>
+
+
+                                                                  <td  class="last" ><a href="http://www.guardian.co.uk/media/pda/2011/sep/12/week"  >18</a></td>
+                                                    </tr>
+
+                          <tr class="  has-links ">
+
+
+                                                      <td  class="first" ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >19</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >20</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >21</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >22</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >23</a></td>
+
+
+                                                      <td ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >24</a></td>
+
+
+                                                                  <td  class="last" ><a href="http://www.guardian.co.uk/media/pda/2011/sep/19/week"  >25</a></td>
+                                                    </tr>
+
+                          <tr class=" ">
+
+
+                                                      <td  class="first" >26</td>
+
+
+                                                      <td >27</td>
+
+
+                                                      <td >28</td>
+
+
+                                                      <td >29</td>
+
+
+                                                      <td >30</td>
+
+
+                                      <td class="not-this-month ">1</td>
+
+
+                                                  <td class="not-this-month last">2</td>
+                                      </tr>
+                            </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
+                          <style>
+  .m-guardianbookshop .rank { float: left; margin-left: -15px; }
+  .m-guardianbookshop .thumb .rank { margin-left: 0; }
+  .m-guardianbookshop h4 { border-top: none !important; font-weight: bold; margin-left: 5px !important; padding: 5px 0 8px 0 !important; }
+  .m-guardianbookshop .bestsellers { background-color: #fff; padding-bottom: 17px;}
+  .m-guardianbookshop ol { padding: 0 5px; }
+  .m-guardianbookshop .l1 { clear: both; padding-left: 15px; }
+  .m-guardianbookshop .thumb { padding-left: 0; }
+  .m-guardianbookshop .thumb img { float: left; margin: 2px 10px 9px 0;}
+  .m-guardianbookshop .price { display: inline; }
+  .m-guardianbookshop .thumb .price { display: block; }
+  .m-guardianbookshop .rank, .m-guardianbookshop .book-title { font-weight: bold; }
+  .m-guardianbookshop input { border: 1px solid #999; width: 75%; min-height: 16px; margin-top: 8px; padding: 3px 2px;}
+</style>
+
+<div class="m-guardianbookshop promo-component">
+    <div class="hd">
+      <h3>
+      <a href="http://www.guardianbookshop.co.uk"><img src="http://resource.guim.co.uk/global/static/proxy?url=http%3A%2F%2Fgu-books.appspot.com%2Fimg%2Flogo-guardian-bookshop.png" alt="Guardian Bookshop" title="" /></a>
+    </h3>
+    </div>
+    <div class="bd">
+      <div class="bestsellers">
+          <h4>This week's bestsellers</h4>
+          <ol>
+
+              <li class="l1 thumb">
+
+
+            <img src="http://resource.guim.co.uk/books/gubookshop/thumbnail/images.bertrams.com/ProductImages/services/GetImage?Source=BERT&amp;Quality=WEB&amp;EAN13=9781408812129&amp;Component=FRONTCOVER" title="River Cottage Veg Every Day!" />
+
+
+          <span class="rank">1.&nbsp;</span>
+          <a href="http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=9781408812129" class="book-title">River Cottage Veg Every Day!</a>
+                  <p>
+
+                          by Hugh Fearnley-Whittingstall
+
+
+                        <span class="price">£25.00</span>
+
+                  </p>
+              </li>
+
+              <li class="l1">
+
+          <span class="rank">2.&nbsp;</span>
+          <a href="http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=9780099560630" class="book-title">Life and Fate</a>
+                  <p>
+
+                          by Vasily Grossman
+
+
+                        <span class="price">£9.99</span>
+
+                  </p>
+              </li>
+
+              <li class="l1">
+
+          <span class="rank">3.&nbsp;</span>
+          <a href="http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=9780007391431" class="book-title">Short and Sweet</a>
+                  <p>
+
+                          by Dan Lepard
+
+
+                        <span class="price">£25.00</span>
+
+                  </p>
+              </li>
+
+              <li class="l1">
+
+          <span class="rank">4.&nbsp;</span>
+          <a href="http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=5038495031389" class="book-title">Romantic Poets Collection</a>
+                  <p>
+
+
+                        <span class="price">£64.00</span>
+
+                  </p>
+              </li>
+
+              <li class="l1">
+
+          <span class="rank">5.&nbsp;</span>
+          <a href="http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=9780099506164" class="book-title">Life and Fate</a>
+                  <p>
+
+                          by Vasily Grossman
+
+
+                        <span class="price">£9.99</span>
+
+                  </p>
+              </li>
+
+          </ol>
+    </div>
+      <div class="search">
+          <p>
+              Search the Guardian bookshop
+          </p>
+          <form method="POST" action="http://www.guardianbookshop.co.uk/BerteShopWeb/search.do" name="QuickSearchForm">
+              <input type="text" class="searchBox" value="" name="keyword">
+              <button class="searchBtn" type="submit">
+                  <span class="searchText">Search</span>
+              </button>
+              <input type="hidden" value="" name="author">
+          </form>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="promo-component json-features x31 four-col" style="display: none;">
+    <div class="hd">
+      <h3>Sponsored feature</h3>
+    </div>
+    <div class="bd inline-pic">
+      <a href="" class="link-image"><img width="130" height="121" alt="" /></a>
+
+
+
+        <div id="x31" class=" hide-on-popup">
+
+
+            <div id="ad-placeholder-x31"></div>
+        </div>
+
+
+            <span class="x31-script-placeholder"></span>
+            <script>
+
+                function showSponsoredFeaturex31(){
+                    if (window.sponJSON) {
+                        if(typeof(sponJSON) === 'object') {
+                          adx31 = sponJSON;
+                          var node = jQ('.json-features.x31');
+                          convertJSONtoAd(
+                              node.find('img:first-child'),
+                              node.find('a.t6'),
+                              node.find('p:last-child'),
+                              adx31,
+                              node.find('.hd').children().eq(0),
+                              'x31'
+                          );
+                        }
+                    }
+                }
+
+                                jQ(document).ready(function(){
+                    jQ('.x31-script-placeholder').writeCapture().replaceWith('<script>showSponsoredFeaturex31()<' + '/script>')
+                })
+
+      </script>
+      <a href="" class="t6"></a>
+      <p></p>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="Middle2" class=" hide-on-popup">
+
+
+            <div id="ad-placeholder-Middle2"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="Position4" class=" hide-on-popup">
+
+
+            <div id="ad-placeholder-Position4"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          <div class="related-content eight-col component">
+
+    <div class="hd">
+        <h3>Related information</h3>
+    </div>
+    <div class="bd">
+        <div class="two-col">
+
+            <div class="related-keywords">
+                <h4 class="t6 b4"><a href="http://www.guardian.co.uk/technology?INTCMP=ILCNETTXT3487">Technology</a></h4>
+                <ul>
+                    <li><a href="http://www.guardian.co.uk/technology/startups?INTCMP=ILCNETTXT3487">Technology startups</a></li>
+                </ul>
+
+            </div><div class="related-keywords">
+                <h4 class="t6 b3"><a href="http://www.guardian.co.uk/media?INTCMP=ILCNETTXT3487">Media</a></h4>
+                <ul>
+                    <li><a href="http://www.guardian.co.uk/media/techcrunch?INTCMP=ILCNETTXT3487">TechCrunch</a> &middot; </li><li><a href="http://www.guardian.co.uk/media/blogging?INTCMP=ILCNETTXT3487">Blogging</a> &middot; </li><li><a href="http://www.guardian.co.uk/media/digital-media?INTCMP=ILCNETTXT3487">Digital media</a></li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="two-col">
+            <a href="http://www.guardian.co.uk/media/pda/2011/sep/07/techcrunch-mike-arrington-aol" class="related-content-image">
+                <img alt="The AOL logo. Photograph: AP/Paul Sakuma" src="http://static.guim.co.uk/sys-images/Media/Pix/pictures/2008/03/13/AOL14084.jpg" />
+            </a>
+
+            <p class="t6">
+
+                <a class="related-content-headline" href="http://www.guardian.co.uk/media/pda/2011/sep/07/techcrunch-mike-arrington-aol?INTCMP=ILCNETTXT3487">Does the AOL 'Crunchgate' spat mark the end for TechCrunch?</a>
+            </p>
+
+            <p class="t6 related-content-publication-date">7 Sep 2011</p>
+
+            <p class="related-content-trail-text">Mike Arrington's plans for a venture capital fund have kicked off a giant shit-storm with TechCrunch owners AOL over 'editorial independence' and Arianna Huffington's role. It's showtime. By Jemima Kiss</p>
+
+
+        </div>
+
+         <div class="two-col">
+            <ul class="l1d">
+                <li>
+                    <p class="t6 related-content-publication-date">16 Jul 2008</p>
+                    <p class="t7">
+                        <a class="related-content-headline" href="http://www.guardian.co.uk/technology/blog/2008/jul/16/evtalksabouttwitterandbuy?INTCMP=ILCNETTXT3487">Ev talks about Twitter and buying Summize</a>
+                    </p>
+                </li><li>
+                    <p class="t6 related-content-publication-date">23 Aug 2006</p>
+                    <p class="t7">
+                        <a class="related-content-headline" href="http://www.guardian.co.uk/technology/blog/2006/aug/23/bloggingfordo?INTCMP=ILCNETTXT3487">Blogging for Dollars</a>
+                    </p>
+                </li><li>
+                    <p class="t6 related-content-publication-date">14 Jul 2008</p>
+                    <p class="t7">
+                        <a class="related-content-headline" href="http://www.guardian.co.uk/media/pda/2008/jul/14/istechcrunchthenexttechbl?INTCMP=ILCNETTXT3487">Is TechCrunch the next tech blog up for sale?</a>
+                    </p>
+                </li><li>
+                    <p class="t6 related-content-publication-date">9 May 2008</p>
+                    <p class="t7">
+                        <a class="related-content-headline" href="http://www.guardian.co.uk/media/pda/2008/may/09/techcrunchpartnerswithwashi?INTCMP=ILCNETTXT3487">TechCrunch partners with WashingtonPost.com</a>
+                    </p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="two-col edge">
+
+
+            <p class="t6">
+
+                <a class="related-content-headline" href="http://www.guardian.co.uk/technology/pda/2010/sep/29/aol-techcrunch-arrington?INTCMP=ILCNETTXT3487">AOL buys TechCrunch - but can it really contain Mike Arrington?</a>
+            </p>
+
+            <p class="t6 related-content-publication-date">29 Sep 2010</p>
+
+            <p class="related-content-trail-text">Deal goes through for $25m – but can Arrington last three years at the reincarnated AOL? By Jemima Kiss</p>
+
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="crumb-wrapper global">
+
+
+
+                    <ul class="crumb-nav">
+                <li id="crumb1">      <span>
+
+          Hot topics
+    </span>
+  </li>
+            </ul>
+
+        <ul class="local-nav">
+                                <li
+
+            class='first'
+>
+                                    <a href="http://www.guardian.co.uk/media/interactive/2011/jul/25/mediaguardian-100-2011-interactive" >MediaGuardian 100</a>
+          </li>
+                                        <li
+
+
+>
+                                    <a href="http://www.guardian.co.uk/media/privacy" >Privacy &amp; the media</a>
+          </li>
+                                        <li
+
+
+>
+                                    <a href="http://www.guardian.co.uk/media/television" >Television industry</a>
+          </li>
+                                        <li
+
+
+>
+                                    <a href="http://www.guardian.co.uk/media/pressandpublishing" >Newspapers &amp; magazines</a>
+          </li>
+                                        <li
+
+            class=' last'
+>
+                                    <a href="http://www.guardian.co.uk/media/newsinternational" >News International</a>
+          </li>
+                            </ul>
+
+</div>
+
+
+<div id="footer" class="news footer b4">
+    <ul id="footer-links">
+
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://syndication.guardian.co.uk/"  class="link-text">License/buy our content</a>
+    </li>
+
+  |
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/help/privacy-policy"  class="link-text">Privacy policy</a>
+    </li>
+
+  |
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/help/terms-of-service"  class="link-text">Terms of service</a>
+    </li>
+
+  |
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/advertising"  class="link-text">US Advertising</a>
+    </li>
+
+  |
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/index/subjects/a"  class="link-text">A - Z index</a>
+    </li>
+
+  |
+
+
+
+
+
+
+    <li>
+
+          <a      href="http://www.guardian.co.uk/info"  class="link-text">About guardiannews.com</a>
+    </li>
+
+            </ul>
+
+    <ul id="copyright-links">
+            <li>&#169; 2011 Guardian News and Media Limited or its affiliated companies. All rights reserved.</li>
+              </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+        <script id="omnitureGeneratorScript" type="text/javascript">
+  //<![CDATA[
+  if(true) {
+    var s_account="guardiangu-blogs,guardiangu-media,guardiangu-network";
+    writeScript('http://static.guim.co.uk/static/e7518479fc9cdb2d09c922e4732029a07ae2d157/common/scripts/omniture-H.22.2.js', false, function(){});
+  }
+  //]]>
+  </script>
+
+  <script id="omnitureScript" type="text/javascript">
+
+
+  //<![CDATA[
+  if(true) {
+    if (false) {
+        s.pageName = document.title;
+    } else {
+      s.pageName="More TechCrunch drama as Arrington-backed startup wins blog\'s contest:Article:1633834";
+    }
+    s.channel = "Media";
+    s.pageType="";
+    s.server='10';
+    s.prop2='GUID:(none)';
+
+          s['prop3']="GU.co.uk";
+          s['prop4']="TechCrunch,Media,Blogging (Media),Digital media,Technology,Technology startups (Technology)";
+          s['prop5']="Unclassified,Digital Media,Media Weekly,Corporate IT";
+          s['prop6']="Jemima Kiss";
+          s['prop7']="11-Sep-15";
+          s['prop8']="1633834";
+          s['prop9']="Article";
+          s['prop10']="Blogpost,News";
+          s['prop11']="Media";
+          s['prop13']="";
+          s['prop25']="PDA blog";
+          s['prop30']="content";
+
+    s.hier2="GU/Media/blog/PDA";
+    s.events="";
+    s.eVar23="";
+
+    try {
+      if (guardian.r2.OmnitureTrackingOverride) {
+        new guardian.r2.OmnitureTrackingOverride(s);
+      }
+    }
+    catch(err) {
+    }
+
+        if(jQ.cookie("GU_OMNITURE") !== null) {
+            s.events = jQ.cookie("GU_OMNITURE");
+            jQ.cookie("GU_OMNITURE", null, { path: '/', domain: '.guardian.co.uk'});
+        }
+
+        var s_code=s.t();if(s_code)document.write(s_code);
+  }
+  //]]>
+  </script>
+  <noscript id="omnitureNoScript">
+    <div><img alt="" src='http://hits.guardian.co.uk/b/ss/guardiangu-blogs,guardiangu-media,guardiangu-network/1/H.22.2/15186?ns=guardian&pageName=More+TechCrunch+drama+as+Arrington-backed+startup+wins+blog%27s+contest%3AArticle%3A1633834&ch=Media&c3=GU.co.uk&c4=TechCrunch%2CMedia%2CBlogging+%28Media%29%2CDigital+media%2CTechnology%2CTechnology+startups+%28Technology%29&c5=Unclassified%2CDigital+Media%2CMedia+Weekly%2CCorporate+IT&c6=Jemima+Kiss&c7=11-Sep-15&c8=1633834&c9=Article&c10=Blogpost%2CNews&c11=Media&c13=&c25=PDA+blog&c30=content&h2=GU%2FMedia%2Fblog%2FPDA&c2=GUID:(none)' width="1" height="1" /></div>
+  </noscript>
+
+
+<script id="componentTrackingScript" type="text/javascript">
+if (true) {
+    jQ(document).ready(function () {
+        jQ('a[data-cpt]').each(
+            function () {
+            jQ(this).click(
+                function () {
+                var cpId = jQ(this).attr('data-cpt').split("-")[1];
+                var currentLink = jQ(this).attr('href');
+
+                if (currentLink.indexOf('intcmp=') == -1) {
+                    if(currentLink.indexOf('?') == -1) {
+                        var separator = '?'
+                    } else {
+                        var separator = '&'
+                    }
+
+                    jQ(this).attr('href', currentLink + separator + "intcmp=" + cpId);
+                }
+            });
+        });
+    });
+}
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+  if (false) {
+        // guardian.co.uk Connect Adprobe Tag, MPU [9814], Leaderboard [9815]
+        var wlOrd = new Date().getTime();
+        document.write('<scr' + 'ipt type="text/javascript" src="http://req.connect.wunderloop.net/AP/1566/6033/10343/js?cus=10343,10344&ord=' + wlOrd + '"></sc' + 'ript>');
+  }
+// ]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+  if (false) {
+        OAS_query += 'wl10343=' + wl10343camp + '&wl10344=' + wl10344camp + '&';
+  }
+// ]]>
+</script>
+
+  <script type="text/javascript">
+  //<![CDATA[
+
+  if(true) {
+    ensurePackage("guardian.r2.revsci");
+
+    guardian.r2.revsci.cookieDomain = '.guardian.co.uk';
+    guardian.r2.revsci.gu_geo_country = 'usa';
+    guardian.r2.revsci.siteName = 'Media';
+          guardian.r2.revsci.commercialFolder = 'Digital+Media'
+
+    addEvent(null, 'load', function () {
+      writeScript('http://js.revsci.net/gateway/gw.js?csid=E05516', true, function() {
+        writeScript('http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/scripts/revsci.js', true, function() {
+          rs_initTracking();
+        })
+      })
+    });
+  }
+
+  // ]]>
+  </script>
+
+  <noscript>
+    <div><img src="http://pix01.revsci.net/E05516/a3/0/0/0/0/0/0/0/0/0/noscript.gif" alt="" /></div>
+  </noscript>
+
+
+
+
+          <script type="text/javascript">
+    //<![CDATA[
+                      function OAS_NORMAL(pos) {
+              document.write('<A HREF="' + OAS_url + 'click_nx.ads/' + OAS_sitepage + '/1' + OAS_rns + '@' + pos + '!' + pos + '?' + OAS_query + '" TARGET=' + OAS_target + '>');
+              document.write('<IMG SRC="' + OAS_url + 'adstream_nx.ads/' + OAS_sitepage + '/1' + OAS_rns + '@' + pos + '!' + pos + '?' + OAS_query + '" BORDER=0></A>');
+            }
+
+            OAS_version = 11;
+            if ((navigator.userAgent.indexOf('Mozilla/3') != -1) || (navigator.userAgent.indexOf('Mozilla/4.0 WebTV') != -1)) OAS_version = 10;
+
+                        if (true) {
+                            if (OAS_version >= 11) document.write('<SCR' + 'IPT LANGUAGE=JavaScript1.1 SRC="' + OAS_url + 'adstream_mjx.ads/' + OAS_sitepage + '/1' + OAS_rns + '@' + OAS_listpos + '?' + OAS_query + '"><\/SCRIPT>');
+                        }
+
+            function OAS_AD(pos) {
+                            if (true) {
+                                if (typeof(OAS_RICH) !== 'undefined' && OAS_version >= 11) {
+                                    OAS_RICH(pos);
+                                } else {
+                                    OAS_NORMAL(pos);
+                                }
+                            }
+            }
+
+        //]]>
+        </script>
+        <!------ OAS SETUP end ------>
+
+      <div id="ad-temp-Top">
+                        <script>
+                //<![CDATA[
+                jQ('#ad-placeholder-Top').writeCapture().replaceWith('<script>OAS_AD("Top")<' + '/script>');
+                //]]>
+            </script>
+          </div>
+        <script>
+              jQ('#ad-temp-Top').hide();
+          </script>
+
+      <div id="ad-temp-Middle2">
+                        <script>
+                //<![CDATA[
+                jQ('#ad-placeholder-Middle2').writeCapture().replaceWith('<script>OAS_AD("Middle2")<' + '/script>');
+                //]]>
+            </script>
+          </div>
+        <script>
+              jQ('#ad-temp-Middle2').hide();
+          </script>
+
+      <div id="ad-temp-Right1">
+                        <script>
+                //<![CDATA[
+                jQ('#ad-placeholder-Right1').writeCapture().replaceWith('<script>OAS_AD("Right1")<' + '/script>');
+                //]]>
+            </script>
+          </div>
+        <script>
+              jQ('#ad-temp-Right1').hide();
+          </script>
+
+      <div id="ad-temp-x31">
+                        <script>
+                //<![CDATA[
+                jQ('#ad-placeholder-x31').writeCapture().replaceWith('<script>OAS_AD("x31")<' + '/script>');
+                //]]>
+            </script>
+          </div>
+        <script>
+              jQ('#ad-temp-x31').hide();
+          </script>
+
+      <div id="ad-temp-Position4">
+                        <script>
+                //<![CDATA[
+                jQ('#ad-placeholder-Position4').writeCapture().replaceWith('<script>OAS_AD("Position4")<' + '/script>');
+                //]]>
+            </script>
+          </div>
+        <script>
+              jQ('#ad-temp-Position4').hide();
+          </script>
+
+
+<script type="text/javascript">
+ensurePackage("guardian.r2.omniture");
+guardian.r2.omniture.isAvailable = function(){
+      return true;
+  }
+</script>
+
+
+
+
+<span id="Panel_Content" class="initially-off"></span>
+<script type="text/javascript">
+  //  <![CDATA[
+  if(true) {
+        var OAS_taxonomy='&Paneled_Site=guardian.co.uk&Paneled_Section=media';
+    jQ(document).ready(function(){
+      jQ.getScript('http://static.guim.co.uk/static/32b9600ebe43926107624a816c7870f8566f154f/common/scripts/kantarmedia.js');
+    });
+  }
+  // ]]>
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

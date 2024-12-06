@@ -1,0 +1,139 @@
+---
+ru:
+  i18n_tasks:
+    add_missing:
+      added: Добавлены ключи (%{count})
+    cmd:
+      args:
+        default_text: 'По умолчанию: %{value}'
+        desc:
+          all_locales: Не ожидать, что маски ключа начинаются с локали. Применять маски ко всем локалям.
+          config: Путь к файлу конфигурации
+          confirm: Подтвердить автоматом
+          data_format: 'Формат данных: %{valid_text}.'
+          keep_order: Keep the order of the keys
+          key_pattern: Маска ключа (например, common.*)
+          key_pattern_to_rename: Полный ключ (шаблон) для переименования. Необходимый параметр.
+          locale: 'Язык. По умолчанию: base'
+          locale_to_translate_from: 'Язык, с которого переводить (по умолчанию: base)'
+          locales_filter: >-
+            Список языков для обработки, разделенный запятыми (,). По умолчанию: все. Специальное
+            значение: base.
+          missing_types: 'Типы недостающих переводов: %{valid}. По умолчанию: все'
+          new_key_name: Новое имя, интерполирует оригинальное название как %{key}. Необходимый параметр.
+          nostdin: Не читать дерево из стандартного ввода
+          out_format: 'Формат вывода: %{valid_text}.'
+          pattern_router: 'Использовать pattern_router: ключи распределятся по файлам согласно data.write'
+          strict: Не угадывать динамические использования ключей, например `t("category.#{category.key}")`
+          translation_backend: Движок перевода (google или deepl)
+          value: >-
+            Значение, интерполируется с %{value}, %{human_key}, %{key}, %{default}, %{value_or_human_key},
+            %{value_or_default_or_human_key}
+      desc:
+        add_missing: добавить недостающие ключи к переводам
+        check_consistent_interpolations: убедитесь, что во всех переводах используются правильные
+          интерполяционные переменные
+        check_normalized: проверить, что все файлы переводов нормализованы
+        config: показать конфигурацию
+        data: показать данные переводов
+        data_merge: добавить дерево к переводам
+        data_remove: удалить ключи, которые есть в дереве, из данных
+        data_write: заменить переводы деревом
+        eq_base: показать переводы, равные значениям в основном языке
+        find: показать, где ключи используются в коде
+        gem_path: показать путь к ruby gem
+        health: Всё ОК?
+        irb: начать REPL сессию в контексте i18n-tasks
+        missing: показать недостающие переводы
+        mv: переименовать / объединить ключи, которые соответствуют заданному шаблону
+        normalize: нормализовать файлы переводов (сортировка и распределение)
+        remove_unused: удалить неиспользуемые ключи
+        rm: удалить ключи, которые соответствуют заданному шаблону
+        translate_missing: перевести недостающие переводы с Google Translate / DeepL Pro
+        tree_convert: преобразовать дерево между форматами
+        tree_filter: фильтровать дерево по ключу
+        tree_merge: объединенить деревья
+        tree_mv_key: переименованить / объединить / удалить ключи соответствующие заданному шаблону
+        tree_set_value: заменить значения ключей
+        tree_subtract: дерево A минус ключи в дереве B
+        tree_translate: Перевести дерево при помощи Google Translate на язык корневых узлов
+        unused: показать неиспользуемые переводы
+      encourage:
+      - Хорошая работа!
+      - Отлично!
+      - Прекрасно!
+      enum_list_opt:
+        invalid: "%{invalid} не в: %{valid}."
+      enum_opt:
+        invalid: "%{invalid} не является одним из: %{valid}."
+      errors:
+        invalid_format: 'Неизвестный формат %{invalid}. Форматы: %{valid}.'
+        invalid_locale: Неверный язык %{invalid}
+        invalid_missing_type:
+          few: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
+          many: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
+          one: 'Неизвестный тип %{invalid}. Типы: %{valid}.'
+          other: 'Неизвестные типы: %{invalid}. Типы: %{valid}.'
+        pass_forest: Передайте дерево
+    common:
+      continue_q: Продолжить?
+      key: Ключ
+      locale: Язык
+      n_more: ещё %{count}
+      value: Значение
+    data_stats:
+      text: >-
+        %{key_count} ключей в %{locale_count} языках. В среднем, длина строки: %{value_chars_avg},
+        сегменты ключей: %{key_segments_avg}, ключей в языке %{per_locale_avg}.
+      text_single_locale: >-
+        %{key_count} ключей. В среднем, длина строки: %{value_chars_avg}, сегменты ключей: %{key_segments_avg}.
+      title: 'Данные (%{locales}):'
+    deepl_translate:
+      errors:
+        no_api_key: >-
+          Задайте ключ API DeepL через переменную окружения DEEPL_AUTH_KEY или translation.deepl_api_key
+          Получите ключ через https://www.deepl.com/pro.
+        no_results: DeepL не дал результатов.
+        specific_target_missing: You must supply a specific variant for the given target language
+          e.g. en-us instead of en.
+    google_translate:
+      errors:
+        no_api_key: >-
+          Задайте ключ API Google через переменную окружения GOOGLE_TRANSLATE_API_KEY или translation.google_translate_api_key
+          в config/i18n-tasks.yml. Получите ключ через https://code.google.com/apis/console.
+        no_results: >-
+          Google Translate не дал результатов. Убедитесь в том, что платежная информация добавлена
+          в https://code.google.com/apis/console.
+    health:
+      no_keys_detected: Ключи не обнаружены. Проверьте data.read в config/i18n-tasks.yml.
+    inconsistent_interpolations:
+      none: Не найдено несогласованных интерполяций.
+    missing:
+      details_title: На других языках или в коде
+      none: Всё переведено.
+    openai_translate:
+      errors:
+        no_api_key: |-
+          Установить ключ API Яндекса с помощью переменной среды OPENAI_API_KEY или translation.openai_api_key
+           в config / i18n-tasks.yml. Получите ключ по адресу https://openai.com/.
+        no_results: Яндекс не дал результатов.
+    remove_unused:
+      confirm:
+        few: Переводы (%{count}) будут удалены из %{locales}.
+        many: Переводы (%{count}) будут удалены из %{locales}.
+        one: "%{count} перевод будут удалён из %{locales}."
+        other: Переводы (%{count}) будут удалены из %{locales}.
+      noop: Нет неиспользуемых ключей
+      removed: Удалены ключи (%{count})
+    translate_missing:
+      translated: Переведены ключи (%{count})
+    unused:
+      none: Все переводы используются.
+    usages:
+      none: Не найдено использований.
+    yandex_translate:
+      errors:
+        no_api_key: |-
+          Установить ключ API Яндекса с помощью переменной среды YANDEX_API_KEY или translation.yandex_api_key
+           в config / i18n-tasks.yml. Получите ключ по адресу https://tech.yandex.com/translate/.
+        no_results: Яндекс не дал результатов.

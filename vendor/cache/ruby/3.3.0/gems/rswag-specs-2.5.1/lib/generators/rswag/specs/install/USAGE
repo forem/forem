@@ -1,0 +1,8 @@
+Description:
+  Adds swagger_helper to enable Swagger DSL in integration specs
+
+Example:
+    rails generate rswag:specs:install
+
+    This will create:
+        spec/swagger_helper.rb

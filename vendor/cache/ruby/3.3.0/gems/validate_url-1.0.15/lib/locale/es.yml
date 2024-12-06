@@ -1,0 +1,4 @@
+es:
+  errors:
+    messages:
+      url: no es una URL válida

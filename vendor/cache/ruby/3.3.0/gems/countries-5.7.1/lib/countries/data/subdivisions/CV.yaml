@@ -1,0 +1,1292 @@
+---
+B:
+  name: Ilhas de Barlavento
+  code: B
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Illes de Barlavento
+    cs: Barlavento
+    da: Barlavento
+    de: Ilhas de Barlavento
+    en: Barlavento Islands
+    es: Barlovento
+    et: Tuulepealsed saared
+    fi: Barlavento
+    fr: Îles de Barlavento
+    gl: Illas de Barlovento, Cabo Verde
+    he: בארלאוונטו
+    it: Ilhas do Barlavento
+    ja: バルラヴェント諸島
+    ko: 바를라벤투 제도
+    lt: Priešvėjinės salos
+    nb: Barlavento
+    nl: Barlavento
+    pl: Wyspy Zawietrzne
+    pt: Ilhas de Barlavento
+    sv: Barlavento
+    zh: 向风群岛
+    ceb: Ilhas do Barlavento
+    ar: الجزر لافينتو
+    tr: Barlavento Adaları
+    ur: بارلاوینتو جزائر
+    ccp: "\U0001111D\U00011122\U00011134\U00011123\U0001111E\U0001112C\U0001111A\U00011134\U00011111\U0001112E
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    be: астравы Барлавенту
+    'no': Barlavento
+    az: Barlaventu adaları
+    fa: جزایر بارلاونتو²
+    ha: Tsibirin Barlavento
+    ha_NE: Tsibirin Barlavento
+    id: Kepulauan Barlavento
+    ru: Острова Барловенто
+    uk: Барловенто (острови)
+  comments:
+  type: geographical_region
+BR:
+  name: Brava
+  code: BR
+  unofficial_names: Brava
+  geo:
+    latitude: 14.8661257
+    longitude: -24.7024179
+    min_latitude: 14.8026825
+    min_longitude: -24.7488499
+    max_latitude: 14.979173
+    max_longitude: -24.640837
+  translations:
+    en: Brava
+    ar: برافا
+    bn: ব্রাভা
+    ca: Brava
+    da: Brava
+    de: Brava
+    el: Μπράβα
+    es: Brava
+    fi: Brava
+    fr: Brava
+    gu: બ્રાવા
+    hi: ब्रावा
+    id: Brava
+    it: contea di Brava
+    ja: ブラヴァ (カーボベルデ)
+    kn: ಬ್ರವ
+    ko: 브라바 시
+    mr: ब्रावा
+    ms: Brava
+    nb: Brava
+    nl: Brava
+    pl: Brava
+    pt: Brava
+    ru: Брава
+    si: බ්රාවා
+    sv: Brava
+    ta: பிறவா
+    te: బ్రావా
+    th: บราวา
+    tr: Brava
+    ur: براوا
+    vi: Brava
+    lv: Brava
+    lt: Brava
+    zh: 布拉瓦島縣
+    ccp: "\U0001111D\U00011133\U00011122\U0001111E"
+    uk: Брава
+    'no': Brava
+  comments:
+  type: municipality
+BV:
+  name: Boa Vista
+  code: BV
+  unofficial_names: Boa Vista
+  geo:
+    latitude: 16.1372504
+    longitude: -22.858217
+    min_latitude: 15.9687814
+    min_longitude: -22.9649422
+    max_latitude: 16.2250611
+    max_longitude: -22.6695356
+  translations:
+    en: Boa Vista
+    ar: بوا فيستا
+    bn: বুয়ো ভিস্তা
+    ca: Boa Vista
+    da: Boa Vista
+    de: Boa Vista
+    el: Δήμος Μπόα Βίστα
+    es: Boavista
+    fi: Boa Vista
+    fr: Boa Vista
+    gu: બોઆ વિસ્ટા
+    hi: बोआ विस्टा
+    id: Boa Vista
+    it: contea di Boa Vista
+    ja: ボア・ヴィスタ (カーボベルデ)
+    kn: ಬೋವಾ ವಿಸ್ಟಾ
+    ko: 보아비스타 시
+    mr: बोआ व्हिस्टा
+    ms: Boa Vista
+    nb: Boa Vista
+    nl: Boa Vista
+    pl: Boa Vista
+    pt: Boa Vista
+    ru: Боа-Виста
+    si: බොආ විස්ටා
+    sv: Boa Vista
+    ta: போஆ விஸ்ட்டா
+    te: బోవా విస్తా
+    th: เบา วิสตา
+    tr: Boa Vista
+    ur: بوا وسٹا
+    vi: Boa Vista
+    lv: Boavišta
+    lt: Boa Vista
+    zh: 博阿維斯塔島縣
+    ccp: "\U0001111D\U0001112E\U00011120 \U0001111E\U00011128\U0001110C\U00011134\U00011111"
+    ro: Municipalitatea Boa Vista, Capul Verde
+    uk: Боа-Вішта
+    'no': Boa Vista
+    ceb: Concelho da Boa Vista
+  comments:
+  type: municipality
+CA:
+  name: Santa Catarina
+  code: CA
+  unofficial_names: Santa Catarina
+  geo:
+    latitude: 15.0992532
+    longitude: -23.6918783
+    min_latitude: 14.9808349
+    min_longitude: -23.7812941
+    max_latitude: 15.199731
+    max_longitude: -23.6272161
+  translations:
+    en: Santa Catarina
+    ar: سانتا كاتارينا
+    bg: Санта Катарина
+    bn: স্যান্টা ক্যাটারিনা
+    ca: Santa Catarina
+    da: Santa Catarina
+    de: Santa Catarina
+    el: Δήμος Σάντα Καταρίνα
+    es: Santa Catarina
+    fi: Santa Catarina
+    fr: Santa Catarina
+    gu: સાંતા કેટરિના
+    hi: सैंटा कैटरीना
+    id: Santa Catarina
+    it: contea di Santa Catarina
+    ja: サンタ・カタリナ
+    kn: ಸಾಂಟಾ ಕ್ಯಾಟರಿನಾ
+    ko: 산타카타리나 시
+    lt: Santa Katarinos savivaldybė
+    mr: सांता कॅटरीना
+    ms: Santa Catarina
+    nb: Santa Catarina
+    nl: Santa Catarina (Kaapverdië)
+    pl: Santa Catarina
+    pt: Santa Catarina
+    ru: Санта-Катарина
+    si: සැන්ටා කැතරිනා
+    sv: Concelho de Santa Catarina
+    ta: சாண்டா கேட்டறினா
+    te: సాంటా కేటరీనా
+    th: ปาร์มา
+    tr: Santa Catarina
+    ur: سنتا کاتارینا
+    vi: Santa Catarina
+    lv: Santakatarina
+    ceb: Concelho de Santa Catarina
+    zh: 聖卡塔琳娜縣
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011107\U00011133\U00011120\U00011111\U00011122\U00011128\U0001111A"
+    he: סנטה קטרינה
+    uk: Санта-Катаріна
+    'no': Santa Catarina
+    fa: سانتا کاتارینا (دماغه سبز)
+  comments:
+  type: municipality
+CF:
+  name: Santa Catarina do Fogo
+  code: CF
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: سانتا كاتارينا دو فوجو
+    bn: স্যান্টা ক্যাটারিনা দো ফোগো
+    ca: Santa Catarina do Fogo
+    da: Santa Catarina do Fogo
+    de: Santa Catarina do Fogo
+    el: Σάντα Καταρίνα ντο Φόργκο, Κέϊπ Βέρντε
+    en: Santa Catarina do Fogo
+    es: Santa Catarina do Fogo
+    fi: Santa Catarina do Fogo
+    fr: Santa Catarina do Fogo
+    gu: સાંતા કેટરિના દો ફૉગો
+    hi: सैंटा कैटरीना डो फोगो
+    id: Santa Catarina do Fogo
+    it: contea di Santa Catarina do Fogo
+    ja: サンタ・カタリナ・ド・フォゴ
+    kn: ಸಾಂಟಾ ಕ್ಯಾಟರೀನಾ ಫೊಗೊ
+    ko: 산타카타리나두포구 시
+    lt: Santa Katarinos savivaldybė²
+    mr: सांता कॅटरीना डू फोगो
+    ms: Santa Catarina do Fogo
+    nb: Santa Catarina do Fogo
+    nl: Santa Catarina do Fogo
+    pl: Santa Catarina do Fogo
+    pt: Santa Catarina do Fogo
+    ru: Санта-Катарина-до-Фого
+    si: සැන්ටා කැතරිනා²
+    sv: Concelho de Santa Catarina do Fogo
+    ta: சாண்டா கேடறின டூ போகோ
+    te: సాంటా కేటరీనా డో ఫోగో
+    th: านต้า ซาตารินาโด โฟโก
+    tr: Santa Catarina do Fogo
+    ur: سنتا کاتارینا دو فوجو
+    vi: Santa Catarina do Fogo
+    lv: Santakatarina du Fugu
+    ceb: Concelho de Santa Catarina do Fogo
+    zh: 福戈聖卡塔琳娜縣
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011107\U00011133\U00011120\U00011111\U00011122\U00011128\U0001111A
+      \U00011113\U0001112E \U0001111C\U00011127\U00011109\U0001112E"
+    uk: Санта-Катаріна-до-Фого
+    'no': Santa Catarina do Fogo
+    fa: سانتا کاتارینا دو فگو (دماغه سبز)
+  comments:
+  type: municipality
+CR:
+  name: Santa Cruz
+  code: CR
+  unofficial_names: Santa Cruz
+  geo:
+    latitude: 15.1027292
+    longitude: -23.5609459
+    min_latitude: 15.041449
+    min_longitude: -23.639359
+    max_latitude: 15.1868812
+    max_longitude: -23.4919112
+  translations:
+    en: Santa Cruz
+    ar: سانتا كروز
+    bg: Санта Круз
+    bn: সান্তা ক্রুজের
+    ca: Santa Cruz
+    da: Santa Cruz
+    de: Santa Cruz
+    el: Δήμος Σάντα Κρουζ
+    es: Santa Cruz (Cabo Verde)
+    fi: Santa Cruz
+    fr: Santa Cruz
+    gu: સાન્તા ક્રૂઝ
+    hi: सांता क्रुज़
+    hu: Santa Cruz
+    id: Santa Cruz
+    it: contea di Santa Cruz
+    ja: サンタ・クルス (カーボベルデ)
+    kn: ಸಾಂತಾ ಕ್ರೂಜ್
+    ko: 산타크루스 시
+    lt: Santa Kruso savivaldybė
+    mr: सांताक्रूझ
+    ms: Santa Cruz
+    nb: Santa Cruz
+    nl: Santa Cruz (Kaapverdië)
+    pl: Santa Cruz
+    pt: Santa Cruz
+    ru: Санта-Круз
+    si: සැන්ටා කෘස්
+    sv: Santa Cruz (ort i Kap Verde)
+    ta: சாண்டா கிருஸ்
+    te: సాంటా క్రజ్
+    th: ซานตาครูซ
+    tr: Santa Cruz
+    ur: سنتا کروز
+    vi: Santa Cruz
+    lv: Santakruza
+    ceb: Santa Cruz
+    zh: 聖克魯斯縣
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011107\U00011133\U00011122\U0001112A\U0001110C\U00011134"
+    uk: Санта-Круз
+    'no': Santa Cruz
+    fa: سانتا کروز (دماغه سبز)
+  comments:
+  type: municipality
+CS:
+  name: Calheta de São Miguel
+  code: CS
+  unofficial_names: Calheta de São Miguel
+  geo:
+    latitude: 15.1875
+    longitude: -23.593
+    min_latitude: 15.1799619
+    min_longitude: -23.5979247
+    max_latitude: 15.1908814
+    max_longitude: -23.5874318
+  translations:
+    en: Calheta de São Miguel
+    ja: カリェタ・デ・サン・ミゲル
+  comments:
+  type: municipality
+MA:
+  name: Maio
+  code: MA
+  unofficial_names: Maio
+  geo:
+    latitude: 15.2003098
+    longitude: -23.1679793
+    min_latitude: 15.118355
+    min_longitude: -23.2338931
+    max_latitude: 15.3377624
+    max_longitude: -23.0840044
+  translations:
+    en: Maio
+    ca: Maio
+    de: Maio
+    es: Maio
+    fr: Maio
+    it: contea di Maio
+    ja: マイオ (カーボベルデ)
+    ko: 마이우 시
+    nl: Maio
+    pt: Maio
+    ceb: Concelho do Maio
+    ur: مائیو، کیپ ورڈی
+    zh: 馬約島縣
+    ccp: "\U0001111F\U0001112D\U00011103\U0001112E"
+    ar: مايو
+    cy: Bwrdeistref Maio
+    pl: Maio (concelho)
+  comments:
+  type: municipality
+MO:
+  name: Mosteiros
+  code: MO
+  unofficial_names: Mosteiros
+  geo:
+    latitude: 15.034
+    longitude: -24.325
+    min_latitude: 15.023137
+    min_longitude: -24.3313264
+    max_latitude: 15.0359258
+    max_longitude: -24.3187952
+  translations:
+    en: Mosteiros
+    ar: موستيروس، الرأس الأخضر
+    bn: মস্টেইরোস
+    ca: Mosteiros
+    da: Mosteiros
+    de: Mosteiros
+    el: Μοστέιρος
+    es: Mosteiros
+    fi: Mosteiros
+    fr: Mosteiros
+    gu: મોસ્ટેરોસ
+    hi: मोस्टायरोस
+    id: Mosteiros
+    it: contea di Mosteiros
+    ja: モシュテイホシュ
+    kn: ಮೋಸ್ಟಿಯೊರೋಸ್
+    ko: 모스테이루스 시
+    lt: Mosteiroso savivaldybė
+    mr: मोस्टेइरोस
+    ms: Mosteiros
+    nb: Mosteiros
+    nl: Mosteiros
+    pl: Mosteiros
+    pt: Mosteiros
+    ru: Моштейруш
+    si: මොස්ටෙරියෝස්
+    sv: Concelho dos Mosteiros
+    ta: மோஸ்டீரோஸ்
+    te: మోస్టెయిరోస్
+    th: มอสเตอร์รอส
+    tr: Mosteiros
+    ur: موستییروس
+    vi: Mosteiros
+    lv: Mosteiros
+    ceb: Concelho dos Mosteiros
+    zh: 莫什泰魯什縣
+    ccp: "\U0001111F\U00011127\U0001110C\U00011134\U00011111\U0001112C\U0001112D\U00011122\U0001112E\U0001110C\U00011134"
+    uk: Моштейруш
+    'no': Mosteiros
+  comments:
+  type: municipality
+PA:
+  name: Paúl
+  code: PA
+  unofficial_names: Paúl
+  geo:
+    latitude: 17.1005359
+    longitude: -24.9872821
+    min_latitude: 17.0717081
+    min_longitude: -25.075462
+    max_latitude: 17.153166
+    max_longitude: -24.967329
+  translations:
+    en: Paul
+    ar: بول
+    bn: পল
+    ca: Paul
+    da: Paúl
+    de: Paul
+    el: Δήμος Παούλ
+    es: Paul
+    fi: Paul
+    fr: Paul
+    gu: પોલ
+    hi: पॉल
+    id: Paul
+    it: contea di Paul
+    ja: パウル (カーボベルデ)
+    kn: ಪಾಲ್
+    ko: 파울 시
+    lt: Paulio savivaldybė
+    mr: पॉल
+    ms: Paul
+    nb: Paúl
+    nl: Paúl
+    pl: Paúl
+    pt: Paul
+    ro: Paúl
+    ru: Пол
+    si: පාවුළු
+    sv: Concelho do Paul
+    ta: பால்
+    te: పాల్
+    th: พอล
+    tr: Paul
+    ur: پال
+    vi: Paul
+    lv: Paula
+    ceb: Concelho do Paul
+    zh: 保爾縣
+    ccp: "\U0001111B\U00011127\U00011123\U00011134"
+    uk: Поль
+    'no': Paúl
+    fa: پل (دماغه سبز)
+    ml: പോൾ
+    sw: Paul, Cape Verde
+  comments:
+  type: municipality
+PN:
+  name: Porto Novo
+  code: PN
+  unofficial_names: Porto Novo
+  geo:
+    latitude: 16.9911107
+    longitude: -25.2363408
+    min_latitude: 16.9104722
+    min_longitude: -25.3556249
+    max_latitude: 17.1292379
+    max_longitude: -24.979912
+  translations:
+    en: Porto Novo
+    ar: بورتو نوفو
+    bn: পোর্টো নোভো
+    ca: Porto Novo
+    da: Porto Novo
+    de: Porto Novo
+    el: Δήμος Πόρτο Νόβο
+    es: Porto Novo
+    fi: Porto Novo
+    fr: Porto Novo
+    gu: પોર્ટો નોવો
+    hi: पोर्टो नोवो
+    id: Porto Novo
+    it: contea di Porto Novo
+    ja: ポルト・ノボ (カーボベルデ)
+    kn: ಪೋರ್ಟೊ ನೋವೋ
+    ko: 포르투노부 시
+    lt: Porto Novas
+    mr: पोर्टो नोवो
+    ms: Porto Novo
+    nb: Porto Novo
+    nl: Porto Novo
+    pl: Porto Novo
+    pt: Porto Novo
+    ro: Porto Novo
+    ru: Порто-Ново
+    si: පෝර්ටෝ-නොවෝ
+    sv: Porto Novo
+    ta: போர்டோ நோவோ
+    te: పోర్టో నోవో
+    th: คีชีเนา
+    tr: Porto Novo
+    ur: پورٹو نووو
+    vi: Porto Novo
+    lv: Portonovu
+    ceb: Porto Novo
+    zh: 波多諾伏縣
+    ccp: "\U0001111B\U00011127\U00011122\U00011134\U00011111\U0001112E \U0001111A\U0001112E\U0001111E\U0001112E"
+    uk: Порто-Ново
+    'no': Porto Novo
+    fa: پورتو نوو (دماغه سبز)
+  comments:
+  type: municipality
+PR:
+  name: Praia
+  code: PR
+  unofficial_names: Praia
+  geo:
+    latitude: 14.95
+    longitude: -23.52
+    min_latitude: 14.9001745
+    min_longitude: -23.5428429
+    max_latitude: 14.9727297
+    max_longitude: -23.4706162
+  translations:
+    en: Praia
+    ar: برايا
+    bg: Прая
+    bn: পারাইয়া
+    ca: Praia
+    da: Praia
+    de: Praia
+    el: Δήμος Πράια
+    es: Praia
+    fi: Praia
+    fr: Praia
+    gu: પ્રાઇઆ
+    hi: प्रेया
+    id: Praia
+    it: contea di Praia
+    ja: プライア市
+    kn: ಪ್ರೈಯ
+    ko: 프라이아 시
+    mr: प्रेया
+    ms: Praia
+    nb: Praia
+    nl: Praia
+    pl: Praia
+    pt: Praia
+    ru: община Прая
+    si: ප්‍රයියා
+    sv: Praia
+    ta: ப்ரையா
+    te: ప్రాయా
+    th: ไปรอา
+    tr: Praia
+    ur: پرایا
+    vi: Praia
+    lv: Praja
+    ceb: Concelho da Praia
+    lt: Praja
+    zh: 普拉亞縣
+    ccp: "\U0001111B\U00011133\U00011122\U0001112D\U00011120"
+    ro: Municipalitatea Praia, Capul Verde
+    uk: Прая
+    be: Прая
+    'no': Praia
+  comments:
+  type: municipality
+RB:
+  name: Ribeira Brava
+  code: RB
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ريبيرا برافا
+    bn: রিবেইরা ব্রাভা
+    ca: Ribeira Brava
+    da: Ribeira Brava
+    de: Ribeira Brava
+    el: Δήμος Ριμπέιρα Μπράβα
+    en: Ribeira Brava
+    es: Ribeira Brava
+    fi: Ribeira Brava
+    fr: Ribeira Brava
+    gu: રિબેરા બ્રાવા
+    hi: रिबेरा ब्रावा
+    id: Ribeira Brava
+    it: contea di Ribeira Brava
+    ja: リベイラ・ブラヴァ
+    kn: ರೈಬೆರಾ ಬ್ರವಾ
+    ko: 히베이라브라바 시
+    lt: Ribeira Brava
+    mr: रबीरा ब्रावा
+    ms: Ribeira Brava
+    nb: Ribeira Brava
+    nl: Ribeira Brava
+    pl: Ribeira Brava
+    pt: Ribeira Brava
+    ro: Ribeira Brava
+    ru: Рибейра-Брава
+    si: රෙබෙයිරා බරවා
+    sv: Concelho da Ribeira Brava
+    ta: ரிபெயர பிறவா
+    te: రిబియేరా బ్రావా
+    th: ริเบียรา บราว่า
+    tr: Ribeira Brava
+    ur: ریبییرا براوا
+    vi: Ribeira Brava
+    lv: Ribeirabrava
+    ceb: Concelho da Ribeira Brava
+    zh: 里貝拉布拉瓦縣
+    ccp: "\U00011122\U00011128\U0001111D\U0001112C\U0001112D\U00011122 \U0001111D\U00011133\U00011122\U0001111E"
+    uk: Рібейра-Брава
+    'no': Ribeira Brava
+  comments:
+  type: municipality
+RG:
+  name: Ribeira Grande
+  code: RG
+  unofficial_names:
+  - Santiago
+  geo:
+    latitude: 17.1601387
+    longitude: -25.1177654
+    min_latitude: 17.077749
+    min_longitude: -25.2308923
+    max_latitude: 17.199805
+    max_longitude: -25.0201209
+  translations:
+    en: Ribeira Grande
+    ar: ريبيرا غراندي
+    bn: রবিরা গ্র্যান্ডে
+    ca: Ribeira Grande
+    da: Ribeira Grande
+    de: Ribeira Grande
+    el: Δήμος Ριμπέιρα Γκράντε
+    es: Ribeira Grande
+    fi: Ribeira Grande
+    fr: Ribeira Grande
+    gu: રિબેરા ગ્રાન્ડે
+    hi: रिबेरा ग्रांडे
+    id: Ribeira Grande
+    it: contea di Ribeira Grande
+    ja: リベイラ・グランデ
+    kn: ರಿಬೇರಿ ಗ್ರಾಂಡೆ
+    ko: 히베이라그란드 시
+    lt: Ribeira Grandė
+    mr: रिबेरा ग्रांडे
+    ms: Ribeira Grande
+    nb: Ribeira Grande
+    nl: Ribeira Grande
+    pl: Ribeira Grande
+    pt: Ribeira Grande
+    ro: Ribeira Grande
+    ru: Рибейра-Гранде
+    si: රිබෙයිරා ග්‍රන්ඩේ
+    sv: Ribeira Grande
+    ta: ரிபெய்ரா கிராண்டே
+    te: రివియేరా గ్రాండ్
+    th: จังหวัดเบเนเวนโต
+    tr: Riberie GRande
+    ur: ریبییرا جراندی
+    vi: Ribeira Grande
+    lv: Ribeiragrandi
+    ceb: Concelho da Ribeira Grande
+    zh: 大里貝拉縣
+    ccp: "\U00011122\U00011128\U0001111D\U0001112C\U0001112D\U00011122 \U00011109\U00011133\U00011122\U0001111A\U00011134\U00011113\U0001112C"
+    uk: Рібейра-Гранде
+    'no': Ribeira Grande
+  comments:
+  type: municipality
+RS:
+  name: Ribeira Grande de Santiago
+  code: RS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ريبيرا غراندي دي سانتياغو، الرأس الأخضر
+    bg: Рибейра Гранде де Сантяго
+    bn: রইবেরা গ্রান্ডে দি সান্তিয়াগু
+    ca: Ribeira Grande de Santiago
+    da: Ribeira Grande de Santiago
+    de: Ribeira Grande de Santiago
+    el: Δήμος Ριμπέιρα Γκράντε ντε Σαντιάγο
+    en: Ribeira Grande de Santiago
+    es: Ribeira Grande de Santiago
+    fi: Ribeira Grande de Santiago
+    fr: Ribeira Grande de Santiago
+    gu: રિબેરા ગ્રાન્દે દે સેન્ટિયાગો
+    hi: रिबैरा ग्रैंडे डी सैंटियागो
+    id: Ribeira Grande de Santiago
+    it: contea di Ribeira Grande de Santiago
+    ja: リベイラ・グランデ・デ・サンティアゴ (カーボベルデ)
+    kn: ರೈಬೆರಾ ಗ್ರಾಂಡೆ ಡಿ ಸ್ಯಾಂಟಿಯಾಗೊ
+    ko: 히베이라그란드드산티아구 시
+    lt: Santjago Ribeira Grandės savivaldybė
+    mr: रिबेरा ग्रान्दे दे सॅंटियागो
+    ms: Ribeira Grande de Santiago
+    nb: Ribeira Grande de Santiago
+    nl: Ribeira Grande de Santiago
+    pl: Ribeira Grande de Santiago
+    pt: Ribeira Grande de Santiago
+    ru: Рибейра-Гранде-де-Сантьяго
+    si: රිබෙයිරා ග්‍රන්ඩේ ඩි සන්තියාගෝ
+    sv: Concelho de Ribeira Grande de Santiago
+    ta: ரிபெய்ரா கிராண்டே டே சாண்டியாகோ
+    te: రీబేరా గ్రాండె ద సాంటియాగో
+    th: ริเบรา กรานเด ซานติอาโก
+    tr: Ribeira Grande de Santiago
+    ur: ریبییرا جراندی دے سانتیاگو
+    vi: Ribeira Grande de Santiago
+    lv: Ribeiragrandi di Santjagu pašvaldība
+    ceb: Concelho de Ribeira Grande de Santiago
+    zh: 聖地亞哥大里貝拉縣
+    ccp: "\U00011122\U00011128\U0001111D\U0001112C\U0001112D\U00011122 \U00011109\U00011133\U00011122\U0001111A\U00011134\U00011113\U0001112C
+      \U00011113\U0001112C \U00011125\U0001111A\U00011134\U00011111\U00011128\U00011120\U00011109\U0001112E"
+    uk: Рібейра-Гранде-де-Сантьяго
+    'no': Ribeira Grande de Santiago
+    fa: ریبیرا گرانده د سانتیاگو
+  comments:
+  type: municipality
+S:
+  name: Ilhas de Sotavento
+  code: S
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: جزر سوتافينتو
+    ca: Illes de Sotavento
+    cs: Sotavento
+    da: Sotavento
+    de: Ilhas de Sotavento
+    en: Sotavento Islands
+    es: Sotavento
+    et: Tuulealused saared
+    fa: جزایر بارلاونتو
+    fi: Sotavento
+    fr: Îles de Sotavento
+    gl: Illas de Sotavento, Cabo Verde
+    he: סוטאוונטו
+    it: Ilhas do Sotavento
+    ja: ソタヴェント諸島
+    ko: 소타벤투 제도
+    lt: Pavėjinės salos
+    nb: Sotavento
+    nl: Sotavento
+    pl: Wyspy Podwietrzne
+    pt: Ilhas de Sotavento
+    sv: Sotavento
+    ceb: Ilhas do Sotavento
+    ur: سوتاوینتو جزائر
+    zh: 背風群島
+    ccp: "\U00011125\U0001112E\U00011111\U0001111E\U0001112C\U0001111A\U00011134\U00011111\U0001112E
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    be: астравы Сатавенту
+    'no': Sotavento
+    id: Kepulauan Sotavento
+    ru: острова Сотовенту
+    uk: Сотавенто (острови)
+  comments:
+  type: geographical_region
+SD:
+  name: São Domingos
+  code: SD
+  unofficial_names: São Domingos
+  geo:
+    latitude: 15.025
+    longitude: -23.5625
+    min_latitude: 15.0196346
+    min_longitude: -23.5748148
+    max_latitude: 15.0340585
+    max_longitude: -23.552177
+  translations:
+    en: São Domingos
+    ar: ساو دومينغوس
+    bg: Сао Домингос
+    bn: সাঁও ডোমিঙ্গো
+    ca: São Domingos
+    da: São Domingos
+    de: São Domingos
+    el: Δήμος Σάο Ντομίνγκος
+    es: São Domingos
+    fi: São Domingos
+    fr: São Domingos
+    gu: સાઓ ડોમિંગોસ
+    hi: साओ डोमिंगोस
+    id: São Domingos
+    it: contea di São Domingos
+    ja: サン・ドミンゴス
+    kn: ಸಾವೊ ಡೊಮಿಂಗೊಸ್
+    ko: 상도밍구스 시
+    lt: San Domingosas
+    mr: साओ डोमिंगोस
+    ms: Sao Domingos
+    nb: São Domingos
+    nl: São Domingos
+    pl: São Domingos
+    pt: São Domingos
+    ru: Сан-Домингос
+    si: සාඕ ඩොමින්ගොස්
+    sv: Concelho de São Domingos
+    ta: ஸோ டொமிங்கோஸ்
+    te: సావోో డామింగోస్
+    th: เซา โดมินโกส
+    tr: Sao Domingos
+    ur: ساؤ دومینجوس
+    vi: Sao Domingos
+    lv: Sandomigusa
+    ceb: Concelho de São Domingos
+    zh: 聖多明戈斯縣
+    ccp: "\U00011125\U00011103\U0001112E \U00011113\U0001112E\U0001111F\U00011128\U0001111A\U00011134\U00011109\U0001112E\U0001110C\U00011134"
+    uk: Сан-Домінгос
+    'no': São Domingos
+    fa: سائو دومینگوس (دماغه سبز)
+  comments:
+  type: municipality
+SF:
+  name: São Filipe
+  code: SF
+  unofficial_names: São Filipe
+  geo:
+    latitude: 14.895
+    longitude: -24.498
+    min_latitude: 14.8795941
+    min_longitude: -24.5021173
+    max_latitude: 14.9068766
+    max_longitude: -24.4744921
+  translations:
+    en: São Filipe
+    ar: ساو فيليب
+    bn: সাঁও ফিলিপ
+    ca: São Filipe
+    da: São Filipe
+    de: São Filipe
+    el: Σάο Φιλίπε
+    es: São Filipe
+    fi: São Filipe
+    fr: São Filipe
+    gu: સાઓ ફિલિપ
+    hi: साओ फिलिप
+    id: São Filipe
+    it: contea di São Filipe
+    ja: サン・フィリペ
+    kn: ಸಾವೊ ಫಿಲಿಪ್
+    ko: 상필리프 시
+    lt: San Filipė
+    mr: साओ फिलिप
+    ms: Sao Filipe
+    nb: São Filipe
+    nl: São Filipe
+    pl: São Filipe
+    pt: São Filipe (concelho de Cabo Verde)
+    ru: Сан-Фелипе
+    si: සාඕ ෆිලිපේ
+    sv: Concelho do São Filipe
+    ta: ஸோ பிலிப்
+    te: సావో ఫిలిపె
+    th: เซา ฟิลิเป้
+    tr: Sao Filipe
+    ur: ساؤ فیلیپی
+    vi: São Filipe
+    lv: Sanfilipi
+    ceb: Concelho do São Filipe
+    zh: 聖菲利佩縣
+    ccp: "\U00011125\U00011103\U0001112E \U0001111C\U00011128\U00011123\U00011128\U0001111B\U00011134"
+    uk: Сан-Філіпе
+    'no': São Filipe
+    fa: سائو فیلیپه (دماغه سبز)
+  comments:
+  type: municipality
+SL:
+  name: Sal
+  code: SL
+  unofficial_names: Sal
+  geo:
+    latitude: 16.7266152
+    longitude: -22.9297109
+    min_latitude: 16.5853415
+    min_longitude: -22.9942131
+    max_latitude: 16.8537251
+    max_longitude: -22.8727016
+  translations:
+    en: Sal
+    ar: سال
+    bn: সাল
+    ca: Sal
+    da: Sal
+    de: Sal
+    el: Δήμος Σαλ
+    es: Sal
+    fi: Sal
+    fr: Sal
+    gu: સાલ
+    hi: साल
+    hu: Sal
+    id: Sal
+    it: contea di Sal
+    ja: サル (カーボベルデ)
+    kn: ಸಾಲ್
+    ko: 살 시
+    mr: साल
+    ms: Sal
+    nb: Sal
+    nl: Sal
+    pl: Sal
+    pt: Sal
+    ru: Сал
+    si: සල්
+    sv: Sal
+    ta: ஸல்
+    te: సాల్
+    th: ซาล
+    tr: Sal
+    ur: سال
+    vi: Sal
+    lv: Sala
+    ceb: Sal Municipality
+    lt: Salas
+    zh: 薩爾縣
+    ccp: "\U00011125\U00011123\U00011134"
+    uk: Сал
+    'no': Sal
+  comments:
+  type: municipality
+SM:
+  name: São Miguel
+  code: SM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Сао Мигел
+    ca: São Miguel
+    de: São Miguel
+    en: São Miguel
+    es: São Miguel (Cabo Verde)
+    fr: São Miguel
+    it: contea di São Miguel
+    ja: サン・ミゲル
+    ko: 상미겔 시
+    lt: San Migelis
+    nb: São Miguel
+    nl: São Miguel (Kaapverdië)
+    pl: São Miguel
+    pt: São Miguel
+    ceb: Concelho de São Miguel
+    ur: سآو میگوئل، کیپ ورڈی
+    zh: 聖米戈爾縣
+    ccp: "\U00011125\U00011103\U0001112E \U0001111F\U0001112D\U00011109\U0001112A\U00011120\U0001112C\U00011123\U00011134"
+    'no': São Miguel
+    fa: سائو میگوئل (دماغه سبز)
+    id: São Miguel, Tanjung Verde
+    uk: Сан-Мігель (Кабо-Верде)
+  comments:
+  type: municipality
+SN:
+  name: São Nicolau
+  code: SN
+  unofficial_names: São Nicolau
+  geo:
+    latitude: 16.6048609
+    longitude: -24.3103718
+    min_latitude: 16.4791765
+    min_longitude: -24.4276023
+    max_latitude: 16.6813965
+    max_longitude: -24.0076803
+  translations:
+    en: São Nicolau
+    ja: サン・ニコラウ島
+  comments:
+  type: municipality
+SO:
+  name: São Lourenço dos Órgãos
+  code: SO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ساو لورينسو دوس أورغاوس
+    bn: সেন্ট লরেন্স দোস অরগ্যাস
+    ca: São Lourenço dos Órgãos
+    da: Sao Lourenco dos Orgaos
+    de: São Lourenço dos Órgãos
+    el: Δήμος Σάο Λουρένσο ντος Οργκάος
+    en: São Lourenço dos Órgãos
+    es: São Lourenço dos Órgãos
+    fi: São Lourenço dos Órgãos
+    fr: São Lourenço dos Órgãos
+    gu: સાઓ લોરેન્સો ડોસ ઓગાઓસ
+    hi: साओ लोरेंको डॉस ऑरेगोस
+    id: São Lourenço dos Órgãos
+    it: contea di São Lourenço dos Órgãos
+    ja: サン・ローレンソ・ドス・オルガンス
+    kn: ಸಾವೊ ಲೌರೆನ್ಕೋ ಡಾಸ್ ಓರ್ಗಾವೋಸ್
+    ko: 상로렌수두스오르강스 시
+    lt: San Lorenso dos Organjoso savivaldybė
+    mr: साओ लूरेनको डो ओस्रागॉओस
+    ms: Sao Lourenco dos Orgaos
+    nb: São Lourenço dos Órgãos
+    nl: São Lourenço dos Órgãos
+    pl: São Lourenço dos Órgãos
+    pt: São Lourenço dos Órgãos
+    ru: Сан-Лоренсу-душ-Оргауш
+    si: සාවෝ ලොරෙන්සෝ දොස් ඔර්ගවොස්
+    sv: São Lourenço dos Órgãos
+    ta: ஸோ லூரின்க்கோ டாஸ் ஒர்கவ்ஸ்
+    te: సావో లోరెంకో డాస్ ఓర్గావోస్
+    th: เซา รัวเรนโค ดอส ออกาโอส
+    tr: Sao Lourenco dos Orgaos
+    ur: ساؤ لوورینکو ڈوز ورجاوس
+    vi: Sao Lourenco dos Orgaos
+    lv: Sanlourensu du Orgaosa
+    ceb: São Lourenço dos Órgãos
+    zh: 聖洛倫索縣
+    ccp: "\U00011125\U00011103\U0001112E \U00011123\U0001112E\U00011122\U0001112C\U0001111A\U00011134\U00011107\U0001112E
+      \U00011113\U0001112E\U0001110C\U00011134 \U00011103\U00011127\U00011122\U00011134\U00011109\U00011103\U0001112E\U0001110C\U00011134"
+    uk: Сан-Лоренсу-душ-Оргауш
+    'no': São Lourenço dos Órgãos
+    fa: سائو لورنچو دوس ارگیوس (دماغه سبز)
+  comments:
+  type: municipality
+SS:
+  name: São Salvador do Mundo
+  code: SS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ساو سلفادور دو موندو
+    bg: Сао Салвадор до Мундо
+    bn: সাও সালভাডর ডু মুন্ডো
+    ca: São Salvador do Mundo
+    da: São Salvador do Mundo
+    de: São Salvador do Mundo
+    el: Δήμος Σάο Σαλβαδόρ ντο Μούντο
+    en: São Salvador do Mundo
+    es: São Salvador do Mundo
+    fi: São Salvador do Mundo
+    fr: São Salvador do Mundo
+    gu: સાઓ સાલ્વાડોર દો મુન્ડો
+    hi: साओ साल्वाडोर डो मुंडो
+    id: São Salvador do Mundo
+    it: contea di São Salvador do Mundo
+    ja: サン・サルバドル・ド・ムンド
+    kn: ಸಾವೊ ಸಾಲ್ವಡಾರ್ ಡು ಮುಂಡೋ
+    ko: 상살바도르두문두 시
+    lt: San Salvador do Mundas
+    mr: साओ साल्वाडोर डू मुंडो
+    ms: Sao Salvador do Mundo
+    nb: São Salvador do Mundo
+    nl: São Salvador do Mundo
+    pl: São Salvador do Mundo
+    pt: São Salvador do Mundo
+    ru: Сан-Сальвадор-до-Мундо
+    si: සාඕ සැල්වදෝර් ඩො මුන්ඩෝ
+    sv: Concelho de São Salvador do Mundo
+    ta: ஸோ சால்வடார் டூ முன்டோ
+    te: సావ్నిో సాల్వడార్ డు ముండో
+    th: เซา ซัลวาดอร์ โดมอนโด
+    tr: Sao Salvador do Mundo
+    ur: ساؤ سالوادور دو موندو
+    vi: São Salvador do Mundo
+    lv: Sansalvadora du Mundu
+    ceb: Concelho de São Salvador do Mundo
+    zh: 聖薩爾瓦多蒙多縣
+    ccp: "\U00011125\U00011103\U0001112E \U00011125\U00011123\U00011134\U0001111E\U00011118\U00011127\U00011122\U00011134
+      \U00011113\U0001112E \U0001111F\U0001112A\U0001111A\U00011134\U00011113\U0001112E"
+    uk: Сан-Сальвадор-до-Мундо
+    'no': São Salvador do Mundo
+    fa: سائو سالوادور دو موندو (دماغه سبز)
+  comments:
+  type: municipality
+SV:
+  name: São Vicente
+  code: SV
+  unofficial_names: São Vicente
+  geo:
+    latitude: 16.8341271
+    longitude: -24.9279547
+    min_latitude: 16.6069539
+    min_longitude: -25.0855633
+    max_latitude: 16.9222019
+    max_longitude: -24.5742091
+  translations:
+    en: São Vicente
+    ar: ساو فيسنتي
+    bn: সাঁও ভিন্সেন্ট
+    ca: São Vicente
+    da: São Vicente
+    de: São Vicente
+    el: Δήμος Σάο Βισέντε
+    es: São Vicente
+    fi: São Vicente
+    fr: São Vicente
+    gu: સાઓ વિસેન્ટે
+    hi: साओ विसेंटे
+    id: São Vicente
+    it: contea di São Vicente
+    ja: サン・ビセンテ
+    kn: ಸಾವೊ ವಿಸೆಂಟೆ
+    ko: 상비센트 시
+    lt: San Visentės savivaldybė
+    mr: साओ विसेंटे
+    ms: Sao Vicente
+    nb: São Vicente
+    nl: São Vicente
+    pl: São Vicente
+    pt: São Vicente
+    ru: Сан-Висенти
+    si: සාඕ විසෙන්ටේ
+    sv: São Vicente
+    ta: ஸோ விசேன்ட்
+    te: సావో విసెంటి
+    th: เขตเซา วิเซนเต
+    tr: Sao Vicente
+    ur: ساؤ ویکینتی
+    vi: Sao Vicente
+    lv: Sanvinsenti
+    ceb: Concelho de São Vicente
+    zh: 聖維森特縣
+    ccp: "\U00011125\U00011103\U0001112E \U0001111E\U0001112D\U00011125\U0001112C\U0001111A\U00011134\U00011111\U0001112C"
+    uk: Сан-Вісенті
+    'no': São Vicente
+    be: Сан-Вісенты
+  comments:
+  type: municipality
+TA:
+  name: Tarrafal
+  code: TA
+  unofficial_names: Tarrafal
+  geo:
+    latitude: 15.278
+    longitude: -23.752
+    min_latitude: 15.2685529
+    min_longitude: -23.7590069
+    max_latitude: 15.283593
+    max_longitude: -23.7384294
+  translations:
+    en: Tarrafal
+    ar: تارفال
+    bg: Тарафал
+    bn: তারাফাল
+    ca: Tarrafal
+    da: Tarrafal
+    de: Tarrafal
+    el: Δήμος Ταρραφάλ
+    es: Tarrafal
+    fi: Tarrafal
+    fr: Tarrafal
+    gu: ટેરેફલ
+    hi: तार्राफल
+    hy: Տարրաֆալ
+    id: Tarrafal
+    it: contea di Tarrafal
+    ja: タラファル
+    kn: ಟರ್ರಫಾಲ್
+    ko: 타하팔 시
+    lt: Tarafalis
+    mr: तारराफल
+    ms: Tarrafal
+    nb: Tarrafal
+    nl: Tarrafal
+    pl: Tarrafal
+    pt: Tarrafal
+    ru: Таррафал
+    si: ටර්රෆල්
+    sv: Concelho do Tarrafal
+    ta: டர்ரபால்
+    te: టారాాపాల్
+    th: ทาร์ราฟาล
+    tr: Tarrafal
+    ur: تارافال
+    vi: Tarrafal
+    lv: Tarafala
+    ceb: Concelho do Tarrafal
+    zh: 塔拉法爾縣
+    ccp: "\U00011111\U00011122\U0001111C\U00011127\U00011123\U00011134"
+    uk: Таррафал
+    'no': Tarrafal
+  comments:
+  type: municipality
+TS:
+  name: Tarrafal de São Nicolau
+  code: TS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: تارفال دي ساو نيكولاو
+    bn: ত্ররাফাল দে সাও নিকোলাউ
+    ca: Tarrafal de São Nicolau
+    da: Tarrafal de São Nicolau
+    de: Tarrafal de São Nicolau
+    el: Δήμος Ταρραφάλ ντε Σάο Νικολάου
+    en: Tarrafal de São Nicolau
+    es: Tarrafal de São Nicolau
+    fi: Tarrafal de São Nicolau
+    fr: Tarrafal de São Nicolau
+    gu: તારાફલ દે સાઓ નિકોલાઉ
+    hi: तराफल डे साओ निकोलौ
+    id: Tarrafal de São Nicolau
+    it: contea di Tarrafal de São Nicolau
+    ja: タラファル・デ・サン・ニコラウ
+    kn: ಟ್ಯಾರಾಫಾಲ್ ಡಿ ಸಾವೊ ನಿಕೋಲೌ
+    ko: 타하팔드상니콜라우 시
+    lt: San Nikolau Tarafalis
+    mr: टर्रफल डे साओ निकोलाऊ
+    ms: Tarrafal de Sao Nicolau
+    nb: Tarrafal de São Nicolau
+    nl: Tarrafal de São Nicolau
+    pl: Tarrafal de São Nicolau
+    pt: Tarrafal de São Nicolau
+    ru: Таррафал-де-Сан-Николау
+    si: ටරාෆල් ඩි සාඕ නිකොලෞ
+    sv: Tarrafal de São Nicolau
+    ta: டர்ரபால் டி ஸோ நிகோலா
+    te: టారాఫాల్ ద సావో నికోలావ్
+    th: ทาราฟาว เดอ เสา นิโคลัว
+    tr: Tarrafal de Sao Belediyesi
+    ur: تارافال دے ساؤ نیکولاو
+    vi: Tarrafal de Sao Nicolau
+    lv: Tarafala du Sanikolava
+    ceb: Concelho do Tarrafal de São Nicolau
+    zh: 聖尼古勞塔拉法爾縣
+    ccp: "\U00011111\U00011133\U00011120\U00011122\U0001111C\U00011127\U00011123\U00011134
+      \U00011113\U0001112C \U00011125\U00011103\U0001112E \U0001111A\U00011128\U00011107\U0001112E\U00011123\U0001112D\U00011105\U0001112A"
+    uk: Таррафал-де-Сан-Ніколау
+    'no': Tarrafal de São Nicolau
+  comments:
+  type: municipality

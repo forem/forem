@@ -1,0 +1,583 @@
+---
+A:
+  name: Maseru
+  code: A
+  unofficial_names: Maseru
+  geo:
+    latitude: -29.31
+    longitude: 27.48
+    min_latitude: -29.4010271
+    min_longitude: 27.4344263
+    max_latitude: -29.272605
+    max_longitude: 27.5997162
+  translations:
+    en: Maseru
+    ar: مقاطعة ماسيرو
+    bg: Масеру
+    bn: মাসেরো জেলা
+    da: Maseru
+    de: Maseru
+    el: Μασερού
+    es: Distrito de Maseru
+    et: Maseru ringkond
+    fi: Maserun alue
+    fr: District de Maseru
+    gu: માસેરુ જિલ્લો
+    hi: मसेरु जिला
+    id: Distrik Maseru
+    it: distretto di Maseru
+    ja: マセル県
+    ka: მასერუს ოლქი
+    kn: ಮಾಸೆರು ಜಿಲ್ಲೆ
+    ko: 마세루 구
+    lt: Maseru rajonas
+    mr: मासेरु जिल्हा
+    ms: Daerah Maseru
+    nb: Maseru
+    nl: Maseru
+    pl: Dystrykt Maseru
+    pt: Maseru
+    ro: Districtul Maseru
+    ru: Масеру
+    si: මසේරු දිස්ත්‍රික්කය
+    sv: Maseru (distrikt)
+    ta: மசெறு மாவட்டம்
+    te: మాసేరు జిల్లా
+    th: มาเซรู
+    tr: Maseru District
+    uk: Масеру
+    ur: ماسیرو ضلع
+    vi: Quận Maseru
+    zh: 馬塞盧區
+    lv: Maseru distrikts
+    ceb: Maseru
+    ccp: "\U0001111F\U00011125\U0001112C\U00011122\U0001112A"
+    'no': Maseru
+    ca: Maseru
+    fa: ناحیه ماسرو
+    hy: Մասերու
+    zu: Maseru, Isifunda
+  comments:
+  type: district
+B:
+  name: Butha-Buthe
+  code: B
+  unofficial_names: Butha-Buthe
+  geo:
+    latitude: -28.801561
+    longitude: 28.5331038
+    min_latitude: -29.083893
+    min_longitude: 28.2183061
+    max_latitude: -28.5708011
+    max_longitude: 28.824408
+  translations:
+    en: Butha-Buthe
+    ar: مقاطعة بوثا-بوث
+    bg: Бута-Буте
+    bn: বুথা বুথে জেলা
+    da: Butha-Buthe District
+    de: Butha-Buthe
+    el: Μπούτα-Μπούθε
+    es: Distrito de Butha-Buthe
+    et: Butha-Buthe ringkond
+    fi: Butha-Buthen alue
+    fr: District de Butha-Buthe
+    gu: બુથા-બુથે જિલ્લો
+    hi: बूथा-बूथे जिला
+    hy: Բութա Բութե
+    id: Distrik Butha-Buthe
+    it: distretto di Butha-Buthe
+    ja: ブータ・ブーテ県
+    ka: ბუტა-ბუტეს ოლქი
+    kn: ಬುಥಾ-ಬುಥೆ ಜಿಲ್ಲೆ
+    ko: 부타부테 구
+    lt: Buta Butės rajonas
+    mr: बुटा-बुठे जिल्हा
+    ms: Daerah Butha-Buthe
+    nb: Butha-Buthe
+    nl: Butha-Buthe
+    pl: Dystrykt Butha-Buthe
+    pt: Butha-Buthe
+    ro: Districtul Botha-Buthe
+    ru: Бута-Буте
+    si: බුතේ බුතේ දිස්ත්‍රික්කය
+    sv: Butha-Buthe (distrikt)
+    ta: புத்தா -புத்தே மாவட்டம்
+    te: బుథా-బుథె జిల్లా
+    th: เขตบัตธา-บัตเธ
+    tr: Butha-Buthe Bölgesi
+    uk: Бута-Буте
+    ur: بوتھا-بوتھ ضلع
+    vi: Quận Butha-Buthe
+    lv: Buthabethes distrikts
+    ceb: Butha-Buthe
+    zh: 布塔-布泰區
+    ccp: "\U0001111D\U0001112A\U00011117-\U0001111D\U0001112A\U00011116\U00011134"
+    'no': Butha-Buthe
+    ca: Butha Buthe
+    fa: ناحیه بوتا-بوته
+  comments:
+  type: district
+C:
+  name: Leribe
+  code: C
+  unofficial_names: Leribe
+  geo:
+    latitude: -28.873361
+    longitude: 28.041583
+    min_latitude: -28.8889464
+    min_longitude: 28.0343413
+    max_latitude: -28.844824
+    max_longitude: 28.08805
+  translations:
+    en: Leribe
+    ar: مقاطعة لريب
+    bg: Лерибе
+    bn: লেরিবে জেলা
+    da: Leribe District
+    de: Leribe
+    el: Λερίμπε
+    es: Distrito de Leribe
+    et: Leribe ringkond
+    fi: Leriben alue
+    fr: District de Leribe
+    gu: લેરિબ જિલ્લો
+    hi: लारीब जिला
+    hy: Լերիբե
+    id: Distrik Leribe
+    it: distretto di Leribe
+    ja: レリベ県
+    ka: ლერიბე
+    kn: ಲೆರಿಬೆ ಜಿಲ್ಲೆ
+    ko: 레리베 구
+    lt: Leribės rajonas
+    mr: लारीब जिल्हा
+    ms: Daerah Leribe
+    nb: Leribe
+    nl: Leribe
+    pl: Dystrykt Leribe
+    pt: Leribe
+    ro: Districtul Leribe
+    ru: Лерибе
+    si: ලෙරිබේ දිස්ත්‍රික්කය
+    sv: Leribe District
+    ta: லெறிபே மாவட்டம்
+    te: లెరిబె జిల్లా
+    th: เลริเบ
+    tr: Leribe District
+    uk: Лерібе
+    ur: لیریب ضلع
+    vi: Quận Leribe
+    lv: Leribes distrikts
+    ceb: Leribe District
+    zh: 萊里貝區
+    ccp: "\U00011123\U0001112C\U00011122\U00011128\U0001111D\U0001112C"
+    'no': Leribe
+    ml: ലെരിബെ ജില്ല
+  comments:
+  type: district
+D:
+  name: Berea
+  code: D
+  unofficial_names: Berea
+  geo:
+    latitude: -29.1746723
+    longitude: 27.8311428
+    min_latitude: -29.3866321
+    min_longitude: 27.511712
+    max_latitude: -28.942451
+    max_longitude: 28.295258
+  translations:
+    en: Berea
+    ar: مقاطعة بيريا
+    bg: Береа
+    bn: বেরিয়া জেলা
+    da: Berea District
+    de: Berea
+    el: Μπερέα
+    es: Distrito de Berea
+    et: Berea ringkond
+    fi: Berea
+    fr: District de Berea
+    gl: Distrito de Berea
+    gu: બેરિયા જિલ્લો
+    hi: बीरिया जिला
+    hy: Բերեա
+    id: Distrik Berea
+    it: distretto di Berea
+    ja: ベレア県
+    ka: ბერეა
+    kn: ಬೆರಿಯಾ ಜಿಲ್ಲೆ
+    ko: 베레아 구
+    lt: Berea rajonas
+    mr: बेरिया जिल्हा
+    ms: Daerah Berea
+    nb: Berea
+    nl: Berea
+    pl: Dystrykt Berea
+    pt: Berea
+    ro: Districtul Berea
+    ru: Берья
+    si: බෙරෙරා දිස්ත්‍රික්කය
+    sv: Berea (distrikt)
+    ta: பெரியா மாவட்டம்
+    te: బెరియా జిల్లా
+    th: เบเรีย
+    tr: Berea District
+    uk: Береа
+    ur: بیریا ضلع
+    vi: Quận Berea
+    lv: Berjas distrikts
+    ceb: Berea
+    zh: 伯里亞區
+    ccp: "\U0001111D\U00011122\U00011128\U00011120"
+    'no': Berea
+    ca: Districte de Berea
+    he: בראה
+  comments:
+  type: district
+E:
+  name: Mafeteng
+  code: E
+  unofficial_names: Mafeteng
+  geo:
+    latitude: -29.8224312
+    longitude: 27.2388161
+    min_latitude: -29.8478281
+    min_longitude: 27.2053242
+    max_latitude: -29.7745098
+    max_longitude: 27.2761774
+  translations:
+    en: Mafeteng
+    ar: مقاطعة مافتنغ
+    bg: Мафетенг
+    bn: মাফেতেং জেলা
+    da: Mafeteng District
+    de: Mafeteng
+    el: Μαφετένγκ
+    es: Distrito de Mafeteng
+    et: Mafetengi ringkond
+    fi: Mafeteng
+    fr: District de Mafeteng
+    gu: માફેટેંગ જિલ્લો
+    hi: माफेटेंग जिला
+    hy: Մաֆեթենգ
+    id: Distrik Mafeteng
+    it: distretto di Mafeteng
+    ja: マフェテング県
+    ka: მაფეტენგის ოლქი
+    kn: ಮಾಫೆಟೆಂಗ್ ಜಿಲ್ಲೆ
+    ko: 마페텡 구
+    lt: Mafetengo rajonas
+    mr: माफेटेंग जिल्हा
+    ms: Daerah Mafeteng
+    nb: Mafeteng
+    nl: Mafeteng
+    pl: Dystrykt Mafeteng
+    pt: Mafeteng
+    ro: Districtul Mafeteng
+    ru: Мафетенг
+    si: මෆෙටෙන්ග් දිස්ත්‍රික්කය
+    sv: Mafeteng District
+    ta: மாபிடேங் மாவட்டம்
+    te: మాఫెటెంగ్ జిల్లా
+    th: เขตมาเฟเตง
+    tr: Mafeteng District
+    uk: Мафетенг
+    ur: مافیتینگ ضلع
+    vi: Quận Mafeteng
+    lv: Mafetenas distrikts
+    ceb: Mafeteng District
+    zh: 馬費滕區
+    ccp: "\U0001111F\U0001111C\U0001112C\U00011111\U0001112C\U00011101"
+    'no': Mafeteng
+    ca: Mafeteng
+    fa: ناحیه مافتنگ
+    he: מפטנג
+  comments:
+  type: district
+F:
+  name: Mohale's Hoek
+  code: F
+  unofficial_names: Mohale's Hoek
+  geo:
+    latitude: -30.15
+    longitude: 27.466667
+    min_latitude: -30.1672616
+    min_longitude: 27.4296428
+    max_latitude: -30.1215401
+    max_longitude: 27.4988436
+  translations:
+    en: Mohale’s Hoek
+    ar: مقاطعة موهيلز هوك
+    bg: Мохалес-Хук
+    bn: মোহালেস হোয়েক জেলা
+    da: Mohale’s Hoek District
+    de: Mohale’s Hoek
+    el: Μοχάλες Χόεκ
+    es: Distrito de Mohale’s Hoek
+    et: Mohale’s Hoeki ringkond
+    fi: Mohale’s Hoekin kaupunginosa
+    fr: District de Mohale’s Hoek
+    gu: મોહાલેસ હોક જિલ્લો
+    hi: मोहालेज़ होएक जिला
+    id: Distrik Mohale’s Hoek
+    it: distretto di Mohale’s Hoek
+    ja: モハレス・フーク県
+    ka: მოჰალეს ჰუკის ოლქი
+    kn: ಮೊಹೇಲ್ನ ಹೋಯೆಕ್ ಜಿಲ್ಲೆ
+    ko: 모할레스후크 구
+    lt: Mohales Huko rajonas
+    mr: मोहेल होके जिल्हा
+    ms: Daerah Mohale’s Hoek
+    nb: Mohale’s Hoek
+    nl: Mohale’s Hoek
+    pl: Dystrykt Mohale’s Hoek
+    pt: Mohale’s Hoek
+    ro: Districtul Mohale’s Hoek
+    ru: Мохалес-Хук
+    si: මොහාලිස් හොඑක් දිස්ත්‍රික්කය
+    sv: Mohale’s Hoek District
+    ta: மொஹல்‘ஸ் ஹோஏக் மாவட்டம்
+    te: మోహేల్స్ హోయెక్ జిల్లా
+    th: เขตมอเฮล โฮเอค
+    tr: Mohale’s Hoek District
+    uk: Мохалес-Хук
+    vi: Quận Mohale’s Hoek
+    lv: Mohaleshukas distrikts
+    ceb: Mohale’s Hoek District
+    zh: 莫哈萊斯胡克區
+    ccp: "\U0001111F\U00011127\U00011126\U00011123\U00011128\U0001110C\U00011134 \U00011126\U0001112E\U00011120\U0001112C\U00011107\U00011134"
+    'no': Mohale’s Hoek
+    ca: Mohale’s Hoek
+    hy: Մոհալես Հուկ
+  comments:
+  type: district
+G:
+  name: Quthing
+  code: G
+  unofficial_names: Quthing
+  geo:
+    latitude: -30.400111
+    longitude: 27.700194
+    min_latitude: -30.4231979
+    min_longitude: 27.6868129
+    max_latitude: -30.39171929999999
+    max_longitude: 27.7433325
+  translations:
+    en: Quthing
+    ar: مقاطعة قوثنغ
+    bg: Цгутинг
+    bn: কুতিং জেলা
+    da: Quthing District
+    de: Quthing
+    el: Κουτίνγκ
+    es: Quthing
+    fi: Quthing
+    fr: District de Quthing
+    gu: ક્યુથિંગ જિલ્લો
+    hi: क्यूथिंग जिला
+    id: Distrik Quthing
+    it: distretto di Quthing
+    ja: クティング県
+    ka: ქუთინგის ოლქი
+    kn: ಕ್ಯೂಥಿಂಗ್ ಡಿಸ್ಟ್ರಿಕ್ಟ್
+    ko: 쿠팅 구
+    lt: Cgutingo rajonas
+    mr: क्यूथिंग जिल्हा
+    ms: Daerah Quthing
+    nb: Quthing
+    nl: Quthing
+    pl: Dystrykt Quthing
+    pt: Quthing
+    ro: Districtul Quthing
+    ru: Цгутинг
+    si: කුතින්ග් දිස්ත්‍රික්කය
+    sv: Quthing (distrikt)
+    ta: குத்தீங் மாவட்டம்
+    te: క్యుతింగ్ జిల్లా
+    th: เมืองมันดาลูยง
+    tr: Quthing Distring
+    uk: Цгутінг
+    ur: قوتھینگ ضلع
+    vi: Quận Quthing
+    lv: Kuthinas distrikts
+    ceb: Quthing (distrito)
+    zh: 古廷區
+    ccp: "\U00011107\U0001112A\U00011120\U00011117\U00011128\U00011101"
+    'no': Quthing
+    ca: Quthing
+    fa: ناحیه قوتینگ
+  comments:
+  type: district
+H:
+  name: Qacha's Nek
+  code: H
+  unofficial_names: Qacha's Nek
+  geo:
+    latitude: -30.116667
+    longitude: 28.68333299999999
+    min_latitude: -30.1284628
+    min_longitude: 28.6603689
+    max_latitude: -30.09698209999999
+    max_longitude: 28.700881
+  translations:
+    en: Qacha’s Nek
+    ar: مقاطعة قاخاز نك
+    bg: Цгачас-Нек
+    bn: কাচাস নেক জেলা
+    da: Qacha’s Nek District
+    de: Qacha’s Nek
+    el: Κάτσας Νεκ
+    es: Distrito de Qacha’s Nek
+    fi: Qacha’snekin kaupunginosa
+    fr: District de Qacha’s Nek
+    gu: ક્યૂચાસ નેક જિલ્લો
+    hi: काशाज़ नेक जिला
+    id: Distrik Qacha’s Nek
+    it: distretto di Qacha’s Nek
+    ja: クァクハスネック県
+    ka: ქაჩას ნეკის ოლქი
+    kn: ಕಚಾ ನ ನೆಕ್ ಜಿಲ್ಲೆ
+    ko: 카차스네크 구
+    lt: Cgačas Neko rajonas
+    mr: क्यूचा नेक जिल्हा
+    ms: Daerah Qacha’s Nek
+    nb: Qacha’s Nek
+    nl: Qacha’s Nek
+    pl: Dystrykt Qacha’s Nek
+    pt: Qacha’s Nek
+    ro: Districtul Qacha’s Nek
+    ru: Цгачас-Нек
+    si: කචාස් නෙක් දිස්ත්‍රික්කය
+    sv: Qacha’s Nek (distrikt)
+    ta: கிச்சா ‘ஸ் நெக் மாவட்டம்
+    te: ఖాచా నెక్ జిల్లా
+    th: อำเภอคาชาส์เนก
+    tr: Qacha’s Nek District
+    uk: Цгачас-Нек
+    vi: Quận Qacha’s Nek
+    lv: Kachasnekas distrikts
+    ceb: Qacha’s Nek (distrito)
+    zh: 加查斯內克區
+    ccp: "\U00011107\U0001112E\U00011120\U0001110C\U00011133\U00011126 \U0001111A\U0001112C\U00011107\U00011134"
+    'no': Qacha’s Nek
+    ca: Qacha’s Nek
+    fa: ناحیه نک قچا
+    he: קאצ׳ה׳ס נק
+  comments:
+  type: district
+J:
+  name: Mokhotlong
+  code: J
+  unofficial_names: Mokhotlong
+  geo:
+    latitude: -29.288495
+    longitude: 29.065568
+    min_latitude: -29.2995091
+    min_longitude: 29.0297267
+    max_latitude: -29.2750633
+    max_longitude: 29.0821563
+  translations:
+    en: Mokhotlong
+    ar: مقاطعة موخوتلنغ
+    bg: Мокотлонг
+    bn: মোকুলং জেলা
+    da: Mokhotlong District
+    de: Mokhotlong
+    el: Μοκχοτλόνγκ
+    es: Distrito de Mokhotlong
+    fi: Mokhotlong
+    fr: District de Mokhotlong
+    gu: મોખોટલોંગ જિલ્લો
+    hi: मोखोटलांग जिला
+    id: Distrik Mokhotlong
+    it: distretto di Mokhotlong
+    ja: モコトロング県
+    ka: მოკჰოტლონგის ოლქი
+    kn: ಮೊಕೊಟ್ಲಾಂಗ್ ಜಿಲ್ಲೆ
+    ko: 모코틀롱 구
+    lt: Mokotlongo rajonas
+    mr: मोखोटलाँग जिल्हा
+    ms: Daerah Mokhotlong
+    nb: Mokhotlong
+    nl: Mokhotlong
+    pl: Dystrykt Mokhotlong
+    pt: Mokhotlong
+    ro: Districtul Mokhotlong
+    ru: Мокотлонг
+    si: මොකොට්ලොන්ග් දිස්ත්‍රික්කය
+    sv: Mokhotlongdistriktet
+    ta: மோக்ஹோட்டலோங் மாவட்டம்
+    te: మాఖోట్లాంగ్ జిల్లా
+    th: โมคอตลอง
+    tr: Mokhotlong District
+    uk: Мокотлонг
+    ur: موخوتلونگ ضلع
+    vi: Quận Mokhotlong
+    lv: Mohothlonas distrikts
+    ceb: Mokhotlong
+    zh: 莫霍特隆區
+    ccp: "\U0001111F\U0001112E\U00011108\U0001112E\U00011116\U00011134\U00011123\U00011127\U00011101"
+    'no': Mokhotlong
+    ca: Mokhotlong
+    fa: منطقه موکاتلانگ
+    hy: Մոկոտլոնգ
+  comments:
+  type: district
+K:
+  name: Thaba-Tseka
+  code: K
+  unofficial_names: Thaba-Tseka
+  geo:
+    latitude: -29.5157527
+    longitude: 28.5901895
+    min_latitude: -29.89548289999999
+    min_longitude: 28.1051919
+    max_latitude: -29.113616
+    max_longitude: 29.3251312
+  translations:
+    en: Thaba-Tseka
+    ar: مقاطعة ثابا-تسيكا
+    bg: Таба-Цека
+    bn: থাবা তেস্কা জেলা
+    da: Thaba-Tseka District
+    de: Thaba-Tseka
+    el: Θάμπα-Τσέκα
+    es: Distrito de Thaba-Tseka
+    fi: Thaba-Tseka
+    fr: District de Thaba-Tseka
+    gu: થાબા-ત્સેકા જિલ્લો
+    hi: थबा-त्सेका जिला
+    id: Distrik Thaba-Tseka
+    it: distretto di Thaba-Tseka
+    ja: ターバ・ツェーカ県
+    ka: თაბა-ცეკის ოლქი
+    kn: ಥಾಬಾ -ಸೆಕಾ ಜಿಲ್ಲೆ
+    ko: 타바체카 구
+    lt: Taba Cekos rajonas
+    mr: थबा-त्सेका जिल्हा
+    ms: Daerah Thaba-Tseka
+    nb: Thaba-Tseka
+    nl: Thaba-Tseka
+    pl: Dystrykt Thaba-Tseka
+    pt: Thaba-Tseka
+    ro: Districtul Thaba-Tseka
+    ru: Таба-Цека
+    si: තබා -ට්සෙකා දිස්ත්‍රික්කය
+    sv: Thaba-Tseka (distrikt)
+    ta: தபா -டஸ்கா மாவட்டம்
+    te: థాబా-సేకా జిల్లా
+    th: เขตทาบา-ทีเซกา
+    tr: Thaba-Tseka District
+    uk: Таба-Цека
+    ur: تھابا-تسیکا ضلع
+    vi: Quận Thaba-Tseka
+    lv: Thabacekas distrikts
+    ceb: Thaba-Tseka
+    zh: 塔巴-采卡區
+    ccp: "\U00011117\U0001111D-\U00011125\U0001112C\U00011107"
+    'no': Thaba-Tseka
+    hy: Թաբա-Ցեկա
+  comments:
+  type: district

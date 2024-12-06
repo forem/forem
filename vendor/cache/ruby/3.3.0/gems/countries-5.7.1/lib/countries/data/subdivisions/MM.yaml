@@ -1,0 +1,954 @@
+---
+'01':
+  name: Sagaing
+  code: '01'
+  unofficial_names: Sagaing
+  geo:
+    latitude: 21.9159702
+    longitude: 95.9621106
+    min_latitude: 21.8696635
+    min_longitude: 95.8791447
+    max_latitude: 21.9659415
+    max_longitude: 96.0088348
+  translations:
+    en: Sagaing
+    ar: إقليم ساجينغ
+    bn: সাগাইনিং অঞ্চল
+    ca: Divisió de Sagaing
+    da: Sagaing Region
+    de: Sagaing-Region
+    el: Σαγκάινγκ
+    es: División de Sagaing
+    et: Sagaingi piirkond
+    fa: ناحیه زاگاین
+    fi: Sagaing
+    fr: Région de Sagaing
+    gu: સાગિંગ પ્રદેશ
+    hi: सगाइंग मण्डल
+    id: Region Sagaing
+    it: regione di Sagaing
+    ja: ザガイン管区
+    kn: ಸಾಗಾಂಗ್ ಪ್ರದೇಶ
+    ko: 사가잉 구
+    lt: Sagaino regionas
+    mr: सागायनिंग प्रदेश
+    ms: Sagaing Region
+    nb: Sagaing
+    nl: Sagaing
+    pl: Sikong
+    pt: Sagaing
+    ru: Сикайн
+    si: සගයින් සගයින්ග් කලාපය
+    sv: Sagaingregionen
+    ta: சாகைங் பகுதி
+    te: సాగెయింగ్ ప్రాంతం
+    th: เขตสะกาย
+    tr: Sagaing Bölgesi
+    uk: Сікайн
+    ur: ساگاینگ علاقہ
+    vi: Vùng Sagaing
+    zh: 實皆省
+    lv: Sikainas reģions
+    ceb: Sagaing Region
+    ccp: "\U00011125\U00011109\U00011103\U00011128\U00011101"
+    cs: Sakainská oblast
+    my: စစ်ကိုင်းတိုင်း
+    mk: Сагаин
+    'no': Sagaing
+    eu: Sagaing
+    ka: საგაინგის რეგიონი
+    km: តំបន់សាហ្គាំង
+    ky: Сикайн (оодан)
+  comments:
+  type: region
+'02':
+  name: Bago
+  code: '02'
+  unofficial_names:
+  - Pegu
+  geo:
+    latitude: 17.333333
+    longitude: 96.483333
+    min_latitude: 17.2299639
+    min_longitude: 96.4299202
+    max_latitude: 17.3624761
+    max_longitude: 96.51615849999999
+  translations:
+    en: Bago
+    ar: باغو
+    bn: বাগো
+    ca: Divisió de Bago
+    da: Bago
+    de: Bago-Region
+    el: Μπάγκο
+    es: Bago (Birmania)
+    et: Bago piirkond
+    fa: ناحیه باگو
+    fi: Bago (alue)
+    fr: Région de Bago
+    gu: બગો
+    hi: बगो मण्डल
+    id: Region Bago
+    it: regione di Bago
+    ja: バゴー管区
+    kn: ಬಾಗೋ
+    ko: 바고 구
+    lt: Bago regionas
+    mr: बेगो
+    ms: Bago
+    nb: Bago
+    nl: Bago
+    pl: Pegu (prowincja)
+    pt: Bago (divisão)
+    ru: Пегу (округ)
+    si: බගෝ
+    sv: Bagoregionen
+    ta: பாகோ
+    te: బాగో
+    th: เขตหงสาวดี
+    tr: Bago
+    uk: Пегу
+    ur: باگو علاقہ
+    vi: Vùng Bago
+    lv: Pegu
+    ceb: Bago Region
+    zh: 勃固省
+    ccp: "\U0001111D\U00011109\U0001112E"
+    my: ပဲခူးတိုင်း
+    mk: Баго (округ)
+    'no': Bago
+    ka: ბაგოს რეგიონი
+    km: តំបន់បាហ្គោ
+  comments:
+  type: region
+'03':
+  name: Magway
+  code: '03'
+  unofficial_names:
+  - Magwe
+  geo:
+    latitude: 20.15
+    longitude: 94.94999999999999
+    min_latitude: 20.1100737
+    min_longitude: 94.9161388
+    max_latitude: 20.1782538
+    max_longitude: 94.99182309999999
+  translations:
+    en: Magway
+    ar: إقليم ماغواي
+    bn: মাগওয়ে অঞ্চল
+    ca: Divisió de Magwe
+    da: Magway Region
+    de: Magway-Region
+    el: Μαγκγουέι
+    es: Magway
+    et: Magway piirkond
+    fa: ناحیه ماگوای
+    fi: Magway
+    fr: Région de Magway
+    gu: મેગવે પ્રદેશ
+    hi: मगवे मण्डल
+    id: Region Magway
+    it: regione di Magway
+    ja: マグウェ管区
+    kn: ಮ್ಯಾಗ್ವೇ ಪ್ರದೇಶ
+    ko: 마궤 구
+    lt: Magvės regionas
+    mr: मॅगवे प्रदेश
+    ms: Magway Region
+    nb: Magway
+    nl: Magway
+    pl: Magwe
+    pt: Magway
+    ru: Магуэ
+    si: මැග්වේ කලාපය
+    sv: Magwayregionen
+    ta: மாகுவே மண்டலம்
+    te: మ్యాగ్వే ప్రాంతం
+    th: เขตมาเกว
+    tr: Magway Bölgesi
+    uk: Магуе
+    ur: ماگاوے علاقہ
+    vi: Vùng Magway
+    lv: Magves reģions
+    ceb: Magway Region
+    zh: 馬圭省
+    ccp: "\U0001111F\U00011107\U00011134\U00011103\U0001112E\U00011120\U0001112C"
+    cs: Makweiská oblast
+    my: မကွေးတိုင်း
+    mk: Магве
+    'no': Magway
+    ka: მაგვაის რეგიონი
+    ky: Магуэ (оодан)
+  comments:
+  type: region
+'04':
+  name: Mandalay
+  code: '04'
+  unofficial_names: Mandalay
+  geo:
+    latitude: 21.975
+    longitude: 96.083333
+    min_latitude: 21.8545804
+    min_longitude: 96.0112381
+    max_latitude: 22.0261394
+    max_longitude: 96.14041019999999
+  translations:
+    en: Mandalay
+    ar: إقليم ماندالاي
+    bn: মান্ডালায় অঞ্চল
+    ca: Divisió de Mandalay
+    da: Mandalay Region
+    de: Mandalay-Region
+    el: Μάνταλεϊ
+    es: Región del Mandalay
+    et: Mandalay piirkond
+    fa: ایالت ماندلی
+    fi: Mandalay
+    fr: Région de Mandalay
+    gu: માંડલે પ્રદેશ
+    hi: माण्डले मण्डल
+    id: Region Mandalay
+    it: regione di Mandalay
+    ja: マンダレー管区
+    kn: ಮ್ಯಾಂಡಲೆ ಪ್ರದೇಶ
+    ko: 만달레이 구
+    lt: Mandalajaus regionas
+    mr: मॅंडेले प्रदेश
+    ms: Mandalay Region
+    nb: Mandalay
+    nl: Mandalay
+    pl: Mandalaj (prowincja)
+    pt: Mandalay (divisão)
+    ru: Мандалай (округ)
+    si: මැන්ඩලේ කලාපය
+    sv: Mandalayregionen
+    ta: மண்டலே பகுதி
+    te: మండాలే ప్రాంతం
+    th: เขตมัณฑะเลย์
+    tr: Mandalay Bölgesi
+    uk: Мандалай
+    ur: ماندالے علاقہ
+    vi: Vùng Mandalay
+    lv: Mandalajas reģions
+    ceb: Mandalay Region
+    zh: 曼德勒省
+    ccp: "\U0001111F\U0001111A\U00011134\U00011113\U00011123\U0001112C"
+    cs: Mandalajská oblast
+    my: မန္တလေးတိုင်း
+    be: Мандалай
+    mk: Мандалеј (округ)
+    'no': Mandalay
+    eu: Mandalay
+    ka: მანდალაის რეგიონი
+    km: តំបន់ម៉ាន់ដាឡាយ
+    ky: Мандалай (оодан)
+    ro: Regiunea Mandalay
+  comments:
+  type: region
+'05':
+  name: Tanintharyi
+  code: '05'
+  unofficial_names:
+  - Tenasserim
+  geo:
+    latitude: 12.0896327
+    longitude: 99.0115113
+    min_latitude: 12.0778055
+    min_longitude: 99.0064103
+    max_latitude: 12.0926189
+    max_longitude: 99.020505
+  translations:
+    en: Tanintharyi
+    ar: اقليم تانينثاري
+    bn: তানিনতারারি অঞ্চল
+    ca: Divisió de Tanintharyi
+    cs: Tanintharyi
+    da: Tanintharyi Region
+    de: Tanintharyi-Region
+    el: Τανινθάργι
+    es: Tanintharyi
+    et: Tanintharyi piirkond
+    fa: ناحیه تانینتاریی
+    fi: Tanintharyi
+    fr: Région de Tanintharyi
+    gu: તાનિન્થાર્યી પ્રદેશ
+    hi: तनीन्थार्यी मण्डल
+    id: Region Tanintharyi
+    it: regione di Tanintharyi
+    ja: タニンダーリ管区
+    kn: ತನಿಂಥರ್ಯ್ಈ ಪ್ರದೇಶ
+    ko: 타닌타리 구
+    lt: Tanintajio regionas
+    mr: तन्थांरीय प्रदेश
+    ms: Wilayah Tanintharyi
+    nb: Tanintharyi
+    nl: Tanintharyi
+    pl: Taninthayi
+    pt: Tanintharyi
+    ru: Танинтайи
+    si: ටනින්තරි කලාපය
+    sv: Taninthayiregionen
+    ta: தணிந்தருயி பகுதி
+    te: టానింతార్యి ప్రాంతం
+    th: เขตตะนาวศรี
+    tr: Tanintharyi Region
+    uk: Танінтаї
+    ur: تانینتھارئی علاقہ
+    vi: Vùng Tanintharyi
+    lv: Tanintaji reģions
+    ceb: Taninthayi Region
+    zh: 德林达依
+    ccp: "\U00011111\U0001111A\U00011128\U0001111A\U00011134\U00011117\U00011122\U00011128"
+    pa: ਤਨੀਂਥਾਰਾਈ ਮੰਡਲ
+    my: တနင်္သာရီတိုင်း
+    mk: Танинтаји
+    'no': Tanintharyi
+    km: តំបន់តានីនថារី
+    ky: Танинтайи
+  comments:
+  type: region
+'06':
+  name: Yangon
+  code: '06'
+  unofficial_names:
+  - Yangon
+  - Rangun
+  - Rangoun
+  - Rangún
+  geo:
+    latitude: 16.780833
+    longitude: 96.149722
+    min_latitude: 16.7288268
+    min_longitude: 95.9957885
+    max_latitude: 17.0788151
+    max_longitude: 96.3432311
+  translations:
+    en: Yangon
+    ar: إقليم يانغون
+    be: Янгон
+    bn: ইয়াগন অঞ্চল
+    ca: Divisió de Yangon
+    da: Yangon Region
+    de: Yangon-Region
+    el: Γιάνγκον
+    es: Región de Yangon
+    et: Yangoni piirkond
+    fa: ناحیه یانگون
+    fi: Yangon
+    fr: Région de Yangon
+    gu: યાંગોન પ્રદેશ
+    hi: यांगोन मण्डल
+    id: Region Yangon
+    it: regione di Yangon
+    ja: ヤンゴン管区
+    kn: ಯಾಂಗೊನ್ ಪ್ರದೇಶ
+    ko: 양곤 구
+    lt: Jangono regionas
+    mr: यांगॉन रिजन
+    ms: Yangon Region
+    nb: Yangon
+    nl: Rangoon
+    pl: Rangun
+    pt: Yangon
+    ru: Янгон
+    si: යැන්ගොන් කලාපය
+    sv: Yangonregionen
+    ta: யங்கொண் பகுதி
+    te: యాంగోన్ ప్రాంతం
+    th: เขตย่างกุ้ง
+    tr: Yangon Bölgesi
+    uk: Янгон
+    ur: یانگون رگوں
+    vi: Vùng Yangon
+    lv: Jangonas reģions
+    ceb: Yangon Region
+    zh: 仰光省
+    ccp: "\U00011103\U00011128\U00011120\U00011101\U00011109\U0001112A\U0001111A\U00011134"
+    pa: ਯਾਂਗੋਨ ਖੇਤਰ
+    cs: Rangúnská oblast
+    my: ရန်ကုန်တိုင်း
+    mk: Јангон
+    'no': Yangon
+    cy: Ardal Yangon
+    eu: Yangon
+    he: מחוז יאנגון
+    hy: Յանգոն
+    ka: იანგონის რეგიონი
+    km: តំបន់យ៉ាំងហ្គូន
+  comments:
+  type: region
+'07':
+  name: Ayeyarwady
+  code: '07'
+  unofficial_names:
+  - Irrawaddy
+  geo:
+    latitude: 17.0342125
+    longitude: 95.22666749999999
+    min_latitude: 13.9746695
+    min_longitude: 93.22602839999999
+    max_latitude: 18.4690619
+    max_longitude: 95.9665632
+  translations:
+    en: Ayeyarwady
+    ar: مقاطعة أيياروادي
+    az: İravadi dairəsi
+    bn: আয়েয়ার্ব্যাদি অঞ্চল
+    ca: Divisió d’Ayeyarwady
+    cs: oblast Iravádí
+    da: Ayeyarwady Region
+    de: Irawadi-Region
+    el: Επαρχία Αγιεγιαγουάντι
+    es: Ayeyarwady
+    et: Ayeyarwady piirkond
+    fa: ناحیه آیه‌یاروادی
+    fi: Ayeyarwady
+    fr: Région d’Ayeyarwady
+    gu: આયેયાર્વાડી પ્રદેશ
+    hi: इरावदी मण्डल
+    hy: Իրավադի
+    id: Region Ayeyarwady
+    it: regione di Ayeyarwady
+    ja: エーヤワディ管区
+    kn: ಅಯ್ಯರ್ವಾಡಿ ಪ್ರದೇಶ
+    ko: 에야와디 구
+    lt: Ajejarvadžio regionas
+    mr: आययेर्वाडी प्रदेश
+    ms: Daerah Ayeyarwady
+    nb: Ayeyarwady
+    nl: Ayeyarwady
+    pl: Irawadi
+    pt: Ayeyarwady
+    ru: Иравади
+    si: අයෙයාර්වඩි කලාපය
+    sv: Ayeyarwady (region)
+    ta: அயேயர்வாடி பகுதி
+    te: అయేయార్వాడీ ప్రాంతం
+    th: เขตอิรวดี
+    tr: Ayeryarwady Bölgesi
+    uk: Іраваді
+    ur: ایئیاروادی علاقہ
+    vi: Vùng Ayeyarwady
+    lv: Ajejarvadžio reģions
+    af: Ayeyarwady Streek
+    ceb: Ayeyawady Region
+    zh: 伊洛瓦底省
+    yue_Hans: 爱耶也华地省
+    ccp: "\U00011103\U00011127\U00011120\U0001112C\U00011120\U00011122\U00011134\U00011103\U00011128\U00011120\U00011113\U00011128"
+    pa: ਏਯਾਰਵਾਡੀ ਮੰਡਲ
+    yue: 愛耶也華地省
+    be: Іравадзі
+    mk: Иравади
+    'no': Ayeyarwady
+    he: מחוז אייברטי
+    ka: აიეიარვადის რეგიონი
+    my: ဧရာဝတီတိုင်း
+  comments:
+  type: region
+'11':
+  name: Kachin
+  code: '11'
+  unofficial_names: Kachin
+  geo:
+    latitude: 25.850904
+    longitude: 97.4381355
+    min_latitude: 23.641569
+    min_longitude: 95.8360589
+    max_latitude: 28.543259
+    max_longitude: 98.78279099999999
+  translations:
+    en: Kachin
+    ar: ولاية كاشين
+    bn: কাছিন রাজ্য
+    ca: Kachin
+    cs: Kačjinský stát
+    da: Kachin State
+    de: Kachin-Staat
+    el: Κατσίν
+    es: Estado Kachin
+    et: Katšini osariik
+    eu: Katxin estatua
+    fa: ایالت کاچین
+    fi: Kachin
+    fr: État de Kachin
+    gu: કાચિન સ્ટેટ
+    hi: काचीन राज्य
+    hr: Država Kachin
+    hy: Կաչին
+    id: Negara Bagian Kachin
+    it: Stato Kachin
+    ja: カチン州
+    kn: ಕಚಿನ್
+    ko: 카친 주
+    lt: Kačinų valstija
+    mr: काचीन राज्य
+    ms: Kachin State
+    nb: Kachin
+    nl: Kachin
+    pl: Kaczin
+    pt: Kachin
+    ro: Statul Kachin
+    ru: Качин
+    si: කචින් රාජ්‍ය
+    sr: Качин
+    sv: Kachin
+    ta: கொச்சின் மாநிலம்
+    te: కచిన్ స్టేట్
+    th: รัฐกะฉิ่น
+    tr: Kachin Eyaleti
+    uk: Качин
+    ur: کاچین ریاست
+    vi: Kachin
+    lv: Kačinas pavalsts
+    cy: Talaith Kachin
+    ceb: Kachin State
+    as: কাচিন
+    sr_Latn: Kačin
+    zh: 克钦邦
+    ccp: "\U00011107\U0001110C\U00011128\U0001111A\U00011134"
+    pa: ਕਾਚੀਨ ਸੂਬਾ
+    my: ကချင်ပြည်နယ်
+    mk: Качин
+    'no': Kachin
+    ka: კაჩინის შტატი
+    km: រដ្ឋកាឈីន
+    ky: Качин (штат)
+  comments:
+  type: state
+'12':
+  name: Kayah
+  code: '12'
+  unofficial_names: Kayah
+  geo:
+    latitude: 19.2342061
+    longitude: 97.26528580000002
+    min_latitude: 18.4917349
+    min_longitude: 96.833956
+    max_latitude: 19.9939339
+    max_longitude: 97.88789399999999
+  translations:
+    en: Kayah
+    ar: ولاية كاياه
+    bn: কায়াহ অঙ্গরাজ্য
+    ca: Kayah
+    da: Kayah-regionen
+    de: Kayah-Staat
+    el: Κάγια
+    es: Kayah
+    et: Kaja osariik
+    fa: ایالت کایا
+    fi: Kayah
+    fr: État de Kayah
+    gu: કેયાહ સ્ટેટ
+    hi: कयाह राज्य
+    hy: Կայա
+    id: Negara Bagian Kayah
+    it: Stato Kayah
+    ja: カヤー州
+    kn: ಕರೆನಿ ರಾಜ್ಯ
+    ko: 카야 주
+    lt: Kajahų valstija
+    mr: कायह राज्य
+    ms: Kayah State
+    nb: Kayah
+    nl: Kayah
+    pl: Kaja
+    pt: Kayah
+    ru: Кая
+    si: කයා රාජ්‍ය
+    sr: Каја
+    sv: Kayahstaten
+    ta: காய மாநிலம்
+    te: కాయా రాష్ట్రం
+    th: รัฐกะยา
+    tr: Kayah Eyaleti
+    uk: Кая
+    ur: کایاہ ریاست
+    vi: Kayah
+    lv: Kajas pavalsts
+    ceb: Kayah State
+    sr_Latn: Kaja
+    zh: 克耶邦
+    ccp: "\U00011107\U0001112C\U00011120\U00011126\U00011134"
+    pa: ਕਾਇਆਹ ਰਾਜ
+    cs: Kajaský stát
+    my: ကယားပြည်နယ်
+    mk: Каја
+    'no': Kayah
+    ka: კაიაჰის შტატი
+    km: រដ្ឋកាយ៉ា
+    ky: Кая (штат)
+    ro: Statul Kayah
+  comments:
+  type: state
+'13':
+  name: Kayin
+  code: '13'
+  unofficial_names:
+  - Karen
+  geo:
+    latitude: 16.9459346
+    longitude: 97.9592863
+    min_latitude: 15.2195629
+    min_longitude: 96.39982189999999
+    max_latitude: 19.4953029
+    max_longitude: 98.91750309999999
+  translations:
+    en: Kayin
+    ar: ولاية كايين
+    bn: কায়িন অঙ্গরাজ্য
+    ca: Karen
+    cs: Karenský stát
+    da: Kayin State
+    de: Kayin-Staat
+    el: Καγίν
+    es: Kayin
+    et: Kareni osariik
+    fa: ایالت کایین
+    fi: Kayin
+    fr: État Karen
+    gu: કેયિન સ્ટેટ
+    hi: कयिन राज्य
+    id: Negara Bagian Kayin
+    it: Stato Karen
+    ja: カレン州
+    kn: ಕರೆನ್ ರಾಜ್ಯ
+    ko: 카인 주
+    lt: Kajinų valstija
+    mr: कायिन राज्य
+    ms: Kayin
+    nb: Karen
+    nl: Kayin
+    pl: Karen
+    pt: Kayin
+    ru: Карен
+    si: කේ ඉන් රාජ්‍ය
+    sr: Карен
+    sv: Karen
+    ta: காயின் மாநிலம்
+    te: కేయిన్ స్టేట్
+    th: รัฐกะเหรี่ยง
+    tr: Kayin Eyaleti
+    uk: Карен
+    ur: کایئن ریاست
+    vi: Kayin
+    lv: Karenas pavalsts
+    ceb: Kayin State
+    sr_Latn: Karen
+    zh: 克倫邦
+    ccp: "\U00011107\U0001112C\U00011120\U00011103\U00011128\U0001111A\U00011134"
+    pa: ਕਾਇਨ
+    my: ကရင်ပြည်နယ်
+    mk: Карен
+    'no': Karen
+    ka: კაინის შტატი
+    ky: Карен (штат)
+    ro: Statul Kayin
+  comments:
+  type: state
+'14':
+  name: Chin
+  code: '14'
+  unofficial_names: Chin
+  geo:
+    latitude: 22.3896751
+    longitude: 93.5812692
+    min_latitude: 20.6635458
+    min_longitude: 92.6037597
+    max_latitude: 24.0915281
+    max_longitude: 94.1857909
+  translations:
+    en: Chin
+    ar: ولاية تشين
+    bn: চিন অঙ্গরাজ্য
+    ca: Xin
+    cs: Čjinský stát
+    da: Chin
+    de: Chin-Staat
+    el: Τσιν
+    es: Chin
+    et: Tšini osariik
+    eu: Chin estatua
+    fa: ایالت چین
+    fi: Chin
+    fr: État Chin
+    gu: ચિન સ્ટેટ
+    hi: चिन राज्य
+    id: Negara Bagian Chin
+    it: Stato Chin
+    ja: チン州
+    kn: ಚಿನ್ ರಾಜ್ಯ
+    ko: 친 주
+    lt: Činų valstija
+    lv: Čina
+    mr: चिन राज्य
+    ms: Chin State
+    nb: Chin
+    nl: Chin
+    pl: Czin
+    pt: Chin
+    ro: Statul Chin
+    ru: Чин
+    si: චින් රාජ්‍ය
+    sr: Чин
+    sv: Chin
+    ta: சின் மாநிலம்
+    te: చిన్ స్టేట్
+    th: รัฐชิน
+    tr: Chin Eyaleti
+    uk: Чин
+    ur: چن ریاست
+    vi: Chin
+    ceb: Chin State
+    sr_Latn: Čin
+    zh: 欽邦
+    ccp: "\U0001110C\U00011128\U0001111A\U00011134"
+    hy: Չին
+    ml: ചിൻ സംസ്ഥാനം
+    mk: Чин
+    'no': Chin
+    gl: Chin
+    ky: Чин (штат)
+    my: ချင်းပြည်နယ်
+  comments:
+  type: state
+'15':
+  name: Mon
+  code: '15'
+  unofficial_names: Mon
+  geo:
+    latitude: 17.0626039
+    longitude: 97.35165579999999
+    min_latitude: 14.884192
+    min_longitude: 96.8755518
+    max_latitude: 17.7052629
+    max_longitude: 98.23783879999999
+  translations:
+    en: Mon
+    ar: ولاية مون
+    bn: মন রাজ্য
+    ca: Mon
+    da: Mon State
+    de: Mon-Staat
+    el: Μον
+    es: Estado Mon
+    et: Moni osariik
+    fa: ایالت مون
+    fi: Mon
+    fr: État Môn
+    gu: મોન સ્ટેટ
+    hi: मोन राज्य
+    id: Mon State
+    it: Stato Mon
+    ja: モン州
+    kn: ಮೋನ್ ರಾಜ್ಯ
+    ko: 몬 주
+    lt: Monų valstija
+    mr: मोन राज्य
+    ms: Mon State
+    nb: Mon
+    nl: Mon
+    pl: Mon
+    pt: Mon
+    ru: Мон
+    si: මොන් රාජ්‍ය
+    sr: Мон
+    sv: Mon
+    ta: மோன் மாநிலம்
+    te: మోన్ రాష్ట్రం
+    th: รัฐมอญ
+    tr: Mon Eyaleti
+    uk: Мон
+    ur: مون ریاست
+    vi: Mon
+    lv: Monas pavalsts
+    ceb: Mon State
+    sr_Latn: Mon
+    zh: 孟邦
+    ccp: "\U0001111F\U00011127\U0001111A\U00011134"
+    hy: Մոն
+    pa: ਮੋਨ ਸਟੇਟ
+    cs: Monský stát
+    my: မွန်ပြည်နယ်
+    mk: Мон
+    'no': Mon
+    eu: Mon
+    ka: მონის შტატი
+    km: រដ្ឋមន
+    ky: Мон (штат)
+  comments:
+  type: state
+'16':
+  name: Rakhine
+  code: '16'
+  unofficial_names:
+  - Arakan
+  geo:
+    latitude: 19.810093
+    longitude: 93.9878427
+    min_latitude: 17.363218
+    min_longitude: 92.189278
+    max_latitude: 21.4735741
+    max_longitude: 94.909111
+  translations:
+    en: Rakhine
+    ar: راخين
+    bn: আরাকান রাজ্য
+    ca: Arakan
+    cs: Rakhinský stát
+    da: Rakhine State
+    de: Rakhaing-Staat
+    el: Ρακίνε
+    es: Rakhine
+    et: Arakani osariik
+    eu: Rakhine estatua
+    fa: ایالت راخین
+    fi: Rakhine
+    fr: État d’Arakan
+    gu: રખીન સ્ટેટ
+    hi: अराकान
+    id: Negara Bagian Rakhine
+    it: Stato Rakhine
+    ja: ラカイン州
+    kn: ಅರಕಾನ್
+    ko: 라카인 주
+    lt: Rachinų valstija
+    mr: रखिन राज्य
+    ms: Negeri Rakhine
+    nb: Rakhine
+    nl: Rakhine
+    pl: Arakan
+    pt: Arracão
+    ru: Ракхайн
+    si: රකිනේ රාජ්‍ය
+    sr: Ракајн
+    sv: Rakhinestaten
+    sw: Dola la Rakhaing
+    ta: ரஃஹினீ மாநிலம்
+    te: రాఖినె స్టేట్
+    th: รัฐยะไข่
+    tr: Rakhine Eyaleti
+    uk: Ракхайн
+    ur: راخائن ریاست
+    vi: Rakhine
+    lv: Rakhainas pavalsts
+    ceb: Rakhine State
+    sr_Latn: Rakajn
+    zh: 若開邦
+    jv: Rakhine
+    ccp: "\U00011122\U00011108\U0001112D\U0001111A\U00011134"
+    he: ראקין
+    my: ရခိုင်ပြည်နယ်
+    mk: Ракајн
+    'no': Rakhine
+    ky: Ракхайн
+  comments:
+  type: state
+'17':
+  name: Shan
+  code: '17'
+  unofficial_names: Shan
+  geo:
+    latitude: 21.156717
+    longitude: 97.57347829999999
+    min_latitude: 21.1287002
+    min_longitude: 97.5539589
+    max_latitude: 21.1839317
+    max_longitude: 97.59275430000001
+  translations:
+    en: Shan
+    ar: ولاية شان
+    bn: শান রাজ্য
+    ca: Estat Shan
+    cs: Šanský stát
+    da: Shan State
+    de: Shan-Staat
+    el: Σαν
+    es: Shan
+    et: Šani osariik
+    eu: Shan estatua
+    fa: ایالت شان
+    fi: Shan
+    fr: État Shan
+    gu: શાન સ્ટેટ
+    hi: शान राज्य
+    id: Negara Bagian Shan
+    it: Stato Shan
+    ja: シャン州
+    kn: ಶನ್ ರಾಜ್ಯ
+    ko: 샨 주
+    lt: Šanų valstija
+    mr: शान राज्य
+    ms: Shan State
+    nb: Shan
+    nl: Shan
+    pl: Szan
+    pt: Shan
+    ru: Шан
+    si: ශාන් රාජ්‍ය
+    sr: Шан
+    sv: Shanstaten
+    ta: ஷான் மாநிலம்
+    te: షాన్ రాష్ట్రం
+    th: รัฐฉาน
+    tr: Shan State
+    uk: Шан
+    ur: ریاست شان
+    vi: Shan
+    lv: Šanas pavalsts
+    ceb: Shan State
+    sr_Latn: Šan
+    zh: 掸邦
+    yue_Hans: 掸邦
+    ccp: "\U00011125\U0001111A\U00011134"
+    hy: Շան
+    ml: ഷാൻ സംസ്ഥാനം
+    yue: 撣邦
+    my: ရှမ်းပြည်နယ်
+    mk: Шан
+    'no': Shan
+    az: Şan (Myanma)
+    ka: შანის შტატი
+    km: រដ្ឋសាន
+    ky: Шан (штат)
+    pa: ਸ਼ਾਨ ਰਾਜ
+  comments:
+  type: state
+'18':
+  name: နေပြည်တော် ပြည်ထောင်စုနယ်မြေ
+  code: '18'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Unionsterritorium Naypyidaw
+    en: Naypyidaw
+    es: Territorio de la Unión de Naypyidaw
+    fr: Naypyidaw Territoire de l’Union
+    it: Territorio dell’Unione di Naypyidaw
+    ja: ネピドー連邦領
+    ko: 네피도 연방구
+    nl: Naypyidaw Union Territory
+    pl: Naypyidaw
+    pt: Território da União de Naypyidaw
+    th: ดินแดนสหภาพเนปยีดอ
+    ur: نیپیداو متحدہ خطہ
+    vi: Lãnh thổ Liên bang Naypyidaw
+    ta: நைப்பியிதா யூனியன் பிரதேசம்
+    zh: 内比都联邦区
+    el: Ενωσιακή Επικράτεια Νέπιντο
+    ccp: "\U0001111A\U0001112C\U0001111B\U0001112D\U00011103\U00011128\U00011113\U00011133\U00011126\U00011127"
+    my: နေပြည်တော် ပြည်ထောင်စုနယ်မြေ
+    ca: Territori de la Unió de Naypyidaw
+    bn: নেপিডো কেন্দ্রশাসিত অঞ্চল
+    eu: Naypyidaw
+    km: ទឹកដីសហភាពណៃពិដោ
+    mr: नेप्यिडॉ केंद्रशासित प्रदेश
+  comments:
+  type: union_territory

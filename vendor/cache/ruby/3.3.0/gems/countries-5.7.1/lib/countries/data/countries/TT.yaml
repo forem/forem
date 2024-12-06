@@ -1,0 +1,52 @@
+---
+TT:
+  alpha2: TT
+  alpha3: TTO
+  continent: North America
+  country_code: '1'
+  currency_code: TTD
+  distance_unit: KM
+  gec: TD
+  geo:
+    latitude: 10.691803
+    longitude: -61.222503
+    max_latitude: 11.4004
+    max_longitude: -60.45089989999999
+    min_latitude: 9.9930001
+    min_longitude: -61.9725001
+    bounds:
+      northeast:
+        lat: 11.4004
+        lng: -60.45089989999999
+      southwest:
+        lat: 9.9930001
+        lng: -61.9725001
+  international_prefix: '011'
+  ioc: TRI
+  iso_long_name: The Republic of Trinidad and Tobago
+  iso_short_name: Trinidad and Tobago
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1868'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Trinidadian
+  number: '780'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: TT
+  unofficial_names:
+  - Trinidad and Tobago
+  - Trinidad und Tobago
+  - Trinité et Tobago
+  - Trinidad y Tobago
+  - トリニダード・トバゴ
+  - Trinidad en Tobago
+  world_region: AMER

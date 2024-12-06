@@ -1,0 +1,5312 @@
+---
+A:
+  name: Alicante/Alacant
+  code: A
+  unofficial_names:
+  - Alicante/Alacant
+  - Alacant/Alicante
+  - Alicante
+  - Alacant
+  geo:
+    latitude: 38.3459963
+    longitude: -0.4906855
+    min_latitude: 38.32474879999999
+    min_longitude: -0.5416291999999999
+    max_latitude: 38.3909328
+    max_longitude: -0.4034191
+  translations:
+    en: Alicante
+    ar: أليكانتي
+    be: правінцыя Алікантэ
+    bg: Аликанте
+    bn: আলিকান্তে প্রদেশ
+    ca: província d’Alacant
+    cs: Provincie Alicante
+    da: Alicante
+    de: Provinz Alicante
+    el: Επαρχία του Αλικάντε
+    es: Provincia de Alicante
+    et: Alicante provints
+    eu: Alacanteko probintzia
+    fa: استان آلیکانته
+    fi: Alicante
+    fr: province d’Alicante
+    gl: Provincia de Alacant
+    gu: એલિકેન્ટ પ્રાંત
+    hi: एलिसाण्ट प्रान्त
+    hr: Alicante
+    hu: Alicante tartomány
+    id: Provinsi Alicante
+    it: provincia di Alicante
+    ja: アリカンテ県
+    ka: ალიკანტეს პროვინცია
+    kn: ಅಲಿಸಿಯಾ ಪ್ರಾಂತ್ಯ
+    ko: 알리칸테 주
+    lt: Alikantės provincija
+    lv: Alakantas province
+    mr: अॅलिकेंटे प्रांत
+    ms: Wilayah Alicante
+    nb: Alicante
+    nl: Alicante
+    pl: Alicante
+    pt: Alicante
+    ro: Provincia Alicante
+    ru: Аликанте
+    si: අලිකන්ටේ පළාත
+    sl: Alicante
+    sv: Alicante
+    sw: Mkoa wa Alicante
+    ta: அலிகாண்ட் மாகாணம்
+    te: అలికాంట్ ప్రావిన్స్
+    th: เขตอโมลาทา
+    tr: Alicante ili
+    uk: Аліканте
+    ur: صوبہ الیکانتے
+    vi: Alicante
+    zh: 阿利坎特省
+    ceb: Provincia de Alicante
+    sr_Latn: Pokrajina Alikante
+    yue_Hans: 阿利坎特省
+    sq: Provinca Alicante
+    ccp: "\U00011103\U00011123\U00011128\U00011107\U00011133\U00011120\U0001111A\U00011134\U00011111\U0001112C"
+    sr: Покрајина Аликанте
+    hy: Ալիկանտե
+    kk: Аликанте
+    yue: 阿利坎特省
+    az: Alikante vilayəti
+    uz: Alicante
+    mk: Аликанте
+    'no': Alicante
+    cy: Talaith Alicante
+  comments:
+  type: province
+AB:
+  name: Albacete
+  code: AB
+  unofficial_names:
+  - Albacete
+  geo:
+    latitude: 38.994349
+    longitude: -1.8585424
+    min_latitude: 38.9714828
+    min_longitude: -1.8862798
+    max_latitude: 39.0129156
+    max_longitude: -1.834899
+  translations:
+    en: Albacete
+    ar: البسيط
+    be: Правінцыя Альбасетэ
+    bg: Албасете
+    bn: আল্বাসেটে প্রদেশ
+    ca: Província d’Albacete
+    cs: Provincie Albacete
+    da: Albacete
+    de: Provinz Albacete
+    el: Αλμπαθέτε
+    es: Provincia de Albacete
+    et: Albacete provints
+    eu: Albaceteko probintzia
+    fa: استان آلباسته
+    fi: Albacete
+    fr: province d’Albacete
+    gl: Provincia de Albacete
+    gu: અલ્બાસેટે પ્રાંત
+    he: מחוז אלבסטה
+    hi: आल्बासेते प्रान्त
+    hr: Albacete
+    hu: Albacete
+    hy: Ալբասետե
+    id: Provinsi Albacete
+    it: Provincia di Albacete
+    ja: アルバセテ県
+    ka: ალბასეტეს პროვინცია
+    kn: ಅಲ್ಬೆಸೆಟ್ ಪ್ರಾಂತ್ಯ
+    ko: 알바세테 주
+    lt: Albasetės provincija
+    lv: Albasetes province
+    mr: अल्बासिटे प्रांत
+    ms: Wilayah Albacete
+    nb: Albacete
+    nl: Albacete
+    pl: Albacete
+    pt: Albacete
+    ro: Provincia Albacete
+    ru: Альбасете
+    si: අල්බසේටේ පළාත
+    sv: Albacete
+    ta: அல்பாஸ்ட் மாகாணம்
+    te: ఆల్బసీట్ ప్రావిన్స్
+    th: จังหวัดอัลเบอเซตี
+    tr: Albacete ili
+    uk: Альбасете
+    ur: صوبہ الباسیتے
+    vi: Albacete
+    zh: 阿爾瓦塞特省
+    ceb: Provincia de Albacete
+    sr_Latn: Pokrajina Albasete
+    sq: Provinca Albacete
+    ccp: "\U00011103\U00011123\U00011134\U0001111D\U00011125\U0001112C\U00011116\U00011134"
+    sr: Покрајина Албасете
+    kk: Альбасете
+    az: Albasete vilayəti
+    uz: Albacete
+    'no': Albacete
+    cy: Talaith Albacete
+    sw: Mkoa wa Albacete
+  comments:
+  type: province
+AL:
+  name: Almería
+  code: AL
+  unofficial_names:
+  - Almería
+  geo:
+    latitude: 36.834047
+    longitude: -2.4637136
+    min_latitude: 36.817203
+    min_longitude: -2.4855446
+    max_latitude: 36.8658532
+    max_longitude: -2.4286886
+  translations:
+    en: Almería
+    ar: المرية
+    be: Правінцыя Альмерыя
+    bg: Алмерия
+    bn: আল্মেরিয়া প্রদেশ
+    ca: Província d’Almeria
+    cs: Provincie Almería
+    da: Almería
+    de: Provinz Almería
+    el: Αλμερία
+    es: Provincia de Almería
+    et: Almería provints
+    eu: Almeríako probintzia
+    fa: استان آلمریا
+    fi: Almería
+    fr: province d’Almería
+    gl: Provincia de Almería
+    gu: અલમેરીયા પ્રાંત
+    hi: आल्मेरिया प्रान्त
+    hr: Almería
+    hu: Almería
+    hy: Ալմերիա
+    id: Provinsi Almería
+    it: Provincia di Almería
+    ja: アルメリア県
+    ka: ალმერიის პროვინცია
+    kn: ಅಲ್ಮೆರಿಯಾ ಪ್ರಾಂತ್ಯ
+    ko: 알메리아 주
+    lt: Almerijos provincija
+    lv: Almerijas province
+    mr: अल्मेरिया प्रांत
+    ms: Wilayah Almería
+    nb: Almería
+    nl: Almería
+    pl: Almería
+    pt: Almeria
+    ro: Provincia Almería
+    ru: Альмерия
+    si: අල්මෙරියා පළාත
+    sl: Almeria (pokrajina)
+    sr: Провинција Алмерија
+    sv: Almería
+    sw: Mkoa wa Almería
+    ta: அல்மேரிஆ மாகாணம்
+    te: ఆల్మేరియా ప్రావిన్స్
+    th: จังหวัดอัลมีเรีย
+    tr: Almería ili
+    uk: Альмерія
+    ur: صوبہ المریہ
+    vi: Almería
+    zh: 阿爾梅里亞省
+    ceb: Provincia de Almería
+    sr_Latn: Provincija Almerija
+    yue_Hans: 阿尔梅里亚省
+    sq: Provinca Almería
+    ccp: "\U00011103\U00011123\U00011134\U0001111F\U0001112C\U00011122\U00011128\U00011120"
+    kk: Альмерия
+    yue: 阿爾梅里亞省
+    az: Almeriya vilayəti
+    uz: Almería
+    mk: Алмерија
+    'no': Almería
+    cy: Talaith Almería
+  comments:
+  type: province
+AN:
+  name: Andalucía
+  code: AN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Andalusië
+    ar: منطقة أندلوسيا
+    az: Andalusiya
+    be: Андалусія
+    bg: Андалусия
+    bn: আন্দালুসিয়া
+    ca: Andalusia
+    cs: Andalusie
+    da: Andalusien
+    de: Autonome Gemeinschaft Andalusien
+    el: Ανδαλουσία
+    en: Andalusia
+    es: Andalucía
+    et: Andaluusia
+    eu: Andaluzia
+    fa: اندلس
+    fi: Andalusia
+    fr: Andalousie
+    gl: Andalucía
+    he: אנדלוסיה
+    hi: आंदालुसिया
+    hr: Andaluzija
+    hu: Andalúzia
+    hy: Անդալուզիա
+    id: Andalusia
+    is: Andalúsía
+    it: Andalusia
+    ja: アンダルシア州
+    ka: ანდალუსია
+    ko: 안달루시아 지방
+    lt: Andalūzija
+    lv: Andalūzija
+    ml: ആൻഡലൂഷ്യ
+    mn: Андалус орон
+    mr: आंदालुसिया
+    ms: Andalusia
+    nb: Andalucía
+    nl: Andalusië
+    pl: Andaluzja
+    pt: Andaluzia
+    ro: Andaluzia
+    ru: Андалусия
+    sk: Andalúzia
+    sl: Andaluzija
+    sr: Андалузија
+    sv: Andalusien
+    sw: Andalusia
+    th: แคว้นอันดาลูซีอา
+    tr: Endülüs
+    uk: Андалусія
+    ur: اندلوسیا
+    vi: Andalusia
+    zh: 安達魯西亞
+    cy: Andalucía
+    ceb: Andalucía
+    sr_Latn: Andaluzija
+    ta: அந்தாலூசியா
+    yue_Hans: 安达卢西亚
+    jv: Andalusia
+    sq: Andalusia
+    ccp: "\U00011103\U0001111A\U00011134\U00011113\U00011123\U00011134\U00011123\U0001112D\U0001112A\U00011125\U00011128\U00011120"
+    ga: An Andalúis
+    ky: Андалусия
+    kk: Андалусия
+    yue: 安達盧西亞
+    am: አንዳሉሲያ
+    uz: Andalusiya
+    bs: Andaluzija
+    mk: Андалузија
+    'no': Andalucía
+    sd: اندلس
+  comments:
+  type: autonomous_community
+AR:
+  name: Aragón
+  code: AR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة أراغـون
+    az: Araqon
+    be: Арагон
+    bg: Арагон
+    ca: Aragó
+    cs: Aragonie
+    da: Aragonien
+    de: Aragonien
+    el: Αραγονία
+    en: Aragon
+    es: Aragón
+    et: Aragón
+    eu: Aragoi
+    fa: آراگون
+    fi: Aragonia
+    fr: Aragon
+    gl: Aragón
+    he: אראגון
+    hi: आरागोन
+    hr: Aragonija
+    hu: Aragónia
+    hy: Արագոն
+    id: Aragon
+    is: Aragon
+    it: Aragona
+    ja: アラゴン州
+    ka: არაგონი
+    ko: 아라곤 지방
+    lt: Aragonas
+    lv: Aragona
+    mn: Арагон орон
+    mr: आरागोन
+    ms: Aragon
+    nb: Aragon
+    nl: Aragón
+    pl: Aragonia
+    pt: Aragão
+    ro: Aragon
+    ru: Арагон
+    sk: Aragónsko
+    sl: Aragonija
+    sr: Арагон
+    sv: Aragonien
+    ta: அரகொன்
+    th: แคว้นอารากอง
+    tr: Aragon
+    uk: Арагон
+    ur: اراغون
+    vi: Aragon
+    zh: 阿拉贡自治区
+    cy: Aragón
+    ceb: Aragon
+    sr_Latn: Aragon
+    yue_Hans: 亚拉冈
+    jv: Aragon
+    sq: Aragon
+    ccp: "\U00011103\U00011122\U00011109\U00011127\U0001111A\U00011134"
+    ga: An Aragóin
+    kk: Арагон
+    yue: 亞拉岡
+    am: አራጎን
+    uz: Aragon
+    bs: Aragon
+    mk: Арагон
+    'no': Aragon
+    bn: আরাগোন
+    ky: Арагон
+    sw: Aragon
+  comments:
+  type: autonomous_community
+AS:
+  name: Principado de Asturias
+  code: AS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Asturië
+    ar: منطقة أستورياس
+    az: Asturiya
+    be: Астурыя
+    bg: Астурия
+    bn: আস্তুরিয়াস
+    ca: Astúries
+    cs: Asturie
+    da: Asturien
+    de: Asturien
+    el: Αστούριες
+    en: Asturias
+    es: Principado de Asturias
+    et: Astuuria
+    eu: Asturiesko Printzerria
+    fa: آستوریاس
+    fi: Asturia
+    fr: Asturies
+    gl: Principado de Asturias
+    gu: અસ્ટુરિયાસ
+    he: אסטוריאס
+    hi: आस्तुरियास
+    hr: Asturija
+    hu: Asztúria
+    hy: Աստուրիա
+    id: Asturias
+    is: Astúría
+    it: Asturie
+    ja: アストゥリアス州
+    ka: ასტურია
+    kn: ಆಸ್ಟೂರಿಯಸ್
+    ko: 아스투리아스 지방
+    lt: Astūrija
+    lv: Astūrija
+    mn: Астур муж
+    mr: आस्तुरियास
+    ms: Asturias
+    nb: Asturias
+    nl: Asturië
+    pl: Asturia
+    pt: Astúrias
+    ro: Asturia
+    ru: Астурия
+    si: අස්ටුරියස්
+    sk: Astúria
+    sr: Кнежевина Астурија
+    sv: Asturien
+    ta: ஆதூரியா
+    te: అస్టూరియాస్
+    th: แคว้นอัสตูเรียส
+    tr: Asturies
+    uk: Астурія
+    ur: استوریاس
+    vi: Asturies
+    zh: 阿斯图里亚斯
+    cy: Asturias
+    ceb: Principality of Asturias
+    sr_Latn: Kneževina Asturija
+    yue_Hans: 阿斯图里亚斯
+    jv: Asturias
+    sq: Asturias
+    ccp: "\U00011103\U00011127\U0001110C\U00011134\U00011111\U00011122\U00011128\U00011120\U0001110C\U00011134"
+    ga: Asturies
+    kk: Астурия
+    yue: 阿斯圖里亞斯
+    am: አስቱርያስ
+    uz: Asturiya
+    bs: Asturija
+    mk: Астурија
+    'no': Asturias
+    ky: Астуриа
+    sl: Asturija
+    sw: Asturias
+  comments:
+  type: autonomous_community
+AV:
+  name: Ávila
+  code: AV
+  unofficial_names:
+  - Ávila
+  geo:
+    latitude: 40.656685
+    longitude: -4.6812086
+    min_latitude: 40.6378229
+    min_longitude: -4.707720000000001
+    max_latitude: 40.6759493
+    max_longitude: -4.6566674
+  translations:
+    en: Ávila
+    ar: آبلة
+    be: Правінцыя Авіла
+    bg: Авила
+    bn: এভিলা প্রদেশ
+    ca: província d’Àvila
+    cs: Provincie Ávila
+    da: Ávila
+    de: Provinz Ávila
+    el: Αβίλα
+    es: Provincia de Ávila
+    et: Ávila provints
+    eu: Ávilako probintzia
+    fa: استان آبیلا
+    fi: Ávila
+    fr: province d’Ávila
+    gl: Provincia de Ávila
+    gu: એવીલા પ્રાંત
+    hi: एविला प्रांत
+    hr: Ávila
+    hu: Ávila
+    id: Provinsi Ávila
+    it: provincia di Ávila
+    ja: アビラ県
+    ka: ავილის პროვინცია
+    kn: ಆವಿಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 아빌라 주
+    lt: Avilos provincija
+    lv: Avilas province
+    mr: एविला प्रांत
+    ms: Wilayah Ávila
+    nb: Ávila
+    nl: Ávila
+    pl: Ávila
+    pt: Ávila
+    ro: Provincia Ávila
+    ru: Авила
+    si: ආවිලා පළාත
+    sv: Ávila
+    sw: Mkoa wa Ávila
+    ta: ஆவிலா மாகாணம்
+    te: అవిలా ప్రావిన్స్
+    th: จังหวัดอาบีลา
+    tr: Ávila ili
+    uk: Авіла
+    ur: صوبہ آبیلا
+    vi: Ávila
+    zh: 阿维拉省
+    ceb: Provincia de Ávila
+    sr_Latn: Pokrajina Avila
+    sq: Provinca Ávila
+    ccp: "\U00011103\U0001111E\U00011128\U00011123"
+    sr: Покрајина Авила
+    kk: Авила
+    az: Avila vilayəti
+    uz: Ávila
+    mk: Авила
+    'no': Ávila
+    hy: Ավիլա
+  comments:
+  type: province
+B:
+  name: Barcelona
+  code: B
+  unofficial_names:
+  - Barcelona
+  - Barna
+  geo:
+    latitude: 41.3850639
+    longitude: 2.1734035
+    min_latitude: 41.320004
+    min_longitude: 2.0695258
+    max_latitude: 41.4695761
+    max_longitude: 2.2280099
+  translations:
+    en: Barcelona
+    ar: برشلونة
+    be: правінцыя Барселона
+    bn: বার্সেলোনা প্রদেশ
+    ca: província de Barcelona
+    cs: Provincie Barcelona
+    da: Barcelona
+    de: Provinz Barcelona
+    el: Επαρχία της Βαρκελώνης
+    es: Provincia de Barcelona
+    et: Barcelona provints
+    eu: Bartzelonako probintzia
+    fa: استان بارسلون
+    fi: Barcelona
+    fr: province de Barcelone
+    gl: Provincia de Barcelona
+    gu: બાર્સિલોના પ્રાંત
+    hi: बार्सीलोना प्रांत
+    hr: Barcelona
+    hu: Barcelona tartomány
+    id: Provinsi Barcelona
+    it: Provincia di Barcellona
+    ja: バルセロナ県
+    ka: ბარსელონის პროვინცია
+    kn: ಬಾರ್ಸಿಲೋನಾ ಪ್ರಾಂತ್ಯ
+    ko: 바르셀로나 주
+    lt: Barselonos provincija
+    lv: Barselonas province
+    mr: बार्सिलोना प्रांत
+    ms: Barcelona Province
+    nb: Barcelona
+    nl: Barcelona
+    pl: Barcelona
+    pt: Barcelona
+    ro: Provincia Barcelona
+    ru: Барселона
+    si: බාසිලෝනා පළාත
+    sr: Провинција Барселона
+    sv: Barcelona
+    sw: Mkoa wa Barcelona
+    ta: பார்ஸலோனா மாகாணம்
+    te: బార్సిలోనా ప్రావిన్స్
+    th: จังหวัดบาร์เซโลนา
+    tr: Barselona ili
+    uk: провінція Барселона
+    ur: صوبہ برشلونہ
+    vi: Barcelona
+    zh: 巴塞罗那省
+    cy: Talaith Barcelona
+    ceb: Província de Barcelona
+    sr_Latn: Provincija Barselona
+    yue_Hans: 巴萨隆拿省
+    sq: Provinca Barcelona
+    ccp: "\U0001111D\U00011122\U00011134\U00011125\U0001112C\U00011123\U0001112E\U0001111A"
+    he: מחוז ברצלונה
+    kk: Барселона
+    yue: 巴薩隆拿省
+    az: Barselona vilayəti
+    uz: Barselona
+    'no': Barcelona
+    ga: Cúige Barcelona
+    hy: Բարսելոնա
+    is: Barselóna-hérað
+    mk: Барселона (покраина)
+  comments:
+  type: province
+BA:
+  name: Badajoz
+  code: BA
+  unofficial_names:
+  - Badajoz
+  geo:
+    latitude: 38.8794495
+    longitude: -6.9706535
+    min_latitude: 38.8517673
+    min_longitude: -7.0346625
+    max_latitude: 38.9069928
+    max_longitude: -6.9406957
+  translations:
+    en: Badajoz
+    ar: بطليوس
+    be: Бадахас
+    bn: বাদাজোজ প্রদেশ
+    ca: Província de Badajoz
+    cs: Provincie Badajoz
+    da: Badajoz
+    de: Provinz Badajoz
+    el: Μπαδαχόθ
+    es: Provincia de Badajoz
+    et: Badajozi provints
+    eu: Badajozko probintzia
+    fa: استان باداخس
+    fi: Badajoz
+    fr: province de Badajoz
+    gl: Provincia de Badaxoz
+    gu: બદાજોઝ પ્રાંત
+    hi: बदाओज़ प्रांत
+    hr: Badajoz
+    hu: Badajoz tartomány
+    hy: Բադախոս
+    id: Provinsi Badajoz
+    it: Provincia di Badajoz
+    ja: バダホス県
+    ka: ბადახოსის პროვინცია
+    kn: ಬಾಡೋಜೋಜ್ ಪ್ರಾಂತ್ಯ
+    ko: 바다호스 주
+    lt: Badachoso provincija
+    lv: Badahosas province
+    mr: बदाजोज प्रांत
+    ms: Wilayah Badajoz
+    nb: Badajoz
+    nl: Badajoz
+    pl: Badajoz
+    pt: Badajoz (província)
+    ro: Provincia Badajoz
+    ru: Бадахос
+    si: බඩජෝස් පළාත
+    sl: Badajoz
+    sv: Badajoz
+    sw: Mkoa wa Badajoz
+    ta: படஜோஸ் மாகாணம்
+    te: బడాజోజ్ ప్రావిన్స్
+    th: จังหวัดบาดาจอซ
+    tr: Badajoz ili
+    uk: Бадахос
+    ur: صوبہ بطليوس
+    vi: Badajoz
+    zh: 巴达霍斯省
+    ceb: Provincia de Badajoz
+    sr_Latn: Pokrajina Badahoz
+    yue_Hans: 巴达何斯省
+    sq: Provinca Badajoz
+    ccp: "\U0001111D\U00011116\U00011134\U0001110E\U0001112E\U0001110C\U00011134"
+    sr: Покрајина Бадахоз
+    ga: Badajoz
+    kk: Бадахос
+    yue: 巴達何斯省
+    az: Badaxos vilayəti
+    uz: Badajoz
+    mk: Бадахоз
+    'no': Badajoz
+    cy: Talaith Badajoz
+  comments:
+  type: province
+BI:
+  name: Bizkaia
+  code: BI
+  unofficial_names:
+  - Bizkaia
+  - Vizcaya
+  geo:
+    latitude: 43.2204286
+    longitude: -2.6983868
+    min_latitude: 42.9818773
+    min_longitude: -3.4492758
+    max_latitude: 43.4572451
+    max_longitude: -2.4127155
+  translations:
+    en: Biscay
+    af: Biskaje
+    ar: بيسكاي
+    bg: Бизкаиа
+    bn: বিসকে
+    ca: Biscaia
+    cs: Bizkaia
+    da: Vizcaya
+    de: Bizkaia
+    el: Βισκαϊκή
+    es: Vizcaya
+    et: Biskaia
+    eu: Bizkaia
+    fa: استان بیسکای
+    fi: Vizcaya
+    fr: Biscaye
+    gl: Biscaia - Bizkaia
+    gu: બિસ્કે
+    hi: बिस्के
+    hr: Biskaja
+    hu: Bizkaia
+    id: Vizcaya
+    it: Biscaglia
+    ja: ビスカヤ県
+    ka: ბისკაია
+    kn: ಬಿಸ್ಕೆ
+    ko: 비스카야 주
+    lt: Biskajos provincija
+    lv: Biskaja
+    mr: बिस्के
+    ms: Wilayah Biscay
+    nb: Bizkaia
+    nl: Biskaje
+    pl: Vizcaya
+    pt: Biscaia
+    ro: Provincia Vizcaya
+    ru: Бискайя
+    si: බිස්කේ
+    sv: Biscaya
+    sw: Mkoa wa Vizcaya
+    ta: பிஸ்கேய்
+    te: బిస్కే
+    th: จังหวัดบิซกายา
+    tr: Biskay
+    uk: Біскайя
+    ur: بیسکای
+    vi: Biscay
+    zh: 比斯開省
+    cy: Biskaia
+    ceb: Bizkaia
+    sr_Latn: Pokrajina Biskaja
+    sq: Provinca Biscay
+    ccp: "\U0001111D\U00011128\U0001110C\U00011134\U00011107\U0001112C"
+    sr: Покрајина Бискаја
+    ky: Бискай
+    he: ביסקאיה
+    kk: Бискайя
+    az: Biskaya vilayəti
+    be: правінцыя Біская
+    uz: Vizcaya
+    'no': Bizkaia
+    ga: An Bhioscáin
+    hy: Բիսկայա
+    sl: Biskaja
+  comments:
+  type: province
+BU:
+  name: Burgos
+  code: BU
+  unofficial_names:
+  - Burgos
+  geo:
+    latitude: 42.3439925
+    longitude: -3.696906
+    min_latitude: 42.31611789999999
+    min_longitude: -3.7526357
+    max_latitude: 42.3721341
+    max_longitude: -3.6367504
+  translations:
+    en: Burgos
+    ar: برغش
+    be: Правінцыя Бургас
+    bg: Бургос
+    bn: বুর্গোস প্রদেশ
+    ca: província de Burgos
+    cs: Provincie Burgos
+    da: Burgos
+    de: Provinz Burgos
+    el: Επαρχία του Μπούργκος
+    es: Provincia de Burgos
+    et: Burgose provints
+    eu: Burgosko probintzia
+    fa: استان بورگس
+    fi: Burgos
+    fr: province de Burgos
+    gl: Provincia de Burgos
+    gu: બર્ગોસ પ્રાંત
+    hi: बर्गोस प्रांत
+    hr: Burgos
+    hu: Burgos
+    id: Provinsi Burgos
+    it: provincia di Burgos
+    ja: ブルゴス県
+    ka: ბურგოსის პროვინცია
+    kn: ಬರ್ಗೋಸ್ ಪ್ರಾಂತ್ಯ
+    ko: 부르고스 주
+    lt: Burgoso provincija
+    lv: Burgosas province
+    mr: बर्गोस प्रांत
+    ms: Burgos
+    nb: Burgos
+    nl: Burgos
+    pl: Burgos
+    pt: Burgos
+    ro: Provincia Burgos
+    ru: Бургос
+    si: බර්ගොස් පළාත
+    sv: Burgos
+    sw: Mkoa wa Burgos
+    ta: பர்கோஸ் மாகாணம்
+    te: బుర్గోస్ ప్రావిన్స్
+    th: บูร์โกส
+    tr: Burgos ili
+    uk: Бургос
+    ur: صوبہ بورگوس
+    vi: Burgos
+    zh: 布尔戈斯省
+    ceb: Provincia de Burgos
+    sr_Latn: Pokrajina Burgos
+    sq: Provinca Burgos
+    ccp: "\U0001111D\U00011122\U00011134\U00011109\U0001112E\U0001110C\U00011134"
+    sr: Покрајина Бургос
+    kk: Бургос
+    az: Burqos vilayəti
+    uz: Burgos
+    'no': Burgos
+    cy: Talaith Burgosko
+    hy: Բուրգոս
+    mk: Бургос (покраина)
+  comments:
+  type: province
+C:
+  name: Coruña, A
+  code: C
+  unofficial_names:
+  - Coruña, A
+  - A Coruña
+  - Corunna
+  - La Coruña
+  - Coruña
+  geo:
+    latitude: 43.3623436
+    longitude: -8.4115401
+    min_latitude: 43.337341
+    min_longitude: -8.4382592
+    max_latitude: 43.38640729999999
+    max_longitude: -8.3871082
+  translations:
+    en: A Coruña
+    ar: لا كورونيا
+    be: Правінцыя Ла-Карунья
+    bg: Ла Коруня
+    bn: এ করুনা প্রদেশ
+    ca: província de la Corunya
+    cs: Provincie A Coruña
+    da: A Coruña
+    de: Provinz A Coruña
+    el: Α Κορούνια
+    es: Provincia de La Coruña
+    et: A Coruña provints
+    eu: Coruñako probintzia
+    fa: استان لاکرونیا
+    fi: A Coruña
+    fr: province de La Corogne
+    gl: Provincia da Coruña
+    gu: આ કોરુના પ્રાંત
+    hi: ला कोरूनिया प्रान्त
+    hr: A Coruña
+    hu: A Coruña
+    id: Provinsi A Coruña
+    it: Provincia della Coruña
+    ja: ア・コルーニャ県
+    ka: ლა-კორუნიის პროვინცია
+    kn: ಎ ಕೊರುನಾ ಪ್ರಾಂತ್ಯ
+    ko: 라코루냐 주
+    lt: La Korunjos provincija
+    lv: Akoruņas province
+    mr: ला कोरुन्या
+    ms: Wilayah A Coruña
+    nb: A Coruña
+    nl: A Coruña
+    pl: A Coruña
+    pt: Corunha
+    ro: Provincia La Coruña
+    ru: Ла-Корунья
+    si: ඒ කොරුනා පළාත
+    sk: Provincia La Coruña
+    sv: La Coruña
+    sw: Mkoa wa La Coruña
+    ta: கோரூஞா
+    te: ఓ కొరూనా ప్రావిన్స్
+    th: จังหวัดอาโกรุญญา
+    tr: A Coruña ili
+    uk: А-Корунья
+    ur: صوبہ لا کورونا
+    vi: A Coruña
+    zh: 拉科鲁尼亚省
+    ceb: Provincia da Coruña
+    sr_Latn: Pokrajina Korunja
+    sq: Provinca A Coruña
+    ccp: "\U00011103\U0001112C \U00011107\U00011127\U00011122\U0001112A\U0001111A"
+    sr: Покрајина Коруња
+    ga: A Coruña
+    hy: Լա Կորունյա նահանգ
+    kk: Ла-Корунья
+    az: La-Korunya vilayəti
+    uz: A Coruña
+    'no': A Coruña
+    cy: Talaith A Coruña
+    mk: Ла Коруња
+  comments:
+  type: province
+CA:
+  name: Cádiz
+  code: CA
+  unofficial_names:
+  - Cádiz
+  geo:
+    latitude: 36.5270612
+    longitude: -6.2885962
+    min_latitude: 36.4895662
+    min_longitude: -6.309558
+    max_latitude: 36.5431863
+    max_longitude: -6.255334599999999
+  translations:
+    en: Cádiz
+    ar: قادس
+    be: правінцыя Кадыс
+    ca: província de Cadis
+    cs: Provincie Cádiz
+    da: Cádiz
+    de: Provinz Cádiz
+    el: Επαρχία Κάδιθ
+    es: Provincia de Cádiz
+    et: Cádizi provints
+    eu: Cádizko probintzia
+    fa: استان کادیس
+    fi: Cádiz
+    fr: province de Cadix
+    gl: Provincia de Cádiz
+    gu: કાડીઝ પ્રાંત
+    he: מחוז קדיס
+    hi: कैडीज़ प्रांत
+    hr: Cádiz
+    hu: Cádiz
+    id: Provinsi Cádiz
+    it: Provincia di Cadice
+    ja: カディス県
+    ka: კადისის პროვინცია
+    kn: ಕಾಡಿಜ್ ಪ್ರಾಂತ್ಯ
+    ko: 카디스 주
+    lt: Kadiso provincija
+    lv: Kadisas province
+    mr: काडिझ प्रांत
+    ms: Wilayah Cádiz
+    nb: Cádiz
+    nl: Cádiz
+    pl: Kadyks
+    pt: Cádis
+    ro: Provincia Cádiz
+    ru: Кадис
+    si: කාදිස් පළාත
+    sr: Провинција Кадиз
+    sv: Cádiz
+    sw: Mkoa wa Cádiz
+    ta: காதீசு
+    te: కాడిజ్ ప్రావిన్స్
+    th: จังหวัดกาดิซ
+    tr: Cádiz ili
+    uk: Кадіс
+    ur: صوبہ کادیز
+    vi: Cádiz
+    zh: 加的斯省
+    ceb: Provincia de Cádiz
+    sr_Latn: Provincija Kadiz
+    bn: কাদিস প্রদেশ
+    yue_Hans: 加的斯省
+    sq: Provinca Cadiz
+    ccp: "\U00011107\U00011113\U00011128\U0001110C\U00011134"
+    hy: Կադիս
+    kk: Кадис
+    yue: 加的斯省
+    az: Kadis vilayəti
+    uz: Cádiz
+    mk: Кадиз
+    'no': Cádiz
+    cy: Talaith Cádiz
+  comments:
+  type: province
+CB:
+  name: Cantabria
+  code: CB
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة كانتابريا
+    az: Kantabriya
+    be: Кантабрыя
+    bg: Кантабрия
+    bn: কান্তাব্রিয়া
+    ca: Cantàbria
+    cs: Kantábrie
+    da: Kantabrien
+    de: Autonome Gemeinschaft Kantabrien
+    el: Κανταβρία
+    en: Cantabria
+    es: Cantabria
+    et: Kantaabria
+    eu: Kantabria
+    fa: کانتابریا
+    fi: Kantabria
+    fr: Cantabrie
+    gl: Cantabria
+    gu: કાન્તાબ્રિયા
+    he: קנטבריה
+    hi: कंटैब्रिया
+    hr: Kantabrija
+    hu: Kantábria
+    hy: Կանտաբրիա
+    id: Cantabria
+    is: Kantabría
+    it: Cantabria
+    ja: カンタブリア州
+    ka: კანტაბრია
+    kn: ಕ್ಯಾಂಥಬ್ರಿಯಾ
+    ko: 칸타브리아 지방
+    lt: Kantabrija
+    lv: Kantabrija
+    mr: कांताब्रिया
+    ms: Cantabria
+    nb: Cantabria
+    nl: Cantabrië
+    pl: Kantabria
+    pt: Cantábria
+    ro: Cantabria
+    ru: Кантабрия
+    si: කැන්ටබ්රියා
+    sk: Kantábria
+    sr: Кантабрија
+    sv: Kantabrien
+    ta: காந்தாபிரியா
+    te: కాంటాబ్రియా
+    th: แคว้นกันตาเบรีย
+    tr: Kantabria
+    uk: Кантабрія
+    ur: کانتابریا
+    vi: Cantabria
+    zh: 坎塔布里亚
+    cy: Cantabria
+    ceb: Cantabria
+    sr_Latn: Kantabrija
+    yue_Hans: 坎塔布里亚
+    sq: Cantabria
+    ccp: "\U00011107\U00011133\U00011120\U0001111A\U00011134\U00011111\U0001111D\U00011133\U00011122\U00011128\U00011120"
+    ga: Cantabria
+    kk: Кантабрия
+    yue: 坎塔布里亞
+    am: ካንታብርያ
+    uz: Cantabria
+    bs: Kantabrija
+    mk: Кантабрија
+    'no': Cantabria
+    mn: Кантабри
+    sl: Kantabrija
+    sw: Cantabria
+  comments:
+  type: autonomous_community
+CC:
+  name: Cáceres
+  code: CC
+  unofficial_names:
+  - Cáceres
+  geo:
+    latitude: 39.4752765
+    longitude: -6.3724247
+    min_latitude: 39.4431692
+    min_longitude: -6.4270489
+    max_latitude: 39.500104
+    max_longitude: -6.3543895
+  translations:
+    en: Cáceres
+    ar: قصرش
+    be: Касерэс
+    bn: সিরেরেস প্রদেশ
+    ca: Província de Càceres
+    cs: Provincie Cáceres
+    da: Cáceres
+    de: Provinz Cáceres
+    el: Επαρχία του Κάθερες
+    es: Provincia de Cáceres
+    et: Cácerese provints
+    eu: Cáceresko probintzia
+    fa: استان کاسرس
+    fi: Cáceres
+    fr: province de Cáceres
+    gl: Provincia de Cáceres
+    gu: કેસેરેસ પ્રાંત
+    hi: कासेरेस प्रांत
+    hr: Cáceres
+    hu: Cáceres
+    hy: Կասարես
+    id: Provinsi Cáceres
+    it: Provincia di Cáceres
+    ja: カセレス県
+    ka: კასერესის პროვინცია
+    kn: ಕ್ಯಾಸೆರೆಸ್ ಪ್ರಾಂತ್ಯ
+    ko: 카세레스 주
+    lt: Kasereso provincija
+    lv: Kaseresas province
+    mr: कॅसरेस प्रांत
+    ms: Wilayah Cáceres
+    nb: Cáceres
+    nl: Cáceres
+    pl: Cáceres
+    pt: Cáceres (província)
+    ro: Provincia Cáceres
+    ru: Касерес
+    si: කාසේරෙස් පළාත
+    sv: Cáceres
+    ta: கஸ்ர்ஸ் மாகாணம்
+    te: కాకరస్ ప్రావిన్స్
+    th: จังหวัดคาเซเรส
+    tr: Cáceres ili
+    uk: Касерес
+    ur: صوبہ کاسیریس
+    vi: Cáceres
+    zh: 卡塞雷斯省
+    ceb: Provincia de Cáceres
+    sr_Latn: Pokrajina Kaseres
+    yue_Hans: 卡舍利斯省
+    sq: Provinca Cáceres
+    ccp: "\U00011107\U0001112C\U00011125\U0001112C\U00011122\U0001112C\U0001110C\U00011134"
+    sr: Покрајина Касерес
+    ga: Cáceres
+    kk: Касерес
+    yue: 卡舍利斯省
+    az: Kaseres vilayəti
+    uz: Cáceres
+    'no': Cáceres
+    cy: Talaith Cáceres
+  comments:
+  type: province
+CE:
+  name: Ceuta
+  code: CE
+  unofficial_names:
+  - Ceuta
+  - Sebta
+  geo:
+    latitude: 35.8893874
+    longitude: -5.3213455
+    min_latitude: 35.8710601
+    min_longitude: -5.3587124
+    max_latitude: 35.9068648
+    max_longitude: -5.27836
+  translations:
+    en: Ceuta
+    af: Ceuta
+    ar: سبتة
+    be: Сеўта
+    bg: Сеута
+    bn: সিউচা
+    ca: Ceuta
+    cs: Ceuta
+    da: Ceuta
+    de: Ceuta
+    el: Θέουτα
+    es: Ceuta
+    et: Ceuta
+    eu: Ceuta
+    fa: سبته
+    fi: Ceuta
+    fr: Ceuta
+    gl: Ceuta
+    gu: સ્યુટા
+    he: סאוטה
+    hi: सेउटा
+    hr: Ceuta
+    hu: Ceuta
+    hy: Սեուտա
+    id: Ceuta
+    is: Ceuta
+    it: Ceuta
+    ja: セウタ
+    ka: სეუტა
+    kn: ಸಿಯುಟಾ
+    ko: 세우타
+    lt: Seuta
+    lv: Seuta
+    mr: सेउता
+    ms: Ceuta
+    nb: Ceuta
+    ne: सेउटा
+    nl: Ceuta
+    pl: Ceuta
+    pt: Ceuta
+    ro: Ceuta
+    ru: Сеута
+    si: සියුටා
+    sk: Ceuta
+    sl: Ceuta
+    sr: Сеута
+    sv: Ceuta
+    sw: Ceuta
+    ta: சியூடா
+    te: సియూటా
+    th: เซวตา
+    tr: Ceuta
+    uk: Сеута
+    ur: سبتہ
+    vi: Ceuta
+    zh: 休达
+    zu: Ceuta
+    cy: Ceuta
+    ceb: Ceuta
+    sr_Latn: Seuta
+    yue_Hans: 休达
+    jv: Ceuta
+    sq: Ceuta
+    ccp: "\U00011125\U0001112C\U00011105\U0001112A\U00011111"
+    ga: Ceuta
+    kk: Сеута
+    yue: 休達
+    az: Seuta
+    am: ሴውታ
+    yo: Ceuta
+    bs: Ceuta
+    mk: Сеута
+    'no': Ceuta
+    yo_BJ: Ceuta
+    mn: Сеута
+    ps: سیوتا
+    uz: Seuta
+  comments:
+  type: autonomous_city_in_north_africa
+CL:
+  name: Castilla y León
+  code: CL
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Kastilië en León
+    ar: منطقة قـشتالة وليون
+    az: Kastiliya və Leon
+    be: Кастылія і Леон
+    bg: Кастилия и Леон
+    ca: Castella i Lleó
+    cs: Kastilie a León
+    da: Castilla y León
+    de: Autonome Gemeinschaft Kastilien und León
+    el: Καστίλλη και Λεόν
+    en: Castile and León
+    es: Castilla y León
+    et: Castilla-León
+    eu: Gaztela eta Leon
+    fa: کاستیا و لئون
+    fi: Kastilia ja León
+    fr: Castille-et-León
+    gl: Castela e León
+    he: קסטיליה ולאון
+    hr: Kastilja i León
+    hu: Kasztília és León
+    id: Castilla y León
+    is: Kastilía-León
+    it: Castiglia e León
+    ja: カスティーリャ・レオン州
+    ka: კასტილია და ლეონი
+    ko: 카스티야이레온 지방
+    lt: Kastilija ir Leonas
+    lv: Kastīlija un Leona
+    mr: कास्तिया इ लेओन
+    ms: Castile-León
+    nb: Castilla y León
+    nl: Castilië en León
+    pl: Kastylia i León
+    pt: Castela e Leão
+    ro: Castilia și León
+    ru: Кастилия и Леон
+    sr: Кастиља и Леон
+    sv: Kastilien och León
+    th: แคว้นคาสตีลและเลออน
+    tr: Kastilya ve Leon
+    uk: Кастилія-і-Леон
+    ur: قشتالہ اور لیون
+    vi: Castilla và León
+    zh: 卡斯蒂利亚-莱昂
+    cy: Castilla y León
+    ceb: Castilla y León
+    sr_Latn: Kastilja i Leon
+    yue_Hans: 卡斯提亚与利昂
+    hi: कैस्टिले और लेओन
+    jv: Castile-Leon
+    sq: Castile dhe León
+    ccp: "\U00011107\U00011133\U00011120\U0001110C\U00011134\U00011111\U0001112D\U00011123\U00011134
+      \U00011103\U00011133\U00011103 \U00011123\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    ga: Castilla y León
+    hy: Կաստիլիա և Լեոն
+    kk: Кастилия және Леон
+    yue: 卡斯提亞與利昂
+    am: ካስቲያና ሌዮን
+    uz: Castilla y León
+    bs: Kastilja i Leon
+    mk: Кастиља и Леон
+    'no': Castilla y León
+    mn: Кастили ба Леон
+    sl: Kastilja in Leon
+    sw: Castilia na León
+  comments:
+  type: autonomous_community
+CM:
+  name: Castilla-La Mancha
+  code: CM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة كاستيا لا مانتشا
+    az: Kastiliya – La-Mança
+    be: Кастылія — Ла-Манча
+    bg: Кастилия - Ла Манча
+    ca: Castella - la Manxa
+    cs: Kastilie – La Mancha
+    da: Castilla-La Mancha
+    de: Autonome Gemeinschaft Kastilien-La Mancha
+    el: Καστίλλη-Λα Μάντσα
+    en: Castile-La Mancha
+    es: Castilla-La Mancha
+    eu: Gaztela-Mantxa
+    fa: کاستیا-لامانچا
+    fi: Kastilia- La Mancha
+    fr: Castille-La Manche
+    gl: Castela-A Mancha
+    he: קסטיליה-לה מנצ׳ה
+    hi: कास्तिया-ला मांचा
+    hr: Kastilja-La Mancha
+    hu: Kasztília-La Mancha
+    hy: Կաստիլիա-Լա Մանչա
+    id: Castilla-La Mancha
+    is: Kastilía-La Mancha
+    it: Castiglia-La Mancia
+    ja: カスティーリャ・ラ・マンチャ州
+    ka: კასტილია-ლა მანჩა
+    ko: 카스티야라만차 지방
+    lt: Kastilija ir La Manča
+    lv: Kastīlija-Lamanča
+    mr: कास्तिया-ला मांचा
+    ms: Castile-La Mancha
+    nb: Castilla-La Mancha
+    nl: Castilië-La Mancha
+    pl: Kastylia-La Mancha
+    pt: Castela-Mancha
+    ro: Castilia-La Mancha
+    ru: Кастилия — Ла-Манча
+    sl: Kategorija:Kastilja-Manča
+    sr: Кастиља-Ла Манча
+    sv: Kastilien-La Mancha
+    th: แคว้นคาสตีล-ลามันชา
+    tr: Kastilya-La Mancha
+    uk: Кастилія — Ла-Манча
+    ur: کاستیا-لا مانچا
+    vi: Castile-La Mancha
+    zh: 卡斯蒂利亚-拉曼恰
+    cy: Castilla-La Mancha
+    ceb: Castilla-La Mancha
+    sr_Latn: Kastilja-La Manča
+    yue_Hans: 卡斯提亚-拉曼查
+    jv: Castile-La Mancha
+    sq: Castilla-La Mancha
+    ccp: "\U00011107\U00011133\U00011120\U0001110C\U00011134\U00011111\U0001112D\U00011123\U00011134-\U00011123
+      \U0001111F\U0001111A\U00011134\U0001110C"
+    ga: Castilla-La Mancha
+    kk: Кастилия — Ла-Манча
+    yue: 卡斯提亞-拉曼查
+    uz: Castilla-La Mancha
+    bs: Castilla-La Mancha
+    mk: Кастиља-Ла Манча
+    'no': Castilla-La Mancha
+    et: Castilla–La Mancha
+    mn: Кастили-Ла Манча
+  comments:
+  type: autonomous_community
+CN:
+  name: Canary Islands
+  code: CN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Canary Islands
+    ccp: "\U00011107\U00011133\U00011120\U0001111A\U00011122\U00011128 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    af: Kanariese Eilande
+    am: ካናሪያስ ደሴቶች
+    ar: جزر الكناري
+    az: Kanar adaları
+    be: Канарскія астравы
+    bg: Канарски острови
+    bn: কানারি দ্বীপপুঞ্জ
+    bs: Kanarska ostrva
+    ca: illes Canàries
+    ceb: Canary Islands
+    cs: Kanárské ostrovy
+    cy: Yr Ynysoedd Dedwydd
+    da: Kanariske Øer
+    de: Kanarische Inseln
+    el: Κανάριες Νήσοι
+    es: Canarias
+    et: Kanaari saared
+    eu: Kanariak
+    fa: جزایر قناری
+    fi: Kanariansaaret
+    fr: Îles Canaries
+    ga: Na hOileáin Chanáracha
+    gl: Illas Canarias
+    gu: કેનેરી આઈલેન્ડ
+    ha: Canary Islands
+    ha_NE: Canary Islands
+    he: האיים הקנריים
+    hi: कैनरी द्वीपसमूह
+    hr: Kanari
+    hu: Kanári-szigetek
+    hy: Կանարյան կղզիներ
+    id: Kepulauan Canaria
+    is: Kanaríeyjar
+    it: isole Canarie
+    ja: カナリア諸島
+    jv: Kapuloan Canary
+    ka: კანარის კუნძულები
+    kk: Канар аралдары
+    kn: ಕೆನರಿ ದ್ವೀಪಗಳು
+    ko: 카나리아 제도
+    ky: Канария аралдары
+    lt: Kanarų salos
+    lv: Kanāriju salas
+    mk: Канарски Острови
+    ml: കനേറി ദ്വീപുകൾ
+    mn: Канарын Арлууд
+    mr: कॅनरी द्वीपसमूह
+    ms: Kepulauan Canary
+    my: ကနေရီကျွန်းစု
+    ne: क्यानरी द्विप
+    nl: Canarische Eilanden
+    pl: Wyspy Kanaryjskie
+    pt: Canárias
+    ro: Insulele Canare
+    ru: Канарские острова
+    si: කැනරි දූපත්
+    sk: Kanárske ostrovy
+    sl: Kanarski otoki
+    sq: Ishujt Kanare
+    sr: Канарска острва
+    sr_Latn: Kanarska ostrva
+    sv: Kanarieöarna
+    sw: Visiwa vya Kanari
+    ta: கேனரி தீவுகள்
+    te: కానరీ ద్వీపములు
+    th: หมู่เกาะคะแนรี
+    tk: Kanar adalary
+    tr: Kanarya Adaları
+    uk: Канарські острови
+    ur: جزائر کناری
+    uz: Kanar orollari
+    vi: Quần đảo Canaria
+    yo: Àwọn Erékùṣù Kánárì
+    yo_BJ: Àwɔn Erékùshù Kánárì
+    yue: 加那利群島
+    yue_Hans: 加那利群岛
+    zh: 加那利群岛
+  comments:
+  type: autonomous_community
+CO:
+  name: Córdoba
+  code: CO
+  unofficial_names:
+  - Córdoba
+  geo:
+    latitude: 37.8881751
+    longitude: -4.7793835
+    min_latitude: 37.8558932
+    min_longitude: -4.8227937
+    max_latitude: 37.9272788
+    max_longitude: -4.7461769
+  translations:
+    en: Córdoba
+    ar: مقاطعة قرطبة
+    be: Правінцыя Кордава
+    bg: Кордоба
+    bn: কর্ডোবা প্রদেশ
+    ca: província de Còrdova
+    cs: Provincie Córdoba
+    da: Córdoba
+    de: Córdoba
+    el: Κόρδοβα
+    es: Provincia de Córdoba
+    et: Córdoba provints
+    eu: Kordobako probintzia
+    fa: استان کوردوبا
+    fi: Córdoba
+    fr: province de Cordoue
+    gl: Provincia de Córdoba
+    gu: કોર્ડોબા પ્રાંત
+    hi: कोर्डोबा प्रांत
+    hr: Córdoba
+    hu: Córdoba
+    id: Provinsi Córdoba
+    it: Provincia di Cordova
+    ja: コルドバ県
+    ka: კორდობის პროვინცია
+    kn: ಕೊರ್ಡೊಬಾ ಪ್ರಾಂತ್ಯ
+    ko: 코르도바 주
+    lt: Kordobos provincija
+    lv: Kordovas province
+    mr: कॉर्डोबा प्रांत
+    ms: Provinsi Córdoba
+    nb: Córdoba
+    nl: Córdoba
+    pl: Kordoba
+    pt: Córdova (província da Espanha)
+    ro: Provincia Córdoba
+    ru: Кордова
+    si: කොර්ඩොබා පළාත
+    sv: Córdoba
+    sw: Mkoa wa Córdoba
+    ta: கோர்டோபா மாகாணம்
+    te: కొరోడోబా ప్రావిన్స్
+    th: รัฐกอร์โดบา
+    tr: Córdoba ili
+    uk: Кордова
+    ur: صوبہ قرطبہ
+    vi: Córdoba
+    zh: 科爾多瓦省
+    ceb: Province of Córdoba
+    sr_Latn: Pokrajina Kordoba
+    sq: Provinca Cordoba
+    ccp: "\U00011107\U0001112E\U00011122\U00011134\U00011113\U0001112E\U0001111D"
+    sr: Покрајина Кордоба
+    ga: Córdoba
+    kk: Кордова
+    uz: Córdoba
+    mk: Кордоба
+    'no': Córdoba
+    az: Kordova vilayəti
+    cy: Talaith Córdoba
+  comments:
+  type: province
+CR:
+  name: Ciudad Real
+  code: CR
+  unofficial_names:
+  - Ciudad Real
+  geo:
+    latitude: 38.9848295
+    longitude: -3.927377799999999
+    min_latitude: 38.9658707
+    min_longitude: -3.9533808
+    max_latitude: 39.0062168
+    max_longitude: -3.9005951
+  translations:
+    en: Ciudad Real
+    ar: ثيوداد ريال
+    be: Сьюдад-Рэаль
+    bn: কিউদাদ
+    ca: Província de Ciudad Real
+    cs: Provincie Ciudad Real
+    da: Ciudad Real
+    de: Provinz Ciudad Real
+    el: Θιουδάδ Ρεάλ
+    es: Provincia de Ciudad Real
+    et: Ciudad Reali provints
+    eu: Ciudad Realgo probintzia
+    fa: استان سیوداد رئال
+    fi: Ciudad Real
+    fr: province de Ciudad Real
+    gl: Provincia de Cidade Real - Ciudad Real
+    gu: સિયુદાદ રિયલ પ્રાંત
+    hi: सिदाद रियल प्रांत
+    hr: Ciudad Real
+    hu: Ciudad Real
+    id: Provinsi Ciudad Real
+    it: provincia di Ciudad Real
+    ja: シウダ・レアル県
+    ka: სიუდად-რეალის პროვინცია
+    kn: ಸಿಯುಡಾಡ್ ರಿಯಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 시우다드레알 주
+    lt: Siudad Realio provincija
+    lv: Sjudadrealas province
+    mr: सिउदाद रिअल प्रांत
+    ms: Wilayah Ciudad Real
+    nb: Ciudad Real
+    nl: Ciudad Real
+    pl: Ciudad Real
+    pt: Cidade Real
+    ro: Provincia Ciudad Real
+    ru: Сьюдад-Реаль
+    si: කියුඩැඩ්
+    sv: Ciudad Real
+    sw: Mkoa wa Ciudad Real
+    ta: சியூடட் ரியல் மாகாணம்
+    te: సియుడాడ్ రియల్ ప్రావిన్స్
+    th: จังหวัดซิวดัดเรอัล
+    tr: Ciudad Real ili
+    uk: Сьюдад-Реаль
+    ur: صوبہ سیوداد ریال
+    vi: Ciudad Real
+    zh: 雷阿爾城省
+    ceb: Provincia de Ciudad Real
+    sr_Latn: Pokrajina Sijudad Real
+    sq: Provinca Ciudad Real
+    ccp: "\U00011125\U0001112D\U00011105\U0001112A\U00011118\U00011116\U00011134 \U00011122\U00011128\U00011120\U0001112C\U00011123\U00011134"
+    sr: Покрајина Сијудад Реал
+    kk: Сьюдад-Реаль
+    uz: Ciudad Real
+    'no': Ciudad Real
+    az: Syudad-Real vilayəti
+    cy: Talaith Ciudad Real
+    hy: Սիուդադ Ռեալ
+  comments:
+  type: province
+CS:
+  name: Castellón/Castelló
+  code: CS
+  unofficial_names:
+  - Castellón/Castelló
+  - Castelló/Castellón
+  - Castellón
+  - Castelló
+  geo:
+    latitude: 39.9863563
+    longitude: -0.0513246
+    min_latitude: 39.970746
+    min_longitude: -0.0797563
+    max_latitude: 40.0041729
+    max_longitude: -0.0163697
+  translations:
+    en: Castellón
+    ar: كاستيون
+    be: правінцыя Кастэльён
+    bn: ক্যাস্টেল্লন প্রদেশ
+    ca: província de Castelló
+    cs: Provincie Castellón
+    da: Castellón
+    de: Provinz Castellón
+    el: Επαρχία της Καστελιό
+    es: Provincia de Castellón
+    et: Castellóni provints
+    eu: Castellóko probintzia
+    fa: استان کاستلیون
+    fi: Castellón
+    fr: province de Castellón
+    gl: Provincia de Castelló
+    gu: કેસ્ટેલોન પ્રાંત
+    he: מחוז קאסטיון
+    hi: कास्टेलोन प्रांत
+    hr: Castellón
+    hu: Castellón
+    id: Provinsi Castellón
+    it: provincia di Castellón
+    ja: カステリョン県
+    ka: კასტელონის პროვინცია
+    kn: ಕ್ಯಾಸ್ಟೆಲ್ಲನ್ ಪ್ರಾಂತ್ಯ
+    ko: 카스테욘 주
+    lt: Kasteljono provincija
+    lv: Kastelo province
+    mr: कास्टेलोन प्रांत
+    ms: Wilayah Castellón
+    nb: Castellón
+    nl: Castellón
+    pl: Castellón
+    pt: Castellón
+    ro: Provincia Castellón
+    ru: Кастельон
+    si: කැස්ටෙලෝන් පළාත
+    sv: Castellón
+    sw: Mkoa wa Castellón
+    ta: காஸ்டெல்லோன் மாகாணம்
+    te: కాస్టెలాన్ ప్రావిన్స్
+    th: จังหวัดคาสเตลลอน
+    tr: Castellón
+    uk: Кастельйон
+    ur: صوبہ کاستیلون
+    vi: Castellón
+    zh: 卡斯特利翁省
+    ceb: Província de Castelló
+    sr_Latn: Pokrajina Kasteljon
+    sq: Provinca Castellón
+    ccp: "\U00011107\U0001110C\U00011134\U00011111\U0001112C\U00011123\U00011127\U0001111A\U00011134"
+    sr: Покрајина Кастељон
+    kk: Кастельон
+    uz: Castellón
+    mk: Кастелјон
+    'no': Castellón
+    az: Kastelyon vilayəti
+    cy: Castellón
+  comments:
+  type: province
+CT:
+  name: Cataluña
+  code: CT
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Katalonië
+    am: ካታሎኒያ
+    ar: كتالونيا
+    az: Kataloniya
+    be: Каталонія
+    bg: Каталония
+    bn: কাতালোনিয়া
+    ca: Catalunya
+    cs: Katalánsko
+    da: Catalonien
+    de: Autonome Gemeinschaft Katalonien
+    el: Καταλονία
+    en: Catalonia
+    es: Cataluña
+    et: Kataloonia
+    eu: Katalunia
+    fa: کاتالونیا
+    fi: Katalonia
+    fr: Catalogne
+    gl: Cataluña
+    he: קטלוניה
+    hi: कातालोन्या
+    hr: Katalonija
+    hu: Katalónia
+    hy: Կատալոնիա
+    id: Catalunya
+    is: Katalónía
+    it: Catalogna
+    ja: カタルーニャ州
+    ka: კატალონია
+    ko: 카탈루냐 지방
+    lo: ແຄວ້ນກາຕາໂລຍ
+    lt: Katalonija
+    lv: Katalonija
+    ml: കാറ്റലോണിയ
+    mn: Каталон орон
+    mr: कातालोनिया
+    ms: Catalonia
+    nb: Catalonia
+    nl: Catalonië
+    pl: Katalonia
+    pt: Catalunha
+    ro: Catalonia
+    ru: Каталония
+    si: කැටලෝනියා
+    sk: Katalánsko
+    sl: Katalonija
+    sr: Каталонија
+    sv: Katalonien
+    ta: காத்தலோனியா
+    th: แคว้นกาตาลุญญา
+    tk: Kataloniýa
+    tr: Katalonya
+    uk: Каталонія
+    ur: کاتالونیا
+    vi: Catalunya
+    zh: 加泰罗尼亚
+    cy: Catalwnia
+    ceb: Catalunya
+    sr_Latn: Katalonija
+    sw: Catalonia
+    yue_Hans: 加泰隆尼亚
+    jv: Catalunya
+    sq: Katalonia
+    ccp: "\U00011107\U00011133\U00011120\U00011111\U00011123\U00011127\U0001111A\U00011128\U00011120"
+    ga: An Chatalóin
+    ky: Каталония
+    ha: Katalunya
+    so: Katalooniya
+    pa: ਕਾਤਾਲੋਨੀਆ
+    kk: Каталония
+    or: କେଟଲୋନିଆ
+    yue: 加泰隆尼亞
+    my: ကက်တလိုနီးယားနိုင်ငံ
+    uz: Kataloniya
+    bs: Katalonija
+    mk: Каталонија
+    ha_NE: Katalunya
+    'no': Catalonia
+    ps: کاتالونیا
+  comments:
+  type: autonomous_community
+CU:
+  name: Cuenca
+  code: CU
+  unofficial_names:
+  - Cuenca
+  geo:
+    latitude: 40.0703925
+    longitude: -2.1374162
+    min_latitude: 40.0401312
+    min_longitude: -2.1802044
+    max_latitude: 40.083813
+    max_longitude: -2.1158454
+  translations:
+    en: Cuenca
+    ar: قونكة
+    be: Куэнка
+    bg: Куенка
+    bn: কুয়েঙ্কা প্রদেশ
+    ca: Província de Conca
+    cs: Provincie Cuenca
+    da: Cuenca
+    de: Provinz Cuenca
+    el: Κουένκα
+    es: Provincia de Cuenca
+    et: Cuenca provints
+    eu: Cuencako probintzia
+    fa: استان کوئنکا
+    fi: Cuenca
+    fr: province de Cuenca
+    gl: Provincia de Cuenca
+    gu: કુએન્કા પ્રાંત
+    hi: कुएँका प्रांत
+    hr: Cuenca
+    hu: Cuenca
+    id: Provinsi Cuenca
+    it: Provincia di Cuenca
+    ja: クエンカ県
+    ka: კუენკის პროვინცია
+    kn: ಕ್ಯುನೆಕಾ ಪ್ರಾಂತ್ಯ
+    ko: 쿠엥카 주
+    lt: Kuenkos provincija
+    lv: Kvenkas province
+    mr: कुएनका प्रांत
+    ms: Wilayah Cuenca
+    nb: Cuenca
+    nl: Cuenca
+    pl: Cuenca
+    pt: Cuenca
+    ro: Provincia Cuenca
+    ru: Куэнка
+    si: කුඑන්කා පළාත
+    sv: Cuenca
+    sw: Mkoa wa Cuenca
+    ta: குயென்க்கா மாகாணம்
+    te: క్యుయెంకా
+    th: จังหวัดคูเอนกา
+    tr: Cuenca ili
+    uk: Куенка
+    ur: صوبہ کوینکا
+    vi: Cuenca
+    zh: 昆卡省
+    ceb: Provincia de Cuenca
+    sr_Latn: Pokrajina Kuenka
+    sq: Provinca Cuenca
+    ccp: "\U00011107\U0001112A\U00011120\U0001112C\U0001111A\U00011134\U00011107"
+    sr: Покрајина Куенка
+    ga: Cuenca
+    kk: Куэнка
+    az: Kuenqa vilayəti
+    uz: Cuenca
+    'no': Cuenca
+    cy: Talaith Cuenca
+  comments:
+  type: province
+EX:
+  name: Extremadura
+  code: EX
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Extremadura
+    ar: منطقة إكستـريمادورا
+    az: Estremadura
+    be: Эстрэмадура
+    bg: Естремадура
+    ca: Extremadura
+    cs: Extremadura
+    da: Extremadura
+    de: Autonome Gemeinschaft Extremadura
+    el: Εξτρεμαδούρα
+    en: Extremadura
+    es: Extremadura
+    et: Extremadura
+    eu: Extremadura
+    fa: اکسترمادورا
+    fi: Extremadura
+    fr: Estrémadure
+    gl: Estremadura - Extremadura
+    he: אקסטרמדורה
+    hr: Ekstremadura
+    hu: Extremadura
+    hy: Էստրեմադուրա
+    id: Extremadura
+    is: Extremadúra
+    it: Estremadura
+    ja: エストレマドゥーラ州
+    ka: ესტრემადურა
+    ko: 에스트레마두라 지방
+    lo: ແຄວ້ນແອສະຕະເຣມາດູ
+    lt: Estremadūra
+    lv: Estremadura
+    mr: एस्त्रेमादुरा
+    ms: Extremadura
+    nb: Extremadura
+    nl: Extremadura
+    pl: Estremadura
+    pt: Estremadura (Espanha)
+    ro: Extremadura
+    ru: Эстремадура
+    sk: Extremadura
+    sl: Extremadura
+    sr: Екстремадура
+    sv: Extremadura
+    th: แคว้นเอกซ์เตรมาดูรา
+    tr: Ekstremadura
+    uk: Естремадура
+    ur: اکستریمادورا
+    vi: Extremadura
+    zh: 埃斯特雷马杜拉
+    cy: Extremadura
+    ceb: Extremadura
+    sr_Latn: Ekstremadura
+    yue_Hans: 易斯特里马杜拉
+    hi: एक्सत्रेमेद्युरा
+    sq: Extremadura
+    ccp: "\U00011103\U0001112C\U00011107\U00011134\U00011111\U00011133\U00011122\U0001112C\U0001111F\U00011113\U0001112A\U00011120\U00011122"
+    ga: Extremadura
+    kk: Эстремадура
+    yue: 易斯特里馬杜拉
+    uz: Extremadura
+    bs: Extremadura
+    mk: Екстремадура
+    'no': Extremadura
+    bn: এক্সত্রেমাদুরা
+    ky: Эстремаура
+    mn: Эстремадура
+    sw: Extremadura
+  comments:
+  type: autonomous_community
+GA:
+  name: Galicia
+  code: GA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Galicië
+    ar: منطقة غاليسيا
+    az: Qalisiya
+    be: Галісія
+    bg: Галисия
+    bn: গালিথিয়া
+    ca: Galícia
+    cs: Galicie
+    da: Galicien
+    de: Galicien
+    el: Γαλικία
+    en: Galicia
+    es: Galicia
+    et: Galicia
+    eu: Galizia
+    fa: گالیسیا
+    fi: Galicia
+    fr: Galice
+    gl: Galicia
+    he: גליסיה
+    hi: गलिशिया
+    hr: Galicija
+    hu: Galicia
+    hy: Գալիսիա
+    id: Galisia
+    is: Galisía
+    it: Galizia
+    ja: ガリシア州
+    ka: გალისია
+    ko: 갈리시아 지방
+    lt: Galisija
+    lv: Galisija
+    mr: गालिसिया
+    ms: Galicia
+    nb: Galicia
+    nl: Galicië
+    pl: Galicja
+    pt: Galiza
+    ro: Galicia
+    ru: Галисия
+    sk: Galícia
+    sl: Galicija
+    sr: Галиција
+    sv: Galicien
+    ta: கலீசியா
+    te: గలిసియా
+    th: แคว้นกาลิเซีย
+    tr: Galiçya
+    uk: Галісія
+    ur: گالیسیا
+    vi: Galicia
+    zh: 加利西亚
+    cy: Galisia
+    ceb: Galicia
+    sr_Latn: Galicija
+    yue_Hans: 加利西亚
+    jv: Galicia
+    sq: Galicia
+    ccp: "\U00011109\U00011123\U00011128\U00011125\U00011128\U00011120"
+    ga: An Ghailís
+    ig: Galisa
+    ky: Галисия
+    kk: Галисия
+    yue: 加利西亞
+    am: ጋሊስያ
+    uz: Galisiya
+    bs: Galicija
+    mk: Галиција
+    'no': Galicia
+    mn: Галиси
+    sw: Galicia (Spain)
+  comments:
+  type: autonomous_community
+GC:
+  name: Palmas, Las
+  code: GC
+  unofficial_names:
+  - Palmas, Las
+  - Las Palmas
+  - Las Palmas de Gran Canaria
+  geo:
+    latitude: 28.1235459
+    longitude: -15.4362574
+    min_latitude: 28.0783812
+    min_longitude: -15.467486
+    max_latitude: 28.1563403
+    max_longitude: -15.4117481
+  translations:
+    en: Las Palmas
+    ar: لاس بالماس
+    be: Правінцыя Лас-Пальмас
+    bn: লাস পালমাস প্রদেশ
+    ca: província de Las Palmas
+    cs: Provincie Las Palmas
+    da: Las Palmas
+    de: Provinz Las Palmas
+    el: Λας Πάλμας
+    es: Provincia de Las Palmas
+    et: Las Palmase provints
+    eu: Las Palmasko probintzia
+    fa: استان لاسپالماس
+    fi: Las Palmas
+    fr: province de Las Palmas
+    gl: Provincia das Palmas
+    gu: લાસ પામસ પ્રાંત
+    hi: लास पाल्मास प्रांत
+    hr: Las Palmas
+    hu: Las Palmas
+    id: Provinsi Las Palmas
+    it: Provincia di Las Palmas
+    ja: ラス・パルマス県
+    ka: ლას პალმასის პროვინცია
+    kn: ಲಾಸ್ ಪಾಲ್ಮಾಸ್ ಪ್ರಾಂತ್ಯ
+    ko: 라스팔마스 주
+    lt: Las Palmo provincija
+    lv: Laspalmasas province
+    mr: लास पालमास प्रांत
+    ms: Wilayah Las Palmas
+    nb: Las Palmas
+    nl: Las Palmas
+    pl: Las Palmas
+    pt: Las Palmas
+    ro: Provincia Las Palmas
+    ru: Лас-Пальмас
+    si: ලා පල්මාස් පළාත
+    sv: Las Palmas
+    sw: Mkoa wa Las Palmas
+    ta: லாஸ் பால்மாஸ் மாகாணம்
+    te: లాస్్ పాల్మాస్ ప్రావిన్స్
+    th: จังหวัดลาส ปาลมาส
+    tr: Las Palmas ili
+    uk: Лас-Пальмас
+    ur: صوبہ لاس پاماس
+    vi: Las Palmas
+    zh: 拉斯帕爾馬斯省
+    ceb: Provincia de Las Palmas
+    sr_Latn: Pokrajina Las Palmas
+    sq: Provinca Las Palmas
+    ccp: "\U00011123\U0001110C\U00011134 \U0001111B\U00011127\U00011123\U00011134\U0001111F\U0001110C\U00011134"
+    sr: Покрајина Лас Палмас
+    hy: Լաս Պալմաս
+    kk: Лас-Пальмас
+    uz: Las Palmas
+    'no': Las Palmas
+    az: Las-Palmas vilayəti
+    cy: Las Palmas
+    he: מחוז לאס פאלמס
+  comments:
+  type: province
+GI:
+  name: Girona
+  code: GI
+  unofficial_names:
+  - Girona
+  - Gerona
+  geo:
+    latitude: 41.9794005
+    longitude: 2.8214264
+    min_latitude: 41.9462966
+    min_longitude: 2.7983782
+    max_latitude: 42.0142089
+    max_longitude: 2.8389562
+  translations:
+    en: Girona
+    ar: جرندة
+    be: правінцыя Херона
+    bg: Херона
+    bn: গিরোনা প্রদেশ
+    ca: província de Girona
+    cs: Provincie Girona
+    da: Girona (provins)
+    de: Provinz Girona
+    el: Ζιρόνα
+    es: Provincia de Gerona
+    et: Girona provints
+    eu: Gironako probintzia
+    fa: استان خرنا
+    fi: Girona
+    fr: province de Gérone
+    gl: Provincia de Xirona - Girona
+    gu: ગિરૉના પ્રાંત
+    he: מחוז ז׳ירונה
+    hi: गिरोना प्रांत
+    hr: Girona
+    hu: Girona
+    id: Provinsi Girona
+    it: Provincia di Girona
+    ja: ジローナ県
+    ka: ხერონის პროვინცია
+    kn: ಗಿರೊನಾ ಪ್ರಾಂತ್ಯ
+    ko: 지로나 주
+    lt: Žironos provincija
+    lv: Žironas province
+    mr: गिरोना प्रांत
+    ms: Daearah Girona
+    nb: Girona
+    nl: Gerona
+    pl: Girona
+    pt: Girona
+    ro: Provincia Girona
+    ru: Херона
+    si: ගරෝනා පළාත
+    sr: Провинција Ђирона
+    sv: Girona
+    sw: Mkoa wa Gerona
+    ta: கிரோனா மாகாணம்
+    te: గిరోనా ప్రావిన్స్
+    th: จังหวัดชิโนนา
+    tr: Gerona ili
+    uk: Жирона
+    ur: صوبہ جیرونا
+    vi: Girona
+    zh: 赫羅納省
+    cy: Talaith Girona
+    ceb: Província de Girona
+    sr_Latn: Provincija Đirona
+    yue_Hans: 赫罗纳省
+    sq: Provinca Girona
+    ccp: "\U00011109\U00011128\U00011122\U0001112E\U0001111A"
+    kk: Херона
+    yue: 赫羅納省
+    az: Jirona vilayəti
+    uz: Girona
+    mk: Жирона
+    'no': Girona
+  comments:
+  type: province
+GR:
+  name: Granada
+  code: GR
+  unofficial_names:
+  - Granada
+  geo:
+    latitude: 37.1773363
+    longitude: -3.5985571
+    min_latitude: 37.1494277
+    min_longitude: -3.6338351
+    max_latitude: 37.2124648
+    max_longitude: -3.5505714
+  translations:
+    en: Granada
+    ar: غرناطة
+    be: Правінцыя Гранада
+    bg: Гранада
+    bn: গ্রানাডা প্রদেশ
+    ca: província de Granada
+    cs: Provincie Granada
+    da: Granada
+    de: Provinz Granada
+    el: Γρανάδα
+    es: Provincia de Granada
+    et: Granada provints
+    eu: Granadako probintzia
+    fa: استان گرانادا
+    fi: Granada
+    fr: province de Grenade
+    gl: Provincia de Granada
+    gu: ગ્રેનાડા પ્રાંત
+    hi: ग्रानादा प्रान्त
+    hr: Razgovor:Granada
+    hu: Granada
+    id: Provinsi Granada
+    it: Provincia di Granada
+    ja: グラナダ県
+    ka: გრანადის პროვინცია
+    kn: ಗ್ರಾನಡಾ ಪ್ರಾಂತ್ಯ
+    ko: 그라나다 주
+    lt: Granados provincija
+    lv: Granadas province
+    mr: ग्रॅनडा प्रांत
+    ms: Wilayah Granada
+    nb: Granada
+    nl: Granada
+    pl: Grenada
+    pt: Granada
+    ro: Provincia Granada
+    ru: Гранада
+    si: ග්‍රනාඩා පළාත
+    sr: Провинција Гранада
+    sv: Granada
+    sw: Mkoa wa Granada
+    ta: கிரனடா மாகாணம்
+    te: గ్రనాాడా ప్రావిన్స్
+    th: จังหวัดกรานาดา
+    tr: Granada ili
+    uk: Гранада
+    ur: صوبہ غرناطہ
+    vi: Granada
+    zh: 格拉納達省
+    ceb: Provincia de Granada
+    sr_Latn: Provincija Granada
+    yue_Hans: 格兰纳达省
+    sq: Provinca Granada
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011113"
+    ga: Granada
+    kk: Гранада
+    yue: 格蘭納達省
+    uz: Granada
+    'no': Granada
+    az: Qranada vilayəti
+    cy: Talaith Granada
+    he: פרובינציית גרנדה
+    hy: Գրանադա
+  comments:
+  type: province
+GU:
+  name: Guadalajara
+  code: GU
+  unofficial_names:
+  - Guadalajara
+  geo:
+    latitude: 40.632489
+    longitude: -3.16017
+    min_latitude: 40.6184806
+    min_longitude: -3.2034081
+    max_latitude: 40.6458997
+    max_longitude: -3.1429369
+  translations:
+    en: Guadalajara
+    ar: غوادالاخارا
+    bg: Гуадалахара
+    bn: গুয়াডালাজারা প্রদেশ
+    ca: Província de Guadalajara
+    cs: Provincie Guadalajara
+    da: Guadalajara
+    de: Provinz Guadalajara
+    el: Επαρχία της Γουαδαλαχάρα
+    es: Provincia de Guadalajara
+    et: Guadalajara provints
+    eu: Guadalajarako probintzia
+    fa: استان گوادالاخارا
+    fi: Guadalajara
+    fr: province de Guadalajara
+    gl: Provincia de Guadalaxara - Guadalajara
+    gu: ગોડાલજારા પ્રાંત
+    hi: ग्वाडलाजारा प्रांत
+    hr: Guadalajara
+    hu: Guadalajara
+    id: Provinsi Guadalajara
+    it: Provincia di Guadalajara
+    ja: グアダラハラ県
+    ka: გვადალახარის პროვინცია
+    kn: ಗ್ವಾಡಲಜರ ಪ್ರಾಂತ್ಯ
+    ko: 과달라하라 주
+    lt: Gvadalacharos provincija
+    lv: Gvadalaharas province
+    mr: गडालजारा प्रांत
+    ms: Wilayah Guadalajara
+    nb: Guadalajara
+    nl: Guadalajara
+    pl: Guadalajara
+    pt: Guadalajara
+    ro: Provincia Guadalajara
+    ru: Гвадалахара
+    si: ගුදලජාරා පළාත
+    sv: Guadalajara
+    sw: Mkoa wa Guadalajara
+    ta: குண்டலாஜாரா மாகாணம்
+    te: గ్వాడాలాజారా ప్రావిన్స్
+    th: จังหวัดกัวดาลาจารา
+    tr: Guadalajara ili
+    uk: Гвадалахара
+    ur: صوبہ گوادالاخارا
+    vi: Guadalajara
+    zh: 瓜達拉哈拉省
+    ceb: Provincia de Guadalajara
+    sr_Latn: Pokrajina Gvadalahara
+    sq: Provinca Guadalajara
+    ccp: "\U00011109\U0001112A\U00011120\U00011113\U00011123\U00011134\U0001110E\U00011122"
+    sr: Покрајина Гвадалахара
+    kk: Гвадалахара
+    be: правінцыя Гвадалахара
+    uz: Guadalajara
+    mk: Гвадалахара
+    'no': Guadalajara
+    az: Qvadalaxara vilayəti
+    cy: Talaith Guadalajara
+    hy: Գվադալախարա
+  comments:
+  type: province
+H:
+  name: Huelva
+  code: H
+  unofficial_names:
+  - Huelva
+  geo:
+    latitude: 37.261421
+    longitude: -6.9447224
+    min_latitude: 37.2504151
+    min_longitude: -6.962591799999999
+    max_latitude: 37.2913207
+    max_longitude: -6.916788899999999
+  translations:
+    en: Huelva
+    ar: ولبة
+    be: Правінцыя Уэльва
+    bn: হুল্ভা প্রদেশ
+    ca: província de Huelva
+    cs: Provincie Huelva
+    da: Huelva
+    de: Provinz Huelva
+    el: Επαρχία της Ουέλβα
+    es: Provincia de Huelva
+    et: Huelva provints
+    eu: Huelvako probintzia
+    fa: استان اوئلوا
+    fi: Huelva
+    fr: province de Huelva
+    gl: Provincia de Huelva
+    gu: હુએલ્વા પ્રાંત
+    hi: हुएल्वा प्रांत
+    hr: Huelva
+    hu: Huelva tartomány
+    id: Provinsi Huelva
+    it: Provincia di Huelva
+    ja: ウエルバ県
+    ka: უელვის პროვინცია
+    kn: ಹುಲ್ವಾ ಪ್ರಾಂತ್ಯ
+    ko: 우엘바 주
+    lt: Huelvos provincija
+    lv: Velvas province
+    mr: हुएलवा प्रांत
+    ms: Wilayah Huelva
+    nb: Huelva
+    nl: Huelva
+    pl: Huelva
+    pt: Província de Huelva
+    ro: Provincia Huelva
+    ru: Уэльва
+    si: හුඑල්වා පළාත
+    sv: Huelva
+    sw: Mkoa wa Huelva
+    ta: ஹூயில்வா மாகாணம்
+    te: హుయెల్వా ప్రావిన్స్
+    th: จังหวัดฮิววา
+    tr: Huelva ili
+    uk: Уельва
+    ur: صوبہ ویلبا
+    vi: Huelva
+    zh: 韋爾瓦省
+    ceb: Provincia de Huelva
+    sr_Latn: Pokrajina Uelva
+    sq: Provinca Huelva
+    ccp: "\U00011126\U0001112A\U00011120\U0001112C\U00011123\U00011134\U0001111E"
+    sr: Покрајина Уелва
+    hy: Ուելվա
+    kk: Уэльва
+    uz: Huelva
+    'no': Huelva
+    az: Uelva vilayəti
+    cy: Talaith Huelva
+    mk: Уелва (покраина)
+    yue: 維爾華省
+    yue_Hans: 维尔华省
+  comments:
+  type: province
+HU:
+  name: Huesca
+  code: HU
+  unofficial_names:
+  - Huesca
+  geo:
+    latitude: 42.131845
+    longitude: -0.4078058
+    min_latitude: 42.1249823
+    min_longitude: -0.4231033
+    max_latitude: 42.1468304
+    max_longitude: -0.3885935
+  translations:
+    en: Huesca
+    ar: وشقة
+    be: Правінцыя Уэска
+    bg: Уеска
+    bn: হুয়েস্কা প্রদেশ
+    ca: província d’Osca
+    cs: Provincie Huesca
+    da: Huesca
+    de: Provinz Huesca
+    el: Ουέσκα
+    es: Provincia de Huesca
+    et: Huesca provints
+    eu: Huescako probintzia
+    fa: استان هوئسکا
+    fi: Huesca
+    fr: province de Huesca
+    gl: Provincia de Huesca - Uesca
+    gu: હુએસ્કા પ્રાંત
+    hi: ह्यूसका प्रांत
+    hr: Huesca
+    hu: Huesca
+    id: Provinsi Huesca
+    it: Provincia di Huesca
+    ja: ウエスカ県
+    ka: უესკის პროვინცია
+    kn: ಹೂಸ್ಕಾ ಪ್ರಾಂತ್ಯ
+    ko: 우에스카 주
+    lt: Hueskos provincija
+    lv: Veskas province
+    mr: हुसका प्रांत
+    ms: Wilayah Huesca
+    nb: Huesca
+    nl: Huesca
+    pl: Huesca
+    pt: Huesca
+    ro: Provincia Huesca
+    ru: Уэска
+    si: හියුස්කා පළාත
+    sr: Провинција Уеска
+    sv: Huesca
+    sw: Mkoa wa Huesca
+    ta: ஹஎஸ்கே மாகாணம்
+    te: హుయెస్కా ప్రావిన్స్
+    th: จังหวัดฮูสกา
+    tr: Huesca ili
+    uk: Уеска
+    ur: صوبہ ویسکا
+    vi: Huesca
+    zh: 韋斯卡省
+    ceb: Provincia de Huesca
+    sr_Latn: Provincija Ueska
+    yue_Hans: 威斯卡省
+    sq: Provinca Huesca
+    ccp: "\U00011126\U0001112A\U00011120\U0001112C\U0001110C\U00011134\U00011107"
+    hy: Ուեսկա
+    kk: Уэска
+    yue: 威斯卡省
+    uz: Huesca
+    bs: Huesca
+    mk: Уеска
+    'no': Huesca
+    az: Ueska vilayəti
+    cy: Talaith Huesca
+  comments:
+  type: province
+IB:
+  name: Islas Baleares
+  code: IB
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Baleariese Eilande
+    ar: منطقة جزر البليار
+    az: Balear adaları
+    be: Балеарскія астравы
+    bg: Балеарски острови
+    bn: বেলারিক আইল্যান্ডস
+    ca: Illes Balears
+    cs: Baleáry
+    da: Baleariske Øer
+    de: Balearische Inseln
+    el: Βαλεαρίδες Νήσοι
+    en: Balearic Islands
+    es: Islas Baleares
+    et: Baleaarid
+    eu: Balear Uharteak
+    fa: جزایر بالئاری
+    fi: Baleaarit
+    fr: Îles Baléares
+    gl: Illas Baleares - Illes Balears
+    gu: બેલેરીક આઇલેન્ડ્સ
+    he: האיים הבלאריים
+    hi: बैलेरिक द्वीपसमूह
+    hr: Baleari
+    hu: Baleár-szigetek
+    hy: Բալեարյան կղզիներ
+    id: Kepulauan Balears
+    is: Baleareyjar
+    it: isole Baleari
+    ja: バレアレス諸島
+    ka: ბალეარის კუნძულები
+    kn: ಬಾಲೀರಿಕ್ ದ್ವೀಪಗಳು
+    ko: 발레아레스 제도
+    lt: Balearų salos
+    lv: Baleāru Salas
+    mn: Балеарын арлууд
+    mr: बालेआरिक द्वीपसमूह
+    ms: Kepulauan Balearic
+    nb: Balearene
+    nl: Balearen
+    pl: Baleary
+    pt: Baleares
+    ro: Insulele Baleare
+    ru: Балеарские острова
+    si: බලේයරික් දූපත්
+    sk: Baleáry
+    sl: Balearski otoki
+    sr: Балеарска острва
+    sv: Balearerna
+    sw: Visiwa vya Baleari
+    ta: பலேரிக் தீவுகள்
+    te: బాలియారిక్ దీవులు
+    th: หมู่เกาะแบลีแอริก
+    tr: Balear Adaları
+    uk: Балеарські острови
+    ur: جزائر بلیبار
+    vi: Quần đảo Baleares
+    zh: 巴利阿里群島
+    cy: Ynysoedd Balearig
+    ceb: Islas Baleares
+    sr_Latn: Balearska ostrva
+    yue_Hans: 巴利亚利群岛
+    jv: Kapuloan Baleares
+    sq: Ishujt Balearik
+    ccp: "\U0001111D\U00011123\U0001112C\U00011120\U00011122\U00011128\U00011107\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    ga: Na hOileáin Bhailéaracha
+    ky: Балдар аралдары
+    kk: Балеар аралдары
+    yue: 巴利亞利群島
+    am: ባሌያሪክ ደሴቶች
+    uz: Balear orollari
+    bs: Balearska ostrva
+    mk: Балеарски Острови
+    'no': Balearene
+  comments:
+  type: autonomous_community
+J:
+  name: Jaén
+  code: J
+  unofficial_names:
+  - Jaén
+  geo:
+    latitude: 37.7795941
+    longitude: -3.784905699999999
+    min_latitude: 37.75610030000001
+    min_longitude: -3.8201251
+    max_latitude: 37.8040884
+    max_longitude: -3.7736049
+  translations:
+    en: Jaén
+    ar: خاين
+    be: Правінцыя Хаэн
+    bg: Хаен
+    bn: জিয়ান প্রদেশ
+    ca: província de Jaén
+    cs: Provincie Jaén
+    da: Jaén
+    de: Jaén
+    el: Χαέν
+    es: Provincia de Jaén
+    et: Jaéni provints
+    eu: Jaéngo probintzia
+    fa: استان خائن
+    fi: Jaén
+    fr: province de Jaén
+    gl: Provincia de Xaén
+    gu: જૅન પ્રાંત
+    hi: जैएन प्रांत
+    hr: Jaén
+    hu: Jaén
+    hy: Խաեն
+    id: Provinsi Jaén
+    it: Provincia di Jaén
+    ja: ハエン県
+    ka: ხაენის პროვინცია
+    kn: ಜೇನ್ ಪ್ರಾಂತ್ಯ
+    ko: 하엔 주
+    lt: Chaeno provincija
+    lv: Haenas province
+    mr: जॅन प्रांत
+    ms: Wilayah Jaén
+    nb: Jaén
+    nl: Jaén
+    pl: Jaén
+    pt: Jaén
+    ro: Provincia Jaén
+    ru: Хаэн
+    si: ජාඑන් පළාත
+    sv: Jaén
+    sw: Mkoa wa Jaén
+    ta: ஜென் மாகாணம்
+    te: జేన్ ప్రావిన్స్
+    th: เจยัน
+    tr: Jaén ili
+    uk: Хаен
+    ur: صوبہ خائن
+    vi: Jaén
+    zh: 哈恩省
+    ceb: Provincia de Jaén
+    sr_Latn: Pokrajina Haen
+    sq: Provinca Jaén
+    ccp: "\U0001110E\U00011128\U0001111A\U00011134"
+    sr: Покрајина Хаен
+    is: Jaén
+    kk: Хаэн
+    uz: Jaén
+    'no': Jaén
+    az: Xaen vilayəti
+    cy: Talaith Jaén
+    he: מחוז חאאן
+    yue: 哈恩省
+    yue_Hans: 哈恩省
+  comments:
+  type: province
+L:
+  name: Lleida
+  code: L
+  unofficial_names:
+  - Lleida
+  - Lérida
+  geo:
+    latitude: 41.6175899
+    longitude: 0.6200146
+    min_latitude: 41.5970365
+    min_longitude: 0.5901124999999999
+    max_latitude: 41.6396481
+    max_longitude: 0.6497571999999999
+  translations:
+    en: Lleida
+    ar: لاردة
+    bn: লিইডা প্রদেশ
+    ca: província de Lleida
+    cs: Provincie Lleida
+    da: Lleida
+    de: Provinz Lleida
+    el: Επαρχία της Λιέιδα
+    es: Provincia de Lérida
+    et: Lleida provints
+    eu: Lleidako probintzia
+    fa: استان لریدا
+    fi: Lleida
+    fr: province de Lérida
+    gl: Provincia de Lleida
+    gu: લેઈડા પ્રાંત
+    hi: लीडा प्रांत
+    hr: Lleida
+    hu: Lleida
+    id: Provinsi Lleida
+    it: Provincia di Lleida
+    ja: リェイダ県
+    ka: ლერიდის პროვინცია
+    kn: ಲೆಲೆಡಾ ಪ್ರಾಂತ್ಯ
+    ko: 예이다 주
+    lt: Leridos provincija
+    lv: Ļeidas province
+    mr: लेइडा प्रांत
+    ms: Lleida Province
+    nb: Lleida
+    nl: Lerida
+    pl: Lleida
+    pt: Província de Lérida
+    ro: Provincia Lleida
+    ru: Льейда
+    si: ලෙයිඩා පළාත
+    sr: Провинција Љеида
+    sv: Lleida
+    sw: Mkoa wa Lérida
+    ta: ல்லேய்டா மாகாணம்
+    te: లేయిడా ప్రావిన్స్
+    th: จังหวัดเยย์ดา
+    tr: Lérida ili
+    uk: Льєйда
+    ur: صوبہ لاریدا
+    vi: Lérida
+    zh: 莱里达省
+    cy: Talaith Lleida
+    ceb: Província de Lleida
+    sr_Latn: Provincija Ljeida
+    yue_Hans: 莱里达省
+    sq: Provinca Lleida
+    ccp: "\U00011123\U0001112C\U0001112D\U00011113"
+    kk: Лерида
+    yue: 萊里達省
+    be: правінцыя Льейда
+    uz: Lleida
+    mk: Љејда
+    'no': Lleida
+    az: Lyeyda vilayəti
+    bg: Льейда
+    hy: Լյեյդա
+  comments:
+  type: province
+LE:
+  name: León
+  code: LE
+  unofficial_names:
+  - León
+  geo:
+    latitude: 42.5987263
+    longitude: -5.5670959
+    min_latitude: 42.5839633
+    min_longitude: -5.6000101
+    max_latitude: 42.623248
+    max_longitude: -5.554772499999999
+  translations:
+    en: León
+    ar: ليون
+    be: Леон
+    bg: Леон
+    ca: província de Lleó
+    cs: Provincie León
+    da: León
+    de: Provinz León
+    el: Επαρχία Λεόν
+    es: Provincia de León
+    et: Leóni provints
+    eu: Leóngo probintzia
+    fa: استان لئن
+    fi: León
+    fr: province de León
+    gl: Provincia de León
+    he: תבנית:הקהילות האוטונומיות של ספרד
+    hi: साँचा:स्पेन के प्रान्त
+    hr: León
+    hu: León
+    id: Provinsi León
+    it: provincia di León
+    ja: レオン県
+    ka: ლეონის პროვინცია
+    ko: 레온 주
+    lt: Leono provincija
+    lv: Leonas province
+    ms: Wilayah León
+    nb: León
+    nl: León
+    pl: León
+    pt: Leão
+    ro: Provincia León
+    ru: Леон
+    sk: León
+    sl: León
+    sv: León
+    sw: Mkoa wa León
+    th: แม่แบบ:เขตการปกครองสเปน
+    tr: León ili
+    uk: Леон
+    ur: صوبہ لیون
+    vi: León
+    zh: 莱昂省
+    ceb: Provincia de León
+    sr_Latn: Pokrajina Leon
+    yue_Hans: 利昂省
+    sq: Provinca León
+    ccp: "\U00011123\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    sr: Покрајина Леон
+    hy: Լեոնի շրջան
+    kk: Леон
+    yue: 利昂省
+    uz: Leon
+    'no': León
+    az: Leon vilayəti
+    cy: Talaith León
+    mk: Леон (покраина)
+  comments:
+  type: province
+LO:
+  name: Rioja, La
+  code: LO
+  unofficial_names:
+  - Rioja, La
+  - La Rioja
+  - Rioja
+  - Logroño
+  geo:
+    latitude: 42.2870733
+    longitude: -2.539603
+    min_latitude: 41.9190339
+    min_longitude: -3.1342713
+    max_latitude: 42.6442647
+    max_longitude: -1.6787014
+  translations:
+    en: La Rioja Province
+    ar: منطقة لا ريوخا
+    az: Rioxa
+    be: Рыёха
+    bg: Ла Риоха
+    bn: লা রিওজা
+    ca: La Rioja
+    cs: La Rioja
+    da: La Rioja
+    de: La Rioja
+    el: Λα Ριόχα
+    es: La Rioja
+    et: La Rioja
+    eu: Errioxako Autonomia Erkidegoa
+    fa: لاریخا
+    fi: La Rioja
+    fr: La Rioja
+    gl: A Rioxa
+    gu: લા રિયોજા
+    he: לה ריוחה
+    hi: ला रिओजा
+    hr: La Rioja
+    hu: La Rioja
+    hy: Ռիոխա
+    id: La Rioja
+    is: La Rioja
+    it: La Rioja
+    ja: ラ・リオハ州
+    ka: ლა-რიოხა
+    kn: ಲಾ ರೈಜಾ
+    ko: 라리오하 지방
+    lt: La Riocha
+    lv: Larjoha
+    mr: ला रियोहा
+    ms: La Rioja
+    nb: La Rioja
+    nl: La Rioja
+    pl: La Rioja
+    pt: La Rioja
+    ro: La Rioja
+    ru: Риоха
+    si: ලා රයෝජා
+    sl: La Rioja
+    sr: Риоха
+    sv: La Rioja
+    sw: La Rioja
+    ta: லா ரியோஜ
+    te: లా రియోజా
+    th: แคว้นลารีโอคา
+    tr: La Rioja
+    uk: Ла-Ріоха
+    ur: لا ریوخا
+    vi: La Rioja
+    zh: 拉里奥哈
+    cy: La Rioja
+    sr_Latn: Rioha
+    yue_Hans: 拉里奥哈
+    jv: La Rioja
+    sq: La Rioja
+    ccp: "\U00011123 \U00011122\U00011128\U00011103\U0001112E\U0001110E \U0001111B\U00011133\U00011122\U00011127\U0001111E\U00011128\U0001111A\U00011134\U00011125\U00011134"
+    ga: La Rioja
+    kk: Риоха
+    yue: 拉里奧哈
+    uz: La Rioja
+    bs: La Rioja
+    mk: Риоха
+    'no': La Rioja
+  comments:
+  type: province
+LU:
+  name: Lugo
+  code: LU
+  unofficial_names:
+  - Lugo
+  geo:
+    latitude: 43.0097384
+    longitude: -7.5567582
+    min_latitude: 42.9897687
+    min_longitude: -7.5761881
+    max_latitude: 43.03479859999999
+    max_longitude: -7.536812100000001
+  translations:
+    en: Lugo
+    ar: لوغو
+    be: Правінцыя Луга
+    bn: লুগো প্রদেশ
+    ca: província de Lugo
+    cs: Provincie Lugo
+    da: Lugo
+    de: Provinz Lugo
+    el: Λούγκο
+    es: Provincia de Lugo
+    et: Lugo provints
+    eu: Lugoko probintzia
+    fa: استان لوگو
+    fi: Lugo
+    fr: province de Lugo
+    gl: Provincia de Lugo
+    gu: લુગો પ્રાંત
+    hi: लूगो प्रांत
+    hr: Lugo
+    hu: Lugo
+    id: Provinsi Lugo
+    it: Provincia di Lugo
+    ja: ルーゴ県
+    ka: ლუგოს პროვინცია
+    kn: ಲುಗೊ ಪ್ರಾಂತ್ಯ
+    ko: 루고 주
+    lt: Lugo provincija
+    lv: Lugo province
+    mr: लुगो
+    ms: Wilayah Lugo
+    nb: Lugo
+    nl: Lugo
+    pl: Lugo
+    pt: Lugo
+    ro: Provincia Lugo
+    ru: Луго
+    si: ලුගෝ පළාත
+    sv: Lugo
+    sw: Mkoa wa Lugo
+    ta: லுகோ மாகாணம்
+    te: లూగో ప్రావిన్స్
+    th: จังหวัดลูโก
+    tr: Lugo ili
+    uk: Луго
+    ur: صوبہ لوگو
+    vi: Lugo
+    zh: 卢戈省
+    cy: Talaith Lugo
+    ceb: Provincia de Lugo
+    sr_Latn: Pokrajina Lugo
+    sq: Provinca Lugo
+    ccp: "\U00011123\U00011109\U0001112E"
+    sr: Покрајина Луго
+    hy: Լուգո
+    kk: Луго
+    uz: Lugo
+    'no': Lugo
+    az: Luqo vilayəti
+    ga: Provincia de Lugo
+    he: מחוז לוגו
+  comments:
+  type: province
+M:
+  name: Madrid
+  code: M
+  unofficial_names:
+  - Madrid
+  geo:
+    latitude: 40.4167754
+    longitude: -3.7037902
+    min_latitude: 40.3120639
+    min_longitude: -3.8341618
+    max_latitude: 40.5635903
+    max_longitude: -3.5249115
+  translations:
+    en: Madrid Province
+    be: Правінцыя Мадрыд
+    ca: província de Madrid
+    es: provincia de Madrid
+    fr: province de Madrid
+    ja: マドリード県
+    ru: Мадрид
+    sv: Provincia de Madrid
+    ceb: Provincia de Madrid
+    ccp: "\U0001111F\U00011113\U00011133\U00011122\U00011128\U00011116\U00011134 \U0001111B\U00011133\U00011122\U00011127\U0001111E\U00011128\U0001111A\U00011134\U00011125\U00011134"
+    uk: Провінція Мадрид
+    az: Madrid vilayəti
+    cy: Talaith Madrid
+    de: Provinz Madrid
+    eu: Madrilgo probintzia
+    fi: Madrid²
+    he: מחוז מדריד
+    hy: Մադրիդ նահանգ
+    sw: Mkoa wa Madrid
+    th: จังหวัดมาดริด
+  comments:
+  type: province
+MA:
+  name: Málaga
+  code: MA
+  unofficial_names:
+  - Málaga
+  geo:
+    latitude: 36.721261
+    longitude: -4.4212655
+    min_latitude: 36.6788914
+    min_longitude: -4.5590373
+    max_latitude: 36.7575526
+    max_longitude: -4.3394965
+  translations:
+    en: Málaga
+    ar: مالقة
+    be: Правінцыя Малага
+    bg: Малага
+    ca: província de Màlaga
+    cs: Provincie Málaga
+    da: Málaga
+    de: Málaga
+    el: Μάλαγα
+    es: provincia de Málaga
+    et: Málaga provints
+    eu: Málagako probintzia
+    fa: مالاگا
+    fi: Málaga
+    fr: province de Málaga
+    gl: Provincia de Málaga
+    hr: Razgovor:Málaga
+    hu: Málaga
+    id: Provinsi Málaga
+    it: Provincia di Malaga
+    ja: マラガ県
+    ka: მალაგის პროვინცია
+    ko: 말라가 주
+    lt: Malagos provincija
+    lv: Malagas province
+    ms: Wilayah Málaga
+    nb: Málaga
+    nl: Málaga
+    pl: Malaga
+    pt: Málaga
+    ro: Provincia Málaga
+    ru: Малага
+    sr: Провинција Малага
+    sv: Málaga
+    sw: Mkoa wa Málaga
+    tr: Málaga ili
+    uk: Малага
+    ur: صوبہ مالقہ
+    vi: Málaga
+    zh: 馬拉加省
+    ceb: Provincia de Málaga
+    sr_Latn: Provincija Malaga
+    sq: Provinca Málaga
+    ccp: "\U0001111F\U00011123\U00011109"
+    ga: Málaga
+    kk: Малага
+    uz: Málaga
+    'no': Málaga
+    az: Malaqa vilayəti
+    cy: Talaith Málaga
+    he: מחוז מאלגה
+    hy: Մալագա
+    th: จังหวัดมาลากา
+    yue: 馬拉加省
+    yue_Hans: 马拉加省
+  comments:
+  type: province
+MC:
+  name: Región de Murcia
+  code: MC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة مرسية
+    az: Mursiya
+    be: Мурсія
+    bg: Мурсия
+    bn: মুর্সিয়া অঞ্চল
+    ca: Regió de Múrcia
+    cs: Murcie
+    da: Murcia
+    de: Autonome Gemeinschaft Region Murcia
+    el: Περιοχή της Μούρθια
+    en: Murcia Region
+    es: Región de Murcia
+    et: Murcia autonoomne piirkond
+    eu: Murtziako Eskualdea
+    fa: مورسیا
+    fi: Murcia
+    fr: région de Murcie
+    gl: Rexión de Murcia
+    gu: મુર્સિયા પ્રદેશ
+    he: מורסיה
+    hi: मर्सिया
+    hr: Regija Murcia
+    hu: Murcia tartomány
+    hy: Մուրսիա
+    id: Murcia
+    is: Múrsía
+    it: regione di Murcia
+    ja: ムルシア州
+    ka: მურსიის ავტონომიური გაერთიანება
+    kn: ಮರ್ಸಿಯ ಪ್ರದೇಶ
+    ko: 무르시아 지방
+    lt: Mursija
+    lv: Mursijas reģions
+    mr: मुर्सिया
+    ms: Wilayah Murcia
+    nb: Murcia
+    nl: Murcia
+    pl: Murcja
+    pt: Região de Múrcia
+    ro: Regiunea Murcia
+    ru: Мурсия
+    si: මුරිකා කලාපය
+    sr: Регион Мурсија
+    sv: Murcia
+    ta: முற்சியா பகுதி
+    te: ముర్సియా ప్రాంతం
+    th: แคว้นมูร์เซีย
+    tr: Murcia
+    uk: Мурсія
+    ur: ریجن مورکیا
+    vi: Vùng Murcia
+    zh: 穆尔西亚自治区
+    cy: Murcia (cymuned ymreolaethol)
+    ceb: Región de Murcia
+    sr_Latn: Region Mursija
+    yue_Hans: 穆尔西亚自治区
+    jv: Murcia
+    sq: Rajoni Murcia
+    ccp: "\U0001111F\U00011122\U00011134\U00011125\U00011128\U00011120 \U00011122\U0001112C\U0001110E\U00011133\U00011120\U00011127"
+    ga: Murcia
+    kk: Мурсия
+    yue: 穆爾西亞自治區
+    uz: Murcia
+    bs: Regija Murcia
+    mk: Мурсија
+    'no': Murcia
+    mn: Мурси (муж)
+    sw: Jimbo la Murcia
+  comments:
+  type: autonomous_community
+MD:
+  name: Comunidad de Madrid
+  code: MD
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة مدريد
+    be: аўтаномная супольнасць Мадрыд
+    bg: Мадрид
+    ca: Comunitat de Madrid
+    cs: Madridské autonomní společenství
+    da: Madrid
+    de: Autonome Gemeinschaft Madrid
+    el: Κοινότητα της Μαδρίτης
+    en: Madrid Autonomous Community
+    es: Comunidad de Madrid
+    et: Madridi autonoomne piirkond
+    eu: Madrilgo Erkidegoa
+    fa: مادرید
+    fi: Madrid
+    fr: communauté de Madrid
+    gl: Comunidade de Madrid
+    he: מדריד
+    hr: Zajednica Madrida
+    hu: Madrid tartomány
+    hy: Մադրիդ
+    id: Madrid
+    is: Madríd (hérað)
+    it: comunità di Madrid
+    ja: マドリード州
+    ka: მადრიდის ავტონომიური გაერთიანება
+    ko: 마드리드 지방
+    lt: Madridas
+    lv: Madride
+    mr: माद्रिद
+    ms: Madrid
+    nb: Madrid
+    nl: Madrid
+    pl: Madryt
+    pt: Comunidade de Madrid
+    ro: Madrid
+    ru: Мадрид²
+    sk: Madridské spoločenstvo
+    sl: avtonomna skupnost Madrid
+    sr: Покрајина Мадрид
+    sv: Madrid
+    th: แคว้นมาดริด
+    tr: Madrid
+    uk: Мадрид
+    vi: Cộng đồng Madrid
+    zh: 马德里自治区
+    cy: Madrid
+    ceb: Comunidad de Madrid
+    sr_Latn: Pokrajina Madrid
+    yue_Hans: 马德里自治区
+    sq: Komuniteti i Madridit
+    ccp: "\U0001111F\U00011113\U00011133\U00011122\U00011128\U00011116\U00011134 \U00011103\U00011127\U00011111\U0001112E\U0001111A\U0001112E\U0001111F\U0001110C\U00011134
+      \U00011107\U00011127\U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011111\U00011128"
+    ga: Comhphobal Mhaidrid
+    kk: Мадрид
+    yue: 馬德里自治區
+    az: Madrid cəmiyyəti
+    uz: Madrid
+    bs: Zajednica Madrida
+    mk: Мадрид
+    'no': Madrid
+    mn: Мадридын Өөртөө Засах Нийгэмлэг
+    sw: Jimbo la Madrid
+    ur: میدرد کمیونٹی
+  comments:
+  type: autonomous_community
+ML:
+  name: Melilla
+  code: ML
+  unofficial_names:
+  - Melilla
+  geo:
+    latitude: 35.2922775
+    longitude: -2.9380973
+    min_latitude: 35.2694508
+    min_longitude: -2.9657935
+    max_latitude: 35.3030924
+    max_longitude: -2.9232595
+  translations:
+    en: Melilla
+    af: Melilla
+    am: ሜሊያ
+    ar: مليلية
+    az: Melilya
+    be: Мелілья
+    bg: Мелиля
+    bn: মেলিলা
+    ca: Melilla
+    cs: Melilla
+    da: Melilla
+    de: Melilla
+    el: Μελίγια
+    es: Melilla
+    et: Melilla
+    eu: Melilla
+    fa: ملیلیه
+    fi: Melilla
+    fr: Melilla
+    gl: Melilla
+    gu: મેલિલા
+    he: מלייה
+    hi: मेलिला
+    hr: Melilla
+    hu: Melilla
+    hy: Մելիլյա
+    id: Melilla
+    is: Melilla
+    it: Melilla
+    ja: メリリャ
+    ka: მელილია
+    kn: ಮೆಲಿಲ್ಲಾ
+    ko: 멜리야
+    lt: Melilja
+    lv: Melilja
+    mr: मेलिया
+    ms: Melilla
+    nb: Melilla
+    nl: Melilla
+    pl: Melilla
+    pt: Melilla
+    ro: Melilla
+    ru: Мелилья
+    si: මෙලිල්ලා
+    sk: Melilla
+    sl: Melilla
+    sr: Мелиља
+    sv: Melilla
+    sw: Melilla
+    ta: மெலில்லா
+    te: మెలిల్లా
+    th: เมลียา
+    tr: Melilla
+    uk: Мелілья
+    ur: ملیلہ
+    vi: Melilla
+    zh: 梅利利亚
+    cy: Melilla
+    ceb: Melilla
+    sr_Latn: Melilja
+    yue_Hans: 梅利利亚
+    jv: Melilla
+    sq: Melilla
+    ccp: "\U0001111F\U0001112C\U00011123\U00011128\U00011123\U00011133\U00011126"
+    ga: Melilla
+    kk: Мелилья
+    yue: 梅利利亞
+    yo: Melilla
+    zu: IMelilla
+    bs: Melilla
+    mk: Мелиља
+    'no': Melilla
+    yo_BJ: Melilla
+    mn: Мелилья
+    ps: ملیلیه
+  comments:
+  type: autonomous_city_in_north_africa
+MU:
+  name: Murcia
+  code: MU
+  unofficial_names:
+  - Murcia
+  geo:
+    latitude: 37.9922399
+    longitude: -1.1306544
+    min_latitude: 37.9649768
+    min_longitude: -1.1533806
+    max_latitude: 38.0122586
+    max_longitude: -1.1066994
+  translations:
+    en: Murcia
+    ja: ムルシア県
+    ccp: "\U0001111F\U0001112A\U00011122\U00011134\U00011125\U00011128\U00011120"
+    fr: province de Murcie
+    es: provincia de Murcia
+    ca: província de Múrcia
+    ar: منطقة مرسية²
+    cy: Talaith Murcia
+  comments:
+  type: province
+NA:
+  name: Navarra
+  code: NA
+  unofficial_names:
+  - Navarra
+  - Navarre
+  - Nafarroa
+  geo:
+    latitude: 42.6953909
+    longitude: -1.6760691
+    min_latitude: 41.9098937
+    min_longitude: -2.5000827
+    max_latitude: 43.314792
+    max_longitude: -0.7239504
+  translations:
+    ca: Navarra²
+    en: Navarra
+    eu: Nafarroako Foru Erkidegoa²
+    es: Navarra²
+    lv: Navarra²
+    mr: नाबारा²
+    cy: Nafarroa
+    ceb: Navarra
+    ms: Navarre²
+    ar: منطقة نافارا²
+    te: నవార్²
+    tr: Navarra²
+    sr_Latn: Navara²
+    lt: Navara²
+    ta: நவரரே²
+    vi: Navarra²
+    ur: ناوار²
+    nl: Navarra²
+    zh: 納瓦拉²
+    bn: নাবারা²
+    fa: نابارا²
+    pl: Nawarra²
+    yue_Hans: 纳华拉
+    sv: Navarra²
+    el: Ναβάρρα²
+    hi: नावारा²
+    ja: ナバラ州²
+    sq: Navarre
+    ru: Наварра²
+    ccp: "\U0001111A\U0001111E\U00011122\U00011133\U00011126"
+    gu: નાવારે²
+    ka: ნავარა²
+    sr: Навара²
+    fr: communauté forale de Navarre²
+    ga: Navarra
+    hy: Նավառա
+    ko: 나바라 지방²
+    gl: Navarra²
+    si: නවරේ²
+    da: Navarra²
+    fi: Navarra²
+    hu: Navarra²
+    kn: ನವಾರ್ರೆ²
+    is: Navarra²
+    id: Navarra²
+    sk: Navarra²
+    ro: Navarra²
+    he: נווארה²
+    hr: Navara²
+    pt: Navarra²
+    et: Navarra²
+    de: Autonome Gemeinschaft Navarra²
+    sl: Navarre²
+    it: Navarra²
+    kk: Наварра
+    uk: Наварра²
+    cs: Navarra²
+    yue: 納華拉
+    az: Navarra²
+    am: ናቫራ
+    nb: Navarra²
+    be: аўтаномная супольнасць Навара
+    th: แคว้นนาวาร์²
+    uz: Navarra
+    bs: Navara
+    mk: Навара
+    bg: Навара²
+    'no': Navarra²
+    mn: Наварра
+    sw: Navarra
+  comments:
+  type: province
+NC:
+  name: Navarra
+  code: NC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة نافارا
+    az: Navarra
+    be: Навара, аўтаномная супольнасць
+    bg: Навара
+    bn: নাবারা
+    ca: Navarra
+    cs: Navarra
+    da: Navarra
+    de: Autonome Gemeinschaft Navarra
+    el: Ναβάρρα
+    en: Navarra Chartered Community
+    es: Navarra
+    et: Navarra
+    eu: Nafarroako Foru Erkidegoa
+    fa: نابارا
+    fi: Navarra
+    fr: communauté forale de Navarre
+    gl: Navarra
+    gu: નાવારે
+    he: נווארה
+    hi: नावारा
+    hr: Navara
+    hu: Navarra
+    hy: Նավարրա
+    id: Navarra
+    is: Navarra
+    it: Navarra
+    ja: ナバラ州
+    ka: ნავარა
+    kn: ನವಾರ್ರೆ
+    ko: 나바라 지방
+    lt: Navara
+    lv: Navarra
+    mr: नाबारा
+    ms: Navarre
+    nb: Navarra
+    nl: Navarra
+    pl: Nawarra
+    pt: Navarra
+    ro: Navarra
+    ru: Наварра
+    si: නවරේ
+    sk: Navarra
+    sl: Navarre
+    sr: Навара
+    sv: Navarra
+    ta: நவரரே
+    te: నవార్
+    th: แคว้นนาวาร์
+    tr: Navarra
+    uk: Наварра
+    ur: ناوار
+    vi: Navarra
+    zh: 納瓦拉
+    cy: Nafarroa²
+    ceb: Navarra²
+    sr_Latn: Navara
+    yue_Hans: 纳华拉²
+    sq: Navarre²
+    ccp: "\U0001111A\U0001111E\U00011127\U00011122\U00011133\U00011126 \U0001110C\U00011122\U00011134\U00011111\U00011122\U00011134
+      \U00011107\U00011127\U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011111\U00011128"
+    ga: Navarra²
+    kk: Наварра²
+    yue: 納華拉²
+    am: ናቫራ²
+    uz: Navarra²
+    bs: Navara²
+    mk: Навара²
+    'no': Navarra
+    mn: Наварра²
+    sw: Navarra²
+  comments:
+  type: autonomous_community
+O:
+  name: Asturias
+  code: O
+  unofficial_names:
+  - Asturias
+  - Oviedo
+  geo:
+    latitude: 43.3613953
+    longitude: -5.8593267
+    min_latitude: 42.8825428
+    min_longitude: -7.1824889
+    max_latitude: 43.6665323
+    max_longitude: -4.5105944
+  translations:
+    en: Asturias Province
+    ru: Астурия²
+    ccp: "\U00011103\U00011127\U0001110C\U00011134\U00011111\U00011128\U00011105\U0001112A\U00011122\U00011128\U00011120\U0001110C\U00011134
+      \U0001111B\U00011133\U00011122\U00011127\U0001111E\U00011128\U0001111A\U00011134\U00011125\U00011134"
+    hy: Աստուրիա²
+    gl: provincia de Asturias
+    es: provincia de Asturias
+    ja: アストゥリアス県
+    uk: Астурія²
+    ca: província d’Astúries
+    be: Астурыя²
+    bg: Астурия²
+    ceb: Province of Asturias
+    hu: Asztúria tartomány
+    sv: Province of Asturias
+  comments:
+  type: province
+OR:
+  name: Ourense
+  code: OR
+  unofficial_names:
+  - Ourense
+  - Orense
+  geo:
+    latitude: 42.33578929999999
+    longitude: -7.863880999999998
+    min_latitude: 42.3184311
+    min_longitude: -7.880299
+    max_latitude: 42.35829409999999
+    max_longitude: -7.8470722
+  translations:
+    en: Ourense
+    ar: أورينسي
+    be: Правінцыя Арэнсэ
+    bg: Оренсе
+    bn: ওরেন্স প্রদেশ
+    ca: província d’Ourense
+    cs: Provincie Ourense
+    da: Ourense
+    de: Provinz Ourense
+    el: Ουρένσε
+    es: Provincia de Orense
+    et: Ourense provints
+    eu: Ourenseko probintzia
+    fa: استان اورنسه
+    fi: Ourense
+    fr: province d’Ourense
+    gl: Provincia de Ourense
+    gu: ઓરેન્સે પ્રાંત
+    hi: ओउरेंस प्रांत
+    hr: Ourense
+    hu: Ourense
+    id: Provinsi Ourense
+    it: Provincia di Ourense
+    ja: オウレンセ県
+    ka: ორენსეს პროვინცია
+    kn: ಓರೆನ್ಸ್ ಪ್ರಾಂತ್ಯ
+    ko: 오렌세 주
+    lt: Orensės provincija
+    lv: Ourenses province
+    mr: ओरनेसे प्रांत
+    ms: Wilayah Ourense
+    nb: Ourense
+    nl: Ourense
+    pl: Ourense
+    pt: Ourense
+    ro: Provincia Ourense
+    ru: Оренсе
+    si: අවරෙන්ස් පළාත
+    sv: Orense
+    sw: Mkoa wa Orense
+    ta: ஓரன்ஸ் மாகாணம்
+    te: ఔరెన్స్ ప్రావిన్స్
+    th: จังหวัดอูเรนเซ
+    tr: Ourense ili
+    uk: Оренсе
+    ur: صوبہ اورینسے
+    vi: Ourense
+    zh: 奥伦塞省
+    ceb: Provincia de Ourense
+    sr_Latn: Pokrajina Orense
+    sq: Provinca Ourense
+    ccp: "\U00011103\U0001112F\U00011122\U0001112C\U0001111A\U00011134\U00011125\U00011134"
+    sr: Покрајина Оренсе
+    ga: Ourense
+    kk: Оренсе
+    uz: Ourense
+    'no': Ourense
+    az: Orense vilayəti
+    cy: Talaith Ourense
+    mk: Оренсе (покраина)
+  comments:
+  type: province
+P:
+  name: Palencia
+  code: P
+  unofficial_names:
+  - Palencia
+  geo:
+    latitude: 42.0096857
+    longitude: -4.5288016
+    min_latitude: 41.98871279999999
+    min_longitude: -4.5481221
+    max_latitude: 42.0289194
+    max_longitude: -4.505785599999999
+  translations:
+    en: Palencia
+    ar: بالنثيا
+    bg: Паленсия
+    bn: প্যালেসিয়া প্রদেশ
+    ca: província de Palència
+    cs: Provincie Palencia
+    da: Palencia
+    de: Provinz Palencia
+    el: Επαρχία της Παλένθια
+    es: Provincia de Palencia
+    et: Palencia provints
+    eu: Palentziako probintzia
+    fa: استان پالنسیا
+    fi: Palencia
+    fr: province de Palencia
+    gl: Provincia de Palencia
+    gu: પેલેન્સિયા પ્રાંત
+    hi: पैलेन्सिया प्रांत
+    hr: Palencia
+    hu: Palencia
+    id: Provinsi Palencia
+    it: provincia di Palencia
+    ja: パレンシア県
+    ka: პალენსიის პროვინცია
+    kn: ಪಾಲೆನ್ಸಿಯಾ ಪ್ರಾಂತ್ಯ
+    ko: 팔렌시아 주
+    lt: Palensijos provincija
+    lv: Palensijas province
+    mr: पॅलेन्सीया प्रांत
+    ms: Wilayah Palencia
+    nb: Palencia
+    nl: Palencia
+    pl: Palencia
+    pt: Palência
+    ro: Provincia Palencia
+    ru: Паленсия
+    si: පලේන්සියා පළාත
+    sv: Palencia
+    sw: Mkoa wa Palencia
+    ta: பலென்சியா மாகாணம்
+    te: పాలినేసియా ప్రావిన్స్
+    th: จังหวัดปาเลนเซีย
+    tr: Palencia ili
+    uk: Паленсія
+    ur: صوبہ پالینسیا
+    vi: Palencia
+    zh: 帕伦西亚省
+    ceb: Provincia de Palencia
+    sr_Latn: Pokrajina Palensija
+    sq: Provinca Palencia
+    ccp: "\U0001111B\U00011127\U00011123\U0001112C\U0001111A\U00011134\U00011125\U00011128\U00011120"
+    sr: Покрајина Паленсија
+    kk: Паленсия
+    be: правінцыя Паленсія
+    uz: Palencia
+    'no': Palencia
+    az: Palensiya vilayəti
+    cy: Talaith Palencia
+    he: פלנסיה
+    mk: Паленсија (покраина)
+  comments:
+  type: province
+PM:
+  name: Balears, Illes
+  code: PM
+  unofficial_names:
+  - Balears, Illes
+  - Baleares
+  - Illes Balears
+  - Islas Baleares
+  - Balearic Islands
+  geo:
+    latitude: 39.5341789
+    longitude: 2.8577105
+    min_latitude: 38.6403875
+    min_longitude: 1.1572495
+    max_latitude: 40.0945744
+    max_longitude: 4.3277839
+  translations:
+    ca: Illes Balears²
+    en: Balears Province
+    es: Islas Baleares²
+    lv: Baleāru Salas²
+    mr: बालेआरिक द्वीपसमूह²
+    cy: Ynysoedd Balearig²
+    af: Baleariese Eilande²
+    ceb: Islas Baleares²
+    ms: Kepulauan Balearic²
+    ar: منطقة جزر البليار²
+    te: బాలియారిక్ దీవులు²
+    tr: Balear Adaları²
+    sr_Latn: Balearska ostrva²
+    lt: Balearų salos²
+    ta: பலேரிக் தீவுகள்²
+    vi: Quần đảo Baleares²
+    ur: جزائر بلیبار²
+    nl: Balearen²
+    zh: 巴利阿里群島²
+    bn: বেলারিক আইল্যান্ডস²
+    fa: جزایر بالئاری²
+    pl: Baleary²
+    sw: Visiwa vya Baleari²
+    yue_Hans: 巴利亚利群岛²
+    sv: Balearerna²
+    el: Βαλεαρίδες Νήσοι²
+    hi: बैलेरिक द्वीपसमूह²
+    jv: Kapuloan Baleares²
+    ja: バレアレス諸島²
+    sq: Ishujt Balearik²
+    ru: Балеарские острова²
+    ccp: "\U0001111D\U00011123\U00011128\U00011120\U00011122\U00011134\U00011125\U00011134
+      \U0001111B\U00011133\U00011122\U00011127\U0001111E\U00011128\U0001111A\U00011134\U00011125\U00011134"
+    gu: બેલેરીક આઇલેન્ડ્સ²
+    ka: ბალეარის კუნძულები²
+    sr: Балеарска острва²
+    fr: Îles Baléares²
+    ga: Na hOileáin Bhailéaracha²
+    hy: Բալեարյան կղզիներ²
+    ko: 발레아레스 제도²
+    gl: Illas Baleares
+    si: බලේයරික් දූපත්²
+    da: Baleariske Øer²
+    fi: Baleaarit²
+    ky: Балдар аралдары²
+    hu: Baleár-szigetek²
+    kn: ಬಾಲೀರಿಕ್ ದ್ವೀಪಗಳು²
+    is: Baleareyjar²
+    id: Kepulauan Balears²
+    sk: Baleáry²
+    ro: Insulele Baleare²
+    he: האיים הבלאריים²
+    hr: Baleari²
+    eu: Balear Uharteak²
+    pt: Baleares²
+    et: Baleaarid²
+    de: Balearische Inseln²
+    sl: Balearski otoki²
+    it: isole Baleari²
+    kk: Балеар аралдары²
+    uk: Балеарські острови²
+    cs: Baleáry²
+    yue: 巴利亞利群島²
+    az: Balear adaları²
+    am: ባሌያሪክ ደሴቶች²
+    nb: Balearene²
+    mn: Балеарын арлууд²
+    be: Балеарскія астравы²
+    th: หมู่เกาะแบลีแอริก²
+    uz: Balear orollari²
+    bs: Balearska ostrva²
+    mk: Балеарски Острови²
+    bg: Балеарски острови²
+    'no': Balearene²
+  comments:
+  type: province
+PO:
+  name: Pontevedra
+  code: PO
+  unofficial_names:
+  - Pontevedra
+  geo:
+    latitude: 42.4298846
+    longitude: -8.6446202
+    min_latitude: 42.4159549
+    min_longitude: -8.6648576
+    max_latitude: 42.4517667
+    max_longitude: -8.613833699999999
+  translations:
+    en: Pontevedra
+    ar: بونتيفيدرا
+    be: правінцыя Пантэведра
+    bn: পন্টেভেদ্রা প্রদেশ
+    ca: província de Pontevedra
+    cs: Provincie Pontevedra
+    da: Pontevedra
+    de: Provinz Pontevedra
+    el: Επαρχία της Ποντεβέδρα
+    es: Provincia de Pontevedra
+    et: Pontevedra provints
+    eu: Pontevedrako probintzia
+    fa: استان پنتبدرا
+    fi: Pontevedra
+    fr: province de Pontevedra
+    gl: Provincia de Pontevedra
+    gu: પોંટેવેડ્રા પ્રાંત
+    hi: पोंटेवेड्रा प्रांत
+    hr: Pontevedra
+    hu: Pontevedra
+    id: Provinsi Pontevedra
+    it: Provincia di Pontevedra
+    ja: ポンテベドラ県
+    ka: პონტევედრის პროვინცია
+    kn: ಪೊಂಟೆವೇದ್ರ ಪ್ರಾಂತ್ಯ
+    ko: 폰테베드라 주
+    lt: Pontevedros provincija
+    lv: Pontebedras province
+    mr: पोंटेवेड्रा प्रांत
+    ms: Wilayah Pontevedra
+    nb: Pontevedra
+    nl: Pontevedra
+    pl: Pontevedra
+    pt: Pontevedra
+    ro: Provincia Pontevedra
+    ru: Понтеведра
+    si: පොන්ටෙවෙද්‍රා පළාත
+    sv: Pontevedra
+    sw: Mkoa wa Pontevedra
+    ta: பொன்டேவெட்றா மாகாணம்
+    te: పాంటివెద్రా ప్రావిన్స్
+    th: จังหวัดปอนเตเบดรา
+    tr: Pontevedra ili
+    uk: провінція Понтеведра
+    ur: صوبہ پونتیبیدرا
+    vi: Pontevedra
+    zh: 蓬特韋德拉省
+    ceb: Provincia de Pontevedra
+    sr_Latn: Pokrajina Pontevedra
+    sq: Provinca Pontevedra
+    ccp: "\U0001111B\U0001112E\U0001111A\U00011134\U00011111\U0001112C\U0001111E\U0001112C\U00011113\U00011133\U00011122"
+    sr: Покрајина Понтеведра
+    kk: Понтеведра
+    uz: Pontevedra
+    'no': Pontevedra
+    az: Pontevedra vilayəti
+    cy: Talaith Pontevedra
+    mk: Понтеведра (покраина)
+  comments:
+  type: province
+PV:
+  name: País Vasco
+  code: PV
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Outonome Gemeenskap van die Baskeland
+    ar: منطقة إقليم الباسك
+    az: Basklar ölkəsi
+    be: Краіна Баскаў
+    bg: Баска автономна област
+    ca: Comunitat autònoma del País Basc
+    cs: Autonomní společenství Baskicko
+    da: Baskerlandet
+    de: Autonome Gemeinschaft Baskenland
+    el: Χώρα των Βάσκων
+    en: Basque Country
+    es: País Vasco
+    et: Baski autonoomne piirkond
+    eu: Euskal Autonomia Erkidegoa
+    fa: سرزمین باسک
+    fi: Baskimaa
+    fr: Pays basque
+    gl: País Vasco
+    he: חבל הבסקים
+    hi: बास्क प्रदेश
+    hr: Baskija
+    hu: Baszkföld
+    hy: Բասկերի երկիր
+    id: País Vasco
+    is: Baskaland
+    it: Paesi Baschi
+    ja: バスク州
+    ka: ბასკეთი
+    ko: 바스크 지방
+    lt: Baskija
+    lv: Basku Zeme
+    mn: Баск орон
+    mr: पाईज बास्को
+    ms: Negara Basque
+    nb: Baskerland
+    nl: Baskenland
+    pl: Kraj Basków
+    pt: Comunidade autónoma do País Basco
+    ro: Țara Bascilor
+    ru: Страна Басков
+    sk: Baskicko
+    sl: Baskija
+    sr: Баскија
+    sv: Regionen Baskien
+    ta: பாசுக்கு நாடு
+    th: แคว้นบาสก์
+    tr: Bask Bölgesi
+    uk: Країна Басків
+    ur: باسک ملک
+    vi: Xứ Basque
+    zh: 巴斯克自治區
+    cy: Cymuned Ymreolaethol Gwlad y Basg
+    sr_Latn: Baskija
+    yue_Hans: 巴斯克自治区
+    jv: País Vasco
+    sq: Baskia
+    ccp: "\U00011125\U0001110C\U00011134\U00011107\U0001112A \U00011107\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011128"
+    ga: Tír na mBascach Theas
+    ky: Басктар Өлкөсү
+    kk: Басктар елі
+    yue: 巴斯克自治區
+    am: ባስክ ሀገር
+    uz: Basklar mamlakati
+    bs: Baskija (autonomna zajednica)
+    mk: Баскија
+    'no': Baskerland
+    ceb: Euskal Autonomia Erkidegoa / Comunidad Autónoma Vasca
+  comments:
+  type: autonomous_community
+RI:
+  name: La Rioja
+  code: RI
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة لا ريوخا²
+    az: Rioxa²
+    be: Рыёха²
+    bg: Ла Риоха²
+    bn: লা রিওজা²
+    ca: La Rioja²
+    cs: La Rioja²
+    da: La Rioja²
+    de: La Rioja²
+    el: Λα Ριόχα²
+    en: La Rioja
+    es: La Rioja²
+    et: La Rioja²
+    eu: Errioxako Autonomia Erkidegoa²
+    fa: لاریخا²
+    fi: La Rioja²
+    fr: La Rioja²
+    gl: A Rioxa²
+    gu: લા રિયોજા²
+    he: לה ריוחה²
+    hi: ला रिओजा²
+    hr: La Rioja²
+    hu: La Rioja²
+    hy: Ռիոխա²
+    id: La Rioja²
+    is: La Rioja²
+    it: La Rioja²
+    ja: ラ・リオハ州²
+    ka: ლა-რიოხა²
+    kn: ಲಾ ರೈಜಾ²
+    ko: 라리오하 지방²
+    lt: La Riocha²
+    lv: Larjoha²
+    mr: ला रियोहा²
+    ms: La Rioja²
+    nb: La Rioja²
+    nl: La Rioja²
+    pl: La Rioja²
+    pt: La Rioja²
+    ro: La Rioja²
+    ru: Риоха²
+    si: ලා රයෝජා²
+    sl: La Rioja²
+    sr: Риоха²
+    sv: La Rioja²
+    sw: La Rioja²
+    ta: லா ரியோஜ²
+    te: లా రియోజా²
+    th: แคว้นลารีโอคา²
+    tr: La Rioja²
+    uk: Ла-Ріоха²
+    ur: لا ریوخا²
+    vi: La Rioja²
+    zh: 拉里奥哈²
+    cy: La Rioja²
+    sr_Latn: Rioha²
+    yue_Hans: 拉里奥哈²
+    jv: La Rioja²
+    sq: La Rioja²
+    ccp: "\U00011123 \U00011122\U00011128\U00011103\U0001112E\U0001110E"
+    ga: La Rioja²
+    kk: Риоха²
+    yue: 拉里奧哈²
+    uz: La Rioja²
+    bs: La Rioja²
+    mk: Риоха²
+    'no': La Rioja²
+    ceb: La Rioja
+    mn: Ла Риоха (Испанийн муж)
+  comments:
+  type: autonomous_community
+S:
+  name: Cantabria
+  code: S
+  unofficial_names:
+  - Cantabria
+  - Santander
+  geo:
+    latitude: 43.1828396
+    longitude: -3.9878427
+    min_latitude: 42.75804979999999
+    min_longitude: -4.8517782
+    max_latitude: 43.5136929
+    max_longitude: -3.149652
+  translations:
+    ca: Cantàbria²
+    en: Cantabria Province
+    es: Cantabria²
+    lv: Kantabrija²
+    mr: कांताब्रिया²
+    cy: Cantabria²
+    ceb: Cantabria²
+    ms: Cantabria²
+    ar: منطقة كانتابريا²
+    te: కాంటాబ్రియా²
+    tr: Kantabria²
+    sr_Latn: Kantabrija²
+    lt: Kantabrija²
+    ta: காந்தாபிரியா²
+    vi: Cantabria²
+    ur: کانتابریا²
+    nl: Cantabrië²
+    zh: 坎塔布里亚²
+    bn: কান্তাব্রিয়া²
+    fa: کانتابریا²
+    pl: Kantabria²
+    yue_Hans: 坎塔布里亚²
+    sv: Kantabrien²
+    el: Κανταβρία²
+    hi: कंटैब्रिया²
+    ja: カンタブリア州²
+    sq: Cantabria²
+    ru: Кантабрия²
+    ccp: "\U00011107\U00011133\U00011120\U0001111A\U00011134\U00011111\U0001111D\U00011133\U00011122\U00011128\U00011120
+      \U0001111B\U00011133\U00011122\U00011127\U0001111E\U00011128\U0001111A\U00011134\U00011125\U00011134"
+    gu: કાન્તાબ્રિયા²
+    ka: კანტაბრია²
+    sr: Кантабрија²
+    fr: Cantabrie²
+    ga: Cantabria²
+    hy: Կանտաբրիա²
+    ko: 칸타브리아 지방²
+    gl: Cantabria²
+    si: කැන්ටබ්රියා²
+    da: Kantabrien²
+    fi: Kantabria²
+    hu: Kantábria²
+    kn: ಕ್ಯಾಂಥಬ್ರಿಯಾ²
+    is: Kantabría²
+    id: Cantabria²
+    sk: Kantábria²
+    ro: Cantabria²
+    he: קנטבריה²
+    hr: Kantabrija²
+    eu: Kantabria²
+    pt: Cantábria²
+    et: Kantaabria²
+    de: Autonome Gemeinschaft Kantabrien²
+    it: Cantabria²
+    kk: Кантабрия²
+    uk: Кантабрія²
+    cs: Kantábrie²
+    yue: 坎塔布里亞²
+    az: Kantabriya²
+    am: ካንታብርያ²
+    nb: Cantabria²
+    be: Кантабрыя²
+    th: แคว้นกันตาเบรีย²
+    uz: Cantabria²
+    bs: Kantabrija²
+    mk: Кантабрија²
+    bg: Кантабрия²
+    'no': Cantabria²
+  comments:
+  type: province
+SA:
+  name: Salamanca
+  code: SA
+  unofficial_names:
+  - Salamanca
+  geo:
+    latitude: 40.9701039
+    longitude: -5.663539699999999
+    min_latitude: 40.9417799
+    min_longitude: -5.707220299999999
+    max_latitude: 40.9850971
+    max_longitude: -5.6312039
+  translations:
+    en: Salamanca
+    ar: شلمنقة
+    be: правінцыя Саламанка
+    bg: Саламанка
+    bn: সালামানকা প্রদেশ
+    ca: província de Salamanca
+    cs: Provincie Salamanca
+    da: Salamanca
+    de: Provinz Salamanca
+    el: Σαλαμάνκα
+    es: Provincia de Salamanca
+    et: Salamanca provints
+    eu: Salamancako probintzia
+    fa: سالامانکا
+    fi: Salamanca
+    fr: province de Salamanque
+    gl: Provincia de Salamanca
+    gu: સાલામાંકા પ્રાંત
+    hi: सैलामैंका प्रांत
+    hu: Salamanca
+    id: Provinsi Salamanca
+    it: Provincia di Salamanca
+    ja: サラマンカ県
+    ka: სალამანკის პროვინცია
+    kn: ಸಲಾಮಾಂಕಾ ಪ್ರಾಂತ್ಯ
+    ko: 살라망카 주
+    lt: Salamankos provincija
+    lv: Salamankas province
+    mr: सॅलमेंका प्रांत
+    ms: Wilayah Salamanca
+    nb: Salamanca
+    nl: Salamanca
+    pl: Salamanka
+    pt: Salamanca
+    ro: Provincia Salamanca
+    ru: Саламанка
+    si: සලමන්සා පළාත
+    sr: Провинција Саламанка
+    sv: Salamanca
+    sw: Mkoa wa Salamanca
+    ta: சாலமாக மாகாணம்
+    te: సలమంకా ప్రావిన్స్
+    th: จังหวัดซาลามัสกา
+    tr: Salamanca ili
+    uk: Саламанка
+    ur: صوبہ سالامانکا
+    vi: Salamanca
+    zh: 萨拉曼卡省
+    ceb: Provincia de Salamanca
+    sr_Latn: Provincija Salamanka
+    yue_Hans: 萨拉曼卡省
+    sq: Provinca Salamanca
+    ccp: "\U00011125\U00011123\U0001111F\U0001111A\U00011134\U00011107"
+    kk: Саламанка
+    yue: 薩拉曼卡省
+    uz: Salamanka
+    'no': Salamanca
+    az: Salamanka vilayəti
+    cy: Talaith Salamanca
+    he: מחוז סלמנקה
+    hy: Սալամանկա
+    mk: Саламанка (покраина)
+  comments:
+  type: province
+SE:
+  name: Sevilla
+  code: SE
+  unofficial_names:
+  - Sevilla
+  geo:
+    latitude: 37.3890924
+    longitude: -5.9844589
+    min_latitude: 37.3152203
+    min_longitude: -6.0216578
+    max_latitude: 37.4355212
+    max_longitude: -5.8884587
+  translations:
+    en: Seville
+    ar: إشبيلية
+    be: правінцыя Севілья
+    bg: Севиля
+    bn: সেভিলি প্রদেশ
+    ca: província de Sevilla
+    cs: Provincie Sevilla
+    da: Sevilla
+    de: Sevilla
+    el: Σεβίλλη
+    es: Provincia de Sevilla
+    et: Sevilla provints
+    eu: Sevillako probintzia
+    fa: سبیا
+    fi: Sevilla
+    fr: province de Séville
+    gl: Provincia de Sevilla
+    gu: સેવિલે પ્રાંત
+    hi: सेविल प्रांत
+    hr: Sevilla
+    hu: Sevilla
+    hy: Սևիլյա
+    id: Provinsi Sevilla
+    it: Provincia di Siviglia
+    ja: セビリア県
+    ka: სევილიის პროვინცია
+    kn: ಸೆವಿಲ್ಲೆ ಪ್ರಾಂತ್ಯ
+    ko: 세비야 주
+    lt: Sevilijos provincija
+    lv: Seviljas province
+    mr: सिविल प्रांत
+    ms: Wilayah Seville
+    nb: Sevilla
+    nl: Sevilla
+    pl: Sewilla
+    pt: Província de Sevilha
+    ro: Provincia Sevilla
+    ru: Севилья
+    si: සෙවිලි පළාත
+    sv: Sevilla
+    sw: Mkoa wa Sevilla
+    ta: செவில்லே மாகாணம்
+    te: సెవిల్లె ప్రావిన్స్
+    th: จังหวัดเซบียา
+    tr: Sevilla ili
+    uk: Севілья
+    ur: صوبہ اشبیلیہ
+    vi: Sevilla
+    zh: 塞維利亞省
+    ceb: Provincia de Sevilla
+    sr_Latn: Pokrajina Sevilja
+    yue_Hans: 西维尔省
+    sq: Provinca Sevilla
+    ccp: "\U00011125\U0001112C\U0001111E\U00011128\U00011123\U0001112C"
+    sr: Покрајина Севиља
+    kk: Севилья
+    yue: 西維爾省
+    uz: Sevilla
+    bs: Sevilla
+    'no': Sevilla
+    az: Sevilya vilayəti
+    cy: Talaith Seville
+  comments:
+  type: province
+SG:
+  name: Segovia
+  code: SG
+  unofficial_names:
+  - Segovia
+  geo:
+    latitude: 40.9429032
+    longitude: -4.108806899999999
+    min_latitude: 40.9199986
+    min_longitude: -4.1335868
+    max_latitude: 40.9625017
+    max_longitude: -4.090816999999999
+  translations:
+    en: Segovia
+    ar: شقوبية
+    be: Сеговія
+    bg: Сеговия
+    ca: província de Segòvia
+    cs: Provincie Segovia
+    da: Segovia
+    de: Provinz Segovia
+    el: Επαρχία της Σεγόβια
+    es: Provincia de Segovia
+    et: Segovia provints
+    eu: Segoviako probintzia
+    fa: سگبیا (استان)
+    fi: Segovia
+    fr: province de Ségovie
+    gl: Provincia de Segovia
+    hr: Segovia
+    hu: Segovia
+    id: Provinsi Segovia
+    it: provincia di Segovia
+    ja: セゴビア県
+    ka: სეგოვიის პროვინცია
+    ko: 세고비아 주
+    lt: Segovijos provincija
+    lv: Segovijas province
+    ms: Wilayah Segovia
+    nb: Segovia
+    nl: Segovia
+    pl: Segowia
+    pt: Segóvia
+    ro: Provincia Segovia
+    ru: Сеговия
+    sv: Segovia
+    sw: Mkoa wa Segovia
+    tr: Segovia ili
+    uk: Сеговія
+    ur: صوبہ سیگوبیا
+    vi: Segovia
+    zh: 塞哥維亞省
+    ceb: Provincia de Segovia
+    sr_Latn: Pokrajina Segovija
+    sq: Provinca Segovia
+    ccp: "\U00011125\U0001112C\U00011109\U0001112E\U0001111E\U00011128\U00011120"
+    sr: Покрајина Сеговија
+    kk: Сеговия
+    uz: Segovia
+    'no': Segovia
+    az: Seqoviya vilayəti
+    cy: Talaith Segovia
+    hy: Սեգովիա
+    th: จังหวัดเซโกเบีย
+  comments:
+  type: province
+SO:
+  name: Soria
+  code: SO
+  unofficial_names:
+  - Soria
+  geo:
+    latitude: 41.7665972
+    longitude: -2.4790306
+    min_latitude: 41.7519601
+    min_longitude: -2.4938061
+    max_latitude: 41.7822829
+    max_longitude: -2.455352
+  translations:
+    en: Soria
+    af: Provinsie Soria
+    ar: سوريا
+    be: Правінцыя Сорыя
+    bn: সোরিয়া প্রদেশ
+    ca: província de Sòria
+    cs: Provincie Soria
+    da: Soria
+    de: Provinz Soria
+    el: Επαρχία της Σόρια
+    es: Provincia de Soria
+    et: Soria provints
+    eu: Soriako probintzia
+    fa: سریا (استان)
+    fi: Soria
+    fr: province de Soria
+    gl: Provincia de Soria
+    gu: સોરિયા પ્રાંત
+    hi: सोरिया प्रांत
+    hr: Soria
+    hu: Soria
+    id: Provinsi Soria
+    it: provincia di Soria
+    ja: ソリア県
+    ka: სორიის პროვინცია
+    kn: ಸೊರಿಯಾ ಪ್ರಾಂತ್ಯ
+    ko: 소리아 주
+    lt: Sorijos provincija
+    lv: Sorijas province
+    mr: सोरिया प्रांत
+    ms: Wilayah Soria
+    nb: Soria
+    nl: Soria
+    pl: Soria
+    pt: Sória
+    ro: Provincia Soria
+    ru: Сория
+    si: සොරියා පළාත
+    sv: Soria
+    sw: Mkoa wa Soria
+    ta: சொறியா மாகாணம்
+    te: సోరియా ప్రావిన్స్
+    th: จังหวัดโซเรีย
+    tr: Soria ili
+    uk: Сорія
+    ur: سوریا صوبہ
+    vi: Soria
+    zh: 索里亚省
+    ceb: Provincia de Soria
+    sr_Latn: Pokrajina Sorija
+    yue_Hans: 索里亚省
+    sq: Provinca Soria
+    ccp: "\U00011125\U0001112E\U00011122\U00011128\U00011120"
+    sr: Покрајина Сорија
+    kk: Сория
+    yue: 索里亞省
+    uz: Soria
+    mk: Сорија
+    'no': Soria
+    az: Soriya vilayəti
+    cy: Soria Province
+    ga: Soria (cúige)
+  comments:
+  type: province
+SS:
+  name: Gipuzkoa
+  code: SS
+  unofficial_names:
+  - Gipuzkoa
+  - Guipúzcoa
+  geo:
+    latitude: 43.0756299
+    longitude: -2.2236667
+    min_latitude: 42.8952452
+    min_longitude: -2.6026837
+    max_latitude: 43.3956796
+    max_longitude: -1.7293434
+  translations:
+    en: Gipuzkoa
+    af: Gipuzkoa
+    ar: غيبوثكوا
+    be: Гіпускоа
+    bg: Гипузкоа
+    bn: গিপুজকোয়া
+    ca: Guipúscoa
+    cs: Gipuzkoa
+    da: Guipúzcoa
+    de: Gipuzkoa
+    el: Γκιπούθκοα
+    es: Guipúzcoa
+    et: Gipuzkoa
+    eu: Gipuzkoa
+    fa: استان گیپوسکوا
+    fi: Guipúzcoa
+    fr: Guipuscoa
+    gl: Provincia de Guipúscoa - Gipuzkoa
+    gu: ગીપુઝકોઆ
+    hi: जिपूज़को
+    hr: Gipuskoa
+    hu: Gipuzkoa
+    hy: Գիպուսկոա
+    id: Gipuzkoa
+    it: Guipúzcoa
+    ja: ギプスコア県
+    ka: გიპუსკოა
+    kn: ಗಿಪುಝೋಕಾ
+    ko: 기푸스코아 주
+    lt: Gipuskoa provincija
+    lv: Gipuskoja
+    mr: गिपूझकोआ
+    ms: Gipuzkoa
+    nb: Gipuzkoa
+    nl: Gipuzkoa
+    pl: Prowincja Guipúzcoa
+    pt: Guipúscoa
+    ro: Provincia Guipúzcoa
+    ru: Гипускоа
+    si: ජිපුස්කොආ
+    sv: Guipúzcoa
+    ta: குபூஸ்கோயா
+    te: జిపుజ్కో
+    th: จังหวัดกีปุซโกอา
+    tr: Guipúzcoa ili
+    uk: Гіпускоа
+    ur: گیپوسکوا
+    vi: Guipuscoa
+    zh: 吉普斯夸省
+    cy: Gipuzkoa
+    ceb: Gipuzkoa
+    sr_Latn: Pokrajina Gipuskoa
+    sq: Provinca Gipuzkoa
+    ccp: "\U00011109\U00011128\U0001111B\U0001112A\U0001110C\U00011134\U00011107\U0001112E\U00011120"
+    sr: Покрајина Гипускоа
+    kk: Гипускоа
+    uz: Guipúzcoa
+    'no': Gipuzkoa
+    az: Gipuskoa vilayəti
+    ga: Gipuzkoa
+    he: גיפוסקואה
+    sw: Guipúzcoa
+  comments:
+  type: province
+T:
+  name: Tarragona
+  code: T
+  unofficial_names:
+  - Tarragona
+  geo:
+    latitude: 41.1188827
+    longitude: 1.2444909
+    min_latitude: 41.1096612
+    min_longitude: 1.1873165
+    max_latitude: 41.1419484
+    max_longitude: 1.2898503
+  translations:
+    en: Tarragona
+    ar: طراغونة
+    bn: তারাগোনা প্রদেশ
+    ca: província de Tarragona
+    cs: Provincie Tarragona
+    da: Tarragona
+    de: Tarragona
+    el: Επαρχία της Ταρραγκόνα
+    es: provincia de Tarragona
+    et: Tarragona provints
+    eu: Tarragonako probintzia
+    fa: استان تاراگونا
+    fi: Tarragona
+    fr: province de Tarragone
+    gl: Provincia de Tarragona
+    gu: ટેરગોનો પ્રાંત
+    he: מחוז טרגונה
+    hi: टेरागोना
+    hr: Tarragona
+    hu: Tarragona
+    id: Provinsi Tarragona
+    it: Provincia di Tarragona
+    ja: タラゴナ県
+    ka: ტარაგონის პროვინცია
+    kn: ತರ್ರಾಗೋನಾ ಪ್ರಾಂತ್ಯ
+    ko: 타라고나 주
+    lt: Taragonos provincija
+    lv: Taragonas province
+    mr: तारागॉनना प्रांत
+    ms: Tarragona Province
+    nb: Tarragona
+    nl: Tarragona
+    pl: Tarragona
+    pt: Tarragona
+    ro: Provincia Tarragona
+    ru: Таррагона
+    si: ටැරගොනා පළාත
+    sr: Провинција Тарагона
+    sv: Tarragona
+    sw: Mkoa wa Tarragona
+    ta: டர்ரகோனா மாகாணம்
+    te: టర్రాగోనా ప్రావిన్స్
+    th: จังหวัดตาราโกนา
+    tr: Tarragona İli
+    uk: Таррагона
+    ur: صوبہ تاریگؤنا
+    vi: Tarragona
+    zh: 塔拉戈纳省
+    cy: Talaith Tarragona
+    ceb: Província de Tarragona
+    sr_Latn: Provincija Taragona
+    yue_Hans: 塔拉戈纳省
+    sq: Provinca Tarragona
+    ccp: "\U00011111\U00011122\U00011133\U00011126\U00011109\U00011127\U0001111A"
+    kk: Таррагона
+    yue: 塔拉戈納省
+    be: правінцыя Тарагона
+    uz: Tarragona
+    'no': Tarragona
+    az: Tarraqona vilayəti
+    mk: Тарагона (покраина)
+  comments:
+  type: province
+TE:
+  name: Teruel
+  code: TE
+  unofficial_names:
+  - Teruel
+  geo:
+    latitude: 40.3456879
+    longitude: -1.1064345
+    min_latitude: 40.3257241
+    min_longitude: -1.1209926
+    max_latitude: 40.3642951
+    max_longitude: -1.0809371
+  translations:
+    en: Teruel
+    ar: تيروال
+    be: Тэруэль
+    bg: Теруел
+    ca: província de Terol
+    cs: Provincie Teruel
+    da: Teruel
+    de: Provinz Teruel
+    el: Επαρχία του Τερουέλ
+    es: Provincia de Teruel
+    et: Terueli provints
+    eu: Teruelgo probintzia
+    fa: استان تروئل
+    fi: Teruel
+    fr: province de Teruel
+    gl: Provincia de Teruel
+    hr: Teruel
+    hu: Teruel
+    id: Provinsi Teruel
+    it: provincia di Teruel
+    ja: テルエル県
+    ka: ტერუელის პროვინცია
+    ko: 테루엘 주
+    lt: Teruelio provincija
+    lv: Tervelas province
+    ms: Wilayah Teruel
+    nb: Teruel
+    nl: Teruel
+    pl: Teruel
+    pt: Teruel (província)
+    ro: Provincia Teruel
+    ru: Теруэль
+    sv: Teruel
+    sw: Mkoa wa Teruel
+    tr: Teruel İli
+    uk: Теруель
+    ur: صوبہ تیرویل
+    vi: Teruel
+    zh: 特魯埃爾省
+    ceb: Provincia de Teruel
+    sr_Latn: Pokrajina Teruel
+    yue_Hans: 特鲁埃尔省
+    sq: Provinca Teruel
+    ccp: "\U00011111\U0001112C\U00011122\U0001112A\U00011120\U0001112C\U00011123\U00011134"
+    sr: Покрајина Теруел
+    kk: Теруэль
+    yue: 特魯埃爾省
+    uz: Teruel
+    bs: Teruel
+    'no': Teruel
+    az: Teruel vilayəti
+    cy: Talaith Teruel
+    he: מחוז טרואל
+    hy: Տերուել
+    mk: Теруел (покраина)
+    th: จังหวัดเตรูเอล
+  comments:
+  type: province
+TF:
+  name: Santa Cruz de Tenerife
+  code: TF
+  unofficial_names:
+  - Santa Cruz de Tenerife
+  - Tenerife
+  geo:
+    latitude: 28.4636296
+    longitude: -16.2518467
+    min_latitude: 28.4280248
+    min_longitude: -16.3370045
+    max_latitude: 28.487616
+    max_longitude: -16.2356646
+  translations:
+    en: Santa Cruz de Tenerife
+    ar: سانتا كروث دي تينيريفه
+    bg: Санта Крус де Тенерифе
+    bn: স্যান্টা ক্রুজ দে টেনেলিফে প্রদেশ
+    ca: província de Santa Cruz de Tenerife
+    cs: Provincie Santa Cruz de Tenerife
+    da: Santa Cruz de Tenerife
+    de: Provinz Santa Cruz de Tenerife
+    el: Σάντα Κρούθ Ντε Τενερίφε
+    es: Provincia de Santa Cruz de Tenerife
+    et: Santa Cruz de Tenerife provints
+    eu: Santa Cruz Tenerifekoko probintzia
+    fa: سانتا کروس
+    fi: Santa Cruz de Tenerife
+    fr: province de Santa Cruz de Ténérife
+    gl: Provincia de Santa Cruz de Tenerife
+    gu: સાંતા ક્રુઝ ડે ટેનેરિફ પ્રાંત
+    hi: सैंटा क्रूज़ डी टैनेरीफ प्रांत
+    hr: Santa Cruz de Tenerife
+    hu: Santa Cruz de Tenerife
+    id: Provinsi Santa Cruz de Tenerife
+    it: Provincia di Santa Cruz de Tenerife
+    ja: サンタ・クルス・デ・テネリフェ県
+    ka: სანტა-კრუს-დე-ტენერიფეს პროვინცია
+    kn: ಸಾಂಟಾ ಕ್ರೂಜ್ ಡಿ ಟೆನೆರೈಫ್ ಪ್ರಾಂತ್ಯ
+    ko: 산타크루스데테네리페 주
+    lt: Tenerifės Santa Kruso provincija
+    lv: Santakrusas de Tenerifes province
+    mr: सांता क्रूज़ डी टेनेरिफ प्रांत
+    ms: Wilayah Santa Cruz de Tenerife
+    nb: Santa Cruz de Tenerife
+    nl: Santa Cruz de Tenerife
+    pl: Santa Cruz de Tenerife
+    pt: Santa Cruz de Tenerife
+    ro: Provincia Santa Cruz de Tenerife
+    ru: Санта-Крус-де-Тенерифе
+    si: සැන්ටා කෘස් ඩෙ ටෙනේරිෆේ පළාත
+    sv: Santa Cruz de Tenerife
+    sw: Mkoa wa Santa Cruz de Tenerife
+    ta: சாண்டா கிருஸ் டி தேநெறிப மாகாணம்
+    te: సాంటా క్రజ్ ద టెనెరైఫ్ ప్రావిన్స్
+    th: ซานตาครูซ เด เตเรนิเฟ
+    tr: Santa Cruz de Tenerife İli
+    uk: Санта-Крус-де-Тенерифе
+    ur: صوبہ سانتا کروز دے فینیریفے
+    vi: Santa Cruz de Tenerife
+    zh: 聖克魯斯-德特內里費省
+    ceb: Provincia de Santa Cruz de Tenerife
+    sr_Latn: Pokrajina Santa Kruz de Tenerife
+    sq: Provinca Santa Cruz de Tenerife
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011107\U00011133\U00011122\U0001112A\U0001110C\U00011134
+      \U00011113\U0001112C \U00011111\U0001112C\U0001111A\U0001112C\U00011122\U0001112D\U0001111B\U00011134"
+    sr: Покрајина Санта Круз де Тенерифе
+    hy: Սանտա Կրուս դե Տեներիֆե
+    kk: Санта-Крус-де-Тенерифе
+    be: правінцыя Санта-Крус-дэ-Тэнэрыфэ
+    uz: Santa Cruz de Tenerife
+    'no': Santa Cruz de Tenerife
+    az: Santa-Krus-de-Tenerife vilayəti
+    cy: Talaith Santa Cruz de Tenerife
+    he: פרובינציית סנטה קרוס דה טנריפה
+    mk: Санта Крус де Тенерифе (покраина)
+  comments:
+  type: province
+TO:
+  name: Toledo
+  code: TO
+  unofficial_names:
+  - Toledo
+  geo:
+    latitude: 39.8628316
+    longitude: -4.027323099999999
+    min_latitude: 39.8383676
+    min_longitude: -4.0629256
+    max_latitude: 39.88605099999999
+    max_longitude: -3.9192423
+  translations:
+    en: Toledo
+    ar: طليطلة
+    be: Правінцыя Таледа
+    ca: Província de Toledo
+    cs: Provincie Toledo
+    da: Toledo
+    de: Provinz Toledo
+    el: Τολέδο
+    es: Provincia de Toledo
+    et: Toledo provints
+    eu: Toledoko probintzia
+    fa: استان تولدو
+    fi: Toledo
+    fr: province de Tolède
+    gl: Provincia de Toledo
+    hi: टोलेडो प्रान्त
+    hr: Toledo
+    hu: Toledo
+    id: Provinsi Toledo
+    it: provincia di Toledo
+    ja: トレド県
+    ka: ტოლედოს პროვინცია
+    ko: 톨레도 주
+    lt: Toledo provincija
+    lv: Toledo province
+    ms: Toledo
+    nb: Toledo
+    nl: Toledo
+    pl: Toledo
+    pt: Toledo
+    ro: Provincia Toledo
+    ru: Толедо
+    sv: Toledo
+    sw: Mkoa wa Toledo
+    tr: Toledo ili
+    uk: Толедо
+    ur: صوبہ طلیطلہ
+    vi: Toledo
+    zh: 托萊多省
+    ceb: Province of Toledo
+    sr_Latn: Pokrajina Toledo
+    sq: Provinca Toledo
+    ccp: "\U00011111\U00011127\U00011123\U0001112C\U00011113\U0001112E"
+    sr: Покрајина Толедо
+    he: פרובינציית טולדו
+    kk: Толедо
+    uz: Toledo
+    bs: Toledo
+    mk: Толедо
+    'no': Toledo
+    az: Toledo vilayəti
+    cy: Talaith Toledo
+    th: จังหวัดโตเลโด
+  comments:
+  type: province
+V:
+  name: Valencia/València
+  code: V
+  unofficial_names:
+  - Valencia/València
+  - València/Valencia
+  - Valencia
+  - València
+  geo:
+    latitude: 39.4699075
+    longitude: -0.3762881
+    min_latitude: 39.308248
+    min_longitude: -0.4315448
+    max_latitude: 39.5073225
+    max_longitude: -0.2914778
+  translations:
+    en: Valencia
+    ar: بلنسية
+    be: Правінцыя Валенсія
+    bn: ভ্যালেন্সিয়া প্রদেশ
+    ca: Província de València
+    cs: Provincie Valencia
+    da: Valencia
+    de: Provinz Valencia
+    el: Επαρχία της Βαλένθια
+    es: Provincia de Valencia
+    et: Valencia provints
+    eu: Valentziako probintzia
+    fa: استان والنسیا
+    fi: Valencia
+    fr: province de Valence
+    gl: Provincia de Valencia
+    gu: વેલેન્સિયા પ્રાંત
+    hi: वैलेंसिया प्रांत
+    hr: Valencia
+    hu: Valencia tartomány
+    hy: Վալենսիա
+    id: Provinsi Valencia
+    it: Provincia di Valencia
+    ja: バレンシア県
+    ka: ვალენსიის პროვინცია
+    kn: ವ್ಯಾಲೆನ್ಸಿಯಾ ಪ್ರಾಂತ್ಯ
+    ko: 발렌시아 주
+    lt: Valensijos provincija
+    lv: Valensijas province
+    mr: व्हॅलेन्सिया प्रांत
+    ms: Wilayah Valencia
+    nb: Valencia
+    nl: Valencia
+    pl: Walencja
+    pt: Valência (província)
+    ro: Provincia Valencia
+    ru: Валенсия
+    si: වැලෙන්සියා පළාත
+    sv: Valencia
+    sw: Mkoa wa Valencia
+    ta: வாலென்சியா மாகாணம்
+    te: వాలెన్సియా ప్రావిన్స్
+    th: จังหวัดวาเลนเซีย
+    tr: Valencia Province
+    uk: Валенсія
+    ur: صوبہ ویلنسیا
+    vi: Valencia
+    zh: 巴倫西亞省
+    ceb: Província de València
+    sr_Latn: Pokrajina Valensija
+    yue_Hans: 华伦西亚省
+    sq: Provinca Valencia
+    ccp: "\U0001111E\U00011123\U0001112C\U0001111A\U00011134\U00011125\U00011128\U00011120"
+    sr: Покрајина Валенсија
+    yue: 華倫西亞省
+    uz: Valencia
+    mk: Валенсија
+    'no': Valencia
+    az: Valensiya vilayəti
+    cy: Talaith Valencia
+    kk: Валенсия²
+  comments:
+  type: province
+VA:
+  name: Valladolid
+  code: VA
+  unofficial_names:
+  - Valladolid
+  geo:
+    latitude: 41.652251
+    longitude: -4.724532099999999
+    min_latitude: 41.6042843
+    min_longitude: -4.9281803
+    max_latitude: 41.8155086
+    max_longitude: -4.6894439
+  translations:
+    en: Valladolid
+    ar: بلد الوليد
+    be: Вальядалід
+    bn: ভ্যাল্লাদোলিড প্রদেশ
+    ca: província de Valladolid
+    cs: Provincie Valladolid
+    da: Valladolid
+    de: Provinz Valladolid
+    el: Επαρχία του Βαγιαδολίδ
+    es: Provincia de Valladolid
+    et: Valladolidi provints
+    eu: Valladolideko probintzia
+    fa: استان بالادولید
+    fi: Valladolid
+    fr: province de Valladolid
+    gl: Provincia de Valladolid
+    gu: વેલેડોલીડ પ્રાંત
+    hi: वेलाडोलिड प्रांत
+    hr: Valladolid
+    hu: Valladolid
+    hy: Վալյադոլիդ
+    id: Provinsi Valladolid
+    it: Provincia di Valladolid
+    ja: バリャドリッド県
+    ka: ვალიადოლიდის პროვინცია
+    kn: ವಲ್ಲಾಡೋಲಿಡ್ ಪ್ರಾಂತ್ಯ
+    ko: 바야돌리드 주
+    lt: Valjadolido provincija
+    lv: Valjadolidas province
+    mr: वॅलॅडॉलिड प्रांत
+    ms: Wilayah Valladolid
+    nb: Valladolid
+    nl: Valladolid
+    pl: Valladolid
+    pt: Valhadolide
+    ro: Provincia Valladolid
+    ru: Вальядолид
+    si: වල්ලඩොලිඩ් පළාත
+    sv: Valladolid
+    sw: Mkoa wa Valladolid
+    ta: வெள்ளாடாய்ட் மாகாணம்
+    te: వాలాడోలిడ్ ప్రావిన్స్
+    th: จังหวัดบายาโดลิด
+    tr: Valladolid ili
+    uk: Вальядолід
+    ur: صوبہ بلدولید
+    vi: Valladolid
+    zh: 巴利亞多利德省
+    ceb: Provincia de Valladolid
+    sr_Latn: Pokrajina Valjadolid
+    sq: Provinca Valladolid
+    ccp: "\U0001111E\U00011123\U00011133\U00011126\U00011113\U0001112E\U00011123\U00011128\U00011116\U00011134"
+    sr: Покрајина Ваљадолид
+    ga: Valladolid
+    kk: Вальядолид
+    az: Valyadolid vilayəti
+    uz: Valladolid
+    mk: Ваљадолид
+    'no': Valladolid
+    cy: Talaith Valladolid
+  comments:
+  type: province
+VC:
+  name: Comunidad Valenciana
+  code: VC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: منطقة بلنسية
+    be: аўтаномная супольнасць Валенсія
+    bg: Валенсия
+    ca: País Valencià
+    cs: Valencijské společenství
+    da: Valencia²
+    de: Valencianische Gemeinschaft
+    el: Βαλένθια
+    en: Valencian Community
+    es: Comunidad Valenciana
+    et: Valencia autonoomne piirkond
+    eu: Valentziako Erkidegoa
+    fa: بخش خودمختار والنسیا
+    fi: Valencia²
+    fr: communauté valencienne
+    gl: Comunidade Valenciana
+    gu: વૅલેન્શિયા નો પ્રદેશ
+    he: ולנסיה
+    hi: वैलेंसियाई समुदाय
+    hr: Valencijska Zajednica
+    hu: Valencia
+    hy: Վալենսիա²
+    id: Negeri Valencia
+    is: Valensía (hérað)
+    it: comunità Valenzana
+    ja: バレンシア州
+    ka: ვალენსიის ავტონომიური გაერთიანება
+    ko: 발렌시아 지방
+    lo: ແຄວ້ນວາລັງ
+    lt: Valensija
+    lv: Valensija
+    mr: वालेन्सिया
+    ms: Komuniti Valencia
+    nb: Valencia²
+    nl: Valencia²
+    pl: Walencja²
+    pt: Comunidade Valenciana
+    ro: Comunitatea Valenciană
+    ru: Валенсия²
+    sl: Valencijska dežela
+    sr: Валенсијанска Покрајина
+    sv: Valencia²
+    ta: வளன்சியான் மாநிலம்
+    th: แคว้นบาเลนเซีย
+    tr: Valensiya
+    uk: Валенсія²
+    ur: ویلنسیائی کمیونٹی
+    vi: Cộng đồng Valencia
+    zh: 巴倫西亞自治區
+    cy: Valencia
+    ceb: Comunitat Valenciana
+    sr_Latn: Valensijanska Pokrajina
+    yue_Hans: 华伦西亚自治区
+    sq: Komuniteti i Valencias
+    ccp: "\U0001111E\U00011127\U00011123\U0001112C\U0001111A\U00011134\U00011125\U00011128\U00011120\U0001111A\U00011134
+      \U00011107\U00011127\U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011111\U00011128"
+    ga: Comhphobal Valencia
+    sk: Valencijské spoločenstvo
+    kk: Валенсия
+    yue: 華倫西亞自治區
+    am: የቫለንሲያ ኅብረተሠብ
+    uz: Valencialar mamlakati
+    bs: Valencia (pokrajina)
+    mk: Валенсија²
+    'no': Valencia²
+    az: Valensiya icması
+    mn: Валенсийн Нийгэмлэг
+    sw: Jimbo la Valencia
+  comments:
+  type: autonomous_community
+VI:
+  name: Araba/Álava
+  code: VI
+  unofficial_names:
+  - Araba/Álava
+  - Araba
+  - Álava
+  geo:
+    latitude: 42.9099989
+    longitude: -2.6983868
+    min_latitude: 42.4722552
+    min_longitude: -3.2867669
+    max_latitude: 43.216969
+    max_longitude: -2.2326871
+  translations:
+    en: Álava
+    af: Álava
+    ar: ألافا
+    bg: Алава
+    bn: এলাভা
+    ca: Àlaba
+    cs: Álava
+    da: Álava
+    de: Álava
+    el: Αλάβα
+    es: Álava
+    et: Araba
+    eu: Araba
+    fa: استان آلابا
+    fi: Álava
+    fr: province d’Alava
+    gl: Provincia de Álava - Araba
+    gu: અલાવા
+    hi: अलवा प्रान्त
+    hr: Alava
+    hu: Araba
+    id: Álava
+    it: Álava
+    ja: アラバ県
+    ka: ალავა
+    kn: ಅಲಾವಾ
+    ko: 알라바 주
+    lt: Alavos provincija
+    lv: Alavas province
+    mr: अलावा
+    ms: Álava
+    nb: Álava
+    nl: Álava
+    pl: Araba
+    pt: Álava
+    ro: Provincia Álava
+    ru: Алава
+    si: අලවා
+    sr: Провинција Алава
+    sv: Álava
+    sw: Álava
+    ta: அல்லவா
+    te: అలావా
+    th: จังหวัดอาลาบา
+    tr: Álava ili
+    uk: Алава
+    ur: آلابا
+    vi: Álava
+    zh: 阿拉瓦省
+    cy: Araba
+    ceb: Araba / Álava
+    sr_Latn: Provincija Alava
+    sq: Provinca Álava
+    ccp: "\U00011103\U00011123\U0001111E"
+    hy: Ալավա
+    kk: Алава
+    az: Alava vilayəti
+    be: правінцыя Алава
+    uz: Álava
+    mk: Алава
+    'no': Álava
+  comments:
+  type: province
+Z:
+  name: Zaragoza
+  code: Z
+  unofficial_names:
+  - Zaragoza
+  geo:
+    latitude: 41.6488226
+    longitude: -0.8890853
+    min_latitude: 41.6139746
+    min_longitude: -0.9472301000000001
+    max_latitude: 41.6894079
+    max_longitude: -0.8427317
+  translations:
+    en: Zaragoza
+    ar: سرقسطة
+    be: правінцыя Сарагоса
+    bn: জাারাগোজা প্রদেশ
+    ca: província de Saragossa
+    cs: Provincie Zaragoza
+    da: Zaragoza
+    de: Provinz Saragossa
+    el: Θαραγόθα
+    es: Provincia de Zaragoza
+    et: Zaragoza provints
+    eu: Zaragozako probintzia
+    fa: استان ساراگوسا
+    fi: Zaragoza
+    fr: province de Saragosse
+    gl: Provincia de Zaragoza
+    gu: ઝારાગોઝા પ્રાંત
+    hi: ज़ारागोज़ा प्रांत
+    hr: Zaragoza
+    hu: Zaragoza
+    id: Provinsi Zaragoza
+    it: provincia di Saragozza
+    ja: サラゴサ県
+    ka: სარაგოსის პროვინცია
+    kn: ಜರಾಗೊಝಾ ಪ್ರಾಂತ್ಯ
+    ko: 사라고사 주
+    lt: Saragosos provincija
+    lv: Saragosas province
+    mr: ज़ारागोजा प्रांत
+    ms: Wilayah Zaragoza
+    nb: Zaragoza
+    nl: Zaragoza
+    pl: Saragossa
+    pt: Saragoça
+    ro: Provincia Zaragoza
+    ru: Сарагоса
+    si: සරගොසා පළාත
+    sv: Zaragoza
+    sw: Mkoa wa Zaragoza
+    ta: சரகோஜா மாகாணம்
+    te: జరాగోజా ప్రావిన్స్
+    th: จังหวัดซาราโกซา
+    tr: Zaragoza ili
+    uk: Сарагоса
+    ur: صوبہ سرقسطہ
+    vi: Zaragoza
+    zh: 薩拉戈薩省
+    ceb: Provincia de Zaragoza
+    sr_Latn: Pokrajina Saragosa
+    yue_Hans: 萨拉戈萨省
+    sq: Provinca Zaragoza
+    ccp: "\U0001110E\U00011122\U00011134\U00011109\U0001112E\U0001110E"
+    sr: Покрајина Сарагоса
+    hy: Սարագոսա
+    he: מחוז סרגוסה
+    kk: Сарагоса
+    yue: 薩拉戈薩省
+    az: Zaraqoza
+    uz: Zaragoza
+    bs: Zaragoza
+    mk: Сагароса
+    'no': Zaragoza
+    cy: Talaith Zaragoza
+  comments:
+  type: province
+ZA:
+  name: Zamora
+  code: ZA
+  unofficial_names:
+  - Zamora
+  geo:
+    latitude: 41.5034712
+    longitude: -5.7467879
+    min_latitude: 41.4850183
+    min_longitude: -5.768415699999999
+    max_latitude: 41.5226013
+    max_longitude: -5.720656399999999
+  translations:
+    en: Zamora
+    ar: سمورة
+    be: Правінцыя Самора
+    bg: Самора
+    bn: জামোড়া প্রদেশ
+    ca: província de Zamora
+    cs: Provincie Zamora
+    da: Zamora
+    de: Provinz Zamora
+    el: Επαρχία της Θαμόρα
+    es: Provincia de Zamora
+    et: Zamora provints
+    eu: Zamorako probintzia
+    fa: استان سامرا
+    fi: Zamora
+    fr: province de Zamora
+    gl: Provincia de Zamora
+    gu: ઝામોરા પ્રાંત
+    hi: ज़मोरा प्रांत
+    hr: Zamora
+    hu: Zamora
+    id: Provinsi Zamora
+    it: provincia di Zamora
+    ja: サモラ県
+    ka: სამორის პროვინცია
+    kn: ಝಮೊರಾ ಪ್ರಾಂತ್ಯ
+    ko: 사모라 주
+    lt: Samoros provincija
+    lv: Samoras province
+    mr: ज़मोमो प्रांत
+    ms: Wilayah Zamora
+    nb: Zamora
+    nl: Zamora
+    pl: Zamora
+    pt: Zamora
+    ro: Provincia Zamora
+    ru: Самора
+    si: සමෝරා පළාත
+    sv: Zamora
+    sw: Mkoa wa Zamora
+    ta: சமோரா மாகாணம்
+    te: జమోరా ప్రావిన్స్
+    th: จังหวัดซาโมรา
+    tr: Zamora ili
+    uk: Самора
+    ur: صوبہ سامورا
+    vi: Zamora
+    zh: 萨莫拉省
+    ceb: Provincia de Zamora
+    sr_Latn: Pokrajina Zamora
+    sq: Provinca Zamora
+    ccp: "\U0001110E\U0001111F\U0001112E\U00011122"
+    sr: Покрајина Замора
+    kk: Самора
+    uz: Zamora
+    'no': Zamora
+    az: Samora vilayəti
+    cy: Talaith Zamora
+    he: מחוז זמורה
+  comments:
+  type: province

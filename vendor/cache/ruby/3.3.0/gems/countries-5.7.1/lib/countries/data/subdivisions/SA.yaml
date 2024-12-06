@@ -1,0 +1,854 @@
+---
+'01':
+  name: Ar Riyāḑ
+  code: '01'
+  unofficial_names:
+  - ar-Riyad
+  - ar-Riyād̨
+  - Riad
+  - Riyadh
+  - Riad
+  geo:
+    latitude: 24.633333
+    longitude: 46.716667
+    min_latitude: 24.2939113
+    min_longitude: 46.2981033
+    max_latitude: 25.1564724
+    max_longitude: 47.34695430000001
+  translations:
+    en: Riyadh
+    ar: منطقة الرياض
+    be: Правінцыя Рыяд
+    ca: Província de Riad
+    de: Provinz Riad
+    el: Ριάντ
+    es: Provincia de Riad
+    et: Ar-Riyāḑi provints
+    fa: استان ریاض
+    fi: Ar Riyad
+    fr: Riyad (province)
+    hi: रियाद प्रान्त
+    hr: Rijad (pokrajina)
+    hu: Rijád tartomány
+    id: Provinsi Riyadh
+    it: Al-Riyad
+    ja: リヤード州
+    ko: 리야드 주
+    ml: റിയാദ് പ്രവിശ്യ
+    mr: रियाध प्रांत
+    nb: Ar Riyad (provins)
+    nl: Riyad
+    pl: Rijad (prowincja)
+    pt: Ar Riyad
+    ro: Provincia Riad
+    ru: Эр-Рияд
+    sv: Ar-Riyad
+    tr: Riyad Bölgesi
+    uk: Ер-Ріяд
+    ur: صوبہ الرياض
+    zh: 利雅得省
+    ceb: Minţaqat ar Riyāḑ
+    vi: Riyadh
+    ccp: "\U00011122\U00011128\U00011120\U00011116\U00011134"
+    he: מחוז ריאד
+    'no': Ar Riyad (provins)
+    az: Ər-Riyad regionu
+    hy: Էև-Ռիյադ
+    ms: Wilayah Riyadh
+    sr: Ријад (провинција)
+    sr_Latn: Rijad (provincija)
+    ta: ரியாத் மாகாணம்
+    uz: Riyod viloyati
+  comments:
+  type: region
+'02':
+  name: Makkah al Mukarramah
+  code: '02'
+  unofficial_names:
+  - La Meca
+  - Mecca
+  geo:
+    latitude: 21.416667
+    longitude: 39.816667
+    min_latitude: 21.2790277
+    min_longitude: 39.6902353
+    max_latitude: 21.5930031
+    max_longitude: 40.0028579
+  translations:
+    en: Makkah
+    ar: منطقة مكة المكرمة
+    be: Правінцыя Мекка
+    bn: মক্কা অঞ্চল
+    da: Makkah Region
+    de: Provinz Mekka
+    el: Επαρχία Μάκκα
+    es: Provincia de La Meca
+    et: Meka provints
+    fa: استان مکه
+    fi: Makkah
+    fr: La Mecque
+    gu: મક્કાહ પ્રદેશ
+    hi: मक्का प्रान्त
+    hu: Mekka tartomány
+    id: Provinsi Makkah
+    it: provincia della Mecca
+    ja: マッカ州
+    kn: ಮಕಾಹ್ ಪ್ರದೇಶ
+    ko: 메카 주
+    lt: Mekos emyratas
+    ml: മക്ക പ്രവിശ്യ
+    mr: मक्का प्रांत
+    ms: Makkah Region
+    nb: Mekka
+    nl: Mekka
+    pl: Mekka
+    ps: مکه معظمه
+    pt: Meca
+    ro: Provincia Mecca
+    ru: Мекка
+    si: මක්කම ප්‍රාන්තය
+    sr: Мека
+    sv: Mekka
+    ta: மக்கா பிராந்தியம்
+    te: మక్కా ప్రాంతం
+    th: จังหวัดมักกะฮ์
+    tr: Mekke Bölgesi
+    uk: Мекка (провінція)
+    ur: صوبہ المکہ
+    vi: Khu vực Makkah
+    lv: Mekas mintaka
+    ceb: Makkah Province
+    sr_Latn: Meka
+    zh: 麥加省
+    jv: Provinsi Mekkah
+    ccp: "\U0001111F\U00011127\U00011107\U00011133\U00011126\U00011126\U00011134"
+    he: מחוז מכה
+    pa: ਮੱਕਾ ਸੂਬਾ
+    ca: Regió de la Meca
+    mk: Мека
+    'no': Mekka
+    az: Məkkə bölgəsi
+    ha: yankin Makka
+    ha_NE: yankin Makka
+    hy: Մեքքայի շրջան
+    sq: Provinca Meka
+    uz: Makka viloyati
+  comments:
+  type: region
+'03':
+  name: Al Madinah
+  code: '03'
+  unofficial_names:
+  - Medina
+  - Médine
+  - al-Madinah
+  geo:
+    latitude: 24.466667
+    longitude: 39.6
+    min_latitude: 24.2829585
+    min_longitude: 39.37397
+    max_latitude: 24.6591863
+    max_longitude: 39.861145
+  translations:
+    en: Al Madinah
+    ar: منطقة المدينة المنورة
+    be: Эль-Медына
+    bn: আল মদিনা অঞ্চল
+    da: Al Madinah Region
+    de: Provinz Medina
+    el: Επαρχία Μαδίνα
+    es: Provincia de Medina
+    et: Mediina provints
+    fa: استان مدینه
+    fi: Al Madinah
+    fr: Médine
+    gu: અલ મદીના પ્રદેશ
+    hi: मदीना प्रान्त
+    hr: Medina
+    hu: Medina tartomány
+    id: Provinsi Madinah
+    it: Medina
+    ja: マディーナ州
+    kn: ಅಲ್ ಮಡಿನಾ ಪ್ರದೇಶ
+    ko: 메디나 주
+    lt: Medinos emyratas
+    ml: മദീന പ്രവിശ്യ
+    mr: अल मदीना प्रांत
+    ms: Al Madinah
+    nb: Medina
+    nl: Medina
+    pl: Medyna
+    pt: Al Madinah
+    ro: Provincia Medina
+    ru: Медина (провинция)
+    si: අල් මදීනා කලාපය
+    sr: Ел Медина
+    sv: Al-Madinah
+    ta: அல்-மதீனா பிராந்தியம்
+    te: అల్ మాదీనాహ్ ప్రాంతం
+    th: แคว้นอัลมะดีนะฮ์
+    tr: Medine Bölgesi
+    uk: Ель-Мадіна
+    ur: صوبہ المدينہ
+    vi: Khu vực Al Madinah
+    lv: Medīnas mintaka
+    ceb: Al Madīnah al Munawwarah
+    sr_Latn: El Medina
+    zh: 麦地那省
+    ccp: "\U00011103\U00011123\U00011134 \U0001111F\U00011127\U00011113\U00011128\U0001111A\U00011126\U00011134"
+    he: מחוז אל-מדינה
+    az: Əl-Mədinə
+    ca: Província de Medina
+    mk: Медина
+    'no': Medina
+  comments:
+  type: region
+'04':
+  name: Ash Sharqiyah
+  code: '04'
+  unofficial_names:
+  - Eastern
+  - ash-Sharqiyah
+  geo:
+    latitude: 22.2954496
+    longitude: 50.6793759
+    min_latitude: 17.013492
+    min_longitude: 44.9209199
+    max_latitude: 29.1188431
+    max_longitude: 55.6665879
+  translations:
+    en: Eastern
+    ar: المنطقة الشرقية
+    be: Эш-Шаркія
+    bn: ইস্টার্ন প্রদেশ
+    da: Eastern Province
+    de: Provinz asch-Scharqiyya
+    el: Ανατολική επαρχία
+    es: Provincia Oriental
+    et: Ash-Sharqīyah
+    fa: استان شرقی (عربستان سعودی)
+    fi: Al-Šarqiyya
+    fr: Ach-Charqiya
+    gu: પૂર્વીય પ્રાંત
+    he: מחוז א-שרקייה
+    hi: पूर्वी प्रान्त, सउदी अरब
+    hr: Istočna pokrajina
+    hu: Keleti tartomány
+    id: Syarqiyah, Arab Saudi
+    it: Al-Sharqiyya
+    ja: 東部州
+    ka: ეშ-შარკია
+    kn: ಪೂರ್ವ ಪ್ರಾಂತ್ಯ
+    ko: 동부 주
+    ml: കിഴക്കൻ പ്രവിശ്യ
+    mr: पूर्व प्रांत
+    ms: Ash Syarqiyah
+    nb: Ash Sharqiyah
+    nl: Ash Sharqiyah
+    pl: Prowincja Wschodnia
+    pt: Ash Sharqiyah
+    ro: Ash Sharqiyah
+    ru: Восточная провинция
+    si: නැගෙනහිර පළාත
+    sr: Источна провинција
+    sv: Ash Sharqiyah
+    ta: கிழக்கு மாகாணம்
+    te: తూర్పు ప్రావిన్స్
+    th: สยาริอาห์, ซาอุดีอาระเบีย
+    tr: Doğu Bölgesi
+    uk: Еш-Шаркійя
+    ur: صوبہ الشرقيہ
+    vi: Tỉnh Miền Đông
+    lv: Austrumu province
+    ceb: Al Minţaqah ash Sharqīyah
+    sr_Latn: Istočna provincija
+    lt: Rytų Provincija
+    zh: 东部省
+    ccp: "\U00011103\U00011128\U0001110C\U00011134\U00011111\U00011122\U00011134\U0001111A\U00011134"
+    ca: Província Oriental
+    'no': Ash Sharqiyah
+    hy: Արևելյան նահանգ
+    uz: Sharqiy viloyati, Saudi Arabistoni
+  comments:
+  type: region
+'05':
+  name: Al Qasim
+  code: '05'
+  unofficial_names:
+  - Qaseem
+  geo:
+    latitude: 25.8274886
+    longitude: 42.8637875
+    min_latitude: 24.6168831
+    min_longitude: 41.40690499999999
+    max_latitude: 27.3311671
+    max_longitude: 44.8272001
+  translations:
+    en: Al-Qassim
+    ar: منطقة القصيم
+    be: Правінцыя Эль-Касім
+    bn: আল কাসিম অঞ্চল
+    ca: Al-Kasim
+    da: Al-Qassim Region
+    de: Provinz al-Qasim
+    el: Επαρχία Κασίμ
+    es: Casim
+    et: Al-Qaşīm
+    fa: استان قصیم
+    fi: Al Qasim
+    fr: Al Qasim
+    gu: અલ-કાસીમ પ્રદેશ
+    hi: क़सीम प्रान्त
+    hr: Kasim (pokrajina)
+    hu: Kaszím tartomány
+    id: Provinsi Qasim
+    it: Al-Qasim
+    ja: カスィーム州
+    kn: ಅಲ್-ಖಾಸ್ಸಿಮ್ ಪ್ರದೇಶ
+    ko: 카심 주
+    lt: Kasimo emyratas
+    ml: അൽ ഖസീം
+    mr: अल-कासिम प्रदेश
+    ms: Al Qasim
+    nb: Al Qasim (provins)
+    nl: Al Qasim
+    pl: Al-Kasim
+    pt: Al Qasim
+    ro: Provincia Al-Qassim
+    ru: Эль-Касим
+    si: අල්-කසීම් කලාපය
+    sr: Ел Касим
+    sv: Al Qasim
+    ta: அல் -கிஆசிம் பகுதி
+    te: అల్-ఖాసిం ప్రాంతం
+    th: เมืองแอลเจียร์
+    tr: El Kasım Bölgesi
+    uk: Ель-Касим
+    ur: صوبہ القصيم
+    vi: Khu vực Al-Qassim
+    lv: Kasīmas mintaka
+    ceb: Al-Qassim Province
+    sr_Latn: El Kasim
+    zh: 盖西姆省
+    ccp: "\U00011103\U00011123\U00011134-\U00011107\U0001112A\U00011125\U00011128\U0001111F\U00011134"
+    he: אזור אלקסים
+    pa: ਅਲ-ਕਸੀਮ ਸੂਬਾ
+    'no': Al Qasim (provins)
+    ha: Yankin Al-Qassim
+    ha_NE: Yankin Al-Qassim
+    hy: Ալ Քասիմ
+    ka: ელ-ქაზიმი
+    uz: Al-Qassim viloyati
+  comments:
+  type: region
+'06':
+  name: Ḩā'il
+  code: '06'
+  unofficial_names:
+  - Hail
+  geo:
+    latitude: 27.516667
+    longitude: 41.683333
+    min_latitude: 27.3530152
+    min_longitude: 41.5061761
+    max_latitude: 27.6987282
+    max_longitude: 41.8434906
+  translations:
+    en: Ha’il
+    ar: منطقة حائل
+    be: Правінцыя Хаіль
+    bn: হাইল অঞ্চল
+    da: v
+    de: Provinz Ha’il
+    el: Επαρχία Χαΐλ
+    es: Provincia de Haíl
+    fa: منطقه حائل
+    fi: Ha’il
+    fr: Haïl
+    gu: હાઈલ પ્રદેશ
+    hi: हाइल प्रान्त
+    hr: Ha’il
+    hu: Háil tartomány
+    hy: Հայիլի էմիրություն
+    id: Provinsi Ha’il
+    it: Ha’il
+    ja: ハーイル州
+    ka: ჰაილის პროვინცია
+    kn: ಹಾಲ್ ಪ್ರದೇಶ
+    ko: 하일 주
+    lt: Hailo emyratas
+    ml: ഹായിൽ പ്രവിശ്യ
+    mr: हाईल प्रदेश
+    ms: Ha’il
+    nb: Ha’il
+    nl: Hail
+    pl: Hail
+    pt: Ha’il
+    ro: Provincia Ha’il
+    ru: Хаиль
+    si: හා ‘ඉල් කලාපය
+    sr: Хаил
+    sv: Ha’il
+    ta: ஹா ‘இல் பகுதி
+    te: హాయిల్ ప్రాంతం
+    th: เขตฮาอิล
+    tr: Hail Bölgesi
+    uk: Хаїль
+    ur: صوبہ حائل
+    vi: Tỉnh Ha’il
+    lv: Hāilas mintaka
+    ceb: Minţaqat Ḩā’il
+    sr_Latn: Hail
+    zh: 哈伊勒省
+    ccp: "\U00011126‘\U00011103\U00011128\U00011123\U00011134"
+    et: Ḩā’ili provints
+    pa: ਹਾਇਲ ਰਿਆਸਤ
+    ca: Província de Ha’il
+    mk: Хаил
+    'no': Ha’il
+    uz: Hail viloyati
+  comments:
+  type: region
+'07':
+  name: Tabūk
+  code: '07'
+  unofficial_names:
+  - Tabook
+  geo:
+    latitude: 28.383333
+    longitude: 36.583333
+    min_latitude: 28.3255379
+    min_longitude: 36.4326624
+    max_latitude: 28.4718602
+    max_longitude: 36.6991425
+  translations:
+    en: Tabuk
+    ar: منطقة تبوك
+    be: Правінцыя Табук
+    bn: তাবুক অঞ্চল
+    ca: Província de Tabuk
+    da: Tabuk Region
+    de: Provinz Tabuk
+    el: Επαρχία Ταμπούκ
+    es: Provincia de Tabuk
+    et: Tabūki provints
+    fa: استان تبوک
+    fi: Tabuk
+    fr: Tabuk (province)
+    gu: તાબૂક પ્રદેશ
+    hi: तबूक प्रान्त
+    hr: Tabuk (pokrajina)
+    hu: Tabúk tartomány
+    id: Provinsi Tabuk
+    it: Tabuk
+    ja: タブーク州
+    kn: ತಾಬುಕ್ ಪ್ರದೇಶ
+    ko: 타부크 주
+    lt: Tabuko emyratas
+    ml: തബൂക്ക് പ്രവിശ്യ
+    mr: ताबूक प्रदेश
+    ms: Tabuk
+    nb: Tabuk (provins)
+    nl: Tabuk
+    pl: Tabuk (prowincja)
+    pt: Tabuk (província)
+    ro: Provincia Tabuk
+    ru: Табук
+    si: ", ටබුක් කලාපය"
+    sr: Табук
+    sv: Tabuk (provins)
+    ta: தபூக் பகுதி
+    te: టాబుక్ ప్రాంతం
+    th: เขตตาบุก
+    tr: Tebük Bölgesi
+    uk: Табук
+    ur: صوبہ تبوک
+    vi: Khu vực Tabuk
+    lv: Tebūkas mintaka
+    ceb: Minţaqat Tabūk
+    sr_Latn: Tabuk
+    zh: 塔布克省
+    ccp: "\U00011111\U0001111D\U0001112A\U00011107\U00011134"
+    pa: ਤਬੂਕ ਸੂਬਾ
+    'no': Tabuk (provins)
+    uz: Tabuk viloyati
+  comments:
+  type: region
+'08':
+  name: Al Ḩudūd ash Shamālīyah
+  code: '08'
+  unofficial_names:
+  - Northern
+  - al-Hudud ash-Shamaliyah
+  geo:
+    latitude: 29.7248676
+    longitude: 42.2362435
+    min_latitude: 27.459833
+    min_longitude: 37.8584141
+    max_latitude: 32.158333
+    max_longitude: 45.92311
+  translations:
+    en: Northern Borders
+    ar: منطقة الحدود الشمالية
+    be: Эль-Худуд эш-Шамалія
+    de: Provinz al-Hudud asch-schamaliyya
+    el: Επαρχία Βορείων Συνόρων
+    es: Provincia de la Frontera del Norte
+    et: Al-Ḩudūd ash-Shamālīyah
+    fa: استان مرزهای شمالی
+    fi: Al Hudud ash Shamaliyah
+    fr: Al-Hudud ach-Chamaliya
+    hi: उत्तरी सीमाएँ प्रान्त
+    hu: Északi határvidék tartomány
+    id: Hududusy Syamaliyah
+    it: Al-Hudud al-Shamaliyya
+    ja: 北部国境州
+    ko: 북부 변경 주
+    lt: Šiaurinio Krašto emyratas
+    ml: വടക്കൻ അതിർത്തി പ്രവിശ്യ
+    ms: Al Hudud ash Shamaliyah
+    nb: Al Hudud ash Shamaliyah
+    nl: Al Hudud ash Shamaliyah
+    pl: Północna Prowincja Graniczna
+    pt: Al Hudud ash Shamaliyah
+    ro: Al Hudud ash Shamaliyah
+    ru: Эль-Худуд-эш-Шамалия
+    sr: Северна граница
+    sv: Al Hudud ash Shamaliyah
+    tr: Kuzey Sınır Bölgesi
+    uk: Ель-Худуд еш-Шамалійя
+    ur: صوبہ الحدود الشماليہ
+    ceb: Minţaqat al Ḩudūd ash Shamālīyah
+    sr_Latn: Severna granica
+    vi: Biên giới Phương Bắc
+    zh: 北部边疆省
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011125\U00011128\U0001111F\U00011128\U0001111A\U0001112C"
+    ca: Província de la Frontera Septentrional
+    'no': Al Hudud ash Shamaliyah
+    he: מחוז אל-חודוד א-שמאליה
+    ta: வடக்கு எல்லைகள் மாகாணம்
+  comments:
+  type: region
+'09':
+  name: Jāzān
+  code: '09'
+  unofficial_names:
+  - Jizan
+  geo:
+    latitude: 16.889167
+    longitude: 42.561111
+    min_latitude: 16.8181793
+    min_longitude: 42.5295783
+    max_latitude: 16.9898154
+    max_longitude: 42.64789589999999
+  translations:
+    en: Jizan
+    ar: منطقة جازان
+    be: Правінцыя Джызан
+    ca: Jizan
+    de: Provinz Dschāzān
+    el: Επαρχία Τζιζάν
+    es: Provincia de Jizán
+    et: Jīzāni provints
+    fa: استان جازان
+    fi: Jizan
+    fr: Jizan
+    hi: जाज़ान प्रान्त
+    hu: Dzsízán tartomány
+    id: Provinsi Jizan
+    it: Jazan
+    ja: ジーザーン州
+    ko: 지잔 주
+    ml: ജിസാൻ പ്രവിശ്യ
+    ms: Jizan
+    nb: Jizan
+    nl: Jizan
+    pl: Dżizan
+    pt: Jizan
+    ro: Provincia Jizan
+    ru: Джизан
+    sr: Џизан
+    sv: Jizan
+    tr: Cizan Bölgesi
+    uk: Джизан
+    ur: صوبہ جازان
+    ceb: Jizan Region
+    sr_Latn: Džizan
+    lt: Džizano provincija
+    vi: Jizan
+    zh: 吉赞省
+    ccp: "\U0001110E\U00011128\U0001110E\U0001111A\U00011134"
+    'no': Jizan
+    cs: Džižan
+    he: מחוז ג׳אזאן
+    ta: ஜாசான் மாகாணம்
+    uz: Jizan viloyati
+  comments:
+  type: region
+'10':
+  name: Najrān
+  code: '10'
+  unofficial_names: Najran
+  geo:
+    latitude: 17.491667
+    longitude: 44.132222
+    min_latitude: 17.4746589
+    min_longitude: 44.0930793
+    max_latitude: 17.6004129
+    max_longitude: 44.2933307
+  translations:
+    en: Najran
+    ar: منطقة نجران
+    be: Правінцыя Наджран
+    bn: নাজরান অঞ্চল
+    da: Najran Region
+    de: Provinz Nadschran
+    el: Περιφέρεια Νατζράν
+    es: Provincia de Najrán
+    et: Najrāni provints
+    fa: استان نجران
+    fi: Najran
+    fr: Najran
+    gu: નજરાન પ્રદેશ
+    hi: नजरान प्रान्त
+    hu: Nadzsrán tartomány
+    id: Provinsi Najran
+    it: Najran
+    ja: ナジュラーン州
+    kn: ನಜ್ರಾನ್ ಪ್ರದೇಶ
+    ko: 나즈란 주
+    ml: നജ്റാൻ പ്രവിശ്യ
+    mr: नजरेन प्रदेश
+    ms: Najran
+    nb: Najran
+    nl: Najran
+    pl: Nadżran
+    pt: Najran
+    ro: Provincia Najran
+    ru: Наджран
+    si: නජ්රන් කලාපය
+    sr: Наџран
+    sv: Najran
+    ta: நஜ்ரான் பகுதி
+    te: నజ్రన్ ప్రాంతం
+    th: นัจญ์รอน
+    tr: Necran Bölgesi
+    uk: Наджран
+    ur: صوبہ نجران
+    vi: Khu vực Najran
+    lv: Nedžrānas mintaka
+    ceb: Minţaqat Najrān
+    sr_Latn: Nadžran
+    lt: Nadžrano regionas
+    zh: 奈季兰省
+    ccp: "\U0001111A\U0001110C\U00011134\U00011122\U0001111A\U00011134"
+    ca: Província de Najran
+    'no': Najran
+    cs: Provincie Nadžrán
+    he: מחוז נג׳ראן
+    uz: Najron viloyati
+  comments:
+  type: region
+'11':
+  name: Al Bāḩah
+  code: '11'
+  unofficial_names:
+  - Baha
+  geo:
+    latitude: 21.4556901
+    longitude: 39.2133847
+    min_latitude: 21.4550067
+    min_longitude: 39.21315860000001
+    max_latitude: 21.4561942
+    max_longitude: 39.2135471
+  translations:
+    en: Al Bahah
+    ar: منطقة الباحة
+    be: Правінцыя Эль-Баха
+    bn: আল বাহা অঞ্চল
+    ca: Província d’Al-Bahah
+    da: Al Bahah Region
+    de: Provinz al-Baha
+    el: Επαρχία Μπαά
+    es: Provincia de Baha
+    et: Al-Bāḩah’ provints
+    fa: استان باحه
+    fi: Al Bahah
+    fr: Al Bahah
+    gu: અલ બહાહ પ્રદેશ
+    hi: बाहाह प्रान्त
+    hr: Bahah (pokrajina)
+    hu: Báha tartomány
+    id: Provinsi Bahah
+    it: Al-Baha
+    ja: バーハ州
+    kn: ಅಲ್ ಬಹಾ ಪ್ರದೇಶ
+    ko: 바하 주
+    lt: Al Bahos emyratas
+    ml: അൽ ബഹ പ്രവിശ്യ
+    mr: अल-बाहा प्रांत
+    ms: Al Bahah
+    nb: al-Bāḥa
+    nl: Al-Bahah
+    pl: Al-Baha (prowincja)
+    pt: Al Bahah (distrito)
+    ro: Provincia Al Bahah
+    ru: Эль-Баха
+    si: අල් බහා කලාපය
+    sr: Ал Баха (покрајина)
+    sv: Al Bahah
+    ta: அல் பஹத் பகுதி
+    te: అల్ బహాహ్ ప్రాంతం
+    th: อัลบาฮา
+    tr: El Baha Bölgesi
+    uk: Ель-Баха (провінція)
+    ur: صوبہ الباحہ
+    vi: Khu vực Al Bahah
+    lv: Bāhas mintaka
+    ceb: Minţaqat al Bāḩah
+    sr_Latn: Al Baha (pokrajina)
+    zh: 巴哈省
+    ccp: "\U00011103\U00011123\U00011134 \U0001111D\U00011126\U00011134"
+    pa: ਅਲਬਾਹਾ ਸੂਬਾ
+    'no': al-Bāḥa
+    he: מחוז אל-באחה
+    ne: अल बाहा प्रान्त
+    uz: Al-Baha viloyati
+  comments:
+  type: region
+'12':
+  name: Al Jawf
+  code: '12'
+  unofficial_names:
+  - Al-Jouf
+  geo:
+    latitude: 29.887356
+    longitude: 39.3206241
+    min_latitude: 28.1313139
+    min_longitude: 34.8245874
+    max_latitude: 31.7389761
+    max_longitude: 41.91381500000001
+  translations:
+    en: Al Jawf
+    ar: منطقة الجوف
+    be: Правінцыя Эль-Джаўф
+    bg: Ал-Джоуф
+    bn: আল যাফ অঞ্চল
+    ca: Província d’Al-Jawf
+    da: Al Jawf Region
+    de: Provinz al-Dschauf
+    el: Επαρχία Τζωφ
+    es: Provincia de Yauf
+    et: Al-Jawfi provints
+    fa: جوف
+    fi: Al Jawf
+    fr: Al Jawf (province)
+    gu: અલ જૉફ પ્રદેશ
+    hi: जौफ़ प्रान्त
+    hr: Džavf (pokrajina)
+    hu: Dzsauf tartomány (Szaúd-Arábia)
+    id: Provinsi Jauf
+    it: Al-Jawf
+    ja: ジャウフ州
+    kn: ಅಲ್ ಜಾವ್ಫ್ ಪ್ರದೇಶ
+    ko: 자우프 주 (사우디아라비아)
+    lt: Džaufo emyratas
+    ml: അൽ ജൗഫ് പ്രവിശ്യ
+    mr: अल जौफ प्रदेश
+    ms: Wilayah Al Jawf
+    nb: Al Jawf (provins)
+    nl: Al Jawf
+    pl: Al-Dżauf (prowincja)
+    pt: Al Jawf (Arábia Saudita)
+    ro: Provincia Al Jawf
+    ru: Эль-Джауф
+    si: අල් ජෝෆ් කලාපය
+    sr: Ел Џауф
+    sv: Al Jawf
+    ta: அல் ஜாவ்ப் பகுதி
+    te: అల్ జాఫ్ ప్రాంతం
+    th: อัลเจาฟ์
+    tr: Cevf Bölgesi
+    uk: Ель-Джауф
+    ur: صوبہ الجوف
+    vi: Khu vực Al Jawf
+    lv: Džaufas mintaka
+    ceb: Al Jawf
+    sr_Latn: El Džauf
+    zh: 焦夫省 (沙地阿拉伯)
+    ccp: "\U00011103\U00011123\U00011134 \U0001110E\U00011127\U00011120\U0001112E\U0001111B\U00011134"
+    pa: ਜੌਫ਼ ਸੂਬਾ
+    'no': Al Jawf (provins)
+    he: מחוז אל-ג׳וף
+    hy: Ալ Ջաուֆ
+  comments:
+  type: region
+'14':
+  name: "'Asīr"
+  code: '14'
+  unofficial_names:
+  - Aseer
+  geo:
+    latitude: 19.0969062
+    longitude: 42.8637875
+    min_latitude: 17.422384
+    min_longitude: 41.38029
+    max_latitude: 20.970846
+    max_longitude: 44.528442
+  translations:
+    en: Asir
+    ar: منطقة عسير
+    be: Правінцыя Асір
+    bn: আসির প্রদেশ
+    ca: Regió d’Asir
+    cs: Asír
+    da: Asir Region
+    de: Provinz Asir
+    el: Επαρχία Ασίρ
+    es: Provincia de Asir
+    fa: استان عسیر
+    fi: Asir
+    fr: Asir (province)
+    gu: આસિર પ્રદેશ
+    he: אזור עסיר
+    hi: असीर प्रान्त
+    hr: Asir (pokrajina)
+    hu: Aszír tartomány
+    id: Provinsi ‘Asir
+    ja: アスィール州
+    ka: ასირი
+    kn: ಆಸಿರ್ ಪ್ರದೇಶ
+    ko: 아시르 주
+    lt: Asiro emyratas
+    ml: അസീർ പ്രവിശ്യ
+    mr: असर प्रदेश
+    ms: "‘Asir"
+    nb: Asir
+    nl: Asir
+    pl: Asir
+    pt: "‘Asir"
+    ro: Provincia ‘Asir
+    ru: Асир (провинция)
+    si: අසීර් කලාපය
+    sr: Асир
+    sv: "‘Asir"
+    ta: ஆசீர் பகுதி
+    te: యాసిర్ ప్రాంతం
+    th: จังหวัดอาเซอร์
+    tr: Asir Bölgesi
+    uk: Асір
+    ur: صوبہ عسير
+    vi: Khu vực Asir
+    lv: Asīras mintaka
+    ceb: Minţaqat ‘Asīr
+    sr_Latn: Asir
+    zh: 阿西尔省
+    ccp: "\U00011103\U00011125\U00011128\U00011122\U00011134"
+    pa: ਅਸੀਰ ਰਿਆਸਤ
+    ne: असिर प्रान्त
+    'no': Asir
+    az: Əsir bölgəsi
+    gl: Provincia de Asir
+  comments:
+  type: region

@@ -1,0 +1,11 @@
+module Datadog
+  module CI
+    module Utils
+      module Git
+        def self?.normalize_ref: (untyped name) -> (nil | untyped)
+
+        def self?.is_git_tag?: (untyped ref) -> untyped
+      end
+    end
+  end
+end

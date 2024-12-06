@@ -1,0 +1,9 @@
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
+run_test.sh
+doc/*
+.*.sw?
+.env
+gemfiles/*.lock

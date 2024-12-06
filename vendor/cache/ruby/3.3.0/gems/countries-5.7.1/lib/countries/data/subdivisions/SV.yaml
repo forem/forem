@@ -1,0 +1,810 @@
+---
+AH:
+  name: Ahuachapán
+  code: AH
+  unofficial_names: Ahuachapán
+  geo:
+    latitude: 13.9259486
+    longitude: -89.84113819999999
+    min_latitude: 13.9044087
+    min_longitude: -89.8722839
+    max_latitude: 13.9537264
+    max_longitude: -89.8150349
+  translations:
+    en: Ahuachapán
+    ar: إدارة أهواشابان
+    bg: Ауачапан
+    bn: আহোয়াচাপান বিভাগ
+    ca: Departament d’Ahuachapán
+    cs: Sonsonate
+    da: Ahuachapán Department
+    de: Departamento Ahuachapán
+    el: Διαμέρισμα Αουατσαπάν
+    es: Departamento de Ahuachapán
+    fa: بخش اهواچوپان
+    fi: Ahuachapánin departmentti
+    fr: département d’Ahuachapán
+    gu: આહુચપન વિભાગ
+    hi: अहुअछापान
+    hu: Ahuachapán megye
+    id: Departemen Ahuachapán
+    it: dipartimento di Ahuachapán
+    ja: アワチャパン県
+    ka: აუაჩაპანის დეპარტამენტი
+    kn: ಅಹುಚಪಾನ್ ಇಲಾಖೆ
+    ko: 아우아차판 주
+    lt: Auačapano departamentas
+    mr: अहुचापान विभाग
+    ms: Ahuachapan Department
+    nb: Ahuachapán
+    nl: Ahuachapán
+    pl: Ahuachapán
+    pt: Ahuachapán
+    ro: Departamentul Ahuachapán
+    ru: Ауачапан
+    si: අහුවාචපාන් දෙපාර්තමේන්තුව
+    sv: Ahuachapán
+    ta: குச்சாபன் துறை
+    te: అహూచాపన్ డిపార్ట్మెంట్
+    th: จังหวัดอาวาชาปัง
+    tr: Ahuachpan Departmanı
+    ur: اہواشاپان محکمہ
+    vi: Khu vực hành chính Ahuachapán
+    zh: 阿瓦查潘省
+    lv: Avačapanas departaments
+    ceb: Departamento de Ahuachapán
+    ccp: "\U00011103\U00011126\U0001112A\U00011120\U0001110C\U0001111B\U00011127\U0001111A\U00011134"
+    eu: Ahuachapán departamendua
+    uk: Регіон Ауачапан
+    'no': Ahuachapán
+    gl: Departamento de Ahuachapán
+  comments:
+  type: departments
+CA:
+  name: Cabañas
+  code: CA
+  unofficial_names: Cabañas
+  geo:
+    latitude: 13.8648288
+    longitude: -88.7493998
+    min_latitude: 13.7396891
+    min_longitude: -88.9883749
+    max_latitude: 14.019085
+    max_longitude: -88.49336
+  translations:
+    en: Cabañas
+    ar: إدارة كاباناس
+    bg: Кабаняс
+    bn: কাবানাস বিভাগ
+    ca: Departament de Cabañas
+    da: Cabañas Department
+    de: Departamento Cabañas
+    el: Διαμέρισμα Καμπάνιας
+    es: Cabañas
+    fi: Cabañasn departmentti
+    fr: département de Cabañas
+    gu: કેબાનાસ વિભાગ
+    hi: कभान्यास
+    hu: Cabañas megye
+    id: Departemen Cabañas
+    it: dipartimento di Cabañas
+    ja: カバーニャス県
+    ka: კაბანიასის დეპარტამენტი
+    kn: ಕ್ಯಾಬಾನಾಸ್ ಇಲಾಖೆ
+    ko: 카바냐스 주
+    lt: Kabanjaso departamentas
+    mr: सेबानास विभाग
+    ms: Cabañas Department
+    nb: Cabañas
+    nl: Cabañas
+    pl: Cabañas
+    pt: Cabañas
+    ro: Departamentul Cabañas
+    ru: Кабаньяс
+    si: කබානාස් දෙපාර්තමේන්තුව
+    sv: Cabañas
+    ta: கபானாஸ் துறை
+    te: కబానాస్ డిపార్ట్మెంట్
+    th: จังหวัดกาบาญัส
+    tr: Cabanas Departmanı
+    ur: کابانیاس محکمہ
+    vi: Khu vực hành chính Cabanas
+    lv: Kabanjasas departaments
+    ceb: Departamento de Cabañas
+    zh: 卡瓦尼亚斯省
+    ccp: "\U00011107\U0001112C\U0001111D\U0001111A\U0001110C\U00011134"
+    eu: Cabañas departamendua
+    uk: Регіон Кабаньяс
+    'no': Cabañas
+    fa: بخش کابیناس
+    gl: Cabañas
+  comments:
+  type: departments
+CH:
+  name: Chalatenango
+  code: CH
+  unofficial_names: Chalatenango
+  geo:
+    latitude: 14.033333
+    longitude: -88.93333299999999
+    min_latitude: 13.9967041
+    min_longitude: -88.9538956
+    max_latitude: 14.0487081
+    max_longitude: -88.88797749999999
+  translations:
+    en: Chalatenango
+    bg: Чалатенанго
+    ca: Departament de Chalatenango
+    de: Departamento Chalatenango
+    el: Διαμέρισμα Τσαλατενάνγκο
+    es: Departamento de Chalatenango
+    fr: département de Chalatenango
+    gl: Chalatenango
+    hi: छालातेनानगो
+    hu: Chalatenango megye
+    id: Departemen Chalatenango
+    it: dipartimento di Chalatenango
+    ja: チャラテナンゴ県
+    ka: ჩალატენანგოს დეპარტამენტი
+    ko: 찰라테낭고 주
+    lt: Čalatenango departamentas
+    nl: Chalatenango
+    pl: Chalatenango
+    pt: Chalatenango
+    ro: Departamentul Chalatenango
+    ru: Чалатенанго
+    th: จังหวัดชาลาเตนังโก
+    ur: شالاتنانگو محکمہ
+    ceb: Departamento de Chalatenango
+    zh: 查拉特南戈省
+    ccp: "\U00011107\U0001112C\U00011123\U00011111\U0001112C\U0001111A\U0001111A\U00011134\U00011109\U0001112E"
+    eu: Chalatenango departamendua
+    uk: Чалатенанго
+  comments:
+  type: departments
+CU:
+  name: Cuscatlán
+  code: CU
+  unofficial_names: Cuscatlán
+  geo:
+    latitude: 13.8661957
+    longitude: -89.0561532
+    min_latitude: 13.6386259
+    min_longitude: -89.17243099999999
+    max_latitude: 14.069207
+    max_longitude: -88.86089799999999
+  translations:
+    en: Cuscatlán
+    ar: إدارة كوسكاتلان
+    bg: Кускатлан
+    bn: কুসকাতলান বিভাগ
+    ca: Departament de Cuscatlán
+    da: Cuscatlán Department
+    de: Departamento Cuscatlán
+    el: Διαμέρισμα Κουσκατλάν
+    es: Cuscatlán
+    fi: Cuscatlánin departmentti
+    fr: département de Cuscatlán
+    gu: કુસ્કાટલાન વિભાગ
+    hi: कूसकातलान
+    hu: Cuscatlán megye
+    id: Departemen Cuscatlán
+    it: dipartimento di Cuscatlán
+    ja: クスカトラン県
+    ka: კუსკატლანის დეპარტამენტი
+    kn: ಕುಸ್ಕಟಾನ್ ಇಲಾಖೆ
+    ko: 쿠스카틀란 주
+    lt: Kuskatlano departamentas
+    mr: कुस्कॅटान विभाग
+    ms: Cuscatlan Department
+    nb: Cuscatlan
+    nl: Cuscatlán
+    pl: Cuscatlán
+    pt: Cuscatlán
+    ro: Departamentul Cuscatlán
+    ru: Кускатлан
+    si: කුස්කෙට්ලාන් දෙපාර්තමේන්තුව
+    sv: Cuscatlan
+    ta: குசுக்காட்லான் துறை
+    te: కుస్కట్లాన్ డిపార్ట్మెంట్
+    th: จังหวัดกุสกัตลัง
+    tr: Cuscatian Departmanı
+    ur: کوسکاتلان محکمہ
+    vi: Khu vực hành chính Cuscatlán
+    lv: Kuskatlanas departaments
+    ceb: Departamento de Cuscatlán
+    zh: 库斯卡特兰省
+    ccp: "\U00011107\U0001110C\U00011134\U00011107\U00011116\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011134"
+    eu: Cuscatlán departamendua
+    uk: Регіон Кускатлан
+    'no': Cuscatlan
+    fa: بخش کوسکاتلان
+    gl: Departamento de Cuscatlán
+  comments:
+  type: departments
+LI:
+  name: La Libertad
+  code: LI
+  unofficial_names: La Libertad
+  geo:
+    latitude: 13.6817661
+    longitude: -89.3606298
+    min_latitude: 13.4242178
+    min_longitude: -89.6235825
+    max_latitude: 14.0608631
+    max_longitude: -89.133437
+  translations:
+    en: La Libertad
+    ar: إدارة لا ليبرتاد
+    bg: Ла Либертад
+    bn: লা লিবারটেড বিভাগ
+    ca: Departament de La Libertad
+    cs: La Libertad
+    da: La Libertad Department
+    de: Departamento La Libertad
+    el: Διαμέρισμα Λα Λιμπερτάδ
+    es: Departamento de La Libertad
+    fi: La Libertadin departmentti
+    fr: La Libertad
+    gl: La Libertad, O Salvador
+    gu: લા લિબરટૅડ વિભાગ
+    he: לה ליברטד
+    hi: ला-लीभेरता
+    hu: La Libertad megye
+    id: Departemen La Libertad
+    it: dipartimento di La Libertad
+    ja: ラリベルタ県 (エルサルバドル)
+    ka: ლა-ლიბერტადის დეპარტამენტი
+    kn: ಲಾ ಲಿಬರ್ಟಾಡ್ ಇಲಾಖೆ
+    ko: 라리베르타드 주
+    lt: La Libertado departamentas
+    mr: ला लिबर्टाद विभाग
+    ms: La Libertad Department
+    nb: La Libertad department
+    nl: La Libertad
+    pl: La Libertad
+    pt: La Libertad
+    ro: Departamentul La Libertad
+    ru: Ла-Либертад
+    si: ලා ලිබරෙටඩ් දෙපාර්තමේන්තුව
+    sv: La Libertad Department
+    ta: லா லிபேர்ட்டட் துறை
+    te: లా లిబర్టాడ్ డిపార్ట్మెంట్
+    th: จังหวัดลาลีเบร์ตัด
+    tr: La Libertad Departmanı
+    ur: لا لیبیرتاڈ دیپارٹمنٹ
+    vi: Khu vực hành chính La Libertad
+    lv: Lalibertadas departaments
+    ceb: Departamento de La Libertad
+    zh: 拉利伯塔德省
+    ccp: "\U00011123 \U00011123\U0001112D\U0001111D\U00011122\U00011134\U00011111\U00011116\U00011134"
+    eu: La Libertad departamendua
+    uk: Муніципалітет Ла-Лібертад
+    'no': La Libertad department
+    fa: ناحیه لا لیبرتاد (السالوادور)
+  comments:
+  type: departments
+MO:
+  name: Morazán
+  code: MO
+  unofficial_names: Morazán
+  geo:
+    latitude: 13.7682
+    longitude: -88.1291387
+    min_latitude: 13.542379
+    min_longitude: -88.26838610000001
+    max_latitude: 13.951336
+    max_longitude: -87.935045
+  translations:
+    en: Morazán
+    ar: إدارة مورازان
+    bg: Морасан
+    bn: মুরাজান বিভাগ
+    ca: Departament de Morazán
+    da: Morazán Department
+    de: Departamento Morazán
+    el: Διαμέρισμα Μοραζάν
+    es: Morazán
+    fi: Morazánin departmentti
+    fr: département de Morazán
+    gu: મોરાઝાન વિભાગ
+    hi: मोरसान
+    hu: Morazán megye
+    id: Departemen Morazán
+    it: dipartimento di Morazán
+    ja: モラサン県
+    ka: მორასანის დეპარტამენტი
+    kn: ಮೊರಾಜನ್ ಇಲಾಖೆ
+    ko: 모라산 주
+    lt: Morasano departamentas
+    mr: मोराझान विभाग
+    ms: Morazan Department
+    nb: Morazan department
+    nl: Morazán
+    pl: Morazán
+    pt: Morazán
+    ro: Departamentul Morazán
+    ru: Морасан
+    si: මොරසාන් දෙපාර්තමේන්තුව
+    sv: Morazan Department
+    ta: மொராசன் துறை
+    te: మోరాజన్ డిపార్ట్మెంట్
+    th: จังหวัดโมราซัง
+    tr: Morazan Departmanı
+    uk: Морасан
+    ur: مورازان محکمہ
+    vi: Khu vực hành chính Morazán
+    lv: Morasanas departaments
+    ceb: Departamento de Morazán
+    zh: 莫拉桑省
+    ccp: "\U0001111F\U0001112E\U00011122\U0001110E\U0001111A\U00011134"
+    eu: Morazán departamendua
+    'no': Morazan department
+    fa: بخش مرازان
+    gl: Departamento de Morazán
+    he: מחוז מורסאן
+  comments:
+  type: departments
+PA:
+  name: La Paz
+  code: PA
+  unofficial_names: La Paz
+  geo:
+    latitude: 13.495364
+    longitude: -88.9796776
+    min_latitude: 13.2651022
+    min_longitude: -89.16793799999999
+    max_latitude: 13.662424
+    max_longitude: -88.7764349
+  translations:
+    en: La Paz
+    ar: إدارة لاباز
+    bg: Ла Пас
+    bn: লা পাজ বিভাগ
+    ca: Departament de La Paz
+    da: La Paz Department
+    de: La Paz
+    el: Διαμέρισμα Λα Παζ
+    es: La Paz
+    fi: La Pazin depatermentti
+    fr: département de La Paz
+    gu: લા પાઝ વિભાગ
+    he: לה פאס
+    hi: ला-पास
+    hu: La Paz megye
+    id: Departemen La Paz
+    it: La Paz
+    ja: ラ・パス県 (エル・サルバドル)
+    ka: ლა-პასის დეპარტამენტი
+    kn: ಲಾ ಪಾಜ್ ಇಲಾಖೆ
+    ko: 라파스 주
+    lt: La Paso departamentas
+    mr: ला पाझ विभाग
+    ms: La Paz Department
+    nb: La Paz department
+    nl: La Paz
+    pl: La Paz
+    pt: La Paz
+    ro: Departamentul La Paz, El Salvador
+    ru: Ла-Пас
+    si: ලා ප්ලාස් දෙපාර්තමේන්තුව
+    sv: La Paz
+    ta: லா பாஸ் துறை
+    te: లా పాజ్ డిపార్ట్మెంట్
+    th: จังหวัดลาปาซ
+    tr: Le Paz Departmanı
+    ur: لا پاز ڈیپارٹمنٹ
+    vi: Tỉnh La Paz
+    lv: Lapaso departaments
+    ceb: Departamento de La Paz
+    zh: 拉巴斯省
+    ccp: "\U00011123 \U0001111B\U0001110C\U00011134"
+    eu: La Paz departamendua
+    uk: Департамент Ла-Пас
+    'no': La Paz department
+    fa: ناحیه لاپاز (السالوادور)
+    gl: Departamento de La Paz, O Salvador
+  comments:
+  type: departments
+SA:
+  name: Santa Ana
+  code: SA
+  unofficial_names: Santa Ana
+  geo:
+    latitude: 13.9778279
+    longitude: -89.56391190000001
+    min_latitude: 13.9562252
+    min_longitude: -89.58621029999999
+    max_latitude: 14.0113614
+    max_longitude: -89.53943249999999
+  translations:
+    en: Santa Ana
+    ar: إدارة سانتا آنا
+    bg: Санта Ана
+    bn: স্যান্টা আনা বিভাগ
+    ca: Departament de Santa Ana
+    da: Santa Ana Department
+    de: Departamento Santa Ana
+    el: Διαμέρισμα Σάντα Άνα
+    es: Departamento de Santa Ana
+    fi: Santa Anan departmentti
+    fr: département de Santa Ana
+    gu: સાંતા એના વિભાગ
+    hi: सानता-आना प्रदेश
+    hu: Santa Ana megye
+    id: Departemen Santa Ana
+    it: dipartimento di Santa Ana
+    ja: サンタ・アナ県
+    ka: სანტა-ანას დეპარტამენტი
+    kn: ಸಾಂಟಾ ಅನಾ ಇಲಾಖೆ
+    ko: 산타아나 주
+    lt: Santa Anos departamentas
+    mr: सांता आना विभाग
+    ms: Santa Ana Department
+    nb: Santa Ana department
+    nl: Santa Ana
+    pl: Santa Ana
+    pt: Santa Ana
+    ro: Departamentul Santa Ana
+    ru: Санта-Ана
+    si: සැන්ටා ඇනා දෙපාර්තමේන්තුව
+    sv: Santa Ana department
+    ta: சாண்டா அனா துறை
+    te: సాంటా ఆనా డిపార్ట్మెంట్
+    th: จังหวัดซานตาอานา
+    tr: Santa Ana Departmanı
+    ur: سانتا آنا محکمہ
+    vi: Khu vực hành chính Santa Ana
+    lv: Santaanas departaments
+    ceb: Departamento de Santa Ana
+    zh: 圣安娜省
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011103\U0001111A"
+    eu: Santa Ana departamendua
+    uk: Регіон Санта-Ана
+    'no': Santa Ana department
+    fa: ناحیه سانتا آنا
+    hy: Սանտա Անա
+  comments:
+  type: departments
+SM:
+  name: San Miguel
+  code: SM
+  unofficial_names: San Miguel
+  geo:
+    latitude: 13.4451041
+    longitude: -88.24611829999999
+    min_latitude: 13.1693608
+    min_longitude: -88.5278369
+    max_latitude: 13.8935291
+    max_longitude: -88.016002
+  translations:
+    en: San Miguel
+    ar: إدارة سان ميغيل
+    bg: Сан Мигел
+    bn: সান মিগুয়েল বিভাগ
+    ca: Departament de San Miguel
+    da: San Miguel Department
+    de: Departamento San Miguel
+    el: Διαμέρισμα Σαν Μιγκέλ
+    es: San Miguel
+    fi: San Miguelin departmentti
+    fr: département de San Miguel
+    gl: San Miguel, O Salvador
+    gu: સેન મિગ્યુએલ વિભાગ
+    hi: नास-मीगोल
+    hu: San Miguel megye
+    id: Departemen San Miguel
+    it: dipartimento di San Miguel
+    ja: サンミゲル県
+    ka: სან-მიგელის დეპარტამენტი
+    kn: ಸ್ಯಾನ್ ಮಿಗುಯೆಲ್ ಇಲಾಖೆ
+    ko: 산미겔 주
+    lt: San Migelio departamentas
+    mr: सॅन मिगेल विभाग
+    ms: San Miguel Department
+    nb: San Miguel department
+    nl: San Miguel
+    pl: San Miguel
+    pt: San Miguel
+    ro: Departamentul San Miguel, El Salvador
+    ru: Сан-Мигель
+    si: සැන් මිගෙල් දෙපාර්තමේන්තුව
+    sv: San Miguel Department
+    ta: சான் மிகுயில் துறை
+    te: సాన్ మిగ్వెల్ డిపార్ట్మెంట్
+    th: จังหวัดซานมีเกล
+    tr: San Miguel Departmanı
+    ur: سان میگیل محکمہ
+    vi: Khu vực hành chính San Miguel
+    lv: Sanmigelas departaments
+    ceb: Departamento de San Miguel
+    zh: 圣米格尔省
+    ccp: "\U00011125\U0001111A\U00011134 \U0001111F\U00011128\U00011109\U0001112A\U00011120\U0001112C\U00011123\U00011134"
+    eu: San Miguel departamendua
+    uk: Регіон Сан-Мігель
+    'no': San Miguel department
+    fa: ناحیه سان میگوئل (السالوادور)
+  comments:
+  type: departments
+SO:
+  name: Sonsonate
+  code: SO
+  unofficial_names: Sonsonate
+  geo:
+    latitude: 13.682358
+    longitude: -89.6628111
+    min_latitude: 13.5195387
+    min_longitude: -89.95551770000002
+    max_latitude: 13.898528
+    max_longitude: -89.445171
+  translations:
+    en: Sonsonate
+    ar: إدارة سونسونات
+    bg: Сонсонате
+    bn: সোন্সোনাটে বিভাগ
+    ca: Departament de Sonsonate
+    da: Sonsonate Department
+    de: Departamento Sonsonate
+    el: Διαμέρισμα Σονσονάτε
+    es: Sonsonate
+    fi: Sonsonate
+    fr: département de Sonsonate
+    gu: સોન્સોનેટ વિભાગ
+    hi: सोनसोनाते प्रदेश
+    hu: Sonsonate megye
+    id: Departemen Sonsonate
+    it: dipartimento di Sonsonate
+    ja: ソンソナーテ県
+    ka: სონსონატეს დეპარტამენტი
+    kn: ಸನ್ಸೊನೇಟ್ ಇಲಾಖೆ
+    ko: 손소나테 주
+    lt: Sonsonatės departamentas
+    mr: सोंसोनेट विभाग
+    ms: Sonsonate Department
+    nb: Sonsonate department
+    nl: Sonsonate
+    pl: Sonsonate
+    pt: Sonsonate
+    ro: Departamentul Sonsonate
+    ru: Сонсонате
+    si: සොන්සොනාටේ දෙපාර්තමේන්තුව
+    sv: Sonsonate Department
+    ta: சோனிசோனட் துறை
+    te: సన్సోనేట్ డిపార్ట్మెంట్
+    th: จังหวัดซอนโซนาเต
+    tr: Sonsonate Departmanı
+    ur: سونسوناتے محکمہ
+    vi: Khu vực hành chính Sonsonate
+    lv: Sonsonates departaments
+    ceb: Departamento de Sonsonate
+    zh: 松索纳特省
+    ccp: "\U00011125\U0001112E\U0001111A\U00011134\U00011125\U0001112E\U0001111A\U0001112C\U00011116\U00011134"
+    eu: Sonsonate departamendua
+    uk: Регіон Сонсонате
+    cs: Sonsonate²
+    'no': Sonsonate department
+    fa: بخش سونسوناتی
+  comments:
+  type: departments
+SS:
+  name: San Salvador
+  code: SS
+  unofficial_names: San Salvador
+  geo:
+    latitude: 13.6929403
+    longitude: -89.2181911
+    min_latitude: 13.6523257
+    min_longitude: -89.2663228
+    max_latitude: 13.7306307
+    max_longitude: -89.1630651
+  translations:
+    en: San Salvador
+    ar: إدارة سان سلفادور
+    bg: Сан Салвадор
+    bn: সান সাল্ভাদর বিভাগ
+    ca: Departament de San Salvador
+    cs: San Salvador
+    da: San Salvador Department
+    de: Departamento San Salvador
+    el: Διαμέρισμα Σαν Σαλβαδόρ
+    es: San Salvador
+    et: San Salvadori departemang
+    fi: San Salvadorin departmentti
+    fr: département de San Salvador
+    gl: Departamento de San Salvador
+    gu: સાન સલ્વાડોર વિભાગ
+    hi: सान-साल्वाडोर
+    hu: San Salvador megye
+    id: Departemen San Salvador
+    it: dipartimento di San Salvador
+    ja: サン・サルバドル県
+    ka: სან-სალვადორის დეპარტამენტი
+    kn: ಸ್ಯಾನ್ ಸಾಲ್ವಡಾರ್ ಇಲಾಖೆ
+    ko: 산살바도르 주
+    lt: San Salvadoro departamentas
+    mr: सॅन साल्वादोर विभाग
+    ms: San Salvador Department
+    nb: San Salvador
+    nl: San Salvador
+    pl: San Salvador
+    pt: San Salvador
+    ro: Departamentul San Salvador
+    ru: Сан-Сальвадор
+    si: සැන් සැල්වදෝර් දෙපාර්තමේන්තුව
+    sv: San Salvador
+    ta: சான் சால்வடோர் துறை
+    te: సాన్ సాల్వడార్ డిపార్ట్మెంట్
+    th: จังหวัดซานซัลวาดอร์
+    tr: San Salvador
+    uk: Сан-Сальвадор
+    ur: سان سیلواڈور محکمہ
+    vi: Khu vực hành chính San Salvador
+    lv: Sansalvadoras departaments
+    ceb: Departamento de San Salvador
+    zh: 聖薩爾瓦多省
+    ccp: "\U00011125\U0001111A\U00011134 \U00011125\U00011123\U00011134\U0001111E\U00011113\U00011127\U00011122\U00011134"
+    eu: San Salvador departamendua
+    'no': San Salvador
+    be: Сан-Сальвадор
+    fa: بخش سن سالوادور
+  comments:
+  type: departments
+SV:
+  name: San Vicente
+  code: SV
+  unofficial_names: San Vicente
+  geo:
+    latitude: 13.5868561
+    longitude: -88.7493998
+    min_latitude: 13.2529737
+    min_longitude: -88.89559799999999
+    max_latitude: 13.7897911
+    max_longitude: -88.48514999999999
+  translations:
+    en: San Vicente
+    ar: إدارة سان فيسينتي
+    bg: Сан Висенте
+    bn: সান ভিসেন্তে বিভাগ
+    ca: Departament de San Vicente
+    da: San Vicente Department
+    de: Departamento San Vicente
+    el: Διαμέρισμα Σαν Βισέντε
+    es: San Vicente
+    fi: San Vicenten departementti
+    fr: département de San Vicente
+    gu: સેન વિસેન્ટ વિભાગ
+    hi: सान-विसेनते
+    hu: San Vicente megye
+    id: Departemen San Vicente
+    it: dipartimento di San Vicente
+    ja: サン・ビセンテ県
+    ka: სან-ვისენტეს დეპარტამენტი
+    kn: ಸ್ಯಾನ್ ವಿಸೆಂಟೆ ಇಲಾಖೆ
+    ko: 산비센테 주
+    lt: San Visentės departamentas
+    mr: सॅन व्हिसेंटा विभाग
+    ms: San Vicente Department
+    nb: San Vincente department
+    nl: San Vicente
+    pl: San Vicente
+    pt: San Vicente
+    ro: Departamentul San Vicente
+    ru: Сан-Висенте
+    si: සැන් විසේන්තේ දෙපාර්තමේන්තුව
+    sv: San Vincente department
+    ta: சான் விஸேண்ட் துறை
+    te: సాన్ విసెంటి డిపార్ట్మెంట్
+    th: จังหวัดซานวีเซนเต
+    tr: San Vicente Departmanı
+    ur: سان ویسینتے محکمہ
+    vi: Khu vực hành chính San Vicente
+    lv: Sanvisentes departaments
+    ceb: Departamento de San Vicente
+    zh: 圣维森特省
+    ccp: "\U00011125\U0001111A\U00011134 \U0001111E\U0001112D\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134"
+    eu: San Vicente departamendua
+    uk: Регіон Сан-Вісенте
+    'no': San Vincente department
+    fa: ناحیه سان ویسنته
+    gl: Departamento de San Vicente
+  comments:
+  type: departments
+UN:
+  name: La Unión
+  code: UN
+  unofficial_names: La Unión
+  geo:
+    latitude: 13.336944
+    longitude: -87.84388899999999
+    min_latitude: 13.319889
+    min_longitude: -87.8767204
+    max_latitude: 13.3553415
+    max_longitude: -87.820673
+  translations:
+    en: La Unión
+    bg: Ла Унион
+    ca: Departament de La Unión
+    de: Departamento La Unión
+    el: Διαμέρισμα Λα Ουνιόν
+    es: La Unión
+    fr: département de La Unión
+    hi: ला-उनिओन प्रदेश
+    hu: La Unión megye
+    id: Departemen La Unión
+    it: dipartimento di La Unión
+    ja: ラ・ウニオン県
+    ka: ლა-უნიონის დეპარტამენტი
+    ko: 라우니온 주
+    lt: La Uniono departamentas
+    nl: La Unión
+    pl: La Unión
+    pt: La Unión
+    ro: Departamentul La Unión
+    ru: Ла-Унион
+    th: จังหวัดลาอูนีออง
+    ur: لا یونیون ڈیپارٹمنٹ
+    zh: 拉乌尼翁省
+    ccp: "\U00011123 \U00011103\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: La Unión departamendua
+    uk: Ла-Уніон
+    fa: ناحیه لا یونیون
+  comments:
+  type: departments
+US:
+  name: Usulután
+  code: US
+  unofficial_names: Usulután
+  geo:
+    latitude: 13.35
+    longitude: -88.45
+    min_latitude: 13.3328344
+    min_longitude: -88.45788
+    max_latitude: 13.3537129
+    max_longitude: -88.4276677
+  translations:
+    en: Usulután
+    ar: إدارة أوسولوتان
+    bg: Усулутан
+    bn: উসুলুটান বিভাগ
+    ca: Departament d’Usulután
+    da: Usulután Department
+    de: Usulután
+    el: Διαμέρισμα Ουσουλουτάν
+    es: Usulután
+    fi: Usulutánin departmentti
+    fr: département d’Usulután
+    gu: ઉસુલુટન વિભાગ
+    hi: उसुलुतान
+    hu: Usulután megye
+    id: Departemen Usulután
+    it: dipartimento di Usulután
+    ja: ウスルタン県
+    ka: უსულუტანის დეპარტამენტი
+    kn: ಯುಸುಲ್ಯುಟಾನ್ ಡಿಪಾರ್ಟ್ಮೆಂಟ್
+    ko: 우술루탄 주
+    lt: Usulutano departamentas
+    mr: उसुलुटन विभाग
+    ms: Usulutan Department
+    nb: Usulutan department
+    nl: Usulután
+    pl: Usulután
+    pt: Usulután
+    ro: Departamentul Usulután
+    ru: Усулутан (департамент)
+    si: උලුස්තාන් දෙපාර්තමේන්තුව
+    sv: Usulutan department
+    ta: உஸூலுடன் துறை
+    te: ఉసులుటాన్ డిపార్ట్మెంట్
+    th: จังหวัดอูซูลูตัง
+    tr: Usulutan Departmanı
+    ur: اوسولوتآن محکمہ
+    vi: Khu vực hành chính Usulután
+    lv: Usulutanas departaments
+    ceb: Departamento de Usulután
+    zh: 乌苏卢坦省
+    ccp: "\U00011103\U00011128\U00011105\U0001112A\U00011125\U00011123\U0001112A\U00011111\U0001111A\U00011134"
+    eu: Usulután departamendua
+    uk: Регіон Усулутан
+    'no': Usulutan department
+  comments:
+  type: departments

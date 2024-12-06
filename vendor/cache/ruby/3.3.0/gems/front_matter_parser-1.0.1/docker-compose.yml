@@ -1,0 +1,12 @@
+version: '2'
+services:
+  app:
+    build: .
+    image: front_matter_parser_user
+    command: bash -c "bundle && tail -f Gemfile"
+    volumes:
+      - .:/home/front_matter_parser_user/app
+    tty: true
+    stdin_open: true
+    tmpfs:
+      - /tmp

@@ -1,0 +1,65 @@
+---
+'NO':
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: 'NO'
+  alpha3: NOR
+  continent: Europe
+  country_code: '47'
+  currency_code: NOK
+  distance_unit: KM
+  eea_member: true
+  gec: 'NO'
+  geo:
+    latitude: 60.47202399999999
+    longitude: 8.468945999999999
+    max_latitude: 71.30780000000001
+    max_longitude: 31.3549999
+    min_latitude: 57.8097
+    min_longitude: 4.0649
+    bounds:
+      northeast:
+        lat: 71.30780000000001
+        lng: 31.3549999
+      southwest:
+        lat: 57.8097
+        lng: 4.0649
+  international_prefix: '00'
+  ioc: NOR
+  iso_long_name: The Kingdom of Norway
+  iso_short_name: Norway
+  languages_official:
+  - nb
+  - nn
+  languages_spoken:
+  - nb
+  - nn
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Norwegian
+  number: '578'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: 'NO'
+  unofficial_names:
+  - Norway
+  - Norwegen
+  - Norvège
+  - Noruega
+  - ノルウェー
+  - Noorwegen
+  vat_rates:
+    standard: 25
+    reduced: []
+    super_reduced:
+    parking:
+  world_region: EMEA

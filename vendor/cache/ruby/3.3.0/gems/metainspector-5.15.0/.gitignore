@@ -1,0 +1,11 @@
+*.gem
+.bundle
+.rvmrc
+.ruby-version
+.ruby-gemset
+.rspec
+pkg/*
+.idea/
+.rubocop_todo.yml
+.rubocop.yml
+.tool-versions

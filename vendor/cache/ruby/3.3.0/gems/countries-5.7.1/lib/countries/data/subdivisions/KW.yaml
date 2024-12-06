@@ -1,0 +1,317 @@
+---
+AH:
+  name: Al Ahmadi
+  code: AH
+  unofficial_names:
+  - Ahmadi
+  geo:
+    latitude: 29.083333
+    longitude: 48.083333
+    min_latitude: 29.0593959
+    min_longitude: 48.0440711
+    max_latitude: 29.1115398
+    max_longitude: 48.0997057
+  translations:
+    en: Al Ahmadi
+    ar: محافظة الأحمدي
+    bg: Ал-Ахмади
+    bn: আল আহমাদি গভর্নোরেট
+    ca: Governació d’Ahmadí
+    da: Al Ahmadi Governorate
+    de: Gouvernement Ahmadi
+    el: Αλ Αχμάντι Γκοβερνοράτε
+    es: Ahmadí
+    fa: استان احمدی
+    fi: Al Ahmadin kuvernoraatti
+    fr: Al Ahmadi (gouvernorat)
+    gu: અલ અહમદી ગવર્નોરેટ
+    hi: अल अहमदी गवर्नरेट
+    hu: Ahmadi kormányzóság
+    id: Kegubernuran Al-Ahmadi
+    it: Al-Ahmad
+    ja: アハマディ県
+    kn: ಅಲ್ ಅಹ್ಮದಿ ಗವರ್ನೇಟ್
+    ko: 알아마디 주
+    lt: Al Achmadžio muchafaza
+    mr: अल अहमदी गव्हर्नोरेट
+    ms: Al Ahmadi Governorate
+    nb: Al Ahmadi Governorate
+    nl: Ahmadi
+    pl: Al-Ahmadi (muhafaza)
+    pt: Al Ahmadi (província)
+    ru: Эль-Ахмади
+    si: අල් අහමදි පළාත
+    ta: அல் அஹ்மடி கோவெர்னோராட்
+    te: అల్ అహ్మది గవర్నరేట్
+    th: อัลอาห์มาดี
+    tr: El Ahmedî Valiliği
+    ur: محافظہ احمدی
+    vi: Tỉnh Al Ahmadi
+    zh: 艾哈迈迪省
+    lv: Ahmedi muhāfaza
+    ccp: "\U00011103\U00011123\U00011134 \U00011103\U00011126\U00011134\U0001111F\U00011127\U00011118\U00011128"
+    uk: Муніципалітет Ель-Ахмаді
+    'no': Al Ahmadi Governorate
+    he: אל-אחמדי
+  comments:
+  type: governorate
+FA:
+  name: Al Farwaniyah
+  code: FA
+  unofficial_names:
+  - Farwaniyah
+  geo:
+    latitude: 29.2428445
+    longitude: 47.9416114
+    min_latitude: 29.180285
+    min_longitude: 47.8128219
+    max_latitude: 29.305629
+    max_longitude: 48.0104
+  translations:
+    en: Al Farwaniyah
+    ar: محافظة الفروانية
+    bg: Фаруания
+    bn: আল ফারবানিয়াহ গভর্নোরেট
+    da: Al Farwaniyah Governorate
+    de: Gouvernement Al Farwaniya
+    el: Αλ Φαρβανιγιά Γκοβερνοράτε
+    es: Al Farwaniyah
+    fa: استان فروانیه
+    fi: Al Farwaniyahn kuvernoraatti
+    fr: Al Farwaniyah
+    gu: અલ ફરવાનિયાહ ગવર્નોરેટ
+    hi: अल फरवानिया गवर्नरेट
+    hu: Farvánijja kormányzóság
+    hy: Էլ Ֆարվանիյահ
+    id: Kegubernuran Al-Farwaniyah
+    it: Al-Farwaniyah
+    ja: ファルワーニーヤ県
+    kn: ಅಲ್ ಫರ್ವಾನಿಯಾ ಗವರ್ನೇಟ್
+    ko: 알파르와니야 주
+    lt: Al Farvanijos muchafaza
+    mr: अल फरविनिया गव्हर्नोरेट
+    ms: Al Farwaniyah Governorate
+    nb: Al Farwaniyah
+    nl: Farwaniya
+    pl: Al-Farwanijja
+    pt: Al Farwaniyah
+    ru: Эль-Фарвания
+    si: අල් ෆවානියා පළාත
+    sv: Al Farwaniyah
+    ta: அல் பார்வானிய கோவெர்னோரே
+    te: అల్ ఫర్వానియా గవర్నరేట్
+    th: เขตอัลฟาร์วะนียะห์
+    tr: El Fervaniye Valiliği
+    ur: محافظہ فروانیہ
+    vi: Tỉnh Al Farwaniyah
+    lv: Farvānijas muhāfaza
+    zh: 費爾瓦尼耶省
+    ccp: "\U00011103\U00011123\U00011134 \U0001111C\U00011122\U00011134\U00011124\U0001111A\U00011128\U00011120\U00011126\U00011134"
+    uk: Меніципалітет Ель-Фарванія
+    'no': Al Farwaniyah
+  comments:
+  type: governorate
+HA:
+  name: Hawalli
+  code: HA
+  unofficial_names:
+  - Hawalli
+  geo:
+    latitude: 29.333
+    longitude: 48.029
+    min_latitude: 29.3230583
+    min_longitude: 48.0009217
+    max_latitude: 29.34970509999999
+    max_longitude: 48.0381103
+  translations:
+    en: Hawalli
+    ar: محافظة حولي
+    bg: Хавалли
+    bn: হাওয়াল্যি গভর্নোরেট
+    da: Hawalli Governorate
+    de: Gouvernement Hawalli
+    el: Χαβάλι
+    es: Hawalli
+    fa: استان حولی
+    fi: Hawalli
+    fr: Hawalli
+    gu: હવાલી ગવર્નોરેટ
+    hi: हवाली गवर्नरेट
+    hr: Hawalli
+    hu: Havalli kormányzóság
+    hy: Հավալի
+    id: Kegubernuran Hawalli
+    it: Hawalli
+    ja: ハワリ県
+    kn: ಹವಾಲಿ ಗವರ್ನೇಟ್
+    ko: 하왈리 주
+    lt: Havalio muchafaza
+    mr: हुवली गव्हर्नोरेट
+    ms: Hawalli Governorate
+    nb: Hawalli
+    nl: Hawalli
+    pl: Hawalli
+    pt: Hawalli
+    ru: Хавалли
+    si: හවායි පළාත
+    ta: ஹவல்லி கோவெர்னோரே
+    te: హవాలి గవర్నరేట్
+    th: เขตฮะวัลลี
+    tr: Hawalli Yönetimi
+    uk: Хаваллі
+    ur: محافظہ حولی
+    vi: Tỉnh Hawalli
+    lv: Havalli muhāfaza
+    zh: 哈瓦利省
+    ccp: "\U00011126\U00011124\U00011123\U00011128"
+    'no': Hawalli
+  comments:
+  type: governorate
+JA:
+  name: Al Jahrah
+  code: JA
+  unofficial_names:
+  - Al Jahra
+  - Jahra
+  - Jahrah
+  - al-Jahra
+  - al-Jahraʿ
+  geo:
+    latitude: 29.3365728
+    longitude: 47.6755291
+    min_latitude: 29.2811337
+    min_longitude: 47.6289382
+    max_latitude: 29.3745747
+    max_longitude: 47.7926787
+  translations:
+    en: Al Jahra
+    ar: محافظة الجهراء
+    bg: Джахра
+    de: Gouvernement al-Dschahra
+    es: Yahra
+    fa: استان جهرا
+    fr: Al Jahra
+    hr: Al Jahra
+    hu: Dzsahrá kormányzóság
+    hy: Էլ Ջահրա
+    id: Kegubernuran Al-Jahra
+    it: Al-Jahra
+    ja: ジャハラー県
+    ko: 알자라 주
+    lt: Al Džahros muchafaza
+    nl: Jahra
+    pl: Al-Dżahra
+    pt: Al Jahra
+    ru: Эль-Джахра
+    tr: El Cehrâ
+    ur: محافظہ جہراء
+    zh: 傑赫拉省
+    ccp: "\U00011103\U00011123\U00011134 \U0001110E\U00011126\U00011134\U00011122"
+    ca: Governació d’Al Jahra
+    ta: அல் ஜஹ்ரா ஆளுநரகம்
+  comments:
+  type: governorate
+KU:
+  name: Al Kuwayt
+  code: KU
+  unofficial_names:
+  - Capital
+  - Koweit
+  - Kuwait
+  - Kuwayt
+  - al-Kuwayt
+  geo:
+    latitude: 29.375859
+    longitude: 47.9774052
+    min_latitude: 29.3587818
+    min_longitude: 47.95796259999999
+    max_latitude: 29.3933479
+    max_longitude: 48.0058081
+  translations:
+    en: Al Asimah
+    ar: محافظة العاصمة
+    bg: Ал-Асима
+    es: Capital
+    fa: استان عاصمه
+    fr: Al Asimah
+    hr: Al Asimah
+    hu: Főváros kormányzóság (Kuvait)
+    hy: Ալ Ասիմա
+    id: Kegubernuran Al-Asimah
+    it: Governatorato della Capitale
+    ja: アースィマ県
+    ko: 알아시마 주
+    lt: Al Asimos muchafaza
+    nb: Al Asimah
+    nl: Al-Asimah
+    pl: Al-Asima
+    pt: Al Asimah
+    ru: Эль-Асима
+    sv: Al Asimahguvernementet
+    tr: El Asime Valiliği
+    ur: محافظہ العاصمہ (کویت)
+    mr: अल असिमाह गव्हर्नरेट
+    ceb: Al Asimah Governorate
+    zh: 科威特省
+    el: Κυβερνείο Πρωτεύουσας
+    ccp: "\U00011103\U00011123\U00011134 \U00011103\U00011125\U00011128\U0001111F\U00011126\U00011134"
+    'no': Al Asimah
+    de: Gouvernement al-Asima
+    ta: தலைநகர ஆளுநரகம்
+  comments:
+  type: governorate
+MU:
+  name: Mubarak al-Kabir
+  code: MU
+  unofficial_names: Mubarak al-Kabir
+  geo:
+    latitude: 29.21224
+    longitude: 48.0605108
+    min_latitude: 29.172518
+    min_longitude: 47.983255
+    max_latitude: 29.2734889
+    max_longitude: 48.1176184
+  translations:
+    en: Mubarak Al-Kabeer
+    ar: محافظة مبارك الكبير
+    bg: Мубарак ал-Кабир
+    bn: মুবারক আল-কাবির গভর্নোরেট
+    da: Mubarak Al-Kabeer Governorate
+    de: Gouvernement Mubarak Al-Kabeer
+    el: Μουμπάρακ Αλ-Καμπίρ
+    es: Gobernación de Mubarak el Grande
+    fa: استان مبارک‌الکبیر
+    fi: Mubarak Al-Kabeern kuvernoraatti
+    fr: Gouvernorat de Mubarak Al-Kabeer
+    gu: મુબારક અલ-કબીર ગવર્નોરેટ
+    hi: मुबारक अल-कबीर गवर्नरेट
+    hr: Mubarak Al-Kabeer
+    hu: Mubárak el-Kabír kormányzóság
+    hy: Մուբարաք Էլ Քաբիր
+    id: Kegubernuran Mubarak Al-Kabeer
+    it: Mobarak al-Kabir
+    ja: ムバーラク・アル＝カビール県
+    kn: ಮುಬಾರಕ್ ಅಲ್-ಕಬೀರ್ ಗವರ್ನರ್
+    ko: 무바라크알카비르 주
+    lt: Mubarak Al Kabiro muchafaza
+    mr: मुबारक अल-कबीर गव्हर्नोरेट
+    ms: Mubarak Al-Kabeer Governorate
+    nb: Mubarak Al-Kabeer
+    nl: Mubarak Al-Kabier
+    pl: Mubarak al-Kabir
+    pt: Mubarak Al-Kabeer
+    ru: Мубарак аль-Кабир
+    si: මුබාරක් අල්-කබීර් පළාත
+    ta: முபாரக் அழ -கபீர் கோவெர்னோரே
+    te: ముబారక్ అల్-కబీర్ గవర్నరేట్
+    th: มูบารัค อัล คาเบีย
+    tr: Mübarek El Kebir Valiliği
+    ur: محافظہ مبارک الکبیر
+    vi: Tỉnh Mubarak Al-Kabeer
+    lv: Mubarāk el Kebīras muhāfaza
+    zh: 大穆巴拉克省
+    ccp: "\U0001111F\U0001112A\U0001111D\U00011122\U00011127\U00011107\U00011134 \U00011103\U00011123\U00011134-\U00011107\U0001111D\U00011128\U00011122\U00011134"
+    uk: Муніципалітет Мубарак-аль-Кабір
+    'no': Mubarak Al-Kabeer
+  comments:
+  type: governorate

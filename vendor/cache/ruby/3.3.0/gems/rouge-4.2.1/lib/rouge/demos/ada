@@ -1,0 +1,26 @@
+with Ada.Directories;
+with Ada.Direct_IO;
+with Ada.Text_IO;
+
+procedure Extra_IO.Read_File (Name : String) is
+
+   package Dirs renames Ada.Directories;
+   package Text_IO renames Ada.Text_IO;
+
+   -- Get the size of the file for a new string.
+   Size : Natural := Natural (Dirs.Size (Name));
+   subtype File_String is String (1 .. Size);
+
+   -- Instantiate Direct_IO for our file type.
+   package FIO is new Ada.Direct_IO (File_String);
+
+   File     : FIO.File_Type;
+   Contents : File_String;
+
+begin
+   FIO.Open (File, FIO.In_File, Name);
+   FIO.Read (File, Contents);
+   FIO.Close (File);
+
+   Text_IO.Put (Contents);
+end Extra_IO.Read_File;

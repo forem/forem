@@ -1,0 +1,17 @@
+@import Foundation;
+#import <array>
+#include <vector>
+
+@interface IntegerArray : NSObject {
+    std::vector<NSUInteger> _numbers;
+}
+@property(readonly) NSUInteger count;
+
+- (instancetype)initWithNumbers:(NSUInteger *)numbers count:(NSUInteger)count;
+- (NSUInteger)numberAtIndex:(NSUInteger)index;
+@end
+
+int main(int argc, char **argv) {
+    auto numbers = std::array<NSUInteger, 3>{1, 2, 3};
+    NSLog(@"%@", [[IntegerArray alloc] initWithNumbers:numbers.data() count:numbers.size()]);
+}

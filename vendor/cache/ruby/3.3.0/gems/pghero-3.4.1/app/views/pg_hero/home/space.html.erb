@@ -1,0 +1,87 @@
+<div class="content">
+  <h1>Space</h1>
+
+  <p>Database Size: <%= @database_size %></p>
+
+  <% if @system_stats_enabled %>
+    <div id="chart-1" class="chart" style="margin-bottom: 20px;">Loading...</div>
+    <script>
+      new Chartkick.LineChart("chart-1", <%= pghero_js_value(free_space_stats_path) %>, {colors: ["#5bc0de"], bytes: true, library: {plugins: {tooltip: {intersect: false, mode: "index"}}}})
+    </script>
+  <% end %>
+
+  <!--
+  <% if @index_bloat.any? %>
+    <p>Check out <%= link_to "index bloat", index_bloat_path %> for an easy way to reclaim space.</p>
+  <% end %>
+  -->
+
+  <% if @unused_indexes.any? %>
+    <p>
+      <%= pluralize(@unused_indexes.size, "unused index") %>. Remove them
+      <% if @show_migrations %>
+        <a href="javascript: void(0);" onclick="document.getElementById('migration').style.display = 'block';">with a migration</a>
+      <% end %>
+      for faster writes.
+
+      <% if @database.replicating? %>
+        Check they aren’t used on replicas.
+      <% end %>
+    </p>
+
+    <div id="migration" style="display: none;">
+      <pre>rails generate migration remove_unused_indexes</pre>
+      <p>And paste</p>
+      <pre style="overflow: scroll; white-space: pre; word-break: normal;"><% @unused_indexes.sort_by { |q| [-q[:size_bytes], q[:index]] }.each do |query| %>
+<%= pghero_remove_index(query) %><% end %></pre>
+    </div>
+  <% end %>
+
+  <% if @sizes_timeout %>
+    <p>Breakdown not available (system catalog locked)</p>
+  <% else %>
+    <table class="table space-table">
+      <thead>
+        <tr>
+          <th><%= link_to (@only_tables ? "Table" : "Relation"), @header_options.merge(sort: "name") %></th>
+          <th style="width: 15%;"><%= link_to "Size", @header_options %></th>
+          <% if @space_stats_enabled %>
+            <th style="width: 15%;"><%= link_to "#{@days}d Growth", @header_options.merge(sort: "growth") %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @relation_sizes.each do |query| %>
+          <tr>
+            <td style="<%= query[:type] == "index" ? "font-style: italic;" : "" %>">
+              <span style="word-break: break-all;">
+                <% name = query[:relation] || query[:table] %>
+                <% if @space_stats_enabled %>
+                  <%= link_to name, relation_space_path(name, schema: query[:schema]), target: "_blank", style: "color: inherit;" %>
+                <% else %>
+                  <%= name %>
+                <% end %>
+              </span>
+              <% if query[:schema] != "public" %>
+                <span class="text-muted"><%= query[:schema] %></span>
+              <% end %>
+              <% if @unused_index_names.include?(query[:relation]) %>
+                <span class="unused-index">UNUSED</span>
+              <% end %>
+            </td>
+            <td><%= query[:size] %></td>
+            <% if @space_stats_enabled %>
+              <td>
+                <% if @growth_bytes_by_relation[[query[:schema], query[:relation]]] %>
+                  <% if @growth_bytes_by_relation[[query[:schema], query[:relation]]] < 0 %>-<% end %><%= PgHero.pretty_size(@growth_bytes_by_relation[[query[:schema], query[:relation]]].abs) %>
+                <% else %>
+                  <span class="text-muted">Unknown</span>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

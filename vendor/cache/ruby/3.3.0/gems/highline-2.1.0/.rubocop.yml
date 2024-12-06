@@ -1,0 +1,84 @@
+# Bellow the changes to default Rubocop behavior.
+
+# See options at:
+# https://github.com/bbatsov/rubocop/tree/master/config
+
+AllCops:
+  TargetRubyVersion: 2.1
+
+# General
+
+# Multi-line method chaining should be done with leading dots.
+Layout/DotPosition:
+  EnforcedStyle: trailing
+  SupportedStyles:
+    - leading
+    - trailing
+
+# Enabling
+# --------
+
+Style/CollectionMethods:
+  Description: 'Preferred collection methods.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size'
+  Enabled: true
+
+Style/StringMethods:
+  Description: 'Checks if configured preferred methods are used over non-preferred.'
+  Enabled: true
+
+# Disabling
+# ---------
+
+# Modifying
+# ---------
+
+# Check quotes usage according to lint rule below.
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+# Configuration parameters: SupportedStyles.
+# SupportedStyles: snake_case, camelCase
+Naming/MethodName:
+  EnforcedStyle: snake_case
+  Exclude:
+    - 'test/**/*'
+
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles, AutoCorrectEncodingComment.
+# SupportedStyles: when_needed, always, never
+Style/Encoding:
+  Enabled: true
+
+# If we fix this, it will change method signature.
+# Save it for major release.
+Style/OptionalArguments:
+  Exclude:
+    - 'lib/highline/list_renderer.rb'
+
+# TemplateRenderer should never fail on method missing.
+Style/MethodMissing:
+  Exclude:
+    - 'lib/highline/template_renderer.rb'
+
+# This is a breaking change for MRI 1.9.
+# Revoke when updating to MRI 2.0 as minimum.
+# Cop supports --auto-correct.
+# Configuration parameters: MinSize, SupportedStyles.
+# SupportedStyles: percent, brackets
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
+Layout/IndentHeredoc:
+  Exclude:
+    - 'examples/page_and_wrap.rb'
+    - 'highline.gemspec'
+    - 'test/acceptance/acceptance.rb'
+
+# Cop supports --auto-correct.
+Lint/ScriptPermission:
+  Enabled: false

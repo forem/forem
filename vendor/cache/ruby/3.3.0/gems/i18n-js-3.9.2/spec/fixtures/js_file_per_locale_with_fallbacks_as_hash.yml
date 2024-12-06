@@ -1,0 +1,6 @@
+fallbacks:
+  fr: ["de", "en"]
+  de: "en"
+
+translations:
+  - file: "tmp/i18n-js/%{locale}.js"

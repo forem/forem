@@ -1,0 +1,3 @@
+exclude_patterns:
+  - "lib/flipper/ui/public"
+  - "spec/"

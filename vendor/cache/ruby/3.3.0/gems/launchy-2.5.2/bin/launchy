@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'launchy'
+Launchy::Cli.new.run( ARGV, ENV )

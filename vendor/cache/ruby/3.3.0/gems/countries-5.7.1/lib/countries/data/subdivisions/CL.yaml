@@ -1,0 +1,1067 @@
+---
+AI:
+  name: Aisén del General Carlos Ibáñez del Campo
+  code: AI
+  unofficial_names:
+  - Aisén del General Carlos Ibáñez del Campo
+  - Aysén
+  geo:
+    latitude: -46.378345
+    longitude: -72.3007623
+    min_latitude: -49.3439696
+    min_longitude: -75.67981809999999
+    max_latitude: -43.6399768
+    max_longitude: -71.08750119999999
+  translations:
+    en: Aysén
+    ar: إقليم أيسن
+    bg: Айсен
+    bn: আয়সেন অঞ্চল
+    ca: Regió d’Aysén
+    cs: Region Aysén
+    da: Aisén-regionen
+    de: Región de Aysén
+    el: Αϊσέν
+    es: Región Aysén del General Carlos Ibáñez del Campo
+    eu: Aisén eskualdea
+    fa: منطقه آیسین
+    fi: Aisén del General Carlos Ibáñez del Campo
+    fr: Région Aisén del General Carlos Ibáñez del Campo
+    gl: Rexión de Aisén
+    gu: આશેન પ્રદેશ
+    he: אייסן
+    hi: आइसन क्षेत्र
+    hr: XI. regija Aisén del General Carlos Ibáñez del Campo
+    hu: Aysén régió
+    hy: Այսեն
+    id: Region Aisén
+    it: regione di Aysén
+    ja: アイセン・デル・ヘネラル・カルロス・イバニェス・デル・カンポ州
+    ka: აისენი
+    kn: ಐಸೆನ್ ಪ್ರದೇಶ
+    ko: 아이센델헤네랄카를로스이바녜스델캄포 주
+    lt: Aiseno regionas
+    mr: अयान प्रदेश
+    ms: Aysen Region
+    nb: Aisén
+    nl: Aysén del General Carlos Ibáñez del Campo
+    pl: Aisén
+    pt: Aisén (região)
+    ro: Regiunea Aysén
+    ru: Айсен
+    si: අයිසෙන් කලාපය
+    sk: Aysén
+    sv: Región de Aisén
+    ta: ஐஸேண் பகுதி
+    te: ఆయెసెన్ ప్రాంతం
+    th: ไอเซน
+    tr: Aysen bölgesi
+    ur: ایسین ریجن
+    vi: Khu vực Aysén
+    zh: 伊瓦涅斯将军艾森大区
+    lv: Aisenas reģions
+    ceb: Aysén
+    yue_Hans: 艾森大区
+    ccp: "\U00011103\U00011103\U00011128\U00011125\U0001112C\U0001111A\U00011134"
+    yue: 艾森大區
+    'no': Aisén
+  comments:
+  type: region
+AN:
+  name: Antofagasta
+  code: AN
+  unofficial_names: Antofagasta
+  geo:
+    latitude: -23.65
+    longitude: -70.39999999999999
+    min_latitude: -25.40112
+    min_longitude: -70.62911609999999
+    max_latitude: -23.0591235
+    max_longitude: -68.1182127
+  translations:
+    en: Antofagasta
+    ar: إقليم أنتوفاغاستا
+    bg: Антофагаста
+    bn: আন্তুফাগাস্তা অঞ্চল
+    ca: Regió d’Antofagasta
+    cs: Region Antofagasta
+    da: Antofagasta-regionen
+    de: Región de Antofagasta
+    el: Αντοφαγκάστα
+    es: Región de Antofagasta
+    et: Antofagasta piirkond
+    eu: Antofagasta eskualdea
+    fa: منطقه آنتوفاگاستا
+    fi: Antofagastan alue
+    fr: Région d’Antofagasta
+    gl: Rexión de Antofagasta
+    gu: એન્ટોફગાસ્ટા પ્રદેશ
+    he: אנטופגסטה
+    hi: एंटोफगास्ता प्रदेश
+    hr: II . regija Antofagasta
+    hy: Անտոֆագաստա
+    id: Wilayah Antofagasta
+    it: regione di Antofagasta
+    ja: アントファガスタ州
+    ka: ანტოფაგასტა
+    kn: ಆಂಟೊಫಾಗಸ್ಟಾ ಪ್ರದೇಶ
+    ko: 안토파가스타 주
+    lt: Antofagastos regionas
+    mr: अँटोफागस्ता प्रदेश
+    ms: Antofagasta Region
+    nb: Antofagasta
+    nl: Antofagasta
+    pl: Antofagasta
+    pt: Região de Antofagasta
+    ro: Regiunea Antofagasta
+    ru: Антофагаста
+    si: අන්ටෝෆගස්ටා කලාපය
+    sk: Antofagasta
+    sr: Регион Антофагаста
+    sv: Región de Antofagasta
+    ta: அன்டோபிஹஸ்தா பகுதி
+    te: ఆంటోఫాగస్తా ప్రాంతం
+    th: เมืองอันโตฟากัสตา
+    tr: Antofagasta bölgesi
+    ur: انتوفاجاستا ریجن
+    vi: Khu vực Antofagasta
+    lv: Antofagastas reģions
+    ceb: Antofagasta
+    sr_Latn: Region Antofagasta
+    zh: 安托法加斯塔大区
+    ccp: "\U00011103\U0001111A\U00011134\U00011111\U0001112E\U0001111C\U00011109\U0001110C\U00011134\U00011111"
+    be: вобласць Антафагаста
+    'no': Antofagasta
+    sl: Regija Antofagasta
+    yue: 安托法加斯塔大區
+    yue_Hans: 安托法加斯塔大区
+  comments:
+  type: region
+AP:
+  name: Arica y Parinacota
+  code: AP
+  unofficial_names: Arica y Parinacota
+  geo:
+    latitude: -18.5940485
+    longitude: -69.4784541
+    min_latitude: -19.2302791
+    min_longitude: -70.37963309999999
+    max_latitude: -17.5008571
+    max_longitude: -68.9160989
+  translations:
+    en: Arica y Parinacota
+    ar: إقليم أريكا وبارينكوتا
+    bg: Арика и Паринакота
+    ca: Regió d’Arica i Parinacota
+    cs: Region Arica y Parinacota
+    da: Arica og Parinacota-regionen
+    de: Región de Arica y Parinacota
+    es: Región de Arica y Parinacota
+    et: Arica y Parinacota
+    eu: Arica eta Parinacota eskualdea
+    fa: منطقه آریکا و پاریناکوتا
+    fi: Arica-Parinacota
+    fr: Région d’Arica et Parinacota
+    gl: Rexión de Arica e Parinacota
+    hr: XV. regija Arica i Parinacota
+    hy: Արիկա և Պարինակոտա
+    it: regione di Arica e Parinacota
+    ja: アリカ・イ・パリナコータ州
+    ka: არიკა და პარინაკოტა
+    ko: 아리카 이 파리나코타 주
+    lt: Arikos ir Parinakotos regionas
+    nb: Arica y Parinacota
+    nl: Arica y Parinacota
+    pl: Arica y Parinacota
+    pt: Região de Arica e Parinacota
+    ro: Regiunea Arica și Parinacota
+    ru: Арика-и-Паринакота
+    sk: Arica y Parinacota
+    sv: Región de Arica y Parinacota
+    sw: Mkoa wa Arica na Parinacota
+    tr: Arica ve Parinacota bölgesi
+    vi: Arica và Parinacota
+    ceb: Región de Arica y Parinacota
+    zh: 阿里卡和帕里纳科塔大区
+    ccp: "\U00011103\U00011122\U00011128\U00011107 \U00011124\U00011120\U0001112D
+      \U0001111B\U00011122\U00011128\U0001111A\U00011107\U0001112E\U00011111"
+    'no': Arica y Parinacota
+    he: אריקה ופרינאקוטה
+    id: Region Arica y Parinacota
+    ur: آریکا و پاریناکوتا علاقہ
+    yue: 阿列卡同帕利拿哥達大區
+    yue_Hans: 阿列卡同帕利拿哥达大区
+  comments:
+  type: region
+AR:
+  name: Araucanía
+  code: AR
+  unofficial_names:
+  - La Araucanía
+  geo:
+    latitude: -38.948921
+    longitude: -72.331113
+    min_latitude: -39.6397245
+    min_longitude: -73.5228712
+    max_latitude: -37.5880498
+    max_longitude: -70.8301122
+  translations:
+    en: Araucanía
+    ar: إقليم أروكانيا
+    bg: Араукания
+    bn: আরাকানিয়া অঞ্চল
+    ca: Regió de l’Araucània
+    cs: Region Araucanía
+    da: Araucanía-regionen
+    de: Región de la Araucanía
+    el: Αροκανία
+    es: Región de la Araucanía
+    eu: Araucanía eskualdea
+    fa: منطقه آرائوکانیا
+    fi: Araucanía
+    fr: Région d’Araucanie
+    gl: Rexión de Araucanía
+    gu: અરાઉકેનિયા પ્રદેશ
+    he: אראוקניה
+    hi: अराऊकेनिया प्रदेश
+    hr: IX. regija Araucanía
+    hu: Araucanía régió
+    hy: Արուկանիա
+    id: Wilayah Araucanía
+    is: Araucanía-fylki
+    it: regione dell’Araucanía
+    ja: ラ・アラウカニア州
+    ka: არაუკანია
+    kn: ಅರಕುನಿಯಾ ಪ್ರದೇಶ
+    ko: 아라우카니아 주
+    lt: Araukanijos regionas
+    mr: अराक्रानिया प्रदेश
+    ms: Araucania Region
+    nb: Araucanía
+    nl: Araucanía
+    pl: Araukania
+    pt: Região da Araucanía
+    ro: Regiunea La Araucanía
+    ru: Араукания
+    si: අරෞ කානියා කලාපය
+    sk: Araucanía
+    sv: Región de la Araucanía
+    sw: Mkoa wa Araucanía
+    ta: அர்துகானியா பகுதி
+    te: ఆరాకేనియా ప్రాంతం
+    th: เขตอเราคาเนีย
+    tr: Araucanía bölgesi
+    ur: اراوکانیا ریجن
+    vi: Khu vực Araucanía
+    lv: Araukānijas reģions
+    ceb: Región de la Araucanía
+    zh: 阿劳卡尼亚大区
+    ccp: "\U00011103\U00011122\U00011105\U0001112A\U00011107\U0001111A\U00011128\U00011120"
+    'no': Araucanía
+    be: Араўканія
+    yue: 阿勞卡尼亞大區
+    yue_Hans: 阿劳卡尼亚大区
+  comments:
+  type: region
+AT:
+  name: Atacama
+  code: AT
+  unofficial_names: Atacama
+  geo:
+    latitude: -27.5660558
+    longitude: -70.050314
+    min_latitude: -29.5373752
+    min_longitude: -71.5936886
+    max_latitude: -25.2897006
+    max_longitude: -68.26686219999999
+  translations:
+    en: Atacama
+    ar: إقليم أتاكاما
+    bg: Атакама
+    bn: আটকামা অঞ্চল
+    ca: Regió d’Atacama
+    cs: Region Atacama
+    da: Atacama-regionen
+    de: Región de Atacama
+    el: Ατακάμα
+    es: Región de Atacama
+    eu: Atacama eskualdea
+    fa: منطقه آتاکاما
+    fi: Atacaman alue
+    fr: Région d’Atacama
+    gl: Rexión de Atacama
+    gu: અટાકામા પ્રદેશ
+    hi: एटाकामा क्षेत्र
+    hr: III. regija Atacama
+    hy: Ատակամա
+    id: Wilayah Atacama
+    it: regione di Atacama
+    ja: アタカマ州
+    ka: ატაკამა
+    kn: ಅಟ್ಕಾಮಾ ಪ್ರದೇಶ
+    ko: 아타카마 주
+    lt: Atakamos regionas
+    mr: अटाकामा प्रदेश
+    ms: Atacama Region
+    nb: Atacama
+    nl: Atacama
+    pl: Atakama
+    pt: Região de Atacama
+    ro: Regiunea Atacama
+    ru: Атакама
+    si: ඇටකාමා කලාපය
+    sk: Atacama
+    sv: Región de Atacama
+    sw: Mkoa wa Atacama
+    ta: அடக்கமா பகுதி
+    te: అటాకామా ప్రాంతం
+    th: อาตากามา
+    tr: Atacama bölgesi
+    ur: اتاکاما ریجن
+    vi: Khu vực Atacama
+    lv: Atakamas reģions
+    ceb: Atacama
+    zh: 阿塔卡马大区
+    ccp: "\U00011103\U00011111\U00011107\U0001111F"
+    'no': Atacama
+    he: מחוז אטקמה
+    yue: 阿塔卡馬大區
+    yue_Hans: 阿塔卡马大区
+  comments:
+  type: region
+BI:
+  name: Bío-Bío
+  code: BI
+  unofficial_names:
+  - Bíobío
+  geo:
+    latitude: -36.9777206
+    longitude: -72.331113
+    min_latitude: -38.4918218
+    min_longitude: -73.9699354
+    max_latitude: -36.0083148
+    max_longitude: -70.98831919999999
+  translations:
+    en: Bío Bío
+    ar: إقليم بيو بيو
+    bg: Биобио
+    bn: অঞ্চল মেট্রোপলিটন
+    ca: Regió del Bío-Bío
+    cs: Region Bío-Bío
+    da: Biobío-regionen
+    de: Región del Bío-Bío
+    el: Περιφέρεια Μπίο Μπίο
+    es: Región del Bío Bío
+    et: Bío-Bío piirkond
+    eu: Biobío eskualdea
+    fa: بیوبیو
+    fi: Biobíon alue
+    fr: Région du Biobío
+    gl: Rexión de Biobío
+    gu: રીજન મેટ્રોપોલિટન
+    he: ביוביו
+    hr: VIII. regija Biobío
+    hu: Biobío régió
+    hy: Բիոբիո
+    id: Wilayah Bío Bío
+    is: Biobío-fylki
+    it: regione del Bío Bío
+    ja: ビオビオ州
+    ka: ბიო-ბიო
+    kn: ರೆಜಿಯಾನ್ ಮಹಾನಗರ
+    ko: 비오비오 주
+    lt: Biobio regionas
+    lv: Biobio reģions
+    mr: रीजन मेट्रोपॉलिटन
+    ms: Region metropolitana
+    nb: Biobío
+    nl: Bío-Bío
+    pl: Biobío
+    pt: Região de Bío-Bío
+    ro: Regiunea Biobío
+    ru: Био-Био
+    si: මෙට්‍රොපොලිටනා කලාපය
+    sk: Biobío
+    sr: Регион Биобио
+    sv: Región del BioBío
+    ta: பகுதி மெட்ரோபோலிதானா
+    te: రీజియన్ మెట్రోపాలిటానా
+    th: เรจิโอนัลเมโทรโปลิตาโน
+    tr: Bío-Bío bölgesi
+    uk: Біобіо
+    ur: ریجن میتروپولیتانا
+    vi: Vùng Bío Bío
+    cy: Bío Bío Region
+    ceb: Región del Biobío
+    sr_Latn: Region Biobio
+    zh: 比奥比奥大区
+    ccp: "\U0001111D\U0001112D\U00011103\U0001112E \U0001111D\U0001112D\U00011103\U0001112E"
+    az: Bio Bio bölgəsi
+    be: вобласць Біа-Біа
+    bs: Regija Bío-Bío
+    mk: Биобио
+    'no': Biobío
+    yue: 比奧比奧大區
+    yue_Hans: 比奥比奥大区
+  comments:
+  type: region
+CO:
+  name: Coquimbo
+  code: CO
+  unofficial_names: Coquimbo
+  geo:
+    latitude: -29.9533
+    longitude: -71.3436
+    min_latitude: -30.515066
+    min_longitude: -71.67686309999999
+    max_latitude: -29.9331593
+    max_longitude: -71.117463
+  translations:
+    en: Coquimbo
+    ar: إقليم كوكيمبو
+    be: Какімба
+    bg: Кокимбо
+    bn: কুকিম্বু অঞ্চল
+    ca: Regió de Coquimbo
+    cs: Region Coquimbo
+    da: Coquimbo-regionen
+    de: Región de Coquimbo
+    el: Κοκίμπο
+    es: Región de Coquimbo
+    eu: Coquimbo eskualdea
+    fa: منطقه کوکیمبو
+    fi: Coquimbo
+    fr: Région de Coquimbo
+    gl: Rexión de Coquimbo
+    gu: કોકુમ્બો પ્રદેશ
+    hi: कोकिम्बो प्रदेश
+    hr: IV. regija Coquimbo
+    hy: Կոկիմբո
+    id: Wilayah Coquimbo
+    it: regione di Coquimbo
+    ja: コキンボ州
+    ka: კოკიმბო
+    kn: ಕೊಕ್ವಿಬೋ ಪ್ರದೇಶ
+    ko: 코킴보 주
+    lt: Kokimbo regionas
+    mr: कोक्मिलो प्रदेश
+    ms: Coquimbo Region
+    nb: Coquimbo
+    nl: Coquimbo
+    pl: Coquimbo
+    pt: Região de Coquimbo
+    ro: Regiunea Coquimbo
+    ru: Кокимбо
+    si: කොකිම්බෝ කලාපය
+    sk: Coquimbo
+    sv: Región de Coquimbo
+    ta: கோகுய்ம்பொ பகுதி
+    te: కాక్వింబో ప్రాంతం
+    th: แคว้นโกกิมโบ
+    tr: Coquimbo bölgesi
+    ur: کوکیمبو علاقہ
+    vi: Khu vực Coquimbo
+    lv: Kokimbo reģions
+    ceb: Coquimbo
+    zh: 科金博大区
+    ccp: "\U00011107\U0001112E\U00011107\U0001112A\U00011103\U00011128\U0001111F\U00011134\U0001111D\U0001112E"
+    mk: Кокимбо
+    'no': Coquimbo
+    he: קוקימבו
+    yue: 科金博大區
+    yue_Hans: 科金博大区
+  comments:
+  type: region
+LI:
+  name: Libertador General Bernardo O'Higgins
+  code: LI
+  unofficial_names:
+  - General Bernardo O'Higgins
+  - Libertador
+  - Libertador OʿHiggins
+  geo:
+    latitude: -34.5755374
+    longitude: -71.0022311
+    min_latitude: -35.0066722
+    min_longitude: -72.0717305
+    max_latitude: -33.8537682
+    max_longitude: -70.0121472
+  translations:
+    en: Libertador General Bernardo O’Higgins
+    ar: إقليم ليبيرتادور جينيرال برناردو أوهيجينز
+    ca: Regió d’O’Higgins
+    cs: Region O’Higgins
+    da: O’Higgins-regionen
+    de: Región del Libertador General Bernardo O’Higgins
+    el: Ο’Χίγκινς
+    es: Región de O’Higgins
+    eu: O’Higgins eskualdea
+    fi: Libertador General Bernardo O’Higginsin maakunta
+    fr: Région du Libertador General Bernardo O’Higgins
+    gl: Rexión de O’Higgins
+    gu: લિબર્ટાડોર જનરલ , બર્નાર્ડો ઓ’હિગિન્સ પ્રદેશ
+    hi: लिबर्टडोर जनरल बर्नार्डो ओ’हिगिन्स क्षेत्र
+    hr: VI. regija Libertador General Bernardo O’Higgins
+    id: Wilayah Libertador General Bernardo O’Higgins
+    it: regione del Libertador General Bernardo O’Higgins
+    ja: リベルタドール・ベルナルド・オイギンス州
+    kn: ಲಿಬರ್ಟಡರ್ ಜನರಲ್ ಬೆರ್ನಾರ್ಡೊ ಓ ಹಿಗ್ಗಿನ್ಸ್ ಪ್ರದೇಶ
+    ko: 리베르타도르헤네랄베르나르도오이긴스 주
+    lt: Išvaduotojo Generolo Bernardo O’Higinso regionas
+    mr: लिबर्टाडोडर जनरल बर्नार्डो ओ’हिग्गीन्स प्रदेश
+    ms: Libertador General Bernardo O’Higgins Region
+    nb: O’Higgins
+    nl: Libertador General Bernardo O’Higgins
+    pl: Libertador
+    pt: Região de O’Higgins
+    ro: Regiunea Libertador General Bernardo O’Higgins
+    si: ලිබර්ටෙදෝර් ජෙනරල් බර්නාඩෝ ඔ හිගින්ස් කලාපය
+    sk: Libertador General Bernardo O’Higgins
+    sv: Región de O’Higgins
+    sw: Mkoa wa O’Higgins
+    ta: லிபெர்ட்டொர் ஜெனரல் பெர்னார்டோ ஓ ‘ஹிக்கின்ஸ் பகுதி
+    te: లిబర్టేడర్ జనరల్ బెర్నార్డో ఓ’హిగిన్స్ ప్రాంతం
+    th: โอ ฮิกกินส์
+    tr: O’Higgins bölgesi
+    vi: Khu vực Libertador General Bernardo O’Higgins
+    lv: Ohiginsa reģions
+    ceb: Región del Libertador General Bernardo O’Higgins
+    zh: 奥伊金斯将军解放者大区
+    bn: লিবার্তাদো জেনারেল বার্নাডো ও’হিগিন্স অঞ্চল
+    fa: منطقه ا هیگینز
+    ccp: "\U00011123\U0001112D\U0001111D\U00011122\U00011134\U00011111\U00011113\U0001112E
+      \U0001110E\U0001112C\U0001111A\U00011122\U0001112C\U00011123\U00011134 \U0001111D\U00011122\U00011134\U0001111A\U00011122\U00011134\U00011113\U0001112E
+      \U00011103\U0001112E‘\U00011126\U0001112D\U0001110E\U00011128\U0001111A\U00011134\U00011125\U00011134"
+    'no': O’Higgins
+    he: או׳היגינס
+    yue: 奧伊金斯將軍解放者大區
+    yue_Hans: 奥伊金斯将军解放者大区
+  comments:
+  type: region
+LL:
+  name: Los Lagos
+  code: LL
+  unofficial_names: Los Lagos
+  geo:
+    latitude: -41.9197779
+    longitude: -72.1416132
+    min_latitude: -44.0668098
+    min_longitude: -74.8511989
+    max_latitude: -40.2364882
+    max_longitude: -71.5841725
+  translations:
+    en: Los Lagos
+    ar: إقليم لوس لاغوس
+    bg: Лос Лагос
+    bn: লস লাগোস অঞ্চল
+    ca: Regió de Los Lagos
+    cs: Region Los Lagos
+    da: Los Lagos-regionen
+    de: Región de los Lagos
+    el: Λος Λάγκος
+    es: Región de Los Lagos
+    eu: Los Lagos eskualdea
+    fa: منطقه لوس لاگوس
+    fi: Los Lagosin maakunta
+    fr: Région des Lacs
+    gl: Rexión de Los Lagos
+    gu: લોસ લાગોસ પ્રાંત
+    he: לוס לאגוס
+    hi: लॉस लागोस क्षेत्र
+    hr: X. regija Los Lagos
+    hu: Los Lagos régió
+    hy: Լոս Լագոս
+    id: Wilayah Los Lagos
+    is: Los Lagos-fylki
+    it: regione di Los Lagos
+    ja: ロス・ラゴス州
+    ka: ლოს-ლაგოსი
+    kn: ಲಾಸ್ ಲಾಗೋಸ್ ಪ್ರದೇಶ
+    ko: 로스라고스 주
+    lt: Los Lagoso regionas
+    mr: लॉस लागोस प्रदेश
+    ms: Los Lagos Region
+    nb: Los Lagos
+    nl: Los Lagos
+    pl: Los Lagos
+    pt: Região de Los Lagos
+    ro: Regiunea Los Lagos
+    ru: Лос-Лагос
+    si: ලොස් ලාගොස් කලාපය
+    sk: Los Lagos
+    sv: Región de Los Lagos
+    sw: Mkoa wa Los Lagos
+    ta: லாஸ் லாகோஸ் பகுதி
+    te: లాస్ లాగోస్ ప్రాంతం
+    th: ลอสลากอส
+    tr: Los Lagos bölgesi
+    ur: لوس لاگوس علاقہ
+    vi: Khu vực Los Lagos
+    lv: Loslagosas reģions
+    ceb: Los Lagos
+    zh: 湖大区
+    ccp: "\U00011123\U00011127\U0001110C\U00011134 \U00011123\U00011109\U0001112E\U0001110C\U00011134"
+    'no': Los Lagos
+    ga: Réigiún Los Lagos
+    yue: 湖大區
+    yue_Hans: 湖大区
+  comments:
+  type: region
+LR:
+  name: Los Ríos
+  code: LR
+  unofficial_names: Los Ríos
+  geo:
+    latitude: -40.2310217
+    longitude: -72.331113
+    min_latitude: -40.6819045
+    min_longitude: -73.7275484
+    max_latitude: -39.2871406
+    max_longitude: -71.5829256
+  translations:
+    en: Los Ríos
+    ar: مقاطعة لوس ريوس
+    be: Лос-Рыяс
+    bg: Лос Риос
+    bn: লস রিওস অঞ্চল
+    ca: Regió de Los Ríos
+    cs: Region Los Ríos
+    da: Los Ríos-regionen
+    de: Región de Los Ríos
+    el: Λος Ρίος
+    es: Región de Los Ríos
+    eu: Los Ríos eskualdea
+    fa: منطقه لوس ریوس
+    fi: Los Ríos
+    fr: Région des Fleuves
+    gl: Rexión de Los Ríos
+    gu: લોસ રિયોસ પ્રદેશ
+    he: לוס ריוס
+    hi: लॉस रिओस क्षेत्र
+    hr: XIV. regija Los Ríos
+    hu: Los Ríos régió
+    hy: Լոս Ռիոս
+    id: Wilayah Los Ríos
+    is: Los Ríos-fylki
+    it: regione di Los Ríos
+    ja: ロス・リオス州
+    ka: ლოს-რიოსი
+    kn: ಲಾಸ್ ರಿಯೋಸ್ ಪ್ರದೇಶ
+    ko: 로스리오스 주
+    lt: Los Rioso regionas
+    mr: लॉस रियोस प्रदेश
+    ms: Los Rios Region
+    nb: Los Ríos
+    nl: Los Ríos
+    pl: Los Ríos
+    pt: Região de Los Rios
+    ro: Regiunea Los Ríos
+    ru: Лос-Риос
+    si: ලොස් රියෝස් පළාත
+    sk: Los Ríos
+    sv: Región de Los Ríos
+    sw: Mkoa wa Los Ríos
+    ta: லாஸ் ரீவ்ஸ் பகுதி
+    te: లాస్ రియోస్ ప్రాంతం
+    th: แคว้นลอส ริออส
+    tr: Los Ríos bölgesi
+    ur: لوس ریوس علاقہ
+    vi: Khu vực Los Ríos
+    lv: Losroisas reģions
+    ceb: Región de Los Ríos
+    zh: 河大区
+    ccp: "\U00011123\U00011127\U0001110C\U00011134 \U00011122\U00011128\U00011120\U0001112E\U0001110C\U00011134"
+    'no': Los Ríos
+    yue: 河大區
+    yue_Hans: 河大区
+  comments:
+  type: region
+MA:
+  name: Magallanes
+  code: MA
+  unofficial_names:
+  - Magellantes y la Antártica Chilena
+  geo:
+    latitude: -52.20643159999999
+    longitude: -72.16850010000002
+    min_latitude: -55.9799665
+    min_longitude: -75.7296587
+    max_latitude: -48.5966006
+    max_longitude: -66.4181435
+  translations:
+    en: Magallanes Region
+    ar: مقاطعة ماغالانس
+    bg: Магалянес и Чилийска Антарктика
+    bn: মাগালানেস লা এন্টার্কটিকা চিলিয়েনা অঞ্চল
+    ca: Regió de Magallanes i de l’Antàrtica Xilena
+    cs: Region Magallanes y la Antártica Chilena
+    da: Magallanes og Antártica Chilena-regionen
+    de: Región de Magallanes y de la Antártica Chilena
+    el: Περιοχή Μαγαγιάνες και η Χιλιανή Ανταρκτική
+    es: Región de Magallanes y de la Antártica Chilena
+    eu: Magallanes y la Antártica Chilena eskualdea
+    fa: منطقه ماژلان و قطب جنوب شیلی
+    fi: Magallanes y la Antártica Chilenan alue
+    fr: Région de Magallanes et de l’Antarctique chilien
+    gl: Rexión de Magallanes e da Antártica Chilena
+    gu: મેગાલેન્સ ય લા એન્ટાર્ટિકા ચિલેના પ્રદેશ
+    hi: मैगलेन्स वाई ला अंटार्कटिका चिलेना क्षेत्र
+    hr: XII. regija Magallanes y de la Antártica Chilena
+    hy: Մագալանես և Չիլիական Անտարկտիկա
+    id: Region Magallanes y la Antártica
+    it: regione di Magellano e dell’Antartide Cilena
+    ja: マガジャネス・イ・デ・ラ・アンタルティカ・チレーナ州
+    ka: მაგალიანესი და ჩილეს ანტარქტიკა
+    kn: ಮಗಾಲೆನ್ಸ್ ವೈ ಲಾ ಅಂಟಾರ್ಟಿಕಾ ಚಿಲೆನಾ ಪ್ರದೇಶ
+    ko: 마가야네스 이 안타르티카칠레나 주
+    lt: Magelano ir Čilės Antarktidos regionas
+    ml: റെജിയോൺ ഡെ മഗല്യാൻസ് ഡെല യെ അന്റാർട്ടിക്ക ചിലെന
+    mr: मागालान्स या ला अंटार्क्टिका चिलेना प्रदेश
+    ms: Daerah Magallanes y la Antartica Chilena
+    nb: Magallanes y de la Antártica Chilena
+    nl: Magallanes y la Antártica Chilena
+    pl: Magallanes
+    pt: Magalhães e Antártica Chilena
+    ro: Regiunea Magallanes și Antartica Chileană
+    ru: Магальянес и Чилийская Антарктика
+    si: මගලනෙස් වයි ලා ඇන්ටාක්ටිකා චිලේනා කලාපය
+    sk: Magallanes y de la Antártica Chilena
+    sv: Región de Magallanes y de la Antártica Chilena
+    sw: Mkoa wa Magallanes na Antaktiki ya Chile
+    ta: மகாலனேஸி லா அண்டார்டிகா சீலேனா பகுதி
+    te: మగాలేనస్ యా లా అంటార్కిటికా ప్రాంతం
+    th: แคว้นมากายาเนสและลาอันตาร์ตีกาชีเลนา
+    tr: Magallanes y la Antártica Chilena bölgesi
+    ur: ماگایانس و لا انتارتیکا چلی علاقہ
+    vi: Magellan và Địa Cực Chile
+    lv: Magaljanesas un Čīles Antarktikas reģions
+    ceb: Región de Magallanes y de la Antártica Chilena
+    zh: 麦哲伦-智利南极大区
+    ccp: "\U0001111F\U00011133\U00011120\U00011109\U00011123\U00011128\U0001111A\U00011134
+      \U00011122\U0001112C\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    he: מגאיאנס ואנטארקטיקה צ׳ילנה
+    be: Магальянес і Чылійская Антарктыка
+    'no': Magallanes y de la Antártica Chilena
+    yue: 麥哲倫同智利南極大區
+    yue_Hans: 麦哲伦同智利南极大区
+  comments:
+  type: region
+ML:
+  name: Maule
+  code: ML
+  unofficial_names: Maule
+  geo:
+    latitude: -35.5163603
+    longitude: -71.5723953
+    min_latitude: -36.5456538
+    min_longitude: -72.78989299999999
+    max_latitude: -34.7119045
+    max_longitude: -70.3260118
+  translations:
+    en: Maule
+    ar: إقليم مولي
+    be: Мауле
+    bg: Мауле
+    bn: মউলে অঞ্চল
+    ca: Regió del Maule
+    cs: Region Maule
+    da: Maule-regionen
+    de: Región del Maule
+    el: Μόλε
+    es: Región del Maule
+    eu: Maule eskualdea
+    fa: منطقه مائوله
+    fi: Maule
+    fr: Région du Maule
+    gl: Rexión de Maule
+    gu: મૌલ પ્રદેશ
+    hi: मौल क्षेत्र
+    hr: VII. regija Maule
+    hu: Maule régió
+    hy: Մաուլե
+    id: Wilayah Maule
+    it: regione del Maule
+    ja: マウレ州
+    ka: მაულე
+    kn: ಮಾಲೆ ಪ್ರದೇಶ
+    ko: 마울레 주
+    lt: Maulės regionas
+    mr: मौल प्रदेश
+    ms: Maule Region
+    nb: Maule
+    nl: Maule
+    pl: Maule
+    pt: Região de Maule
+    ro: Regiunea Maule
+    ru: Мауле
+    si: මෞලේ කලාපය
+    sk: Maule
+    sv: Región del Maule
+    sw: Mkoa wa Maule
+    ta: மௌலி பகுதி
+    te: మాలె ప్రాంతం
+    th: เมาเล
+    tr: Maule bölgesi
+    ur: ماولے علاقہ
+    vi: Khu vực Maule
+    lv: Maules reģions
+    ceb: Maule
+    zh: 马乌莱大区
+    ccp: "\U0001111F\U0001112F\U00011123\U0001112C"
+    he: מאולה
+    'no': Maule
+    yue: 馬烏萊大區
+    yue_Hans: 马乌莱大区
+  comments:
+  type: region
+NB:
+  name: Región de Ñuble
+  code: NB
+  unofficial_names:
+  - Ñuble
+  geo:
+    latitude: -36.599985
+    longitude: -71.905225
+    min_latitude: -37.19417
+    min_longitude: -73.064033
+    max_latitude: -35.979985
+    max_longitude: -71.007955
+  translations:
+    en: Ñuble
+    bg: Ньюбле
+    ca: Regió de Ñube
+    cs: Ñuble
+    da: Ñuble
+    de: Región de Ñuble
+    es: Región de Ñuble
+    eu: Ñuble eskualdea
+    fr: Région de Ñuble
+    gl: Rexión de Ñuble
+    hu: Ñuble régió
+    id: Region Ñuble
+    it: Regione di Ñuble
+    ja: ニュブレ州
+    lt: Ñuble regionas
+    ms: Ñuble Region
+    nb: Ñuble
+    nl: Ñuble
+    pl: Ñuble (region)
+    pt: Ñuble
+    ro: Regiunea Ñuble
+    ru: Ньюбле
+    sk: Ñuble
+    sv: Ñuble (region)
+    tr: Ñuble bölgesi
+    'no': Ñuble
+    he: ניובלה
+    hy: Նյուբլե
+    th: แคว้นญูเบล
+    yue: 紐夫萊大區
+    yue_Hans: 纽夫莱大区
+  comments:
+  type: region
+RM:
+  name: Región Metropolitana de Santiago
+  code: RM
+  unofficial_names:
+  - Metropolitana de Santiago
+  geo:
+    latitude: -33.4843354
+    longitude: -70.6216794
+    min_latitude: -34.2878805
+    min_longitude: -71.7186941
+    max_latitude: -32.919451
+    max_longitude: -69.7689944
+  translations:
+    en: Santiago Metropolitan
+    ar: منطقة سانتياغو متروبوليتان
+    bg: Сантяго
+    bn: সান্তিয়াগো মেট্রোপলিটন অঞ্চল
+    ca: Regió Metropolitana de Santiago
+    cs: Metropolitní region Santiago
+    da: Santiago Hovedstadsregionen
+    de: Región Metropolitana de Santiago
+    el: Σαντιάγκο Μετροπόλιταν
+    es: Región Metropolitana de Santiago
+    eu: Santiagoko metropolitar eskualdea
+    fa: منطقه شهری سانتیاگو
+    fi: Santiago Metropolitan maakunta
+    fr: Région métropolitaine de Santiago
+    gl: Rexión Metropolitana de Santiago
+    gu: મિન્સ્ક
+    hi: सेंटिआगो मेट्रोपोलिटन क्षेत्र
+    hr: Metropolitanska regija Santiaga
+    hy: Սանտյագոյի մայրաքաղաքային տարածաշրջան
+    id: Wilayah Metropolitan Santiago
+    it: regione Metropolitana di Santiago
+    ja: 首都州
+    ka: სანტიაგო
+    kn: ಸ್ಯಾಂಟಿಯಾಗೊ ಮಹಾನಗರ ಪ್ರದೇಶ
+    ko: 산티아고 수도주
+    lt: Santjago metropolinis regionas
+    mr: सांतियागो महानगरीय प्रदेश
+    ms: Santiago Metropolitan Region
+    nb: Región Metropolitana de Santiago
+    nl: Región Metropolitana de Santiago
+    pl: Region Metropolitalny
+    pt: Região Metropolitana de Santiago
+    ro: Regiunea Santiago Metropolitan
+    ru: Сантьяго
+    si: සන්තියාගෝ මෙට්‍රොපොලිටන් දෙපාර්තමේන්තුව
+    sk: Región hlavného mesta Santiago
+    sv: Región Metropolitana de Santiago
+    ta: சாண்டியாகோ மெட்ரோபொலிட்டன் ரீஜியன்
+    te: సాంటియాగో మెట్రోపాలిటన్ ప్రాంతం
+    th: ซันติอาโก
+    tr: Santiago Metropolitan bölgesi
+    uk: Столичний Регіон Сантьяго
+    ur: سینٹیاگو میٹروپولیٹن علاقہ
+    vi: Khu Đô thị Santiago
+    lv: Santjago Metropoles reģions
+    ceb: Región Metropolitana de Santiago
+    zh: 圣地亚哥首都大区
+    ccp: "\U00011125\U0001111A\U00011134\U00011111\U00011128\U00011120\U00011109\U0001112E
+      \U0001111F\U0001112C\U00011111\U00011133\U00011122\U0001112E\U0001111B\U00011127\U00011123\U00011128\U00011111\U0001111A\U00011134"
+    he: מטרופולין סנטיאגו
+    az: Santyaqo Metropolitan bölgəsi
+    'no': Región Metropolitana de Santiago
+    yue: 聖地亞哥都會大區
+    yue_Hans: 圣地亚哥都会大区
+  comments:
+  type: region
+TA:
+  name: Tarapacá
+  code: TA
+  unofficial_names: Tarapacá
+  geo:
+    latitude: -20.2028799
+    longitude: -69.2877535
+    min_latitude: -21.6334004
+    min_longitude: -70.2885344
+    max_latitude: -18.9387142
+    max_longitude: -68.40684449999999
+  translations:
+    en: Tarapacá
+    ar: إقليم تاراباكا
+    bg: Тарапака
+    bn: তারাপাকা অঞ্চল
+    ca: Regió de Tarapacá
+    cs: Region Tarapacá
+    da: Tarapacá-regionen
+    de: Región de Tarapacá
+    el: Ταραπακά
+    es: Región de Tarapacá
+    et: Tarapacá piirkond
+    eu: Tarapacá eskualdea
+    fa: منطقه تاراپاکا
+    fi: Tarapacá
+    fr: Région de Tarapacá
+    gl: Rexión de Tarapacá
+    gu: તારાપકા પ્રદેશ
+    hi: तारापाका क्षेत्र
+    hr: I. regija Tarapacá
+    hy: Տարապակա
+    id: Wilayah Tarapacá
+    it: regione di Tarapacá
+    ja: タラパカ州
+    ka: ტარაპაკა
+    kn: ತರಾಪಾಕಾ ಪ್ರದೇಶ
+    ko: 타라파카 주
+    lt: Tarapakos regionas
+    mr: तारापाका प्रदेश
+    ms: Tarapaca Region
+    nb: Tarapacá
+    nl: Tarapacá
+    pl: Tarapacá
+    pt: Região de Tarapacá
+    ro: Regiunea Tarapacá
+    ru: Тарапака
+    si: ටරපකා කලාපය
+    sk: Tarapacá
+    sv: Región de Tarapacá
+    sw: Mkoa wa Tarapacá
+    ta: ட்ராபிக்கா பகுதி
+    te: టారాపాకా ప్రాంతం
+    th: ทาราปาคา
+    tr: Tarapacá bölgesi
+    ur: تاراپاکا ریجن
+    vi: Khu vực Tarapacá
+    lv: Tarapakas reģions
+    ceb: Región de Tarapacá
+    zh: 塔拉帕卡大区
+    ccp: "\U00011111\U00011122\U0001111B\U00011107"
+    he: טרפקה
+    mk: Тарапака
+    'no': Tarapacá
+    sr: Тарапака (регион)
+    sr_Latn: Tarapaka (region)
+    uz: Tarapacá viloyati
+    yue: 塔拉帕卡大區
+    yue_Hans: 塔拉帕卡大区
+  comments:
+  type: region
+VS:
+  name: Valparaíso
+  code: VS
+  unofficial_names: Valparaíso
+  geo:
+    latitude: -33.045646
+    longitude: -71.620361
+    min_latitude: -33.2149745
+    min_longitude: -71.7444525
+    max_latitude: -33.0178165
+    max_longitude: -71.38561109999999
+  translations:
+    en: Valparaíso
+    ar: إقليم فالبارايسو
+    be: вобласць Вальпараіса
+    bg: Валпараисо
+    bn: বালপারাইসো অঞ্চল
+    ca: Regió de Valparaíso
+    cs: Region Valparaíso
+    da: Valparaíso-regionen
+    de: Región de Valparaíso
+    el: Βαλπαραΐσο
+    es: Región de Valparaíso
+    eu: Valparaíso eskualdea
+    fa: منطقه والپارایزو
+    fi: Valparaíson alue
+    fr: Région de Valparaíso
+    gl: Rexión de Valparaíso
+    gu: વાલ્પરાઇઝો પ્રદેશ
+    he: ולפראיסו (מחוז)
+    hi: वेलपरैसो क्षेत्र
+    hr: V. regija Valparaíso
+    hu: Valparaíso régió
+    hy: Վալպարաիսո
+    id: Wilayah Valparaíso
+    it: regione di Valparaíso
+    ja: バルパライソ州
+    ka: ვალპარაისო
+    kn: ವಾಲ್ಪರೈಸೊ ಪ್ರದೇಶ
+    ko: 발파라이소 주
+    lt: Valparaiso regionas
+    mr: वालपराइसो प्रदेश
+    ms: Valparaiso Region
+    nb: Valparaíso
+    nl: Valparaíso
+    pl: Valparaíso
+    pt: Região de Valparaíso
+    ro: Regiunea Valparaíso
+    ru: Вальпараисо
+    si: වල්පරයිසෝ කලාපය
+    sk: Valparaíso
+    sv: Región de Valparaíso
+    ta: வால்பரைஸோ பகுதி
+    te: వాల్పరాయిసో ప్రాంతం
+    th: ฟาลปาไรโซ
+    tr: Valparaíso bölgesi
+    ur: والپارایسو علاقہ
+    vi: Khu vực Valparaíso
+    lv: Valparaiso reģions
+    ceb: Región de Valparaíso
+    zh: 瓦尔帕莱索大区
+    ccp: "\U0001111E\U00011127\U00011123\U00011134\U0001111B\U00011122\U0001112D\U00011125\U0001112E"
+    'no': Valparaíso
+  comments:
+  type: region

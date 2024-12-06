@@ -1,0 +1,61 @@
+---
+PS:
+  alpha2: PS
+  alpha3: PSE
+  alt_currency: EGP
+  continent: Asia
+  country_code: '970'
+  currency_code: ILS
+  distance_unit: KM
+  gec: WE
+  geo:
+    latitude: 31.952162
+    longitude: 35.233154
+    max_latitude: 32.5520999
+    max_longitude: 35.5740521
+    min_latitude: 31.219691
+    min_longitude: 34.21010010000001
+    bounds:
+      northeast:
+        lat: 32.5520999
+        lng: 35.5740521
+      southwest:
+        lat: 31.219691
+        lng: 34.21010010000001
+  international_prefix: '00'
+  ioc: PLE
+  iso_long_name: The State of Palestine
+  iso_short_name: Palestine, State of
+  languages_official:
+  - ar
+  - he
+  - en
+  languages_spoken:
+  - ar
+  - he
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Palestinian
+  number: '275'
+  postal_code: false
+  region: Asia
+  start_of_week: sunday
+  subregion: Western Asia
+  un_locode: PS
+  unofficial_names:
+  - Palestine
+  - فلسطين
+  - Palästina
+  - Palestina
+  - the Occupied Palestinian Territory
+  - パレスチナ
+  - Palestijnse gebieden
+  - Palestinian Territory Occupied
+  - Palestinian Authority
+  world_region: EMEA

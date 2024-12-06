@@ -1,0 +1,11 @@
+.DS_Store
+pkg
+tmp
+*.cache
+doc
+vendor
+/.bundle
+Gemfile.lock
+
+# tempfiles
+*~

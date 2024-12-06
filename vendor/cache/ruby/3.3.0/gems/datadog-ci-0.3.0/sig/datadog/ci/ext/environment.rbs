@@ -1,0 +1,44 @@
+module Datadog
+  module CI
+    module Ext
+      # Defines constants for CI tags
+      module Environment
+        TAG_JOB_NAME: String
+
+        TAG_JOB_URL: String
+
+        TAG_PIPELINE_ID: String
+
+        TAG_PIPELINE_NAME: String
+
+        TAG_PIPELINE_NUMBER: String
+
+        TAG_PIPELINE_URL: String
+
+        TAG_PROVIDER_NAME: String
+
+        TAG_STAGE_NAME: String
+
+        TAG_WORKSPACE_PATH: String
+
+        TAG_NODE_LABELS: String
+
+        TAG_NODE_NAME: String
+
+        TAG_CI_ENV_VARS: String
+
+        HEX_NUMBER_REGEXP: Regexp
+
+        PROVIDERS: ::Array[Array[String | Symbol]]
+
+        def self?.tags: (untyped env) -> Hash[String, String]
+
+        def self?.ensure_post_conditions: (Hash[String, String] tags) -> void
+
+        def self?.validate_repository_url: (String? repo_url) -> void
+
+        def self?.validate_git_sha: (String? git_sha) -> void
+      end
+    end
+  end
+end

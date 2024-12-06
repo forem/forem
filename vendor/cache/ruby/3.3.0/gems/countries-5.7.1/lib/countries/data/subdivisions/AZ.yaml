@@ -1,0 +1,4998 @@
+---
+ABS:
+  name: Abseron
+  code: ABS
+  unofficial_names: Abseron
+  geo:
+    latitude: 40.3629693
+    longitude: 49.2736815
+    min_latitude: 39.9478741
+    min_longitude: 48.843646
+    max_latitude: 40.638273
+    max_longitude: 49.908777
+  translations:
+    en: Absheron
+    ar: مقاطعة آبشوران
+    az: Abşeron
+    bn: আবশেরন জেলা
+    cs: Apšeron
+    da: Absheron District
+    de: Abşeron
+    el: Αμπσερόν
+    es: Abşeron
+    fa: شهرستان آب‌شوران
+    fi: Apšeronin piirikunta
+    fr: Abşeron
+    gu: એબ્શેરોન જિલ્લો
+    hi: एबशेरन जिला
+    hu: Abşeroni járás
+    hy: Ապշերոնի շրջան
+    id: Abşeron
+    it: distretto di Abşeron
+    ja: アブシェロン県
+    kn: ಅಬ್ಷೆರಾನ್ ಜಿಲ್ಲೆ
+    ko: 압셰론 구
+    mn: Абшерон аймаг
+    mr: अब्बीरॉन जिल्हा
+    ms: Abşeron
+    nb: Abşeron
+    nl: Abşeron
+    pl: Rejon Abşeron
+    pt: Absheron
+    ru: Апшеронский район
+    si: අබ්ශේරොන් දිස්ත්‍රික්කය
+    sl: Abşeron
+    sr: Апшеронски рејон
+    sv: Apsjeron
+    ta: அபிஷெரோன் மாவட்டம்
+    te: అబ్‌షెరాన్ జిల్లా
+    th: เขตแอบชีรอน
+    tk: Apşeron
+    tr: Abşeron Rayonu
+    ur: آب شیرون ضلع
+    vi: Absheron
+    zh: 阿布歇隆區
+    lv: Abšeronas rajons
+    ceb: Absheron Rayon
+    sr_Latn: Apšeronski rejon
+    lt: Abšerono apskritis
+    sq: Absheron
+    ccp: "\U00011103\U0001111B\U00011134\U00011125\U0001112C\U00011122\U00011127\U0001111A\U00011134"
+    uk: Апшеронський район
+    mk: Апшерон
+    'no': Abşeron
+    ca: Districte d’Abşeron
+    he: אזור אבשרון
+    hr: Apšeronski rajon
+    ka: აფშერონის რაიონი
+    sd: ابشرون ضلعو
+    uz: Absheron tumani
+  comments:
+  type: rayon
+AGA:
+  name: Agstafa
+  code: AGA
+  unofficial_names: Agstafa
+  geo:
+    latitude: 41.118889
+    longitude: 45.453889
+    min_latitude: 41.09837
+    min_longitude: 45.4031037
+    max_latitude: 41.1373284
+    max_longitude: 45.48357
+  translations:
+    en: Agstafa
+    ar: مقاطعة أقستافا
+    az: Ağstafa
+    bn: আগস্তাপা জেলা
+    cs: Agstafa
+    da: Agstafa District
+    de: Ağstafa
+    el: Αγκστάφα
+    es: Ağstafa
+    fa: شهرستان آق‌استفا
+    fi: Ağstafan piirikunta
+    fr: Aghstafa
+    gu: અગસ્તાફા જિલ્લો
+    hi: अस्ताफा जिला
+    hu: Ağstafai járás
+    hy: Աղստևի շրջան
+    id: Agstafa
+    it: distretto di Ağstafa
+    ja: アグスタファ県
+    kn: ಅಗಸ್ಟಾ ಜಿಲ್ಲಾ
+    ko: 아흐스타파 구
+    mn: Акстафа аймаг
+    mr: अस्तास्ता जिल्हा
+    ms: Daerah Agstafa
+    nb: Ağstafa
+    nl: Ağstafa
+    pl: Rejon Ağstafa
+    pt: Agstafa
+    ru: Акстафинский район
+    si: අග්ස්ටෆා දිස්ත්‍රික්කය
+    sr: Акстафински рејон
+    sv: Ağstafa Rayonu
+    ta: அஃஸ்தாபா மாவட்டம்
+    te: అగ్స్‌టాఫా జిల్లా
+    th: อักสทาฟา
+    tk: Akstafa
+    tr: Ağstafa Rayonu
+    ur: اغستافا ضلع
+    vi: Aghstafa
+    lv: Agstafas rajons
+    ceb: Aghstafa Rayon
+    sr_Latn: Akstafinski rejon
+    lt: Akstafos apskritis
+    zh: 阿克斯塔法區
+    sq: Agstafa
+    ccp: "\U00011103\U00011107\U00011134\U00011125\U00011133\U00011111\U0001111C"
+    uk: Агстафінський район
+    mk: Агстафа
+    'no': Ağstafa
+    ca: Ağstafa
+    hr: Akstafinski rajon
+    ka: აღსთაფის რაიონი
+  comments:
+  type: rayon
+AGC:
+  name: Agcabädi
+  code: AGC
+  unofficial_names: Agcabädi
+  geo:
+    latitude: 40.0257239
+    longitude: 47.3290937
+    min_latitude: 39.702849
+    min_longitude: 47.0597249
+    max_latitude: 40.248541
+    max_longitude: 47.735411
+  translations:
+    en: Aghjabadi
+    ar: مقاطعة آقجبدي
+    az: Ağcabədi
+    bn: আগজাবাদি জেলা
+    cs: Agdžabadi
+    da: Aghjabadi District
+    de: Ağcabədi
+    el: Αγκτζαμπάντι
+    es: Ağcabədi
+    fa: شهرستان آقجه‌بدی
+    fi: Ağcabədin piirikunta
+    fr: Ağcabədi
+    gu: અગ્જાબાદી જિલ્લો
+    hi: एग्जाबेड़ी जिला
+    hu: Ağcabədi járás
+    hy: Աղջաբեդի շրջան
+    id: Agjabadi
+    it: distretto di Ağcabədi
+    ja: アグジャバディ県
+    kn: ಅಜ್ಜಬಾದಿ ಜಿಲ್ಲೆ
+    ko: 아그자베디 구
+    mn: Агжабеди аймаг
+    mr: अगजाबादी जिल्हा
+    ms: Daerah Agjabadi
+    nb: Aghjabadi distrikt
+    nl: Ağcabədi
+    pl: Rejon Ağcabədi
+    pt: Aghjabadi
+    ru: Агджабединский район
+    si: අගාහ්ජබාදී දිස්ත්‍රික්කය
+    sr: Агџабедински рејон
+    sv: Ağcabədi
+    ta: அஃஜபடி மாவட்டம்
+    te: అగ్జాబాది జిల్లా
+    th: เขตอัจจาบาดิ
+    tk: Agjabedi
+    tr: Ağcabedi Rayonu
+    uk: Агджабединський район
+    ur: اغجابادی ضلع
+    vi: Aghjabedi
+    lv: Agdžabedi rajons
+    ceb: Aghjabadi Rayon
+    sr_Latn: Agdžabedinski rejon
+    lt: Agdžabadžio apskritis
+    zh: 阿格賈貝迪區
+    sq: Aghjabadi
+    ccp: "\U00011103\U00011107\U00011134\U0001110E\U0001111D\U00011118\U00011128"
+    mk: Агџабеди
+    'no': Aghjabadi distrikt
+    ca: Districte d’Ağcabədi
+    hr: Agdžabedinski rajon
+    ka: აღჯაბადის რაიონი
+    sd: آغجابادي ريئن
+  comments:
+  type: rayon
+AGM:
+  name: Agdam
+  code: AGM
+  unofficial_names: Agdam
+  geo:
+    latitude: 39.5554533
+    longitude: 46.9507608
+    min_latitude: 39.5526992
+    min_longitude: 46.9491719
+    max_latitude: 39.5579602
+    max_longitude: 46.95384989999999
+  translations:
+    en: Agdam
+    ar: مقاطعة آقدام
+    az: Ağdam
+    bn: আগডাম জেলা
+    cs: Agdam
+    da: Agdam District
+    de: Ağdam
+    el: Αγκντάμ
+    es: Ağdam
+    fa: شهرستان آق‌دام
+    fi: Ağdamin piirikunta
+    fr: Agdam
+    gu: અગામ જિલ્લો
+    hi: एगडेम जिला
+    hu: Ağdami járás
+    id: Agdam
+    it: distretto di Ağdam
+    ja: アグダム県
+    ka: აღდამის რაიონი
+    kn: ಅಗಮ್ ಜಿಲ್ಲೆ
+    ko: 아그담 구
+    mn: Агдам аймаг
+    mr: आगडम जिल्हा
+    ms: Agdam
+    nb: Ağdam
+    nl: Ağdam
+    pl: Rejon Ağdam
+    pt: Agdam
+    ru: Агдамский район
+    si: අග්ඩම් දිස්ත්‍රික්කය
+    sr: Агдамски рејон
+    sv: Ağdam
+    ta: அக்தாம் மாவட்டம்
+    te: ఆగ్డమ్ జిల్లా
+    th: ควาน อัคดัม
+    tk: Agdam
+    tr: Ağdam Rayonu
+    ur: اغدام ضلع
+    vi: Quận Agdam
+    lv: Agdamas rajons
+    ceb: Aghdam Rayon
+    sr_Latn: Agdamski rejon
+    lt: Agdamo provincija
+    zh: 阿格達姆區
+    sq: Agdam
+    ccp: "\U00011103\U00011107\U00011134\U00011118\U0001111F\U00011134"
+    uk: Агдамський район
+    uz: Agʻdam tumani
+    mk: Агдам
+    'no': Ağdam
+    be: Агдамскі раён
+    ca: Districte d’Ağdam
+    hr: Agdamski rajon
+  comments:
+  type: rayon
+AGS:
+  name: Agdas
+  code: AGS
+  unofficial_names: Agdas
+  geo:
+    latitude: 40.6335427
+    longitude: 47.467431
+    min_latitude: 40.6229434
+    min_longitude: 47.4376344
+    max_latitude: 40.6659586
+    max_longitude: 47.5069858
+  translations:
+    en: Agdash
+    ar: مقاطعة أقداش
+    az: Ağdaş
+    bn: আগডাস জেলা
+    cs: Agdaš
+    da: Agdash District
+    de: Ağdaş
+    el: Αγκντάς
+    es: Ağdaş
+    fa: شهرستان آق‌داش
+    fi: Ağdaşin piirikunta
+    fr: Ağdaş
+    gu: અગદાશ જિલ્લો
+    hi: एगडैश जिला
+    hu: Ağdaşi járás
+    hy: Աղդաշի շրջան
+    id: Agdash
+    it: distretto di Ağdaş
+    ja: アグダシュ県
+    kn: ಅಗ್ದಾಶ್ ಜಿಲ್ಲೆ
+    ko: 아그다슈 구
+    mn: Агдаш аймаг
+    mr: आगादास जिल्हा
+    ms: Daerah Agdash
+    nb: Ağdaş
+    nl: Ağdaş
+    pl: Rejon Ağdaş
+    pt: Agdash
+    ru: Агдашский район
+    si: අග්දාෂ් දිස්ත්‍රික්කය
+    sr: Агдашки рејон
+    sv: Aghdasj
+    ta: அக்தாஸ் மாவட்டம்
+    te: అగ్దాష్ జిల్లా
+    th: อักแดช
+    tk: Agdaş
+    tr: Ağdaş Rayonu
+    uk: Агдаський район
+    ur: آقداش ضلع
+    vi: Aghdash
+    lv: Agdašas rajons
+    ceb: Aghdash Rayon
+    sr_Latn: Agdaški rejon
+    lt: Agdašo apskritis
+    zh: 阿格達什區
+    sq: Agdash
+    ccp: "\U00011103\U00011107\U00011134\U00011118\U00011133\U00011120\U0001110C\U00011134"
+    mk: Агдаш
+    'no': Ağdaş
+    ca: Districte d’Ağdaş
+    hr: Agdaški rajon
+    ka: აღდაშის რაიონი
+  comments:
+  type: rayon
+AGU:
+  name: Agsu
+  code: AGU
+  unofficial_names: Agsu
+  geo:
+    latitude: 40.569167
+    longitude: 48.400833
+    min_latitude: 40.553135
+    min_longitude: 48.3700133
+    max_latitude: 40.587429
+    max_longitude: 48.4195375
+  translations:
+    en: Agsu
+    ar: مقاطعة أقسو
+    az: Ağsu
+    bn: আগসো জেলা
+    cs: Agsu
+    da: Agsu
+    de: Ağsu
+    el: Άγκσου
+    es: Ağsu
+    fa: شهرستان آق‌سو
+    fi: Ağsun piirikunta
+    fr: Ağsu
+    gu: અગસુ જિલ્લો
+    hi: एग्सू जिला
+    hy: Աղսուի շրջան
+    id: Agsu
+    it: distretto di Ağsu
+    ja: アグス県
+    ka: აღსუს რაიონი
+    kn: ಅಗಸು ಜಿಲ್ಲೆ
+    ko: 아흐수 구
+    mn: Агсу аймаг
+    mr: अगुसु जिल्हा
+    ms: Agsu
+    nb: Ağsu
+    nl: Ağsu
+    pl: Rejon Ağsu
+    pt: Agsu
+    ru: Ахсуйский район
+    si: අග්සු
+    sr: Ахсујски рејон
+    sv: Ağsu Rayonu
+    ta: அக்சு மாவட்டம்
+    te: అగ్సు జిల్లా
+    th: เขตอักซู
+    tk: Agsu
+    tr: Ağsu Rayonu
+    ur: اغسو ضلع
+    vi: Aghsu
+    lv: Agsu rajons
+    ceb: Aghsu Rayon
+    sr_Latn: Ahsujski rejon
+    lt: Agsu apskritis
+    zh: 阿赫蘇區
+    sq: Agsu
+    ccp: "\U00011103\U00011107\U00011134\U00011125\U0001112A"
+    uk: Ахсуйський район
+    mk: Агсу
+    'no': Ağsu
+    ca: Districte d’Ağsu
+    hr: Ahsujski rajon
+  comments:
+  type: rayon
+AST:
+  name: Astara
+  code: AST
+  unofficial_names: Astara
+  geo:
+    latitude: 38.45611100000001
+    longitude: 48.878611
+    min_latitude: 38.4422285
+    min_longitude: 48.8535404
+    max_latitude: 38.4936713
+    max_longitude: 48.8811778
+  translations:
+    en: Astara
+    ar: مقاطعة آستارا
+    az: Astara
+    bn: আস্তারা জেলা
+    ca: Districte d’Astara
+    cs: Astara
+    da: Astara District
+    de: Astara
+    el: Ασταρά
+    es: Astara
+    fa: شهرستان آستارا
+    fi: Astaran piirikunta
+    fr: Astara
+    gu: એસ્ટારા જિલ્લો
+    hi: अस्तारा जिला
+    hy: Աստարայի շրջան
+    id: Astara
+    it: distretto di Astara
+    ja: アスタラ県
+    kn: ಅಸ್ತರಾ ಜಿಲ್ಲೆ
+    ko: 아스타라 구
+    mn: Астара аймаг
+    mr: अतारा जिल्हा
+    ms: Astara
+    nb: Astara
+    nl: Astara
+    pl: Rejon Astara
+    pt: Astara
+    ru: Астаринский район
+    si: අස්ටරා දිස්ත්‍රික්කය
+    sr: Астарински рејон
+    sv: Astara (distrikt)
+    ta: அஸ்ட்ரா மாவட்டம்
+    te: అస్టారా జిల్లా
+    th: เมืองอัสทารา
+    tk: Astara
+    tr: Astara Rayonu
+    ur: آستارا ضلع
+    vi: Astara
+    lv: Astaras rajons
+    ceb: Astara District
+    sr_Latn: Astarinski rejon
+    lt: Astaros apskritis
+    zh: 阿斯塔拉區
+    sq: Astara
+    ccp: "\U00011103\U0001110C\U00011134\U00011116\U00011122"
+    uk: Астаринський район
+    mk: Астара
+    'no': Astara
+    hr: Astarinski rajon
+    ka: ასტარის რაიონი
+  comments:
+  type: rayon
+BA:
+  name: Baki
+  code: BA
+  unofficial_names: Baki
+  geo:
+    latitude: 40.40926169999999
+    longitude: 49.8670924
+    min_latitude: 40.3039993
+    min_longitude: 49.6538049
+    max_latitude: 40.486602
+    max_longitude: 50.0561143
+  translations:
+    en: Baku
+    af: Bakoe
+    am: ባኩ
+    ar: باكو
+    az: Bakı
+    be: Баку
+    bg: Баку
+    bn: বাকু
+    ca: Bakú
+    cs: Baku
+    da: Baku
+    de: Baku
+    el: Μπακού
+    es: Bakú
+    et: Bakuu
+    eu: Baku
+    fa: باکو
+    fi: Baku
+    fr: Bakou
+    gl: Bakú
+    gu: બાકૂ
+    he: באקו
+    hi: बाकू
+    hr: Baku
+    hu: Baku
+    hy: Բաքու
+    id: Baku
+    is: Bakú
+    it: Baku
+    ja: バクー
+    ka: ბაქო
+    kn: ಬಾಕು
+    ko: 바쿠
+    lt: Baku
+    lv: Baku
+    ml: ബക്കു
+    mn: Баку
+    mr: बाकू
+    ms: Baku
+    nb: Baku
+    nl: Bakoe
+    or: ବାକୁ
+    pl: Baku
+    ps: باکو
+    pt: Baku
+    ro: Baku
+    ru: Баку
+    si: බාකු
+    sk: Baku
+    sl: Baku
+    sr: Баку
+    sv: Baku
+    sw: Baku
+    ta: பாகு
+    te: బాకూ
+    th: บากู
+    tk: Baku
+    tr: Bakü
+    uk: Баку
+    ur: باکو
+    vi: Baku
+    cy: Baku
+    ceb: Baku City
+    sr_Latn: Baku
+    zh: 巴库
+    yue_Hans: 巴库
+    jv: Baku
+    sq: Baku
+    ccp: "\U0001111D\U00011107\U0001112A"
+    ga: Bakı
+    ky: Баку
+    pa: ਬਾਕੂ
+    kk: Баку
+    yue: 巴庫
+    my: ဗားကူးမြို့
+    yo: Baku
+    uz: Boku
+    bs: Baku
+    mk: Баку
+    ne: बाकु
+    'no': Baku
+    yo_BJ: Baku
+    ha: Baku
+    ha_NE: Baku
+    sd: باڪو
+    so: Baku
+    zu: Baku
+  comments:
+  type: municipality
+BAB:
+  name: Babäk
+  code: BAB
+  unofficial_names: Babäk
+  geo:
+    latitude: 39.1507613
+    longitude: 45.4485368
+    min_latitude: 39.1335888
+    min_longitude: 45.4309559
+    max_latitude: 39.1675349
+    max_longitude: 45.46829229999999
+  translations:
+    en: Babek
+    ar: مقاطعة بابيك
+    az: Babək
+    bn: বাবেক জেলা
+    ca: Babək
+    da: Babek District
+    de: Babək
+    el: Μπάμπεκ
+    es: Babek
+    fa: شهرستان بابک
+    fi: Babəkin piirikunta
+    fr: Babek
+    gu: બાબેક જિલ્લો
+    hi: बाबेक जिला
+    hy: Բաբեկի շրջան
+    id: Babek
+    it: Distretto di Babak
+    ja: バベク県
+    kn: ಬಾಬೆಕ್ ಜಿಲ್ಲೆ
+    ko: 바베크 구
+    mr: बाम्ब जिल्हा
+    ms: Babek
+    nb: Babək
+    nl: Babək
+    pl: Rejon Babək
+    pt: Babek
+    ru: Бабекский район
+    si: බබෙක් දිස්ත්‍රික්කය
+    sr: Бабечки рејон
+    sv: Babek Rayon
+    ta: பாபேக் மாவட்டம்
+    te: బాబెక్ జిల్లా
+    th: เขตบาเบคร์
+    tk: Babek
+    tr: Babek Rayonu
+    uk: Бабецький район
+    ur: بابک ضلع
+    vi: Babek
+    lv: Babekas rajons
+    ceb: Babek Rayon
+    sr_Latn: Babečki rejon
+    lt: Babeko apskritis
+    zh: 巴貝克區
+    ccp: "\U0001111D\U0001111D\U0001112C\U00011107\U00011134"
+    mk: Бабек
+    'no': Babək
+    hr: Babečki rajon
+    ka: ბაბექის რაიონი
+  comments:
+  type: rayon
+BAL:
+  name: Balakän
+  code: BAL
+  unofficial_names: Balakän
+  geo:
+    latitude: 41.725833
+    longitude: 46.408333
+    min_latitude: 41.6622043
+    min_longitude: 46.3497733
+    max_latitude: 41.7560107
+    max_longitude: 46.4600659
+  translations:
+    en: Balakan
+    ar: مقاطعة بالاكن
+    az: Balakən
+    bn: বালাকান জেলা
+    cs: Balakan
+    da: Balakan District
+    de: Balakən
+    el: Μπαλακάν
+    es: Balakən
+    fa: شهرستان بالاکن
+    fi: Balakənin piirikunta
+    fr: Balakən
+    gu: બાલાકન જિલ્લો
+    hi: बालकन ज़िला
+    hu: Balakəni járás
+    id: Balakan
+    it: distretto di Balakən
+    ja: バラキャン県
+    ka: ბელაქანის რაიონი
+    kn: ಬಾಲಕನ್ ಜಿಲ್ಲೆ
+    ko: 발라켄 구
+    mn: Балакен аймаг
+    mr: बालाकण जिल्हा
+    ms: Balakan
+    nb: Balakən
+    nl: Balakən
+    pl: Rejon Balakən
+    pt: Balakan
+    ru: Белоканский район
+    si: බලකන් දිස්ත්‍රික්කය
+    sr: Белокански рејон
+    sv: Balakən Rayonu
+    ta: பாலகன் மாவட்டம்
+    te: బాలాకన్ జిల్లా
+    th: บาลาคาน
+    tk: Balakan
+    tr: Balaken Rayonu
+    ur: بالاکن ضلع
+    vi: Balaken
+    lv: Balakenas rajons
+    ceb: Balakan Rayon
+    sr_Latn: Belokanski rejon
+    lt: Balakano apskritis
+    zh: 巴拉肯區
+    sq: Balakan
+    ccp: "\U0001111D\U00011127\U00011123\U00011107\U0001111A\U00011134"
+    uk: Белоканський район
+    mk: Балакен
+    'no': Balakən
+    ca: Districte de Balakan
+    hr: Belokanski rajon
+  comments:
+  type: rayon
+BAR:
+  name: Bärdä
+  code: BAR
+  unofficial_names: Bärdä
+  geo:
+    latitude: 40.3667
+    longitude: 47.11669999999999
+    min_latitude: 40.3447124
+    min_longitude: 47.09220879999999
+    max_latitude: 40.405915
+    max_longitude: 47.1718597
+  translations:
+    en: Barda
+    ar: مقاطعة بردع
+    az: Bərdə
+    bn: বারদা জেলা
+    cs: Barda
+    da: Barda District
+    de: Bərdə
+    el: Μπάρντα
+    es: Bərdə
+    fa: شهرستان بردع
+    fi: Bərdən piirikunta
+    fr: Bərdə
+    gu: બરડા જિલ્લો
+    hi: बर्दा जिला
+    id: Barda
+    it: distretto di Bərdə
+    ja: バルダ県
+    kn: ಬರ್ಡಾ ಜಿಲ್ಲೆ
+    ko: 베르데 구
+    mn: Барде аймаг
+    mr: बारडा जिल्हा
+    ms: Barda
+    nb: Bərdə
+    nl: Bərdə
+    pl: Rejon Bərdə
+    pt: Barda
+    ru: Бардинский район
+    si: බර්ඩා දිස්ත්‍රික්කය
+    sr: Бардински рејон
+    sv: Bərdə Rayonu
+    ta: பர்தா மாவட்டம்
+    te: బార్డా జిల్లా
+    th: เขตบาด้า
+    tk: Bärde
+    tr: Berde Rayonu
+    ur: بردع ضلع
+    vi: Barda
+    lv: Bardas rajons
+    ceb: Barda Rayon
+    sr_Latn: Bardinski rejon
+    lt: Bardos apskritis
+    zh: 巴爾達區
+    sq: Barda
+    ccp: "\U0001111D\U00011122\U00011134\U00011118"
+    ka: ბარდის რაიონი
+    uk: Район Барда
+    mk: Барда
+    'no': Bərdə
+    ca: Districte de Barda
+    hr: Bardinski rajon
+  comments:
+  type: rayon
+BEY:
+  name: Beyläqan
+  code: BEY
+  unofficial_names: Beyläqan
+  geo:
+    latitude: 39.766667
+    longitude: 47.616667
+    min_latitude: 39.7545479
+    min_longitude: 47.58363250000001
+    max_latitude: 39.7852244
+    max_longitude: 47.6407099
+  translations:
+    en: Beylagan
+    ar: مقاطعة بيلقان
+    az: Beyləqan
+    bn: বেলাগান জেলা
+    cs: Bejlagan
+    da: Beylagan District
+    de: Beyləqan
+    el: Μπεϊλαγκάν
+    es: Beyləqan
+    fa: شهرستان بیلقان
+    fi: Beyləqanin piirikunta
+    fr: Beyləqan
+    gu: બેલેગન જિલ્લો
+    hi: बेलागन जिला
+    id: Beylagan
+    it: distretto di Beyləqan
+    ja: ベイラガン県
+    kn: ಬೈಲಾಗನ್ ಜಿಲ್ಲೆ
+    ko: 베일레간 구
+    mn: Бейлеган аймаг
+    mr: बेलागान जिल्हा
+    ms: Beylagan
+    nb: Beyləqan
+    nl: Beyləqan
+    pl: Rejon Beyləqan
+    pt: Beylagan
+    ru: Бейлаганский район
+    si: බෙලාගන් දිස්ත්‍රික්කය
+    sr: Бејлагански рејон
+    sv: Bejläqan
+    ta: பெய்லகன் மாவட்டம்
+    te: బేలాగన్ జిల్లా
+    th: เขตเบย์ลาแกน
+    tk: Beýlagan
+    tr: Beylegan Rayonu
+    ur: بیلقان ضلع
+    vi: Beilagan
+    lv: Bejleganas rajons
+    ceb: Beylagan Rayon
+    sr_Latn: Bejlaganski rejon
+    lt: Bejlagano apskritis
+    zh: 貝拉甘區
+    sq: Beylagan
+    ccp: "\U0001111D\U0001112C\U00011123\U00011127\U00011109\U00011127\U0001111A\U00011134"
+    he: ביילגאן
+    uk: Бейлаганський район
+    mk: Бејлеган
+    'no': Beyləqan
+    ca: Districte de Baylakan
+    hr: Bejlaganski rajon
+    hy: Բայլականի շրջան
+    ka: ბეილაგანის რაიონი
+  comments:
+  type: rayon
+BIL:
+  name: Biläsuvar
+  code: BIL
+  unofficial_names: Biläsuvar
+  geo:
+    latitude: 39.45
+    longitude: 48.533333
+    min_latitude: 39.4349998
+    min_longitude: 48.5262895
+    max_latitude: 39.4795993
+    max_longitude: 48.5670376
+  translations:
+    en: Bilasuvar
+    ar: مقاطعة بيلاسوار
+    az: Biləsuvar rayonu
+    bn: বিলাসোবার জেলা
+    cs: Bilasuvar
+    da: Bilasuvar District
+    de: Biləsuvar
+    el: Μπιλασουβάρ
+    es: Biləsuvar
+    fa: شهرستان بیله‌سوار
+    fi: Biləsuvarin piirikunta
+    fr: Biləsuvar
+    gu: બિલાસુવર જિલ્લો
+    hi: बिलासुवार जिला
+    id: Bilasuvar
+    it: distretto di Biləsuvar
+    ja: ビラスヴァル県
+    kn: ಬಿಲಸುವರ್ ಜಿಲ್ಲೆ
+    ko: 빌레수바르 구
+    mn: Билесувар аймаг
+    mr: बिलासुवर जिल्हा
+    ms: Bilasuvar
+    nb: Biləsuvar
+    nl: Biləsuvar
+    pl: Rejon Biləsuvar
+    pt: Bilasuvar
+    ru: Билясуварский район
+    si: බිලසුවාර් දිස්ත්‍රික්කය
+    sr: Биљасуварски рејон
+    sv: Biläsuvar
+    ta: பிளாசுவர் மாவட்டம்
+    te: బిలాసువర్ జిల్లా
+    th: เขตบีละซูวาร์
+    tk: Bilesuwar
+    tr: Bilesuvar rayonu
+    uk: Білясуварський район
+    ur: بیلاسوار ضلع
+    vi: Bilasuvar
+    lv: Bilesuvaras rajons
+    ceb: Bilasuvar Rayon
+    sr_Latn: Biljasuvarski rejon
+    lt: Bilasuvaro apskritis
+    zh: 比利亞蘇瓦爾區
+    ccp: "\U0001111D\U00011128\U00011123\U00011125\U0001112A\U0001111E\U00011122\U00011134"
+    mk: Биљасувар
+    'no': Biləsuvar
+    ca: Districte de Biləsuvar
+    hr: Biljasuvarski rajon
+    ka: ბილიასუვარის რაიონი
+    sq: Bilasuvar
+  comments:
+  type: rayon
+CAB:
+  name: Cäbrayil
+  code: CAB
+  unofficial_names: Cäbrayil
+  geo:
+    latitude: 39.2645544
+    longitude: 46.9621561
+    min_latitude: 39.132511
+    min_longitude: 46.692907
+    max_latitude: 39.478561
+    max_longitude: 47.27655410000001
+  translations:
+    en: Jabrayil
+    ar: مقاطعة جبرائيل
+    az: Cəbrayıl
+    bn: জাব্রাইল জেলা
+    da: Jabrayil District
+    de: Cəbrayıl
+    el: Τζαμπραγίλ
+    es: Cəbrayıl
+    fa: شهرستان جبراییل
+    fi: Cəbrayılin piirikunta
+    fr: Jabrayil
+    gu: જબરાયિલ જિલ્લો
+    hi: जाब्रेइल जिला
+    hu: Cəbrayıl járás
+    id: Jabrayil
+    it: distretto di Cəbrayıl
+    ja: ジャブライル県
+    kn: ಜಬ್ರೇಲ್ ಜಿಲ್ಲೆ
+    ko: 제브라이을 구
+    mn: Жабраил аймаг
+    mr: जाबरॉय जिल्हा
+    ms: Jabrayil
+    nb: Cəbrayıl
+    nl: Cəbrayıl
+    pl: Rejon Cəbrayıl
+    pt: Jabrayil
+    ru: Джебраильский район
+    si: ජබ්‍රයිල් දිස්ත්‍රික්කය
+    sr: Џебрајиљски рејон
+    sv: Cəbrayıl Rayonu
+    ta: ஜப்ராயில் மாவட்டம்
+    te: జాబ్రాయిల్ జిల్లా
+    th: จังหวัดจาบรายิล
+    tk: Jebraýyl
+    tr: Cebrayıl Rayonu
+    uk: Джебраїльський район
+    ur: جبراییل ضلع
+    vi: Jebrail
+    lv: Džebrajilas rajons
+    ceb: Cəbrayıl Rayonu
+    sr_Latn: Džebrajiljski rejon
+    lt: Džebrailo apskritis
+    zh: 傑布拉伊爾區
+    sq: Jabrayil
+    ccp: "\U0001110E\U0001111D\U00011133\U00011122\U0001112D\U00011123\U00011134"
+    mk: Џебраил
+    'no': Cəbrayıl
+    ca: Districte de Cəbrayıl
+    hr: Džebrailjski rajon
+    ka: ჯაბრაილის რაიონი
+    uz: Jabrayil tumani
+  comments:
+  type: rayon
+CAL:
+  name: Cälilabab
+  code: CAL
+  unofficial_names: Cälilabab
+  geo:
+    latitude: 39.218442
+    longitude: 48.4295146
+    min_latitude: 38.98947
+    min_longitude: 48.1295969
+    max_latitude: 39.408813
+    max_longitude: 48.754075
+  translations:
+    en: Jalilabad
+    ar: مقاطعة جليل‌ آباد
+    az: Cəlilabad
+    bn: জালিলা বাদ জেলা
+    cs: Džalilabad
+    da: Jalilabad District
+    de: Cəlilabad
+    el: Τζαλιλαμπάντ
+    es: Cəlilabad
+    fa: شهرستان جلیل‌آباد
+    fi: Cəlilabadin piirikunta
+    fr: Cəlilabad
+    gu: જલિલાબાદ જિલ્લો
+    hi: जलीलाबाद जिला
+    hu: Cəlilabadi járás
+    id: Jalilabad
+    it: distretto di Cəlilabad
+    ja: ジャリラバド県
+    kn: ಜಲೀಲಾಬಾದ್ ಜಿಲ್ಲೆ
+    ko: 젤릴라바트 구
+    mn: Жалилабад аймаг
+    mr: जलालाबाद जिल्हा
+    ms: Jalilabad
+    nb: Cəlilabab
+    nl: Cəlilabad
+    pl: Rejon Cəlilabad
+    pt: Jalilabad
+    ru: Джалилабадский район
+    si: ජලයිලාබාද් දිස්ත්‍රික්කය
+    sr: Џалилабадски рејон
+    sv: Cəlilabad (distrikt)
+    ta: ஜலீலாபாத் மாவட்டம்
+    te: జలీలాబాద్ జిల్లా
+    th: เขตจาลิลาบัด
+    tk: Jelilabat
+    tr: Celilabad Rayonu
+    ur: جلیل آباد ضلع (آذربائیجان)
+    vi: Jalilabad
+    lv: Dželilabadas rajons
+    ceb: Jalilabad
+    sr_Latn: Džalilabadski rejon
+    lt: Džalilabado apskritis
+    zh: 賈利拉巴德區
+    sq: Jalilabad
+    ccp: "\U0001110E\U00011123\U00011128\U00011123\U0001111D\U00011116\U00011134"
+    uk: Джалілабад
+    mk: Џелилабад
+    'no': Cəlilabab
+    ca: Districte de Cəlilabad
+    hr: Džalilabadski rajon
+    ka: ჯალილაბადის რაიონი
+  comments:
+  type: rayon
+CUL:
+  name: Culfa
+  code: CUL
+  unofficial_names: Culfa
+  geo:
+    latitude: 38.955833
+    longitude: 45.630833
+    min_latitude: 38.9447447
+    min_longitude: 45.605641
+    max_latitude: 38.9734231
+    max_longitude: 45.6617546
+  translations:
+    en: Julfa
+    ar: حي جلفا
+    az: Culfa rayonu
+    bn: জুলফা জেলা
+    da: Julfa District
+    de: Culfa
+    el: Τζούλφα
+    es: Julfa
+    fa: شهرستان جلفا
+    fi: Culfan piirikunta
+    fr: Djoulfa
+    gu: જુલ્ફા જિલ્લો
+    hi: जूल्फा जिला
+    hy: Ջուղայի շրջան
+    id: Julfa
+    it: Distretto di Culfa
+    ja: ジュルファ県
+    ka: ჯულფის რაიონი
+    kn: ಜುಲ್ಫಾ ಜಿಲ್ಲೆ
+    ko: 줄파 구
+    mr: जुल्फा जिल्हा
+    ms: Julfa
+    nb: Culfa
+    nl: Culfa
+    pl: Rejon Culfa
+    pt: Julfa
+    ru: Джульфинский район
+    si: ජුල්ෆා දිස්ත්‍රික්කය
+    sr: Џулфински рејон
+    sv: Julfa Rayon
+    ta: ஜூலபா மாவட்டம்
+    te: జుల్ఫా జిల్లా
+    th: เขตจุลฟา
+    tk: Julfa
+    tr: Culfa Rayonu
+    uk: Джульфінський район
+    ur: جلفا ضلع
+    vi: Julfa
+    lv: Džulfas rajons
+    ceb: Julfa Rayon
+    sr_Latn: Džulfinski rejon
+    lt: Džulfos apskritis
+    zh: 朱利法區
+    ccp: "\U0001110E\U0001112A\U00011123\U00011134\U0001111C"
+    be: Джульфінскі раён
+    mk: Џулфа
+    'no': Culfa
+    hr: Džulfinski rajon
+  comments:
+  type: rayon
+DAS:
+  name: Daskäsän
+  code: DAS
+  unofficial_names: Daskäsän
+  geo:
+    latitude: 40.5202257
+    longitude: 46.0779304
+    min_latitude: 40.5079263
+    min_longitude: 46.0622406
+    max_latitude: 40.5287404
+    max_longitude: 46.09107969999999
+  translations:
+    en: Dashkasan
+    ar: مقاطعة داشكاسان
+    az: Daşkəsən
+    bn: ডাসকাসান জেলা
+    cs: Daškasan
+    da: Dashkasan District
+    de: Daşkəsən
+    el: Ντασκασάν
+    es: Daşkəsən
+    fi: Daşkəsənin piirikunta
+    fr: Daşkəsən
+    gu: દશેકાસન જિલ્લો
+    hi: दशकासन जिला
+    hu: Daşkəsəni járás
+    hy: Դաշկեսանի շրջան
+    id: Dashkasan
+    it: distretto di Daşkəsən
+    ja: ダシュキャサン県
+    kn: ದಶಕಾಸನ್ ಜಿಲ್ಲೆ
+    ko: 다슈케센 구
+    mn: Дашкесан аймаг
+    mr: दशकासन जिल्हा
+    ms: Dashkasan
+    nb: Daşkəsən
+    nl: Daşkəsən
+    pl: Rejon Daşkəsən
+    pt: Dashkasan
+    ru: Дашкесанский район
+    si: ඩෂ්කසන්
+    sr: Дашкесански рејон
+    sv: Daşkəsən Rayonu
+    ta: தாஸ்கசன் மாவட்டம்
+    te: దష్కాసన్ జిల్లా
+    th: แดชคาซาน
+    tk: Daşkesen
+    tr: Daşkesen Rayonu
+    ur: داشکسن ضلع
+    vi: Dashkasan
+    lv: Daškesenas rajons
+    ceb: Dashkasan Rayon
+    sr_Latn: Daškesanski rejon
+    lt: Daškesano apskritis
+    zh: 達什卡桑區
+    fa: شهرستان داش‌کسن
+    sq: Dashkasan
+    ccp: "\U00011113\U00011133\U00011120\U0001110C\U00011134\U00011107\U00011125\U0001111A\U00011134"
+    uk: Дашкесанський район
+    mk: Дашкесен
+    'no': Daşkəsən
+    ca: Districte de Daşkəsən
+    hr: Daškesanski rajon
+    ka: დაშქესანის რაიონი
+  comments:
+  type: rayon
+FUZ:
+  name: Füzuli
+  code: FUZ
+  unofficial_names: Füzuli
+  geo:
+    latitude: 39.6003
+    longitude: 47.1431
+    min_latitude: 39.5692419
+    min_longitude: 47.1216489
+    max_latitude: 39.6252594
+    max_longitude: 47.1828459
+  translations:
+    en: Fizuli
+    ar: مقاطعة فضولي
+    az: Füzuli
+    bn: ফিজুলি জেলা
+    cs: Füzuli
+    da: Fizuli District
+    de: Füzuli
+    el: Φιζούλι
+    es: Füzuli
+    fa: شهرستان فضولی
+    fi: Füzulin piirikunta
+    fr: Fizuli
+    gu: ફિઝુલી જિલ્લો
+    hi: फिज़ूली जिला
+    hu: Füzuli járás
+    hy: Ֆիզուլիի շրջան
+    id: Fizuli
+    it: distretto di Füzuli
+    ja: フュズリ県
+    kn: ಫಿಜುಲಿ ಜಿಲ್ಲೆ
+    ko: 퓌줄리 구
+    mr: फझुली जिल्हा
+    ms: Daerah Fizuli
+    nb: Füzuli
+    nl: Füzuli
+    pl: Rejon Füzuli
+    pt: Fizuli
+    ru: Физулинский район
+    si: ෆිසුලි දිස්ත්‍රික්කය
+    sr: Физулински рејон
+    sv: Füzuli Rayonu
+    ta: பிஸுலி மாவட்டம்
+    te: ఫిజూలి జిల్లా
+    th: ฟิซูลี
+    tk: Fizuli
+    tr: Füzuli Rayonu
+    ur: فضولی ضلع
+    vi: Fuzuli
+    lv: Fuzuli rajons
+    ceb: Fizuli Rayon
+    sr_Latn: Fizulinski rejon
+    lt: Fuzulio apskritis
+    zh: 菲祖利區
+    sq: Fizuli
+    ccp: "\U0001111C\U0001112D\U0001110E\U0001112A\U00011123\U00011129"
+    uk: Фізулінський район
+    mk: Физули
+    'no': Füzuli
+    ca: Districte de Füzuli
+    he: מחוז פיזולי
+    hr: Fizulinski rajon
+    ka: ფუზულის რაიონი
+    uz: Fuzuliy tumani
+  comments:
+  type: rayon
+GA:
+  name: Gäncä
+  code: GA
+  unofficial_names: Gäncä
+  geo:
+    latitude: 40.682778
+    longitude: 46.360556
+    min_latitude: 40.6333659
+    min_longitude: 46.2979746
+    max_latitude: 40.7553196
+    max_longitude: 46.4393805
+  translations:
+    en: Ganja
+    ar: غنجة
+    az: Gəncə
+    be: Гянджа
+    bg: Ганджа
+    bn: গাঞ্জা
+    ca: Gandja
+    cs: Gandža
+    da: Gandja
+    de: Gəncə
+    el: Γκαντζά
+    es: Ganja
+    et: Gəncə
+    eu: Gəncə
+    fa: گنجه
+    fi: Gəncə
+    fr: Gəncə
+    gu: ગંજા
+    he: גנג׳ה
+    hi: गांजा
+    hr: Gäncä
+    hu: Gəncə
+    hy: Գանձակ
+    id: Ganja
+    it: Gäncä
+    ja: ギャンジャ
+    ka: განჯა
+    kn: ಗಂಜ
+    ko: 간자
+    lt: Gendžė
+    lv: Gendže
+    mn: Гянжа
+    mr: गणजा
+    ms: Ganja
+    nb: Gandsja
+    nl: Gəncə
+    pl: Gandża
+    pt: Ganja
+    ro: Gandja
+    ru: Гянджа
+    si: ගන්ජා
+    sk: Gəncə
+    sl: Gandža
+    sr: Ганџа
+    sv: Gəncə
+    ta: கஞ்சா
+    te: గంజా
+    th: กานชา
+    tk: Genje
+    tr: Gence
+    uk: Гянджа
+    ur: گنجہ
+    vi: Ganca
+    cy: Ganja
+    ceb: Ganja
+    sr_Latn: Gandža
+    zh: 占贾
+    sq: Ganja
+    ccp: "\U00011109\U0001111A\U00011134\U0001110E"
+    kk: Гәнжә
+    uz: Ganja
+    'no': Gandsja
+    ga: Ganja
+    gl: Gəncə
+    yue: 占賈
+    yue_Hans: 占贾
+  comments:
+  type: municipality
+GAD:
+  name: Gädäbäy
+  code: GAD
+  unofficial_names: Gädäbäy
+  geo:
+    latitude: 40.5087904
+    longitude: 45.67288509999999
+    min_latitude: 40.319229
+    min_longitude: 45.3550831
+    max_latitude: 40.821649
+    max_longitude: 45.915231
+  translations:
+    en: Gadabay
+    ar: مقاطعة غدابيغ
+    az: Gədəbəy
+    bn: গেডাবে
+    da: Gedebey
+    de: Gədəbəy
+    el: Γκάντμπεϊ
+    es: Gədəbəy
+    fa: شهرستان گدابیگ
+    fi: Gədəbəyn piirikunta
+    fr: Gədəbəy
+    gu: ગાડબે
+    hi: गेडेबी
+    hu: Gədəbəyi járás
+    hy: Գետաբեկի շրջան
+    id: Gadabay
+    it: distretto di Gədəbəy
+    ja: ガダバイ県
+    kn: ಗಾಡ್ಬೆ
+    ko: 게데베이 구
+    mn: Кадебай аймаг
+    mr: गाडबे
+    ms: Gadabay
+    nb: Gədəbəy
+    nl: Gədəbəy
+    pl: Rejon Gədəbəy
+    pt: Gadabay
+    ru: Кедабекский район
+    si: ගෙඩෙබේ
+    sr: Кедабечки рејон
+    sv: Gädäbäj
+    ta: கெடிபாய்
+    te: గెడెబీ
+    th: กากาเบย์
+    tk: Gädebaý
+    tr: Gedebey Rayonu
+    uk: Кедабекський район
+    ur: گدابے ضلع
+    vi: Gadabey
+    lv: Gedebejas rajons
+    ceb: Gadabay Rayon
+    sr_Latn: Kedabečki rejon
+    lt: Gadabajaus apskritis
+    zh: 凱達貝克區
+    sq: Gadabay
+    ccp: "\U00011109\U00011118\U0001111D\U00011133\U00011120"
+    ka: გადაბეის რაიონი
+    mk: Гедебеј
+    'no': Gədəbəy
+    ca: Districte de Gadabay
+    hr: Kedabekski rajon
+  comments:
+  type: rayon
+GOR:
+  name: Goranboy
+  code: GOR
+  unofficial_names: Goranboy
+  geo:
+    latitude: 40.610278
+    longitude: 46.789722
+    min_latitude: 40.5915353
+    min_longitude: 46.7551517
+    max_latitude: 40.6267217
+    max_longitude: 46.8130016
+  translations:
+    en: Goranboy
+    ar: مقاطعة غورانبوي
+    az: Goranboy
+    bn: গোরানবয় জেলা
+    da: Goranboy
+    de: Goranboy
+    el: Γκορανμπόι
+    es: Goranboy
+    fa: شهرستان گورانبوی
+    fi: Goranboyn piirikunta
+    fr: Goranboy
+    gu: ગોરાનબોય જિલ્લો
+    he: גורנבוי
+    hi: गोरान्बोय जिला
+    id: Goranboy
+    it: distretto di Goranboy
+    ja: ゴランボイ県
+    kn: ಗೋರನ್ಬಾಯ್ ಜಿಲ್ಲೆ
+    ko: 고란보이 구
+    mr: गोरानबॉय जिल्हा
+    ms: Goranboy
+    nb: Goranboy
+    nl: Goranboy
+    pl: Rejon Goranboy
+    pt: Goranboy
+    ru: Геранбойский район
+    si: ගොරන්බෝයි දිස්ත්‍රික්කය
+    sr: Геранбојски рејон
+    sv: Goranboj
+    ta: கோரன்போய் மாவட்டம்
+    te: గోరన్బాయ్ జిల్లా
+    th: เขตกอแรนบอย
+    tk: Goranboý
+    tr: Goranboy Rayonu
+    uk: Геранбойський район
+    ur: گورانبوئے ضلع
+    vi: Geranboy
+    lv: Goranbojas rajons
+    ceb: Goranboy Rayon
+    sr_Latn: Geranbojski rejon
+    lt: Goranbojaus apskritis
+    zh: 戈蘭博伊區
+    sq: Goranboy
+    ccp: "\U00011109\U00011127\U00011122\U0001111A\U00011134\U0001111D\U00011127\U00011120\U00011134"
+    ka: გორანბოის რაიონი
+    hy: Գերանբոյի շրջան
+    mk: Горанбој
+    'no': Goranboy
+    be: Геранбойскі раён
+    ca: Districte de Goranboy
+    hr: Geranbojski rajon
+  comments:
+  type: rayon
+GOY:
+  name: Göyçay
+  code: GOY
+  unofficial_names: Göyçay
+  geo:
+    latitude: 40.65309999999999
+    longitude: 47.7406
+    min_latitude: 40.5915353
+    min_longitude: 47.67448410000001
+    max_latitude: 40.6723061
+    max_longitude: 47.78572080000001
+  translations:
+    en: Goychay
+    ar: مقاطعة غويتشاي
+    az: Göyçay
+    bn: গয়চা
+    da: Goychay
+    de: Göyçay
+    el: Γκοϊτσάι
+    es: Göyçay
+    fa: شهرستان گوی‌چای
+    fi: Göyçayn piirikunta
+    fr: Göyçay
+    gu: ગોયચે
+    hi: गोएचाए
+    id: Goychay
+    it: distretto di Göyçay
+    ja: ギョイチャイ県
+    kn: ಗೊಯ್ಚೇ
+    ko: 괴이차이 구
+    mr: गोयचाय
+    ms: Goychay
+    nb: Göyçay
+    nl: Göyçay
+    pl: Rejon Göyçay
+    pt: Goychay
+    ro: Göyçay
+    ru: Гёйчайский район
+    si: ගොයිචේ
+    sr: Геокчајски рејон
+    sv: Göjtjaj
+    ta: கோய்ச்சிய
+    te: గోయ్‌చే
+    th: กอยเชย์
+    tk: Gökçaý
+    tr: Göyçay Rayonu
+    ur: گوئچے ضلع
+    vi: Goychay
+    lv: Gejčalas rajons
+    ceb: Goychay Rayon
+    sr_Latn: Geokčajski rejon
+    lt: Geochajaus apskritis
+    zh: 蓋奧克恰伊區
+    sq: Goychay
+    ccp: "\U00011109\U00011127\U00011120\U00011134\U0001110C\U00011127\U00011120\U00011134"
+    uk: Гейчайський район
+    mk: Ѓојчај
+    'no': Göyçay
+    ca: Districte de Göyçay
+    hr: Geokčajski rajon
+    hu: Göyçay járás
+    ka: გოქჩაის რაიონი
+  comments:
+  type: rayon
+GYG:
+  name: Göygöl
+  code: GYG
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    az: Göygöl
+    cs: Göygöl
+    de: Göygöl
+    en: Goygol
+    es: Göygöl
+    fa: شهرستان گوی‌گل
+    fi: Göygölin piirikunta
+    fr: Göygöl
+    id: Khanlar
+    it: distretto di Göygöl
+    ja: ギョイギョル県
+    ko: 괴이괼 구
+    ms: Khanlar
+    nb: Göygöl
+    nl: Göygöl
+    pl: Rejon Göygöl
+    pt: Goygol
+    ru: Гёйгёльский район
+    sr: Гогољски рејон
+    sv: Xanlar Rayonu
+    tk: Goýgöl
+    tr: Göygöl Rayonu
+    vi: Goygol
+    ceb: Goygol Rayon
+    sr_Latn: Gogoljski rejon
+    zh: 漢拉爾區
+    sq: Goygol
+    ccp: "\U00011109\U00011127\U00011120\U00011134\U00011109\U0001112E\U00011123\U00011134"
+    hy: Գոյգյոլի շրջան
+    mk: Ѓојѓол
+    'no': Göygöl
+    ar: مقاطعة كويكول
+    hr: Gojgolski rajon
+    ka: გოიგოლის რაიონი
+    uk: Гейгельський район
+  comments:
+  type: rayon
+HAC:
+  name: Haciqabul
+  code: HAC
+  unofficial_names: Haciqabul
+  geo:
+    latitude: 40.043333
+    longitude: 48.935556
+    min_latitude: 40.00655500000001
+    min_longitude: 48.8856411
+    max_latitude: 40.0635722
+    max_longitude: 48.959273
+  translations:
+    en: Hajigabul
+    ar: مقاطعة هايغابول
+    az: Hacıqabul
+    bn: হাজিগাবোল জেলা
+    da: Hajigabul District
+    de: Hacıqabul
+    el: Χατζιγκαμπούλ
+    es: Hacıqabul
+    fa: شهرستان حاجی‌قبول
+    fi: Hacıqabulin piirikunta
+    fr: Hacıqabul
+    gu: હાજીગબુલ જિલ્લો
+    hi: हाजीगबल जिला
+    hy: Հաջիգաբուլի շրջան
+    id: Hajigabul
+    it: distretto di Hacıqabul
+    ja: ハジュガブル県
+    kn: ಹಜಿಗಬುಲ್ ಜಿಲ್ಲೆ
+    ko: 하즈가불 구
+    mn: Хажигабул аймаг
+    mr: हाजीगबल जिल्हा
+    ms: Hajigabul
+    nb: Hacıqabul
+    nl: Hacıqabul
+    pl: Rejon Hacıqabul
+    pt: Hajigabul
+    ro: Hadjîgabul
+    ru: Аджикабулский район
+    si: හජිගබුල් දිස්ත්‍රික්කය
+    sr: Аџигабуљски рејон
+    sv: Hadzjyqabul
+    ta: ஹாஜிகபூல் மாவட்டம்
+    te: హాజిగాబుల్ జిల్లా
+    th: ฮาจิกาบูร
+    tk: Hajykabul
+    tr: Hacıkabul Rayonu
+    ur: حاجی قبول ضلع
+    vi: Hacuqabul
+    lv: Hadžigabulas rajons
+    ceb: Hajigabul Rayon
+    sr_Latn: Adžigabuljski rejon
+    lt: Hadžigabulo apskritis
+    zh: 卡齊穆罕默德區
+    sq: Hajigabul
+    ccp: "\U00011126\U0001110E\U00011128\U00011109\U0001111D\U0001112A\U00011123\U00011134"
+    uk: Район Гаджигабул
+    mk: Аџикабул
+    'no': Hacıqabul
+    ca: Districte de Hacıqabul
+    hr: Adžigabuljski rajon
+    ka: ჰაჯიყაბულის რაიონი
+  comments:
+  type: rayon
+IMI:
+  name: Imisli
+  code: IMI
+  unofficial_names: Imisli
+  geo:
+    latitude: 39.8692
+    longitude: 48.06
+    min_latitude: 39.8378046
+    min_longitude: 48.0193521
+    max_latitude: 39.8917536
+    max_longitude: 48.1096519
+  translations:
+    en: Imishli
+    ar: مقاطعة إيميشلي
+    az: İmişli
+    bn: ইমিশি জেলা
+    da: Imishli District
+    de: İmişli (Rayon)
+    el: Ιμισχλί
+    es: İmişli (raión)
+    fa: شهرستان ایمیشلی
+    fi: İmişlin piirikunta
+    fr: İmişli (raion)
+    gu: ઈમિશલી જિલ્લો
+    hi: इमिशली जिला
+    id: Imishli
+    it: distretto di İmişli
+    ja: イミシュリ県
+    kn: ಇಮಿಶ್ಲಿ ಜಿಲ್ಲೆ
+    ko: 이미슐리 구
+    mr: इमिशिली जिल्हा
+    ms: Imishli
+    nb: İmişli (distrikt)
+    nl: İmişli
+    pl: Rejon İmişli
+    pt: Imishli
+    ru: Имишлинский район
+    si: ඉමිශ්ලි දිස්ත්‍රික්කය
+    sr: Имишлински рејон
+    sv: Imisjli
+    ta: இமிஷ்லி மாவட்டம்
+    te: ఇమిష్లి జిల్లా
+    th: จังหวัดประจวบคีรีขันธ์
+    tk: Imişli
+    tr: İmişli Rayonu
+    uk: Імішлінський район
+    ur: ایمیشلی ضلع
+    vi: Imishli (quận)
+    lv: Imišli rajons
+    ceb: Imishli Rayon
+    sr_Latn: Imišlinski rejon
+    lt: Išmišlio apskritis
+    zh: 伊米什利區
+    sq: Imishli (rajon)
+    ccp: "\U00011103\U00011128\U0001111F\U00011128\U0001110C\U00011134\U00011123\U00011128"
+    et: İmişli rajoon
+    mk: Имишли (округ)
+    'no': İmişli (distrikt)
+    ca: Districte d’İmişli
+    hr: Imišlinski rajon
+    ka: იმიშლის რაიონი
+  comments:
+  type: rayon
+ISM:
+  name: Ismayilli
+  code: ISM
+  unofficial_names: Ismayilli
+  geo:
+    latitude: 40.79
+    longitude: 48.151944
+    min_latitude: 40.7646814
+    min_longitude: 48.13007349999999
+    max_latitude: 40.8119253
+    max_longitude: 48.2034588
+  translations:
+    en: Ismailli
+    ar: مقاطعة إسمايلي
+    az: İsmayıllı
+    bn: ইসমাইলি জেলা
+    da: Ismailli District
+    de: İsmayıllı
+    el: Ισμαΐλι
+    es: İsmayıllı (raión)
+    fa: شهرستان اسماعیللی
+    fi: İsmayıllın piirikunta
+    fr: Ismailli (raion)
+    gu: ઇસ્માઈલી જિલ્લો
+    hi: इस्माइलि जिला
+    hu: İsmayıllı járás
+    id: Ismailli
+    it: distretto di İsmayıllı
+    ja: イスマイル県
+    kn: ಇಸ್ಮಾಲ್ಲಿ ಜಿಲ್ಲೆ
+    ko: 이스마이을르 구
+    mr: इस्माइलि जिल्हा
+    ms: Ismailli
+    nb: İsmayıllı (distrikt)
+    nl: İsmayıllı
+    pl: Rejon İsmayıllı
+    pt: Ismailli
+    ru: Исмаиллинский район
+    si: ඉස්මයිලි දිස්ත්‍රික්කය
+    sr: Исмајилински рејон
+    sv: Ismajylly
+    ta: இஸ்மாயிலி மாவட்டம்
+    te: ఇస్మాయిలి జిల్లా
+    th: อีสเมลลี
+    tk: Ysmaýylly
+    tr: İsmayıllı Rayonu
+    uk: Ісмаїллінський район
+    ur: اسماعیلی ضلع
+    vi: Ismailly (quận)
+    lv: Ismajilli rajons
+    ceb: Ismayilli Rayon
+    sr_Latn: Ismajilinski rejon
+    lt: Ismailio apskritis
+    zh: 伊斯梅爾雷區
+    sq: Ismailli (rajon)
+    ccp: "\U00011103\U00011128\U0001110C\U00011134\U0001111F\U0001112D\U00011123\U00011129"
+    mk: Исмаили (округ)
+    'no': İsmayıllı (distrikt)
+    ca: Districte d’İsmayıllı
+    hr: Ismajilinski rajon
+    ka: ისმაილის რაიონი
+  comments:
+  type: rayon
+KAL:
+  name: Kälbäcär
+  code: KAL
+  unofficial_names: Kälbäcär
+  geo:
+    latitude: 40.1315615
+    longitude: 46.1674645
+    min_latitude: 39.81310999999999
+    min_longitude: 45.6090569
+    max_latitude: 40.31433699999999
+    max_longitude: 46.759549
+  translations:
+    en: Kalbajar
+    ar: مقاطعة كلبجر
+    az: Kəlbəcər
+    bn: কালবাজার জেলা
+    da: Kalbajar
+    de: Kəlbəcər
+    el: Καλμπατζάρ
+    es: Kəlbəcər
+    fa: شهرستان کلبجر
+    fi: Kəlbəcərin piirikunta
+    fr: Kelbadjar
+    gu: કલબજાર જિલ્લો
+    hi: कालबाजर जिला
+    hu: Kəlbəcəri járás
+    id: Kalbajar
+    it: distretto di Kəlbəcər
+    ja: カルバジャル県
+    kn: ಕಲ್ಬಾಜರ್ ಜಿಲ್ಲೆ
+    ko: 켈베제르 구
+    mr: काळबाजर जिल्हा
+    ms: Daerah Kalbajar
+    nb: Kəlbəcər
+    nl: Kəlbəcər
+    pl: Rejon Kəlbəcər
+    pt: Kalbajar
+    ro: Kalbadjar
+    ru: Кельбаджарский район
+    si: කල්ජබාර් දිස්ත්‍රික්කය
+    sr: Кељбаџарски рејон
+    sv: Kälbädzjär
+    ta: கல்பஜார் மாவட்டம்
+    te: కాల్‌బజార్ జిల్లా
+    th: เขตคาลบาจาร์
+    tk: Kelbajar
+    tr: Kelbecer Rayonu
+    ur: کلباجار ضلع
+    vi: Kelbajar
+    lv: Kelbedžeras rajons
+    ceb: Kəlbəcər Rayonu
+    sr_Latn: Keljbadžarski rejon
+    lt: Kalbadžaro apskritis
+    zh: 克爾巴賈爾區
+    sq: Kalbajar
+    ccp: "\U00011107\U00011123\U00011134\U0001111D\U0001110E\U00011122\U00011134"
+    uk: Кельбаджарський район
+    uz: Kalbajar tumani
+    mk: Келбеџер
+    'no': Kəlbəcər
+    ca: Districte de Kəlbəcər
+    hr: Keljbadžarski rajon
+    hy: Քելբաջարի շրջան
+    ka: ქალბაჯარის რაიონი
+  comments:
+  type: rayon
+KAN:
+  name: Kəngərli
+  code: KAN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: كنجة
+    az: Kəngərli
+    bn: কানগারলি জেলা
+    da: Kangarli District
+    de: Kəngərli
+    el: Κανγκαρλί
+    en: Kangarli
+    es: Kangarli
+    fa: شهرستان کنگرلی
+    fi: Kəngərlin piirikunta
+    fr: Kangarli
+    gu: કાન્ગરલી જિલ્લો
+    hi: कंगारली जिला
+    hy: Քենգերլիի շրջան
+    id: Kangarli
+    it: Distretto di Kəngərli
+    ja: キャンギャルリ県
+    kn: ಕಾಂಗಾರ್ಲಿ ಜಿಲ್ಲೆ
+    ko: 켄겔리 구
+    mr: कांगारली जिल्हा
+    ms: Kangarli
+    nb: Kəngərli
+    nl: Kəngərli
+    pl: Rejon Kəngərli
+    pt: Kangarli
+    ru: Кенгерлинский район
+    si: කන්ගාර්ලි දිස්ත්‍රික්කය
+    sr: Кенгерлински рејон
+    sv: Kangarli Rayon
+    ta: காங்கரலி மாவட்டம்
+    te: కంగార్లి జిల్లా
+    th: จังหวัดมานัส
+    tk: Kengerli
+    tr: Kengerli Rayonu
+    uk: Кенгерлінський район
+    ur: کانجارلی ضلع
+    vi: Kangarli
+    lv: Kengerli rajons
+    ceb: Kangarli Rayon
+    sr_Latn: Kengerlinski rejon
+    lt: Kangarlio apskritis
+    zh: 坎加利區
+    ccp: "\U00011107\U0001110B\U00011134\U00011109\U00011122\U00011134\U00011123\U00011128"
+    mk: Кенгерли
+    'no': Kəngərli
+    hr: Kengerlinski rajon
+    ka: კანგარლის რაიონი
+  comments:
+  type: rayon
+KUR:
+  name: Kürdämir
+  code: KUR
+  unofficial_names: Kürdämir
+  geo:
+    latitude: 40.34
+    longitude: 48.16
+    min_latitude: 40.3172317
+    min_longitude: 48.120718
+    max_latitude: 40.3976794
+    max_longitude: 48.2148742
+  translations:
+    en: Kurdamir
+    ar: مقاطعة كوردامير
+    az: Kürdəmir
+    bn: কুরদামির জেলা
+    da: Kurdamir District
+    de: Kürdəmir
+    el: Κουρνταμίρ
+    es: Kürdəmir
+    fa: شهرستان کردامیر
+    fi: Kürdəmirin piirikunta
+    fr: Kürdəmir
+    gu: કુર્દામિર જિલ્લો
+    hi: कुर्दमीर जिला
+    id: Kurdamir
+    it: distretto di Kürdəmir
+    ja: キュルダミル県
+    kn: ಕುರ್ದಾಮಿರ್ ಜಿಲ್ಲೆ
+    ko: 퀴르데미르 구
+    mr: कुर्दामिर जिल्हा
+    ms: Kurdamir
+    nb: Kürdəmir
+    nl: Kürdəmir
+    pl: Rejon Kürdəmir
+    pt: Kurdamir
+    ru: Кюрдамирский район
+    si: කුර්දාමීර් දිස්ත්රික්කය
+    sr: Кјурдамирски рејон
+    sv: Kürdämir
+    ta: குர்டாமிர் மாவட்டம்
+    te: కుర్దామిర్ జిల్లా
+    th: เขตคูดาเมียร์
+    tk: Kurdemir
+    tr: Kürdemir Rayonu
+    ur: کردامیر ضلع
+    vi: Kyurdamir
+    lv: Kurdemiras rajons
+    ceb: Kurdamir Rayon
+    sr_Latn: Kjurdamirski rejon
+    lt: Kiurdamiro apskritis
+    zh: 丘爾達米爾區
+    sq: Kurdamir
+    ccp: "\U00011107\U0001112A\U00011122\U00011134\U00011113\U0001111F\U00011128\U00011122\U00011134"
+    uk: Кюрдамирський район
+    mk: Ќурдемир
+    'no': Kürdəmir
+    ca: Districte de Kurdamir
+    hr: Kjurdamirski rajon
+    ka: ქურდამირის რაიონი
+  comments:
+  type: rayon
+LA:
+  name: Länkäran City
+  code: LA
+  unofficial_names: Länkäran City
+  geo:
+    latitude: 38.753611
+    longitude: 48.851111
+    min_latitude: 38.7321757
+    min_longitude: 48.8232207
+    max_latitude: 38.7975439
+    max_longitude: 48.8669301
+  translations:
+    en: Lankaran
+    ar: مقاطعة لانكران
+    az: Lənkəran
+    bn: লাংকারান জেলা
+    da: Lankaran District
+    de: Lənkəran
+    el: Λάνκαραν
+    es: Lənkəran
+    fa: شهرستان لنکران
+    fi: Lənkəranin piirikunta
+    fr: Lənkəran
+    gu: લંકારણ જિલ્લો
+    hi: लंकारन जिला
+    id: Lankaran
+    it: distretto di Lənkəran
+    ja: レンキャラン県
+    kn: ಲಂಕರನ್ ಜಿಲ್ಲೆ
+    ko: 렌케란 구
+    mn: Ланкеран аймаг
+    mr: लंकारण जिल्हा
+    ms: Lankaran
+    nb: Lənkəran
+    nl: Lənkəran
+    pl: Rejon Lenkoran
+    pt: Lankaran
+    ru: Ленкоранский район
+    si: ලන්කරන් දිස්ත්‍රික්කය
+    sr: Ленкорански рејон
+    sv: Lankaran
+    ta: லங்காரன் மாவட்டம்
+    te: లంకారన్ జిల్లా
+    th: เขตลังคารัน
+    tk: Lenkeran
+    tr: Lenkeran Rayonu
+    uk: Ленкоранський район
+    ur: لنکران ضلع
+    vi: Lenkaran etraby
+    lv: Lenkeranas rajons
+    ceb: Lankaran Rayon
+    sr_Latn: Lenkoranski rejon
+    lt: Lankarano apskritis
+    zh: 連科蘭區
+    sq: Lankaran
+    ccp: "\U00011123\U00011127\U00011101\U00011107\U00011122\U0001111A\U00011134"
+    mk: Ленкеран
+    'no': Lənkəran
+    ca: Districte de Lenkoran
+    hr: Lenkoranski rajon
+    ka: ლენქორანის რაიონი
+  comments:
+  type: municipality
+LAC:
+  name: Laçin
+  code: LAC
+  unofficial_names: Laçin
+  geo:
+    latitude: 39.633333
+    longitude: 46.55
+    min_latitude: 39.6167968
+    min_longitude: 46.5265846
+    max_latitude: 39.652359
+    max_longitude: 46.5657878
+  translations:
+    en: Lachin
+    ar: مقاطعة لاتشين
+    az: Laçın
+    de: Laçın
+    es: Laçın
+    fa: شهرستان لاچین
+    fi: Laçınin piirikunta
+    fr: Latchin
+    hu: Laçıni járás
+    id: Lachin
+    it: distretto di Laçın
+    ja: ラチン県
+    ko: 라츤 구
+    ms: Daerah Lachin
+    nb: Laçın
+    nl: Laçın
+    pl: Rejon Laçın
+    pt: Lachin
+    ru: Лачинский район
+    sr: Лачински рејон
+    sv: Latjyn
+    tk: Laçyn
+    tr: Laçın Rayonu
+    ur: لاچین ضلع
+    vi: Lachin
+    ceb: Laçın Rayonu
+    sr_Latn: Lačinski rejon
+    zh: 拉欽區
+    sq: Lachin
+    ccp: "\U00011123\U00011127\U0001110C\U00011128\U0001111A\U00011134"
+    mk: Лачин
+    'no': Laçın
+    ca: Districte de Laçın
+    el: Επαρχία Λατσίν
+    hr: Lačinski rajon
+    ka: ლაჩინის რაიონი
+    uk: Лачинський район
+  comments:
+  type: rayon
+LAN:
+  name: Länkäran
+  code: LAN
+  unofficial_names: Länkäran
+  geo:
+    latitude: 38.753611
+    longitude: 48.851111
+    min_latitude: 38.7321757
+    min_longitude: 48.8232207
+    max_latitude: 38.7975439
+    max_longitude: 48.8669301
+  translations:
+    en: Lankaran District
+    ar: لنكران
+    az: Lənkəran²
+    be: Горад Ленкарань
+    bg: Ленкоран
+    bn: লঙ্কারান
+    ca: Lenkoran
+    cs: Lenkoran
+    da: Lankaran
+    de: Lənkəran²
+    el: Λανκαράν
+    es: Lankaran
+    et: Lənkəran
+    fa: لنکران
+    fi: Lənkəran
+    fr: Lankaran
+    gu: લંકારણ
+    he: לנקראן
+    hi: लंकारण
+    hy: Լենքորան
+    id: Lankaran²
+    it: Lənkəran
+    ja: ランカラン
+    ka: ლენქორანი
+    kn: ಲಂಕರನ್
+    ko: 렌케란
+    lt: Lenkoranė
+    lv: Lenkorāna
+    ml: ലങ്കരാൻ
+    mn: Ланкеран хот
+    mr: लंकरण
+    ms: Lankaran²
+    nb: Lənkəran²
+    nl: Lənkəran²
+    pl: Lenkoran
+    pt: Lankaran²
+    ro: Lankaran
+    ru: Ленкорань
+    si: ලන්කාරන්
+    sl: Lankaran
+    sv: Lankaran²
+    ta: லங்காரன்
+    te: లంకారన్
+    th: ลังคารัน
+    tk: Lenkeran
+    tr: Lenkeran
+    uk: Ленкорань
+    ur: لنکران
+    vi: Lankaran
+    ceb: Lankaran
+    zh: 連科蘭
+    sq: Lankaran²
+    ccp: "\U00011123\U00011127\U00011101\U00011107\U00011122\U0001111A\U00011134 \U0001110E\U0001112C\U00011123"
+    ky: Ленкорань
+    uz: Lenkoran
+    'no': Lənkəran²
+    hr: Lankoran
+    hu: Lənkəran
+  comments:
+  type: rayon
+LER:
+  name: Lerik
+  code: LER
+  unofficial_names: Lerik
+  geo:
+    latitude: 38.7736192
+    longitude: 48.4151483
+    min_latitude: 38.7643235
+    min_longitude: 48.3984231
+    max_latitude: 38.786539
+    max_longitude: 48.4290648
+  translations:
+    en: Lerik
+    ar: مقاطعة ليريك
+    az: Lerik
+    bn: লেরিক জেলা
+    da: Lerik District
+    de: Lerik
+    el: Λέρικ
+    es: Lerik
+    fa: شهرستان لریک
+    fi: Lerikin piirikunta
+    fr: Lerik
+    gu: ઑડિશા
+    hi: लेरिक जिला
+    id: Lerik
+    it: distretto di Lerik
+    ja: レリク県
+    kn: ಲೆರಿಕ್ ಜಿಲ್ಲೆ
+    ko: 레리크 구
+    mr: लरिक जिल्हा
+    ms: Daerah Lerik
+    nb: Lerik
+    nl: Lerik
+    pl: Rejon Lerik
+    pt: Lerik
+    ru: Лерикский район
+    si: ලෙරික් දිස්ත්‍රික්කය
+    sr: Лерички рејон
+    sv: Lerik Rayonu
+    ta: ளெரிக் மாவட்டம்
+    te: లెరిక్ జిల్లా
+    th: เลริค
+    tk: Lerik
+    tr: Lerik Rayonu
+    ur: لیرک ضلع
+    vi: Lerik
+    lv: Lerikas rajons
+    ceb: Lerik Rayon
+    sr_Latn: Lerički rejon
+    lt: Leriko apskritis
+    zh: 列里克區
+    sq: Lerik
+    ccp: "\U00011123\U0001112C\U00011122\U00011128\U00011107\U00011134"
+    uk: Лерікський район
+    mk: Лерик
+    'no': Lerik
+    he: מחוז לריק
+    hr: Lerički rajon
+    ka: ლერიქის რაიონი
+  comments:
+  type: rayon
+MAS:
+  name: Masalli
+  code: MAS
+  unofficial_names: Masalli
+  geo:
+    latitude: 39.033333
+    longitude: 48.65
+    min_latitude: 39.0163495
+    min_longitude: 48.6470318
+    max_latitude: 39.0481191
+    max_longitude: 48.6902905
+  translations:
+    en: Masally
+    ar: مقاطعة ماساللي
+    az: Masallı
+    bn: মাসালি জেলা
+    da: Masallı
+    de: Masallı
+    el: Μασάλι
+    es: Masallı
+    fa: شهرستان ماساللی
+    fi: Masallın piirikunta
+    fr: Masallı
+    gu: મસાલી જિલ્લો
+    hi: मेज़ली जिला
+    id: Masally
+    it: distretto di Masallı
+    ja: マサッル県
+    kn: ಮಸಾಲಿ ಜಿಲ್ಲೆ
+    ko: 마살르 구
+    mr: मसाली जिल्हा
+    ms: Masally
+    nb: Masallı
+    nl: Masallı
+    pl: Rejon Masallı
+    pt: Masally
+    ru: Масаллинский район
+    si: මසලි දිස්ත්‍රික්කය
+    sr: Масалински рејон
+    sv: Masallı Rayonu
+    ta: மஸல்லி மாவட்டம்
+    te: మాసాలీ జిల్లా
+    th: เขตมาซอลลิ
+    tk: Masally
+    tr: Masallı Rayonu
+    ur: ماسالی ضلع
+    vi: Masally
+    lv: Masalli rajons
+    ceb: Masally District
+    sr_Latn: Masalinski rejon
+    lt: Masalio apskritis
+    zh: 馬薩雷區
+    sq: Masally
+    ccp: "\U0001111F\U00011125\U00011123\U00011129"
+    uk: Масаллінський район
+    mk: Масали
+    'no': Masallı
+    hr: Masalinski rajon
+    ka: მასალის რაიონი
+  comments:
+  type: rayon
+MI:
+  name: Mingäçevir
+  code: MI
+  unofficial_names: Mingäçevir
+  geo:
+    latitude: 40.7702563
+    longitude: 47.0496015
+    min_latitude: 40.73093360000001
+    min_longitude: 46.9520472
+    max_latitude: 40.7958107
+    max_longitude: 47.1156406
+  translations:
+    en: Mingachevir
+    ar: مينجا تشيفير
+    az: Mingəçevir
+    bg: Мингечаур
+    bn: মিঙ্গাচেভির
+    cs: Mingačevir
+    da: Mingachevir
+    de: Mingəçevir
+    el: Μινγκατσεβίρ
+    es: Mingachevir
+    et: Mingəçevir
+    fa: مینگه‌چویر
+    fi: Mingəçevir
+    fr: Mingachevir
+    gu: મિંગચેવીર
+    he: מיגאצ׳ביר
+    hi: मिंगाशेवीर
+    hy: Մինգեչաուր
+    id: Mingachevir
+    it: Mingəçevir
+    ja: ミンゲチェヴィル
+    ka: მინგეჩაური
+    kn: ಮಿಂಗಚೆವೀರ್
+    ko: 밍개체비르
+    lt: Mingečevyras
+    mn: Мингечевир хот
+    mr: मिंगचेव्हीर
+    ms: Mingachevir
+    nb: Mingachevir
+    nl: Mingəçevir
+    pl: Mingeczaur
+    pt: Mingachevir
+    ro: Mingacevir
+    ru: Мингечаур
+    si: මිනාශේවිර්
+    sr: Мингечевир
+    sv: Mingetjaur
+    ta: மிங்காசெவிற்
+    te: మింగాచెవిర్
+    th: มินกาเชเวอ
+    tk: Mingeçewir
+    tr: Mingeçevir
+    uk: Мінгечаур
+    ur: منگچویر
+    vi: Mingachevir
+    lv: Mingačevira
+    ceb: Mingacevir City
+    sr_Latn: Mingečevir
+    zh: 明盖恰乌尔
+    sq: Mingachevir
+    ccp: "\U0001111F\U00011128\U00011101\U00011109\U0001110C\U0001112C\U0001111E\U00011128\U00011122\U00011134"
+    ky: Мингечуар
+    be: Мінгечаур
+    'no': Mingachevir
+    hr: Mingečaur
+    hu: Mingəçevir
+    uz: Mingechaur
+  comments:
+  type: municipality
+NA:
+  name: Naftalan
+  code: NA
+  unofficial_names: Naftalan
+  geo:
+    latitude: 40.506667
+    longitude: 46.825
+    min_latitude: 40.4947426
+    min_longitude: 46.8092251
+    max_latitude: 40.5216943
+    max_longitude: 46.8460464
+  translations:
+    en: Naftalan
+    de: Naftalan
+    ja: ナフタラン
+    sv: Naftalan Şəhəri
+    ceb: Naftalan
+    ccp: "\U0001111A\U0001111B\U00011134\U00011111\U00011123\U00011127\U0001111A\U00011134"
+    tk: Naftalan
+  comments:
+  type: municipality
+NEF:
+  name: Neftçala
+  code: NEF
+  unofficial_names: Neftçala
+  geo:
+    latitude: 39.358611
+    longitude: 49.246944
+    min_latitude: 39.3435909
+    min_longitude: 49.2190934
+    max_latitude: 39.4222045
+    max_longitude: 49.2725657
+  translations:
+    en: Neftchala
+    ar: مقاطعة نيفتشالا
+    az: Neftçala
+    bn: নেফকালা জেলা
+    da: Neftchala District
+    de: Neftçala
+    el: Νεφτσάλα
+    es: Neftçala
+    fa: شهرستان نفت‌چاله
+    fi: Neftçalan piirikunta
+    fr: Neftçala
+    gu: નેફ્ટચલા જિલ્લો
+    hi: नेफचाला जिला
+    id: Neftchala
+    it: distretto di Neftçala
+    ja: ネフトチャラ県
+    kn: ನೆಫ್ಚಾಲಾ ಜಿಲ್ಲೆ
+    ko: 네프찰라 구
+    mr: नेफ्ताळा जिल्हा
+    ms: Daerah Neftchala
+    nb: Neftçala
+    nl: Neftçala
+    pl: Rejon Neftçala
+    pt: Neftchala
+    ru: Нефтечалинский район
+    si: නෙෆ්ට්චලා දිස්ත්‍රික්කය
+    sr: Нефтечалински рејон
+    sv: Nefttjala
+    ta: நேபிச்சலா மாவட்டம்
+    te: నెఫ్ట్‌చాలా జిల్లా
+    th: เขตเนฟท์ชาลา
+    tk: Neftçala
+    tr: Neftçala Rayonu
+    ur: نفتچالا ضلع
+    vi: Neftchala
+    lv: Neftčalas rajons
+    ceb: Neftchala Rayon
+    sr_Latn: Neftečalinski rejon
+    lt: Neftchalos apskritis
+    zh: 涅夫捷恰拉區
+    sq: Neftchala
+    ccp: "\U0001111A\U0001112C\U0001111B\U00011134\U0001110C\U00011127\U00011123"
+    uk: Район Нефтечала
+    mk: Нефтчала
+    'no': Neftçala
+    hr: Neftečalinski rajon
+    ka: ნეფთჩალის რაიონი
+  comments:
+  type: rayon
+NV:
+  name: Naxçıvan
+  code: NV
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Nachitsjewan
+    ar: نخجوان
+    az: Naxçıvan
+    be: Горад Нахічэвань
+    bg: Нахичеван
+    bn: নাখচিভান
+    ca: Naxçıvan
+    cs: Nachičevan
+    da: Nakhitjevan
+    de: Naxçıvan
+    el: Ναχιτσεβάν
+    en: Nakhchivan
+    es: Najicheván
+    et: Naxçıvan
+    fa: نخجوان
+    fi: Nahitševan
+    fr: Nakhitchevan
+    gl: Nakhichevan
+    gu: નખચિવેન
+    he: נחיצ׳יבאן
+    hi: नख़्चीवां
+    hu: Nahicseván
+    hy: Նախիջևան
+    id: Kota Nakhchivan
+    it: Naxçıvan
+    ja: ナヒチェヴァン
+    ka: ნახიჩევანი
+    kn: ನಖ್ಚಿವನ್
+    ko: 나히체반
+    lt: Nachičevanė
+    lv: Nahčivana
+    ml: നാഖ്ചിവൻ സിറ്റി
+    mr: नखचीवं
+    ms: Nakhchivan
+    nb: Nachitjevan
+    nl: Nachitsjevan
+    pl: Nachiczewan
+    pt: Naquichevão
+    ro: Naxcivan
+    ru: Нахичевань
+    si: නක්සිවන්
+    sk: Nachičevan
+    sr: Нахчиван
+    sv: Nachitjevan
+    ta: நஃகுசிவான்
+    te: నాక్చివన్
+    th: นาคีชีวัน
+    tk: Nahçywan
+    tr: Nahçıvan
+    uk: Нахічевань
+    ur: ناخچیوان (شہر)
+    vi: Nakhchivan
+    cy: Nakhchivan
+    ceb: Nakhchivan Autonomous Republic
+    sr_Latn: Nahčivan
+    zh: 納希切萬
+    ccp: "\U0001111A\U00011107\U00011134\U0001110C\U00011128\U0001111E\U00011127\U0001111A\U00011134"
+    ky: Нахичеван
+    eu: Nakhitxevan²
+    uz: Naxichevan (shahar)
+    'no': Nachitjevan
+    hr: Nahičevan (grad)
+    kk: Нахшыван²
+    ps: نخجوان
+    sl: Nahičevan²
+    sq: Nahçivani
+    yue: 納希契凡
+    yue_Hans: 纳希契凡
+  comments:
+  type: municipality
+NX:
+  name: Naxçivan
+  code: NX
+  unofficial_names: Naxçivan
+  geo:
+    latitude: 39.208889
+    longitude: 45.412222
+    min_latitude: 39.1708288
+    min_longitude: 45.3697586
+    max_latitude: 39.228264
+    max_longitude: 45.4377366
+  translations:
+    en: Nakhchivan AR
+    af: Nachitsjewan²
+    ar: جمهورية نخجوان الذاتية
+    az: Naxçıvan Muxtar Respublikası
+    be: Нахічэванская Аўтаномная Рэспубліка
+    bg: Нахичеванска автономна република
+    bn: নাখচিভান স্বায়ত্বশাসিত প্রজাতন্ত্র
+    ca: Nakhtxivan
+    cs: Nachičevanská autonomní republika
+    da: Nakhitjevan²
+    de: Autonome Republik Nachitschewan
+    el: Ναχιτσεβάν²
+    es: República Autónoma de Najicheván
+    et: Nahhitševan
+    eu: Nakhitxevan
+    fa: جمهوری خودمختار نخجوان
+    fi: Nahitševan²
+    fr: Nakhitchevan²
+    gl: Nakhichevan - Naxçıvan
+    gu: નાખચિવન ઓટોનોમસ રિપબ્લિક
+    he: נחצ׳יבאן
+    hi: नकचिवन ऑटोनॉमस रिपब्लिक
+    hu: Nahicseván²
+    hy: Նախիջևանի Ինքնավար Հանրապետություն
+    id: Nakhichevan
+    it: Repubblica Autonoma di Naxçıvan
+    ja: ナヒチェヴァン自治共和国
+    ka: ნახიჩევანის ავტონომიური რესპუბლიკა
+    kn: ನಖ್ಚಿವನ್ ಸ್ವಾಯತ್ತ ಗಣರಾಜ್ಯ
+    ko: 나히체반 자치공화국
+    lt: Nachičevanės autonominė respublika
+    lv: Nahčivanas Autonomā Republika
+    ml: നാഖ്ചിവൻ സ്വയംഭരണ റിപ്പബ്ലിക്
+    mn: Нахчыван
+    mr: नखिवियन ऑटोनॉमस रिपब्लिक
+    ms: Nakhichevan
+    nb: Nakhitsjevan
+    nl: Nachitsjevan²
+    pl: Nachiczewańska Republika Autonomiczna
+    pt: Nakichevan
+    ro: Naxcivan²
+    ru: Нахичеванская Автономная Республика
+    si: නක්චිවන් ස්වාධීන ජනරජය
+    sl: Nahičevan
+    sr: Нахчиван²
+    sv: Nachitjevan²
+    ta: நஃகுசிவான் தன்னாட்சிக் குடியரசு
+    te: నాఖ్చివాన్ అటానామస్ రిపబ్లిక్
+    th: นาคีชีวัน²
+    tk: Nahçywan Awtonom Respublikasy
+    tr: Nahçıvan Özerk Cumhuriyeti
+    uk: Нахічеванська Автономна Республіка
+    ur: ناخچیوان خود مختار جمہوریہ
+    vi: Nakhchivan²
+    ceb: Nakhchivan Autonomous Republic²
+    sr_Latn: Nahčivan²
+    zh: 纳希切万自治共和国
+    ccp: "\U0001111A\U00011107\U00011134\U0001110C\U00011128\U0001111E\U00011127\U0001111A\U00011134
+      \U00011103\U0001112C\U00011103\U00011122\U00011134"
+    ky: Нахичеван автономия республикасы
+    kk: Нахшыван
+    uz: Naxichevan
+    bs: Nahičevan
+    'no': Nakhitsjevan
+    ga: Poblacht Fhéinrialaitheach Nakhichevan
+    hr: Nahičevanska Autonomna Republika
+    sq: Republika Autonome e Nahçivanit
+    yue: 納希契凡自治共和國
+    yue_Hans: 纳希契凡自治共和国
+  comments:
+  type: autonomous_republic
+OGU:
+  name: Oguz
+  code: OGU
+  unofficial_names: Oguz
+  geo:
+    latitude: 41.070833
+    longitude: 47.458333
+    min_latitude: 41.0595502
+    min_longitude: 47.4506378
+    max_latitude: 41.0923544
+    max_longitude: 47.4782753
+  translations:
+    en: Oghuz
+    ar: مقاطعة أغوز
+    az: Oğuz
+    bn: ওঘুয জেলা
+    da: Oghuz District
+    de: Oğuz
+    el: Επαρχία Ογκούζ
+    es: Oğuz
+    fa: شهرستان اغوز
+    fi: Oğuzin piirikunta
+    fr: Oğuz
+    gu: ઓઘુઝ જિલ્લો
+    hi: ओग़ज़ जिला
+    hu: Oğuzi járás
+    hy: Վարդաշենի շրջան
+    id: Oguz
+    it: distretto di Oğuz
+    ja: オグズ県
+    kn: ಒಘುಜ್ ಜಿಲ್ಲೆ
+    ko: 오구스 구
+    mr: औघ्ज जिल्हा
+    ms: Daerah Oghuz
+    nb: Oğuz
+    nl: Oğuz
+    pl: Rejon Oğuz
+    pt: Oğuz
+    ru: Огузский район
+    si: ඔගුස් දිස්ත්‍රික්කය
+    sr: Огушки рејон
+    sv: Oğuz
+    ta: ஓகுஸ் மாவட்டம்
+    te: ఓగుజ్ జిల్లా
+    th: เขตอ็อกฮัซ
+    tk: Oguz
+    tr: Oğuz Rayonu
+    ur: اغوز ضلع
+    vi: Oghuz
+    lv: Oghužas rajons
+    ceb: Oghuz Rayon
+    sr_Latn: Oguški rejon
+    lt: Oguzo apskritis
+    zh: 奧古茲區
+    sq: Oghuz
+    ccp: "\U00011103\U00011127\U0001110A\U0001112A\U0001110C\U00011134"
+    uk: Огузький район
+    mk: Огуз
+    'no': Oğuz
+    hr: Oguški rajon
+    ka: ოღუზის რაიონი
+  comments:
+  type: rayon
+ORD:
+  name: Ordubad
+  code: ORD
+  unofficial_names: Ordubad
+  geo:
+    latitude: 38.9
+    longitude: 46.033333
+    min_latitude: 38.8915673
+    min_longitude: 46.0086823
+    max_latitude: 38.9190856
+    max_longitude: 46.0360623
+  translations:
+    en: Ordubad
+    ar: مقاطعة أوردوباد
+    az: Ordubad
+    bn: ওরডোবাড জেলা
+    da: Ordubad District
+    de: Ordubad
+    el: Όρντουμπαντ
+    es: Ordubad
+    fa: شهرستان اردوباد
+    fi: Ordubadin piirikunta
+    fr: Ordubad
+    gu: ઓર્ડુબાદ જિલ્લો
+    hi: ऑर्डुबैड जिला
+    hy: Որդուարի շրջան
+    id: Ordubad
+    it: Distretto di Ordubad
+    ja: オルドゥバド県
+    ka: ორდუბადის რაიონი
+    kn: ಒರ್ಡುಬಾದ್ ಜಿಲ್ಲೆ
+    ko: 오르두바트 구
+    mr: ऑर्डुबॅड जिल्हा
+    ms: Daerah Ordubad
+    nb: Ordubad
+    nl: Ordubad
+    pl: Rejon Ordubad
+    pt: Ordubad
+    ru: Ордубадский район
+    si: ඔර්ඩුබාද් දිස්ත්‍රික්කය
+    sr: Ордубадски рејон
+    sv: Ordubad Rayon
+    ta: ஓடுபாடு மாவட்டம்
+    te: ఓర్డుబాడ్ జిల్లా
+    th: เขตอรดูแบด
+    tk: Orduabat
+    tr: Ordubad Rayonu
+    uk: Ордубадський район
+    ur: اردوباد ضلع
+    vi: Ordubad
+    lv: Ordubadas rajons
+    ceb: Ordubad Rayon
+    sr_Latn: Ordubadski rejon
+    lt: Ordubado apskritis
+    zh: 奧爾杜巴德區
+    ccp: "\U00011103\U00011127\U00011122\U00011134\U00011113\U00011128\U0001111D\U00011116\U00011134"
+    be: Ардубадскі раён
+    mk: Ордубад
+    'no': Ordubad
+    hr: Ordubadski rajon
+  comments:
+  type: rayon
+QAB:
+  name: Qäbälä
+  code: QAB
+  unofficial_names: Qäbälä
+  geo:
+    latitude: 40.9981633
+    longitude: 47.8699826
+    min_latitude: 40.9477997
+    min_longitude: 47.8214693
+    max_latitude: 41.0042653
+    max_longitude: 47.8774202
+  translations:
+    en: Qabala
+    ar: مقاطعة غابالا
+    az: Qəbələ
+    bg: Габалски район
+    bn: কাবালা জেলা
+    cs: Gabala
+    da: Qabala District
+    de: Qəbələ
+    el: Καμπάλα
+    es: Qəbələ
+    fa: شهرستان قبله
+    fi: Qəbələn piirikunta
+    fr: Qabala
+    gu: કબાલા જિલ્લો
+    hi: कबाला जिला
+    hu: Qəbələi járás
+    id: Qabala
+    it: distretto di Qəbələ
+    ja: ガバラ県
+    kn: ಖಬಲಾ ಜಿಲ್ಲೆ
+    ko: 게벨레 구
+    mr: कबाला जिल्हा
+    ms: Qabala
+    nb: Qəbələ
+    nl: Qəbələ
+    pl: Rejon Qəbələ
+    pt: Qabala
+    ro: Raionul Qabala
+    ru: Габалинский район
+    si: කබලා දිස්ත්‍රික්කය
+    sr: Габалински рејон
+    sv: Qəbələ (distrikt)
+    ta: கிலாபாலா மாவட்டம்
+    te: ఖాబాలా జిల్లా
+    th: จังหวัดกะบาลา
+    tk: Gabala
+    tr: Kabala Rayonu
+    ur: قابالا ضلع
+    vi: Gabala
+    lv: Gebeles rajons
+    ceb: Qabala Rayon
+    sr_Latn: Gabalinski rejon
+    lt: Kabalos apskritis
+    zh: 蓋貝萊區
+    sq: Qabala
+    ccp: "\U00011107\U00011127\U0001111D\U00011127\U00011123"
+    uk: Габалинський район
+    uz: Qabala tumani
+    mk: Кабала
+    'no': Qəbələ
+    hr: Gabalinski rajon
+    hy: Գաբալայի շրջան
+    ka: გაბალის რაიონი
+  comments:
+  type: rayon
+QAX:
+  name: Qax
+  code: QAX
+  unofficial_names: Qax
+  geo:
+    latitude: 41.4225
+    longitude: 46.924167
+    min_latitude: 41.4077159
+    min_longitude: 46.89085009999999
+    max_latitude: 41.4429194
+    max_longitude: 46.9906713
+  translations:
+    en: Qakh
+    ar: مقاطعة قاخ
+    az: Qax
+    bn: কাহ জেলা
+    da: Qakh District
+    de: Qax
+    el: Κάκχ
+    es: Qax
+    fa: شهرستان قاخ
+    fi: Qaxin piirikunta
+    fr: Qax
+    gu: કાખ જિલ્લો
+    hi: काख जिला
+    hu: Qaxi járás
+    id: Qakh
+    it: distretto di Qax
+    ja: ガフ県
+    ka: კახის რაიონი
+    kn: ಖಖ್ ಜಿಲ್ಲೆ
+    ko: 가흐 구
+    mr: काख जिल्हा
+    ms: Qakh
+    nb: Qax
+    nl: Qax
+    pl: Rejon Qax
+    pt: Qakh
+    ru: Кахский район
+    si: කාක් දිස්ත්‍රික්කය
+    sr: Кашки рејон
+    sv: Qach
+    ta: கியக்ஹ மாவட்டம்
+    te: ఖాఖ్ జిల్లా
+    th: เมืองคาร์ก
+    tk: Kah
+    tr: Kah rayonu
+    ur: کاخ ضلع
+    vi: Gakh
+    lv: Gahas rajons
+    ceb: Qakh Rayon
+    sr_Latn: Kaški rejon
+    lt: Kako apskritis
+    zh: 卡希區
+    sq: Qakh
+    ccp: "\U00011107\U00011127\U00011107\U00011134"
+    uk: Гахський район
+    mk: Ках
+    'no': Qax
+    hr: Kahski rajon
+    uz: Qax tumani
+  comments:
+  type: rayon
+QAZ:
+  name: Qazax
+  code: QAZ
+  unofficial_names: Qazax
+  geo:
+    latitude: 41.093333
+    longitude: 45.366111
+    min_latitude: 41.0805481
+    min_longitude: 45.3229809
+    max_latitude: 41.1163487
+    max_longitude: 45.3892851
+  translations:
+    en: Qazakh
+    ar: مقاطعة قازاخ
+    az: Qazax
+    be: Казахскі раён
+    bn: কোয়াজাক জেলা
+    da: Qazakh District
+    de: Qazax
+    el: Καζάκχ
+    es: Qazax
+    fa: شهرستان قازاخ
+    fi: Qazaxin piirikunta
+    fr: Qazax
+    gu: કઝાક જિલ્લો
+    hi: कज़ाख़ जिला
+    hu: Qazaxi járás
+    hy: Ղազախի շրջան
+    id: Qazakh
+    it: distretto di Qazax
+    ja: ガザフ県
+    kn: ಖಜಾಕ್ ಜಿಲ್ಲೆ
+    ko: 가자흐 구
+    mr: कझाख जिल्हा
+    ms: Qazakh
+    nb: Qazax
+    nl: Qazax
+    pl: Rejon Qazax
+    pt: Qazakh
+    ro: Qazax
+    ru: Казахский район
+    si: කසාක් දිස්ත්‍රික්කය
+    sr: Казашки рејон
+    sv: Qazach
+    ta: கசாக் மாவட்டம்
+    te: ఖజాఖ్ జిల్లా
+    th: กาซาฮ์
+    tk: Gazak
+    tr: Kazah Rayonu
+    ur: قازاخ ضلع
+    vi: Gazakh
+    lv: Gazahas rajons
+    ceb: Qazakh Rayon
+    sr_Latn: Kazaški rejon
+    lt: Kazacho apskritis
+    zh: 哈薩克區
+    sq: Qazakh
+    ccp: "\U00011107\U00011127\U0001110E\U00011107\U00011134"
+    kk: Қазақ ауданы
+    uk: Газахський район
+    mk: Казах
+    'no': Qazax
+    hr: Kazahski rajon
+    ka: ყაზახის რაიონი
+  comments:
+  type: rayon
+QBA:
+  name: Quba
+  code: QBA
+  unofficial_names: Quba
+  geo:
+    latitude: 41.359722
+    longitude: 48.5125
+    min_latitude: 41.3494949
+    min_longitude: 48.4612941
+    max_latitude: 41.3764865
+    max_longitude: 48.557725
+  translations:
+    en: Quba
+    ar: قوبا
+    az: Quba
+    bn: কোবা জেলা
+    da: Quba District
+    de: Quba
+    el: Κούμπα
+    es: Quba
+    fa: شهرستان قبه
+    fi: Quban piirikunta
+    fr: Quba
+    gu: ક્યુબા જિલ્લો
+    hi: क्यूबा जिला
+    hu: Qubai járás
+    id: Quba
+    it: distretto di Quba
+    ja: クバ県
+    kn: ಖುಬಾ ಜಿಲ್ಲೆ
+    ko: 구바 구
+    mr: क्यूबा जिल्हा
+    ms: Quba
+    nb: Quba
+    nl: Quba
+    pl: Rejon Quba
+    pt: Quba
+    ru: Кубинский район
+    si: කුබා දිස්ත්‍රික්කය
+    sr: Кубински рејон
+    sv: Quba Rayonu
+    ta: கியூபா மாவட்டம்
+    te: క్యూబా జిల్లా
+    th: เขตคูบา
+    tk: Kuba
+    tr: Kuba Rayonu
+    ur: قوبا ضلع
+    vi: Guba
+    lv: Gubas rajons
+    ceb: Quba Rayon
+    sr_Latn: Kubinski rejon
+    lt: Kubos apskritis
+    zh: 庫巴區
+    sq: Quba
+    ccp: "\U00011107\U0001112A\U0001111D"
+    ka: ყუბის რაიონი
+    uk: Куба
+    uz: Quba tumani
+    mk: Куба
+    'no': Quba
+    hr: Kubinski rajon
+  comments:
+  type: rayon
+QBI:
+  name: Qubadli
+  code: QBI
+  unofficial_names: Qubadli
+  geo:
+    latitude: 39.2713996
+    longitude: 46.6354312
+    min_latitude: 39.120843
+    min_longitude: 46.3865889
+    max_latitude: 39.489675
+    max_longitude: 46.829667
+  translations:
+    en: Qubadli
+    ar: منطقة قبادلي
+    az: Qubadlı
+    bn: কাুবাডলি জেলা
+    da: Qubadli District
+    de: Qubadlı
+    el: Επαρχία Κουμπάντλι
+    es: Qubadlı
+    fa: شهرستان قبادلی
+    fi: Qubadlın piirikunta
+    fr: Qubadli
+    gu: ક્યુબાડલી જિલ્લો
+    hi: क्वैडली जिला
+    hu: Qubadlı járás
+    id: Qubadli
+    it: distretto di Qubadlı
+    ja: グバドリ県
+    kn: ಕ್ಯೂಬಾದ್ಲಿ ಜಿಲ್ಲೆ
+    ko: 구바들르 구
+    mr: क्युबाडली जिल्हा
+    ms: Daerah Qubadli
+    nb: Qubadlı
+    nl: Qubadlı
+    pl: Rejon Qubadlı
+    pt: Qubadli
+    ru: Кубатлинский район
+    si: කුබාද්ලි දිස්ත්‍රික්කය
+    sr: Кубатлински рејон
+    sv: Qubadli
+    ta: குபாட்லி மாவட்டம்
+    te: ఖుబాడ్లి జిల్లా
+    th: เขตคิวแบดลิ
+    tk: Kubatly
+    tr: Kubadlı Rayonu
+    ur: قوبادلی ضلع
+    vi: Gubadly
+    lv: Gubadli rajons
+    ceb: Qubadli Rayon
+    sr_Latn: Kubatlinski rejon
+    lt: Kubadlio apskritis
+    zh: 庫巴特雷區
+    sq: Qubadli
+    ccp: "\U00011107\U0001112A\U0001111D\U00011116\U00011134\U00011123\U00011128"
+    ka: გუბადლის რაიონი
+    uk: Кубатлинський район
+    mk: Кубадли
+    'no': Qubadlı
+    hr: Kubatlinski rajon
+    uz: Gubadli tumani
+  comments:
+  type: rayon
+QOB:
+  name: Qobustan
+  code: QOB
+  unofficial_names: Qobustan
+  geo:
+    latitude: 40.0877962
+    longitude: 49.4030219
+    min_latitude: 40.0337922
+    min_longitude: 49.38769749999999
+    max_latitude: 40.1079896
+    max_longitude: 49.433756
+  translations:
+    en: Gobustan
+    ar: مقاطعة غوبوستان
+    az: Qobustan
+    bn: গোবুস্তান জেলা
+    cs: Gobustan
+    da: Gobustan District
+    de: Qobustan
+    el: Γκομπουστάν
+    es: Qobustan
+    fa: شهرستان قبوستان
+    fi: Qobustanin piirikunta
+    fr: Qobustan
+    gu: ગોબ્સ્ટન જિલ્લો
+    hi: गोबस्टन जिला
+    id: Qobustan
+    it: distretto di Qobustan
+    ja: ゴブスタン県
+    ka: გობუსტანის რაიონი
+    kn: ಗೊಬಸ್ಟನ್ ಜಿಲ್ಲೆ
+    ko: 고부스탄 구
+    mr: गोबूस्तान जिल्हा
+    ms: Qobustan
+    nb: Qobustan
+    nl: Qobustan
+    pl: Rejon Qobustan
+    pt: Gobustão
+    ru: Гобустанский район
+    si: ගොබුස්තාන් දිස්ත්‍රික්කය
+    sr: Гобустански рејон
+    sv: Qobustan Rayonu
+    ta: கோபிஸ்டாண் மாவட்டம்
+    te: గోబుస్తాన్ జిల్లా
+    th: เขตโกบัสตัน
+    tk: Gobustan
+    tr: Kobustan Rayonu
+    uk: Гобустанський район
+    ur: قوبوستان ضلع
+    vi: Gobustan
+    lv: Gobustanas rajons
+    ceb: Gobustan Rayon
+    sr_Latn: Gobustanski rejon
+    lt: Gobustano apskritis
+    zh: 戈布斯坦區
+    sq: Gobustan
+    ccp: "\U00011109\U00011127\U0001111D\U0001112A\U0001110C\U00011134\U00011111\U0001111A\U00011134"
+    mk: Гобустан
+    'no': Qobustan
+    hr: Gobustanski rajon
+  comments:
+  type: rayon
+QUS:
+  name: Qusar
+  code: QUS
+  unofficial_names: Qusar
+  geo:
+    latitude: 41.426389
+    longitude: 48.435556
+    min_latitude: 41.4036923
+    min_longitude: 48.3841753
+    max_latitude: 41.4406353
+    max_longitude: 48.4615945
+  translations:
+    en: Qusar
+    ar: مقاطعة كوسار
+    az: Qusar
+    bn: কোসার জেলা
+    da: Qusar District
+    de: Qusar
+    el: Κουσάρ
+    es: Qusar
+    fa: شهرستان قوسار
+    fi: Qusarin piirikunta
+    fr: Qusar
+    gu: કુસર જિલ્લો
+    hi: कुसर जिला
+    hu: Qusari járás
+    id: Qusar
+    it: distretto di Qusar
+    ja: クサル県
+    kn: ಕುಸಾರ್ ಜಿಲ್ಲೆ
+    ko: 구사르 구
+    mr: कुसर जिल्हा
+    ms: Qusar
+    nb: Qusar
+    nl: Qusar
+    pl: Rejon Qusar
+    pt: Qusar
+    ru: Кусарский район
+    si: කුසාර් දිස්ත්‍රික්කය
+    sr: Кусарски рејон
+    sv: Qusar Rayonu
+    ta: குசர் மாவட்டம்
+    te: ఖుసార్ జిల్లా
+    th: จังหวัดกูซาร์
+    tk: Kusar
+    tr: Kusar Rayonu
+    ur: قوسار ضلع
+    vi: Gusar
+    lv: Gusaras rajons
+    ceb: Qusar Rayon
+    sr_Latn: Kusarski rejon
+    lt: Kusaro provincija
+    zh: 庫薩雷區
+    sq: Qusar
+    ccp: "\U00011107\U0001112A\U00011125\U00011122\U00011134"
+    uk: Гусарський район
+    uz: Qusar tumani
+    mk: Кусар
+    'no': Qusar
+    hr: Kusarski rajon
+    ka: გუსარის რაიონი
+  comments:
+  type: rayon
+SA:
+  name: Säki City
+  code: SA
+  unofficial_names: Säki City
+  geo:
+    latitude: 34.0489281
+    longitude: -111.0937311
+    min_latitude: 31.3321771
+    min_longitude: -114.8165909
+    max_latitude: 37.0042599
+    max_longitude: -109.0452231
+  translations:
+    en: Shaki
+    ar: شكي
+    az: Şəki
+    bg: Шеки
+    bn: শাকি
+    ca: Shaki
+    cs: Şəki
+    da: Shaki
+    de: Şəki
+    el: Σάκι
+    es: Şəki
+    et: Şəki
+    fa: شکی
+    fi: Şəki
+    fr: Shaki
+    gu: શાકી
+    he: שקי
+    hi: शाकी
+    hy: Շաքի
+    id: Shaki
+    it: Şəki
+    ja: シャキ
+    ka: შაქი
+    kn: ಶಕೀ
+    ko: 섀키
+    lt: Šekis
+    mn: Шеки
+    mr: शकी
+    ms: Shaki, Azerbaijan
+    nb: Şəki
+    nl: Şəki
+    pl: Şəki
+    pt: Shaki
+    ro: Șaki
+    ru: Шеки
+    si: ශකි
+    sl: Şäki
+    sr: Шаки
+    sv: Sjaki
+    ta: ஷாகி
+    te: షాకి
+    th: จังหวัดเกลเดอร์ลันด์
+    tk: Şaky
+    tr: Şeki
+    uk: Шекі
+    ur: شکی
+    vi: Şəki
+    lv: Šeki
+    ceb: Sheki
+    sr_Latn: Šaki
+    zh: 舍基
+    sq: Shaki (qytet)
+    ccp: "\U00011125\U00011107\U00011128"
+    be: Шэкі
+    uz: Sheki
+    'no': Şəki
+    bs: Historijski grad Šaki
+    eu: Şəki
+    hr: Šeki
+    hu: Şəki
+    ml: ശാകി, അസർബയ്ജാൻ
+    sk: Şəki
+  comments:
+  type: municipality
+SAB:
+  name: Sabirabad
+  code: SAB
+  unofficial_names: Sabirabad
+  geo:
+    latitude: 40.012778
+    longitude: 48.478889
+    min_latitude: 39.9682403
+    min_longitude: 48.4441281
+    max_latitude: 40.0227507
+    max_longitude: 48.5010339
+  translations:
+    en: Sabirabad
+    ar: مقاطعة صابرآباد
+    az: Sabirabad
+    bn: সাবিরাবাদ জেলা
+    cs: Sabirabad
+    da: Sabirabad District
+    de: Sabirabad
+    el: Σαμπιραμπάντ
+    es: Sabirabad
+    fa: شهرستان صابرآباد
+    fi: Sabirabadin piirikunta
+    fr: Sabirabad
+    gu: સબરાબાદ જિલ્લો
+    hi: सबीराबाद जिला
+    id: Sabirabad
+    it: distretto di Sabirabad
+    ja: サビラバド県
+    kn: ಸಬೀರಾಬಾದ್ ಜಿಲ್ಲೆ
+    ko: 사비라바트 구
+    mr: सबिराबाद जिल्हा
+    ms: Sabirabad
+    nb: Sabirabad
+    nl: Sabirabad
+    pl: Rejon Sabirabad
+    pt: Sabirabad
+    ru: Сабирабадский район
+    si: සබිරාබාද් දිස්ත්‍රික්කය
+    sr: Сабирабадски рејон
+    sv: Sabirabad Rayonu
+    ta: சாபிரபட் மாவட்டம்
+    te: సబీరాబాద్ జిల్లా
+    th: เขตซาบีราบัด
+    tk: Sabirabat
+    tr: Sabirabad Rayonu
+    uk: Сабірабадський район
+    ur: سبیر آباد ضلع
+    vi: Sabirabad
+    lv: Sabirabadas rajons
+    ceb: Sabirabad Rayon
+    sr_Latn: Sabirabadski rejon
+    lt: Sabirabado apskritis
+    zh: 薩比拉巴德區
+    sq: Sabirabad
+    ccp: "\U00011125\U00011127\U0001111D\U00011128\U00011122\U0001111D\U00011116\U00011134"
+    et: Sabirabadi rajoon
+    ml: സാബിറാബാദ് ജില്ല
+    mk: Сабирабад
+    bg: Сабирабад (район)
+    'no': Sabirabad
+    be: Сабірабад
+    ca: Districte de Sabirabad
+    hr: Sabirabadski rajon
+    hy: Սաբիրաբադ
+    ka: საბირაბადი
+    ro: Sabirabad
+    uz: Sabirobod
+  comments:
+  type: rayon
+SAD:
+  name: Sädäräk
+  code: SAD
+  unofficial_names: Sädäräk
+  geo:
+    latitude: 39.7175
+    longitude: 44.876389
+    min_latitude: 39.6878368
+    min_longitude: 44.85340129999999
+    max_latitude: 39.7285114
+    max_longitude: 44.9173451
+  translations:
+    en: Sadarak
+    ar: مقاطعة ساداراك
+    az: Sədərək
+    bn: সাদারাক জেলা
+    cs: Sadarak
+    da: Sadarak District
+    de: Sədərək
+    el: Σανταράκ
+    es: Sadarak
+    fa: شهرستان سدرک
+    fi: Sədərəkin piirikunta
+    fr: Sadarak
+    gu: સદરક જિલ્લો
+    hi: सदरक जिला
+    hy: Սանդրուքի շրջան
+    id: Sadarak
+    it: Distretto di Sədərək
+    ja: サダラク県
+    kn: ಸದರಾಕ್ ಜಿಲ್ಲೆ
+    ko: 세데레크 구
+    mr: सदरक जिल्हा
+    ms: Sadarak
+    nb: Sədərək
+    nl: Sədərək
+    pl: Rejon Sədərək
+    pt: Sadarak
+    ru: Садаракский район
+    si: සදරක් දිස්ත්‍රික්කය
+    sr: Садарачки рејон
+    sv: Sadarak Rayon
+    ta: சடராக் மாவட்டம்
+    te: సడారక్ జిల్లా
+    th: เขตซาดารัค
+    tk: Sederek
+    tr: Sederek Rayonu
+    uk: Садарацький район
+    ur: صدرک ضلع
+    vi: Sedarak
+    lv: Sederekas rajons
+    ceb: Sadarak Rayon
+    sr_Latn: Sadarački rejon
+    lt: Sadarako apskritis
+    zh: 薩達拉克區
+    ccp: "\U00011125\U00011113\U00011122\U00011107\U00011134"
+    mk: Седерек
+    'no': Sədərək
+    hr: Sadarački rajon
+    ka: სადარაქის რაიონი
+  comments:
+  type: rayon
+SAH:
+  name: Sahbuz
+  code: SAH
+  unofficial_names: Sahbuz
+  geo:
+    latitude: 39.407222
+    longitude: 45.57388900000001
+    min_latitude: 39.39315759999999
+    min_longitude: 45.5522345
+    max_latitude: 39.4185908
+    max_longitude: 45.597639
+  translations:
+    en: Shahbuz
+    ar: مقاطعة شهبوز
+    az: Şahbuz
+    bn: শাহবাজ জেলা
+    da: Shahbuz District
+    de: Şahbuz (Rayon)
+    el: Σαχμπούζ
+    es: Shahbuz
+    fa: شهرستان شاه‌بوز
+    fi: Şahbuzin piirikunta
+    fr: Shakhbuz (raion)
+    gu: શાહબુઝ જિલ્લો
+    hi: शाहबुज़ जिला
+    hy: Շահբուզի շրջան
+    id: Shahbuz
+    it: Distretto di Şahbuz
+    ja: シャフブズ県
+    kn: ಶಹಬುಜ್ ಜಿಲ್ಲೆ
+    ko: 샤흐부스 구
+    mr: शाहबुझ जिल्हा
+    ms: Shahbuz
+    nb: Şahbuz (distrikt)
+    nl: Şahbuz
+    pl: Rejon Şahbuz
+    pt: Shakhbuz
+    ru: Шахбузский район
+    si: ශාබුස් දිස්ත්‍රික්කය
+    sr: Шахбушки рејон
+    sv: Şahbuz (distrikt)
+    ta: ஷாஹபிஸ் மாவட்டம்
+    te: షాహబుజ్ జిల్లా
+    th: ชาฮ์บุช
+    tk: Şahbuz
+    tr: Şahbuz Rayonu
+    uk: Шахбузький район
+    ur: شاحبوز ضلع
+    vi: Shahbuz (quận)
+    lv: Šahbuzas rajons
+    sr_Latn: Šahbuški rejon
+    lt: Šabuzo apskritis
+    zh: 沙赫布茲區
+    ccp: "\U00011125\U00011126\U00011134\U0001111D\U0001112A\U0001110C\U00011134"
+    mk: Шахбуз (округ)
+    'no': Şahbuz (distrikt)
+    ceb: Shahbuz Rayon
+    hr: Šahbuški rajon
+  comments:
+  type: rayon
+SAK:
+  name: Säki
+  code: SAK
+  unofficial_names: Säki
+  geo:
+    latitude: 41.1134662
+    longitude: 47.13169269999999
+    min_latitude: 40.7506485
+    min_longitude: 46.808805
+    max_latitude: 41.485622
+    max_longitude: 47.6075521
+  translations:
+    en: Shaki District
+    ar: مقاطعة شاكي
+    az: Şəki²
+    bn: শাকি জেলা
+    ca: Districte de Shaki
+    da: Shaki District
+    de: Şəki²
+    el: Σάκι²
+    es: Şəki²
+    fa: شهرستان شکی
+    fi: Şəkin piirikunta
+    fr: Şəki
+    gu: શાખી જિલ્લો
+    hi: शाकी जिला
+    hu: Şəki járás
+    hy: Շաքիի շրջան
+    id: Shaki²
+    it: distretto di Şəki
+    ja: シャキ県
+    kn: ಷಕೀ ಜಿಲ್ಲೆ
+    ko: 셰키 구
+    mr: शाकी जिल्हा
+    ms: Shaki
+    nb: Şəki²
+    nl: Şəki²
+    pl: Rejon Şəki
+    pt: Shaki²
+    ru: Шекинский район
+    si: ශකි දිස්ත්‍රික්කය
+    sr: Шекински рејон
+    sv: Sjäki (distrikt)
+    ta: ஷாகி மாவட்டம்
+    te: షాకి జిల్లా
+    th: ซาร์กี้
+    tk: Şeki
+    tr: Şeki Rayonu
+    ur: شکی ضلع
+    vi: Sheki
+    lv: Šeki rajons
+    ceb: Shaki Rayon
+    sr_Latn: Šekinski rejon
+    lt: Šakio apskritis
+    zh: 舍基區
+    sq: Shaki
+    ccp: "\U00011125\U00011107\U00011128 \U0001110E\U0001112C\U00011123"
+    uk: Шекинський район
+    mk: Шеки
+    'no': Şəki²
+    hr: Šekinski rajon
+    ka: შაქის რაიონი
+  comments:
+  type: rayon
+SAL:
+  name: Salyan
+  code: SAL
+  unofficial_names: Salyan
+  geo:
+    latitude: 39.595
+    longitude: 48.979167
+    min_latitude: 39.5387341
+    min_longitude: 48.91036039999999
+    max_latitude: 39.6451555
+    max_longitude: 49.0261459
+  translations:
+    en: Salyan
+    ar: مقاطعة ساليان
+    az: Salyan
+    bn: সালিয়ান জেলা
+    da: Salyan District
+    de: Salyan
+    el: Σαλγιάν
+    es: Salyan
+    fa: شهرستان سالیان
+    fi: Salyanin piirikunta
+    fr: Salyan
+    gu: સાયલન જિલ્લો
+    hi: सल्यान जिला
+    id: Salyan
+    it: distretto di Salyan
+    ja: サルヤン県
+    kn: ಸಾಲ್ಯಾನ್ ಡಿಸ್ಟ್ರಿಕ್ಟ್
+    ko: 살리안 구
+    mr: सल्याण जिल्हा
+    ms: Salyan
+    nb: Salyan
+    nl: Salyan
+    pl: Rejon Salyan
+    pt: Salyan
+    ru: Сальянский район
+    si: සල්යාන් දිස්ත්‍රික්කය
+    sr: Саљански рејон
+    sv: Saljan
+    ta: சல்யன் மாவட்டம்
+    te: సల్యాన్ జిల్లా
+    th: เขตซาลยาน
+    tk: Salýan
+    tr: Salyan Rayonu
+    ur: سالیان ضلع
+    vi: Salyan
+    lv: Saljanas rajons
+    ceb: Salyan Rayon
+    sr_Latn: Saljanski rejon
+    lt: Saljano apskritis
+    zh: 薩利揚區
+    sq: Salyan
+    ccp: "\U00011125\U00011123\U0001112D\U0001111A\U00011134"
+    uk: Сальянський район
+    mk: Саљан
+    'no': Salyan
+    be: Сальянскі раён
+    hr: Saljanski rajon
+    ka: სალიანის რაიონი
+  comments:
+  type: rayon
+SAR:
+  name: Särur
+  code: SAR
+  unofficial_names: Särur
+  geo:
+    latitude: 39.5687523
+    longitude: 45.0823321
+    min_latitude: 39.3825
+    min_longitude: 44.82024
+    max_latitude: 39.785526
+    max_longitude: 45.2860981
+  translations:
+    en: Sharur
+    az: Şərur
+    de: Şərur (Rayon)
+    es: Sharur
+    fa: شهرستان شرور
+    fi: Şərurin piirikunta
+    fr: Sharur
+    hy: Շարուրի շրջան
+    id: Sharur
+    it: Distretto di Şərur
+    ja: シャルル県
+    ka: შარურის რაიონი
+    ko: 셰루르 구
+    ms: Sharur
+    nb: Şərur (distrikt)
+    nl: Şərur
+    pl: Rejon Şərur
+    pt: Sharur
+    ru: Шарурский район
+    sr: Шарурски рејон
+    sv: Sharur Rayon
+    tk: Şerur
+    tr: Şerur Rayonu
+    uk: Шарурський район
+    vi: Sherur (quận)
+    ceb: Sharur Rayon
+    sr_Latn: Šarurski rejon
+    zh: 沙魯爾區
+    ccp: "\U00011125\U00011122\U0001112A\U00011122\U00011134"
+    he: סחרור
+    mk: Шерур
+    'no': Şərur (distrikt)
+    ar: مقاطعة شرور
+    be: Шарурскі раён
+    hr: Šarurski rajon
+  comments:
+  type: rayon
+SAT:
+  name: Saatli
+  code: SAT
+  unofficial_names: Saatli
+  geo:
+    latitude: 39.930833
+    longitude: 48.36944399999999
+    min_latitude: 39.8768098
+    min_longitude: 48.2874871
+    max_latitude: 39.9668589
+    max_longitude: 48.4565735
+  translations:
+    en: Saatly
+    ar: مقاطعة ساتلي
+    az: Saatlı
+    bn: সাটলি জেলা
+    da: Saatly District
+    de: Saatlı
+    el: Σαάτλι
+    es: Saatlı
+    fa: شهرستان ساعتلی
+    fi: Saatlın piirikunta
+    fr: Saatlı
+    gu: સાટલી જિલ્લો
+    hi: सातली जिला
+    id: Saatly
+    it: distretto di Saatlı
+    ja: サアトル
+    kn: ಸಾಟ್ಲಿ ಜಿಲ್ಲೆ
+    ko: 사틀르 구
+    mr: साटली जिल्हा
+    ms: Saatly
+    nb: Saatlı
+    nl: Saatlı
+    pl: Rejon Saatlı
+    pt: Saatly
+    ru: Саатлинский район
+    si: සාල්ට්ලි දිස්ත්‍රික්කය
+    sr: Сатлински рејон
+    sv: Saatlı Rayonu
+    ta: சாட்லய் மாவட்டம்
+    te: సాట్లీ జిల్లా
+    th: เขตซ๊าทลี่
+    tk: Saatly
+    tr: Saatlı Rayonu
+    ur: سااتلی ضلع
+    vi: Saatly
+    lv: Saatli rajons
+    ceb: Saatly Rayon
+    sr_Latn: Satlinski rejon
+    lt: Saatlio apskritis
+    zh: 薩特雷區
+    sq: Saatly
+    ccp: "\U00011125\U00011116\U00011123\U00011129"
+    uk: Район Саатлі
+    mk: Саатли
+    'no': Saatlı
+    hr: Satlinski rajon
+    ka: საათლის რაიონი
+  comments:
+  type: rayon
+SBN:
+  name: Şabran (rayon)
+  code: SBN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة شابران
+    az: Şabran (rayon)
+    bn: সাব্রান জেলা
+    cs: Šabran
+    da: Shabran District
+    de: Şabran (Rayon)
+    el: Σάμπραν
+    en: Shabran
+    es: Şabran (raión)
+    fa: دوه‌چی
+    fi: Şabranin piirikunta
+    fr: Şabran (raion)
+    gu: શબ્રાન જિલ્લો
+    hi: शबरान जिला
+    id: Davachi
+    it: distretto di Şabran
+    ja: ダヴァヒ県
+    kn: ಶಬ್ರಾನ್ ಜಿಲ್ಲೆ
+    ko: 샤브란 구
+    mn: Шабран аймаг
+    mr: शबरण जिल्हा
+    ms: Davachi
+    nb: Şabran
+    nl: Dəvəçi
+    pl: Rejon Dəvəçi
+    pt: Shabran
+    ro: Șabran
+    ru: Шабранский район
+    si: ශබ්රන් දිස්ත්‍රික්කය
+    sr: Шабрански рејон
+    sv: Shabran Rayon
+    ta: சாப்ரான் மாவட்டம்
+    te: షబ్రన్ జిల్లా
+    th: จังหวัดคอปเปอเบล
+    tk: Şabran
+    tr: Şabran rayonu
+    ur: شابران ضلع
+    vi: Quận Shabran
+    lv: Šabranas rajons
+    ceb: Shabran Rayon
+    sr_Latn: Šabranski rejon
+    lt: Šabrano apskritis
+    zh: 迪維奇區
+    ccp: "\U00011125\U0001111B\U00011134\U00011122\U0001111A\U00011134"
+    uk: Шабранський район
+    mk: Шабран
+    'no': Şabran
+    ca: Districte de Şabran
+    hr: Šabranski rajon
+    hy: Շաբրանի շրջան
+    ka: შაბრანის რაიონი
+  comments:
+  type: rayon
+SIY:
+  name: Siyäzän
+  code: SIY
+  unofficial_names: Siyäzän
+  geo:
+    latitude: 41.0783833
+    longitude: 49.1118478
+    min_latitude: 41.0619124
+    min_longitude: 49.0923215
+    max_latitude: 41.09882270000001
+    max_longitude: 49.1377259
+  translations:
+    en: Siazan
+    ar: مقاطعة سيازن
+    az: Siyəzən
+    bn: সিজান জেলা
+    da: Siazan District
+    de: Siyəzən
+    el: Σιαζάν
+    es: Siyəzən
+    fa: شهرستان سیاه‌زن
+    fi: Siyəzənin piirikunta
+    fr: Siyəzən
+    gu: સિઆઝાન જિલ્લો
+    hi: सिज़ान जिला
+    hu: Siyəzəni járás
+    id: Siazan
+    it: distretto di Siyəzən
+    ja: シアザン県
+    kn: ಸಿಯಾಜ್
+    ko: 시예젠 구
+    mr: सिझन जिल्हा
+    ms: Siazan
+    nb: Siyəzən
+    nl: Siyəzən
+    pl: Rejon Siyəzən
+    pt: Siazan
+    ru: Сиазаньский район
+    si: සියාසාන් දිස්ත්‍රික්කය
+    sr: Сијазански рејон
+    sv: Siyəzən Rayonu
+    ta: சிதாசன் மாவட்டம்
+    te: సియాజన్ జిల్లా
+    th: เซ๊ยแซน
+    tk: Siýezen
+    tr: Siyezen Rayonu
+    ur: سیاہ زن ضلع
+    vi: Siazan
+    lv: Sijezenas rajons
+    ceb: Siazan Rayon
+    sr_Latn: Sijazanski rejon
+    lt: Siazano apskritis
+    zh: 錫阿贊區
+    sq: Siazan
+    ccp: "\U00011125\U00011128\U00011120\U0001110E\U00011127\U0001111A\U00011134"
+    uk: Район Сіазань
+    mk: Сијезен
+    'no': Siyəzən
+    hr: Sijazanski rajon
+    hy: Սիազանի շրջան
+    ka: სიაზანის რაიონი
+  comments:
+  type: rayon
+SKR:
+  name: Sämkir
+  code: SKR
+  unofficial_names: Sämkir
+  geo:
+    latitude: 40.88123969999999
+    longitude: 46.0179009
+    min_latitude: 40.570687
+    min_longitude: 45.713568
+    max_latitude: 41.129959
+    max_longitude: 46.323192
+  translations:
+    en: Shamkir
+    ar: مقاطعة شمكير
+    az: Şəmkir
+    be: Шамкірскі раён
+    bn: শামকির জেলা
+    da: Shamkir District
+    de: Şəmkir
+    el: Επαρχία Σαμκίρ
+    es: Şəmkir
+    fa: شهرستان شمکیر
+    fi: Şəmkirin piirikunta
+    fr: Şəmkir
+    gu: શામકિર જિલ્લો
+    hi: शामकीर जिला
+    hu: Şəmkiri járás
+    id: Shamkir
+    it: distretto di Şəmkir
+    ja: シャムキル県
+    ka: შამქირის რაიონი
+    kn: ಶಾಮ್ಕಿರ್ ಜಿಲ್ಲೆ
+    ko: 솀키르 구
+    mr: शामकीर जिल्हा
+    ms: Shamkir
+    nb: Şəmkir
+    nl: Şəmkir
+    pl: Rejon Şəmkir
+    pt: Shamkir
+    ru: Шамкирский район
+    si: ශාම්කිර් දිස්ත්‍රික්කය
+    sr: Шамкирски рејон
+    sv: Sjämkir
+    ta: ஷாம்கிர் மாவட்டம்
+    te: షాంకీర్ జిల్లా
+    th: เขตชามเคอ
+    tk: Şemkir
+    tr: Şemkir Rayonu
+    uk: Шамкірський район
+    ur: شمخور ضلع
+    vi: Shamkir
+    lv: Šemkiras rajons
+    ceb: Shamkir Rayon
+    sr_Latn: Šamkirski rejon
+    lt: Šamkiro apskritis
+    zh: 沙姆基爾區
+    sq: Shamkir
+    ccp: "\U00011125\U0001111F\U00011134\U00011107\U00011128\U00011122\U00011134"
+    hy: Շամխորի շրջան
+    mk: Шемкир
+    'no': Şəmkir
+    hr: Šamkirski rajon
+  comments:
+  type: rayon
+SM:
+  name: Sumqayit
+  code: SM
+  unofficial_names: Sumqayit
+  geo:
+    latitude: 40.5854765
+    longitude: 49.6317411
+    min_latitude: 40.5001047
+    min_longitude: 49.5211315
+    max_latitude: 40.6572359
+    max_longitude: 49.74102980000001
+  translations:
+    en: Sumqayit
+    af: Sumqayit
+    ar: سومقاييت
+    az: Sumqayıt
+    be: Сумгаіт
+    bg: Сумгаит
+    bn: সুমকায়িত
+    ca: Sumqayit
+    cs: Sumqayıt
+    da: Sumqayit
+    de: Sumqayıt
+    el: Σουμγκαγήτ
+    es: Sumqayit
+    et: Sumqayıt
+    eu: Sumqayit
+    fa: سومقاییت
+    fi: Sumqayıt
+    fr: Sumqayıt
+    gu: સુમક્વાયિત
+    he: סומגאיט
+    hi: सुम्क़यित
+    hu: Sumqayit
+    hy: Սումգայիթ
+    id: Sumqayit
+    is: Sumqayit
+    it: Sumqayıt
+    ja: スムガイト
+    kn: ಸುಮ್ಮಾಯತ್
+    ko: 숨가이트
+    lt: Sumgajitas
+    lv: Sumgajita
+    mn: Сумгаит
+    mr: सुमगायीत
+    ms: Sumqayit
+    nb: Sumqayit
+    nl: Sumqayıt
+    pl: Sumgait
+    pt: Sumqayit
+    ro: Sumqayıt
+    ru: Сумгаит
+    si: සුම්කෙයිට්
+    sl: Sumgait
+    sr: Сумгајит
+    sv: Sumqayıt
+    ta: ஸும்ப்கயிட்
+    te: సంఖాయత్
+    th: ซัมกายิต
+    tk: Sumgaýit
+    tr: Sumgayıt
+    uk: Сумгаїт
+    ur: سومقاییت
+    vi: Sumqayit
+    cy: Sumqayıt
+    ceb: Sumqayıt
+    sr_Latn: Sumgajit
+    zh: 苏姆盖特
+    sq: Sumqayit
+    ccp: "\U00011125\U0001112A\U0001111F\U00011107\U0001112E\U00011103\U00011128\U00011116\U00011134"
+    ka: სუმგაითი
+    uz: Sumgait
+    mk: Сумгајит
+    'no': Sumqayit
+    ga: Sumgait
+    hr: Sumgait
+    ml: സംഗയ്റ്റ്
+    sd: سومقاييت
+  comments:
+  type: municipality
+SMI:
+  name: Samaxi
+  code: SMI
+  unofficial_names: Samaxi
+  geo:
+    latitude: 40.63187310000001
+    longitude: 48.6363801
+    min_latitude: 40.6056446
+    min_longitude: 48.6082792
+    max_latitude: 40.6541736
+    max_longitude: 48.6714078
+  translations:
+    en: Shamakhi
+    ar: مقاطعة شاماخي
+    az: Şamaxı
+    ca: Districte de Şamaxı
+    cs: Šamachi
+    de: Şamaxı
+    es: Şamaxı
+    fa: شهرستان شماخی
+    fi: Şamaxın piirikunta
+    fr: Şamaxı
+    hu: Şamaxı járás
+    id: Shamakhi
+    it: distretto di Şamaxı
+    ja: シャマフ県
+    ka: შემახის რაიონი
+    ko: 샤마흐 구
+    ms: Shamakhi
+    nb: Şamaxı
+    nl: Şamaxı
+    pl: Rejon Şamaxı
+    pt: Shamakhi
+    ru: Шемахинский район
+    sr: Шемахински рејон
+    sv: Sjamachy
+    tk: Şamahy
+    tr: Şamahı Rayonu
+    uk: Шамахинський район
+    vi: Shamakhy
+    ceb: Shamakhi Rayon
+    sr_Latn: Šemahinski rejon
+    zh: 沙馬基區
+    sq: Shamakhi
+    ccp: "\U00011125\U0001111F\U00011108\U00011128"
+    mk: Шамахи
+    'no': Şamaxı
+    be: Шэмахінскі раён
+    hr: Šemahinski rajon
+    hy: Շամախիի շրջան
+    ur: ضلع شماخی
+  comments:
+  type: rayon
+SMX:
+  name: Samux
+  code: SMX
+  unofficial_names: Samux
+  geo:
+    latitude: 40.765833
+    longitude: 46.40888899999999
+    min_latitude: 40.747452
+    min_longitude: 46.3920022
+    max_latitude: 40.7820362
+    max_longitude: 46.42375939999999
+  translations:
+    en: Samukh
+    ar: مقاطعة ساموخ
+    az: Samux
+    bn: সামোক জেলা
+    da: Samukh District
+    de: Samux
+    el: Σαμούκ
+    es: Samux
+    fa: شهرستان ساموخ
+    fi: Samuxin piirikunta
+    fr: Samux
+    gu: સમુખ જિલ્લો
+    hi: समुख जिला
+    hu: Samuxi járás
+    id: Samukh
+    it: distretto di Samux
+    ja: サムフ県
+    kn: ಸಾಮುಖ್ ಜಿಲ್ಲೆ
+    ko: 사무흐 구
+    mr: सामुख जिल्हा
+    ms: Samukh
+    nb: Samux
+    nl: Samux
+    pl: Rejon Samux
+    pt: Samukh
+    ru: Самухский район
+    si: සමුඛ් දිස්ත්‍රික්කය
+    sr: Самушки рејон
+    sv: Samux Rayonu
+    ta: சமூக்ஹ் மாவட்டம்
+    te: సముఖ్ జిల్లా
+    th: ซามุก
+    tk: Samuh
+    tr: Samuh Rayonu
+    ur: ساموخ ضلع
+    vi: Samuh
+    lv: Samuhas rajons
+    ceb: Samukh Rayon
+    sr_Latn: Samuški rejon
+    lt: Samuko apskritis
+    zh: 薩穆赫區
+    sq: Samukh
+    ccp: "\U00011125\U0001111F\U0001112A\U00011107\U00011134"
+    uk: Самухський район
+    mk: Самух
+    'no': Samux
+    hr: Samuški rajon
+    ka: სამუხის რაიონი
+  comments:
+  type: rayon
+SR:
+  name: Şirvan
+  code: SR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: شيروان
+    az: Şirvan
+    be: Шырван
+    cs: Širvan
+    de: Şirvan
+    el: Σιρβάν
+    en: Shirvan
+    es: Shirvan
+    fa: شیروان
+    fi: Şirvan
+    fr: Şirvan
+    he: שירוואן
+    hy: Շիրվան
+    id: Shirvan
+    it: Şirvan
+    ja: シルヴァン (市)
+    ka: შირვანი
+    ko: 시르반
+    lt: Širvanas
+    mn: Азербайжаны Ширван
+    ms: Shirvan
+    nl: Şirvan
+    pl: Szyrwan
+    pt: Shirvan
+    ro: Șirvan
+    ru: Ширван
+    sr: Ширван
+    sv: Shirvan
+    tk: Şirwan
+    tr: Şirvan
+    uk: Ширван
+    ur: شیروان
+    lv: Širvana
+    ceb: Shirvan
+    sr_Latn: Širvan
+    zh: 希爾萬
+    sq: Shirvan
+    ccp: "\U00011125\U00011128\U00011122\U0001111E\U00011127\U0001111A\U00011134"
+    mk: Ширван
+    hr: Širvan (Azerbajdžan)
+  comments:
+  type: municipality
+SUS:
+  name: Susa
+  code: SUS
+  unofficial_names: Susa
+  geo:
+    latitude: 39.7537438
+    longitude: 46.7464755
+    min_latitude: 39.7456061
+    min_longitude: 46.7307758
+    max_latitude: 39.7725926
+    max_longitude: 46.765623
+  translations:
+    en: Shusha
+    ar: مقاطعة شوشا
+    az: Şuşa
+    bn: সুশা জেলা
+    da: Shusha District
+    de: Şuşa
+    el: Σούσα
+    es: Şuşa
+    fa: شهرستان شوشا
+    fi: Şuşan piirikunta
+    fr: Choucha
+    gu: શુશા જિલ્લો
+    he: שושה
+    hi: शुशा जिला
+    hu: Şuşai járás
+    hy: Շուշիի շրջան
+    id: Shusha
+    it: distretto di Şuşa
+    ja: シュシャ県
+    kn: ಶುಶಾ ಜಿಲ್ಲೆ
+    ko: 슈샤 구
+    mr: शुसा विभाग
+    ms: Shusha
+    nb: Şuşa
+    nl: Şuşa
+    pl: Rejon Şuşa
+    pt: Shusha
+    ru: Шушинский район
+    si: ශුෂා දිස්ත්‍රික්කය
+    sr: Шушински рејон
+    sv: Shusha (distrikt)
+    ta: ஷுஷா மாவட்டம்
+    te: షూషా జిల్లా
+    th: เขตซูซา
+    tk: Şuşa
+    tr: Şuşa Rayonu
+    ur: شوشا ضلع
+    vi: Shusha
+    lv: Šušas rajons
+    sr_Latn: Šušinski rejon
+    lt: Šušos apskritis
+    zh: 舒沙區
+    sq: Shusha
+    ccp: "\U00011125\U0001112A\U00011125"
+    uk: Шушинський район
+    uz: Shusha tumani
+    mk: Шуша
+    'no': Şuşa
+    ceb: Shusha
+    cs: okres Šuša
+    hr: Šušinski rajon
+    ka: შუშის რაიონი
+  comments:
+  type: rayon
+TAR:
+  name: Tärtär
+  code: TAR
+  unofficial_names: Tärtär
+  geo:
+    latitude: 40.333333
+    longitude: 46.916667
+    min_latitude: 40.3265895
+    min_longitude: 46.9110202
+    max_latitude: 40.3576638
+    max_longitude: 46.96801199999999
+  translations:
+    en: Tartar
+    ar: مقاطعة تارتار
+    az: Tərtər
+    bn: তারতার জেলা
+    da: Tartar District
+    de: Tərtər
+    el: Ταρτάρ
+    es: Tərtər
+    fa: شهرستان ترتر
+    fi: Tərtərin piirikunta
+    fr: Tartar
+    gu: ટર્ટાર જિલ્લો
+    hi: टारटर जिला
+    hu: Tərtəri járás
+    id: Tartar
+    it: distretto di Tərtər
+    ja: タルタル県
+    kn: ಟಾರ್ಟಾರ್ ಜಿಲ್ಲೆ
+    ko: 테르테르 구
+    mr: टाटार जिल्हा
+    ms: Tartar
+    nb: Tərtər
+    nl: Tərtər
+    pl: Rejon Tərtər
+    pt: Tartar
+    ru: Тертерский район
+    si: ටරාර් දිස්ත්‍රික්කය
+    sr: Тертерски рејон
+    sv: Tärtär
+    ta: டார்ட்டார் மாவட்டம்
+    te: టార్టార్ జిల్లా
+    th: ทาร์ทาร์
+    tk: Terter
+    tr: Terter Rayonu
+    ur: تارتار ضلع
+    vi: Terter
+    lv: Terteras rajons
+    ceb: Tartar Rayon
+    sr_Latn: Terterski rejon
+    lt: Tartaro apskritis
+    zh: 泰爾泰爾區
+    sq: Tartar
+    ccp: "\U00011111\U00011122\U00011134\U00011111\U00011122\U00011134"
+    hy: Թարթառի շրջան
+    uk: Тертерський район
+    mk: Тертер
+    'no': Tərtər
+    ca: Tartar
+    hr: Tartar (rajon)
+    ka: ტერტერის რაიონი
+  comments:
+  type: rayon
+TOV:
+  name: Tovuz
+  code: TOV
+  unofficial_names: Tovuz
+  geo:
+    latitude: 40.9922
+    longitude: 45.62889999999999
+    min_latitude: 40.9754255
+    min_longitude: 45.5907513
+    max_latitude: 41.0084997
+    max_longitude: 45.6436444
+  translations:
+    en: Tovuz
+    ar: مقاطعة توفوز
+    az: Tovuz
+    bn: তুভোজ জেলা
+    da: Tovuz District
+    de: Tovuz
+    el: Τοβούζ
+    es: Tovuz
+    fa: شهرستان تووز
+    fi: Tovuzin piirikunta
+    fr: Tovuz
+    gu: તોવુઝ જિલ્લો
+    hi: तोवूज़ जिला
+    hu: Tovuzi járás
+    hy: Թովուզի շրջան
+    id: Tovuz
+    it: distretto di Tovuz
+    ja: トヴズ県
+    kn: ಟೋವಝ್ ಜಿಲ್ಲೆ
+    ko: 토부스 구
+    mr: तेव्हज जिल्हा
+    ms: Tovuz
+    nb: Tovuz
+    nl: Tovuz
+    pl: Rejon Tovuz
+    pt: Tovuz
+    ru: Таузский район
+    si: ටෝවුස් දිස්ත්‍රික්කය
+    sr: Товушки рејон
+    sv: Tovuz Rayonu
+    ta: டோவுஸ் மாவட்டம்
+    te: టోవుజ్ జిల్లా
+    th: เขตทาวุช
+    tk: Towuz
+    tr: Tovuz Rayonu
+    ur: توووز ضلع
+    vi: Tovuz
+    lv: Tovuzas rajons
+    ceb: Tovuz Rayon
+    sr_Latn: Tovuški rejon
+    lt: Tovuzo apskritis
+    zh: 塔烏茲區
+    sq: Tovuz
+    ccp: "\U00011111\U00011127\U0001111E\U0001112A\U0001110C\U00011134"
+    uk: Товузький район
+    mk: Товуз
+    'no': Tovuz
+    hr: Tovuški rajon
+    ka: თოუზი
+  comments:
+  type: rayon
+UCA:
+  name: Ucar
+  code: UCA
+  unofficial_names: Ucar
+  geo:
+    latitude: 40.518333
+    longitude: 47.654167
+    min_latitude: 40.4896513
+    min_longitude: 47.6283074
+    max_latitude: 40.5296863
+    max_longitude: 47.6742697
+  translations:
+    en: Ujar
+    ar: مقاطعة أويار
+    az: Ucar
+    bn: উজার জেলা
+    da: Ujar District
+    de: Ucar
+    el: Ούτζαρ
+    es: Ucar
+    fa: شهرستان اوجار
+    fi: Ucarin piirikunta
+    fr: Ucar
+    gu: ઉજર જિલ્લો
+    hi: उजर जिला
+    id: Ujar
+    it: distretto di Ucar
+    ja: ウジャル県
+    kn: ಉಜರ್ ಜಿಲ್ಲೆ
+    ko: 우자르 구
+    mr: उर्जर जिल्हा
+    ms: Ujar
+    nb: Ucar
+    nl: Ucar
+    pl: Rejon Ucar
+    pt: Ujar
+    ru: Уджарский район
+    si: උජාර් දිස්ත්‍රික්කය
+    sr: Уџарски рејон
+    sv: Udzjar
+    ta: உஜார் மாவட்டம்
+    te: ఉజర్ జిల్లా
+    th: เขตอูจาร์
+    tk: Ujar
+    tr: Ucar Rayonu
+    ur: اجڑ ضلع
+    vi: Ujar
+    lv: Udžaras rajons
+    ceb: Ujar Rayon
+    sr_Latn: Udžarski rejon
+    lt: Udžaro apskritis
+    zh: 烏賈雷區
+    sq: Ujar
+    ccp: "\U00011105\U0001112A\U0001110E\U00011122\U00011134"
+    uk: Уджарський район
+    mk: Уџар
+    'no': Ucar
+    hr: Udžarski rajon
+    ka: უჯარის რაიონი
+  comments:
+  type: rayon
+XA:
+  name: Xankändi
+  code: XA
+  unofficial_names: Xankändi
+  geo:
+    latitude: 39.8196258
+    longitude: 46.7594431
+    min_latitude: 39.7995519
+    min_longitude: 46.7298317
+    max_latitude: 39.8520223
+    max_longitude: 46.7890549
+  translations:
+    en: Stepanakert
+    af: Stepanakert
+    ar: سيتباناكيرت
+    az: Xankəndi
+    be: Горад Сцепанакерт
+    bg: Степанакерт
+    bn: স্টেপানাকেট
+    ca: Stepanakert
+    cs: Stěpanakert
+    da: Stepanakert
+    de: Stepanakert
+    el: Στεπανακέρτ
+    es: Stepanakert
+    et: Xankəndi
+    eu: Stepanakert
+    fa: خان‌کندی
+    fi: Stepanakert
+    fr: Stepanakert
+    gl: Stepanakert
+    gu: સ્ટેપનકેર્ટ
+    he: סטפנקרט
+    hi: सटेपणाकेर्ट
+    hr: Stepanakert
+    hu: Sztepanakert
+    hy: Ստեփանակերտ
+    id: Stepanakert
+    it: Step’anakert
+    ja: ステパナケルト
+    ka: ხანქენდი
+    kn: ಸ್ಟೆಟೆನಾಕರ್ಟ್
+    ko: 스테파나케르트
+    lt: Chankendi
+    lv: Stepanakerta
+    mr: स्टेपनाकर्ट
+    ms: Stepanakert
+    nb: Stepanakert
+    nl: Stepanakert
+    pl: Stepanakert
+    pt: Stepanakert
+    ro: Stepanakert
+    ru: Степанакерт
+    si: ස්ටේපනකර්ට්
+    sk: Stepanakert
+    sl: Stepanakert
+    sv: Stepanakert
+    ta: எசுடெபானெகெத்
+    te: స్టెపనాకర్ట్
+    th: สเตพานาแกร์ต
+    tk: Hankendi
+    tr: Hankendi
+    uk: Степанакерт
+    ur: خان کندی
+    vi: Khankendy
+    ceb: Xankandi
+    zh: 斯捷潘納克特
+    yue_Hans: 斯捷潘纳克特
+    sq: Khankendi
+    ccp: "\U0001110C\U00011133\U00011111\U0001112C\U0001111B\U0001111A\U00011134\U00011107\U00011122\U00011133\U00011111\U00011134"
+    ky: Степанакерт
+    yue: 斯捷潘納克特
+    uz: Xonkendi
+    bs: Stepanakert
+    mk: Степанакерт
+    'no': Stepanakert
+    ga: Príomh chathair Poblacht na hArtsac
+    is: Stepanakert
+    ml: സ്റ്റെപാനകെർട്ട്
+    ps: استپاناکرت
+  comments:
+  type: municipality
+XAC:
+  name: Xaçmaz
+  code: XAC
+  unofficial_names: Xaçmaz
+  geo:
+    latitude: 41.470833
+    longitude: 48.809722
+    min_latitude: 41.4395092
+    min_longitude: 48.774619
+    max_latitude: 41.4863344
+    max_longitude: 48.8417817
+  translations:
+    en: Khachmaz
+    ar: مقاطعة خاتشماز
+    az: Xaçmaz
+    bn: কাকহাময জেলা
+    da: Khachmaz District
+    de: Xaçmaz
+    el: Κατσμάζ
+    es: Xaçmaz
+    fa: شهرستان خاچماز
+    fi: Xaçmazin piirikunta
+    fr: Xaçmaz
+    gu: ખાકમાઝ જિલ્લો
+    hi: खाकमज जिला
+    hu: Xaçmazi járás
+    id: Khachmaz
+    it: distretto di Xaçmaz
+    ja: ハヒマズ県
+    kn: ಖಚ್ಮಾಜ್ ಜಿಲ್ಲೆ
+    ko: 하치마스 구
+    mr: खाकमझ जिल्हा
+    ms: Khachmaz
+    nb: Xaçmaz
+    nl: Xaçmaz
+    pl: Rejon Xaçmaz
+    pt: Khachmaz
+    ru: Хачмасский район
+    si: කච්මාස් දිස්ත්‍රික්කය
+    sr: Хачмашки рејон
+    sv: Khachmaz Rayon
+    ta: காச்மாஸ் மாவட்டம்
+    te: ఖాచ్మాజ్ జిల్లా
+    th: คัชมาช
+    tk: Haçmaz
+    tr: Haçmaz Rayonu
+    ur: خاشماز ضلع
+    vi: Khachmaz
+    lv: Hačmazas rajons
+    ceb: Khachmaz Rayon
+    sr_Latn: Hačmaški rejon
+    lt: Chačmazo apskritis
+    zh: 哈奇馬斯區
+    sq: Khachmaz
+    ccp: "\U00011108\U0001110C\U00011134\U0001111F\U0001110C\U00011134"
+    ka: ხაჩმაზის რაიონი
+    uk: Хачмазький район
+    mk: Хачмаз
+    'no': Xaçmaz
+    ca: Districte de Xaçmaz
+    hr: Hačmaski rajon
+  comments:
+  type: rayon
+XCI:
+  name: Xocali
+  code: XCI
+  unofficial_names: Xocali
+  geo:
+    latitude: 39.9132553
+    longitude: 46.794305
+    min_latitude: 39.9040514
+    min_longitude: 46.770262
+    max_latitude: 39.9206634
+    max_longitude: 46.8147892
+  translations:
+    en: Khojali
+    ar: مقاطعة خوجالي
+    az: Xocalı
+    bn: খুজালি জেলা
+    cs: Chodžali
+    da: Khojali District
+    de: Xocalı
+    el: Κχοτζάλι
+    es: Xocalı
+    fa: شهرستان خوجالی
+    fi: Xocalın piirikunta
+    fr: Khodjaly
+    gu: ખોઝાલી જિલ્લો
+    he: חוג׳אלי
+    hi: खोजाली जिला
+    hu: Xocalı járás
+    id: Khojali
+    it: distretto di Xocalı
+    ja: ホジャリ県
+    kn: ಖೋಜಲಿ ಜಿಲ್ಲೆ
+    ko: 호잘르 구
+    mr: खोजली जिल्हा
+    ms: Daerah Khojali
+    nb: Xocalı
+    nl: Xocalı
+    pl: Rejon Xocalı
+    pt: Khojali
+    ru: Ходжалинский район
+    si: කොජාලි දිස්ත්‍රික්කය
+    sr: Хоџалински рејон
+    sv: Xocalı Rayonu
+    ta: க்ஹோஜாலி மாவட்டம்
+    te: ఖోజాలీ జిల్లా
+    th: เขตโคจาลิ
+    tk: Hojaly
+    tr: Hocalı Rayonu
+    ur: خوجالی ضلع
+    vi: Khojaly
+    lv: Hodžalinas rajons
+    ceb: Xocalı Rayonu
+    sr_Latn: Hodžalinski rejon
+    lt: Kojalio apskritis
+    zh: 霍賈雷區
+    sq: Khojali
+    ccp: "\U00011108\U00011127\U0001110E\U00011127\U00011123\U00011128"
+    ka: ხოჯალის რაიონი
+    hy: Խոջալուի շրջան
+    uk: Ходжалинський район
+    mk: Хоџали
+    'no': Xocalı
+    hr: Hodžalinski rajon
+  comments:
+  type: rayon
+XIZ:
+  name: Xizi
+  code: XIZ
+  unofficial_names: Xizi
+  geo:
+    latitude: 40.9
+    longitude: 49.066667
+    min_latitude: 40.8974897
+    min_longitude: 49.0516375
+    max_latitude: 40.9251219
+    max_longitude: 49.0894889
+  translations:
+    en: Khizi
+    az: Xızı
+    de: Xızı
+    es: Xızı
+    fa: شهرستان خیزی
+    fi: Xızın piirikunta
+    fr: Xızı
+    hu: Xızı járás
+    id: Khizi
+    it: distretto di Xızı
+    ja: ヒジ県
+    ko: 흐즈 구
+    ms: Rayon Khizi
+    nb: Xızı
+    nl: Xızı
+    pl: Rejon Xızı
+    pt: Khizi
+    ru: Хызинский район
+    sr: Хизински рејон
+    sv: Khizi Rayon
+    tk: Hyzy
+    tr: Hızı Rayonu
+    vi: Khyzy
+    ceb: Khizi Rayon
+    sr_Latn: Hizinski rejon
+    zh: 基茲區
+    sq: Khizi
+    ccp: "\U00011108\U00011128\U0001110F\U00011128"
+    mk: Хизи
+    'no': Xızı
+    ar: مقاطعة خيزي
+    hr: Hizinski rajon
+    hy: Խըզիի շրջան
+    ka: ხიზის რაიონი
+    sd: خيزي ريئن
+  comments:
+  type: rayon
+XVD:
+  name: Xocavänd
+  code: XVD
+  unofficial_names: Xocavänd
+  geo:
+    latitude: 39.7060287
+    longitude: 47.064533
+    min_latitude: 39.3751951
+    min_longitude: 46.63206090000001
+    max_latitude: 39.883672
+    max_longitude: 47.345414
+  translations:
+    en: Khojavend
+    az: Xocavənd
+    de: Xocavənd
+    es: Xocavənd
+    fa: شهرستان خواجه‌وند
+    fi: Xocavəndin piirikunta
+    fr: Khojavend
+    he: חוג׳אבנד
+    hu: Xocavəndi járás
+    id: Khojavend
+    it: distretto di Xocavənd
+    ja: ホジャヴェンド県
+    ko: 호자벤트 구
+    ms: Khojavend
+    nb: Xocavənd
+    nl: Xocavənd
+    pl: Rejon Xocavənd
+    pt: Khojavend
+    ru: Ходжавендский район
+    sr: Хоџавендски рејон
+    sv: Chodzjavänd
+    tk: Hojawend
+    tr: Hocavend Rayonu
+    vi: Khojavend
+    ceb: Xocavənd Rayonu
+    sr_Latn: Hodžavendski rejon
+    zh: 霍賈文德區
+    sq: Khojavend
+    ccp: "\U00011108\U00011127\U0001110E\U0001111E\U0001112C\U0001111A\U00011133\U00011113\U00011134"
+    mk: Хоџавенд
+    'no': Xocavənd
+    ar: مقاطعة خوجاوند
+    be: Хаджавендскі раён
+    ca: Khojavend
+    ha: Dərəkənd, Khojavend
+    ha_NE: Dərəkənd, Khojavend
+    hr: Hodžavendski rajon
+    hy: Մարտունու շրջան
+    ka: ხოჯავენდის რაიონი
+    uk: Ходжавендський район
+  comments:
+  type: rayon
+YAR:
+  name: Yardimli
+  code: YAR
+  unofficial_names: Yardimli
+  geo:
+    latitude: 38.9058917
+    longitude: 48.24961270000001
+    min_latitude: 38.886824
+    min_longitude: 48.2148314
+    max_latitude: 38.9156798
+    max_longitude: 48.2865858
+  translations:
+    en: Yardymli
+    ar: مقاطعة يارديملي
+    az: Yardımlı
+    bn: ইয়ার্ডিমলি জেলা
+    cs: Jardymli
+    da: Yardymli District
+    de: Yardımlı
+    el: Γιαρντιμλί
+    es: Yardımlı
+    fa: شهرستان یاردیملی
+    fi: Yardımlın piirikunta
+    fr: Yardımlı
+    gu: યાર્દિમલી જિલ્લો
+    hi: यार्दिमली जिला
+    id: Yardymli
+    it: distretto di Yardımlı
+    ja: ヤルディムリ県
+    kn: ಯಾರ್ಡಿಲಿ ಜಿಲ್ಲೆ
+    ko: 야르듬르 구
+    mr: यार्डिमली जिल्हा
+    ms: Yardymli
+    nb: Yardımlı
+    nl: Yardımlı
+    pl: Rejon Yardımlı
+    pt: Yardymli
+    ru: Ярдымлинский район
+    si: යාර්ඩිම්ලි දිස්ත්‍රික්කය
+    sr: Јардимлински рејон
+    sv: Jardymly
+    ta: யார்ட்யம்லி மாவட்டம்
+    te: యార్డిమ్లి జిల్లా
+    th: ยาดีไมล์
+    tk: Ýardymly
+    tr: Yardımlı Rayonu
+    uk: Ярдимлинський район
+    ur: یارڈیملی ضلع
+    vi: Yardymly
+    lv: Jardimli rajons
+    ceb: Yardymli Rayon
+    sr_Latn: Jardimlinski rejon
+    lt: Jardimlio apskritis
+    zh: 亞爾德姆雷區
+    sq: Yardymli
+    ccp: "\U00011103\U00011128\U00011120\U00011122\U00011134\U00011113\U00011128\U0001111F\U00011134\U00011123\U00011128"
+    mk: Јардимли
+    'no': Yardımlı
+    hr: Jardimlinski rajon
+    ka: იარდიმლის რაიონი
+  comments:
+  type: rayon
+YE:
+  name: Yevlax City
+  code: YE
+  unofficial_names: Yevlax City
+  geo:
+    latitude: 40.617222
+    longitude: 47.15
+    min_latitude: 40.5830618
+    min_longitude: 47.1098042
+    max_latitude: 40.6331705
+    max_longitude: 47.1835326
+  translations:
+    en: Yevlakh
+    az: Yevlax
+    cs: Jevlach
+    de: Yevlax
+    es: Yevlax
+    fa: یولاخ
+    fi: Yevlax
+    fr: Ievlakh
+    he: ייבלאח
+    hu: Yevlakh
+    hy: Եվլախ
+    id: Yevlakh
+    it: Yevlax
+    ja: イェヴラフ
+    ko: 예블라흐
+    lt: Jevlachas
+    mn: Евлах
+    ms: Yevlakh
+    nl: Yevlax
+    pl: Yevlax
+    ro: Ievlah
+    ru: Евлах
+    sl: Jevlah
+    sr: Јевлах
+    sv: Jevlach
+    tk: Ýewlah
+    tr: Yevlah
+    uk: Євлах
+    ur: یولاخ
+    ceb: Yevlakh
+    sr_Latn: Jevlah
+    zh: 葉夫拉赫
+    ccp: "\U00011103\U00011128\U00011120\U0001112C\U0001111B\U00011134\U00011123\U00011107\U00011134"
+    be: Еўлах
+    ar: يفلاكس
+    el: Γιεβλάχ
+    hr: Jevlah
+    ka: ევლახ
+    sq: Jevlah
+    vi: Yevlakh²
+  comments:
+  type: municipality
+YEV:
+  name: Yevlax
+  code: YEV
+  unofficial_names: Yevlax
+  geo:
+    latitude: 40.617222
+    longitude: 47.15
+    min_latitude: 40.5830618
+    min_longitude: 47.1098042
+    max_latitude: 40.6331705
+    max_longitude: 47.1835326
+  translations:
+    en: Yevlakh District
+    ar: مقاطعة يفلاخ
+    az: Yevlax²
+    bn: ইয়েভ্লাক জেলা
+    da: Yevlax
+    de: Yevlax²
+    el: Γιεβλάκ
+    es: Yevlax²
+    fa: شهرستان یولاخ
+    fi: Yevlaxin piirikunta
+    fr: Yevlax
+    gu: યેવલાખ જિલ્લો
+    hi: यवलाख जिला
+    id: Yevlakh²
+    it: distretto di Yevlax
+    ja: イェヴラフ県
+    kn: ಯೆವ್ಲಾಕ್ ಜಿಲ್ಲೆ
+    ko: 예블라흐 구
+    mr: येवलाख जिल्हा
+    ms: Yevlakh²
+    nb: Yevlax
+    nl: Yevlax²
+    pl: Rejon Yevlax
+    pt: Yevlakh
+    ru: Евлахский район
+    si: යෙව්ලක් දිස්ත්‍රික්කය
+    sr: Јевлашки рејон
+    sv: Yevlakh (distrikt)
+    ta: எவ்லக்ஹ் மாவட்டம்
+    te: యెవ్లాక్ జిల్లా
+    th: เขตเยวลาค์
+    tk: Ýewlah etraby
+    tr: Yevlah Rayonu
+    uk: Євлахський район
+    ur: ییولاخ ضلع
+    vi: Yevlakh
+    lv: Jevlahas rajons
+    ceb: Yevlakh Rayon
+    sr_Latn: Jevlaški rejon
+    lt: Jevlako apskritis
+    zh: 葉夫拉赫區
+    sq: Yevlakh
+    ccp: "\U00011103\U00011128\U00011120\U0001112C\U0001111B\U00011134\U00011123\U00011107\U00011134
+      \U0001110E\U0001112C\U00011123"
+    be: Еўлахскі раён
+    mk: Јевлах
+    'no': Yevlax
+    hr: Jevlaški rajon
+    hy: Եվլախի շրջան
+    ka: ევლახის რაიონი
+  comments:
+  type: rayon
+ZAN:
+  name: Zängilan
+  code: ZAN
+  unofficial_names: Zängilan
+  geo:
+    latitude: 39.0318935
+    longitude: 46.6265379
+    min_latitude: 38.872734
+    min_longitude: 46.43833900000001
+    max_latitude: 39.224588
+    max_longitude: 46.8760261
+  translations:
+    en: Zangilan
+    ar: مقاطعة زنغلان
+    az: Zəngilan
+    bn: জাংগিলান জেলা
+    da: Zəngilan
+    de: Zəngilan (Rayon)
+    el: Ζάνγκιλαν
+    es: Zəngilan (raión)
+    fa: شهرستان زنگلان
+    fi: Zəngilanin piirikunta
+    fr: Zangilan (raion)
+    gu: ઝાંગીલાન જિલ્લો
+    hi: ज़न्गिलन जिला
+    hu: Zəngilani járás
+    id: Zangilan
+    it: distretto di Zəngilan
+    ja: ザンギラン県
+    kn: ಜಂಗಿಲಾನ್ ಜಿಲ್ಲೆ
+    ko: 젠길란 구
+    mr: झांगिलन जिल्हा
+    ms: Daerah Zangilan
+    nb: Zəngilan (distrikt)
+    nl: Zəngilan
+    pl: Rejon Zəngilan
+    pt: Zangilan
+    ru: Зангеланский район
+    si: සැන්ගිලන් දිස්ත්‍රික්කය
+    sr: Зангелански рејон
+    sv: Zängilan
+    ta: சாங்கிலன் மாவட்டம்
+    te: జాంగిలాన్ జిల్లా
+    th: เขตแซงกิแลน
+    tk: Zengilan
+    tr: Zengilan Rayonu
+    uk: Зангеланський район
+    ur: زنگلان ضلع
+    vi: Zangilan (quận)
+    lv: Zengilanas rajons
+    ceb: Zangilan Rayon
+    sr_Latn: Zangelanski rejon
+    lt: Zangelano sritis
+    zh: 贊格蘭區
+    sq: Zangilan (rajon)
+    ccp: "\U0001110E\U0001110B\U00011134\U00011109\U00011128\U00011123\U0001111A\U00011134"
+    mk: Зенгилан (округ)
+    'no': Zəngilan (distrikt)
+    cs: Zangilanský rajón
+    hr: Zangelanski rajon
+    ka: ზანგილანის რაიონი
+    uz: Zangilan tumani
+  comments:
+  type: rayon
+ZAQ:
+  name: Zaqatala
+  code: ZAQ
+  unofficial_names: Zaqatala
+  geo:
+    latitude: 41.63361099999999
+    longitude: 46.643333
+    min_latitude: 41.5850192
+    min_longitude: 46.6077804
+    max_latitude: 41.6469735
+    max_longitude: 46.6757584
+  translations:
+    en: Zaqatala
+    ar: مقاطعة زقاتالا
+    az: Zaqatala
+    bn: জাকাতালা জেলা
+    da: Zaqatala District
+    de: Zaqatala
+    el: Ζακατάλα
+    es: Zaqatala (raión)
+    fa: شهرستان زاقاتالا
+    fi: Zaqatalan piirikunta
+    fr: Zaqatala (raion)
+    gu: ઝાકાતાલા જિલ્લો
+    hi: ज़ाकाटला जिला
+    hu: Zaqatalai járás
+    hy: Զաքաթալայի շրջան
+    id: Zaqatala (rayon)
+    it: distretto di Zaqatala
+    ja: ザガタラ県
+    ka: ზაქათალის რაიონი
+    kn: ಜಕಾತಲಾ ಜಿಲ್ಲೆ
+    ko: 자가탈라 구
+    mr: जकातला जिल्हा
+    ms: Zaqatala (rayon)
+    nb: Zaqatala (distrikt)
+    nl: Zaqatala
+    pl: Rejon Zaqatala
+    pt: Zaqatala
+    ru: Закатальский район
+    si: සකටලා දිස්ත්‍රික්කය
+    sr: Закатаљски рејон
+    sv: Zaqatala (distrikt)
+    ta: சாகியாதலா மாவட்டம்
+    te: జకాటలా జిల్లా
+    th: เขตซาดาคาลา
+    tk: Zakatala
+    tr: Zakatala Rayonu
+    ur: زاقاتالا ضلع
+    vi: Zagatala (quận)
+    lv: Zagatalas rajons
+    ceb: Zaqatala Rayon
+    sr_Latn: Zakataljski rejon
+    lt: Zakatala apskritis
+    zh: 扎卡塔雷區
+    sq: Zaqatala (rajon)
+    ccp: "\U0001110E\U00011107\U00011111\U00011123\U00011134"
+    uk: Загатальський район
+    uz: Zaqatala tumani
+    mk: Закатала (округ)
+    'no': Zaqatala (distrikt)
+    ca: Zaqatala
+    hr: Zakataljski rajon
+  comments:
+  type: rayon
+ZAR:
+  name: Zärdab
+  code: ZAR
+  unofficial_names: Zärdab
+  geo:
+    latitude: 40.218333
+    longitude: 47.708333
+    min_latitude: 40.2012645
+    min_longitude: 47.6942681
+    max_latitude: 40.2448614
+    max_longitude: 47.73121829999999
+  translations:
+    en: Zardab
+    ar: مقاطعة زارداب
+    az: Zərdab
+    bn: জারডাব জেলা
+    da: Zardab District
+    de: Zərdab (Rayon)
+    el: Ζάρνταμπ
+    es: Zərdab (raión)
+    fa: شهرستان زردآب
+    fi: Zərdabin piirikunta
+    fr: Zərdab (raion)
+    gu: ઝર્દાબ જિલ્લો
+    hi: ज़ारदब जिला
+    id: Zardab
+    it: distretto di Zərdab
+    ja: ザルダブ県
+    kn: ಜರ್ದಾಬ್ ಜಿಲ್ಲೆ
+    ko: 제르다프 구
+    mr: झारदबा जिल्हा
+    ms: Zardab
+    nb: Zərdab (distrikt)
+    nl: Zərdab
+    pl: Rejon Zərdab
+    pt: Zardab
+    ru: Зардобский район
+    si: සර්දාබ් දිස්ත්‍රික්කය
+    sr: Зердапски рејон
+    sv: Zärdab
+    ta: சார்தாப் மாவட்டம்
+    te: జర్దాబ్ జిల్లా
+    th: เขตซาร์แดบ
+    tk: Zerdab
+    tr: Zerdab Rayonu
+    ur: زارداب ضلع
+    vi: Zerdab (quận)
+    lv: Zerdabas rajons
+    ceb: Zardab Rayon
+    sr_Latn: Zerdapski rejon
+    lt: Zardabo sritis
+    zh: 扎爾多布區
+    sq: Zardab (rajon)
+    ccp: "\U0001110E\U00011122\U00011134\U00011113\U0001111B\U00011134"
+    uk: Зердабський район
+    mk: Зердаб
+    'no': Zərdab (distrikt)
+    hr: Zerdapski rajon
+    ka: ზარდაბის რაიონი
+  comments:
+  type: rayon

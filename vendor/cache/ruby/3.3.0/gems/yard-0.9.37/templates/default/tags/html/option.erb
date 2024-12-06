@@ -1,0 +1,24 @@
+<% if object.has_tag?(:option) && object.respond_to?(:parameters) %>
+  <% object.parameters.each do |param, default| %>
+    <% tags = object.tags(:option).select {|x| x.name.to_s == param.to_s.sub(/^\*+|:$/, '') } %>
+    <% next if tags.empty? %>
+    <p class="tag_title">Options Hash (<tt><%= param %></tt>):</p>
+    <ul class="option">
+      <% for tag in tags %>
+        <li>
+          <span class="name"><%= tag.pair.name %></span>
+          <span class="type"><%= format_types(tag.pair.types || ['Object']) %></span>
+          <span class="default">
+            <% if tag.pair.defaults %>
+              &mdash; default:
+              <%= tag.pair.defaults.map {|t| "<tt>#{h t}</tt>" }.join(", ") %>
+            <% end %>
+          </span>
+          <% if tag.pair.text && tag.pair.text =~ /\S/ %>
+            &mdash; <%= htmlify_line(tag.pair.text) %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

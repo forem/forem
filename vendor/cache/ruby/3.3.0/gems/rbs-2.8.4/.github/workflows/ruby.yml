@@ -1,0 +1,91 @@
+name: Ruby
+
+on:
+  push:
+    branches:
+      - master
+  pull_request: {}
+
+env:
+  LANG: 'C.UTF-8'
+
+jobs:
+  test:
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        container_tag:
+          - master-nightly-focal
+          - 3.1-dev-focal
+          - 3.0-dev-focal
+          - 2.7-dev-bionic
+          - 2.6-bionic
+        job:
+          - test
+          - stdlib_test
+          - rubocop validate test_doc build test_generate_stdlib
+          - lexer confirm_lexer
+          - lexer compile
+        exclude:
+          - container_tag: master-nightly-focal
+            job: confirm_lexer
+          - container_tag: 2.6-bionic
+            job: stdlib_test
+          - container_tag: 2.7-dev-bionic
+            job: stdlib_test
+          - container_tag: 3.0-dev-focal
+            job: stdlib_test
+    container:
+      image: rubylang/ruby:${{ matrix.container_tag }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set working directory as safe
+        run: git config --global --add safe.directory $(pwd)
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y libdb-dev curl autoconf automake m4 libtool
+      - name: Install Re2c
+        if: contains(matrix.job, 'lexer')
+        run: |
+          cd /tmp
+          curl -L https://github.com/skvadrik/re2c/archive/refs/tags/3.0.tar.gz > re2c-3.0.tar.gz
+          tar xf re2c-3.0.tar.gz
+          cd re2c-3.0
+          autoreconf -i -W all
+          ./configure
+          make
+          make install
+      - name: Update rubygems & bundler
+        run: |
+          ruby -v
+          gem update --system
+      - name: bundle config set with
+        run: |
+          echo "NO_MINITEST=true" >> $GITHUB_ENV
+          bundle config set --local without 'minitest'
+        if: "contains(matrix.container_tag, 'master-nightly')"
+      - name: bin/setup
+        run: |
+          bin/setup
+      - name: Run test
+        run: |
+          bundle exec rake ${{ matrix.job }}
+
+  windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019, windows-2022]
+        ruby: [ucrt, mswin]
+    steps:
+      - uses: actions/checkout@v3
+      - name: load ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: rake-compiler
+        run: gem install rake-compiler
+      - name: compile
+        run: rake compile

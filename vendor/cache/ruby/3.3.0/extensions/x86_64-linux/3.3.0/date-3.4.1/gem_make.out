@@ -1,0 +1,24 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/date-3.4.1/ext/date
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+checking for rb_category_warn()... yes
+checking for timezone in time.h with  -Werror... yes
+checking for altzone in time.h with  -Werror... no
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/date-3.4.1/ext/date
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4cinpc sitelibdir\=./.gem.20241205-149352-4cinpc clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/date-3.4.1/ext/date
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4cinpc sitelibdir\=./.gem.20241205-149352-4cinpc
+compiling date_core.c
+compiling date_parse.c
+compiling date_strftime.c
+compiling date_strptime.c
+linking shared-object date_core.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/date-3.4.1/ext/date
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4cinpc sitelibdir\=./.gem.20241205-149352-4cinpc install
+/usr/bin/install -c -m 0755 date_core.so ./.gem.20241205-149352-4cinpc
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/date-3.4.1/ext/date
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4cinpc sitelibdir\=./.gem.20241205-149352-4cinpc clean

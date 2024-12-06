@@ -1,0 +1,22 @@
+HTTP/1.1 200 OK
+Server: nginx/1.0.5
+Date: Thu, 29 Dec 2011 23:10:13 GMT
+Content-Type: text/html
+Content-Length: 15013
+Last-Modified: Fri, 02 Dec 2011 21:00:49 GMT
+Connection: keep-alive
+Accept-Ranges: bytes
+
+<!DOCTYPE html>
+<html>
+<head>
+  <base href=""/>
+  <meta charset="utf-8" />
+  <title>Relative links</title>
+</head>
+<body>
+  <p>Relative links</p>
+  <a href="about">About</a>
+  <a href="../sitemap">Sitemap</a>
+</body>
+</html>

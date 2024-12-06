@@ -1,0 +1,888 @@
+---
+'01':
+  name: Aiwo
+  code: '01'
+  unofficial_names: Aiwo
+  geo:
+    latitude: -0.5340012
+    longitude: 166.9138873
+    min_latitude: -0.5406168000000001
+    min_longitude: 166.9095518
+    max_latitude: -0.5264073
+    max_longitude: 166.918411
+  translations:
+    en: Aiwo
+    ar: ضاحية إيو
+    bn: আয়ো জেলা
+    ca: Aiwo
+    da: Aiwo
+    de: Aiwo
+    el: Άιβο
+    es: Aiwo
+    et: Aiwo ringkond
+    fi: Aiwo
+    fr: Aiwo
+    gl: Aiwo
+    gu: આઇવો જિલ્લો
+    he: אייוו
+    hi: आयवो जिला
+    hr: Aiwo
+    id: Aiwo
+    it: Aiwo
+    ja: アイウォ地区
+    ka: აივო
+    kn: ಐವೊ ಜಿಲ್ಲೆ
+    ko: 아이워 구
+    lt: Aivas
+    mr: इओ जिल्हा
+    ms: Aiwo
+    nb: Aiwo
+    nl: Aiwo
+    pl: Aiwo
+    pt: Aiwo
+    ro: Aiwo
+    ru: Айво
+    si: අයිවෝ දිස්ත්‍රික්කය
+    sv: Aiwo
+    ta: ஐஒ மாவட்டம்
+    te: అయివో జిల్లా
+    th: ไอโว
+    tr: Aiwo District
+    uk: Айво
+    ur: ایوو ضلع
+    vi: Aiwo
+    zh: 愛和區
+    lv: Aivo distrikts
+    ceb: Aiwo District
+    jv: Aiwo
+    ccp: "\U00011103\U0001112D\U00011120\U0001112E"
+    kk: Айво
+    mk: Аиво
+    'no': Aiwo
+    be: Акруга Айва
+    fa: بخش آیوو
+    hy: Այվո
+  comments:
+  type: district
+'02':
+  name: Anabar
+  code: '02'
+  unofficial_names: Anabar
+  geo:
+    latitude: -0.5133517
+    longitude: 166.9484624
+    min_latitude: -0.522434
+    min_longitude: 166.9397261
+    max_latitude: -0.5043035
+    max_longitude: 166.9578031
+  translations:
+    en: Anabar
+    ar: ضاحية أنابار
+    bn: আনাবার জেলা
+    ca: Anabar
+    da: Anabar
+    de: Anabar
+    el: Περιφέρεια Άναμπαρ
+    es: Anabar
+    et: Anabari ringkond
+    fi: Anabar
+    fr: Anabar
+    gu: એનાબાર જિલ્લો
+    hi: अनाबार जिला
+    hr: Anabar
+    hy: Անաբար
+    id: Anabar
+    it: Anabar
+    ja: アナバー地区
+    ka: ანაბარი
+    kn: ಅನಾಬರ್ ಜಿಲ್ಲೆ
+    ko: 아나바르 구
+    lt: Anabaras
+    mr: अंबर जिल्हा
+    ms: Anabar
+    nb: Anabar
+    nl: Anabar
+    pl: Anabar
+    pt: Anabar
+    ro: Anabar
+    ru: Анабар
+    si: අනබාර් දිස්ත්‍රික්කය
+    sr: Анабар
+    sv: Anabar
+    ta: அனபர் மாவட்டம்
+    te: అనాబర్ జిల్లా
+    th: อนาบาร์
+    tr: Anabar District
+    ur: انابر ضلع
+    vi: Anabar
+    lv: Anabaras distrikts
+    ceb: Anabar District
+    sr_Latn: Anabar
+    zh: 阿納巴爾區
+    jv: Anabar
+    ccp: "\U00011103\U0001111A\U0001111D\U00011122\U00011134"
+    uk: Район Анабар
+    mk: Анабар
+    'no': Anabar
+    fa: بخش آنابار
+  comments:
+  type: district
+'03':
+  name: Anetan
+  code: '03'
+  unofficial_names: Anetan
+  geo:
+    latitude: -0.5064343
+    longitude: 166.9427006
+    min_latitude: -0.5187309999999999
+    min_longitude: 166.9389193
+    max_latitude: -0.5027978
+    max_longitude: 166.9484027
+  translations:
+    en: Anetan
+    ar: ضاحية أنتان
+    bn: আনেতান জেলা
+    ca: Anetan
+    da: Anetan
+    de: Anetan
+    el: Ανέταν
+    es: Anetan
+    fi: Anetan
+    fr: Anetan
+    gu: એનેટન જિલ્લો
+    hi: एनेटन जिला
+    hr: Anetan
+    hy: Անետան
+    id: Anetan
+    it: Anetan
+    ja: アネタン地区
+    ka: ანეტანი
+    kn: ಅನಿತಾನ್ ಜಿಲ್ಲೆ
+    ko: 아네탄 구
+    lt: Anetanas
+    mr: ऍनेटनं जिल्हा
+    ms: Anetan
+    nb: Anetan
+    nl: Anetan
+    pl: Anetan
+    pt: Anetan
+    ro: Anetan
+    ru: Анетан
+    si: ඇනෙටන් දිස්ත්‍රික්කය
+    sv: Anetan
+    ta: அனேதான் மாவட்டம்
+    te: అనెటాన్ జిల్లా
+    th: อะเนตัน
+    tr: Anetan District
+    ur: انیتان ضلع
+    vi: Anetan
+    lv: Anetanas distrikts
+    ceb: Anetan District
+    zh: 安鄂灘區
+    jv: Anetan
+    ccp: "\U00011103\U0001111A\U0001112C\U00011111\U0001111A\U00011134"
+    uk: Район Анетан
+    mk: Анетан
+    'no': Anetan
+    fa: بخش آنتان
+  comments:
+  type: district
+'04':
+  name: Anibare
+  code: '04'
+  unofficial_names: Anibare
+  geo:
+    latitude: -0.532915
+    longitude: 166.944141
+    min_latitude: -0.5423
+    min_longitude: 166.9355289
+    max_latitude: -0.520894
+    max_longitude: 166.9563043
+  translations:
+    en: Anibare
+    ar: ضاحية أنباير
+    bn: আনিবারে জেলা
+    ca: Anibare
+    da: Anibare
+    de: Anibare
+    el: Ανιμπάρε
+    es: Anibare
+    fi: Anibare
+    fr: Anibare
+    gu: એનિબેર જિલ્લો
+    hi: अनिबारे जिला
+    hr: Anibare
+    hy: Անիբար
+    id: Anibare
+    it: Anibare
+    ja: アニバレ地区
+    ka: ანიბარი
+    kn: ಅನೈಬೇ್ ಜಿಲ್ಲೆ
+    ko: 아니바레 구
+    lt: Anibaras
+    mr: अनिबेरे जिल्हा
+    ms: Anibare
+    nb: Anibare
+    nl: Anibare
+    pl: Anibare
+    pt: Anibare
+    ro: Anibare
+    ru: Анибар
+    si: අනිබරේ දිස්ත්‍රික්කය
+    sv: Anibare
+    ta: அனிபார் மாவட்டம்
+    te: ఆనిబేర్ జిల్లా
+    th: อนิบาเร
+    tr: Anibare District
+    uk: Анібар
+    ur: انیباری ضلع
+    vi: Anibare
+    lv: Anabares distrikts
+    ceb: Anibare District
+    zh: 安尼巴惹區
+    jv: Anibare
+    ccp: "\U00011103\U0001111A\U00011128\U0001111D\U00011122\U00011134"
+    mk: Анибар
+    'no': Anibare
+    fa: بخش انیبیر
+  comments:
+  type: district
+'05':
+  name: Baiti
+  code: '05'
+  unofficial_names: Baiti
+  geo:
+    latitude: -0.5133158
+    longitude: 166.9311761
+    min_latitude: -0.5243401
+    min_longitude: 166.925876
+    max_latitude: -0.5060557
+    max_longitude: 166.941229
+  translations:
+    en: Baiti
+    ar: ضاحية بايتسي
+    bn: বোইতি জেলা
+    ca: Baiti
+    da: Baiti
+    de: Baiti
+    el: Μπαΐτσι
+    es: Baiti
+    fi: Baiti
+    fr: Baiti
+    gu: બૈતી જિલ્લો
+    hi: बैती जिला
+    hr: Baiti
+    hy: Բաիտի
+    id: Baiti
+    it: Baiti
+    ja: バイチ地区
+    ka: ბაიტი
+    kn: ಬೈತಿ ಜಿಲ್ಲೆ
+    ko: 바이티 구
+    lt: Baitis
+    mr: बाती जिल्हा
+    ms: Baiti
+    nb: Baiti
+    nl: Baiti
+    pl: Baiti
+    pt: Baiti
+    ro: Baiti
+    ru: Баити
+    si: බයිටි දිස්ත්‍රික්කය
+    sv: Baiti
+    ta: பைடி மாவட்டம்
+    te: బైటి జిల్లా
+    th: ไบตี
+    tr: Baiti
+    ur: بیٹی ضلع
+    vi: Baiti
+    lv: Baiti distrikts
+    ceb: Baiti
+    zh: 白帝區
+    jv: Baiti
+    ccp: "\U0001111D\U0001112D\U00011111\U00011128"
+    uk: Район Баіті
+    mk: Баити
+    'no': Baiti
+    fa: بخش بایتسی
+  comments:
+  type: district
+'06':
+  name: Boe
+  code: '06'
+  unofficial_names: Boe
+  geo:
+    latitude: -0.5414945
+    longitude: 166.9174893
+    min_latitude: -0.544316
+    min_longitude: 166.9117951
+    max_latitude: -0.5383049999999999
+    max_longitude: 166.922186
+  translations:
+    en: Boe
+    ar: ضاحية بو
+    bn: বোয়ে জেলা
+    ca: Boe
+    da: Boe
+    de: Boe
+    el: Μπόε
+    es: Boe
+    fi: Boe
+    fr: Boe
+    gu: બોઇ જિલ્લો
+    he: מחוז בוה
+    hi: बो जिला
+    hr: Boe
+    hy: Բոե
+    id: Boe
+    it: Boe
+    ja: ボエ地区
+    ka: ბოე
+    kn: ಬೋ ಡಿಸ್ಟ್ರಿಕ್ಟ್
+    ko: 보에 구
+    lt: Boė
+    mr: बोई जिल्हा
+    ms: Boe
+    nb: Boe
+    nl: Boe
+    pl: Boe
+    pt: Boe
+    ro: Boe
+    ru: Боэ
+    si: බොයි දිස්ත්‍රික්කය
+    sr: Бое
+    sv: Boe
+    ta: போ மாவட்டம்
+    te: బోయె జిల్లా
+    th: เขตโบ
+    tr: Boe District
+    uk: Бое
+    ur: بیو ضلع
+    vi: Boe
+    lv: Boe distrikts
+    ceb: Boe District
+    sr_Latn: Boe
+    zh: 泊區
+    jv: Boe
+    ccp: "\U0001111D\U0001112E\U00011120\U0001112C"
+    mk: Бое
+    'no': Boe
+    fa: بخش بوئه
+  comments:
+  type: district
+'07':
+  name: Buada
+  code: '07'
+  unofficial_names: Buada
+  geo:
+    latitude: -0.5328777
+    longitude: 166.9268541
+    min_latitude: -0.542245
+    min_longitude: 166.916138
+    max_latitude: -0.5264839
+    max_longitude: 166.936519
+  translations:
+    en: Buada
+    ar: ضاحية بوادا
+    bn: বুয়াদা জেলা
+    ca: Buada
+    da: Buada
+    de: Buada
+    el: Μπουάντα
+    es: Buada
+    fi: Buada
+    fr: Buada
+    gu: બુડા જિલ્લો
+    hi: बुआडा जिला
+    hr: Buada
+    hy: Բուադա
+    id: Buada
+    it: Buada
+    ja: ブアダ地区
+    ka: ბუადა
+    kn: ಬುಆಡ ಜಿಲ್ಲೆ
+    ko: 부아다 구
+    lt: Buada
+    mr: बुडा जिल्हा
+    ms: Buada
+    nb: Buada
+    nl: Buada
+    pl: Buada
+    pt: Buada
+    ro: Buada
+    ru: Буада
+    si: බුඅඩා දිස්ත්රික්කය
+    sr: Буада
+    sv: Buada
+    ta: புவதா மாவட்டம்
+    te: బువాడా జిల్లా
+    th: เขตบัวดา
+    tr: Buada District
+    uk: Буада
+    ur: بوادا ضلع
+    vi: Buada
+    lv: Buadas distrikts
+    ceb: Buada District
+    sr_Latn: Buada
+    zh: 部亞達區
+    jv: Buada
+    ccp: "\U0001111D\U0001112A\U00011120\U00011113"
+    kk: Буада
+    mk: Буада
+    'no': Buada
+    fa: بخش بوادا
+  comments:
+  type: district
+'08':
+  name: Denigomodu
+  code: '08'
+  unofficial_names:
+  - Denigomodu
+  geo:
+    latitude: -0.5247963999999999
+    longitude: 166.9167689
+    min_latitude: -0.5291599
+    min_longitude: 166.9108336
+    max_latitude: -0.5191129
+    max_longitude: 166.925101
+  translations:
+    en: Denigomodu
+    ar: ضاحية دينيغومودو
+    bn: ডেনিগোমুদো জেলা
+    ca: Denigomodu
+    da: Denigomodu
+    de: Denigomodu
+    el: Ντενιγκομόντου
+    es: Denigomodu
+    fi: Denigomodu
+    fr: Denigomodu
+    gu: ડેનિગોમોડુ જિલ્લો
+    he: דניגומודו
+    hi: डेनीगोमोदु जिला
+    hr: Denigomodu
+    hy: Դենիգոմոդու
+    id: Denigomodu
+    it: Denigomodu
+    ja: デニゴムドゥ地区
+    ka: დენიგომოდუ
+    kn: ಡೆನಿಗೊಮೊಡು ಜಿಲ್ಲೆ
+    ko: 데니고모두 구
+    lt: Denigomodu
+    mr: डेनिगोमुनोड जिल्हा
+    ms: Denigomodu
+    nb: Denigomodu
+    nl: Denigomodu
+    pl: Denigomodu
+    pt: Anexo:Distritos de Nauru
+    ro: Denigomodu
+    ru: Денигомоду
+    si: ඩෙනිගෝමොඩු දිස්ත්‍රික්කය
+    sr: Денигомоду
+    sv: Denigomodu
+    ta: டெனிகோமோடு மாவட்டம்
+    te: డెనిగోమోడు జిల్లా
+    th: เดนิโกโมดู
+    tr: Denigomodu District
+    uk: Денігомоду
+    ur: دینیجومودو ضلع
+    vi: Denigomodu
+    lv: Denigomodu distrikts
+    ceb: Denigomodu District
+    sr_Latn: Denigomodu
+    zh: 德尼高莫都區
+    jv: Denigomodu
+    ccp: "\U00011113\U0001112C\U0001111A\U00011128\U00011109\U0001112E\U0001111F\U0001112E\U00011113\U0001112A"
+    kk: Денигомоду
+    mk: Денигомоду (округ)
+    'no': Denigomodu
+    be: Дэнігамоду
+    fa: بخش دنیگومودو
+    ps: دنیګومودو
+  comments:
+  type: district
+'09':
+  name: Ewa
+  code: '09'
+  unofficial_names: Ewa
+  geo:
+    latitude: -0.5087241
+    longitude: 166.9369384
+    min_latitude: -0.5203078999999999
+    min_longitude: 166.9306406
+    max_latitude: -0.5026395
+    max_longitude: 166.9437219
+  translations:
+    en: Ewa
+    ar: ضاحية إيوا
+    bn: এওয়া জেলা
+    ca: Ewa
+    da: Ewa
+    de: Ewa
+    el: Έβα
+    es: Ewa
+    fi: Ewa
+    fr: Ewa
+    gu: ઇવા જિલ્લો
+    hi: एवा जिला
+    hr: Ewa
+    hy: Եվա
+    id: Ewa
+    it: Ewa
+    ja: エウァ地区
+    ka: ევა
+    kn: ಇವಾ ಜಿಲ್ಲೆ
+    ko: 에와 구
+    lt: Eva
+    mr: इवा जिल्हा
+    ms: Ewa
+    nb: Ewa
+    nl: Ewa
+    pl: Ewa
+    pt: Ewa
+    ro: Ewa
+    ru: Ева
+    si: ඒවා දිස්ත්‍රික්කය
+    sv: Ewa
+    ta: இவா மாவட்டம்
+    te: ఈవా జిల్లా
+    th: เอวา
+    tr: Ewa District
+    ur: یوا ضلع
+    vi: Ewa
+    lv: Evas distrikts
+    zh: 埃瓦區
+    jv: Ewa
+    ccp: "\U00011103\U00011128\U00011124"
+    uk: Район Ева
+    mk: Ева
+    'no': Ewa
+    fa: بخش اوا
+  comments:
+  type: district
+'10':
+  name: Ijuw
+  code: '10'
+  unofficial_names: Ijuw
+  geo:
+    latitude: -0.5202646000000001
+    longitude: 166.9513432
+    min_latitude: -0.523936
+    min_longitude: 166.9436481
+    max_latitude: -0.514258
+    max_longitude: 166.958865
+  translations:
+    en: Ijuw
+    ar: ضاحية أيجو
+    bn: ইজুউ জেলা
+    ca: Ijuw
+    da: Ijuw
+    de: Ijuw
+    el: Ίτζου
+    es: Ijuw
+    fi: Ijuw
+    fr: Ijuw
+    gu: ઇજૂવ જિલ્લો
+    hi: इयुव जिला
+    hr: Ijuw
+    hy: Իուվ
+    id: Ijuw
+    it: Ijuw
+    ja: イジュウ地区
+    ka: იუვი
+    kn: ಇಜುವ ಜಿಲ್ಲೆ
+    ko: 이유브 구
+    lt: Ijuvas
+    mr: इजूव जिल्हा
+    ms: Ijuw
+    nb: Ijuw
+    nl: Ijuw
+    pl: Ijuw
+    pt: Ijuw
+    ro: Ijuw
+    ru: Июв
+    si: අයිජුවූ දිස්ත්‍රික්කය
+    sv: Ijuw
+    ta: இஜுவ் மாவட்டம்
+    te: ఇజూవ్ జిల్లా
+    th: อิจูว์
+    tr: İyuv
+    ur: یجوو ضلع
+    vi: Ijuw
+    lv: Iju distrikts
+    ceb: Ijuw District
+    zh: 艾珠區
+    jv: Ijuw
+    ccp: "\U00011103\U00011128\U0001110E\U0001112A\U00011120"
+    uk: Район Іюв
+    mk: Ијув
+    'no': Ijuw
+    fa: ناحیه ایجوو
+  comments:
+  type: district
+'11':
+  name: Meneng
+  code: '11'
+  unofficial_names: Meneng
+  geo:
+    latitude: -0.546724
+    longitude: 166.938379
+    min_latitude: -0.5539963
+    min_longitude: 166.9286009
+    max_latitude: -0.5366
+    max_longitude: 166.9506771
+  translations:
+    en: Meneng
+    ar: ضاحية مينينغ
+    bn: মেনেং জেলা
+    ca: Meneng
+    da: Meneng
+    de: Meneng
+    el: Μενένγκ
+    es: Meneng
+    fi: Meneng
+    fr: Meneng
+    gu: મેનેંગ જિલ્લો
+    he: מננג
+    hi: मेनेंग जिला
+    hr: Meneng
+    hy: Մենենգ
+    id: Meneng
+    it: Meneng
+    ja: メネン地区
+    ka: მენენგი
+    kn: ಮೆನೆಂಗ್ ಜಿಲ್ಲೆ
+    ko: 메넹 구
+    lt: Menengas
+    mr: मेनेंग जिल्हा
+    ms: Meneng
+    nb: Meneng
+    nl: Meneng
+    pl: Meneng
+    pt: Meneng
+    ro: Meneng
+    ru: Мененг
+    si: මෙනෙන්ග් දිස්ත්‍රික්කය
+    sv: Meneng
+    ta: மேனெங் மாவட்டம்
+    te: మెనెంగ్ జిల్లా
+    th: เมเนง
+    tr: Meneng District
+    ur: مینینج ضلع
+    vi: Meneng
+    lv: Menengas distrikts
+    ceb: Meneng District
+    zh: 湄濘區
+    jv: Meneng
+    ccp: "\U0001111F\U0001112C\U0001111A\U0001112C\U0001111A\U00011134"
+    kk: Мененг
+    uk: Район Мененг
+    mk: Мененг
+    'no': Meneng
+    be: Мененг
+    fa: بخش مننگ
+  comments:
+  type: district
+'12':
+  name: Nibok
+  code: '12'
+  unofficial_names: Nibok
+  geo:
+    latitude: -0.5225124
+    longitude: 166.9254134
+    min_latitude: -0.530461
+    min_longitude: 166.917013
+    max_latitude: -0.5136925
+    max_longitude: 166.9371241
+  translations:
+    en: Nibok
+    ar: ضاحية نيبوك
+    bn: নিবুক জেলা
+    ca: Nibok
+    da: Nibok
+    de: Nibok
+    el: Νίμποκ
+    es: Nibok
+    fi: Nibok
+    fr: Nibok
+    gu: નિબોક જિલ્લો
+    hi: निबोक जिला
+    hr: Nibok
+    hy: Նիբոկ
+    id: Nibok
+    it: Nibok
+    ja: ニボク地区
+    ka: ნიბოკი
+    kn: ನಿಬೋಕ್ ಜಿಲ್ಲೆ
+    ko: 니보크 구
+    lt: Nibokas
+    mr: निबोक जिल्हा
+    ms: Nibok
+    nb: Nibok
+    nl: Nibok
+    pl: Nibok
+    pt: Nibok
+    ro: Nibok
+    ru: Нибок
+    si: නිබොක් දිස්ත්‍රික්කය
+    sv: Nibok
+    ta: நிபோக மாவட்டம்
+    te: నిబోక్ జిల్లా
+    th: นิบอก
+    tr: Nibok District
+    ur: نیبوک ضلع
+    vi: Nibok
+    lv: Nibokas distrikts
+    ceb: Nibok District
+    zh: 尼柏區
+    jv: Nibok
+    ccp: "\U0001111A\U00011128\U0001111D\U0001112E\U00011107\U00011134"
+    kk: Нибок
+    uk: Район Нібок
+    mk: Нибок
+    'no': Nibok
+    fa: بخش نیبوک
+  comments:
+  type: district
+'13':
+  name: Uaboe
+  code: '13'
+  unofficial_names: Uaboe
+  geo:
+    latitude: -0.5173398
+    longitude: 166.9290151
+    min_latitude: -0.5244783
+    min_longitude: 166.9229766
+    max_latitude: -0.5118939
+    max_longitude: 166.939466
+  translations:
+    en: Uaboe
+    ar: ضاحية يوابوي
+    bn: উয়াবুয়ে জেলা
+    ca: Uaboe
+    da: Uaboe
+    de: Uaboe
+    el: Ουαμπόε
+    es: Uaboe
+    fi: Uaboe
+    fr: Uaboe
+    gu: યુબોઇ જિલ્લો
+    hi: युआबो जिला
+    hr: Uaboe
+    hy: Ուաբո
+    id: Uaboe
+    it: Uaboe
+    ja: ウアボエ地区
+    ka: უაბო
+    kn: ಉಬೊಯ್ ಜಿಲ್ಲೆ
+    ko: 우아보에 구
+    lt: Uabo
+    mr: उबाओ जिल्हा
+    ms: Uaboe
+    nb: Uaboe
+    nl: Uaboe
+    pl: Uaboe
+    pt: Uaboe
+    ro: Uaboe
+    ru: Уабо
+    si: උවාබෝඒ දිස්ත්‍රික්කය
+    sv: Uaboe
+    ta: உவபோய் மாவட்டம்
+    te: యువాబో జిల్లా
+    th: อัวโบเอ
+    tr: Uaboe District
+    ur: وابوی ضلع
+    vi: Uaboe
+    lv: Uaboe distrikts
+    ceb: Uaboe District
+    zh: 優雅布區
+    jv: Uaboe
+    ccp: "\U00011105\U0001112A\U0001111D\U0001112E\U00011120\U0001112C"
+    uk: Район Уабо
+    mk: Уабое
+    'no': Uaboe
+    fa: ناحیه اوابو
+  comments:
+  type: district
+'14':
+  name: Yaren
+  code: '14'
+  unofficial_names: Yaren
+  geo:
+    latitude: -0.5466856999999999
+    longitude: 166.9210913
+    min_latitude: -0.5541410999999999
+    min_longitude: 166.9109682
+    max_latitude: -0.5398079
+    max_longitude: 166.9298291
+  translations:
+    en: Yaren
+    af: Yaren
+    am: ያሬን
+    ar: مقاطعة يارين
+    az: Yaren
+    be: Ярэн
+    bg: Ярен
+    bn: ইয়ারেন জেলা
+    ca: Yaren
+    cs: Yaren
+    da: Yaren
+    de: Yaren
+    el: Γιαρέν
+    es: Yaren
+    et: Yareni ringkond
+    eu: Yaren
+    fa: یارن
+    fi: Yaren
+    fr: Yaren
+    gl: Yaren
+    gu: યેરેન જિલ્લો
+    he: יארן
+    hi: यारेन जिला
+    hr: Yaren
+    hu: Yaren
+    hy: Յարեն
+    id: Yaren
+    it: Yaren
+    ja: ヤレン地区
+    ka: იარენი
+    kn: ಯಾರೆನ್ ಜಿಲ್ಲೆ
+    ko: 야렌 구
+    lt: Jarenas
+    lv: Jarena
+    mr: यारेन जिल्हा
+    ms: Yaren
+    nb: Yaren
+    nl: Yaren
+    pl: Yaren
+    pt: Yaren
+    ro: Yaren
+    ru: Ярен
+    si: යරෙන් දිස්ත්‍රික්කය
+    sk: Yaren
+    sr: Јарен
+    sv: Yaren
+    sw: Yaren
+    ta: யாரென் மாவட்டம்
+    te: యెరెన్ జిల్లా
+    th: ยาเรน
+    tr: Yaren
+    uk: Ярен
+    ur: یارن
+    vi: Yaren
+    cy: Yaren
+    ceb: Yaren
+    sr_Latn: Jaren
+    zh: 亞倫區
+    yue_Hans: 亚伦
+    jv: Yaren
+    ccp: "\U00011103\U00011128\U00011120\U00011122\U0001112C\U0001111A\U00011134"
+    sl: Yaren
+    pa: ਯਾਰਨ ਜ਼ਿਲ੍ਹਾ
+    kk: Ярен
+    yue: 亞倫
+    bs: Yaren
+    mk: Јарен
+    'no': Yaren
+    is: Jaren
+  comments:
+  type: district

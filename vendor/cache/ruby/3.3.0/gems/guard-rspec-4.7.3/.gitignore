@@ -1,0 +1,10 @@
+pkg/*
+*.gem
+.bundle
+.DS_Store
+.rvmrc
+.rbx/*
+Gemfile*.lock
+coverage/
+.ruby-version
+.ruby-gemset

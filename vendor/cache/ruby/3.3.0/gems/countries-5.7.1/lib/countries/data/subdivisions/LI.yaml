@@ -1,0 +1,627 @@
+---
+'01':
+  name: Balzers
+  code: '01'
+  unofficial_names: Balzers
+  geo:
+    latitude: 47.06887
+    longitude: 9.50704
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Balzers
+    ar: بالزرس
+    be: Бальцэрс
+    ca: Balzers
+    cs: Balzers
+    da: Balzers
+    de: Balzers
+    es: Balzers
+    eu: Balzers
+    fa: بالزرس
+    fi: Balzers
+    fr: Balzers
+    gl: Balzers
+    he: בלצרס
+    id: Balzers
+    it: Balzers
+    ja: バルザース
+    ko: 발처스
+    lt: Balcersas
+    ms: Balzers
+    nb: Balzers
+    nl: Balzers
+    pl: Balzers
+    pt: Balzers
+    ru: Бальцерс
+    sk: Balzers
+    sv: Balzers
+    tr: Balzers
+    uk: Бальцерс
+    zh: 巴尔采斯
+    ceb: Balzers (munisipyo)
+    ccp: "\U0001111D\U00011127\U00011123\U00011134\U0001110E\U00011122\U00011134\U0001110C\U00011134"
+    hr: Balzers
+    az: Balçers
+    mk: Балцерс
+    'no': Balzers
+    el: Μπάλτσερς
+    hu: Balzers
+    ps: بالزرس
+    th: บัลท์เซิร์ส
+    ur: بالزرس
+  comments:
+  type: commune
+'02':
+  name: Eschen
+  code: '02'
+  unofficial_names: Eschen
+  geo:
+    latitude: 47.21239
+    longitude: 9.52327
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Eschen
+    be: Эшэн
+    ca: Eschen
+    cs: Eschen
+    da: Eschen
+    de: Eschen
+    el: Έσκεν
+    es: Eschen
+    eu: Eschen
+    fa: اشن
+    fi: Eschen
+    fr: Eschen
+    gl: Eschen
+    he: אשן
+    hu: Eschen
+    id: Eschen
+    it: Eschen
+    ja: エッシェン
+    ko: 에셴
+    lt: Ešenas
+    ms: Eschen
+    nb: Eschen
+    nl: Eschen
+    pl: Eschen
+    pt: Eschen
+    ru: Эшен
+    sk: Eschen
+    sv: Eschen
+    th: เอสเชิน
+    tr: Eschen
+    uk: Ешен
+    ceb: Eschen (kapital sa munisipyo)
+    zh: 埃申
+    ccp: "\U00011103\U00011128\U0001110C\U00011134\U0001110C\U0001112C\U0001111A\U00011134"
+    az: Eşen
+    mk: Ешен
+    'no': Eschen
+    ar: إشن
+    et: Eschen
+  comments:
+  type: commune
+'03':
+  name: Gamprin
+  code: '03'
+  unofficial_names: Gamprin
+  geo:
+    latitude: 47.2196376
+    longitude: 9.5129295
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Gamprin
+    be: Гампрын
+    ca: Gamprin
+    cs: Gamprin
+    da: Gamprin
+    de: Gamprin
+    es: Gamprin
+    eu: Gamprin
+    fa: گمپخین
+    fr: Gamprin
+    gl: Gamprin
+    he: גמפרין
+    hy: Գամպրին
+    id: Gamprin
+    it: Gamprin
+    ja: ガンプリン
+    ko: 감프린
+    lt: Gamprinas
+    ms: Gamprin
+    nb: Gamprin
+    nl: Gamprin
+    pl: Gamprin
+    pt: Gamprin
+    ru: Гамприн
+    sk: Gamprin
+    sv: Gamprin
+    th: กัมพริน
+    tr: Gamprin
+    uk: Гампрін
+    ur: گامپرین
+    ceb: Gamprin (kapital sa munisipyo sa Liechtenstein)
+    zh: 甘普林
+    ccp: "\U00011109\U0001111F\U00011134\U0001111B\U00011133\U00011122\U00011128\U0001111A\U00011134"
+    mk: Гамприн
+    'no': Gamprin
+    ar: جامبرين
+    el: Γκάμπριν
+    fi: Gamprin
+    hu: Gamprin
+  comments:
+  type: commune
+'04':
+  name: Mauren
+  code: '04'
+  unofficial_names: Mauren
+  geo:
+    latitude: 47.21937
+    longitude: 9.54322
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Mauren
+    be: Маўрэн
+    ca: Mauren
+    cs: Mauren
+    da: Mauren
+    de: Mauren
+    es: Mauren
+    eu: Mauren
+    fa: ماوقن
+    fr: Mauren
+    gl: Mauren
+    he: מאורן
+    id: Mauren
+    it: Mauren
+    ja: マウレン
+    ko: 마우렌
+    lt: Maurenas
+    ms: Mauren
+    nb: Mauren
+    nl: Mauren
+    pl: Mauren
+    pt: Mauren
+    ru: Маурен
+    sk: Mauren
+    sv: Mauren
+    th: เมาเริน
+    uk: Маурен
+    ur: ماویرن
+    ceb: Mauren (kapital sa munisipyo)
+    zh: 毛伦
+    ccp: "\U0001111F\U0001112F\U00011122\U0001112C\U0001111A\U00011134"
+    mk: Маурен
+    'no': Mauren
+    ar: بلدية مورين
+    fi: Mauren
+    hu: Mauren
+    tr: Mauren
+  comments:
+  type: commune
+'05':
+  name: Planken
+  code: '05'
+  unofficial_names: Planken
+  geo:
+    latitude: 47.1855315
+    longitude: 9.545365
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Planken
+    be: Планкен
+    ca: Planken
+    cs: Planken
+    da: Planken
+    de: Planken
+    es: Planken
+    eu: Planken
+    fa: پلنکن
+    fi: Planken
+    fr: Planken
+    gl: Planken
+    he: פלנקן
+    id: Planken
+    it: Planken
+    ja: プランケン
+    ko: 플랑켄
+    lt: Plankenas
+    nb: Planken
+    nl: Planken
+    pl: Planken
+    pt: Planken
+    ru: Планкен
+    sk: Planken
+    sv: Planken
+    th: พลังเคิน
+    uk: Планкен
+    ur: پلنکین
+    ceb: Planken (kapital sa munisipyo)
+    zh: 普兰肯
+    ccp: "\U0001111B\U00011133\U00011123\U00011101\U00011107\U0001112C\U0001111A\U00011134"
+    mk: Планкен
+    'no': Planken
+    ar: بلانكين
+    hu: Planken
+    ps: پلانکن
+    tr: Planken
+  comments:
+  type: commune
+'06':
+  name: Ruggell
+  code: '06'
+  unofficial_names:
+  - Ruggel
+  geo:
+    latitude: 47.2401202
+    longitude: 9.526255299999999
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Ruggell
+    ar: روغل
+    be: Ругель
+    ca: Ruggell
+    cs: Ruggell
+    da: Ruggell
+    de: Ruggell
+    el: Ρούγκελ
+    es: Ruggell
+    eu: Ruggell
+    fa: روگل
+    fr: Ruggell
+    gl: Ruggell
+    he: רוגל
+    id: Ruggell
+    it: Ruggell
+    ja: ルッゲル
+    ko: 루겔
+    lt: Rugelis
+    nb: Ruggell
+    nl: Ruggell
+    pl: Ruggell
+    pt: Ruggell
+    ru: Руггелль
+    sk: Ruggell
+    sv: Ruggell
+    th: รุกเกิลล์
+    uk: Руґґель
+    ceb: Ruggell (kapital sa munisipyo)
+    zh: 儒格尔
+    ccp: "\U00011122\U0001112A\U00011109\U0001112C\U00011123\U00011134"
+    mk: Ругел
+    'no': Ruggell
+    fi: Ruggell
+    hu: Ruggell
+    ps: روګل
+    tr: Ruggell
+  comments:
+  type: commune
+'07':
+  name: Schaan
+  code: '07'
+  unofficial_names: Schaan
+  geo:
+    latitude: 47.16638529999999
+    longitude: 9.5106746
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Schaan
+    ar: شان ، ليختنشتاين
+    be: Горад Шан
+    bg: Шаан
+    ca: Schaan
+    cs: Schaan
+    da: Schaan
+    de: Schaan
+    el: Σάαν
+    es: Schaan
+    eu: Schaan
+    fa: شان
+    fi: Schaan
+    fr: Schaan
+    gl: Schaan
+    he: שאן
+    hu: Schaan
+    id: Schaan
+    it: Schaan
+    ja: シャーン
+    ko: 샨
+    lt: Šanas
+    mn: Шаан
+    nb: Schaan
+    nl: Schaan
+    pl: Schaan
+    pt: Schaan
+    ro: Schaan
+    ru: Шан
+    sk: Schaan
+    sr: Шан
+    sv: Schaan
+    th: ชาน
+    tr: Schaan
+    uk: Шан
+    ur: شان، لیختینستائن
+    vi: Schaan
+    cy: Schaan
+    ceb: Schaan (kapital sa munisipyo)
+    sr_Latn: Šan
+    zh: 沙恩
+    ccp: "\U0001110C\U00011133\U00011107\U0001111A\U00011134"
+    az: Şan
+    mk: Шан
+    'no': Schaan
+    ps: شان
+  comments:
+  type: commune
+'08':
+  name: Schellenberg
+  code: '08'
+  unofficial_names: Schellenberg
+  geo:
+    latitude: 47.23968439999999
+    longitude: 9.5511955
+    min_latitude: 47.2241401
+    min_longitude: 9.52844
+    max_latitude: 47.25243
+    max_longitude: 9.56735
+  translations:
+    en: Schellenberg
+    be: Шэленберг
+    ca: Schellenberg
+    cs: Schellenberg
+    da: Schellenberg
+    de: Schellenberg
+    el: Σέλενμπεργκ
+    es: Schellenberg
+    eu: Schellenberg
+    fa: شلنبرگ
+    fi: Schellenberg
+    fr: Schellenberg
+    gl: Schellenberg
+    he: שלנברג
+    hu: Schellenberg
+    id: Schellenberg
+    it: Schellenberg
+    ja: シェレンベルク
+    ko: 셸렌베르크
+    lt: Šelenbergas
+    nb: Schellenberg
+    nl: Schellenberg
+    pl: Schellenberg
+    pt: Schellenberg
+    ro: Schellenberg
+    ru: Шелленберг
+    sk: Schellenberg
+    sv: Schellenberg
+    th: เชลเลนแบร์ก
+    uk: Шелленберг
+    ur: شلنبرگ
+    ceb: Schellenberg
+    zh: 施伦贝格
+    ccp: "\U0001110C\U00011133\U00011107\U0001112C\U00011123\U0001112C\U0001111A\U00011134\U0001111D\U00011122\U00011134\U00011107\U00011134"
+    mk: Шеленберг
+    'no': Schellenberg
+    ar: شلينبرج
+    ps: شیلینبرګ
+    tr: Schellenberg
+  comments:
+  type: commune
+'09':
+  name: Triesen
+  code: '09'
+  unofficial_names: Triesen
+  geo:
+    latitude: 47.1111739
+    longitude: 9.5264091
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Triesen
+    be: Трызен
+    ca: Triesen
+    cs: Triesen
+    da: Triesen
+    de: Triesen
+    el: Τρίσεν
+    es: Triesen
+    eu: Triesen
+    fa: تخیزن
+    fi: Triesen
+    fr: Triesen
+    gl: Triesen
+    he: טריזן
+    hu: Triesen
+    id: Triesen
+    it: Triesen
+    ja: トリーゼン
+    ko: 트리젠
+    lt: Tryzenas
+    nb: Triesen
+    nl: Triesen
+    pl: Triesen
+    pt: Triesen
+    ru: Тризен
+    sk: Triesen
+    sv: Triesen
+    uk: Трізен
+    ceb: Triesen (munisipyo)
+    zh: 特里森
+    ccp: "\U00011111\U00011133\U00011122\U0001112D\U00011125\U0001112C\U0001111A\U00011134"
+    az: Trizen
+    mk: Тризен
+    'no': Triesen
+    ar: تريسين
+    mn: Трийзен
+    ps: تریزن
+    th: ทรีเซิน
+    tr: Triesen
+  comments:
+  type: commune
+'10':
+  name: Triesenberg
+  code: '10'
+  unofficial_names: Triesenberg
+  geo:
+    latitude: 47.1173252
+    longitude: 9.544181199999999
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Triesenberg
+    be: Трызенберг
+    ca: Triesenberg
+    da: Triesenberg
+    de: Triesenberg
+    es: Triesenberg
+    et: Triesenberg
+    eu: Triesenberg
+    fa: تخیزنبرگ
+    fi: Triesenberg
+    fr: Triesenberg
+    gl: Triesenberg
+    he: טריזנברג
+    id: Triesenberg
+    it: Triesenberg
+    ja: トリーゼンベルク
+    ko: 트리젠베르크
+    lt: Tryzenbergas
+    nb: Triesenberg
+    nl: Triesenberg
+    pl: Triesenberg
+    pt: Triesenberg
+    ru: Тризенберг
+    sk: Triesenberg
+    sr: Тризенберг
+    sv: Triesenberg
+    th: ทรีเซินแบร์ก
+    uk: Трізенберг
+    ceb: Triesenberg (kapital sa munisipyo)
+    sr_Latn: Trizenberg
+    zh: 特里森貝格
+    el: Τρίζενμπεργκ
+    ccp: "\U00011111\U00011133\U00011122\U0001112D\U00011125\U0001112C\U0001111A\U00011134\U0001111D\U00011122\U00011134\U00011107\U00011134"
+    mk: Тризенберг
+    'no': Triesenberg
+    ar: تريسنبيرج
+    hu: Triesenberg
+    ps: تریزنبرګ
+    tr: Triesenberg
+  comments:
+  type: commune
+'11':
+  name: Vaduz
+  code: '11'
+  unofficial_names: Vaduz
+  geo:
+    latitude: 47.14136999999999
+    longitude: 9.5207
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Vaduz
+    af: Vaduz
+    am: ፋዱጽ
+    ar: فادوتس
+    az: Vaduts
+    be: Горад Вадуц
+    bg: Вадуц
+    bn: ফাডুৎস
+    ca: Vaduz
+    cs: Vaduz
+    da: Vaduz
+    de: Vaduz
+    el: Βαντούζ
+    es: Vaduz
+    et: Vaduz
+    eu: Vaduz
+    fa: فادوتس
+    fi: Vaduz
+    fr: Vaduz
+    gl: Vaduz
+    gu: વાદુઝ
+    he: ואדוץ
+    hi: वादुज़
+    hr: Vaduz
+    hu: Vaduz
+    hy: Վադուց
+    id: Vaduz
+    is: Vaduz
+    it: Vaduz
+    ja: ファドゥーツ
+    ka: ვადუცი
+    kn: ವಾಡಝ್
+    ko: 파두츠
+    lt: Vaducas
+    lv: Vaduca
+    ml: വാടുസ്
+    mn: Вадуц
+    mr: फाडुट्स
+    ms: Vaduz
+    nb: Vaduz
+    nl: Vaduz
+    pl: Vaduz
+    pt: Vaduz
+    ro: Vaduz
+    ru: Вадуц
+    si: වඩුස්
+    sk: Vaduz
+    sl: Vaduz
+    sr: Вадуц
+    sv: Vaduz
+    sw: Vaduz
+    ta: வாதூசு
+    te: వాడూజ్
+    th: วาดุซ
+    tk: Waduz
+    tr: Vaduz
+    uk: Вадуц
+    ur: واڈوز
+    vi: Vaduz
+    cy: Vaduz
+    ceb: Vaduz
+    sr_Latn: Vaduc
+    zh: 瓦都茲
+    yue_Hans: 华杜兹
+    sq: Vaduz
+    ccp: "\U0001111E\U00011113\U0001112A\U0001110C\U00011134"
+    ga: Vadús
+    ky: Вадуц
+    pa: ਫ਼ਾਦੁਤਸ
+    kk: Вадуц
+    yue: 華杜茲
+    yo: Vaduz
+    uz: Vaduz
+    bs: Vaduz
+    mk: Вадуц
+    'no': Vaduz
+    yo_BJ: Vaduz
+    ps: وادوڅ
+  comments:
+  type: commune

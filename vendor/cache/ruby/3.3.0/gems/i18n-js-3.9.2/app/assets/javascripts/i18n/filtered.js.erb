@@ -1,0 +1,23 @@
+<%# encoding: utf-8 %>
+
+// Using UMD pattern from
+// https://github.com/umdjs/umd#regular-module
+// `returnExports.js` version
+;(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(["i18n"], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    factory(require("i18n"));
+  } else {
+    // Browser globals (root is window)
+    factory(root.I18n);
+  }
+}(this, function(I18n) {
+  "use strict";
+
+  I18n.translations = <%= I18n::JS.filtered_translations.to_json %>;
+}));

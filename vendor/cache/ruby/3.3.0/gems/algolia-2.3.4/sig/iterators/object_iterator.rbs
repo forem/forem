@@ -1,0 +1,6 @@
+module Algolia
+  class ObjectIterator < BaseIterator
+
+    def each: () { (Hash[Symbol, String|[String]]) -> void } -> Hash[Symbol, String|[String]]
+  end
+end

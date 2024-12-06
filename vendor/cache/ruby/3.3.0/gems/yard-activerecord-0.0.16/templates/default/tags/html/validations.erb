@@ -1,0 +1,15 @@
+<p class="tag_title">Validations<% if @condition %> (<i><%= @condition %></i> )<% end %>:</p>
+<ul class="validations">
+  <% for tag in @tags %>
+    <% tag.types.each do | type, options | %>
+      <li>
+        <% if link = YARD::Handlers::Ruby::ActiveRecord::Validate.link_for_validation( type ) %>
+            <%= linkify(link, type.capitalize ) %>
+        <% else %>
+            <%= type.capitalize %>
+        <% end %>
+        <% if options %> (<%= options %>) <% end %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>

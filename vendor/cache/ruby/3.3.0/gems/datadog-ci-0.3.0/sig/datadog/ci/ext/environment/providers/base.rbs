@@ -1,0 +1,71 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        module Providers
+          class Base
+            attr_reader env: Hash[String, String?]
+            @branch: String?
+            @tag: String?
+
+            def self.handles?: (Hash[String, String?] env) -> bool
+
+            def initialize: (Hash[String, String?] env) -> void
+
+            def job_name: () -> nil
+
+            def job_url: () -> nil
+
+            def pipeline_id: () -> nil
+
+            def pipeline_name: () -> nil
+
+            def pipeline_number: () -> nil
+
+            def pipeline_url: () -> nil
+
+            def provider_name: () -> nil
+
+            def stage_name: () -> nil
+
+            def workspace_path: () -> nil
+
+            def node_labels: () -> nil
+
+            def node_name: () -> nil
+
+            def ci_env_vars: () -> nil
+
+            def git_branch: () -> String?
+
+            def git_repository_url: () -> nil
+
+            def git_tag: () -> String?
+
+            def git_branch_or_tag: () -> nil
+
+            def git_commit_author_date: () -> nil
+
+            def git_commit_author_email: () -> nil
+
+            def git_commit_author_name: () -> nil
+
+            def git_commit_committer_date: () -> nil
+
+            def git_commit_committer_email: () -> nil
+
+            def git_commit_committer_name: () -> nil
+
+            def git_commit_message: () -> nil
+
+            def git_commit_sha: () -> nil
+
+            private
+
+            def set_branch_and_tag: () -> [String?, String?]
+          end
+        end
+      end
+    end
+  end
+end

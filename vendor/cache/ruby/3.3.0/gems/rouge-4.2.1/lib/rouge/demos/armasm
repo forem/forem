@@ -1,0 +1,12 @@
+            GET     common.s
+
+RetVal      *       0x123 :SHL: 4
+
+            AREA    |Area$$Name|, CODE, READONLY
+
+MyFunction  ROUT             ; This is a comment
+            ASSERT  RetVal <> 0
+1           MOVW    r0, #RetVal
+            BX      lr
+
+            END

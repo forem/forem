@@ -1,0 +1,3 @@
+@echo off
+setlocal enableextensions enabledelayedexpansion
+for /f "tokens=*" %%a in ("hello !username! hi") do echo %%~a

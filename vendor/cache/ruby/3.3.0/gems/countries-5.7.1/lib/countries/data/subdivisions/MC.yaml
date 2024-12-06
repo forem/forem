@@ -1,0 +1,548 @@
+---
+CL:
+  name: La Colle
+  code: CL
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: La Còla
+    de: La Colle
+    en: La Colle
+    es: La Colle
+    fr: La Colle
+    gl: La Colle, Mónaco
+    it: La Colle
+    ko: 라콜
+    nl: La Colle
+    pt: La Colle
+    ru: Ла-Колле
+    tr: La Colle, Monako
+    ur: لا کولی، موناکو
+    zh: 拉科尔
+    sv: La Colle
+    ccp: "\U00011123 \U00011107\U0001112E\U00011123\U00011128"
+    da: La Colle
+    az: La-Kolle
+    fa: له کل، موناکو
+    ja: ラ・コル
+  comments:
+  type: quarter
+CO:
+  name: La Condamine
+  code: CO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Ла-Кандамін
+    ca: La Condamina
+    cs: La Condamine
+    de: La Condamine
+    en: La Condamine
+    es: La Condamine
+    fr: La Condamine
+    gl: La Condamine
+    hu: La Condamine
+    hy: Լա Կոնդամին
+    it: La Condamine
+    ja: ラ・コンダミーヌ地区
+    ko: 라콩다민
+    lt: La Kondaminas
+    nl: La Condamine
+    pl: La Condamine
+    pt: La Condamine
+    ru: Ла-Кондамин
+    sv: La Condamine
+    tr: La Condamine
+    uk: Ла-Кондамін
+    ur: لا کونڈامینی
+    ceb: La Condamine
+    zh: 拉康达明
+    fa: لا کوندامین
+    ccp: "\U00011123 \U00011107\U00011127\U0001111A\U00011134\U00011113\U0001111F\U0001112D\U0001111A\U00011134"
+    az: La-Kondamin
+    el: Λα Κονταμίν
+    eu: La Condamine
+    he: לה קונדמין
+    id: La Condamine
+    th: ลากงดามีน
+  comments:
+  type: quarter
+FO:
+  name: Fontvieille
+  code: FO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Fòntvielha
+    de: Fontvieille
+    el: Φοντβιέγ
+    en: Fontvieille
+    es: Fontvieille
+    fa: فونوی، موناکو
+    fr: Fontvieille
+    gl: Fontvieille, Mónaco
+    hu: Fontvieille
+    hy: Ֆոնվյեյ
+    it: Fontvieille
+    ja: フォンヴィエイユ
+    ko: 퐁비에유
+    lt: Fonvjėjus
+    nl: Fontvieille
+    pl: Fontvieille
+    pt: Fontvieille
+    ru: Фонвьей
+    sv: Fontvieille (del av en befolkad plats)
+    tr: Fontvieille, Monako
+    uk: Фонтвілль
+    ceb: Fontvieille
+    zh: 芳特维耶
+    ccp: "\U0001111C\U00011127\U0001111A\U00011134\U00011111\U00011134\U0001111E\U00011128\U00011123\U0001112C"
+    he: פונטוייל
+    nb: Fontvieille
+    'no': Fontvieille
+    az: Fonvey (Monako)
+    cs: Fontvieille
+    da: Fontvieille (Monaco)
+    eu: Fontvieille (Monako)
+    mk: Фонвјеј
+    th: ฟงวีแยย์
+  comments:
+  type: quarter
+GA:
+  name: La Gare
+  code: GA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: La Gare
+    ccp: "\U00011123 \U00011109\U00011122\U0001112C"
+    ru: Ла Га
+  comments:
+  type: quarter
+JE:
+  name: jardin exotique de Monaco
+  code: JE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Exotischer Garten von Monaco
+    en: Jardin Exotique de Monaco
+    es: Jardín Exótico de Mónaco
+    fr: jardin exotique de Monaco
+    it: Giardino esotico di Monaco
+    ja: 熱帯公園
+    nl: Jardin Exotique de Monaco
+    pl: Jardin exotique de Monaco
+    uk: Екзотичний сад Монако
+    zh: 摩納哥熱帶公園
+    ccp: "\U0001110E\U00011122\U00011134\U00011113\U00011128\U0001111A\U00011134 \U00011103\U0001112C\U00011107\U00011134\U0001110E\U0001112E\U00011111\U00011128\U00011107\U00011134
+      \U00011113\U0001112C \U0001111F\U00011127\U0001111A\U00011134\U00011107\U0001112E"
+    ru: Жарден-Экзотик
+    th: ฌาร์แด็งแอกซอติก
+  comments:
+  type: quarter
+LA:
+  name: Larvotto/Bas Moulins
+  code: LA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Larvot e Molins Bas
+    de: Larvotto
+    en: Larvotto
+    es: Larvotto
+    fr: Larvotto/Bas Moulins
+    gl: Larvotto
+    it: Larvotto
+    ja: ラルヴォット
+    ko: 라르보토
+    nl: Larvotto
+    pt: Larvotto
+    ru: Ларвотто
+    tr: Larvotto
+    ur: لارووٹو
+    zh: 拉沃托
+    ccp: "\U00011123\U00011122\U00011134\U0001111E\U0001112E\U00011111\U0001112E"
+    az: Larvotto
+    el: Λαρβοττό
+    fa: لاروتو
+    sv: Larvotto
+    th: ลาร์วอโต
+  comments:
+  type: quarter
+MA:
+  name: Malbousquet
+  code: MA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Malbousquet
+    ccp: "\U0001111F\U00011123\U00011134\U0001111D\U0001112F\U00011107\U0001112E\U00011120\U0001112C\U00011116\U00011134"
+    fr: Malbousquet
+    ru: Мальбуке
+  comments:
+  type: quarter
+MC:
+  name: Monte-Carlo
+  code: MC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Monte Carlo
+    ar: مونت كارلو
+    az: Monte Karlo
+    be: Монтэ-Карла
+    bg: Монте Карло
+    ca: Montcarles
+    cs: Monte Carlo
+    da: Monte Carlo
+    de: Monte-Carlo
+    el: Μόντε Κάρλο
+    en: Monte Carlo
+    es: Montecarlo
+    eu: Monte-Carlo
+    fa: مونت‌کارلو
+    fi: Monte Carlo
+    fr: Monte-Carlo
+    gl: Monte Carlo
+    he: מונטה קרלו
+    hi: मोंटी कार्लो
+    hr: Monte Carlo
+    hu: Monte-Carlo
+    hy: Մոնտե Կառլո
+    id: Monte Carlo
+    is: Monte Carlo
+    it: Monte Carlo
+    ja: モンテカルロ
+    ka: მონტე-კარლო
+    ko: 몬테카를로
+    lt: Monte Karlas
+    lv: Montekarlo
+    ms: Monte Carlo
+    nb: Monte Carlo
+    nl: Monte Carlo
+    pl: Monte Carlo
+    pt: Monte Carlo
+    ro: Monte Carlo
+    ru: Монте-Карло
+    sk: Monte Carlo
+    sl: Monte Carlo
+    sr: Монте Карло
+    sv: Monte Carlo
+    ta: மான்டே கார்லோ
+    tr: Monte Carlo
+    uk: Монте-Карло
+    vi: Monte Carlo
+    cy: Monte-Carlo
+    ceb: Monte-Carlo
+    sr_Latn: Monte Karlo
+    ur: مونٹی کارلو
+    zh: 蒙特卡洛
+    yue_Hans: 蒙地卡罗
+    sq: Monte Karlo
+    ccp: "\U0001111F\U00011127\U0001111A\U00011134\U00011111\U0001112C \U00011107\U00011122\U00011134\U00011123\U0001112E"
+    ga: Monte Carlo
+    et: Monte Carlo
+    kk: Монте-Карло
+    yue: 蒙地卡羅
+    my: မွန်တီကာလိုမြို့
+    uz: Montekarlo
+    bs: Monte Carlo
+    mk: Монте Карло
+    'no': Monte Carlo
+    mr: माँटे कार्लो
+    ps: مونت کارلو
+    th: มงเต-การ์โล
+  comments:
+  type: quarter
+MG:
+  name: Moneghetti
+  code: MG
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Монегхети
+    ca: Moneguet
+    de: Moneghetti
+    en: Moneghetti
+    es: Monegeti
+    fr: Moneghetti
+    gl: Moneghetti
+    hu: Moneghetti
+    it: Moneghetti
+    ja: モネウッティ
+    ko: 모네게티
+    nl: Moneghetti
+    pt: Moneghetti
+    ru: Монегетти
+    sv: Moneghetti
+    ceb: Moneghetti
+    zh: 莫内盖蒂
+    ccp: "\U0001111F\U00011127\U0001111A\U0001112C\U0001110A\U0001112C\U00011111\U00011128"
+    az: Moneqetti
+    fa: له مونگتی
+    th: เลมอเนอแกตี
+  comments:
+  type: quarter
+MO:
+  name: Monaco-Ville
+  code: MO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: موناكو فيل
+    az: Monako Vill
+    be: Горад Манака
+    ca: Vila de Mònaco
+    cs: Monaco-Ville
+    da: Monaco-Ville
+    de: Monaco-Ville
+    en: Monaco-Ville
+    es: Mónaco
+    et: Monaco-Ville
+    eu: Monako
+    fa: موناکوویل
+    fr: Monaco-Ville
+    gl: Monaco-Ville
+    he: מונקו-ויל
+    hu: Monaco
+    hy: Մոնակո
+    it: Monaco Vecchia
+    ja: モナコ・ヴィル
+    ko: 모나코빌
+    lt: Monakas
+    nl: Monaco-Ville
+    pl: Monaco-Ville
+    pt: Monaco-Ville
+    ru: Монако
+    sv: Monaco-Ville
+    te: మొనాకో-విల్
+    tr: Monaco-Ville
+    uk: Монако
+    ur: موناکو شہر
+    ceb: Commune de Monaco
+    zh: 摩纳哥城
+    ccp: "\U0001111F\U00011127\U0001111A\U00011107\U0001112E-\U0001111E\U00011128\U00011123\U0001112C"
+    kk: Монако
+    uz: Monako
+    el: Μονακό-Βιλ
+    ps: موناکو ویل
+    th: มอนาโก-วีล
+  comments:
+  type: quarter
+MU:
+  name: Moulins
+  code: MU
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Moulins
+    ccp: "\U0001111F\U0001112F\U00011123\U00011128\U0001111A\U00011134"
+    fr: Moulins
+    ja: ムーラン
+    ru: Молин
+  comments:
+  type: quarter
+PH:
+  name: Port Hercule
+  code: PH
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Port Hercule
+    en: Port Hercules
+    es: Puerto Hércules
+    fr: Port Hercule
+    it: Port Hercule
+    nl: Port Hercules
+    sv: Port Hercule
+    ceb: Port Hercule
+    ja: ポートエルキュール
+    ccp: "\U0001111B\U0001112E\U00011122\U00011134\U00011111\U00011134 \U00011126\U00011122\U00011134\U00011107\U00011128\U00011105\U0001112A\U00011123\U0001110C\U00011134"
+    el: Λιμάνι του Ηρακλή
+    ru: Порт Геркулес
+  comments:
+  type: quarter
+SD:
+  name: église Sainte-Dévote
+  code: SD
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Sainte-Dévote Chapel
+    es: iglesia de Santa Devota
+    fr: église Sainte-Dévote
+    ja: サン・デボーテ
+    nl: Église Sainte-Dévote
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134-\U00011113\U00011128\U0001111E\U0001112E\U00011116\U00011134
+      \U00011107\U0001111B\U0001112C\U00011123\U00011134"
+    de: Ravin de Sainte-Dévote
+    hu: Ravin de Sainte-Dévote
+    it: Ravina di Santa Devota
+    ru: Санте-Девоте
+  comments:
+  type: quarter
+SO:
+  name: La Source
+  code: SO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: La Source
+    ccp: "\U00011123 \U00011125\U0001112E\U00011122\U00011134\U0001110C\U00011134"
+    fr: La Source
+  comments:
+  type: quarter
+SP:
+  name: Spélugues
+  code: SP
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Spélugues
+    ccp: "\U0001110C\U00011133\U0001111B\U0001112C\U00011123\U00011128\U00011105\U0001112A\U00011109\U0001110C\U00011134"
+    fr: Spélugues
+    ru: Спилаге
+  comments:
+  type: quarter
+SR:
+  name: La Rousse
+  code: SR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: La Rossa e Sant Roman
+    de: La Rousse
+    en: Saint Roman
+    es: La Rousse/San Roman
+    fr: La Rousse
+    gl: Saint Roman
+    it: La Rousse/Saint-Roman
+    ko: 생로망
+    nl: Saint Roman, Monaco
+    pt: La Rousse/Saint-Roman
+    ru: Сен-Роман
+    sv: Saint-Roman, Monaco
+    ur: سینٹ رومن، موناکو
+    ceb: Saint-Roman
+    zh: 圣罗曼
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134 \U00011122\U00011127\U0001111F\U0001111A\U00011134"
+    az: Sen-Roman
+  comments:
+  type: quarter
+VR:
+  name: Vallon de la Rousse
+  code: VR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Vallon de la Rousse
+    nl: La Rousse
+    ccp: "\U0001111E\U00011123\U00011127\U0001111A\U00011134 \U00011113\U0001112C
+      \U00011123 \U00011122\U0001112F\U0001110C\U00011134"
+    fr: Vallon de la Rousse
+    ru: Валлон де ла Роус
+  comments:
+  type: quarter

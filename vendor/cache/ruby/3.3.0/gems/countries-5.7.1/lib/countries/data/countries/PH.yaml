@@ -1,0 +1,65 @@
+---
+PH:
+  address_format: |-
+    {{recipient}}
+    {{street}} {{region_short}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: PH
+  alpha3: PHL
+  continent: Asia
+  country_code: '63'
+  currency_code: PHP
+  distance_unit: KM
+  gec: RP
+  geo:
+    latitude: 12.879721
+    longitude: 121.774017
+    max_latitude: 21.2412572
+    max_longitude: 127.6444784
+    min_latitude: 4.2259
+    min_longitude: 116.1474999
+    bounds:
+      northeast:
+        lat: 21.2412572
+        lng: 127.6444784
+      southwest:
+        lat: 4.2259
+        lng: 116.1474999
+  international_prefix: '00'
+  ioc: PHI
+  iso_long_name: The Republic of the Philippines
+  iso_short_name: Philippines
+  languages_official:
+  - tl
+  - en
+  languages_spoken:
+  - tl
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  - 10
+  national_prefix: '0'
+  nationality: Filipino
+  number: '608'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: PH
+  unofficial_names:
+  - Philippines
+  - Philippinen
+  - Filipinas
+  - フィリピン
+  - Filipijnen
+  vat_rates:
+    standard: 12
+    reduced: []
+    super_reduced:
+    parking:
+  world_region: APAC

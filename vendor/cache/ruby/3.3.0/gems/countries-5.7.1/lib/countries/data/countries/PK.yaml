@@ -1,0 +1,52 @@
+---
+PK:
+  alpha2: PK
+  alpha3: PAK
+  continent: Asia
+  country_code: '92'
+  currency_code: PKR
+  distance_unit: KM
+  gec: PK
+  geo:
+    latitude: 30.375321
+    longitude: 69.34511599999999
+    max_latitude: 37.0841069
+    max_longitude: 77.8231711
+    min_latitude: 23.6344999
+    min_longitude: 60.8729721
+    bounds:
+      northeast:
+        lat: 37.0841069
+        lng: 77.8231711
+      southwest:
+        lat: 23.6344999
+        lng: 60.8729721
+  international_prefix: '00'
+  ioc: PAK
+  iso_long_name: The Islamic Republic of Pakistan
+  iso_short_name: Pakistan
+  languages_official:
+  - en
+  - ur
+  languages_spoken:
+  - en
+  - ur
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  - 10
+  national_prefix: '0'
+  nationality: Pakistani
+  number: '586'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: Southern Asia
+  un_locode: PK
+  unofficial_names:
+  - Pakistan
+  - Paquistán
+  - パキスタン
+  world_region: APAC

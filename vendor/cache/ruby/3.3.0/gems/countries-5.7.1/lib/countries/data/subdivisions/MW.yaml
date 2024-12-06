@@ -1,0 +1,1784 @@
+---
+BA:
+  name: Balaka
+  code: BA
+  unofficial_names: Balaka
+  geo:
+    latitude: -14.9876054
+    longitude: 34.9561748
+    min_latitude: -15.0083795
+    min_longitude: 34.9307894
+    max_latitude: -14.9766781
+    max_longitude: 34.9850202
+  translations:
+    en: Balaka
+    ar: مقاطعة بالاكا
+    az: Balaka
+    bg: Балака
+    bn: বালাকা জেলা
+    da: Balaka District
+    de: Balaka
+    el: Μπαλάκα
+    es: Distrito de Balaka
+    fa: بخش بالاکا
+    fi: Balakan piirikunta
+    fr: District de Balaka
+    gl: Distrito de Balaka
+    gu: બાલાકા જિલ્લો
+    hi: बलाका जिला
+    id: Distrik Balaka
+    it: Distretto di Balaka
+    ja: バラカ
+    ka: ბალაკის რაიონი
+    kn: ಬಾಲಕ ಜಿಲ್ಲೆ
+    ko: 발라카 현
+    mr: बालाक जिल्हा
+    ms: Daerah Balaka
+    nb: Balaka
+    nl: Balaka
+    pl: Dystrykt Balaka
+    pt: Balaka
+    ro: Districtul Balaka
+    ru: Балака
+    si: බලකා දිස්ත්‍රික්කය
+    sr: Балака
+    sv: Balaka
+    ta: பாலாக மாவட்டம்
+    te: బలాకా జిల్లా
+    th: บาลากา
+    tr: Balaka
+    ur: بالاکا ضلع
+    vi: Quận Balaka
+    zh: 巴拉卡縣
+    lv: Balakas distrikts
+    ceb: Balaka
+    sr_Latn: Balaka
+    lt: Balakos apskritis
+    ccp: "\U0001111D\U00011123\U00011107"
+    uk: Район Балака
+    'no': Balaka
+    sw: Wilaya ya Balaka
+    zu: Balaka District
+  comments:
+  type: district
+BL:
+  name: Blantyre
+  code: BL
+  unofficial_names: Blantyre
+  geo:
+    latitude: -15.786111
+    longitude: 35.005833
+    min_latitude: -15.8702044
+    min_longitude: 34.952488
+    max_latitude: -15.6822126
+    max_longitude: 35.1090431
+  translations:
+    en: Blantyre
+    ar: مقاطعة بلانتير
+    az: Blantyre
+    bg: Блантайр
+    bn: ব্লান্তি জেলা
+    da: Blantyre District
+    de: Blantyre
+    el: Μπλαντάιρ
+    es: Distrito de Blantyre
+    fa: بخش بلانتایر
+    fi: Blantyren piirikunta
+    fr: District de Blantyre
+    gl: Distrito de Blantyre
+    gu: બ્લાન્ટીર જિલ્લો
+    hi: ब्लांतिरे जिला
+    id: Distrik Blantyre
+    it: Distretto di Blantyre
+    ja: ブランタイヤ
+    ka: ბლანტირეს რაიონი
+    kn: ಬ್ಲಾಂಟೈರ್ ಜಿಲ್ಲೆ
+    ko: 블랜타이어 현
+    mr: ब्लँटायरे जिल्हा
+    ms: Blantyre District
+    nb: Blantyre
+    nl: Blantyre
+    pl: Dystrykt Blantyre
+    pt: Blantyre
+    ro: Districtul Blantyre
+    ru: Блантайр
+    si: බ්ලන්ටය්රේ දිස්ත්‍රික්කය
+    sr: Блантајер
+    sv: Blantyre
+    ta: ப்ளாண்ட்யர் மாவட்டம்
+    te: బ్లాంటైర్ జిల్లా
+    th: บลานไทร์
+    tr: Blantyre
+    ur: بلانتیری ضلع
+    vi: Quận Blantyre
+    lv: Blantairas distrikts
+    ceb: Blantyre District
+    sr_Latn: Blantajer
+    lt: Blantiro apskritis
+    zh: 布蘭太爾縣
+    ccp: "\U0001111D\U00011133\U00011123\U0001111A\U00011134\U00011111\U00011120\U00011122\U00011134"
+    uk: Блантайр
+    'no': Blantyre
+    ca: Blantyre
+    sw: Wilaya ya Blantyre
+  comments:
+  type: district
+C:
+  name: Central
+  code: C
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    az: Mərkəz bölgəsi
+    bg: Централен регион
+    ca: Regió Central
+    de: Central Region
+    el: Κεντρική Περιφέρεια
+    en: Central
+    es: Región Central
+    fa: منطقه مرکزی مالاوی
+    fi: Keskinen alue
+    fr: Malawi central
+    gl: Rexión Central
+    id: Region Tengah
+    it: regione Centrale
+    ja: 中部州
+    ka: მალავის ცენტრალური რეგიონი
+    ko: 중부 주
+    lt: Centrinis regionas
+    nb: Central
+    nl: Central
+    pt: Região Central
+    ro: Regiunea Central
+    ru: Центральный регион
+    sr: Централни регион
+    sv: Central Region
+    tr: Merkez Bölgesi
+    uk: Центральний регіон
+    ur: وسطی علاقہ، ملاوی
+    ceb: Central Region
+    sr_Latn: Centralni region
+    zh: 中央区
+    ccp: "\U00011125\U0001112C\U0001111A\U00011111\U00011133\U00011122\U00011123\U00011134"
+    be: Цэнтральны рэгіён
+    'no': Central
+    ar: المنطقة الوسطى
+    sw: Kanda ya Kati, Malawi
+  comments:
+  type: region
+CK:
+  name: Chikwawa
+  code: CK
+  unofficial_names: Chikwawa
+  geo:
+    latitude: -16.035
+    longitude: 34.801
+    min_latitude: -16.0552991
+    min_longitude: 34.7784233
+    max_latitude: -16.0070408
+    max_longitude: 34.8167897
+  translations:
+    en: Chikwawa
+    ar: مقاطعة تشيكواوا
+    az: Chikwawa
+    bg: Чикуауа
+    bn: চিকাওয়ালা জেলা
+    da: Chikwawa District
+    de: Chikwawa-Distrikt
+    el: Τσικβάβα
+    es: Distrito de Chikwawa
+    fa: بخش چیکواوا
+    fi: Chikwawan piirikunta
+    fr: District de Chikwawa
+    gl: Distrito de Chikwawa
+    gu: ચિકવાવા જિલ્લો
+    hi: चिकवावा जिला
+    id: Distrik Chikwawa
+    it: Distretto di Chikwawa
+    ja: チクワワ
+    ka: ჩიკუაუის რაიონი
+    kn: ಚಿಕ್ವಾವಾ ಜಿಲ್ಲೆ
+    ko: 치콰와 현
+    mr: चिखवा जिल्हा
+    ms: Chikwawa District
+    nb: Chikwawa
+    nl: Chikwawa
+    pl: Dystrykt Chikwawa
+    pt: Chikwawa
+    ro: Districtul Chikwawa
+    ru: Чиквава
+    si: ච්කවා දිස්ත්‍රික්කය
+    sv: Chikwawa
+    ta: சிகிவாவா மாவட்டம்
+    te: చిక్వావా జిల్లా
+    th: ชิกวาวา
+    tr: Chikwawa
+    ur: چیکواوا ضلع
+    vi: Quận Chikwawa
+    lv: Čikvavas distrikts
+    ceb: Chikwawa District
+    lt: Čikvavos apskritis
+    zh: 奇克瓦瓦縣
+    ccp: "\U0001110C\U00011107\U00011134\U00011124\U00011124"
+    uk: Район Чіквава
+    'no': Chikwawa
+    ca: Chikwawa
+    sw: Wilaya ya Chikwawa
+  comments:
+  type: district
+CR:
+  name: Chiradzulu
+  code: CR
+  unofficial_names: Chiradzulu
+  geo:
+    latitude: -15.6759485
+    longitude: 35.1406293
+    min_latitude: -15.6875012
+    min_longitude: 35.1309299
+    max_latitude: -15.6594037
+    max_longitude: 35.1468944
+  translations:
+    en: Chiradzulu
+    ar: إقليم تشيرازولو
+    az: Chiradzulu
+    bg: Чирадзулу
+    bn: কিরাদজুলু জেলা
+    da: Chiradzulu District
+    de: Chiradzulu-Distrikt
+    el: Τσιραντζούλου
+    es: Distrito de Chiradzulu
+    fa: بخش چیرادزولو
+    fi: Chiradzulun piirikunta
+    fr: District de Chiradzulu
+    gl: Distrito de Chiradzulu
+    gu: ચિરાડઝુલુ જિલ્લો
+    hi: चिरादज़ुलु जिला
+    id: Distrik Chiradzulu
+    it: Distretto di Chiradzulu
+    ja: チラズル
+    ka: ჩირაძულუს რაიონი
+    kn: ಚಿರಾದ್ಜುಲು ಜಿಲ್ಲೆ
+    ko: 치라줄루 현
+    mr: चिराडझलू जिल्हा
+    ms: Chiradzulu District
+    nb: Chiradzulu
+    nl: Chiradzulu
+    pl: Dystrykt Chiradzulu
+    pt: Chiradzulu
+    ro: Districtul Chiradzulu
+    ru: Чирадзулу
+    si: චිරඩ්සුලු දිස්ත්‍රික්කය
+    sv: Chiradzulu
+    ta: சிரதஸுலு மாவட்டம்
+    te: చిరాడ్‌జులు జిల్లా
+    th: ชิราดซูลู
+    tr: Chiradzulu
+    ur: چیرادزولو ضلع
+    vi: Quận Chiradzulu
+    lv: Čiradzulu distrikts
+    ceb: Chiradzulu District
+    lt: Čiradzulo apskritis
+    zh: 奇拉朱盧縣
+    ccp: "\U0001110C\U00011128\U00011122\U00011116\U00011134\U0001110E\U0001112A\U00011123\U0001112A"
+    uk: Район Чірадзулу
+    'no': Chiradzulu
+    ca: Chiradzulu
+    sw: Wilaya ya Chiradzulu
+  comments:
+  type: district
+CT:
+  name: Chitipa
+  code: CT
+  unofficial_names: Chitipa
+  geo:
+    latitude: -9.7037655
+    longitude: 33.2700253
+    min_latitude: -9.7162481
+    min_longitude: 33.2463455
+    max_latitude: -9.6740303
+    max_longitude: 33.2946682
+  translations:
+    en: Chitipa
+    ar: مقاطعة تشيتيبا
+    az: Chitipa
+    bg: Читипа
+    bn: কিটিপা জেলা
+    da: Chitipa District
+    de: Chitipa-Distrikt
+    el: Τσιτίπα
+    es: Distrito de Chitipa
+    fa: بخش چیتیپا
+    fi: Chitipan piirikunta
+    fr: District de Chitipa
+    gl: Distrito de Chitipa
+    gu: ચિતીપા જિલ્લો
+    hi: चितिपा जिला
+    id: Distrik Chitipa
+    it: Distretto di Chitipa
+    ja: チティパ
+    ka: ჩიტიპის რაიონი
+    kn: ಚಿತಿಪಾ ಜಿಲ್ಲೆ
+    ko: 치티파 현
+    mr: चिट्टीपा जिल्हा
+    ms: Chitipa District
+    nb: Chitipa
+    nl: Chitipa
+    pl: Dystrykt Chitipa
+    pt: Chitipa
+    ro: Districtul Chitipa
+    ru: Читипа
+    si: චිටිපා දිස්ත්‍රික්කය
+    sr: Читипа
+    sv: Chitipa
+    ta: நகரம்பா மாவட்டம்
+    te: చిటిపా జిల్లా
+    th: เขตชิทิพา
+    tr: Chitipa
+    ur: چیتیپا ضلع
+    vi: Quận Chitipa
+    lv: Čitipas distrikts
+    ceb: Chitipa District
+    sr_Latn: Čitipa
+    lt: Čitipos apskritis
+    zh: 奇蒂帕縣
+    ccp: "\U0001110C\U00011128\U00011111\U00011128\U0001111B"
+    uk: Район Чітіпа
+    'no': Chitipa
+    ca: Chitipa
+    sw: Wilaya ya Chitipa
+  comments:
+  type: district
+DE:
+  name: Dedza
+  code: DE
+  unofficial_names: Dedza
+  geo:
+    latitude: -14.3816618
+    longitude: 34.3254842
+    min_latitude: -14.398852
+    min_longitude: 34.3036938
+    max_latitude: -14.3712497
+    max_longitude: 34.34515
+  translations:
+    en: Dedza
+    ar: مقاطعة ديدزا
+    az: Dedza
+    bg: Дедза
+    bn: ডেডজা জেলা
+    da: Dedza District
+    de: Distrikt Dedza
+    el: Ντέντζα
+    es: Distrito de Dedza
+    fa: بخش ددزا
+    fi: Dedzan piirikunta
+    fr: District de Dedza
+    gl: Distrito de Dedza
+    gu: ડેઝા જિલ્લો
+    hi: देड्ज़ा जिला
+    id: Distrik Dedza
+    is: Dedza
+    it: Distretto di Dedza
+    ja: デッザ
+    ka: დედზის რაიონი
+    kn: ಡಿದ್ಝಾ ಜಿಲ್ಲೆ
+    ko: 데자 현
+    mr: डेझा जिल्हा
+    ms: Dedza District
+    nb: Dedza
+    nl: Dedza
+    pl: Dystrykt Dedza
+    pt: Dedza
+    ro: Districtul Dedza
+    ru: Дедза
+    si: ඩෙඩ්සා දිස්ත්‍රික්කය
+    sv: Dedza
+    ta: டெட்ஜா மாவட்டம்
+    te: డెడ్జా జిల్లా
+    th: อำเภอเดดซา
+    tr: Dedza
+    ur: دیدزا ضلع
+    vi: Quận Dedza
+    lv: Dedzas distrikts
+    ceb: Dedza District
+    lt: Dedzo apskritis
+    zh: 代扎縣
+    ccp: "\U00011113\U0001112C\U00011116\U00011134\U0001110E"
+    uk: Район Дедза
+    'no': Dedza
+    sw: Wilaya ya Dedza
+  comments:
+  type: district
+DO:
+  name: Dowa
+  code: DO
+  unofficial_names: Dowa
+  geo:
+    latitude: -13.6514687
+    longitude: 33.9359756
+    min_latitude: -13.6647528
+    min_longitude: 33.9223479
+    max_latitude: -13.6396478
+    max_longitude: 33.9471531
+  translations:
+    en: Dowa
+    ar: مقاطعة دوا
+    az: Dowa
+    bg: Дова
+    bn: ডুওয়া জেলা
+    da: Dowa District
+    de: Distrikt Dowa
+    el: Ντόουα
+    es: Distrito de Dowa
+    fa: بخش دووا
+    fi: Dowan piirikunta
+    fr: District de Dowa
+    gl: Distrito de Dowa
+    gu: ડોવા જિલ્લો
+    hi: डोवा जिला
+    id: Distrik Dowa
+    it: Distretto di Dowa
+    ja: ドーワ
+    ka: დოვის რაიონი
+    kn: ಡೋವಾ ಜಿಲ್ಲೆ
+    ko: 도와 현
+    mr: डोवा जिल्हा
+    ms: Daerah Dowa
+    nb: Dowa
+    nl: Dowa
+    pl: Dystrykt Dowa
+    pt: Dowa
+    ro: Districtul Dowa
+    ru: Дова
+    si: දොවා දිස්ත්‍රික්කය
+    sv: Dowa
+    ta: டோவா மாவட்டம்
+    te: డోవా జిల్లా
+    th: เขตโดวา
+    tr: Dowa
+    ur: دوا ضلع
+    vi: Quận Dowa
+    lv: Dovas reģions
+    ceb: Dowa District
+    lt: Dovos apskritis
+    zh: 多瓦縣
+    ccp: "\U00011113\U0001112E\U00011124"
+    uk: Район Дова
+    'no': Dowa
+    ca: Dowa
+    sw: Wilaya ya Dowa
+  comments:
+  type: district
+KR:
+  name: Karonga
+  code: KR
+  unofficial_names: Karonga
+  geo:
+    latitude: -9.933333
+    longitude: 33.933333
+    min_latitude: -9.967624899999999
+    min_longitude: 33.8861703
+    max_latitude: -9.9243401
+    max_longitude: 33.94612310000001
+  translations:
+    en: Karonga
+    az: Karonga
+    bg: Каронга
+    es: Distrito de Karonga
+    fa: بخش کارونگا
+    fi: Karongan piirikunta
+    fr: District de Karonga
+    gl: Distrito de Karonga
+    id: Distrik Karonga
+    it: Distretto di Karonga
+    ja: カロンガ
+    ka: კარონგის რაიონი
+    ko: 카롱가 현
+    nb: Karonga
+    nl: Karonga
+    pl: Dystrykt Karonga
+    pt: Karonga
+    ro: Districtul Karonga
+    ru: Каронга
+    sr: Каронга
+    sv: Karonga
+    tr: Karonga
+    ceb: Karonga District
+    sr_Latn: Karonga
+    zh: 卡龍加縣
+    ccp: "\U00011107\U00011122\U00011127\U00011101\U00011109"
+    'no': Karonga
+    ca: Karonga
+    de: Karonga Distrikt
+    he: מחוז קרונגה
+    sw: Wilaya ya Karonga
+  comments:
+  type: district
+KS:
+  name: Kasungu
+  code: KS
+  unofficial_names: Kasungu
+  geo:
+    latitude: -13.033333
+    longitude: 33.483333
+    min_latitude: -13.0698636
+    min_longitude: 33.4539701
+    max_latitude: -13.007652
+    max_longitude: 33.5083008
+  translations:
+    en: Kasungu
+    ar: مقاطعة كاسونغو
+    az: Kasungu
+    bg: Касунгу
+    bn: কাসোগু জেলা
+    da: Kasungu District
+    de: Kasungu-Distrikt
+    el: Κασουνγκού
+    es: Distrito de Kasungu
+    fa: بخش کاسونگو
+    fi: Kasungun piirikunta
+    fr: District de Kasungu
+    gl: Distrito de Kasungu
+    gu: કાસુન્ગુ જિલ્લો
+    hi: कसुंगु जिला
+    id: Distrik Kasungu
+    it: Distretto di Kasungu
+    ja: カスング
+    ka: კასუნგუს რაიონი
+    kn: ಕಸ್ಸಂಗ್ ಜಿಲ್ಲೆ
+    ko: 카숭구 현
+    mr: कासंगु जिल्हा
+    ms: Daerah Kasungu
+    nb: Kasungu
+    nl: Kasungu
+    pl: Dystrykt Kasungu
+    pt: Kasungu
+    ro: Districtul Kasungu
+    ru: Касунгу
+    si: කසුන්ගු දිස්ත්‍රික්කය
+    sv: Kasungu
+    ta: காசுக்கு மாவட்டம்
+    te: కసుంగు జిల్లా
+    th: เขตคาซุนกู
+    tr: Kasungu
+    ur: کاسونجو ضلع
+    vi: Quận Kasungu
+    lv: Kasungu distrikts
+    ceb: Kasungu District
+    lt: Kasungo apskritis
+    zh: 卡松古縣
+    ccp: "\U00011107\U00011125\U0001112A\U0001111A\U00011134\U00011109\U0001112A"
+    uk: Район Касунгу
+    be: раён Касунгу
+    'no': Kasungu
+    ml: കസുങു ജില്ല
+    sw: Wilaya ya Kasungu
+  comments:
+  type: district
+LI:
+  name: Lilongwe
+  code: LI
+  unofficial_names: Lilongwe
+  geo:
+    latitude: -13.983333
+    longitude: 33.783333
+    min_latitude: -14.0644008
+    min_longitude: 33.7162716
+    max_latitude: -13.8624138
+    max_longitude: 33.8478469
+  translations:
+    en: Lilongwe
+    ar: مقاطعة ليلونغوي
+    az: Lilongwe
+    bg: Лилонгве
+    bn: লিলংওয়ে জেলা
+    da: Lilongwe District
+    de: Distrikt Lilongwe
+    el: Λιλόνγκουε
+    es: Distrito de Lilongwe
+    fa: بخش لیلونگوه
+    fi: Lilongwen piirikunta
+    fr: District de Lilongwe
+    gl: Distrito de Lilongwe
+    gu: લીલોંગવે જિલ્લો
+    hi: लिलोंग्वे जिला
+    id: Distrik Lilongwe
+    it: Distretto di Lilongwe
+    ja: リロングウェ県
+    ka: ლილონგვეს რაიონი
+    kn: ಲಿಲೊಂಗ್ವೆ ಜಿಲ್ಲೆ
+    ko: 릴롱궤 현
+    mr: लिलांगॉ जिल्हा
+    ms: Daerah Lilongwe
+    nb: Lilongwe
+    nl: Lilongwe
+    pl: Dystrykt Lilongwe
+    pt: Lilongwe
+    ro: Districtul Lilongwe
+    ru: Лилонегве
+    si: ලිලොන්ග්වේ දිස්ත්‍රික්කය
+    sv: Lilongwe
+    ta: லிலோங்வெ மாவட்டம்
+    te: లిలోంగ్వే జిల్లా
+    th: เขตลิลองเว
+    tr: Lilongwe
+    ur: لیلونجوی ضلع
+    vi: Quận Lilongwe
+    lv: Lilongves distrikts
+    ceb: Lilongwe District
+    lt: Lilongvės apskritis
+    zh: 利隆圭縣
+    ccp: "\U00011123\U00011128\U00011123\U00011127\U00011101\U00011105\U0001112A\U00011103\U00011128"
+    uk: Район Лилонгве
+    be: раён Лілонгвэ
+    'no': Lilongwe
+    ca: Lilongwe
+    he: מחוז לילונגווה
+    sw: Wilaya ya Lilongwe
+  comments:
+  type: district
+LK:
+  name: Likoma Island
+  code: LK
+  unofficial_names: Likoma Island
+  geo:
+    latitude: -12.0584005
+    longitude: 34.7354031
+    min_latitude: -12.1000348
+    min_longitude: 34.7087596
+    max_latitude: -12.0311794
+    max_longitude: 34.7604815
+  translations:
+    en: Likoma
+    ar: مقاطعة ليكوما
+    az: Likoma
+    bg: Ликома
+    bn: লিকুমা জেলা
+    da: Likoma
+    de: Likoma
+    el: Λικόμα
+    es: Distrito de Likoma
+    fa: بخش لیکوما
+    fi: Likoman piirikunta
+    fr: District de Likoma
+    gl: Distrito de Likoma
+    gu: લિકોમા જિલ્લો
+    hi: लिकोमा जिला
+    id: Distrik Likoma
+    it: Distretto di Likoma
+    ja: リコマ
+    ka: ლიკომის რაიონი
+    kn: ಲಿಕೋಮಾ ಜಿಲ್ಲೆ
+    ko: 리코마 현
+    mr: लिकामा जिल्हा
+    ms: Likoma District
+    nb: Likoma
+    nl: Likoma
+    pl: Dystrykt Likoma
+    pt: Likoma
+    ro: Districtul Likoma
+    ru: Ликома
+    si: ලිකොමා දිස්ත්‍රික්කය
+    sr: Ликома
+    sv: Likoma
+    ta: லிகோமா மாவட்டம்
+    te: లికోమా జిల్లా
+    th: เขตลิโกมา
+    tr: Likoma
+    ur: لیکوما ڈسٹرک
+    vi: Quận Likoma
+    lv: Likomas distrikts
+    ceb: Likoma District
+    sr_Latn: Likoma
+    lt: Likomos apskritis
+    zh: 利科馬縣
+    ccp: "\U00011123\U00011128\U00011107\U0001112E\U0001111F"
+    uk: Район Лікома
+    'no': Likoma
+    sw: Wilaya ya Likoma
+  comments:
+  type: district
+MC:
+  name: Mchinji
+  code: MC
+  unofficial_names: Mchinji
+  geo:
+    latitude: -13.8000058
+    longitude: 32.8930441
+    min_latitude: -13.8171608
+    min_longitude: 32.8671455
+    max_latitude: -13.7765674
+    max_longitude: 32.90946
+  translations:
+    en: Mchinji
+    ar: مقاطعة مشينجي
+    az: Mchinji
+    bg: Мчинджи
+    bn: এম সিঞ্জি জেলা
+    da: Mchinji District
+    de: Mchinji-Distrikt
+    el: Μτσίνζι
+    es: Distrito de Mchinji
+    fa: بخش مچینجی
+    fi: Mchinjin piirikunta
+    fr: District de Mchinji
+    gl: Distrito de Mchinji
+    gu: મચિંજી જિલ્લો
+    hi: मचींजी जिला
+    id: Distrik Mchinji
+    it: Distretto di Mchinji
+    ja: ムチンジ
+    ka: მჩინჯის რაიონი
+    kn: ಮಚ್ಚಿ ಜಿಲ್ಲೆ
+    ko: 음친지 현
+    mr: म्च्चिजी जिल्हा
+    ms: Daerah Mchinji
+    nb: Mchinji
+    nl: Mchinji
+    pl: Dystrykt Mchinji
+    pt: Mchinji
+    ro: Districtul Mchinji
+    ru: Мчиньи
+    si: මිචින්ජි දිස්ත්‍රික්කය
+    sv: Mchinji
+    ta: மசிஞ்சி மாவட்டம்
+    te: మాచింజి జిల్లా
+    th: มชินจิ
+    tr: Mchinji
+    ur: مچینجی ضلع
+    vi: Quận Mchinji
+    lv: Mčindži distrikts
+    ceb: Mchinji District
+    lt: Mčinio apskritis
+    zh: 姆欽吉縣
+    ccp: "\U0001110C\U00011128\U0001111A\U00011134\U0001110E\U00011128"
+    uk: Район Мчіньї
+    'no': Mchinji
+    sw: Wilaya ya Mchinji
+  comments:
+  type: district
+MG:
+  name: Mangochi
+  code: MG
+  unofficial_names: Mangochi
+  geo:
+    latitude: -14.4861733
+    longitude: 35.253304
+    min_latitude: -14.5005024
+    min_longitude: 35.2314378
+    max_latitude: -14.4638539
+    max_longitude: 35.2740097
+  translations:
+    en: Mangochi
+    ar: مقاطعة مانغوتشي
+    az: Mangochi
+    bg: Мангочи
+    bn: মাঙ্গোচি জেলা
+    da: Mangochi District
+    de: Distrikt Mangochi
+    el: Μανγκότσι
+    es: Distrito de Mangochi
+    fa: بخش مانگوچی
+    fi: Mangochin piirikunta
+    fr: District de Mangochi
+    gl: Distrito de Mangochi
+    gu: મંગોચી જિલ્લો
+    hi: मन्गोची जिला
+    id: Distrik Mangochi
+    it: Distretto di Mangochi
+    ja: マンゴチ
+    ka: მანგოჩის რაიონი
+    kn: ಮಂಗೊಚಿ ಜಿಲ್ಲೆ
+    ko: 망고치 현
+    mr: मंगोची जिल्हा
+    ms: Daerah Mangochi
+    nb: Mangochi
+    nl: Mangochi
+    pl: Dystrykt Mangochi
+    pt: Mangochi
+    ro: Districtul Mangochi
+    ru: Мангочи
+    si: මන්ගොචි දිස්ත්‍රික්කය
+    sv: Mangochi
+    ta: மண்கொச்சி மாவட்டம்
+    te: మాంగోచి జిల్లా
+    th: เขตแมนโกชิ
+    tr: Mangochi
+    ur: مانجوچی ضلع
+    vi: Quận Mangochi
+    lv: Mangonči distrikts
+    ceb: Mangochi District
+    lt: Magončio apskritis
+    zh: 曼戈切縣
+    ccp: "\U0001111F\U00011101\U00011109\U0001112E\U0001110C\U00011128"
+    uk: Район Мангочі
+    'no': Mangochi
+    sw: Wilaya ya Mangochi
+  comments:
+  type: district
+MH:
+  name: Machinga
+  code: MH
+  unofficial_names: Machinga
+  geo:
+    latitude: -15.1699934
+    longitude: 35.2999779
+    min_latitude: -15.1822628
+    min_longitude: 35.2879491
+    max_latitude: -15.1613515
+    max_longitude: 35.31739719999999
+  translations:
+    en: Machinga
+    ar: مقاطعة ماشينكا
+    az: Machinga
+    bg: Мачинга
+    bn: মেশিগান জেলা
+    da: Machinga
+    de: Machinga
+    el: Ματσίνγκα
+    es: Distrito de Machinga
+    fa: بخش ماچینگا
+    fi: Machingan piirikunta
+    fr: District de Machinga
+    gl: Distrito de Machinga
+    gu: મચીન્ગા જિલ્લો
+    hi: माचिंगा जिला
+    id: Distrik Machinga
+    it: Distretto di Machinga
+    ja: マチンガ
+    ka: მაჩინგის რაიონი
+    kn: ಮಚಿಂಗ ಜಿಲ್ಲೆ
+    ko: 마칭가 현
+    mr: मचांगा जिल्हा
+    ms: Daerah Machinga
+    nb: Machinga
+    nl: Machinga
+    pl: Dystrykt Machinga
+    pt: Machinga
+    ro: Districtul Machinga
+    ru: Мачинга
+    si: මචින්ගා දිස්ත්‍රික්කය
+    sv: Machinga
+    ta: மசிங்கா மாவட்டம்
+    te: మచింగా జిల్లా
+    th: มาชิงกา
+    tr: Machinga
+    ur: ماچینجا ضلع
+    vi: Quận Machinga
+    lv: Mačingas distrikts
+    ceb: Machinga District
+    lt: Mačingos apskritis
+    zh: 馬欽加縣
+    ccp: "\U0001111F\U0001110C\U00011128\U00011101\U00011109"
+    uk: Район Мачінга
+    be: раён Мачынга
+    'no': Machinga
+    sw: Wilaya ya Machinga
+  comments:
+  type: district
+MU:
+  name: Mulanje
+  code: MU
+  unofficial_names: Mulanje
+  geo:
+    latitude: -16.033333
+    longitude: 35.5
+    min_latitude: -16.0381583
+    min_longitude: 35.4918706
+    max_latitude: -16.0180114
+    max_longitude: 35.5212391
+  translations:
+    en: Mulanje
+    ar: مقاطعة مولاني
+    az: Mulanje
+    bg: Мулание
+    bn: মোলানজে জেলা
+    da: Mulanje District
+    de: Mulanje-Distrikt
+    el: Μουλάντζε
+    es: Distrito de Mulanje
+    fa: بخش مولانجه
+    fi: Mulanjen piirikunta
+    fr: District de Mulanje
+    gl: Distrito de Mulanje
+    gu: મુલાંજે જિલ્લો
+    hi: मुलान्ये जिला
+    id: Distrik Mulanje
+    it: Distretto di Mulanje
+    ja: ムランジェ
+    ka: მულანჯეს რაიონი
+    kn: ಮುಲಾನ್ಜೆ ಜಿಲ್ಲೆ
+    ko: 물란제 현
+    mr: मुलानें जिल्हा
+    ms: Mulanje District
+    nb: Mulanje
+    nl: Mulanje
+    pl: Dystrykt Mulanje
+    pt: Mulanje
+    ro: Districtul Mulanje
+    ru: Муланье
+    si: මුලන්ජේ දිස්ත්‍රික්කය
+    sv: Mulanje
+    ta: மூலஞ்சே மாவட்டம்
+    te: ములాంజె జిల్లా
+    th: เขตมูลานเจ
+    tr: Mulanje
+    ur: ملانجی ضلع
+    vi: Quận Mulanje
+    lv: Mulandžes distrikts
+    ceb: Mulanje District
+    lt: Mulandžės apskritis
+    zh: 姆蘭傑縣
+    ccp: "\U0001111F\U0001112A\U00011123\U0001111A\U00011134\U0001110E\U0001112C"
+    uk: Район Муланье
+    'no': Mulanje
+    ca: Mulanje
+    sw: Wilaya ya Mulanje
+  comments:
+  type: district
+MW:
+  name: Mwanza
+  code: MW
+  unofficial_names: Mwanza
+  geo:
+    latitude: -15.609722
+    longitude: 34.5225
+    min_latitude: -15.6189038
+    min_longitude: 34.4934655
+    max_latitude: -15.5777469
+    max_longitude: 34.5392461
+  translations:
+    en: Mwanza
+    ar: مقاطعة موانزا
+    az: Mwanza
+    bg: Мванза
+    bn: এমওয়াঞ্জা জেলা
+    da: Mwanza District
+    de: Mwanza-Distrikt
+    el: Μουάνζα
+    es: Distrito de Mwanza
+    fa: بخش موانزا
+    fi: Mwanzan piirikunta
+    fr: District de Mwanza
+    gl: Distrito de Mwanza
+    gu: મ્વાંઝા જિલ્લો
+    hi: मवान्ज़ा जिला
+    id: Distrik Mwanza
+    it: Distretto di Mwanza
+    ja: ムワンザ
+    ka: მვანზის რაიონი
+    kn: ಮ್ವಾಂಝಾ ಜಿಲ್ಲೆ
+    ko: 음완자 현
+    mr: म्व्हाझा जिल्हा
+    ms: Mwanza District
+    nb: Mwanza
+    nl: Mwanza
+    pl: Dystrykt Mwanza
+    pt: Mwanza
+    ro: Districtul Mwanza
+    ru: Мванза
+    si: ම්වන්සා දිස්ත්‍රික්කය
+    sv: Mwanza
+    ta: மவன்சங் மாவட்டம்
+    te: మవాంజా జిల్లా
+    th: เขตมวันซา
+    tr: Mwanza
+    ur: موانزا ضلع
+    vi: Quận Mwanza
+    lv: Mvanzas distrikts
+    ceb: Mwanza District (distrito sa Malawi)
+    lt: Manzos apskritis
+    zh: 姆萬紮縣
+    ccp: "\U00011124\U0001111A\U00011134\U0001110E"
+    uk: Район Мванза
+    'no': Mwanza
+    ca: Mwanza
+    sw: Wilaya ya Mwanza, Malawi
+  comments:
+  type: district
+MZ:
+  name: Mzimba
+  code: MZ
+  unofficial_names: Mzimba
+  geo:
+    latitude: -11.9
+    longitude: 33.6
+    min_latitude: -11.913209
+    min_longitude: 33.5802269
+    max_latitude: -11.8862493
+    max_longitude: 33.60408779999999
+  translations:
+    en: Mzimba
+    ar: مقاطعة مزيمبا
+    az: Mzimba
+    bg: Мзимба
+    bn: এমজিম্বা জেলা
+    da: Mzimba District
+    de: Mzimba-Distrikt
+    el: Μζίμπα
+    es: Distrito de Mzimba
+    fa: بخش مزیمبا
+    fi: Mzimban piirikunta
+    fr: District de Mzimba
+    gl: Distrito de Mzimba
+    gu: મઝીબા જિલ્લો
+    hi: ज़िम्बा जिला
+    id: Distrik Mzimba
+    it: Distretto di Mzimba
+    ja: ムジンバ
+    ka: მზიმბის რაიონი
+    kn: ಮಿಜಿಂಬ ಜಿಲ್ಲೆ
+    ko: 음짐바 현
+    mr: मझीबा जिल्हा
+    ms: Mzimba District
+    nb: Mzimba
+    nl: Mzimba
+    pl: Dystrykt Mzimba
+    pt: Mzimba
+    ro: Districtul Mzimba
+    ru: Мзимба
+    si: මසිම්බා දිස්ත්‍රික්කය
+    sr: Мзимба
+    sv: Mzimba
+    ta: மஜிம்பா மாவட்டம்
+    te: ఎంజింబా జిల్లా
+    th: เขตเอ็มซิมบ้า
+    tr: Mzimba
+    ur: مزیمبا ضلع
+    vi: Quận Mzimba
+    lv: Mzimbas distrikts
+    ceb: Mzimba District
+    sr_Latn: Mzimba
+    lt: Mzimbos apskritis
+    zh: 姆津巴縣
+    ccp: "\U0001110E\U00011128\U0001111F\U00011134\U0001111D"
+    uk: Район Мзімба
+    be: раён Мзімба
+    'no': Mzimba
+    ca: Mzimba
+    he: מזמבה
+    sw: Wilaya ya Mzimba
+  comments:
+  type: district
+N:
+  name: Northern
+  code: N
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    az: Şimal bölgəsi
+    bg: Северен регион
+    de: Northern Region
+    el: Βόρεια Περιφέρεια
+    en: Northern
+    es: Región del Norte
+    fa: منطقه شمالی مالاوی
+    fi: Pohjoinen alue
+    fr: Région Nord
+    gl: Rexión Norte
+    it: regione Settentrionale
+    ja: 北部州
+    ka: მალავის ჩრდილოეთი რეგიონი
+    ko: 북부 주
+    lt: Šiaurės regionas
+    nb: Northern
+    nl: Northern
+    pt: Região Norte
+    ro: Regiunea Northern
+    ru: Северный регион
+    sr: Северни регион
+    sv: Northern Region
+    tr: Kuzey Bölgesi
+    uk: Північний регіон
+    ur: شمالی علاقہ، ملاوی
+    ceb: Northern Region
+    sr_Latn: Severni region
+    zh: 北部区
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ca: Regió del Nort
+    be: Паўночны рэгіён
+    'no': Northern
+    he: אזור הצפון
+    sw: Kanda ya Kaskazini, Malawi
+  comments:
+  type: region
+NB:
+  name: Nkhata Bay
+  code: NB
+  unofficial_names: Nkhata Bay
+  geo:
+    latitude: -11.6085556
+    longitude: 34.2949409
+    min_latitude: -11.6133972
+    min_longitude: 34.2894459
+    max_latitude: -11.6009539
+    max_longitude: 34.3032989
+  translations:
+    en: Nkhata Bay
+    ar: مقاطعة خليج نخاتا
+    az: Nkhata Bay
+    bg: Нхата Бей
+    bn: এন কে হাতা বে জেলা
+    da: Nkhata Bay District
+    de: Nkhata Bay Distrikt
+    el: Κόλπος Νχάτα
+    es: Distrito de Nkhata Bay
+    fa: بخش نکهاتا بای
+    fi: Nkhata Bayn piirikunta
+    fr: District de Nkhata Bay
+    gl: Distrito de Nkhata Bay
+    gu: નખાતા બે જિલ્લો
+    hi: खाता बे जिला
+    id: Distrik Nkhata Bay
+    it: Distretto di Nkhata Bay
+    ja: カタベイ
+    ka: ნხატა ბაის რაიონი
+    kn: ನೆಖತಾ ಬೇ ಜಿಲ್ಲೆ
+    ko: 은카타베이 현
+    mr: नखाता बे जिल्हा
+    ms: Nkhata Bay District
+    nb: Nkhata Bay
+    nl: Nkhata Bay
+    pl: Dystrykt Nkhata Bay
+    pt: Nkhata Bay
+    ro: Districtul Nkhata Bay
+    ru: Нхата Бэй
+    si: එන්ඛටා කලපු දිස්ත්‍රික්කය
+    sr: Нхата Беј
+    sv: Nkhata Bay
+    ta: நகாடா பே மாவட்டம்
+    te: ఎన్‌‌ఖాటా బే జిల్లా
+    th: เขตคฮาทา เบย์
+    tr: Nkhata Bay
+    ur: نخاتا بے ضلع
+    vi: Quận Nkhata Bay
+    lv: Nkhatabejas distrikts
+    ceb: Nkhata Bay District
+    sr_Latn: Nhata Bej
+    lt: Nkata Bėjaus apskritis
+    zh: 恩卡塔灣縣
+    ccp: "\U00011108\U00011111 \U0001111D\U0001112C"
+    uk: Район Нхата-Бей
+    'no': Nkhata Bay
+    sw: Wilaya ya Nkhata Bay
+  comments:
+  type: district
+NE:
+  name: Neno
+  code: NE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة نينو
+    az: Neno
+    bg: Нено
+    bn: নেনো জেলা
+    da: Neno District
+    de: Neno-Distrikt
+    el: Νένο
+    en: Neno
+    es: Distrito de Neno
+    fa: بخش ننو
+    fi: Nenon piirikunta
+    fr: District de Neno
+    gl: Distrito de Neno
+    gu: નેનો જિલ્લો
+    hi: नेनो जिला
+    id: Distrik Neno
+    it: Distretto di Neno
+    ja: ネノ
+    ka: ნენოს რაიონი
+    kn: ನೆನೊ ಜಿಲ್ಲೆ
+    ko: 네노 현
+    mr: नेनो जिल्हा
+    ms: Neno District
+    nb: Neno
+    nl: Neno District
+    pl: Dystrykt Neno
+    pt: Neno
+    ro: Districtul Neno
+    ru: Нено
+    si: නෙනෝ දිස්ත්‍රික්කය
+    sv: Neno
+    ta: நேனோ மாவட்டம்
+    te: నెనో జిల్లా
+    th: เขตนีโน
+    tr: Neno
+    ur: نینو ضلع
+    vi: Neno Quận
+    lv: Neno distrikts
+    ceb: Neno District
+    lt: Neno apskritis
+    ccp: "\U0001111A\U0001112C\U0001111A\U0001112E"
+    uk: Район Нено
+    'no': Neno
+    sw: Wilaya ya Neno
+  comments:
+  type: district
+NI:
+  name: Ntchisi
+  code: NI
+  unofficial_names: Ntchisi
+  geo:
+    latitude: -13.2841992
+    longitude: 33.88577470000001
+    min_latitude: -13.534227
+    min_longitude: 33.703213
+    max_latitude: -13.0142031
+    max_longitude: 34.131686
+  translations:
+    en: Ntchisi
+    ar: مقاطعة نتشيسى
+    az: Ntchisi
+    bg: Нтчиси
+    bn: ছিসি জেলা
+    da: Ntchisi District
+    de: Ntchisi-Distrikt
+    el: Ντσίσι
+    es: Distrito de Ntchisi
+    fa: بخش نتچیسی
+    fi: Ntchisin piirikunta
+    fr: District de Ntchisi
+    gl: Distrito de Ntchisi
+    gu: ન્ટચીસી જિલ્લો
+    hi: नटशिसी जिला
+    id: Distrik Ntchisi
+    it: Distretto di Ntchisi
+    ja: ンチシ
+    ka: ნტჩისის რაიონი
+    kn: ಎನ್ಟಿಚಿ ಜಿಲ್ಲೆ
+    ko: 은치시 현
+    mr: न्टचीसी जिल्हा
+    ms: Daerah Ntchisi
+    nb: Ntchisi
+    nl: Ntchisi
+    pl: Dystrykt Ntchisi
+    pt: Ntchisi
+    ro: Districtul Ntchisi
+    ru: Нтчиси
+    si: න්ට්චිසි දිස්ත්‍රික්කය
+    sv: Ntchisi
+    ta: நட்சிசி மாவட்டம்
+    te: ఎన్చిజి జిల్లా
+    th: เขตนชิสิ
+    tr: Ntchisi
+    ur: نتچیسی ضلع
+    vi: Quận Ntchisi
+    lv: Ntsiči rajons
+    ceb: Ntchisi District
+    lt: Nčisio apskritis
+    zh: 恩奇斯縣
+    ccp: "\U0001110C\U00011128\U00011125\U00011128"
+    uk: Район Нтчісі
+    'no': Ntchisi
+    sw: Wilaya ya Ntchisi
+  comments:
+  type: district
+NK:
+  name: Nkhotakota
+  code: NK
+  unofficial_names: Nkhotakota
+  geo:
+    latitude: -12.9316863
+    longitude: 34.2810541
+    min_latitude: -12.9423296
+    min_longitude: 34.2674732
+    max_latitude: -12.9116282
+    max_longitude: 34.2997456
+  translations:
+    en: Nkhotakota
+    ar: مقاطعة نكوتاكوتا
+    az: Nkhotakota
+    bg: Нхотакота
+    bn: কোটাকোটা জেলা
+    da: Nkhotakota District
+    de: Nkhotakota
+    el: Νχοτακότα
+    es: Distrito de Nkhotakota
+    fa: بخش نخوتاکوتا
+    fi: Nkhotakotan piirikunta
+    fr: District de Nkhotakota
+    gl: Distrito de Nkhotakota
+    gu: નાખોટાકોટા જિલ્લો
+    hi: खोताकोता जिला
+    id: Distrik Nkhotakota
+    is: Nkhotakota
+    it: Distretto di Nkhotakota
+    ja: コタコタ
+    ka: ნხოტაკოტის რაიონი
+    kn: ನೆಕೊಟಕೋಟಾ ಜಿಲ್ಲೆ
+    ko: 은코타코타 현
+    mr: नखोटाकोटा जिल्हा
+    ms: Nkhotakota District
+    nb: Nkhotakota
+    nl: Nkhotakota
+    pl: Dystrykt Nkhotakota
+    pt: Nkhotakota
+    ro: Districtul Nkhotakota
+    ru: Нхотакота
+    si: න්ඛෝටකොටා දිස්ත්‍රික්කය
+    sv: Nkhotakota
+    ta: ந்கஹோடகோடா மாவட்டம்
+    te: నికోటాకోటా జిల్లా
+    th: เขตอึงโคทาโกตา
+    tr: Nkhotakota
+    ur: نخوتاکوتا ضلع
+    vi: Quận Nkhotakota
+    lv: Nkhotakotas distrikts
+    ceb: Nkhotakota District
+    lt: Nkotakotos apskritis
+    zh: 恩科塔科塔縣
+    ccp: "\U00011108\U0001112E\U00011111\U00011107\U0001112E\U00011111"
+    uk: Район Нхотакота
+    be: раён Нхатакота
+    'no': Nkhotakota
+    sw: Wilaya ya Nkhotakota
+  comments:
+  type: district
+NS:
+  name: Nsanje
+  code: NS
+  unofficial_names: Nsanje
+  geo:
+    latitude: -16.916667
+    longitude: 35.266667
+    min_latitude: -16.9436398
+    min_longitude: 35.2404084
+    max_latitude: -16.8957132
+    max_longitude: 35.27349
+  translations:
+    en: Nsanje
+    ar: مقاطعة نسانج
+    az: Nsanje
+    bg: Нсане
+    bn: সাঞ্জে ডিস্টিক্ট
+    da: Nsanje District
+    de: Nsanje-Distrikt
+    el: Νσάντζε
+    es: Distrito de Nsanje
+    fa: بخش نسانجه
+    fi: Nsanjen piirikunta
+    fr: District de Nsanje
+    gl: Distrito de Nsanje
+    gu: સાંજે જિલ્લો
+    hi: नसंजे जिला
+    id: Distrik Nsanje
+    it: Distretto di Nsanje
+    ja: ンサンジェ
+    ka: ნსანეს რაიონი
+    kn: ಎನ್ಸಾಂಜ್ ಜಿಲ್ಲೆ
+    ko: 은산제 현
+    mr: नांझान जिल्हा
+    ms: Daerah Nsanje
+    nb: Nsanje
+    nl: Nsanje
+    pl: Dystrykt Nsanje
+    pt: Nsanje
+    ro: Districtul Nsanje
+    ru: Нсанье
+    si: එන්සන්ජේ දිස්ත්‍රික්කය
+    sv: Nsanje
+    ta: ன்சஞ்சே மாவட்டம்
+    te: సాన్యే జిల్లా
+    th: เขตเอนแซนเจ
+    tr: Nsanje
+    ur: نسانجی ضلع
+    vi: Quận Nsanje
+    lv: Nsandžes distrikts
+    ceb: Nsanje District
+    lt: Nsanjės apskritis
+    zh: 恩桑傑縣
+    ccp: "\U00011125\U0001111A\U00011134\U0001110E\U0001112C"
+    uk: Район Нсанье
+    'no': Nsanje
+    sw: Wilaya ya Nsanje
+  comments:
+  type: district
+NU:
+  name: Ntcheu
+  code: NU
+  unofficial_names: Ntcheu
+  geo:
+    latitude: -14.8219765
+    longitude: 34.6358702
+    min_latitude: -14.8403539
+    min_longitude: 34.6122551
+    max_latitude: -14.7955467
+    max_longitude: 34.6578313
+  translations:
+    en: Ntcheu
+    ar: مقاطعة نتشيو
+    az: Ntcheu
+    bg: Нтчеу
+    bn: এনটি চেঊ ডিস্ট্রি
+    da: Ntcheu District
+    de: Ntcheu-Distrikt
+    el: Ντσέου
+    es: Distrito de Ntcheu
+    fa: بخش نتچئو
+    fi: Ntcheun piirikunta
+    fr: District de Ntcheu
+    gl: Distrito de Ntcheu
+    gu: નટ્ચેઉ જિલ્લો
+    hi: तिचेऊ जिला
+    id: Distrik Ntcheu
+    it: Distretto di Ntcheu
+    ja: ンチェウ
+    ka: ნტჩეუს რაიონი
+    kn: ನ್ಟೆಚ್ಯೂ ಜಿಲ್ಲೆ
+    ko: 은체우 현
+    mr: नटाचेउ जिल्हा
+    ms: Ntcheu District
+    nb: Ntcheu
+    nl: Ntcheu
+    pl: Dystrykt Ntcheu
+    pt: Ntcheu
+    ro: Districtul Ntcheu
+    ru: Нтчеу
+    si: න්ට්චේයු දිස්ත්‍රික්කය
+    sv: Ntcheu
+    ta: நிட்சேக்கு மாவட்டம்
+    te: ఎన్చియూ జిల్లా
+    th: เขตเน็ทชิว
+    tr: Ntcheu
+    ur: نتچیو ضلع
+    vi: Quận Ntcheu
+    lv: Nčheu distrikts
+    ceb: Ntcheu District
+    lt: Nčou apskritis
+    zh: 恩徹烏縣
+    ccp: "\U0001110C\U0001112C\U00011105\U0001112A"
+    uk: Нтчеу
+    'no': Ntcheu
+    ca: Ncheu
+    sw: Wilaya ya Ntcheu
+  comments:
+  type: district
+PH:
+  name: Phalombe
+  code: PH
+  unofficial_names: Phalombe
+  geo:
+    latitude: -15.7633303
+    longitude: 35.6587503
+    min_latitude: -15.7868579
+    min_longitude: 35.638361
+    max_latitude: -15.748579
+    max_longitude: 35.6769688
+  translations:
+    en: Phalombe
+    ar: مقاطعة فالومبي
+    az: Phalombe
+    bg: Паломбе
+    bn: পালোম্বে জেলা
+    da: Phalombe District
+    de: Distrikt Phalombe
+    el: Φαλόμπε
+    es: Distrito de Phalombe
+    fa: بخش پهالومبه
+    fi: Phalomben piirikunta
+    fr: District de Phalombe
+    gl: Distrito de Phalombe
+    gu: ફાલોમ્બે જિલ્લો
+    hi: फलोम्बी जिला
+    id: Distrik Phalombe
+    it: Distretto di Phalombe
+    ja: パロンベ
+    ka: ფალომბეს რაიონი
+    kn: ಫಲೋಂಬೆ ಜಿಲ್ಲೆ
+    ko: 팔롬베 현
+    mr: फलोमबे जिल्हा
+    ms: Phalombe District
+    nb: Phalombe
+    nl: Phalombe
+    pl: Dystrykt Phalombe
+    pt: Phalombe
+    ro: Districtul Phalombe
+    ru: Фаломбе
+    si: පලොඹේ දිස්ත්‍රික්කය
+    sv: Phalombe
+    ta: பாலம்பே மாவட்டம்
+    te: ఫాలోంబే జిల్లా
+    th: เขตปาลัมเบ
+    tr: Phalombe
+    ur: پھالومبی ضلع
+    vi: Quận Phalombe
+    lv: Falombes distrikts
+    ceb: Phalombe District
+    lt: Falombės apskritis
+    zh: 法隆貝縣
+    ccp: "\U0001111C\U00011123\U0001112E\U0001111F\U00011134\U0001111D\U0001112C"
+    uk: Район Фаломбе
+    ca: districte de Phalombe
+    'no': Phalombe
+    sw: Wilaya ya Phalombe
+  comments:
+  type: district
+RU:
+  name: Rumphi
+  code: RU
+  unofficial_names: Rumphi
+  geo:
+    latitude: -11.016667
+    longitude: 33.866667
+    min_latitude: -11.0211537
+    min_longitude: 33.8431264
+    max_latitude: -11.0083478
+    max_longitude: 33.8720083
+  translations:
+    en: Rumphi
+    ar: إقليم رومفي
+    az: Rumphi
+    bg: Румфи
+    bn: রুম্পি জেলা
+    da: Rumphi
+    de: Rumphi-Distrikt
+    el: Ρούμφι
+    es: Distrito de Rumphi
+    fa: بخش رامفی
+    fi: Rumphin piirikunta
+    fr: District de Rumphi
+    gl: Distrito de Rumphi
+    gu: રુમ્ફી જિલ્લો
+    hi: रुम्फी जिला
+    id: Distrik Rumphi
+    it: Distretto di Rumphi
+    ja: ルンピ
+    ka: რუმფის რაიონი
+    kn: ರಂಫಿ ಜಿಲ್ಲೆ
+    ko: 룸피 현
+    mr: रंफि जिल्हा
+    ms: Rumphi District
+    nb: Rumphi
+    nl: Rumphi
+    pl: Dystrykt Rumphi
+    pt: Rumphi
+    ro: Districtul Rumphi
+    ru: Румфи
+    si: රම්ප්හි දිස්ත්‍රික්කය
+    sr: Румфи
+    sv: Rumphi
+    ta: ராமபி மாவட்டம்
+    te: రుంఫి జిల్లా
+    th: อำเภอรัมฟี
+    tr: Rumphi
+    ur: رومپحی ضلع
+    vi: Quận Rumphi
+    lv: Rumfi distrikts
+    ceb: Rumphi District
+    sr_Latn: Rumfi
+    lt: Rumfio apskritis
+    zh: 倫比縣
+    ccp: "\U00011122\U0001112A\U0001111F\U00011134\U0001111C\U00011128"
+    uk: Район Румфі
+    'no': Rumphi
+    sw: Wilaya ya Rumphi
+  comments:
+  type: district
+S:
+  name: Southern
+  code: S
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    az: Cənub bölgəsi
+    bg: Южен регион
+    de: Southern Region
+    el: Νότια Περιφέρεια
+    en: Southern
+    es: Región del Sur
+    fa: منطقه جنوبی مالاوی
+    fi: Eteläinen alue
+    fr: Région Sud
+    gl: Rexión Sur
+    it: regione Meridionale
+    ja: 南部州
+    ka: მალავის სამხრეთი რეგიონი
+    ko: 남부 주
+    lt: Pietų regionas
+    nb: Southern
+    nl: Southern
+    pt: Região Sul
+    ro: Regiunea Southern
+    ru: Южный регион
+    sr: Јужни регион
+    sv: Southern Region
+    tr: Güney Bölgesi
+    uk: Південний регіон
+    ur: جنوبی علاقہ، ملاوی
+    ceb: Southern Region
+    sr_Latn: Južni region
+    zh: 南部区
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ca: Regió del Sud
+    be: Паўднёвы рэгіён
+    'no': Southern
+    sw: Kanda ya Kusini, Malawi
+  comments:
+  type: region
+SA:
+  name: Salima
+  code: SA
+  unofficial_names: Salima
+  geo:
+    latitude: -13.7795533
+    longitude: 34.458641
+    min_latitude: -13.7959897
+    min_longitude: 34.4338989
+    max_latitude: -13.7622286
+    max_longitude: 34.4751836
+  translations:
+    en: Salima
+    ar: مقاطعة ساليما
+    az: Salima
+    bg: Салима
+    bn: সালিমা জেলা
+    da: Salima District
+    de: Distrikt Salima
+    el: Σαλίμα
+    es: Distrito de Salima
+    fa: بخش سالیما
+    fi: Saliman piirikunta
+    fr: District de Salima
+    gl: Distrito de Salima
+    gu: સલિમા જિલ્લો
+    hi: सलीमा जिला
+    id: Distrik Salima
+    it: Distretto di Salima
+    ja: サリマ
+    ka: სალიმის რაიონი
+    kn: ಸಲಿಮಾ ಜಿಲ್ಲೆ
+    ko: 살리마 현
+    mr: सलीमा जिल्हा
+    ms: Daerah Salima
+    nb: Salima
+    nl: Salima
+    pl: Dystrykt Salima
+    pt: Salima
+    ro: Districtul Salima
+    ru: Салима
+    si: සලිමා දිස්ත්‍රික්කය
+    sv: Salima
+    ta: சலீமா மாவட்டம்
+    te: సాలిమా జిల్లా
+    th: เขตซาลิมะ
+    tr: Salima
+    ur: سلیمہ ضلع
+    vi: Quận Salima
+    lv: Salimas distrikts
+    ceb: Salima District
+    lt: Salimos apskritis
+    zh: 薩利馬縣
+    ccp: "\U00011125\U00011123\U00011128\U0001111F"
+    uk: Район Саліма
+    'no': Salima
+    sw: Wilaya ya Salima
+  comments:
+  type: district
+TH:
+  name: Thyolo
+  code: TH
+  unofficial_names: Thyolo
+  geo:
+    latitude: -16.066667
+    longitude: 35.133333
+    min_latitude: -16.0789703
+    min_longitude: 35.1302433
+    max_latitude: -16.0617329
+    max_longitude: 35.1527309
+  translations:
+    en: Thyolo
+    az: Thyolo
+    bg: Тхиоло
+    es: Distrito de Thyolo
+    fa: بخش تیولو
+    fi: Thyolon piirikunta
+    fr: District de Thyolo
+    gl: Distrito de Thyolo
+    id: Distrik Thyolo
+    it: Distretto di Thyolo
+    ja: チョロ
+    ka: ტიოლოს რაიონი
+    ko: 티올로 현
+    nb: Thyolo
+    nl: Thyolo
+    pl: Dystrykt Thyolo
+    pt: Thyolo
+    ro: Districtul Thyolo
+    ru: Тайоло
+    sv: Thyolo
+    tr: Thyolo
+    ceb: Thyolo District
+    zh: 蒂約羅縣
+    ccp: "\U00011112\U0001112D\U00011120\U0001112E\U00011123\U0001112E"
+    'no': Thyolo
+    be: Тыёла
+    sw: Wilaya ya Thyolo
+  comments:
+  type: district
+ZO:
+  name: Zomba
+  code: ZO
+  unofficial_names: Zomba
+  geo:
+    latitude: -15.383333
+    longitude: 35.333333
+    min_latitude: -15.4255095
+    min_longitude: 35.2947378
+    max_latitude: -15.3602598
+    max_longitude: 35.3924561
+  translations:
+    en: Zomba
+    az: Zomba
+    bg: Зомба
+    es: Distrito de Zomba
+    fa: بخش زومبا
+    fi: Zomban piirikunta
+    fr: District de Zomba
+    gl: Distrito de Zomba
+    id: Distrik Zomba
+    it: Distretto di Zomba
+    ka: ზომბის რაიონი
+    ko: 좀바 현
+    nb: Zomba
+    nl: Zomba
+    pt: Zomba
+    ro: Districtul Zomba
+    sr: Зомба
+    sv: Zomba
+    tr: Zomba
+    ceb: Zomba District
+    sr_Latn: Zomba
+    zh: 松巴縣
+    ja: ゾンバ県
+    ccp: "\U0001110E\U0001112E\U0001111F\U00011134\U0001111D"
+    ca: districte de Zomba
+    be: раён Зомба
+    'no': Zomba
+    ml: സൊംബ ജില്ല
+    sw: Wilaya ya Zomba
+  comments:
+  type: district

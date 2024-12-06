@@ -1,0 +1,51 @@
+---
+GP:
+  alpha2: GP
+  alpha3: GLP
+  continent: North America
+  country_code: '590'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: true
+  euvat_member: false
+  gec: GP
+  geo:
+    latitude: 16.265
+    longitude: -61.55099999999999
+    max_latitude: 16.5572273
+    max_longitude: -60.9473
+    min_latitude: 15.742032
+    min_longitude: -61.8468
+    bounds:
+      northeast:
+        lat: 16.5572273
+        lng: -60.9473
+      southwest:
+        lat: 15.742032
+        lng: -61.8468
+  international_prefix: '00'
+  ioc:
+  iso_long_name: Guadeloupe
+  iso_short_name: Guadeloupe
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: None
+  nationality: French
+  number: '312'
+  postal_code: true
+  postal_code_format: 9[78][01]\d{2}
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: GP
+  unofficial_names:
+  - Guadeloupe
+  - Guadalupe
+  - グアドループ
+  world_region: AMER

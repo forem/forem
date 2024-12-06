@@ -1,0 +1,62 @@
+<p>
+  <%= link_to root_path do %>
+    &laquo; Experiments
+  <% end %>
+</p>
+
+<h1><%= @participant %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Experiment</th>
+      <th style="width: 20%;">Variant</th>
+      <th style="width: 20%;">Converted</th>
+      <th style="width: 20%;">Started</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @memberships.each do |membership| %>
+      <tr>
+        <td><%= link_to membership.experiment, experiment_path(membership.experiment) %></td>
+        <td>
+          <% experiment = FieldTest::Experiment.find(membership.experiment) rescue nil %>
+          <% if experiment %>
+            <%= form_for membership do |f| %>
+              <%= f.select "variant", options_for_select(FieldTest::Experiment.find(membership.experiment).variants.map { |v| [v, v] }, membership.variant), {}, onchange: "this.form.submit()" %>
+            <% end %>
+          <% else %>
+            <%= membership.variant %>
+          <% end %>
+        </td>
+        <td>
+          <% converted = false %>
+          <% if experiment %>
+          <% experiment.goals.each do |goal| %>
+              <% if @events[[membership.id, goal]] %>
+                <% converted = true %>
+                <div>
+                  <span class="check">✓</span>
+                  <% if experiment.multiple_goals? %>
+                    <%= goal.titleize %>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <% if !converted && membership.try(:converted) %>
+            <span class="check">✓</span>
+          <% end %>
+        </td>
+        <td>
+          <% if membership.created_at > 1.day.ago %>
+            <%= time_ago_in_words(membership.created_at, include_seconds: true) %> ago
+          <% else %>
+            <%= membership.created_at.to_formatted_s(:short) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

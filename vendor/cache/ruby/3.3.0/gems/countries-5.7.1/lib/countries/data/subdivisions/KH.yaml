@@ -1,0 +1,1627 @@
+---
+'1':
+  name: Banteay Mean Chey [Bântéay Méanchey]
+  code: '1'
+  unofficial_names:
+  - Banteay Mean Chey [Bântéay Méanchey]
+  - banteay meanchey
+  - b.chey
+  - bm
+  - b.m
+  geo:
+    latitude: 13.6672596
+    longitude: 102.8975098
+    min_latitude: 13.343196
+    min_longitude: 102.3400039
+    max_latitude: 14.24883
+    max_longitude: 103.44429
+  translations:
+    en: Banteay Meanchey
+    ar: محافظة بانتياي مينتشي
+    bg: Бантеай Меантей
+    bn: বান্টি মিঞ্চি প্রদেশ
+    da: Banteay Meanchey Province
+    de: Banteay Meanchey
+    el: Μπαντό Μίντσεϊ
+    es: Banteay Mean Chey
+    fi: Bântéay Méancheăy
+    fr: province de Banteay Mean Chey
+    gu: બાન્તેય મિન્ચેય પ્રાંત
+    hi: बैंतीए मीनचिए प्रांत
+    id: Provinsi Banteay Meanchey
+    it: provincia di Banteay Meanchey
+    ja: バンテイメンチェイ州
+    km: ខេត្តបន្ទាយមានជ័យ
+    kn: ಬಂಟೇಯ್ ಮೀನ್ಚೆ ಪ್ರಾಂತ್ಯ
+    ko: 반테아이메안체이 주
+    mr: बेंटेय मेकेसी प्रांत
+    ms: Banteay Meanchey Province
+    nb: Banteay Meancheay
+    nl: Banteay Mean Cheay
+    pl: Prowincja Banteay Mean Cheay
+    pt: Banteay Meanchey
+    ru: Бантеаймеантьей
+    si: බැන්ටේ පළාත
+    sv: Banteay Meanchey
+    ta: பாண்டேயாய் மேயஞ்செய் மாகாணம்
+    te: బాంటే మీంచే ప్రావిన్స్
+    th: จังหวัดบันทายมีชัย
+    tr: Banteay Meanchey
+    ur: بانتیئی مینچیئی صوبہ
+    vi: Banteay Meanchey
+    zh: 班迭棉吉省
+    lv: Bantīejmīenķeajas province
+    ceb: Banteay Meanchey
+    lt: Bantėj Mančėjaus provincija
+    ccp: "\U0001111D\U0001111A\U00011134\U00011111\U00011128\U00011120 \U0001111F\U00011128\U0001111A\U00011134\U0001110C\U0001112C"
+    uk: Провінція Бантеаймеантьей
+    'no': Banteay Meancheay
+    cy: Talaith Banteay Meanchey
+    et: Bântéay Méan Cheăy provints
+    he: באנטי מינצ׳י
+    so: Banteay Meanchey Province
+  comments:
+  type: province
+'10':
+  name: Kracheh [Krâchéh]
+  code: '10'
+  unofficial_names:
+  - Kratié
+  - Kratie
+  - kr.ch
+  - kr
+  - k.r
+  geo:
+    latitude: 12.5759862
+    longitude: 106.2522143
+    min_latitude: 12.332707
+    min_longitude: 105.9990121
+    max_latitude: 12.7869431
+    max_longitude: 106.409197
+  translations:
+    en: Kratié
+    ar: محافظة كراتي
+    bg: Кратех
+    bn: ক্রাটি প্রদেশ
+    da: Kratié Province
+    de: Kratie
+    el: Κρατιέ
+    es: Kratié
+    et: Krâchéhi provints
+    fi: Krâchéh
+    fr: province de Kratie
+    gu: ક્રેટી પ્રાંત
+    hi: कराती प्रांत
+    id: Kratié
+    it: provincia di Kratié
+    ja: クラチエ州
+    km: ខេត្ត ក្រចេះ
+    kn: ಕ್ರಾಟಿ ಪ್ರಾಂತ್ಯ
+    ko: 크라티에 주
+    mr: क्रेटी प्रांत
+    ms: Kratie Province
+    nb: Kratie
+    nl: Khett Kracheh
+    pl: Prowincja Krachen
+    pt: Kratié
+    ru: Кратьэх
+    si: ක්රටයි පලාත
+    sv: Kratie (provins i Kambodja)
+    ta: க்ராடில் மாகாணம்
+    te: క్రేటీ ప్రావిన్స్
+    th: จังหวัดกระแจะ
+    tr: Kratie District
+    ur: کراتیہ صوبہ
+    vi: Kratié
+    lv: Kraķēhas province
+    ceb: Kratie (lalawigan sa Kamboya)
+    lt: Kratės provincija
+    zh: 桔井省
+    ccp: "\U00011107\U00011133\U00011122\U00011111\U0001112D"
+    uk: Провінція Кратьех
+    'no': Kratie
+    be: Крацьэх (правінцыя)
+    cy: Talaith Kratié
+    fa: استان کراتیه
+    so: Kratié Province
+  comments:
+  type: province
+'11':
+  name: Mondol Kiri [Môndól Kiri]
+  code: '11'
+  unofficial_names:
+  - Mondolkiri
+  - Mondulkiri
+  - m.ri
+  - mk
+  - m.k
+  geo:
+    latitude: 12.7879427
+    longitude: 107.1011931
+    min_latitude: 12.059729
+    min_longitude: 106.3519529
+    max_latitude: 13.423394
+    max_longitude: 107.606102
+  translations:
+    en: Mondulkiri
+    ar: محافظة موندولكيري
+    bg: Мондул Кири
+    bn: মন্ডুলকিরী প্রদেশ
+    ca: Província de Mondulkiri
+    da: Mondulkiri Province
+    de: Mondulkiri
+    el: Μοντουλκίρι
+    es: Provincia de Mondol Kirí
+    et: Môndôl Kĭri provints
+    fi: Môndôl Kiri
+    fr: province de Mondol Kiri
+    gu: મોંડુલ્કીરી પ્રાંત
+    hi: मौण्डुलकिरी प्रांत
+    id: Provinsi Mondulkiri
+    it: provincia di Mondulkiri
+    ja: モンドルキリ州
+    km: ខេត្តមណ្ឌលគិរី
+    kn: ಮೊಂಡುಲ್ಕಿರಿ ಪ್ರಾಂತ್ಯ
+    ko: 몬둘키리 주
+    mr: मोंडुलकेरी प्रांत
+    ms: Mondulkiri Province
+    nb: Mondulkiri
+    nl: Mondol Kiri
+    pl: Prowincja Mondol Kiri
+    pt: Mondul Kiri
+    ru: Мондолькири
+    si: මොන්ඩුල්කිරි පළාත
+    sv: Mondolkiri
+    ta: மொண்டுலகிரி மாகாணம்
+    te: మాండుల్కురి ప్రావిన్స్
+    th: จังหวัดมณฑลคีรี
+    tr: Mondulkiri Province
+    ur: موندولکیری صوبہ
+    vi: Mondulkiri
+    lv: Mondolkīrī province
+    ceb: Mondolkiri
+    lt: Modulkirio provincija
+    zh: 蒙多基里省
+    ccp: "\U0001111F\U00011127\U0001111A\U00011134\U00011113\U0001112A\U00011123\U00011134\U00011107\U00011128\U00011122\U00011128"
+    uk: Провінція Мондулкірі
+    'no': Mondulkiri
+    cy: Rhanbarth Mondulkiri
+    fa: استان موندولکیری
+    so: Mondulkiri Province
+  comments:
+  type: province
+'12':
+  name: Phnom Penh [Phnum Pénh]
+  code: '12'
+  unofficial_names:
+  - Phnom Penh
+  - pp
+  - p.p
+  geo:
+    latitude: 11.5448729
+    longitude: 104.8921668
+    min_latitude: 11.428726
+    min_longitude: 104.779653
+    max_latitude: 11.682486
+    max_longitude: 104.968803
+  translations:
+    en: Phnom Penh
+    af: Phnom Penh
+    am: ፕኖም ፔን
+    ar: بنوم بنه
+    az: Pnompen
+    be: Пнампень
+    bg: Пном Пен
+    bn: প্‌নম পেন
+    ca: Phnom Penh
+    cs: Phnompenh
+    da: Phnom Penh
+    de: Phnom Penh
+    el: Πνομ Πεν
+    es: Nom Pen
+    et: Phnom Penh
+    eu: Phnom Penh
+    fa: پنوم‌پن
+    fi: Phnom Penh
+    fr: Phnom Penh
+    gl: Phnom Penh
+    gu: પનામ પેન્હ
+    he: פנום פן
+    hi: नामपेन्ह
+    hr: Phnom Penh
+    hu: Phnompen
+    hy: Պնոմպեն
+    id: Phnom Penh
+    is: Phnom Penh
+    it: Phnom Penh
+    ja: プノンペン
+    ka: პნომპენი
+    km: ភ្នំពេញ
+    kn: ನೋಮ್ ಫೆನ್
+    ko: 프놈펜
+    lo: ພະນົມເປັນ
+    lt: Pnompenis
+    lv: Pnompeņa
+    ml: നോം പെൻ
+    mn: Пномпень
+    mr: पनॉम पेन
+    ms: Phnom Penh
+    nb: Phnom Penh
+    nl: Phnom-Penh
+    pl: Phnom Penh
+    pt: Phnom Penh
+    ro: Phnom Penh
+    ru: Пномпень
+    si: නොම් පෙන්
+    sk: Phnom Pénh
+    sl: Phnom Penh
+    sr: Пном Пен
+    sv: Phnom Penh
+    sw: Phnom Penh
+    ta: புனோம் பென்
+    te: ఫ్నోం పెన్
+    th: พนมเปญ
+    tk: Fnom-Penh
+    tr: Phnom Penh
+    uk: Пномпень
+    ur: پنوم پن
+    vi: Phnôm Pênh
+    cy: Phnom Penh
+    ceb: Phnom Penh (lalawigan)
+    sr_Latn: Pnom Pen
+    zh: 金边
+    yue_Hans: 金边
+    sq: Phnom Penh
+    ccp: "\U0001111A\U00011127\U0001111F\U00011134 \U0001111B\U0001112C\U0001111A\U00011134"
+    ga: Phnom Penh
+    ky: Пномпень
+    so: Phnom Penh
+    pa: ਪਨਾਮ ਪੈਨ
+    kk: Пномпень
+    yue: 金邊
+    my: ဖနွမ်းပင်မြို့
+    yo: Phnom Penh
+    uz: Pnompen
+    bs: Phnom Penh
+    mk: Пном Пен
+    ne: पेनोम पेन्ह
+    'no': Phnom Penh
+    yo_BJ: Phnom Penh
+    ha: Phnom Penh
+    ha_NE: Phnom Penh
+    ps: پنوم پن
+  comments:
+  type: autonomous_municipality
+'13':
+  name: Preah Vihear [Preah Vihéar]
+  code: '13'
+  unofficial_names:
+  - Preah Vihear [Preah Vihéar]
+  - pr.h
+  - ph
+  - p.h
+  geo:
+    latitude: 14.0085797
+    longitude: 104.8454619
+    min_latitude: 13.099064
+    min_longitude: 104.3539239
+    max_latitude: 14.434327
+    max_longitude: 105.8868709
+  translations:
+    en: Preah Vihear
+    ar: محافظة برياه فيهير
+    bg: Преах Вихеа
+    bn: প্রিয়ে ভিহে প্রদেশ
+    da: Preah Vihear
+    de: Preah Vihear
+    el: Πρέα Βιχεάρ
+    es: Provincia de Preah Wijía
+    et: Preăh Vĭhéari provints
+    fi: Preăh Vihéar
+    fr: province de Preah Vihear
+    gu: પ્રેહ વિહિઅર પ્રાંત
+    hi: प्रीह वीहियर प्रांत
+    id: Provinsi Preah Vihear
+    it: provincia di Preah Vihear
+    ja: プレアヴィヒア州
+    km: ខេត្តព្រះវិហារ
+    kn: ಪ್ರೀಹ್ ವಿಹಾರ್ ಪ್ರಾಂತ್ಯ
+    ko: 프레아비헤아르 주
+    mr: प्रेह हिहर प्रांत
+    ms: Wilayah Preah Vihear
+    nb: Preah Vihear
+    nl: Preah Vihear
+    pl: Prowincja Preah Vihear
+    pt: Preah Vihear
+    ru: Прэахвихеа
+    si: පප්රෙආහ් විහීර් පළාත
+    sv: Preah Vihear
+    ta: பிரீஹ் விஹெயர் மாகாணம்
+    te: ప్రియ వీహేర్
+    th: จังหวัดพระวิหาร
+    tr: Preah Vihear Province
+    ur: پریاہ ویہیار صوبہ
+    vi: Preah Vihear
+    lv: Prīehvihīeras province
+    ceb: Preah Vihear
+    lt: Prėja Vicharo provincija
+    zh: 柏威夏省
+    ccp: "\U0001111B\U00011133\U00011122\U0001112C\U00011126\U00011134 \U0001111E\U00011128\U00011126\U00011122\U00011134"
+    uk: Провінція Преахвіхеа
+    'no': Preah Vihear
+    cy: Talaith Preah Vihear
+    he: מחוז פראה ויהאר
+  comments:
+  type: province
+'14':
+  name: Prey Veaeng [Prey Vêng]
+  code: '14'
+  unofficial_names:
+  - Prey Vêng
+  - Prey Veng
+  - pr.v
+  - pv
+  - p.v
+  geo:
+    latitude: 11.485114
+    longitude: 105.328098
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Prey Veng
+    ar: مقاطعة بري فنغ
+    be: Прэйвэнг
+    bg: Прей Венг
+    bn: প্রে ভেং প্রদেশ
+    da: Prey Veng Province
+    de: Prey Veng
+    el: Πρέι Βενγκ
+    es: Provincia de Prey Veng
+    fi: Prey Vêng
+    fr: province de Prey Veng
+    gu: પ્રે વેંગ પ્રાંત
+    hi: प्रीई वेंग प्रांत
+    hu: Prejveng tartomány
+    id: Provinsi Prey Veng
+    it: provincia di Prey Veng
+    ja: プレイベン州
+    km: ខេត្តព្រៃវែង
+    kn: ಪ್ರೇ ವೆಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 프레이벵 주
+    mr: प्रीई वेंग प्रांत
+    ms: Prey Veng Province
+    nb: Prey Veng
+    nl: Prey Veng
+    pl: Prowincja Prey Veng
+    pt: Prey Veng
+    ru: Прейвэнг
+    si: ප්‍රේ වෙන්ග් පළාත
+    sv: Prey Veng
+    ta: பிராய வெங் மாகாணம்
+    te: ప్రే వెంగ్ ప్రావిన్స్
+    th: จังหวัดไพรแวง
+    tr: Prey Veng Profince
+    ur: پریی وینگ صوبہ
+    vi: Prey Veng
+    lv: Prijvēnas province
+    ceb: Prey Veng (lalawigan)
+    lt: Prei Vengo provincija
+    zh: 波萝勉省
+    ccp: "\U0001111B\U00011133\U00011122\U0001112C \U0001111E\U0001112C\U0001110B\U00011134"
+    uk: Провінція Прей-Венг
+    'no': Prey Veng
+    cy: Talaith Prey Veng
+    et: Prey Vêngi provints
+    fa: استان شکار ونگ
+    so: Prey Veng Province
+  comments:
+  type: province
+'15':
+  name: Pousaat [Pouthisat]
+  code: '15'
+  unofficial_names:
+  - Poŭthĭsăt
+  - Pursat
+  - p.s
+  - ps
+  geo:
+    latitude: 12.533333
+    longitude: 103.916667
+    min_latitude: 12.3524528
+    min_longitude: 103.7871553
+    max_latitude: 12.5827952
+    max_longitude: 104.0180611
+  translations:
+    en: Pursat
+    ar: محافظة بورسات
+    bg: Поусат
+    bn: পুরসাত প্রদেশ
+    ca: Província de Pursat
+    da: Pursat Province
+    de: Pursat
+    el: Πουρσάτ
+    es: Provincia de Pursat
+    fi: Poŭthĭsăt
+    fr: province de Pouthisat
+    gu: પુરસત પ્રાંત
+    hi: पर्सट प्रांत
+    hu: Puszat tartomány
+    id: Provinsi Pursat
+    it: provincia di Pursat
+    ja: ポーサット州
+    km: ខេត្តពោធិ៍សាត់
+    kn: ಪರ್ಸತ್ ಪ್ರಾಂತ್ಯ
+    ko: 푸르사트 주
+    mr: पूरसट प्रांत
+    ms: Pursat Province
+    nb: Pursat
+    nl: Pouthisat
+    pl: Prowincja Pouthisat
+    pt: Pursat
+    ru: Поусат
+    si: පුර්සැට් පළාත
+    sv: Pursat (provins)
+    ta: புர்சட் மாகாணம்
+    te: పుర్సాట్ ప్రావిన్స్
+    th: จังหวัดโพธิสัตว์
+    tr: Pursat Province
+    ur: پورسات صوبہ
+    vi: Pursat
+    lv: Pothisatas province
+    ceb: Pursat (lalawigan)
+    lt: Pursuato provincija
+    zh: 菩萨省
+    ccp: "\U0001111B\U00011122\U00011134\U00011125\U00011116\U00011134"
+    et: Poŭthĭsăti provints
+    uk: Провінція Поусат
+    'no': Pursat
+    cy: Talaith Pursat
+    fa: استان پورسات
+    so: Pursat Province
+  comments:
+  type: province
+'16':
+  name: Rotanak Kiri [Rôtânôkiri]
+  code: '16'
+  unofficial_names:
+  - Ratanakiri
+  - Rotanokiri
+  - Rôtanah Kiri
+  - r.r
+  - rr
+  - rk
+  - r.k
+  geo:
+    latitude: 13.8576607
+    longitude: 107.1011931
+    min_latitude: 13.1666069
+    min_longitude: 106.5465848
+    max_latitude: 14.6864041
+    max_longitude: 107.6277161
+  translations:
+    en: Ratanakiri
+    ar: محافظة راتاناكيري
+    bg: Ратана Кири
+    bn: রতনকিরি প্রদেশ
+    da: Ratanakiri Province
+    de: Ratanakiri
+    el: Ρατανακίρι
+    es: Provincia de Ratanak Kirí
+    et: Rôtânăh Kĭri provints
+    fi: Rôtanak Kiri
+    fr: province de Rotanah Kiri
+    gu: રત્નાકીરી પ્રાંત
+    hi: रत्नाकिरी प्रांत
+    id: Provinsi Ratanakiri
+    it: provincia di Ratanakiri
+    ja: ラタナキリ州
+    km: ខេត្ត រតនគិរី
+    kn: ರತಾನಕ್ರಿ ಪ್ರಾಂತ್ಯ
+    ko: 라타나키리 주
+    mr: रत्नाकिरी प्रांत
+    ms: Ratanakiri Province
+    nb: Ratanakiri
+    nl: Ratanakiri
+    pl: Prowincja Rotanah Kiri
+    pt: Ratanakiri
+    ru: Ратанакири
+    si: රටනකිරි පළාත
+    sv: Ratanakiri
+    ta: ரட்ணகிரி மாகாணம்
+    te: రటానకిరి ప్రావిన్స్
+    th: จังหวัดรัตนคีรี
+    tr: Ratanakiri
+    ur: راتاناکیری صوبہ
+    vi: Ratanakiri
+    lv: Ratanakiri province
+    ceb: Ratanakiri
+    lt: Ratanakirio provincija
+    zh: 腊塔纳基里省
+    ccp: "\U00011122\U00011127\U00011111\U00011127\U0001111A\U00011107\U00011128\U00011122\U00011128"
+    uk: Провінція Ратанакірі
+    'no': Ratanakiri
+    cy: Talaith Ratanakiri
+    he: רטנאקירי
+    so: Ratanakiri Province
+  comments:
+  type: province
+'17':
+  name: Siem Reab [Siemréab]
+  code: '17'
+  unofficial_names:
+  - Siem Reap
+  - Siemréab
+  - s.r
+  - sr
+  geo:
+    latitude: 13.3529103
+    longitude: 103.8594171
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Siem Reap
+    ar: محافظة سيم رياب
+    bg: Сием Реап
+    bn: সিয়েম রিপ প্রদেশ
+    ca: Província de Siem Reap
+    da: Siem Reap Province
+    de: Siem Reap
+    el: Σιέμ Ριπ
+    es: Provincia de Siem Riep
+    et: Siĕm Réabi provints
+    fi: Siĕm Réab
+    fr: province de Siem Reap
+    gu: સિએમ રીપ પ્રાંત
+    hi: सिएम रीप प्रांत
+    hu: Sziemreap tartomány
+    id: Provinsi Siem Reap
+    it: provincia di Siem Reap
+    ja: シェムリアップ州
+    km: ខេត្តសៀមរាប
+    kn: ಸೀಯೆಮ್ ಪ್ರಾಂತ್ಯ
+    ko: 시엠레아프 주
+    mr: सिएम रीप प्रांत
+    ms: Siem Reap Province
+    nb: Siem Reap
+    nl: Siem Reap
+    pl: Prowincja Siem Reap
+    pt: Siem Reap
+    ru: Сиемреап
+    si: සියෙම් රීප් පළාත
+    sv: Siem Reap
+    ta: சிஎம் ரீப் மாகாணம்
+    te: సియెమ్ రీప్ ప్రావిన్స్
+    th: จังหวัดเสียมราฐ
+    tr: Siem Reap Province
+    ur: صوبہ سیئم ریئپ
+    vi: Xiêm Riệp
+    lv: Sīemrīebas province
+    ceb: Siem Reap
+    lt: Sijem Ripo provincija
+    zh: 暹粒省
+    ccp: "\U00011125\U00011128\U00011120\U0001112C\U0001111F\U00011134 \U00011122\U00011128\U0001111B\U00011134"
+    gl: Provincia de Siem Reap
+    uk: Провінція Сиємреап
+    'no': Siem Reap
+    be: Сіемрэап
+    cy: Talaith Siem Reap
+    fa: استان سیم ریپ
+    so: Siem Reap Province
+  comments:
+  type: province
+'18':
+  name: Krong Preah Sihanouk [Krong Preah Sihanouk]
+  code: '18'
+  unofficial_names:
+  - Preah Seihânu
+  - Sihanoukville
+  - Kompong Som
+  - Kampong Som
+  - Kompong Saom
+  - Kampong Saom
+  - k.som
+  - k.saom
+  - s.v
+  geo:
+    latitude: 10.6253016
+    longitude: 103.5233963
+    min_latitude: 10.5427244
+    min_longitude: 103.1816841
+    max_latitude: 10.7803603
+    max_longitude: 103.5925877
+  translations:
+    en: Sihanoukville
+    ar: سيهانوكفيل
+    be: Горад Сіануквіль
+    bn: শিহানুকভিলি
+    cs: Sihanoukville
+    da: Sihanoukville
+    de: Sihanoukville
+    el: Σιχανουκβίλε
+    es: Ciudad de Sihanoukville
+    et: Preăh Seihânŭ
+    eu: Sihanoukville
+    fa: سیهانوکویل
+    fi: Sihanoukville
+    fr: Sihanoukville
+    gu: સિહાનોકવિલ
+    hi: सिहानोकविले
+    hu: Kampongszom
+    id: Sihanoukville
+    it: Sihanoukville
+    ja: シアヌークビル
+    km: ខេត្ត ព្រះសីហនុ
+    kn: ಸಿಹಾನೌಕ್ವಿಲ್ಲೆ
+    ko: 시아누크빌
+    lt: Sianukvilis
+    mr: सिहानोकविले
+    ms: Sihanoukville
+    nb: Sihanoukville
+    nl: Sihanoukville
+    pl: Preah Seihanu
+    pt: Sihanoukville
+    ro: Sihanoukville
+    ru: Сиануквиль
+    si: සිහනොකුවිලි
+    sr: Сихануквил
+    sv: Sihanoukville
+    ta: சிஹானோக்வில்லே
+    te: సిహానౌక్‌విల్లె
+    th: กรุงพระสีหนุ
+    tr: Sihanoukville
+    uk: Сіануквіль
+    ur: سیہانوکویل صوبہ
+    vi: Sihanoukville
+    lv: Sianukvila
+    ceb: Sihanoukville (lalawigan)
+    sr_Latn: Sihanukvil
+    zh: 西哈努克省
+    ccp: "\U00011125\U00011128\U00011126\U0001111A\U0001112F\U00011107\U00011134\U0001111E\U00011128\U00011123\U0001112C"
+    'no': Sihanoukville
+    ca: Sihanoukville
+    cy: Talaith Sihanoukville
+  comments:
+  type: province
+'19':
+  name: Stueng Traeng
+  code: '19'
+  unofficial_names:
+  - Stoeng Trêng
+  - Stung Treng
+  - s.t
+  - st
+  geo:
+    latitude: 13.576473
+    longitude: 105.9699878
+    min_latitude: 13.108477
+    min_longitude: 105.521177
+    max_latitude: 14.587619
+    max_longitude: 106.6629029
+  translations:
+    en: Stung Treng
+    ar: محافظة ستونغ ترينغ
+    bg: Стънг Тренг
+    bn: সে্তা স্টাং প্রদেশ
+    ca: Província de Stung Treng
+    da: Stung Treng Province
+    de: Stung Treng (Provinz)
+    el: Στουνγκ Τρενγκ
+    es: Provincia de Stung Treng
+    fi: Stŏeng Trêng
+    fr: Stoeng Treng
+    gu: સ્ટંગ ટ્રેંગ પ્રાંત
+    hi: स्टंग ट्रेंग प्रांत
+    id: Provinsi Stung Treng
+    it: provincia di Stung Treng
+    ja: ストゥントレン州
+    km: ខេត្តស្ទឹងត្រែង
+    kn: ಸ್ಟುಂಗ್ ಟ್ರೆಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 스퉁트렝 주
+    mr: स्टून्ग ट्रॅन्ग प्रांत
+    ms: Stung Treng Province
+    nb: Stung Treng (provins)
+    nl: Stoeng Treng (provincie)
+    pl: Prowincja Stoeng Treng
+    pt: Stung Treng
+    ro: Stung Treng
+    ru: Стынгтраенг
+    si: ස්ටන්ග් ට්‍රෙන්ග් පළාත
+    sv: Stung Treng (provins)
+    ta: ஸ்டுங் ட்ரெங் மாகாணம்
+    te: స్టంగ్ ట్రెంగ్ ప్రావిన్స్
+    th: จังหวัดสตึงแตรง
+    tr: Stung Treng Province
+    ur: ستونگ ترینگ صوبہ
+    vi: Stung Treng (tỉnh)
+    lv: Stentrēnas province
+    ceb: Stung Treng
+    lt: Sting Trengo provincija
+    zh: 上丁省
+    ccp: "\U0001110C\U00011133\U00011111\U00011101 \U00011111\U00011133\U00011122\U0001112C\U00011101"
+    uk: Провінція Стинг-Тренг
+    'no': Stung Treng (provins)
+    cy: Talaith Stung Treng
+    fa: استان استونگ ترنگ
+  comments:
+  type: province
+'2':
+  name: Baat Dambang [Batdâmbâng]
+  code: '2'
+  unofficial_names:
+  - Batdâmbâng
+  - Battambang
+  - bb
+  - b.b
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Battambang
+    ar: محافظة باتامبانغ
+    bg: Батамбанг (провинция)
+    bn: ব্যাটামবং প্রদেশ
+    ca: Província de Battambang
+    da: Battambang Province
+    de: Battambang (Provinz)
+    el: Μπαταμπάνγκ
+    es: Provincia de Battambang
+    fi: Băt Dâmbâng
+    fr: province de Battambang
+    gu: બટ્ટમ્બેંગ પ્રાંત
+    hi: बैटमबैंग प्रांत
+    id: Provinsi Battambang
+    it: provincia di Battambang
+    ja: バタンバン州
+    km: ខេត្តបាត់ដំបង
+    kn: ಬಟಾಂಬಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 바탐방 주
+    mr: बाटंबॅंग प्रांत
+    ms: Battambang Province
+    nb: Battambang (provins)
+    nl: Battambang
+    pl: Prowincja Battambang
+    pt: Battambang (província)
+    ru: Баттамбанг
+    si: බට්ටම්බන්ග් පළාත
+    sv: Battambang (provins)
+    ta: பாட்டம்பாங் மாகாணம்
+    te: బటంబాంగ్ ప్రావిన్స్
+    th: จังหวัดพระตะบอง
+    tr: Battambang Province
+    ur: باتامبانگ صوبہ
+    vi: Battambang (tỉnh)
+    lv: Batdambanas province
+    ceb: Battambang
+    lt: Batambango provincija
+    zh: 馬德望省
+    ccp: "\U0001111D\U00011111\U0001111F\U00011134\U0001111D\U0001110B\U00011134"
+    et: Bătdâmbângi provints
+    uk: Провінція Батамбанг
+    'no': Battambang (provins)
+    be: Батамбанг
+    cy: Rhanbarth Battambang
+    fa: استان باتامبانگ
+    he: באטאמבאנג
+    hu: Battambang tartomány
+    so: Battambang Province
+  comments:
+  type: province
+'20':
+  name: Svaay Rieng [Svay Rieng]
+  code: '20'
+  unofficial_names:
+  - Svaay Rieng [Svay Rieng]
+  - svay rieng
+  - sv.r
+  - svr
+  geo:
+    latitude: 11.0877866
+    longitude: 105.800951
+    min_latitude: 11.024966
+    min_longitude: 105.7366598
+    max_latitude: 11.1564031
+    max_longitude: 105.8909941
+  translations:
+    en: Svay Rieng
+    ar: مقاطعة سفاي رينغ
+    bg: Свай Риенг
+    bn: সেভায় রিং প্রদেশ
+    da: Svay Rieng Province
+    de: Svay Rieng
+    el: Επαρχία Σβέι Ριένγκ
+    es: Provincia de Svay Rieng
+    et: Svay Riĕngi provints
+    fi: Svay Riĕng
+    fr: province de Svay Rieng
+    gu: સ્વય રીએંગ પ્રાંત
+    hi: स्वाय रिएंग प्रांत
+    hu: Szvajrieng tartomány
+    id: Provinsi Svay Rieng
+    it: provincia di Svay Rieng
+    ja: スヴァイリエン州
+    km: ខេត្តស្វាយរៀង
+    kn: ಎಸ್ವೈ ರೈಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 스바이리엥 주
+    mr: स्वाने रेंग प्रांत
+    ms: Wilayah Svay Rieng
+    nb: Svay Rieng (provins)
+    nl: Svay Rieng (provincie)
+    pl: Prowincja Svay Rieng
+    pt: Svay Rieng
+    ro: Svay Rieng
+    ru: Свайриенг
+    si: ස්වේ රින්ග් පළාත
+    sv: Svay Rieng
+    ta: சுவாய் ரியங் மாகாணம்
+    te: స్వే రియెంగ్ ప్రావిన్స్
+    th: จังหวัดสวายเรียง
+    tr: Svay Rieng Province
+    ur: سوای ریئنگ صوبہ
+    vi: Svay Rieng (tỉnh)
+    lv: Svājrīenas province
+    ceb: Svay Rieng
+    lt: Svei Rengo provincija
+    zh: 柴楨省
+    ccp: "\U0001111E\U0001112C \U00011122\U00011128\U00011120\U0001112C\U00011107\U00011134"
+    uk: Провінція Свайріенг
+    'no': Svay Rieng (provins)
+    be: Свайрыенг
+    cy: Talaith Svay Rieng
+    fa: استان سوای رینگ
+    so: Svay Rieng Province
+  comments:
+  type: province
+'21':
+  name: Taakaev [Takêv]
+  code: '21'
+  unofficial_names:
+  - Takeo
+  - Takêv
+  - tk
+  - t.k
+  geo:
+    latitude: 10.9321519
+    longitude: 104.798771
+    min_latitude: 10.5201891
+    min_longitude: 104.4379809
+    max_latitude: 11.3528621
+    max_longitude: 105.0994111
+  translations:
+    en: Takéo
+    ar: محافظة تاكو
+    bg: Такео
+    bn: টাকেও প্রদেশ
+    da: Takéo Province
+    de: Takeo
+    el: Τακέο
+    es: Takéo
+    fi: Takêv
+    fr: province de Takeo
+    gu: ટેકેઓ પ્રાંત
+    hi: ताकौ प्रांत
+    hu: Takeo tartomány
+    id: Provinsi Takéo
+    it: provincia di Takéo
+    ja: タケオ州
+    km: ខេត្តតាកែវ
+    kn: ಟಕಿಯೋ ಪ್ರಾಂತ್ಯ
+    ko: 타케오 주
+    mr: ताक्यो प्रांत
+    ms: Takeo Province
+    nb: Takeo
+    nl: Takev
+    pl: Prowincja Takev
+    pt: Takéo
+    ru: Такео
+    si: ටකෙයෝ පළාත
+    sv: Takeo (provins)
+    ta: தாக்கிய மாகாணம்
+    te: టాకియో ప్రావిన్స్
+    th: จังหวัดตาแก้ว
+    tr: Takéo Belediyesi
+    ur: تاکیو صوبہ
+    vi: Takéo
+    lv: Tākēvas province
+    ceb: Takeo
+    lt: Tako provincija
+    zh: 茶胶省
+    ccp: "\U00011111\U00011127\U00011107\U00011128\U00011103\U0001112E"
+    uk: Провінція Такео
+    'no': Takeo
+    cs: Takéo
+    cy: Talaith Takéo
+    et: Takêvi provints
+    fa: استان تاکئو
+    so: Takéo Province
+  comments:
+  type: province
+'22':
+  name: 'Otdar Mean Chey [Otdâr Méanchey] '
+  code: '22'
+  unofficial_names:
+  - 'Otdar Mean Chey [Otdâr Méanchey] '
+  - Oddar Meanchey
+  - o.chey
+  - om
+  - o.m
+  geo:
+    latitude: 14.1717195
+    longitude: 103.6362715
+    min_latitude: 13.909678
+    min_longitude: 103.0405579
+    max_latitude: 14.4395071
+    max_longitude: 104.4748511
+  translations:
+    en: Oddar Meanchey
+    ar: مقاطعة أودار ميانتشي
+    be: Адармеанцьей
+    bg: Одар Меантей
+    bn: অড্ডার মিনকে প্রদেশ
+    ca: Província d’Oddar Meancheay
+    da: Oddar Meanchey Province
+    de: Oddar Meanchey
+    el: Οντάρ Μίντσεϊ
+    es: Oddar Mean Chey
+    fi: Ŏtâr Méancheăy
+    fr: province d’Otdar Mean Cheay
+    gu: ઓડર મીનચે પ્રાંત
+    hi: ओडार मीनचे प्रांत
+    id: Provinsi Oddar Meanchey
+    it: provincia di Oddar Meancheay
+    ja: ウドンメンチェイ州
+    km: ខេត្តឧត្ដរមានជ័យ
+    kn: ಒಡ್ಡಾರ್ ಮೀನ್ಚೆ ಪ್ರಾಂತ್ಯ
+    ko: 오다르메안체이 주
+    mr: ओडेर मेचेंसी प्रांत
+    ms: Oddar Meanchey Province
+    nb: Oddar Meancheay
+    nl: Oddar Meancheay
+    pl: Prowincja Otdar Mean Cheay
+    pt: Oddar Mean Cheay
+    ru: Оддармеантьей
+    si: ඔද්දාර් මීන්චේ පළාත
+    sv: Ŏtâr Méanchey
+    ta: ஓடர் மேயஞ்செய் மாகாணம்
+    te: ఒద్దార్ మియాంచీ ప్రావిన్స్
+    th: จังหวัดอุดรมีชัย
+    tr: Odday Mecanhey Province
+    ur: اودار مینچیئی صوبہ
+    vi: Oddar Meancheay
+    lv: Otarmīenķijas province
+    ceb: Ŏtâr Méanchey
+    lt: Odaro Mičėjaus provincija
+    zh: 奥多棉吉省
+    ccp: "\U00011103\U00011127\U00011113\U00011122\U00011134 \U0001111F\U00011128\U0001111A\U00011134\U0001110C\U0001112C"
+    uk: Провінція Оддармеантьей
+    'no': Oddar Meancheay
+    cy: Talaith Oddar Meanchey
+    et: Ŏtdâr Méan Cheăy provints
+    fa: استان اودار میانی
+    hy: Օդդարմեանթեյ
+    so: Oddar Meanchey Province
+  comments:
+  type: province
+'23':
+  name: Krong Kep [Krong Kêb]
+  code: '23'
+  unofficial_names:
+  - Krong Kep [Krong Kêb]
+  - Kep
+  geo:
+    latitude: 10.543246
+    longitude: 104.319142
+    min_latitude: 10.3438702
+    min_longitude: 104.2153591
+    max_latitude: 10.5781139
+    max_longitude: 104.3620275
+  translations:
+    en: Kep
+    ar: محافظة كيب
+    bn: কেপ প্রদেশ
+    da: Kep Province
+    de: Kep
+    el: Κεπ
+    es: Ciudad de Kep
+    et: Kêbi provints
+    fi: Kêb
+    fr: Kep
+    gu: કેપ પ્રાંત
+    he: קפ
+    hi: केप प्रांत
+    id: Kep
+    it: Kep
+    ja: ケップ
+    km: ខេត្ត កែប
+    kn: ಕೆಪ್ ಪ್ರಾಂತ್ಯ
+    ko: 케프
+    mr: केप प्रांत
+    ms: Kep Province
+    nb: Kep
+    nl: Keb
+    pl: Keb
+    pt: Keb
+    ru: Каеп
+    si: කෙප් පළාත
+    sv: Kep (provins)
+    ta: கேப் மாகாணம்
+    te: కెప్ ప్రావిన్స్
+    th: แกบ
+    tr: Kep, Kamboçya
+    ur: کِیپ صوبہ
+    vi: Kep
+    lv: Kēbas province
+    lt: Kepo provincija
+    zh: 白馬市
+    ccp: "\U00011107\U0001112C\U0001111B\U00011134"
+    uk: Провінція Каеп
+    'no': Kep
+    ceb: Kep
+    cy: Talaith Kep
+    fa: استان کپ
+    so: Kep Province
+  comments:
+  type: province
+'24':
+  name: Krong Pailin [Krong Pailin]
+  code: '24'
+  unofficial_names:
+  - Krong Pailin [Krong Pailin]
+  - Pailin
+  - pl
+  - p.l
+  geo:
+    latitude: 12.8539496
+    longitude: 102.6083506
+    min_latitude: 12.6638293
+    min_longitude: 102.4972057
+    max_latitude: 12.8922183
+    max_longitude: 102.7534103
+  translations:
+    en: Pailin
+    ar: مقاطعة بايلين
+    bn: পাইলিন প্রদেশ
+    da: Pailin Province
+    de: Pailin
+    el: Παϊλίν
+    es: Provincia de Pailín
+    et: Pailĭn
+    fa: پیلین
+    fi: Pailĭn
+    fr: Pailin
+    gu: પાઈલિન પ્રાંત
+    hi: पैलिन प्रांत
+    id: Pailin
+    it: Pailin
+    ja: パイリン
+    km: ខេត្ត ប៉ៃលិន
+    kn: ಪೈಲಿನ್ ಪ್ರಾಂತ್ಯ
+    ko: 파일린
+    mr: पाइलिन प्रांत
+    ms: Pailin
+    nb: Pailin
+    nl: Pailin
+    pl: Pailin
+    pt: Pailin
+    ro: Pailin
+    ru: Пайлин
+    si: පලින් පළාත
+    sv: Pailin
+    ta: பைலின் மாகாணம்
+    te: పైలిన్ ప్రావిన్స్
+    th: จังหวัดไพลิน
+    tr: Pailin Province
+    ur: پائلن صوبہ
+    vi: Pailin
+    lv: Pajlinas province
+    ceb: Pailin
+    lt: Pailino provincija
+    zh: 拜林市
+    ccp: "\U0001111B\U0001112D\U00011123\U00011128\U0001111A\U00011134"
+    uk: Провінція Пайлін
+    'no': Pailin
+    cy: Pailin Province
+  comments:
+  type: province
+'25':
+  name: Tbong Khmum
+  code: '25'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Tbong Khmum
+    ccp: "\U0001111D\U00011127\U00011101 \U0001111F\U0001111F\U00011134"
+    bn: তবৌং খমুম প্রদেশ
+    ceb: Tboung Khmum
+    cy: Talaith Tbong Khmum
+    de: Tbong Khmum (Provinz)
+    es: Provincia de Tboung Khmum
+    et: Tbong Khmŭmi provints
+    fa: استان تبونگ خموم
+    fr: province de Tbong Khmum
+    hi: त्बोन्ग ख्मुम प्रान्त
+    it: provincia di Tbong Khmum
+    ja: トボンクムン州
+    km: ខេត្តត្បូងឃ្មុំ
+    ko: 트봉크뭄주
+    pt: Tbong Khmum
+    ru: Тбонгхмум
+    so: Tbong Khmum Province
+    sv: Tboung Khmum
+    th: จังหวัดตโบงฆมุม
+    ur: تبونگ خموم صوبہ
+    vi: Tbong Khmum
+  comments:
+  type: province
+'3':
+  name: Kampong Chaam [Kâmpóng Cham]
+  code: '3'
+  unofficial_names:
+  - Kompong Cham
+  - Kompong Chaam
+  - Kampong Cham
+  - k.cham
+  - kc
+  - k.c
+  geo:
+    latitude: 11.9924294
+    longitude: 105.4645408
+    min_latitude: 11.9600879
+    min_longitude: 105.4002787
+    max_latitude: 12.0178724
+    max_longitude: 105.4737067
+  translations:
+    en: Kampong Cham
+    ar: مقاطعة كامبونغ تشام
+    be: Кампангцям
+    bg: Кампонг Тям
+    bn: কাম্পোং প্রদেশ
+    ca: Província de Kampong Cham
+    da: Kampong Cham Province
+    de: Kampong Cham
+    el: Καμπόνγκ Τσαμ
+    es: Kompung Cham
+    et: Kâmpóng Chami provints
+    fa: استان کامپونگ چام
+    fi: Kâmpóng Cham
+    fr: province de Kampong Cham
+    gu: કામ્પોંગ ચેમ પ્રાંત
+    hi: कम्पोंग चाम प्रांत
+    id: Provinsi Kampong Cham
+    it: provincia di Kampong Cham
+    ja: コンポンチャム州
+    km: ខេត្ត​កំពង់ចាម
+    kn: ಕಂಪೊಂಗ್ ಚಾಮ್ ಪ್ರಾಂತ್ಯ
+    ko: 캄퐁참 주
+    mr: काम्पोंंग चाम प्रांत
+    ms: Kampong Cham Province
+    nb: Kampong Cham
+    nl: Kampong Cham
+    pl: Prowincja Kampong Cham
+    pt: Kampong Cham
+    ru: Кампонгтям
+    si: කැම්පොන්ග් චැම් පළාත
+    sv: Kampong Cham
+    ta: கம்போங் சாம் மாகாணம்
+    te: కాంపోంగ్ చామ్ ప్రావిన్స్
+    th: จังหวัดกำปงจาม
+    tr: Kampong Cham
+    uk: Кампонгтям
+    ur: کامپونگ چام صوبہ
+    vi: Kampong Cham
+    lv: Kamponķhnanas province
+    ceb: Kampong Cham (lalawigan)
+    lt: Kampong Čiamo provincija
+    zh: 磅湛省
+    ccp: "\U0001111F\U00011133\U00011120\U0001111F\U00011134\U0001111B\U00011127\U00011101
+      \U0001110C\U0001111F\U00011134"
+    'no': Kampong Cham
+    az: Kamponqtyam vilayəti
+    cy: Talaith Kampong Cham
+    he: קמפונג צ׳אם
+  comments:
+  type: province
+'4':
+  name: Kampong Chhnang [Kâmpóng Chhnang]
+  code: '4'
+  unofficial_names:
+  - Kompong Chhnang
+  - k.chhnang
+  - kn
+  - k.n
+  geo:
+    latitude: 12.25
+    longitude: 104.666667
+    min_latitude: 12.2167587
+    min_longitude: 104.6459342
+    max_latitude: 12.3243638
+    max_longitude: 104.7148133
+  translations:
+    en: Kampong Chhnang
+    ar: مقاطعة كامبونغ تشنانغ
+    bg: Кампонг Чнанг (провинция)
+    bn: কাম্পাং চাং প্রদেশ
+    da: Kampong Chhnang Province
+    de: Kampong Chhnang
+    el: Κάμπονγκ Τσνάνγκ
+    es: Kompung Chinang
+    fi: Kâmpóng Chhnăng
+    fr: province de Kampong Chhnang
+    gu: કંમ્પોન છાંગ પ્રાંત
+    hi: कैम्पोंग चनैंग प्रांत
+    id: Kampong Chhnang
+    it: provincia di Kampong Chhnang
+    ja: コンポンチュナン州
+    km: ខេត្តកំពង់ឆ្នាំង
+    kn: ಕಂಪೊಂಗ್ ಛ್ನಾಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 캄퐁치낭 주
+    mr: काम्पोंग छँनग प्रांत
+    ms: Kampong Chhnang Province
+    nb: Kampong Chhnang
+    nl: Kampong Chhnang
+    pl: Prowincja Kampong Chhnang
+    pt: Kampong Chhnang
+    ru: Кампонгчнанг
+    si: කම්පොන්ග් ච්නාන්ග් පළාත
+    sv: Kampong Chhnang
+    ta: கம்போங் சஹன்ங் மாகாணம்
+    te: కాంపోంగ్ చనాంగ్ ప్రావిన్స్
+    th: จังหวัดกำปงชนัง
+    tr: Kampong Chhang Province
+    ur: کامپونگ چھنانگ صوبہ
+    vi: Kampong Chhnang
+    lv: Kampongčnangas province
+    ceb: Kampong Chhnang (lalawigan)
+    lt: Kampong Čiango provincija
+    zh: 磅清扬省
+    ccp: "\U0001111F\U00011133\U00011120\U0001111F\U00011134\U0001111B\U00011127\U00011101
+      \U0001110D\U0001111A\U00011127\U00011101"
+    uk: Провінція Кампонгчнанг
+    'no': Kampong Chhnang
+    cy: Talaith Kampong Chhnang
+    et: Kâmpóng Chhnăngi provints
+    fa: استان کامپونگ چوننگ
+    gl: Kompung Chinang
+    so: Kampong Chhnang Province
+  comments:
+  type: province
+'5':
+  name: Kampong Spueu [Kâmpóng Spœ]
+  code: '5'
+  unofficial_names:
+  - Kompong Speu
+  - Kompong Spoe
+  - Kampong Speu
+  - Kampong Spoe
+  - k.speu
+  - ks
+  - k.s
+  geo:
+    latitude: 11.45311
+    longitude: 104.5202599
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Kampong Speu
+    ar: محافظة كامبونغ سبيو
+    bg: Кампонг Спъ
+    bn: ক্যাম্পং স্পিউ প্রদেশ
+    da: Kampong Speu Province
+    de: Kampong Speu
+    el: Κάμπονγκ Σπο
+    es: Provincia de Kompung Speu
+    fi: Kâmpóng Spœ
+    fr: province de Kampong Spoe
+    gu: કેમ્પોંગ સ્પુ પ્રાંત
+    hi: काम्पोंग स्पू प्रांत
+    id: Provinsi Kampong Speu
+    it: provincia di Kampong Speu
+    ja: コンポンスプー州
+    km: ខេត្តកំពង់ស្ពឺ
+    kn: ಕಾಂಪೊಂಗ್ ಸ್ಪೀ ಪ್ರಾಂತ್ಯ
+    ko: 캄퐁스페우 주
+    mr: काम्पोल स्पू प्रांत
+    ms: Kampong Speu Province
+    nb: Kampong Spoe
+    nl: Kampong Spoe
+    pl: Prowincja Kampong Spoe
+    pt: Kampong Speu
+    ru: Кампонгспы
+    si: කැම්පොන්ග් ස්පෙයු පළාත
+    sv: Kampong Spoe
+    ta: கம்போங் ஸ்பூ மாகாணம்
+    te: కాంపోంగ్ స్ప్యూ ప్రావిన్స్
+    th: จังหวัดกำปงสปือ
+    tr: Kampong Speu Province
+    ur: کامپونگ سپیو صوبہ
+    vi: Kampong Speu
+    lv: Kampongspi province
+    ceb: Kampong Speu
+    lt: Kampong Spu provincija
+    zh: 磅士卑省
+    ccp: "\U0001111F\U00011133\U00011120\U0001111F\U00011134\U0001111B\U00011127\U00011101
+      \U0001110C\U00011133\U0001111B\U0001112C\U00011105\U0001112A"
+    et: Kâmpóng Speu provints
+    uk: Провінція Кампонгспи
+    'no': Kampong Spoe
+    cy: Talaith Kampong Speu
+    fa: استان کامپونگ اسپیو
+    so: Kampong Speu Province
+  comments:
+  type: province
+'6':
+  name: Kampong Thum [Kâmpóng Thum]
+  code: '6'
+  unofficial_names:
+  - Kompong Thom
+  - Kompong Thum
+  - Kampong Thom
+  - Kampong Thum
+  - k.thom
+  - kt
+  - k.t
+  geo:
+    latitude: 12.71197
+    longitude: 104.888603
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Kampong Thom
+    ar: محافظة كامبونغ ثوم
+    be: Кампонгтхам
+    bg: Кампонг Тхом
+    bn: কাম্পং থম প্রদেশ
+    cs: Kampong Thom
+    da: Kampong Thom Province
+    de: Kampong Thom
+    el: Κάμπονγκ Θομ
+    es: Provincia de Kompung Thom
+    et: Kâmpóng Thumi provints
+    fi: Kâmpóng Thum
+    fr: province de Kampong Thom
+    gu: કંમ્પોંગ થોમ પ્રાંત
+    hi: कम्पोंग थोम प्रांत
+    id: Provinsi Kampong Thom
+    it: provincia di Kampong Thom
+    ja: コンポントム州
+    km: ខេត្តកំពង់ធំ
+    kn: ಕಂಪಾಂಗ್ ಥಾಮ್ ಪ್ರಾಂತ್ಯ
+    ko: 캄퐁톰 주
+    mr: काम्पॉँग थॉम प्रांत
+    ms: Kampong Thom Province
+    nb: Kampong Thom
+    nl: Kampong Thum
+    pl: Prowincja Kampong Thum
+    pt: Kampong Thom
+    ru: Кампонгтхом
+    si: කැම්පොන්ග් තොම් පළාත
+    sv: Kompong Thom
+    ta: கம்போங் தோம் மாகாணம்
+    te: కాంపోంగ్ థామ్ ప్రావిన్స్
+    th: จังหวัดกำปงธม
+    tr: Kampong Thom
+    ur: کامپونگ تھوم صوبہ
+    vi: Kampong Thom
+    lv: Kamponthumas province
+    ceb: Kampong Thom (lalawigan)
+    lt: Kampong Tomo provincija
+    zh: 磅同省
+    ccp: "\U0001111F\U00011133\U00011120\U0001111F\U00011134\U0001111B\U00011127\U00011101
+      \U00011117\U00011127\U0001111F\U00011134"
+    uk: Провінція Кампонг-Том
+    'no': Kampong Thom
+    ca: Kampong Thom
+    cy: Talaith Kampong Thom
+    fa: استان کامپونگ توم
+    hy: Կամպոնգ Թհոմ
+    ro: Kampong Thom (provincie)
+    so: Kampong Thom Province
+  comments:
+  type: province
+'7':
+  name: Kampot [Kâmpôt]
+  code: '7'
+  unofficial_names:
+  - Kampot [Kâmpôt]
+  - k.pot
+  - kp
+  - k.p
+  geo:
+    latitude: 10.7412089
+    longitude: 104.1930918
+    min_latitude: 9.9039915
+    min_longitude: 103.8328105
+    max_latitude: 11.1730128
+    max_longitude: 104.7244262
+  translations:
+    en: Kampot
+    ar: محافظة كامبوت
+    bg: Кампот
+    bn: কাম্পট প্রদেশ
+    da: Kampot Province
+    de: Kampot
+    el: Καμπότ
+    es: Kompot
+    et: Kâmpôti provints
+    fa: استان کامپوت
+    fi: Kâmpôt
+    fr: province de Kampot
+    gu: કેમ્પોટ પ્રાંત
+    hi: कम्पोट प्रांत
+    id: Provinsi Kampot
+    it: provincia di Kampot
+    ja: カンポット州
+    km: ខេត្តកំពត
+    kn: ಕಂಪಾಟ್ ಪ್ರಾಂತ್ಯ
+    ko: 캄포트 주
+    mr: काम्पोट प्रांत
+    ms: Kampot Province
+    nb: Kampot
+    nl: Kampot
+    pl: Prowincja Kampot
+    pt: Kampot
+    ru: Кампот
+    si: කැම්පට් පළාත
+    sv: Kampot
+    ta: கம்போட் மாகாணம்
+    te: కాంపోట్ ప్రావిన్స్
+    th: จังหวัดกำปอต
+    tr: Kampot Province
+    ur: کامپوت صوبہ
+    vi: Kam pốt
+    lv: Kampotas province
+    ceb: Kampot (lalawigan)
+    lt: Kampoto provincija
+    zh: 贡布省
+    ccp: "\U00011107\U0001111F\U00011134\U0001111B\U00011127\U00011116\U00011134"
+    uk: Провінція Кампот
+    'no': Kampot
+    be: Кампот
+    cy: Talaith Kampot
+    so: Kampot Province
+  comments:
+  type: province
+'8':
+  name: Kandaal [Kândal]
+  code: '8'
+  unofficial_names:
+  - Kandaal [Kândal]
+  - Kandal
+  - Kondal
+  - kd
+  - k.d
+  geo:
+    latitude: 11.4573319
+    longitude: 104.693403
+    min_latitude: 11.4568189
+    min_longitude: 104.6909094
+    max_latitude: 11.4589902
+    max_longitude: 104.6949489
+  translations:
+    en: Kandal
+    ar: محافظة كندال
+    bg: Кандал
+    bn: কান্দাল প্রদেশ
+    ca: Kândal
+    da: Kandal Province
+    de: Kandal
+    el: Καντάλ
+    es: Provincia de Kandal
+    fi: Kândal
+    fr: province de Kandal
+    gu: કંદાલ પ્રાંત
+    hi: कंडल प्रांत
+    id: Provinsi Kandal
+    it: provincia di Kandal
+    ja: カンダル州
+    km: ខេត្តកណ្ដាល
+    kn: ಕಂಡಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 칸달 주
+    mr: कांडल प्रांत
+    ms: Wilayah Kandal
+    nb: Kandal
+    nl: Kandal
+    pl: Prowincja Kandal
+    pt: Kandal
+    ru: Кандаль
+    si: කන්දාල් පළාත
+    sv: Kandal
+    ta: கண்டால் மாகாணம்
+    te: కాండాల్ ప్రావిన్స్
+    th: จังหวัดกันดาล
+    tr: Kandal Province
+    ur: کاندال صوبہ
+    vi: Kandal
+    lv: Kandālas province
+    ceb: Kandal
+    lt: Kandalo provincija
+    ccp: "\U00011107\U0001111A\U00011134\U00011113\U00011123\U00011134"
+    uk: Провінція Кандал
+    'no': Kandal
+    cy: Talaith Kandal
+    et: Kândali provints
+    fa: استان کندال
+    he: קנדאל
+    so: Kandal Province
+  comments:
+  type: province
+'9':
+  name: Kaoh Kong [Kaôh Kong]
+  code: '9'
+  unofficial_names:
+  - Koh Kong
+  - kk
+  - k.k
+  geo:
+    latitude: 11.5762804
+    longitude: 103.3587288
+    min_latitude: 9.287840300000001
+    min_longitude: 102.7800221
+    max_latitude: 12.1494559
+    max_longitude: 104.146877
+  translations:
+    en: Koh Kong
+    ar: محافظة كوه كونغ
+    bg: Кох Конг
+    bn: কোহ কোং প্রদেশ
+    ca: Província de Koh Kong
+    da: Koh Kong Province
+    de: Koh Kong
+    el: Κοχ Κονγκ
+    es: Provincia de Koh Kong
+    et: Kaôh Kŏngi provints
+    fi: Kaôh Kông
+    fr: province de Kaoh Kong
+    gu: કોહ કોંગ પ્રાંત
+    hi: कोह काँग प्रांत
+    id: Provinsi Koh Kong
+    it: provincia di Koh Kong
+    ja: ココン州
+    km: ខេត្តកោះកុង
+    kn: ಕೊಹ್ ಕಾಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 코콩 주
+    mr: कोह काँग प्रांत
+    ms: Koh Kong Province
+    nb: Koh Kong
+    nl: Koh Kong
+    pl: Prowincja Kaoh Kong
+    pt: Koh Kong
+    ru: Кохконг
+    si: කෝ කොන්ග් පළාත
+    sv: Koh Kong
+    ta: கோஹ் காங் மாகாணம்
+    te: కోహ్ కాంగ్ ప్రావిన్స్
+    th: จังหวัดเกาะกง
+    tr: Koh kong
+    ur: کوہ کونگ صوبہ
+    vi: Koh Kong
+    lv: Kohkongas province
+    ceb: Koh Kong
+    lt: Kog Kongo provincija
+    zh: 戈公省
+    ccp: "\U00011107\U0001112E\U00011126\U00011134 \U00011107\U00011127\U00011101"
+    uk: Провінція Кахконг
+    'no': Koh Kong
+    cy: Talaith Koh Kong
+    fa: استان کوه کنگ
+    ga: Cúige Koh Kong
+    so: Koh Kong Province
+  comments:
+  type: province

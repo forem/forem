@@ -1,0 +1,24 @@
+module Algolia
+  class BaseConfig
+    attr_accessor app_id: String
+
+    attr_accessor api_key: String
+
+    attr_accessor headers: Hash[String, String]
+
+    attr_accessor batch_size: Integer
+
+    attr_accessor read_timeout: Integer
+
+    attr_accessor write_timeout: Integer
+
+    attr_accessor connect_timeout: Integer
+
+    attr_accessor compression_type: String
+
+    attr_accessor symbolize_keys: bool
+
+    def initialize: (?::Hash[Symbol, String|[String]] opts) -> void
+    def set_extra_header: (Symbol|String key, String value) -> void
+  end
+end

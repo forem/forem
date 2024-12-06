@@ -1,0 +1,50 @@
+---
+MU:
+  alpha2: MU
+  alpha3: MUS
+  continent: Africa
+  country_code: '230'
+  currency_code: MUR
+  distance_unit: KM
+  gec: MP
+  geo:
+    latitude: -20.348404
+    longitude: 57.55215200000001
+    max_latitude: -10.0878538
+    max_longitude: 63.80859390000001
+    min_latitude: -20.7458403
+    min_longitude: 56.3159179
+    bounds:
+      northeast:
+        lat: -10.0878538
+        lng: 63.80859390000001
+      southwest:
+        lat: -20.7458403
+        lng: 56.3159179
+  international_prefix: '020'
+  ioc: MRI
+  iso_long_name: The Republic of Mauritius
+  iso_short_name: Mauritius
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Mauritian
+  number: '480'
+  postal_code: true
+  postal_code_format: "\\d{3}(?:\\d{2}|[A-Z]{2}\\d{3})"
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: MU
+  unofficial_names:
+  - Mauritius
+  - Île Maurice
+  - Mauricio
+  - モーリシャス
+  world_region: EMEA

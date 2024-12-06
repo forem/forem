@@ -1,0 +1,19 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+  reek:
+    enabled: true
+ratings:
+  paths:
+  - "**.rb"
+exclude_paths:
+  - spec/
+  - Gemfile
+  - front_matter_parser.gemspec

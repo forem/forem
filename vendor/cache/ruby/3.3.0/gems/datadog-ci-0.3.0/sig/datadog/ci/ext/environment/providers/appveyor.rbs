@@ -1,0 +1,48 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        module Providers
+          class Appveyor < Base
+            @github_repo_provider: bool
+            @url: String
+
+            def provider_name: () -> "appveyor"
+
+            def pipeline_url: () -> String?
+
+            def job_url: () -> String?
+
+            def workspace_path: () -> String?
+
+            def pipeline_id: () -> String?
+
+            def pipeline_name: () -> String?
+
+            def pipeline_number: () -> String?
+
+            def git_repository_url: () -> String?
+
+            def git_commit_sha: () -> String?
+
+            def git_branch: () -> String?
+
+            def git_tag: () -> String?
+
+            def git_commit_author_name: () -> String?
+
+            def git_commit_author_email: () -> String?
+
+            def git_commit_message: () -> String?
+
+            def github_repo_provider?: () -> bool
+
+            private
+
+            def url: () -> String?
+          end
+        end
+      end
+    end
+  end
+end

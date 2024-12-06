@@ -1,0 +1,14 @@
+name: Apply project management flow
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+jobs:
+  project-management:
+    runs-on: ubuntu-latest
+    name: Apply project management flow
+    steps:
+      - uses: honeycombio/oss-management-actions/projects@v1
+        with:
+          ghprojects-token: ${{ secrets.GHPROJECTS_TOKEN }}

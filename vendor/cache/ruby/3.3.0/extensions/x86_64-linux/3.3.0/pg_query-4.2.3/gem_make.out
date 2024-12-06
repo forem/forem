@@ -1,0 +1,788 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hqlklw sitelibdir\=./.gem.20241205-149352-hqlklw clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hqlklw sitelibdir\=./.gem.20241205-149352-hqlklw
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/guc-file.c
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query.c: In function ‘pg_query_enter_memory_context’:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query.c:69:15: warning: old-style function definition [-Wold-style-definition]
+   69 | MemoryContext pg_query_enter_memory_context()
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query.pb-c.c
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_deparse.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_deparse.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_fingerprint.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_fingerprint.c:6:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_json_plpgsql.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_json_plpgsql.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_json_plpgsql.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_normalize.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_normalize.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_outfuncs_json.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_outfuncs_json.c:3:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_outfuncs_protobuf.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_outfuncs_protobuf.c:3:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_parse.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_parse.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_parse_plpgsql.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_parse_plpgsql.c:5:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_readfuncs_protobuf.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_readfuncs.h:6,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_readfuncs_protobuf.c:1:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c: In function ‘raise_ruby_parse_error’:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c:34:6: warning: function might be candidate for attribute ‘noreturn’ [-Wsuggest-attribute=noreturn]
+   34 | void raise_ruby_parse_error(PgQueryProtobufParseResult result)
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c: In function ‘raise_ruby_deparse_error’:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c:52:6: warning: function might be candidate for attribute ‘noreturn’ [-Wsuggest-attribute=noreturn]
+   52 | void raise_ruby_deparse_error(PgQueryDeparseResult result)
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c: In function ‘raise_ruby_normalize_error’:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c:70:6: warning: function might be candidate for attribute ‘noreturn’ [-Wsuggest-attribute=noreturn]
+   70 | void raise_ruby_normalize_error(PgQueryNormalizeResult result)
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c: In function ‘raise_ruby_fingerprint_error’:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c:88:6: warning: function might be candidate for attribute ‘noreturn’ [-Wsuggest-attribute=noreturn]
+   88 | void raise_ruby_fingerprint_error(PgQueryFingerprintResult result)
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c: In function ‘raise_ruby_scan_error’:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c:106:6: warning: function might be candidate for attribute ‘noreturn’ [-Wsuggest-attribute=noreturn]
+  106 | void raise_ruby_scan_error(PgQueryScanResult result)
+      |      ^~~~~~~~~~~~~~~~~~~~~
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_ruby.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_scan.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_scan.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_split.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_internal.h:4,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/pg_query_split.c:2:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/postgres_deparse.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/postgres_deparse.c:1:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/protobuf-c.c
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_catalog_namespace.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_catalog_namespace.c:27:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_catalog_pg_proc.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_catalog_pg_proc.c:21:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_commands_define.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_commands_define.c:39:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_bitmapset.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_bitmapset.c:33:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_copyfuncs.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_copyfuncs.c:328:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_equalfuncs.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_equalfuncs.c:277:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_extensible.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_extensible.c:29:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_list.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_list.c:43:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_makefuncs.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_makefuncs.c:33:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_nodeFuncs.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_nodeFuncs.c:23:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_value.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_nodes_value.c:25:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_parser_gram.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from gram.y:46:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_parser_parser.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_parser_parser.c:34:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_parser_scan.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from scan.c:32:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_parser_scansup.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_parser_scansup.c:24:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_postmaster_postmaster.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_postmaster_postmaster.c:72:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_storage_ipc_ipc.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_storage_ipc_ipc.c:27:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_storage_lmgr_s_lock.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_storage_lmgr_s_lock.c:58:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_tcop_postgres.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_tcop_postgres.c:33:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_activity_pgstat_database.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_activity_pgstat_database.c:24:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_datum.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_datum.c:51:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_expandeddatum.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_expandeddatum.c:23:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_format_type.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_format_type.c:22:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_ruleutils.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_adt_ruleutils.c:23:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_error_assert.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_error_assert.c:21:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_error_elog.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_error_elog.c:98:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_fmgr_fmgr.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_fmgr_fmgr.c:22:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_hash_dynahash.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_hash_dynahash.c:114:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_init_globals.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_init_globals.c:29:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_mb_mbutils.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_mb_mbutils.c:57:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_misc_guc.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_misc_guc.c:27:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_mmgr_aset.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_mmgr_aset.c:66:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_mmgr_mcxt.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_backend_utils_mmgr_mcxt.c:56:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_encnames.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_encnames.c:19:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_hashfn.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_hashfn.c:30:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_keywords.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_keywords.c:22:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_kwlookup.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_kwlookup.c:22:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_pg_prng.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_pg_prng.c:29:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_psprintf.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_psprintf.c:26:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_string.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_string.c:25:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_stringinfo.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_stringinfo.c:34:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_wchar.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_common_wchar.c:97:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_comp.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_comp.c:52:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_funcs.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_funcs.c:62:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_gram.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from pl_gram.y:16:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_handler.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_handler.c:23:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_scanner.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/postgres.h:46,
+                 from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_pl_plpgsql_src_pl_scanner.c:50:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_pg_bitutils.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_pg_bitutils.c:20:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_pgsleep.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_pgsleep.c:19:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_pgstrcasecmp.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_pgstrcasecmp.c:33:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_qsort.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_qsort.c:11:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_snprintf.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_snprintf.c:62:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_strerror.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_strerror.c:23:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_strnlen.c
+In file included from /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/src_port_strnlen.c:22:
+/home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/include/c.h:141:5: warning: "__clang_major__" is not defined, evaluates to 0 [-Wundef]
+  141 | #if __clang_major__ >= 7 || __GNUC__ >= 8
+      |     ^~~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-deprecated-non-prototype’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query/xxhash.c
+linking shared-object pg_query/pg_query.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hqlklw sitelibdir\=./.gem.20241205-149352-hqlklw install
+/usr/bin/install -c -m 0755 pg_query.so ./.gem.20241205-149352-hqlklw/pg_query
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/pg_query-4.2.3/ext/pg_query
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-hqlklw sitelibdir\=./.gem.20241205-149352-hqlklw clean

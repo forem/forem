@@ -1,0 +1,7 @@
+Validations<% if @condition %> (<%= @condition %> )<% end %>:
+---------
+<% for tag in @tags %>
+  <% for type in tag.types %>
+    <%= type %>
+  <% end %>
+<% end %>

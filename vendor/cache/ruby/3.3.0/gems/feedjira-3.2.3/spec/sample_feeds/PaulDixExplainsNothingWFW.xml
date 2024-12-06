@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://feeds.feedburner.com/~d/styles/atom10full.xsl" type="text/xsl" media="screen"?><?xml-stylesheet href="http://feeds.feedburner.com/~d/styles/itemcontent.css" type="text/css" media="screen"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:thr="http://purl.org/syndication/thread/1.0" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0">
+    <title>Paul Dix Explains Nothing</title>
+    
+    <link rel="alternate" type="text/html" href="http://www.pauldix.net/" />
+    <id>tag:typepad.com,2003:weblog-108605</id>
+    <updated>2009-01-22T10:50:22-05:00</updated>
+    <subtitle>Entrepreneurship, programming, software development, politics, NYC, and random thoughts.</subtitle>
+    <generator uri="http://www.typepad.com/">TypePad</generator>
+    <link rel="self" href="http://feeds.feedburner.com/PaulDixExplainsNothing" type="application/atom+xml" /><entry>
+        <title>Making a Ruby C library even faster</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/519925023/making-a-ruby-c-library-even-faster.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2009/01/making-a-ruby-c-library-even-faster.html" thr:count="1" thr:updated="2009-01-22T16:30:53-05:00" />
+        <id>tag:typepad.com,2003:post-61753462</id>
+        <published>2009-01-22T10:50:22-05:00</published>
+        <updated>2009-01-22T16:30:53-05:00</updated>
+        <summary>Last week I released the first version of a SAX based XML parsing library called SAX-Machine. It uses Nokogiri, which uses libxml, so it's pretty fast. However, I felt that it could be even faster. The only question was how...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Ruby" />
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Another Category" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">&lt;p&gt;Last week I released the first version of a &lt;a href="http://www.pauldix.net/2009/01/sax-machine-sax-parsing-made-easy.html"&gt;SAX based XML parsing library called SAX-Machine&lt;/a&gt;. It uses Nokogiri, which uses libxml, so it's pretty fast. However, I felt that it could be even faster. The only question was how to make a ruby library that is already using c underneath perform better. Since I've never written a Ruby C extension and it's been a few years since I've touched C, I decided it would be a good educational experience to give it a try.&lt;/p&gt;
+
+&lt;p&gt;First, let's look into how Nokogiri and SAX-Machine perform a parse. The syntax for SAX-Machine builds up a set of class variables (actually, instance variables on a class object) that describe what you're interested in parsing. So when you see something like this:
+&lt;/p&gt;&lt;script src="http://gist.github.com/50549.js"&gt;&lt;/script&gt;&lt;p&gt;
+It calls the 'element' and 'elements' methods inserted by the SAXMachine module that build up ruby objects that describe what XML tags we're interested in for the Entry class. That's all pretty straight forward and not really the source of any slowdown in the parsing process. These calls only happen once, when you first load the class.
+
+&lt;/p&gt;&lt;p&gt;Things get interesting when you run a parse. So you run Entry.parse(some_xml). That makes the call to Nokogiri, which in turn makes a call to libxml. Libxml then parses over the stream (or string) and makes calls to C methods (in Nokogiri) on certain events. For our purposes, the most interesting are start_element, end_element, and characters_func. The C code in Nokogiri for these is basic. It simply converts those C variables into Ruby ones and then makes calls to whatever instance of Nokogiri::XML:SAX::Document (a Ruby object) is associated with this parse. This is where SAXMachine comes back in. It has handlers for these events that match up the tags with the previously defined SAXMachine objects attached to the Entry class. It ignores the events that don't match a tag (however, it still needs to determine if the tag should be ignored).&lt;/p&gt;
+
+&lt;p&gt;The only possible place I saw to speed things up was to push more of SAX event handling down into the C code. Unfortunately, the only way to do this was to abandon Nokogiri and write my own code to interface with libxml. I used the xml_sax_parser.c from Nokogiri as a base and added to it. I changed it so the SAXMachine definitions of what was interesting would be stored in C. I then changed the SAX handling code to capture the events in C and determine if a tag was of interest there before sending it off to the Ruby objects. The end result is that calls are only made to Ruby when there is an actual event of interest. Thus, I avoid doing any comparisons in Ruby and those classes are simply wrappers that call out to the correct value setters.&lt;/p&gt;
+
+&lt;p&gt;Here are the results of a quick speed comparison against the Nokogiri SAXMachine, parsing my atom feed using &lt;a href="http://gist.github.com/47938"&gt;code from my last post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;        user   system  total   real&lt;br&gt;sax c    0.060000 0.000000 0.060000 ( 0.069990)&lt;br&gt;sax nokogiri 0.500000 0.010000 0.510000 ( 0.520278)&lt;br&gt;&lt;/pre&gt;&lt;p&gt;
+The SAX C is 7.4 times faster than SAX Nokogiri. Now, that doesn't seem like a whole lot, but I think it's quite good considering it was against a library that was already half in C. It's even more punctuated when you look at the comparison of these two against rfeedparser.
+&lt;/p&gt;&lt;pre&gt;        user   system  total    real&lt;br&gt;sax c     0.060000 0.000000 0.060000  ( 0.069990)&lt;br&gt;sax nokogiri 0.500000 0.010000 0.510000  ( 0.520278)&lt;br&gt;rfeedparser 13.770000 1.730000 15.500000 ( 15.690309)&lt;br&gt;&lt;/pre&gt;
+&lt;p&gt;The SAX C version is 224 times faster than rfeedparser! The 7 times multiple from the Nokogiri version of SAXMachine really makes a difference. Unfortunately, I really only wrote this code as a test. It's not even close to something I would use for real. It has memory leaks, isn't thread safe, is completely unreadable, and has hidden bugs that I know about. You can take a look at it in all its misery on the &lt;a href="http://github.com/pauldix/sax-machine/tree/c-refactor"&gt;c-rafactor branch of SAXMachine on github&lt;/a&gt;. Even though the code is awful, I think it's interesting that there can be this much variability in performance on Ruby libraries that are using C.&lt;/p&gt;
+
+&lt;p&gt;I could actually turn this into a legitimate working version, but it would take more work than I think it's worth at this point. Also, I'm not excited about the idea of dealing with C issues in SAXMachine. I would be more excited for it if I could get this type of SAX parsing thing into Nokogiri (in addition to the one that is there now). For now, I'll move on to using the Nokogiri version of SAXMachine to create a feed parsing library.&lt;/p&gt;&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=9Q8qfQ.P"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=9Q8qfQ.P" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=rLK96Z.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=rLK96Z.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=B95sFg.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=B95sFg.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/519925023" height="1" width="1"/&gt;</content>
+
+<wfw:commentRss>this is the new val</wfw:commentRss>
+    <feedburner:origLink>http://www.pauldix.net/2009/01/making-a-ruby-c-library-even-faster.html</feedburner:origLink></entry>
+    <entry>
+        <title>SAX Machine - SAX Parsing made easy</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/514044516/sax-machine-sax-parsing-made-easy.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2009/01/sax-machine-sax-parsing-made-easy.html" thr:count="4" thr:updated="2009-01-21T23:16:44-05:00" />
+        <id>tag:typepad.com,2003:post-61473064</id>
+        <published>2009-01-16T09:47:32-05:00</published>
+        <updated>2009-01-21T23:16:44-05:00</updated>
+        <summary>For a while now I've been wanting to create a ruby library for feed (Atom, RSS) parsing. I know there are already some out there, but for one reason or another each of them falls short for my needs. The...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Ruby" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">&lt;p&gt;For a while now I've been wanting to create a ruby library for feed (Atom, RSS) parsing. I know there are already some out there, but for one reason or another each of them falls short for my needs. The first part of this effort requires me to decide how I want to go about parsing the feeds. One of the primary goals is speed. I want this thing to be fast. So I decided to look into SAX parsing. Further, I wanted to use Nokogiri because I'm going to be doing a few other things with the posts like pulling out links and tags, and sanitizing entries.&lt;/p&gt;&lt;p&gt;SAX parsing is an event based parsing model. It fires events during parsing for things like start_tag, end_tag, start_document, end_document, and characters. Nokogiri contains a very light weight wrapper around libxml's SAX parsing. Using this I started creating a basic declarative syntax for registering parsing events and mapping them into objects and values. The end result is &lt;a href="http://github.com/pauldix/sax-machine"&gt;SAX Machine, a declarative SAX parser for parsing xml into ruby objects&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Some of the syntax was inspired by &lt;a href="http://github.com/jnunemaker/happymapper"&gt;John Nunemaker's Happy Mapper&lt;/a&gt;. However, the behavior is a bit different. There are probably many more features I am going to add in as I use it to create my feed parsing library, but the basic stuff is there right now.&lt;/p&gt;&lt;p&gt;Here's an example that uses SAX Machine to parse a FeedBurner atom feed into ruby objects.&lt;/p&gt;&lt;script src="http://gist.github.com/47938.js"&gt;&lt;/script&gt;&lt;p&gt;
+
+So in a few short lines of code this parses feedburner feeds exactly how I want them. It's also pretty fast. Here's a benchmark against rfeedparser running against the atom feed from this blog 100 times.
+&lt;/p&gt;&lt;pre&gt;feedzirra 1.430000 0.020000 1.450000 ( 1.472081)&lt;br&gt;rfeedparser 15.780000 0.580000 16.360000 ( 16.768889)&lt;br&gt;&lt;/pre&gt;&lt;p&gt;
+It's about 11 times faster in this test. I have to do more tests before I feel comfortable with that figure, but it's a promising start. More importantly this will enable me to make a feed parser that's flexible, extensible, and readable.&lt;/p&gt;&lt;p&gt;SAX Machine is available as a gem as long as you have github added as a gem source. Just do gem install pauldix-sax-machine to get the party started (&lt;strong&gt;UPDATE:&lt;/strong&gt; for some reason it's not built yet. looking into it. &lt;strong&gt;UPDATE 2: &lt;/strong&gt;it's built and ready to go. thanks to nakajima). Also, special thanks to &lt;a href="http://www.brynary.com/"&gt;Bryan Helmkamp&lt;/a&gt; for helping me turn my initial spike into a decently tested and refactored version (even if it did slow my benchmark down by a factor of 4).&lt;/p&gt;&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=2VN4Om.P"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=2VN4Om.P" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=5MHPvx.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=5MHPvx.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=nMpoB4.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=nMpoB4.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/514044516" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2009/01/sax-machine-sax-parsing-made-easy.html</feedburner:origLink></entry>
+    <entry>
+        <title>Professional Goals for 2009</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/499546917/professional-goals-for-2009.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/12/professional-goals-for-2009.html" thr:count="3" thr:updated="2009-01-01T10:17:04-05:00" />
+        <id>tag:typepad.com,2003:post-60634768</id>
+        <published>2008-12-31T10:55:02-05:00</published>
+        <updated>2009-01-01T10:17:05-05:00</updated>
+        <summary>In two weeks I'll be making the transition from full time student to full time worker. Instead of worrying about grades and papers I'll have to get real work done. For the last four years I've set a lot of...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">&lt;p&gt;In two weeks I'll be making the transition from full time student to full time worker. Instead of worrying about grades and papers I'll have to get real work done. For the last four years I've set a lot of goals for myself, but I've mainly been focused on the single goal of finishing school. Now that I've accomplished that it's time to figure out what the next steps are. Being that it's the eve of a new year, I thought a good way to start would be to outline exactly what I'd like to accomplish professionally in 2009. So here are some goals in no particular order:
+&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;Write 48 well thought out blog posts (once a week for 48 weeks of the year)&lt;/li&gt;
+&lt;li&gt;Write an open source library that at least 2 people/organizations use in production&lt;/li&gt;
+&lt;li&gt;Contribute to a popular open source library/project&lt;/li&gt;
+&lt;li&gt;Finish a working version of &lt;a href="http://www.pauldix.net/tahiti/index.html"&gt;Filterly&lt;/a&gt; and use it daily&lt;/li&gt;
+&lt;li&gt;Learn a new programming language&lt;/li&gt;
+&lt;li&gt;Finish reading &lt;a href="http://www.amazon.com/Introduction-Machine-Learning-Adaptive-Computation/dp/0262012111/ref=sr_1_3?ie=UTF8&amp;amp;s=books&amp;amp;qid=1230736254&amp;amp;sr=1-3"&gt;this book on machine learning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Read &lt;a href="http://www.amazon.com/Learning-Kernels-Regularization-Optimization-Computation/dp/0262194759/ref=sr_1_1?ie=UTF8&amp;amp;s=books&amp;amp;qid=1230736307&amp;amp;sr=1-1"&gt;Learning With Kernels by Schlkopf and Smola&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Be a contributing author to a book or shortcut&lt;/li&gt;
+&lt;li&gt;Present at a conference&lt;/li&gt;
+&lt;li&gt;Present at a users group&lt;/li&gt;
+&lt;li&gt;Help create a site that gets decent traffic (kind of non-specific, I know)
+&lt;/li&gt;
+&lt;li&gt;Attend two conferences&lt;/li&gt;
+&lt;li&gt;Attend at least 8 &lt;a href="http://nycruby.org/wiki/"&gt;nyc.rb (NYC Ruby) meetings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Attend at least 6 &lt;a href="http://www.meetup.com/ny-tech/"&gt;NY Tech Meetups&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Attend at least 4 &lt;a href="http://www.meetup.com/BlueVC/"&gt;Columbia Blue Venture Community events&lt;/a&gt; (hard because it conflicts with nyc.rb)&lt;/li&gt;
+&lt;li&gt;Attend at least 4 &lt;a href="http://nextny.org/"&gt;NextNY&lt;/a&gt; events&lt;/li&gt;
+&lt;li&gt;Do all the &lt;a href="http://codekata.pragprog.com/"&gt;Code Katas&lt;/a&gt; at least once (any language)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That's all I've come up with so far. I probably won't be able to get everything on the list, but if I get most of the way there I'll be happy. A year may be too long of a development cycle for professional goals. It would be much more agile if I broke these down into two week sprints, but this will do for now. It gives me specific areas to focus my efforts over the next 12 months. What goals do you have for 2009?&lt;/p&gt;&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=IP49Wo.O"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=IP49Wo.O" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=4Azfxm.o"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=4Azfxm.o" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=iwU8iG.o"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=iwU8iG.o" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/499546917" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/12/professional-goals-for-2009.html</feedburner:origLink></entry>
+    <entry>
+        <title>Marshal data too short error with ActiveRecord</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/383536354/marshal-data-to.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/09/marshal-data-to.html" thr:count="2" thr:updated="2008-11-17T14:40:06-05:00" />
+        <id>tag:typepad.com,2003:post-55147740</id>
+        <published>2008-09-04T16:07:19-04:00</published>
+        <updated>2008-11-17T14:40:06-05:00</updated>
+        <summary>In my previous post about the speed of serializing data, I concluded that Marshal was the quickest way to get things done. So I set about using Marshal to store some data in an ActiveRecord object. Things worked great at...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Tahiti" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">
+&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;In my previous &lt;a href="http://www.pauldix.net/2008/08/serializing-dat.html"&gt;post about the speed of serializing data&lt;/a&gt;, I concluded that Marshal was the quickest way to get things done. So I set about using Marshal to store some data in an ActiveRecord object. Things worked great at first, but on some test data I got this error: marshal data too short. Luckily, &lt;a href="http://www.brynary.com/"&gt;Bryan Helmkamp&lt;/a&gt; had helpfully pointed out that there were sometimes problems with storing marshaled data in the database. He said it was best to base64 encode the marshal dump before storing.&lt;/p&gt;
+
+&lt;p&gt;I was curious why it was working on some things and not others. It turns out that some types of data being marshaled were causing the error to pop up. Here's the test data I used in my specs:&lt;/p&gt;
+&lt;pre&gt;{ :foo =&amp;gt; 3, :bar =&amp;gt; 2 } # hash with symbols for keys and integer values&lt;br /&gt;[3, 2.1, 4, 8]&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; # array with integer and float values&lt;/pre&gt;
+&lt;p&gt;Everything worked when I switched the array values to all integers so it seems that floats were causing the problem. However, in the interest of keeping everything working regardless of data types, I base64 encoded before going into the database and decoded on the way out.&lt;/p&gt;
+
+&lt;p&gt;I also ran the benchmarks again to determine what impact this would have on speed. Here are the results for 100 iterations on a 10k element array and a 10k element hash with and without base64 encode/decode:&lt;/p&gt;
+&lt;pre&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; user&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; system&amp;nbsp; &amp;nbsp;&amp;nbsp; total&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; real&lt;br /&gt;array marshal&amp;nbsp; 0.200000&amp;nbsp; &amp;nbsp;0.010000&amp;nbsp; &amp;nbsp;0.210000 (&amp;nbsp; 0.214018) (without Base64)&lt;br /&gt;array marshal&amp;nbsp; 0.220000&amp;nbsp; &amp;nbsp;0.010000&amp;nbsp; &amp;nbsp;0.230000 (&amp;nbsp; 0.250260)&lt;br /&gt;&lt;br /&gt;hash marshal&amp;nbsp; &amp;nbsp;1.830000&amp;nbsp; &amp;nbsp;0.040000&amp;nbsp; &amp;nbsp;1.870000 (&amp;nbsp; 1.892874) (without Base64)&lt;br /&gt;hash marshal&amp;nbsp; &amp;nbsp;2.040000&amp;nbsp; &amp;nbsp;0.100000&amp;nbsp; &amp;nbsp;2.140000 (&amp;nbsp; 2.170405)&lt;/pre&gt;
+&lt;p&gt;As you can see the difference in speed is pretty negligible. I assume that the error has to do with AR cleaning the stuff that gets inserted into the database, but I'm not really sure. In the end it's just easier to use Base64.encode64 when serializing data into a text field in ActiveRecord using Marshal.&lt;/p&gt;
+
+&lt;p&gt;I've also read people posting about this error when using the database session store. I can only assume that it's because they were trying to store either way too much data in their session (too much for a regular text field) or they were storing float values or some other data type that would cause this to pop up. Hopefully this helps.&lt;/p&gt;&lt;/div&gt;
+&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=SX7veW.P"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=SX7veW.P" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=9RuRMG.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=9RuRMG.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=3a9dsf.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=3a9dsf.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/383536354" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/09/marshal-data-to.html</feedburner:origLink></entry>
+    <entry>
+        <title>Serializing data speed comparison: Marshal vs. JSON vs. Eval vs. YAML</title>
+        <link rel="alternate" type="text/html" href="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~3/376401099/serializing-dat.html" />
+        <link rel="replies" type="text/html" href="http://www.pauldix.net/2008/08/serializing-dat.html" thr:count="5" thr:updated="2008-10-14T01:26:31-04:00" />
+        <id>tag:typepad.com,2003:post-54766774</id>
+        <published>2008-08-27T14:31:41-04:00</published>
+        <updated>2008-10-14T01:26:31-04:00</updated>
+        <summary>Last night at the NYC Ruby hackfest, I got into a discussion about serializing data. Brian mentioned the Marshal library to me, which for some reason had completely escaped my attention until last night. He said it was wicked fast...</summary>
+        <author>
+            <name>Paul Dix</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Tahiti" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://www.pauldix.net/">
+&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;&lt;p&gt;Last night at the &lt;a href="http://nycruby.org"&gt;NYC Ruby hackfest&lt;/a&gt;, I got into a discussion about serializing data. Brian mentioned the Marshal library to me, which for some reason had completely escaped my attention until last night. He said it was wicked fast so we decided to run a quick benchmark comparison.&lt;/p&gt;
+&lt;p&gt;The test data is designed to roughly approximate what my &lt;a href="http://www.pauldix.net/2008/08/storing-many-cl.html"&gt;stored classifier data&lt;/a&gt; will look like. The different methods we decided to benchmark were Marshal, json, eval, and yaml. With each one we took the in-memory object and serialized it and then read it back in. With eval we had to convert the object to ruby code to serialize it then run eval against that. Here are the results for 100 iterations on a 10k element array and a hash with 10k key/value pairs run on my Macbook Pro 2.4 GHz Core 2 Duo:&lt;/p&gt;
+&lt;pre&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; user&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;system&amp;nbsp; &amp;nbsp;&amp;nbsp; total&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; real&lt;br /&gt;array marshal&amp;nbsp; 0.210000&amp;nbsp; &amp;nbsp;0.010000&amp;nbsp; &amp;nbsp;0.220000 (&amp;nbsp; 0.220701)&lt;br /&gt;array json&amp;nbsp; &amp;nbsp;&amp;nbsp; 2.180000&amp;nbsp; &amp;nbsp;0.050000&amp;nbsp; &amp;nbsp;2.230000 (&amp;nbsp; 2.288489)&lt;br /&gt;array eval&amp;nbsp; &amp;nbsp;&amp;nbsp; 2.090000&amp;nbsp; &amp;nbsp;0.060000&amp;nbsp; &amp;nbsp;2.150000 (&amp;nbsp; 2.240443)&lt;br /&gt;array yaml&amp;nbsp; &amp;nbsp; 26.650000&amp;nbsp; &amp;nbsp;0.350000&amp;nbsp; 27.000000 ( 27.810609)&lt;br /&gt;&lt;br /&gt;hash marshal&amp;nbsp; &amp;nbsp;2.000000&amp;nbsp; &amp;nbsp;0.050000&amp;nbsp; &amp;nbsp;2.050000 (&amp;nbsp; 2.114950)&lt;br /&gt;hash json&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;3.700000&amp;nbsp; &amp;nbsp;0.060000&amp;nbsp; &amp;nbsp;3.760000 (&amp;nbsp; 3.881716)&lt;br /&gt;hash eval&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;5.370000&amp;nbsp; &amp;nbsp;0.140000&amp;nbsp; &amp;nbsp;5.510000 (&amp;nbsp; 6.117947)&lt;br /&gt;hash yaml&amp;nbsp; &amp;nbsp;&amp;nbsp; 68.220000&amp;nbsp; &amp;nbsp;0.870000&amp;nbsp; 69.090000 ( 72.370784)&lt;/pre&gt;
+&lt;p&gt;The order in which I tested them is pretty much the order in which they ranked for speed. Marshal was amazingly fast. JSON and eval came out roughly equal on the array with eval trailing quite a bit for the hash. Yaml was just slow as all hell. A note on the json: I used the 1.1.3 library which uses c to parse. I assume it would be quite a bit slower if I used the pure ruby implementation. Here's &lt;a href="http://gist.github.com/7549"&gt;a gist of the benchmark code&lt;/a&gt; if you're curious and want to run it yourself.&lt;/p&gt;
+
+
+
+&lt;p&gt;If you're serializing user data, be super careful about using eval. It's probably best to avoid it completely. Finally, just for fun I took yaml out (it was too slow) and ran the benchmark again with 1k iterations:&lt;/p&gt;
+&lt;pre&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; user&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;system&amp;nbsp; &amp;nbsp;&amp;nbsp; total&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp; real&lt;br /&gt;array marshal&amp;nbsp; 2.080000&amp;nbsp; &amp;nbsp;0.110000&amp;nbsp; &amp;nbsp;2.190000 (&amp;nbsp; 2.242235)&lt;br /&gt;array json&amp;nbsp; &amp;nbsp; 21.860000&amp;nbsp; &amp;nbsp;0.500000&amp;nbsp; 22.360000 ( 23.052403)&lt;br /&gt;array eval&amp;nbsp; &amp;nbsp; 20.730000&amp;nbsp; &amp;nbsp;0.570000&amp;nbsp; 21.300000 ( 21.992454)&lt;br /&gt;&lt;br /&gt;hash marshal&amp;nbsp; 19.510000&amp;nbsp; &amp;nbsp;0.500000&amp;nbsp; 20.010000 ( 20.794111)&lt;br /&gt;hash json&amp;nbsp; &amp;nbsp;&amp;nbsp; 39.770000&amp;nbsp; &amp;nbsp;0.670000&amp;nbsp; 40.440000 ( 41.689297)&lt;br /&gt;hash eval&amp;nbsp; &amp;nbsp;&amp;nbsp; 51.410000&amp;nbsp; &amp;nbsp;1.290000&amp;nbsp; 52.700000 ( 54.155711)&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="feedflare"&gt;
+&lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=a3KCSc.P"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=a3KCSc.P" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=zhI5zo.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=zhI5zo.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?a=u7DqIA.p"&gt;&lt;img src="http://feeds.feedburner.com/~f/PaulDixExplainsNothing?i=u7DqIA.p" border="0"&gt;&lt;/img&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;img src="http://feeds.feedburner.com/~r/PaulDixExplainsNothing/~4/376401099" height="1" width="1"/&gt;</content>
+
+
+    <feedburner:origLink>http://www.pauldix.net/2008/08/serializing-dat.html</feedburner:origLink></entry>
+ 
+</feed>

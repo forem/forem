@@ -1,0 +1,4 @@
+fallbacks: false
+
+translations:
+  - file: "tmp/i18n-js/no_scope.js"

@@ -1,0 +1,52 @@
+---
+SJ:
+  alpha2: SJ
+  alpha3: SJM
+  continent: Europe
+  country_code: '47'
+  currency_code: NOK
+  distance_unit: KM
+  gec: SV
+  geo:
+    latitude: 77.55360399999999
+    longitude: 23.6702719
+    max_latitude: 80.92842569999999
+    max_longitude: 34.8046879
+    min_latitude: 70.4662074
+    min_longitude: -10.5468752
+    bounds:
+      northeast:
+        lat: 80.92842569999999
+        lng: 34.8046879
+      southwest:
+        lat: 70.4662074
+        lng: -10.5468752
+  international_prefix: '00'
+  ioc:
+  iso_long_name: Svalbard and Jan Mayen
+  iso_short_name: Svalbard and Jan Mayen
+  languages_official:
+  - 'no'
+  languages_spoken:
+  - 'no'
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Norwegian
+  number: '744'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: SJ
+  unofficial_names:
+  - Svalbard and Jan Mayen
+  - Svalbard und Jan Mayen
+  - Îles Svalbard et Jan Mayen
+  - Islas Svalbard y Jan Mayen
+  - スヴァールバル諸島およびヤンマイエン島
+  - Svalbard en Jan Mayen
+  world_region: EMEA

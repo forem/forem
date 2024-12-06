@@ -1,0 +1,42 @@
+
+<h1>This page is used for testing various scopes</h1>
+
+<p id="for_foo">
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+  incididunt ut labore et dolore magna aliqua. Ut enim ad minim venia.
+  <a href="/redirect">Go</a>
+  <input name="disabled" disabled="disabled"/>
+</p>
+
+<div id="for_bar">
+  <ul>
+    <li>With Simple HTML: <a href="/with_simple_html">Go</a>
+      <form action="/redirect" method="post" accept-charset="utf-8">
+        <p>
+          <label for="simple_first_name">First Name</label>
+          <input type="text" name="first_name" value="John" id="simple_first_name"/>
+        </p>
+        <p><input type="submit" value="Go"/></p>
+      </form>
+    </li>
+    <li>Bar: <a href="/foo">Go</a>
+      <form action="/form" method="post" accept-charset="utf-8">
+        <p>
+          <label for="bar_first_name">First Name</label>
+          <input type="text" name="form[first_name]" value="Peter" id="bar_first_name"/>
+        </p>
+        <p>
+          <label for="bar_other_name">Other Name</label>
+          <input type="text" name="form[other_name]" value="James" id="bar_other_name" disabled="disabled"/>
+        </p>
+        <p><input type="submit" value="Go"/></p>
+      </form>
+    </li>
+  </ul>
+</div>
+
+<div id="another_foo">
+  <ul>
+    <li>With Simple HTML: <a href="/">Go</a>
+  </ul>
+</div>

@@ -1,0 +1,15 @@
+mitch =
+    age:    21
+    height: 180cm
+    pets:   [\dog, \goldfish]
+
+phile = {}
+phile{height, pets} = mitch
+phile.height #=> 180
+phile.pets   #=> ['dog', 'goldfish']
+
+a = [2 7 1 8]
+    ..push 3
+    ..shift!
+    ..sort!
+a #=> [1,3,7,8]

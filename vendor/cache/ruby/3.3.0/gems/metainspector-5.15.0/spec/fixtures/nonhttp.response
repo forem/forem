@@ -1,0 +1,24 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Content-Type: text/html
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 4987
+X-Varnish: 2000423390
+Age: 0
+Via: 1.1 varnish
+
+<html>
+  <head>
+    <title>Sample file non-http links</title>
+  </head>
+  <body>
+    <a href="ftp://ftp.cdrom.com">an FTP link</a>
+    <a href="FTP://FTP.CDROM.COM">an uppercase FTP link</a>
+    <a href="javascript:alert('hey');">a javascript function</a>
+    <a href="mailto:user@example.com">an email</a>
+    <a href="skype:joeuser?call">a skype link</a>
+    <a href="telnet://telnet.cdrom.com">a telnet link</a>
+  </body>
+</html>

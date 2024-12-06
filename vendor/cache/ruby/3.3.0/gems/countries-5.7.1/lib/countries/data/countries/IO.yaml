@@ -1,0 +1,48 @@
+---
+IO:
+  alpha2: IO
+  alpha3: IOT
+  continent: Asia
+  country_code: '246'
+  currency_code: USD
+  distance_unit: KM
+  gec: IO
+  geo:
+    latitude: -6.343194
+    longitude: 71.876519
+    max_latitude: -5.1401857
+    max_longitude: 72.5880433
+    min_latitude: -7.4891118
+    min_longitude: 71.1859131
+    bounds:
+      northeast:
+        lat: -5.1401857
+        lng: 72.5880433
+      southwest:
+        lat: -7.4891118
+        lng: 71.1859131
+  international_prefix: ''
+  ioc:
+  iso_long_name: The British Indian Ocean Territory
+  iso_short_name: British Indian Ocean Territory
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Indian
+  number: '086'
+  postal_code: true
+  postal_code_format: BBND 1ZZ
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: IO
+  unofficial_names:
+  - British Indian Ocean Territory
+  - Britisches Territorium im Indischen Ozean
+  - イギリス領インド洋地域
+  - Britse Gebieden in de Indische Oceaan
+  world_region: APAC

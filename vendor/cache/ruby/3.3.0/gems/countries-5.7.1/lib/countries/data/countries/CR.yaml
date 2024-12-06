@@ -1,0 +1,48 @@
+---
+CR:
+  alpha2: CR
+  alpha3: CRI
+  continent: North America
+  country_code: '506'
+  currency_code: CRC
+  distance_unit: KM
+  gec: CS
+  geo:
+    latitude: 9.748916999999999
+    longitude: -83.753428
+    max_latitude: 11.2196806
+    max_longitude: -82.51830009999999
+    min_latitude: 5.496099999999999
+    min_longitude: -87.09899999999999
+    bounds:
+      northeast:
+        lat: 11.2196806
+        lng: -82.51830009999999
+      southwest:
+        lat: 5.496099999999999
+        lng: -87.09899999999999
+  international_prefix: '00'
+  ioc: CRC
+  iso_long_name: The Republic of Costa Rica
+  iso_short_name: Costa Rica
+  languages_official:
+  - es
+  languages_spoken:
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Costa Rican
+  number: '188'
+  postal_code: true
+  postal_code_format: "\\d{4,5}|\\d{3}-\\d{4}"
+  region: Americas
+  start_of_week: monday
+  subregion: Central America
+  un_locode: CR
+  unofficial_names:
+  - Costa Rica
+  - コスタリカ
+  world_region: AMER

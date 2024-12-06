@@ -1,0 +1,18 @@
+extends Node
+
+# Variables & Built-in Types
+
+var a = 5
+var b = true
+var s = "Hello"
+var arr = [1, 2, 3]
+
+# Constants & Enums
+
+const ANSWER = 42
+enum { UNIT_NEUTRAL, UNIT_ENEMY, UNIT_ALLY }
+
+# Functions
+
+func _ready():
+    print("Hello, World")

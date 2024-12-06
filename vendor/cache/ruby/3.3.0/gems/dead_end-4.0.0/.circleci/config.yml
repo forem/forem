@@ -1,0 +1,91 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.2.0
+references:
+  unit: &unit
+    run:
+      name: Run test suite
+      command: bundle exec rspec spec/
+
+  lint: &lint
+    run:
+      name: Run linter, fix with `standardrb --fix` locally
+      command: bundle exec standardrb
+
+jobs:
+  "ruby-2-5":
+    docker:
+      - image: circleci/ruby:2.5
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+
+  "ruby-2-6":
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+
+  "ruby-2-7":
+    docker:
+      - image: circleci/ruby:2.7
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+
+  "ruby-3-0":
+    docker:
+      - image: circleci/ruby:3.0
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+
+  "ruby-3-1":
+    docker:
+      - image: 'cimg/ruby:3.1'
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+
+  "ruby-3-2":
+    docker:
+      - image: 'ruby:3.2.0-preview1'
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+  "ruby-3-2-yjit":
+    docker:
+      - image: 'ruby:3.2.0-preview1'
+    steps:
+      - run: echo "export RUBY_YJIT_ENABLE=1" >> $BASH_ENV
+      - checkout
+      - ruby/install-deps
+      - <<: *unit
+
+  "lint":
+    docker:
+      - image: circleci/ruby:3.0
+    steps:
+      - checkout
+      - ruby/install-deps
+      - <<: *lint
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "ruby-2-5"
+      - "ruby-2-6"
+      - "ruby-2-7"
+      - "ruby-3-0"
+      - "ruby-3-1"
+      - "ruby-3-2"
+      - "ruby-3-2-yjit"
+      - "lint"

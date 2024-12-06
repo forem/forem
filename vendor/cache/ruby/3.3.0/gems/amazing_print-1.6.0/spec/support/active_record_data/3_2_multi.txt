@@ -1,0 +1,50 @@
+[
+    [0] #<User:placeholder_id
+        @aggregation_cache = {},
+        @attributes_cache = {},
+        @destroyed = false,
+        @marked_for_destruction = false,
+        @mass_assignment_options = nil,
+        @new_record = true,
+        @previously_changed = {},
+        @readonly = false,
+        attr_accessor :attributes = {
+                 "admin" => false,
+            "created_at" => "1992-10-10 12:30:00",
+                    "id" => nil,
+                  "name" => "Diana",
+                  "rank" => 1
+        },
+        attr_reader :association_cache = {},
+        attr_reader :changed_attributes = {
+                 "admin" => nil,
+            "created_at" => nil,
+                  "name" => nil,
+                  "rank" => nil
+        }
+    >,
+    [1] #<User:placeholder_id
+        @aggregation_cache = {},
+        @attributes_cache = {},
+        @destroyed = false,
+        @marked_for_destruction = false,
+        @mass_assignment_options = nil,
+        @new_record = true,
+        @previously_changed = {},
+        @readonly = false,
+        attr_accessor :attributes = {
+                 "admin" => true,
+            "created_at" => "2003-05-26 14:15:00",
+                    "id" => nil,
+                  "name" => "Laura",
+                  "rank" => 2
+        },
+        attr_reader :association_cache = {},
+        attr_reader :changed_attributes = {
+                 "admin" => nil,
+            "created_at" => nil,
+                  "name" => nil,
+                  "rank" => nil
+        }
+    >
+]

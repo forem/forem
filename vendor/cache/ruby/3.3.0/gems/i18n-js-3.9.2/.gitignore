@@ -1,0 +1,7 @@
+pkg
+node_modules
+Gemfile.lock
+.idea/
+coverage/
+gemfiles/*.gemfile.lock
+gemfiles/.bundle

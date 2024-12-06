@@ -1,0 +1,44 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Content-Type: text/html
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 4987
+X-Varnish: 2000423390
+Age: 0
+Via: 1.1 varnish
+
+<html>
+  <head>
+    <title>An example page</title>
+    <meta property="og:image" content="/wp-content/uploads/2015/03/50316106.jpg" />
+  </head>
+  <body>
+    <!-- An SVG tag can have a title tag, should not interfere with the head title tag -->
+    <!-- https://github.com/jaimeiniesta/metainspector/issues/83 -->
+    <svg width="500" height="300" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <title>SVG Title Demo example</title>
+        <rect x="10" y="10" width="200" height="50" style="fill:none; stroke:blue; stroke-width:1px"/>
+      </g>
+    </svg>
+
+    <!-- Internal relative links -->
+    <a href="/">Root</a>
+    <a href="/faqs">FAQs</a>
+    <a href="contact">Contact</a>
+
+    <!-- Internal absolute links -->
+    <a href="http://example.com/team.html">Team</a>
+
+    <!-- External links -->
+    <a href="https://twitter.com">Twitter</a>
+    <a href="https://github.com">Github</a>
+
+    <!-- Non-HTTP links -->
+    <a href="mailto:hello@example.com">email</a>
+    <a href="javascript:alert('hi');">hello</a>
+    <a href="ftp://ftp.example.com">FTP</a>
+  </body>
+</html>

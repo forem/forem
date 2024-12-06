@@ -1,0 +1,53 @@
+<table class="table queries">
+  <thead>
+    <tr>
+      <th style="width: 25%;">Pid</th>
+      <th style="width: 25%;">Duration</th>
+      <th style="width: 25%;">State</th>
+      <th style="width: 25%;"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% queries.reverse.each do |query| %>
+      <tr>
+        <td><%= query[:pid] %></td>
+        <td>
+          <% if query[:duration_ms] %>
+            <% sec = query[:duration_ms] / 1000.0 %>
+            <% if sec < 1.minute %>
+              <%= sec.round(1) %> s
+            <% elsif sec < 1.day %>
+              <%= Time.at(sec).utc.strftime("%H:%M:%S") %>
+            <% else %>
+              <% days = (sec / 1.day).floor %>
+              <%= days %>d <%= Time.at(sec - days.days).utc.strftime("%H:%M:%S") %>
+            <% end %>
+          <% end %>
+        </td>
+        <td>
+          <%= query[:state] %>
+          <% if vacuum_progress[query[:pid]] %>
+            <br />
+            <strong><%= vacuum_progress[query[:pid]][:phase] %></strong>
+          <% end %>
+        </td>
+        <td class="text-right">
+          <% unless @database.filter_data %>
+            <%= button_to "Explain", explain_path, params: {query: query[:query]}, form: {target: "_blank"}, class: "btn btn-info" %>
+          <% end %>
+          <%= button_to "Kill", kill_path(pid: query[:pid]), class: "btn btn-danger" %>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="6" style="border-top: none; padding: 0;">
+          <%= query[:source] %> <span class="text-muted"><%= query[:user] %></span>
+          <pre style="margin-top: 1em;"><code><%= query[:query] %></code></pre>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<script>
+  highlightQueries();
+</script>

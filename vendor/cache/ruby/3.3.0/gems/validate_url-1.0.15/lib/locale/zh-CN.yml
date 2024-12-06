@@ -1,0 +1,4 @@
+zh-CN:
+  errors:
+    messages:
+      url: '网址格式不正确'

@@ -1,0 +1,198 @@
+<% if @error %>
+  <div class="alert alert-danger"><%= @error.first(200) %></div>
+<% elsif !@success %>
+  <% if @only_chart %>
+    <p class="text-muted">Select variables</p>
+  <% else %>
+    <div class="alert alert-info">Can’t preview queries with variables...yet!</div>
+  <% end %>
+<% elsif @cohort_analysis %>
+  <% if @cohort_error %>
+    <div class="alert alert-info"><%= @cohort_error %></div>
+  <% else %>
+    <%= render partial: "cohorts" %>
+  <% end %>
+<% else %>
+  <% unless @only_chart %>
+    <%= render partial: "caching" %>
+    <p class="text-muted" style="margin-bottom: 10px;">
+      <% if @row_limit && @rows.size > @row_limit %>
+        First
+        <% @rows = @rows.first(@row_limit) %>
+      <% end %>
+      <%= pluralize(@rows.size, "row") %>
+
+      <% @checks.select(&:state).each do |check| %>
+        &middot; <small class="check-state <%= check.state.parameterize.gsub("-", "_") %>"><%= link_to check.state.upcase, edit_check_path(check) %></small>
+        <% if check.try(:message) %>
+          &middot; <%= check.message %>
+        <% end %>
+      <% end %>
+
+      <% if @query && @result.forecastable? && !params[:forecast] %>
+        &middot;
+        <%= link_to "Forecast", query_path(@query, params: {forecast: "t"}.merge(variable_params(@query))) %>
+      <% end %>
+    </p>
+  <% end %>
+  <% if @forecast_error %>
+    <div class="alert alert-danger"><%= @forecast_error %></div>
+  <% end %>
+  <% if @cohort_error %>
+    <div class="alert alert-info"><%= @cohort_error %></div>
+  <% end %>
+  <% if @rows.any? %>
+    <% values = @rows.first %>
+    <% chart_id = SecureRandom.hex %>
+    <% column_types = @result.column_types %>
+    <% chart_type = @result.chart_type %>
+    <% chart_options = {id: chart_id} %>
+    <% if ["line", "line2"].include?(chart_type) %>
+      <% chart_options.merge!(min: nil) %>
+    <% end %>
+    <% if chart_type == "scatter" %>
+      <% chart_options.merge!(library: {tooltips: {intersect: false}}) %>
+    <% elsif ["bar", "bar2"].include?(chart_type) %>
+      <% chart_options.merge!(library: {tooltips: {intersect: false, axis: 'x'}}) %>
+    <% elsif chart_type != "pie" %>
+      <% if column_types.size == 2 || @forecast %>
+        <% chart_options.merge!(library: {tooltips: {intersect: false, axis: 'x'}}) %>
+      <% else %>
+        <%# chartjs axis: 'x' has poor behavior with multiple series %>
+        <% chart_options.merge!(library: {tooltips: {intersect: false}}) %>
+      <% end %>
+    <% end %>
+    <% series_library = {} %>
+    <% target_index = @columns.index { |k| k.downcase == "target" } %>
+    <% if target_index %>
+      <% color = "#109618" %>
+      <% series_library[target_index - 1] = {pointStyle: "line", hitRadius: 5, borderColor: color, pointBackgroundColor: color, backgroundColor: color, pointHoverBackgroundColor: color} %>
+    <% end %>
+    <% if @forecast %>
+      <% color = "#54a3ee" %>
+      <% series_library[1] = {borderDash: [8], borderColor: color, pointBackgroundColor: color, backgroundColor: color, pointHoverBackgroundColor: color} %>
+    <% end %>
+    <% if blazer_maps? && @markers.any? %>
+      <% map_id = SecureRandom.hex %>
+      <%= content_tag :div, nil, id: map_id, style: "height: #{@only_chart ? 300 : 500}px;" %>
+      <script>
+        <%= blazer_js_var "mapboxAccessToken", Blazer.mapbox_access_token %>
+        <%= blazer_js_var "markers", @markers %>
+        <%= blazer_js_var "mapId", map_id %>
+        L.mapbox.accessToken = mapboxAccessToken;
+        var map = L.mapbox.map(mapId)
+          .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+        var featureLayer = L.mapbox.featureLayer().addTo(map);
+        var geojson = [];
+        for (var i = 0; i < markers.length; i++) {
+          var marker = markers[i];
+          geojson.push({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [
+                marker.longitude,
+                marker.latitude
+              ]
+            },
+            properties: {
+              description: marker.title,
+              'marker-color': '#f86767',
+              'marker-size': 'medium'
+            }
+          });
+        }
+        featureLayer.setGeoJSON(geojson);
+        map.fitBounds(featureLayer.getBounds());
+      </script>
+    <% elsif chart_type == "line" %>
+      <% chart_data = @columns[1..-1].each_with_index.map{ |k, i| {name: blazer_series_name(k), data: @rows.map{ |r| [r[0], r[i + 1]] }, library: series_library[i]} } %>
+      <%= line_chart chart_data, **chart_options %>
+    <% elsif chart_type == "line2" %>
+      <%= line_chart @rows.group_by { |r| v = r[1]; (@boom[@columns[1]] || {})[v.to_s] || v }.each_with_index.map { |(name, v), i| {name: blazer_series_name(name), data: v.map { |v2| [v2[0], v2[2]] }, library: series_library[i]} }, **chart_options %>
+    <% elsif chart_type == "pie" %>
+      <%= pie_chart @rows.map { |r| [(@boom[@columns[0]] || {})[r[0].to_s] || r[0], r[1]] }, **chart_options %>
+    <% elsif chart_type == "bar" %>
+      <%= column_chart (values.size - 1).times.map { |i| name = @columns[i + 1]; {name: blazer_series_name(name), data: @rows.first(20).map { |r| [(@boom[@columns[0]] || {})[r[0].to_s] || r[0], r[i + 1]] } } }, **chart_options %>
+    <% elsif chart_type == "bar2" %>
+      <% first_20 = @rows.group_by { |r| r[0] }.values.first(20).flatten(1) %>
+      <% labels = first_20.map { |r| r[0] }.uniq %>
+      <% series = first_20.map { |r| r[1] }.uniq %>
+      <% labels.each do |l| %>
+        <% series.each do |s| %>
+          <% first_20 << [l, s, 0] unless first_20.find { |r| r[0] == l && r[1] == s } %>
+        <% end %>
+      <% end %>
+      <%= column_chart first_20.group_by { |r| v = r[1]; (@boom[@columns[1]] || {})[v.to_s] || v }.each_with_index.map { |(name, v), i| {name: blazer_series_name(name), data: v.sort_by { |r2| labels.index(r2[0]) }.map { |v2| v3 = v2[0]; [(@boom[@columns[0]] || {})[v3.to_s] || v3, v2[2]] }} }, **chart_options %>
+    <% elsif chart_type == "scatter" %>
+      <%= scatter_chart @rows, xtitle: @columns[0], ytitle: @columns[1], **chart_options %>
+    <% elsif @only_chart %>
+      <% if @rows.size == 1 && @rows.first.size == 1 %>
+        <% v = @rows.first.first %>
+        <% if v.is_a?(String) && v == "" %>
+          <div class="text-muted">empty string</div>
+        <% else %>
+          <p style="font-size: 160px;"><%= blazer_format_value(@columns.first, v) %></p>
+        <% end %>
+      <% else %>
+        <% @no_chart = true %>
+      <% end %>
+    <% end %>
+
+    <% unless @only_chart && !@no_chart %>
+      <% header_width = 100 / @columns.size.to_f %>
+      <div class="results-container">
+        <% if @columns == ["QUERY PLAN"] %>
+          <pre><code><%= @rows.map { |r| r[0] }.join("\n") %></code></pre>
+        <% elsif @columns == ["PLAN"] && @data_source.adapter == "druid" %>
+          <pre><code><%= @rows[0][0] %></code></pre>
+        <% else %>
+          <table class="table results-table">
+            <thead>
+              <tr>
+                <% @columns.each_with_index do |key, i| %>
+                  <% type = @column_types[i] %>
+                  <th style="width: <%= header_width %>%;" data-sort="<%= type %>">
+                    <div style="min-width: <%= @min_width_types.include?(i) ? 180 : 60 %>px;">
+                      <%= key %>
+                    </div>
+                  </th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rows.each do |row| %>
+                <tr>
+                  <% row.each_with_index do |v, i| %>
+                    <% k = @columns[i] %>
+                    <td>
+                      <% if v.is_a?(Time) %>
+                        <% v = blazer_time_value(@data_source, k, v) %>
+                      <% end %>
+
+                      <% unless v.nil? %>
+                        <% if v.is_a?(String) && v == "" %>
+                          <div class="text-muted">empty string</div>
+                        <% elsif @linked_columns[k] %>
+                          <%= link_to blazer_format_value(k, v), @linked_columns[k].gsub("{value}", u(v.to_s)), target: "_blank" %>
+                        <% else %>
+                          <%= blazer_format_value(k, v) %>
+                        <% end %>
+                      <% end %>
+
+                      <% if v2 = (@boom[k] || {})[v.nil? ? v : v.to_s] %>
+                        <div class="text-muted"><%= v2 %></div>
+                      <% end %>
+                    </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+    <% end %>
+  <% elsif @only_chart %>
+    <p class="text-muted">No rows</p>
+  <% end %>
+<% end %>

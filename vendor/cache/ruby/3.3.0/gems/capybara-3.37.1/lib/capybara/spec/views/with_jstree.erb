@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>with_jstree</title>
+  </head>
+  <body id="with_jstree">
+    <div id="container">
+      <ul>
+        <li>Child node A</li>
+        <li>Child node B</li>
+        <li>Child node C</li>
+      </ul>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
+    <script>
+      $(function () {
+        $('#container').jstree({
+          "core" : { "check_callback" : true }, // so that operations work
+          "plugins" : ["dnd"]
+        });
+      });
+    </script>
+  </body>
+</html>

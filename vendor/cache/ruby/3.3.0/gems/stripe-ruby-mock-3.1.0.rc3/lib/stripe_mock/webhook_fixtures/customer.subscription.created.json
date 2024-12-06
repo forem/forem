@@ -1,0 +1,66 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "customer.subscription.created",
+  "object": "event",
+  "data": {
+    "object": {
+      "id": "su_00000000000000",
+        "items": {
+          "object": "list",
+          "data": [
+          {
+            "id": "si_00000000000000",
+            "object": "subscription_item",
+            "created": 1497881783,
+            "plan": {
+              "interval": "month",
+              "product": "pr_00000000000000",
+              "amount": 100,
+              "currency": "usd",
+              "id": "fkx0AFo_00000000000000",
+              "object": "plan",
+              "livemode": false,
+              "interval_count": 1,
+              "trial_period_days": null,
+              "metadata": {}
+            },
+            "quantity": 1
+          },
+          {
+            "id": "si_00000000000001",
+            "object": "subscription_item",
+            "created": 1497881788,
+            "plan": {
+              "interval": "month",
+              "product": "pr_00000000000001",
+              "amount": 200,
+              "currency": "eur",
+              "id": "fkx0AFo_00000000000001",
+              "object": "plan",
+              "livemode": false,
+              "interval_count": 1,
+              "trial_period_days": null,
+              "metadata": {}
+            },
+            "quantity": 5
+          }
+        ]
+      },
+      "object": "subscription",
+      "start": 1381080557,
+      "status": "active",
+      "customer": "cus_00000000000000",
+      "cancel_at_period_end": false,
+      "current_period_start": 1381080557,
+      "current_period_end": 1383758957,
+      "ended_at": null,
+      "trial_start": null,
+      "trial_end": null,
+      "canceled_at": null,
+      "quantity": 1,
+      "application_fee_percent": null
+    }
+  }
+}

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: ["2.7"]
+        gemfile:
+          - gemfiles/rails50_sprockets_3.gemfile
+          - gemfiles/rails51_sprockets_3.gemfile
+          - gemfiles/rails52_sprockets_3.gemfile
+          - gemfiles/rails70_sprockets_4.gemfile
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - name: install dependencies
+        run: |
+          bundle install --jobs 3 --retry 3
+          yarn install
+      - name: test
+        run: bundle exec rake spec

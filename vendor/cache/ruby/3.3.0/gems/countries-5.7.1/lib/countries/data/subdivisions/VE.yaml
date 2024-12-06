@@ -1,0 +1,1668 @@
+---
+A:
+  name: Distrito Federal
+  code: A
+  unofficial_names: Distrito Federal
+  geo:
+    latitude: 10.4883092
+    longitude: -66.8201397
+    min_latitude: 10.4846835
+    min_longitude: -66.8206768
+    max_latitude: 10.4915618
+    max_longitude: -66.8186636
+  translations:
+    en: Capital
+    ar: مقاطعة العاصمة
+    bn: কেপিটাল জেলা
+    da: Capital District
+    de: Distrito Capital
+    el: Κάπιταλ Ντίστρικτ, Βενεζουέλα
+    es: Distrito Capital
+    fi: Pääkaupunkialue
+    fr: District Capitale de Caracas
+    gu: કેપિટલ જિલ્લો
+    he: מחוז הבירה של ונצואלה
+    hi: कैपिटल जिला
+    id: Distrik Capital
+    it: distretto Capitale
+    ja: 首都地区
+    ka: ვენესუელის ფედერალური ოლქი
+    kn: ಕ್ಯಾಪಿಟಲ್ ಡಿಸ್ಟ್ರಿಕ್ಟ್
+    ko: 수도 지구
+    lt: Venesuelos sostinės apygarda
+    mr: राजधानी जिल्हा
+    ms: Capital District
+    nb: Hovedstad
+    nl: Hoofdstedelijk District
+    pl: Dystrykt Capital
+    pt: Distrito Capital
+    ro: Distrito Capital (Venezuela)
+    ru: Столичный округ Венесуэлы
+    si: කැපිටල් දිස්ත්‍රික්කය
+    sv: Venezuelas huvudstadsdistrikt
+    ta: கேப்பிடல் மாவட்டம்
+    te: క్యాపిటల్ జిల్లా
+    th: เมคเนส ทาฟิลาเลท
+    tr: Venezuela Başkent Bölgesi
+    ur: دارالحکومت ضلع
+    vi: Quận Capital
+    zh: 聯邦區 (委內瑞拉)
+    lv: Federālais distrikts
+    ceb: Distrito Capital (estado sa Venezuela)
+    sq: Distrikti i Kryeqytetit
+    ccp: "\U00011107\U00011133\U00011120\U0001111B\U00011128\U00011111\U00011123\U00011134"
+    uk: Столичний район
+    ca: Districte Capital
+    be: Сталічная акруга Венесуэлы
+    'no': Hovedstad
+    fa: بخش کاپیتال (ونزوئلا)
+    hr: Caracas
+  comments:
+  type: capital_district
+B:
+  name: Anzoátegui
+  code: B
+  unofficial_names: Anzoátegui
+  geo:
+    latitude: 8.5913073
+    longitude: -63.95861110000001
+    min_latitude: 7.662308999999999
+    min_longitude: -65.7231031
+    max_latitude: 10.3062849
+    max_longitude: -62.690419
+  translations:
+    en: Anzoátegui
+    ar: ولاية أنزواتغي
+    be: Штат Ансаатэгі
+    bg: Ансоатеги
+    bn: আঞ্জোয়াতেগুই
+    ca: Anzoátegui
+    cs: Anzoátegui
+    da: Anzoátegui
+    de: Anzoátegui
+    el: Ανζοατέγκουι
+    es: Anzoátegui
+    et: Anzoátegui
+    eu: Anzoátegui
+    fa: ایالت آنسوآتگی
+    fi: Anzoátegui
+    fr: État d’Anzoátegui
+    gl: Anzoátegui
+    gu: એન્ઝોટેગ્યુઇ
+    he: אנסואטגי
+    hi: एंजोटेग्यूई
+    hu: Anzoátegui
+    hy: Անսոատեգի
+    id: Anzoátegui
+    it: Anzoátegui
+    ja: アンソアテギ州
+    ka: ანსოატეგი
+    kn: ಅಂಜೋಟೆಗುಯಿ
+    ko: 안소아테기 주
+    lt: Ansoategis
+    mr: अनझोटेग्यूई
+    ms: Anzoátegui
+    nb: Anzoátegui
+    nl: Anzoátegui
+    pl: Anzoátegui
+    pt: Anzoátegui
+    ro: Anzoátegui
+    ru: Ансоатеги
+    si: අන්සොආටෙගුයි
+    sr: Анзоатеги
+    sv: Anzoátegui
+    ta: அந்தஸ்ஓட்டேகி
+    te: అంజోవాటెగూ
+    th: รัฐอันโซอาเตกี
+    tr: Anzoategui
+    uk: Ансоатегі
+    ur: انسوآتیگی
+    vi: Anzoategui
+    lv: Ansoategi
+    ceb: Estado Anzoátegui
+    sr_Latn: Anzoategi
+    zh: 安索阿特吉州
+    ccp: "\U00011103\U0001111A\U00011134\U0001110E\U0001112E\U00011120\U00011111\U0001112C\U00011109\U0001112D\U0001112A"
+    mk: Анзоатеги
+    'no': Anzoátegui
+    hr: Anzoátegui
+    ps: آنسوآتګی
+  comments:
+  type: state
+C:
+  name: Apure
+  code: C
+  unofficial_names: Apure
+  geo:
+    latitude: 6.926948299999999
+    longitude: -68.52471489999999
+    min_latitude: 6.087082100000001
+    min_longitude: -72.44940199999999
+    max_latitude: 8.071935
+    max_longitude: -66.387362
+  translations:
+    en: Apure
+    ar: ولاية أبوري
+    be: Штат Апурэ
+    bg: Апуре
+    bn: আপুর
+    ca: Apure
+    cs: Apure
+    da: Apure
+    de: Apure
+    el: Απούρε
+    es: Apure
+    et: Apure
+    eu: Apure
+    fa: آپوره
+    fi: Apure (osavaltio)
+    fr: État d’Apure
+    gl: Apure
+    gu: અપુર
+    he: אפורה
+    hi: अपुरे
+    hu: Apure
+    hy: Ապուրե
+    id: Apure
+    it: Apure
+    ja: アプレ州
+    ka: აპურეს შტატი
+    kn: ಅಪುರೆ
+    ko: 아푸레 주
+    lt: Apūrė
+    mr: अपूर
+    ms: Apure
+    nb: Apure
+    nl: Apure
+    pl: Apure
+    pt: Apure
+    ro: Apure
+    ru: Апуре
+    si: අපුරේ
+    sr: Апуре
+    sv: Apure
+    ta: அபுரே
+    te: అప్యూర్
+    th: รัฐอาปูเร
+    tr: Apure
+    uk: Апуре
+    ur: آپورے
+    vi: Apure
+    lv: Apure
+    ceb: Estado Apure
+    sr_Latn: Apure
+    zh: 阿普雷州
+    ccp: "\U00011103\U00011133\U00011120\U0001111B\U00011128\U00011105\U0001112A\U00011122\U00011134"
+    mk: Апуре
+    'no': Apure
+    hr: Apure (država u Venezueli)
+  comments:
+  type: state
+D:
+  name: Aragua
+  code: D
+  unofficial_names: Aragua
+  geo:
+    latitude: 10.2313205
+    longitude: -67.2847875
+    min_latitude: 9.236194
+    min_longitude: -67.8416931
+    max_latitude: 10.5348419
+    max_longitude: -66.577714
+  translations:
+    en: Aragua
+    ar: ولاية آراغوآ
+    be: Штат Арагуа
+    bg: Арагуа
+    bn: আরাগুয়া
+    ca: Aragua
+    cs: Aragua
+    da: Aragua
+    de: Aragua
+    el: Αραγκούα
+    es: Aragua
+    et: Aragua
+    eu: Aragua
+    fa: آراگوآ
+    fi: Aragua
+    fr: État d’Aragua
+    gu: એરાગુઆ
+    he: ארגואה
+    hi: एरागुआ
+    hy: Արագուա
+    id: Aragua
+    it: Aragua
+    ja: アラグア州
+    ka: არაგუის შტატი
+    kn: ಅರಗುವಾ
+    ko: 아라과 주
+    lt: Aragva
+    mr: अरागुआ
+    ms: Aragua
+    nb: Aragua
+    nl: Aragua
+    pl: Aragua
+    pt: Aragua
+    ro: Aragua
+    ru: Арагуа
+    si: අරගුවා
+    sr: Арагва
+    sv: Aragua
+    ta: அரவும்
+    te: అరాగ్వా
+    th: รัฐอารากวา
+    tr: Aragua
+    uk: Арагуа
+    ur: آراگوا
+    vi: Aragua
+    lv: Aragva
+    ceb: Estado Aragua
+    sr_Latn: Aragva
+    zh: 阿拉瓜州
+    ccp: "\U00011103\U00011122\U00011109\U0001112A\U00011120"
+    bs: Aragua
+    mk: Арагва
+    'no': Aragua
+    hr: Aragua (država u Venezueli)
+    ps: آراګوآ آیالات
+  comments:
+  type: state
+E:
+  name: Barinas
+  code: E
+  unofficial_names: Barinas
+  geo:
+    latitude: 8.6231498
+    longitude: -70.2371045
+    min_latitude: 8.567696399999999
+    min_longitude: -70.3161825
+    max_latitude: 8.676318000000002
+    max_longitude: -70.1549148
+  translations:
+    en: Barinas
+    ar: ولاية باريناس
+    be: Штат Барынас
+    bg: Баринас
+    bn: বারিনাস
+    ca: Barinas
+    cs: Barinas
+    da: Barinas
+    de: Barinas
+    el: Μπαρίνας
+    es: Barinas
+    et: Barinase osariik
+    eu: Barinas estatua
+    fa: ایالت باریناس
+    fi: Barinas
+    fr: État de Barinas
+    gu: બારીનસ
+    he: ברינס
+    hi: बरीनाज़
+    id: Barinas
+    it: Barinas
+    ja: バリナス州
+    ka: ბარინასის შტატი
+    kn: ಬರಿನಾಸ್
+    ko: 바리나스 주
+    lt: Barinasas
+    mr: बरिनास
+    ms: Barinas
+    nb: Barinas
+    nl: Barinas
+    pl: Barinas
+    pt: Barinas
+    ro: Barinas
+    ru: Баринас
+    si: බරිනාස්
+    sr: Баринас
+    sv: Barinas
+    ta: பரிணாஸ்
+    te: బారినాస్
+    th: รัฐบารีนัส
+    tr: Barinas
+    uk: Барінас
+    ur: باریناس
+    vi: Barinas (bang Venezuela)
+    lv: Barinasa
+    ceb: Estado Barinas
+    sr_Latn: Barinas
+    zh: 巴里纳斯州
+    ccp: "\U0001111D\U00011122\U00011128\U0001111A\U0001110C\U00011134"
+    hy: Բարինաս
+    ml: ബരീനാസ്
+    mk: Баринас
+    'no': Barinas
+    hr: Barinas
+  comments:
+  type: state
+F:
+  name: Bolívar
+  code: F
+  unofficial_names: Bolívar
+  geo:
+    latitude: 28.6002894
+    longitude: 77.1857196
+    min_latitude: 28.5999888
+    min_longitude: 77.1853477
+    max_latitude: 28.6005899
+    max_longitude: 77.1860916
+  translations:
+    en: Bolívar
+    ar: ولاية بوليفار
+    be: Штат Балівар
+    bg: Боливар
+    bn: বলিভার
+    ca: Estat Bolívar
+    da: Bolívar
+    de: Bolívar
+    el: Μπολίβαρ
+    es: Bolívar
+    et: Bolívari osariik
+    eu: Bolívar estatua
+    fa: بولیوار
+    fi: Bolívar
+    fr: État de Bolívar
+    gl: Estado Bolívar
+    gu: બોલિવર
+    he: בוליבר
+    hi: बोलिवार
+    hr: Bolivar
+    id: Bolívar
+    it: Bolívar
+    ja: ボリバル州
+    ka: ბოლივარის შტატი
+    kn: ಬೋಲಿವರ್
+    ko: 볼리바르 주
+    lt: Bolivaras
+    mr: बोलिवार
+    ms: Bolívar
+    nb: Bolívar
+    nl: Bolívar
+    pl: Bolívar
+    pt: Bolívar
+    ro: Bolívar
+    ru: Боливар
+    si: බොලිවර්
+    sr: Боливар
+    sv: Bolívar
+    ta: பொலிவார்
+    te: బోలివర్
+    th: รัฐโบลีวาร์
+    tr: Bolivar
+    uk: Болівар
+    ur: بولیبار
+    vi: Bolívar
+    lv: Bolivara
+    ceb: Estado Bolívar
+    sr_Latn: Bolivar
+    zh: 玻利瓦爾州
+    ccp: "\U0001111D\U0001112E\U00011123\U00011128\U0001111E\U00011122\U00011134"
+    hy: Բոլիվար
+    mk: Боливар
+    'no': Bolívar
+    az: Bolivar
+  comments:
+  type: state
+G:
+  name: Carabobo
+  code: G
+  unofficial_names: Carabobo
+  geo:
+    latitude: 10.1176433
+    longitude: -68.0477509
+    min_latitude: 9.840609899999999
+    min_longitude: -68.3616419
+    max_latitude: 10.582696
+    max_longitude: -67.500586
+  translations:
+    en: Carabobo
+    af: Carabobo
+    ar: كارابوبو
+    be: Штат Карабоба
+    bg: Карабобо
+    bn: ক্যারাবোবো
+    ca: Carabobo
+    cs: Carabobo
+    da: Carabobo
+    de: Carabobo
+    el: Καραμπόμπο
+    es: Carabobo
+    et: Carabobo
+    eu: Carabobo
+    fa: کارابوبو
+    fi: Carabobo
+    fr: État de Carabobo
+    gu: કારબોબો
+    he: קרבובו
+    hi: कैरोबोबो
+    id: Carabobo
+    it: Carabobo
+    ja: カラボボ州
+    ka: კარაბობოს შტატი
+    kn: ಕರಾಬೊಬೋ
+    ko: 카라보보 주
+    lt: Karabobas
+    mr: कॅरोबोबो
+    ms: Carabobo
+    nb: Carabobo
+    nl: Carabobo
+    pl: Carabobo
+    pt: Carabobo
+    ro: Carabobo
+    ru: Карабобо
+    si: කරබොබෝ
+    sr: Карабобо
+    sv: Carabobo
+    ta: சரபோபோ
+    te: కారాబోబో
+    th: รัฐการาโบโบ
+    tr: Carabobo
+    uk: Карабобо
+    ur: کارابوبو
+    vi: Carabobo
+    lv: Karabobo
+    ceb: Estado Carabobo
+    sr_Latn: Karabobo
+    zh: 卡拉沃沃州
+    ccp: "\U00011107\U00011122\U0001111D\U0001112E\U0001111D\U0001112E"
+    hy: Կարաբոբո
+    mk: Карабобо
+    'no': Carabobo
+    hr: Carabobo
+  comments:
+  type: state
+H:
+  name: Cojedes
+  code: H
+  unofficial_names: Cojedes
+  geo:
+    latitude: 9.3816682
+    longitude: -68.3339275
+    min_latitude: 8.447204
+    min_longitude: -68.973962
+    max_latitude: 10.136926
+    max_longitude: -67.729923
+  translations:
+    en: Cojedes
+    ar: كويديس
+    be: Штат Кахедэс
+    bg: Кохедес
+    bn: কুজেডেস
+    ca: Cojedes
+    da: Cojedes
+    de: Cojedes
+    el: Κοτζέντες
+    es: Cojedes
+    et: Cojedes
+    fi: Cojedes
+    fr: État de Cojedes
+    gu: કોજેડેસ
+    he: קוחדס
+    hi: कोएडेस
+    id: Cojedes
+    it: Cojedes
+    ja: コヘデス州
+    ka: კოხედესის შტატი
+    kn: ಕೊಜೆಡೆಸ್
+    ko: 코헤데스 주
+    lt: Kochedesas
+    mr: कोजेडे
+    ms: Cojedes
+    nb: Cojedes
+    nl: Cojedes
+    pl: Cojedes
+    pt: Cojedes
+    ro: Cojedes
+    ru: Кохедес
+    si: කොජෙඩෙස්
+    sr: Кохедес
+    sv: Cojedes
+    ta: கோஜெட்ஸ்
+    te: కోజెడెస్
+    th: รัฐโกเฮเดส
+    tr: Cojedes
+    uk: Кохедес
+    ur: کوخیدیس
+    vi: Cojedes (bang)
+    lv: Kohedesa
+    ceb: Estado Cojedes
+    sr_Latn: Kohedes
+    zh: 科赫德斯州
+    fa: کوخدس
+    ccp: "\U00011107\U0001112E\U0001110E\U0001112C\U00011113\U0001112C\U0001110C\U00011134"
+    eu: Cojedes
+    mk: Кохедес
+    'no': Cojedes
+    hr: Cojedes
+  comments:
+  type: state
+I:
+  name: Falcón
+  code: I
+  unofficial_names: Falcón
+  geo:
+    latitude: 11.1810674
+    longitude: -69.8597406
+    min_latitude: 10.3007589
+    min_longitude: -71.2543781
+    max_latitude: 12.1967488
+    max_longitude: -68.2239176
+  translations:
+    en: Falcón
+    ar: فالكون
+    be: Штат Фалькон
+    bg: Фалкон
+    bn: ফেলকন
+    ca: Falcón
+    da: Falcón
+    de: Falcón
+    el: Φαλκόν
+    es: Falcón
+    et: Falcón
+    fa: فالکون
+    fi: Falcón
+    fr: État de Falcón
+    gl: Falcón
+    gu: ફાલકન
+    he: פלקון
+    hi: फाल्कोन
+    id: Falcón
+    it: Falcón
+    ja: ファルコン州
+    ka: ფალკონის შტატი
+    kn: ಫಾಲ್ಕನ್
+    ko: 팔콘 주
+    lt: Falkonas
+    mr: फाल्कॉन
+    ms: Falcón
+    nb: Falcón
+    nl: Falcón
+    pl: Falcón
+    pt: Falcón
+    ro: Falcón
+    ru: Фалькон
+    si: ෆැල්කන්
+    sr: Фалкон
+    sv: Falcón
+    ta: பால்கான்
+    te: ఫాల్కన్
+    th: รัฐฟัลกอน
+    tr: Falcon
+    uk: Фалькон
+    ur: فالکون
+    vi: Falcón
+    lv: Falkona
+    ceb: Estado Falcón
+    sr_Latn: Falkon
+    zh: 法尔孔州
+    ccp: "\U0001111C\U00011127\U00011123\U00011134\U00011107\U00011127\U0001111A\U00011134"
+    eu: Falcón
+    mk: Фалкон
+    'no': Falcón
+    hr: Falcón
+    hy: Ֆալկոն
+  comments:
+  type: state
+J:
+  name: Guárico
+  code: J
+  unofficial_names: Guárico
+  geo:
+    latitude: 8.7489309
+    longitude: -66.2367172
+    min_latitude: 7.605169999999998
+    min_longitude: -68.0238901
+    max_latitude: 10.057669
+    max_longitude: -64.75399209999999
+  translations:
+    en: Guárico
+    ar: غواريكو
+    be: Штат Гуарыка
+    bg: Гуарико
+    bn: গুয়ারিকো
+    ca: Guárico
+    da: Guárico
+    de: Guárico
+    el: Γκουάρικο
+    es: Guárico
+    et: Guárico
+    fi: Guárico
+    fr: État de Guárico
+    gu: ગુઆરિકો
+    he: גואריקו
+    hi: गुआरिको
+    id: Guárico
+    it: Guárico
+    ja: グアリコ州
+    ka: გუარიკოს შტატი
+    kn: ಗೌರಾಕೊ
+    ko: 과리코 주
+    lt: Gvarikas
+    mr: गुआरिको
+    ms: Guárico
+    nb: Guárico
+    nl: Guárico
+    pl: Guárico
+    pt: Guárico
+    ro: Guárico
+    ru: Гуарико
+    si: ගුආරිකෝ
+    sr: Гварико
+    sv: Guárico
+    ta: குஅரிகோ
+    te: గువారికో
+    th: รัฐกวารีโก
+    tr: Guarico
+    uk: Гуаріко
+    ur: گواریکو
+    vi: Guarico
+    lv: Gvariko
+    ceb: Estado Guárico
+    sr_Latn: Gvariko
+    zh: 瓜里科州
+    fa: گوآریکو
+    ccp: "\U00011109\U0001112A\U00011120\U00011122\U00011128\U00011107\U0001112E"
+    eu: Guárico
+    mk: Гварико
+    'no': Guárico
+    hr: Guárico
+    hy: Գուարիկո
+  comments:
+  type: state
+K:
+  name: Lara
+  code: K
+  unofficial_names: Lara
+  geo:
+    latitude: 10.1537842
+    longitude: -69.8597406
+    min_latitude: 9.471193
+    min_longitude: -70.86321000000001
+    max_latitude: 10.7833261
+    max_longitude: -68.86312699999999
+  translations:
+    en: Lara
+    ar: لارا
+    be: Штат Лара
+    bg: Лара
+    bn: লারা
+    ca: Estat Lara
+    da: Lara
+    de: Lara
+    el: Λάρα
+    es: Lara
+    et: Lara
+    fa: ایالت لارا
+    fi: Lara
+    fr: État de Lara
+    gu: લારા
+    he: לרה
+    hi: लारा
+    id: Lara
+    it: Lara
+    ja: ララ州
+    ka: ლარას შტატი
+    kn: ಲಾರಾ
+    ko: 라라 주
+    lt: Lara
+    mr: लारा
+    ms: Lara
+    nb: Lara
+    nl: Lara
+    pl: Lara
+    pt: Lara
+    ro: Lara
+    ru: Лара
+    si: ලාරා
+    sr: Лара
+    sv: Lara
+    ta: லாரா
+    te: లారా
+    th: รัฐลารา
+    tr: Lara
+    uk: Лара
+    ur: لارا، وینیزویلا
+    vi: Lara
+    lv: Lara
+    ceb: Estado Lara
+    sr_Latn: Lara
+    zh: 拉腊州
+    ccp: "\U00011123\U00011122"
+    eu: Lara (estatua)
+    mk: Лара
+    'no': Lara
+    cs: Lara
+    gl: Estado Lara
+    hr: Lara
+  comments:
+  type: state
+L:
+  name: Mérida
+  code: L
+  unofficial_names: Mérida
+  geo:
+    latitude: 8.6
+    longitude: -71.14999999999999
+    min_latitude: 8.550806399999999
+    min_longitude: -71.2217046
+    max_latitude: 8.6325337
+    max_longitude: -71.1248876
+  translations:
+    en: Mérida
+    ar: ولاية ماردة
+    be: Штат Мерыда
+    bg: Мерида
+    bn: মেরিদা
+    ca: Estat Mérida
+    da: Mérida
+    de: Mérida
+    el: Μέριντα
+    es: Mérida
+    et: Mérida osariik
+    fa: ایالت مریدا
+    fi: Mérida
+    fr: État de Mérida
+    gu: મેરિડા
+    he: מרידה
+    hi: मेरिडा
+    id: Mérida
+    it: Mérida
+    ja: メリダ州
+    ka: მერიდის შტატი
+    kn: ಮೆರಿಡಾ
+    ko: 메리다 주
+    lt: Merida
+    mr: मेरिडा
+    ms: Merida
+    nb: Mérida
+    nl: Mérida
+    pl: Mérida
+    pt: Mérida
+    ro: Mérida (stat)
+    ru: Мерида
+    si: මෙරිඩා
+    sr: Мерида (држава Венецуеле)
+    sv: Mérida
+    ta: மேரீடா
+    te: మెరిడా
+    th: รัฐเมรีดา
+    tr: Mérida
+    uk: Меріда
+    ur: میریدا
+    vi: Mérida (bang)
+    lv: Merida
+    ceb: Estado Mérida
+    sr_Latn: Merida (država Venecuele)
+    zh: 梅里达州
+    ccp: "\U0001111F\U00011122\U00011128\U00011113"
+    eu: Mérida (estatua)
+    mk: Мерида
+    'no': Mérida
+    hr: Mérida
+  comments:
+  type: state
+M:
+  name: Miranda
+  code: M
+  unofficial_names: Miranda
+  geo:
+    latitude: 10.4883092
+    longitude: -66.8201397
+    min_latitude: 10.4846835
+    min_longitude: -66.8206768
+    max_latitude: 10.4915618
+    max_longitude: -66.8186636
+  translations:
+    en: Miranda
+    ar: ميراندا
+    be: Штат Міранда
+    bg: Миранда
+    bn: মিরান্ডা
+    ca: Estat de Miranda
+    cs: Miranda
+    da: Miranda
+    de: Miranda
+    el: Μιράντα
+    es: Miranda
+    et: Miranda osariik
+    fa: ایالت میراندا
+    fi: Miranda
+    fr: État de Miranda
+    gu: મિરાન્ડા
+    he: מירנדה
+    hi: मिरांडा
+    hu: Miranda
+    id: Miranda
+    it: Miranda
+    ja: ミランダ州
+    ka: მირანდას შტატი
+    kn: ಮಿರಾಂಡಾ
+    ko: 미란다 주
+    lt: Miranda
+    mr: मिरांडा
+    ms: Miranda
+    nb: Miranda
+    nl: Miranda
+    pl: Miranda
+    pt: Miranda
+    ro: Miranda
+    ru: Миранда
+    si: මිරැන්ඩා
+    sr: Миранда
+    sv: Miranda
+    ta: மிராண்டா
+    te: మిరాండా
+    th: รัฐมีรันดา
+    tr: Miranda
+    uk: Міранда
+    ur: میراندا
+    vi: Miranda
+    lv: Miranda
+    ceb: Miranda (estado)
+    sr_Latn: Miranda
+    zh: 米兰达州
+    ccp: "\U0001111F\U00011128\U00011122\U00011128\U0001111A\U00011134\U00011113"
+    eu: Miranda (estatua)
+    mk: Миранда
+    'no': Miranda
+    gl: Estado Miranda
+    hr: Miranda
+  comments:
+  type: state
+N:
+  name: Monagas
+  code: N
+  unofficial_names: Monagas
+  geo:
+    latitude: 9.3241652
+    longitude: -63.0147578
+    min_latitude: 8.370352
+    min_longitude: -64.060521
+    max_latitude: 10.313212
+    max_longitude: -61.992819
+  translations:
+    en: Monagas
+    ar: موناغاس
+    be: Штат Манагас
+    bg: Монагас
+    bn: মোনাগাস
+    ca: Monagas
+    da: Monagas
+    de: Monagas
+    el: Μονάγκας
+    es: Monagas
+    et: Monagas
+    fa: ایالت موناگاس
+    fi: Monagas
+    fr: État de Monagas
+    gu: મોનાગાસ
+    he: מונגס
+    hi: मोनागास
+    id: Monagas
+    it: Monagas
+    ja: モナガス州
+    ka: მონაგასის შტატი
+    kn: ಮೊನಾಗಾಸ್
+    ko: 모나가스 주
+    lt: Monagasas
+    mr: मोनागास
+    ms: Monagas
+    nb: Monagas
+    nl: Monagas
+    pl: Monagas
+    pt: Monagas
+    ro: Monagas
+    ru: Монагас
+    si: මොනගාස්
+    sr: Монагас (држава Венецуеле)
+    sv: Monagas
+    ta: மொனகஸ்
+    te: మోనాగాస్
+    th: รัฐโมนากัส
+    tr: Monagas
+    uk: Монагас (штат Венесуели)
+    ur: موناگاس
+    vi: Monagas
+    lv: Monagasa
+    ceb: Estado Monagas
+    sr_Latn: Monagas (država Venecuele)
+    zh: 莫納加斯州
+    ccp: "\U0001111F\U0001112E\U0001111A\U00011109\U0001110C\U00011134"
+    eu: Monagas
+    mk: Монагас
+    'no': Monagas
+    cs: Monagas
+    hr: Monagas
+  comments:
+  type: state
+O:
+  name: Nueva Esparta
+  code: O
+  unofficial_names: Nueva Esparta
+  geo:
+    latitude: 10.9970723
+    longitude: -63.91132959999999
+    min_latitude: 10.7362473
+    min_longitude: -64.408394
+    max_latitude: 11.1751676
+    max_longitude: -63.7801904
+  translations:
+    en: Nueva Esparta
+    ar: نويفا إسبارتا
+    be: Штат Нуэва-Эспарта
+    bg: Нуева Еспарта
+    bn: নুয়েবা এস্পারতা
+    ca: Nueva Esparta
+    cs: Nueva Esparta
+    da: Nueva Esparta
+    de: Nueva Esparta
+    el: Νουέβα Εσπάρτα
+    es: Nueva Esparta
+    et: Nueva Esparta
+    fi: Nueva Esparta
+    fr: État de Nueva Esparta
+    gu: નુએવા એસ્પાર્ટા
+    he: נואבה אספרטה
+    hi: न्युएवा एस्पार्टा
+    id: Nueva Esparta
+    it: Nueva Esparta
+    ja: ヌエバ・エスパルタ州
+    ka: ნუევა-ესპარტა
+    kn: ನುವಾ ಎಸ್ಪಾರ್ಟಾ
+    ko: 누에바에스파르타 주
+    lt: Nueva Esparta
+    mr: नुएव्ह एस्पर्टा
+    ms: Nueva Esparta
+    nb: Nueva Esparta
+    nl: Nueva Esparta
+    pl: Nueva Esparta
+    pt: Nueva Esparta
+    ro: Nueva Esparta
+    ru: Нуэва-Эспарта
+    si: නුඑවා එස්පර්ටා
+    sr: Нуева Еспарта
+    sv: Nueva Esparta
+    sw: Nueva Esparta
+    ta: நுயேவா எஸ்பார்ட்டா
+    te: నుయేవా ఎస్పార్టా
+    th: รัฐนวยวาเอสปาร์ตา
+    tr: Nueva Esparta
+    uk: Нуева-Еспарта
+    ur: نویبا ایسپارتا
+    vi: Nueva Esparta
+    lv: Nueva Esparta
+    ceb: Estado Nueva Esparta
+    sr_Latn: Nueva Esparta
+    zh: 新埃斯帕塔州
+    fa: نوئوا اسپارتا
+    ccp: "\U0001111A\U00011128\U00011105\U0001112A\U0001111E \U00011103\U0001112C\U0001110C\U00011134\U0001111B\U00011122\U00011134\U00011111"
+    eu: Nueva Esparta
+    mk: Нуева Еспарта
+    'no': Nueva Esparta
+    hr: Nueva Esparta
+  comments:
+  type: state
+P:
+  name: Portuguesa
+  code: P
+  unofficial_names: Portuguesa
+  geo:
+    latitude: 9.094399899999999
+    longitude: -69.097023
+    min_latitude: 8.0664041
+    min_longitude: -70.20322999999999
+    max_latitude: 9.936261
+    max_longitude: -68.4286499
+  translations:
+    en: Portuguesa
+    ar: بورتوغيزا
+    be: Штат Партугеса
+    bg: Португеса
+    bn: পর্তুগিজা
+    ca: Estat Portuguesa
+    da: Portuguesa
+    de: Portuguesa
+    el: Πορτουγκέσα
+    es: Portuguesa
+    et: Portuguesa
+    fa: پورتوگسا
+    fi: Portuguesa
+    fr: État de Portuguesa
+    gu: પોર્ટુગીઝ
+    he: פורטוגסה
+    hi: पुर्तगीज़ा (वेनेजुएला)
+    id: Portuguesa
+    it: Portuguesa
+    ja: ポルトゥゲサ州
+    ka: პორტუგესის შტატი
+    kn: ಪೋರ್ಚುಗೀಸ್
+    ko: 포르투게사 주
+    lt: Portugesa
+    mr: पोर्तुगुसा
+    ms: Portuguesa
+    nb: Portuguesa
+    nl: Portuguesa
+    pl: Portuguesa
+    pt: Portuguesa
+    ro: Portuguesa
+    ru: Португеса
+    si: මශෝනාලන්ඩ් බටහිර පළාත
+    sr: Португеса
+    sv: Portuguesa
+    ta: போர்டுகுகேசா
+    te: పోర్చుగీసా
+    th: รัฐโปร์ตูเกซา
+    tr: Portuguesa
+    uk: Португеса
+    ur: پورتوگیسا، وینیزویلا
+    vi: Portuguesa (bang)
+    lv: Portugesa
+    ceb: Estado Portuguesa
+    sr_Latn: Portugesa
+    zh: 波图格萨州
+    ccp: "\U00011111\U0001112E\U00011122\U00011134\U00011111\U0001112A\U00011109\U0001112A\U00011120\U0001112C\U0001110C"
+    eu: Portuguesa
+    mk: Португеса
+    'no': Portuguesa
+    hr: Portuguesa (država u Venezueli)
+    ps: پورتوګسا آیالات
+  comments:
+  type: state
+R:
+  name: Sucre
+  code: R
+  unofficial_names: Sucre
+  geo:
+    latitude: 10.4883092
+    longitude: -66.8201397
+    min_latitude: 10.4846835
+    min_longitude: -66.8206768
+    max_latitude: 10.4915618
+    max_longitude: -66.8186636
+  translations:
+    en: Sucre
+    ar: سوكري
+    be: Штат Сукрэ
+    bg: Сукре
+    bn: সুক্রে
+    ca: Estat Sucre
+    da: Sucre
+    de: Sucre
+    el: Σούκρε
+    es: Sucre
+    et: Sucre osariik
+    fa: ایالت سوکره
+    fi: Sucre
+    fr: État de Sucre
+    gu: સૂક્ર
+    he: סוקרה
+    hi: सूकर
+    id: Sucre
+    it: Sucre
+    ja: スクレ州
+    ka: სუკრეს შტატი
+    kn: ಸುಕ್ರೆ
+    ko: 수크레 주
+    lt: Sukrė
+    mr: सूक्र
+    ms: Sucre
+    nb: Sucre
+    nl: Sucre
+    pl: Sucre
+    pt: Sucre
+    ro: Sucre
+    ru: Сукре
+    si: සක්රේ
+    sr: Сукре
+    sv: Sucre
+    ta: சுகிரே
+    te: సుక్రె
+    th: รัฐซูเกร
+    tr: Sucre
+    uk: Сукре
+    ur: سوکرے، وینیزویلا
+    vi: Sucre (bang)
+    lv: Sukre
+    ceb: Estado Sucre
+    sr_Latn: Sukre
+    zh: 苏克雷州
+    ccp: "\U00011125\U00011107\U00011133\U00011122\U0001112C"
+    eu: Sucre (estatua)
+    mk: Сукре
+    'no': Sucre
+  comments:
+  type: state
+S:
+  name: Táchira
+  code: S
+  unofficial_names: Táchira
+  geo:
+    latitude: 7.9137001
+    longitude: -72.1416132
+    min_latitude: 7.328787999999999
+    min_longitude: -72.48719799999999
+    max_latitude: 8.6657761
+    max_longitude: -71.349119
+  translations:
+    en: Táchira
+    ar: ولاية تاتشيرا
+    be: Штат Тачыра
+    bg: Тачира
+    bn: তাচিরা
+    ca: Táchira
+    cs: Táchira
+    da: Táchira
+    de: Táchira
+    el: Τατσίρα
+    es: Táchira
+    et: Táchira
+    fa: تاچیرا
+    fi: Táchira
+    fr: État de Táchira
+    gu: તાચીરા
+    he: טאצ׳ירה
+    hi: ताचीरा
+    id: Táchira
+    it: Táchira
+    ja: タチラ州
+    ka: ტაჩირის შტატი
+    kn: ಟಾಚಿರಾ
+    ko: 타치라 주
+    lt: Tačira
+    mr: ताचीरा
+    ms: Táchira
+    nb: Táchira
+    nl: Táchira
+    pl: Táchira
+    pt: Táchira
+    ro: Táchira
+    ru: Тачира
+    si: ටාචිරා
+    sk: Táchira
+    sr: Тачира
+    sv: Táchira
+    ta: டச்சிரா
+    te: టకీరా
+    th: รัฐตาชีรา
+    tr: Táchira
+    uk: Тачіра
+    ur: تاچیرا
+    vi: Táchira (bang)
+    lv: Tačira
+    ceb: Estado Táchira
+    sr_Latn: Tačira
+    zh: 塔奇拉州
+    ccp: "\U00011111\U0001110C\U00011128\U00011122"
+    eu: Táchira (estatua)
+    mk: Тачира
+    'no': Táchira
+    ps: تاچیرا آیالات
+  comments:
+  type: state
+T:
+  name: Trujillo
+  code: T
+  unofficial_names: Trujillo
+  geo:
+    latitude: 9.366667
+    longitude: -70.433056
+    min_latitude: 9.3437211
+    min_longitude: -70.4553008
+    max_latitude: 9.398062699999999
+    max_longitude: -70.4230498
+  translations:
+    en: Trujillo
+    ar: تروخيو
+    be: Штат Трухільё
+    bg: Трухильо
+    bn: ট্রুজিল্লো
+    ca: Estat de Trujillo
+    cs: Trujillo
+    da: Trujillo
+    de: Bundesstaat Trujillo
+    el: Τρουτζίλο
+    es: Trujillo
+    et: Trujillo osariik
+    fa: تروهیو
+    fi: Trujillo
+    fr: État de Trujillo
+    gu: ટ્રુજિલો
+    he: טרוחיו
+    hi: त्रुइओ
+    id: Trujillo
+    it: Trujillo
+    ja: トルヒージョ州
+    ka: ტრუხილიოს შტატი
+    kn: ಟ್ರುಜಿಲೊ
+    ko: 트루히요 주
+    lt: Truchiljas
+    mr: ट्रुजिल्लो
+    ms: Trujillo
+    nb: Trujillo
+    nl: Trujillo
+    pl: Trujillo
+    pt: Trujillo
+    ro: Trujillo
+    ru: Трухильо
+    si: ට්රුජිල්ලෝ
+    sr: Трухиљо
+    sv: Trujillo
+    ta: ட்ருஜிலோ
+    te: ట్రూజిలో
+    th: รัฐตรูฮีโย
+    tr: Trujillo
+    uk: Трухільйо
+    ur: تروخیو
+    vi: Trujillo
+    lv: Truhiljo
+    ceb: Estado Trujillo
+    sr_Latn: Truhiljo
+    zh: 特鲁希略州
+    ccp: "\U00011111\U00011133\U00011122\U0001112A\U0001110E\U00011128\U00011123\U00011133\U00011123\U0001112E"
+    eu: Trujillo (estatua)
+    mk: Трухиљо
+    'no': Trujillo
+  comments:
+  type: state
+U:
+  name: Yaracuy
+  code: U
+  unofficial_names: Yaracuy
+  geo:
+    latitude: 10.417644
+    longitude: -68.7154975
+    min_latitude: 9.898342999999999
+    min_longitude: -69.1803231
+    max_latitude: 10.7661631
+    max_longitude: -68.239899
+  translations:
+    en: Yaracuy
+    ar: ياراكوي
+    be: Штат Яракуй
+    bg: Яракуй
+    bn: ইয়ারাকুই
+    ca: Yaracuy
+    da: Yaracuy
+    de: Yaracuy
+    el: Γιαρακούι
+    es: Yaracuy
+    et: Yaracuy
+    eu: Yaracuy
+    fi: Yaracuy
+    fr: Yaracuy
+    gl: Yaracuy
+    gu: યારાક્યુ
+    he: יארקוי
+    hi: येराक्यू
+    id: Yaracuy
+    it: Yaracuy
+    ja: ヤラクイ州
+    ka: იარაკუი
+    kn: ಯಾರಾಕುಯಿ
+    ko: 야라쿠이 주
+    lt: Jarakujus
+    mr: येराक्यू
+    ms: Yaracuy
+    nb: Yaracuy
+    nl: Yaracuy
+    pl: Yaracuy
+    pt: Yaracuy
+    ro: Yaracuy
+    ru: Яракуй
+    si: යරකුයි
+    sr: Јаракуј
+    sv: Yaracuy
+    ta: யரசுய்
+    te: యారకీ
+    th: รัฐยารากุย
+    tr: Yaracuy
+    uk: Яракуй
+    ur: یارکے
+    vi: Yaracuy
+    lv: Jarakuja
+    ceb: Estado Yaracuy
+    sr_Latn: Jarakuj
+    zh: 亚拉奎州
+    fa: یاراکوی
+    ccp: "\U00011103\U00011128\U00011120\U00011122\U00011107\U0001112A\U00011120\U00011128"
+    mk: Јаракуј
+    'no': Yaracuy
+  comments:
+  type: state
+V:
+  name: Zulia
+  code: V
+  unofficial_names: Zulia
+  geo:
+    latitude: 9.967492
+    longitude: -72.5204827
+    min_latitude: 8.387665
+    min_longitude: -73.37431289999999
+    max_latitude: 11.8552741
+    max_longitude: -70.63522999999999
+  translations:
+    en: Zulia
+    ar: زوليا
+    be: Штат Сулія
+    bg: Сулия
+    bn: জুলিয়া
+    ca: Zulia
+    cs: Zulia
+    da: Zulia
+    de: Zulia
+    el: Ζούλια
+    es: Zulia
+    et: Zulia
+    fa: سولیا
+    fi: Zulia
+    fr: État de Zulia
+    gl: Zulia
+    gu: ઝુલિયા
+    he: סוליה
+    hi: जूलिया
+    hr: Zulia
+    id: Zulia
+    it: Zulia
+    ja: スリア州
+    ka: სულიას შტატი
+    kn: ಜುಲಿಯಾ
+    ko: 술리아 주
+    lt: Sulija
+    mr: झुलिया
+    ms: Zulia
+    nb: Zulia
+    nl: Zulia
+    pl: Zulia
+    pt: Zulia
+    ro: Zulia
+    ru: Сулия
+    si: සුලියා
+    sr: Зулија
+    sv: Zulia
+    ta: ஸுலியா
+    te: జులియా
+    th: รัฐซูเลีย
+    tr: Zulia
+    uk: Сулія
+    ur: سولیا
+    vi: Zulia
+    lv: Sulija
+    ceb: Estado Zulia
+    sr_Latn: Zulija
+    zh: 苏利亚州
+    ccp: "\U0001110E\U0001112A\U00011123\U00011128\U00011120"
+    eu: Zulia
+    mk: Сулија
+    'no': Zulia
+  comments:
+  type: state
+W:
+  name: Dependencias Federales
+  code: W
+  unofficial_names: Dependencias Federales
+  geo:
+    latitude: 10.9377053
+    longitude: -65.35695729999999
+    min_latitude: 10.889361
+    min_longitude: -67.6694946
+    max_latitude: 11.9848232
+    max_longitude: -63.07872800000001
+  translations:
+    en: Federal Dependencies
+    ar: التبعيات الاتحادية لفنزويلا
+    bn: ভেনিজুয়েলা ফেডারেল ডিপেন্ডেন্সি
+    cs: Federální dependence
+    da: Federal Dependencies of Venezuela
+    de: Dependencias Federales
+    el: Φεουδαρχικές Περιοχές Βενεζουέλας
+    es: Dependencias Federales Venezolanas
+    fi: Federal Dependencies of Venezuela
+    fr: Dépendances fédérales du Venezuela
+    gu: ફેડરલ , ડિપેન્ડન્સીઝ ઓફ વેનેઝુએલા
+    he: הדפנדנסיות הפדרליות של ונצואלה
+    hi: वेनेजुएला संघीय निर्भरता
+    id: Federal Dependencies of Venezuela
+    it: dipendenze Federali
+    ja: ベネズエラ連邦保護領
+    ka: ვენესუელის ფედერალური სამფლობელოები
+    kn: ವೆನೆಜುವೆಲಾದ ಫೆಡರಲ್ ಅವಲಂಬನೆಗಳು
+    ko: 연방 보호령
+    lt: Venesuelos federalinės valdos
+    lv: Venecuēlas Federālie valdījumi
+    mr: फेडरल डिपेंडंसीज ऑफ व्हेनेझुएला
+    ms: Federal Dependencies of Venezuela
+    nb: Føderal avhengighet av Venezuela
+    nl: Federale gebieden
+    pl: Dependencje Federalne
+    pt: Dependências Federais da Venezuela
+    ro: Dependențele federale ale Venezuelei
+    ru: Федеральные владения Венесуэлы
+    si: ෆෙඩරල් ඩිපෙන්ඩන්සිස් , වෙනිසියුලාව
+    sr: Федерална територија Венецуеле
+    sv: Dependencias Federales
+    sw: Visiwa vidogo vya Venezuela
+    ta: பெடரல் டிபெண்டென்சிஸ் ஆப் வெனிசுலா
+    te: ఫెడరల్ డిపెండెన్స్ ఆప్ వెనిజుయెలా
+    th: เฟเดอรัลดีเพนเดนซีส์
+    tr: Federal Dependencies of Venezuela
+    uk: Федеральні володіння Венесуели
+    ur: وفاقی توابع وینیزویلا
+    vi: Vùng lãnh thổ phụ thuộccủa Venezuela
+    ceb: Dependencias Federales
+    sr_Latn: Federalna teritorija Venecuele
+    zh: 聯邦屬地
+    ccp: "\U0001111C\U0001112C\U00011113\U00011122\U00011133\U00011120\U00011123\U00011134
+      \U00011113\U0001112C\U0001111B\U0001112C\U0001111A\U00011134\U00011113\U0001112C\U0001111A\U00011134\U00011125\U0001112D\U0001110C\U00011134"
+    ca: Dependències Federals de Veneçuela
+    be: Федэральныя ўладанні Венесуэлы
+    'no': Føderal avhengighet av Venezuela
+    az: Federal mülkiyyəti
+    gl: Dependencias Federais
+    hr: Savezni teritoriji Venezuele
+    mk: Федерални Владенија
+  comments:
+  type: federal_dependency
+X:
+  name: Vargas
+  code: X
+  unofficial_names: Vargas
+  geo:
+    latitude: 10.5890015
+    longitude: -66.7367345
+    min_latitude: 10.417451
+    min_longitude: -67.3725891
+    max_latitude: 10.6304144
+    max_longitude: -66.337891
+  translations:
+    en: Vargas
+    ar: فارغاس
+    be: Штат Варгас
+    bg: Варгас
+    bn: ভার্গাস
+    ca: Estat de Vargas
+    da: Vargas
+    de: Vargas
+    el: Βάργκας
+    es: Vargas
+    et: Vargas
+    fa: وارگاس، ونزوئلا
+    fi: Vargas
+    fr: État de Vargas
+    gu: વર્ગાસ
+    he: ורגאס
+    hi: वर्गास (राज्य)
+    id: Vargas
+    it: Vargas
+    ja: バルガス州
+    ka: ვარგასის შტატი
+    kn: ವರ್ಗಾಸ್
+    ko: 바르가스 주
+    lt: Vargasas
+    mr: वर्गास
+    ms: Vargas
+    nb: Vargas
+    nl: Vargas
+    pl: Vargas
+    pt: Vargas
+    ro: Vargas
+    ru: Варгас
+    si: වර්ගාස්
+    sr: Варгас
+    sv: Vargas
+    ta: வர்காஸ்
+    te: వర్గాస్
+    th: รัฐบาร์กัส
+    tr: Vargas
+    uk: Варгас
+    ur: بارگاس
+    vi: Vargas (bang)
+    lv: Vargasa
+    ceb: Estado Vargas
+    sr_Latn: Vargas
+    zh: 瓦尔加斯州
+    ccp: "\U0001111E\U00011122\U00011134\U00011109\U0001110C\U00011134"
+    eu: Vargas (estatua)
+    mk: Варгас
+    'no': Vargas
+    hr: Vargas
+  comments:
+  type: state
+Y:
+  name: Delta Amacuro
+  code: Y
+  unofficial_names: Delta Amacuro
+  geo:
+    latitude: 8.8315945
+    longitude: -61.5180455
+    min_latitude: 7.608759
+    min_longitude: -62.6149749
+    max_latitude: 10.053239
+    max_longitude: -59.80378
+  translations:
+    en: Delta Amacuro
+    ar: دلتا أماكورو
+    be: Штат Дэльта-Амакура
+    bg: Делта Амакуро
+    bn: ডেল্টা আমাকুরু
+    ca: Delta Amacuro
+    da: Delta Amacuro
+    de: Delta Amacuro
+    el: Ντέλτα Αμακούρο
+    es: Delta Amacuro
+    et: Delta Amacuro
+    fi: Delta Amacuro
+    fr: État de Delta Amacuro
+    gu: ડેલ્ટા એમેકુરો
+    he: דלטה אמקורו
+    hi: डेल्टा अमाकुरो
+    hr: Delta Amacuro
+    id: Delta Amacuro
+    it: Delta Amacuro
+    ja: デルタアマクロ州
+    ka: დელტა-ამაკურო
+    kn: ಡೆಲ್ಟಾ ಅಮಕುರೊ
+    ko: 델타아마쿠로 주
+    lt: Amakuro Delta
+    mr: डेल्टा अमाकुरो
+    ms: Delta Amacuro
+    nb: Delta Amacuro
+    nl: Delta Amacuro
+    pl: Delta Amacuro
+    pt: Delta Amacuro
+    ro: Delta Amacuro
+    ru: Дельта-Амакуро
+    si: ඩෙල්ටා අමකුරෝ
+    sr: Делта Амакуро
+    sv: Delta Amacuro
+    ta: டெல்டா அமகுரோ
+    te: డెల్టా అమాక్యురో
+    th: รัฐเดลตาอามากูโร
+    tr: Deltra Amacuro
+    uk: Дельта-Амакуро
+    ur: دیلتا اماکورا
+    vi: Delta Amacuro
+    lv: Delta Amakuro
+    ceb: Delta Amacuro
+    sr_Latn: Delta Amakuro
+    zh: 阿马库罗三角洲州
+    fa: دلتا آماکورو
+    ccp: "\U00011113\U0001112C\U00011123\U00011134\U00011111 \U00011103\U0001111F\U0001110E\U00011128\U00011105\U0001112A\U00011122\U0001112E"
+    hu: Delta Amacuro
+    eu: Delta Amacuro
+    mk: Делта Амакуро
+    'no': Delta Amacuro
+    cs: Delta Amacuro
+  comments:
+  type: state
+Z:
+  name: Amazonas
+  code: Z
+  unofficial_names: Amazonas
+  geo:
+    latitude: 2.8101413
+    longitude: -65.0957792
+    min_latitude: 0.6745019999999999
+    min_longitude: -67.877792
+    max_latitude: 6.1556791
+    max_longitude: -63.37184399999999
+  translations:
+    en: Amazonas
+    ar: ولاية آمازون
+    be: Штат Амасонас
+    bg: Амасонас
+    bn: আমাজনাস
+    ca: Estat Amazones
+    cs: Amazonas
+    da: Amazonas
+    de: Amazonas
+    el: Αμαζόνας
+    es: Amazonas
+    et: Amazonase osariik
+    eu: Amazonas
+    fa: آمازون
+    fi: Amazonas
+    fr: État d’Amazonas
+    gl: Amazonas
+    gu: એમેઝોનસ
+    he: אמסונאס
+    hi: अमेज़ोनस
+    hr: Amazonas, država
+    hu: Amazonas
+    hy: Ամազոնաս
+    id: Amazonas
+    it: Amazonas
+    ja: アマソナス州
+    ka: ამასონასის შტატი
+    kn: ಅಮೆಜೋನಾಸ್
+    ko: 아마소나스 주
+    lt: Amazonė
+    mr: अमेझोनस
+    ms: Amazonas
+    nb: Amazonas
+    nl: Amazonas
+    pl: Amazonas
+    pt: Amazonas
+    ro: Amazonas, Venezuela
+    ru: Амасонас
+    si: ඇමසෝනාස්
+    sr: Амазонас
+    sv: Amazonas
+    ta: அமேசானாஸ்
+    te: అమెజోనాస్
+    th: รัฐอามาโซนัส
+    tr: Amazonas
+    uk: Амасонас
+    ur: اماسوناس، وینیزویلا
+    vi: Amazonas
+    lv: Amazonasa
+    ceb: Estado Amazonas
+    sr_Latn: Amazonas
+    zh: 亞馬遜州
+    yue_Hans: 亚马逊州
+    ccp: "\U00011103\U0001111F\U0001110E\U0001112E\U0001111A\U0001110C\U00011134"
+    yue: 亞馬遜州
+    bs: Amazonas
+    mk: Амазон
+    'no': Amazonas
+  comments:
+  type: state

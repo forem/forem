@@ -1,0 +1,51 @@
+---
+HT:
+  alpha2: HT
+  alpha3: HTI
+  continent: North America
+  country_code: '509'
+  currency_code: HTG
+  distance_unit: KM
+  gec: HA
+  geo:
+    latitude: 18.971187
+    longitude: -72.285215
+    max_latitude: 20.1282
+    max_longitude: -71.621754
+    min_latitude: 17.9422
+    min_longitude: -74.6082
+    bounds:
+      northeast:
+        lat: 20.1282
+        lng: -71.621754
+      southwest:
+        lat: 17.9422
+        lng: -74.6082
+  international_prefix: '00'
+  ioc: HAI
+  iso_long_name: The Republic of Haiti
+  iso_short_name: Haiti
+  languages_official:
+  - fr
+  - ht
+  languages_spoken:
+  - fr
+  - ht
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Haitian
+  number: '332'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: HT
+  unofficial_names:
+  - Haiti
+  - ハイチ
+  - Haïti
+  world_region: AMER

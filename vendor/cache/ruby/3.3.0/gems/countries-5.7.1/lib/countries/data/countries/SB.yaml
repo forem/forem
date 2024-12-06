@@ -1,0 +1,51 @@
+---
+SB:
+  alpha2: SB
+  alpha3: SLB
+  continent: Australia
+  country_code: '677'
+  currency_code: SBD
+  distance_unit: KM
+  gec: BP
+  geo:
+    latitude: -9.64571
+    longitude: 160.156194
+    max_latitude: -6.075011
+    max_longitude: 168.0249023
+    min_latitude: -12.6832149
+    min_longitude: 155.1187134
+    bounds:
+      northeast:
+        lat: -6.075011
+        lng: 168.0249023
+      southwest:
+        lat: -12.6832149
+        lng: 155.1187134
+  international_prefix: '00'
+  ioc: SOL
+  iso_long_name: The Solomon Islands
+  iso_short_name: Solomon Islands
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 5
+  national_prefix: None
+  nationality: Solomon Islander
+  number: '090'
+  postal_code: false
+  region: Oceania
+  start_of_week: monday
+  subregion: Melanesia
+  un_locode: SB
+  unofficial_names:
+  - Solomon Islands
+  - Salomonen
+  - Îles Salomon
+  - Islas Salomón
+  - ソロモン諸島
+  - Salomonseilanden
+  world_region: APAC

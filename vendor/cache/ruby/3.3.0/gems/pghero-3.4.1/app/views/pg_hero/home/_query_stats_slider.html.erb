@@ -1,0 +1,16 @@
+<div id="slider-container">
+  <div id="slider"></div>
+  <div id="range-end"></div>
+  <div id="range-start"></div>
+</div>
+
+<script>
+  var sort = <%= pghero_js_value(@sort) %>;
+  var minAverageTime = <%= pghero_js_value(@min_average_time) %>;
+  var minCalls = <%= pghero_js_value(@min_calls) %>;
+  var debug = <%= pghero_js_value(@debug) %>;
+  var startAt = <%= pghero_js_value(params[:start_at] ? @start_at.to_i * 1000 : nil) %>;
+  var endAt = <%= pghero_js_value(@end_at.to_i * 1000) %>;
+
+  initSlider();
+</script>

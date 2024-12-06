@@ -1,0 +1,624 @@
+---
+'01':
+  name: Acquaviva
+  code: '01'
+  unofficial_names: Acquaviva
+  geo:
+    latitude: 43.945153
+    longitude: 12.4179988
+    min_latitude: 43.9333961
+    min_longitude: 12.4034824
+    max_latitude: 43.9578511
+    max_longitude: 12.4408071
+  translations:
+    en: Acquaviva
+    ar: أكوافيفا
+    bn: আকোয়াভাইভা
+    ca: Acquaviva
+    cs: Acquaviva
+    da: Acquaviva
+    de: Acquaviva
+    el: Ακουαβίβα
+    es: Acquaviva
+    eu: Acquaviva
+    fa: آکووا ویوا
+    fi: Acquaviva
+    fr: Acquaviva
+    gl: Acquaviva
+    gu: એક્વાવિવા
+    he: אקואוויווה
+    hi: एक्वाविवा
+    hu: Acquaviva
+    id: Acquaviva, San Marino
+    it: Acquaviva
+    ja: アックアヴィーヴァ
+    kn: ಅಕ್ವೇವಿವಾ
+    ko: 아콰비바
+    lt: Akvaviva
+    mr: अक्वाव्हिवा
+    ms: Acquaviva
+    nb: Acquaviva
+    nl: Acquaviva
+    pl: Acquaviva
+    pt: Acquaviva
+    ro: Acquaviva, San Marino
+    ru: Аккуавива
+    si: ඇක්වාවිවා
+    sk: Acquaviva
+    sr: Аквавива
+    sv: Acquaviva
+    ta: அக்குவைவா
+    te: అక్వేవియా
+    th: แอคคัววิวา
+    tr: Acquaviva
+    uk: Аккуавіва
+    ur: آکواویوا
+    vi: Acquaviva
+    zh: 阿夸维瓦
+    lv: Akvaviva
+    ceb: Castello di Acquaviva
+    sr_Latn: Akvaviva
+    ccp: "\U00011103\U0001112C\U00011107\U0001112A\U00011120\U0001111E\U00011128\U0001111E"
+    'no': Acquaviva
+    bg: Акуавива (Сан Марино)
+    et: Acquaviva
+    ky: Аккуавива
+  comments:
+  type: municipality
+'02':
+  name: Chiesanuova
+  code: '02'
+  unofficial_names:
+  - Poggio di Chiesanuova
+  geo:
+    latitude: 43.91429050000001
+    longitude: 12.4208642
+    min_latitude: 43.9001989
+    min_longitude: 12.4075108
+    max_latitude: 43.9321595
+    max_longitude: 12.4378871
+  translations:
+    en: Chiesanuova
+    ar: تشيسانوفا
+    bn: চিচান্যুভা
+    ca: Chiesanuova
+    cs: Chiesanuova
+    da: Chiesanuova
+    de: Chiesanuova
+    el: Κιεζανουόβα
+    es: Chiesanuova
+    eu: Chiesanuova
+    fa: کیسانوووا
+    fi: Chiesanuova
+    fr: Chiesanuova
+    gl: Chiesanuova
+    gu: ચિઝાનુઓવા
+    he: קייזאנואובה
+    hi: चेसनुओवा
+    hu: Chiesanuova
+    hy: Կիեզանուովա
+    id: Chiesanuova
+    it: Chiesanuova
+    ja: キエザヌオーヴァ
+    kn: ಚಿಸಾನೂವಾ
+    ko: 키에사누오바
+    lt: Kjezanuova
+    mr: चिसनुओवा
+    ms: Chiesanuova
+    nb: Chiesanuova
+    nl: Chiesanuova
+    pl: Chiesanuova
+    pt: Chiesanuova
+    ro: Chiesanuova
+    ru: Кьезануова
+    si: චයිසනොවා
+    sk: Chiesanuova
+    sr: Кјезануова
+    sv: Chiesanuova
+    ta: சியேஷனுவவ
+    te: చీసన్యోవా
+    th: กิเอซานูโอวา
+    tr: Chiesanuova
+    uk: Кʼєзануова
+    ur: کیئزانووا
+    vi: Chiesanuova
+    lv: Kjezanuova
+    sr_Latn: Kjezanuova
+    zh: 基埃萨努欧瓦
+    ccp: "\U0001110C\U00011128\U00011125\U0001112C\U0001111A\U0001112F\U0001111E"
+    'no': Chiesanuova
+    bg: Киезануова (Сан Марино)
+    et: Chiesanuova (San Marino)
+  comments:
+  type: municipality
+'03':
+  name: Domagnano
+  code: '03'
+  unofficial_names: Domagnano
+  geo:
+    latitude: 43.9501929
+    longitude: 12.4681537
+    min_latitude: 43.9464416
+    min_longitude: 12.459486
+    max_latitude: 43.9531099
+    max_longitude: 12.4734553
+  translations:
+    en: Domagnano
+    ar: دومانيانو
+    bn: ডোমাগ্নানো
+    ca: Domagnano
+    cs: Domagnano
+    da: Domagnano
+    de: Domagnano
+    el: Ντομαγκνιάνο
+    es: Domagnano
+    eu: Domagnano
+    fa: دومانیانو
+    fi: Domagnano
+    fr: Domagnano
+    gl: Domagnano
+    gu: ડોમેગનેનો
+    he: דומניאנו
+    hi: डोमागननो
+    hu: Domagnano
+    id: Domagnano
+    it: Domagnano
+    ja: ドマニャーノ
+    kn: ಡೊಮಗ್ನಾನೋ
+    ko: 도마냐노
+    lt: Domanjanas
+    mr: डोमॅगनानो
+    ms: Domagnano
+    nb: Domagnano
+    nl: Domagnano
+    pl: Domagnano
+    pt: Domagnano
+    ro: Domagnano
+    ru: Доманьяно
+    si: දුමන්ගානෝ
+    sk: Domagnano
+    sr: Домањано
+    sv: Domagnano
+    ta: டொமாஞனோ
+    te: డొమాగ్నానో
+    th: โดมัญญาโน
+    tr: Domagnano
+    uk: Доманьяно
+    ur: دوماجنانو
+    vi: Domagnano
+    lv: Domanjāno
+    ceb: Domagnano
+    sr_Latn: Domanjano
+    zh: 多玛尼亚诺
+    ccp: "\U00011113\U00011127\U0001111F\U00011107\U00011134\U0001111A\U0001111A\U0001112E"
+    kk: Доманьяно
+    'no': Domagnano
+    bg: Доманяно
+    et: Domagnano
+    ps: دومانیانو
+  comments:
+  type: municipality
+'04':
+  name: Faetano
+  code: '04'
+  unofficial_names: Faetano
+  geo:
+    latitude: 43.9257086
+    longitude: 12.4993728
+    min_latitude: 43.9242222
+    min_longitude: 12.4951199
+    max_latitude: 43.93020629999999
+    max_longitude: 12.5006162
+  translations:
+    en: Faetano
+    ar: فيتانو
+    bn: ফেটানো
+    ca: Faetano
+    cs: Faetano
+    da: Faetano
+    de: Faetano
+    el: Φετάνο
+    es: Faetano
+    eu: Faetano
+    fa: فااتانو
+    fi: Faetano
+    fr: Faetano
+    gl: Faetano
+    gu: ફાટેનો
+    he: פאטאנו
+    hi: फाटानो
+    hu: Faetano
+    hy: Ֆաետանո
+    id: Faetano
+    it: Faetano
+    ja: ファエターノ
+    kn: ಫೆಟಾನೊ
+    ko: 파에타노
+    lt: Faetanas
+    mr: फाटॅनो
+    ms: Faetano
+    nb: Faetano
+    nl: Faetano
+    pl: Faetano
+    pt: Faetano
+    ro: Faetano
+    ru: Фаэтано
+    si: ෆටානෝ
+    sk: Faetano
+    sr: Фаетано
+    sv: Faetano
+    ta: பாயிடனோ
+    te: ఫాయిటానో
+    th: เฟย์นาโต
+    tr: Faetano
+    uk: Фаетано
+    ur: فیٹانو
+    vi: Faetano
+    lv: Featāno
+    ceb: Castello di Faetano
+    sr_Latn: Faetano
+    zh: 法尔齐亚诺
+    ccp: "\U0001111C\U00011120\U0001112C\U00011116\U0001111A\U0001112E"
+    kk: Фаэтано
+    'no': Faetano
+    bg: Фаетано
+    et: Faetano
+    ps: فایتانو
+  comments:
+  type: municipality
+'05':
+  name: Fiorentino
+  code: '05'
+  unofficial_names: Fiorentino
+  geo:
+    latitude: 43.9078337
+    longitude: 12.4581209
+    min_latitude: 43.8936809
+    min_longitude: 12.4316196
+    max_latitude: 43.92223509999999
+    max_longitude: 12.4778208
+  translations:
+    en: Fiorentino
+    ar: فيورنتينو
+    bn: ফিয়োরেনটিনো
+    ca: Fiorentino
+    cs: Fiorentino
+    da: Fiorentino
+    de: Fiorentino
+    el: Φιορεντίνο
+    es: Fiorentino
+    eu: Fiorentino
+    fa: فیورنتینو
+    fi: Fiorentino
+    fr: Fiorentino
+    gl: Fiorentino
+    gu: ફિયોરેન્ટીનો
+    he: פיורנטינו
+    hi: फ़ियोरेंतिनो
+    hu: Fiorentino
+    hy: Ֆիորենտինո
+    id: Fiorentino
+    it: Fiorentino
+    ja: フィオレンティーノ
+    kn: ಫಿಯೊರೆಂಟಿನೊ
+    ko: 피오렌티노
+    lt: Fiorentinas
+    mr: फिओरेंटीनो
+    ms: Fiorentino
+    nb: Fiorentino
+    nl: Fiorentino
+    pl: Fiorentino
+    pt: Fiorentino
+    ro: Fiorentino
+    ru: Фьорентино
+    si: ෆ්ලොරෙන්ටිනෝ
+    sk: Fiorentino
+    sr: Фјорентино
+    sv: Fiorentino
+    ta: பைஓரென்டினோ
+    te: ఫియోరెంటినో
+    th: ฟิโอเรนติโน
+    tr: Fiorentino
+    uk: Фйорентіно
+    ur: فیورنتینو
+    vi: Fiorentino
+    lv: Fiorentīno
+    ceb: Castello di Fiorentino
+    sr_Latn: Fjorentino
+    zh: 菲奥伦蒂诺
+    ccp: "\U0001111C\U0001112D\U00011120\U0001112E\U00011122\U0001112C\U0001111A\U00011134\U00011111\U00011128\U0001111A\U0001112E"
+    'no': Fiorentino
+    bg: Фиорентино
+    et: Fiorentino
+  comments:
+  type: municipality
+'06':
+  name: Borgo Maggiore
+  code: '06'
+  unofficial_names: Borgo Maggiore
+  geo:
+    latitude: 43.9574882
+    longitude: 12.4552546
+    min_latitude: 43.918149
+    min_longitude: 12.428586
+    max_latitude: 43.9681825
+    max_longitude: 12.4827569
+  translations:
+    en: Borgo Maggiore
+    ar: بورغو ماجيوري
+    bn: বোর্গ ম্যাজ্ঞুইর
+    ca: Borgo Maggiore
+    cs: Borgo Maggiore
+    da: Borgo Maggiore
+    de: Borgo Maggiore
+    el: Μπόργκο Ματζιόρε
+    es: Borgo Maggiore
+    eu: Borgo Maggiore
+    fa: بورگو ماجیوره
+    fi: Borgo Maggiore
+    fr: Borgo Maggiore
+    gl: Borgo Maggiore
+    gu: બોર્ગો મેગીયોર
+    he: בורגו מג׳ורה
+    hi: बोर्गो मैगौयर
+    hu: Borgo Maggiore
+    id: Borgo Maggiore
+    it: Borgo Maggiore
+    ja: ボルゴ・マッジョーレ
+    kn: ಬೊರ್ಗೊ ಮ್ಯಾಗಿಯೋರ್
+    ko: 보르고마조레
+    lt: Borgo Madžorė
+    mr: बोरो मेगायोर
+    ms: Borgo Maggiore
+    nb: Borgo Maggiore
+    nl: Borgo Maggiore
+    pl: Borgo Maggiore
+    pt: Borgo Maggiore
+    ro: Borgo Maggiore
+    ru: Борго-Маджоре
+    si: බොර්ගෝ මැගීඕරේ
+    sk: Borgo Maggiore
+    sr: Борго Мађоре
+    sv: Borgo Maggiore
+    ta: போர்கோ மாக்கியோரே
+    te: బోర్గో మాగియోర్
+    th: บอร์โกมัจโจเร
+    tr: Borgo Maggiore
+    uk: Борго-Маджоре
+    ur: بورجو ماججیوری
+    vi: Borgo Maggiore
+    lv: Borgo Madžore
+    ceb: Castello di Borgo Maggiore
+    sr_Latn: Borgo Mađore
+    zh: 博尔戈·马吉欧雷
+    ccp: "\U0001111D\U0001112E\U00011122\U00011134\U00011109\U0001112E \U0001111F\U00011133\U00011120\U00011109\U00011128\U00011120\U0001112E\U00011122\U00011134"
+    kk: Борго-Маджоре
+    'no': Borgo Maggiore
+    bg: Борго Маджоре
+    et: Borgo Maggiore
+  comments:
+  type: municipality
+'07':
+  name: San Marino
+  code: '07'
+  unofficial_names:
+  - Saint Marin
+  geo:
+    latitude: 43.9355907
+    longitude: 12.4472806
+    min_latitude: 43.9242767
+    min_longitude: 12.4383433
+    max_latitude: 43.9403789
+    max_longitude: 12.4529661
+  translations:
+    en: San Marino
+    af: San Marino
+    am: ሳን ማሪኖ
+    ar: سان مارينو المدينة
+    az: San Marino
+    be: Горад Сан-Марына
+    bg: Сан Марино
+    bn: সান মারিনো
+    ca: Ciutat de San Marino
+    cs: San Marino
+    da: San Marino
+    de: San Marino
+    el: Άγιος Μαρίνος
+    es: San Marino
+    et: San Marino
+    eu: San Marino
+    fa: سن مارینو
+    fi: San Marino
+    fr: Ville de Saint-Marin
+    gl: Cidade de San Mariño - Città di San Marino
+    gu: સાનમૅરિનો
+    he: סן מרינו
+    hi: सानमारिनो
+    hr: San Marino
+    hu: San Marino
+    hy: Սան Մարինո
+    id: San Marino
+    is: San Marínó
+    it: Città di San Marino
+    ja: サンマリノ市
+    ka: სან-მარინო
+    kn: ಸಾನ್ಮರಿನೊ
+    ko: 산마리노
+    lt: San Marinas
+    lv: Sanmarīno
+    mn: Сан-Марино
+    mr: सॅन मरीनो
+    ms: San Marino
+    nb: San Marino
+    nl: San Marino
+    pl: San Marino
+    pt: San Marino
+    ro: Orașul San Marino
+    ru: Сан-Марино
+    si: සැන් මැරීනෝ
+    sk: San Maríno
+    sl: San Marino
+    sr: Сан Марино
+    sv: San Marino
+    ta: செயின்ட் மரினோ நகரம்
+    te: శాన్ మారినో
+    th: ซานมารีโน
+    tk: San-Marino
+    tr: San Marino şehri
+    uk: Сан-Марино
+    ur: سان مارینو شہر
+    vi: Thành phố San Marino
+    cy: Dinas San Marino
+    ceb: Castello di San Marino Città
+    sr_Latn: San Marino
+    zh: 聖馬力諾
+    yue_Hans: 圣马连奴城
+    jv: San Marino
+    sq: San Marino
+    ccp: "\U00011125\U0001111A\U00011134 \U0001111F\U0001112C\U00011122\U00011128\U0001111A\U0001112E"
+    ga: Cathair San Mairíne, San Mairíne
+    ky: Сан-Марино
+    kk: Сан-Марино
+    yue: 聖馬連奴城
+    yo: Ìlú San Màrínò
+    uz: San-Marino
+    bs: San Marino
+    mk: Сан Марино
+    'no': San Marino
+    yo_BJ: Ìlú San Màrínò
+  comments:
+  type: municipality
+'08':
+  name: Montegiardino
+  code: '08'
+  unofficial_names: Montegiardino
+  geo:
+    latitude: 43.9097318
+    longitude: 12.4863344
+    min_latitude: 43.9061677
+    min_longitude: 12.4802671
+    max_latitude: 43.9119125
+    max_longitude: 12.4898347
+  translations:
+    en: Montegiardino
+    ar: مونتيجاردينو
+    bn: মন্টেগার্ডিনো
+    ca: Montegiardino
+    cs: Montegiardino
+    da: Montegiardino
+    de: Montegiardino
+    el: Μοντετζαρντίνο
+    es: Montegiardino
+    eu: Montegiardino
+    fa: مونته‌جیاردینو
+    fi: Montegiardino
+    fr: Montegiardino
+    gl: Montegiardino
+    gu: મોન્ટેગિઆર્ડિનો
+    he: מונטג׳ארדינו
+    hi: मोंटेजिआर्डीनो
+    hu: Montegiardino
+    hy: Մոնտեջարդինո
+    id: Montegiardino
+    it: Montegiardino
+    ja: モンテジャルディーノ
+    kn: ಮೊಂಟೆಗೆರ್ಡಿನೋ
+    ko: 몬테자르디노
+    lt: Montedžardinas
+    mr: मॉन्टेगीर्डिनो
+    ms: Montegiardino
+    nb: Montegiardino
+    nl: Montegiardino
+    pl: Montegiardino
+    pt: Montegiardino
+    ro: Montegiardino
+    ru: Монтеджардино
+    si: මොන්ටෙගාර්ඩිනෝ
+    sk: Montegiardino
+    sr: Монтеђардино
+    sv: Montegiardino
+    ta: மொண்டேஜிஆர்டினோ
+    te: మాంటెగియార్డినో
+    th: มอนจาร์ดิโน
+    tr: Montegiardino
+    uk: Монтеджардіно
+    ur: مونتےجاردینو
+    vi: Montegiardino
+    lv: Montedžardino
+    ceb: Castello di Montegiardino
+    sr_Latn: Monteđardino
+    zh: 蒙泰吉阿迪诺
+    ccp: "\U0001111F\U00011127\U0001111A\U00011134\U00011111\U00011128\U00011109\U00011122\U00011134\U00011113\U00011128\U0001111A\U0001112E"
+    'no': Montegiardino
+    bg: Монтеджардино
+    et: Montegiardino
+  comments:
+  type: municipality
+'09':
+  name: Serravalle
+  code: '09'
+  unofficial_names: Serravalle
+  geo:
+    latitude: 43.9690367
+    longitude: 12.4774099
+    min_latitude: 43.9565896
+    min_longitude: 12.448919
+    max_latitude: 43.992075
+    max_longitude: 12.5159
+  translations:
+    en: Serravalle
+    ar: سرافاله
+    bn: সের‍্যাভাল্ল্যে
+    ca: Serravalle
+    cs: Serravalle
+    da: Serravalle
+    de: Serravalle
+    el: Σερραβάλλε
+    es: Serravalle
+    eu: Serravalle
+    fa: سرواله
+    fi: Serravalle
+    fr: Serravalle
+    gl: Serravalle
+    gu: સેરાવલ્લે
+    he: סראוואלה
+    hi: सेरावेले
+    hu: Serravalle
+    id: Serravalle, San Marino
+    it: Serravalle
+    ja: セラヴァッレ
+    kn: ಸೆರಾವಾಲ್ಲೆ
+    ko: 세라발레
+    lt: Seravalė
+    mr: सर्रावाल्ले
+    ms: Serravalle
+    nb: Serravalle
+    nl: Serravalle
+    pl: Serravalle
+    pt: Serravalle
+    ro: Serravalle, San Marino
+    ru: Серравалле
+    si: සේරාවලේ
+    sk: Serravalle
+    sl: Serravalle
+    sr: Серавале
+    sv: Serravalle
+    ta: சேர்றவல்லே
+    te: సెర్రావల్లె
+    th: เซราวัลเล (ซานมารีโน)
+    tr: Serravalle
+    uk: Серравалле
+    ur: سیراوالی
+    vi: Serravalle
+    lv: Serravalle
+    ceb: Serravalle (kapital sa munisipyo)
+    sr_Latn: Seravale
+    zh: 塞拉瓦莱
+    ccp: "\U00011125\U00011122\U00011134\U0001111E\U0001112C\U00011123\U00011128"
+    bs: Serravalle
+    mk: Серавале
+    'no': Serravalle
+    bg: Серавале (Сан Марино)
+    et: Serravalle
+  comments:
+  type: municipality

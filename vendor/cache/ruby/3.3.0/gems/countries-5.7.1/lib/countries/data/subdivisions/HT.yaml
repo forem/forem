@@ -1,0 +1,570 @@
+---
+AR:
+  name: Artibonite
+  code: AR
+  unofficial_names:
+  - LʿArtibonite
+  geo:
+    latitude: 19.362902
+    longitude: -72.4258145
+    min_latitude: 18.8393919
+    min_longitude: -73.1348189
+    max_latitude: 19.81222
+    max_longitude: -72.18431079999999
+  translations:
+    en: Artibonite
+    ar: إدارة أرتيبونيت
+    bn: আর্টিবোনাইট
+    da: Artibonite
+    de: Département Artibonite
+    el: Αρτιμπονίτ
+    es: Artibonito
+    fa: شهرستان آرتیبونیت
+    fi: Artibonite
+    fr: Artibonite
+    gu: આર્ટિબોનાઈટ
+    hi: आर्टिबोनिट
+    hr: Artibonite
+    id: Departemen Artibonite
+    it: dipartimento dell’Artibonite
+    ja: アルティボニット県
+    kn: ಆರ್ಟಿಬೋನೈಟ್
+    ko: 아르티보니트 주
+    mr: आर्टिबोनिट
+    ms: Artibonite
+    nb: Artibonite
+    nl: Artibonite
+    pl: Artibonite
+    pt: Artibonite
+    ru: Артибонит
+    si: අර්ටිබෝනිටේ
+    sv: Artibonite
+    ta: அடிபணிட்டே
+    te: అర్టిబోనిటె
+    th: รักวา
+    tr: Artibonite
+    uk: Артібоніт
+    ur: آرتیبونیتے محکمہ
+    vi: Artibonite
+    zh: 阿蒂博尼特省
+    lv: Artibonita
+    ceb: Département de l’Artibonite
+    lt: Artibonitas
+    ccp: "\U00011103\U00011122\U00011134\U00011111\U00011128\U0001111D\U0001112E\U0001111A\U0001112D\U00011116\U00011134"
+    ca: Artibonite
+    'no': Artibonite
+    az: Artibonit
+  comments:
+  type: department
+CE:
+  name: Centre
+  code: CE
+  unofficial_names: Centre
+  geo:
+    latitude: 18.9582742
+    longitude: -72.0468164
+    min_latitude: 18.6777091
+    min_longitude: -72.349538
+    max_latitude: 19.327567
+    max_longitude: -71.61335799999999
+  translations:
+    en: Centre
+    ar: الإدارة الوسطى
+    bn: সেন্টার
+    da: Centre
+    de: Département Centre
+    el: Κεντρικό Διαμέρισμα
+    es: Departamento Centro
+    fa: شهرستان مرکزی
+    fi: Centre
+    fr: centre
+    gu: સેન્ટર
+    hi: सेंटर
+    hr: Centre
+    id: Departemen Centre
+    it: dipartimento del Centro
+    ja: 中央県
+    kn: ಕೇಂದ್ರ
+    ko: 중앙 주
+    mr: सेंटर
+    ms: Centre
+    nb: Centre
+    nl: Centre
+    pl: Departament Centralny
+    pt: Centro
+    ru: Центральный департамент
+    si: සෙන්ටර්
+    sv: Centre
+    ta: சென்டர்
+    te: సెంటర్్
+    th: จังหวัดครึคลาเรลี
+    tr: Centre
+    ur: سانت محکمہ
+    vi: Centre
+    lv: Centrs
+    ceb: Centre
+    lt: Centras
+    zh: 中央省
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134"
+    uk: Центральний департамент Гаїті
+    ca: Centre
+    bs: Centre
+    'no': Centre
+    az: Haitinin Mərkəzi departamenti
+  comments:
+  type: department
+GA:
+  name: Grande-Anse
+  code: GA
+  unofficial_names:
+  - Grande Anse
+  geo:
+    latitude: 18.5489259
+    longitude: -74.07701
+    min_latitude: 18.357681
+    min_longitude: -74.4768955
+    max_latitude: 18.6759873
+    max_longitude: -73.69869899999999
+  translations:
+    en: Grand’Anse
+    ar: إدارة آنس الكبرى
+    bg: Гранданс
+    da: Grand’Anse
+    de: Département Grand’Anse
+    el: Γκραντ Ανς
+    es: Grand’Anse
+    fa: شهرستان گرندآنسه
+    fi: Grand’Anse
+    fr: Grand’Anse
+    gu: ગ્રાન્ડ’એંસ
+    hi: ग्रैंड’एन्से
+    hr: Grand’Anse
+    id: Departemen Grand’Anse
+    it: dipartimento di Grand’Anse
+    ja: グランダンス県
+    kn: ಗ್ರ್ಯಾಂಡ್‘ಏನ್ಸ್
+    ko: 그랑당스 주
+    mr: ग्रँड ऐसें
+    ms: Grand’Anse
+    nb: Grand’Anse
+    nl: Grand’Anse
+    pl: Departament Grand’Anse
+    pt: Grande Enseada
+    ru: Гранд-Анс
+    si: ග්‍රෑන්ඩ්‘අන්සේ
+    sv: Grand’Anse
+    ta: கிராண்ட் ‘அன்ஸ்
+    te: గ్రాండ్ ఆన్స్
+    th: แกรนด์ แอนเซ่
+    tr: Grand’Anse
+    ur: گراند آنسے محکمہ
+    vi: Grand’Anse
+    lv: Granansa
+    ceb: Grandans
+    lt: Grand Ansė
+    zh: 大灣省
+    bn: গ্রান্ড’আন্সে
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134‘\U00011103\U0001111A\U00011134\U00011125\U0001112C"
+    uk: Регіон Гранд-Анс
+    ca: Grand’Anse
+    'no': Grand’Anse
+    az: Qrand-Ans
+  comments:
+  type: department
+ND:
+  name: Nord
+  code: ND
+  unofficial_names: Nord
+  geo:
+    latitude: 19.5687715
+    longitude: -72.189
+    min_latitude: 19.2473899
+    min_longitude: -72.6788249
+    max_latitude: 19.8828792
+    max_longitude: -71.96107099999999
+  translations:
+    en: Nord
+    ar: الإدارة الشمالية
+    bn: নর্ড
+    da: Nord
+    de: Département Nord
+    el: Βόρειο Διαμέρισμα, Αϊτή
+    es: Departamento Norte
+    fa: شهرستان شمالی
+    fi: Nord
+    fr: Nord
+    gu: નોર્ડ
+    hi: नोर्ड
+    hr: Nord, Haiti
+    id: Nord
+    it: dipartimento del Nord
+    ja: 北県
+    kn: ನಾರ್ಡ್
+    ko: 북부 주
+    mr: नॉर्ड
+    ms: Nord
+    nb: Nord
+    nl: Nord
+    pl: Departament Północny
+    pt: Departamento do Norte
+    ru: Северный департамент Гаити
+    si: නොර්ඩ්
+    sv: Nord
+    ta: நோர்ட்
+    te: నార్డ్
+    th: นอร์ด
+    tr: Nord
+    ur: شمالی محکمہ
+    vi: Nord
+    lv: Ziemeļi
+    ceb: Nord
+    lt: Nordas
+    zh: 北部省
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011113\U00011134"
+    uk: Північний департамент Гаїті
+    ca: Nord
+    'no': Nord
+    az: Haitinin Şimal departamenti
+    hy: Նորդ
+  comments:
+  type: department
+NE:
+  name: Nord-Est
+  code: NE
+  unofficial_names: Nord-Est
+  geo:
+    latitude: 19.4889723
+    longitude: -71.8571331
+    min_latitude: 19.2588809
+    min_longitude: -72.11789
+    max_latitude: 19.7289295
+    max_longitude: -71.675034
+  translations:
+    en: Nord-Est
+    ar: الإدارة الشمال شرقية
+    bn: নর্ড-এস্ট
+    da: Nord-Est
+    de: Département Nord-Est
+    el: Βορειοανατολικό Διαμέρισμα, Αϊτή
+    es: Departamento Nordeste
+    fa: شهرستان شمال شرقی
+    fi: Nord-Est
+    fr: Nord-Est
+    gu: નોર્ડ-ઈસ્ટ
+    hi: नोर्ड-एस्ट
+    hr: Nord-Est
+    id: Nord-Est
+    it: dipartimento del Nordest
+    ja: 北東県
+    kn: ನಾರ್ಡ್-ಎಸ್ಟ್
+    ko: 북동부 주
+    mr: नॉर्द- इस्ट
+    ms: Nord-Est
+    nb: Nord-Est
+    nl: Nord-Est
+    pl: Departament Północno-Wschodni
+    pt: Nordeste
+    ru: Северо-Восточный департамент
+    si: නොර්ඩ්-ඉස්ට්
+    sv: Nord-Est
+    ta: நோர்ட -ஈஸ்ட்
+    te: నార్డ్-ఎస్ట్
+    th: เมืองนอร์ดเอสท์
+    tr: Nord-Est
+    ur: شمالی-مشرقی محکمہ
+    vi: Nord-Est
+    lv: Ziemeļaustrumi
+    ceb: Département du Nord-Est
+    lt: Nord-Estas
+    zh: 东北省
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011113\U00011134-\U00011103\U00011128\U0001110C\U00011134\U00011111\U00011134"
+    uk: Північно-Східний департамент Гаїті
+    ca: Nord-Est
+    'no': Nord-Est
+    az: Haitinin Şimal-Şərq departamenti
+  comments:
+  type: department
+NI:
+  name: Nippes
+  code: NI
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: إدارة نيبيس
+    bn: নিপেস
+    da: Nippes
+    de: Département Nippes
+    el: Νιπς
+    en: Nippes
+    es: Nippes
+    fa: شهرستان نیپ
+    fi: Nippes
+    fr: Nippes
+    gu: નિપ્પ્સ
+    hi: निपेस
+    hr: Nippes
+    id: Nippes
+    it: dipartimento di Nippes
+    ja: ニップ県
+    kn: ನಿಪ್ಪೆಸ್
+    ko: 니프 주
+    mr: निप्प्स
+    ms: Nippes
+    nb: Nippes
+    nl: Nippes
+    pl: Departament Nippes
+    pt: Nippes
+    ru: Нип
+    si: නිපස්
+    sv: Nippes
+    ta: நிப்பேஸ்
+    te: నిప్పెస్
+    th: นิปเป้
+    tr: Nippes
+    ur: نیپ محکمہ
+    vi: Nippes
+    lv: Nipesa
+    ceb: Département de Nippes
+    lt: Nipesas
+    zh: 尼普斯省
+    ccp: "\U0001111A\U00011128\U0001111B\U0001112C\U0001110C\U00011134"
+    uk: Ніп
+    ca: Nippes
+    'no': Nippes
+    az: Nip
+    he: ניפס
+  comments:
+  type: department
+'NO':
+  name: Nord-Ouest
+  code: 'NO'
+  unofficial_names: Nord-Ouest
+  geo:
+    latitude: 19.8374009
+    longitude: -73.0405277
+    min_latitude: 19.625431
+    min_longitude: -73.451469
+    max_latitude: 20.0877688
+    max_longitude: -72.565755
+  translations:
+    en: Nord-Ouest
+    ar: الإدارة الشمال غربية
+    bn: নর্ড-কুয়েস্ট
+    da: Nord-Ouest
+    de: Département Nord-Ouest
+    el: Βορειοδυτικό Διαμέρισμα
+    es: Departamento Noroeste
+    fa: شهرستان شمال غربی
+    fi: Nord-Ouest
+    fr: Nord-Ouest
+    gu: નોર્ડ-ક્વેસ્ટ
+    hi: नोर्ड-ऑस्ट
+    hr: Nord-Ouest, Haiti
+    id: Nord-Ouest
+    it: dipartimento del Nordovest
+    ja: 北西県
+    kn: ನಾರ್ಡ್-ಓಯೆಸ್ಟ್
+    ko: 북서부 주
+    mr: नॉर-आउस्ट
+    ms: Nord-Ouest
+    nb: Nord-Ouest
+    nl: Nord-Ouest
+    pl: Departament Północno-Zachodni
+    pt: Noroeste
+    ru: Северо-Западный департамент
+    si: නොර්ඩ්-ඕඌඑස්ට්
+    sv: Nord-Ouest
+    ta: நொர்ட்-யஸ்ட்
+    te: నార్డ-క్వెస్ట్
+    th: นอร์-แวสต์
+    tr: Nord-Ouest
+    ur: شمالی-مغربی محکمہ
+    vi: Nord-Ouest
+    lv: Ziemeļrietumi
+    ceb: Nord-Ouest (departamento sa Haiti)
+    lt: Nord Vestas
+    zh: 西北省
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011113\U00011128-\U00011103\U0001112E\U00011120\U0001112C\U0001110C\U00011134\U00011111\U00011134"
+    uk: Північно-Західний регіон Гаїті
+    ca: Nord-Ouest
+    'no': Nord-Ouest
+    az: Haitinin Şimal-Qərb departamenti
+  comments:
+  type: department
+OU:
+  name: Ouest
+  code: OU
+  unofficial_names: Ouest
+  geo:
+    latitude: 18.4957015
+    longitude: -72.4731529
+    min_latitude: 18.2460119
+    min_longitude: -73.299515
+    max_latitude: 18.9696918
+    max_longitude: -71.6928559
+  translations:
+    en: Ouest
+    ar: الإدارة الغربية
+    be: Заходні дэпартамент Гаіці
+    bn: আউয়েস্ট
+    da: Ouest
+    de: Département Ouest
+    el: Δυτικό Διαμέρισμα
+    es: Departamento Oeste
+    fa: شهرستان غربی
+    fi: Ouest
+    fr: Ouest
+    gu: ઔએસ્ટ
+    hi: ऊएस्ट
+    hr: Ouest, Haiti
+    id: Ouest
+    it: dipartimento dell’Ovest
+    ja: 西県
+    kn: ಓಯೆಸ್ಟ್
+    ko: 서부 주
+    mr: आउस्ट
+    ms: Ouest
+    nb: Ouest
+    nl: Ouest
+    pl: Departament Zachodni
+    pt: Departamento do Oeste (Haiti)
+    ru: Западный департамент Гаити
+    si: ඖඑස්ට්
+    sv: Ouest
+    ta: ஆயுஸ்ட்
+    te: ఓయెస్ట్
+    th: เควส
+    tr: Ouest
+    uk: Західний департамент
+    ur: مغربی محکمہ
+    vi: Ouest
+    lv: Rietumi
+    ceb: Département de l’Ouest
+    lt: Vestas
+    zh: 西部省
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U0001110C\U00011134\U00011111\U00011134"
+    ca: Ouest
+    'no': Ouest
+    az: Haitinin Qərb departamenti
+    hy: Քուեսթ
+  comments:
+  type: department
+SD:
+  name: Sud
+  code: SD
+  unofficial_names: Sud
+  geo:
+    latitude: 18.3320005
+    longitude: -73.7007088
+    min_latitude: 18.0220783
+    min_longitude: -74.446304
+    max_latitude: 18.423093
+    max_longitude: -72.9886701
+  translations:
+    en: Sud
+    ar: الإدارة الجنوبية
+    bn: সুদ
+    da: Sud
+    de: Département Sud
+    el: Σουντ
+    es: Departamento Sur
+    fa: شهرستان جنوبی
+    fi: Sud
+    fr: Sud
+    gu: સુદ
+    hi: सुड (विभाग)
+    hr: Sud
+    id: Sud
+    it: dipartimento del Sud
+    ja: 南県
+    kn: ಸುಡ್
+    ko: 남부 주
+    mr: सूद
+    ms: Sud
+    nb: Sud
+    nl: Sud
+    pl: Departament Południowy
+    pt: Departamento do Sul
+    ru: Южный департамент
+    si: සුඩ්
+    sv: Sud
+    ta: சுட்
+    te: సూద్
+    th: กรมซัด
+    tr: Sud
+    uk: Південний департамент
+    ur: جنوبی محکمہ
+    vi: Sud
+    lv: Dienvidi
+    ceb: Sud (departamento sa Haiti)
+    lt: Sudas
+    zh: 南部省
+    ccp: "\U00011125\U00011116\U00011134"
+    ca: Sud
+    'no': Sud
+    az: Haitinin Cənub departamenti
+    be: Паўднёвы дэпартамент
+  comments:
+  type: department
+SE:
+  name: Sud-Est
+  code: SE
+  unofficial_names: Sud-Est
+  geo:
+    latitude: 18.2783598
+    longitude: -72.35479149999999
+    min_latitude: 18.0301479
+    min_longitude: -73.01316489999999
+    max_latitude: 18.384912
+    max_longitude: -71.7241439
+  translations:
+    en: Sud-Est
+    ar: الإدارة الجنوب شرقية
+    bn: সাদ- ইস্ট
+    da: Sud-Est
+    de: Département Sud-Est
+    el: Νοτιοανατολικό Διαμέρισμα, Αϊτή
+    es: Departamento Sudeste
+    fa: شهرستان جنوب شرقی
+    fi: Sud-Est
+    fr: Sud-Est
+    gu: સુદ-એસ્ટ
+    hi: सड-एस्ट
+    hr: Sud-Est
+    id: Sud-Est
+    it: dipartimento del Sudest
+    ja: 南東県
+    kn: ಸುಡ್-ಎಸ್ಟ್
+    ko: 남동부 주
+    mr: सुद-इस्ट
+    ms: Sud-Est
+    nb: Sud-Est
+    nl: Sud-Est
+    pl: Departament Południowo-Wschodni
+    pt: Sudeste
+    ru: Юго-Восточный департамент Гаити
+    si: සුඩ්-එස්ට්
+    sv: Sud-Est
+    ta: சுட்-ஈஸ்ட்
+    te: సుద్-ఎస్ట్
+    th: รัฐเประก์
+    tr: Sud-Est
+    ur: جنوبی-مشرقی محکمہ
+    vi: Sud-Est
+    lv: Dienvidaustrumi
+    ceb: Sud-Est
+    lt: Sed Estas
+    zh: 東南省
+    ccp: "\U00011125\U00011116\U00011134-\U00011103\U00011128\U0001110C\U00011134\U00011111\U00011134"
+    uk: Південно-Східний департамент Гаїті
+    ca: Sud-Est
+    'no': Sud-Est
+    az: Haitinin Cənub-Şərq departamenti
+  comments:
+  type: department

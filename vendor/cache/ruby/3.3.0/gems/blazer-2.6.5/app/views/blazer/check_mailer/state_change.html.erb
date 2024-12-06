@@ -1,0 +1,48 @@
+<html>
+  <head>
+  </head>
+  <body style="font-family: 'Helvetica Neue', Arial, Helvetica; font-size: 14px; color: #333;">
+    <%# check queries shouldn't have variables, but in any case, don't pass them to url helpers %>
+    <p><%= link_to "View", query_url(@check.query_id) %></p>
+    <% if @error %>
+      <p><%= @error %></p>
+    <% elsif @rows_count > 0 && @check_type == "bad_data" %>
+      <p>
+        <% if @rows_count <= 10 %>
+          <%= pluralize(@rows_count, "row") %>
+        <% else %>
+          Showing 10 of <%= @rows_count %> rows
+        <% end %>
+      </p>
+      <table style="width: 100%; border-spacing: 0; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <% @columns.first(5).each do |column| %>
+              <th style="padding: 8px; line-height: 1.4; text-align: left; vertical-align: bottom; border-bottom: 2px solid #ddd; width: <%= (100 / @columns.size).round(2) %>%;">
+                <%= column %>
+              </th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @rows.first(10).each do |row| %>
+            <tr>
+              <% @columns.first(5).each_with_index do |column, i| %>
+                <td style="padding: 8px; line-height: 1.4; vertical-align: top; border-top: 1px solid #ddd;">
+                  <% value = row[i] %>
+                  <% if @column_types[i] == "time" && value.to_s.length > 10 %>
+                    <% value = Time.parse(value).in_time_zone(Blazer.time_zone) rescue value %>
+                  <% end %>
+                  <%= value %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <% if @columns.size > 5 %>
+        <p style="color: #999;">Only first 5 columns shown</p>
+      <% end %>
+    <% end %>
+  </body>
+</html>

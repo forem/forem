@@ -1,0 +1,8 @@
+/ comment
+x: til 10
+
+tab:([]a:1 2 3;b:`a `b `c);
+
+function:{[table]
+	select from table where b=`c
+	};

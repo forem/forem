@@ -1,0 +1,4 @@
+translations:
+  - file: "tmp/i18n-js/merge_plurals_with_partial_overrides.js"
+    only:
+      - "*.merge_plurals_with_partial_overrides"

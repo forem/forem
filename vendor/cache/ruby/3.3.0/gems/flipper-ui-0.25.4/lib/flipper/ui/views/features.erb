@@ -1,0 +1,59 @@
+<% if @show_blank_slate %>
+  <div class="jumbotron text-center m-0">
+    <% if Flipper::UI.configuration.fun %>
+      <h4>But I've got a blank space baby...</h4>
+      <p>And I'll flip your features.</p>
+      <%- if !Flipper::UI.configuration.read_only && Flipper::UI.configuration.feature_creation_enabled -%>
+        <p>
+          <a class="btn btn-primary btn-sm" href="<%= script_name %>/features/new">Add Feature</a>
+        </p>
+      <%- end -%>
+    <% else %>
+      <h4>Getting Started</h4>
+      <p class="mb-1">You have not added any features to configure yet.</p>
+      <%- if !Flipper::UI.configuration.read_only && Flipper::UI.configuration.feature_creation_enabled -%>
+        <p class="mt-2">
+          <a class="btn btn-primary btn-sm" href="<%= script_name %>/features/new">Add Feature</a>
+        </p>
+      <% else %>
+        <p>
+          Check the <a href="https://github.com/jnunemaker/flipper#examples">examples</a> to
+          learn how to add one.
+        </p>
+      <%- end -%>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card">
+    <div class="card-header">
+      <%- if !Flipper::UI.configuration.read_only && Flipper::UI.configuration.feature_creation_enabled -%>
+        <div class="float-right">
+          <a class="btn btn-primary btn-sm" href="<%= script_name %>/features/new">Add Feature</a>
+        </div>
+      <%- end -%>
+      <h4 class="m-0">Features</h4>
+    </div>
+    <div class="card-body py-0">
+      <% @features.each do |feature| %>
+        <div class="feature row align-items-center mt-0 px-3 border-bottom">
+          <div class="col-1 col-md-auto">
+            <span class="status <%= feature.color_class %>" data-toggle="tooltip" title=<%= feature.state.to_s.capitalize %>></span>
+          </div>
+          <div class="col-10">
+            <a href="<%= "#{script_name}/features/#{feature.key}" %>" class="d-block px-0 py-3 btn text-left text-dark">
+              <div class="text-truncate" style="font-weight: 500"><%= feature.key %></div>
+              <% if Flipper::UI.configuration.show_feature_description_in_list? && Flipper::UI::Util.present?(feature.description) %>
+                <div class="text-muted font-weight-light" style="line-height: 1.4; white-space: initial; padding: 8px 0">
+                  <%== Sanitize.fragment(feature.description, Sanitize::Config::BASIC) %>
+                </div>
+              <% end %>
+              <div class="text-muted text-truncate">
+                <%== feature.gates_in_words %>
+              </div>
+            </a>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,73 @@
+module Datadog
+  module CI
+    module TestVisibility
+      module Serializers
+        class Base
+          MINIMUM_TIMESTAMP_NANO: 946684800000000000
+          MINIMUM_DURATION_NANO: 0
+          MAXIMUM_DURATION_NANO: 9223372036854775807
+
+          @content_fields_count: Integer
+          @start: Integer
+          @duration: Integer
+
+          attr_reader trace: Datadog::Tracing::TraceSegment
+          attr_reader span: Datadog::Tracing::Span
+
+          def initialize: (Datadog::Tracing::TraceSegment trace, Datadog::Tracing::Span span) -> void
+
+          def to_msgpack: (?untyped? packer) -> untyped
+
+          def valid?: () -> bool
+          def content_fields: () -> ::Array[String | Hash[String, String]]
+          def content_map_size: () -> Integer
+
+          def runtime_id: () -> String
+
+          def trace_id: () -> String
+
+          def span_id: () -> String
+
+          def parent_id: () -> String
+
+          def type: () -> nil
+
+          def version: () -> 1
+
+          def span_type: () -> String
+
+          def name: () -> String
+
+          def resource: () -> String
+
+          def service: () -> String
+
+          def start: () -> Integer
+
+          def duration: () -> Integer
+
+          def meta: () -> Hash[String, untyped]
+
+          def metrics: () -> Hash[String, untyped]
+
+          def error: () -> Integer
+
+          def self.calculate_content_map_size: (Array[String | Hash[String, String]] fields_list) -> Integer
+
+          private
+
+          def valid_start_time?: () -> bool
+          def valid_duration?: () -> bool
+          def required_fields_present?: () -> bool
+          def required_fields: () -> Array[String]
+
+          def write_field: (untyped packer, String field_name, ?String? method) -> untyped
+          def time_nano: (Time time) -> Integer
+          def duration_nano: (Float duration) -> Integer
+
+          def content_fields_count: () -> Integer
+        end
+      end
+    end
+  end
+end

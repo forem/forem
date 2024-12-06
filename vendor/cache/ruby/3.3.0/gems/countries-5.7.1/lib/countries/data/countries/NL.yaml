@@ -1,0 +1,67 @@
+---
+NL:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: NL
+  alpha3: NLD
+  continent: Europe
+  country_code: '31'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: NL
+  geo:
+    latitude: 52.132633
+    longitude: 5.291265999999999
+    max_latitude: 53.6316
+    max_longitude: 7.227510199999999
+    min_latitude: 50.75038379999999
+    min_longitude: 3.3316001
+    bounds:
+      northeast:
+        lat: 53.6316
+        lng: 7.227510199999999
+      southwest:
+        lat: 50.75038379999999
+        lng: 3.3316001
+  international_prefix: '00'
+  ioc: NED
+  iso_long_name: The Kingdom of the Netherlands
+  iso_short_name: Netherlands
+  languages_official:
+  - nl
+  languages_spoken:
+  - nl
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Dutch
+  number: '528'
+  postal_code: true
+  postal_code_format: "\\d{4} ?[A-Z]{2}"
+  region: Europe
+  start_of_week: monday
+  subregion: Western Europe
+  un_locode: NL
+  unofficial_names:
+  - Netherlands
+  - The Netherlands
+  - Niederlande
+  - Pays-Bas
+  - Países Bajos
+  - オランダ
+  - Nederland
+  - Нидерландия
+  vat_rates:
+    standard: 21
+    reduced:
+    - 9
+    super_reduced:
+    parking:
+  world_region: EMEA

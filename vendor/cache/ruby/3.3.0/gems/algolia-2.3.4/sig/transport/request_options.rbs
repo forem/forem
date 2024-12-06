@@ -1,0 +1,33 @@
+module Algolia
+  module Transport
+    class RequestOptions
+      attr_accessor headers: Hash[Symbol|String, String]
+
+      attr_accessor params: Hash[Symbol|String, untyped]
+
+      attr_accessor data: Hash[Symbol|String, untyped]
+
+      attr_accessor timeout: Integer
+
+      attr_accessor connect_timeout: Integer
+
+      attr_accessor compression_type: String
+
+      def initialize: (Algolia::Search::Config config) -> void
+
+      def create: (?::Hash[Symbol|String, untyped] opts) -> void
+
+      def add_headers: (?::Hash[Symbol|String, untyped] opts) -> void
+
+      def add_params: (?::Hash[Symbol|String, untyped] opts) -> void
+
+      def add_timeout: (?::Hash[Symbol|String, untyped] opts) -> void
+
+      def add_connect_timeout: (?::Hash[Symbol|String, untyped] opts) -> void
+
+      def add_compression_type: (?::Hash[Symbol|String, untyped] opts) -> void
+
+      def add_data_body: (?::Hash[Symbol|String, untyped] opts) -> void
+    end
+  end
+end

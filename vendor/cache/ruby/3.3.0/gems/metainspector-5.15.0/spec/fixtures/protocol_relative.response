@@ -1,0 +1,31 @@
+HTTP/1.1 200 OK
+Server: nginx/1.0.5
+Date: Thu, 29 Dec 2011 23:10:13 GMT
+Content-Type: text/html
+Content-Length: 15013
+Last-Modified: Fri, 02 Dec 2011 21:00:49 GMT
+Connection: keep-alive
+Accept-Ranges: bytes
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Protocol-relative URLs</title>
+  <meta property="og:image" content="//static-secure.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/8/8/1312810126887/gu_192x115.jpg"/>
+  <link rel="shortcut icon" href="//static-secure.guim.co.uk/sys-images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+  <p>Internal links</p>
+  <a href="/">Internal: home page</a>
+  <a href="/faqs">Internal: FAQs</a>
+  <a href="//protocol-relative.com/contact">Internal: protocol-relative</a>
+
+  <p>External links</p>
+  <a href="http://google.com">External: normal link</a>
+  <a href="//yahoo.com">External: protocol-relative link</a>
+
+  <p>Images</p>
+  <img src="//example.com/image.jpg" />
+</body>
+</html>

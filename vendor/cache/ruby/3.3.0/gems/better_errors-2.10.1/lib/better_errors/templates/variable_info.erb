@@ -1,0 +1,82 @@
+<header class="trace_info clearfix">
+    <div class="title">
+        <h2 class="name"><%= frame.name %></h2>
+        <div class="location">
+          <span class="filename">
+            <a
+              href="<%= editor_url %>"
+              <%= ENV.key?('BETTER_ERRORS_INSIDE_FRAME') ? "target=_blank" : '' %>
+            ><%= frame.pretty_path %></a>
+          </span>
+        </div>
+    </div>
+    <div class="code_block clearfix">
+        <%== ErrorPage.html_formatted_code_block frame %>
+    </div>
+
+    <% if BetterErrors.binding_of_caller_available? && frame.frame_binding %>
+        <div class="be-repl">
+            <div class="be-console">
+                <pre></pre>
+                <div class="command-line"><span class='prompt'>&gt;&gt;</span> <input tabindex="1"/></div>
+            </div>
+        </div>
+    <% end %>
+</header>
+
+<% if BetterErrors.binding_of_caller_available? && frame.frame_binding %>
+    <div class="hint live-console-hint">
+        This is a live shell. Type in here.
+    </div>
+
+    <div class="variable_info"></div>
+<% end %>
+
+<% unless BetterErrors.binding_of_caller_available? %>
+    <div class="hint">
+        <strong>Tip:</strong> add <code>gem "binding_of_caller"</code> to your Gemfile to enable the REPL and local/instance variable inspection.
+    </div>
+<% end %>
+
+<%# TODO: move this outside of the frame info. It's not part of the frame. %>
+<div class="sub">
+    <h3>Request info</h3>
+    <div class='inset variables'>
+        <table class="var_table">
+            <% if rails_params %>
+                <tr><td class="name">Request parameters</td><td><pre><%== ErrorPage.inspect_value rails_params %></pre></td></tr>
+            <% end %>
+            <% if rack_session %>
+                <tr><td class="name">Rack session</td><td><pre><%== ErrorPage.inspect_value rack_session %></pre></td></tr>
+            <% end %>
+        </table>
+    </div>
+</div>
+
+<% if BetterErrors.binding_of_caller_available? && frame.frame_binding %>
+    <div class="sub">
+        <h3>Local Variables</h3>
+        <div class='inset variables'>
+            <table class="var_table">
+                <% frame.local_variables.each do |name, value| %>
+                    <tr><td class="name"><%= name %></td><td><pre><%== ErrorPage.inspect_value value %></pre></td></tr>
+                <% end %>
+            </table>
+        </div>
+    </div>
+
+    <div class="sub">
+        <h3>Instance Variables</h3>
+        <div class="inset variables">
+            <table class="var_table">
+                <% frame.instance_variables.each do |name, value| %>
+                    <tr><td class="name"><%= name %></td><td><pre><%== ErrorPage.inspect_value value %></pre></td></tr>
+                <% end %>
+            </table>
+        </div>
+    </div>
+<% end %>
+
+<% if start_time %>
+    <!-- variable_info took <%= Time.now.to_f - start_time %> seconds -->
+<% end %>

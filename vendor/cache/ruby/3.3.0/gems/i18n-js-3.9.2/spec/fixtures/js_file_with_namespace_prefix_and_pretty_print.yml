@@ -1,0 +1,9 @@
+fallbacks: false
+
+translations:
+  - file: "tmp/i18n-js/%{locale}.js"
+    only: '*'
+    namespace: "Foo"
+    pretty_print: true
+    prefix: "import random from 'random-library';\n"
+    suffix: "//test"

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    function delay_unload() {
+      var start = new Date();
+      var i = 0;
+      while ((new Date()) - start < 1000){ i = i + 1; };
+      return null;
+    }
+    window.onbeforeunload = delay_unload;
+    window.onunload = delay_unload;
+  </script>
+</head>
+<body>
+  <div>This delays unload by 2 seconds</div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+---
+GH:
+  alpha2: GH
+  alpha3: GHA
+  continent: Africa
+  country_code: '233'
+  currency_code: GHS
+  distance_unit: KM
+  gec: GH
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    bounds:
+      northeast:
+        lat: 11.1750308
+        lng: 1.199972
+      southwest:
+        lat: 4.6339001
+        lng: -3.2607859
+  international_prefix: '00'
+  ioc: GHA
+  iso_long_name: The Republic of Ghana
+  iso_short_name: Ghana
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 5
+  - 6
+  - 7
+  - 8
+  national_prefix: None
+  nationality: Ghanaian
+  number: '288'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: GH
+  unofficial_names:
+  - Ghana
+  - ガーナ
+  world_region: EMEA

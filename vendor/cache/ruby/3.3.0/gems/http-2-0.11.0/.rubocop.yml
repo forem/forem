@@ -1,0 +1,93 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 2.1
+  DisplayCopNames: true
+  Exclude:
+    - 'bin/**'
+    - 'vendor/**/*'
+    - '**/huffman_statemachine.rb'
+
+Layout/IndentHeredoc:
+  Exclude:
+    - 'lib/tasks/generate_huffman_table.rb'
+    - 'example/*'
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Max: 700
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+
+Layout/IndentHash:
+  EnforcedStyle: consistent
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Layout/SpaceAroundOperators:
+  Enabled: false
+
+Layout/ExtraSpacing:
+  Enabled: false
+
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
+Style/SignalException:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/ParenthesesAroundCondition:
+  Enabled: false
+
+Style/IfInsideElse:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/MultilineIfModifier:
+  Enabled: false
+
+Lint/EmptyWhen:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/TrailingUnderscoreVariable:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Performance/TimesMap:
+  Enabled: false
+
+Performance/RedundantBlockCall:
+  Enabled: false
+

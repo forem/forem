@@ -1,0 +1,5619 @@
+---
+'00':
+  name: National Capital Region
+  code: '00'
+  unofficial_names:
+  - National Capital Region
+  - Pambansang Punong Rehiyon
+  geo:
+    latitude: 14.6090537
+    longitude: 121.0222565
+    min_latitude: 14.3493861
+    min_longitude: 120.9172569
+    max_latitude: 14.781217
+    max_longitude: 121.132012
+  translations:
+    en: Metro Manila
+    be: Сталічны Рэгіён
+    ca: Metro Manila
+    de: Metro Manila
+    es: Gran Manila
+    fa: کلانشهر مانیل
+    fi: Metro Manila
+    fr: Grand Manille
+    hi: मेट्रो मनिला
+    hr: Metro Manila
+    id: Metro Manila
+    it: Regione Capitale Nazionale
+    ja: マニラ首都圏
+    ko: 마닐라 대도시
+    lt: Manilos metropolija
+    ms: Metro Manila
+    nb: Metro Manila
+    nl: National Capital Region
+    pl: Region Stołeczny
+    pt: Grande Manila
+    ru: Столичный Регион
+    sl: Metro Manila
+    sr: Метро Манила
+    sv: Metro Manila
+    ta: மணிலா பெருநகரம்
+    th: เมโทรมะนิลา
+    tr: Metro Manila
+    uk: Столичний регіон (Філіппіни)
+    ur: میٹرو منیلا
+    vi: Vùng đô thị Manila
+    zh: 馬尼拉大都會
+    ceb: Manila
+    sr_Latn: Metro Manila
+    bn: মেট্রো মানিলা
+    yue_Hans: 马尼拉大都会
+    ccp: "\U0001111F\U0001112C\U00011111\U00011133\U00011122\U0001112E \U0001111F\U0001112C\U0001111A\U00011128\U00011123"
+    he: אזור מנילה רבתי
+    eu: Manila Handia
+    ml: മെട്രോ മനില
+    cs: Metro Manila
+    yue: 馬尼拉大都會
+    my: မက်ထရို မနီလာ
+    mk: Метро Манила
+    'no': Metro Manila
+    ar: حاضرة مانيلا
+    cy: Metro Manila
+    da: Stormanila
+    hy: Մետրո Մանիլա
+    jv: Metro Manila
+    ka: ეროვნული დედაქალაქის რეგიონი
+  comments:
+  type: region
+'01':
+  name: Ilocos
+  code: '01'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Regió d’Ilocos
+    de: Ilocos Region
+    en: Ilocos
+    es: Ilocos
+    fi: Ilocosin alue
+    fr: Région d’Ilocos
+    hi: इलोकोस क्षेत्र
+    hr: Ilocos
+    id: Ilocos
+    it: Ilocos
+    ja: イロコス地方
+    ko: 일로코스 지방
+    lt: Ilokoso regionas
+    nb: Ilocos Region
+    nl: Ilocos Region
+    pl: Ilocos
+    pt: Ilocos
+    ru: Илокос
+    sv: Ilocosregionen
+    ta: இலோகொஸ் பிராந்தியம்
+    tr: Ilocos Bölgesi
+    uk: Ілокос
+    ur: ایلوکوس علاقہ
+    vi: Ilocos
+    ceb: Rehiyon sa Ilocos
+    zh: 伊羅戈
+    yue_Hans: 伊罗戈
+    ccp: "\U00011103\U00011128\U00011123\U0001112E\U00011107\U0001112E\U0001110C\U00011134"
+    eu: Ilocos
+    yue: 伊羅戈
+    th: เขตอีโลโคส
+    mk: Илокос
+    'no': Ilocos Region
+    cs: Ilocos
+    fa: منطقه ایلوکوس
+    he: מחוז אילוקוס
+    jv: Ilocos
+    ka: ილოკოსის რეგიონი
+    ms: Daerah Ilocos
+    my: အီလိုကော့
+  comments:
+  type: region
+'02':
+  name: Cagayan Valley
+  code: '02'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Vall de Cagayan
+    de: Cagayan Valley
+    en: Cagayan Valley
+    es: Valle del Cagayán
+    fi: Cagayan Valley
+    fr: Vallée de Cagayan
+    hi: कागायान घाटी
+    hr: Cagayan Valley
+    id: Lembah Cagayan
+    it: Valle di Cagayan
+    ja: カガヤン・バレー地方
+    ko: 카가얀밸리 지방
+    lt: Kagajano Slėnis
+    nb: Cagayan Valley
+    nl: Cagayan Valley
+    pl: Cagayan Valley
+    ru: Долина Кагаян
+    sv: Cagayandalen
+    ta: ககயன் பள்ளத்தாக்கு
+    uk: Долина Кагаян
+    ur: کاگایان وادی
+    vi: Thung lũng Cagayan
+    ceb: Lupot sa Cagayan
+    ms: Lembah Cagayan
+    ar: وادي كاغيان
+    zh: 卡加延河谷
+    yue_Hans: 卡加延谷
+    ccp: "\U00011107\U0001112C\U00011109\U0001112C\U00011103\U00011128\U00011120\U0001111A\U00011134
+      \U0001111E\U0001112C\U00011123\U00011129"
+    eu: Cagayan Harana
+    yue: 卡加延谷
+    th: เขตลัมบักนางคากายัน
+    mk: Кагајанска Долина
+    'no': Cagayan Valley
+    fa: دره کاگایان
+    he: עמק קגאיאן
+    hy: Կագայան հովիտ
+    jv: Cagayan Valley
+    ka: კაგაიანის ხეობა
+    my: ကာဂယံတောင်ကြားဒေသ
+    pt: Vale de Cagayan
+  comments:
+  type: region
+'03':
+  name: Central Luzon
+  code: '03'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Luzon Central
+    de: Central Luzon
+    en: Central Luzon
+    es: Luzón Central
+    fi: Keski-Luzon
+    fr: Luçon centrale
+    hi: मध्य लूज़ोन
+    hr: Središnji Luzon
+    id: Luzon Tengah
+    it: Luzon Centrale
+    ja: 中部ルソン地方
+    ko: 중앙루손 지방
+    lt: Centrinis Lusonas
+    nb: Central Luzon
+    nl: Central Luzon
+    pl: Luzon Środkowy
+    ru: Центральный Лусон
+    sv: Centrala Luzon
+    ta: மத்திய லூசோன்
+    tr: Merkez Luzon
+    uk: Центральний Лусон
+    ur: وسطی لوزون
+    vi: Trung Luzon
+    ceb: Tunga-tungang Luzon
+    zh: 中央吕宋
+    yue_Hans: 中吕宋
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011123\U0001112A\U0001110E\U00011127\U0001111A\U00011134"
+    eu: Erdialdeko Luzon
+    yue: 中呂宋
+    th: เขตกิตนางลูโซน
+    mk: Централен Лузон
+    'no': Central Luzon
+    fa: سنترال لوزون
+    he: מרכז לוזון
+    jv: Central Luzon
+    ka: ცენტრალური ლუსონი
+    ms: Luzon Tengah
+    my: အလယ်လူဇွန်
+    pt: Luzon Central
+  comments:
+  type: region
+'05':
+  name: Bicol
+  code: '05'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Regió de Bicol
+    de: Bicol Region
+    en: Bicol
+    es: Bicolandia
+    fi: Bicolin alue
+    fr: Bicol
+    hi: बिकोल क्षेत्र
+    hr: Bicol
+    it: Bicol
+    ja: ビコル地方
+    ko: 비콜 지방
+    lt: Bikolo regionas
+    nb: Bicol Region
+    nl: Bicol Region
+    pl: Bicol Region
+    ru: Бикольский Регион
+    sv: Bikolregionen
+    ta: பிகோல் பிராந்தியம்
+    uk: Бікол
+    ur: بیکول علاقہ
+    vi: Bicol
+    ceb: Bikol
+    zh: 比科爾
+    yue_Hans: 比科尔
+    ccp: "\U0001111D\U00011128\U00011107\U0001112E\U00011123\U00011134"
+    hy: Բիկոլի շրջան
+    eu: Bicolgo eskualdea
+    yue: 比科爾
+    th: เขตบีโคล
+    mk: Бикол
+    'no': Bicol Region
+    bn: বিকোল অঞ্চল
+    fa: منطقه بیکل
+    he: מחוז ביכול
+    jv: Bicol
+    ka: ბიკოლის რეგიონი
+    ms: Daerah Bicol
+    pt: Região de Bicol
+  comments:
+  type: region
+'06':
+  name: Western Visayas
+  code: '06'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Visayas Occidentals
+    de: Western Visayas
+    en: Western Visayas
+    es: Bisayas Occidentales
+    fi: Länsi-Visayas
+    fr: Visayas occidentales
+    gl: Visayas Occidental
+    he: מערב ויסאיאס
+    hi: पश्चिमी विसाया
+    hr: Zapadni Visayas
+    it: Visayas Occidentale
+    ja: 西ヴィサヤ地方
+    ko: 서비사야 지방
+    lt: Vakarų Visajai
+    nl: Western Visayas
+    pl: Western Visayas
+    ru: Западные Висайи
+    sv: Västra Visayas
+    ta: மேற்கு விசயாசு
+    tr: Batı Visayas
+    uk: Західні Вісаї
+    ur: مغربی ویسایا
+    vi: Tây Visayas
+    ceb: Kasadpang Kabisay-an
+    ar: بيسايا الغربية
+    zh: 西米沙鄢
+    yue_Hans: 西维萨亚斯
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U0001111E\U00011128\U00011125\U0001112C\U00011120\U0001110C\U00011134"
+    eu: Mendebaldeko Bisayak
+    yue: 西維薩亞斯
+    nb: Western Visayas
+    th: เขตคันลูรังคาบีซายาอัน
+    mk: Западни Висаи
+    'no': Western Visayas
+    el: Δυτικά Βισάϊας
+    fa: وسترن ویسایاز
+    jv: Western Visayas
+    ka: დასავლეთი ვისაიასი
+    ms: Bisayak Barat
+    pt: Visayas Ocidentais
+  comments:
+  type: region
+'07':
+  name: Central Visayas
+  code: '07'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Visayas Centrals
+    de: Central Visayas
+    en: Central Visayas
+    es: Bisayas Centrales
+    fi: Keski-Visayas
+    fr: Visayas centrales
+    hi: मध्य विसाया
+    hr: Središnji Visayas
+    hy: Կենտրոնական Վիսարյա
+    id: Bisaya Tengah
+    it: Visayas Centrale
+    ja: 中部ヴィサヤ地方
+    ko: 중앙비사야 지방
+    lt: Centriniai Visajai
+    nl: Central Visayas
+    pl: Central Visayas
+    pt: Visayas Centrais
+    ru: Центральные Висайи
+    sv: Centrala Visayas
+    ta: மத்திய விசயாசு
+    tr: Merkez Visayas
+    uk: Центральні Вісаї
+    ur: وسطی ویسایا
+    vi: Trung Visayas
+    ceb: Tunga-tungang Kabisay-an
+    ar: بيسايا الوسطى
+    zh: 中米沙鄢
+    yue_Hans: 中维萨亚斯
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U0001111E\U00011128\U00011125\U0001112C\U00011120\U0001110C\U00011134"
+    eu: Erdialdeko Bisayak
+    yue: 中維薩亞斯
+    th: เขตกิตนางคาบีซายาอัน
+    mk: Централни Висаи
+    az: Mərkəzi Visay
+    fa: سنترال ویسایاز
+    jv: Central Visayas
+    ms: Bisayak Tengah
+  comments:
+  type: region
+'08':
+  name: Eastern Visayas
+  code: '08'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Усходнія Вісаі
+    ca: Visayas Orientals
+    de: Eastern Visayas
+    en: Eastern Visayas
+    es: Bisayas Orientales
+    fi: Itä-Visayas
+    fr: Visayas orientales
+    he: מזרח ויסאיאס
+    hi: पूर्वी विसाया
+    hr: Istočni Visayas
+    it: Visayas Orientale
+    ja: 東ヴィサヤ地方
+    ko: 동비사야 지방
+    lt: Rytų Visajai
+    nl: Eastern Visayas
+    pl: Eastern Visayas
+    ru: Восточные Висайи
+    sv: Östra Visayas
+    ta: கிழக்கு விசயாசு
+    uk: Східні Вісаї
+    ur: مشرقی ویسایا
+    vi: Đông Visayas
+    ceb: Sidlakang Kabisay-an
+    zh: 東米沙鄢
+    yue_Hans: 东维萨亚斯
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U0001111E\U00011128\U00011125\U0001112C\U00011120\U0001110C\U00011134"
+    eu: Ekialdeko Bisayak
+    ml: കിഴക്കൻ വിസായസ്
+    yue: 東維薩亞斯
+    th: เขตซีลางังคาบีซายาอัน
+    mk: Источни Висаи
+    az: Şərqi Visay
+    cy: Gorllewin Visayas
+    jv: Eastern Visayas
+    ka: აღმოსავლეთი ვისაიასი
+    ms: Bisayak Timur
+    my: အရှေ့ဝိစာရ
+    pt: Visayas Orientais
+    tr: Doğu Visayas
+  comments:
+  type: region
+'09':
+  name: Zamboanga Peninsula
+  code: '09'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Península de Zamboanga
+    de: Zamboanga Peninsula
+    en: Zamboanga Peninsula
+    es: Península de Zamboanga
+    fi: Zamboangan niemimaa
+    fr: péninsule de Zamboanga
+    hi: ज़म्बोआंगा प्रायद्वीप
+    hr: Poluotok Zamboanga
+    id: Semenanjung Zamboanga
+    it: Penisola di Zamboanga
+    ja: サンボアンガ半島地方
+    ko: 삼보앙가 반도 지방
+    lt: Zamboangos pusiasalis
+    nb: Zamboangahalvøya
+    nl: Zamboanga Peninsula
+    pl: Zamboanga Peninsula
+    pt: Península de Zamboanga
+    ru: Полуостров Замбоанга
+    sv: Zamboangahalvön
+    ta: சம்பொவாங்கா தீபகற்பம்
+    tr: Zamboanga Yarımadası
+    uk: Півострів Замбоанга
+    ur: زامبوانگا جزیرہ نما
+    vi: Bán đảo Zamboanga
+    ceb: Zamboanga
+    ar: شبه جزيرة زامبوانجا
+    zh: 三宝颜半岛
+    yue_Hans: 三宝颜半岛
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U0001112E\U00011120\U00011101\U00011109
+      \U0001111B\U0001112C\U0001111A\U00011128\U0001111A\U00011134\U00011125\U0001112A\U00011123"
+    eu: Zamboangako penintsula
+    cs: Poloostrov Zamboanga
+    yue: 三寶顏半島
+    th: เขตตังไวนางซัมบวงกา
+    mk: Полуостров Замбоанга
+    'no': Zamboangahalvøya
+    fa: شبه جزیره زامبوانگا
+    jv: Zamboanga Peninsula
+    ka: ზამბოანგის ნახევარკუნძული
+    ms: Semenanjung Zamboanga
+  comments:
+  type: region
+'10':
+  name: Northern Mindanao
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Mindanao Septentrional
+    de: Northern Mindanao
+    en: Northern Mindanao
+    es: Mindanao del Norte
+    fi: Pohjois-Mindanaon alue
+    fr: Mindanao du Nord
+    hi: उत्तरी मिन्दनाओ
+    hr: Sjeverni Mindanao
+    it: Mindanao Settentrionale
+    ja: 北ミンダナオ地方
+    ko: 북민다나오 지방
+    lt: Šiaurinis Mindanao
+    nb: Northern Mindanao
+    nl: Northern Mindanao
+    pl: Mindanao Północne
+    ru: Северный Минданао
+    sv: Norra Mindanao
+    ta: வடக்கு மின்டனவு
+    uk: Північне Мінданао
+    ur: شمالی مینداناؤ
+    vi: Bắc Mindanao
+    ceb: Amihanang Mindanao
+    zh: 北棉兰老
+    yue_Hans: 北棉兰老
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U0001111F\U00011128\U0001111A\U00011134\U00011113\U0001111A\U00011103\U0001112E"
+    eu: Iparraldeko Mindanao
+    yue: 北棉蘭老
+    th: เขตฮีลากังมินดาเนา
+    mk: Северен Минданао
+    'no': Northern Mindanao
+    ar: مينداناو الشمالية
+    bs: Sjeverni Mindanao
+    jv: Northern Mindanao
+    ms: Mindanao Utara
+    my: မြောက်မင်းဒနောင်
+    pt: Mindanao Setentrional
+  comments:
+  type: region
+'11':
+  name: Davao
+  code: '11'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bn: দাভাও অঞ্চল
+    ca: Regió de Davao
+    de: Davao Region
+    en: Davao
+    es: Región de Davao
+    fi: Davaon alue
+    fr: région de Davao
+    hi: दावाओ क्षेत्र
+    hr: Davao (regija)
+    it: Davao
+    ja: ダバオ地方
+    ko: 다바오 지방
+    lt: Davao regionas
+    ms: Daerah Davao
+    nl: Davao Region
+    pl: Davao
+    ru: Давао (регион)
+    sv: Davaoregionen
+    ta: டவாவோ பிராந்தியம்
+    tr: Davao Bölgesi
+    uk: Давао
+    ur: داوائو علاقہ
+    vi: Vùng Davao
+    ceb: Davao
+    zh: 达沃区
+    yue_Hans: 达沃区
+    ccp: "\U00011113\U0001111E\U00011103\U0001112E"
+    eu: Davaoko eskualdea
+    yue: 達沃區
+    th: เขตดาเบา
+    mk: Давао
+    fa: منطقه داوائو
+    jv: Davao Region
+    ka: დავაოს რეგიონი
+    pt: Região de Dávao
+  comments:
+  type: region
+'12':
+  name: Soccsksargen
+  code: '12'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: SOCCSKSARGEN
+    cs: Soccsksargen
+    de: SOCCSKSARGEN
+    en: Soccsksargen
+    es: Región XII
+    fi: SOCCSKSARGEN
+    fr: SOCCSKSARGEN
+    hi: सोकसारजेन
+    hr: SOCCSKSARGEN
+    it: SOCCSKSARGEN
+    ja: ソクサージェン地方
+    ko: 소크사르젠 지방
+    lt: SOCCSKSARGEN
+    nl: SOCCSKSARGEN
+    pl: SOCCSKSARGEN
+    ru: СОККСКСАРХЕН
+    sv: SOCCSKSARGEN
+    ta: சொக்ஸ்சர்ஜென்
+    uk: Сокксксарген
+    ur: سوکسارگین
+    vi: SOCCSKSARGEN
+    ceb: SOCCSKSARGEN
+    yue_Hans: 中棉兰老
+    ccp: "\U00011125\U00011127\U0001110C\U00011134\U00011125\U00011122\U00011134\U00011109\U0001112C\U0001111A\U00011134"
+    eu: Soccsksargen
+    yue: 中棉蘭老
+    th: เขตโซกซาร์เจน
+    mk: Сокксксархен
+    jv: Soccsksargen
+    ms: Soccsksargen
+    pt: Soccsksargen
+  comments:
+  type: region
+'13':
+  name: Caraga
+  code: '13'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Caraga
+    de: Caraga
+    en: Caraga
+    es: Caraga
+    fi: Caraga
+    fr: Caraga
+    hi: कारागा
+    hr: Caraga
+    it: Caraga
+    ja: カラガ地方
+    ko: 카라가 지방
+    lt: Karaga
+    nl: Caraga
+    pl: Caraga
+    ru: Карага
+    sv: Caraga
+    ta: கரகா
+    uk: Карага
+    ur: کاراگا
+    vi: Caraga
+    ceb: Caraga
+    zh: 卡拉加区
+    yue_Hans: 卡拉加
+    ccp: "\U00011125\U00011122\U00011134\U00011109"
+    eu: Caraga
+    yue: 卡拉加
+    nb: Caraga
+    th: เขตคารากา
+    mk: Карага
+    'no': Caraga
+    jv: Caraga
+    ka: კარაგა
+    ms: Caraga
+    pt: Caraga
+  comments:
+  type: region
+'14':
+  name: Muslim Mindanao
+  code: '14'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    az: Müsəlman Mindanao muxtar regionu
+    be: Аўтаномны рэгіён у Мусульманскім Мінданаа
+    ca: Regió Autònoma del Mindanao Musulmà
+    cs: Autonomní region Muslimské Mindanao
+    de: Autonomous Region in Muslim Mindanao
+    en: Muslim Mindanao
+    es: Mindanao Musulmán
+    eu: Mindanao Musulmaneko Eskualde Autonomoa
+    fi: Mindanaon autonominen alue
+    fr: région autonome en Mindanao musulmane
+    gl: Rexión Autónoma do Mindanao Musulmán
+    hi: मुस्लिम मिन्दनाओ में स्वशासित क्षेत्र
+    hr: Autonomna regija Muslimanski Mindanao
+    id: Region Otonomi Muslim Mindanao
+    it: regione autonoma nel Mindanao Musulmano
+    ja: イスラム教徒ミンダナオ自治地域
+    ko: 무슬림 민다나오 자치구
+    lt: Mindanao musulmonų autonominis regionas
+    ms: Wilayah Autonomi Islam Mindanao
+    nl: Autonomous Region in Muslim Mindanao
+    pl: Muzułmańskie Mindanao
+    pt: Região Autónoma do Mindanau Muçulmano
+    ru: Автономный регион в Мусульманском Минданао
+    sr: Муслимански Минданао
+    sv: Muslimska Mindanao
+    ta: முசுலிம் மிண்டனாவோ தன்னாட்சிப் பகுதி
+    tr: Müslüman Mindanao Özerk Bölgesi
+    uk: Автономний регіон в Мусульманському Мінданао
+    ur: مسلم مینداناؤ کا خود مختار علاقہ
+    vi: Khu tự trị Hồi giáo Mindanao
+    ceb: Mindanawng Muslim
+    sr_Latn: Muslimanski Mindanao
+    zh: 棉兰老穆斯林自治区
+    fa: ناحیه خودمختار مسلمانان میندانائو
+    yue_Hans: 棉兰老穆斯林自治区
+    ccp: "\U0001111F\U0001112A\U0001110C\U00011134\U00011123\U00011128\U0001111F\U00011134
+      \U0001111F\U00011128\U0001111A\U00011134\U00011113\U0001111A\U00011103\U0001112E"
+    yue: 棉蘭老穆斯林自治區
+    nb: Autonomous Region in Muslim Mindanao
+    th: เขตปกครองตนเองในมินดาเนามุสลิม
+    mk: Автономен регион во Муслимански Минданао
+    'no': Autonomous Region in Muslim Mindanao
+    ar: الحكم الذاتي الاقليمي لمسلمي مندناو
+    ka: ავტონომიური რეგიონი მუსლიმურ მინდანაოში
+  comments:
+  type: region
+'15':
+  name: Cordillera Administrative
+  code: '15'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Regió Administrativa de la Cordillera
+    de: Cordillera Administrative Region
+    en: Cordillera Administrative
+    es: La Cordillera
+    fi: Cordilleran hallinnollinen alue
+    fr: région administrative de la Cordillère
+    hi: कोर्दिल्येरा प्रशासनिक क्षेत्र
+    hr: Administrativna regija Cordillera
+    it: Regione amministrativa Cordillera
+    ja: コルディリェラ行政地域
+    ko: 코르디예라 행정구
+    lt: Kordiljeros administracinis regionas
+    nl: Cordillera Administrative Region
+    pl: Cordillera Administrative Region
+    pt: Região Administrativa de Cordillera
+    ru: Кордильерский административный регион
+    sv: Kordiljärernas administrativa region
+    ta: கோர்டில்லெரா நிர்வாகப் பிராந்தியம்
+    uk: Кордильєрський адміністративний регіон
+    ur: کوردیلیرا انتظامی علاقہ
+    vi: Vùng Hành chính Cordillera
+    ceb: Administratibong Rehiyon sa Cordillera
+    zh: 科迪勒拉行政區
+    yue_Hans: 科迪勒拉
+    ccp: "\U00011107\U00011127\U00011122\U00011134\U00011113\U00011128\U00011123\U0001112C\U00011122
+      \U00011103\U0001112C\U00011116\U00011134\U0001111F\U00011128\U0001111A\U00011128\U0001110C\U00011134\U00011111\U00011133\U00011122\U00011111\U00011128\U0001111B\U00011134"
+    eu: Cordillerako Eskualde Administratiboa
+    yue: 科迪勒拉
+    nb: Cordillera Administrative Region
+    th: เขตบริหารคอร์ดิลเยรา
+    mk: Кордилјера
+    'no': Cordillera Administrative Region
+    fa: منطقه اداری کوردیلرا
+    jv: Cordillera Administrative Region
+    ka: კორდილიერის ადმინისტრაციული რეგიონი
+    ms: Daerah Pentadbiran Cordillera
+  comments:
+  type: region
+'40':
+  name: Calabarzon
+  code: '40'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: CALABARZON
+    de: Calabarzon
+    en: Calabarzon
+    es: Región IV-A
+    fi: Calabarzon
+    fr: Calabarzon
+    hi: कालाबारज़ोन
+    hr: CALABARZON
+    id: CALABARZON
+    it: CALABARZON
+    ja: カラバルソン地方
+    ko: 칼라바르손 지방
+    lt: CALABARZON
+    ms: CALABARZON
+    nb: Calabarzon
+    nl: Calabarzon
+    pl: CALABARZON
+    ru: КАЛАБАРСОН
+    sv: CALABARZON
+    ta: கலபர்சொன்
+    tr: CALABARZON
+    uk: Калабарсон
+    ur: کالابارزون
+    vi: CALABARZON
+    ceb: CALABARZON
+    zh: 卡拉巴松
+    yue_Hans: 卡拉巴松
+    ccp: "\U00011107\U00011123\U0001111D\U00011122\U00011134\U0001110E\U00011127\U0001111A\U00011134"
+    eu: Calabarzon
+    yue: 卡拉巴鬆
+    th: เขตคาลาบาร์โซน
+    mk: Калабарзон
+    'no': Calabarzon
+    fa: کالابارزون
+    he: קלבארזון
+    hy: Կալաբարսոն
+    jv: Calabarzon
+    ka: კალაბარსონი
+    my: ကလဘားဇွန်
+    pt: Calabarzon
+  comments:
+  type: region
+'41':
+  name: Mimaropa
+  code: '41'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ميماروبا
+    ca: MIMAROPA
+    de: MIMAROPA
+    en: Mimaropa
+    es: Región IV-B
+    fi: Mimaropa
+    fr: MIMAROPA
+    hi: मिमारोपा
+    hr: MIMAROPA
+    it: MIMARO
+    ja: ミマロパ地方
+    ko: 미마로파 지방
+    lt: MIMAROPA
+    nl: MIMAROPA
+    pl: MIMAROPA
+    ru: МИМАРОПА
+    sv: MIMAROPA
+    ta: மிமரோபா
+    uk: Мімаропа
+    ur: میماپورا
+    vi: MIMAROPA
+    ceb: MIMAROPA
+    zh: 民马罗巴区
+    yue_Hans: 民马罗巴
+    ccp: "\U0001111F\U00011128\U0001111F\U00011122\U0001112E\U0001111B"
+    eu: Mimaropa
+    yue: 民馬羅巴
+    nb: MIMAROPA
+    th: เขตมีมาโรปา
+    mk: Мимаропа
+    'no': MIMAROPA
+    fa: میماروپا
+    he: מימרופה
+    jv: Mimaropa
+    ka: მიმაროპა
+    ms: Mimaropa
+    pt: Mimaropa
+  comments:
+  type: region
+ABR:
+  name: Abra
+  code: ABR
+  unofficial_names: Abra
+  geo:
+    latitude: 17.5951122
+    longitude: 120.7982528
+    min_latitude: 17.154255
+    min_longitude: 120.463118
+    max_latitude: 17.979682
+    max_longitude: 121.124898
+  translations:
+    en: Abra
+    ar: أبرا
+    bn: আব্রা
+    da: Abra
+    de: Abra
+    el: Άμπρα
+    es: Abra
+    fa: آبرا
+    fi: Abra
+    fr: Abra
+    gl: Abra, Filipinas
+    gu: અબ્રા
+    hi: आब्रा प्रान्त
+    id: Abra
+    it: Provincia di Abra
+    ja: アブラ州
+    kn: ಅಬ್ರಾ
+    ko: 아브라 주
+    mr: अब्रा
+    ms: Abra
+    nb: Abra
+    nl: Abra
+    pl: Abra
+    pt: Abra (província)
+    ru: Абра
+    si: අබ්‍රා
+    sv: Abra
+    ta: அப்ர
+    te: అబ్రా
+    th: จังหวัดอาบรา
+    tr: Abra
+    ur: ابرا (صوبہ)
+    vi: Abra
+    lv: Abra
+    ceb: Abra
+    lt: Abra
+    zh: 阿布拉省
+    ccp: "\U00011103\U0001111D\U00011133\U00011122"
+    uk: Провінція Абра
+    mk: Абра
+    'no': Abra
+    ca: Abra
+    jv: Abra
+    ka: აბრა (პროვინცია)
+  comments:
+  type: province
+AGN:
+  name: Agusan del Norte
+  code: AGN
+  unofficial_names: Agusan del Norte
+  geo:
+    latitude: 8.9456259
+    longitude: 125.5319234
+    min_latitude: 8.6575759
+    min_longitude: 125.2066434
+    max_latitude: 9.4591
+    max_longitude: 125.7669111
+  translations:
+    en: Agusan del Norte
+    ar: أغوسان ديل نورت
+    bn: আগুসান ডেল নর্থে
+    ca: Agusan del Norte
+    da: Agusan del Norte
+    de: Agusan del Norte
+    el: Αγκουσάν ντελ Νόρτε
+    es: Agusan del Norte
+    fa: آگوسان شمالی
+    fi: Agusan del Norte
+    fr: Agusan du Nord
+    gu: એગ્યુસન ડેલ નોર્ટ
+    hi: आगुसान देल नोर्ते
+    id: Agusan del Norte
+    it: Provincia di Agusan del Norte
+    ja: 北アグサン州
+    kn: ಅಗುಸನ್ ಡೆರ್ ನಾರ್ಟೆ
+    ko: 북아구산 주
+    mr: अगुसन डेल नॉर्ट
+    ms: Agusan del Norte
+    nb: Agusan del Norte
+    nl: Agusan del Norte
+    pl: Agusan del Norte
+    pt: Agusão do Norte
+    ru: Северный Агусан
+    si: අගුසාන් ඩෙල් නොර්ටේ
+    sv: Agusan del Norte
+    ta: அங்குசன் டெல் நோர்ட்
+    te: అగూసన్ డెల్ నార్ట్
+    th: อกูซาน เดล นอร์เต้
+    tr: Agusan del Norte
+    ur: اگوسان شمالی
+    vi: Agusan del Norte
+    lv: Agusana del Norte
+    ceb: Agusan del Norte
+    lt: Šiaurės Agusanas
+    zh: 北阿古桑省
+    ccp: "\U00011103\U00011109\U0001112A\U00011125\U0001111A\U00011134 \U00011113\U0001112C\U00011123\U00011134
+      \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північний Агусан
+    mk: Северен Агусан
+    'no': Agusan del Norte
+    jv: Agusan del Norte
+    ka: ჩრდილოეთი აგუსანი
+  comments:
+  type: province
+AGS:
+  name: Agusan del Sur
+  code: AGS
+  unofficial_names: Agusan del Sur
+  geo:
+    latitude: 8.6051665
+    longitude: 125.916739
+    min_latitude: 7.936757
+    min_longitude: 125.239547
+    max_latitude: 9.231869
+    max_longitude: 126.361955
+  translations:
+    en: Agusan del Sur
+    ar: أغوسان ديل سور
+    bn: আগুসান দেল সুর
+    da: Agusan del Sur
+    de: Agusan del Sur
+    el: Αγκουσάν ντελ Σουρ
+    es: Agusan del Sur
+    fa: آگوسان جنوبی
+    fi: Agusan del Sur
+    fr: Agusan du Sud
+    gu: અગુસન ડેલ સુર
+    hi: आगुसान देल सूर
+    id: Agusan del Sur
+    it: Provincia di Agusan del Sur
+    ja: 南アグサン州
+    kn: ಅಗುಸನ್ ಡೆಲ್ ಸುರ್
+    ko: 남아구산 주
+    mr: अगुसन डेल सुर
+    ms: Agusan del Sur
+    nb: Agusan del Sur
+    nl: Agusan del Sur
+    pl: Agusan del Sur
+    pt: Augusan do Sur
+    ru: Южный Агусан
+    si: අගුසාන් ඩෙල් සර්
+    sv: Agusan del Sur
+    ta: அங்குசன் டெல் சூர்
+    te: అగూసన్ డెల్ సుర్
+    th: อกูซาน เดล เซอ
+    tr: Agusan del Sur
+    ur: اگوسان جنوبی
+    vi: Agusan del Sur
+    lv: Agusana del Sura
+    ceb: Agusan del Sur
+    lt: Pietų Agusanas
+    zh: 南阿古桑省
+    ccp: "\U00011103\U00011109\U0001112A\U00011125\U0001111A\U00011134 \U00011113\U0001112C\U00011123\U00011134
+      \U00011125\U00011122\U00011134"
+    uk: Південний Агусан
+    mk: Јужен Агусан
+    'no': Agusan del Sur
+    jv: Agusan del Sur
+    ka: სამხრეთი აგუსანი
+  comments:
+  type: province
+AKL:
+  name: Aklan
+  code: AKL
+  unofficial_names: Aklan
+  geo:
+    latitude: 11.8166109
+    longitude: 122.0941541
+    min_latitude: 11.311094
+    min_longitude: 121.848633
+    max_latitude: 11.9994645
+    max_longitude: 122.57729
+  translations:
+    en: Aklan
+    ar: ولاية أكلان
+    bn: আকা্লান
+    ca: Aklan
+    da: Aklan
+    de: Aklan
+    el: Ακλάν
+    es: Aklan
+    eu: Aklan
+    fa: آکلان
+    fi: Aklan
+    fr: province de Aklan
+    gu: અક્લાન
+    hi: अक्लान प्रान्त
+    id: Aklan
+    it: Provincia di Aklan
+    ja: アクラン州
+    kn: ಅಕ್ಲಾನ್
+    ko: 아클란 주
+    mr: अकालान
+    ms: Aklan
+    nb: Aklan
+    nl: Aklan
+    pl: Aklan
+    pt: Aklan
+    ru: Аклан
+    si: අක්ලන්
+    sv: Aklan
+    ta: அகிலன்
+    te: అక్లాన్
+    th: อัคแลน
+    tr: Aklan
+    uk: Аклан
+    ur: اکلان
+    vi: Aklan
+    lv: Aklana
+    ceb: Aklan
+    lt: Aklanas
+    zh: 阿克兰省
+    ccp: "\U00011103\U00011107\U00011134\U00011123\U0001111A\U00011134"
+    bs: Aklan
+    mk: Аклан
+    'no': Aklan
+    jv: Aklan
+    ka: აკლანი
+  comments:
+  type: province
+ALB:
+  name: Albay
+  code: ALB
+  unofficial_names: Albay
+  geo:
+    latitude: 13.1774827
+    longitude: 123.5280072
+    min_latitude: 12.986531
+    min_longitude: 123.2739775
+    max_latitude: 13.525534
+    max_longitude: 124.220096
+  translations:
+    en: Albay
+    ar: ألباي
+    bn: আল্বে
+    ca: Albay
+    da: Albay
+    de: Albay
+    el: Αλμπέι
+    es: Albay
+    fa: آلبای
+    fi: Albay
+    fr: Albay
+    gu: આલ્બે
+    hi: अल्बाय प्रान्त
+    id: Albay
+    it: Provincia di Albay
+    ja: アルバイ州
+    kn: ಅಲ್ಬೇ
+    ko: 알바이 주
+    mr: अल्बाय
+    ms: Albay
+    nb: Albay
+    nl: Albay
+    pl: Albay
+    pt: Albay
+    ru: Албай
+    si: අල්බේ
+    sv: Albay
+    ta: அலிபாய்
+    te: ఆల్బే
+    th: อัลเบย์
+    tr: Albay
+    ur: البائی
+    vi: Albay
+    lv: Albaja
+    ceb: Albay
+    lt: Albajus
+    zh: 阿尔拜省
+    ccp: "\U00011103\U00011123\U00011134\U0001111D\U0001112C"
+    hy: Ալբայ
+    uk: Албай
+    mk: Албај
+    'no': Albay
+    he: פרובינציית אלבאי
+    jv: Albay
+    ka: ალბაი (ფილიპინები)
+  comments:
+  type: province
+ANT:
+  name: Antique
+  code: ANT
+  unofficial_names: Antique
+  geo:
+    latitude: 11.380579
+    longitude: 122.0635005
+    min_latitude: 10.4172679
+    min_longitude: 121.2828827
+    max_latitude: 12.117357
+    max_longitude: 122.325029
+  translations:
+    en: Antique
+    ar: آنتيك
+    bn: এন্টিক
+    ca: Antique
+    da: Antique
+    de: Antique
+    el: Αντίκ
+    es: Antique
+    fa: آنتیک
+    fi: Antique
+    fr: Antique
+    gu: એન્ટિક
+    hi: आन्तीके प्रान्त
+    id: Antique
+    it: Provincia di Antique
+    ja: アンティーケ州
+    kn: ಆಂಟಿಕ್
+    ko: 안티케 주
+    mr: अँटिक
+    ms: Wilayah Antique
+    nb: Antique
+    nl: Antique
+    pl: Antique
+    pt: Antigo
+    ru: Антике
+    si: ඇන්ටික්
+    sv: Antique
+    ta: ஆன்டியூ
+    te: యాంటిక్
+    th: แอนติค
+    tr: Antique
+    ur: اینٹیک (صوبہ)
+    vi: Antique
+    lv: Antike
+    ceb: Antique
+    lt: Antikė
+    zh: 安蒂克省
+    ccp: "\U00011103\U0001111A\U00011134\U00011111\U00011128\U00011107\U00011134"
+    uk: Антік
+    mk: Антике
+    'no': Antique
+    jv: Antique
+    ka: ანტიკე
+  comments:
+  type: province
+APA:
+  name: Apayao
+  code: APA
+  unofficial_names: Apayao
+  geo:
+    latitude: 18.0120304
+    longitude: 121.1710389
+    min_latitude: 17.623744
+    min_longitude: 120.9254531
+    max_latitude: 18.541674
+    max_longitude: 121.4897879
+  translations:
+    en: Apayao
+    ar: آبايو
+    bn: আপায়াও
+    ca: Apayao
+    da: Apayao
+    de: Apayao
+    el: Απαγιάο
+    es: Apayao
+    fa: آپایو
+    fi: Apayao
+    fr: province de Apayao
+    gu: અપાયાઓ
+    hi: आपायाओ प्रान्त
+    id: Apayao
+    it: Provincia di Apayao
+    ja: アパヤオ州
+    kn: ಅಪಾಯಾವೊ
+    ko: 아파야오 주
+    mr: अपॉईओ
+    ms: Apayao
+    nb: Apayao
+    nl: Apayao
+    pl: Apayao
+    pt: Apayao
+    ru: Апаяо
+    si: අපයාවෝ
+    sv: Apayao
+    ta: அபாயவ்
+    te: అపాయేవో
+    th: อพาเยา
+    tr: Apayao
+    ur: اپایاؤ
+    vi: Apayao
+    lv: Apajao
+    ceb: Apayao
+    lt: Apajao
+    zh: 阿巴尧省
+    ccp: "\U00011103\U0001111B\U0001112C\U00011120\U00011103\U0001112E"
+    uk: Апаяо
+    mk: Апајао
+    'no': Apayao
+    jv: Apayao
+    ka: აპაიაო
+  comments:
+  type: province
+AUR:
+  name: Aurora
+  code: AUR
+  unofficial_names: Aurora
+  geo:
+    latitude: 16.991944
+    longitude: 121.636944
+    min_latitude: 16.9357138
+    min_longitude: 121.5742779
+    max_latitude: 17.0173518
+    max_longitude: 121.7060828
+  translations:
+    en: Aurora
+    ar: أورورا
+    bn: অরোরা
+    ca: Aurora
+    da: Aurora
+    de: Aurora
+    el: Ορόρα
+    es: Aurora
+    fa: آرورا
+    fi: Aurora
+    fr: Aurora
+    gu: ઓરોરા
+    hi: औरोरा प्रान्त
+    id: Aurora
+    is: Aurora
+    it: Provincia di Aurora
+    ja: アウロラ州
+    kn: ಅರೋರಾ
+    ko: 아우로라 주
+    mr: अरोरा
+    ms: Aurora
+    nb: Aurora
+    nl: Aurora
+    pl: Aurora
+    pt: Aurora
+    ru: Аурора
+    si: අවුරෝරා
+    sv: Aurora
+    ta: அரோரா
+    te: అరోరా
+    th: จังหวัดออโรรา
+    tr: Aurora
+    ur: آرورا (صوبہ)
+    vi: Aurora
+    lv: Aurora
+    ceb: Aurora
+    lt: Aurora
+    zh: 奥罗拉省
+    ccp: "\U00011103\U00011127\U00011105\U0001112A\U00011122\U0001112E\U00011122"
+    uk: Провінція Аврора
+    mk: Аурора
+    'no': Aurora
+    cs: Aurora
+    jv: Aurora
+    ka: აურორა (პროვინცია)
+  comments:
+  type: province
+BAN:
+  name: Bataan
+  code: BAN
+  unofficial_names: Bataan
+  geo:
+    latitude: 14.6416842
+    longitude: 120.4818446
+    min_latitude: 14.3725568
+    min_longitude: 120.2426195
+    max_latitude: 14.9283039
+    max_longitude: 120.6115616
+  translations:
+    en: Bataan
+    ar: باتان
+    bn: বাতান
+    ca: Península de Bataan
+    da: Bataan
+    de: Bataan
+    el: Μπαταάν
+    es: Bataán
+    fa: باتاآن
+    fi: Bataan
+    fr: Bataan
+    gu: બટાન
+    hi: बाताआन प्रान्त
+    id: Bataan
+    it: Provincia di Bataan
+    ja: バターン州
+    kn: ಬಟಾನ್
+    ko: 바탄 주
+    mr: बातन
+    ms: Bataan
+    nb: Bataan
+    nl: Bataan
+    pl: Bataan
+    pt: Bataan
+    ru: Батаан
+    si: බටාන්
+    sv: Bataan
+    ta: பட்டான்
+    te: బటాన్
+    th: บาตาน
+    tr: Bataan
+    uk: Батаан
+    ur: باتان
+    vi: Bataan
+    lv: Bataana
+    ceb: Bataan
+    lt: Bataanas
+    zh: 巴丹省
+    ccp: "\U0001111D\U00011111\U00011133\U00011103\U0001111A\U00011134"
+    mk: Батаан
+    'no': Bataan
+    he: בטאן
+    jv: Bataan
+    ka: ბატაანი
+    sr: Батан
+    sr_Latn: Batan
+  comments:
+  type: province
+BAS:
+  name: Basilan
+  code: BAS
+  unofficial_names: Basilan
+  geo:
+    latitude: 6.4296349
+    longitude: 121.9870165
+    min_latitude: 6.2788594
+    min_longitude: 121.4296532
+    max_latitude: 6.906267000000001
+    max_longitude: 122.3269363
+  translations:
+    en: Basilan
+    ar: باسيلان
+    bn: ব্যাসিলান
+    ca: Basilan
+    cs: Basilan
+    da: Basilan
+    de: Basilan
+    el: Μπασιλάν
+    es: Basilán
+    fa: باسیلان
+    fi: Basilan
+    fr: Basilan
+    gu: બેસિલન
+    hi: बसीलन
+    id: Basilan
+    it: Provincia di Basilan
+    ja: バシラン州
+    kn: ಬಸಿಲಾನ್
+    ko: 바실란 주
+    lt: Basilanas
+    mr: बेसिलॅन
+    ms: Basilan
+    nb: Basilan
+    nl: Basilan
+    pl: Basilan
+    pt: Província de Basilan
+    ru: Басилан
+    si: බැසිලන්
+    sv: Basilan
+    ta: பசீலன்
+    te: బాసిలాన్
+    th: จังหวัดบาซีลัน
+    tr: Basilan
+    uk: Басілан
+    ur: باسیلان
+    vi: Basilan
+    lv: Basilana
+    ceb: Basilan
+    zh: 巴西兰省
+    ccp: "\U0001111D\U00011125\U00011128\U00011123\U00011127\U0001111A\U00011134"
+    gl: Basilán
+    mk: Басилан
+    'no': Basilan
+    jv: Basilan
+    ka: ბასილანი
+  comments:
+  type: province
+BEN:
+  name: Benguet
+  code: BEN
+  unofficial_names: Benguet
+  geo:
+    latitude: 16.5577257
+    longitude: 120.8039474
+    min_latitude: 16.186448
+    min_longitude: 120.468057
+    max_latitude: 16.9382421
+    max_longitude: 120.904165
+  translations:
+    en: Benguet
+    ar: بينغويت
+    bn: বেনকুয়েট
+    ca: Benguet
+    da: Benguet
+    de: Benguet
+    el: Μπενγκέτ
+    es: Benguet
+    fa: بنگوئه
+    fi: Benguet
+    fr: province de Benguet
+    gu: બેન્ક્વેટ
+    hi: बेंगेत प्रान्त
+    id: Benguet
+    it: provincia di Benguet
+    ja: ベンゲット州
+    kn: ಬೆಂಗ್ವೆಟ್
+    ko: 벵게트 주
+    mr: बेनक्वेट
+    ms: Benguet
+    nb: Benguet
+    nl: Benguet
+    pl: Benguet
+    pt: Província de Benguet
+    ru: Бенгет
+    si: බෙන්ගුවට්
+    sv: Benguet
+    ta: பென்குட்
+    te: బెంగ్వెట్
+    th: เบงเกวต
+    tr: Benguet
+    uk: Бенґет
+    ur: بینگیت
+    vi: Benguet
+    lv: Bengveta
+    ceb: Benguet
+    lt: Bengetas
+    zh: 本格特省
+    ccp: "\U0001111D\U0001112C\U0001111A\U00011134\U00011109\U0001112A\U00011120\U0001112C\U00011116\U00011134"
+    mk: Бенгет
+    'no': Benguet
+    he: מחוז בנגוט
+    jv: Benguet
+    ka: ბენგეტი
+  comments:
+  type: province
+BIL:
+  name: Biliran
+  code: BIL
+  unofficial_names: Biliran
+  geo:
+    latitude: 11.466667
+    longitude: 124.483333
+    min_latitude: 11.4556383
+    min_longitude: 124.4320654
+    max_latitude: 11.5656392
+    max_longitude: 124.5410156
+  translations:
+    en: Biliran
+    ar: بيليران
+    bn: বিলিরান
+    ca: Biliran
+    da: Biliran
+    de: Biliran
+    el: Μπιλιράν
+    es: Bilirán
+    fa: بیلیران
+    fi: Biliran
+    fr: province de Biliran
+    gu: બીલીરન
+    he: ביליראן
+    hi: बिलिरान
+    id: Biliran
+    it: Provincia di Biliran
+    ja: ビリラン州
+    kn: ಬಿಲಿರಾನ್
+    ko: 빌리란 주
+    mr: बिलीरान
+    ms: Biliran
+    nb: Biliran
+    nl: Biliran
+    pl: Biliran
+    pt: Biliran
+    ru: Билиран
+    si: බිලිරන්
+    sv: Biliran
+    ta: பிளிரன்
+    te: బిలిరాన్
+    th: จังหวัดบีลีรัน
+    tr: Biliran
+    ur: بیلیران
+    vi: Biliran
+    lv: Bilirana
+    ceb: Biliran
+    lt: Biliranas
+    zh: 比利兰省
+    ccp: "\U0001111D\U00011128\U00011123\U00011128\U00011122\U0001111A\U00011134"
+    gl: Biliran
+    uk: Біліран
+    az: Biliran adası
+    mk: Билиран
+    'no': Biliran
+    jv: Biliran
+    ka: ბილირანი
+  comments:
+  type: province
+BOH:
+  name: Bohol
+  code: BOH
+  unofficial_names: Bohol
+  geo:
+    latitude: 9.849991099999999
+    longitude: 124.1435427
+    min_latitude: 9.4856913
+    min_longitude: 123.719351
+    max_latitude: 10.2562504
+    max_longitude: 124.6197582
+  translations:
+    en: Bohol
+    ar: بوهول
+    bn: বোহোল
+    ca: Bohol
+    cs: Bohol
+    da: Bohol
+    de: Bohol
+    el: Μποχόλ
+    es: Bohol
+    et: Bohol
+    eu: Bohol
+    fa: بهل
+    fi: Bohol
+    fr: Bohol
+    gl: Bohol
+    gu: બોહોલ
+    hi: बोहोल
+    hu: Bohol
+    id: Bohol
+    it: Provincia di Bohol
+    ja: ボホール州
+    kn: ಬೊಹೋಲ್
+    ko: 보홀 주
+    lt: Boholis
+    ml: ബൊഹോൾ
+    mr: बोहोल
+    ms: Bohol
+    nb: Bohol
+    ne: बोहोल
+    nl: Bohol
+    pl: Bohol
+    pt: Bohol
+    ru: Провинция Бохоль
+    si: බොහොල්
+    sr: Бохол
+    sv: Bohol
+    ta: போஹோல்
+    te: బోహోల్
+    th: โบฮอล
+    tr: Bohol
+    ur: بوہول
+    vi: Bohol
+    lv: Bohola
+    ceb: Bohol
+    sr_Latn: Bohol
+    zh: 保和省
+    jv: Bohol
+    ccp: "\U0001111D\U00011126\U0001112A\U00011123\U00011134"
+    uk: Бохол, Бохоль
+    az: Bohol
+    mk: Бохол
+    'no': Bohol
+    he: בוהול
+    is: Bóhol
+    ka: ბოჰოლი (პროვინცია)
+  comments:
+  type: province
+BTG:
+  name: Batangas
+  code: BTG
+  unofficial_names: Batangas
+  geo:
+    latitude: 13.7564651
+    longitude: 121.0583076
+    min_latitude: 13.5261516
+    min_longitude: 121.0278529
+    max_latitude: 13.8518358
+    max_longitude: 121.1820692
+  translations:
+    en: Batangas
+    ar: باتانغاس
+    bn: বাটাঙ্গাস
+    ca: Batangas
+    da: Batangas
+    de: Batangas
+    el: Μπατάνγκας
+    es: Batangas
+    fa: باتانگا
+    fi: Batangas
+    fr: Batangas
+    gu: બેટંગસ
+    he: באטאנגס
+    hi: बतांगास प्रान्त
+    id: Batangas
+    it: Provincia di Batangas
+    ja: バタンガス州
+    kn: ಬಟಾಂಗಸ್
+    ko: 바탕가스 주
+    mr: बटांगस
+    ms: Batangas
+    nb: Batangas
+    nl: Batangas
+    pl: Batangas
+    pt: Batangas
+    ru: Батангас
+    si: බටනගස්
+    sv: Batangas
+    ta: பட்டன்கஸ்
+    te: బటంగాస్
+    th: จังหวัดบาตังกัส
+    tr: Batangas
+    uk: Батангас
+    ur: باتھانگاس
+    vi: Batangas
+    lv: Batangasa
+    ceb: Batangas
+    lt: Batangasas
+    zh: 八打雁省
+    ccp: "\U0001111D\U00011111\U00011101\U00011109\U0001110C\U00011134"
+    mk: Батангас
+    'no': Batangas
+    jv: Batangas
+    ka: ბატანგასი (პროვინცია)
+  comments:
+  type: province
+BTN:
+  name: Batanes
+  code: BTN
+  unofficial_names: Batanes
+  geo:
+    latitude: 20.4485074
+    longitude: 121.9708129
+    min_latitude: 20.2578335
+    min_longitude: 121.778977
+    max_latitude: 21.1206112
+    max_longitude: 122.034889
+  translations:
+    en: Batanes
+    ar: باتانيس
+    bn: বাতানেস
+    ca: Batanes
+    da: Batanes
+    de: Batanes
+    el: Μπατάνες
+    es: Batanes
+    fa: باتانه
+    fi: Batanes
+    fr: Batanes
+    gu: બાટનેસ
+    he: בטאנס
+    hi: बातानेस
+    hr: Batanes
+    id: Batanes
+    it: Provincia di Batanes
+    ja: バタネス州
+    kn: ಬ್ಯಾಟನೀಸ್
+    ko: 바타네스 주
+    mr: बाटनेस
+    ms: Batanes
+    nb: Batanes
+    nl: Batanes
+    pl: Batanes
+    pt: Batanes
+    ru: Батанес
+    si: බටනිස්
+    sv: Batanes
+    ta: பாட்னஸ்
+    te: బాటేన్స్
+    th: บาตาเนส
+    tr: Batanes
+    ur: باتانیس
+    vi: Batanes
+    lv: Batanesa
+    cy: Batanes
+    ceb: Batanes
+    lt: Batanesas
+    zh: 巴丹群島省
+    ccp: "\U0001111D\U00011111\U0001111A\U0001112C\U0001110C\U00011134"
+    uk: Батанес
+    mk: Батанес
+    'no': Batanes
+    hy: Բաթանես
+    jv: Batanes
+    ka: ბატანესი
+  comments:
+  type: province
+BUK:
+  name: Bukidnon
+  code: BUK
+  unofficial_names: Bukidnon
+  geo:
+    latitude: 8.0515054
+    longitude: 124.9229946
+    min_latitude: 7.3991609
+    min_longitude: 124.4961241
+    max_latitude: 8.593256
+    max_longitude: 125.444464
+  translations:
+    en: Bukidnon
+    ar: بوكيدنون
+    bn: বুকিদনোন
+    ca: Bukidnon
+    da: Bukidnon
+    de: Bukidnon
+    el: Μπούκιντνον
+    es: Bukidnon
+    fa: بوکیدنون
+    fi: Bukidnon
+    fr: province de Bukidnon
+    gu: બુકીડનન
+    he: בוקידנון
+    hi: बुकिदनोन प्रान्त
+    id: Bukidnon
+    it: Provincia di Bukidnon
+    ja: ブキドノン州
+    kn: ಬುಕಿಡ್ನಾನ್
+    ko: 부키드논 주
+    mr: बोकिडॉन
+    ms: Bukidnon
+    nb: Bukidnon
+    nl: Bukidnon
+    pl: Bukidnon
+    pt: Bukidnon
+    ru: Букиднон
+    si: බුකිඩ්නොන්
+    sv: Bukidnon
+    ta: பிகிட்ணன்
+    te: బుకిడ్నాన్
+    th: บูคิดนอน
+    tr: Bukidnon
+    ur: بوکیدنون
+    vi: Bukidnon
+    lv: Bukidnona
+    ceb: Bukidnon
+    lt: Bukidnonas
+    zh: 布基农省
+    ccp: "\U0001111D\U0001112A\U00011107\U00011128\U00011116\U00011134\U0001111A\U00011127\U0001111A\U00011134"
+    uk: Букіднон
+    mk: Букиднон
+    'no': Bukidnon
+    jv: Bukidnon
+    ka: ბუკიდნონი (პროვინცია)
+  comments:
+  type: province
+BUL:
+  name: Bulacan
+  code: BUL
+  unofficial_names: Bulacan
+  geo:
+    latitude: 14.7942735
+    longitude: 120.8799008
+    min_latitude: 14.7098374
+    min_longitude: 120.8245333
+    max_latitude: 14.8234278
+    max_longitude: 120.9149916
+  translations:
+    en: Bulacan
+    ar: بولاكان
+    bn: বুলাকান
+    ca: Bulacan
+    cs: Bulacan
+    da: Bulacan
+    de: Bulacan
+    el: Μπουλακάν
+    es: Bulacán
+    fa: بولاکان
+    fi: Bulacan
+    fr: Bulacan
+    gu: બુલકન
+    hi: बुलाकान प्रान्त
+    id: Bulacan
+    it: provincia di Bulacan
+    ja: ブラカン州
+    kn: ಬುಲಕಾನ್
+    ko: 불라칸 주
+    mr: बलकन
+    ms: Bulacan
+    nb: Bulacan
+    nl: Bulacan
+    pl: Bulacan
+    pt: Bulacão
+    ru: Булакан
+    si: බුලකෑන්
+    sv: Bulacan
+    ta: புலக்கான்
+    te: బులాకాన్
+    th: แอนซี อีทอยเร่
+    tr: Bulacan
+    ur: بولاکان
+    vi: Bulacan
+    lv: Bulakana
+    ceb: Bulacan
+    lt: Bulakanas
+    zh: 布拉干省
+    ccp: "\U0001111D\U0001112A\U00011123\U00011107\U0001111A\U00011134"
+    uk: Булакан
+    mk: Булакан
+    'no': Bulacan
+    jv: Bulacan
+    ka: ბულაკანი
+  comments:
+  type: province
+CAG:
+  name: Cagayan
+  code: CAG
+  unofficial_names: Cagayan
+  geo:
+    latitude: 18.2489629
+    longitude: 121.8787833
+    min_latitude: 17.5081239
+    min_longitude: 120.9600601
+    max_latitude: 19.9662652
+    max_longitude: 122.33802
+  translations:
+    en: Cagayan
+    ar: كاغايان
+    bn: কাগায়ান
+    ca: Cagayan
+    cs: Cagayan
+    da: Cagayan
+    de: Cagayan
+    el: Καγκαγιάν
+    es: Cagayán
+    fa: کاگایان
+    fi: Cagayan
+    fr: Cagayan
+    gu: કેગયન
+    hi: कागायान प्रान्त
+    id: Cagayan
+    it: Provincia di Cagayan
+    ja: カガヤン州
+    kn: ಕ್ಯಾಗಾನ್
+    ko: 카가얀 주
+    mr: कॅगयन
+    ms: Cagayan
+    nb: Cagayan
+    nl: Cagayan
+    pl: Cagayan
+    pt: Cagayan
+    ru: Кагаян
+    si: කගයාන්
+    sv: Cagayan
+    ta: கேகயன்
+    te: కాగేయాన్
+    th: คากายัน
+    tr: Cagayan
+    ur: کاگایان
+    vi: Cagayan
+    lv: Kagajana
+    ceb: Cagayan
+    lt: Kagajanas
+    zh: 卡加延省
+    ccp: "\U00011107\U00011133\U00011120\U00011109\U0001112C\U00011103\U00011128\U00011120\U0001111A\U00011134"
+    uk: Кагаян
+    mk: Кагајан
+    'no': Cagayan
+    jv: Cagayan
+    ka: კაგაიანი
+  comments:
+  type: province
+CAM:
+  name: Camiguin
+  code: CAM
+  unofficial_names: Camiguin
+  geo:
+    latitude: 9.1732164
+    longitude: 124.7298765
+    min_latitude: 9.0787702
+    min_longitude: 124.6333946
+    max_latitude: 9.2580606
+    max_longitude: 124.806468
+  translations:
+    en: Camiguin
+    ar: كاميغويين
+    bn: কামিকুইন
+    ca: Camiguin
+    da: Camiguin
+    de: Camiguin
+    el: Καμιγκουίν
+    es: Camiguín
+    fa: کامیگوئین
+    fi: Camiguin
+    fr: province de Camiguin
+    gu: કેમિગ્યુઇન
+    he: קמיגין
+    hi: कमिगिन
+    id: Camiguin
+    it: Provincia di Camiguin
+    ja: カミギン州
+    kn: ಕ್ಯಾಮಿಗುಯಿನ್
+    ko: 카미긴 주
+    mr: कॅमगुईन
+    ms: Camiguin
+    nb: Camiguin
+    nl: Camiguin
+    pl: Camiguin
+    pt: Camiguin
+    ru: Камигин
+    si: කමිගුයින්
+    sv: Camiguin
+    ta: காமிகின்
+    te: కామిగ్విన్
+    th: คามิควิน
+    tr: Camiguin
+    ur: کامیگوین
+    vi: Camiguin
+    lv: Kamigina
+    ceb: Camiguin
+    lt: Kamiginas
+    zh: 卡米金省
+    ccp: "\U00011107\U0001112C\U0001111F\U00011128\U00011109\U0001112A\U00011103\U00011128\U0001111A\U00011134"
+    uk: Камігін
+    mk: Камигин
+    'no': Camiguin
+    bs: Camiguin
+    jv: Camiguin
+    ka: კამიგინი
+  comments:
+  type: province
+CAN:
+  name: Camarines Norte
+  code: CAN
+  unofficial_names: Camarines Norte
+  geo:
+    latitude: 14.1390265
+    longitude: 122.7633036
+    min_latitude: 13.835935
+    min_longitude: 122.301291
+    max_latitude: 14.4930237
+    max_longitude: 123.1175996
+  translations:
+    en: Camarines Norte
+    ar: كامارينز نورتي
+    bn: ক্যামারিন নর্টে
+    ca: Camarines Norte
+    da: Camarines Norte
+    de: Camarines Norte
+    el: Καμαρίνες Νόρτε
+    es: Camarines Norte
+    fa: کامارینه شمالی
+    fi: Camarines Norte
+    fr: Camarines Norte
+    gu: કેમેરિન્સ નોર્ટ
+    hi: कामारिनेस नोर्ते प्रान्त
+    id: Camarines Norte
+    it: Provincia di Camarines Norte
+    ja: 北カマリネス州
+    kn: ಕ್ಯಾಮರಿನ್ ನಾರ್ಟೆ
+    ko: 북카마리네스 주
+    mr: केमारिन्स नॉर्टे
+    ms: Camarines Norte
+    nb: Camarines Norte
+    nl: Camarines Norte
+    pl: Camarines Norte
+    pt: Camarines Norte
+    ru: Северный Камаринес
+    si: කමරයින්ස් නොර්ටේ
+    sv: Camarines Norte
+    ta: காமாரின்ஸ் நோர்ட்
+    te: కామెరైన్స్ నార్టె
+    th: กามารีเนสเหนือ
+    tr: Camarines Norte
+    ur: کامارینز شمالی
+    vi: Camarines Norte
+    lv: Kamarines Norte
+    ceb: Camarines Norte
+    lt: Kamarines Nortė
+    zh: 北甘馬粦省
+    ccp: "\U00011107\U0001112C\U0001111F\U0001112C\U00011122\U0001112D\U0001111A\U00011134\U00011125\U00011134
+      \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північний Камарінес
+    mk: Северен Камаринес
+    'no': Camarines Norte
+    jv: Camarines Norte
+    ka: ჩრდილოეთი კამარინესი
+  comments:
+  type: province
+CAP:
+  name: Capiz
+  code: CAP
+  unofficial_names: Capiz
+  geo:
+    latitude: 11.3888799
+    longitude: 122.6277455
+    min_latitude: 11.1436509
+    min_longitude: 122.1992869
+    max_latitude: 11.645162
+    max_longitude: 123.1000324
+  translations:
+    en: Capiz
+    ar: كابيز
+    bn: কাফিজ
+    da: Capiz
+    de: Capiz
+    el: Καπίζ
+    es: Cápiz
+    fa: کاپیز
+    fi: Capiz
+    fr: Cápiz
+    gu: કેપિઝ
+    hi: कापीज़ प्रान्त
+    id: Capiz
+    it: Provincia di Capiz
+    ja: カピス州
+    kn: ಕ್ಯಾಪಿಜ್
+    ko: 카피스 주
+    mr: कॅपिझ
+    ms: Capiz
+    nb: Capiz
+    nl: Capiz
+    pl: Capiz
+    pt: Capiz
+    ru: Капис
+    si: කැපිස්
+    sv: Capiz
+    ta: காபிஸ்
+    te: కాపిజ్
+    th: คาปิซ
+    tr: Capiz
+    ur: کاپیز
+    vi: Capiz
+    lv: Kapiza
+    ceb: Capiz
+    lt: Kapizas
+    zh: 卡皮茲省
+    ccp: "\U00011107\U00011133\U00011120\U0001111B\U00011128\U0001110C\U00011134"
+    uk: Капіз
+    mk: Капиз
+    'no': Capiz
+    ca: Capiz
+    jv: Capiz
+    ka: კაპისი (პროვინცია)
+  comments:
+  type: province
+CAS:
+  name: Camarines Sur
+  code: CAS
+  unofficial_names: Camarines Sur
+  geo:
+    latitude: 13.5250197
+    longitude: 123.3486147
+    min_latitude: 13.2638826
+    min_longitude: 122.550947
+    max_latitude: 14.1279977
+    max_longitude: 123.97699
+  translations:
+    en: Camarines Sur
+    ar: كامارينس سور
+    bn: কামারিনেস সোর
+    ca: Camarines Sur
+    da: Camarines Sur
+    de: Camarines Sur
+    el: Καμαρίνες Σουρ
+    es: Camarines Sur
+    fa: کامارینه جنوبی
+    fi: Camarines Sur
+    fr: Camarines Sur
+    gu: કેમેરિન્સ સુર
+    he: איי קמרינס
+    hi: कामारिनेस सूर प्रान्त
+    id: Camarines Sur
+    it: Provincia di Camarines Sur
+    ja: 南カマリネス州
+    kn: ಕ್ಯಾಮರೀನ್ ಸುರ್
+    ko: 남카마리네스 주
+    mr: केमारिन्स सुर
+    ms: Camarines Sur
+    nb: Camarines Sur
+    nl: Camarines Sur
+    pl: Camarines Sur
+    pt: Camarines Sur
+    ru: Южный Камаринес
+    si: කමරයින්ස් සර්
+    sv: Camarines Sur
+    ta: காமாரின்ஸ் சூர்
+    te: కామెరైన్స్ సుర్
+    th: คามาไลเนส เซอ
+    tr: Camarines Sur
+    ur: کامارینز جنوبی
+    vi: Camarines Sur
+    lv: Dienvidkamarinesa
+    ceb: Camarines Sur
+    lt: Kamarines Suras
+    zh: 南甘馬粦省
+    ccp: "\U00011107\U0001112C\U0001111F\U0001112C\U00011122\U0001112D\U0001111A\U00011134
+      \U00011125\U00011122\U00011134"
+    hy: Հարավային Կամարինես
+    uk: Південний Камарінес
+    mk: Јужен Камаринес
+    'no': Camarines Sur
+    jv: Camarines Sur
+    ka: სამხრეთი კამარინესი
+  comments:
+  type: province
+CAT:
+  name: Catanduanes
+  code: CAT
+  unofficial_names: Catanduanes
+  geo:
+    latitude: 13.7088684
+    longitude: 124.2421597
+    min_latitude: 13.5181658
+    min_longitude: 124.0169811
+    max_latitude: 14.1005278
+    max_longitude: 124.4218897
+  translations:
+    en: Catanduanes
+    ar: كاتاندوانه
+    bn: ক্যাটান্ডুয়ান্স
+    ca: Catanduanes
+    cs: Catanduanes
+    da: Catanduanes
+    de: Catanduanes
+    el: Καταντουάνες
+    es: Catanduanes
+    fa: کاتاندوانه
+    fi: Catanduanes
+    fr: Catanduanes
+    gu: કેટાન્ડુઅનેસ
+    hi: कतन्दुआनेस
+    id: Catanduanes
+    it: Provincia di Catanduanes
+    ja: カタンドゥアネス州
+    kn: ಕ್ಯಾಟೌನ್ವಾನ್ಸ್
+    ko: 카탄두아네스 주
+    mr: कॅटंडुअस
+    ms: Catanduanes
+    nb: Catanduanes
+    nl: Catanduanes
+    pl: Catanduanes
+    pt: Catanduanes
+    ru: Катандуанес
+    si: කටනඩුවනීස්
+    sv: Catanduanes
+    ta: கடந்தவனேஸ்
+    te: కటాండుయేన్స్
+    th: เมืองกาตันดัวเนส
+    tr: Catanduanes
+    uk: Катандуанес
+    ur: کاتاندوانیس
+    vi: Catanduanes
+    lv: Katanduanesa
+    ceb: Catanduanes
+    lt: Katandvanesas
+    zh: 卡坦端内斯省
+    ccp: "\U00011107\U00011111\U0001111A\U00011134\U00011113\U0001112A\U00011120\U0001112C\U0001111A\U00011134\U0001110C\U00011134"
+    gl: Catanduanes
+    ml: കടാൻദുവാനിസ്
+    mk: Катандуанес
+    'no': Catanduanes
+    bg: Катандуанес
+    jv: Catanduanes
+    ka: კატანდუანესი
+  comments:
+  type: province
+CAV:
+  name: Cavite
+  code: CAV
+  unofficial_names: Cavite
+  geo:
+    latitude: 14.4791297
+    longitude: 120.8969634
+    min_latitude: 14.3646447
+    min_longitude: 120.5212855
+    max_latitude: 14.5002355
+    max_longitude: 120.9209909
+  translations:
+    en: Cavite
+    ar: كاويته
+    bn: ক্যাভিটে
+    ca: Cavite
+    da: Provins Cavite
+    de: Provinz Cavite
+    el: Καβιτέ
+    es: Cavite
+    fa: کاویته
+    fi: Cavite
+    fr: province de Cavite
+    gu: કેવિટે
+    hi: काविते प्रान्त
+    id: Cavite
+    it: Provincia di Cavite
+    ja: カヴィテ州
+    kn: ಕ್ಯಾವೆಟ್
+    ko: 카비테 주
+    mr: कवाट
+    ms: Cavite
+    nb: Cavite
+    nl: Cavite
+    pl: Prowincja Cavite
+    pt: Província de Cavite
+    ru: Кавите
+    si: කවයිට්
+    sv: Provins Cavite
+    ta: காவிட்
+    te: కావిటి
+    th: คาวิต
+    tr: Cavite
+    uk: Кавіте
+    ur: کاویت
+    vi: Cavite
+    lv: Kavite
+    ceb: Cavite
+    lt: Kavitė
+    zh: 甲米地省
+    ccp: "\U00011107\U0001111E\U00011128\U00011116\U00011134"
+    hy: Կավիտե
+    mk: Кавите
+    'no': Cavite
+    jv: Cavite
+    ka: კავიტე
+  comments:
+  type: province
+CEB:
+  name: Cebu
+  code: CEB
+  unofficial_names: Cebu
+  geo:
+    latitude: 10.3156992
+    longitude: 123.8854366
+    min_latitude: 10.2594378
+    min_longitude: 123.7633896
+    max_latitude: 10.498277
+    max_longitude: 123.9326476
+  translations:
+    en: Cebu
+    ar: سيبو
+    bn: সেবু
+    ca: Província de Cebú
+    cs: Cebu
+    da: Cebu
+    de: Provinz Cebu
+    el: Κεμπού
+    es: Cebú
+    et: Cebu
+    eu: Cebu
+    fa: جزیره سبو
+    fi: Cebu
+    fr: Cebu
+    gl: Cebú
+    gu: સિબુ
+    he: סבו
+    hi: सिबु
+    hy: Սեբու
+    id: Cebu
+    it: Provincia di Cebu
+    ja: セブ州
+    kn: ಸೆಬು
+    ko: 세부 주
+    lt: Sebu
+    ml: സെബൂ
+    mr: सिबू
+    ms: Cebu
+    nb: Cebu
+    nl: Cebu
+    pl: Cebu
+    pt: Cebu
+    ru: Себу
+    si: සේබූ
+    sr: Себу
+    sv: Cebu
+    ta: செப்பு
+    te: సెబు
+    th: เซบู
+    tr: Cebu
+    uk: Себу
+    ur: سیبو
+    vi: Cebu
+    lv: Sebu
+    ceb: Sugbo
+    sr_Latn: Sebu
+    zh: 宿霧省
+    ccp: "\U00011125\U0001112C\U0001111D\U0001112A"
+    mk: Себу
+    'no': Cebu
+    hu: Cebu
+    jv: Cebu
+    ka: სებუ (პროვინცია)
+  comments:
+  type: province
+COM:
+  name: Compostela Valley
+  code: COM
+  unofficial_names: Compostela Valley
+  geo:
+    latitude: 7.512514999999999
+    longitude: 126.1762615
+    min_latitude: 7.078257199999999
+    min_longitude: 125.674365
+    max_latitude: 7.9994319
+    max_longitude: 126.2988501
+  translations:
+    en: Compostela Valley
+    ar: كامبوستلا ولي
+    bn: কম্পোস্টেলা ভ্যালি
+    da: Compostela Valley
+    de: Compostela Valley
+    el: Κομποστέλα Βάλεϊ
+    es: Valle de Compostela
+    fa: کامپوستلا ولی
+    fi: Compostela Valley
+    fr: Vallée de Compostela
+    gu: કોમ્પોસ્ટેલા વેલી
+    hi: कोम्पोस्तेला घाटी
+    id: Compostela Valley
+    it: Provincia di Compostela Valley
+    ja: コンポステラ・バレー州
+    kn: ಕಾಂಪೊಸ್ಟೆಲಾ ಕಣಿವೆ
+    ko: 콤포스텔라밸리 주
+    mr: कंपोस्टेला व्हॅली
+    ms: Compostela Valley
+    nb: Compostela Valley
+    nl: Compostela Valley
+    pl: Compostela Valley
+    pt: Vale de Compostela
+    ru: Долина Компостела
+    si: කොම්පොස්ටේලා වැලි
+    sv: Composteladalen
+    ta: கொம்போஸ்ட்டேளா வாலே
+    te: కాంపోస్టెలా వ్యాలీ
+    th: คอมโพสเตลา
+    tr: Compostela Vadisi
+    ur: وادی کومپوستیلا
+    vi: Compostela Valley
+    lv: Kompostelas ieleja
+    ceb: Compostela Valley
+    lt: Kompostelos slėnis
+    zh: 康波斯特拉谷省
+    ccp: "\U00011107\U00011127\U0001111F\U00011134\U0001111B\U0001112A\U0001110C\U00011111\U0001112C\U00011123
+      \U0001111E\U0001112C\U00011123\U00011128"
+    uk: Долина Компостела
+    mk: Долина Компостела
+    'no': Compostela Valley
+    jv: Davao de Oro
+    ka: დავაო-დე-ორო
+  comments:
+  type: province
+DAO:
+  name: Davao Oriental
+  code: DAO
+  unofficial_names: Davao Oriental
+  geo:
+    latitude: 7.3171585
+    longitude: 126.5419887
+    min_latitude: 5.5511669
+    min_longitude: 125.938116
+    max_latitude: 8.0013469
+    max_longitude: 126.6015399
+  translations:
+    en: Davao Oriental
+    ar: دافاو أورينتال
+    bn: দাভাও ওরিয়েন্টাল
+    da: Davao Oriental
+    de: Davao Oriental
+    el: Νταβάο Οριεντάλ
+    es: Davao Oriental
+    fa: داوائو شرقی
+    fi: Davao Oriental
+    fr: Davao oriental
+    gu: દવાઓ ઓરિએન્ટલ
+    hi: दावाओ ओरिएंटल
+    id: Davao Oriental
+    it: Provincia di Davao Oriental
+    ja: 東ダバオ州
+    kn: ದಾವೊವೊ ಒರಿಯಂಟಲ್
+    ko: 동다바오 주
+    mr: दॅवओ ओरिएंटल
+    ms: Davao Oriental
+    nb: Davao Oriental
+    nl: Davao Oriental
+    pl: Davao Oriental
+    pt: Davao Oriental
+    ru: Восточный Давао
+    si: ඩවාඕ ඔරියෙන්ටල්
+    sv: Davao Oriental
+    ta: டாவாவ் ஒரிஎண்டல்
+    te: డావావో ఓరియంటల్
+    th: จังหวัดดาเวาโอเรียนเต็ล
+    tr: Davao Oriental
+    ur: داوائو شرقی
+    vi: Davao Oriental
+    lv: Austrumdavao
+    ceb: Davao Oriental
+    lt: Rytų Davao
+    zh: 东达沃省
+    ccp: "\U00011113\U0001111E\U00011103\U0001112E \U00011103\U00011127\U00011122\U00011128\U00011120\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    uk: Східний Давао
+    mk: Источен Давао
+    'no': Davao Oriental
+    jv: Davao Oriental
+    ka: აღმოსავლეთი დავაო
+  comments:
+  type: province
+DAS:
+  name: Davao del Sur
+  code: DAS
+  unofficial_names: Davao del Sur
+  geo:
+    latitude: 6.766268699999999
+    longitude: 125.3284269
+    min_latitude: 5.367669999999999
+    min_longitude: 125.1010209
+    max_latitude: 7.565537000000001
+    max_longitude: 125.7164231
+  translations:
+    en: Davao del Sur
+    ar: دافاو ديل سور
+    bn: ডাভাও ডেল সুর
+    da: Davao del Sur
+    de: Davao del Sur
+    el: Νταβάο ντελ Σούρ
+    es: Davao del Sur
+    fa: داوائو جنوبی
+    fi: Davao del Sur
+    fr: Davao du Sud
+    gu: દાવાઓ ડેલ સુર
+    hi: दावाओ देल सूर
+    id: Davao del Sur
+    it: Provincia di Davao del Sur
+    ja: 南ダバオ州
+    kn: ದಾವೊವೊ ಡೆಲ್ ಸುರ್
+    ko: 남다바오 주
+    mr: डावाओ डेल सुर
+    ms: Davao del Sur
+    nb: Davao del Sur
+    nl: Davao del Sur
+    pl: Davao del Sur
+    pt: Davao do Sul
+    ru: Южный Давао
+    si: ඩවාඕ ඩෙල් සර්
+    sv: Davao del Sur
+    ta: டவையோ டேல் சூர்
+    te: డావావో డెల్ సుర్
+    th: จังหวัดดาเวา เดล เซอร์
+    tr: Davao del Sur
+    ur: داوائو جنوبی
+    vi: Davao del Sur
+    lv: Dienviddavao
+    ceb: Davao del Sur
+    lt: Pietų Davao
+    zh: 南達沃省
+    ccp: "\U00011113\U0001111E\U00011103\U0001112E \U00011113\U0001112C\U00011123\U00011134
+      \U00011125\U00011122\U00011134"
+    uk: Південний Давао
+    mk: Јужен Давао
+    'no': Davao del Sur
+    jv: Davao del Sur
+    ka: სამხრეთი დავაო
+  comments:
+  type: province
+DAV:
+  name: Davao del Norte
+  code: DAV
+  unofficial_names:
+  - Davao
+  geo:
+    latitude: 7.561769899999999
+    longitude: 125.6532848
+    min_latitude: 6.894526000000001
+    min_longitude: 125.250456
+    max_latitude: 7.997327
+    max_longitude: 125.944498
+  translations:
+    en: Davao del Norte
+    ar: دافاو ديل نورت
+    bn: দাভাও দেল নর্টে
+    da: Davao del Norte
+    de: Davao del Norte
+    el: Νταβάο ντελ Νόρτε
+    es: Davao del Norte
+    fa: داوائو شمالی
+    fi: Davao del Norte
+    fr: Davao du Nord
+    gu: દાવાઓ ડેલ નોર્ટે
+    hi: दावाओ देल नोर्ते
+    id: Davao del Norte
+    it: Provincia di Davao del Norte
+    ja: ダバオ州
+    kn: ಡೇವೊ ಡೆಲ್ ನಾರ್ಟೆ
+    ko: 북다바오 주
+    mr: दॅव्हाओ डेल नॉर्ट
+    ms: Davao del Norte
+    nb: Davao del Norte
+    nl: Davao del Norte
+    pl: Davao del Norte
+    pt: Davao del Norte
+    ru: Северный Давао
+    si: ඩවාඕ ඩෙල් නොර්ටේ
+    sv: Davao del Norte
+    ta: டாவோ டெல் நோர்ட்டே
+    te: డేవా డెల్ నోర్టె
+    th: ดาเวา เดล เหนือ
+    tr: Davao del Norte
+    ur: داوائو شمالی
+    vi: Davao del Norte
+    lv: Ziemeļdavao
+    ceb: Davao del Norte
+    lt: Šiaurės Davao
+    zh: 北達沃省
+    ccp: "\U00011113\U0001111E\U00011103\U0001112E \U00011113\U0001112C\U00011123\U00011134
+      \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північний Давао
+    mk: Северен Давао
+    'no': Davao del Norte
+    jv: Davao del Norte
+    ka: ჩრდილოეთი დავაო
+  comments:
+  type: province
+DIN:
+  name: Dinagat Islands
+  code: DIN
+  unofficial_names: Dinagat Islands
+  geo:
+    latitude: 10.1281816
+    longitude: 125.6095474
+    min_latitude: 9.8547497
+    min_longitude: 125.465279
+    max_latitude: 10.4716027
+    max_longitude: 125.7067526
+  translations:
+    en: Dinagat Islands
+    de: Dinagat Islands
+    es: Islas Dinagat
+    fa: دیناگات آیلندز
+    fi: Dinagat Islands
+    fr: province des Îles Dinagat
+    hi: दिनागत द्वीपसमूह
+    id: Kepulauan Dinagat
+    it: Provincia di Dinagat Islands
+    ja: ディナガット・アイランズ州
+    ko: 디나가트 제도 주
+    nb: Dinagat Islands
+    nl: Dinagat Islands
+    pl: Prowincja Dinagat Islands
+    ru: Острова Динагат
+    sv: Dinagatöarna
+    ur: جزائر دیناگات
+    vi: Quần đảo Dinagat
+    ceb: Kapupud-ang Dinagat
+    zh: 迪纳加特群岛
+    ccp: "\U00011113\U00011128\U0001111A\U00011109\U00011116\U00011134 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    uk: Острови Дінагат
+    th: จังหวัดคาปูลูอังดีนากัต
+    mk: Динагат
+    'no': Dinagat Islands
+    bn: দিনাগাত দ্বীপপুঞ্জ
+    jv: Dinagat Islands
+    ka: დინაგატის კუნძულები
+    ms: Kepulauan Dinagat
+    pt: Ilhas de Dinagat
+  comments:
+  type: province
+DVO:
+  name: Davao Occidental
+  code: DVO
+  unofficial_names: Davao Occidental
+  geo:
+    latitude: 12.879721
+    longitude: 121.774017
+    min_latitude: 4.5870339
+    min_longitude: 116.7029193
+    max_latitude: 19.5740241
+    max_longitude: 126.6043837
+  translations:
+    en: Davao Occidental
+    es: Dávao Occidental
+    fi: Davao Occidental
+    fr: Davao occidental
+    hi: दावाओ ओक्सीडेंटल
+    id: Davao Occidental
+    it: Davao Occidental
+    ko: 서다바오 주
+    nl: Davao Occidental
+    ur: داوائو غربی
+    vi: Davao Occidental
+    ceb: Davao Occidental
+    zh: 西達沃省
+    ccp: "\U00011113\U0001111E\U00011103\U0001112E \U00011103\U00011127\U00011107\U00011134\U00011125\U00011128\U00011113\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    uk: Західне Давао
+    th: จังหวัดคันลูรังดาเบา
+    mk: Западен Давао
+    de: Davao Occidental
+    fa: داوائو اوکیدنتال
+    ja: 西ダバオ
+    jv: Davao Occidental
+    ka: დასავლეთი დავაო
+    ms: Davao Barat
+    pt: Davao Ocidental
+  comments:
+  type: province
+EAS:
+  name: Eastern Samar
+  code: EAS
+  unofficial_names: Eastern Samar
+  geo:
+    latitude: 11.5000731
+    longitude: 125.4999908
+    min_latitude: 10.690784
+    min_longitude: 125.1116951
+    max_latitude: 12.370305
+    max_longitude: 125.969378
+  translations:
+    en: Eastern Samar
+    ar: سامار الشرقية
+    bn: ইস্টার্ন সামার
+    ca: Samar Oriental
+    da: Eastern Samar
+    de: Eastern Samar
+    el: Ανατολικό Σαμάρ
+    es: Sámar Oriental
+    fa: سامار شرقی
+    fi: Eastern Samar
+    fr: Samar oriental
+    gu: ઇસ્ટર્ન સમર
+    hi: पूर्वी सामार प्रान्त
+    id: Samar Timur
+    it: Provincia di Eastern Samar
+    ja: 東サマル州
+    kn: ಪೂರ್ವ ಸಮರ್
+    ko: 동사마르 주
+    mr: ईस्टर्न समर
+    ms: Eastern Samar
+    nb: Eastern Samar
+    nl: Eastern Samar
+    pl: Eastern Samar
+    pt: Samar Oriental
+    ru: Восточный Самар
+    si: නැගෙනහිර සමාර්
+    sv: Östra Samar
+    ta: கிழக்கு சாமர்
+    te: తూర్పు సమర్
+    th: ซามาร์ตะวันออก
+    tr: Doğu Samar
+    ur: مشرقی سامار
+    vi: Đông Samar
+    lv: Austrumu Samara
+    ceb: Sidlakang Samar
+    lt: Rytų Samaras
+    zh: 東薩馬省
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011125\U00011127\U0001111F\U00011122\U00011134"
+    uk: Східний Самар
+    mk: Источен Самар
+    'no': Eastern Samar
+    jv: Eastern Samar
+  comments:
+  type: province
+GUI:
+  name: Guimaras
+  code: GUI
+  unofficial_names: Guimaras
+  geo:
+    latitude: 10.5928661
+    longitude: 122.6325081
+    min_latitude: 10.389255
+    min_longitude: 122.4749851
+    max_latitude: 10.7544428
+    max_longitude: 122.741077
+  translations:
+    en: Guimaras
+    ar: غيماراس
+    bn: গুইমারাস
+    ca: Guimaras
+    da: Guimaras
+    de: Guimaras
+    el: Γκουιμάρας
+    es: Guimarás
+    fa: گیماراس
+    fi: Guimaras
+    fr: province de Guimaras
+    gu: ગુમેરાસ
+    hi: गिमारास
+    id: Guimaras
+    it: Provincia di Guimaras
+    ja: ギマラス州
+    kn: ಗುಯಿಮಾರಸ್
+    ko: 기마라스 주
+    mr: गुइमर्स
+    ms: Guimaras
+    nb: Guimaras
+    nl: Guimaras
+    pl: Guimaras
+    pt: Guimaras
+    ru: Гимарас
+    si: ගුයින්මරාස්
+    sv: Guimaras
+    ta: குமாரஸ்
+    te: గిమారస్
+    th: เกาะกุยมาราส
+    tr: Guimaras
+    uk: Гуймарас
+    ur: گوئماراس
+    vi: Guimaras
+    lv: Gimarasa
+    ceb: Guimaras
+    lt: Gimarasas
+    zh: 吉馬拉斯省
+    ccp: "\U00011109\U0001112D\U0001112A\U0001111F\U00011122\U0001110C\U00011134"
+    gl: Guimarás
+    mk: Гимарас
+    'no': Guimaras
+    jv: Guimaras
+    ka: გიმარასი
+  comments:
+  type: province
+IFU:
+  name: Ifugao
+  code: IFU
+  unofficial_names: Ifugao
+  geo:
+    latitude: 16.8330792
+    longitude: 121.1710389
+    min_latitude: 16.598261
+    min_longitude: 120.881094
+    max_latitude: 17.071433
+    max_longitude: 121.5859809
+  translations:
+    en: Ifugao
+    ar: ايفوغايو
+    bn: ইফুগাও
+    ca: Ifugao
+    da: Ifugao
+    de: Ifugao
+    el: Ιφουγκάο
+    es: Ifugao
+    fa: ایفوگائو
+    fi: Ifugao
+    fr: Ifugao
+    gu: ઇફુગાઓ
+    hi: इफ़ुगाओ प्रान्त
+    id: Ifugao
+    it: Provincia di Ifugao
+    ja: イフガオ州
+    kn: ಇಪುಗಾವೊ
+    ko: 이푸가오 주
+    mr: ईगूगाओ
+    ms: Ifugao
+    nb: Ifugao
+    nl: Ifugao
+    pl: Ifugao
+    pt: Ifugão
+    ru: Ифугао
+    si: ඉෆුගාඕ
+    sv: Ifugao
+    ta: ஐபியூகாவ்
+    te: ఇఫుగావో
+    th: จังหวัดอีฟูเกา
+    tr: Ifugao
+    ur: ایفوگاؤ
+    vi: Ifugao
+    lv: Ifugao
+    ceb: Ifugao
+    lt: Ifugao
+    zh: 伊富高省
+    ccp: "\U00011103\U0001112D\U0001111C\U0001112A\U00011109\U00011103\U0001112E"
+    uk: Іфугао
+    mk: Ифугао
+    'no': Ifugao
+    eu: Ifugao
+    he: נפת איפוגאו
+    jv: Ifugao
+    ka: იფუგაო
+    ro: Ifugao (provincie)
+  comments:
+  type: province
+ILI:
+  name: Iloilo
+  code: ILI
+  unofficial_names: Iloilo
+  geo:
+    latitude: 10.7201501
+    longitude: 122.5621063
+    min_latitude: 10.6792844
+    min_longitude: 122.494087
+    max_latitude: 10.7818569
+    max_longitude: 122.6001559
+  translations:
+    en: Iloilo
+    ar: إلويلو
+    bn: ইলোইলো
+    ca: Iloilo
+    da: Iloilo
+    de: Iloilo
+    el: Ιλόιλο
+    es: Iloílo
+    fa: ایلوئیلو
+    fi: Iloilo
+    fr: province de Iloilo
+    gu: ઇલોઇલો
+    hi: इलोइलो प्रान्त
+    hu: Iloilo
+    id: Iloilo
+    it: Provincia di Iloilo
+    ja: イロイロ州
+    kn: ಇಲೌಲೋ
+    ko: 일로일로 주
+    mr: ललॉयलो
+    ms: Iloilo
+    nb: Iloilo
+    nl: Iloilo
+    pl: Prowincja Iloilo
+    pt: Iloilo
+    ru: Илоило
+    si: ඉලොයිලෝ
+    sv: Iloilo
+    ta: இலோயிலோ
+    te: ఇలాయిలో
+    th: อิโลยโล
+    tr: Iloilo
+    ur: الوئیلو
+    vi: Iloilo
+    lv: Iloilo
+    ceb: Iloilo
+    lt: Iloilas
+    zh: 伊洛伊洛省
+    ccp: "\U00011103\U00011128\U00011123\U0001112E\U00011103\U00011128\U00011123\U0001112E"
+    uk: Ілоіло
+    mk: Илоило
+    'no': Iloilo
+    jv: Iloilo
+    ka: ილოილო (პროვინცია)
+  comments:
+  type: province
+ILN:
+  name: Ilocos Norte
+  code: ILN
+  unofficial_names: Ilocos Norte
+  geo:
+    latitude: 18.1647281
+    longitude: 120.7115592
+    min_latitude: 17.698466
+    min_longitude: 120.4290068
+    max_latitude: 18.650944
+    max_longitude: 120.980399
+  translations:
+    en: Ilocos Norte
+    ar: إيلوكوس نورت
+    bn: ইলোকোস নর্তে
+    ca: Ilocos Norte
+    da: Ilocos Norte
+    de: Ilocos Norte
+    el: Ιλόκος Νόρτε
+    es: Ilocos Norte
+    fa: ایلوکوس شمالی
+    fi: Ilocos Norte
+    fr: Ilocos Norte
+    gu: ઇલોકોસ નોર્ટ
+    hi: इलोकोस नोर्ते
+    id: Ilocos Norte
+    it: Provincia di Ilocos Norte
+    ja: 北イロコス州
+    kn: ಇಲೋಕೋಸ್ ನಾರ್ಟೆ
+    ko: 북일로코스 주
+    mr: इलोकोस नॉर्टे
+    ms: Ilocos Norte
+    nb: Ilocos Norte
+    nl: Ilocos Norte
+    pl: Ilocos Norte
+    pt: Ilocos Norte
+    ro: Ilocos Norte
+    ru: Северный Илокос
+    si: ඉලොකොස් නොර්ටේ
+    sv: Norra Ilocos
+    ta: இலோகாஸ் நோர்ட்
+    te: ఇలోకోస్ నార్ట్
+    th: โลคอส นอร์ท
+    tr: Ilocos Norte
+    ur: ایلوکوس شمالی
+    vi: Ilocos Norte
+    lv: Ziemeļilokosa
+    ceb: Ilocos Norte
+    lt: Šiaurės Ilokų regionas
+    zh: 北伊羅戈省
+    ccp: "\U00011103\U00011128\U00011123\U0001112E\U00011107\U0001112E\U0001110C\U00011134
+      \U0001111F\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північний Ілокос
+    mk: Северен Илокос
+    'no': Ilocos Norte
+    jv: Ilocos Norte
+    ka: ჩრდილოეთი ილოკოსი
+  comments:
+  type: province
+ILS:
+  name: Ilocos Sur
+  code: ILS
+  unofficial_names: Ilocos Sur
+  geo:
+    latitude: 17.2278664
+    longitude: 120.5739579
+    min_latitude: 16.655479
+    min_longitude: 120.3427526
+    max_latitude: 17.9007002
+    max_longitude: 120.860186
+  translations:
+    en: Ilocos Sur
+    ar: إيلوكوس سور
+    bn: ইলোকোস সুর
+    ca: Ilocos Sur
+    da: Ilocos Sur
+    de: Ilocos Sur
+    el: Ιλόκος Σουρ
+    es: Ilocos Sur
+    fa: ایلوکوس جنوبی
+    fi: Ilocos Sur
+    fr: Ilocos Sur
+    gu: ઇલોકોસ સુર
+    hi: इलोकोस सूर
+    id: Ilocos Sur
+    it: Provincia di Ilocos Sur
+    ja: 南イロコス州
+    kn: ಇಲೋಕೋಸ್ ಸುರ್
+    ko: 남일로코스 주
+    mr: इलोकस सुर
+    ms: Ilocos Sur
+    nb: Ilocos Sur
+    nl: Ilocos Sur
+    pl: Ilocos Sur
+    pt: Ilocos Sur
+    ru: Южный Илокос
+    si: ඉලොකොස් සර්
+    sv: Södra Ilocos
+    ta: இலோகோஸ் சூர்
+    te: ఇలోకోస్ సుర్
+    th: อิโลคอส ซูร์
+    tr: Ilocos Sur
+    ur: ایلوکوس جنوبی
+    vi: Ilocos Sur
+    lv: Dienvidu Ilokosa
+    ceb: Ilocos Sur
+    lt: Pietų Ilokų regionas
+    zh: 南伊羅戈省
+    ccp: "\U00011103\U00011128\U00011123\U0001112E\U00011107\U0001112E\U0001110C\U00011134
+      \U00011125\U00011122\U00011134"
+    uk: Південий Ілокос
+    mk: Јужен Илокос
+    'no': Ilocos Sur
+    he: אילוקוס סור
+    jv: Ilocos Sur
+    ka: სამხრეთი ილოკოსი
+  comments:
+  type: province
+ISA:
+  name: Isabela
+  code: ISA
+  unofficial_names: Isabela
+  geo:
+    latitude: 16.9753758
+    longitude: 121.8107079
+    min_latitude: 16.3794739
+    min_longitude: 121.3364481
+    max_latitude: 17.5454246
+    max_longitude: 122.5278068
+  translations:
+    en: Isabela
+    ar: ايزابلا
+    bn: ইসাবেলা
+    ca: Isabela
+    da: Isabela
+    de: Isabela
+    el: Ισαμπέλα
+    es: Isabela
+    fa: ایزابلا
+    fi: Isabela
+    fr: Isabela
+    gu: ઇસાબેલા
+    hi: इसाबेला प्रान्त
+    id: Isabela
+    it: Provincia di Isabela
+    ja: イサベラ州
+    kn: ಇಸಾಬೆಲಾ
+    ko: 이사벨라 주
+    mr: इसाबेला
+    ms: Isabela
+    nb: Isabela
+    nl: Isabela
+    pl: Isabela
+    pt: Isabela
+    ru: Исабела
+    si: ඉසබෙලා
+    sv: Isabela
+    ta: இசபெல்லா
+    te: ఇసబెల్లా
+    th: จังหวัดอิซาเบลา
+    tr: Isabela
+    ur: آئزابیلا (صوبہ)
+    vi: Isabela
+    lv: Isabela
+    ceb: Isabela
+    lt: Izabela
+    zh: 伊莎貝拉省
+    ccp: "\U00011103\U00011128\U00011125\U0001111D\U0001112C\U00011123"
+    mk: Изабела
+    'no': Isabela
+    he: נפת איסבלה
+    jv: Isabela
+    ka: ისაბელა (პროვინცია)
+  comments:
+  type: province
+KAL:
+  name: Kalinga
+  code: KAL
+  unofficial_names: Kalinga
+  geo:
+    latitude: 17.4740422
+    longitude: 121.3541631
+    min_latitude: 17.1616239
+    min_longitude: 120.909971
+    max_latitude: 17.6889911
+    max_longitude: 121.682251
+  translations:
+    en: Kalinga
+    ar: كالينغا
+    bn: কালিংগা
+    ca: província de Kalinga
+    da: Kalinga
+    de: Kalinga
+    el: Καλίνγκα
+    es: Kalinga
+    fa: کالینگا
+    fi: Kalingan provinssi
+    fr: province de Kalinga
+    gu: કલિંગા
+    hi: कालिंगा प्रान्त
+    id: Kalinga
+    it: Provincia di Kalinga
+    ja: カリンガ州
+    kn: ಕಳಿಂಗ
+    ko: 칼링가 주
+    mr: कलिंगा
+    ms: Kalinga
+    nb: Kalinga
+    nl: Kalinga
+    pl: Kalinga
+    pt: Província de Kalinga
+    ru: Калинга
+    si: කාලිංග
+    sv: Kalinga
+    ta: கலிங்கா
+    te: కళింగ
+    th: คาลินก้า
+    tr: Kalinga
+    ur: کالینگا
+    vi: Kalinga
+    lv: Kalinga
+    ceb: Kalinga
+    lt: Kalinga
+    zh: 卡林阿省
+    ccp: "\U00011107\U00011123\U00011128\U00011101\U00011109"
+    uk: Провінція Калінга
+    or: କଳିଙ୍ଗ (ରାଜ୍ୟ), ଫିଲିପାଇନ୍ସ
+    mk: Калинга
+    'no': Kalinga
+    jv: Kalinga
+    ka: კალინგა (პროვინცია)
+  comments:
+  type: province
+LAG:
+  name: Laguna
+  code: LAG
+  unofficial_names: Laguna
+  geo:
+    latitude: 14.2956294
+    longitude: 121.4961581
+    min_latitude: 14.2647886
+    min_longitude: 121.4209908
+    max_latitude: 14.3487163
+    max_longitude: 121.630674
+  translations:
+    en: Laguna
+    ar: لاغونا
+    bn: লেগুনা
+    ca: Laguna
+    da: Laguna
+    de: Laguna
+    el: Λαγκούνα
+    es: La Laguna
+    eu: Laguna probintzia
+    fa: لاگونا
+    fi: Laguna
+    fr: Laguna
+    gu: લગુના
+    hi: लगूना प्रान्त
+    id: Laguna
+    it: Provincia di Laguna
+    ja: ラグナ州
+    ka: ლაგუნა
+    kn: ಲಗುನಾ
+    ko: 라구나 주
+    mr: लागुना
+    ms: Laguna
+    nb: Laguna
+    nl: Laguna
+    pl: Laguna
+    pt: Laguna
+    ru: Лагуна
+    si: ලගුනා
+    sv: Laguna
+    ta: லகுனா
+    te: లాగునా
+    th: จังหวัดลากูน่า
+    tr: Laguna
+    uk: Лагуна
+    ur: لاگونا (صوبہ)
+    vi: Laguna
+    lv: Laguna
+    ceb: Laguna
+    lt: Laguna
+    zh: 內湖省
+    ccp: "\U00011123\U00011133\U00011120\U00011109\U0001112A\U0001111A"
+    mk: Лагуна
+    'no': Laguna
+    hy: Լագունա
+    jv: Laguna
+  comments:
+  type: province
+LAN:
+  name: Lanao del Norte
+  code: LAN
+  unofficial_names: Lanao del Norte
+  geo:
+    latitude: 7.8721811
+    longitude: 123.8857747
+    min_latitude: 7.6934621
+    min_longitude: 123.621328
+    max_latitude: 8.3414729
+    max_longitude: 124.573305
+  translations:
+    en: Lanao del Norte
+    ar: لاناو ديل نورتي
+    bn: লানাও ডেল নর্টে
+    da: Lanao del Norte
+    de: Lanao del Norte
+    el: Λανάο ντελ Νόρτε
+    es: Lanao del Norte
+    fa: لانائو شمالی
+    fi: Lanao del Norte
+    fr: Lanao du Nord
+    gu: લાનાઓ ડેલ નોર્ટ
+    hi: लानाओ देल नोर्ते
+    id: Lanao del Norte
+    it: Provincia di Lanao del Norte
+    ja: 北ラナオ州
+    kn: ಲಾನೊ ಡೆಲ್ ನಾರ್ಟೆ
+    ko: 북라나오 주
+    mr: लानाओ डेल नॉर्ट
+    ms: Lanao del Norte
+    nb: Lanao del Norte
+    nl: Lanao del Norte
+    pl: Lanao del Norte
+    pt: Lanão do Norte
+    ru: Северный Ланао
+    si: ලනාඕ ඩෙල් නොර්ටේ
+    sv: Lanao del Norte
+    ta: லெனோவோ டெல் நோர்ட்டே
+    te: లానావో డెల్ నార్టె
+    th: ลานาว เดล เหนือ
+    tr: Lanao del Norte
+    ur: لاناؤ شمالی
+    vi: Lanao del Norte
+    lv: Ziemeļlanao
+    ceb: Lanao del Norte
+    lt: Šiaurės Lanao
+    zh: 北拉瑙省
+    ccp: "\U00011123\U0001111A\U00011103\U0001112E \U00011113\U0001112C\U00011123\U00011134
+      \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північний Ланао
+    mk: Северен Ланао
+    'no': Lanao del Norte
+    jv: Lanao del Norte
+    ka: ჩრდილოეთი ლანაო
+  comments:
+  type: province
+LAS:
+  name: Lanao del Sur
+  code: LAS
+  unofficial_names: Lanao del Sur
+  geo:
+    latitude: 7.823176
+    longitude: 124.4198243
+    min_latitude: 7.3995557
+    min_longitude: 123.8264541
+    max_latitude: 8.2121889
+    max_longitude: 124.807193
+  translations:
+    en: Lanao del Sur
+    ar: لاناو ديل سور
+    bn: লানাও দেল সুর
+    da: Lanao del Sur
+    de: Lanao del Sur
+    el: Λανάο ντελ Σουρ
+    es: Lanao del Sur
+    fa: لانائو جنوبی
+    fi: Lanao del Sur
+    fr: Lanao du Sud
+    gu: લાનાઓ ડેલ સુર
+    hi: लानाओ देल सूर
+    id: Lanao del Sur
+    it: Provincia di Lanao del Sur
+    ja: 南ラナオ州
+    kn: ಲಾನೊ ಡೆಲ್ ಸುರ್
+    ko: 남라나오 주
+    mr: लानाओ डेल सुर
+    ms: Lanao del Sur
+    nb: Lanao del Sur
+    nl: Lanao del Sur
+    pl: Lanao del Sur
+    pt: Lanão de Sur
+    ru: Южный Ланао
+    si: ලනාඕ ඩෙල් සර්
+    sv: Lanao del Sur
+    ta: லானாயோ டேல் சூர்
+    te: లానావో డెల్ సుర్
+    th: ลาเนา เดล เซอร์
+    tr: Lanao del Sur
+    ur: لاناؤ دل سور
+    vi: Lanao del Sur
+    lv: Lanaodelsura
+    ceb: Lanao del Sur
+    lt: Pietų Lanao
+    zh: 南拉瑙省
+    ccp: "\U00011123\U0001111A\U00011103\U0001112E \U00011113\U0001112C\U00011123\U00011134
+      \U00011125\U00011122\U00011134"
+    uk: Південний Ланао
+    mk: Јужен Ланао
+    'no': Lanao del Sur
+    jv: Lanao del Sur
+    ka: სამხრეთი ლანაო
+  comments:
+  type: province
+LEY:
+  name: Leyte
+  code: LEY
+  unofficial_names: Leyte
+  geo:
+    latitude: 11.366667
+    longitude: 124.483333
+    min_latitude: 11.2012197
+    min_longitude: 124.3958759
+    max_latitude: 11.4561949
+    max_longitude: 124.5601559
+  translations:
+    en: Leyte
+    ar: مقاطعة ليتة
+    bn: লেতে
+    ca: Província de Leyte
+    da: Leyte
+    de: Leyte
+    el: Λέγτε
+    es: Leyte
+    fa: لیته
+    fi: Leyte
+    fr: Leyte
+    gu: લેટે
+    hi: लेयते प्रान्त
+    id: Leyte Utara
+    it: Provincia di Leyte
+    ja: レイテ州
+    kn: ಲೇಯ್ಟೆ
+    ko: 레이테 주
+    mr: लेये
+    ms: Leyte
+    nb: Leyte
+    nl: Leyte
+    pl: Prowincja Leyte
+    pt: Leyte
+    ru: Лейте
+    si: ලේටේ
+    sv: Leyte
+    ta: லெய்டி மாகாணம்
+    te: లైటి
+    th: เกาะเลย์เต
+    tr: Leyte
+    ur: لیئتے (صوبہ)
+    vi: Leyte
+    lv: Leite
+    ceb: Leyte
+    lt: Leitė
+    zh: 雷伊泰省
+    ccp: "\U00011123\U0001112C\U00011120\U00011116\U00011134"
+    uk: Провінція Лейте
+    mk: Лејте
+    'no': Leyte
+    jv: Leyte
+    ka: ლეიტე (პროვინცია)
+  comments:
+  type: province
+LUN:
+  name: La Union
+  code: LUN
+  unofficial_names: La Union
+  geo:
+    latitude: 16.6158906
+    longitude: 120.3209373
+    min_latitude: 16.207748
+    min_longitude: 120.2801715
+    max_latitude: 16.91881
+    max_longitude: 120.5744889
+  translations:
+    en: La Union
+    ar: لا يونيون
+    bn: লা ইউনিয়ন
+    ca: La Union
+    da: La Union
+    de: La Union
+    el: Λα Γιούνιον
+    es: La Unión
+    fa: لا یونیون، پرو
+    fi: La Union
+    fr: La Union
+    gu: લા યુનિયન
+    hi: ला युनियोन प्रान्त
+    id: La Union
+    it: Provincia di La Union
+    ja: ラウニオン州
+    kn: ಲಾ ಯೂನಿಯನ್
+    ko: 라우니온 주
+    mr: ला युनियन
+    ms: La Union
+    nb: La Union
+    nl: La Union
+    pl: La Union
+    pt: La Unión
+    ru: Ла-Унион
+    si: ලා යුනියන්
+    sv: La Union
+    ta: லா யூனியன்
+    te: లా యూనియన్
+    th: ลา ยูเนียน
+    tr: La Union
+    ur: لا یونین
+    vi: La Union
+    lv: Laūniona
+    ceb: La Union
+    lt: La Junion
+    zh: 聯合省
+    ccp: "\U00011123 \U00011103\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    uk: Ла Уніон
+    mk: Ла Унион
+    'no': La Union
+    he: לה יוניון
+    jv: La Union
+    ka: ლა-უნიონი (ფილიპინები)
+  comments:
+  type: province
+MAD:
+  name: Marinduque
+  code: MAD
+  unofficial_names: Marinduque
+  geo:
+    latitude: 13.4767171
+    longitude: 121.9032192
+    min_latitude: 13.1990285
+    min_longitude: 121.80645
+    max_latitude: 13.5706939
+    max_longitude: 122.1491437
+  translations:
+    en: Marinduque
+    ar: ماريندوك
+    az: Marinduke
+    bn: মারিন্দুক
+    ca: Marinduque
+    da: Marinduque
+    de: Marinduque
+    el: Μαριντούκουε
+    es: Marinduque
+    fa: ماریندوک
+    fi: Marinduque
+    fr: province de Marinduque
+    gu: મારિન્દુક
+    hi: मरिनदूके
+    hr: Marinduque
+    id: Marinduque
+    it: Provincia di Marinduque
+    ja: マリンドゥケ州
+    kn: ಮರಿಂಡುಕ್ಯೂ
+    ko: 마린두케 주
+    mr: मरिंदुक
+    ms: Marinduque
+    nb: Marinduque
+    nl: Marinduque
+    pl: Marinduque
+    pt: Marinduque
+    ru: Мариндуке
+    si: මරින්ඩුකේ
+    sv: Marinduque
+    ta: மாறிண்டுயூ
+    te: మారిండూక్వె
+    th: มารินดูค
+    tr: Marinduque
+    uk: Маріндук
+    ur: ماریندوک
+    vi: Marinduque
+    lv: Marinduke
+    ceb: Marinduque
+    lt: Marindukė
+    zh: 馬林杜克省
+    ccp: "\U0001111F\U00011122\U00011128\U0001111A\U00011134\U00011113\U0001112A\U00011107\U0001112A"
+    gl: Marinduque
+    ml: മാറിൻദ്യൂഖ്
+    mk: Мариндуке
+    'no': Marinduque
+    cs: Marinduque
+    jv: Marinduque
+    ka: მარინდუკე
+    sk: Marinduque
+  comments:
+  type: province
+MAG:
+  name: Maguindanao
+  code: MAG
+  unofficial_names: Maguindanao
+  geo:
+    latitude: 6.9422581
+    longitude: 124.4198243
+    min_latitude: 6.649818499999999
+    min_longitude: 123.943766
+    max_latitude: 7.651929099999999
+    max_longitude: 125.120551
+  translations:
+    en: Maguindanao
+    ar: ماغوييندانايو
+    bn: মাগুইন্দানাও
+    ca: Maguindanao
+    da: Maguindanao
+    de: Maguindanao
+    el: Μαγκουιντανάο
+    es: Maguindanao
+    fa: ماگوئیندانائو
+    fi: Maguindanao
+    fr: Maguindanao
+    gl: Provincia de Maguindanao
+    gu: માગુઈંદાનાઓ
+    hi: मगिन्दानाओ प्रान्त
+    id: Maguindanao
+    it: Provincia di Maguindanao
+    ja: マギンダナオ州
+    kn: ಮಗುಂದಾನೊ
+    ko: 마긴다나오 주
+    mr: मागूइनदानाओ
+    ms: Maguindanao
+    nb: Maguindanao
+    nl: Maguindanao
+    pl: Maguindanao
+    pt: Maguindanao
+    ru: Магинданао
+    si: මගුඉන්ඩනාඕ
+    sv: Maguindanao
+    ta: மகின்டனாவ்
+    te: మాగ్విండానవ్
+    th: จังหวัดมากูอินดาเนา
+    tr: Maguindanao
+    ur: ماگوئنداناؤ
+    vi: Maguindanao
+    lv: Magvindanao
+    ceb: Maguindanao
+    lt: Magindanas
+    zh: 馬京達瑙省
+    ccp: "\U0001111F\U0001112C\U00011109\U0001112D\U0001112A\U0001111A\U00011134\U00011113\U0001111A\U00011103\U0001112E"
+    uk: Магінданао
+    mk: Магинданао
+    'no': Maguindanao
+    jv: Maguindanao
+    ka: მაგინდანაო
+  comments:
+  type: province
+MAS:
+  name: Masbate
+  code: MAS
+  unofficial_names: Masbate
+  geo:
+    latitude: 12.366667
+    longitude: 123.616667
+    min_latitude: 12.2440624
+    min_longitude: 123.4894181
+    max_latitude: 12.4616029
+    max_longitude: 123.6398035
+  translations:
+    en: Masbate
+    ar: ماسبات
+    bn: মাসবেট
+    ca: Masbate
+    da: Masbate
+    de: Masbate
+    el: Μασμπάτε
+    es: Masbate
+    fa: ماسباته
+    fi: Masbate
+    fr: Masbate
+    gu: માસબેટે
+    hi: मस्बाते
+    hr: Masbate
+    hu: Masbate
+    id: Masbate
+    it: Provincia di Masbate
+    ja: マスバテ州
+    kn: ಮಾಸ್ಬೇಟ್
+    ko: 마스바테 주
+    mr: मासबाट
+    ms: Masbate
+    nb: Masbate
+    nl: Masbate
+    pl: Masbate
+    pt: Masbate
+    ru: Масбате
+    si: මස්බටේ
+    sv: Masbate
+    ta: மாசுபட்டே
+    te: మాస్పేట్
+    th: จังหวัดมัสบาเต
+    tr: Masbate
+    ur: ماسبات
+    vi: Masbate
+    lv: Masbate
+    ceb: Masbate
+    lt: Masbatė
+    zh: 馬斯巴特省
+    yue_Hans: 马士弼
+    ccp: "\U0001111F\U0001110C\U00011134\U0001111D\U0001112C\U00011116\U00011134"
+    uk: Масбате
+    yue: 馬士弼
+    mk: Масбате
+    'no': Masbate
+    he: מסבאטה
+    jv: Masbate
+    ka: მასბატეს პროვინცია
+  comments:
+  type: province
+MDC:
+  name: Mindoro Occidental
+  code: MDC
+  unofficial_names: Mindoro Occidental
+  geo:
+    latitude: 13.1024111
+    longitude: 120.7651284
+    min_latitude: 12.1530185
+    min_longitude: 120.0174402
+    max_latitude: 13.8989589
+    max_longitude: 121.250199
+  translations:
+    en: Occidental Mindoro
+    ar: أوكسيدنتال ميندورو
+    bn: অক্সিডেন্টাল মিন্ডোলো
+    ca: Mindoro Occidental
+    da: Occidental Mindoro
+    de: Occidental Mindoro
+    el: Οξιντένταλ Μιντόρο
+    es: Mindoro Occidental
+    fa: میندورو غربی
+    fi: Occidental Mindoro
+    fr: Mindoro occidental
+    gu: ઓક્સિડેંટલ મિન્ડૉરો
+    hi: ओक्सिडेन्टल मिन्दोरो
+    id: Occidental Mindoro
+    it: Provincia di Occidental Mindoro
+    ja: 西ミンドロ州
+    kn: ಆಕ್ಸಿಡೆಂಟಲ್ ಮಿಂಡೋರೋ
+    ko: 서민도로 주
+    mr: ओकॅसिडेंटल मिन्डॉरो
+    ms: Occidental Mindoro
+    nb: Occidental Mindoro
+    nl: Occidental Mindoro
+    pl: Occidental Mindoro
+    pt: Mindoro Ocidental
+    ru: Западный Миндоро
+    si: ඔක්සිඩෙන්ටල් මින්ඩොරෝ
+    sv: Occidental Mindoro
+    ta: அஸிடெண்ட்டாள் மிண்டோரோ
+    te: ఓక్సిడెంటల్ మిండోరో
+    th: ออคซิเดนทอล มินโดโร
+    tr: Occidental Mindoro
+    uk: Західний Міндоро
+    ur: غربی میندورو
+    vi: Occidental Mindoro
+    lv: Rietumu Mindoro
+    ceb: Kasadpang Mindoro
+    lt: Vakarų Mindoras
+    zh: 西民都洛省
+    ccp: "\U00011103\U00011127\U00011107\U00011134\U00011125\U00011128\U00011113\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134
+      \U0001111F\U00011128\U0001111A\U00011134\U00011113\U0001112E\U00011122\U0001112E"
+    mk: Западен Миндоро
+    'no': Occidental Mindoro
+    jv: Occidental Mindoro
+    ka: დასავლეთი მინდორო
+  comments:
+  type: province
+MDR:
+  name: Mindoro Oriental
+  code: MDR
+  unofficial_names: Mindoro Oriental
+  geo:
+    latitude: 13.0564598
+    longitude: 121.4069417
+    min_latitude: 12.1951624
+    min_longitude: 120.8007199
+    max_latitude: 13.5314771
+    max_longitude: 121.5576218
+  translations:
+    en: Oriental Mindoro
+    ar: أورينتال ميندورو
+    bn: ওরিয়েন্টাল মিন্ডোরো
+    ca: Mindoro Oriental
+    da: Oriental Mindoro
+    de: Oriental Mindoro
+    el: Οριεντάλ Μιντόρο
+    es: Mindoro Oriental
+    fa: میندورو شرقی
+    fi: Oriental Mindoro
+    fr: Mindoro oriental
+    gu: ઓરિએન્ટલ મિન્ડોરો
+    hi: ओरियेन्टल मिन्दोरो
+    id: Oriental Mindoro
+    it: Provincia di Oriental Mindoro
+    ja: 東ミンドロ州
+    kn: ಓರಿಯೆಂಟಲ್ ಮಿಂಡೋರೊ
+    ko: 동민도로 주
+    mr: ओरिएन्टल मिंडोरो
+    ms: Oriental Mindoro
+    nb: Oriental Mindoro
+    nl: Oriental Mindoro
+    pl: Oriental Mindoro
+    pt: Oriental Mindoro
+    ru: Восточный Миндоро
+    si: ඔරියන්ටල් මින්ඩොරෝ
+    sv: Oriental Mindoro
+    ta: ஓரியண்டல் மிண்டோரோ
+    te: ఓరియంటల్ మిండోరో
+    th: โอรเียนทอล มินโดโร
+    tr: Oriental Mindoro
+    uk: Східний Міндоро
+    ur: شرقی میندورو
+    vi: Oriental Mindoro
+    lv: Austrumu Mindoro
+    ceb: Sidlakang Mindoro
+    lt: Rytų Mindoras
+    zh: 東民都洛省
+    ccp: "\U00011103\U00011127\U00011122\U00011128\U00011120\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134
+      \U0001111F\U00011128\U0001111A\U00011134\U00011113\U0001112E\U00011122\U0001112E"
+    mk: Источен Миндоро
+    'no': Oriental Mindoro
+    jv: Oriental Mindoro
+    ka: აღმოსავლეთი მინდორო
+  comments:
+  type: province
+MOU:
+  name: Mountain Province
+  code: MOU
+  unofficial_names: Mountain Province
+  geo:
+    latitude: 17.0663429
+    longitude: 121.03351
+    min_latitude: 16.822498
+    min_longitude: 120.770595
+    max_latitude: 17.306318
+    max_longitude: 121.5659461
+  translations:
+    en: Mountain
+    ar: مقاطعة ماونتين
+    bn: মাউন্টেইন প্রদেশ
+    ca: Mountain Province
+    da: Mountain Province
+    de: Mountain Province
+    el: Μάουντεν
+    es: La Montaña
+    fa: ماونتین
+    fi: Mountain Province
+    fr: Mountain Province
+    gu: માઉન્ટેન પ્રાંત
+    hi: माउंटन प्रान्त
+    id: Provinsi Pegunungan
+    it: Mountain Province
+    ja: マウンテン州
+    kn: ಪರ್ವತ ಪ್ರಾಂತ್ಯ
+    ko: 마운틴 주
+    mr: माउंटन प्रांत
+    ms: Mountain Province
+    nb: Bergsprovinsen
+    nl: Mountain Province
+    pl: Mountain Province
+    pt: Província Mountain
+    ru: Горная провинция
+    si: කඳුකර පළාත
+    sv: Bergsprovinsen
+    ta: மௌண்டைன் மாகாணம்
+    te: మౌంటెయిన్ ప్రావిన్స్
+    th: จังหวัดมอนเทรน
+    tr: Dağ Bölgesi
+    ur: ماؤنٹین صوبہ
+    vi: Mountain Province
+    lv: Kalnu province
+    ceb: Lalawigang Bulubundukin
+    lt: Kalnų provincija
+    zh: 高山省
+    ccp: "\U0001111F\U00011105\U0001112A\U0001111A\U00011134\U00011111\U0001112C\U0001111A\U00011134"
+    uk: Гірська провінція
+    mk: Планинска покраина
+    'no': Bergsprovinsen
+    he: נפת ההר
+    jv: Mountain Province
+  comments:
+  type: province
+MSC:
+  name: Misamis Occidental
+  code: MSC
+  unofficial_names: Misamis Occidental
+  geo:
+    latitude: 8.337490299999999
+    longitude: 123.7070619
+    min_latitude: 8.01499
+    min_longitude: 123.5556264
+    max_latitude: 8.668944699999999
+    max_longitude: 123.8690157
+  translations:
+    en: Misamis Occidental
+    ar: ميساميس أوتشيدنتال
+    bn: মিসামিস ওক্সিডেন্টাল
+    ca: Misamis Occidental
+    da: Misamis Occidental
+    de: Misamis Occidental
+    el: Μισάμις
+    es: Misamis Occidental
+    fa: میسامی غربی
+    fi: Misamis Occidental
+    fr: Misamis occidental
+    gu: મીસેમિસ ઓક્સીડેન્ટલ
+    hi: मिसामिस ओक्सीदेन्ताल प्रान्त
+    id: Misamis Occidental
+    it: Provincia di Misamis Occidental
+    ja: 西ミサミス州
+    kn: ಮಿಸ್ಸಾಮಿಸ್ ಆಕೇಶನಲ್
+    ko: 서미사미스 주
+    mr: मिसामिस ऑक्सिडेंटल
+    ms: Misamis Occidental
+    nb: Misamis Occidental
+    nl: Misamis Occidental
+    pl: Misamis Occidental
+    pt: Misamis Occidental
+    ru: Западный Мисамис
+    si: මිසාමිස් ඔක්සිඩේන්ටල්
+    sv: Misamis Occidental
+    ta: மிச்சமிஸ் அஸிடெண்ட்டால்
+    te: మిసామిస్ ఆక్సిడెంటల్
+    th: บาเยลซ่า
+    tr: Misamis Occidental
+    ur: میسامس غربی
+    vi: Misamis Occidental
+    lv: Rietummisamisa
+    ceb: Misamis Occidental
+    lt: Rytų Misamisas
+    zh: 西米薩米斯省
+    ccp: "\U0001111F\U00011128\U00011125\U0001111F\U00011128\U0001110C\U00011134 \U00011103\U00011127\U00011107\U00011134\U00011125\U00011128\U00011113\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    uk: Західний Місаміс
+    mk: Западен Мисамис
+    'no': Misamis Occidental
+    jv: Misamis Occidental
+  comments:
+  type: province
+MSR:
+  name: Misamis Oriental
+  code: MSR
+  unofficial_names: Misamis Oriental
+  geo:
+    latitude: 8.5045558
+    longitude: 124.6219592
+    min_latitude: 8.2358519
+    min_longitude: 124.2491
+    max_latitude: 9.0931017
+    max_longitude: 125.2555001
+  translations:
+    en: Misamis Oriental
+    ar: ميساميس أوريانتال
+    bn: মিসামিস ওরিয়েন্টাল
+    ca: Misamis Oriental
+    da: Misamis Oriental
+    de: Misamis Oriental
+    el: Μίσαμις Οριένταλ
+    es: Misamis Oriental
+    fa: میسامی شرقی
+    fi: Misamis Oriental
+    fr: Misamis oriental
+    gu: મિસામિસ ઓરિએન્ટલ
+    hi: मिसामिस ओरिएन्ताल प्रान्त
+    id: Misamis Oriental
+    it: Provincia di Misamis Oriental
+    ja: 東ミサミス州
+    kn: ಮಿಸಾಮಿಸ್ ಓರಿಯೆಂಟಲ್
+    ko: 동미사미스 주
+    mr: मिसामिस ओरिएंटल
+    ms: Misamis Oriental
+    nb: Misamis Oriental
+    nl: Misamis Oriental
+    pl: Misamis Oriental
+    pt: Misamis Oriental
+    ru: Восточный Мисамис
+    si: මිසාමිස් ඔරියන්ටල්
+    sv: Misamis Oriental
+    ta: மிஸமிஸ் ஒரிஎண்டல்
+    te: మిసామిస్ ఓరియంటల్
+    th: มิซามิสโอเรียนทัล
+    tr: Misamis Oriental
+    ur: میسامس شرقی
+    vi: Misamis Oriental
+    lv: Austrumu Misamisa
+    ceb: Misamis Oriental
+    lt: Rytų Misamis
+    zh: 東米薩米斯省
+    ccp: "\U0001111F\U00011128\U00011125\U0001111F\U00011128\U0001110C\U00011134 \U00011103\U00011127\U00011122\U00011128\U00011120\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    uk: Східний Місаміс
+    mk: Источен Мисамис
+    'no': Misamis Oriental
+    jv: Misamis Oriental
+    ka: აღმოსავლეთი მისამისი
+  comments:
+  type: province
+NCO:
+  name: North Cotabato
+  code: NCO
+  unofficial_names:
+  - North Cotabato
+  geo:
+    latitude: 7.1083349
+    longitude: 125.0388164
+    min_latitude: 6.7588269
+    min_longitude: 124.3334349
+    max_latitude: 7.681884999999999
+    max_longitude: 125.31497
+  translations:
+    en: Cotabato
+    ar: كوتاباتو
+    bn: কিোতাবাতো
+    ca: Cotabato
+    da: Cotabato
+    de: Cotabato
+    el: Κοταμπάτο
+    es: Cotabato
+    fa: کوتاباتو
+    fi: Cotabato
+    fr: Cotabato
+    gu: કોટાબેટો
+    hi: कोताबातो प्रान्त
+    id: Cotabato
+    it: Provincia di Cotabato
+    ja: コタバト州
+    kn: ಕೋಟಾಬಾಟೊ
+    ko: 코타바토 주
+    mr: कोटाबेतो
+    ms: Cotabato
+    nb: Cotabato
+    nl: Cotabato
+    pl: Cotabato
+    pt: Cotabato
+    ru: Котабато
+    si: කොටබොටෝ
+    sv: Cotabato
+    ta: காட்டப்பட்ட
+    te: కోటాబాటో
+    th: โคตาบาโต
+    tr: Cotabato
+    ur: کوتاباتو
+    vi: Cotabato
+    lv: Kotabato
+    ceb: Cotabato
+    lt: Kotabatas
+    zh: 哥打巴托省
+    ccp: "\U00011107\U0001112E\U00011111\U0001111D\U00011111\U0001112E"
+    uk: Котабато
+    mk: Котабато
+    'no': Cotabato
+    jv: Cotabato
+    ka: კოტაბატო (პროვინცია)
+  comments:
+  type: province
+NEC:
+  name: Negros Occidental
+  code: NEC
+  unofficial_names: Negros Occidental
+  geo:
+    latitude: 10.2925609
+    longitude: 123.0246518
+    min_latitude: 9.423715099999999
+    min_longitude: 122.3767471
+    max_latitude: 11.0031714
+    max_longitude: 123.5701711
+  translations:
+    en: Negros Occidental
+    ar: نيغروس أوتشيدنتال
+    bn: নেগ্রোস অক্সিডেন্টাল
+    ca: Negros Occidental
+    da: Negros Occidental
+    de: Negros Occidental
+    el: Νέγκρος Οξιντένταλ
+    es: Negros Occidental
+    fa: نگرو غربی
+    fi: Negros Occidental
+    fr: Negros occidental
+    gu: નેગ્રોસ ઓસીડેન્ટલ
+    hi: नेग्रोस ओक्सीदेन्ताल
+    id: Negros Occidental
+    it: Provincia di Negros Occidental
+    ja: 西ネグロス州
+    kn: ನೆಗ್ರೋಸ್ ಆಕೇಶನಲ್
+    ko: 서네그로스 주
+    mr: नेग्रोस ओजीस्टॅनल
+    ms: Negros Occidental
+    nb: Negros Occidental
+    nl: Negros Occidental
+    pl: Negros Occidental
+    pt: Negros Ocidental
+    ru: Западный Негрос
+    si: නෙග්රෝස් ඔක්සිඩෙන්ටල්
+    sv: Negros Occidental
+    ta: நெக்ரோஸ் அஸிடெண்ட்டால்
+    te: నెగ్రోస్ ఓక్సిడెంటల్
+    th: เนกรอส ออคซิเดนทัล
+    tr: Negros Occidental
+    ur: نیگروس غربی
+    vi: Negros Occidental
+    lv: Rietumu Negrosa
+    ceb: Negros Occidental
+    lt: Vakarų Negrosas
+    zh: 西內格羅省
+    ccp: "\U0001111A\U0001112C\U00011109\U00011133\U00011122\U0001112E\U0001110C\U00011134
+      \U00011103\U00011127\U00011107\U00011134\U00011125\U00011128\U00011113\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    uk: Західний Негрос
+    mk: Западен Негрос
+    'no': Negros Occidental
+    jv: Negros Occidental
+    ka: დასავლეთი ნეგროსი
+  comments:
+  type: province
+NER:
+  name: Negros Oriental
+  code: NER
+  unofficial_names: Negros Oriental
+  geo:
+    latitude: 9.628208299999999
+    longitude: 122.9888319
+    min_latitude: 9.0385288
+    min_longitude: 122.6101151
+    max_latitude: 10.4163581
+    max_longitude: 123.3400472
+  translations:
+    en: Negros Oriental
+    ar: أورينتال نيغروس
+    bn: নেগ্রোস ওরিয়েন্টাল
+    ca: Negros Oriental
+    da: Negros Oriental
+    de: Negros Oriental
+    el: Νέγκρος Οριένταλ
+    es: Negros Oriental
+    fa: نگرو شرقی
+    fi: Negros Oriental
+    fr: Negros oriental
+    gu: નેગ્રોસ ઓરિએન્ટલ
+    he: נגרוס אוריינטל
+    hi: नेग्रोस ओरिएन्ताल
+    id: Negros Oriental
+    it: Provincia di Negros Oriental
+    ja: 東ネグロス州
+    kn: ನೆಗ್ರೋಸ್ ಒರಿಯಂಟಲ್
+    ko: 동네그로스 주
+    mr: नेग्रोस ओरिएंटल
+    ms: Negros Oriental
+    nb: Negros Oriental
+    nl: Negros Oriental
+    pl: Negros Oriental
+    pt: Negros Oriental
+    ru: Восточный Негрос
+    si: නෙග්රෝස් ඔරියන්ටල්
+    sv: Negros Oriental
+    ta: நெகிறோஸ் ஒரிஎண்டல்
+    te: నెగ్రోస్ ఓరియంటల్
+    th: เนกรอส โอเรียนทัล
+    tr: Negros Oriental
+    ur: نیگروس شرقی
+    vi: Negros Oriental
+    lv: Austrumu Negrosa
+    ceb: Negros Oriental
+    lt: Rytinis Negrosas
+    zh: 東內格羅省
+    ccp: "\U0001111A\U0001112C\U00011109\U00011133\U00011122\U0001112E\U0001110C\U00011134
+      \U00011103\U00011127\U00011122\U00011128\U00011120\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    uk: Східний Негрос
+    mk: Источен Негрос
+    'no': Negros Oriental
+    jv: Negros Oriental
+    ka: აღმოსავლეთი ნეგროსი
+  comments:
+  type: province
+NSA:
+  name: Northern Samar
+  code: NSA
+  unofficial_names: Northern Samar
+  geo:
+    latitude: 12.3613199
+    longitude: 124.7740793
+    min_latitude: 12.1405061
+    min_longitude: 124.0025139
+    max_latitude: 12.6966542
+    max_longitude: 125.3422503
+  translations:
+    en: Northern Samar
+    ar: سامار الشمالية
+    bn: নর্দান সামার
+    ca: Samar Septentrional
+    da: Northern Samar
+    de: Northern Samar
+    el: Βόρειο Σαμάρ
+    es: Sámar del Norte
+    fa: سامار شمالی
+    fi: Northern Samar
+    fr: Samar du Nord
+    gu: નધર્ન સમર
+    hi: उत्तरी सामार प्रान्त
+    id: Samar Utara
+    it: Provincia di Northern Samar
+    ja: 北サマル州
+    kn: ಉತ್ತರ ಸಮಾರ್
+    ko: 북사마르 주
+    mr: नॉर्दर्न समर
+    ms: Northern Samar
+    nb: Northern Samar
+    nl: Northern Samar
+    pl: Northern Samar
+    pt: Northern Samar
+    ru: Северный Самар
+    si: උතුරු සමර්
+    sv: Norra Samar
+    ta: நொர்தேர்ந் சாமர்
+    te: ఉత్తర సమర్
+    th: เขตนอร์เธิร์น ซามาร์
+    tr: Kuzey Samar
+    ur: شمالی سامار
+    vi: Bắc Samar
+    lv: Ziemeļu Samara
+    ceb: Amihanang Samar
+    lt: Šiaurės Samaras
+    zh: 北薩馬省
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011125\U00011127\U0001111F\U00011122\U00011134"
+    uk: Північний Самар
+    mk: Северен Самар
+    'no': Northern Samar
+    jv: Northern Samar
+    ka: ჩრდილოეთი სამარი
+  comments:
+  type: province
+NUE:
+  name: Nueva Ecija
+  code: NUE
+  unofficial_names: Nueva Ecija
+  geo:
+    latitude: 15.6906831
+    longitude: 120.9876321
+    min_latitude: 15.1651679
+    min_longitude: 120.611833
+    max_latitude: 16.1302161
+    max_longitude: 121.3782461
+  translations:
+    en: Nueva Ecija
+    ar: نويفا إيسيا
+    bn: ন্যুভা একিজা
+    ca: Nueva Ecija
+    cs: Nueva Ecija
+    da: Nueva Ecija
+    de: Nueva Ecija
+    el: Νουέβα Εκίτζα
+    es: Nueva Écija
+    fa: نوئه‌وا اکیجا
+    fi: Nueva Ecija
+    fr: Nueva Ecija
+    gu: નુએવા એસિજા
+    hi: नुएवा एसिहा प्रान्त
+    id: Nueva Ecija
+    it: Provincia di Nueva Ecija
+    ja: ヌエヴァ・エシハ州
+    kn: ನುವಾ ಎಜಿಜಾ
+    ko: 누에바에시하 주
+    mr: नुईव एसिज
+    ms: Nueva Ecija
+    nb: Nueva Ecija
+    nl: Nueva Ecija
+    pl: Nueva Ecija
+    pt: Nueva Ecija
+    ru: Нуэва-Эсиха
+    si: නුඑවා එසිජා
+    sv: Nueva Ecija
+    ta: னுக்கேவா ஏசிஜா
+    te: నుయేవా ఎసిజా
+    th: นูวา อีซิจา
+    tr: Nueva Ecija
+    ur: نوئوا اسیہا
+    vi: Nueva Ecija
+    lv: Nueva Esiha
+    ceb: Nueva Ecija
+    lt: Nueva Ecidža
+    zh: 新怡詩夏省
+    ccp: "\U0001111A\U0001112A\U00011120\U0001112C\U0001111E \U00011103\U00011128\U00011125\U00011128\U0001110E"
+    uk: Нуева-Есіха
+    mk: Нова Есиха
+    'no': Nueva Ecija
+    jv: Nueva Ecija
+    ka: ნუევა-ესიხა
+  comments:
+  type: province
+NUV:
+  name: Nueva Vizcaya
+  code: NUV
+  unofficial_names: Nueva Vizcaya
+  geo:
+    latitude: 16.3301107
+    longitude: 121.1710389
+    min_latitude: 15.7672
+    min_longitude: 120.756631
+    max_latitude: 16.7457349
+    max_longitude: 121.465768
+  translations:
+    en: Nueva Vizcaya
+    ar: نويفا فيزكايا
+    bn: ন্যুভা ভিজকায়া
+    ca: Nueva Vizcaya
+    da: Nueva Vizcaya
+    de: Nueva Vizcaya
+    el: Νουέβα Βιζκάγια
+    es: Nueva Vizcaya
+    eu: Bizkai Berria
+    fa: نوئه‌وا ویزکایا
+    fi: Nueva Vizcaya
+    fr: Nueva Vizcaya
+    gu: નુએવા વિઝકાયા
+    hi: नुएवा विज़काया प्रान्त
+    id: Nueva Vizcaya
+    it: Provincia di Nueva Vizcaya
+    ja: ヌエヴァ・ヴィスカヤ州
+    kn: ನುವಾ ವಿಕಾಯಾಯಾ
+    ko: 누에바비스카야 주
+    mr: नूव्हे व्हिज्काय
+    ms: Nueva Vizcaya
+    nb: Nueva Vizcaya
+    nl: Nueva Vizcaya
+    pl: Nueva Vizcaya
+    pt: Nova Vizcaya
+    ru: Нуэва-Виская
+    si: නුඑවා විස්කයා
+    sv: Nueva Vizcaya
+    ta: நியூவா விஸ்க்காய
+    te: నుయెవా విజ్కాయా
+    th: โนวาวิซคายา
+    tr: Nueva Vizcaya
+    ur: نوئوا ویزکایا
+    vi: Nueva Vizcaya
+    lv: Nueva Viskaja
+    ceb: Nueva Vizcaya
+    lt: Nueva Viskaja
+    zh: 新比斯開省
+    ccp: "\U0001111A\U0001112A\U00011120\U0001112C\U0001111E \U0001111E\U00011128\U0001110C\U00011107\U0001112C\U00011120"
+    uk: Нуева-Віская
+    mk: Нова Вискаја
+    'no': Nueva Vizcaya
+    jv: Nueva Vizcaya
+    ka: ნუევა-ვისკაია
+  comments:
+  type: province
+PAM:
+  name: Pampanga
+  code: PAM
+  unofficial_names: Pampanga
+  geo:
+    latitude: 15.079409
+    longitude: 120.6199895
+    min_latitude: 14.7673906
+    min_longitude: 120.3561269
+    max_latitude: 15.2718861
+    max_longitude: 120.985538
+  translations:
+    en: Pampanga
+    ar: بامبانغا
+    bn: পাম্পাঙ্গা
+    ca: Pampanga
+    da: Pampanga
+    de: Provinz Pampanga
+    el: Παμπάνγκα
+    es: Pampanga
+    fa: پامپانگا
+    fi: Pampanga
+    fr: Pampanga
+    gu: પમ્પાન્ગા
+    hi: पाम्पांगा प्रान्त
+    id: Pampanga
+    it: Provincia di Pampanga
+    ja: パンパンガ州
+    kn: ಪಂಪಾಂಗಾ
+    ko: 팜팡가 주
+    mr: पाम्पान्गा
+    ms: Pampanga
+    nb: Pampanga
+    nl: Pampanga
+    pl: Pampanga
+    pt: Pampanga
+    ru: Пампанга
+    si: පපන්ගා
+    sv: Pampanga
+    ta: பம்பங்கா
+    te: పంపాంగా
+    th: ปัมปางา
+    tr: Pampanga
+    ur: پامپانگا
+    vi: Pampanga
+    lv: Pampanga
+    ceb: Pampanga
+    lt: Pampanga
+    zh: 邦板牙省
+    ccp: "\U0001111B\U0001111F\U00011134\U0001111B\U0001111A\U00011134\U00011109"
+    uk: Пампанга
+    mk: Пампанга
+    'no': Pampanga
+    he: פמפנגה
+    jv: Pampanga
+    ka: პამპანგა
+  comments:
+  type: province
+PAN:
+  name: Pangasinan
+  code: PAN
+  unofficial_names: Pangasinan
+  geo:
+    latitude: 15.8949055
+    longitude: 120.2863183
+    min_latitude: 15.61848
+    min_longitude: 119.7495495
+    max_latitude: 16.426502
+    max_longitude: 120.9229021
+  translations:
+    en: Pangasinan
+    ar: بانغاسينان
+    bn: পাঙ্গাসিনান
+    ca: Pangasinan
+    da: Pangasinan
+    de: Pangasinán
+    el: Πανγκασινάν
+    es: Pangasinán
+    fa: پانگاسینان
+    fi: Pangasinan
+    fr: Pangasinan
+    gu: પંગાસીનન
+    hi: पांगासिनान प्रान्त
+    id: Pangasinan
+    it: Provincia di Pangasinan
+    ja: パンガシナン州
+    kn: ಪಂಗಾಸಿನಾನ್
+    ko: 팡가시난 주
+    mr: पंगासीनन
+    ms: Pangasinan
+    nb: Pangasinan
+    nl: Pangasinan
+    pl: Pangasinan
+    pt: Pangasinán
+    ru: Пангасинан
+    si: පන්ගසිනාන්
+    sv: Pangasinan
+    ta: பஞசினான்
+    te: పాంగాసినన్
+    th: ปังกาสินัน
+    tr: Pangasinan
+    uk: Пангасінан
+    ur: پانگاسینان
+    vi: Pangasinan
+    lv: Pangasinana
+    ceb: Pangasinan
+    lt: Pangasinanas
+    zh: 邦阿西楠省
+    jv: Pangasinan
+    ccp: "\U0001111B\U0001111A\U00011134\U00011109\U00011125\U00011128\U0001111A\U0001111A\U00011134"
+    mk: Пангасинан
+    'no': Pangasinan
+    gl: Pangasinan
+    he: פנגסינאן
+    ka: პანგასინანი
+    my: ပန်ဂါဆီနန်
+  comments:
+  type: province
+PLW:
+  name: Palawan
+  code: PLW
+  unofficial_names: Palawan
+  geo:
+    latitude: 9.8349493
+    longitude: 118.7383615
+    min_latitude: 6.9634569
+    min_longitude: 116.9315639
+    max_latitude: 12.66335
+    max_longitude: 121.2708889
+  translations:
+    en: Palawan
+    ar: بالاوان
+    be: Правінцыя Палаван
+    bg: Палаван
+    bn: পালাওয়ান
+    ca: Palawan
+    cs: Palawan
+    da: Palawan
+    de: Palawan
+    el: Πάλαβαν
+    es: Palawan
+    et: Palawan
+    fa: پالاوان
+    fi: Palawan
+    fr: province de Palawan
+    gu: પાલાવાન
+    he: פלאוואן
+    hi: पलावन
+    hr: Palawan
+    hu: Palawan
+    id: Palawan
+    it: Provincia di Palawan
+    ja: パラワン州
+    kn: ಪಾಲವಾನ್
+    ko: 팔라완 주
+    mr: पालावान
+    ms: Palawan
+    nb: Palawan
+    nl: Palawan
+    pl: Palawan
+    pt: Palawan
+    ru: Палаван
+    si: පලවන්
+    sl: Palawan
+    sr: Палаван
+    sv: Palawan
+    ta: பலவான்
+    te: పాలావాన్
+    th: จังหวัดปาลาวัน
+    tr: Palawan
+    uk: Палаван
+    ur: پالاوان
+    vi: Palawan
+    lv: Palavana
+    cy: Palawan
+    ceb: Palawan
+    sr_Latn: Palavan
+    lt: Palavanas
+    zh: 巴拉望省
+    ccp: "\U0001111B\U00011127\U00011123\U00011124\U0001111A\U00011134"
+    ml: പലാവൻ
+    mk: Палаван
+    'no': Palawan
+    af: Palawan
+    jv: Palawan
+    ka: პალავანი (პროვინცია)
+  comments:
+  type: province
+QUE:
+  name: Quezon
+  code: QUE
+  unofficial_names: Quezon
+  geo:
+    latitude: 14.0313906
+    longitude: 122.1130909
+    min_latitude: 14.0007015
+    min_longitude: 122.0490502
+    max_latitude: 14.1294959
+    max_longitude: 122.1910019
+  translations:
+    en: Quezon
+    ar: كزون
+    bn: কৌয়েজন
+    ca: Quezon
+    da: Quezon
+    de: Quezon
+    el: Κουεζόν
+    es: Quezón
+    fa: کزون
+    fi: Quezon
+    fr: province de Quezon
+    gu: ક્વેઝોન
+    hi: केज़ोन प्रान्त
+    id: Quezon
+    it: Provincia di Quezon
+    ja: ケソン州
+    kn: ಕ್ವೆಝೋನ್
+    ko: 케손 주
+    mr: क्वेझोन
+    ms: Quezon
+    nb: Quezon
+    nl: Quezon
+    pl: Quezon
+    pt: Quezon
+    ru: Кесон
+    si: කියුසන්
+    sv: Quezon
+    ta: யூஸ்ன்
+    te: క్వెజాన్
+    th: เคซอน
+    tr: Quezon
+    uk: Кесон
+    ur: کویزون
+    vi: Quezon
+    lv: Kesona
+    ceb: Quezon
+    lt: Kezonas
+    zh: 奎松省
+    ccp: "\U00011107\U0001112A\U00011120\U0001112C\U0001110E\U00011127\U0001111A\U00011134"
+    mk: Кезон
+    'no': Quezon
+    he: קזון
+    jv: Quezon
+    ka: კესონი (პროვინცია)
+  comments:
+  type: province
+QUI:
+  name: Quirino
+  code: QUI
+  unofficial_names:
+  - Angkaki
+  geo:
+    latitude: 17.133333
+    longitude: 121.7
+    min_latitude: 17.0988256
+    min_longitude: 121.6813735
+    max_latitude: 17.2103775
+    max_longitude: 121.8186592
+  translations:
+    en: Quirino
+    ar: كويرينو
+    bn: কিরিনো
+    ca: Quirino
+    da: Quirino
+    de: Quirino
+    el: Κουιρίνο
+    es: Quirino
+    fa: کویرینو
+    fi: Quirino
+    fr: Quirino
+    gu: ક્વિરિનો
+    hi: किरीनो प्रान्त
+    id: Quirino
+    it: Provincia di Quirino
+    ja: キリノ州
+    kn: ಕ್ವಿರಿನೊ
+    ko: 키리노 주
+    mr: क्विरिनो
+    ms: Quirino
+    nb: Quirino
+    nl: Quirino
+    pl: Quirino
+    pt: Quirino
+    ru: Кирино
+    si: කුයිරිනෝ
+    sv: Quirino
+    ta: குரினொ
+    te: క్విరినో
+    th: ควิริโน
+    tr: Quirino
+    ur: کوئرینو
+    vi: Quirino
+    lv: Kirino
+    ceb: Quirino
+    lt: Kirinas
+    zh: 季里諾省
+    ccp: "\U00011107\U0001112A\U00011103\U00011128\U00011122\U00011128\U0001111A\U0001112E"
+    uk: Кіріно
+    mk: Кирино
+    'no': Quirino
+    jv: Quirino
+    ka: კირინო
+  comments:
+  type: province
+RIZ:
+  name: Rizal
+  code: RIZ
+  unofficial_names: Rizal
+  geo:
+    latitude: 14.6037446
+    longitude: 121.3084088
+    min_latitude: 14.2896792
+    min_longitude: 121.0935389
+    max_latitude: 14.8888711
+    max_longitude: 121.4698249
+  translations:
+    en: Rizal
+    ar: ريزال
+    bn: রিজাল
+    ca: Rizal
+    da: Rizal
+    de: Rizal
+    el: Ριζάλ
+    es: Rizal
+    fa: ریزال
+    fi: Rizal
+    fr: Rizal
+    gu: રિઝાલ
+    hi: रिज़ाल प्रान्त
+    id: Rizal
+    it: Provincia di Rizal
+    ja: リサール州
+    kn: ರಿಜಾಲ್
+    ko: 리살 주
+    mr: रियाझल
+    ms: Rizal
+    nb: Rizal
+    nl: Rizal
+    pl: Rizal
+    pt: Rizal
+    ru: Рисаль
+    si: රිසාල්
+    sv: Rizal
+    ta: ரிசால்
+    te: రిజాల్
+    th: ริเซล
+    tr: Rizal
+    uk: Рісаль
+    ur: ریزال
+    vi: Rizal
+    lv: Rizala
+    ceb: Rizal
+    lt: Rizalis
+    zh: 黎剎省
+    ccp: "\U00011122\U00011128\U0001110E\U00011123\U00011134"
+    mk: Ризал
+    'no': Rizal
+    he: ריזל
+    hy: Ռիսալ
+    jv: Rizal
+    ka: რისალი
+  comments:
+  type: province
+ROM:
+  name: Romblon
+  code: ROM
+  unofficial_names: Romblon
+  geo:
+    latitude: 12.5778554
+    longitude: 122.269129
+    min_latitude: 12.4778353
+    min_longitude: 122.2304249
+    max_latitude: 12.6712134
+    max_longitude: 122.328081
+  translations:
+    en: Romblon
+    ar: رومبلون
+    bn: রোম্বলন
+    ca: Romblon
+    da: Romblon
+    de: Romblon
+    el: Ρόμπλον
+    es: Romblón
+    fa: رومبلون
+    fi: Romblon
+    fr: Romblon
+    gu: રોમ્બ્લોન
+    hi: रोमब्लोन
+    id: Romblon
+    it: Provincia di Romblon
+    ja: ロンブロン州
+    kn: ರೊಮ್ಬ್ಲೋನ್
+    ko: 롬블론 주
+    mr: रोमबलोन
+    ms: Romblon
+    nb: Romblon
+    nl: Romblon
+    pl: Romblon
+    pt: Romblon
+    ru: Ромблон
+    si: රොම්බලෝන්
+    sv: Romblon
+    ta: ரொம்பலோன்
+    te: రాంబ్లాన్
+    th: เมืองรอมบลอน
+    tr: Romblon
+    uk: Ромблон
+    ur: رومبلون
+    vi: Romblon
+    lv: Romblona
+    ceb: Romblon
+    lt: Romblonas
+    zh: 朗布隆省
+    ccp: "\U00011122\U0001112E\U0001111F\U00011134\U0001111D\U00011133\U00011123\U0001112E\U0001111A\U00011134"
+    mk: Ромблон
+    'no': Romblon
+    he: רומבלון
+    jv: Romblon
+    ka: რომბლონი
+  comments:
+  type: province
+SAR:
+  name: Sarangani
+  code: SAR
+  unofficial_names: Sarangani
+  geo:
+    latitude: 5.926717500000001
+    longitude: 124.994751
+    min_latitude: 5.566673
+    min_longitude: 124.3531991
+    max_latitude: 6.468224999999999
+    max_longitude: 125.5387121
+  translations:
+    en: Sarangani
+    ar: سارانغاني
+    bn: সারাাঙ্গানি
+    ca: Sarangani
+    da: Sarangani
+    de: Sarangani
+    el: Σαρανγκάνι
+    es: Sarangani
+    fa: سارانگانی
+    fi: Sarangani
+    fr: Sarangani
+    gu: સારંગણી
+    he: סרנגני
+    hi: सारंगानी प्रान्त
+    id: Sarangani
+    it: Provincia di Sarangani
+    ja: サランガニ州
+    kn: ಸರಂಗನಿ
+    ko: 사랑가니 주
+    mr: सारंगणी
+    ms: Sarangani
+    nb: Sarangani
+    nl: Sarangani
+    pl: Sarangani
+    pt: Sarangani
+    ru: Сарангани
+    si: සරන්ගනී
+    sv: Sarangani
+    ta: சரங்கணி
+    te: సారంగని
+    th: ซารางานิ
+    tr: Sarangani
+    ur: سارانگانی
+    vi: Sarangani
+    lv: Sarangani
+    ceb: Sarangani
+    lt: Saranganis
+    zh: 薩蘭加尼省
+    ccp: "\U00011125\U00011122\U0001110B\U00011134\U00011109\U0001111A\U00011128"
+    uk: Сарангані
+    mk: Сарангани
+    'no': Sarangani
+    jv: Sarangani
+  comments:
+  type: province
+SCO:
+  name: South Cotabato
+  code: SCO
+  unofficial_names: South Cotabato
+  geo:
+    latitude: 6.3357565
+    longitude: 124.7740793
+    min_latitude: 5.957796999999999
+    min_longitude: 124.278951
+    max_latitude: 6.6679448
+    max_longitude: 125.2723331
+  translations:
+    en: South Cotabato
+    ar: جنوب كوتاباتو
+    bn: দক্ষিণ কোটাবাটো
+    da: South Cotabato
+    de: South Cotabato
+    el: Νότιο Κοταμπάτο
+    es: Cotabato del Sur
+    fa: کوتاباتو جنوبی
+    fi: South Cotabato
+    fr: Cotabato du Sud
+    gu: સાઉથ કોટાબેટો
+    hi: दक्षिण कोताबातो प्रान्त
+    id: Cotabato Selatan
+    it: Provincia di South Cotabato
+    ja: 南コタバト州
+    kn: ದಕ್ಷಿಣ ಕೊಟಬಾಟೊ
+    ko: 남코타바토 주
+    mr: दक्षिण कोटेबेटो
+    ms: Cotabato Selatan
+    nb: South Cotabato
+    nl: South Cotabato
+    pl: South Cotabato
+    pt: Cotabato do Sul
+    ru: Южный Котабато
+    si: දකුණු කොටබටෝ
+    sv: Södra Cotabato
+    ta: தெற்கு காட்டப்பட்டோ
+    te: దక్షిణ కోటోబాటో
+    th: โคตาบาโตใต้
+    tr: Güney Cotabato
+    ur: جنوبی کوتاباتو
+    vi: Nam Cotabato
+    lv: Dievidkotabato
+    ceb: Habagatang Cotabato
+    lt: Pietų Kotabatas
+    zh: 南哥打巴托省
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011107\U0001112E\U00011111\U0001111D\U00011111\U0001112E"
+    uk: Південний Котабато
+    mk: Јужен Котабато
+    'no': South Cotabato
+    jv: South Cotabato
+    ka: სამხრეთი კოტაბატო
+  comments:
+  type: province
+SIG:
+  name: Siquijor
+  code: SIG
+  unofficial_names: Siquijor
+  geo:
+    latitude: 9.213263099999999
+    longitude: 123.5157032
+    min_latitude: 9.141587999999999
+    min_longitude: 123.4554852
+    max_latitude: 9.2403095
+    max_longitude: 123.6037446
+  translations:
+    en: Siquijor
+    ar: سيكيخور
+    bn: সিকুইজোর
+    ca: Siquijor
+    da: Siquijor
+    de: Siquijor
+    el: Σικουιτζόρ
+    es: Siquijor
+    fa: سیکیخور
+    fi: Siquijor
+    fr: Siquijor
+    gu: સિક્વિઝોર
+    hi: सिकिहोर
+    id: Siquijor
+    it: Provincia di Siquijor
+    ja: シキホル州
+    kn: ಸಿಕ್ವಿಜರ್
+    ko: 시키호르 주
+    mr: सीकुईजोर
+    ms: Siquijor
+    nb: Siquijor
+    nl: Siquijor
+    pl: Siquijor
+    pt: Siquijor
+    ru: Сикихор
+    si: සිකිජෝර්
+    sv: Siquijor
+    ta: சிகுயிஜுர்
+    te: సిఖిజోర్
+    th: ซิกีจอร์
+    tr: Siquijor
+    ur: سیقیحور
+    vi: Siquijor
+    lv: Sikvuijora
+    ceb: Siquijor
+    lt: Sikijoras
+    zh: 錫基霍爾省
+    ccp: "\U00011125\U00011128\U00011107\U0001112D\U0001112A\U0001110E\U0001112E\U00011122\U00011134"
+    uk: Сікіхор
+    cs: Siquijor
+    mk: Сикихор
+    'no': Siquijor
+    he: סיקיהור
+    jv: Siquijor
+  comments:
+  type: province
+SLE:
+  name: Southern Leyte
+  code: SLE
+  unofficial_names: Southern Leyte
+  geo:
+    latitude: 10.3346206
+    longitude: 125.1708741
+    min_latitude: 9.895297
+    min_longitude: 124.755684
+    max_latitude: 10.6267204
+    max_longitude: 125.2990696
+  translations:
+    en: Southern Leyte
+    ar: لايتي الجنوبية
+    be: Паўднёвы Лейтэ
+    bn: সাউদার্ন লেটে
+    ca: Leyte Meridional
+    da: Southern Leyte
+    de: Southern Leyte
+    el: Σάουθερν Λέιτε
+    es: Leyte del Sur
+    fa: لیته جنوبی
+    fi: Southern Leyte
+    fr: Leyte du Sud
+    gu: સધર્ન લેટે
+    hi: दक्षिणी लेयते प्रान्त
+    id: Leyte Selatan
+    it: Provincia di Southern Leyte
+    ja: 南レイテ州
+    kn: ಸದರ್ನ್ ಲೇಯ್ಟೆ
+    ko: 남레이테 주
+    mr: साउदर्न लेये
+    ms: Southern Leyte
+    nb: Southern Leyte
+    nl: Southern Leyte
+    pl: Southern Leyte
+    pt: Southern Leyte
+    ru: Южный Лейте
+    si: දකුණු ලේටේ
+    sv: Södra Leyte
+    ta: தெற்கு லெய்டி
+    te: దక్షిణ లెయిటే
+    th: เซ้าเทิร์น เลย์เต้
+    tr: Güney Leyte
+    ur: جنوبی لیئتے
+    vi: Nam Leyte
+    lv: Dienvidleite
+    ceb: Habagatang Leyte
+    lt: Pietryčių Leitė
+    zh: 南萊特省
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011123\U0001112C\U00011120\U00011116\U00011134"
+    et: Lõuna-Leyte
+    uk: Південний Лейте
+    mk: Јужен Лејте
+    'no': Southern Leyte
+    jv: Southern Leyte
+    ka: სამხრეთი ლეიტე
+  comments:
+  type: province
+SLU:
+  name: Sulu
+  code: SLU
+  unofficial_names: Sulu
+  geo:
+    latitude: 5.974901099999999
+    longitude: 121.03351
+    min_latitude: 5.4429449
+    min_longitude: 120.4130955
+    max_latitude: 6.4398352
+    max_longitude: 121.9476239
+  translations:
+    en: Sulu
+    ar: سولو
+    bn: সুলু
+    ca: Sulu
+    da: Sulu
+    de: Sulu
+    el: Σουλού
+    es: Sulú
+    fa: سولو
+    fi: Sulu
+    fr: Sulu
+    gu: સુલુ
+    hi: सुलु प्रान्त
+    id: Sulu
+    it: Provincia di Sulu
+    ja: スールー州
+    kn: ಸುಲು
+    ko: 술루 주
+    mr: सलू
+    ms: Sulu
+    nb: Sulu
+    nl: Sulu
+    pl: Archipelag Sulu
+    pt: Sulu
+    ru: Сулу
+    si: සූලු
+    sv: Sulu
+    ta: சுலு
+    te: సులు
+    th: จังหวัดซูลู
+    tr: Sulu
+    ur: سولو
+    vi: Sulu
+    lv: Sulu
+    ceb: Sulu
+    lt: Sulu
+    zh: 蘇祿省
+    ccp: "\U00011125\U0001112A\U00011123\U0001112A"
+    uk: Сулу
+    mk: Сулу
+    'no': Sulu
+    he: סולו
+    jv: Sulu
+    ka: სულუ (პროვინცია)
+  comments:
+  type: province
+SOR:
+  name: Sorsogon
+  code: SOR
+  unofficial_names: Sorsogon
+  geo:
+    latitude: 12.9927095
+    longitude: 124.0147464
+    min_latitude: 12.8177146
+    min_longitude: 123.7906891
+    max_latitude: 13.1196236
+    max_longitude: 124.1477504
+  translations:
+    en: Sorsogon
+    ar: سوروسوغون
+    bn: সরসোগন
+    ca: Sorsogon
+    da: Sorsogon
+    de: Sorsogon
+    el: Σορσογκόν
+    es: Sorsogón
+    fa: سوروسوگون
+    fi: Sorsogon
+    fr: Sorsogon
+    gu: સર્સોગોન
+    hi: सोरसोगोन प्रान्त
+    id: Sorsogon
+    it: Provincia di Sorsogon
+    ja: ソルソゴン州
+    kn: ಸೋರ್ಸೋಗಾನ್
+    ko: 소르소곤 주
+    mr: सर्सोगोन
+    ms: Sorsogon
+    nb: Sorsogon
+    nl: Sorsogon
+    pl: Sorsogon
+    pt: Sorsogon
+    ru: Сорсогон
+    si: සොර්සොගෝන්
+    sv: Sorsogon
+    ta: சொற்சோகோன்
+    te: సోర్సోగన్
+    th: รัฐทาราบา
+    tr: Sorsogon
+    ur: سورسوگون
+    vi: Sorsogon
+    lv: Sorsogona
+    ceb: Sorsogon
+    lt: Sorsogonas
+    zh: 索索貢省
+    yue_Hans: 索索贡省
+    ccp: "\U00011125\U0001112E\U00011122\U00011134\U00011125\U0001112E\U00011109\U0001111A\U00011134"
+    uk: Сорсогон
+    yue: 索索貢省
+    mk: Сорсогон
+    'no': Sorsogon
+    jv: Sorsogon
+    ka: სორსოგონი (პროვინცია)
+  comments:
+  type: province
+SUK:
+  name: Sultan Kudarat
+  code: SUK
+  unofficial_names: Sultan Kudarat
+  geo:
+    latitude: 6.5069401
+    longitude: 124.4198243
+    min_latitude: 6.117249999999999
+    min_longitude: 124.0158941
+    max_latitude: 6.883467
+    max_longitude: 125.197615
+  translations:
+    en: Sultan Kudarat
+    ar: سلطان قادرات
+    bn: সুলতান কুদ্রাত
+    ca: Sultan Kudarat
+    da: Sultan Kudarat
+    de: Sultan Kudarat
+    el: Σουλτάν Κουνταράτ
+    es: Sultán Kudarat
+    fa: سلطان کودرت
+    fi: Sultan Kudarat
+    fr: Sultan Kudarat
+    gu: સુલતાન કુદારાત
+    hi: सुल्तान कुदारात प्रान्त
+    id: Sultan Kudarat
+    it: Provincia di Sultan Kudarat
+    ja: スルタン・クダラット州
+    kn: ಸುಲ್ತಾನ್ ಕುದಾರತ್
+    ko: 술탄쿠다라트 주
+    mr: सुल्तान कुदारात
+    ms: Sultan Kudarat
+    nb: Sultan Kudarat
+    nl: Sultan Kudarat
+    pl: Sultan Kudarat
+    pt: Sultão Kudarat
+    ru: Султан-Кударат
+    si: සුල්තාන් කුදරට්
+    sv: Sultan Kudarat
+    ta: சுல்தான் குடாரட்
+    te: సుల్తాన్ కుదారత్
+    th: ซุลตานกุดารัต
+    tr: Sultan Kudarat
+    ur: سلطان قدرت
+    vi: Sultan Kudarat
+    lv: Sultana Kudarata
+    ceb: Sultan Kudarat
+    lt: Sultan Kudaratas
+    zh: 蘇丹庫達拉省
+    ccp: "\U00011125\U0001112A\U00011123\U00011134\U00011111\U0001111A\U00011134 \U00011107\U0001112A\U00011113\U00011122\U00011116\U00011134"
+    uk: Султан-Кударат
+    mk: Султан Кударат
+    'no': Sultan Kudarat
+    jv: Sultan Kudarat
+  comments:
+  type: province
+SUN:
+  name: Surigao del Norte
+  code: SUN
+  unofficial_names: Surigao del Norte
+  geo:
+    latitude: 9.514828
+    longitude: 125.6969984
+    min_latitude: 9.325377
+    min_longitude: 125.3916907
+    max_latitude: 10.0626918
+    max_longitude: 126.1804676
+  translations:
+    en: Surigao del Norte
+    ar: سوريجاو ديل نورت
+    bn: সুরিগাল ডেল নর্টে
+    da: Surigao del Norte
+    de: Surigao del Norte
+    el: Σουριγκάο ντελ Νόρτε
+    es: Surigao del Norte
+    fa: سوریگائو شمالی
+    fi: Surigao del Norte
+    fr: Surigao du Nord
+    gu: સુરિગાઓ ડેલ નોર્ટે
+    hi: सुरिगाओ देल नोर्ते
+    id: Surigao del Norte
+    it: Provincia di Surigao del Norte
+    ja: 北スリガオ州
+    kn: ಸುರಿಗಾವೊ ಡೆ ನಾರ್ಟೆ
+    ko: 북수리가오 주
+    mr: सुरिगाओ डेल नॉर्ट
+    ms: Surigao del Norte
+    nb: Surigao del Norte
+    nl: Surigao del Norte
+    pl: Surigao del Norte
+    pt: Surigão do Norte
+    ru: Северный Суригао
+    si: සුරිගාඕ ඩෙල් නොර්ටේ
+    sv: Surigao del Norte
+    ta: சுரிகையோ டெல் நோர்ட்
+    te: సురిగావో డెల్ నార్టె
+    th: ซุริเกา เดล นอร์เต
+    tr: Surigao del Norte
+    ur: سوریگاؤ شمالی
+    vi: Surigao del Norte
+    lv: Ziemeļsurigao
+    ceb: Surigao del Norte
+    lt: Šiaurės Surigao
+    zh: 北苏里高省
+    ccp: "\U00011125\U0001112A\U00011122\U00011128\U00011109\U00011103\U0001112E \U00011113\U0001112C\U00011123\U00011134
+      \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північний Сурігао
+    mk: Северен Суригао
+    'no': Surigao del Norte
+    jv: Surigao del Norte
+    ka: ჩრდილოეთი სურიგაო
+  comments:
+  type: province
+SUR:
+  name: Surigao del Sur
+  code: SUR
+  unofficial_names: Surigao del Sur
+  geo:
+    latitude: 8.5404906
+    longitude: 126.1144758
+    min_latitude: 7.908138999999999
+    min_longitude: 125.7439209
+    max_latitude: 9.496260099999999
+    max_longitude: 126.4583336
+  translations:
+    en: Surigao del Sur
+    ar: سوريجاو ديل سور
+    bn: সুরিগাও ডেল সোর
+    da: Surigao del Sur
+    de: Surigao del Sur
+    el: Σουριγκάο ντελ Σούρ
+    es: Surigao del Sur
+    fa: سوریگائو جنوبی
+    fi: Surigao del Sur
+    fr: Surigao du Sud
+    gu: સુરિગાઓ ડેલ સુર
+    hi: सुरिगाओ देल सूर
+    id: Surigao del Sur
+    it: Provincia di Surigao del Sur
+    ja: 南スリガオ州
+    kn: ಸುರಿಗಾವೊ ಡೆಲ್ ಸುರ್
+    ko: 남수리가오 주
+    mr: सुरिगाओ डेल सुर
+    ms: Surigao del Sur
+    nb: Surigao del Sur
+    nl: Surigao del Sur
+    pl: Surigao del Sur
+    pt: Surigão do Sur
+    ru: Южный Суригао
+    si: සුරිගාඕ ඩෙල් සර්
+    sv: Surigao del Sur
+    ta: சுரிகையோ டெல் சூர்
+    te: సురిగావో డెల్ సుర్
+    th: ซูรีเกา เดล เซอ
+    tr: Surigao del Sur
+    ur: سوریگاؤ جنوبی
+    vi: Surigao del Sur
+    lv: Dienvidsurigao
+    ceb: Surigao del Sur
+    lt: Pietų Surigao
+    zh: 南苏里高省
+    ccp: "\U00011125\U0001112A\U00011122\U00011128\U00011109\U00011103\U0001112E \U00011113\U0001112C\U00011123\U00011134
+      \U00011125\U00011122\U00011134"
+    uk: Південий Сурігао
+    mk: Јужен Суригао
+    'no': Surigao del Sur
+    jv: Surigao del Sur
+    ka: სამხრეთი სურიგაო
+  comments:
+  type: province
+TAR:
+  name: Tarlac
+  code: TAR
+  unofficial_names: Tarlac
+  geo:
+    latitude: 15.4754786
+    longitude: 120.5963492
+    min_latitude: 15.4011971
+    min_longitude: 120.5281542
+    max_latitude: 15.543999
+    max_longitude: 120.6978608
+  translations:
+    en: Tarlac
+    ar: تارلاك
+    bn: টারলার্ক
+    ca: Tarlac
+    da: Tarlac
+    de: Tarlac
+    el: Ταρλάκ
+    es: Tarlac
+    fa: تارلاک
+    fi: Tarlac
+    fr: Tarlac
+    gu: તારલક
+    hi: तरलाक प्रान्त
+    id: Tarlac
+    it: Provincia di Tarlac
+    ja: タルラック州
+    kn: ಟಾರ್ಲಾಕ್
+    ko: 타를라크 주
+    mr: तारलक
+    ms: Tarlac
+    nb: Tarlac
+    nl: Tarlac
+    pl: Tarlac
+    pt: Tarlac
+    ru: Тарлак
+    si: ටර්ලක්
+    sv: Tarlac
+    ta: டார்லக்
+    te: టార్లాక్
+    th: ทาร์แลค
+    tr: Tarlac
+    uk: Тарлак
+    ur: تارلاک
+    vi: Tarlac
+    lv: Tarlaka
+    ceb: Tarlac
+    lt: Tarlakas
+    zh: 丹轆省
+    ccp: "\U00011111\U00011122\U00011134\U00011123\U00011107\U00011134"
+    hy: Տարլակ
+    mk: Тарлак
+    'no': Tarlac
+    ga: Tarlac
+    jv: Tarlac
+    ka: ტარლაკი (პროვინცია)
+  comments:
+  type: province
+TAW:
+  name: Tawi-Tawi
+  code: TAW
+  unofficial_names: Tawi-Tawi
+  geo:
+    latitude: 5.133811
+    longitude: 119.950926
+    min_latitude: 4.616361299999999
+    min_longitude: 119.3835042
+    max_latitude: 5.9914141
+    max_longitude: 120.6829369
+  translations:
+    en: Tawi-Tawi
+    ar: تاوي تاوي
+    bn: তাবি-তাবি
+    ca: Tawi-Tawi
+    cs: Tawi-Tawi
+    da: Tawi-Tawi
+    de: Tawi-Tawi
+    el: Τάουι-Τάουι
+    es: Tawi-Tawi
+    fa: تاوی تاوی
+    fi: Tawi-Tawi
+    fr: Tawi-Tawi
+    gu: તાવી-તાવી
+    hi: तावी-तावी
+    id: Tawi-Tawi
+    it: Provincia di Tawi-Tawi
+    ja: タウイタウイ州
+    kn: ತಾವಿ-ತಾವಿ
+    ko: 타위타위 주
+    mr: तावी-तावी
+    ms: Tawi-Tawi
+    nb: Tawi-Tawi
+    nl: Tawi-Tawi
+    pl: Tawi-Tawi
+    pt: Tawi-Tawi
+    ru: Тави-Тави
+    si: ටාවි-ටාවි
+    sk: Tawi-Tawi
+    sv: Tawi-Tawi
+    ta: தாவி -தாவி
+    te: టావి-టావి
+    th: ทะวี-ทะวี
+    tr: Tawi-Tawi
+    ur: تاوی تاوی
+    vi: Tawi-Tawi
+    lv: Tavi-Tavi
+    ceb: Tawi-Tawi
+    lt: Tavi-Tavis
+    zh: 塔威塔威省
+    ccp: "\U00011111\U00011127\U00011120\U00011128-\U00011111\U00011127\U00011120\U00011128"
+    uk: Таві-Таві
+    mk: Тави-Тави
+    'no': Tawi-Tawi
+    jv: Tawi-Tawi
+    ka: ტავი-ტავი
+  comments:
+  type: province
+WSA:
+  name: Western Samar
+  code: WSA
+  unofficial_names:
+  - Western Samar
+  geo:
+    latitude: 11.5795195
+    longitude: 124.9748219
+    min_latitude: 11.0872409
+    min_longitude: 124.1477429
+    max_latitude: 12.334325
+    max_longitude: 125.307814
+  translations:
+    en: Samar
+    ar: سامار
+    bg: Самар
+    bn: সামার
+    ca: Província de Samar
+    cs: Samar
+    da: Samar
+    de: Samar
+    el: Σαμάρ
+    es: Sámar
+    fa: سامار
+    fi: Samar
+    fr: Samar
+    gu: સમર
+    hi: सामार प्रान्त
+    id: Samar
+    it: Provincia di Samar
+    ja: サマル州
+    kn: ಸಮರ್
+    ko: 사마르 주
+    mr: समर
+    ms: Samar
+    nb: Samar
+    nl: Samar
+    pl: Samar
+    pt: Samar
+    ru: Самар
+    si: සමාර්
+    sv: Samar
+    ta: சாமர்
+    te: సమర్
+    th: จังหวัดซามาร์
+    tr: Samar
+    ur: سامار (صوبہ)
+    vi: Samar
+    lv: Samara
+    ceb: Samar
+    lt: Samaras
+    zh: 薩馬省
+    ccp: "\U00011125\U00011127\U0001111F\U00011122\U00011134"
+    uk: Провінція Самар
+    mk: Самар
+    'no': Samar
+    jv: Samar
+    ka: სამარი (პროვინცია)
+  comments:
+  type: province
+ZAN:
+  name: Zamboanga del Norte
+  code: ZAN
+  unofficial_names: Zamboanga del Norte
+  geo:
+    latitude: 8.3886282
+    longitude: 123.1688883
+    min_latitude: 7.1448079
+    min_longitude: 121.9014683
+    max_latitude: 8.856403499999999
+    max_longitude: 123.559396
+  translations:
+    en: Zamboanga del Norte
+    ar: زامبوانجا ديل نورت
+    bn: জিম্বোয়াঙ্গা ডেল নর্টে
+    da: Zamboanga del Norte
+    de: Provinz Zamboanga del Norte
+    el: Ζαμποάνγκα ντελ Νόρτε
+    es: Zamboanga del Norte
+    fa: زامبوانگا شمالی
+    fi: Zamboanga del Norte
+    fr: Zamboanga du Nord
+    gu: ઝામ્બોઆંગા ડેલ નોર્ટ
+    hi: ज़म्बोआंगा देल नोर्ते
+    id: Zamboanga del Norte
+    it: Provincia di Zamboanga del Norte
+    ja: 北サンボアンガ州
+    kn: ಜಂಬೋಂಗಾ ಡೆಲ್ ನಾರ್ಟೆ
+    ko: 북삼보앙가 주
+    mr: झांबोअंगा डेल नॉर्ट
+    ms: Zamboanga del Norte
+    nb: Zamboanga del Norte
+    nl: Zamboanga del Norte
+    pl: Zamboanga del Norte
+    pt: Zamboanga del Norte
+    ru: Северная Замбоанга
+    si: සම්බෝඅන්ගා ඩෙල් නොර්ටේ
+    sv: Zamboanga del Norte
+    ta: சம்போவாங்க டெல் நோர்ட்டே
+    te: జంబావోంగా డెల్ నార్టె
+    th: แซมโบอันก้า เดล นอเต้
+    tr: Zamboanga del Norte
+    ur: زامبوانگا شمالی
+    vi: Zamboanga del Norte
+    lv: Ziemeļu Zamboanga
+    ceb: Zamboanga del Norte
+    lt: Šiaurės Zamboanga
+    zh: 北三寶顏省
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U0001112E\U00011120\U0001110B\U00011134\U00011109
+      \U00011113\U0001112C\U00011123\U00011134 \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    uk: Північна Замбоанга
+    mk: Северна Замбоанга
+    'no': Zamboanga del Norte
+    he: זמבואנגה דל נורטה
+    jv: Zamboanga del Norte
+    ka: ჩრდილოეთი ზამბოანგა
+  comments:
+  type: province
+ZAS:
+  name: Zamboanga del Sur
+  code: ZAS
+  unofficial_names: Zamboanga del Sur
+  geo:
+    latitude: 7.838305399999999
+    longitude: 123.2966657
+    min_latitude: 7.3595234
+    min_longitude: 122.916847
+    max_latitude: 8.2364218
+    max_longitude: 123.669302
+  translations:
+    en: Zamboanga del Sur
+    ar: زامبوانجا ديل سور
+    bn: জ্যাম্বাংগা ডেল সুর
+    da: Zamboanga del Sur
+    de: Zamboanga del Sur
+    el: Ζαμποάνγκα ντελ Σούρ
+    es: Zamboanga del Sur
+    fa: زامبوانگا جنوبی
+    fi: Zamboanga del Sur
+    fr: Zamboanga du Sud
+    gu: ઝામબોંગા ડેલ સુર
+    hi: ज़म्बोआंगा देल सूर
+    id: Zamboanga del Sur
+    it: Provincia di Zamboanga del Sur
+    ja: 南サンボアンガ州
+    kn: ಜಂಬೊಂಗಾ ಡೆಲ್ ಸುರ್
+    ko: 남삼보앙가 주
+    mr: झांबोअंगा डेल सुर
+    ms: Zamboanga del Sur
+    nb: Zamboanga del Sur
+    nl: Zamboanga del Sur
+    pl: Zamboanga del Sur
+    pt: Zamboanga del Sur
+    ru: Южная Замбоанга
+    si: සැම්බෝඅන්ගා ඩෙල් සර්
+    sv: Zamboanga del Sur
+    ta: சாம்போங்க டேல் சூர்
+    te: జాంబోంగా డెల్ సుర్
+    th: แซมโบอันกา เดล เซอร์
+    tr: Zamboanga del Sur
+    ur: زامبوانگا جنوبی
+    vi: Zamboanga del Sur
+    lv: Dienvidzamboanga
+    ceb: Zamboanga del Sur
+    lt: Pietų Zamboanga
+    zh: 南三寶顏省
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U0001112E\U00011120\U0001110B\U00011134\U00011109
+      \U00011113\U0001112C\U00011123\U00011134 \U00011125\U00011122\U00011134"
+    uk: Південна Замбоанга
+    mk: Јужна Замбоанга
+    'no': Zamboanga del Sur
+    jv: Zamboanga del Sur
+    ka: სამხრეთი ზამბოანგა
+  comments:
+  type: province
+ZMB:
+  name: Zambales
+  code: ZMB
+  unofficial_names: Zambales
+  geo:
+    latitude: 15.5081766
+    longitude: 119.9697808
+    min_latitude: 14.7397255
+    min_longitude: 117.8441242
+    max_latitude: 15.845467
+    max_longitude: 120.462163
+  translations:
+    en: Zambales
+    ar: زامباله
+    az: Zambales
+    bn: জাম্বালে
+    ca: Zambales
+    da: Zambales
+    de: Zambales
+    el: Ζάμπαλες
+    es: Zambales
+    fa: زامباله
+    fi: Zambales
+    fr: Zambales
+    gu: ઝામ્બેલ્સ
+    he: סאמבאלס
+    hi: ज़म्बालेस प्रान्त
+    id: Zambales
+    it: Provincia di Zambales
+    ja: サンバレス州
+    kn: ಝಂಬಾಲೆಸ್
+    ko: 삼발레스 주
+    mr: झांबलेस
+    ms: Zambales
+    nb: Zambales
+    nl: Zambales
+    pl: Zambales
+    pt: Zambales
+    ru: Самбалес
+    si: සැම්බලීස්
+    sv: Zambales
+    ta: சாம்பல்ஸ்
+    te: జాంబేలెస్
+    th: แซมบาเลส
+    tr: Zambales
+    ur: زامبالیس
+    vi: Zambales
+    lv: Zambale
+    ceb: Zambales
+    lt: Zambalesas
+    zh: 三描礼士省
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U00011123\U00011128\U0001110C\U00011134"
+    uk: Самбалес
+    mk: Замбалес
+    'no': Zambales
+    jv: Zambales
+    ka: სამბალესი
+  comments:
+  type: province
+ZSI:
+  name: Zamboanga Sibuguey [Zamboanga Sibugay]
+  code: ZSI
+  unofficial_names: Zamboanga Sibuguey [Zamboanga Sibugay]
+  geo:
+    latitude: 7.02427
+    longitude: 122.189
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Zamboanga Sibugay
+    ar: زامبوانجا سيبوجاي
+    bn: জাম্বুয়াঙ্গা সিবুগাই
+    ca: Zamboanga Sibugay
+    da: Zamboanga Sibugay
+    de: Zamboanga Sibugay
+    el: Ζαμποάνγκα Σιμπουγκάϊ
+    es: Zamboanga Sibugay
+    fa: زامبوانگا سیبوگای
+    fi: Zamboanga Sibugay
+    fr: Zamboanga Sibugay
+    gu: ઝામ્બોઆંગા સિબુગે
+    hi: ज़म्बोआंगा सिबुगय
+    id: Zamboanga Sibugay
+    it: Provincia di Zamboanga Sibugay
+    ja: サンボアンガ・シブガイ州
+    kn: ಜಂಬೊಂಗಾ ಸಿಬುಗೆ
+    ko: 삼보앙가시부가이 주
+    mr: झांबोआंगा सिबगाये
+    ms: Zamboanga Sibugay
+    nb: Zamboanga Sibugay
+    nl: Zamboanga Sibugay
+    pl: Zamboanga Sibugay
+    pt: Zamboanga Sibugay
+    ru: Замбоанга-Сибугей
+    si: සබෝඅන්ගා සිබ්යුගේ
+    sv: Zamboanga Sibugay
+    ta: சம்பொங்க சிப்புக்காய்
+    te: జాంబోంగా సిబుగే
+    th: ซัมบวงกา ซีบูเกย์
+    tr: Zamboanga Sibugay
+    ur: زامبوانگا سیبوگائے
+    vi: Zamboanga Sibugay
+    lv: Zamboanga-Sibugeja
+    ceb: Zamboanga Sibugay
+    lt: Sibugajaus Samboanga
+    zh: 三寶顏錫布格省
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U0001112E\U00011120\U0001110B\U00011134\U00011109
+      \U00011125\U00011128\U0001111D\U0001112A\U00011109\U0001112C"
+    uk: Замбоанга-Сибугай
+    mk: Замбоанга Сибугај
+    'no': Zamboanga Sibugay
+    bg: Замбоанга-Сибугай
+    he: זאמבואנגה סיבוגאי
+    jv: Zamboanga Sibugay
+    ka: ზამბოანგა-სიბუგაი
+  comments:
+  type: province

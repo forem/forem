@@ -1,0 +1,80 @@
+---
+GB:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}}
+    {{region}}
+    {{postalcode}}
+    {{country}}
+  alpha2: GB
+  alpha3: GBR
+  continent: Europe
+  country_code: '44'
+  currency_code: GBP
+  distance_unit: MI
+  eea_member: false
+  eu_member: false
+  g7_member: true
+  g20_member: true
+  gec: UK
+  geo:
+    latitude: 55.378051
+    longitude: -3.435973
+    max_latitude: 60.91569999999999
+    max_longitude: 1.68153079591
+    min_latitude: 49.959999905
+    min_longitude: -7.57216793459
+    bounds:
+      northeast:
+        lat: 60.91569999999999
+        lng: 1.68153079591
+      southwest:
+        lat: 49.959999905
+        lng: -7.57216793459
+  international_prefix: '00'
+  ioc: GBR
+  iso_long_name: The United Kingdom of Great Britain and Northern Ireland
+  iso_short_name: United Kingdom of Great Britain and Northern Ireland
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  - 11
+  national_prefix: '0'
+  nationality: British
+  number: '826'
+  postal_code: true
+  postal_code_format: GIR ?0AA|(?:(?:AB|AL|B|BA|BB|BD|BF|BH|BL|BN|BR|BS|BT|BX|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(?:\d[\dA-Z]?
+    ?\d[ABD-HJLN-UW-Z]{2}))|BFPO ?\d{1,4}
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: GB
+  unofficial_names:
+  - United Kingdom
+  - The United Kingdom
+  - England
+  - Großbritannien
+  - Vereinigtes Königreich
+  - Royaume-Uni
+  - Reino Unido
+  - イギリス
+  - Verenigd Koninkrijk
+  - Great Britain (UK)
+  - UK
+  - Великобритания
+  - Velká Británie
+  - İngiltere
+  - Великобританія
+  vat_rates:
+    standard: 20
+    reduced:
+    - 5
+    super_reduced:
+    parking:
+  world_region: EMEA

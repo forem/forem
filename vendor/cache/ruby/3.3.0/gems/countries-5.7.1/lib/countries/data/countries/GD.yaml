@@ -1,0 +1,48 @@
+---
+GD:
+  alpha2: GD
+  alpha3: GRD
+  continent: North America
+  country_code: '1'
+  currency_code: XCD
+  distance_unit: MI
+  gec: GJ
+  geo:
+    latitude: 12.1165
+    longitude: -61.67899999999999
+    max_latitude: 12.5367
+    max_longitude: -61.3746999
+    min_latitude: 11.9829051
+    min_longitude: -61.80589999999999
+    bounds:
+      northeast:
+        lat: 12.5367
+        lng: -61.3746999
+      southwest:
+        lat: 11.9829051
+        lng: -61.80589999999999
+  international_prefix: '011'
+  ioc: GRN
+  iso_long_name: Grenada
+  iso_short_name: Grenada
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1473'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Grenadian
+  number: '308'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: GD
+  unofficial_names:
+  - Grenada
+  - グレナダ
+  world_region: AMER

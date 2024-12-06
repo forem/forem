@@ -1,0 +1,21 @@
+HTTP/1.1 200 OK
+Age: 13
+Cache-Control: max-age=120
+Content-Type: text/html
+Date: Mon, 06 Jan 2014 12:47:42 GMT
+Expires: Mon, 06 Jan 2014 12:49:28 GMT
+Server: Apache/2.2.14 (Ubuntu)
+Vary: Accept-Encoding
+Via: 1.1 varnish
+X-Powered-By: PHP/5.3.2-1ubuntu4.22
+X-Varnish: 1188792404 1188790413
+Content-Length: 265
+Connection: keep-alive
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head></head>
+  <body>
+    <address>This author came from the address tag</address>
+  </body>
+</html>

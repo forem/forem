@@ -1,0 +1,51 @@
+---
+CO:
+  alpha2: CO
+  alpha3: COL
+  continent: South America
+  country_code: '57'
+  currency_code: COP
+  distance_unit: KM
+  gec: CO
+  geo:
+    latitude: 4.570868
+    longitude: -74.297333
+    max_latitude: 13.5177999
+    max_longitude: -66.8463122
+    min_latitude: -4.227109899999999
+    min_longitude: -81.8317
+    bounds:
+      northeast:
+        lat: 13.5177999
+        lng: -66.8463122
+      southwest:
+        lat: -4.227109899999999
+        lng: -81.8317
+  international_prefix: '005'
+  ioc: COL
+  iso_long_name: The Republic of Colombia
+  iso_short_name: Colombia
+  languages_official:
+  - es
+  languages_spoken:
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  - 10
+  national_prefix: '05'
+  nationality: Colombian
+  number: '170'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: CO
+  unofficial_names:
+  - Colombia
+  - Kolumbien
+  - Colombie
+  - コロンビア
+  world_region: AMER

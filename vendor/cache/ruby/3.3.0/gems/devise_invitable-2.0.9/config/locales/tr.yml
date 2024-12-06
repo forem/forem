@@ -1,0 +1,24 @@
+tr:
+  devise:
+    failure:
+      invited: "Hesap oluşturmak için bekleyen davetiyenizi kabul edin"
+    invitations:
+      send_instructions: "%{email} adresine davetiye maili gönderildi."
+      invitation_token_invalid: "Davetiye tokenı geçerli değil!"
+      updated: "Şifreniz başarıyla oluşturuldu ve giriş yaptınız"
+      updated_not_active: "Şifreniz başarıyla oluşturuldu."
+      no_invitations_remaining: "Davetiye kalmadı"
+      invitation_removed: "Davetiyeniz silindi"
+      new:
+        header: "Davetiye gönderildi"
+        submit_button: "Davetiye gönder"
+      edit:
+        header: "Şifre oluştur"
+        submit_button: "Şifremi oluştur"
+    mailer:
+      invitation_instructions:
+        subject: "Davetiye adımları"
+        hello: "Merhaba %{email}"
+        someone_invited_you: "%{url} adresine davet edildiniz. Kabul etmek için aşağıdaki linke tıklayınız."
+        accept: "Daveti kabul et"
+        ignore: "Daveti kabul etmek istemiyorsanız bu maili yoksayabilirsiniz.<br />Aşağıdaki linke tıklayıp şifrenizi oluşturmadan hesabınız oluşturulmayacaktır."

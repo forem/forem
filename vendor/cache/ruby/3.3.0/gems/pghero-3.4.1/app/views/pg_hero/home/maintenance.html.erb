@@ -1,0 +1,55 @@
+<div class="content">
+  <h1>Maintenance</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Table</th>
+        <th style="width: 20%;">Last Vacuum</th>
+        <th style="width: 20%;">Last Analyze</th>
+        <% if @show_dead_rows %>
+          <th style="width: 20%;">Dead Rows</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @maintenance_info.each do |table| %>
+        <tr>
+          <td>
+            <%= table[:table] %>
+            <% if table[:schema] != "public" %>
+              <span class="text-muted"><%= table[:schema] %></span>
+            <% end %>
+          </td>
+          <td>
+            <% time = [table[:last_autovacuum], table[:last_vacuum]].compact.max %>
+            <% if time %>
+              <%= pghero_formatted_vacuum_times(time) %>
+            <% else %>
+              <span class="text-muted">Unknown</span>
+            <% end %>
+          </td>
+          <td>
+            <% time = [table[:last_autoanalyze], table[:last_analyze]].compact.max %>
+            <% if time %>
+              <%= pghero_formatted_vacuum_times(time) %>
+            <% else %>
+              <span class="text-muted">Unknown</span>
+            <% end %>
+          </td>
+          <% if @show_dead_rows %>
+            <td>
+              <% if table[:live_rows] != 0 %>
+                <%# use live rows only for denominator to make it easier to compare with autovacuum_vacuum_scale_factor %>
+                <%# it's not a true percentage, since it can go above 100% %>
+                <%= (100.0 * table[:dead_rows] / table[:live_rows]).round %>%
+              <% else %>
+                <span class="text-muted">Unknown</span>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

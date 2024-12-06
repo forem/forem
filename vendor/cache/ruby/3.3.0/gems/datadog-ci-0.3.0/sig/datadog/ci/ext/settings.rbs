@@ -1,0 +1,11 @@
+module Datadog
+  module CI
+    module Ext
+      module Settings
+        ENV_MODE_ENABLED: String
+        ENV_AGENTLESS_MODE_ENABLED: String
+        ENV_AGENTLESS_URL: String
+      end
+    end
+  end
+end

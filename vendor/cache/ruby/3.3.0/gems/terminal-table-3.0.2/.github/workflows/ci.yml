@@ -1,0 +1,28 @@
+name: CI
+on: [push]
+
+jobs:
+  test:
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu]
+        ruby: [2.4, 2.5, 2.6, 2.7]
+
+    runs-on: ${{ matrix.os }}-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ${{ matrix.ruby }}
+
+      - run: bundle install
+      - run: bundle exec rspec

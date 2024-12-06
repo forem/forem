@@ -1,0 +1,48 @@
+---
+DM:
+  alpha2: DM
+  alpha3: DMA
+  continent: North America
+  country_code: '1'
+  currency_code: XCD
+  distance_unit: MI
+  gec: DO
+  geo:
+    latitude: 15.414999
+    longitude: -61.37097600000001
+    max_latitude: 15.6485199
+    max_longitude: -61.23090180000001
+    min_latitude: 15.2042266
+    min_longitude: -61.484108
+    bounds:
+      northeast:
+        lat: 15.6485199
+        lng: -61.23090180000001
+      southwest:
+        lat: 15.2042266
+        lng: -61.484108
+  international_prefix: '011'
+  ioc: DMA
+  iso_long_name: The Commonwealth of Dominica
+  iso_short_name: Dominica
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1767'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Dominican
+  number: '212'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: DM
+  unofficial_names:
+  - Dominica
+  - ドミニカ国
+  world_region: AMER

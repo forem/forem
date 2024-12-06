@@ -1,0 +1,6 @@
+test:
+  clients:
+    default:
+      database: godfather
+      hosts:
+        - localhost:27017

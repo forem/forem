@@ -1,0 +1,9 @@
+class <%= migration_class_name %> < ActiveRecord::Migration<%= migration_version %>
+  def self.up<% counter_cache_columns.each do |column| %>
+    add_column :<%= table_name %>, :<%= column %>, :integer, null: false, default: 0
+<% end %>  end
+
+  def self.down<% counter_cache_columns.each do |column| %>
+    remove_column :<%= table_name %>, :<%= column %>
+<% end %>  end
+end

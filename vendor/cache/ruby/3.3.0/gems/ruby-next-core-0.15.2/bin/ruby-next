@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+lib_path = File.expand_path("../lib", __dir__)
+$LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
+
+require "ruby-next/cli"
+
+begin
+  cli = RubyNext::CLI.new
+  cli.run(ARGV)
+rescue => e
+  raise e if $DEBUG
+  STDERR.puts e.message
+  STDERR.puts e.backtrace.join("\n") if ENV["RUBY_NEXT_DEBUG"] == "1"
+  exit 1
+end

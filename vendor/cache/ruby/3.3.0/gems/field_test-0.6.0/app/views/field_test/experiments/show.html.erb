@@ -1,0 +1,69 @@
+<p>
+  <%= link_to root_path do %>
+    &laquo; Experiments
+  <% end %>
+</p>
+
+<h1><%= @experiment.name %></h1>
+
+<% if @experiment.description %>
+  <p class="description"><%= @experiment.description %></p>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Participant</th>
+      <th style="width: 20%;">Variant</th>
+      <th style="width: 20%;">Converted</th>
+      <th style="width: 20%;">Started</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @memberships.each do |membership| %>
+      <tr>
+        <td><%= field_test_participant_link(membership) %></td>
+        <td><%= membership.variant %></td>
+        <td>
+          <% converted = false %>
+          <% @experiment.goals.each do |goal| %>
+            <% if @events[[membership.id, goal]] %>
+              <% converted = true %>
+              <div>
+                <span class="check">✓</span>
+                <% if @experiment.multiple_goals? %>
+                  <%= goal.titleize %>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+
+          <% if !converted && membership.try(:converted) %>
+            <span class="check">✓</span>
+          <% end %>
+        </td>
+        <td>
+          <% if membership.created_at > 1.day.ago %>
+            <%= time_ago_in_words(membership.created_at, include_seconds: true) %> ago
+          <% else %>
+            <%= membership.created_at.to_formatted_s(:short) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p class="pagination">
+  <% unless @page == 1 %>
+    <%= link_to experiment_path(@experiment.id, page: @page - 1) do %>
+      &laquo; Prev
+    <% end %>
+  <% end %>
+  <!-- there may not be a next page, but don't want another DB query -->
+  <% if @memberships.size == @per_page %>
+    <%= link_to experiment_path(@experiment.id, page: @page + 1) do %>
+      Next &raquo;
+    <% end %>
+  <% end %>
+</p>

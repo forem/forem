@@ -1,0 +1,718 @@
+---
+AA:
+  name: Greater Accra
+  code: AA
+  unofficial_names: Greater Accra
+  geo:
+    latitude: 5.8142836
+    longitude: 0.0746767
+    min_latitude: 5.4948349
+    min_longitude: -0.5112099999999999
+    max_latitude: 5.9961559
+    max_longitude: 0.72458
+  translations:
+    en: Greater Accra
+    ar: إقليم أكرا الكبرى
+    be: рэгіён Вялікая Акра
+    bg: Голяма Акра
+    bn: গ্রেটার আক্রা অঞ্চল
+    ca: Regió del Gran Accra
+    cs: Greater Accra
+    da: Greater Accra
+    de: Greater Accra Region
+    el: Γκρέιτερ Άκρα
+    es: Gran Acra
+    fa: منطقه آکرای بزرگ
+    fi: Greater Accra
+    fr: Région du Grand Accra
+    gu: ગ્રેટર એક્રા પ્રદેશ
+    hi: बृहत्तर एकरा प्रदेश
+    id: Region Greater Accra
+    it: regione della Grande Accra
+    ja: グレーター・アクラ州
+    kn: ಗ್ರೇಟರ್ ಅಕ್ರಾ ಪ್ರದೇಶ
+    ko: 그레이터아크라 주
+    lt: Didžiosios Akros regionas
+    mr: ग्रेटर अकरा प्रदेश
+    ms: Greater Accra Region
+    nb: Greater Accra
+    nl: Greater Accra
+    pl: Region Wielka Akra
+    pt: Grande Acra
+    ro: Regiunea Marea Accra
+    ru: Большая Аккра
+    si: මහා අක්රා කලාපය
+    sv: Storaccra
+    ta: கிரேட்டர் ஆசிரா பகுதி
+    te: గ్రేటర్ అక్రా ప్రాంతం
+    th: เขตเซ้าธ์ บานัต
+    tr: Büyük Accra Bölgesi
+    ur: عظیم اکرا علاقہ
+    vi: Khu vực Greater Accra
+    zh: 大阿克拉地區
+    lv: Lielās Akras reģions
+    ceb: Greater Accra Region
+    ccp: "\U00011109\U00011133\U00011122\U00011111\U00011122\U00011134 \U00011103\U00011107\U00011133\U00011122\U00011134"
+    ha: Yankin Greater Accra
+    uk: Велика Аккра
+    ha_NE: Yankin Greater Accra
+    'no': Greater Accra
+    he: אזור אקרה רבתי
+    hy: Մեծ Աքրա
+    sw: Mkoa wa Greater Accra
+  comments:
+  type: region
+AF:
+  name: Ahafo
+  code: AF
+  unofficial_names:
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+  translations:
+    en: Ahafo
+    de: Ahafo Region
+    es: Región Ahafo
+    fa: ناحیه آهافو
+    it: Regione di Ahafo
+    ja: アハフォ州
+    pl: Region Ahafo
+    ru: Ахафо
+    sw: Mkoa wa Ahafo
+  comments:
+  type: region
+AH:
+  name: Ashanti
+  code: AH
+  unofficial_names:
+  - Asante
+  geo:
+    latitude: 6.7470436
+    longitude: -1.5208624
+    min_latitude: 5.853753999999999
+    min_longitude: -2.451715
+    max_latitude: 7.621659999999999
+    max_longitude: -0.222413
+  translations:
+    en: Ashanti
+    ar: منطقة أشانتي
+    be: рэгіён Ашанці
+    bg: Ашанти
+    bn: আশান্তি অঞ্চল
+    ca: Regió Aixanti
+    da: Ashanti
+    de: Ashanti Region
+    el: περιοχή Ασάντι
+    es: Ashanti
+    fa: منطقه آشانتی
+    fi: Ashantin hallintoalue
+    fr: Région Ashanti
+    gu: અશાંતિ પ્રદેશ
+    hi: अश्ंती क्षेत्र
+    id: Region Ashanti
+    it: regione di Ashanti
+    ja: アシャンティ州
+    ka: აშანტის რეგიონი
+    kn: ಆಷಂತಿ
+    ko: 아샨티 주
+    lt: Ašančio regionas
+    ml: അഷാന്തി
+    mr: अश्ंती प्रदेश
+    ms: Ashanti Region
+    nb: Ashanti
+    nl: Ashanti
+    pl: Region Aszanti
+    pt: Ashanti
+    ro: Regiunea Ashanti
+    ru: Ашанти
+    si: ආශාන්ටි කලාපය
+    sv: Ashantiregionen
+    ta: அஷாந்தி பகுதி
+    te: అశాంతి ప్రాంతం
+    th: อาชานติ
+    tr: Ashanti Bölgesi
+    uk: Ашанті
+    ur: اشانتی ریجن
+    vi: Khu vực Ashanti
+    lv: Ašanti reģions
+    ceb: Ashanti Region
+    zh: 阿散蒂地區
+    ccp: "\U00011103\U00011127\U00011125\U0001111A\U00011134\U00011111\U00011128"
+    ha: Yankin Ashanti
+    yo: Agbègbè Ashanti
+    ha_NE: Yankin Ashanti
+    'no': Ashanti
+    yo_BJ: Agbègbè Ashanti
+    af: Asjanti (streek)
+    he: חבל אשנטי
+    sw: Mkoa wa Ashanti
+  comments:
+  type: region
+BE:
+  name: Bono East
+  code: BE
+  unofficial_names:
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+  translations:
+    en: Bono East
+    ar: إقليم شرق بونو
+    de: Bono East Region
+    es: Región de Bono Oriental
+    fa: ناحیه بونو شرقی
+    it: Regione di Bono Est
+    ja: ボノ・イースト州
+    pl: Region Bono Wschodnie
+    ru: Боно-Ист
+    sw: Mkoa wa Bono Mashariki
+  comments:
+  type: region
+BO:
+  name: Bono
+  code: BO
+  unofficial_names:
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+  translations:
+    en: Bono
+    ar: إقليم بونو
+    de: Bono Region
+    es: Región de Bono
+    fa: ناحیه بونو
+    ha: Yankin Bono
+    ha_NE: Yankin Bono
+    it: Regione di Bono
+    ja: ボノ州
+    pl: Region Bono
+    ru: Боно
+    sw: Mkoa wa Bono
+  comments:
+  type: region
+CP:
+  name: Central
+  code: CP
+  unofficial_names: Central
+  geo:
+    latitude: 5.5607846
+    longitude: -1.0586135
+    min_latitude: 5.0336656
+    min_longitude: -2.176695
+    max_latitude: 6.3042729
+    max_longitude: -0.369136
+  translations:
+    en: Central
+    ar: الإقليم الأوسط
+    be: Цэнтральны рэгіён
+    bg: Централен регион
+    bn: সেন্ট্রাল অঞ্চল
+    ca: Regió Central
+    da: Central
+    de: Central Region
+    el: Κεντρική Περιφέρεια, Γκάνα
+    es: Región Central
+    fa: منطقه مرکزی (غنا)
+    fi: Centralin hallintoalue
+    fr: Région du Centre
+    gu: સેન્ટ્રલ પ્રદેશ
+    hi: केन्द्रीय क्षेत्र
+    id: Region Tengah
+    it: regione Centrale
+    ja: セントラル州
+    kn: ಮಧ್ಯ ಪ್ರದೇಶ
+    ko: 중앙 주
+    lt: Vidurio regionas
+    mr: मध्यवर्ती प्रदेश
+    ms: Central Region
+    nb: Central
+    nl: Central
+    pl: Region Centralny
+    pt: Central
+    ro: Regiunea Orientală
+    ru: Центральный регион
+    si: මධ්‍යම කලාපය
+    sv: Centralregionen
+    ta: சென்ட்ரல் பகுதி
+    te: సెంట్రల్ ప్రాంతం
+    th: เซ็นทรัล รีเจี้ยน
+    tr: Merkez Bölgesi
+    uk: Центральна область
+    ur: وسطی علاقہ
+    vi: Khu vực Miền Trung
+    lv: Centrālais reģions
+    ceb: Central Region
+    zh: 中部地區
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    hy: Կենտրոնական շրջան
+    ha: Yankin Tsakiya (Ghana)
+    ha_NE: Yankin Tsakiya (Ghana)
+    'no': Central
+    he: מחוז המרכז
+    sw: Mkoa wa Kati, Ghana
+  comments:
+  type: region
+EP:
+  name: Eastern
+  code: EP
+  unofficial_names: Eastern
+  geo:
+    latitude: 6.237403599999999
+    longitude: -0.4502368
+    min_latitude: 5.729348
+    min_longitude: -1.2483401
+    max_latitude: 7.186541000000001
+    max_longitude: 0.322644
+  translations:
+    en: Eastern
+    ar: الإقليم الشرقي
+    be: Усходні рэгіён
+    bg: Източен регион
+    bn: ইস্টার্ন অঞ্চল
+    ca: Regió Oriental
+    da: Eastern
+    de: Eastern Region
+    el: Ίστερν Ρίτζιον, Γκάνα
+    es: Región Oriental
+    fa: منطقه شرقی (غنا)
+    fi: Eastern Ghana
+    fr: Région Orientale
+    gu: પૂર્વીય પ્રદેશ
+    hi: पूर्वी क्षेत्र
+    id: Region Timur
+    it: regione Orientale
+    ja: イースタン州
+    kn: ಪೂರ್ವ ಪ್ರದೇಶ
+    ko: 동부 주
+    lt: Rytų regionas
+    mr: पूर्व प्रदेश
+    ms: Eastern Region
+    nb: Eastern
+    nl: Eastern
+    pl: Region Wschodni
+    pt: Região Oriental
+    ro: Regiunea Orientală²
+    ru: Восточный регион
+    si: නැගෙනහිර කලාපය
+    sv: Östra regionen (region i Ghana)
+    ta: கிழக்கு பகுதி
+    te: తూర్పు ప్రాంతం
+    th: อิสเทิร์น รีเจี้ยน
+    tr: Doğu Bölgesi
+    uk: Східна область (Гана)
+    ur: مشرقی علاقہ
+    vi: Khu vực Eastern
+    lv: Austrumu reģions
+    ceb: Eastern Region
+    zh: 東部地區
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ha: Yankin Gabashi (Ghana)
+    ha_NE: Yankin Gabashi (Ghana)
+    'no': Eastern
+    sw: Mkoa wa Mashariki, Ghana
+  comments:
+  type: region
+NE:
+  name: North East
+  code: NE
+  unofficial_names:
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+  translations:
+    en: North East
+    de: North East Region
+    es: Región Norte Oriental
+    fa: ناحیه شمال شرقی (غنا)
+    it: Regione Nord Est
+    ja: ノース・イースト州
+    pl: Region Północno–Wschodni
+    ru: Северо-Восточная область
+  comments:
+  type: region
+NP:
+  name: Northern
+  code: NP
+  unofficial_names: Northern
+  geo:
+    latitude: 9.543926899999999
+    longitude: -0.9056623
+    min_latitude: 7.954847000000001
+    min_longitude: -2.779666
+    max_latitude: 10.714593
+    max_longitude: 0.56338
+  translations:
+    en: Northern
+    ar: الإقليم الشمالي
+    be: Паўночны рэгіён
+    bg: Северен регион
+    bn: নর্দান অঞ্চল
+    ca: Regió Septentrional
+    da: Northern
+    de: Northern Region
+    el: Βόρεια Περιφέρεια, Γκανά
+    es: Región Norte
+    fa: منطقه شمالی (غنا)
+    fi: Northern Ghana
+    fr: Région du Nord
+    gu: નોર્ધન પ્રદેશ
+    hi: उत्तरी प्रांत
+    id: Region Utara
+    it: regione Settentrionale
+    ja: ノーザン州
+    kn: ಉತ್ತರ ಪ್ರದೇಶ
+    ko: 북부 주
+    lt: Šiaurės regionas
+    mr: उत्तर प्रदेश
+    ms: Northern Region
+    nb: Northern
+    nl: Northern
+    pl: Region Północny
+    pt: Região Norte
+    ro: Regiunea de Nord
+    ru: Северный регион
+    si: උතුරු කලාපය
+    sv: Norra regionen (region i Ghana)
+    ta: வடக்கு பகுதி
+    te: ఉత్తర ప్రాంతం
+    th: นอร์ท เทิร์น รีเจี้ยน
+    tr: Kuzey Bölgesi
+    uk: Північна область
+    ur: شمالی علاقہ
+    vi: Khu vực Miền Nam
+    lv: Ziemeļu reģions
+    ceb: Northern Region
+    zh: 北部地區
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ha: Yankin Arewaci (Ghana)
+    ha_NE: Yankin Arewaci (Ghana)
+    'no': Northern
+    cs: Northern Region (Ghana)
+    sw: Mkoa wa Kaskazini, Ghana
+  comments:
+  type: region
+OT:
+  name: Oti
+  code: OT
+  unofficial_names:
+  geo:
+  translations:
+    en: Oti
+    de: Oti Region
+    es: Región Oti
+    fa: ناحیه اوتی
+    it: Regione di Oti
+    ja: オティ州
+    pl: Region Oti
+    ru: Оти
+    sw: Mkoa wa Oti
+  comments:
+  type: region
+SV:
+  name: Savannah
+  code: SV
+  unofficial_names:
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+  translations:
+    en: Savannah
+    ar: منطقة السفانا
+    de: Savannah Region
+    es: Región de Sabana
+    fa: ناحیه ساوانا
+    ha: Yankin Savannah
+    ha_NE: Yankin Savannah
+    it: Regione di Savannah
+    ja: サバンナ州
+    pl: Region Savannah
+    ru: Саванна
+    sw: Mkoa wa Savannah
+  comments:
+  type: region
+TV:
+  name: Volta
+  code: TV
+  unofficial_names: Volta
+  geo:
+    latitude: 6.5781373
+    longitude: 0.4502368
+    min_latitude: 5.7696366
+    min_longitude: -0.3436661
+    max_latitude: 8.754108
+    max_longitude: 1.1917686
+  translations:
+    en: Volta
+    ar: إقليم فولتا
+    be: Рэгіён Вольта
+    bg: Волта
+    bn: ভুল্টা অঞ্চল
+    ca: Regió Volta
+    cs: Volta Region
+    da: Volta
+    de: Volta Region
+    el: Βόλτα
+    es: Volta
+    fa: منطقه ولتا
+    fi: Voltan hallintoalue
+    fr: Volta
+    gu: વોલ્ટા પ્રદેશ
+    hi: वोल्टा क्षेत्र
+    id: Region Volta
+    it: regione del Volta
+    ja: ヴォルタ州
+    kn: ವೋಲ್ಟಾ ಪ್ರದೇಶ
+    ko: 볼타 주
+    lt: Voltos regionas
+    mr: व्होल्टा प्रदेश
+    ms: Volta Region
+    nb: Volta
+    nl: Volta
+    pl: Region Wolta
+    pt: Região do Volta
+    ro: Regiunea Volta
+    ru: Вольта
+    si: වොල්ටා කලාපය
+    sv: Voltaregionen
+    ta: வோல்ட்டா பகுதி
+    te: వోల్టా ప్రాంతం
+    th: วอลตา
+    tr: Volta Bölgesi
+    uk: Вольта
+    ur: وولٹا علاقہ
+    vi: Khu vực Volta
+    lv: Voltas reģions
+    ceb: Volta Region
+    zh: 沃爾特地區
+    ccp: "\U0001111E\U0001112E\U00011123\U00011134\U00011111"
+    ha: Yankin Volta
+    ha_NE: Yankin Volta
+    'no': Volta
+    sw: Mkoa wa Volta
+  comments:
+  type: region
+UE:
+  name: Upper East
+  code: UE
+  unofficial_names: Upper East
+  geo:
+    latitude: 10.7082499
+    longitude: -0.9820667999999999
+    min_latitude: 10.270471
+    min_longitude: -1.575864
+    max_latitude: 11.173301
+    max_longitude: 0.032068
+  translations:
+    en: Upper East
+    ar: مقاطعة الشرق األوسط
+    be: Верхні ўсходні рэгіён
+    bg: Горноизточен регион
+    bn: আপার ইস্ট অঞ্চল
+    ca: Regió Superior Oriental
+    da: Upper East
+    de: Upper East Region
+    el: Περιφέρεια Απώτερης Ανατολής
+    es: Alta Oriental
+    fa: منطقه شرق علیا
+    fi: Upper East Ghana
+    fr: Région du Haut Ghana oriental
+    gu: અપર પૂર્વ પ્રદેશ
+    hi: ऊपरी पूर्वी क्षेत्र
+    id: Region Timur Atas
+    it: regione Nordorientale
+    ja: アッパー・イースト州
+    kn: ಅಪ್ಪರ್ ಈಸ್ಟ್ ರೀಜನ್
+    ko: 어퍼이스트 주
+    lt: Aukštutinis Rytų regionas
+    mr: अप्पर ईस्ट प्रदेश
+    ms: Upper East Region
+    nb: Upper East
+    nl: Upper East
+    pl: Górny Region Wschodni
+    pt: Alto Oriental
+    ro: Regiunea Superioară de Est
+    ru: Верхний Восточный регион
+    si: ඉහල නැගෙනහිර පළාත
+    sv: Övre östra regionen
+    ta: அப்பர் கிழக்கு பகுதி
+    te: అప్పర్ ఈస్ట్ ప్రాంతం
+    th: อัปเปอ อีส รีเจี้ยน
+    tr: Yukarı Doğu Bölgesi
+    ur: اپر ایسٹ ریجن
+    vi: Vùng Thượng Đông
+    lv: Austrumaugšējais reģions
+    ceb: Upper East Region
+    zh: 東北地區
+    ccp: "\U00011103\U0001111B\U00011122\U00011134 \U0001111B\U0001112A\U00011107\U00011134"
+    ha: Yankin Upper East
+    uk: Верхній Східний Регіон
+    ha_NE: Yankin Upper East
+    'no': Upper East
+    gl: rexión Superior Oriental
+    sw: Mkoa wa Mashariki ya Juu
+  comments:
+  type: region
+UW:
+  name: Upper West
+  code: UW
+  unofficial_names: Upper West
+  geo:
+    latitude: 10.2529757
+    longitude: -2.1450245
+    min_latitude: 9.6529639
+    min_longitude: -2.9455968
+    max_latitude: 11.0189701
+    max_longitude: -1.3693439
+  translations:
+    en: Upper West
+    ar: الإقليم الغربي الأعلى
+    be: Верхні заходні рэгіён
+    bg: Горнозападен регион
+    bn: উপের ওয়েস্ট অঞ্চল
+    ca: Regió Superior Occidental
+    da: Upper West
+    de: Upper West Region
+    el: Άπερ Γουέστ
+    es: Alta Occidental
+    fa: منطقه غرب علیا
+    fi: Upper West Ghana
+    fr: Région du Haut Ghana occidental
+    gu: અપર પશ્ચિમ પ્રદેશ
+    hi: ऊपरी पश्चिम क्षेत्र
+    id: Region Barat Atas
+    it: regione Nordoccidentale
+    ja: アッパー・ウエスト州
+    kn: ಅಪ್ಪರ್ ವೆಸ್ಟ್ ರೀಜನ್
+    ko: 어퍼웨스트 주
+    lt: Aukštutinis Vakarų regionas
+    mr: अप्पर वेस्ट प्रदेश
+    ms: Upper West Region
+    nb: Upper West
+    nl: Upper West
+    pl: Górny Region Zachodni
+    pt: Alto Ocidental
+    ro: Regiunea Superioară de Vest
+    ru: Верхний Западный регион
+    si: ඉහල බටහිර කලාපය
+    sv: Övre västra regionen
+    ta: அப்பர் மேற்கு பகுதி
+    te: అప్పర్ వెస్ట్ ప్రాంతం
+    th: อัพเปอร์ เวสต์
+    tr: Yukarı Batı Bölgesi
+    ur: اپر ویسٹ ریجن
+    vi: Khu vực Thượng Tây
+    lv: Rietumaugšējais reģions
+    ceb: Upper West Region
+    zh: 西北地區
+    ccp: Upper West
+    ha: Yankin Upper West
+    uk: Верхній Західний регіон
+    ha_NE: Yankin Upper West
+    'no': Upper West
+    sw: Mkoa wa Magharibi ya Juu
+  comments:
+  type: region
+WN:
+  name: Western North
+  code: WN
+  unofficial_names:
+  geo:
+    latitude: 7.946527
+    longitude: -1.023194
+    min_latitude: 4.6339001
+    min_longitude: -3.2607859
+    max_latitude: 11.1750308
+    max_longitude: 1.199972
+  translations:
+    en: Western North
+    de: Western North Region
+    es: Región Norte Occidental
+    fa: ناحیه شمال غربی
+    it: Regione Nordoccidentale
+    ja: ウェスタン・ノース州
+    pl: Region Zachodnio-Północny
+    ru: Северо-Западная область (Гана)
+    sw: Mkoa wa Kaskazini Magharibi
+  comments:
+  type: region
+WP:
+  name: Western
+  code: WP
+  unofficial_names: Western
+  geo:
+    latitude: 5.3901978
+    longitude: -2.1450245
+    min_latitude: 4.738815
+    min_longitude: -3.25542
+    max_latitude: 7.052660899999999
+    max_longitude: -1.417818
+  translations:
+    en: Western
+    ar: الإقليم الغربي
+    be: Заходні рэгіён
+    bg: Западен регион
+    bn: ওয়েস্টার্ন অঞ্চল
+    ca: Regió Occidental
+    da: Western
+    de: Western Region
+    el: Δυτική Περιοχή, Γκάνα
+    es: Región Occidental
+    fa: منطقه غربی (غنا)
+    fi: Westernin maakunta
+    fr: Région Occidentale
+    gu: પશ્ચિમી પ્રદેશ
+    hi: पश्चिमी क्षेत्र
+    id: Region Barat
+    it: regione Occidentale
+    ja: ウェスタン州
+    kn: ಪಾಶ್ಚಾತ್ಯ ಪ್ರದೇಶ
+    ko: 서부 주
+    lt: Vakarų regionas
+    mr: वेस्टर्न प्रदेश
+    ms: Western Region
+    nb: Western
+    nl: Western
+    pl: Region Zachodni
+    pt: Ocidental
+    ro: Regiunea de Vest
+    ru: Западный Регион
+    si: බස්නාහිර කලාපය
+    sv: Västra regionen (region i Ghana)
+    ta: மேற்கு பகுதி
+    te: పశ్చిమ ప్రాంతం
+    th: เวสเทิร์น รีเจี้ยน
+    tr: Batı Bölgesi
+    uk: Західний Регіон
+    ur: مغربی علاقہ
+    vi: Khu vực Phía Tây
+    lv: Rietumu reģions
+    ceb: Western Region
+    zh: 西部地區
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U0001110C\U00011134\U00011111\U00011122\U00011134\U0001111A\U00011134"
+    ha: Yankin Yammaci, Ghana
+    ha_NE: Yankin Yammaci, Ghana
+    'no': Western
+    he: מחוז המערב
+    sw: Mkoa wa Magharibi, Ghana
+  comments:
+  type: region

@@ -1,0 +1,51 @@
+---
+KE:
+  alpha2: KE
+  alpha3: KEN
+  continent: Africa
+  country_code: '254'
+  currency_code: KES
+  distance_unit: KM
+  gec: KE
+  geo:
+    latitude: -0.023559
+    longitude: 37.906193
+    max_latitude: 5.033420899999999
+    max_longitude: 41.9069449
+    min_latitude: -4.724299999999999
+    min_longitude: 33.90982109999999
+    bounds:
+      northeast:
+        lat: 5.033420899999999
+        lng: 41.9069449
+      southwest:
+        lat: -4.724299999999999
+        lng: 33.90982109999999
+  international_prefix: '000'
+  ioc: KEN
+  iso_long_name: The Republic of Kenya
+  iso_short_name: Kenya
+  languages_official:
+  - en
+  - sw
+  languages_spoken:
+  - en
+  - sw
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Kenyan
+  number: '404'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: KE
+  unofficial_names:
+  - Kenya
+  - Kenia
+  - ケニア
+  world_region: EMEA

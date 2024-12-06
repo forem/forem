@@ -1,0 +1,78 @@
+---
+ZA:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}}
+    {{region}}
+    {{postalcode}}
+    {{country}}
+  alpha2: ZA
+  alpha3: ZAF
+  continent: Africa
+  country_code: '27'
+  currency_code: ZAR
+  distance_unit: KM
+  g20_member: true
+  gec: SF
+  geo:
+    latitude: -30.559482
+    longitude: 22.937506
+    max_latitude: -22.1254239
+    max_longitude: 38.2216904
+    min_latitude: -47.1313489
+    min_longitude: 16.2816999
+    bounds:
+      northeast:
+        lat: -22.1254239
+        lng: 38.2216904
+      southwest:
+        lat: -47.1313489
+        lng: 16.2816999
+  international_prefix: '09'
+  ioc: RSA
+  iso_long_name: The Republic of South Africa
+  iso_short_name: South Africa
+  languages_official:
+  - af
+  - en
+  - nr
+  - st
+  - ss
+  - tn
+  - ts
+  - ve
+  - xh
+  - zu
+  languages_spoken:
+  - af
+  - en
+  - nr
+  - st
+  - ss
+  - tn
+  - ts
+  - ve
+  - xh
+  - zu
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: South African
+  number: '710'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Africa
+  start_of_week: monday
+  subregion: Southern Africa
+  un_locode: ZA
+  unofficial_names:
+  - South Africa
+  - Republik Südafrika
+  - Afrique du Sud
+  - República de Sudáfrica
+  - 南アフリカ
+  - Zuid-Afrika
+  world_region: EMEA

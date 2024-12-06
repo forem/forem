@@ -1,0 +1,18 @@
+module Datadog
+  module CI
+    module TestVisibility
+      module Serializers
+        class Span < Base
+          CONTENT_FIELDS: Array[String | Hash[String, String]]
+          CONTENT_MAP_SIZE: Integer
+          REQUIRED_FIELDS: Array[String]
+
+          def required_fields: () -> Array[String]
+          def content_fields: () -> Array[String | Hash[String, String]]
+          def content_map_size: () -> Integer
+          def type: () -> "span"
+        end
+      end
+    end
+  end
+end

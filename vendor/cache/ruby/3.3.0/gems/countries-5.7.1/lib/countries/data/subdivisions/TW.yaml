@@ -1,0 +1,1399 @@
+---
+CHA:
+  name: Changhua
+  code: CHA
+  unofficial_names:
+  - Changhua
+  geo:
+    latitude: 24.0716583
+    longitude: 120.5624474
+    min_latitude: 24.0377972
+    min_longitude: 120.4997914
+    max_latitude: 24.1139398
+    max_longitude: 120.6258758
+  translations:
+    en: Changhua
+    ar: مقاطعة تشانغوا
+    bg: Чангхуа
+    bn: চ্যাংহুয়া কাউন্টি
+    cs: Okres Čang-chua
+    da: Changhua County
+    de: Landkreis Changhua
+    el: Τσάνγκουα
+    es: Condado de Changhua
+    eu: Changhua konderria
+    fi: Changhuan kunta
+    fr: Comté de Changhua
+    gu: ચાંગહુઆ કાઉન્ટી
+    hi: चान्गुआ काउंटी
+    id: Kabupaten Changhua
+    it: contea di Changhua
+    ja: 彰化県
+    kn: ಚಂಗ್ವಾ ಕೌಂಟಿ
+    ko: 장화 현
+    lt: Džanghua apskritis
+    mn: Жанхуа
+    mr: चंगहुआ काउंटी
+    ms: Changhua County
+    nb: Changhua Fylke
+    nl: Changhua
+    pl: Zhanghua
+    pt: Condado de Changhua
+    ru: Чжанхуа
+    si: චන්ග්හුආ ප්‍රාන්තය
+    sv: Changhus (ort)
+    ta: சாங்உஆ கவுண்டி
+    te: చాంగువా కౌంటీ
+    th: จางฮว่า
+    tr: Changhua
+    ur: چانگہوا کاؤنٹی
+    vi: Chương Hóa
+    zh: 彰化縣
+    lv: Džanhua apriņķis
+    cy: Sir Changhua
+    ceb: Changhua
+    yue_Hans: 彰化县
+    ccp: "\U0001110C\U0001111A\U00011134\U0001110A\U0001112A\U00011120"
+    uk: Округ Чжанхуа
+    yue: 彰化縣
+    'no': Changhua Fylke
+    ca: Changhua
+    fa: شهرستان جانگوآ
+  comments:
+  type: county
+CYI:
+  name: Chiayi Municipality
+  code: CYI
+  unofficial_names:
+  - Chiai
+  geo:
+    latitude: 23.4871898
+    longitude: 120.4516708
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Chiayi County
+    ar: مقاطعة شياي
+    bn: চিয়ায়ি কাউন্টি
+    cs: Okres Ťia-i
+    da: Chiayi County
+    de: Landkreis Chiayi
+    el: Κομητεία Τσιαγί
+    es: Condado del Chiayai
+    eu: Chiayi konderria
+    fi: Chiayin kunta
+    fr: Comté de Chiayi
+    gu: ચીઆયી કાઉન્ટી
+    hi: चायेई काउंटी
+    id: Kabupaten Chiayi
+    it: contea di Chiayi
+    ja: 嘉義県
+    kn: ಚಿಯಾಯಿ ಕೌಂಟಿ
+    ko: 자이 현
+    lt: Dziaji apskritis
+    mr: चिआई काउंटी
+    ms: Daerah Chiayi
+    nb: Chiayi Fylke
+    nl: Chiayi
+    pl: Jiayi
+    pt: Condado de Chiayi
+    ru: Цзяи
+    si: චියායි පළාත
+    sv: Chiayi
+    ta: சியாயி கவுண்டி
+    te: చియాయీ కౌంటీ
+    th: เจียอี้
+    tr: Chiayi Country
+    ur: چیائی کاؤنٹی
+    vi: Gia Nghĩa
+    lv: Czai apgabals
+    cy: Sir Chiayi
+    ceb: Chiayi
+    zh: 嘉義縣
+    yue_Hans: 嘉义县
+    ccp: "\U0001110C\U00011128\U00011120\U00011103\U00011128 \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    uk: Округ Цзяі
+    yue: 嘉義縣
+    mn: Жяи шянь
+    'no': Chiayi Fylke
+    fa: چیایای²
+    he: ג׳יאיי²
+    hu: Csiaji²
+  comments:
+  type: city
+CYQ:
+  name: Chiayi
+  code: CYQ
+  unofficial_names: Chiayi
+  geo:
+    latitude: 23.4518428
+    longitude: 120.2554615
+    min_latitude: 23.2148
+    min_longitude: 120.1174411
+    max_latitude: 23.6359268
+    max_longitude: 120.9576495
+  translations:
+    en: Chiayi
+    ar: شيا يي
+    bn: সিয়াই শহর
+    cs: Ťia-i
+    da: Chiayi
+    de: Chiayi
+    el: Τσιάγι
+    es: Chiayi
+    eu: Chiayi
+    fa: چیایای
+    fi: Chiayi City
+    fr: Chiayi
+    gu: ચિઆઇ શહેર
+    he: ג׳יאיי
+    hi: छिअई सिटी
+    hu: Csiaji
+    id: Kota Chiayi
+    it: Chiayi
+    ja: 嘉義市
+    kn: ಚಿಯಾಯಿ
+    ko: 자이 시
+    lt: Dziaji
+    mn: Жяи
+    mr: चिआई शहर
+    ms: Chiayi
+    nb: Chiayi
+    nl: Chiayi²
+    pl: Jiayi²
+    pt: Chiayi
+    ru: Цзяи²
+    si: චියායි සිටි
+    sv: Jiayi
+    ta: சியாஇ நகரம்
+    te: చియాంయి సిటీ
+    th: นครเจียอี้
+    tr: Chiayi
+    uk: Цзяї
+    ur: چیایی شہر
+    vi: Gia Nghĩa²
+    lv: Dzjaji
+    ceb: Chiayi (lalawigan sa Republika sa Tsina, lat 23,48, long 120,45)
+    zh: 嘉義市
+    yue_Hans: 嘉义市
+    ccp: "\U0001110C\U00011128\U00011120\U00011103\U00011128"
+    yue: 嘉義市
+    'no': Chiayi
+    ca: Comarca de Txiayi
+    cy: Sir Chiayi²
+  comments:
+  type: county
+HSQ:
+  name: Hsinchu
+  code: HSQ
+  unofficial_names: Hsinchu
+  geo:
+    latitude: 24.8066493
+    longitude: 120.9669257
+    min_latitude: 24.7125478
+    min_longitude: 120.8794077
+    max_latitude: 24.8569956
+    max_longitude: 121.0335449
+  translations:
+    en: Hsinchu County
+    ar: مقاطعة هسينشو
+    bn: হেসিনচু কাউন্টি
+    cs: Okres Sin-ču
+    da: Hsinchu County
+    de: Landkreis Hsinchu
+    el: Χσίντσου
+    es: Condado de Hsinchu
+    eu: Hsinchu konderria
+    fi: Hsinchun kunta
+    fr: Comté de Hsinchu
+    gu: સિન્ચુ કાઉન્ટી
+    hi: सिंचू काउंटी
+    id: Kabupaten Hsinchu
+    it: Contea di Hsinchu
+    ja: 新竹県
+    kn: ಹಿನ್ಚು ಕೌಂಟಿ
+    ko: 신주 현
+    lt: Sindžu apskritis
+    mn: Шиньжү шянь
+    mr: सिंचू काउंटी
+    ms: Hsinchu County
+    nb: Hsinchu Fylke
+    nl: Hsinchu
+    pl: Xinzhu
+    pt: Condado de Hsinchu
+    ru: Синьчжу
+    si: සින්චු ප්‍රාන්තය
+    sv: Hsinchu (Län)
+    ta: ஹசிஞ்சு கவுண்டி
+    te: హిసించు కౌంటీ
+    th: ซินจู๋
+    tr: Hsinchu County
+    ur: ہسینچو کاؤنٹی
+    vi: Tân Trúc
+    lv: Sjiņdžu apriņķis
+    cy: Sir Hsinchu
+    zh: 新竹縣
+    yue_Hans: 新竹县
+    ccp: "\U00011125\U00011128\U0001111A\U00011134\U0001110C\U0001112A \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ml: ഹ്സിഞ്ചു കൗണ്ടി
+    uk: Округ Сіньчжу
+    yue: 新竹縣
+    'no': Hsinchu Fylke
+    ca: Comarca de Xintxu
+    fa: شهرستان هسینچو
+  comments:
+  type: county
+HSZ:
+  name: Hsinchu Municipality
+  code: HSZ
+  unofficial_names: Hsinchu Municipality
+  geo:
+    latitude: 24.9330791
+    longitude: 121.0093188
+    min_latitude: 24.932182
+    min_longitude: 121.0086104
+    max_latitude: 24.9337171
+    max_longitude: 121.0100775
+  translations:
+    en: Hsinchu
+    ar: سين شو
+    bn: সিনসো
+    cs: Sin-ču
+    da: Hsinchu
+    de: Hsinchu
+    el: Χσιντσού
+    es: Hsinchu
+    fa: سینچو
+    fi: Hsinchu
+    fr: Hsinchu
+    gu: સિન્ચુ
+    he: שינג׳ו
+    hi: सिंचु
+    hu: Hszincsu
+    id: Kota Hsinchu
+    it: Hsinchu
+    ja: 新竹市
+    kn: ಶಿಂಚು
+    ko: 신주 시
+    lt: Sindžu
+    mn: Шиньжү
+    mr: ह्सिंचु
+    ms: Hsinchu
+    nb: Hsinchu
+    nl: Hsinchu²
+    pl: Xinzhu²
+    pt: Hsinchu
+    ru: Синьчжу²
+    si: සින්චු
+    sv: Hsinchu
+    ta: ஹெசின்ச்சூ
+    te: శించు
+    th: นครซินจู๋
+    tr: Hsinchu
+    uk: Сіньчжу
+    ur: ہسینچو
+    vi: Tân Trúc²
+    lv: Sjiņdžu
+    ceb: Hsinchu (kapital sa lalawigan)
+    zh: 新竹市
+    yue_Hans: 新竹市
+    ccp: "\U00011125\U00011128\U0001111A\U00011134\U0001110C\U0001112A"
+    kk: Синьчжу
+    yue: 新竹市
+    ca: Hsinchu
+    be: Сіньчжу
+    'no': Hsinchu
+    af: Hsinchu
+    cy: Hsinchu
+    ga: Hsinchu
+  comments:
+  type: city
+HUA:
+  name: Hualien
+  code: HUA
+  unofficial_names:
+  - Hualian
+  geo:
+    latitude: 23.9499886
+    longitude: 121.5518908
+    min_latitude: 23.0977983
+    min_longitude: 120.9866267
+    max_latitude: 24.37056
+    max_longitude: 121.7714431
+  translations:
+    en: Hualien
+    ar: مقاطعة هوالين
+    bn: হুয়ালিয়েন কাউন্টি
+    cs: Okres Chua-lien
+    da: Hualien County
+    de: Landkreis Hualien
+    el: Χουάλιεν
+    es: Condado de Hualien
+    eu: Hualien konderria
+    fa: هوالاین
+    fi: Hualienin kunta
+    fr: Comté d’Hualien
+    gu: હુઆલિયન કાઉન્ટી
+    hi: हुअलिएन काउंटी
+    id: Kabupaten Hualien
+    it: Contea di Hualien
+    ja: 花蓮県
+    kn: ಹುಲ್ಲಿಯನ್ ಕೌಂಟಿ
+    ko: 화롄 현
+    lt: Hualiano apskritis
+    mn: Хуалянь
+    mr: हुअलिएन काउंटी
+    ms: Hualien County
+    nb: Hualien Fylke
+    nl: Hualien
+    pl: Hualian
+    pt: Condado de Hualien
+    ru: Хуалянь
+    si: හුආලියන් ප්‍රාන්තය
+    sv: Hualien (län)
+    ta: ஹப்களின் கவுண்டி
+    te: హువాలియెన్ కౌంటీ
+    th: ฮวาเหลียน
+    tr: Hualien
+    ur: ہوالیئن کاؤنٹی
+    vi: Hoa Liên
+    lv: Hualiaņas apriņķis
+    cy: Sir Hualien
+    ceb: Hualien (lalawigan sa Republika sa Tsina)
+    zh: 花蓮縣
+    yue_Hans: 花莲县
+    ccp: "\U00011126\U0001112A\U00011120\U00011123\U00011128\U00011120\U0001112C\U0001111A\U00011134"
+    uk: Округ Гуалянь
+    yue: 花蓮縣
+    'no': Hualien Fylke
+    ca: comtat de Hualien
+    ml: ഹുവാലിയെൻ കൗണ്ടി
+  comments:
+  type: county
+ILA:
+  name: Ilan
+  code: ILA
+  unofficial_names: Ilan
+  geo:
+    latitude: 24.7021073
+    longitude: 121.7377502
+    min_latitude: 24.3094447
+    min_longitude: 121.3167219
+    max_latitude: 25.7517095
+    max_longitude: 123.4934282
+  translations:
+    en: Yilan
+    ar: مقاطعة ييلان
+    bn: ইলান কাউন্টি
+    cs: Okres I-lan
+    da: Yilan County
+    de: Landkreis Ilan
+    el: Γιλάν
+    es: Condado de Yilan
+    eu: Yilan konderria
+    fa: یایلان
+    fi: Yilanin kunta
+    fr: comté de Yilan
+    gu: યિલાન કાઉન્ટી
+    hi: यिलान काउंटी
+    id: Kabupaten Yilan
+    it: Contea di Yilan
+    ja: 宜蘭県
+    kn: ಯಿಲಾನ್ ಕೌಂಟಿ
+    ko: 이란 현
+    lt: Jilano apskritis
+    mn: Илань
+    mr: इलान काउंटी
+    ms: Yilan County
+    nb: Yilan Fylke
+    nl: Yilan
+    pl: Yilan
+    pt: Condado de Yilan
+    ru: Илань
+    si: යිලන් ප්‍රාන්තය
+    sv: Yilan (län)
+    ta: இலன் கவுண்டி
+    te: యిలాన్ కౌంటీ
+    th: อี๋หลาน
+    tr: Yilan
+    ur: یلن کاؤنٹی، تائیوان
+    vi: Nghi Lan
+    lv: Ilaņas distrikts
+    cy: Sir Yilan
+    ceb: Yilan
+    zh: 宜蘭縣
+    yue_Hans: 宜兰县
+    ccp: "\U00011103\U00011128\U00011123\U0001111A\U00011134"
+    uk: Округ Ілань
+    yue: 宜蘭縣
+    'no': Yilan Fylke
+  comments:
+  type: county
+KEE:
+  name: Keelung Municipality
+  code: KEE
+  unofficial_names:
+  - Chilung Shih
+  geo:
+    latitude: 25.1313701
+    longitude: 121.7488675
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Keelung
+    ar: كي لنغ
+    az: Kiilunq
+    bn: কেলুং
+    cs: Ťi-lung
+    da: Keelung
+    de: Keelung
+    el: Κίλανγκ
+    es: Keelung
+    eu: Keelung
+    fa: کیلانگ
+    fi: Keelung
+    fr: Chilung
+    gu: કીલંગ
+    he: ג׳ילונג
+    hi: कीलंग
+    hu: Csilung
+    id: Kota Keelung
+    it: Keelung
+    ja: 基隆市
+    kn: ಕೀಲುಂಗ್
+    ko: 지룽 시
+    lt: Dzilongas
+    mn: Жилун
+    mr: किलुंग
+    ms: Keelung
+    nb: Chilung
+    nl: Keelung
+    pl: Keelung
+    pt: Keelung
+    ru: Цзилун
+    si: කීලං
+    sv: Chilung
+    ta: கீளுங்
+    te: కీలంగ్
+    th: นครจีหลง
+    tr: Keelung
+    ur: کیلونگ
+    vi: Cơ Long
+    lv: Kēlunga
+    ceb: Keelung
+    zh: 基隆市
+    yue_Hans: 基隆
+    ccp: "\U00011107\U00011129\U00011123\U0001112A\U00011101"
+    uk: Цзилун
+    yue: 基隆
+    'no': Chilung
+    ca: Keelung
+    ga: Keelung
+  comments:
+  type: city
+KHH:
+  name: Kaohsiung Special Municipality
+  code: KHH
+  unofficial_names: Kaohsiung Special Municipality
+  geo:
+    latitude: 22.6272784
+    longitude: 120.3014353
+    min_latitude: 20.5862202
+    min_longitude: 116.7118602
+    max_latitude: 23.4717267
+    max_longitude: 121.0490147
+  translations:
+    en: Kaohsiung
+    af: Kaohsiung
+    ar: كاوهسيونغ
+    bg: Гаосюн
+    bn: তাইওয়ান শহর
+    ca: Kaohsiung
+    cs: Kao-siung
+    da: Kaohsiung
+    de: Kaohsiung
+    el: Καοσιούνγκ
+    es: Kaohsiung
+    eu: Kaohsiung
+    fa: کاوهسیونگ
+    fi: Kaohsiung
+    fr: Kaohsiung
+    gl: Kaohsiung
+    gu: કાઊશુંગ શહેર
+    he: גאושיונג
+    hi: काऊशुंग सिटी
+    hu: Kaohsziung
+    hy: Գաոսյուն
+    id: Kota Kaohsiung
+    it: Kaohsiung
+    ja: 高雄市
+    ka: კაოჰსიუნგი
+    kn: ಕಾಒಹ್ಸ್ಯುಂಗ್
+    ko: 가오슝 시
+    lt: Gaosiongas
+    mn: Гаошюн
+    mr: काऊशुंग शहर
+    ms: Kaohsiung
+    nb: Kaohsiung
+    nl: Kaohsiung
+    pl: Kaohsiung
+    pt: Kaohsiung
+    ro: Kaohsiung
+    ru: Гаосюн
+    si: කොසියුන්ග්
+    sk: Kao-siung
+    sv: Kaohsiung
+    sw: Kaohsiung
+    ta: கோஷிங் நகரம்
+    te: కావోోసియంగ్ సిటీ
+    th: เกาสฺยง
+    tr: Kaohsiung
+    uk: Гаосюн
+    ur: کائوسیونگ شہر
+    vi: Cao Hùng
+    lv: Gaosjunas speciālā municipalitāte
+    cy: Dinas Kaohsiung
+    ceb: Kaohsiung (kapital sa lalawigan)
+    zh: 高雄市
+    yue_Hans: 高雄市
+    ccp: "\U00011107\U00011103\U0001112E\U00011126\U00011134\U00011125\U00011128\U00011105\U0001112A\U00011101"
+    ky: Гаосун
+    pa: ਕਾਓਸੀਅੰਗ
+    yue: 高雄市
+    my: ကောင်းရှုံမြို့
+    mk: Гаосјунг
+    'no': Kaohsiung
+    be: Гаасюн
+    ga: Kaohsiung
+    ha: Kaohsiung
+    ha_NE: Kaohsiung
+    is: Kaohsiung
+    ml: കൗഷ്യിംഗ്
+    so: Kaohsiung
+  comments:
+  type: special_municipality
+KIN:
+  name: 金門縣
+  code: KIN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: كنمن
+    az: Szinmınsyundao
+    bn: কোয়েময়
+    ca: Kinmen
+    cs: Okres Ťin-men
+    da: Kinmen
+    de: Kinmen
+    el: Κίνμεν
+    en: Kinmen
+    es: Kinmen
+    et: Jinmen
+    eu: Kinmen
+    fa: کینمن
+    fi: Kinmen
+    fr: Jinmen
+    gu: કિનમેન
+    he: קואמוי
+    hi: किन्मेन
+    hu: Csinmen-szigetek
+    id: Kabupaten Kinmen
+    it: Kinmen
+    ja: 金門県
+    kn: ಕಿನ್ಮೆನ್
+    ko: 진먼 현
+    lt: Dzinmenas
+    ml: കിന്മെൻ
+    mn: Жиньмэнь
+    mr: किमेन
+    ms: Kinmen
+    nb: Kinmen
+    nl: Kinmen
+    pl: Kinmen
+    pt: Kinmen
+    ru: Цзиньмэнь
+    si: කින්මෙන්
+    sv: Kinmen
+    ta: கின்மேன்
+    te: కిన్మెన్
+    th: หมู่เกาะจินเหมิน
+    tr: Kinmen
+    ur: کنمن
+    vi: Kim Môn
+    lv: Dzjiņmeņa
+    ceb: Kinmen (lalawigan sa Republika sa Tsina)
+    zh: 金門縣
+    yue_Hans: 金门
+    ccp: "\U00011107\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U0001111A\U00011134"
+    uk: Цзіньмень
+    yue: 金門
+    yo: Kinmen
+    'no': Kinmen
+    yo_BJ: Kinmen
+  comments:
+  type: county
+LIE:
+  name: 連江縣
+  code: LIE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    cs: Okres Lien-ťiang
+    en: Lienchiang
+    fr: comté de Lienchiang
+    id: Kepulauan Lienchiang
+    ja: 連江県
+    ko: 롄장 현
+    cy: Sir Lienchiang
+    ceb: Lienchiang
+    zh: 連江縣
+    yue_Hans: 连江
+    ccp: "\U00011122\U00011128\U00011120\U0001112C\U0001111A\U00011134\U0001110C\U00011128\U00011120\U0001112C\U00011101"
+    yue: 連江
+    el: Λιέντζιανγκ Κάουντι
+    it: contea di Lianjiang
+    ru: Ляньцзян
+  comments:
+  type: county
+MIA:
+  name: Miaoli
+  code: MIA
+  unofficial_names: Miaoli
+  geo:
+    latitude: 24.560159
+    longitude: 120.8214265
+    min_latitude: 24.2885293
+    min_longitude: 120.6223738
+    max_latitude: 24.741082
+    max_longitude: 121.2626344
+  translations:
+    en: Miaoli
+    ar: مقاطعة مياولي
+    bn: মিয়াওলি কাউন্টি
+    cs: Okres Miao-li
+    da: Miaoli County
+    de: Landkreis Miaoli
+    el: Μιαολί
+    es: Comté de Miaoli
+    eu: Miaoli konderria
+    fi: Miaolin kunta
+    fr: Comté de Miaoli
+    gu: મિયાઓલી કાઉન્ટી
+    hi: मियाओली काउंटी
+    id: Kabupaten Miaoli
+    it: contea di Miaoli
+    ja: 苗栗県
+    kn: ಮಿಯಾಲಿ ಕೌಂಟಿ
+    ko: 먀오리 현
+    lt: Miaoli apskritis
+    mn: Мяоли
+    mr: मियाओली काउंटी
+    ms: Daerah Miaoli
+    nb: Miaoli Fylke
+    nl: Miaoli
+    pl: Miaoli
+    pt: Condado de Miaoli
+    ru: Мяоли
+    si: මියාඔලි ප්‍රාන්තය
+    sv: Miaoli County
+    ta: மியாவ்லி கவுண்டி
+    te: మియావోలి కౌంటీ
+    th: เหมียวลี่
+    tr: Miaoli County
+    ur: میاولی کاؤنٹی
+    vi: Miêu Lật
+    lv: Miaoli apriņķis
+    cy: Sir Miaoli
+    ceb: Miaoli (lalawigan)
+    zh: 苗栗縣
+    yue_Hans: 苗栗县
+    ccp: "\U0001111F\U0001112D\U00011103\U0001112E\U00011123\U00011128"
+    ml: മിയോലി കൗണ്ടി
+    uk: Округ Мяолі
+    yue: 苗栗縣
+    'no': Miaoli Fylke
+    ca: comtat de Miaoli
+  comments:
+  type: county
+NAN:
+  name: Nantou
+  code: NAN
+  unofficial_names: Nantou
+  geo:
+    latitude: 23.9609981
+    longitude: 120.9718638
+    min_latitude: 23.435385
+    min_longitude: 120.6155614
+    max_latitude: 24.2463089
+    max_longitude: 121.3494752
+  translations:
+    en: Nantou
+    ar: مقاطعة نانتو
+    bn: নান্তু কাউন্টি
+    cs: Okres Nan-tchou
+    da: Nantou County
+    de: Landkreis Nantou
+    el: Ναντού
+    es: Condado del Nantou
+    eu: Nantou konderria
+    fi: Nantoun kunta
+    fr: Comté de Nantou
+    gu: નાન્તોઉ કાઉન્ટી
+    hi: नैनटो काउंटी
+    id: Kabupaten Nantou
+    it: contea di Nantou
+    ja: 南投県
+    kn: ನಾಂಟೌ ಕೌಂಟಿ
+    ko: 난터우 현
+    lt: Nantou apskritis
+    mn: Наньтоу
+    mr: नॅनटोउ काउंटी
+    ms: Nantou County
+    nb: Nantou fylk
+    nl: Nantou
+    pl: Nantou
+    pt: Condado de Nantou
+    ru: Наньтоу
+    si: නන්ටෝඋ ප්‍රාන්තය
+    sv: Nantou (län)
+    ta: நண்டோவு கவுண்டி
+    te: నాంటో కౌంటీ
+    th: หนานโถว
+    tr: Nantou
+    ur: نانتوو کاؤنٹی
+    vi: Nam Đầu
+    lv: Naņtou apriņķis
+    cy: Sir Nantou
+    ceb: Nantou (lalawigan)
+    zh: 南投縣
+    yue_Hans: 南投县
+    ccp: "\U0001111A\U0001111A\U00011134\U00011111\U0001112F"
+    uk: Округ Наньтоу
+    yue: 南投縣
+    'no': Nantou fylk
+    he: מחוז נאנטו
+    ml: നാൻറ്റൗ കൗണ്ടി
+  comments:
+  type: county
+NWT:
+  name: New Taipei
+  code: NWT
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: New Taipei
+    ccp: "\U0001111A\U00011128\U00011105\U0001112A \U00011111\U0001112D\U0001111B\U0001112C"
+    af: Nieu-Taipei
+    ar: تايبيه الجديدة
+    be: Новы Тайбэй
+    bn: নিউ তাইপে সিটি
+    ca: Nova Taipei
+    ceb: Taipei
+    cs: Nová Tchaj-pej
+    cy: Dinas Newydd Taipei
+    da: Ny Taipei
+    de: Neu-Taipeh
+    el: Νιού Ταϊπέι Σίτι
+    es: Nuevo Taipéi
+    eu: Taipei konderria
+    fa: نیو تایپه
+    fi: Uusi-Taipei
+    fr: Nouveau Taipei
+    gu: ન્યુ તાઇપે શહેર
+    he: ניו טאיפיי
+    hi: न्यू ताइपे शहर
+    hu: Hszinpej
+    hy: Նոր Նայպեյ
+    id: Kabupaten Taipei
+    it: Nuova Taipei
+    ja: 新北市
+    kn: ಹೊಸ ತೈಪೆ ನಗರ
+    ko: 신베이시
+    lt: Sinbėjus
+    lv: Sinbei
+    mk: Нов Тајпеј
+    ml: ന്യൂ തായ്പെയ് നഗരം
+    mn: Шиньбэй
+    mr: न्यू ताइपे शहर
+    ms: New Taipei City
+    my: ထိုင်ပေမြို့သစ်
+    nl: Nieuw Taipei
+    pa: ਨਵਾਂ ਤਾਈਪਈ ਸ਼ਹਿਰ
+    pl: Nowe Tajpej
+    pt: Novo Taipé
+    ru: Новый Тайбэй
+    si: නිව් තායිපේ නගරය
+    sr: Синбеј
+    sr_Latn: Sinbej
+    sv: New Taipei City
+    ta: நியூ டைப்பாய் நகரம்
+    te: న్యూ టాయిపెయ్ సిటీ
+    th: ซินเป่ย์
+    tr: New Taipei
+    uk: Новий Тайбей
+    ur: نیا تائپے شہر
+    vi: Tân Bắc
+    yue: 新北市
+    yue_Hans: 新北市
+  comments:
+  type: special_municipality
+PEN:
+  name: Penghu
+  code: PEN
+  unofficial_names: Penghu
+  geo:
+    latitude: 23.5711899
+    longitude: 119.5793157
+    min_latitude: 23.1865723
+    min_longitude: 119.3144141
+    max_latitude: 23.775773
+    max_longitude: 119.7269552
+  translations:
+    en: Penghu
+    cs: Okres Pcheng-chu
+    de: Landkreis Penghu
+    fr: comté de Penghu
+    id: Kabupaten Penghu
+    it: contea di Penghu
+    ja: 澎湖県
+    ko: 펑후 현
+    ru: Пэнху
+    cy: Sir Penghu
+    ms: Penghu
+    ar: بسكادورز
+    vi: Bành Hồ
+    nl: Pescadores
+    zh: 澎湖縣
+    fa: پنگهو
+    yue_Hans: 澎湖县
+    ccp: "\U0001111B\U0001112C\U0001111A\U00011134\U0001110A\U0001112A"
+    es: Islas Pescadores
+    da: Pescadorerne
+    fi: Peskadorit
+    is: Penghu
+    pt: Penghu
+    ml: പെൻഘു
+    uk: Пенху
+    yue: 澎湖縣
+    mn: Пөнхү
+    th: เผิงหู
+    yo: Penghu
+    yo_BJ: Penghu
+    ca: Comtat de Penghu
+    ceb: Penghu (lalawigan sa Republika sa Tsina)
+    eu: Penghu konderria
+    he: פנגחו
+    ur: پینگہو
+  comments:
+  type: county
+PIF:
+  name: Pingtung
+  code: PIF
+  unofficial_names: Pingtung
+  geo:
+    latitude: 22.5519759
+    longitude: 120.5487597
+    min_latitude: 21.8968211
+    min_longitude: 120.3527512
+    max_latitude: 22.8851844
+    max_longitude: 120.9042007
+  translations:
+    en: Pingtung
+    ar: مقاطعة بينغتونغ
+    bg: Пингтунг
+    bn: পিংটুং কাউন্টি
+    cs: Okres Pching-tung
+    da: Pingtung County
+    de: Landkreis Pingtung
+    el: Πίνγκτουνγκ
+    es: Condado de Pingtung
+    eu: Pingtung konderria
+    fa: پینگتانگ
+    fi: Pingtungin kunta
+    fr: Comté de Pingtung
+    gu: પિંગટંગ કાઉન્ટી
+    hi: पिंगटूंग काउंटी
+    id: Kabupaten Pingtung
+    it: Contea di Pingtung
+    ja: 屏東県
+    kn: ಪಿಂಗ್ಟಂಗ್ ಕೌಂಟಿ
+    ko: 핑둥 현
+    lt: Pingdongo apskritis
+    mn: Пиндун
+    mr: पिंगतुंग काउंटी
+    ms: Pingtung County
+    nb: Pingtung fylke
+    nl: Pingtung
+    pl: Pingdong
+    pt: Condado de Pingtung
+    ru: Пиндун
+    si: පින්ග්ටුන්ග් ප්‍රාන්තය
+    sv: Pingtung (län)
+    ta: பிங்டுங் கவுண்டி
+    te: పింగ్‌టుంగ్ కౌంటీ
+    th: ผิงตง
+    tr: Pingtung
+    ur: پنگتونگ کاؤنٹی
+    vi: Bình Đông
+    lv: Pindunas apriņķis
+    cy: Sir Pingtung
+    ceb: Pingtung
+    zh: 屏東縣
+    yue_Hans: 屏东县
+    ccp: "\U0001111B\U00011128\U00011101\U00011111\U00011101"
+    ml: പിങ്ടങ് കൗണ്ടി
+    uk: Округ Пінтун
+    yue: 屏東縣
+    be: Піндун
+    'no': Pingtung fylke
+    he: מחוז פינגטונג
+  comments:
+  type: county
+TAO:
+  name: Taoyuan
+  code: TAO
+  unofficial_names: Taoyuan
+  geo:
+    latitude: 24.9936281
+    longitude: 121.3009798
+    min_latitude: 24.5864837
+    min_longitude: 120.9845663
+    max_latitude: 25.123137
+    max_longitude: 121.4798128
+  translations:
+    en: Taoyuan
+    af: Taoyuan
+    ar: مدينة تاويون
+    bn: তাওউয়ান শহর
+    cs: Okres Tchao-jüan
+    da: Taoyuan City
+    de: Taoyuan
+    el: Ταογιουάν
+    es: Taoyuan
+    eu: Taoyuang konderria
+    fa: تاویوان
+    fi: Taoyuan City
+    fr: comté de Taoyuan
+    gu: તાઓયુઆન શહેર
+    hi: ताओयुआन सिटी
+    hu: Taojüan megye
+    id: Kabupaten Taoyuan
+    it: Taoyuan
+    ja: 桃園市
+    kn: ತಾವೋಯೂನ್
+    ko: 타오위안 시
+    lt: Taojuano apskritis
+    mn: Таоюань
+    mr: ताओयुआन शहर
+    ms: Taoyuan
+    nb: Toayuan By
+    nl: Taoyuan
+    pl: Taoyuan
+    pt: Taoyuan
+    ru: Таоюань
+    si: ටොයුආන්
+    sv: Taoyuan
+    ta: தாவோயூயான் நகரம்
+    te: టైయోవాన్ నగరం
+    th: เถาหยวน
+    tr: Taoyuan
+    ur: تاویوان
+    vi: Đào Viên
+    lv: Taojuaņas speciālā municipalitāte
+    ceb: Taoyuan
+    zh: 桃園市
+    yue_Hans: 桃园县
+    ccp: "\U00011111\U00011103\U0001112E\U00011105\U0001112A\U00011120\U0001111A\U00011134"
+    uk: Таоюань
+    yue: 桃園縣
+    mk: Тоајуен
+    'no': Toayuan By
+    ca: Taoyuan
+    ga: Taoyuan
+    ha: Taoyuan
+    ha_NE: Taoyuan
+  comments:
+  type: special_municipality
+TNN:
+  name: Tainan Municipality
+  code: TNN
+  unofficial_names: Tainan Municipality
+  geo:
+    latitude: 23.0038497
+    longitude: 120.212227
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Tainan
+    af: Tainan
+    ar: تاينان
+    be: Горад Тайнань
+    bn: তাইনান
+    ca: Tainan
+    cs: Tchaj-nan
+    da: Tainan
+    de: Tainan
+    el: Ταϊνάν
+    es: Tainan
+    eu: Tainan
+    fa: تاینان
+    fi: Tainan
+    fr: Tainan
+    gu: તૈનન
+    he: טאינאן
+    hi: ताइनान
+    hu: Tajnan
+    hy: Թայնան
+    id: Kota Tainan
+    it: Tainan
+    ja: 台南市
+    kn: ತೈನೆನ್
+    ko: 타이난 시
+    lt: Tainanas
+    mn: Тайнань
+    mr: ताईनान
+    ms: Tainan
+    nb: Tainan
+    nl: Tainan
+    pl: Tainan
+    pt: Tainan
+    ru: Тайнань
+    si: ටයිනන්
+    sv: Tainan
+    ta: டைனான்
+    te: టాయినాన్
+    th: ไถหนัน
+    tr: Tainan
+    uk: Тайнань
+    ur: تاینان
+    vi: Đài Nam
+    lv: Tainana
+    zh: 臺南市
+    yue_Hans: 台南
+    ccp: "\U00011111\U0001112D\U0001111A\U0001111A\U00011134"
+    ga: Tainan
+    yue: 臺南
+    mk: Тајнан
+    'no': Tainan
+    bg: Тайнан
+    ceb: Tainan
+    ha: Tainan
+    ha_NE: Tainan
+    is: Taínan
+    ro: Tainan
+    sk: Tainan
+    sl: Tajnan
+  comments:
+  type: special_municipality
+TPE:
+  name: Taipei Special Municipality
+  code: TPE
+  unofficial_names: Taipei Special Municipality
+  geo:
+    latitude: 25.0329694
+    longitude: 121.5654177
+    min_latitude: 24.7900797
+    min_longitude: 121.2826735
+    max_latitude: 25.2443731
+    max_longitude: 121.7300824
+  translations:
+    en: Taipei
+    af: Taipei
+    am: ታይፔ
+    ar: تايبيه
+    az: Taybey
+    be: Тайбэй
+    bg: Тайпей
+    bn: তাইপে
+    ca: Taipei
+    cs: Tchaj-pej
+    da: Taipei
+    de: Taipeh
+    el: Ταϊπέι
+    es: Taipéi
+    et: Taipei
+    eu: Taipei
+    fa: تایپه
+    fi: Taipei
+    fr: Taipei
+    gl: Taipei
+    gu: તાયપેઈ
+    he: טאיפיי
+    hi: ताइपे
+    hr: Taipei
+    hu: Tajpej
+    hy: Թայբեյ
+    id: Kota Taipei
+    is: Taípei
+    it: Taipei
+    ja: 台北市
+    ka: ტაიბეი
+    kn: ತೈಪೆ
+    ko: 타이베이 시
+    lt: Taipėjus
+    lv: Taibei
+    ml: തായ്‌പെയ്
+    mn: Тайбэй
+    mr: ताइपेइ
+    ms: Taipei
+    nb: Taipei
+    ne: ताइपेइ
+    nl: Taipei
+    or: ତାଇପେ
+    pl: Tajpej
+    pt: Taipé
+    ro: Taipei
+    ru: Тайбэй
+    si: තායිපේ
+    sk: Tchaj-pej
+    sl: Tajpej
+    sr: Тајпеј
+    sv: Taipei
+    sw: Taipei
+    ta: தாய்பெய்
+    te: తాయిపెయ్
+    th: ไทเป
+    tk: Taýpeý
+    tr: Taipei
+    uk: Тайбей
+    ur: تائی پے
+    vi: Đài Bắc
+    cy: Taipei
+    ceb: Taipei (ulohang dakbayan)
+    sr_Latn: Tajpej
+    zh: 臺北市
+    yue_Hans: 台北市
+    jv: Taipei
+    sq: Taipei
+    ccp: "\U00011111\U0001112D\U0001111B\U0001112C"
+    ga: Taipei
+    ky: Тайбэй
+    ha: Taipei
+    so: Taipei
+    pa: ਤਾਈਪਈ
+    kk: Тайбэй
+    yue: 臺北市
+    my: ထိုင်ပေမြို့
+    yo: Taipei
+    uz: Taypey
+    bs: Taipei
+    mk: Тајпеј
+    ha_NE: Taipei
+    'no': Taipei
+    yo_BJ: Taipei
+    ps: تایپي
+  comments:
+  type: special_municipality
+TTT:
+  name: Taitung
+  code: TTT
+  unofficial_names:
+  - Taidong
+  geo:
+    latitude: 22.7972447
+    longitude: 121.0713702
+    min_latitude: 22.0009719
+    min_longitude: 120.7390581
+    max_latitude: 23.443723
+    max_longitude: 121.601229
+  translations:
+    en: Taitung
+    ar: مقاطعة تايتونغ
+    bg: Таитунг
+    bn: টাইটুং কাউন্টি
+    cs: Okres Tchaj-tung
+    da: Taitung County
+    de: Landkreis Taitung
+    el: Ταϊτούνγκ
+    es: Condado del Taitung
+    eu: Taitung konderria
+    fi: Taitungn kunta
+    fr: Comté de Taitung
+    gu: તૈતુંગ કાઉન્ટી
+    hi: ताइतुंग काउंटी
+    id: Kabupaten Taitung
+    it: Contea di Taitung
+    ja: 台東県
+    kn: ತೈಟಂಗ್ ಕೌಂಟಿ
+    ko: 타이둥 현
+    lt: Taidongo apskritis
+    mn: Тайдун
+    mr: तायतुग काउंटी
+    ms: Taitung County
+    nb: Taitung Fylke
+    nl: Taitung
+    pl: Taidong
+    pt: Condado de Taitung
+    ru: Тайдун
+    si: ටයිටුන්ග් දිස්ත්‍රික්කය
+    sv: Taitung (län)
+    ta: டைட்டுங் கவுண்டி
+    te: టైటుంగ్ కౌంటీ
+    th: ไถตง
+    tr: Taitung County
+    ur: تائیتونگ کاؤنٹی
+    vi: Đài Đông
+    lv: Taidunas apriņķis
+    cy: Sir Taitung
+    ceb: Taitung
+    zh: 臺東縣
+    yue_Hans: 台东县
+    ccp: "\U00011111\U0001112D\U00011111\U0001112A\U00011101"
+    uk: Округ Тайдун
+    yue: 臺東縣
+    'no': Taitung Fylke
+    he: מחוז טייטונג
+  comments:
+  type: county
+TXG:
+  name: Taichung Municipality
+  code: TXG
+  unofficial_names: Taichung Municipality
+  geo:
+    latitude: 24.301983
+    longitude: 120.5854674
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Taichung
+    af: Taichung
+    ar: تاي شانغ
+    bn: তাইচোং
+    cs: Tchaj-čung
+    da: Taichung
+    de: Taichung
+    el: Ταϊτσούνγκ
+    es: Taichung
+    fa: تایچونگ
+    fi: Taichung
+    fr: Taichung
+    gu: તાઈચુંગ
+    he: טאיג׳ונג
+    hi: ताइचुंग
+    hu: Tajcshung
+    id: Kota Taichung
+    it: Taichung
+    ja: 台中市
+    kn: ತಾಯ್ಚುಂಗ್
+    ko: 타이중 시
+    lt: Taičungas
+    mn: Тайжун
+    mr: ताईचुंग
+    ms: Taichung
+    nb: Taichung
+    nl: Taichung
+    pl: Taizhong
+    pt: Taichung
+    ro: Taichung
+    ru: Тайчжун
+    si: ටායිචන්ග්
+    sv: Taichung
+    ta: தாய்சங்
+    te: టాయిచుంగ్
+    th: ไทจง
+    tr: Taichung
+    uk: Тайчжун
+    ur: ٹائچونگ
+    vi: Đài Trung
+    lv: Taidžuna
+    zh: 臺中市
+    yue_Hans: 台中市
+    ccp: "\U00011111\U0001112D\U0001110C\U0001112A\U00011101"
+    ga: Taichung
+    ky: Тайчжун
+    yue: 臺中市
+    ca: Taichung
+    mk: Тајџунг
+    'no': Taichung
+    et: Taichung
+    ha: Taichung
+    ha_NE: Taichung
+    hr: Taichung
+  comments:
+  type: special_municipality
+YUN:
+  name: Yunlin
+  code: YUN
+  unofficial_names: Yunlin
+  geo:
+    latitude: 23.7092033
+    longitude: 120.4313373
+    min_latitude: 23.5043147
+    min_longitude: 120.132978
+    max_latitude: 23.8421451
+    max_longitude: 120.7362057
+  translations:
+    en: Yunlin
+    ar: مقاطعة يونلين
+    bg: Юнлин
+    bn: ইউনলিন কাউন্টি
+    cs: Okres Jün-lin
+    da: Yunlin County
+    de: Landkreis Yunlin
+    el: Γιούνλιν
+    es: Condado de Yunlin
+    eu: Yunlin konderria
+    fi: Yunlinin kunta
+    fr: comté de Yunlin
+    gu: યુનલીન કાઉન્ટી
+    hi: यूनलिन काउंटी
+    id: Kabupaten Yunlin
+    it: contea di Yunlin
+    ja: 雲林県
+    kn: ಯುನ್ಲಿನ್ ಕೌಂಟಿ
+    ko: 윈린 현
+    lt: Junlino apskritis
+    mn: Юньлинь
+    mr: युनिन काउंटी
+    ms: Yunlin County
+    nb: Yunlin County
+    nl: Yunlin
+    pl: Yunlin
+    pt: Condado de Yunlin
+    ru: Юньлинь
+    si: යුන්ලින් ප්‍රාන්තය
+    sv: Yunlin County
+    ta: யூன்லின் கவுண்டி
+    te: యున్లిన్ కౌంటీ
+    th: หยุนหลิน
+    tr: Yunlin County
+    ur: یونلن کاؤنٹی
+    vi: Vân Lâm
+    lv: Junlinas distrikts
+    cy: Sir Yunlin
+    ceb: Yunlin
+    zh: 雲林縣
+    yue_Hans: 云林县
+    ccp: "\U00011103\U00011128\U00011105\U0001112A\U0001111A\U00011134\U00011123\U00011128\U0001111A\U00011134"
+    uk: Округ Юньлінь
+    yue: 雲林縣
+    'no': Yunlin County
+    ca: Comarca de Yunlin
+  comments:
+  type: county

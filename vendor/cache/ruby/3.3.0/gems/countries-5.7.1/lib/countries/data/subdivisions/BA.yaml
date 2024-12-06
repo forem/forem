@@ -1,0 +1,224 @@
+---
+BIH:
+  name: Federacija Bosna i Hercegovina
+  code: BIH
+  unofficial_names: Federacija Bosna i Hercegovina
+  geo:
+    latitude: 43.8874897
+    longitude: 17.842793
+    min_latitude: 42.6075035
+    min_longitude: 15.7237473
+    max_latitude: 45.2271323
+    max_longitude: 19.0392512
+  translations:
+    en: Federation of Bosnia and Herzegovina
+    ar: اتحاد البوسنة والهرسك
+    az: Bosniya və Herseqovina Federasiyası
+    be: Федэрацыя Босніі і Герцагавіны
+    bg: Федерация Босна и Херцеговина
+    ca: Federació de Bòsnia i Hercegovina
+    cs: Federace Bosny a Hercegoviny
+    de: Föderation Bosnien und Herzegowina
+    el: Ομοσπονδία Βοσνίας-Ερζεγοβίνης
+    es: Federación de Bosnia y Herzegovina
+    et: Bosnia ja Hertsegoviina Föderatsioon
+    eu: Bosnia-Herzegovinako Federazioa
+    fa: فدراسیون بوسنی و هرزگوین
+    fi: Bosnia ja Hertsegovinan federaatio
+    fr: Fédération de Bosnie-et-Herzégovine
+    gl: Federación de Bosnia e Hercegovina
+    he: הפדרציה של בוסניה והרצגובינה
+    hr: Federacija Bosne i Hercegovine
+    hu: Bosznia-hercegovinai Föderáció
+    id: Federasi Bosnia dan Herzegovina
+    it: Federazione di Bosnia ed Erzegovina
+    ja: ボスニア・ヘルツェゴビナ連邦
+    ka: ბოსნია და ჰერცეგოვინის ფედერაცია
+    ko: 보스니아 헤르체고비나 연방
+    lt: Bosnijos ir Hercegovinos Federacija
+    ms: Persekutuan Bosnia dan Herzegovina
+    nb: Føderasjonen av Bosnia og Hercegovina
+    nl: Federatie van Bosnië en Herzegovina
+    pl: Federacja Bośni i Hercegowiny
+    pt: Federação da Bósnia e Herzegovina
+    ro: Federația Bosniei și Herțegovinei
+    ru: Федерация Боснии и Герцеговины
+    sl: Federacija Bosne in Hercegovine
+    sr: Федерација Босне и Херцеговине
+    sv: Federationen Bosnien och Hercegovina
+    th: สหพันธรัฐบอสเนียและเฮอร์เซโกวีนา
+    tk: Bosniýa we Gertsegowina Federasiýasy
+    tr: Bosna-Hersek Federasyonu
+    uk: Федерація Боснія і Герцеговина
+    ur: وفاق بوسنیا و ہرزیگووینا
+    vi: Liên bang Bosna và Hercegovina
+    zh: 波士尼亞與赫塞哥維納聯邦
+    ceb: Federation of Bosnia and Herzegovina
+    sr_Latn: Federacija Bosne i Hercegovine
+    jv: Federasi Bosnia Herzegovina
+    sq: Federata e Bosnjës dhe Hercegovinës
+    ccp: "\U0001111C\U0001112C\U00011113\U00011122\U0001112C\U00011125\U00011127\U0001111A\U00011134
+      \U00011103\U00011127\U0001111B\U00011134 \U0001111D\U00011127\U0001110C\U00011134\U0001111A\U00011128\U00011120
+      \U00011103\U0001112C\U0001111A\U00011133\U00011113\U00011134 \U00011126\U00011122\U00011134\U0001110E\U0001112E\U00011109\U00011127\U0001111E\U00011128\U0001111A"
+    hy: Բոսնիա և Հերցեգովինա ֆեդերացիա
+    kk: Босния және Герцеговина федерациясы
+    bs: Federacija Bosne i Hercegovine
+    mk: Федерација Босна и Херцеговина
+    'no': Føderasjonen av Bosnia og Hercegovina
+    da: Føderationen af Bosnien og Hercegovina
+    ky: Босния жана Герцеговина Федерациясы
+    lv: Bosnijas un Hercegovinas Federācija
+  comments:
+  type: entity
+BRC:
+  name: Brčko Distrikt
+  code: BRC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة برتشو
+    be: Акруга Брчко
+    bg: Бръчко
+    bn: বাক্কু জেলা
+    ca: Districte de Brčko
+    cs: Brčko
+    da: Brčko
+    de: Distrikt Brčko
+    el: Μπρσκο
+    en: Brčko District
+    es: Distrito de Brčko
+    et: Brčko ringkond
+    eu: Brčkoko Barrutia
+    fi: Brčkon kaupunginosa
+    fr: District de Brčko
+    gl: Distrito de Brčko
+    gu: બ્રકો જિલ્લો
+    he: מחוז ברצ׳קו
+    hi: ब्राको जिला
+    hr: Brčko Distrikt Bosne i Hercegovine
+    hu: Brčkói Körzet
+    id: Distrik Brčko
+    it: Distretto di Brčko
+    ja: ブルチコ行政区
+    ka: ბრჩკოს ოლქი
+    kn: ಬ್ರೆಸ್ಕೊ ಜಿಲ್ಲೆ
+    ko: 브르치코 행정구
+    lt: Brčko apygarda
+    lv: Brčko apgabals
+    mr: ब्रँचको जिल्हा
+    ms: Brcko District
+    nb: Brčko-distriktet
+    nl: Brčko
+    pl: Dystrykt Brczko
+    pt: Distrito de Brčko
+    ro: Districtul Brčko
+    ru: Округ Брчко
+    si: බ්ර්කෝ දිස්ත්‍රික්කය
+    sk: Dištrikt Brčko
+    sr: Брчко Дистрикт
+    sv: Brčko
+    ta: ப்ரக்க்கோ மாவட்டம்
+    te: బ్రకో జిల్లా
+    th: เขตบรึชโก
+    tk: Brçko etraby
+    tr: Brçko Bölgesi
+    uk: Округ Брчко
+    ur: ضلع برچکو
+    vi: Quận Brčko
+    ceb: Brčko (entidad)
+    sr_Latn: Brčko Distrikt
+    zh: 布爾奇科特區
+    fa: بخش برچکو
+    jv: Distrik Brčko
+    sq: Distrikti i Brçkos
+    ccp: "\U0001111D\U00011133\U00011122\U00011127\U00011107\U00011134\U00011107\U0001112E
+      \U0001110E\U0001112C\U00011123"
+    sl: Distrikt Brčko
+    bs: Brčko Distrikt
+    mk: Брчко
+    'no': Brčko-distriktet
+  comments:
+  type: district_with_special_status
+SRP:
+  name: Republika Srpska
+  code: SRP
+  unofficial_names: Republika Srpska
+  geo:
+    latitude: 44.7280186
+    longitude: 17.3148136
+    min_latitude: 42.5561996
+    min_longitude: 16.1924385
+    max_latitude: 45.2737124
+    max_longitude: 19.6256174
+  translations:
+    en: Republika Srpska
+    ar: جمهورية صرب البوسنة
+    az: Bosniya Serb Respublikası
+    be: Рэспубліка Сербская
+    bg: Република Сръбска
+    bn: রেপুবলিকা সর্পস্কা
+    ca: República Sèrbia
+    cs: Republika srbská
+    da: Republika Srpska
+    de: Republika Srpska
+    el: Σερβική Δημοκρατία
+    es: República Srpska
+    et: Serblaste Vabariik
+    eu: Bosniako Serbiar Errepublika
+    fa: جمهوری صرب بوسنی
+    fi: Serbitasavalta
+    fr: République serbe de Bosnie
+    gl: República Serbia - Republika Srpska
+    he: רפובליקה סרפסקה
+    hr: Republika Srpska
+    hu: Boszniai Szerb Köztársaság
+    hy: Սերբական Հանրապետություն
+    id: Republik Srpska
+    it: Repubblica Serba di Bosnia ed Erzegovina
+    ja: スルプスカ共和国
+    ka: ბოსნიელთა რესპუბლიკა
+    ko: 스릅스카 공화국
+    lt: Serbų respublika
+    lv: Serbu Republika
+    mr: स्राप्स्काचे प्रजासत्ताक
+    ms: Republika Srpska
+    nb: Republika Srpska
+    nl: Servische Republiek
+    pl: Republika Serbska
+    pt: República Sérvia
+    ro: Republika Srpska
+    ru: Республика Сербская
+    sk: Republika srbská
+    sl: Republika srbska
+    sr: Република Српска
+    sv: Republika Srpska
+    ta: சிறுப்ஸ்கா குடியரசு
+    th: สาธารณรัฐเซิร์ปสกา
+    tk: Serb Respublikasy
+    tr: Sırp Cumhuriyeti
+    uk: Республіка Сербська
+    ur: سرپسکا
+    vi: Cộng hòa Srpska
+    ceb: Republika Srpska
+    yo_BJ: Sérbíà Orílɛ̀-èdè Olómìnira
+    sr_Latn: Republika Srpska
+    zh: 塞族共和國
+    jv: Republika Srpska
+    sq: Republika Serbe
+    ccp: "\U00011122\U0001112C\U0001111B\U0001111B\U00011134\U00011123\U00011128\U00011107
+      \U00011103\U0001112C\U0001110C\U00011134\U00011103\U00011122\U00011134\U0001111B\U00011128\U00011103\U00011128\U0001110C\U00011134\U00011107\U00011133\U00011103"
+    ky: Серб Республикасы
+    yo: Sérbíà Orílẹ̀-èdè Olómìnira
+    bs: Republika Srpska
+    mk: Република Српска
+    'no': Republika Srpska
+    af: Serwiese Republiek
+    my: ဆာ့ပ်စ်ကာသမ္မတနိုင်ငံ
+  comments:
+  type: entity

@@ -1,0 +1,57 @@
+module RBS
+  class Parser
+    # Parse a method type and return it
+    #
+    # When `pos` keyword is specified, skips the first `pos` characters from the input.
+    # If no token is left in the input, it returns `nil`.
+    #
+    # ```ruby
+    # RBS::Parser.parse_method_type("() -> void", range: 0...)                   # => `() -> void`
+    # RBS::Parser.parse_method_type("() -> void () -> String", range: 11...)     # => `() -> String`
+    # RBS::Parser.parse_method_type("() -> void () -> String", range: 23...)     # => nil
+    # ```
+    #
+    # `line` and `column` is deprecated and are ignored.
+    #
+    def self.parse_method_type: (Buffer | String, range: Range[Integer?], ?variables: Array[Symbol]) -> MethodType?
+                              | (Buffer | String, ?line: top, ?column: top, ?variables: Array[Symbol]) -> MethodType
+
+    # Parse a type and return it
+    #
+    # When `pos` keyword is specified, skips the first `pos` characters from the input.
+    # If no token is left in the input, it returns `nil`.
+    #
+    # ```ruby
+    # RBS::Parser.parse_type("String", range: 0...)             # => `String`
+    # RBS::Parser.parse_type("String Integer", pos: 7...)       # => `Integer`
+    # RBS::Parser.parse_type("String Integer", pos: 14...)      # => nil
+    # ```
+    #
+    # `line` and `column` is deprecated and are ignored.
+    #
+    def self.parse_type: (Buffer | String, range: Range[Integer?], ?variables: Array[Symbol]) -> Types::t?
+                       | (Buffer | String, ?line: top, ?column: top, ?variables: Array[Symbol]) -> Types::t
+
+    # Parse whole RBS file and return an array of declarations
+    #
+    # `line` and `column` is deprecated and are ignored.
+    #
+    def self.parse_signature: (Buffer | String) -> Array[AST::Declarations::t]
+                            | (Buffer | String, ?line: top, ?column: top) -> Array[AST::Declarations::t]
+
+    KEYWORDS: Hash[String, bot]
+
+    private
+
+    def self.buffer: (String | Buffer source) -> Buffer
+
+    def self._parse_type: (Buffer, Integer start_pos, Integer end_pos, Array[Symbol] variables, boolish eof) -> Types::t?
+
+    def self._parse_method_type: (Buffer, Integer start_pos, Integer end_pos, Array[Symbol] variables, boolish eof) -> MethodType?
+
+    def self._parse_signature: (Buffer, Integer end_pos) -> Array[AST::Declarations::t]
+
+    class LocatedValue
+    end
+  end
+end

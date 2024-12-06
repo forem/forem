@@ -1,0 +1,1453 @@
+---
+'11':
+  name: Tunis
+  code: '11'
+  unofficial_names:
+  - Toûnis
+  - Tūnis
+  - Tunis
+  - Tunis
+  - Túnez
+  geo:
+    latitude: 36.8064948
+    longitude: 10.1815316
+    min_latitude: 36.7184274
+    min_longitude: 10.0179433
+    max_latitude: 36.8713385
+    max_longitude: 10.2686119
+  translations:
+    en: Tunis
+    ar: ولاية تونس
+    be: вілает Туніс
+    bg: Тунис
+    ca: Governació de Tunis
+    de: Gouvernorat Tunis
+    es: Gobernación de Túnez
+    fa: استان تونس
+    fr: Gouvernorat de Tunis
+    id: Kegubernuran Tunis
+    it: governatorato di Tunisi
+    ja: チュニス県
+    ko: 튀니스 주
+    ms: Kawasan kegabenoran Tunis
+    nb: Tunis
+    nl: Tunis
+    pl: Gubernatorstwo Tunis
+    pt: Túnis
+    ro: Guvernoratul Tunis
+    ru: Тунис
+    sv: Tunis
+    tr: Tunus ili
+    uk: Туніс
+    ur: تونس
+    zh: 突尼斯省
+    cy: Tunis
+    ceb: Gouvernorat de Tunis
+    el: Κυβερνείο Τύνιδας
+    ccp: "\U00011111\U0001112A\U0001111A\U00011128\U0001110C\U00011134"
+    'no': Tunis
+    az: Tunis qubernatorluğu
+    cs: Tuniský guvernorát
+    da: Tunis
+    hy: Թունիս
+    zu: Tunis Governorate
+  comments:
+  type: governorate
+'12':
+  name: L'Ariana
+  code: '12'
+  unofficial_names:
+  - Ariano
+  - Iryanah
+  - Ariana
+  geo:
+    latitude: 36.9922751
+    longitude: 10.1255164
+    min_latitude: 36.827762
+    min_longitude: 9.976983899999999
+    max_latitude: 37.1352458
+    max_longitude: 10.2448928
+  translations:
+    en: Ariana
+    ar: ولاية أريانة
+    be: Вілает Арыяна
+    bg: Ариана
+    ca: Governació d’Ariana
+    de: Gouvernorat Ariana
+    el: Αρυάνα
+    es: Gobernación de Ariana
+    fa: استان اریانه
+    fi: Ariana
+    fr: Gouvernorat de l’Ariana
+    hu: Ariana kormányzóság
+    id: Kegubernuran Ariana
+    it: governatorato di Ariana
+    ja: アリアナ県
+    ka: არიანის ვილაიეთი
+    ko: 아리아나 주
+    lt: Arianos vilajetas
+    ms: Kawasan kegabenoran Ariana
+    nb: Ariana
+    nl: Ariana
+    pl: Gubernatorstwo Arjana
+    pt: Ariana
+    ro: Guvernoratul Ariana
+    ru: Арьяна
+    sv: Ariana
+    tr: Aryana Vilayeti
+    uk: Арʼяна
+    ur: آریانہ
+    vi: Ariana
+    cy: Ariana
+    ceb: Gouvernorat de l’Ariana
+    zh: 艾爾亞內省
+    ccp: "\U00011103\U00011122\U00011128\U00011120\U0001111A\U00011134"
+    az: Aryana vilayəti
+    'no': Ariana
+    he: אריאנה
+    th: เขตผู้ว่าการอัรยานะฮ์
+  comments:
+  type: governorate
+'13':
+  name: Ben Arous
+  code: '13'
+  unofficial_names:
+  - Bin Arus
+  - Ben Arous
+  geo:
+    latitude: 36.7435003
+    longitude: 10.2319757
+    min_latitude: 36.7297301
+    min_longitude: 10.2090426
+    max_latitude: 36.7632374
+    max_longitude: 10.2602512
+  translations:
+    en: Ben Arous
+    ar: ولاية بن عروس
+    be: Вілает Бен-Арус
+    bg: Бен Арус
+    bn: বেন আরুস গভর্নোরেট
+    ca: Governació de Ben Arous
+    da: Ben Arous
+    de: Gouvernorat Ben Arous
+    el: Μπιν Αρούς
+    es: Gobernación de Ben Arous
+    fa: استان بن عروس
+    fi: Ben Arous
+    fr: Gouvernorat de Ben Arous
+    gu: બેન એરોસ ગવર્નોરેટ
+    hi: बेन आरुस गवर्नरेट
+    hu: Ben Arous kormányzóság
+    id: Kegubernuran Ben Arous
+    it: governatorato di Ben Arous
+    ja: ベンナラス県
+    ka: ბენ-არუსის ვილაიეთი
+    kn: ಬೆನ್ ಅರೋಸ್ ಗವರ್ನೇಟ್
+    ko: 벤아루스 주
+    lt: Ben Aruso vilajetas
+    mr: बेन एउर गव्हरनेट
+    ms: Ben Arous Governorate
+    nb: Ben Arous
+    nl: Ben Arous
+    pl: Gubernatorstwo Bin Arus
+    pt: Ben Arous
+    ro: Guvernoratul Ben Arous
+    ru: Бен-Арус
+    si: බෙන් අරෞස් පළාත
+    sv: Ben Arous
+    ta: பெண் அரூஸ் கோவெர்னோரேட்
+    te: బెన్ ఆరస్ గవర్నరేట్
+    th: เบนอารุส
+    tr: Ben Arus ili
+    uk: Бен-Арус
+    ur: بن عروس
+    vi: Tỉnh Ben Arous
+    lv: Ben Aruso vilājets
+    cy: Ben Arous
+    ceb: Gouvernorat de Ben Arous
+    zh: 本阿魯斯省
+    ccp: "\U0001111D\U0001112C\U0001111A\U00011134 \U00011103\U00011122\U0001112F\U0001110C\U00011134"
+    az: Ben Arus vilayəti
+    'no': Ben Arous
+    he: בן ערוס
+  comments:
+  type: governorate
+'14':
+  name: La Manouba
+  code: '14'
+  unofficial_names:
+  - Manouba
+  geo:
+    latitude: 36.8446504
+    longitude: 9.8571416
+    min_latitude: 36.592011
+    min_longitude: 9.553794
+    max_latitude: 36.9795789
+    max_longitude: 10.081348
+  translations:
+    en: Manouba
+    ar: ولاية منوبة
+    be: Вілает Мануба
+    bg: Мануба (област)
+    bn: মান্যুবা গভর্নোরেট
+    ca: Governació de Manouba
+    da: Manouba Governorate
+    de: Gouvernorat Manouba
+    el: Μανούμπα
+    es: Gobernación de Manouba
+    fa: استان منوبه
+    fi: Manouban kuvernoraatti
+    fr: Gouvernorat de la Manouba
+    gu: માનૌબા ગવર્નોરેટ
+    hi: मनोबा गवर्नरेट
+    id: Kegubernuran Manouba
+    it: governatorato di Manouba
+    ja: マヌーバ県
+    kn: ಮನ್ಬೌ ಗವರ್ನೇಟ್
+    ko: 마누바 주
+    mr: मोनौबा गव्हर्नोरेट
+    ms: Kawasan kegabenoran Manouba
+    nb: Manouba
+    nl: Manouba
+    pl: Gubernatorstwo Manuba
+    pt: Manouba
+    ro: Guvernoratul Manouba
+    ru: Мануба
+    si: මනොඋබා පළාත
+    sv: Manouba
+    ta: மனோபா கோவெர்னோரே
+    te: మానోబా గవర్నరేట్
+    th: มานูวบา
+    tr: Manuba ili
+    uk: Мануба
+    ur: منوبہ
+    vi: Tỉnh Manouba
+    lv: Manūbas vilāja
+    cy: Manouba
+    ceb: Manouba (lalawigan)
+    lt: Manubos gubernija
+    zh: 馬努巴省
+    ccp: "\U0001111F\U0001111A\U0001112F\U0001111D"
+    az: Manuba vilayəti
+    'no': Manouba
+  comments:
+  type: governorate
+'21':
+  name: Nabeul
+  code: '21'
+  unofficial_names:
+  - Nabul
+  - Nabeul
+  geo:
+    latitude: 36.454167
+    longitude: 10.734722
+    min_latitude: 36.4244781
+    min_longitude: 10.6720592
+    max_latitude: 36.4772055
+    max_longitude: 10.7524394
+  translations:
+    en: Nabeul
+    ar: ولاية نابل
+    be: Вілает Набуль
+    bg: Набьол
+    bn: নাবেউল গভর্নোরেট
+    ca: Governació de Nabeul
+    da: Nabeul Governorate
+    de: Gouvernorat Nabeul
+    el: Νάμπουλ
+    es: Gobernación de Nabeul
+    fa: استان نابل
+    fi: Nabeul
+    fr: Gouvernorat de Nabeul
+    gu: નાબુલ ગવર્નોરેટ
+    hi: नाबुल गवर्नरेट
+    id: Kegubernuran Nabeul
+    it: governatorato di Nabeul
+    ja: ナブール県
+    kn: ನಬೆಲ್ ಗವರ್ನೇಟ್
+    ko: 나뵐 주
+    mr: नबील गव्हर्नोरेट
+    ms: Kawasan kegabenoran Nabeul
+    nb: Nabeul
+    nl: Nabeul
+    pl: Gubernatorstwo Nabul
+    pt: Nabeul
+    ro: Guvernoratul Nabeul
+    ru: Набуль
+    si: නබුඑල් පළාත
+    sv: Nabeul
+    ta: நபியினுள் கோவெர்னோரே
+    te: నాబియల్ గవర్నరేట్
+    th: จังหวัดนาเบิล
+    tr: Nabil ili
+    uk: Набуль
+    ur: نابل
+    vi: Tỉnh Nabeul
+    lv: Nābulas vilāja
+    cy: Nabeul
+    ceb: Gouvernorat de Nabeul
+    lt: Nabulo gubernija
+    zh: 納布勒省
+    ccp: "\U0001111A\U0001111D\U0001112C\U00011105\U0001112A\U00011123\U00011134"
+    az: Nabul vilayəti
+    'no': Nabeul
+  comments:
+  type: governorate
+'22':
+  name: Zaghouan
+  code: '22'
+  unofficial_names:
+  - Zaghwan
+  - Zagwan
+  - Zaghouan
+  geo:
+    latitude: 36.4
+    longitude: 10.15
+    min_latitude: 36.3916477
+    min_longitude: 10.1144424
+    max_latitude: 36.4261047
+    max_longitude: 10.1580619
+  translations:
+    en: Zaghouan
+    ar: ولاية زغوان
+    be: Вілает Загван
+    bg: Загуан
+    bn: জাঘুয়ান গভর্নোরেট
+    ca: Governació de Zaghouan
+    da: Zaghouan Governorate
+    de: Gouvernement Zaghouan
+    el: Ζαγκουάν (Κυβερνείο)
+    es: Gobernación de Zaghouan
+    fa: استان زغوان
+    fi: Zaghouanin kuvernoraatti
+    fr: Gouvernorat de Zaghouan
+    gu: ઝાગૌઆન ગવર્નોરેટ
+    hi: ज़घूअन गवर्नरेट
+    id: Governorat Zaghouan
+    it: governatorato di Zaghouan
+    ja: ザグアン県
+    kn: ಝಘೌವಾನ್ ಗವರ್ನೇಟ್
+    ko: 자구완
+    mr: झगाऊयन गव्हनर्टेट
+    ms: Kawasan kegabenoran Zaghouan
+    nb: Zaghouan (guvernement)
+    nl: Zaghouan
+    pl: Gubernatorstwo Zaghwan
+    pt: Zaghouan
+    ro: Guvernoratul Zaghouan, Tunisia
+    ru: Загван
+    si: සග්හුආන් පළාත
+    sv: Zaghouan (guvernement)
+    ta: சாஜிஹௌன் கோவெர்னோராட்
+    te: జాగ్హోవన్ గవర్నరేట్
+    th: ซากวน
+    tr: Zağvan ili
+    uk: Загуан (вілаєт)
+    ur: زغوان گوورنوراتے
+    vi: Tỉnh Zaghouan
+    lv: Zagvānas vilāja
+    cy: Zaghouan
+    ceb: Gouvernorat de Zaghouan
+    lt: Zahvano gubernija
+    zh: 宰格萬省
+    ccp: "\U0001110E\U0001110A\U0001112F\U00011120\U0001111A\U00011134"
+    'no': Zaghouan (guvernement)
+  comments:
+  type: governorate
+'23':
+  name: Bizerte
+  code: '23'
+  unofficial_names:
+  - Banzart
+  - Benzert
+  - Bizerta
+  - Bizerte
+  geo:
+    latitude: 37.266667
+    longitude: 9.866667
+    min_latitude: 37.2544257
+    min_longitude: 9.839630099999999
+    max_latitude: 37.2958372
+    max_longitude: 9.885862999999999
+  translations:
+    en: Bizerte
+    ar: ولاية بنزرت
+    be: Вілает Бізерта
+    bg: Бизерта
+    bn: বিজার্তে গভর্নোরেট
+    ca: Governació de Bizerta
+    da: Bizerte Governorate
+    de: Gouvernorat Bizerta
+    el: Μπιζέρτα
+    es: Gobernación de Bizerta
+    fa: استان بنزرت
+    fi: Bizerte
+    fr: Gouvernorat de Bizerte
+    gu: બિઝેર્ટ ગવર્નોરેટ
+    hi: बिज़ेर्ते गवर्नरेट
+    hu: Bizerte kormányzóság
+    id: Kegubernuran Bizerte
+    it: governatorato di Biserta
+    ja: ビゼルト県
+    ka: ბიზერტის ვილაიეთი
+    kn: ಬಿಜರ್ಟೆ ಗವರ್ನೇಟ್
+    ko: 비제르테 주
+    lt: Bizertos vilajetas
+    mr: बर्जर गव्हनर्टेट
+    ms: Kawasan kegabenoran Bizerte
+    nb: Bizerte
+    nl: Bizerte
+    pl: Gubernatorstwo Bizerta
+    pt: Bizerte
+    ro: Guvernoratul Bizerte
+    ru: Бизерта
+    si: බිසර්ටේ පළාත
+    sv: Bizerte
+    ta: பிஸிர்ட்டே கோவெர்னோராட்
+    te: బిజర్టె గవర్నరేట్
+    th: บิเสิท กอฟเวอโนเลท
+    tr: Binzert ili
+    uk: Бізерта
+    ur: بنزرت
+    vi: Tỉnh Bizerte
+    lv: Bizertas vilāja
+    cy: Bizerte
+    ceb: Gouvernorat de Bizerte
+    zh: 比塞大省
+    ccp: "\U0001111D\U0001112D\U0001110E\U00011122\U00011134\U00011111\U0001112C"
+    az: Bizerta vilayəti
+    'no': Bizerte
+    he: בנזרט (מחוז)
+  comments:
+  type: governorate
+'31':
+  name: Béja
+  code: '31'
+  unofficial_names:
+  - Bajah
+  - Béja
+  geo:
+    latitude: 36.733333
+    longitude: 9.183333
+    min_latitude: 36.713096
+    min_longitude: 9.1621957
+    max_latitude: 36.7463238
+    max_longitude: 9.213008799999999
+  translations:
+    en: Béja
+    ar: ولاية باجة
+    be: Вілает Беджа
+    bg: Бежа (област)
+    ca: Governació de Béja
+    de: Gouvernorat Beja
+    el: Μπατζά
+    es: Gobernación de Béja
+    fa: استان باجه
+    fi: Béja
+    fr: Gouvernorat de Béja
+    hu: Béja kormányzóság
+    id: Kegubernuran Béja
+    it: governatorato di Béja
+    ja: ベジャ県
+    ka: ბეჯის ვილაიეთი
+    ko: 베자 주
+    lt: Badžos vilajetas
+    ms: Kawasan kegabenoran Béja
+    nb: Béja
+    nl: Béja
+    pl: Gubernatorstwo Badża
+    pt: Béja
+    ro: Guvernoratul Béja
+    ru: Беджа
+    sv: Béja
+    tr: Bace ili
+    uk: Беджа
+    ur: باجہ
+    cy: Béja
+    ceb: Gouvernorat de Béja
+    zh: 巴傑省
+    ccp: "\U0001111D\U0001112C\U0001110E"
+    az: Beca vilayəti
+    'no': Béja
+    he: בז׳ה (מחוז, תוניסיה)
+    th: เขตผู้ว่าการบาญะฮ์
+  comments:
+  type: governorate
+'32':
+  name: Jendouba
+  code: '32'
+  unofficial_names:
+  - Jundubah
+  - Jendouba
+  geo:
+    latitude: 36.5
+    longitude: 8.783332999999999
+    min_latitude: 36.485349
+    min_longitude: 8.750782
+    max_latitude: 36.5212251
+    max_longitude: 8.807001099999999
+  translations:
+    en: Jendouba
+    ar: ولاية جندوبة
+    be: Вілает Джэндуба
+    bg: Жендуба
+    bn: জেন্দুবা গভর্নোরেট
+    ca: Governació de Jendouba
+    da: Jendouba Governorate
+    de: Gouvernorat Jendouba
+    el: Τζουντούμπα
+    es: Gobernación de Jendouba
+    fa: استان جندوبه
+    fi: Jendouba
+    fr: Gouvernorat de Jendouba
+    gu: જેંડોબા ગવર્નોરેટ
+    hi: जेंडुबा गवर्नरेट
+    id: Kegubernuran Jendouba
+    it: governatorato di Jendouba
+    ja: ジェンドゥーバ県
+    kn: ಜೆಂಡೌಬ ಗವರ್ನೇಟ್
+    ko: 젠두바 주
+    lt: Džendubos vilajetas
+    mr: जेन्डोबा गव्हर्नोरेट
+    ms: Kawasan kegabenoran Jendouba
+    nb: Jendouba
+    nl: Jendouba
+    pl: Gubernatorstwo Dżunduba
+    pt: Jendouba
+    ro: Guvernoratul Jendouba
+    ru: Джендуба
+    si: ජේන්දෝඋබා පළාත
+    sv: Jendouba
+    ta: ஜெண்டோயூபா கோவெர்னோரே
+    te: జెండోబా గవర్నరేట్
+    th: เจนเดาบา โดเวอโนเรท
+    tr: Cendube ili
+    uk: Джендуба
+    ur: جندوبہ
+    vi: Tỉnh Jendouba
+    lv: Džundūbas vilāja
+    cy: Jendouba
+    ceb: Gouvernorat de Jendouba
+    zh: 堅杜拜省
+    ccp: "\U0001110E\U0001112C\U0001111A\U00011134\U00011113\U0001112F\U0001111D"
+    az: Cenduba vilayəti
+    'no': Jendouba
+    he: מחוז ג׳נדובה
+  comments:
+  type: governorate
+'33':
+  name: Le Kef
+  code: '33'
+  unofficial_names:
+  - El Kef
+  - Le Kef
+  geo:
+    latitude: 36.182222
+    longitude: 8.714722
+    min_latitude: 36.1414446
+    min_longitude: 8.670744899999999
+    max_latitude: 36.1922777
+    max_longitude: 8.7338974
+  translations:
+    en: Kef
+    ar: ولاية الكاف
+    be: Вілает Эль-Кеф
+    bg: Кеф
+    bn: কেফ গভর্নোরেট
+    ca: Governació del Kef
+    da: Kef Governorate
+    de: Gouvernement Kef
+    el: Αλ Καφ
+    es: Gobernación de Al-Kāf
+    fa: استان کاف
+    fi: Kef
+    fr: gouvernorat du Kef
+    gu: કેફ ગવર્નોરેટ
+    hi: केफ़ गवर्नरेट
+    id: Kegubernuran Kef
+    it: governatorato del Kef
+    ja: ケフ県
+    kn: ಕೆಫ್ ಗವರ್ನೇಟ್
+    ko: 케프 주
+    mr: केफ गव्हरनेटेट
+    ms: Kawasan kegabenoran Kef
+    nb: Kef
+    nl: Kef
+    pl: Gubernatorstwo Kaf
+    pt: Kef
+    ro: Guvernoratul Kef
+    ru: Эль-Кеф
+    si: කෙෆ් පළාත
+    sv: Kef
+    ta: கேபி கோவெர்னோராட்
+    te: కెఫ్ గవర్నరేట్
+    th: เคฟ กอฟเวอโนเลท
+    tr: Kâf ili
+    uk: Ель-Кеф
+    ur: کاف (صوبہ)
+    vi: Tỉnh Kef
+    lv: Kāfas vilāja
+    cy: El Kef
+    ceb: Gouvernorat de Kef
+    lt: Kefo gubernija
+    zh: 卡夫省
+    ccp: "\U00011107\U0001112C\U0001111B\U00011134"
+    az: Kef vilayəti
+    'no': Kef
+    he: מחוז כף
+  comments:
+  type: governorate
+'34':
+  name: Siliana
+  code: '34'
+  unofficial_names:
+  - Silyanah
+  - Siliana
+  geo:
+    latitude: 36.08194400000001
+    longitude: 9.374722
+    min_latitude: 36.0747015
+    min_longitude: 9.349880200000001
+    max_latitude: 36.098909
+    max_longitude: 9.3806076
+  translations:
+    en: Siliana
+    ar: ولاية سليانة
+    be: Вілает Сільяна
+    bg: Силиана
+    bn: সিলিয়ানা গভর্নোরেট
+    ca: Governació de Siliana
+    da: Siliana Governorate
+    de: Gouvernorat Siliana
+    el: Σιλγιάνα
+    es: Gobernación de Siliana
+    fa: استان سلیانه
+    fi: Siliana
+    fr: Gouvernorat de Siliana
+    gu: સિલિઆના ગવર્નોરેટ
+    hi: सिलिआना गवर्नरेट
+    id: Kegubernuran Siliana
+    it: governatorato di Siliana
+    ja: シリアナ県
+    kn: ಸಿಲಿಯಾನಾ ಗವರ್ನೇಟ್
+    ko: 실리아나 주
+    mr: सिलियाना गव्हर्नोरेट
+    ms: Kawasan kegabenoran Siliana
+    nb: Siliana
+    nl: Siliana
+    pl: Gubernatorstwo Siljana
+    pt: Siliana
+    ro: Guvernoratul Siliana
+    ru: Сильяна
+    si: සිලියනා පළාත
+    sv: Siliana
+    ta: சிலியான கோவெர்னோரே
+    te: సిలియానా గవర్నరేట్
+    th: เขตการปกครองซิเลียนา
+    tr: Silyana ili
+    uk: Сільяна
+    ur: سلیانہ
+    vi: Tỉnh Siliana
+    lv: Siljānas vilāja
+    cy: Siliana
+    ceb: Gouvernorat de Siliana
+    lt: Silianos gubernija
+    zh: 錫勒亞奈省
+    ccp: "\U00011125\U00011128\U00011123\U00011128\U00011120\U0001111A"
+    'no': Siliana
+  comments:
+  type: governorate
+'41':
+  name: Kairouan
+  code: '41'
+  unofficial_names:
+  - al-Qayrawan
+  - Kairouan
+  geo:
+    latitude: 35.6759137
+    longitude: 10.0919243
+    min_latitude: 35.64132439999999
+    min_longitude: 10.0691415
+    max_latitude: 35.7072139
+    max_longitude: 10.1331712
+  translations:
+    en: Kairouan
+    ar: ولاية القيروان
+    be: Вілает Кайруан
+    bg: Кайруан
+    ca: Governació de Kairouan
+    de: Gouvernorat Kairouan
+    el: Καϊρουάν
+    es: Gobernación de Kairuán
+    fa: استان قیروان
+    fr: Gouvernorat de Kairouan
+    he: קירואן
+    id: Kegubernuran Kairouan
+    it: governatorato di Kairouan
+    ja: ケルアン県
+    ko: 카이르완 주
+    ms: Kawasan kegabenoran Kairouan
+    nb: Kairouan
+    nl: Kairouan
+    pl: Gubernatorstwo Kairuan
+    pt: Kairouan (província)
+    ro: Guvernoratul Kairouan
+    ru: Кайруан
+    tr: Kayravan
+    uk: Кайруан
+    ur: قیروان
+    cy: Kairouan
+    ceb: Gouvernorat de Kairouan
+    zh: 凱魯萬省
+    ccp: "\U00011107\U0001112D\U00011122\U0001112F\U00011120\U0001111A\U00011134"
+    az: Kayruan vilayəti
+    'no': Kairouan
+    th: เขตผู้ว่าการอัลก็อยเราะวาน
+    uz: Qayravon viloyati
+  comments:
+  type: governorate
+'42':
+  name: Kasserine
+  code: '42'
+  unofficial_names:
+  - Qasrayn
+  - Kasserine
+  geo:
+    latitude: 35.166667
+    longitude: 8.833333
+    min_latitude: 35.1505123
+    min_longitude: 8.780908499999999
+    max_latitude: 35.1900134
+    max_longitude: 8.8686274
+  translations:
+    en: Kasserine
+    ar: ولاية القصرين
+    be: Вілает Касерын
+    bg: Касерин
+    bn: কাস্যেরিন গভর্নোরেট
+    ca: Governació de Kasserine
+    da: Kasserine Governorate
+    de: Gouvernorat Kasserine
+    el: Αλ Κασράυν
+    es: Gobernación de Kasserine
+    fa: استان قصرین
+    fi: Kasserinen kuvernoraatti
+    fr: Gouvernorat de Kasserine
+    gu: કેસરિન ગવર્નોરેટ
+    hi: कैसरिन गवर्नरेट
+    id: Kegubernuran Kasserine
+    it: governatorato di Kasserine
+    ja: カスリーヌ県
+    kn: ಕಸ್ಸೇರಿನ್ ಗವರ್ನೇಟ್
+    ko: 카세린 주
+    mr: कॅसरिन गव्हनलेटेट
+    ms: Kawasan kegabenoran Kasserine
+    nb: Kasserine
+    nl: Kasserine
+    pl: Gubernatorstwo Al-Kasrajn
+    pt: Kasserine
+    ro: Guvernoratul Kasserine
+    ru: Касерин
+    si: කස්සෙරිනේ පළාත
+    sv: Kasserine
+    ta: கஸ்ஸரின் கோவெர்னோரே
+    te: కాసెరిన్ గవర్నరేట్
+    th: เมืองคาซัสดิน
+    tr: Kassarin ili
+    uk: Касерін
+    ur: قصرین
+    vi: Tỉnh Kasserine
+    lv: Kasrainas vilāja
+    cy: Kasserine
+    ceb: Gouvernorat de Kasserine
+    lt: Kaserinės gubernija
+    zh: 卡塞林省
+    ccp: "\U00011107\U00011125\U0001112C\U00011122\U0001112D\U0001111A\U00011134"
+    az: Kasserin vilayəti
+    'no': Kasserine
+    he: קסרין
+  comments:
+  type: governorate
+'43':
+  name: Sidi Bouzid
+  code: '43'
+  unofficial_names:
+  - Sidi Bu Zayd
+  - Sidi Bouzid
+  geo:
+    latitude: 35.033333
+    longitude: 9.5
+    min_latitude: 35.0233905
+    min_longitude: 9.4474748
+    max_latitude: 35.0493886
+    max_longitude: 9.506600599999999
+  translations:
+    en: Sidi Bouzid
+    ar: ولاية سيدي بوزيد
+    be: Вілает Сідзі-Бу-Зід
+    bg: Сиди Бузид
+    bn: সিদি বৌজিদ গভর্নোরেট
+    ca: Governació de Sidi Bou Zid
+    da: Sidi Bouzid Governorate
+    de: Gouvernorat Sidi Bouzid
+    el: Σίντι Μπου Ζαΰντ
+    es: Gobernación de Sidi Bouzid
+    fa: استان سیدی بوزید
+    fi: Sidi Bou Said
+    fr: Gouvernorat de Sidi Bouzid
+    gu: સિદિ બૌઝિદ ગવર્નોરેટ
+    hi: सिडी बौज़िड गवर्नरेट
+    id: Kegubernuran Sidi Bou Said
+    it: governatorato di Sidi Bouzid
+    ja: シディブジッド県
+    kn: ಸಿಡಿ ಬೌಜಿಡ್ ಗವರ್ನೇಟ್
+    ko: 시디부지드 주
+    mr: सिदी बाऊझिद गव्हर्नोरेट
+    ms: Kawasan kegabenoran Sidi Bou Said
+    nb: Sidi Bouzid
+    nl: Sidi Bouzid
+    pl: Gubernatorstwo Sidi Bu Zajd
+    pt: Sidi Bou Said
+    ro: Guvernoratul Sidi Bouzid
+    ru: Сиди-Бу-Зид
+    si: සිඩි බොස්ගිඩ් පළාත
+    sv: Sidi Bouzid
+    ta: சிதி பௌசிட் கோவெர்னோரே
+    te: సిడి బౌజిడ్ గవర్నరేట్
+    th: จังหวัดซิดิเบาซิด
+    tr: Sidi Bu Zeyd ili
+    uk: Сіді-Бузід
+    ur: سیدی بوزید
+    vi: Tỉnh Sidi Bouzid
+    lv: Sīdī Bū Zeidas vilāja
+    cy: Sidi Bouzid
+    ceb: Gouvernorat de Sidi Bouzid
+    lt: Sidi Buzido gubernija
+    zh: 西迪布濟德省
+    ccp: "\U00011125\U00011128\U00011113\U00011128 \U0001111D\U0001112F\U0001110E\U00011128\U00011116\U00011134"
+    az: Sidi-Bu-Zid vilayəti
+    'no': Sidi Bouzid
+    he: מחוז סידי בוזיד
+  comments:
+  type: governorate
+'51':
+  name: Sousse
+  code: '51'
+  unofficial_names:
+  - Susah
+  - Sousse
+  geo:
+    latitude: 35.825603
+    longitude: 10.608395
+    min_latitude: 35.7857109
+    min_longitude: 10.5743716
+    max_latitude: 35.8729782
+    max_longitude: 10.666535
+  translations:
+    en: Sousse
+    ar: ولاية سوسة
+    be: Вілает Сус
+    bg: Сус
+    bn: সুস্যি গভর্নোরেট
+    ca: Governació de Sussa
+    da: Sousse Governorate
+    de: Gouvernorat Sousse
+    el: Σούσα
+    es: Gobernación de Susa
+    fa: استان سوسه
+    fi: Sousse
+    fr: Gouvernorat de Sousse
+    gu: સોંસે ગવર્નોરેટ
+    he: סוס
+    hi: सूसे गवर्नरेट
+    id: Kegubernuran Sousse
+    it: governatorato di Susa
+    ja: スース県
+    kn: ಸೌಸ್ಸೆ ಗವರ್ನೇಟ್
+    ko: 수스 주
+    lt: Suso vilajetas
+    mr: सॉस गव्हर्नोरेट
+    ms: Kawasan kegabenoran Sousse
+    nb: Sousse
+    nl: Sousse
+    pl: Gubernatorstwo Susa
+    pt: Sousse
+    ro: Guvernoratul Sousse
+    ru: Сус
+    si: සවුස්සේ පළාත
+    sv: Sousse
+    ta: சௌஸ்ஸே கோவெர்னோரே
+    te: సాసె గవర్నరేట్
+    th: ซูสส์
+    tr: Susa ili
+    uk: Сус
+    ur: سوسہ
+    vi: Tỉnh Sousse
+    lv: Sūsas vilāja
+    cy: Sousse
+    ceb: Gouvernorat de Sousse
+    zh: 蘇塞省
+    ccp: "\U00011125\U0001112F\U0001110C\U00011134"
+    'no': Sousse
+  comments:
+  type: governorate
+'52':
+  name: Monastir
+  code: '52'
+  unofficial_names:
+  - al-Munastir
+  - Monastir
+  geo:
+    latitude: 35.783333
+    longitude: 10.833333
+    min_latitude: 35.7204547
+    min_longitude: 10.7770729
+    max_latitude: 35.788039
+    max_longitude: 10.8437093
+  translations:
+    en: Monastir
+    ar: ولاية المنستير
+    be: Вілает Манасцір
+    bg: Монастир
+    bn: মোনাস্তির গভর্নোরেট
+    ca: Governació de Monastir
+    da: Monastir Governorate
+    de: Gouvernorat Monastir
+    el: Μοναστίρ
+    es: Gobernación de Monastir
+    fa: استان منستیر
+    fi: Monastir
+    fr: Gouvernorat de Monastir
+    gu: મોનાસ્ટિર ગવર્નોરેટ
+    hi: मोनास्टीर
+    id: Kegubernuran Monastir
+    it: governatorato di Monastir
+    ja: モナスティル県
+    ka: მონასტირის ვილაიეთი
+    kn: ಮೊನಾಸ್ಟಿರ್ ಗವರ್ನೇಟ್
+    ko: 모나스티르 주
+    mr: मोनास्टीर गव्हर्नोरेट
+    ms: Kawasan kegabenoran Monastir
+    nb: Monastir
+    nl: Monastir
+    pl: Gubernatorstwo Monastyr
+    pt: Monastir (província)
+    ro: Guvernoratul Monastir
+    ru: Монастир
+    si: මොනස්ටර් පළාත
+    sv: Monastir
+    ta: மோனஸ்ட்டீர் கோவெர்னோரே
+    te: మోనాస్టిర్ గవర్నరేట్
+    th: โมนาสตีร์
+    tr: Munastır
+    uk: Монастір
+    ur: منستر
+    vi: Tỉnh Monastir
+    lv: Monastīras vilāja
+    cy: Monastir
+    ceb: Gouvernorat de Monastir
+    lt: Monastiro gubernija
+    zh: 莫納斯提爾省
+    ccp: "\U0001111F\U0001112E\U0001111A\U0001110C\U00011134\U00011111\U00011128\U00011122\U00011134"
+    az: Monastir vilayəti
+    'no': Monastir
+    hr: Monastir
+    sq: Monastir
+  comments:
+  type: governorate
+'53':
+  name: Mahdia
+  code: '53'
+  unofficial_names:
+  - Mahdia
+  - al-Mahdiyah
+  - Mehdia
+  geo:
+    latitude: 35.5024461
+    longitude: 11.045721
+    min_latitude: 35.4924656
+    min_longitude: 11.0219544
+    max_latitude: 35.516999
+    max_longitude: 11.0821596
+  translations:
+    en: Mahdia
+    ar: ولاية المهدية
+    be: Вілает Махдзія
+    bg: Махдия
+    bn: মাহদিয়া গভর্নোরেট
+    ca: Governació de Mahdia
+    da: Mahdia Governorate
+    de: Gouvernorat Mahdia
+    el: Αλ Μαντίγια
+    es: Gobernación de Mahdia
+    fa: استان مهدیه
+    fi: Mahdia
+    fr: Gouvernorat de Mahdia
+    gu: મહદિયા ગવર્નોરેટ
+    hi: महदिया गवर्नरेट
+    id: Kegubernuran Mahdia
+    it: governatorato di Mahdia
+    ja: マーディア県
+    kn: ಮಹಾದಿಯಾ ಗವರ್ನೇಟ್
+    ko: 마디아 주
+    mr: महडिया गव्हर्नोरेट
+    ms: Kawasan kegabenoran Mahdia
+    nb: Mahdia
+    nl: Mahdia
+    pl: Gubernatorstwo Al-Mahdija
+    pt: Mahdia
+    ro: Guvernoratul Mahdia
+    ru: Махдия
+    si: මහ්දියා පළාත
+    sv: Mahdia
+    ta: மஹதிஆ கோவெர்னோரே
+    te: మాహ్దియా గవర్నరేట్
+    th: เขตการปกตรองมาห์เดีย
+    tr: Mehdiye ili
+    uk: Махдія
+    ur: مہدیہ
+    vi: Tỉnh Mahdia
+    lv: Mehdījas vilāja
+    cy: Mahdia
+    ceb: Gouvernorat de Mahdia
+    lt: Machdijos gubernija
+    zh: 馬赫迪耶省
+    ccp: "\U0001111F\U00011126\U00011134\U00011113\U00011128\U00011120"
+    az: Mahdiya vilayəti
+    'no': Mahdia
+    he: מהדיה
+  comments:
+  type: governorate
+'61':
+  name: Sfax
+  code: '61'
+  unofficial_names:
+  - Safaqis
+  - Sfax
+  geo:
+    latitude: 34.733333
+    longitude: 10.766667
+    min_latitude: 34.6996316
+    min_longitude: 10.677681
+    max_latitude: 34.8146488
+    max_longitude: 10.8035946
+  translations:
+    en: Sfax
+    ar: ولاية صفاقس
+    be: Вілает Сфакс
+    bg: Сфакс
+    bn: স্ফ্যাক্স গভর্নোরেট
+    ca: Governació de Sfax
+    da: Sfax Governorate
+    de: Gouvernorat Sfax
+    el: Σφαξ
+    es: Gobernación de Sfax
+    et: Şafāqise kubernerkond
+    fa: استان صفاقس
+    fi: Sfax
+    fr: Gouvernorat de Sfax
+    gu: સ્ફેક્સ ગવર્નોરેટ
+    he: ספקס
+    hi: स्फैक्स गवर्नरेट
+    id: Kegubernuran Sfax
+    it: governatorato di Sfax
+    ja: スファックス県
+    kn: ಸ್ಫಾಕ್ಸ್ ಗವರ್ನೇಟ್
+    ko: 스팍스 주
+    mr: स्फेक्स गोव्हर्नोरेट
+    ms: Kawasan kegabenoran Sfax
+    nb: Sfax
+    nl: Sfax
+    pl: Gubernatorstwo Safakis
+    pt: Sfax
+    ro: Guvernoratul Sfax
+    ru: Сфакс
+    si: එස්ෆක්ස් පළාත
+    sv: Sfax
+    ta: சபாஸ் கோவெர்னோரேட்
+    te: ఫాక్స్ గవర్నరేట్
+    th: เขตการปกครองสแฟกซ์
+    tr: Sfaks ili
+    uk: Сфакс
+    ur: صفاقس
+    vi: Tỉnh Sfax
+    lv: Sfāksas vilāja
+    cy: Sfax
+    ceb: Gouvernorat de Sfax
+    lt: Sfakso gubernija
+    zh: 斯法克斯省
+    ccp: "\U0001111C\U00011133\U00011120\U00011107\U00011134"
+    az: Sfaqs vilayəti
+    'no': Sfax
+  comments:
+  type: governorate
+'71':
+  name: Gafsa
+  code: '71'
+  unofficial_names: Gafsa
+  geo:
+    latitude: 34.416667
+    longitude: 8.783332999999999
+    min_latitude: 34.403907
+    min_longitude: 8.744003
+    max_latitude: 34.4532756
+    max_longitude: 8.8033181
+  translations:
+    en: Gafsa
+    ar: ولاية قفصة
+    be: Вілает Гафса
+    bg: Гафса
+    bn: গাফসা গভর্নোরেট
+    ca: Governació de Gafsa
+    da: Gafsa Governorate
+    de: Gouvernorat Gafsa
+    el: Κάφσα
+    es: Gobernación de Gafsa
+    fa: استان قفصه
+    fi: Gafsa
+    fr: Gouvernorat de Gafsa
+    gu: ગફ્સા ગવર્નોરેટ
+    hi: गफसा गवर्नरेट
+    hu: Gafsa kormányzóság
+    id: Kegubernuran Gafsa
+    it: governatorato di Gafsa
+    ja: ガフサ県
+    kn: ಗಫ್ಸಾ ಗವರ್ನೇಟ್
+    ko: 가프사 주
+    lt: Gafsos vilajetas
+    mr: गफसो गव्हर्नोरेट
+    ms: Kawasan kegabenoran Gafsa
+    nb: Gafsa
+    nl: Gafsa
+    pl: Gubernatorstwo Kafsa
+    pt: Gafsa
+    ro: Guvernoratul Gafsa
+    ru: Гафса
+    si: ගෆ්සා පළාත
+    sv: Gafsa
+    ta: கஃசா கோவெர்னோராட்
+    te: గాఫ్సా గవర్నరేట్
+    th: จังหวัดกาฟซา
+    tr: Kafsa ili
+    uk: Гафса
+    ur: قفصہ
+    vi: Tỉnh Gafsa
+    lv: Gafsas vilāja
+    cy: Gafsa
+    ceb: Gafsa Governorate
+    zh: 加夫薩省
+    ccp: "\U00011109\U0001111B\U00011134\U00011125"
+    az: Qafsa vilayəti
+    'no': Gafsa
+    he: גפסה
+  comments:
+  type: governorate
+'72':
+  name: Tozeur
+  code: '72'
+  unofficial_names:
+  - Tozeur
+  geo:
+    latitude: 33.916667
+    longitude: 8.133333
+    min_latitude: 33.8938586
+    min_longitude: 8.082332599999999
+    max_latitude: 33.9435024
+    max_longitude: 8.157348599999999
+  translations:
+    en: Tozeur
+    ar: ولاية توزر
+    be: Вілает Таўзар
+    bg: Тозьор
+    bn: তোজেউর গভর্নোরেট
+    ca: Governació de Tozeur
+    da: Tozeur Governorate
+    de: Gouvernorat Tozeur
+    el: Ταουζάρ
+    es: Gobernación de Tozeur
+    fa: استان توزر
+    fi: Tozeurn kuvernoraatti
+    fr: Gouvernorat de Tozeur
+    gu: ટોઝુર ગવર્નોરેટ
+    hi: तोज़िउर गवर्नरेट
+    id: Kegubernuran Tozeur
+    it: governatorato di Tozeur
+    ja: トズール県
+    kn: ತೋಝುರ್ ಗವರ್ನೇಟ್
+    ko: 토죄르 주
+    mr: तोझुर गव्हर्नोरेट
+    ms: Kawasan kegabenoran Tozeur
+    nb: Tozeur
+    nl: Tozeur
+    pl: Gubernatorstwo Tauzar
+    pt: Tozeur
+    ro: Guvernoratul Tozeur
+    ru: Таузар
+    si: ටෝසේර් පළාත
+    sv: Tozeur
+    ta: டோஸிர் கோவெர்னோரேட்
+    te: టోజియర్ గవర్నరేట్
+    th: โทเซอร์ โกเวอโนเรท
+    tr: Tuzer ili
+    uk: Таузар
+    ur: توزر
+    vi: Tỉnh Tozeur
+    lv: Tauzāras vilāja
+    cy: Tozeur
+    ceb: Gouvernorat de Tozeur
+    lt: Tozuro gubernija
+    zh: 托澤爾省
+    ccp: "\U00011111\U0001112E\U0001110E\U0001112C\U00011105\U0001112A\U00011122\U00011134"
+    'no': Tozeur
+    he: טוזור
+  comments:
+  type: governorate
+'73':
+  name: Kebili
+  code: '73'
+  unofficial_names:
+  - Qabili
+  - Qabilī
+  - Qibili
+  - Kébili
+  geo:
+    latitude: 33.1245286
+    longitude: 8.8362755
+    min_latitude: 32.515911
+    min_longitude: 7.738455099999999
+    max_latitude: 34.209379
+    max_longitude: 9.998009099999999
+  translations:
+    en: Kebili
+    ar: ولاية قبلي
+    be: Вілает Кебілі
+    bg: Кебили
+    bn: কেবিলি গভর্নোরেট
+    ca: Governació de Kébili
+    da: Kebili Governorate
+    de: Gouvernorat Kebili
+    el: Κιμπιλί
+    es: Gobernación de Kebili
+    fa: استان قبلی
+    fi: Kebilin kuvernoraatti
+    fr: Gouvernorat de Kébili
+    gu: કેબીલી ગવર્નોરેટ
+    hi: केबिली गवर्नरेट
+    id: Kegubernuran Kebili
+    it: governatorato di Kébili
+    ja: ケビリ県
+    kn: ಕೆಬಿಲಿ ಗವರ್ನೇಟ್
+    ko: 케빌리 주
+    mr: केबिली गव्हर्नोरेट
+    ms: Kawasan kegabenoran Kebili
+    nb: Kebili
+    nl: Kébili
+    pl: Gubernatorstwo Kibili
+    pt: Kebili
+    ro: Guvernoratul Kebili, Tunisia
+    ru: Кебили
+    si: කෙබිලි පළාත
+    sv: Kebili
+    ta: கேபிலி கோவெர்னோரே
+    te: కేబిలి గవర్నరేట్
+    th: เคบิลี
+    tr: Kabili ili
+    uk: Кебілі
+    ur: قبلی
+    vi: Tỉnh Kebili
+    lv: Kibilī vilāja
+    cy: Kébili
+    ceb: Gouvernorat de Kébili
+    lt: Kebilio gubernija
+    zh: 吉比利省
+    ccp: "\U00011107\U0001112C\U0001111D\U00011128\U00011123\U00011128"
+    az: Kebili vilayəti
+    'no': Kebili
+    he: קבילי
+  comments:
+  type: governorate
+'81':
+  name: Gabès
+  code: '81'
+  unofficial_names:
+  - Qabis
+  - Gabès
+  geo:
+    latitude: 33.883333
+    longitude: 10.116667
+    min_latitude: 33.8708076
+    min_longitude: 10.0854492
+    max_latitude: 33.9077505
+    max_longitude: 10.1198673
+  translations:
+    en: Gabès
+    ar: ولاية قابس
+    be: Вілает Габес
+    bg: Габес
+    bn: গ্যাবেজ গভর্নোরেট
+    ca: Governació de Gabès
+    da: Gabès Governorate
+    de: Gouvernorat Gabès
+    el: Κάμπις
+    es: Gobernación de Gabès
+    fa: استان قابس
+    fi: Gabès
+    fr: Gouvernorat de Gabès
+    gu: ગેબેસ ગવર્નોરેટ
+    hi: गेबेस
+    hu: Gabès kormányzóság
+    id: Kegubernuran Gabès
+    it: governatorato di Gabès
+    ja: ガベズ県
+    kn: ಗಬೆಸ್ ಗವರ್ನೇಟ್
+    ko: 가베스 주
+    lt: Gabeso vilajetas
+    mr: गॅबसचे गव्हर्नोरेट
+    ms: Kawasan kegabenoran Gabès
+    nb: Gabès
+    nl: Gabès
+    pl: Gubernatorstwo Kabis
+    pt: Gabès
+    ro: Guvernoratul Gabès
+    ru: Габес
+    si: ගබේස් දිස්ත්‍රික්කය
+    sv: Gabès
+    ta: கபேஸ் கோவெர்னோரே
+    te: గేబ్స్ గవర్నరేట్
+    th: เกบส์
+    tr: Gabes
+    uk: Габес
+    ur: گابس
+    vi: Tỉnh Gabès
+    lv: Gābisas vilāja
+    cy: Gabès
+    ceb: Gouvernorat de Gabès
+    zh: 加貝斯省
+    ccp: "\U00011109\U0001111D\U0001112C\U0001110C\U00011134"
+    az: Qabes vilayəti
+    'no': Gabès
+    he: גאבס
+  comments:
+  type: governorate
+'82':
+  name: Medenine
+  code: '82'
+  unofficial_names:
+  - Madaniyin
+  - Medenine
+  geo:
+    latitude: 33.354722
+    longitude: 10.505278
+    min_latitude: 33.3227112
+    min_longitude: 10.4608726
+    max_latitude: 33.3705348
+    max_longitude: 10.5216409
+  translations:
+    en: Medenine
+    ar: ولاية مدنين
+    be: Вілает Медзенін
+    bg: Меденин
+    bn: মেদেনিন গভর্নোরেট
+    ca: Governació de Médenine
+    da: Medenine Governorate
+    de: Gouvernorat Medenine
+    el: Μαντανίγιν
+    es: Gobernación de Medenine
+    fa: استان مدنین
+    fi: Medenine
+    fr: Gouvernorat de Médenine
+    gu: મેડેનિન ગવર્નોરેટ
+    hi: मेडेनिन
+    id: Kegubernuran Medenine
+    it: governatorato di Médenine
+    ja: メドニン県
+    kn: ಮೆಡೆನೆನ್ ಗವರ್ನೇಟ್
+    ko: 메드닌 주
+    mr: मेडेनिन गव्हरनेटेट
+    ms: Kawasan kegabenoran Medenine
+    nb: Medenine
+    nl: Médenine
+    pl: Gubernatorstwo Madanijin
+    pt: Médenine
+    ro: Guvernoratul Medenine
+    ru: Меденин
+    si: මෙදෙනිනේ පළාත
+    sv: Medenine
+    ta: மேடெனின் கோவெர்னோகைட்
+    te: మెడెనైన్ గవర్నరేట్
+    th: เมเดนีน
+    tr: Medenin ili
+    uk: Меденін
+    ur: مدنین
+    vi: Tỉnh Medenine
+    lv: Medenīnas vilāja
+    cy: Médenine
+    ceb: Gouvernorat de Médenine
+    lt: Medeninos gubernija
+    zh: 梅德寧省
+    ccp: "\U0001111F\U0001112C\U00011113\U0001112C\U0001111A\U0001112D\U0001111A\U00011134"
+    az: Medenin vilayəti
+    'no': Medenine
+    he: מחוז מדנין
+  comments:
+  type: governorate
+'83':
+  name: Tataouine
+  code: '83'
+  unofficial_names:
+  - Tatawin
+  - Tatouine
+  geo:
+    latitude: 32.933333
+    longitude: 10.45
+    min_latitude: 32.8872997
+    min_longitude: 10.4053402
+    max_latitude: 32.9618664
+    max_longitude: 10.4796697
+  translations:
+    en: Tataouine
+    ar: ولاية تطاوين
+    be: Вілает Татавін
+    bg: Татауин
+    bn: তাতাউইন গভর্নোরেট
+    ca: Governació de Tataouine
+    da: Tataouine Governorate
+    de: Gouvernorat Tataouine
+    el: Τατάουιν
+    es: Gobernación de Tataouine
+    fa: استان تطاوین
+    fi: Tataouine
+    fr: Gouvernorat de Tataouine
+    gu: ટાટાઉઇન ગવર્નોરેટ
+    hi: टाटाउने
+    id: Kegubernuran Tataouine
+    it: governatorato di Tataouine
+    ja: タタウイヌ県
+    kn: ಟಾಟಾಯಿನ್ ಗವರ್ನೇಟ್
+    ko: 타타우인 주
+    mr: टाटाउने गव्हर्नोरेट
+    ms: Kawasan kegabenoran Tataouine
+    nb: Tataouine
+    nl: Tataouine
+    pl: Gubernatorstwo Tatawin
+    pt: Tataouine
+    ro: Guvernoratul Tataouine
+    ru: Татавин
+    si: ටටෝයින්ග් පළාත
+    sv: Tataouine
+    ta: தடையின் கோவெர்னோரே
+    te: టాటోయిన్ గవర్నరేట్
+    th: เขตทาทูอิน
+    tr: Tatavin ili
+    uk: Татауїн
+    ur: تطاوین
+    vi: Tỉnh Tataouine
+    lv: Tatāvīnas vilāja
+    cy: Tataouine
+    ceb: Tataouine (lalawigan)
+    lt: Tatujino gubernija
+    zh: 泰塔溫省
+    ccp: "\U00011111\U00011111\U0001112F\U00011103\U00011128\U0001111A\U00011134"
+    'no': Tataouine
+  comments:
+  type: governorate

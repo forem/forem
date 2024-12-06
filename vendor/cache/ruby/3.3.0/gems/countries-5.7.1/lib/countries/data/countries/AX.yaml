@@ -1,0 +1,50 @@
+---
+AX:
+  alpha2: AX
+  alpha3: ALA
+  continent: Europe
+  country_code: '358'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: true
+  euvat_member: false
+  gec:
+  geo:
+    latitude: 60.1785247
+    longitude: 19.9156105
+    max_latitude: 60.8400009
+    max_longitude: 21.4866841
+    min_latitude: 59.6872001
+    min_longitude: 19.2095998
+    bounds:
+      northeast:
+        lat: 60.8400009
+        lng: 21.4866841
+      southwest:
+        lat: 59.6872001
+        lng: 19.2095998
+  international_prefix: ''
+  ioc:
+  iso_long_name: Åland
+  iso_short_name: Åland Islands
+  languages_official:
+  - sv
+  languages_spoken:
+  - sv
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Swedish
+  number: '248'
+  postal_code: true
+  postal_code_format: 22\d{3}
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: AX
+  unofficial_names:
+  - Åland Islands
+  - Åland
+  - オーランド諸島
+  - Ålandeilanden
+  world_region: EMEA

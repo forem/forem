@@ -1,0 +1,20 @@
+install:
+  - set PATH=C:\Ruby22\bin;%PATH%
+  - bundle install
+
+build: off
+
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
+
+test_script:
+  - bundle exec rake
+
+environment:
+  matrix:
+    - RUBY_VERSION: 23
+    - RUBY_VERSION: 22
+    - RUBY_VERSION: 21
+    - RUBY_VERSION: 200

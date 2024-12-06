@@ -1,0 +1,54 @@
+---
+QA:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: QA
+  alpha3: QAT
+  continent: Asia
+  country_code: '974'
+  currency_code: QAR
+  distance_unit: KM
+  gec: QA
+  geo:
+    latitude: 25.354826
+    longitude: 51.183884
+    max_latitude: 26.2171
+    max_longitude: 51.7144001
+    min_latitude: 24.471118
+    min_longitude: 50.7211001
+    bounds:
+      northeast:
+        lat: 26.2171
+        lng: 51.7144001
+      southwest:
+        lat: 24.471118
+        lng: 50.7211001
+  international_prefix: '00'
+  ioc: QAT
+  iso_long_name: The State of Qatar
+  iso_short_name: Qatar
+  languages_official:
+  - ar
+  languages_spoken:
+  - ar
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Qatari
+  number: '634'
+  postal_code: false
+  region: Asia
+  start_of_week: sunday
+  subregion: Western Asia
+  un_locode: QA
+  unofficial_names:
+  - Qatar
+  - قطر
+  - Katar
+  - カタール
+  world_region: EMEA

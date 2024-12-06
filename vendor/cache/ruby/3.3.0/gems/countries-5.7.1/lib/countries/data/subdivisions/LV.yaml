@@ -1,0 +1,2645 @@
+---
+'002':
+  name: Aizkraukles novads
+  code: '002'
+  unofficial_names: Aizkraukle
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية إيزكروكل
+    be: Айзкраўкльскі край
+    bn: আইজক্রকল পৌরসভা
+    ca: Municipi d’Aizkraukle
+    da: Aizkraukle municipality
+    de: Bezirk Aizkraukle
+    el: Άιζκραουκλε
+    en: Aizkraukle
+    es: Municipio de Aizkraukle
+    et: Aizkraukle piirkond
+    eu: Aizkraukleko udalerria
+    fa: شهر ایزکراکل
+    fi: Aizkrauklen kunta
+    fr: Aizkraukles novads
+    gu: ઐઝક્રુકલ મ્યુનિસિપાલિટી
+    hi: एज़क्रोक्ले नगरपालिका
+    hy: Այզկրաուկլեի շրջան
+    id: Kotamadya Aizkraukle
+    it: Comune di Aizkraukle
+    ja: アイズクラウクレ
+    ka: აიზკრაუკლეს მხარე
+    kn: ಐಜ್ಕ್ರಾಕುಲ್ ಪುರಸಭೆ
+    ko: 아이스크라우클레 시
+    lt: Aizkrauklės savivaldybė
+    lv: Aizkraukles novads
+    mr: एईस्क्राइकल म्युन्सिपाल्टी
+    ms: Aizkraukle municipality
+    nb: Aizkraukle Kommune
+    nl: Aizkraukles novads
+    pl: Gmina Aizkraukle
+    pt: Município de Aizkraukle
+    ru: Айзкраукльский край
+    si: අයිස්ක්රවුක්ලේ නගර සභාව
+    sv: Aizkraukle kommun
+    ta: ஐஸ்க்ரூக்களே நகராட்சி
+    te: ఐజుక్రాక్లే మున్సిపాలిటీ
+    th: เมืองอิซเคราเคิลส์
+    tr: Aizkraukle Belediyesi
+    uk: Айзкраукльський край
+    ur: آئزکراوکلے بلدیہ
+    vi: Đô thị tự trị Aizkraukle
+    zh: 艾茲克勞克萊自治市
+    ccp: "\U00011103\U00011103\U00011128\U0001110C\U00011134\U00011107\U00011133\U00011122\U0001112D\U00011105\U0001112A\U00011107\U00011134\U00011123\U0001112C"
+    az: Ayzqrauql diyarı
+    mk: Ајзкраукле
+    'no': Aizkraukle Kommune
+    cy: Bwrdeistref Aizkraukle
+  comments:
+  type: municipality
+'007':
+  name: Alūksnes novads
+  code: '007'
+  unofficial_names: Alūksne
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية ألوكسنه
+    be: Алуксненскі край
+    bn: আলুক্সনে পৌরসভা
+    ca: Municipi d’Alūksne
+    da: Alūksne municipality
+    de: Bezirk Alūksne
+    el: Αλούκσνε
+    en: Alūksne
+    es: Municipalidad de Alūksne
+    et: Alūksne piirkond
+    fa: شهر الاکسن
+    fi: Alūksnen kunta
+    fr: Alūksne
+    gu: અલુક્સને મ્યુનિસિપાલિટી
+    hi: अल्यूकने नगरपालिका
+    hy: Ալուքսենեի շրջան
+    id: Kotamadya Alūksne
+    it: Alūksne
+    ja: アルークスネ
+    ka: ალუქსნეს მხარე
+    kn: ಅಲುಕ್ಸ್ನೆ ಪುರಸಭೆ
+    ko: 알룩스네 시
+    lt: Alūksnės savivaldybė
+    lv: Alūksnes novads
+    mr: अलुक्सने म्युन्सिपाल्टी
+    ms: Aluksne municipality
+    nb: Aluksne kommune
+    nl: Alūksnes novads
+    pl: Gmina Alūksnē
+    pt: Município de Aluksne
+    ru: Алуксненский край
+    si: අලුක්ස්නේ නගර සභාව
+    sv: Aluksne kommun
+    ta: லுக்ஸ்நெ நகராட்சி
+    te: అలూక్స్‌నె మున్సిపాలిటీ
+    th: อลุกนี มูนิซิพัลลิตี้
+    tr: Aluksne Belediyesi
+    uk: Алуксненський край
+    ur: آلوکسنے بلدیہ
+    vi: Đô thị tự trị Aluksne
+    zh: 阿盧克斯內自治市
+    ccp: "\U00011103\U00011123\U0001112A\U00011107\U00011134\U0001110C\U00011134"
+    eu: Alūksne udalerria
+    mk: Алуксне
+    'no': Aluksne kommune
+    cy: Bwrdeistref Alūksne
+  comments:
+  type: municipality
+'011':
+  name: Ādažu novads
+  code: '011'
+  unofficial_names: Ādaži
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية آداجي
+    be: Адажскі край
+    bn: আদাজি পৌরসভা
+    ca: Municipi d’Ādaži
+    da: Ādaži municipality
+    de: Bezirk Ādaži
+    el: Αντάζι
+    en: Ādaži
+    es: Municipalidad de Ādaži
+    et: Ādaži piirkond
+    fi: Ādažin kunta
+    fr: Ādaži
+    gu: આડેઝી મ્યુનિસિપાલિટી
+    hi: अदाज़ी नगरपालिका
+    hy: Ադաժի շրջան
+    id: Kotamadya Ādaži
+    it: Comune di Ādaži
+    ja: アーダジ
+    ka: ადაჟის მხარე
+    kn: ಆಜಾಜಿ ಪುರಸಭೆ
+    ko: 아다지 시
+    lt: Adažų savivaldybė
+    lv: Ādažu novads
+    mr: आडेझी म्युन्सिपाल्टी
+    ms: Adazi municipality
+    nb: Adazi kommune
+    nl: Ādažu novads
+    pl: Gmina Ādaži
+    pt: Município de Adazi
+    ru: Адажский край
+    si: අඩසි නගර සභාව
+    sv: Ādažu novads
+    ta: அடசி நகராட்சி
+    te: అడాజి మున్సిపాలిటీ
+    th: เมืองอดาซี
+    tr: Adazi Belediyesi
+    uk: Адажський край
+    ur: آداژی بلدیہ
+    vi: Đô thị tự trị Adazi
+    ceb: Ādažu Novads
+    zh: 阿達日自治市
+    fa: شهرداری آداژی
+    ccp: "\U00011103\U00011113\U0001110E\U00011128"
+    eu: Ādaži udalerria
+    mk: Адажи
+    'no': Adazi kommune
+    cs: Ādaži (kraj/okres)
+    cy: Bwrdeistref Ādaži
+    sk: Ādaži (kraj/okres)
+  comments:
+  type: municipality
+'015':
+  name: Balvu novads
+  code: '015'
+  unofficial_names: Balvi
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية بالفي
+    be: Балвскі край
+    bn: বাল্ভি পৌরসভা
+    ca: Municipi de Balvi
+    da: Balvi municipality
+    de: Bezirk Balvi
+    el: Μπαλβί
+    en: Balvi
+    es: Municipalidad de Balvi
+    et: Balvi piirkond
+    fi: Balvin kunta
+    fr: Balvi
+    gu: બાલ્વી મ્યુનિસિપાલિટી
+    hi: बलवी नगरपालिका
+    hy: Բալվիի շրջան
+    id: Kotamadya Balvi
+    it: Balvi
+    ja: バルヴィ
+    ka: ბალვის მხარე
+    kn: ಬಾಲ್ವಿ ಪುರಸಭೆ
+    ko: 발비 시
+    lt: Balvų savivaldybė
+    lv: Balvu novads
+    mr: बलवी म्युन्सिपाल्टी
+    ms: Perbandaran Balvi
+    nb: Balvi kommune
+    nl: Balvu novads
+    pl: Gmina Balvi
+    pt: Município de Balvi
+    ru: Балвский край
+    si: බල්වී නගර සභාව
+    sv: Balvi kommun
+    ta: பால்வி நகராட்சி
+    te: బాల్వి మున్సిపాలిటీ
+    th: เทศบาลบาลวี
+    tr: Balvi Belediyesi
+    uk: Балвський край
+    ur: بالوی بلدیہ
+    vi: Đô thị tự trị Balvi
+    zh: 巴爾維自治市
+    fa: شهرداری بالوی
+    ccp: "\U0001111D\U00011127\U00011123\U00011134\U0001111E\U00011128"
+    eu: Balvi udalerria
+    mk: Балви
+    'no': Balvi kommune
+    cy: Bwrdeistref Balvi
+  comments:
+  type: municipality
+'016':
+  name: Bauskas novads
+  code: '016'
+  unofficial_names: Bauska
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية بوسكا
+    be: Баўскі край
+    bn: বাউস্কা পৌরসভা
+    ca: Municipi de Bauska
+    da: Bauska municipality
+    de: Bezirk Bauska
+    el: Μπάουσκα
+    en: Bauska
+    es: Municipalidad de Bauska
+    et: Bauska piirkond
+    fi: Bauskan kunta
+    fr: Bauska
+    gu: બાઉસ્કા મ્યુનિસિપાલિટી
+    hi: बाउस्का नगर पालिका
+    hy: Բաուսկայի շրջան
+    id: Kotamadya Bauska
+    it: Comune di Bauska
+    ja: バウスカ
+    ka: ბაუსკის მხარე
+    kn: ಬಾಸ್ಕಾ ಪುರಸಭೆ
+    ko: 바우스카 시
+    lt: Bauskės savivaldybė
+    lv: Bauskas novads
+    mr: बाऊसका म्युन्सिपाल्टी
+    ms: Bauska municipality
+    nb: Bauska kommune
+    nl: Bauskas novads
+    pl: Gmina Bauska
+    pt: Município de Bauska
+    ru: Бауский край
+    si: බෞස්කා නගර සභාව
+    sv: Bauska kommun
+    ta: பஸ்க்கா நகராட்சி
+    te: బాస్కా మున్సిపాలిటీ
+    th: เบาสกา
+    tr: Bauska Belediyesi
+    uk: Бауський край
+    ur: باوسکا میونسپلٹی
+    vi: Đô thị tự trị Bauska
+    zh: 包斯卡自治市
+    fa: شهرداری باوسکا
+    ccp: "\U0001111D\U00011105\U0001112A\U0001110C\U00011134\U00011107"
+    eu: Bauska udalerria
+    mk: Бауска
+    'no': Bauska kommune
+    cy: Bwrdeistref Bauska
+  comments:
+  type: municipality
+'022':
+  name: Cēsu novads
+  code: '022'
+  unofficial_names: Cēsis
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية تسيسس
+    be: Цэсіскі край
+    bn: চেসিস পৌরসভা
+    ca: Municipi de Cēsis
+    da: Cēsis municipality
+    de: Bezirk Cēsis
+    el: Κέσις
+    en: Cēsis
+    es: Municipalidad de Cēsis
+    et: Cēsise piirkond
+    fi: Cēsisin kunta
+    fr: Cēsis
+    gu: કેસીસ મ્યુનિસિપાલિટી
+    hi: केसिस नगरपालिका
+    id: Kotamadya Cēsis
+    it: Comune di Cēsis
+    ja: ツェースィス
+    ka: ცესისის მხარე
+    kn: ಕೆಸಿಸ್ ಪುರಸಭೆ
+    ko: 체시스 시
+    lt: Cėsių savivaldybė
+    lv: Cēsu novads
+    mr: कॅसिस म्युन्सिपाल्टी
+    ms: Cesis municipality
+    nb: Cesis Kommune
+    nl: Cēsu novads
+    pl: Gmina Kieś
+    pt: Município de Cesis
+    ru: Цесисский край
+    si: සේසිස් නගර සභාව
+    sv: Cēsu novads
+    ta: சேசிஸ் நகராட்சி
+    te: సెసిస్ మున్సిపాలిటీ
+    th: เมืองเซซิส
+    tr: Cesis Bölgesi
+    uk: Цесіський край
+    ur: چیسس بلدیہ
+    vi: Đô thị tự trị Cesis
+    ceb: Cēsu Novads
+    zh: 采西斯自治市
+    fa: شهرداری سسیس
+    ccp: "\U00011125\U0001112C\U0001110C\U00011128\U0001110C\U00011134"
+    eu: Cēsis udalerria
+    mk: Цесис
+    'no': Cesis Kommune
+    cy: Bwrdeistref Cēsis
+    hy: Ցեսիսի շրջան
+  comments:
+  type: municipality
+'026':
+  name: Dobeles novads
+  code: '026'
+  unofficial_names: Dobele
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية دوبيل
+    bn: ডোবেল পৌরসভা
+    ca: Municipi de Dobele
+    da: Dobele municipality
+    de: Bezirk Dobele
+    el: Ντόμπελε
+    en: Dobele
+    es: Municipalidad de Dobele
+    et: Dobele piirkond
+    fi: Dobelen kunta
+    fr: Dobele
+    gu: ડોબેલ મ્યુનિસિપાલિટી
+    hi: दोबेले नगरपालिका
+    hy: Դոբելեի շրջան
+    id: Kotamadya Dobele
+    it: Comune di Dobele
+    ja: ドベレ
+    ka: დობელეს მხარე
+    kn: ಡೊಬಿಲೆ ಪುರಸಭೆ
+    ko: 도벨레 시
+    lt: Duobelės savivaldybė
+    lv: Dobeles novads
+    mr: डोबेले म्युन्सिपाल्टी
+    ms: Dobele municipality
+    nb: Dobele Kommune
+    nl: Dobele
+    pl: Gmina Dobele
+    pt: Município de Dobele
+    ru: Добельский край
+    si: ඩොබෙලේ නගර සභාව
+    sv: Dobele (kommun)
+    ta: டொபெலே நகராட்சி
+    te: డోబెలి మున్సిపాలిటీ
+    th: เมืองโดเบเล่
+    tr: Dobele Belediyesi
+    uk: Добельський край
+    ur: دوبیلے بلدیہ
+    vi: Đô thị tự trị Dobele
+    zh: 多貝萊自治市
+    fa: شهرداری دوبل
+    ccp: "\U00011113\U00011127\U0001111D\U00011128\U00011123\U00011128"
+    eu: Dobele udalerria
+    be: Добэльскі край
+    mk: Добеле
+    'no': Dobele Kommune
+    cy: Bwrdeistref Dobele
+  comments:
+  type: municipality
+'033':
+  name: Gulbenes novads
+  code: '033'
+  unofficial_names: Gulbene
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية غولبين
+    be: Гулбенскі край
+    bn: গুল্বেন পৌরসভা
+    ca: Municipi de Gulbene
+    da: Gulbene municipality
+    de: Bezirk Gulbene
+    el: Γκουλμπένε
+    en: Gulbene
+    es: Municipalidad de Gulbene
+    et: Gulbene piirkond
+    fi: Gulbene
+    fr: Gulbene
+    gu: ગુલબેન મ્યુનિસિપાલિટી
+    hi: गुलबेने नगरपालिका
+    hy: Գուլբենեի շրջան
+    id: Kotamadya Gulbene
+    it: Comune di Gulbene
+    ja: グルベネ
+    ka: გულბენეს მხარე
+    kn: ಗುಲ್ಬೀನ್ ಪುರಸಭೆ
+    ko: 굴베네 시
+    lt: Gulbenės savivaldybė
+    lv: Gulbenes novads
+    mr: गुलाबेन म्युन्सिपाल्टी
+    ms: Gulbene municipality
+    nb: Gulbene Kommune
+    nl: Gulbenes novads
+    pl: Gmina Gulbene
+    pt: Município de Gulbene
+    ru: Гулбенский край
+    si: ගුල්බෙනේ නගර සභාව
+    sv: Gulbene (kommun)
+    ta: கோல்பேனே நகராட்சி
+    te: గుల్బీన్ మున్సిపాలిటీ
+    th: เมืองกุลเบเน
+    tr: Gulbene Belgesi
+    uk: Гулбенський край
+    ur: گولبینے بلدیہ
+    vi: Đô thị tự trị Gulbene
+    zh: 古爾貝內自治市
+    fa: شهرداری گولبن
+    ccp: "\U00011109\U0001112A\U00011123\U00011134\U0001111D\U0001112C\U0001111A\U0001112C"
+    eu: Gulbene udalerria
+    mk: Гулбене
+    'no': Gulbene Kommune
+    cy: Bwrdeistref Gulbene
+  comments:
+  type: municipality
+'041':
+  name: Jelgavas novads
+  code: '041'
+  unofficial_names: Jelgava
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية جيلغافا
+    bn: জেল্গাভা পৌরসভা
+    ca: Municipi de Jelgava
+    da: Jelgava municipality
+    de: Bezirk Jelgava
+    el: Γιέλγκαβα
+    en: Jelgava Municipality
+    es: Municipalidad de Jelgava
+    et: Jelgava piirkond
+    fi: Jelgavan kunta
+    fr: Jelgava
+    gu: જેલગાવા મ્યુનિસિપાલિટી
+    hi: जेल्गावा नगरपालिका
+    id: Kotamadya Jelgava
+    it: Jelgava
+    ja: ヤルガワ
+    ka: ელგავის მხარე
+    kn: ಜೆಲ್ಗಾವ ಪುರಸಭೆ
+    ko: 옐가바 시
+    lt: Jelgavos savivaldybė
+    lv: Jelgavas novads
+    mr: जेल्गा म्युन्सिपाल्टी
+    ms: Jelgava municipality
+    nb: Jelgava kommune
+    nl: Jelgavas novads
+    pl: Gmina Jełgawa
+    pt: Município de Jelgava
+    ru: Елгавский край
+    si: ජෙල්ගවා නගර සභාව
+    sv: Jelgava kommun
+    ta: ஜெல்கவா நகராட்சி
+    te: జల్గావా మున్సిపాలిటీ
+    th: เทศบาลนครเยลกาวา
+    tr: Jelgava Belediyesi
+    uk: Єлгавський край
+    ur: جیلجاوا میونسپلٹی
+    vi: Đô thị tự trị Jelgava
+    zh: 葉爾加瓦自治市
+    fa: شهرداری یلگاوا
+    ccp: "\U0001110E\U0001112C\U00011123\U00011134\U00011109\U0001111E \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    hy: Ելգավայի շրջան
+    eu: Jelgava udalerria
+    be: Елгаўскі край
+    mk: Јелгава
+    'no': Jelgava kommune
+    cy: Bwrdeistref Jelgava
+  comments:
+  type: municipality
+'042':
+  name: Jēkabpils novads
+  code: '042'
+  unofficial_names: Jēkabpils
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية جوكابيلز
+    bn: জেকাবপিলস পৌরসভা
+    ca: Municipi de Jēkabpils
+    da: Jekabpils municipality
+    de: Jēkabpils novads
+    el: Γιέκαμπιλς
+    en: Jēkabpils Municipality
+    es: Municipalidad de Jēkabpils
+    et: Jēkabpilsi piirkond
+    fi: Jēkabpilsin kunta
+    fr: Jēkabpils
+    gu: જેકેબપિલ્સ મ્યુનિસિપાલિટી
+    hi: जेकबपिल्स नगरपालिका
+    id: Kotamadya Jēkabpils
+    it: Jēkabpils
+    ja: ヤーカブピルス
+    ka: იეკაბპილსის მხარე
+    kn: ಜೆಕಾಬ್ಪಿಲ್ಸ್ ಪುರಸಭೆ
+    ko: 예캅필스 시
+    lt: Jėkabpilio savivaldybė
+    lv: Jēkabpils novads
+    mr: जेकबपिल म्युन्सिपाल्टी
+    ms: Jekabpils municipality
+    nb: Jekabpils kommune
+    nl: Jēkabpils novads
+    pl: Gmina Jēkabpils
+    pt: Município de Jekabpils
+    ru: Екабпилсский край
+    si: ජේකබ්පිල්ස් නගර සභාව
+    sv: Jēkabpils novads
+    ta: ஜெகபபிள்ஸ் நகராட்சி
+    te: జెకాబ్పిలిస్ మున్సిపాలిటీ
+    th: เมืองเจคับพิล
+    tr: Jekabpils Belediyesi
+    uk: Єкабпілський край
+    ur: جیکابپیلس میونسپلٹی
+    vi: Đô thị tự trị Jekabpils
+    ceb: Jēkabpils Municipality
+    zh: 葉卡布皮爾斯自治市
+    fa: شهرداری یکابپلیس
+    ccp: "\U0001110E\U0001112C\U00011107\U0001111B\U00011134\U0001111B\U00011128\U00011123\U00011134
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    hy: Եկաբպիսլի շրջան
+    eu: Jēkabpils udalerria
+    be: Екабпілскі край
+    mk: Јекабпилс
+    'no': Jekabpils kommune
+    cy: Bwrdeistref Jēkabpils
+  comments:
+  type: municipality
+'047':
+  name: Krāslavas novads
+  code: '047'
+  unofficial_names: Krāslava
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية كراسلافا
+    be: Краслаўскі край
+    bn: ক্রাস্লাভা পৌরসভা
+    ca: Municipi de Krāslava
+    da: Krāslava municipality
+    de: Bezirk Krāslava
+    el: Κράσλαβα
+    en: Krāslava
+    es: Municipalidad de Krāslava
+    et: Krāslava piirkond
+    fi: Krāslavan kunta
+    fr: Krāslava
+    gu: ક્રાસ્લાવા મ્યુનિસિપાલિટી
+    hi: क्रस्लावा नगरपालिका
+    id: Kotamadya Krāslava
+    it: Comune di Krāslava
+    ja: クラスラヴァ
+    ka: კრასლავის მხარე
+    kn: ಕ್ರಾಸ್ಲಾವಾ ಪುರಸಭೆ
+    ko: 크라슬라바 시
+    lt: Kraslavos savivaldybė
+    lv: Krāslavas novads
+    mr: क्रासलवा म्युन्सिपाल्टी
+    ms: Perbandaran Kraslave
+    nb: Kraslava kommune
+    nl: Krāslavas novads
+    pl: Gmina Krasław
+    pt: Município de Kraslava
+    ru: Краславский край
+    si: ක්රාසල්වා නගර සභාව
+    sv: Kraslava kommun
+    ta: கிராஸ்லவா நகராட்சி
+    te: క్రాస్లావా మున్సిపాలిటీ
+    th: เทศบาลคราสลาว่า
+    tr: Kraslava Belediyesi
+    uk: Краславський край
+    ur: کراسلاوا میونسپلٹی
+    vi: Đô thị tự trị Kraslava
+    zh: 克拉斯拉瓦自治市
+    fa: شهرداری کراسلاوا
+    ccp: "\U00011107\U00011133\U00011122\U0001110C\U00011134\U00011123\U0001111E"
+    eu: Krāslava udalerria
+    mk: Краслава
+    'no': Kraslava kommune
+    cy: Bwrdeistref Krāslava
+    hy: Կրասլավայի շրջան
+  comments:
+  type: municipality
+'050':
+  name: Kuldīgas novads
+  code: '050'
+  unofficial_names: Kuldīga
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية كولديغا
+    be: Кулдыгскі край
+    bn: কুলদিগা পৌরসভা
+    ca: Municipi de Kuldīga
+    da: Kuldīga municipality
+    de: Bezirk Kuldīga
+    el: Κουλντίγκα
+    en: Kuldīga
+    es: Municipalidad de Kuldīga
+    et: Kuldīga piirkond
+    fi: Kuldīgan kunta
+    fr: Kuldīga
+    gu: કુલડીગા મ્યુનિસિપાલિટી
+    hi: कुलदीगा नगरपालिका
+    id: Kotamadya Kuldīga
+    it: Comune di Kuldīga
+    ja: クルディーガ
+    ka: კულდიგის მხარე
+    kn: ಕುಲ್ದಿಗಾ ಪುರಸಭೆ
+    ko: 쿨디가 시
+    lt: Kuldygos savivaldybė
+    lv: Kuldīgas novads
+    mr: कुलदीगा म्युन्सिपाल्टी
+    ms: Kuldiga municipality
+    nb: Kuldiga kommune
+    nl: Kuldīgas novads
+    pl: Gmina Kuldīga
+    pt: Kuldiga
+    ru: Кулдигский край
+    si: කුල්ඩිගා නගර සභාව
+    sv: Kuldiga kommun
+    ta: குலடிகா நகராட்சி
+    te: కుల్డిగా మున్సిపాలిటీ
+    th: คุลดีกา
+    tr: Kuldiga Belediyesi
+    uk: Кулдізький край
+    ur: کولدیجا میونسپلٹی
+    vi: Đô thị tự trị Kuldiga
+    zh: 庫爾迪加自治市
+    fa: شهرداری کولدیگا
+    ccp: "\U00011107\U0001112A\U00011123\U00011134\U00011113\U00011128\U00011109"
+    eu: Kuldīga udalerria
+    mk: Кулдига
+    'no': Kuldiga kommune
+    cy: Bwrdeistref Kuldīga
+    gl: Municipio de Kuldīga
+    hy: Կուլդիգայի շրջան
+  comments:
+  type: municipality
+'052':
+  name: Ķekavas novads
+  code: '052'
+  unofficial_names: Ķekava
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية كيكافا
+    bn: কেকাভা পৌরসভা
+    ca: Municipi de Ķekava
+    da: Ķekava municipality
+    de: Bezirk Ķekava
+    el: Κέκαβα
+    en: Ķekava
+    es: Municipalidad de Ķekava
+    et: Ķekava piirkond
+    fi: Ķekavan kunta
+    fr: Ķekava
+    gu: કેકાવા મ્યુનિસિપાલિટી
+    hi: केकावा नगरपालिका
+    id: Kotamadya Ķekava
+    it: Ķekava
+    ja: キェカワ
+    ka: კეკავის მხარე
+    kn: ಐಕೆಟಿ ಪುರಸಭೆ
+    ko: 체카바 시
+    lt: Kekavos savivaldybė
+    lv: Ķekavas novads
+    mr: ऐक्वा म्युन्सिपाल्टी
+    ms: Kekava municipality
+    nb: Kekava kommune
+    nl: Ķekavas novads
+    pl: Gmina Ķekava
+    pt: Município de Kekava
+    ru: Кекавский край
+    si: කෙකවා නගර සභාව
+    sv: Kekava kommun
+    ta: கேயெகோவா நகராட்சி
+    te: కెకావా మున్సిపాలిటీ
+    th: เมืองเคกาวา
+    tr: Kekava Belediyesi
+    uk: Кекавський край
+    ur: کیکاوا میونسپلٹی
+    vi: Đô thị tự trị Kekava
+    zh: 科卡瓦斯自治市
+    fa: شهرداری ککاوا
+    ccp: "\U00011107\U0001112C\U00011107\U0001111E"
+    hy: Կեկավայի շրջան
+    eu: Ķekava udalerria
+    be: Кекаўскі край
+    mk: Ќекава
+    'no': Kekava kommune
+    ceb: Ķekavas Novads
+    cy: Bwrdeistref Ķekava
+  comments:
+  type: municipality
+'054':
+  name: Limbažu novads
+  code: '054'
+  unofficial_names: Limbaži
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية ليمباجي
+    bn: লিম্বাজি পৌরসভা
+    ca: Municipi de Limbaži
+    da: Limbaži municipality
+    de: Limbaži
+    el: Λιμπάζι
+    en: Limbaži
+    es: Municipalidad de Limbaži
+    et: Limbaži piirkond
+    fi: Limbažin kunta
+    fr: Limbaži
+    gu: લિમ્બેઝિ મ્યુનિસિપાલિટી
+    hi: लीम्बाजी नगरपालिका
+    hy: Լիմբաժիի շրջան
+    id: Kotamadya Limbaži
+    it: Limbaži
+    ja: リンバジ
+    ka: ლიმბაჟის მხარე
+    kn: ಲಿಂಬಾಝಿ ಪುರಸಭೆ
+    ko: 림바지 시
+    lt: Limbažių savivaldybė
+    lv: Limbažu novads
+    mr: लिम्बो म्युन्सिपाल्टी
+    ms: Limbazi municipality
+    nb: Limbazi kommune
+    nl: Limbažu novads
+    pl: Gmina Limbaži
+    pt: Município de Limbazi
+    ru: Лимбажский край
+    si: ලිම්බසි නගර සභාව
+    sv: Limbazi kommun
+    ta: லிம்பாஜி நகராட்சி
+    te: లింబాజి మున్సిపాలిటీ
+    th: ดามันและดีอู
+    tr: Limbazi Belediyesi
+    uk: Лімбазький край
+    ur: لیمبازی میونسپلٹی
+    vi: Đô thị tự trị Limbazi
+    zh: 林巴濟自治市
+    fa: شهرداری لیمباژی
+    ccp: "\U00011123\U0001111F\U00011134\U0001111D\U0001110E\U00011128"
+    eu: Limbaži udalerria
+    be: Лімбажскі край
+    mk: Лимбажи
+    'no': Limbazi kommune
+    cy: Bwrdeistref Limbaži
+  comments:
+  type: municipality
+'056':
+  name: Līvānu novads
+  code: '056'
+  unofficial_names: Līvāni
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية ليفاني
+    bn: লিভানি পৌরসভা
+    ca: Municipi de Līvāni
+    da: Līvāni
+    de: Bezirk Līvāni
+    el: Λιβάνι
+    en: Līvāni
+    es: Municipalidad de Līvāni
+    et: Līvāni piirkond
+    fi: Līvānin kunta
+    fr: Līvāni
+    gu: લીવાની મ્યુનિસિપાલિટી
+    hi: लिवानी नगरपालिका
+    id: Kotamadya Līvāni
+    it: Līvāni
+    ja: リーヴァーニ
+    ka: ლივანის მხარე
+    kn: ಲಿವಾನಿ ಪುರಸಭೆ
+    ko: 리바니 시
+    lt: Lyvanų savivaldybė
+    lv: Līvānu novads
+    mr: लीवनि म्युन्सिपाल्टी
+    ms: Livani municipality
+    nb: Livani kommune
+    nl: Līvānu novads
+    pl: Gmina Līvāni
+    pt: Livani
+    ru: Ливанский край
+    si: ලීවානි නගර සභාව
+    sv: Līvānu novads
+    ta: லிவனி நகராட்சி
+    te: లివానీ మున్సిపాలిటీ
+    th: เทศบาลลิวานี่
+    tr: Livani Belediyesi
+    uk: Ліванський край
+    ur: لیوانی میونسپلٹی
+    vi: Đô thị tự trị Livani
+    zh: 利瓦尼自治市
+    ceb: Līvānu Novads
+    fa: شهرداری لیوانی
+    ccp: "\U00011123\U00011128\U0001111E\U0001111A\U00011128"
+    hy: Լիվանիի շրջան
+    eu: Līvāni udalerria
+    be: Ліванскі край
+    mk: Ливани
+    'no': Livani kommune
+    cy: Bwrdeistref Līvāni
+  comments:
+  type: municipality
+'058':
+  name: Ludzas novads
+  code: '058'
+  unofficial_names: Ludza
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية لودزا
+    be: Лудзенскі край
+    bn: লুদজা পৌরসভা
+    ca: Municipi de Ludza
+    da: Ludza municipality
+    de: Bezirk Ludza
+    el: Λούντζα
+    en: Ludza
+    es: Municipalidad de Ludza
+    et: Ludza piirkond
+    fi: Ludzan kunta
+    fr: Ludza
+    gu: લુદઝા મ્યુનિસિપાલિટી
+    hi: लुड्ज़ा नगरपालिका
+    id: Kotamadya Ludza
+    it: Ludza
+    ja: ルヅァ
+    ka: ლუძის მხარე
+    kn: ಲುಡ್ಜಾ ಪುರಸಭೆ
+    ko: 루자 시
+    lt: Ludzos savivaldybė
+    lv: Ludzas novads
+    mr: लूडझ म्युन्सिपाल्टी
+    ms: Ludza municipality
+    nb: Ludza kommune
+    nl: Ludzas novads
+    pl: Gmina Lucyn
+    pt: Ludza
+    ru: Лудзенский край
+    si: ලුඩ්සා නගර සභාව
+    sv: Ludza kommun
+    ta: லுடசா நகராட்சி
+    te: లుడ్జా మున్సిపాలిటీ
+    th: เทศบาลลัดซา
+    tr: Ludza Belediyesi
+    uk: Лудзенський край
+    ur: لودزا میونسپلٹی
+    vi: Đô thị tự trị Ludza
+    ceb: Lielais Ludzas Ezers
+    zh: 盧扎自治市
+    fa: شهرداری لودزا
+    ccp: "\U00011123\U0001112A\U00011116\U00011134\U0001110E"
+    eu: Ludza udalerria
+    mk: Луѕа
+    'no': Ludza kommune
+    cy: Bwrdeistref Ludza
+    hy: Լուձայի շրջան
+  comments:
+  type: municipality
+'059':
+  name: Madonas novads
+  code: '059'
+  unofficial_names: Madona
+  geo:
+    latitude: 49.8498701
+    longitude: 18.2723841
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية مادونا
+    bn: ম্যাডোনা পৌরসভা
+    ca: Municipi de Madona
+    da: Madona municipality
+    de: Bezirk Madona
+    el: Μαντόνα
+    en: Madona
+    es: Municipalidad de Madona
+    et: Madona piirkond
+    fi: Madona
+    fr: Madona
+    gu: મડોના મ્યુનિસિપાલિટી
+    hi: मैडोना नगरपालिका
+    id: Kotamadya Madona
+    it: Madona
+    ja: マドゥアナ
+    ka: მადონას მხარე
+    kn: ಮಡೋನಾ ಪುರಸಭೆ
+    ko: 마도나 시
+    lt: Maduonos savivaldybė
+    lv: Madonas novads
+    mr: मॅडोना म्युन्सिपाल्टी
+    ms: Madona municipality
+    nb: Madona kommune
+    nl: Madonas novads
+    pl: Gmina Madona
+    pt: Município de Madona
+    ru: Мадонский край
+    si: මැඩෝනා නගර සභාව
+    sv: Madonas novads
+    ta: மடோனா நகராட்சி
+    te: మడోనా మున్సిపాలిటీ
+    th: โดโบรวา โพลโฮว กราเดค
+    tr: Madona Belediyesi
+    uk: Мадонський край
+    ur: مادونا میونسپلٹی
+    vi: Đô thị tự trị Madona
+    zh: 馬多納自治市
+    ceb: Madona Municipality
+    fa: شهرداری مادونا
+    ccp: "\U0001111F\U00011127\U00011113\U0001112E\U0001111A"
+    eu: Madona udalerria
+    be: Маданскі край
+    mk: Мадона
+    'no': Madona kommune
+    cy: Bwrdeistref Madona
+    hy: Մադոնայի շրջան
+  comments:
+  type: municipality
+'062':
+  name: Mārupes novads
+  code: '062'
+  unofficial_names: Mārupe
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية ماروب
+    bn: মারুপ পৌরসভা
+    ca: Municipi de Mārupe
+    da: Mārupe municipality
+    de: Bezirk Mārupe
+    el: Μάρουπε
+    en: Mārupe
+    es: Municipalidad de Mārupe
+    et: Mārupe piirkond
+    fi: Mārupen kunta
+    fr: Mārupes novads
+    gu: મરૂપ મ્યુનિસિપાલિટી
+    hi: मरूप नगरपालिका
+    id: Kotamadya Mārupe
+    it: Mārupe
+    ja: マールペ
+    ka: მარუპეს მხარე
+    kn: ಮಾರಪ್ ಪುರಸಭೆ
+    ko: 마루페 시
+    lt: Marupės savivaldybė
+    lv: Mārupes novads
+    mr: मापू म्युन्सिपाल्टी
+    ms: Marupe municipality
+    nb: Marupe kommune
+    nl: Mārupes novads
+    pl: Gmina Mārupe
+    pt: Município de Marupe
+    ru: Марупский край
+    si: මාරුපේ නගර සභාව
+    sv: Mārupes novads
+    ta: மறுப்பே நகராட்சி
+    te: మారుపె మున్సిపాలిటీ
+    th: เทศบาลเมืองมารูเป้
+    tr: Mareupe Belediyesi
+    uk: Марупський край
+    ur: مروپی میونسپلٹی
+    vi: Đô thị tự trị Marupe
+    zh: 馬魯皮斯自治市
+    ceb: Mārupes Novads
+    fa: شهرداری ماروپه
+    ccp: "\U0001111F\U00011122\U0001112A\U0001111B\U00011134"
+    hy: Մարուպեի շրջան
+    eu: Mārupe udalerria
+    sl: Mārupe
+    be: Марупскі край
+    mk: Марупе
+    'no': Marupe kommune
+    cy: Bwrdeistref Mārupe
+  comments:
+  type: municipality
+'067':
+  name: Ogres novads
+  code: '067'
+  unofficial_names: Ogre
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية أوغري
+    bn: ওগ্রে পৌরসভা
+    ca: Municipi d’Ogre
+    da: Ogre municipality
+    de: Bezirk Ogre
+    el: Όγκρε
+    en: Ogre
+    es: Municipalidad de Ogre
+    et: Ogre piirkond
+    fi: Ogren kunta
+    fr: Ogre
+    gu: ઓગ્રે મ્યુનિસિપાલિટી
+    hi: ओग्रे नगरपालिका
+    hy: Օգրեի շրջան
+    id: Kotamadya Ogre
+    it: Comune di Ogre
+    ja: ウアグレ
+    ka: ოგრეს მხარე
+    kn: ಓಗ್ರೆ ಪುರಸಭೆ
+    ko: 오그레 시
+    lt: Uogrės savivaldybė
+    lv: Ogres novads
+    mr: ओगरी म्युन्सिपाल्टी
+    ms: Ogre municipality
+    nb: Ogre Kommune
+    nl: Ogres novads
+    pl: Gmina Ogre
+    pt: Município de Ogre
+    ru: Огрский край
+    si: ඔග්‍රේ නගර සභාව
+    sv: Ogres novads
+    ta: ஓக்கிறே நகராட்சி
+    te: ఓగ్రె మున్సిపాలిటీ
+    th: เมืองโอเกร
+    tr: Ogre Belediyesi
+    uk: Огрський край
+    ur: وجری میونسپلٹی
+    vi: Đô thị tự trị Ogre
+    zh: 奧格雷自治市
+    ceb: Ogres novads
+    fa: شهرداری اوگره
+    ccp: "\U00011103\U00011127\U00011109\U00011133\U00011122\U0001112C"
+    eu: Ogre udalerria
+    be: Огрскі край
+    mk: Огре
+    'no': Ogre Kommune
+    cy: Bwrdeistref Ogre
+  comments:
+  type: municipality
+'068':
+  name: Olaines novads
+  code: '068'
+  unofficial_names: Olaine
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية أولاين
+    bn: ওলাইন পৌরসভা
+    ca: Municipi d’Olaine
+    da: Olaine municipality
+    de: Bezirk Olaine
+    el: Ολαίνε
+    en: Olaine
+    es: Municipalidad de Olaine
+    et: Olaine piirkond
+    fi: Olainen kunta
+    fr: Olaine
+    gu: ઓલાઇન મ્યુનિસિપાલિટી
+    hi: ओलेन नगरपालिका
+    hy: Օլաինեի շրջան
+    id: Kotamadya Olaine
+    it: Comune di Olaine
+    ja: ウアライネ
+    ka: ოლაინეს მხარე
+    kn: ಒಲೇನ್ ಪುರಸಭೆ
+    ko: 올라이네 시
+    lt: Uolainės savivaldybė
+    lv: Olaines novads
+    mr: ओलाईने म्युन्सिपाल्टी
+    ms: Olaine municipality
+    nb: Olaine kommune
+    nl: Olaines novads
+    pl: Gmina Olaine
+    pt: Município de Olaine
+    ru: Олайнский край
+    si: ඔලය්නේ නගර සභාව
+    sv: Olaine kommun
+    ta: ஓலைனே நகராட்சி
+    te: ఓలైన్ మున్సిపాలిటీ
+    th: จังหวัดนายาลา
+    tr: Olaine Belediyesi
+    uk: Олайнський край
+    ur: ولاینی میونسپلٹی
+    vi: Đô thị tự trị Olaine
+    zh: 奧萊內自治市
+    fa: شهرداری اولاین
+    ccp: "\U00011103\U0001112E\U00011123\U0001112D\U0001111A\U00011134"
+    eu: Olaine udalerria
+    be: Олайнскі край
+    mk: Олаине
+    'no': Olaine kommune
+    ceb: Olaines Novads
+    cy: Bwrdeistref Olaine
+  comments:
+  type: municipality
+'073':
+  name: Preiļu novads
+  code: '073'
+  unofficial_names: Preiļi
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية بريلي
+    bn: প্রেইলি পৌরসভা
+    ca: Municipi de Preiļi
+    da: Preiļi
+    de: Bezirk Preiļi
+    el: Κοινότητα Πρέιλι
+    en: Preiļi
+    es: Municipalidad de Preiļi
+    et: Preiļi piirkond
+    fi: Preiļin kunta
+    fr: Preiļi
+    gu: પ્રેલી મ્યુનિસિપાલિટી
+    hi: प्रीली नगरपालिका
+    id: Kotamadya Preiļi
+    it: Preiļi
+    ja: プレイリ
+    ka: პრეილის მხარე
+    kn: ಪ್ರೈಲಿ ಪುರಸಭೆ
+    ko: 프레일리 시
+    lt: Preilių savivaldybė
+    lv: Preiļu novads
+    mr: प्रेइ म्युन्सिपाल्टी
+    ms: Perbandaran Preiļi
+    nb: Preili kommune
+    nl: Preiļu novads
+    pl: Gmina Preiļi
+    pt: Município de Preili
+    ru: Прейльский край
+    si: ප්‍රේයිලි නගර සභාව
+    sv: Preiļi Municipality
+    ta: பிரெய்லி நகராட்சி
+    te: ప్రీలీ మున్సిపాలిటీ
+    th: เขตเทศบาล พรายลิ
+    tr: Preili Belediyesi
+    uk: Прейльський край
+    ur: میونسپلٹی
+    vi: Đô Thị Tự Trị Preili
+    zh: 普雷利自治市
+    ceb: Preiļi Municipality
+    fa: شهرداری پریلی
+    ccp: "\U0001111B\U00011133\U00011122\U0001112D\U00011123\U00011128"
+    eu: Preiļi udalerria
+    be: Прэйльскі край
+    mk: Преиљи
+    'no': Preili kommune
+    cy: Bwrdeistref Preiļi
+    hy: Պրեյլյիի շրջան
+  comments:
+  type: municipality
+'077':
+  name: Rēzeknes novads
+  code: '077'
+  unofficial_names: Rēzekne
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية ريزكنه
+    bn: রেজেকনি পৌরসভা
+    ca: Municipi de Rēzekne
+    da: Rēzekne municipality
+    de: Bezirk Rēzekne
+    el: Ρέζεκνε
+    en: Rēzekne Municipality
+    es: Municipalidad de Rēzekne
+    et: Rēzekne piirkond
+    fi: Rēzeknen kunta
+    fr: Rēzekne
+    gu: રીજેક્ને મ્યુનિસિપાલિટી
+    hi: रेज़ेक्ने नगरपालिका
+    id: Kotamadya Rēzekne
+    it: Rēzekne
+    ja: レーゼクネ
+    ka: რეზეკნეს მხარე
+    kn: ರೇಜೆನ್ನೆ ಪುರಸಭೆ
+    ko: 레제크네 시
+    lt: Rėzeknės savivaldybė
+    lv: Rēzeknes novads
+    mr: रेजेन्ने म्युन्सिपाल्टी
+    ms: Rezekne municipality
+    nb: Rezekne kommune
+    nl: Rēzeknes novads
+    pl: Gmina Rzeżyca
+    pt: Município de Rezekne
+    ru: Резекненский край
+    si: රේසේන්ක්නේ නගර සභාව
+    sv: Rēzeknes Novads
+    ta: ரெஸிக்னே நகராட்சி
+    te: రిజెన్ మున్సిపాలిటీ
+    th: เทศบาลเรเซคเน
+    tr: Rezekne Belediyesi
+    uk: Резекненський край
+    ur: ریزیکنی میونسپلٹی
+    vi: Đô thị tự trị Rezekne
+    ceb: Rēzeknes Novads
+    zh: 雷澤克內自治市
+    fa: شهرداری رزکنه
+    ccp: "\U00011122\U0001112C\U0001110E\U0001112C\U00011107\U00011134\U0001111A\U00011128
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    eu: Rēzekne udalerria
+    be: Рэзэкненскі край
+    mk: Резекне
+    'no': Rezekne kommune
+    cy: Bwrdeistref Rēzekne
+    hy: Ռեզեկնեի շրջան
+  comments:
+  type: municipality
+'080':
+  name: Ropažu novads
+  code: '080'
+  unofficial_names: Ropaži
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية روباجي
+    bn: রোপাজা পৌরসভা
+    ca: Municipi de Ropaži
+    da: Ropaži municipality
+    de: Bezirk Ropaži
+    el: Ροπάζι
+    en: Ropaži
+    es: Municipalidad de Ropaži
+    et: Ropaži piirkond
+    fi: Ropažin kunta
+    fr: Ropaži
+    gu: રોપાજી મ્યુનિસિપાલિટી
+    hi: रोपाजी नगरपालिका
+    id: Kotamadya Ropaži
+    it: Ropaži
+    ja: ルアパジ
+    ka: როპაჟის მხარე
+    kn: ರೊಪಾಝಿ ಪುರಸಭೆ
+    ko: 로파지 시
+    lt: Ruopažų savivaldybė
+    lv: Ropažu novads
+    mr: रोपाजी म्युन्सिपाल्टी
+    ms: Ropazi municipality
+    nb: Ropazi kommune
+    nl: Ropažu novads
+    pl: Gmina Ropaži
+    pt: Município de Ropazi
+    ru: Ропажский край
+    si: රෝපසි නගර සභාව
+    sv: Ropažu novads
+    ta: ரோபஸ்ய் நகராட்சி
+    te: రోపాజి మున్సిపాలిటీ
+    th: เมืองโรปาซี
+    tr: Ropazi Belediyesi
+    uk: Ропажський край
+    ur: روپازی میونسپلٹی
+    vi: Đô thị tự trị Ropazi
+    zh: 羅帕日自治市
+    ceb: Ropažu Novads
+    fa: شهرداری روپاژی
+    ccp: "\U00011122\U0001112E\U0001111B\U0001110E\U00011128"
+    eu: Ropaži udalerria
+    be: Ропажскі край
+    mk: Ропажи
+    'no': Ropazi kommune
+    cy: Bwrdeistref Ropaži
+    hy: Ռոպաժիի շրջան
+  comments:
+  type: municipality
+'087':
+  name: Salaspils novads
+  code: '087'
+  unofficial_names: Salaspils
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية سالاسبيلز
+    bn: সালাস্পিলস পৌরসভা
+    ca: Municipi de Salaspils
+    da: Salaspils municipality
+    de: Bezirk Salaspils
+    el: Σάλασπιλς
+    en: Salaspils
+    es: Municipalidad de Salaspils
+    et: Salaspilsi piirkond
+    fi: Salaspilsin kunta
+    fr: Salaspils
+    gu: સાલાસ્પિલ મ્યુનિસિપાલિટી
+    hi: सलासपिल्स नगर पालिका
+    id: Kotamadya Salaspils
+    it: Comune di Salaspils
+    ja: サラスピルス
+    ka: სალასპილსის მხარე
+    kn: ಸಲಾಸ್ಪೈಲ್ಸ್ ಪುರಸಭೆ
+    ko: 살라스필스 시
+    lt: Salaspilio savivaldybė
+    lv: Salaspils novads
+    mr: सालास्पिलस म्युन्सिपाल्टी
+    ms: Salaspils municipality
+    nb: Salaspils Kommune
+    nl: Salaspils novads
+    pl: Gmina Salaspils
+    pt: Município de Salaspils
+    ru: Саласпилсский край
+    si: සලපිල්ස් නගර සභාව
+    sv: Salaspils Novads
+    ta: சலசபிள்ஸ் நகராட்சி
+    te: సాలాస్‌పిల్స్ మున్సిపాలిటీ
+    th: เมืองซาลาสปิลส์
+    tr: Salaspils Belediyesi
+    uk: Саласпілський край
+    ur: سالاسپیلس میونسپلٹی
+    vi: Đô thị tự trị Salaspils
+    ceb: Salaspils Novads
+    zh: 薩拉斯皮爾斯自治市
+    fa: شهرداری سالاسپیلس
+    ccp: "\U00011125\U00011123\U0001110C\U00011134\U0001111B\U00011128\U00011123\U00011134\U00011125\U00011134"
+    hy: Սալասպիլսի շրջան
+    eu: Salaspils udalerria
+    be: Саласпілскі край
+    mk: Саласпилс
+    'no': Salaspils Kommune
+    cy: Bwrdeistref Salaspils
+  comments:
+  type: municipality
+'088':
+  name: Saldus novads
+  code: '088'
+  unofficial_names: Saldus
+  geo:
+    latitude: 56.6653019
+    longitude: 22.492169
+    min_latitude: 56.6456732
+    min_longitude: 22.4596109
+    max_latitude: 56.6855229
+    max_longitude: 22.5252327
+  translations:
+    ar: بلدية سالدوس
+    bn: স্যালদুস পৌরসভা
+    ca: Municipi de Saldus
+    da: Saldus Municipality
+    de: Bezirk Saldus
+    el: Σάλντους
+    en: Saldus
+    es: Municipalidad de Saldus
+    et: Salduse piirkond
+    fi: Saldusin kunta
+    fr: Saldus
+    gu: સાલડસ મ્યુનિસિપાલિટી
+    hi: सल्दुस नगरपालिका
+    id: Kotamadya Saldus
+    it: Saldus
+    ja: サルドゥス
+    ka: სალდუსის მხარე
+    kn: ಸಲ್ಡಸ್ ಪುರಸಭೆ
+    ko: 살두스 시
+    lt: Saldaus savivaldybė
+    lv: Saldus novads
+    mr: सालडस म्युन्सिपाल्टी
+    ms: Saldus Municipality
+    nb: Saldus kommune
+    nl: Saldus novads
+    pl: Gmina Saldus
+    pt: Município de Saldus
+    ru: Салдусский край
+    si: සල්දස් නගර සභාව
+    sv: Saldus novads
+    ta: சால்டஸ் நகராட்சி
+    te: సాల్డస్ మున్సిపాలిటీ
+    th: เมืองซาลดัส
+    tr: Saldus Belediyesi
+    uk: Салдуський край
+    ur: سالدوس میونسپلٹی
+    vi: Đô thị tự trị Saldus
+    ceb: Saldus Municipality
+    zh: 薩爾杜斯自治市
+    fa: شهرداری سالدوس
+    ccp: "\U00011125\U00011123\U00011134\U00011113\U0001110C\U00011134"
+    hy: Սալդուսի շրջան
+    eu: Saldus udalerria
+    be: Салдускі край
+    mk: Салдус
+    'no': Saldus kommune
+    cy: Bwrdeistref Saldus
+  comments:
+  type: municipality
+'089':
+  name: Saulkrastu novads
+  code: '089'
+  unofficial_names: Saulkrasti
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية سولكراستي
+    bn: সল্ক্রাস্তি পৌরসভা
+    ca: Municipi de Saulkrasti
+    da: Saulkrasti municipality
+    de: Bezirk Saulkrasti
+    el: Σολκράστι
+    en: Saulkrasti
+    es: Municipalidad de Saulkrasti
+    et: Saulkrasti piirkond
+    fi: Saulkrastin kunta
+    fr: Saulkrasti
+    gu: સૌલ્ક્રસ્ટી મ્યુનિસિપાલિટી
+    hi: सौलक्रास्ती नगरपालिका
+    id: Kotamadya Saulkrasti
+    it: Saulkrasti
+    ja: サウルクラスチ
+    ka: საულკრასტის მხარე
+    kn: ಸೌಲ್ಕ್ರಾಸ್ಟಿ ಪುರಸಭೆ
+    ko: 사울크라스티 시
+    lt: Saulkrastų savivaldybė
+    lv: Saulkrastu novads
+    mr: शौलक्रस्ती म्युन्सिपाल्टी
+    ms: Saulkrasti municipality
+    nb: Saulkrasi kommune
+    nl: Saulkrastu novads
+    pl: Gmina Saulkrasti
+    pt: Município de Saulkrasti
+    ru: Саулкрастский край
+    si: සෞල්ක්රස්ටි නගර සභාව
+    sv: Saulkrastu novads
+    ta: ஸுலக்ரஸ்ட்டி நகராட்சி
+    te: సౌల్క్రాస్టి మున్సిపాలిటీ
+    th: เทศบาลเมืองเซาคราสติ
+    tr: Saulkrasti Belediyesi
+    uk: Саулкрастський край
+    ur: ساولکراستی میونسپلٹی
+    vi: Đô thị tự trị Saulkrasti
+    ceb: Saulkrastu Novads
+    zh: 薩烏爾克拉斯蒂自治市
+    fa: شهرداری ساولکراستی
+    ccp: "\U00011125\U0001112F\U00011107\U00011134\U00011107\U00011133\U00011122\U0001110C\U00011134\U00011111\U00011128"
+    eu: Saulkrasti udalerria
+    be: Саўлкрасцкі край
+    mk: Саулкрасти
+    'no': Saulkrasi kommune
+    cy: Bwrdeistref Saulkrasti
+    hy: Սաուլկրաստիի շրջան
+  comments:
+  type: municipality
+'091':
+  name: Siguldas novads
+  code: '091'
+  unofficial_names: Sigulda
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية سيغولدا
+    bn: সিগুল্ডা পৌরসভা
+    ca: Municipi de Sigulda
+    da: Sigulda municipality
+    de: Bezirk Sigulda
+    el: Σιγκούλντα
+    en: Sigulda
+    es: Municipalidad de Sigulda
+    et: Sigulda piirkond
+    fi: Siguldan kunta
+    fr: Sigulda
+    gu: સિગુલ્ડા મ્યુનિસિપાલિટી
+    hi: सिगुलडा नगरपालिका
+    id: Kotamadya Sigulda
+    it: Sigulda
+    ja: スィグルダ
+    ka: სიგულდის მხარე
+    kn: ಸಿಗುಲ್ಡಾ ಪುರಸಭೆ
+    ko: 시굴다 시
+    lt: Siguldos savivaldybė
+    lv: Siguldas novads
+    mr: सिघुल्ड म्युन्सिपाल्टी
+    ms: Sigulda municipality
+    nb: Sigulda Kommune
+    nl: Siguldas novads
+    pl: Gmina Sigulda
+    pt: Município de Sigulda
+    ru: Сигулдский край
+    si: සිගුල්ඩා නගර සභාව
+    sv: Siguldas novads
+    ta: சிகுலடா நகராட்சி
+    te: సిగుల్దా మున్సిపాలిటీ
+    th: ซิกุลดา
+    tr: Sigulda Belediyesi
+    uk: Сігулдський край
+    ur: سیجولدا میونسپلٹی
+    vi: Đô thị tự trị Sigulda
+    ceb: Siguldas Novads
+    zh: 錫古爾達自治市
+    fa: شهرداری سیگولدا
+    ccp: "\U00011125\U00011128\U00011109\U0001112A\U00011123\U00011134\U00011113"
+    eu: Sigulda udalerria
+    be: Сігулдскі край
+    mk: Сигулда
+    'no': Sigulda Kommune
+    cy: Bwrdeistref Sigulda
+    hy: Սիգուլդայի շրջան
+  comments:
+  type: municipality
+'094':
+  name: Smiltenes novads
+  code: '094'
+  unofficial_names: Smiltene
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية سميلتين
+    bn: স্মিল্টেন পৌরসভা
+    ca: Municipi de Smiltene
+    da: Smiltene municipality
+    de: Bezirk Smiltene
+    el: Σμιλτένε
+    en: Smiltene
+    es: Municipalidad de Smiltene
+    et: Smiltene piirkond
+    fi: Smiltenen kunta
+    fr: Smiltene
+    gu: સ્મિલટેને મ્યુનિસિપાલિટી
+    hi: स्मिल्टीन नगरपालिका
+    hy: Սմիլտենեի շրջան
+    id: Kotamadya Smiltene
+    it: Smiltene
+    ja: スミルテネ
+    ka: სმილტენეს მხარე
+    kn: ಸ್ಮಿಲೆನೆ ಪುರಸಭೆ
+    ko: 스밀테네 시
+    lt: Smiltenės savivaldybė
+    lv: Smiltenes novads
+    mr: स्मिल्डीन म्युन्सिपाल्टी
+    ms: Smiltene municipality
+    nb: Smiltene kommune
+    nl: Smiltenes novads
+    pl: Gmina Smiltene
+    pt: Município de Smiltene
+    ru: Смилтенский край
+    si: ස්මිල්ටෙනේ නගර සභාව
+    sv: Smiltenes novads
+    ta: ஸ்மைல்ட்டேனே நகராட்சி
+    te: స్మిల్టీన్ మున్సిపాలిటీ
+    th: เทศบาลเมืองสมิลเตเน
+    tr: Smiltene Belediyesi
+    uk: Смілтенський край
+    ur: سمیلتینی میونسپلٹی
+    vi: Đô thị tự trị Smiltene
+    zh: 斯米爾泰內自治市
+    ceb: Smiltenes Novads
+    fa: شهرداری اسمیلتن
+    ccp: "\U0001110C\U00011133\U0001111F\U0001112D\U00011123\U00011134\U00011111\U0001112C\U0001111A\U0001112C"
+    eu: Smiltene udalerria
+    be: Смілтэнскі край
+    mk: Смилтене
+    'no': Smiltene kommune
+    cy: Bwrdeistref Smiltene
+  comments:
+  type: municipality
+'097':
+  name: Talsu novads
+  code: '097'
+  unofficial_names: Talsi
+  geo:
+    latitude: 57.2480409
+    longitude: 22.5873859
+    min_latitude: 57.2275979
+    min_longitude: 22.5537861
+    max_latitude: 57.265104
+    max_longitude: 22.6215941
+  translations:
+    ar: بلدية تالشي
+    bn: তালসি পৌরসভা
+    ca: Municipi de Talsi
+    da: Talsi municipality
+    de: Bezirk Talsi
+    el: Τάλσι
+    en: Talsi
+    es: Municipalidad de Talsi
+    et: Talsi piirkond
+    fi: Talsin kunta
+    fr: Municipalité de Talsi
+    gu: તાલ્સી મ્યુનિસિપાલિટી
+    hi: टाल्सी नगरपालिका
+    id: Kotamadya Talsi
+    it: Talsi
+    ja: タルスィ
+    ka: ტალსის მხარე
+    kn: ಟಾಲ್ಸಿ ಪುರಸಭೆ
+    ko: 탈시 시
+    lt: Talsų savivaldybė
+    lv: Talsu novads
+    mr: तल्सी म्युन्सिपाल्टी
+    ms: Talsi municipality
+    nb: Talsi kommune
+    nl: Talsu novads
+    pl: Gmina Talsi
+    pt: Município de Talsi
+    ru: Талсинский край
+    si: ටල්සි නගර සභාව
+    sv: Talsu novads
+    ta: டல்சி நகராட்சி
+    te: టాల్సి మున్సిపాలిటీ
+    th: เมืองทาสซิ
+    tr: Talsi Belediyesi
+    uk: Талсінський край
+    ur: تالسی میونسپلٹی
+    vi: Đô thị tự trị Talsi
+    zh: 塔爾西自治市
+    ceb: Talsi Municipality
+    fa: شهرداری تالسی
+    ccp: "\U00011111\U00011123\U00011134\U00011125\U00011128"
+    hy: Տալսիի շրջան
+    eu: Talsi udalerria
+    be: Талсінскі край
+    mk: Талси
+    'no': Talsi kommune
+    cy: Bwrdeistref Talsi
+  comments:
+  type: municipality
+'099':
+  name: Tukuma novads
+  code: '099'
+  unofficial_names: Tukums
+  geo:
+    latitude: 56.96966399999999
+    longitude: 23.15319
+    min_latitude: 56.9496259
+    min_longitude: 23.1016533
+    max_latitude: 56.9880529
+    max_longitude: 23.205056
+  translations:
+    ar: بلدية توكومز
+    be: Тукумскі край
+    bn: টুকুমস পৌরসভা
+    ca: Municipi de Tukums
+    cs: Tukums
+    da: Tukums Municipality
+    de: Bezirk Tukums
+    el: Τουκούμς
+    en: Tukums
+    es: Municipalidad de Tukums
+    et: Tukumsi piirkond
+    fi: Tukumsin kunta
+    fr: Tukums
+    gu: ટુકુમ્સ મ્યુનિસિપાલિટી
+    hi: तुकुम्स नगरपालिका
+    hu: Tukums község
+    id: Kotamadya Tukums
+    it: Tukums
+    ja: トゥクムス
+    ka: ტუკუმსის მხარე
+    kn: ತುಕಮ್ಸ್ ಪುರಸಭೆ
+    ko: 투쿰스 시
+    lt: Tukumo savivaldybė
+    lv: Tukuma novads
+    mr: तुम म्युन्सिपाल्टी
+    ms: Tukums Municipality
+    nb: Tukums kommune
+    nl: Tukuma novads
+    pl: Gmina Tukums
+    pt: Tukums
+    ru: Тукумсский край
+    si: ටුකුම්ස් නගර සභාව
+    sv: Tukums kommun
+    ta: டுக்கும்ஸ் நகராட்சி
+    te: టుకుమ్స్ మున్సిపాలిటీ
+    th: เมืองตูกุมส์
+    tr: Tukums Belediyesi
+    uk: Тукумський край
+    ur: توکومس میونسپلٹی
+    vi: Đô thị tự trị Tukums
+    zh: 圖庫姆斯自治市
+    fa: شهرداری توکومس
+    ccp: "\U00011111\U0001112A\U00011107\U0001112A\U0001111F\U00011134\U0001110C\U00011134"
+    hy: Տուկումայի շրջան
+    he: טוקומס
+    eu: Tukums udalerria
+    mk: Тукумс
+    'no': Tukums kommune
+    cy: Bwrdeistref Tukums
+  comments:
+  type: municipality
+'101':
+  name: Valkas novads
+  code: '101'
+  unofficial_names: Valka
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية فالكا
+    be: Валцкі край
+    bn: ভল্কা পৌরসভা
+    ca: Municipi de Valka
+    da: Valka municipality
+    de: Bezirk Valka
+    el: Βάλκα
+    en: Valka
+    es: Municipalidad de Valka
+    et: Valka piirkond
+    fi: Valkan kunta
+    fr: Valka
+    gu: વાલ્કા મ્યુનિસિપાલિટી
+    hi: वाल्का नगरपालिका
+    hy: Վալկայի շրջան
+    id: Kotamadya Valka
+    it: Comune di Valka
+    ja: ヴァルカ
+    ka: ვალკის მხარე
+    kn: ವಲ್ಕಾ ಪುರಸಭೆ
+    ko: 발카 시
+    lt: Valkos savivaldybė
+    lv: Valkas novads
+    mr: वल्का म्युन्सिपाल्टी
+    ms: Valka municipality
+    nb: Valka kommune
+    nl: Valkas novads
+    pl: Gmina Valka
+    pt: Município de Valka
+    ru: Валкский край
+    si: වලකා නගර සභාව
+    sv: Valka Municipality
+    ta: வெல்க நகராட்சி
+    te: వాల్క మున్సిపాలిటీ
+    th: เมืองวัลก้า
+    tr: Valka Belediyesi
+    uk: Валкський край
+    ur: والکا میونسپلٹی
+    vi: Đô thị tự trị Valka
+    zh: 瓦爾加自治市
+    ceb: Valka Municipality
+    fa: شهرداری والکا
+    ccp: "\U0001111E\U00011123\U00011134\U00011107"
+    eu: Valka udalerria
+    mk: Валка
+    'no': Valka kommune
+    cy: Bwrdeistref Valka
+  comments:
+  type: municipality
+'102':
+  name: Varakļānu novads
+  code: '102'
+  unofficial_names: Varakļāni
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: بلدية فاراكاياني
+    bn: ভারাক্লানি পৌরসভা
+    ca: Municipi de Varakļāni
+    da: Varakļāni municipality
+    de: Bezirk Varakļāni
+    el: Βαρακλάνι
+    en: Varakļāni
+    es: Municipalidad de Varakļāni
+    et: Varakļāni piirkond
+    fa: واراکلانی مونیکیپلیتی
+    fi: Varakļānin kunta
+    fr: Varakļāni
+    gu: વરાકલાની મ્યુનિસિપાલિટી
+    hi: वरक्लानी नगरपालिका
+    hy: Վարակլյանիի շրջան
+    id: Kotamadya Varakļāni
+    it: Varakļāni
+    ja: ヴァラクリャーニ
+    ka: ვარაკლიანის მხარე
+    kn: ವರಾಕ್ಲಾನಿ ಪುರಸಭೆ
+    ko: 바라클랴니 시
+    lt: Varaklianų savivaldybė
+    lv: Varakļānu novads
+    mr: वरकणी म्युन्सिपाल्टी
+    ms: Varaklani municipality
+    nb: Varaklani kommune
+    nl: Varakļānu novads
+    pl: Gmina Varakļāni
+    pt: Município de Varaklani
+    ru: Вараклянский край
+    si: වරක්ලානි නගර සභාව
+    sv: Varakļānu novads
+    ta: வரக்கனி நகராட்சி
+    te: వారక్లాని మున్సిపాలిటీ
+    th: เมืองวารัคลานี
+    tr: Varakjani Belediyesi
+    uk: Вараклянський край
+    ur: واراکلانی میونسپلٹی
+    vi: Đô thị tự trị Varaklani
+    zh: 瓦拉克利亞尼自治市
+    ceb: Varakļānu Novads
+    ccp: "\U0001111E\U00011122\U00011107\U00011134\U00011123\U0001111A\U00011128"
+    eu: Varakļāni udalerria
+    be: Вараклянскі край
+    mk: Варакљани
+    'no': Varaklani kommune
+    cy: Bwrdeistref Varakļāni
+  comments:
+  type: municipality
+'106':
+  name: Ventspils novads
+  code: '106'
+  unofficial_names: Ventspils
+  geo:
+    latitude: 57.3937216
+    longitude: 21.5647066
+    min_latitude: 57.34809389999999
+    min_longitude: 21.5157259
+    max_latitude: 57.47072199999999
+    max_longitude: 21.6736649
+  translations:
+    ar: بلدية فينتسبيلس
+    be: Вэнтспілскі край
+    bn: ভেন্টস্পিল পৌরসভা
+    ca: Municipi de Ventspils
+    da: Ventspils municipality
+    de: Bezirk Ventspils
+    el: Βέντσπιλς
+    en: Ventspils Municipality
+    es: Municipalidad de Ventspils
+    et: Ventspilsi piirkond
+    fa: ونتسپیلس مونیکیپلیتی
+    fi: Ventspilsin kunta
+    fr: Ventspils
+    gu: વેન્ટ્સપિલ્સ મ્યુનિસિપાલિટી
+    hi: वेंटस्पिल्स नगरपालिका
+    id: Kotamadya Ventspils
+    it: Ventspils
+    ja: ヴェンツピルス
+    ka: ვენტსპილსის მხარე
+    kn: ವೆಂಟ್ಸ್ಪಿಲ್ ಪುರಸಭೆ
+    ko: 벤츠필스 시
+    lt: Ventspilio savivaldybė
+    lv: Ventspils novads
+    mr: वेन्टस्पिलस म्युन्सिपाल्टी
+    ms: Ventspils municipality
+    nb: Ventspils kommune
+    nl: Ventspils novads
+    pl: Gmina Windawa
+    pt: Município de Ventspils
+    ru: Вентспилсский край
+    si: වෙන්ට්ස්පිල්ස් නගර සභාව
+    sv: Ventspils novads
+    ta: வென்டஸிபிள்ஸ் நகராட்சி
+    te: వెంట్స్‌పిల్స్ మున్సిపాలిటీ
+    th: เวนต์สปิลส์
+    tr: Ventspils Belediyesi
+    uk: Вентспілський край
+    ur: وینتسپیلس میونسپلٹی
+    vi: Đô thị tự trị Ventspils
+    zh: 文茨皮爾斯自治市
+    ceb: Ventspils Municipality
+    ccp: "\U0001111E\U0001112C\U0001111A\U00011134\U00011111\U00011134\U0001111B\U00011128\U00011123\U00011134\U00011125\U00011134
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    hy: Վենտսպիլսի շրջան
+    eu: Ventspils udalerria
+    mk: Вентспилс
+    'no': Ventspils kommune
+    cy: Bwrdeistref Ventspils
+  comments:
+  type: municipality
+'111':
+  name: Augšdaugavas novads
+  code: '111'
+  unofficial_names: Augšdaugava
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    lv: Augšdaugavas novads
+    en: Augšdaugavas novads
+    de: Bezirk Augšdaugava
+    es: Municipio de Augšdaugava
+    ja: アウゲシュダウガヴァ市
+    lt: Aukštutinės Dauguvos savivaldybė
+    zh: 上道加瓦市镇
+  type: municipality
+'112':
+  name: Dienvidkurzemes Novads
+  code: '112'
+  unofficial_names: Dienvidkurzeme
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    lv: Dienvidkurzemes Novads
+    en: Dienvidkurzemes Novads
+    de: Bezirk Dienvidkurzeme
+    ja: 南クルゼメ市
+    lt: Pietų Kuršo savivaldybė
+    zh: 南库尔泽梅市镇
+  type: municipality
+'113':
+  name: Valmieras Novads
+  code: '113'
+  unofficial_names: Valmiera
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    lv: Valmieras Novads
+    en: Valmieras Novads
+    ca: municipi de Vamiera
+    de: Bezirk Valmiera
+    es: Municipio de Valmiera
+    et: Valmiera piirkond
+    ja: ヴァルミエラ市
+    lt: Valmieros savivaldybė
+    zh: 瓦尔米耶拉市镇
+  type: municipality
+DGV:
+  name: Daugavpils
+  code: DGV
+  unofficial_names: Daugavpils
+  geo:
+    latitude: 55.874736
+    longitude: 26.536179
+    min_latitude: 55.836144
+    min_longitude: 26.438294
+    max_latitude: 55.955541
+    max_longitude: 26.6361371
+  translations:
+    en: Daugavpils
+    af: Daugavpils
+    ar: داوغافبيلس
+    az: Dauqavpils
+    be: Даўгаўпілс
+    bg: Даугавпилс
+    bn: দ গ ভুলস
+    ca: Daugavpils
+    cs: Daugavpils
+    da: Daugavpils
+    de: Daugavpils
+    el: Νταουγκάβπιλς
+    es: Daugavpils
+    et: Daugavpils
+    eu: Daugavpils
+    fa: دوگاپیلس
+    fi: Daugavpils
+    fr: Daugavpils
+    gl: Daugavpils
+    gu: ડૌગેવપિલ્સ
+    he: דאוגבפילס
+    hi: डौगाव्पिल्स
+    hr: Daugavpils
+    hu: Daugavpils
+    hy: Դաուգավպիլս
+    id: Daugavpils
+    it: Daugavpils
+    ja: ダウガフピルス²
+    ka: დაუგავპილსი
+    kn: ದಾವ್ಗವ್ಪಿಲ್ಸ್
+    ko: 다우가프필스
+    lt: Daugpilis
+    lv: Daugavpils
+    mr: दौगौपिल्स
+    ms: Daugavpils
+    nb: Daugavpils
+    nl: Daugavpils
+    pl: Dyneburg
+    pt: Daugavpils
+    ro: Daugavpils
+    ru: Даугавпилс
+    si: ඩොගව්පිල්ස්
+    sk: Daugavpils
+    sl: Daugavpils
+    sr: Даугавпилс
+    sv: Daugavpils
+    ta: டகாவபிள்ஸ்
+    te: డౌగావ్‌ప్లిస్
+    th: เดากัฟปิลส์
+    tr: Daugavpils
+    uk: Даугавпілс
+    ur: داوگاوپلس
+    vi: Daugavpils
+    zh: 陶格夫匹尔斯
+    cy: Daugavpils
+    ceb: Daugavpils
+    sr_Latn: Daugavpils
+    sq: Daugavpils
+    ccp: "\U00011113\U0001112F\U00011109\U0001111B\U00011134\U0001111B\U00011128\U00011123\U00011134\U00011125\U00011134"
+    kk: Даугавпилс
+    uz: Daugavpils
+    mk: Даугавпилс
+    'no': Daugavpils
+    ga: Daugavpils
+    yue: 陶格夫匹爾斯
+    yue_Hans: 陶格夫匹尔斯
+  comments:
+  type: state_city
+JEL:
+  name: Jelgava
+  code: JEL
+  unofficial_names: Jelgava
+  geo:
+    latitude: 56.6511091
+    longitude: 23.7213541
+    min_latitude: 56.596751
+    min_longitude: 23.623268
+    max_latitude: 56.6916349
+    max_longitude: 23.8002769
+  translations:
+    en: Jelgava
+    af: Jelgava
+    ar: جيلغافا
+    az: Yelqava
+    be: Елгава
+    bg: Йелгава
+    bn: জেল্গাভা
+    ca: Jelgava
+    cs: Jelgava
+    da: Jelgava
+    de: Jelgava
+    el: Γιέλγκαβα²
+    es: Jelgava
+    et: Jelgava
+    eu: Jelgava
+    fa: یلگاوا
+    fi: Jelgava
+    fr: Jelgava²
+    gl: Jelgava
+    gu: જેલગાવા
+    he: ילגבה
+    hi: जेल्गावा
+    hr: Jelgava
+    hu: Jelgava
+    hy: Ելգավա
+    id: Jelgava
+    it: Jelgava²
+    ja: イェルガヴァ
+    ka: ელგავა
+    kn: ಜೆಲ್ಗವ
+    ko: 옐가바
+    lt: Jelgava
+    lv: Jelgava
+    mr: जेऌगवा
+    ms: Jelgava
+    nb: Jelgava
+    nl: Jelgava
+    pl: Jełgawa
+    pt: Jelgava
+    ro: Jelgava
+    ru: Елгава
+    si: ජෙල්ගාවා
+    sk: Jelgava
+    sl: Jelgava
+    sr: Јелгава
+    sv: Jelgava
+    ta: ஜெல்கவா
+    te: జెల్గావా
+    th: เยลกาวา
+    tr: Jelgava
+    uk: Єлгава
+    ur: یالگاوا
+    vi: Jelgava
+    zh: 叶尔加瓦
+    cy: Jelgava
+    ceb: Jelgava (munisipyo)
+    sr_Latn: Jelgava
+    ccp: "\U0001110E\U0001112C\U00011123\U00011134\U00011109\U0001111E"
+    kk: Елгава
+    uz: Yelgava
+    mk: Јелгава²
+    'no': Jelgava
+    ky: Елгава
+    yue: 葉爾加瓦
+    yue_Hans: 叶尔加瓦
+  comments:
+  type: state_city
+JUR:
+  name: Jurmala
+  code: JUR
+  unofficial_names: Jurmala
+  geo:
+    latitude: 56.947079
+    longitude: 23.6168486
+    min_latitude: 56.923886
+    min_longitude: 23.47297
+    max_latitude: 57.007044
+    max_longitude: 23.9693479
+  translations:
+    en: Jūrmala
+    af: Jūrmala
+    ar: جورمالا
+    az: Yurmala
+    be: Юрмала
+    bg: Юрмала
+    bn: জুমালা
+    ca: Jūrmala
+    cs: Jūrmala
+    da: Jūrmala
+    de: Jūrmala
+    el: Γιούρμαλα
+    es: Jūrmala
+    et: Jūrmala
+    eu: Jūrmala
+    fa: یورمالا
+    fi: Jūrmala
+    fr: Jurmala
+    gl: Jūrmala
+    gu: જુર્માલા
+    he: יורמלה
+    hi: जुरमाला
+    hr: Jūrmala
+    hu: Jūrmala
+    hy: Յուրմալա
+    id: Jūrmala
+    it: Jūrmala
+    ja: ユールマラ
+    ka: იურმალა
+    kn: ಜುರ್ಮಾಲಾ
+    ko: 유르말라
+    lt: Jūrmala
+    lv: Jūrmala
+    mr: जुर्मला
+    ms: Jurmala
+    nb: Jūrmala
+    nl: Jūrmala
+    pl: Jurmała
+    pt: Jūrmala
+    ro: Jūrmala
+    ru: Юрмала
+    si: ජුර්මලා
+    sk: Jūrmala
+    sl: Jūrmala
+    sr: Јурмала
+    sv: Jūrmala
+    ta: ஜுர்மாலா
+    te: జుర్మాలా
+    th: ยัวมาลา
+    tr: Jurmala
+    uk: Юрмала
+    ur: یورمالا
+    vi: Jūrmala
+    zh: 尤爾馬拉
+    cy: Jūrmala
+    sr_Latn: Jurmala
+    ccp: "\U0001110E\U00011122\U00011134\U0001111F\U00011123"
+    kk: Юрмала
+    uz: Yurmala
+    mk: Јурмала
+    'no': Jūrmala
+    ceb: Jūrmala (kapital sa munisipyo)
+    yue: 尤爾馬拉
+    yue_Hans: 尤尔马拉
+  comments:
+  type: state_city
+LPX:
+  name: Liepaja
+  code: LPX
+  unofficial_names: Liepaja
+  geo:
+    latitude: 56.5046678
+    longitude: 21.010806
+    min_latitude: 56.464691
+    min_longitude: 20.971237
+    max_latitude: 56.60919999999999
+    max_longitude: 21.1057334
+  translations:
+    en: Liepāja
+    af: Liepaja
+    ar: ليباجا
+    be: Ліепая
+    bg: Лиепая
+    bn: লিপাজা
+    ca: Liepāja
+    cs: Liepāja
+    da: Liepāja
+    de: Liepāja
+    el: Λιεπάγια
+    es: Liepāja
+    et: Liepāja
+    eu: Liepāja
+    fa: لیپایا
+    fi: Liepāja
+    fr: Liepāja
+    gl: Liepāja
+    gu: લીપેજા
+    he: לייפאיה
+    hi: लिएपाजा
+    hr: Liepāja
+    hu: Liepāja
+    hy: Լիեպայա
+    id: Liepāja
+    it: Liepāja
+    ja: リエパーヤ
+    ka: ლიეპაია
+    kn: ಲಿಏಪಜಾ
+    ko: 리예파야
+    lt: Liepoja
+    lv: Liepāja
+    mr: लीपाया
+    ms: Liepāja
+    nb: Liepāja
+    nl: Liepāja
+    pl: Lipawa
+    pt: Liepāja
+    ro: Liepāja
+    ru: Лиепая
+    si: ලීපජා
+    sk: Liepāja
+    sr: Лијепаја
+    sv: Liepāja
+    ta: லிபாஜா
+    te: లీపాజా
+    th: ไลพาจาส์
+    tr: Liepāja
+    uk: Лієпая
+    ur: لیاپائیا
+    vi: Liepāja
+    zh: 利耶帕亚
+    cy: Liepāja
+    ceb: Liepāja
+    sr_Latn: Lijepaja
+    ccp: "\U00011123\U0001112D\U0001111B\U0001110E"
+    ky: Лиепая
+    pa: ਲਿਪਾਯਾ
+    kk: Лиепая
+    uz: Liyepaya
+    'no': Liepāja
+    az: Liepaya
+    mk: Лијепаја
+    yue: 利耶帕亞
+    yue_Hans: 利耶帕亚
+  comments:
+  type: state_city
+REZ:
+  name: Rezekne
+  code: REZ
+  unofficial_names: Rezekne
+  geo:
+    latitude: 56.5099223
+    longitude: 27.3331357
+    min_latitude: 56.4775499
+    min_longitude: 27.3038497
+    max_latitude: 56.53846009999999
+    max_longitude: 27.379451
+  translations:
+    en: Rēzekne
+    af: Rēzekne
+    ar: ريزكني
+    az: Rezekne
+    be: Горад Рэзэкнэ
+    bg: Резекне
+    bn: রেজেকনে
+    ca: Rēzekne
+    cs: Rēzekne
+    da: Rēzekne
+    de: Rēzekne
+    el: Ρέζεκνε²
+    es: Rēzekne
+    et: Rēzekne
+    eu: Rēzekne
+    fa: رزکنه
+    fi: Rēzekne
+    fr: Rēzekne²
+    gl: Rēzekne
+    gu: રીજેક્ને
+    he: רזקנה
+    hi: रीजकेन
+    hu: Rēzekne
+    hy: Ռեզեկնե
+    id: Rēzekne
+    it: Rēzekne²
+    ja: レーゼクネ²
+    ka: რეზეკნე
+    kn: ರೆಝೆಕ್ನೆ
+    ko: 레제크네
+    lt: Rėzeknė
+    lv: Rēzekne
+    mr: रीजेक्ने
+    ms: Rezekne
+    nb: Rēzekne
+    nl: Rēzekne
+    pl: Rzeżyca
+    pt: Rezekne
+    ro: Rēzekne
+    ru: Резекне
+    si: රෙසේක්නේ
+    sk: Rēzekne
+    sl: Režica
+    sr: Резекне
+    sv: Rēzekne
+    ta: ரெசெக்னி
+    te: రెజెక్నే
+    th: เรเซคเน
+    tr: Rezekne
+    uk: Резекне
+    ur: ریزکنے
+    vi: Rezekne
+    zh: 雷澤克內
+    cy: Rēzekne
+    ceb: Rēzekne (kapital sa munisipyo)
+    sr_Latn: Rezekne
+    sq: Rēzekne
+    ccp: "\U00011122\U0001112C\U0001110E\U0001112C\U00011107\U00011134\U0001111A\U00011128"
+    pa: ਰੀਜਿਕਨ
+    kk: Резекне
+    mk: Резекне²
+    'no': Rēzekne
+    uz: Rezekne
+    yue: 雷澤克內
+    yue_Hans: 雷泽克内
+  comments:
+  type: state_city
+RIX:
+  name: Riga
+  code: RIX
+  unofficial_names: Riga
+  geo:
+    latitude: 56.9496487
+    longitude: 24.1051864
+    min_latitude: 56.8570279
+    min_longitude: 23.9336591
+    max_latitude: 57.085921
+    max_longitude: 24.3246659
+  translations:
+    en: Riga
+    af: Riga
+    am: ሪጋ
+    ar: ريغا
+    az: Riqa
+    be: Рыга
+    bg: Рига
+    bn: রিগা
+    ca: Riga
+    cs: Riga
+    da: Riga
+    de: Riga
+    el: Ρίγα
+    es: Riga
+    et: Riia
+    eu: Riga
+    fa: ریگا
+    fi: Riika
+    fr: Riga
+    gl: Riga
+    gu: રીગા
+    he: ריגה
+    hi: रीगा
+    hr: Riga
+    hu: Riga
+    hy: Ռիգա
+    id: Riga
+    is: Ríga
+    it: Riga
+    ja: リガ
+    ka: რიგა
+    kn: ರಿಗಾ
+    ko: 리가
+    lt: Ryga
+    lv: Rīga
+    ml: റിഗ
+    mn: Рига
+    mr: रिगा
+    ms: Riga
+    nb: Riga
+    nl: Riga
+    pl: Ryga
+    pt: Riga
+    ro: Riga
+    ru: Рига
+    si: රිගා
+    sk: Riga
+    sl: Riga
+    sr: Рига
+    sv: Riga
+    sw: Riga
+    ta: ரீகா
+    te: రీగా
+    th: รีกา
+    tk: Riga
+    tr: Riga
+    uk: Рига
+    ur: ریگا
+    vi: Riga
+    zh: 里加
+    zu: IRiga
+    cy: Riga
+    ceb: Riga
+    sr_Latn: Riga
+    yue_Hans: 里加
+    jv: Riga
+    sq: Riga
+    ccp: "\U00011122\U00011128\U00011109"
+    ga: Ríge
+    ky: Рига
+    ha: Riga
+    pa: ਰੀਗਾ
+    kk: Рига
+    yue: 里加
+    my: ရီဂါမြို့
+    yo: Riga
+    uz: Riga
+    bs: Riga
+    mk: Рига
+    ha_NE: Riga
+    'no': Riga
+    yo_BJ: Riga
+    ps: ریګا
+  comments:
+  type: state_city
+VEN:
+  name: Ventspils
+  code: VEN
+  unofficial_names: Ventspils
+  geo:
+    latitude: 57.3937216
+    longitude: 21.5647066
+    min_latitude: 57.34809389999999
+    min_longitude: 21.5157259
+    max_latitude: 57.47072199999999
+    max_longitude: 21.6736649
+  translations:
+    en: Ventspils
+    af: Ventspils
+    ar: فينتسبيلس
+    be: Горад Вэнтспілс
+    bg: Вентспилс
+    bn: ভেন্টস্পিলস
+    ca: Ventspils
+    cs: Ventspils
+    da: Ventspils
+    de: Ventspils
+    el: Βέντσπιλς²
+    es: Ventspils
+    et: Ventspils
+    eu: Ventspils
+    fa: ونتسپیلس
+    fi: Ventspils
+    fr: Ventspils²
+    gl: Ventspils
+    gu: વેન્ટસપિલ્સ
+    he: ונטספילס
+    hi: वेंटसपिल्स
+    hu: Ventspils
+    hy: Վենտսպիլս
+    id: Ventspils
+    it: Ventspils²
+    ja: ヴェンツピルス²
+    ka: ვენტსპილსი
+    kn: ವೆಂಟ್ಸ್ಪಿಲ್ಸ್,
+    ko: 벤츠필스
+    lt: Ventspilis
+    lv: Ventspils
+    mr: वेन्टस्पिल्स
+    ms: Ventspils
+    nb: Ventspils
+    nl: Ventspils
+    pl: Windawa
+    pt: Ventspils
+    ro: Ventspils
+    ru: Вентспилс
+    si: වෙන්ට්ස්පිල්ස්
+    sk: Ventspils
+    sr: Вентспилс
+    sv: Ventspils
+    ta: வென்ட்ஸ்ப்பிள்ஸ்
+    te: వెంట్స్‌పిల్స్
+    th: เวนต์สปิลส์²
+    tr: Ventspils
+    uk: Вентспілс
+    ur: وینتپلس
+    vi: Ventspils
+    zh: 文茨皮尔斯
+    cy: Ventspils
+    ceb: Ventspils
+    sr_Latn: Ventspils
+    ccp: "\U0001111E\U0001111A\U00011134\U00011111\U00011134\U0001111B\U00011128\U00011123\U00011134\U00011125\U00011134"
+    ky: Вентспилс
+    hr: Ventspils
+    pa: ਵੇਂਟਸਪਿਲਸ
+    kk: Вентспилс
+    uz: Ventspils
+    mk: Вентспилс²
+    'no': Ventspils
+    yue: 雲特史比斯
+    yue_Hans: 云特史比斯
+  comments:
+  type: state_city

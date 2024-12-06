@@ -1,0 +1,11 @@
+<%= t("devise.mailer.invitation_instructions.hello", email: @resource.email) %>
+
+<%= t("devise.mailer.invitation_instructions.someone_invited_you", url: root_url) %>
+
+<%= accept_invitation_url(@resource, invitation_token: @token) %>
+
+<% if @resource.invitation_due_at %>
+  <%= t("devise.mailer.invitation_instructions.accept_until", due_date: l(@resource.invitation_due_at, format: :'devise.mailer.invitation_instructions.accept_until_format')) %>
+<% end %>
+
+<%= t("devise.mailer.invitation_instructions.ignore") %>

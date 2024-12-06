@@ -1,0 +1,4 @@
+context Compagnie::toEuros() : Collection(Real)
+body: self.employees->collect(each: Employee| each.salary/ 6.55957)
+-- OR
+body: self.employees->collect(salary) -> collect(x | x/6.55957)

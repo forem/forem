@@ -1,0 +1,29 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.time.LocalDateTime" %>
+
+<%! int day = 3; %> 
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Simple JSP Application</title>
+	</head>
+	<body>
+        <%-- This is a JSP comment --%>
+		<h1>Hello world!</h1>
+		<h2>Current time is <%= LocalDateTime.now() %></h2>
+
+        <% if (day == 1 || day == 7) { %>
+            <p> Today is weekend</p>
+        <% } else { %>
+            <p> Today is not weekend</p>
+        <% } %>
+
+        h2>Using JavaBeans in JSP</h2>
+        <jsp:useBean id="test" class="action.TestBean" />
+        <jsp:setProperty name="test"  property="message"  value="Hello JSP..." />
+        
+        <p>Got message:</p>
+        <jsp:getProperty name="test" property="message" />
+	</body>
+</html>

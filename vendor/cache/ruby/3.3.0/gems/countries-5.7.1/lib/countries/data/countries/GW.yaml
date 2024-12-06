@@ -1,0 +1,51 @@
+---
+GW:
+  alpha2: GW
+  alpha3: GNB
+  continent: Africa
+  country_code: '245'
+  currency_code: XOF
+  distance_unit: KM
+  gec: PU
+  geo:
+    latitude: 11.803749
+    longitude: -15.180413
+    max_latitude: 12.6869468
+    max_longitude: -13.6265235
+    min_latitude: 10.7146
+    min_longitude: -16.9518999
+    bounds:
+      northeast:
+        lat: 12.6869468
+        lng: -13.6265235
+      southwest:
+        lat: 10.7146
+        lng: -16.9518999
+  international_prefix: '00'
+  ioc: GBS
+  iso_long_name: The Republic of Guinea-Bissau
+  iso_short_name: Guinea-Bissau
+  languages_official:
+  - pt
+  languages_spoken:
+  - pt
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Guinea-Bissauan
+  number: '624'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: GW
+  unofficial_names:
+  - Guinea-Bissau
+  - Guinée-Bissau
+  - ギニアビサウ
+  - Guinee-Bissau
+  - Guinea Bissau
+  world_region: EMEA

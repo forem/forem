@@ -1,0 +1,63 @@
+---
+IL:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: IL
+  alpha3: ISR
+  continent: Asia
+  country_code: '972'
+  currency_code: ILS
+  distance_unit: KM
+  gec: IS
+  geo:
+    latitude: 31.046051
+    longitude: 34.851612
+    max_latitude: 33.33280500000001
+    max_longitude: 35.896244
+    min_latitude: 29.47969999999999
+    min_longitude: 34.2673871
+    bounds:
+      northeast:
+        lat: 33.33280500000001
+        lng: 35.896244
+      southwest:
+        lat: 29.47969999999999
+        lng: 34.2673871
+  international_prefix: '00'
+  ioc: ISR
+  iso_long_name: The State of Israel
+  iso_short_name: Israel
+  languages_official:
+  - he
+  - ar
+  languages_spoken:
+  - he
+  - ar
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Israeli
+  number: '376'
+  postal_code: true
+  postal_code_format: "\\d{5}(?:\\d{2})?"
+  region: Asia
+  start_of_week: sunday
+  subregion: Western Asia
+  un_locode: IL
+  vat_rates:
+    standard: 17
+    reduced: []
+    super_reduced:
+    parking:
+  unofficial_names:
+  - Israel
+  - Israël
+  - イスラエル
+  world_region: EMEA

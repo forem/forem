@@ -1,0 +1,17 @@
+module Datadog
+  module CI
+    module TestVisibility
+      module Flush
+        module Tagging
+          def get_trace: (Datadog::Tracing::TraceOperation trace_op) -> untyped
+        end
+        class Finished < Tracing::Flush::Finished
+          prepend Tagging
+        end
+        class Partial < Tracing::Flush::Partial
+          prepend Tagging
+        end
+      end
+    end
+  end
+end

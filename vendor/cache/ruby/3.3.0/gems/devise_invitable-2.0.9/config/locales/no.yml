@@ -1,0 +1,17 @@
+"no":
+  devise:
+    invitations:
+      send_instructions: 'En epost med invitasjon er sent til %{email}.'
+      invitation_token_invalid: 'Autentiseringskoden er ikke gyldig!'
+      updated: 'Passordet ble oppdatert suksessfullt. Du er nå logget inn.'
+      no_invitations_remaining: 'Ingen gjenværende invitasjoner.'
+      invitation_removed: 'Din invitasjon ble fjernet.'
+      new:
+        header: 'Send invitasjon'
+        submit_button: 'Send en invitasjon'
+      edit:
+        header: 'Sett ditt passord'
+        submit_button: 'Sett mitt passord'
+    mailer:
+      invitation_instructions:
+        subject: 'Invitasjonsinstruksjoner'

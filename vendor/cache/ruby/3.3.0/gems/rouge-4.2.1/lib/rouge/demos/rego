@@ -1,0 +1,8 @@
+package httpapi.authz
+
+subordinates = {"alice": [], "charlie": [], "bob": ["alice"], "betty": ["charlie"]}
+
+# HTTP API request
+import input
+
+default allow = false

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // https://codepen.io/gaearon/pen/VmmPgp?editors=0010
+      class NameForm extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { value: '' };
+
+          this.handleChange = this.handleChange.bind(this);
+          this.handleSubmit = this.handleSubmit.bind(this);
+        }
+
+        handleChange(event) {
+          this.setState({ value: event.target.value });
+        }
+
+        handleSubmit(event) {
+          alert('A name was submitted: ' + this.state.value);
+          event.preventDefault();
+        }
+
+        render() {
+          return (
+            React.createElement("form", { onSubmit: this.handleSubmit },
+            React.createElement("label", null, "Name:",
+
+            React.createElement("input", { type: "text", value: this.state.value, onChange: this.handleChange })),
+
+            React.createElement("input", { type: "submit", value: "Submit" })));
+        }}
+
+
+        ReactDOM.render(
+        React.createElement(NameForm, null),
+        document.getElementById('root'));
+    </script>
+  </body>
+</html>

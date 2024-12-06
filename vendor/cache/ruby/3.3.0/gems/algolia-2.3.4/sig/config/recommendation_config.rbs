@@ -1,0 +1,11 @@
+module Algolia
+  module Recommendation
+    class Config < BaseConfig
+      attr_accessor region: String
+
+      attr_accessor default_hosts: [String]
+
+      def initialize: (?::Hash[Symbol, String] opts) -> void
+    end
+  end
+end

@@ -1,0 +1,55 @@
+---
+VC:
+  alpha2: VC
+  alpha3: VCT
+  continent: North America
+  country_code: '1'
+  currency_code: XCD
+  distance_unit: MI
+  gec: VC
+  geo:
+    latitude: 12.984305
+    longitude: -61.287228
+    max_latitude: 13.4136657
+    max_longitude: -61.0846
+    min_latitude: 12.5294999
+    min_longitude: -61.4822
+    bounds:
+      northeast:
+        lat: 13.4136657
+        lng: -61.0846
+      southwest:
+        lat: 12.5294999
+        lng: -61.4822
+  international_prefix: '011'
+  ioc: VIN
+  iso_long_name: Saint Vincent and the Grenadines
+  iso_short_name: Saint Vincent and the Grenadines
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1784'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Saint Vincentian
+  number: '670'
+  postal_code: true
+  postal_code_format: VC\d{4}
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: VC
+  unofficial_names:
+  - Saint Vincent and the Grenadines
+  - Saint Vincent und die Grenadinen
+  - Saint-Vincent et les Grenadines
+  - San Vicente y Granadinas
+  - セントビンセントおよびグレナディーン諸島
+  - Saint Vincent en de Grenadines
+  - St. Vincent Grenadines
+  - St Vincent Grenadines
+  world_region: AMER

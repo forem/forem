@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Some Title</title>
+    <description>Some Description</description>
+    <lastBuildDate>Thu, 14 May 2020 10:00:18 Z</lastBuildDate>
+    <category>Some Category</category>
+    <a10:link href="http://www.example.com/" />
+    <pubDate>Sat, 16 May 2020 08:50:40 GMT</pubDate>
+    <item>
+      <title>Title 5</title>
+      <description>Description 5</description>
+      <pubDate>Thu, 14 May 2020 10:00:18 Z</pubDate>
+      <a10:link href="http://www.example.com/5" />
+      <a10:author>
+        <a10:name>John Doe</a10:name>
+        <a10:uri>http://www.example.com/</a10:uri>
+        <a10:email>john.doe@example.com</a10:email>
+      </a10:author>
+      <a10:updated>2020-05-14T10:00:18Z</a10:updated>
+    </item>
+    <item>
+      <title>Title 4</title>
+      <description>Description 4</description>
+      <pubDate>Wed, 13 May 2020 10:17:57 Z</pubDate>
+      <a10:link href="http://www.example.com/4" />
+      <a10:author>
+        <a10:name>John Doe</a10:name>
+        <a10:uri>http://www.example.com/</a10:uri>
+        <a10:email>john.doe@example.com</a10:email>
+      </a10:author>
+      <a10:updated>2020-05-13T10:17:57Z</a10:updated>
+    </item>
+    <item>
+      <title>Title 3</title>
+      <description>Dfescription 3</description>
+      <pubDate>Tue, 12 May 2020 15:00:00 Z</pubDate>
+      <a10:link href="http://www.example.com/3" />
+      <a10:author>
+        <a10:name>John Doe</a10:name>
+        <a10:uri>http://www.example.com/</a10:uri>
+        <a10:email>john.doe@example.com</a10:email>
+      </a10:author>
+      <a10:updated>2020-05-12T15:00:00Z</a10:updated>
+    </item>
+    <item>
+      <title>Title 2</title>
+      <description>Description 2</description>
+      <pubDate>Tue, 12 May 2020 07:52:36 Z</pubDate>
+      <a10:link href="http://www.example.com/2" />
+      <a10:author>
+        <a10:name>John Doe</a10:name>
+        <a10:uri>http://www.example.com/</a10:uri>
+        <a10:email>john.doe@example.com</a10:email>
+      </a10:author>
+      <a10:updated>2020-05-12T07:52:36Z</a10:updated>
+    </item>
+    <item>
+      <title>Title 1</title>
+      <description>Description 1</description>
+      <pubDate>Thu, 07 May 2020 07:36:53 Z</pubDate>
+      <a10:link href="http://www.example.com/1" />
+      <a10:author>
+        <a10:name>John Doe</a10:name>
+        <a10:uri>http://www.example.com/</a10:uri>
+        <a10:email>john.doe@example.com</a10:email>
+      </a10:author>
+      <a10:updated>2020-05-07T07:36:53Z</a10:updated>
+    </item>
+  </channel>
+</rss>
+

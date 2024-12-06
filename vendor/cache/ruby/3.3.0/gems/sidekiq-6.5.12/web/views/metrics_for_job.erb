@@ -1,0 +1,87 @@
+<script type="text/javascript" src="<%= root_path %>javascripts/chart.min.js"></script>
+<script type="text/javascript" src="<%= root_path %>javascripts/chartjs-plugin-annotation.min.js"></script>
+<script type="text/javascript" src="<%= root_path %>javascripts/metrics.js"></script>
+
+<%
+  job_result = @query_result.job_results[@name]
+  hist_totals = job_result.hist.values.first.zip(*job_result.hist.values[1..-1]).map(&:sum)
+  bucket_labels =Sidekiq::Metrics::Histogram::LABELS
+  bucket_intervals =Sidekiq::Metrics::Histogram::BUCKET_INTERVALS.reverse
+
+  # Replace INFINITY since it can't be represented as JSON
+  bucket_intervals[0] = bucket_intervals[1] * 2
+%>
+
+<% if job_result.totals["s"] > 0 %>
+  <div class="header-with-subheader">
+    <h1>
+      <a href="<%= root_path %>/metrics"><%= t(:metrics).to_s.titleize %></a> /
+      <%= h @name %>
+    </h1>
+    <h2>Histogram summary</h2>
+  </div>
+
+  <canvas id="hist-totals-chart"></canvas>
+
+  <script>
+    window.histTotalsChart = new HistTotalsChart(
+      "hist-totals-chart",
+      <%= Sidekiq.dump_json({
+        series: hist_totals,
+        labels: bucket_labels,
+      }) %>
+    )
+  </script>
+
+  <h2>Performance over time</h2>
+
+  <canvas id="hist-bubble-chart"></canvas>
+
+  <script>
+    window.histBubbleChart = new HistBubbleChart(
+      "hist-bubble-chart",
+      <%= Sidekiq.dump_json({
+        hist: job_result.hist,
+        marks: @query_result.marks.map { |m| [m.bucket, m.label] },
+        labels: @query_result.buckets,
+        histIntervals: bucket_intervals,
+      }) %>
+    )
+  </script>
+
+  <div class="table_container">
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+        <tr>
+          <th><%= t('Time') %></th>
+          <th><%= t('Processed') %></th>
+          <th><%= t('Failed') %></th>
+          <th><%= t('ExecutionTime') %></th>
+          <th><%= t('AvgExecutionTime') %></th>
+        </tr>
+        <% @query_result.buckets.reverse.each do |bucket| %>
+          <tr>
+            <td><%= bucket %></td>
+            <td><%= job_result.series.dig("p", bucket) %></td>
+            <td><%= job_result.series.dig("f", bucket) %></td>
+            <% if (total_sec = job_result.series.dig("s", bucket)) > 0 %>
+              <td><%= total_sec.round(2) %> seconds</td>
+              <td><%= job_result.series_avg("s")[bucket].round(2) %> seconds</td>
+            <% else %>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <p><small>Data from <%= @query_result.starts_at %> to <%= @query_result.ends_at %></small></p>
+<% else %>
+  <h1>
+    <a href="<%= root_path %>/metrics"><%= t(:metrics).to_s.titleize %></a> /
+    <%= h @name %>
+  </h1>
+
+  <div class="alert alert-success"><%= t('NoJobMetricsFound') %></div>
+<% end %>

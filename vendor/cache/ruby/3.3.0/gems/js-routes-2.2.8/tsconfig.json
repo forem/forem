@@ -1,0 +1,28 @@
+ {
+  "compilerOptions": {
+    "target": "es2019",
+    "lib": ["es2020", "dom"],
+    "module": "commonjs",
+    "sourceMap": false,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": false,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "alwaysStrict": false,
+
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+
+  },
+  "ts-node": {
+    "files": true,
+    "transpileOnly": false
+  },
+  "include": ["lib/*.ts"]
+}

@@ -1,0 +1,23 @@
+HTTP/1.1 200
+date: Wed, 08 Jan 2020 23:21:58 GMT
+content-type: text/html; charset=UTF-8
+server: nginx/0.7.67
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>a page with feeds</title>
+  <link rel="alternate" title="Articles - JSON Feed" type="application/json" href="https://example.org/feed.json" />
+  <link rel="alternate" title="Comments - JSON Feed" type="application/json" href="https://example.org/feed/comments.json" />
+  <link rel="alternate" title="Articles - RSS Feed" type="application/rss+xml" href="https://example.org/feed.rss" />
+  <link rel="alternate" title="Comments - RSS Feed" type="application/rss+xml" href="https://example.org/feed/comments.rss" />
+  <link rel="alternate" title="Articles - Atom Feed" type="application/atom+xml" href="https://example.org/feed.xml" />
+  <link rel="alternate" title="Comments - Atom Feed" type="application/atom+xml" href="https://example.org/feed/comments.xml" />
+
+  <link rel="alternate" title="Invalid Feed" />
+  <link rel="alternate" title="Feed with empty href" type="application/atom+xml" href="" />
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,1095 @@
+---
+AT:
+  name: Atlántida
+  code: AT
+  unofficial_names: Atlántida
+  geo:
+    latitude: 15.6696283
+    longitude: -87.14228949999999
+    min_latitude: 15.430607
+    min_longitude: -87.7970871
+    max_latitude: 15.9182919
+    max_longitude: -86.3275431
+  translations:
+    en: Atlántida
+    ar: أتلانتيدا
+    bg: Атлантида
+    bn: আটলান্টিকা বিভাগ
+    ca: Departament d’Atlántida
+    da: Atlántida Department
+    de: Atlántida
+    el: Ατλαντίδα
+    es: Departamento de Atlántida
+    eu: Atlántida
+    fa: استان آتلانتیدا
+    fi: Atlántida
+    fr: département d’Atlántida
+    gl: Departamento de Atlántida
+    gu: એટલાન્ટિડા વિભાગ
+    he: אטלנטידה
+    hi: अटलांटिडा विभाग
+    hu: Atlántida megye
+    id: Departemen Atlántida
+    it: dipartimento di Atlántida
+    ja: アトランティダ県
+    ka: ატლანტიდის დეპარტამენტი
+    kn: ಅಟ್ಲಾಂಟಿಡಾ ಇಲಾಖೆ
+    ko: 아틀란티다 주
+    lt: Atlantidos departamentas
+    mr: अटलांटिडा विभाग
+    ms: Atlantida Department
+    nb: Atlantida department
+    nl: Atlántida
+    pl: Atlántida
+    pt: Atlántida
+    ro: Atlántida
+    ru: Атлантида
+    si: අට්ලන්ටිඩා දෙපාර්තමේන්තුව
+    sv: Atlántida
+    ta: அட்லான்டிடா துறை
+    te: అట్లాంటిడా డిపార్ట్మెంట్
+    th: จังหวัดอัตลันตีดา
+    tr: Atlántida Departmanı
+    uk: Атлантида
+    ur: آتلانتیدا محکمہ
+    vi: Atlántida
+    zh: 阿特蘭蒂達省
+    lv: Atlantīdas departaments
+    ceb: Departamento de Atlántida
+    ccp: "\U00011103\U00011116\U00011134\U00011123\U00011125\U00011111\U00011128\U00011113"
+    'no': Atlantida department
+    sr: Атлантида (Хондурас)
+    sr_Latn: Atlantida (Honduras)
+  comments:
+  type: department
+CH:
+  name: Choluteca
+  code: CH
+  unofficial_names: Choluteca
+  geo:
+    latitude: 13.3198572
+    longitude: -87.1622344
+    min_latitude: 13.2443735
+    min_longitude: -87.2275829
+    max_latitude: 13.3577214
+    max_longitude: -87.11497299999999
+  translations:
+    en: Choluteca
+    ar: إدارة تشولوتيكا
+    bg: Чолутека
+    bn: কুলুতেকা বিভাগ
+    ca: Departament de Choluteca
+    da: Choluteca Department
+    de: Departamento Choluteca
+    el: Τσολουτέκα
+    es: Departamento de Choluteca
+    eu: Choluteca
+    fa: استان چولوتکا
+    fi: Choluteca
+    fr: département de Choluteca
+    gl: Departamento de Choluteca
+    gu: ચોલુટેકા વિભાગ
+    hi: चोलुटेका विभाग
+    hu: Choluteca megye
+    id: Departemen Choluteca
+    it: dipartimento di Choluteca
+    ja: チョルテカ県
+    ka: ჩოლუტეკის დეპარტამენტი
+    kn: ಕೊಲುಟೆಕಾ ಇಲಾಖೆ
+    ko: 촐루테카 주
+    lt: Čolutekos departamentas
+    mr: चोलुटेका विभाग
+    ms: Choluteca Department
+    nb: Choluteca
+    nl: Choluteca
+    pl: Choluteca
+    pt: Choluteca
+    ro: Departamentul Choluteca
+    ru: Чолутека
+    si: චොලුටෙකා දෙපාර්තමේන්තුව
+    sk: Choluteca
+    sv: Choluteca
+    ta: சொல்லுடீக்கா துறை
+    te: చోలుటెకా డిపార్ట్మెంట్
+    th: โชลูเตกา
+    tr: Choluteca Departmanı
+    uk: Чолутека
+    ur: چولوتیکا ڈیپارٹمنٹ
+    vi: Choluteca
+    lv: Čolutekas departaments
+    ceb: Departamento de Choluteca
+    zh: 喬盧特卡省
+    ccp: "\U0001110C\U0001112E\U00011123\U00011128\U00011105\U0001112A\U00011111\U0001112C\U00011107"
+    'no': Choluteca
+  comments:
+  type: department
+CL:
+  name: Colón
+  code: CL
+  unofficial_names: Colón
+  geo:
+    latitude: 15.6391768
+    longitude: -85.35496499999999
+    min_latitude: 15.0795581
+    min_longitude: -86.4258461
+    max_latitude: 16.0269222
+    max_longitude: -84.9903293
+  translations:
+    en: Colón
+    ar: إدارة كولون
+    bg: Колон
+    bn: কোলন বিভাগ
+    ca: Departament de Colón
+    da: Colón Department
+    de: Departamento Colón
+    el: Κολόν
+    es: Departamento de Colón
+    eu: Colón
+    fa: استان کولون
+    fi: Colón
+    fr: département de Colón
+    gl: Departamento de Colón
+    gu: કોલોન વિભાગ
+    hi: कोलन विभाग (होंडुरास)
+    hu: Colón megye
+    id: Departemen Colón
+    it: dipartimento di Colón
+    ja: コロン県
+    ka: კოლონის დეპარტამენტი
+    kn: ಕೊಲೊನ್ ಡಿಪಾರ್ಟ್ಮೆಂಟ್
+    ko: 콜론 주
+    lt: Kolono departamentas
+    mr: कॉलोन विभाग
+    ms: Colon Department
+    nb: Colon department
+    nl: Colón
+    pl: Colón
+    pt: Colón
+    ro: Colón
+    ru: Колон
+    si: කොලෝන් දෙපාර්තමේන්තුව
+    sv: Departamento de Colón (departement)
+    ta: கோலோன் துறை
+    te: కోలోన్ డిపార్ట్మెంట్
+    th: โคลอนดิพาทเมนท์
+    tr: Colon Departmanı
+    uk: Колон
+    ur: کولون محکمہ
+    vi: Colón
+    lv: Kolonas departaments
+    ceb: Departamento de Colón
+    zh: 科隆省
+    ccp: "\U00011107\U0001112E\U00011123\U0001112E\U0001111A\U00011134"
+    'no': Colon department
+    sr: Колон (Хондурас)
+    sr_Latn: Kolon (Honduras)
+  comments:
+  type: department
+CM:
+  name: Comayagua
+  code: CM
+  unofficial_names: Comayagua
+  geo:
+    latitude: 14.5534828
+    longitude: -87.6186379
+    min_latitude: 14.0668049
+    min_longitude: -88.08321099999999
+    max_latitude: 15.0569
+    max_longitude: -87.261583
+  translations:
+    en: Comayagua
+    bg: Комаягуа
+    ca: Comayagua
+    cs: Comayagua
+    de: Departamento Comayagua
+    es: Comayagua
+    eu: Comayagua
+    fa: استان کومایاگوآ
+    fi: Comayagua
+    fr: département de Comayagua
+    gl: Departamento de Comayagua
+    hu: Comayagua megye
+    id: Departemen Comayagua
+    it: dipartimento di Comayagua
+    ja: コマヤグア県
+    ka: კომაიაგუის დეპარტამენტი
+    ko: 코마야과 주
+    lt: Komajagvos departamentas
+    nl: Comayagua
+    pl: Comayagua
+    pt: Comayagua
+    ro: Comayagua
+    ru: Комаягуа
+    sk: Comayagua
+    sv: Departamento de Comayagua
+    uk: Комаягуа
+    ur: کومایاغوا محکمہ
+    vi: Comayagua
+    mr: कोमायागुआ प्रांत
+    ceb: Departamento de Comayagua
+    zh: 科馬亞瓜省
+    ccp: "\U00011107\U0001112E\U0001111F\U0001112C\U00011120\U0001110B\U00011134\U00011109\U0001112A\U00011120"
+    ar: إدارة كوماياغوا
+    th: จังหวัดโกมายากัว
+    tr: Comayagua ili
+  comments:
+  type: department
+CP:
+  name: Copán
+  code: CP
+  unofficial_names: Copán
+  geo:
+    latitude: 14.9360838
+    longitude: -88.86469799999999
+    min_latitude: 14.5260461
+    min_longitude: -89.22522
+    max_latitude: 15.294539
+    max_longitude: -88.63253
+  translations:
+    en: Copán
+    ar: إدارة كوبان
+    bg: Копан
+    bn: কোপান বিভাগ
+    ca: Copán
+    da: Copán Department
+    de: Departamento Copán
+    el: Κοπάν
+    es: Departamento de Copán
+    eu: Copán
+    fa: استان کوپان
+    fi: Copán
+    fr: département de Copán
+    gl: Departamento de Copán
+    gu: કોપૅન વિભાગ
+    hi: कोपन विभाग
+    hu: Copán megye
+    id: Departemen Copán
+    it: dipartimento di Copán
+    ja: コパン県
+    ka: კოპანის დეპარტამენტი
+    kn: ಕೊಪಾನ್ ಇಲಾಖೆ
+    ko: 코판 주
+    lt: Kopano departamentas
+    mr: कोपन विभाग
+    ms: Copan Department
+    nb: Copan department
+    nl: Copán
+    pl: Copán
+    pt: Copán
+    ru: Копан
+    si: කොපාන් දෙපාර්තමේන්තුව
+    sv: Departamento de Copán
+    ta: கோபன் துறை
+    te: కోపన్ డిపార్ట్మెంట్
+    th: จังหวัดโกปัน
+    tr: Copan Departmanı
+    uk: Копан
+    ur: کوپان محکمہ
+    vi: Copán
+    lv: Kopanas departaments
+    ceb: Departamento de Copán
+    zh: 科潘省
+    ccp: "\U00011107\U0001112E\U0001111B\U0001111A\U00011134"
+    'no': Copan department
+    ro: Copán
+  comments:
+  type: department
+CR:
+  name: Cortés
+  code: CR
+  unofficial_names: Cortés
+  geo:
+    latitude: 15.4909515
+    longitude: -87.9334803
+    min_latitude: 14.8104159
+    min_longitude: -88.44252600000002
+    max_latitude: 15.9198125
+    max_longitude: -87.7257844
+  translations:
+    en: Cortés
+    ar: إدارة كورتيس
+    bg: Кортес
+    bn: কর্টেস বিভাগ
+    ca: Departament de Cortés
+    cs: Cortés
+    da: Cortés Department
+    de: Departamento Cortés
+    el: Κορτές
+    es: Cortés
+    eu: Cortés
+    fa: استان کورتس
+    fi: Cortés
+    fr: département de Cortés
+    gl: Departamento de Cortés
+    gu: કોર્ટિસ વિભાગ
+    hi: कोर्टेज विभाग
+    hu: Cortés megye
+    id: Departemen Cortés
+    it: dipartimento di Cortés
+    ja: コルテス県
+    ka: კორტესის დეპარტამენტი
+    kn: ಕಾರ್ಟೆಸ್ ಇಲಾಖೆ
+    ko: 코르테스 주
+    lt: Korteso departamentas
+    mr: कोर्तेस प्रांत
+    ms: Cortes Department
+    nb: Cortes
+    nl: Cortés
+    pl: Cortés
+    pt: Cortés
+    ru: Кортес
+    si: කොටේස් දෙපාර්තමේන්තුව
+    sk: Cortés
+    sv: Departamento de Cortés
+    ta: கார்ட்ஸ் டெபார்ட்மென்ட
+    te: కోర్టెస్ డిపార్ట్మెంట్
+    th: คอร์เตส
+    tr: Cortés Departmanı
+    uk: Кортес
+    ur: کورتیس محکمہ
+    vi: Cortés
+    lv: Kortesa departaments
+    ceb: Departamento de Cortés
+    zh: 科爾特斯省
+    ccp: "\U00011107\U00011127\U00011122\U00011134\U00011111\U0001112C\U0001110C\U00011134"
+    'no': Cortes
+    ro: Cortés
+  comments:
+  type: department
+EP:
+  name: El Paraíso
+  code: EP
+  unofficial_names: El Paraíso
+  geo:
+    latitude: 14.0736932
+    longitude: -86.41873079999999
+    min_latitude: 13.5013601
+    min_longitude: -87.23560499999999
+    max_latitude: 14.3801481
+    max_longitude: -85.57647709999999
+  translations:
+    en: El Paraíso
+    ar: إدارة بارايسو
+    bg: Ел Параисо
+    bn: এল পারাইসো বিভাগ
+    ca: Departament d’El Paraíso
+    da: El Paraíso Department
+    de: Departamento El Paraíso
+    el: Ελ Παραΐσο
+    es: El Paraíso
+    eu: El Paraíso
+    fa: استان ال پارائیسو
+    fi: El Paraiso
+    fr: département d’El Paraíso
+    gl: Departamento de El Paraíso
+    gu: અલ પારાઈસો વિભાગ
+    he: אל פאראיסו
+    hi: अल पेराइसो डिपार्टमेंट
+    hu: El Paraíso megye
+    id: Departemen El Paraíso
+    it: dipartimento di El Paraíso
+    ja: エル・パライソ県
+    ka: ელ-პარაისოს დეპარტამენტი
+    kn: ಎಲ್ ಪಾರೈಸೊ ಇಲಾಖೆ
+    ko: 엘파라이소 주
+    lt: El Paraiso departamentas
+    mr: अल पाराईओ विभाग
+    ms: El Paraiso Department
+    nb: El Paraiso
+    nl: El Paraíso
+    pl: El Paraíso
+    pt: El Paraíso
+    ru: Эль-Параисо
+    si: එල් පරයිසෝ දෙපාර්තමේන්තුව
+    sv: El Paraiso
+    ta: எல் பரிசோ துறை
+    te: ఎల్ పారాసియో డిపార్ట్మెంట్
+    th: เอลปาไรโซ
+    tr: El Paraiso Departmanı
+    uk: Ель-Параїсо
+    ur: ال پارایسو ڈیپارٹمنٹ
+    vi: El Paraíso
+    lv: Elparaiso departaments
+    ceb: Departamento de El Paraíso
+    zh: 埃爾帕拉伊索省
+    ccp: "\U00011103\U0001112C\U00011123\U00011134 \U0001111B\U00011122\U0001112D\U00011125\U0001112E"
+    'no': El Paraiso
+    ro: El Paraíso
+  comments:
+  type: department
+FM:
+  name: Francisco Morazán
+  code: FM
+  unofficial_names: Francisco Morazán
+  geo:
+    latitude: 14.45411
+    longitude: -87.0624261
+    min_latitude: 13.662749
+    min_longitude: -87.648878
+    max_latitude: 15.013803
+    max_longitude: -86.70461999999999
+  translations:
+    en: Francisco Morazán
+    ar: إدارة فرانسيسكو مورازان
+    bg: Франсиско Морасан
+    bn: ফ্রান্সিসকো মরাজান বিভাগ
+    ca: Departament de Francisco Morazán
+    da: Francisco Morazán Department
+    de: Departamento Francisco Morazán
+    el: Φρανκίσκο Μοραζάν
+    es: Francisco Morazán
+    eu: Francisco Morazán
+    fa: استان فرانسیسکو مورازان
+    fi: Francisco Morazán
+    fr: département de Francisco Morazán
+    gl: Departamento de Francisco Morazán
+    gu: ફ્રાન્સિસ્કો મોરાઝાન વિભાગ
+    hi: फ्रेंसिस्को मोराज़न विभाग
+    hu: Francisco Morazán megye
+    id: Departemen Francisco Morazán
+    it: dipartimento di Francisco Morazán
+    ja: フランシスコ・モラサン県
+    ka: ფრანსისკო-მორასანის დეპარტამენტი
+    kn: ಫ್ರಾನ್ಸಿಸ್ಕೊ ಮೊರಾಜನ್ ಇಲಾಖೆ
+    ko: 프란시스코모라산 주
+    lt: Fransisko Morasano departamentas
+    mr: फ्रांसिस्को मोराझान प्रांत
+    ms: Francisco Morazan Department
+    nb: Franciso Morazan department
+    nl: Francisco Morazán
+    pl: Francisco Morazán (departament)
+    pt: Francisco Morazán
+    ru: Франсиско Морасан
+    si: ෆ්රැන්සිස්කෝ මොරසාන් දෙපාර්තමේන්තුව
+    sv: Departamento de Francisco Morazán
+    ta: பிரான்சிஸ்கோ மோராசன் துறை
+    te: ఫ్రాన్సిస్కో మోరాజన్ డిపార్ట్మెంట్
+    th: ฟรานซิสโกมอราซัน
+    tr: Francisco Moraz
+    uk: Франсіско Морасан
+    ur: فرانسسکو مورازان ڈیپارٹمنٹ
+    vi: Francisco Morazán
+    lv: Fransiskomorasanas departaments
+    ceb: Departamento de Francisco Morazán
+    zh: 弗朗西斯科-莫拉桑省
+    ccp: "\U0001111C\U00011133\U00011122\U0001111A\U00011134\U00011125\U00011128\U0001110C\U00011134\U00011107\U0001112E
+      \U0001111F\U0001112E\U00011122\U0001110E\U0001111A\U00011134"
+    be: Франсіска Марасан
+    'no': Franciso Morazan department
+    ro: Francisco Morazán
+  comments:
+  type: department
+GD:
+  name: Gracias a Dios
+  code: GD
+  unofficial_names: Gracias a Dios
+  geo:
+    latitude: 15.341806
+    longitude: -84.6060449
+    min_latitude: 14.614529
+    min_longitude: -84.99412
+    max_latitude: 15.9782862
+    max_longitude: -83.15540299999999
+  translations:
+    en: Gracias a Dios
+    ar: إدارة غراسياس ديوس
+    bg: Грасиас а Диос
+    bn: গার্সিয়াস অ্যা ডায়োস বিভাগ
+    ca: Departament de Gracias a Dios
+    cs: Gracias a Dios
+    da: Gracias a Dios Department
+    de: Gracias a Dios
+    el: Γκρασίας α Ντίος
+    es: Gracias a Dios
+    eu: Gracias a Dios
+    fa: استان گراسیاس آدیوس
+    fi: Gracias a Dios
+    fr: département de Gracias a Dios
+    gl: Departamento de Gracias a Dios
+    gu: ગ્રેસિયસ અ ડાયોસ વિભાગ
+    hi: ग्रासियास आ दिओस विभाग
+    hu: Gracias a Dios megye
+    id: Departemen Gracias a Dios
+    it: dipartimento di Gracias a Dios
+    ja: グラシアス・ア・ディオス県
+    ka: გრასიას-ა-დიოსის დეპარტამენტი
+    kn: ಗ್ರೇಸ್ಯಾಸ್ ಡಿವೊಸ್ ಇಲಾಖೆ
+    ko: 그라시아스아디오스 주
+    lt: Grasjas a Dioso departamentas
+    mr: ग्रॅसिस ए ड्युओस डिपार्टमेंट
+    ms: Gracias a Dios Department
+    nb: Gracias a Dios
+    nl: Gracias a Dios
+    pl: Gracias a Dios
+    pt: Gracias a Dios
+    ru: Грасьяс-а-Дьос
+    si: ග්‍රාසියස් අ ඩයොස් දෙපාර්තමේන්තුව
+    sk: Gracias a Dios
+    sv: Departamento de Gracias a Dios
+    ta: க்ராசியஸ் அ டியோஸ் துறை
+    te: గ్రాంసియాస్ ఎ డియాస్ డిపార్ట్మెంట్
+    th: เมืองซาบล์จัค
+    tr: Gracias a Dios
+    uk: Грасіас-а-Діос
+    ur: گریشیئس آ دیوس ڈیپارٹمنٹ
+    vi: Gracias a Dios
+    lv: Grasjasadjosas departaments
+    ceb: Departamento de Gracias a Dios
+    zh: 格拉西亚斯-阿迪奥斯省
+    ccp: "\U00011109\U00011133\U00011122\U00011125\U00011128\U00011120\U0001110C\U00011134
+      \U00011103 \U00011113\U00011128\U00011120\U0001112E\U0001110C\U00011134"
+    'no': Gracias a Dios
+    ro: Gracias a Dios
+  comments:
+  type: department
+IB:
+  name: Islas de la Bahía
+  code: IB
+  unofficial_names: Islas de la Bahía
+  geo:
+    latitude: 16.3526078
+    longitude: -86.4895463
+    min_latitude: 16.069366
+    min_longitude: -86.98986409999999
+    max_latitude: 17.415835
+    max_longitude: -83.9287665
+  translations:
+    en: Bay Islands
+    ar: إدارة جزر الخليج
+    be: Астравы Іслас-дэ-ла-Баія
+    bg: Ислас де ла Баия
+    bn: বে আইল্যান্ড বিভাগ
+    ca: Illes de la Badia
+    cs: Islas de la Bahía
+    da: Bay Islands Department
+    de: Islas de la Bahía
+    el: Νησιά Μπέι
+    es: Islas de la Bahía
+    et: Bahía saared
+    eu: Islas de la Bahía
+    fa: استان ایسلاس دلا باهیا
+    fi: Islas de la Bahía
+    fr: département des Islas de la Bahía
+    gl: Departamento de Islas de la Bahía
+    gu: બે આયલેન્ડ્સ વિભાગ
+    he: איי באייה
+    hi: बे द्वीप समूह विभाग
+    hu: Islas de la Bahía megye
+    id: Islas de la Bahía
+    it: dipartimento di Islas de la Bahía
+    ja: イスラス・デ・ラ・バイア県
+    ka: ისლას-დე-ლა-ბაიის დეპარტამენტი
+    kn: ಬೇ ದ್ವೀಪಗಳು ಇಲಾಖೆ
+    ko: 이슬라스데라바이아 주
+    lt: Bahijos salos
+    mr: इस्लास दे ला बाहिया
+    ms: Bay Islands Department
+    nb: Bay Islands department
+    nl: Islas de la Bahía
+    pl: Wyspy Bahia
+    pt: Ilhas da Baía
+    ru: Ислас-де-ла-Баия
+    si: කලපු දූපත් දෙපාර්තමේන්තුව
+    sk: Islas de la Bahía
+    sv: Bahíaöarna
+    ta: பே இஸ்லாண்ட்ஸ் துறை
+    te: బే ఐలాండ్స్ డిపార్ట్మెంట్
+    th: เบย์ ไอซ์แลนด์
+    tr: Bay Adaları
+    uk: Іслас-де-ла-Байя
+    ur: بے آیلینڈز محکمہ
+    vi: Islas de la Bahía
+    lv: Baijas Salas departaments
+    ceb: Departamento de Islas de la Bahía
+    zh: 海灣群島省
+    yue_Hans: 海湾群岛省
+    ccp: "\U0001111D\U0001112C \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U0001110C\U00011134"
+    yue: 海灣群島省
+    'no': Bay Islands department
+  comments:
+  type: department
+IN:
+  name: Intibucá
+  code: IN
+  unofficial_names: Intibucá
+  geo:
+    latitude: 14.316667
+    longitude: -88.16666699999999
+    min_latitude: 14.309215
+    min_longitude: -88.1977272
+    max_latitude: 14.3376566
+    max_longitude: -88.1368732
+  translations:
+    en: Intibucá
+    ar: إدارة إنتبوكا
+    bg: Интибука
+    bn: ইন্টিবুকা বিভাগ
+    ca: Intibucá
+    da: Intibucá Department
+    de: Intibucá
+    el: Ιντιμπουκά
+    es: Intibucá
+    eu: Intibucá
+    fa: استان اینتیبوکا
+    fi: Intibucán departmentti
+    fr: département d’Intibucá
+    gl: Departamento de Intibucá
+    gu: ઇન્ટિબ્યુકા વિભાગ
+    hi: इंटीबुका विभाग
+    hu: Intibucá megye
+    id: Departemen Intibucá
+    it: dipartimento di Intibucá
+    ja: インティブカ県
+    ka: ინტიბუკის დეპარტამენტი
+    kn: ಇಂಟಿಬುಕಾ ಇಲಾಖೆ
+    ko: 인티부카 주
+    lt: Intibukos departamentas
+    mr: इंटीबूच विभाग
+    ms: Intibuca Department
+    nb: Intibuca department
+    nl: Intibucá
+    pl: Intibucá
+    pt: Intibucá
+    ru: Интибука
+    si: ඉන්ටිබුකා දෙපාර්තමේන්තුව
+    sv: Departamento de Intibucá
+    ta: இன்டிபுக்கா துறை
+    te: ఇంటిబూకా డిపార్ట్మెంట్
+    th: เมืองอินทิบูคา
+    tr: Intibuca Departmanı
+    uk: Інтібука
+    ur: انتیپوکا محکمہ
+    vi: Intibucá
+    lv: Intibukas departaments
+    ceb: Departamento de Intibucá
+    zh: 因蒂布卡省
+    ccp: "\U00011103\U00011128\U0001111A\U00011134\U00011111\U00011128\U0001111D\U00011128\U00011105\U0001112A\U00011107"
+    'no': Intibuca department
+    ro: Departamentul Intibucá
+  comments:
+  type: department
+LE:
+  name: Lempira
+  code: LE
+  unofficial_names: Lempira
+  geo:
+    latitude: 14.1887698
+    longitude: -88.55653099999999
+    min_latitude: 13.978775
+    min_longitude: -88.99023400000002
+    max_latitude: 14.955633
+    max_longitude: -88.3192471
+  translations:
+    en: Lempira
+    ar: إدارة ليمبيرا
+    bg: Лемпира
+    bn: লেম্পিরা বিভাগ
+    ca: Departament de Lempira
+    da: Lempira Department
+    de: Departamento Lempira
+    el: Λεμπίραν
+    es: Lempira
+    eu: Lempira
+    fa: استان لمپیرا
+    fi: Lempiran departmentti
+    fr: département de Lempira
+    gl: Departamento de Lempira
+    gu: લેમ્પિરા વિભાગ
+    hi: लेम्पिरा विभाग
+    hu: Lempira megye
+    id: Departemen Lempira
+    it: dipartimento di Lempira
+    ja: レンピーラ県
+    ka: ლემპირას დეპარტამენტი
+    kn: ಲೆಂಪ್ಪಿ ಇಲಾಖೆ
+    ko: 렘피라 주
+    lt: Lempiros departamentas
+    mr: लिम्पिरा विभाग
+    ms: Jabatan Lempira
+    nb: Lampira department
+    nl: Lempira
+    pl: Lempira
+    pt: Lempira
+    ru: Лемпира
+    si: ලේම්පිරා දෙපාර්තමේන්තුව
+    sv: Departamento de Lempira
+    ta: லெம்பிரா துறை
+    te: లెంపిరా డిపార్ట్మెంట్
+    th: เมืองเลมพิรา
+    tr: Lempira Departmanı
+    uk: Лемпіра (департамент)
+    ur: لیمپیرا ڈیپارٹمنٹ
+    vi: Lempira
+    lv: Lempiras departaments
+    ceb: Departamento de Lempira
+    zh: 倫皮拉省
+    ccp: "\U00011123\U0001112C\U0001111F\U00011134\U0001111B\U00011128\U00011122"
+    'no': Lampira department
+    ro: Departamentul Lempira
+  comments:
+  type: department
+LP:
+  name: La Paz
+  code: LP
+  unofficial_names: La Paz
+  geo:
+    latitude: 13.9984833
+    longitude: -87.9334803
+    min_latitude: 13.822687
+    min_longitude: -88.23758199999999
+    max_latitude: 14.417439
+    max_longitude: -87.6088089
+  translations:
+    en: La Paz
+    ar: إدارة لا باز
+    bg: Ла Пас
+    bn: লা পাজ বিভাগ
+    ca: Departament de La Paz
+    da: La Paz Department
+    de: La Paz
+    el: Λα Παζ
+    es: La Paz
+    eu: La Paz
+    fa: استان لاپاز
+    fi: La Pazin departementti
+    fr: département de La Paz
+    gl: Departamento de La Paz
+    gu: લા પાઝ વિભાગ
+    he: לה פאס
+    hi: ला-पाज़ विभाग
+    hu: La Paz megye
+    id: Departemen La Paz
+    it: dipartimento di La Paz
+    ja: ラパス県
+    ka: ლა-პასის დეპარტამენტი (ჰონდურასი)
+    kn: ಲಾ ಪಾಜ್ ಇಲಾಖೆ
+    ko: 라파스 주
+    lt: La Paso departamentas
+    mr: ला पाझ विभाग
+    ms: La Paz Department
+    nb: La Paz department
+    nl: La Paz
+    pl: La Paz (departament Hondurasu)
+    pt: La Paz
+    ru: Ла-Пас
+    si: ලා පාස් දෙපාර්තමේන්තුව
+    sv: Departamento de La Paz (departement i Honduras)
+    ta: லா பஸ் துறை
+    te: లా పాజ్ డిపార్ట్మెంట్
+    th: จังหวัดลาปาซ
+    tr: La paz
+    uk: Ла-Пас (департамент Гондурасу)
+    ur: لا پاز ڈیپارٹمنٹ
+    vi: La Paz
+    lv: Lapasas departaments
+    ceb: Departamento de La Paz (departamento sa Honduras)
+    zh: 拉巴斯省 (洪都拉斯)
+    ccp: "\U00011123 \U0001111B\U0001110C\U00011134"
+    'no': La Paz department
+    ro: Departamentul La Paz (Honduras)
+  comments:
+  type: department
+OC:
+  name: Ocotepeque
+  code: OC
+  unofficial_names: Ocotepeque
+  geo:
+    latitude: 14.5170347
+    longitude: -89.0561532
+    min_latitude: 14.249759
+    min_longitude: -89.350792
+    max_latitude: 14.747355
+    max_longitude: -88.716308
+  translations:
+    en: Ocotepeque
+    ar: إدارة أوكوتيبيك
+    bg: Окотепеке
+    bn: অকোটেপেক বিভাগ
+    ca: Departament d’Ocotepeque
+    da: Ocotepeque Department
+    de: Departamento Ocotepeque
+    el: Οκοτεπέκε
+    es: Ocotepeque
+    eu: Ocotepeque
+    fa: استان اوکوتپکوئه
+    fi: Ocotepeque
+    fr: département d’Ocotepeque
+    gl: Departamento de Ocotepeque
+    gu: ઓકોટેપેક્યુ વિભાગ
+    hi: ओकोटेपेक्यू विभाग
+    hu: Ocotepeque megye
+    id: Departemen Ocotepeque
+    it: dipartimento di Ocotepeque
+    ja: オコテペケ県
+    ka: ოკოტეპეკეს დეპარტამენტი
+    kn: ಒಕೊಟೆಪೆಕ್ ಇಲಾಖೆ
+    ko: 오코테페케 주
+    lt: Okotepekės departamentas
+    mr: ओकोटेपेक्यू विभाग
+    ms: Ocotepeque Department
+    nb: Ocotepeque department
+    nl: Ocotepeque
+    pl: Department Ocotepeque
+    pt: Ocotepeque
+    ru: Окотепеке
+    si: ඔකොටෙපෙක් දෙපාර්තමේන්තුව
+    sv: Departamento de Ocotepeque
+    ta: ஒகோடிப்பேயூ துறை
+    te: ఆక్టోపెఖ్ డిపార్ట్మెంట్
+    th: โอโคเพคิว ดีพาร์ทเม้น
+    tr: Ocotepeque Departmanı
+    uk: Окотепеке
+    ur: اوکوتیپیقوی ڈیپارٹمنٹ
+    vi: Ocotepeque
+    lv: Okotepekes departaments
+    ceb: Departamento de Ocotepeque
+    zh: 奥科特佩克省
+    ccp: "\U00011103\U0001112E\U00011107\U0001112E\U00011111\U0001112C\U0001111B\U0001112C\U00011107\U00011134"
+    'no': Ocotepeque department
+    ro: Departamentul Ocotepeque
+  comments:
+  type: department
+OL:
+  name: Olancho
+  code: OL
+  unofficial_names: Olancho
+  geo:
+    latitude: 14.8067406
+    longitude: -85.76666449999999
+    min_latitude: 14.046359
+    min_longitude: -86.9544921
+    max_latitude: 15.61391
+    max_longitude: -84.98785400000001
+  translations:
+    en: Olancho
+    ar: إدارة أولانشو
+    bg: Оланчо
+    bn: ওলানকো বিভাগ
+    ca: Departament d’Olancho
+    da: Olancho
+    de: Departamento Olancho
+    el: Ολάντσο
+    es: Olancho
+    eu: Olancho
+    fa: استان اولانچو
+    fi: Olancho
+    fr: département d’Olancho
+    gl: Departamento de Olancho
+    gu: ઓલાંકો વિભાગ
+    hi: ओलान्को विभाग
+    hu: Olancho megye
+    id: Departemen Olancho
+    it: dipartimento di Olancho
+    ja: オランチョ県
+    ka: ოლანჩოს დეპარტამენტი
+    kn: ಒಲಾಂಚೊ ಇಲಾಖೆ
+    ko: 올란초 주
+    lt: Olančo departamentas
+    mr: ओलांचो विभाग
+    ms: Olancho Department
+    nb: Olancho department
+    nl: Olancho
+    pl: Olancho
+    pt: Olancho
+    ru: Оланчо
+    si: ඕලන්චෝ දෙපාර්තමේන්තුව
+    sv: Departamento de Olancho
+    ta: ஒலான்சோ துறை
+    te: ఓలాంచో డిపార్ట్మెంట్
+    th: จังหวัดโอลันโช
+    tr: Olancho Department
+    uk: Оланчо
+    ur: اولانچو ڈیپارٹمنٹ
+    vi: Olancho
+    lv: Olančo departaments
+    ceb: Departamento de Olancho
+    zh: 奧蘭喬省
+    ccp: "\U00011103\U0001112E\U00011123\U0001111A\U00011134\U00011107\U0001112E"
+    'no': Olancho department
+    cs: Olancho
+    ro: Departamentul Olancho
+  comments:
+  type: department
+SB:
+  name: Santa Bárbara
+  code: SB
+  unofficial_names: Santa Bárbara
+  geo:
+    latitude: 15.1202795
+    longitude: -88.4016041
+    min_latitude: 14.5849759
+    min_longitude: -88.751592
+    max_latitude: 15.53789
+    max_longitude: -87.9959605
+  translations:
+    en: Santa Bárbara
+    ar: إدارة سانتا باربرا
+    bg: Санта Барбара
+    bn: সান্তা বারবারা বিভাগ
+    ca: Departament de Santa Bárbara
+    da: Santa Bárbara Department
+    de: Departamento Santa Bárbara
+    el: Σάντα Μπάρμπαρα
+    es: Santa Bárbara
+    eu: Santa Bárbara
+    fa: استان سانتا باربارا
+    fi: Santa Bárbaran departmentti
+    fr: département de Santa Bárbara
+    gl: Departamento de Santa Bárbara
+    gu: સાન્ટા બાર્બરા વિભાગ
+    hi: सैंटा बारबरा विभाग
+    hu: Santa Bárbara megye
+    id: Departemen Santa Bárbara
+    it: dipartimento di Santa Bárbara
+    ja: サンタ・バルバラ県
+    ka: სანტა-ბარბარას დეპარტამენტი
+    kn: ಸಾಂಟಾ ಬರ್ಬರಾ ಇಲಾಖೆ
+    ko: 산타바르바라 주
+    lt: Santa Barbaros departamentas
+    mr: सांता बारबरा विभाग
+    ms: Santa Barbara Department
+    nb: Santa Barbara Department
+    nl: Santa Bárbara
+    pl: Santa Bárbara
+    pt: Santa Bárbara
+    ru: Санта-Барбара
+    si: සැන්ටා බාර්බරා දෙපාර්තමේන්තුව
+    sk: Santa Bárbara
+    sv: Departamento de Santa Bárbara (departement)
+    ta: சாண்டா பார்பரா துறை
+    te: సాంటా బార్బరా డిపార్ట్మెంట్
+    th: เขตซานตาบาร์บารา
+    tr: Santa Bárbara
+    uk: Санта-Барбара
+    ur: سنتا بڑبڑا ڈیپارٹمنٹ
+    vi: Santa Bárbara
+    lv: Santabarbaras departaments
+    ceb: Departamento de Santa Bárbara (departamento)
+    zh: 聖巴巴拉省
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U0001111D\U00011122\U00011134\U0001111D\U00011122"
+    'no': Santa Barbara Department
+    ro: Departamentul Santa Bárbara, Honduras
+  comments:
+  type: department
+VA:
+  name: Valle
+  code: VA
+  unofficial_names: Valle
+  geo:
+    latitude: 13.5782936
+    longitude: -87.5791287
+    min_latitude: 13.2487044
+    min_longitude: -87.8682931
+    max_latitude: 13.853783
+    max_longitude: -87.361198
+  translations:
+    en: Valle
+    ar: إدارة فالي
+    bg: Вале
+    bn: ভাল বিভাগ
+    ca: Departament de Valle
+    da: Valle Department
+    de: Departamento Valle
+    el: Βάλλε
+    es: Valle
+    eu: Valle
+    fa: استان واله
+    fi: Valle
+    fr: département de Valle
+    gl: Departamento de Valle
+    gu: વાલે વિભાગ
+    hi: वैले विभाग
+    hu: Valle megye
+    id: Departemen Valle
+    it: dipartimento di Valle
+    ja: バジェ県
+    ka: ვალიეს დეპარტამენტი
+    kn: ವ್ಯಾಲೆ ಇಲಾಖೆ
+    ko: 바예 주
+    lt: Valjės departamentas
+    mr: वॅले प्रदेश
+    ms: Valle Department
+    nb: Valle
+    nl: Valle
+    pl: Valle
+    pt: Valle
+    ru: Валье
+    si: වල්ලේ දෙපාර්තමේන්තුව
+    sk: Valle
+    sv: Departamento de Valle
+    ta: வல்லே துறை
+    te: వల్లే డిపార్ట్మెంట్
+    th: เวลลี ดีพาทเม้น
+    tr: Valle Department
+    uk: Вальє
+    ur: والی ڈیپارٹمنٹ
+    vi: Valle
+    lv: Valjes departaments
+    ceb: Departamento de Valle
+    zh: 山谷省
+    ccp: "\U0001111E\U00011123\U0001112C"
+    be: Валье
+    'no': Valle
+    ro: Departamentul Valle
+  comments:
+  type: department
+YO:
+  name: Yoro
+  code: YO
+  unofficial_names: Yoro
+  geo:
+    latitude: 15.2949679
+    longitude: -87.14228949999999
+    min_latitude: 14.7905061
+    min_longitude: -87.9417579
+    max_latitude: 15.729222
+    max_longitude: -86.2196529
+  translations:
+    en: Yoro
+    ar: يورو
+    bg: Йоро
+    bn: ইউরো বিভাগ
+    ca: Departament de Yoro
+    da: Yoro Department
+    de: Departamento Yoro
+    el: Γιόρο
+    es: Yoro
+    eu: Yoro
+    fa: استان یورو
+    fi: Yoron departmentti
+    fr: département de Yoro
+    gl: Departamento de Yoro
+    gu: યોરો વિભાગ
+    hi: योरो विभाग
+    hu: Yoro megye
+    id: Departemen Yoro
+    it: dipartimento di Yoro
+    ja: ヨロ県
+    ka: იოროს დეპარტამენტი
+    kn: ಯಾರೊ ಡಿಪಾರ್ಟ್ಮೆಂಟ್
+    ko: 요로 주
+    lt: Joro departamentas
+    mr: योरॉ विभाग
+    ms: Yoro Department
+    nb: Yoro department
+    nl: Yoro
+    pl: Yoro
+    pt: Yoro
+    ru: Йоро
+    si: යොරෝ දෙපාර්තමේන්තුව
+    sv: Departamento de Yoro
+    ta: யாரோ துறை
+    te: యోరో డిపార్ట్మెంట్
+    th: โยโร
+    tr: Yoro Departmanı
+    uk: Йоро
+    ur: یورو ڈیپارٹمنٹ
+    vi: Yoro
+    lv: Joro departaments
+    ceb: Departamento de Yoro
+    zh: 約羅省
+    ccp: "\U00011103\U00011128\U00011120\U0001112E\U00011122\U0001112E"
+    'no': Yoro department
+    ro: Departamentul Yoro
+  comments:
+  type: department

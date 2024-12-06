@@ -1,0 +1,14 @@
+// Creates a dot marker at the given position
+#include "script_component.hpp"
+params ["_pos", "_txt"];
+
+if (isNil QGVAR(markerID)) then {
+    GVAR(markerID) = 0;
+};
+
+_markerstr = createMarker [QGVAR(marker) + str GVAR(markerID), _pos];
+_markerstr setMarkerShape "ICON";
+_markerstr setMarkerType "hd_dot";
+_markerstr setMarkerText _txt;
+
+GVAR(markerID) = GVAR(markerID) + 1;

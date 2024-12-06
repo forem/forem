@@ -1,0 +1,52 @@
+---
+KH:
+  alpha2: KH
+  alpha3: KHM
+  continent: Asia
+  country_code: '855'
+  currency_code: KHR
+  distance_unit: KM
+  gec: CB
+  geo:
+    latitude: 12.565679
+    longitude: 104.990963
+    max_latitude: 14.6901791
+    max_longitude: 107.627687
+    min_latitude: 9.6007
+    min_longitude: 102.333542
+    bounds:
+      northeast:
+        lat: 14.6901791
+        lng: 107.627687
+      southwest:
+        lat: 9.6007
+        lng: 102.333542
+  international_prefix: '00'
+  ioc: CAM
+  iso_long_name: The Kingdom of Cambodia
+  iso_short_name: Cambodia
+  languages_official:
+  - km
+  languages_spoken:
+  - km
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Cambodian
+  number: '116'
+  postal_code: true
+  postal_code_format: "\\d{5,6}"
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: KH
+  unofficial_names:
+  - Cambodia
+  - Kambodscha
+  - Cambodge
+  - Camboya
+  - カンボジア
+  - Cambodja
+  world_region: APAC

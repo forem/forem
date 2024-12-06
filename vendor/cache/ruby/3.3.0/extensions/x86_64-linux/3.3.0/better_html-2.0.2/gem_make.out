@@ -1,0 +1,48 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/better_html-2.0.2/ext/better_html_ext
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/better_html-2.0.2/ext/better_html_ext
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4nvzam sitelibdir\=./.gem.20241205-149352-4nvzam clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/better_html-2.0.2/ext/better_html_ext
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4nvzam sitelibdir\=./.gem.20241205-149352-4nvzam
+compiling html_tokenizer.c
+html_tokenizer.c: In function ‘Init_better_html_ext’:
+html_tokenizer.c:7:6: warning: old-style function definition [-Wold-style-definition]
+    7 | void Init_better_html_ext()
+      |      ^~~~~~~~~~~~~~~~~~~~
+html_tokenizer.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling parser.c
+parser.c: In function ‘parser_document_append’:
+parser.c:498:9: warning: unused variable ‘old’ [-Wunused-variable]
+  498 |   void *old = parser->doc.data;
+      |         ^~~
+parser.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling tokenizer.c
+tokenizer.c: In function ‘scan_tag_name’:
+tokenizer.c:467:9: warning: variable ‘old’ set but not used [-Wunused-but-set-variable]
+  467 |   void *old;
+      |         ^~~
+tokenizer.c: In function ‘tokenizer_set_scan_string’:
+tokenizer.c:669:15: warning: unused variable ‘old’ [-Wunused-variable]
+  669 |   const char *old = tk->scan.string;
+      |               ^~~
+tokenizer.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+linking shared-object better_html_ext.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/better_html-2.0.2/ext/better_html_ext
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4nvzam sitelibdir\=./.gem.20241205-149352-4nvzam install
+/usr/bin/install -c -m 0755 better_html_ext.so ./.gem.20241205-149352-4nvzam
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/better_html-2.0.2/ext/better_html_ext
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4nvzam sitelibdir\=./.gem.20241205-149352-4nvzam clean

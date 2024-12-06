@@ -1,0 +1,138 @@
+= ruby-warning
+
+ruby-warning adds custom processing for warnings, including the
+ability to ignore specific warning messages, ignore warnings
+in specific files/directories, include backtraces with warnings,
+treat warnings as errors, deduplicate warnings, and add
+custom handling for all warnings in specific files/directories.
+
+ruby-warning requires ruby 2.4+, as previous versions of ruby do
+not support custom processing of warnings.
+
+= Installation
+
+  gem install warning
+
+= Source Code
+
+Source code is available on GitHub at https://github.com/jeremyevans/ruby-warning
+
+= Usage 
+
+By default, requiring the library does not make changes to how ruby processes
+warnings, it just adds methods that allow you to customize the processing.
+
+<tt>Warning.ignore</tt> takes a regexp and optionally a path prefix, and ignores
+any warning that matches the regular expression if it starts with the path
+prefix.  It can also take a symbol or an array of symbols, and will use an
+appropriate regexp.  The supported symbols are:
+
+* :arg_prefix
+* :ambiguous_slash
+* :bignum
+* :fixnum
+* :keyword_separation
+* :method_redefined
+* :mismatched_indentations
+* :missing_gvar
+* :missing_ivar
+* :not_reached
+* :safe
+* :shadow
+* :taint
+* :unused_var
+* :useless_operator
+* :void_context
+
+<tt>Warning.process</tt> takes an optional path prefix and a block, and if the
+warning string starts with the path prefix, it calls the block with the warning
+string instead of performing the default behavior. You can call
+<tt>Warning.process</tt> multiple times and it will operate intelligently,
+choosing the longest path prefix that the string starts with.
+
+<tt>Warning.process</tt> blocks can return +:default+ to use the default
+behavior, +:backtrace+ to use the default behavior and also print the backtrace
+or +:raise+ to raise the warning string as a RuntimeError.
+
+<tt>Warning.process</tt> can also accept a hash of actions instead of a block,
+with keys being regexps (or symbols supported by <tt>Warning.ignore</tt>) and
+values being callable objects (or +:default+, +:backtrace+, or +:raise+).
+
+<tt>Warning.dedup</tt> deduplicates warnings, so that if a warning is received
+that is the same as a warning that has already been processed, the warning is
+ignored. Note that this should be used with care, since if the application
+generates an arbitrary number of unique warnings, that can lead to unbounded
+memory growth.
+
+<tt>Warning.clear</tt> resets the library to its initial state, clearing the
+current ignored warnings and warning processors, and turning off deduplication.
+
+By using path prefixes, it's fairly easy for a gem to set that specific warnings
+should be ignored inside the gem's directory.
+
+Note that path prefixes will not correctly handle warnings raised by
+<tt>Kernel#warn</tt>, unless the warning message given to <tt>Kernel#warn</tt>
+starts with the filename where the warning is used. The <tt>Kernel#warn</tt>
++:uplevel+ option will make sure the warning starts with the filename.
+
+Note that many of the warnings this library can ignore are warnings caused
+during compilation (i.e. when files are loaded via require).  You should
+require this library and setup the appropriate warning handling before
+loading any code that could cause warnings.
+
+= Examples
+
+  # Ignore all uninitialized instance variable warnings
+  Warning.ignore(/instance variable @\w+ not initialized/)
+
+  # Ignore all uninitialized instance variable warnings in current file
+  Warning.ignore(/instance variable @\w+ not initialized/, __FILE__)
+
+  # Ignore all uninitialized instance variable warnings in current file
+  Warning.ignore(:missing_ivar, __FILE__)
+
+  # Ignore all Fixnum and Bignum warnings in current file
+  Warning.ignore([:fixnum, :bignum], __FILE__)
+
+  # Write warning to LOGGER at level warning
+  Warning.process do |warning|
+    LOGGER.warning(warning)
+  end
+
+  # Write warnings in the current file to LOGGER at level error
+  Warning.process(__FILE__) do |warning|
+    LOGGER.error(warning)
+  end
+
+  # Write warnings in the current file to $stderr, but include backtrace
+  Warning.process(__FILE__) do |warning|
+    :backtrace
+  end
+
+  # Raise warnings in the current file as RuntimeErrors, with the warning
+  # string as the exception message
+  Warning.process(__FILE__) do |warning|
+    :raise
+  end
+
+  # Raise keyword argument separation warnings in the current file as
+  # RuntimeErrors, and write ambiguous slash warnings to $stderr, including
+  # the backtrace
+  Warning.process(__FILE__, keyword_separation: :raise,
+                  ambiguous_slash: :backtrace)
+
+  # Deduplicate warnings
+  Warning.dedup
+
+  # Ignore all warnings in Gem dependencies
+  Gem.path.each do |path|
+    Warning.ignore(//, path)
+  end
+
+= License
+
+MIT
+
+= Author
+
+Jeremy Evans <code@jeremyevans.net>

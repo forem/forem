@@ -1,0 +1,27 @@
+{
+   "created":1326853478,
+   "livemode":false,
+   "id":"evt_00000000000000",
+   "type":"account.external_account.updated",
+   "object":"event",
+   "data":{
+      "object":{
+         "id":"ba_00000000000000",
+         "object":"bank_account",
+         "account":"acct_00000000000000",
+         "account_holder_name":"Jane Austen",
+         "account_holder_type":"individual",
+         "bank_name":"STRIPE TEST BANK",
+         "country":"US",
+         "currency":"eur",
+         "default_for_currency":false,
+         "fingerprint":"efGCBmiwp56O1lsN",
+         "last4":"6789",
+         "metadata":{
+
+         },
+         "routing_number":"110000000",
+         "status":"new"
+      }
+   }
+}

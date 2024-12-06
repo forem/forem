@@ -1,0 +1,108 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "GUARD" "1" "November 2014" "" ""
+.
+.SH "NAME"
+\fBguard\fR \- Guard keeps an eye on your file modifications\.
+.
+.SH "DESCRIPTION"
+Guard is a command line tool to easily handle events on file system modifications\.
+.
+.SH "SYNOPSIS"
+\fBguard <COMMAND> <OPTIONS>\fR
+.
+.SH "COMMANDS"
+.
+.SS "start"
+Starts Guard\. This is the default command if none is provided\.
+.
+.P
+The following options are available:
+.
+.P
+\fB\-c\fR, \fB\-\-clear\fR Clears the Shell after each change\.
+.
+.P
+\fB\-n\fR, \fB\-\-notify\fR \fIFLAG\fR Disable notifications (Growl or Libnotify depending on your system)\. Notifications can be disabled globally by setting a GUARD_NOTIFY environment variable to false\. FLAG can be \fBtrue\fR/\fBfalse\fR or \fBt\fR/\fBf\fR\.
+.
+.P
+\fB\-g\fR, \fB\-\-group\fR \fIGROUP1\fR \fIGROUP2\fR\.\.\. Scopes the Guard actions to the groups specified by GROUP1, GROUP2, etc\. Group names should be separated by spaces\. Plugins that don\'t belong to a group are considered global and are always run\.
+.
+.P
+\fB\-P\fR, \fB\-\-plugin\fR \fIPLUGIN1\fR \fIPLUGIN2\fR\.\.\. Scopes the Guard actions to the plugins specified by PLUGIN1, PLUGIN2, etc\. Plugin names should be separated by spaces\.
+.
+.P
+\fB\-d\fR, \fB\-\-debug\fR Runs Guard in debug mode\.
+.
+.P
+\fB\-w\fR, \fB\-\-watchdir\fR \fIPATH\fR Tells Guard to watch PATH instead of \fB\./\fR\.
+.
+.P
+\fB\-G\fR, \fB\-\-guardfile\fR \fIFILE\fR Tells Guard to use FILE as its Guardfile instead of \fB\./Guardfile\fR or \fB~/\.Guardfile\fR\.
+.
+.P
+\fB\-i\fR, \fB\-\-no\-interactions\fR Turn off completely any Guard terminal interactions\.
+.
+.P
+\fB\-B\fR, \fB\-\-no\-bundler\-warning\fR Turn off warning when Bundler is not present\.
+.
+.P
+\fB\-l\fR, \fB\-\-latency\fR Overwrite Listen\'s default latency\.
+.
+.P
+\fB\-p\fR, \fB\-\-force\-polling\fR Force usage of the Listen polling listener\.
+.
+.P
+\fB\-y\fR, \fB\-\-wait\-for\-delay\fR Overwrite Listen\'s default \fBwait_for_delay\fR, useful for kate\-like editors through ssh access\.
+.
+.SS "init [GUARDS]"
+If no Guardfile is present in the current directory, creates an empty Guardfile\.
+.
+.P
+If \fIGUARDS\fR are present, add their default Guardfile configuration to the current Guardfile\. Note that \fIGUARDS\fR is a list of the Guard plugin names without the \fBguard\-\fR prefix\. For instance to initialize guard\-rspec, run \fBguard init rspec\fR\.
+.
+.SS "list"
+Lists Guard plugins that can be used with the \fBinit\fR command\.
+.
+.SS "\-T, show"
+List defined groups and Guard plugins for the current Guardfile\.
+.
+.SS "\-h, help [COMMAND]"
+List all of Guard\'s available commands\.
+.
+.P
+If \fICOMMAND\fR is given, displays a specific help for \fITASK\fR\.
+.
+.SH "EXAMPLES"
+Initialize Guard and a specific Guard plugin at the same time:
+.
+.P
+\fB[bundle exec] guard init [rspec]\fR
+.
+.P
+Run Guard:
+.
+.P
+\fB[bundle exec] guard [start] \-\-watchdir ~/dev \-\-guardfile ~/env/Guardfile \-\-clear \-\-group backend frontend \-\-notify false \-\-debug\fR
+.
+.P
+or in a more concise way:
+.
+.P
+\fB[bundle exec] guard [start] \-w ~/dev \-G ~/env/Guardfile \-c \-g backend frontend \-n f \-d\fR
+.
+.SH "AUTHORS / CONTRIBUTORS"
+Thibaud Guillaume\-Gentil is the main author\.
+.
+.P
+A list of contributors based on all commits can be found here: https://github\.com/guard/guard/contributors
+.
+.SH "CHANGELOG"
+The changelog can be found at: https://github\.com/guard/guard/blob/master/CHANGELOG\.md
+.
+.P
+This manual has been written by Remy Coutable\.
+.
+.SH "WWW"
+http://guardgem\.org/

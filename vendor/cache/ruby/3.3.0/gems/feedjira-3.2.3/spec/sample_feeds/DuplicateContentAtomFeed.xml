@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<body>
+		<feed xmlns="http://www.w3.org/2005/Atom">
+			<title type="html">Avian’s Blog</title>
+			<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/" />
+			<link rel="self" type="application/atom+xml" href="http://www.tablix.org/~avian/blog/atom.xml" />
+			<link rel="license" type="text/html" href="http://creativecommons.org/licenses/by-nc/2.5/" />
+			<link rel="license" type="application/rdf+xml" href="http://creativecommons.org/licenses/by-nc/2.5/rdf" />
+			<updated>2014-07-21T21:14:39+02:00</updated>
+			<author>
+				<name>Tomaž Šolc</name>
+				<uri>http://www.tablix.org/~avian/blog/</uri>
+			</author>
+			<id>http://www.tablix.org/~avian/blog/</id>
+			<entry>
+				<title type="text">Down time</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/07/down_time/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/07/down_time/</id>
+				<published>2014-07-21T21:14:39+02:00</published>
+				<updated>2014-07-21T21:14:39+02:00</updated>
+				<category term="Life"></category>
+				<summary type="text">
+					Two switches in two cities seemingly failed because of a transient on the power grid.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>You might have noticed that for the past two days or so this website was off-line. The reason for it is a bit curious.</p>
+						<p>On Friday, 18 July at 17:45, two of my Ethernet switches failed - one in Logatec and one in Ljubljana, separated by around 35 km. They crashed simultaneously at the exactly the same second.</p>
+						<p>Here are the relevant log entries of two machines connected to them. Both had clocks synchronized via NTP, so the time stamps should be fairly accurate. The machines logged these messages when their Ethernet adapters reported the loss of carrier signal on the cable from their respective switches:</p>
+						<pre>
+							Jul 18 17:45:21 gildedale kernel: [1658547.286187] PHY: sunxi_gmac-0:00 - Link is Down
+							Jul 18 17:45:21 chandra kernel: [512418.004319] e100 0000:00:0c.0: eth3: NIC Link is Down
+						</pre>
+						<p>These two pieces of equipment were geographically separated and had nothing in common. As far fetched as it seems that they would fail because of a common reason, this appears to be the case here.</p>
+						<p><a href="http://www.dnevnik.si/kronika/na-kotnikovi-v-ljubljani-eksplozija-na-transformatorski-postaji">Newspapers reported</a> on Friday afternoon that a small explosion occurred at a transformer station in Ljubljana. The distribution company <a href="http://www.elektro-ljubljana.si/2/Za-medije/Vse-novice/Novica/articleType/ArticleView/articleId/445/OBVESTILO-O-IZREDNEM-DOGODKU-NA-KOTNIKOVI-ULICI-V-LJUBLJANI.aspx">confirms the event</a>, but doesn't share many details. There is also no official source of the exact time, but the <a href="https://twitter.com/GloriaPorcupine/status/490160552619298816">first tweet</a> about it appeared at 17:45.</p>
+						<p>I guess that whatever occurred at the transformer station caused a transient on the power grid that crashed my switches. It must have been fairly short because two other computers that were connected to the same outlet did not reboot or report any problems.</p>
+						<p>It's curious that this effect threw both of the switches in a state where they didn't reboot, but didn't function either. One of these is a fairly old, low-cost affair that I have seen behave in this way a few times before. The other one is integrated into a Linksys WRT54GL access point that has been fairly reliable so far.</p>
+						<p>This is the <a href="http://www.tablix.org/~avian/blog/archives/2014/02/story_of_ice_and_more_ice/">second time</a> this year that something completely unexpected happened with my servers. It's not that I try to run some kind of high-reliability shop, but it is annoying and makes me appreciate the work real system administrators do each day. I guess that's the cost of trying to stay away from the cloud these days.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Kickstarting failure</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/07/kickstarting_failure/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/07/kickstarting_failure/</id>
+				<published>2014-07-16T17:37:14+02:00</published>
+				<updated>2014-07-17T12:54:57+02:00</updated>
+				<category term="Analog"></category>
+				<summary type="text">
+					Comparing back-of-the-envelope calculations with claims on the Shawn West's Kickstarter campaign.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>Yesterday I stumbled upon the list of supposedly <a href="http://collex.io/c/kickstarter-projects-that-might-actually-change-the-way-you-live-1405346089/">life-changing Kickstarter projects</a> that hovered briefly on the front page of <a href="https://news.ycombinator.com/">Hacker News</a>. While I receive a regular stream of links to more or less feasible crowd-funding projects through various channels of modern communication, this list caught my eye as being particularly full of far fetched, if not down-right fraudulent proposals.</p>
+						<p>After skimming through a campaign for electric vehicles, written by someone who doesn't know the difference between energy and power, I stopped for a moment on Shawn West's <a href="https://www.kickstarter.com/projects/shawnpwest/30-second-charging-rechargeable-battery">30-second rechargeable battery</a>. He is asking for $10.000 to build a replacement for ordinary rechargeable batteries using a super capacitor for energy storage instead of an electrochemical cell.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/07/capacitor_casing_and_circuit_board.jpg">
+							<img alt="Capacitor, casing and circuit board." src="http://www.tablix.org/~avian/blog/images2/2014/07/capacitor_casing_and_circuit_board-t.jpg" /></a>
+						<p class="img-attribution">Image by <a href="https://www.kickstarter.com/projects/shawnpwest/30-second-charging-rechargeable-battery">Shawn West</a></p>
+						<p>Let's consider for a moment his claims: he says that his patent-pending battery using a lithium-ion super capacitor is roughly equivalent to a typical rechargeable battery. He shows us an AA-sized prototype that supposedly contains two integrated circuits: a voltage regulator and a protective circuit that prevents the capacitor from being over- or under-charged. In the FAQ he mentions that the capacity of his battery is 1150 mAh.</p>
+						<p>Unsurprisingly, on all of his pictures the capacitor is placed in such a way that the model or capacity rating isn't visible. However, with some image enhancement, it's just possible to read out "YUDEN" on one of the photographs.</p>
+						<img alt="Enhanced photograph of Shawn West's capacitor" src="http://www.tablix.org/~avian/blog/images2/2014/07/enhanced_photograph_of_shawn_wests_capacitor-t.jpg" /><p><a href="http://www.yuden.co.jp/or/">Taiyo Yuden</a> is in fact a manufacturer of lithium-ion capacitors. Looking through <a href="http://www.yuden.co.jp/or/product/category/energy_device/list47#!c:47">their super capacitor range</a>, there is actually just one model that would fit within the 14 x 50 mm AA sized battery: the 40 farad, 12 x 35 mm cylinder-type <a href="http://www.yuden.co.jp/or/product/category/energydevice/LIC1235R3R8406.html">LIC1235R3R8406</a>.</p>
+						<p>Here are its specifications:</p>
+						<div class="math">
+							<img alt="C_{cap} = 40 \mathrm{F}" src="http://www.tablix.org/~avian/blog/mathtex/2_NhMn8CO8MCq2zCqhYRKw.png" /></div>
+						<div class="math">
+							<img alt="U_{max} = 3.8 \mathrm{V}" src="http://www.tablix.org/~avian/blog/mathtex/jTrMu6fClE8QmKCOwee2VA.png" /></div>
+						<div class="math">
+							<img alt="U_{min} = 2.2 \mathrm{V}" src="http://www.tablix.org/~avian/blog/mathtex/CCZ9Fx6uTZBKHY6Qb1-kpw.png" /></div>
+						<p>Let's do some back-of-the envelope calculations: That tiny chip on the circuit board looks like a low-drop linear regulator. In that case, the capacity of the battery given in milliampere-hours is equal to the change in electric charge between the fully charged and fully discharged capacitor (ignoring quiescent current of the regulator):</p>
+						<div class="math">
+							<img alt="C_{bat} = \Delta Q = Q_{max} - Q_{min} = C_{cap} \cdot (U_{max} - U_{min})" src="http://www.tablix.org/~avian/blog/mathtex/lGfPgMME1tNA8il0LdwH-w.png" /></div>
+						<div class="math">
+							<img alt="C_{bat} = 17.8 \mathrm{mAh}" src="http://www.tablix.org/~avian/blog/mathtex/aYiE89Ma4eieOYoVw91z3A.png" /></div>
+						<p>That's barely 1.5% of the claimed capacity!</p>
+						<p>If we consider for a moment that his circuit actually contains a switching regulator, the situation improves, but only slightly. Given 100% conversion efficiency, the energy that can be extracted from the battery is now equal to the change in electric field energy between the fully charged and fully discharged capacitor:</p>
+						<div class="math">
+							<img alt="\Delta W = \frac{C_{cap}}{2}\left(U_{max}^2 - U_{min}^2\right)" src="http://www.tablix.org/~avian/blog/mathtex/Iiqclt0XVRmf_QzWDcJl-A.png" /></div>
+						<div class="math">
+							<img alt="\Delta W = 192 \mathrm{J}" src="http://www.tablix.org/~avian/blog/mathtex/6dXxYyLrkIYKSeSxLT9-Nw.png" /></div>
+						<p>Since the inventor claims that his battery does not have a discharge curve, but puts out a steady U<sub>bat</sub> = 1.5 V, we can simply convert the energy rating to capacity:</p>
+						<div class="math">
+							<img alt="C_{bat} = \frac{\Delta W}{U_{bat}}" src="http://www.tablix.org/~avian/blog/mathtex/a0HVtuitE4T5aOg_ZLxrLg.png" /></div>
+						<div class="math">
+							<img alt="C_{bat} = 35.6 \mathrm{mAh}" src="http://www.tablix.org/~avian/blog/mathtex/RPr756CqqCvVyFzCpDc_fA.png" /></div>
+						<p>Obviously, this is much better than the dissipative case above, but the figure is still more than one order of magnitude off from the Kickstarter campaign claim of 1150 mAh. Even giving the author the benefit of doubt and using the largest capacitor from Taiyo Yuden's super capacitor range, the achievable capacity remains much smaller than your vanilla pink-bunny-never-stops alkaline.</p>
+						<br /><p><a href="https://en.wikipedia.org/wiki/Supercapacitor">Super capacitors</a> are a fascinating component and they certainly have their uses. I kind of like the idea of packaging one into a alkaline battery casing, especially the exposed ring that is used to by-pass the regulator for fast charging. However the claims that this could be used to power your smart phone are ridiculous.</p>
+						<p>Crowd-funding seems to fuel a big part of the broader-Internet fascination with hardware start-ups these days. I can't help but think that projects with claims that are not challenged in even one of the overly-enthusiastic let's-disrupt-the-industry comments are doing more harm than good to our field.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Remembrance</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/07/remembrance/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/07/remembrance/</id>
+				<published>2014-07-08T22:06:41+02:00</published>
+				<updated>2014-07-08T22:06:41+02:00</updated>
+				<category term="Life"></category>
+				<summary type="text">
+					Remembering my grandfather by visiting hydroelectric plant Završnica.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>Back in my childhood I used to spend a lot of time at my grandparent's cottage. It was a wooden house amid a small orchard, just under the top of a hill outside of Ljubljana. My parents would often drive me there in a red <a class="zem_slink" href="https://en.wikipedia.org/wiki/Zastava_Skala" title="Zastava Skala">Zastava 101</a> on weekends and holidays. I played with surplus plumbing parts and old tools that were lying around, slept in the attic and had nightmares from having to go to the outhouse after dark.</p>
+						<p>The cottage was designed and built by my grandfather as a weekend retreat. He was a mechanical engineer who moved to Ljubljana with my grandmother to one of the first apartment complexes in the city, proudly displaying his professional title above the door bell. He was designing turbines for hydroelectric power plants at the heavy machinery manufacturer <a class="zem_slink" href="https://en.wikipedia.org/wiki/Litostroj" title="Litostroj">Litostroj</a>.</p>
+						<p>When I wasn't wasting potable water or setting things on fire, one of my favorite ways of spending time there was browsing through a book <i>Elektrotehnika v slikah</i>. I could always find it stashed between two planks above my grandfather's bed. It was bound into a hard crimson cover with gold lettering and even back then already had the smell of an old paperback. The title translates to English as <i>Electrical engineering in pictures</i> and it's actually a Slovenian translation of the German original <i>Elektrotechnik in Bildern</i> by Gustav Büscher.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/07/elektrotehnika_v_slikah_cover_and_page_56.jpg">
+							<img alt="Elektrotehnika v slikah, cover and page 56" src="http://www.tablix.org/~avian/blog/images2/2014/07/elektrotehnika_v_slikah_cover_and_page_56-t.jpg" /></a>
+						<p>I don't know how that book got there. I doubt that my grandfather learned anything new from it, considering it was printed in 1968 and he finished his 4-book, 5-inch thick <a href="http://cobiss4.izum.si/scripts/cobiss?command=DISPLAY&amp;base=99999&amp;rid=6679579&amp;fmt=11&amp;lani=si">thesis on designing Francis turbines</a> 6 years earlier.</p>
+						<p>In any case, I loved to turn its pages. I looked at the pictures and read the short paragraphs until I knew most of it by heart. First few chapters at least, where the book explains the basics like current, voltage and resistance with simple water analogies. There, almost each paragraph had an illustration that was just serious enough not to appear overly childish and funny enough to keep it interesting. The book was, after all, targeted at adults.</p>
+						<p>Later chapters went on to describe electric machinery and vacuum tubes with more elaborate mechanical analogies. Judging by the tear-and-wear of the pages, I skipped most of those parts back then. Equations were definitely beyond me at that point, and I'm not sure I even bothered my parents asking about them.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/illustration_of_he_zavrsnica_from_elektrotehnika_v.jpg">
+							<img alt="Illustration of HE Završnica from Elektrotehnika v slikah." src="http://www.tablix.org/~avian/blog/images2/2014/06/illustration_of_he_zavrsnica_from_elektrotehnika_v-t.jpg" /></a>
+						<p>In the chapter about hydroelectricity, the Završnica power plant is featured on several occasions. Maybe it was there in the original version of the book. Or, more likely, the illustrations were adapted when the book was translated. Regardless, Završnica was the first public power plant in the region, so it definitely deserved the attention. By the time this book was published, it was already more than 50 years old.</p>
+						<p>For a long time, if someone would ask me, that plant would be the only one I could name. I didn't know where it was, but the name has definitely stuck in my head. </p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/surge_tank_of_he_zavrsnica.jpg">
+							<img alt="Surge tank of HE Završnica" src="http://www.tablix.org/~avian/blog/images2/2014/06/surge_tank_of_he_zavrsnica-t.jpg" /></a>
+						<p>Even a month ago I wouldn't know where to put it exactly on the map. I was therefore a bit surprised when I found out that the plant is now being converted into a museum and that I will see it on <a href="http://www.tablix.org/~avian/blog/archives/2014/06/visiting_he_moste/">my visit of HE Moste</a>.</p>
+						<p>I now know that the dam on river Završnica is a short hike from the town of Žirovnica and is surrounded by a <a href="http://www.zavrsnica.si/">pleasant recreational park</a>. I learned that the pressure pipeline goes under the town and discharges into river Sava below. And I also learned that the prominent building on the top of the hill you see when driving on the Gorenjska highway is its <a href="http://en.wikipedia.org/wiki/Surge_tank">surge tank</a>. Even though machinery in the old turbine hall is being cut open for display, the surge tank above still serves its original purpose. From up close it is an impressive monument to early 20th century hydro engineering.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/07/mechanical_frequency_meter_in_he_zavrsnica.jpg">
+							<img alt="Mechanical frequency meter in HE Završnica" src="http://www.tablix.org/~avian/blog/images2/2014/07/mechanical_frequency_meter_in_he_zavrsnica-t.jpg" /></a>
+						<p>A walk through the museum revealed many sights that were familiar to me from the book, like the mechanical frequency meter above. I don't think I ever saw a real one before.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/07/he_zavrsnica_museum.jpg">
+							<img alt="HE Završnica museum." src="http://www.tablix.org/~avian/blog/images2/2014/07/he_zavrsnica_museum-t.jpg" /></a>
+						<p>What I also learned on the tour is that HE Moste next door was my grandfather's first big design project at Litostroj.</p>
+						<p>The original bronze <a href="https://en.wikipedia.org/wiki/Francis_turbine">Francis turbines</a> dimensioned by him and cast by Litostroj have long been replaced, damaged by cavitation and sand particles carried from the mountains by river Sava. However one of them is now proudly displayed on a plinth in the park in front of the plant.</p>
+						<p>After HE Moste, my grandfather went on to design power plants throughout the former Yugoslavia and abroad. His design bureau was involved in projects all over the world. He kept a globe in his office marked with flight paths of his intercontinental flights that circled the Earth.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/07/bronze_francis_turbine_on_display_at_he_moste.jpg">
+							<img alt="Bronze Francis turbine on display at HE Moste" src="http://www.tablix.org/~avian/blog/images2/2014/07/bronze_francis_turbine_on_display_at_he_moste-t.jpg" /></a>
+						<p>The visit to HE Moste and HE Završnica last month has been as much a technical interest for me as it was a way to remember my grandfather. Without doubt he helped spark my interest for engineering. Either by letting me browse his books or watch him spend his days drawing carefully calculated lines on translucent paper.</p>
+						<p>He died in 2011 and was designing turbines in his home office for as long as he could hold a pen against a drafting table. His cottage is gone as well and <i>Elektrotehnika v slikah</i> is now standing on a bookshelf in my living room. It was nice to see in person one of more than a hundred power plants he helped design during his career that are still producing electricity.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Visiting HE Moste</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/06/visiting_he_moste/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/06/visiting_he_moste/</id>
+				<published>2014-06-22T15:09:47+02:00</published>
+				<updated>2014-06-22T15:09:47+02:00</updated>
+				<category term="Life"></category>
+				<summary type="text">
+					I took a guided tour of the hydroelectric power plant Moste on river Sava.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>When you're driving from central Slovenia towards the mountains, the Gorenjska highway crosses the valley of the Sava river. From the viaduct you can see a high dam wedged between sides of a narrow gorge. Behind it is the water reservoir for the <a href="http://www.sel.si/?p=8&amp;s=1">Hidroelektrarna Moste</a>.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/viadukt_moste_and_he_moste_dam.jpg">
+							<img alt="Viadukt Moste and HE Moste dam." src="http://www.tablix.org/~avian/blog/images2/2014/06/viadukt_moste_and_he_moste_dam-t.jpg" /></a>
+						<p>I've been watching this dam every time I was traveling on that road. For years I wanted to see it up close and the power plant below it. My wish came true when my mum got a contact at the plant and arranged for a guided tour. So my parents and I drove up to Žirovnica last week and visited the facility.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/hidroelektrarna_moste.jpg">
+							<img alt="Hidroelektrarna Moste" src="http://www.tablix.org/~avian/blog/images2/2014/06/hidroelektrarna_moste-t.jpg" /></a>
+						<p>To my surprise, turbines and the generator hall of the power plant are actually located quite a bit down river from the dam, not directly underneath it as I expected. Water from river Sava is routed through a tunnel under the nearby town Moste, from which the facility also got its name.</p>
+						<p>What you see above is the steep railway with which heavy machinery has been lowered into the valley during construction.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/safety_valve_on_the_high_pressure_pipeline_for_he.jpg">
+							<img alt="Safety valve on the high-pressure pipeline for HE Moste" src="http://www.tablix.org/~avian/blog/images2/2014/06/safety_valve_on_the_high_pressure_pipeline_for_he-t.jpg" /></a>
+						<p>This safety valve on the high-pressure pipe in the tunnel was the first impression of the scale of engineering of this place.</p>
+						<p>The valve is designed to operate in a fail-safe manner: in case of an emergency, it uses stored potential energy without the need for any external power. The huge red weight shuts off the water supply if electric power is lost or if sensors detect flooding in the facility. Later on in the generator hall we saw emergency buttons similar to fire alarms that would manually trigger it.</p>
+						<p>Behind the valve is a huge vertical <a href="http://en.wikipedia.org/wiki/Surge_tank">surge tank</a> embedded in rock. Its purpose is to absorb the kinetic energy of the water in the pipeline which could cause damage if the valve would suddenly close.</p>
+						<p>Even though around 20 m<sup>3</sup> of water were flowing per second through the large pipe, there was surprisingly little sound to be heard.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/flotation_device_near_the_turbine_of_he_moste.jpg">
+							<img alt="Flotation device near the turbine of HE Moste" src="http://www.tablix.org/~avian/blog/images2/2014/06/flotation_device_near_the_turbine_of_he_moste-t.jpg" /></a>
+						<p>The site is actually home to two power plants:</p>
+						<p>In 1915 Hidroelektrarna Završnica was built here to become the first public power plant in the area. It used water from the <a href="http://www.zavrsnica.si/">river Završnica</a> which was routed from a reservoir higher up in the mountains and discharged into the river Sava.</p>
+						<p>Later on, river Sava was dammed in 1952 and Hidroelektrarna Moste built alongside the old power plant. Now HE Završnica is no longer in use and is being slowly converted to a museum. Its water supply however has been routed to one of the turbines in HE Moste and is still used intermittently to generate electricity.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/francis_turbine_in_he_zavrsnica.jpg">
+							<img alt="Francis turbine in HE Završnica." src="http://www.tablix.org/~avian/blog/images2/2014/06/francis_turbine_in_he_zavrsnica-t.jpg" /></a>
+						<p>This is one of the three 10 MW <a class="zem_slink" href="https://en.wikipedia.org/wiki/Francis_turbine" title="Francis turbine">Francis turbines</a> currently in operation. In contrast to the quiet flow of water in the pipeline, turbine wells were noisy enough that you had to shout to talk to someone.</p>
+						<p>While we were visiting, one of the generators had to be stopped because of a problem with one of the oil pumps. Our tour was put on hold while repairs were made. After the pump was fixed, the turbine was spun up, generator <a href="http://en.wikipedia.org/wiki/Synchronization_%28alternating_current%29">synchronized with the grid</a> and control of the power plant handed back to the remote operations center in Ljubljana.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/modern_hydraulic_turbine_speed_governor.jpg">
+							<img alt="Modern hydraulic turbine speed governor." src="http://www.tablix.org/~avian/blog/images2/2014/06/modern_hydraulic_turbine_speed_governor-t.jpg" /></a>
+						<p>This is one of the modern hydraulic turbine speed governors that are currently in use in the power plant.</p>
+						<p>All aspects of the power plant are remotely monitored using a <a href="https://en.wikipedia.org/wiki/SCADA">SCADA</a> system. Status of every temperature sensor and pump can be accessed from a central control room. Apart from electrical parameters they also measure and record structural status of the dam and its surroundings. They have automatic strain gauges and a grid of reference points where geometers regularly check for any unexpected earth movements.</p>
+						<p>In theory the plant could be operated entirely by remote control, but we were told that the company will continue to keep the site staffed round-the-clock. Problems can be detected and solved faster and cheaper if experienced engineers are around. Otherwise a maintenance team would have to be dispatched from somewhere else, which could lead to more downtime or a small problem growing into a more expensive one.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/he_moste_generator_4.jpg">
+							<img alt="HE Moste, generator 4" src="http://www.tablix.org/~avian/blog/images2/2014/06/he_moste_generator_4-t.jpg" /></a>
+						<p>In conclusion, I would like to thank the friendly staff of HE Moste for taking the time for us in a busy day and Mr. Pirjevec for guiding us on this tour. We were shown every nook and cranny of the power plant and he gave us a thorough description of the machinery and answered every question we had.</p>
+						<p>It was a pleasant and informative way to spend a morning and a welcome step away from all the low-power electronics I deal with each day.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">vesna-drivers git visualization</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/06/vesna_drivers_git_visualization/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/06/vesna_drivers_git_visualization/</id>
+				<published>2014-06-16T17:41:40+02:00</published>
+				<updated>2014-06-16T17:43:46+02:00</updated>
+				<category term="Code"></category>
+				<summary type="text">
+					Plotting VESNA firmware branches and releases with git-big-picture.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>Further in the context of <a href="http://www.tablix.org/~avian/blog/archives/2014/06/evolution_of_vesna_firmware_size/">two years in development</a> of firmware for VESNA sensor nodes in Logatec, here's another view on the firmware. I used <a href="https://github.com/esc/git-big-picture">git-big-picture</a> to graph the branching and merging of the source code.</p>
+						<p>We use a <a href="http://www.tablix.org/~avian/blog/archives/2012/08/follow_up_on_open_sourcing_vesna/">private GitHub repository</a> to collaborate on the code. At the time of writing, it had 16 forks and 7 contributors to the master branch. Before that we used Subversion, but switched to git soon after I joined the team.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/vesna_drivers_repository_branching_visualization.png">
+							<img alt="vesna-drivers repository branching visualization" src="http://www.tablix.org/~avian/blog/images2/2014/06/vesna_drivers_repository_branching_visualization-t.jpg" /></a>
+						<p>Red are commits pointed to by tags, blue are branch heads and white are merge and bifurcation commits. Other uninteresting commits are not shown - zero or more intermediary commits are implied by graph edges. Time, or rather entropy, roughly increases from left to right.</p>
+						<p>Below is a detail from that picture. If you're curious, you can also download the complete graph as a <a href="http://www.tablix.org/~avian/blog/archives/2014/06/vesna_drivers_git_visualization/vesna-drivers-redacted.pdf">rather large PDF</a> (most branch names and tags have been redacted though).</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/vesna_drivers_repository_branching_visualization_1.png">
+							<img alt="vesna-drivers repository branching visualization, detail" src="http://www.tablix.org/~avian/blog/images2/2014/06/vesna_drivers_repository_branching_visualization_1-t.jpg" /></a>
+						<p>At the first glance, this looks pretty chaotic. Definitely our academic environment is a bit less strict regarding the code structure than what you might see in a <a href="http://nvie.com/posts/a-successful-git-branching-model/">production project</a>. That's not necessarily a bad thing. Many people here are researchers first and software developers second. For many, this has been their first encounter with source version control.</p>
+						<p>On the other hand, the whole point of this repository is that work can be shared. Pieces that have been useful in one project are often useful again in another. Searching 16 repositories and countless branches for a driver you might reuse isn't very fun. So some kind of structure is a must.</p>
+						<p>It's hard to get this balance right tough. On one hand you don't want to be too strict when accepting code to the git master, since then you have less code to share. Often it's even impossible for the reviewer to run-test the code since he might not have the hardware necessary. On the other hand, merging code that will be a maintenance hell later on is counter productive as well. There's no use trying to share code that will cost people more time to debug it than it would to rewrite it from scratch.</p>
+						<p>We're currently trying to go with a system of GitHub pull requests and a Wiki page that lists all the projects in private branches and I think setting up <a href="https://github.com/avian2/vesna-ci">automated builds</a> was worth the effort. But I guess after two years we're still trying to find the sweet spot.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Evolution of VESNA firmware size</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/06/evolution_of_vesna_firmware_size/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/06/evolution_of_vesna_firmware_size/</id>
+				<published>2014-06-11T21:23:54+02:00</published>
+				<updated>2014-06-11T21:23:54+02:00</updated>
+				<category term="Code"></category>
+				<summary type="text">
+					Plotting the size of VESNA binary firmware images over the last two years and some comments on firmware development.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>Yesterday I got an idea to plot how the size of the firmware images for VESNA sensor nodes evolved over time. Thanks to my diligent tagging of releases in git and making sure binaries can be built with a single <i>make</i>, all it took was a short bash script to come up with this:</p>
+						<p>
+							<a href="http://www.tablix.org/~avian/blog/images2/2014/06/size_of_binary_firmware_image_over_time.png">
+								<img alt="Size of binary firmware image over time." src="http://www.tablix.org/~avian/blog/images2/2014/06/size_of_binary_firmware_image_over_time-t.jpg" /></a>
+						</p>
+						<p>Only now do I realize that we've been polishing this code base for two years now.</p>
+						<p>When we originally started working on firmware that would run on spectrum sensing nodes in the <a href="http://log-a-tec.eu/cr.html">Logatec testbed</a>, a decision was made to develop everything from scratch and not go with an existing operating system like <a href="http://www.contiki-os.org/">Contiki</a>. The rationale was that we don't need all of its facilities and making something from scratch will be simpler than learning and building on existing work.</p>
+						<p>As it usually happens in such cases, over time we basically developed our own, small operating system. Given all the invested time, it is now hard to make a break from it, even when we have applications that would benefit from a standard platform like Contiki.</p>
+						<p>Looking at the graph, I'm actually surprised that the size of the firmware didn't increase more than it has. Keep in mind that these binary images are uploaded over a flaky <a href="http://www.tablix.org/~avian/blog/archives/2012/08/on_atmel_serialnet_zigbit_modules/">ZigBit</a> network where the best throughput is in the hundreds-of-bytes-per-second range. From the upload times to 50 nodes it certainly felt like it has increased a lot.</p>
+						<p>I didn't look into what features caused the most size increase. I'm pretty sure the recent large jump between versions <i>2.40</i> and <i>2.42</i> was because of a new SPI and microSD card driver. Also, one of the size decreases early on was after we added <i>-ffunction-sections</i> and <i>-fdata-sections</i> <a href="http://gcc.gnu.org/onlinedocs/gcc-4.0.4/gcc/Optimize-Options.html">options to the GCC</a>. </p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Testing VESNA's power supply</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/06/testing_vesnas_power_supply/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/06/testing_vesnas_power_supply/</id>
+				<published>2014-06-08T18:22:45+02:00</published>
+				<updated>2014-06-08T18:22:45+02:00</updated>
+				<category term="Analog"></category>
+				<summary type="text">
+					Testing the current source capability of VESNA's power supply with Re:load 2.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>Now that I have <a href="http://www.tablix.org/~avian/blog/archives/2014/05/re_load_2/">Re:load</a>, I seem to end up checking every power supply that lands on my desk if it meets its specifications. I put <a href="http://www.tablix.org/~avian/blog/archives/2011/12/vesna/">VESNA's</a> to the test yesterday.</p>
+						<p>VESNA core board has a switching power supply that supplies around 5V and 3.3V to any expansion boards connected to it. The source can be a battery, solar cell, USB cable or a DC voltage from some external supply. I tested it with a 12V external supply, which is the most common case when you power a node from the grid using a wall wart or something like that.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/testing_vesna_snc_source_current_capabilities_on.jpg">
+							<img alt="Testing VESNA SNC source current capabilities on expansion connector." src="http://www.tablix.org/~avian/blog/images2/2014/06/testing_vesna_snc_source_current_capabilities_on-t.jpg" /></a>
+						<p>VCC pin on the expansion connector supplies 3.3V. This line also powers VESNA's main ARM CPU. Datasheet says it can supply at most 500 mA to the expansion board and this is approximately what I've also seen in my test. With a setting on Re:load higher than 500 mA, the voltage fell sharply to around 2 V where Re:load wasn't acting as a current source anymore.</p>
+						<p>I've measured the voltage using my oscilloscope, so the resolution on the vertical axis isn't as good as it could be. Still, I think 40 mΩ is a fair estimate of the internal resistance for VCC.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/vcc_voltage_versus_output_current.png">
+							<img alt="VCC voltage versus output current." src="http://www.tablix.org/~avian/blog/images2/2014/06/vcc_voltage_versus_output_current-t.jpg" /></a>
+						<p>Voltage on the VPP pin is typically around 4.5 V. This pin is also supposed to supply a maximum of 500 mA to the expansion board. In my test it managed just a little bit below that, but considering the accuracy of my measurements that's within the margin of error.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/06/vpp_voltage_versus_output_current.png">
+							<img alt="VPP voltage versus output current." src="http://www.tablix.org/~avian/blog/images2/2014/06/vpp_voltage_versus_output_current-t.jpg" /></a>
+						<p>I also checked the ripple on both VCC and VPP pins. With low loads the power supply seems to operate in discontinuous mode and the ripple is a bit high at 100 mV peak-to-peak. With higher loads, it goes into continuous mode and the peak-to-peak voltage falls. This is how it looks like on the VPP pin with near maximum load:</p>
+						<img alt="VPP voltage ripple when under load." src="http://www.tablix.org/~avian/blog/images2/2014/06/vpp_voltage_ripple_when_under_load-t.png" /><p>So, I'm happy to say that everything looks here as it should. The ripple is a bit high for my taste, especially when powering analog electronics.</p>
+						<p>Part of why I tested this is because my <a href="http://www.tablix.org/~avian/blog/archives/2013/12/uhf_receiver_redesign/&quot;">new UHF receiver</a> will put a higher load on this power supply than other expansions I've worked with on VESNA. With around 350 mA of load my board puts on the VPP line, it looks like VESNA will be able to power it without problems. It won't be able to power two receivers at once however and some auxiliary power supply will be necessary for that.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">On ICT Seminars at IPS</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/06/on_ict_seminars_at_ips/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/06/on_ict_seminars_at_ips/</id>
+				<published>2014-06-05T01:04:04+02:00</published>
+				<updated>2014-06-05T01:04:04+02:00</updated>
+				<category term="Ideas"></category>
+				<summary type="text">
+					What I think about seminars at the Jožef Stefan International Postgraduate School and my advice on giving an interesting academic presentation.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>Today was the last day of seminars on Information and Communication Technologies for this year at the <a href="http://www.mps.si">Jožef Stefan International Postgraduate School</a>. I believe I managed to attend 77.7% of the 18 talks given by other PhD students and gave one short presentation on <a href="http://www.tablix.org/~avian/blog/archives/2014/05/seminar_on_spectrum_sensing_methods/">spectrum sensing</a>. That should bring me above the mandatory attendance with a sufficient margin of error.</p>
+						<p>With a few exceptions, most of these talks were wrist-cuttingly boring. Considering that the final conclusion was that this year's presentations were better than usual I dread to think what previous years had to endure.</p>
+						<p>It was suggested to me that I might not understand all the finer nuances of the pedagogic process. However I still believe that if students are giving these talks to learn how to a present their research topic, more realistic feedback on their performance might be helpful. So here is mine.</p>
+						<p>I think two mistakes were prevalent:</p>
+						<p>First was gross mismatch between audience and the basic knowledge required to follow presentations. ICT field of study at this school is so broad that you will have someone parsing tweets about celebrities on one side of the classroom, someone working on protein databases in the center and someone doing motor bearing fault prediction on the other side. As an electronics engineer I had the misfortune of acquainting myself with sentiment analysis before. Still it doesn't make sense to talk to me about Segmented Discourse Representation Theory if you can't introduce it in a way that someone who has not been studying it for the past 6 months can understand.</p>
+						<p>Personally, I like best the format where presentation is roughly split into three parts: the first one can be followed by anyone with an elementary education, second one by someone familiar with the field and third one by your supervisor and colleagues from your research group. I find that I can follow such presentations with interest even when topic is completely outside of my specialties.</p>
+						<p>I realize that with the suggested 15 - 30 minute length of these ICT seminars this might not be possible. But I think it's better to drop the last third than the first. Your supervisor already knows what you are doing and will skip the talk anyway. Others can read your paper.</p>
+						<img alt="&quot;Because Magic&quot; by Egophiliac" src="http://www.tablix.org/~avian/blog/images2/2014/06/because_magic_by_egophiliac-t.jpg" /><p class="img-attribution">"Because Magic" by <a href="http://egophiliac.deviantart.com/">Egophiliac</a></p>
+						<p>And that brings me to the other problem I noticed. I know that it is the <i>de facto</i> standard that academic slides are walls of text and are expected to stand alone relatively well without the accompanying speech (as much as I like LaTeX, <a href="http://en.wikipedia.org/wiki/Beamer_%28LaTeX%29">Beamer</a> was a terrible invention). I also know I enjoy every talk that breaks this mold. Don't recite a table of contents of your talk at the beginning. Make slides colorful - you're not paying Springer's color print fees here. Explain the topic using examples, plots, photographs. Don't fill up slides with 10 pt text that I can't even read from the back row. Use slide notes if the slide deck must be usable as a stand-alone publication (by the way, it doesn't in these seminars - the school doesn't even publish slides on the web).</p>
+						<p>Presentations in an academic setting certainly must be on a much higher level than your usual marketing pitch with stock photos, cute kittens and a stevejobsian act, but that doesn't mean they must make me sorry I didn't rather spend the afternoon debugging some PHP code.</p>
+						<br /><p>In conclusion, I think everyone would be better off if these seminars would be given a bit more exposure. Obviously there is a lot of <a href="http://kt.ijs.si/markodebeljak/Lectures/Seminar_MPS/2012_on/otline1.htm">interesting research</a> being done in the offices at our Institute. But as long as presenting it is viewed strictly as a formality and there is no push towards teaching people how to talk about their work in an understandable way, it will stay behind those closed lab doors. Presenting scientific discoveries to the public can be done by postgraduate students at informal seminars as well as by big-name professors with 3-hour extravaganzas in the large auditorium.</p>
+						<p>Maybe if that would be the case, the school wouldn't need mandatory attendance and enforce one (1) mandatory insightful question per student after the talk to give an impression of an academic debate. We might even get some of that much-sought-after cooperation between departments.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Re:load 2</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/05/re_load_2/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/05/re_load_2/</id>
+				<published>2014-05-28T23:04:58+02:00</published>
+				<updated>2014-05-28T23:04:58+02:00</updated>
+				<category term="Analog"></category>
+				<summary type="text">
+					A first look at the Arachnid Labs Re:load 2 adjustable constant-current load.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>One thing I was missing on my table was an adjustable constant-current load. I occasionally repair small power supplies and having a robust load to test them is quite handy. I have a drawer full of high-power ceramic resistors, but those are clumsy to handle, especially when they get too hot to touch.</p>
+						<p>For a while I've been planning to make one myself. I have a finished schematic hanging on the wall for a battery powered device using a micro-power op-amp and an old passive heat sink salvaged from an old Radeon. I just never came around to finish a PCB layout for it. Then I came across the <a href="https://www.tindie.com/products/arachnidlabs/reload-the-simple-robust-affordable-dummy-load/">Re:load 2</a>. It looked better than what I was making, so I filed away my design and ordered one instead. It's nice being a shopper on Tindie instead of a seller for once.</p>
+						<p>The <a href="http://www.arachnidlabs.com/reload-2/instructions.html">build instructions</a> were quite clear and there's not much assembly required anyway. I ordered the version with the highest power (6 A and 20 W) and I got the PCB pre-assembled with SMD components. The Arachnid Labs shop points to an instruction manual that describes soldering through-hole components, which was not necessary in my case.</p>
+						<p>Re:load comes without an enclosure and the bare circuit seemed a bit awkward to use, with the tiny pot and current sense wires close to the big load terminals. I wanted it to stand on its own on my table, so I fashioned a simple stand from a scrap piece of aluminum I found in my father's workshop.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/05/re_load_2_constant_current_load_in_a_simple_custom.jpg">
+							<img alt="Re:load 2 constant-current load in a simple custom enclosure." src="http://www.tablix.org/~avian/blog/images2/2014/05/re_load_2_constant_current_load_in_a_simple_custom-t.jpg" /></a>
+						<p>I connected the load and the current sense wires to terminals on the front panel. I also found a matching 10 kΩ potentiometer with a knob for setting the current.</p>
+						<p>Eventually I want to also add a connector for external power supply and a switch instead of the solder jumper that's on the PCB. I didn't have one at hand when I was first assembling it though so it's missing here.</p>
+						<p>Mounting the enclosure directly to the heat sink makes sense from the mechanical point of view, but it also means the whole thing gets uncomfortably hot under load. Unfortunately that was the only obvious solution. The four 3 mm mounting holes on the Re:load's PCB turned out to be useless for actually mounting the thing. SMD components are too close to the holes to accommodate a spacer or a M3 nut.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/05/re_load_2_with_an_external_potentiometer_and.jpg">
+							<img alt="Re:load 2 with an external potentiometer and connections." src="http://www.tablix.org/~avian/blog/images2/2014/05/re_load_2_with_an_external_potentiometer_and-t.jpg" /></a>
+						<p></p>
+						<p>As far as I have tested it, Re:load 2 seems to work as advertised. I haven't noticed any drift in current I could notice with my multimeter when Re:load is heating up. I did notice though that with the 6 A range it gets hard to set currents below 1 A even with the large knob I added. A fine-adjustment pot might be handy in those cases.</p>
+						<p>I haven't tested the thermal protection feature. I have looked up its design though - there are no obvious components doing the advertised thermal shutdown visible on the board or <a href="https://raw.githubusercontent.com/arachnidlabs/reload/master/reload-schematic.png">the schematic</a>.</p>
+						<p>The secret turns out to be in the BTS117 component. What looks like an ordinary MOSFET in a TO-220 package is in fact a linear integrated circuit with a power MOSFET and all sorts of protection functionality. Here's the <a href="http://www.infineon.com/dgdl/BTS117_DS_13%5B1%5D.pdf?folderId=db3a3043163797a6011667aa084c0e01&amp;fileId=db3a30431ddc9372011e2b6637844df3">datasheet</a> if you're interested.</p>
+						<p>In conclusion, at the first glance Re:load 2 seems to be exactly what it says it is. At $30 I paid with shipping to Slovenia it's also quite cheap. Even if I just count the material, I doubt I would get below that if I would make my own from scratch.</p>
+						<p>Only time will tell if it's also as indestructible as it claims to be. Considering what kind of hardware <a href="http://www.tablix.org/~avian/blog/archives/2014/05/idioternas_usb_charger/">ends up on my desk</a> I don't think I'll have to wait long to put that to the test.</p>
+					</div>
+				</content>
+			</entry>
+			<entry>
+				<title type="text">Balanced variable phase shift circuit</title>
+				<author>
+					<name>Tomaž</name>
+				</author>
+				<link rel="alternate" type="text/html" href="http://www.tablix.org/~avian/blog/archives/2014/05/balanced_variable_phase_shift_circuit/" />
+				<id>http://www.tablix.org/~avian/blog/archives/2014/05/balanced_variable_phase_shift_circuit/</id>
+				<published>2014-05-13T14:28:42+02:00</published>
+				<updated>2014-05-15T20:49:09+02:00</updated>
+				<category term="Analog"></category>
+				<summary type="text">
+					Overview of an analog circuit for phase-shifting a single frequency balanced signal.
+				</summary>
+				<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">
+						<p>While working on the <a href="http://www.tablix.org/~avian/blog/archives/2013/12/uhf_receiver_redesign/">new UHF receiver</a> for VESNA, I came across a problem when I wanted to correct for a delay in a 16 MHz sine wave signal. The idea was to have a circuit where you could adjust the phase shift by turning a trimmer of some sort. Delaying a signal of single frequency is relatively simple and shouldn't involve <a href="http://commons.wikimedia.org/wiki/File:Glass_delay_line.jpg">delay lines</a> or other such unusual components.</p>
+						<p>While searching for circuits that would fit this purpose I came across the <a href="http://www.eleccircuit.com/single-transistor-phase-shifter/">single transistor phase shifter</a>. While it isn't directly applicable here, it did give me an idea. Signals in my circuit are balanced, which means that for every signal you have the inverse signal available as well. This fact removes the need for the transistor that only serves as a way to invert the signal.</p>
+						<p>This line of thinking led me to the following a circuit:</p>
+						<img alt="Balanced, variable phase shift circuit." src="http://www.tablix.org/~avian/blog/images2/2014/05/balanced_variable_phase_shift_circuit-t.png" /><p>In a single-ended RC circuit the gain as well as phase delay varies when you change the time constant RC. The very nice thing about this balanced version however is that its response only varies in phase. The absolute value of gain remains 1 for the complete range.</p>
+						<p>You can verify that from the expression for the complex gain:</p>
+						<div class="math">
+							<img alt="\frac{U_{out}}{U_{in}} = 2 \frac{j\omega R C}{j\omega R C + 1} - 1" src="http://www.tablix.org/~avian/blog/mathtex/xkSHT4f6tIfikQ6FxDzhGA.png" /></div>
+						<p>The characteristic value for the circuit is the normalized angular frequency <i>ωRC</i>. Here is the relationship between it and the signal phase shift Δ<i>φ</i>.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/05/phase_shift_versus_wrc.png">
+							<img alt="Phase shift versus wRC." src="http://www.tablix.org/~avian/blog/images2/2014/05/phase_shift_versus_wrc-t.jpg" /></a>
+						<p>Note that you can affect the phase by changing either capacitance or resistance. I've chosen a variable capacitor for my circuit because trimmer capacitors characterized for high frequencies are simpler to find. Small variable resistors seem to be mostly designed for low frequency signals and don't have defined characteristics for higher frequencies.</p>
+						<p>You can also make a similar LR circuit, but tunable inductors are even rarer these days.</p>
+						<br /><p>From the graph above it looks like you could achieve any phase shift for any frequency with this circuit. In reality however several factors limit the usable range.</p>
+						<p>The maximum phase shift is limited by how low you can get your time constant <i>RC</i>. With capacitances below 1 pF stray effects of the circuit board start to get significant. On the other end, you are limited by the circuit's input impedance <i>Z<sub>in</sub></i>. Typically the lower bound is dictated by whatever is driving the circuit.</p>
+						<div class="math">
+							<img alt="Z_{in} = R + \frac{1}{j\omega C} = R\left(1 + \frac{1}{j\omega R C}\right)" src="http://www.tablix.org/~avian/blog/mathtex/sitSKYUBApLPoqt719B1-A.png" /></div>
+						<p>This expression shows that the impedance is lowest for the lowest phase shift and that the chosen resistance value directly affects <i>Z<sub>in</sub></i>. Therefore in general, you want to keep the range of capacitances as low as you can and keep the constant resistance high.</p>
+						<p>To illustrate, here are usable ranges for phase shift Δ<i>φ</i> for frequencies between 1 MHz and 1 GHz and three different lower bounds on <i>Z<sub>in</sub></i>. For the range of capacitance values I used a <a href="http://si.farnell.com/murata/tzb4p400ab10r00/cap-trimmer-8-5-40pf-100v-top/dp/1760637">common trimmer capacitor</a>.</p>
+						<a href="http://www.tablix.org/~avian/blog/images2/2014/05/phase_shift_ranges_for_different_frequencies_and.png">
+							<img alt="Phase shift ranges for different frequencies and impedances." src="http://www.tablix.org/~avian/blog/images2/2014/05/phase_shift_ranges_for_different_frequencies_and-t.jpg" /></a>
+						<p>In conclusion, this circuit can be quite useful when you are dealing with balanced signals, but you need to drive it from a low-impedance source to have a wide setting range. For electronic phase adjustment I guess a <a class="zem_slink" href="https://en.wikipedia.org/wiki/Varicap" title="Varicap">varactor diode</a> could also be used instead of a trimmer capacitor.</p>
+						<p>Unfortunately, I had to leave this part out of my final design because I ran out of circuit board real-estate for an additional voltage-follower and trimmers. I'm describing it here however, because I'm sure it will come handy in the future, perhaps as an add-on daughterboard for the receiver (I left provisions for that).</p>
+					</div>
+				</content>
+			</entry>
+		</feed>
+	</body>
+</html>

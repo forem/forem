@@ -1,0 +1,2880 @@
+---
+AC:
+  name: Aceh
+  code: AC
+  unofficial_names:
+  geo:
+    latitude: -6.131231499999999
+    longitude: 106.7329234
+  translations:
+    lv: Ačeha
+    mr: आचे
+    cy: Aceh
+    af: Aceh
+    ceb: Nanggroe Aceh Darussalam Province
+    ms: Aceh
+    ar: آتشيه
+    te: ఏసె
+    tr: Açe
+    sr_Latn: Aćeh
+    lt: Ačehas
+    ta: அச்சே மாகாணம்
+    vi: Aceh
+    ur: آچے
+    nl: Atjeh
+    zh: 亞齊
+    bn: আচেহ
+    fa: آچه
+    pl: Aceh
+    sw: Aceh
+    yue_Hans: 亚齐
+    sv: Aceh
+    el: Άτσεχ
+    hi: आचे
+    jv: Acèh
+    ja: アチェ州
+    en: Aceh
+    sq: Aqeh
+    ru: Ачех
+    ccp: "\U00011103\U0001110C\U0001112C\U00011126\U00011134"
+    gu: અસેહ
+    ka: აჩეჰი
+    sr: Аћех
+    fr: Aceh
+    ga: Aceh
+    ko: 아체 주
+    gl: Aceh
+    es: Aceh
+    si: අකෙහ්
+    da: Aceh
+    fi: Aceh
+    hu: Aceh
+    kn: ಆಚೇ
+    is: Aceh
+    id: Aceh
+    sk: Aceh
+    ro: Aceh
+    he: אצ׳ה
+    hr: Aceh
+    eu: Aceh
+    pt: Achém
+    et: Aceh
+    de: Aceh
+    sl: Aceh
+    it: Aceh
+    ml: അക്കെ
+    uk: Ачех
+    cs: Aceh
+    yue: 亞齊
+    nb: Aceh
+    mn: Аче
+    ca: Aceh
+    be: Правінцыя Ачэх
+    th: จังหวัดอาเจะฮ์
+    yo: Aceh
+    zu: Aceh
+    uz: Achex
+    mk: Ачех
+    ne: अाचे
+    bg: Ачех
+    'no': Aceh
+    yo_BJ: Aceh
+    az: Açeh
+  comments:
+  type: province
+BA:
+  name: Bali
+  code: BA
+  unofficial_names:
+  geo:
+    latitude: -8.4095178
+    longitude: 115.188916
+    min_latitude: -8.849261
+    min_longitude: 114.431626
+    max_latitude: -8.061681799999999
+    max_longitude: 115.7115281
+  translations:
+    cy: Bali
+    af: Bali
+    ceb: Provinsi Bali
+    ms: Bali
+    vi: Bali
+    nl: Bali
+    pl: prowincja Bali
+    sw: Bali
+    sv: Bali
+    jv: Provinsi Bali
+    ja: バリ州
+    en: Bali
+    ru: Бали
+    ccp: "\U0001111D\U00011123\U00011128"
+    fr: province de Bali
+    ga: Bali
+    ko: 발리주
+    gl: Bali
+    es: provincia de Bali
+    da: Bali
+    fi: Bali
+    hu: Bali
+    is: Bali
+    id: Bali
+    sk: Bali
+    ro: Bali
+    hr: Bali
+    eu: Bali
+    pt: Bali
+    et: Bali provints
+    de: Provinz Bali
+    sl: Bali
+    it: provincia di Bali
+    uk: Балі
+    cs: Bali
+    nb: Bali
+    ca: Bali
+    zu: Bali
+    'no': Bali
+    ar: بالي
+    az: Bali (əyalət)
+    be: правінцыя Балі
+    bn: বালি, ইন্দোনেশিয়া
+    el: Μπαλί
+    fa: بالی (استان)
+    he: באלי
+    hi: बाली
+    hy: Բալի
+    km: កោះបាលី
+    lv: Bali
+    mr: बाली
+    ta: பாலி
+    th: จังหวัดบาหลี
+    ur: بالی
+    zh: 巴厘岛
+  comments:
+  type: province
+BB:
+  name: Kepulauan Bangka Belitung
+  code: BB
+  unofficial_names:
+  geo:
+    latitude: -1.2392759
+    longitude: 116.8727314
+  translations:
+    lv: Banka-Belituna
+    mr: बांका-बेलितुंग द्वीपसमूह
+    ceb: Kepulauan Bangka Belitung
+    ms: Kepulauan Bangka Belitung
+    ar: بانغكا - بليتونغ
+    te: బాంగ్కా-బెలిటంగ్ దీవులు
+    tr: Bangka-Belitung
+    sr_Latn: Bangka Belitung
+    lt: Bankos-Belitungo salos
+    ta: பங்கா-பெலித்துங் தீவுகள்
+    vi: Quần đảo Bangka-Belitung
+    ur: بانگکا بیلیٹنگ
+    nl: Banka-Billiton
+    zh: 邦加-勿里洞省
+    bn: বাঙ্কা বেলিটুং দ্বীপপুঞ্জ
+    fa: جزایر بانگکا-بلیتونگ
+    pl: Wyspy Bangka i Belitung
+    yue_Hans: 邦加-勿里洞
+    sv: Bangka-Belitung
+    el: Μπάνγκα Μπελίτουνγκ
+    hi: बांका-बेलितुंग द्वीपसमूह
+    jv: Kapuloan Bangka-Belitung
+    ja: バンカ・ブリトゥン州
+    en: Bangka–Belitung Islands
+    ru: Банка-Белитунг
+    ccp: "\U0001111D\U00011101\U00011107-\U0001111D\U0001112C\U00011123\U00011128\U00011111\U00011101
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    gu: બાંગ્કા બેલિટુંગ આઇલેન્ડ્સ
+    ka: ბანკა-ბელიტუნგი
+    sr: Бангка Белитунг
+    fr: Îles Bangka Belitung
+    ko: 방카블리퉁 제도
+    es: Bangka-Belitung
+    si: බන්ග්කා බෙලිටුන්ග් දුපත්
+    da: Bangka-Belitung
+    fi: Bangka-Belitung
+    hu: Bangka-Belitung
+    kn: ಬ್ಯಾಂಗ್ಕಾ ಬೆಲಿಟುಂಗ್ ದ್ವೀಪಗಳು
+    id: Kepulauan Bangka Belitung
+    he: באנגקה-בליטונג
+    eu: Bangka-Belitung
+    pt: Bangka-Belitung
+    de: Bangka-Belitung
+    it: Bangka-Belitung
+    ml: ബങ്ക ബലിറ്റങ് ദ്വീപുകൾ
+    uk: Банка-Белітунг
+    cs: Bangka-Belitung
+    yue: 邦加-勿里洞
+    nb: Bangka-Belitung
+    ca: Bangka-Belitung
+    th: หมู่เกาะบังกาเบลีตุง
+    uz: Bangka-Belitung
+    bg: Бангка Белитунг
+    'no': Bangka-Belitung
+  comments:
+  type: province
+BE:
+  name: Bengkulu
+  code: BE
+  unofficial_names:
+  geo:
+  translations:
+    lv: Benkulu
+    mr: बेंकुलू
+    cy: Bengkulu
+    ceb: Propinsi Bengkulu
+    ms: Bengkulu
+    ar: بنغكولو
+    te: బెంగ్‌కులు ప్రావిన్స్
+    tr: Bengkulu
+    sr_Latn: Bengkulu
+    lt: Benkulus
+    ta: பெங்குளு மாகாணம்
+    vi: Bengkulu
+    ur: بنگکولو
+    nl: Bengkulu
+    zh: 明古魯省
+    bn: বেংকুলু প্রদেশ
+    fa: بنگکولو
+    pl: Bengkulu
+    yue_Hans: 明古鲁
+    sv: Bengkulu
+    el: Μπενγκούλου
+    hi: बेंकुलू
+    jv: Bengkulu
+    ja: ブンクル州
+    en: Bengkulu
+    ru: Бенкулу
+    ccp: "\U0001111D\U0001112C\U00011101\U00011107\U0001112A\U00011123\U0001112A"
+    gu: બેન્ગકુલુ પ્રાંત
+    ka: ბენკულუ
+    sr: Бенгкулу
+    fr: Bengkulu (province)
+    ko: 븡쿨루 주
+    es: Bengkulu
+    si: බෙන්කුලු පළාත
+    da: Bengkulu
+    fi: Bengkulu
+    hu: Bengkulu
+    kn: ಬೆಂಕುಲು ಪ್ರಾಂತ್ಯ
+    id: Bengkulu
+    ro: Bengkulu
+    eu: Bengkulu
+    pt: Bengkulu
+    de: Bengkulu
+    it: Bengkulu
+    ml: ബെങ്കുളു
+    uk: Бенгкулу (провінція)
+    cs: Bengkulu
+    yue: 明古魯
+    nb: Bengkulu
+    ca: Bengkulu
+    be: Правінцыя Бенгкулу
+    th: จังหวัดเบิงกูลู
+    bg: Бенгкулу
+    'no': Bengkulu
+    az: Benqkulu
+    so: Bengkulu
+  comments:
+  type: province
+BT:
+  name: Banten
+  code: BT
+  unofficial_names:
+  geo:
+    latitude: -0.789275
+    longitude: 113.921327
+    min_latitude: -11.1082999
+    min_longitude: 94.7351
+    max_latitude: 6.216999899999999
+    max_longitude: 141.0425
+  translations:
+    lv: Bantena
+    mr: बांतेन
+    cy: Banten
+    af: Banten
+    ceb: Banten (lalawigan sa Indonesia)
+    ms: Banten
+    ar: بنتن
+    te: బాంటెన్ ప్రావిన్స్
+    tr: Banten
+    sr_Latn: Banten
+    lt: Bantenas
+    ta: பந்தன் மாகாணம்
+    vi: Banten
+    ur: بانٹین
+    nl: Bantam
+    zh: 万丹省
+    bn: ব্যান্টেন প্রদেশ
+    fa: بانتن
+    pl: Banten
+    yue_Hans: 万丹
+    sv: Banten
+    el: Μπάντεν
+    hi: बांतेन
+    jv: Banten
+    ja: バンテン州
+    en: Banten
+    sq: Banten
+    ru: Бантен
+    ccp: "\U0001111D\U0001111A\U00011134\U00011111\U0001112C\U0001111A\U00011134"
+    gu: બૅન્ટેન પ્રાંત
+    ka: ბანტენი
+    sr: Бантен
+    fr: Banten
+    hy: Բանտեն
+    ko: 반텐 주
+    es: Bantén
+    si: බන්ටෙන් පළාත
+    da: Banten
+    fi: Banten
+    kn: ಬಂಟೇನ್ ಪ್ರಾಂತ್ಯ
+    id: Banten
+    he: באנטן
+    eu: Banten
+    pt: Banten
+    de: Banten
+    it: Banten
+    ml: ബാൻറൻ
+    uk: Бантен
+    cs: Banten
+    yue: 萬丹
+    nb: Banten
+    mn: Бантен
+    ca: Banten
+    be: Правінцыя Бантэн
+    th: จังหวัดบันเติน
+    bg: Бантен
+    'no': Banten
+    az: Banten
+  comments:
+  type: province
+GO:
+  name: Gorontalo
+  code: GO
+  unofficial_names:
+  geo:
+    latitude: -0.789275
+    longitude: 113.921327
+    min_latitude: -11.1082999
+    min_longitude: 94.7351
+    max_latitude: 6.216999899999999
+    max_longitude: 141.0425
+  translations:
+    lv: Gorontalo province
+    mr: गोरोन्गस्टो प्रांत
+    ceb: Provinsi Gorontalo
+    ms: Gorontalo
+    ar: غورونتالو
+    te: గోరొంటాలో ప్రావిన్స్
+    tr: Gorontalo
+    sr_Latn: Gorontalo
+    lt: Gorontalas
+    ta: கொரொந்தாளோ மாகாணம்
+    vi: Gorontalo
+    ur: گورونٹالو (صوبہ)
+    nl: Gorontalo
+    zh: 哥伦打洛省
+    bn: গোরন্তালো প্রদেশ
+    fa: گورونتالو
+    pl: Gorontalo
+    yue_Hans: 哥伦打洛
+    sv: Gorontalo
+    el: Γκοροντάλο
+    hi: गोरोंतालो
+    jv: Gorontalo
+    ja: ゴロンタロ州
+    en: Gorontalo
+    ru: Горонтало
+    ccp: "\U00011109\U0001112E\U00011122\U0001112E\U0001111A\U00011134\U00011111\U00011123\U0001112E"
+    gu: ગોરોન્ટાલો પ્રાંત
+    ka: გორონტალო
+    sr: Горонтало
+    fr: Gorontalo
+    ko: 고론탈로 주
+    es: Gorontalo
+    si: ගොරෝන්ටලෝ පළාත
+    da: Gorontalo Province
+    fi: Gorontalo
+    kn: ಗೊರಾಂಟೊ ಪ್ರಾಂತ್ಯ
+    id: Gorontalo
+    eu: Gorontalo
+    pt: Gorontalo
+    de: Gorontalo
+    it: Provincia di Gorontalo
+    ml: ഗൊറാന്റാലോ
+    uk: Горонтало
+    cs: Gorontalo
+    yue: 哥倫打洛
+    nb: Gorontalo
+    ca: Gorontalo
+    be: Правінцыя Гарантала
+    th: จังหวัดโกรอนทาโล
+    mk: Горонтало
+    bg: Горонтало
+    'no': Gorontalo
+  comments:
+  type: province
+JA:
+  name: Jambi
+  code: JA
+  unofficial_names:
+  geo:
+    latitude: -1.4851831
+    longitude: 102.4380581
+    min_latitude: -2.7700678
+    min_longitude: 101.1286029
+    max_latitude: -0.7357379
+    max_longitude: 104.4574329
+  translations:
+    lv: Džambi province
+    mr: जांबी
+    cy: Jambi
+    ceb: Provinsi Jambi
+    ms: Jambi
+    ar: جمبي
+    te: జాంబి ప్రావిన్స్
+    tr: Jambi
+    sr_Latn: Džambi
+    lt: Džambis
+    ta: ஜம்பி மாகாணம்
+    vi: Jambi
+    ur: جمبی
+    nl: Jambi
+    zh: 占碑省
+    bn: জাম্বি প্রদেশে
+    fa: جامبی
+    pl: Jambi
+    yue_Hans: 占碑
+    sv: Jambi
+    el: Τζάμπι
+    hi: जांबी
+    jv: Jambi
+    ja: ジャンビ州
+    en: Jambi
+    ru: Джамби
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U00011128"
+    gu: જાંબી પ્રાંત
+    ka: ჯამბი
+    sr: Џамби
+    fr: Jambi
+    ko: 잠비 주
+    es: Jambi
+    si: ජම්බි පළාත
+    da: Jambi
+    fi: Jambi
+    kn: ಜಂಬಿ ಪ್ರಾಂತ್ಯ
+    id: Jambi
+    ro: Jambi
+    eu: Jambi
+    pt: Jambi
+    de: Jambi
+    it: Jambi
+    ml: ജംബി പട്ടണം
+    uk: Джамбі
+    cs: Jambi
+    yue: 占碑
+    nb: Jambi
+    mn: Жамби
+    ca: Jambi
+    th: จังหวัดจัมบี
+    bg: Джамби
+    'no': Jambi
+    az: Cambi
+    mk: Џамби (покраина)
+  comments:
+  type: province
+JB:
+  name: Jawa Barat
+  code: JB
+  unofficial_names:
+  geo:
+    latitude: -7.446736199999999
+    longitude: 109.2390841
+  translations:
+    lv: Rietumjava
+    mr: पश्चिम जावा
+    cy: Gorllewin Jawa
+    ceb: Jawa Barat
+    ms: Jawa Barat
+    ar: جاوة الغربية
+    te: పశ్చిమ జావా ప్రావిన్స్
+    tr: Batı Cava
+    sr_Latn: Zapadna Java
+    lt: Vakarų Java
+    ta: மேற்குச் சாவக மாகாணம்
+    vi: Tây Java
+    ur: مغربی جاوا
+    nl: West-Java
+    zh: 西爪哇省
+    bn: পশ্চিম জাভা প্রদেশ
+    fa: جاوه غربی
+    pl: Jawa Zachodnia
+    yue_Hans: 西爪哇
+    sv: Jawa Barat
+    el: Γουέστ Τζάβα
+    hi: पश्चिम जावा
+    jv: Jawa Wetan
+    ja: 西ジャワ州
+    en: West Java
+    ru: Западная Ява
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U0001110E\U0001111E"
+    gu: પશ્ચિમ જાવા પ્રાંત
+    ka: დასავლეთი იავა
+    sr: Западна Јава
+    fr: Java occidental
+    ko: 자와바랏 주
+    es: Java Occidental
+    si: බටහිර ජාවා පළාත
+    da: Vestjava
+    fi: Länsi-Jaava
+    kn: ಪಶ್ಚಿಮ ಜಾವಾ ಪ್ರಾಂತ್ಯ
+    id: Jawa Barat
+    ro: Provincia Java de Vest
+    he: מערב ג׳אווה
+    eu: Mendebaldeko Java
+    pt: Java Ocidental
+    de: Jawa Barat
+    it: Giava Occidentale
+    ml: പടിഞ്ഞാറൻ ജാവ
+    uk: Західна Ява
+    cs: Západní Jáva
+    yue: 西爪哇
+    az: Qərbi Yava
+    nb: Jawa Barat
+    mn: Өрнө Жава
+    ca: Java Occidental
+    th: จังหวัดชวาตะวันตก
+    bg: Западна Ява
+    'no': Jawa Barat
+    hy: Արևմտյան Ճավա
+    mk: Западна Јава
+    so: Jawa Barat,
+  comments:
+  type: province
+JI:
+  name: Jawa Timur
+  code: JI
+  unofficial_names:
+  geo:
+    latitude: -7.5360639
+    longitude: 112.2384017
+    min_latitude: -8.780560999999999
+    min_longitude: 110.8987199
+    max_latitude: -5.048857
+    max_longitude: 116.267761
+  translations:
+    lv: Austrumjava
+    mr: पूर्व जावा
+    cy: Dwyrain Jawa
+    ceb: Jawa Timur
+    ms: Jawa Timur
+    ar: جاوة الشرقية
+    te: తూర్పు జావా
+    tr: Doğu Cava
+    sr_Latn: Istočna Java
+    lt: Rytų Java
+    ta: கிழக்குச் சாவக மாகாணம்
+    vi: Đông Java
+    ur: مشرقی جاوا
+    nl: Oost-Java
+    zh: 东爪哇省
+    bn: পূর্ব জাভা
+    fa: جاوه شرقی
+    pl: Jawa Wschodnia
+    yue_Hans: 东爪哇
+    sv: Jawa Timur
+    el: Ιστ Τζάβα
+    hi: पूर्व जावा
+    jv: Jawa Wétan
+    ja: 東ジャワ州
+    en: East Java
+    ru: Восточная Ява
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U0001110E\U0001111E"
+    gu: ઇસ્ટ જાવા
+    ka: აღმოსავლეთი იავა
+    sr: Источна Јава
+    fr: Java oriental
+    ko: 자와티무르 주
+    es: Java Oriental
+    si: නැගෙනහිර ජාවා
+    da: Østjava
+    fi: Itä-Jaava
+    kn: ಪೂರ್ವ ಜಾವಾ
+    id: Jawa Timur
+    ro: Provincia Java de Est
+    he: מזרח ג׳אווה
+    eu: Ekialdeko Java
+    pt: Java Oriental
+    de: Jawa Timur
+    sl: Vzhodna Java
+    it: Giava Orientale
+    ml: കിഴക്കൻ ജാവ
+    uk: Східна Ява
+    cs: Východní Jáva
+    yue: 東爪哇
+    nb: Jawa Timur
+    mn: Дорно Жава
+    ca: Java Oriental
+    th: จังหวัดชวาตะวันออก
+    ne: पूर्वी जाभा क्षेत्र
+    bg: Източна Ява
+    'no': Jawa Timur
+    az: Şərqi Yava
+    be: Усходняя Ява
+    ga: Iáva Thoir
+    hy: Արևելյան Յավա
+    mk: Источна Јава
+    my: အရှေ့ ဂျာဗား
+  comments:
+  type: province
+JK:
+  name: Daerah Khusus Ibukota Jakarta
+  code: JK
+  unofficial_names:
+  geo:
+    latitude: -6.180495
+    longitude: 106.8283415
+    min_latitude: -6.3708331
+    min_longitude: 106.3831259
+    max_latitude: -5.1843219
+    max_longitude: 106.972825
+  translations:
+    lv: Džakarta
+    mr: जकार्ता
+    cy: Jakarta
+    af: Djakarta
+    ceb: Daerah Khusus Ibukota Jakarta
+    ms: Jakarta
+    ar: جاكرتا
+    te: జకార్తా
+    tr: Cakarta
+    as: জাকাৰ্টা
+    sr_Latn: Džakarta
+    lt: Džakarta
+    ta: ஜகார்த்தா
+    vi: Jakarta
+    ur: جکارتہ
+    nl: Jakarta
+    zh: 雅加达
+    bn: জাকার্তা
+    fa: جاکارتا
+    pl: Dżakarta
+    sw: Jakarta
+    yue_Hans: 耶加达
+    sv: Jakarta
+    el: Τζακάρτα
+    hi: जकार्ता
+    jv: Jakarta
+    ja: ジャカルタ
+    en: Jakarta
+    sq: Xhakarta
+    ru: Джакарта
+    ccp: "\U0001110E\U00011107\U00011122\U00011134\U00011116"
+    gu: જાકાર્તા
+    ka: ჯაკარტა
+    sr: Џакарта
+    fr: Jakarta
+    ga: Iacárta
+    hy: Ջակարտա
+    ko: 자카르타
+    gl: Iacarta
+    es: Yakarta
+    si: ජකාර්තා
+    ps: جکارتا
+    da: Jakarta
+    fi: Jakarta
+    ky: Жакарта
+    hu: Jakarta
+    kn: ಜಕಾರ್ತ
+    is: Djakarta
+    id: Daerah Khusus Ibukota Jakarta
+    sk: Jakarta
+    ro: Jakarta
+    ha: Jakarta
+    km: ចាការតា
+    he: ג׳קרטה
+    hr: Jakarta
+    eu: Jakarta
+    pt: Jacarta
+    et: Jakarta
+    de: Jakarta
+    sl: Džakarta
+    pa: ਜਕਾਰਤਾ
+    it: Giacarta
+    kk: Джакарта
+    ml: ജക്കാർത്ത
+    uk: Джакарта
+    or: ଜାକର୍ତା
+    cs: Jakarta
+    yue: 耶加達
+    az: Cakarta
+    am: ጃካርታ
+    my: ဂျကာတာမြို့
+    nb: Jakarta
+    mn: Жакарта
+    ca: Jakarta
+    be: Горад Джакарта
+    th: จาการ์ตา
+    yo: Jakarta
+    uz: Jakarta
+    bs: Džakarta
+    mk: Џакарта
+    ne: जाकार्ता
+    tk: Jakarta
+    bg: Джакарта
+    ha_NE: Jakarta
+    'no': Jakarta
+    yo_BJ: Jakarta
+    sd: جڪارتا
+  comments:
+  type: capital_region
+JT:
+  name: Jawa Tengah
+  code: JT
+  unofficial_names:
+  geo:
+    latitude: -7.150975
+    longitude: 110.1402594
+    min_latitude: -8.2116361
+    min_longitude: 108.555502
+    max_latitude: -5.725698
+    max_longitude: 111.6914889
+  translations:
+    lv: Centrālās Javas province
+    mr: मध्य जावा
+    cy: Canolbarth Jawa
+    af: Jawa Tengah
+    ceb: Provinsi Jawa Tengah
+    ms: Jawa Tengah
+    ar: جاوة الوسطى
+    te: సెంట్రల్ జావా ప్రావిన్స్
+    tr: Orta Cava
+    sr_Latn: Centralna Java
+    lt: Centrinė Java
+    ta: நடுச் சாவக மாகாணம்
+    vi: Trung Java
+    ur: وسطی جاوا
+    nl: Midden-Java
+    zh: 中爪哇省
+    bn: কেন্দ্রীয় জাভা প্রদেশ
+    fa: جاوه مرکزی
+    pl: Jawa Środkowa
+    sw: Jawa Tengah
+    yue_Hans: 中爪哇
+    sv: Jawa Tengah
+    el: Σέντραλ Τζάβα
+    hi: मध्य जावा
+    jv: Jawa Tengah
+    ja: 中部ジャワ州
+    en: Central Java
+    ru: Центральная Ява
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U0001110E\U0001111E"
+    gu: સેન્ટ્રલ જાવા પ્રાંત
+    ka: ცენტრალური იავა
+    sr: Централна Јава
+    fr: Java central
+    ga: Jawa Tengah
+    ko: 자와틍아 주
+    gl: Jawa Tengah
+    es: Java Central
+    si: මධ්‍යම ජාවා පළාත
+    da: Centraljava
+    fi: Keski-Jaava
+    hu: Jawa Tengah
+    kn: ಮಧ್ಯ ಜಾವಾ ಪ್ರಾಂತ್ಯ
+    is: Jawa Tengah
+    id: Jawa Tengah
+    sk: Jawa Tengah
+    ro: Provincia Java Centrală
+    he: יאוה המרכזית
+    hr: Jawa Tengah
+    eu: Jawa Tengah
+    pt: Java Central
+    et: Jawa Tengah
+    de: Jawa Tengah
+    sl: Jawa Tengah
+    it: Giava Centrale
+    ml: മദ്ധ്യ ജാവ
+    uk: Центральна Ява
+    cs: Střední Jáva
+    yue: 中爪哇
+    nb: Jawa Tengah
+    mn: Төв Жава
+    ca: Java Central
+    be: Цэнтральная Ява
+    th: จังหวัดชวากลาง
+    zu: Jawa Tengah
+    bg: Централна Ява
+    'no': Jawa Tengah
+    az: Mərkəzi Yava
+    mk: Централна Јава
+    so: Jawa tengah,
+  comments:
+  type: province
+JW:
+  name: Jawa
+  code: JW
+  unofficial_names:
+  geo:
+  translations:
+    lv: Java
+    mr: जावा
+    cy: Jawa
+    af: Java
+    ceb: Java
+    ms: Jawa
+    ar: جاوة
+    te: జావా
+    tr: Cava Adası
+    sr_Latn: Java
+    lt: Java
+    ta: சாவகம்
+    vi: Java
+    ur: جاوا
+    nl: Java
+    zh: 爪哇岛
+    bn: জাভা দ্বীপ
+    fa: جاوه
+    pl: Jawa
+    sw: Java
+    yue_Hans: 爪哇
+    sv: Java
+    el: Ιάβα
+    hi: जावा
+    jv: Jawa
+    ja: ジャワ島
+    en: Java
+    ru: Ява
+    ccp: "\U0001110E\U0001111E"
+    gu: જાવા
+    ka: იავა
+    sr: Јава
+    fr: île de Java
+    ga: Iáva
+    hy: Ճավա
+    ko: 자와 섬
+    gl: Xava
+    es: Java
+    si: ජාවා
+    da: Java
+    fi: Jaava
+    ky: Ява
+    hu: Jáva
+    kn: ಜಾವಾ
+    is: Java
+    id: Jawa
+    sk: Jáva
+    ro: Insula Java
+    ha: Java
+    km: កោះជ្វា
+    he: ג׳אווה
+    hr: Java
+    eu: Java
+    pt: Java
+    et: Jaava
+    de: Java
+    sl: Java
+    pa: ਜਾਵਾ ਟਾਪੂ
+    it: Giava
+    kk: Ява
+    ml: ജാവ (ദ്വീപ്)
+    uk: Ява
+    or: ଜାଭା
+    cs: Jáva
+    yue: 爪哇
+    az: Yava
+    am: ጃዋ
+    my: ဂျားဗားကျွန်း
+    nb: Java
+    mn: Жава
+    ca: Java
+    be: Востраў Ява
+    th: เกาะชวา
+    uz: Yava
+    bs: Java
+    mk: Јава
+    ne: जावा द्वीप
+    bg: Ява
+    ha_NE: Java
+    'no': Java
+    sq: Ishulli Java
+  comments:
+  type: geographical_unit
+KA:
+  name: Kalimantan
+  code: KA
+  unofficial_names:
+  geo:
+    latitude: -7.9790674
+    longitude: 112.6358005
+  translations:
+    ms: Kalimantan
+    ar: كليمنتان
+    tr: Kalimantan
+    lt: Kalimantanas
+    ta: கலிமந்தன்
+    vi: Kalimantan
+    ur: کالیمانتان
+    nl: Kalimantan
+    zh: 加里曼丹
+    bn: কালিমান্তান
+    fa: کالیمانتان
+    pl: Kalimantan
+    sw: Kalimantan
+    yue_Hans: 婆罗洲
+    sv: Kalimantan
+    hi: कालिमंतान
+    ja: カリマンタン
+    en: Kalimantan
+    ru: Индонезийский Калимантан
+    ccp: "\U00011107\U00011123\U00011128\U0001111F\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    fr: Kalimantan
+    ko: 칼리만탄
+    es: Kalimantan
+    da: Kalimantan
+    fi: Kalimantan
+    id: Kalimantan
+    km: កាលីម៉ាន់តាន់
+    he: קלימנטן
+    eu: Kalimantan
+    pt: Kalimantan
+    de: Kalimantan
+    it: Kalimantan
+    ml: കലിമന്താൻ‌
+    uk: Індонезійський Калімантан
+    yue: 婆羅洲
+    nb: Kalimantan
+    ca: Kalimantan
+    be: Інданезійскі Калімантан
+    uz: Kalimantan
+    mk: Калимантан
+    bg: Калимантан
+    'no': Kalimantan
+    az: Kalimantan (İndoneziya)
+    el: Καλιμαντάν²
+    gl: Kalimantan
+    sr: Калимантан
+    sr_Latn: Kalimantan
+  comments:
+  type: geographical_unit
+KB:
+  name: Kalimantan Barat
+  code: KB
+  unofficial_names:
+  geo:
+    latitude: -0.2787808
+    longitude: 111.4752851
+    min_latitude: -3.0391839
+    min_longitude: 108.020782
+    max_latitude: 2.0815391
+    max_longitude: 114.2022952
+  translations:
+    lv: Rietumkalimantāna
+    mr: पश्चिम कालिमांतान
+    ceb: Provinsi Kalimantan Barat
+    ms: Kalimantan Barat
+    ar: كالمنتان الغربية
+    te: కాలిమంటన్ బారాట్
+    tr: Batı Kalimantan
+    sr_Latn: Zapadni Kalimantan
+    lt: Vakarų Kalimantanas
+    ta: மேற்கு களிமந்தான் மாகாணம்
+    vi: Tây Kalimantan
+    ur: مغربی کالیمانتان
+    nl: West-Kalimantan
+    zh: 西加里曼丹省
+    bn: কালািমানতান বারাতা
+    fa: کالیمانتان غربی
+    pl: Borneo Zachodnie
+    yue_Hans: 西加里曼丹
+    sv: Kalimantan Barat
+    el: Γουέστ Καλιμάνταν
+    hi: पश्चिम कालिमंतान
+    jv: Kalimantan Kulon
+    ja: 西カリマンタン州
+    en: West Kalimantan
+    ru: Западный Калимантан
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011107\U00011123\U00011128\U0001111F\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    gu: કાલિમંતાન બારાટ
+    ka: დასავლეთი კალიმანტანი
+    sr: Западни Калимантан
+    fr: Kalimantan occidental
+    ko: 칼리만탄바랏 주
+    es: Borneo Occidental
+    si: කලිමන්ටන් බාරට්
+    da: Kalimantan Barat
+    fi: Länsi-Kalimantan
+    kn: ಕಲಿಮಾಂತನ್ ಬರಾಟ್
+    id: Kalimantan Barat
+    he: מערב קלימנטן
+    eu: Mendebaldeko Kalimantan
+    pt: Kalimantan Ocidental
+    et: Lääne-Kalimantan
+    de: Kalimantan Barat
+    it: Kalimantan Occidentale
+    ml: പശ്ചിമ കലിമന്താൻ
+    uk: Західний Калімантан
+    cs: Západní Kalimantan
+    yue: 西加里曼丹
+    nb: Kalimantan Barat
+    mn: Өрнө Калимантан
+    th: จังหวัดกาลีมันตันตะวันตก
+    bg: Западен Калимантан
+    'no': Kalimantan Barat
+    mk: Западен Калимантан
+    so: Kalimantan Barat,
+  comments:
+  type: province
+KI:
+  name: Kalimantan Timur
+  code: KI
+  unofficial_names:
+  geo:
+    latitude: 0.5386586
+    longitude: 116.419389
+    min_latitude: -2.409401
+    min_longitude: 113.8366543
+    max_latitude: 2.6065559
+    max_longitude: 119.025528
+  translations:
+    lv: Austrumu Kalimantāna
+    mr: पूर्व कालिमांतान
+    ceb: Provinsi Kalimantan Timur
+    ms: Kalimantan Timur
+    ar: كالمنتان الشرقية
+    te: కాలిమంటన్ టిమూర్
+    tr: Doğu Kalimantan
+    sr_Latn: Istočni Kalimantan
+    lt: Rytų Kalimantanas
+    ta: கிழக்குக் களிமந்தான் மாகாணம்
+    vi: Đông Kalimantan
+    ur: مشرقی کالیمانتان
+    nl: Oost-Kalimantan
+    zh: 東加里曼丹省
+    bn: কিলিমান্তান তিমুর
+    fa: کالیمانتان شرقی
+    pl: Borneo Wschodnie
+    yue_Hans: 东加里曼丹
+    sv: Kalimantan Timur
+    el: Ανατολικό Καλιμαντάν
+    hi: पूर्व कालिमंतान
+    jv: Kalimantan Wétan
+    ja: 東カリマンタン州
+    en: East Kalimantan
+    ru: Восточный Калимантан
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U00011107\U00011123\U00011128\U0001111F\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    gu: કાલિમંતન તૈમુર
+    ka: აღმოსავლეთი კალიმანტანი
+    sr: Источни Калимантан
+    fr: Kalimantan oriental
+    ko: 칼리만탄티무르 주
+    es: Kalimantan Oriental
+    si: කලිමන්ටන් ටිමුර්
+    da: Kalimantan Timur
+    fi: Itä-Kalimantan
+    kn: ಕಲಿಮಾಂತನ್ ತಿಮುರ್
+    id: Kalimantan Timur
+    ro: Kalimantanul de Est
+    eu: Ekialdeko Kalimantan
+    pt: Kalimantan Oriental
+    de: Kalimantan Timur
+    it: Kalimantan Orientale
+    ml: കിഴക്കൻ കലിമന്താൻ
+    uk: Східний Калімантан
+    cs: Východní Kalimantan
+    yue: 東加里曼丹
+    my: အရှေ့ကာလီမန်တန်ပြည်နယ်
+    nb: Kalimantan Timur
+    ca: Kalimantan oriental
+    be: Правінцыя Усходні Калімантан
+    th: จังหวัดกาลีมันตันตะวันออก
+    bg: Източен Калимантан
+    'no': Kalimantan Timur
+    he: מזרח קלימנטאן
+    mk: Источен Калимантан
+  comments:
+  type: province
+KR:
+  name: Kepulauan Riau
+  code: KR
+  unofficial_names:
+  geo:
+    latitude: -6.4429142
+    longitude: 107.0115729
+  translations:
+    lv: Riau salas
+    mr: रियाउ द्वीपसमूह
+    cy: Ynysoedd Riau
+    ceb: Provinsi Kepulauan Riau
+    ms: Kepulauan Riau
+    ar: جزر رياو
+    te: కాేపులావన్ రియావు
+    tr: Riau Adaları
+    sr_Latn: Ostrva Rijau
+    lt: Riau salos
+    ta: ரியாவு தீவுகள் மாகாணம்
+    vi: Quần đảo Riau
+    ur: ریاو جزائر صوبہ
+    nl: Riouwarchipel
+    zh: 廖内群岛省
+    bn: কেপুলাউয়ান প্রদেশ
+    fa: جزایر ریائو
+    pl: Wyspy Riau
+    yue_Hans: 廖内群岛省
+    sv: Kepulauan Riau
+    el: Νησιά Ριάου
+    hi: रियाउ द्वीपसमूह
+    jv: Kapuloan Riau
+    ja: リアウ諸島州
+    en: Riau Islands
+    ru: Острова Риау
+    ccp: "\U00011122\U0001112D\U00011105\U0001112A \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    gu: કેપુલઉઆન રીઉ
+    ka: რიაუს კუნძულების პროვინცია
+    sr: Острва Ријау
+    fr: Îles Riau
+    ko: 리아우 제도 주
+    es: Islas Riau
+    si: කෙපුලඋආන් රියවූ
+    da: Kepulauan Riau
+    fi: Riausaaret
+    kn: ಕೆಪುಲೌನ್ ರಿಯು
+    id: Kepulauan Riau
+    he: איי ריאו
+    eu: Riau uhartedi
+    pt: Ilhas Riau
+    de: Kepulauan Riau
+    it: Isole Riau
+    ml: റിയാവു ദ്വീപുകൾ
+    uk: Острови Ріау
+    cs: Ostrovy Riau
+    yue: 廖內群島省
+    nb: Kepulauan Riau
+    mn: Риау арлуудын муж
+    ca: Illes Riau
+    be: Астравы Рыау
+    th: หมู่เกาะเรียว
+    bg: Острови Риау
+    'no': Kepulauan Riau
+  comments:
+  type: province
+KS:
+  name: Kalimantan Selatan
+  code: KS
+  unofficial_names:
+  geo:
+    latitude: -3.0926415
+    longitude: 115.2837585
+    min_latitude: -4.744812899999999
+    min_longitude: 114.345859
+    max_latitude: -1.315037
+    max_longitude: 116.555961
+  translations:
+    lv: Dienvidkalimantāna
+    mr: दक्षिण कालिमांतान
+    ceb: Provinsi Kalimantan Selatan
+    ms: Kalimantan Selatan
+    ar: كليمنتان الجنوبية
+    te: కాలిమంటన్ సెలాటన్
+    tr: Güney Kalimantan
+    sr_Latn: Južni Kalimantan
+    lt: Pietų Kalimantanas
+    ta: தெற்குக் களிமந்தான் மாகாணம்
+    vi: Nam Kalimantan
+    ur: جنوبی کالیمانتان
+    nl: Zuid-Kalimantan
+    zh: 南加里曼丹省
+    bn: কালিমান্টান সেলাটান
+    fa: کالیمانتان جنوبی
+    pl: Borneo Południowe
+    yue_Hans: 南加里曼丹
+    sv: Kalimantan Selatan
+    el: Καλιμαντάν
+    hi: दक्षिण कालिमंतान
+    jv: Kalimantan Kidul
+    ja: 南カリマンタン州
+    en: South Kalimantan
+    ru: Южный Калимантан
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011107\U00011123\U00011128\U0001111F\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    gu: કાલિમંટન સેલાટન
+    ka: სამხრეთი კალიმანტანი
+    sr: Јужни Калимантан
+    fr: Kalimantan du Sud
+    ko: 칼리만탄슬라탄 주
+    es: Borneo Meridional
+    si: කලිමන්ටන් සෙලටන්
+    da: Kalimantan Selatan
+    fi: Etelä-Kalimantan
+    kn: ಕಲಿಮಾಂತನ್ ಸೆಲಟಾನ್
+    id: Kalimantan Selatan
+    eu: Hego Kalimantan
+    pt: Kalimantan do Sul
+    de: Kalimantan Selatan
+    it: Kalimantan Meridionale
+    ml: ദക്ഷിണ കലിമന്താൻ
+    uk: Південний Калімантан
+    cs: Jižní Kalimantan
+    yue: 南加里曼丹
+    nb: Kalimantan Selatan
+    mn: Өмнө Калимантан
+    ca: Kalimantan del Sud
+    th: จังหวัดกาลิมันตัน
+    bg: Южен Калимантан
+    'no': Kalimantan Selatan
+    he: דרום קלימנטאן
+  comments:
+  type: province
+KT:
+  name: Kalimantan Tengah
+  code: KT
+  unofficial_names:
+  geo:
+    latitude: -1.6814878
+    longitude: 113.3823545
+    min_latitude: -3.5618859
+    min_longitude: 110.7336648
+    max_latitude: 0.793256
+    max_longitude: 115.84722
+  translations:
+    lv: Centrālā Kalimantāna
+    mr: मध्य कालिमांतान
+    ceb: Provinsi Kalimantan Tengah
+    ms: Kalimantan Tengah
+    ar: كالمنتان الوسطى
+    te: కాలిమంటన్ టెంగా
+    tr: Orta Kalimantan
+    sr_Latn: Centralni Kalimantan
+    lt: Centrinis Kalimantanas
+    ta: நடுக் களிமந்தான் மாகாணம்
+    vi: Trung Kalimantan
+    ur: وسطی کالیمانتان
+    nl: Midden-Kalimantan
+    zh: 中加里曼丹省
+    bn: কালিমান্টন টেঙ্গাহ
+    fa: کالیمانتان مرکزی
+    pl: Borneo Środkowe
+    yue_Hans: 中加里曼丹
+    sv: Kalimantan Tengah
+    el: Κεντρικό Καλιμαντάν
+    hi: मध्य कालिमंतान
+    jv: Kalimantan Tengah
+    ja: 中部カリマンタン州
+    en: Central Kalimantan
+    ru: Центральный Калимантан
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011107\U00011123\U00011128\U0001111F\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    gu: કાલીમંતાન ટેન્ગાહ
+    ka: ცენტრალური კალიმანტანი
+    sr: Централни Калимантан
+    fr: Kalimantan central
+    ko: 칼리만탄틍아 주
+    es: Borneo Central
+    si: කලිමන්ටන් ටෙන්ගා
+    da: Centralkalimantan
+    fi: Keski-Kalimantan
+    kn: ಕಲಿಮಾಂತನ್ ತೆಂಗಾಹ್
+    id: Kalimantan Tengah
+    sk: Stredný Kalimantan
+    eu: Erdialdeko Kalimantan
+    pt: Kalimantan Central
+    de: Kalimantan Tengah
+    it: Kalimantan Centrale
+    ml: മദ്ധ്യ കലിമന്താൻ
+    uk: Центральний Калімантан
+    cs: Střední Kalimantan
+    yue: 中加里曼丹
+    nb: Kalimantan Tengah
+    mn: Төв Калимантан
+    ca: Kalimantan central
+    th: จังหวัดกาลีมันตันกลาง
+    bg: Централен Калимантан
+    'no': Kalimantan Tengah
+    gl: Kalimantan Central
+    he: מרכז קלימנטאן
+    mk: Централен Калимантан
+    my: အလယ်ပိုင်း ကာလီမန်တန်
+  comments:
+  type: province
+KU:
+  name: Kalimantan Utara
+  code: KU
+  unofficial_names:
+  geo:
+    latitude: -6.1718272
+    longitude: 106.8440285
+  translations:
+    mr: उत्तर कालिमांतान
+    ceb: North Kalimantan
+    ms: Kalimantan Utara
+    ar: كالمنتان الشمالية
+    tr: Kuzey Kalimantan
+    sr_Latn: Severni Kalimantan
+    ta: வடக்குக் களிமந்தான் மாகாணம்
+    vi: Bắc Kalimantan
+    ur: شمالی کالیمانتان
+    nl: Noord-Kalimantan
+    zh: 北加里曼丹省
+    fa: کالیمانتان شمالی
+    pl: Borneo Północne
+    yue_Hans: 北加里曼丹
+    hi: उत्तर कालिमंतान
+    jv: Kalimantan Lor
+    ja: 北カリマンタン州
+    en: North Kalimantan
+    ru: Северный Калимантан
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011107\U00011123\U00011128\U0001111F\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    sr: Северни Калимантан
+    fr: Nord Kalimantan
+    ko: 칼리만탄우타라 주
+    es: Kalimantán Septentrional
+    fi: Pohjois-Kalimantan
+    id: Kalimantan Utara
+    eu: Ipar Kalimantan
+    pt: Kalimantan Setentrional
+    de: Kalimantan Utara
+    it: Kalimantan Utara
+    uk: Північний Калімантан
+    cs: Severní Kalimantan
+    yue: 北加里曼丹
+    my: မြောက်ကာလီမန်တန်ပြည်နယ်
+    ca: Kalimantan Nord
+    be: Паўночны Калімантан
+    th: จังหวัดกาลีมันตันเหนือ
+    az: Şimali Kalimantan
+    bn: উত্তর কালিমান্তান
+    el: Βόρειο Καλιμαντάν
+    he: צפון קלימנטאן
+    ml: വടക്കൻ കലിമന്താൻ
+  comments:
+  type: province
+LA:
+  name: Lampung
+  code: LA
+  unofficial_names:
+  geo:
+    latitude: -8.636759399999999
+    longitude: 115.2067686
+  translations:
+    lv: Lampungas province
+    mr: लांपुंग
+    cy: Lampung
+    ceb: Provinsi Lampung
+    ms: Lampung
+    ar: لامبونغ
+    te: లాంపుంగ్ ప్రావిన్స్
+    tr: Lampung
+    sr_Latn: Lampung
+    lt: Lampungas
+    ta: இளம்புங் மாகாணம்
+    vi: Lampung
+    ur: لامپونگ
+    nl: Lampung
+    zh: 楠榜省
+    bn: ল্যাম্পুং প্রদেশ
+    fa: لامپونگ
+    pl: Lampung
+    yue_Hans: 楠榜
+    sv: Lampung
+    el: Λαμπούνγκ
+    hi: लांपुंग
+    jv: Lampung
+    ja: ランプン州
+    en: Lampung
+    sq: Lampung
+    ru: Лампунг
+    ccp: "\U00011123\U0001111F\U00011134\U0001111B\U0001112A\U00011101"
+    gu: લેમ્પુંગ પ્રાંત
+    ka: ლამპუნგი
+    sr: Лампунг
+    fr: Lampung
+    hy: Լամպունգ
+    ko: 람풍 주
+    es: Lampung
+    si: ලැම්පන්ග් පළාත
+    da: Lampung
+    fi: Lampung
+    kn: ಲ್ಯಾಂಪಂಗ್ ಪ್ರಾಂತ್ಯ
+    id: Lampung
+    ro: Lampung
+    eu: Lampung
+    pt: Lampung
+    de: Lampung
+    it: Lampung
+    uk: Лампунг
+    cs: Lampung
+    yue: 楠榜
+    nb: Lampung
+    mn: Лампун
+    ca: Lampung
+    th: จังหวัดลำปาง
+    ne: ल्याम्पुङ क्षेत्र
+    bg: Лампунг
+    'no': Lampung
+    az: Lampunq
+    so: Lampung,
+  comments:
+  type: province
+MA:
+  name: Maluku
+  code: MA
+  unofficial_names:
+  geo:
+    latitude: 42.4072107
+    longitude: -71.3824374
+    min_latitude: 41.18705300000001
+    min_longitude: -73.5081419
+    max_latitude: 42.88679
+    max_longitude: -69.85886099999999
+  translations:
+    lv: Maluku province
+    mr: मालुकू प्रांत
+    cy: Maluku
+    ceb: Provinsi Maluku
+    ms: Maluku
+    ar: مالوكو
+    te: మాలుకు ప్రావిన్స్
+    tr: Maluku
+    sr_Latn: Moluci
+    lt: Molukai
+    ta: மளுக்கு மாகாணம்
+    vi: Maluku
+    ur: مالوکو (صوبہ)
+    nl: Maluku
+    zh: 马鲁古省
+    bn: মালাকু প্রদেশ
+    fa: ملوک
+    pl: Moluki
+    yue_Hans: 摩鹿加
+    sv: Moluckerna
+    el: Μαλούκου
+    hi: मालुकू
+    jv: Maluku
+    ja: マルク州
+    en: Maluku
+    ru: Малуку
+    ccp: "\U0001111F\U00011123\U0001112A\U00011107\U0001112A"
+    gu: માલુકુ પ્રાંત
+    ka: მალუკუ
+    sr: Молуци
+    fr: Moluques
+    ko: 말루쿠 주
+    es: Molucas
+    si: මලුකු පළාත
+    da: Maluku Province
+    fi: Molukit
+    kn: ಮಲುಕು ಪ್ರಾಂತ್ಯ
+    id: Maluku
+    he: מאלוקו
+    eu: Molukak
+    pt: Molucas (província)
+    et: Maluku provints
+    de: Maluku
+    it: Provincia di Maluku
+    uk: Малуку
+    cs: Moluky
+    yue: 摩鹿加
+    nb: Maluku Kommune
+    ca: Província de les Moluques
+    be: Правінцыя Малуку
+    th: จังหวัดมาลูกู
+    mk: Малуку
+    bg: Молуку
+    'no': Maluku Kommune
+    hr: Maluku
+  comments:
+  type: province
+ML:
+  name: Kepulauan Maluku
+  code: ML
+  unofficial_names:
+  geo:
+    latitude: -0.789275
+    longitude: 113.921327
+    min_latitude: -11.1082999
+    min_longitude: 94.7351
+    max_latitude: 6.216999899999999
+    max_longitude: 141.0425
+  translations:
+    lv: Moluku salas
+    cy: Maluku²
+    af: Molukke
+    ceb: Molucas
+    ms: Kepulauan Maluku
+    ar: جزر الملوك
+    tr: Maluku Adaları
+    sr_Latn: Molučka ostrva
+    lt: Molukų salos
+    ta: மலுக்கு தீவுகள்
+    vi: Quần đảo Maluku
+    ur: جزائر ملوک
+    nl: Molukken
+    zh: 摩鹿加群岛
+    fa: جزایر ملوک
+    pl: Moluki²
+    yue_Hans: 摩鹿加群岛
+    sv: Moluckerna²
+    el: Μολούκες
+    hi: मालुकू द्वीपसमूह
+    jv: Kapuloan Maluku
+    ja: モルッカ諸島
+    en: Maluku Islands
+    ru: Молуккские острова
+    ccp: "\U0001111F\U00011123\U0001112A\U00011107\U0001112A \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    ka: მოლუკის კუნძულები
+    sr: Молучка острва
+    fr: Moluques²
+    ga: Na Molacaí
+    hy: Մոլուքային կղզիներ
+    ko: 말루쿠 제도
+    gl: Molucas
+    es: Islas Molucas
+    da: Molukkerne
+    fi: Molukit²
+    ky: Молукка аралдары
+    hu: Maluku-szigetek
+    is: Mólúkkaeyjar
+    id: Kepulauan Maluku
+    sk: Moluky
+    ro: Insulele Moluce
+    he: איי מאלוקו
+    hr: Molučki otoci
+    eu: Molukak²
+    pt: Ilhas Molucas
+    et: Maluku saared
+    de: Molukken
+    it: Molucche
+    kk: Молукка аралдары
+    ml: മലുകു ദ്വീപുകൾ
+    uk: Молуккські острови
+    cs: Moluky²
+    yue: 摩鹿加群島
+    nb: Molukkene
+    ca: Moluques
+    be: Малукскія астравы
+    th: หมู่เกาะโมลุกกะ
+    uz: Molukka orollari
+    bs: Molučka ostrva
+    mk: Молучки Острови
+    bg: Молукски острови
+    'no': Molukkene
+    bn: মালুকু দ্বীপপুঞ্জ
+    sl: Moluki
+    sw: Visiwa vya Maluku
+  comments:
+  type: geographical_unit
+MU:
+  name: Maluku Utara
+  code: MU
+  unofficial_names:
+  geo:
+    latitude: 1.5709993
+    longitude: 127.8087693
+    min_latitude: -2.477640000000001
+    min_longitude: 124.2830601
+    max_latitude: 2.645167
+    max_longitude: 129.6574671
+  translations:
+    lv: Ziemeļu Moluku province
+    mr: उत्तर मालुकू प्रांत
+    cy: Gogledd Maluku
+    ceb: Provinsi Maluku Utara
+    ms: Maluku Utara
+    ar: مالوكو الشمالية
+    te: ఉత్తర మాలుకు ప్రావిన్స్
+    tr: Kuzey Maluku
+    sr_Latn: Severni Moluci
+    lt: Šiaurės Molukai
+    ta: வடக்கு மளுக்கு மாகாணம்
+    vi: Bắc Maluku
+    ur: شمالی مالوکو
+    nl: Noord-Molukken
+    zh: 北马鲁古省
+    bn: উত্তর মালুকা প্রদেশ
+    fa: ملوک شمالی
+    pl: Moluki Północne
+    yue_Hans: 北马鲁古省
+    sv: Maluku Utara
+    el: Βόρειο Μαλούκου
+    hi: उत्तर मालुकू
+    jv: Maluku Lor
+    ja: 北マルク州
+    en: North Maluku
+    ru: Северное Малуку
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111F\U00011123\U0001112A\U00011107\U0001112A"
+    gu: ઉત્તર માલુકુ પ્રાંત
+    ka: ჩრდილოეთი მალუკუ
+    sr: Северни Молуци
+    fr: Moluques du Nord
+    ko: 말루쿠우타라 주
+    es: Molucas Septentrional
+    si: උතුරු මලුකු පළාත
+    da: North Maluku Province
+    fi: Pohjois-Molukit
+    kn: ಉತ್ತರ ಮಲುಕು ಪ್ರಾಂತ್ಯ
+    id: Maluku Utara
+    he: צפון מאלוקו
+    eu: Ipar Molukak
+    pt: Molucas do Norte
+    de: Nordmolukken
+    it: Maluku Settentrionale
+    ml: വടക്കൻ മലുകു
+    uk: Північне Малуку
+    cs: Severní Moluky
+    yue: 北馬魯古省
+    nb: Nord Maluku provins
+    ca: Moluques Septentrionals
+    be: Паўночнае Малуку
+    th: จังหวัดมาลูกูเหนือ
+    bg: Северно Молуку
+    'no': Nord Maluku provins
+  comments:
+  type: province
+NB:
+  name: Nusa Tenggara Barat
+  code: NB
+  unofficial_names:
+  geo:
+    latitude: -6.249008
+    longitude: 106.776638
+  translations:
+    lv: Rietumu Nusa Tengara
+    mr: पश्चिम नुसा तेंगारा
+    cy: Gorllewin Nusa Tenggara
+    ceb: West Nusa Tenggara
+    ms: Nusa Tenggara Barat
+    ar: نوسا تنقارا الغربية
+    te: పశ్చిమ నూసా టెంగారా
+    tr: Batı Nusa Tenggara
+    sr_Latn: Zapadna Nusa Tengara
+    lt: Vakarų Nusa Tengara
+    ta: மேற்கு நுசா தெங்காரா மாகாணம்
+    vi: Nusa Tenggara Barat
+    ur: مغربی نوسا ٹنگارہ
+    nl: West-Nusa Tenggara
+    zh: 西努沙登加拉省
+    bn: ওয়েস্ট নুসা তেনগারা
+    fa: سوندای غربی
+    pl: Małe Wyspy Sundajskie Zachodnie
+    yue_Hans: 西努沙登加拉
+    sv: Nusa Tenggara Barat
+    el: Γουέστ Νούσα Τενγκάρα
+    hi: पश्चिम नुसा तेंगारा
+    jv: Nusa Tenggara Kulon
+    ja: 西ヌサ・トゥンガラ州
+    en: West Nusa Tenggara
+    sq: Nusa Tengara Perëndimore
+    ru: Западные Малые Зондские острова
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U0001111A\U0001112A\U00011125
+      \U00011111\U0001112C\U0001111A\U00011134\U00011109\U00011122"
+    gu: વેસ્ટ નુસા તેંગારા
+    ka: დასავლეთი მცირე ზონდის კუნძულები
+    sr: Западна Нуса Тенгара
+    fr: Petites Îles de la Sonde occidentales
+    ko: 누사틍가라바랏 주
+    es: Nusatenggara Occidental
+    si: බටහිර නුසා ටෙන්ග්ගරා
+    da: West Nusa Tenggara
+    fi: Läntinen Nusa Tenggara
+    kn: ವೆಸ್ಟ್ ನುಸಾ ತೆಂಗ್ಗರಾ
+    id: Nusa Tenggara Barat
+    eu: Mendebaldeko Nusa Tenggara
+    pt: Sonda Ocidental
+    de: Nusa Tenggara Barat
+    it: Nusa Tenggara Occidentale
+    ml: പടിഞ്ഞാറൻ നുസ ടെങ്കാര
+    uk: Західна Південно-Східна Нуса
+    cs: Západní Nusa Tenggara
+    yue: 西努沙登加拉
+    nb: West Nusa Tenggara
+    ca: Illes Petites de la Sonda Occidentals
+    th: จังหวัดนูซาเต็งการาตะวันตก
+    mk: Западни Мали Сундски острови
+    bg: Западни Малки Зондски острови
+    'no': West Nusa Tenggara
+    be: Заходняя Нуса-Тэнгара
+    he: מערב נוסה טנגרה
+  comments:
+  type: province
+NT:
+  name: Nusa Tenggara Timur
+  code: NT
+  unofficial_names:
+  geo:
+    latitude: -8.657381899999999
+    longitude: 121.0793705
+    min_latitude: -11.0075679
+    min_longitude: 118.927002
+    max_latitude: -8.063516
+    max_longitude: 125.192625
+  translations:
+    lv: Austrumu Nusa Tengara
+    mr: पूर्व नुसा तेंगारा
+    cy: Dwyrain Nusa Tenggara
+    ceb: Provinsi Nusa Tenggara Timur
+    ms: Nusa Tenggara Timur
+    ar: نوسا تنقارا الشرقية
+    te: తూర్పు న్యూసా టెంగారా ప్రావిన్స్
+    tr: Doğu Nusa Tenggara
+    sr_Latn: Istočna Nusa Tengara
+    lt: Rytų Nusa Tengara
+    ta: கிழக்கு நுசா தெங்காரா மாகாணம்
+    vi: Đông Nusa Tenggara
+    ur: مشرقی نوسا ٹنگارہ
+    nl: Oost-Nusa Tenggara
+    zh: 東努沙登加拉省
+    bn: পূর্ব নুসা টেঙ্গারা প্রদেশ
+    fa: سوندای شرقی
+    pl: Małe Wyspy Sundajskie Wschodnie
+    yue_Hans: 东努沙登加拉
+    sv: Nusa Tenggara Timur
+    el: Ήστ Νούσα Τενγκάρα
+    hi: पूर्वी नुसा तेंगारा
+    jv: Nusa Tenggara Wétan
+    ja: 東ヌサ・トゥンガラ州
+    en: East Nusa Tenggara
+    ru: Восточные Малые Зондские острова
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U0001111A\U0001112A\U00011125
+      \U00011111\U0001112C\U0001111A\U00011134\U00011109\U00011122"
+    gu: પૂર્વ નુસા તેંગારા પ્રાંત
+    ka: აღმოსავლეთი მცირე ზონდის კუნძულები
+    sr: Источна Нуса Тенгара
+    fr: Petites Îles de la Sonde orientales
+    ko: 누사틍가라티무르 주
+    es: Nusatenggara Oriental
+    si: නැගෙනහිර ටෙන්ගාරා පළාත
+    da: East Nusa Tenggara Province
+    fi: Itäinen Nusa Tenggara
+    kn: ಈಸ್ಟ್ ನುಸಾ ಟೆಂಗ್ಗರಾ ಪ್ರಾಂತ್ಯ
+    id: Nusa Tenggara Timur
+    he: מזרח נוסה טנגרה
+    hr: Istočni Mali sundski otoci
+    eu: Nusa Tenggara Timur
+    pt: Sonda Oriental
+    de: Nusa Tenggara Timur
+    it: Nusa Tenggara Orientale
+    ml: കിഴക്കൻ നുസ ടെങ്കാര
+    uk: Східна Південно-Східна Нуса
+    cs: Východní Nusa Tenggara
+    yue: 東努沙登加拉
+    nb: Nusa Tenggara Timur
+    ca: Illes Petites de la Sonda Orientals
+    th: นูซา เตงการา ตะวันออก
+    mk: Источни Мали Сундски Острови
+    bg: Източни Малки Зондски острови
+    'no': Nusa Tenggara Timur
+    be: Усходняя Нуса-Тэнгара
+    ps: ختیځ سوندای
+  comments:
+  type: province
+NU:
+  name: Kepulauan Nusa Tenggara
+  code: NU
+  unofficial_names:
+  geo:
+  translations:
+    lv: Mazās Zunda salas
+    cy: Ynysoedd Swnda Lleiaf
+    af: Klein Sunda-eilande
+    ceb: Lesser Sunda Islands
+    ms: Kepulauan Sunda Kecil
+    ar: جزر سوندا الصغرى
+    tr: Küçük Sunda Adaları
+    sr_Latn: Mala Sundska ostrva
+    lt: Mažosios Sundos salos
+    ta: சுந்தா சிறு தீவுகள்
+    vi: Quần đảo Sunda Nhỏ
+    ur: سونڈای جزائر کوچک
+    nl: Kleine Soenda-eilanden
+    zh: 小巽他群岛
+    fa: جزایر سوندای کوچک
+    pl: Małe Wyspy Sundajskie
+    yue_Hans: 小巽他群岛
+    sv: Små Sundaöarna
+    el: Νήσοι Μικρές Σούνδες
+    hi: छोटा सुन्दा द्वीप समूह
+    jv: Kapuloan Nusa Tenggara
+    ja: 小スンダ列島
+    en: Lesser Sunda Islands
+    ru: Малые Зондские острова
+    ccp: "\U00011123\U0001112C\U00011125\U00011122\U00011134 \U00011125\U0001112A\U0001111A\U00011134\U00011113
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    ka: მცირე ზონდის კუნძულები
+    sr: Мала Сундска острва
+    fr: Petites îles de la Sonde
+    ko: 소순다 열도
+    gl: Illas menores da Sonda
+    es: Islas menores de la Sonda
+    da: De små Sundaøer
+    fi: Pienet Sundasaaret
+    ky: Кичи зонд аралдары
+    hu: Kis-Szunda-szigetek
+    is: Litlu-Sundaeyjar
+    id: Kepulauan Nusa Tenggara
+    sk: Malé Sundy
+    he: איי סונדה הקטנים
+    hr: Mali sundski otoci
+    eu: Sondako Uharte Txikiak
+    pt: Pequenas Ilhas da Sonda
+    et: Väikesed Sunda saared
+    de: Kleine Sundainseln
+    it: Piccole Isole della Sonda
+    ml: ലെസ്സർ സന്റ ദ്വീപ് സമൂഹം
+    uk: Малі Зондські острови
+    cs: Malé Sundy
+    yue: 小巽他群島
+    az: Kiçik Zond adaları
+    nb: De små Sundaøyer
+    mn: Бага Зондын арлууд
+    ca: Illes Petites de la Sonda
+    be: Малыя Зондскія астравы
+    th: หมู่เกาะซุนดาน้อย
+    uz: Kichik zond orollari
+    bs: Mala Sundska ostrva
+    mk: Мали Сундски Острови
+    bg: Малки Зондски острови
+    'no': De små Sundaøyer
+    hy: Փոքր Զոնդյան կղզիներ
+    sl: Mali Sundski otoki
+  comments:
+  type: geographical_unit
+PA:
+  name: Papua
+  code: PA
+  unofficial_names:
+  geo:
+    latitude: 41.2033216
+    longitude: -77.1945247
+    min_latitude: 39.7197989
+    min_longitude: -80.51989499999999
+    max_latitude: 42.5141658
+    max_longitude: -74.6895018
+  translations:
+    lv: Papua
+    mr: पापुआ
+    cy: Papua
+    af: Papoea
+    ceb: Provinsi Papua
+    ms: Papua
+    ar: بابوا
+    te: పాపువా ప్రావిన్స్
+    tr: Papua
+    sr_Latn: Papua
+    lt: Papua
+    ta: பப்புவா மாகாணம்
+    vi: Papua
+    ur: پاپوا (صوبہ)
+    nl: Papoea
+    zh: 巴布亚省
+    bn: পাপুয়া প্রদেশ
+    fa: پاپوآ
+    pl: Papua
+    yue_Hans: 巴布亚
+    sv: Papua
+    el: Παπούα
+    hi: पापुआ
+    jv: Papua
+    ja: パプア州
+    en: Papua
+    ru: Папуа
+    ccp: "\U0001111B\U0001111B\U0001112A\U00011120"
+    gu: પાપુઆ પ્રાંત
+    ka: პაპუა
+    sr: Папуа
+    fr: Papouasie
+    ko: 파푸아 주
+    es: Papúa
+    si: පැපුවා පළාත
+    da: Papua Province
+    fi: Papua
+    kn: ಪಪುವಾ ಪ್ರಾಂತ್ಯ
+    id: Papua
+    sk: Papua
+    eu: Papua
+    pt: Papua
+    de: Papua
+    it: Papua
+    ml: പപുവ
+    uk: Папуа
+    cs: Papua
+    yue: 巴布亞
+    nb: Papua
+    ca: Província de Papua
+    be: Правінцыя Папуа
+    th: จังหวัดปาปัว
+    mk: Папуа
+    'no': Papua
+    az: Papua
+    bg: Папуа
+    et: Paapua provints
+  comments:
+  type: province
+PB:
+  name: Papua Barat
+  code: PB
+  unofficial_names:
+  geo:
+    latitude: -0.789275
+    longitude: 113.921327
+    min_latitude: -11.1082999
+    min_longitude: 94.7351
+    max_latitude: 6.216999899999999
+    max_longitude: 141.0425
+  translations:
+    lv: Rietumpapua province
+    mr: पश्चिम पापुआ
+    cy: Gorllewin Papua
+    ceb: Provinsi Papua Barat
+    ms: Papua Barat
+    ar: بابوا الغربية
+    te: పశ్చిమ పాపువా ప్రావిన్స్
+    tr: Batı Papua
+    sr_Latn: Zapadna Papua
+    lt: Vakarų Papua
+    ta: மேற்குப் பப்புவா மாகாணம்
+    vi: Tây Papua
+    ur: مغربی پاپوا (صوبہ)
+    nl: West-Papoea
+    zh: 西巴布亞省
+    bn: পশ্চিম পাপুয়া প্রদেশ
+    fa: پاپوآی غربی
+    pl: Papua Zachodnia
+    yue_Hans: 西巴布亚
+    sv: Papua Barat
+    el: Επαρχία Δυτικής Παπούα
+    hi: पश्चिम पापुआ
+    jv: Papua Kulon
+    ja: 西パプア州
+    en: West Papua
+    ru: Западное Папуа
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U0001111B\U0001111B\U0001112A\U00011120"
+    gu: પશ્ચિમ પપુઆ પ્રાંત
+    ka: დასავლეთი პაპუა
+    sr: Западна Папуа
+    fr: Papouasie occidentale
+    ko: 파푸아바랏 주
+    es: Papúa Occidental
+    si: බටහිර පැපුවා පළාත
+    da: West Papua Province
+    fi: Länsi-Papua
+    kn: ಪಶ್ಚಿಮ ಪಪುವಾ ಪ್ರಾಂತ್ಯ
+    id: Papua Barat
+    he: פפואה המערבית
+    eu: Mendebaldeko Papua
+    pt: Papua Ocidental
+    de: Papua Barat
+    it: Papua Occidentale
+    ml: വെസ്റ്റ് പപുവ
+    uk: Західне Папуа
+    cs: Západní Papua
+    yue: 西巴布亞
+    nb: Papua Barat
+    ca: Província de Papua Occidental
+    th: จังหวัดปาปัวตะวันตก
+    mk: Западна Папуа
+    bg: Западна Папуа
+    'no': Papua Barat
+    et: Lääne-Paapua provints
+    hr: Zapadna Papua (pokrajina)
+    hy: Արևմտյան Պապուա
+  comments:
+  type: province
+PP:
+  name: Papua bagian barat
+  code: PP
+  unofficial_names:
+  geo:
+    latitude: -6.9084233
+    longitude: 109.136415
+  translations:
+    lv: Rietumpapua
+    mr: वेस्ट पापुआ
+    ms: West Papua
+    ar: غرب غينيا الجديدة
+    te: పశ్చిమ పాపువా
+    tr: Batı Papua²
+    lt: Vakarų Naujoji Gvinėja
+    ta: மேற்கு பாபுஆ
+    vi: Tây New Guinea
+    ur: مغربی پاپوا (علاقہ)
+    nl: Irian Jaya
+    zh: 西新几内亚
+    bn: পশ্চিম পাপুয়া
+    fa: پاپوآی غربی²
+    pl: Irian Zachodni
+    yue_Hans: 西新畿内亚
+    sv: Västpapua
+    el: Πάπουα
+    hi: पश्चिम पापुआ²
+    ja: イリアンジャヤ
+    en: Papua Islands
+    ru: Западная Новая Гвинея
+    ccp: "\U0001111B\U0001111B\U0001112A\U00011120 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    gu: વેસ્ટ પપુઆ
+    ka: დასავლეთი ახალი გვინეა
+    fr: Nouvelle-Guinée occidentale
+    hy: Արևմտյան Իրիան
+    ko: 서뉴기니
+    es: Nueva Guinea Occidental
+    si: බටහිර පැපුවා
+    da: West Papua
+    fi: Länsi-Uusi-Guinea
+    kn: ಪಶ್ಚಿಮ ಪಪುವಾ
+    is: Vestur-Nýja-Gínea
+    id: Papua bagian barat
+    he: מערב גינאה החדשה
+    eu: Mendebaldeko Papua²
+    pt: Nova Guiné Ocidental
+    de: Westneuguinea
+    it: Nuova Guinea Occidentale
+    kk: Батыс Ириан
+    ml: വെസ്റ്റേൺ ന്യൂ ഗിനിയ
+    uk: Західна Нова Гвінея
+    cs: Západní Nová Guinea
+    yue: 西新畿內亞
+    nb: Vest-Papua
+    mn: Папуа-Шинэ Гвиней
+    ca: Papua Occidental
+    th: นิวกินีตะวันตก
+    bg: Западна Нова Гвинея
+    'no': Vest-Papua
+    az: Qərbi Yeni Qvineya
+    hu: Nyugat-Új-Guinea
+    sw: Guinea Mpya ya Kiholanzi
+    uz: Gʻarbiy Yangi Gvineya
+  comments:
+  type: geographical_unit
+RI:
+  name: Riau
+  code: RI
+  unofficial_names:
+  geo:
+    latitude: -6.91266
+    longitude: 107.642042
+  translations:
+    lv: Riau province
+    mr: रियाउ
+    cy: Riau
+    ceb: Provinsi Riau
+    ms: Riau
+    ar: رياو
+    te: రియాయూ ప్రావిన్స్
+    tr: Riau
+    sr_Latn: Rijau
+    lt: Riau
+    ta: ரியாவு
+    vi: Riau
+    ur: ریاو
+    nl: Riau
+    zh: 廖內省
+    bn: রিয়াউ প্রদেশ
+    fa: ریائو
+    pl: Riau
+    yue_Hans: 廖内
+    sv: Riau
+    el: Ριάου
+    hi: रियाउ
+    jv: Riau
+    ja: リアウ州
+    en: Riau
+    ru: Риау
+    ccp: "\U00011122\U0001112D\U00011105\U0001112A"
+    gu: રિયાઉ પ્રાંત
+    ka: რიაუ
+    sr: Ријау
+    fr: Riau
+    ko: 리아우 주
+    es: Riau
+    si: රියෞ පළාත
+    da: Riau
+    fi: Riau
+    kn: ರಿಯು ಪ್ರಾಂತ್ಯ
+    id: Riau
+    eu: Riau
+    pt: Riau
+    de: Riau
+    it: Riau
+    ml: റിയാവു
+    uk: Ріау
+    cs: Riau
+    yue: 廖內
+    nb: Riau
+    mn: Риау
+    ca: Riau
+    be: Правінцыя Рыау
+    th: จังหวัดเรียว
+    bg: Риау
+    'no': Riau
+    az: Riau
+  comments:
+  type: province
+SA:
+  name: Sulawesi Utara
+  code: SA
+  unofficial_names:
+  geo:
+    latitude: -8.7199596
+    longitude: 115.1752526
+  translations:
+    lv: Ziemeļsulavesi province
+    mr: उत्तर सुलावेसी
+    ceb: Sulawesi Utara
+    ms: Sulawesi Utara
+    ar: سولاوسي الشمالية
+    te: ఉత్తర సులావేసి ప్రావిన్స్
+    tr: Kuzey Sulawesi
+    sr_Latn: Severni Sulavesi
+    lt: Šiaurės Sulavesis
+    ta: வடக்குச் சுளாவெசி மாகாணம்
+    vi: Bắc Sulawesi
+    ur: شمالی سولاویسی
+    nl: Noord-Celebes
+    zh: 北苏拉威西省
+    bn: উত্তর সুলাবেসি প্রদেশ
+    fa: سولاوسی شمالی
+    pl: Celebes Północny
+    yue_Hans: 北苏拉威西
+    sv: Sulawesi Utara
+    el: Βόρειο Σουλαβέσι
+    hi: उत्तर सुलावेसी
+    jv: Sulawesi Lor
+    ja: 北スラウェシ州
+    en: North Sulawesi
+    ru: Северный Сулавеси
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011125\U0001112A\U00011123\U00011120\U0001112C\U00011125\U00011128"
+    gu: ઉત્તર સુલાવેસી પ્રાંત
+    ka: ჩრდილოეთი სულავესი
+    sr: Северни Сулавеси
+    fr: Sulawesi du Nord
+    ko: 술라웨시우타라 주
+    es: Célebes Septentrional
+    si: උතුරු සුලවෙසි පළාත
+    da: North Sulawesi Province
+    fi: Pohjois-Sulawesi
+    kn: ಉತ್ತರ ಸುಲಾವೆಸಿ ಪ್ರಾಂತ್ಯ
+    id: Sulawesi Utara
+    eu: Ipar Sulawesi
+    pt: Celebes do Norte
+    de: Sulawesi Utara
+    it: Sulawesi Settentrionale
+    ml: വടക്കൻ സുലവേസി
+    uk: Північне Сулавесі
+    cs: Severní Sulawesi
+    yue: 北蘇拉威西
+    nb: Nord Sulawesi provins
+    mn: Умар Сулавеси
+    be: Правінцыя Паўночны Сулавесі
+    th: จังหวัดซูลาเวซีใต้
+    bg: Северно Сулавеси
+    'no': Nord Sulawesi provins
+    ca: Cèlebes septentrional
+    ga: An tSulaivéis Thuaidh
+  comments:
+  type: province
+SB:
+  name: Sumatera Barat
+  code: SB
+  unofficial_names:
+  geo:
+    latitude: -0.7399397
+    longitude: 100.8000051
+    min_latitude: -4.020091
+    min_longitude: 98.59692190000001
+    max_latitude: 0.907389
+    max_longitude: 101.8929181
+  translations:
+    lv: Rietumsumatra
+    mr: पश्चिम सुमात्रा
+    cy: Gorllewin Sumatra
+    ceb: Provinsi Sumatera Barat
+    ms: Sumatera Barat
+    ar: سومطرة الغربية
+    te: పశ్చిమ సుమత్ర
+    tr: Batı Sumatra
+    sr_Latn: Zapadna Sumatra
+    lt: Vakarų Sumatra
+    ta: மேற்குச் சுமாத்திரா
+    vi: Tây Sumatera
+    ur: مغربی سماٹرا
+    nl: West-Sumatra
+    zh: 西苏门答腊省
+    bn: পশ্চিম সুমাত্রা
+    fa: سوماترای غربی
+    pl: Sumatra Zachodnia
+    yue_Hans: 西苏门答腊
+    sv: Sumatera Barat
+    el: Δυτική Σουμάτρα (Γουέστ Σουμάτρα)
+    hi: पश्चिम सुमात्रा
+    jv: Sumatra Kulon
+    ja: 西スマトラ州
+    en: West Sumatra
+    ru: Западная Суматра
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011125\U0001112A\U0001111F\U00011116\U00011133\U00011122\U00011134"
+    gu: વેસ્ટ સુમાત્રા
+    ka: დასავლეთი სუმატრა
+    sr: Западна Суматра
+    fr: Sumatra occidental
+    ko: 수마트라바랏 주
+    es: Sumatra Occidental
+    si: බස්නාහිර සුමාත්‍රා
+    da: Vestsumatra
+    fi: Länsi-Sumatra
+    kn: ಪಶ್ಚಿಮ ಸುಮಾತ್ರ
+    id: Sumatera Barat
+    he: מערב סומטרה
+    eu: Mendebaldeko Sumatra
+    pt: Sumatra Ocidental
+    de: Sumatera Barat
+    it: Sumatra Occidentale
+    ml: പടിഞ്ഞാറൻ സുമാത്ര
+    uk: Західна Суматра
+    cs: Západní Sumatra
+    yue: 西蘇門答臘
+    nb: Sumatera Barat
+    mn: Өрнө Суматра
+    ca: Sumatra Occidental
+    be: Правінцыя Заходняя Суматра
+    th: จังหวัดสุมาตราตะวันตก
+    bg: Западна Суматра
+    'no': Sumatera Barat
+    az: Qərbi Sumatra
+  comments:
+  type: province
+SG:
+  name: Sulawesi Tenggara
+  code: SG
+  unofficial_names:
+  geo:
+  translations:
+    lv: Dienvidaustrumu Suvalesi
+    mr: आग्नेय सुलावेसी
+    ceb: Sulawesi Tenggara
+    ms: Sulawesi Tenggara
+    ar: سولاوسي الجنوبية الشرقية
+    te: దక్షిణ తూర్పు సులవేసి ప్రావిన్స్
+    tr: Güneydoğu Sulawesi
+    sr_Latn: Jugoistočni Sulavesi
+    lt: Pietryčių Sulavesis
+    ta: தென்கிழக்குச் சுளாவெசி மாகாணம்
+    vi: Đông Nam Sulawesi
+    ur: جنوب مشرقی سولاویسی
+    nl: Zuidoost-Celebes
+    zh: 东南苏拉威西省
+    bn: দক্ষিণ পূর্ব সুলভিসী প্রদেশ
+    fa: سولاوسی جنوب شرقی
+    pl: Celebes Południowo-Wschodni
+    yue_Hans: 东南苏拉威西
+    sv: Sulawesi Tenggara
+    el: Νοτιοανατολικό Σουλαβέσι
+    hi: आग्नेय सुलावेसी
+    jv: Sulawesi Kidul-wétan
+    ja: 南東スラウェシ州
+    en: Southeast Sulawesi
+    ru: Юго-Восточный Сулавеси
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011125\U0001112A\U00011123\U00011120\U0001112C\U00011125\U00011128"
+    gu: દક્ષિણ પૂર્વ સુલાવેસી પ્રાંત
+    ka: სამხრეთ-აღმოსავლეთი სულავესი
+    sr: Југоисточни Сулавеси
+    fr: Sulawesi du Sud-Est
+    ko: 술라웨시틍가라 주
+    es: Célebes Suroriental
+    si: දකුණු නැගෙනහිර සුලවෙසි පළාත
+    da: Sydøstsulawesi provins
+    fi: Kaakkois-Sulawesi
+    kn: ಸೌತ್ ಈಸ್ಟ್ ಸುಲಾವೆಸಿ ಪ್ರಾಂತ್ಯ
+    id: Sulawesi Tenggara
+    eu: Hego-ekialdeko Sulawesi
+    pt: Celebes do Sudeste
+    de: Sulawesi Tenggara
+    it: Sulawesi Sudorientale
+    uk: Південно-Східне Сулавесі
+    cs: Jihovýchodní Sulawesi
+    yue: 東南蘇拉威西
+    nb: South East Sulawesi Provins
+    be: Правінцыя Паўднёва-Усходні Сулавесі
+    th: สุลาเวสีเตงการาตะวันออกเฉียงใต้
+    bg: Югоизточно Сулавеси
+    'no': South East Sulawesi Provins
+    ca: Cèlebes Sud-orientals
+    he: דרום-מזרח סולאווסי
+    hu: Délkelet-Celebesz
+    ml: തെക്കുകിഴക്കൻ സുലവേസി
+    so: Sulawesi Tenggara,
+  comments:
+  type: province
+SL:
+  name: Sulawesi
+  code: SL
+  unofficial_names:
+  geo:
+  translations:
+    lv: Sulavesi
+    mr: सुलावेसी
+    cy: Sulawesi
+    af: Sulawesi
+    ceb: Sulawesi
+    ms: Sulawesi
+    ar: سولاوسي
+    tr: Sulawesi
+    sr_Latn: Sulavesi
+    lt: Sulavesis
+    ta: சுலாவெசி
+    vi: Sulawesi
+    ur: سولاویسی
+    nl: Celebes
+    zh: 苏拉威西岛
+    fa: سولاوسی
+    pl: Celebes
+    sw: Sulawesi
+    yue_Hans: 苏拉威西
+    sv: Sulawesi
+    el: Σουλαουέζι
+    hi: सुलावेसी
+    jv: Sulawesi
+    ja: スラウェシ島
+    en: Sulawesi
+    ru: Сулавеси
+    ccp: "\U00011125\U0001112A\U00011123\U00011103\U0001112E\U00011120\U0001112C\U00011125\U00011128"
+    ka: სულავესი
+    sr: Сулавеси
+    fr: Célèbes
+    ga: An Cheilibéis
+    hy: Ցելեբես Սուլավեսի
+    ko: 술라웨시 섬
+    gl: Célebes
+    es: Célebes
+    da: Sulawesi
+    fi: Sulawesi
+    hu: Celebesz
+    is: Súlavesí
+    id: Sulawesi
+    sk: Sulawesi
+    ro: Sulawesi
+    ha: Sulawesi
+    he: סולאווסי
+    hr: Sulawesi
+    eu: Sulawesi
+    pt: Celebes
+    et: Sulawesi
+    de: Sulawesi
+    sl: Sulavezi
+    pa: ਸੁਲਾਵੇਸੀ
+    it: Sulawesi
+    kk: Сулавеси
+    ml: സുലവേസി
+    uk: Сулавесі
+    cs: Celebes
+    yue: 蘇拉威西
+    az: Sulavesi
+    my: ဆူလာဝေစီကျွန်း
+    nb: Sulawesi
+    ca: Cèlebes
+    be: Востраў Сулавесі
+    th: เกาะซูลาเวซี
+    uz: Sulavesi
+    bs: Sulawesi
+    mk: Сулавеси
+    bg: Сулавеси
+    ha_NE: Sulawesi
+    'no': Sulawesi
+    bn: সুলাওসি
+  comments:
+  type: geographical_unit
+SM:
+  name: Sumatera
+  code: SM
+  unofficial_names:
+  geo:
+  translations:
+    lv: Sumatra
+    mr: सुमात्रा
+    cy: Sumatera
+    af: Sumatra
+    ceb: Sumatra
+    ms: Sumatera
+    ar: سومطرة
+    tr: Sumatra
+    sr_Latn: Sumatra
+    lt: Sumatra
+    ta: சுமாத்திரா
+    vi: Sumatra
+    ur: سماٹرا
+    nl: Sumatra
+    zh: 蘇門答臘
+    bn: সুমাত্রা
+    fa: سوماترا
+    pl: Sumatra
+    sw: Sumatra
+    yue_Hans: 苏门答腊
+    sv: Sumatra
+    el: Σουμάτρα
+    hi: सुमात्रा
+    jv: Sumatra
+    ja: スマトラ島
+    en: Sumatra
+    sq: Sumatra
+    ru: Суматра
+    ccp: "\U00011125\U0001112A\U0001111F\U00011116\U00011133\U00011122\U00011134"
+    ka: სუმატრა
+    sr: Суматра
+    fr: Sumatra
+    ga: Sumatra
+    hy: Սումատրա
+    ko: 수마트라 섬
+    gl: Sumatra
+    es: Sumatra
+    da: Sumatra
+    fi: Sumatra
+    ky: Суматра
+    hu: Szumátra
+    is: Súmatra
+    id: Sumatera
+    sk: Sumatra
+    ro: Sumatra
+    ha: Sumatra
+    km: កោះស៊ូម៉ាត្រា
+    he: סומטרה
+    hr: Sumatra
+    eu: Sumatra
+    pt: Sumatra
+    et: Sumatra
+    de: Sumatra
+    sl: Sumatra
+    it: Sumatra
+    kk: Суматра
+    ml: സുമാത്ര
+    uk: Суматра
+    or: ସୁମାତ୍ରା
+    cs: Sumatra
+    yue: 蘇門答臘
+    az: Sumatra
+    am: ሱማትራ
+    my: ဆူမတြာကျွန်း
+    nb: Sumatra
+    ca: Sumatra
+    be: Востраў Суматра
+    th: เกาะสุมาตรา
+    uz: Sumatra
+    bs: Sumatra
+    mk: Суматра
+    ne: सुमात्रा
+    bg: Суматра
+    ha_NE: Sumatra
+    'no': Sumatra
+  comments:
+  type: geographical_unit
+SN:
+  name: Sulawesi Selatan
+  code: SN
+  unofficial_names:
+  geo:
+    latitude: -3.6687994
+    longitude: 119.9740534
+    min_latitude: -7.758941000000001
+    min_longitude: 117.038483
+    max_latitude: -1.8952359
+    max_longitude: 121.8402099
+  translations:
+    lv: Dienvidsulavesi
+    mr: दक्षिण सुलावेसी
+    ceb: Provinsi Sulawesi Selatan
+    ms: Sulawesi Selatan
+    ar: سولاوسي الجنوبية
+    te: దక్షిణ సులవేసి
+    tr: Güney Sulawesi
+    sr_Latn: Južni Sulavesi
+    lt: Pietų Sulavesis
+    ta: தெற்குச் சுளாவெசி மாகாணம்
+    vi: Nam Sulawesi
+    ur: جنوبی سولاویسی
+    nl: Zuid-Celebes
+    zh: 南苏拉威西省
+    bn: দক্ষিন সুলাবেসি
+    fa: سولاوسی جنوبی
+    pl: Celebes Południowy
+    yue_Hans: 南苏拉威西
+    sv: Sulawesi Selatan
+    el: Νότιο Σουλαβέσι
+    hi: दक्षिण सुलावेसी
+    jv: Sulawesi Kidul
+    ja: 南スラウェシ州
+    en: South Sulawesi
+    ru: Южный Сулавеси
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011125\U0001112A\U00011123\U00011120\U0001112C\U00011125\U00011128"
+    gu: સાઉથ સુલાવેસી
+    ka: სამხრეთი სულავესი
+    sr: Јужни Сулавеси
+    fr: Sulawesi du Sud
+    ko: 술라웨시슬라탄 주
+    gl: Célebes Meridional
+    es: Célebes Meridional
+    si: දකුණු සුලවෙසි
+    da: South Sulawesi
+    fi: Etelä-Sulawesi
+    kn: ಸೌತ್ ಸುಲಾವೆಸಿ
+    id: Sulawesi Selatan
+    eu: Hego Sulawesi
+    pt: Celebes do Sul
+    de: Sulawesi Selatan
+    it: Sulawesi Meridionale
+    ml: തെക്കൻ സുലവേസി
+    uk: Південне Сулавесі
+    cs: Jižní Sulawesi
+    yue: 南蘇拉威西
+    nb: Sør Sulawesi
+    be: Правінцыя Паўднёвы Сулавесі
+    th: จังหวัดสุลาเวสี
+    bg: Южно Сулавеси
+    'no': Sør Sulawesi
+    ca: Cèlebes Meridionals
+  comments:
+  type: province
+SR:
+  name: Sulawesi Barat
+  code: SR
+  unofficial_names:
+  geo:
+    latitude: -6.926822599999999
+    longitude: 107.6068221
+  translations:
+    lv: Rietumsulavesi
+    mr: पश्चिम सुलावेसी
+    ceb: Provinsi Sulawesi Barat
+    ms: Sulawesi Barat
+    ar: سولاوسي الغربية
+    te: పశ్చిమ సులవేసి
+    tr: Batı Sulawesi
+    sr_Latn: Zapadni Sulavesi
+    lt: Vakarų Sulavesis
+    ta: மேற்குச் சுளாவெசி மாகாணம்
+    vi: Tây Sulawesi
+    ur: مغربی سولاویسی
+    nl: West-Celebes
+    zh: 西苏拉威西省
+    bn: ওয়েস্ট সুলাবেসি
+    fa: سولاوسی غربی
+    pl: Celebes Zachodni
+    yue_Hans: 西苏拉威西
+    sv: Sulawesi Barat
+    el: Γουέστ Σουλαβέσι
+    hi: पश्चिम सुलावेसी
+    jv: Sulawesi Kulon
+    ja: 西スラウェシ州
+    en: West Sulawesi
+    ru: Западный Сулавеси
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011125\U0001112A\U00011123\U00011120\U0001112C\U00011125\U00011128"
+    gu: વેસ્ટ સુલાવેસી
+    ka: დასავლეთი სულავესი
+    sr: Западни Сулавеси
+    fr: Sulawesi occidental
+    ko: 술라웨시바랏 주
+    es: Célebes Occidental
+    si: බටහිර සුලවෙසි
+    da: West Sulawesi (Vestsulawesi)
+    fi: Länsi-Sulawesi
+    kn: ವೆಸ್ಟ್ ಸುಲಾವೆಸಿ
+    id: Sulawesi Barat
+    eu: Mendebaldeko Sulawesi
+    pt: Celebes Ocidental
+    de: Westsulawesi
+    it: Sulawesi Occidentale
+    uk: Західне Сулавесі
+    cs: Západní Sulawesi
+    yue: 西蘇拉威西
+    nb: West Sulawesi
+    mn: Өрнө Сулавеси
+    be: Правінцыя Заходні Сулавесі
+    th: จังหวัดซูลาเวซีตะวันตก
+    bg: Западно Сулавеси
+    'no': West Sulawesi
+    he: מערב סולאווסי
+    mk: Западен Сулавеси
+  comments:
+  type: province
+SS:
+  name: Sumatera Selatan
+  code: SS
+  unofficial_names:
+  geo:
+  translations:
+    lv: Dienvidsumatra
+    mr: दक्षिण सुमात्रा
+    cy: De Sumatra
+    af: Suid-Sumatra
+    ceb: Sumatera Selatan
+    ms: Sumatera Selatan
+    ar: سومطرة الجنوبية
+    te: దక్షిణ సుమత్ర
+    tr: Güney Sumatra
+    sr_Latn: Južna Sumatra
+    lt: Pietų Sumatra
+    ta: தெற்குச் சுமாத்திரா
+    vi: Nam Sumatera
+    ur: جنوبی سماٹرا
+    nl: Zuid-Sumatra
+    zh: 南苏门答腊省
+    bn: দক্ষিণ সুমাত্রার
+    fa: سوماترای جنوبی
+    pl: Sumatra Południowa
+    yue_Hans: 南苏门答腊
+    sv: Sumatera Selatan
+    el: Νότια Σουμάτρα
+    hi: दक्षिण सुमात्रा
+    jv: Sumatra Kidul
+    ja: 南スマトラ州
+    en: South Sumatra
+    ru: Южная Суматра
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011125\U0001112A\U0001111F\U00011116\U00011133\U00011122\U00011134"
+    gu: સાઉથ સુમાત્રા
+    ka: სამხრეთი სუმატრა
+    sr: Јужна Суматра
+    fr: Sumatra du Sud
+    ko: 수마트라슬라탄 주
+    gl: Sumatra Meridional
+    es: Sumatra Meridional
+    si: දකුණු සුමාත්‍රා
+    da: Sydsumatra
+    fi: Etelä-Sumatra
+    kn: ದಕ್ಷಿಣ ಸುಮಾತ್ರ
+    id: Sumatera Selatan
+    he: דרום סומטרה
+    eu: Hego Sumatra
+    pt: Sumatra do Sul
+    de: Sumatera Selatan
+    it: Sumatra Meridionale
+    ml: തെക്കൻ സുമാത്ര
+    uk: Південна Суматра
+    cs: Jižní Sumatra
+    yue: 南蘇門答臘
+    nb: Sumatera Selatan
+    mn: Өмнө Суматра
+    ca: Sumatra Meridional
+    th: จังหวัดสุมาตราใต้
+    bg: Южна Суматра
+    'no': Sumatera Selatan
+    az: Cənubi Sumatra
+  comments:
+  type: province
+ST:
+  name: Sulawesi Tengah
+  code: ST
+  unofficial_names:
+  geo:
+  translations:
+    lv: Centrālā Sulavesi
+    mr: मध्य सुलावेसी
+    ceb: Sulawesi Tengah
+    ms: Sulawesi Tengah
+    ar: سولاوسي الوسطى
+    te: సెంట్రల్ సులావేసి ప్రావిన్స్
+    tr: Orta Sulawesi
+    sr_Latn: Centralni Sulavesi
+    lt: Centrinis Sulavesis
+    ta: நடுச் சுளாவெசி மாகாணம்
+    vi: Trung Sulawesi
+    ur: وسطی سولاویسی
+    nl: Midden-Celebes
+    zh: 中苏拉威西省
+    bn: কেন্দ্রীয় সুলাবেসি প্রদেশ
+    fa: سولاوسی مرکزی
+    pl: Celebes Środkowy
+    yue_Hans: 中苏拉威西
+    sv: Sulawesi Tengah
+    el: Κεντρικό Σουλαβέσι
+    hi: मध्य सुलावेसी
+    jv: Sulawesi Tengah
+    ja: 中部スラウェシ州
+    en: Central Sulawesi
+    ru: Центральный Сулавеси
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011125\U0001112A\U00011123\U00011120\U0001112C\U00011125\U00011128"
+    gu: સેન્ટ્રલ સુલાવેસી પ્રાંત
+    ka: ცენტრალური სულავესი
+    sr: Централни Сулавеси
+    fr: Sulawesi central
+    ko: 술라웨시틍아 주
+    es: Célebes Central
+    si: මද්‍යම සුලවෙසි පළාත
+    da: Central Sulawesi Province
+    fi: Keski-Sulawesi
+    kn: ಕೇಂದ್ರ ಸುಲಾವೆಸಿ ಪ್ರಾಂತ್ಯ
+    id: Sulawesi Tengah
+    eu: Erdialdeko Sulawesi
+    pt: Celebes Central
+    de: Sulawesi Tengah
+    it: Sulawesi Centrale
+    ml: മദ്ധ്യ സുലവേസി
+    uk: Центральне Сулавесі
+    cs: Střední Sulawesi
+    yue: 中蘇拉威西
+    nb: Sentral Sulaweisi provins
+    mn: Төв Сулавеси
+    ca: Celebas del Centre
+    be: Правінцыя Цэнтральны Сулавесі
+    th: จังหวัดซูลาเวซีกลาง
+    bg: Централно Сулавеси
+    'no': Sentral Sulaweisi provins
+  comments:
+  type: province
+SU:
+  name: Sumatera Utara
+  code: SU
+  unofficial_names:
+  geo:
+    latitude: 2.1153547
+    longitude: 99.54509739999999
+    min_latitude: -0.6387609
+    min_longitude: 97.0575619
+    max_latitude: 4.3013449
+    max_longitude: 100.4257811
+  translations:
+    lv: Ziemeļsumatra
+    mr: उत्तर सुमात्रा
+    cy: Gogledd Sumatra
+    ceb: Sumatera Utara
+    ms: Sumatera Utara
+    ar: سومطرة الشمالية
+    te: ఉత్తర సుమత్రా ప్రావిన్స్
+    tr: Kuzey Sumatra
+    sr_Latn: Severna Sumatra
+    lt: Šiaurės Sumatra
+    ta: வடக்கு சுமாத்திரா மாகாணம்
+    vi: Bắc Sumatera
+    ur: شمالی سماٹرا
+    nl: Noord-Sumatra
+    zh: 北苏门答腊省
+    bn: উত্তর সুমাত্রা প্রদেশ
+    fa: سوماترای شمالی
+    pl: Sumatra Północna
+    yue_Hans: 北苏门答腊
+    sv: Sumatera Utara
+    el: Βόρεια Σουμάτρα
+    hi: उत्तर सुमात्रा
+    jv: Sumatra Lor
+    ja: 北スマトラ州
+    en: North Sumatra
+    ru: Северная Суматра
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011125\U0001112A\U0001111F\U00011116\U00011133\U00011122\U00011134"
+    gu: ઉત્તર સુમાત્રા પ્રાંત
+    ka: ჩრდილოეთი სუმატრა
+    sr: Северна Суматра
+    fr: Sumatra du Nord
+    ko: 수마트라우타라 주
+    es: Sumatra Septentrional
+    si: උතුරු සුමාත්‍රා පළාත
+    da: Nordsumatra
+    fi: Pohjois-Sumatra
+    kn: ಉತ್ತರ ಸುಮಾತ್ರ ಪ್ರಾಂತ್ಯ
+    id: Sumatera Utara
+    he: צפון סומטרה
+    eu: Ipar Sumatra
+    pt: Sumatra do Norte
+    de: Sumatera Utara
+    it: Sumatra Settentrionale
+    ml: വടക്കൻ സുമാത്ര
+    uk: Північна Суматра
+    cs: Severní Sumatra
+    yue: 北蘇門答臘
+    nb: Sumatera Utara
+    mn: Умар Суматра
+    ca: Sumatra Septentrional
+    be: Правінцыя Паўночная Суматра
+    th: จังหวัดสุมาตราเหนือ
+    uz: Shimoliy Sumatra
+    bg: Северна Суматра
+    'no': Sumatera Utara
+    az: Şimali Sumatra
+    hu: Észak-Szumátra
+    hy: Հյուսիսային Սումատրա
+    mk: Северна Суматра
+  comments:
+  type: province
+YO:
+  name: Yogyakarta
+  code: YO
+  unofficial_names:
+  geo:
+    latitude: -7.875384899999999
+    longitude: 110.4262088
+    min_latitude: -8.204191999999999
+    min_longitude: 110.013942
+    max_latitude: -7.541901900000001
+    max_longitude: 110.8346329
+  translations:
+    lv: Džojakarta speciālais reģions
+    mr: योग्यताकाचा विशेष प्रदेश
+    cy: Yogyakarta
+    af: Yogyakarta
+    ceb: Daerah Istimewa Yogyakarta
+    ms: Daerah Istimewa Yogyakarta
+    ar: يوجياكرتا
+    te: స్పెషల్ రీజియన్ ఆఫ్ యోగ్యకార్టా
+    tr: Yogyakarta Özel Bölgesi
+    sr_Latn: Džogdžakarta
+    lt: Džokjakarta
+    ta: யோக்யகர்த்தா சிறப்புப் பகுதி
+    vi: Yogyakarta
+    ur: خصوصی علاقہ یوگیاکارتا
+    nl: Jogjakarta
+    zh: 日惹特区
+    bn: ইয়গাকারাতা-র বিশেষ অঞ্চল
+    fa: یوگیاکارتا
+    pl: Yogyakarta
+    sw: Yogyakarta
+    yue_Hans: 日惹特区
+    sv: Yogyakarta
+    el: Γιογκιακάρτα
+    hi: योग्यकर्ता
+    jv: Dhaérah Istiméwa Yogyakarta
+    ja: ジョグジャカルタ特別州
+    en: Yogyakarta
+    ru: Джокьякарта
+    ccp: "\U00011121\U0001112E\U00011109\U00011107\U00011122\U00011134\U00011116"
+    gu: યોગ્યાકર્તાનો સ્પેશિયલ પ્રદેશ
+    ka: ჯოკიაკარტის სპეციალური რეგიონი
+    sr: Џогџакарта
+    fr: Territoire spécial de Yogyakarta
+    ga: Yogyakarta
+    ko: 욕야카르타
+    gl: Yogyakarta
+    es: Yogyakarta
+    si: යෝග්‍යකර්ටා විශේෂිත කලාපය
+    da: Yogyakarta
+    fi: Yogyakarta
+    hu: Yogyakarta
+    kn: ಯೋಗ್ಯಕಾರ್ಟಾದ ವಿಶೇಷ ಪ್ರದೇಶ
+    is: Yogyakarta
+    id: Yogyakarta
+    sk: Yogyakarta
+    ro: Yogyakarta
+    hr: Yogyakarta
+    eu: Yogyakarta
+    pt: Yogyakarta
+    et: Yogyakarta
+    de: Yogyakarta
+    sl: Yogyakarta
+    it: Yogyakarta
+    ml: സ്പെഷ്യൽ റീജിയൻ ഓഫ് യോഗ്യാകർത്ത
+    uk: Джокʼякарта
+    cs: Yogyakarta
+    yue: 日惹特區
+    nb: Yogyakarta
+    ca: Yogyakarta
+    th: เขตปกครองพิเศษย็อกยาการ์ตา
+    zu: Yogyakarta
+    bg: Джокякарта
+    'no': Yogyakarta
+    az: Cokyakarta Xüsusi Bölgəsi
+    he: מחוז מיוחד יוגיאקרטה
+    hy: Ջոկյակարտա հատուկ մարզ
+    mk: Јогјакарта (покраина)
+  comments:
+  type: special_region

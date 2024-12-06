@@ -1,0 +1,9 @@
+Description:
+    This creates an RSpec request spec to define Swagger documentation for a
+    controller. It will create a test for each of the controller's methods.
+
+Example:
+    rails generate rspec:swagger V3::AccountsController
+
+    This will create:
+        spec/requests/v3/accounts_spec.rb

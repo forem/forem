@@ -1,0 +1,249 @@
+---
+HH:
+  name: Hhohho
+  code: HH
+  unofficial_names: Hhohho
+  geo:
+    latitude: -26.1365662
+    longitude: 31.3541631
+    min_latitude: -26.475104
+    min_longitude: 30.908245
+    max_latitude: -25.7196479
+    max_longitude: 31.760738
+  translations:
+    en: Hhohho
+    ar: مقاطعة هوهو
+    bg: Хохо
+    bn: হোহো জেলা
+    cs: Hhohho
+    da: Hhohho District
+    de: Hhohho
+    el: Χνόχο
+    es: Hhohho
+    fi: Hhohho
+    fr: Hhohho
+    gu: હહહો જિલ્લો
+    hi: होहो जिला
+    id: Distrik Hhohho
+    it: distretto di Hhohho
+    ja: ホホ
+    ka: ჰოჰო
+    kn: ಹ್ಹೋ ಹ್ಹೋ ಜಿಲ್ಲೆ
+    ko: 호호 구
+    lt: Hhohho rajonas
+    mr: होहो जिल्हा
+    ms: Hhohho District
+    nb: Hhohho
+    nl: Hhohho
+    pl: Dystrykt Hhohho
+    pt: Hhohho
+    ro: Districtul Hhohho
+    ru: Хохо
+    si: හොහ්හෝ දිස්ත්‍රික්කය
+    sr: Хохо
+    sv: Hhohho
+    ta: ஹ்ஹஒஹொ மாவட்டம்
+    te: హోహ్హో జిల్లా
+    th: จังหวัดโฮโฮ
+    tr: Hhohho District
+    uk: Хохо
+    ur: ہوہو علاقہ
+    vi: Quận Hhohho
+    zh: 霍霍
+    lv: Hoho reģions
+    ceb: Hhohho District
+    sr_Latn: Hoho
+    ccp: "\U00011126\U0001112E\U00011126\U0001112E"
+    he: מחוז האהוהאהו
+    'no': Hhohho
+    be: Хоха
+    ca: Hhohho
+    fa: ناحیه هووهو
+    hy: Հոհո
+    zu: IHhohho
+  comments:
+  type: region
+LU:
+  name: Lubombo
+  code: LU
+  unofficial_names:
+  - Lebombo
+  geo:
+    latitude: -26.7851773
+    longitude: 31.8107079
+    min_latitude: -27.1706039
+    min_longitude: 31.4920601
+    max_latitude: -25.93021
+    max_longitude: 32.13726
+  translations:
+    en: Lubombo
+    ar: مقاطعة لوبومبو
+    bg: Лубомбо
+    bn: লুবোম্বু জেলা
+    da: Lubombo District
+    de: Lubombo
+    el: Λουμπόμπο
+    es: Lubombo
+    fi: Lubombo
+    fr: Lubombo
+    gu: લુમોમ્બો જિલ્લો
+    hi: लुबोम्बो जिला
+    id: Distrik Lubombo
+    it: distretto di Lubombo
+    ja: ルボンボ
+    ka: ლუბომბო
+    kn: ಲುಬೊಂಬಾ ಜಿಲ್ಲೆ
+    ko: 루봄보 구
+    lt: Lubombo rajonas
+    mr: लुब्म्बो जिल्हा
+    ms: Lubombo District
+    nb: Lubombo
+    nl: Lubombo
+    pl: Dystrykt Lubombo
+    pt: Lubombo
+    ro: Districtul Lubombo
+    ru: Лубомбо
+    si: ලුබෝම්බෝ දිස්ත්‍රික්කය
+    sv: Lubombo
+    ta: லுபாம்போ மாவட்டம்
+    te: లుబోంబో జిల్లా
+    th: ลูบอมโบ
+    tr: Lubombo District
+    uk: Лубомбо
+    ur: لوبومبو علاقہ
+    vi: Quận Lubombo
+    lv: Lubombo reģions
+    ceb: Lubombo District
+    zh: 卢邦博
+    ccp: "\U00011123\U0001112A\U0001111D\U0001112A\U0001111F\U00011134\U0001111D\U0001112E"
+    he: מחוז לובומבו
+    ca: Lubombo
+    'no': Lubombo
+    fa: ناحیه لوبومبو
+    hy: Լուբոմբո
+    sr: Лубомбо
+    sr_Latn: Lubombo
+  comments:
+  type: region
+MA:
+  name: Manzini
+  code: MA
+  unofficial_names: Manzini
+  geo:
+    latitude: -26.644588
+    longitude: 31.3541631
+    min_latitude: -26.8945191
+    min_longitude: 30.794107
+    max_latitude: -26.1589679
+    max_longitude: 31.706045
+  translations:
+    en: Manzini
+    ar: مقاطعة منزيني
+    bg: Манзини
+    bn: মাঞ্জিনি জেলা
+    da: Manzini District
+    de: Manzini
+    el: Μανζίνι
+    es: Distrito de Manzini
+    fi: Manzini
+    fr: Manzini
+    gu: મેન્ઝીની જિલ્લો
+    hi: मैन्ज़ीनी प्रदेश
+    id: Distrik Manzini
+    it: distretto di Manzini
+    ja: マンジニ地方
+    ka: მანზინის რეგიონი
+    kn: ಮಂಜಿನಿ ಜಿಲ್ಲೆ
+    ko: 만지니 구
+    lt: Manzinio rajonas
+    mr: मांझिनी जिल्हा
+    ms: Manzini District
+    nb: Manzini
+    nl: Manzini
+    pl: Dystrykt Manzini
+    pt: Manzini
+    ro: Districtul Manzini, Swaziland
+    ru: Манзини
+    si: මන්සිනි දිස්ත්‍රික්කය
+    sv: Manzini
+    ta: மஞ்சினி மாவட்டம்
+    te: మాంజిని జిల్లా
+    th: มันซินี
+    tr: Manzini District
+    uk: Манзіні
+    ur: مانزینی علاقہ
+    vi: Quận Manzini
+    lv: Manzini reģions
+    ceb: Manzini District
+    zh: 曼齊尼區
+    ccp: "\U0001111F\U0001111A\U00011134\U0001110E\U00011128\U0001111A\U00011128"
+    he: מחוז מנזיני
+    'no': Manzini
+    ca: Manzini
+    fa: منطقه مانزینی
+    hy: Մանզինի
+    sr: Манзини (покрајина)
+    sr_Latn: Manzini (pokrajina)
+  comments:
+  type: region
+SH:
+  name: Shiselweni
+  code: SH
+  unofficial_names: Shiselweni
+  geo:
+    latitude: -26.9827577
+    longitude: 31.3541631
+    min_latitude: -27.317101
+    min_longitude: 30.902433
+    max_latitude: -26.75172
+    max_longitude: 31.980196
+  translations:
+    en: Shiselweni
+    ar: مقاطعة شيزلويني
+    bg: Шиселвени
+    bn: শিসেলওয়েনি জেলা
+    ca: Shiselweni
+    da: Shiselweni District
+    de: Shiselweni
+    el: Σισελουένι
+    es: Shishelweni
+    fi: Shiselweni
+    fr: Shiselweni
+    gu: શીસેલવેની જિલ્લો
+    hi: शिसेल्वेनी जिला
+    id: Distrik Shiselweni
+    it: distretto di Shiselweni
+    ja: シセルウェニ
+    ka: შისელვენი
+    kn: ಶಿಸೆಲ್ವೆನಿ ಜಿಲ್ಲೆ
+    ko: 시셀웨니 구
+    lt: Šiselvenio rajonas
+    mr: शीसलनेणी जिल्हा
+    ms: Shiselweni District
+    nb: Shiselweni
+    nl: Shiselweni
+    pl: Dystrykt Shiselweni
+    pt: Shishelweni
+    ro: Districtul Shiselweni
+    ru: Шиселвени
+    si: ශිසේල්වෙනි දිස්ත්‍රික්කය
+    sv: Shiselweni
+    ta: ஷிசெலவெனி மாவட்டம்
+    te: షిషెల్వేని జిల్లా
+    th: ชิเซลเวนี
+    tr: Shiselweni District
+    uk: Шіселвені
+    ur: شیزلوینی علاقہ
+    vi: Quận Shiselweni
+    lv: Šiselveni reģions
+    ceb: Shiselweni District
+    zh: 希塞卢韦尼
+    ccp: "\U00011125\U0001112D\U00011125\U0001112C\U00011123\U00011134\U00011124\U0001111A\U00011128"
+    he: מחוז שיסלוואני
+    'no': Shiselweni
+    fa: ناحیه شیزلونی
+    hy: Շիսելվենի
+    sr: Шиселвени
+    sr_Latn: Šiselveni
+  comments:
+  type: region

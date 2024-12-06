@@ -1,0 +1,35 @@
+module Datadog
+  module CI
+    module Contrib
+      module Cucumber
+        class Formatter
+          private
+
+          attr_reader config: untyped
+
+          attr_reader current_feature_span: untyped
+
+          attr_reader current_step_span: untyped
+
+          public
+
+          def initialize: (untyped config) -> void
+
+          def bind_events: (untyped config) -> untyped
+
+          def on_test_case_started: (untyped event) -> untyped
+
+          def on_test_case_finished: (untyped event) -> (nil | untyped)
+
+          def on_test_step_started: (untyped event) -> untyped
+
+          def on_test_step_finished: (untyped event) -> (nil | untyped)
+
+          private
+
+          def configuration: () -> untyped
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,20 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/field_test-0.6.0/ext/field_test
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+checking for rice/rice.hpp in /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/rice-4.1.0/include... yes
+checking for -lstdc++... yes
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/field_test-0.6.0/ext/field_test
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-eoaa25 sitelibdir\=./.gem.20241205-149352-eoaa25 clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/field_test-0.6.0/ext/field_test
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-eoaa25 sitelibdir\=./.gem.20241205-149352-eoaa25
+compiling ext.cpp
+linking shared-object field_test/ext.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/field_test-0.6.0/ext/field_test
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-eoaa25 sitelibdir\=./.gem.20241205-149352-eoaa25 install
+/usr/bin/install -c -m 0755 ext.so ./.gem.20241205-149352-eoaa25/field_test
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/field_test-0.6.0/ext/field_test
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-eoaa25 sitelibdir\=./.gem.20241205-149352-eoaa25 clean

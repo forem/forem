@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title> HighLine </title>
+    <style type="text/css"> @import url(highline.css); </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="header"></div>
+      <div id="content">
+        <h2>HighLine is about&#8230;</h2>
+
+
+	<h3>Saving time.</h3>
+
+
+	<p>Command line interfaces are meant to be easy.  So why shouldn&#8217;t building
+them be easy, too?  HighLine provides a solid toolset to help you get
+the job done cleanly so you can focus on the real task at hand,
+<em>your task.</em></p>
+
+
+	<h3>Clean and intuitive design.</h3>
+
+
+	<p>Want to get a taste for how HighLine is used?  Take a look at this simple
+example, which asks a user for a zip code, automatically does validation,
+and returns the result:</p>
+
+
+	<pre><code>zip = ask("Zip?  ") { |q| q.validate = /\A\d{5}(?:-?\d{4})?\Z/ }</code></pre>
+
+
+	<h3>Hassle-free Installation.</h3>
+
+
+	<p>Installation is easy via RubyGems.  Simply enter the command:</p>
+
+
+	<pre><code>sudo gem install highline</code></pre>
+
+
+	<p>and you&#8217;ll be on your way! Of course, manual installation is an option,
+too.</p>
+      </div>
+      <div id="sidebar">
+        <ul>
+	<li><a href="http://rubyforge.org/projects/highline">Project Page</a></li>
+		<li><a href="http://highline.rubyforge.org/doc">Documentation</a></li>
+		<li><a href="https://github.com/JEG2/highline">Source</a></li>
+		<li><a href="mailto:james@grayproductions.net">Contact</a></li>
+	</ul>
+      </div>
+      <div id="footer">
+      Created by James Edward Gray II and Gregory Brown
+      </div>
+    </div>
+  </body>
+</html>

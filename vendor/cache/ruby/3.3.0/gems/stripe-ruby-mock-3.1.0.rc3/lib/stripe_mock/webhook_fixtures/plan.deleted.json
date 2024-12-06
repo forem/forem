@@ -1,0 +1,20 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "plan.deleted",
+  "object": "event",
+  "data": {
+    "object": {
+      "interval": "month",
+      "product": "pr_00000000000000",
+      "amount": 100,
+      "currency": "usd",
+      "id": "fkx0AFo_00000000000000",
+      "object": "plan",
+      "livemode": false,
+      "interval_count": 1,
+      "trial_period_days": null
+    }
+  }
+}

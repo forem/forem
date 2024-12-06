@@ -1,0 +1,560 @@
+---
+BA:
+  name: Barima-Waini
+  code: BA
+  unofficial_names: Barima-Waini
+  geo:
+    latitude: 7.488241899999999
+    longitude: -59.6564494
+    min_latitude: 6.981004
+    min_longitude: -60.7125971
+    max_latitude: 8.5480995
+    max_longitude: -58.8041041
+  translations:
+    en: Barima-Waini
+    ar: باريما - ويني
+    bg: Барима-Уейни
+    bn: বারিমা-ওয়াইনি
+    da: Barima-Waini
+    de: Barima-Waini
+    el: Μπαρίμα-Γουαΐνι
+    es: Barima-Waini
+    fa: باریما-واینی
+    fi: Barima-Waini
+    fr: Barima-Waini
+    gl: Barima-Waini
+    gu: બારીમા-વાઈની
+    hi: बरीमा-वैनी
+    id: Barima-Waini
+    it: Barima-Waini
+    ja: バリマ・ワイニ州
+    kn: ಬರಿಮಾ-ವೈನಿ
+    ko: 바리마와이니 주
+    lt: Barima-Vainis
+    mr: बरिमा-वेनई
+    ms: Barima-Waini
+    nb: Barima-Waini
+    nl: Barima-Waini
+    pl: Barima-Waini
+    pt: Barima-Waini
+    ru: Барима-Уайни
+    si: බරිමා-වයිනි
+    sv: Barima-Waini
+    ta: பரிமா -வைனி
+    te: బరిమా-వైని
+    th: บาริมา-วาอินิ
+    tr: Barima-Waini
+    uk: Баріма-Вайні
+    ur: باریما واینی
+    vi: Barima-Waini
+    zh: 巴里马-瓦伊尼
+    lv: Barima-Vaini
+    ceb: Barima-Waini Region
+    sq: Barima-Waini
+    ccp: "\U0001111D\U00011122\U00011128\U0001111F-\U00011103\U0001112E\U00011120\U0001112D\U0001111A\U00011128"
+    'no': Barima-Waini
+    kk: Барима-Уайни
+    ps: باریما واینی
+    ro: Barima-Waini
+  comments:
+  type: region
+CU:
+  name: Cuyuni-Mazaruni
+  code: CU
+  unofficial_names: Cuyuni-Mazaruni
+  geo:
+    latitude: 6.4642141
+    longitude: -60.21107519999999
+    min_latitude: 5.16021
+    min_longitude: -61.396271
+    max_latitude: 7.233457
+    max_longitude: -58.56568799999999
+  translations:
+    en: Cuyuni-Mazaruni
+    ar: كويوني مازاروني
+    bg: Каюни-Мазаруни
+    bn: কুয়ুনি-মাজারুনি
+    da: Cuyuni-Mazaruni
+    de: Cuyuni-Mazaruni
+    el: Κουγιούνι-Μαζαρούνι
+    es: Cuyuni-Mazaruni
+    fa: کویونی-مازارونی
+    fi: Cuyuni-Mazaruni
+    fr: Cuyuni-Mazaruni
+    gu: કુયૂની-મઝારૂની
+    hi: कुयूनी-मज़ारूनी
+    id: Cuyuni-Mazaruni
+    it: Cuyuni-Mazaruni
+    ja: クユニ＝マザルニ州
+    kn: ಕುಯುನಿ-ಮಝರುನಿ
+    ko: 쿠유니마자루니 주
+    lt: Kujunis-Mazarunis
+    mr: क्युनी-मझारुनी
+    ms: Cuyuni-Mazaruni
+    nb: Cuyuni-Mazaruni
+    nl: Cuyuni-Mazaruni
+    pl: Cuyuni-Mazaruni
+    pt: Cuyuni-Mazaruni
+    ru: Куюни-Мазаруни
+    si: කුයිනි මාසරූනි
+    sv: Cuyuni-Mazaruni
+    ta: சுயூனி -மாசாருநி
+    te: కయూని-మజరునై
+    th: คูยูนี-มาซารูนี
+    tr: Cuyuni-Maarauni
+    uk: Куюні-Мазаруні
+    ur: کویونی مازارونی
+    vi: Cuyuni-Mazaruni
+    lv: Kujuni-Mazaruni
+    ceb: Cuyuni-Mazaruni Region
+    zh: 庫尤尼-馬扎魯尼區
+    sq: Cuyuni-Mazaruni
+    ccp: "\U0001110C\U0001112A\U00011120\U0001112E\U0001111A\U00011128-\U0001111F\U0001110E\U00011122\U0001112A\U0001111A\U00011128"
+    'no': Cuyuni-Mazaruni
+    kk: Куюни-Мазаруни
+    ro: Cuyuni-Mazaruni
+  comments:
+  type: region
+DE:
+  name: Demerara-Mahaica
+  code: DE
+  unofficial_names: Demerara-Mahaica
+  geo:
+    latitude: 6.546425999999999
+    longitude: -58.0982046
+    min_latitude: 6.096394
+    min_longitude: -58.3052001
+    max_latitude: 6.826398299999999
+    max_longitude: -57.8823981
+  translations:
+    en: Demerara-Mahaica
+    ar: ديميرارا-مهايكا
+    bg: Демерара-Махайка
+    bn: ডেমারারা-মাহিয়াকা
+    da: Demerara-Mahaica
+    de: Demerara-Mahaica
+    el: Ντεμεράρα-Μαχάικα
+    es: Demerara-Mahaica
+    fa: دمرارا-ماهایکا
+    fi: Demerara-Mahaica
+    fr: Demerara-Mahaica
+    gu: ડેમેરારા-મહૈકા
+    hi: डेमरारा-महाइका
+    id: Demerara-Mahaica
+    it: Demerara-Mahaica
+    ja: デメララ・マハイカ州
+    kn: ಡೆಮೆರರಾ-ಮಹಾಕಾ
+    ko: 데메라라마하이카 주
+    lt: Demerara-Mahaika
+    mr: डेमेरारा-महाका
+    ms: Demerara-Mahaica
+    nb: Demerara-Mahaica
+    nl: Demerara-Mahaica
+    pl: Demerara-Mahaica
+    pt: Demerara-Mahaica
+    ru: Демерара-Махайка
+    si: දෙමෙරාරා මහසියා
+    sv: Demerara-Mahaica
+    ta: டெமெரரா -மஹேகா
+    te: డెమెరారా-మాహైకా
+    th: เดเมอรารา-มาเฮคา
+    tr: Demerara- Mahaica
+    uk: Демерара-Махайка
+    ur: دیمیرارا ماہایکا
+    vi: Demerara-Mahaica
+    lv: Demerara-Mahaika
+    ceb: Demerara-Mahaica Region
+    zh: 德梅拉拉-馬海卡區
+    sq: Demerara-Mahaica
+    ccp: "\U00011113\U0001112C\U0001111F\U00011122\U00011122-\U0001111F\U00011126\U0001112D\U00011107"
+    be: Дэмерара-Махайка
+    'no': Demerara-Mahaica
+    kk: Демерара-Махайка
+    ro: Demerara-Mahaica
+  comments:
+  type: region
+EB:
+  name: East Berbice-Corentyne
+  code: EB
+  unofficial_names: East Berbice-Corentyne
+  geo:
+    latitude: 2.7477922
+    longitude: -57.4627259
+    min_latitude: 1.452054
+    min_longitude: -58.518758
+    max_latitude: 6.3251509
+    max_longitude: -56.48025089999999
+  translations:
+    en: East Berbice-Corentyne
+    ar: شرق بيربيس-كورنتين
+    bn: ইস্ট বারবিচ-করেনটাইন
+    cs: East Berbice-Corentyne
+    da: East Berbice-Corentyne
+    de: East Berbice-Corentyne
+    el: Ήστ Μπερμπίκε-Κορεντίνε
+    es: Berbice Oriental-Corentyne
+    fa: بربیک شرقی-کورنتاین
+    fi: East Berbice-Corentyne
+    fr: Berbice oriental-Courantyne
+    gu: ઇસ્ટ બેર્બિસ-કોરેન્ટીન
+    hi: ईस्ट बेर्बिस-कोरेंटीन
+    id: Berbice-Corentyne Timur
+    it: Berbice Orientale-Corentyne
+    ja: 東ベルビセ＝コレンティネ州
+    kn: ಈಸ್ಟ್ ಬರ್ಬೀಸ್-ಕೊರೆಂಟೈನ್
+    ko: 이스트버비스코렌타인 주
+    lt: Rytų Berbisas-Koranteinas
+    mr: ईस्ट बेर्बाइस-कोरनेटीन
+    ms: East Berbice-Corentyne
+    nb: East Berbice-Corentyne
+    nl: East Berbice-Corentyne
+    pl: East Berbice-Corentyne
+    pt: Berbice Oriental-Corentyne
+    ru: Ист-Бербис-Корентайн
+    si: නැගෙනහිර බර්බයිස් කොරෙන්ට්ය්නේ
+    sv: East Berbice-Corentyne
+    ta: கிழக்கு பெர்பிஸ் -காரெண்ட்டின்
+    te: తూర్పు బెర్బైస్-కోరెంటైన్
+    th: อีส เบอไบซ์ โคเร็นไทร์
+    tr: Doğu Berbice-County
+    uk: Східний Бербіс-Корентайн
+    ur: مشرقی بربیس کورینتینے
+    vi: Đông Berbice-Corentyne
+    lv: Austrumberbisa-Koranteina
+    ceb: East Berbice-Corentyne Region
+    zh: 东伯比斯-科兰太因
+    sq: East Berbice-Corentyne
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U0001111D\U00011122\U00011134\U0001111D\U0001112D\U0001110C\U00011134-\U00011107\U0001112E\U00011122\U0001112C\U0001111A\U00011134\U00011111\U0001112D\U0001111A\U00011134"
+    'no': East Berbice-Corentyne
+    kk: Шығыс Бербис - Корентайн
+    ro: East Berbice-Corentyne
+  comments:
+  type: region
+ES:
+  name: Essequibo Islands-West Demerara
+  code: ES
+  unofficial_names: Essequibo Islands-West Demerara
+  geo:
+    latitude: 6.5720132
+    longitude: -58.4629997
+    min_latitude: 6.114976
+    min_longitude: -58.835067
+    max_latitude: 7.0862864
+    max_longitude: -58.1656161
+  translations:
+    en: Essequibo Islands-West Demerara
+    ar: إقليم جزر ايسيكويبو غرب ديميرارا
+    bn: এসেকুইবো আইল্যান্ড
+    cs: Essequibo Islands-West Demerara
+    da: Essequibo Islands-West Demerara
+    de: Essequibo Islands-West Demerara
+    el: Νησιά Εσσεσουίμπο-Γουέστ Ντεμεράρα
+    es: Islas Esequibo-Demerara Occidental
+    fa: جزایر اسیکوییبو-دمرارا غربی
+    fi: Essequibo Islands-West Demerara
+    fr: Îles d’Essequibo-Demerara Occidental
+    gu: એસેક્યુબો આઇલેન્ડ્સ-વેસ્ટ ડેમેરારા
+    hi: एसेकिबो द्वीपसमूह-पश्चिमी डेमरारा
+    id: Pulau Essequibo-Demerara Barat
+    it: Isole Essequibo-Demerara Occidentale
+    ja: エセキボ諸島＝西デメララ州
+    kn: ಈಸ್ಕಿನಿಬೋ ಐಲ್ಯಾಂಡ್ಸ್-ವೆಸ್ಟ್ ಡೆಮೆರಾರಾ
+    ko: 에세키보아일랜즈웨스트데메라라 주
+    lt: Esekibo salos-Vakarų Demerara
+    mr: एसेशिबू आइलॅंड्स-वेस्ट डेमेरारा
+    ms: Kepulauan Essequibo-Demerara Barat
+    nb: Essequibo Islands-West Demerara
+    nl: Essequibo Islands-West Demerara
+    pl: Essequibo Islands-West Demerara
+    pt: Ilhas Essequibo-Demerara Ocidental
+    ru: Эссекибо-Айлендс-Уэст-Демерара
+    si: එසේකුයිබෝ දූපත්
+    sv: Essequibo Islands-West Demerara
+    ta: எஸ்செகுஇபோ இஸ்லாண்ட்ஸ் -மேற்கு டெமெரரா
+    te: ఎసెక్విబో దీవులు-పశ్చిమ డెమెరారా
+    th: หมู่เกาะเอสสิคิวโบเดเมราร่าตะวันตก
+    tr: Essequibo Adaları - Batı Demerara
+    uk: Острови Есекібо-Західна Демерара
+    ur: ایسیکویبو جزائر مغربی دیمیرارا
+    vi: Quần đảo Essequibo Islands (Tây Demerara)
+    lv: Esekibo salas-Rietumdemerara
+    ceb: Essequibo Islands-West Demerara Region
+    zh: 埃塞奎博群島-西德梅拉拉區
+    sq: Essequibo Islands-West Demerara
+    ccp: "\U00011103\U00011128\U00011125\U0001112C\U00011107\U0001112D\U0001112A\U0001111D\U0001112E
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U0001110C\U00011134-\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134
+      \U00011113\U0001112C\U0001111F\U00011122\U00011122"
+    'no': Essequibo Islands-West Demerara
+    kk: Эссекибо аралдары - Батыс Демерара
+    ro: Essequibo Islands-West Demerara
+  comments:
+  type: region
+MA:
+  name: Mahaica-Berbice
+  code: MA
+  unofficial_names: Mahaica-Berbice
+  geo:
+    latitude: 6.238496
+    longitude: -57.9162555
+    min_latitude: 5.8556228
+    min_longitude: -58.1318211
+    max_latitude: 6.7012129
+    max_longitude: -57.530811
+  translations:
+    en: Mahaica-Berbice
+    bg: Махайка-Бърбайс
+    de: Mahaica-Berbice
+    es: Mahaica-Berbice
+    fa: ماهایکا-بربیک
+    fr: Mahaica-Berbice
+    id: Mahaica-Berbice
+    it: Mahaica-Berbice
+    ja: マハイカ＝ベルビセ州
+    ko: 마하이카버비스 주
+    lt: Mahaika-Berbisas
+    nb: Mahaica-Berbice
+    nl: Mahaica-Berbice
+    pt: Mahaica-Berbice
+    ru: Махайка-Бербис
+    sv: Mahaica-Berbice
+    uk: Махайка-Бербіс
+    ur: ماہایکا بربیس
+    ceb: Mahaica-Berbice Region
+    zh: 馬海卡-伯比斯區
+    pl: Mahaica-Berbice
+    sq: Mahaica-Berbice
+    ccp: "\U0001111F\U00011126\U0001112D\U00011107-\U0001111D\U00011122\U00011134\U0001111D\U0001112D\U0001110C\U00011134"
+    'no': Mahaica-Berbice
+    kk: Махайка-Бербис
+    ro: Mahaica-Berbice
+  comments:
+  type: region
+PM:
+  name: Pomeroon-Supenaam
+  code: PM
+  unofficial_names: Pomeroon-Supenaam
+  geo:
+    latitude: 7.1294166
+    longitude: -58.9206295
+    min_latitude: 6.7601081
+    min_longitude: -59.17710700000001
+    max_latitude: 7.6828597
+    max_longitude: -58.47301489999999
+  translations:
+    en: Pomeroon-Supenaam
+    ar: بوميرون-سوبنام
+    bg: Померун-Супенам
+    bn: পোমেরুন-সুপেনাম
+    da: Pomeroon-Supenaam
+    de: Pomeroon-Supenaam
+    el: Πομερούν-Σουπεναάμ
+    es: Pomeroon-Supenaam
+    fa: پومرون-سوپنام
+    fi: Pomeroon-Supenaam
+    fr: Pomeroon-Supenaam
+    gu: પોમેરૂન-સુપેનામ
+    hi: पोमेरून-सुपनाम
+    id: Pomeroon-Supenaam
+    it: Pomeroon-Supenaam
+    ja: ポメローン＝スペナーム州
+    kn: ಪೋಮರೂನ್-ಸುಪೀನಾಮ್
+    ko: 포메룬수페남 주
+    lt: Pomeronas-Supenamas
+    mr: पोमेरून-सुपेंनाम
+    ms: Pomeroon-Supenaam
+    nb: Pomeroon-Supenaam
+    nl: Pomeroon-Supenaam
+    pl: Pomeroon-Supenaam
+    pt: Pomeroon-Supenaam
+    ru: Померун-Супенаам
+    si: පොමෙරූන්-සුපෙනාම්
+    sv: Pomeroon-Supenaam
+    ta: போமெரூன் -சூப்பேனாம்
+    te: పోమెరూన్-సూపెనామ్
+    th: เมืองดิงลี
+    tr: Pomeroon-Supenaam
+    uk: Померун-Супенаам
+    ur: پومیرون سوپینام
+    vi: Pomeroon-Supenaam
+    lv: Pomerūna-Supenāma
+    ceb: Pomeroon-Supenaam Region
+    zh: 波默倫-蘇佩納姆區
+    sq: Pomeroon-Supenaam
+    ccp: "\U0001111B\U0001112E\U0001111F\U00011122\U0001112A\U0001111A\U00011134-\U00011125\U0001112A\U0001111B\U0001112C\U0001111A\U0001111F\U00011134"
+    'no': Pomeroon-Supenaam
+    kk: Померун-Супенаам
+    ro: Pomeroon-Supenaam
+  comments:
+  type: region
+PT:
+  name: Potaro-Siparuni
+  code: PT
+  unofficial_names: Potaro-Siparuni
+  geo:
+    latitude: 4.7855853
+    longitude: -59.28799770000001
+    min_latitude: 3.989301
+    min_longitude: -60.16331909999999
+    max_latitude: 5.733892000000001
+    max_longitude: -58.272824
+  translations:
+    en: Potaro-Siparuni
+    ar: بوتارو-سيباروني
+    bg: Потаро-Сипаруни
+    bn: পোতারো সিপারুনি
+    da: Potaro-Siparuni
+    de: Potaro-Siparuni
+    el: Ποτάρο-Σιπαρούνι
+    es: Potaro-Siparuni
+    fa: پوتارو-سیپارونی
+    fi: Potaro-Siparuni
+    fr: Potaro-Siparuni
+    gu: પોટારો-સિપરુનિ
+    hi: पोटारो-सिपारुनी
+    id: Potaro-Siparuni
+    it: Potaro-Siparuni
+    ja: ポタロ＝シパルニ州
+    kn: ಪೋಟೋರೋ-ಸಿಪರುನಿ
+    ko: 포타로시파루니 주
+    lt: Potaras-Siparunis
+    mr: पोट्रो-सिपरुन
+    ms: Potaro-Siparuni
+    nb: Potaro-Siparuni
+    nl: Potaro-Siparuni
+    pl: Potaro-Siparuni
+    pt: Potaro-Siparuni
+    ru: Потаро-Сипаруни
+    si: පොටාරෝ-සිපරුනි
+    sv: Potaro-Siparuni
+    ta: போடரோ-சிபருணி
+    te: పోటారో-సిపారుని
+    th: โปตาโร สิปารูนิ
+    tr: Potaro-Siparuni
+    uk: Потаро-Сипаруні
+    ur: پوتارو سیپارونی
+    vi: Potaro-Siparuni
+    lv: Potaro-Siparuni
+    ceb: Potaro-Siparuni Region
+    zh: 波塔羅-錫帕魯尼區
+    sq: Potaro-Siparuni
+    ccp: "\U0001111B\U00011127\U00011111\U00011122\U0001112E-\U00011125\U00011128\U0001111B\U00011122\U0001112A\U0001111A\U00011128"
+    'no': Potaro-Siparuni
+    kk: Потаро-Сипаруни
+    ro: Potaro-Siparuni
+  comments:
+  type: region
+UD:
+  name: Upper Demerara-Berbice
+  code: UD
+  unofficial_names: Upper Demerara-Berbice
+  geo:
+    latitude: 5.3064879
+    longitude: -58.18929209999999
+    min_latitude: 4.601077
+    min_longitude: -58.8706361
+    max_latitude: 6.508296100000001
+    max_longitude: -57.63137390000001
+  translations:
+    en: Upper Demerara-Berbice
+    ar: أبر ديميرارا-بيربيس
+    bn: আপার ডেমারারা-বারবিচ
+    da: Upper Demerara-Berbice
+    de: Upper Demerara-Berbice
+    el: Άπερ Ντεμεράρα-Μπερμπίκε
+    es: Alto Demerara-Berbice
+    fa: دمرارا-بربیک علیا
+    fi: Upper Demerara-Berbice
+    fr: Haut-Demerara-Berbice
+    gu: અપર ડેમેરારા-બર્બાઈસ
+    hi: ऊपरी डेमरारा-बर्बिस
+    id: Demerara Hulu-Berbice
+    it: Alto Demerara-Berbice
+    ja: アッパー・デメララ＝ベルビセ州
+    kn: ಅಪ್ಪರ್ ಡೆಮೆರಾ-ಬರ್ಬಿಸ್
+    ko: 어퍼데메라라버비스 주
+    lt: Aukštutinė Demerara-Berbisas
+    mr: अप्पर डेमेररा-बरबिस
+    ms: Upper Demerara-Berbice
+    nb: Upper Demerara-Berbice
+    nl: Upper Demerara-Berbice
+    pl: Upper Demerara-Berbice
+    pt: Alto Demerara-Berbice
+    ru: Аппер-Демерара-Бербис
+    si: ඉහල දෙමෙරාරා -බර්බිස්
+    sv: Upper Demerara-Berbice
+    ta: அப்பர் டெமென்றாரா -பெர்பிஸ்
+    te: అప్పర్ డమెరారా-బెర్బైస్
+    th: เดเมอร์อราเบอร์บิสตอนบน
+    tr: Upper Demerara- Berbice
+    uk: Верхня Демерара-Бербіс
+    ur: بالائی دیمیرارا بربیس
+    vi: Thượng Demerara-Berbice
+    lv: Augšdemerara-Berbisa
+    ceb: Upper Demerara-Berbice Region
+    zh: 上德梅拉拉-伯比斯區
+    sq: Upper Demerara-Berbice
+    ccp: "\U00011103\U0001111B\U00011122\U00011134 \U00011113\U0001111F\U0001112C\U00011122\U00011122-\U0001111D\U00011122\U00011134\U0001111D\U0001112D\U0001110C\U00011134"
+    'no': Upper Demerara-Berbice
+    ca: Upper Demerara-Berbice
+    kk: Жоғарғы Демерара-Бербис
+    ro: Upper Demerara-Berbice
+  comments:
+  type: region
+UT:
+  name: Upper Takutu-Upper Essequibo
+  code: UT
+  unofficial_names: Upper Takutu-Upper Essequibo
+  geo:
+    latitude: 2.9239595
+    longitude: -58.73736339999999
+    min_latitude: 1.1750799
+    min_longitude: -59.992054
+    max_latitude: 4.5214021
+    max_longitude: -57.93002989999999
+  translations:
+    en: Upper Takutu-Upper Essequibo
+    ar: أبر كاتوكو - أبر ايسيكوبيو
+    bn: আপার টাকুটু-আপার এসেকুইবো
+    da: Upper Takutu-Upper Essequibo
+    de: Upper Takutu-Upper Essequibo
+    el: Άπερ Τακούτου-Άπερ Εσεκουίμπο
+    es: Alto Tacutu-Alto Esequibo
+    fa: تاکوتو بالا- اسیکوییبو بالا
+    fi: Upper Takutu-Upper Essequibo
+    fr: Haut-Takutu-Haut-Essequibo
+    gu: અપર ટકુટુ-અપર એસેકુબો
+    hi: ऊपरी टकूटू-ऊपरी एसेकिबो
+    id: Takutu Hulu-Essequibo Hulu
+    it: Alto Takutu-Alto Essequibo
+    ja: アッパー・タクトゥ＝アッパー・エセキボ州
+    kn: ಅಪ್ಪರ್ ಟಕುತು-ಅಪ್ಪರ್ ಎಸ್ಸಿಸ್ಟಿಬೊ
+    ko: 어퍼타쿠투어퍼에세키보 주
+    lt: Aukštutinis Takutu-Aukštutinis Esekibas
+    mr: अप्पर टोकुतू-अप्पर इस्कोवबो
+    ms: Upper Takutu-Upper Essequibo
+    nb: Upper Takutu-Upper Essequibo
+    nl: Upper Takutu-Upper Essequibo
+    pl: Upper Takutu-Upper Essequibo
+    pt: Alto Takutu-Alto Essequibo
+    ru: Аппер-Такуту-Аппер-Эссекибо
+    si: ඉහල ටකුටු -ඉහල එසේකුයිබෝ
+    sv: Upper Takatu-Upper Esseqiubo
+    ta: அப்பர் டாகுது-அப்பர் எஸ்ஸேகுஇபோ
+    te: అప్పర్ టకూటూ-అప్పర్ ఎసెక్విబో
+    th: ทาคูตูตอนบน-สคิวโบตอนบน
+    tr: Upper Takutu- Upper Essequibo
+    uk: Верхнє Такуту-Верхня Есекібо
+    ur: بالائی تاکوتو بالائی ایسیکویبو
+    vi: Thượng Takutu-Thượng Essequibo
+    lv: Augštakutu-Augšesekibo
+    ceb: Upper Takutu-Upper Essequibo Region
+    zh: 上塔库图-上埃塞奎博
+    sq: Upper Takutu-Upper Essequibo
+    ccp: "\U00011103\U0001111B\U00011122\U00011134 \U00011111\U00011107\U0001112A\U00011111\U0001112A-\U00011103\U0001111B\U00011122\U00011134
+      \U00011103\U00011128\U00011125\U0001112C\U00011107\U0001112D\U0001112A\U0001111D\U0001112E"
+    'no': Upper Takutu-Upper Essequibo
+    ca: Alt Takutu-Alto Essequibo
+    kk: Жоғарғы Такуту-Жоғарғы Эссекибо
+    ro: Upper Takutu-Upper Essequibo
+  comments:
+  type: region

@@ -1,0 +1,24 @@
+HTTP/1.1 404 Not Found
+Server: nginx
+Date: Fri, 17 Oct 2014 21:01:44 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 933
+Connection: keep-alive
+Status: 404 Not Found
+X-Request-Id: 84997334b729a4e1ad65c10d9c1f68a7
+X-Runtime: 0.032396
+X-Rack-Cache: miss
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>The page you were looking for doesn't exist (404)</title>
+</head>
+
+<body>
+  <h1>Four Oh Four!</h1>
+  <h2>The page you were looking for doesn't exist.</h2>
+</body>
+</html>

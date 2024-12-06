@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../spec/bin_simplecov_helper' if ENV['I18N_TASKS_BIN_SIMPLECOV_COVERAGE']
+
+# prevent i18n gem warning
+require 'i18n'
+i18n_gem_config = I18n.config
+if i18n_gem_config.respond_to?(:enforce_available_locales=) && i18n_gem_config.enforce_available_locales.nil?
+  i18n_gem_config.enforce_available_locales = true
+end
+
+require 'i18n/tasks/cli'
+
+I18n::Tasks::CLI.start(ARGV)

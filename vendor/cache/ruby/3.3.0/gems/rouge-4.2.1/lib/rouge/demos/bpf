@@ -1,0 +1,7 @@
+r0 = *(u8 *)skb[23]
+*(u32 *)(r10 - 4) = r0
+r1 = *(u32 *)(r6 + 4)
+r1 = 0 ll
+call 1	/* lookup */
+if r0 == 0 goto +2 <LBB0_3>
+lock *(u64 *)(r0 + 0) += r1

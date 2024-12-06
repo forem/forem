@@ -1,0 +1,58 @@
+---
+TR:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: TR
+  alpha3: TUR
+  continent: Europe
+  country_code: '90'
+  currency_code: TRY
+  distance_unit: KM
+  g20_member: true
+  gec: TU
+  geo:
+    latitude: 38.963745
+    longitude: 35.243322
+    max_latitude: 42.3666999
+    max_longitude: 44.8178449
+    min_latitude: 35.808592
+    min_longitude: 25.5377
+    bounds:
+      northeast:
+        lat: 42.3666999
+        lng: 44.8178449
+      southwest:
+        lat: 35.808592
+        lng: 25.5377
+  international_prefix: '00'
+  ioc: TUR
+  iso_long_name: The Republic of Türkiye
+  iso_short_name: Türkiye
+  languages_official:
+  - tr
+  languages_spoken:
+  - tr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: '0'
+  nationality: Turkish
+  number: '792'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: Western Asia
+  un_locode: TR
+  unofficial_names:
+  - Turkey
+  - Türkei
+  - Turquie
+  - Turquía
+  - トルコ
+  - Turkije
+  world_region: EMEA

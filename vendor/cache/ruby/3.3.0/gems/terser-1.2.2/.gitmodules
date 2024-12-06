@@ -1,0 +1,9 @@
+[submodule "vendor/source-map"]
+	path = vendor/source-map
+	url = https://github.com/mozilla/source-map.git
+[submodule "vendor/split"]
+	path = vendor/split
+	url = https://gist.github.com/2048056.git
+[submodule "vendor/terser"]
+	path = vendor/terser
+	url = https://github.com/terser/terser.git

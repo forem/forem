@@ -1,0 +1,38 @@
+{
+  "name": "js-routes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:railsware/js-routes.git",
+  "author": "Bogdan Gusiev <agresso@gmail.com>, Alexey Vasiliev <https://leopard.in.ua> ",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-import": "^2.27.5",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.2",
+    "pinst": "^2.1.1",
+    "prettier": "^2.8.4"
+  },
+  "scripts": {
+    "build": "tsc && yarn lint:fix",
+    "lint:fix": "yarn eslint --fix && yarn prettier --write lib/routes.ts",
+    "postinstall": "yarn husky-upgrade"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint:fix"
+    }
+  },
+  "lint-staged": {
+    "./lib/routes.ts": [
+      "yarn lint:fix"
+    ]
+  }
+}

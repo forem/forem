@@ -1,0 +1,52 @@
+---
+CX:
+  alpha2: CX
+  alpha3: CXR
+  continent: Asia
+  country_code: '61'
+  currency_code: AUD
+  distance_unit: KM
+  gec: KT
+  geo:
+    latitude: -10.447525
+    longitude: 105.690449
+    max_latitude: -10.412352
+    max_longitude: 105.7129382
+    min_latitude: -10.5703619
+    min_longitude: 105.5333161
+    bounds:
+      northeast:
+        lat: -10.412352
+        lng: 105.7129382
+      southwest:
+        lat: -10.5703619
+        lng: 105.5333161
+  international_prefix: '0011'
+  ioc:
+  iso_long_name: The Territory of Christmas Island
+  iso_short_name: Christmas Island
+  languages_official:
+  - en
+  - zh
+  - ms
+  languages_spoken:
+  - en
+  - zh
+  - ms
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: '0'
+  nationality: Christmas Island
+  number: '162'
+  postal_code: true
+  postal_code_format: '6798'
+  region: Oceania
+  start_of_week: monday
+  subregion: Australia and New Zealand
+  un_locode: CX
+  unofficial_names:
+  - Christmas Island
+  - Weihnachtsinsel
+  - クリスマス島
+  - Christmaseiland
+  world_region: APAC

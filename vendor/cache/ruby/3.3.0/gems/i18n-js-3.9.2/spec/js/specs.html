@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Jasmine Spec Runner</title>
+        <link rel="stylesheet" href="jasmine/jasmine.css" type="text/css">
+    </head>
+
+    <body>
+        <!-- load jasmine -->
+        <script type="text/javascript" src="jasmine/jasmine.js"></script>
+        <script type="text/javascript" src="jasmine/jasmine-html.js"></script>
+
+        <!-- load your javascript files -->
+        <script type="text/javascript" src="../../app/assets/javascripts/i18n.js"></script>
+        <script type="text/javascript">
+          function require(path) {
+            if (path.match(/i18n/)) {
+              return I18n;
+            } else {
+              return Translations;
+            }
+          }
+        </script>
+
+        <!-- load your spec files -->
+        <script type="text/javascript" src="translations.js"></script>
+        <script type="text/javascript" src="currency.spec.js"></script>
+        <script type="text/javascript" src="current_locale.spec.js"></script>
+        <script type="text/javascript" src="dates.spec.js"></script>
+        <script type="text/javascript" src="defaults.spec.js"></script>
+        <script type="text/javascript" src="interpolation.spec.js"></script>
+        <script type="text/javascript" src="localization.spec.js"></script>
+        <script type="text/javascript" src="locales.spec.js"></script>
+        <script type="text/javascript" src="numbers.spec.js"></script>
+        <script type="text/javascript" src="placeholder.spec.js"></script>
+        <script type="text/javascript" src="pluralization.spec.js"></script>
+        <script type="text/javascript" src="prepare_options.spec.js"></script>
+        <script type="text/javascript" src="translate.spec.js"></script>
+        <script type="text/javascript" src="utility_functions.spec.js"></script>
+        <script type="text/javascript" src="extend.spec.js"></script>
+
+        <!-- run specs -->
+        <script type="text/javascript">
+          jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+          jasmine.getEnv().execute();
+        </script>
+    </body>
+</html>

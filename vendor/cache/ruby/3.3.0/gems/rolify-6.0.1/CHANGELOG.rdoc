@@ -1,0 +1,246 @@
+== 6.0.1
+
+* Fix with_role with :any resource
+
+= 6.0.0 (April 2, 2021)
+
+Breaking changes:
+
+* Support strict <tt>with_role</tt> queries. Note this changes behaviour of with_role when running in strict mode to behave as previously documented. #543 describes the behaviour change.
+* Dropped support for Ruby 2.3 and 2.4
+
+Improvements:
+
+* Updated ActiveRecord adapters implementation of <tt>in</tt> to utilise a subquery instead of two queries
+
+= 5.3.0 (June 1, 2020)
+
+5.3.0 will be the last version to support Ruby < 2.5 and Rails < 5.2. Support for these will be dropped in the next major release.
+
+* Fix deprecation warning in Ruby 2.7
+* Add Rails 6 support to migration generator
+* Significant ActiveRecord performance improvements to <tt>add_role</tt> and <tt>without_role</tt>
+* Mongoid fix and performance improvement and to <tt>roles_name</tt>
+* Make it safe to call <tt>Thing.with_role(:admin, user)</tt> with new record
+
+= 5.2.0 (Dec 14, 2017)
+* Fix regression in generator around belongs_to options compatibility
+* Update version of database_cleaner
+* Update initializer.rb to include the remove_role_if_empty option and description
+* Allow inverse_of option on rolify method
+* Fix the code-climate-reporter issue that's causing travis to fail
+* Remove a separate index for the name column
+* Fix migration generator for AR 5.x
+* Fixed ambiguous column error
+
+= 5.1.0 (Mar 19, 2016)
+* Rails 5 Support (thanks @lorefnon)
+* Fix user handling in generator (thanks @lorefnon)
+* Fix quoting issues (thanks @lorefnon)
+* Improvements to dynamic module loading (thanks to @DmitryKK)
+
+= 5.0.0 (Nov 17, 2015)
+* Fix migration warning showing when it shouldn't
+* Add role lazy-loading
+* Add has_cached_role and has_cached_strict_role to project.
+  See: https://github.com/RolifyCommunity/rolify#cached-roles-to-avoid-n1-issue
+* Update specs to pass with all Mongoid version.
+
+= 4.1.1 (Aug 06, 2015)
+* Fix a regression in the dynamic method loader.
+
+= 4.1.0 (Aug 04, 2015)
+* added `without_role` method for resources and classes
+* fix `has_role?` with :any and an unsaved user
+* rename the `with_role` method on a resource to `find_as`
+* add a strict parameter to check only roles that were set without supers.
+
+= 4.0.0 (Feb 12, 2015)
+* Increasing version number to 4.0.0 for semantic versioning since `has_role` was removed in 3.5.0
+* Fix spec to pass.
+* Fix dynamic shortcuts being set before migration.
+
+= 3.5.2 (Jan 14, 2015)
+* Fixed regression in RolifyGenerator
+* Updated dependencies
+
+= 3.5.0 (Jan 08, 2015)
+* Removed `has_role` method alias for `add_role`
+* Fixed regression in caching system
+* Fix deprecation warning about timestamp on specs
+* Copy Kernel#capture helper from Rails
+* Add validation on Role.resource_type
+
+= 3.4.1 (Sep 08, 2014)
+* Fixed issue with migrations being generated without a file extension.
+* Updated spec tests to work with Travis CI on Ruby up to 2.1.2 and Rails 4.1.x
+* Made it possible for inheritance of resources.
+* Fixed small bugs throughout project.
+
+= 3.4 (Jan 28, 2014)
+* fixed an initializer bug preventing the rails app to boot
+* enhanced documentation regarding <tt>with_role</tt> method (thanks to @vicomte)
+* added <tt>select(:id)</tt> in SQL subquery used by <tt>in</tt> method in ActiveRecord adapter (thanks to @ryanaip and @badaboda)
+* improved speed when removing roles using <tt>LIMIT(1)</tt> instead of <tt>COUNT</tt> (thanks to @yankovski)
+* fixed travis builds for rubinius and mongoid
+* fixed sanity check running before <tt>Rolify.config</tt> to ensure roles table exists
+* fixed <tt>has_any_role?</tt> to work with unsaved records (thanks to @mhw)
+* fixed specs for Mongoid
+
+= 3.3 (Jan 26, 2014)
+* <b>DEPRECATION NOTICE:</b>Rails 3.1 support dropped: if you use Rails 3.1, please stick to rolify 3.2
+* code cleanup in finders methods
+* generators rewritten entirely. now using ActiveRecord/Mongoid model generator to create Role model
+* added rspec matchers for detailed spec error messages (thanks to @delwyn)
+* clean up specs (thanks to @delwyn), removed subject and let declarations in before(:all) block
+* roles query needs 1 DB hit instead of 1 up to 3 (thanks to @terraplane)
+* remove nil entries from ResourceAdapter#resources_find when using Mongoid adapter (thanks to @daviscabral)
+* fixed a bug regarding redundant index for Mongoid Role model (thanks to  @rschultheis)
+* added support for rolify and resourcify methods on the same model class (specs by @amer)
+* added support for namespaced models (thanks to @intrica)
+* fixed compatibility issue with squeel when using symbols as role parameters (hint by @f3ndot)
+* now raises a warning in the initializer if migration has not been run
+* add support for primary key different than 'id' for resource Model (thanks to @rafaeldl)
+* Rails 4 (thanks to @adammathys) and ruby 2.0 compliant
+* configured travis-ci to run the specs on Rails 3.2/4.0 and Rubies 1.9.3/2.0/rbx/jruby
+* added code climate to check for code smell
+
+= 3.2 (Aug 7, 2012)
+* <b>DEPRECATION NOTICE:</b> Ruby 1.8 support dropped ! Mongoid 3.0 only supports MRI 1.9.3, and HEAD, and JRuby 1.6.0+ in 1.9 mode
+* removed <tt>dynamic_shortcuts</tt> arguments from the generator
+  * to use dynamic shortcuts feature when you're using ActiveRecord, you have to enable it _after_ running rake db:migrate as it relies on the roles table
+* support for Mongoid 3.x (thanks to @Leonas)
+* new class methods on the User class to find users depending on roles they have
+* added scopes to Role class to be able to fetch global, class scoped and instance scoped roles for a specific user
+* deletions of n-n relation are unreliable with Mongoid. Removing ids instead (thanks to @nfo)
+* <tt>has_role?</tt> method now supports new instance (i.e. record not saved in the database yet) (thanks to @demental)
+* added association callbacks <tt>(before|after)_add</tt>, <tt>(before|after)_remove</tt> on <tt>rolify</tt> method (thanks to @shekibobo)
+* added ability to pass an array of roles to <tt>Resource.with_role()</tt>, aliased by <tt>Resource.with_roles()</tt> (thanks to @lukes)
+* added option to have roles be destroyed by default if parent resource is destroyed (thanks to @treydock)
+* added new method <tt>only_has_role?</tt> to check if user has only a specific role (thanks to @jalcine)
+* better edge cases covering in the specs
+* fixed a bug regarding the loading order of the railtie when using Mongoid ORM and other gems using initializer files (thanks to @stigi)
+* fixed double quote syntax when using MySQL
+* fixed a nasty bug regarding class level queries (thanks to @kamrulhassan)
+* fixed uninitialized constant error in scopify method
+* documentation improvement
+
+= 3.1 (Apr 6, 2012)
+* Mongoid adapter optimization
+* adapter code refactoring
+* generator now adds the role class name to the rolify method injected in the user class
+* fixed a bug on the generator when using a 2 words Camel case for the Role class name
+* <b>DEPRECATION NOTICE:</b> <tt>has_role</tt> and <tt>has_no_role</tt> have been depecrated. They are replaced by <tt>add_role</tt> and <tt>remove_role</tt>
+* some internals cleanup (backward compatible)
+* stop requiring <tt>active_record</tt> in <tt>rolify.rb</tt> to prevent other gems ORM detection issue
+* fixed a bug when removing a role to the user using Mongoid adapter
+* added indexes to generator for mongoid (thanks to @stigi)
+* fixed a bug regarding **with_role** method on resource classes (thanks to @nfo)
+
+= 3.0 (Apr 2, 2012)
+* support for Mongoid
+* roles search on resources on instance level (e.g. <tt>Forum.first.roles</tt>) and class level (e.g. <tt>Forum.with_role("admin", user)</tt>)
+* heavy lifting and redesign of the library, code and specs refactoring
+* enhanced drastically specs coverage: 1001 examples !
+
+= 2.2.2 (Feb 17, 2012)
+* fixed another bug occurring when dynamic shortcuts is enabled
+* display now a README file after running the generator to show the next setup steps
+
+= 2.2.1 (Jan 24, 2012)
+* fixed a backward incompatible change introduced in Rails 3.2 release (<tt>find_or_create_by_* generated methods</tt>)
+
+= 2.2 (Jan 18, 2012)
+* fixed a bug in the initializer file regarding dynamic shortcuts
+
+= 2.1 (Nov 30, 2011)
+* added syntactic sugar: <tt>grant</tt> and <tt>revoke</tt> are aliases for <tt>has_role</tt> and <tt>has_no_role</tt>
+* check if RUBY_ENGINE is defined in the gemspec to be able to use jdbc with JRuby for SQLite
+
+= 2.0 (Nov 10, 2011)
+* improved performance of <tt>has_all_roles?</tt> method using one single DB query instead of doing one DB lookup per argument
+  * significant speed-up when requesting with many arguments
+  * database choice can mitigate the results
+* clean up the initializer code
+  * using a DSL to configure the library
+  * setting defaults for User and Role classes
+  * dynamic shortcuts feature is now <b>disabled</b> by default. To turn it on:
+    * set it to true in the initializer file
+    * uncomment the <tt>extend Rolify::Dynamic</tt> line in the User class
+  * detecting if it's loaded by Rails::Server or Rails::Console
+* now also running on Rubinius, JRuby, REE and Ruby 1.8. all specs pass successfully, yeah !
+
+= 1.2 (Nov 4, 2011)
+* fixed a strange bug, probably rails related (thanks to @scottkf)
+  * when using rails in development mode, the <tt>config.cache_classes = false</tt> makes the role class to be loaded at every call and can lead to a <tt>AssociationTypeMismatch</tt>
+  * use of <tt>role_ids</tt> array instead of the <tt>roles</tt> association
+* now running on JRuby (<b>specs are still failing for JRuby though</b>)
+
+= 1.1 (Oct 14, 2011)
+* added a spec to test the rails generator using ammeter gem
+* Gemfile cleanup, moved all dependencies in gemspec instead
+* edited the dependency to Rails 3.1 and newer, now that Rails 3.1 has been released
+* new role scoping capabilities
+  * instance level : <tt>user.has_role "moderator", Forum.first</tt> (<em>already supported in previous release</em>). user has the moderator role only on that Forum in particular
+  * class level : <tt>user.has_role "moderator", Forum</tt>. User has the moderator role on all instances of Forum
+  * global level : <tt>user.has_role "moderator"</tt> (<em>already supported in previous release</em>). User has the moderator role globally (e.q. on all resources)
+* new scoped query capabilities
+  * <tt>user.has_role? "moderator", Forum.first</tt> (<em>already supported in previous release</em>). asks if the user has the moderator role on Forum.first instance
+  * <tt>user.has_role? "moderator", Forum</tt>. asks if the user has the moderator role on all Forum instances
+  * <tt>user.has_role? "moderator"</tt> (<em>already supported in previous release</em>). asks if the user has the global moderator role
+  * <tt>user.has_role? "moderator", :any</tt>. asks if the user has at least one moderator role no matter the scope is (instance, class or global).
+
+= 1.0 (Aug 25, 2011)
+* added a new parameter to disable dynamic shortcut methods due to potential incompatibility with other gems using method_missing with the same pattern
+  * add <tt>Rolify.dynamic_shortcuts = false</tt> in the initializer file or
+  * use the generator command with a third parameter:
+    * <tt>rails g rolify:role Role User false</tt>
+* removed the railtie as it created more problems than it solved
+* code refactoring to do some speed improvements and code clean up
+* added a lot of specs to improve tests coverage
+* wrote a tutorial showing how to use rolify with CanCan and Devise
+* rolify is now on travis-ci to monitor build status
+
+= 0.7 (June 20, 2011)
+* added a method_missing to catch newly created role outside the current ruby process (i.e. dynamic shortcut methods are not defined within this process)
+  * dynamic shortcut is created on the fly in the method_missing to avoid extra method_missing for the same dynamic shortcut
+  * check if the role actually exists in the database before defining the new method
+  * first call is slower due to method_missing but next calls are fast
+  * avoid strange bugs when spawning many ruby processes as the dynamic shortcut methods were only defined in the process that used the <tt>has_role</tt> command
+
+= 0.6 (June 19, 2011)
+* custom User and Role class names support
+  * can now use other class names for Role and User classes
+  * fixed generators and templates
+  * join table is explicitly set to avoid alphabetical order issue
+* created a new railtie to load the dynamic shortcuts at startup
+
+= 0.5.1 (June 07, 2011)
+* fixed a nasty typo on a variable name and added a spec to make it never happen again
+
+= 0.5 (June 07, 2011)
+* dynamic shortcuts support
+  * creates automatically new methods upon new role creation (or at startup for a Rails app)
+  * <tt>has_role "admin"</tt> will create a method called <tt>is_admin?</tt>
+  * <tt>has_role "moderator", Forum.first</tt> will create 2 methods:
+     * <tt>is_moderator_of?(resource)</tt>
+     * <tt>is_moderator?</tt>
+
+= v0.4 (June 07, 2011)
+* removing role support
+  * <tt>has_no_role</tt> removes a global role or a role scoped to a resource
+  * Please note that trying to remove a global role whereas the user a role with the same name on a resource will remove that scoped role
+  * Trying to remove a role scoped to a resource whereas the user has a global role won't remove it
+
+= v0.3 (June 06, 2011)
+* multiple roles check:
+  * <tt>has_all_roles?</tt> returns true if the user has ALL the roles in arguments
+  * <tt>has_any_role?</tt> returns true if the user has ANY the roles in arguments
+
+= v0.2 (June 04, 2011)
+* fixed the generator to include the lib
+* fixed the migration file with missing polymorphic field
+* added some examples in documentation
+
+= v0.1 (June 04, 2011)
+* first release

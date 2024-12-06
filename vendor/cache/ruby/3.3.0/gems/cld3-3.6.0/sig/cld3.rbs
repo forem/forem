@@ -1,0 +1,66 @@
+# Copyright 2021 Akihiko Odaki <akihiko.odaki@gmail.com>
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
+module CLD3
+  class NNetLanguageIdentifier
+    MIN_NUM_BYTES_TO_CONSIDER: Integer
+    MAX_NUM_BYTES_TO_CONSIDER: Integer
+    MAX_NUM_INPUT_BYTES_TO_CONSIDER: Integer
+    RELIABILITY_THRESHOLD: Float
+    RELIABILITY_HR_BS_THRESHOLD: Float
+
+    class SpanInfo < Struct[Float | Integer]
+      attr_accessor start_index(): Integer
+      attr_accessor end_index(): Integer
+      attr_accessor probability(): Float
+    end
+
+    class Result < Struct[Array[SpanInfo] | Float | TaskContextParams::language_names | bool]
+      attr_accessor language(): TaskContextParams::language_names
+      attr_accessor probability(): Float
+      attr_accessor reliable?(): bool
+      attr_accessor proportion(): Float
+      attr_accessor byte_ranges(): Array[SpanInfo]
+    end
+
+    Unstable: untyped
+    @cc: untyped
+
+    def initialize: (?Integer, ?Integer) -> void
+    def find_language: (String) -> Result?
+    def find_top_n_most_freq_langs: (String, Integer) -> Array[Result]
+
+    private
+
+    def convert_result: (untyped) -> Result?
+  end
+
+  module TaskContextParams
+    type language_names = 
+      :eo | :co | :eu | :ta | :de | :mt | :ps | :te | :su | :uz | :'zh-Latn' | :ne |
+      :nl | :sw | :sq | :hmn | :ja | :no | :mn | :so | :ko | :kk | :sl | :ig |
+      :mr | :th | :zu | :ml | :hr | :bs | :lo | :sd | :cy | :hy | :uk | :pt |
+      :lv | :iw | :cs | :vi | :jv | :be | :km | :mk | :tr | :fy | :am | :zh |
+      :da | :sv | :fi | :ht | :af | :la | :id | :fil | :sm | :ca | :el | :ka |
+      :sr | :it | :sk | :ru | :'ru-Latn' | :bg | :ny | :fa | :haw | :gl | :et |
+      :ms | :gd | :'bg-Latn' | :ha | :is | :ur | :mi | :hi | :bn | :'hi-Latn' | :fr |
+      :yi | :hu | :xh | :my | :tg | :ro | :ar | :lb | :'el-Latn' | :st | :ceb |
+      :kn | :az | :si | :ky | :mg | :en | :gu | :es | :pl | :'ja-Latn' | :ga | :lt |
+      :sn | :yo | :pa | :ku
+
+    LANGUAGE_NAMES: Array[language_names]
+  end
+end

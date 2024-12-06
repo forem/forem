@@ -1,0 +1,25 @@
+class Ahoy::Store < Ahoy::BaseStore
+  def track_visit(data)
+    # do
+  end
+
+  def track_event(data)
+    # something
+  end
+
+  def geocode(data)
+    # amazing
+  end
+
+  def authenticate(data)
+    # !!!
+  end
+end
+
+# set to true for JavaScript tracking
+Ahoy.api = false
+
+# set to true for geocoding (and add the geocoder gem to your Gemfile)
+# we recommend configuring local geocoding as well
+# see https://github.com/ankane/ahoy#geocoding
+Ahoy.geocode = false

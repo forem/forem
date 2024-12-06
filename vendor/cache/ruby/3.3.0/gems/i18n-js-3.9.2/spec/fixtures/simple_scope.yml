@@ -1,0 +1,5 @@
+fallbacks: false
+
+translations:
+  - file: "tmp/i18n-js/simple_scope.js"
+    only: "*.date.formats"

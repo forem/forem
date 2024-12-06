@@ -1,0 +1,6 @@
+HTTP/1.1 302 Found
+Location: http://unsafe-facebook.com/
+Connection:keep-alive
+Content-Length:0
+Content-Type:text/html; charset=utf-8
+Date:Mon, 26 Nov 2012 23:02:17 GMT

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>with_sortable_js</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.12.0/dist/sortable.umd.min.js" type="text/javascript"></script>
+  </head>
+
+  <body id="with_sortable_js">
+    <div id="sortable">
+      <div class="item1">Item 1</div>
+      <div class="item2">Item 2</div>
+      <div class="item3">Item 3</div>
+      <div class="item4">Item 4</div>
+      <div class="item5">Item 5</div>
+    </div>
+    <script>
+      new Sortable(document.getElementById("sortable"));
+    </script>
+  </body>
+</html>

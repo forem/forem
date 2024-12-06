@@ -1,0 +1,12 @@
+{
+  "type": "account.application.deauthorized",
+  "object": "event",
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "data": {
+    "object": {
+      "id": "cus_00000000000000"
+    }
+  }
+}

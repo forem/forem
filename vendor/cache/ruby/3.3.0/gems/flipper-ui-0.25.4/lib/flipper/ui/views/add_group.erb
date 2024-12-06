@@ -1,0 +1,29 @@
+<% if params.key?("error") %>
+  <div class="alert alert-danger">
+    <%= params["error"] %>
+  </div>
+<% end %>
+
+<div class="card">
+  <h4 class="card-header">Enable Group for <%= @feature.key %></h4>
+  <div class="card-body">
+    <% if @feature.disabled_groups.empty? %>
+      <p>All groups are enabled for this feature which means there is nothing to add.</p>
+    <% else %>
+      <p>
+        Turn on this feature for an entire group of actors.
+      </p>
+      <form action="<%= script_name %>/features/<%= @feature.key %>/groups" method="post" class="form-inline">
+        <%== csrf_input_tag %>
+        <input type="hidden" name="operation" value="enable">
+        <select name="value" class="form-control mr-2">
+          <option value="">Select a group...</option>
+          <% @feature.disabled_groups.each do |group| %>
+            <option value="<%= group.name %>"><%= group.name %></option>
+          <% end %>
+        </select>
+        <input type="submit" value="Add Group" class="btn btn-primary">
+      </form>
+    <% end %>
+  </div>
+</div>

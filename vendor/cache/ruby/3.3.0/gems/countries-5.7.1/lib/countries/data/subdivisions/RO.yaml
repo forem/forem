@@ -1,0 +1,3096 @@
+---
+AB:
+  name: Alba
+  code: AB
+  unofficial_names: Alba
+  geo:
+    latitude: 46.1558924
+    longitude: 23.5556121
+    min_latitude: 45.467659
+    min_longitude: 22.6724509
+    max_latitude: 46.569062
+    max_longitude: 24.2515318
+  translations:
+    en: Alba
+    ar: إقليم ألبا
+    bg: Алба
+    bn: এলবা কাউন্টি
+    ca: Província d’Alba
+    cs: Alba
+    da: Alba
+    de: Kreis Alba
+    el: Άλμπα
+    es: Alba
+    et: Alba maakond
+    eu: Alba konderria
+    fa: شهرستان آلبا
+    fi: Alba
+    fr: județ d’Alba
+    gl: Condado de Alba
+    gu: આલ્બા કાઉન્ટી
+    he: אלבה
+    hi: अल्बा काउंटी
+    hr: Alba
+    hu: Fehér megye
+    id: Provinsi Alba
+    it: distretto di Alba
+    ja: アルバ県
+    ka: ალბის ჟუდეცი
+    kn: ಆಲ್ಬಾ ಕೌಂಟಿ
+    ko: 알바 주
+    lt: Albos apskritis
+    mn: Алба аймаг
+    mr: अल्बा काउंटी
+    ms: Daerah Alba
+    nb: Alba
+    nl: District Alba
+    pl: Okręg Alba
+    pt: Alba
+    ro: Alba
+    ru: Алба
+    si: ඇල්බා ප්‍රාන්තය
+    sk: Alba
+    sr: Алба
+    sv: Alba
+    ta: அல்பா கவுண்டி
+    te: ఆల్బా కౌంటీ
+    th: อัลบา
+    tr: Alba ili
+    uk: Алба
+    ur: البا کاؤنٹی
+    vi: Alba
+    zh: 阿爾巴縣
+    lv: Albas žudecs
+    ceb: Județul Alba
+    sr_Latn: Alba
+    sq: Qarku Alba
+    ccp: "\U00011103\U00011123\U00011134\U0001111D"
+    be: жудзец Алба
+    bs: Alba (okrug)
+    mk: Алба
+    'no': Alba
+    az: Alba (judets)
+  comments:
+  type: department
+AG:
+  name: Arges
+  code: AG
+  unofficial_names:
+  - Arges
+  geo:
+    latitude: 45.0722527
+    longitude: 24.8142726
+    min_latitude: 44.366297
+    min_longitude: 24.427089
+    max_latitude: 45.610782
+    max_longitude: 25.325839
+  translations:
+    en: Argeș
+    ar: مقاطعة أرغيس
+    be: Арджэш
+    bg: Арджеш
+    bn: আর্জেস কাউন্টি
+    ca: Província d’Argeș
+    cs: Argeș
+    da: Argeș
+    de: Kreis Argeș
+    el: Άρτζες
+    es: Argeș
+    et: Argeși maakond
+    fa: شهرستان ارجش
+    fi: Argeș
+    fr: județ d’Argeș
+    gl: Condado de Argeş
+    gu: અર્જેસ કાઉન્ટી
+    he: מחוז ארג׳ש
+    hi: अर्जेस काउंटी
+    hr: Argeş
+    hu: Argeș megye
+    id: Provinsi Argeş
+    it: distretto di Argeș
+    ja: アルジェシュ県
+    ka: არჯეშის ჟუდეცი
+    kn: ಅರ್ಗೆಸ್ ಕೌಂಟಿ
+    ko: 아르제슈 주
+    lt: Ardžešo apskritis
+    mn: Аржеш аймаг
+    mr: अर्जेस काउंटी
+    ms: Daerah Argeş
+    nb: Argeș
+    nl: District Argeș
+    pl: Okręg Ardżesz
+    pt: Argeş
+    ro: Argeș
+    ru: Арджеш
+    si: අර්ගස් ප්‍රාන්තය
+    sk: Argeş
+    sr: Арђеш
+    sv: Argeș
+    ta: அர்கெஸ் கவுண்டி
+    te: ఆర్జెస్ కౌంటీ
+    th: อาร์เจส
+    tr: Argeș ili
+    uk: Арджеш
+    ur: آرجش کاؤنٹی
+    vi: Argeş
+    lv: Ardžešas žudecs
+    ceb: Județul Argeș
+    sr_Latn: Arđeš
+    zh: 阿爾傑什縣
+    sq: Qarku Argeș
+    ccp: "\U00011103\U00011122\U00011134\U0001110E\U0001112C\U0001110C\U00011134"
+    mk: Арџеш
+    'no': Argeș
+    az: Ardjeş
+    bs: Argeș (okrug)
+    eu: Argeş konderria
+    hy: Արջեշ
+  comments:
+  type: department
+AR:
+  name: Arad
+  code: AR
+  unofficial_names: Arad
+  geo:
+    latitude: 46.166667
+    longitude: 21.316667
+    min_latitude: 46.1286903
+    min_longitude: 21.230371
+    max_latitude: 46.2217118
+    max_longitude: 21.3823449
+  translations:
+    en: Arad
+    ar: مقاطعة أراد
+    be: жудзец Арад
+    bg: Арад
+    bn: আরাদ কাউন্টি
+    ca: Província d’Arad
+    cs: Arad
+    da: Arad
+    de: Kreis Arad
+    el: Αράντ
+    es: Arad
+    et: Aradi maakond
+    eu: Arad konderria
+    fa: شهرستان آراد
+    fi: Arad
+    fr: județ d’Arad
+    gl: Condado de Arad
+    gu: અરાદ કાઉન્ટી
+    he: מחוז ארד
+    hi: अराद काउंटी
+    hr: Arad
+    hu: Arad megye
+    id: Provinsi Arad
+    it: distretto di Arad
+    ja: アラド県
+    ka: არადის ჟუდეცი
+    kn: ಅರಾದ್ ಕೌಂಟಿ
+    ko: 아라드 주
+    lt: Arado apskritis
+    mn: Арад аймаг
+    mr: आर्द काउंटी
+    ms: Daerah Arad
+    nb: Arad
+    nl: District Arad
+    pl: Okręg Arad
+    pt: Arad
+    ro: Arad
+    ru: Арад
+    si: අරඩ් ප්‍රාන්තය
+    sk: Arad
+    sr: Арад
+    sv: Arad
+    ta: அரத் கவுண்டி
+    te: అరద్ కౌంటీ
+    th: เทศมณฑลอารัด
+    tr: Arad ili
+    uk: Арад
+    ur: آراد کاؤنٹی
+    vi: Arad
+    lv: Aradas žudecs
+    ceb: Arad (lalawigan)
+    sr_Latn: Arad
+    zh: 阿拉德縣
+    sq: Qarku Arad
+    ccp: "\U00011103\U00011122\U00011116\U00011134"
+    mk: Арад
+    'no': Arad
+    az: Arad (judets)
+    bs: Arad (okrug)
+    cy: Sir Arad
+  comments:
+  type: department
+B:
+  name: Bucuresti
+  code: B
+  unofficial_names:
+  - Bucuresti
+  - Bucureşti
+  - Bukarest
+  - Bucarest
+  - Bucarest
+  geo:
+    latitude: 44.4267674
+    longitude: 26.1025384
+    min_latitude: 44.3342445
+    min_longitude: 25.9637001
+    max_latitude: 44.541407
+    max_longitude: 26.225575
+  translations:
+    en: Bucharest
+    af: Boekarest
+    am: ቡካረስት
+    ar: بوخارست
+    az: Buxarest
+    be: Бухарэст
+    bg: Букурещ
+    bn: বুখারেস্ট
+    ca: Bucarest
+    cs: Bukurešť
+    da: Bukarest
+    de: Bukarest
+    el: Βουκουρέστι
+    es: Bucarest
+    et: Bukarest
+    eu: Bukarest
+    fa: بخارست
+    fi: Bukarest
+    fr: Bucarest
+    gl: Bucarest
+    gu: બુકારેસ્ટ
+    he: בוקרשט
+    hi: बुखारेस्ट
+    hr: Bukurešt
+    hu: Bukarest
+    hy: Բուխարեստ
+    id: Bukares
+    is: Búkarest
+    it: Bucarest
+    ja: ブカレスト
+    ka: ბუქარესტი
+    kn: ಬ್ಯೂಖರೆಸ್ಟ್
+    ko: 부쿠레슈티
+    lt: Bukareštas
+    lv: Bukareste
+    ml: ബുക്കാറെസ്റ്റ്
+    mn: Бухарест
+    mr: बुखारेस्ट
+    ms: Bucharest
+    nb: București
+    ne: बुखारेस्ट
+    nl: Boekarest
+    pl: Bukareszt
+    ps: بخارست
+    pt: Bucareste
+    ro: București
+    ru: Бухарест
+    si: බුකාරෙස්ට්
+    sk: Bukurešť
+    sl: Bukarešta
+    sr: Букурешт
+    sv: Bukarest
+    sw: Bukarest
+    ta: புக்கரெஸ்ட்
+    te: బుఖారెస్ట్
+    th: บูคาเรสต์
+    tk: Buharest
+    tr: Bükreş
+    uk: Бухарест
+    ur: بخارسٹ
+    vi: Bucharest
+    cy: Bwcarést
+    ceb: București (lalawigan sa Rumanya)
+    sr_Latn: Bukurešt
+    zh: 布加勒斯特
+    yue_Hans: 布加勒斯特
+    jv: Bukarès
+    sq: Bukureshti
+    ccp: "\U0001111D\U0001112A\U00011107\U00011122\U0001112C\U0001110C\U00011134\U00011111\U00011134"
+    ga: Búcairist
+    ky: Бухарест
+    so: Buqarest
+    pa: ਬੁਖ਼ਾਰੈਸਟ
+    kk: Бухарест
+    yue: 布加勒斯特
+    my: ဗူးခရက်မြို့
+    yo: Bucharest
+    uz: Buharest
+    bs: Bukurešt
+    mk: Букурешт
+    'no': București
+    yo_BJ: Bucharest
+    ha: Bukarest
+    ha_NE: Bukarest
+  comments:
+  type: municipality
+BC:
+  name: Bacau
+  code: BC
+  unofficial_names:
+  - Bacau
+  geo:
+    latitude: 46.583333
+    longitude: 26.916667
+    min_latitude: 46.5073649
+    min_longitude: 26.8629241
+    max_latitude: 46.6207201
+    max_longitude: 26.9547951
+  translations:
+    en: Bacău
+    ar: إقليم باكاو
+    be: Бакэў
+    bg: Бакъу
+    ca: Província de Bacău
+    cs: Bacău
+    da: Bacău
+    de: Kreis Bacău
+    es: Bacău
+    et: Bacău maakond
+    fa: شهرستان باکائو
+    fi: Bacău
+    fr: județ de Bacău
+    gl: Condado de Bacău
+    he: מחוז בוזאו
+    hr: Bacău
+    hu: Bákó megye
+    id: Provinsi Bacău
+    it: distretto di Bacău
+    ja: バカウ県
+    ka: ბაკეუს ჟუდეცი
+    ko: 바커우 주
+    lt: Bakeu apskritis
+    mn: Бакау аймаг
+    ms: Daerah Bacău
+    nb: Bacău
+    nl: District Bacău
+    pl: Okręg Bacău
+    pt: Bacău
+    ro: Bacău
+    ru: Бакэу
+    sk: Bacău
+    sl: okrožje Bacău
+    sr: Бакау
+    sv: Bacău
+    tr: Bacău ili
+    uk: Бакеу
+    ur: باکئو کاؤنٹی
+    vi: Bacău
+    ceb: Județul Bacău
+    sr_Latn: Bakau
+    zh: 巴克烏縣
+    sq: Qarku Bacău
+    ccp: "\U0001111D\U00011107\U0001112C\U00011105\U0001112A"
+    mk: Бакау
+    'no': Bacău
+    az: Bakeu judetsi
+    bs: Bacău (okrug)
+    cy: Sir Bacău
+    el: Τζουντέτς του Μπακάου
+    eu: Bacău konderria
+    hy: Բակեու
+    lv: Bakeu žudecs
+    th: เทศมณฑลบาเกิว
+  comments:
+  type: department
+BH:
+  name: Bihor
+  code: BH
+  unofficial_names: Bihor
+  geo:
+    latitude: 47.01575159999999
+    longitude: 22.172266
+    min_latitude: 46.38481789999999
+    min_longitude: 21.427627
+    max_latitude: 47.607922
+    max_longitude: 22.816566
+  translations:
+    en: Bihor
+    ar: مقاطعة بيهور
+    bg: Бихор
+    bn: বিহোর কাউন্টি
+    ca: Província de Bihor
+    cs: Bihor
+    da: Bihor
+    de: Kreis Bihor
+    el: Μπιχόρ
+    es: Bihor
+    et: Bihori maakond
+    eu: Bihor konderria
+    fa: شهرستان بیهور
+    fi: Bihor
+    fr: județ de Bihor
+    gl: Condado de Bihor
+    gu: બિહોર કાઉન્ટી
+    he: מחוז ביחור
+    hi: बिहोर काउंटी
+    hr: Bihor
+    hu: Bihar megye
+    id: Provinsi Bihor
+    it: distretto di Bihor
+    ja: ビホル県
+    ka: ბიჰორის ჟუდეცი
+    kn: ಬಿಹೋರ್ ಕೌಂಟಿ
+    ko: 비호르 주
+    lt: Bihoro apskritis
+    mn: Бихор аймаг
+    mr: बिहोर काउंटी
+    ms: Wilayah Bihor
+    nb: Bihor
+    nl: District Bihor
+    pl: Okręg Bihor
+    pt: Bihor
+    ro: Bihor
+    ru: Бихор
+    si: බිහෝර් ප්‍රාන්තය
+    sk: Bihor
+    sr: Бихор
+    sv: Bihor
+    ta: பிஹார் கவுண்டி
+    te: బిహోర్ కౌంటీ
+    th: เทศมณฑลบีฮอร์
+    tr: Bihor ili
+    uk: Біхор
+    ur: بیہور کاؤنٹی
+    vi: Bihor
+    lv: Bihoras žudecs
+    ceb: Bihor (lalawigan)
+    sr_Latn: Bihor
+    zh: 比霍爾縣
+    sq: Qarku Bihor
+    ccp: "\U0001111D\U00011128\U00011126\U0001112E\U00011122\U00011134"
+    mk: Бихор
+    'no': Bihor
+    az: Bihor judeçi
+    be: жудзец Біхар
+    bs: Bihor (okrug)
+    cy: Sir Bihor
+  comments:
+  type: department
+BN:
+  name: Bistrita-Nasaud
+  code: BN
+  unofficial_names:
+  - Bistrita-Nasaud
+  geo:
+    latitude: 47.2486107
+    longitude: 24.5322814
+    min_latitude: 46.7517591
+    min_longitude: 23.9229529
+    max_latitude: 47.6071391
+    max_longitude: 25.0916189
+  translations:
+    en: Bistriţa-Năsăud
+    ar: مقاطعة بيستريتا-ناسود
+    bg: Бистрица-Нъсъуд
+    bn: বিস্ত্রিৎসা-নাসাউদ কাউন্টি
+    ca: Província de Bistrița-Năsăud
+    cs: Bistrița-Năsăud
+    da: Bistrița-Năsăud
+    de: Kreis Bistrița-Năsăud
+    el: Μπιστρίτα-Νασόντ
+    es: Bistrița-Năsăud
+    et: Bistrița-Năsăudi maakond
+    eu: Bistriţa-Năsăud konderria
+    fa: شهرستان بیستریتسا-نسئود
+    fi: Bistrița-Năsăud
+    fr: Județ de Bistrița-Năsăud
+    gl: Condado de Bistriţa-Năsăud
+    gu: બિસ્ત્રિટા-નસૌદ કાઉન્ટી
+    he: ביסטריצה-נסאוד
+    hi: बिस्ट्रिटा-नसाऊद काउंटी
+    hr: Bistriţa-Năsăud
+    hu: Beszterce-Naszód megye
+    id: Provinsi Bistriţa-Năsăud
+    it: distretto di Bistrița-Năsăud
+    ja: ビストリツァ＝ナサウド県
+    ka: ბისტრიცა-ნესეუდის ჟუდეცი
+    kn: ಬಿಸ್ಟ್ರಿಟಾ-ನಾಸೌಡ್ ಕೌಂಟಿ
+    ko: 비스트리차너서우드 주
+    lt: Bistricos-Neseudo apskritis
+    mn: Бистрица-Насауд аймаг
+    mr: बिस्त्रिया-नसाउड काउंटी
+    ms: Wilayah Bistrița-Năsăud
+    nb: Bistrița-Năsăud
+    nl: Bistrița-Năsăud
+    pl: Okręg Bistriţa-Năsăud
+    pt: Bistrița-Năsăud
+    ro: Bistrița-Năsăud
+    ru: Бистрица-Нэсэуд
+    si: බිස්ට්‍ර්ටා-නාසාඋඩ් ප්‍රාන්තය
+    sk: Bistriţa-Năsăud
+    sr: Бистрица-Насауд
+    sv: Bistrița-Năsăud
+    ta: பிஸ்டரிடா -நாசாவுட் கவுண்டி
+    te: బిస్ట్రిటా -నాసౌద్ కౌంటీ
+    th: รัฐกะฉิ่น
+    tr: Bistrița-Năsăud ili
+    uk: Бистриця-Несеуд
+    ur: بیستریتسا-ناسائود کاؤنٹی
+    vi: Bistriţa-Năsăud
+    lv: Bistricas-Neseudas žudecs
+    ceb: Județul Bistrița-Năsăud
+    sr_Latn: Bistrica-Nasaud
+    zh: 比斯特里察-訥瑟烏德縣
+    sq: Qarku Bistrița-Năsăud
+    ccp: "\U0001111D\U00011128\U0001110C\U00011134\U00011111\U00011133\U00011122\U00011128\U00011111-\U0001111A\U00011125\U00011105\U0001112A\U00011116\U00011134"
+    mk: Бистрица-Насауд
+    'no': Bistrița-Năsăud
+    az: Bistritsa-Neseud (judets)
+    be: жудзец Бістрыца-Нэсэуд
+    bs: Bistrița-Năsăud (okrug)
+    cy: Sir Bistrița-Năsăud
+  comments:
+  type: department
+BR:
+  name: Braila
+  code: BR
+  unofficial_names:
+  - Braila
+  geo:
+    latitude: 45.269194
+    longitude: 27.957472
+    min_latitude: 45.1678028
+    min_longitude: 27.8928493
+    max_latitude: 45.3137327
+    max_longitude: 28.0004168
+  translations:
+    en: Brăila
+    ar: مقاطعة برايلا
+    be: Жудзец Брэіла
+    bg: Браила
+    bn: ব্রাইলা কাউন্টি
+    ca: Província de Brăila
+    cs: Brăila
+    da: Brăila
+    de: Kreis Brăila
+    el: Βραΐλα
+    es: Brăila
+    et: Brăila maakond
+    fa: شهرستان برئیلا
+    fi: Brăila
+    fr: Județ de Brăila
+    gl: Condado de Brăila
+    gu: બ્રેલા કાઉન્ટી
+    hi: ब्रायला काउंटी
+    hr: Brăila
+    hu: Brăila megye
+    id: Provinsi Brăila
+    it: distretto di Brăila
+    ja: ブライラ県
+    ka: ბრეილის ჟუდეცი
+    kn: ಬ್ರೈಲ್ ಕೌಂಟಿ
+    ko: 브러일라 주
+    lt: Breilos apskritis
+    mn: Браила аймаг
+    mr: ब्राझील काउंटी
+    ms: Wilayah Brăila
+    nb: Brăila
+    nl: District Brăila
+    pl: Okręg Braiła
+    pt: Brăila
+    ro: Brăila
+    ru: Брэила
+    si: බ්‍රයිලා ප්‍රාන්තය
+    sk: Brăila
+    sr: Браила
+    sv: Brăila
+    ta: பிரைளா கவுண்டி
+    te: బ్రెయిలా కౌంటీ
+    th: เทศมณฑลบราอิลา
+    tr: Brăila ili
+    uk: Бреїла
+    ur: برئیلا کاؤنٹی
+    vi: Hạt Brăila
+    lv: Breilas žudecs
+    ceb: Județul Brăila
+    sr_Latn: Braila
+    zh: 布勒伊拉縣
+    sq: Qarku Brăila
+    ccp: "\U0001111D\U00011133\U00011122\U0001112D\U00011123\U00011134"
+    mk: Браила
+    'no': Brăila
+    az: Breila (judets)
+    bs: Brăila (okrug)
+    eu: Brăila konderria
+  comments:
+  type: department
+BT:
+  name: Botosani
+  code: BT
+  unofficial_names:
+  - Botosani
+  geo:
+    latitude: 47.748611
+    longitude: 26.669444
+    min_latitude: 47.7045958
+    min_longitude: 26.609519
+    max_latitude: 47.7705485
+    max_longitude: 26.709298
+  translations:
+    en: Botoşani
+    ar: إقليم بوتوشان
+    be: Баташані
+    bg: Ботошани
+    bn: বোতোসানি কাউন্টি
+    ca: Província de Botoșani
+    cs: Botoșani
+    da: Botoșani
+    de: Kreis Botoșani
+    el: Μποτοσάνι
+    es: Botoșani
+    et: Botoșani maakond
+    fa: شهرستان بوتوشانی
+    fi: Botoșani
+    fr: județ de Botoșani
+    gl: Condado de Botoşani
+    gu: બોટોસાની કાઉન્ટી
+    he: בוטושני
+    hi: बोतोसानी काउंटी
+    hr: Botoşani
+    hu: Botoșani megye
+    hy: Բոտոշանի
+    id: Provinsi Botoşani
+    it: distretto di Botoșani
+    ja: ボトシャニ県
+    ka: ბოტოშანის ჟუდეცი
+    kn: ಬೊಟೊಸನಿ ಕೌಂಟಿ
+    ko: 보토샤니 주
+    lt: Botošanio apskritis
+    mn: Ботошани аймаг
+    mr: बोटोसानी काउंटी
+    ms: Wilayah Botoșani
+    nb: Botoșani
+    nl: District Botoșani
+    pl: Okręg Botoszany
+    pt: Botoşani
+    ro: Botoșani
+    ru: Ботошани
+    si: බෝටෝසානි ප්‍රාන්තය
+    sk: Botoşani
+    sl: Botoşani
+    sr: Ботошани
+    sv: Botoșani
+    ta: போட்டோ அணி கவுண்டி
+    te: బోటోసాని కౌంటీ
+    th: เทศมณฑลโบโตซานี
+    tr: Botoșani ili
+    uk: Ботошань
+    ur: بوتوشانی کاؤنٹی
+    vi: Botoşani
+    lv: Botošanu žudecs
+    ceb: Județul Botoșani
+    sr_Latn: Botošani
+    zh: 博托沙尼縣
+    sq: Qarku Botoșani
+    ccp: "\U0001111D\U0001112E\U00011111\U0001112E\U00011125\U0001111A\U00011128"
+    mk: Ботошан
+    'no': Botoșani
+    az: Botoşani (judets)
+    bs: Botoșani (okrug)
+    cy: Sir Botoșani
+    eu: Botoşani konderria
+  comments:
+  type: department
+BV:
+  name: Brasov
+  code: BV
+  unofficial_names:
+  - Brasov
+  geo:
+    latitude: 45.666667
+    longitude: 25.616667
+    min_latitude: 45.5828542
+    min_longitude: 25.514449
+    max_latitude: 45.72210200000001
+    max_longitude: 25.6784767
+  translations:
+    en: Braşov
+    ar: مقاطعة براسوف
+    bg: Брашов
+    bn: ব্রাসোভ কাউন্টি
+    ca: Província de Brașov
+    cs: Brašov
+    da: Brașov
+    de: Kreis Brașov
+    el: Επαρχία Μπράσοβ
+    es: Brașov
+    et: Brașovi maakond
+    fa: شهرستان براشوو
+    fi: Brașov
+    fr: Județ de Brașov
+    gl: Condado de Braşov
+    gu: બ્રાસોવ કાઉન્ટી
+    hi: ब्रसोव काउंटी
+    hr: Brașov
+    hu: Brassó megye
+    id: Provinsi Braşov
+    it: distretto di Brașov
+    ja: ブラショフ県
+    ka: ბრაშოვის ჟუდეცი
+    kn: ಬ್ರಾಸೊವ್ ಕೌಂಟಿ
+    ko: 브라쇼브 주
+    lt: Brašovo apskritis
+    mn: Брашов аймаг
+    mr: ब्रॅसोव्ह काउंटी
+    ms: Wilayah Brașov
+    nb: Brașov
+    nl: District Brașov
+    pl: Okręg Braszów
+    pt: Brașov
+    ro: Brașov
+    ru: Брашов
+    si: බ්‍රසෝව් ප්‍රාන්තය
+    sk: Braşov
+    sr: Брашов
+    sv: Brașov
+    ta: ப்ரஸ்ஒவ் கவுண்டி
+    te: బ్రాసోవ్ కౌంటీ
+    th: เทศมณฑลบราซอฟ
+    tr: Brașov ili
+    uk: Брашов
+    ur: براشوو کاؤنٹی
+    vi: Brașov
+    lv: Brasovas apgabals
+    ceb: Județul Brașov
+    sr_Latn: Brašov
+    zh: 布拉索夫縣
+    sq: Qarku Brașov
+    ccp: "\U0001111D\U00011133\U00011122\U00011125\U0001112E\U0001111B\U00011134"
+    mk: Брашов
+    'no': Brașov
+    az: Braşov (judets)
+    be: жудзец Брашоў
+    bs: Brașov (okrug)
+    cy: Sir Brașov
+    eu: Braşov konderria
+    he: בראשוב
+  comments:
+  type: department
+BZ:
+  name: Buzau
+  code: BZ
+  unofficial_names:
+  - Buzau
+  geo:
+    latitude: 45.166667
+    longitude: 26.816667
+    min_latitude: 45.1162977
+    min_longitude: 26.7563438
+    max_latitude: 45.1814771
+    max_longitude: 26.8720435
+  translations:
+    en: Buzău
+    ar: إقليم بوزاو
+    bg: Бузъу
+    bn: বুজাউ কাউন্টি
+    ca: Província de Buzău
+    cs: Buzău
+    da: Buzău
+    de: Kreis Buzău
+    el: Μπουζάου
+    es: Buzău
+    et: Buzău maakond
+    eu: Buzau
+    fa: شهرستان بوزائو
+    fi: Buzău
+    fr: Județ de Buzău
+    gl: Condado de Buzău
+    gu: બુઝુ કાઉન્ટી
+    hi: बुज़ू काउंटी
+    hr: Buzău
+    hu: Buzău megye
+    id: Provinsi Buzău
+    it: distretto di Buzău
+    ja: ブザウ県
+    ka: ბუზეუს ჟუდეცი
+    kn: ಬುಜೌ ಕೌಂಟಿಯು
+    ko: 부저우 주
+    lt: Buzeu apskritis
+    mn: Бузау аймаг
+    mr: बुझू काउंटी
+    ms: Wilayah Buzău
+    nb: Buzău
+    nl: District Buzău
+    pl: Okręg Buzău
+    pt: Buzău
+    ro: Buzău
+    ru: Бузэу
+    si: බුසෞ ප්‍රාන්තය
+    sk: Buzău
+    sr: Бузау
+    sv: Buzău
+    ta: புசாஉ கவுண்டி
+    te: బుజావ్ కౌంటీ
+    th: บูเซาเคาน์ตี
+    tr: Buzău ili
+    uk: Бузеу
+    ur: بوزاو کاؤنٹی
+    vi: Hạt Buzau
+    lv: Buzeu žudecs
+    ceb: Județul Buzău
+    sr_Latn: Buzau
+    zh: 布澤烏縣
+    ccp: "\U0001111D\U0001112A\U0001110E\U00011105\U0001112A"
+    mk: Бузау
+    'no': Buzău
+    az: Buzeu (judets)
+    be: жудзец Бузэу
+    bs: Buzău (okrug)
+    cy: Sir Buzău
+    ga: Contae Buzău
+  comments:
+  type: department
+CJ:
+  name: Cluj
+  code: CJ
+  unofficial_names: Cluj
+  geo:
+    latitude: 46.766667
+    longitude: 23.583333
+    min_latitude: 46.7054762
+    min_longitude: 23.522544
+    max_latitude: 46.8612951
+    max_longitude: 23.7104809
+  translations:
+    en: Cluj
+    ar: مقاطعة كلوج
+    be: Клуж
+    bg: Клуж
+    bn: ক্লুজ কাউন্টি
+    ca: Província de Cluj
+    cs: Kluž
+    da: Cluj
+    de: Kreis Cluj
+    el: Κλούτζ
+    es: Cluj
+    et: Cluji maakond
+    eu: Cluj konderria
+    fa: شهرستان کلوژ
+    fi: Cluj
+    fr: Județ de Cluj
+    gl: Condado de Cluj
+    gu: ક્લુજ કાઉન્ટી
+    he: מחוז קלוז׳
+    hi: क्लुए काउंटी
+    hr: Cluj
+    hu: Kolozs megye
+    id: Provinsi Cluj
+    it: distretto di Cluj
+    ja: クルジュ県
+    ka: კლუჟის ჟუდეცი
+    kn: ಕ್ಲೂಜ್ ಕೌಂಟಿ
+    ko: 클루지 주
+    lt: Klužo apskritis
+    lv: Klužas žudecs
+    mn: Клуж аймаг
+    mr: क्लुज काउंटी
+    ms: Wilayah Cluj
+    nb: Cluj
+    nl: District Cluj
+    pl: Okręg Kluż
+    pt: Cluj
+    ro: Cluj
+    ru: Клуж
+    si: ක්ලජ් ප්‍රාන්තය
+    sk: Cluj
+    sr: Клуж
+    sv: Cluj
+    ta: கிலுஜ் கவுண்டி
+    te: క్లజ్ కౌంటీ
+    th: คลูช
+    tr: Cluj
+    uk: Клуж
+    ur: کلوژ کاؤنٹی
+    vi: Hạt Cluj
+    ceb: Județul Cluj
+    sr_Latn: Kluž
+    zh: 克魯日縣
+    ccp: "\U00011107\U00011133\U00011123\U0001112A\U0001110C\U00011134"
+    mk: Клуж
+    'no': Cluj
+    az: Kluj judetsi
+    bs: Cluj (okrug)
+    cy: Sir Cluj
+    hy: Կլուժ
+  comments:
+  type: department
+CL:
+  name: Calarasi
+  code: CL
+  unofficial_names:
+  - Calarasi
+  geo:
+    latitude: 44.2
+    longitude: 27.333333
+    min_latitude: 44.1794956
+    min_longitude: 27.277003
+    max_latitude: 44.23818929999999
+    max_longitude: 27.3725225
+  translations:
+    en: Călărași
+    ar: مقاطعة كالاراسي
+    bg: Кълъраш
+    bn: কালারাসি কাউন্টি
+    ca: Província de Călăraşi
+    cs: Călărași
+    da: Călărași
+    de: Kreis Călărași
+    el: Καλαράσι
+    es: Călărași
+    et: Călărași maakond
+    fa: شهرستان کالارشی
+    fi: Călărași
+    fr: Județ de Călărași
+    gl: Condado de Călăraşi
+    gu: કાલારાસી કાઉન્ટી
+    hi: कालारसी काउंटी
+    hr: Călăraşi
+    hu: Călărași megye
+    id: Provinsi Călăraşi
+    it: distretto di Călărași
+    ja: カララシ県
+    ka: კელერაშის ჟუდეცი
+    kn: ಕ್ಯಾಲಾರಾಸ್ ಕೌಂಟಿ
+    ko: 컬러라시 주
+    lt: Kelerašio apskritis
+    mn: Калараш аймаг
+    mr: कॅलॅसी काउंटी
+    ms: Wilayah Călărași
+    nb: Călărași
+    nl: District Călărași
+    pl: Okręg Călăraşi
+    pt: Călăraşi
+    ro: Călărași
+    ru: Кэлэраши
+    si: කාලාරසි ප්‍රාන්තය
+    sk: Călăraşi
+    sr: Калараши
+    sv: Călărași
+    ta: கலராசி கவுண்டி
+    te: కాలారసి కౌంటీ
+    th: คาลาราสิ คันทรี่
+    tr: Călărași ili
+    uk: Келераш
+    ur: کالاراشی کاؤنٹی
+    vi: Hạt Calarasi
+    lv: Kelerašu žudecs
+    ceb: Județul Călărași
+    sr_Latn: Kalaraši
+    zh: 克勒拉希縣
+    ccp: "\U00011107\U00011133\U00011120\U00011123\U00011122\U00011125\U00011128"
+    be: жудзец Кэлэрашы
+    mk: Калараш
+    'no': Călărași
+    az: Keleraşi
+    bs: Călărași (okrug)
+    cy: Sir Călărași
+    eu: Călăraşi konderria
+  comments:
+  type: department
+CS:
+  name: Caras-Severin
+  code: CS
+  unofficial_names:
+  - Caras-Severin
+  geo:
+    latitude: 45.1139646
+    longitude: 22.0740993
+    min_latitude: 44.589462
+    min_longitude: 21.3522489
+    max_latitude: 45.67003099999999
+    max_longitude: 22.7100121
+  translations:
+    en: Caraș-Severin
+    ar: مقاطعة كاراس-سيفيرين
+    bg: Караш-Северин
+    bn: কারাস-সেভারিন কাউন্টি
+    ca: Província de Caraş-Severin
+    cs: Caraș-Severin
+    da: Caraș-Severin
+    de: Kreis Caraș-Severin
+    el: Καράς-Σεβερίν
+    es: Caraș-Severin
+    et: Caraș-Severini maakond
+    fa: شهرستان کاراش-سورین
+    fi: Caraș-Severin
+    fr: Județ de Caraș-Severin
+    gl: Condado de Caraş-Severin
+    gu: કરસ-સેવેરીન કાઉન્ટી
+    hi: करास-सेवेरिन काउंटी
+    hr: Karaš-severinska županija
+    hu: Krassó-Szörény megye
+    id: Provinsi Caraş-Severin
+    it: distretto di Caraș-Severin
+    ja: カラシュ＝セヴェリン県
+    ka: კარაშ-სევერინის ჟუდეცი
+    kn: ಕಾರಾಸ್-ಸೆವೆರಿನ್ ಕೌಂಟಿ
+    ko: 카라슈세베린 주
+    lt: Karašo-Severino apskritis
+    mn: Караш-Северин аймаг
+    mr: कार्सा-सेव्हरिन काउंटी
+    ms: Wilayah Caraș-Severin
+    nb: Caraș-Severin
+    nl: Caraș-Severin
+    pl: Okręg Caraş-Severin
+    pt: Caraş-Severin
+    ro: Caraș-Severin
+    ru: Караш-Северин
+    si: කරාස් -සේවෙරින් ප්‍රාන්තය
+    sk: Caraş-Severin
+    sr: Караш-Северин
+    sv: Caraș-Severin
+    ta: காரா-சேவேரின் கவுண்டி
+    te: కారస్-సెవరిన్ కౌంటీ
+    th: คาราส เซเวริน คันทรี่
+    tr: Caraș-Severin ili
+    uk: Караш-Северін
+    ur: کاراش-سیویرین کاؤنٹی
+    vi: Hạt Caras-Severin
+    lv: Karašas-Severinas žudecs
+    ceb: Județul Caraș-Severin
+    sr_Latn: Karaš-Severin
+    zh: 卡拉什-塞維林縣
+    ccp: "\U00011107\U00011122\U0001110C\U00011134-\U00011125\U0001112C\U0001111E\U0001112C\U00011122\U00011128\U0001111A\U00011134"
+    be: жудзец Караш-Северын
+    mk: Караш-Северин
+    'no': Caraș-Severin
+    az: Karaş-Severin (judets)
+    bs: Caraș-Severin (okrug)
+    cy: Sir Caraș-Severin
+    eu: Caraş-Severin konderria
+  comments:
+  type: department
+CT:
+  name: Constanta
+  code: CT
+  unofficial_names:
+  - Constanta
+  - Konstanza
+  geo:
+    latitude: 44.173333
+    longitude: 28.638333
+    min_latitude: 44.0842815
+    min_longitude: 28.5510205
+    max_latitude: 44.2782744
+    max_longitude: 28.7076575
+  translations:
+    en: Constanța
+    ar: إقليم كونستانتسا
+    bg: Кюстенджа
+    bn: কনস্ট্যান্টা কাউন্টি
+    ca: Província de Constanţa
+    cs: Constanţa
+    da: Constanța
+    de: Kreis Constanța
+    el: Κονστάντα
+    es: Constanța
+    et: Constanța maakond
+    fa: شهرستان کونستانسا
+    fi: Constanța
+    fr: Județ de Constanța
+    gl: Condado de Constanţa
+    gu: કોન્સ્ટાન્ટા કાઉન્ટી
+    hi: कॉस्टैंटा काउंटी
+    hr: Constanţa
+    hu: Constanța megye
+    id: Provinsi Constanţa
+    it: distretto di Costanza
+    ja: コンスタンツァ県
+    ka: კონსტანცის ჟუდეცი
+    kn: ಕಾನ್ಸ್ಟಾನ್ಟಾ ಕೌಂಟಿ
+    ko: 콘스탄차 주
+    lt: Konstancos apskritis
+    mn: Констанца аймаг
+    mr: कॉन्स्टन्टा काउंटी
+    ms: Wilayah Constanța
+    nb: Constanța
+    nl: District Constanța
+    pl: Okręg Konstanca
+    pt: Constanţa
+    ro: Constanța
+    ru: Констанца
+    si: කොන්ස්ටන්ටා ප්‍රාන්තය
+    sk: Constanţa
+    sr: Констанца
+    sv: Constanța
+    ta: கான்ஸ்டான்டை கவுண்டி
+    te: కాన్‌స్టాంటా కౌంటీ
+    th: คอสตันซา
+    tr: Köstence ili
+    uk: Констанца
+    ur: کونستانتسا کاؤنٹی
+    vi: Constanta
+    lv: Konstancas žudecs
+    ceb: Constanța
+    sr_Latn: Konstanca
+    zh: 康斯坦察縣
+    ccp: "\U00011107\U00011127\U0001111A\U00011134\U00011111\U0001111A\U00011134\U00011111"
+    be: Канстанца
+    mk: Констанца
+    'no': Constanța
+    az: Konstantsa
+    bs: Constanța (okrug)
+    cy: Sir Constanța
+    eu: Constanţa konderria
+    he: מחוז קונסטנצה
+  comments:
+  type: department
+CV:
+  name: Covasna
+  code: CV
+  unofficial_names: Covasna
+  geo:
+    latitude: 45.849167
+    longitude: 26.185278
+    min_latitude: 45.83421149999999
+    min_longitude: 26.1405088
+    max_latitude: 45.8621916
+    max_longitude: 26.2171125
+  translations:
+    en: Covasna
+    ar: مقاطعة كوفاسنا
+    bg: Ковасна
+    bn: কোভাস্না কাউন্টি
+    ca: Província de Covasna
+    cs: Covasna
+    da: Covasna
+    de: Kreis Covasna
+    el: Κοβάσνα
+    es: Covasna
+    et: Covasna maakond
+    fa: شهرستان کوواسنا
+    fi: Covasna
+    fr: județ de Covasna
+    gl: Condado de Covasna
+    gu: કોવાસ્ના કાઉન્ટી
+    hi: कोवासना काउंटी
+    hr: Covasna
+    hu: Kovászna megye
+    id: Provinsi Covasna
+    it: distretto di Covasna
+    ja: コヴァスナ県
+    ka: კოვასნის ჟუდეცი
+    kn: ಕೊವಾಸ್ನಾ ಕೌಂಟಿ
+    ko: 코바스나 주
+    lt: Kovasnos apskritis
+    mn: Ковасна аймаг
+    mr: कोव्हाना काउंटी
+    ms: Wilayah Covasna
+    nb: Covasna
+    nl: District Covasna
+    pl: Okręg Covasna
+    pt: Covasna
+    ro: Covasna
+    ru: Ковасна
+    si: කොවස්නා ප්‍රාන්තය
+    sk: Covasna
+    sr: Ковасна
+    sv: Covasna
+    ta: கோவன கவுண்டி
+    te: కోవస్నా కౌంటీ
+    th: โควาสนา
+    tr: Covasna ili
+    uk: Ковасна
+    ur: کوواسنا کاؤنٹی
+    vi: Hạt Covasna
+    lv: Kovasnas žudecs
+    ceb: Covasna
+    sr_Latn: Kovasna
+    zh: 科瓦斯納縣
+    ccp: "\U00011107\U0001112E\U0001111E\U0001110C\U00011134\U0001111A"
+    'no': Covasna
+    az: Kovasna
+    bs: Covasna (okrug)
+    cy: Sir Covasna
+    eu: Covasna konderria
+    he: קובאסנה (מחוז)
+  comments:
+  type: department
+DB:
+  name: Dâmbovita
+  code: DB
+  unofficial_names:
+  - Dambovita
+  - Dimbovita
+  - Dîmboviţa
+  geo:
+    latitude: 44.9289893
+    longitude: 25.425385
+    min_latitude: 44.403276
+    min_longitude: 25.124594
+    max_latitude: 45.440805
+    max_longitude: 25.992037
+  translations:
+    en: Dâmbovița
+    ar: مقاطعة دامبوفيتا
+    bg: Дъмбовица
+    bn: ডাম্বোভিটা কাউন্টি
+    ca: Província de Dâmbovița
+    cs: Dâmbovița
+    da: Dâmbovița
+    de: Kreis Dâmbovița
+    el: Νταμποβίτα
+    es: Dâmbovița
+    et: Dâmbovița maakond
+    fa: شهرستان دمبوویتسا
+    fi: Dâmbovița
+    fr: Județ de Dâmbovița
+    gl: Condado de Dâmboviţa
+    gu: દામ્બોવિટા કાઉન્ટી
+    he: מחוז דמבוביצה
+    hi: दम्बोविता काउंटी
+    hr: Dâmboviţa
+    hu: Dâmbovița megye
+    id: Provinsi Dâmboviţa
+    it: distretto di Dâmbovița
+    ja: ドゥンボヴィツァ県
+    ka: დიმბოვიცის ჟუდეცი
+    kn: ಡಂಬೋವಿಟಾ ಕೌಂಟಿ
+    ko: 듬보비차 주
+    lt: Dimbovicos apskritis
+    mn: Дымбовица аймаг
+    mr: दांबोवित्ता काउंटी
+    ms: Wilayah Dâmbovița
+    nb: Dâmbovița
+    nl: District Dâmbovița
+    pl: Okręg Dymbowica
+    pt: Dâmboviţa
+    ro: Dâmbovița
+    ru: Дымбовица
+    si: ඩාම්බෝවිටා ප්‍රාන්තය
+    sk: Dâmboviţa
+    sr: Дамбовица
+    sv: Dâmbovița
+    ta: டாம்போவிட்ட கவுண்டி
+    te: డాంబోవిటా కౌంటీ
+    th: ดามโบวิต้า คันทรี่
+    tr: Dâmbovița ili
+    uk: Димбовіца
+    ur: دیمبوویتسا کاؤنٹی
+    vi: Hạt Dambovita
+    lv: Dimbovicas žudecs
+    ceb: Județul Dâmbovița
+    sr_Latn: Dambovica
+    zh: 登博維察縣
+    ccp: "\U00011113\U0001111F\U00011134\U0001111D\U0001112E\U0001111E\U00011128\U00011111"
+    be: жудзец Дымбавіца
+    'no': Dâmbovița
+    az: Dımboviça
+    bs: Dâmbovița (okrug)
+    cy: Sir Dâmbovița
+    eu: Dâmboviţa konderria
+  comments:
+  type: department
+DJ:
+  name: Dolj
+  code: DJ
+  unofficial_names: Dolj
+  geo:
+    latitude: 44.1623022
+    longitude: 23.6325054
+    min_latitude: 43.699738
+    min_longitude: 22.8383393
+    max_latitude: 44.728214
+    max_longitude: 24.2646289
+  translations:
+    en: Dolj
+    ar: مقاطعة دولج
+    bg: Долж
+    bn: ডলি কাউন্টি
+    ca: Província de Dolj
+    cs: Dolj
+    da: Dolj
+    de: Kreis Dolj
+    el: Ντόλτζ
+    es: Dolj
+    et: Dolji maakond
+    fa: شهرستان دولژ
+    fi: Dolj
+    fr: Județ de Dolj
+    gl: Condado de Dolj
+    gu: ડોલ્જ કાઉન્ટી
+    he: דולז׳
+    hi: डॉल्ज काउंटी
+    hr: Dolj
+    hu: Dolj megye
+    id: Provinsi Dolj
+    it: distretto di Dolj
+    ja: ドルジュ県
+    ka: დოლჟის ჟუდეცი
+    kn: ಡಾಲ್ಜ್ ಕೌಂಟಿ
+    ko: 돌지 주
+    lt: Dolžo apskritis
+    mn: Долж аймаг
+    mr: डोलज काउंटी
+    ms: Wilayah Dolj
+    nb: Dolj
+    nl: District Dolj
+    pl: Okręg Dolj
+    pt: Dolj
+    ro: Dolj
+    ru: Долж
+    si: ඩොල්ජ් ප්‍රාන්තය
+    sk: Dolj
+    sr: Долж
+    sv: Dolj
+    ta: டாஜ் கவுண்டி
+    te: డోల్జీ కౌంటీ
+    th: โดลจ์
+    tr: Dolj ili
+    uk: Долж
+    ur: دولژ کاؤنٹی
+    vi: Hạt Dolj
+    lv: Dolžas žudecs
+    ceb: Dolj
+    sr_Latn: Dolž
+    zh: 多爾日縣
+    ccp: "\U00011118\U0001112E\U00011123\U00011134"
+    be: жудзец Долж
+    'no': Dolj
+    az: Dolj (judets)
+    bs: Dolj (okrug)
+    cy: Sir Dolj
+    eu: Dolj konderria
+  comments:
+  type: department
+GJ:
+  name: Gorj
+  code: GJ
+  unofficial_names: Gorj
+  geo:
+    latitude: 44.94855949999999
+    longitude: 23.2427079
+    min_latitude: 44.568317
+    min_longitude: 22.5596509
+    max_latitude: 45.3546451
+    max_longitude: 23.8601481
+  translations:
+    en: Gorj
+    ar: مقاطعة غورج
+    be: Горж
+    bg: Горж
+    bn: গর্জ কাউন্টি
+    ca: Província de Gorj
+    cs: Gorj
+    da: Gorj
+    de: Kreis Gorj
+    el: Γκορτζ
+    es: Gorj
+    et: Gorji maakond
+    fa: شهرستان گورژ
+    fi: Gorj
+    fr: Județ de Gorj
+    gl: Condado de Gorj
+    gu: ગોર્જ કાઉન્ટી
+    he: גורז׳
+    hi: गोर्ज काउंटी
+    hr: Gorj
+    hu: Gorj megye
+    id: Provinsi Gorj
+    it: distretto di Gorj
+    ja: ゴルジュ県
+    ka: გორჟის ჟუდეცი
+    kn: ಗೊರ್ಜ್ ಕೌಂಟಿ
+    ko: 고르지 주
+    lt: Goržo apskritis
+    mn: Горж аймаг
+    mr: गोरज काउंटी
+    ms: Wilayah Gorj
+    nb: Gorj
+    nl: District Gorj
+    pl: Okręg Gorj
+    pt: Gorj
+    ro: Gorj
+    ru: Горж
+    si: ගොර්ජ් ප්‍රාන්තය
+    sk: Gorj
+    sr: Горж
+    sv: Gorj
+    ta: கோர்ஜ் கவுண்டி
+    te: గోర్జ్ కౌంటీ
+    th: หาดจอล์จ
+    tr: Gorj ili
+    uk: Горж
+    ur: گورژ کاؤنٹی
+    vi: Hạt Gorj
+    lv: Goržas žudecs
+    ceb: Gorj
+    sr_Latn: Gorž
+    zh: 戈爾日縣
+    ccp: "\U00011109\U0001112E\U00011122\U00011134"
+    'no': Gorj
+    az: Qorj (judets)
+    bs: Gorj (okrug)
+    cy: Sir Gorj
+    eu: Gorj konderria
+  comments:
+  type: department
+GL:
+  name: Galati
+  code: GL
+  unofficial_names:
+  - Galati
+  - Galatz
+  geo:
+    latitude: 45.423333
+    longitude: 28.0425
+    min_latitude: 45.3905241
+    min_longitude: 27.9515362
+    max_latitude: 45.484793
+    max_longitude: 28.1434536
+  translations:
+    en: Galați
+    ar: إقليم غالاتس
+    bg: Галац
+    bn: গালোতি কাউন্টি
+    ca: Província de Galaţi
+    cs: Galați
+    da: Galaţi
+    de: Kreis Galați
+    el: Γκαλάτι
+    es: Galați
+    et: Galați maakond
+    fa: شهرستان گالاتسی
+    fi: Galați
+    fr: Județ de Galați
+    gl: Condado de Galaţi
+    gu: ગલાટી કાઉન્ટી
+    he: מחוז גאלאץ
+    hi: गलाती काउंटी
+    hr: Galaţi
+    hu: Galați megye
+    id: Provinsi Galaţi
+    it: distretto di Galați
+    ja: ガラツィ県
+    ka: გალაცის ჟუდეცი
+    kn: ಗ್ಯಾಲಾಟಿ ಕೌಂಟಿ
+    ko: 갈라치 주
+    lt: Galacio apskritis
+    mn: Галац аймаг
+    mr: गालिटी काउंटी
+    ms: Wilayah Galaţi
+    nb: Galați
+    nl: District Galați
+    pl: Okręg Gałacz
+    pt: Galaţi
+    ro: Galați
+    ru: Галац
+    si: ගලටි ප්‍රාන්තය
+    sk: Galaţi
+    sr: Галац
+    sv: Galați
+    ta: காலாடி கவுண்டி
+    te: గలాటి కౌంటీ
+    th: มณฑลกาลาติ
+    tr: Galați ili
+    uk: Галац
+    ur: گالاتسی کاؤنٹی
+    vi: Hạt Galati
+    lv: Galacas žudecs
+    ceb: Județul Galați
+    sr_Latn: Galac
+    zh: 加拉茨縣
+    ccp: "\U00011109\U00011123\U00011111\U00011128"
+    be: Галац
+    'no': Galați
+    az: Qalats (judets)
+    bs: Galați (okrug)
+    cy: Sir Galați
+    eu: Galaţi konderria
+  comments:
+  type: department
+GR:
+  name: Giurgiu
+  code: GR
+  unofficial_names: Giurgiu
+  geo:
+    latitude: 43.900833
+    longitude: 25.973889
+    min_latitude: 43.8592715
+    min_longitude: 25.8950758
+    max_latitude: 43.9360169
+    max_longitude: 26.0299587
+  translations:
+    en: Giurgiu
+    ar: مقاطعة جورجيو
+    bg: Гюргево
+    bn: গিউরগিউ কাউন্টি
+    ca: Província de Giurgiu
+    cs: Giurgiu
+    da: Giurgiu
+    de: Kreis Giurgiu
+    el: Γκιούρτζιου
+    es: Giurgiu
+    et: Giurgiu maakond
+    fa: شهرستان جورجی
+    fi: Giurgiu
+    fr: Județ de Giurgiu
+    gl: Condado de Giurgiu
+    gu: ગિર્ગિયુ કાઉન્ટી
+    hi: जिर्गिउ काउंटी
+    hr: Giurgiu
+    hu: Giurgiu megye
+    id: Provinsi Giurgiu
+    it: distretto di Giurgiu
+    ja: ジュルジュ県
+    ka: ჯურჯუს ჟუდეცი
+    kn: ಗಿರ್ಗುಯಿ ಕೌಂಟಿಯು
+    ko: 지우르지우 주
+    lt: Džurdžu apskritis
+    mn: Журжу аймаг
+    mr: गिर्गिउ काउंटी
+    ms: Wilayah Giurgiu
+    nb: Giurgiu
+    nl: District Giurgiu
+    pl: Okręg Giurgiu
+    pt: Giurgiu
+    ro: Giurgiu
+    ru: Джурджу
+    si: ගියුර්ගියු ප්‍රාන්තය
+    sk: Giurgiu
+    sr: Ђурђу
+    sv: Giurgiu
+    ta: கியூர்கியூ கவுண்டி
+    te: జియర్జియు కౌంటీ
+    th: จูร์จู
+    tr: Yergöğü ili
+    uk: Джурджу
+    ur: جیورجو کاؤنٹی
+    vi: Hạt Giurgiu
+    lv: Džurdžu žudecs
+    ceb: Giurgiu
+    sr_Latn: Đurđu
+    zh: 久爾久縣
+    ccp: "\U0001110E\U00011128\U00011120\U00011122\U00011134\U0001110E\U00011128\U00011105\U0001112A"
+    'no': Giurgiu
+    az: Curcu (judets)
+    be: жудзец Джурджу
+    bs: Giurgiu (okrug)
+    cy: Sir Giurgiu
+    eu: Giurgiu konderria
+    mk: Џурџу
+  comments:
+  type: department
+HD:
+  name: Hunedoara
+  code: HD
+  unofficial_names: Hunedoara
+  geo:
+    latitude: 45.76972199999999
+    longitude: 22.920278
+    min_latitude: 45.7303145
+    min_longitude: 22.8775477
+    max_latitude: 45.7960152
+    max_longitude: 22.9378867
+  translations:
+    en: Hunedoara
+    ar: مقاطعة هوندوارا
+    be: жудзец Хунедаара
+    bg: Хунедоара
+    bn: হুনেদোয়ারা কাউন্টি
+    ca: Província de Hunedoara
+    cs: Hunedoara
+    da: Hunedoara
+    de: Hunedoara
+    el: Χουνεντοάρα
+    es: Hunedoara
+    et: Hunedoara maakond
+    fa: شهرستان هوندوارا
+    fi: Hunedoara
+    fr: județ de Hunedoara
+    gl: Condado de Hunedoara
+    gu: હુનેડોઆરા કાઉન્ટી
+    hi: हूनेदोआरा काउंटी
+    hr: Hunedoara
+    hu: Hunyad megye
+    id: Provinsi Hunedoara
+    it: distretto di Hunedoara
+    ja: フネドアラ県
+    ka: ჰუნედოარის ჟუდეცი
+    kn: ಹುನೆಡೊರಾ ಕೌಂಟಿ
+    ko: 후네도아라 주
+    lt: Hunedoaros apskritis
+    mn: Хунедоара аймаг
+    mr: हुनदओरा काउंटी
+    ms: Wilayah Hunedoara
+    nb: Hunedoara
+    nl: District Hunedoara
+    pl: Okręg Hunedoara
+    pt: Hunedoara
+    ro: Hunedoara
+    ru: Хунедоара
+    si: හුනේඩොආරා ප්‍රාන්තය
+    sk: Hunedoara
+    sr: Хунедоара
+    sv: Hunedoara
+    ta: ஹுநேடோரா கவுண்டி
+    te: హునెండోవరా కౌంటీ
+    th: เทศมณฑลฮูเนโดอารา
+    tr: Hunedoara ili
+    uk: Хунедоара
+    ur: ہونےدوارا کاؤنٹی
+    vi: Hạt Hunedoara
+    lv: Hunedoaras žudecs
+    ceb: Hunedoara (lalawigan)
+    sr_Latn: Hunedoara
+    zh: 胡內多阿拉縣
+    sq: Qarku Hunedoara
+    ccp: "\U00011126\U0001112A\U0001111A\U0001112C\U00011113\U0001112E\U00011120\U00011122"
+    'no': Hunedoara
+    bs: Hunedoara (okrug)
+    cy: Sir Hunedoara
+    eu: Hunedoara konderria
+    hy: Հունեդոարա
+  comments:
+  type: department
+HR:
+  name: Harghita
+  code: HR
+  unofficial_names: Harghita
+  geo:
+    latitude: 46.4928507
+    longitude: 25.6456696
+    min_latitude: 46.118927
+    min_longitude: 24.838758
+    max_latitude: 47.182226
+    max_longitude: 26.2926781
+  translations:
+    en: Harghita
+    ar: مقاطعة هارغيتا
+    bg: Харгита
+    bn: হারঘিতা কাউন্টি
+    ca: Província de Harghita
+    cs: Harghita
+    da: Harghita
+    de: Kreis Harghita
+    el: Χαργκίτα
+    es: Harghita
+    et: Harghita maakond
+    fa: شهرستان هارگیتا
+    fi: Harghita
+    fr: Județ de Harghita
+    gl: Condado de Harghita
+    gu: હાર્ઘિટા કાઉન્ટી
+    hi: हरघिता काउंटी
+    hr: Harghita
+    hu: Hargita megye
+    id: Provinsi Harghita
+    it: distretto di Harghita
+    ja: ハルギタ県
+    ka: ჰარგიტის ჟუდეცი
+    kn: ಹರ್ಘಿತ ಕೌಂಟಿ
+    ko: 하르기타 주
+    lt: Hargitos apskritis
+    mn: Харгита аймаг
+    mr: हरघिता काउंटी
+    ms: Wilayah Harghita
+    nb: Harghita
+    nl: Harghita
+    pl: Okręg Harghita
+    pt: Harghita
+    ro: Harghita
+    ru: Харгита
+    si: හර්ඝිටා ප්‍රාන්තය
+    sk: Harghita
+    sr: Харгита
+    sv: Harghita
+    ta: ஹாஜிஹிட கவுண்டி
+    te: హార్గిటా కౌంటీ
+    th: เทศมณฑลฮาร์กิต้า
+    tr: Harghita ili
+    uk: Харгіта
+    ur: ہارگیتا کاؤنٹی
+    vi: Hạt Harghita
+    lv: Hargitas žudecs
+    ceb: Harghita
+    sr_Latn: Hargita
+    zh: 哈爾吉塔縣
+    ccp: "\U00011126\U00011122\U00011134\U0001110A\U00011128\U00011111"
+    'no': Harghita
+    az: Hargita judeçi
+    be: жудзец Харгіта
+    bs: Harghita (okrug)
+    cy: Sir Harghita
+    eu: Harghita konderria
+  comments:
+  type: department
+IF:
+  name: Ilfov
+  code: IF
+  unofficial_names:
+  - Sectorul Agricol Ilfov
+  geo:
+    latitude: 44.535548
+    longitude: 26.2324886
+    min_latitude: 44.21543
+    min_longitude: 25.823766
+    max_latitude: 44.767888
+    max_longitude: 26.454579
+  translations:
+    en: Ilfov
+    ar: مقاطعة إلفوف
+    bg: Илфов
+    bn: ইলফোভ
+    ca: Província d’Ilfov
+    cs: Ilfov
+    da: Ilfov
+    de: Kreis Ilfov
+    el: Ίλφοβ
+    es: Ilfov
+    et: Ilfovi maakond
+    fa: شهرستان ایلفوو
+    fi: Ilfov
+    fr: Județ d’Ilfov
+    gl: Condado de Ilfov
+    gu: ઇલ્ફૉવ કાઉન્ટી
+    hi: लेफ़ॉव काउंटी
+    hr: Ilfov
+    hu: Ilfov megye
+    id: Provinsi Ilfov
+    it: distretto di Ilfov
+    ja: イルフォヴ県
+    ka: ილფოვის ჟუდეცი
+    kn: ಇಲ್ಫೊವ್ ಕೌಂಟಿ
+    ko: 일포브 주
+    lt: Ilfovo apskritis
+    mn: Илфов аймаг
+    mr: इल्फॉव काउंटी
+    ms: Wilayah Ilfov
+    nb: Ilfov
+    nl: District Ilfov
+    pl: Okręg Ilfov
+    pt: Ilfov
+    ro: Ilfov
+    ru: Илфов
+    si: ඉල්ෆොව් ප්‍රාන්තය
+    sk: Ilfov
+    sr: Илфов
+    sv: Ilfov
+    ta: இலபோவ் கவுண்டி
+    te: ఇల్ఫో కౌంటీ
+    th: อิลฟอพ คันทรี
+    tr: Ilfov ili
+    uk: Ілфов
+    ur: الیفوف کاؤنٹی
+    vi: Hạt Ilfov
+    lv: Ilfovas žudecs
+    ceb: Ilfov
+    sr_Latn: Ilfov
+    zh: 伊爾福夫縣
+    ccp: "\U00011103\U00011128\U00011123\U00011134\U0001111C\U0001112E\U0001111B\U00011134"
+    'no': Ilfov
+    az: İlfov (judets)
+    bs: Ilfov (okrug)
+    cy: Sir Ilfov
+    eu: Ilfov konderria
+    he: מחוז אילפוב
+  comments:
+  type: department
+IL:
+  name: Ialomita
+  code: IL
+  unofficial_names:
+  - Ialomita
+  geo:
+    latitude: 44.603133
+    longitude: 27.3789914
+    min_latitude: 44.330837
+    min_longitude: 26.300869
+    max_latitude: 44.86406700000001
+    max_longitude: 28.1100249
+  translations:
+    en: Ialomița
+    ar: مقاطعة إيالوميتا
+    bg: Яломица
+    bn: ইয়ালোমিতা কাউন্টি
+    ca: Província de Ialomiţa
+    cs: Ialomița
+    da: Ialomița
+    de: Kreis Ialomița
+    el: Ιαλομίτα
+    es: Ialomița
+    et: Ialomița maakond
+    fa: شهرستان ایالومیتسا
+    fi: Ialomița
+    fr: Județ de Ialomița
+    gl: Condado de Ialomiţa
+    gu: ઇલોમીટા કાઉન્ટી
+    hi: इआलोमिटा काउंटी
+    hr: Ialomiţa
+    hu: Ialomița megye
+    id: Provinsi Ialomiţa
+    it: distretto di Ialomița
+    ja: ヤロミツァ県
+    ka: იალომიცის ჟუდეცი
+    kn: ಐಲೊಮಿಟಾ ಕೌಂಟಿ
+    ko: 이알로미차 주
+    lt: Jalomicos apskritis
+    mn: Яломица аймаг
+    mr: इलॉमीता काउंटी
+    ms: Wilayah Ialomița
+    nb: Ialomiţa
+    nl: District Ialomița
+    pl: Okręg Jałomica
+    pt: Ialomiţa
+    ro: Ialomița
+    ru: Яломица
+    si: ලලොමිටා ප්‍රාන්තය
+    sk: Ialomiţa
+    sr: Јаломица
+    sv: Ialomița
+    ta: இயலொமிடா கவுண்டி
+    te: లాలోమితా కౌంటీ
+    th: ลาโลมีตา คันทรี่
+    tr: Ialomița ili
+    uk: Яломіца
+    ur: یالومیتسا کاؤنٹی
+    vi: Hạt Ialomita
+    lv: Jalomicas žudecs
+    ceb: Județul Ialomița
+    sr_Latn: Jalomica
+    zh: 雅洛米察縣
+    ccp: "\U00011103\U0001112D\U00011103\U00011123\U0001112E\U0001111F\U00011128\U00011111"
+    'no': Ialomiţa
+    be: жудзец Яламіца
+    bs: Ialomița (okrug)
+    cy: Sir Ialomița
+    eu: Ialomiţa konderria
+  comments:
+  type: department
+IS:
+  name: Iasi
+  code: IS
+  unofficial_names:
+  - Iasi
+  - Jasch
+  - Jassy
+  - Yassy
+  geo:
+    latitude: 47.156944
+    longitude: 27.590278
+    min_latitude: 47.08483709999999
+    min_longitude: 27.4769569
+    max_latitude: 47.2274375
+    max_longitude: 27.6969839
+  translations:
+    en: Iași
+    ar: إقليم ياش
+    be: Ясы
+    bg: Яш
+    bn: ইয়াসি কাউন্টি
+    ca: Província de Iași
+    cs: Iași
+    da: Iași
+    de: Kreis Iași
+    el: Ιασί
+    es: Iași
+    et: Iași maakond
+    fa: شهرستان ایاشی
+    fi: Iași
+    fr: Județ de Iași
+    gl: Condado de Iași
+    gu: ઇઆસી કાઉન્ટી
+    he: מחוז יאשי
+    hi: इयासी काउंटी
+    hr: Iaşi
+    hu: Iași megye
+    id: Provinsi Iaşi
+    it: distretto di Iași
+    ja: ヤシ県
+    ka: იასის ჟუდეცი
+    kn: ಇಯಾಸಿ ಕೌಂಟಿ
+    ko: 이아시 주
+    lt: Jasų apskritis
+    mn: Яаш аймаг
+    mr: इसासी काउंटी
+    ms: Wilayah Iași
+    nb: Iași
+    nl: District Iași
+    pl: Okręg Jassy
+    pt: Iaşi
+    ro: Iași
+    ru: Яссы
+    si: ඉයාසි ප්‍රාන්තය
+    sk: Iaşi
+    sr: Јаши
+    sv: Iași
+    ta: லிச்சி கவுண்டி
+    te: అయాసీ కౌంటీ
+    th: เมืองยาช
+    tr: Yaş ili
+    uk: Ясси
+    ur: یاشی کاؤنٹی
+    vi: Hạt Iasi
+    lv: Jasu žudecs
+    ceb: Județul Iași
+    sr_Latn: Jaši
+    zh: 雅西縣
+    ccp: "\U00011103\U0001112D\U00011103\U00011125\U00011128"
+    mk: Јаш
+    'no': Iași
+    bs: Iași (okrug)
+    cy: Sir Iași
+    eu: Iași konderria
+    ga: Contae Iași
+    hy: Յասի շրջան
+  comments:
+  type: department
+MH:
+  name: Mehedinti
+  code: MH
+  unofficial_names:
+  - Mehedinti
+  geo:
+    latitude: 44.5515053
+    longitude: 22.9044157
+    min_latitude: 44.0983461
+    min_longitude: 22.0000145
+    max_latitude: 45.108286
+    max_longitude: 23.458584
+  translations:
+    en: Mehedinți
+    ar: مقاطعة ميهيدينتي
+    bg: Мехединци
+    bn: মেহেদিন্তি কাউন্টি
+    ca: Província de Mehedinți
+    cs: Mehedinți
+    da: Mehedinţi
+    de: Kreis Mehedinți
+    el: Μεχεντίντι
+    es: Mehedinți
+    et: Mehedinți maakond
+    fa: شهرستان مهدینتسی
+    fi: Mehedinți
+    fr: Județ de Mehedinți
+    gl: Condado de Mehedinţi
+    gu: મેહેડિન્ટી કાઉન્ટી
+    hi: महेदिंती काउंटी
+    hr: Mehedinţi
+    hu: Mehedinți megye
+    id: Provinsi Mehedinţi
+    it: distretto di Mehedinți
+    ja: メヘディンチ県
+    ka: მეჰედინცის ჟუდეცი
+    kn: ಮೆಹೆಥಿಂಟಿ ಕೌಂಟಿ
+    ko: 메헤딘치 주
+    lt: Mehedincio apskritis
+    mn: Мехединци аймаг
+    mr: मेहेदिनटी काउंटी
+    ms: Wilayah Mehedinți
+    nb: Mehedinți
+    nl: District Mehedinți
+    pl: Okręg Mehedinţi
+    pt: Mehedinţi
+    ro: Mehedinți
+    ru: Мехединци
+    si: මෙහ්ඩින්ටි ප්‍රාන්තය
+    sk: Mehedinţi
+    sr: Мехединци
+    sv: Mehedinți
+    ta: மெஹெடின்டி கவுண்டி
+    te: మెహెడినిటి కౌంటీ
+    th: เมเฮดินติ
+    tr: Mehedinți ili
+    uk: Мехедінць
+    ur: میہیدینتسی کاؤنٹی
+    vi: Hạt Mehedinti
+    lv: Mehedincu žudecs
+    ceb: Județul Mehedinți
+    sr_Latn: Mehedinci
+    zh: 梅赫丁茨縣
+    ccp: "\U0001111F\U0001112C\U00011126\U0001112C\U00011113\U00011128\U0001111A\U00011134\U00011111\U00011128"
+    be: жудзец Мехедынцы
+    'no': Mehedinți
+    az: Mexedintsi
+    bs: Mehedinți (okrug)
+    cy: Sir Mehedinți
+    eu: Mehedinţi konderria
+  comments:
+  type: department
+MM:
+  name: Maramures
+  code: MM
+  unofficial_names:
+  - Maramures
+  geo:
+    latitude: 47.6737598
+    longitude: 23.7456285
+    min_latitude: 47.324372
+    min_longitude: 22.965186
+    max_latitude: 48.020276
+    max_longitude: 25.0557001
+  translations:
+    en: Maramureş
+    be: жудзец Марамурэш
+    bg: Марамуреш
+    ca: Província de Maramureș
+    cs: Maramureș
+    da: Maramureș
+    de: Kreis Maramureș
+    es: Maramureș
+    et: Maramureși maakond
+    fa: شهرستان مارامورش
+    fi: Maramureș
+    fr: Județ de Maramureș
+    gl: Condado de Maramureş
+    he: מחוז מרמורש
+    hr: Maramureş
+    hu: Máramaros megye
+    id: Provinsi Maramureş
+    it: distretto di Maramureș
+    ja: マラムレシュ県
+    ka: მარამურეშის ჟუდეცი
+    ko: 마라무레슈 주
+    lt: Maramurešo apskritis
+    mn: Марамуреш аймаг
+    ms: Wilayah Maramureș
+    nb: Maramureș
+    nl: District Maramureș
+    pl: Okręg Marmarosz
+    pt: Maramureș
+    ro: Maramureș
+    ru: Марамуреш
+    sk: Maramureş
+    sr: Марамуреш
+    sv: Maramureș
+    tr: Maramureș ili
+    uk: Марамуреш
+    ur: ماراموریش کاؤنٹی
+    sr_Latn: Maramureš
+    zh: 馬拉穆列什縣
+    hi: मारमुरेस काउंटी
+    ccp: "\U0001111F\U00011122\U0001111F\U0001112A\U00011122\U0001112C\U0001110C\U00011134"
+    'no': Maramureș
+    ar: مقاطعة مارامورس
+    az: Maramureş
+    bs: Maramureș (okrug)
+    ceb: Județul Maramureș
+    cy: Sir Maramureș
+    el: Τζουντέτς του Μαραμούρες
+    eu: Maramureş konderria
+    ga: Contae Maramureș
+    hy: Մարամուրեշ
+    sl: okrožje Maramureș
+    th: เทศมณฑลมารามูเรช
+  comments:
+  type: department
+MS:
+  name: Mures
+  code: MS
+  unofficial_names:
+  - Mures
+  geo:
+    latitude: 46.5569904
+    longitude: 24.6723215
+    min_latitude: 46.075015
+    min_longitude: 23.9577359
+    max_latitude: 47.143799
+    max_longitude: 25.3139161
+  translations:
+    en: Mureş
+    ar: مقاطعة موريس
+    be: Мюрэш
+    bg: Муреш
+    bn: মুর কাউন্টি
+    ca: Província de Mureș
+    cs: Mureș
+    da: Mureș
+    de: Kreis Mureș
+    el: Μουρές
+    es: Mureș
+    et: Mureși maakond
+    fa: شهرستان مورش
+    fi: Mureș
+    fr: Județ de Mureș
+    gl: Condado de Mureş
+    gu: મુરેસ કાઉન્ટી
+    hi: म्यूरेस काउंटी
+    hr: Mureș
+    hu: Maros megye
+    id: Provinsi Mureş
+    it: distretto di Mureș
+    ja: ムレシュ県
+    ka: მურეშის ჟუდეცი
+    kn: ಮೌರೆಸ್ ಕೌಂಟಿ
+    ko: 무레슈 주
+    lt: Murešo apskritis
+    mn: Муреш аймаг
+    mr: मॉरेस काउंटी
+    ms: Wilayah Mureș
+    nb: Mureș
+    nl: District Mureș
+    pl: Okręg Marusza
+    pt: Mureș
+    ro: Mureș
+    ru: Муреш
+    si: මියුරෙස් ප්‍රාන්තය
+    sk: Mureş
+    sr: Муреш
+    sv: Mureș
+    te: మూరెస్ కౌంటీ
+    th: มูเรช
+    tr: Mureș ili
+    uk: Муреш
+    ur: موریش کاؤنٹی
+    vi: Hạt Mures
+    lv: Murešas žudecs
+    ceb: Județul Mureș
+    sr_Latn: Mureš
+    zh: 穆列什縣
+    ccp: "\U0001111F\U0001112A\U00011122\U0001112C\U0001110C\U00011134"
+    'no': Mureș
+    az: Mureş
+    bs: Mureș (okrug)
+    cy: Sir Mureș
+    eu: Mureş konderria
+    hy: Մուրեշ
+  comments:
+  type: department
+NT:
+  name: Neamt
+  code: NT
+  unofficial_names:
+  - Neamt
+  geo:
+    latitude: 46.9758685
+    longitude: 26.3818764
+    min_latitude: 46.640951
+    min_longitude: 25.6630821
+    max_latitude: 47.337545
+    max_longitude: 27.246063
+  translations:
+    en: Neamţ
+    ar: مقاطعة نيامتس
+    bg: Нямц
+    bn: নিমট কাউন্টি
+    ca: Província de Neamț
+    cs: Neamț
+    da: Neamț
+    de: Kreis Neamț
+    el: Κομητεία Νεάμτς
+    es: Neamț
+    et: Neamți maakond
+    fa: شهرستان نامس
+    fi: Neamț
+    fr: Județ de Neamț
+    gl: Condado de Neamţ
+    gu: નેમાટ કાઉન્ટી
+    hi: नीम्ट काउंटी
+    hr: Neamț
+    hu: Neamț megye
+    id: Provinsi Neamţ
+    it: distretto di Neamț
+    ja: ネアムツ県
+    ka: ნიამცის ჟუდეცი
+    kn: ನೆಮ್ಟ್ ಕೌಂಟಿ
+    ko: 네암츠 주
+    lt: Niamco apskritis
+    mn: Нямц аймаг
+    mr: नेमाट काउंटी
+    ms: Wilayah Neamț
+    nb: Neamț
+    nl: District Neamț
+    pl: Okręg Neamţ
+    pt: Neamţ
+    ro: Neamț
+    ru: Нямц
+    si: නිම්ට් ප්‍රාන්තය
+    sk: Neamț
+    sr: Њамц
+    sv: Neamț
+    ta: நீம்ட் கவுண்டி
+    te: నీమ్ట్ కౌంటీ
+    th: เมืองแนมท์
+    tr: Neamț ili
+    uk: Нямц
+    ur: نامتس کاؤنٹی
+    vi: Hạt Neamt
+    lv: Njamcas žudecs
+    ceb: Județul Neamț
+    sr_Latn: Njamc
+    zh: 尼亞姆茨縣
+    ccp: "\U0001111A\U00011128\U0001111F\U00011134\U00011111\U00011134"
+    he: ניאמץ
+    'no': Neamț
+    az: Nyamts (judets)
+    be: жудзец Нямц
+    bs: Neamț (okrug)
+    cy: Sir Neamț
+    eu: Neamţ konderria
+    hy: Նյամց
+    mk: Њамц
+  comments:
+  type: department
+OT:
+  name: Olt
+  code: OT
+  unofficial_names: Olt
+  geo:
+    latitude: 44.200797
+    longitude: 24.5022981
+    min_latitude: 43.6820435
+    min_longitude: 23.881877
+    max_latitude: 44.896967
+    max_longitude: 24.8545519
+  translations:
+    en: Olt
+    ar: مقاطعة أولت
+    be: Олт
+    bg: Олт
+    bn: ওল্ট কাউন্টি
+    ca: Província d’Olt
+    cs: Olt
+    da: Olt
+    de: Kreis Olt
+    el: Όλτ
+    es: Olt
+    et: Olti maakond
+    fa: شهرستان اولت
+    fi: Olt
+    fr: Județ d’Olt
+    gl: Condado de Olt
+    gu: ઓલ્ટ કાઉન્ટી
+    hi: ओल्ट काउंटी
+    hr: Olt
+    hu: Olt megye
+    id: Provinsi Olt
+    it: distretto di Olt
+    ja: オルト県
+    ka: ოლტის ჟუდეცი
+    kn: ಓಲ್ಟ್ ಕೌಂಟಿ
+    ko: 올트 주
+    lt: Olto apskritis
+    mn: Олт аймаг
+    mr: ओल्ट काउंटी
+    ms: Wilayah Olt
+    nb: Olt
+    nl: District Olt
+    pl: Okręg Aluta
+    pt: Olt
+    ro: Olt
+    ru: Олт
+    si: ඕල්ට් ප්‍රාන්තය
+    sk: Olt
+    sr: Олт
+    sv: Olt
+    ta: ஓல்ட் கவுண்டி
+    te: ఓల్ట్ కౌంటీ
+    th: โอลด์ คันทรี่
+    tr: Olt ili
+    uk: Олт
+    ur: اولت کاؤنٹی
+    vi: Hạt Olt
+    lv: Oltas žudecs
+    ceb: Olt (lalawigan)
+    sr_Latn: Olt
+    zh: 奧爾特縣
+    ccp: "\U00011103\U00011127\U00011123\U00011134\U00011111\U00011134"
+    'no': Olt
+    bs: Olt (okrug)
+    cy: Sir Olt
+    eu: Olt konderria
+  comments:
+  type: department
+PH:
+  name: Prahova
+  code: PH
+  unofficial_names: Prahova
+  geo:
+    latitude: 45.08919059999999
+    longitude: 26.0829312
+    min_latitude: 44.692479
+    min_longitude: 25.4514369
+    max_latitude: 45.5147729
+    max_longitude: 26.6054759
+  translations:
+    en: Prahova
+    ar: مقاطعة يراهوفا
+    be: Прахова
+    bg: Прахова
+    bn: প্রাহোভা কাউন্টি
+    ca: Província de Prahova
+    cs: Prahova
+    da: Prahova
+    de: Kreis Prahova
+    el: Πράχοβα
+    es: Prahova
+    et: Prahova maakond
+    fa: شهرستان پراهووا
+    fi: Prahova
+    fr: Județ de Prahova
+    gl: Condado de Prahova
+    gu: પ્રહોવા કાઉન્ટી
+    hi: प्रहोवा काउंटी
+    hr: Prahova
+    hu: Prahova megye
+    id: Provinsi Prahova
+    it: distretto di Prahova
+    ja: プラホヴァ県
+    ka: პრაჰოვის ჟუდეცი
+    kn: ಪ್ರಹೋವಾ ಕೌಂಟಿ
+    ko: 프라호바 주
+    lt: Prahovos apskritis
+    mn: Прахова аймаг
+    mr: प्रेहो काउंटी
+    ms: Wilayah Prahova
+    nb: Prahova
+    nl: District Prahova
+    pl: Okręg Prahova
+    pt: Prahova
+    ro: Prahova
+    ru: Прахова
+    si: ප්‍රහොවා ප්‍රාන්තය
+    sk: Prahova
+    sr: Прахова
+    sv: Prahova
+    ta: ப்ரஹோவா கவுண்டி
+    te: ప్రహోవా కౌంటీ
+    th: จังหวัดแซเนมาร์น
+    tr: Prahova ili
+    uk: Прахова
+    ur: پراہوا کاؤنٹی
+    vi: Hạt Prahova
+    lv: Prahovas žudecs
+    sr_Latn: Prahova
+    zh: 普拉霍瓦縣
+    ccp: "\U0001111B\U00011133\U00011122\U00011127\U00011126\U0001112E\U0001111E"
+    'no': Prahova
+    bs: Prahova (okrug)
+    ceb: Prahova (lalawigan)
+    cy: Sir Prahova
+    eu: Prahova konderria
+  comments:
+  type: department
+SB:
+  name: Sibiu
+  code: SB
+  unofficial_names: Sibiu
+  geo:
+    latitude: 45.792784
+    longitude: 24.152069
+    min_latitude: 45.72439780000001
+    min_longitude: 24.0631485
+    max_latitude: 45.8415964
+    max_longitude: 24.2165279
+  translations:
+    en: Sibiu
+    ar: مقاطعة سيبيو
+    bg: Сибиу
+    bn: সিবিউ কাউন্টি
+    ca: Província de Sibiu
+    cs: Sibiu
+    da: Sibiu
+    de: Kreis Sibiu
+    el: Σίμπιου
+    es: Sibiu
+    et: Sibiu maakond
+    eu: Sibiu
+    fa: شهرستان سیبیو
+    fi: Sibiu
+    fr: Județ de Sibiu
+    gl: Condado de Sibiu
+    gu: સિબિયુ કાઉન્ટી
+    he: מחוז סיביו
+    hi: सिबिउ काउंटी
+    hr: Sibiu
+    hu: Szeben megye
+    id: Provinsi Sibiu
+    it: distretto di Sibiu
+    ja: シビウ県
+    ka: სიბიუს ჟუდეცი
+    kn: ಸಿಬಿಯು ಕೌಂಟಿ
+    ko: 시비우 주
+    lt: Sibiu apskritis
+    mn: Сибиу аймаг
+    mr: सिबियु काउंटी
+    ms: Wilayah Sibiu
+    nb: Sibiu
+    nl: District Sibiu
+    pl: Okręg Sybin
+    pt: Sibiu
+    ro: Sibiu
+    ru: Сибиу
+    si: සිබියු ප්‍රාන්තය
+    sk: Sibiu
+    sr: Сибињ
+    sv: Sibiu
+    ta: சிபியு கவுண்டி
+    te: సిబియు కౌంటీ
+    th: ซีบิว
+    tr: Sibiu ili
+    uk: Сібіу
+    ur: سیبیو کاؤنٹی
+    vi: Hạt Sibiu
+    lv: Sibiu žudecs
+    ceb: Județul Sibiu
+    sr_Latn: Sibinj
+    zh: 錫比烏縣
+    ccp: "\U00011125\U00011128\U0001111D\U00011128\U00011105\U0001112A"
+    be: жудзец Сібіу
+    mk: Сибиу
+    'no': Sibiu
+    az: Sibiu
+    bs: Sibiu (okrug)
+    cy: Sir Sibiu
+    hy: Սիբիու
+  comments:
+  type: department
+SJ:
+  name: Salaj
+  code: SJ
+  unofficial_names:
+  - Salaj
+  geo:
+    latitude: 47.2090813
+    longitude: 23.2121901
+    min_latitude: 46.854099
+    min_longitude: 22.493326
+    max_latitude: 47.460111
+    max_longitude: 23.8409952
+  translations:
+    en: Sălaj
+    ar: مقاطعة سالاج
+    bg: Сълаж
+    bn: সালাজ কাউন্টি
+    ca: Província de Sălaj
+    cs: Sălaj
+    da: Sălaj
+    de: Kreis Sălaj
+    el: Σάλατζ
+    es: Sălaj
+    et: Sălaji maakond
+    fa: شهرستان سلاژ
+    fi: Sălaj
+    fr: Județ de Sălaj
+    gl: Condado de Sălaj
+    gu: સાલજ કાઉન્ટી
+    he: סלאז׳
+    hi: सलाय काउंटी
+    hr: Sălaj
+    hu: Szilágy megye
+    id: Provinsi Sălaj
+    it: distretto di Sălaj
+    ja: サラージュ県
+    ka: სელაჟის ჟუდეცი
+    kn: ಸಾಲಾಜ್ ಕೌಂಟಿ
+    ko: 설라지 주
+    lt: Selažo apskritis
+    mn: Салаж аймаг
+    mr: सलज काउंटी
+    ms: Wilayah Sălaj
+    nb: Sălaj
+    nl: Sălaj
+    pl: Okręg Sălaj
+    pt: Sălaj
+    ro: Sălaj
+    ru: Сэлаж
+    si: සාලාජ් පළාත
+    sk: Sălaj
+    sr: Салаж
+    sv: Sălaj
+    ta: சலஜ் கவுண்டி
+    te: సలాజ్ కౌంటీ
+    th: ซาลาจ
+    tr: Sălaj ili
+    uk: Селаж
+    ur: سالاژ کاؤنٹی
+    vi: Hạt Salaj
+    lv: Selažas žudecs
+    ceb: Județul Sălaj
+    sr_Latn: Salaž
+    zh: 瑟拉日縣
+    ccp: "\U00011125\U00011123\U0001110C\U00011134"
+    be: жудзец Сэлаж
+    'no': Sălaj
+    bs: Sălaj (okrug)
+    cy: Sir Sălaj
+    eu: Sălaj konderria
+  comments:
+  type: department
+SM:
+  name: Satu Mare
+  code: SM
+  unofficial_names: Satu Mare
+  geo:
+    latitude: 47.79
+    longitude: 22.89
+    min_latitude: 47.71166729999999
+    min_longitude: 22.7901506
+    max_latitude: 47.8945642
+    max_longitude: 22.9771327
+  translations:
+    en: Satu Mare
+    ar: مقاطعة ساتو ماري
+    bg: Сату Маре
+    bn: সাতু মার কাউন্টি
+    ca: Província de Satu Mare
+    cs: Satu Mare
+    da: Satu Mare
+    de: Kreis Satu Mare
+    el: επαρχία Σάτου Μάρε
+    es: Satu Mare
+    et: Satu Mare maakond
+    fa: شهرستان ساتو ماره
+    fi: Satu Mare
+    fr: județ de Satu Mare
+    gl: Condado de Satu Mare
+    gu: સતુ મેર કાઉન્ટી
+    he: מחוז סאטו מארה
+    hi: सातू मेअर काउंटी
+    hr: Satu Mare
+    hu: Szatmár megye
+    id: Provinsi Satu Mare
+    it: distretto di Satu Mare
+    ja: サトゥ・マーレ県
+    ka: სატუ-მარეს ჟუდეცი
+    kn: ಸತು ಮೇರ್ ಕೌಂಟಿ
+    ko: 사투마레 주
+    lt: Satu Marės apskritis
+    mn: Сату-Маре аймаг
+    mr: सातू मेअर काउंटी
+    ms: Wilayah Satu Mare
+    nb: Satu Mare
+    nl: District Satu Mare
+    pl: Okręg Satu Mare
+    pt: Satu Mare
+    ro: Satu Mare
+    ru: Сату-Маре
+    si: සටුමරේ ප්‍රාන්තය
+    sk: Satu Mare
+    sr: Сату Маре
+    sv: Satu Mare
+    ta: சாட்டு மாறே கவுண்டி
+    te: సాటు మేర్ కౌంటీ
+    th: มณฑลซาตูมาเร
+    tr: Satu Mare ili
+    uk: Сату-Маре
+    ur: ساتو مارے کاؤنٹی
+    vi: Hạt Satu Mare
+    lv: Satumares žudecs
+    ceb: Satu Mare
+    sr_Latn: Satu Mare
+    zh: 薩圖馬雷縣
+    ccp: "\U00011125\U00011111\U0001112A \U0001111F\U0001112C\U00011120\U00011122\U00011134"
+    hy: Սատու Մարե
+    be: жудзец Сату-Марэ
+    'no': Satu Mare
+    bs: Satu Mare (okrug)
+    cy: Sir Satu Mare
+    eu: Satu Mare konderria
+  comments:
+  type: department
+SV:
+  name: Suceava
+  code: SV
+  unofficial_names: Suceava
+  geo:
+    latitude: 47.65138899999999
+    longitude: 26.255556
+    min_latitude: 47.6085356
+    min_longitude: 26.2014914
+    max_latitude: 47.7191674
+    max_longitude: 26.3217187
+  translations:
+    en: Suceava
+    ar: إقليم سوتشيافا
+    be: жудзец Сучава
+    bg: Сучава
+    bn: সুচিভা কাউন্টি
+    ca: Província de Suceava
+    cs: Suceava
+    da: Suceava
+    de: Kreis Suceava
+    el: Σουκεάβα
+    es: Suceava
+    et: Suceava maakond
+    eu: Suceava
+    fa: شهرستان سوچاوا
+    fi: Suceava
+    fr: Județ de Suceava
+    gl: Condado de Suceava
+    gu: સુસેવા કાઉન્ટી
+    he: מחוז סוצ׳אבה
+    hi: सुसेवा काउंटी
+    hr: Suceava
+    hu: Suceava megye
+    id: Provinsi Suceava
+    it: distretto di Suceava
+    ja: スチャヴァ県
+    ka: სუჩავის ჟუდეცი
+    kn: ಸೂಸವ ಕೌಂಟಿ
+    ko: 수체아바 주
+    lt: Sučavos apskritis
+    mn: Сучава аймаг
+    mr: सुसेवा काउंटी
+    ms: Wilayah Suceava
+    nb: Suceava
+    nl: District Suceava
+    pl: Okręg Suczawa
+    pt: Suceava
+    ro: Suceava
+    ru: Сучава
+    si: සුසේආවා ප්‍රාන්තය
+    sk: Suceava
+    sr: Сучава
+    sv: Suceava
+    ta: சுசாவா கவுண்டி
+    te: సుకియావా కౌంటీ
+    th: ซูซาวา
+    tr: Suceava ili
+    uk: Сучава
+    ur: سوچاوا کاؤنٹی
+    vi: Hạt Suceava
+    lv: Sučavas žudecs
+    ceb: Suceava (lalawigan)
+    sr_Latn: Sučava
+    zh: 蘇恰瓦縣
+    ccp: "\U00011125\U0001112A\U0001110C\U00011128\U0001111E"
+    'no': Suceava
+    az: Suçava (judets)
+    bs: Suceava (okrug)
+    cy: Sir Suceava
+    ga: Contae Suceava
+    hy: Սուչավա
+    sl: Okrožje Suceava
+  comments:
+  type: department
+TL:
+  name: Tulcea
+  code: TL
+  unofficial_names: Tulcea
+  geo:
+    latitude: 45.1716165
+    longitude: 28.7914439
+    min_latitude: 45.1574314
+    min_longitude: 28.7479162
+    max_latitude: 45.2010679
+    max_longitude: 28.8334142
+  translations:
+    en: Tulcea
+    ar: مقاطعة تولسيا
+    bg: Тулча
+    bn: তুলসিয়া কাউন্টি
+    ca: Província de Tulcea
+    cs: Tulcea
+    da: Tulcea
+    de: Kreis Tulcea
+    el: Τουλκέα
+    es: Tulcea
+    et: Tulcea maakond
+    fa: شهرستان تولچا
+    fi: Tulcea
+    fr: Județ de Tulcea
+    gl: Condado de Tulcea
+    gu: ટુલ્સિઆ કાઉન્ટી
+    he: טולצ׳ה
+    hi: टलसी काउंटी
+    hr: Tulcea
+    hu: Tulcea megye
+    id: Provinsi Tulcea
+    it: distretto di Tulcea
+    ja: トゥルチャ県
+    ka: ტულჩის ჟუდეცი
+    kn: ತುಲ್ಸಿಯ ಕೌಂಟಿ
+    ko: 툴체아 주
+    lt: Tulčos apskritis
+    mn: Тулча аймаг
+    mr: टुलसीआ काउंटी
+    ms: Wilayah Tulcea
+    nb: Tulcea
+    nl: District Tulcea
+    pl: Okręg Tulcza
+    pt: Tulcea
+    ro: Tulcea
+    ru: Тулча
+    si: ටුලේසියා ප්‍රාන්තය
+    sk: Tulcea
+    sr: Тулча
+    sv: Tulcea
+    ta: துளசியா கவுண்டி
+    te: టుల్సీ కౌంటీ
+    th: เมืองตุลเซ
+    tr: Tulcea ili
+    uk: Тульча
+    ur: تولچا کاؤنٹی
+    vi: Hạt Tulcea
+    lv: Tulčas žudecs
+    ceb: Tulcea
+    sr_Latn: Tulča
+    zh: 圖爾恰縣
+    ccp: "\U00011111\U0001112A\U00011123\U00011134\U00011125\U00011128"
+    be: жудзец Тулча
+    'no': Tulcea
+    az: Tulça
+    bs: Tulcea (okrug)
+    cy: Sir Tulcea
+    eu: Tulcea konderria
+    hy: Տուլչա
+    sl: okrožje Tulcea
+  comments:
+  type: department
+TM:
+  name: Timis
+  code: TM
+  unofficial_names:
+  - Timis
+  geo:
+    latitude: 45.8138902
+    longitude: 21.3331055
+    min_latitude: 45.1918419
+    min_longitude: 20.2617593
+    max_latitude: 46.18994
+    max_longitude: 22.5461279
+  translations:
+    en: Timiș
+    ar: مقاطعة تيميش
+    be: Тыміш
+    bg: Тимиш
+    bn: টিমিস কাউন্টি
+    ca: Província de Timiş
+    cs: Timiș
+    da: Timiș
+    de: Kreis Timiș
+    el: Τίμις
+    es: Timiș
+    et: Timiși maakond
+    fa: شهرستان تیمیش
+    fi: Timiș
+    fr: județ de Timiș
+    gl: Condado de Timiş
+    gu: ટિમીશ કાઉન્ટી
+    he: טימיש (מחוז)
+    hi: टिमिस काउंटी
+    hr: Timiş
+    hu: Temes megye
+    id: Provinsi Timiş
+    it: distretto di Timiș
+    ja: ティミシュ県
+    ka: ტიმიშის ჟუდეცი
+    kn: ಟಿಮಿಸ್ ಕೌಂಟಿ
+    ko: 티미슈 주
+    lt: Timišo apskritis
+    mn: Тимиш аймаг
+    mr: तिमिस काउंटी
+    ms: Wilayah Timiș
+    nb: Timiș
+    nl: District Timiș
+    pl: Okręg Temesz
+    pt: Timiş
+    ro: Timiș
+    ru: Тимиш
+    si: ටිමිස් ප්‍රාන්තය
+    sk: Timiş
+    sr: Тимиш
+    sv: Timiș
+    ta: டிமிஸ் கவுண்டி
+    te: టిమిస్ కౌంటీ
+    th: ทิมิ
+    tr: Timiș ili
+    uk: Тіміш
+    ur: تیمیش کاؤنٹی
+    vi: Hạt Timis
+    lv: Timišas žudecs
+    ceb: Județul Timiș
+    sr_Latn: Timiš
+    zh: 蒂米什縣
+    sq: Qarku Timiș
+    ccp: "\U00011111\U0001112D\U0001111F\U00011128\U0001110C\U00011134"
+    mk: Тимиш
+    'no': Timiș
+    bs: Timiș (okrug)
+    cy: Sir Timiș
+    eu: Timiş konderria
+    hy: Տիմիշ
+  comments:
+  type: department
+TR:
+  name: Teleorman
+  code: TR
+  unofficial_names: Teleorman
+  geo:
+    latitude: 44.0160491
+    longitude: 25.2986628
+    min_latitude: 43.6186193
+    min_longitude: 24.585499
+    max_latitude: 44.518081
+    max_longitude: 25.713873
+  translations:
+    en: Teleorman
+    ar: مقاطعة تيلورمان
+    bg: Телеорман
+    bn: টেলেওরম্যান কাউন্টি
+    ca: Província de Teleorman
+    cs: Teleorman
+    da: Teleorman
+    de: Kreis Teleorman
+    el: Τελεορμάν
+    es: Teleorman
+    et: Teleormani maakond
+    fa: شهرستان تلئورمان
+    fi: Teleorman
+    fr: Județ de Teleorman
+    gl: Condado de Teleorman
+    gu: ટેલિઓર્મન કાઉન્ટી
+    hi: टेलीओर्नान काउंटी
+    hr: Teleorman
+    hu: Teleorman megye
+    id: Provinsi Teleorman
+    it: distretto di Teleorman
+    ja: テレオルマン県
+    ka: ტელეორმანის ჟუდეცი
+    kn: ಟೆಲಿಮೋರ್ನ್ ಕೌಂಟಿ
+    ko: 텔레오르만 주
+    lt: Teleormano apskritis
+    mn: Телеорман аймаг
+    mr: टेलरमन काउंटी
+    ms: Wilayah Teleorman
+    nb: Teleorman
+    nl: District Teleorman
+    pl: Okręg Teleorman
+    pt: Teleorman
+    ro: Teleorman
+    ru: Телеорман
+    si: ටෙලෙයොර්මන් ප්‍රාන්තය
+    sk: Teleorman
+    sr: Телеорман
+    sv: Teleorman
+    ta: டெலெஓர்மன் கவுண்டி
+    te: టెలియోర్మన్ కౌంటీ
+    th: เตเลออร์มันเคาน์ตี
+    tr: Teleorman ili
+    uk: Телеорман
+    ur: تیلیاورمان کاؤنٹی
+    vi: Hạt Teleorman
+    lv: Teleormanas žudecs
+    ceb: Teleorman
+    sr_Latn: Teleorman
+    zh: 特列奧爾曼縣
+    ccp: "\U00011111\U0001112C\U00011123\U00011128\U00011120\U0001112E\U00011122\U00011134\U0001111F\U0001111A\U00011134"
+    he: טלאורמן (מחוז)
+    be: жудзец Тэлеарман
+    'no': Teleorman
+    bs: Teleorman (okrug)
+    cy: Sir Teleorman
+    eu: Teleorman konderria
+  comments:
+  type: department
+VL:
+  name: Vâlcea
+  code: VL
+  unofficial_names:
+  - Vîlcea
+  geo:
+    latitude: 45.07980509999999
+    longitude: 24.0835282
+    min_latitude: 44.49141210000001
+    min_longitude: 23.5770419
+    max_latitude: 45.587699
+    max_longitude: 24.5211
+  translations:
+    en: Vâlcea
+    ar: مقاطعة فالسيا
+    bg: Вълча
+    bn: ভ্যালসিয়া
+    ca: Província de Vâlcea
+    cs: Vâlcea
+    da: Vâlcea
+    de: Kreis Vâlcea
+    el: Βάλτσεα
+    es: Vâlcea
+    et: Vâlcea maakond
+    fa: شهرستان ولوچا
+    fi: Vâlcea
+    fr: Județ de Vâlcea
+    gl: Condado de Vâlcea
+    gu: વલ્સીઆ કાઉન્ટી
+    he: מחוז ולצ׳ה
+    hi: वैल्सिया काउंटी
+    hr: Vâlcea
+    hu: Vâlcea megye
+    id: Provinsi Vâlcea
+    it: distretto di Vâlcea
+    ja: ヴルチャ県
+    ka: ვილჩის ჟუდეცი
+    kn: ವಲ್ಸಿಯಾ ಕೌಂಟಿ
+    ko: 블체아 주
+    lt: Vilčos apskritis
+    mn: Вылча аймаг
+    mr: व्लासीआ काउंटी
+    ms: Wilayah Vâlcea
+    nb: Vâlcea
+    nl: District Vâlcea
+    pl: Okręg Vâlcea
+    pt: Vâlcea
+    ro: Vâlcea
+    ru: Вылча
+    si: වල්සියා ප්‍රාන්තය
+    sk: Vâlcea
+    sr: Валча
+    sv: Vâlcea
+    ta: வால்சா கவுண்டி
+    te: వాల్సియా కౌంటీ
+    th: วัลเซีย คันทรี่
+    tr: Vâlcea ili
+    uk: Вилчя
+    ur: ویلچا کاؤنٹی
+    vi: Hạt Vâlcea
+    lv: Vilčas žudecs
+    ceb: Județul Vâlcea
+    sr_Latn: Valča
+    zh: 沃爾恰縣
+    ccp: "\U0001111E\U00011127\U00011123\U00011134\U00011125\U00011128"
+    be: жудзец Вылча
+    'no': Vâlcea
+    az: Vılça judetsi
+    bs: Vâlcea (okrug)
+    cy: Sir Vâlcea
+    eu: Vâlcea konderria
+    hy: Վիլչա
+  comments:
+  type: department
+VN:
+  name: Vrancea
+  code: VN
+  unofficial_names: Vrancea
+  geo:
+    latitude: 45.81348759999999
+    longitude: 27.0657531
+    min_latitude: 45.366076
+    min_longitude: 26.3742352
+    max_latitude: 46.204405
+    max_longitude: 27.558525
+  translations:
+    en: Vrancea
+    ar: إقليم فرنتشيا
+    be: Вранча
+    bg: Вранча
+    bn: ভ্রান্সিয়া কাউন্টি
+    ca: Província de Vrancea
+    cs: Vrancea
+    da: Vrancea
+    de: Kreis Vrancea
+    el: Βράντσεα
+    es: Vrancea
+    et: Vrancea maakond
+    eu: Vrancea
+    fa: شهرستان ورانچا
+    fi: Vrancea
+    fr: Județ de Vrancea
+    gl: Vrancea
+    gu: વ્રાન્સિયા કાઉન્ટી
+    hi: व्रान्सी काउंटी
+    hr: Vrancea
+    hu: Vrancea megye
+    id: Provinsi Vrancea
+    it: distretto di Vrancea
+    ja: ヴランチャ県
+    ka: ვრანჩის ჟუდეცი
+    kn: ವ್ರಾನ್ಸ ಕೌಂಟಿ
+    ko: 브란체아 주
+    lt: Vrančos apskritis
+    mn: Вранча аймаг
+    mr: व्रान्सा काउंटी
+    ms: Wilayah Vrancea
+    nb: Vrancea
+    nl: District Vrancea
+    pl: Okręg Vrancea
+    pt: Vrancea
+    ro: Vrancea
+    ru: Вранча
+    si: ව්රන්සියා ප්‍රාන්තය
+    sk: Vrancea
+    sr: Вранча
+    sv: Vrancea
+    ta: விரன்ஸா கவுண்டி
+    te: వ్రాన్సియా కౌంటీ
+    th: วาเลนเซ อิล
+    tr: Vrancea ili
+    uk: Вранчя
+    ur: ورانچا کاؤنٹی
+    vi: Vrancea
+    lv: Vrančas žudecs
+    ceb: Vrancea
+    sr_Latn: Vranča
+    zh: 弗朗恰縣
+    ccp: "\U0001111E\U00011133\U00011122\U0001111A\U00011134\U00011125\U00011128"
+    'no': Vrancea
+    az: Vrança (judets)
+    bs: Vrancea (okrug)
+    cy: Sir Vrancea
+    he: מחוז ורנצ׳אה
+  comments:
+  type: department
+VS:
+  name: Vaslui
+  code: VS
+  unofficial_names: Vaslui
+  geo:
+    latitude: 46.638333
+    longitude: 27.729167
+    min_latitude: 46.6157827
+    min_longitude: 27.707777
+    max_latitude: 46.6689939
+    max_longitude: 27.7493192
+  translations:
+    en: Vaslui
+    ar: إقليم فاسلوي
+    be: Васлуй
+    bg: Васлуй
+    bn: ভাস্লুয়ী কাউন্টি
+    ca: Província de Vaslui
+    cs: Vaslui
+    da: Vaslui
+    de: Kreis Vaslui
+    el: Βασλούι
+    es: Vaslui
+    et: Vaslui maakond
+    fa: شهرستان وزلو
+    fi: Vaslui
+    fr: județ de Vaslui
+    gl: Condado de Vaslui
+    gu: વાસ્લુઈ કાઉન્ટી
+    he: מחוז וסלוי
+    hi: वास्लूय काउंटी
+    hr: Vaslui
+    hu: Vaslui megye
+    id: Provinsi Vaslui
+    it: distretto di Vaslui
+    ja: ヴァスルイ県
+    ka: ვასლუის ჟუდეცი
+    kn: ವಾಸ್ಲುಯಿ ಕೌಂಟಿ
+    ko: 바슬루이 주
+    lt: Vaslujaus apskritis
+    mn: Васлуй аймаг
+    mr: वास्लूय काउंटी
+    ms: Wilayah Vaslui
+    nb: Vaslui
+    nl: District Vaslui
+    pl: Okręg Vaslui
+    pt: Vaslui
+    ro: Vaslui
+    ru: Васлуй
+    si: වස්ලුයි ප්‍රාන්තය
+    sk: Vaslui
+    sr: Васлуј
+    sv: Vaslui
+    ta: வாசலுய் கவுண்டி
+    te: వాస్లూయి కౌంటీ
+    th: เมืองหลวงวาสลุย
+    tr: Vaslui ili
+    uk: Васлуй
+    ur: واسلوی کاؤنٹی
+    vi: Hạt Vaslui
+    lv: Vaslujas žudecs
+    ceb: Vaslui
+    sr_Latn: Vasluj
+    zh: 瓦斯盧伊縣
+    ccp: "\U0001111E\U0001110C\U00011134\U00011123\U0001112D\U0001112A"
+    mk: Васлуј
+    'no': Vaslui
+    az: Vasluy judetsi
+    bs: Vaslui (okrug)
+    cy: Sir Vaslui
+    eu: Vaslui konderria
+  comments:
+  type: department

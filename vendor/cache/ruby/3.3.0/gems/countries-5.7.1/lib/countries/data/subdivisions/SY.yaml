@@ -1,0 +1,937 @@
+---
+DI:
+  name: Dimashq
+  code: DI
+  unofficial_names:
+  - Dimashq
+  - Madīnat Dimašq
+  - Damaskus
+  - Damas
+  geo:
+    latitude: 33.513
+    longitude: 36.292
+    min_latitude: 33.4498124
+    min_longitude: 36.1978912
+    max_latitude: 33.5651386
+    max_longitude: 36.3678997
+  translations:
+    en: Damascus
+    ar: محافظة دمشق
+    be: Мухафаза Дамаск
+    bg: Дамаск
+    ca: Governació de Damasc
+    el: Δαμασκός
+    es: Gobernación de Damasco
+    eu: Damasko eskualdea
+    fa: استان دمشق
+    fi: Damaskoksen maakunta
+    fr: Gouvernorat de Damas
+    hi: दमिश्क़ प्रान्त
+    hy: Դամասկոսի մարզ
+    id: Kegubernuran Damaskus
+    it: governatorato di Damasco
+    ja: ダマスカス県
+    ka: დამასკის მუჰაფაზა
+    ko: 다마스쿠스 주
+    nb: Damaskus
+    nl: Damascus Governorate
+    pt: Damasco
+    ro: Guvernoratul Damasc
+    ru: Дамаск
+    tr: Şam
+    ur: محافظہ دمشق
+    zh: 大馬士革省 (敘利亞)
+    ceb: Damascus Governorate
+    pl: Damaszek-Miasto
+    ccp: "\U00011113\U0001111F\U0001110C\U00011134\U00011107\U0001110C\U00011134"
+    de: Gouvernement Damaskus
+    'no': Damaskus
+    cy: Rhaglawiaeth Damascus
+    he: דמשק (מחוז)
+    hr: Damask (pokrajina)
+    ta: டமாஸ்கஸ் ஆளுநரகம்
+    th: เขตผู้ว่าการดามัสกัส
+  comments:
+  type: province
+DR:
+  name: Dar'ā
+  code: DR
+  unofficial_names:
+  - Dara
+  - Darā
+  - Darʿa
+  - Deraa
+  - Dārayyā
+  geo:
+    latitude: 32.625278
+    longitude: 36.106111
+    min_latitude: 32.5963599
+    min_longitude: 36.0721494
+    max_latitude: 32.6466746
+    max_longitude: 36.1277676
+  translations:
+    en: Daraa
+    ar: محافظة درعا
+    bg: Дараа
+    ca: Governació de Daraa
+    cs: Guvernorát Dar’á
+    de: Gouvernement Dar’a
+    el: Νταράα
+    es: Gobernación de Dar’a
+    eu: Daraa eskualdea
+    fa: استان درعا
+    fi: Dar’an maakunta
+    fr: Gouvernorat de Deraa
+    he: מחוז דרעא
+    hi: दरआ प्रान्त
+    hy: Դառաայի մարզ
+    id: Kegubernuran Daraa
+    it: governatorato di Dar’a
+    ja: ダルアー県
+    ka: დარის მუჰაფაზა
+    ko: 다라 주
+    lt: Daros muchafaza
+    nl: Daraa
+    pl: Dara
+    pt: Dara
+    ro: Guvernoratul Daraa
+    ru: Деръа
+    sr: Дара (покрајина)
+    sv: Dar’a
+    tr: Dera
+    uk: Дара
+    ur: محافظہ درعا
+    vi: Daraa
+    ceb: Daraa Governorate
+    sr_Latn: Dara (pokrajina)
+    zh: 德拉省
+    ccp: "\U00011113\U00011122\U00011133\U00011103"
+    az: Dəra mühafəzəsi
+    hr: Daraa (pokrajina)
+    ta: தாரா ஆளுநரகம்
+    th: เขตผู้ว่าการดัรอา
+    yue: 德拉 (省)
+    yue_Hans: 德拉 (省)
+  comments:
+  type: province
+DY:
+  name: Dayr az Zawr
+  code: DY
+  unofficial_names:
+  - Deir El-Zor
+  - Deir-ez-Zor
+  geo:
+    latitude: 35.336
+    longitude: 40.145
+    min_latitude: 35.2968173
+    min_longitude: 40.0813007
+    max_latitude: 35.3734271
+    max_longitude: 40.1946509
+  translations:
+    en: Deir ez-Zor
+    ar: محافظة دير الزور
+    az: Deyr əz-Zor mühafazası
+    bg: Дейр ез-Зор
+    bn: ডিএর এজ-জর গভর্নোরেট
+    ca: Governació de Deir ez-Zor
+    cs: Guvernorát Dajr az-Zaur
+    da: Deir ez-Zor Governorate
+    de: Gouvernement Deir ez-Zor
+    el: Ντέιρ εζ-Ζορ
+    es: Gobernación de Deir ez-Zor
+    eu: Dayr az Zawr eskualdea
+    fa: استان دیرالزور
+    fi: Dayr al-Zawrin maakunta
+    fr: Gouvernorat de Deir ez-Zor
+    gu: ડેઇર ઇઝ-ઝોર ગવર્નોરેટ
+    he: מחוז דיר א-זור
+    hi: देइर अज़-ज़ोर प्रान्त
+    hu: Dajr ez-Zaur kormányzóság
+    hy: Դեյր-էլ-Զորի մարզ
+    id: Kegubernuran Dayr az-Zawr
+    it: governatorato di Deir el-Zor
+    ja: デリゾール県
+    ka: დეირ-ელ-ზორის მუჰაფაზა
+    kn: ಡಿಯರ್ ಇಜ್-ಝೋರ್ ಗವರ್ನೇಟ್
+    ko: 데이르에조르 주
+    lt: Deir az Zoro muchafaza
+    mr: देअर एझ-झोर गव्हर्नोरेट
+    ms: Deir ez-Zor Governorate
+    nb: Dayr az-Zawr
+    nl: Deir ez-Zor
+    pl: Dajr az-Zaur
+    pt: Deir ez-Zor
+    ro: Guvernoratul Deir ez-Zor
+    ru: Дейр-эз-Зор
+    si: ඩයිර් එස්-සෝර් පළාත
+    sr: Дајр ез Заур (покрајина)
+    sv: Dayr az-Zawr
+    ta: டேயார் எஸ்-சொற் கோவெர்னோரேட்
+    te: డియర్ ఈజీ-జోర్ గవర్నరేట్
+    th: ไดร์อัซเซาร์
+    tr: Deyrizor
+    uk: Дайр-аз-Заур
+    ur: محافظہ دیر الزور
+    vi: Deir ez-Zor
+    lv: Deir ez Zoras muhāfaza
+    ceb: Deir ez-Zor Governorate
+    sr_Latn: Dajr ez Zaur (pokrajina)
+    zh: 代尔祖尔省
+    ccp: "\U00011113\U00011120\U0001112C\U00011122\U00011134 \U00011103\U0001112C\U0001110C\U00011134-\U0001110E\U0001112E\U00011122\U00011134"
+    'no': Dayr az-Zawr
+    be: мухафаза Дэйр-эз-Зор
+    yue: 代爾祖爾 (省)
+    yue_Hans: 代尔祖尔 (省)
+  comments:
+  type: province
+HA:
+  name: Al Ḩasakah
+  code: HA
+  unofficial_names:
+  - El Haseke
+  - Hassetche
+  - H̨asakah
+  - al-Hasakah
+  geo:
+    latitude: 36.405515
+    longitude: 40.7969149
+    min_latitude: 35.5298381
+    min_longitude: 39.452599
+    max_latitude: 37.319145
+    max_longitude: 42.3850397
+  translations:
+    en: Al-Hasakah
+    ar: محافظة الحسكة
+    az: Əl-Həsəkə mühafazası
+    bg: Ал-Хасеке
+    bn: আল-হাসাকাহ গভর্নোরেট
+    ca: Governació d’Al-Hasakah
+    cs: Guvernorát Hasaka
+    da: Al-Hasakah Governorate
+    de: Gouvernement al-Hasaka
+    el: Αλ Χασακά
+    es: Gobernación de Hasaka
+    eu: Al-Hasakah eskualdea
+    fa: استان حسکه
+    fi: Al-Hasakan maakunta
+    fr: Gouvernorat d’al-Hasaka
+    gu: અલ-હસાકાહ ગવર્નોરેટ
+    he: מחוז אל-חסכה
+    hi: अल-हसकाह प्रान्त
+    hu: Haszaka kormányzóság
+    hy: Ալ-Հասաքայի մարզ
+    id: Kegubernuran Al-Hasakah
+    it: governatorato di al-Hasaka
+    ja: ハサカ県
+    ka: ალ-ჰასაქის მუჰაფაზა
+    kn: ಅಲ್-ಹಸಾಕ ಗವರ್ನೇಟ್
+    ko: 하사카 주
+    lt: Hasekės muchafaza
+    mr: अल-हसाका गव्हर्नोरेट
+    ms: Al-Hasakah Governorate
+    nb: Al-Hasakah
+    nl: Al-Hasakah
+    pl: Al-Hasaka
+    pt: Al-Hasakah
+    ro: Guvernoratul Al-Hasaka
+    ru: Хасеке
+    si: අල් හසකා පළාත
+    sr: Хасака (покрајина)
+    sv: Al-Hasakah
+    ta: அல்-ஹஸக்காஹ் கோவெர்னோரேட்
+    te: అల్-హసకా గవర్నరేట్
+    th: อัลฮะซะกะห์
+    tr: Hasiçi
+    uk: Аль-Хасака
+    ur: محافظہ الحسکہ
+    vi: Al-Hasakah
+    lv: Hasekas muhāfaza
+    ceb: Al-Hasakah Governorate
+    sr_Latn: Hasaka (pokrajina)
+    zh: 哈塞克省
+    ccp: "\U00011103\U00011123\U00011134-\U0001111D\U00011125\U00011107\U00011134\U00011126\U00011134"
+    'no': Al-Hasakah
+    yue: 哈塞克 (省)
+    yue_Hans: 哈塞克 (省)
+  comments:
+  type: province
+HI:
+  name: Ḩimş
+  code: HI
+  unofficial_names:
+  - Hims
+  - Homs
+  geo:
+    latitude: 33.7348116
+    longitude: -117.9947778
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Homs
+    ar: محافظة حمص
+    az: Hims mühafazası
+    be: Хомс
+    bg: Хомс
+    bn: হোমস গভর্নোরেট
+    ca: Governació d’Homs
+    cs: Guvernorát Homs
+    da: Homs
+    de: Gouvernement Homs
+    el: Χομς
+    es: Gobernación de Homs
+    eu: Homs eskualdea
+    fa: استان حمص
+    fi: Homsin maakunta
+    fr: Gouvernorat de Homs
+    gu: હોમ્સ ગવર્નોરેટ
+    he: מחוז חומס
+    hi: होम्स प्रान्त
+    hu: Homsz kormányzóság
+    hy: Հոմսի մարզ
+    id: Kegubernuran Homs
+    is: Homshérað
+    it: governatorato di Homs
+    ja: ホムス県
+    ka: ჰომსის მუჰაფაზა
+    kn: ಹಾಮ್ಸ್ ಗವರ್ನೇಟ್
+    ko: 홈스 주
+    lt: Homso muchafaza
+    mr: होम्स गोव्हर्नोरेट
+    ms: Pentadbiran Homs
+    nb: Homs
+    nl: Homs
+    pl: Hims
+    pt: Homs
+    ro: Guvernoratul Homs
+    ru: Хомс
+    si: හෝම්ස් පළාත
+    sr: Хомс (покрајина)
+    sv: Homs
+    ta: ஹோம்ஸ் கோவெர்னோரேட்
+    te: హామ్స్ గవర్నరేట్
+    th: เขตการปกครองฮิมส์
+    tr: Humus
+    uk: Хомс
+    ur: محافظہ حمص
+    vi: Homs
+    lv: Himsas munāfaza
+    ceb: Homs Governorate
+    sr_Latn: Homs (pokrajina)
+    zh: 霍姆斯省
+    ccp: "\U00011126\U00011127\U0001111F\U00011134\U0001110C\U00011134"
+    'no': Homs
+    hr: Homs (pokrajina)
+    yue: 荷姆斯 (省)
+    yue_Hans: 荷姆斯 (省)
+  comments:
+  type: province
+HL:
+  name: Ḩalab
+  code: HL
+  unofficial_names:
+  - Halab
+  - Haleb
+  - H̨alab
+  - Alep
+  geo:
+    latitude: 33.9166667
+    longitude: 38.3
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Aleppo
+    ar: محافظة حلب
+    az: Hələb mühafazası
+    bg: Халеб
+    ca: Governació d’Alep
+    cs: Aleppská muháfaza
+    da: Aleppo
+    de: Gouvernement Aleppo
+    el: Αλέππο
+    es: Gobernación de Alepo
+    eu: Alepo eskualdea
+    fa: استان حلب
+    fi: Aleppon maakunta
+    fr: Gouvernorat d’Alep
+    he: מחוז חלב
+    hi: हलब प्रान्त
+    hu: Aleppó kormányzóság
+    hy: Հալեպի մարզ
+    id: Kegubernuran Aleppo
+    it: governatorato di Aleppo
+    ja: アレッポ県
+    ka: ალეპოს მუჰაფაზა
+    ko: 알레포 주
+    lt: Alepo muchafaza
+    nb: Aleppo
+    nl: Aleppo
+    pl: Aleppo
+    pt: Alepo
+    ro: Guvernoratul Alep
+    ru: Халеб
+    sr: Алеп (покрајина)
+    sv: Aleppo
+    tr: Halep
+    uk: Халеб
+    ur: محافظہ حلب
+    vi: Aleppo
+    ceb: Aleppo Governorate
+    sr_Latn: Alep (pokrajina)
+    zh: 阿勒颇省
+    ccp: "\U00011103\U00011123\U00011128\U0001111B\U00011133\U00011126\U00011127"
+    be: Халеб
+    'no': Aleppo
+    hr: Pokrajina Alep
+    jv: Kagubernuran Aleppo
+    ta: அலெப்போ ஆளுநரகம்
+    th: เขตผู้ว่าการอะเลปโป
+    yue: 阿勒頗 (省)
+    yue_Hans: 阿勒颇 (省)
+  comments:
+  type: province
+HM:
+  name: Ḩamāh
+  code: HM
+  unofficial_names:
+  - Hama
+  - Hamah
+  geo:
+    latitude: 32.8947222
+    longitude: 37.12527780000001
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Hama
+    ar: محافظة حماة
+    az: Həma mühafazası
+    bg: Хама
+    bn: হামা গভর্নোরেট
+    ca: Governació d’Hama
+    cs: Hamá
+    da: Hama Governorate
+    de: Gouvernement Hama
+    el: Χάμα
+    es: Gobernación de Hama
+    eu: Hama eskualdea
+    fa: استان حمات
+    fi: Haman maakunta
+    fr: Gouvernorat de Hama
+    gu: હમા ગવર્નોરેટ
+    he: מחוז חמה
+    hi: हमा प्रान्त
+    hu: Hamá kormányzóság
+    hy: Համայի մարզ
+    id: Kegubernuran Hama
+    is: Hamahérað
+    it: governatorato di Hama
+    ja: ハマー県
+    ka: ჰამის მუჰაფაზა
+    kn: ಹಮಾ ಗವರ್ನೇಟ್
+    ko: 하마 주
+    lt: Hamos muchafaza
+    mr: हमा गव्हर्नोरेट
+    ms: Hama Governorate
+    nb: Guvernementet Hama
+    nl: Hama
+    pl: Hama
+    pt: Hama
+    ro: Guvernoratul Hama
+    ru: Хама
+    si: හමා පළාත
+    sr: Хама (покрајина)
+    sv: Guvernementet Hamah
+    ta: ஹமா கோவெர்னோரே
+    te: హమా గవర్నరేట్
+    th: ฮามาห์
+    tr: Hama
+    uk: Хама
+    ur: محافظہ حماہ
+    vi: Hama
+    lv: Hamas muhāfaza
+    ceb: Hama Governorate
+    sr_Latn: Hama (pokrajina)
+    zh: 哈馬省
+    ccp: "\U00011126\U0001111F"
+    'no': Guvernementet Hama
+    hr: Hama (pokrajina)
+    yue: 哈馬 (省)
+    yue_Hans: 哈马 (省)
+  comments:
+  type: province
+ID:
+  name: Idlib
+  code: ID
+  unofficial_names: Idlib
+  geo:
+    latitude: 35.933333
+    longitude: 36.633333
+    min_latitude: 35.90606289999999
+    min_longitude: 36.6036813
+    max_latitude: 35.9471799
+    max_longitude: 36.6674555
+  translations:
+    en: Idlib
+    ar: محافظة إدلب
+    az: İdlib mühafazası
+    bg: Идлиб
+    bn: ইদলিব গভর্নোরেট
+    ca: Governació d’Idlib
+    cs: Guvernorát Idlib
+    da: Idlib Governorate
+    de: Gouvernement Idlib
+    el: Ιντλίμπ
+    es: Gobernación de Idlib
+    eu: Idlib eskualdea
+    fa: استان ادلب
+    fi: Idlibin maakunta
+    fr: Gouvernorat d’Idleb
+    gu: ઇડલિબ ગૃહારીત
+    he: מחוז אדלב
+    hi: इदलिब प्रान्त
+    hu: Idlib kormányzóság
+    hy: Իդլիբի մարզ
+    id: Kegubernuran Idlib
+    it: governatorato di Idlib
+    ja: イドリブ県
+    ka: იდლიბის მუჰაფაზა
+    kn: ಇಡ್ಲಿಬ್ ಗವರ್ನೇಟ್
+    ko: 이들리브 주
+    lt: Idlibo muchafaza
+    mr: इडलीब गव्हर्नोरेट
+    ms: Idlib Governorate
+    nb: Idlib
+    nl: Idlib
+    pl: Idlib
+    pt: Idlib
+    ro: Guvernoratul Idlib
+    ru: Идлиб
+    si: ඉද්ලිබ් පළාත
+    sr: Идлиб (покрајина)
+    sv: Idlib
+    ta: இட்லிப் கோவெர்னோரே
+    te: ఇడ్లిబ్ గవర్నరేట్
+    th: อิดลิบ
+    tr: İdlip
+    uk: Ідліб
+    ur: محافظہ ادلب
+    vi: Idlib
+    lv: Idlibas munāfaza
+    ceb: Idlib Governorate
+    sr_Latn: Idlib (pokrajina)
+    zh: 伊德利卜省
+    ccp: "\U00011103\U00011128\U00011116\U00011134\U00011123\U00011128\U0001111B\U00011134"
+    'no': Idlib
+    hr: Idlib (pokrajina)
+    yue: 伊德利卜 (省)
+    yue_Hans: 伊德利卜 (省)
+  comments:
+  type: province
+LA:
+  name: Al Ladhiqiyah
+  code: LA
+  unofficial_names:
+  - Latakia
+  - Lattakia
+  - Lattaquié
+  - Lādhiqīyah
+  - al-Ladhiqiyah
+  geo:
+    latitude: 35.6129791
+    longitude: 36.0023225
+    min_latitude: 35.194528
+    min_longitude: 35.7272339
+    max_latitude: 35.940891
+    max_longitude: 36.2848139
+  translations:
+    en: Latakia
+    ar: محافظة اللاذقية
+    az: Latakiya mühafazası
+    bg: Латакия
+    ca: Governació de Latakia
+    cs: Guvernorát Latákia
+    de: Gouvernement Latakia
+    el: Λατάκεια
+    es: Gobernación de Latakia
+    eu: Latakia eskualdea
+    fa: استان لاذقیه
+    fi: Lattakian maakunta
+    fr: Gouvernorat de Lattaquié
+    he: מחוז לטקיה
+    hi: लातक़िया प्रान्त
+    hu: Latakia kormányzóság
+    hy: Լաթակիայի մարզ
+    id: Kegubernuran Latakia
+    it: governatorato di Latakia
+    ja: ラタキア県
+    ka: ლათაკიის მუჰაფაზა
+    ko: 라타키아 주
+    lt: Latakijos muchafaza
+    nb: Latakia
+    nl: Latakia
+    pl: Latakia
+    pt: Latakia
+    ro: Guvernoratul Latakia
+    ru: Латакия
+    sr: Латакија (покрајина)
+    sv: Latakia
+    tr: Lazkiye
+    uk: Латакія
+    ur: اللاذقیة
+    vi: Latakia
+    ceb: Latakia Governorate
+    sr_Latn: Latakija (pokrajina)
+    zh: 拉塔基亚省
+    ccp: "\U00011123\U00011111\U00011107\U00011128\U00011120"
+    'no': Latakia
+    hr: Latakija (pokrajina)
+    ta: லடாகியா ஆளுநரகம்
+    th: เขตผู้ว่าการอัลลาษิกียะฮ์
+    yue: 拉塔基亞 (省)
+    yue_Hans: 拉塔基亚 (省)
+  comments:
+  type: province
+QU:
+  name: Al Qunaytirah
+  code: QU
+  unofficial_names:
+  - Quneitra
+  - al-Qunaytirah
+  geo:
+    latitude: 33.0776318
+    longitude: 35.8934136
+    min_latitude: 32.836052
+    min_longitude: 35.8478781
+    max_latitude: 33.247301
+    max_longitude: 36.003361
+  translations:
+    en: Quneitra
+    ar: محافظة القنيطرة
+    az: Əl-Qüneytrə mühafazası
+    bg: Кунейтра
+    bn: কুনিত্রা গভর্নোরেট
+    cs: Guvernorát Kunejtra
+    da: Al-Qunaytirah
+    de: Gouvernement al-Quneitra
+    el: Κουνέιτρα
+    es: Gobernación de Quneitra
+    eu: Al Qunaytirah eskualdea
+    fa: استان قنیطره
+    fi: Al-Qunaytran maakunta
+    fr: Gouvernorat de Qouneitra
+    gu: ક્યુનેટ્રા ગવર્નોરેટ
+    he: מחוז קוניטרה
+    hy: Ալ-Կունեյտրայի մարզ
+    id: Kegubernuran Quneitra
+    it: governatorato di Quneitra
+    ja: クネイトラ県
+    ka: ალ-კუნეიტრის მუჰაფაზა
+    kn: ಖುನೈತ್ರ ಗವರ್ನೇಟ್
+    ko: 쿠네이트라 주
+    lt: Kuneitros muchafaza
+    mr: क्यूनइंट्रा गव्हर्नोरेट
+    ms: Quneitra Governorate
+    nb: Al-Qunaytirah
+    nl: Quneitra
+    pl: Al-Kunajtira
+    pt: Quneitra
+    ro: Guvernoratul Quneitra
+    ru: Эль-Кунейтра
+    si: කුනේඉට්‍රා පළාත
+    sr: Кунејтра (покрајина)
+    sv: al-Qunaytirah
+    ta: குனிற்றா கோவெர்னோரே
+    te: క్వినీట్రా గవర్నరేట్
+    th: คูเนทร่า โกเวอโนเรท
+    tr: Kuneytire
+    uk: Ель-Кунейтра
+    ur: محافظہ قنیطرہ
+    vi: Quneitra
+    lv: Kunaitiras muhāfaza
+    ceb: Quneitra Governorate
+    sr_Latn: Kunejtra (pokrajina)
+    zh: 库奈特拉省
+    ccp: "\U00011107\U0001112A\U00011120\U0001111A\U00011134\U00011103\U0001112D\U00011111\U00011133\U00011122"
+    ca: governació de Quneitra
+    'no': Al-Qunaytirah
+    hi: क़ुनेइत्राह प्रान्त
+    hr: Quneitra (pokrajina)
+    yue: 古奈特拉 (省)
+    yue_Hans: 古奈特拉 (省)
+  comments:
+  type: province
+RA:
+  name: Ar Raqqah
+  code: RA
+  unofficial_names:
+  - Raqqah
+  - al-Rakka
+  geo:
+    latitude: 35.9594106
+    longitude: 38.9981052
+    min_latitude: 35.9272857
+    min_longitude: 38.9259338
+    max_latitude: 35.9821736
+    max_longitude: 39.0682411
+  translations:
+    en: Ar-Raqqah
+    ar: محافظة الرقة
+    az: Ər-Rəqqə mühafazası
+    bg: Ар-Ракка
+    ca: Governació d’Ar-Raqqà
+    cs: Guvernorát Rakka
+    de: Gouvernement ar-Raqqa
+    el: Αρ Ρακκά
+    es: Gobernación de Ar-Raqqa
+    eu: Ar-Raqqa eskualdea
+    fa: استان رقه
+    fi: Al-Raqqan maakunta
+    fr: Gouvernorat de Racca
+    he: מחוז א-רקה
+    hu: Rakka kormányzóság
+    hy: Ալ-Ռակկայի մարզ
+    id: Kegubernuran Ar-Raqqah
+    it: governatorato di al-Raqqa
+    ja: ラッカ県
+    ka: ალ-რაკის მუჰაფაზა
+    ko: 락까 주
+    lt: Rakos muchafaza
+    nb: Ar-Raqqah
+    nl: Ar-Raqqah
+    pl: Ar-Rakka
+    pt: Ar-Raqqah
+    ro: Guvernoratul Ar-Raqqa
+    ru: Ракка
+    sr: Рака (покрајина)
+    sv: Ar-Raqqah
+    tr: Rakka
+    uk: Ар-Ракка
+    ur: محافظہ الرقہ
+    vi: Ar-Raqqah
+    ceb: Ar-Raqqah Governorate
+    sr_Latn: Raka (pokrajina)
+    zh: 拉卡省
+    ccp: "\U00011103\U00011122\U00011134-\U00011122\U00011107\U00011133\U00011126"
+    mk: Рака
+    'no': Ar-Raqqah
+    hi: अर-रक़्क़ाह प्रान्त
+    hr: Pokrajina Raqqa
+    th: เขตผู้ว่าการอัรร็อกเกาะฮ์
+    yue: 拉卡 (省)
+    yue_Hans: 拉卡 (省)
+  comments:
+  type: province
+RD:
+  name: Rif Dimashq
+  code: RD
+  unofficial_names:
+  - Dimashq
+  - Dimašq
+  - Damaskus
+  - Damas
+  - Damascus
+  geo:
+    latitude: 33.5167289
+    longitude: 36.954107
+    min_latitude: 32.68313
+    min_longitude: 35.834707
+    max_latitude: 34.2120558
+    max_longitude: 38.313671
+  translations:
+    en: Rif Dimashq
+    ar: محافظة ريف دمشق
+    az: Dəməşq mühafazası
+    bg: Кунейтра²
+    bn: রিফ দামাস্ক গভর্নোরেট
+    ca: Governació de Damasc Rural
+    cs: Ríf Dimašq
+    da: Rif Dimashq Governorate
+    de: Gouvernement Rif Dimaschq
+    el: Ριφ Ντιμάσκ
+    es: Gobernación de la campiña de Damasco
+    eu: Rif Dimashq eskualdea
+    fa: استان ریف دمشق
+    fi: Rif Dimašqin maakunta
+    fr: Gouvernorat de Rif Dimachq
+    gu: રિફ ડિમાશક ગવર્નોરેટ
+    he: ריף דמשק
+    hi: रीफ़ दिमश्क़ प्रान्त
+    hu: Ríf Dimask kormányzóság
+    hy: Ռիֆ Դիմաշկ
+    id: Kegubernuran Rif Dimashq
+    it: governatorato del Rif di Damasco
+    ja: ダマスカス郊外県
+    ka: რიფ-დიმაშკის მუჰაფაზა
+    kn: ರಿಫ್ ದಿಮಾಶ್ಕ್ ಗವರ್ನೇಟ್
+    ko: 리프디마슈크 주
+    lt: Damasko muchafaza
+    mr: रिफ डिमशक गव्हर्नोरेट
+    ms: Rif Dimashq Governorate
+    nb: Rif Dimashq
+    nl: Rif Dimashq
+    pl: Damaszek
+    pt: Rif Dimashq
+    ro: Guvernoratul Rif Dimashq
+    ru: Дамаск²
+    si: රිෆ් ඩිමාශ්ක් පළාත
+    sr: Дамаск (покрајина)
+    sv: Rif Dimashq
+    ta: ரிஃ டிமாஷ்க் கோவெர்னோரே
+    te: రిఫ్ డిమాష్ఖ్ గవర్నరేట్
+    th: ริฟดิมัชก์
+    tr: Rif Şam
+    uk: Дамаск
+    ur: محافظہ ریف دمشق
+    vi: Rif Dimashq
+    lv: Damaskas muhāfaza
+    sr_Latn: Damask (pokrajina)
+    zh: 大马士革农村省
+    ccp: "\U00011122\U00011128\U0001111B\U00011134 \U00011113\U00011128\U0001111F\U0001110C\U00011134\U00011107\U00011134"
+    'no': Rif Dimashq
+    hr: Rif Dimashq
+    yue: 大馬士革 (省)
+    yue_Hans: 大马士革 (省)
+  comments:
+  type: province
+SU:
+  name: As Suwayda'
+  code: SU
+  unofficial_names:
+  - as-Suwayda
+  geo:
+    latitude: 32.7
+    longitude: 36.566667
+    min_latitude: 32.6688949
+    min_longitude: 36.5449906
+    max_latitude: 32.7348733
+    max_longitude: 36.6076899
+  translations:
+    en: As-Suwayda
+    ar: محافظة السويداء
+    az: Əs-Süveydə mühafazası
+    bg: Ас-Суейда
+    bn: আস-সুবায়দা গভর্নোরেট
+    ca: Governació d’As-Suwayda
+    cs: Guvernorát Suvajda
+    da: As-Suwayda
+    de: Gouvernement as-Suwaida
+    el: Ας Σουγουαΰντα
+    es: Gobernación de Sueida
+    eu: As Suwayda eskualdea
+    fa: استان سویدا
+    fi: Al-Suwaydanin maakunta
+    fr: Gouvernorat de Suweyda
+    gu: અસ-સુવેદા ગવર્નોરેટ
+    he: מחוז א-סווידא
+    hi: अस-सुवैदा प्रान्त
+    hy: Ալ-Սուեյդայի մարզ
+    id: Kegubernuran As-Suwayda
+    it: governatorato di al-Suwayda
+    ja: スワイダー県
+    ka: ელ-სუვაიდის მუჰაფაზა
+    kn: ಸುವೇದಾ ಗವರ್ನೇಟ್
+    ko: 수와이다 주
+    lt: Suveidos muchafaza
+    mr: अस-सुवेडा गव्हर्नोरेट
+    ms: As-Suwayda Governorate
+    nb: as-Suwayda
+    nl: As-Suwayda
+    pl: As-Suwajda
+    pt: As-Suwayda
+    ro: Guvernoratul As-Suwayda
+    ru: Эс-Сувейда
+    si: අස්-සුවේදා පළාත
+    sr: Сувајда (покрајина)
+    sv: As-Suwayda’
+    ta: அஸ் -சுவாயட கோவெர்னோரே
+    te: అస్-సువే డా గవర్నరేట్
+    th: อัสซุเวย์ดา
+    tr: Süveyde
+    uk: Ас-Сувайда
+    ur: محافظہ السویداء
+    vi: As-Suwayda
+    lv: Suveidas muhāfaza
+    ceb: As-Suwayda Governorate
+    sr_Latn: Suvajda (pokrajina)
+    zh: 苏韦达省
+    ccp: "\U00011103\U0001110C\U00011134-\U00011125\U0001112A\U00011120\U0001112C\U00011113"
+    'no': as-Suwayda
+    yue: 蘇韋達 (省)
+    yue_Hans: 苏韦达 (省)
+  comments:
+  type: province
+TA:
+  name: Tartus
+  code: TA
+  unofficial_names:
+  - Tartoûs
+  - Tartus
+  geo:
+    latitude: 34.883333
+    longitude: 35.883333
+    min_latitude: 34.8481038
+    min_longitude: 35.8542896
+    max_latitude: 34.9235482
+    max_longitude: 35.9136459
+  translations:
+    en: Tartus
+    ar: محافظة طرطوس
+    az: Tərtus mühafazası
+    bg: Тартус
+    bn: টারটাস গভর্নোরেট
+    ca: Governació de Tartus
+    cs: Guvernorát Tartús
+    da: Tartus Governorate
+    de: Gouvernement Tartus
+    el: Ταρτούς
+    es: Gobernación de Tartus
+    eu: Tartus eskualdea
+    fa: استان طرطوس
+    fi: Tartusin maakunta
+    fr: Gouvernorat de Tartous
+    gu: ટાર્ટસ ગવર્નોરેટ
+    he: מחוז טרטוס
+    hi: तरतूस प्रान्त
+    hu: Tartúsz kormányzóság
+    hy: Տարտուսի մարզ
+    id: Kegubernuran Tartus
+    it: governatorato di Tartus
+    ja: タルトゥース県
+    ka: ტარტუსის მუჰაფაზა
+    kn: ಟಾರ್ಟಸ್ ಗವರ್ನೇಟ್
+    ko: 타르투스 주
+    lt: Tartuso muchafaza
+    mr: तार्टास गव्हर्नोरेट
+    ms: Tartus Governorate
+    nb: Tartus
+    nl: Tartous
+    pl: Tartus
+    pt: Tartus
+    ro: Guvernoratul Tartus
+    ru: Тартус
+    si: ටාර්ටස් පරිපාලන දිස්ත්‍රිකය
+    sr: Тартус (покрајина)
+    sv: Tartus
+    ta: டார்ட்ஸ் கோவெர்னோரே
+    te: టార్టస్ గవర్నరేట్
+    th: จังหวัดตอร์ตูส
+    tr: Tartus
+    uk: Тартус
+    ur: محافظہ طرطوس
+    vi: Tartus
+    lv: Tartūsas muhāfaza
+    ceb: Tartus Governorate
+    sr_Latn: Tartus (pokrajina)
+    zh: 塔尔图斯省
+    ccp: "\U00011111\U00011122\U00011134\U00011111\U0001110C\U00011134"
+    'no': Tartus
+    hr: Tartus (pokrajina)
+    yue: 他圖斯 (省)
+    yue_Hans: 他图斯 (省)
+  comments:
+  type: province

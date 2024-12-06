@@ -1,0 +1,15 @@
+include <linux/test.h>
+
+resource fd_test[fd]
+
+openat$test(fd const[AT_FDCWD], file ptr[in, string["/dev/test"]], flags flags[open_flags], mode const[0]) fd_test
+
+ioctl$TEST(fd fd_test, cmd const[TEST], arg ptr[in, test])
+
+test {
+	number	int32
+	size	len[data, int32]
+	data	array[int8]
+}
+
+_ = TEST

@@ -1,0 +1,31 @@
+ja:
+  devise:
+    failure:
+      invited: 'アカウントを作成するには、保留中の招待を承認してください。'
+    invitations:
+      send_instructions: '招待メールが%{email}に送信されました。'
+      invitation_token_invalid: '招待コードが不正です。'
+      updated: 'パスワードが設定されました。お使いのアカウントでログインできます。'
+      updated_not_active: 'パスワードが設定されました。'
+      no_invitations_remaining: 'これ以上招待できません。'
+      invitation_removed: '招待を取り消しました。'
+      new:
+        header: '招待する'
+        submit_button: '招待メールを送る'
+      edit:
+        header: 'パスワードを設定する'
+        submit_button: 'パスワードを設定する'
+    mailer:
+      invitation_instructions:
+        subject: '招待を承認するには'
+        hello: 'こんにちは、%{email}さん'
+        someone_invited_you: '%{url}に招待されました。以下のリンクから承認できます。'
+        accept: '招待を承認する'
+        accept_until: 'この招待は%{due_date}まで有効です。'
+        ignore: '招待を承認しない場合は、このメールを無視してください。<br />あなたのアカウントは上記のリンク先にアクセスしパスワードを設定するまでは作成されません。'
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: '%Y年%m月%d日%H時%M分'

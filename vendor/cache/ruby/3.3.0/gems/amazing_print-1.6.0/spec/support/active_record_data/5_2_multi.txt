@@ -1,0 +1,210 @@
+[
+    [0] #<User:placeholder_id
+        @_start_transaction_state = {},
+        @aggregation_cache = {},
+        @association_cache = {},
+        @destroyed = false,
+        @marked_for_destruction = false,
+        @new_record = true,
+        @readonly = false,
+        @transaction_state = nil,
+        attr_accessor :attributes = #<ActiveModel::AttributeSet:placeholder_id
+            @attributes = {
+                     "admin" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "admin",
+                        attr_reader :type = #<ActiveModel::Type::Boolean:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "admin",
+                    attr_reader :type = #<ActiveModel::Type::Boolean:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = false
+                >,
+                "created_at" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "created_at",
+                        attr_reader :type = #<ActiveRecord::Type::DateTime:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "created_at",
+                    attr_reader :type = #<ActiveRecord::Type::DateTime:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = "1992-10-10 12:30:00"
+                >,
+                        "id" => #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                    @original_attribute = nil,
+                    attr_reader :name = "id",
+                    attr_reader :type = #<ActiveRecord::ConnectionAdapters::SQLite3Adapter::SQLite3Integer:placeholder_id
+                        @range = -9223372036854775808...9223372036854775808,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = nil
+                >,
+                      "name" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "name",
+                        attr_reader :type = #<ActiveModel::Type::String:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "name",
+                    attr_reader :type = #<ActiveModel::Type::String:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = "Diana"
+                >,
+                      "rank" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "rank",
+                        attr_reader :type = #<ActiveRecord::ConnectionAdapters::SQLite3Adapter::SQLite3Integer:placeholder_id
+                            @range = -9223372036854775808...9223372036854775808,
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "rank",
+                    attr_reader :type = #<ActiveRecord::ConnectionAdapters::SQLite3Adapter::SQLite3Integer:placeholder_id
+                        @range = -9223372036854775808...9223372036854775808,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = 1
+                >
+            }
+        >,
+        attr_accessor :destroyed_by_association = nil
+    >,
+    [1] #<User:placeholder_id
+        @_start_transaction_state = {},
+        @aggregation_cache = {},
+        @association_cache = {},
+        @destroyed = false,
+        @marked_for_destruction = false,
+        @new_record = true,
+        @readonly = false,
+        @transaction_state = nil,
+        attr_accessor :attributes = #<ActiveModel::AttributeSet:placeholder_id
+            @attributes = {
+                     "admin" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "admin",
+                        attr_reader :type = #<ActiveModel::Type::Boolean:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "admin",
+                    attr_reader :type = #<ActiveModel::Type::Boolean:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = true
+                >,
+                "created_at" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "created_at",
+                        attr_reader :type = #<ActiveRecord::Type::DateTime:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "created_at",
+                    attr_reader :type = #<ActiveRecord::Type::DateTime:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = "2003-05-26 14:15:00"
+                >,
+                        "id" => #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                    @original_attribute = nil,
+                    attr_reader :name = "id",
+                    attr_reader :type = #<ActiveRecord::ConnectionAdapters::SQLite3Adapter::SQLite3Integer:placeholder_id
+                        @range = -9223372036854775808...9223372036854775808,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = nil
+                >,
+                      "name" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "name",
+                        attr_reader :type = #<ActiveModel::Type::String:placeholder_id
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "name",
+                    attr_reader :type = #<ActiveModel::Type::String:placeholder_id
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = "Laura"
+                >,
+                      "rank" => #<ActiveModel::Attribute::FromUser:placeholder_id
+                    @original_attribute = #<ActiveModel::Attribute::FromDatabase:placeholder_id
+                        @original_attribute = nil,
+                        attr_reader :name = "rank",
+                        attr_reader :type = #<ActiveRecord::ConnectionAdapters::SQLite3Adapter::SQLite3Integer:placeholder_id
+                            @range = -9223372036854775808...9223372036854775808,
+                            attr_reader :limit = nil,
+                            attr_reader :precision = nil,
+                            attr_reader :scale = nil
+                        >,
+                        attr_reader :value_before_type_cast = nil
+                    >,
+                    attr_reader :name = "rank",
+                    attr_reader :type = #<ActiveRecord::ConnectionAdapters::SQLite3Adapter::SQLite3Integer:placeholder_id
+                        @range = -9223372036854775808...9223372036854775808,
+                        attr_reader :limit = nil,
+                        attr_reader :precision = nil,
+                        attr_reader :scale = nil
+                    >,
+                    attr_reader :value_before_type_cast = 2
+                >
+            }
+        >,
+        attr_accessor :destroyed_by_association = nil
+    >
+]

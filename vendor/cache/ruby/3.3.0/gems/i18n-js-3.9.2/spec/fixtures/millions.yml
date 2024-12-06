@@ -1,0 +1,4 @@
+translations:
+  - file: "tmp/i18n-js/millions.js"
+    only:
+      - "*.number.human.decimal_units.units"

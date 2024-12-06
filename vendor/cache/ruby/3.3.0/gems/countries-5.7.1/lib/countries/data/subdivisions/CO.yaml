@@ -1,0 +1,2271 @@
+---
+AMA:
+  name: Amazonas
+  code: AMA
+  unofficial_names: Amazonas
+  geo:
+    latitude: -1.4429123
+    longitude: -71.5723953
+    min_latitude: -4.22727
+    min_longitude: -74.39015
+    max_latitude: 0.11057
+    max_longitude: -69.39555
+  translations:
+    en: Amazonas
+    ar: إدارة أمازوناس
+    bg: Амасонас
+    bn: আমাজুনাস বিভাগ
+    ca: Departament de l’Amazones
+    cs: Amazonas
+    da: Amazonas Department
+    de: Departamento de Amazonas
+    el: Διαμέρισμα Αμαζόνιου
+    es: Amazonas
+    et: Amazonase departemang
+    eu: Amazonas
+    fa: حوزه امازوناس
+    fi: Amazonas
+    fr: Amazonas
+    gl: Amazonas
+    gu: એમેઝોનાઝ વિભાગ
+    he: אמסונאס
+    hi: अमेज़ोनास विभाग
+    hr: Amazonas
+    hu: Amazonas megye
+    hy: Ամազոնաս
+    id: Departemen Amazonas
+    it: dipartimento di Amazonas
+    ja: アマソナス県
+    ka: ამასონასის დეპარტამენტი
+    kn: ಅಮೆಜೋನಾಸ್ ಇಲಾಖೆ
+    ko: 아마소나스 주
+    lt: Amazonės departamentas
+    mr: अमॅझॉन्स विभाग
+    ms: Pentadbiran Amazonas
+    nb: Amazonas
+    nl: Amazonas
+    pl: Amazonas
+    pt: Amazonas
+    ro: Departamentul Amazonas
+    ru: Амасонас
+    si: ඇමසෝනාස් දෙපාර්තමේන්තුව
+    sk: Amazonas (department v Kolumbii)
+    sv: Amazonas
+    ta: அமாசோனஸ் துறை
+    te: అమెజానోస్ డిపార్ట్మెంట్
+    th: เขตอะเมโซนาส
+    tr: Amazonas Departmantı
+    uk: Амасонас
+    ur: ایمازوناس محکمہ
+    vi: Amazonas
+    zh: 亚马孙省
+    lv: Amazonasas departaments
+    ceb: Departamento del Amazonas
+    ccp: "\U00011103\U0001111F\U0001110E\U00011127\U0001111A\U0001110C\U00011134"
+    ga: Amazonas
+    az: Amasonas (Kolumbiya)
+    yo: Amazonas Department
+    'no': Amazonas
+    yo_BJ: Amazonas Department
+    af: Amazonas (Colombia)
+  comments:
+  type: department
+ANT:
+  name: Antioquia
+  code: ANT
+  unofficial_names: Antioquia
+  geo:
+    latitude: 7.1986064
+    longitude: -75.34121789999999
+    min_latitude: 5.41826
+    min_longitude: -77.12709
+    max_latitude: 8.889778699999999
+    max_longitude: -73.88748
+  translations:
+    en: Antioquia
+    af: Antioquia
+    ar: أنتيوكيا
+    be: Анцьёкія
+    bg: Антиокия
+    bn: আন্টিকুইয়া বিভাগ
+    ca: Departament d’Antioquia
+    cs: Antioquia
+    da: Antioquia Department
+    de: Departamento de Antioquia
+    el: Αντιόχεια Κολομβίας
+    es: Antioquia
+    et: Antioquia departemang
+    eu: Antioquia
+    fa: شهرستان انتیوکیا
+    fi: Antioquia
+    fr: Antioquia
+    gl: Antioquia
+    gu: એન્ટિઓક્વિઆ વિભાગ
+    hi: एंटियोक्विया विभाग
+    hr: Antioquia
+    hu: Antioquia megye
+    hy: Անտիոքիա
+    id: Departemen Antioquia
+    it: dipartimento di Antioquia
+    ja: アンティオキア県
+    ka: ანტიოკიის დეპარტამენტი
+    kn: ಅಂಟಿಯೋಕ್ವಿಯಾ ಇಲಾಖೆ
+    ko: 안티오키아 주
+    lt: Antiokijos departamentas
+    mr: एन्टिऑक्विया विभाग
+    ms: Pentadbiran Antioquia
+    nb: Antioquia
+    nl: Antioquia
+    pl: Antioquia
+    pt: Antioquia
+    ro: Departamentul Antioquia
+    ru: Антьокия
+    si: අන්ටියෝකුයියා දෙපාර්තමේන්තුව
+    sk: Antioquia
+    sv: Antioquia
+    ta: அண்டியகுஐயா துறை
+    te: ఆంటియోకియా డిపార్ట్మెంట్
+    th: แอนติโอกัว
+    tr: Antioquia
+    uk: Антіокія
+    ur: انتیوکیا محکمہ
+    vi: Antioquia
+    lv: Antjokijas departaments
+    ceb: Departamento de Antioquia
+    zh: 安蒂奥基亚省
+    yue_Hans: 晏托卡省
+    ccp: "\U00011103\U0001111A\U00011134\U00011111\U00011128\U00011103\U0001112E\U00011107\U0001112D\U0001112A\U00011120"
+    ga: Antioquia
+    he: אנטיוקיה
+    yue: 晏托卡省
+    az: Antokiya
+    yo: Antioquia Department
+    mk: Антиокија
+    'no': Antioquia
+    yo_BJ: Antioquia Department
+    sl: Departma Antioquia
+    uz: Antyokiya
+  comments:
+  type: department
+ARA:
+  name: Arauca
+  code: ARA
+  unofficial_names: Arauca
+  geo:
+    latitude: 7.079371
+    longitude: -70.758377
+    min_latitude: 6.48352
+    min_longitude: -71.20248
+    max_latitude: 7.10438
+    max_longitude: -69.76795
+  translations:
+    en: Arauca
+    ar: إدارة أروكا
+    bg: Араука
+    bn: আরোকা বিভাগ
+    ca: Departament d’Arauca
+    cs: Arauca
+    da: Arauca
+    de: Departamento del Arauca
+    el: Αράουκα
+    es: Arauca
+    eu: Arauca
+    fa: شهرستان آرائوکا
+    fi: Arauca
+    fr: Arauca
+    gl: Arauca
+    gu: અરૌકા વિભાગ
+    hi: अराउका विभाग
+    hr: Arauca
+    hu: Arauca megye
+    id: Departemen Arauca
+    it: dipartimento di Arauca
+    ja: アラウカ県
+    ka: არაუკის დეპარტამენტი
+    kn: ಅರೌಕ ಇಲಾಖೆ
+    ko: 아라우카 주
+    lt: Araukos departamentas
+    mr: अरौका विभाग
+    ms: Pentadbiran Arauca
+    nb: Arauca
+    nl: Arauca
+    pl: Arauca
+    pt: Arauca
+    ro: Departamentul Arauca
+    ru: Араука
+    si: අරවුකා දෙපාර්තමේන්තුව
+    sk: Arauca
+    sv: Arauca
+    ta: அறவுக்கா துறை
+    te: అరౌకా డిపార్ట్మెంట్
+    th: จังหวัดอราวกา
+    tr: Arauca
+    uk: Араука
+    ur: آراوکا محکمہ
+    vi: Arauca
+    lv: Araukas departments
+    ceb: Departamento de Arauca
+    zh: 阿劳卡省
+    ccp: "\U00011103\U00011122\U00011105\U0001112A\U00011107"
+    ga: Arauca
+    he: אראוקה (מחוז)
+    az: Arauka (departament)
+    yo: Arauca Department
+    'no': Arauca
+    yo_BJ: Arauca Department
+    af: Arauca (departement)
+  comments:
+  type: department
+ATL:
+  name: Atlántico
+  code: ATL
+  unofficial_names: Atlántico
+  geo:
+    latitude: 10.6966159
+    longitude: -74.8741045
+    min_latitude: 10.2557104
+    min_longitude: -75.26715
+    max_latitude: 11.1067254
+    max_longitude: -74.71324
+  translations:
+    en: Atlántico
+    ar: إدارة أتلانتيكو
+    be: дэпартамент Атлантыка
+    bg: Атлантико
+    bn: আটলান্টিকো বিভাগ
+    ca: Departament de l’Atlàntic
+    cs: Atlántico
+    da: Atlántico Department
+    de: Departamento del Atlántico
+    el: Διαμέρισμα Ατλαντικού
+    es: Atlántico
+    eu: Atlantikoko departamendua
+    fa: شهرستان آتلانتیکو
+    fi: Atlántico
+    fr: Atlántico
+    gl: Atlántico
+    gu: એટલાન્ટિકો વિભાગ
+    hi: अटलांटिको विभाग
+    hr: Atlántico
+    hu: Atlántico megye
+    id: Departemen Atlántico
+    it: dipartimento dell’Atlantico
+    ja: アトランティコ県
+    ka: ატლანტიკოს დეპარტამენტი
+    kn: ಅಟ್ಲಾಂಟಿಕೊ ಡಿಪಾರ್ಟ್ಮೆಂಟ್
+    ko: 아틀란티코 주
+    lt: Atlantiko departamentas
+    mr: अटलांटिको विभाग
+    ms: Pentadbiran Atlántico
+    nb: Atlántico
+    nl: Atlántico
+    pl: Atlántico
+    pt: Atlántico
+    ro: Departamentul Atlántico
+    ru: Атлантико
+    si: ඇට්ලන්ටිකෝ දෙපාර්තමේන්තුව
+    sk: Atlántico
+    sv: Atlántico
+    ta: அட்லான்டிகோ துறை
+    te: అట్లాంటికో డిపార్ట్మెంట్
+    th: แอตแลนติโก
+    tr: Atlántico
+    uk: Атлантіко
+    ur: اتلانتیکو محکمہ
+    vi: Atlántico
+    lv: Atlantiko departaments
+    ceb: Departamento del Atlántico
+    zh: 大西洋省
+    ccp: "\U00011103\U00011116\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011134\U00011111\U00011128\U00011107\U0001112E"
+    ga: Atlántico
+    he: אטלאנטיקו
+    az: Atlantiko
+    yo: Atlántico Department
+    'no': Atlántico
+    yo_BJ: Atlántico Department
+    af: Atlántico
+    hy: Անտլանտիկո
+  comments:
+  type: department
+BOL:
+  name: Bolívar
+  code: BOL
+  unofficial_names: Bolívar
+  geo:
+    latitude: 8.6704382
+    longitude: -74.0300122
+    min_latitude: 6.99981
+    min_longitude: -75.70403019999999
+    max_latitude: 10.8013601
+    max_longitude: -73.74835
+  translations:
+    en: Bolívar
+    ar: إدارة بوليفار
+    bg: Боливар
+    bn: বলিভার বিভাগ
+    ca: Departament de Bolívar
+    cs: Bolívar
+    da: Bolívar Department
+    de: Departamento de Bolívar
+    el: Διαμέρισμα Μπολίβαρ
+    es: Bolívar
+    eu: Bolívar
+    fa: شهرستان بولیوار، کلمبیا
+    fi: Bolívar
+    fr: Bolívar
+    gl: Bolívar
+    gu: બોલિવર વિભાગ
+    he: בוליבר
+    hi: बोलिवार विभाग
+    hr: Bolívar
+    hu: Bolívar megye
+    id: Departemen Bolívar
+    it: dipartimento di Bolívar
+    ja: ボリーバル県
+    ka: ბოლივარის დეპარტამენტი
+    kn: ಬೋಲಿವಾರ್ ಇಲಾಖೆ
+    ko: 볼리바르 주
+    lt: Bolivaro departamentas
+    mr: बोलिवर विभाग
+    ms: Pentadbiran Bolívar
+    nb: Bolívar
+    nl: Bolívar
+    pl: Bolívar
+    pt: Bolívar
+    ro: Departamentul Bolívar
+    ru: Боливар
+    si: බොලිවර් දෙපාර්තමේන්තුව
+    sv: Bolívar
+    ta: பொலிவார் துறை
+    te: బోలివర్ డిపార్ట్మెంట్
+    th: โบลีวาร์
+    tr: Bolívar
+    uk: Болівар
+    ur: بولیوار محکمہ
+    vi: Bolívar
+    lv: Bolivara departaments
+    ceb: Departamento de Bolívar
+    zh: 玻利瓦尔省
+    ccp: "\U0001111D\U00011127\U00011123\U00011128\U0001111E\U00011122\U00011134"
+    hy: Բոլիվար
+    az: Bolivar (departament)
+    yo: Bolívar Department
+    'no': Bolívar
+    yo_BJ: Bolívar Department
+    af: Bolívar (Colombia)
+  comments:
+  type: department
+BOY:
+  name: Boyacá
+  code: BOY
+  unofficial_names: Boyacá
+  geo:
+    latitude: 5.45
+    longitude: -73.35
+    min_latitude: 5.40465
+    min_longitude: -73.43772
+    max_latitude: 5.481
+    max_longitude: -73.33131999999999
+  translations:
+    en: Boyacá
+    ar: إدارة بوياكا
+    bg: Бояка
+    bn: বয়াকা বিভাগ
+    ca: Boyacá
+    cs: Boyacá
+    da: Boyacá Department
+    de: Departamento de Boyacá
+    el: Μπογιακά
+    es: Boyacá
+    eu: Boyacá
+    fa: شهرستان بویاکا
+    fi: Boyacá
+    fr: Boyacá
+    gl: Boyacá
+    gu: બોયાકા વિભાગ
+    hi: बोयाका विभाग
+    hr: Boyacá
+    hu: Boyacá megye
+    id: Departemen Boyacá
+    it: dipartimento di Boyacá
+    ja: ボヤカ県
+    ka: ბოიაკის დეპარტამენტი
+    kn: ಬಾಯ್ಕಾ ಇಲಾಖೆ
+    ko: 보야카 주
+    lt: Bojakos departamentas
+    mr: बॉयका विभाग
+    ms: Pentadbiran Boyacá
+    nb: Boyacá
+    nl: Boyacá
+    pl: Boyacá
+    pt: Boyacá
+    ro: Departamentul Boyacá
+    ru: Бояка
+    si: බොයකා දෙපාර්තමේන්තුව
+    sv: Boyacá
+    ta: போயக்கா துறை
+    te: బోయాకా డిపార్ట్మెంట్
+    th: จังหวัดโบยากา
+    tr: Boyacá
+    uk: Бояка
+    ur: بویاکا محکمہ
+    vi: Khu vực hành chính Boyacá
+    lv: Bojasas departaments
+    ceb: Departamento de Boyacá
+    zh: 博亚卡省
+    ccp: "\U0001111D\U00011127\U00011120\U00011107"
+    ga: Boyacá
+    he: בויאקה
+    az: Boyaka
+    yo: Boyacá Department
+    'no': Boyacá
+    yo_BJ: Boyacá Department
+    af: Boyacá (departement)
+    sr: Департман Бојака
+    sr_Latn: Departman Bojaka
+  comments:
+  type: department
+CAL:
+  name: Caldas
+  code: CAL
+  unofficial_names: Caldas
+  geo:
+    latitude: 5.4815477
+    longitude: -75.21144079999999
+    min_latitude: 5.4777194
+    min_longitude: -75.21738049999999
+    max_latitude: 5.4854088
+    max_longitude: -75.2068233
+  translations:
+    en: Caldas
+    ar: إدارة كالداس
+    bg: Калдас
+    bn: কালডাস বিভাগ
+    ca: Departament de Caldas
+    cs: Caldas
+    da: Caldas Department
+    de: Departamento de Caldas
+    el: Διαμέρισμα Κάλδα
+    es: Caldas
+    eu: Caldas
+    fa: شهرستان کالداس
+    fi: Caldas
+    fr: Caldas
+    gl: Caldas
+    gu: કાલ્ડસ વિભાગ
+    hi: कैलडस विभाग
+    hr: Caldas
+    hu: Caldas megye
+    id: Departemen Caldas
+    it: dipartimento di Caldas
+    ja: カルダス県
+    ka: კალდასის დეპარტამენტი
+    kn: ಕ್ಯಾಲ್ಡಾಸ್ ಇಲಾಖೆ
+    ko: 칼다스 주
+    lt: Kaldaso departamentas
+    mr: कॅलडस विभाग
+    ms: Pentadbiran Caldas
+    nb: Caldas
+    nl: Caldas
+    pl: Caldas
+    pt: Caldas
+    ro: Departamentul Caldas
+    ru: Кальдас
+    si: කල්ඩාස් දෙපාර්තමේන්තුව
+    sv: Caldas
+    ta: கால்டஸ் துறை
+    te: కాల్డాస్ డిపార్ట్మెంట్
+    th: ดาลดาส ดีพาทเม้น
+    tr: Caldas
+    uk: Кальдас
+    ur: کالداس محکمہ
+    vi: Caldas
+    lv: Kaldasas departaments
+    ceb: Departamento de Caldas
+    zh: 卡尔达斯省
+    ccp: "\U00011107\U00011123\U00011134\U00011113\U0001110C\U00011134"
+    he: קלדס
+    az: Kaldas
+    yo: Caldas Department
+    'no': Caldas
+    yo_BJ: Caldas Department
+    af: Caldas
+  comments:
+  type: department
+CAQ:
+  name: Caquetá
+  code: CAQ
+  unofficial_names: Caquetá
+  geo:
+    latitude: 0.869892
+    longitude: -73.8419063
+    min_latitude: -0.7065199999999999
+    min_longitude: -76.30578
+    max_latitude: 2.9332
+    max_longitude: -71.32021999999999
+  translations:
+    en: Caquetá
+    ar: إدارة كاكيتا
+    bg: Какета
+    bn: কাকুয়েটা বিভাগ
+    ca: Caquetá
+    cs: Caquetá
+    da: Caquetá Department
+    de: Departamento de Caquetá
+    el: Κακουετά
+    es: Caquetá
+    eu: Caquetá
+    fa: شهرستان کاکئتا
+    fi: Caquetá
+    fr: Caquetá
+    gl: Caquetá
+    gu: કેક્વેટા વિભાગ
+    he: קקטה
+    hi: कैकेटा विभाग
+    hr: Caquetá
+    hu: Caquetá megye
+    id: Departemen Caquetá
+    it: dipartimento di Caquetá
+    ja: カケタ県
+    ka: კაკეტის დეპარტამენტი
+    kn: ಕಾಕ್ವೆಟಾ ಇಲಾಖೆ
+    ko: 카케타 주
+    lt: Kaketos departamentas
+    mr: कॅकाटा विभाग
+    ms: Pentadbiran Caquetá
+    nb: Caquetá
+    nl: Caquetá
+    pl: Caquetá
+    pt: Caquetá
+    ro: Departamentul Caquetá
+    ru: Какета
+    si: කක්වෙටා දෙපාර්තමේන්තුව
+    sv: Caquetá
+    ta: சயூடா துறை
+    te: కాక్వెటా డిపార్ట్మెంట్
+    th: คาควอต้า ดิพาร์ทเมนต์
+    tr: Caquetá
+    uk: Какета
+    ur: کاکیتا محکمہ
+    vi: Caquetá
+    lv: Kaketas departaments
+    ceb: Departamento del Caquetá
+    zh: 卡克塔省
+    ccp: "\U00011107\U0001112C\U00011107\U0001112A\U00011120\U0001112C\U00011111"
+    yo: Caquetá Department
+    'no': Caquetá
+    yo_BJ: Caquetá Department
+    af: Caqueta
+    az: Kaketa (departament)
+    be: дэпартамент Какета
+    mk: Департман Какета
+  comments:
+  type: department
+CAS:
+  name: Casanare
+  code: CAS
+  unofficial_names: Casanare
+  geo:
+    latitude: 5.7589269
+    longitude: -71.5723953
+    min_latitude: 4.286
+    min_longitude: -73.07694
+    max_latitude: 6.30716
+    max_longitude: -69.8356
+  translations:
+    en: Casanare
+    ar: إدارة كاساناري
+    bg: Касанаре
+    bn: কাসানরে বিভাগ
+    ca: Casanare
+    cs: Casanare
+    da: Casanare Department
+    de: Departamento de Casanare
+    el: Κασανάρε
+    es: Casanare
+    eu: Casanare
+    fa: شهرستان کاساناره
+    fi: Casanare
+    fr: Casanare
+    gl: Casanare
+    gu: કાસનેર વિભાગ
+    hi: कासनेरे विभाग
+    hr: Casanare
+    hu: Casanare megye
+    id: Departemen Casanare
+    it: dipartimento di Casanare
+    ja: カサナレ県
+    ka: კასანარეს დეპარტამენტი
+    kn: ಕ್ಯಾಸನಾರ್ ಇಲಾಖೆ
+    ko: 카사나레 주
+    lt: Kasanarės departamentas
+    mr: कासनेर विभाग
+    ms: Pentadbiran Casanare
+    nb: Casanare
+    nl: Casanare
+    pl: Casanare
+    pt: Casanare
+    ru: Касанаре
+    si: කසනේයාර් දෙපාර්තමේන්තුව
+    sv: Casanare
+    ta: கேசனாரே துறை
+    te: కాసనార్ డిపార్ట్మెంట్
+    th: คาซาแนร์
+    tr: Casanare
+    uk: Касанаре
+    ur: کاسانارے محکمہ
+    vi: Casanare
+    lv: Kasanares departaments
+    ceb: Departamento de Casanare
+    zh: 卡萨纳雷省
+    ccp: "\U00011107\U00011125\U0001111A\U00011122\U0001112C"
+    he: קסנרה
+    yo: Casanare Department
+    'no': Casanare
+    yo_BJ: Casanare Department
+    af: Casanare
+    az: Kasanare
+  comments:
+  type: department
+CAU:
+  name: Cauca
+  code: CAU
+  unofficial_names: Cauca
+  geo:
+    latitude: 2.5725523
+    longitude: -76.7783748
+    min_latitude: 2.5690383
+    min_longitude: -76.78168769999999
+    max_latitude: 2.5752548
+    max_longitude: -76.7718601
+  translations:
+    en: Cauca
+    ar: إدارة كاوكا
+    be: дэпартамент Каўка
+    bg: Каука
+    bn: কাউকা বিভাগ
+    ca: Departament del Cauca
+    cs: Cauca
+    da: Cauca Department
+    de: Departamento de Cauca
+    el: Διαμέρισμα Κάουκας
+    es: Cauca
+    eu: Cauca
+    fa: شهرستان کائوکا
+    fi: Cauca
+    fr: Cauca
+    gl: Cauca
+    gu: કોઉકા વિભાગ
+    hi: काऊका विभाग
+    hr: Cauca
+    hu: Cauca megye
+    id: Departemen Cauca
+    it: dipartimento di Cauca
+    ja: カウカ県
+    ka: კაუკის დეპარტამენტი
+    kn: ಕೌಕಾ ಇಲಾಖೆ
+    ko: 카우카 주
+    lt: Kaukos departamentas
+    mr: काऊचं विभाग
+    ms: Pentadbiran Cauca
+    nb: Cauca
+    nl: Cauca
+    pl: Cauca
+    pt: Cauca
+    ro: Departamentul Cauca
+    ru: Каука
+    si: කවුකා දෙපාර්තමේන්තුව
+    sv: Cauca
+    ta: கவுக்க துறை
+    te: కౌకా డిపార్ట్మెంట్
+    th: เคาคา ดีพาทเม้น
+    tr: Cauca
+    uk: Каука
+    ur: کاؤکا محکمہ
+    vi: Cauca
+    lv: Kaukas departaments
+    ceb: Departamento del Cauca
+    zh: 考卡省
+    ccp: "\U00011107\U00011127\U00011105\U0001112A\U00011107"
+    hy: Կաուկա
+    he: קאוקה
+    yo: Cauca Department
+    'no': Cauca
+    yo_BJ: Cauca Department
+    af: Cauca
+    az: Kauka
+  comments:
+  type: department
+CES:
+  name: Cesar
+  code: CES
+  unofficial_names: Cesar
+  geo:
+    latitude: 9.3372948
+    longitude: -73.65362089999999
+    min_latitude: 7.676399999999999
+    min_longitude: -74.13982
+    max_latitude: 10.86722
+    max_longitude: -72.88257
+  translations:
+    en: Cesar
+    ar: إدارة سيزار
+    bg: Сесар
+    bn: সিজার বিভাগ
+    ca: Departament del Cesar
+    cs: Cesar
+    da: Cesar Department
+    de: Departamento del Cesar
+    el: Κέσαρ
+    es: Cesar
+    eu: Cesar
+    fa: شهرستان سزار
+    fi: Cesar
+    fr: Cesar
+    gl: Cesar
+    gu: સીઝર વિભાગ
+    he: ססאר
+    hi: सीसर विभाग
+    hr: Cesar
+    hu: Cesar megye
+    id: Departemen Cesar
+    it: dipartimento di Cesar
+    ja: セサール県
+    ka: სესარის დეპარტამენტი
+    kn: ಸೀಜರ ಇಲಾಖೆ
+    ko: 세사르 주
+    lt: Sesaro departamentas
+    mr: सीझर विभाग
+    ms: Pentadbiran Cesar
+    nb: Cesar
+    nl: Cesar
+    pl: Cesar
+    pt: Cesar
+    ru: Сесар
+    si: සීසර් දෙපාර්තමේන්තුව
+    sv: Cesar
+    ta: சீசர் துறை
+    te: సీసర్ డిపార్ట్మెంట్
+    th: ซีซาร์
+    tr: Cesar
+    uk: Сесар
+    ur: سیزار محکمہ
+    vi: Khu vực hành chính Cesar
+    lv: Sesaras departaments
+    ceb: Departamento del Cesar
+    zh: 塞萨尔省
+    ccp: "\U00011125\U0001112C\U00011125\U00011122\U00011134"
+    az: Sesar (departament)
+    yo: Cesar Department
+    'no': Cesar
+    yo_BJ: Cesar Department
+    af: Cesar (departement)
+  comments:
+  type: department
+CHO:
+  name: Chocó
+  code: CHO
+  unofficial_names: Chocó
+  geo:
+    latitude: 5.2528033
+    longitude: -76.8259652
+    min_latitude: 3.96467
+    min_longitude: -77.88727999999999
+    max_latitude: 8.67598
+    max_longitude: -76.0026
+  translations:
+    en: Chocó
+    ar: إدارة تشوكو
+    be: дэпартамент Чако
+    bg: Чоко
+    bn: কুকো বিভাগ
+    ca: Chocó
+    cs: Chocó
+    da: Chocó Department
+    de: Departamento del Chocó
+    el: Τσοκό
+    es: Chocó
+    et: Chocó departemang
+    eu: Chocó
+    fa: شهرستان چوکو
+    fi: Chocó
+    fr: Chocó
+    gl: Chocó
+    gu: ચોકો વિભાગ
+    hi: चोको विभाग
+    hr: Chocó
+    hu: Chocó megye
+    hy: Չոկո
+    id: Departemen Chocó
+    it: dipartimento di Chocó
+    ja: チョコ県
+    ka: ჩოკოს დეპარტამენტი
+    kn: ಚೊಕೊ ಇಲಾಖೆ
+    ko: 초코 주
+    lt: Čioko departamentas
+    mr: चोको विभाग
+    ms: Pentadbiran Chocó
+    nb: Chocó
+    nl: Chocó
+    pl: Chocó
+    pt: Chocó
+    ru: Чоко
+    si: චෝකෝ දෙපාර්තමේන්තුව
+    sv: Chocó
+    ta: சாகோ துறை
+    te: చోకో డిపార్ట్మెంట్
+    th: จังหวัดโชโก
+    tr: Chocó
+    uk: Чоко
+    ur: چوکو محکمہ
+    vi: Chocó
+    lv: Čoko departaments
+    ceb: Departamento del Chocó
+    zh: 乔科省
+    ccp: "\U0001110C\U0001112E\U00011107\U0001112E"
+    he: צ׳וקו
+    yo: Chocó Department
+    'no': Chocó
+    yo_BJ: Chocó Department
+    af: Chocó
+    az: Çoko departamenti
+  comments:
+  type: department
+COR:
+  name: Córdoba
+  code: COR
+  unofficial_names: Córdoba
+  geo:
+    latitude: 8.4029253
+    longitude: -75.89986739999999
+    min_latitude: 7.347090000000001
+    min_longitude: -76.50993
+    max_latitude: 9.447802399999999
+    max_longitude: -74.78514
+  translations:
+    en: Córdoba
+    ar: إدارة قرطبة
+    bg: Кордоба
+    bn: কর্ডোবা বিভাগ
+    ca: Departament de Córdoba
+    da: Córdoba Department
+    de: Departamento de Córdoba
+    el: Διαμέρισμα Κόρδοβα
+    es: Córdoba
+    et: Córdoba departemang
+    eu: Córdoba
+    fa: شهرستان کوردوبا
+    fi: Córdoba
+    fr: Córdoba
+    gl: Córdoba
+    gu: કોર્ડોબા વિભાગ
+    hi: कॉर्दोबा विभाग
+    hr: Córdoba
+    hu: Córdoba megye
+    id: Departemen Córdoba
+    it: Córdoba
+    ja: コルドバ県
+    ka: კორდობის დეპარტამენტი
+    kn: ಕೊರ್ಡೊಬಾ ಇಲಾಖೆ
+    ko: 코르도바 주
+    lt: Kordobos departamentas
+    mr: कोर्डोबा विभाग
+    ms: Pentadbiran Córdoba
+    nb: Córdoba
+    nl: Córdoba
+    pl: Córdoba
+    pt: Córdoba (departamento)
+    ru: Кордова
+    si: කොර්ඩොබා දෙපාර්තමේන්තුව
+    sv: Córdoba
+    ta: கோர்டோபா துறை
+    te: కోర్డోబా డిపార్ట్మెంట్
+    th: จังหวัดคอร์โดบา
+    tr: Córdoba
+    uk: Кордова
+    ur: کوردوبا محکمہ
+    vi: Khu vực hành chính Cordoba
+    lv: Kordobas departaments
+    ceb: Departamento de Córdoba
+    zh: 科爾多瓦省 (哥倫比亞)
+    ccp: "\U00011107\U00011127\U00011122\U00011134\U00011113\U0001112E\U0001111D"
+    he: קורדובה (קולומביה)
+    cs: Córdoba
+    yo: Córdoba Department
+    'no': Córdoba
+    yo_BJ: Córdoba Department
+    af: Córdoba (departement, Colombia)
+    az: Kordova departamenti
+  comments:
+  type: department
+CUN:
+  name: Cundinamarca
+  code: CUN
+  unofficial_names: Cundinamarca
+  geo:
+    latitude: 5.026002999999999
+    longitude: -74.0300122
+    min_latitude: 3.7269
+    min_longitude: -74.89067
+    max_latitude: 5.8367
+    max_longitude: -73.05084
+  translations:
+    en: Cundinamarca
+    ar: إدارة كونديناماركا
+    bg: Кундинамарка
+    bn: কুন্ডিনামাকা বিভাগ
+    ca: Cundinamarca
+    da: Cundinamarca Department
+    de: Cundinamarca
+    el: Διαμέρισμα Κουντιναμάρκα
+    es: Cundinamarca
+    eu: Cundinamarca
+    fa: شهرستان کوندینامارکا
+    fi: Cundinamarca
+    fr: Cundinamarca
+    gl: Cundinamarca
+    gu: કુન્ડિનામાર્કા વિભાગ
+    hi: कुंडीनामार्का विभाग
+    hr: Cundinamarca
+    hu: Cundinamarca megye
+    id: Departemen Kundinamarka
+    it: dipartimento di Cundinamarca
+    ja: クンディナマルカ県
+    ka: კუნდინამარკის დეპარტამენტი
+    kn: ಕುಂಡಿನಮಾರ್ಕ ಇಲಾಖೆ
+    ko: 쿤디나마르카 주
+    lt: Kundinamarkos departamentas
+    mr: कुंडीनमरका विभाग
+    ms: Pentadbiran Kundinamarka
+    nb: Cundinamarca
+    nl: Cundinamarca
+    pl: Cundinamarca
+    pt: Cundinamarca
+    ru: Кундинамарка
+    si: කුන්ඩිනාමර්කා දෙපාර්තමේන්තුව
+    sv: Cundinamarca
+    ta: சுண்டினமார்க்க துறை
+    te: కుండినామార్సా డిపార్ట్మెంట్
+    th: จังหวัดกุนดีนามาร์กา
+    tr: Cundinamarca
+    uk: Кундінамарка
+    ur: کوندینامارکا محکمہ
+    vi: Cundinamarca
+    lv: Kundinamarkas departaments
+    ceb: Departamento de Cundinamarca
+    zh: 昆迪納馬卡省
+    ccp: "\U00011107\U0001112A\U0001111A\U00011134\U00011113\U00011128\U0001111A\U0001111F\U00011122\U00011134\U00011107"
+    sk: Cundinamarca
+    he: קונדינמרקה
+    cs: Cundinamarca
+    yo: Cundinamarca Department
+    'no': Cundinamarca
+    yo_BJ: Cundinamarca Department
+    af: Cundinamarca
+    az: Kundinamarka
+    be: Кундзінамарка
+    hy: Կունդինամարկա
+    mk: Департман Кундинамарка
+    sl: Departma Cundinamarca
+  comments:
+  type: department
+DC:
+  name: Distrito Capital de Bogotá
+  code: DC
+  unofficial_names:
+  - Santafé de Bogotá Distrito Capital
+  geo:
+    latitude: 4.598056000000001
+    longitude: -74.075833
+    min_latitude: 3.72977
+    min_longitude: -74.45177
+    max_latitude: 4.8371
+    max_longitude: -73.99631
+  translations:
+    en: Capital District
+    af: Bogotá, DC
+    am: ቦጎታ
+    ar: بوغوتا
+    az: Boqota
+    be: Багата
+    bg: Богота
+    bn: বোগোতা
+    ca: Bogotà
+    cs: Bogotá
+    da: Bogotá
+    de: Bogotá
+    el: Μπογκοτά
+    es: Bogotá
+    et: Bogotá
+    eu: Bogotá
+    fa: بوگوتا
+    fi: Bogotá
+    fr: Bogota
+    gl: Bogotá
+    gu: બોગોટા
+    he: בוגוטה
+    hi: बोगोटा
+    hr: Bogotá
+    hu: Bogotá
+    hy: Բոգոտա
+    id: Bogotá
+    is: Bógóta
+    it: Bogotá, DC
+    ja: ボゴタ
+    ka: ბოგოტა
+    km: ទីក្រុងបូកូតា
+    kn: ಬೊಗೋಟ
+    ko: 보고타
+    lt: Bogota
+    lv: Bogota
+    ml: ബൊഗോട്ട
+    mn: Богота
+    mr: बोगोता
+    ms: Bogotá
+    nb: Bogotá
+    nl: Bogota
+    or: ବୋଗୋଟା
+    pl: Bogota
+    pt: Bogotá, DC
+    ro: Bogotá
+    ru: Богота
+    si: බොගෝටා
+    sk: Bogota
+    sl: Bogota
+    sr: Богота
+    sv: Bogotá
+    sw: Bogota
+    ta: பொகோட்டா
+    te: బోగోటా
+    th: โบโกตา
+    tk: Bogota
+    tr: Bogotá
+    uk: Богота
+    ur: بوگوتا
+    vi: Bogotá
+    cy: Bogotá
+    ceb: Bogotá
+    sr_Latn: Bogota
+    zh: 波哥大
+    yue_Hans: 波哥大
+    jv: Bogotá
+    sq: Bogotá
+    ccp: "\U00011122\U0001110C\U00011134\U00011119\U0001111A\U00011129 \U0001110E\U0001112C\U00011123"
+    ga: Bogotá
+    so: Bogota
+    pa: ਬੋਗੋਤਾ
+    kk: Богота
+    yue: 波哥大
+    my: ဘိုဂိုတာမြို့
+    yo: Bogotá
+    zu: IBogotaa
+    uz: Bogota
+    bs: Bogotá
+    mk: Богота
+    'no': Bogotá
+    yo_BJ: Bogotá
+    ha: Bogotá
+    ha_NE: Bogotá
+    ig: Bogotá
+    ky: Богота
+    ps: بوګوتا
+    sd: بگوٽا
+  comments:
+  type: capital_district
+GUA:
+  name: Guainía
+  code: GUA
+  unofficial_names: Guainía
+  geo:
+    latitude: 2.585393
+    longitude: -68.52471489999999
+    min_latitude: 1.16702
+    min_longitude: -70.9425
+    max_latitude: 4.04741
+    max_longitude: -66.84722
+  translations:
+    en: Guainía
+    ar: إدارة غواينيا
+    bg: Гуайния
+    bn: গোয়াইনিয়া বিভাগ
+    ca: Guainía
+    da: Guainía Department
+    de: Guainía
+    el: Γκουαϊνία
+    es: Guainía
+    eu: Guainía
+    fa: شهرستان گواینیا
+    fi: Guainía
+    fr: Guainía
+    gl: Guainía
+    gu: ગ્યુએનિઆ વિભાગ
+    he: גואאיניה
+    hi: गुऐनिआ विभाग
+    hr: Guainía
+    hu: Guainía megye
+    id: Departemen Guainía
+    it: dipartimento di Guainía
+    ja: グアイニア県
+    ka: გუაინიის დეპარტამენტი
+    kn: ಗಿನಿಯಾ ಇಲಾಖೆ
+    ko: 과이니아 주
+    lt: Guainijos departamentas
+    mr: ग्वेनिआ विभाग
+    ms: Pentadbiran Guainía
+    nb: Guainía
+    nl: Guainía
+    pl: Guainía
+    pt: Guainía
+    ru: Гуайния
+    si: ගයිනියා දෙපාර්තමේන්තුව
+    sv: Guainía
+    ta: குயினியா துறை
+    te: గ్వెయినియా డిపార్ట్మెంట్
+    th: เมืองกัวเนีย
+    tr: Guainía
+    uk: Ґуайнія
+    ur: گواینیا محکمہ
+    vi: Khu hành chính Guainía
+    lv: Gvainijas departaments
+    ceb: Departamento del Guainía
+    zh: 瓜伊尼亚省
+    ccp: "\U00011109\U0001112D\U0001112A\U00011103\U00011128\U0001111A\U00011128\U00011120"
+    yo: Guainía Department
+    'no': Guainía
+    yo_BJ: Guainía Department
+    af: Guainía (departement)
+    az: Quayniya
+    mk: Гвајнија
+  comments:
+  type: department
+GUV:
+  name: Guaviare
+  code: GUV
+  unofficial_names: Guaviare
+  geo:
+    latitude: 1.0619181
+    longitude: -73.2558952
+    min_latitude: 1.051796
+    min_longitude: -73.27159879999999
+    max_latitude: 1.0722202
+    max_longitude: -73.24516299999999
+  translations:
+    en: Guaviare
+    ar: إدارة غوافياري
+    bg: Гуавиаре
+    bn: গোয়াভিরে বিভাগ
+    ca: Guaviare
+    da: Guaviare Department
+    de: Guaviare
+    el: Γκουαβιάρε
+    es: Guaviare
+    eu: Guaviare
+    fa: شهرستان گواویره
+    fi: Guaviare
+    fr: Guaviare
+    gl: Guaviare
+    gu: ગુઆવિરે વિભાગ
+    he: גואביארה
+    hi: ग्वाविआरे विभाग
+    hr: Guaviare
+    hu: Guaviare megye
+    id: Departemen Guaviare
+    it: dipartimento di Guaviare
+    ja: グアビアーレ県
+    ka: გუავიარეს დეპარტამენტი
+    kn: ಗುವಾವಿರೆ ಇಲಾಖೆ
+    ko: 과비아레 주
+    lt: Guavjarės departamentas
+    mr: गुआविरे विभाग
+    ms: Pentadbiran Guaviare
+    nb: Guaviare
+    nl: Guaviare
+    pl: Guaviare
+    pt: Guaviare
+    ru: Гуавьяре
+    si: ගවියරේ දෙපාර්තමේන්තුව
+    sv: Guaviare
+    ta: குவையாரே துறை
+    te: గ్వావేర్ డిపార్ట్మెంట్
+    th: กัวเวียเร่ ดีพาทเม้น
+    tr: Guaviare
+    uk: Ґуавʼяре
+    ur: گوابیارے محکمہ
+    vi: Khu vực hành chính Guaviare
+    lv: Guavjares departaments
+    ceb: Departamento del Guaviare
+    zh: 瓜维亚雷省
+    ccp: "\U00011109\U0001112A\U00011120\U0001111E\U00011120\U00011122\U00011134"
+    az: Quavyare (departament)
+    yo: Guaviare Department
+    'no': Guaviare
+    yo_BJ: Guaviare Department
+    af: Guaviare (departement)
+  comments:
+  type: department
+HUI:
+  name: Huila
+  code: HUI
+  unofficial_names: Huila
+  geo:
+    latitude: 2.5359349
+    longitude: -75.52766989999999
+    min_latitude: 1.55547
+    min_longitude: -76.62425
+    max_latitude: 3.84485
+    max_longitude: -74.41284999999999
+  translations:
+    en: Huila
+    ar: إدارة هويلا
+    bg: Уила
+    bn: হুইলা বিভাগ
+    ca: Huila
+    da: Huila Department
+    de: Departamento de Huila
+    el: Χουίλα
+    es: Huila
+    eu: Huila
+    fa: شهرستان هویلا
+    fi: Huila
+    fr: Huila
+    gl: Huila
+    gu: હુઈલા વિભાગ
+    he: וילה (מחוז)
+    hi: हुइला विभाग
+    hr: Huila
+    hu: Huila megye
+    id: Departemen Huila
+    it: dipartimento di Huila
+    ja: ウイラ県
+    ka: უილის დეპარტამენტი
+    kn: ಹುಯಿಲಾ ಇಲಾಖೆ
+    ko: 우일라 주
+    lt: Uilos departamentas
+    mr: हुईला विभाग
+    ms: Pentadbiran Huila
+    nb: Huila
+    nl: Huila
+    pl: Huila
+    pt: Huila
+    ru: Уила
+    si: හුයිලා දෙපාර්තමේන්තුව
+    sv: Huila
+    ta: ஹுஇலா துறை
+    te: హుయిలా డిపార్ట్మెంట్
+    th: ฮุยลา ดีพาทเม้น
+    tr: Huila
+    uk: Уїла
+    ur: ہوئلا محکمہ
+    vi: Khu vực hành chính Huila
+    lv: Uilas departaments
+    ceb: Departamento del Huila
+    zh: 乌伊拉省
+    ccp: "\U00011126\U0001112D\U0001112A\U00011123"
+    az: Uila (departament)
+    yo: Huila Department
+    'no': Huila
+    yo_BJ: Huila Department
+    af: Huila (departement)
+    ga: Huila
+  comments:
+  type: department
+LAG:
+  name: La Guajira
+  code: LAG
+  unofficial_names: La Guajira
+  geo:
+    latitude: 11.3547743
+    longitude: -72.5204827
+    min_latitude: 10.39699
+    min_longitude: -73.66418999999999
+    max_latitude: 12.4584622
+    max_longitude: -71.1131716
+  translations:
+    en: La Guajira
+    ar: إدارة لا غواخيرا
+    bg: Ла Гуахира
+    bn: লা গোয়াজিরা বিভাগ
+    ca: La Guajira
+    da: La Guajira Department
+    de: La Guajira
+    el: Λα Γκουατζίρα
+    es: La Guajira
+    eu: La Guajira
+    fa: شهرستان لا گواخیرا
+    fi: Guajira
+    fr: La Guajira
+    gl: La Guajira
+    gu: લા ગુજિરા વિભાગ
+    hi: ला ग्वाजिरा विभाग
+    hr: La Guajira
+    hu: La Guajira megye
+    id: Departemen Guajira
+    it: dipartimento di La Guajira
+    ja: ラ・グアヒーラ県
+    ka: ლა-გუახირის დეპარტამენტი
+    kn: ಲಾ ಗುಜಿರಾ ಇಲಾಖೆ
+    ko: 라과히라 주
+    lt: Gvachiros departamentas
+    mr: ला गुजिरा विभाग
+    ms: Pentadbiran Guajira
+    nb: La Guajira
+    nl: La Guajira
+    pl: La Guajira
+    pt: Guajira
+    ru: Гуахира
+    si: ලා ගුආ ජිරා දෙපාර්තමේන්තුව
+    sv: La Guajira
+    ta: லா குஅஜீரா துறை
+    te: లా గ్వాజిరా డిపార్ట్మెంట్
+    th: จังหวัดลากัวฮิรา
+    tr: La Guajira
+    uk: Гуахіра
+    ur: لا گواجیرا دیپارٹمنٹ
+    vi: Khu vực hành chính La Guajira
+    lv: Lagvahiras departaments
+    ceb: Departamento de La Guajira
+    zh: 瓜希拉省
+    ccp: "\U00011123 \U00011109\U0001112A\U00011120\U0001110E\U00011128\U00011122"
+    he: לה גואחירה
+    yo: La Guajira Department
+    'no': La Guajira
+    yo_BJ: La Guajira Department
+    af: Guajira (departement)
+  comments:
+  type: department
+MAG:
+  name: Magdalena
+  code: MAG
+  unofficial_names: Magdalena
+  geo:
+    latitude: 10.4113014
+    longitude: -74.4056612
+    min_latitude: 8.9183801
+    min_longitude: -74.94542299999999
+    max_latitude: 11.3489296
+    max_longitude: -73.54199
+  translations:
+    en: Magdalena
+    ar: إدارة ماجدالينا
+    bg: Магдалена
+    bn: মাগডালেনা বিভাগ
+    ca: Departament del Magdalena
+    cs: Magdalena
+    da: Magdalena Department
+    de: Departamento del Magdalena
+    el: Διαμέρισμα Μαγκνταλένας
+    es: Magdalena
+    eu: Magdalena
+    fa: شهرستان ماگدالنا
+    fi: Magdalena
+    fr: Magdalena
+    gl: Magdalena
+    gu: માગ્દાલેના વિભાગ
+    hi: मेगडेलिना विभाग
+    hr: Magdalena
+    hu: Magdalena megye
+    id: Departemen Magdalena
+    it: dipartimento di Magdalena
+    ja: マグダレーナ県
+    ka: მაგდალენას დეპარტამენტი
+    kn: ಮ್ಯಾಗ್ಡಲೇನಾ ಇಲಾಖೆ
+    ko: 마그달레나 주
+    lt: Magdalenos departamentas
+    mr: मॅग्डालेना विभाग
+    ms: Pentadbiran Magdalena
+    nb: Magdalena
+    nl: Magdalena
+    pl: Magdalena
+    pt: Magdalena
+    ro: Departamentul Magdalena
+    ru: Магдалена
+    si: මගල්දේනා දෙපාර්තමන්තුව
+    sr: Магдалена регион
+    sv: Magdalena
+    ta: மக்தாலென துறை
+    te: మాగ్డాలెనా డిపార్ట్మెంట్
+    th: มักดาเลนา
+    tr: Magdalena
+    uk: Маґдалена
+    ur: ماگدالینا محکمہ
+    vi: Magdalena
+    lv: Magdalenas departaments
+    ceb: Departamento del Magdalena
+    sr_Latn: Magdalena region
+    zh: 马格达莱纳省
+    ccp: "\U0001111F\U00011107\U00011134\U00011113\U0001112C\U00011123\U0001112C\U0001111A"
+    hy: Մագդալենա շրջան
+    he: מגדלנה
+    az: Maqdalena (departament)
+    be: Магдалена
+    yo: Magdalena Department
+    'no': Magdalena
+    yo_BJ: Magdalena Department
+    af: Magdalena (departement)
+    sl: Departma Magdalena
+  comments:
+  type: department
+MET:
+  name: Meta
+  code: MET
+  unofficial_names: Meta
+  geo:
+    latitude: 3.2719904
+    longitude: -73.087749
+    min_latitude: 1.60126
+    min_longitude: -74.93392
+    max_latitude: 4.92514
+    max_longitude: -71.0774
+  translations:
+    en: Meta
+    ar: إدارة ميتا
+    bg: Мета
+    bn: মেটা
+    ca: Departament del Meta
+    da: Meta
+    de: Meta
+    el: Μέτα
+    es: Meta
+    eu: Meta
+    fa: شهرستان متا
+    fi: Meta
+    fr: Meta
+    gl: Meta
+    gu: મેટા
+    hi: मेटा
+    hr: Meta
+    hu: Meta megye
+    id: Departemen Meta
+    it: dipartimento di Meta
+    ja: メタ県
+    ka: მეტის დეპარტამენტი
+    kn: ಮೆಟಾ
+    ko: 메타 주
+    lt: Metos departamentas
+    mr: मेटा
+    ms: Pentadbiran Meta
+    nb: Meta
+    nl: Meta
+    pl: Meta
+    pt: Meta
+    ru: Ме́та
+    si: මෙටා
+    sv: Meta
+    ta: மெட்டா
+    te: మెటా
+    th: เมตา
+    tr: Meta
+    uk: Мета
+    ur: میتا محکمہ
+    vi: Meta
+    lv: Metas departaments
+    ceb: Departamento del Meta
+    zh: 梅塔省
+    ccp: "\U0001111F\U0001112C\U00011111"
+    he: מטה (מחוז)
+    az: Meta (departament)
+    yo: Meta Department
+    'no': Meta
+    yo_BJ: Meta Department
+    af: Meta (departement)
+    cy: Meta
+  comments:
+  type: department
+NAR:
+  name: Nariño
+  code: NAR
+  unofficial_names: Nariño
+  geo:
+    latitude: 1.289822
+    longitude: -77.35861190000001
+    min_latitude: 1.22328
+    min_longitude: -77.38336
+    max_latitude: 1.35415
+    max_longitude: -77.30888999999999
+  translations:
+    en: Nariño
+    ar: إدارة نارينيو
+    bg: Нариньо
+    bn: নারিনো বিভাগ
+    ca: Nariño
+    da: Narino Department
+    de: Departamento de Nariño
+    el: Ναρίνο
+    es: Nariño
+    et: Nariño departemang
+    eu: Nariño
+    fa: شهرستان نارینیو
+    fi: Nariño
+    fr: Nariño
+    gl: Nariño
+    gu: નરીનો વિભાગ
+    hi: नारिनो विभाग
+    hr: Nariño
+    hu: Nariño megye
+    id: Departemen Nariño
+    it: dipartimento di Nariño
+    ja: ナリーニョ県
+    ka: ნარინიოს დეპარტამენტი
+    kn: ನ್ಯಾರಿನೋ ಇಲಾಖೆ
+    ko: 나리뇨 주
+    lt: Narinjo departamentas
+    mr: नरेन विभाग
+    ms: Pentadbiran Nariño
+    nb: Nariño
+    nl: Nariño
+    pl: Nariño
+    pt: Nariño
+    ro: Nariño
+    ru: Нариньо
+    si: නරිනෝ දෙපාර්තමේන්තුව
+    sv: Nariño
+    ta: நரினோ துறை
+    te: నారినో డిపార్ట్మెంట్
+    th: นาริโน
+    tr: Nariño
+    uk: Наріньйо
+    ur: نارینو محکمہ
+    vi: Nariño
+    lv: Narinjo departaments
+    ceb: Departamento de Nariño
+    zh: 纳里尼奥省
+    ccp: "\U0001111A\U00011122\U00011128\U0001111A\U0001112E"
+    he: נריניו
+    az: Narino
+    yo: Nariño Department
+    mk: Нарињо
+    'no': Nariño
+    yo_BJ: Nariño Department
+    af: Nariño (departement)
+    be: Нарынья
+    cs: Nariño
+    hy: Նարինյո
+  comments:
+  type: department
+NSA:
+  name: Norte de Santander
+  code: NSA
+  unofficial_names: Norte de Santander
+  geo:
+    latitude: 7.9462831
+    longitude: -72.8988069
+    min_latitude: 6.87306
+    min_longitude: -73.63743
+    max_latitude: 9.29051
+    max_longitude: -72.04813
+  translations:
+    en: Norte de Santander
+    ar: إدارة نورتي دي سانتاندر
+    be: дэпартамент Нортэ-дэ-Сантандэр
+    bg: Северен Сантандер
+    bn: নর্থে ডি সান্তান্ডের বিভাগ
+    ca: Norte de Santander
+    da: Norte de Santander Department
+    de: Departamento de Norte de Santander
+    el: Νόρτε ντε Σαντάντερ
+    es: Norte de Santander
+    eu: Norte de Santander
+    fa: شهرستان نورته د سانتاندر
+    fi: Norte de Santander
+    fr: Norte de Santander
+    gl: Norte de Santander
+    gu: નોર્ટ દે સેન્ટેન્ડર વિભાગ
+    hi: नोर्टे डी सैनटेंडर विभाग
+    hr: Norte de Santander
+    hu: Észak-Santander megye
+    id: Departemen Norte de Santander
+    it: dipartimento di Norte de Santander
+    ja: ノルテ・デ・サンタンデール県
+    ka: ნორტე-დე-სანტანდერის დეპარტამენტი
+    kn: ನಾರ್ಟೆ ಡೆ ಸ್ಯಾಂಟಾಂಡರ್ ಇಲಾಖೆ
+    ko: 노르테데산탄데르 주
+    lt: Šiaurės Santandero departamentas
+    mr: नॉर्टे डी सॅन्तेंडर विभाग
+    ms: Pentadbiran Norte de Santander
+    nb: Norte de Santander
+    nl: Norte de Santander
+    pl: Norte de Santander
+    pt: Norte de Santander
+    ru: Северный Сантандер
+    si: නොර්ටේ ඩි සන්ටර්ඩෙන් දෙපාර්තමේන්තුව
+    sv: Norte de Santander
+    ta: நோர்ட் டி சந்தாண்டேர் துறை
+    te: నార్ట్ డి సాంటాండర్ డిపార్ట్మెంట్
+    th: นอร์เท เด ซานทานเดอร์
+    tr: Norte de Santander
+    uk: Норте-де-Сантандер
+    ur: شمالی سانتاندر محکمہ
+    vi: Norte de Santander
+    lv: Ziemeļsantanderas departaments
+    ceb: Departamento de Norte de Santander
+    zh: 北桑坦德省
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C \U00011113\U0001112C
+      \U00011125\U0001111A\U00011134\U00011111\U0001111A\U00011134\U00011113\U00011122\U00011134"
+    he: נורטה דה סנטנדר
+    az: Şimali Santander
+    yo: Norte de Santander Department
+    'no': Norte de Santander
+    yo_BJ: Norte de Santander Department
+    af: Norte de Santander
+  comments:
+  type: department
+PUT:
+  name: Putumayo
+  code: PUT
+  unofficial_names: Putumayo
+  geo:
+    latitude: 0.4359506
+    longitude: -75.52766989999999
+    min_latitude: -0.56002
+    min_longitude: -77.18681
+    max_latitude: 1.46781
+    max_longitude: -73.84129999999999
+  translations:
+    en: Putumayo
+    ar: إدارة بوتومايو
+    bg: Путумайо
+    bn: পুতোমাইয়ো বিভাগ
+    ca: Putumayo
+    da: Putumayo Department
+    de: Departamento de Putumayo
+    el: Πουτουμάγιο
+    es: Putumayo
+    eu: Putumayo
+    fa: شهرستان پوتومایو
+    fi: Putumayo
+    fr: Putumayo
+    gl: Putumayo
+    gu: પુટુમેયો વિભાગ
+    he: פוטומיו
+    hi: पुटुमाओ विभाग
+    hr: Putumayo
+    hu: Putumayo megye
+    id: Departemen Putumayo
+    it: dipartimento di Putumayo
+    ja: プトゥマヨ県
+    ka: პუტუმაიოს დეპარტამენტი
+    kn: ಪುಟುಮಾಯಿ ಇಲಾಖೆ
+    ko: 푸투마요 주
+    lt: Putumajo departamentas
+    mr: पुत्तुमा विभाग
+    ms: Pentadbiran Putumayo
+    nb: Putumayo
+    nl: Putumayo
+    pl: Putumayo
+    pt: Putumayo
+    ru: Путумайо
+    si: පුටුමායෝ දෙපාර්තමේන්තුව
+    sv: Putumayo
+    ta: புதுமையோ துறை
+    te: పుటుమాయో డిపార్ట్మెంట్
+    th: จังหวัดปูตูมาโย
+    tr: Putumayo
+    uk: Путумайо
+    ur: پوتامایو محکمہ
+    vi: Putumayo
+    lv: Putumajo departaments
+    ceb: Departamento del Putumayo
+    zh: 普图马约省
+    ccp: "\U0001111B\U0001112A\U00011111\U0001112A\U0001111F\U0001112D\U00011120\U0001112E"
+    az: Putumayo (departament)
+    yo: Putumayo Department
+    'no': Putumayo
+    yo_BJ: Putumayo Department
+    af: Putumayo (departement)
+    be: Путумая
+    cs: Putumayo
+  comments:
+  type: department
+QUI:
+  name: Quindío
+  code: QUI
+  unofficial_names: Quindío
+  geo:
+    latitude: 4.4610191
+    longitude: -75.667356
+    min_latitude: 4.07391
+    min_longitude: -75.89562
+    max_latitude: 4.71822
+    max_longitude: -75.38454
+  translations:
+    en: Quindío
+    ar: إدارة كوينديو
+    bg: Киндио
+    bn: কিনদিও বিভাগ
+    ca: Quindío
+    da: Quindío Department
+    de: Departamento del Quindío
+    el: Κουίντιο
+    es: Quindío
+    eu: Quindío
+    fa: شهرستان کیندیو
+    fi: Quindío
+    fr: Quindío
+    gl: Quindío
+    gu: ક્વિન્ડો વિભાગ
+    hi: किनडियो विभाग
+    hr: Quindío
+    hu: Quindío megye
+    id: Departemen Quindío
+    it: dipartimento di Quindío
+    ja: キンディオ県
+    ka: კინდიოს დეპარტამენტი
+    kn: ಕ್ವಿಂಡಿಯೋ ಇಲಾಖೆ
+    ko: 킨디오 주
+    lt: Kindijo departamentas
+    mr: क्विंन्डियो विभाग
+    ms: Pentadbiran Quindío
+    nb: Quindío
+    nl: Quindío
+    pl: Quindío
+    pt: Quindío
+    ru: Киндио
+    si: කුයින්ඩියෝ දෙපාර්තමේන්තුව
+    sv: Quindío
+    ta: குஇந்தியோ துறை
+    te: క్విండియో డిపార్ట్మెంట్
+    th: ควินเดียว ดีพาทเม้น
+    tr: Quindío
+    uk: Кіндіо
+    ur: قیندیو محکمہ
+    vi: Quindío
+    lv: Kindio departaments
+    ceb: Quindío Department
+    zh: 金迪奥省
+    ccp: "\U00011107\U0001112A\U00011103\U00011128\U0001111A\U00011134\U00011113\U00011128\U00011103\U0001112E"
+    he: קינדיו
+    az: Kindio
+    yo: Quindío Department
+    'no': Quindío
+    yo_BJ: Quindío Department
+    af: Quindío
+  comments:
+  type: department
+RIS:
+  name: Risaralda
+  code: RIS
+  unofficial_names: Risaralda
+  geo:
+    latitude: 4.99243
+    longitude: -76.01866
+    min_latitude: 4.66464
+    min_longitude: -76.21154
+    max_latitude: 5.568049999999999
+    max_longitude: -75.37608999999999
+  translations:
+    en: Risaralda
+    ar: إدارة ريزارالدا
+    bg: Рисаралда
+    bn: রিসারালডা বিভাগ
+    ca: Risaralda
+    da: Risaralda Department
+    de: Departamento de Risaralda
+    el: Ρισαράλντα
+    es: Risaralda
+    eu: Risaralda
+    fa: شهرستان ریسارالدا
+    fi: Risaralda
+    fr: Risaralda
+    gl: Risaralda
+    gu: રિસારલડા વિભાગ
+    hi: रिसाराल्डा विभाग
+    hr: Risaralda
+    hu: Risaralda megye
+    id: Departemen Risaralda
+    it: dipartimento di Risaralda
+    ja: リサラルダ県
+    ka: რისარალდის დეპარტამენტი
+    kn: ರಿಸರಾಲ್ಡಾ ಇಲಾಖೆ
+    ko: 리사랄다 주
+    lt: Risaraldos departamentas
+    mr: रियारलादा विभाग
+    ms: Pentadbiran Risaralda
+    nb: Risaralda
+    nl: Risaralda
+    pl: Risaralda
+    pt: Risaralda
+    ru: Рисаральда
+    si: රිසරල්ඩා
+    sv: Risaralda
+    ta: ரிசரளடா துறை
+    te: రిసారాల్డా డిపార్ట్మెంట్
+    th: บาไบเท
+    tr: Risaralda
+    uk: Рісаральда
+    ur: ریسارالدا محکمہ
+    vi: Risaralda
+    lv: Risaraldas departaments
+    ceb: Departamento de Risaralda
+    zh: 里萨拉尔达省
+    ccp: "\U00011122\U00011128\U00011125\U00011122\U00011123\U00011134\U00011113"
+    he: ריסרלדה
+    az: Risaralda
+    yo: Risaralda Department
+    'no': Risaralda
+    yo_BJ: Risaralda Department
+    af: Risaralda (departement)
+  comments:
+  type: department
+SAN:
+  name: Santander
+  code: SAN
+  unofficial_names: Santander
+  geo:
+    latitude: 6.6437076
+    longitude: -73.65362089999999
+    min_latitude: 5.70671
+    min_longitude: -74.52665999999999
+    max_latitude: 8.1410123
+    max_longitude: -72.4764
+  translations:
+    en: Santander
+    ar: سانتاندير
+    bg: Сантандер
+    bn: স্যানটানডার বিভাগ
+    ca: Departament de Santander
+    da: Santander Department
+    de: Departamento de Santander
+    el: Διαμέρισμα Σανταντέρ
+    es: Santander
+    eu: Santander
+    fa: شهرستان سانتاندر
+    fi: Santander
+    fr: Santander
+    gl: Santander
+    gu: સેન્ટેન્ડર વિભાગ
+    hi: संतान्दर विभाग
+    hu: Santander megye
+    id: Departemen Santander
+    it: dipartimento di Santander
+    ja: サンタンデール県
+    ka: სანტანდერის დეპარტამენტი
+    kn: ಸ್ಯಾಂಟ್ಯಾಂಡರ್ ಇಲಾಖೆ
+    ko: 산탄데르 주
+    lt: Santandero departamentas
+    mr: सॅनटॅनडर विभाग
+    ms: Pentadbiran Santander
+    nb: Santander
+    nl: Santander
+    pl: Santander
+    pt: Santander
+    ru: Сантандер
+    si: සන්ටන්ඩෙර් දෙපාර්තමේන්තුව
+    sv: Santander
+    ta: சந்தண்டெர் துறை
+    te: సాంటాండర్ డిపార్ట్మెంట్
+    th: จังหวัดซันตันเดร์
+    tr: Santander
+    uk: Сантандер
+    ur: سانتاندر محکمہ
+    vi: Khu vực hành chính Santander
+    lv: Santanderas departaments
+    ceb: Departamento de Santander
+    zh: 桑坦德省
+    ccp: "\U00011125\U0001111A\U00011134\U00011111\U0001111A\U00011134\U00011113\U00011122\U00011134"
+    he: סנטנדר
+    az: Santander (departament)
+    yo: Santander Department
+    'no': Santander
+    yo_BJ: Santander Department
+    af: Santander (departement, Kolombië)
+  comments:
+  type: department
+SAP:
+  name: San Andrés, Providencia y Santa Catalina
+  code: SAP
+  unofficial_names: San Andrés, Providencia y Santa Catalina
+  geo:
+    latitude: 13.35395
+    longitude: -81.37127
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: San Andrés & Providencia
+    ar: ارخبيل سان اندريس
+    bg: Сан Андрес и Провиденсия
+    bn: দ্বীপপুঞ্জ সেন্ট আন্ড্রেজ, প্রভিডেন্স এবং সেন্ট কাতালিনা
+    ca: San Andrés y Providencia
+    cs: San Andrés a Providencia
+    da: San Andrés y Providencia
+    de: San Andrés und Providencia
+    el: Διαμέρισμα Άγιου Ανδρέα και Προβιντένσιας
+    es: Archipiélago de San Andrés, Providencia y Santa Catalina
+    eu: San Andrés eta Providencia
+    fa: مجمع‌الجزایر سن آندرس، پروویدنسیا و سانتا کاتالینا
+    fi: San Andrés, Providencia y Santa Catalina
+    fr: Archipel de San Andrés, Providencia et Santa Catalina
+    gl: Arquipélago de San Andrés, Providencia e Santa Catalina
+    gu: આર્ચિપેલાગો ઓફ સેંટ આન્દ્રેસ, પ્રોવિડેન્સ , એન્ડ સેન્ટ કેટિલાના
+    he: סן אנדרס ופרובידנסיה
+    hi: सेंट एंड्रूस, प्रोविडेंस और सेंट कैटलीना आर्कीपलैगो
+    hu: San Andrés y Providencia megye
+    id: Departemen San Andrés dan Providencia
+    it: dipartimento dell’Arcipelago di San Andrés, Providencia e Santa Catalina
+    ja: サン・アンドレス・イ・プロビデンシア県
+    ka: სან-ანდრეს-ი-პროვიდენსია
+    kn: ಸಂತ ಆಂಡ್ರೆವ್ಸ್, ಪ್ರಾವಿಡೆನ್ಸ್ ಮತ್ತು ಸೇಂಟ್ ಕ್ಯಾಟಲಿನಾದ ದ್ವೀಪಸಮೂಹ
+    ko: 산안드레스 이 프로비덴시아 주
+    lt: San Andresas ir Providensija
+    mr: सेंट अँण्ड्र्सचे अर्पलीगोगो, प्रोविडेंस अॅन्ड सेंट कातालिना
+    ms: Pentadbiran San Andrés dan Providencia
+    nb: San Andrés y Providencia
+    nl: San Andrés en Providencia
+    pl: San Andrés i Providencia
+    pt: Santo André, Providência e Santa Catarina
+    ru: Сан-Андрес-и-Провиденсия
+    si: ශාන්ත ඇන්ඩ්රු වල අර්ච්පෙලගෝ,ශාන්ත කැටලිනා පළාත
+    sr: Сан Андрес и Провиденсија
+    sv: San Andrés och Providencia
+    sw: San Andrés
+    ta: அர்ச்சிபெலகோ ஆப் செயின்ட் அந்திரேவ்ஸ் , ப்ரொவிடென்ஸ் அண்ட் செயின்ட் கேட்டலினா
+    te: ఆర్చిపెలాగో ఆఫ్ సెయింట్ ఆండ్రూస్ ప్రావిడెన్స్ అండ్ సెయింట్ కాటలీనా
+    th: จังหวัดซันอันเดรสและโปรบีเดนเซีย
+    tr: San Andrés, Providencia ve Santa Catalina Takımadaları
+    uk: Сан-Андрес і Провіденсія
+    ur: مجموعہ الجزائر سان اینڈریس، پرووڈینسیا و سانتا کاتالینا
+    vi: Archipelago ở Saint Andréws, Providence và Saint Catalina
+    lv: Sanandresas, Providensijas un Santakatalinas arhipelāgs
+    ceb: Providencia y Santa Catalina
+    sr_Latn: San Andres i Providensija
+    zh: 聖安德列斯-普羅維登西亞和聖卡塔利娜群島省
+    ccp: "\U00011125\U0001111A\U00011134 \U00011103\U0001111A\U00011134\U00011113\U00011133\U00011122\U0001112C
+      & \U0001111B\U00011133\U00011122\U00011127\U0001112E\U0001111E\U0001112D\U00011113\U0001112C\U0001111A\U00011128\U00011120"
+    pa: ਸਾਨ ਆਂਦਰੇਸ, ਪ੍ਰੋਵੀਦੈਂਸੀਆ ਅਤੇ ਸਾਂਤਾ ਕਾਤਾਲੀਨਾ ਟਾਪੂ-ਸਮੂਹ
+    az: San Andres və Providensiya
+    yo: San Andrés, Providencia àti Santa Catalina
+    'no': San Andrés y Providencia
+    yo_BJ: San Andrés, Providencia àti Santa Catalina
+    af: San Andrés en Providencia
+  comments:
+  type: department
+SUC:
+  name: Sucre
+  code: SUC
+  unofficial_names: Sucre
+  geo:
+    latitude: 8.813889999999999
+    longitude: -74.72529999999999
+    min_latitude: 8.568349999999999
+    min_longitude: -74.89497999999999
+    max_latitude: 9.04574
+    max_longitude: -74.55743
+  translations:
+    en: Sucre
+    ar: إدارة سوكري
+    bg: Сукре
+    bn: সুক্রে বিভাগ
+    ca: Departament de Sucre
+    da: Sucre Department
+    de: Departamento de Sucre
+    el: Σούκρε
+    es: Sucre
+    eu: Sucre departamendua
+    fa: شهرستان سوکره
+    fi: Sucre
+    fr: Sucre
+    gl: Sucre
+    gu: સુક્રે વિભાગ
+    hi: सूक्र विभाग
+    hu: Sucre megye
+    id: Departemen Sucre
+    it: dipartimento di Sucre
+    ja: スクレ県
+    ka: სუკრეს დეპარტამენტი
+    kn: ಸುಕ್ರೆ ಇಲಾಖೆ
+    ko: 수크레 주
+    lt: Sukrės departamentas
+    mr: सुक्रे विभाग
+    ms: Pentadbiran Sucre
+    nb: Sucre
+    nl: Sucre
+    pl: Sucre
+    pt: Sucre
+    ru: Сукре
+    si: සක්රේ දෙපාර්තමේන්තුව
+    sv: Sucre
+    ta: சுகிரே துறை
+    te: సుక్రె డిపార్ట్మెంట్
+    th: ซูเกร
+    tr: Sucre
+    uk: Сукре
+    ur: سوکرے محکمہ
+    vi: Khu vực hành chính Sucre
+    lv: Sukres departaments
+    ceb: Departamento de Sucre
+    zh: 苏克雷省
+    ccp: "\U00011125\U0001112A\U00011107\U00011133\U00011122\U0001112C"
+    he: סוקרה
+    az: Sukre (departament)
+    yo: Sucre Department
+    'no': Sucre
+    yo_BJ: Sucre Department
+    af: Sucre (departement, Colombia)
+  comments:
+  type: department
+TOL:
+  name: Tolima
+  code: TOL
+  unofficial_names: Tolima
+  geo:
+    latitude: 4.092516799999999
+    longitude: -75.1545381
+    min_latitude: 2.8705
+    min_longitude: -76.10852
+    max_latitude: 5.316949999999999
+    max_longitude: -74.47525
+  translations:
+    en: Tolima
+    ar: إدارة توليما
+    bg: Толима
+    bn: টোলিমা বিভাগ
+    ca: Tolima
+    da: Tolima Department
+    de: Tolima
+    el: Διαμέρισμα Τολίμα
+    es: Tolima
+    eu: Tolima
+    fa: شهرستان تولیما
+    fi: Tolima
+    fr: Tolima
+    gl: Tolima
+    gu: તોલિમા વિભાગ
+    hi: तोलिमा विभाग
+    hu: Tolima megye
+    id: Departemen Tolima
+    it: dipartimento di Tolima
+    ja: トリマ県
+    ka: ტოლიმის დეპარტამენტი
+    kn: ಟಾಲಿಮಾ ಇಲಾಖೆ
+    ko: 톨리마 주
+    lt: Tolimos departamentas
+    mr: तोलिमा विभाग
+    ms: Pentadbiran Tolima
+    nb: Tolima
+    nl: Tolima
+    pl: Tolima
+    pt: Tolima
+    ru: Толима
+    si: ටෝලිමා දෙපාර්තමේන්තුව
+    sv: Tolima
+    ta: டோலிமா துறை
+    te: టోలిమా డిపార్ట్మెంట్
+    th: โตลิมา
+    tr: Tolima
+    uk: Толіма
+    ur: تولیما محکمہ
+    vi: Khu vực hành chính Tolima
+    lv: Tolimas departaments
+    ceb: Departamento de Tolima
+    zh: 托利马省
+    ccp: "\U00011111\U00011127\U00011123\U00011128\U0001111F"
+    he: טולימה
+    cs: Tolima
+    az: Tolima
+    yo: Tolima Department
+    'no': Tolima
+    yo_BJ: Tolima Department
+    af: Tolima (departement)
+  comments:
+  type: department
+VAC:
+  name: Valle del Cauca
+  code: VAC
+  unofficial_names: Valle del Cauca
+  geo:
+    latitude: 3.8008893
+    longitude: -76.64127119999999
+    min_latitude: 3.09083
+    min_longitude: -77.5440788
+    max_latitude: 5.03687
+    max_longitude: -75.70488
+  translations:
+    en: Valle del Cauca
+    ar: إدارة فالي ديل كاوكا
+    bg: Вале дел Каука
+    bn: ভাল ডেল কাউকা বিভাগ
+    ca: Valle del Cauca
+    da: Valle del Cauca Department
+    de: Valle del Cauca
+    el: Διαμέρισμα Βάλιε δελ Κάουκα
+    es: Valle del Cauca
+    eu: Valle del Cauca
+    fa: شهرستان بایه دل کائوکا
+    fi: Valle del Cauca
+    fr: Valle del Cauca
+    gl: Valle del Cauca
+    gu: વેલે ડેલ કૌકા વિભાગ
+    he: ואייה דל קאוקה
+    hi: वैले डेल काऊका विभाग
+    hu: Valle del Cauca megye
+    id: Departemen Valle del Cauca
+    it: dipartimento di Valle del Cauca
+    ja: バジェ・デル・カウカ県
+    ka: ვალიე-დელ-კაუკის დეპარტამენტი
+    kn: ವ್ಯಾಲೆ ಡೆಲ್ ಕೌಕಾ ಇಲಾಖೆ
+    ko: 바예델카우카 주
+    lt: Valje del Kaukos departamentas
+    mr: वॅले डेल काऊका विभाग
+    ms: Pentadbiran Valle del Cauca
+    nb: Valle del Cauca
+    nl: Valle del Cauca
+    pl: Valle del Cauca
+    pt: Valle del Cauca
+    ru: Валье-дель-Каука
+    si: වැලි ඩෙල් කාවුකා දිස්ත්‍රික්කය
+    sv: Valle del Cauca
+    ta: வல்லே டேல் காக்கா துறை
+    te: వల్లె డెల్ కాకా
+    th: จังหวัดบาเยเดลเกากา
+    tr: Valle del Cauca
+    uk: Вальє-дель-Каука
+    ur: ویے دیل کاؤکا محکمہ
+    vi: Valle del Cauca
+    lv: Valjes del Kaukas departaments
+    ceb: Departamento del Valle del Cauca
+    zh: 考卡山谷省
+    ccp: "\U0001111E\U00011123\U0001112C \U00011113\U0001112C\U00011123\U00011134
+      \U00011107\U0001112F\U00011107"
+    cs: Valle del Cauca
+    az: Valye Del Kauka
+    be: дэпартамент Валье-дэль-Каўка
+    yo: Valle del Cauca Department
+    'no': Valle del Cauca
+    yo_BJ: Valle del Cauca Department
+    af: Valle del Cauca
+    hy: Վալիե դել Կաուկա
+    ro: Valle del Cauca
+  comments:
+  type: department
+VAU:
+  name: Vaupés
+  code: VAU
+  unofficial_names: Vaupés
+  geo:
+    latitude: 0.8553561
+    longitude: -70.81199529999999
+    min_latitude: -1.22768
+    min_longitude: -72.03437
+    max_latitude: 2.08011
+    max_longitude: -69.11563
+  translations:
+    en: Vaupés
+    ar: إدارة فاوبيس
+    bg: Ваупес
+    bn: ভুপ্স বিভাগ
+    ca: Vaupés
+    cs: Vaupés
+    da: Vaupés Department
+    de: Departamento del Vaupés
+    el: Βοπές
+    es: Vaupés
+    eu: Vaupés
+    fa: واوپس دپارتمنت
+    fi: Vaupés
+    fr: Vaupés
+    gl: Vaupés
+    gu: વોપેસ વિભાગ
+    he: ואופס
+    hi: वॉपेस विभाग
+    hu: Vaupés megye
+    id: Departemen Vaupés
+    it: dipartimento di Vaupés
+    ja: バウペス県
+    ka: ვაუპესის დეპარტამენტი
+    kn: ವೂಪೆಸ್ ಇಲಾಖೆ
+    ko: 바우페스 주
+    lt: Vaupeso departamentas
+    mr: वुप्स विभाग
+    ms: Pentadbiran Vaupés
+    nb: Vaupés
+    nl: Vaupés
+    pl: Vaupés
+    pt: Vaupés
+    ru: Ваупес
+    si: වෞපේස් දෙපාර්තමේන්තුව
+    sv: Vaupés
+    ta: வாயுப்ஸ் துறை
+    te: వాపెస్ డిపార్ట్మెంట్
+    th: ายุเปส ดีพาทเม้น
+    tr: Vaupés
+    uk: Ваупес
+    ur: واوپیس محکمہ
+    vi: Khu vực hành chính Vaupés
+    lv: Vaupesas departaments
+    ceb: Departamento del Vaupés
+    zh: 沃佩斯省
+    ccp: "\U0001111E\U00011105\U0001112A\U0001111B\U0001112C\U0001110C\U00011134"
+    az: Vaupes
+    yo: Vaupés Department
+    'no': Vaupés
+    yo_BJ: Vaupés Department
+    af: Vaupés (departement)
+  comments:
+  type: department
+VID:
+  name: Vichada
+  code: VID
+  unofficial_names: Vichada
+  geo:
+    latitude: 4.4234452
+    longitude: -69.2877535
+    min_latitude: 2.7371
+    min_longitude: -71.07766
+    max_latitude: 6.32433
+    max_longitude: -67.40982
+  translations:
+    en: Vichada
+    ar: إدارة فيتشادا
+    bg: Вичада
+    bn: ভিকাদা বিভাগ
+    ca: Vichada
+    da: Vichada Department
+    de: Vichada
+    el: Βιτσάντα
+    es: Vichada
+    eu: Vichada
+    fa: شهرستان ویچادا
+    fi: Vichada
+    fr: Vichada
+    gl: Vichada
+    gu: વિચાડા વિભાગ
+    he: ויצ׳דה
+    hi: विकाडा विभाग
+    hu: Vichada megye
+    id: Departemen Vichada
+    it: dipartimento di Vichada
+    ja: ビチャーダ県
+    ka: ვიჩადის დეპარტამენტი
+    kn: ವಿಕಾಡಾ ಇಲಾಖೆ
+    ko: 비차다 주
+    lt: Vičados departamentas
+    mr: वीचॅड विभाग
+    ms: Pentadbiran Vichada
+    nb: Vichada
+    nl: Vichada
+    pl: Vichada
+    pt: Vichada
+    ru: Вичада
+    si: වික්හඩා දෙපාර්තමේන්තුව
+    sv: Vichada
+    ta: விச்சாடா துறை
+    te: విచాడా డిపార్ట్మెంట్
+    th: วิชาดา ดีพาทเม้น
+    tr: Vichada
+    uk: Вічада
+    ur: بیچادا محکمہ
+    vi: Khu vực hành chính Vichada
+    lv: Vičadas departaments
+    ceb: Departamento del Vichada
+    zh: 比查达省
+    ccp: "\U0001111E\U0001112D\U00011125\U00011113"
+    az: Viçada
+    yo: Vichada Department
+    'no': Vichada
+    yo_BJ: Vichada Department
+    af: Vichada (departement)
+    cs: Vichada
+    hy: Վիչադա
+  comments:
+  type: department

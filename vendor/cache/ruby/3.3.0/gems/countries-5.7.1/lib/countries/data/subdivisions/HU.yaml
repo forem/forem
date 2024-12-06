@@ -1,0 +1,3172 @@
+---
+BA:
+  name: Baranya
+  code: BA
+  unofficial_names: Baranya
+  geo:
+    latitude: 46.0484585
+    longitude: 18.2719173
+    min_latitude: 45.7370889
+    min_longitude: 17.624765
+    max_latitude: 46.4172391
+    max_longitude: 18.868302
+  translations:
+    ar: مقاطعة بارانيا
+    be: Баранья
+    bg: Бараня
+    ca: Baranya
+    cs: Baranya
+    da: Baranya
+    de: Komitat Baranya
+    en: Baranya
+    es: Baranya
+    et: Baranya komitaat
+    eu: Baranya
+    fa: بارانیا
+    fi: Baranya
+    fr: Baranya
+    gl: Condado de Baranya
+    he: באראניה
+    hr: Baranjska županija
+    hu: Baranya megye
+    id: Baranya
+    it: Provincia di Baranya
+    ja: バラニャ県
+    ka: ბარანიის მედიე
+    ko: 버러녀 주
+    lt: Barania
+    lv: Baraņas meģe
+    ms: Baranya
+    nl: Baranya
+    pl: Komitat Baranya
+    pt: Baranya
+    ro: Comitatul Baranya
+    ru: Баранья
+    sk: Baranská župa
+    sl: Županija Baranja
+    sr: Барања
+    sv: Baranya
+    sw: Baranya
+    tr: Baranya ili
+    uk: Бараня
+    ur: بارانیا کاؤنٹی
+    zh: 巴蘭尼亞州
+    ceb: Baranya county
+    sr_Latn: Baranja
+    hi: बरानिया काउंटी
+    ccp: "\U0001111D\U00011122\U0001111A\U00011128\U00011120"
+    az: Baranya əyaləti
+    mk: Барања
+    cy: Sir Baranya
+    hy: Բարանյա
+    th: เทศมณฑลบอรอญอ
+  comments:
+  type: county
+BC:
+  name: Békéscsaba
+  code: BC
+  unofficial_names: Békéscsaba
+  geo:
+    latitude: 46.6735939
+    longitude: 21.0877309
+    min_latitude: 46.61125999999999
+    min_longitude: 20.9300351
+    max_latitude: 46.7476239
+    max_longitude: 21.2357529
+  translations:
+    ar: بيكيسكسابا
+    bg: Бекешчаба
+    bn: বেকেসসাবা
+    ca: Békéscsaba
+    cs: Békéscsaba
+    da: Békéscsaba
+    de: Békéscsaba
+    el: Μπεκεστσάμπα
+    en: Békéscsaba
+    es: Békéscsaba
+    et: Békéscsaba
+    eu: Békéscsaba
+    fa: بیکیشچابا
+    fi: Békéscsaba
+    fr: Békéscsaba
+    gl: Békéscsaba
+    gu: બેકેસસાબા
+    he: בקשצ׳אבה
+    hi: बेक्सस्काबा
+    hr: Békéscsaba
+    hu: Békéscsaba
+    hy: Բեկեշչաբա
+    id: Békéscsaba
+    it: Békéscsaba
+    ja: ベーケーシュチャバ
+    ka: ბეკეშჩაბა
+    kn: ಬೆಕ್ಸ್ಸ್ಕಾಬ
+    ko: 베케슈처버
+    lt: Bekeščaba
+    mr: बेकस्साबा
+    ms: Békéscsaba
+    nb: Békéscsaba
+    nl: Békéscsaba
+    pl: Békéscsaba
+    pt: Békéscsaba
+    ro: Bichișciaba
+    ru: Бекешчаба
+    si: බෙකෙසබා
+    sk: Békešská Čaba
+    sl: Békéscsaba
+    sr: Бекешчаба
+    sv: Békéscsaba
+    sw: Békéscsaba
+    ta: பேகஸ்ஸபா
+    te: బెకేస్కాబా
+    th: เบเก้ซัคซาบา
+    tr: Békéscsaba
+    uk: Бекешчаба
+    ur: بیکیسکسابا
+    vi: Békéscsaba
+    lv: Bēkēščaba
+    ceb: Békéscsaba
+    sr_Latn: Bekeščaba
+    zh: 貝凱什喬包
+    ccp: "\U0001111D\U00011107\U0001112C\U0001110C\U00011134\U00011125\U0001111D"
+    az: Bekeşçaba
+    be: Бекешчаба
+    mk: Бекешчаба
+    'no': Békéscsaba
+  comments:
+  type: city_with_county_rights
+BE:
+  name: Békés
+  code: BE
+  unofficial_names: Békés
+  geo:
+    latitude: 46.7711185
+    longitude: 21.1289753
+    min_latitude: 46.715268
+    min_longitude: 21.04361
+    max_latitude: 46.845706
+    max_longitude: 21.2195859
+  translations:
+    ar: مقاطعة بكيش
+    bg: Бекеш
+    bn: বেকস কাউন্টি
+    ca: Békés
+    cs: Békés
+    da: Békés
+    de: Komitat Békés
+    el: Μπεκές
+    en: Békés
+    es: Békés
+    et: Békési komitaat
+    eu: Békés
+    fa: بیکیس
+    fi: Békés
+    fr: Békés
+    gl: Condado de Békés
+    gu: બેકેઝ કાઉન્ટી
+    he: בקש
+    hi: बेकज़ काउंटी
+    hr: Bekeška županija
+    hu: Békés megye
+    id: Békés
+    it: Provincia di Békés
+    ja: ベーケーシュ県
+    ka: ბეკეშის მედიე
+    kn: ಬೆಕೆಸ್ ಕೌಂಟಿ
+    ko: 베케시 주
+    lt: Bėkėšas
+    lv: Bēkēšas meģe
+    mr: बेकिस काउंटी
+    ms: Békés
+    nb: Bekes Fylke
+    nl: Békés
+    pl: Komitat Békés
+    pt: Békés
+    ro: Județul Békés
+    ru: Бекеш
+    si: බෙකෙස් ප්‍රාන්තය
+    sk: Békešská župa
+    sl: Békés
+    sr: Бекеш
+    sv: Békés
+    sw: Békés
+    ta: பேக்ஸ் கவுண்டி
+    te: బెకెస్ కౌంటీ
+    th: เทศมณฑลเบเกช
+    tr: Békés ili
+    uk: Бекеш
+    ur: بیکیش کاؤنٹی
+    vi: Hạt Békés
+    ceb: Bekes County
+    sr_Latn: Bekeš
+    zh: 貝凱什州
+    ccp: "\U0001111D\U00011107\U0001112C\U0001110C\U00011134"
+    be: медзье Бекеш
+    mk: Бекеш
+    'no': Bekes Fylke
+    az: Bekeş medyesi
+    cy: Sir Békés
+  comments:
+  type: county
+BK:
+  name: Bács-Kiskun
+  code: BK
+  unofficial_names: Bács-Kiskun
+  geo:
+    latitude: 46.5661437
+    longitude: 19.4272464
+    min_latitude: 45.904761
+    min_longitude: 18.7327931
+    max_latitude: 47.134105
+    max_longitude: 20.1599619
+  translations:
+    ar: مقاطعة باتش-كيشكون
+    be: Бач-Кішкун
+    bg: Бач-Кишкун
+    bn: বাকস-কিস্কুন কাউন্টি
+    ca: Bács-Kiskun
+    cs: Bács-Kiskun
+    da: Bács-Kiskun
+    de: Komitat Bács-Kiskun
+    el: Μπακς-Κισκούν
+    en: Bács-Kiskun
+    es: Bács-Kiskun
+    et: Bács-Kiskuni komitaat
+    eu: Bács-Kiskun
+    fa: باتس-کیسکون
+    fi: Bács-Kiskun
+    fr: Bács-Kiskun
+    gl: Bács-Kiskun
+    gu: બૅક્સ-કિસ્કુન કાઉન્ટી
+    he: באץ׳-קישקון
+    hi: बेक्स-किस्कुन काउंटी
+    hr: Bačko-kiškunska županija
+    hu: Bács-Kiskun megye
+    id: Bács-Kiskun
+    it: Provincia di Bács-Kiskun
+    ja: バーチ・キシュクン県
+    ka: ბაჩ-კიშკუნის მედიე
+    kn: ಬ್ಯಾಕ್ಸ್-ಕಿಸ್ಕುನ್ ಕೌಂಟಿ
+    ko: 바치키슈쿤 주
+    lt: Bač Kiškūnas
+    lv: Bāčas-Kiškunas meģe
+    mr: बेक्स-किस्कुन काउंटी
+    ms: Bács-Kiskun
+    nb: Bacs-Kiskun Fylke
+    nl: Bács-Kiskun
+    pl: Komitat Bács-Kiskun
+    pt: Bács-Kiskun
+    ro: Județul Bács-Kiskun
+    ru: Бач-Кишкун
+    si: බාක්ස්-කිස්කන් ප්‍රාන්තය
+    sk: Báčsko-malokumánska župa
+    sl: Bács-Kiskun
+    sr: Бач-Кишкун
+    sv: Bács-Kiskun
+    sw: Bács-Kiskun
+    ta: பாக்ஸ் -கிஸ்க்கும் கவுண்டி
+    te: బాక్స్-కిస్కున్ కౌెంటీ
+    th: บาช-คิชคุน
+    tr: Bács-Kiskun ili
+    uk: Бач-Кішкун
+    ur: باتش-کیشکون کاؤنٹی
+    vi: Hạt Bács-Kiskun
+    ceb: Bács-Kiskun county
+    sr_Latn: Bač-Kiškun
+    zh: 巴奇-基什孔州
+    ccp: "\U0001111D\U00011133\U00011120\U00011107\U00011134\U00011125\U00011134-\U00011107\U00011128\U0001110C\U00011134\U00011107\U0001112A\U0001111A\U00011134"
+    az: Baç-Kişkun (medye)
+    mk: Бач-Кишкун
+    'no': Bacs-Kiskun Fylke
+    cy: Sir Bács-Kiskun
+    hy: Բաչ-Կիշկուն
+    mn: Бач-Кишкун
+  comments:
+  type: county
+BU:
+  name: Budapest
+  code: BU
+  unofficial_names: Budapest
+  geo:
+    latitude: 47.497912
+    longitude: 19.040235
+    min_latitude: 47.349415
+    min_longitude: 18.9261011
+    max_latitude: 47.6130119
+    max_longitude: 19.334505
+  translations:
+    af: Boedapest
+    am: ቡዳፔስት
+    ar: بودابست
+    az: Budapeşt
+    be: Будапешт
+    bg: Будапеща
+    bn: বুদাপেস্ট
+    ca: Budapest
+    cs: Budapešť
+    da: Budapest
+    de: Budapest
+    el: Βουδαπέστη
+    en: Budapest
+    es: Budapest
+    et: Budapest
+    eu: Budapest
+    fa: بوداپست
+    fi: Budapest
+    fr: Budapest
+    gl: Budapest
+    gu: બુડાપેસ્ટ
+    he: בודפשט
+    hi: बुडापेस्ट
+    hr: Budimpešta
+    hu: Budapest
+    hy: Բուդապեշտ
+    id: Budapest
+    is: Búdapest
+    it: Budapest
+    ja: ブダペスト
+    ka: ბუდაპეშტი
+    kn: ಬುಡಾಪೆಸ್ಟ್
+    ko: 부다페스트
+    lt: Budapeštas
+    lv: Budapešta
+    ml: ബുഡാപെസ്റ്റ്
+    mn: Будапешт
+    mr: बुडापेस्ट
+    ms: Budapest
+    nb: Budapest
+    ne: बुडापेस्ट
+    nl: Boedapest
+    or: ବୁଦାପେଷ୍ଟ
+    pl: Budapeszt
+    ps: بوډاپسټ
+    pt: Budapeste
+    ro: Budapesta
+    ru: Будапешт
+    si: බුඩාපෙස්ට්
+    sk: Budapešť
+    sl: Budimpešta
+    sr: Будимпешта
+    sv: Budapest
+    sw: Budapest
+    ta: புடாபெஸ்ட்
+    te: బుడాపెస్ట్
+    th: บูดาเปสต์
+    tk: Budapeşt
+    tr: Budapeşte
+    uk: Будапешт
+    ur: بوداپست
+    vi: Budapest
+    cy: Budapest
+    ceb: Budapest
+    sr_Latn: Budimpešta
+    zh: 布达佩斯
+    yue_Hans: 布达佩斯
+    jv: Budapest
+    sq: Budapesti
+    ccp: "\U0001111D\U0001112A\U00011118\U0001111B\U0001112C\U0001110C\U00011134\U00011111\U00011134"
+    ga: Búdaipeist
+    ky: Будапешт
+    so: Budapest
+    pa: ਬੁਦਾਪੈਸਤ
+    kk: Будапешт
+    yue: 布達佩斯
+    my: ဗူးဒပက်မြို့
+    yo: Budapest
+    uz: Budapesht
+    bs: Budimpešta
+    mk: Будимпешта
+    'no': Budapest
+    yo_BJ: Budapest
+    ha: Budapest
+    ha_NE: Budapest
+  comments:
+  type: capital_city
+BZ:
+  name: Borsod-Abaúj-Zemplén
+  code: BZ
+  unofficial_names: Borsod-Abaúj-Zemplén
+  geo:
+    latitude: 48.2939401
+    longitude: 20.6934113
+    min_latitude: 47.64265
+    min_longitude: 20.0518941
+    max_latitude: 48.585234
+    max_longitude: 22.1292827
+  translations:
+    ar: مقاطعة بورسود-آبائوي-زمبلن
+    az: Borşod-Abauy-Zemplen
+    be: Боршад-Абауй-Земплен
+    bg: Боршод-Абауй-Земплен
+    bn: বোরোসদ-আবাউদ-জেমপ্লেন কাউন্টি
+    ca: Borsod-Abaúj-Zemplén
+    cs: Borsod-Abaúj-Zemplén
+    da: Borsod-Abaúj-Zemplén
+    de: Komitat Borsod-Abaúj-Zemplén
+    el: Μπόρσοντ-Αμπαούτζ-Ζεμπλέν
+    en: Borsod-Abaúj-Zemplén
+    es: Borsod-Abaúj-Zemplén
+    et: Borsod-Abaúj-Zempléni komitaat
+    eu: Borsod-Abaúj-Zemplén
+    fa: بورسود-اباوج-زیمپلن
+    fi: Borsod-Abaúj-Zemplén
+    fr: Borsod-Abaúj-Zemplén
+    gl: Borsod-Abaúj-Zemplén
+    gu: બૉર્સોડ-અબૌજ-ઝેમપ્લેન કાઉન્ટી
+    he: בורשוד-אבאוי-זמפלן
+    hi: बोर्सोद-अबौज-ज़ेम्प्लेन काउंटी
+    hr: Boršod-abaújsko-zemplénska županija
+    hu: Borsod-Abaúj-Zemplén megye
+    id: Borsod-Abaúj-Zemplén
+    it: Provincia di Borsod-Abaúj-Zemplén
+    ja: ボルショド・アバウーイ・ゼンプレーン県
+    ka: ბორშოდ-აბაუი-ზემგლენის მედიე
+    kn: ಬೋರ್ಸೋಡ್-ಅಬೌಜ್-ಝೆಂಪ್ಲೆನ್ ಕೌಂಟಿ
+    ko: 보르쇼드어버우이젬플렌 주
+    lt: Boršodas-Abaujus-Zemplėnas
+    lv: Boršodas-Abaūjas-Zemplēna meģe
+    mr: बोर्सोड-अबुज-झेंप्लेन काउंटी
+    ms: Borsod-Abaúj-Zemplén
+    nb: Borsod Abauj Zemplen Fylke
+    nl: Borsod-Abaúj-Zemplén
+    pl: Komitat Borsod-Abaúj-Zemplén
+    pt: Borsod-Abaúj-Zemplén
+    ro: Județul Borsod-Abaúj-Zemplén
+    ru: Боршод-Абауй-Земплен
+    si: බොර්සොඩ්-අබෞජ්-සෙම්ප්ලේන් ප්‍රාන්තය
+    sk: Boršodsko-abovsko-zemplínska župa
+    sl: Borsod-Abaúj-Zemplén
+    sr: Боршод-Абауј-Земплен
+    sv: Borsod-Abaúj-Zemplén
+    sw: Borsod-Abaúj-Zemplén
+    ta: பாற்சோட்-அபாஉஜ்-ஸிம்ப்ளென் கவுண்டி
+    te: బోర్సోద్-అబావుజ్-జెంప్లిన్ కౌంటీ
+    th: เทศมณฑลโบร์โชด-ออบออูย-แซ็มเปลน
+    tr: Borsod-Abaúj-Zemplén ili
+    uk: Боршод-Абауй-Земплен
+    ur: بورشود-اباوی-زیمپلین کاؤنٹی
+    vi: Hạt Borsod-Abaúj-Zemplén
+    ceb: Borsod-Abauj Zemplen county
+    sr_Latn: Boršod-Abauj-Zemplen
+    zh: 包爾紹德-奧包烏伊-曾普倫州
+    ccp: "\U0001111D\U0001112E\U00011122\U00011134\U00011125\U0001112E\U00011116\U00011134-\U00011103\U0001111D\U00011105\U0001112A\U0001110C\U00011134-\U0001110E\U0001112C\U0001111F\U00011134\U0001111B\U00011133\U00011123\U0001112C\U0001111A\U00011134"
+    mk: Боршод-Абауј-Земплен
+    'no': Borsod Abauj Zemplen Fylke
+    cy: Sir Borsod-Abaúj-Zemplén
+    hy: Բորշոդ-Աբաույ-Զեմպլեն
+  comments:
+  type: county
+CS:
+  name: Csongrád
+  code: CS
+  unofficial_names: Csongrád
+  geo:
+    latitude: 46.7084264
+    longitude: 20.1436061
+    min_latitude: 46.649019
+    min_longitude: 19.969219
+    max_latitude: 46.8063689
+    max_longitude: 20.221518
+  translations:
+    ar: مقاطعة تشونغراد
+    be: Чанград
+    bg: Чонград
+    bn: সনগ্রাড কাউন্টি
+    ca: Csongrád
+    cs: Csongrád
+    da: Csongrád
+    de: Komitat Csongrád
+    el: Κσονγκράντ
+    en: Csongrád
+    es: Csongrád
+    et: Csongrádi komitaat
+    eu: Csongrád
+    fa: سونگراد
+    fi: Csongrád
+    fr: Csongrád
+    gl: Condado de Csongrád
+    gu: સિસોંગ્રેડ કાઉન્ટી
+    he: מחוז צ׳ונגרד
+    hi: सिसोंग्रांड काउंटी
+    hr: Čongradska županija
+    hu: Csongrád megye
+    id: Csongrád
+    it: Provincia di Csongrád
+    ja: チョングラード県
+    ka: ჩონგრადის მედიე
+    kn: ಸಿಂಗ್ರಾಡ್ ಕೌಂಟಿ
+    ko: 촌그라드 주
+    lt: Čongradas
+    lv: Čongrādas meģe
+    mr: कोंगार्ड काउंटी
+    ms: Csongrád
+    nb: Csongrád (fylke)
+    nl: Csongrád
+    pl: Komitat Csongrád
+    pt: Csongrád
+    ro: Csongrád
+    ru: Чонград
+    si: ක්සොන්ග්රඩ් ප්‍රාන්තය
+    sk: Čongrádska župa
+    sl: Csongrád
+    sr: Чонград
+    sv: Csongrád
+    sw: Csongrád
+    ta: கிசோங்கிறட் கவுண்டி
+    te: కసోన్‌గ్రాడ్ కౌంటీ
+    th: เมืองคสอนกราด
+    tr: Csongrád ili
+    uk: Чонград
+    ur: چونگراد کاؤنٹی
+    vi: Hạt Csongrád
+    sr_Latn: Čongrad
+    zh: 瓊格拉德州
+    ccp: "\U00011125\U00011127\U00011101\U00011109\U00011133\U00011122\U00011116\U00011134"
+    mk: Чонград
+    'no': Csongrád (fylke)
+    az: Çonqrad
+    cy: Sir Csongrád-Csanád
+    hy: Չոնգրադ
+  comments:
+  type: county
+DE:
+  name: Debrecen
+  code: DE
+  unofficial_names: Debrecen
+  geo:
+    latitude: 47.5316049
+    longitude: 21.6273123
+    min_latitude: 47.4248649
+    min_longitude: 21.4366579
+    max_latitude: 47.6369639
+    max_longitude: 21.8837061
+  translations:
+    af: Debrecen
+    ar: دبرتسن
+    az: Debrecen
+    be: Горад Дэбрэцэн
+    bg: Дебрецен
+    bn: দেব্রেচেন
+    ca: Debrecen
+    cs: Debrecín
+    da: Debrecen
+    de: Debrecen
+    el: Ντέμπρετσεν
+    en: Debrecen
+    es: Debrecen
+    et: Debrecen
+    eu: Debrecen
+    fa: دبرسن
+    fi: Debrecen
+    fr: Debrecen
+    gl: Debrecen
+    gu: ડેબ્રેસેન
+    he: דברצן
+    hi: डेब्रेसेन
+    hr: Debrecin
+    hu: Debrecen
+    hy: Դեբրեցեն
+    id: Debrecen
+    is: Debrecen
+    it: Debrecen
+    ja: デブレツェン
+    ka: დებრეცენი
+    kn: ದೇಬ್ರೆಸೆನ್
+    ko: 데브레첸
+    lt: Debrecenas
+    lv: Debrecena
+    mn: Дебрецен
+    mr: डेब्रेसेन
+    ms: Debrecen
+    nb: Debrecen
+    nl: Debrecen
+    pl: Debreczyn
+    pt: Debrecen
+    ro: Debrețin
+    ru: Дебрецен
+    si: ඩෙබ්‍රිසෙන්
+    sk: Debrecín
+    sl: Debrecen
+    sr: Дебрецин
+    sv: Debrecen
+    sw: Debrecen
+    ta: டெப்ரெசென்
+    te: డెబ్రెసెన్
+    th: แดแบร็ตแซ็น
+    tr: Debrecen
+    uk: Дебрецен
+    ur: دیبریکین
+    vi: Debrecen
+    cy: Debrecen
+    ceb: Debrecen
+    sr_Latn: Debrecin
+    zh: 德布勒森
+    yue_Hans: 德布勒森
+    ccp: "\U00011113\U0001111D\U00011133\U00011122\U0001112C\U00011125\U0001112C\U0001111A\U00011134"
+    ky: Дебрецен
+    kk: Дебрецен
+    yue: 德布勒森
+    uz: Debretsen
+    bs: Debrecen
+    mk: Дебрецин
+    'no': Debrecen
+    ga: Debrecen
+    ps: دبرسن
+  comments:
+  type: city_with_county_rights
+DU:
+  name: Dunaújváros
+  code: DU
+  unofficial_names: Dunaújváros
+  geo:
+    latitude: 46.9619059
+    longitude: 18.9355227
+    min_latitude: 46.8897881
+    min_longitude: 18.860456
+    max_latitude: 47.001966
+    max_longitude: 18.9657249
+  translations:
+    bg: Дунауйварош
+    ca: Dunaújváros
+    cs: Dunaújváros
+    da: Dunaújváros
+    de: Dunaújváros
+    en: Dunaújváros
+    es: Dunaújváros
+    et: Dunaújváros
+    fa: دونائیوروش
+    fi: Dunaújváros
+    fr: Dunaújváros
+    gl: Dunaújváros
+    he: דונאויווארוש
+    hr: Dunaújváros
+    hu: Dunaújváros
+    hy: Դունաույվարոշ
+    id: Dunaújváros
+    it: Dunaújváros
+    ja: ドゥナウーイヴァーロシュ
+    ka: დუნაუივაროში
+    ko: 두너우이바로시
+    lt: Dunauivarošas
+    ms: Dunaújváros
+    nl: Dunaújváros
+    pl: Dunaújváros
+    pt: Dunaújváros
+    ro: Dunaújváros
+    ru: Дунауйварош
+    sk: Dunaújváros
+    sl: Dunaújváros
+    sr: Дунаујварош
+    sv: Dunaújváros
+    tr: Dunaújváros
+    uk: Дунауйварош
+    vi: Dunaújváros
+    ceb: Dunaújváros
+    sr_Latn: Dunaujvaroš
+    zh: 多瑙新城
+    ccp: "\U00011113\U0001112A\U0001111A\U00011127\U00011105\U0001112A\U0001110C\U00011134\U0001111E\U00011122\U0001112E\U0001110C\U00011134"
+    ky: Дунауйварош
+    az: Dunauyvaroş
+    mk: Дунаујварош
+    ar: دوناوجفاروس
+    be: Дунауйвараш
+    el: Ντούναουϊβαρος
+  comments:
+  type: city_with_county_rights
+EG:
+  name: Eger
+  code: EG
+  unofficial_names: Eger
+  geo:
+    latitude: 47.9025348
+    longitude: 20.3772284
+    min_latitude: 47.857033
+    min_longitude: 20.3113128
+    max_latitude: 48.001331
+    max_longitude: 20.471507
+  translations:
+    be: Горад Эгер
+    bg: Егер
+    ca: Eger
+    cs: Eger
+    da: Eger
+    de: Eger
+    en: Eger
+    es: Eger
+    et: Eger
+    eu: Eger
+    fa: اگر
+    fi: Eger
+    fr: Eger
+    gl: Eger
+    he: אגר
+    hr: Eger
+    hu: Eger
+    hy: Էգեր
+    it: Eger
+    ja: エゲル
+    ka: ეგერი
+    ko: 에게르
+    lt: Egeris
+    lv: Egera
+    ms: Eger
+    nb: Eger
+    nl: Eger
+    pl: Eger
+    pt: Eger
+    ro: Eger
+    ru: Эгер
+    sk: Jáger
+    sl: Eger
+    sr: Јегра
+    sv: Eger
+    sw: Eger
+    tr: Eger
+    uk: Еґер
+    vi: Eger
+    cy: Eger
+    ceb: Eger (kapital sa lalawigan)
+    sr_Latn: Jegra
+    zh: 埃格爾
+    el: Έγκερ
+    ccp: "\U00011103\U00011109\U00011122\U00011134"
+    id: Eger
+    az: Eqer
+    mk: Егер
+    'no': Eger
+    ar: ايغر
+    kk: Эгер
+  comments:
+  type: city_with_county_rights
+ER:
+  name: Érd
+  code: ER
+  unofficial_names: Érd
+  geo:
+    latitude: 47.3919718
+    longitude: 18.904544
+    min_latitude: 47.314573
+    min_longitude: 18.833885
+    max_latitude: 47.430192
+    max_longitude: 18.96238
+  translations:
+    be: Горад Эрд
+    bg: Ерд
+    ca: Érd
+    cs: Érd
+    da: Érd
+    de: Érd
+    en: Érd
+    es: Érd
+    et: Érd
+    eu: Érd
+    fa: ایرد
+    fr: Érd
+    gl: Érd
+    he: ארד
+    hr: Andzabeg
+    hu: Érd
+    it: Érd
+    ja: エールド
+    ka: ერდი
+    ko: 에르드
+    ms: Érd
+    nl: Érd
+    pl: Érd
+    pt: Érd
+    ro: Érd
+    ru: Эрд
+    sk: Érd
+    sl: Érd
+    sr: Ерд
+    sv: Érd
+    tr: Érd
+    uk: Ерд
+    vi: Érd
+    ceb: Érd
+    sr_Latn: Erd
+    lt: Erdris
+    zh: 埃爾德
+    ccp: "\U00011103\U00011128\U00011122\U00011134\U00011113\U00011134"
+    az: Erd
+    mk: Ерд
+    ar: إيرد
+    hy: Էրդ
+    kk: Эрд
+  comments:
+  type: city_with_county_rights
+FE:
+  name: Fejér
+  code: FE
+  unofficial_names: Fejér
+  geo:
+    latitude: 47.1217932
+    longitude: 18.5294815
+    min_latitude: 46.687195
+    min_longitude: 18.0337199
+    max_latitude: 47.57704589999999
+    max_longitude: 18.967485
+  translations:
+    ar: مقاطعة فيير
+    be: Феер
+    bg: Фейер
+    bn: ফেযেঁর কাউন্টি
+    ca: Fejér
+    cs: Fejér
+    da: Fejér
+    de: Komitat Fejér
+    el: Επαρχία Φετζέρ
+    en: Fejér
+    es: Fejér
+    et: Fejéri komitaat
+    eu: Fejér
+    fa: فیجر
+    fi: Fejér
+    fr: Fejér
+    gl: Fejér
+    gu: ફેજેર કાઉન્ટી
+    he: מחוז פייר
+    hi: फेयेर काउंटी
+    hr: Bila županija
+    hu: Fejér megye
+    hy: Ֆեյեր
+    id: Fejér
+    it: Provincia di Fejér
+    ja: フェイェール県
+    ka: ფეიერის მედიე
+    kn: ಫೆಜರ್ ಕೌಂಟಿ
+    ko: 페예르 주
+    lt: Fejėras
+    lv: Fejēras meģe
+    mr: फेजर काउंटी
+    ms: Fejér
+    nb: Fejer fylke
+    nl: Fejér
+    pl: Komitat Fejér
+    pt: Fejér
+    ro: Județul Fejér
+    ru: Фейер
+    si: ෆෙජෙර් ප්‍රාන්තය
+    sk: Stoličnobelehradská župa
+    sl: Fejér
+    sr: Фејер
+    sv: Fejér
+    sw: Fejér
+    ta: பஜ்ர் கவுண்டி
+    te: ఫెజెర్ కౌంటీ
+    th: เทศมณฑลเฟเจอร์
+    tr: Fejér ili
+    uk: Феєр
+    ur: فیئیر کاؤنٹی
+    vi: Hạt Fejér
+    ceb: Fejér megye
+    sr_Latn: Fejer
+    zh: 費耶爾州
+    ccp: "\U0001111C\U0001112C\U0001110E\U00011122\U00011134"
+    mn: Фейер
+    mk: Фејер
+    'no': Fejer fylke
+    az: Feyer medyesi
+    cy: Fejér
+    ga: Contae Fejér
+  comments:
+  type: county
+GS:
+  name: Győr-Moson-Sopron
+  code: GS
+  unofficial_names: Győr-Moson-Sopron
+  geo:
+    latitude: 47.6509285
+    longitude: 17.2505883
+    min_latitude: 47.272214
+    min_longitude: 16.4215489
+    max_latitude: 48.022446
+    max_longitude: 17.9364819
+  translations:
+    ar: مقاطعة ديور-موشون-سوبرون
+    be: Дзьёр-Мошан-Шопран
+    bg: Дьор-Мошон-Шопрон
+    bn: গিওর-মোসন-সোপ্রন কাউন্টি
+    ca: Gyõr-Moson-Sopron
+    cs: Győr-Moson-Sopron
+    da: Győr-Moson-Sopron
+    de: Komitat Győr-Moson-Sopron
+    el: Γκιόρ-Μοσόν-Σοπρόν
+    en: Győr-Moson-Sopron
+    es: Győr-Moson-Sopron
+    et: Győr-Moson-Soproni komitaat
+    eu: Győr-Moson-Sopron
+    fa: گیور-موسون-سوپرون
+    fi: Győr-Moson-Sopron
+    fr: Győr-Moson-Sopron
+    gl: Győr-Moson-Sopron
+    gu: ગ્યોર-મોસૉન-સોપ્રોન કાઉન્ટી
+    he: גיור-מושון-שופרון
+    hi: ग्योर-मोसोन-सोपरोन काउंटी
+    hr: Đursko-mošonjsko-šopronska županija
+    hu: Győr-Moson-Sopron megye
+    id: Győr-Moson-Sopron
+    it: Provincia di Győr-Moson-Sopron
+    ja: ジェール・モション・ショプロン県
+    ka: დიორ-მოშონ-შოპრონის მედიე
+    kn: ಗ್ಯೋರ್-ಮೋಸನ್-ಸೋಪ್ರಾನ್ ಕೌಂಟಿ
+    ko: 죄르모숀쇼프론 주
+    lt: Dėras-Mošonas-Šopronas
+    lv: Ģēras-Mošonas-Šopronas meģe
+    mr: ग्योर-मोसोन-सोप्रोन काउंटी
+    ms: Győr-Moson-Sopron
+    nb: Gyor Moson Sopron Fylke
+    nl: Győr-Moson-Sopron
+    pl: Komitat Győr-Moson-Sopron
+    pt: Győr-Moson-Sopron
+    ro: Județul Győr-Moson-Sopron
+    ru: Дьёр-Мошон-Шопрон
+    si: ග්යෝර්-මොසෝන්-සොප්රෝන් ප්‍රාන්තය
+    sk: Rábsko-mošonsko-šopronská župa
+    sl: Győr-Moson-Sopron
+    sr: Ђер-Мошон-Шопрон
+    sv: Győr-Moson-Sopron
+    sw: Győr-Moson-Sopron
+    ta: கியோர் -மோசான்-சொப்ரோன் கவுண்டி
+    te: గ్యోర్-మోసన్-సోప్రోన్ కౌంటీ
+    th: เทศมณฑลเยอร์-โมโชน-โชโปรน
+    tr: Győr-Moson-Sopron ili
+    uk: Дьйор-Мошон-Шопрон
+    ur: جیور-موشون-شوپرون کاؤنٹی
+    vi: Hạt Gyor-Moson-Sopron
+    ceb: Győr-Moson-Sopron megye
+    sr_Latn: Đer-Mošon-Šopron
+    zh: 傑爾-莫雄-肖普朗州
+    ccp: "\U00011109\U0001112D\U00011120\U0001112E\U00011122\U00011134-\U0001111F\U0001112E\U00011125\U00011127\U0001111A\U00011134-\U00011125\U0001112E\U0001111B\U00011133\U00011122\U00011127\U0001111A\U00011134"
+    az: Dyör-Moşon-Şopron
+    mn: Дьёр-Мошон-Шопрон
+    mk: Ѓер-Мошон-Шопрон
+    'no': Gyor Moson Sopron Fylke
+    cy: Győr-Moson-Sopron
+    hy: Դյոր-Մոշոն-Շոպրոն
+  comments:
+  type: county
+GY:
+  name: Győr
+  code: GY
+  unofficial_names: Győr
+  geo:
+    latitude: 47.6874569
+    longitude: 17.6503974
+    min_latitude: 47.591275
+    min_longitude: 17.50948
+    max_latitude: 47.747587
+    max_longitude: 17.80789
+  translations:
+    af: Győr
+    ar: جيور
+    be: Горад Дзьёр
+    bg: Дьор
+    bn: ইয়োর
+    ca: Győr
+    cs: Győr
+    da: Győr
+    de: Győr
+    el: Γκιούρ
+    en: Győr
+    es: Győr
+    et: Győr
+    eu: Győr
+    fa: گیور
+    fi: Győr
+    fr: Győr
+    gl: Győr
+    gu: ગ્યોર
+    he: גיור
+    hi: ग्योर
+    hr: Jura
+    hu: Győr
+    hy: Դյոր
+    id: Győr
+    it: Győr
+    ja: ジェール
+    ka: დიორი
+    kn: ಗ್ಯೋರ್
+    ko: 죄르
+    lt: Dėras
+    lv: Ģēra
+    mr: गॉर
+    ms: Győr
+    nb: Győr
+    nl: Győr
+    pl: Győr
+    pt: Győr
+    ro: Győr
+    ru: Дьёр
+    si: ගියෝර්
+    sk: Győr
+    sl: Gjur
+    sr: Ђер
+    sv: Győr
+    sw: Győr
+    ta: க்யூர்
+    te: గ్యోర్
+    th: เจอร์
+    tr: Győr
+    uk: Дьйор
+    ur: جیور
+    vi: Győr
+    cy: Győr
+    ceb: Győr
+    sr_Latn: Đer
+    zh: 杰尔
+    jv: Győr
+    sq: Győr
+    ccp: "\U00011109\U0001112D\U00011120\U0001112E\U00011122\U00011134"
+    kk: Дьер
+    az: Dyor
+    uz: Dyor
+    mk: Ѓер
+    'no': Győr
+    ga: Győr
+    ps: ګیور
+    yue: 焦爾
+    yue_Hans: 焦尔
+  comments:
+  type: city_with_county_rights
+HB:
+  name: Hajdú-Bihar
+  code: HB
+  unofficial_names: Hajdú-Bihar
+  geo:
+    latitude: 47.4688355
+    longitude: 21.5453228
+    min_latitude: 46.9412041
+    min_longitude: 20.82321
+    max_latitude: 47.964842
+    max_longitude: 22.1297241
+  translations:
+    ar: مقاطعة هايدو-بيهار
+    bg: Хайду-Бихар
+    bn: হজদু-বিহার কাউন্টি
+    ca: Hajdú-Bihar
+    cs: Hajdú-Bihar
+    da: Hajdú-Bihar
+    de: Komitat Hajdú-Bihar
+    el: Χάτζντου-Μπιχάρ
+    en: Hajdú-Bihar
+    es: Hajdú-Bihar
+    et: Hajdú-Bihari komitaat
+    eu: Hajdú-Bihar
+    fa: هاجدو-بیهار
+    fi: Hajdú-Bihar
+    fr: Hajdú-Bihar
+    gl: Hajdú-Bihar
+    gu: હાજદુ-બિહાર કાઉન્ટી
+    he: היידו-ביהר
+    hi: हजदु-बिहार काउंटी
+    hr: Hajdu-biharska županija
+    hu: Hajdú-Bihar megye
+    id: Hajdú-Bihar
+    it: Provincia di Hajdú-Bihar
+    ja: ハイドゥー・ビハール県
+    ka: ჰაიდუ-ბიჰარის მედიე
+    kn: ಹಜ್ದು-ಬಿಹಾರ ಕೌಂಟಿ
+    ko: 허이두비허르 주
+    lt: Haidū Biharas
+    lv: Hajdū-Biharas meģe
+    mr: हजदु-बिहार काउंटी
+    ms: Hajdú-Bihar
+    nb: Hajdu-Bihar Fylke
+    nl: Hajdú-Bihar
+    pl: Komitat Hajdú-Bihar
+    pt: Hajdú-Bihar
+    ro: Județul Hajdú-Bihar
+    ru: Хайду-Бихар
+    si: හජ්දු-බිහාර්
+    sk: Hajducko-bihárska župa
+    sl: Hajdú-Bihar
+    sr: Хајду-Бихар
+    sv: Hajdú-Bihar
+    sw: Hajdú-Bihar
+    ta: ஹஜ்ஜிடு -பீகார் கவுண்டி
+    te: హజ్దు-బీహార్ కౌంటీ
+    th: ฮัจดุส ไบฮา ครันทรี่
+    tr: Hajdú-Bihar ili
+    uk: Гайду-Бігар
+    ur: ہایدو-بیہار کاؤنٹی
+    vi: Hajdu-Bihar
+    ceb: Hajdú-Bihar
+    sr_Latn: Hajdu-Bihar
+    zh: 豪伊杜-比豪爾州
+    ccp: "\U00011126\U0001110C\U00011134\U00011113\U0001112A-\U0001111D\U00011128\U00011126\U00011122\U00011134"
+    be: Хайду-Біхар
+    mk: Хајду-Бихар
+    'no': Hajdu-Bihar Fylke
+    az: Haydu-Bihar medyesi
+    cy: Sir Hajdú-Bihar
+  comments:
+  type: county
+HE:
+  name: Heves
+  code: HE
+  unofficial_names: Heves
+  geo:
+    latitude: 47.5971694
+    longitude: 20.280156
+    min_latitude: 47.528197
+    min_longitude: 20.208671
+    max_latitude: 47.67125799999999
+    max_longitude: 20.3831291
+  translations:
+    ar: مقاطعة هفش
+    be: Хевеш
+    bg: Хевеш
+    bn: হেভেস কাউন্টি
+    ca: Heves
+    cs: Heves
+    da: Heves
+    de: Komitat Heves
+    el: Χέβςς
+    en: Heves
+    es: Heves
+    et: Hevesi komitaat
+    eu: Heves
+    fa: هیویس
+    fi: Heves
+    fr: Heves
+    gl: Condado de Heves
+    gu: હેવેસ કાઉન્ટી
+    he: הווש
+    hi: हेवेस काउंटी
+    hr: Heveška županija
+    hu: Heves megye
+    id: Heves
+    it: Provincia di Heves
+    ja: ヘヴェシュ県
+    ka: ხევეშის მედიე
+    kn: ಹೆವೆಸ್ ಕೌಂಟಿ
+    ko: 헤베시 주
+    lt: Hevešas
+    lv: Hevešas meģe
+    mr: हेव्हस काउंटी
+    ms: Heves
+    nb: Heves Fylke
+    nl: Heves
+    pl: Komitat Heves
+    pt: Heves
+    ro: Județul Heves
+    ru: Хевеш
+    si: හෙවෙස් ප්‍රාන්තය
+    sk: Hevešská župa
+    sl: Heves
+    sr: Хевеш
+    sv: Heves
+    sw: Heves
+    ta: ஹெவ்ஸ் கவுண்டி
+    te: హెవెస్ కౌంటీ
+    th: เทศมณฑลแฮแว็ช
+    tr: Heves ili
+    uk: Гевеш
+    ur: ہیویش کاؤنٹی
+    vi: Hạt Heves
+    ceb: Heves megye
+    sr_Latn: Heveš
+    zh: 赫維什州
+    ccp: "\U00011126\U0001112C\U0001111E\U0001112C\U0001110C\U00011134"
+    hy: Հևեշ
+    mk: Хевеш
+    'no': Heves Fylke
+    az: Xeveş
+    cy: Sir Heves
+  comments:
+  type: county
+HV:
+  name: Hódmezővásárhely
+  code: HV
+  unofficial_names: Hódmezővásárhely
+  geo:
+    latitude: 46.4181262
+    longitude: 20.3300315
+    min_latitude: 46.2947919
+    min_longitude: 20.184785
+    max_latitude: 46.528218
+    max_longitude: 20.5828911
+  translations:
+    be: Хадмезёвашархей
+    bg: Ходмезьовашархей
+    ca: Hódmezővásárhely
+    cs: Hódmezővásárhely
+    da: Hódmezővásárhely
+    de: Hódmezővásárhely
+    el: Χοντμεζοβάσαρχεϊ
+    en: Hódmezővásárhely
+    es: Hódmezővásárhely
+    et: Hódmezővásárhely
+    fa: هدمزواشارهی
+    fr: Hódmezővásárhely
+    gl: Hódmezővásárhely
+    he: הודמזוושרהיי
+    hr: Vašrelj
+    hu: Hódmezővásárhely
+    hy: Հոդմեզյովաշարհեյ
+    it: Hódmezővásárhely
+    ja: ホードメゼーヴァーシャールヘイ
+    ka: ჰოდმეზევაშარჰეი
+    ko: 호드메죄바샤르헤이
+    lt: Hodmezėvašarhėjus
+    ms: Hódmezővásárhely
+    nb: Hódmezővásárhely
+    nl: Hódmezővásárhely
+    pl: Hódmezővásárhely
+    pt: Hódmezővásárhely
+    ro: Hódmezővásárhely
+    ru: Ходмезёвашархей
+    sk: Hódmezővásárhely
+    sl: Hódmezővásárhely
+    sr: Ходмезевашархељ
+    sv: Hódmezővásárhely
+    th: โฮดแมเซอวาชาร์แฮย์
+    tr: Hódmezővásárhely
+    uk: Годмезевашаргей
+    vi: Hódmezővásárhely
+    cy: Hódmezővásárhely
+    ceb: Hódmezővásárhely
+    sr_Latn: Hodmezevašarhelj
+    zh: 霍德梅澤瓦
+    ccp: "\U00011126\U0001112E\U00011116\U00011134\U0001111F\U0001112C\U0001110E\U0001112E\U0001111E\U00011125\U00011122\U00011134\U00011126\U0001112C\U00011123\U00011128"
+    id: Hódmezővásárhely
+    az: Xodmezövaşarxey
+    mk: Ходмезевашархељ
+    'no': Hódmezővásárhely
+    ar: هدمزوفازارهلي
+    fi: Hódmezővásárhely
+  comments:
+  type: city_with_county_rights
+JN:
+  name: Jász-Nagykun-Szolnok
+  code: JN
+  unofficial_names: Jász-Nagykun-Szolnok
+  geo:
+    latitude: 47.2555579
+    longitude: 20.5232456
+    min_latitude: 46.754459
+    min_longitude: 19.651048
+    max_latitude: 47.682564
+    max_longitude: 21.0302648
+  translations:
+    ar: مقاطعة ياس-نادكون-سولنك
+    bg: Яс-Надкун-Солнок
+    bn: জায-নাগিকুন-জোলনক কাউন্টি
+    ca: Jász-Nagykun-Szolnok
+    cs: Jász-Nagykun-Szolnok
+    da: Jász-Nagykun-Szolnok
+    de: Komitat Jász-Nagykun-Szolnok
+    el: Τζασζ-Ναγκίκουν-Σζόλνοκ
+    en: Jász-Nagykun-Szolnok
+    es: Jász-Nagykun-Szolnok
+    et: Jász-Nagykun-Szolnoki komitaat
+    eu: Jász-Nagykun-Szolnok
+    fa: جاسز-ناگیکون-زولنوک
+    fi: Jász-Nagykun-Szolnok
+    fr: Jász-Nagykun-Szolnok
+    gl: Jász-Nagykun-Szolnok
+    gu: જાસ્ઝ-નાગીકુન-ઝોલનોક કાઉન્ટી
+    he: יאס-נאג׳קון-סולנוק
+    hi: जस्ज़-नाजिकुन-सज़ोल्नोक काउंटी
+    hr: Jaziško-velikokumansko-szolnočka županija
+    hu: Jász-Nagykun-Szolnok megye
+    id: Jász-Nagykun-Szolnok
+    it: Provincia di Jász-Nagykun-Szolnok
+    ja: ヤース・ナジクン・ソルノク県
+    ka: იას-ნადკუნ-სოლნოკის მედიე
+    kn: ಜಾಸ್ಜ್-ನಾಗ್ಕುನ್-ಸ್ಝೊಲ್ನೋಕ್ ಕೌಂಟಿ
+    ko: 야스너지쿤솔노크 주
+    lt: Jasas-Nadkūnas-Solnokas
+    lv: Jāsas-Naģkunas-Solnokas meģe
+    mn: Яс-Надькун-Сольнок
+    mr: जस्स-नाजिकुक-सोलोन्क काउंटी
+    ms: Jász-Nagykun-Szolnok
+    nb: Jasz Nagykun Szolnok fylke
+    nl: Jász-Nagykun-Szolnok
+    pl: Komitat Jász-Nagykun-Szolnok
+    pt: Jász-Nagykun-Szolnok
+    ro: Județul Jász-Nagykun-Szolnok
+    ru: Яс-Надькун-Сольнок
+    si: ජාස්-නගිකුන් -ස්ලොනොක් ප්‍රාන්තය
+    sk: Jasovsko-veľkokumánsko-solnocká župa
+    sl: Jász-Nagykun-Szolnok
+    sr: Јас-Нађкун-Солнок
+    sv: Jász-Nagykun-Szolnok
+    sw: Jász-Nagykun-Szolnok
+    ta: ஜாஸிஸ்-நகிகுண்-ஸ்ஸ்வ்ள்நோக்க கவுண்டி
+    te: జస్జ్-నాగ్యాకున్-జోల్నోక్ కౌంటీ
+    th: เทศมณฑลยาส-น็อจกุน-โซลโนก
+    tr: Jász-Nagykun-Szolnok ili
+    uk: Яс-Надькун-Сольнок
+    ur: جاسز-نگیکن-سزولنوک کاؤنٹی
+    vi: Hạt Jász-Nagykun-Szolnok
+    ceb: Jász-Nagykun-Szolnok
+    sr_Latn: Jas-Nađkun-Solnok
+    zh: 亞斯-瑙吉孔-索爾諾克州
+    ccp: "\U0001110E\U0001110C\U00011134-\U0001111A\U00011109\U0001112D\U00011107\U0001112A\U0001111A\U00011134-\U00011125\U0001112A\U00011123\U00011134\U0001111A\U00011127\U00011107\U00011134"
+    az: Yas-Nadkun-Solnok
+    be: Яс-Надзькун-Сольнак
+    mk: Јас-Наѓкун-Солнок
+    'no': Jasz Nagykun Szolnok fylke
+    cy: Sir Jász-Nagykun-Szolnok
+    hy: Յաս-Նադկուն-Սոլնոկ
+  comments:
+  type: county
+KE:
+  name: Komárom-Esztergom
+  code: KE
+  unofficial_names: Komárom-Esztergom
+  geo:
+    latitude: 47.7390852
+    longitude: 18.1267006
+    min_latitude: 47.68579099999999
+    min_longitude: 18.016753
+    max_latitude: 47.75665499999999
+    max_longitude: 18.2301799
+  translations:
+    ar: مقاطعة كوماروم-إستركوم
+    be: Камаром-Эстэргам
+    bg: Комаром-Естергом
+    bn: কোমারম-এজতারগম কাউন্টি
+    ca: Komárom-Esztergom
+    cs: Komárom-Esztergom
+    da: Komárom-Esztergom
+    de: Komitat Komárom-Esztergom
+    el: Κομάρομ-Έσζτεργκομ
+    en: Komárom-Esztergom
+    es: Komárom-Esztergom
+    et: Komárom-Esztergomi komitaat
+    eu: Komárom-Esztergom
+    fa: کوماروم-ایسترگوم
+    fi: Komárom-Esztergom
+    fr: Komárom-Esztergom
+    gl: Komárom-Esztergom
+    gu: કોમેરોમ-એઝટેર્ગોમ કાઉન્ટી
+    he: קומארום-אסטרגום
+    hi: कोमारोम-एज्टरगोम काउंटी
+    hr: Komoransko-ostrogonska županija
+    hu: Komárom-Esztergom megye
+    id: Komárom-Esztergom
+    it: Provincia di Komárom-Esztergom
+    ja: コマーロム・エステルゴム県
+    ka: კომარომ-ესტერგომის მედიე
+    kn: ಕೊಮೊರೊಮ್-ಎಸ್ಝೆರ್ಗೊಮ್ ಕೌಂಟಿ
+    ko: 코마롬에스테르곰 주
+    lt: Komaromas-Estergomas
+    lv: Komāromas-Estergomas meģe
+    mr: कॉमरोम-एसझेटर्गोम काउंटी
+    ms: Komárom-Esztergom
+    nb: Komarom-Esztergom fylke
+    nl: Komárom-Esztergom
+    pl: Komitat Komárom-Esztergom
+    pt: Komárom-Esztergom
+    ro: Județul Komárom-Esztergom
+    ru: Комаром-Эстергом
+    si: කොමාරොම් එස්ටර්ගොම් ප්‍රාන්තය
+    sk: Komárňansko-ostrihomská župa
+    sl: Komárom-Esztergom
+    sr: Комаром-Естергом
+    sv: Komárom-Esztergom
+    sw: Komárom-Esztergom
+    ta: கோமாறோம்-ஸ்ஸ்ட்பேர்கோம் கவுண்டி
+    te: కోమారోమ్-ఎస్టర్గోమ్ కౌంటీ
+    th: เทศมณฑลโกมาโรม-แอ็สแตร์โกม
+    tr: Komárom-Esztergom ili
+    uk: Комаром-Естерґом
+    ur: کوماروم-ایسترگوم کاؤنٹی
+    vi: Hạt Komárom-Esztergom
+    ceb: Komárom-Esztergom
+    sr_Latn: Komarom-Estergom
+    zh: 科馬羅姆-埃斯泰爾戈姆州
+    ccp: "\U00011107\U0001112E\U0001111F\U00011122\U0001112A\U0001111A\U00011134-\U00011103\U00011128\U0001110C\U00011134\U00011111\U00011122\U00011134\U00011109\U00011127\U0001111F\U00011134"
+    mn: Комаром-Эстергом
+    mk: Комаром-Естергом
+    'no': Komarom-Esztergom fylke
+    az: Komarom-Esterqom
+    cy: Sir Komárom-Esztergom
+    hy: Կոմարոմ-Էստերգոմ
+  comments:
+  type: county
+KM:
+  name: Kecskemét
+  code: KM
+  unofficial_names: Kecskemét
+  geo:
+    latitude: 46.8963711
+    longitude: 19.6896861
+    min_latitude: 46.769863
+    min_longitude: 19.5066109
+    max_latitude: 47.0012541
+    max_longitude: 19.8515029
+  translations:
+    ar: كيكسكيميت
+    be: Кечкемет
+    bg: Кечкемет
+    bn: কেক্সকেমিট
+    ca: Kecskemét
+    cs: Kecskemét
+    da: Kecskemét
+    de: Kecskemét
+    el: Κετσκέμετ
+    en: Kecskemét
+    es: Kecskemét
+    et: Kecskemét
+    eu: Kecskemét
+    fa: کچکمیت
+    fi: Kecskemét
+    fr: Kecskemét
+    gl: Kecskemét
+    gu: કેક્સકેમેંટ
+    he: קצ׳קמט
+    hi: कएक्सकेमेट
+    hr: Kečkemet
+    hu: Kecskemét
+    hy: Կեչկեմետ
+    id: Kecskemét
+    it: Kecskemét
+    ja: ケチケメート
+    ka: კეჩკემეტი
+    kn: ಕೇಕ್ಸ್ಕೇಮೆಟ್
+    ko: 케치케메트
+    lt: Kečkemėtas
+    mr: केक्‍सकेमेट
+    ms: Kecskemét
+    nb: Kecskemet
+    nl: Kecskemét
+    pl: Kecskemét
+    pt: Kecskemét
+    ro: Kecskemét
+    ru: Кечкемет
+    si: කෙක්ස්කෙමට්
+    sk: Kecskemét
+    sl: Kecskemét
+    sr: Кечкемет
+    sv: Kecskemét
+    sw: Kecskemét
+    ta: கேக்ஸ்க்மேட்
+    te: కెక్స్సేమేట్
+    th: แก็ชแกเมต
+    tr: Kecskemét
+    uk: Кечкемет
+    ur: کیکسکیمیت
+    vi: Kecskemét
+    lv: Kečkemēta
+    ceb: Kecskemét
+    sr_Latn: Kečkemet
+    zh: 凯奇凯梅特
+    jv: Kecskemét
+    ccp: "\U00011107\U0001112C\U0001110C\U00011134\U00011107\U0001112C\U0001111F\U0001112C\U00011116\U00011134"
+    kk: Кечкемет
+    az: Keçkemet
+    mk: Кечкемет
+    'no': Kecskemet
+    ga: Kecskemét
+    ps: کچکمیت
+  comments:
+  type: city_with_county_rights
+KV:
+  name: Kaposvár
+  code: KV
+  unofficial_names: Kaposvár
+  geo:
+    latitude: 46.3593606
+    longitude: 17.7967639
+    min_latitude: 46.290355
+    min_longitude: 17.741116
+    max_latitude: 46.45050699999999
+    max_longitude: 17.8911989
+  translations:
+    ar: كابوشفار
+    be: Капашвар
+    bg: Капошвар
+    bn: কাপোভার
+    ca: Kaposvár
+    cs: Kaposvár
+    da: Kaposvár
+    de: Kaposvár
+    el: Κάποσβαρ
+    en: Kaposvár
+    es: Kaposvár
+    et: Kaposvár
+    eu: Kaposvár
+    fa: کاپشوار
+    fi: Kaposvár
+    fr: Kaposvár
+    gl: Kaposvár
+    gu: કપોસ્વાર
+    he: קאפושוואר
+    hi: कापोस्वार
+    hr: Kapošvar
+    hu: Kaposvár
+    hy: Կապոշվար
+    id: Kaposvár
+    it: Kaposvár
+    ja: カポシュヴァール
+    ka: კაპოშვარი
+    kn: ಕಪೋಶ್ವರ್
+    ko: 커포슈바르
+    lt: Kapošvaras
+    mr: क्यापोस्वार
+    ms: Kaposvár
+    nb: Kaposvár
+    nl: Kaposvár
+    pl: Kaposvár
+    pt: Kaposvár
+    ro: Kaposvár
+    ru: Капошвар
+    si: කූටහ්යා
+    sk: Kaposvár
+    sl: Kaposvár
+    sr: Капошвар
+    sv: Kaposvár
+    sw: Kaposvár
+    ta: கபோஸ்வர்
+    te: కాపోవార్
+    th: คาโปสวาร์
+    tr: Kaposvár
+    uk: Капошвар
+    ur: کیپوسوار
+    vi: Kaposvár
+    lv: Kapošvāra
+    cy: Kaposvár
+    ceb: Kaposvár
+    sr_Latn: Kapošvar
+    zh: 考波什堡
+    ccp: "\U00011107\U0001111B\U0001112E\U0001110C\U00011134\U0001111E\U00011122\U00011134"
+    kk: Капошвар
+    az: Kapoşvar
+    mk: Капошвар
+    'no': Kaposvár
+    bs: Kaposvár
+    uz: Kaposhvar
+  comments:
+  type: city_with_county_rights
+MI:
+  name: Miskolc
+  code: MI
+  unofficial_names: Miskolc
+  geo:
+    latitude: 48.0963631
+    longitude: 20.762386
+    min_latitude: 48.0233119
+    min_longitude: 20.4817199
+    max_latitude: 48.154998
+    max_longitude: 20.8697789
+  translations:
+    af: Miskolc
+    ar: ميشكولتس
+    be: Мішкальц
+    bg: Мишколц
+    bn: মিসকস
+    ca: Miskolc
+    cs: Miskolc
+    da: Miskolc
+    de: Miskolc
+    el: Μίσκολτς
+    en: Miskolc
+    es: Miskolc
+    et: Miskolc
+    eu: Miskolc
+    fa: میشکولتس
+    fi: Miskolc
+    fr: Miskolc
+    gl: Miskolc
+    gu: મિસ્કોલ્ક
+    he: מישקולץ
+    hi: मिस्कोल्स
+    hr: Miškolc
+    hu: Miskolc
+    hy: Միշկոլց
+    id: Miskolc
+    it: Miskolc
+    ja: ミシュコルツ
+    ka: მიშკოლცი
+    kn: ಮಿಸ್ಕೋಲ್ಕ್
+    ko: 미슈콜츠
+    lt: Miškolcas
+    lv: Miškolca
+    mr: मिस्कोल्क
+    ms: Miskolc
+    nb: Miskolc
+    nl: Miskolc
+    pl: Miszkolc
+    pt: Miskolc
+    ro: Miskolc
+    ru: Мишкольц
+    si: මිස්කොල්ක්
+    sk: Miškovec
+    sl: Miskolc
+    sr: Мишколц
+    sv: Miskolc
+    sw: Miskolc
+    ta: மிஸ்க்கோல்க்
+    te: మిస్కోల్చ్
+    th: มิสโคลค
+    tr: Miskolc
+    uk: Мішкольц
+    ur: مسکولک
+    vi: Miskolc
+    cy: Miskolc
+    ceb: Miskolc
+    sr_Latn: Miškolc
+    zh: 米什科尔茨
+    ccp: "\U0001111F\U00011128\U0001110C\U00011134\U00011107\U0001112E\U00011123\U00011134\U00011107\U00011134"
+    ky: Мишкольц
+    kk: Мишкольц
+    az: Mişkolç
+    mk: Мишколц
+    'no': Miskolc
+    ga: Miskolc
+    ps: میشکولتس
+    sq: Miskolc
+    yue: 米什科爾茨
+    yue_Hans: 米什科尔茨
+  comments:
+  type: city_with_county_rights
+NK:
+  name: Nagykanizsa
+  code: NK
+  unofficial_names: Nagykanizsa
+  geo:
+    latitude: 46.4590218
+    longitude: 16.9896796
+    min_latitude: 46.35871299999999
+    min_longitude: 16.919825
+    max_latitude: 46.543614
+    max_longitude: 17.0906941
+  translations:
+    ar: ناجيكانيزسا
+    be: Горад Надзьканіжа
+    bg: Надканижа
+    ca: Nagykanizsa
+    cs: Nagykanizsa
+    da: Nagykanizsa
+    de: Nagykanizsa
+    en: Nagykanizsa
+    es: Nagykanizsa
+    et: Nagykanizsa
+    eu: Nagykanizsa
+    fa: نادکانیژا
+    fi: Nagykanizsa
+    fr: Nagykanizsa
+    gl: Nagykanizsa
+    he: נג׳קניז׳ה
+    hr: Velika Kaniža
+    hu: Nagykanizsa
+    id: Nagykanizsa
+    it: Nagykanizsa
+    ja: ナジカニジャ
+    ka: ნადკანიჟა
+    lt: Nadkaniža
+    ms: Nagykanizsa
+    nb: Nagykanizsa
+    nl: Nagykanizsa
+    pl: Nagykanizsa
+    pt: Nagykanizsa
+    ro: Nagykanizsa
+    ru: Надьканижа
+    sk: Nagykanizsa
+    sl: Nagykanizsa
+    sr: Велика Канижа
+    sv: Nagykanizsa
+    tr: Nagykanizsa
+    uk: Надьканіжа
+    vi: Nagykanizsa
+    cy: Nagykanizsa
+    ceb: Nagykanizsa
+    sr_Latn: Velika Kaniža
+    zh: 瑙吉考尼饒
+    jv: Nagykanizsa
+    ccp: "\U0001111A\U00011109\U0001112D\U00011107\U0001111A\U00011128\U0001110C\U00011134\U00011125"
+    'no': Nagykanizsa
+    az: Nadkanija
+    lv: Naģkaniža
+    mk: Велика Канижа
+  comments:
+  type: city_with_county_rights
+'NO':
+  name: Nógrád
+  code: 'NO'
+  unofficial_names: Nógrád
+  geo:
+    latitude: 47.90410310000001
+    longitude: 19.0498504
+    min_latitude: 47.867935
+    min_longitude: 18.9853318
+    max_latitude: 47.933664
+    max_longitude: 19.1055319
+  translations:
+    ar: مقاطعة نوغراد
+    bg: Ноград
+    bn: নোগ্রাড কাউন্টি
+    ca: Nógrád
+    cs: Nógrád
+    da: Nógrád
+    de: Komitat Nógrád
+    el: Νόγκραντ
+    en: Nógrád
+    es: Nógrád
+    et: Nógrádi komitaat
+    eu: Nógrád
+    fa: نوگراد
+    fi: Nógrád
+    fr: Nógrád
+    gl: Condado de Nógrád
+    gu: નોગ્રેડ કાઉન્ટી
+    he: נוגראד
+    hi: नॉग्रैड काउंटी
+    hr: Nogradska županija
+    hu: Nógrád megye
+    id: Nógrád
+    it: Provincia di Nógrád
+    ja: ノーグラード県
+    ka: ნოგრადის მედიე
+    kn: ನೊಗ್ರಾಡ್ ಕೌಂಟಿ
+    ko: 노그라드 주
+    lt: Nogradas
+    lv: Nogrādas meģe
+    mr: नॉरग्रेड काउंटी
+    ms: Nógrád
+    nb: Nógrád
+    nl: Nógrád
+    pl: Komitat Nógrád
+    pt: Nógrád
+    ro: Județul Nógrád
+    ru: Ноград
+    si: නොග්රාඩ් ප්‍රාන්තය
+    sk: Novohradská župa
+    sl: Nógrád
+    sr: Ноград
+    sv: Nógrád
+    sw: Nógrád
+    ta: நோக்ராட் கவுண்டி
+    te: నోగ్రాడ్ కౌంటీ
+    th: เทศมณฑลโนกราด
+    tr: Nógrád ili
+    uk: Ноґрад
+    ur: نوگراد کاؤنٹی
+    vi: Hạt Nógrád
+    ceb: Nógrád megye
+    sr_Latn: Nograd
+    zh: 諾格拉德州
+    ccp: "\U0001111A\U00011127\U00011109\U00011133\U00011122\U00011116\U00011134"
+    az: Noqrad
+    be: Ноград
+    mk: Ноград
+    'no': Nógrád
+    cy: Sir Nógrád
+  comments:
+  type: county
+NY:
+  name: Nyíregyháza
+  code: NY
+  unofficial_names: Nyíregyháza
+  geo:
+    latitude: 47.9495324
+    longitude: 21.7244053
+    min_latitude: 47.845661
+    min_longitude: 21.5576691
+    max_latitude: 48.03913
+    max_longitude: 21.844149
+  translations:
+    af: Nyíregyháza
+    ar: نيرغهازا
+    be: Горад Ньірэдзьхаза
+    bg: Ниредхаза
+    bn: নিরজহাজা
+    ca: Nyíregyháza
+    cs: Nyíregyháza
+    da: Nyíregyháza
+    de: Nyíregyháza
+    el: Νιρεγιχάσα
+    en: Nyíregyháza
+    es: Nyíregyháza
+    et: Nyíregyháza
+    eu: Nyíregyháza
+    fa: نیرگهزا
+    fi: Nyíregyháza
+    fr: Nyíregyháza
+    gl: Nyíregyháza
+    gu: નાઇરીગેહાઝા
+    he: נירג׳האזה
+    hi: नयीरेगयहाज़ा
+    hr: Nyíregyháza
+    hu: Nyíregyháza
+    hy: Նյիրեդխազա
+    id: Nyíregyháza
+    it: Nyíregyháza
+    ja: ニーレジハーザ
+    ka: ნირედჰაზა
+    kn: ನೈರೆಜಿಹಾಝ
+    ko: 니레지하저
+    lt: Nyredhaza
+    mr: नायरीजीहझा
+    ms: Nyíregyháza
+    nb: Nyíregyháza
+    nl: Nyíregyháza
+    pl: Nyíregyháza
+    pt: Nyíregyháza
+    ro: Nyíregyháza
+    ru: Ньиредьхаза
+    si: නයිරේගීහසා
+    sk: Níreďháza
+    sl: Nyíregyháza
+    sr: Њиређхаза
+    sv: Nyíregyháza
+    sw: Nyíregyháza
+    ta: இரேஜியாஜா
+    te: నయిరేగయహాజా
+    th: นีเอียร์กีฮาซ่า
+    tr: Nyíregyháza
+    uk: Ньїредьгаза
+    ur: نییریجیحازا
+    vi: Nyíregyháza
+    lv: Ņīreģhāza
+    cy: Nyíregyháza
+    ceb: Nyíregyháza
+    sr_Latn: Njiređhaza
+    zh: 尼賴吉哈佐
+    ccp: "\U0001111A\U0001112D\U00011122\U00011134\U00011122\U0001112C\U00011109\U0001112D\U00011126\U0001110E"
+    az: Niredxaza
+    mk: Њиреѓхаза
+    'no': Nyíregyháza
+    ga: Nyíregyháza
+    ps: نیرګهزا
+  comments:
+  type: city_with_county_rights
+PE:
+  name: Pest
+  code: PE
+  unofficial_names: Pest
+  geo:
+    latitude: 47.44800009999999
+    longitude: 19.4618128
+    min_latitude: 46.944111
+    min_longitude: 18.6884409
+    max_latitude: 48.05865989999999
+    max_longitude: 20.1127141
+  translations:
+    ar: مقاطعة بشت
+    be: Пешт
+    bg: Пещ
+    ca: Pest
+    cs: Pest
+    da: Pest
+    de: Komitat Pest
+    en: Pest
+    es: Pest
+    et: Pesti komitaat
+    eu: Pest konderria
+    fa: پست کانتی
+    fi: Pest
+    fr: Pest
+    gl: Condado de Pest
+    he: מחוז פשט
+    hr: Peštanska županija
+    hu: Pest megye
+    hy: Պեշտ
+    id: Pest
+    it: Provincia di Pest
+    ja: ペシュト県
+    ka: პეშტის მედიე
+    ko: 페슈트 주
+    lt: Peštas
+    lv: Peštas meģe
+    ms: Pest
+    nb: Pest
+    nl: Pest
+    pl: Komitat Pest
+    pt: Pest
+    ro: Județul Pest
+    ru: Пешт
+    sk: Peštianska župa
+    sl: Pešta
+    sr: Пешта
+    sv: Pest
+    sw: Pest
+    tr: Pest ili
+    uk: Пешт
+    ur: پاشت کاؤنٹی
+    ceb: Pest megye
+    sr_Latn: Pešta
+    zh: 佩斯州
+    ccp: "\U0001111B\U0001112C\U0001110C\U00011134\U00011111\U00011134"
+    mk: Пешта
+    'no': Pest
+    az: Peşt medyesi
+    cy: Sir Pest
+  comments:
+  type: county
+PS:
+  name: Pécs
+  code: PS
+  unofficial_names: Pécs
+  geo:
+    latitude: 46.0727345
+    longitude: 18.232266
+    min_latitude: 45.994045
+    min_longitude: 18.13568
+    max_latitude: 46.161421
+    max_longitude: 18.3654829
+  translations:
+    af: Pécs
+    ar: بيتش
+    be: Печ
+    bg: Печ
+    bn: পিকস
+    ca: Pécs
+    cs: Pécs
+    da: Pécs
+    de: Pécs
+    el: Πετς
+    en: Pécs
+    es: Pécs
+    et: Pécs
+    eu: Pécs
+    fa: پچ
+    fi: Pécs
+    fr: Pécs
+    gl: Pécs
+    gu: પેક્સ
+    he: פץ׳
+    hi: पेक्स
+    hr: Pečuh
+    hu: Pécs
+    hy: Պեչ
+    id: Pécs
+    it: Pécs
+    ja: ペーチ
+    ka: პეჩი
+    kn: ಪೆಕ್ಸ್
+    ko: 페치
+    lt: Pėčas
+    lv: Pēča
+    mr: पेक्स
+    ms: Pécs
+    nb: Pécs
+    nl: Pécs
+    pl: Pecz
+    pt: Pécs
+    ro: Pécs
+    ru: Печ
+    si: පෙක්ස්
+    sk: Pécs
+    sl: Pécs
+    sr: Печуј
+    sv: Pécs
+    sw: Pécs
+    ta: பேக்ஸ்
+    te: పీస్
+    th: เพซ
+    tr: Pécs
+    uk: Печ
+    ur: پیکس
+    vi: Pécs
+    cy: Pécs
+    ceb: Pécs
+    sr_Latn: Pečuj
+    zh: 佩奇
+    sq: Pécs
+    ccp: "\U0001111B\U0001112C\U0001110C\U00011134\U00011125\U00011134"
+    az: Peç
+    bs: Pečuh
+    mk: Печ
+    'no': Pécs
+    ga: Pécs
+    ps: پچ (هنګري)
+    uz: Pech
+    yue: 佩奇
+    yue_Hans: 佩奇
+  comments:
+  type: city_with_county_rights
+SD:
+  name: Szeged
+  code: SD
+  unofficial_names: Szeged
+  geo:
+    latitude: 46.2530102
+    longitude: 20.1414253
+    min_latitude: 46.115766
+    min_longitude: 19.97234
+    max_latitude: 46.349812
+    max_longitude: 20.3085971
+  translations:
+    af: Szeged
+    ar: سيجد
+    be: Сегед
+    bg: Сегед
+    bn: সেজড
+    ca: Szeged
+    cs: Szeged
+    da: Szeged
+    de: Szeged
+    el: Σέγκεντ
+    en: Szeged
+    es: Szeged
+    et: Szeged
+    eu: Szeged
+    fa: سگد
+    fi: Szeged
+    fr: Szeged
+    gl: Szeged
+    gu: સેગેડ
+    he: סגד
+    hi: जगेड
+    hr: Segedin
+    hu: Szeged
+    hy: Սեգեդ
+    id: Szeged
+    is: Szeged
+    it: Seghedino
+    ja: セゲド
+    ka: სეგედი
+    kn: ಜಗೆಡ್
+    ko: 세게드
+    lt: Segedas
+    lv: Segeda
+    mr: सेगेड
+    ms: Szeged
+    nb: Szeged
+    nl: Szeged
+    pl: Segedyn
+    pt: Szeged
+    ro: Seghedin
+    ru: Сегед
+    si: සෙගෙඩ්
+    sk: Segedín
+    sl: Szeged
+    sr: Сегедин
+    sv: Szeged
+    sw: Szeged
+    ta: செஜெட்
+    te: జగేడ్
+    th: เซเกด
+    tr: Szeged
+    uk: Сегед
+    ur: سزیجید
+    vi: Szeged
+    cy: Szeged
+    sr_Latn: Segedin
+    zh: 塞格德
+    jv: Szeged
+    ccp: "\U0001110E\U0001110E\U0001112C\U00011116\U00011134"
+    az: Seqed
+    mk: Сегедин
+    'no': Szeged
+    ga: Szeged
+    kk: Сегед
+    ps: سګد
+    sq: Szeged
+    yue: 塞格德
+    yue_Hans: 塞格德
+  comments:
+  type: city_with_county_rights
+SF:
+  name: Székesfehérvár
+  code: SF
+  unofficial_names: Székesfehérvár
+  geo:
+    latitude: 47.18602620000001
+    longitude: 18.4221358
+    min_latitude: 47.107929
+    min_longitude: 18.3287498
+    max_latitude: 47.28114
+    max_longitude: 18.553754
+  translations:
+    ar: سيكشفهيرفار
+    be: Горад Секешфехервар
+    bg: Секешфехервар
+    bn: জেকেসফেরহেভার
+    ca: Székesfehérvár
+    cs: Székesfehérvár
+    da: Székesfehérvár
+    de: Székesfehérvár
+    el: Σεκεσφεχερβάρ
+    en: Székesfehérvár
+    es: Székesfehérvár
+    et: Székesfehérvár
+    eu: Székesfehérvár
+    fa: سیکشفهروار
+    fi: Székesfehérvár
+    fr: Székesfehérvár
+    gl: Székesfehérvár
+    gu: ઝેકેસફેહરવાર
+    he: סקשפהרוואר
+    hi: ज़ेकेसफहरवार
+    hr: Stolni Biograd
+    hu: Székesfehérvár
+    hy: Սեկաշֆեհերվար
+    id: Székesfehérvár
+    it: Székesfehérvár
+    ja: セーケシュフェヘールヴァール
+    ka: სეკეშფეჰერვარი
+    kn: ಝೆಕ್ಎಸ್ಫೆಹೇರ್ವಾರ್
+    ko: 세케슈페헤르바르
+    lt: Sėkešfehėrvaras
+    lv: Sēkešfehērvāra
+    mr: झेकेसफेहरवर
+    ms: Székesfehérvár
+    nb: Székesfehérvár
+    nl: Székesfehérvár
+    pl: Székesfehérvár
+    pt: Székesfehérvár
+    ro: Székesfehérvár
+    ru: Секешфехервар
+    si: සේකෙස්ෆෙර්වාර්
+    sk: Stoličný Belehrad
+    sl: Székesfehérvár
+    sr: Столни Београд
+    sv: Székesfehérvár
+    sw: Székesfehérvár
+    ta: ஸிகேஸ்பிஹெர்வார்
+    te: జెకెస్ఫెహేర్వార్
+    th: เซแก็ชแฟเฮร์วาร์
+    tr: Székesfehérvár
+    uk: Секешфегервар
+    ur: سزیکیسفیحیروار
+    vi: Székesfehérvár
+    cy: Székesfehérvár
+    ceb: Székesfehérvár
+    sr_Latn: Stolni Beograd
+    zh: 塞克什白堡
+    ccp: "\U0001110E\U0001112C\U00011107\U0001112C\U0001110C\U00011134\U0001111C\U0001112C\U00011126\U0001112C\U00011122\U00011134\U0001111E\U00011122\U00011134"
+    kk: Секешфехервар
+    az: Sekeşfexervar
+    mk: Секешфехервар
+    'no': Székesfehérvár
+    ga: Székesfehérvár
+    ps: سیکشفهروار
+  comments:
+  type: city_with_county_rights
+SH:
+  name: Szombathely
+  code: SH
+  unofficial_names: Szombathely
+  geo:
+    latitude: 47.2306851
+    longitude: 16.6218441
+    min_latitude: 47.154338
+    min_longitude: 16.5270979
+    max_latitude: 47.274314
+    max_longitude: 16.6982231
+  translations:
+    ar: زومباثلي
+    be: Сомбатхей
+    bg: Сомбатхей
+    bn: সোম্বেতলি
+    ca: Szombathely
+    cs: Szombathely
+    da: Szombathely
+    de: Szombathely
+    el: Σζομπαθέλι
+    en: Szombathely
+    es: Szombathely
+    et: Szombathely
+    eu: Szombathely
+    fa: سمباتهی
+    fi: Szombathely
+    fr: Szombathely
+    gl: Szombathely
+    gu: ઝોમ્બાથેલી
+    he: סומבטהיי
+    hi: ज़ोम्बएथेली
+    hr: Sambotel
+    hu: Szombathely
+    hy: Սոմբատհեյ
+    id: Szombathely
+    it: Szombathely
+    ja: ソンバトヘイ
+    ka: სომბატჰეი
+    kn: ಸ್ಜಂಬಾಥೆಲಿ
+    ko: 솜버트헤이
+    lt: Sombathėjus
+    mr: झोंबाथली
+    ms: Szombathely
+    nb: Szombathely
+    nl: Szombathely
+    pl: Szombathely
+    pt: Szombathely
+    ro: Szombathely
+    ru: Сомбатхей
+    si: සොම්බතෙලි
+    sk: Szombathely
+    sl: Sombotel
+    sr: Сомбатхељ
+    sv: Szombathely
+    sw: Szombathely
+    ta: கிடா
+    te: జామ్బతెలీ
+    th: โซมบ็อตแฮย์
+    tr: Szombathely
+    uk: Сомбатгей
+    ur: سزومباتحیلی
+    vi: Szombathely
+    lv: Sombatheja
+    ceb: Szombathely
+    sr_Latn: Sombathelj
+    zh: 松博特海伊
+    sq: Szombathely
+    ccp: "\U0001110E\U0001112E\U0001111F\U00011134\U0001111D\U00011117\U0001112C\U00011123\U00011128"
+    az: Sombatxey
+    mk: Сомбатхељ
+    'no': Szombathely
+    kk: Сомбатхей
+    ps: سمباتهي
+  comments:
+  type: city_with_county_rights
+SK:
+  name: Szolnok
+  code: SK
+  unofficial_names: Szolnok
+  geo:
+    latitude: 47.16213550000001
+    longitude: 20.1824712
+    min_latitude: 47.096289
+    min_longitude: 20.0710291
+    max_latitude: 47.264515
+    max_longitude: 20.296315
+  translations:
+    ar: سزولنوك
+    be: Горад Сольнак
+    bg: Солнок
+    bn: সোনক
+    ca: Szolnok
+    cs: Szolnok
+    da: Szolnok
+    de: Szolnok
+    el: Ζόλνοκ
+    en: Szolnok
+    es: Szolnok
+    et: Szolnok
+    eu: Szolnok
+    fa: سلنوک
+    fi: Szolnok
+    fr: Szolnok
+    gl: Szolnok
+    gu: સ્ઝોલનોક
+    he: סולנוק
+    hi: ज़ोलनोक
+    hu: Szolnok
+    hy: Սոլնոկ
+    id: Szolnok
+    it: Szolnok
+    ja: ソルノク
+    ka: სოლნოკი
+    kn: ಸ್ಝೊಲ್ನೋಕ್
+    ko: 솔노크
+    lt: Solnokas
+    mr: स्लोनोक
+    ms: Szolnok
+    nb: Szolnok
+    nl: Szolnok
+    pl: Szolnok
+    pt: Szolnok
+    ro: Solnoca
+    ru: Сольнок
+    si: සොල්නොක්
+    sk: Szolnok
+    sl: Szolnok
+    sr: Солнок
+    sv: Szolnok
+    sw: Szolnok
+    ta: ஸ்ஸ்வ்ல்நோக்
+    te: జోల్నోక్
+    th: โซลนอค
+    tr: Szolnok
+    uk: Сольнок
+    ur: سزولنوک
+    vi: Szolnok
+    lv: Solnoka
+    cy: Szolnok
+    ceb: Szolnok (kapital sa lalawigan)
+    sr_Latn: Solnok
+    zh: 索尔诺克
+    ccp: "\U0001110E\U0001112E\U00011123\U00011134\U0001111A\U00011127\U00011107\U00011134"
+    hr: Szolnok
+    az: Solnok
+    mk: Солнок
+    'no': Szolnok
+    yue: 蘇諾
+    yue_Hans: 苏诺
+  comments:
+  type: city_with_county_rights
+SN:
+  name: Sopron
+  code: SN
+  unofficial_names: Sopron
+  geo:
+    latitude: 47.68166189999999
+    longitude: 16.5844795
+    min_latitude: 47.6267501
+    min_longitude: 16.4215489
+    max_latitude: 47.7590711
+    max_longitude: 16.7462818
+  translations:
+    af: Sopron
+    ar: شوبرون
+    be: Горад Шопран
+    bg: Шопрон
+    ca: Sopron
+    cs: Sopron
+    da: Sopron
+    de: Sopron
+    el: Σόπρον
+    en: Sopron
+    es: Sopron
+    et: Sopron
+    eu: Sopron
+    fa: شپرن
+    fi: Sopron
+    fr: Sopron
+    gl: Sopron
+    he: שופרון
+    hi: सोपरोन
+    hr: Šopron
+    hu: Sopron
+    hy: Շոպրոն
+    id: Sopron
+    it: Sopron
+    ja: ショプロン
+    ka: შოპრონი
+    ko: 쇼프론
+    lt: Šopronas
+    lv: Šoprona
+    ms: Sopron
+    nb: Sopron
+    nl: Sopron
+    pl: Sopron
+    pt: Sopron
+    ro: Sopron
+    ru: Шопрон
+    sk: Šopron
+    sl: Šopron
+    sr: Шопрон
+    sv: Sopron
+    tr: Sopron
+    uk: Шопрон
+    vi: Sopron
+    ceb: Sopron
+    sr_Latn: Šopron
+    zh: 肖普朗
+    ccp: "\U00011125\U00011127\U0001111B\U00011133\U00011122\U00011127\U0001112E\U0001111A\U00011134"
+    kk: Шопрон
+    az: Şopron
+    mk: Шопрон
+    'no': Sopron
+    cy: Sopron
+  comments:
+  type: city_with_county_rights
+SO:
+  name: Somogy
+  code: SO
+  unofficial_names: Somogy
+  geo:
+    latitude: 46.554859
+    longitude: 17.5866732
+    min_latitude: 45.848009
+    min_longitude: 16.8751449
+    max_latitude: 46.997146
+    max_longitude: 18.2128418
+  translations:
+    ar: مقاطعة شومود
+    bg: Шомод
+    bn: সোমোগি কাউন্টি
+    ca: Somogy
+    cs: Somogy
+    da: Somogy
+    de: Komitat Somogy
+    el: Σομόγκι
+    en: Somogy
+    es: Somogy
+    et: Somogyi komitaat
+    eu: Somogy
+    fa: سوموگی
+    fi: Somogy
+    fr: Somogy
+    gl: Somogy
+    gu: સોમોગી કાઉન્ટી
+    he: שומוג׳
+    hi: सोमोगी काउंटी
+    hr: Šomođska županija
+    hu: Somogy megye
+    hy: Սոմոգի
+    id: Somogy
+    it: Provincia di Somogy
+    ja: ショモジ県
+    ka: შომოდის მედიე
+    kn: ಸೊಮೊಗಿ ಕೌಂಟಿ
+    ko: 쇼모지 주
+    lt: Šomodis
+    lv: Šomoģas meģe
+    mr: सोमोगी काउंटी
+    ms: Somogy
+    nb: Saomogy fylke
+    nl: Somogy
+    pl: Komitat Somogy
+    pt: Somogy
+    ro: Județul Somogy
+    ru: Шомодь
+    si: සොමෝගී ප්‍රාන්තය
+    sk: Šomoďská župa
+    sl: Šomodska županija
+    sr: Шомођ
+    sv: Somogy
+    sw: Somogy
+    ta: சோமோகி கவுண்டி
+    te: సోమోగి కౌంటీ
+    th: เขตปกครองโซโมกี
+    tr: Somogy ili
+    uk: Шомодь
+    ur: شوموج کاؤنٹی
+    vi: Hạt Somogy
+    sr_Latn: Šomođ
+    zh: 紹莫吉州
+    ccp: "\U00011125\U0001112E\U0001111F\U0001112E\U00011109\U0001112D"
+    mn: Шомодь
+    be: медзье Шомадзь
+    mk: Шомоѓ
+    'no': Saomogy fylke
+    az: Şomod
+    cy: Sir Somogy
+  comments:
+  type: county
+SS:
+  name: Szekszárd
+  code: SS
+  unofficial_names: Szekszárd
+  geo:
+    latitude: 46.3474326
+    longitude: 18.7062293
+    min_latitude: 46.2943501
+    min_longitude: 18.6108151
+    max_latitude: 46.404041
+    max_longitude: 18.851653
+  translations:
+    ar: سكسارد
+    be: Горад Сексард
+    bg: Сексард
+    bn: শেকজাদ
+    ca: Szekszárd
+    cs: Szekszárd
+    da: Szekszárd
+    de: Szekszárd
+    el: Σέξαρντ (Σέκσαρντ)
+    en: Szekszárd
+    es: Szekszárd
+    et: Szekszárd
+    eu: Szekszárd
+    fa: سکسارد
+    fi: Szekszárd
+    fr: Szekszárd
+    gl: Szekszárd
+    gu: જ઼ેક્સર્ડ
+    he: סקסארד
+    hi: सज़एक्सजार्ड
+    hr: Szekszárd
+    hu: Szekszárd
+    hy: Սեկսարդ
+    id: Szekszárd
+    it: Szekszárd
+    ja: セクサールド
+    kn: ಝೆಕ್ಸ್ಕ್ಸ್ಝರ್ಡ್
+    ko: 섹사르드
+    lt: Seksardas
+    mr: झेकसर्ड
+    ms: Szekszárd
+    nb: Szekszárd
+    nl: Szekszárd
+    pl: Szekszárd
+    pt: Szekszárd
+    ro: Szekszárd
+    ru: Сексард
+    si: සෙක්සාර්ඩ්
+    sk: Szekszárd
+    sl: Szekszárd
+    sr: Сексард
+    sv: Szekszárd
+    sw: Szekszárd
+    ta: ஸிக்ஸ்ர்டு
+    te: సెక్జార్డ్
+    th: เซคซาร์ด
+    tr: Szekszárd
+    uk: Сексард
+    ur: زیکسارڈ
+    vi: Szekszárd
+    lv: Seksārda
+    cy: Szekszárd
+    ceb: Szekszárd
+    sr_Latn: Seksard
+    zh: 塞克薩德
+    ccp: "\U0001110E\U0001112C\U00011107\U00011134\U0001110E\U00011122\U00011134\U00011113\U00011134"
+    az: Seksard
+    mk: Сексард
+    'no': Szekszárd
+  comments:
+  type: city_with_county_rights
+ST:
+  name: Salgótarján
+  code: ST
+  unofficial_names: Salgótarján
+  geo:
+    latitude: 48.0935237
+    longitude: 19.7999813
+    min_latitude: 48.039501
+    min_longitude: 19.7267319
+    max_latitude: 48.178421
+    max_longitude: 19.9221181
+  translations:
+    ar: سالجوتارجان
+    bg: Шалготарян
+    bn: সাল্গোতারিয়ান
+    ca: Salgótarján
+    cs: Salgótarján
+    da: Salgótarján
+    de: Salgótarján
+    el: Σαλγκόταριαν
+    en: Salgótarján
+    es: Salgótarján
+    et: Salgótarján
+    eu: Salgótarján
+    fa: شالگوتاریان
+    fi: Salgótarján
+    fr: Salgótarján
+    gl: Salgótarján
+    gu: સાલ્ગોટાર્જાન
+    he: שאלגוטאריאן
+    hi: साल्गोटार्जन
+    hr: Salgótarján
+    hu: Salgótarján
+    id: Salgótarján
+    it: Salgótarján
+    ja: シャルゴータルヤーン
+    ka: შალგოტარიანი
+    kn: ಸಾಲ್ಗೋಟಾರ್ಜಾನ್
+    ko: 셜고터랸
+    lt: Šalgotarjanas
+    mr: सलगोर्त्जन
+    ms: Salgótarján
+    nb: Salgótarján
+    nl: Salgótarján
+    pl: Salgótarján
+    pt: Salgótarján
+    ro: Salgótarján
+    ru: Шальготарьян
+    si: සල්ගෝටර්ජාන්
+    sk: Salgótarján
+    sl: Salgótarján
+    sr: Шалготарјан
+    sv: Salgótarján
+    sw: Salgótarján
+    ta: சால்கோடர்ஜான்
+    te: సాల్గొటార్జన్
+    th: ซาลโกทาจาน
+    tr: Salgótarján
+    uk: Шалґотарʼян
+    ur: سالجوتارجان
+    vi: Salgótarján
+    lv: Šalgotarjana
+    cy: Salgótarján
+    ceb: Salgótarján
+    sr_Latn: Šalgotarjan
+    zh: 紹爾戈陶爾揚
+    ccp: "\U00011125\U00011123\U00011134\U00011109\U0001112E\U00011111\U00011122\U00011134\U0001110E\U0001111A\U00011134"
+    az: Şalqotariyan
+    mk: Шалготарјан
+    'no': Salgótarján
+  comments:
+  type: city_with_county_rights
+SZ:
+  name: Szabolcs-Szatmár-Bereg
+  code: SZ
+  unofficial_names: Szabolcs-Szatmár-Bereg
+  geo:
+    latitude: 48.0394954
+    longitude: 22.00333
+    min_latitude: 47.5916749
+    min_longitude: 21.0789789
+    max_latitude: 48.4256611
+    max_longitude: 22.896544
+  translations:
+    ar: مقاطعة زابولكس-زاتمار-بيريج
+    bg: Саболч-Сатмар-Берег
+    bn: যাবলচেস-যাত্মার-বেরেগ কাউন্টি
+    ca: Szabolcs-Szatmár-Bereg
+    cs: Szabolcs-Szatmár-Bereg
+    da: Szabolcs-Szatmár-Bereg
+    de: Komitat Szabolcs-Szatmár-Bereg
+    el: Σζαμπόλκς-Σζατμάρ-Μπερέκ
+    en: Szabolcs-Szatmár-Bereg
+    es: Szabolcs-Szatmár-Bereg
+    et: Szabolcs-Szatmár-Beregi komitaat
+    eu: Szabolcs-Szatmár-Bereg
+    fa: زابولکس-زاتمار-بریج
+    fi: Szabolcs-Szatmár-Bereg
+    fr: Szabolcs-Szatmár-Bereg
+    gl: Szabolcs-Szatmár-Bereg
+    gu: ઝાબોલ્ક્સ-ઝાટમાર-બેરેગ કાઉન્ટી
+    he: סאבולץ׳-סאטמר-ברג
+    hi: सबोल्ट-सतमार-बेरेग काउंटी
+    hr: Szabolčko-szatmársko-bereška županija
+    hu: Szabolcs-Szatmár-Bereg megye
+    id: Szabolcs-Szatmár-Bereg
+    it: Provincia di Szabolcs-Szatmár-Bereg
+    ja: サボルチ・サトマール・ベレグ県
+    ka: საბოლჩ-სატმარ-ბერეგის მედიე
+    kn: ಸ್ಝಾಬಾಲ್ಕ್ಸ್-ಸ್ಜತ್ಮಾರ್-ಬೆರೆಗ್ ಕೌಂಟಿಯು
+    ko: 서볼치서트마르베레그 주
+    lt: Sabolčas-Satmaras-Beregas
+    lv: Sabolčas-Satmāras-Beregas meģe
+    mr: स्झबॉल्क्स-झाटमार-बेयग काउंटी
+    ms: Szabolcs-Szatmár-Bereg
+    nb: Szaboles Szatmar Bereg fylke
+    nl: Szabolcs-Szatmár-Bereg
+    pl: Komitat Szabolcs-Szatmár-Bereg
+    pt: Szabolcs-Szatmár-Bereg
+    ro: Județul Szabolcs-Szatmár-Bereg
+    ru: Сабольч-Сатмар-Берег
+    si: ස්කබෝල්ක්ස්-සට්මාර්-බෙරෙග් ප්‍රාන්තය
+    sk: Sabolčsko-satmársko-berežská župa
+    sl: Županija Szabolcs-Szatmár-Bereg
+    sr: Саболч-Сатмар-Берег
+    sv: Szabolcs-Szatmár-Bereg
+    sw: Szabolcs-Szatmár-Bereg
+    ta: சசபல்க்ஸ் -சசாத்மர்-பேரெக் கவுண்டி
+    te: జాబోల్క్-సాట్మర్-బెరెగ్ కౌంటీ
+    th: สซาบอค ซแซทมาร์ เบเรค
+    tr: Szabolcs-Szatmár-Bereg ili
+    uk: Саболч-Сатмар-Береґ
+    ur: سابولچ-ساتمار-بیریگ کاؤنٹی
+    vi: Hạt Szabolcs-Szatmár-Bereg
+    ceb: Szabolcs-Szatmár-Bereg
+    sr_Latn: Sabolč-Satmar-Bereg
+    zh: 索博爾奇-索特馬爾-貝拉格州
+    ccp: "\U0001110E\U0001111D\U0001112E\U00011123\U00011134\U00011107\U00011134-\U0001110E\U00011116\U00011134\U0001111F\U00011122\U00011134-\U0001111D\U0001112C\U00011122\U0001112C\U00011107\U00011134"
+    hy: Սաբոլճ-Սատմար-Բերեգ շրջան
+    az: Sabolç-Satmar-Bereq
+    be: Сабальч-Сатмар-Берэг
+    mk: Саболч-Сатмар-Берег
+    'no': Szaboles Szatmar Bereg fylke
+    cy: Sir Szabolcs-Szatmár-Bereg
+  comments:
+  type: county
+TB:
+  name: Tatabánya
+  code: TB
+  unofficial_names: Tatabánya
+  geo:
+    latitude: 47.569246
+    longitude: 18.404818
+    min_latitude: 47.48642599999999
+    min_longitude: 18.3379901
+    max_latitude: 47.6096499
+    max_longitude: 18.4973549
+  translations:
+    ar: تاتابانيا
+    be: Горад Татабанья
+    bg: Татабаня
+    bn: তাতাবানায়ান
+    ca: Tatabánya
+    cs: Tatabánya
+    da: Tatabánya
+    de: Tatabánya
+    el: Ταταμπάνια
+    en: Tatabánya
+    es: Tatabánya
+    et: Tatabánya
+    eu: Tatabánya
+    fa: تاتابانیا
+    fi: Tatabánya
+    fr: Tatabánya
+    gl: Tatabánya
+    gu: તતાબાન્યા
+    he: טטבאניה
+    hi: ताताबनया
+    hu: Tatabánya
+    id: Tatabánya
+    it: Tatabánya
+    ja: タタバーニャ
+    ka: ტატაბანია
+    kn: ಟಾಟಾಬನ್ಯ
+    ko: 터터바녀
+    lt: Tatabania
+    mr: तत्ताब्यआ
+    ms: Tatabánya
+    nb: Tatabanya
+    nl: Tatabánya
+    pl: Tatabánya
+    pt: Tatabánya
+    ro: Tatabánya
+    ru: Татабанья
+    si: ටටබන්යා
+    sk: Tatabánya
+    sl: Tatabánya
+    sr: Татабања
+    sv: Tatabánya
+    sw: Tatabánya
+    ta: டாடாபான்யா
+    te: తాతబన్యా
+    th: ทาทาบันย่า
+    tr: Tatabánya
+    uk: Татабанья
+    ur: تاتابانیا
+    vi: Tatabánya
+    lv: Tatabāņa
+    cy: Tatabánya
+    ceb: Tatabánya
+    sr_Latn: Tatabanja
+    zh: 陶陶巴尼奧
+    ccp: "\U00011111\U00011111\U0001111D\U0001111A\U00011128\U00011120"
+    hy: Թաթաբանյա
+    hr: Tatabánya
+    az: Tatabanya
+    mk: Татабања
+    'no': Tatabanya
+    kk: Татабанья
+  comments:
+  type: city_with_county_rights
+TO:
+  name: Tolna
+  code: TO
+  unofficial_names: Tolna
+  geo:
+    latitude: 46.4258265
+    longitude: 18.7752069
+    min_latitude: 46.3655339
+    min_longitude: 18.7066851
+    max_latitude: 46.5007989
+    max_longitude: 18.8259278
+  translations:
+    ar: مقاطعة تولنا
+    be: медзье Тольна
+    bg: Толна
+    bn: টোলনা কাউন্টি
+    ca: Tolna
+    cs: Tolna
+    da: Tolna
+    de: Komitat Tolna
+    el: Κομητεία Τόλνα
+    en: Tolna
+    es: Tolna
+    et: Tolna komitaat
+    eu: Tolna
+    fa: تولنا
+    fi: Tolna
+    fr: Tolna
+    gl: Condado de Tolna
+    gu: ટોલના કાઉન્ટી
+    he: מחוז טולנה
+    hi: टोलना काउंटी
+    hr: Tolnanska županija
+    hu: Tolna megye
+    id: Tolna
+    it: Provincia di Tolna
+    ja: トルナ県
+    ka: ტოლნის მედიე
+    kn: ಟೋಲ್ನಾ ಕೌಂಟಿ
+    ko: 톨너 주
+    lt: Tolna
+    lv: Tolnas meģe
+    mr: टोलना काउंटी
+    ms: Tolna
+    nb: Tolna Fylke
+    nl: Tolna
+    pl: Komitat Tolna
+    pt: Tolna
+    ro: Județul Tolna
+    ru: Тольна
+    si: ටොල්නා ප්‍රාන්තය
+    sk: Tolnianska župa
+    sl: Tolna
+    sr: Толна
+    sv: Tolna
+    sw: Tolna
+    ta: தொல்ந கவுண்டி
+    te: టోల్నా కౌంటీ
+    th: มณฑลโตลน่า
+    tr: Tolna ili
+    uk: Толна
+    ur: تولنا کاؤنٹی
+    vi: Hạt Tolna
+    ceb: Tolna megye
+    sr_Latn: Tolna
+    zh: 托爾瑙州
+    ccp: "\U00011111\U0001112E\U00011123\U00011134\U0001111A"
+    mk: Толна
+    'no': Tolna Fylke
+    az: Tolna
+    cy: Sir Tolna
+  comments:
+  type: county
+VA:
+  name: Vas
+  code: VA
+  unofficial_names: Vas
+  geo:
+    latitude: 47.09291109999999
+    longitude: 16.6812183
+    min_latitude: 46.714203
+    min_longitude: 16.1138579
+    max_latitude: 47.460547
+    max_longitude: 17.295531
+  translations:
+    ar: مقاطعة فاس
+    be: Ваш
+    bg: Ваш
+    bn: ভাস কাউন্টি
+    ca: Vas
+    cs: Vas
+    da: Vas
+    de: Komitat Vas
+    el: Βας
+    en: Vas
+    es: Vas
+    et: Vasi komitaat
+    eu: Vas konderria
+    fa: شهرستان واس
+    fi: Vas
+    fr: Vas
+    gl: Vas
+    gu: વાસ કાઉન્ટી
+    he: מחוז ואש
+    hi: वास काउंटी
+    hr: Željezna županija
+    hu: Vas megye
+    hy: Վաս
+    id: Vas
+    it: Provincia di Vas
+    ja: ヴァシュ県
+    ka: ვაშის მედიე
+    kn: ವಾಸ್ ಕೌಂಟಿ
+    ko: 버시 주
+    lt: Vašas
+    lv: Vašas meģe
+    mr: वास काउंटी
+    ms: Vas
+    nb: Vas Fylke
+    nl: Vas
+    pl: Komitat Vas
+    pt: Vas
+    ro: Județul Vas
+    ru: Ваш
+    si: වාස් ප්‍රාන්තය
+    sk: Vašská župa
+    sl: Železna županija
+    sr: Ваш
+    sv: Vas
+    sw: Vas
+    ta: வாஸ் கவுண்டி
+    te: వాస్ కౌంటీ
+    th: เขตปกครองแวส
+    tr: Vas ili
+    uk: Ваш
+    ur: واش کاؤنٹی
+    vi: Hạt Vas
+    ceb: Vas megye
+    sr_Latn: Vaš
+    zh: 沃什州
+    ccp: "\U0001111E\U0001110C\U00011134"
+    mn: Ваш
+    mk: Ваш
+    'no': Vas Fylke
+    az: Vaş medyesi
+    cy: Sir Vas
+  comments:
+  type: county
+VE:
+  name: Veszprém
+  code: VE
+  unofficial_names: Veszprém
+  geo:
+    latitude: 47.1028087
+    longitude: 17.9093019
+    min_latitude: 47.0459651
+    min_longitude: 17.8207858
+    max_latitude: 47.205633
+    max_longitude: 17.9937111
+  translations:
+    ar: مقاطعة فسبرم
+    be: Веспрэм
+    bg: Веспрем
+    bn: ভেস্প্রেম কাউন্টি
+    ca: Veszprém
+    cs: Veszprém
+    da: Veszprém
+    de: Komitat Veszprém
+    el: Κομητεία Βετσπρέμ
+    en: Veszprém County
+    es: Veszprém
+    et: Veszprémi komitaat
+    eu: Veszprém
+    fa: وزپریم
+    fi: Veszprém
+    fr: Veszprém
+    gl: Condado de Veszprém
+    gu: વેસ્ઝપ્રેમ કાઉન્ટી
+    he: מחוז וספרם
+    hi: वेस्ज़प्रिम काउंटी
+    hr: Vesprimska županija
+    hu: Veszprém megye
+    id: Veszprém
+    it: Provincia di Veszprém
+    ja: ヴェスプレーム県
+    ka: ვესპრემის მედიე
+    kn: ವೆಸ್ಜ್ಪ್ರೆಮ್ ಕೌಂಟಿ
+    ko: 베스프렘 주
+    lt: Vesprėmas
+    lv: Vesprēmas meģe
+    mr: वेस्झप्रिम काउंटी
+    ms: Veszprém
+    nb: Veszprém
+    nl: Veszprém
+    pl: Komitat Veszprém
+    pt: Veszprém
+    ro: Județul Veszprém
+    ru: Веспрем
+    si: වෙස්ප්‍රේම් ප්‍රාන්තය
+    sk: Vesprémska župa
+    sl: Veszprém
+    sr: Веспрем
+    sv: Veszprém
+    sw: Veszprém
+    ta: வெஸ்ஸ்ப்ரேம் கவுண்டி
+    te: వెస్‌ప్రెమ్ కౌంటీ
+    th: เวซสเพรม คันทรี่
+    tr: Veszprém ili
+    uk: Веспрем
+    ur: ویسپریم کاؤنٹی
+    vi: Hạt Veszprém
+    ceb: Veszprém megye
+    sr_Latn: Vesprem
+    zh: 維斯普雷姆州
+    ccp: "\U0001111E\U0001112C\U0001110C\U00011134\U0001111B\U00011133\U00011122\U0001112C\U0001111F\U00011134
+      \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    mk: Веспрем
+    'no': Veszprém
+    az: Vesprem²
+    cy: Sir Veszprém
+    hy: Վեսպրեմ²
+  comments:
+  type: county
+VM:
+  name: Veszprém
+  code: VM
+  unofficial_names: Veszprém
+  geo:
+    latitude: 47.1028087
+    longitude: 17.9093019
+    min_latitude: 47.0459651
+    min_longitude: 17.8207858
+    max_latitude: 47.205633
+    max_longitude: 17.9937111
+  translations:
+    ar: فيسبرم
+    az: Vesprem
+    be: Горад Веспрэм
+    bg: Веспрем²
+    bn: ভেসপ্রেম
+    ca: Veszprém²
+    cs: Veszprém²
+    da: Veszprém²
+    de: Veszprém
+    el: Βεσζπρέμ
+    en: Veszprém
+    es: Veszprém²
+    et: Veszprém
+    eu: Veszprém²
+    fa: وسپریم
+    fi: Veszprém²
+    fr: Veszprém²
+    gl: Veszprém
+    gu: વેસ્ઝપ્રેમ
+    he: וספרם
+    hi: वेस्ज़प्रेम
+    hr: Vesprim
+    hu: Veszprém
+    hy: Վեսպրեմ
+    id: Veszprém²
+    it: Veszprém
+    ja: ヴェスプレーム
+    ka: ვესპრემი
+    kn: ವೆಸ್ಜ್ಪ್ರೆಮ್
+    ko: 베스프렘
+    lt: Vesprėmas²
+    mr: वेसीझप्रेम
+    ms: Veszprém²
+    nb: Veszprém
+    nl: Veszprém²
+    pl: Veszprém
+    pt: Veszprém²
+    ro: Veszprém
+    ru: Веспрем²
+    si: වෙස්ප්‍රේම්
+    sk: Vesprém
+    sl: Veszprém²
+    sr: Веспрем²
+    sv: Veszprém²
+    sw: Veszprém²
+    ta: வெஸ்பிரேம்
+    te: వేస్జ్ ప్రేమ్
+    th: เวสเปรม
+    tr: Veszprém
+    uk: Веспрем²
+    ur: ویسزپریم
+    vi: Veszprém
+    lv: Vesprēma
+    cy: Veszprém
+    ceb: Veszprém
+    sr_Latn: Vesprem²
+    zh: 維斯普雷姆
+    ccp: "\U0001111E\U0001112C\U0001110C\U00011134\U0001111B\U00011133\U00011122\U0001112C\U0001111F\U00011134"
+    mk: Веспрем²
+    'no': Veszprém²
+  comments:
+  type: city_with_county_rights
+ZA:
+  name: Zala
+  code: ZA
+  unofficial_names: Zala
+  geo:
+    latitude: 46.73844039999999
+    longitude: 16.9152252
+    min_latitude: 46.290997
+    min_longitude: 16.361846
+    max_latitude: 47.048693
+    max_longitude: 17.3809683
+  translations:
+    en: Zala
+    ar: مقاطعة زالا
+    bg: Зала
+    bn: জালা কাউন্টি
+    ca: Zala
+    cs: Zala
+    da: Zala
+    de: Komitat Zala
+    el: Ζάλα
+    es: Zala
+    et: Zala komitaat
+    eu: Zala konderria
+    fa: زالا
+    fi: Zala
+    fr: Zala
+    gl: Zala
+    gu: ઝાલા કાઉન્ટી
+    he: זאלה
+    hi: ज़ला काउंटी
+    hr: Zalska županija
+    hu: Zala megye
+    id: Zala
+    it: Provincia di Zala
+    ja: ザラ県
+    ka: ზალის მედიე
+    kn: ಝಲಾ ಕೌಂಟಿ
+    ko: 절러 주
+    lt: Zala
+    lv: Zalas meģe
+    mr: झला काउंटी
+    ms: Zala
+    nb: Zala Fylke
+    nl: Zala
+    pl: Komitat Zala
+    pt: Zala
+    ro: Județul Zala
+    ru: Зала
+    si: සාලා ප්‍රාන්තය
+    sk: Zalianska župa
+    sl: Zala
+    sr: Зала
+    sv: Zala
+    sw: Zala
+    ta: சாலா கவுண்டி
+    te: జాలా కౌంటీ
+    th: เขตปกครองซาล่า
+    tr: Zala ili
+    uk: Зала
+    ur: زالا کاؤنٹی
+    vi: Hạt Zala
+    ceb: Zala megye
+    sr_Latn: Zala
+    zh: 佐洛州
+    ccp: "\U0001110E\U00011123"
+    mn: Зала
+    mk: Зала
+    'no': Zala Fylke
+    az: Zala
+    be: медзье Зала
+    cy: Sir Zala
+  comments:
+  type: county
+ZE:
+  name: Zalaegerszeg
+  code: ZE
+  unofficial_names: Zalaegerszeg
+  geo:
+    latitude: 46.8416936
+    longitude: 16.8416322
+    min_latitude: 46.780261
+    min_longitude: 16.768593
+    max_latitude: 46.90018389999999
+    max_longitude: 16.90627
+  translations:
+    en: Zalaegerszeg
+    ar: زالاجيرسيج
+    be: Горад Залаэгерсег
+    bg: Залаегерсег
+    bn: জালায়েসেগ
+    ca: Zalaegerszeg
+    cs: Zalaegerszeg
+    da: Zalaegerszeg
+    de: Zalaegerszeg
+    el: Ζάλαεγκερσεγκ
+    es: Zalaegerszeg
+    et: Zalaegerszeg
+    eu: Zalaegerszeg
+    fa: زالائگرسگ
+    fi: Zalaegerszeg
+    fr: Zalaegerszeg
+    gl: Zalaegerszeg
+    gu: ઝલાગેર્ઝેગ
+    he: זאלאגרסג
+    hi: ज़लाइजर्सजग
+    hr: Jegersek
+    hu: Zalaegerszeg
+    hy: Զալաեգերսեգ
+    id: Zalaegerszeg
+    it: Zalaegerszeg
+    ja: ザラエゲルセグ
+    ka: ზალაეგერსეგი
+    kn: ಝಲೇಜೆರ್ಜೆಗ್
+    ko: 절러에게르세그
+    lt: Zalaegersegas
+    mr: झलागेर्सेझेग
+    ms: Zalaegerszeg
+    nb: Zalaegerszeg
+    nl: Zalaegerszeg
+    pl: Zalaegerszeg
+    pt: Zalaegerszeg
+    ro: Zalaegerszeg
+    ru: Залаэгерсег
+    si: සලගර්සෙග්
+    sk: Zalaegerszeg
+    sl: Zalaegerszeg
+    sr: Залаегерсег
+    sv: Zalaegerszeg
+    sw: Zalaegerszeg
+    ta: சாக்லேகெர்செக்
+    te: జలయెజెర్సజగ్
+    th: ซาลาเอแกร์เซก.
+    tr: Zalaegerszeg
+    uk: Залаеґерсеґ
+    ur: زالایجیرسزیج
+    vi: Zalaegerszeg
+    lv: Zalaegersega
+    cy: Zalaegerszeg
+    ceb: Zalaegerszeg
+    sr_Latn: Zalaegerseg
+    zh: 佐洛埃格塞格
+    ccp: "\U0001110E\U00011123\U0001110E\U0001112C\U00011122\U00011134\U0001110E\U0001112C\U00011107\U00011134"
+    az: Zalaeqerseq
+    mk: Залаегерсег
+    'no': Zalaegerszeg
+  comments:
+  type: city_with_county_rights

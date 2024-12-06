@@ -1,0 +1,67 @@
+---
+FI:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: FI
+  alpha3: FIN
+  continent: Europe
+  country_code: '358'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: FI
+  geo:
+    latitude: 61.92410999999999
+    longitude: 25.7481511
+    max_latitude: 70.0922932
+    max_longitude: 31.5870999
+    min_latitude: 59.693623
+    min_longitude: 20.4565002
+    bounds:
+      northeast:
+        lat: 70.0922932
+        lng: 31.5870999
+      southwest:
+        lat: 59.693623
+        lng: 20.4565002
+  international_prefix: '00'
+  ioc: FIN
+  iso_long_name: The Republic of Finland
+  iso_short_name: Finland
+  languages_official:
+  - fi
+  - sv
+  languages_spoken:
+  - fi
+  - sv
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Finnish
+  number: '246'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: FI
+  unofficial_names:
+  - Finland
+  - Finnland
+  - Finlande
+  - Finlandia
+  - フィンランド
+  vat_rates:
+    standard: 24
+    reduced:
+    - 10
+    - 14
+    super_reduced:
+    parking:
+  world_region: EMEA

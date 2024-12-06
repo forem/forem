@@ -1,0 +1,25 @@
+PATH
+  remote: .
+  specs:
+    sterile (1.0.26)
+      nokogiri (>= 1.11.7)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.18.0)
+    nokogiri (1.14.3-arm64-darwin)
+      racc (~> 1.4)
+    racc (1.6.2)
+    rake (13.0.6)
+
+PLATFORMS
+  arm64-darwin-22
+
+DEPENDENCIES
+  minitest
+  rake
+  sterile!
+
+BUNDLED WITH
+   2.4.6

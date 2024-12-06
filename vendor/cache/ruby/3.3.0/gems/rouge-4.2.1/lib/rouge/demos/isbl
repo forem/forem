@@ -1,0 +1,4 @@
+NameReq = Object.Requisites(SYSREQ_NAME)
+if Assigned(NameReq.AsString)
+  ShowMessage("Привет мир")
+endif

@@ -1,0 +1,49 @@
+---
+BD:
+  alpha2: BD
+  alpha3: BGD
+  continent: Asia
+  country_code: '880'
+  currency_code: BDT
+  distance_unit: KM
+  gec: BG
+  geo:
+    latitude: 23.684994
+    longitude: 90.356331
+    max_latitude: 26.633914
+    max_longitude: 92.6801153
+    min_latitude: 20.3794
+    min_longitude: 88.00861410000002
+    bounds:
+      northeast:
+        lat: 26.633914
+        lng: 92.6801153
+      southwest:
+        lat: 20.3794
+        lng: 88.00861410000002
+  international_prefix: '00'
+  ioc: BAN
+  iso_long_name: The People's Republic of Bangladesh
+  iso_short_name: Bangladesh
+  languages_official:
+  - bn
+  languages_spoken:
+  - bn
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: '0'
+  nationality: Bangladeshi
+  number: '050'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Asia
+  start_of_week: sunday
+  subregion: Southern Asia
+  un_locode: BD
+  unofficial_names:
+  - Bangladesh
+  - Bangladesch
+  - バングラデシュ
+  world_region: APAC

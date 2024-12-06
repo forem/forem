@@ -1,0 +1,9 @@
+class <%= migration_class_name %> < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :field_test_events do |t|
+      t.references :field_test_membership
+      t.string :name
+      t.datetime :created_at
+    end
+  end
+end

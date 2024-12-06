@@ -1,0 +1,9 @@
+{% include 'header.html' %}
+
+{% for user in users %}
+  * {{ user.name }}
+{% else %}
+  No users have been found.
+{% endfor %}
+
+{% include 'footer.html' %}

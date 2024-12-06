@@ -1,0 +1,56 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        module Providers
+          class Azure < Base
+            @pipeline_url: String
+            @job_url: String
+
+            def provider_name: () -> "azurepipelines"
+
+            def pipeline_url: () -> String?
+
+            def job_url: () -> String?
+
+            def workspace_path: () -> String?
+
+            def pipeline_id: () -> String?
+
+            def pipeline_number: () -> String?
+
+            def pipeline_name: () -> String?
+
+            def stage_name: () -> String?
+
+            def job_name: () -> String?
+
+            def git_repository_url: () -> String?
+
+            def git_commit_sha: () -> String?
+
+            def git_branch_or_tag: () -> String?
+
+            def git_commit_author_name: () -> String?
+
+            def git_commit_author_email: () -> String?
+
+            def git_commit_message: () -> String?
+
+            def ci_env_vars: () -> String?
+
+            private
+
+            def build_id: () -> String?
+
+            def team_foundation_server_uri: () -> String?
+
+            def team_project_id: () -> String?
+
+            def url_defined?: () -> bool
+          end
+        end
+      end
+    end
+  end
+end

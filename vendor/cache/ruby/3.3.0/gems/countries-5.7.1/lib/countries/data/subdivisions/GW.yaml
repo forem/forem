@@ -1,0 +1,619 @@
+---
+BA:
+  name: Bafatá
+  code: BA
+  unofficial_names: Bafatá
+  geo:
+    latitude: 12.171944
+    longitude: -14.6575
+    min_latitude: 12.1559758
+    min_longitude: -14.6747733
+    max_latitude: 12.2007357
+    max_longitude: -14.6261502
+  translations:
+    en: Bafatá
+    ar: محافظة بافاتا
+    bg: Бафата
+    bn: বোফাতা অঞ্চল
+    ca: Regió de Bafatá
+    cs: Bafatá
+    da: Bafatá Region
+    de: Region Bafatá
+    el: Μπαφατά
+    es: Región de Bafatá
+    fi: Bafatán alue
+    fr: Région Bafatá
+    gu: બફતા પ્રદેશ
+    hi: बफाटा क्षेत्र
+    id: Wilayah Bafatá
+    it: regione di Bafatá
+    ja: バファタ州
+    kn: ಬಫಾಟಾ ಪ್ರದೇಶ
+    ko: 바파타 주
+    lt: Bafatos regionas
+    mr: बाफता प्रदेश
+    ms: Bafata Region
+    nb: Bafatá
+    nl: Bafatá
+    pl: Region Bafatá
+    pt: Bafatá (região)
+    ro: Regiunea Bafatá
+    ru: Бафата
+    si: බෆාටා කලාපය
+    sv: Bafatá (region)
+    ta: பாபாட பகுதி
+    te: బఫాటా ప్రాంతం
+    th: เขตบาฟาตา
+    tr: Bafata Bölgesi
+    uk: Бафата
+    ur: بافاتا ریجن
+    vi: Khu vực Bafatá
+    zh: 巴法塔區
+    lv: Bafatas reģions
+    ceb: Bafatá
+    ccp: "\U0001111D\U0001111C\U00011111"
+    'no': Bafatá
+    fa: ناحیه بافتا
+  comments:
+  type: region
+BL:
+  name: Bolama
+  code: BL
+  unofficial_names: Bolama
+  geo:
+    latitude: 11.5770712
+    longitude: -15.4800382
+    min_latitude: 11.5640396
+    min_longitude: -15.4946602
+    max_latitude: 11.5904801
+    max_longitude: -15.4710599
+  translations:
+    en: Bolama
+    ar: إقليم بولاما
+    bg: Болама
+    bn: বুলামা অঞ্চল
+    ca: Regió de Bolama
+    cs: Bolama
+    da: Bolama Region
+    de: Bolama
+    el: Μπολάμα
+    es: Región de Bolama
+    et: Bolama piirkond
+    fi: Bolaman alue
+    fr: Bolama-Bijagos
+    gu: બોલમા પ્રદેશ
+    hi: बोलामा प्रदेश
+    id: Wilayah Bolama
+    it: regione di Bolama
+    ja: ボラマ州
+    kn: ಬೋಲಾಮಾ ಪ್ರದೇಶ
+    ko: 볼라마 주
+    lt: Bolamos regionas
+    mr: बोलमा प्रदेश
+    ms: Bolama Region
+    nb: Bolama
+    nl: Bolama
+    pl: Region Bolama
+    pt: Bolama
+    ro: Regiunea Bolama
+    ru: Болама
+    si: බොලමා කලාපය
+    sv: Bolama-Bijagós
+    ta: போலாமா பகுதி
+    te: బొలామా ప్రాంతం
+    th: โบลามา
+    tr: Bolama Bölgesi
+    uk: Болама
+    ur: بولاما ریجن
+    vi: Khu vực Bolama
+    lv: Bolamas reģions
+    ceb: Bolama
+    zh: 博拉馬區
+    ccp: "\U0001111D\U00011127\U00011123\U0001111F"
+    'no': Bolama
+    fa: ناحیه بولاما
+  comments:
+  type: region
+BM:
+  name: Biombo
+  code: BM
+  unofficial_names: Biombo
+  geo:
+    latitude: 11.8529061
+    longitude: -15.7351171
+    min_latitude: 11.7364393
+    min_longitude: -15.9681988
+    max_latitude: 12.026648
+    max_longitude: -15.6145911
+  translations:
+    en: Biombo
+    ar: إقليم بيومبو
+    bg: Биомбо
+    bn: বায়োম্বু অঞ্চল
+    ca: Regió de Biombo
+    cs: Biombo
+    da: Biombo Region
+    de: Region Biombo
+    el: Μπιόμπο
+    es: Región de Biombo
+    fi: Biombon alue
+    fr: Biombo
+    gu: બિમ્બો પ્રદેશ
+    hi: बिओम्बो प्रदेश
+    id: Wilayah Biombo
+    it: regione di Biombo
+    ja: ビオンボ州
+    kn: ಬಯೋಂಬೊ ಪ್ರದೇಶ
+    ko: 비옴부 주
+    lt: Biombo regionas
+    mr: जीवपो प्रदेश
+    ms: Biombo Region
+    nb: Biombo
+    nl: Biombo
+    pl: Region Biombo
+    pt: Biombo
+    ro: Regiunea Biombo
+    ru: Биомбо
+    si: බයෝම්බෝ කලාපය
+    sv: Biombo
+    ta: பியம்போ பகுதி
+    te: బయాంబో ప్రాంతం
+    th: เขตบิบอมโบ
+    tr: Biombo Region
+    uk: Біомбо
+    ur: بیومبو ریجن
+    vi: Khu vực Biombo
+    lv: Biombo reģions
+    ceb: Biombo
+    zh: 比翁博區
+    ccp: "\U0001111D\U0001112D\U00011103\U0001112E\U0001111F\U00011134\U0001111D\U0001112E"
+    'no': Biombo
+  comments:
+  type: region
+BS:
+  name: Bissau
+  code: BS
+  unofficial_names: Bissau
+  geo:
+    latitude: 11.8816553
+    longitude: -15.6177942
+    min_latitude: 11.8207819
+    min_longitude: -15.6621402
+    max_latitude: 11.9180031
+    max_longitude: -15.5579567
+  translations:
+    en: Bissau
+    af: Bissau
+    am: ቢሳው
+    ar: بيساو
+    az: Bisau
+    be: Бісау
+    bg: Бисау
+    bn: বিসাউ
+    ca: Bissau
+    cs: Bissau
+    da: Bissau
+    de: Bissau
+    el: Μπισσάου
+    es: Bisáu
+    et: Bissau
+    eu: Bissau
+    fa: بیسائو
+    fi: Bissau
+    fr: Bissau
+    gl: Bissau
+    gu: બિસ્સૌ
+    he: ביסאו
+    hi: बिसाउ
+    hr: Bissau
+    hu: Bissau
+    hy: Բիսաու
+    id: Bissau
+    is: Bissá
+    it: Bissau
+    ja: ビサウ
+    ka: ბისაუ
+    kn: ಬಿಸೌ
+    ko: 비사우
+    lt: Bisau
+    lv: Bisava
+    mn: Биссау
+    mr: बिसाउ
+    ms: Bissau
+    nb: Bissau
+    nl: Bissau
+    pl: Bissau
+    pt: Bissau
+    ro: Bissau
+    ru: Бисау
+    si: බිසවු
+    sk: Bissau
+    sl: Bissau
+    sr: Бисао
+    sv: Bissau
+    sw: Bisau
+    ta: பிசாவு
+    te: బిసావు
+    th: บิสเซา
+    tk: Bissau
+    tr: Bissau
+    uk: Бісау
+    ur: بساؤ
+    vi: Bissau
+    cy: Bissau
+    ceb: Bissau Region
+    sr_Latn: Bisao
+    zh: 比绍
+    yue_Hans: 比绍
+    jv: Bissau
+    sq: Bissau
+    ccp: "\U0001111D\U00011128\U00011125\U0001112A\U00011105\U0001112A"
+    ga: Bissau
+    ky: Бисау
+    so: Bissau
+    pa: ਬਿਸਾਊ
+    kk: Бисау
+    yue: 比紹
+    yo: Bissau
+    uz: Bisau
+    bs: Bissau
+    mk: Бисао
+    'no': Bissau
+    yo_BJ: Bissau
+    ha: Bisau
+    ha_NE: Bisau
+    ps: بیساو
+  comments:
+  type: autonomous_sector
+CA:
+  name: Cacheu
+  code: CA
+  unofficial_names:
+  - Cacheo
+  geo:
+    latitude: 12.2732631
+    longitude: -16.1669156
+    min_latitude: 12.2542116
+    min_longitude: -16.1758661
+    max_latitude: 12.2793106
+    max_longitude: -16.1526919
+  translations:
+    en: Cacheu
+    ar: اقليم كاشيو
+    bg: Кашеу
+    bn: কাচেউ অঞ্চল
+    ca: Regió de Cacheu
+    cs: Cacheu
+    da: Cacheu Region
+    de: Cacheu
+    el: Κάτσεου
+    es: Región de Cacheu
+    fi: Cacheun alue
+    fr: Cacheu
+    gu: કૈચુ પ્રદેશ
+    hi: कैझू प्रदेश
+    id: Wilayah Cacheu
+    it: regione di Cacheu
+    ja: カシェウ州
+    kn: ಕ್ಯಾಚೆ ಪ್ರದೇಶ
+    ko: 카셰우 주
+    lt: Kašeu regionas
+    mr: कचेू प्रदेश
+    ms: Cacheu Region
+    nb: Cacheu
+    nl: Cacheu
+    pl: Region Cacheu
+    pt: Cacheu
+    ro: Regiunea Cacheu
+    ru: Кашеу
+    si: කාචු කලාපය
+    sv: Cacheu
+    ta: காசு பகுதி
+    te: క్యాషూ ప్రాంతం
+    th: เขตแคชู
+    tr: Cacheu
+    ur: کاشیو علاقہ
+    vi: Khu vực Cacheu
+    lv: Kašeu reģions
+    ceb: Cacheu Region
+    zh: 卡謝烏區
+    ccp: "\U00011107\U0001112C\U0001110C\U0001112C\U00011105\U0001112A"
+    uk: Регіон Кашеу
+    'no': Cacheu
+  comments:
+  type: region
+GA:
+  name: Gabú
+  code: GA
+  unofficial_names: Gabú
+  geo:
+    latitude: 11.8962488
+    longitude: -14.1001326
+    min_latitude: 11.56273
+    min_longitude: -14.570715
+    max_latitude: 12.6777339
+    max_longitude: -13.6365221
+  translations:
+    en: Gabú
+    ar: لإقلين غابو
+    bg: Габу
+    bn: গাবু অঞ্চল
+    ca: Regió de Gabú
+    cs: Gabú
+    da: Gabú Region
+    de: Gabú
+    el: Γκαμπού
+    es: Región de Gabú
+    fi: Gabún alue
+    fr: Gabu
+    gu: ગેબૂ પ્રદેશ
+    hi: गाबू क्षेत्र
+    id: Wilayah Gabú
+    it: regione di Gabú
+    ja: ガブ州
+    kn: ಗಾಬು ಪ್ರದೇಶ
+    ko: 가부 주
+    lt: Gabu regionas
+    mr: गॅबू प्रदेश
+    ms: Gabu Region
+    nb: Gabú
+    nl: Gabú
+    pl: Region Gabú
+    pt: Gabu
+    ro: Regiunea Gabú
+    ru: Габу
+    si: ගාබු ප්‍රාන්තය
+    sv: Gabú
+    ta: காபி பகுதி
+    te: గాబు ప్రాంతం
+    th: เขตกาบู
+    tr: Gabu Bölgesi
+    ur: گابو علاقہ
+    vi: Khu vực Gabú
+    lv: Gabu reģions
+    zh: 加布區
+    ccp: "\U00011109\U0001111D\U0001112A"
+    uk: Регіон Габу
+    'no': Gabú
+    ceb: Gabú (rehiyon)
+    fa: ناحیه گابو
+  comments:
+  type: region
+L:
+  name: Leste
+  code: L
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Leste
+    ccp: "\U00011123\U0001112C\U0001110C\U00011134\U00011111\U0001112C"
+    de: Provinz Leste
+    cy: Talaith Leste
+    fa: استان شرقی (گینه بیسائو)
+    ja: 東地方
+    pt: Província Leste
+    ru: Восточная провинция
+  comments:
+  type: province
+N:
+  name: Norte
+  code: N
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Norte
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    de: Provinz Norte
+    ca: província Nord
+    cy: Talaith Norte
+    fa: شمال (گینه بیسائو)
+    ja: 北地方
+    pt: Província Norte
+    ru: Северная провинция
+  comments:
+  type: province
+OI:
+  name: Oio
+  code: OI
+  unofficial_names: Oio
+  geo:
+    latitude: 12.2760709
+    longitude: -15.3131185
+    min_latitude: 11.890556
+    min_longitude: -15.765291
+    max_latitude: 12.680788
+    max_longitude: -14.841685
+  translations:
+    en: Oio
+    ar: إقليم أويو
+    bg: Ойо
+    bn: ওইও অঞ্চল
+    ca: Regió d’Oio
+    cs: Oio
+    da: Oio Region
+    de: Region Oio
+    el: Οίο
+    es: Región de Oio
+    et: Oio piirkond
+    fi: Oion alue
+    fr: Oio
+    gu: ઓઈઓ પ્રદેશ
+    hi: ओइओ क्षेत्र
+    id: Wilayah Oio
+    it: regione di Oio
+    ja: オイオ州
+    kn: ಓಯೊ ಪ್ರದೇಶ
+    ko: 오이우 주
+    lt: Ojo regionas
+    mr: ऑओ प्रदेश
+    ms: Oio Region
+    nb: Oio
+    nl: Oio
+    pl: Region Oio
+    pt: Oio
+    ro: Regiunea Oio
+    ru: Ойо
+    si: ඔයිඕ කලාපය
+    sv: Oio
+    ta: ஒய்யோ பகுதி
+    te: ఓయియో ప్రాంతం
+    th: เขตโอไอโอ
+    tr: Oio Bölgesi
+    ur: ویو ریجن
+    vi: Khu vực Oio
+    lv: Oio reģions
+    ceb: Oio Region
+    zh: 奧約區
+    ccp: "\U00011103\U0001112E\U00011103\U00011130"
+    uk: Ойо
+    'no': Oio
+  comments:
+  type: region
+QU:
+  name: Quinara
+  code: QU
+  unofficial_names: Quinara
+  geo:
+    latitude: 11.795562
+    longitude: -15.1726816
+    min_latitude: 11.3275232
+    min_longitude: -15.6142401
+    max_latitude: 11.9419759
+    max_longitude: -14.8287029
+  translations:
+    en: Quinara
+    ar: إقليم كوينارا
+    bg: Кинара
+    bn: কিনারা অঞ্চল
+    ca: Regió de Quinara
+    cs: Quinara
+    da: Quinara Region
+    de: Region Quinara
+    el: Κουινάρα
+    es: Región de Quinara
+    fi: Quinaran alue
+    fr: Quinara
+    gl: Quinara
+    gu: ક્વિનારા પ્રદેશ
+    hi: क्विनारा क्षेत्र
+    id: Wilayah Quinara
+    it: regione di Quinara
+    ja: キナラ州
+    kn: ಕ್ವಿನಾರ ಪ್ರದೇಶ
+    ko: 키나라 주
+    lt: Kinaros regionas
+    mr: क्युइनारा प्रदेश
+    ms: Quinara Region
+    nb: Quinara
+    nl: Quinara
+    pl: Region Quinara
+    pt: Quinara
+    ro: Regiunea Quinara
+    ru: Кинара
+    si: කුයිනාරා කලාපය
+    sv: Quinara
+    ta: குயினரா பகுதி
+    te: క్వినారా ప్రాంతం
+    th: คิวนารา
+    tr: Quinara Bölgesi
+    ur: کوینارا علاقہ
+    vi: Khu vực Quinara
+    lv: Kinaras reģions
+    ceb: Quinara
+    zh: 基納拉區
+    ccp: "\U00011107\U0001112D\U0001112A\U0001111A\U00011122"
+    uk: Регіон Кінара
+    'no': Quinara
+    fa: ناحیه کوینارا
+  comments:
+  type: region
+S:
+  name: Sul
+  code: S
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Sul
+    ccp: "\U00011125\U00011123\U00011134"
+    de: Provinz Sul
+    cy: Talaith Sul
+    fa: استان جنوبی (گینه بیسائو)
+    pt: Província Sul
+    ru: Южная провинция
+  comments:
+  type: province
+TO:
+  name: Tombali
+  code: TO
+  unofficial_names: Tombali
+  geo:
+    latitude: 11.300838
+    longitude: -15.409939
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Tombali
+    ar: إقليم تومبالي
+    bg: Томбали
+    bn: তুম্বালি অঞ্চল
+    ca: Regió de Tombali
+    cs: Tombali (region)
+    da: Tombali Region
+    de: Region Tombali
+    el: Τόμπαλι
+    es: Región de Tombali
+    fi: Tombalin alue
+    fr: Tombali
+    gu: ટોમ્બાલી પ્રદેશ
+    hi: टॉम्बाली क्षेत्र
+    id: TombaliWilayah
+    it: regione di Tombali
+    ja: トンバリ州
+    kn: ಟೋಂಬಲಿ ಪ್ರದೇಶ
+    ko: 톰발리 주
+    lt: Tombali regionas
+    mr: टोम्बाली प्रदेश
+    ms: Tombali Region
+    nb: Tombali
+    nl: Tombali
+    pl: Region Tombali
+    pt: Tombali
+    ro: Regiunea Tombali
+    ru: Томбали
+    si: ටොම්බලි කලාපය
+    sv: Tombali
+    ta: டொம்பலி பகுதி
+    te: టోంబాలి ప్రాంతం
+    th: ทอมบาลี
+    tr: Tombali Bölgesi
+    ur: تومبالی ریجن
+    vi: Khu vực Tombali
+    lv: Tombali reģions
+    ceb: Tombali
+    zh: 通巴利區
+    ccp: "\U00011111\U0001111F\U00011134\U0001111D\U00011123\U00011128"
+    uk: Район Томбалі
+    'no': Tombali
+    fa: ناحیه تومبالی
+  comments:
+  type: region

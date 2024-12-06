@@ -1,0 +1,27 @@
+<%= form_for @upload, html: {class: "small-form"} do |f| %>
+  <% if @upload.errors.any? %>
+    <div class="alert alert-danger"><%= @upload.errors.full_messages.first %></div>
+  <% elsif !@upload.persisted? %>
+    <p>Create a database table from a CSV file. The table will be created in the <code><%= Blazer.settings["uploads"]["schema"] %></code> schema.</p>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :table %>
+    <%= f.text_field :table, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :description %>
+    <%= f.text_area :description, placeholder: "Optional", style: "height: 60px;", class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :file %>
+    <%= f.file_field :file, accept: "text/csv", style: "margin-top: 6px; margin-bottom: 21px;" %>
+  </div>
+  <p>
+    <% if @upload.persisted? %>
+      <%= link_to "Delete", upload_path(@upload), method: :delete, "data-confirm" => "Are you sure?", class: "btn btn-danger" %>
+    <% end %>
+    <%= f.submit "Save", class: "btn btn-success" %>
+    <%= link_to "Back", :back, class: "btn btn-link" %>
+  </p>
+<% end %>

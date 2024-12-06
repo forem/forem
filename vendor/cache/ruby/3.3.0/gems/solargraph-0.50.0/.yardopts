@@ -1,0 +1,2 @@
+lib/**/*.rb
+-e lib/yard-solargraph.rb

@@ -1,0 +1,47 @@
+---
+ML:
+  alpha2: ML
+  alpha3: MLI
+  continent: Africa
+  country_code: '223'
+  currency_code: XOF
+  distance_unit: KM
+  gec: ML
+  geo:
+    latitude: 17.570692
+    longitude: -3.996166
+    max_latitude: 25.001084
+    max_longitude: 4.267382599999999
+    min_latitude: 10.147811
+    min_longitude: -12.2403447
+    bounds:
+      northeast:
+        lat: 25.001084
+        lng: 4.267382599999999
+      southwest:
+        lat: 10.147811
+        lng: -12.2403447
+  international_prefix: '00'
+  ioc: MLI
+  iso_long_name: The Republic of Mali
+  iso_short_name: Mali
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Malian
+  number: '466'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: ML
+  unofficial_names:
+  - Mali
+  - マリ
+  world_region: EMEA

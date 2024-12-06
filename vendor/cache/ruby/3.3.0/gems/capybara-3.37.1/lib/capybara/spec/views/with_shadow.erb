@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<%# Borrowed from Titus Fortner %>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Shadow DOM</title>
+  </head>
+  <body>
+    <div id="no_host"></div>
+    <div id="shadow_host"></div>
+    <a href="scroll.html">scroll.html</a>
+    <script>
+      let shadowRoot = document.getElementById('shadow_host').attachShadow({mode: 'open'});
+      shadowRoot.innerHTML = `
+              <span class="wrapper" id="shadow_content"><span class="info">some text</span></span>
+              <div id="nested_shadow_host"></div>
+              <a href="scroll.html">scroll.html</a>
+	  		  <div id="controls_wrapper">
+                <input type="text" />
+                <input type="checkbox" id="shadow_checkbox" />
+                <input type="file" />
+	 		  </div>
+            `;
+
+      let nestedShadowRoot = shadowRoot.getElementById('nested_shadow_host').attachShadow({mode: 'open'});
+      nestedShadowRoot.innerHTML = `
+              <div id="nested_shadow_content"><div>nested text</div></div>
+            `;
+    </script>
+  </body>
+</html>

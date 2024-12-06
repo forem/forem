@@ -1,0 +1,13 @@
+data sim;
+    do i = 1 to 100;
+        x1 = rand("Normal");
+        x2 = rand("Binomial", 0.5, 100);
+        output;
+    end;
+run;
+
+proc means data=sashelp.class;
+    class sex;
+    var height weight;
+    output out = mean_by_sex;
+run;

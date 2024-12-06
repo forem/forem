@@ -1,0 +1,8 @@
+; Header comments
+
+#include "definitions.h"
+
+command-keyword-table:  command_handler
+                        foo(min-args:0, max-args:0,; comment
+                            international:,
+                            invalid-syntax: "syntaxtoken" help-text: "helptoken")

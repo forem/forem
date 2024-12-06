@@ -1,0 +1,27 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/io-console-0.7.2/ext/io/console
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+checking for rb_io_path()... yes
+checking for rb_io_descriptor()... yes
+checking for rb_io_get_write_io()... yes
+checking for rb_io_closed_p()... yes
+checking for rb_io_open_descriptor()... yes
+checking for termios.h... yes
+checking for cfmakeraw() in termios.h... yes
+checking for sys/ioctl.h... yes
+checking for HAVE_RUBY_FIBER_SCHEDULER_H... yes
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/io-console-0.7.2/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4ij11i sitelibdir\=./.gem.20241205-149352-4ij11i clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/io-console-0.7.2/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4ij11i sitelibdir\=./.gem.20241205-149352-4ij11i
+compiling console.c
+linking shared-object io/console.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/io-console-0.7.2/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4ij11i sitelibdir\=./.gem.20241205-149352-4ij11i install
+/usr/bin/install -c -m 0755 console.so ./.gem.20241205-149352-4ij11i/io
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/io-console-0.7.2/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-4ij11i sitelibdir\=./.gem.20241205-149352-4ij11i clean

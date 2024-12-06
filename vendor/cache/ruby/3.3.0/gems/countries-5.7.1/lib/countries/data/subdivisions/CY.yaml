@@ -1,0 +1,365 @@
+---
+'01':
+  name: Lefkosia
+  code: '01'
+  unofficial_names: Lefkosia
+  geo:
+    latitude: 35.166667
+    longitude: 33.366667
+    min_latitude: 35.1516702
+    min_longitude: 33.3186151
+    max_latitude: 35.2323172
+    max_longitude: 33.4762216
+  translations:
+    en: Nicosia
+    ar: منطقة نيقوسيا
+    be: Нікосія
+    bg: Никозия
+    ca: Districte de Nicòsia
+    cs: Nikósie
+    de: Bezirk Nikosia
+    el: Επαρχία Λευκωσίας
+    es: Nicosia
+    fa: ناحیه نیکوزیا
+    fi: Nikosian alue
+    fr: district de Nicosie
+    hy: Նիկոսիայի շրջան
+    it: distretto di Nicosia
+    ja: ニコシア地区
+    ka: ნიქოზიის რაიონი
+    ko: 니코시아 구
+    lt: Nikosijos apygarda
+    ms: Daerah Nicosia
+    nb: Nikosia
+    ne: नोकोसिया जिल्ला
+    nl: Nicosia
+    pl: Dystrykt Nikozja
+    pt: Nicósia
+    ro: Districtul Nicosia
+    ru: Никосия
+    sr: Никозија
+    sv: Eparchía Lefkosías
+    th: เขตนิโคเซีย
+    tr: Lefkoşa kazası
+    uk: Нікосія
+    ur: ضلع نیکوسیا
+    vi: Nicosia
+    zh: 尼科西亚区
+    ceb: Eparchía Lefkosías
+    sr_Latn: Nikozija
+    ccp: "\U0001111A\U00011128\U00011107\U0001112E\U00011125\U00011128\U00011120"
+    hu: Nikosia kerület
+    he: מחוז ניקוסיה
+    'no': Nikosia
+    az: Nikosiya rayonu
+    cy: Ardal Nicosia
+    eu: Nikosiako barrutia
+    id: Distrik Nicosia
+    lv: Nikosijas eparhija
+  comments:
+  type: district
+'02':
+  name: Lemesos
+  code: '02'
+  unofficial_names: Lemesos
+  geo:
+    latitude: 34.7071301
+    longitude: 33.0226174
+    min_latitude: 34.6433942
+    min_longitude: 32.986418
+    max_latitude: 34.7400842
+    max_longitude: 33.0705513
+  translations:
+    en: Limassol
+    ar: منطقة ليماسول
+    bg: Лимасол
+    bn: লিমাসোল জেলা
+    ca: Districte de Limassol
+    cs: Lemesos (distrikt)
+    da: Limassol District
+    de: Bezirk Limassol
+    el: Επαρχία Λεμεσού
+    es: Limasol
+    fa: ناحیه لیماسول
+    fi: Limassolin alue
+    fr: district de Limassol
+    gu: લિમાસોલ જિલ્લો
+    he: מחוז לימסול
+    hi: लिमासोल जिला
+    hy: Լիմասոլի շրջան
+    id: Distrik Limassol
+    it: distretto di Limassol
+    ja: リマソール地区
+    ka: ლიმასოლის რაიონი
+    kn: ಲಿಮಾಸಾಲ್ ಜಿಲ್ಲೆ
+    ko: 리마솔 구
+    lt: Limasolio apygarda
+    mr: लिमासोल जिल्हा
+    ms: Daerah Limassol
+    nb: Limassol
+    nl: Limasol
+    pl: Dystrykt Limassol
+    pt: Limassol
+    ro: Districtul Limassol
+    ru: Лимасол
+    si: ලිමස්සොල් දිස්ත්‍රික්කය
+    sr: Лимасол
+    sv: Eparchía Lemesoú
+    ta: லிமஸ்ஸோல் மாவட்டம்
+    te: లిమాసోల్ జిల్లా
+    th: เขตลีมาซอล
+    tr: Limasol Bölgesi
+    uk: Лімасол
+    ur: ضلع لیماسول
+    vi: Quận Limassol
+    lv: Limasolas eparhija
+    ceb: Eparchía Lemesoú
+    sr_Latn: Limasol
+    zh: 利马索尔区
+    ccp: "\U00011123\U00011128\U0001111F\U00011125\U0001112E\U00011123\U00011134"
+    hu: Limassol kerület
+    'no': Limassol
+    az: Limasol rayonu
+    eu: Limasolgo barrutia
+  comments:
+  type: district
+'03':
+  name: Larnaka
+  code: '03'
+  unofficial_names: Larnaka
+  geo:
+    latitude: 34.8507206
+    longitude: 33.4831906
+    min_latitude: 34.7075399
+    min_longitude: 33.125832
+    max_latitude: 35.1124949
+    max_longitude: 33.791904
+  translations:
+    en: Larnaca
+    ar: منطقة لارنكا
+    bg: Ларнака
+    bn: লার্নাকা জেলা
+    ca: Districte de Làrnaca
+    cs: Larnaka
+    da: Larnaca District
+    de: Bezirk Larnaka
+    el: Επαρχία Λάρνακας
+    es: Lárnaca
+    fa: ناحیه لارناکا
+    fi: Larnakan alue
+    fr: district de Larnaca
+    gu: લાર્નાકા જિલ્લો
+    he: מחוז לרנקה
+    hi: लार्नाका जिला
+    hy: Լարնակայի շրջան
+    id: Distrik Larnaca
+    it: distretto di Larnaca
+    ja: ラルナカ地区
+    kn: ಲಾರ್ನಕ ಜಿಲ್ಲೆ
+    ko: 라르나카 구
+    lt: Larnakos apygarda
+    mr: लार्नाका जिल्हा
+    ms: Daerah Larnaca
+    nb: Larnaka
+    nl: Larnaca
+    pl: Dystrykt Larnaka
+    pt: Larnaca
+    ro: Larnaca
+    ru: Ларнака
+    si: ලමකා දිස්ත්‍රික්කය
+    sr: Ларнака
+    sv: Eparchía Lárnakas
+    ta: லார்நக மாவட்டம்
+    te: లార్నాకా జిల్లా
+    th: เขตลาร์นากา
+    tr: Larnaka kazası
+    uk: Ларнака
+    ur: ضلع لارناکا
+    vi: Quận Larnaca
+    lv: Larnakas eparhija
+    ceb: Eparchía Lárnakas
+    sr_Latn: Larnaka
+    zh: 拉纳卡区
+    ccp: "\U00011123\U00011122\U00011134\U0001111A\U00011107"
+    ka: ლარნაკის რაიონი
+    hu: Lárnaka kerület
+    'no': Larnaka
+    eu: Larnakako barrutia
+  comments:
+  type: district
+'04':
+  name: Ammochostos
+  code: '04'
+  unofficial_names: Ammochostos
+  geo:
+    latitude: 35.1149116
+    longitude: 33.919245
+    min_latitude: 35.0780555
+    min_longitude: 33.8847113
+    max_latitude: 35.1608203
+    max_longitude: 33.9829874
+  translations:
+    en: Famagusta
+    ar: منطقة فاماغوستا
+    bg: Фамагуста
+    ca: Districte de Famagusta
+    cs: Gazimağusa
+    de: Bezirk Famagusta
+    el: Επαρχία Αμμοχώστου
+    es: Famagusta
+    fa: ناحیه فاماگوستا
+    fi: Famagustan alue
+    fr: district de Famagouste
+    hy: Ֆամագուստայի շրջան
+    it: distretto di Famagosta
+    ja: ファマグスタ地区
+    ko: 파마구스타 구
+    lt: Famagustos apygarda
+    ms: Daerah Famagusta
+    nb: Famagusta
+    nl: Famagusta
+    pl: Dystrykt Famagusta
+    pt: Famagusta
+    ro: Districtul Famagusta
+    ru: Фамагуста
+    si: ෆැමගුස්ටා දිස්ත්‍රික්කය
+    sk: Mağusa
+    sr: Амохостос (округ)
+    sv: Famagusta
+    th: เขตแฟมากุสตา
+    tr: Mağusa kazası
+    uk: Фамагуста
+    ur: ضلع فاماگوستا
+    ceb: Eparchía Ammochóstou
+    sr_Latn: Amohostos (okrug)
+    zh: 法马古斯塔区
+    ccp: "\U0001111C\U0001112C\U0001111F\U00011109\U0001110C\U00011134\U00011111"
+    ka: ფამაგუსტის რაიონი
+    hu: Famagusta kerület
+    'no': Famagusta
+    az: Famaqusta qəzası
+    be: Фамагуста
+    eu: Famagustako barrutia
+    id: Distrik Famagusta
+  comments:
+  type: district
+'05':
+  name: Pafos
+  code: '05'
+  unofficial_names: Pafos
+  geo:
+    latitude: 34.7720133
+    longitude: 32.4297369
+    min_latitude: 34.7442135
+    min_longitude: 32.3999583
+    max_latitude: 34.8011783
+    max_longitude: 32.4666024
+  translations:
+    en: Paphos
+    ar: منطقة بافوس
+    bg: Пафос
+    ca: Districte de Pafos
+    cs: Pafos
+    de: Bezirk Paphos
+    el: Επαρχία Πάφου
+    es: Pafos
+    fa: ناحیه پافوس
+    fi: Pafoksen alue
+    fr: district de Paphos
+    he: מחוז פאפוס
+    hy: Պաֆոսի շրջան
+    it: distretto di Pafo
+    ja: パフォス地区
+    ka: პაფოსის რაიონი
+    ko: 파포스 구
+    lt: Pafoso apygarda
+    ms: Daerah Paphos
+    nb: Pafos
+    nl: Paphos
+    pl: Dystrykt Pafos
+    pt: Pafos
+    ro: Districtul Paphos
+    ru: Пафос
+    sr: Пафос
+    sv: Eparchía Páfou
+    th: เขตแพฟอส
+    tr: Baf kazası
+    uk: Пафос
+    ur: ضلع پافوس
+    ceb: Eparchía Páfou
+    sr_Latn: Pafos
+    zh: 帕福斯区
+    ccp: "\U0001111B\U0001111C\U0001112E\U0001110C\U00011134"
+    hu: Paphos kerület
+    'no': Pafos
+    be: раён Пафас
+    cy: Ardal Paphos
+    eu: Pafosko barrutia
+    id: Distrik Paphos
+    lv: Pafas eparhija
+  comments:
+  type: district
+'06':
+  name: Keryneia
+  code: '06'
+  unofficial_names: Keryneia
+  geo:
+    latitude: 35.0586943
+    longitude: 33.9582783
+    min_latitude: 35.0423389
+    min_longitude: 33.9222729
+    max_latitude: 35.072638
+    max_longitude: 34.0006899
+  translations:
+    en: Kyrenia
+    ar: منطقة كيرينيا
+    bg: Кирения
+    bn: কায়রেনিয়া জেলা
+    ca: Districte de Kerínia
+    cs: Kyrenia
+    da: Kyrenia District
+    de: Bezirk Kyrenia
+    el: Επαρχία Κερύνειας
+    es: Girne
+    fa: ناحیه گیرنه
+    fi: Kyrenian alue
+    fr: district de Kyrenia
+    gu: કીરેનિયા જિલ્લો
+    hi: कायरेनिया जिला
+    hy: Կիրենիայի շրջան
+    id: Distrik Kyrenia
+    it: distretto di Kyrenia
+    ja: キレニア地区
+    kn: ಕಿರೆನಿಯಾ ಜಿಲ್ಲೆ
+    ko: 키레니아 구
+    lt: Kirenijos apygarda
+    mr: कायरेनिया जिल्हा
+    ms: Daerah Kyrenia
+    nb: Kyrenia
+    nl: Kyrenia
+    pl: Dystrykt Kirenia
+    pt: Kyrenia
+    ro: Districtul Kyrenia
+    ru: Кирения
+    si: කයිරෙනියා දිස්ත්‍රික්කය
+    sk: Girne
+    sr: Керинеја
+    sv: Kyrenia (distrikt)
+    ta: கியரேனியா மாவட்டம்
+    te: కైరేనియా జిల్లా
+    th: เขตคีรีเนีย
+    tr: Girne kazası
+    uk: Киренія
+    ur: ضلع کیرینیہ
+    vi: Huyện Kyrenia
+    lv: Kerinijas eparhija
+    ceb: Eparchía Kerýneias
+    sr_Latn: Kerineja
+    zh: 凯里尼亚区
+    ccp: "\U00011107\U0001112D\U00011122\U0001112C\U0001111A\U00011128\U00011120"
+    ka: კირენიის რაიონი
+    hu: Kyrenia kerület
+    'no': Kyrenia
+    eu: Kireniako barrutia
+  comments:
+  type: district

@@ -1,0 +1,3126 @@
+---
+'01':
+  name: Boucle du Mouhoun
+  code: '01'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Букъл дю Муун
+    da: Boucle du Mouhoun
+    de: Boucle du Mouhoun
+    en: Boucle du Mouhoun
+    es: Región Boucle du Mouhoun
+    eu: Boucle du Mouhoun eskualdea
+    fi: Boucle du Mouhoun
+    fr: Boucle du Mouhoun
+    gl: Boucle du Mouhoun
+    hr: Boucle du Mouhoun
+    id: Region Boucle du Mouhoun
+    it: regione di Boucle du Mouhoun
+    ja: ブクル・デュ・ムウン地方
+    ko: 부클뒤무운 주
+    lt: Muhuno Kilpos regionas
+    nb: Boucle du Mouhoun
+    nl: Boucle du Mouhoun
+    pl: Region Boucle du Mouhoun
+    pt: Boucle du Mouhoun
+    ro: Regiunea Boucle du Mouhoun, Burkina Faso
+    ru: Букле-ду-Мухун
+    sv: Boucle du Mouhoun
+    tr: Boucle du Mouhoun Bölgesi
+    uk: Букле-ду-Мухун
+    ur: بوکل دی موہون علاقہ
+    zh: 布克萊迪穆翁大區
+    ceb: Boucle du Mouhoun Region
+    ar: بوكل دو موهون
+    ccp: "\U0001111D\U00011127\U00011105\U0001112A\U0001110C\U00011134\U00011123\U0001112C
+      \U00011113\U0001112A \U0001111F\U0001112F\U00011126\U0001112F\U0001111A\U00011134"
+    ka: ბუკლე-დუ-მუჰუნის რეგიონი
+    he: מחוז בוקל דו מואון
+    ca: Regió Boucle du Mouhoun
+    'no': Boucle du Mouhoun
+  comments:
+  type: region
+'02':
+  name: Cascades
+  code: '02'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Каскадес
+    da: Cascades
+    de: Cascades
+    el: Κασκάντ
+    en: Cascades
+    es: Región Cascades
+    eu: Cascades eskualdea
+    fi: Cascades
+    fr: Cascades
+    gl: Cascades, Burquina Faso
+    hr: Cascades
+    id: Region Cascades
+    it: regione delle Cascate
+    ja: カスカード地方
+    ko: 카스카드 주
+    lt: Kaskadų regionas
+    nb: Cascades
+    nl: Cascades
+    pl: Region Cascades
+    pt: Região Cascades
+    ro: Regiunea Cascades, Burkina Faso
+    ru: Каскады
+    sv: Cascades, Burkina Faso
+    tr: Cascades Bölgesi
+    uk: Каскади
+    ur: آبشار علاقہ
+    ceb: Cascades Region
+    ar: الشالالات
+    zh: 瀑布大區
+    ccp: "\U00011107\U0001110C\U00011134\U00011107\U00011133\U00011120\U00011113\U0001112C\U0001110C\U00011134"
+    ka: კასკადების რეგიონი
+    ca: Regió Cascades
+    'no': Cascades
+    fa: ناحیه آبشار
+  comments:
+  type: region
+'03':
+  name: Centre
+  code: '03'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Централен регион
+    da: Centre
+    de: Centre
+    en: Centre
+    es: Región Centro
+    eu: Erdialdeko eskualdea
+    fi: Centre
+    fr: Centre
+    gl: Rexión Centro, Burquina Faso
+    hr: Centralna regija, Burkina Faso
+    id: Region Centre
+    it: regione del Centro
+    ja: 中部地方 (ブルキナファソ)
+    ko: 중부 주
+    lt: Centrinis regionas (Burkina Fasas)
+    nb: Centre
+    nl: Centre
+    pl: Region Centre
+    pt: Região Centro
+    ro: Regiunea Centre, Burkina Faso
+    ru: Центральная область
+    sv: Centre, Burkina Faso
+    tr: Centre Bölgesi
+    uk: Центральна область
+    ur: وسطی علاقہ
+    ceb: Centre
+    zh: 中央大區
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134"
+    ka: ცენტრალური რეგიონი
+    ca: Regió Centre
+    be: Цэнтральная вобласць
+    'no': Centre
+    ar: الأوسط
+    el: Σαντρ
+    fa: ناحیه مرکز (بورکینافاسو)
+  comments:
+  type: region
+'04':
+  name: Centre-Est
+  code: '04'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Централно-източен регион
+    da: Centre-Est
+    de: Centre-Est
+    en: Centre-Est
+    es: Región Centro-Este
+    eu: Erdialde Ekialdeko eskualdea
+    fi: Centre-Est
+    fr: Centre-Est
+    gl: Rexión Centro-Leste
+    hr: Centralno-istočna regija, Burkina Faso
+    id: Region Centre-Est
+    it: regione del Centro-Est
+    ja: 中東部地方 (ブルキナファソ)
+    ko: 중동부 주
+    lt: Vidurio Rytų regionas
+    nb: Centre-Est
+    nl: Centre-Est
+    pl: Region Centre-Est
+    pt: Região Centro-Este
+    ro: Regiunea Centre-Est, Burkina Faso
+    ru: Восточно-Центральная область
+    sv: Centre-Est
+    tr: Centre-Est Bölgesi
+    uk: Східно-Центральна область
+    ur: وسطی-مشرقی علاقہ
+    ceb: Centre-Est
+    zh: 中東大區
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134-\U00011103\U00011128\U0001110C\U00011133\U00011111\U00011134"
+    ka: აღმოსავლეთ-ცენტრალური რეგიონი
+    ca: Regió Centre-Est
+    'no': Centre-Est
+    ar: الوسط شرقي
+    fa: ناحیه مرکز-است
+  comments:
+  type: region
+'05':
+  name: Centre-Nord
+  code: '05'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Централно-северен регион
+    da: Centre-Nord
+    de: Centre-Nord
+    en: Centre-Nord
+    es: Región Centro-Norte
+    eu: Erdialde Iparraldeko eskualdea
+    fi: Centre-Nord
+    fr: Centre-Nord
+    gl: Rexión Centro-Norte
+    hr: Centralno-sjeverna regija
+    id: Region Centre-Nord
+    it: regione del Centro-Nord
+    ja: 中北部地方 (ブルキナファソ)
+    ko: 중북부 주
+    lt: Vidurio Šiaurės regionas
+    nb: Centre-Nord
+    nl: Centre-Nord
+    pl: Region Centre-Nord
+    pt: Região Centro-Norte
+    ro: Regiunea Centre-Nord, Burkina Faso
+    ru: Северо-Центральная область
+    sv: Centre-Nord
+    tr: Centre-Nord Bölgesi
+    uk: Північно-Центральна область
+    ur: وسطی-شمالی علاقہ
+    ceb: Centre-Nord
+    ar: الوسط شمالي
+    zh: 中北大區
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134-\U0001111A\U00011127\U00011122\U00011133\U00011113\U00011134"
+    ka: ჩრდილო-ცენტრალური რეგიონი
+    he: מחוז מרכז-צפון (בורקינה פאסו)
+    ca: Regió Centre-Nord
+    'no': Centre-Nord
+    el: Σαντρ-Νορ
+    fa: ناحیه مرکز نورد
+  comments:
+  type: region
+'06':
+  name: Centre-Ouest
+  code: '06'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Централно-западен регион
+    da: Centre-Ouest
+    de: Centre-Ouest
+    el: Σαντρ-Ουέστ
+    en: Centre-Ouest
+    es: Región Centro-Oeste
+    eu: Erdialde Mendebaldeko eskualdea
+    fi: Centre-Ouest
+    fr: Centre-Ouest
+    gl: Rexión Centro-Oeste
+    hr: Centralno-zapadna regija
+    id: Region Centre-Ouest
+    it: regione del Centro-Ovest
+    ja: 中西部地方 (ブルキナファソ)
+    ko: 중서부 주
+    lt: Vidurio Vakarų regionas
+    nb: Centre-Ouest
+    nl: Centre-Ouest
+    pl: Region Centre-Ouest
+    pt: Região Centro-Oeste
+    ro: Regiunea Centre-Ouest, Burkina Faso
+    ru: Западно-Центральная область
+    sv: Centre-Ouest
+    tr: Centre-Ouest Bölgesi
+    uk: Західно-Центральна область
+    ur: وسطی-مغربی علاقہ
+    ceb: Centre-Ouest
+    ar: وسط كويست
+    zh: 中西大區
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134-\U00011103\U0001112F\U00011120\U0001112C\U0001110C\U00011133\U00011111\U00011134"
+    ka: დასავლეთ-ცენტრალური რეგიონი
+    'no': Centre-Ouest
+    ca: Regió Centre-Oest
+    fa: ناحیه مرکز اوست
+  comments:
+  type: region
+'07':
+  name: Centre-Sud
+  code: '07'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Централно-южен регион
+    da: Centre-Sud
+    de: Centre-Sud
+    en: Centre-Sud
+    es: Región Centro-Sur
+    eu: Erdialde Hegoaldeko eskualdea
+    fi: Centre-Sud
+    fr: Centre-Sud
+    gl: Rexión Centro-Sur
+    hr: Centralno-južna regija
+    id: Region Centre-Sud
+    it: regione del Centro-Sud
+    ja: 中南部地方 (ブルキナファソ)
+    ko: 중남부 주
+    lt: Vidurio Pietų regionas
+    nb: Centre-Sud
+    nl: Centre-Sud
+    pl: Region Centre-Sud
+    pt: Região Centro-Sul
+    ro: Regiunea Centre-Sud, Burkina Faso
+    ru: Юго-Центральная область
+    sv: Centre-Sud
+    tr: Centre-Sud Bölgesi
+    uk: Південно-Центральна область
+    ur: وسطی-جنوبی علاقہ
+    ceb: Centre-Sud
+    ar: الوسط الجنوبي
+    zh: 中南大區
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134-\U00011125\U00011116\U00011134"
+    ka: სამხრეთ-ცენტრალური რეგიონი
+    ca: Regió Centre-Sud
+    'no': Centre-Sud
+    fa: ناحیه مرکز سود
+  comments:
+  type: region
+'08':
+  name: Est
+  code: '08'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Източен регион
+    da: Est
+    de: Est
+    en: Est
+    es: Región Este
+    eu: Ekialdeko eskualdea
+    fi: Est
+    fr: Est
+    gl: Rexión Leste, Burquina Faso
+    hr: Istočna regija
+    id: Region Est
+    it: regione dell’Est
+    ja: 東部地方 (ブルキナファソ)
+    ko: 동부 주
+    lt: Rytų regionas
+    nb: Est
+    nl: Est
+    pl: Region Est
+    pt: Região Este
+    ro: Regiunea Est, Burkina Faso
+    ru: Восточная область
+    sv: Est, Burkina Faso
+    tr: Est Bölgesi
+    uk: Східна область
+    ur: مشرقی علاقہ
+    ceb: Est
+    ar: الشرقي
+    zh: 東部大區
+    ccp: "\U00011103\U00011128\U0001110C\U00011133\U00011111\U00011134"
+    ka: აღმოსავლეთი რეგიონი
+    ca: Regió Est
+    'no': Est
+    he: מחוז המזרח של בורקינה פאסו
+  comments:
+  type: region
+'09':
+  name: Hauts-Bassins
+  code: '09'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: От Басен
+    da: Hauts-Bassins
+    de: Hauts-Bassins
+    el: Ω-Μπασάν
+    en: Hauts-Bassins
+    es: Región Hauts-Bassins
+    eu: Hauts-Bassins eskualdea
+    fa: منطقه هوت-باسین
+    fi: Hauts-Bassins
+    fr: Hauts-Bassins
+    gl: Hauts-Bassins
+    hr: Hauts-Bassins
+    id: Region Hauts-Bassins
+    it: regione degli Alti Bacini
+    ja: 上流域地方
+    ko: 오트바생 주
+    lt: Aukštutinių Baseinų regionas
+    nb: Hauts-Bassins
+    nl: Hauts-Bassins
+    pl: Region Hauts-Bassins
+    pt: Região Hauts-Bassins
+    ro: Regiunea Hauts-Bassins, Burkina Faso
+    ru: Верхние Бассейны
+    sv: Hauts-Bassins
+    tr: Hauts-Bassins Bölgesi
+    uk: Верхні Басейни
+    ur: بالائی-طاس علاقہ
+    ceb: High-Basins Region
+    zh: 上盆地大區
+    ccp: "\U00011126\U00011127\U00011105\U0001112A\U00011111\U00011133\U00011125\U00011134-\U0001111D\U00011125\U00011128\U00011101"
+    ka: ზემო აუზების რეგიონი
+    he: מחוז אוט בסינס
+    ca: Regió Hauts-Bassins
+    'no': Hauts-Bassins
+    ar: إقليم هوتس-باسنز
+  comments:
+  type: region
+'10':
+  name: Nord
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Regió Nord
+    da: Nord
+    de: Nord
+    en: Nord
+    es: Región Norte
+    eu: Iparraldeko eskualdea
+    fi: Nord
+    fr: Nord
+    gl: Rexión Norte
+    hr: Sjeverna regija
+    id: Region Nord
+    it: regione del Nord
+    ja: 北部地方 (ブルキナファソ)
+    ko: 북부 주
+    lt: Šiaurės regionas
+    nb: Nord
+    nl: Nord
+    pl: Region Nord
+    pt: Região Norte
+    ro: Regiunea Nord, Burkina Faso
+    ru: Северная область
+    sv: Nord, Burkina Faso
+    tr: Nord Bölgesi
+    uk: Північна область
+    ur: شمالی علاقہ
+    ceb: Nord
+    ar: الشمالي
+    zh: 北部大區
+    ccp: "\U0001111A\U00011127\U00011122\U00011133\U00011113\U00011134"
+    ka: ჩრდილოეთი რეგიონი
+    be: Паўночная вобласць
+    'no': Nord
+    el: Νορ
+    fa: ناحیه نورد (بورکینافاسو)
+  comments:
+  type: region
+'11':
+  name: Plateau-Central
+  code: '11'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Плато Сентрал
+    da: Plateau-Central
+    de: Plateau Central
+    en: Plateau-Central
+    es: Región Plateau-Central
+    eu: Plateau-Central eskualdea
+    fi: Plateau-Central
+    fr: Plateau-Central
+    gl: Plateau-Central
+    hr: Plato-centralna regija
+    id: Region Plateau-Central
+    it: regione dell’Altopiano Centrale
+    ja: 中央大地地方
+    ko: 플라토상트랄 주
+    lt: Vidurio Plokščiakalnio regionas
+    nb: Plateau-Central
+    nl: Plateau-Central
+    pl: Region Plateau-Central
+    pt: Região Plateau-Central
+    ro: Regiunea Plateau-Central, Burkina Faso
+    ru: Центральное Плато
+    sv: Plateau-Central
+    tr: Plateau-Central Bölgesi
+    uk: Центральне Плато
+    ur: مرتفع-وسطی علاقہ
+    ceb: Plateau-Central
+    ar: الهضبة الوسطى
+    zh: 高原-中部大區
+    ccp: "\U0001111B\U00011133\U00011123\U00011127\U00011111\U0001112E-\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    ka: ცენტრალური პლატოს რეგიონი
+    ca: Regió Plateau-Central
+    'no': Plateau-Central
+    el: Πλατώ-Σαντράλ
+    fa: ناحیه پلاتیوکس مرکزی
+  comments:
+  type: region
+'12':
+  name: Sahel
+  code: '12'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Саел
+    da: Sahel
+    de: Sahel
+    en: Sahel
+    es: Región del Sahel
+    eu: Sahel eskualdea
+    fi: Sahel
+    fr: Sahel
+    gl: Sahel, Burquina Faso
+    hr: Sahel, Burkina Faso
+    id: Region Sahel
+    it: regione del Sahel
+    ja: サヘル地方
+    ko: 사엘 주
+    lt: Sahelio regionas
+    nb: Sahel
+    nl: Sahel
+    pl: Region Sahel
+    pt: Região Sahel
+    ru: Сахель
+    sv: Sahel, Burkina Faso
+    tr: Sahel Bölgesi
+    uk: Сахель
+    ur: سہیل ریجن
+    ceb: Sahel
+    ar: الساحل
+    zh: 薩赫勒大區
+    ccp: "\U00011125\U00011127\U00011126\U0001112C\U00011123\U00011134"
+    ka: საჰელის რეგიონი
+    ca: Regió del Sahel
+    'no': Sahel
+    el: Σαχέλ
+    fa: ناحیه ساحل
+  comments:
+  type: region
+'13':
+  name: Sud-Ouest
+  code: '13'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    bg: Югозападен регион
+    da: Sud-Ouest
+    de: Sud-Ouest
+    el: Συντ-Ουέστ
+    en: Sud-Ouest
+    es: Región Suroeste
+    eu: Hego-mendebaldeko eskualdea
+    fi: Sud-Ouest
+    fr: Sud-Ouest
+    gl: Rexión Sur-Oeste
+    hr: Jugo-zapadna regija, Burkina Faso
+    id: Region Sud-Ouest
+    it: regione del Sud-Ovest
+    ja: 南西地方 (ブルキナファソ)
+    ko: 남서부 주
+    lt: Pietvakarių regionas
+    nb: Sud-Ouest
+    nl: Sud-Ouest
+    pl: Region Sud-Ouest
+    pt: Região Sul-Oeste
+    ro: Regiunea Sud-Ouest, Burkina Faso
+    ru: Юго-Западная область
+    sv: Sud-Ouest, Burkina Faso
+    tr: Sud-Ouest Bölgesi
+    uk: Південно-Західна область
+    ur: جنوبی-مغربی علاقہ
+    ceb: Southwest Region
+    zh: 西南大區
+    ccp: "\U00011125\U00011116\U00011134-\U00011103\U0001112F\U00011120\U0001112C\U00011125\U00011133\U00011111\U00011134"
+    ka: სამხრეთ-დასავლეთი რეგიონი
+    ca: Regió Sud-Oest
+    'no': Sud-Ouest
+    ar: جنوب كويست
+    fa: ناحیه سود اوست (بورکینافاسو)
+  comments:
+  type: region
+BAL:
+  name: Balé
+  code: BAL
+  unofficial_names: Balé
+  geo:
+    latitude: 13.383333
+    longitude: 0.133333
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Balé
+    ar: مقاطعة بالي
+    bn: বেইল প্রদেশ
+    da: Balé
+    de: Balé
+    el: Μπαλέ
+    es: Provincia de Balé
+    fa: استان باله
+    fi: Balé
+    fr: Balé (province du Burkina Faso)
+    gl: Balé, Burquina Faso
+    gu: બાલે પ્રાંત
+    hi: बैले प्रांत
+    id: Provinsi Balé
+    it: Provincia di Balé
+    ja: バレ県
+    kn: ಬಾಲೆ ಪ್ರಾಂತ್ಯ
+    ko: 발레 현
+    mr: बाले प्रांत
+    ms: Wilayah Bale
+    nb: Balé
+    nl: Balé
+    pl: Prowincja Balé
+    pt: Balé (Burkina Faso)
+    ro: Balé
+    ru: Бале
+    si: බාලේ පළාත
+    sv: Province des Balé
+    ta: பலி மாகாணம்
+    te: బాలే ప్రావిన్స్
+    th: จังหวัดบาเล
+    tr: Bale Province
+    uk: Бале
+    ur: بالے صوبہ
+    vi: Balé (tỉnh)
+    lv: Bale province
+    ceb: Province des Balé
+    lt: Balės provincija
+    zh: 巴雷省
+    ccp: "\U0001111D\U00011123\U0001112C"
+    eu: Balé probintzia
+    'no': Balé
+  comments:
+  type: province
+BAM:
+  name: Bam
+  code: BAM
+  unofficial_names: Bam
+  geo:
+    latitude: 13.4061979
+    longitude: -1.5160212
+    min_latitude: 13.3089475
+    min_longitude: -1.5372276
+    max_latitude: 13.4943028
+    max_longitude: -1.4912223
+  translations:
+    en: Bam
+    ar: محافظة بام
+    bn: বাম প্রদেশ
+    da: Bam Province
+    de: Bam
+    el: Μπαμ
+    es: Provincia de Bam
+    fa: استان بام
+    fi: Bam
+    fr: Bam
+    gl: Bam, Burquina Faso
+    gu: બામ પ્રાંત
+    hi: बार्न प्रांत
+    id: Provinsi Bam
+    it: Provincia di Bam
+    ja: バム県
+    kn: ಬಾಮ್ ಪ್ರಾಂತ್ಯ
+    ko: 밤 현
+    mr: बाम प्रांत
+    ms: Bam Province
+    nb: Bam
+    nl: Bam
+    pl: Prowincja Bam
+    pt: Bam
+    ro: Bam
+    ru: Бам
+    si: බාම් පළාත
+    sv: Province du Bam
+    ta: பாம் மாகாணம்
+    te: బామ్ ప్రావిన్స్
+    th: จังหวัดแบม
+    tr: Bam
+    uk: Бам
+    ur: بام صوبہ
+    vi: Bam
+    lv: Bamas province
+    ceb: Province du Bam
+    lt: Bamo provincija
+    zh: 巴姆省
+    ccp: "\U0001111D\U0001111F\U00011134"
+    eu: Bam probintzia
+    'no': Bam
+    ca: Bam
+  comments:
+  type: province
+BAN:
+  name: Banwa
+  code: BAN
+  unofficial_names: Banwa
+  geo:
+    latitude: 12.1323053
+    longitude: -4.1513764
+    min_latitude: 11.687353
+    min_longitude: -4.646695999999999
+    max_latitude: 12.731423
+    max_longitude: -3.5671951
+  translations:
+    en: Banwa
+    ar: مقاطعة بانوا
+    bn: বানওয়া প্রদেশ
+    da: Banwa Province
+    de: Banwa
+    el: Μπάνβα
+    es: Provincia de Banwa
+    fa: استان بانوا
+    fi: Banwa
+    fr: Banwa
+    gl: Banwa
+    gu: બાન્વા પ્રાંત
+    hi: बनवा प्रांत
+    id: Provinsi Banwa
+    it: Provincia di Banwa
+    ja: バンワ県
+    kn: ಬನ್ವಾ ಪ್ರಾಂತ್ಯ
+    ko: 반와 현
+    mr: बनवा प्रांत
+    ms: Banwa Province
+    nb: Banwa
+    nl: Banwa
+    pl: Prowincja Banwa
+    pt: Banwa
+    ro: Banwa
+    ru: Банва
+    si: බන්වා පළාත
+    sv: Province des Banwa
+    ta: பானவா மாகாணம்
+    te: బన్వా ప్రావిన్స్
+    th: จังหวัดบานวา
+    tr: Banwa Province
+    uk: Банва
+    ur: بنوا صوبہ
+    vi: Banwa
+    lv: Banvas province
+    ceb: Province des Banwa
+    lt: Banvos provincija
+    zh: 巴瓦省
+    ccp: "\U0001111D\U00011127\U0001111A\U00011134\U00011103\U0001112E\U00011120"
+    eu: Banwa probintzia
+    'no': Banwa
+  comments:
+  type: province
+BAZ:
+  name: Bazèga
+  code: BAZ
+  unofficial_names: Bazèga
+  geo:
+    latitude: 11.9767692
+    longitude: -1.443469
+    min_latitude: 11.5704171
+    min_longitude: -1.995481
+    max_latitude: 12.186012
+    max_longitude: -0.8822188999999999
+  translations:
+    en: Bazèga
+    ar: مقاطعة بازيجا
+    bn: বাজেঙ্গা প্রদেশ
+    da: Bazèga Province
+    de: Bazèga
+    el: Επαρχία Μπαζέγκα
+    es: Provincia de Bazéga
+    fa: استان بازگا
+    fi: Bazèga
+    fr: Bazèga
+    gl: Bazèga
+    gu: બજેગા પ્રાંત
+    hi: बज़ेग़ा प्रांत
+    id: Provinsi Bazèga
+    it: Provincia di Bazèga
+    ja: バゼガ県
+    kn: ಬಝೆಗ ಪ್ರಾಂತ್ಯ
+    ko: 바제가 현
+    mr: बाजेगा प्रांत
+    ms: Daerah Bazega
+    nb: Bazèga
+    nl: Bazéga
+    pl: Prowincja Bazéga
+    pt: Bazéga
+    ro: Bazèga
+    ru: Базега
+    si: බසේගා පළාත
+    sv: Bazega Province
+    ta: பாஸிக்க மாகாணம்
+    te: బాజేగా ప్రావిన్స్
+    th: จังหวัดบาเซกา
+    tr: Bazega Province
+    uk: Базега
+    ur: بازےگا صوبہ
+    vi: Bazéga
+    lv: Bazegas province
+    ceb: Bazega Province
+    lt: Bazegos provincija
+    zh: 巴澤加省
+    ccp: "\U0001111D\U0001110E\U0001112C\U00011109"
+    eu: Bazèga probintzia
+    'no': Bazèga
+  comments:
+  type: province
+BGR:
+  name: Bougouriba
+  code: BGR
+  unofficial_names: Bougouriba
+  geo:
+    latitude: 10.8722646
+    longitude: -3.3388917
+    min_latitude: 10.573969
+    min_longitude: -3.7324119
+    max_latitude: 11.164746
+    max_longitude: -3.0406049
+  translations:
+    en: Bougouriba
+    ar: محافظة بوغوريبا
+    bn: বৌগৌরিবা প্রদেশ
+    da: Bougouriba Province
+    de: Bougouriba
+    el: Μπουγκουρίμπα
+    es: Provincia de Bougouriba
+    fi: Bougouriba
+    fr: Bougouriba
+    gl: Bougouriba
+    gu: બોગોરિબા પ્રાંત
+    hi: बौगोरीबा प्रांत
+    id: Provinsi Bougouriba
+    it: Provincia di Bougouriba
+    ja: ブグリバ県
+    kn: ಬೌಗೊರಿಬಾ ಪ್ರಾಂತ್ಯ
+    ko: 부구리바 현
+    mr: बोगोरिबा प्रांत
+    ms: Bougouriba Province
+    nb: Bougouriba
+    nl: Bougouriba
+    pl: Prowincja Bougouriba
+    pt: Bougouriba
+    ro: Bougouriba
+    ru: Бугуриба
+    si: බෝගොරිබා පළාත
+    sv: Province de la Bougouriba
+    ta: பௌகௌரிபா மாகாணம்
+    te: బౌగోరిబా ప్రావిన్స్
+    th: จังหวัดบัวกัวริบา
+    tr: Bougouriba
+    uk: Бугуріба
+    ur: بؤگؤریبا صوبہ
+    vi: Bougouriba
+    lv: Buguribas province
+    ceb: Province de la Bougouriba
+    lt: Buguribos provincija
+    zh: 布古里巴省
+    ccp: "\U0001111D\U0001112F\U00011109\U0001112F\U00011122\U00011128\U0001111D"
+    'no': Bougouriba
+    ca: Bougouriba
+    fa: استان بوگوریبا
+  comments:
+  type: province
+BLG:
+  name: Boulgou
+  code: BLG
+  unofficial_names: Boulgou
+  geo:
+    latitude: 11.4336766
+    longitude: -0.3748354
+    min_latitude: 10.90218
+    min_longitude: -0.890411
+    max_latitude: 11.992653
+    max_longitude: 0.025269
+  translations:
+    en: Boulgou
+    ar: بولجو
+    bn: বুল্গো
+    da: Boulgou
+    de: Boulgou
+    el: Μπούλγκου
+    es: Boulgou
+    fa: استان بولگو
+    fi: Boulgou
+    fr: Boulgou
+    gl: Boulgou
+    gu: બૌલ્ગૌ
+    hi: बोल्गू
+    id: Boulgou
+    it: Boulgou
+    ja: ブルグ県
+    kn: ಬೌಲ್ಗೌ
+    ko: 불구 현
+    mr: बॉलगॉ
+    ms: Boulgou
+    nb: Boulgou
+    nl: Boulgou
+    pl: Boulgou
+    pt: Boulgou
+    ro: Boulgou
+    ru: Булгу
+    si: බෝවුල්ගොවූ
+    sv: Boulgou
+    ta: பௌலகௌ
+    te: బౌల్గోవు
+    th: โบวกูว
+    tr: Boulgou
+    uk: Булгу
+    ur: بؤلگؤ صوبہ
+    vi: Boulgou
+    lv: Bulgu
+    ceb: Province du Boulgou
+    lt: Bulgu
+    zh: 布爾古省
+    ccp: "\U0001111D\U0001112F\U00011123\U00011134\U00011109\U0001112F"
+    eu: Boulgou probintzia
+    ca: Boulgou
+    'no': Boulgou
+  comments:
+  type: province
+BLK:
+  name: Boulkiemdé
+  code: BLK
+  unofficial_names: Boulkiemdé
+  geo:
+    latitude: 12.3373752
+    longitude: -2.2236667
+    min_latitude: 11.9286029
+    min_longitude: -2.5120629
+    max_latitude: 12.715336
+    max_longitude: -1.7748639
+  translations:
+    en: Boulkiemdé
+    ar: محافظة بولكييمدي
+    bn: বুল্কিমডি প্রদেশ
+    da: Boulkiemdé Province
+    de: Boulkiemdé
+    el: Μπουλκιεμντέ
+    es: Provincia de Boulkiemdé
+    fa: استان بولکیمده
+    fi: Boulkiemdé
+    fr: Boulkiemdé
+    gl: Boulkiemdé
+    gu: બોલ્કીમેડે પ્રાંત
+    hi: बोलकिएम्डे प्रांत
+    id: Provinsi Boulkiemdé
+    it: Provincia di Boulkiemdé
+    ja: ブルキアンデ県
+    kn: ಬೋಲ್ಕಿಮೆಡೆ ಪ್ರಾಂತ್ಯ
+    ko: 불키엠데 현
+    mr: बॉलीमेडे प्रांत
+    ms: Boulkiemde Province
+    nb: Boulkiemdé
+    nl: Boulkiemdé
+    pl: Prowincja Boulkiemdé
+    pt: Boulkiemdé
+    ro: Boulkiemdé
+    ru: Булькиемде
+    si: බොඋල්කීම්ඩේ පළාත
+    sv: Boulkiemdé
+    ta: பெல்கிஎம்டே மாகாணம்
+    te: బోల్కెమ్డే ప్రావిన్స్
+    th: บัลดอน
+    tr: Boulkiemde Provience
+    uk: Булькіємде
+    ur: بوولکییمدی صوبہ
+    vi: Boulkiemdé (tỉnh)
+    lv: Bulkiemdes province
+    lt: Bulkemdės provincija
+    zh: 布爾基恩德省
+    ccp: "\U0001111D\U0001112F\U00011123\U00011134\U00011107\U00011128\U00011120\U0001112C\U0001111F\U00011134\U00011113\U00011128"
+    eu: Boulkiemdé probintzia
+    'no': Boulkiemdé
+    ceb: Province du Boulkiemdé
+  comments:
+  type: province
+COM:
+  name: Comoé
+  code: COM
+  unofficial_names: Comoé
+  geo:
+    latitude: 10.4072992
+    longitude: -4.5624426
+    min_latitude: 9.594069
+    min_longitude: -5.131688
+    max_latitude: 10.906152
+    max_longitude: -3.677724
+  translations:
+    en: Comoé
+    ar: محافظة كومويه
+    bn: কোমোয় প্রদেশ
+    da: Comoé Province
+    de: Comoé
+    el: Κομοέ
+    es: Provincia de Comoé
+    fi: Comoé
+    fr: Comoé
+    gl: Comoé
+    hi: कोमोए प्रांत
+    id: Provinsi Comoé
+    it: Provincia di Comoé
+    ja: コモエ県
+    kn: ಕೊಮೊ ಪ್ರಾಂತ್ಯ
+    ko: 코모에 현
+    mr: कोमई प्रांत
+    ms: Comoe Province
+    nb: Comoé
+    nl: Comoé
+    pl: Prowincja Comoé
+    pt: Comoé
+    ro: Comoé
+    ru: Комоэ
+    si: කොමොයි පළාත
+    sv: Province de la Comoé
+    ta: கோமோ மாகாணம்
+    te: కామోయ్ ప్రావిన్స్
+    th: ตำบลเซนต์จอร์จ
+    tr: Comoé Province
+    uk: Комое
+    ur: کوموے صوبہ
+    vi: Comoé
+    lv: Komoje province
+    ceb: Province de la Comoé
+    lt: Komojės provincija
+    zh: 科莫埃省
+    ccp: "\U00011107\U00011127\U0001111F\U00011127\U00011120\U00011128"
+    eu: Comoé probintzia
+    'no': Comoé
+    gu: કોમોઇ પ્રાંત
+  comments:
+  type: province
+GAN:
+  name: Ganzourgou
+  code: GAN
+  unofficial_names: Ganzourgou
+  geo:
+    latitude: 12.2537648
+    longitude: -0.7532808999999999
+    min_latitude: 11.83368
+    min_longitude: -1.11665
+    max_latitude: 12.6701701
+    max_longitude: -0.417549
+  translations:
+    en: Ganzourgou
+    ar: محافظة غانزورغو
+    bn: গাঞ্জুরগু প্রদেশ
+    da: Ganzourgou Province
+    de: Ganzourgou
+    el: Γκανζούργκου
+    es: Provincia de Ganzourgou
+    fa: استان گانزورگو
+    fi: Ganzourgou
+    fr: Ganzourgou
+    gl: Ganzourgou
+    gu: ગાન્ઝોર્ગોઉ પ્રાંત
+    hi: गैनजूरगू प्रांत
+    id: Provinsi Ganzourgou
+    it: Provincia di Ganzourgou
+    ja: ガンズル県
+    kn: ಗನ್ಜೌರ್ಗು ಪ್ರಾಂತ್ಯ
+    ko: 간주르구 현
+    mr: गँजॉर्गोऊ प्रांत
+    ms: Ganzourgou Province
+    nb: Ganzourgou
+    nl: Ganzourgou
+    pl: Prowincja Ganzourgou
+    pt: Ganzourgou
+    ro: Ganzourgou
+    ru: Ганзургу
+    si: ගන්සොර්ගෝඋ පළාත
+    sv: Province du Ganzourgou
+    ta: கன்சாவுர்கோவு மாகாணம்
+    te: గాంజోర్గూ ప్రావిన్స్
+    th: จังหวัดกานซัวอ์เกา
+    tr: Ganzourgou Province
+    uk: Ганзургу
+    ur: گانزؤرگؤ صوبہ
+    vi: Ganzourgou
+    lv: Ganzurgu province
+    ceb: Province du Ganzourgou
+    lt: Ganzurgo provincija
+    zh: 岡祖爾古省
+    ccp: "\U00011109\U0001111A\U00011134\U0001110E\U0001112F\U00011122\U00011134\U00011109\U0001112F"
+    'no': Ganzourgou
+    ca: Ganzourgou
+  comments:
+  type: province
+GNA:
+  name: Gnagna
+  code: GNA
+  unofficial_names: Gnagna
+  geo:
+    latitude: 12.8974992
+    longitude: 0.0746767
+    min_latitude: 12.2465851
+    min_longitude: -0.391241
+    max_latitude: 13.564223
+    max_longitude: 0.5907659
+  translations:
+    en: Gnagna
+    ar: محافظةغناغنا
+    bn: গুনাগা প্রদেশ
+    da: Gnagna Province
+    de: Gnagna
+    el: Γκνάγκνα
+    es: Provincia de Gnagna
+    fi: Gnagna
+    fr: Gnagna
+    gl: Gnagna
+    gu: ગ્નાગ્ના પ્રાંત
+    hi: नाग्ना प्रांत
+    id: Provinsi Gnagna
+    it: Provincia di Gnagna
+    ja: グナグナ州
+    kn: ಗ್ನಾಗ್ನಾ ಪ್ರಾಂತ್ಯ
+    ko: 그나그나 현
+    mr: ग्नग्ना प्रांत
+    ms: Gnagna Province
+    nb: Gnagna
+    nl: Gnagna
+    pl: Prowincja Gnagna
+    pt: Gnagna
+    ro: Gnagna
+    ru: Няня
+    si: ග්නග්නා පළාත
+    sv: Gnagna Province
+    ta: ஞாஞா மாகாணம்
+    te: గ్నాగ్నా ప్రావిన్స్
+    th: จังหวัดนักนา
+    tr: Gnagna Province
+    uk: Няня
+    ur: گناگنا صوبہ
+    vi: Gnagna
+    lv: Njanjas provinces
+    ceb: Gnagna Province
+    sr_Latn: Pokrajina Nana
+    lt: Nanos provincija
+    zh: 尼亞尼亞省
+    ccp: "\U00011109\U0001112C\U00011107\U00011134\U0001111A"
+    sr: Покрајина Нана
+    eu: Gnagna probintzia
+    'no': Gnagna
+    fa: استان گناگنا
+  comments:
+  type: province
+GOU:
+  name: Gourma
+  code: GOU
+  unofficial_names: Gourma
+  geo:
+    latitude: 12.1624473
+    longitude: 0.6773045999999999
+    min_latitude: 11.653354
+    min_longitude: -0.14185
+    max_latitude: 12.774307
+    max_longitude: 1.325947
+  translations:
+    en: Gourma
+    ar: مقاطعة غورما
+    bn: গুরমা প্রদেশ
+    da: Gourma Province
+    de: Gourma
+    el: Γκούρμα
+    es: Provincia de Gourma
+    fi: Gourma
+    fr: Gourma
+    gl: Gourma
+    gu: ગૌરમા પ્રાંત
+    hi: गूरमा प्रांत
+    id: Provinsi Gourma
+    it: Provincia di Gourma
+    ja: グルマ県
+    kn: ಗೌರ್ಮ ಪ್ರಾಂತ್ಯ
+    ko: 구르마 현
+    mr: गौरमा प्रांत
+    ms: Gourma Province
+    nb: Gourma
+    nl: Gourma
+    pl: Prowincja Gurma
+    pt: Gourma
+    ro: Gourma
+    ru: Гурма
+    si: ගොර්මා පළාත
+    sv: Province du Gourma
+    ta: கௌரமா மாகாணம்
+    te: గౌర్మా ప్రావిన్స్
+    th: จังหวัดกรัวมา
+    tr: Gourma Province
+    uk: Ґурма
+    ur: گؤرما صوبہ
+    vi: Gourma
+    lv: Gurmas province
+    ceb: Province du Gourma
+    lt: Gurmos provincija
+    zh: 古爾馬省
+    ccp: "\U00011109\U0001112F\U00011122\U00011134\U0001111F"
+    eu: Gourma probintzia
+    'no': Gourma
+    fa: استان گورما
+  comments:
+  type: province
+HOU:
+  name: Houet
+  code: HOU
+  unofficial_names: Houet
+  geo:
+    latitude: 11.1320447
+    longitude: -4.2333355
+    min_latitude: 10.6684769
+    min_longitude: -4.830123
+    max_latitude: 12.0947281
+    max_longitude: -3.606641
+  translations:
+    en: Houet
+    ar: محافظة هويت
+    bn: হুয়েত প্রদেশ
+    da: Houet Province
+    de: Houet
+    el: Χουέτ
+    es: Provincia de Houet
+    fi: Houet
+    fr: Houet
+    gl: Houet
+    gu: હૌએટ પ્રાંત
+    hi: हूएट प्रांत
+    id: Provinsi Houet
+    it: Provincia di Houet
+    ja: ウエ県
+    kn: ಹೌಟೆ ಪ್ರಾಂತ್ಯ
+    ko: 우에 현
+    mr: हौएट प्रांत
+    ms: Houet Province
+    nb: Houet
+    nl: Houet
+    pl: Prowincja Houet
+    pt: Houet
+    ro: Houet
+    ru: Уэ
+    si: හෞඑට් පළාත
+    sv: Province du Houet
+    ta: ஹோயூட் மாகாணம்
+    te: హోయెట్ ప్రావిన్స్
+    th: จังหวัดฮูมต์
+    tr: Houet Province
+    uk: Уе
+    ur: ہؤیت صوبہ
+    vi: Houet
+    lv: Ūetas province
+    ceb: Province du Houet
+    lt: Hueto provincija
+    zh: 烏埃省
+    ccp: "\U00011126\U0001112F\U00011120\U0001112C\U00011116\U00011134"
+    eu: Houet probintzia
+    'no': Houet
+    ca: Houet
+    fa: استان هوت
+  comments:
+  type: province
+IOB:
+  name: Ioba
+  code: IOB
+  unofficial_names: Ioba
+  geo:
+    latitude: 11.0562034
+    longitude: -3.0175712
+    min_latitude: 10.7027129
+    min_longitude: -3.4346219
+    max_latitude: 11.348253
+    max_longitude: -2.6235329
+  translations:
+    en: Ioba
+    ar: محافظة إيوبا
+    bn: ইয়োবের প্রদেশ
+    da: Ioba Province
+    de: Ioba
+    el: Ιόμπα
+    es: Provincia de Ioba
+    fi: Ioba
+    fr: Ioba
+    gl: Ioba
+    gu: ઇઓબા પ્રાંત
+    hi: आयोबा प्रांत
+    id: Provinsi Ioba
+    it: Provincia di Ioba
+    ja: イオバ県
+    kn: ಐಯೋಬಾ ಪ್ರಾಂತ್ಯ
+    ko: 이오바 현
+    mr: लोबा प्रांत
+    ms: Ioba Province
+    nb: Ioba
+    nl: Ioba
+    pl: Prowincja Ioba
+    pt: Ioba
+    ro: Ioba
+    ru: Иоба
+    si: අයෝබා පළාත
+    sv: Province du Ioba
+    ta: யோபா மாகாணம்
+    te: అయోబా ప్రావిన్స్
+    th: จังหวัดโลบา
+    tr: Ioba Province
+    uk: Іоба
+    ur: ایوبا صوبہ
+    vi: Ioba
+    lv: Iobas province
+    ceb: Province du Ioba
+    lt: Iobos provincija
+    zh: 伊奧巴省
+    ccp: "\U00011123\U00011127\U0001111D"
+    'no': Ioba
+    fa: استان ایوبا
+  comments:
+  type: province
+KAD:
+  name: Kadiogo
+  code: KAD
+  unofficial_names: Kadiogo
+  geo:
+    latitude: 12.3425897
+    longitude: -1.443469
+    min_latitude: 12.0280849
+    min_longitude: -1.838807
+    max_latitude: 12.651055
+    max_longitude: -1.061279
+  translations:
+    en: Kadiogo
+    ar: مقاطعة كاديوغو
+    bn: কাডিওগো প্রদেশ
+    da: Kadiogo Province
+    de: Kadiogo
+    el: Καντιόγκο
+    es: Provincia de Kadiogo
+    fa: استان کادیوگو
+    fi: Kadiogo
+    fr: Kadiogo
+    gl: Kadiogo
+    gu: કાડીઓગો પ્રાંત
+    hi: कडीओगो प्रांत
+    id: Provinsi Kadiogo
+    it: Provincia di Kadiogo
+    ja: カディオゴ県
+    kn: ಕದಿಗೊ ಪ್ರಾಂತ್ಯ
+    ko: 카디오고 현
+    mr: कडीगो प्रांत
+    ms: Kadiogo Province
+    nb: Kadiogo
+    nl: Kadiogo
+    pl: Prowincja Kadiogo
+    pt: Kadiogo
+    ro: Kadiogo
+    ru: Кадиого
+    si: කඩයෝගෝ පළාත
+    sv: Kadiogo Province
+    ta: கடியோகோ மாகாணம்
+    te: కడియోగో ప్రావిన్స్
+    th: จังหวัดกาดิโอโก
+    tr: Kadigo Province
+    uk: Кадіого
+    ur: کادیوگو صوبہ
+    vi: Kadiogo
+    lv: Kadiogo province
+    ceb: Kadiogo Province
+    lt: Kadiogo apskritis
+    zh: 卡焦戈省
+    ccp: "\U00011107\U00011113\U00011128\U00011109\U0001112E"
+    eu: Kadiogo probintzia
+    be: правінцыя Кадыёга
+    'no': Kadiogo
+  comments:
+  type: province
+KEN:
+  name: Kénédougou
+  code: KEN
+  unofficial_names: Kénédougou
+  geo:
+    latitude: 11.3919395
+    longitude: -4.976654
+    min_latitude: 10.818135
+    min_longitude: -5.496531
+    max_latitude: 12.0652081
+    max_longitude: -4.5546
+  translations:
+    en: Kénédougou
+    ar: مقاطعة كينيدوغو
+    bn: কােনেদগৌ প্রদেশ
+    da: Kénédougou
+    de: Kénédougou
+    el: Κενέντουγκου
+    es: Provincia de Kénédougou
+    fi: Kénédougou
+    fr: Kénédougou
+    gl: Kénédougou
+    gu: કેનેડોઉગોઉ પ્રાંત
+    hi: केनेडूगू प्रांत
+    id: Provinsi Kénédougou
+    it: Provincia di Kénédougou
+    ja: ケネドゥグ県
+    kn: ಕೆನೆಡೌಗು ಪ್ರಾಂತ್ಯ
+    ko: 케네두구 현
+    mr: केनेदोऊ प्रांत
+    ms: Kenedougou Province
+    nb: Kénédougou
+    nl: Kénédougou
+    pl: Prowincja Kénédougou
+    pt: Kénédougou
+    ro: Kénédougou
+    ru: Кенедугу
+    si: කීනේඩොගු පළාත
+    sv: Province du Kénédougou
+    ta: கெனெடௌகௌ மாகாணம்
+    te: కెనోడోగో ప్రావిన్స్
+    th: จังหวัดเคเนกู
+    tr: Kenedougou Province
+    uk: Кенедугу
+    ur: کےنےدؤگؤ صوبہ
+    vi: Kénédougou
+    lv: Kenedugu province
+    ceb: Province du Kénédougou
+    lt: Kenedugu provincija
+    zh: 凱內杜古省
+    ccp: "\U00011107\U0001112C\U0001111A\U0001112C\U00011113\U0001112F\U00011109\U0001112F"
+    eu: Kénédougou probintzia
+    'no': Kénédougou
+    fa: استان کندوگو
+  comments:
+  type: province
+KMD:
+  name: Komondjari
+  code: KMD
+  unofficial_names:
+  - Komandjoari
+  - Komondjari
+  geo:
+    latitude: 12.7126527
+    longitude: 0.6773045999999999
+    min_latitude: 12.3178831
+    min_longitude: 0.223796
+    max_latitude: 13.1079471
+    max_longitude: 1.327212
+  translations:
+    en: Komondjari
+    ar: محافظة كوموندجاري
+    bn: কমন্দারি প্রদেশ
+    da: Komondjari Province
+    de: Komondjari
+    el: Κομοντζάρι
+    es: Provincia de Komondjari
+    fi: Komondjari
+    fr: Komondjari
+    gl: Komondjari
+    gu: કોમોનજરી પ્રાંત
+    hi: कोमोंड्यारी प्रांत
+    id: Provinsi Komondjari
+    it: Provincia di Komandjoari
+    ja: コモンジャリ県
+    kn: ಕೊಮೊಂಜರಿ ಪ್ರಾಂತ್ಯ
+    ko: 코몽자리 현
+    mr: कोमोनजरी प्रांत
+    ms: Komondjari Province
+    nb: Komondjari
+    nl: Komondjari
+    pl: Prowincja Komondjari
+    pt: Komondjari
+    ro: Komondjari
+    ru: Комонджари
+    si: කොමොන්ද්ජරි පළාත
+    sv: Province de la Komandjoari
+    ta: கோமோந்துஜாரி மாகாணம்
+    te: కోమోండ్జారి ప్రావిన్స్
+    th: จังหวัดโคมอนด์จาริ
+    tr: Komondjari Province
+    ur: کوموندجاری صوبہ
+    vi: Komondjari
+    lv: Komondjari province
+    ceb: Province de la Komandjoari
+    lt: Komondjario provincija
+    zh: 科蒙加里省
+    ccp: "\U00011107\U00011127\U0001111F\U00011127\U0001111A\U00011133\U00011113\U00011134\U0001110E\U00011122\U00011128"
+    eu: Komondjari probintzia
+    uk: Провінція Комонджарі
+    'no': Komondjari
+    fa: استان کومنجری
+  comments:
+  type: province
+KMP:
+  name: Kompienga
+  code: KMP
+  unofficial_names: Kompienga
+  geo:
+    latitude: 11.5238362
+    longitude: 0.7532808999999999
+    min_latitude: 10.930996
+    min_longitude: 0.406261
+    max_latitude: 11.9385549
+    max_longitude: 1.390587
+  translations:
+    en: Kompienga
+    ar: محافظة كومبينغا
+    bn: কম্পিয়েঙ্গা প্রদেশ
+    da: Kompienga Province
+    de: Kompienga
+    el: Κομπιένγκα
+    es: Provincia de Kompienga
+    fi: Kompienga
+    fr: Kompienga
+    gl: Kompienga
+    gu: કૉમ્પીએન્ગા પ્રાંત
+    hi: कोम्पिएंगा प्रांत
+    id: Provinsi Kompienga
+    it: Provincia di Kompienga
+    ja: コンピエンガ県
+    kn: ಕೊಂಪಿಂಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 콤피엥가 현
+    mr: कॉम्पीइंगा प्रांत
+    ms: Kompienga Province
+    nb: Kompienga
+    nl: Kompienga
+    pl: Prowincja Kompienga
+    pt: Kompienga
+    ro: Kompienga
+    ru: Компьенга
+    si: කොම්පින්ගා පළාත
+    sv: Province de la Kompienga
+    ta: கொம்பிஏங்கா மாகாணம்
+    te: కాంపియెంగా ప్రావిన్స్
+    th: จังหวัดคอมเพียงกา
+    tr: Kompienga Province
+    uk: Компʼєнга
+    ur: کومپیئنگا صوبہ
+    vi: Tỉnh Kompienga
+    lv: Kompiengas province
+    ceb: Province de la Kompienga
+    lt: Kompjengos provincija
+    zh: 孔皮恩加省
+    ccp: "\U00011107\U00011127\U0001111F\U00011134\U0001111B\U00011128\U00011120\U0001112C\U0001110B\U00011134\U00011109"
+    eu: Kompienga probintzia
+    'no': Kompienga
+    fa: استان کمپینگا
+  comments:
+  type: province
+KOP:
+  name: Koulpélogo
+  code: KOP
+  unofficial_names: Koulpélogo
+  geo:
+    latitude: 11.5247674
+    longitude: 0.1494988
+    min_latitude: 11.028617
+    min_longitude: -0.197487
+    max_latitude: 11.7926739
+    max_longitude: 0.558619
+  translations:
+    en: Koulpélogo
+    ar: مقاطعة كولبيلوغو
+    bn: কুল্পেলঙ্গ প্রদেশ
+    da: Koulpélogo Province
+    de: Koulpélogo
+    el: Κουλπέλογκο
+    es: Provincia de Koulpélogo
+    fi: Koulpélogo
+    fr: Koulpélogo
+    gl: Koulpélogo
+    gu: કૌલ્પેલોગો પ્રાંત
+    hi: कौलपेलोगो प्रांत
+    id: Provinsi Koulpélogo
+    it: Provincia di Koulpélogo
+    ja: クルペロゴ県
+    kn: ಕೌಲ್ಪೆಲೋಗೊ ಪ್ರಾಂತ್ಯ
+    ko: 쿨펠로고 현
+    mr: कुल्पेलोगो प्रांत
+    ms: Koulpelogo Province
+    nb: Koulpélogo
+    nl: Koulpélogo
+    pl: Prowincja Koulpélogo
+    pt: Koulpélogo
+    ro: Koulpélogo
+    ru: Кульпелого
+    si: කෞල්පේල්ගෝ පළාත
+    sv: Province du Koulpélogo
+    ta: கோல்பேலோகோ மாகாணம்
+    te: కౌల్పెలోగో ప్రావిన్స్
+    th: โคลเปโลโก
+    tr: Koulpélogo Province
+    uk: Кульпелого
+    ur: کوولپیلوجو صوبہ
+    vi: Koulpélogo
+    lv: Kulpelogo province
+    ceb: Province du Koulpélogo
+    lt: Kulpelogo provincija
+    zh: 庫爾佩羅戈省
+    ccp: "\U00011107\U0001112F\U00011123\U00011134\U0001111B\U0001112C\U00011123\U00011127\U00011109\U0001112E"
+    eu: Koulpélogo probintzia
+    'no': Koulpélogo
+    fa: استان کولپلوگو
+  comments:
+  type: province
+KOS:
+  name: Kossi
+  code: KOS
+  unofficial_names: Kossi
+  geo:
+    latitude: 12.960458
+    longitude: -3.9062688
+    min_latitude: 12.3918809
+    min_longitude: -4.3569829
+    max_latitude: 13.5011959
+    max_longitude: -3.420758
+  translations:
+    en: Kossi
+    ar: محافظة كوسي
+    bn: কোসি প্রদেশ
+    da: Kossi Province
+    de: Kossi
+    el: Κόσσι
+    es: Provincia de Kossi
+    fi: Kossi
+    fr: Kossi
+    gl: Kossi
+    gu: કોસી પ્રાંત
+    hi: कोसी प्रांत
+    id: Provinsi Kossi
+    it: Provincia di Kossi
+    ja: コッシ県
+    kn: ಕೊಸ್ಸಿಯ ಪ್ರಾಂತ್ಯ
+    ko: 코시 현
+    mr: कासी प्रांत
+    ms: Kossi Province
+    nb: Kossi
+    nl: Kossi
+    pl: Prowincja Kossi
+    pt: Kossi
+    ro: Kossi
+    ru: Косси
+    si: කොසි පළාත
+    sv: Province de la Kossi
+    ta: கோசி மாகாணம்
+    te: కోసి ప్రావిన్స్
+    th: จังหวัดคอสสิ
+    tr: Kossi Province
+    uk: Коссі
+    ur: کوسی صوبہ
+    vi: Kossi
+    lv: Kossi province
+    ceb: Province de la Kossi
+    lt: Kosio provincija
+    zh: 孔西省
+    ccp: "\U00011107\U0001112E\U00011125\U00011128"
+    eu: Kossi probintzia
+    'no': Kossi
+    ca: Kossi
+    fa: استان کوسی
+  comments:
+  type: province
+KOT:
+  name: Kouritenga
+  code: KOT
+  unofficial_names: Kouritenga
+  geo:
+    latitude: 12.1631813
+    longitude: -0.2244662
+    min_latitude: 11.800252
+    min_longitude: -0.549895
+    max_latitude: 12.5637131
+    max_longitude: -0.013345
+  translations:
+    en: Kouritenga
+    ar: مقاطعة كوريتينغا
+    bn: কুরিটেঙ্গা প্রদেশ
+    da: Kouritenga Province
+    de: Kouritenga
+    el: Κουριτένγκα
+    es: Provincia de Kouritenga
+    fi: Kouritenga
+    fr: Kouritenga
+    gl: Kouritenga
+    gu: કૌરીટેન્ગા પ્રાંત
+    hi: कौरितेंगा प्रांत
+    id: Provinsi Kouritenga
+    it: Provincia di Kouritenga
+    ja: クリテンガ県
+    kn: ಕೌರಿಟೆಂಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 쿠리텡가 현
+    mr: कौरीटेन्गा प्रांत
+    ms: Kouritenga Province
+    nb: Kouritenga
+    nl: Kouritenga
+    pl: Prowincja Kouritenga
+    pt: Kouritenga
+    ro: Kouritenga
+    ru: Куритенга
+    si: කොඋරිටෙන්ගා පළාත
+    sv: Kouritenga Province
+    ta: கௌரிதேங்கா மாகாணம்
+    te: కౌరిటెంగా ప్రావిన్స్
+    th: จังหวัดกัวริเทนกา
+    tr: Kouritenga Province
+    uk: Курітенга
+    ur: کؤریتئنگا صوبہ
+    vi: Kouritenga
+    lv: Kuritengas province
+    ceb: Kouritenga Province
+    lt: Kuritengos provincija
+    zh: 庫里滕加省
+    ccp: "\U00011107\U0001112F\U00011122\U00011128\U00011111\U0001112C\U00011101\U00011109"
+    eu: Kouritenga probintzia
+    'no': Kouritenga
+    fa: استان کوریتینگا
+  comments:
+  type: province
+KOW:
+  name: Kourwéogo
+  code: KOW
+  unofficial_names: Kourwéogo
+  geo:
+    latitude: 12.7077495
+    longitude: -1.7538817
+    min_latitude: 12.258193
+    min_longitude: -2.053207
+    max_latitude: 12.854551
+    max_longitude: -1.6024919
+  translations:
+    en: Kourwéogo
+    ar: محافظة كورويوغو
+    bn: কুরওয়েওগো প্রদেশ
+    da: Kourwéogo Province
+    de: Kourwéogo
+    el: Κουρβέογκο
+    es: Provincia de Kourwéogo
+    fi: Kourwéogo
+    fr: Kourwéogo
+    gl: Kourwéogo
+    gu: કોર્વેઓગો પ્રાંત
+    hi: कौरवेगो प्रांत
+    id: Provinsi Kourwéogo
+    it: Provincia di Kourwéogo
+    ja: クルウェゴ県
+    kn: ಕೊರ್ವೆಗೊ ಪ್ರಾಂತ್ಯ
+    ko: 쿠르웨오고 현
+    mr: कॉर्वोओ प्रांत
+    ms: Kourweogo Province
+    nb: Kourwéogo
+    nl: Kourwéogo
+    pl: Prowincja Kourwéogo
+    pt: Kourwéogo
+    ro: Kourwéogo
+    ru: Курвеого
+    si: කොඋර්වේගෝ පළාත
+    sv: Province du Kourwéogo
+    ta: கௌரவ்எகோ மாகாணம்
+    te: కోర్వియోగో ప్రావిన్స్
+    th: ริฟ วัลลี่
+    tr: Kourwéogo
+    uk: Курвеого
+    ur: کؤروئوگو صوبہ
+    vi: Kourwéogo
+    lv: Kurveogo province
+    ceb: Province du Kourwéogo
+    lt: Kurvogo provincija
+    zh: 庫爾維奧戈省
+    ccp: "\U00011107\U0001112F\U00011122\U00011134\U00011103\U0001112A\U00011103\U00011128\U00011109\U0001112E"
+    'no': Kourwéogo
+    fa: استان کوروگو
+  comments:
+  type: province
+LER:
+  name: Léraba
+  code: LER
+  unofficial_names: Léraba
+  geo:
+    latitude: 10.6648785
+    longitude: -5.3102505
+    min_latitude: 10.285268
+    min_longitude: -5.518916
+    max_latitude: 11.0630681
+    max_longitude: -4.950835
+  translations:
+    en: Léraba
+    ar: مقاطعة ليرابا
+    bn: লিরাবা প্রদেশ
+    da: Léraba Province
+    de: Léraba
+    el: Λεραμπά
+    es: Provincia de Léraba
+    fa: استان لرابا
+    fi: Léraba
+    fr: Léraba
+    gl: Léraba
+    gu: લેરાબા પ્રાંત
+    hi: लेरबा प्रांत
+    id: Provinsi Léraba
+    it: Provincia di Léraba
+    ja: レラバ県
+    kn: ಲೆರಾಬಾ ಪ್ರಾಂತ್ಯ
+    ko: 레라바 현
+    mr: लीराबा प्रांत
+    ms: Leraba Province
+    nb: Léraba
+    nl: Léraba
+    pl: Prowincja Léraba
+    pt: Léraba
+    ro: Léraba
+    ru: Лераба
+    si: ලේරබා පළාත
+    sv: Province de la Léraba
+    ta: லெரபா மாகாணம்
+    te: లెరాబా ప్రావిన్స్
+    th: จังหวัดเลราบา
+    tr: Leraba Province
+    uk: Лераба
+    ur: لیرابا صوبہ
+    vi: Léraba
+    lv: Lebaras province
+    ceb: Province de la Léraba
+    lt: Lerabos provincija
+    zh: 雷拉巴省
+    ccp: "\U00011123\U0001112C\U00011122\U0001111B\U00011134"
+    eu: Léraba probintzia
+    'no': Léraba
+  comments:
+  type: province
+LOR:
+  name: Loroum
+  code: LOR
+  unofficial_names: Loroum
+  geo:
+    latitude: 13.8129814
+    longitude: -2.0665197
+    min_latitude: 13.543141
+    min_longitude: -2.6626219
+    max_latitude: 14.287777
+    max_longitude: -1.741041
+  translations:
+    en: Loroum
+    ar: مقاطعة لوروم
+    bn: লোরুম প্রদেশ
+    da: Loroum Province
+    de: Loroum
+    el: Λόρουμ
+    es: Provincia de Loroum
+    fi: Loroum
+    fr: Loroum
+    gl: Loroum
+    gu: લોરૌમ પ્રાંત
+    hi: लोरूम प्रांत
+    id: Provinsi Loroum
+    it: Provincia di Loroum
+    ja: ロルム県
+    kn: ಲೊರೊಮ್ ಪ್ರಾಂತ್ಯ
+    ko: 로룸 현
+    mr: लोरुम प्रांत
+    ms: Loroum Province
+    nb: Loroum
+    nl: Loroum
+    pl: Prowincja Loroum
+    pt: Loroum
+    ro: Loroum
+    ru: Лорум
+    si: ලොරම් පළාත
+    sv: Province du Loroum
+    ta: லோரோம் மாகாணம்
+    te: లోరౌమ్ ప్రావిన్స్
+    th: จังหวัดโลรัม
+    tr: Loroum Province
+    uk: Лорум
+    ur: لورؤم صوبہ
+    vi: Loroum
+    lv: Lorumas province
+    ceb: Province du Loroum
+    lt: Lorumo provincija
+    zh: 羅盧姆省
+    ccp: "\U00011123\U00011127\U00011122\U0001112F\U0001111F\U00011134"
+    eu: Loroum probintzia
+    'no': Loroum
+    ca: Loroum
+  comments:
+  type: province
+MOU:
+  name: Mouhoun
+  code: MOU
+  unofficial_names: Mouhoun
+  geo:
+    latitude: 12.1432381
+    longitude: -3.3388917
+    min_latitude: 11.7275591
+    min_longitude: -3.984274
+    max_latitude: 12.746741
+    max_longitude: -2.7976019
+  translations:
+    en: Mouhoun
+    ar: موهون
+    bn: মৌহুন
+    da: Mouhoun
+    de: Mouhoun
+    el: Μουχούν
+    es: Provincia de Mouhoun
+    eu: Mouhoun probintzia
+    fi: Mouhoun
+    fr: Mouhoun
+    gl: Mouhoun
+    gu: મૌઉંન
+    hi: मुहून
+    id: Mouhoun
+    it: Provincia di Mouhoun
+    ja: ムフン県
+    kn: ಮೌಹೌನ್
+    ko: 무운 현
+    mr: मोउंन
+    ms: Mouhoun
+    nb: Mouhoun
+    nl: Mouhoun
+    pl: Prowincja Mouhoun
+    pt: Mouhoun
+    ro: Mouhoun
+    ru: Мухун
+    si: මුහුන්
+    sv: Province du Mouhoun
+    ta: மௌஹௌன்
+    te: మౌహౌన్
+    th: เมาฮวร์น
+    tr: Mouhoun
+    uk: Мухун
+    ur: مؤہؤن صوبہ
+    vi: Mouhoun
+    lv: Muhuna
+    ceb: Province du Mouhoun
+    lt: Muchuno provincija
+    zh: 穆翁省
+    ccp: "\U0001111F\U0001112F\U00011126\U0001112F"
+    'no': Mouhoun
+  comments:
+  type: province
+NAM:
+  name: Namentenga
+  code: NAM
+  unofficial_names: Namentenga
+  geo:
+    latitude: 13.0812584
+    longitude: -0.5257822999999999
+    min_latitude: 12.3899759
+    min_longitude: -0.816957
+    max_latitude: 13.991249
+    max_longitude: -0.2123129
+  translations:
+    en: Namentenga
+    ar: محافظة نامنتنغا
+    bn: নামেনটেঙ্গা প্রদেশ
+    da: Namentenga Province
+    de: Namentenga
+    el: Ναμεντένγκα
+    es: Provincia de Namentenga
+    fa: استان نامنتنگا
+    fi: Namentenga
+    fr: Namentenga
+    gl: Namentenga
+    gu: પ્રાંત નામેંટેંગા
+    hi: नमेंटेंगा प्रांत
+    id: Provinsi Namentenga
+    it: Provincia di Namentenga
+    ja: ナメテンガ県
+    kn: ನಾಮೆಂಟೆಂಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 나멘텡가 현
+    mr: नॉर्थेंगा प्रांत
+    ms: Namentenga Province
+    nb: Namentenga
+    nl: Namentenga
+    pl: Prowincja Namentenga
+    pt: Namentenga
+    ro: Namentenga
+    ru: Наментенга
+    si: නමෙන්ටෙන්ගා පළාත
+    sv: Province du Namentenga
+    ta: நாமென்டேங்கா மாகாணம்
+    te: నామెంటెంగా ప్రావిన్స్
+    th: จังหวัดนาเมนเทนกา
+    tr: Namentenga Province
+    uk: Наментенга
+    ur: نامینتینجا صوبہ
+    vi: Namentenga
+    lv: Namentengas province
+    ceb: Province du Namentenga
+    lt: Namentengos provincija
+    zh: 納門滕加省
+    ccp: "\U0001111A\U00011127\U0001111F\U0001112C\U0001111A\U00011134\U00011111\U0001112C\U00011101\U00011109"
+    eu: Namentenga probintzia
+    'no': Namentenga
+    ca: Namentenga
+  comments:
+  type: province
+NAO:
+  name: Nahouri
+  code: NAO
+  unofficial_names:
+  - Naouri
+  geo:
+    latitude: 11.2502267
+    longitude: -1.135302
+    min_latitude: 10.959089
+    min_longitude: -1.6524489
+    max_latitude: 11.522449
+    max_longitude: -0.6820199
+  translations:
+    en: Nahouri
+    ar: محافظة ناهوري
+    bn: নাহৌরি প্রদেশ
+    da: Nahouri
+    de: Nahouri
+    el: Ναχούρι
+    es: Provincia de Nahouri
+    fi: Nahouri
+    fr: Nahouri
+    gl: Nahouri
+    gu: નાહોરી પ્રાંત
+    hi: नहौरी प्रांत
+    id: Provinsi Nahouri
+    it: Provincia di Nahouri
+    ja: ナウリ県
+    kn: ನಹೌರಿ ಪ್ರಾಂತ್ಯ
+    ko: 나우리 현
+    mr: नहौरी प्रांत
+    ms: Nahouri Province
+    nb: Nahouri
+    nl: Nahouri
+    pl: Prowincja Nahouri
+    pt: Nahouri
+    ro: Nahouri
+    ru: Нахури
+    si: නහොරි පළාත
+    sv: Nahouri Province
+    ta: நாஹௌறி மாகாணம்
+    te: నాహౌరి ప్రావిన్స్
+    th: จังหวัดนาฮาริ
+    tr: Nahouri Province
+    uk: Нахурі
+    ur: ناہؤری صوبہ
+    vi: Nahouri
+    lv: Nahūri province
+    ceb: Nahouri Province
+    lt: Nachurio provincija
+    zh: 納烏里省
+    ccp: "\U0001111A\U00011126\U0001112F\U00011122\U00011128"
+    eu: Nahouri probintzia
+    'no': Nahouri
+  comments:
+  type: province
+NAY:
+  name: Nayala
+  code: NAY
+  unofficial_names: Nayala
+  geo:
+    latitude: 12.6964558
+    longitude: -3.0175712
+    min_latitude: 12.338824
+    min_longitude: -3.4210301
+    max_latitude: 12.9881389
+    max_longitude: -2.6541769
+  translations:
+    en: Nayala
+    ar: محافظة نيالا
+    bn: নায়ালা প্রদেশ
+    da: Nayala Province
+    de: Nayala
+    el: Ναγιάλα
+    es: Provincia de Nayala
+    fi: Nayala
+    fr: Nayala
+    gl: Nayala
+    gu: નાયલા પ્રાંત
+    hi: नायला प्रांत
+    id: Provinsi Nayala
+    it: Provincia di Nayala
+    ja: ナヤラ県
+    kn: ನಾಯಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 나얄라 현
+    mr: नायला प्रांत
+    ms: Nayala Province
+    nb: Nayala
+    nl: Nayala
+    pl: Prowincja Nayala
+    pt: Nayala
+    ro: Nayala
+    ru: Наяла
+    si: නයලා පළාත
+    sv: Province du Nayala
+    ta: நயலா மாகாணம்
+    te: నయాలా ప్రావిన్స్
+    th: จังหวัดซิสซิลลิ
+    tr: Nayala Province
+    uk: Наяла
+    ur: نایالا صوبہ
+    vi: Nayala
+    lv: Najalas province
+    ceb: Province du Nayala
+    lt: Najalos provincija
+    zh: 納亞拉省
+    ccp: "\U0001111A\U00011120\U00011123"
+    eu: Nayala probintzia
+    'no': Nayala
+    fa: استان نایالا
+  comments:
+  type: province
+NOU:
+  name: Noumbiel
+  code: NOU
+  unofficial_names: Noumbiel
+  geo:
+    latitude: 9.8440946
+    longitude: -2.9775558
+    min_latitude: 9.401107999999999
+    min_longitude: -3.2736119
+    max_latitude: 10.1794679
+    max_longitude: -2.689926
+  translations:
+    en: Noumbiel
+    ar: محافظة نومبيل
+    bn: নুম্বিল প্রদেশ
+    da: Noumbiel Province
+    de: Noumbiel
+    el: Νούμπιελ
+    es: Provincia de Noumbiel
+    fi: Noumbiel
+    fr: Noumbiel
+    gl: Noumbiel
+    gu: નૌમ્બબીલ પ્રાંત
+    hi: नोम्बिएल प्रांत
+    id: Provinsi Noumbiel
+    it: Provincia di Noumbiel
+    ja: ヌンビエル県
+    kn: ನೌಂಬಿಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 눔비엘 현
+    mr: नूम्बील प्रांत
+    ms: Noumbiel Province
+    nb: Noumbiel
+    nl: Noumbiel
+    pl: Prowincja Noumbiel
+    pt: Noumbiel
+    ro: Noumbiel
+    ru: Нумбиель
+    si: නොඋම්බයෙල් පළාත
+    sv: Province du Noumbièl
+    ta: நோம்பியில் மாகாணம்
+    te: నాంబియెల్ ప్రావిన్స్
+    th: นูมเบียว
+    tr: Noumbiel Province
+    uk: Нумбʼєль
+    ur: نؤمبیئل صوبہ
+    vi: Noumbiel
+    lv: Numbielas province
+    ceb: Province du Noumbièl
+    lt: Numbjelo provincija
+    zh: 努姆比埃爾省
+    ccp: "\U0001111A\U0001112F\U0001111F\U00011134\U0001111D\U0001112D\U00011120\U0001112C\U00011123\U00011134"
+    'no': Noumbiel
+  comments:
+  type: province
+OUB:
+  name: Oubritenga
+  code: OUB
+  unofficial_names: Oubritenga
+  geo:
+    latitude: 12.7096087
+    longitude: -1.443469
+    min_latitude: 12.2280669
+    min_longitude: -1.711143
+    max_latitude: 12.898948
+    max_longitude: -0.8792981
+  translations:
+    en: Oubritenga
+    ar: محافظة أوبريتنغا
+    bn: ইউব্রিটেঙ্গা প্রদেশ
+    da: Oubritenga Province
+    de: Oubritenga
+    el: Ουμπριτένγκα
+    es: Provincia de Oubritenga
+    fi: Oubritenga
+    fr: Oubritenga
+    gl: Oubritenga
+    gu: ઑબ્રીટેંગા પ્રાંત
+    hi: औब्रिटेंगा प्रांत
+    id: Provinsi Oubritenga
+    it: Provincia di Oubritenga
+    ja: ウブリテンガ県
+    kn: ಒಬ್ರಿಟ್ಟೆಂಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 우브리텡가 현
+    mr: ओब्रिटेंगा प्रांत
+    ms: Wilayah Oubritenga
+    nb: Oubritenga
+    nl: Oubritenga
+    pl: Prowincja Oubritenga
+    pt: Oubritenga
+    ro: Oubritenga
+    ru: Убритенга
+    si: ඔඋබ්‍රිටෙන්ගා පළාත
+    sv: Province d’Oubritenga
+    ta: ஒருபிரிடீங்கா மாகாணம்
+    te: ఔబ్రిటెంగా ప్రావిన్స్
+    th: จังหวัดอูบริเทนกา
+    tr: Oubritenga Province
+    uk: Убрітенга
+    ur: اؤبریتئنگا صوبہ
+    vi: Oubritenga
+    lv: Ubritengas province
+    ceb: Province d’Oubritenga
+    lt: Oubritengos provincija
+    zh: 烏布里滕加省
+    ccp: "\U00011103\U0001112E\U00011105\U0001112A\U0001111D\U00011133\U00011122\U00011128\U00011111\U0001112C\U00011101\U00011109"
+    'no': Oubritenga
+    ca: Oubritenga
+  comments:
+  type: province
+OUD:
+  name: Oudalan
+  code: OUD
+  unofficial_names: Oudalan
+  geo:
+    latitude: 14.471902
+    longitude: -0.4502368
+    min_latitude: 14.1614599
+    min_longitude: -1.036602
+    max_latitude: 15.0825929
+    max_longitude: 0.237572
+  translations:
+    en: Oudalan
+    ar: مقاطعة أودالان
+    bn: ওউদালান প্রদেশ
+    da: Oudalan Province
+    de: Oudalan
+    el: Ουνταλάν
+    es: Provincia de Oudalan
+    fi: Oudalan
+    fr: Oudalan
+    gl: Oudalan
+    gu: ઔડલાન પ્રાંત
+    hi: औदलान प्रांत
+    id: Provinsi Oudalan
+    it: Provincia di Oudalan
+    ja: ウダラン県
+    kn: ಔಡಾಲಾನ್ ಪ್ರಾಂತ್ಯ
+    ko: 우달란 현
+    mr: औदलान प्रांत
+    ms: Oudalan Province
+    nb: Oudalan
+    nl: Oudalan
+    pl: Prowincja Oudalan
+    pt: Oudalan
+    ro: Oudalan
+    ru: Удалан
+    si: ඖදලාන් පළාත
+    sv: Province de l’Oudalan
+    ta: ஓடலன் மாகாணம்
+    te: ఉడాలన్ ప్రావిన్స్
+    th: จังหวัดฮอูวดาลัน
+    tr: Oudalan Province
+    uk: Удалан
+    ur: اؤدالان صوبہ
+    vi: Oudalan
+    lv: Oudalanas province
+    ceb: Province de l’Oudalan
+    lt: Oudalano provincija
+    zh: 烏達蘭省
+    ccp: "\U00011103\U0001112E\U00011105\U0001112A\U00011113\U00011123\U0001111A\U00011134"
+    'no': Oudalan
+    ca: Oudalan
+  comments:
+  type: province
+PAS:
+  name: Passoré
+  code: PAS
+  unofficial_names: Passoré
+  geo:
+    latitude: 12.8881221
+    longitude: -2.2236667
+    min_latitude: 12.616918
+    min_longitude: -2.7353291
+    max_latitude: 13.1489779
+    max_longitude: -1.5174049
+  translations:
+    en: Passoré
+    ar: محافظة باسوري
+    bn: প্যাসেরে প্রদেশ
+    da: Passoré Province
+    de: Passoré
+    el: Πασορέ
+    es: Provincia de Passoré
+    fi: Passoré
+    fr: Passoré
+    gl: Passoré
+    gu: પાસૉર પ્રાંત
+    hi: पासोरे प्रांत
+    id: Provinsi Passoré
+    it: Provincia di Passoré
+    ja: パッソレ県
+    kn: ಪಾಸ್ಸೋರ್ ಪ್ರಾಂತ್ಯ
+    ko: 파소레 현
+    mr: पॅसेरे प्रांत
+    ms: Passore Province
+    nb: Passoré
+    nl: Passoré
+    pl: Prowincja Passoré
+    pt: Passoré
+    ro: Passoré
+    ru: Провинция Пассор
+    si: පැසොරේ පළාත
+    sv: Province du Passoré
+    ta: பாசூரே மாகாணம்
+    te: పాసోర్ ప్రావిన్స్
+    th: จังหวัดพาสโซเร่
+    tr: Passoré
+    uk: Пассоре
+    ur: پاسورے صوبہ
+    vi: Passoré
+    lv: Pasores province
+    ceb: Province du Passoré
+    lt: Pasorės provincija
+    zh: 帕索雷省
+    ccp: "\U0001111B\U0001112C\U00011125\U0001112E\U00011122\U00011134"
+    eu: Passoré probintzia
+    be: правінцыя Пасарэ
+    'no': Passoré
+  comments:
+  type: province
+PON:
+  name: Poni
+  code: PON
+  unofficial_names: Poni
+  geo:
+    latitude: 10.3325996
+    longitude: -3.3388917
+    min_latitude: 9.851626999999999
+    min_longitude: -3.960880999999999
+    max_latitude: 10.7633291
+    max_longitude: -2.762533
+  translations:
+    en: Poni
+    ar: محافظة بوني
+    bn: পনি প্রদেশ
+    da: Poni Province
+    de: Poni
+    el: Πόνι
+    es: Provincia de Poni
+    fa: استان پونی
+    fi: Poni
+    fr: Poni
+    gl: Poni
+    gu: પોની પ્રાંત
+    hi: पोनी प्रांत
+    id: Provinsi Poni
+    it: Provincia di Poni
+    ja: ポニ県
+    kn: ಪೋನಿ ಪ್ರಾಂತ್ಯ
+    ko: 포니 현
+    mr: पोनी प्रांत
+    ms: Poni Province
+    nb: Poni
+    nl: Poni
+    pl: Prowincja Poni
+    pt: Poni
+    ro: Poni
+    ru: Пони
+    si: පොනි පළාත
+    sv: Province du Poni
+    ta: போனி மாகாணம்
+    te: పోని ప్రావిన్స్
+    th: จังหวัดโพนิ
+    tr: Poni Province
+    uk: Поні
+    ur: پونی صوبہ
+    vi: Poni
+    lv: Poni province
+    ceb: Province du Poni
+    lt: Ponio provincija
+    zh: 波尼省
+    ccp: "\U0001111B\U00011127\U0001111A\U00011128"
+    'no': Poni
+    ca: Poni
+  comments:
+  type: province
+SEN:
+  name: Séno
+  code: SEN
+  unofficial_names: Séno
+  geo:
+    latitude: 14.0072234
+    longitude: -0.0746767
+    min_latitude: 13.5140089
+    min_longitude: -0.629656
+    max_latitude: 14.4390691
+    max_longitude: 0.53044
+  translations:
+    en: Séno
+    ar: محافظة سينو
+    bn: সেনো প্রদেশ
+    da: Séno Province
+    de: Séno
+    el: Σένο
+    es: Provincia de Séno
+    fa: سنو
+    fi: Séno
+    fr: Séno
+    gl: Séno
+    gu: સેનો પ્રાંત
+    hi: सेनो प्रांत
+    id: Provinsi Séno
+    it: Provincia di Séno
+    ja: セノ県
+    kn: ಸೆನೋ ಪ್ರಾಂತ್ಯ
+    ko: 세노 현
+    mr: सेनो प्रांत
+    ms: Seno Province
+    nb: Séno
+    nl: Séno
+    pl: Prowincja Séno
+    pt: Séno
+    ro: Séno
+    ru: Сено
+    si: සේනෝ පළාත
+    sv: Province du Séno
+    ta: சோனோ மாகாணம்
+    te: సెనో ప్రావిన్స్
+    th: จังหวัดเซโน
+    tr: Séno Province
+    uk: Сено
+    ur: سینو صوبہ
+    vi: Séno
+    lv: Seno province
+    ceb: Province du Séno
+    lt: Seno provincija
+    zh: 塞諾省
+    ccp: "\U00011125\U00011128\U0001111A\U0001112E"
+    'no': Séno
+  comments:
+  type: province
+SIS:
+  name: Sissili
+  code: SIS
+  unofficial_names: Sissili
+  geo:
+    latitude: 11.2441219
+    longitude: -2.2236667
+    min_latitude: 10.976135
+    min_longitude: -2.81077
+    max_latitude: 11.9286029
+    max_longitude: -1.4617729
+  translations:
+    en: Sissili
+    ar: محافظة سيسيلي
+    bn: সিসিলি প্রদেশ
+    da: Sissili Province
+    de: Sissili
+    el: Σισσίλι
+    es: Provincia de Sissili
+    fa: استان سیسیلی
+    fi: Sissili
+    fr: Sissili
+    gl: Sissili
+    gu: સિસિલી પ્રાંત
+    hi: सिसिली प्रांत
+    id: Provinsi Sissili
+    it: Provincia di Sissili
+    ja: シッシリ県
+    kn: ಸಿಸ್ಲಿ ಪ್ರಾಂತ್ಯ
+    ko: 시실리 현
+    mr: सिसली प्रांत
+    ms: Sissili Province
+    nb: Sissili
+    nl: Sissili
+    pl: Prowincja Sissili
+    pt: Sissili
+    ro: Sissili
+    ru: Сиссили
+    si: සිසිලි පළාත
+    sv: Province de la Sissili
+    ta: சிசிலி மாகாணம்
+    te: సిసిలీ ప్రావిన్స్
+    th: รัฐซานตา แคธรีนา
+    tr: Sissili Province
+    uk: Сиссілі
+    ur: سیسیلی صوبہ
+    vi: Sissili
+    lv: Sisili province
+    ceb: Province de la Sissili
+    lt: Sisilio provincija
+    zh: 錫西里省
+    ccp: "\U00011125\U00011128\U00011125\U00011128\U00011123\U00011128"
+    eu: Sissili probintzia
+    'no': Sissili
+    ca: Província de Sissili
+  comments:
+  type: province
+SMT:
+  name: Sanmatenga
+  code: SMT
+  unofficial_names: Sanmatenga
+  geo:
+    latitude: 13.3565304
+    longitude: -1.0586135
+    min_latitude: 12.508294
+    min_longitude: -1.558366
+    max_latitude: 13.94149
+    max_longitude: -0.656181
+  translations:
+    en: Sanmatenga
+    ar: مقاطعة سانماتنغا
+    bn: স্যান্মাটেঙ্গা প্রদেশ
+    da: Sanmatenga Province
+    de: Sanmatenga
+    el: Σανματένγκα
+    es: Provincia de Sanmatenga
+    fi: Sanmatenga
+    fr: Sanmatenga
+    gl: Sanmatenga
+    gu: સાનમાટેન્ગા પ્રાંત
+    hi: सैनमतेंगा प्रांत
+    id: Provinsi Sanmatenga
+    it: Provincia di Sanmatenga
+    ja: サンマテンガ県
+    kn: ಸ್ಯಾನ್ಮಾಟೆಂಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 산마텡가 현
+    mr: सानमटगा प्रांत
+    ms: Sanmatenga Province
+    nb: Sanmatenga
+    nl: Sanmatenga
+    pl: Prowincja Sanmatenga
+    pt: Sanmatenga
+    ro: Sanmatenga
+    ru: Санматенга
+    si: සන්මටෙන්ගා පළාත
+    sv: Province du Sanmatenga
+    ta: சன்மடென்கா மாகாணம்
+    te: సన్మాటెంగా ప్రావిన్స్
+    th: จังหวัดซานมาเทนกา
+    tr: Sanmatenga Province
+    uk: Санматенга
+    ur: سانماتئنگا صوبہ
+    vi: Sanmatenga
+    lv: Sanmatengas province
+    ceb: Province du Sanmatenga
+    lt: Sanmatengos provincija
+    zh: 桑馬滕加省
+    ccp: "\U00011125\U0001111A\U00011134\U0001111F\U00011111\U0001112C\U00011101\U00011109"
+    eu: Sanmatenga probintzia
+    'no': Sanmatenga
+    ca: Sanmatenga
+  comments:
+  type: province
+SNG:
+  name: Sanguié
+  code: SNG
+  unofficial_names: Sanguié
+  geo:
+    latitude: 12.1501861
+    longitude: -2.6983868
+    min_latitude: 11.6107929
+    min_longitude: -2.9356
+    max_latitude: 12.8316141
+    max_longitude: -2.2357741
+  translations:
+    en: Sanguié
+    ar: محافظة سانغوي
+    bn: সাঙ্গুই প্রদেশ
+    da: Sanguié Province
+    de: Sanguié
+    el: Σανγκιέ
+    es: Provincia de Sanguié
+    fi: Sanguié
+    fr: Sanguié
+    gl: Sanguié
+    gu: સૅગુઈએ પ્રાંત
+    hi: सैन्गुई प्रांत
+    id: Provinsi Sanguié
+    it: Provincia di Sanguié
+    ja: サンギエ県
+    kn: ಸಾಂಗುಯಿ ಪ್ರಾಂತ್ಯ
+    ko: 상기에 현
+    mr: सॅग्गीय प्रांत
+    ms: Sanguie Province
+    nb: Sanguié
+    nl: Sanguié
+    pl: Prowincja Sanguié
+    pt: Sanguié
+    ro: Sanguié
+    ru: Санги
+    si: සන්ගුයි පළාත
+    sv: Province du Sanguié
+    ta: சங்குயி மாகாணம்
+    te: సాంగ్యీ ప్రావిన్స్
+    th: จังหวัดแซงกิว
+    tr: Sangie Province
+    uk: Сангіє
+    ur: سانگویے صوبہ
+    vi: Sanguié
+    lv: Sagijes province
+    ceb: Province du Sanguié
+    lt: Sangijės provincija
+    zh: 桑吉省
+    ccp: "\U00011125\U0001110B\U00011134\U00011109\U0001112A\U00011120\U00011128"
+    eu: Sanguié probintzia
+    'no': Sanguié
+  comments:
+  type: province
+SOM:
+  name: Soum
+  code: SOM
+  unofficial_names: Soum
+  geo:
+    latitude: 12.600536
+    longitude: -2.2728877
+    min_latitude: 12.5728018
+    min_longitude: -2.3179582
+    max_latitude: 12.6329361
+    max_longitude: -2.2242114
+  translations:
+    en: Soum
+    de: Soum
+    es: Provincia de Soum
+    fi: Soum
+    fr: Soum
+    gl: Soum
+    it: Provincia di Soum
+    ja: スム県
+    ko: 숨 현
+    nb: Soum
+    nl: Soum
+    pl: Prowincja Soum
+    pt: Soum
+    ro: Soum
+    ru: Сум
+    sv: Province du Soum
+    uk: Сум
+    ur: سؤم صوبہ
+    vi: Soum
+    ceb: Province du Soum
+    zh: 蘇姆省
+    ccp: "\U00011125\U0001112F\U0001111F\U00011134"
+    'no': Soum
+    el: Σουμ
+    fa: استان سوم (بورکینافاسو)
+    id: Provinsi Soum
+  comments:
+  type: province
+SOR:
+  name: Sourou
+  code: SOR
+  unofficial_names: Sourou
+  geo:
+    latitude: 13.341803
+    longitude: -2.9375739
+    min_latitude: 12.744838
+    min_longitude: -3.491432
+    max_latitude: 13.718467
+    max_longitude: -2.455232
+  translations:
+    en: Sourou
+    ar: محافظة سورو
+    bn: সৌরু প্রদেশ
+    da: Sourou Province
+    de: Provinz Sourou
+    el: Σούρου
+    es: Provincia de Sourou
+    fi: Sourou
+    fr: Sourou
+    gl: Sourou
+    gu: સોઉરો પ્રાંત
+    hi: सौरू प्रांत
+    id: Provinsi Sourou
+    it: Provincia di Sourou
+    ja: スル県
+    kn: ಸೌರೌ ಪ್ರಾಂತ್ಯ
+    ko: 수루 현
+    mr: सौरोवू प्रांत
+    ms: Sourou Province
+    nb: Sourou
+    nl: Sourou
+    pl: Prowincja Sourou
+    pt: Sourou
+    ro: Sourou
+    ru: Суру
+    si: සොඋරු පළාත
+    sv: Sourou (provins)
+    ta: சௌரௌ மாகாணம்
+    te: సౌరో ప్రావిన్స్
+    th: จังหวัดซูรู
+    tr: Sourou Province
+    uk: Суру
+    ur: سؤرؤ صوبہ
+    vi: Sourou
+    lv: Suru province
+    ceb: Province du Sourou
+    lt: Suru provincija
+    zh: 蘇魯省
+    ccp: "\U00011125\U0001112F\U00011122\U0001112F"
+    eu: Sourou probintzia
+    'no': Sourou
+  comments:
+  type: province
+TAP:
+  name: Tapoa
+  code: TAP
+  unofficial_names: Tapoa
+  geo:
+    latitude: 12.2497072
+    longitude: 1.6760691
+    min_latitude: 11.390404
+    min_longitude: 1.188077
+    max_latitude: 12.835267
+    max_longitude: 2.405395
+  translations:
+    en: Tapoa
+    ar: محافظة تابوا
+    bn: তাপোয়া প্রদেশ
+    da: Tapoa Province
+    de: Tapoa
+    el: Ταπόα
+    es: Provincia de Tapoa
+    fi: Tapoa
+    fr: Tapoa
+    gl: Tapoa
+    gu: ટાપોઆ પ્રાંત
+    hi: टैपो प्रांत
+    id: Provinsi Tapoa
+    it: Provincia di Tapoa
+    ja: タポア県
+    kn: ತಪೋವಾ ಪ್ರಾಂತ್ಯ
+    ko: 타포아 현
+    mr: टॅपोआ प्रांत
+    ms: Tapoa Province
+    nb: Tapoa
+    nl: Tapoa
+    pl: Prowincja Tapoa
+    pt: Tapoa
+    ro: Tapoa
+    ru: Тапоа
+    si: ටැපොවා පළාත
+    sv: Province de la Tapoa
+    ta: தபோது மாகாணம்
+    te: టపోరా ప్రావిన్స్
+    th: จังหวัดทาเปา
+    tr: Tapoa Province
+    uk: Тапоа
+    ur: تاپوا صوبہ
+    vi: Tapoa
+    lv: Tapoa province
+    ceb: Province de la Tapoa
+    lt: Tapoa provincija
+    zh: 塔波阿省
+    ccp: "\U00011111\U00011127\U0001111B\U0001112E\U00011120"
+    eu: Tapoa probintzia
+    'no': Tapoa
+    ca: Tapoa
+    he: נפת טפואה
+    sw: Tapoa
+  comments:
+  type: province
+TUI:
+  name: Tui
+  code: TUI
+  unofficial_names:
+  - Tui
+  geo:
+    latitude: 11.5029004
+    longitude: -3.5812692
+    min_latitude: 10.9803371
+    min_longitude: -3.9798661
+    max_latitude: 11.8717401
+    max_longitude: -2.831935
+  translations:
+    en: Tuy
+    ar: مقاطعة توي
+    bn: তুয় প্রদেশ
+    da: Tuy Province
+    de: Tuy
+    el: Τούι
+    es: Provincia de Tuy
+    fi: Tuy
+    fr: Tuy
+    gl: Tuy
+    gu: તુય પ્રાંત
+    hi: टाय प्रांत
+    id: Provinsi Tuy
+    it: Provincia di Tuy
+    ja: トゥイ県
+    kn: ತುಯಿ ಪ್ರಾಂತ್ಯ
+    ko: 투이 현
+    mr: ट्यू प्रांत
+    ms: Tuy Province
+    nb: Tuy
+    nl: Tuy
+    pl: Prowincja Tuy
+    pt: Tuy
+    ro: Tuy
+    ru: Провинция Туй
+    si: ටුයි පළාත
+    sv: Province du Tuy
+    ta: டூய மாகாணம்
+    te: టయ్ ప్రావిన్స్
+    th: จังหวัดตุย
+    tr: Tuy Province
+    uk: Тюї
+    ur: توے صوبہ
+    vi: Tuy
+    lv: Tujas province
+    ceb: Province du Tuy
+    lt: Tuijo provincija
+    zh: 圖伊省
+    ccp: "\U00011111\U0001112A\U00011103\U00011128"
+    eu: Tuy probintzia
+    'no': Tuy
+  comments:
+  type: province
+YAG:
+  name: Yagha
+  code: YAG
+  unofficial_names: Yagha
+  geo:
+    latitude: 13.3576157
+    longitude: 0.7532808999999999
+    min_latitude: 12.9720259
+    min_longitude: 0.04778900000000001
+    max_latitude: 13.8406751
+    max_longitude: 1.282974
+  translations:
+    en: Yagha
+    ar: مقاطعة ياجا
+    bn: ইয়াঘা প্রদেশ
+    da: Yagha Province
+    de: Yagha
+    el: Γιάγκχα
+    es: Provincia de Yagha
+    fi: Yagha
+    fr: Yagha
+    gl: Yagha
+    gu: યાઘા પ્રાંત
+    hi: याघा प्रांत
+    id: Provinsi Yagha
+    it: Provincia di Yagha
+    ja: ヤガ県
+    kn: ಯಾಗ ಪ್ರಾಂತ್ಯ
+    ko: 야가 현
+    mr: याघा प्रांत
+    ms: Yagha Province
+    nb: Yagha
+    nl: Yagha
+    pl: Prowincja Yagha
+    pt: Yagha
+    ro: Yagha
+    ru: Яга
+    si: යැන්ග්හා පළාත
+    sv: Province du Yagha
+    ta: யஃஹா மாகாணம்
+    te: యాఘా ప్రావిన్స్
+    th: จังหวัดยากา
+    tr: Yagha Province
+    uk: Яга
+    ur: یاگہا صوبہ
+    vi: Yagha
+    lv: Jagas province
+    ceb: Province du Yagha
+    lt: Jagos provincija
+    zh: 亞加省
+    ccp: "\U00011121\U0001112E\U0001110A"
+    'no': Yagha
+  comments:
+  type: province
+YAT:
+  name: Yatenga
+  code: YAT
+  unofficial_names: Yatenga
+  geo:
+    latitude: 13.6249344
+    longitude: -2.3813621
+    min_latitude: 13.017303
+    min_longitude: -2.9604
+    max_latitude: 14.145415
+    max_longitude: -1.737376
+  translations:
+    en: Yatenga
+    ar: محافظة ياتنغا
+    bn: ইয়াটেঙ্গা প্রদেশ
+    da: Yatenga
+    de: Yatenga
+    el: Γιατένγκα
+    es: Provincia de Yatenga
+    fa: استان یاتنگا
+    fi: Yatenga
+    fr: Yatenga
+    gl: Yatenga
+    gu: યતેંગા પ્રાંત
+    hi: यतींगा प्रांत
+    id: Provinsi Yatenga
+    it: Provincia di Yatenga
+    ja: ヤテンガ県
+    kn: ಯಟೆಂಗ ಪ್ರಾಂತ್ಯ
+    ko: 야텡가 현
+    mr: यतेंगा प्रांत
+    ms: Yatenga Province
+    nb: Yatenga
+    nl: Yatenga
+    pl: Prowincja Yatenga
+    pt: Yatenga
+    ro: Yatenga
+    ru: Ятенга
+    si: යටෙන්ගා පළාත
+    sv: Province du Yatenga
+    ta: யாதென்க மாகாணம்
+    te: యెటెంగా ప్రావిన్స్
+    th: จังหวัดยาเทนก้า
+    tr: Yatenga Province
+    uk: Ятенга
+    ur: یاتئنگا صوبہ
+    vi: Yatenga
+    lv: Jatengas province
+    ceb: Province du Yatenga
+    lt: Jatengos provincija
+    zh: 雅滕加省
+    ccp: "\U00011103\U00011128\U00011111\U0001112C\U00011101\U00011109"
+    'no': Yatenga
+    ca: Yatenga
+  comments:
+  type: province
+ZIR:
+  name: Ziro
+  code: ZIR
+  unofficial_names: Ziro
+  geo:
+    latitude: 11.6094995
+    longitude: -1.9099238
+    min_latitude: 11.2930421
+    min_longitude: -2.337875
+    max_latitude: 12.017244
+    max_longitude: -1.288668
+  translations:
+    en: Ziro
+    ar: مقاطعة زيرو
+    bn: জিরো প্রদেশ
+    da: Ziro Province
+    de: Ziro
+    el: Ζίρο
+    es: Provincia de Ziro
+    fa: استان زیرو
+    fi: Ziro
+    fr: Ziro
+    gl: Ziro
+    gu: ઝીરો પ્રાંત
+    hi: ज़िरो प्रांत
+    id: Provinsi Ziro
+    it: Provincia di Ziro
+    ja: ジロ県
+    kn: ಝೈರೊ ಪ್ರಾಂತ್ಯ
+    ko: 지로 현
+    mr: झीरो प्रांत
+    ms: Ziro Province
+    nb: Ziro
+    nl: Ziro
+    pl: Prowincja Ziro
+    pt: Ziro (província)
+    ro: Ziro
+    ru: Зиро
+    si: සිරෝ පළාත
+    sv: Province du Ziro
+    ta: ஜிரோ மாகாணம்
+    te: జీరో ప్రావిన్స్
+    th: จังหวัดซิโร
+    tr: Ziro Province
+    uk: Зіро
+    ur: زیرو صوبہ
+    vi: Ziro (tỉnh)
+    lv: Ziro province
+    ceb: Province du Ziro
+    lt: Ziro provincija
+    zh: 濟羅省
+    ccp: "\U0001110E\U00011128\U00011122\U0001112E"
+    eu: Ziro probintzia
+    'no': Ziro
+  comments:
+  type: province
+ZON:
+  name: Zondoma
+  code: ZON
+  unofficial_names: Zondoma
+  geo:
+    latitude: 13.1165926
+    longitude: -2.4208713
+    min_latitude: 12.9534151
+    min_longitude: -2.7272621
+    max_latitude: 13.35255
+    max_longitude: -2.0683491
+  translations:
+    en: Zondoma
+    ar: محافظة زوندوما
+    bn: জোন্ডোমা প্রদেশ
+    da: Zondoma Province
+    de: Zondoma
+    el: Ζοντόμα
+    es: Provincia de Zondoma
+    fi: Zondoma
+    fr: Zondoma
+    gl: Zondoma
+    gu: ઝોંડોમા પ્રાંત
+    hi: ज़ोंडोमा प्रांत
+    id: Provinsi Zondoma
+    it: Provincia di Zondoma
+    ja: ゾンドマ県
+    kn: ಝೊಂಡೋಮಾ ಪ್ರಾಂತ್ಯ
+    ko: 존도마 현
+    mr: झोन्डमा प्रांत
+    ms: Zondoma Province
+    nb: Zondoma
+    nl: Zondoma
+    pl: Prowincja Zondoma
+    pt: Zondoma
+    ro: Zondoma
+    ru: Зондома
+    si: සොන්දොමා පළාත
+    sv: Province du Zondoma
+    ta: ஸ்ண்டமா மாகாணம்
+    te: జోండోమా ప్రావిన్స్
+    th: เมืองดุนดากา
+    tr: Zondoma Province
+    uk: Зондома
+    ur: زوندوما صوبہ
+    vi: Zondoma (tỉnh)
+    lv: Zondomas province
+    ceb: Province du Zondoma
+    lt: Zandomos provincija
+    zh: 宗多馬省
+    ccp: "\U0001110E\U00011127\U0001111A\U00011134\U00011113\U0001112E\U0001111F"
+    'no': Zondoma
+  comments:
+  type: province
+ZOU:
+  name: Zoundwéogo
+  code: ZOU
+  unofficial_names: Zoundwéogo
+  geo:
+    latitude: 11.6141174
+    longitude: -0.9820667999999999
+    min_latitude: 11.1615009
+    min_longitude: -1.336139
+    max_latitude: 11.909723
+    max_longitude: -0.5527740000000001
+  translations:
+    en: Zoundwéogo
+    ar: محافظة زوندويوغو
+    bn: জুন্ডবেগো প্রদেশ
+    da: Zoundwéogo Province
+    de: Zoundwéogo
+    el: Ζουντβέογκο
+    es: Provincia de Zoundwéogo
+    fi: Zoundwéogo
+    fr: Zoundwéogo
+    gl: Zoundwéogo
+    gu: ઝોન્ડવેઓગો પ્રાંત
+    hi: जौंडवेगो प्रांत
+    id: Provinsi Zoundwéogo
+    it: Provincia di Zoundwéogo
+    ja: ズンドウェオゴ県
+    kn: ಝೌಂಡ್ವೆಗೊ ಪ್ರಾಂತ್ಯ
+    ko: 준드웨오고 현
+    mr: झुंडवेओगो प्रांत
+    ms: Zoundweogo Province
+    nb: Zoundwéogo
+    nl: Zoundwéogo
+    pl: Prowincja Zoundwéogo
+    pt: Zoundwéogo
+    ro: Zoundwéogo
+    ru: Зундвеого
+    si: සවුන්ඩ්වෝගෝ පළාත
+    sv: Zoundwéogo
+    ta: ஸ்வுண்டவெகோ மாகாணம்
+    te: జౌండ్వియోగో ప్రావిన్స్
+    th: ซาววีร์โอโก
+    tr: Zoundwéogo Province
+    uk: Зундвеого
+    ur: زؤندویوگو صوبہ
+    vi: Zoundwéogo
+    lv: Zundveogo province
+    ceb: Zoundweogo Province
+    lt: Zundveogo provincija
+    zh: 宗德韋奧戈省
+    ccp: "\U0001110E\U0001112F\U0001111A\U00011134\U00011113\U0001112E\U00011120\U0001112C\U00011109\U0001112E"
+    eu: Zoundwéogo probintzia
+    'no': Zoundwéogo
+    ca: Zoundwéogo
+  comments:
+  type: province

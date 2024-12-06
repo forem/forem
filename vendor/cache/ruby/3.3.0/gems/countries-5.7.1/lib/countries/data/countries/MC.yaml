@@ -1,0 +1,52 @@
+---
+MC:
+  alpha2: MC
+  alpha3: MCO
+  continent: Europe
+  country_code: '377'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: false
+  euvat_member: true
+  gec: MN
+  geo:
+    latitude: 43.73841760000001
+    longitude: 7.424615799999999
+    max_latitude: 43.7519029
+    max_longitude: 7.4426
+    min_latitude: 43.7237999
+    min_longitude: 7.4091049
+    bounds:
+      northeast:
+        lat: 43.7519029
+        lng: 7.4426
+      southwest:
+        lat: 43.7237999
+        lng: 7.4091049
+  international_prefix: '00'
+  ioc: MON
+  iso_long_name: The Principality of Monaco
+  iso_short_name: Monaco
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Monegasque
+  number: '492'
+  postal_code: true
+  postal_code_format: 980\d{2}
+  region: Europe
+  start_of_week: monday
+  subregion: Western Europe
+  un_locode: MC
+  unofficial_names:
+  - Monaco
+  - Mónaco
+  - モナコ
+  world_region: EMEA

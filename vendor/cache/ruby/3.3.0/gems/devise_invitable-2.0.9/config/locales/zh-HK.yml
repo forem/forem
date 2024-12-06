@@ -1,0 +1,31 @@
+zh-HK:
+  devise:
+    failure:
+      invited: "你有一個待處理的邀請, 請接受它以完成創建您的帳戶。"
+    invitations:
+      send_instructions: "邀請電子郵件已發送到%{email)。"
+      invitation_token_invalid: "提供嘅邀請令牌無效!"
+      updated: "你嘅密碼設置成功。 你而家已經登錄。"
+      updated_not_active: "你嘅密碼設置成功。"
+      no_invitations_remaining: "冇剩餘邀請"
+      invitation_removed: "你嘅邀請已被刪除。"
+      new:
+        header: "發送邀請"
+        submit_button: "發送邀請"
+      edit:
+        header: "設置密碼"
+        submit_button: "設置密碼"
+    mailer:
+      invitation_instructions:
+        subject: "邀請指示"
+        hello: "你好%{email}"
+        someone_invited_you: "有人邀請你去%{url}, 你可以通過下面嘅連結接受它。"
+        accept: "接受邀請"
+        accept_until: "此邀請就喺%{due_date} 中到期。"
+        ignore: "如果你唔想接受邀請, 請忽略此電子郵件。 系你訪問上面的連結並設置密碼之前, 不會創建您的帳戶。"
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"

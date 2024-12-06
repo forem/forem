@@ -1,0 +1,188 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Mon, 30 May 2011 09:45:42 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+ETag: "d0534cf7ad7d7a7fb737fe4ad99b0fd1"
+X-UA-Compatible: IE=Edge,chrome=1
+X-Runtime: 0.031274
+Set-Cookie: _session_id=33575f7694b4492af4c4e282d62a7127; path=/; HttpOnly
+Cache-Control: max-age=0, private, must-revalidate
+Content-Length: 6690
+X-Varnish: 2167295052
+Age: 0
+Via: 1.1 varnish
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+  <link rel="alternate" type="application/rss+xml" title="PageRankAlert.com blog" href="http://feeds.feedburner.com/PageRankAlert" />
+  <title>PageRankAlert.com :: Track your PageRank changes &amp; receive alerts</title>
+  <link href="img/apple-touch-icon-58x58.png" rel="apple-touch-icon" sizes="58x58" />
+  <link rel="icon" href="/src/favicon.ico">
+  <meta name="description" content="Track your PageRank(TM) changes and receive alerts by email" />
+  <meta name="keywords" content="pagerank, seo, optimization, google" />
+  <meta name="robots" content="all,follow" />
+  <link rel="stylesheet" href="/stylesheets/screen.css">
+  <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz&subset=latin' rel='stylesheet' type='text/css'>
+
+  <script src="/javascripts/jquery.min.js?1305794559" type="text/javascript"></script>
+<script src="/javascripts/rails.js?1305794559" type="text/javascript"></script>
+  
+
+
+  <meta name="csrf-param" content="authenticity_token"/>
+<meta name="csrf-token" content="iW1/w+R8zrtDkhOlivkLZ793BN04Kr3X/pS+ixObHsE="/>
+</head>
+
+<body>
+  <script type="text/javascript">
+(function(){
+  var bsa = document.createElement('script');
+     bsa.type = 'text/javascript';
+     bsa.async = true;
+     bsa.src = '//s3.buysellads.com/ac/bsa.js';
+  (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+})();
+</script>  <div id="flash_notice" class="flashmessage" style='display:none;'></div>
+
+<div id="flash_error" class="flashmessage" style='display:none;'></div>
+
+<div id="flash_alert" class="flashmessage" style='display:none;'></div>
+
+  <div id="banner_top" style="background-color:#111; color:#fff;text-align:center;font-size:1.4em;font-weight:bold;padding:0.6em;">
+    <div style="width:980px; margin:0 auto;">
+      <div id="bsap_1260794" style="margin-left: 125px;" class="bsarocks bsap_a85b1f9acae25d5eef510375a20768f1"></div>
+    </div>
+  </div>
+
+  <div id="page">
+    <div id="header">
+      <div class="section">
+        <h1>
+          <a href="/" id="logo" tabindex="1"><img alt="PageRankAlert" src="/images/pagerank_alert.png?1305794559" /></a>
+        </h1>
+      </div>
+
+      <div class="section language">
+  <span id='eng'>eng</span> |
+  <a href="/es?language=es"><span id='esp'>esp</span></a>
+</div>
+
+
+
+
+
+      <div class="section login">
+          <a href="/users/sign_up">Register</a> or <a href="/users/sign_in">Sign in</a>
+      </div>
+
+      <div class="aside">
+        <ul class="nav">
+          <li><a href="/" class="selectedss">home</a></li>
+          <li><a href="mailto:pagerankalert@gmail.com">contact</a></li>
+          <li><a href="http://pagerankalert.posterous.com" target="_blank">blog</a></li>
+          <li><a href="http://twitter.com/pagerankalert" target="_blank">twitter</a></li>
+            <li style="margin-top:10px; margin-left:40px;"><a href="http://twitter.com/share" style="display:block;" class="twitter-share-button" data-count="horizontal" data-via="pagerankalert" data-lang="en">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content1">
+  <h2 class="begin">
+    Track your PageRank changes
+  </h2>
+  <h3 class="begin">WHAT'S YOUR PAGERANK?</h3>
+
+  
+
+<div id="banner_up" class="tac" style="margin-top:2em; margin-bottom:-2em;">
+  <div id="bsap_1258008" class="bsarocks bsap_a85b1f9acae25d5eef510375a20768f1" style="width: 728px; padding-left:115px;"></div>
+</div>
+
+  <form accept-charset="UTF-8" action="/pages" class="search_form general_form" id="pagerank" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="iW1/w+R8zrtDkhOlivkLZ793BN04Kr3X/pS+ixObHsE=" /></div>
+    <label for="myurl">Search your page now:</label>
+    <input class="text" id="page_url" maxlength="250" name="page[url]" size="60" type="text" value="http://" />
+
+    <p class="explanation">
+      PageRank is different for the same URL with or without <em>www</em>
+    </p>
+    <p class="tac">
+      <button type="submit">Check PageRank &raquo;</button>
+    </p>
+</form>
+  <div id="features">
+    <div id="a" class="section">
+      <h4><strong>Build your own lists</strong></h4>
+      <p>Have you got a lot of pages that you'd like to track easily from one single place?<br /><br />You can build your own <strong>PageRank watchlist</strong> with an unlimited number of URLs.</p>
+    </div>
+
+    <div id="b" class="section">
+      <h4><strong>Get e-mail alerts</strong></h4>
+      <p>Do you want to be notified by email when your <strong>PageRank</strong> changes?<br /><br />You'll get an <strong>email</strong> when we detect a change in any of your tracked sites.</p>
+    </div>
+
+    <div id="c" class="section last">
+      <h4><strong>Track your history</strong></h4>
+      <p>Do you want to know the details of your <strong>PageRank evolution</strong>?<br /><br />We will show you a graphic with all the registered PageRank changes for each page.</p>
+    </div>
+  </div>
+
+  <div id="banner_down" class="tac">
+  <div id="bsap_1256852" class="bsarocks bsap_a85b1f9acae25d5eef510375a20768f1"></div>
+</div>
+
+</div>
+    </div>
+
+    <div id="footer">
+      <div id="credits" class="section">
+        <small>
+          <p>
+            © 2006-2011 PageRankAlert.com. This site is not associated to Google. PageRank is a registered trademark of Google Inc.
+          </p>
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+var uservoiceOptions = {
+ key: 'pagerankalert',
+ host: 'pagerankalert.uservoice.com',
+ forum: '6999',
+ showTab: true,
+
+ alignment: 'left',
+ background_color:'#f00',
+ text_color: 'white',
+ hover_color: '#06C',
+ lang: 'en'
+};
+
+function _loadUserVoice() {
+ var s = document.createElement('script');
+ s.setAttribute('type', 'text/javascript');
+ s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
+ document.getElementsByTagName('head')[0].appendChild(s);
+}
+_loadSuper = window.onload;
+window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
+</script>
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-122379-8']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

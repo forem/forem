@@ -1,0 +1,61 @@
+---
+US:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}} {{region_short}} {{postalcode}}
+    {{country}}
+  alpha2: US
+  alpha3: USA
+  continent: North America
+  country_code: '1'
+  currency_code: USD
+  distance_unit: MI
+  g7_member: true
+  g20_member: true
+  gec: US
+  geo:
+    latitude: 37.09024
+    longitude: -95.712891
+    max_latitude: 71.3577635769
+    max_longitude: -66.96466
+    min_latitude: 18.91619
+    min_longitude: -171.791110603
+    bounds:
+      northeast:
+        lat: 71.3577635769
+        lng: -66.96466
+      southwest:
+        lat: 18.91619
+        lng: -171.791110603
+  international_prefix: '011'
+  ioc: USA
+  iso_long_name: The United States of America
+  iso_short_name: United States of America
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: American
+  number: '840'
+  postal_code: true
+  postal_code_format: "(\\d{5})(?:[ \\-](\\d{4}))?"
+  region: Americas
+  start_of_week: sunday
+  subregion: Northern America
+  un_locode: US
+  unofficial_names:
+  - United States
+  - USA
+  - Vereinigte Staaten von Amerika
+  - États-Unis
+  - Estados Unidos
+  - アメリカ合衆国
+  - Verenigde Staten
+  - Соединенные Штаты Америки
+  world_region: AMER

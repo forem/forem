@@ -1,0 +1,1036 @@
+---
+DC:
+  name: Wasaţ Dārfūr Zālinjay
+  code: DC
+  unofficial_names:
+  geo:
+  translations:
+    ar: وسط دار فور
+    en: Central Darfur
+    bn: সেন্ট্রাল দারফুর
+    da: Central Darfur
+    de: Wasat Darfur
+    el: Κεντρικό Νταρφούρ
+    es: Darfur Central
+    fa: دارفور مرکزی
+    fi: Central Darfur
+    fr: Darfour-Central
+    gu: સેન્ટ્રલ દારફુર
+    hi: केंद्रीय दारफुर
+    id: Central Darfur
+    it: Central Darfur
+    ja: 中部ダルフール州
+    ka: ცენტრალური დარფური
+    kn: ಸೆಂಟ್ರಲ್ ಡಾರ್ಫರ್
+    ko: 중앙다르푸르 주
+    lt: Vidurio Darfūras
+    mr: सेंट्रल दारुर
+    ms: Central Darfur
+    nb: Darfur senter
+    nl: Darfoer
+    pl: Darfur Środkowy
+    pt: Darfur Central
+    ro: Statul Darfur Central
+    ru: Центральный Дарфур
+    si: මධ්‍යම ඩාෆුර්
+    sv: Centrala Dafur
+    ta: சென்ட்ரல் டார்பர்
+    te: సెంట్రల్ డార్ఫుర్
+    th: รัฐดาร์ฟัวกลาง
+    tr: Orta Darfur
+    uk: Центральний Дарфур
+    ur: وسطی دارفور
+    vi: Miền Trung Darfur
+    zh: 中達爾富爾
+    lv: Centrālā Dārfūra
+    ceb: Central Darfur State
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U00011113\U00011122\U00011134\U0001111C\U0001112A\U00011122\U00011134"
+    'no': Darfur senter
+    zu: Central Darfur
+  comments:
+  type: state
+DE:
+  name: Sharq Dārfūr
+  code: DE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ولاية شرق دارفور
+    en: East Darfur
+    bn: ইস্ট দারফুর
+    ca: Darfur de l’Est
+    da: East Darfur
+    de: Scharq Darfur
+    el: Ανατολικό Νταρφούρ (Ήστ Νταρφούρ)
+    es: Darfur del Este
+    fa: دارفور شرقی
+    fi: Itä-Darfur
+    fr: Darfour-Oriental
+    gu: ઇસ્ટ દારફુર
+    hi: पूर्वी दारफुर
+    id: East Darfur
+    it: East Darfur
+    ja: 東ダルフール州
+    ka: აღმოსავლეთი დარფური
+    kn: ಈಸ್ಟ್ ಡಾರ್ಫೂರ್
+    ko: 동다르푸르 주
+    lt: Rytų Darfūras
+    mr: पूर्व दारफुर
+    ms: East Darfur
+    nb: Vest Darfur
+    nl: Oost Darfoer
+    pl: Darfur Wschodni
+    pt: Darfur Este
+    ro: Statul Darfur de Est
+    ru: Восточный Дарфур
+    si: නැගෙනහිර ඩාර්ෆුර්
+    sv: Västra Dafur
+    ta: கிழக்கு டார்பர்
+    te: తూర్పు డార్ఫుర్
+    th: เอิร์ท ดาฟูล
+    tr: East Darfur
+    uk: Східний Дарфур
+    ur: مشرقی دارفور
+    vi: Đông Darfur
+    lv: Austrumdārfūra
+    ceb: East Darfur
+    zh: 东達爾富爾
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U00011113\U00011122\U00011134\U0001111C\U0001112A\U00011122\U00011134"
+    'no': Vest Darfur
+  comments:
+  type: state
+DN:
+  name: Shamāl Dārfūr
+  code: DN
+  unofficial_names:
+  geo:
+    latitude: 15.7661969
+    longitude: 24.9042208
+    min_latitude: 11.7224969
+    min_longitude: 22.75691
+    max_latitude: 20.0064945
+    max_longitude: 27.532602
+  translations:
+    ar: ولاية شمال دارفور
+    en: North Darfur
+    bg: Северен Дарфур
+    bn: দক্ষিন দারফুর
+    ca: Shamal Darfur
+    da: Norddarfur
+    de: Schamal Darfur
+    el: Βόρειο Νταρφούρ
+    es: Darfur del Norte
+    fa: دارفور شمالی
+    fi: Pohjois-Darfur
+    fr: Darfour du Nord
+    gu: નોર્થ ડાર્ફુર
+    he: צפון דארפור
+    hi: उत्तरी दार्फुर
+    id: Darfur Utara
+    it: Darfur Settentrionale
+    ja: 北ダルフール州
+    ka: ჩრდილოეთი დარფური
+    kn: ಉತ್ತರ ಡಾರ್ಫರ್
+    ko: 북다르푸르 주
+    lt: Šiaurės Darfūras
+    mr: नॉर्थ दारफुर
+    ms: North Darfur
+    nb: Nord-Darfur
+    nl: Shamal-Darfur
+    pl: Darfur Północny
+    pt: Darfur do Norte
+    ro: Statul Darfur de Nord
+    ru: Северный Дарфур
+    si: උතුරු ඩාර්ෆුර්
+    sr: Северни Дарфур
+    sv: Shamal Darfur
+    sw: Kaskazini Darfur
+    ta: வடக்கு டார்பர்
+    te: ఉత్తర డార్ఫూర్
+    th: ดาร์ฟูร์เหนือ
+    tr: Kuzey Darfur Eyaleti
+    uk: Північний Дарфур
+    ur: شمالی دارفور
+    vi: Bắc Darfur
+    lv: Ziemeļdārfūra
+    ceb: North Darfur
+    sr_Latn: Severni Darfur
+    zh: 北達爾富爾省
+    ccp: "\U00011105\U0001112A\U00011126\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011113\U00011122\U00011134\U0001111C\U0001112A\U00011122\U00011134"
+    'no': Nord-Darfur
+  comments:
+  type: state
+DS:
+  name: Janūb Dārfūr
+  code: DS
+  unofficial_names:
+  geo:
+    latitude: 11.6488639
+    longitude: 24.9042208
+    min_latitude: 8.6366421
+    min_longitude: 23.047403
+    max_latitude: 13.133373
+    max_longitude: 27.908629
+  translations:
+    ar: جنوب دارفور
+    en: South Darfur
+    bg: Южен Дарфур
+    bn: দক্ষিণ দারফুর
+    ca: Janob Darfur
+    da: Syddarfur
+    de: Dschanub Darfur
+    el: Νότιο Νταρφούρ
+    es: Darfur del Sur
+    fa: دارفور جنوبی
+    fi: Etelä-Darfur
+    fr: Darfour du Sud
+    gu: સાઉથ ડાર્ફુર
+    hi: दक्षिण दारफुर
+    hy: Հարավային Դարֆուր
+    id: Darfur Selatan
+    it: Darfur Meridionale
+    ja: 南ダルフール州
+    ka: სამხრეთი დარფური
+    kn: ಸೌತ್ ಡಾರ್ಫರ್
+    ko: 남다르푸르 주
+    lt: Pietų Darfūras
+    mr: साऊथ दारफुर
+    ms: South Darfur
+    nb: Sør Darfur
+    nl: Janub-Darfur
+    pl: Darfur Południowy
+    pt: Darfur do Sul
+    ro: Statul Darfur de Sud
+    ru: Южный Дарфур
+    si: දකුණු ඩාර්ෆුර්
+    sr: Јужни Дарфур
+    sv: Janub Darfur
+    sw: Kusini Darfur
+    ta: தெற்கு டார்பர்
+    te: దక్షిణ డార్ఫుర్
+    th: เซาท์ ดาร์ฟูล
+    tr: Güney Darfur Eyaleti
+    uk: Південний Дарфур
+    ur: جنوبی دارفور
+    vi: Nam Darfur
+    lv: Dienviddārfūra
+    ceb: South Darfur
+    sr_Latn: Južni Darfur
+    zh: 南达尔富尔省
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011113\U00011122\U00011134\U0001111C\U0001112A\U00011122\U00011134"
+    'no': Sør Darfur
+  comments:
+  type: state
+DW:
+  name: Gharb Dārfūr
+  code: DW
+  unofficial_names:
+  geo:
+    latitude: 12.8463561
+    longitude: 23.0011989
+    min_latitude: 10.694536
+    min_longitude: 21.838947
+    max_latitude: 14.972213
+    max_longitude: 24.720192
+  translations:
+    ar: غرب دارفور
+    en: West Darfur
+    bg: Западен Дарфур
+    bn: পশ্চিম দারফুর
+    ca: Gharb Darfur
+    da: Vestdarfur
+    de: Gharb Darfur
+    el: Δυτικό Νταρφούρ
+    es: Darfur del Oeste
+    fa: دارفور غربی
+    fi: Länsi-Darfur
+    fr: Darfour-Occidental
+    gu: વેસ્ટ ડર્ફર
+    hi: पश्चिम दारफुर
+    id: Darfur Barat
+    it: Darfur Occidentale
+    ja: 西ダルフール州
+    ka: დასავლეთი დარფური
+    kn: ವೆಸ್ಟ್ ಡಾರ್ಫರ್
+    ko: 서다르푸르 주
+    lt: Vakarų Darfūras
+    mr: पश्चिम दारफुर
+    ms: West Darfur
+    nb: Vest Dafur
+    nl: Gharb-Darfur
+    pl: Darfur Zachodni
+    pt: Darfur Ocidental
+    ro: Statul Darfur de Vest
+    ru: Западный Дарфур
+    si: බටහිර ඩාර්ෆුර්
+    sr: Западни Дарфур
+    sv: Gharb Darfur
+    sw: Magharibi Darfur
+    ta: மேற்கு டார்பர்
+    te: పశ్చిమ డార్ఫూర్
+    th: รัฐดาร์ฟัวร์ตะวันตก
+    tr: Batı Darfur Eyaleti
+    uk: Західний Дарфур
+    ur: مغربی دارفور
+    vi: Bang West Darfur
+    lv: Rietumdārfūra
+    ceb: West Darfur
+    sr_Latn: Zapadni Darfur
+    zh: 西达尔富尔省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011113\U00011122\U00011134\U0001111C\U0001112A\U00011122\U00011134"
+    'no': Vest Dafur
+    he: מערב סודאן
+  comments:
+  type: state
+GD:
+  name: Al Qaḑārif
+  code: GD
+  unofficial_names:
+  geo:
+    latitude: 14.024307
+    longitude: 35.3685679
+    min_latitude: 13.9824623
+    min_longitude: 35.3189849
+    max_latitude: 14.0808871
+    max_longitude: 35.4345988
+  translations:
+    ar: القضارف
+    en: Al Qadarif
+    bg: Ал Кадариф
+    bn: আল কাদারিফ
+    ca: Estat de Gedarif
+    cs: Al Qadarif
+    da: Al Qadarif
+    de: Al-Qadarif
+    el: Αλ Κανταρίφ
+    es: Gadarif
+    fa: القضارف
+    fi: Al Qadarif
+    fr: Al Qadarif
+    gu: અલ કાદારીફ
+    hi: अल कादरीफ
+    id: Al Qadarif
+    it: Gadaref
+    ja: ガダーレフ州
+    ka: ალ-ქადარიფის შტატი
+    kn: ಅಲ್ ಖದರಿಫ್
+    ko: 알카다리프 주
+    lt: Kadarifas
+    mr: अल कादरीफ
+    ms: Al Qadarif
+    nb: Al-Qadarif
+    nl: Al-Qadarif
+    pl: Al-Kadarif
+    pt: Gadarife
+    ro: Statul Gedarif
+    ru: Гедареф
+    si: අල් කඩරිෆ්
+    sv: Al-Qadarif
+    sw: Al Qadarif
+    ta: அல் கிடரிப்பி
+    te: అల్ ఖడారిఫ్
+    th: อัล คาดาริฟ
+    tr: El Kadarif Eyaleti
+    uk: Гедареф
+    ur: القضارف (ریاست)
+    vi: Al Qadarif
+    lv: Gadārifa
+    ceb: Al Qadarif State
+    zh: 加达里夫省
+    ccp: "\U00011103\U00011123\U00011134 \U00011107\U0001112A\U00011120\U00011113\U00011122\U00011128\U0001111B\U00011134"
+    kk: Гедареф қаласы
+    'no': Al-Qadarif
+  comments:
+  type: state
+GK:
+  name: Gharb Kurdufān
+  code: GK
+  unofficial_names:
+  geo:
+  translations:
+    ar: ولاية غرب كردفان
+    en: West Kurdufan
+    ca: Kordofan de l’Oest
+    de: Gharb Kurdufan
+    es: Kordofán del Oeste
+    fa: غرب کردفان
+    id: Kurdufan Barat
+    it: Kordofan Occidentale
+    ja: 西コルドファン州
+    ko: 서쿠르두판 주
+    nl: Gharb-Kordofan
+    pl: Kordofan Zachodni
+    pt: Cordofão Ocidental
+    ro: Statul Kordofan de Vest
+    ru: Западный Кордофан
+    sw: Magharibi Kurdufan
+    uk: Західний Кордофан
+    ur: مغربی کردفان
+    zh: 西科尔多凡州
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U00011107\U0001112A\U00011122\U00011134\U00011113\U0001112A\U0001111C\U0001111A\U00011134"
+    fr: Kordofan-Occidental
+    bn: পশ্চিম কুরদুফান
+    ceb: West Kordofan State
+  comments:
+  type: state
+GZ:
+  name: Al Jazīrah
+  code: GZ
+  unofficial_names:
+  geo:
+    latitude: 14.8859611
+    longitude: 33.438353
+    min_latitude: 13.604472
+    min_longitude: 32.415869
+    max_latitude: 15.4767249
+    max_longitude: 34.3057649
+  translations:
+    ar: الجزيرة
+    en: Al Jazirah
+    bg: Ал-Джазира
+    bn: আল জাজিরা
+    ca: Gezira
+    da: Al Jazirah
+    de: Al-Dschazira
+    el: Αλ Τζαζίρα
+    es: Gezira
+    fa: جزیره
+    fi: Al Jazirah
+    fr: Al Jazirah
+    gu: અલ જાઝીરાહ
+    he: אל-ג׳זירה
+    hi: अल जज़ीरा (राज्य)
+    id: Al Jazirah
+    it: Gezira
+    ja: ジャジーラ州
+    ka: ალ-ჯაზირის შტატი
+    kn: ಅಲ್ ಜಝಿರಾಹ್
+    ko: 알자지라 주
+    lt: Džezira
+    mr: अल जाजीराह
+    ms: Al Jazirah
+    nb: Al Jazirah
+    nl: Al-Jazirah
+    pl: Al-Dżazira
+    pt: Al Jazirah (estado)
+    ro: Statul Al Jazirah
+    ru: Эль-Гезира
+    si: අල් ජසීරා
+    sv: Al-Jazirah
+    sw: Al Jazirah
+    ta: அல் ஜஸீரா
+    te: అల్ జజీరా
+    th: อัลจาซีรา
+    tr: El Cezire Eyaleti
+    uk: Ель-Гезіра
+    ur: الجزیرہ (ریاست)
+    vi: Al Jazirah
+    lv: Džazīra
+    ceb: Al Jazirah State
+    zh: 杰济拉省
+    ccp: "\U00011103\U00011123\U00011134 \U0001110E\U00011122\U00011128\U00011122\U00011126\U00011134"
+    'no': Al Jazirah
+  comments:
+  type: state
+KA:
+  name: Kassalā
+  code: KA
+  unofficial_names:
+  geo:
+    latitude: 15.4581332
+    longitude: 36.4039629
+    min_latitude: 15.4122089
+    min_longitude: 36.3763976
+    max_latitude: 15.4994253
+    max_longitude: 36.4511558
+  translations:
+    ar: كسلا
+    en: Kassala
+    bg: Касала
+    bn: কাসালা
+    ca: Estat de Kassala
+    da: Kassala (stat)
+    de: Kassala
+    el: Κάσσαλα
+    es: Kasala (estado)
+    fa: استان کسلا
+    fi: Kassala (osavaltio)
+    fr: Kassala
+    gu: કસાલા
+    hi: कसाला (राज्य)
+    id: Kassala
+    it: Cassala
+    ja: カッサラ州
+    ka: კასალის შტატი
+    kn: ಕಸ್ಸಲಾ
+    ko: 카살라 주
+    lt: Kasala
+    mr: कासला
+    ms: Kassala
+    nb: Kassala
+    nl: Kassala
+    pl: Kassala
+    pt: Kassala
+    ro: Kassala
+    ru: Кассала
+    si: කස්සලා
+    sv: Kassala
+    sw: Kassala
+    ta: கஸ்ஸலா
+    te: కస్సాలా
+    th: คาสซาลา
+    tr: Kassala Eyaleti
+    uk: Кассала
+    ur: کسلا (ریاست)
+    vi: Kassala
+    lv: Kasala
+    ceb: Kassala State
+    zh: 卡萨拉省
+    ccp: "\U00011107\U00011125\U00011123"
+    'no': Kassala
+  comments:
+  type: state
+KH:
+  name: Al Kharţūm
+  code: KH
+  unofficial_names:
+  geo:
+    latitude: 15.5006544
+    longitude: 32.5598994
+    min_latitude: 15.3870932
+    min_longitude: 32.4592475
+    max_latitude: 15.615997
+    max_longitude: 32.6859455
+  translations:
+    ar: الخرطوم
+    en: Khartoum
+    bg: Хартум
+    bn: খার্তুম
+    da: Khartoum
+    de: Al-Chartum
+    el: Χαρτούμ
+    es: Jartum
+    fa: استان خارطوم
+    fi: Khartoum
+    fr: Khartoum
+    gu: ખાર્ટૂમ
+    hi: खार्तूम
+    id: Khartum
+    it: Khartum
+    ja: ハルツーム州
+    ka: ხარტუმის შტატი
+    kn: ಖಾರ್ಟೌಮ್
+    ko: 하르툼 주
+    lt: Chartumas
+    mr: खार्टूम
+    ms: Khartoum
+    nb: Khartoum
+    nl: Khartoem
+    pl: Chartum
+    pt: Cartum
+    ro: Statul Khartoum
+    ru: Хартум
+    si: කාර්ටෝඋම්
+    sv: Khartoum
+    sw: Khartoum
+    ta: கார்டூம்
+    te: ఖార్టోమ్
+    th: คาร์ทูม
+    tr: Hartum Eyaleti
+    uk: Хартум
+    ur: خرطوم (ریاست)
+    vi: Khartoum
+    lv: Hartūma
+    ceb: Khartoum
+    zh: 喀土穆省
+    ccp: "\U00011108\U00011122\U00011134\U00011111\U0001112A\U00011120\U0001112E\U0001111F\U00011134"
+    he: ח׳רטום (מדינה)
+    be: Хартум
+    'no': Khartoum
+    az: Xartum
+    ca: Khartum
+    et: Hartumi provints
+    hy: Խարթում
+  comments:
+  type: state
+KN:
+  name: Shiamāl Kurdufān
+  code: KN
+  unofficial_names:
+  geo:
+  translations:
+    ar: ولاية شمال كردفان
+    en: North Kurdufan
+    bg: Северен Курдуфан
+    bn: উত্তর কুর্দফান
+    ca: Kordofan del Nord
+    da: Nordkordofan
+    de: Schamal Kurdufan
+    el: Βόρειο Κορντοφάν
+    es: Kordofán del Norte
+    fa: کردفان شمالی
+    fi: North Kurdufan
+    fr: Kordofan du Nord
+    gu: નોર્થ કુર્દૂફાન
+    hi: उत्तर कुर्दुफान
+    id: Kurdufan Utara
+    it: Kordofan Settentrionale
+    ja: 北コルドファン州
+    ka: ჩრდილოეთი კორდოფანი
+    kn: ಉತ್ತರ ಕರ್ಡುಫನ್
+    ko: 북쿠르두판 주
+    lt: Šiaurės Kordofanas
+    mr: नॉर्थ कुर्दुफान
+    ms: North Kurdufan
+    nb: Nord Kurdufan
+    nl: Shamal-Kordofan
+    pl: Kordofan Północny
+    pt: Cordofão do Norte
+    ro: Statul Kordofan de Nord
+    ru: Северный Кордофан
+    si: උතුරු කුර්දුෆාන්
+    sv: Shamal Kurdufan
+    sw: Kaskazini Kurdufan
+    ta: வடக்கு குர்துபான்
+    te: ఉత్తరం కుర్దుఫాన్
+    th: นอร์ท เคอดูแฟน
+    tr: Kuzey Kordofan Eyaleti
+    uk: Північний Кордофан
+    ur: شمالی کردفان
+    vi: Bắc Kurdufan
+    lv: Ziemeļkordofāna
+    ceb: North Kordofan
+    zh: 北科尔多凡省
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011107\U0001112A\U00011122\U00011134\U00011113\U0001112A\U0001111C\U0001111A\U00011134"
+    'no': Nord Kurdufan
+  comments:
+  type: state
+KS:
+  name: Janūb Kurdufān
+  code: KS
+  unofficial_names:
+  geo:
+    latitude: 11.1990192
+    longitude: 29.4179324
+    min_latitude: 9.345832
+    min_longitude: 27.2556731
+    max_latitude: 12.7500065
+    max_longitude: 32.473745
+  translations:
+    ar: جنوب كردفان
+    en: South Kurdufan
+    bg: Южен Курдуфан
+    bn: সাউথ কোদোফ্যান
+    ca: Kordofan del Sud
+    cs: Jižní Kordofán
+    da: Sydkordofan
+    de: Dschanub Kurdufan
+    el: Νότιο Κορντοφάν
+    es: Kordofán del Sur
+    fa: کردفان جنوبی
+    fi: Etelä-Kordofan
+    fr: Kordofan du Sud
+    gu: સાઉથ કોર્ડોફેન
+    hi: दक्षिणी कोर्डोफैन
+    hu: Dél-Kordofán
+    hy: Հարավային Կորդոֆան
+    id: Kurdufan Selatan
+    it: Kordofan Meridionale
+    ja: 南コルドファン州
+    ka: სამხრეთი კორდოფანი
+    kn: ದಕ್ಷಿಣ ಕೊರ್ಡೊಫಾನ್
+    ko: 남쿠르두판 주
+    lt: Pietų Kordofanas
+    mr: साऊथ कॉर्डोफॅन
+    ms: South Kordofan
+    nb: Sør Kordofan
+    nl: Janub-Kordofan
+    pl: Kordofan Południowy
+    pt: Cordofão do Sul
+    ro: Statul Kordofan de Sud
+    ru: Южный Кордофан
+    si: දකුණු කොර්ඩෝෆාන්
+    sr: Јужни Кордофан
+    sv: Janub Kurdufan
+    sw: Kusini Kurdufan
+    ta: தெற்கு கோர்டோபான்
+    te: దక్షిణ కోర్డోఫాన్
+    th: คอรืโดแฟนใต้
+    tr: Güney Kordofan Eyaleti
+    uk: Південний Кордофан
+    ur: جنوبی کردفان
+    vi: Nam Kordofan
+    lv: Dienvidkordofāna
+    ceb: South Kordofan
+    sr_Latn: Južni Kordofan
+    zh: 南科尔多凡省
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011107\U0001112A\U00011122\U00011134\U00011113\U0001112A\U0001111C\U0001111A\U00011134"
+    'no': Sør Kordofan
+  comments:
+  type: state
+NB:
+  name: An Nīl al Azraq
+  code: NB
+  unofficial_names:
+  geo:
+    latitude: 11.5860078
+    longitude: 34.1531947
+    min_latitude: 9.500347999999999
+    min_longitude: 33.1359769
+    max_latitude: 12.56568
+    max_longitude: 35.09243
+  translations:
+    ar: النيل الأزرق
+    en: Blue Nile
+    bg: Сини Нил
+    bn: ব্লু নীল
+    ca: Nil Blau
+    da: Blå Nil
+    de: An-Nil al-azraq
+    el: Μπλε Νείλος
+    es: Nilo Azul
+    fa: نیل آبی
+    fi: Blue Nile
+    fr: Nil Bleu
+    gu: બ્લુ નાઇલ
+    hi: ब्लू नाइल (राज्य)
+    id: Nil Biru
+    it: Nilo Azzurro
+    ja: 青ナイル州
+    ka: ცისფერი ნილოსის შტატი
+    kn: ಬ್ಲೂ ನೈಲ್
+    ko: 청나일 주
+    lt: Žydrojo Nilo vilajetas
+    mr: ब्लू नाईल
+    ms: Blue Nile
+    nb: An-Nil al-Azraq
+    nl: An-Nil-al-Azraq
+    pl: Nil Błękitny
+    pt: Nilo Azul
+    ro: Statul Nilul Albastru
+    ru: Голубой Нил
+    si: නිල් නයිල්
+    sr: Плави Нил
+    sv: An-Nil al-Azraq
+    sw: Bluu Nile
+    ta: ப்ளூ நில
+    te: బ్లూ నైల్
+    th: บลูนาย
+    tr: Mavi Nil Eyaleti
+    uk: Блакитний Ніл
+    ur: نیل ازرق (ریاست)
+    vi: Nin Xanh
+    lv: Zilās Nīlas vilājs
+    ceb: Blue Nile (estado)
+    sr_Latn: Plavi Nil
+    zh: 青尼罗省
+    ccp: "\U0001111D\U00011133\U00011123\U0001112A \U0001111A\U0001112D\U00011123\U00011134"
+    'no': An-Nil al-Azraq
+    cs: Modrý Nil
+  comments:
+  type: state
+'NO':
+  name: Ash Shamālīyah
+  code: 'NO'
+  unofficial_names:
+  geo:
+    latitude: 18.4448963
+    longitude: 30.1589303
+    min_latitude: 16.511393
+    min_longitude: 25
+    max_latitude: 22.225082
+    max_longitude: 32.637459
+  translations:
+    ar: الشمالية
+    bg: Северна провинция
+    bn: নর্দান
+    ca: Estat del Nord
+    da: Nordlige Sudan
+    de: Asch-Schamaliyya
+    el: Νόρθερν
+    en: Northern
+    es: Norte
+    eu: Iparraldea
+    fa: شمالیه
+    fi: Northern
+    fr: Nord
+    gu: નોર્થન
+    hi: उत्तरी
+    id: Asy-Syamaliyah
+    it: Nord
+    ja: 北部州
+    ka: ჩრდილოეთის შტატი
+    kn: ಉತ್ತರದ
+    ko: 북부 주
+    lt: Šiaurės vilajetas
+    mr: नॉर्थर्न
+    ms: Wilayah Utara
+    nb: Nord
+    nl: Ash-Shamaliyah
+    pl: Prowincja Północna
+    pt: Estado do Norte
+    ro: Statul de Nord
+    ru: Северный штат
+    si: නොදර්න්
+    sv: Ash-Shamaliyya
+    sw: Kaskazini
+    ta: வடக்கு
+    te: ఉత్తర
+    th: รัฐซูดานเหนือ
+    tr: Kuzey Eyaleti
+    uk: Північний штат
+    ur: شمالی (ریاست)
+    vi: Khu vực Phía Bắc
+    lv: Ziemeļu vilājs
+    ceb: Northern
+    zh: 北部省
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    'no': Nord
+    he: א-שימאליה
+  comments:
+  type: state
+NR:
+  name: Nahr an Nīl
+  code: NR
+  unofficial_names:
+  geo:
+    latitude: 17.1142529
+    longitude: 33.7964613
+    min_latitude: 15.9642631
+    min_longitude: 31.8534791
+    max_latitude: 22.006193
+    max_longitude: 35.69729090000001
+  translations:
+    ar: نهر النيل
+    en: River Nile
+    bg: Река Нил
+    bn: নিল নদ
+    ca: Nahr an-Nil
+    da: Nilen
+    de: Nahr an-Nil
+    el: Ποταμός Νείλος
+    es: Río Nilo
+    fi: River Nile
+    fr: Nil
+    gu: રિવર નાઇલ
+    hi: नील नदी
+    id: Sungai Nil
+    it: Nilo
+    ja: ナイル川州
+    ka: ნილოსის შტატი
+    kn: ನೈಲ್ ನದಿ
+    ko: 나일 주
+    lt: Nilo Upės vilajetas
+    mr: रिव्हर नाईल
+    ms: River Nile
+    nb: Nil elven
+    nl: Nahr-an-Nil
+    pl: Nil
+    pt: Rio Nilo
+    ro: Statul Râul Nil
+    ru: Нил
+    si: නයිල් ගංගාව
+    sv: Nahr an-Nil
+    sw: Mto Nile
+    ta: ரிவேர் நில்
+    te: రివర్ నైల్
+    th: ริเวอร์ไนล์
+    tr: Nil Nehri Eyaleti
+    uk: Ніл
+    ur: دریائے نیل (ریاست)
+    vi: Sông Nin
+    lv: Nīlas vilājs
+    ceb: River Nile
+    zh: 尼羅省
+    ccp: "\U00011122\U00011128\U0001111E\U00011122\U00011134 \U0001111A\U0001112D\U00011123\U00011134"
+    'no': Nil elven
+    az: Nil vilayəti
+    be: Ніл
+    fa: رود نیل (ایالت)
+  comments:
+  type: state
+NW:
+  name: An Nīl al Abyaḑ
+  code: NW
+  unofficial_names:
+  geo:
+    latitude: 13.2403881
+    longitude: 32.5372741
+    min_latitude: 11.9465411
+    min_longitude: 31.525822
+    max_latitude: 15.250874
+    max_longitude: 33.2549571
+  translations:
+    ar: النيل الأبيض
+    en: White Nile
+    bg: Бели Нил
+    bn: হোয়াইট নিল
+    da: Hvide Nil
+    de: An-Nil al-abyad
+    el: Λευκός Νείλος
+    es: Nilo Blanco
+    fa: نیل سفید
+    fi: White Nile
+    fr: Nil Blanc
+    gu: વ્હાઇટ નીલ
+    hi: सफ़ेद नील
+    id: Nil Putih
+    it: Nilo Bianco
+    ja: 白ナイル州
+    ka: თეთრი ნილოსის შტატი
+    kn: ವೈಟ್ ನೈಲ್
+    ko: 백나일 주
+    lt: Baltojo Nilo vilajetas
+    mr: व्हाईट नील
+    ms: White Nile
+    nb: Hvite nil
+    nl: An-Nil-al-Abyad
+    pl: Nil Biały
+    pt: Nilo Branco
+    ro: Statul Nilul Alb
+    ru: Белый Нил
+    si: සුදු නයිල්
+    sv: An-Nil al-Abyad
+    sw: Nile nyeupe
+    ta: வைட் நிலே
+    te: వైట్ నైల్
+    th: จังหวัดโกต-ดาร์มอร์
+    tr: Beyaz Nil Eyaleti
+    uk: Білий Ніл
+    ur: نیل ابیض (ریاست)
+    vi: Nin Trắng
+    lv: Baltās Nīlas vilājs
+    ceb: White Nile
+    zh: 白尼罗省
+    ccp: "\U00011118\U0001112A\U0001111B\U00011134 \U0001111A\U0001112D\U00011123\U00011134"
+    'no': Hvite nil
+  comments:
+  type: state
+RS:
+  name: Al Baḩr al Aḩmar
+  code: RS
+  unofficial_names:
+  geo:
+    latitude: 19.4556063
+    longitude: 35.2148469
+    min_latitude: 16.9985761
+    min_longitude: 33.2534589
+    max_latitude: 22.0063784
+    max_longitude: 38.580036
+  translations:
+    ar: البحر الأحمر
+    en: Red Sea
+    bg: Червено море
+    bn: লোহিত সাগর
+    ca: Estat de la Mar Roja
+    da: Røde Hav
+    de: Al-Bahr al-ahmar
+    el: Ερυθρά Θάλασσα
+    es: Mar Rojo
+    et: Al-Baḩr al-Aḩmari provints
+    fa: دریای سرخ (استان سودان)
+    fi: Al-Bahr al-Ahmar
+    fr: Mer Rouge
+    gu: રેડ સી
+    he: אל-בחר אל-אחמר
+    hi: लाल सागर
+    id: Laut Merah
+    it: Mar Rosso
+    ja: 紅海州
+    ka: წითელი ზღვის შტატი
+    kn: ಕೆಂಪು ಸಮುದ್ರ
+    ko: 홍해 주
+    lt: Raudonosios Jūros vilajetas
+    mr: रेड सी
+    ms: Laut Merah
+    nb: Rød sjøen
+    nl: Al-Bahr-al-Ahmar
+    pl: Prowincja Morza Czerwonego
+    pt: Mar Vermelho
+    ro: Statul Marea Roșie
+    ru: Красное море
+    si: රතු මුහුද
+    sv: Al-Bahr al-Ahmar
+    sw: Bahari ya Shamu
+    ta: ரெட் ஸீ
+    te: ఎర్ర సముద్రం
+    th: ทะเลแดง
+    tr: Kızıl Deniz Eyaleti
+    uk: Червоне море
+    ur: بحیرہ احمر (ریاست)
+    vi: Biển Đỏ
+    lv: Sarkanā jūra
+    ceb: Red Sea (estado)
+    zh: 紅海省
+    ccp: "\U00011122\U0001112C\U00011116\U00011134 \U00011125\U00011128"
+    'no': Rød sjøen
+  comments:
+  type: state
+SI:
+  name: Sinnār
+  code: SI
+  unofficial_names:
+  geo:
+    latitude: 13.0317108
+    longitude: 33.9750018
+    min_latitude: 11.7343758
+    min_longitude: 32.924994
+    max_latitude: 14.106393
+    max_longitude: 35.70768
+  translations:
+    ar: سنار
+    en: Sennar
+    am: ስናር
+    bg: Сенар
+    bn: সেনার
+    da: Sennar
+    de: Sannar
+    el: Σένναρ
+    es: Sennar
+    fa: سنار
+    fi: Sennar
+    fr: Sannar
+    gu: સેનાર
+    hi: सेनणार
+    id: Sannar
+    it: Sennar
+    ja: センナール州
+    ka: სენარის შტატი
+    kn: ಸೆನ್ನರ್
+    ko: 센나르 주
+    lt: Senaras
+    mr: सेन्नार
+    ms: Sennar
+    nb: Sennar
+    nl: Sennar
+    pl: Sannar
+    pt: Sennar
+    ro: Statul Sennar
+    ru: Сеннар
+    si: සෙන්නර්
+    sv: Sennar
+    ta: சென்னார்
+    te: సెన్నార్
+    th: ซานนาร์
+    tr: Sennar Eyaleti
+    uk: Сеннар
+    ur: سنار (ریاست)
+    vi: Sennar
+    lv: Senara
+    ceb: Sinnar State
+    zh: 森纳尔省
+    ccp: "\U00011125\U0001112C\U0001111A\U00011122\U00011134"
+    'no': Sennar
+    ca: Sennar
+    sw: Sennar (Jimbo)
+  comments:
+  type: state

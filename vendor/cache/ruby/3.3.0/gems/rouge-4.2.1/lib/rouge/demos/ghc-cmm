@@ -1,0 +1,23 @@
+[lvl_s4t3_entry() //  [R1]
+         { info_tbls: [(c4uB,
+                        label: lvl_s4t3_info
+                        rep: HeapRep 1 ptrs { Thunk }
+                        srt: Nothing)]
+           stack_info: arg_space: 8 updfr_space: Just 8
+         }
+     {offset
+       c4uB: // global
+           if ((Sp + -32) < SpLim) (likely: False) goto c4uC; else goto c4uD;
+       c4uC: // global
+           R1 = R1;
+           call (stg_gc_enter_1)(R1) args: 8, res: 0, upd: 8;
+       c4uD: // global
+           I64[Sp - 16] = stg_upd_frame_info;
+           P64[Sp - 8] = R1;
+           R2 = P64[R1 + 16];
+           I64[Sp - 32] = stg_ap_p_info;
+           P64[Sp - 24] = Main.fib3_closure+1;
+           Sp = Sp - 32;
+           call GHC.Num.fromInteger_info(R2) args: 40, res: 0, upd: 24;
+     }
+ }

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ruby-prof call tree</title>
+    <style>
+      body {
+        font-size: 70%;
+        padding: 0;
+        margin: 5px;
+        margin-right: 0px;
+        margin-left: 0px;
+        background: #ffffff;
+      }
+
+      ul {
+        margin-left: 0px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-left: 0px;
+        list-style-type: none;
+        font-weight: normal;
+      }
+
+      li {
+        margin-left: 11px;
+        padding: 0px;
+        white-space: nowrap;
+        border-top: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-bottom: none;
+      }
+
+      .thread {
+        margin-left: 11px;
+        background: #708090;
+        padding-top: 3px;
+        padding-left: 12px;
+        padding-bottom: 2px;
+        border-left: 1px solid #CCCCCC;
+        border-top: 1px solid #CCCCCC;
+        font-weight: bold;
+      }
+
+      .hidden {
+        display: none;
+        width: 0px;
+        height: 0px;
+        margin: 0px;
+        padding: 0px;
+        border-style: none;
+      }
+
+      .color01 {
+        background: #adbdeb
+      }
+
+      .color05 {
+        background: #9daddb
+      }
+
+      .color0 {
+        background: #8d9dcb
+      }
+
+      .color1 {
+        background: #89bccb
+      }
+
+      .color2 {
+        background: #56e3e7
+      }
+
+      .color3 {
+        background: #32cd70
+      }
+
+      .color4 {
+        background: #a3d53c
+      }
+
+      .color5 {
+        background: #c4cb34
+      }
+
+      .color6 {
+        background: #dcb66d
+      }
+
+      .color7 {
+        background: #cda59e
+      }
+
+      .color8 {
+        background: #be9d9c
+      }
+
+      .color9 {
+        background: #cf947a
+      }
+
+      #commands {
+        font-size: 10pt;
+        padding: 10px;
+        margin-left: 11px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        background: #708090;
+        border-top: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-bottom: none;
+      }
+
+      #titlebar {
+        font-size: 10pt;
+        padding: 10px;
+        margin-left: 11px;
+        margin-bottom: 0px;
+        margin-top: 10px;
+        background: #8090a0;
+        border-top: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-bottom: none;
+      }
+
+      #help {
+        font-size: 10pt;
+        padding: 10px;
+        margin-left: 11px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        background: #8090a0;
+        display: none;
+        border-top: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-bottom: none;
+      }
+
+      #sentinel {
+        height: 400px;
+        margin-left: 11px;
+        background: #8090a0;
+        border-top: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-bottom: none;
+      }
+
+      input {
+        margin-left: 10px;
+      }
+
+      .toggle {
+        background: url(data:image/png;base64,<%= base64_image %>) no-repeat left center;
+        float: left;
+        width: 9px;
+        height: 9px;
+        margin: 2px 1px 1px 1px;
+      }
+
+      .toggle.minus {
+        background-position: -9px 0;
+      }
+
+      .toggle.plus {
+        background-position: -18px 0;
+      }
+    </style>
+
+    <script type="text/javascript">
+      function rootNode()
+      {
+        return currentThread
+      }
+
+      function showUL(node, show)
+      {
+        Array.prototype.forEach.call(node.childNodes, function(child)
+        {
+          if (child.nodeName == 'LI')
+            toggle(child, show)
+        })
+      }
+
+      function findUlChild(li)
+      {
+        var ul = li.childNodes[2]
+        while (ul && ul.nodeName != "UL")
+        {
+          ul = ul.nextSibling
+        }
+        return ul
+      }
+
+      function isLeafNode(li)
+      {
+        var element = li.querySelector('a')
+        return element.classList.contains('empty')
+      }
+
+      function toggle(li, show)
+      {
+        if (isLeafNode(li))
+          return
+
+        var img = li.firstChild
+        img.className = 'toggle '
+        img.className += show ? 'minus' : 'plus'
+
+        var ul = findUlChild(li)
+        if (ul)
+        {
+          ul.style.display = show ? 'block' : 'none'
+          showUL(ul, true)
+        }
+      }
+
+      function toggleLI(li)
+      {
+        var img = li.firstChild
+        if (img.className.indexOf("minus") > -1)
+          toggle(li, false)
+        else
+        {
+          if (img.className.indexOf("plus") > -1)
+            toggle(li, true)
+        }
+      }
+
+      function aboveThreshold(text, threshold)
+      {
+        var match = text.match(/\d+[.,]\d+%/)
+        if (!match)
+        {
+          return true
+        }
+        else
+        {
+          var value = parseFloat(match[0].replace(/,/, '.'))
+          return value >= threshold
+        }
+      }
+
+      function setThresholdLI(li, threshold)
+      {
+        var a = li.querySelector('a')
+        var span = li.querySelector('span')
+        var ul = li.querySelector('ul')
+
+        var visible = aboveThreshold(span.textContent, threshold) ? 1 : 0
+
+        var count = 0
+        if (ul)
+        {
+          count = setThresholdUL(ul, threshold)
+        }
+
+        if (count > 0)
+        {
+          a.className = 'toggle minus'
+        }
+        else
+        {
+          a.className = 'toggle empty'
+        }
+
+        if (visible)
+        {
+          li.style.display = 'block'
+        } else
+        {
+          li.style.display = 'none'
+        }
+        return visible
+      }
+
+      function setThresholdUL(node, threshold)
+      {
+        var count = 0
+        Array.prototype.forEach.call(node.childNodes, function(child)
+        {
+          if (child.nodeName == 'LI')
+            count = count + setThresholdLI(child, threshold)
+        })
+
+        var visible = (count > 0) ? 1 : 0
+        if (visible)
+        {
+          node.style.display = 'block'
+        } else
+        {
+          node.style.display = 'none'
+        }
+        return visible
+      }
+
+      function toggleChildren(img, event)
+      {
+        event.cancelBubble = true
+        if (img.className.indexOf('empty') > -1)
+          return
+
+        var minus = (img.className.indexOf('minus') > -1)
+
+        if (minus)
+        {
+          img.className = 'toggle plus'
+        } else
+          img.className = 'toggle minus'
+
+        var li = img.parentNode
+        var ul = findUlChild(li)
+        if (ul)
+        {
+          if (minus)
+            ul.style.display = 'none'
+          else
+            ul.style.display = 'block'
+        }
+        if (minus)
+          moveSelectionIfNecessary(li)
+      }
+
+      function showChildren(li)
+      {
+        var img = li.firstChild
+        if (img.className.indexOf('empty') > -1)
+          return
+        img.className = 'toggle minus'
+
+        var ul = findUlChild(li)
+        if (ul)
+        {
+          ul.style.display = 'block'
+        }
+      }
+
+      function setThreshold()
+      {
+        var tv = document.getElementById("threshold").value
+        if (tv.match(/[0-9]+([.,][0-9]+)?/))
+        {
+          var f = parseFloat(tv.replace(/,/, '.'))
+          var threads = document.getElementsByName("thread")
+          var l = threads.length
+          for (var i = 0; i < l; i++)
+          {
+            setThresholdUL(threads[i], f)
+          }
+          var p = selectedNode
+          while (p && p.style.display == 'none')
+            p = p.parentNode.parentNode
+          if (p && p.nodeName == "LI")
+            selectNode(p)
+        } else
+        {
+          alert("Please specify a decimal number as threshold value!")
+        }
+      }
+
+      function expandAll(event)
+      {
+        toggleAll(event, true)
+      }
+
+      function collapseAll(event)
+      {
+        toggleAll(event, false)
+        selectNode(rootNode(), null)
+      }
+
+      function toggleAll(event, show)
+      {
+        event.cancelBubble = true
+        var threads = document.getElementsByName("thread")
+        var l = threads.length
+        for (var i = 0; i < l; i++)
+        {
+          showUL(threads[i], show)
+        }
+      }
+
+      function toggleHelp(node)
+      {
+        var help = document.getElementById("help")
+        if (node.value == "Show Help")
+        {
+          node.value = "Hide Help"
+          help.style.display = 'block'
+        } else
+        {
+          node.value = "Show Help"
+          help.style.display = 'none'
+        }
+      }
+
+      var selectedNode = null
+      var selectedColor = null
+      var selectedThread = null
+
+      function descendentOf(a, b)
+      {
+        while (a != b && b != null)
+          b = b.parentNode
+        return (a == b)
+      }
+
+      function moveSelectionIfNecessary(node)
+      {
+        if (descendentOf(node, selectedNode))
+          selectNode(node, null)
+      }
+
+      function selectNode(node, event)
+      {
+        if (event)
+        {
+          event.cancelBubble = true
+          thread = findThread(node)
+          selectThread(thread)
+        }
+        if (selectedNode)
+        {
+          selectedNode.style.background = selectedColor
+        }
+        selectedNode = node
+        selectedColor = node.style.background
+        selectedNode.style.background = "red"
+        selectedNode.scrollIntoView()
+        window.scrollBy(0, -400)
+      }
+
+      function moveUp()
+      {
+        move(selectedNode.previousSibling)
+      }
+
+      function moveDown()
+      {
+        move(selectedNode.nextSibling)
+      }
+
+      function move(p)
+      {
+        while (p && p.style.display == 'none')
+          p = p.nextSibling
+        if (p && p.nodeName == "LI")
+        {
+          selectNode(p, null)
+        }
+      }
+
+      function moveLeft()
+      {
+        var p = selectedNode.parentNode.parentNode
+        if (p && p.nodeName == "LI")
+        {
+          selectNode(p, null)
+        }
+      }
+
+      function moveRight()
+      {
+        if (!isLeafNode(selectedNode))
+        {
+          showChildren(selectedNode)
+          var ul = findUlChild(selectedNode)
+          if (ul)
+          {
+            selectNode(ul.firstChild, null)
+          }
+        }
+      }
+
+      function moveForward()
+      {
+        if (isLeafNode(selectedNode))
+        {
+          var p = selectedNode
+          while ((p.nextSibling == null || p.nextSibling.style.display == 'none') && p.nodeName == "LI")
+          {
+            p = p.parentNode.parentNode
+          }
+          if (p.nodeName == "LI")
+            selectNode(p.nextSibling, null)
+        } else
+        {
+          moveRight()
+        }
+      }
+
+      function isExpandedNode(li)
+      {
+        var img = li.firstChild
+        return (img.className.indexOf('minus') > -1)
+      }
+
+      function moveBackward()
+      {
+        var p = selectedNode
+        var q = p.previousSibling
+        while (q != null && q.style.display == 'none')
+          q = q.previousSibling
+        if (q == null)
+        {
+          p = p.parentNode.parentNode
+        } else
+        {
+          while (!isLeafNode(q) && isExpandedNode(q))
+          {
+            q = findUlChild(q).lastChild
+            while (q.style.display == 'none')
+              q = q.previousSibling
+          }
+          p = q
+        }
+        if (p.nodeName == "LI")
+          selectNode(p, null)
+      }
+
+      function moveHome()
+      {
+        selectNode(currentThread)
+      }
+
+      var currentThreadIndex = null
+
+      function findThread(node)
+      {
+        while (node && !node.parentNode.nodeName.match(/BODY|DIV/g))
+        {
+          node = node.parentNode
+        }
+        return node.firstChild
+      }
+
+      function selectThread(node)
+      {
+        var threads = document.getElementsByName("thread")
+        currentThread = node
+        for (var i = 0; i < threads.length; i++)
+        {
+          if (threads[i] == currentThread.parentNode)
+            currentThreadIndex = i
+        }
+      }
+
+      function nextThread()
+      {
+        var threads = document.getElementsByName("thread")
+        if (currentThreadIndex == threads.length - 1)
+          currentThreadIndex = 0
+        else
+          currentThreadIndex += 1
+        currentThread = threads[currentThreadIndex].firstChild
+        selectNode(currentThread, null)
+      }
+
+      function previousThread()
+      {
+        var threads = document.getElementsByName("thread")
+        if (currentThreadIndex == 0)
+          currentThreadIndex = threads.length - 1
+        else
+          currentThreadIndex -= 1
+        currentThread = threads[currentThreadIndex].firstChild
+        selectNode(currentThread, null)
+      }
+
+      function switchThread(node, event)
+      {
+        event.cancelBubble = true
+        selectThread(node.nextSibling.firstChild)
+        selectNode(currentThread, null)
+      }
+
+      function handleKeyEvent(event)
+      {
+        var code = event.charCode ? event.charCode : event.keyCode
+        var str = String.fromCharCode(code)
+        switch (str)
+        {
+          case "a":
+            moveLeft()
+            break
+          case "s":
+            moveDown()
+            break
+          case "d":
+            moveRight()
+            break
+          case "w":
+            moveUp()
+            break
+          case "f":
+            moveForward()
+            break
+          case "b":
+            moveBackward()
+            break
+          case "x":
+            toggleChildren(selectedNode.firstChild, event)
+            break
+          case "*":
+            toggleLI(selectedNode)
+            break
+          case "n":
+            nextThread()
+            break
+          case "h":
+            moveHome()
+            break
+          case "p":
+            previousThread()
+            break
+        }
+      }
+
+      document.onkeypress = function (event)
+      {
+        handleKeyEvent(event)
+      }
+
+      window.onload = function ()
+      {
+        var images = document.querySelectorAll(".toggle")
+        for (var i = 0; i < images.length; i++)
+        {
+          var img = images[i]
+          img.onclick = function (event)
+          {
+            toggleChildren(this, event)
+            return false
+          }
+        }
+        var divs = document.getElementsByTagName("div")
+        for (i = 0; i < divs.length; i++)
+        {
+          var div = divs[i]
+          if (div.className == "thread")
+            div.onclick = function (event)
+            {
+              switchThread(this, event)
+            }
+        }
+        var lis = document.getElementsByTagName("li")
+        for (var i = 0; i < lis.length; i++)
+        {
+          lis[i].onclick = function (event)
+          {
+            selectNode(this, event)
+          }
+        }
+
+        var threads = document.getElementsByName("thread")
+        currentThreadIndex = 0
+        currentThread = threads[0].querySelector('li')
+        selectNode(currentThread, null)
+      }
+    </script>
+
+    <% @overall_time = @result.threads.reduce(0) do |val, thread|
+      val += thread.total_time
+    end %>
+  </head>
+  <body>
+    <div style="display: inline-block;">
+      <div id="titlebar">
+        Call tree for application <strong><%= application %> <%= arguments %></strong><br/> Generated on <%= Time.now %>
+        with options <%= @options.inspect %><br/>
+      </div>
+      <div id="commands">
+        <span style="font-size: 11pt; font-weight: bold;">Threshold:</span>
+        <input value="1.0" size="3" id="threshold" type="text">
+        <input value="Apply" onclick="setThreshold();" type="submit">
+        <input value="Expand All" onclick="expandAll(event);" type="submit">
+        <input value="Collapse All" onclick="collapseAll(event);" type="submit">
+        <input value="Show Help" onclick="toggleHelp(this);" type="submit">
+      </div>
+      <ul style="display: none;" id="help">
+        <li>* indicates recursively called methods</li>
+        <li>Enter a decimal value <i>d</i> into the threshold field and click "Apply" to hide all nodes marked with time
+          values lower than <em>d</em>.
+        </li>
+        <li>Click on "Expand All" for full tree expansion.</li>
+        <li>Click on "Collapse All" to show only top level nodes.</li>
+        <li>Use a, s, d, w as in Quake or Urban Terror to navigate the tree.</li>
+        <li>Use f and b to navigate the tree in preorder forward and backwards.</li>
+        <li>Use x to toggle visibility of a subtree.</li>
+        <li>Use * to expand/collapse a whole subtree.</li>
+        <li>Use h to navigate to thread root.</li>
+        <li>Use n and p to navigate between threads.</li>
+        <li>Click on background to move focus to a subtree.</li>
+      </ul>
+
+      <% @result.threads.each do |thread| %>
+        <% thread_percent = 100 * (thread.total_time / @overall_time)
+           thread_info = "#{"%4.2f%%" % thread_percent} ~ #{@overall_time}" %>
+        <div class="thread">
+          <span>Thread: <%= thread.id %>, Fiber: <%= thread.fiber_id %> (<%= thread_info %>)</span>
+          <ul name="thread">
+            <% visited = Set.new
+               output = StringIO.new('')
+               print_stack(output, visited, thread.call_tree, thread.call_tree.total_time) %>
+            <%= output.string %>
+          </ul>
+        </div>
+      <% end %>
+      <div id="sentinel"></div>
+    </div>
+  </body>
+</html>

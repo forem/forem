@@ -1,0 +1,59 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 2.4
+  NewCops: enable
+
+Style/Documentation:
+  Enabled: false
+
+Layout/BeginEndAlignment:
+  EnforcedStyleAlignWith: begin
+
+Layout/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Lint/RescueException:
+  Exclude:
+    - 'lib/libhoney/transmission.rb'
+    - 'lib/libhoney/experimental_transmission.rb'
+
+Metrics/BlockLength:
+  Max: 35
+
+Metrics/ClassLength:
+  Max: 300
+  Exclude:
+    - lib/libhoney/transmission.rb # Should this remain so large?
+    - test/*
+
+Metrics/MethodLength:
+  Max: 45
+  Exclude:
+    - lib/libhoney/transmission.rb
+    - test/*
+
+Layout/LineLength:
+  Max: 115
+  Exclude:
+    - lib/libhoney/client.rb
+    - lib/libhoney/builder.rb
+
+Metrics/AbcSize:
+  Exclude:
+    - test/*

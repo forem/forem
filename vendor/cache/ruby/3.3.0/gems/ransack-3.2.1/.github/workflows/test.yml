@@ -1,0 +1,130 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  sqlite3:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        rails:
+          - v7.0.3
+          - v6.1.6
+        ruby:
+          - 3.1.2
+          - 3.0.4
+          - 2.7.6
+    env:
+      DB: sqlite3
+      RAILS: ${{ matrix.rails }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rspec
+
+  mysql:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        rails:
+          - v7.0.3
+          - v6.1.6
+        ruby:
+          - 3.1.2
+          - 3.0.4
+          - 2.7.6
+    env:
+      DB: mysql
+      RAILS: ${{ matrix.rails }}
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Startup MySQL
+        run: |
+          sudo systemctl start mysql.service
+      - name: Setup databases
+        run: |
+          mysql --user=root --password=root --host=127.0.0.1 -e 'create database ransack collate utf8_general_ci;';
+          mysql --user=root --password=root --host=127.0.0.1 -e 'use ransack;show variables like "%character%";show variables like "%collation%";';
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rspec
+
+  postgres:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        rails:
+          - v7.0.3
+          - v6.1.6
+        ruby:
+          - 3.1.2
+          - 3.0.4
+          - 2.7.6
+    env:
+      DB: postgres
+      RAILS: ${{ matrix.rails }}
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: 127.0.0.1
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Setup databases
+        run: |
+          psql -h localhost -p 5432 -W postgres -c 'create database ransack;' -U postgres;
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rspec
+
+  bug-report-templates:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.2
+      - name: Install dependencies
+        run: bundle install
+      - name: Run bug report templates
+        run: |
+          ruby bug_report_templates/test-ransacker-arel-present-predicate.rb
+          ruby bug_report_templates/test-ransack-scope-and-column-same-name.rb
+          rm Gemfile Gemfile.lock

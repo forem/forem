@@ -1,0 +1,62 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    name: Test on ruby ${{ matrix.ruby }} and rails ${{ matrix.rails }}
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    strategy:
+      matrix:
+        ruby: ['2.6', '2.7', '3.0', '3.1']
+        rails: ['5.2', '6.0.0', '6.1.0', '7.0.0']
+        exclude:
+          - ruby: "2.6"
+            rails: "7.0.0"
+          - ruby: "3.0"
+            rails: "5.2"
+          - ruby: "3.1"
+            rails: "5.2"
+          - ruby: "3.1"
+            rails: "6.0.0"
+    env:
+      SQLITE3_VERSION: 1.4.1
+      REDIS_URL: redis://localhost:6379/0
+      CI: true
+    steps:
+      - name: Setup memcached
+        uses: KeisukeYamashita/memcached-actions@v1
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: 4.0
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Do some action caching
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ matrix.ruby }}-${{ matrix.rails }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-${{ matrix.ruby }}-${{ matrix.rails }}-
+      - name: Set up Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install libpq-dev
+        run: sudo apt-get -yqq install libpq-dev
+      - name: Install bundler
+        run: gem install bundler
+      - name: Run Rake with Rails ${{ matrix.rails }}
+        env:
+          RAILS_VERSION: ${{ matrix.rails }}
+        run: |
+          bundle install --jobs 4 --retry 3
+          bundle exec rake

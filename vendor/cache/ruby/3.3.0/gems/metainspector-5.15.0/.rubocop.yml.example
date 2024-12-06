@@ -1,0 +1,4 @@
+# Forcing the new ruby 1.9 syntax for hashes is not a requirement,
+# we still { :love => 'hashrockets' }
+Style/HashSyntax:
+  Enabled: false

@@ -1,0 +1,61 @@
+---
+NP:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}}
+    {{region}} {{postalcode}}
+    {{country}}
+  alpha2: NP
+  alpha3: NPL
+  continent: Asia
+  country_code: '977'
+  currency_code: NPR
+  distance_unit: KM
+  gec: NP
+  geo:
+    latitude: 28.394857
+    longitude: 84.12400799999999
+    max_latitude: 30.4473898
+    max_longitude: 88.20182969999999
+    min_latitude: 26.3473741
+    min_longitude: 80.05846980000001
+    bounds:
+      northeast:
+        lat: 30.4473898
+        lng: 88.20182969999999
+      southwest:
+        lat: 26.3473741
+        lng: 80.05846980000001
+  international_prefix: '00'
+  ioc: NEP
+  iso_long_name: The Federal Democratic Republic of Nepal
+  iso_short_name: Nepal
+  languages_official:
+  - ne
+  languages_spoken:
+  - ne
+  - mai
+  - bho
+  - new
+  - urd
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  national_prefix: '0'
+  nationality: Nepalese
+  number: '524'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: sunday
+  subregion: Southern Asia
+  un_locode: NP
+  unofficial_names:
+  - Nepal
+  - Népal
+  - the Federal Democratic Republic of Nepal
+  - ネパール
+  world_region: APAC

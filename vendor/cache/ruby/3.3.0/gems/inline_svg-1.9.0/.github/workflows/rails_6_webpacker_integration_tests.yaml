@@ -1,0 +1,62 @@
+name: Rails 6 Webpacker Integration Tests (unreliable)
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-branch: [rails6-webpacker]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Checkout test app
+      uses: actions/checkout@v2
+      with:
+        repository: jamesmartin/inline_svg_test_app
+        ref: ${{ matrix.test-branch }}
+        path: test_app
+    - name: Set up Ruby 3.1
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.1
+    - name: Build local gem
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+        bundle exec rake build
+    - name: Use the local gem in the test App
+      id: uselocalgem
+      uses: jacobtomlinson/gha-find-replace@0.1.1
+      with:
+        find: "gem 'inline_svg'"
+        replace: "gem 'inline_svg', path: '${{github.workspace}}'"
+    - name: Check local gem in use
+      run: |
+        test "${{ steps.uselocalgem.outputs.modifiedFiles }}" != "0"
+        grep "inline_svg" $GITHUB_WORKSPACE/test_app/Gemfile
+    - name: Bundle
+      run: |
+        cd $GITHUB_WORKSPACE/test_app
+        bundle install --jobs 4 --retry 3
+    - name: Set up Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+      if: matrix.test-branch == 'rails6-webpacker'
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v4
+      with:
+        python-version: '2.7'
+    - name: Generate Webpacker config
+      run: |
+        cd $GITHUB_WORKSPACE/test_app
+        CXXFLAGS="--std=c++17" yarn install --check-files
+        bundle exec rake webpacker:compile
+      if: matrix.test-branch == 'rails6-webpacker'
+    - name: Test
+      run: |
+        cd $GITHUB_WORKSPACE/test_app
+        bundle exec rake test

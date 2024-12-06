@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gem 'rack', RUBY_VERSION < '2.2.2' ? '~> 1.6' : '~> 2.0'
+gem "binding_of_caller"
+
+gem 'simplecov',      require: false
+gem 'simplecov-lcov', require: false
+
+gemspec path: "../"

@@ -1,0 +1,144 @@
+module Anyway
+  def self.env: -> Env
+  def self.loaders: -> Loaders::Registry
+
+  class Settings
+    def self.default_config_path=: (String | Pathname | ^(untyped) -> String val) -> void
+    def self.future: -> Future
+    def self.current_environment: -> String?
+    def self.default_environmental_key: -> String?
+    def self.known_environments: -> Array[String]?
+
+    class Future
+      def self.setting: (untyped name, untyped default_value) -> untyped
+      def self.settings: -> Hash[untyped, untyped]
+      def use: (*untyped names) -> untyped
+    end
+  end
+
+  module Tracing
+    class Trace
+      def merge!: (Trace another_trace) -> void
+    end
+
+    def inspect: -> String
+    def self.capture: ?{ -> Hash[untyped, untyped]? } -> Trace
+    def self.trace_stack: -> Array[untyped]
+    def self.current_trace: -> Trace?
+    def self.source_stack: -> Array[untyped]
+    def self.current_trace_source: -> ({type: Symbol} & Hash[Symbol, untyped])
+    def self.with_trace_source: (untyped src) { -> void } -> untyped
+    def trace!: [V] (Symbol, *String paths, **untyped) ?{ -> V} -> V
+    def self.trace!: [V] (Symbol, *String paths, **untyped) ?{ -> V} -> V
+  end
+
+  module RBSGenerator
+    def to_rbs: -> String
+  end
+
+  module OptparseConfig
+    def option_parser: -> OptionParser
+    def parse_options!: (Array[String]) -> void
+
+    module ClassMethods
+      def ignore_options: (*Symbol args) -> void
+      def describe_options: (**(String | {desc: String, type: Module})) -> void
+      def flag_options: (*Symbol args) -> void
+      def extend_options: { (OptionParser, Config) -> void } -> void
+    end
+  end
+
+  module DynamicConfig
+    module ClassMethods
+      def for: (String | Symbol name, ?auto_cast: bool, **untyped) -> Hash[untyped, untyped]
+    end
+  end
+
+  type valueType = Symbol | nil
+  type arrayType = {array: bool, type: valueType}
+  type hashType = Hash[Symbol, valueType | arrayType | hashType]
+
+  type mappingType = valueType | arrayType | hashType
+  type envType = String | Symbol | Array[String | Symbol] | {except: String | Symbol | Array[String | Symbol]}
+
+  class Config
+    extend RBSGenerator
+    extend DynamicConfig::ClassMethods
+    extend OptparseConfig::ClassMethods
+    include DynamicConfig
+    include OptparseConfig
+
+    def self.attr_config: (*Symbol args, **untyped) -> void
+    def self.defaults: -> Hash[String, untyped]
+    def self.config_attributes: -> Array[Symbol]?
+    def self.required: (*Symbol names, ?env: envType) -> void
+    def self.required_attributes: -> Array[Symbol]
+    def self.on_load: (*Symbol callbacks) ?{ () -> void } -> void
+    def self.config_name: (?(Symbol | String) val) -> String?
+    def self.env_prefix: (?(Symbol | String) val) -> String
+    def self.coerce_types: (**mappingType) -> void
+    def self.coercion_mapping: -> Hash[untyped, untyped]?
+    def self.disable_auto_cast!: -> void
+
+    attr_reader config_name: String
+    attr_reader env_prefix: String
+
+    def initialize: (?Hash[Symbol | String, untyped] overrides) -> void
+                  | (NilClass) -> void
+    def reload: (?Hash[Symbol | String, untyped] overrides) -> Config
+    def clear: -> void
+    def load: (Hash[Symbol | String, untyped] overrides) -> Config
+            | (NilClass) -> Config
+    def dig: (*(Symbol | String) keys) -> untyped
+    def to_h: -> Hash[untyped, untyped]
+    def dup: -> Config
+    def deconstruct_keys: (untyped keys) -> Hash[untyped, untyped]
+    def to_source_trace: -> Hash[String, untyped]
+    def inspect: -> String
+    def pretty_print: (untyped q) -> untyped
+
+    private
+    attr_reader values: Hash[untyped, untyped]
+    def raise_validation_error: (String msg) -> void
+
+    class Error < StandardError
+    end
+
+    class ValidationError < Error
+    end
+  end
+
+  class Env
+    def clear: -> void
+    def fetch: (String prefix) -> untyped
+    def fetch_with_trace: (String prefix) -> [untyped, Tracing::Trace?]
+  end
+
+  module Loaders
+    class Base
+      include Tracing
+
+      def self.call: (?local: bool, **untyped) -> untyped
+      def initialize: (local: bool) -> void
+      def use_local?: -> bool
+    end
+
+    interface _Loader
+      def call: (**untyped) -> Hash[untyped, untyped]
+    end
+
+    class Registry
+      def prepend: (Symbol id, _Loader loader) -> void
+                 | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def append: (Symbol id, _Loader loader) -> void
+                | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def insert_before: (Symbol another_id, Symbol id, _Loader loader) -> void
+                       | (Symbol another_id, Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def insert_after: (Symbol another_id, Symbol id, _Loader loader) -> void
+                      | (Symbol another_id, Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def override: (Symbol id, _Loader loader) -> void
+                  | (Symbol id) { (**untyped) -> Hash[untyped, untyped] } -> void
+      def delete: (Symbol id) -> void
+    end
+  end
+end

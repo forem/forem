@@ -1,0 +1,19 @@
+interface FastEthernet0.20
+    encapsulation dot1Q 20
+    no ip route-cache
+    bridge-group 1
+    no bridge-group 1 source-learning
+    bridge-group 1 spanning-disabled
+
+! Supports shortened versions of config words, too
+inter gi0.10
+encap dot1q 10 native
+inter gi0
+
+banner login # Authenticate yourself! #
+
+! Supports #, $ and % to delimit banners, and multiline
+banner motd $
+Attention!
+We will be having scheduled system maintenance on this device.
+$

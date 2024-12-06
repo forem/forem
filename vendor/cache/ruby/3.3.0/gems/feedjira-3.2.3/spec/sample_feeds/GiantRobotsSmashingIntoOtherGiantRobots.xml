@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/atom10full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0">
+  <title>Giant Robots Smashing Into Other Giant Robots</title>
+  <subtitle>Written by thoughtbot</subtitle>
+  <id>https://robots.thoughtbot.com/</id>
+  <link href="https://robots.thoughtbot.com" />
+  
+  <updated>2016-12-21T00:00:00+00:00</updated>
+  <author>
+    <name>thoughtbot</name>
+  </author>
+<atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/atom+xml" href="http://feeds.feedburner.com/GiantRobotsSmashingIntoOtherGiantRobots" /><feedburner:info uri="giantrobotssmashingintoothergiantrobots" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><feedburner:emailServiceId>GiantRobotsSmashingIntoOtherGiantRobots</feedburner:emailServiceId><feedburner:feedburnerHostname>https://feedburner.google.com</feedburner:feedburnerHostname><feedburner:browserFriendly>This is an XML content feed. It is intended to be viewed in a newsreader or syndicated to another site, subject to copyright and fair use.</feedburner:browserFriendly><entry>
+  <title>"Tell, Don't Ask" in Elixir: A Story of Pattern-Matching
+</title>
+  <link rel="alternate" href="http://feedproxy.google.com/~r/GiantRobotsSmashingIntoOtherGiantRobots/~3/DeWX2QCae6A/tell-don-t-ask-in-elixir" />
+  <author>
+    <name>Josh Clayton</name>
+  </author>
+  <id>https://robots.thoughtbot.com/tell-don-t-ask-in-elixir</id>
+  <published>2016-12-21T00:00:00+00:00</published>
+  <updated>2016-12-20T22:08:11Z</updated>
+  <content type="html">&lt;p&gt;&lt;a href="https://robots.thoughtbot.com/tell-dont-ask"&gt;&amp;ldquo;Tell, Don&amp;rsquo;t Ask&amp;rdquo;&lt;/a&gt; is a &lt;a href="http://martinfowler.com/bliki/TellDontAsk.html"&gt;well-covered&lt;/a&gt; &lt;a href="http://c2.com/cgi/wiki?TellDontAsk"&gt;topic&lt;/a&gt; within
+object-oriented programming communities. Its goal? Encourage encapsulation by
+having the caller &lt;strong&gt;tell&lt;/strong&gt; an object to do something instead of checking on
+state and acting upon it. Almost at odds with the &lt;a href="https://github.com/troessner/reek/blob/master/docs/Control-Couple.md"&gt;control couple&lt;/a&gt; code smell,
+our goal is to have the caller issue explicit commands without concerning
+itself with object state.&lt;/p&gt;
+&lt;h2 id="quottell-don39t-askquot-in-elixir"&gt;
+  &lt;a href="#quottell-don39t-askquot-in-elixir"&gt;
+    &amp;ldquo;Tell, Don&amp;rsquo;t Ask&amp;rdquo; in Elixir
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="http://tech.noredink.com/post/142689001488/the-most-object-oriented-language"&gt;Is Elixir object-oriented?&lt;/a&gt; From a paradigm perspective, Elixir is a
+functional language when looking at aspects like immutability,
+pattern-matching, and functions with inputs and outputs, focused on the sending
+of messages to &amp;ldquo;objects&amp;rdquo; directly. How does &amp;ldquo;Tell, Don&amp;rsquo;t Ask&amp;rdquo; translate?&lt;/p&gt;
+
+&lt;p&gt;Thinking about the goal, let&amp;rsquo;s do some mental mapping. In OOP, objects are a
+blueprint with information containing behavior (methods) and data (state).
+In FP, we have functions organized within modules, with state being captured in
+various values (e.g. Elixir&amp;rsquo;s Maps or Structs). We want to avoid having the
+caller (a function) dictate paths based on information present in our data.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s write out some non-idiomatic Elixir and see what we can improve.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="elixir"&gt;defmodule Game.Lobby do
+  def add_player(%{game: game} = lobby, player) do
+    new_player = cond do
+      is_binary(player) -&amp;gt;
+        %Game.Player{name: player, id: Game.Player.generate_id}
+      is_map(player) -&amp;gt;
+        %Game.Player{} |&amp;gt; Map.merge(player)
+      true -&amp;gt;
+        %Game.Player{}
+    end
+
+    %{lobby |
+      game: %{game | players: game.players ++ [new_player]}}
+  end
+end
+
+defmodule Game.Player do
+  defstruct id: 0, name: &amp;quot;New player&amp;quot;, active: true
+
+  def generate_id do
+    UUID.uuid4()
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;Game.Lobby.add_player/2&lt;/code&gt; doesn&amp;rsquo;t feel right. There&amp;rsquo;s a significant amount of
+&lt;a href="http://c2.com/cgi/wiki?FeatureEnvySmell"&gt;feature envy&lt;/a&gt; as it cares about the various shapes of &lt;code&gt;player&lt;/code&gt; and how to
+construct a &lt;code&gt;%Game.Player{}&lt;/code&gt;. Also, why is &lt;code&gt;Game.Player.generate_id/0&lt;/code&gt; public?
+It seems all &lt;code&gt;Game.Lobby.add_player/2&lt;/code&gt; should care about is managing its own
+structure (the final two lines of the function).&lt;/p&gt;
+
+&lt;p&gt;Instead of having &lt;code&gt;Game.Lobby.add_player/2&lt;/code&gt; care about constructing players,
+generating ids, and so on, let&amp;rsquo;s &lt;strong&gt;tell&lt;/strong&gt; &lt;code&gt;Game.Player&lt;/code&gt; to handle that instead:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="elixir"&gt;defmodule Game.Lobby do
+  def add_player(%{game: game} = lobby, player) do
+    %{lobby |
+      game: %{game | players: game.players ++ [Game.Player.new(player)]}}
+  end
+end
+
+defmodule Game.Player do
+  defstruct id: 0, name: &amp;quot;New player&amp;quot;, active: true
+
+  def new(name) when is_binary(name), do: new(%{name: name, id: generate_id})
+  def new(a)    when is_map(a),       do: %__MODULE__{} |&amp;gt; Map.merge(a)
+  def new(_),                         do: %__MODULE__{}
+
+  defp generate_id, do: UUID.uuid4()
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here, we move player generation to the &lt;code&gt;Game.Player&lt;/code&gt; module, where it can
+determine how best to generate the struct instead of &lt;code&gt;Game.Lobby.add_player/2&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="write-declarative-not-imperative-code"&gt;
+  &lt;a href="#write-declarative-not-imperative-code"&gt;
+    Write declarative (not imperative) code
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;By moving player creation logic from &lt;code&gt;Game.Lobby.add_player/2&lt;/code&gt; to
+&lt;code&gt;Game.Player.new/1&lt;/code&gt;, we were able to call a single function to take the
+appropriate action based on data. It is important to note that the data it&amp;rsquo;s
+acting upon specifically is behavior to construct a &lt;code&gt;%Game.Player{}&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This becomes more important when using the &lt;a href="http://elixir-lang.org/docs/stable/elixir/Kernel.html#%7C%3E/2"&gt;pipe operator&lt;/a&gt;, which shines as a
+way to transform data.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Tell, don&amp;rsquo;t ask&amp;rdquo; is a way to encourage developers to &lt;a href="https://medium.freecodecamp.com/imperative-vs-declarative-programming-283e96bf8aea"&gt;write declarative code
+instead of imperative code&lt;/a&gt;. Imperative code asks questions before making
+decisions; declarative code issues a command and expects it to be done
+correctly.&lt;/p&gt;
+</content>
+  <summary>Write declarative Elixir code by applying &amp;ldquo;Tell, Don&amp;rsquo;t Ask&amp;rdquo;.</summary>
+<feedburner:origLink>https://robots.thoughtbot.com/tell-don-t-ask-in-elixir</feedburner:origLink></entry>
+<entry>
+  <title>Avoiding Out of Memory Crashes on Mobile</title>
+  <link rel="alternate" href="http://feedproxy.google.com/~r/GiantRobotsSmashingIntoOtherGiantRobots/~3/Px1_JC1CMVg/avoiding-out-of-memory-crashes-on-mobile" />
+  <author>
+    <name>Steff Kelsey</name>
+  </author>
+  <id>https://robots.thoughtbot.com/avoiding-out-of-memory-crashes-on-mobile</id>
+  <published>2016-12-20T00:00:00+00:00</published>
+  <updated>2016-12-19T19:30:45Z</updated>
+  <content type="html">&lt;p&gt;One reason why it is difficult to develop software for mobile devices is that
+the hardware is not the best compared to deploying to a console or a &amp;ldquo;real&amp;rdquo;
+computer. Resources are limited. One particularly sparse resource is RAM. Out
+of memory exceptions are common on both Android and iOS if you&amp;rsquo;re dealing with
+large files. Recently, when building a Google VR 360 video player, we went over
+the 1GB of RAM available on older iOS devices pretty quickly.&lt;/p&gt;
+&lt;h2 id="what-not-to-do"&gt;
+  &lt;a href="#what-not-to-do"&gt;
+    What Not to Do
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;One of my big complaints about the Unity manual and many tutorials is they
+usually just show you how to do something really quickly and don&amp;rsquo;t always tell
+you the exact use case or how it can just flat out fail. For example, using the
+relatively new &lt;code&gt;UnityWebRequest&lt;/code&gt;, you can download a file over HTTP like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="csharp"&gt;private IEnumerator loadAsset(string path)
+{
+  using (UnityWebRequest webRequest = new UnityWebRequest(path))
+  {
+    webRequest.downloadHandler = new DownloadHandlerBuffer();
+    webRequest.Send();
+    while (!webRequest.isDone)
+    {
+      yield return null;
+    }
+    if (string.IsNullOrEmpty(webRequest.error))
+    {
+      FileComplete(this, new FileLoaderCompleteEventArgs(
+        webRequest.downloadHandler.data));
+    }
+    else
+    {
+      Debug.Log(&amp;quot;error! message: &amp;quot; + webRequest.error);
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;These are all off the shelf parts from Unity, with the exception of the 
+&lt;code&gt;FileLoaderCompleteEventArg&lt;/code&gt; but just assume that we use that to pass off the 
+downloaded bytes as an array eg: &lt;code&gt;byte[]&lt;/code&gt;. Notice this returns an &lt;code&gt;IEnumerator&lt;/code&gt;
+and utilizes &lt;code&gt;yield&lt;/code&gt; statements so it should be run in a &lt;code&gt;Coroutine&lt;/code&gt;. What 
+happens here is that the &lt;code&gt;UnityWebRequest&lt;/code&gt; will open up a connection to the 
+given path, download everything into a byte array contained within the
+&lt;code&gt;DownloadHandlerBuffer&lt;/code&gt;. The &lt;code&gt;FileComplete&lt;/code&gt; event will fire if there are no
+errors, sending the entire byte array to the subscribing class. Easy, right? For
+small files, sure. But we were making a 360 Video player. Our max resolution was
+1440p. The first sample files we got for testing were bigger than 400MB. The
+iPhone 7, with 2GB of RAM, took it like a champ. The iPhone 6, with 1GB of RAM,
+crashed like a piano dropped from a helicopter.&lt;/p&gt;
+&lt;h2 id="why-did-my-app-just-crash"&gt;
+  &lt;a href="#why-did-my-app-just-crash"&gt;
+    Why Did my App Just Crash?
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at the guts of these components. The main focus is on the 
+&lt;code&gt;DownloadHandlerBuffer&lt;/code&gt; object. When it is first created, it will start by 
+preallocating memory for a small byte array where it will store all the 
+downloaded bytes. As the bytes come in, it will periodically expand the size of
+the array. In our test case, it was expanding the array until it could hold 
+400MB. And because each additional allocation is a guess, it will most likely
+overshot that amount. Note, I am speculating here because I have not looked at 
+the source code for the &lt;code&gt;DownloadBufferHandler&lt;/code&gt;. There is a chance it allocates 
+space based on the Content-Length header returned with the HTTP Response. But, 
+the result is the same; it will use up at least 400MB of RAM. That&amp;rsquo;s 40% of the
+1GB that the iPhone 6 has! We&amp;rsquo;re already in dangerous territory. I know what
+you&amp;rsquo;re saying, &amp;ldquo;Steff, why did it crash if we only used 40% of the RAM?&amp;rdquo; There
+are two ways to find the answer. One (and give Unity credit here) is in the
+documentation for &lt;a href="https://docs.unity3d.com/ScriptReference/Networking.DownloadHandlerBuffer.html"&gt;&lt;code&gt;DownloadHandlerBuffer&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Note: When accessing DownloadHandler.data or DownloadHandler.text on this
+subclass, a new byte array or string will be allocated each time the property
+is accessed.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So, by accessing the data property, Unity allocates an &lt;em&gt;additional 400MB of
+memory&lt;/em&gt; to pass off the byte array into the EventArg. Now we have used 800MB of
+RAM just on handling this one file. The OS has other services running plus you
+very likely have RAM allocated for bitmaps and UI and logic. You&amp;rsquo;re doomed!&lt;/p&gt;
+&lt;h2 id="profiling-memory-allocations"&gt;
+  &lt;a href="#profiling-memory-allocations"&gt;
+    Profiling Memory Allocations
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;If you didn&amp;rsquo;t read the docs, and they&amp;rsquo;re long: I get it, you could have found 
+this memory leak by running the application in Unity while using the Profiler
+&lt;em&gt;AND&lt;/em&gt; by running the application on an iOS device while using a valuable free
+tool from Apple: Instruments. The Allocations instrument captures information 
+about memory allocation for an application. I recommend using the Unity Profiler
+heavily for testing in the Editor and then continuing performance testing on
+device for each platform. They all act differently. Using the Profiler in the
+Editor is only your first line of defense. In this case I only properly
+understood what was happening when I watched it unfold in a recording using the
+Allocations instrument.&lt;/p&gt;
+&lt;h2 id="streams-to-the-rescue"&gt;
+  &lt;a href="#streams-to-the-rescue"&gt;
+    Streams to the Rescue
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;There is a way to download large files and save them without using unnecessary 
+RAM. &lt;em&gt;Streams!&lt;/em&gt; Since we plan on immediately saving these large video files 
+in local storage on device to be ready for offline viewing, we need to send the
+downloaded bytes right into a File as they are received. When doing that, we can
+reuse the same byte array and never have to allocate more space. Unity outlines
+how to do that &lt;a href="https://docs.unity3d.com/Manual/UnityWebRequest-CreatingDownloadHandlers.html"&gt;here&lt;/a&gt;, but below is an expanded example that includes a &lt;code&gt;FileStream&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="csharp"&gt;public class ToFileDownloadHandler : DownloadHandlerScript
+{
+  private int expected = -1;
+  private int received = 0;
+  private string filepath;
+  private FileStream fileStream;
+  private bool canceled = false;
+
+  public ToFileDownloadHandler(byte[] buffer, string filepath)
+    : base(buffer)
+  {
+    this.filepath = filepath;
+    fileStream = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+  }
+
+  protected override byte[] GetData() { return null; }
+
+  protected override bool ReceiveData(byte[] data, int dataLength)
+  {
+    if (data == null || data.Length &amp;lt; 1)
+    {
+      return false;
+    }
+    received += dataLength;
+    if (!canceled) fileStream.Write(data, 0, dataLength);
+    return true;
+  }
+
+  protected override float GetProgress()
+  {
+    if (expected &amp;lt; 0) return 0;
+    return (float)received / expected;
+  }
+
+  protected override void CompleteContent()
+  {
+    fileStream.Close();
+  }
+
+  protected override void ReceiveContentLength(int contentLength)
+  {
+    expected = contentLength;
+  }
+
+  public void Cancel()
+  {
+    canceled = true;
+    fileStream.Close();
+    File.Delete(filepath);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And to use the above in our coroutine:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="csharp"&gt;private IEnumerator loadAsset(string path, string savePath)
+{
+  using (UnityWebRequest webRequest = new UnityWebRequest(path)) 
+  {
+    webRequest.downloadHandler = new ToFileDownloadHandler(new byte[64 * 1024], 
+      savePath);
+    webRequest.Send();
+    ...
+    ...
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Looking first at our new &lt;code&gt;ToFileDownloadHandler&lt;/code&gt;, we extended Unity&amp;rsquo;s
+&lt;code&gt;DownloadHandlerScript&lt;/code&gt; and have overridden the required methods. The magic
+happens in two places. First, we pass in a byte array to the base class via the 
+constructor. This let&amp;rsquo;s Unity know that we want to re-use that byte array on
+each &lt;code&gt;ReceiveData&lt;/code&gt; callback where we only allocate a small amount of RAM once.
+Second, we use a &lt;code&gt;FileStream&lt;/code&gt; object to write the bytes directly to our desired
+file. The rest of the code is there to handle canceling the request. Whenever 
+you deal with &lt;code&gt;FileStream&lt;/code&gt; objects, you &lt;em&gt;must&lt;/em&gt; remember to close them out when
+you&amp;rsquo;re done.&lt;/p&gt;
+
+&lt;p&gt;Looking at the &lt;code&gt;loadAsset&lt;/code&gt; method, we added a parameter for the path to where
+the file will be saved locally and we defined the size of the buffer at 64MB. 
+This size is dependent on your network speeds. We were focussed on WiFi 
+connections, so a larger buffer made sense. Too small and you will make the 
+download take longer than necessary to complete.&lt;/p&gt;
+&lt;h2 id="where-to-go-from-here"&gt;
+  &lt;a href="#where-to-go-from-here"&gt;
+    Where to Go from Here
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Now you have an understanding of one way that your application can eat up RAM.
+If you only take away one thing from reading this post it&amp;rsquo;s this: for managing 
+memory  allocations, streams are your friends. And you should be constantly
+performance testing as you develop your application, unless you&amp;rsquo;re trying to
+maximize one-star reviews in the App Store.&lt;/p&gt;
+&lt;h2 id="gotchyas"&gt;
+  &lt;a href="#gotchyas"&gt;
+    Gotchyas
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;One final note on the code above: we did not end up going to production using
+&lt;code&gt;UnityWebRequest&lt;/code&gt; on iOS. When we tried using a similar streaming solution
+as above, we found that the request was not clearing from memory if it was 
+canceled due to the user sending the application to the background. Using the 
+Time Profiler Instrument showed that &lt;code&gt;NSURLSession&lt;/code&gt; objects were not being
+cleaned up when the application paused and resumed, so eventually the CPU would
+max out and crash. We had to seek an alternative solution for iOS using a native
+plugin. However, in the final code we still used HTTP streaming directly into a 
+file via &lt;code&gt;FileStream&lt;/code&gt;. Just not wrapped up in &lt;code&gt;UnityWebRequest&lt;/code&gt; objects.&lt;/p&gt;
+</content>
+  <summary>How to use Streams to more efficiently manage memory when downloading large files using Unity Engine.</summary>
+<feedburner:origLink>https://robots.thoughtbot.com/avoiding-out-of-memory-crashes-on-mobile</feedburner:origLink></entry>
+<entry>
+  <title>Solve Problems, not Strawmen</title>
+  <link rel="alternate" href="http://feedproxy.google.com/~r/GiantRobotsSmashingIntoOtherGiantRobots/~3/E6Xo6tl2AKk/you-aint-gonna-need-process" />
+  <author>
+    <name>Mike Burns</name>
+  </author>
+  <id>https://robots.thoughtbot.com/you-aint-gonna-need-process</id>
+  <published>2016-12-19T00:00:00+00:00</published>
+  <updated>2016-12-19T20:00:59Z</updated>
+  <content type="html">&lt;p&gt;It&amp;rsquo;s important to remember that solutions make little sense without problems,
+and to &lt;strong&gt;avoid applying solutions in a vacuum&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Applying solutions within a vacuum &amp;ndash; for example, reading about VPNs and then
+deciding to implement one for your team, without having a strong driving
+impetus &amp;ndash; has a few downsides. Skipping the problem statement makes it
+difficult to measure whether the solution works or how to iterate on it. It
+also runs the risk of decreasing team happiness when solutions are not tethered
+to reality.&lt;/p&gt;
+
+&lt;p&gt;We avoid applying them unless needed in an effort to reduce bureaucracy and
+process, so that developers can concentrate on developing, designers can
+concentrate on designing, product owners can concentrate on prioritization, and
+so on.&lt;/p&gt;
+
+&lt;p&gt;To round this out we&amp;rsquo;ll present &lt;a href="https://thoughtbot.com/playbook"&gt;some solutions that we apply to
+problems&lt;/a&gt;, along with some of the problems that they attack. Our
+choice of the word &amp;ldquo;attack&amp;rdquo; here is meaningful: these solutions, despite their
+name, do not &lt;em&gt;solve&lt;/em&gt; the problems; rather, they are part of a long-running
+process of dealing with the problems.  They might solve them entirely; they
+might need refinement, or they might not work at all.&lt;/p&gt;
+&lt;h2 id="acceptance-criteria"&gt;
+  &lt;a href="#acceptance-criteria"&gt;
+    Acceptance Criteria
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Acceptance criteria is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unrelated result: the ticket says one thing, the dev does another. If you
+have another person accepting the stories, this will lead to lost time as the
+dev and QA go back and forth on solutions. Without QA, this leads to an app
+that you don&amp;rsquo;t recognize.&lt;/li&gt;
+&lt;li&gt;The banana ticket: the developer knows how to implement the solution, but
+doesn&amp;rsquo;t know &lt;a href="http://blog.teamtreehouse.com/when-is-a-user-story-done-acceptance-criteria-definition-done"&gt;when to stop&lt;/a&gt;, leading to an infinite refactoring of the entire
+codebase under the guise of finishing this one ticket.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To implement &lt;a href="http://nomad8.com/acceptance_criteria/"&gt;acceptance criteria&lt;/a&gt;, when writing tickets and stories for the
+team, provide a detailed description of what the solution might look like &amp;ndash; a
+description of when the story is finished and the ticket can be accepted by the
+quality assurance team. &amp;ldquo;As an unconfirmed user, I cannot message anyone,&amp;rdquo; is a
+quick example, but they can get bigger and more descriptive.&lt;/p&gt;
+&lt;h2 id="retrospectives"&gt;
+  &lt;a href="#retrospectives"&gt;
+    Retrospectives
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Retrospectives is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unresolved conflict: the team is unable to communicate effectively during
+conflict. Anger and resentment grow instead, buried and festering inside,
+manifesting as passive-aggressive code review comments, poor collaboration,
+low morale, people quitting, or an explosion of anger.&lt;/li&gt;
+&lt;li&gt;Fights: instead of passive-aggressive, low-level frustration, the team could
+express constant anger. Code review ends in tears.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Scheduled, frequent, recurring retrospectives are a time for the team to
+reflect on their happiness and internal relationship. These happen rain or
+shine: it helps to practice communication in good times so that it becomes a
+normal reflex in times of need. Some teams pair it with drinks at the end of a
+workday; others do it mid-day as a normal part of the workday.&lt;/p&gt;
+&lt;h2 id="standups"&gt;
+  &lt;a href="#standups"&gt;
+    Standups
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Standup is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Isolation: people feel lonely working on remote teams or siloed projects.&lt;/li&gt;
+&lt;li&gt;Othering: people on different teams have inhuman expectations of anothers&amp;rsquo;
+team. This is expressed as increasing demands via faceless platforms like
+&lt;a href="https://medium.com/@chrisjbatts/actually-slack-really-sucks-625802f1420a#.qf3n7xjdn"&gt;chat&lt;/a&gt; and ticket trackers, constant rejection of solutions, or warring
+teams.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;A quick check-in once a day to catch everyone up on small details: what issue
+or project people are working on, whether they are blocked, perhaps something
+interesting that they learned, and general announcements. They are done
+standing in an effort to &lt;a href="https://www.researchgate.net/publication/232529574_The_effects_of_stand-up_and_sit-down_meeting_formats_on_meeting_outcomes"&gt;keep them short&lt;/a&gt; (more fit teams may want to do them
+standing on one leg instead).&lt;/p&gt;
+&lt;h2 id="ticket-tracker"&gt;
+  &lt;a href="#ticket-tracker"&gt;
+    Ticket Tracker
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;A ticket tracker is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Duplicated work: multiple people open code reviews, only to find that another
+review exists with that exact feature implemented. This kind of simple
+miscommunication can be exacerbated by large teams, &lt;a href="http://basho.com/posts/technical/microservices-please-dont/"&gt;microservices&lt;/a&gt;,
+distributed teams, and other communication challenges.&lt;/li&gt;
+&lt;li&gt;Hurry up and wait: the marketing department waits until the feature is
+shipped, and then hurries to advertise it (meanwhile they sat around
+waiting).&lt;/li&gt;
+&lt;li&gt;Surprise changes: the support team first learns that the UI has changed when
+complaints roll in about the redesign; the CEO hears about the removal of her
+favorite feature during a Q&amp;amp;A session at a conference.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ticket trackers are common, though often using different vocabulary. Trello
+uses cards; Trajectory uses stories; Pivotal Tracker uses bugs, chores, and
+stories.  Jira does all of that plus provides visibility into metrics &amp;ndash; some
+of which are projections, and others that are correct.&lt;/p&gt;
+&lt;h2 id="story-or-jobs-to-be-done-format"&gt;
+  &lt;a href="#story-or-jobs-to-be-done-format"&gt;
+    Story or Jobs-To-Be-Done Format
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Story format is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mysterious business: the developer will happily implement a feature, lacking
+the understanding of how it fits into the product or how it might be used.
+Long term this leads to a disconnect between the code and the product &amp;ndash; the
+domain-specific wording and language used throughout the app bears no
+relation to the reality that it must model &amp;ndash; causing frustration among the
+users and confusion when onboarding new developers.&lt;/li&gt;
+&lt;li&gt;Unfollow-through: the developer implements the letter of the ticket, but not
+the spirit, leading to situations where the feature is done but nothing
+links to it; the JSON API functions but sends useless data; the user can
+receive the password reset email but Gmail marks it as spam.&lt;/li&gt;
+&lt;li&gt;Inflexibility: when the dev runs into complications, she pushes through
+instead of re-evaluating for time sensitivity. This one solution is the only
+one, and no compromises are entertained, regardless of how long this takes
+and how it affects the user or the company.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The story format phrases tasks in terms that the end user cares about, with an
+explanation for &lt;a href="http://www.toyota-global.com/company/toyota_traditions/quality/mar_apr_2006.html"&gt;why&lt;/a&gt; the user might want the task done; similarly, the &lt;a href="https://robots.thoughtbot.com/converting-to-jobs-stories"&gt;jobs
+story format&lt;/a&gt; puts the user&amp;rsquo;s context first and the &lt;a href="http://www.kitchensoap.com/2014/11/14/the-infinite-hows-or-the-dangers-of-the-five-whys/"&gt;motivation&lt;/a&gt; right in the
+middle. This is all in contrast to the traditional task format, that focuses
+only on what the developer must change in the code, with no explanation or
+motivation.&lt;/p&gt;
+&lt;h2 id="test-driven-design"&gt;
+  &lt;a href="#test-driven-design"&gt;
+    Test-Driven Design
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;TDD is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Blind fixes: the bug is fixed &amp;hellip; or is it? No one is quite sure, but
+the new commit sure has a great description of how it could have fixed the
+bug.&lt;/li&gt;
+&lt;li&gt;Runtime whimsy: return values go unchecked, from &lt;a href="https://robots.thoughtbot.com/why-do-rubyists-test-so-completely"&gt;&lt;code&gt;nil&lt;/code&gt;&lt;/a&gt; to missing
+files to failed credit card payments, leading to errors at runtime.&lt;/li&gt;
+&lt;li&gt;Fear of deployment: the development workflow is running efficiently until it
+comes time to actually merge the branch. Hesitation, followed by asking for
+review after review, followed by begging others for reviews because no one
+wants the responsibility of saying that it will work in production.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Test-driven design (TDD) uses programmatic tests to drive the design and
+architecture of the codebase. An incidental side effect is that the major
+codepaths are tested, including error flows. Running the test suite exercises
+all parts of the application, finding regressions in paths where bugs have been
+found and fixed.&lt;/p&gt;
+&lt;h2 id="refactoring"&gt;
+  &lt;a href="#refactoring"&gt;
+    Refactoring
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Refactoring is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unworkable feature: adding the new feature requires its own separate app or a
+fragile connection through the database. What could be a simple button on a
+Web page that performs a common activity takes days, weeks, or months to
+implement.&lt;/li&gt;
+&lt;li&gt;Hidden bug: you&amp;rsquo;ve traced the crash to one method, but that method was
+written by a developer from two generations of coworkers ago, is 127
+lines long, and the commit message was &amp;ldquo;it works&amp;rdquo;. The twenty code paths,
+including liberal use of &lt;a href="https://docs.racket-lang.org/reference/cont.html#%28def._%28%28quote._%7E23%7E25kernel%29._call-with-escape-continuation%29%29"&gt;&lt;code&gt;return&lt;/code&gt;&lt;/a&gt;, obscure the source of the error.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Refactoring is the process of shuffling code around without adding any features
+or fixing any bugs. It is often the first step to implementing a new feature or
+bug fix, carving a more clear path through the system, as part of the
+&lt;a href="http://www.virtuouscode.com/2012/06/25/every-day-in-every-way/"&gt;red-green-refactor&lt;/a&gt; workflow.&lt;/p&gt;
+&lt;h2 id="feature-flags"&gt;
+  &lt;a href="#feature-flags"&gt;
+    Feature Flags
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Feature flags is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Market timing: the feature is implemented but the rest of the company still
+isn&amp;rsquo;t ready for it. The support team needs to be trained on it, the
+promotional announcement needs to be sent out, or the CEO needs to be
+convinced that it&amp;rsquo;s a good idea.&lt;/li&gt;
+&lt;li&gt;Questionable code: an isolated chunk of code &amp;ndash; a new file system, for
+example &amp;ndash; is ready to be evaluated by willing and able participants, but
+is not ready for public consumption until all the initial bugs have been
+shaken out.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Feature flags refers to hiding parts of the app behind a toggle, only shown to
+some specific users or only enabled by an admin. These feature flags typically
+differ from A/B testing in that they&amp;rsquo;re less about measurement and more about
+hiding.&lt;/p&gt;
+&lt;h2 id="code-review"&gt;
+  &lt;a href="#code-review"&gt;
+    Code Review
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Code review is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Siloed development: developers work in isolation on specific categories of
+projects &amp;ndash; one person on payment, another on API, a third on advertisement
+targeting &amp;ndash; but on the same codebase. Features change around them and cruft
+grows without any clear communication channel between devs.&lt;/li&gt;
+&lt;li&gt;Poor code quality: the developers learn from blog posts and Web search
+results instead of from each other, furthering their isolation. Coding styles
+vary, and the same solution exists &lt;a href="http://lists.llvm.org/pipermail/llvm-dev/2016-October/106079.html"&gt;multiple times&lt;/a&gt; in the same repo.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Reviewing code is the &lt;a href="http://www.geraldmweinberg.com/Site/Programming_Psychology.html"&gt;process&lt;/a&gt; of reading a diff: comparing a new commit with
+what exists in the system. Often there is a focus on maintainability,
+consistency, or knowledge transfer. Since it typically works on a diff, there
+are fewer considerations for big picture harmony.&lt;/p&gt;
+&lt;h2 id="git-workflow"&gt;
+  &lt;a href="#git-workflow"&gt;
+    Git Workflow
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;A consistent git workflow is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unexplainable code: you find a strange line of code, the test explains
+nothing, the commit message only says &amp;ldquo;initial commit&amp;rdquo;, the ticket tracker
+was replaced twice since the project started, as was the project manager. Why
+is this solution the right one, and why does the mysterious test enforce it?&lt;/li&gt;
+&lt;li&gt;Bus factor one: the developer works alone, deploys a JAR, and leaves no
+comments. Then she quits and the new dev is onboarded. I hope you enjoyed
+this short horror story.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Git provides enough plumbing to hang yourself. Maybe that&amp;rsquo;s not the expression.
+Regardless, there&amp;rsquo;s no one way to use git, and multiple right ways. From branch
+names to merge strategies to &lt;a href="https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message"&gt;commit message&lt;/a&gt; content, it&amp;rsquo;s possible to have
+&lt;a href="https://github.com/thoughtbot/guides/tree/master/protocol/git"&gt;a unified version control process&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="deployment-process"&gt;
+  &lt;a href="#deployment-process"&gt;
+    Deployment Process
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;A deploy process is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Expensive downtime: each second of downtime costs more in lost sales than
+each second of development time costs in salary.&lt;/li&gt;
+&lt;li&gt;External failures: the deployment depends on a set of external services
+providing DNS, caching and content delivery, uptime monitoring, error
+reporting, and so on, each of which has their own failure modes.&lt;/li&gt;
+&lt;li&gt;Regulations: strict compliance with the law requires that very few people
+have access to the database or the production servers.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Going from development to production takes a few steps, which means it can be
+scripted. The runnable script can live near a human-readable script, separately
+describing who can deploy, what steps to take when it fails, what to do about
+downtime, and how to announce it. Combined, the program and documentation
+around it make up the deployment process.&lt;/p&gt;
+&lt;h2 id="horizontal-scaling"&gt;
+  &lt;a href="#horizontal-scaling"&gt;
+    Horizontal Scaling
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Scaling is one way to attack the following problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Concurrent users: the service is immediately more popular and needs to handle
+twice as many users as before. They don&amp;rsquo;t necessarily need to use the full
+service, but at least need to have enough working to get their job done.&lt;/li&gt;
+&lt;li&gt;Concurrent processing: the algorithm can be subdivided into smaller,
+independent problems, but each problem would take its own computer to solve.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Scaling horizontally presents as spinning up more servers to handle the load;
+this is in comparison with vertical scaling, where the CPU is sped up or the
+RAM increased. The new servers come up quickly (&amp;ldquo;instantly&amp;rdquo;), run the same
+software, and can be reduced when needed.&lt;/p&gt;
+&lt;h2 id="and-more"&gt;
+  &lt;a href="#and-more"&gt;
+    And more
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;This is just a tiny selection of the solutions that we have seen to real
+problems over the years. Some are for fancy ideas &amp;ndash; feature flags and story
+format are not common to every team &amp;ndash; and some are sacred cows, like TDD and
+refactoring.&lt;/p&gt;
+
+&lt;p&gt;Your homework, dear reader, is to think of what problems you are solving and
+what solutions are not carrying their weight. Let us know what you learn while
+reflecting; we are always looking for &lt;a href="https://thoughtbot.com/playbook"&gt;processes we can drop&lt;/a&gt;!&lt;/p&gt;
+</content>
+  <summary>Avoid applying solutions in a vacuum.</summary>
+<feedburner:origLink>https://robots.thoughtbot.com/you-aint-gonna-need-process</feedburner:origLink></entry>
+</feed>

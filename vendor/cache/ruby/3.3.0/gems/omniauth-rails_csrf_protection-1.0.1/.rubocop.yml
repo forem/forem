@@ -1,0 +1,9 @@
+inherit_from:
+  - https://raw.githubusercontent.com/cookpad/global-style-guides/master/.rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 2.5
+
+# Disable this as this does not apply to rack-test
+Rails/HttpPositionalArguments:
+  Enabled: false

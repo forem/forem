@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+# Specify your gem's dependencies in active_record_union.gemspec
+gemspec
+
+gem 'rails', '~> 4.2.7'
+
+# On Rails < 5.2, only pg < v1 is supported. See:
+# https://github.com/rails/rails/pull/31671
+# https://bitbucket.org/ged/ruby-pg/issues/270/pg-100-x64-mingw32-rails-server-not-start
+gem 'pg', '~> 0.21'

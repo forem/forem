@@ -1,0 +1,32 @@
+name: Publish
+on:
+  push:
+    tags: [v*]
+permissions:
+  contents: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
+      - run: |
+          mkdir -p ~/.gem
+          cat << EOF > ~/.gem/credentials
+          ---
+          :rubygems_api_key: ${{ secrets.RUBYGEMS_API_KEY }}
+          EOF
+
+          chmod 0600 ~/.gem/credentials
+      - run: bundle exec rake release
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: "*.gem"
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, '.pre') }}

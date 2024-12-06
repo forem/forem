@@ -1,0 +1,50 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://api.knapsackpro.test:3000/v1/build_subsets
+    body:
+      encoding: UTF-8
+      string: '{"commit_hash":"abcdefg","branch":"master","node_total":"2","node_index":"1","test_files":[{"path":"a_spec.rb","time_execution":1.2},{"path":"b_spec.rb","time_execution":0.3}],"test_suite_token":"3fa64859337f6e56409d49f865d13fd7"}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: 'Created '
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Content-Type:
+      - text/plain; charset=utf-8
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - 3f9741b6-36b2-43e9-8346-d94732a0841e
+      X-Runtime:
+      - '0.060958'
+      Server:
+      - WEBrick/1.3.1 (Ruby/2.2.2/2015-04-13)
+      Date:
+      - Fri, 31 Jul 2015 16:18:27 GMT
+      Content-Length:
+      - '0'
+      Connection:
+      - Keep-Alive
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Fri, 31 Jul 2015 16:18:27 GMT
+recorded_with: VCR 2.9.3

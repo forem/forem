@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+
+    - uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: v1-${{ runner.os }}-${{ hashFiles('Gemfile', 'better_errors.gemspec') }}
+        restore-keys: |
+          v1-${{ runner.os }}
+
+    - name: Bundle install
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Get release version
+      id: get_version
+      run: |
+        version="${github_ref//refs\/tags\/v/}"
+        echo "${version}"
+        echo "::set-output name=version::${version}"
+      env:
+        github_ref: ${{ github.ref }}
+
+    - name: Get Release
+      id: get_release
+      uses: bruceadams/get-release@v1.2.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Set gem version
+      run: |
+        bundle exec gem bump better_errors --version ${{ steps.get_version.outputs.version }} --no-commit
+
+    - name: Compile CSS
+      run: |
+        bundle exec rake style:build
+
+    - name: Build gem
+      run: gem build better_errors.gemspec
+
+    - name: Add gem to GitHub Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
+        asset_path: ./better_errors-${{ steps.get_version.outputs.version }}.gem
+        asset_name: better_errors-${{ steps.get_version.outputs.version }}.gem
+        asset_content_type: application/octet-stream
+
+    # TODO: if this release is on master, add a commit updating the version in master.

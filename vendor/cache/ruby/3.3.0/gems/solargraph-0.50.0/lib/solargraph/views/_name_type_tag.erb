@@ -1,0 +1,10 @@
+<%= tag.name %>
+<% unless tag.types.nil? or tag.types.empty? %>
+	[<%= escape(tag.types.join(', ')) %>]
+<% end %>
+<% unless tag.text.nil? || tag.text.empty? %>
+	<% unless (tag.name.nil? or tag.name.empty?) and (tag.types.nil? or tag.types.empty?) %>
+		-
+	<% end %>
+	<%= tag.text %>
+<% end %>

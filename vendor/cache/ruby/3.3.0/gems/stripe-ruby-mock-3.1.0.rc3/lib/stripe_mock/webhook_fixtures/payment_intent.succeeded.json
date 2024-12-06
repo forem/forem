@@ -1,0 +1,164 @@
+{
+  "id": "evt_00000000000000",
+  "object": "event",
+  "api_version": "2018-02-28",
+  "created": 1578499109,
+  "data": {
+    "object": {
+      "id": "pi_00000000000000",
+      "object": "payment_intent",
+      "allowed_source_types": ["card", "sepa_debit"],
+      "amount": 900,
+      "amount_capturable": 0,
+      "amount_received": 900,
+      "application": null,
+      "application_fee_amount": null,
+      "canceled_at": null,
+      "cancellation_reason": null,
+      "capture_method": "automatic",
+      "charges": {
+        "object": "list",
+        "data": [
+          {
+            "id": "ch_00000000000000",
+            "object": "charge",
+            "amount": 900,
+            "amount_refunded": 0,
+            "application": null,
+            "application_fee": null,
+            "application_fee_amount": null,
+            "balance_transaction": "txn_00000000000000",
+            "billing_details": {
+              "address": {
+                "city": null,
+                "country": "DE",
+                "line1": null,
+                "line2": null,
+                "postal_code": null,
+                "state": null
+              },
+              "email": null,
+              "name": null,
+              "phone": null
+            },
+            "captured": true,
+            "created": 1578499109,
+            "currency": "eur",
+            "customer": "cus_00000000000000",
+            "description": null,
+            "destination": "acct_00000000000000",
+            "dispute": null,
+            "disputed": false,
+            "failure_code": null,
+            "failure_message": null,
+            "fraud_details": {},
+            "invoice": null,
+            "livemode": false,
+            "metadata": {},
+            "on_behalf_of": null,
+            "order": null,
+            "outcome": {
+              "network_status": "approved_by_network",
+              "reason": null,
+              "risk_level": "normal",
+              "risk_score": 40,
+              "seller_message": "Payment complete.",
+              "type": "authorized"
+            },
+            "paid": true,
+            "payment_intent": "pi_00000000000000",
+            "payment_method": "pm_00000000000000",
+            "payment_method_details": {
+              "card": {
+                "brand": "visa",
+                "checks": {
+                  "address_line1_check": null,
+                  "address_postal_code_check": null,
+                  "cvc_check": null
+                },
+                "country": "US",
+                "exp_month": 4,
+                "exp_year": 2024,
+                "fingerprint": "00000000000000",
+                "funding": "credit",
+                "installments": null,
+                "last4": "4242",
+                "network": "visa",
+                "three_d_secure": null,
+                "wallet": null
+              },
+              "type": "card"
+            },
+            "receipt_email": null,
+            "receipt_number": null,
+            "receipt_url": "https://pay.stripe.com/receipts/acct_00000000000000/ch_00000000000000/rcpt_00000000000000",
+            "refunded": false,
+            "refunds": {
+              "object": "list",
+              "data": [],
+              "has_more": false,
+              "total_count": 0,
+              "url": "/v1/charges/ch_00000000000000/refunds"
+            },
+            "review": null,
+            "shipping": null,
+            "source": null,
+            "source_transfer": null,
+            "statement_descriptor": "ACME Corp",
+            "statement_descriptor_suffix": null,
+            "status": "succeeded",
+            "transfer": "tr_00000000000000",
+            "transfer_data": {
+              "amount": null,
+              "destination": "acct_00000000000000"
+            },
+            "transfer_group": "group_pi_00000000000000"
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/charges?payment_intent=pi_00000000000000"
+      },
+      "client_secret": "pi_00000000000000",
+      "confirmation_method": "automatic",
+      "created": 1578499108,
+      "currency": "eur",
+      "customer": "cus_00000000000000",
+      "description": null,
+      "invoice": null,
+      "last_payment_error": null,
+      "livemode": false,
+      "metadata": {},
+      "next_action": null,
+      "next_source_action": null,
+      "on_behalf_of": null,
+      "payment_method": "pm_00000000000000",
+      "payment_method_options": {
+        "card": {
+          "installments": null,
+          "request_three_d_secure": "automatic"
+        }
+      },
+      "payment_method_types": ["card", "sepa_debit"],
+      "receipt_email": null,
+      "review": null,
+      "setup_future_usage": null,
+      "shipping": null,
+      "source": null,
+      "statement_descriptor": "ACME Corp",
+      "statement_descriptor_suffix": null,
+      "status": "succeeded",
+      "transfer_data": {
+        "destination": "acct_00000000000000"
+      },
+      "transfer_group": "group_pi_00000000000000"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": "req_00000000000000",
+    "idempotency_key": null
+  },
+  "type": "payment_intent.succeeded"
+}

@@ -1,0 +1,22 @@
+HTTP/1.1 200 OK
+Date: Fri, 29 Apr 2016 00:27:28 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+X-Powered-By: Express
+Cache-Control: public, max-age=0
+Vary: Accept-Encoding
+Via: 1.1 vegur
+Server: cloudflare-nginx
+CF-RAY: 29aea0e05c720938-DFW
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Disrupting DeAcero, un ejemplo de innovación Disruptive Angels</title>
+<meta name="description" content=""/>
+</head>
+<body>
+<p>Vivimos en una época en la que el término 'Innovación' esta siendo usado a placer por organizaciones de todo tipo. Hace algunos meses en una reunión de trabajo alguien mencionó:"La innovación esta siendo usada como todo aquello que las empresas no saben dónde poner". Mejor no lo pudo haber dicho. Llevamos más de dos años de estar colaborando cercanamente con directores de innovación de decenas de empresas, participando en comisiones industriales enfocadas a la innovación y haciendo conexiones laborales internacionales con expertos en materias de innovación (particularmente innovación abierta), y después de todo, la gran mayoría de las empresas no tienen claro lo que (por lo menos dentro de su organización) es innovación. </p>
+</body>
+</html>

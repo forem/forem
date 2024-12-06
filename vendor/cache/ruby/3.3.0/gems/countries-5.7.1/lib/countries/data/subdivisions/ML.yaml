@@ -1,0 +1,632 @@
+---
+'1':
+  name: Kayes
+  code: '1'
+  unofficial_names: Kayes
+  geo:
+    latitude: 14.4367876
+    longitude: -11.4452717
+    min_latitude: 14.4186581
+    min_longitude: -11.4719188
+    max_latitude: 14.4902814
+    max_longitude: -11.3716221
+  translations:
+    en: Kayes
+    ar: منطقة كايس
+    bg: Кайес
+    bn: কায়েস অঞ্চল
+    da: Kayes
+    de: Region Kayes
+    el: Περιφέρεια Καγιές
+    es: Kayes
+    et: Kayesi piirkond
+    eu: Kayes eskualdea
+    fa: استان کایس
+    fi: Kayesin alue
+    fr: Région de Kayes
+    gu: કાયેસ પ્રદેશ
+    hi: कायेस क्षेत्र
+    hu: Kayes régió
+    id: Region Kayes
+    it: regione di Kayes
+    ja: カイ州
+    kn: ಕೇಯ್ಸ್ ಪ್ರದೇಶ
+    ko: 케이스 주
+    lt: Kajeso regionas
+    mr: कायेस प्रदेश
+    ms: Kayes Region
+    nb: Kayes
+    nl: Kayes
+    pl: Region Kayes
+    pt: Kayes
+    ro: Regiunea Kayes
+    ru: Каес
+    si: කේයස් ප්‍රාන්තය
+    sv: Kayes
+    ta: கேஎஸ் பகுதி
+    te: కేయెస్ ప్రాంతం
+    th: อาณาเขตคาเยส
+    tr: Kayes Bölgesi
+    uk: Каєс
+    ur: علاقہ کیز
+    vi: Khu vực Kayes
+    zh: 卡伊區
+    lv: Kajesas reģions
+    ceb: Kayes Region
+    ccp: "\U00011107\U0001112C\U00011120\U0001112C\U0001110C\U00011134"
+    ka: კაესის რეგიონი
+    'no': Kayes
+    az: Kayes (bölgə)
+    ca: Regió de Kayes
+    sw: Mkoa wa Kayes
+  comments:
+  type: region
+'10':
+  name: Région de Taoudénit
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude: -15.7753392
+    longitude: -47.8138065
+    min_latitude: -15.7804757
+    min_longitude: -47.817425
+    max_latitude: -15.7724352
+    max_longitude: -47.8095817
+  translations:
+    ja: タウデニ州
+    en: Taoudénit
+    fr: Région de Taoudénit
+    fi: Taoudénitin alue
+    ar: منطقة تودني
+    de: Region Taoudénit
+    el: Περιοχή του Ταουντενίτ
+    fa: استان توئودنیت
+    ru: Таоденни
+    sw: Mkoa wa Taoudenit
+    th: แคว้นตาอูเดนี
+  comments:
+  type: region
+'2':
+  name: Koulikoro
+  code: '2'
+  unofficial_names: Koulikoro
+  geo:
+    latitude: 12.861111
+    longitude: -7.558332999999999
+    min_latitude: 12.8513625
+    min_longitude: -7.571923199999999
+    max_latitude: 12.8789565
+    max_longitude: -7.5457191
+  translations:
+    en: Koulikoro
+    ar: منطقة كوليكورو
+    bg: Куликоро
+    bn: কউলিকুরো অঞ্চল
+    ca: Regió de Koulikoro
+    da: Koulikoro
+    de: Region Koulikoro
+    el: Περιφέρεια Κουλικορό
+    es: Kulikoró
+    et: Koulikoro piirkond
+    eu: Koulikoro eskualdea
+    fa: استان کولیکورو
+    fi: Koulikoron alue
+    fr: Région de Koulikoro
+    gu: કૌલીકોરો પ્રદેશ
+    hi: कोइलिकोरो क्षेत्र
+    hu: Koulikoro régió
+    id: Region Koulikoro
+    it: regione di Koulikoro
+    ja: クリコロ州
+    kn: ಕೌಲಿಕೊರೋ ಪ್ರದೇಶ
+    ko: 쿨리코로 주
+    lt: Kulikoro regionas
+    mr: कोलिको प्रांत
+    ms: Koulikoro Region
+    nb: Koulikoro
+    nl: Koulikoro
+    pl: Region Koulikoro
+    pt: Koulikoro
+    ro: Regiunea Koulikoro
+    ru: Куликоро
+    si: කොවුලිකොරෝ කලාපය
+    sv: Koulikoro
+    ta: கோழிகோரோ பகுதி
+    te: కోలికోరో ప్రాంతం
+    th: เขตกูลีกอโร
+    tr: Koulikoro Bölgesi
+    uk: Кулікоро
+    ur: علاقہ کولیکورو
+    vi: Khu vực Koulikoro
+    lv: Kulikoro reģions
+    ceb: Koulikoro Region
+    zh: 库利科罗区
+    ccp: "\U00011107\U0001112F\U00011123\U00011128\U00011107\U0001112E\U00011122\U0001112E"
+    ka: კულიკოროს რეგიონი
+    'no': Koulikoro
+    sw: Mkoa wa Koulikoro
+  comments:
+  type: region
+'3':
+  name: Sikasso
+  code: '3'
+  unofficial_names: Sikasso
+  geo:
+    latitude: 11.316667
+    longitude: -5.666666999999999
+    min_latitude: 11.2896322
+    min_longitude: -5.7206155
+    max_latitude: 11.3538204
+    max_longitude: -5.634414
+  translations:
+    en: Sikasso
+    ar: منطقة سيكاسو
+    be: Сікасо
+    bn: সিকাসো অঞ্চল
+    da: Sikasso
+    de: Region Sikasso
+    el: Περιφέρεια Σικασσό
+    es: Sikasso
+    et: Sikasso piirkond
+    eu: Sikasso eskualdea
+    fa: استان سیکاسو
+    fi: Sikasson alue
+    fr: Région de Sikasso
+    gu: સિકાસો પ્રદેશ
+    hi: सिकासो क्षेत्र
+    hu: Sikasso régió
+    id: Region Sikasso
+    it: regione di Sikasso
+    ja: シカソ州
+    kn: ಸಿಕಸ್ಸೊ ಪ್ರದೇಶ
+    ko: 시카소 주
+    lt: Sikaso regionas
+    mr: सिकासो प्रदेश
+    ms: Sikasso Region
+    nb: Sikasso
+    nl: Sikasso
+    pl: Region Sikasso
+    pt: Sikasso
+    ro: Regiunea Sikasso
+    ru: Сикасо
+    si: සිකස්සෝ කලාපය
+    sv: Sikasso
+    ta: சிகாஸோ பகுதி
+    te: సికాసో ప్రాంతం
+    th: ซิคาสโซ
+    tr: Sikasso Bölgesi
+    uk: Сікасо
+    ur: علاقہ سیکاسو
+    vi: Khu vực Sikasso
+    lv: Sikaso reģions
+    ceb: Sikasso Region
+    zh: 锡卡索区
+    ccp: "\U00011125\U00011128\U00011107\U00011125\U0001112E"
+    ka: სიკასოს რეგიონი
+    'no': Sikasso
+    az: Sikaso (bölgə)
+    ca: Sikasso
+    sw: Mkoa wa Sikasso
+  comments:
+  type: region
+'4':
+  name: Ségou
+  code: '4'
+  unofficial_names: Ségou
+  geo:
+    latitude: 13.45
+    longitude: -6.266667
+    min_latitude: 13.4017673
+    min_longitude: -6.3270675
+    max_latitude: 13.4589132
+    max_longitude: -6.2011928
+  translations:
+    en: Ségou
+    ar: منطقة سيغو
+    bn: সেগুউ অঞ্চল
+    ca: Regió de Ségou
+    da: Ségou
+    de: Region Ségou
+    el: Περιφέρεια Σεγκού
+    es: Segú
+    et: Ségou piirkond
+    eu: Ségou eskualdea
+    fa: استان سگو
+    fi: Ségoun alue
+    fr: Région de Ségou
+    gu: સેગોઉ પ્રદેશ
+    hi: सेगोऊ क्षेत्र
+    id: Region Ségou
+    it: regione di Ségou
+    ja: セグー州
+    kn: ಸೆಗಾವ್ ಪ್ರದೇಶ
+    ko: 세구 주
+    lt: Segu regionas
+    mr: सेगो प्रदेश
+    ms: Segou Region
+    nb: Ségou
+    nl: Ségou
+    pl: Region Ségou
+    pt: Ségou
+    ro: Regiunea Ségou
+    ru: Сегу
+    si: සෙගෞ කලාපය
+    sv: Ségou
+    ta: செகௌ பகுதி
+    te: సెగౌ ప్రాంతం
+    th: เซเกา
+    tr: Ségou Bölgesi
+    uk: Сегу
+    ur: علاقہ سیگو
+    vi: Khu vực Ségou
+    lv: Segu reģions
+    ceb: Ségou Region
+    zh: 塞古区
+    ccp: "\U00011125\U0001112C\U00011109\U0001112F"
+    ka: სეგუს რეგიონი
+    'no': Ségou
+    sw: Mkoa wa Segou
+  comments:
+  type: region
+'5':
+  name: Mopti
+  code: '5'
+  unofficial_names: Mopti
+  geo:
+    latitude: 14.495833
+    longitude: -4.198611
+    min_latitude: 14.4526312
+    min_longitude: -4.2045531
+    max_latitude: 14.5178846
+    max_longitude: -4.1471441
+  translations:
+    en: Mopti
+    ar: منطقة موبتي
+    bg: Мопти
+    bn: মুপ্তি অঞ্চল
+    ca: Regió de Mopti
+    da: Mopti
+    de: Region Mopti
+    el: Περιφέρεια Μοπτί
+    es: Región de Mopti
+    et: Mopti piirkond
+    eu: Mopti eskualdea
+    fa: استان موپتی
+    fi: Moptin alue
+    fr: Région de Mopti
+    gu: મોપ્ટી પ્રદેશ
+    hi: मोपटी क्षेत्र
+    id: Region Mopti
+    it: regione di Mopti
+    ja: モプティ州
+    kn: ಮೊಪ್ಟಿ ಪ್ರದೇಶ
+    ko: 몹티 주
+    lt: Mopčio regionas
+    mr: मोपटी प्रदेश
+    ms: Mopti Region
+    nb: Mopti
+    nl: Mopti
+    pl: Region Mopti
+    pt: Mopti
+    ro: Regiunea Mopti
+    ru: Мопти
+    si: මොප්ටි කලාපය
+    sv: Mopti
+    ta: மோப்டி பகுதி
+    te: మోప్టి ప్రాంతం
+    th: เมืองม๊อปติ
+    tr: Mopti Region
+    uk: Мопті
+    ur: علاقہ موپٹی
+    vi: Khu vực Mopti
+    lv: Mopti reģions
+    ceb: Mopti Region
+    zh: 莫普提区
+    ccp: "\U0001111F\U0001112E\U0001111B\U00011134\U00011111\U00011128"
+    ka: მოპტის რეგიონი
+    be: Мопці
+    'no': Mopti
+    cy: rhanbarth Mopti
+    sw: Mkoa wa Mopti
+  comments:
+  type: region
+'6':
+  name: Tombouctou
+  code: '6'
+  unofficial_names: Tombouctou
+  geo:
+    latitude: 16.7665887
+    longitude: -3.0025615
+    min_latitude: 16.7526054
+    min_longitude: -3.0226994
+    max_latitude: 16.7901617
+    max_longitude: -2.9932594
+  translations:
+    en: Tombouctou
+    ar: منطقة تمبكتو
+    bn: তম্বুকতু অঞ্চল
+    ca: Regió de Tombouctou
+    da: Timbuktu
+    de: Region Timbuktu
+    el: Περιφέρεια Τομπουκτού
+    es: Tombuctú
+    et: Tombouctou piirkond
+    eu: Tonbuktu eskualdea
+    fa: استان تومبوکتو
+    fi: Timbuktun alue
+    fr: Région de Tombouctou
+    gu: ટોમ્બૌક્ટોઉ પ્રદેશ
+    he: מחוז טימבוקטו
+    hi: टॉम्बौक्टाउ क्षेत्र
+    id: Region Timbuktu
+    it: regione di Timbuctù
+    ja: トンブクトゥ州
+    kn: ಟೊಂಬೌಕ್ಟೌ ಪ್ರದೇಶ
+    ko: 통북투 주
+    lt: Tombuktu regionas
+    mr: टॉम्बॉक्टौ प्रदेश
+    ms: Tombouctou Region
+    nb: Timbuktu
+    nl: Timboektoe
+    pl: Region Timbuktu
+    pt: Tombouctou
+    ro: Regiunea Tombouctou
+    ru: Томбукту
+    si: ටෝම්බෝක්ටු කලාපය
+    sv: Timbuktu
+    ta: டாம்போவுக்டோக்கு பகுதி
+    te: టాంబోక్టోవ్ ప్రాంతం
+    th: ทอมบัวซเทา
+    tr: Tombouctou Bölgesi
+    uk: Тімбукту
+    ur: علاقہ ٹمبکٹو
+    vi: Khu vực Tombouctou
+    lv: Tombuktu reģions
+    ceb: Tombouctou Region
+    zh: 通布圖區
+    ccp: "\U00011111\U0001112E\U0001111F\U00011134\U0001111D\U0001112F\U00011107\U00011134\U00011111\U0001112F"
+    ka: ტომბუქტუს რეგიონი
+    'no': Timbuktu
+    az: Tombuktu
+    ps: تومبوکتو
+    sw: Mkoa wa Timbuktu
+  comments:
+  type: region
+'7':
+  name: Gao
+  code: '7'
+  unofficial_names: Gao
+  geo:
+    latitude: 16.2639807
+    longitude: -0.0279867
+    min_latitude: 16.2237359
+    min_longitude: -0.0576808
+    max_latitude: 16.3047953
+    max_longitude: 0.0254726
+  translations:
+    en: Gao
+    ar: منطقة غاو
+    bg: Гао
+    bn: গাও অঞ্চল
+    da: Gao
+    de: Region Gao
+    el: Περιφέρεια Γκαό
+    es: Gao
+    et: Gao piirkond
+    eu: Gao eskualdea
+    fa: استان گائو
+    fi: Gaon alue
+    fr: Région de Gao
+    gu: ગાઓ પ્રદેશ
+    hi: गाओ क्षेत्र
+    hu: Gao régió
+    id: Region Gao
+    it: regione di Gao
+    ja: ガオ州
+    kn: ಗಾವೊ ಪ್ರದೇಶ
+    ko: 가오 주
+    lt: Gao regionas
+    mr: गाओ प्रदेश
+    ms: Gao Region
+    nb: Gao
+    nl: Gao
+    pl: Region Gao
+    pt: Gao
+    ro: Regiunea Gao
+    ru: Гао
+    si: ගාඕ කලාපය
+    sv: Gao
+    ta: காவோ பகுதி
+    te: గావ్ ప్రాంతం
+    th: เกา
+    tr: Gao Belediyesi
+    uk: Гао
+    ur: علاقہ گاو
+    vi: Khu vực Gao
+    lv: Gao reģions
+    ceb: Gao Region
+    zh: 加奥区
+    ccp: "\U00011109\U00011103\U0001112E"
+    ka: გაოს რეგიონი
+    'no': Gao
+    az: Qao (bölgə)
+    ca: Gao
+    sw: Mkoa wa Gao
+  comments:
+  type: region
+'8':
+  name: Kidal
+  code: '8'
+  unofficial_names: Kidal
+  geo:
+    latitude: 18.438889
+    longitude: 1.408333
+    min_latitude: 18.4226161
+    min_longitude: 1.39359
+    max_latitude: 18.4647725
+    max_longitude: 1.4252616
+  translations:
+    en: Kidal
+    ar: منطقة كيدال
+    bg: Кидал
+    bn: কিডাল অঞ্চল
+    da: Kidal
+    de: Region Kidal
+    el: Περιφέρεια Κιντάλ
+    es: Kidal
+    et: Kidali piirkond
+    eu: Kidal eskualdea
+    fa: استان کیدال
+    fi: Kidalin alue
+    fr: Région de Kidal
+    gu: કિડલ પ્રદેશ
+    hi: किडाल प्रदेश
+    hu: Kidal régió
+    id: Region Kidal
+    it: regione di Kidal
+    ja: キダル州
+    kn: ಕಿಡಾಲ್ ಪ್ರದೇಶ
+    ko: 키달 주
+    lt: Kidalio regionas
+    mr: किदील प्रदेश
+    ms: Daerah Kidal
+    nb: Kidal
+    nl: Kidal
+    pl: Region Kidal
+    pt: Kidal
+    ro: Regiunea Kidal
+    ru: Кидаль
+    si: කිඩල් කලාපය
+    sv: Kidal
+    ta: கிடல் பகுதி
+    te: కిడాల్ ప్రాంతం
+    th: ภูมิภาคคิดัล
+    tr: Kidal Region
+    uk: Кідаль
+    ur: علاقہ کڈال
+    vi: Khu vực Kidal
+    lv: Kidalas reģions
+    ceb: Kidal Region
+    zh: 基達爾區
+    ccp: "\U00011107\U00011128\U00011113\U00011123\U00011134"
+    ka: კიდალის რეგიონი
+    'no': Kidal
+    ca: Regió de Kidal
+    ha: Yankin Kidal
+    ha_NE: Yankin Kidal
+    sw: Mkoa wa Kidal
+  comments:
+  type: region
+'9':
+  name: Région de Ménaka
+  code: '9'
+  unofficial_names:
+  geo:
+  translations:
+    ja: メナカ州
+    en: Ménaka
+    fr: Région de Ménaka
+    fi: Ménakan alue
+    de: Region Ménaka
+    el: Περιοχή της Μενακά
+    fa: استان مناکا
+    sw: Mkoa wa Menaka
+    th: แคว้นเมนากา
+  comments:
+  type: region
+BKO:
+  name: Bamako
+  code: BKO
+  unofficial_names: Bamako
+  geo:
+    latitude: 12.65
+    longitude: -8
+    min_latitude: 12.4909088
+    min_longitude: -8.1150808
+    max_latitude: 12.7329742
+    max_longitude: -7.8759453
+  translations:
+    en: Bamako
+    af: Bamako
+    am: ባማኮ
+    ar: باماكو
+    az: Bamako
+    be: Горад Бамако
+    bg: Бамако
+    bn: বামাকো
+    ca: Bamako
+    cs: Bamako
+    da: Bamako
+    de: Bamako
+    el: Μπαμακό
+    es: Bamako
+    et: Bamako
+    eu: Bamako
+    fa: باماکو
+    fi: Bamako
+    fr: Bamako
+    gl: Bamaco
+    gu: બામાકો
+    he: במקו
+    hi: बमाको
+    hr: Bamako
+    hu: Bamako
+    hy: Բամակո
+    id: Bamako
+    is: Bamakó
+    it: Bamako
+    ja: バマコ
+    ka: ბამაკო
+    kn: ಬಮಾಕೋ
+    ko: 바마코
+    lt: Bamakas
+    lv: Bamako
+    ml: ബാമാകോ
+    mn: Бамако
+    mr: बमाको
+    ms: Bamako
+    nb: Bamako
+    nl: Bamako
+    pl: Bamako
+    pt: Bamako
+    ro: Bamako
+    ru: Бамако
+    si: බමාකෝ
+    sk: Bamako
+    sl: Bamako
+    sr: Бамако
+    sv: Bamako
+    sw: Bamako
+    ta: பமாக்கோ
+    te: బమాకో
+    th: บามาโก
+    tk: Bamako
+    tr: Bamako
+    uk: Бамако
+    ur: بماکو
+    vi: Bamako
+    cy: Bamako
+    ceb: Bamako Region
+    sr_Latn: Bamako
+    zh: 巴馬科
+    yue_Hans: 巴马科
+    jv: Bamako
+    sq: Bamako
+    ccp: "\U0001111D\U0001111F\U00011107\U0001112E"
+    ga: Bamako
+    ky: Бамако
+    ha: Bamako
+    so: Bamako
+    pa: ਬਮਾਕੋ
+    kk: Бамако
+    yue: 巴馬科
+    yo: Bamako
+    uz: Bamako
+    bs: Bamako
+    mk: Бамако
+    ha_NE: Bamako
+    'no': Bamako
+    yo_BJ: Bamako
+    ps: باماکو
+  comments:
+  type: district

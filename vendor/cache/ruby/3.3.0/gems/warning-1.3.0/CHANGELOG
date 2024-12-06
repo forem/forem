@@ -1,0 +1,63 @@
+=== 1.3.0 (2022-07-14)
+
+* Allow Warning.clear to take a block, and restore current state after block (splattael) (#18, #20)
+
+* Raise ArgumentError if Warning.process is passed non-String as first argument (splattael) (#17, #19)
+
+=== 1.2.1 (2021-10-04)
+
+* Recognize additional void context warnings (kachick) (#13)
+
+=== 1.2.0 (2021-02-16)
+
+* Add support for :void_context as regexp argument to Warning.ignore (jeremyevans)
+
+* Support :category keyword to Warning.warn on Ruby 3.0 (jeremyevans)
+
+* Fix :taint warning handling on Ruby 3.0 (jeremyevans)
+
+* Fix :ambiguous_slash warning handling on Ruby 3.0 (jeremyevans)
+
+=== 1.1.0 (2020-06-12)
+
+* Allow Warning.process to be called with a hash of actions instead of a block (jeremyevans)
+
+* Handle Warning.process blocks that return :default, :backtrace, or :raise specially (jeremyevans)
+
+* Add support for :mismatched_indentations as regexp argument to Warning.ignore (qortex) (#7)
+
+=== 1.0.0 (2020-01-21)
+
+* Add support for :taint as regexp argument to Warning.ignore (jeremyevans)
+
+* Add support for :safe as regexp argument to Warning.ignore (jeremyevans)
+
+* Add Warning.dedup for deduplicating warnings (jeremyevans)
+
+* Add support for :keyword_separation as regexp argument to Warning.ignore (jeremyevans)
+
+=== 0.10.1 (2017-11-16)
+
+* Correctly handle Warning.freeze (jeremyevans)
+
+=== 0.10.0 (2016-11-16)
+
+* Add support for :arg_prefix and :shadow as regexp argument to Warning.ignore (jeremyevans)
+
+* Add support for :useless_operator as regexp argument to Warning.ignore (jeremyevans)
+
+* Add support for :missing_gvar as regexp argument to Warning.ignore (jeremyevans)
+
+* Add support for :ambiguous_slash and :unused_var as regexp arguments to Warning.ignore (jeremyevans)
+
+* Add support for :fixnum and :bignum as regexp arguments to Warning.ignore (jeremyevans)
+
+* Add support for array of symbols as regexp argument to Warning.ignore (jeremyevans)
+
+* Add support for :not_reached as regexp argument to Warning.ignore (jeremyevans)
+
+* Add support for :missing_ivar and :method_redefined as regexp argument to Warning.ignore (jeremyevans)
+
+=== 0.9.0 (2016-08-09)
+
+* Initial Public Release

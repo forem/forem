@@ -1,0 +1,54 @@
+---
+MY:
+  alpha2: MY
+  alpha3: MYS
+  continent: Asia
+  country_code: '60'
+  currency_code: MYR
+  distance_unit: KM
+  gec: MY
+  geo:
+    latitude: 4.210484
+    longitude: 101.975766
+    max_latitude: 7.5191
+    max_longitude: 119.4000001
+    min_latitude: 0.8539281000000001
+    min_longitude: 98.9353999
+    bounds:
+      northeast:
+        lat: 7.5191
+        lng: 119.4000001
+      southwest:
+        lat: 0.8539281000000001
+        lng: 98.9353999
+  international_prefix: '00'
+  ioc: MAS
+  iso_long_name: Malaysia
+  iso_short_name: Malaysia
+  languages_official:
+  - ms
+  - en
+  languages_spoken:
+  - ms
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  - 10
+  national_prefix: '0'
+  nationality: Malaysian
+  number: '458'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: sunday
+  subregion: South-Eastern Asia
+  un_locode: MY
+  unofficial_names:
+  - Malaysia
+  - Malaisie
+  - Malasia
+  - マレーシア
+  - Maleisië
+  world_region: APAC

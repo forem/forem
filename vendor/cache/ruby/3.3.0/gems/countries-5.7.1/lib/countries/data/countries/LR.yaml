@@ -1,0 +1,50 @@
+---
+LR:
+  alpha2: LR
+  alpha3: LBR
+  continent: Africa
+  country_code: '231'
+  currency_code: LRD
+  distance_unit: MI
+  gec: LI
+  geo:
+    latitude: 6.428055
+    longitude: -9.429499000000002
+    max_latitude: 8.551986
+    max_longitude: -7.3692549
+    min_latitude: 4.269699999999999
+    min_longitude: -11.5355999
+    bounds:
+      northeast:
+        lat: 8.551986
+        lng: -7.3692549
+      southwest:
+        lat: 4.269699999999999
+        lng: -11.5355999
+  international_prefix: '00'
+  ioc: LBR
+  iso_long_name: The Republic of Liberia
+  iso_short_name: Liberia
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  - 7
+  - 8
+  national_prefix: '22'
+  nationality: Liberian
+  number: '430'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: LR
+  unofficial_names:
+  - Liberia
+  - リベリア
+  world_region: EMEA

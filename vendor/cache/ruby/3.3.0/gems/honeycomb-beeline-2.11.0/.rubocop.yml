@@ -1,0 +1,78 @@
+require: rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 2.2
+  Exclude:
+    - "examples/**/*"
+    - "vendor/**/*"
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Metrics/BlockLength:
+  Exclude:
+    - honeycomb-beeline.gemspec
+    - spec/**/*.rb
+    - spec/**/*.rake
+
+Metrics/AbcSize:
+  Max: 50
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/MethodLength:
+  Max: 25
+  Exclude:
+    - lib/generators/honeycomb/honeycomb_generator.rb
+
+Metrics/LineLength:
+  Max: 100
+  Exclude:
+    - spec/honeycomb/integrations/active_support_spec.rb
+    - spec/support/event_data_shared_examples.rb
+
+Metrics/ParameterLists:
+  Max: 6
+
+Style/AccessModifierDeclarations:
+  Exclude:
+    - lib/honeycomb/propagation/aws.rb
+    - lib/honeycomb/propagation/w3c.rb
+    - lib/honeycomb/propagation/honeycomb.rb
+    - lib/honeycomb/propagation/default.rb
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: always
+  Exclude:
+    - gemfiles/**/*
+
+Naming/FileName:
+  Exclude:
+    - lib/honeycomb-beeline.rb
+
+Style/SymbolProc:
+  Exclude:
+    - lib/honeycomb/span.rb
+
+Lint/HandleExceptions:
+  Exclude:
+    - lib/honeycomb-beeline.rb
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/IfUnlessModifier:
+  Enabled: false

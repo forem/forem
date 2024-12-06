@@ -1,0 +1,375 @@
+---
+MAP:
+  name: Malampa
+  code: MAP
+  unofficial_names:
+  - Ambrim
+  - Ambrym
+  - Malakula
+  - Malekula
+  - Mallicollo
+  - Paama
+  geo:
+    latitude: -16.4011405
+    longitude: 167.6077865
+    min_latitude: -16.5913427
+    min_longitude: 167.163246
+    max_latitude: -15.8821222
+    max_longitude: 168.368011
+  translations:
+    en: Malampa
+    ar: محافظة مالامبا
+    be: Правінцыя Малампа
+    bg: Малампа
+    bn: মালাম্পা প্রদেশ
+    cs: Malampa
+    da: Malampa Province
+    de: Malampa
+    el: Μαλάμπα
+    es: Malampa
+    fi: Malampa
+    fr: Malampa
+    gl: Malampa
+    gu: માલામ્પા પ્રાંત
+    hi: मलाम्पा प्रांत
+    hr: Malampa
+    id: Provinsi Malampa
+    it: Malampa
+    ja: マランパ州
+    ka: მალამპა
+    kn: ಮಲಂಪಾ ಪ್ರಾಂತ್ಯ
+    ko: 말람파 주
+    lt: Malampa
+    mr: मालाम्पा प्रांत
+    ms: Daerah Malampa
+    nb: Malampa
+    nl: Malampa
+    pl: Malampa
+    pt: Malampa
+    ru: Малампа
+    si: මලම්පා පළාත
+    sv: Malampa
+    ta: மலாம்பா மாகாணம்
+    te: మాలంపా ప్రావిన్స్
+    th: จังหวัดมาแลมปา
+    tr: Malamba Province
+    ur: مالامپا صوبہ
+    vi: Tỉnh Malampa
+    zh: 马朗巴省
+    lv: Malampas province
+    ceb: Malampa Province
+    ccp: "\U0001111F\U00011123\U0001111F\U00011134\U0001111B"
+    uk: Провінція Малампа
+    mk: Малампа
+    'no': Malampa
+    he: מחוז מאלאמפה
+  comments:
+  type: province
+PAM:
+  name: Pénama
+  code: PAM
+  unofficial_names:
+  - Ambae-Maewo
+  - Aoba-Maewo
+  - Omba-Aurora
+  - Omba-Maewo
+  - Pentecost
+  geo:
+    latitude: -15.3795758
+    longitude: 167.9053182
+    min_latitude: -16.0129131
+    min_longitude: 167.6715374
+    max_latitude: -14.89196
+    max_longitude: 168.276847
+  translations:
+    en: Penama
+    ar: مقاطعة بيناما
+    be: Правінцыя Пенама
+    bg: Пенама
+    bn: পেনামা প্রদেশ
+    da: Penama Province
+    de: Penama
+    el: Πενάμα
+    es: Penama
+    fi: Penama
+    fr: Pénama
+    gl: Penama
+    gu: પેનામા પ્રાંત
+    hi: पेनामा प्रांत
+    hr: Penama
+    id: Provinsi Penama
+    it: Penama
+    ja: ペナマ州
+    ka: პენამა
+    kn: ಪೆನಾಮಾ ಪ್ರಾಂತ್ಯ
+    ko: 페나마 주
+    lt: Penama
+    mr: पेनमा प्रांत
+    ms: Wilayah Penama
+    nb: Penama
+    nl: Penama
+    pl: Penama
+    pt: Penama
+    ru: Пенама
+    si: පැනමා පළාත
+    sv: Penama
+    ta: பெனமா மாகாணம்
+    te: పెనామా ప్రావిన్స్
+    th: จังหวัดปีนัง
+    tr: Penama Province
+    ur: پیناما صوبہ
+    vi: Tỉnh Penama
+    lv: Penamas province
+    ceb: Penama Province
+    zh: 彭纳马省
+    ccp: "\U0001111B\U0001112C\U0001111A\U0001111F\U00011134"
+    uk: Провінція Пенама
+    mk: Пенама
+    'no': Penama
+    cs: Penama
+  comments:
+  type: province
+SAM:
+  name: Sanma
+  code: SAM
+  unofficial_names:
+  - Santo-Malo
+  geo:
+    latitude: -15.4840017
+    longitude: 166.9182097
+    min_latitude: -15.7510071
+    min_longitude: 166.5417588
+    max_latitude: -14.643453
+    max_longitude: 167.2973799
+  translations:
+    en: Sanma
+    ar: سانما
+    be: Правінцыя Санма
+    bg: Санма
+    bn: সান্মা প্রদেশ
+    da: Sanma Province
+    de: Sanma
+    el: Σανμά
+    es: Sanma
+    fi: Sanma
+    fr: Sanma
+    gl: Sanma
+    gu: સાનમા પ્રાંત
+    hi: सानमा प्रांत
+    hr: Sanma
+    id: Provinsi Sanma
+    it: Sanma
+    ja: サンマ州
+    ka: სანმა
+    kn: ಸನ್ಮಾ ಪ್ರಾಂತ್ಯ
+    ko: 산마 주
+    lt: Sanma
+    mr: सानमा प्रांत
+    ms: Sanma Province
+    nb: Sanma
+    nl: Sanma
+    pl: Sanma
+    pt: Sanma
+    ru: Санма
+    si: සන්මා පළාත
+    sr: Санма
+    sv: Sanma
+    ta: சன்மா மாகாணம்
+    te: సన్మా ప్రావిన్స్
+    th: จังหวัดแซนา
+    tr: Sanma Province
+    ur: سامنے صوبہ
+    vi: Tỉnh Sanma
+    lv: Sanma province
+    ceb: Sanma Province
+    sr_Latn: Sanma
+    zh: 桑马省
+    ccp: "\U00011125\U0001111A\U00011134\U0001111F"
+    uk: Провінція Санма
+    mk: Санма
+    'no': Sanma
+  comments:
+  type: province
+SEE:
+  name: Shéfa
+  code: SEE
+  unofficial_names:
+  - Sandwich Island
+  - Vaté
+  - Éfaté
+  geo:
+    latitude: -17.6523412
+    longitude: 168.3387066
+    min_latitude: -17.8242832
+    min_longitude: 168.1203521
+    max_latitude: -16.567901
+    max_longitude: 168.6487059
+  translations:
+    en: Shefa
+    ar: محافظة شييفا
+    be: Правінцыя Шэфа
+    bg: Шефа
+    bn: শেফা প্রদেশ
+    ca: Província de Shefa
+    da: Shefa Province
+    de: Shefa
+    el: Σέφα
+    es: Shefa
+    fi: Shefa
+    fr: Shéfa
+    gl: Shefa
+    gu: શેફા પ્રાંત
+    hi: शेफा प्रांत
+    hr: Shefa
+    id: Provinsi Shefa
+    it: Shefa
+    ja: シェファ州
+    ka: შეფა
+    kn: ಷೆಫಾ ಪ್ರಾಂತ್ಯ
+    ko: 셰파 주
+    lt: Šefa
+    mr: शेफा प्रांत
+    ms: Shefa Province
+    nb: Shefa
+    nl: Shefa
+    pl: Shefa
+    pt: Shefa
+    ru: Шефа
+    si: ශේෆා පළාත
+    sv: Shefa
+    ta: ஷெபிஆ மாகாணம்
+    te: షెఫా ప్రావిన్స్
+    th: จังหวัดเชฟา
+    tr: Shefa Province
+    ur: شفا صوبہ
+    vi: Tỉnh Shefa
+    lv: Šefas province
+    ceb: Shefa Province
+    zh: 谢法省
+    ccp: "\U00011125\U0001112C\U0001111C"
+    uk: Провінція Шефа
+    'no': Shefa
+    et: Shefa provints
+    hy: Շեֆա
+    mk: Шефа
+  comments:
+  type: province
+TAE:
+  name: Taféa
+  code: TAE
+  unofficial_names: Taféa
+  geo:
+    latitude: -18.7237827
+    longitude: 169.0645056
+    min_latitude: -20.2504909
+    min_longitude: 168.9860777
+    max_latitude: -18.6213293
+    max_longitude: 170.237299
+  translations:
+    en: Tafea
+    ar: مقاطعة تافيا
+    be: Правінцыя Тафеа
+    bg: Тафеа
+    bn: টাফেয়া প্রদেশ
+    da: Tafea Province
+    de: Tafea
+    el: Ταφέα
+    es: Tafea
+    fi: Tafea
+    fr: Taféa
+    gl: Tafea
+    gu: ટાફિયા પ્રાંત
+    hi: टेफिया प्रांत
+    hr: Tafea
+    id: Provinsi Tafea
+    it: Tafea
+    ja: タフェア州
+    ka: ტაფეა
+    kn: ಟಾಫಿಯ ಪ್ರಾಂತ್ಯ
+    ko: 타페아 주
+    lt: Tafea
+    mr: टफिया प्रांत
+    ms: Tafea Province
+    nb: Tafea
+    nl: Tafea
+    pl: Tafea
+    pt: Tafea
+    ru: Тафеа
+    si: ටෆියා පළාත
+    sv: Tafea
+    ta: டாபியா மாகாணம்
+    te: టాఫియా ప్రావిన్స్
+    th: จังหวัดทาเฟีย
+    tr: Tafea Province
+    uk: Тафеа
+    ur: تافیا صوبہ
+    vi: Tỉnh Tafea
+    lv: Tafea province
+    ceb: Tafea Province
+    zh: 塔菲亚省
+    ccp: "\U00011111\U0001111C\U00011128\U00011120"
+    'no': Tafea
+    ca: Taféa
+    mk: Тафеа
+  comments:
+  type: province
+TOB:
+  name: Torba
+  code: TOB
+  unofficial_names:
+  - Banks-Torres
+  geo:
+    latitude: -14.28096
+    longitude: 167.5160788
+    min_latitude: -14.465699
+    min_longitude: 166.5435819
+    max_latitude: -13.0724554
+    max_longitude: 168.0674347
+  translations:
+    en: Torba
+    ar: محافظة توربا
+    be: Правінцыя Торба
+    bg: Торба
+    bn: তোর্বা প্রদেশ
+    da: Torba Province
+    de: Torba
+    el: Τόρμπα
+    es: Torba
+    et: Torba provints
+    fi: Torba
+    fr: Torba
+    gl: Torba
+    gu: ટોર્બા પ્રાંત
+    hi: टोर्बा प्रांत
+    hr: Torba
+    id: Provinsi Torba
+    it: Torba
+    ja: トルバ州
+    ka: ტორბა
+    kn: ಟೊರ್ಬಾ ಪ್ರಾಂತ್ಯ
+    ko: 토르바 주
+    lt: Torba
+    mr: टोरबा प्रांत
+    ms: Torba Province
+    nb: Torba
+    nl: Torba
+    pl: Torba
+    pt: Torba
+    ru: Торба
+    si: ටොර්බා පළාත
+    sv: Torba
+    ta: டார்ப மாகாணம்
+    te: టోర్బా ప్రావిన్స్
+    th: จังหวัดตอร์บา
+    tr: Torba Province
+    ur: توربا صوبہ
+    vi: Tỉnh Torba
+    lv: Torbas province
+    ceb: Torba Province
+    zh: 托尔巴省
+    ccp: "\U00011111\U00011127\U00011122\U00011134\U0001111D"
+    uk: Провінція Торба
+    'no': Torba
+    mk: Торба (покраина)
+  comments:
+  type: province

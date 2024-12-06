@@ -1,0 +1,11 @@
+*.gem
+.bundle
+Gemfile.lock
+gemfiles/*.lock
+pkg/*
+tmp/*
+coverage/*
+log*/*
+.rbx/*
+.rspec
+*.swp

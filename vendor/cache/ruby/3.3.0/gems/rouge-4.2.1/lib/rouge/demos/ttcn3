@@ -1,0 +1,6 @@
+module DNSTester {
+  type integer Identification( 0..65535 ); // 16-bit integer
+  type enumerated MessageKind {e_Question, e_Answer};
+  type charstring Question;
+  type charstring Answer;
+}

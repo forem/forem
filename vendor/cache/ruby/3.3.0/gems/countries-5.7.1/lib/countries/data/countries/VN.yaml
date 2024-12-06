@@ -1,0 +1,58 @@
+---
+VN:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}}
+    {{region}}
+    {{country}}
+  alpha2: VN
+  alpha3: VNM
+  continent: Asia
+  country_code: '84'
+  currency_code: VND
+  distance_unit: KM
+  gec: VM
+  geo:
+    latitude: 14.058324
+    longitude: 108.277199
+    max_latitude: 23.3926504
+    max_longitude: 109.6765
+    min_latitude: 8.1952001
+    min_longitude: 102.1439156
+    bounds:
+      northeast:
+        lat: 23.3926504
+        lng: 109.6765
+      southwest:
+        lat: 8.1952001
+        lng: 102.1439156
+  international_prefix: '00'
+  ioc: VIE
+  iso_long_name: The Socialist Republic of Viet Nam
+  iso_short_name: Viet Nam
+  languages_official:
+  - vi
+  languages_spoken:
+  - vi
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  - 9
+  - 10
+  national_prefix: '0'
+  nationality: Vietnamese
+  number: '704'
+  postal_code: true
+  postal_code_format: "\\d{5}\\d?"
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: VN
+  unofficial_names:
+  - Vietnam
+  - ベトナム
+  - Viet Nam
+  world_region: APAC

@@ -1,0 +1,53 @@
+<% blazer_title @dashboard.name %>
+
+<div class="topbar">
+  <div class="container">
+    <div class="row" style="padding-top: 13px;">
+      <div class="col-sm-9">
+        <%= render partial: "blazer/nav" %>
+        <h3 style="line-height: 34px; display: inline; margin-left: 5px;">
+          <%= @dashboard.name %>
+        </h3>
+      </div>
+      <div class="col-sm-3 text-right">
+        <%= link_to "Edit", edit_dashboard_path(@dashboard, params: variable_params(@dashboard)), class: "btn btn-info" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-bottom: 60px;"></div>
+
+<% if @data_sources.any? { |ds| ds.cache_mode != "off" } %>
+  <p class="text-muted" style="float: right;">
+    Some queries may be cached
+    <%= link_to "Refresh", refresh_dashboard_path(@dashboard, params: variable_params(@dashboard)), method: :post %>
+  </p>
+<% end %>
+
+<% if @bind_vars.any? %>
+  <%= render partial: "blazer/variables", locals: {action: dashboard_path(@dashboard)} %>
+<% else %>
+  <div style="padding-bottom: 15px;"></div>
+<% end %>
+
+<% @queries.each_with_index do |query, i| %>
+  <div class="chart-container">
+    <h4><%= link_to query.friendly_name, query_path(query, params: variable_params(query)), target: "_blank" %></h4>
+    <div id="chart-<%= i %>" class="chart">
+      <p class="text-muted">Loading...</p>
+    </div>
+  </div>
+  <script>
+    <% data = {statement: query.statement, query_id: query.id, data_source: query.data_source, variables: variable_params(query), only_chart: true} %>
+    <% data.merge!(cohort_period: params[:cohort_period]) if params[:cohort_period] %>
+    <%= blazer_js_var "data", data %>
+
+    runQuery(data, function (data) {
+      $("#chart-<%= i %>").html(data)
+      $("#chart-<%= i %> table").stupidtable(stupidtableCustomSettings)
+    }, function (message) {
+      $("#chart-<%= i %>").addClass("query-error").html(message)
+    });
+  </script>
+<% end %>

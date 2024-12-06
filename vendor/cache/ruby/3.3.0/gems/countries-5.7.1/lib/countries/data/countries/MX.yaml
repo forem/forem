@@ -1,0 +1,64 @@
+---
+MX:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}} {{region_short}}
+    {{country}}
+  alpha2: MX
+  alpha3: MEX
+  continent: North America
+  country_code: '52'
+  currency_code: MXN
+  distance_unit: KM
+  g20_member: true
+  gec: MX
+  geo:
+    latitude: 23.634501
+    longitude: -102.552784
+    max_latitude: 32.7186534
+    max_longitude: -86.5887
+    min_latitude: 14.3895
+    min_longitude: -118.6523001
+    bounds:
+      northeast:
+        lat: 32.7186534
+        lng: -86.5887
+      southwest:
+        lat: 14.3895
+        lng: -118.6523001
+  international_prefix: '00'
+  ioc: MEX
+  iso_long_name: The United Mexican States
+  iso_short_name: Mexico
+  languages_official:
+  - es
+  languages_spoken:
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  - 10
+  national_prefix: '01'
+  nationality: Mexican
+  number: '484'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Americas
+  start_of_week: monday
+  subregion: Central America
+  un_locode: MX
+  unofficial_names:
+  - Mexico
+  - Mexiko
+  - Mexique
+  - México
+  - メキシコ
+  vat_rates:
+    standard: 16
+    reduced: []
+    super_reduced:
+    parking:
+  world_region: AMER

@@ -1,0 +1,59 @@
+---
+JO:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{country}}
+  alpha2: JO
+  alpha3: JOR
+  continent: Asia
+  country_code: '962'
+  currency_code: JOD
+  distance_unit: KM
+  gec: JO
+  geo:
+    latitude: 30.585164
+    longitude: 36.238414
+    max_latitude: 33.374735
+    max_longitude: 39.301154
+    min_latitude: 29.1850361
+    min_longitude: 34.9441001
+    bounds:
+      northeast:
+        lat: 33.374735
+        lng: 39.301154
+      southwest:
+        lat: 29.1850361
+        lng: 34.9441001
+  international_prefix: '00'
+  ioc: JOR
+  iso_long_name: The Hashemite Kingdom of Jordan
+  iso_short_name: Jordan
+  languages_official:
+  - ar
+  languages_spoken:
+  - ar
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Jordanian
+  number: '400'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: sunday
+  subregion: Western Asia
+  un_locode: JO
+  unofficial_names:
+  - Jordan
+  - الأردن
+  - Jordanien
+  - Jordanie
+  - Jordania
+  - ヨルダン
+  - Jordanië
+  world_region: EMEA

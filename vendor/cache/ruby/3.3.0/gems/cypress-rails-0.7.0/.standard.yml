@@ -1,0 +1,5 @@
+ruby_version: 2.5
+ignore:
+  - 'vendor/bundle/**/*'
+  - 'example/node_modules/**/*'
+  - 'example/vendor/bundle/**/*'

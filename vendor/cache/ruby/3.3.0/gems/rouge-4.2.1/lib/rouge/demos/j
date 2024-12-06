@@ -1,0 +1,12 @@
+NB. Procedural programming
+fizzbuzz=: monad define
+  for_i. >:i.y do.
+    if.     0 = 15 | i do. echo'FizzBuzz'
+    elseif. 0 =  3 | i do. echo'Fizz'
+    elseif. 0 =  5 | i do. echo'Buzz'
+    else.                  echo i
+    end.
+  end.
+)
+NB. Loopless programming
+fizzbuzz=: echo@(, ::] ('Fizz' ; 'Buzz') ;@#~ 0 = 3 5&|)@>:@i.

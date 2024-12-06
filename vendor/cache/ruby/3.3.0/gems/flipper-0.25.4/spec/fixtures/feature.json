@@ -1,0 +1,31 @@
+{
+  "key": "my_feature",
+  "state": "on",
+  "gates": [
+    {
+      "key": "boolean",
+      "name": "boolean",
+      "value": "true"
+    },
+    {
+      "key": "groups",
+      "name": "group",
+      "value": []
+    },
+    {
+      "key": "actors",
+      "name": "actor",
+      "value": []
+    },
+    {
+      "key": "percentage_of_actors",
+      "name": "percentage_of_actors",
+      "value": null
+    },
+    {
+      "key": "percentage_of_time",
+      "name": "percentage_of_time",
+      "value": null
+    }
+  ]
+}

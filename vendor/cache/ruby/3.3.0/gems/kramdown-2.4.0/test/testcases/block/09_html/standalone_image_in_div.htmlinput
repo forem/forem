@@ -1,0 +1,7 @@
+<div class="example-1">
+  <img src="src.png" alt="inside" />
+</div>
+
+<div class="example-2">
+  <a href="website.html">text</a>
+</div>

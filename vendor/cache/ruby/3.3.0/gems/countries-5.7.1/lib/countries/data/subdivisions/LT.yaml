@@ -1,0 +1,3027 @@
+---
+'01':
+  name: Akmenės rajono savivaldybė
+  code: '01'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Акмянскі раён
+    ca: Districte municipal d’Akmenė
+    de: Rajongemeinde Akmenė
+    en: Akmenė
+    et: Akmenė rajoon
+    fa: شهر بخش اکمنی
+    fi: Akmenėn kunnallispiiri
+    fr: municipalité du district d’Akmenė
+    he: אקמני (מחוז משנה)
+    it: Comune distrettuale di Akmenė
+    ja: アクメネ地区自治体
+    ka: აკმიანის რაიონი
+    lt: Akmenės rajono savivaldybė
+    lv: Akmenes rajona pašvaldība
+    nl: Akmenė
+    pl: Rejon okmiański
+    ru: Акмянский район
+    sv: Akmenės rajono savivaldybė
+    uk: Акмянський район
+    ur: اکمینے ضلع بلدیہ
+    zh: 阿克梅內地區
+    ceb: Akmenės Rajonas
+    ccp: "\U00011103\U00011107\U00011134\U0001111F\U0001112C\U0001111A\U0001112C"
+    cs: okres Akmenė
+    ko: 아크메네구
+  comments:
+  type: district_municipality
+'02':
+  name: Alytaus miesto savivaldybė
+  code: '02'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Stadtgemeinde Alytus
+    el: Δήμος Πόλης Αλύτους
+    en: Alytus Municipality
+    it: Comune urbano di Alytus
+    ja: アリートゥス都市自治体
+    lt: Alytaus miesto savivaldybė
+    nl: Alytus City Municipality
+    pl: Olita (rejon miejski)
+    ccp: "\U00011103\U00011123\U00011128\U00011120\U00011111\U0001110C\U00011134 \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    be: Алітускае гарадское самакіраванне
+    ceb: Alytus
+    cy: Alytus
+    fr: Alytus²
+    ru: Алитусское городское самоуправление
+    th: เทศบาลนครอาลีตุส
+  comments:
+  type: city_municipality
+'03':
+  name: Alytaus rajono savivaldybė
+  code: '03'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Алітускі раён
+    ca: Districte municipal d’Alytus
+    de: Rajongemeinde Alytus
+    el: Δήμος διαμερίσματος Αλύτους
+    en: Alytus
+    es: Alytus
+    fa: شهرداری بخش الیتاس
+    fi: Alytusin kunnallispiiri
+    fr: Alytus
+    he: אליטא (מחוז משנה)
+    it: Alytus
+    ka: ალიტუსის რაიონი
+    lt: Alytaus rajono savivaldybė
+    lv: Alītas rajona pašvaldība
+    nb: Alytus landkommune
+    nl: Alytus
+    pl: Rejon olicki
+    ru: Алитусский район
+    sv: Alytaus rajono savivaldybė
+    uk: Алітуський район
+    ur: الیتوس ضلع بلدیہ
+    ceb: Alytaus rajonas
+    zh: 阿利圖斯地區
+    ja: アリートゥス郡
+    ccp: "\U00011103\U00011123\U00011128\U00011120\U00011111\U0001110C\U00011134"
+    et: Alytuse rajoon
+    'no': Alytus landkommune
+    cs: okres Alytus
+    ko: 알리투스구
+    th: เทศบาลเขตอาลีตุส
+  comments:
+  type: district_municipality
+'04':
+  name: Anykščių rajono savivaldybė
+  code: '04'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    az: Anikşçyay rayonu
+    be: Анікшчайскі раён
+    ca: Districte municipal d’Anykščiai
+    da: Anykščiai
+    de: Rajongemeinde Anykščiai
+    el: Δήμος Διαμερίσματος Ανικστσιάι
+    en: Anykščiai
+    fi: Anykščiain kunnallispiiri
+    fr: municipalité du district d’Anykščiai
+    he: אניקצ׳ה
+    it: Comune distrettuale di Anykščiai
+    ja: アニークシュチェイ地区自治体
+    ka: ანიკშჩიაის რაიონი
+    lt: Anykščių rajono savivaldybė
+    lv: Anīkšču rajona pašvaldība
+    nl: Anykščiai
+    pl: Rejon oniksztyński
+    ru: Аникщяйский район
+    uk: Анікщяйський район
+    ur: انیکشئیی ضلع بلدیہ
+    zh: 阿尼克什奇艾地區
+    ccp: "\U00011103\U00011133\U00011120\U0001111A\U00011128\U00011107\U00011134\U00011125\U00011128\U00011103\U0001112D"
+    hy: Անիկշչայի շրջան
+    es: Distrito de Anykščiai
+    ceb: Anykščiai (munisipyo sa Lyetuwanya)
+    cs: okres Anykščiai
+    et: Anykščiai rajoon
+    ko: 아닉슈차이구
+  comments:
+  type: district_municipality
+'05':
+  name: Birštono savivaldybė
+  code: '05'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Municipi de Birštonas
+    cs: okres Birštonas
+    de: Gemeinde Birštonas
+    el: Δήμος Μπιρστόνας
+    en: Birštonas
+    fi: Birštonasin kunta
+    fr: Municipalité de Birštonas
+    he: בירשטונאס (מחוז משנה)
+    it: Comune di Birštonas
+    ja: ビルシュトナス郡
+    lt: Birštono savivaldybė
+    lv: Birštonas pašvaldība
+    nl: Birštonas
+    pl: Rejon birsztański
+    ru: Бирштонское самоуправление
+    ur: بارشتوناس بلدیہ
+    zh: 比爾什托納斯區
+    ccp: "\U0001111D\U00011128\U00011122\U00011134\U0001110C\U00011133\U00011111\U00011127\U0001111A\U0001110C\U00011134"
+    et: Birštonase omavalitsus
+    be: Бірштанаскае самакіраванне
+    ceb: Birštonas (munisipyo)
+    ko: 비르슈토나스시
+    th: เทศบาลบีร์ชตอนัส
+    uk: Бірштонаське самоврядування
+  comments:
+  type: municipality
+'06':
+  name: Biržų rajono savivaldybė
+  code: '06'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Біржаўскі раён
+    ca: Districte municipal de Biržai
+    de: Rajongemeinde Biržai
+    el: Δήμος Διαμερίσματος Μπίρζαϊ
+    en: Biržai
+    et: Biržai rajoon
+    fi: Biržain kunnallispiiri
+    fr: municipalité du district de Biržai
+    he: בירז׳
+    it: Comune distrettuale di Biržai
+    ja: ビルジャイ地区自治体
+    ka: ბირჟაის რაიონი
+    lt: Biržų rajono savivaldybė
+    lv: Biržu rajona pašvaldība
+    nl: Biržai
+    pl: Rejon birżański
+    ru: Биржайский район
+    sv: Biržų rajono savivaldybė
+    uk: Біржайський район
+    ur: برژائی ضلع بلدیہ
+    ceb: Biržai (munisipyo sa Litwanya)
+    zh: 比爾扎伊地區
+    ccp: "\U0001111D\U00011128\U00011122\U00011134\U0001110E\U0001112D"
+    es: Distrito de Biržai
+    da: Biržai Distriktkommune
+    hu: Biržai község
+    cs: okres Biržai
+    fa: شهرداری ناحیه بیرژای
+    ko: 비르자이구
+  comments:
+  type: district_municipality
+'07':
+  name: Druskininkų savivaldybė
+  code: '07'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Друскенінкайскае самакіраванне
+    ca: Municipi de Druskininkai
+    de: Gemeinde Druskininkai
+    el: Δήμος Ντρούσκινινκαϊ
+    en: Druskininkai
+    et: Druskininkai omavalitsus
+    fi: Druskininkain kunta
+    fr: Municipalité de Druskininkai
+    he: דרוסקינינקאי (מחוז משנה)
+    it: Comune di Druskininkai
+    ja: ドルスキニンカイ基礎自治体
+    lt: Druskininkų savivaldybė
+    lv: Druskininku pašvaldība
+    nl: Druskininkai
+    pl: Rejon druskienicki
+    ru: Друскининкайское самоуправление
+    ur: دروسکیکینکائی بلدیہ
+    zh: 德魯斯基寧凱區
+    ccp: "\U00011113\U00011133\U00011122\U0001112A\U0001110C\U00011134\U00011107\U00011128\U0001111A\U00011128\U0001111A\U00011134\U00011107\U0001112D"
+    cs: okres Druskininkai
+    ko: 드루스키닝카이시
+    th: เทศบาลดรุสกินิงเก็ย
+    uk: Друскінінкайське самоврядування
+  comments:
+  type: municipality
+'08':
+  name: Elektrėnų savivaldybė
+  code: '08'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Municipi d’Elektrėnai
+    de: Gemeinde Elektrėnai
+    el: Δήμος Ελεκτρέναϊ
+    en: Elektrėnai
+    fi: Elektrėnain kunta
+    fr: Municipalité d’Elektrėnai
+    he: אלקטריני (מחוז משנה)
+    it: Comune di Elektrėnai
+    ja: エレクトレナイ基礎自治体
+    lt: Elektrėnų savivaldybė
+    lv: Elektrēnu pašvaldība
+    nb: Elektrėnai kommune
+    nl: Elektrėnai
+    pl: Rejon elektreński
+    ru: Электренское самоуправление
+    sv: Elektrėnų savivaldybė
+    uk: Електренайське самоврядування
+    ur: الیکترینئی بلدیہ
+    ceb: Elektrėnai (munisipyo)
+    zh: 埃萊克特倫艾區
+    ccp: "\U00011103\U00011128\U00011123\U0001112C\U00011107\U00011134\U00011111\U00011133\U00011122\U0001112C\U0001111A\U0001112D"
+    be: Эляктрэнайскае самакіраванне
+    'no': Elektrėnai kommune
+    cs: okres Elektrėnai
+    et: Elektrėnai omavalitsus
+    ko: 엘렉트레나이시
+  comments:
+  type: municipality
+'09':
+  name: Ignalinos rajono savivaldybė
+  code: '09'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Ігналінскі раён
+    ca: Districte municipal d’Ignalina
+    de: Rajongemeinde Ignalina
+    el: Δήμος Διαμερίσματος Ιγκναλίνα
+    en: Ignalina
+    et: Ignalina rajoon
+    fi: Ignalinan kunnallispiiri
+    fr: municipalité du district d’Ignalina
+    he: איגנלינה
+    it: Comune distrettuale di Ignalina
+    ja: イグナリナ地区自治体
+    ka: იგნალინის რაიონი
+    lt: Ignalinos rajono savivaldybė
+    lv: Ignalinas rajona pašvaldība
+    nl: Ignalina
+    pl: Rejon ignaliński
+    ru: Игналинский район
+    sv: Ignalina distrikt
+    uk: Ігналінський район
+    ur: اگنالینا ضلع بلدیہ
+    zh: 伊格納利納地區
+    ccp: "\U00011103\U00011128\U00011107\U00011134\U0001111A\U00011123\U00011128\U0001111A"
+    es: Distrito de Ignalina
+    ceb: Ignalina (munisipyo)
+    cs: okres Ignalina
+    ko: 이그날리나구
+  comments:
+  type: district_municipality
+'10':
+  name: Jonavos rajono savivaldybė
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Ёнаўскі раён
+    ca: Districte municipal de Jonava
+    cs: okres Jonava
+    de: Rajongemeinde Jonava
+    en: Jonava
+    es: Distrito Municipio de Jonava
+    et: Jonava rajoon
+    fi: Jonavan kunnallispiiri
+    fr: municipalité du district de Jonava
+    he: יאנובה
+    it: comune distrettuale di Jonava
+    ja: ヨナヴァ郡
+    ka: იონავის რაიონი
+    lt: Jonavos rajono savivaldybė
+    lv: Jonavas rajona pašvaldība
+    nl: Jonava
+    pl: Rejon janowski
+    ru: Ионавский район
+    sv: Jonavos rajono savivaldybė
+    uk: Йонавський район
+    ur: یوناوا ضلع بلدیہ
+    ceb: Jonava
+    zh: 約納瓦地區
+    ccp: "\U0001110E\U00011127\U0001111A\U0001111E"
+    hu: Jonava község
+    ko: 요나바구
+    th: เทศบาลเขตยอนาวา
+  comments:
+  type: district_municipality
+'11':
+  name: Joniškio rajono savivaldybė
+  code: '11'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Joniškis
+    de: Rajongemeinde Joniškis
+    en: Joniškis
+    et: Joniškise rajoon
+    fi: Joniškisin kunnallispiiri
+    fr: municipalité du district de Joniškis
+    he: ינישוק (מחוז משנה)
+    it: Comune distrettuale di Joniškis
+    ja: ヨニシュキス地区自治体
+    ka: იონიშკის რაიონი
+    lt: Joniškio rajono savivaldybė
+    lv: Jonišķu rajona pašvaldība
+    nl: Joniškis
+    pl: Rejon janiski
+    ru: Ионишкский район
+    uk: Йонішкіський район
+    ur: یونیشکس ضلع بلدیہ
+    zh: 約什尼基斯地區
+    ccp: "\U0001110E\U00011127\U0001111A\U00011128\U0001110C\U00011134\U00011107\U00011128\U0001110C\U00011134"
+    be: Ёнішкіскі раён
+    ceb: Joniškis (munisipyo)
+    cs: okres Joniškis
+    ko: 요니슈키스구
+  comments:
+  type: district_municipality
+'12':
+  name: Jurbarko rajono savivaldybė
+  code: '12'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Jurbarkas
+    de: Rajongemeinde Jurbarkas
+    en: Jurbarkas
+    es: Distrito de Jurbarkas
+    et: Jurbarkase rajoon
+    fi: Jurbarkasin kunnallispiiri
+    fr: municipalité du district de Jurbarkas
+    he: יורבורג (מחוז משנה)
+    it: Comune distrettuale di Jurbarkas
+    ja: ユルバルカス地区自治体
+    ka: იურბარკასის რაიონი
+    lt: Jurbarko rajono savivaldybė
+    lv: Jurbarkas rajona pašvaldība
+    nl: Jurbarkas
+    pl: Rejon jurborski
+    ru: Юрбаркский район
+    sv: Jurbarko rajono savivaldybė
+    ur: یوربارکاس ضلع بلدیہ
+    ceb: Jurbarkas (munisipyo)
+    zh: 尤爾巴爾卡斯地區
+    ccp: "\U0001110E\U00011122\U00011134\U0001111D\U00011122\U00011134\U00011107\U0001110C\U00011134"
+    be: Юрбаркаскі раён
+    cs: okres Jurbarkas
+    ko: 유르바르카스구
+    uk: Юрбаркський район
+  comments:
+  type: district_municipality
+'13':
+  name: Kaišiadorių rajono savivaldybė
+  code: '13'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Kaišiadorys
+    de: Rajongemeinde Kaišiadorys
+    en: Kaišiadorys
+    es: Distrito Municipio de Kaišiadorys
+    fi: Kaišiadorysin kunnallispiiri
+    fr: municipalité du district de Kaišiadorys
+    he: קישיאדוריס (מחוז משנה)
+    it: Comune distrettuale di Kaišiadorys
+    ja: カイシェドリース地区自治体
+    ka: კაიშიადორისის რაიონი
+    lt: Kaišiadorių rajono savivaldybė
+    lv: Kaišadores rajona pašvaldība
+    nl: Kaišiadorys
+    pl: Rejon koszedarski
+    ru: Кайшядорский район
+    uk: Кайшядоріський район
+    ur: کایشیادوریس ضلع بلدیہ
+    zh: 凱希亞多里斯地區
+    ccp: "\U00011107\U0001112D\U00011125\U00011128\U00011120\U00011113\U00011127\U00011122\U00011128\U0001110C\U00011134"
+    et: Kaišiadorysi rajoon
+    be: Кайшадорыскі раён
+    ceb: Kaišiadorys
+    cs: okres Kaišiadorys
+    ko: 카이샤도리스구
+    sv: Kaišiadorys
+    th: เทศบาลเขตเก็ยแชดอรีส
+  comments:
+  type: district_municipality
+'14':
+  name: Kalvarijos savivaldybė
+  code: '14'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Кальварыйскае самакіраванне
+    ca: Municipi de Kalvarija
+    de: Kalvarija
+    el: Δήμος Καλβαρίγια
+    en: Kalvarija
+    et: Kalvarija omavalitsus
+    fi: Kalvarijan kunta
+    fr: Municipalité de Kalvarija
+    he: קלווריה (מחוז משנה)
+    it: comune di Kalvarija
+    ja: カルヴァリヤ基礎自治体
+    lt: Kalvarijos savivaldybė
+    lv: Kalvarijas pašvaldība
+    nl: Kalvarija
+    pl: Rejon kalwaryjski
+    ru: Калварийское самоуправление
+    sv: Kalvarijos savivaldybė
+    ur: کالواریا بلدیہ
+    ceb: Kalvarija Municipality
+    zh: 卡爾瓦里亞區
+    ccp: "\U00011107\U00011123\U00011134\U0001111E\U00011122\U00011128\U0001110E"
+    cs: okres Kalvarija
+    ko: 칼바리야시
+    uk: Калварійське самоврядування
+  comments:
+  type: municipality
+'15':
+  name: Kauno miesto savivaldybė
+  code: '15'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Каўнаскае гарадское самакіраванне
+    cs: Kaunas
+    de: Stadtgemeinde Kaunas
+    en: Kauno Municipality
+    es: Ciudad Municipio de Kaunas
+    it: Comune urbano di Kaunas
+    ja: カウナス都市自治体
+    lt: Kauno miesto savivaldybė
+    nl: Kaunas
+    pl: Kowno
+    ru: Каунасское городское самоуправление
+    el: Δήμος Κάουνας
+    ccp: "\U00011107\U0001112F\U0001111A\U0001112E \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    uk: Каунаський міський муніципалітет
+    az: Kaunas şəhər bələdiyyəsi
+    ceb: Kaunas
+    cy: Kaunas
+    fr: Kaunas
+    hy: Կաունասի քաղաքային ինքնակառավարում
+    th: เทศบาลนครเกานัส
+  comments:
+  type: city_municipality
+'16':
+  name: Kauno rajono savivaldybė
+  code: '16'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Каўнаскі раён
+    ca: Districte municipal de Kaunas
+    de: Rajongemeinde Kaunas
+    en: Kaunas
+    es: Distrito Municipio de Kaunas
+    et: Kaunase rajoon
+    fi: Kaunasin kunnallispiiri
+    fr: municipalité du district de Kaunas
+    he: קובנה
+    it: Comune distrettuale di Kaunas
+    ja: カウナス地区自治体
+    ka: კაუნასის რაიონი
+    lt: Kauno rajono savivaldybė
+    lv: Kauņas rajona pašvaldība
+    nl: Kaunas²
+    pl: Rejon kowieński
+    ru: Каунасский район
+    sv: Kauno rajono savivaldybė
+    uk: Каунаський район
+    ur: کاوناس ضلع بلدیہ
+    ceb: Kauno rajonas
+    zh: 考那斯地區
+    ccp: "\U00011107\U0001112F\U0001111A\U0001110C\U00011134"
+    az: Kaunas rayonu
+    cs: okres Kaunas
+    da: Kauno rajono savivaldybė
+    ko: 카우나스구
+    th: เทศบาลเขตเกานัส
+  comments:
+  type: district_municipality
+'17':
+  name: Kazlų Rūdos savivaldybė
+  code: '17'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Municipi de Kazlų Rūda
+    de: Kazlų Rūda
+    el: Δήμος Κάζλου Ρούντα
+    en: Kazlų Rūda
+    et: Kazlų Rūda omavalitsus
+    fi: Kazlų Rūdan kunta
+    fr: Municipalité de Kazlų Rūda
+    he: קזלו רודה (מחוז משנה)
+    it: Comune di Kazlų Rūda
+    ja: カズルー・ルーダ基礎自治体
+    lt: Kazlų Rūdos savivaldybė
+    lv: Kazlu Rūdas pašvaldība
+    nl: Kazlų Rūda
+    pl: Rejon kozłoworudzki
+    ru: Казлу-Рудское самоуправление
+    sv: Kazlų Rūdos savivaldybė
+    ur: کازلو رودا بلدیہ
+    ceb: Kazlų Rūda Municipality
+    zh: 卡茲盧魯達區
+    ccp: "\U00011107\U0001110C\U00011134\U00011123\U0001112A \U00011122\U0001112A\U00011113"
+    be: Казлурудскае самакіраванне
+    cs: okres Kazlų Rūda
+    ko: 카즐루루다시
+    uk: Казлу-Рудське самоврядування
+  comments:
+  type: municipality
+'18':
+  name: Kėdainių rajono savivaldybė
+  code: '18'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Кейданскі раён
+    ca: Districte municipal de Kėdainiai
+    de: Rajongemeinde Kėdainiai
+    en: Kėdainiai
+    es: Distrito municipal de Kėdainiai
+    et: Kėdainiai rajoon
+    fi: Kėdainiain kunnallispiiri
+    fr: municipalité du district de Kėdainiai
+    he: קדאייני (מחוז משנה)
+    it: Comune distrettuale di Kėdainiai
+    ja: ケダイネイ地区自治体
+    ka: კედაინიაის რაიონი
+    lt: Kėdainių rajono savivaldybė
+    lv: Ķēdaiņu rajona pašvaldība
+    nl: Kėdainiai
+    pl: Rejon kiejdański
+    ru: Кедайнский район
+    sv: Kėdainių rajono savivaldybė
+    uk: Кедайняйський район
+    ur: کئیداینیائی ضلع بلدیہ
+    ceb: Kėdainiai
+    zh: 凱代尼艾地區
+    ccp: "\U00011107\U0001112C\U00011113\U0001112D\U0001111A\U00011128\U00011103\U0001112D"
+    cs: okres Kėdainiai
+    ko: 케다이냐이구
+    th: เทศบาลเขตเกอดายเนย์
+  comments:
+  type: district_municipality
+'19':
+  name: Kelmės rajono savivaldybė
+  code: '19'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Кяльмскі раён
+    ca: Districte municipal de Kelmė
+    de: Rajongemeinde Kelmė
+    en: Kelmė
+    et: Kelmė rajoon
+    fi: Kelmėn kunnallispiiri
+    fr: municipalité du district de Kelmė
+    he: קלם (מחוז משנה)
+    it: Comune distrettuale di Kelmė
+    ja: ケルメ地区自治体
+    ka: კელმის რაიონი
+    lt: Kelmės rajono savivaldybė
+    lv: Ķelmes rajona pašvaldība
+    nl: Kelmė
+    pl: Rejon kielmski
+    ru: Кельмеский район
+    uk: Кельмеський район
+    ur: کیلمے ضلع بلدیہ
+    zh: 凱爾梅地區
+    ccp: "\U00011107\U0001112C\U00011123\U00011134\U0001111F\U0001112C"
+    ceb: Kelmė (munisipyo)
+    cs: okres Kelmė
+    ko: 켈메구
+  comments:
+  type: district_municipality
+'20':
+  name: Klaipėdos miesto savivaldybė
+  code: '20'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Stadtgemeinde Klaipėda
+    en: Klaipėdos Municipality
+    ja: クライペダ都市自治体
+    lt: Klaipėdos miesto savivaldybė
+    ccp: "\U00011107\U00011133\U00011123\U0001112D\U0001111B\U00011128\U00011113\U0001112E\U0001110C\U00011134
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    be: Клайпедскае гарадское самакіраванне
+    ceb: Klaipėda (kapital sa lalawigan)
+    ru: Клайпедское городское самоуправление
+    sv: Klaipėda (länshuvudort)
+  comments:
+  type: city_municipality
+'21':
+  name: Klaipėdos rajono savivaldybė
+  code: '21'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Клайпедскі раён
+    ca: Districte municipal de Klaipėda
+    de: Rajongemeinde Klaipėda
+    en: Klaipėda
+    es: Distrito de Klaipėda
+    et: Klaipėda rajoon
+    fi: Klaipėdan kunnallispiiri
+    fr: municipalité du district de Klaipėda
+    he: קלייפדה
+    it: Comune distrettuale di Klaipėda
+    ja: クライペダ地区自治体
+    ka: კლაიპედის რაიონი
+    lt: Klaipėdos rajono savivaldybė
+    lv: Klaipēdas rajona pašvaldība
+    nb: Klaipeda landkommune
+    nl: Klaipėda
+    pl: Rejon kłajpedzki
+    ru: Клайпедский район
+    sv: Klaipėdos rajonas
+    uk: Клайпедський район
+    ur: کلائپیدا ضلع بلدیہ
+    ceb: Klaipėdos rajonas
+    zh: 克萊佩達地區
+    ccp: "\U00011107\U00011133\U00011123\U0001112D\U0001111B\U0001112C\U00011113"
+    'no': Klaipeda landkommune
+    cs: okres Klaipėda
+    ko: 클라이페다구
+  comments:
+  type: district_municipality
+'22':
+  name: Kretingos rajono savivaldybė
+  code: '22'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Крацінгскі раён
+    ca: Districte municipal de Kretinga
+    de: Rajongemeinde Kretinga
+    en: Kretinga
+    es: Distrito de Kretinga
+    et: Kretinga rajoon
+    fi: Kretingan kunnallispiiri
+    fr: municipalité du district de Kretinga
+    he: קרטינגה
+    it: Comune distrettuale di Kretinga
+    ja: クレチンガ
+    ka: კრეტინგის რაიონი
+    lt: Kretingos rajono savivaldybė
+    lv: Kretingas rajona pašvaldība
+    nb: Kretinga kommune
+    nl: Kretinga
+    pl: Rejon kretyngański
+    ru: Кретингский район
+    uk: Кретинзький район
+    ur: کریتینگا ضلع بلدیہ
+    ceb: Kretinga
+    zh: 克雷廷加地區
+    ccp: "\U00011107\U00011133\U00011122\U0001112C\U00011111\U00011128\U00011101\U00011109"
+    'no': Kretinga kommune
+    cs: okres Kretinga
+    ko: 크레팅가구
+  comments:
+  type: district_municipality
+'23':
+  name: Kupiškio rajono savivaldybė
+  code: '23'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Купішкскі раён
+    ca: Districte municipal de Kupiškis
+    de: Rajongemeinde Kupiškis
+    el: Δήμος Διαμερίσματος Κουπίσκις
+    en: Kupiškis
+    et: Kupiškise rajoon
+    fi: Kupiškisin kunnallispiiri
+    fr: municipalité du district de Kupiškis
+    he: קופישקיס (מחוז משנה)
+    it: Comune distrettuale di Kupiškis
+    ja: クピシュキス地区自治体
+    ka: კუპიშკისის რაიონი
+    lt: Kupiškio rajono savivaldybė
+    lv: Kupišķu rajona pašvaldība
+    nl: Kupiškis
+    pl: Rejon kupiszecki
+    ru: Купишкский район
+    uk: Купишкіський район
+    ur: کوپشکس ضلع بلدیہ
+    zh: 庫皮什基斯地區
+    ccp: "\U00011107\U0001112A\U0001111B\U00011128\U0001110C\U00011134\U00011107\U00011128\U0001110C\U00011134"
+    es: Distrito de Kupiškis
+    ceb: Kupiškis (munisipyo sa Lyetuwanya)
+    cs: okres Kupiškis
+    hy: Կուպիշի շրջան
+    ko: 쿠피슈키스구
+  comments:
+  type: district_municipality
+'24':
+  name: Lazdijų rajono savivaldybė
+  code: '24'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Lazdijai
+    de: Rajongemeinde Lazdijai
+    el: Δήμος Διαμερίσματος Λαζντίγιαι
+    en: Lazdijai
+    fi: Lazdijain kunnallispiiri
+    fr: municipalité du district de Lazdijai
+    he: לזדיי (מחוז משנה)
+    it: Comune distrettuale di Lazdijai
+    ja: ラズディヤイ地区自治体
+    ka: ლაზდიიაის რაიონი
+    lt: Lazdijų rajono savivaldybė
+    lv: Lazdiju rajona pašvaldība
+    nb: Lazdijai kommune
+    nl: Lazdijai
+    pl: Rejon łoździejski
+    ru: Лаздийский район
+    uk: Лаздийський район
+    ur: لازدییئی ضلع بلدیہ
+    zh: 拉茲迪亞伊地區
+    ccp: "\U00011123\U0001110C\U00011134\U00011113\U00011128\U0001110E\U0001112D"
+    et: Lazdijai rajoon
+    be: Лаздзіяйскі раён
+    'no': Lazdijai kommune
+    ceb: Lazdijai (munisipyo)
+    cs: okres Lazdijai
+    ko: 라즈디야이구
+    ro: Municipalitatea Districtului Lazdijai
+    th: เทศบาลเขตลัซดิเยย์
+  comments:
+  type: district_municipality
+'25':
+  name: Marijampolės savivaldybė
+  code: '25'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Марыямпальскае самакіраванне
+    ca: Municipi de Marijampolė
+    de: Marijampolė
+    en: Marijampolė
+    es: Marijampolė
+    et: Marijampolė omavalitsus
+    fr: Municipalité de Marijampolė
+    he: מריאמפול (מחוז משנה)
+    it: Comune di Marijampolė
+    ja: マリヤンポレ基礎自治体
+    lt: Marijampolės savivaldybė
+    lv: Marijampoles pašvaldība
+    nl: Marijampolė
+    pl: Rejon mariampolski
+    ru: Мариямпольское самоуправление
+    sv: Marijampolės savivaldybė
+    ur: مارییامپولے بلدیہ
+    ceb: Marijampolės Rajonas
+    zh: 馬里揚泊列區
+    ccp: "\U0001111F\U00011122\U00011128\U0001110E\U0001111F\U00011134\U0001111B\U00011127\U00011123\U0001112C"
+    ko: 마리얌폴레시
+    uk: Маріямпольське самоврядування
+  comments:
+  type: district_municipality
+'26':
+  name: Mažeikių rajono savivaldybė
+  code: '26'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Мажэйкейскі раён
+    ca: Districte municipal de Mažeikiai
+    de: Rajongemeinde Mažeikiai
+    en: Mažeikiai
+    es: Distrito Municipio de Mažeikiai
+    et: Mažeikiai rajoon
+    fi: Mažeikiain kunnallispiiri
+    fr: municipalité du district de Mažeikiai
+    he: מז׳ייקי (מחוז משנה)
+    it: Comune distrettuale di Mažeikiai
+    ja: マジェイケイ地区自治体
+    ka: მაჟეიკიაის რაიონი
+    lt: Mažeikių rajono savivaldybė
+    lv: Mažeiķu rajona pašvaldība
+    nl: Mažeikiai
+    pl: Rejon możejski
+    ru: Мажейкяйский район
+    uk: Мажейкяйський район
+    ur: ماژئیکئی ضلع بلدیہ
+    zh: 馬爾熱基艾地區
+    ccp: "\U0001111F\U0001110E\U0001112C\U00011107\U00011128\U00011103\U0001112D"
+    ceb: Mažeikiai (munisipyo sa Lyetuwanya)
+    cs: okres Mažeikiai
+    ko: 마제이캬이구
+  comments:
+  type: district_municipality
+'27':
+  name: Molėtų rajono savivaldybė
+  code: '27'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Molėtai
+    de: Rajongemeinde Molėtai
+    el: Δήμος Διαμερίσματος Μολετάι
+    en: Molėtai
+    fi: Molėtain kunnallispiiri
+    fr: municipalité du district de Molėtai
+    he: מולייטי
+    it: Comune distrettuale di Molėtai
+    ja: モレタイ地区自治体
+    ka: მოლეტაის რაიონი
+    lt: Molėtų rajono savivaldybė
+    lv: Molētu rajona pašvaldība
+    nl: Molėtai
+    pl: Rejon malacki
+    ru: Молетский район
+    sv: Molėtų rajono savivaldybė
+    uk: Молетський район
+    ur: مولیتئی ضلع بلدیہ
+    ceb: Moletai
+    zh: 莫萊泰地區
+    ccp: "\U0001111F\U0001112E\U00011123\U0001112C\U00011111\U0001112D"
+    es: Distrito de Molėtai
+    be: Малетайскі раён
+    cs: okres Molėtai
+    et: Molėtai rajoon
+    ko: 몰레타이구
+  comments:
+  type: district_municipality
+'28':
+  name: Neringos savivaldybė
+  code: '28'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Gemeinde Neringa
+    en: Neringa
+    et: Neringa omavalitsus
+    fi: Neringan kunta
+    fr: Municipalité de Neringa
+    he: נרינגה
+    it: Comune di Neringa
+    lt: Neringos savivaldybė
+    pl: Rejon neryński
+    sv: Neringa (kommun)
+    ceb: Neringa (munisipyo)
+    ur: نیرنگا بلدیہ
+    ja: ネリンガ基礎自治体
+    ccp: "\U0001111A\U0001112C\U00011122\U00011128\U00011101\U00011109"
+    pt: Neringa
+    nb: Neringa kommune
+    'no': Neringa kommune
+    cs: Neringa
+    cy: Bwrdeistref Neringa
+    ka: ნერინგის მუნიციპალიტეტი
+    ko: 네링가시
+    ru: Нерингское самоуправление
+  comments:
+  type: municipality
+'29':
+  name: Pagėgių savivaldybė
+  code: '29'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Пагегейскае самакіраванне
+    ca: Municipi de Pagėgiai
+    de: Pagėgiai
+    en: Pagėgiai
+    et: Pagėgiai omavalitsus
+    fi: Pagėgiain kunta
+    fr: Municipalité de Pagėgiai
+    he: פאגיגי (מחוז משנה)
+    it: Comune di Pagėgiai
+    ja: パゲゲイ基礎自治体
+    lt: Pagėgių savivaldybė
+    lv: Paģēģu pašvaldība
+    nl: Pagėgiai
+    pl: Rejon pojeski
+    ru: Пагегское самоуправление
+    sv: Pagėgių savivaldybė
+    ur: پاگیگیئی بلدیہ
+    ceb: Pagėgiai (munisipyo)
+    zh: 帕蓋吉艾區
+    ccp: "\U0001111B\U0001112C\U00011103\U00011128\U0001110C\U00011134\U00011109\U0001112D"
+    cs: okres Pagėgiai
+    ko: 파게갸이시
+    uk: Пагегяйське самоврядування
+  comments:
+  type: municipality
+'30':
+  name: Pakruojo rajono savivaldybė
+  code: '30'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Пакруойскі раён
+    ca: Districte municipal de Pakruojis
+    de: Rajongemeinde Pakruojis
+    en: Pakruojis
+    et: Pakruojise rajoon
+    fi: Pakruojisin kunnallispiiri
+    fr: municipalité du district de Pakruojis
+    he: פאקרוייס (מחוז משנה)
+    it: Comune distrettuale di Pakruojis
+    ja: パクルオイス地区自治体
+    ka: პაკრუოის რაიონი
+    lt: Pakruojo rajono savivaldybė
+    lv: Pakrojas rajona pašvaldība
+    nl: Pakruojis
+    pl: Rejon pokrojski
+    ru: Пакруойский район
+    sv: Pakruojo rajono savivaldybė
+    uk: Пакруоїський район
+    ur: پاکرووئیس ضلع بلدیہ
+    ceb: Pakruojis (munisipyo)
+    zh: 帕克魯奧伊斯地區
+    ccp: "\U0001111B\U00011107\U00011134\U00011122\U0001112F\U0001110E\U00011128\U0001110C\U00011134"
+    az: Pakruoyis rayonu
+    cs: okres Pakruojis
+    ko: 파크루오이스구
+    th: เทศบาลเขตปากรัวยิส
+  comments:
+  type: district_municipality
+'31':
+  name: Palangos miesto savivaldybė
+  code: '31'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Stadtgemeinde Palanga
+    en: Palanga
+    it: Comune urbano di Palanga
+    ja: パランガ都市自治体
+    lt: Palangos miesto savivaldybė
+    pl: Połąga (rejon miejski)
+    ceb: Palanga
+    ccp: "\U0001111B\U00011127\U00011123\U00011101\U00011109"
+    fr: Palanga
+    ko: 팔랑가시
+    ru: Палангское городское самоуправление
+  comments:
+  type: city_municipality
+'32':
+  name: Panevėžio miesto savivaldybė
+  code: '32'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Stadtgemeinde Panevėžys
+    el: Δήμος Πόλης Πανεβεζίς
+    en: Panevėžio Municipality
+    it: Comune urbano di Panevėžys
+    ja: パネヴェジース都市自治体
+    lt: Panevėžio miesto savivaldybė
+    nl: Panevėžys City Municipality
+    pl: Poniewież (rejon miejski)
+    ccp: "\U0001111B\U00011127\U0001111A\U0001112C\U0001111E\U0001112C\U0001110E\U00011128\U00011103\U0001112E
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    be: Панявежскае гарадское самакіраванне
+    ceb: Panevėžys City
+    fr: Panevėžys
+    ru: Паневежское городское самоуправление
+    sv: Panevėžys City
+  comments:
+  type: city_municipality
+'33':
+  name: Panevėžio rajono savivaldybė
+  code: '33'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Паневежыскі раён
+    ca: Districte municipal de Panevėžys
+    cs: Panevėžys
+    de: Rajongemeinde Panevėžys
+    el: Δήμος Διαμερίσματος Πανεβεζίς
+    en: Panevėžys
+    et: Panevėžysi rajoon
+    fi: Panevėžysin kunnallispiiri
+    fr: municipalité du district de Panevėžys
+    he: פוניבז׳ (מחוז משנה)
+    it: Comune distrettuale di Panevėžys
+    ja: パネヴェジース地区自治体
+    ka: პანევეჟისის რაიონი
+    lt: Panevėžio rajono savivaldybė
+    lv: Panevēžas rajona pašvaldība
+    nl: Panevėžys
+    pl: Rejon poniewieski
+    ru: Паневежский район
+    sv: Panevėžio rajono savivaldybė
+    uk: Паневежиський район
+    ur: پانیویژیس ضلع بلدیہ
+    ceb: Panevėžys District Municipality
+    zh: 帕內韋日斯地區
+    ccp: "\U0001111B\U00011127\U0001111A\U0001112C\U0001111E\U0001112C\U0001110E\U00011128\U0001110C\U00011134"
+    es: Distrito de Panevėžys
+    ko: 파네베지스구
+  comments:
+  type: district_municipality
+'34':
+  name: Pasvalio rajono savivaldybė
+  code: '34'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Пасваліскі раён
+    ca: Districte municipal de Pasvalys
+    de: Rajongemeinde Pasvalys
+    el: Δήμος Διαμερίσματος Πάσβαλις
+    en: Pasvalys
+    et: Pasvalysi rajoon
+    fi: Pasvalysin kunnallispiiri
+    fr: municipalité du district de Pasvalys
+    he: פסווליס (מחוז משנה)
+    it: Comune distrettuale di Pasvalys
+    ja: パスヴァリース地区自治体
+    ka: პასვალისის რაიონი
+    lt: Pasvalio rajono savivaldybė
+    lv: Pasvales rajona pašvaldība
+    nl: Pasvalys
+    pl: Rejon poswolski
+    ro: Pasvalys
+    ru: Пасвальский район
+    uk: Пасваліський район
+    ur: پاسویلیس ضلع بلدیہ
+    zh: 帕斯瓦利斯地區
+    ccp: "\U0001111B\U0001110C\U00011134\U0001111E\U00011123\U00011128\U0001110C\U00011134"
+    es: Distrito de Pasvalys
+    ceb: Pasvalys (munisipyo)
+    cs: okres Pasvalys
+    ko: 파스발리스구
+  comments:
+  type: district_municipality
+'35':
+  name: Plungės rajono savivaldybė
+  code: '35'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Plungė
+    de: Rajongemeinde Plungė
+    en: Plungė
+    es: Distrito Municipio de Plungė
+    et: Plungė rajoon
+    fi: Plungėn kunnallispiiri
+    fr: municipalité du district de Plungė
+    he: פלונגה (מחוז משנה)
+    it: Comune distrettuale di Plungė
+    ja: プルンゲ地区自治体
+    ka: პლუნგეს რაიონი
+    lt: Plungės rajono savivaldybė
+    lv: Pluņģes rajona pašvaldība
+    nl: Plungė
+    pl: Rejon płungiański
+    ru: Плунгеский район
+    uk: Плунгеський район
+    ur: پلونگے ضلع بلدیہ
+    zh: 普倫蓋地區
+    ccp: "\U0001111B\U00011133\U00011123\U00011101\U00011109\U0001112C"
+    be: Плунгскі раён
+    ceb: Plungė (munisipyo sa Litwanya)
+    cs: Okres Plungė
+    ko: 플룽게구
+    sk: Okres Plungė
+    sv: Plungė
+  comments:
+  type: district_municipality
+'36':
+  name: Prienų rajono savivaldybė
+  code: '36'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Прэнайскі раён
+    ca: Districte municipal de Prienai
+    de: Rajongemeinde Prienai
+    en: Prienai
+    es: Distrito Municipio de Prienai
+    fi: Prienain kunnallispiiri
+    fr: municipalité du district de Prienai
+    he: פרינאי
+    it: Comune distrettuale di Prienai
+    ja: プリエナイ地区自治体
+    ka: პრიენაის რაიონი
+    lt: Prienų rajono savivaldybė
+    lv: Prienu rajona pašvaldība
+    nl: Prienai
+    pl: Rejon preński
+    ru: Пренайский район
+    uk: Пренайський район
+    ur: پریئنائی ضلع بلدیہ
+    zh: 普列奈地區
+    ccp: "\U0001111B\U00011133\U00011122\U0001112D\U00011120\U0001112C\U0001111A\U0001112D"
+    et: Prienai rajoon
+    ceb: Prienai (munisipyo)
+    cs: okres Prienai
+    ko: 프리에나이구
+    th: เทศบาลเขตเปรียเน็ย
+  comments:
+  type: district_municipality
+'37':
+  name: Radviliškio rajono savivaldybė
+  code: '37'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Радзівілішкаўскі раён
+    ca: Districte municipal de Radviliškis
+    da: Radviliškis distriktskommune
+    de: Rajongemeinde Radviliškis
+    en: Radviliškis
+    et: Radviliškise rajoon
+    fi: Radviliškisin kunnallispiiri
+    fr: municipalité du district de Radviliškis
+    he: רדווילישקיס (מחוז משנה)
+    it: Comune distrettuale di Radviliškis
+    ja: ラドヴィリシュキス地区自治体
+    ka: რადვილიშკის რაიონი
+    lt: Radviliškio rajono savivaldybė
+    lv: Radvilišķu rajona pašvaldība
+    nb: Radviliškis storkommune
+    nl: Radviliškis
+    pl: Rejon radziwiliski
+    ru: Радвилишкский район
+    uk: Радвилішкіський район
+    ur: رادویلشکس ضلع بلدیہ
+    zh: 拉德維利什基斯地區
+    ccp: "\U00011122\U00011116\U00011134\U0001111E\U00011128\U00011123\U00011128\U0001110C\U00011134\U00011107\U00011128\U0001110C\U00011134"
+    'no': Radviliškis storkommune
+    ceb: Radviliškis (munisipyo sa Litwanya)
+    cs: okres Radviliškis
+    ko: 라드빌리슈키스구
+    sv: Radviliškis (kommun i Litauen)
+  comments:
+  type: district_municipality
+'38':
+  name: Raseinių rajono savivaldybė
+  code: '38'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Расяйнейскі раён
+    ca: Districte municipal de Raseiniai
+    de: Rajongemeinde Raseiniai
+    en: Raseiniai
+    es: Distrito Municipio de Raseiniai
+    et: Raseiniai rajoon
+    fi: Raseiniain kunnallispiiri
+    fr: municipalité du district de Raseiniai
+    he: ראסייני (מחוז משנה)
+    it: Comune distrettuale di Raseiniai
+    ja: ラセイネイ地区自治体
+    ka: რასეინიაის რაიონი
+    lt: Raseinių rajono savivaldybė
+    lv: Raseiņu rajona pašvaldība
+    nl: Raseiniai
+    pl: Rejon rosieński
+    ru: Расейнский район
+    sv: Raseiniai (kommun)
+    uk: Расейняйський район
+    ur: راسئینیائی ضلع بلدیہ
+    ceb: Raseiniai
+    zh: 拉塞尼艾地區
+    ccp: "\U00011122\U00011125\U0001112C\U0001112D\U0001111A\U00011128\U00011103\U0001112D"
+    cs: okres Raseiniai
+    ko: 라세이냐이구
+    th: เทศบาลเขตราแซย์เนย์
+  comments:
+  type: district_municipality
+'39':
+  name: Rietavo savivaldybė
+  code: '39'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Municipi de Rietavas
+    de: Rietavas
+    el: Δήμος Ριετάβας
+    en: Rietavas
+    es: Municipio de Rietavas
+    et: Rietavase omavalitsus
+    fi: Rietavasin kunta
+    fr: Municipalité de Rietavas
+    he: ריטובה (מחוז משנה)
+    it: Comune di Rietavas
+    ja: リエタヴァス市
+    lt: Rietavo savivaldybė
+    lv: Rietavas pašvaldība
+    nl: Rietavas
+    pl: Rejon retowski
+    ru: Ретавское самоуправление
+    sv: Rietavo savivaldybė
+    ur: ریئتاواس بلدیہ
+    ceb: Rietavas (munisipyo)
+    zh: 里塔瓦斯區
+    ccp: "\U00011122\U0001112D\U00011120\U0001112C\U00011111\U0001111E\U0001110C\U00011134"
+    be: Рыетаваскае самакіраванне
+    cs: okres Rietavas
+    ko: 리에타바스시
+    uk: Ретавське самоврядування
+  comments:
+  type: municipality
+'40':
+  name: Rokiškio rajono savivaldybė
+  code: '40'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Рокішкіскі раён
+    ca: Districte municipal de Rokiškis
+    de: Rajongemeinde Rokiškis
+    el: Δήμος Διαμερίσματος Ροκίσκις
+    en: Rokiškis
+    et: Rokiškise rajoon
+    fi: Rokiškisin kunnallispiiri
+    fr: municipalité du district de Rokiškis
+    he: רוקישקיס (מחוז משנה)
+    it: Comune distrettuale di Rokiškis
+    ja: ロキシュキス地区自治体
+    ka: როკიშკისის რაიონი
+    lt: Rokiškio rajono savivaldybė
+    lv: Rokišķu rajona pašvaldība
+    nl: Rokiškis
+    pl: Rejon rakiszecki
+    ru: Рокишкский район
+    uk: Рокишкіський район
+    ur: روکشکس ضلع بلدیہ
+    zh: 羅基什基斯地區
+    ccp: "\U00011122\U00011127\U00011107\U00011128\U0001110C\U00011134\U00011107\U00011128\U0001110C\U00011134"
+    es: Distrito de Rokiškis
+    ceb: Rokiškis (munisipyo)
+    cs: okres Rokiškis
+    ko: 로키슈키스구
+  comments:
+  type: district_municipality
+'41':
+  name: Šakių rajono savivaldybė
+  code: '41'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Šakiai
+    de: Rajongemeinde Šakiai
+    en: Šakiai
+    et: Šakiai rajoon
+    fi: Šakiain kunnallispiiri
+    fr: municipalité du district de Šakiai
+    he: שאקי (מחוז משנה)
+    it: Comune distrettuale di Šakiai
+    ka: შაკიაის რაიონი
+    lt: Šakių rajono savivaldybė
+    lv: Šaķu rajona pašvaldība
+    nl: Šakiai
+    pl: Rejon szakowski
+    ru: Шакяйский район
+    ur: شاکیای ضلع بلدیہ
+    zh: 沙基艾地區
+    ccp: "\U00011125\U00011107\U00011128\U00011103\U0001112D"
+    be: Шакейскі раён
+    ceb: Sakiai (munisipyo)
+    cs: okres Šakiai
+    ja: シャケイ地区自治体
+    ko: 샤캬이구
+    uk: Шакяйський район
+  comments:
+  type: district_municipality
+'42':
+  name: Šalčininkų rajono savivaldybė
+  code: '42'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Šalčininkai
+    de: Rajongemeinde Šalčininkai
+    el: Δήμος Περιφέρειας Σαλτσινίνκαϊ
+    en: Šalčininkai
+    et: Šalčininkai rajoon
+    fi: Šalčininkain kunnallispiiri
+    fr: municipalité du district de Šalčininkai
+    he: שיילצ׳נינקי
+    it: Comune distrettuale di Šalčininkai
+    ja: シャルチニンカイ地区自治体
+    ka: შალჩინინკაის რაიონი
+    lt: Šalčininkų rajono savivaldybė
+    lv: Šaļčininku rajona pašvaldība
+    nb: Šalčininkai kommune
+    nl: Šalčininkai
+    pl: Rejon solecznicki
+    ro: Comuna Šalčininkai
+    ru: Шальчининкский район
+    uk: Шальчинінкський район
+    ur: شیلچینیکئی ضلع بلدیہ
+    zh: 沙爾奇寧凱地區
+    ccp: "\U00011125\U00011123\U00011134\U00011125\U00011128\U0001111A\U00011128\U0001111A\U00011134\U00011107\U0001112D"
+    'no': Šalčininkai kommune
+    be: Шальчынінкайскі раён
+    ceb: Šalčininkai (munisipyo)
+    cs: okres Šalčininkai
+    ko: 샬치닝카이구
+  comments:
+  type: district_municipality
+'43':
+  name: Šiaulių miesto savivaldybė
+  code: '43'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    da: Šiauliai bykommune
+    de: Stadtgemeinde Šiauliai
+    en: Šiaulių Municipality
+    ja: シャウレイ都市自治体
+    lt: Šiaulių miesto savivaldybė
+    pl: Szawle
+    ccp: "\U00011125\U0001112D\U00011103\U0001112F\U00011123\U00011128\U00011105\U0001112A
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    be: Шаўляйскае гарадское самакіраванне
+    ceb: Šiauliai (munisipyo)
+    cy: Bwrdeisdref Šiauliai
+    ru: Шяуляйское городское самоуправление
+    sv: Šiauliai (kommun)
+  comments:
+  type: city_municipality
+'44':
+  name: Šiaulių rajono savivaldybė
+  code: '44'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Шаўляйскі раён
+    ca: Districte municipal de Šiauliai
+    de: Rajongemeinde Šiauliai
+    en: Šiauliai
+    et: Šiauliai rajoon
+    fi: Šiauliain kunnallispiiri
+    fr: municipalité du district de Šiauliai
+    he: שאולאי (מחוז משנה(
+    it: Comune distrettuale di Šiauliai
+    ja: シャウレイ地区自治体
+    ka: შიაულიაის რაიონი
+    lt: Šiaulių rajono savivaldybė
+    lv: Šauļu rajona pašvaldība
+    nl: Šiauliai
+    pl: Rejon szawelski
+    ru: Шяуляйский район
+    sv: Šiaulių rajono savivaldybė
+    ur: شئولئی ضلع بلدیہ
+    ceb: Šiaulių rajonas
+    zh: 希奧利艾地區
+    ccp: "\U00011125\U0001112D\U00011103\U0001112F\U00011123\U00011128\U00011103\U0001112D"
+    cs: okres Šiauliai
+    da: Šiauliai Distriktskommune
+    ko: 샤울랴이구
+    uk: Шяуляйський район
+  comments:
+  type: district_municipality
+'45':
+  name: Šilalės rajono savivaldybė
+  code: '45'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Šilalė
+    de: Rajongemeinde Šilalė
+    en: Šilalė
+    es: Distrito de Šilalė
+    et: Šilalė rajoon
+    fi: Šilalėn kunnallispiiri
+    fr: municipalité du district de Šilalė
+    he: שיללה (מחוז משנה)
+    it: comune distrettuale di Šilalė
+    ja: シラレ地区自治体
+    ka: შილალის რაიონი
+    lt: Šilalės rajono savivaldybė
+    lv: Šilales rajona pašvaldība
+    nl: Šilalė
+    pl: Rejon szyłelski
+    ru: Шилальский район
+    ur: شیلالے ضلع بلدیہ
+    zh: 錫拉萊地區
+    ccp: "\U00011125\U00011128\U00011123\U00011123\U0001112C"
+    be: Шылальскі раён
+    ceb: Šilalė (munisipyo)
+    cs: okres Šilalė
+    ko: 실랄레구
+    uk: Шилальський район
+  comments:
+  type: district_municipality
+'46':
+  name: Šilutės rajono savivaldybė
+  code: '46'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Шылуцкі раён
+    ca: Districte municipal de Šilutė
+    de: Rajongemeinde Šilutė
+    en: Šilutė
+    es: Distrito de Šilutė
+    et: Šilutė rajoon
+    fi: Šilutėn kunnallispiiri
+    fr: municipalité du district de Šilutė
+    he: שילוטה (מחוז משנה)
+    it: Comune distrettuale di Šilutė
+    ja: シルテ地区自治体
+    ka: შილუტის რაიონი
+    lt: Šilutės rajono savivaldybė
+    lv: Šilutes rajona pašvaldība
+    nl: Šilutė
+    pl: Rejon szyłokarczemski
+    ru: Шилутский район
+    ur: شیلوتے ضلع بلدیہ
+    zh: 錫盧泰地區
+    ccp: "\U00011125\U00011128\U00011123\U00011105\U0001112A\U00011116\U00011134"
+    ceb: Šilutė (munisipyo sa Litwanya)
+    cs: okres Šilutė
+    ko: 실루테구
+    sk: okres Šilutė
+    sv: Šilutė (kommun i Litauen)
+    uk: Шилутський район
+  comments:
+  type: district_municipality
+'47':
+  name: Širvintų rajono savivaldybė
+  code: '47'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Шырвінцкі раён
+    ca: Districte municipal de Širvintos
+    de: Rajongemeinde Širvintos
+    el: Δήμος Περιφέρειας Σιρβίντος
+    en: Širvintos
+    es: Širvintos
+    fi: Širvintosin kunnallispiiri
+    fr: municipalité du district de Širvintos
+    he: שירווינטו (מחוז משנה)
+    it: Comune distrettuale di Širvintos
+    ja: シルヴィントス地区自治体
+    ka: შირვინტოსის რაიონი
+    lt: Širvintų rajono savivaldybė
+    lv: Širvintu rajona pašvaldība
+    nb: Širvintos kommune
+    nl: Širvintos
+    pl: Rejon szyrwincki
+    ru: Ширвинтский район
+    uk: Ширвінтоський район
+    ur: شیروینتوس ضلع بلدیہ
+    zh: 希爾文托斯地區
+    ccp: "\U00011125\U00011128\U00011122\U00011134\U0001111E\U0001112D\U0001111A\U00011134\U00011111\U0001112E\U0001110C\U00011134"
+    et: Širvintose rajoon
+    'no': Širvintos kommune
+    ceb: Sirvintos (munisipyo sa Lyetuwanya)
+    cs: okres Širvintos
+    ko: 시르빈토스구
+  comments:
+  type: district_municipality
+'48':
+  name: Skuodo rajono savivaldybė
+  code: '48'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Skuodas
+    cs: Okres Skuodas
+    de: Rajongemeinde Skuodas
+    en: Skuodas
+    es: Distrito de Skuodas
+    et: Skuodase rajoon
+    fi: Skuodasin kunnallispiiri
+    fr: municipalité du district de Skuodas
+    he: שקוד (מחוז משנה)
+    it: Comune distrettuale di Skuodas
+    ja: スクオダス地区自治体
+    ka: სკუოდასის რაიონი
+    lt: Skuodo rajono savivaldybė
+    lv: Skodas rajona pašvaldība
+    nl: Skuodas
+    pl: Rejon szkudzki
+    ru: Скуодасский район
+    ur: سکؤداس ضلع بلدیہ
+    zh: 斯庫奧達斯地區
+    ccp: "\U0001110C\U00011133\U00011107\U0001112A\U0001112A\U00011103\U0001112F\U00011113\U0001110C\U00011134"
+    be: Скуодаскі раён
+    ceb: Skuodas (munisipyo)
+    ko: 스쿠오다스구
+    uk: Скуодаський район
+  comments:
+  type: district_municipality
+'49':
+  name: Švenčionių rajono savivaldybė
+  code: '49'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة بلدية سفينيتشونيس
+    be: Свянцянскі раён
+    ca: Districte municipal de Švenčionys
+    de: Rajongemeinde Švenčionys
+    el: Δήμος Περιφέρειας Σβεντσιόνυς
+    en: Švenčionys
+    et: Švenčionyse rajoon
+    fi: Švenčionysin kunnallispiiri
+    fr: municipalité du district de Švenčionys
+    he: שווינציאן (מחוז משנה)
+    it: Comune distrettuale di Švenčionys
+    ja: シュヴェンチョニース地区自治体
+    ka: შვენჩიონისის რაიონი
+    lt: Švenčionių rajono savivaldybė
+    lv: Švenčoņu rajona pašvaldība
+    nb: Švenčionys kommune
+    nl: Švenčionys
+    pl: Rejon święciański
+    ru: Швенчёнский район
+    uk: Швенчьонський район
+    ur: شوینچونیس ضلع بلدیہ
+    zh: 什文喬尼斯地區
+    ccp: "\U0001110C\U00011133\U0001111E\U0001112C\U0001111A\U00011134\U00011125\U00011128\U00011103\U0001112E\U0001111A\U00011128\U0001110C\U00011134"
+    'no': Švenčionys kommune
+    ceb: Svencionys (munisipyo sa Lyetuwanya)
+    cs: okres Švenčionys
+    ko: 슈벤초니스구
+  comments:
+  type: district_municipality
+'50':
+  name: Tauragės rajono savivaldybė
+  code: '50'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Таўрагскі раён
+    ca: Districte municipal de Tauragė
+    de: Rajongemeinde Tauragė
+    en: Tauragė
+    es: Distrito de Tauragė
+    et: Tauragė rajoon
+    fi: Tauragėn kunnallispiiri
+    fr: municipalité du district de Tauragė
+    he: טאורגה (מחוז משנה)
+    it: Comune distrettuale di Tauragė
+    ja: タウラゲ地区自治体
+    ka: ტაურაგეს რაიონი
+    lt: Tauragės rajono savivaldybė
+    lv: Tauraģes rajona pašvaldība
+    nl: Tauragė
+    pl: Rejon tauroski
+    ru: Таурагский район
+    ur: توراگئیے ضلع بلدیہ
+    zh: 陶拉格地區
+    ccp: "\U00011111\U00011127\U00011105\U0001112A\U00011122\U00011107\U00011134"
+    ceb: Tauragė (munisipyo sa Litwanya)
+    ko: 타우라게구
+    sv: Tauragė (kommun i Litauen)
+    uk: Тауразький район
+  comments:
+  type: district_municipality
+'51':
+  name: Telšių rajono savivaldybė
+  code: '51'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Цяльшайскі раён
+    ca: Districte municipal de Telšiai
+    de: Rajongemeinde Telšiai
+    en: Telšiai
+    es: Distrito Municipio de Telšiai
+    et: Telšiai rajoon
+    fi: Telšiain kunnallispiiri
+    fr: municipalité du district de Telšiai
+    he: טלז (מחוז משנה)
+    it: Comune distrettuale di Telšiai
+    ja: テルシェイ地区自治体
+    ka: ტელშიაის რაიონი
+    lt: Telšių rajono savivaldybė
+    lv: Telšu rajona pašvaldība
+    nl: Telšiai
+    pl: Rejon telszański
+    ru: Тельшяйский район
+    sv: Telšių rajono savivaldybė
+    ur: تلشئیی ضلع بلدیہ
+    ceb: Telšiai (munisipyo sa Litwanya)
+    zh: 特爾希艾地區
+    ccp: "\U00011111\U0001112C\U00011123\U00011134\U00011125\U00011128\U00011103\U0001112D"
+    az: Telşyay rayonu
+    ko: 텔샤이구
+    uk: Тельшяйський район
+  comments:
+  type: district_municipality
+'52':
+  name: Trakų rajono savivaldybė
+  code: '52'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Тракайскі раён
+    ca: Districte municipal de Trakai
+    da: Trakai distriktskommune
+    de: Rajongemeinde Trakai
+    el: Δήμος Περιφέρειας Τράκαϊ
+    en: Trakai
+    fi: Trakain kunnallispiiri
+    fr: municipalité du district de Trakai
+    he: טרקאי (מחוז משנה)
+    it: Comune distrettuale di Trakai
+    ja: トラカイ地区自治体
+    ka: ტრაკაის რაიონი
+    lt: Trakų rajono savivaldybė
+    lv: Traķu rajona pašvaldība
+    nl: Trakai
+    pl: Rejon trocki
+    ru: Тракайский район
+    uk: Тракайський район
+    ur: تراکئی ضلع بلدیہ
+    zh: 特拉開地區
+    ccp: "\U00011111\U00011133\U00011122\U00011107\U0001112D"
+    cs: okres Trakai
+    et: Trakai rajoon
+    ko: 트라카이구
+  comments:
+  type: district_municipality
+'53':
+  name: Ukmergės rajono savivaldybė
+  code: '53'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Укмяргскі раён
+    ca: Districte municipal d’Ukmergė
+    da: Ukmergė distriktskommune
+    de: Rajongemeinde Ukmergė
+    el: Δήμος Περιφέρειας Ουκμεργκέ
+    en: Ukmergė
+    fi: Ukmergėn kunnallispiiri
+    fr: municipalité du district d’Ukmergė
+    he: אוקמרגה
+    it: Comune distrettuale di Ukmergė
+    ja: ウクメルゲ地区自治体
+    ka: უკმერგეს რაიონი
+    lt: Ukmergės rajono savivaldybė
+    lv: Ukmerģes rajona pašvaldība
+    nl: Ukmergė
+    pl: Rejon wiłkomierski
+    ru: Укмергский район
+    sv: Ukmergės rajono savivaldybė
+    uk: Укмергський район
+    ur: اوکمیرگے ضلع بلدیہ
+    ceb: Ukmergė (munisipyo sa Litwanya)
+    zh: 烏克梅爾蓋地區
+    ccp: "\U00011103\U00011107\U00011134\U0001111F\U00011122\U00011134\U00011107\U00011134"
+    et: Ukmergė rajoon
+    cs: okres Ukmergė
+    ko: 우크메르게구
+  comments:
+  type: district_municipality
+'54':
+  name: Utenos rajono savivaldybė
+  code: '54'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal d’Utena
+    de: Rajongemeinde Utena
+    el: Δήμος Διαμερίσματος Ουτενά
+    en: Utena
+    fi: Utenan kunnallispiiri
+    fr: municipalité du district d’Utena
+    he: אוטנה
+    it: Comune distrettuale di Utena
+    ja: ウテナ地方
+    ka: უტენის რაიონი
+    lt: Utenos rajono savivaldybė
+    lv: Utenas rajona pašvaldība
+    nl: Utena
+    pl: Rejon uciański
+    ru: Утенский район
+    ur: اوتینا ضلع بلدیہ
+    zh: 烏田納地區
+    ccp: "\U00011103\U0001112A\U00011111\U0001112C\U0001111A"
+    es: Distrito de Utena
+    be: Уцянскі раён
+    et: Utena rajoon
+    ko: 우테나구
+    uk: Утенський район
+  comments:
+  type: district_municipality
+'55':
+  name: Varėnos rajono savivaldybė
+  code: '55'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Варэнскі раён
+    ca: Districte municipal de Varėna
+    de: Rajongemeinde Varėna
+    el: Δήμος Διαμερίσματος Βαρένα
+    en: Varėna
+    et: Varėna rajoon
+    fa: منطقهٔ وارنا مونیکیپلیتی
+    fi: Varėnan kunnallispiiri
+    fr: municipalité du district de Varėna
+    he: וריאנה (מחוז משנה)
+    it: Comune distrettuale di Varėna
+    ja: ヴァレナ地区自治体
+    ka: ვარენის რაიონი
+    lt: Varėnos rajono savivaldybė
+    lv: Varēnas rajona pašvaldība
+    nl: Varėna
+    pl: Rejon orański
+    ru: Варенский район
+    uk: Варенський район
+    ur: وورئینا ضلع بلدیہ
+    zh: 瓦雷納地區
+    ccp: "\U0001111E\U00011122\U0001112C\U0001111A"
+    ceb: Varėna (munisipyo)
+    cs: okres Varėna
+    ko: 바레나구
+    th: เทศบาลเขตวาเรนา
+  comments:
+  type: district_municipality
+'56':
+  name: Vilkaviškio rajono savivaldybė
+  code: '56'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Districte municipal de Vilkaviškis
+    de: Rajongemeinde Vilkaviškis
+    en: Vilkaviškis
+    et: Vilkaviškise rajoon
+    fi: Vilkaviškisin kunnallispiiri
+    fr: municipalité du district de Vilkaviškis
+    he: וילקובישק (מחוז משנה)
+    it: Comune distrettuale di Vilkaviškis
+    ja: ヴィルカヴィシュキス地区自治体
+    ka: ვილკავიშკისის რაიონი
+    lt: Vilkaviškio rajono savivaldybė
+    lv: Vilkavišķu rajona pašvaldība
+    nl: Vilkaviškis
+    pl: Rejon wyłkowyski
+    ru: Вилкавишкский район
+    uk: Вилкавишкіський район
+    ur: ویلکاوشکس ضلع بلدیہ
+    zh: 維爾卡維什基斯地區
+    ccp: "\U0001111E\U00011128\U00011123\U00011134\U00011107\U0001111E\U00011128\U0001110C\U00011134\U00011107\U00011128\U0001110C\U00011134"
+    be: Вілкавішкіскі раён
+    cs: okres Vilkaviškis
+    es: Muncipio del Districto de Vilkaviškis
+    ko: 빌카비슈키스구
+    ro: Vilkaviškis
+  comments:
+  type: district_municipality
+'57':
+  name: Vilniaus miesto savivaldybė
+  code: '57'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Вільнюскае гарадское самакіраванне
+    ca: Ciutat municipal de Vílnius
+    de: Stadtgemeinde Vilnius
+    el: Δήμος Πόλης Βίλνιους
+    en: Vilniaus Municipality
+    fr: Municipalité de Vilnius-ville
+    it: Comune urbano di Vilnius
+    ja: ヴィリニュス都市自治体
+    lt: Vilniaus miesto savivaldybė
+    lv: Viļņas pilsētas pašvaldība
+    nl: Vilnius City Municipality
+    pl: Wilno
+    ru: Вильнюсское городское самоуправление
+    ur: ویلنیوس شہر بلدیہ
+    zh: 維爾紐斯市
+    ccp: "\U0001111E\U00011128\U00011123\U00011134\U0001111A\U00011128\U00011124\U0001110C\U00011134
+      \U0001111F\U00011128\U00011105\U0001112A\U0001111A\U00011128\U00011125\U00011128\U0001111B\U00011123\U00011128\U00011111\U00011128"
+    ceb: Vilnius (munisipyo)
+    cy: Bwrdeistref Dinas Vilnius
+    et: Vilniuse linna omavalitsus
+    sv: Vilnius (kommun)
+    uk: Вільнюське міське самоврядування
+  comments:
+  type: city_municipality
+'58':
+  name: Vilniaus rajono savivaldybė
+  code: '58'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Вільнюскі раён
+    ca: Districte municipal de Vílnius
+    de: Rajongemeinde Vilnius
+    el: Βίλνιους
+    en: Vilnius
+    et: Vilniuse rajoon
+    fi: Vilnan kunnallispiiri
+    fr: municipalité du district de Vilnius
+    he: וילנה (מחוז משנה)
+    it: comune distrettuale di Vilnius
+    ja: ヴィリニュス地区自治体
+    ka: ვილნიუსის რაიონი
+    lt: Vilniaus rajono savivaldybė
+    lv: Viļņas rajona pašvaldība
+    nb: Vilnius landkommune
+    nl: Vilnius
+    pl: Rejon wileński
+    ru: Вильнюсский район
+    sv: Vilniaus rajono savivaldybė
+    uk: Вільнюський район
+    ur: ویلنیوس ضلع بلدیہ
+    ceb: Vilniaus Rajonas
+    zh: 維爾紐斯地區
+    ccp: "\U0001111E\U00011128\U00011123\U00011134\U0001111A\U00011128\U00011120\U0001110C\U00011134"
+    'no': Vilnius landkommune
+    cs: okres Vilnius
+    hu: Vilniusi körzet
+    ko: 빌뉴스구
+  comments:
+  type: district_municipality
+'59':
+  name: Visagino savivaldybė
+  code: '59'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ca: Municipi de Visaginas
+    de: Gemeinde Visaginas
+    el: Δήμος Βισάγκινας
+    en: Visaginas
+    he: ויסגינס
+    it: Comune di Visaginas
+    ja: ヴィサギナス都市自治体
+    lt: Visagino savivaldybė
+    lv: Visaginas pašvaldība
+    nl: Visaginas Municipality
+    pl: Rejon wisagiński
+    ru: Висагинское самоуправление
+    ur: ویساگیناس بلدیہ
+    zh: 維薩基納斯區
+    ccp: "\U0001111E\U00011128\U00011125\U00011109\U0001112D\U0001111A\U0001110C\U00011134"
+    fr: Municipalité de Visaginas
+    uk: муніципалітет Висагінас
+    be: Вісагінаскае самакіраванне
+    cy: Bwrdeistref Visaginas
+    et: Visaginase omavalitsus
+    ko: 비사기나스시
+  comments:
+  type: municipality
+'60':
+  name: Zarasų rajono savivaldybė
+  code: '60'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Зарасайскі раён
+    ca: Districte municipal de Zarasai
+    de: Rajongemeinde Zarasai
+    el: Δήμος Διαμερίσματος Ζαρασάι
+    en: Zarasai
+    fi: Zarasain kunnallispiiri
+    fr: municipalité du district de Zarasai
+    he: זרסאי
+    it: Comune distrettuale di Zarasai
+    ka: ზარასაის რაიონი
+    lt: Zarasų rajono savivaldybė
+    lv: Zarasu rajona pašvaldība
+    nl: Zarasai
+    pl: Rejon jezioroski
+    ru: Зарасайский район
+    uk: Зарасайський район
+    ur: زاراسئی ضلع بلدیہ
+    zh: 扎拉賽地區
+    ccp: "\U0001110E\U00011122\U00011125\U0001112D"
+    es: Distrito de Zarasai
+    ceb: Zarasai (munisipyo)
+    cs: okres Zarasai
+    et: Zarasai rajoon
+    hy: Զարասայ շրջան
+    ja: ザラサイ地区自治体
+    ko: 자라사이구
+  comments:
+  type: district_municipality
+AL:
+  name: Alytaus Apskritis
+  code: AL
+  unofficial_names: Alytaus Apskritis
+  geo:
+    latitude: 54.2000214
+    longitude: 24.1512634
+    min_latitude: 53.89747999999999
+    min_longitude: 23.3125978
+    max_latitude: 54.5634689
+    max_longitude: 25.025222
+  translations:
+    en: Alytus County
+    ar: مقاطعة أليتس
+    be: Алітускі павет
+    bg: Алитуски окръг
+    bn: অ্যালিটাস কাউন্টি
+    ca: Comtat d’Alytus
+    cs: Alytuský kraj
+    da: Alytus amt
+    de: Bezirk Alytus
+    el: Επαρχία Αλύτους
+    es: Provincia de Alytus
+    et: Alytuse maakond
+    eu: Alytusko konderria
+    fa: شهرستان آلیتوس
+    fi: Alytusin lääni
+    fr: apskritis d’Alytus
+    gu: એલિટ્સ કાઉન્ટી
+    he: מחוז אליטא
+    hi: एलीटस काउंटी
+    hr: Okrug Alitus
+    id: County Alytus
+    it: contea di Alytus
+    ja: アリートゥス県
+    ka: ალიტუსის მაზრა
+    kn: ಆಲಿಟಸ್ ಕೌಂಟಿ
+    ko: 알리투스 주
+    lt: Alytaus apskritis
+    lv: Alītas apriņķis
+    mr: एल्टस काउंटी
+    ms: Alytus County
+    nb: Alytus fylke
+    nl: Alytus²
+    pl: Okręg olicki
+    pt: Alytus
+    ro: Județul Alytus
+    ru: Алитусский уезд
+    si: ඇලිටස් ප්‍රාන්තය
+    sr: Алитус округ
+    sv: Alytus
+    sw: Wilaya ya Alytus
+    ta: அலிட்ஸ் கவுண்டி
+    te: అలిటస్ కౌంటీ
+    th: เทศมณฑลอิทัส
+    tr: Alytus County
+    uk: Алітуський повіт
+    ur: الیتوس کاؤنٹی
+    vi: Hạt Alytus
+    ceb: Alytaus apskritis
+    sr_Latn: Alitus okrug
+    zh: 阿利圖斯縣
+    ccp: "\U00011103\U00011123\U0001112D\U00011111\U0001110C\U00011134 \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Alytus
+    bs: Okrug Alitus
+    mk: Алитушки округ
+    'no': Alytus fylke
+    az: Alitus qəzası
+    cy: Sir Alytus
+    hu: Alytus megye
+    yue: 阿里特斯縣
+    yue_Hans: 阿里特斯县
+  comments:
+  type: county
+KL:
+  name: Klaipedos Apskritis
+  code: KL
+  unofficial_names:
+  - Klaipedos
+  geo:
+    latitude: 55.6686983
+    longitude: 21.4241373
+    min_latitude: 55.18056989999999
+    min_longitude: 20.9531999
+    max_latitude: 56.38402379999999
+    max_longitude: 22.0260791
+  translations:
+    en: Klaipėda County
+    ar: مقاطعة كلايبيدا
+    be: Клайпедскі павет
+    bg: Клайпедски окръг
+    ca: Comtat de Klaipėda
+    cs: Klaipėdský kraj
+    da: Det tidligere Klaipėda amt
+    de: Bezirk Klaipėda
+    el: Επαρχία Κλαϊπέντα
+    es: Provincia de Klaipėda
+    et: Klaipėda maakond
+    eu: Klaipėdako konderria
+    fa: شهرستان کلایپدا
+    fi: Klaipėdan lääni
+    fr: apskritis de Klaipėda
+    he: מחוז קלייפדה
+    hr: Okrug Klaipėda
+    id: County Klaipėda
+    it: contea di Klaipėda
+    ja: クライペダ県
+    ka: კლაიპედის მაზრა
+    ko: 클라이페다 주
+    lt: Klaipėdos apskritis
+    lv: Klaipēdas apriņķis
+    nb: Klaipėda fylke
+    nl: Klaipėda²
+    pl: Okręg kłajpedzki
+    pt: Klaipėda
+    ro: Județul Klaipėda
+    ru: Клайпедский уезд
+    sr: Клајпеда
+    sv: Klaipėda
+    sw: Wilaya ya Klaipėda
+    uk: Клайпедський повіт
+    ur: کلائپیدا کاؤنٹی
+    ceb: Klaipėdos apskritis
+    tr: Klaipėda
+    sr_Latn: Klajpeda
+    zh: 克萊佩達縣
+    ccp: "\U00011107\U00011133\U00011123\U0001112D\U0001111B\U0001112C\U00011113 \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Klaipėda
+    hy: Կլայպեդի գավառ
+    th: เทศมณฑลไคลเพดา
+    bs: Okrug Klaipėda
+    mk: Клајпедски округ
+    'no': Klaipėda fylke
+    az: Klayped qəzası
+    cy: Sir Klaipėda
+    yue: 卡賴佩達縣
+    yue_Hans: 卡赖佩达县
+  comments:
+  type: county
+KU:
+  name: Kauno Apskritis
+  code: KU
+  unofficial_names: Kauno Apskritis
+  geo:
+    latitude: 54.9872863
+    longitude: 23.9525736
+    min_latitude: 54.4543069
+    min_longitude: 22.6715098
+    max_latitude: 55.57691699999999
+    max_longitude: 24.811666
+  translations:
+    en: Kaunas County
+    ar: مقاطعة كاوناس
+    be: Каўнаскі павет
+    bg: Каунаски окръг
+    bn: কুনাস কাউন্টি
+    ca: Comtat de Kaunas
+    cs: Kaunaský kraj
+    da: Kaunas amt
+    de: Bezirk Kaunas
+    el: Επαρχία Κάουνας
+    es: Provincia de Kaunas
+    et: Kaunase maakond
+    eu: Kaunasko konderria
+    fa: شهرستان کاوناس
+    fi: Kaunasin lääni
+    fr: apskritis de Kaunas
+    gu: કૌનાસ કાઉન્ટી
+    he: מחוז קובנה
+    hi: कौनास काउंटी
+    hr: Okrug Kaunas
+    id: County Kaunas
+    it: contea di Kaunas
+    ja: カウナス県
+    ka: კაუნასის მაზრა
+    kn: ಕೌನಾಸ್ ಕೌಂಟಿ
+    ko: 카우나스 주
+    lt: Kauno apskritis
+    lv: Kauņas apriņķis
+    mr: कौनास काउंटी
+    ms: Kaunas County
+    nb: Kaunas fylke
+    nl: Kaunas³
+    pl: Okręg kowieński
+    pt: Kaunas (condado)
+    ro: Județul Kaunas
+    ru: Каунасский уезд
+    si: කවුනාස් ප්‍රාන්තය
+    sr: Каунас округ
+    sv: Kaunas (provins)
+    sw: Wilaya ya Kaunas
+    ta: கௌனஸ் கவுண்டி
+    te: కౌనాస్ కౌంటీ
+    th: เมืองคาอูนัส
+    tr: Kaunas County
+    uk: Каунаський повіт
+    ur: کاوناس کاؤنٹی
+    vi: Hạt Kaunas
+    ceb: Kauno apskritis
+    sr_Latn: Kaunas okrug
+    zh: 考那斯縣
+    ccp: "\U00011107\U0001112F\U0001111A\U0001110C\U00011134 \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Kaunas
+    bs: Okrug Kaunas
+    mk: Каунашки округ
+    'no': Kaunas fylke
+    az: Kaunas qəzası
+    cy: Sir Kaunas
+    yue: 考那斯縣
+    yue_Hans: 考那斯县
+  comments:
+  type: county
+MR:
+  name: Marijampoles Apskritis
+  code: MR
+  unofficial_names:
+  - Mariampoles
+  geo:
+    latitude: 54.78199710000001
+    longitude: 23.1341364
+    min_latitude: 54.253698
+    min_longitude: 22.58981
+    max_latitude: 55.104489
+    max_longitude: 23.7938401
+  translations:
+    en: Marijampolė County
+    ar: مقاطعة ميرايامبوله
+    be: Марыямпальскі павет
+    bg: Мариямполски окръг
+    bn: মারিজাম্পোল কাউন্টি
+    ca: Comtat de Marijampolė
+    cs: Marijampolský kraj
+    da: Marijampolė amt
+    de: Bezirk Marijampolė
+    el: Επαρχία Μαριγιαμπολέ
+    es: Marijampolė²
+    et: Marijampolė maakond
+    eu: Marijampolėko konderria
+    fa: شهرستان ماریامپوله
+    fi: Marijampolėn lääni
+    fr: apskritis de Marijampolė
+    gu: મારિજેમ્પોલે કાઉન્ટી
+    he: מחוז מריאמפולה
+    hi: मारियेम्पोल काउंटी
+    hr: Okrug Marijampolė
+    id: County Marijampolė
+    it: contea di Marijampolė
+    ja: マリヤーンポレ県
+    ka: მარიამპოლის მაზრა
+    kn: ಮರಿಜಾಂಪೊಲೆ ಕೌಂಟಿ
+    ko: 마리얌폴레 주
+    lt: Marijampolės apskritis
+    lv: Marijampoles apriņķis
+    mr: मारिजपोल्ले काउंटी
+    ms: Marijampole County
+    nb: Marijampolė fylke
+    nl: Marijampolė²
+    pl: Okręg mariampolski
+    pt: Marijampolė (condado)
+    ro: Județul Marijampolė
+    ru: Мариямпольский уезд
+    si: මරිජම්පොලේ ප්‍රාන්තය
+    sr: Маријамполе округ
+    sv: Marijampolė (provins)
+    sw: Wilaya ya Marijampolė
+    ta: மரிசம்போலே கவுண்டி
+    te: మారిజాంపోల్ కౌంటీ
+    th: มาริยามโปเล
+    tr: Marijampolė County
+    uk: Маріямпольський повіт
+    ur: مارییامپولے کاؤنٹی
+    vi: Marijampolė (hạt)
+    ceb: Marijampolės apskritis
+    sr_Latn: Marijampole okrug
+    zh: 馬里揚泊列縣
+    ccp: "\U0001111F\U00011122\U00011128\U0001111F\U00011134\U0001111B\U0001112E\U00011123\U00011134
+      \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Marijampolė
+    bs: Okrug Marijampolė
+    mk: Маријамполски округ
+    'no': Marijampolė fylke
+    az: Mariyampol qəzası
+    cy: Sir Marijampolė
+    yue: 馬麗漢普縣
+    yue_Hans: 马丽汉普县
+  comments:
+  type: county
+PN:
+  name: Panevežio Apskritis
+  code: PN
+  unofficial_names:
+  - Panevezhio
+  geo:
+    latitude: 55.9748049
+    longitude: 25.0794767
+    min_latitude: 55.38713989999999
+    min_longitude: 23.8790478
+    max_latitude: 56.45032089999999
+    max_longitude: 26.0457081
+  translations:
+    en: Panevėžys County
+    ar: مقاطعة بانيفيزيس
+    be: Панявежыскі павет
+    bg: Паневежки окръг
+    bn: প্যানেভেজিস কাউন্টি
+    ca: Comtat de Panevėžys
+    cs: Panevėžyský kraj
+    da: Panevėžys amt
+    de: Bezirk Panevėžys
+    el: Επαρχία Πανεβεζίς
+    es: Provincia de Panevėžys
+    et: Panevėžysi maakond
+    eu: Panevėžysko konderria
+    fa: شهرستان پانه‌وژیس
+    fi: Panevėžysin lääni
+    fr: apskritis de Panevėžys
+    gu: પૅનવેજીસ કાઉન્ટી
+    he: מחוז פוניבז׳
+    hi: पेनेवेज़िस काउंटी
+    hr: Okrug Panevėžis
+    id: County Panevėžys
+    it: contea di Panevėžys
+    ja: パネヴェジース県
+    ka: პანევეჟისის მაზრა
+    kn: ಪನೆವೆಝಿ ಕೌಂಟಿ
+    ko: 파네베지스 주
+    lt: Panevėžio apskritis
+    lv: Panevēžas apriņķis
+    mr: पॅनवेज काउंटी
+    ms: Panevezys County
+    nb: Panevėžys fylke
+    nl: Panevėžys²
+    pl: Okręg poniewieski
+    pt: Panevėžys
+    ro: Județul Panevėžys
+    ru: Паневежский уезд
+    si: පනේවේසයිස් ප්‍රාන්තය
+    sr: Паневежис округ
+    sv: Panevėžys
+    sw: Wilaya ya Panevėžys
+    ta: பனெவேஸ்ய்ஸ் கவுண்டி
+    te: పానెవెజిస్ కౌంటీ
+    th: เมืองพาเนเวซี
+    tr: Panevezys County
+    uk: Паневезький повіт
+    ur: پانیویژیس کاؤنٹی
+    vi: Hạt Panevezys
+    ceb: Panevėžys
+    sr_Latn: Panevežis okrug
+    zh: 帕涅韋日斯縣
+    ccp: "\U0001111B\U00011133\U00011120\U0001111A\U0001112C\U0001111E\U0001112C\U0001110E\U0001112D
+      \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Panevėžys
+    hy: Պանավեժի կոմսություն
+    bs: Okrug Panevėžys
+    mk: Паневешки округ
+    'no': Panevėžys fylke
+    az: Panevej qəzası
+    cy: Sir Panevėžys
+    yue: 賓拿法斯縣
+    yue_Hans: 宾拿法斯县
+  comments:
+  type: county
+SA:
+  name: Šiauliu Apskritis
+  code: SA
+  unofficial_names:
+  - Shiauliu
+  geo:
+    latitude: 55.9985751
+    longitude: 23.1380051
+    min_latitude: 55.4631011
+    min_longitude: 22.4657018
+    max_latitude: 56.41505489999999
+    max_longitude: 24.1824539
+  translations:
+    en: Šiauliai County
+    ar: مقاطعة شياولياي
+    be: Шаўляйскі павет
+    bg: Шяуляйски окръг
+    bn: সিয়াউলিয়াই কাউন্টি
+    ca: Comtat de Šiauliai
+    cs: Šiauliaiský kraj
+    da: Šiauliai amt
+    de: Bezirk Šiauliai
+    el: Επαρχία Σιαουλιάι
+    es: Provincia de Šiauliai
+    et: Šiauliai maakond
+    eu: Šiauliaiko konderria
+    fa: شهرستان شاولیای
+    fi: Šiauliain lääni
+    fr: apskritis de Šiauliai
+    gu: સિયાઉલિઆઇ કાઉન્ટી
+    he: מחוז שאולאי
+    hi: सिऔलिआई काउंटी
+    hr: Okrug Šiauliai
+    id: County Šiauliai
+    it: contea di Šiauliai
+    ja: シャウレイ県
+    ka: შიაულიაის მაზრა
+    kn: ಸಿಯುಲಿಯಾಯಿ ಕೌಂಟಿ
+    ko: 샤울랴이 주
+    lt: Šiaulių apskritis
+    lv: Šauļu apriņķis
+    mr: सियाउल्लाई काउंटी
+    ms: Siauliai County
+    nb: Šiauliai fylke
+    nl: Šiauliai²
+    pl: Okręg szawelski
+    pt: Šiauliai
+    ro: Județul Šiauliai
+    ru: Шяуляйский уезд
+    si: සියවුලියයි ප්‍රාන්තය
+    sr: Шјауљај
+    sv: Šiauliai
+    sw: Wilaya ya Šiauliai
+    ta: சிசுழியாய் கவுண்டி
+    te: సియాలియా కౌంటీ
+    tr: Siauliai County
+    uk: Шяуляйський повіт
+    ur: شئولئی کاؤنٹی
+    vi: Hạt siauliai
+    ceb: Šiaulių apskritis
+    sr_Latn: Šjauljaj
+    zh: 希奧利艾縣
+    ccp: "\U00011125\U00011128\U00011103\U0001112E\U00011123\U00011128\U00011103\U0001112D
+      \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Šiauliai
+    bs: Okrug Šiauliai
+    mk: Шјауљајски округ
+    'no': Šiauliai fylke
+    az: Şyaulyay qəzası
+    cy: Sir Šiauliai
+    th: เทศมณฑลเช็วเลย์
+    yue: 斯奧利艾縣
+    yue_Hans: 斯奥利艾县
+  comments:
+  type: county
+TA:
+  name: Taurages Apskritis
+  code: TA
+  unofficial_names:
+  - Taurages
+  geo:
+    latitude: 55.3072586
+    longitude: 22.357294
+    min_latitude: 55.02444
+    min_longitude: 21.649398
+    max_latitude: 55.68873199999999
+    max_longitude: 23.5038912
+  translations:
+    en: Tauragė County
+    ar: مقاطعة تاوراغه
+    be: Таўрагскі павет
+    bg: Таурагски окръг
+    bn: তাউরাগি কাউন্টি
+    ca: Comtat de Tauragė
+    cs: Tauragėský kraj
+    da: Tauragė amt
+    de: Bezirk Tauragė
+    el: Επαρχία Ταουραγκέ
+    es: Provincia de Tauragė
+    et: Tauragė maakond
+    eu: Tauragėko konderria
+    fa: شهرستان تاوراگه
+    fi: Tauragėn lääni
+    fr: apskritis de Tauragė
+    gu: ટૌરગા કાઉન્ટી
+    he: מחוז טאורגה
+    hi: टॉरेज काउंटी
+    hr: Okrug Tauragė
+    id: County Tauragė
+    it: contea di Tauragė
+    ja: タウラゲ県
+    ka: ტაურაგეს მაზრა
+    kn: ಟೌರ್ಗೆ ಕೌಂಟಿ
+    ko: 타우라게 주
+    lt: Tauragės apskritis
+    lv: Tauraģes apriņķis
+    mr: टौर्गा काउंटी
+    ms: Taurage County
+    nb: Tauragė fylke
+    nl: Tauragė²
+    pl: Okręg tauroski
+    pt: Tauragė
+    ro: Județul Tauragė
+    ru: Таурагский уезд
+    si: ටෞරගේ ප්‍රාන්තය
+    sr: Округ Таураге
+    sv: Tauragė
+    sw: Wilaya ya Tauragė
+    ta: டயராஜ் கவுண்டி
+    te: టౌరేజ్ కౌంటీ
+    th: เทศมณฑลโตว์ราเก
+    tr: Taurage County
+    uk: Таурагський повіт
+    ur: توراگئیے کاؤنٹی
+    vi: Hạt Taurage
+    ceb: Tauragės apskritis
+    sr_Latn: Okrug Taurage
+    zh: 陶拉格縣
+    ccp: "\U00011111\U00011105\U0001112A\U00011122\U00011107\U00011134\U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Tauragė
+    hy: Տաուրագեսի կոմսություն
+    bs: Okrug Tauragė
+    mk: Таурашки округ
+    'no': Tauragė fylke
+    az: Tauraq qəzası
+    cy: Sir Tauragė
+    yue: 陶拉格縣
+    yue_Hans: 陶拉格县
+  comments:
+  type: county
+TE:
+  name: Telšiu Apskritis
+  code: TE
+  unofficial_names:
+  - Telshiu
+  geo:
+    latitude: 56.1026616
+    longitude: 22.1113916
+    min_latitude: 55.59742689999999
+    min_longitude: 21.5120119
+    max_latitude: 56.4320116
+    max_longitude: 22.7381388
+  translations:
+    en: Telšiai County
+    ar: مقاطعة تيلسياي
+    be: Цяльшэйскі павет
+    bg: Телшяйски окръг
+    bn: তেলসিয়াই কাউন্টি
+    ca: Comtat de Telšiai
+    cs: Telšiajský kraj
+    da: Telšiai amt
+    de: Bezirk Telšiai
+    el: Επαρχία Τελσιάι
+    es: Provincia de Telšiai
+    et: Telšiai maakond
+    eu: Telšiaiko konderria
+    fa: شهرستان تلشای
+    fi: Telšiain lääni
+    fr: apskritis de Telšiai
+    gu: ટેલસિયાઈ કાઉન્ટી
+    he: מחוז טלז
+    hi: तेल्सिई काउंटी
+    hr: Okrug Telšiai
+    id: County Telšiai
+    it: contea di Telšiai
+    ja: テルシェイ県
+    ka: ტელშიაის მაზრა
+    kn: ತೆಲ್ಶಿಯಾ ಕೌಂಟಿ
+    ko: 텔샤이 주
+    lt: Telšių apskritis
+    lv: Telšu apriņķis
+    mr: टेलिशिया काउंटी
+    ms: Telsiai County
+    nb: Telšiai fylke
+    nl: Telšiai²
+    pl: Okręg telszański
+    pt: Telšiai
+    ro: Județul Telšiai
+    ru: Тельшяйский уезд
+    si: ටෙල්සියායි ප්‍රාන්තය
+    sr: Телшјај
+    sv: Telšiai
+    sw: Wilaya ya Telšiai
+    ta: டெலிசியை கவுண்டி
+    te: టెల్సియాయి కౌంటీ
+    th: เมืองเตลเซ
+    tr: Teislai County
+    uk: Тельшяйський повіт
+    ur: تلشئیی کاؤنٹی
+    vi: Hạt Telsiai
+    ceb: Telšių apskritis
+    sr_Latn: Telšjaj
+    zh: 特爾希艾縣
+    ccp: "\U00011111\U00011123\U00011134\U00011125\U00011128\U00011103\U0001112D \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Telšiai
+    bs: Okrug Telšiai
+    mk: Телшјајски округ
+    'no': Telšiai fylke
+    az: Telşyay qəzası
+    cy: Sir Telšiai
+    yue: 透斯艾縣
+    yue_Hans: 透斯艾县
+  comments:
+  type: county
+UT:
+  name: Utenos Apskritis
+  code: UT
+  unofficial_names: Utenos Apskritis
+  geo:
+    latitude: 55.53189690000001
+    longitude: 25.7904699
+    min_latitude: 55.0309768
+    min_longitude: 24.653176
+    max_latitude: 55.94378
+    max_longitude: 26.8355798
+  translations:
+    en: Utena County
+    ar: مقاطعة أوتينا
+    be: Уцянскі павет
+    bg: Утенски окръг
+    bn: উটেনা কাউন্টি
+    ca: Comtat d’Utena
+    cs: Utenský kraj
+    da: Utena amt
+    de: Bezirk Utena
+    el: Επαρχία Ουτενά
+    es: Provincia de Utena
+    et: Utena maakond
+    eu: Utenako konderria
+    fa: شهرستان اوتنا
+    fi: Utenan lääni
+    fr: apskritis d’Utena
+    gu: ઉટેના કાઉન્ટી
+    he: מחוז אוטנה
+    hi: उटेना काउंटी
+    hr: Okrug Utena
+    id: County Utena
+    it: contea di Utena
+    ja: ウテナ県
+    ka: უტენის მაზრა
+    kn: ಉಟೆನಾ ಕೌಂಟಿ
+    ko: 우테나 주
+    lt: Utenos apskritis
+    lv: Utenas apriņķis
+    mr: उतेंना काउंटी
+    ms: Utena County
+    nb: Utena fylke
+    nl: Utena²
+    pl: Okręg uciański
+    pt: Utena
+    ro: Județul Utena
+    ru: Утенский уезд
+    si: උටෙනා ප්‍රාන්තය
+    sr: Утена
+    sv: Utena
+    sw: Wilaya ya Utena
+    ta: உட்டேணா கவுண்டி
+    te: ఉటెనా కౌంటీ
+    th: เทศมณฑลอูเตนา
+    tr: Utena
+    uk: Утенський повіт
+    ur: اوتینا کاؤنٹی
+    vi: Hạt Utena
+    ceb: Utenos apskritis
+    sr_Latn: Utena
+    zh: 烏田納縣
+    ccp: "\U00011105\U0001112A\U00011111\U0001112C\U0001111A \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Utena
+    hy: Ուտենայի գավառ
+    bs: Okrug Utena
+    mk: Утенски округ
+    'no': Utena fylke
+    az: Uten qəzası
+    cy: Sir Utena
+    yue: 烏天拿縣
+    yue_Hans: 乌天拿县
+  comments:
+  type: county
+VL:
+  name: Vilniaus Apskritis
+  code: VL
+  unofficial_names: Vilniaus Apskritis
+  geo:
+    latitude: 54.8086502
+    longitude: 25.2182138
+    min_latitude: 54.1276599
+    min_longitude: 24.3863751
+    max_latitude: 55.5174369
+    max_longitude: 26.760213
+  translations:
+    en: Vilnius County
+    ar: مقاطعة فيلنيوس
+    be: Вільнюскі павет
+    bg: Вилнюски окръг
+    bn: ভিনিয়াস কাউন্টি
+    ca: Comtat de Vílnius
+    cs: Vilniuský kraj
+    da: Vilnius amt
+    de: Bezirk Vilnius
+    el: Επαρχία Βίλνιους
+    es: Provincia de Vilna
+    et: Vilniuse maakond
+    eu: Vilniusko konderria
+    fa: شهرستان ویلنیوس
+    fi: Vilnan lääni
+    fr: apskritis de Vilnius
+    gu: વિલ્નિઅસ કાઉન્ટી
+    he: מחוז וילנה
+    hi: विलनियस काउंटी
+    hr: Okrug Vilnius
+    hy: Վիլնյուսի կոմսություն
+    id: County Vilnius
+    it: contea di Vilnius
+    ja: ヴィリニュス県
+    ka: ვილნიუსის მაზრა
+    kn: ವಿಲ್ನಿಯಸ್ ಕೌಂಟಿ
+    ko: 빌뉴스 주
+    lt: Vilniaus apskritis
+    lv: Viļņas apriņķis
+    mr: विल्नियस काउंटी
+    ms: Vilnius County
+    nb: Vilnius fylke
+    nl: Vilnius²
+    pl: Okręg wileński
+    pt: Vilnius
+    ro: Județul Vilnius
+    ru: Вильнюсский уезд
+    si: විල්නියස් ප්‍රාන්තය
+    sr: Вилњус округ
+    sv: Vilnius
+    sw: Wilaya ya Vilnius
+    ta: வில்நீயஸ் கவுண்டி
+    te: విల్నియస్ కౌంటీ
+    th: วิลนีอุส
+    tr: Vilnius County
+    uk: Вільнюський повіт
+    ur: ویلنیوس کاؤنٹی
+    vi: Hạt Vilnius
+    ceb: Vilniaus apskritis
+    sr_Latn: Vilnjus okrug
+    zh: 維爾紐斯縣
+    ccp: "\U0001111E\U00011128\U00011123\U00011134\U0001111A\U00011128\U00011120\U0001110C\U00011134
+      \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Vilnius
+    bs: Okrug Vilnius
+    mk: Вилнушки округ
+    'no': Vilnius fylke
+    az: Vilnüs qəzası
+    cy: Sir Vilnius
+    hu: Vilnius megye
+    yue: 非奧尼日斯縣
+    yue_Hans: 非奥尼日斯县
+  comments:
+  type: county

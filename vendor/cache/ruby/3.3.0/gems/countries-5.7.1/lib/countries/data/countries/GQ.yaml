@@ -1,0 +1,53 @@
+---
+GQ:
+  alpha2: GQ
+  alpha3: GNQ
+  continent: Africa
+  country_code: '240'
+  currency_code: XAF
+  distance_unit: KM
+  gec: EK
+  geo:
+    latitude: 1.650801
+    longitude: 10.267895
+    max_latitude: 3.8355
+    max_longitude: 11.3333
+    min_latitude: -1.5475
+    min_longitude: 5.541900099999999
+    bounds:
+      northeast:
+        lat: 3.8355
+        lng: 11.3333
+      southwest:
+        lat: -1.5475
+        lng: 5.541900099999999
+  international_prefix: '00'
+  ioc: GEQ
+  iso_long_name: The Republic of Equatorial Guinea
+  iso_short_name: Equatorial Guinea
+  languages_official:
+  - es
+  - fr
+  languages_spoken:
+  - es
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  national_prefix: None
+  nationality: Equatorial Guinean
+  number: '226'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Middle Africa
+  un_locode: GQ
+  unofficial_names:
+  - Equatorial Guinea
+  - Äquatorial-Guinea
+  - Guinée Équatoriale
+  - Guinea Ecuatorial
+  - 赤道ギニア
+  - Equatoriaal-Guinea
+  world_region: EMEA

@@ -1,0 +1,4061 @@
+---
+'01':
+  name: Attard
+  code: '01'
+  unofficial_names: Attard
+  geo:
+    latitude: 35.892778
+    longitude: 14.438333
+    min_latitude: 35.8811399
+    min_longitude: 14.4089986
+    max_latitude: 35.9019827
+    max_longitude: 14.4581044
+  translations:
+    en: Attard
+    ar: عطار
+    bn: আতার্ড
+    ca: Attard
+    cs: Attard
+    da: Attard
+    de: Attard
+    el: Ατάρντ
+    es: Attard
+    eu: Attard
+    fa: آتارد
+    fi: Attard
+    fr: Attard
+    gu: એટર્ડ
+    he: אטארד
+    hi: अटार्ड
+    hr: Attard
+    hu: Attard
+    id: Attard
+    it: Attard
+    ja: アタード
+    kn: ಅಟ್ಟಾರ್ಡ್
+    ko: 아타르트
+    lt: Atardas
+    mr: अटर्ड
+    ms: Attard
+    nb: Attard
+    nl: Attard
+    pl: Attard
+    pt: Attard
+    ru: Аттард
+    si: අට්ටාර්ඩ්
+    sv: Attard (kommun)
+    ta: ஆட்டர்ட்
+    te: అటార్డ్
+    th: เขตนาคาปิริปิริท
+    tr: Attard
+    uk: Аттард
+    ur: آتار
+    vi: Attard
+    zh: 阿塔爾德
+    lv: Atarda
+    ceb: Attard
+    ccp: "\U00011103\U00011111\U00011133\U00011126\U00011122\U00011134\U00011113\U00011134"
+    'no': Attard
+    hy: Ատտարդ
+  comments:
+  type: local_council
+'02':
+  name: Balzan
+  code: '02'
+  unofficial_names: Balzan
+  geo:
+    latitude: 35.898056
+    longitude: 14.453333
+    min_latitude: 35.8928049
+    min_longitude: 14.446206
+    max_latitude: 35.9019305
+    max_longitude: 14.4573748
+  translations:
+    en: Balzan
+    ar: بالزان
+    bn: বালযান
+    ca: Balzan
+    da: Balzan
+    de: Balzan
+    el: Μπαλζάν
+    es: Balzan
+    eu: Balzan
+    fa: بالزان
+    fi: Balzan
+    fr: Balzan
+    gu: બાલ્ઝાન
+    hi: बाल्ज़न
+    hr: Balzan
+    hu: Balzan
+    id: Balzan
+    it: Balzan
+    ja: バルツァーン
+    kn: ಬಾಲ್ಜನ್
+    ko: 발찬
+    lt: Balzanas
+    mr: बाल्झान
+    ms: Balzan
+    nb: Balzan
+    nl: Balzan
+    pl: Balzan
+    pt: Balzan
+    ru: Бальцан
+    si: බල්සාන්
+    sv: Balzan (kommun)
+    ta: பால்சன்
+    te: బాల్జాన్
+    th: บอลซาน
+    tr: Balzan
+    ur: بالزان
+    vi: Balzan
+    zh: 巴尔灿
+    lv: Balzana
+    ceb: Balzan
+    ccp: "\U0001111D\U00011127\U00011123\U00011134\U0001110E\U0001111A\U00011134"
+    uk: Бальцан
+    'no': Balzan
+    he: פרס בלצן
+    hy: Բալցան
+  comments:
+  type: local_council
+'03':
+  name: Birgu
+  code: '03'
+  unofficial_names: Birgu
+  geo:
+    latitude: 35.888056
+    longitude: 14.5225
+    min_latitude: 35.8854689
+    min_longitude: 14.5167589
+    max_latitude: 35.893023
+    max_longitude: 14.5255729
+  translations:
+    en: Birgu
+    ar: بيرجو
+    bn: বিরগো
+    ca: Birgu
+    cs: Vittoriosa
+    da: Birgu
+    de: Vittoriosa
+    el: Μπίργκου
+    es: Birgu
+    eu: Birgu
+    fa: بیرگو
+    fi: Birgu
+    fr: Birgu
+    gu: બિર્ગુ
+    he: בירגו
+    hi: बिर्गु
+    hu: Birgu
+    id: Birgu
+    it: Vittoriosa
+    ja: ビルグ
+    kn: ಬರ್ಗು
+    ko: 비르구
+    lt: Birgu
+    mr: बिर्गु
+    ms: Birgu
+    nb: Birgu
+    nl: Birgu
+    pl: Birgu
+    pt: Birgu
+    ru: Биргу
+    si: බර්ගු
+    sr: Биргу
+    sv: Birgu
+    ta: பீர்க்கு
+    te: బిర్గ్యూ
+    th: บีร์กู
+    tr: Birgu
+    uk: Біргу
+    ur: بیرگو
+    vi: Birgu
+    zh: 比尔古
+    lv: Birgu
+    ceb: Vittoriosa
+    sr_Latn: Birgu
+    ccp: "\U0001111D\U00011128\U00011122\U00011134\U00011109\U0001112A"
+    be: Біргу
+    mk: Биргу
+    'no': Birgu
+    hy: Բիրգու
+  comments:
+  type: local_council
+'04':
+  name: Birkirkara
+  code: '04'
+  unofficial_names: Birkirkara
+  geo:
+    latitude: 35.896667
+    longitude: 14.4625
+    min_latitude: 35.8868336
+    min_longitude: 14.4523215
+    max_latitude: 35.9046029
+    max_longitude: 14.478339
+  translations:
+    en: Birkirkara
+    af: Birkirkara
+    am: ቢርኪርካራ
+    ar: بيركيركارا
+    be: Горад Біркіркара
+    bg: Биркиркара
+    bn: বিরকিরকারা
+    ca: Birkirkara
+    cs: Birkirkara
+    da: Birkirkara
+    de: Birkirkara
+    el: Μπιρκιρκάρα
+    es: Birkirkara
+    eu: Birkirkara
+    fa: بیرکیرکارا
+    fi: Birkirkara
+    fr: Birkirkara
+    gu: બિર્કીરકારા
+    he: בירקירקארה
+    hi: बीरकीरकारा
+    hr: Birkirkara
+    hu: Birkirkara
+    hy: Բիրկիրկարա
+    id: Birkirkara
+    is: Birkirkara
+    it: Birchircara
+    ja: ビルキルカラ
+    kn: ಬರ್ಕಿರ್ಕರ
+    ko: 비르키르카라
+    lt: Birkirkara
+    mr: ब्रिकीरकारा
+    ms: Birkirkara
+    nb: Birkirkara
+    nl: Birkirkara
+    pl: Birkirkara
+    pt: Birkirkara
+    ro: Birkirkara
+    ru: Биркиркара
+    si: බර්කර්කරා
+    sk: Birkirkara
+    sr: Биркиркара
+    sv: Birkirkara
+    ta: பிரகிரகரா
+    te: బికిర్కారా
+    th: บีร์กีร์การา
+    tr: Birkirkara
+    uk: Біркіркара
+    ur: بیرکیرکارا
+    vi: Birkirkara
+    zh: 比爾基卡拉
+    lv: Birkirkara
+    ceb: Birkirkara (munisipyo)
+    sr_Latn: Birkirkara
+    sq: Birkirkara
+    ccp: "\U0001111D\U00011128\U00011122\U00011134\U00011107\U00011128\U00011122\U00011134\U00011107\U00011122"
+    ga: Birkirkara
+    'no': Birkirkara
+    et: Birkirkara
+    ps: بیرکیرکارا
+  comments:
+  type: local_council
+'05':
+  name: Birżebbuġa
+  code: '05'
+  unofficial_names: Birżebbuġa
+  geo:
+    latitude: 35.825556
+    longitude: 14.528056
+    min_latitude: 35.805982
+    min_longitude: 14.4982777
+    max_latitude: 35.8415418
+    max_longitude: 14.5496687
+  translations:
+    en: Birżebbuġa
+    ar: بئر زيوجة
+    bn: বির্জেব্বুগা
+    ca: Birżebbuġa
+    da: Birżebbuġa
+    de: Birżebbuġa
+    el: Μπιρζεμπούγκα
+    es: Birżebbuġa
+    eu: Birżebbuġa
+    fa: بیرزبوگا
+    fi: Birżebbuġa
+    fr: Birżebbuġa
+    gu: બ્રીઝેબુગા
+    he: בירזבוג׳ה
+    hi: बिज़ेबुगा
+    hu: Birżebbuġa
+    id: Birżebbuġa
+    it: Birzebbugia
+    ja: ビルゼブジャ
+    kn: ಬರ್ಝೆಬ್ಬು
+    ko: 비르제부자
+    lt: Birzebudžia
+    mr: बोर्झेब्बुग
+    ms: Birzebbuga
+    nb: Bizebbuga
+    nl: Birżebbuġa
+    pl: Birżebbuġa
+    pt: Birżebbuġa
+    ro: Birżebbuġa
+    ru: Бирзеббуджа
+    si: බර්සෙබ්බුගා
+    sv: Birżebbuġa
+    ta: பிரஸிப்புக
+    te: బిర్జెబ్బూగా
+    th: บิร์เซ็บบูกา
+    tr: Birzebbuga
+    uk: Бірзеббуджа
+    ur: بیرزیبوجا
+    vi: Birzebbuga
+    zh: 比尔泽布贾
+    lv: Birzebudžia
+    ceb: Birżebbuġa (munisipyo)
+    ccp: "\U0001111D\U00011128\U00011122\U00011134\U0001110E\U0001112C\U0001111B\U00011134\U0001111D\U0001112A\U00011109"
+    'no': Bizebbuga
+    be: Бірзебуджа
+    cs: Birżebbuġa
+    hy: Բիրզեբուջա
+  comments:
+  type: local_council
+'06':
+  name: Bormla
+  code: '06'
+  unofficial_names: Bormla
+  geo:
+    latitude: 35.882222
+    longitude: 14.522222
+    min_latitude: 35.8754636
+    min_longitude: 14.5123392
+    max_latitude: 35.8860872
+    max_longitude: 14.5293837
+  translations:
+    en: Cospicua
+    ar: كوسبيكو
+    bn: কসপিকোয়া
+    ca: Cospicua
+    da: Cospicua
+    de: Cospicua
+    el: Κοσπίκουα
+    es: Bormla
+    eu: Cospicua
+    fa: کاسپیکوا
+    fi: Cospicua
+    fr: Bormla
+    gu: કોસ્પિક્યુઆ
+    hi: कोस्पिकुआ
+    hu: Bormla
+    hy: Բորմլա
+    id: Cospicua
+    it: Cospicua
+    ja: ボルムラ
+    kn: ಕಾಸ್ಪಿಕ್ಯುವಾ
+    ko: 보름라
+    lt: Bormla
+    mr: कॉस्पिकए
+    ms: Cospicua
+    nb: Cospicua
+    nl: Cospicua
+    pl: Bormla
+    pt: Cospicua
+    ru: Бормла
+    si: කොස්පිකුවා
+    sr: Бормла
+    sv: Bormla (kommun i Malta)
+    ta: காசிபிக்குவா
+    te: కాస్పికువా
+    th: คอสปิกัว
+    tr: Cospicua
+    uk: Бормла
+    ur: کوسپیکوا
+    vi: Cospicua
+    zh: 科斯皮夸
+    lv: Bormla
+    ceb: Bormla
+    sr_Latn: Bormla
+    ccp: "\U00011107\U00011127\U0001110C\U00011134\U0001111B\U00011128\U00011107\U00011131"
+    'no': Cospicua
+    az: Kospikua
+    he: קוספיקאה
+  comments:
+  type: local_council
+'07':
+  name: Dingli
+  code: '07'
+  unofficial_names: Dingli
+  geo:
+    latitude: 35.860278
+    longitude: 14.381389
+    min_latitude: 35.8459337
+    min_longitude: 14.3598641
+    max_latitude: 35.8726379
+    max_longitude: 14.3980764
+  translations:
+    en: Dingli
+    ar: دينغلي
+    bn: ডিংলি
+    ca: Dingli
+    da: Dingli
+    de: Dingli
+    el: Ντίνγκλι
+    es: Dingli
+    eu: Dingli
+    fi: Dingli
+    fr: Dingli
+    gu: ડિંગલી
+    he: דינגלי
+    hi: डिंगली
+    hu: Dingli
+    id: Dingli
+    is: Dingli
+    it: Dingli
+    ja: ディングリ
+    kn: ಡಿಂಗ್ಲಿ
+    ko: 딩글리
+    lt: Dinglis (Malta)
+    mr: दिगली
+    ms: Dingli
+    nb: Dingli
+    nl: Dingli
+    pl: Dingli
+    pt: Dingli
+    ru: Дингли
+    si: ඩින්ග්ලි
+    sl: Dingli
+    sv: Dingli (kommun)
+    ta: டிங்கிளி
+    te: డింగ్లి
+    th: เมืองกิสบอร์น
+    tr: Dingli
+    ur: دینگلی
+    vi: Dingli
+    zh: 丁利
+    lv: Dingli
+    ceb: Dingli
+    ccp: "\U00011113\U00011128\U00011101\U00011123\U00011128"
+    uk: Дінглі
+    'no': Dingli
+    fa: دینگلی
+    hy: Դինգլի
+  comments:
+  type: local_council
+'08':
+  name: Fgura
+  code: '08'
+  unofficial_names: Fgura
+  geo:
+    latitude: 35.8725
+    longitude: 14.522778
+    min_latitude: 35.86677390000001
+    min_longitude: 14.5115118
+    max_latitude: 35.8788395
+    max_longitude: 14.5309181
+  translations:
+    en: Fgura
+    af: Fgura
+    ar: فغورا
+    bn: ফেগুরা
+    ca: Fgura
+    cs: Fgura
+    da: Fgura
+    de: Fgura
+    el: Φγκούρα
+    es: Fgura
+    et: Fgura
+    eu: Fgura
+    fa: فگورا
+    fi: Fgura
+    fr: Fgura
+    gl: Fgura
+    gu: ફગુરા
+    hi: फागुरा
+    hr: Fgura
+    hu: Fgura
+    id: Fgura
+    is: Fgura
+    it: Figura
+    ja: フグーラ
+    kn: ಫಾಗೂರ
+    ko: 프구라
+    lt: Fgura
+    lv: Fgura
+    mr: फगुरं
+    ms: Fgura
+    nb: Fgura
+    nl: Fgura
+    pl: Fgura
+    pt: Fgura
+    ro: Fgura
+    ru: Фгура
+    si: එෆ්ගුරා
+    sk: Fgura
+    sl: Fgura
+    sv: Il-Fgura
+    ta: பிகுரா
+    te: ఎఫ్‌గురా
+    th: ฟกูรา
+    tr: Fgura
+    ur: فگورا
+    vi: Fgura
+    zh: 弗古拉
+    cy: Fgura
+    ceb: Il-Fgura
+    sq: Fgura
+    ccp: "\U00011109\U0001112A\U00011122"
+    uk: Фгура
+    bs: Fgura
+    'no': Fgura
+    hy: Ֆգուրա
+  comments:
+  type: local_council
+'09':
+  name: Floriana
+  code: '09'
+  unofficial_names: Floriana
+  geo:
+    latitude: 35.893333
+    longitude: 14.505833
+    min_latitude: 35.8848454
+    min_longitude: 14.4969012
+    max_latitude: 35.8990215
+    max_longitude: 14.5127249
+  translations:
+    en: Floriana
+    ar: فلوريانا
+    bn: ফ্লুরিয়ানা
+    ca: Floriana
+    cs: Floriana
+    da: Floriana
+    de: Floriana
+    el: Φλοριάνα
+    es: Floriana
+    eu: Floriana
+    fi: Floriana
+    fr: Floriana
+    gu: ફ્લોરીયાના
+    he: פלוריאנה
+    hi: फ्लोरियाना
+    hu: Floriana
+    id: Floriana
+    it: Floriana
+    ja: フロリアーナ
+    kn: ಫ್ಲೋರಿಯಾನಾ
+    ko: 플로리아나
+    lt: Floriana
+    mr: फ्लोरियाना
+    ms: Floriana
+    nb: Floriana
+    nl: Floriana
+    pl: Floriana
+    pt: Floriana
+    ru: Флориана
+    si: ෆ්ලොරියානා
+    sv: Floriana
+    ta: பிளோரினா
+    te: ఫ్లోరియానా
+    th: เมืองโมกิเลฟ
+    tr: Floriana
+    uk: Флоріана
+    ur: فلوریانا
+    vi: Floriana
+    lv: Floriana
+    ceb: Floriana (kapital sa rehiyon sa Malta)
+    zh: 弗罗瑞安娜
+    ccp: "\U0001111C\U00011133\U00011123\U0001112E\U00011122\U00011128\U00011120\U0001111A"
+    'no': Floriana
+    fa: فلوریانا
+  comments:
+  type: local_council
+'10':
+  name: Fontana
+  code: '10'
+  unofficial_names: Fontana
+  geo:
+    latitude: 36.0369053
+    longitude: 14.2352339
+    min_latitude: 36.0320243
+    min_longitude: 14.2321153
+    max_latitude: 36.041569
+    max_longitude: 14.2396141
+  translations:
+    en: Fontana
+    ar: فونتانا
+    bn: ফন্টানা
+    ca: Fontana (Gozo)
+    da: Fontana
+    de: Fontana
+    el: Φοντάνα
+    es: Fontana (Malta)
+    fi: Fontana
+    fr: Fontana (Gozo)
+    gu: ફોન્ટાના
+    hi: फोंटाना
+    hu: Fontana (Gozo)
+    id: Fontana
+    it: Fontana
+    ja: フォンターナ
+    kn: ಫಾಂಟಾನಾ
+    ko: 폰타나
+    lt: Fontana
+    mr: फोंतना
+    ms: Fontana
+    nb: Fontana
+    nl: Fontana
+    pl: Fontana (Malta)
+    pt: Fontana (Malta)
+    ru: Фонтана
+    si: ෆොන්ටානා
+    sv: Il-Fontana
+    ta: போன்டனா
+    te: ఫాంటానా
+    th: ฟอนตานา
+    tr: Fontana
+    ur: فونتانا، گوزو
+    vi: Fontana
+    zh: 丰塔纳
+    lv: Fontana
+    ceb: Il-Fontana
+    ccp: "\U0001111C\U00011127\U0001111A\U00011134\U00011111\U0001111A"
+    eu: Fontana
+    uk: Фонтана
+    'no': Fontana
+    cs: Fontana
+    fa: فونتانا (غودش)
+  comments:
+  type: local_council
+'11':
+  name: Gudja
+  code: '11'
+  unofficial_names: Gudja
+  geo:
+    latitude: 35.848333
+    longitude: 14.5025
+    min_latitude: 35.8400268
+    min_longitude: 14.4975471
+    max_latitude: 35.8527146
+    max_longitude: 14.5087492
+  translations:
+    en: Gudja
+    ar: غوديا
+    bn: গোজা
+    ca: Gudja
+    da: Gudja
+    de: Gudja
+    el: Γκούντζα
+    es: Gudja
+    eu: Gudja
+    fi: Gudja
+    fr: Gudja
+    gu: ગુડ્જા
+    hi: गुडया
+    hu: Gudja
+    id: Gudja
+    it: Gudia
+    ja: グーディア
+    kn: ಗುಡ್ಜಾ
+    ko: 구디아
+    lt: Gudža
+    mr: गुडजा
+    ms: Gudja
+    nb: Gudja
+    nl: Gudja
+    pl: Gudja
+    pt: Gudja
+    ru: Гудья
+    si: ගුඩ්ජා
+    sv: Il-Gudja
+    ta: குட்ஜா
+    te: గుడ్జా
+    th: กัทจา
+    tr: Gudja
+    ur: گودیا
+    vi: Gudja
+    zh: 古迪亚
+    lv: Gudža
+    ceb: Il-Gudja
+    ccp: "\U00011109\U0001112A\U00011116\U00011134\U0001110E"
+    uk: Гудья
+    'no': Gudja
+    fa: گودجا
+  comments:
+  type: local_council
+'12':
+  name: Gżira
+  code: '12'
+  unofficial_names: Gżira
+  geo:
+    latitude: 35.905897
+    longitude: 14.4953338
+    min_latitude: 35.9004619
+    min_longitude: 14.4872762
+    max_latitude: 35.9097691
+    max_longitude: 14.5077289
+  translations:
+    en: Gżira
+    ar: غزيرا
+    bn: জিরা
+    ca: Gżira
+    cs: Gżira
+    da: Gezira
+    de: Gżira
+    el: Γκζίρα
+    es: Gżira
+    eu: Gżira
+    fa: گزیرا
+    fi: Gżira
+    fr: Gżira
+    gu: ગઝીરા
+    hi: ज़िरा
+    hu: Gżira
+    hy: Գզիրա
+    id: Gżira
+    it: Gezira
+    ja: グジラ
+    kn: ಗ್ಜ್ಜಿರಾ
+    ko: 그지라
+    lt: Gzira
+    mr: जस्सीरा
+    ms: Gzira
+    nb: Gżira
+    nl: Gżira
+    pl: Gżira
+    pt: Gżira
+    ru: Гзира
+    si: ග්සිරා
+    sv: Il-Gżira (kommun)
+    ta: கிஸிர
+    te: జిజీరా
+    th: กซีรา
+    tr: Gzira
+    uk: Гзіра
+    ur: گزیرہ
+    vi: Gzira
+    zh: 格齊拉
+    lv: Gzira
+    ceb: Il-Gżira (munisipyo)
+    ccp: "\U0001110E\U00011128\U00011122"
+    'no': Gżira
+  comments:
+  type: local_council
+'13':
+  name: Għajnsielem
+  code: '13'
+  unofficial_names: Għajnsielem
+  geo:
+    latitude: 36.026944
+    longitude: 14.290278
+    min_latitude: 36.0038469
+    min_longitude: 14.2698563
+    max_latitude: 36.0345247
+    max_longitude: 14.3508895
+  translations:
+    en: Għajnsielem
+    ar: غوينزيلم
+    bn: গান্সিলেম
+    ca: Għajnsielem
+    cs: Għajnsiele
+    da: Għajnsielem
+    de: Għajnsielem
+    el: Γκατζνσιελέμ
+    es: Għajnsielem
+    eu: Għajnsielem
+    fi: Għajnsielem
+    fr: Għajnsielem
+    gu: ઘેજન્સીલેમ
+    hi: घंसिलेम
+    hu: Għajnsielem
+    hy: Այնսիլեմ
+    id: Għajnsielem
+    it: Għajnsielem
+    ja: アインシーレム
+    kn: ಗ್ವಾನ್ಸ್ನ್ಸಿಲೆಮ್
+    ko: 아인실렘
+    lt: Gadžnsilemas
+    mr: घोडेस्लेम
+    ms: Ghajnsielem
+    nb: Ghajnsielem
+    nl: Għajnsielem
+    pl: Għajnsielem
+    pt: Għajnsielem
+    ru: Айнсилем
+    si: ගාජ්න්සයිලම්
+    sr: Гајнсијелем
+    sv: Għajnsielem (kommun)
+    ta: கஜன்சிலிம்
+    te: ఘాజ్నిసీలెమ్
+    th: กฮาจ์นซีเลม
+    tr: Ghajnsielem
+    uk: Айнсілем
+    ur: اینسیلیم
+    vi: Ghajnsielem
+    zh: 艾因西莱姆
+    lv: Gadžnsīlema
+    ceb: Għajnsielem
+    sr_Latn: Gajnsijelem
+    ccp: "\U0001110A\U00011116\U00011134\U00011125\U00011128\U00011123\U0001112C\U0001111F\U00011134"
+    'no': Ghajnsielem
+    az: Aynsilem
+    fa: گاجنسیلم
+  comments:
+  type: local_council
+'14':
+  name: Għarb
+  code: '14'
+  unofficial_names: Għarb
+  geo:
+    latitude: 36.061111
+    longitude: 14.209167
+    min_latitude: 36.0545232
+    min_longitude: 14.1889269
+    max_latitude: 36.0797101
+    max_longitude: 14.2186459
+  translations:
+    en: Għarb
+    ar: غارب
+    bn: ঘার্ব
+    ca: Għarb
+    da: Għarb
+    de: Għarb
+    el: Γκαρμπ
+    es: Għarb
+    eu: Għarb
+    fi: Għarb
+    fr: Għarb
+    gu: ઘાર્બ
+    hi: घर्ब
+    hu: Għarb
+    id: Għarb
+    it: Garbo
+    ja: アーブ
+    kn: ಗೆರ್ಬ್
+    ko: 아르프
+    lt: Garbas
+    mr: घार्रब
+    ms: Gharb
+    nb: Gharb
+    nl: Għarb
+    pl: Għarb
+    pt: Għarb
+    ru: Арб
+    si: ඝාර්බ්
+    sv: L-Għarb
+    ta: கார்ப்
+    te: గార్బ్
+    th: การบ์
+    tr: Gharb
+    ur: ارب، مالٹا
+    vi: Gharb
+    lv: Garba
+    ceb: L-Għarb
+    zh: 阿尔卜
+    ccp: "\U0001110A\U00011127\U00011122\U00011134\U0001111B\U00011134"
+    uk: Арб
+    'no': Gharb
+    cs: Għarb
+    fa: گارب
+    hy: Արբ
+    sk: Għarb
+  comments:
+  type: local_council
+'15':
+  name: Għargħur
+  code: '15'
+  unofficial_names: Għargħur
+  geo:
+    latitude: 35.924069
+    longitude: 14.453372
+    min_latitude: 35.9124193
+    min_longitude: 14.4477832
+    max_latitude: 35.9329498
+    max_longitude: 14.4656788
+  translations:
+    en: Għargħur
+    ar: عرعور
+    bn: ঘারঘুর
+    ca: Għargħur
+    cs: Għargħur
+    da: Għargħur
+    de: Għargħur
+    el: Γκαργκούρ
+    es: Għargħur
+    eu: Għargħur
+    fi: Għargħur
+    fr: Għargħur
+    gu: ઘર્ઘુર
+    hi: घार्घुर
+    hu: Għargħur
+    id: Għargħur
+    it: Gargur
+    ja: アーウール
+    kn: ಘಾರಘುರ್
+    ko: 아르우르
+    lt: Garguras
+    mr: घरघुर
+    ms: Gharghur
+    nb: Gharghur
+    nl: Għargħur
+    pl: Għargħur
+    pt: Għargħur
+    ru: Гаргур
+    si: ඝාර්ඝර්
+    sv: Ħal Għargħur
+    ta: காரஃஹர்
+    te: ఘర్గూర్
+    th: กากัว
+    tr: Gharghur
+    ur: ارور
+    vi: Gharghur
+    zh: 加尔古尔
+    lv: Gargura
+    ceb: Ħal Għargħur
+    ccp: "\U0001110A\U00011122\U00011134\U0001110A\U0001112A\U00011122\U00011134"
+    uk: Гаргур
+    'no': Gharghur
+    fa: گارگور
+  comments:
+  type: local_council
+'16':
+  name: Għasri
+  code: '16'
+  unofficial_names: Għasri
+  geo:
+    latitude: 36.058333
+    longitude: 14.227778
+    min_latitude: 36.0501052
+    min_longitude: 14.2091417
+    max_latitude: 36.0816734
+    max_longitude: 14.2382813
+  translations:
+    en: Għasri
+    ar: غاسري
+    bn: ঘার্সি
+    ca: Għasri
+    cs: Għasri
+    da: Għasri
+    de: Għasri
+    el: Γκάσρι
+    es: Għasri
+    eu: Għasri
+    fi: Għasri
+    fr: Għasri
+    gu: ઘેસ્રી
+    hi: घसरी
+    hu: Għasri
+    id: Għasri
+    it: Għasri
+    ja: アーシリ
+    kn: ಗುಡ್ರಿ
+    ko: 아스리
+    lt: Gasris
+    mr: घसरी
+    ms: Ghasri
+    nb: Ghasri
+    nl: Għasri
+    pl: Għasri
+    pt: Għasri
+    ru: Асри
+    si: ඝාස්රි
+    sv: L-Ghasri
+    ta: காஸ்ரீ
+    te: ఘాస్రీ
+    th: กาซรี
+    tr: Ghasri
+    ur: اسری
+    vi: Ghasri
+    lv: Gasri
+    ceb: L-Ghasri
+    zh: 加斯里
+    ccp: "\U0001110A\U0001110C\U00011134\U00011122\U00011128"
+    uk: Асрі
+    'no': Ghasri
+    fa: گاسری
+  comments:
+  type: local_council
+'17':
+  name: Għaxaq
+  code: '17'
+  unofficial_names: Għaxaq
+  geo:
+    latitude: 35.848333
+    longitude: 14.517222
+    min_latitude: 35.8315472
+    min_longitude: 14.5022537
+    max_latitude: 35.8620777
+    max_longitude: 14.5271337
+  translations:
+    en: Għaxaq
+    ar: غاكساق
+    bn: ঘাজাক
+    ca: Għaxaq
+    da: Għaxaq
+    de: Għaxaq
+    el: Γκάξακ
+    es: Għaxaq
+    eu: Għaxaq
+    fi: Għaxaq
+    fr: Għaxaq
+    gu: ઘેક્સેક
+    hi: ग्येक्सैक
+    hu: Għaxaq
+    id: Għaxaq
+    it: Asciac
+    ja: アーシャ
+    kn: ಗುಸಾಕ್
+    ko: 아샤
+    lt: Gašakas
+    mr: घाक्सक
+    ms: Ghaxaq
+    nb: Ghazaq
+    nl: Għaxaq
+    pl: Għaxaq
+    pt: Għaxaq
+    ru: Ашак
+    si: ඝක්සක්
+    sv: Ħal Għaxaq (kommun i Malta)
+    ta: கக்சாக்
+    te: ఘాాక్సాఖ్
+    th: มานามา
+    tr: Ghaxaq
+    ur: اشآ
+    vi: Ghaxaq
+    zh: 阿沙格
+    lv: Gašaka
+    ceb: Ħal Għaxaq
+    ccp: "\U0001110A\U00011107\U00011134\U00011125\U0001112A\U00011107\U00011134"
+    uk: Гашак
+    'no': Ghazaq
+    fa: گاکساق
+    hy: Աշաք
+  comments:
+  type: local_council
+'18':
+  name: Ħamrun
+  code: '18'
+  unofficial_names: Ħamrun
+  geo:
+    latitude: 35.886111
+    longitude: 14.489444
+    min_latitude: 35.8812182
+    min_longitude: 14.4797015
+    max_latitude: 35.8924312
+    max_longitude: 14.5004296
+  translations:
+    en: Ħamrun
+    ar: حمرون
+    bn: ফ্লামুন
+    ca: Ħamrun
+    cs: Ħamrun
+    da: Ħamrun
+    de: Ħamrun
+    el: Χαμρούν
+    es: Ħamrun
+    eu: Ħamrun
+    fa: هارون، مالت
+    fi: Ħamrun
+    fr: Hamrun
+    gu: હામરુન
+    hi: हम्र्न
+    hu: Ħamrun
+    id: Ħamrun
+    it: Ħamrun
+    ja: ハムルーン
+    kn: ಹಮ್ರುನ್
+    ko: 함룬
+    lt: Hamrūnas
+    mr: अमारुन
+    ms: Hamrun
+    nb: Gzira
+    nl: Ħamrun
+    pl: Ħamrun
+    pt: Ħamrun
+    ro: Ħamrun
+    ru: Хамрун
+    si: ෆ්ලම්රන්
+    sv: Il-Ħamrun
+    ta: பிளம்ரூன்
+    te: హామ్రన్
+    th: แฮมรัน
+    tr: Hamrun
+    uk: Хамрун
+    ur: حامرون
+    vi: Hamrun
+    zh: 哈姆倫 (馬耳他)
+    lv: Hamrūna
+    ceb: Il-Ħamrun
+    ccp: "\U00011126\U0001111F\U00011134\U00011122\U0001112A\U0001111A\U00011134"
+    'no': Gzira
+    be: Хамрун
+    ga: Ħamrun
+    hy: Համրուն
+    ps: هامرون (مالت)
+  comments:
+  type: local_council
+'19':
+  name: Iklin
+  code: '19'
+  unofficial_names: Iklin
+  geo:
+    latitude: 35.904167
+    longitude: 14.454444
+    min_latitude: 35.9022261
+    min_longitude: 14.4474291
+    max_latitude: 35.9167553
+    max_longitude: 14.4635223
+  translations:
+    en: Iklin
+    ar: إكلين
+    bn: ইক্লিন
+    ca: Iklin
+    da: Iklin
+    de: Iklin
+    el: Ικλίν
+    es: Iklin
+    eu: Iklin
+    fi: Iklin
+    fr: Iklin
+    gu: ઇક્લિન
+    hi: इकलिन
+    hu: Iklin
+    id: Iklin
+    it: L’Iclin
+    ja: イキリン
+    kn: ಇಕ್ಲಿನ್
+    ko: 이클린
+    lt: Iklinas
+    mr: इक्कलिन
+    ms: Iklin
+    nb: Iklin
+    nl: Iklin
+    pl: Iklin
+    pt: Iklin
+    ru: Иклин
+    si: ඉක්ලින්
+    sv: L-Iklin (kommun)
+    ta: ஈக்களின்
+    te: ఇక్లిన్
+    th: ไอคลิน
+    tr: Iklin
+    ur: اکلین
+    vi: Iklin
+    zh: 伊克伊林
+    lv: Iklina
+    ceb: L-Iklin
+    ccp: "\U00011103\U00011128\U00011107\U00011134\U00011123\U00011128\U0001111A\U00011134"
+    uk: Іклін
+    'no': Iklin
+    fa: ایکلین
+  comments:
+  type: local_council
+'20':
+  name: Isla
+  code: '20'
+  unofficial_names: Isla
+  geo:
+    latitude: 35.887778
+    longitude: 14.516944
+    min_latitude: 35.8846707
+    min_longitude: 14.5136331
+    max_latitude: 35.8910731
+    max_longitude: 14.5201882
+  translations:
+    en: Senglea
+    ar: سنجليا
+    bn: সেনগ্লিয়া
+    ca: Senglea
+    da: Senglea
+    de: Senglea
+    el: Σενγκλέα
+    es: Senglea
+    eu: Senglea
+    fi: Senglea
+    fr: Isla
+    gu: સેન્ગ્લિઆ
+    he: סנגלאה
+    hi: सेंग्लिया
+    hu: Isla
+    id: Senglea
+    it: Senglea
+    ja: イシーラ
+    kn: ಸೆಂಗ್ಲಿಯಾ
+    ko: 셍글레아
+    lt: Isla
+    mr: सेन्ग्लिआ
+    ms: Senglea
+    nb: Senglea
+    nl: Senglea
+    pl: Isla
+    pt: Senglea
+    ru: Сенглеа (Л-Исла)
+    si: සෙන්ග්ලියා
+    sl: Senglea
+    sr: Сенглеа
+    sv: L-Isla (kommun i Malta)
+    ta: செங்கிலேய
+    te: సెంగ్లియా
+    th: เซ็งเกลีย
+    tr: Senglea
+    ur: سینگلیا
+    vi: Senglea
+    zh: 森格萊阿
+    lv: Sengleja
+    ceb: L-Isla
+    sr_Latn: Senglea
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011109\U00011133\U00011123\U00011128\U00011120"
+    uk: Сенглея
+    'no': Senglea
+    fa: سنگله
+    hy: Սենգլեա
+  comments:
+  type: local_council
+'21':
+  name: Kalkara
+  code: '21'
+  unofficial_names: Kalkara
+  geo:
+    latitude: 35.889167
+    longitude: 14.529444
+    min_latitude: 35.8837065
+    min_longitude: 14.5228847
+    max_latitude: 35.8989224
+    max_longitude: 14.5464887
+  translations:
+    en: Kalkara
+    af: Kalkara
+    ar: كالكارا
+    bn: কালকারা
+    ca: Kalkara
+    cs: Kalkara
+    da: Kalkara
+    de: Kalkara
+    el: Καλκάρα
+    es: Kalkara
+    et: Kalkara
+    eu: Kalkara
+    fi: Kalkara
+    fr: Kalkara
+    gl: Kalkara
+    gu: કલકારા
+    hi: कलकारा
+    hr: Kalkara
+    hu: Kalkara
+    id: Kalkara
+    is: Kalkara
+    it: Calcara
+    ja: カルカラ
+    kn: ಕಲ್ಕರಾ
+    ko: 칼카라
+    lt: Kalkara
+    mr: कलकारा
+    ms: Kalkara
+    nb: Kalkara
+    nl: Kalkara
+    pl: Kalkara
+    pt: Kalkara
+    ro: Kalkara
+    ru: Калькара
+    si: කල්කරා
+    sk: Kalkara
+    sl: Kalkara
+    sv: Kalkara
+    sw: Kalkara
+    ta: கல்கார
+    te: కల్కారా
+    th: คาลคารา
+    tr: Kalkara
+    ur: کالکارا
+    vi: Kalkara
+    zh: 麥基基
+    zu: Kalkara
+    lv: Kalkara
+    cy: Kalkara
+    ceb: Il-Kalkara
+    ccp: "\U00011107\U00011123\U00011134\U00011107\U00011122"
+    ga: Kalkara
+    uk: Калкара
+    'no': Kalkara
+    fa: کالکارا
+    hy: Կալկարա
+  comments:
+  type: local_council
+'22':
+  name: Kerċem
+  code: '22'
+  unofficial_names: Kerċem
+  geo:
+    latitude: 36.040556
+    longitude: 14.229722
+    min_latitude: 36.0306725
+    min_longitude: 14.1942011
+    max_latitude: 36.0562404
+    max_longitude: 14.2332729
+  translations:
+    en: Kerċem
+    ar: كيرتشم
+    bn: কেরচেম
+    ca: Kerċem
+    da: Kerċem
+    de: Kerċem
+    el: Κερκέμ
+    es: Kerċem
+    eu: Kerċem
+    fi: Kerċem
+    fr: Kerċem
+    gu: કેરસેમ
+    hi: केर्सेम
+    hu: Kerċem
+    id: Kerċem
+    it: Kerċem
+    ja: ケルチャム
+    kn: ಕೆರ್ಸೆಮ್
+    ko: 케르쳄
+    lt: Kercemas
+    mr: केरनेम
+    ms: Kercem
+    nb: Kercem
+    nl: Kerċem
+    pl: Kerċem
+    pt: Kerċem
+    ru: Керчем
+    si: කර්සෙම්
+    sv: Ta’ Kerċem
+    ta: கேர்ஸ்ம்
+    te: కెర్సెమ్
+    th: เคอเซม
+    tr: Kercem
+    ur: کیرچیم
+    vi: Kercem
+    lv: Kerčema
+    ceb: Ta’ Kerċem
+    zh: 凯尔切姆
+    ccp: "\U00011107\U0001112C\U00011122\U00011134\U00011125\U0001112C\U0001111F\U00011134"
+    uk: Керчем
+    'no': Kercem
+    fa: کرشم
+  comments:
+  type: local_council
+'23':
+  name: Kirkop
+  code: '23'
+  unofficial_names: Kirkop
+  geo:
+    latitude: 35.840854
+    longitude: 14.484347
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Kirkop
+    ar: كيركوب
+    bn: কিরকোপ
+    ca: Kirkop
+    cs: Kirkop
+    da: Kirkop
+    de: Kirkop
+    el: Κίρκοπ
+    es: Kirkop
+    eu: Kirkop
+    fi: Kirkop
+    fr: Kirkop
+    gu: કિર્કોપ
+    hi: किर्कोप
+    hr: Kirkop
+    hu: Kirkop
+    id: Kirkop
+    it: Chircop
+    ja: キルコップ
+    kn: ಕಿರ್ಕ್ಕೋಪ್
+    ko: 키르코프
+    lt: Kirkopas
+    mr: किर्कोप
+    ms: Kirkop
+    nb: Kirkop
+    nl: Kirkop
+    pl: Kirkop
+    pt: Kirkop
+    ru: Киркоп
+    si: කර්කොප්
+    sv: Kirkop (kommun)
+    ta: கிர்கோப்
+    te: కిర్కాప్
+    th: เคอร์คอป
+    tr: Kirkop
+    ur: کیرکوپ
+    vi: Kirkop
+    zh: 基尔科普
+    lv: Kirkopa
+    ceb: Kirkop
+    ccp: "\U00011107\U00011128\U00011122\U00011134\U00011107\U0001112E\U0001111B\U00011134"
+    uk: Кіркоп
+    'no': Kirkop
+    fa: کرکوپ
+  comments:
+  type: local_council
+'24':
+  name: Lija
+  code: '24'
+  unofficial_names: Lija
+  geo:
+    latitude: 35.901389
+    longitude: 14.447222
+    min_latitude: 35.8966204
+    min_longitude: 14.4340182
+    max_latitude: 35.9056413
+    max_longitude: 14.4524341
+  translations:
+    en: Lija
+    ar: ليا
+    bn: লিজা
+    ca: Lija
+    da: Lija
+    de: Lija
+    el: Λίτζα
+    es: Lija
+    eu: Lija
+    fi: Lija
+    fr: Lija
+    gu: લીજા
+    hi: लीया
+    hu: Lija
+    id: Lija
+    it: Lia
+    ja: リーヤ
+    kn: ಲಿಜಾ
+    ko: 리야
+    lt: Lidža
+    mr: लीजा
+    ms: Lija
+    nb: Lija
+    nl: Lija
+    pl: Lija
+    pt: Lija
+    ru: Лия
+    si: ලිජා
+    sv: Lija (kommun)
+    ta: லீஜா
+    te: లిజా
+    th: ลิจา
+    tr: Lija
+    ur: لییا
+    vi: Lija
+    zh: 利亚 (马耳他)
+    lv: Lidža
+    ceb: Lija (munisipyo)
+    ccp: "\U00011123\U00011128\U0001110E"
+    uk: Лія
+    'no': Lija
+    fa: بخش لیخا
+  comments:
+  type: local_council
+'25':
+  name: Luqa
+  code: '25'
+  unofficial_names: Luqa
+  geo:
+    latitude: 35.859722
+    longitude: 14.489167
+    min_latitude: 35.8280087
+    min_longitude: 14.4576001
+    max_latitude: 35.87547199999999
+    max_longitude: 14.5139694
+  translations:
+    en: Luqa
+    ar: لوقا
+    bn: লুকা
+    ca: Luqa
+    da: Luqa
+    de: Luqa
+    el: Λούκα
+    es: Luqa
+    et: Luqa
+    eu: Luqa
+    fa: لاکا
+    fi: Luqa
+    fr: Luqa
+    gu: લુકા
+    he: לואה
+    hi: लुका
+    hr: Luqa
+    hu: Luqa
+    id: Luqa
+    it: Luca
+    ja: ルア
+    kn: ಲುಕಾ
+    ko: 루아
+    lt: Luka
+    mr: लुका
+    ms: Luqa
+    nb: Luqa
+    nl: Luqa
+    pl: Luqa
+    pt: Luqa
+    ru: Лука
+    si: ලුකා
+    sv: Luqa (kommun)
+    ta: லுகிஆ
+    te: లూఖా
+    th: ลุคกา
+    tr: Luqa
+    ur: لوآ
+    vi: Luqa
+    zh: 盧加
+    lv: Luka
+    ceb: Luqa
+    ccp: "\U00011123\U0001112A\U00011107"
+    uk: Лука
+    'no': Luqa
+    be: Лука (Мальта)
+  comments:
+  type: local_council
+'26':
+  name: Marsa
+  code: '26'
+  unofficial_names: Marsa
+  geo:
+    latitude: 35.883333
+    longitude: 14.494722
+    min_latitude: 35.8640792
+    min_longitude: 14.482788
+    max_latitude: 35.887441
+    max_longitude: 14.5017699
+  translations:
+    en: Marsa
+    ca: Marsa
+    de: Marsa
+    el: Μάρσα
+    es: Marsa
+    eu: Marsa
+    fa: مارسا
+    fr: Marsa
+    hr: Marsa
+    hu: Marsa
+    hy: Մարսա
+    it: Marsa
+    ja: マルサ
+    ko: 마르사
+    lt: Marsa
+    nb: Marsa
+    nl: Marsa
+    pl: Marsa
+    pt: Marsa
+    ru: Марса (Мальта)
+    sv: Il-Marsa (kommun i Malta)
+    tr: Marsa
+    uk: Марса (Мальта)
+    ur: مارسا، مالٹا
+    zh: 馬爾薩
+    ceb: Il-Marsa
+    ccp: "\U00011107\U00011122\U00011134\U00011125"
+    be: Марса
+    'no': Marsa
+    ar: المرسى
+    he: מרסה (מלטה)
+    hi: मार्सा, माल्टा
+    id: Marsa, Malta
+  comments:
+  type: local_council
+'27':
+  name: Marsaskala
+  code: '27'
+  unofficial_names: Marsaskala
+  geo:
+    latitude: 35.8625
+    longitude: 14.5675
+    min_latitude: 35.8452937
+    min_longitude: 14.5438296
+    max_latitude: 35.8775598
+    max_longitude: 14.5755001
+  translations:
+    en: Marsaskala
+    ar: مارساسكالا
+    bn: মারসাস্কালা
+    ca: Marsaskala
+    cs: Marsaskala
+    da: Marsaskala
+    de: Marsaskala
+    el: Μαρσασκάλα
+    es: Marsaskala
+    eu: Marsaskala
+    fa: مرسسکلا
+    fi: Marsaskala
+    fr: Marsaskala
+    gu: મરસાસકાલા
+    hi: मर्सस्कला
+    hu: Marsaskala
+    id: Marsaskala
+    it: Marsascala
+    ja: マルサスカラ
+    kn: ಮರ್ಸ್ಕಲಾ
+    ko: 마르사스칼라
+    lt: Marsaskala
+    mr: मार्सस्कॅला
+    ms: Marsaskala
+    nb: Marsakala
+    nl: Marsaskala
+    pl: Marsaskala
+    pt: Marsaskala
+    ru: Марсаскала
+    si: මාර්සකලා
+    sv: Marsaskala
+    ta: மார்சஸ்களை
+    te: మర్సాస్కా
+    th: มาร์ซาสกาลา
+    tr: Marsaskala
+    ur: مارساسکالا
+    vi: Marsaskala
+    zh: 馬爾薩斯卡拉
+    lv: Marsaskala
+    ceb: Marsaskala (kapital sa rehiyon)
+    ccp: "\U0001111F\U00011122\U00011134\U00011125\U0001110C\U00011134\U00011107\U00011123"
+    uk: Марсаскала
+    'no': Marsakala
+  comments:
+  type: local_council
+'28':
+  name: Marsaxlokk
+  code: '28'
+  unofficial_names: Marsaxlokk
+  geo:
+    latitude: 35.84166700000001
+    longitude: 14.544722
+    min_latitude: 35.8193177
+    min_longitude: 14.526355
+    max_latitude: 35.8477721
+    max_longitude: 14.5724385
+  translations:
+    en: Marsaxlokk
+    ar: مارساكسلوخك
+    bn: মার্সালোক
+    ca: Marsaxlokk
+    da: Marsaxlokk
+    de: Marsaxlokk
+    el: Μαρσασλόκκ
+    es: Marsaxlokk
+    eu: Marsaxlokk
+    fi: Marsaxlokk
+    fr: Marsaxlokk
+    gu: માર્સાક્સલોક
+    he: מרסשלוק
+    hi: मार्सक्सलॉक
+    hu: Marsaxlokk
+    id: Marsaxlokk
+    it: Marsa Scirocco
+    ja: マルサシロク
+    kn: ಮರಾಕ್ಸ್ಲೋಕ್
+    ko: 마르사실로크
+    lt: Marsašlokas
+    mr: मार्सक्सलोक
+    ms: Marsaxlokk
+    nb: Marsaxlokk
+    nl: Marsaxlokk
+    pl: Marsaxlokk
+    pt: Marsaxlokk
+    ru: Марсашлокк
+    si: මරසක්ස්ලෝක්ස්
+    sv: Marsaxlokk
+    ta: மார்சஸ்ப்ளோக்க்
+    te: మార్కాక్స్‌లాక్
+    th: มาร์ซักลอกก์
+    tr: Marsaxlokk
+    uk: Марсашлокк
+    ur: مارساشلوک
+    vi: Marsaxlokk
+    lv: Marsašloka
+    ceb: Marsaxlokk
+    zh: 马尔萨什洛克
+    ccp: "\U0001111F\U00011122\U00011134\U00011125\U00011107\U00011134\U00011123\U0001112E\U00011107\U00011133\U00011126\U00011134"
+    'no': Marsaxlokk
+    cs: Marsaxlokk
+    fa: مارساکسلوک
+    hy: Մարսաշլոկ
+    kk: Марсашлокк
+  comments:
+  type: local_council
+'29':
+  name: Mdina
+  code: '29'
+  unofficial_names: Mdina
+  geo:
+    latitude: 35.885833
+    longitude: 14.403056
+    min_latitude: 35.8828916
+    min_longitude: 14.3974757
+    max_latitude: 35.8916793
+    max_longitude: 14.4150602
+  translations:
+    en: Mdina
+    ar: مدينة
+    bg: Мдина
+    bn: মদিনা
+    ca: Mdina
+    cs: Mdina
+    da: Mdina
+    de: Mdina
+    el: Μντίνα
+    es: Mdina
+    eu: Mdina
+    fi: Mdina
+    fr: Mdina
+    gu: એમડીના
+    he: מדינה
+    hi: एमडीना
+    hr: Mdina
+    hu: Mdina
+    id: Mdina
+    it: Medina
+    ja: イムディーナ
+    kn: ಮಿಡಿನಾ
+    ko: 므디나
+    lt: Mdina
+    mr: एमडीना
+    ms: Mdina
+    nb: Mdina
+    nl: Mdina
+    pl: Mdina
+    pt: Mdina
+    ro: Mdina
+    ru: Мдина
+    si: මදිනා
+    sr: Мдина
+    sv: Mdina
+    ta: மதீனா
+    te: ఎందీనా
+    th: เอ็มดินา
+    tr: Mdina
+    uk: Мдіна
+    ur: مدینہ، مالٹا
+    vi: Mdina
+    zh: 姆迪纳
+    lv: Mdina
+    cy: Mdina a Rabat
+    ceb: Imdina
+    sr_Latn: Mdina
+    ccp: "\U0001111F\U00011127\U00011113\U00011128\U0001111A"
+    sl: Mdina
+    'no': Mdina
+    fa: بخش مدینا
+    hy: Մդինա
+  comments:
+  type: local_council
+'30':
+  name: Mellieħa
+  code: '30'
+  unofficial_names: Mellieħa
+  geo:
+    latitude: 35.95638900000001
+    longitude: 14.366389
+    min_latitude: 35.9306305
+    min_longitude: 14.3190222
+    max_latitude: 35.9981237
+    max_longitude: 14.3975705
+  translations:
+    en: Mellieħa
+    ar: مليحة
+    bn: মেল্যিনা
+    ca: Mellieħa
+    da: Mellieħa
+    de: Mellieħa
+    el: Μελιεχά
+    es: Mellieħa
+    eu: Mellieħa
+    fa: ملیحه
+    fi: Mellieħa
+    fr: Mellieħa
+    gu: મેલિએહા
+    hi: मेलिहा
+    hu: Mellieħa
+    id: Mellieħa
+    it: Mellieħa
+    ja: メリッハ
+    kn: ಮೆಲ್ಲಿಯೆ
+    ko: 멜리하
+    lt: Meliha
+    mr: मेलीहा
+    ms: Mellieha
+    nb: Mellieħa
+    nl: Mellieħa
+    pl: Mellieħa
+    pt: Mellieħa
+    ru: Меллиха
+    si: මෙල්ලිහා
+    sv: Il-Mellieħa (kommun i Malta)
+    ta: மெல்லியனா
+    te: మెలియేహా
+    th: แคว้นอัลเกาะศีม
+    tr: Melliana
+    ur: مہلیئحا
+    vi: Mellieha
+    zh: 梅利哈
+    lv: Melliha
+    ceb: Il-Mellieħa (munisipyo sa Malta)
+    ccp: "\U0001111F\U00011123\U00011128\U00011120\U0001112C\U00011126"
+    uk: Мелліха
+    'no': Mellieħa
+    be: Меліха
+    cs: Mellieħa
+    et: Mellieħa
+    ro: Mellieħa
+    sk: Mellieħa
+  comments:
+  type: local_council
+'31':
+  name: Mġarr
+  code: '31'
+  unofficial_names: Mġarr
+  geo:
+    latitude: 35.919722
+    longitude: 14.366389
+    min_latitude: 35.8969767
+    min_longitude: 14.3324275
+    max_latitude: 35.9406116
+    max_longitude: 14.40166
+  translations:
+    en: Mġarr
+    ar: مغار
+    bn: ম্যগার
+    ca: Mġarr
+    cs: Mġarr
+    da: Mġarr
+    de: Mġarr
+    el: Μγκάρ
+    es: Mġarr
+    eu: Mġarr
+    fi: Mġarr
+    fr: Mġarr
+    gu: એમ્ગાર
+    hi: ग़ार
+    hu: Mġarr
+    id: Mġarr
+    it: Mugiarro
+    ja: イムジャー
+    kn: ಮಿಗ್ರ್
+    ko: 므자르
+    lt: Mgaras
+    mr: मगार
+    ms: Mgarr
+    nb: Mgarr
+    nl: Mġarr
+    pl: Mġarr
+    pt: Mġarr
+    ru: Мджарр
+    si: එම්ගාර්
+    sv: L-Imġarr (kommun i Malta)
+    ta: மகர்
+    te: ఎమ్‌గార్
+    th: มการ์
+    tr: Mgarr
+    uk: Мджарр
+    ur: مجار
+    vi: Mġarr
+    lv: Mgara
+    ceb: L-Imġarr
+    zh: 姆贾尔
+    ccp: "\U0001111F\U00011127\U00011109\U00011122\U00011134"
+    'no': Mgarr
+    fa: مگار
+  comments:
+  type: local_council
+'32':
+  name: Mosta
+  code: '32'
+  unofficial_names: Mosta
+  geo:
+    latitude: 35.909722
+    longitude: 14.426111
+    min_latitude: 35.8974461
+    min_longitude: 14.3932378
+    max_latitude: 35.9292057
+    max_longitude: 14.4391572
+  translations:
+    en: Mosta
+    ar: موستا
+    bg: Моста
+    bn: মোস্তা
+    ca: Mosta
+    cs: Mosta
+    da: Mosta
+    de: Mosta
+    el: Μόστα
+    es: Mosta
+    eu: Mosta
+    fa: موستا
+    fi: Mosta
+    fr: Mosta
+    gu: મોસ્ટા
+    hi: मोस्टा
+    hr: Mosta
+    hu: Mosta
+    hy: Մոստա
+    id: Mosta
+    it: Musta
+    ja: モスタ
+    kn: ಮೋಸ್ಟ
+    ko: 모스타
+    lt: Mosta
+    mr: मोस्टा
+    ms: Mosta
+    nb: Mosta
+    nl: Mosta
+    pl: Mosta
+    pt: Mosta
+    ru: Моста
+    si: මොස්ටා
+    sl: Mosta
+    sv: Mosta
+    ta: மோஸ்தா
+    te: మోస్టా
+    th: โมสตาร์
+    tr: Mosta
+    ur: موستا
+    vi: Mosta
+    zh: 莫斯塔
+    lv: Mosta
+    ceb: Mosta
+    ccp: "\U0001111F\U00011127\U0001110C\U00011134\U00011111"
+    uk: Моста
+    'no': Mosta
+    be: Моста
+    he: מוסטה
+    ps: موستا
+    ro: Mosta
+  comments:
+  type: local_council
+'33':
+  name: Mqabba
+  code: '33'
+  unofficial_names: Mqabba
+  geo:
+    latitude: 35.844167
+    longitude: 14.466944
+    min_latitude: 35.8387596
+    min_longitude: 14.4505619
+    max_latitude: 35.852657
+    max_longitude: 14.4819117
+  translations:
+    en: Mqabba
+    ar: مقابا
+    bn: মাকাব্বা
+    ca: Mqabba
+    da: Mqabba
+    de: Mqabba
+    el: Μκάμπα
+    es: Mqabba
+    eu: Mqabba
+    fi: Mqabba
+    fr: Mqabba
+    gu: મકબ્બા
+    hi: मकाबा
+    hu: Mqabba
+    id: Mqabba
+    it: Micabba
+    ja: アッバ
+    kn: ಮಕಾಬ್ಬ
+    ko: 므아바
+    lt: Mkaba
+    mr: मक्बाबा
+    ms: Mqabba
+    nb: Mqabba
+    nl: Mqabba
+    pl: Mqabba
+    pt: Mqabba
+    ru: Мкабба
+    si: එම්කබ්බා
+    sv: Mqabba
+    ta: மஃஅப்பா
+    te: మకాబా
+    th: เมืองมกับบา
+    tr: Mqabba
+    ur: مآبا
+    vi: Mqabba
+    lv: Mkaba
+    ceb: Mqabba
+    zh: 姆卡巴
+    ccp: "\U0001111F\U00011127\U00011107\U0001111D"
+    uk: Мкаба
+    'no': Mqabba
+    fa: مقابا
+  comments:
+  type: local_council
+'34':
+  name: Msida
+  code: '34'
+  unofficial_names: Msida
+  geo:
+    latitude: 35.897778
+    longitude: 14.489444
+    min_latitude: 35.8911014
+    min_longitude: 14.473511
+    max_latitude: 35.9045248
+    max_longitude: 14.4939763
+  translations:
+    en: Msida
+    ar: مسيدا
+    bn: সিডা
+    ca: Msida
+    da: Misida
+    de: Msida
+    el: Μσίντα
+    es: Msida
+    eu: Msida
+    fa: مسیدا
+    fi: Msida
+    fr: Msida
+    gu: મસીદા
+    he: מסידה
+    hi: सीडा
+    hu: Msida
+    id: Msida
+    it: Misida
+    ja: イムシーダ
+    kn: ಮಿಸಿದಾ
+    ko: 므시다
+    lt: Msida
+    mr: मसीद
+    ms: Msida
+    nb: Msida
+    nl: Msida
+    pl: Msida
+    pt: Msida
+    ru: Мсида
+    si: ම්සිඩා
+    sl: Msida
+    sv: Msida
+    ta: மேசிட
+    te: మిసైడా
+    th: มซิดา
+    tr: Msida
+    uk: Мсіда
+    ur: مسیدا
+    vi: Msida
+    zh: 姆西達
+    lv: Msida
+    ccp: "\U0001111F\U00011127\U00011125\U00011128\U00011113"
+    'no': Msida
+    ceb: L-Imsida
+    cs: Msida
+    et: Msida
+    ps: مسيدا
+  comments:
+  type: local_council
+'35':
+  name: Mtarfa
+  code: '35'
+  unofficial_names: Mtarfa
+  geo:
+    latitude: 35.890833
+    longitude: 14.396944
+    min_latitude: 35.8837782
+    min_longitude: 14.3903946
+    max_latitude: 35.8959687
+    max_longitude: 14.4045888
+  translations:
+    en: Imtarfa
+    ar: المطرفة
+    bn: মতারফা
+    ca: Mtarfa
+    da: Mtarfa
+    de: Mtarfa
+    el: Ιμτάρφα
+    es: Mtarfa
+    eu: Mtarfa
+    fi: Mtarfa
+    fr: Mtarfa
+    gu: મટરફા
+    hi: तारफ़ा
+    hu: Mtarfa
+    id: Mtarfa
+    it: Marfa
+    ja: イムタルファ
+    kn: ಮೌರ್ಫಾ
+    ko: 므타르파
+    lt: Mtarfa
+    mr: मटरफा
+    ms: Mtarfa
+    nb: Mtarfa
+    nl: Mtarfa
+    pl: Mtarfa
+    pt: Mtarfa
+    ru: Мтарфа
+    si: ම්ටර්ෆා
+    sv: L-Imtarfa (kommun i Malta)
+    ta: மதரபா
+    te: ఎమ్‌‌టార్ఫా
+    th: มทาร์ฟา
+    tr: Mtarfa
+    ur: متارفا
+    vi: Mtarfa
+    lv: Mtarfa
+    ceb: L-Imtarfa (munisipyo sa Malta)
+    zh: 玛塔法
+    ccp: "\U00011103\U00011128\U0001111F\U00011134\U00011111\U00011122\U00011134\U0001111C"
+    uk: Мтарфа
+    'no': Mtarfa
+    fa: معمرفا
+  comments:
+  type: local_council
+'36':
+  name: Munxar
+  code: '36'
+  unofficial_names: Munxar
+  geo:
+    latitude: 36.030278
+    longitude: 14.235278
+    min_latitude: 36.0202872
+    min_longitude: 14.2120842
+    max_latitude: 36.037693
+    max_longitude: 14.2376999
+  translations:
+    en: Munxar
+    ar: مونكسار
+    bn: মুনক্সার
+    ca: Munxar
+    da: Munxar
+    de: Munxar
+    el: Μουνκσάρ
+    es: Munxar
+    eu: Munxar
+    fi: Munxar
+    fr: Munxar
+    gu: મુન્ક્સર
+    hi: मुन्क्सार
+    hu: Munxar
+    id: Munxar
+    it: Monsciar
+    ja: ムンシー
+    kn: ಮುನ್ಸಾರ್
+    ko: 문샤르
+    lt: Munšaras
+    mr: मुंजार
+    ms: Munxar
+    nb: Munxar
+    nl: Munxar
+    pl: Munxar
+    pt: Munxar
+    ru: Муншар
+    si: මුන්ක්සාර්
+    sv: Il-Munxar (kommun i Malta)
+    ta: முன்க்ஸார்
+    te: ముంక్సార్
+    th: เขตโอโรเมีย
+    tr: Munxar
+    ur: مونشار
+    vi: Munxar
+    lv: Munšara
+    ceb: Il-Munxar (munisipyo sa Malta)
+    zh: 蒙沙尔
+    ccp: "\U0001111F\U0001112A\U0001111A\U00011134\U0001110E\U00011122\U00011134"
+    uk: Муншар
+    'no': Munxar
+    fa: مونکسار
+  comments:
+  type: local_council
+'37':
+  name: Nadur
+  code: '37'
+  unofficial_names: Nadur
+  geo:
+    latitude: 36.038056
+    longitude: 14.295
+    min_latitude: 36.0334661
+    min_longitude: 14.2772483
+    max_latitude: 36.0657091
+    max_longitude: 14.3228352
+  translations:
+    en: Nadur
+    ar: بلدة نادور
+    bn: নাদুর
+    ca: Nadur
+    da: Nadur
+    de: Nadur
+    el: Ναντούρ
+    es: Nadur
+    eu: Nadur
+    fi: Nadur
+    fr: Nadur
+    gu: નાદુર
+    hi: नादुर
+    hu: Nadur
+    id: Nadur
+    it: Nadur
+    ja: ナドゥール
+    kn: ನಾದುರ್
+    ko: 나두르
+    lt: Naduras
+    mr: नादुर
+    ms: Nadur
+    nb: Nadur
+    nl: Nadur
+    pl: Nadur
+    pt: Nadur
+    ru: Надур
+    si: නදුර්
+    sv: In-Nadur (kommun i Malta)
+    ta: நடூர்
+    te: నాడూర్
+    th: แนเดอร์
+    tr: Nadur
+    ur: نادور
+    vi: Nadur
+    lv: Nadura
+    ceb: In-Nadur (munisipyo sa Malta)
+    zh: 纳杜尔
+    ccp: "\U0001111A\U00011128\U00011113\U0001112A\U00011122\U00011134"
+    uk: Нудур
+    'no': Nadur
+    fa: نادور
+  comments:
+  type: local_council
+'38':
+  name: Naxxar
+  code: '38'
+  unofficial_names: Naxxar
+  geo:
+    latitude: 35.915
+    longitude: 14.444722
+    min_latitude: 35.9046768
+    min_longitude: 14.4189548
+    max_latitude: 35.9548581
+    max_longitude: 14.4639623
+  translations:
+    en: Naxxar
+    ar: ناكسار
+    bn: নাক্সার
+    ca: Naxxar
+    da: Naxxar
+    de: Naxxar
+    el: Νάκσαρ
+    es: Naxxar
+    eu: Naxxar
+    fa: ناسار
+    fi: Naxxar
+    fr: Naxxar
+    gu: નક્સર
+    hi: नक्सर
+    hu: Naxxar
+    id: Naxxar
+    it: Nasciaro
+    ja: ナッシャー
+    kn: ನಕ್ಸಾರ್
+    ko: 나샤르
+    lt: Našaras
+    mr: नॅक्सर
+    ms: Naxxar
+    nb: Naxxar
+    nl: Naxxar
+    pl: Naxxar
+    pt: Naxxar
+    ru: Нашар
+    si: නක්සාර්
+    sv: In-Naxxar (kommun i Malta)
+    ta: நஸ்க்சார்
+    te: నక్సార్
+    th: เมืองนักซาร์
+    tr: Naxxar
+    ur: ناشار
+    vi: Naxxar
+    zh: 納沙爾
+    lv: Našara
+    ceb: In-Naxxar (munisipyo sa Malta)
+    ccp: "\U0001111A\U0001110E\U00011133\U00011126\U00011122\U00011134"
+    uk: Нашар
+    'no': Naxxar
+    cs: Naxxar
+    hy: Նաշար
+    sk: Naxxar
+  comments:
+  type: local_council
+'39':
+  name: Paola
+  code: '39'
+  unofficial_names: Paola
+  geo:
+    latitude: 35.872778
+    longitude: 14.5075
+    min_latitude: 35.8625513
+    min_longitude: 14.4953128
+    max_latitude: 35.886247
+    max_longitude: 14.5157979
+  translations:
+    en: Paola
+    ar: باولا
+    be: Горад Паала
+    bn: পাওলা
+    ca: Paola
+    da: Paola
+    de: Paola
+    el: Πάολα (Μάλτα)
+    es: Paola
+    eu: Paola
+    fa: پائولا
+    fi: Paola
+    fr: Paola
+    gu: પાઓલા
+    hi: पाओला
+    hu: Paola
+    id: Paola
+    it: Paola
+    ja: パウラ
+    kn: ಪಾವೊಲಾ
+    ko: 파올라
+    lt: Paola
+    mr: पावला
+    ms: Paola
+    nb: Paola
+    nl: Paola
+    pl: Paola
+    pt: Paola
+    ru: Паола
+    si: පඕලා
+    sv: Paola
+    ta: பவுலா
+    te: పావోలా
+    th: เปาลา
+    tr: Paola
+    ur: پاولا، مالٹا
+    vi: Paola
+    zh: 保拉
+    lv: Paola
+    ccp: "\U0001111B\U00011103\U0001112E\U00011123"
+    he: פאולה
+    uk: Паола
+    'no': Paola
+    ceb: Paola
+  comments:
+  type: local_council
+'40':
+  name: Pembroke
+  code: '40'
+  unofficial_names: Pembroke
+  geo:
+    latitude: 35.926389
+    longitude: 14.480833
+    min_latitude: 35.92315019999999
+    min_longitude: 14.4622564
+    max_latitude: 35.9374579
+    max_longitude: 14.4904841
+  translations:
+    en: Pembroke
+    ar: بيمبروك
+    bn: পেমব্রোক
+    ca: Pembroke
+    da: Pembroke
+    de: Pembroke
+    el: Πέμπρουκ
+    es: Pembroke
+    eu: Pembroke
+    fi: Pembroke
+    fr: Pembroke
+    gu: પેમ્બ્ર્રોક
+    hi: पेम्ब्रोक
+    hu: Pembroke
+    id: Pembroke
+    it: Pembroke
+    ja: ペンブローク
+    kn: ಪೆಂಬ್ರೋಕ್
+    ko: 펨브로크
+    lt: Pembrukas
+    mr: पेमब्रोक
+    ms: Pembroke
+    nb: Pembroke
+    nl: Pembroke
+    pl: Pembroke
+    pt: Pembroke
+    ru: Пемброк
+    si: පෙම්බ්‍රෝකේ
+    sv: Pembroke (kommun i Malta, lat 35,93, long 14,48)
+    ta: பிஎம்ப்ரோக்
+    te: పెంబ్రోక్
+    th: เพมโบรก
+    tr: Pembroke
+    ur: پیمبروک، مالٹا
+    vi: Pembroke
+    lv: Pembroka
+    ceb: Pembroke (munisipyo)
+    zh: 彭布罗克 (马耳他)
+    ccp: "\U0001111B\U0001112C\U0001111F\U00011134\U0001111D\U00011133\U00011122\U0001112E\U00011107\U00011134"
+    uk: Пембрук
+    'no': Pembroke
+    fa: پمبروک (مالت)
+  comments:
+  type: local_council
+'41':
+  name: Pietà
+  code: '41'
+  unofficial_names: Pietà
+  geo:
+    latitude: 35.893056
+    longitude: 14.493611
+    min_latitude: 35.8885633
+    min_longitude: 14.4899475
+    max_latitude: 35.896551
+    max_longitude: 14.498536
+  translations:
+    en: Pietà
+    bg: Пиета
+    ca: Pietà
+    cs: Pietà
+    de: Pietà
+    el: Πιετά
+    es: Pietà
+    eu: Pietà
+    fr: Pietà
+    he: פיאטה
+    hu: Pietà
+    it: Pietà
+    ja: ピータ
+    ko: 피타
+    lt: Pieta
+    nl: Pietà
+    pl: Pietà
+    pt: Pietà (Malta)
+    ru: Пьета
+    sv: Pietà
+    ur: پیئتا، مالٹا
+    zh: 佩塔
+    ccp: "\U0001111B\U0001112D\U00011111"
+    da: Pietà
+    ceb: Pietà
+    fa: پیتا (مالت)
+    id: Pietà, Malta
+  comments:
+  type: local_council
+'42':
+  name: Qala
+  code: '42'
+  unofficial_names: Qala
+  geo:
+    latitude: 36.035278
+    longitude: 14.310278
+    min_latitude: 36.0257316
+    min_longitude: 14.2952699
+    max_latitude: 36.0502352
+    max_longitude: 14.3363473
+  translations:
+    en: Qala
+    ar: قالا، مالطا
+    bn: কালা
+    ca: Qala
+    da: Qala
+    de: Qala
+    el: Κάλα
+    es: Qala
+    fi: Qala
+    fr: Qala
+    gu: ક્વાલા
+    hi: काला.
+    hu: Qala
+    id: Qala
+    it: La Cala
+    ja: アラ
+    kn: ಖಲಾ
+    ko: 알라
+    lt: Kala
+    mr: क्यूएला
+    ms: Qala
+    nb: Qala
+    nl: Qala
+    pl: Qala
+    pt: Qala
+    ru: Кала
+    si: ක්වාලා
+    sv: Il-Qala
+    ta: கியலா
+    te: ఖాలా
+    th: กวาลา
+    tr: Qala
+    ur: آلا، مالٹا
+    vi: Qala
+    lv: Kala
+    ceb: Il-Qala
+    zh: 卡拉 (戈佐岛)
+    ccp: "\U00011107\U0001112E\U00011123"
+    eu: Qala
+    uk: Кала
+    'no': Qala
+    fa: قالا (مالت)
+  comments:
+  type: local_council
+'43':
+  name: Qormi
+  code: '43'
+  unofficial_names: Qormi
+  geo:
+    latitude: 35.879444
+    longitude: 14.472222
+    min_latitude: 35.8626046
+    min_longitude: 14.4508839
+    max_latitude: 35.89071020000001
+    max_longitude: 14.4852912
+  translations:
+    en: Qormi
+    ar: كورمي
+    bn: কর্মী
+    ca: Qormi
+    cs: Qormi
+    da: Qormi
+    de: Qormi
+    el: Κόρμι
+    es: Qormi
+    eu: Qormi
+    fa: کورمی
+    fi: Qormi
+    fr: Qormi
+    gu: કોરમી
+    he: קורמי
+    hi: कोरमी
+    hu: Qormi
+    id: Qormi
+    it: Curmi
+    ja: オルミ
+    kn: ಕ್ರೋಮಿ
+    ko: 오르미
+    lt: Kormis
+    mr: कोरमी
+    ms: Qormi
+    nb: Qormi
+    nl: Qormi
+    pl: Qormi
+    pt: Qormi
+    ru: Корми
+    si: කොර්මී
+    sr: Корми
+    sv: Qormi
+    ta: கிஆர்மி
+    te: ఖోర్మి
+    th: เมืองคอร์มิ
+    tr: Qormi
+    uk: Кормі
+    ur: آورمی
+    vi: Qormi
+    zh: 戈爾米
+    lv: Kormi
+    ceb: Qormi
+    sr_Latn: Kormi
+    ccp: "\U00011107\U0001112E\U00011122\U00011134\U0001111F\U00011128"
+    be: Кормі
+    'no': Qormi
+    et: Qormi
+    hy: Օրմի
+    ps: کورمي
+  comments:
+  type: local_council
+'44':
+  name: Qrendi
+  code: '44'
+  unofficial_names: Qrendi
+  geo:
+    latitude: 35.834167
+    longitude: 14.458889
+    min_latitude: 35.8188991
+    min_longitude: 14.4303489
+    max_latitude: 35.8426211
+    max_longitude: 14.4699598
+  translations:
+    en: Qrendi
+    ar: كريندي
+    bn: কুরেন্ডি
+    ca: Qrendi
+    cs: Qrendi
+    da: Qrendi
+    de: Qrendi
+    el: Κρέντι
+    es: Qrendi
+    eu: Qrendi
+    fi: Qrendi
+    fr: Qrendi
+    gu: ક્રેન્ડી
+    hi: कुरेन्दी
+    hu: Qrendi
+    hy: Կուրենդի
+    id: Qrendi
+    it: Crendi
+    ja: レンディ
+    kn: ಕ್ರೆಂಡಿ
+    ko: 렌디
+    lt: Krendis
+    mr: क्रेंडी
+    ms: Qrendi
+    nb: Qrendi
+    nl: Qrendi
+    pl: Qrendi
+    pt: Qrendi
+    ru: Куренди
+    si: කුරෙන්ඩි
+    sv: Il-Qrendi (kommun i Malta)
+    ta: கிரேண்டி
+    te: క్రెండి
+    th: เครนดิ
+    tr: Qrendi
+    ur: آریندی
+    vi: Qrendi
+    zh: 奎倫迪
+    lv: Krendi
+    ceb: Il-Qrendi
+    ccp: "\U00011107\U00011127\U00011122\U0001112C\U0001111A\U00011134\U00011113\U00011128"
+    uk: Кренді
+    'no': Qrendi
+    bg: Кренди
+    fa: قرندی
+  comments:
+  type: local_council
+'45':
+  name: Rabat Gozo
+  code: '45'
+  unofficial_names:
+  - Rabat Gozo
+  - Rabat Għawdex
+  geo:
+    latitude: 36.043611
+    longitude: 14.243056
+    min_latitude: 36.0335614
+    min_longitude: 14.2268663
+    max_latitude: 36.053097
+    max_longitude: 14.2537264
+  translations:
+    en: Victoria
+    ar: الرباط
+    bn: ভিক্টোরিয়া
+    ca: Victòria
+    cs: Victoria (Malta)
+    da: Victoria
+    de: Victoria
+    el: Βικτώρια
+    es: Victoria
+    eu: Victòria
+    fa: ویکتوریا، مالت
+    fi: Victoria
+    fr: Rabat
+    gu: વિક્ટોરિયા
+    he: ויקטוריה
+    hi: विक्टोरिया
+    hu: Rabat
+    id: Victoria
+    it: Rabat
+    ja: ラバット
+    kn: ವಿಕ್ಟೋರಿಯ
+    ko: 빅토리아
+    lt: Viktorija
+    mr: व्हिक्टोरिया
+    ms: Victoria
+    nb: Victoria
+    nl: Victoria
+    pl: Victoria
+    pt: Victoria
+    ro: Victoria
+    ru: Виктория
+    si: වික්ටෝරියා
+    sk: Victoria
+    sr: Викторија
+    sv: Victoria (kommun i Malta, lat 36,05, long 14,24)
+    ta: விக்டோரியா
+    te: విక్టోరియా
+    th: วิคตอเรีย
+    tr: Victoria
+    uk: Вікторія
+    ur: وکٹوریہ، گوزو
+    vi: Victoria
+    zh: 維多利亞
+    lv: Viktorija
+    cy: Victoria
+    ceb: Victoria
+    sr_Latn: Viktorija
+    ccp: "\U0001111E\U0001112C\U00011107\U00011134\U00011111\U0001112E\U00011122\U00011128\U00011120"
+    sl: Victoria, Gozo
+    'no': Victoria
+    be: Вікторыя (Мальта)
+    ml: വിക്ടോറിയ
+    ps: ویکتوریا (مالتا)
+  comments:
+  type: local_council
+'46':
+  name: Rabat Malta
+  code: '46'
+  unofficial_names: Rabat Malta
+  geo:
+    latitude: 35.881667
+    longitude: 14.398889
+    min_latitude: 35.8615393
+    min_longitude: 14.3280307
+    max_latitude: 35.9101514
+    max_longitude: 14.41697
+  translations:
+    en: Rabat
+    ar: الرابات
+    bn: রাবাত
+    ca: Rabat
+    da: Rabat
+    de: Rabat
+    el: Ραμπάτ (Μάλτα)
+    es: Rabat
+    eu: Rabat
+    fa: ربات، مالت
+    fi: Rabat
+    fr: Rabat²
+    gu: રબટ
+    hi: रबात
+    hr: Rabat
+    hu: Rabat²
+    id: Rabat
+    it: Rabat²
+    ja: ラバト
+    kn: ರಬತ್
+    ko: 라바트
+    lt: Rabatas
+    mr: रबात
+    ms: Rabat
+    nb: Rabat
+    nl: Rabat
+    pl: Rabat
+    pt: Rabat (Malta)
+    ru: Рабат
+    si: රබට්
+    sr: Рабат
+    sv: Rabat
+    ta: ரோபாட்
+    te: రాబట్
+    th: เมืองราบัต
+    tr: Rabat
+    uk: Рабат
+    ur: رابات، مالٹا
+    vi: Rabat
+    zh: 拉巴特
+    lv: Rabata
+    sr_Latn: Rabat
+    ccp: "\U00011122\U00011127\U0001111D\U00011116\U00011134"
+    hy: Ռաբաթ
+    he: רבאט, מלטה
+    sl: Rabat, Malta
+    'no': Rabat
+    be: Рабат (Мальта)
+    ceb: Ir-Rabat
+  comments:
+  type: local_council
+'47':
+  name: Safi
+  code: '47'
+  unofficial_names: Safi
+  geo:
+    latitude: 35.833333
+    longitude: 14.485
+    min_latitude: 35.8260471
+    min_longitude: 14.479385
+    max_latitude: 35.8437126
+    max_longitude: 14.5058208
+  translations:
+    en: Safi
+    ar: سافي
+    bn: সাফি
+    ca: Safi
+    cs: Safi
+    da: Safi
+    de: Safi
+    el: Σάφι
+    es: Safi
+    eu: Safi
+    fi: Safi
+    fr: Safi
+    gu: સફી
+    hi: सफ़ी
+    hu: Safi
+    hy: Սաֆի
+    id: Safi
+    it: Safi
+    ja: サーフィ
+    kn: ಸಫಿ
+    ko: 사피
+    lt: Safis
+    mr: सफ़ी
+    ms: Safi
+    nb: Safi
+    nl: Safi
+    pl: Safi
+    pt: Safi
+    ru: Сафи
+    si: සාෆි
+    sv: Safi (kommun)
+    ta: சாபி
+    te: సాఫి
+    th: ซาฟี
+    tr: Safi
+    ur: سافی، مالٹا
+    vi: Safi
+    lv: Safi
+    ceb: Safi (munisipyo)
+    zh: 萨菲
+    ccp: "\U00011125\U0001111C\U00011128"
+    uk: Сафі
+    'no': Safi
+    fa: سافی (مالت)
+  comments:
+  type: local_council
+'48':
+  name: Saint Julian's
+  code: '48'
+  unofficial_names:
+  - Saint Julian's
+  - San Ġiljan
+  geo:
+    latitude: 35.9181297
+    longitude: 14.4883442
+    min_latitude: 35.9090522
+    min_longitude: 14.4825501
+    max_latitude: 35.93031149999999
+    max_longitude: 14.4966906
+  translations:
+    en: St. Julian’s
+    ar: سانت جوليان
+    bn: সেন্ট জুলিয়ান
+    ca: St. Julian’s
+    da: St. Julian’s
+    de: San Ġiljan
+    el: Σεντ Τζούλιανς
+    es: San Julián
+    eu: St. Julian’s
+    fa: سن جولیان
+    fi: St. Julian’s
+    fr: San Ġiljan
+    gu: સેન્ટ જુલીયન્સ
+    he: סנט ג׳וליאן
+    hi: सेंट जूलियंस
+    hr: St. Julian’s
+    hu: San Ġiljan
+    id: St. Julian’s
+    it: San Giuliano
+    ja: センジュリアン
+    kn: ಸೇಂಟ್ ಜೂಲಿಯನ್ಸ್
+    ko: 세인트줄리언스
+    lt: Sent Džuliansas
+    mr: सेंट ज्युलियनचे
+    ms: St. Julian’s
+    nb: St. Julians
+    nl: San Ġiljan
+    pl: St. Julian’s
+    pt: St. Julian’s
+    ro: St. Julian’s
+    ru: Сент-Джулианс
+    si: ශාන්ත ජූලියන්ස්
+    sl: St. Julian’s
+    sr: Сан Ђиљан
+    sv: St. Julian’s
+    ta: ஸ்ட . ஜூலியன் ‘ஸ்
+    te: సెయింట్ జూలియన్స్
+    th: เมืองเซนต์จูเลียน
+    tr: St. Julian’s
+    ur: سینٹ یولیان
+    vi: St. Julian’s
+    zh: 聖朱利安斯
+    lv: Sentdžuliansa
+    ceb: Saint Julian’s (munisipyo sa Malta)
+    sr_Latn: San Điljan
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134 \U0001110E\U00011128\U00011123\U00011128\U00011120\U0001111A\U00011134"
+    uk: Сент-Джуліанс
+    'no': St. Julians
+    be: Сент-Джуліянс
+    cs: San Ġiljan
+    hy: Սեյնթ Ջուլիանս
+  comments:
+  type: local_council
+'49':
+  name: Saint John
+  code: '49'
+  unofficial_names:
+  - Saint John
+  - San Ġwann
+  geo:
+    latitude: 35.9155231
+    longitude: 14.5008608
+    min_latitude: 35.9147507
+    min_longitude: 14.5005065
+    max_latitude: 35.9168314
+    max_longitude: 14.501465
+  translations:
+    en: San Ġwann
+    ar: سان غوان
+    bn: সান গোয়ান
+    ca: San Ġwann
+    cs: San Ġwann
+    da: San Ġwann
+    de: San Ġwann
+    el: Σαν Γκουάν
+    es: San Ġwann
+    eu: San Ġwann
+    fa: سان گوان
+    fi: San Ġwann
+    fr: San Ġwann
+    gu: સાન ગ્વાન
+    hi: सैन ग्वान
+    hu: San Ġwann
+    id: San Ġwann
+    it: San Giovanni
+    ja: サンジュワン
+    kn: ಸ್ಯಾನ್ ಗ್ವಾನ್
+    ko: 산즈완
+    lt: San Gvanas
+    mr: सॅन ग्वन
+    ms: San Gwann
+    nb: San Gwann
+    nl: San Ġwann
+    pl: San Ġwann
+    pt: San Ġwann
+    ru: Сан-Гванн
+    si: සැන ග්වොන්
+    sv: San Ġwann
+    ta: சான் குவான்
+    te: సాన్ గ్వాన్
+    th: ซาน กวานน์
+    tr: San Gwann
+    ur: سان جوان
+    vi: San Gwann
+    zh: 聖瓜安
+    lv: Sangvana
+    ceb: Saint John
+    ccp: "\U00011125\U0001111A\U00011134 \U00011109\U00011133\U00011126\U00011127\U0001111A\U00011134"
+    uk: Сан-Гванн
+    'no': San Gwann
+    ps: سان ګوان
+  comments:
+  type: local_council
+'50':
+  name: Saint Lawrence
+  code: '50'
+  unofficial_names:
+  - Saint Lawrence
+  - San Lawrenz
+  geo:
+    latitude: 36.055
+    longitude: 14.204167
+    min_latitude: 36.0329839
+    min_longitude: 14.1861148
+    max_latitude: 36.0629307
+    max_longitude: 14.2100868
+  translations:
+    en: Saint Lawrence
+    ar: سانت لورانس
+    bn: সেন্ট লরেন্স
+    ca: Saint Lawrence
+    cs: Saint Lawrence
+    da: Saint Lawrence
+    de: San Lawrenz
+    el: Σεντ Λόρενς
+    es: San Lawrenz
+    eu: Saint Lawrence
+    fi: Saint Lawrence
+    fr: San Lawrenz
+    gu: સેન્ટ લોરેન્સ
+    hi: सेंट लॉरेंस
+    hu: San Lawrenz
+    id: Saint Lawrence
+    it: San Lorenzo
+    ja: サン・ローレンツ
+    kn: ಸೇಂಟ್ ಲಾರೆನ್ಸ್
+    ko: 산라우렌츠
+    lt: San Lavrencas
+    mr: सेंट लॉरेन्स
+    ms: Saint Lawrence
+    nb: San Lawrenz
+    nl: San Lawrenz
+    pl: San Lawrenz
+    pt: Saint Lawrence
+    ru: Сан-Лоренц
+    si: ශාන්ත ලෝරන්ස්
+    sk: Saint Lawrence
+    sv: San Lawrenz (kommunhuvudort i Malta)
+    ta: செயின்ட் லாரன்ஸ்
+    te: సెయింట్ లారెన్స్
+    th: ซาน ลอว์เรนซ์
+    tr: Saint Lawrence
+    ur: سینٹ لارنس، مالٹا
+    vi: Saint Lawrence
+    lv: Senlorenca
+    ceb: San Lawrenz
+    zh: 圣劳伦斯
+    fa: سن لاورنز
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134 \U00011123\U00011133\U00011126\U00011127\U00011122\U0001112C\U0001111A\U00011134\U0001110C\U00011134"
+    uk: Сан-Лоренц
+    'no': San Lawrenz
+  comments:
+  type: local_council
+'51':
+  name: Saint Paul's Bay
+  code: '51'
+  unofficial_names:
+  - Saint Paul's Bay
+  - San Pawl il-Baħar
+  geo:
+    latitude: 35.94833300000001
+    longitude: 14.401667
+    min_latitude: 35.9104035
+    min_longitude: 14.3684005
+    max_latitude: 35.95977000000001
+    max_longitude: 14.4262694
+  translations:
+    en: St. Paul’s Bay
+    ar: شارع خليج بول
+    ca: San Pawl il-Baħar
+    cs: St. Paul’s Bay
+    da: San Pawl il-Baħar
+    de: San Pawl il-Baħar
+    el: Σεντ Πόλς Μπέι
+    es: San Pawl il-Baħar
+    eu: St. Paul’s Bay
+    fa: سان پال ایلبهار
+    fi: St. Paul’s Bay
+    fr: San Pawl il-Baħar
+    gu: સેન્ટ પૌલ્સ બે
+    hi: सेंट पॉल खाड़ी
+    hu: San Pawl il-Baħar
+    id: St. Paul’s Bay
+    it: Baia di San Paolo
+    ja: セントポールズ・ベイ
+    kn: ಸೇಂಟ್ ಪಾಲ್ಸ್ ಬೇ
+    ko: 세인트폴스베이
+    lt: San Polo Bėjus
+    mr: सेंट पॉलज बे
+    ms: St. Paul’s Bay
+    nb: St.Pauls Bay
+    nl: San Pawl il-Baħar
+    pl: St Paul’s Bay
+    pt: St. Paul’s Bay
+    ro: Golful Sfântul Paul
+    ru: Сент-Полс-Бэй
+    si: ශාන්ත පෝල්ස් කලපුව
+    sv: St. Paul’s Bay
+    ta: ஸ்ட். பால்ஸ் பே
+    te: సెయింట్ పాల్స్ బే
+    th: อ่าวเซนต์ปอล
+    tr: St. Paul’s Bay
+    uk: Сан-Пауль-іль-Бахар
+    ur: سینٹ پال بے
+    vi: St. Paul’s Bay
+    zh: 聖保羅灣城
+    lv: Senpola līcis
+    ceb: San Pawl il-Baħar (kapital sa rehiyon sa Malta)
+    bn: সেন্ট পল’স বে
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134 \U0001111B\U00011127\U00011123\U00011134
+      \U0001111D\U0001112C"
+    'no': St.Pauls Bay
+    be: Сан-Паўль-іль-Бахар
+    ps: سان پال ایلبهار
+    sl: San Pawl il-Baħar
+  comments:
+  type: local_council
+'52':
+  name: Sannat
+  code: '52'
+  unofficial_names: Sannat
+  geo:
+    latitude: 36.024444
+    longitude: 14.245833
+    min_latitude: 36.0114655
+    min_longitude: 14.2313128
+    max_latitude: 36.0304853
+    max_longitude: 14.2729834
+  translations:
+    en: Sannat
+    ar: سانات
+    bn: সাঁন্যাৎ
+    ca: Sannat
+    da: Sannat
+    de: Sannat
+    el: Σαννάτ
+    es: Sannat
+    eu: Sannat
+    fi: Sannat
+    fr: Sannat
+    gu: સન્નાત
+    hi: सनत
+    hu: Sannat
+    id: Sannat
+    it: Sannat
+    ja: サンナット
+    kn: ಸನ್ನಾತ್
+    ko: 산나트
+    lt: Sanatas
+    mr: सन्नाट
+    ms: Sannat
+    nb: Sannat
+    nl: Sannat
+    pl: Sannat
+    pt: Sannat
+    ru: Саннат
+    si: සන්නට්
+    sv: Sannat (kommun)
+    ta: சன்னட்
+    te: సన్నత్
+    th: แซนนาท
+    tr: Sannat
+    ur: ساننات
+    vi: Sannat
+    zh: 萨纳
+    lv: Sanata
+    ceb: Sannat
+    ccp: "\U00011125\U0001111A\U00011133\U00011126\U00011116\U00011134"
+    uk: Саннат
+    'no': Sannat
+    fa: سنات
+  comments:
+  type: local_council
+'53':
+  name: Saint Lucia's
+  code: '53'
+  unofficial_names:
+  - Saint Lucia's
+  - Santa Luċija
+  geo:
+    latitude: 35.8982574
+    longitude: 14.5126109
+    min_latitude: 35.896532
+    min_longitude: 14.510846
+    max_latitude: 35.9002424
+    max_longitude: 14.5142606
+  translations:
+    en: Santa Luċija
+    ar: سانتا لوزيجا
+    bn: সেন্ট লুসিয়া
+    ca: Santa Luċija
+    da: Santa Luċija
+    de: Santa Luċija
+    el: Σάντα Λουτσία
+    es: Santa Luċija
+    eu: Santa Luċija
+    fi: Santa Luċija
+    fr: Santa Luċija
+    gu: સાંતા લુસિજા
+    hi: सांता लूसिया
+    hu: Santa Luċija
+    id: Santa Luċija
+    it: Santa Lucia
+    ja: サンタルーチャ
+    kn: ಸಾಂಟಾ ಲೂಸಿಯಾ
+    ko: 산타루치야
+    lt: Santa Lusija
+    mr: सांता लूइजा
+    ms: Santa Lucija
+    nb: Saint Lucia
+    nl: Santa Luċija
+    pl: Santa Luċija
+    pt: Santa Luċija
+    ru: Санта-Лучия
+    si: සැන්ටා ලුසිජා
+    sv: Saint Lucia
+    ta: சாண்டா லூசிஜா
+    te: సాంటాా లూసిజా
+    th: แคว้นโนโวซีบีสค์
+    tr: Santa Lucija
+    ur: سانتا لوچیا
+    vi: Santa Lucija
+    lv: Senlūsija
+    ceb: Saint Lucia
+    zh: 桑塔露西亚市
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011123\U0001112A\U00011125\U00011128\U0001110E"
+    uk: Санта-Лучія
+    'no': Saint Lucia
+    fa: سانتا لوژیا
+  comments:
+  type: local_council
+'54':
+  name: Santa Venera
+  code: '54'
+  unofficial_names: Santa Venera
+  geo:
+    latitude: 35.889722
+    longitude: 14.477778
+    min_latitude: 35.8839129
+    min_longitude: 14.4703674
+    max_latitude: 35.8951169
+    max_longitude: 14.4848298
+  translations:
+    en: Santa Venera
+    ar: سانتا فينيرا
+    bn: স্যান্টা ভেনেরা
+    ca: Santa Venera
+    da: Santa Venera
+    de: Santa Venera
+    el: Σάντα Βενέρα
+    es: Santa Venera
+    eu: Santa Venera
+    fa: سانتا ونرا
+    fi: Santa Venera
+    fr: Santa Venera
+    gu: સાન્ટા વેનેરા
+    hi: सैंटा वेनेरा
+    hu: Santa Venera
+    id: Santa Venera
+    it: Santa Venera
+    ja: サンタヴェネラ
+    kn: ಸಂತ ವೆನೆರಾ
+    ko: 산타베네라
+    lt: Santa Venera
+    mr: सांता व्हेनेरा
+    ms: Santa Venera
+    nb: Santa Venera
+    nl: Santa Venera
+    pl: Santa Venera
+    pt: Santa Venera
+    ru: Санта-Венера
+    si: සැන්ටා වෙනේරා
+    sv: Santa Venera
+    ta: சாண்டா வெனீரா
+    te: సాంటా వెనెరా
+    th: ซานต้า วีเนรา
+    tr: Santa Venera
+    uk: Санта-Венера
+    ur: سانتا وینیرا
+    vi: Santa Venera
+    zh: 聖韋內拉
+    lv: Santa Venera
+    ceb: Santa Venera
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U0001111E\U0001112C\U0001111A\U0001112C\U00011122"
+    'no': Santa Venera
+    hy: Սանտա Վեներա
+  comments:
+  type: local_council
+'55':
+  name: Siġġiewi
+  code: '55'
+  unofficial_names: Siġġiewi
+  geo:
+    latitude: 35.854167
+    longitude: 14.438333
+    min_latitude: 35.8260449
+    min_longitude: 14.389665
+    max_latitude: 35.8686038
+    max_longitude: 14.4725562
+  translations:
+    en: Siġġiewi
+    ar: بلدية سيقيوي
+    bn: সিজ্ঞিবি
+    ca: Siġġiewi
+    da: Siġġiewi
+    de: Siġġiewi
+    el: Σιγκιέβι
+    es: Siġġiewi
+    eu: Siġġiewi
+    fa: سیگیوی
+    fi: Siġġiewi
+    fr: Siġġiewi
+    gu: સિગીએવી
+    hi: सिग्युए
+    hu: Siġġiewi
+    id: Siġġiewi
+    it: Suggeui
+    ja: シッジウィー
+    kn: ಸಿಗ್ಗಿಏವಿ
+    ko: 시지위
+    lt: Sidživis
+    mr: सिग्गीऐवी
+    ms: Siggiewi
+    nb: Siggiewi
+    nl: Siġġiewi
+    pl: Siġġiewi
+    pt: Siġġiewi
+    ru: Сиггиеви
+    si: සිග්ගිවී
+    sr: Сигијеви
+    sv: Is-Siġġiewi (kommun i Malta)
+    ta: சிகியேவி
+    te: సిగ్గీవీ
+    th: ซิกกีวี
+    tr: Siggiewi
+    ur: سیججیوی
+    vi: Siggiewi
+    zh: 錫傑維
+    lv: Sidživija
+    ceb: Is-Siġġiewi (munisipyo sa Malta)
+    sr_Latn: Sigijevi
+    ccp: "\U00011125\U00011128\U00011109\U00011133\U00011126\U00011128\U00011120\U0001112C\U00011105\U0001112A"
+    uk: Сіґґієві
+    'no': Siggiewi
+    hy: Սիգիևի
+  comments:
+  type: local_council
+'56':
+  name: Sliema
+  code: '56'
+  unofficial_names: Sliema
+  geo:
+    latitude: 35.912222
+    longitude: 14.504167
+    min_latitude: 35.9053452
+    min_longitude: 14.4929945
+    max_latitude: 35.918301
+    max_longitude: 14.5147771
+  translations:
+    en: Sliema
+    ar: سليمة
+    bn: স্লিয়েমা
+    ca: Sliema
+    cs: Sliema
+    da: Sliema
+    de: Sliema
+    el: Σλιέμα
+    es: Sliema
+    eu: Sliema
+    fa: سلیما
+    fi: Sliema
+    fr: Sliema
+    gu: સ્લિએમા
+    he: סלימה
+    hi: स्लिमा
+    hr: Sliema
+    hu: Sliema
+    hy: Սիլեմա
+    id: Sliema
+    it: Sliema
+    ja: スリマ
+    kn: ಸ್ಲೀಮಾ
+    ko: 슬리마
+    lt: Slima
+    mr: स्लिमा
+    ms: Sliema
+    nb: Sliema
+    nl: Sliema
+    pl: Sliema
+    pt: Sliema
+    ro: Sliema
+    ru: Слима
+    si: ස්ලීමා
+    sl: Sliema, Malta
+    sr: Слијема
+    sv: Sliema
+    ta: சலியேம
+    te: స్లియేమా
+    th: สเลียม่า
+    tr: Sliema
+    uk: Сліма
+    ur: سلیما
+    vi: Sliema
+    zh: 斯利馬
+    lv: Sliema
+    sr_Latn: Slijema
+    ccp: "\U00011125\U00011133\U00011123\U00011128\U00011120\U0001112C\U0001111F"
+    bs: Sliema
+    'no': Sliema
+    az: Slima
+    be: Сліма
+    ceb: Tas-Sliema
+    ka: სლიმა
+    ps: سليمه (ښار)
+  comments:
+  type: local_council
+'57':
+  name: Swieqi
+  code: '57'
+  unofficial_names: Swieqi
+  geo:
+    latitude: 35.920833
+    longitude: 14.48
+    min_latitude: 35.91263240000001
+    min_longitude: 14.4549179
+    max_latitude: 35.933632
+    max_longitude: 14.4870293
+  translations:
+    en: Swieqi
+    ar: سويقي
+    bn: সুইকি
+    ca: Swieqi
+    da: Swieqi
+    de: Swieqi
+    el: Σβιέκι
+    es: Swieqi
+    eu: Swieqi
+    fa: سویکی
+    fi: Swieqi
+    fr: Swieqi
+    gu: સ્વિકી
+    hi: स्विएकी
+    hu: Swieqi
+    id: Swieqi
+    it: Swieqi
+    ja: シウィーイ
+    kn: ಸ್ವಾಯಿಕಿ
+    ko: 스위이
+    lt: Svikis
+    mr: स्विएकी
+    ms: Swieqi
+    nb: Sweiqi
+    nl: Swieqi
+    pl: Swieqi
+    pt: Swieqi
+    ru: Свийи
+    si: ස්විකි
+    sl: Swieqi
+    sv: Is-Swieqi (kommun i Malta)
+    ta: ஸ்விஏக்கி
+    te: స్వెియెకి
+    th: สวีอิ
+    tr: Sweiqi
+    ur: سویئای
+    vi: Swieqi
+    zh: 斯維吉
+    lv: Svieki
+    ceb: Is-Swieqi (munisipyo sa Malta)
+    ccp: "\U00011125\U0001112A\U00011120\U0001112C\U00011107\U00011128"
+    uk: Свікі
+    'no': Sweiqi
+    cs: Swieqi
+  comments:
+  type: local_council
+'58':
+  name: Ta' Xbiex
+  code: '58'
+  unofficial_names: Ta' Xbiex
+  geo:
+    latitude: 35.899167
+    longitude: 14.498056
+    min_latitude: 35.8971043
+    min_longitude: 14.4907093
+    max_latitude: 35.9018784
+    max_longitude: 14.5006294
+  translations:
+    en: Ta’ Xbiex
+    ar: تا إزبيكس
+    bn: তা বিএক্স
+    ca: Ta’ Xbiex
+    da: Ta’ Xbiex
+    de: Ta’ Xbiex
+    el: Τα Κσμπιέξ
+    es: Ta’ Xbiex
+    eu: Ta’ Xbiex
+    fi: Ta’ Xbiex
+    fr: Ta’ Xbiex
+    gu: તા ‘ક્સબિએક્સ
+    he: טא׳ שביאש
+    hi: टा ‘एक्सबिएक्स
+    hu: Ta’ Xbiex
+    id: Ta’ Xbiex
+    it: Ta’ Xbiex
+    ja: タシビイシェ
+    kn: ತಾ ‘ಬಿಬಿಕ್ಸ್
+    ko: 타시비시
+    lt: Tašbišas
+    mr: ता ‘एक्सबिएक्स
+    ms: Ta’ Xbiex
+    nb: Ta Xbiex
+    nl: Ta’ Xbiex
+    pl: Ta’ Xbiex
+    pt: Ta’ Xbiex
+    ru: Ташбиеш
+    si: ටා‘එක්ස්බිඑක්ස්
+    sv: Ta’ Xbiex
+    ta: த ‘ ஸ்பிஎஸ்
+    te: టాక్సిబియెక్స్
+    th: ตา ซีบริก
+    tr: Ta’Zbiex
+    ur: تآشبیئش
+    vi: Ta’ Xbiex
+    lv: Tašbiša
+    ceb: Ta’ Xbiex
+    zh: 塔比克斯
+    ccp: "\U00011111‘ \U0001111D\U00011128\U00011120\U0001112C\U00011107\U00011134"
+    uk: Та-Шбіш
+    'no': Ta Xbiex
+    ha: Taʼ Xbiex
+    ha_NE: Taʼ Xbiex
+  comments:
+  type: local_council
+'59':
+  name: Tarxien
+  code: '59'
+  unofficial_names: Tarxien
+  geo:
+    latitude: 35.86583299999999
+    longitude: 14.511944
+    min_latitude: 35.8615915
+    min_longitude: 14.5054303
+    max_latitude: 35.8737554
+    max_longitude: 14.5204097
+  translations:
+    en: Tarxien
+    ar: تشرزين
+    bn: টারক্সিয়েন
+    ca: Tarxien
+    cs: Tarxien
+    da: Tarxien
+    de: Tarxien
+    el: Τάρκσιεν
+    es: Tarxien
+    eu: Tarxien
+    fa: ترزین
+    fi: Tarxien
+    fr: Tarxien
+    gu: તાર્ક્સિએન
+    hi: टारज़िएन
+    hu: Tarxien
+    id: Tarxien
+    it: Tarscen
+    ja: タルシーン
+    kn: ಟ್ಯಾಕ್ಸೀನ್
+    ko: 타르신
+    lt: Taršinas
+    mr: टर्क्सिएन
+    ms: Tarxien
+    nb: Tarxien
+    nl: Tarxien
+    pl: Tarxien
+    pt: Tarxien
+    ru: Таршин
+    si: ටක්සියෙන්
+    sv: Tarxien
+    ta: டர்க்ஸின்
+    te: టార్జియెన్
+    th: ทาร์เซียน
+    tr: Tarxien
+    uk: Таршіен
+    ur: تارشیئن
+    vi: Tarxien
+    zh: 塔爾欣
+    lv: Taršina
+    ccp: "\U00011111\U00011122\U00011134\U0001110E\U00011128\U00011120\U0001112C\U0001111A\U00011134"
+    'no': Tarxien
+    ceb: Tarxien
+    he: טרשין
+    ps: ترزین
+  comments:
+  type: local_council
+'60':
+  name: Valletta
+  code: '60'
+  unofficial_names: Valletta
+  geo:
+    latitude: 35.8989085
+    longitude: 14.5145528
+    min_latitude: 35.8932982
+    min_longitude: 14.5055526
+    max_latitude: 35.9035645
+    max_longitude: 14.5207718
+  translations:
+    en: Valletta
+    af: Valletta
+    am: ቫሌታ
+    ar: فاليتا
+    az: Valletta
+    be: Горад Валета
+    bg: Валета
+    bn: ভাল্লেত্তা
+    ca: La Valletta
+    cs: Valletta
+    da: Valletta
+    de: Valletta
+    el: Βαλέτα
+    es: La Valeta
+    et: Valletta
+    eu: Valletta
+    fa: والتا
+    fi: Valletta
+    fr: La Valette
+    gl: A Valeta
+    gu: વેલેટા
+    he: ולטה
+    hi: वैलेटा
+    hr: Valletta
+    hu: Valletta
+    hy: Վալետա
+    id: Valletta
+    is: Valletta
+    it: La Valletta
+    ja: バレッタ
+    ka: ვალეტა
+    kn: ವೆಲೆಟ್ಟ
+    ko: 발레타
+    lt: Valeta
+    lv: Valeta
+    ml: വലേറ്റ
+    mn: Валлетта
+    mr: व्हॅलेटा
+    ms: Valletta
+    nb: Valletta
+    ne: भलेट
+    nl: Valletta
+    pl: Valletta
+    pt: Valeta
+    ro: Valletta
+    ru: Валлетта
+    si: වැලේටා
+    sk: Valletta
+    sl: Valletta
+    sr: Валета
+    sv: Valletta
+    sw: Valletta
+    ta: வல்லெட்டா
+    te: వల్లెట్టా
+    th: วัลเลตตา
+    tk: Walletta
+    tr: Valletta
+    uk: Валлетта
+    ur: والیٹا
+    vi: Valletta
+    zh: 瓦莱塔
+    cy: Valletta
+    ceb: Valletta
+    sr_Latn: Valeta
+    yue_Hans: 华列他
+    sq: Valeta
+    ccp: "\U0001111E\U00011123\U0001112C\U00011116\U00011133\U00011126"
+    ga: Vaileite
+    ky: Валлетта
+    so: Valletta
+    pa: ਵਲੈਟਾ
+    kk: Валлетта
+    yue: 華列他
+    my: ဗယ်လက်တာမြို့
+    yo: Valletta
+    uz: Valletta
+    bs: Valletta
+    mk: Валета
+    'no': Valletta
+    yo_BJ: Valletta
+    ps: والتا
+  comments:
+  type: local_council
+'61':
+  name: Xagħra
+  code: '61'
+  unofficial_names: Xagħra
+  geo:
+    latitude: 36.050278
+    longitude: 14.2675
+    min_latitude: 36.0379885
+    min_longitude: 14.2497419
+    max_latitude: 36.0732968
+    max_longitude: 14.2847375
+  translations:
+    en: Xagħra
+    ar: بلدة زاجورا
+    bn: জাঘ্রা
+    ca: Xagħra
+    da: Xagħra
+    de: Xagħra
+    el: Ξάγκχρα
+    es: Xagħra
+    eu: Xagħra
+    fi: Xagħra
+    fr: Xagħra
+    gu: ઝાઘ્રા
+    hi: ज़ेन्गरॉ
+    hu: Xagħra
+    hy: Շահրա
+    id: Xagħra
+    it: Caccia
+    ja: シャーラ
+    kn: ಕ್ಸಘ್ರಾ
+    ko: 샤라
+    lt: Šagra
+    mr: क्साघार
+    ms: Xaghra
+    nb: Xaghra
+    nl: Xagħra
+    pl: Xagħra
+    pt: Xagħra
+    ru: Шаара
+    si: එක්සග්‍රා
+    sv: Ix-Xagħra
+    ta: சேக்ஹ்ரா
+    te: జాగ్రా
+    th: ซาเกร็บ
+    tr: Xaghra
+    ur: شارا
+    vi: Xaghra
+    lv: Šagra
+    ceb: Ix-Xagħra
+    zh: 沙拉
+    ccp: "\U0001110E\U00011107\U00011134\U00011122"
+    uk: Шаара
+    'no': Xaghra
+    be: Шаара
+    fa: زاگرا
+  comments:
+  type: local_council
+'62':
+  name: Xewkija
+  code: '62'
+  unofficial_names: Xewkija
+  geo:
+    latitude: 36.033009
+    longitude: 14.26234
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Xewkija
+    ar: شوكية
+    bn: জিউকিজা
+    ca: Xewkija
+    da: Xewkija
+    de: Xewkija
+    el: Ξεουκίτζα
+    es: Xewkija
+    eu: Xewkija
+    fi: Xewkija
+    fr: Xewkija
+    gu: ઝ્યુક્વજા
+    hi: झ्युकिया
+    hu: Xewkija
+    id: Xewkija
+    it: Xeuchia
+    ja: シェウキーヤ
+    kn: ಎಕ್ಸ್ವಿಕಿಯಾ
+    ko: 셰우키야
+    lt: Šeukidža
+    mr: एक्सवक्किया
+    ms: Xewkija
+    nb: Xewkija
+    nl: Xewkija
+    pl: Xewkija
+    pt: Xewkija
+    ru: Шевкия
+    si: ක්සේව්කිජා
+    sv: Ix-Xewkija (kommun i Malta)
+    ta: ஸேவ்க்கிஜா
+    te: జెవికిజా
+    th: ซิวคิจา
+    tr: Xekija
+    ur: شیوکیا
+    vi: Xewkija
+    lv: Šeukidža
+    ceb: Ix-Xewkija
+    zh: 绍基亚
+    ccp: "\U0001110E\U0001112C\U00011103\U0001112E\U00011107\U00011128\U0001110E"
+    uk: Шевкія
+    'no': Xewkija
+  comments:
+  type: local_council
+'63':
+  name: Xgħajra
+  code: '63'
+  unofficial_names: Xgħajra
+  geo:
+    latitude: 35.8868282
+    longitude: 14.5472391
+    min_latitude: 35.8791327
+    min_longitude: 14.5347666
+    max_latitude: 35.8899212
+    max_longitude: 14.5571618
+  translations:
+    en: Xgħajra
+    ar: زغواجرا
+    bn: জাঝরা
+    ca: Xgħajra
+    cs: Xgħajra
+    da: Xgħajra
+    de: Xgħajra
+    el: Ξγκάτζρα
+    es: Xgħajra
+    eu: Xgħajra
+    fi: Xgħajra
+    fr: Xgħajra
+    gu: ઝ્ઘાજ્રા
+    hi: ज़ग़ाज़रा
+    hu: Xgħajra
+    id: Xgħajra
+    it: Sciaira
+    ja: シャイラ
+    kn: ಕ್ಸಘಾಜ್ರ
+    ko: 샤이라
+    lt: Šgaira
+    mr: क्सघाज्रा
+    ms: Xghajra
+    nb: Xgħajra
+    nl: Xgħajra
+    pl: Xgħajra
+    pt: Xgħajra
+    ru: Шайра
+    si: එක්ස්ගජ්රා
+    sv: Ix-Xgħajra
+    ta: ஸ்கஜ்ரா
+    te: జగాజ్రా
+    th: ซักฮาจรา
+    tr: Xghajra
+    ur: شایرا
+    vi: Xghajra
+    lv: Šgaira
+    ceb: Ix-Xgħajra
+    zh: 哈加
+    ccp: "\U0001110A\U00011107\U00011134\U00011122"
+    uk: Шайра
+    'no': Xgħajra
+  comments:
+  type: local_council
+'64':
+  name: Żabbar
+  code: '64'
+  unofficial_names: Żabbar
+  geo:
+    latitude: 35.877222
+    longitude: 14.538056
+    min_latitude: 35.8639058
+    min_longitude: 14.5267365
+    max_latitude: 35.8848922
+    max_longitude: 14.5641411
+  translations:
+    en: Żabbar
+    ar: جبار
+    bn: জাব্বার
+    ca: Żabbar
+    cs: Żabbar
+    da: Żabbar
+    de: Żabbar
+    el: Ζαμπάρ
+    es: Żabbar
+    eu: Żabbar
+    fa: زابار
+    fi: Żabbar
+    fr: Żabbar
+    gu: ઝબ્બાર
+    hi: ज़ब्बार
+    hu: Żabbar
+    id: Żabbar
+    it: Zabbar
+    ja: ザッパール
+    kn: ಝಬ್ಬರ್
+    ko: 자바르
+    lt: Zabaras
+    mr: आबबर
+    ms: Zabbar
+    nb: Żabbar
+    nl: Żabbar
+    pl: Żabbar
+    pt: Żabbar
+    ru: Заббар
+    si: සබ්බාර්
+    sk: Żabbar
+    sr: Забар
+    sv: Żabbar
+    ta: சாப்பார்
+    te: జబ్బార్
+    th: ซับบาร์
+    tr: Zabbar
+    uk: Заббар
+    ur: زابار
+    vi: Zabbar
+    zh: 扎巴爾
+    lv: Zabara
+    ceb: Ħaż-Żabbar
+    sr_Latn: Zabar
+    ccp: "\U0001110E\U00011127\U0001111D\U00011133\U00011126\U00011122\U00011134"
+    be: Забар
+    mk: Забар (Малта)
+    'no': Żabbar
+    hy: Զաբար
+    ps: زابار
+  comments:
+  type: local_council
+'65':
+  name: Żebbuġ Gozo
+  code: '65'
+  unofficial_names:
+  - Żebbuġ Gozo
+  - Żebbuġ Għawdex
+  geo:
+    latitude: 36.070833
+    longitude: 14.236944
+    min_latitude: 36.0490571
+    min_longitude: 14.2263722
+    max_latitude: 36.0822238
+    max_longitude: 14.266588
+  translations:
+    en: Żebbuġ Gozo
+    ca: Żebbuġ
+    de: Żebbuġ
+    es: Żebbuġ
+    eu: Żebbuġ
+    fr: Żebbuġ
+    hu: Żebbuġ
+    it: Żebbuġ
+    ja: ゼブージ
+    ko: 제부치
+    lt: Zebudžas
+    nl: Żebbuġ
+    pl: Żebbuġ
+    pt: Żebbuġ (Gozo)
+    sv: Iż-Żebbuġ
+    ur: زیبوج، گوزو
+    ceb: Iż-Żebbuġ
+    zh: 泽布季 (戈佐岛)
+    ccp: "\U0001110E\U0001112C\U0001111D\U0001112A\U00011107\U00011134 \U00011109\U0001112E\U0001110E\U0001112E"
+    id: Żebbuġ, Gozo
+    ru: Зеббудж Гоцо
+  comments:
+  type: local_council
+'66':
+  name: Żebbuġ Malta
+  code: '66'
+  unofficial_names: Żebbuġ Malta
+  geo:
+    latitude: 35.873056
+    longitude: 14.441944
+    min_latitude: 35.8603872
+    min_longitude: 14.4119275
+    max_latitude: 35.886147
+    max_longitude: 14.4665909
+  translations:
+    en: Żebbuġ
+    ar: زيباغ
+    bn: জেব্বুগ
+    ca: Żebbuġ²
+    cs: Żebbuġ
+    da: Żebbuġ
+    de: Żebbuġ²
+    el: Ζέμπουγκ
+    es: Żebbuġ²
+    eu: Żebbuġ²
+    fa: زبوگ
+    fi: Żebbuġ
+    fr: Żebbuġ²
+    gu: ઝેબુગ
+    hi: ज़ेबुग
+    hu: Żebbuġ²
+    id: Żebbuġ
+    it: Casal Zebbugi
+    ja: ゼブージ²
+    kn: ಝೆಬ್ಬುಗ್
+    ko: 제부치²
+    lt: Zebudžas²
+    mr: झब्बुग्ज
+    ms: Zebbug
+    nb: Zebbug
+    nl: Żebbuġ²
+    pl: Żebbuġ²
+    pt: Żebbuġ
+    ru: Зеббудж
+    si: සෙබ්බග්
+    sk: Żebbuġ
+    sr: Зебуг
+    sv: Ħaż-Żebbuġ
+    ta: ஸிப்புக
+    te: జెబగ్
+    th: เซบบูค
+    tr: Zebbug
+    uk: Зеббудж
+    ur: زیبوج
+    vi: Zebbug
+    zh: 澤布季
+    lv: Zebuča
+    ceb: Ħaż-Żebbuġ
+    sr_Latn: Zebug
+    ccp: "\U0001110E\U0001112C\U0001111D\U0001112A\U00011107\U00011134"
+    'no': Zebbug
+    be: Зебудж
+    hy: Զաբուջ
+  comments:
+  type: local_council
+'67':
+  name: Żejtun
+  code: '67'
+  unofficial_names: Żejtun
+  geo:
+    latitude: 35.855556
+    longitude: 14.533333
+    min_latitude: 35.845767
+    min_longitude: 14.5151017
+    max_latitude: 35.8699403
+    max_longitude: 14.5527028
+  translations:
+    en: Żejtun
+    ar: الزيتون
+    bn: জেতোন
+    ca: Żejtun
+    da: Żejtun
+    de: Żejtun
+    el: Ζέτζτουν
+    es: Żejtun
+    eu: Żejtun
+    fa: زیتون، مالت
+    fi: Żejtun
+    fr: Żejtun
+    gu: ઝેજતુન
+    hi: ज़ेयतन
+    hu: Żejtun
+    id: Żejtun
+    it: Zeitun
+    ja: ゼイトゥン
+    kn: ಝೆಜ್ಟೌನ್
+    ko: 제이툰
+    lt: Zeitūnas
+    mr: एग्जटुन
+    ms: Zejtun
+    nb: Iz-Zejtun
+    nl: Żejtun
+    pl: Żejtun
+    pt: Żejtun
+    ru: Зейтун
+    si: සේජ්ටන්
+    sr: Зејтун
+    sv: Iż-Żejtun (kommun i Malta)
+    ta: சேஜ்துன்
+    te: జెజ్‌టన్
+    th: เซจตัน
+    tr: Zejtun
+    uk: Зейтун
+    ur: زیتون، مالٹا
+    vi: Zejtun
+    zh: 榟橔
+    lv: Zejtuna
+    ceb: Iż-Żejtun
+    sr_Latn: Zejtun
+    ccp: "\U0001110E\U0001112C\U00011107\U00011134\U00011111\U0001112A\U0001111A\U00011134"
+    'no': Iz-Zejtun
+    he: איז-זיתון
+    ps: زيتون (مالتا)
+    ro: Żejtun
+  comments:
+  type: local_council
+'68':
+  name: Żurrieq
+  code: '68'
+  unofficial_names: Żurrieq
+  geo:
+    latitude: 35.829167
+    longitude: 14.475833
+    min_latitude: 35.8126989
+    min_longitude: 14.4575752
+    max_latitude: 35.8404648
+    max_longitude: 14.5144888
+  translations:
+    en: Żurrieq
+    ar: زرياق
+    bn: জুরিক
+    ca: Żurrieq
+    cs: Żurrieq
+    da: Zurrieq
+    de: Żurrieq
+    el: Ζουριέκ
+    es: Żurrieq
+    eu: Żurrieq
+    fa: زوریک
+    fi: Żurrieq
+    fr: Żurrieq
+    gu: ઝુરેઈક
+    hi: ज़ुर्रेक
+    hu: Żurrieq
+    id: Żurrieq
+    it: Zurrico
+    ja: ズッリー
+    kn: ಝೆರಿಕ್
+    ko: 주리
+    lt: Zurikas
+    mr: झर्यियेक
+    ms: Zurrieq
+    nb: Zurrieq
+    nl: Żurrieq
+    pl: Żurrieq
+    pt: Żurrieq
+    ru: Зуррик
+    si: සූරික්
+    sv: Iż-Żurrieq (kommun i Malta)
+    ta: ஸுரியக்
+    te: జురియెక్
+    th: เซอร์ริกค์
+    tr: Zurrieq
+    uk: Зуррік
+    ur: زوریئا
+    vi: Zurrieq
+    zh: 祖里格
+    lv: Zurrī
+    ceb: Iż-Żurrieq
+    ccp: "\U0001110E\U0001112A\U00011122\U00011128\U00011120\U0001112C\U00011107\U00011134"
+    bg: Зурик
+    'no': Zurrieq
+    be: Зурык
+    hy: Զուռիկ
+    ps: زوریک
+  comments:
+  type: local_council

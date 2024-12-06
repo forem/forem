@@ -1,0 +1,374 @@
+###############
+# Device Detector - The Universal Device Detection library for parsing User Agents
+#
+# @link https://matomo.org
+# @license http://www.gnu.org/licenses/lgpl.html LGPL v3 or later
+###############
+
+# got (https://github.com/sindresorhus/got)
+- regex: '^got '
+  name: 'got'
+  version: ''
+
+# Typhoeus (https://github.com/typhoeus/typhoeus)
+- regex: 'Typhoeus'
+  name: 'Typhoeus'
+  version: ''
+
+# req (https://github.com/imroc/req)
+- regex: 'req/v([\.\d]+)'
+  name: 'req'
+  version: '$1'
+
+# quic-go (https://github.com/lucas-clemente/quic-go)
+- regex: 'quic-go-HTTP/3'
+  name: 'quic-go'
+  version: ''
+
+# Azure Data Factory (https://azure.microsoft.com/en-us/products/data-factory/)
+- regex: 'azure-data-factory(?:/(\d+[\.\d]+))?'
+  name: 'Azure Data Factory'
+  version: '$1'
+
+# Dart (https://dart.dev/)
+- regex: 'Dart(?:/(\d+[\.\d]+))?'
+  name: 'Dart'
+  version: '$1'
+
+# r-curl (https://github.com/jeroen/curl)
+- regex: 'r-curl(?:/(\d+[\.\d]+))?'
+  name: 'r-curl'
+  version: '$1'
+
+# HTTPX (https://www.python-httpx.org/)
+- regex: 'python-httpx(?:/(\d+[\.\d]+))?'
+  name: 'HTTPX'
+  version: '$1'
+
+# fasthttp (https://github.com/valyala/fasthttp)
+- regex: 'fasthttp(?:/(\d+[\.\d]+))?'
+  name: 'fasthttp'
+  version: '$1'
+
+# GeoIP Update (https://github.com/maxmind/geoipupdate)
+- regex: 'geoipupdate(?:/(\d+[\.\d]+))?'
+  name: 'GeoIP Update'
+  version: '$1'
+
+# PHP cURL Class (https://github.com/php-curl-class/php-curl-class)
+- regex: 'PHP-Curl-Class(?:/(\d+[\.\d]+))?'
+  name: 'PHP cURL Class'
+  version: '$1'
+
+# cPanel HTTP Client (https://www.cpanel.net/)
+- regex: 'Cpanel-HTTP-Client(?:/(\d+[\.\d]+))?'
+  name: 'cPanel HTTP Client'
+  version: '$1'
+
+# AnyEvent HTTP (http://software.schmorp.de/pkg/AnyEvent)
+- regex: 'AnyEvent-HTTP(?:/(\d+[\.\d]+))?'
+  name: 'AnyEvent HTTP'
+  version: '$1'
+
+# SlimerJS (https://www.slimerjs.org/)
+- regex: 'SlimerJS/(\d+[\.\d]+)'
+  name: 'SlimerJS'
+  version: '$1'
+
+- regex: 'Wget(?:/(\d+[\.\d]+))?'
+  name: 'Wget'
+  version: '$1'
+
+- regex: 'Guzzle(?:Http)?(?:/(\d+[\.\d]+))?'
+  name: 'Guzzle (PHP HTTP Client)'
+  version: '$1'
+
+- regex: '(?:lib)?curl(?:/(\d+[\.\d]+))?'
+  name: 'curl'
+  version: '$1'
+
+- regex: 'python-requests(?:/(\d+[\.\d]+))?'
+  name: 'Python Requests'
+  version: '$1'
+
+- regex: 'Python-httplib2(?:/(\d+[\.\d]+))?'
+  name: 'httplib2'
+  version: '$1'
+  url: 'https://pypi.org/project/httplib2/'
+
+- regex: 'Python-urllib(?:/?(\d+[\.\d]+))?'
+  name: 'Python urllib'
+  version: '$1'
+
+- regex: 'Apache-HttpClient(?:/?(\d+[\.\d]+))?'
+  name: 'Apache HTTP Client'
+  version: '$1'
+
+- regex: 'Java-http-client(?:/?(\d+[\.\d]+))?'
+  name: 'Java HTTP Client'
+  version: '$1'
+
+- regex: 'Java(?:/?(\d+[\.\d]+))?'
+  name: 'Java'
+  version: '$1'
+
+- regex: '(?:perlclient|libwww-perl)(?:/?(\d+[\.\d]+))?'
+  name: 'Perl'
+  version: '$1'
+
+- regex: 'grpc-java-okhttp/([\d\.]+)'
+  name: 'gRPC-Java'
+  version: '$1'
+  url: 'https://github.com/grpc/grpc-java'
+
+- regex: '(?:okhttp|network-okhttp3)/([\d\.]+)'
+  name: 'OkHttp'
+  version: '$1'
+- regex: 'okhttp3-([\d\.]+)'
+  name: 'OkHttp'
+  version: '$1'
+
+- regex: 'HTTP_Request2(?:/(\d+[\.\d]+))?'
+  name: 'HTTP_Request2'
+  version: '$1'
+
+- regex: 'HTTP_Request2(?:/(\d+[\.\d]+))?'
+  name: 'HTTP_Request2'
+  version: '$1'
+  url: 'http://pear.php.net/package/http_request2'
+
+- regex: 'Mechanize(?:/(\d+[\.\d]+))?'
+  name: 'Mechanize'
+  version: '$1'
+  url: 'http://github.com/sparklemotion/mechanize/'
+
+- regex: 'aiohttp(?:/(\d+[\.\d]+))?'
+  name: 'aiohttp'
+  version: '$1'
+
+- regex: 'Google-HTTP-Java-Client(?:/(\d+[\.\w-]+))?'
+  name: 'Google HTTP Java Client'
+  version: '$1'
+
+- regex: 'WWW-Mechanize(?:/(\d+[\.\d]+))?'
+  name: 'WWW-Mechanize'
+  version: '$1'
+
+- regex: 'Faraday(?: v(\d+[\.\d]+))?'
+  name: 'Faraday'
+  version: '$1'
+
+- regex: '(?:Go-http-client|Go )/?(?:(\d+[\.\d]+))?(?: package http)?'
+  name: 'Go-http-client'
+  version: '$1'
+
+- regex: 'urlgrabber(?:/(\d+[\.\d]+))?'
+  name: 'urlgrabber (yum)'
+  version: '$1'
+
+- regex: 'libdnf(?:/(\d+[\.\d]+))?'
+  name: 'libdnf'
+  version: '$1'
+
+- regex: 'HTTPie(?:/(\d+[\.\d]+))?'
+  name: 'HTTPie'
+  version: '$1'
+
+- regex: 'rest-client/(\d+\.[\.\d]+) .*ruby'
+  name: 'REST Client for Ruby'
+  version: '$1'
+
+- regex: 'RestSharp/(\d+[\.\d]+)'
+  name: 'RestSharp'
+  version: '$1'
+  url: 'http://restsharp.org/'
+
+- regex: 'scalaj-http/(\d+[\.\d]+)'
+  name: 'ScalaJ HTTP'
+  version: '$1'
+  url: 'https://github.com/scalaj/scalaj-http'
+
+- regex: 'REST::Client/(\d+)'
+  name: 'Perl REST::Client'
+  version: '$1'
+  url: 'https://metacpan.org/pod/REST::Client'
+
+- regex: 'node-fetch/(\d+[\.\d]+)'
+  name: 'Node Fetch'
+  version: '$1'
+  url: 'https://github.com/node-fetch/node-fetch'
+
+- regex: 'ReactorNetty/(\d+[\.\d]+)'
+  name: 'ReactorNetty'
+  version: '$1'
+  url: 'https://github.com/reactor/reactor-netty'
+
+- regex: 'PostmanRuntime(?:/(\d+[\.\d]+))?'
+  name: 'Postman Desktop'
+  version: '$1'
+  url: 'https://github.com/postmanlabs/postman-runtime'
+
+- regex: 'insomnia(?:/(\d+[\.\d]+))?'
+  name: 'Insomnia REST Client'
+  version: '$1'
+  url: 'https://insomnia.rest'
+
+- regex: 'Jakarta Commons-HttpClient/([\.\d]+)'
+  name: 'Jakarta Commons HttpClient'
+  version: '$1'
+  url: 'https://hc.apache.org/httpclient-3.x'
+
+- regex: 'WinHttp.WinHttpRequest.+([\.\d]+)'
+  name: 'WinHttp WinHttpRequest'
+  version: '$1'
+
+- regex: 'WinHTTP'
+  name: 'Windows HTTP'
+  version: ''
+
+# THTTPClient in delphi 10+ default useragent
+- regex: 'Embarcadero URI Client/([\.\d]+)'
+  name: 'Embarcadero URI Client'
+  version: '$1'
+
+- regex: 'Mikrotik/([\.\d]+)'
+  name: 'Mikrotik Fetch'
+  version: '$1'
+
+- regex: 'GRequests(?:/(\d+[\.\d]+))?'
+  name: 'GRequests'
+  version: '$1'
+
+# https://doc.akka.io/
+- regex: 'akka-http/([\.\d]+)'
+  name: 'Akka HTTP'
+  version: '$1'
+
+# this added need added tests
+- regex: 'aria2(?:/(\d+[\.\d]+))?'
+  name: 'Aria2'
+  version: '$1'
+
+- regex: 'BTWebClient/'
+  name: 'uTorrent'
+  version: ''
+
+- regex: 'gvfs/(?:(\d+[\.\d]+))?'
+  name: 'gvfs'
+  version: '$1'
+
+# https://openwrt.org/packages/pkgdata/uclient-fetch
+- regex: 'uclient-fetch'
+  name: 'uclient-fetch'
+  version: ''
+
+# https://github.com/microsoft/cpprestsdk
+- regex: 'cpprestsdk/([\.\d]+)'
+  name: 'C++ REST SDK'
+  version: '$1'
+
+- regex: 'lua-resty-http/([\.\d]+).+ngx_'
+  name: 'LUA OpenResty NGINX'
+  version: '$1'
+
+# https://github.com/Kong/unirest-java
+- regex: 'unirest-java/([\.\d]+)'
+  name: 'Unirest for Java'
+  version: '$1'
+
+# jsdom (https://github.com/jsdom/jsdom)
+- regex: 'jsdom/([\.\d]+)'
+  name: 'jsdom'
+  version: '$1'
+
+# hackney (https://github.com/benoitc/hackney)
+- regex: 'hackney/([\.\d]+)'
+  name: 'hackney'
+  version: '$1'
+
+# Resty (https://github.com/go-resty/resty)
+- regex: 'go-resty/([\.\d]+)'
+  name: 'Resty'
+  version: '$1'
+
+# Pa11y (https://pa11y.org/)
+- regex: 'pa11y/([\.\d]+)'
+  name: 'Pa11y'
+  version: '$1'
+
+# Ultimate Sitemap Parser (https://github.com/mediacloud/ultimate-sitemap-parser)
+- regex: 'ultimate_sitemap_parser/([\.\d]+)'
+  name: 'Ultimate Sitemap Parser'
+  version: '$1'
+
+# Container-related useragents
+
+# Artifactory (https://jfrog.com/de/artifactory/)
+- regex: 'Artifactory/([\.\d]+)'
+  name: 'Artifactory'
+  version: '$1'
+
+# Open build service (https://build.opensuse.org/)
+- regex: 'BSRPC ([\.\d]+)'
+  name: 'Open Build Service'
+  version: '$1'
+
+# Buildah (https://github.com/containers/buildah)
+- regex: 'Buildah/([\.\d]+)'
+  name: 'Buildah'
+  version: '$1'
+
+# Buildkit (https://github.com/moby/buildkit)
+- regex: 'buildkit/v?([\.\d]+)'
+  name: 'BuildKit'
+  version: '$1'
+
+# containerd (https://github.com/containerd/containerd)
+- regex: 'containerd/v?([\.\d]+)'
+  name: 'Containerd'
+  version: '$1'
+
+# containers (https://github.com/containers/image)
+- regex: 'containers/([\.\d]+)'
+  name: 'containers'
+  version: '$1'
+
+# cri-o (https://github.com/cri-o/cri-)o
+- regex: 'cri-o/([\.\d]+)'
+  name: 'cri-o'
+  version: '$1'
+
+# docker (https://github.com/moby/moby)
+- regex: 'docker/([\.\d]+)'
+  name: 'docker'
+  version: '$1'
+
+# gcr (https://github.com/google/go-containerregistry)
+- regex: 'go-containerregistry/v([\.\d]+)'
+  name: 'go-container registry'
+  version: '$1'
+
+# libpod (https://github.com/dankohn/libpod)
+- regex: 'libpod/([\.\d]+)'
+  name: 'libpod'
+  version: '$1'
+
+# skopeo (https://github.com/containers/skopeo)
+- regex: 'skopeo/([\.\d]+)'
+  name: 'Skopeo'
+  version: '$1'
+
+# helm (https://github.com/helm/helm)
+- regex: 'Helm/([\.\d]+)'
+  name: 'Helm'
+  version: '$1'
+
+# harbor client (https://goharbor.io/)
+- regex: 'harbor-registry-client'
+  name: 'Harbor registry client'
+  version: ''
+
+# axios http (https://axios-http.com/)
+- regex: 'axios(?:/?(\d+[\.\d]+))?'
+  name: Axios
+  version: '$1'

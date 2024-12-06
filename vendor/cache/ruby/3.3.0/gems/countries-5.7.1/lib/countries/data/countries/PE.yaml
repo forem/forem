@@ -1,0 +1,51 @@
+---
+PE:
+  alpha2: PE
+  alpha3: PER
+  continent: South America
+  country_code: '51'
+  currency_code: PEN
+  distance_unit: KM
+  gec: PE
+  geo:
+    latitude: -9.189967
+    longitude: -75.015152
+    max_latitude: -0.0387769
+    max_longitude: -68.65232879999999
+    min_latitude: -18.4483
+    min_longitude: -81.3867001
+    bounds:
+      northeast:
+        lat: -0.0387769
+        lng: -68.65232879999999
+      southwest:
+        lat: -18.4483
+        lng: -81.3867001
+  international_prefix: '00'
+  ioc: PER
+  iso_long_name: The Republic of Perú
+  iso_short_name: Peru
+  languages_official:
+  - es
+  languages_spoken:
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Peruvian
+  number: '604'
+  postal_code: true
+  postal_code_format: "(?:LIMA \\d{1,2}|CALLAO 0?\\d)|[0-2]\\d{4}"
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: PE
+  unofficial_names:
+  - Peru
+  - Pérou
+  - Perú
+  - ペルー
+  world_region: AMER

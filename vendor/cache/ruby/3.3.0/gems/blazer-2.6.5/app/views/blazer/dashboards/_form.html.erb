@@ -1,0 +1,76 @@
+<%= form_for @dashboard, url: (@dashboard.persisted? ? dashboard_path(@dashboard, params: variable_params(@dashboard)) : dashboards_path(params: variable_params(@dashboard))), html: {id: "app", class: "small-form"} do |f| %>
+  <% if @dashboard.errors.any? %>
+    <div class="alert alert-danger"><%= @dashboard.errors.full_messages.first %></div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name, class: "form-control" %>
+  </div>
+  <div class="form-group" v-show="queries.length">
+    <%= f.label :charts %>
+    <ul id="queries" class="list-group">
+      <li class="list-group-item" v-for="(query, index) in queries" :key="query.id" v-cloak>
+        <span class="glyphicon glyphicon-remove" aria-hidden="true" v-on:click="remove(index)"></span>
+        {{ query.name }}
+        <input type="hidden" name="query_ids[]" :value="query.id">
+      </li>
+    </ul>
+  </div>
+  <div class="form-group" v-cloak>
+    <%= f.label :query_id, "Add Chart" %>
+    <%= select_tag :query_id, nil, {include_blank: true, placeholder: "Select chart"} %>
+  </div>
+  <p style="padding-bottom: 140px;" v-cloak>
+    <% if @dashboard.persisted? %>
+      <%= link_to "Delete", dashboard_path(@dashboard), method: :delete, "data-confirm" => "Are you sure?", class: "btn btn-danger"%>
+    <% end %>
+    <%= f.submit "Save", class: "btn btn-success" %>
+    <%= link_to "Back", :back, class: "btn btn-link" %>
+  </p>
+<% end %>
+
+<script>
+  <%= blazer_js_var "queries", Blazer::Query.active.named.order(:name).select("id, name").map { |q| {text: q.name, value: q.id} } %>
+  <%= blazer_js_var "dashboardQueries", @queries || @dashboard.dashboard_queries.order(:position).map(&:query) %>
+
+  var app = new Vue({
+    el: "#app",
+    data: {
+      queries: dashboardQueries
+    },
+    methods: {
+      remove: function(index) {
+        this.queries.splice(index, 1)
+      }
+    },
+    mounted: function() {
+      $("#query_id").selectize({
+        options: queries,
+        highlight: false,
+        maxOptions: 100,
+        onChange: function(val) {
+          if (val) {
+            var item = this.getItem(val)
+
+            // if duplicate query is added, remove the first one
+            for (var i = 0; i < app.queries.length; i++) {
+              if (app.queries[i].id == val) {
+                app.queries.splice(i, 1)
+                break
+              }
+            }
+
+            app.queries.push({id: val, name: item.text()})
+            this.setValue("")
+          }
+        }
+      })
+    }
+  })
+  Sortable.create($("#queries").get(0), {
+    onEnd: function(e) {
+      app.queries.splice(e.newIndex, 0, app.queries.splice(e.oldIndex, 1)[0])
+    }
+  })
+</script>

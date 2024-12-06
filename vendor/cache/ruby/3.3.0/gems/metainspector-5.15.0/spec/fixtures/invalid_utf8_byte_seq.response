@@ -1,0 +1,2618 @@
+HTTP/1.1 200 OK
+Date: Thu, 13 Sep 2018 09:24:18 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: __cfduid=d75ea99f61f0b28bcdd0f6f10d2932a151536830654; expires=Fri, 13-Sep-19 09:24:14 GMT; path=/; domain=.plataformaurbana.cl; HttpOnly
+Link: <http://www.plataformaurbana.cl/?p=5192>; rel=shortlink
+Set-Cookie: nf_wp_session=aed25bba7e2eac47e309956ff5c15a59%7C%7C1536832097%7C%7C1536832037; expires=Thu, 13-Sep-2018 09:48:17 GMT; Max-Age=1440; path=/
+Vary: Accept-Encoding
+X-Pingback: http://www.plataformaurbana.cl/xmlrpc.php
+Server: cloudflare
+CF-RAY: 45998f48f3f5b7bf-CDG
+
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7" lang="en-US" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<!--<![endif]-->
+<head>
+<title>¡¡Quiero Reciclar!! // ¿Dónde reciclar?, Plataforma Urbana</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="theme-color" content="#F7941C">
+<meta name="viewport" content="width=device-width">
+<meta name="google-site-verification" content="hlNAAQhePjzzR7WvI6M-T-a367x5ACVvnqW6t8RdYUM" />
+<meta name="bitly-verification" content="742070607b6b" />
+<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.plataformaurbana.cl/feed/" />
+<link rel="alternate" type="text/xml" title="RSS .92" href="http://www.plataformaurbana.cl/feed/rss/" />
+<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://www.plataformaurbana.cl/feed/atom/" />
+<link rel="pingback" href="http://www.plataformaurbana.cl/xmlrpc.php" />
+
+<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="http://www.plataformaurbana.cl/wp-content/themes/purb-theme/style.css?v=09" />
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://www.plataformaurbana.cl/wp-content/themes/purb-theme/js/functions.js"></script>
+<script src="//load.sumome.com/" data-sumo-site-id="1318e5910d8de9a1904f9c54afa71a0a8dafde15e94a754da01c61a71223bfaa" async="async"></script>
+<link rel="shortcut icon" type="image/png" href="http://www.plataformaurbana.cl/wp-content/themes/purb-theme/images/favicon.ico" />
+
+<script type='text/javascript'>
+  var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+  (function() {
+    var gads = document.createElement('script');
+    gads.async = true;
+    gads.type = 'text/javascript';
+    var useSSL = 'https:' == document.location.protocol;
+    gads.src = (useSSL ? 'https:' : 'http:') +
+      '//www.googletagservices.com/tag/js/gpt.js';
+    var node = document.getElementsByTagName('script')[0];
+    node.parentNode.insertBefore(gads, node);
+  })();
+</script>
+<script type='text/javascript'>
+  googletag.cmd.push(function() {
+    if(is_desktop){
+      // Desktop Ads
+      googletag.defineSlot('/1021178/Purb_Featured', [300, 250], 'div-gpt-ad-1445605927147-0').addService(googletag.pubads());
+      googletag.defineSlot('/1021178/Purb_Sidebar_01', [[336, 280], [300, 250]], 'div-gpt-ad-1445613424871-0').addService(googletag.pubads());
+      googletag.defineSlot('/1021178/Purb_Sidebar_02', [[336, 280], [300, 250]], 'div-gpt-ad-1445613195631-0').addService(googletag.pubads());
+      googletag.defineSlot('/1021178/Purb_Thumbs_01', [300, 250], 'div-gpt-ad-1445607629144-0').addService(googletag.pubads());
+      googletag.defineSlot('/1021178/Purb_Thumbs_02', [300, 250], 'div-gpt-ad-1445608442079-0').addService(googletag.pubads());  
+    }
+    else if(is_tablet){
+      // Tablet Ads
+      googletag.defineSlot('/1021178/Purb_Tablet_01', [300, 250], 'div-gpt-ad-1445609027953-0').addService(googletag.pubads());
+      googletag.defineSlot('/1021178/Purb_Tablet_02', [300, 250], 'div-gpt-ad-1445612789884-0').addService(googletag.pubads());  
+    }
+    else if(is_mobile){
+      // Mobile Ads
+      googletag.defineSlot('/1021178/Purb_Mobile_01', [300, 250], 'div-gpt-ad-1445609287461-0').addService(googletag.pubads());  
+    }
+    googletag.pubads().enableSingleRequest();
+    googletag.pubads().collapseEmptyDivs();
+    googletag.enableServices();
+  });
+</script>
+
+<meta name="description" itemprop="description" content="Vía VeoVerde me entero de que a alguien se le ocurrió la genial idea de georeferenciar en un Google Map toda la información que había recopilado hasta ese" />
+<meta name="keywords" itemprop="keywords" content="basura,cerrillos,concepción,estación central,google,huechuraba,internet,la florida,la pintana,la reina,las condes,macul,maipú,mapa,peñalolen,reciclaje,residuos,santiago,talcahuano,temuco,valparaíso,viña del mar,vitacura,websites" />
+<link rel="canonical" href="http://www.plataformaurbana.cl/archive/2009/01/25/%c2%a1%c2%a1quiero-reciclar-%c2%bfdonde-reciclar/" />
+<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-73308-1']);
+		  _gaq.push(['_trackPageview']);
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
+
+<link rel="alternate" type="application/rss+xml" title="Plataforma Urbana &raquo; ¡¡Quiero Reciclar!! // ¿Dónde reciclar? Comments Feed" href="http://www.plataformaurbana.cl/archive/2009/01/25/%c2%a1%c2%a1quiero-reciclar-%c2%bfdonde-reciclar/feed/" />
+<meta property="fb:admins" content="344000001,597004815,1177552365,538247342" /><meta property="og:title" content="¡¡Quiero Reciclar!! // ¿Dónde reciclar?" /><meta property="og:type" content="article" /><meta property="og:url" content="http://www.plataformaurbana.cl/archive/2009/01/25/%c2%a1%c2%a1quiero-reciclar-%c2%bfdonde-reciclar/" /><meta property="og:site_name" content="Plataforma Urbana" /><meta property="og:image" content="http://cdn.plataformaurbana.cl/wp-content/uploads/2009/01/1298934546_1486369807_logo_de_reciclaje1.png" />
+<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/www.plataformaurbana.cl\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.3.1"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='avatars-css' href='http://www.plataformaurbana.cl/wp-content/plugins/add-local-avatar/avatars.css?ver=4.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='imgareaselect-css' href='http://www.plataformaurbana.cl/wp-includes/js/imgareaselect/imgareaselect.css?ver=0.9.8' type='text/css' media='all' />
+<link rel='stylesheet' id='dashicons-css' href='http://www.plataformaurbana.cl/wp-includes/css/dashicons.min.css?ver=4.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='thickbox-css' href='http://www.plataformaurbana.cl/wp-includes/js/thickbox/thickbox.css?ver=4.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-pagenavi-css' href='http://www.plataformaurbana.cl/wp-content/plugins/wp-pagenavi/pagenavi-css.css?ver=2.70' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.plataformaurbana.cl/wp-includes/js/jquery/jquery.js?ver=1.11.3'></script>
+<script type='text/javascript' src='http://www.plataformaurbana.cl/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.plataformaurbana.cl/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.plataformaurbana.cl/wp-includes/wlwmanifest.xml" />
+<link rel='prev' title='Entrevista a Alejandro Gutiérrez' href='http://www.plataformaurbana.cl/archive/2009/01/24/entrevista-a-alejandro-gutierrez/' />
+<link rel='next' title='Remodelación del Instituto Nacional costará $2.714 millones, más del doble de lo estimado' href='http://www.plataformaurbana.cl/archive/2009/01/25/remodelacion-del-instituto-nacional-costara-2714-millones-mas-del-doble-de-lo-estimado/' />
+<meta name="generator" content="WordPress 4.3.1" />
+<link rel='shortlink' href='http://www.plataformaurbana.cl/?p=5192' />
+
+<script type='text/javascript' src='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/xmlhttprequest.js'></script>
+<script type='text/javascript' src='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/ec3.js'></script>
+<script type='text/javascript'><!--
+	ec3.start_of_week=1;
+	ec3.month_of_year=new Array('January','February','March','April','May','June','July','August','September','October','November','December');
+	ec3.month_abbrev=new Array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+	ec3.myfiles='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar';
+	ec3.home='http://www.plataformaurbana.cl';
+	ec3.viewpostsfor="View posts for %1$s %2$s";
+	// --></script>
+<style type='text/css' media='screen'>
+	@import url(http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/ec3.css);
+	.ec3_ec{ background-image:url(http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/ec.png) !IMPORTANT }
+	#ec3_shadow0{ background-image:url(http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/shadow0.png) !IMPORTANT }
+	#ec3_shadow1{ background-image:url(http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/shadow1.png) !IMPORTANT }
+	#ec3_shadow2{ background-image:url(http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/shadow2.png) !IMPORTANT }
+	</style>
+<!--[if IE]>
+	<style type='text/css' media='screen'>
+	.ec3_ec {
+	 background-image:none;
+	 filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/ec.png');
+	}
+	#ec3_shadow0, ec3_shadow1, ec3_shadow2{ background-image:none }
+	#ec3_shadow0 div{ filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/shadow0.png',sizingMethod='scale') }
+	#ec3_shadow1    { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/shadow1.png',sizingMethod='crop') }
+	#ec3_shadow2 div{ filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.plataformaurbana.cl/wp-content/plugins/event-calendar/shadow2.png',sizingMethod='scale') }
+	</style>
+<![endif]-->
+<style type="text/css">
+						ol.footnotes li {list-style-type:decimal;}
+						ol.footnotes{font-size:0.7em; color:#666666;}		</style>
+
+<style type="text/css">
+.vvqbox { display: block; max-width: 100%; visibility: visible !important; margin: 10px auto; } .vvqbox img { max-width: 100%; height: 100%; } .vvqbox object { max-width: 100%; } 
+</style>
+<script type="text/javascript">
+// <![CDATA[
+	var vvqflashvars = {};
+	var vvqparams = { wmode: "opaque", allowfullscreen: "true", allowscriptaccess: "always" };
+	var vvqattributes = {};
+	var vvqexpressinstall = "http://www.plataformaurbana.cl/wp-content/plugins/vipers-video-quicktags/resources/expressinstall.swf";
+// ]]>
+</script>
+</head>
+<body class="single single-post postid-5192 single-format-standard">
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=129333463851807";
+js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<div id="nav-mobile">
+<div id="js-nav-mobile-close" class="nav-mobile__close">
+CERRAR <i class="fa fa-close"></i>
+</div>
+<ul id="menu-menu-header" class="nav__list nav__header clearfix"><li id="menu-item-99104" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-99104"><a href="http://www.plataformaurbana.cl/archive/category/articulos/">Artículos</a>
+<ul class="sub-menu">
+<li id="menu-item-99105" class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99105"><a href="http://www.plataformaurbana.cl/archive/tag/accesibilidad-universal/">Accesibilidad Universal</a></li>
+<li id="menu-item-117310" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-117310"><a href="http://www.plataformaurbana.cl/archive/category/entrevistas/">Entrevistas</a></li>
+<li id="menu-item-99106" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99106"><a href="http://www.plataformaurbana.cl/archive/category/espacio-publico/">Espacio Público</a></li>
+<li id="menu-item-102870" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-102870"><a href="http://www.plataformaurbana.cl/archive/category/cultura-2/">Cultura y Ciudad</a></li>
+<li id="menu-item-99107" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99107"><a href="http://www.plataformaurbana.cl/archive/category/intervencion-urbana-2/">Intervención Urbana</a></li>
+<li id="menu-item-99108" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99108"><a href="http://www.plataformaurbana.cl/archive/category/movilidad-2/">Movilidad</a></li>
+<li id="menu-item-99109" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99109"><a href="http://www.plataformaurbana.cl/archive/category/participacion-ciudadana/">Participación Ciudadana</a></li>
+<li id="menu-item-113146" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-113146"><a href="http://www.plataformaurbana.cl/archive/category/patrimonio/">Plataforma Patrimonio</a></li>
+<li id="menu-item-99111" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99111"><a href="http://www.plataformaurbana.cl/archive/category/bicicletas/">Pedaleo Urbano</a></li>
+<li id="menu-item-99112" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99112"><a href="http://www.plataformaurbana.cl/archive/category/proyecto-urbano/">Proyecto Urbano</a></li>
+<li id="menu-item-99127" class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99127"><a href="http://www.plataformaurbana.cl/archive/tag/redescubriendo-la-ciudad-con/">Redescubriendo la Ciudad con</a></li>
+<li id="menu-item-99113" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99113"><a href="http://www.plataformaurbana.cl/archive/category/regeneracion-urbana/">Regeneración Urbana</a></li>
+<li id="menu-item-99114" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99114"><a href="http://www.plataformaurbana.cl/archive/category/regiones-2/">Regiones</a></li>
+<li id="menu-item-99115" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99115"><a href="http://www.plataformaurbana.cl/archive/category/transporte/">Transporte Público</a></li>
+<li id="menu-item-99116" class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99116"><a href="http://www.plataformaurbana.cl/archive/tag/smart-cities/">Smart Cities</a></li>
+<li id="menu-item-99117" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99117"><a href="http://www.plataformaurbana.cl/archive/category/sustentabilidad/">Sustentabilidad</a></li>
+<li id="menu-item-99118" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99118"><a href="http://www.plataformaurbana.cl/archive/category/urbanismo/">Urbanismo</a></li>
+</ul>
+</li>
+<li id="menu-item-99119" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99119"><a href="http://www.plataformaurbana.cl/archive/category/eventos/">Eventos</a></li>
+<li id="menu-item-99120" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99120"><a href="http://www.plataformaurbana.cl/archive/category/columnas/">Opinión</a></li>
+<li id="menu-item-99121" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-99121"><a href="http://www.plataformaurbana.cl/archive/category/guia-urbana-chile/">Guías Urbanas</a>
+<ul class="sub-menu">
+<li id="menu-item-99122" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99122"><a href="http://www.plataformaurbana.cl/archive/category/guia-urbana-chile/">Guía Urbana de Chile</a></li>
+<li id="menu-item-99123" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99123"><a href="http://www.plataformaurbana.cl/archive/category/guias-urbanas/">Guía Urbana de Santiago</a></li>
+<li id="menu-item-99124" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99124"><a href="http://www.plataformaurbana.cl/archive/category/arte-y-ciudad/">Arte y Ciudad</a></li>
+<li id="menu-item-99125" class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99125"><a href="http://www.plataformaurbana.cl/archive/tag/santiago-picnics/">Santiago en 12 Picnics</a></li>
+<li id="menu-item-99126" class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99126"><a href="http://www.plataformaurbana.cl/archive/tag/patrimonio/">Guía de Patrimonio</a></li>
+</ul>
+</li>
+<li id="menu-item-99128" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99128"><a href="http://www.plataformaurbana.cl/archive/category/prensa/">Ciudad en la Prensa</a></li>
+</ul> </div>
+<header class="header-main">
+<div class="header-main__container clearfix">
+<div id="js-nav-mobile" class="nav-mobile-icon">
+<div class="nav-mobile-icon__line nav-mobile-icon__line--1"></div>
+<div class="nav-mobile-icon__line nav-mobile-icon__line--2"></div>
+<div class="nav-mobile-icon__line nav-mobile-icon__line--3"></div>
+</div>
+<div class="site-title">
+<a href="http://www.plataformaurbana.cl" class="site-title__link" title="Plataforma Urbana">
+<img class="site-logo" src="http://www.plataformaurbana.cl/wp-content/themes/purb-theme/images/logo.png" alt="Plataforma Urbana" width="150">
+</a>
+</div>
+<ul class="social-header clearfix">
+
+<li id="searchbar">
+<form action="http://www.plataformaurbana.cl/search/" id="cse-search-box">
+<div id="search">
+<input type="hidden" name="cx" value="018045377813080133324:f8hc62kiv48" />
+<input type="hidden" name="cof" value="FORID:10" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input type="text" class="searchbox" name="q" size="31" placeholder="Busca en Plataforma" />
+<i class="fa fa-search"></i>
+<input type="submit" class="searchsubmit fa fa-search" name="sa" value="&nbsp;" />
+</div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=es"></script>
+</li>
+
+<li class="social-header__item">
+<a target="_blank" href="https://www.facebook.com/PlataformaUrbana/" class="social-header__link social-header__link--fb" title="Síguenos en Facebook">
+<i class="social-header__icon fa fa-facebook"></i>
+</a>
+</li>
+<li class="social-header__item">
+<a target="_blank" href="http://instagram.com/plataformaurbana/" class="social-header__link social-header__link--ig" title="Síguenos en Instagram">
+<i class="social-header__icon fa fa-instagram"></i>
+</a>
+</li>
+<li class="social-header__item">
+<a target="_blank" href="http://twitter.com/intent/user?screen_name=purb" class="social-header__link social-header__link--tt" title="Síguenos en Twitter">
+<i class="social-header__icon fa fa-twitter"></i>
+</a>
+</li>
+
+<li class="social-header__item"><a href="/contacto" class="special-header-btn"> <div class="textwidget">Contáctanos</div>
+</a></li> 
+</ul>
+<nav class="nav">
+<ul id="menu-menu-header-1" class="nav__list nav__header clearfix"><li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-99104"><a href="http://www.plataformaurbana.cl/archive/category/articulos/">Artículos</a>
+<ul class="sub-menu">
+<li class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99105"><a href="http://www.plataformaurbana.cl/archive/tag/accesibilidad-universal/">Accesibilidad Universal</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-117310"><a href="http://www.plataformaurbana.cl/archive/category/entrevistas/">Entrevistas</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99106"><a href="http://www.plataformaurbana.cl/archive/category/espacio-publico/">Espacio Público</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-102870"><a href="http://www.plataformaurbana.cl/archive/category/cultura-2/">Cultura y Ciudad</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99107"><a href="http://www.plataformaurbana.cl/archive/category/intervencion-urbana-2/">Intervención Urbana</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99108"><a href="http://www.plataformaurbana.cl/archive/category/movilidad-2/">Movilidad</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99109"><a href="http://www.plataformaurbana.cl/archive/category/participacion-ciudadana/">Participación Ciudadana</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-113146"><a href="http://www.plataformaurbana.cl/archive/category/patrimonio/">Plataforma Patrimonio</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99111"><a href="http://www.plataformaurbana.cl/archive/category/bicicletas/">Pedaleo Urbano</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99112"><a href="http://www.plataformaurbana.cl/archive/category/proyecto-urbano/">Proyecto Urbano</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99127"><a href="http://www.plataformaurbana.cl/archive/tag/redescubriendo-la-ciudad-con/">Redescubriendo la Ciudad con</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99113"><a href="http://www.plataformaurbana.cl/archive/category/regeneracion-urbana/">Regeneración Urbana</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99114"><a href="http://www.plataformaurbana.cl/archive/category/regiones-2/">Regiones</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99115"><a href="http://www.plataformaurbana.cl/archive/category/transporte/">Transporte Público</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99116"><a href="http://www.plataformaurbana.cl/archive/tag/smart-cities/">Smart Cities</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99117"><a href="http://www.plataformaurbana.cl/archive/category/sustentabilidad/">Sustentabilidad</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99118"><a href="http://www.plataformaurbana.cl/archive/category/urbanismo/">Urbanismo</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99119"><a href="http://www.plataformaurbana.cl/archive/category/eventos/">Eventos</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99120"><a href="http://www.plataformaurbana.cl/archive/category/columnas/">Opinión</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-99121"><a href="http://www.plataformaurbana.cl/archive/category/guia-urbana-chile/">Guías Urbanas</a>
+<ul class="sub-menu">
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99122"><a href="http://www.plataformaurbana.cl/archive/category/guia-urbana-chile/">Guía Urbana de Chile</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99123"><a href="http://www.plataformaurbana.cl/archive/category/guias-urbanas/">Guía Urbana de Santiago</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99124"><a href="http://www.plataformaurbana.cl/archive/category/arte-y-ciudad/">Arte y Ciudad</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99125"><a href="http://www.plataformaurbana.cl/archive/tag/santiago-picnics/">Santiago en 12 Picnics</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-post_tag menu-item-99126"><a href="http://www.plataformaurbana.cl/archive/tag/patrimonio/">Guía de Patrimonio</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-99128"><a href="http://www.plataformaurbana.cl/archive/category/prensa/">Ciudad en la Prensa</a></li>
+</ul> </nav>
+</div>
+</header>
+<div class="clearfix breadcrumb">
+Est&aacute;s en <a href="http://www.plataformaurbana.cl">Plataforma Urbana</a> &raquo; <a href="http://www.plataformaurbana.cl/archive/category/websites/">Websites</a> &raquo; <strong>¡¡Quiero Reciclar!! // ¿Dónde reciclar?</strong></div>
+<div class="clearfix container-main">
+
+<div class="container-content">
+<div itemscope itemtype="http://schema.org/Article" id="post-5192" class="single-post post-format clearfix post-5192 post type-post status-publish format-standard has-post-thumbnail hentry category-websites tag-basura tag-cerrillos tag-concepcian tag-estacian-central tag-google tag-huechuraba tag-internet tag-la-florida tag-la-pintana tag-la-reina tag-las-condes tag-macul tag-maipa tag-mapa tag-penalolen tag-reciclaje tag-residuos tag-santiago tag-talcahuano tag-temuco tag-valparaiso tag-viaa-del-mar tag-vitacura">
+<div class="post-date post-date__stream"><i class="fa fa-calendar"></i>25 de January, 2009</div>
+<h1 class="post-title post-title__stream">
+<span itemprop="name">¡¡Quiero Reciclar!! // ¿Dónde reciclar? </span>
+</h1>
+<div class="post-author post-author__stream post-author__single">
+Por <a href="http://www.plataformaurbana.cl/archive/author/pponce/" title="Posts by Patricio Ponce Arqueros" rel="author">Patricio Ponce Arqueros</a>
+</div>
+<div class="share-options-top">
+<div class="share-options-btns">
+
+<div class="addthis_native_toolbox"></div>
+</div>
+</div>
+
+<div id='div-gpt-ad-1445609287461-0' class='ad-mobile'>
+<script type='text/javascript'>
+            if(is_mobile)
+              googletag.cmd.push(function() { googletag.display('div-gpt-ad-1445609287461-0'); });
+          </script>
+</div>
+<p style="text-align: center;"><img class="imageframe imgaligncenter" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/1486369807_logo_de_reciclaje.png" alt="1486369807_logo_de_reciclaje.png" width="320" height="310" /></p>
+<p>Vía <a href="http://www.veoverde.com/2009/01/quiero-r-mapas-con-los-lugares-para-reciclar-dentro-de-santiago/">VeoVerde</a> me entero de que a alguien se le ocurrió la genial idea de georeferenciar en <a href="http://maps.google.com/maps/user?uid=112190708411035301430&amp;hl=en&amp;ptab=2&amp;ie=UTF8&amp;num=5&amp;sa=N&amp;start=0">un Google Map</a> toda la información que había recopilado hasta ese momento sobre lugares donde reciben desechos que se pueden reutilizar en Santiago. Investigando un poco más por ahí me encuentro con que la información -en internet al menos- es bastante y hay un sinnúmero de lugares donde enseñan a ocuparse de la basura orgánica e inorgánica e incluso se encargan de cosas que ya no utilizas o de la creciente basura electrónica.</p>
+<p>Después del salto una breve lista de lugares donde reciclar.<span id="more-5192"></span></p>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/224995701_pppp_446x350.png" alt="224995701_pppp_446×350.png" width="446" height="350" /></p>
+<p>En <a href="http://maps.google.com/maps/user?uid=112190708411035301430&amp;hl=en&amp;ptab=2&amp;ie=UTF8&amp;num=5&amp;sa=N&amp;start=0">esta dirección</a></p>
+<p>se puede encontrar varios mapas según el desecho que estemos buscando reciclar. Lo importante de esta lista es que son lugares públicos:</p>
+<ol>
+<li><a href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.000438255d3e6a7340aff">¿Dónde reciclar diarios y revistas? »</a></li>
+<li><a href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.00043824ba32d982da59b">¿Dónde reciclar vidrio? »</a></li>
+<li><a href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.0004382525334ffb71308">¿Dónde reciclar tetra-pak? »</a></li>
+<li><a href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.000438258dfcf76de4ebc">¿Dónde reciclar papel en general? »</a></li>
+<li><a href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.000438253f93fbbd7eec4">¿Dónde reciclar botellas plásticas? »</a></li>
+<li><a class="maptitle" href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.0004382485d70ba1df129">¿Dónde reciclar aluminio? »</a></li>
+<li><a class="maptitle" href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.00043825ff1b7f3db02a1">¿Dónde depositar pilas usadas? »</a></li>
+<li><a class="maptitle" href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.00043d0851713370c82cf">¿Dónde reciclar tapas plásticas de botella? »</a></li>
+<li><a class="maptitle" href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.00043825f94d2bb168a78">¿Dónde depositar cartuchos de tinta y toners de impresoras usados? »</a></li>
+<li><a class="maptitle" href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.000438259dc74ef14ed11">¿Dónde reciclar chatarra? »</a></li>
+<li><a class="maptitle" href="http://maps.google.com/maps/ms?hl=en&amp;ptab=2&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=112946158821324716604.00043825984acc0eadb63">¿Dónde depositar remedios vencidos? »</a></li>
+</ol>
+<ul>
+<li>
+<h3><strong>¿Vives fuera de Santiago y no sabes dónde reciclar?</strong></h3>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/177491781_lugares_de_reciclaje_1232835108986.png" alt="177491781_lugares_de_reciclaje_1232835108986.png" width="518" height="138" /></p>
+<p>En Lugares de Reciclaje están recopilando puntos donde reciclar, pero no sólo de Santiago. Hay varios puntos identificados para las ciudades de <a href="http://lugaresdereciclaje.blogspot.com/search/label/CONCEPCI%C3%93N">Concepción</a>, <a href="http://lugaresdereciclaje.blogspot.com/search/label/VALPARA%C3%8DSO">Valparaíso</a>, <a href="http://lugaresdereciclaje.blogspot.com/search/label/VI%C3%91A%20DEL%20MAR">Viña del Mar</a>, <a href="http://lugaresdereciclaje.blogspot.com/search/label/TEMUCO">Temuco</a>, <a href="http://lugaresdereciclaje.blogspot.com/search/label/TALCAHUANO">Talcahuano</a> y muchos más.</p>
+<ul>
+<li>
+<h3><strong>Proyecto Chile</strong></h3>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/1981875772_lugares_donde_reciclar_en_santiago_1ra_parte_1232831835776.thumbnail.png" alt="1981875772_lugares_donde_reciclar_en_santiago_1ra_parte_1232831835776.png" width="530" height="338" /></p>
+<p>Si no encontraste algo cerca de tu casa, quizás te convendría probar en <a href="http://proyectochile.bligoo.com/content/view/182164/LUGARES_DONDE_RECICLAR_EN_SANTIAGO_1ra_Parte.html">Proyecto Chile</a>. Si bien no está georeferenciado, hay una gran lista agrupada por comunas, donde se nombran los diferentes centros de acopio para desechos reciclables.</p>
+<ol>
+<li>Click <a href="http://proyectochile.bligoo.com/content/view/182164/LUGARES_DONDE_RECICLAR_EN_SANTIAGO_1ra_Parte.html">acá</a> para Cerrillos, Cerro Navia, Conchalí, El Bosque, Estación Central, Huechuraba, Independencia, La Cisterna, La Florida, La Granja, La Pintana,  Las Condes, La Reina, Lo Barnechea, Lo Espejo, Lo Prado y Macul.</li>
+<li>Si eres de Maipú click <a href="http://proyectochile.bligoo.com/content/view/192318/LUGARES_DONDE_RECICLAR_EN_SANTIAGO_2da_Parte.html">aquí</a>.</li>
+<li>Si eres de Ñuñoa o Peñalolén puedes informarte de lugares donde reciclar <a href="http://proyectochile.bligoo.com/content/view/192318/LUGARES_DONDE_RECICLAR_EN_SANTIAGO_2da_Parte.html">acá</a>.</li>
+</ol>
+<ul>
+<li>
+<h3><strong>Ñuñoa</strong></h3>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/1999139024_portal_de_nunoa_1232832726155.thumbnail.png" alt="1999139024_portal_de_nunoa_1232832726155.png" width="530" height="305" /></p>
+<p>A los vecinos de Ñuñoa les es un poco más fácil reciclar. Un camión especial recorre la comuna retirando bolsas con desechos reciclables. Cualquier bolsa sirve, y para no confundirse, el camión pasa en un día diferente al que se retira la basura común. Edificios, colegios y en general bastantes vecinos se han unido y según consta en el <a href="http://www.nunoa.cl/medio_ambiente/">sitio web</a></p>
+<p>ya retiran un promedio de 160 toneladas mensuales, siendo la meta alcanzar las 300 toneladas mensuales.</p>
+<p>Si eres de Ñuñoa y quieres más información sigue <a href="http://www.nunoa.cl/medio_ambiente/">este link.</a></p>
+<ul>
+<li>
+<h3><strong>Vitacura</strong></h3>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/1993582927_vitacura_higiene_y_medio_ambiente_punto_limpio_1232833032952.thumbnail.png" alt="1993582927_vitacura_higiene_y_medio_ambiente_punto_limpio_1232833032952.png" width="530" height="305" /></p>
+<p>Si vives es Vitacura, en el moderno <a href="http://www.vitacura.cl/higiene/punto.php">Centro Limpio</a> de la comuna podrás deshacerte sin cargo de conciencia ambiental, de muchos tipos de desechos que pueden ser reutilizables, ayudando de paso a las instituciones benéficas que usan este medio para financiar sus causas. Reciben actualmente: residuos inorgánicos como vidrios, papeles, cartones, plásticos, tetrapack y aluminios; materiales reutilizables como telas y ropa; y deshechos como escombros (no se reciben de empresas), ramas, computadores, chatarras, electrodomésticos, pilas, entre otros.</p>
+<ul>
+<li>
+<h3><strong>Quiero Reciclar, pero cómo?</strong></h3>
+<h3><strong> </strong></h3>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/1804726669_quiero_reciclar_1232833537523.thumbnail.png" alt="1804726669_quiero_reciclar_1232833537523.png" width="530" height="255" /></p>
+<p>Un asunto no menor es como se separa la basura y en qué condiciones se debe entregar para ser reciclada correctamente. La manera más eficiente es separar los desechos desde el origen y esto involucra hacernos cargo desde nuestra casa. En el sitio <a href="http://www.quieroreciclar.cl/">Quiero Reciclar</a> resumen toda la información desde qué cosas se pueden reciclar, hasta cómo preparar latas antes de depositarlas en los contenedores. Más información <a href="http://www.quieroreciclar.cl/">acá</a>.</p>
+<ul>
+<li>
+<h3><strong>OK. Pero ¿qué hago con la basura orgánica? </strong></h3>
+</li>
+</ul>
+<p><img class="imageframe" src="http://www.plataformaurbana.cl/wp-content/uploads/2009/01/1784457572_compost_chile_home_1232834028302.thumbnail.png" alt="1784457572_compost_chile_home_1232834028302.png" width="530" height="356" /></p>
+<p>Si bien ya tenemos claro que hacer con la basura inorgánica, un tema no menor es qué hacemos con los desechos orgánicos. En <a href="http://www.conama.cl/rm/568/article-1092.html">el sitio de la CONAMA</a> nos enseñan a hacer compost con herramientas totalmente caseras y sin requerir de ningún concoimiento precio. El compost es un mejorador de suelo que resulta de la descomposición controlada de desechos orgánicos domiciliarios. Con ella podemos tener un jardín o huerto sin requerir de abonos ni fertilizantes.</p>
+<p>Para aquellos más perezosos, existen contenedores especiales para ayudar en este proceso. Un ejemplo de estos lo puedes encontrar en <a href="http://www.compostchile.com/">Compost Chile</a>, empresa especializada en contenedores domiciliarios. Más información <a href="http://www.compostchile.com/?id=168&amp;iPag=6">acá</a>.</p>
+<ul>
+<li>
+<h3><strong>Reciclaje a la puerta de tu casa </strong></h3>
+</li>
+</ul>
+<p><img src="http://www.plataformaurbana.cl/wp-content/uploads/2008/09/319057860_banco.thumbnail.jpg" alt="" width="530" height="178" /></p>
+<p>Si no quieres moverte de tu casa para reciclar y más encima lucrar con la basura que produces, en el <a href="http://www.plataformaurbana.cl/archive/2008/09/30/el-banco-ambiental-va-a-buscarte-a-tu-casa/">Banco Ambiental</a> está tu solución. Se encargan de recoger tu basura a domicilio -previa clasificación- y luego te abonan el peso a una cuenta virtual con la cual puedes acceder a descuentos y beneficios. Si bien colapsaron en un momento por la gran demanda, ya están empezando a retirar la basura en algunos sectores. El sitio parecer estar abajo&#8230; pero <a href="http://www.bancoambiental.com/">es este</a>.</p>
+<p>Y eso es todo. Después de tanto dato el que no recicla es sólo porque no quiere. ¿Qué esperas para hacerlo?</p>
+<div class="categories-tags">
+<ul class="post-categories">
+<li><a href="http://www.plataformaurbana.cl/archive/category/websites/" rel="category tag">Websites</a></li></ul> <ul><li><a href="http://www.plataformaurbana.cl/archive/tag/basura/" rel="tag">basura</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/cerrillos/" rel="tag">Cerrillos</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/concepcia%c2%b3n/" rel="tag">Concepción</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/estacia%c2%b3n-central/" rel="tag">Estación Central</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/google/" rel="tag">google</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/huechuraba/" rel="tag">Huechuraba</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/internet/" rel="tag">internet</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/la-florida/" rel="tag">La Florida</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/la-pintana/" rel="tag">La Pintana</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/la-reina/" rel="tag">La Reina</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/las-condes/" rel="tag">Las Condes</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/macul/" rel="tag">Macul</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/maipa%c2%ba/" rel="tag">maipú</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/mapa/" rel="tag">mapa</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/penalolen/" rel="tag">peñalolen</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/reciclaje/" rel="tag">Reciclaje</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/residuos/" rel="tag">residuos</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/santiago/" rel="tag">Santiago</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/talcahuano/" rel="tag">Talcahuano</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/temuco/" rel="tag">Temuco</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/valparaiso/" rel="tag">Valparaíso</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/via%c2%b1a-del-mar/" rel="tag">Viña del Mar</a></li><li><a href="http://www.plataformaurbana.cl/archive/tag/vitacura/" rel="tag">Vitacura</a></li></ul> </div>
+<div class="share-options-bottom">
+ <div class="share-options-btns">
+
+<div class="addthis_native_toolbox"></div>
+</div>
+</div>
+</div>
+
+<div class="related-posts">
+<script>
+        var linkwithin_site_id = 183923;
+      </script>
+<script src="http://www.linkwithin.com/widget.js"></script>
+<div class="linkwithin_div"></div>
+</div>
+
+
+<div>
+<h2 class="linkwithin_text">Comentarios de Facebook</h2>
+<div class="fb-comments" data-href="http://www.plataformaurbana.cl/archive/2009/01/25/%c2%a1%c2%a1quiero-reciclar-%c2%bfdonde-reciclar/" data-width="100%" data-numposts="10" data-colorscheme="light"></div>
+<h2 class="linkwithin_text">Comentarios de Disqus</h2>
+<div id="disqus_thread">
+<div id="dsq-content">
+<ul id="dsq-comments">
+<li class="post pingback">
+<p>Pingback: <a href='http://www.elintruso.cl/content/view/437814/Donde_Reciclar.html' rel='external nofollow' class='url'>�D�nde Reciclar?</a>()</p>
+</li>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-282801">
+<div id="dsq-comment-header-282801" class="dsq-comment-header">
+<cite id="dsq-cite-282801">
+<span id="dsq-author-user-282801">clow</span>
+</cite>
+</div>
+<div id="dsq-comment-body-282801" class="dsq-comment-body">
+<div id="dsq-comment-message-282801" class="dsq-comment-message"><p>aparte de reciclar es importante no generar mas desechos, de nada sirve ke reciclemos mas si generamos mas desechos<br />
+Igualmente excelente que se de a conocer este tipo de informacion</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-365668">
+<div id="dsq-comment-header-365668" class="dsq-comment-header">
+<cite id="dsq-cite-365668">
+<span id="dsq-author-user-365668">constanza briceño</span>
+</cite>
+</div>
+<div id="dsq-comment-body-365668" class="dsq-comment-body">
+<div id="dsq-comment-message-365668" class="dsq-comment-message"><p>y en las condes? dónde se pueden ir a dejar las bolsas, tretra pack, botellas, demases&#8230;parece que es la única comuna tercer mundista de santiago&#8230;<br />
+Faltan más lugares, y a La Municipalidad de las Condes muchísima más aprensión &#8230;<br />
+Si álguien sabe donde puedo ir a dejar mi basura, por favor comunicar!!<br />
+gracias</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-282949">
+<div id="dsq-comment-header-282949" class="dsq-comment-header">
+<cite id="dsq-cite-282949">
+<span id="dsq-author-user-282949">nacho</span>
+</cite>
+</div>
+<div id="dsq-comment-body-282949" class="dsq-comment-body">
+<div id="dsq-comment-message-282949" class="dsq-comment-message"><p>alguien sabe donde reciclar tetra-pak en viña del mar??</p>
+<p>saludos</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-424982">
+<div id="dsq-comment-header-424982" class="dsq-comment-header">
+<cite id="dsq-cite-424982">
+<span id="dsq-author-user-424982">Victoria</span>
+</cite>
+</div>
+<div id="dsq-comment-body-424982" class="dsq-comment-body">
+<div id="dsq-comment-message-424982" class="dsq-comment-message"><p>hola se que la pregunta es antigua, pero de todas formas para que sepa mas gente, en Viña del Mar, hay una pequeña empresa que se encarga de reciclar tetrapack esta en Simon Bolivar, en Forestal casi llegando a la plaza Forestal, por Carabineros hacia arriba, por si alguien quiere reciclar ahi, hay un desposito fuera para que la gente deje sus embases, de hecho salen las instrucciones de como hay que depositarlo. ojala les sea util.</p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-431019">
+<div id="dsq-comment-header-431019" class="dsq-comment-header">
+<cite id="dsq-cite-431019">
+<span id="dsq-author-user-431019">vito</span>
+</cite>
+</div>
+<div id="dsq-comment-body-431019" class="dsq-comment-body">
+<div id="dsq-comment-message-431019" class="dsq-comment-message"><p>hola se que la pregunta es antigua, pero de todas formas para que sepa mas gente, en Viña del Mar, hay una pequeña empresa que se encarga de reciclar tetrapack esta en Simon Bolivar, en Forestal casi llegando a la plaza Forestal, por Carabineros hacia arriba, por si alguien quiere reciclar ahi, hay un desposito fuera para que la gente deje sus embases, de hecho salen las instrucciones de como hay que depositarlo. ojala les sea util.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt depth-2" id="dsq-comment-573653">
+<div id="dsq-comment-header-573653" class="dsq-comment-header">
+<cite id="dsq-cite-573653">
+<span id="dsq-author-user-573653">Cristian Estrada</span>
+</cite>
+</div>
+<div id="dsq-comment-body-573653" class="dsq-comment-body">
+<div id="dsq-comment-message-573653" class="dsq-comment-message"><p>En phoenixbrik </p>
+<p>REvisa: <a href="http://www.phoenixbrik.com/wp/" rel="nofollow">http://www.phoenixbrik.com/wp/</a></p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-796624">
+<div id="dsq-comment-header-796624" class="dsq-comment-header">
+<cite id="dsq-cite-796624">
+<span id="dsq-author-user-796624">soledad</span>
+</cite>
+</div>
+<div id="dsq-comment-body-796624" class="dsq-comment-body">
+<div id="dsq-comment-message-796624" class="dsq-comment-message"><p>Colegio Capellan Pascal<br />
+Guardia Marina Riquelme s/n Población Allard Las Salinas</p>
+<p>Escuela Enrique Cardenas Rivera<br />
+Calle 9, Nº 525, Parada Nº 8 1/2 Reñaca Alto.</p>
+<p>Plaza María Luisa Bombal<br />
+Calle Villanelo esquina calle Valparaiso</p>
+<p>Phoenix Brik , planta<br />
+Simón Bolivar 368, Viña del Mar</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-283084">
+<div id="dsq-comment-header-283084" class="dsq-comment-header">
+<cite id="dsq-cite-283084">
+<span id="dsq-author-user-283084">hosne17</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283084" class="dsq-comment-body">
+<div id="dsq-comment-message-283084" class="dsq-comment-message"><p>Las ciudades chilenas podrían aplicar la experiencia extranjera. Por ejemplo: Jaime Lerner (ex-alcalde de Curitiba-Brasil), transformó su ciudad en top-10 en ecología, aplicando un plan de reciclaje. El cual se componía de ptos de reciclaje (lo que muchas ciudades chilenas ya tienen), pero además aplico políticas de incentivo (lo que ciudades chilenas no tienen). Estas politicas eran de diferente tipo y una de las que más llamó la atención fue:la recolección de papel a cambio de $ para pasaje en tranporte público, lo que producia además de reciclar, descongestionar las calles disminuyendo el uso del auto.<br />
+En fin, creo que los ptos de recilaje tienen que estar acompañados de políticas y publicidad (información) que incentiven el reciclaje!!!</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-283086">
+<div id="dsq-comment-header-283086" class="dsq-comment-header">
+<cite id="dsq-cite-283086">
+<span id="dsq-author-user-283086">hosne17</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283086" class="dsq-comment-body">
+<div id="dsq-comment-message-283086" class="dsq-comment-message"><p>Creo que los alcaldes de las ciudades chilenas deberían aplicar la experiencia de alcaldes extranjeros, como por ejemplo Jaime Lerner (Curitiba-Brasil). Quien a partir de un plan de reciclaje, instaló ptos de reciclaje (lo q muchas ciudades chilenas ya tienen) y además implementó políticas de incentivo (lo que ciudades chilenas no tienen). Siendo la política que más llamó la atención la de recopilar papel a cambio de $ para pasaje en transporte público, lo que logró no solo reciclar sino tb reducir la congestión disminuyendo el uso del auto.<br />
+En fin creo que los ptos de reciclaje deben estar acompañados de publicidad (mapping e información) y tb de políticas de incentivo!!!</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-283112">
+<div id="dsq-comment-header-283112" class="dsq-comment-header">
+<cite id="dsq-cite-283112">
+<span id="dsq-author-user-283112">hosne17</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283112" class="dsq-comment-body">
+<div id="dsq-comment-message-283112" class="dsq-comment-message"><p>perdon lo mande dos veces</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-283127">
+<div id="dsq-comment-header-283127" class="dsq-comment-header">
+<cite id="dsq-cite-283127">
+<span id="dsq-author-user-283127">Erendis</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283127" class="dsq-comment-body">
+<div id="dsq-comment-message-283127" class="dsq-comment-message"><p>También se podría incentivar a que la gente efectivamente bote la basura donde corresponde y no en la calle, en el metro, en la micro o cara de palo a través de la ventana del auto&#8230; si un palito de helado no cuesta guardarlos por 15 minutos en el bolsillo hasta visualizar un basurero&#8230;</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-283131">
+<div id="dsq-comment-header-283131" class="dsq-comment-header">
+<cite id="dsq-cite-283131">
+<span id="dsq-author-user-283131">pat_agonico</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283131" class="dsq-comment-body">
+<div id="dsq-comment-message-283131" class="dsq-comment-message"><p>A proposito de lo que señala Erendis,respecto al cuidado y habitos de la ciudaddania.</p>
+<p>He visto como la gente al abrir un helado &#8220;se le cae,desliza, el envoltorio&#8221;sin inmutarse,familias completas dejando caer &#8220;accidentalmente residuos&#8221;.<br />
+En esto juega un papel importante el rol educativo por parte del Estado,escuelas,aunque, me consta que existe, se debe POTENCIAR,porque decididamnte la educacion no siempre viene del centro de la familia,lamentablemente es asi. </p>
+<p>Esta malos habitos,se pueden apreciar en los eventos masivos &#8220;culturales&#8221;(fiesta de la cultura,Muñecas gigantes varias, a proposito del Teatro a mil),siendo la basura un fiel reflejo de nuestra cultura, una imagen que retrata como pensamos el espacio publico,nuestra relacion con la ciudad y el medio.</p>
+<p>Irresponsabilidad, en esto hay que hacer un mea culpa como sociedad,exijimos pero no repetamos deberes basicos civiles,existe una perdida de la alteridad.<br />
+Contraria a el egocentrismo de nuestros tiempos&#8230;</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-283209">
+<div id="dsq-comment-header-283209" class="dsq-comment-header">
+<cite id="dsq-cite-283209">
+<span id="dsq-author-user-283209">Erendis</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283209" class="dsq-comment-body">
+<div id="dsq-comment-message-283209" class="dsq-comment-message"><p>Yo le he dicho a la gente cuando bota basura &#8220;señor, disculpe pero se le cayó el papelito del helado&#8221; cara de palo y la gente queda plop&#8230; me da risa como reaccionan (gracias a Dios nunca nadie me ha echado la foca) igual siempre con buenos modales&#8230; </p>
+<p>Ojalá el Estado se encargase de fomentar en la gente el hábito de botar los papelitos donde corresponde&#8230; y también de reciclar&#8230;</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-283467">
+<div id="dsq-comment-header-283467" class="dsq-comment-header">
+<cite id="dsq-cite-283467">
+<span id="dsq-author-user-283467">angra</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283467" class="dsq-comment-body">
+<div id="dsq-comment-message-283467" class="dsq-comment-message"><p>jaja, yo también los reto&#8230;y me ha llegado cada improperio, &#8220;echada de foca&#8221; o mirada de malo&#8230;o me han refutado con la lógica de que &#8220;así les dan trabajo a los del aseo&#8221;. Viejujas cochinas que no enseñan a sus hijos. Me he topado &#8220;de todo&#8221; como basura, guacalas aparte, dado el aviso y nadie ha ido a limpiar en semanas.</p>
+<p>Sería ideal mostrarle a la gente la evolución de los sitios de rellenos sanitarios y el mercado de recolección que se da a veces, ahi mismo</p>
+<p>Gran recolección de enlaces para revisar. Gracias</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-445564">
+<div id="dsq-comment-header-445564" class="dsq-comment-header">
+<cite id="dsq-cite-445564">
+<span id="dsq-author-user-445564">Daniel Cabeza</span>
+</cite>
+</div>
+<div id="dsq-comment-body-445564" class="dsq-comment-body">
+<div id="dsq-comment-message-445564" class="dsq-comment-message"><p>Yo quedé plop una vez que increpé a una Sra de unos 40 años que llevaba a su niño de unos 4 de la mano y que dejó cael un envoltorio de helado al piso.<br />
+Me acerco y le digo &#8220;Disculpe señora, se le cayó el papel del helado&#8221; y me respondió &#8220;Ahhh&#8230; no se me cayó, lo boté&#8221;<br />
+En ese momento me di cuenta que poner tu granito de arena para mantener tu ciudad limpia no significa nada.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-283832">
+<div id="dsq-comment-header-283832" class="dsq-comment-header">
+<cite id="dsq-cite-283832">
+<span id="dsq-author-user-283832">hosne17</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283832" class="dsq-comment-body">
+<div id="dsq-comment-message-283832" class="dsq-comment-message"><p>Poco a poco la empresa privada se la ha jugado x el reciclaje y están intentando incentivar. Ej: Jumbo ofrece bolso para llevar compras en vez de bolsas plasticas ¿q tal? ojala existan más ideas como esa&#8230;</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-283928">
+<div id="dsq-comment-header-283928" class="dsq-comment-header">
+<cite id="dsq-cite-283928">
+<span id="dsq-author-user-283928">f1</span>
+</cite>
+</div>
+<div id="dsq-comment-body-283928" class="dsq-comment-body">
+<div id="dsq-comment-message-283928" class="dsq-comment-message"><p>A riesgo de ser politicamente incorrecto: ¿Dónde me pagan por mi basura?</p>
+<p>Creo que como bien dijeron algunos por ahi, sin incentivos difícil que se masifique una cultura del reciclaje sólo por bolitas de dulce. Muchas de estas empresas lucran con los residuos.<br />
+Quizás los cartoneros sean el mejor ejemplo. Uno se da el tiempo de dejarles cartones por que ahorran el desplazamiento a algún punto de acopio.<br />
+De hecho en algo tan simple como los cartuchos de tinta se podría listar donde pagan por recibirlos. </p>
+<p>En todo caso es interesante el aporte de la página. Por lo menos se donde están los lugares mas cercanos para botar mi chatarra y por ende, motivarme a reciclar.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-284410">
+<div id="dsq-comment-header-284410" class="dsq-comment-header">
+<cite id="dsq-cite-284410">
+<span id="dsq-author-user-284410">nacho</span>
+</cite>
+</div>
+<div id="dsq-comment-body-284410" class="dsq-comment-body">
+<div id="dsq-comment-message-284410" class="dsq-comment-message"><p>q lástima q mayoritariamente la lista sea de lugares de stgo; podrían hacer una igual de detallada para las regiones, estaría buenisimo.</p>
+<p>todavía sigue en pie mi pregunta anterior ¿alguien sabe donde se puede reciclar las cajitas de tetra-pak en viña?</p>
+<p>saludos</p>
+</div>
+</div>
+</li>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-327272">
+<div id="dsq-comment-header-327272" class="dsq-comment-header">
+<cite id="dsq-cite-327272">
+<span id="dsq-author-user-327272">KURT SCHNEIDER MELLA</span>
+</cite>
+</div>
+<div id="dsq-comment-body-327272" class="dsq-comment-body">
+<div id="dsq-comment-message-327272" class="dsq-comment-message"><p>Hola a todos los que se interezan por reducir, reciclar y reutilizar, las llamadas tres R.</p>
+<p>Mi comentario se enfoca principalmente a la importancia que tiene el reciclaje,</p>
+<p>Vivo en una comuna de santiago donde el reciclar a traído muchos beneficios para el municipio y por ende trasmitido a todos sus habitantes a través de por ejemplo, la adquisición de buses que recorren la comuna y cuyo costo de viaje es gratuito, la construcción y mantenimiento del ámbito urbano (áreas verdes, repación de calzadas y aceras, señalización vertical y horizontal en todas las calles, actividades culturales, etc.), proyecto exitoso que deberian imcorporar otras comunas de mi querido pais.</p>
+<p>Actualmente muchas comunas que he tenido la oprtunidad de conocer y especialmente Los Andes, que es donde trabajo actualmente como Ing. en Prevención de Riesgos y Gestor Ambiental, y que por este motivo unicamente lo saco a colación, donde veo las carencia en infractura urbana en especial señalización horizontal, vertical y lo más importante, las áreas verdes, me imagino lo feliz que serian los andinas de contar con su cerro la virgen forestado, con caminos alfaltados, centros culturales, etc, en la actualidaexiste poca o nada difución por parte del municipio sobre la educación ambiental a sus habitantes, ya que todo los residuos llegan como un todo a los vertederos, &#8220;derrochando&#8221; materiales comerciables.<br />
+En fin, el reciclar viendolo de una forma macro, es una buena empresa para cuidar nuestro planeta,y también, que es lo principal, financiar los municipios de un manera simple, con sólo una inversión inicial en una planta de procesamiento industrial.<br />
+Todo lo anterial se concretará, cuando los alcaldes se convenzan y adquieran una conciencia ambientalista, creando una conciencia ambiental transversal por medio de un sistema de educación ambiental desde los establecimientos de educación y una campaña educativa dirigida a los vecinos.</p>
+<p>Ojalá algun día sea un mega proyecto pais de algún burocrata.</p>
+<p>Saludos cordiales.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-329159">
+<div id="dsq-comment-header-329159" class="dsq-comment-header">
+<cite id="dsq-cite-329159">
+<span id="dsq-author-user-329159">Katherine</span>
+</cite>
+</div>
+<div id="dsq-comment-body-329159" class="dsq-comment-body">
+<div id="dsq-comment-message-329159" class="dsq-comment-message"><p>Hola&#8230; </p>
+<p>hace unos dias comense a leer el libro &#8220;cradle to cradle&#8221; (de la cuna a la cuna), que hace mucha refrencia al tema rediseñar la forma en que hacemos las cosas, y una cita que me llamo mucho la atención es que, “La tecnología actual crea productos del tipo de la cuna a la tumba”, esto hace énfasis a que extraemos los recursos de la tierra, les damos una forma conveniente, luego usamos el producto creado y para luego desecharlo&#8221;, lo ideal seria atacar el problema del pincipio su tema de contruccion que pensemos en crear cosas que sean posible de reciclarse o degradarse para asi no tener que lidiar con tantos desechos que sacamos diariamente de casa&#8230;</p>
+<p>Por otra parte la página me va a servir mucho para mi tesis, para mi proyecto de titulo&#8230;el tema de cifras como poder indagar en todo lo que tiene que ver con el reciclaje en chile, de crear nuevas tecnologias en esa área, hacer sistemas constructivos&#8230;<br />
+me gustaria saber si ustedes tienen contactos o cifras de cuanto lo que se recicla los difrentes puntos que existen en las comunas que nombran, que tipo de material es el mas reciclado que hacen con todo lo que almacenan, a donde va a parar, que utilidad le dan&#8230;</p>
+<p>les agradeceria si me responden, me encantaria poder enseñar un proyecto que hice a base de reciclaje.. que alguna empresa quisiera financiar.</p>
+<p>saludos&#8230; gracias por la información.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-334074">
+<div id="dsq-comment-header-334074" class="dsq-comment-header">
+<cite id="dsq-cite-334074">
+<span id="dsq-author-user-334074">Erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-334074" class="dsq-comment-body">
+<div id="dsq-comment-message-334074" class="dsq-comment-message"><p>hola, hace poco lei de una capaña para reciclaje de celulares de nokia y movistar, el problema es que recicibian los telefonos y no pagaban nada, yo estoy empezando un proyecto en el cual pago, no mucho pero pago por celular malo, ya sea viejo o uno que se mojo, sin bateria, etc, pago 300 por celular, tambien compro chatarra electronica radiografias, en fin todo lo que sea botado produciria gran daño ambiental, tambien comprocataliticos a 5000, vivo en peñaflor</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-367249">
+<div id="dsq-comment-header-367249" class="dsq-comment-header">
+<cite id="dsq-cite-367249">
+<span id="dsq-author-user-367249">santiago villarroel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-367249" class="dsq-comment-body">
+<div id="dsq-comment-message-367249" class="dsq-comment-message"><p>hola<br />
+tienes discos duros =?</p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-367635">
+<div id="dsq-comment-header-367635" class="dsq-comment-header">
+<cite id="dsq-cite-367635">
+<span id="dsq-author-user-367635">Mario Jerez</span>
+</cite>
+</div>
+<div id="dsq-comment-body-367635" class="dsq-comment-body">
+<div id="dsq-comment-message-367635" class="dsq-comment-message"><p>hola erick<br />
+tengo como 100 kilos (o más) de impresoras, fotocopiadoras y multifuncionales<br />
+marcas epson y hp &#8230; en desuso<br />
+el problema es que vivo en peñalolén, quizás demasiado lejos.</p>
+<p>de todas formas si te interesas, mi numero es: </p>
+<p>casa: 2601219<br />
+cel: 76329431</p>
+<p>podriamos acordar el acercamiento del material o que lo retires directamente en mi casa.</p>
+<p>atte. Mario Jerez</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt depth-2" id="dsq-comment-390410">
+<div id="dsq-comment-header-390410" class="dsq-comment-header">
+<cite id="dsq-cite-390410">
+<span id="dsq-author-user-390410">ANTONIETA DIAZ</span>
+</cite>
+</div>
+<div id="dsq-comment-body-390410" class="dsq-comment-body">
+<div id="dsq-comment-message-390410" class="dsq-comment-message"><p>Hola,tengo muchas radiografías antiguas<br />
+Tú las compras para reciclaje?<br />
+Si te interesan por favor llámame al 9 8630667 o 4752009 Gracias.</p>
+<p>Antonieta´.</p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-419407">
+<div id="dsq-comment-header-419407" class="dsq-comment-header">
+<cite id="dsq-cite-419407">
+<span id="dsq-author-user-419407">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-419407" class="dsq-comment-body">
+<div id="dsq-comment-message-419407" class="dsq-comment-message"><p>hola a todos, gracias por contestar, mi e mail es <a href="/cdn-cgi/l/email-protection#7411061d171f2b031b1812021d181811341c1b0019151d185a171b19"><span class="__cf_email__" data-cfemail="0f6a7d666c645078606369796663636a4f67607b626e6663216c6062">[email&#160;protected]</span></a>, agreguenme al msn y asi podremos hablar</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt depth-2" id="dsq-comment-613644">
+<div id="dsq-comment-header-613644" class="dsq-comment-header">
+<cite id="dsq-cite-613644">
+<span id="dsq-author-user-613644">ana</span>
+</cite>
+</div>
+<div id="dsq-comment-body-613644" class="dsq-comment-body">
+<div id="dsq-comment-message-613644" class="dsq-comment-message"><p>Hola, necesito que retiren de mi dpto, un Tv un<br />
+refrigerador y un lavavajilla, por favor denme una respuesta, yo no tengo vehiculo para llevarlos, gracias de antemano.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-339149">
+<div id="dsq-comment-header-339149" class="dsq-comment-header">
+<cite id="dsq-cite-339149">
+<span id="dsq-author-user-339149">isabel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-339149" class="dsq-comment-body">
+<div id="dsq-comment-message-339149" class="dsq-comment-message"><p>holaaa necesito saber en donde se puede reciclar papel en calama es para un travajo ambiental muy importante xfa respondanmeeeee</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-367907">
+<div id="dsq-comment-header-367907" class="dsq-comment-header">
+<cite id="dsq-cite-367907">
+<span id="dsq-author-user-367907">carmen morales</span>
+</cite>
+</div>
+<div id="dsq-comment-body-367907" class="dsq-comment-body">
+<div id="dsq-comment-message-367907" class="dsq-comment-message"><p>hola yo reciclo en calama mas de 7 años toner y cintas de impresoras ya que son enviadas a santiago para incineracion contacte conmigo y conversamos.</p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-480331">
+<div id="dsq-comment-header-480331" class="dsq-comment-header">
+<cite id="dsq-cite-480331">
+<span id="dsq-author-user-480331">María José</span>
+</cite>
+</div>
+<div id="dsq-comment-body-480331" class="dsq-comment-body">
+<div id="dsq-comment-message-480331" class="dsq-comment-message"><p>Hola!</p>
+<p>Necesito saber de forma urgente dónde y cómo se reciclan los tóner en calama.</p>
+<p>Sl2!</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-339366">
+<div id="dsq-comment-header-339366" class="dsq-comment-header">
+<cite id="dsq-cite-339366">
+<span id="dsq-author-user-339366">Katherine Jara</span>
+</cite>
+</div>
+<div id="dsq-comment-body-339366" class="dsq-comment-body">
+<div id="dsq-comment-message-339366" class="dsq-comment-message"><p>Isabel:</p>
+<p>Lo que podrias hacer, es mandar un email a la Conama, quizas ellos tengan alguna información respecto a eso.</p>
+<p>te dejo su link.<br />
+<a href="http://www.conama.cl/portal/1301/channel.html" rel="nofollow">http://www.conama.cl/portal/1301/channel.html</a></p>
+<p>suerte&#8230;</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-342324">
+<div id="dsq-comment-header-342324" class="dsq-comment-header">
+<cite id="dsq-cite-342324">
+<span id="dsq-author-user-342324">paty</span>
+</cite>
+</div>
+<div id="dsq-comment-body-342324" class="dsq-comment-body">
+<div id="dsq-comment-message-342324" class="dsq-comment-message"><p>kreo q s muy bueno reciclar es d vital importancia para salvar nuestro planeta tierra&#8230; mi problema es que tngo un debate y necesito informacion acerca de el siguiente tema &#8220;EL ESTADO NO DEBE FINANCIAR LOS PRODUCTOS RECICLABLES&#8221; por favor si alguien me puede ayudar se lo agradeceria mx.</p>
+<p>mi correo es <a href="/cdn-cgi/l/email-protection#473726332e3326292e292326072f28332a262e2b6924282a"><span class="__cf_email__" data-cfemail="dfafbeabb6abbeb1b6b1bbbe9fb7b0abb2beb6b3f1bcb0b2">[email&#160;protected]</span></a></p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-599406">
+<div id="dsq-comment-header-599406" class="dsq-comment-header">
+<cite id="dsq-cite-599406">
+<span id="dsq-author-user-599406">Elizabeth melendez</span>
+</cite>
+</div>
+<div id="dsq-comment-body-599406" class="dsq-comment-body">
+<div id="dsq-comment-message-599406" class="dsq-comment-message"><p>Alguien me puede decir donde puedo vender botellas plastica en ocla</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-347474">
+<div id="dsq-comment-header-347474" class="dsq-comment-header">
+<cite id="dsq-cite-347474">
+<span id="dsq-author-user-347474">Andrés Zúñiga</span>
+</cite>
+</div>
+<div id="dsq-comment-body-347474" class="dsq-comment-body">
+<div id="dsq-comment-message-347474" class="dsq-comment-message"><p>Necesito reciclar pallet de madera, no son aptos para su comercialización como tal dado que se encuentran en mal estado.<br />
+Si alguien sabe donde me puedo dirigir, agradecería me enviara el dato.</p>
+<p>Gracias,<br />
+Andrés.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-347545">
+<div id="dsq-comment-header-347545" class="dsq-comment-header">
+<cite id="dsq-cite-347545">
+<span id="dsq-author-user-347545">carlos figueroa</span>
+</cite>
+</div>
+<div id="dsq-comment-body-347545" class="dsq-comment-body">
+<div id="dsq-comment-message-347545" class="dsq-comment-message"><p>hola amigos quiero saber como puedo crear una recicladora de papel en calama, ya q donde trabajo es bastante el papel q termina en la basura por dia, por lo cual me gustaria una orientacion.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-367906">
+<div id="dsq-comment-header-367906" class="dsq-comment-header">
+<cite id="dsq-cite-367906">
+<span id="dsq-author-user-367906">carmen morales</span>
+</cite>
+</div>
+<div id="dsq-comment-body-367906" class="dsq-comment-body">
+<div id="dsq-comment-message-367906" class="dsq-comment-message"><p>hola yo reciclo toner y cintas de fotocopiadoras si tienes<br />
+llamame al 77297696 o al fono en calama 055 318931</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-355235">
+<div id="dsq-comment-header-355235" class="dsq-comment-header">
+<cite id="dsq-cite-355235">
+<span id="dsq-author-user-355235">Valeria</span>
+</cite>
+ </div>
+<div id="dsq-comment-body-355235" class="dsq-comment-body">
+<div id="dsq-comment-message-355235" class="dsq-comment-message"><p>hola. </p>
+<p>alguien tiene algun contacto de personas o empresas que reciban (sin nada a cambio) el papel que tengo&#8230;<br />
+tengo muchos cuadernos que ya no ocupo, hay muchas hojas y diarios, tengo casi 5 kilos de papel, pero no quiero votarlos a la basura para que lo quemen, me daria mucha pena, y como ya veo que aqui son varios los que optamos por el reciclaje, si alguien tiene alguna informacion de contacto me escriben a <a href="/cdn-cgi/l/email-protection#a1d7c0cdc4d3d8fec0c6c0d1c4e1c9ced5ccc0c8cd8fc2cecc"><span class="__cf_email__" data-cfemail="2650474a43545f794741475643664e49524b474f4a0845494b">[email&#160;protected]</span></a> &#8211; en caso que yo tenga que pagar por el envio de esto, lo hare.-</p>
+<p>saludos a todos!!! y sigamos adelante chicos y chicas con este tipo de iniciativas!!</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-357464">
+<div id="dsq-comment-header-357464" class="dsq-comment-header">
+<cite id="dsq-cite-357464">
+http://www.revolver-magazine.com <span id="dsq-author-user-357464">Natasha</span>
+</cite>
+</div>
+<div id="dsq-comment-body-357464" class="dsq-comment-body">
+<div id="dsq-comment-message-357464" class="dsq-comment-message"><p>Hola,</p>
+<p>Que buena la pagina. Yo soy periodista y voy a escribir un reportaje sobre este tema para la revista Revolver en inglés. Parece que hay pocos sitios para reciclar en el centro de Santiago. ¿Sabes si puedes reciclar plástico, papel etc en el centro?</p>
+<p>También me gustaría saber si hay una campaña contra el uso de bolsas de plástico aca, como en inglaterra. En inglaterra, ahora tienes que pagar para bolsas en el supermercardo. También en Barcelona.</p>
+<p><a href="http://www.abolishplasticbags.org.uk/" rel="nofollow">http://www.abolishplasticbags.org.uk/</a></p>
+<p><a href="http://www.lavanguardia.es/ciudadanos/noticias/20081127/53588406019/las-bolsas-de-plastico-en-las-tiendas-tendran-que-pagarse-en-catalunya.html" rel="nofollow">http://www.lavanguardia.es/ciudadanos/noticias/20081127/53588406019/las-bolsas-de-plastico-en-las-tiendas-tendran-que-pagarse-en-catalunya.html</a></p>
+<p>¿Alguien puede ayudarme?</p>
+<p>Gracias y saludos.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-357567">
+<div id="dsq-comment-header-357567" class="dsq-comment-header">
+<cite id="dsq-cite-357567">
+<span id="dsq-author-user-357567">pam</span>
+</cite>
+</div>
+<div id="dsq-comment-body-357567" class="dsq-comment-body">
+<div id="dsq-comment-message-357567" class="dsq-comment-message"><p>Natasha , hay varias campañas para no utilizar bolsas plasticas pero ninguna a nivel nacional , hace unos meses comenzo una de una Fundacion con una cadena de supermercados , estan recoletando bolsas plasticas para reciclarlas , de todas formas hay un proyecto de ley para el año 2010 que se supone regularia el uso de bolsas plasticas&#8230;.si quieres dame tu mail y te cuento con mas detalles<br />
+saludos</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-365613">
+<div id="dsq-comment-header-365613" class="dsq-comment-header">
+<cite id="dsq-cite-365613">
+<span id="dsq-author-user-365613">alejandra</span>
+</cite>
+</div>
+<div id="dsq-comment-body-365613" class="dsq-comment-body">
+<div id="dsq-comment-message-365613" class="dsq-comment-message"><p>La verdad es que No soy una persona caracterizada por reciclar pero creo que nunca es tarde cierto? es por esto que quiero saber donde puedo llevar las bolsas plasticas (se me está haciendo poco el espacio para guardarlas) y no quiero dejar en la basura. De esa forma puedo cooperar con un granito y no seguir contaminando,agradecería la información estoy empezando a separar mi basura pero quiero saber donde dejarla.<br />
+A todo eto vivo en la florida.</p>
+<p>Gracias!!</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt depth-2" id="dsq-comment-386188">
+<div id="dsq-comment-header-386188" class="dsq-comment-header">
+<cite id="dsq-cite-386188">
+<span id="dsq-author-user-386188">Vivi</span>
+</cite>
+</div>
+<div id="dsq-comment-body-386188" class="dsq-comment-body">
+<div id="dsq-comment-message-386188" class="dsq-comment-message"><p>Hola Pam, me llamo la atencion tu respuesta de que existe una Fundacion en con junto con una cadena de supermercado que se dedican al reciclaje de bolsas, solo soy una simple mortal que quiere aportar con su granito de arena tratando de reciclar todo lo que encuentro, entre esas cosas estan las bolsas de basura, yo las hecho en los contenedores de botellas de plastico pero si tu sabes de algun lugar especifico para las bolsas te agradeceria que compartieras esa informacion conmigo, saludos cordiales.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-357896">
+<div id="dsq-comment-header-357896" class="dsq-comment-header">
+<cite id="dsq-cite-357896">
+<span id="dsq-author-user-357896">Sebastián</span>
+</cite>
+</div>
+<div id="dsq-comment-body-357896" class="dsq-comment-body">
+<div id="dsq-comment-message-357896" class="dsq-comment-message"><p>Hola Erick, me interesa tu proyecto, yo soy de Calera de Tango y me gustaría participar en eso. Te dejo mi correo para que estemos en contacto <a href="/cdn-cgi/l/email-protection#245756514d5e64514041470a4748"><span class="__cf_email__" data-cfemail="a1d2d3d4c8dbe1d4c5c4c28fc2cd">[email&#160;protected]</span></a>. Saludos.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-358875">
+<div id="dsq-comment-header-358875" class="dsq-comment-header">
+<cite id="dsq-cite-358875">
+http://www.revolver-magazine.com <span id="dsq-author-user-358875">Natasha</span>
+</cite>
+</div>
+<div id="dsq-comment-body-358875" class="dsq-comment-body">
+<div id="dsq-comment-message-358875" class="dsq-comment-message"><p>Pam,<br />
+Gracias y si me gustaria mas informacion, pf!</p>
+<p><a href="/cdn-cgi/l/email-protection#e18f809580928980a19384978e8d978493cc8c8086809b888f84cf828e8c"><span class="__cf_email__" data-cfemail="bad4dbcedbc9d2dbfac8dfccd5d6ccdfc897d7dbdddbc0d3d4df94d9d5d7">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-359478">
+<div id="dsq-comment-header-359478" class="dsq-comment-header">
+<cite id="dsq-cite-359478">
+http://www.emuh.cl <span id="dsq-author-user-359478">Jaime Hume</span>
+</cite>
+</div>
+<div id="dsq-comment-body-359478" class="dsq-comment-body">
+<div id="dsq-comment-message-359478" class="dsq-comment-message"><p>Recicla el 60% de tu basura, en tu propia casa o departamento con los productos que ofrece la empresa EMUH.<br />
++ Compostera<br />
++ Vermicompostador<br />
++ Cono compostador (a partir de octubre)<br />
++ Lombricultera<br />
++ Biorreactor de compostaje</p>
+<p>Y para los cultivos urbanos, donde puedes aprovechar el abono obtenido el Totem y Cama. Solicita informacion a <a href="/cdn-cgi/l/email-protection#0f6a627a674f6a627a67216c63"><span class="__cf_email__" data-cfemail="3d585048557d58504855135e51">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-366075">
+<div id="dsq-comment-header-366075" class="dsq-comment-header">
+<cite id="dsq-cite-366075">
+<span id="dsq-author-user-366075">Valentina Alexandra</span>
+</cite>
+</div>
+<div id="dsq-comment-body-366075" class="dsq-comment-body">
+<div id="dsq-comment-message-366075" class="dsq-comment-message"><p>hola a todos &#8230; necesito hacer una pregunta importante&#8230; alguen sabe acerca del reciclage de capsulas de nitrogeno? esas ke se usan en las maquinitas de crema batida preparada en casa? &#8230; la verdad entre a trabajar hace poko a un restaurant y uso de 2 a 3 aveces 4 al dia!&#8230; y me siento pesimo usando estos aparatitos ke paracen grandes balas de aluminio(si es ke es aluminio)&#8230; alguien sabe donde las puedo reciclar? me da cargo de conciencia ver todas las ke se van a la basura a la semana&#8230; bueno &#8230; ya las empese a juntar asi ke espero ke me puedan ayudara luego de todas maneras seguire averiguando en puntos de reciclage &#8230; no pretendo llenar mi ksa de estas basuritas contaminantes&#8230; y si por por esas casualidades alguien sabe de lugares o empresas en las ke de dinero a cambio de estas capsulas para volver a rellenarlas con nitrogeno y asi no producir mas seria buenisimo&#8230; :). Gracias de antemano</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-366474">
+<div id="dsq-comment-header-366474" class="dsq-comment-header">
+<cite id="dsq-cite-366474">
+<span id="dsq-author-user-366474">Marianela</span>
+</cite>
+</div>
+<div id="dsq-comment-body-366474" class="dsq-comment-body">
+<div id="dsq-comment-message-366474" class="dsq-comment-message"><p>PORFAVOOOOOOOOOOORRRR&#8230; NECESITO URGENTE INFORMACION DE DONDE RECICLAR BASURA ELECTRONICA (COMPUTADORES..ECT)Y ALUMINIO EN LA SERENA!!! NO ENCUENTRO NINGUNA DIRECCION!!</p>
+<p>Y MIS MAS SINCERAS FELICITACIONES A CUANIQUEM POR SU INICIATIVA CON EL RECICLAJE DE VIDRIO&#8230; ES ALGO DIGNO DE IMITAR!!!</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-478254">
+<div id="dsq-comment-header-478254" class="dsq-comment-header">
+<cite id="dsq-cite-478254">
+<span id="dsq-author-user-478254">Luis Guarachi</span>
+</cite>
+</div>
+<div id="dsq-comment-body-478254" class="dsq-comment-body">
+<div id="dsq-comment-message-478254" class="dsq-comment-message"><p>Yo también estoy buscando alguna institución o personas que retiren PC y monitores a domicilio en Coquimbo, que es donde vive mi suego el cual tiene un par de PC (monitores e imporesoras correspondientes) antiguos que desea donar a alguien a quien les sirva.</p>
+<p>Si sabes algo al respecto, por favor avísenme al mail o.</p>
+<p>(56 2) 3341041</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-366963">
+<div id="dsq-comment-header-366963" class="dsq-comment-header">
+<cite id="dsq-cite-366963">
+<span id="dsq-author-user-366963">Rodrigo Torres</span>
+</cite>
+</div>
+<div id="dsq-comment-body-366963" class="dsq-comment-body">
+<div id="dsq-comment-message-366963" class="dsq-comment-message"><p>Hola,<br />
+buscando en la web sobre el tema de reciclaje llegué a esta página y la encontré muy completa. El único problema es que soy de Viña y no conozco lugares cercanos para reciclar productos q no sean vidrios, y es que tengo una bolsa llena de latas de aerosoles de los desodorantes que llevo usando hace un tiempo.<br />
+Por eso me gustaría que alguien pudiera ayudarme con el tema o darme algún consejo sobre qué hacer con mis latas. </p>
+<p>Gracias de antemano,<br />
+Saludos<br />
+Rodrigo</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-367247">
+<div id="dsq-comment-header-367247" class="dsq-comment-header">
+<cite id="dsq-cite-367247">
+<span id="dsq-author-user-367247">santiago villarroel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-367247" class="dsq-comment-body">
+<div id="dsq-comment-message-367247" class="dsq-comment-message"><p>Hola<br />
+Agradeceria me ayudaran a encontrar discos duros en mal estado, donde desarman computadoras, es para dasarrollar un proyecto en el que estoy trabajando.</p>
+<p>Gracias</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-367248">
+<div id="dsq-comment-header-367248" class="dsq-comment-header">
+<cite id="dsq-cite-367248">
+<span id="dsq-author-user-367248">santiago villarroel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-367248" class="dsq-comment-body">
+<div id="dsq-comment-message-367248" class="dsq-comment-message"><p>Agradeceria me ayuden a encontrar discos duros usados o en mal estado.</p>
+<p>Gracias</p>
+<p>Santiago</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-372788">
+<div id="dsq-comment-header-372788" class="dsq-comment-header">
+<cite id="dsq-cite-372788">
+<span id="dsq-author-user-372788">Sofia</span>
+</cite>
+</div>
+<div id="dsq-comment-body-372788" class="dsq-comment-body">
+<div id="dsq-comment-message-372788" class="dsq-comment-message"><p>Donde puedo comprar listones de maderas usadas para hacer unas mesas?</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-378657">
+<div id="dsq-comment-header-378657" class="dsq-comment-header">
+<cite id="dsq-cite-378657">
+<span id="dsq-author-user-378657">kurt</span>
+</cite>
+</div>
+<div id="dsq-comment-body-378657" class="dsq-comment-body">
+<div id="dsq-comment-message-378657" class="dsq-comment-message"><p>Hola.<br />
+Respondiendo a la pregunta, en un negocio de venta de materiales de demolición&#8230;.<br />
+Espero que no sea muy tarde.<br />
+Saludos</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-377469">
+<div id="dsq-comment-header-377469" class="dsq-comment-header">
+<cite id="dsq-cite-377469">
+<span id="dsq-author-user-377469">Rz</span>
+</cite>
+</div>
+<div id="dsq-comment-body-377469" class="dsq-comment-body">
+<div id="dsq-comment-message-377469" class="dsq-comment-message"><p>La verdad es que estoy de acuerdo con muchas de las opiniones, pero el gran tema es que, el mal llamado reciclaje hoy solo funciona como negocio. Esa es la verdad, nadie ira a buscar 3 kilos de cartón a una casa gastando bencina, tag, empleado, bodega, para después vender esos 3 kilos a $60, o sea no se gana nada.<br />
+Mientras no esten las condiciones reales para desarrollar un verdadero proyecto de reciclaje, nunca habra forma de controlar la producción de residuos domiciliarios e industriales.<br />
+Solo un ejemplo, estoy hace tres años tratando que me financien un proyecto de responsabilidad empresarial, y nada, solo palabras de buena crianza alentandote, a que, a esperar.<br />
+Saludos</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-768345">
+<div id="dsq-comment-header-768345" class="dsq-comment-header">
+<cite id="dsq-cite-768345">
+<span id="dsq-author-user-768345">Manuel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-768345" class="dsq-comment-body">
+<div id="dsq-comment-message-768345" class="dsq-comment-message"><p>Hola. Estoy trabajando en un proyecto de reciclaje que podría solucionar la promlemática que mencionas (&#8220;&#8230;nadie ira a buscar 3 kilos de cartón a una casa&#8230;&#8221;). Me gustaría conocer más tu opinión así que si te interesa, me contactas a <a href="/cdn-cgi/l/email-protection#503d3c326261606110373d31393c7e333f3d"><span class="__cf_email__" data-cfemail="fc91909ececdcccdbc9b919d9590d29f9391">[email&#160;protected]</span></a>.</p>
+<p>Saludos.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</li>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-387257">
+<div id="dsq-comment-header-387257" class="dsq-comment-header">
+<cite id="dsq-cite-387257">
+http://www.codec.cl <span id="dsq-author-user-387257">rodrigo cifuentes</span>
+</cite>
+</div>
+<div id="dsq-comment-body-387257" class="dsq-comment-body">
+<div id="dsq-comment-message-387257" class="dsq-comment-message"><p>estimados trabajo entregando productos a esta empresa <a href="http://www.codec.cl" rel="nofollow">http://www.codec.cl</a> saludos cordiales reciclan computadores felz navidad y prospoero 2011</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-832515">
+<div id="dsq-comment-header-832515" class="dsq-comment-header">
+<cite id="dsq-cite-832515">
+<span id="dsq-author-user-832515">Ma. Soledad</span>
+</cite>
+</div>
+<div id="dsq-comment-body-832515" class="dsq-comment-body">
+<div id="dsq-comment-message-832515" class="dsq-comment-message"><p>Consulta todavía trabajas en el reciclaje de computadora; porque tengo un notebook y me gustaría donarlo.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-388163">
+<div id="dsq-comment-header-388163" class="dsq-comment-header">
+<cite id="dsq-cite-388163">
+<span id="dsq-author-user-388163">Bernardita Valenzuela</span>
+</cite>
+</div>
+<div id="dsq-comment-body-388163" class="dsq-comment-body">
+<div id="dsq-comment-message-388163" class="dsq-comment-message"><p>Hola,hola!!!..<br />
+Quiero reciclar ! y nose donde hacerlo &#8230;.<br />
+Votar las cajas de leche ,papeles ,los plasticos etc &#8230;..<br />
+Vivo en San Pedro de la Paz en Concepcion &#8230;.<br />
+Me podrian ayudar ?</p>
+<p>Hay que empezar a hacer conciencia de a poco &#8230;.pero hay que empezar !&#8230;y no veo señales de las autoridades de Gobierno &#8230;.<br />
+La tierra esta acusando recibo de tanta irresponsabilidad nuestra &#8230;&#8230;<br />
+Les agradeceria mucho que me respondieran&#8230;.<br />
+Bernar</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-390314">
+<div id="dsq-comment-header-390314" class="dsq-comment-header">
+<cite id="dsq-cite-390314">
+<span id="dsq-author-user-390314">victor sepulveda</span>
+</cite>
+</div>
+<div id="dsq-comment-body-390314" class="dsq-comment-body">
+<div id="dsq-comment-message-390314" class="dsq-comment-message"><p><a href="http://www.reciclauc.cl" rel="nofollow">http://www.reciclauc.cl</a> </p>
+<p>Existen varios puntos de reciclaje de pilas, latas y papeles en los campvs de la Universidad</p>
+</div>
+</div>
+</li>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-392043">
+<div id="dsq-comment-header-392043" class="dsq-comment-header">
+<cite id="dsq-cite-392043">
+<span id="dsq-author-user-392043">FELIPE</span>
+</cite>
+</div>
+<div id="dsq-comment-body-392043" class="dsq-comment-body">
+<div id="dsq-comment-message-392043" class="dsq-comment-message"><p>Cada ves q leo la precoupacion de la gente por reciclar me alegro sin embargo tambien me da rabia al ver q la mayoria de las autoridades hacen oidos sordos a un tema que a mi parecer es de vital importancia y algo que nos dara paso a ser un pais mejor,<br />
+bueno la pregunta que queria poner en tapete, alguien conoce donde puedo dejar cosas tecnologicas malas, tengo un par de impresoras, un scanner, algunos parlantes, algunos teclados y uno q otro mouse, aprte de cables malos q tngo almacendos, me da lata botarlos a la basura sabiendo q solo llnara espacio en los basureros, sperando una pronta y satisfactoria respuesta me dspido.<br />
+xao.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-392826">
+<div id="dsq-comment-header-392826" class="dsq-comment-header">
+<cite id="dsq-cite-392826">
+<span id="dsq-author-user-392826">Luis contreras</span>
+</cite>
+</div>
+<div id="dsq-comment-body-392826" class="dsq-comment-body">
+<div id="dsq-comment-message-392826" class="dsq-comment-message"><p>Hola mi nombre es luis, trabajo en una imprenta y me preocupa mucho el destino de los toner, que frecuentemente botamos en la basura. Quisiera saber si hay alguien que los recicle, nuestro telefono es 02 248 95 38.</p>
+<p>Muchas gracias</p>
+</div>
+</div>
+</li>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-402472">
+<div id="dsq-comment-header-402472" class="dsq-comment-header">
+<cite id="dsq-cite-402472">
+<span id="dsq-author-user-402472">Cristina</span>
+</cite>
+</div>
+<div id="dsq-comment-body-402472" class="dsq-comment-body">
+<div id="dsq-comment-message-402472" class="dsq-comment-message"><p>Hola, linda pagina.</p>
+<p>Veo muchas preguntas&#8230;.</p>
+<p>¿Alguien contesta, o es decoración?</p>
+<p>Atte,</p>
+<p>Cristina.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-405690">
+<div id="dsq-comment-header-405690" class="dsq-comment-header">
+<cite id="dsq-cite-405690">
+<span id="dsq-author-user-405690">Lula</span>
+</cite>
+</div>
+<div id="dsq-comment-body-405690" class="dsq-comment-body">
+<div id="dsq-comment-message-405690" class="dsq-comment-message"><p>el reciclaje se empieza por casa no hay mas vueltas amigos</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-412136">
+<div id="dsq-comment-header-412136" class="dsq-comment-header">
+<cite id="dsq-cite-412136">
+https://sites.google.com/site/rutadelreciclajeconcepcion/ <span id="dsq-author-user-412136">Francisco</span>
+</cite>
+</div>
+<div id="dsq-comment-body-412136" class="dsq-comment-body">
+<div id="dsq-comment-message-412136" class="dsq-comment-message"><p>Hola, </p>
+<p>Aqui hay una guia con lugares en donde reciclar diferentes desechos el el gran concepción</p>
+<p><a href="https://sites.google.com/site/rutadelreciclajeconcepcion/" rel="nofollow">https://sites.google.com/site/rutadelreciclajeconcepcion/</a></p>
+<p>Atte.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-413317">
+<div id="dsq-comment-header-413317" class="dsq-comment-header">
+<cite id="dsq-cite-413317">
+<span id="dsq-author-user-413317">Ma.Paz</span>
+</cite>
+</div>
+<div id="dsq-comment-body-413317" class="dsq-comment-body">
+<div id="dsq-comment-message-413317" class="dsq-comment-message"><p>Quisiera saber si existe alguna empresa que compre los tetrapack&#8230;.<br />
+muchas gracias<br />
+saludos,</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-413358">
+<div id="dsq-comment-header-413358" class="dsq-comment-header">
+<cite id="dsq-cite-413358">
+<span id="dsq-author-user-413358">juan</span>
+</cite>
+</div>
+<div id="dsq-comment-body-413358" class="dsq-comment-body">
+<div id="dsq-comment-message-413358" class="dsq-comment-message"><p>Alguien sabe donde se puede reciclar la batería de un computador en desuso?<br />
+gracias</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-416203">
+<div id="dsq-comment-header-416203" class="dsq-comment-header">
+<cite id="dsq-cite-416203">
+<span id="dsq-author-user-416203">cony</span>
+</cite>
+</div>
+<div id="dsq-comment-body-416203" class="dsq-comment-body">
+<div id="dsq-comment-message-416203" class="dsq-comment-message"><p>Las 7 R del Buen Consumidor:<br />
+Reflexionar &#8211; Rechazar- Reducir &#8211; Reutilizar &#8211; Redistribuir &#8211; RECLAMAR &#8211; Reciclar. Recuerden que reciclar es lo último ya que es un proceso que involucra muchos recursos y tb genera impacto negativo al medioambiente&#8230;<br />
+salu2 desde el desierto mágico donde se esta trabajando para generar mayor conciencia y participar activamente en la conservación de nuestros bellos recursos.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-418627">
+<div id="dsq-comment-header-418627" class="dsq-comment-header">
+<cite id="dsq-cite-418627">
+http://www.recicomp.webnode.es <span id="dsq-author-user-418627">Pedro</span>
+</cite>
+</div>
+<div id="dsq-comment-body-418627" class="dsq-comment-body">
+<div id="dsq-comment-message-418627" class="dsq-comment-message"><p>Hola,buena iniciativa ,a reciclar se ha dicho,nosotros tambien hacemos reciclaje de basura electronica ,visiten nuestra pagina <a href="http://www.recicomp.webnode.es" rel="nofollow">http://www.recicomp.webnode.es</a> para que se informen de nuestra labor y compromiso.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-419344">
+<div id="dsq-comment-header-419344" class="dsq-comment-header">
+<cite id="dsq-cite-419344">
+<span id="dsq-author-user-419344">Erick</span>
+</cite>
+</div>
+<div id="dsq-comment-body-419344" class="dsq-comment-body">
+<div id="dsq-comment-message-419344" class="dsq-comment-message"><p>hace poco elavoré un proyecto de reciclaje, de papel, de plastico, e-waste, radiografias, carton, de todo, solo necesitaba el apoyo del gobierno, era un plan altamente elavorado, con ayuda de expertos en el tema, no solo de chile, recibí ayuda de china, mexico y otros paises, pero nunca aprobaron el proyecto</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-419677">
+<div id="dsq-comment-header-419677" class="dsq-comment-header">
+<cite id="dsq-cite-419677">
+<span id="dsq-author-user-419677">CLAUDIO HIDALGO</span>
+</cite>
+</div>
+<div id="dsq-comment-body-419677" class="dsq-comment-body">
+<div id="dsq-comment-message-419677" class="dsq-comment-message"><p>SOMOS UNA EMPRESA DEL RUBRO METALURGICO, EN NUESTRAS OPERACIONES GENERAMOS CASI 20.000 KG DE PALLETS DESUSO MAL ESTADO , ES UNA LASTIMA QUE EN SANTIAGO NO EXISTAN LUGARES PARA RECUPERAR LA MADERA O HACER CHIPS CON RESOLUCION SANITARIA PARA ESTOS TRATAMIENTOS , SI ALGUIEN SABE DE UN LUGAR FAVOR AVISEN</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-419870">
+<div id="dsq-comment-header-419870" class="dsq-comment-header">
+<cite id="dsq-cite-419870">
+<span id="dsq-author-user-419870">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-419870" class="dsq-comment-body">
+<div id="dsq-comment-message-419870" class="dsq-comment-message"><p>hola, tengo buenas noticias, dentro de muy poco se abrira un centro de reciclaje de e-waste, entre 3 y 5 meses, y poco a pococ iremos agregando el reciclaje de papel y plastico, asi que preparense y separen, para comenzar a salvar nuestro planeta y hacerlo un mejor lugar para vivir, cualquier duda solo hablen</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-421219">
+<div id="dsq-comment-header-421219" class="dsq-comment-header">
+<cite id="dsq-cite-421219">
+<span id="dsq-author-user-421219">Lisette</span>
+</cite>
+</div>
+<div id="dsq-comment-body-421219" class="dsq-comment-body">
+<div id="dsq-comment-message-421219" class="dsq-comment-message"><p>Hola!! en mi casa ya reciclamos pero quiero tener contenedores, alguien sabe quien vende contenedores plasticos de uso domestico??</p>
+<p>Gracias!</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-437128">
+<div id="dsq-comment-header-437128" class="dsq-comment-header">
+<cite id="dsq-cite-437128">
+https://www.facebook.com/pages/Eco-ntenedores/300274883352284 <span id="dsq-author-user-437128">Francisca Bignotti</span>
+</cite>
+</div>
+<div id="dsq-comment-body-437128" class="dsq-comment-body">
+<div id="dsq-comment-message-437128" class="dsq-comment-message"><p>Hola Lisette.</p>
+<p>Se que el post es antiguo, pero si aún te encuentras interesa nosotros vendemos Eco-contenedores en tamaño de 36 lts. y 120 lts. ideales para departamento y casa. Revisa nuestra página y ve los distintos productos.</p>
+<p>Cualquier duda, sólo escríbenos.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt depth-2" id="dsq-comment-565079">
+<div id="dsq-comment-header-565079" class="dsq-comment-header">
+<cite id="dsq-cite-565079">
+<span id="dsq-author-user-565079">Jorge</span>
+</cite>
+</div>
+<div id="dsq-comment-body-565079" class="dsq-comment-body">
+<div id="dsq-comment-message-565079" class="dsq-comment-message"><p>Encontraste donde botar plasticos, estoy hace tiempo buscando</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-427239">
+<div id="dsq-comment-header-427239" class="dsq-comment-header">
+<cite id="dsq-cite-427239">
+<span id="dsq-author-user-427239">Alondra Jerez</span>
+</cite>
+</div>
+<div id="dsq-comment-body-427239" class="dsq-comment-body">
+<div id="dsq-comment-message-427239" class="dsq-comment-message"><p>Hola!! tengo como un millon de cds que no quiero botar pero noce donde se pueden dejar para reciclarlos! si alguien sabe algun lugar que me avise porfa necesito dejarlos luego por cambio de domicilio!<br />
+gracias <img src="http://www.plataformaurbana.cl/wp-includes/images/smilies/simple-smile.png" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-575698">
+<div id="dsq-comment-header-575698" class="dsq-comment-header">
+<cite id="dsq-cite-575698">
+<span id="dsq-author-user-575698">cecilia</span>
+</cite>
+</div>
+<div id="dsq-comment-body-575698" class="dsq-comment-body">
+<div id="dsq-comment-message-575698" class="dsq-comment-message"><p>Hola , quiero reciclar pero en esta comuna no hay nada, es la comuna de san miguel, donde se puede ir.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-427823">
+<div id="dsq-comment-header-427823" class="dsq-comment-header">
+<cite id="dsq-cite-427823">
+ <span id="dsq-author-user-427823">victor</span>
+</cite>
+</div>
+<div id="dsq-comment-body-427823" class="dsq-comment-body">
+<div id="dsq-comment-message-427823" class="dsq-comment-message"><p>Donde reciclar en calama papel blanco.<br />
+mi correo es <a href="/cdn-cgi/l/email-protection#46302934322f3c197173062e29322b272f2a6825292b"><span class="__cf_email__" data-cfemail="ddabb2afa9b4a782eae89db5b2a9b0bcb4b1f3beb2b0">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+</li>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-436388">
+<div id="dsq-comment-header-436388" class="dsq-comment-header">
+<cite id="dsq-cite-436388">
+<span id="dsq-author-user-436388">Cecilia Valdés A.</span>
+</cite>
+</div>
+<div id="dsq-comment-body-436388" class="dsq-comment-body">
+<div id="dsq-comment-message-436388" class="dsq-comment-message"><p>Tengo elementos como un televisor antiguo, funcionando (Tatung Dinamic), un computador (Packar Bell;baja memoria 16) pero funcionando y otros electros que no puedo ir a dejarlos a vertederos,ni dejar en el basurero del pasaje; ni los &#8220;pobres&#8221; lo quieren, . No sé si reciclan. Qué hago: Desde Los Andes, Chile. Responda si alguien lo quiere.<br />
+Gracias</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-436469">
+<div id="dsq-comment-header-436469" class="dsq-comment-header">
+<cite id="dsq-cite-436469">
+http://www.recicomp.webnode.es <span id="dsq-author-user-436469">Pedro</span>
+</cite>
+</div>
+<div id="dsq-comment-body-436469" class="dsq-comment-body">
+<div id="dsq-comment-message-436469" class="dsq-comment-message"><p>Hola nosotros reciclamos ese tipo de cosas ,lo ùnico malo es que estamos en santiago,podrìas buscar a alguien de la quinta regiòn que recicle y le cueste menos llegar.</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-436852">
+<div id="dsq-comment-header-436852" class="dsq-comment-header">
+<cite id="dsq-cite-436852">
+<span id="dsq-author-user-436852">Fernanda</span>
+</cite>
+</div>
+<div id="dsq-comment-body-436852" class="dsq-comment-body">
+<div id="dsq-comment-message-436852" class="dsq-comment-message"><p>Soy de S. Pedro de la paz y busco alguien que se interese por el tema de reciclaje para cambiar ideas y aplicarlas en beneficio de esta comunidad.Hay mucho por hacer.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-437129">
+<div id="dsq-comment-header-437129" class="dsq-comment-header">
+<cite id="dsq-cite-437129">
+https://www.facebook.com/pages/Eco-ntenedores/300274883352284 <span id="dsq-author-user-437129">Francisca Bignotti</span>
+</cite>
+</div>
+<div id="dsq-comment-body-437129" class="dsq-comment-body">
+<div id="dsq-comment-message-437129" class="dsq-comment-message"><p>Hola a todos!!!</p>
+<p>Como todos los que han escrito acá, nosotros también nos preocupamos por reciclar. Por esto creamos Eco-contenedores, empresa que vende contenedores en distintos tamaños, ideal para departamentos y casas. También contamos con bolsas de basura con los respectivos colores. Se realizan envíos a todo Chile.</p>
+<p>Para las personas de Viña del Mar, les informamos de los puntos limpios existentes en la ciudad y si reúnes a un grupo de tus vecinos, contamos con el servicio de retiro a domicilio de tus residuos por un costo mensual de $10.000 (en base a una familia de 5 integrantes, una vez a la semana). El precio de este servicio es en base a nuestros costos ya que los residuos son entregados a fundaciones que cuentan con campañas de reciclaje. Si te encuentras interesado, revisa nuestro fb donde se encuentra la información.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-437135">
+<div id="dsq-comment-header-437135" class="dsq-comment-header">
+<cite id="dsq-cite-437135">
+<span id="dsq-author-user-437135">Lisette</span>
+</cite>
+</div>
+<div id="dsq-comment-body-437135" class="dsq-comment-body">
+<div id="dsq-comment-message-437135" class="dsq-comment-message"><p>Puedes darme tu link o contacto??</p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-439912">
+<div id="dsq-comment-header-439912" class="dsq-comment-header">
+<cite id="dsq-cite-439912">
+<span id="dsq-author-user-439912">Carola</span>
+</cite>
+</div>
+<div id="dsq-comment-body-439912" class="dsq-comment-body">
+<div id="dsq-comment-message-439912" class="dsq-comment-message"><p>A mi también</p>
+<p>Carola</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-437137">
+<div id="dsq-comment-header-437137" class="dsq-comment-header">
+<cite id="dsq-cite-437137">
+<span id="dsq-author-user-437137">Francisca Bignotti</span>
+</cite>
+</div>
+<div id="dsq-comment-body-437137" class="dsq-comment-body">
+<div id="dsq-comment-message-437137" class="dsq-comment-message"><p>Hola, nuestro fb <a href="https://www.facebook.com/pages/Eco-ntenedores/300274883352284" rel="nofollow">https://www.facebook.com/pages/Eco-ntenedores/300274883352284</a> sino a mi correo <a href="/cdn-cgi/l/email-protection#284e4b49064a414f46475c5c41684f45494144064b4745"><span class="__cf_email__" data-cfemail="fc9a9f9dd29e959b9293888895bc9b919d9590d29f9391">[email&#160;protected]</span></a> Saludos</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-439911">
+<div id="dsq-comment-header-439911" class="dsq-comment-header">
+<cite id="dsq-cite-439911">
+<span id="dsq-author-user-439911">Carola</span>
+</cite>
+</div>
+<div id="dsq-comment-body-439911" class="dsq-comment-body">
+<div id="dsq-comment-message-439911" class="dsq-comment-message"><p>Hola, vivo en viña y ya se donde reciclar tetra pack (según una publicación en esta página) y vidrio cerca de mi casa, pero necesito saber donde reciclan aluminio, latas y plasticos (no sólo botellas de bebida). En mi casa estoy reciclando todo y haciendo ladrillos ecológicos, además de compost. Ofresco parte de mi cosecha de compost y ladrillos a los interesados. escribir al correo <a href="/cdn-cgi/l/email-protection#1f747e6d7e717b7e6d7a5f78727e7673317c7072"><span class="__cf_email__" data-cfemail="365d574457585257445376515b575f5a1855595b">[email&#160;protected]</span></a></p>
+<p>Carola</p>
+</div>
+</div>
+</li>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-443084">
+<div id="dsq-comment-header-443084" class="dsq-comment-header">
+<cite id="dsq-cite-443084">
+<span id="dsq-author-user-443084">Carolina</span>
+</cite>
+</div>
+<div id="dsq-comment-body-443084" class="dsq-comment-body">
+<div id="dsq-comment-message-443084" class="dsq-comment-message"><p>Hola:</p>
+<p>Les cuento, trabajo en una fabrica de molduras y venta de madera,(Santiago) por lo cual tenemos bastante desecho de madera nativa seca, si alguien esta interesado o le puede dar alguna utilidad a esta la regalamos.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-443458">
+<div id="dsq-comment-header-443458" class="dsq-comment-header">
+<cite id="dsq-cite-443458">
+<span id="dsq-author-user-443458">ERICK VILLALOBOS</span>
+</cite>
+</div>
+<div id="dsq-comment-body-443458" class="dsq-comment-body">
+<div id="dsq-comment-message-443458" class="dsq-comment-message"><p>hola me interesa tu anuncio, me encantaria comunicarme contigo, mi mail es <a href="/cdn-cgi/l/email-protection#5530273c363e0a223a3933233c393930153d3a2138343c397b363a38"><span class="__cf_email__" data-cfemail="781d0a111b13270f17141e0e1114141d3810170c15191114561b1715">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-443273">
+<div id="dsq-comment-header-443273" class="dsq-comment-header">
+<cite id="dsq-cite-443273">
+<span id="dsq-author-user-443273">cristian u</span>
+</cite>
+</div>
+<div id="dsq-comment-body-443273" class="dsq-comment-body">
+<div id="dsq-comment-message-443273" class="dsq-comment-message"><p>hola.como es posible querer aportar al reciclaje si no existe una política ambiental real . e tocado muchas puertas por un proyecto que retiraría toneladas de material reutilizable de las calles o basurales y nadie es capas de tomar esto en serio ni ministerios ni instituciones dedicadas al tena. por favor ayudémonos nosotros mismo a limpiar nuestro país de toneladas de basura reciclable y tener productos reciclado de calidad a un precio justo.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-443459">
+<div id="dsq-comment-header-443459" class="dsq-comment-header">
+<cite id="dsq-cite-443459">
+<span id="dsq-author-user-443459">ERICK VILLALOBOS</span>
+</cite>
+</div>
+<div id="dsq-comment-body-443459" class="dsq-comment-body">
+<div id="dsq-comment-message-443459" class="dsq-comment-message"><p>te apoyo completamente, jamas me han aprobado un proyecto, mencionando a corfo, sercotec, y otros, creo que nadie esta interesado en el reciclaje y a nadie de las autoridades le importa tampoco</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-443578">
+<div id="dsq-comment-header-443578" class="dsq-comment-header">
+<cite id="dsq-cite-443578">
+<span id="dsq-author-user-443578">Victor</span>
+</cite>
+</div>
+<div id="dsq-comment-body-443578" class="dsq-comment-body">
+<div id="dsq-comment-message-443578" class="dsq-comment-message"><p>Hola, que tal, les cuento que tengo un tio en Los Andes que tiene un televisor viejo y quiere saber si hay alguna parte donde se reciclen este tipo de aparatos (es de los antiguos creo), puede ser algun dato en Santiago tambien.</p>
+<p>Gracias y espero exista una parte donde hacerlo para no terminar contaminando aun mas nuestro medio ambiente.</p>
+<p>Saludos!</p>
+</div>
+</div>
+</li>
+</li>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-446064">
+<div id="dsq-comment-header-446064" class="dsq-comment-header">
+<cite id="dsq-cite-446064">
+http://<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583c3936313e2a07696c18352b36763b3735">[email&#160;protected]</a> <span id="dsq-author-user-446064">pro</span>
+</cite>
+</div>
+<div id="dsq-comment-body-446064" class="dsq-comment-body">
+<div id="dsq-comment-message-446064" class="dsq-comment-message"><p>necesito con urgencia un lugar de reciclaje de papel y carton en calama, si alguien tiene algun dato favor de avisar</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-446157">
+<div id="dsq-comment-header-446157" class="dsq-comment-header">
+<cite id="dsq-cite-446157">
+<span id="dsq-author-user-446157">cesar</span>
+</cite>
+</div>
+<div id="dsq-comment-body-446157" class="dsq-comment-body">
+<div id="dsq-comment-message-446157" class="dsq-comment-message"><p>Y que pasa con los emprendimientos de la zona sur?????????</p>
+<p>LA PINTANA, ES TOP EN RECICLAJE DE MATERIAS ORGANICAS Y INORGANICAS</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-446959">
+<div id="dsq-comment-header-446959" class="dsq-comment-header">
+<cite id="dsq-cite-446959">
+<span id="dsq-author-user-446959">Sebastian</span>
+</cite>
+</div>
+<div id="dsq-comment-body-446959" class="dsq-comment-body">
+<div id="dsq-comment-message-446959" class="dsq-comment-message"><p>Como se hacen los ladrillos de reciclaje, es posible fabricarlos en casa?</p>
+<p>Muchos saludos!</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-447798">
+<div id="dsq-comment-header-447798" class="dsq-comment-header">
+<cite id="dsq-cite-447798">
+<span id="dsq-author-user-447798">fernando preciado torres</span>
+</cite>
+</div>
+<div id="dsq-comment-body-447798" class="dsq-comment-body">
+<div id="dsq-comment-message-447798" class="dsq-comment-message"><p>pero no dice nada de donde podemos reciclar</p>
+</div>
+</div>
+</li>
+</li>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-458891">
+<div id="dsq-comment-header-458891" class="dsq-comment-header">
+<cite id="dsq-cite-458891">
+http://www.kurafwerken.cl <span id="dsq-author-user-458891">Romy Bernal Díaz</span>
+</cite>
+</div>
+<div id="dsq-comment-body-458891" class="dsq-comment-body">
+<div id="dsq-comment-message-458891" class="dsq-comment-message"><p>Junto con felicitarles, quisiera que incluyeran nuestro punto de reciclaje en sus listas. Nuestro Centro Cultural Kuraf Werken, tiene un Centro de Reciclaje y Educación Ambiental Mensajeros del Viento en Talca, en funcionamiento desde el 2009.<br />
+Es importante para nosotros ampliar la conciencia recicladora en la comuna, región y país.<br />
+Pueden conocer más de nuestro centro en nuestro portal web.</p>
+<p>Atentos saludos.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-462982">
+<div id="dsq-comment-header-462982" class="dsq-comment-header">
+<cite id="dsq-cite-462982">
+<span id="dsq-author-user-462982">veronica</span>
+</cite>
+</div>
+<div id="dsq-comment-body-462982" class="dsq-comment-body">
+<div id="dsq-comment-message-462982" class="dsq-comment-message"><p>Hola, porfa si alguien sabe donde reciclar latas, papel,platico (no solo botellas) en Viña me avisa plisss</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-465016">
+<div id="dsq-comment-header-465016" class="dsq-comment-header">
+<cite id="dsq-cite-465016">
+<span id="dsq-author-user-465016">Francisco Necochea</span>
+</cite>
+</div>
+<div id="dsq-comment-body-465016" class="dsq-comment-body">
+<div id="dsq-comment-message-465016" class="dsq-comment-message"><p>Sres<br />
+Me dedico al Reciclaje de Material Ferroso (chatarra), Aluminio, Broce, Cobre, etc&#8230;<br />
+con retiro a domicilio y/o empresas (sin costo)<br />
+y con un copago</p>
+<p>Sldos<br />
+07-8609416</p>
+</div>
+</div>
+</li>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-489266">
+<div id="dsq-comment-header-489266" class="dsq-comment-header">
+<cite id="dsq-cite-489266">
+<span id="dsq-author-user-489266">Gaby</span>
+</cite>
+</div>
+<div id="dsq-comment-body-489266" class="dsq-comment-body">
+<div id="dsq-comment-message-489266" class="dsq-comment-message"><p>Hola<br />
+Necesito saber si hay algún lugar en Calama donde se puedan ir a dejar las cosas para reciclar.<br />
+Espero la respuesta<br />
+Saludos</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-489395">
+<div id="dsq-comment-header-489395" class="dsq-comment-header">
+<cite id="dsq-cite-489395">
+http://www.ecopunto.cl <span id="dsq-author-user-489395">Andrés Reyes</span>
+</cite>
+</div>
+<div id="dsq-comment-body-489395" class="dsq-comment-body">
+<div id="dsq-comment-message-489395" class="dsq-comment-message"><p>Hola nosotros somos Ecopunto y nos dedicamos a reciclar papeles, cartones, envases plásticos, envases de vidrio, Tetra Pak (limpio), Latas de Aluminio, celulares, radiografías y electrónica.<br />
+estamos ubicados en Sargento Aldea N° 624, en Chillán y el móvil de contacto es 95152170.<br />
+Saludos a todos. Los esperamos.</p>
+<p>Andrés Reyes Dehays<br />
+Propietario</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-489623">
+<div id="dsq-comment-header-489623" class="dsq-comment-header">
+<cite id="dsq-cite-489623">
+<span id="dsq-author-user-489623">rossana bugueño</span>
+</cite>
+</div>
+<div id="dsq-comment-body-489623" class="dsq-comment-body">
+<div id="dsq-comment-message-489623" class="dsq-comment-message"><p>mi nieta Isidora Bugueño tiene 2 años 3 meses y es habitual en ella cuando caminamos al jardín de niños reclamar por lo sucio que están las calles, se molesta mucho y dice que la gente bota la basura y se ve feo ella come algun caramelo y me pasa a mi el envoltorio y tambien me pregunta por los perros por que no tiene baño yo lwe cuento que aca en Chile la gente no se preocupa de ellos menos lo hace con los animales. Me duele y me alegra a la vez saber que ella siendo tan chiquita ya tenga conciencia y los otros mas grande no</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-492430">
+<div id="dsq-comment-header-492430" class="dsq-comment-header">
+<cite id="dsq-cite-492430">
+<span id="dsq-author-user-492430">Cecilia Sánchez Miño</span>
+</cite>
+</div>
+<div id="dsq-comment-body-492430" class="dsq-comment-body">
+<div id="dsq-comment-message-492430" class="dsq-comment-message"><p>Soy de la Quinta región y quiero saber en donde se puede entregar para reciclar computadores, celulares, pilas y otros.<br />
+Gracias por su información</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-501821">
+<div id="dsq-comment-header-501821" class="dsq-comment-header">
+<cite id="dsq-cite-501821">
+<span id="dsq-author-user-501821">Erick</span>
+</cite>
+</div>
+<div id="dsq-comment-body-501821" class="dsq-comment-body">
+<div id="dsq-comment-message-501821" class="dsq-comment-message"><p>hola a todos, comunico que compro radiografías, los interesados comunicarse a mi email <a href="/cdn-cgi/l/email-protection#781d0a111b13270f17141e0e1114141d3810170c15191114561b1715"><span class="__cf_email__" data-cfemail="91f4e3f8f2facee6fefdf7e7f8fdfdf4d1f9fee5fcf0f8fdbff2fefc">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-516256">
+<div id="dsq-comment-header-516256" class="dsq-comment-header">
+<cite id="dsq-cite-516256">
+<span id="dsq-author-user-516256">Maca</span>
+</cite>
+</div>
+<div id="dsq-comment-body-516256" class="dsq-comment-body">
+<div id="dsq-comment-message-516256" class="dsq-comment-message"><p>Muy bueno el articulo !!! Me ayudo mucho, una consulta aún existe solo un lugar para reciclar cartuchos??? lo encuentro horrible !! </p>
+<p>Saludos, gracias!!!</p>
+</div>
+</div>
+</li>
+</li>
+</li>
+</li>
+</li>
+</li>
+</li>
+</li>
+</li>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-526778">
+<div id="dsq-comment-header-526778" class="dsq-comment-header">
+<cite id="dsq-cite-526778">
+<span id="dsq-author-user-526778">Miguel C.</span>
+</cite>
+</div>
+<div id="dsq-comment-body-526778" class="dsq-comment-body">
+<div id="dsq-comment-message-526778" class="dsq-comment-message"><p>Me parece por parte de todos los que que aqui comentamos situaciones respecto al reciclaje todo muy loable, pero se hace tambien necesario creo yo que incentivemos de manera mas activa a los que nos rodean, familia, amigos, no es una tarea fácil, pero con estusiasmo podemos lograrlo, desde hoy también yo me sumo, saludos amigos y amigas</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-526781">
+<div id="dsq-comment-header-526781" class="dsq-comment-header">
+<cite id="dsq-cite-526781">
+<span id="dsq-author-user-526781">Miguel C.</span>
+</cite>
+</div>
+<div id="dsq-comment-body-526781" class="dsq-comment-body">
+<div id="dsq-comment-message-526781" class="dsq-comment-message"><p>ah, lo que quería comentar despues de leer tanta buena comunicación al respecto era que, ¿habrá alguien que pueda crear un sitio donde exista forma de acceder rapidamente a comunas, lugares, tipos de desechos, horarios de recepción, telefonos, etc. que puedan facilitar la información hacia toda la comunidad y asi no se excusen de querer participar?, ¿o existe algo así?, ¿o es muy tonto lo que estoy diciendo?</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-564571">
+<div id="dsq-comment-header-564571" class="dsq-comment-header">
+<cite id="dsq-cite-564571">
+<span id="dsq-author-user-564571">Nicole</span>
+</cite>
+</div>
+<div id="dsq-comment-body-564571" class="dsq-comment-body">
+<div id="dsq-comment-message-564571" class="dsq-comment-message"><p>Hola:<br />
+Como queren que uno recicle si busco donde dejar diarios, revistas, y salen las condes providencia. Y yo vivo en Puente Alto,discriminan a las otras comunas. Por eso nasie ayuda a limpiar.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment byuser comment-author-daniela even depth-2" id="dsq-comment-564573">
+<div id="dsq-comment-header-564573" class="dsq-comment-header">
+<cite id="dsq-cite-564573">
+<span id="dsq-author-user-564573">Daniela Assael</span>
+</cite>
+</div>
+<div id="dsq-comment-body-564573" class="dsq-comment-body">
+<div id="dsq-comment-message-564573" class="dsq-comment-message"><p>Hola Nicole,</p>
+<p>En este link puedes encontrar más info de lugares dónde reciclar <a href="http://bit.ly/xbRWbM" rel="nofollow">http://bit.ly/xbRWbM</a></p>
+<p>Saludos!</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-565574">
+<div id="dsq-comment-header-565574" class="dsq-comment-header">
+<cite id="dsq-cite-565574">
+<span id="dsq-author-user-565574">RENATO</span>
+</cite>
+</div>
+<div id="dsq-comment-body-565574" class="dsq-comment-body">
+<div id="dsq-comment-message-565574" class="dsq-comment-message"><p>Hola!!! muy buen sitio!, necesito saber donde se reciclan las latas de desodorante&#8230; SE RECICLAN IGUAL QUE LAS LATAS DE BEBIDA??? o es un tipo distinto de aluminio? disculpen la ignorancia. Gracias!!!! un abrazo</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-572944">
+<div id="dsq-comment-header-572944" class="dsq-comment-header">
+<cite id="dsq-cite-572944">
+http://facebok <span id="dsq-author-user-572944">augusto</span>
+</cite>
+</div>
+<div id="dsq-comment-body-572944" class="dsq-comment-body">
+<div id="dsq-comment-message-572944" class="dsq-comment-message"><p>tengo mucho resiclaje y nose que aser</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-573914">
+<div id="dsq-comment-header-573914" class="dsq-comment-header">
+<cite id="dsq-cite-573914">
+<span id="dsq-author-user-573914">Alfonso Astorga</span>
+</cite>
+</div>
+<div id="dsq-comment-body-573914" class="dsq-comment-body">
+<div id="dsq-comment-message-573914" class="dsq-comment-message"><p>Donde se puede reciclar material electrónico en La Serena?????</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-589122">
+<div id="dsq-comment-header-589122" class="dsq-comment-header">
+<cite id="dsq-cite-589122">
+<span id="dsq-author-user-589122">antonio</span>
+</cite>
+</div>
+<div id="dsq-comment-body-589122" class="dsq-comment-body">
+<div id="dsq-comment-message-589122" class="dsq-comment-message"><p>En que lugar de Concepción se reciclan envases de aerosol?</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-602981">
+<div id="dsq-comment-header-602981" class="dsq-comment-header">
+<cite id="dsq-cite-602981">
+<span id="dsq-author-user-602981">Bernarda</span>
+</cite>
+</div>
+<div id="dsq-comment-body-602981" class="dsq-comment-body">
+<div id="dsq-comment-message-602981" class="dsq-comment-message"><p>hola&#8230; quiero hacer un proyecto de reciclaje un la comunidad rural en la que vivo, si algunos de ustedes tiene algún formato para presentar este proyecto a la municipalidad se lo agradecería mucho</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-603025">
+<div id="dsq-comment-header-603025" class="dsq-comment-header">
+<cite id="dsq-cite-603025">
+<span id="dsq-author-user-603025">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-603025" class="dsq-comment-body">
+<div id="dsq-comment-message-603025" class="dsq-comment-message"><p>hola Bernarda, de donde eres?, te cuento una vez intenté que la municipalidad donde yo vivo, viera mi proyecto de reciclaje, un proyecto bastante exigente, pero a la vez con muchisimos beneficios para la comunidad en general, si te interesa comentar, escribeme a mi mail, <a href="/cdn-cgi/l/email-protection#b0d5c2d9d3dbefc7dfdcd6c6d9dcdcd5f0d8dfc4ddd1d9dc9ed3dfdd"><span class="__cf_email__" data-cfemail="0a6f78636961557d65666c7c6366666f4a62657e676b636624696567">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-604017">
+<div id="dsq-comment-header-604017" class="dsq-comment-header">
+<cite id="dsq-cite-604017">
+<span id="dsq-author-user-604017">Fabiola</span>
+</cite>
+</div>
+<div id="dsq-comment-body-604017" class="dsq-comment-body">
+<div id="dsq-comment-message-604017" class="dsq-comment-message"><p>Junto con saludar. solicito saber como lo puedo hacer para reciclar tetrapack y latas de un condominio&#8230;..en San Miguel quien hace eso una empresa o una fundación &#8230;&#8230;entiendo muy poco del asunto pero lo necesito resolver lo mas pronto posible.<br />
+Saludos cordiales.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-604220">
+<div id="dsq-comment-header-604220" class="dsq-comment-header">
+<cite id="dsq-cite-604220">
+<span id="dsq-author-user-604220">ERIKA LLANCA</span>
+</cite>
+</div>
+<div id="dsq-comment-body-604220" class="dsq-comment-body">
+<div id="dsq-comment-message-604220" class="dsq-comment-message"><p>HOLA QUIERO SABER EN DONDE PUEDO DEJAR UNOS PC PARA RECICLAR MI COMUNA ES PUENTE ALTO GRACIAS</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-605155">
+<div id="dsq-comment-header-605155" class="dsq-comment-header">
+<cite id="dsq-cite-605155">
+<span id="dsq-author-user-605155">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-605155" class="dsq-comment-body">
+<div id="dsq-comment-message-605155" class="dsq-comment-message"><p>hola, yo recibo computadores, cuantos tienes?, pues, si te interesa, saber como retirarlos, puedes comunicarte conmigo al email <a href="/cdn-cgi/l/email-protection#3451465d575f6b435b5852425d585851745c5b4059555d581a575b59"><span class="__cf_email__" data-cfemail="cfaabda6aca490b8a0a3a9b9a6a3a3aa8fa7a0bba2aea6a3e1aca0a2">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-604966">
+<div id="dsq-comment-header-604966" class="dsq-comment-header">
+<cite id="dsq-cite-604966">
+http://notengo <span id="dsq-author-user-604966">maximus</span>
+</cite>
+</div>
+<div id="dsq-comment-body-604966" class="dsq-comment-body">
+<div id="dsq-comment-message-604966" class="dsq-comment-message"><p>yo resibo todotipo de chatarra computadores,celulares viejo,equipos musicale,radios,estufas,lavadoras,calefon,cosinas,dividi.revistas cuadernos viejos,etc.retiro adomicilio,este mi fono 2642173(casa) 87314964.amigos soy de viña del mar areciclar qpue el mundo se va acarvar ino ponemos atajos</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-605422">
+<div id="dsq-comment-header-605422" class="dsq-comment-header">
+<cite id="dsq-cite-605422">
+http://socialbuzzweb.com <span id="dsq-author-user-605422">visit</span>
+</cite>
+</div>
+<div id="dsq-comment-body-605422" class="dsq-comment-body">
+<div id="dsq-comment-message-605422" class="dsq-comment-message"><p>Wonderful post! We are linking to this great article on<br />
+our site. Keep up the great writing.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-610205">
+<div id="dsq-comment-header-610205" class="dsq-comment-header">
+<cite id="dsq-cite-610205">
+<span id="dsq-author-user-610205">Carola</span>
+</cite>
+</div>
+<div id="dsq-comment-body-610205" class="dsq-comment-body">
+<div id="dsq-comment-message-610205" class="dsq-comment-message"><p>Hola, pertenezco a una biblioteca pública, y queremos comenzar un proyecto de reciclaje con los vecinos. Para ello hemos pensado en que esto nos sirva como fondos para la biblioteca (que no tenemos) por lo tanto necesito ayuda para saber con quien podemos generar un convenio para que nos compre vidrios, papeles y tetrapack, entre otras cosas.</p>
+<p>Muchas gracias!!!</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-623483">
+<div id="dsq-comment-header-623483" class="dsq-comment-header">
+<cite id="dsq-cite-623483">
+<span id="dsq-author-user-623483">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-623483" class="dsq-comment-body">
+<div id="dsq-comment-message-623483" class="dsq-comment-message"><p>hola, junten radiografias, hay en todas las casas, y al final se botan y contaminan mucho, yo se las compraría</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-613850">
+<div id="dsq-comment-header-613850" class="dsq-comment-header">
+<cite id="dsq-cite-613850">
+http://agdtokk.com <span id="dsq-author-user-613850">Janie</span>
+</cite>
+</div>
+<div id="dsq-comment-body-613850" class="dsq-comment-body">
+<div id="dsq-comment-message-613850" class="dsq-comment-message"><p>Hi Janie here, I like your site.</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-623482">
+<div id="dsq-comment-header-623482" class="dsq-comment-header">
+<cite id="dsq-cite-623482">
+<span id="dsq-author-user-623482">paulina</span>
+</cite>
+</div>
+<div id="dsq-comment-body-623482" class="dsq-comment-body">
+<div id="dsq-comment-message-623482" class="dsq-comment-message"><p>holaaa tengo mucha madera que no utilizare y me gustaria saver si existe un lugar donde reciclarla o si a alguien le sirviria???<br />
+Gracias.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment even depth-2" id="dsq-comment-623484">
+<div id="dsq-comment-header-623484" class="dsq-comment-header">
+<cite id="dsq-cite-623484">
+<span id="dsq-author-user-623484">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-623484" class="dsq-comment-body">
+<div id="dsq-comment-message-623484" class="dsq-comment-message"><p>hola paulina, disculpa la pregunta. pero que tipo de madera???</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-626226">
+<div id="dsq-comment-header-626226" class="dsq-comment-header">
+<cite id="dsq-cite-626226">
+<span id="dsq-author-user-626226">anonimo7</span>
+</cite>
+</div>
+<div id="dsq-comment-body-626226" class="dsq-comment-body">
+<div id="dsq-comment-message-626226" class="dsq-comment-message"><p>DONDE SE PUEDE RECICLAR LATAS U OTRA COSA EN PTE. ALTO O UN LUGAR CERCANO ??</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-627928">
+<div id="dsq-comment-header-627928" class="dsq-comment-header">
+<cite id="dsq-cite-627928">
+<span id="dsq-author-user-627928">dan</span>
+</cite>
+</div>
+<div id="dsq-comment-body-627928" class="dsq-comment-body">
+<div id="dsq-comment-message-627928" class="dsq-comment-message"><p>buenas tardes algien save donde compran las cintas de cine o cintas png si es que las compran en cuanto? tengo 40 toneladas</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-627934">
+<div id="dsq-comment-header-627934" class="dsq-comment-header">
+<cite id="dsq-cite-627934">
+<span id="dsq-author-user-627934">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-627934" class="dsq-comment-body">
+<div id="dsq-comment-message-627934" class="dsq-comment-message"><p>hola, estoy interesado, de donde eres, puedo ir a verlas. repondeme por favor al mail<br />
+<a href="/cdn-cgi/l/email-protection#e481968d878fbb938b8882928d888881a48c8b9089858d88ca878b89"><span class="__cf_email__" data-cfemail="3752455e545c6840585b51415e5b5b52775f58435a565e5b1954585a">[email&#160;protected]</span></a><br />
+saludos Dan</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-635735">
+<div id="dsq-comment-header-635735" class="dsq-comment-header">
+<cite id="dsq-cite-635735">
+<span id="dsq-author-user-635735">luis</span>
+</cite>
+</div>
+<div id="dsq-comment-body-635735" class="dsq-comment-body">
+<div id="dsq-comment-message-635735" class="dsq-comment-message"><p>necesito reciclar radiografias y no se donde existe un lugar para este tipo de elemento a reciclar.<br />
+soy de Peñaflor, si alguien conoce un lugar cercano, favor avisar al mail <a href="/cdn-cgi/l/email-protection#432f2230302e222a27262d03242e222a2f6d202c2e"><span class="__cf_email__" data-cfemail="f39f9280809e929a97969db3949e929a9fdd909c9e">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-637838">
+<div id="dsq-comment-header-637838" class="dsq-comment-header">
+<cite id="dsq-cite-637838">
+<span id="dsq-author-user-637838">Virginia</span>
+</cite>
+</div>
+<div id="dsq-comment-body-637838" class="dsq-comment-body">
+<div id="dsq-comment-message-637838" class="dsq-comment-message"><p>Hola. También me interesa saber donde reciclar radiografías, soy de Santiago.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-638829">
+<div id="dsq-comment-header-638829" class="dsq-comment-header">
+<cite id="dsq-cite-638829">
+<span id="dsq-author-user-638829">geraldine Muñoz</span>
+</cite>
+</div>
+<div id="dsq-comment-body-638829" class="dsq-comment-body">
+<div id="dsq-comment-message-638829" class="dsq-comment-message"><p>Hola<br />
+Vivo en un condominio en Peñaflor, y la idea es hacer contenedores de reciclaje comunitarios&#8230;pero no encontre direccion ni telefono de aquellos que los retiran a domicilio&#8230;ayuda porfavor</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-639296">
+<div id="dsq-comment-header-639296" class="dsq-comment-header">
+<cite id="dsq-cite-639296">
+<span id="dsq-author-user-639296">alejandra</span>
+</cite>
+</div>
+<div id="dsq-comment-body-639296" class="dsq-comment-body">
+<div id="dsq-comment-message-639296" class="dsq-comment-message"><p>Estimada ( o) quisiera conocer algun lugar donde dejar botellas, diarios, etc, pues en el supermercado lider ya no estan ( maipu)</p>
+<p> por su atencion gracias!!!!!!!</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-641359">
+<div id="dsq-comment-header-641359" class="dsq-comment-header">
+<cite id="dsq-cite-641359">
+<span id="dsq-author-user-641359">Mariana</span>
+</cite>
+</div>
+<div id="dsq-comment-body-641359" class="dsq-comment-body">
+<div id="dsq-comment-message-641359" class="dsq-comment-message"><p>Hola, quisiera que me dijeran dónde puedo ir a dejar un montón de radiografías, ya que he sabido que son contaminantes. Vivo en Santiago, en Providencia. Muchas gracias.</p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-641367">
+<div id="dsq-comment-header-641367" class="dsq-comment-header">
+<cite id="dsq-cite-641367">
+<span id="dsq-author-user-641367">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-641367" class="dsq-comment-body">
+<div id="dsq-comment-message-641367" class="dsq-comment-message"><p>hola Mariana y a todos quienes no sepan donde dejar sus rx, yo reciclo de la forma menos contaminante cualquier duda que tengas, solo comunicate conmigo al email<br />
+<a href="/cdn-cgi/l/email-protection#7e1b0c171d152109111218081712121b3e16110a131f1712501d1113"><span class="__cf_email__" data-cfemail="2247504b41497d554d4e44544b4e4e47624a4d564f434b4e0c414d4f">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+<li class="comment even depth-2" id="dsq-comment-641368">
+<div id="dsq-comment-header-641368" class="dsq-comment-header">
+<cite id="dsq-cite-641368">
+<span id="dsq-author-user-641368">erick villalobos</span>
+</cite>
+</div>
+<div id="dsq-comment-body-641368" class="dsq-comment-body">
+<div id="dsq-comment-message-641368" class="dsq-comment-message"><p>hola Mariana y a todos quienes no sepan donde dejar sus rx, yo reciclo de la forma menos contaminante cualquier duda que tengas, solo comunicate conmigo al email<br />
+<a href="/cdn-cgi/l/email-protection#95f0e7fcf6fecae2faf9f3e3fcf9f9f0d5fdfae1f8f4fcf9bbf6faf8"><span class="__cf_email__" data-cfemail="a4c1d6cdc7cffbd3cbc8c2d2cdc8c8c1e4cccbd0c9c5cdc88ac7cbc9">[email&#160;protected]</span></a><br />
+saludos</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-644346">
+<div id="dsq-comment-header-644346" class="dsq-comment-header">
+<cite id="dsq-cite-644346">
+<span id="dsq-author-user-644346">Margarita</span>
+</cite>
+</div>
+<div id="dsq-comment-body-644346" class="dsq-comment-body">
+<div id="dsq-comment-message-644346" class="dsq-comment-message"><p>Hola! Necesito saber si hay algún lugar que recicle bolsas y otras cosas de plástico.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-650316">
+<div id="dsq-comment-header-650316" class="dsq-comment-header">
+<cite id="dsq-cite-650316">
+http://battlefield4betakeys.net <span id="dsq-author-user-650316">bf4 beta codes</span>
+</cite>
+</div>
+<div id="dsq-comment-body-650316" class="dsq-comment-body">
+<div id="dsq-comment-message-650316" class="dsq-comment-message"><p>This is a topic that is close to my heart&#8230; Take<br />
+care! Where are your contact details though?</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-652122">
+<div id="dsq-comment-header-652122" class="dsq-comment-header">
+<cite id="dsq-cite-652122">
+<span id="dsq-author-user-652122">Liliana Riquelme</span>
+</cite>
+</div>
+<div id="dsq-comment-body-652122" class="dsq-comment-body">
+<div id="dsq-comment-message-652122" class="dsq-comment-message"><p>Me gustaría saber porque punto limpio de Vitacura tiene para reciclar la mayoría de las cosas, tintas, tonners, remedios vencidos, chatarra, etc&#8230;en fin. que pasa cuando de otras comunas queremos reciclar???? tenemos que ir muy lejos, no hay puntos centrales para todas las personas y de fácil acceso para todos. Me parece injusto y desigual.</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-657339">
+<div id="dsq-comment-header-657339" class="dsq-comment-header">
+<cite id="dsq-cite-657339">
+<span id="dsq-author-user-657339">Antonio</span>
+</cite>
+</div>
+<div id="dsq-comment-body-657339" class="dsq-comment-body">
+<div id="dsq-comment-message-657339" class="dsq-comment-message"><p>Hola a todos! alguien sabe donde puedo reciclar ropa y papeles en Concepción?</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-737880">
+<div id="dsq-comment-header-737880" class="dsq-comment-header">
+<cite id="dsq-cite-737880">
+http://www.plataformaurbana.cl <span id="dsq-author-user-737880">silvia rojas</span>
+</cite>
+</div>
+<div id="dsq-comment-body-737880" class="dsq-comment-body">
+<div id="dsq-comment-message-737880" class="dsq-comment-message"><p>Hola:<br />
+Alguien sabe donde reciben pilas usadas?<br />
+Falta promoción de puntos limpios. Campañas por el fomento del reciclaje mediante incentivos y políticas publicas claras.<br />
+Silvia Rojas Trincado</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-775497">
+<div id="dsq-comment-header-775497" class="dsq-comment-header">
+<cite id="dsq-cite-775497">
+<span id="dsq-author-user-775497">Andrea</span>
+</cite>
+</div>
+<div id="dsq-comment-body-775497" class="dsq-comment-body">
+<div id="dsq-comment-message-775497" class="dsq-comment-message"><p>Hola! quisiera preguntarles si alguien conoce donde puedo ir a dejar las cajas de cds y dvds en Santiago. Ya que existen puntos limpios pero no encuentro para especificamente estas cajitas.<br />
+Muchas gracias!</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-872293">
+<div id="dsq-comment-header-872293" class="dsq-comment-header">
+<cite id="dsq-cite-872293">
+<span id="dsq-author-user-872293">Victor Bustamante</span>
+</cite>
+</div>
+<div id="dsq-comment-body-872293" class="dsq-comment-body">
+<div id="dsq-comment-message-872293" class="dsq-comment-message"><p>Tengo computadores para reciclar ,, hay algún punto en coquimbo o la serena</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-957648">
+<div id="dsq-comment-header-957648" class="dsq-comment-header">
+<cite id="dsq-cite-957648">
+<span id="dsq-author-user-957648">Gonzalo</span>
+</cite>
+</div>
+<div id="dsq-comment-body-957648" class="dsq-comment-body">
+<div id="dsq-comment-message-957648" class="dsq-comment-message"><p>Hola buenos dias, </p>
+<p>Me gustaria saber si alguien conoce un lugar donde reciclar o desechar los Cds y video casettes. </p>
+<p>Saludos</p>
+<p>y de antemano agradezco sus comentarios.</p>
+<p>Gonzalo</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-even depth-1" id="dsq-comment-963320">
+<div id="dsq-comment-header-963320" class="dsq-comment-header">
+<cite id="dsq-cite-963320">
+<span id="dsq-author-user-963320">Claudio</span>
+</cite>
+</div>
+<div id="dsq-comment-body-963320" class="dsq-comment-body">
+<div id="dsq-comment-message-963320" class="dsq-comment-message"><p>Donde reciclar plásticos p2 &#8211; ps 06 &#8211; envases de detergentes &#8211; pp 5???</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-odd thread-alt depth-1" id="dsq-comment-963393">
+<div id="dsq-comment-header-963393" class="dsq-comment-header">
+<cite id="dsq-cite-963393">
+<span id="dsq-author-user-963393">Walter Aliyah</span>
+</cite>
+</div>
+<div id="dsq-comment-body-963393" class="dsq-comment-body">
+<div id="dsq-comment-message-963393" class="dsq-comment-message"><p>Hola, saludos a todos estoy aquí para informarle acerca de la señora Helena Thomas préstamo de consolidación de inicio, la organización no está aquí para ofrecer todo tipo de asistencia financiera a todas las personas sin importar el estado de su situación financiera, por debajo son los tipos de préstamo ofrecido gracias.</p>
+<p>Ofrecemos los siguientes tipos de préstamos</p>
+<p>Préstamos Personales (Secure y ordinarios)</p>
+<p>Préstamos Comerciales (con y sin garantía)</p>
+<p>Programa de Consolidación de Préstamo -Bajo Down o Cero Financiamiento</p>
+<p>dinero disponible a una tasa del 2% (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="472b28262924282934282b2e2326332e2829242229332235777607202a262e2b6924282a">[email&#160;protected]</a>)</p>
+<p>PRIMERA INFORMACIÓN NECESARIA SON:</p>
+<p>Nombres completos:</p>
+<p>País / Estado:</p>
+<p>Ubicación:</p>
+<p>Edad:</p>
+<p>Los teléfonos de contacto:</p>
+<p>Cantidad necesaria:</p>
+<p>Duración del préstamo:</p>
+<p>Propósito del préstamo:</p>
+<p>gracias y que Dios los bendiga.</p>
+<p>Correo electrónico: <a href="/cdn-cgi/l/email-protection#365a59575855595845595a5f5257425f5958555358425344060776515b575f5a1855595b"><span class="__cf_email__" data-cfemail="86eae9e7e8e5e9e8f5e9eaefe2e7f2efe9e8e5e3e8f2e3f4b6b7c6e1ebe7efeaa8e5e9eb">[email&#160;protected]</span></a></p>
+</div>
+</div>
+<ul class="children">
+<li class="comment odd alt depth-2" id="dsq-comment-963954">
+<div id="dsq-comment-header-963954" class="dsq-comment-header">
+<cite id="dsq-cite-963954">
+<span id="dsq-author-user-963954">lucia</span>
+</cite>
+</div>
+<div id="dsq-comment-body-963954" class="dsq-comment-body">
+<div id="dsq-comment-message-963954" class="dsq-comment-message"><p>donde puedo contactarlos? recibi un correo donde se me informa que no existe el grupo</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-964581">
+<div id="dsq-comment-header-964581" class="dsq-comment-header">
+<cite id="dsq-cite-964581">
+<span id="dsq-author-user-964581">kristhy hidalgo gomez</span>
+</cite>
+</div>
+<div id="dsq-comment-body-964581" class="dsq-comment-body">
+<div id="dsq-comment-message-964581" class="dsq-comment-message"><p>hola, mi nombre es kristhy tengo 19 años y con mis amigas estamos juntando latas de bebidas,cervezas etc para reciclar y enviarlo donde se pueda hacer un buen uso de ellas. Mi pregunta es, donde y como enviar estos materiales para que sean reciclados y no botados a la basura sin un proposito&#8230; esperamos su respuesta GRACIAS!!! 😀</p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-966764">
+<div id="dsq-comment-header-966764" class="dsq-comment-header">
+<cite id="dsq-cite-966764">
+<span id="dsq-author-user-966764">Patricia muñoz</span>
+</cite>
+</div>
+<div id="dsq-comment-body-966764" class="dsq-comment-body">
+<div id="dsq-comment-message-966764" class="dsq-comment-message"><p>Buenos dias. necesito saber donde se pueden ir a dejar impresoras en mal estado en Talca gracias</p>
+</div>
+</div>
+</li>
+<li class="comment even thread-even depth-1" id="dsq-comment-1075290">
+<div id="dsq-comment-header-1075290" class="dsq-comment-header">
+<cite id="dsq-cite-1075290">
+<span id="dsq-author-user-1075290">MR Gabriel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-1075290" class="dsq-comment-body">
+<div id="dsq-comment-message-1075290" class="dsq-comment-message"><p>Hola mi gente ¿Estás en una crisis financiera y necesitas un préstamo para pagar tus cuentas y comenzar un negocio? Aquí viene la respuesta a sus problemas financieros porque hoy recibí un préstamo de 25,000.00 euros de la compañía de préstamos Mr Logan Gabriel <a href="/cdn-cgi/l/email-protection#016660637368646d6d6e606f626e6c71606f78313041666c60686d2f626e6c"><span class="__cf_email__" data-cfemail="46212724342f232a2a29272825292b3627283f767706212b272f2a6825292b">[email&#160;protected]</span></a> y quiero aprovechar esta oportunidad para contarles que el Sr. Logan Gabriel es real y legítimo para hacer lo que nunca le pidió y dentro de 3 horas tendrá sus respuestas a su problema financiero y tome nota de <a href="/cdn-cgi/l/email-protection#c3a4a2a1b1aaa6afafaca2ada0acaeb3a2adbaf3f283a4aea2aaafeda0acae"><span class="__cf_email__" data-cfemail="513630332338343d3d3e303f323e3c21303f28616011363c30383d7f323e3c">[email&#160;protected]</span></a></p>
+</div>
+</div>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-1080118">
+<div id="dsq-comment-header-1080118" class="dsq-comment-header">
+<cite id="dsq-cite-1080118">
+<span id="dsq-author-user-1080118">Emanuel</span>
+</cite>
+</div>
+<div id="dsq-comment-body-1080118" class="dsq-comment-body">
+<div id="dsq-comment-message-1080118" class="dsq-comment-message"><p>Bienvenido a Gina West Loan Firm, apreciamos los buenos comentarios que han estado circulando por Internet sobre nuestros buenos trabajos y agradecemos a todos los que han recibido un préstamo de nuestra firma. Ahora veamos qué hacemos mejor de nuevo. ¿Necesitas un préstamo urgente? ¿Un préstamo para probablemente expandir o iniciar su propio negocio? Con una tasa de interés tan baja como el 2% que se adapta a cualquier cliente, disfrutará de nuestros servicios. Entonces contáctenos ahora vía</p>
+<p>Correo electrónico: <a href="/cdn-cgi/l/email-protection#422923362721232c2c2d302e2d232c2a2d2f2702252f232b2e6c212d2f"><span class="__cf_email__" data-cfemail="0962687d6c6a686767667b656668676166646c496e64686065276a6664">[email&#160;protected]</span></a>, WhattApp + 2349024091449</p>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/javascript">
+var disqus_url = 'http://www.plataformaurbana.cl/archive/2009/01/25/%c2%a1%c2%a1quiero-reciclar-%c2%bfdonde-reciclar/';
+var disqus_identifier = '5192 http://www.plataformaurbana.cl/archive/2009/01/25/%c2%a1%c2%a1quiero-reciclar-%c2%bfdonde-reciclar/';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'plataformaurbana';
+var disqus_title = "¡¡Quiero Reciclar!! \/\/ ¿Dónde reciclar?";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    
+    
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = '?cf_action=sync_comments&post_id=5192';
+
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+</div>
+
+</div>
+
+
+<div class="container-sidebar">
+
+<div id='div-gpt-ad-1445613424871-0'>
+<script type='text/javascript'>
+      if(is_desktop)
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-1445613424871-0'); });
+    </script>
+</div>
+
+<div id='div-gpt-ad-1445609027953-0'>
+<script type='text/javascript'>
+      if(is_tablet)
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-1445609027953-0'); });
+    </script>
+</div>
+<div class="sidebar-widget more-views-widget">
+<h2 class="sidebar-widget__title">Más vistos</h2>
+<ul class='wppp_list'>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href='http://www.plataformaurbana.cl/archive/2010/08/19/ranking-top-10-lineas-de-metro-del-mundo/' title='Ranking: Top 10 líneas de Metro del mundo'>
+<img width="50" height="50" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2010/08/1282246894_metro-125x125.jpg" class="attachment-50x50 wp-post-image" alt="metro" />
+</a>
+</figure>
+<h3>
+<a class='sidebar-widget__item-title' href='http://www.plataformaurbana.cl/archive/2010/08/19/ranking-top-10-lineas-de-metro-del-mundo/' title='Ranking: Top 10 líneas de Metro del mundo'>Ranking: Top 10 líneas de Metro del mundo</a>
+</h3>
+<span class='sidebar-widget__item-category'>Ciudades</span>
+</li>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href='http://www.plataformaurbana.cl/archive/2014/05/21/revisando-los-primeros-asentamientos-humanos/' title='Revisando los primeros asentamientos humanos'>
+<img width="50" height="50" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2014/05/1400177142_1_cromlech_de_stonehenge_grandiosa_construccio__n_prehisto__rica_en_el_sur_de_inglaterra-125x125.jpg" class="attachment-50x50 wp-post-image" alt="1- Cromlech de Stonehenge - Grandiosa construcción prehistórica en el sur de Inglaterra" />
+</a>
+</figure>
+<h3>
+<a class='sidebar-widget__item-title' href='http://www.plataformaurbana.cl/archive/2014/05/21/revisando-los-primeros-asentamientos-humanos/' title='Revisando los primeros asentamientos humanos'>Revisando los primeros asentamientos humanos</a>
+</h3>
+<span class='sidebar-widget__item-category'>Ciudades</span>
+</li>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href='http://www.plataformaurbana.cl/archive/2010/08/05/ranking-los-10-parques-urbanos-mas-grandes-del-mundo/' title='Ranking: Los 10 parques urbanos más grandes del mundo'>
+<img width="50" height="50" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2010/08/1280934932_central_park_new_york_wallpaper-125x125.jpg" class="attachment-50x50 wp-post-image" alt="Central Park" />
+ </a>
+</figure>
+<h3>
+<a class='sidebar-widget__item-title' href='http://www.plataformaurbana.cl/archive/2010/08/05/ranking-los-10-parques-urbanos-mas-grandes-del-mundo/' title='Ranking: Los 10 parques urbanos más grandes del mundo'>Ranking: Los 10 parques urbanos más grandes del mundo</a>
+</h3>
+<span class='sidebar-widget__item-category'>Chile</span>
+</li>
+</ul>
+</div>
+<div class="sidebar-widget sidebar-widget--videos">
+<h2 class="sidebar-widget__title">Videos</h2>
+<ul>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href="http://www.plataformaurbana.cl/archive/2017/08/08/3-videos-destacados-de-ted-ed-sobre-ciudades/" title="3 videos destacados de TED-Ed sobre ciudades">
+<img width="125" height="125" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2017/08/ted-ed-125x125.png" class="attachment-thumbnail wp-post-image" alt="Fuente: Urbanización y el futuro de las ciudades | TED-Ed" /> </a>
+</figure>
+<h3>
+<a class='sidebar-widget__item-title' href="http://www.plataformaurbana.cl/archive/2017/08/08/3-videos-destacados-de-ted-ed-sobre-ciudades/" title="3 videos destacados de TED-Ed sobre ciudades">3 videos destacados de TED-Ed sobre ciudades</a>
+</h3>
+<span class='sidebar-widget__item-category'><a href="http://www.plataformaurbana.cl/archive/category/urbanismo/">Urbanismo</a></span>
+</li>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href="http://www.plataformaurbana.cl/archive/2017/06/23/video-asi-es-un-recorrido-por-una-bicipista-de-holanda/" title="Video: así es un recorrido por una bicipista de Holanda">
+<img width="125" height="125" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2017/06/bicipista-holanda-125x125.png" class="attachment-thumbnail wp-post-image" alt="/srv/www/purb/releases/20170406221454/code/wp content/uploads/2017/06/bicipista holanda" /> </a>
+</figure>
+<h3>
+<a class='sidebar-widget__item-title' href="http://www.plataformaurbana.cl/archive/2017/06/23/video-asi-es-un-recorrido-por-una-bicipista-de-holanda/" title="Video: así es un recorrido por una bicipista de Holanda">Video: así es un recorrido por una bicipista de Holanda</a>
+</h3>
+<span class='sidebar-widget__item-category'><a href="http://www.plataformaurbana.cl/archive/category/movilidad-2/">Movilidad</a></span>
+</li>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href="http://www.plataformaurbana.cl/archive/2017/06/21/documental-the-social-life-of-small-urban-spaces-del-urbanista-william-h-whyte/" title="Documental: &#8220;The Social Life of Small Urban Spaces&#8221; del urbanista William H. Whyte">
+<img width="125" height="125" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2017/06/documental-whyte-125x125.png" class="attachment-thumbnail wp-post-image" alt="Documental Whyte" /> </a>
+</figure>
+<h3>
+<a class='sidebar-widget__item-title' href="http://www.plataformaurbana.cl/archive/2017/06/21/documental-the-social-life-of-small-urban-spaces-del-urbanista-william-h-whyte/" title="Documental: &#8220;The Social Life of Small Urban Spaces&#8221; del urbanista William H. Whyte">Documental: &#8220;The Social Life of Small Urban Spaces&#8221; del urbanista William H. Whyte</a>
+</h3>
+<span class='sidebar-widget__item-category'><a href="http://www.plataformaurbana.cl/archive/category/urbanismo/">Urbanismo</a></span>
+</li>
+</ul>
+</div>
+<div class="sidebar-widget">
+<h2 class="sidebar-widget__title">Columnas</h2>
+<ul>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href="http://www.plataformaurbana.cl/archive/2017/07/31/opinion-accesibilidad-universal-en-transporte-publico/" title="Opinión: Accesibilidad Universal en Transporte Público">
+<img width="125" height="125" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2017/07/61162-640x360-tube-wheelchair-passenger-125x125.jpg" class="attachment-thumbnail wp-post-image" alt="61162-640x360-tube-wheelchair-passenger" /> </a>
+</figure>
+<h3 class="">
+<span class="sidebar-widget__item-author">Por <a href="http://www.plataformaurbana.cl/archive/author/cedeus/" title="Posts by CEDEUS" rel="author">CEDEUS</a></span>
+<a class='sidebar-widget__item-title' href="http://www.plataformaurbana.cl/archive/2017/07/31/opinion-accesibilidad-universal-en-transporte-publico/" title="Opinión: Accesibilidad Universal en Transporte Público">Opinión: Accesibilidad Universal en Transporte Público</a>
+</h3>
+<span class='sidebar-widget__item-category'><a href="http://www.plataformaurbana.cl/archive/category/columnas/">Opinión</a></span>
+</li>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href="http://www.plataformaurbana.cl/archive/2017/07/24/ciudades-intermedias-y-la-resolucion-del-dilema-pluricomunal/" title="Ciudades intermedias y la resolución del dilema pluricomunal">
+<img width="125" height="125" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2017/07/temuco-125x125.jpg" class="attachment-thumbnail wp-post-image" alt="Temuco Imagen Plataforma Urbana" /> </a>
+</figure>
+<h3 class="">
+<span class="sidebar-widget__item-author">Por <a href="http://www.plataformaurbana.cl/archive/author/cedeus/" title="Posts by CEDEUS" rel="author">CEDEUS</a></span>
+<a class='sidebar-widget__item-title' href="http://www.plataformaurbana.cl/archive/2017/07/24/ciudades-intermedias-y-la-resolucion-del-dilema-pluricomunal/" title="Ciudades intermedias y la resolución del dilema pluricomunal">Ciudades intermedias y la resolución del dilema pluricomunal</a>
+</h3>
+<span class='sidebar-widget__item-category'><a href="http://www.plataformaurbana.cl/archive/category/columnas/">Opinión</a></span>
+</li>
+<li>
+<figure class='sidebar-widget__figure'>
+<a href="http://www.plataformaurbana.cl/archive/2017/07/14/opinion-tarifas-de-agua-potable-en-chile-y-sustentabilidad/" title="Opinión: Tarifas de agua potable en Chile y Sustentabilidad">
+<img width="125" height="125" src="http://cdn.plataformaurbana.cl/wp-content/uploads/2017/07/gota-125x125.jpg" class="attachment-thumbnail wp-post-image" alt="gota" /> </a>
+</figure>
+<h3 class="">
+<span class="sidebar-widget__item-author">Por <a href="http://www.plataformaurbana.cl/archive/author/cedeus/" title="Posts by CEDEUS" rel="author">CEDEUS</a></span>
+<a class='sidebar-widget__item-title' href="http://www.plataformaurbana.cl/archive/2017/07/14/opinion-tarifas-de-agua-potable-en-chile-y-sustentabilidad/" title="Opinión: Tarifas de agua potable en Chile y Sustentabilidad">Opinión: Tarifas de agua potable en Chile y Sustentabilidad</a>
+</h3>
+<span class='sidebar-widget__item-category'><a href="http://www.plataformaurbana.cl/archive/category/columnas/">Opinión</a></span>
+</li>
+</ul>
+</div>
+<div id="js-last-sidebar-widget" class="sidebar-widget">
+<h2 class="sidebar-widget__title">Eventos</h2>
+<div>
+<ul class='ec3_events'>
+<li>No events.</li>
+</ul>
+</div>
+<a class="enviar-evento" href="http://www.plataformaurbana.cl/contacto">
+<i class="fa fa-calendar"></i>
+Envíanos un evento
+</a>
+<a class="widget-see-more" href="http://www.plataformaurbana.cl/archive/category/calendario/">Ver más »</a>
+</div>
+
+<div class="sidebar-last-ad-container">
+<div id="js-last-sidebar-ad" class="sidebar-widget sidebar-ad">
+
+<div id='div-gpt-ad-1445613195631-0'>
+<script type='text/javascript'>
+          if(is_desktop)
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1445613195631-0'); });
+        </script>
+</div>
+
+<div id='div-gpt-ad-1445612789884-0'>
+<script type='text/javascript'>
+          if(is_tablet)
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1445612789884-0'); });
+        </script>
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-561eab68a37e8633" async="async"></script>
+<div id='avatar_footer_credit' style='display: none;'>Avatars by <a href='http://www.sterling-adventures.co.uk/blog/'>Sterling Adventures</a></div>
+<div id="js-footer-section">
+<footer class="footer">
+<div class="container-footer">
+<div class="footer-newsletter" id="caja-social_2">
+<h4 class="footer-newsletter__title">Plataforma Urbana en tu mail</h4>
+<p class="footer-newsletter__subtitle">Recibe lo nuevo cada mañana</p>
+<form class="footer-newsletter__form" method="post" target="_newsub" action="http://archdaily.us1.list-manage.com/subscribe/post?u=240fd05fed14bcc1d00032012&amp;id=257372a7e6">
+<i class="fa fa-envelope-o"></i>
+<input class="boletin_input" name="EMAIL" maxlength="255" size="33" onfocus="if(this.value=='Ingresa tu email')this.value='';" onblur="if(this.value=='')this.value='Ingresa tu email';" value="Ingresa tu email" type="text">
+<input name="FEEDID" type="hidden" value="339377">
+<input name="PUBLISHER" type="hidden" value="1368636">
+<input class="boletin_boton" value="Suscríbete" type="submit">
+</form>
+</div>
+<nav class="nav-footer">
+<ul id="menu-menu-footer" class="nav__list nav__footer clearfix"><li id="menu-item-99129" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-99129"><a href="http://www.plataformaurbana.cl/plataforma/">Sobre Plataforma Urbana</a></li>
+<li id="menu-item-99130" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-99130"><a href="http://www.plataformaurbana.cl/contacto/">Contacto</a></li>
+</ul> </nav>
+<ul class="footer-copyright">
+<li id="text-3" class="widget widget_text"> <div class="textwidget">(cc) 2005 - 2018 Algunos Derechos Reservados - El contenido de Plataforma Urbana se encuentra sujeto a la licencia Creative Commons Atribución-No Comercial 2.0 Chile.<br />
+©Plataforma Urbana es una marca registrada de Plataforma Networks.</div>
+</li>
+</ul>
+</div>
+<script type="text/javascript">
+        // <![CDATA[
+        var disqus_shortname = 'plataformaurbana';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); 
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        // ]]>
+        </script>
+<script type='text/javascript' src='http://www.plataformaurbana.cl/wp-includes/js/imgareaselect/jquery.imgareaselect.min.js?ver=4.3.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var thickboxL10n = {"next":"Next >","prev":"< Prev","image":"Image","of":"of","close":"Close","noiframes":"This feature requires inline frames. You have iframes disabled or your browser does not support them.","loadingAnimation":"http:\/\/www.plataformaurbana.cl\/wp-includes\/js\/thickbox\/loadingAnimation.gif"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.plataformaurbana.cl/wp-includes/js/thickbox/thickbox.js?ver=3.1-20121105'></script>
+<script src="http://stats.wordpress.com/e-201837.js" type="text/javascript"></script>
+<script type="text/javascript">
+st_go({blog:'19919932',v:'ext',post:'5192'});
+var load_cmc = function(){linktracker_init(19919932,5192,2);};
+if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+else load_cmc();
+</script>
+</footer>
+</div>
+
+<script type="text/javascript">
+		_atrk_opts = { atrk_acct:"1kj9g1a0Or00qF", domain:"plataformaurbana.cl",dynamic: true};
+		(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+		</script>
+<noscript><img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=1kj9g1a0Or00qF" style="display:none" height="1" width="1" alt="" /></noscript>
+
+</body>
+</html>

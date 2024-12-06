@@ -1,0 +1,51 @@
+---
+GA:
+  alpha2: GA
+  alpha3: GAB
+  continent: Africa
+  country_code: '241'
+  currency_code: XAF
+  distance_unit: KM
+  gec: GB
+  geo:
+    latitude: -0.803689
+    longitude: 11.609444
+    max_latitude: 2.318109
+    max_longitude: 14.5269234
+    min_latitude: -4.1656
+    min_longitude: 8.421
+    bounds:
+      northeast:
+        lat: 2.318109
+        lng: 14.5269234
+      southwest:
+        lat: -4.1656
+        lng: 8.421
+  international_prefix: '00'
+  ioc: GAB
+  iso_long_name: The Gabonese Republic
+  iso_short_name: Gabon
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  - 7
+  - 8
+  national_prefix: None
+  nationality: Gabonese
+  number: '266'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Middle Africa
+  un_locode: GA
+  unofficial_names:
+  - Gabon
+  - Gabun
+  - Gabón
+  - ガボン
+  world_region: EMEA

@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 101
+
+<html>
+  <head>
+    <title>Thsi page has no content-type</title>
+  </head>
+  <body>
+  </body>
+</html>

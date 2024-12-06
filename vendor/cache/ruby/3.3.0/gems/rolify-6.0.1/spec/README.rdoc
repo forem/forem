@@ -1,0 +1,24 @@
+= Rolify Specs
+
+== Running the specs
+
+To run the specs first run the +bundle+ command to install the necessary gems and the +rake+ command to run the specs.
+
+  bundle
+  rake
+
+== Model Adapters
+
+Rolify currently supports 2 different ORMs: ActiveRecord and Mongoid. By default it will use Active Record but you can change this by setting the +ADAPTER+ environment variable before running the specs. You can run the +bundle+ command with this as well to ensure you have all the required gems.
+
+  ADAPTER=mongoid bundle
+  ADAPTER=mongoid rake
+
+The different model adapters you can specify are:
+
+* active_record (default)
+* mongoid
+
+You can also run the +spec_all+ rake task to run specs for each adapter.
+
+  rake spec_all

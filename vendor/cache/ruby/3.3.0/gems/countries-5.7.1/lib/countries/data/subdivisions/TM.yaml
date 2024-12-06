@@ -1,0 +1,434 @@
+---
+A:
+  name: Ahal
+  code: A
+  unofficial_names:
+  - Akhal
+  geo:
+    latitude: 38.6399398
+    longitude: 59.4720904
+    min_latitude: 35.58967
+    min_longitude: 56.723392
+    max_latitude: 40.197323
+    max_longitude: 61.51145510000001
+  translations:
+    en: Ahal
+    ar: اقليم أهال
+    az: Ahal vilayəti
+    bg: Ахал (вилает)
+    bn: আহাল প্রদেশ
+    ca: Província d’Ahal
+    da: Ahal Province
+    de: Ahal welaýaty
+    el: Αχάλ
+    es: Provincia de Ahal
+    et: Ahali vilajett
+    fa: استان آخال
+    fi: Ahalin maakunta
+    fr: Ahal
+    gu: અહાલ પ્રાંત
+    hi: आख़ाल प्रान्त
+    hy: Ահալի վելայաթ
+    id: Provinsi Ahal
+    it: provincia di Ahal
+    ja: アハル州
+    ka: ახალის ველაიათი
+    kn: ಅಹಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 아할 주
+    lt: Ahalo velajatas
+    mn: Ахал муж
+    mr: अहाल प्रांत
+    ms: Provinsi Ahal
+    nb: Ahal provins
+    nl: Ahal
+    pl: Wilajet achalski
+    ps: آخال ولايت
+    pt: Ahal
+    ro: Provincia Ahal
+    ru: Ахалский велаят
+    si: අහාල් පළාත
+    sr: Покрајина Ахал
+    sv: Achal
+    ta: ஆஹ்அல் மாகாணம்
+    te: అహల్ ప్రావిన్స్
+    th: เขตอะฮอล
+    tk: Ahal
+    tr: Ahal vilayeti
+    uk: Ахалський велаят
+    ur: صوبہ آخال
+    vi: Ahal (tỉnh)
+    zh: 阿哈爾州
+    lv: Ahala vilajets
+    ceb: Ahal
+    sr_Latn: Pokrajina Ahal
+    ccp: "\U00011103\U00011126\U00011123\U00011134"
+    ky: Ашгабат облусу
+    be: Ахалскі велаят
+    uz: Ahal viloyati
+    'no': Ahal provins
+    he: מחוז אהאל
+  comments:
+  type: region
+B:
+  name: Balkan
+  code: B
+  unofficial_names: Balkan
+  geo:
+    latitude: 40.9468884
+    longitude: 54.4952432
+    min_latitude: 37.309181
+    min_longitude: 52.4446017
+    max_latitude: 42.3434979
+    max_longitude: 57.19972600000001
+  translations:
+    en: Balkan
+    ar: ولاية بلقان
+    az: Balkan vilayəti
+    bg: Балкан
+    bn: বলকান প্রদেশ
+    ca: Província de Balkan
+    da: Balkan Province
+    de: Balkan welaýaty
+    el: Μπαλκάν
+    es: Provincia de Balkan
+    et: Balkani vilajett
+    eu: Balkan probintzia
+    fa: استان بلخان
+    fi: Balkanin maakunta
+    fr: Balkan
+    gl: Provincia de Balkan
+    gu: બાલ્કન પ્રાંત
+    hi: बलक़ान प्रान्त
+    hr: Balkan welaýaty
+    hu: Balkan
+    hy: Բալկանի վելայաթ
+    id: Provinsi Balkan
+    it: provincia di Balkan
+    ja: バルカン州
+    ka: ბალკანის ველაიათი
+    kn: ಬಾಲ್ಕನ್ ಪ್ರಾಂತ್ಯ
+    ko: 발칸 주
+    lt: Balkano velajatas
+    mn: Балкан муж
+    mr: बाल्कन प्रांत
+    ms: Provinsi Balkan
+    nb: Belkan provins
+    nl: Balkan
+    pl: Wilajet balkański
+    pt: Balkan
+    ro: Provincia Balkan
+    ru: Балканский велаят
+    si: බල්කන් පළාත
+    sr: Покрајина Балкан
+    sv: Balkan
+    ta: பால்கன் மாகாணம்
+    te: బాల్కన్ ప్రావిన్స్
+    th: จังหวัดบัลคัน
+    tk: Balkan welaýaty
+    tr: Balkan vilayeti
+    uk: Балканський велаят
+    ur: صوبہ بلخان
+    vi: Balkan
+    lv: Balkanas vilajets
+    ceb: Balkan
+    sr_Latn: Pokrajina Balkan
+    zh: 巴爾坎州
+    ccp: "\U0001111D\U00011127\U00011123\U00011134\U00011107\U0001111A\U00011134"
+    ps: بلخان ولايت
+    be: Балканскі велаят
+    uz: Bolqon viloyati
+    'no': Belkan provins
+    he: מחוז בלקן
+  comments:
+  type: region
+D:
+  name: Dasoguz
+  code: D
+  unofficial_names:
+  - Dashhovuz
+  - Dashhowuz
+  - Dashkhovuz
+  - Dashogus
+  - Dashoguz
+  - Daşhovuz
+  - Dašhovuz
+  - Tashauz
+  - Tašauz
+  geo:
+    latitude: 41.833333
+    longitude: 59.966667
+    min_latitude: 41.788273
+    min_longitude: 59.8845004
+    max_latitude: 41.880745
+    max_longitude: 60.038309
+  translations:
+    en: Daşoguz
+    ar: ولاية داشوغوز
+    az: Daşoğuz vilayəti
+    bg: Дашховуз
+    ca: Província de Daşoguz
+    de: Daşoguz welaýaty
+    es: Provincia de Daşoguz
+    et: Daşoguzi vilajett
+    fa: استان داش‌اغوز
+    fi: Daşoguzin maakunta
+    fr: Province de Daşoguz
+    hi: दाशोग़ुज़ प्रान्त
+    hy: Դաշողուզի վելայաթ
+    id: Provinsi Dashhowuz
+    it: provincia di Daşoguz
+    ja: ダショグズ州
+    ka: დაშოგუზის ველაიათი
+    ko: 다쇼구즈 주
+    lt: Dašoguzo velajatas
+    mn: Дашогуз муж
+    ms: Provinsi Dashhowuz
+    nl: Daşoguz
+    pl: Wilajet daszoguski
+    ps: داشوغوز ولايت
+    pt: Daşoguz
+    ro: Provincia Dașoguz
+    ru: Дашогузский велаят
+    sr: Покрајина Дашогуз
+    sv: Daşoguz
+    tk: Daşoguz welaýaty
+    tr: Daşoğuz vilayeti
+    uk: Дашогузький велаят
+    ur: صوبہ داشوغوز
+    vi: Daşoguz
+    ceb: Daşoguz Welaýaty
+    sr_Latn: Pokrajina Dašoguz
+    zh: 達沙古茲州
+    ccp: "\U00011113\U00011125\U0001112E\U00011109\U0001112A\U0001110C\U00011134"
+    ky: Ташауз областы
+    uz: Dashoguz viloyati
+    be: Дашагузскі велаят
+    bn: দাসোগুজ প্রদেশ
+    he: מחוז דשחובוז
+    ta: தகோகுஸ் மாகாணம்
+    th: จังหวัดดาโชกุซ
+  comments:
+  type: region
+L:
+  name: Lebap
+  code: L
+  unofficial_names: Lebap
+  geo:
+    latitude: 38.12724619999999
+    longitude: 64.7162415
+    min_latitude: 36.850881
+    min_longitude: 60.18987389999999
+    max_latitude: 41.2915379
+    max_longitude: 66.6843031
+  translations:
+    en: Lebap
+    az: Lebap vilayəti
+    be: Лябапскі велаят
+    bg: Лебап
+    ca: Província de Lebap
+    de: Lebap welaýaty
+    es: Provincia de Lebap
+    et: Lebapi vilajett
+    fa: استان لباب
+    fi: Lebapin maakunta
+    fr: Lebap
+    hi: लेबाप प्रान्त
+    hy: Լեբապի վելայաթ
+    id: Provinsi Lebap
+    it: provincia di Lebap
+    ja: レバプ州
+    ka: ლებაპის ველაიათი
+    ko: 레바프 주
+    lt: Lebapo velajatas
+    mn: Лебап муж
+    ms: Provinsi Lebap
+    nl: Lebap
+    pl: Wilajet lebapski
+    ps: لب آب ولايت
+    pt: Lebap
+    ro: Provincia Lebap
+    ru: Лебапский велаят
+    sr: Покрајина Лебап
+    sv: Lebap
+    tk: Lebap welaýaty
+    tr: Lebap vilayeti
+    uk: Лебапський велаят
+    ur: صوبہ لب آب
+    vi: Lebap
+    ceb: Lebap
+    sr_Latn: Pokrajina Lebap
+    zh: 列巴普州
+    ccp: "\U00011123\U0001112C\U0001111D\U0001111B\U00011134"
+    uz: Lebap viloyati
+    ar: ولاية لباب
+    bn: লেবাপ প্রদেশ
+    he: מחוז לבפ
+    ta: லெபாப் மாகாணம்
+    th: จังหวัดเลบัป
+  comments:
+  type: region
+M:
+  name: Mary
+  code: M
+  unofficial_names:
+  - Mary
+  - Merv
+  geo:
+    latitude: 36.9481623
+    longitude: 62.4504154
+    min_latitude: 35.141151
+    min_longitude: 60.39503499999999
+    max_latitude: 39.5136029
+    max_longitude: 64.737839
+  translations:
+    en: Mary
+    ar: محافظة ماري
+    az: Marı vilayəti
+    bg: Мари
+    bn: মেরি প্রদেশ
+    ca: Província de Mary
+    da: Mary Province
+    de: Mary welaýaty
+    el: Μέρι
+    es: Provincia de Mary
+    et: Mary vilajett
+    fa: استان مرو
+    fi: Maryn maakunta
+    fr: Mary
+    gu: મેરી પ્રાંત
+    hi: मरी प्रान्त
+    hy: Մարիի վելայաթ
+    id: Provinsi Mary
+    it: provincia di Mary
+    ja: マル州
+    ka: მარის ველაიათი
+    kn: ಮೇರಿ ಪ್ರಾಂತ್ಯ
+    ko: 마리 주
+    lt: Maro velajatas
+    mn: Мары муж
+    mr: मेरी प्रांत
+    ms: Provinsi Mary
+    nb: Mary provins
+    nl: Mary
+    pl: Wilajet maryjski
+    ps: ماري ولايت
+    pt: Mary
+    ro: Provincia Mary
+    ru: Марыйский велаят
+    si: මේරි පළාත
+    sr: Покрајина Мари
+    sv: Mary
+    ta: மேரி மாகாணம்
+    te: మేరా ప్రావిన్స్
+    th: เมืองมาตากัลปา
+    tk: Mary welaýaty
+    tr: Mary vilayeti
+    uk: Марийський велаят
+    ur: صوبہ ماری
+    vi: Mary
+    lv: Mari vilajets
+    ceb: Mary
+    sr_Latn: Pokrajina Mari
+    zh: 馬雷州
+    ccp: "\U0001111F\U0001112C\U00011122\U00011128"
+    kk: Мары уәлаяты
+    be: Марыйскі велаят
+    uz: Mari viloyati
+    'no': Mary provins
+    he: מחוז מרי
+  comments:
+  type: region
+S:
+  name: Aşgabat
+  code: S
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Asjchabat
+    am: አሽጋባት
+    ar: عشق آباد
+    az: Aşqabad
+    be: Ашхабад
+    bg: Ашхабад
+    bn: আশখাবাদ
+    ca: Aixkhabad
+    cs: Ašchabad
+    da: Asjkhabad
+    de: Aşgabat
+    el: Ασγκαμπάτ
+    en: Aşgabat
+    es: Asjabad
+    et: Aşgabat
+    eu: Ashgabat
+    fa: عشق‌آباد
+    fi: Ašgabat
+    fr: Achgabat
+    gl: Achkhabad
+    gu: અશગબાત
+    he: אשגבאט
+    hi: अश्क़ाबाद
+    hr: Ašgabat
+    hu: Aşgabat
+    hy: Աշխաբադ
+    id: Ashgabat
+    is: Asgabat
+    it: Aşgabat
+    ja: アシガバート
+    ka: აშხაბადი
+    kn: ಅಶ್ಗಾಬಾತ್
+    ko: 아시가바트
+    lt: Ašchabadas
+    lv: Ašgabata
+    ml: അഷ്ഗാബാദ്
+    mn: Ашгабат
+    mr: अश्गाबाद
+    ms: Ashgabat
+    nb: Asjkhabad
+    nl: Asjchabad
+    pl: Aszchabad
+    ps: عشق آباد
+    pt: Asgabate
+    ro: Așgabat
+    ru: Ашхабад
+    si: ආශ්ගාබාත්
+    sk: Ašchabad
+    sl: Ašhabad
+    sr: Ашхабад
+    sv: Asjchabad
+    sw: Ashgabat
+    ta: அசுகாபாத்
+    te: అషకాబాద్
+    th: อาชกาบัต
+    tk: Aşgabat
+    tr: Aşkabat
+    uk: Ашгабат
+    ur: اشک آباد
+    vi: Ashgabat
+    cy: Ashgabat
+    sr_Latn: Ašhabad
+    zh: 阿什哈巴德
+    yue_Hans: 阿什哈巴德
+    sq: Aschgabat
+    ccp: "\U00011103\U0001110C\U00011134\U00011109\U0001111D\U00011116\U00011134"
+    ga: Ashgabat
+    ky: Ашхабад
+    pa: ਅਸ਼ਗਾਬਾਦ
+    kk: Ашғабад
+    yue: 阿什哈巴德
+    yo: Ashgabat
+    uz: Ashxobod
+    bs: Ashgabat
+    mk: Ашхабад
+    ne: अस्गाबत
+    'no': Asjkhabad
+    yo_BJ: Ashgabat
+    ceb: Aşgabat Şäheri
+    my: အက်ရှ်ဂါဘတ်မြို့
+  comments:
+  type: capital_city

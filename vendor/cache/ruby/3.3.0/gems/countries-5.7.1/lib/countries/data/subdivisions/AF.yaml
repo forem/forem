@@ -1,0 +1,2593 @@
+---
+BAL:
+  name: Balkh
+  code: BAL
+  unofficial_names:
+  - Balkh
+  geo:
+    latitude: 36.7550603
+    longitude: 66.8975372
+    min_latitude: 36.739847
+    min_longitude: 66.879015
+    max_latitude: 36.7744019
+    max_longitude: 66.9103004
+  translations:
+    en: Balkh
+    ar: ولاية بلخ
+    az: Bəlx vilayəti
+    be: Правінцыя Балх
+    bg: Балх
+    bn: বাল্‌খ প্রদেশ
+    ca: Província de Balkh
+    cs: Balch
+    da: Balkh
+    de: Balch
+    el: Μπαλχ
+    es: Provincia de Balj
+    et: Balkhi provints
+    eu: Balkh probintzia
+    fa: ولایت بلخ
+    fi: Balkhin maakunta
+    fr: Balkh
+    gu: બાલ્ખ
+    hi: बल्ख़ प्रान्त
+    hu: Balh tartomány
+    id: Provinsi Balkh
+    it: Balkh
+    ja: バルフ州
+    ka: ბალხის პროვინცია
+    kn: ಬಲ್ಕ್
+    ko: 발흐 주
+    lt: Balcho provincija
+    lv: Balhas province
+    mn: Балх аймаг
+    mr: बाल्क
+    ms: Wilayah Balkh
+    nb: Balkh
+    nl: Balch
+    pl: Balch
+    ps: بلخ ولايت
+    pt: Balkh
+    ro: Provincia Balkh
+    ru: Балх
+    si: බාල්ක්
+    sk: Balch
+    sr: Провинција Балк
+    sv: Balkh
+    ta: பால்க் மாகாணம்
+    te: బాల్క్
+    th: จังหวัดบัลข์
+    tk: Balh
+    tr: Belh Vilayeti
+    uk: Балх
+    ur: بلخ
+    vi: Balkh
+    zh: 巴尔赫省
+    cy: Balkh
+    ceb: Balkh
+    sr_Latn: Provincija Balk
+    ccp: "\U0001111D\U00011123\U00011133\U00011108\U00011134"
+    pa: ਬਲਖ ਸੂਬਾ
+    'no': Balkh
+    he: בלח׳
+    sd: بلخ صوبو
+    uz: Balx
+    yue: 巴赫省
+    yue_Hans: 巴赫省
+  comments:
+  type: province
+BAM:
+  name: Bamian
+  code: BAM
+  unofficial_names:
+  - Bamian
+  - Bamiyan
+  - Bāmīān
+  geo:
+    latitude: 34.9073296
+    longitude: 67.1894488
+    min_latitude: 33.914066
+    min_longitude: 66.2868759
+    max_latitude: 35.479285
+    max_longitude: 68.2664631
+  translations:
+    en: Bamyan
+    ar: ولاية باميان
+    az: Bamiyan
+    be: Правінцыя Баміян
+    bg: Бамян
+    bn: বামিয়ান প্রদেশ
+    ca: Província de Bamiyan
+    cs: Bamján
+    da: Bamiyan
+    de: Bamiyan
+    el: Μπαμιάν
+    es: Provincia de Bamiyan
+    et: Bāmīāni provints
+    eu: Bamijan probintzia
+    fa: ولایت بامیان
+    fi: Bamiyanin maakunta
+    fr: Bâmiyân
+    gu: બામયાન
+    hi: बामयान प्रान्त
+    hu: Bámiján tartomány
+    hy: Բամիան
+    id: Provinsi Bamiyan
+    it: provincia di Bamiyan
+    ja: バーミヤーン州
+    ka: ბამიანის პროვინცია
+    kn: ಬಮಯಾನ್
+    ko: 바미안 주
+    lt: Bamijano provincija
+    lv: Bāmijānas province
+    mn: Бамиан аймаг
+    mr: बामयान
+    ms: Wilayah Bamiyan
+    nb: Bamiyan
+    nl: Bamyan
+    pl: Bamian
+    ps: باميان ولايت
+    pt: Bamiyan
+    ro: Provincia Bamyan
+    ru: Бамиан
+    sd: باميان
+    si: බම්යන්
+    sk: Bámján
+    sr: Провинција Бамијан
+    sv: Bamiyan
+    ta: பாமியான் மாகாணம்
+    te: బమ్యన్
+    th: จังหวัดบามียาน
+    tk: Bamiýan
+    tr: Bamyan Vilayeti
+    uk: Баміан
+    ur: بامیان
+    vi: Bamyan
+    cy: Bamiyan
+    ceb: Wilāyat-e Bāmyān
+    sr_Latn: Provincija Bamijan
+    zh: 巴米扬省
+    ccp: "\U0001111D\U0001111F\U00011128\U00011120\U0001111A\U00011134"
+    ml: ബാമിയാൻ പ്രവിശ്യ
+    'no': Bamiyan
+    he: באמיאן
+    uz: Bomiyon
+    yue: 巴米揚省
+    yue_Hans: 巴米扬省
+  comments:
+  type: province
+BDG:
+  name: Badghis
+  code: BDG
+  unofficial_names:
+  - Badghis
+  - Badgis
+  - Bādghīs
+  geo:
+    latitude: 35.1671339
+    longitude: 63.7695384
+    min_latitude: 34.51659600000001
+    min_longitude: 62.673593
+    max_latitude: 36.041935
+    max_longitude: 65.07057689999999
+  translations:
+    en: Badghis
+    ar: ولاية بادغيس
+    az: Badğis
+    be: Правінцыя Бадгіс
+    bg: Багдис
+    bn: বদগিস প্রদেশ
+    ca: Badghis
+    cs: Bádghís
+    da: Badghis
+    de: Badghis
+    el: Μπαντγκίς
+    es: Provincia de Bādgīs
+    et: Bādghīsi provints
+    eu: Badghis probintzia
+    fa: ولایت بادغیس
+    fi: Badghisin maakunta
+    fr: Bâdghîs
+    gu: બેડઘીસ
+    hi: बादग़ीस प्रान्त
+    hy: Բադղիս
+    id: Provinsi Badghis
+    it: Badghis
+    ja: バードギース州
+    ka: ბადღისის პროვინცია
+    kn: ಬದ್ಗಿಸ್
+    ko: 바드기스 주
+    lt: Badgiso provincija
+    lv: Bādgīsa
+    ml: ബാദ്ഘീസ് പ്രവിശ്യ
+    mn: Бадгис аймаг
+    mr: बॅडघिस
+    ms: Badghis
+    nb: Badghis
+    nl: Badghis
+    pl: Badghis
+    ps: بادغيس ولايت
+    pt: Badghis
+    ro: Provincia Badghis
+    ru: Бадгис
+    si: බඩ්ගිස්
+    sk: Bádgís
+    sr: Провинција Бадгис
+    sv: Badghis
+    ta: பட்கிஸ் மாகாணம்
+    te: బాడ్గిస్
+    th: จังหวัดแบดจิส
+    tk: Bagdis
+    tr: Badgis Vilayeti
+    uk: Бадгіс
+    ur: صوبہ بادغیس
+    vi: Badghis
+    cy: Badghis
+    ceb: Bādghīs
+    sr_Latn: Provincija Badgis
+    zh: 巴德吉斯省
+    ccp: "\U0001111D\U00011116\U00011134\U0001110A\U00011128\U0001110C\U00011134"
+    'no': Badghis
+    he: באדגיס
+    sd: بادغيس صوبو
+    uz: Badgʻis
+    yue: 巴德傑斯省
+    yue_Hans: 巴德杰斯省
+  comments:
+  type: province
+BDS:
+  name: Badakhshan
+  code: BDS
+  unofficial_names:
+  - Badaẖšan
+  geo:
+    latitude: 36.7347725
+    longitude: 70.81199529999999
+    min_latitude: 35.44512100000001
+    min_longitude: 69.98609689999999
+    max_latitude: 38.4906109
+    max_longitude: 74.8901951
+  translations:
+    en: Badakhshan
+    ar: ولاية بدخشان
+    az: Bədəxşan
+    be: Правінцыя Бадахшан
+    bg: Бадахшан
+    bn: বাদাখশন প্রদেশ
+    ca: Província de Badakhxan
+    cs: Badachšán
+    da: Badakhshan
+    de: Badachschan
+    el: Μπανταχσάν
+    es: Provincia de Badakhshan
+    et: Badakhshāni provints
+    eu: Badakhshan probintzia
+    fa: ولایت بدخشان
+    fi: Badahšan
+    fr: Badakhchan
+    gl: Badaghxán
+    gu: બદાખશન
+    hi: बदख़्शान प्रान्त
+    hr: Provincija Badakhšan
+    hy: Բադախշան
+    id: Provinsi Badakhshan
+    it: Badakhshan
+    ja: バダフシャーン州
+    ka: ბადახშანის პროვინცია
+    kn: ಬಡಾಖ್ಶನ್
+    ko: 바다흐샨 주
+    lt: Badachšanas
+    lv: Badahšāna
+    ml: ബദഖ്ശാൻ പ്രവിശ്യ
+    mn: Бадахшан аймаг
+    mr: बदखाशन
+    ms: Badakhshan
+    nb: Badakhshan
+    nl: Badachsjan
+    pl: Badachszan
+    ps: بدخشان ولايت
+    pt: Badakhshan
+    ro: Provincia Badakhshan
+    ru: Бадахшан
+    si: බදක්ශාන්
+    sk: Badachšán
+    sr: Провинција Бадахсан
+    sv: Badakhshan
+    ta: படாக்சான் மாகாணம்
+    te: బడాక్షన్
+    th: จังหวัดบาดัคชาน
+    tk: Badahşan
+    tr: Badahşan Vilayeti
+    uk: Бадахшан
+    ur: صوبہ بدخشاں
+    vi: Badakhshan
+    cy: Badakhshan
+    ceb: Badakhshān
+    sr_Latn: Provincija Badahsan
+    zh: 巴达赫尚省
+    ccp: "\U0001111D\U00011118\U00011107\U00011134\U00011125\U0001111A\U00011134"
+    pa: ਸੂਬਾ ਬਦਖ਼ਸ਼ਾਂ
+    'no': Badakhshan
+    he: בדח׳שאן
+    hu: Badahsán
+    sd: بدخشان صوبو
+    uz: Badaxshon
+    yue: 巴達山省
+    yue_Hans: 巴达山省
+  comments:
+  type: province
+BGL:
+  name: Baghlan
+  code: BGL
+  unofficial_names:
+  - Baghlan
+  - Baghlān
+  - Baglan
+  geo:
+    latitude: 36.17890260000001
+    longitude: 68.74530639999999
+    min_latitude: 36.162409
+    min_longitude: 68.7236881
+    max_latitude: 36.1897066
+    max_longitude: 68.7745
+  translations:
+    en: Baghlan
+    ar: ولاية بغلان
+    az: Bəğlan
+    be: Правінцыя Баглан
+    bg: Баглан
+    bn: বাগলন প্রদেশ
+    ca: Província de Baghlan
+    cs: Baghlán
+    da: Baghlan
+    de: Baglan
+    el: Μπαγκλάν
+    es: Provincia de Baghlan
+    et: Baghlāni provints
+    eu: Baghlan probintzia
+    fa: ولایت بغلان
+    fi: Baghlanin maakunta
+    fr: Baghlân
+    gu: બઘલાન
+    hi: बग़लान प्रान्त
+    hu: Baglán tartomány
+    id: Provinsi Baghlan
+    it: Baghlan
+    ja: バグラーン州
+    ka: ბაღლანის პროვინცია
+    kn: ಬಾಗ್ಲಾನ್
+    ko: 바글란 주
+    lt: Baglano provincija
+    lv: Baglāna
+    mn: Баглан аймаг
+    mr: बागलाण
+    ms: Wilayah Baghlan
+    nb: Baghlan
+    nl: Baghlan
+    pl: Baghlan
+    ps: بغلان ولايت
+    pt: Baghlan
+    ro: Provincia Baghlan
+    ru: Баглан
+    si: බැග්ලන්
+    sr: Провинција Баглан
+    sv: Baghlan
+    ta: பக்லான் மாகாணம்
+    te: బాగ్లాన్
+    th: จังหวัดบางก์ลาน
+    tk: Baglan
+    tr: Baglan Vilayeti
+    uk: Баглан
+    ur: صوبہ بغلان
+    vi: Baghlan
+    cy: Baghlan
+    ceb: Wilāyat-e Baghlān
+    sr_Latn: Provincija Baglan
+    zh: 巴格兰省
+    ccp: "\U0001111D\U00011107\U00011134\U00011123\U0001111A\U00011134"
+    'no': Baghlan
+    he: בגלאן
+    uz: Bagʻlon
+    yue: 巴格蘭省
+    yue_Hans: 巴格兰省
+  comments:
+  type: province
+DAY:
+  name: Daykondi
+  code: DAY
+  unofficial_names:
+  - Daikondi
+  geo:
+    latitude: 33.669495
+    longitude: 66.0463534
+    min_latitude: 32.932084
+    min_longitude: 65.23819689999999
+    max_latitude: 34.36751
+    max_longitude: 67.4245309
+  translations:
+    en: Daykundi
+    ar: ولاية دايكندي
+    az: Daykündi
+    be: Правінцыя Дайкундзі
+    bg: Дайкунди
+    bn: দইকোন্দি প্রদেশ
+    ca: Província de Daykundi
+    cs: Dájkundí
+    da: Daikondi
+    de: Daikondi
+    el: Ντεϊκούντι
+    es: Provincia de Daikondi
+    et: Dāykondī provints
+    eu: Daikondi probintzia
+    fa: ولایت دایکندی
+    fi: Daikondin maakunta
+    fr: Deykandi
+    hi: दायकुंदी प्रान्त
+    id: Provinsi Daykundi
+    it: Daikondi
+    ja: ダーイクンディー州
+    ka: დაიკუნდის პროვინცია
+    ko: 다이쿤디 주
+    lt: Daikondžio provincija
+    lv: Dājkondī province
+    mn: Дайкунди аймаг
+    nb: Daikondi
+    nl: Daikondi
+    pl: Dajkondi
+    ps: دايکندي ولايت
+    pt: Daikondi
+    ro: Provincia Daykundi
+    ru: Дайкунди
+    sk: Dájkundí
+    sr: Провинција Даиконди
+    sv: Daikondi
+    tk: Daýkündi
+    tr: Daykundi Vilayeti
+    uk: Дайкунді
+    ur: صوبہ دایکندی
+    vi: Daykundi
+    ceb: Daykundi Province
+    ms: Wilayah Daykundi
+    sr_Latn: Provincija Daikondi
+    ta: தேக்கண்டி மாகாணம்
+    zh: 代孔迪省
+    ccp: "\U00011113\U0001112C\U00011107\U0001112A\U0001111A\U00011134\U00011118\U00011128"
+    'no': Daikondi
+    he: דאיכונדי
+    mr: दायकुंडी प्रांत
+    sd: دايڪندي صوبو
+    uz: Daykundi
+    yue: 戴管地省
+    yue_Hans: 戴管地省
+  comments:
+  type: province
+FRA:
+  name: Farah
+  code: FRA
+  unofficial_names:
+  - Fahrah
+  geo:
+    latitude: 32.495328
+    longitude: 62.2626627
+    min_latitude: 31.3958321
+    min_longitude: 60.5861239
+    max_latitude: 33.586982
+    max_longitude: 64.750407
+  translations:
+    en: Farah
+    ar: ولاية فراه
+    az: Fərah
+    be: Правінцыя Фарах
+    bg: Фарах
+    bn: ফারহ প্রদেশ
+    ca: Província de Farah
+    cs: Faráh
+    da: Farah
+    de: Farah
+    el: Φαράχ
+    es: Provincia de Farāh
+    et: Farāhi provints
+    fa: ولایت فراه
+    fi: Farahin maakunta
+    fr: Farâh
+    gu: ફરાહ
+    hi: फ़राह प्रान्त
+    id: Provinsi Farah
+    it: provincia di Farah
+    ja: ファラー州
+    ka: ფარაჰის პროვინცია
+    kn: ಫರಾಹ್
+    ko: 파라 주
+    lt: Faraho provincija
+    mn: Фарах аймаг
+    mr: फराह
+    ms: Wilayah Farah
+    nb: Farah
+    nl: Farah
+    pl: Farah
+    ps: فراه ولايت
+    pt: Farah
+    ro: Provincia Farah
+    ru: Фарах
+    si: ෆාරා
+    sk: Faráh
+    sr: Провинција Фарах
+    sv: Farah
+    ta: பாரா
+    te: ఫరా
+    th: จังหวัดฟาราห์
+    tk: Farah
+    tr: Ferah Vilayeti
+    uk: Фарах
+    ur: صوبہ فراہ
+    vi: Farah
+    lv: Farāha
+    cy: Farah
+    ceb: Farāh (lalawigan sa Apganistan)
+    sr_Latn: Provincija Farah
+    zh: 法拉省
+    ccp: "\U0001111C\U00011122\U00011126\U00011134"
+    'no': Farah
+    he: פראה
+    sd: فرا صوبو
+    uz: Farah
+    yue: 法拿省
+    yue_Hans: 法拿省
+  comments:
+  type: province
+FYB:
+  name: Faryab
+  code: FYB
+  unofficial_names:
+  - Fariab
+  geo:
+    latitude: 36.0795613
+    longitude: 64.90595499999999
+    min_latitude: 35.1631961
+    min_longitude: 63.8947181
+    max_latitude: 37.2501681
+    max_longitude: 65.822068
+  translations:
+    en: Faryab
+    ar: ولاية فاریاب
+    az: Fəryab
+    bg: Фаряб
+    bn: ফারিয়ব প্রদেশ
+    ca: Província de Faryab
+    cs: Fárjáb
+    da: Faryab
+    de: Faryab
+    el: Φαρυάμπ
+    es: Provincia de Fāryāb
+    et: Fāryābi provints
+    eu: Fariab probintzia
+    fa: ولایت فاریاب
+    fi: Faryabin maakunta
+    fr: Fâryâb
+    gu: ફર્યાબ
+    hi: फ़ारयाब प्रान्त
+    id: Provinsi Faryab
+    it: Faryab
+    ja: ファーリヤーブ州
+    ka: ფარიაბის პროვინცია
+    kn: ಫರಿಯಾಬ್
+    ko: 파르야브 주
+    lt: Farjabo provincija
+    mn: Фарьяб аймаг
+    mr: फर्याब
+    ms: Wilayah Faryab
+    nb: Faryab
+    ne: फर्याब
+    nl: Faryab
+    pl: Farjab
+    ps: فارياب ولايت
+    pt: Faryab
+    ro: Provincia Faryab
+    ru: Фарьяб
+    si: ෆර්යබ්
+    sk: Fárjáb
+    sr: Провинција Фарјаб
+    sv: Faryab
+    ta: பார்யாப்
+    te: ఫర్యాబ్
+    th: ฟาร์ยับ
+    tk: Farýab
+    tr: Faryab Vilayeti
+    uk: Фарʼяб
+    ur: صوبہ فاریاب
+    vi: Faryab
+    lv: Farjaba
+    cy: Faryab
+    ceb: Faryab Province
+    sr_Latn: Provincija Farjab
+    zh: 法利亚布省
+    ccp: "\U0001111C\U00011122\U00011128\U00011120\U0001111B\U00011134"
+    uz: Foryob (viloyat)
+    'no': Faryab
+    he: פאריאב
+    yue: 法利亞布省
+    yue_Hans: 法利亚布省
+  comments:
+  type: province
+GHA:
+  name: Ghazni
+  code: GHA
+  unofficial_names:
+  - Gazni
+  - Ghazni
+  geo:
+    latitude: 33.4982289
+    longitude: 67.7615983
+    min_latitude: 32.085223
+    min_longitude: 66.8315989
+    max_latitude: 34.2320759
+    max_longitude: 68.834594
+  translations:
+    en: Ghazni
+    ar: ولاية غزني
+    az: Qəzni
+    be: Правінцыя Газні
+    bg: Газни
+    bn: গজনি প্রদেশ
+    ca: Província de Ghazni
+    cs: Ghazní
+    da: Ghazni
+    de: Ghazni
+    el: Γκαζνί
+    es: Provincia de Gazni
+    et: Ghaznī provints
+    eu: Ghazni probintzia
+    fa: ولایت غزنی
+    fi: Ghaznin maakunta
+    fr: Ghazni
+    gu: ગઝની
+    hi: ग़ज़नी प्रान्त
+    id: Provinsi Ghazni
+    it: provincia di Ghazni
+    ja: ガズニー州
+    ka: ღაზნის პროვინცია
+    kn: ಘಜ್ನಿ
+    ko: 가즈니 주
+    lt: Gaznio provincija
+    mn: Газни аймаг
+    mr: गझनी
+    ms: Ghazni
+    nb: Ghazni
+    nl: Ghazni
+    pl: Ghazni
+    ps: غزني ولايت
+    pt: Ghazni
+    ro: Provincia Ghazni
+    ru: Газни
+    si: ඝස්නි
+    sk: Gazní
+    sr: Провинција Газни
+    sv: Ghazni
+    ta: கஜினி மாகாணம்
+    te: ఘజిని
+    th: แกซนิ
+    tk: Gazni
+    tr: Gazni Vilayeti
+    uk: Газні
+    ur: صوبہ غزنی
+    vi: Ghazni
+    lv: Gazni province
+    cy: Ghazni
+    ceb: Wilāyat-e Ghaznī
+    sr_Latn: Provincija Gazni
+    zh: 加兹尼省
+    ccp: "\U0001110A\U0001110C\U00011134\U0001111A\U00011128"
+    hy: Ղազնի
+    pa: ਗਜ਼ਨੀ ਸੂਬਾ
+    'no': Ghazni
+    he: ע׳זנה
+    sd: غزني صوبو
+    uz: Gʻazni viloyati
+    yue: 加茲尼省
+    yue_Hans: 加兹尼省
+  comments:
+  type: province
+GHO:
+  name: Ghowr
+  code: GHO
+  unofficial_names:
+  - Ghawr
+  - Ghor
+  - Ghowr
+  - Gōr
+  geo:
+    latitude: 34.0995776
+    longitude: 64.90595499999999
+    min_latitude: 33.133217
+    min_longitude: 63.19821899999999
+    max_latitude: 35.276925
+    max_longitude: 66.736645
+  translations:
+    en: Ghōr
+    ar: ولاية غور
+    az: Qövr
+    be: Правінцыя Гор
+    bg: Гор
+    bn: গোর প্রদেশ
+    ca: Ghur
+    cs: Ghór
+    da: Ghowr
+    de: Ghor
+    el: Γκοούρ
+    es: Provincia de Ġawr
+    et: Ghowri provints
+    eu: Ghor probintzia
+    fa: ولایت غور
+    fi: Ghowrin maakunta
+    fr: Ghôr
+    gu: અલ્માટી
+    hi: ग़ोर प्रान्त
+    id: Provinsi Ghōr
+    it: Ghowr
+    ja: ゴール州
+    ka: ღორის პროვინცია
+    kn: ಘೋರ್
+    ko: 구르 주
+    lt: Goro provincija
+    mn: Гор аймаг
+    mr: घोर
+    ms: Ghor
+    nb: Ghowr
+    nl: Ghowr
+    pl: Ghor
+    ps: غور ولايت
+    pt: Ghowr
+    ro: Provincia Ghur
+    ru: Гур
+    si: ඝෝර්
+    sr: Провинција Гор
+    sv: Ghor
+    ta: ஜிஹார்
+    te: ఘోర్
+    th: กอฮ์
+    tk: Gör
+    tr: Gur Vilayeti
+    uk: Гор
+    ur: صوبہ غور
+    vi: Ghor
+    lv: Gouras province
+    cy: Ghor
+    ceb: Wilāyat-e Ghōr
+    sr_Latn: Provincija Gor
+    zh: 古爾省
+    ccp: "\U0001110A\U0001112E\U00011122\U00011134"
+    pa: ਗ਼ੋਰ ਸੂਬਾ
+    'no': Ghowr
+    he: גור
+    hy: Գուր
+    sd: غور صوبو
+    uz: Gʻoʻr (viloyati)
+    yue: 古亞省
+    yue_Hans: 古亚省
+  comments:
+  type: province
+HEL:
+  name: Helmand
+  code: HEL
+  unofficial_names:
+  - Helmand
+  - Hilmend
+  geo:
+    latitude: 31.3636474
+    longitude: 63.95861110000001
+    min_latitude: 29.377478
+    min_longitude: 62.553695
+    max_latitude: 33.3782999
+    max_longitude: 65.38026289999999
+  translations:
+    en: Helmand
+    ar: ولاية هلمند
+    az: Hilmənd
+    be: Правінцыя Гільменд
+    bg: Хелманд
+    bn: হেলমান্দ প্রদেশ
+    ca: Província d’Helmand
+    cs: Hilmand
+    da: Helmand
+    de: Helmand
+    el: Χελμάντ
+    es: Provincia de Helmand
+    et: Helmandi provints
+    eu: Helmand probintzia
+    fa: ولایت هلمند
+    fi: Helmandin maakunta
+    fr: Helmand
+    gu: હેલ્મંડ
+    he: מחוז הלמן
+    hi: हेलमंद प्रान्त
+    hu: Helmand tartomány
+    hy: Հիլմենդ
+    id: Provinsi Helmand
+    it: Helmand
+    ja: ヘルマンド州
+    ka: ჰელმანდის პროვინცია
+    kn: ಹೆಲ್ಮಾಂಡ್
+    ko: 헬만드 주
+    lt: Helmando provincija
+    mn: Хильменд аймаг
+    mr: हेलमंड
+    ms: Helmand
+    nb: Helmand
+    nl: Helmand
+    pl: Helmand
+    ps: هلمند ولايت
+    pt: Helmand
+    ro: Provincia Helmand
+    ru: Гильменд
+    si: හෙල්මන්ඩ්
+    sr: Провинција Хелманд
+    sv: Helmand
+    ta: ஹெல்மண்டு மாகாணம்
+    te: హెల్మండ్
+    th: เฮลซ์แมนด์
+    tk: Gilmend
+    tr: Helmend Vilayeti
+    uk: Гільменд
+    ur: صوبہ ہلمند
+    vi: Helmand
+    lv: Helmandas province
+    cy: Helmand
+    ceb: Helmand
+    sr_Latn: Provincija Helmand
+    zh: 赫尔曼德省
+    ccp: "\U00011126\U0001112C\U00011123\U00011134\U0001111F\U0001111A\U00011133\U00011113\U00011134"
+    pa: ਹੇਲਮੰਦ ਸੂਬਾ
+    'no': Helmand
+    ml: ഹെൽമണ്ട് പ്രവിശ്യ
+    sd: ھيلمند صوبو
+    uz: Hilmand viloyati
+    yue: 希奧曼省
+    yue_Hans: 希奥曼省
+  comments:
+  type: province
+HER:
+  name: Herat
+  code: HER
+  unofficial_names:
+  - Herat
+  geo:
+    latitude: 34.341944
+    longitude: 62.203056
+    min_latitude: 34.3185577
+    min_longitude: 62.150774
+    max_latitude: 34.3883543
+    max_longitude: 62.2713661
+  translations:
+    en: Herat
+    ar: ولاية هرات
+    az: Herat vilayəti
+    be: Правінцыя Герат
+    bg: Херат
+    bn: হেরত প্রদেশ
+    ca: Província d’Herat
+    cs: Herát
+    da: Herat
+    de: Herat
+    el: Χεράτ
+    es: Provincia de Herāt
+    et: Herāti provints
+    eu: Herat probintzia
+    fa: ولایت هرات
+    fi: Heratin maakunta
+    fr: Hérât
+    gu: હેરાત
+    hi: हेरात प्रान्त
+    id: Provinsi Herat
+    it: provincia di Herat
+    ja: ヘラート州
+    ka: ჰერათის პროვინცია
+    kn: ಹೆರಾಟ್
+    ko: 헤라트 주
+    lt: Herato provincija
+    mn: Херат аймаг
+    mr: हेरात
+    ms: Herat
+    nb: Herat
+    nl: Herat
+    pl: Herat
+    ps: هرات ولايت
+    pt: Herat
+    ro: Provincia Herat
+    ru: Герат
+    si: හෙරට්
+    sr: Провинција Херат
+    sv: Herat
+    ta: ஹேரத்
+    te: హెరాట్
+    th: จังหวัดเฮรัท
+    tk: Gerat
+    tr: Herat Vilayeti
+    uk: Герат
+    ur: صوبہ ہرات
+    vi: Herat
+    lv: Herāta
+    cy: Herat
+    ceb: Herāt
+    sr_Latn: Provincija Herat
+    zh: 赫拉特省
+    ccp: "\U00011126\U0001112C\U00011122\U00011116\U00011134"
+    'no': Herat
+    he: הראת
+    hy: Հերաթ
+    sd: ھرات صوبو
+    uz: Hirot viloyati
+    yue: 赫拉特省
+    yue_Hans: 赫拉特省
+  comments:
+  type: province
+JOW:
+  name: Jowzjan
+  code: JOW
+  unofficial_names:
+  - Jawzjan
+  - Jowzjan
+  - Jowzjān
+  - Jozjan
+  - Juzjan
+  geo:
+    latitude: 36.8969692
+    longitude: 65.6658568
+    min_latitude: 35.90039410000001
+    min_longitude: 65.1666699
+    max_latitude: 37.544579
+    max_longitude: 66.583344
+  translations:
+    en: Jowzjan
+    ar: ولاية جوزجان
+    az: Cövzcan
+    be: Правінцыя Джаўзджан
+    bg: Джаузджан
+    bn: জোওয্‌জান প্রদেশ
+    ca: Província de Jowzjan
+    cs: Džúzdžán
+    da: Jowzjan
+    de: Dschuzdschan
+    el: Τζοουζτζάν
+    es: Provincia de Jawzjān
+    et: Jowzjāni provints
+    eu: Jowzjan probintzia
+    fa: ولایت جوزجان
+    fi: Jowzjanin maakunta
+    fr: Djôzdjân
+    gu: જોઝજન
+    hi: जोज़जान प्रान्त
+    id: Provinsi Jowzjan
+    it: Jowzjan
+    ja: ジューズジャーン州
+    ka: ჯუზჯანის პროვინცია
+    kn: ಜೋವ್ಜನ್
+    ko: 주즈잔 주
+    lt: Džouzdžano provincija
+    lv: Džouzdžānas province
+    mn: Жаузжан аймаг
+    mr: जोज्जन
+    ms: Wilayah Jowzjan
+    nb: Jowzjan
+    nl: Jowzjan
+    pl: Dżozdżan
+    ps: جوزجان ولايت
+    pt: Jowzjan
+    ro: Provincia Jowzjan
+    ru: Джаузджан
+    si: ජෝස්ජාන්
+    sl: provinca Jowzjan, Afganistan
+    sr: Провинција Ђузан
+    sv: Jowzjan
+    ta: ஜோவ்ஸ்ஜன்
+    te: జోవ్‌జాన్
+    th: ซินต์มาร์เติน
+    tk: Jowuzjan
+    tr: Cüzcan Vilayeti
+    uk: Джаузджан
+    ur: صوبہ جوزجان
+    vi: Jowzjan
+    ceb: Wilāyat-e Jowzjān
+    sr_Latn: Provincija Đuzan
+    zh: 朱兹詹省
+    ccp: "\U0001110E\U00011127\U00011120\U0001112E\U0001110C\U00011134\U0001110E\U0001111A\U00011134"
+    pa: ਜੋਜਾਨ
+    uz: Joʻzjon
+    'no': Jowzjan
+    he: ג׳וזג׳אן
+    sd: جوزجان صوبو
+    yue: 祖茲贊省
+    yue_Hans: 祖兹赞省
+  comments:
+  type: province
+KAB:
+  name: Kabul [Kabol]
+  code: KAB
+  unofficial_names:
+  - Kabol
+  - Kābol
+  - Kābul
+  - Kabul
+  geo:
+    latitude: 34.533333
+    longitude: 69.166667
+    min_latitude: 34.3454912
+    min_longitude: 68.9495086
+    max_latitude: 34.7619227
+    max_longitude: 69.4459534
+  translations:
+    en: Kabul
+    ar: ولاية كابول
+    az: Kabil vilayəti
+    be: Правінцыя Кабул
+    bg: Кабул
+    bn: কাবুল প্রদেশ
+    ca: Província de Kabul
+    cs: Kábul
+    da: Kabul
+    de: Kabul
+    el: Καμπούλ
+    es: Provincia de Kabul
+    et: Kabuli provints
+    eu: Kabul probintzia
+    fa: ولایت کابل
+    fi: Kabulin maakunta
+    fr: Kaboul
+    gu: કાબુલ પ્રાંત
+    hi: काबुल प्रान्त
+    id: Provinsi Kabul
+    it: provincia di Kabul
+    ja: カーブル州
+    ka: ქაბულის პროვინცია
+    kn: ಕಾಬುಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 카불 주
+    lt: Kabulo provincija
+    mn: Кабул аймаг
+    mr: काबुल प्रांत
+    ms: Wilayah Kabul
+    nb: Kabul
+    nl: Kabul
+    pl: Kabul
+    ps: کابل ولايت
+    pt: Cabul
+    ro: Provincia Kabul
+    ru: Кабул
+    si: කාබුල් පළාත
+    sr: Провинција Кабул
+    sv: Kabul
+    ta: காபூல் மாகாணம்
+    te: కాబూల్ ప్రావిన్స్
+    th: จังหวัดคาบูล
+    tk: Kabul welaýaty
+    tr: Kâbil Vilayeti
+    uk: Кабул
+    ur: صوبہ کابل
+    vi: Tỉnh Kabul
+    lv: Kabulas province
+    cy: Kabul
+    ceb: Wilāyat-e Kābul
+    sr_Latn: Provincija Kabul
+    zh: 喀布尔省
+    ccp: "\U00011107\U0001111D\U0001112A\U00011123\U00011134"
+    'no': Kabul
+    ga: Cabúl
+    gl: Provincia de Kabul
+    he: קאבול
+    pa: ਕਾਬਲ
+    sd: ڪابل صوبو
+    uz: Kobul viloyati
+    yue: 喀布爾省
+    yue_Hans: 喀布尔省
+  comments:
+  type: province
+KAN:
+  name: Kandahar
+  code: KAN
+  unofficial_names:
+  - Kandahar
+  geo:
+    latitude: 31.6119
+    longitude: 65.6811
+    min_latitude: 31.5973985
+    min_longitude: 65.6695744
+    max_latitude: 31.6725218
+    max_longitude: 65.8307648
+  translations:
+    en: Kandahar
+    ar: ولاية قندهار
+    az: Qəndəhar vilayəti
+    be: Правінцыя Кандагар
+    bg: Кандахар
+    bn: কান্দাহার প্রদেশ
+    ca: Província de Kandahar
+    cs: Kandahár
+    da: Kandahar
+    de: Kandahar
+    el: Κανταχάρ
+    es: Provincia de Kandahar
+    et: Kandahāri provints
+    eu: Kandahar probintzia
+    fa: ولایت قندهار
+    fi: Kandaharin maakunta
+    fr: Kandahâr
+    gu: કંદાહર
+    he: מחוז קנדהאר
+    hi: कंदहार प्रान्त
+    hy: Ղանդահար վիլայեթ
+    id: Provinsi Kandahar
+    it: provincia di Qandahar
+    ja: カンダハール州
+    ka: ყანდაარის პროვინცია
+    kn: ಕಂಧಹಾರ್
+    ko: 칸다하르 주
+    lt: Kandaharo provincija
+    mn: Кандахар аймаг
+    mr: कंदाहार
+    ms: Wilayah Kandahar
+    nb: Kandahar
+    nl: Kandahar
+    pl: Kandahar
+    ps: کندهار ولايت
+    pt: Kandahar
+    ro: Provincia Kandahar
+    ru: Кандагар
+    si: කන්දහාර්
+    sr: Провинција Кандахар
+    sv: Kandahar
+    ta: கந்தகார் மாகாணம்
+    te: కాందహార్
+    th: จังหวัดกันดะฮาร์
+    tk: Gandagar
+    tr: Kandehar Vilayeti
+    uk: Кандагар
+    ur: صوبہ قندھار
+    vi: Kandahar
+    lv: Kandahāra
+    cy: Kandahar
+    ceb: Kandahār (lalawigan)
+    sr_Latn: Provincija Kandahar
+    zh: 坎大哈省
+    ccp: "\U00011107\U0001111A\U00011134\U00011118\U00011126\U00011122\U00011134"
+    'no': Kandahar
+    sd: قنڌار صوبو
+    uz: Qandahor viloyati
+    yue: 坎大哈省
+    yue_Hans: 坎大哈省
+  comments:
+  type: province
+KAP:
+  name: Kapisa
+  code: KAP
+  unofficial_names:
+  - Kapesa
+  - Kapisa
+  - Kapissa
+  geo:
+    latitude: 34.9810572
+    longitude: 69.6214562
+    min_latitude: 34.636847
+    min_longitude: 69.27812709999999
+    max_latitude: 35.1843449
+    max_longitude: 69.9292071
+  translations:
+    en: Kapisa
+    ar: ولاية كابيسا
+    az: Kapisa
+    be: Правінцыя Капіса
+    bg: Каписа
+    ca: Província de Kapisa
+    cs: Kápísá
+    da: Kapisa
+    de: Kapisa
+    el: Καπίσα
+    es: Provincia de Kāpīsā
+    et: Kāpīsā provints
+    eu: Kapisa probintzia
+    fa: ولایت کاپیسا
+    fi: Kapisan maakunta
+    fr: Kâpîssâ
+    gu: કપિસા
+    hi: कापीसा प्रान्त
+    id: Provinsi Kapisa
+    it: Kapisa
+    ja: カーピーサー州
+    ka: კაპისას პროვინცია
+    kn: ಕಪಿಸಾ
+    ko: 카피사 주
+    lt: Kapisos provincija
+    mn: Каписа аймаг
+    mr: कपिसा
+    ms: Wilayah Kapisa
+    nb: Kapisa
+    nl: Kapisa
+    pl: Kapisa
+    ps: کاپيسا ولايت
+    pt: Capisa
+    ro: Provincia Kapisa
+    ru: Каписа
+    si: කපිසා
+    sr: Провинција Каписа
+    sv: Kapisa
+    ta: கபீஸா
+    te: కాపిసా
+    th: คาปิซา
+    tk: Kapisa
+    tr: Kapisa Vilayeti
+    uk: Капіса
+    ur: صوبہ کاپیسا
+    vi: Kapisa
+    lv: Kapisa
+    cy: Kapisa
+    ceb: Wilāyat-e Kāpīsā
+    sr_Latn: Provincija Kapisa
+    zh: 卡比萨省
+    bn: কপিস’ প্রদেশ
+    ccp: "\U00011107\U0001111B\U00011128\U00011125"
+    pa: ਕਾਪੀਸਾ
+    'no': Kapisa
+    he: כאפיסא
+    sd: ڪاپيسا صوبو
+    yue: 卡皮沙省
+    yue_Hans: 卡皮沙省
+  comments:
+  type: province
+KDZ:
+  name: Kondoz [Kunduz]
+  code: KDZ
+  unofficial_names:
+  - Kondoz
+  - Kondūz
+  - Kūnduz
+  - Qondūz
+  geo:
+    latitude: 36.7285907
+    longitude: 68.8680663
+    min_latitude: 36.6518943
+    min_longitude: 68.7845421
+    max_latitude: 36.77299259999999
+    max_longitude: 68.9773179
+  translations:
+    en: Kunduz
+    ar: ولاية كندوز
+    az: Künduz
+    be: Правінцыя Кундуз
+    bg: Кундуз
+    bn: কুন্দুজ প্রদেশ
+    ca: Província de Kunduz
+    cs: Kundúz
+    da: Kunduz
+    de: Kunduz
+    el: Κουντούζ
+    es: Provincia de Qundūz
+    et: Kondūzi provints
+    eu: Kunduz probintzia
+    fa: ولایت کندوز
+    fi: Qunduzin maakunta
+    fr: Kondôz
+    gu: કુન્ડુઝ પ્રાંત
+    he: קונדוז
+    hi: कुंदुज़ प्रान्त
+    id: Provinsi Kondoz
+    it: provincia di Konduz
+    ja: クンドゥーズ州
+    ka: ყუნდუზის პროვინცია
+    kn: ಕುಂಡುಜ್ ಪ್ರಾಂತ್ಯ
+    ko: 쿤두즈 주
+    lt: Kundūzo provincija
+    mn: Кундуз аймаг
+    mr: कुंदुझ प्रांत
+    ms: Kunduz Province
+    nb: Kunduz
+    ne: कुन्डुज
+    nl: Kunduz
+    pl: Kunduz
+    ps: کندوز ولايت
+    pt: Konduz
+    ro: Provincia Kunduz
+    ru: Кундуз
+    si: කුන්ඩුස් පළාත
+    sr: Провинција Кундуз
+    sv: Kondoz
+    ta: குண்டுஸ் மாகாணம்
+    te: కుండుజ్ ప్రావిన్స్
+    th: จังหวัดคุนดุซ
+    tk: Kündüz
+    tr: Kunduz Vilayeti
+    uk: Кундуз
+    ur: صوبہ قندوز
+    vi: Tỉnh Kunduz
+    lv: Kondozas province
+    cy: Kunduz
+    ceb: Kunduz
+    sr_Latn: Provincija Kunduz
+    zh: 昆都士省
+    ccp: "\U00011107\U0001112A\U0001111A\U00011134\U00011113\U0001112A\U0001110C\U00011134"
+    'no': Kunduz
+    ml: കുന്ദൂസ് പ്രവിശ്യ
+    sd: قندوز صوبو
+    uz: Qunduz viloyati
+    yue: 昆都士省
+    yue_Hans: 昆都士省
+  comments:
+  type: province
+KHO:
+  name: Khowst
+  code: KHO
+  unofficial_names:
+  - H̱ōst
+  - Khawst
+  - Khost
+  - Matun
+  - Matūn
+  - H̱awst
+  geo:
+    latitude: 33.3585079
+    longitude: 69.8597406
+    min_latitude: 33.028327
+    min_longitude: 69.3547779
+    max_latitude: 33.7335318
+    max_longitude: 70.3265909
+  translations:
+    en: Khost
+    ar: ولاية خوست
+    az: Xust
+    be: Правінцыя Хост
+    bg: Хост
+    bn: খোস্ত প্রদেশ
+    ca: Província de Khost
+    cs: Chóst
+    da: Khost
+    de: Chost
+    el: Χοστ
+    es: Provincia de Jost
+    et: Khowsti provints
+    eu: Khost probintzia
+    fa: ولایت خوست
+    fi: Khostin maakunta
+    fr: Khôst
+    gu: ખોસ્ત
+    hi: ख़ोस्त प्रान्त
+    id: Provinsi Khost
+    it: provincia di Khowst
+    ja: ホースト州
+    ka: ხოსტის პროვინცია
+    kn: ಖೋಸ್ಟ್
+    ko: 호스트 주
+    lt: Chosto provincija
+    mn: Хост аймаг
+    mr: खोस्ट
+    ms: Khost
+    nb: Khost
+    nl: Khost
+    pl: Chost
+    ps: خوست ولايت
+    pt: Khost
+    ro: Provincia Khost
+    ru: Хост
+    si: කෝස්ට්
+    sr: Провинција Коуст
+    sv: Khost
+    ta: கஹோஸ்ட
+    te: ఖోస్ట్
+    th: โคลส
+    tk: Höst
+    tr: Host Vilayeti
+    uk: Хост
+    ur: صوبہ خوست
+    vi: Khost
+    lv: Houstas province
+    cy: Khost
+    ceb: Velāyat-e Khowst
+    sr_Latn: Provincija Koust
+    zh: 霍斯特省
+    ccp: "\U00011108\U0001112E\U00011108\U00011133\U00011111\U00011134"
+    pa: ਖੋਸਤ
+    'no': Khost
+    he: ח׳וסת
+    sd: خوست صوبو
+    uz: Xust viloyati
+    yue: 荷斯特省
+    yue_Hans: 荷斯特省
+  comments:
+  type: province
+KNR:
+  name: Konar [Kunar]
+  code: KNR
+  unofficial_names:
+  - Konar
+  - Konarhā
+  geo:
+    latitude: 35.0883133
+    longitude: 71.36685039999999
+    min_latitude: 35.0861153
+    min_longitude: 71.3623594
+    max_latitude: 35.0906452
+    max_longitude: 71.3708674
+  translations:
+    en: Kunar
+    ar: ولاية كنر
+    az: Künər
+    be: Правінцыя Кунар
+    bg: Конар
+    bn: কুনার
+    ca: Província de Kunar
+    cs: Kúnar
+    da: Konar
+    de: Kunar
+    el: Κουνάρ
+    es: Provincia de Kunar
+    et: Konarhā provints
+    eu: Kunar probintzia
+    fa: ولایت کنر
+    fi: Konarin maakunta
+    fr: Kounar
+    gu: કુનાર
+    hi: कुनर प्रान्त
+    id: Provinsi Kunar
+    it: Konar
+    ja: クナル州
+    ka: ქუნარის პროვინცია
+    kn: ಕುನಾರ್
+    ko: 쿠나르 주
+    lt: Kunaro provincija
+    mn: Кунар аймаг
+    mr: कुनार
+    ms: Wilayah Kunar
+    nb: Konar
+    nl: Kunar
+    pl: Kunar
+    ps: کونړ ولايت
+    pt: Kunar
+    ro: Provincia Kunar
+    ru: Кунар
+    si: කුනාර්
+    sr: Провинција Кунар
+    sv: Konar
+    ta: குனர் மாகாணம்
+    te: కునార్
+    th: จังหวัดโกนาร์
+    tk: Kunar
+    tr: Kunar Vilayeti
+    uk: Кунар
+    ur: صوبہ کنڑ
+    vi: Kunar
+    lv: Kunāra
+    ceb: Wilāyat-e Kunaṟ
+    sr_Latn: Provincija Kunar
+    zh: 库纳尔省
+    ccp: "\U00011107\U0001112A\U0001111A\U00011122\U00011134"
+    pa: ਕੁਨੜ ਸੂਬਾ
+    'no': Konar
+    he: כונר
+    sd: ڪونر صوبو
+    uz: Kunar
+    yue: 古拿省
+    yue_Hans: 古拿省
+  comments:
+  type: province
+LAG:
+  name: Laghman
+  code: LAG
+  unofficial_names:
+  - Laghman
+  - Laghmān
+  - Lagman
+  geo:
+    latitude: 34.6897687
+    longitude: 70.1455805
+    min_latitude: 34.3999048
+    min_longitude: 69.8045771
+    max_latitude: 35.2196171
+    max_longitude: 70.63105999999999
+  translations:
+    en: Laghman
+    ar: ولاية لغمان
+    az: Ləğman
+    be: Правінцыя Лагман
+    bg: Лагман
+    bn: লাগমন প্রদেশ
+    ca: Província de Laghman
+    cs: Laghmán
+    da: Laghman
+    de: Laghman
+    el: Λαγκμάν
+    es: Provincia de Laġmān
+    et: Laghmāni provints
+    eu: Laghman probintzia
+    fa: ولایت لغمان
+    fi: Laghmanin maakunta
+    fr: Laghmân
+    gu: લઘમાન
+    hi: लग़मान प्रान्त
+    id: Laghman
+    it: Laghman
+    ja: ラグマーン州
+    ka: ლაღმანის პროვინცია
+    kn: ಲಗ್ಮನ್
+    ko: 라그만 주
+    lt: Lagmano provincija
+    mn: Лагман аймаг
+    mr: लगमन
+    ms: Wilayah Laghman
+    nb: Laghman
+    nl: Laghman
+    pl: Laghman
+    ps: لغمان ولايت
+    pt: Laghman
+    ro: Provincia Laghman
+    ru: Лагман
+    si: ලග්හ්මාන්
+    sr: Провинција Лангмар
+    sv: Laghman
+    ta: லாஃஹ்மான்
+    te: లాగ్మన్
+    th: แลคห์แมน
+    tk: Lagman
+    tr: Lagman Vilayeti
+    uk: Лагман
+    ur: لاگھمان صوبہ
+    vi: Laghman
+    lv: Lagmāna
+    ceb: Wilāyat-e Laghmān
+    sr_Latn: Provincija Langmar
+    zh: 拉格曼省
+    ccp: "\U00011123\U00011107\U00011134\U0001111F\U00011133\U00011120\U0001111A\U00011134"
+    pa: ਲਗਮਾਨ
+    'no': Laghman
+    he: לגמאן
+    sd: لغمان صوبو
+    yue: 勒曼省
+    yue_Hans: 勒曼省
+  comments:
+  type: province
+LOG:
+  name: لوګر ولايت
+  code: LOG
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ولاية لوكر
+    az: Lövgər vilayəti
+    be: Правінцыя Лагар
+    bg: Логар
+    bn: লগার
+    ca: Província de Lowgar
+    cs: Lógar
+    da: Lowgar
+    de: Lugar
+    el: Λογκάρ
+    en: Logar
+    es: Provincia de Lawgar
+    et: Lowgari provints
+    eu: Logar probintzia
+    fa: ولایت لوگر
+    fi: Logarin maakunta
+    fr: Lôgar
+    gu: લોગર
+    he: לוגר
+    hi: लोगर प्रान्त
+    id: Logar
+    it: Lowgar
+    ja: ローガル州
+    ka: ლოგარის პროვინცია
+    kn: ಲೋಗರ್
+    ko: 로가르 주
+    lt: Logaro provincija
+    mn: Логар аймаг
+    mr: लोंगर
+    ms: Wilayah Logar
+    nb: Lowgar
+    nl: Logar
+    pl: Logar
+    ps: لوګر ولايت
+    pt: Logar
+    ro: Provincia Logar
+    ru: Логар
+    si: ලොගාර්
+    sr: Провинција Логар
+    sv: Lowgar
+    ta: லோகர்
+    te: లోగర్
+    th: แคว้นโลเรโต
+    tk: Lowgar
+    tr: Lovgar Vilayeti
+    uk: Логар
+    ur: صوبہ لوگر
+    vi: Logar
+    lv: Lougara
+    ceb: Wilāyat-e Lōgar
+    sr_Latn: Provincija Logar
+    zh: 洛加尔省
+    ccp: "\U00011123\U00011127\U00011109\U00011122\U00011134"
+    uz: Luvgar
+    'no': Lowgar
+    ml: ലോഗർ പ്രവിശ്യ
+    sd: لوگر صوبو
+    yue: 洛加省
+    yue_Hans: 洛加省
+  comments:
+  type: province
+NAN:
+  name: Nangrahar [Nangarhar]
+  code: NAN
+  unofficial_names:
+  - Nangarhar
+  - Ningarhar
+  geo:
+    latitude: 34.1718313
+    longitude: 70.6216794
+    min_latitude: 33.9433401
+    min_longitude: 69.482636
+    max_latitude: 34.809976
+    max_longitude: 71.17125709999999
+  translations:
+    en: Nangarhar
+    ar: ولاية ننكرهار
+    az: Nəngərhar
+    be: Правінцыя Нангархар
+    bg: Нангархар
+    bn: নানগারহর প্রদেশ
+    ca: Província de Nangarhar
+    cs: Nangarhár
+    da: Nangarhar
+    de: Nangarhar
+    el: Νανγκαράρ
+    es: Provincia de Nangarhar
+    et: Nangarhāri provints
+    eu: Nangarhar probintzia
+    fa: ولایت ننگرهار
+    fi: Nangarharin maakunta
+    fr: Nangarhâr
+    gu: નંગારહર
+    hi: नंगरहार प्रान्त
+    hu: Nangarhar
+    id: Provinsi Nangarhar
+    it: Nangarhar
+    ja: ナンガルハール州
+    ka: ნანგარჰარის პროვინცია
+    kn: ನಂಗಾರ್ಹರ್
+    ko: 낭가르하르 주
+    lt: Nangarharo provincija
+    mn: Нангархар аймаг
+    mr: नांजरघर
+    ms: Wilayah Nangarhar
+    nb: Nangarhar
+    nl: Nangarhar
+    pl: Nangarhar
+    ps: د ننګرهار ولايت
+    pt: Nangarhar
+    ro: Provincia Nangarhar
+    ru: Нангархар
+    si: නන්ගර්හාර්
+    sr: Провинција Нангархар
+    sv: Nangarhar
+    ta: நாங்கர்ஹர்
+    te: నంగర్హార్
+    th: นานกาฮาร์
+    tk: Nangarhar
+    tr: Nangarhar Vilayeti
+    uk: Нангархар
+    ur: صوبہ ننگرہار
+    vi: Nangarhar
+    lv: Nangarhara
+    cy: Nangarhar
+    ceb: Nangarhār
+    sr_Latn: Provincija Nangarhar
+    zh: 楠格哈尔省
+    ccp: "\U0001111A\U00011127\U00011101\U00011109\U00011127\U00011122\U00011134\U00011126\U00011122\U00011134"
+    pa: ਨੰਗਰਹਾਰ ਸੂਬਾ
+    'no': Nangarhar
+    he: ננגרהאר
+    sd: ننگرھار صوبو
+    uz: Nangarhor
+    yue: 楠格哈省
+    yue_Hans: 楠格哈省
+  comments:
+  type: province
+NIM:
+  name: Nimruz
+  code: NIM
+  unofficial_names:
+  - Chakhānsur
+  - Neemroze
+  - Nimroz
+  - Nimroze
+  geo:
+    latitude: 31.0261488
+    longitude: 62.4504154
+    min_latitude: 29.3889659
+    min_longitude: 60.87859700000001
+    max_latitude: 32.263132
+    max_longitude: 63.5857501
+  translations:
+    en: Nimruz
+    ar: ولاية نيمروز
+    az: Nimruz
+    be: Правінцыя Німроз
+    bg: Нимруз
+    bn: নিমরুজ প্রদেশ
+    ca: Província de Nimruz
+    cs: Nímróz
+    da: Nimruz
+    de: Nimrus
+    el: Νιμρούζ
+    es: Provincia de Nimruz
+    et: Nīmrūzi provints
+    eu: Nimruz probintzia
+    fa: ولایت نیمروز
+    fi: Nimruzin maakunta
+    fr: Nimrôz
+    gu: નિમ્રુઝ
+    hi: नीमरूज़ प्रान्त
+    hy: Նիմրուզ
+    id: Nimruz
+    it: Nimruz
+    ja: ニームルーズ州
+    ka: ნიმრუზის პროვინცია
+    kn: ನಿಮ್ರುಜ್
+    ko: 님루즈 주
+    lt: Nimrūzo provincija
+    mn: Нимроз аймаг
+    mr: निमरुझ
+    ms: Nimruz
+    nb: Nimruz
+    nl: Nimruz
+    pl: Nimroz
+    ps: نيمروز ولايت
+    pt: Nimruz
+    ro: Provincia Nimruz
+    ru: Нимроз
+    si: නිම්රුස්
+    sr: Провинција Нимруз
+    sv: Nimruz
+    ta: நிம்ருஸ்
+    te: నిమ్రుజ్
+    th: นิมรัซ
+    tk: Nimruz
+    tr: Nimruz Vilayeti
+    uk: Німруз
+    ur: صوبہ نیمروز
+    vi: Nimruz
+    lv: Nīmrūzas province
+    cy: Nimruz
+    ceb: Wilāyat-e Nīmrōz
+    sr_Latn: Provincija Nimruz
+    zh: 尼姆鲁兹省
+    ccp: "\U0001111A\U00011128\U0001111F\U00011134\U00011122\U0001110C\U00011134"
+    pa: ਨੀਮਰੋਜ਼ ਸੂਬਾ
+    'no': Nimruz
+    he: נימרוז
+    sd: نيمروز صوبو
+    uz: Nimroz
+    yue: 廉魯茲省
+    yue_Hans: 廉鲁兹省
+  comments:
+  type: province
+NUR:
+  name: Nurestan
+  code: NUR
+  unofficial_names:
+  - Nooristan
+  - Nouristan
+  - Nurestan
+  geo:
+    latitude: 35.3250223
+    longitude: 70.90712359999999
+    min_latitude: 34.9075738
+    min_longitude: 69.916771
+    max_latitude: 36.0492169
+    max_longitude: 71.614166
+  translations:
+    en: Nuristan
+    ar: ولاية نورستان
+    az: Nuristan
+    be: Правінцыя Нурыстан
+    bg: Нуристан
+    bn: নুরেস্তন প্রদেশ
+    ca: Província de Nuristan
+    cs: Núristán
+    da: Nuristan
+    de: Nuristan
+    el: Νουρεστάν
+    es: Provincia de Nūristān
+    et: Nūrestāni provints
+    eu: Nuristan probintzia
+    fa: ولایت نورستان
+    fi: Nurestanin maakunta
+    fr: Nourestân
+    gu: નુરિસ્તાન
+    hi: नूरिस्तान प्रान्त
+    id: Nurestan
+    it: provincia di Nurestan
+    ja: ヌーリスターン州
+    ka: ნურისტანის პროვინცია
+    kn: ನುರಿಸ್ತಾನ್
+    ko: 누리스탄 주
+    lt: Nuristano provincija
+    ml: നൂറിസ്ഥാൻ
+    mn: Нуристан аймаг
+    mr: नुरिस्तान
+    ms: Nurestan
+    nb: Nuristān
+    nl: Nooristan
+    pl: Nuristan
+    ps: نورستان ولايت
+    pt: Nuristão
+    ro: Provincia Nuristan
+    ru: Нуристан
+    si: නරිස්ටන්
+    sr: Провинција Нурестан
+    sv: Nurestan
+    ta: நூரிஸ்தான் மாகாணம்
+    te: నూరిస్తాన్
+    th: จังหวัดนูริสถาน
+    tk: Nurystan
+    tr: Nuristan Vilayeti
+    uk: Нуристан
+    ur: صوبہ نورستان
+    vi: Nuristan
+    lv: Nūrestāna
+    ceb: Velāyat-e Nūrestān
+    sr_Latn: Provincija Nurestan
+    zh: 努尔斯坦省
+    sq: Nuristani
+    ccp: "\U0001111A\U0001112A\U00011122\U00011128\U0001110C\U00011134\U00011111\U0001111A\U00011134"
+    is: Núristan
+    pa: ਨੂਰਿਸਤਾਨ ਸੂਬਾ
+    uz: Nuriston
+    'no': Nuristān
+    he: נורסתאן
+    hu: Nurisztán
+    jv: Nuristan
+    sd: نورستان صوبو
+    yue: 努利斯坦省
+    yue_Hans: 努利斯坦省
+  comments:
+  type: province
+PAN:
+  name: Panjshir
+  code: PAN
+  unofficial_names:
+  - Panjshir
+  geo:
+    latitude: 35.3350467
+    longitude: 69.7167783
+    min_latitude: 35.1242394
+    min_longitude: 69.53384400000002
+    max_latitude: 35.4374561
+    max_longitude: 69.7982025
+  translations:
+    en: Panjshir
+    ar: ولاية بانشير
+    az: Pəncşir
+    be: Правінцыя Панджшэр
+    bg: Панджшир
+    bn: পাঞ্জশির প্রদেশ
+    ca: Província de Panjshir
+    cs: Pandžšír
+    da: Panjshir
+    de: Pandschschir
+    el: Παντζίρ
+    es: Provincia de Panjshīr
+    et: Panjshēri provints
+    eu: Panjshir probintzia
+    fa: ولایت پنجشیر
+    fi: Panjshirin maakunta
+    fr: Pandjchir
+    hi: पंजशीर प्रान्त
+    it: Panjshir
+    ja: パンジシール州
+    ka: ფანჯშირის პროვინცია
+    ko: 판지시르 주
+    lt: Pandžširo provincija
+    mn: Панжшер аймаг
+    ms: Wilayah Panjshir
+    nb: Panjshir
+    nl: Panjshir
+    pl: Pandższir
+    ps: پنجشېر ولايت
+    pt: Panjshir
+    ro: Provincia Panjshir
+    ru: Панджшер
+    sr: Провинција Пањшир
+    sv: Panjshir
+    ta: பாஞ்ச்சிர் மாகாணம்
+    tk: Panjşir
+    tr: Pençşir Vilayeti
+    uk: Панджшер
+    ur: پنج شیر
+    ceb: Panjshir
+    sr_Latn: Provincija Panjšir
+    zh: 潘傑希爾省
+    ccp: "\U0001111B\U00011110\U00011134\U00011125\U00011128\U00011122\U00011134"
+    pa: ਪੰਜਸ਼ਿਰ
+    'no': Panjshir
+    cy: Panjshir
+    he: פנג׳שיר
+    id: Provinsi Panjshir
+    kk: Панжшер
+    ml: പഞ്ച്ഷിർ പ്രവിശ്യ
+    sw: Panjshir
+    uz: Panjsher viloyati
+    yue: 班哲斯省
+    yue_Hans: 班哲斯省
+  comments:
+  type: province
+PAR:
+  name: Parwan
+  code: PAR
+  unofficial_names:
+  - Parvan
+  - Parvān
+  - Parwan
+  geo:
+    latitude: 34.9630977
+    longitude: 68.81088489999999
+    min_latitude: 34.588373
+    min_longitude: 68.1907899
+    max_latitude: 35.424221
+    max_longitude: 69.616604
+  translations:
+    en: Parwan
+    ar: ولاية بروان
+    az: Pərvan
+    be: Правінцыя Парван
+    bg: Парван
+    bn: পারভন প্রদেশ
+    ca: Província de Parwan
+    cs: Parván
+    da: Parvan
+    de: Parwan
+    el: Παρβάν
+    es: Provincia de Parwān
+    et: Parvāni provints
+    eu: Parwan probintzia
+    fa: ولایت پروان
+    fi: Parvanin maakunta
+    fr: Parwân
+    gu: પારવાન પ્રાંત
+    hi: परवान प्रान्त
+    id: Provinsi Parwan
+    it: Parvan
+    ja: パルヴァーン州
+    ka: ფარვანის პროვინცია
+    kn: ಪರ್ವಾನ್ ಪ್ರಾಂತ್ಯ
+    ko: 파르반 주
+    lt: Parvano provincija
+    mn: Парван аймаг
+    mr: पारवान प्रांत
+    ms: Wilayah Parwan
+    nb: Parvan
+    ne: पर्वान
+    nl: Parvan
+    pl: Parwan
+    ps: پروان ولايت
+    pt: Parwan
+    ro: Provincia Parwan
+    ru: Парван
+    si: පර්වන් පළාත
+    sr: Провинција Парван
+    sv: Parvan
+    ta: பர்வான் மாகாணம்
+    te: పార్వాన్ ప్రావిన్స్
+    th: จังหวัดปาร์วาน
+    tk: Parwan
+    tr: Parvan Vilayeti
+    uk: Парван
+    ur: صوبہ پروان
+    vi: Tỉnh Parwan
+    lv: Parvanas province
+    ceb: Parwān (lalawigan)
+    sr_Latn: Provincija Parvan
+    zh: 帕尔旺省
+    ccp: "\U0001111B\U00011127\U00011122\U00011134\U00011103\U0001112E\U00011120\U0001111A\U00011134"
+    pa: ਪਰਵਾਨ
+    'no': Parvan
+    he: פרוואן
+    ml: പർവാൻ പ്രവിശ്യ
+    uz: Parvon viloyati
+    yue: 帕灣省
+    yue_Hans: 帕湾省
+  comments:
+  type: province
+PIA:
+  name: Paktia
+  code: PIA
+  unofficial_names:
+  - Paktia
+  - Paktiya
+  - Paktīā
+  geo:
+    latitude: 33.706199
+    longitude: 69.3831079
+    min_latitude: 33.1592119
+    min_longitude: 68.772654
+    max_latitude: 34.0908599
+    max_longitude: 70.0056379
+  translations:
+    en: Paktia
+    ar: ولاية بكتيا
+    az: Pəktiya
+    be: Правінцыя Пактыя
+    bg: Пактия
+    bn: পাক্‌তিয়া প্রদেশ
+    ca: Província de Paktia
+    cs: Paktíja
+    da: Paktia
+    de: Paktia
+    el: Πακτιά
+    es: Provincia de Paktiyā
+    et: Paktīā provints
+    eu: Paktia probintzia
+    fa: ولایت پکتیا
+    fi: Paktian maakunta
+    fr: Paktiyâ
+    gu: પક્ટિયા
+    hi: पकतिया प्रान्त
+    id: Paktia
+    it: Paktia
+    ja: パクティヤー州
+    ka: ფაქთიის პროვინცია
+    kn: ಪಖಿಯಾ
+    ko: 팍티야 주
+    lt: Paktijos provincija
+    mn: Пактия аймаг
+    mr: पक्तिया
+    ms: Paktia
+    nb: Paktia
+    nl: Paktia
+    pl: Paktija
+    ps: پکتيا ولايت
+    pt: Paktia
+    ro: Provincia Paktia
+    ru: Пактия
+    si: පකිටා
+    sr: Провинција Пактија
+    sv: Paktia
+    ta: பக்தியா
+    te: పాక్టియా
+    th: จังหวัดปักเตีย
+    tk: Paktiýa
+    tr: Paktiya Vilayeti
+    uk: Пактія
+    ur: پکتیا
+    vi: Paktia
+    lv: Paktija
+    ceb: Wilāyat-e Paktiyā
+    sr_Latn: Provincija Paktija
+    zh: 帕克蒂亚省
+    ccp: "\U0001111B\U00011107\U00011134\U00011116\U00011128\U00011120"
+    pa: ਪਕਤੀਆ
+    'no': Paktia
+    he: פכתיא
+    ml: പാക്തിയ പ്രവിശ്യ
+    uz: Paktia viloyati
+    yue: 帕提亞省
+    yue_Hans: 帕提亚省
+  comments:
+  type: province
+PKA:
+  name: Paktika
+  code: PKA
+  unofficial_names:
+  - Paktika
+  geo:
+    latitude: 32.2645386
+    longitude: 68.52471489999999
+    min_latitude: 31.593519
+    min_longitude: 67.82210479999999
+    max_latitude: 33.4239659
+    max_longitude: 69.5345761
+  translations:
+    en: Paktika
+    ar: ولاية بكتيكا
+    az: Pəktika
+    be: Правінцыя Пактыка
+    bg: Пактика
+    bn: পাক্তিকা প্রদেশ
+    ca: Província de Paktika
+    cs: Paktíka
+    da: Paktika
+    de: Paktika
+    el: Πακτίκα
+    es: Provincia de Paktīkā
+    et: Paktīkā provints
+    eu: Paktika probintzia
+    fa: ولایت پکتیکا
+    fi: Paktikan maakunta
+    fr: Paktîkâ
+    gu: પક્ટીકા
+    hi: पकतीका प्रान्त
+    id: Paktika
+    it: Paktika
+    ja: パクティーカー州
+    ka: ფაქთიკის პროვინცია
+    kn: ಪಕ್ತಿಕ
+    ko: 팍티카 주
+    lt: Paktikos provincija
+    mn: Пактика аймаг
+    mr: पतिकिका
+    ms: Paktika
+    nb: Paktika
+    nl: Paktika
+    pl: Paktika
+    ps: پکتيکا ولايت
+    pt: Paktika
+    ro: Provincia Paktika
+    ru: Пактика
+    si: පකිටිකා
+    sr: Провинција Пактика
+    sv: Paktika
+    ta: பக்திகா
+    te: పాక్టికా
+    th: ปาคิทคา
+    tk: Paktyka
+    tr: Paktika Vilayeti
+    uk: Пактика
+    ur: صوبہ پکتیکا
+    vi: Paktika
+    lv: Paktika
+    ceb: Wilāyat-e Paktīkā
+    sr_Latn: Provincija Paktika
+    zh: 帕克蒂卡省
+    ccp: "\U0001111B\U00011107\U00011134\U00011116\U00011128\U00011107"
+    pa: ਪਕਤੀਕਾ
+    'no': Paktika
+    he: פכתיכא
+    uz: Paktika Province
+    yue: 帕提卡省
+    yue_Hans: 帕提卡省
+  comments:
+  type: province
+SAM:
+  name: Samangan
+  code: SAM
+  unofficial_names: Samangan
+  geo:
+    latitude: 35.9807296
+    longitude: 67.57085359999999
+    min_latitude: 35.34659389999999
+    min_longitude: 66.88432
+    max_latitude: 36.638235
+    max_longitude: 68.5661071
+  translations:
+    en: Samangan
+    ar: ولاية سمنكان
+    az: Səməngan
+    be: Правінцыя Саманган
+    bg: Саманган
+    bn: সামাঙ্গন প্রদেশ
+    ca: Província de Samangan
+    cs: Samangán
+    da: Samangan
+    de: Samangan
+    el: Σαμανγκάν
+    es: Provincia de Samangān
+    et: Samangāni provints
+    eu: Samangan probintzia
+    fa: ولایت سمنگان
+    fi: Samanganin maakunta
+    fr: Samangân
+    gu: સમાંગણ
+    hi: समंगान प्रान्त
+    id: Samangan
+    it: Samangan
+    ja: サマンガーン州
+    ka: სამანგანის პროვინცია
+    kn: ಸಮಂಗನ್
+    ko: 사망간 주
+    lt: Samangano provincija
+    mn: Саманган аймаг
+    mr: समांगण
+    ms: Wilayah Samangan
+    nb: Samangan
+    ne: समन्गन
+    nl: Samangan
+    pl: Samangan
+    ps: سمنګان ولايت
+    pt: Samangan
+    ro: Provincia Samangan
+    ru: Саманган
+    si: සමන්ගන්
+    sr: Провинција Саманган
+    sv: Samangan
+    ta: சமங்கன்
+    te: సమంగాన్
+    th: สแมนแกน
+    tk: Samangan
+    tr: Samangan Vilayeti
+    uk: Саманган
+    ur: صوبہ سمنگان
+    vi: Samangan
+    lv: Samangānas province
+    ceb: Samangān
+    sr_Latn: Provincija Samangan
+    zh: 萨曼甘省
+    ccp: "\U00011125\U0001111F\U00011127\U0001111A\U00011134\U00011109\U00011133\U00011120\U0001111A\U00011134"
+    pa: ਸਮੰਗਾਨ ਸੂਬਾ
+    'no': Samangan
+    he: סמנגאן
+    uz: Samangan
+    yue: 沙曼根省
+    yue_Hans: 沙曼根省
+  comments:
+  type: province
+SAR:
+  name: Sar-e Pol
+  code: SAR
+  unofficial_names:
+  - Sar-e Pol
+  - Sar-i Pol
+  - Sari Pol
+  geo:
+    latitude: 36.22138899999999
+    longitude: 65.927778
+    min_latitude: 36.1827099
+    min_longitude: 65.9110165
+    max_latitude: 36.23838900000001
+    max_longitude: 65.9589957
+  translations:
+    en: Sar-e Pol
+    ar: ولاية سربل
+    az: Səri-Pul
+    be: Правінцыя Сары-Пуль
+    bg: Сарипол
+    bn: সারে পোল প্রদেশ
+    ca: Província de Sar-e Pol
+    cs: Sar-e Pol
+    da: Sar-e Pol
+    de: Sar-i Pul
+    el: Σαρ-έ Πολ
+    es: Provincia de Sar-e Pul
+    et: Sar-e Poli provints
+    eu: Sar-e Pol probintzia
+    fa: ولایت سرپل
+    fi: Sar-e Polin maakunta
+    fr: Sar-é Pol
+    gu: સર-એ પોલ
+    hi: सर-ए-पोल प्रान्त
+    id: Provinsi Sar-e Pol
+    it: Provincia di Sar-e Pol
+    ja: サーレポル州
+    ka: სარიპულის პროვინცია
+    kn: ಸರ್-ಇ ಪೋಲ್
+    ko: 사르이폴 주
+    lt: Sari Pulio provincija
+    mn: Сари-Пуль аймаг
+    mr: सर-ए पोल
+    ms: Wilayah Sar-e Pol
+    nb: Sar-e Pol
+    nl: Sar-e Pol
+    pl: Sar-e Pol
+    ps: سرپل ولايت
+    pt: Sar-e Pol
+    ro: Provincia Sar-e Pol
+    ru: Сари-Пуль
+    si: සරේ පොල්
+    sr: Провинција Сарипол
+    sv: Sar-e Pol
+    ta: சார் -இ போல்
+    te: సర్-ఎ పోల్
+    th: จังหวัดซาร์เอโปล
+    tk: Sary Pul
+    tr: Sar-i Pol Vilayeti
+    uk: Сарі-Пуль
+    ur: صوبہ سرپل
+    vi: Sar-e Pol
+    lv: Sarepola
+    ceb: Sar-e Pul (lalawigan)
+    sr_Latn: Provincija Saripol
+    zh: 薩爾普勒省
+    ccp: "\U00011125\U00011122\U00011134-\U00011103\U00011128 \U0001111B\U00011127\U00011123\U00011134"
+    pa: ਸਰੇ ਪੋਲ
+    'no': Sar-e Pol
+    he: סר-י פול
+    uz: Sarupul viloyati
+    yue: 薩亞普省
+    yue_Hans: 萨亚普省
+  comments:
+  type: province
+TAK:
+  name: Takhar
+  code: TAK
+  unofficial_names:
+  - Tahar
+  - Takhar
+  - Takhār
+  geo:
+    latitude: 36.6698013
+    longitude: 69.4784541
+    min_latitude: 35.785804
+    min_longitude: 69.1752951
+    max_latitude: 37.62126
+    max_longitude: 70.4998339
+  translations:
+    en: Takhar
+    ar: ولاية تخار
+    az: Təxar
+    be: Правінцыя Тахар
+    bg: Тахар
+    bn: তাখর প্রদেশ
+    ca: Província de Takhar
+    cs: Tachár
+    da: Takhar
+    de: Tachar
+    el: Ταχάρ
+    es: Provincia de Tahār
+    et: Takhāri provints
+    eu: Takhar probintzia
+    fa: ولایت تخار
+    fi: Takharin maakunta
+    fr: Takhâr
+    gu: તખાર
+    hi: तख़ार प्रान्त
+    hy: Տախար
+    id: Takhar
+    it: Takhar
+    ja: タハール州
+    ka: თახარის პროვინცია
+    kn: ತಖರ್
+    ko: 타하르 주
+    lt: Tacharo provincija
+    mn: Тахар аймаг
+    mr: तखार
+    ms: Wilayah Takhar
+    nb: Takhar
+    nl: Tachar
+    pl: Tachar
+    ps: تخار ولايت
+    pt: Takhar
+    ro: Provincia Takhar
+    ru: Тахар
+    si: ටක්හාර්
+    sr: Провинција Такар
+    sv: Takhar
+    ta: டகார்
+    te: టఖర్
+    th: ทัคฮาร์
+    tk: Tahar
+    tr: Tahar Vilayeti
+    uk: Тахар
+    ur: صوبہ تخار
+    vi: Takhar
+    lv: Tahāra
+    ceb: Wilāyat-e Takhār
+    sr_Latn: Provincija Takar
+    zh: 塔哈尔省
+    ccp: "\U00011116\U00011127\U00011108\U00011127\U00011122\U00011134"
+    pa: ਤਖਾਰ ਸੂਬਾ
+    'no': Takhar
+    he: תח׳אר
+    yue: 塔哈省
+    yue_Hans: 塔哈省
+  comments:
+  type: province
+URU:
+  name: روزګان ولايت
+  code: URU
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: ولاية أروزكان
+    az: Uruzgan
+    be: Правінцыя Урузган
+    bg: Орузган
+    bn: ওরুজ্‌গন প্রদেশ
+    ca: Província d’Oruzgan
+    cs: Orúzgán
+    da: Oruzgan
+    de: Urusgan
+    el: Ορουζγκάν
+    en: Urozgan
+    es: Provincia de Urūzgān
+    et: Uruzgāni provints
+    eu: Oruzgan probintzia
+    fa: ولایت اروزگان
+    fi: Uruzganin maakunta
+    fr: Orozgân
+    gu: ઉરોઝગન
+    hi: ओरूज़्गान प्रान्त
+    id: Provinsi Oruzgan
+    it: Oruzgan
+    ja: ウルーズガーン州
+    ka: ურუზგანის პროვინცია
+    kn: ಉರೊಜ್ಗನ್
+    ko: 우루즈간 주
+    lt: Urozgano provincija
+    mn: Урузган аймаг
+    mr: उरोजगण
+    ms: Urozgan
+    nb: Uruzgan
+    nl: Uruzgan
+    pl: Oruzgan
+    ps: روزګان ولايت
+    pt: Oruzgan
+    ro: Provincia Urozgan
+    ru: Урузган
+    si: උරෝස්ගන්
+    sr: Провинција Орузган
+    sv: Oruzgan
+    ta: உரோஸ்க்கான்
+    te: యూరోజ్గాన్
+    th: จังหวัดอูรานกัน
+    tk: Uruzgan
+    tr: Uruzgan Vilayeti
+    uk: Урузган
+    ur: اروزگان
+    vi: Oruzgan
+    lv: Orūzgānas province
+    ceb: Uruzgān
+    sr_Latn: Provincija Oruzgan
+    zh: 乌鲁兹甘省
+    ccp: "\U00011105\U0001112A\U00011122\U00011127\U0001110C\U00011134\U00011109\U00011127\U0001111A\U00011134"
+    pa: ਓਰੁਜਗਾਨ ਸੂਬਾ
+    ml: ഉറോസ്ഗാൻ പ്രവിശ്യ
+    'no': Uruzgan
+    he: אורוזגאן
+    sd: اروزگان صوبو
+    uz: Uroʻzgon viloyati
+    yue: 烏魯茲根省
+    yue_Hans: 乌鲁兹根省
+  comments:
+  type: province
+WAR:
+  name: Wardak [Wardag]
+  code: WAR
+  unofficial_names:
+  - Vardak
+  - Wardagh
+  - Wardak
+  geo:
+    latitude: 34.3513494
+    longitude: 68.2385339
+    min_latitude: 33.683571
+    min_longitude: 67.232205
+    max_latitude: 34.797575
+    max_longitude: 68.972619
+  translations:
+    en: Maidan Wardak
+    ar: ولاية وردك
+    az: Vərdək
+    be: Правінцыя Вардак
+    bg: Вардак
+    bn: ভার্দাক প্রদেশ
+    ca: Província de Wardak
+    cs: Vardak
+    da: Vardak
+    de: Wardak
+    el: Βαρντάκ
+    es: Provincia de Vardak
+    et: Vardaki provints
+    eu: Wardak probintzia
+    fa: ولایت وردک
+    fi: Vardakin maakunta
+    fr: Wardak
+    gu: મૈદાન વાર્ડક
+    hi: मैदान वरदक प्रान्त
+    id: Maidan Wardak
+    it: Vardak
+    ja: ヴァルダク州
+    ka: მაიდან-ვარდაკის პროვინცია
+    kn: ಮೈದಾನ್ ವಾರ್ಡಾಕ್
+    ko: 바르다크 주
+    lt: Vardako provincija
+    mn: Вардаг аймаг
+    mr: मैदान वार्डक
+    ms: Wilayah Wardak
+    nb: Vardak
+    nl: Wardak
+    pl: Wardak
+    ps: ميدان وردګ ولايت
+    pt: Maydan-Wardak
+    ro: Provincia Maidan Wardak
+    ru: Вардак
+    si: මාදියන් වර්ඩක්
+    sr: Провинција Вардак
+    sv: Wardak
+    ta: மெய்டன் வார்டாக்
+    te: మైడన్ వార్డాక్
+    th: เมเดนวอร์ดาก
+    tk: Wardak
+    tr: Vardak Vilayeti
+    uk: Вардак
+    ur: وردک
+    vi: Wardak
+    lv: Vardaka
+    ceb: Wardak (lalawigan)
+    sr_Latn: Provincija Vardak
+    zh: 瓦尔达克省
+    ccp: "\U0001111F\U00011133\U00011106\U00011113\U00011127\U0001111A\U00011134 \U00011124\U00011122\U00011134\U00011113\U00011127\U00011107\U00011134"
+    pa: ਵਾਰਦਾਕ
+    'no': Vardak
+    he: מיידאן ורדכ
+    uz: Vardak viloyati
+    yue: 華達省
+    yue_Hans: 华达省
+  comments:
+  type: province
+ZAB:
+  name: Zabol [Zabul]
+  code: ZAB
+  unofficial_names:
+  - Zabol
+  - Zabul
+  - Zābol
+  geo:
+    latitude: 32.1918782
+    longitude: 67.1894488
+    min_latitude: 31.505068
+    min_longitude: 66.192899
+    max_latitude: 33.083939
+    max_longitude: 68.1166841
+  translations:
+    en: Zabul
+    ar: ولاية زابل
+    az: Zabul vilayəti
+    be: Правінцыя Забуль
+    bg: Забул
+    bn: জবোল প্রদেশ
+    ca: Província de Zabul
+    cs: Zábul
+    da: Zabol (provins)
+    de: Zabul
+    el: Ζάμπουλ (περιοχή)
+    es: Provincia de Zābul
+    et: Zābuli provints
+    eu: Zabul probintzia
+    fa: ولایت زابل
+    fi: Zabolin maakunta
+    fr: Zabol (Afghanistan)
+    gu: ઝબુલ
+    hi: ज़ाबुल प्रान्त
+    id: Zabul
+    it: Zabol
+    ja: ザーブル州
+    ka: ზაბულის პროვინცია
+    kn: ಝಬುಲ್
+    ko: 자불 주
+    lt: Zabulio provincija
+    mn: Забуль аймаг
+    mr: झबुल
+    ms: Wilayah Zabul
+    nb: Zabol
+    nl: Zabul
+    pl: Zabol (prowincja)
+    ps: زابل ولايت
+    pt: Zabol
+    ro: Provincia Zabul
+    ru: Забуль
+    si: සබුල්
+    sr: Провинција Забул
+    sv: Zabol (provins)
+    ta: சபிள்
+    te: జాబుల్
+    th: จังหวัดซาบอล
+    tk: Zabul
+    tr: Zabul Vilayeti
+    uk: Забуль
+    ur: زابل پراونس
+    vi: Zabul (tỉnh)
+    lv: Zābola
+    ceb: Wilāyat-e Zābul
+    sr_Latn: Provincija Zabul
+    zh: 扎布尔省
+    ccp: "\U0001110E\U0001111D\U0001112A\U00011123\U00011134"
+    pa: ਜ਼ਾਬੁਲ ਸੂਬਾ
+    'no': Zabol
+    he: זאבול
+    sd: زابل صوبو
+    yue: 扎布省
+    yue_Hans: 扎布省
+  comments:
+  type: province

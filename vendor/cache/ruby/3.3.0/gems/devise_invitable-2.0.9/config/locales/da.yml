@@ -1,0 +1,41 @@
+da:
+  activerecord:
+    attributes:
+      user:
+        invitation_token: Invitationsnøgle
+        invitation_created_at: Invitation oprettet
+        invitation_sent_at: Invitation sendt
+        invitation_accepted_at: Invitation accepteret
+        invitation_limit: Invitationsbegrænsning
+        invited_by: Inviteret af
+        invitations_count: Antal invitationer
+  devise:
+    failure:
+      invited: "Du har allerede en ventende invitation, som du bedes acceptere for at oprette en konto."
+    invitations:
+      send_instructions: "Der er sendt en invitationsmail til %{email}."
+      invitation_token_invalid: "Den angivne invitationsnøgle er ikke gyldig."
+      updated: "Din adgangskode er gemt, og du er nu logget ind."
+      updated_not_active: "Din adgangskode er gemt, og du kan nu logge ind på din konto."
+      no_invitations_remaining: "Ikke flere invitationer tilbage"
+      invitation_removed: "Din invitation er blevet fjernet."
+      new:
+        header: "Send en invitation"
+        submit_button: "Send mail"
+      edit:
+        header: "Vælg din adgangskode"
+        submit_button: "Gem adgangskode"
+    mailer:
+      invitation_instructions:
+        subject: "Invitation til at oprette en konto"
+        hello: "Hej %{email}"
+        someone_invited_you: "Du er blevet inviteret til at oprette en konto på %{url}, og du kan gøre det via linket herunder."
+        accept: "Accepter invitation"
+        accept_until: "Invitation gælder indtil %{due_date}."
+        ignore: "Hvis du ikke vil tage imod invitationen om at oprette en konto, kan du blot ignorere denne mail.<br />\nDer vil ikke blive oprettet nogen konto, medmindre du følger linket herover og derefter opretter en adgangskode."
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%e. %B %Y kl. %H.%M"

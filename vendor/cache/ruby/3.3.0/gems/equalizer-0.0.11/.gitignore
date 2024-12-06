@@ -1,0 +1,39 @@
+## MAC OS
+.DS_Store
+
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## Rubinius
+*.rbc
+.rbx
+
+## PROJECT::GENERAL
+*.gem
+coverage
+profiling
+turbulence
+rdoc
+pkg
+tmp
+doc
+log
+.yardoc
+measurements
+
+## BUNDLER
+.bundle
+Gemfile.lock
+bin
+bundle
+
+## PROJECT::SPECIFIC

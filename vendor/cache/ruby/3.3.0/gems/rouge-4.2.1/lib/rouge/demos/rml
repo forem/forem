@@ -1,0 +1,33 @@
+// A system agnostic domain specific language for runtime monitoring and verification
+// Basic events
+
+insert(index,elem) matches {event:'func_pre',name:'my_insert',args:[index,elem]};
+
+relevant matches insert(_,_)|remove(_,_)|size(_)|get(_,_);
+
+insert_in_bounds(size) matches insert(index,_) with index >= 0 && index <= size;
+
+del_false matches del(_,false);
+not_add_true_del(el) not matches add(el,true) | del(el,_);
+
+Main = relevant >> (CheckIndex<0> /\ add_rm_get >> CheckElem)!;
+CheckIndex<size> =
+    get_size(size)* (insert_in_bounds(size) CheckIndex<size+1> \/ remove_in_bounds(size) CheckIndex<size-1>);
+
+Msg<inf,sup> = if(inf<=sup) msg(inf) Msg<inf+1,sup> else empty;
+Main=relevant>>Msg<1,4>*!;
+
+acquire(id) matches {event:'func_pre',name:'acquire',args:[_,id,...]};
+
+Main = relevant >> Resources;
+Resources =
+    {let id; acquire(id)
+        ((Resources | use(id)* release(id)) /\
+        acqRel(id) >> release(id) all)
+    }?;
+
+msg(ty) matches {event:'func_pre',name:'msg',args:[ty]};
+relevant matches msg(_);
+
+Msg<inf,sup> = if(inf<=sup) msg(inf) Msg<inf+1,sup> else empty;
+Main=relevant>>Msg<1,4>*!;

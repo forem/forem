@@ -1,0 +1,6 @@
+cdef extern from 'foo.h':
+    int foo_int
+    struct foo_struct:
+        pass
+
+ctypedef int word

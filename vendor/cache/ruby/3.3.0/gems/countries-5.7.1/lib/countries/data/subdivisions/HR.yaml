@@ -1,0 +1,1582 @@
+---
+'01':
+  name: Zagrebačka županija
+  code: '01'
+  unofficial_names:
+  - Zagreb County
+  geo:
+    latitude: 45.8706612
+    longitude: 16.395491
+    min_latitude: 45.4676982
+    min_longitude: 15.3262593
+    max_latitude: 46.0695047
+    max_longitude: 16.7137865
+  translations:
+    en: Zagreb County
+    ar: مقاطعة زغرب
+    be: Заграбская жупанія
+    bg: Загребска жупания
+    bn: জাগরেব কাউন্টি
+    ca: Comtat de Zagreb
+    cs: Záhřebská župa
+    da: Zagreb County
+    de: Gespanschaft Zagreb
+    el: Ζάγκρεμπ
+    es: Zagreb
+    et: Zagrebi maakond
+    eu: Zagreb eskualdea
+    fa: ایالت زاگرب
+    fi: Zagreb
+    fr: Comitat de Zagreb
+    gu: ઝાગ્રેબ કાઉન્ટી
+    hi: ज़ाग्रेब काउंटी
+    hr: Zagrebačka županija
+    hu: Zágráb megye
+    id: Kabupaten Zagreb
+    it: regione di Zagabria
+    ja: ザグレブ郡
+    ka: ზაგრების ოლქი
+    kn: ಝಾಗ್ರೆಬ್ ಕೌಂಟಿ
+    ko: 자그레브 주
+    lt: Zagrebo apskritis
+    mr: झगाबेब काउंटी
+    ms: Zagreb County
+    nb: Zagreb
+    nl: Zagreb
+    pl: Zagrebačka županija
+    pt: Condado de Zagreb
+    ro: Cantonul Zagreb
+    ru: Загребская жупания
+    si: සග්‍රෙබ් ප්‍රාන්තය
+    sk: Záhrebská župa
+    sl: Zagrebška županija
+    sr: Загребачка жупанија
+    sv: Zagrebs län
+    ta: சக்ரேப் கவுண்டி
+    te: జాగ్రెబ్ కౌంటీ
+    th: ซาเกร็บ
+    tr: Zagreb Bölgesi
+    uk: Загребська жупанія
+    ur: زگریب کاؤنٹی
+    vi: Zagreb
+    zh: 薩格勒布縣
+    lv: Zagrebas župānija
+    ceb: Zagreb County
+    sr_Latn: Zagrebačka županija
+    sq: Zhupania e Zagrebit
+    ccp: "\U0001110E\U00011109\U00011133\U00011122\U0001112C\U0001111B\U00011134 \U00011107\U00011105\U0001112A\U0001111A\U00011134\U00011111\U00011128"
+    ga: Contae Ságrab
+    bs: Zagrebačka županija
+    mk: Загрепска жупанија
+    'no': Zagreb
+    az: Zaqreb jupaniyası
+    cy: Sir Zagreb
+  comments:
+  type: county
+'02':
+  name: Krapinsko-zagorska županija
+  code: '02'
+  unofficial_names:
+  - Krapina-Zagorje
+  geo:
+    latitude: 46.10133930000001
+    longitude: 15.8809693
+    min_latitude: 45.9023158
+    min_longitude: 15.5954704
+    max_latitude: 46.2800141
+    max_longitude: 16.2571245
+  translations:
+    en: Krapina-Zagorje
+    ar: مقاطعة كرابينا زاغوريه
+    bg: Крапинско-загорска жупания
+    bn: ক্রাপিনা-জাগোর্জে কাউন্টি
+    ca: Comtat de Krapina-Zagorje
+    cs: Krapinsko-zagorská župa
+    da: Krapina-Zagorje County
+    de: Gespanschaft Krapina-Zagorje
+    el: Κραπίνα-Ζαγκόρτζε
+    es: Krapina-Zagorje
+    et: Krapina-Zagorje maakond
+    eu: Krapina-Zagorje eskualdea
+    fa: کراپینا-زاگریه
+    fi: Krapina-Zagorje
+    fr: Comitat de Krapina-Zagorje
+    gu: ક્રેપીના-ઝાગોર્જે કાઉન્ટી
+    hi: क्रापिना-ज़गोरिए काउंटी
+    hr: Krapinsko-zagorska županija
+    hu: Krapina-Zagorje megye
+    id: Kabupaten Krapina-Zagorje
+    it: regione di Krapina e dello Zagorje
+    ja: クラピナ＝ザゴリエ郡
+    kn: ಕ್ರಾಪಿನಾ-ಝಗೋರ್ಜೆ ಕೌಂಟಿ
+    ko: 크라피나자고레 주
+    lt: Krapinos–Zagorjės apskritis
+    mr: क्रिपाना-ज़गोर्जे काउंटी
+    ms: Daerah Krapina-Zagorje
+    nb: Krapina-Zagorje
+    nl: Krapina-Zagorje
+    pl: Krapinsko-zagorska županija
+    pt: Condado de Krapina-Zagorje
+    ro: Cantonul Krapina-Zagorje
+    ru: Крапинско-Загорская жупания
+    si: ක්රපිනා-සගොර්ජේ ප්‍රාන්තය
+    sk: Krapinsko-zagorská župa
+    sl: Krapinsko-zagorska županija
+    sr: Крапинско-загорска жупанија
+    sv: Krapina-Zagorjes län
+    ta: க்ராபினா - சகோரஜே கவுண்டி
+    te: క్రాపినా-జాగోర్యే కౌంటీ
+    th: เทศมณฑลคราปินาซาโกรเจ
+    tr: Krapina-Zagorje
+    uk: Крапинсько-Загорська жупанія
+    ur: کراپینا-زاکوریے کاؤنٹی
+    vi: Hạt Krapina-Zagorje
+    lv: Krapinas-Zagorjes župānija
+    ceb: Krapinsko-Zagorska Županija
+    sr_Latn: Krapinsko-zagorska županija
+    zh: 克拉皮納-扎戈列縣
+    sq: Zhupania e Zagorës dhe Krapinës
+    ccp: "\U00011107\U00011133\U00011122\U0001111B\U00011128\U0001111A-\U0001110E\U00011109\U0001112E\U00011122\U00011134\U0001110E\U0001112C"
+    bs: Krapinsko-zagorska županija
+    mk: Крапинско-загорска жупанија
+    'no': Krapina-Zagorje
+    az: Krapina-Zaqorye jupaniyası
+    cy: Sir Krapina-Zagorje
+    ga: Contae Krapina-Zagorje
+  comments:
+  type: county
+'03':
+  name: Sisačko-moslavačka županija
+  code: '03'
+  unofficial_names:
+  - Sisak-Moslavina
+  geo:
+    latitude: 45.3837926
+    longitude: 16.5380995
+    min_latitude: 44.9959092
+    min_longitude: 15.7676525
+    max_latitude: 45.6699168
+    max_longitude: 17.1949134
+  translations:
+    en: Sisak-Moslavina
+    ar: مقاطعة سيساك-موسلافينا
+    bg: Сисашко-мославска жупания
+    bn: সিসাক-মস্লাভিনা কাউন্টি
+    ca: Comtat de Sisak-Moslavina
+    cs: Sisacko-moslavinská župa
+    da: Sisak-Moslavina County
+    de: Gespanschaft Sisak-Moslavina
+    el: Σισάκ-Μοσλαβίνα
+    es: Sisak-Moslavina
+    et: Sisaki-Moslavina maakond
+    eu: Sisak-Moslavina eskualdea
+    fi: Sisak-Moslavina
+    fr: Comitat de Sisak-Moslavina
+    gu: સિસેક-મોસ્લાવિના કાઉન્ટી
+    hi: सिसाक-मोस्लाविना काउंटी
+    hr: Sisačko-moslavačka županija
+    hu: Sziszek-Moslavina megye
+    id: Kabupaten Sisak-Moslavina
+    it: regione di Sisak e della Moslavina
+    ja: シサク＝モスラヴィナ郡
+    kn: ಸಿಸಾಕ್-ಮೊಸ್ಲಾವಿನಿ ಕೌಂಟಿ
+    ko: 시사크모슬라비나 주
+    lt: Sisako–Moslavinos apskritis
+    mr: सिसॅक-मोसलविणा काउंटी
+    ms: Sisak-Moslavina County
+    nb: Sisak-Moslavina
+    nl: Sisak-Moslavina
+    pl: Sisačko-moslavačka županija
+    pt: Condado de Sisak-Moslavina
+    ro: Cantonul Sisak-Moslavina
+    ru: Сисацко-Мославинская жупания
+    si: සිසක්-මොස්ලවිනා ප්‍රාන්තය
+    sk: Sisacko-moslavinská župa
+    sl: Sisaško-moslavaška županija
+    sr: Сисачко-мославачка жупанија
+    sv: Sisak-Moslavinas län
+    ta: சிசக்-மொஸில்லாவினா கவுண்டி
+    te: సిసాక్-మోస్లావినా కౌంటీ
+    th: ิเมืองไซซัก-มอสลาวินา
+    tr: Sisak-Moslavina
+    uk: Сісацько-Мославінська жупанія
+    ur: سیساک-موسلاوینا کاؤنٹی
+    vi: Hạt Sisak-Moslavina
+    lv: Sisakas-Moslavinas župānija
+    ceb: Sisačko-Moslavačka Županija
+    sr_Latn: Sisačko-moslavačka županija
+    zh: 錫薩克-莫斯拉維納縣
+    fa: شهرستان سیساک-موسلاوینا
+    sq: Zhupania e Sisakut dhe Mosllovaçës
+    ccp: "\U00011125\U00011128\U00011125\U00011107\U00011134-\U0001111F\U0001112E\U0001110C\U00011134\U00011123\U0001111E\U00011128\U0001111A"
+    he: מחוז סיסאק-מוסלאבינה
+    bs: Sisačko-moslavačka županija
+    mk: Сисачко-мославачка жупанија
+    'no': Sisak-Moslavina
+    az: Sisak-Moslavina jupaniyası
+    cy: Sir Sisak-Moslavina
+    ga: Contae Sisak-Moslavina
+  comments:
+  type: county
+'04':
+  name: Karlovačka županija
+  code: '04'
+  unofficial_names:
+  - Karlovac
+  geo:
+    latitude: 45.2389445
+    longitude: 15.3980067
+    min_latitude: 44.88255729999999
+    min_longitude: 14.961508
+    max_latitude: 45.7628058
+    max_longitude: 15.9247762
+  translations:
+    en: Karlovac
+    ar: مقاطعة كارلوفاتش
+    bg: Карловацка жупания
+    bn: কার্লোভাক কাউন্টি
+    ca: Comtat de Karlovac
+    cs: Karlovacká župa
+    da: Karlovac County
+    de: Gespanschaft Karlovac
+    el: Κάρλοβακ
+    es: Karlovac
+    et: Karlovaci maakond
+    eu: Karlovac eskualdea
+    fa: ایالت کارلوواک
+    fi: Karlovac
+    fr: Comitat de Karlovac
+    gu: કાર્લોવાક કાઉન્ટી
+    hi: कार्लोवैक काउंटी
+    hr: Karlovačka županija
+    hu: Károlyváros megye
+    id: Kabupaten Karlovac
+    it: regione di Karlovac
+    ja: カルロヴァツ郡
+    ka: კარლოვაცი
+    kn: ಕಾರ್ಲೋವಾಕ್ ಕೌಂಟಿ
+    ko: 카를로바츠 주
+    lt: Karlovaco apskritis
+    mr: कार्लोव्हॅक काउंटी
+    ms: Karlovac County
+    nb: Karlovac
+    nl: Karlovac
+    pl: Karlovačka županija
+    pt: Condado de Karlovac
+    ro: Cantonul Karlovac
+    ru: Карловачка
+    si: කර්ලොවැක් ප්‍රාන්තය
+    sk: Karlovecká župa
+    sl: Karlovška županija
+    sr: Карловачка жупанија
+    sv: Karlovacs län
+    ta: கார்லோவக் கவுண்டி
+    te: కార్లోవాక్ కౌంటీ
+    th: เทศมณฑลคาร์โลวัตส์
+    tr: Karlovac Bölgesi
+    uk: Карловацька жупанія
+    ur: کارلوواتس کاؤنٹی
+    vi: Hạt Karlovac
+    lv: Karlovacas župānija
+    ceb: Karlovačka Županija
+    sr_Latn: Karlovačka županija
+    zh: 卡爾洛瓦茨縣
+    sq: Zhupania e Karllovcit
+    ccp: "\U00011107\U00011122\U00011134\U00011123\U0001112E\U0001111E\U00011107\U00011134"
+    be: Карлавачка
+    bs: Karlovačka županija
+    mk: Карловачка жупанија
+    'no': Karlovac
+    az: Karlovaç jupaniyası
+    cy: Sir Karlovac
+    ga: Contae Karlovac
+    he: מחוז קרלובץ
+  comments:
+  type: county
+'05':
+  name: Varaždinska županija
+  code: '05'
+  unofficial_names:
+  - Varaždin
+  geo:
+    latitude: 46.23174729999999
+    longitude: 16.3360558
+    min_latitude: 46.0103401
+    min_longitude: 15.8765333
+    max_latitude: 46.4048343
+    max_longitude: 16.7739716
+  translations:
+    en: Varaždin
+    ar: مقاطعة فرازدين
+    be: Вараждзінская жупанія
+    bg: Вараждинска жупания
+    bn: ভারাজদিন কাউন্টি
+    ca: Comtat de Varaždin
+    cs: Varaždinská župa
+    da: Varaždin County
+    de: Gespanschaft Varaždin
+    el: Βαραζντίν
+    es: Varaždin
+    et: Varaždini maakond
+    eu: Varaždin eskualdea
+    fa: ایالت واراژدین
+    fi: Varaždinin piirikunta
+    fr: Comitat de Varaždin
+    gu: વરાઝડિન કાઉન્ટી
+    hi: वराज़दिन काउंटी
+    hr: Varaždinska županija
+    hu: Varasd megye
+    id: Kabupaten Varaždin
+    it: regione di Varaždin
+    ja: ヴァラジュディン郡
+    kn: ವಾರಾಜ್ಡಿನ್ ಕೌಂಟಿ
+    ko: 바라주딘 주
+    lt: Varaždino apskritis
+    mr: वाराझेडीन काउंटी
+    ms: Varazdin County
+    nb: Varaždin
+    nl: Varaždin
+    pl: Varaždinska županija
+    pt: Condado de Varaždin
+    ro: Cantonul Varaždin
+    ru: Вараждинская жупания
+    si: වරස්ඩින් ප්‍රාන්තය
+    sk: Varaždínska župa
+    sl: Varaždinska županija
+    sr: Вараждинска жупанија
+    sv: Varaždins län
+    ta: வரஸ்ட்டின் கவுண்டி
+    te: వారాజ్డిన్ కౌంటీ
+    th: แอททาร์ด
+    tr: Varaždin Bölgesi
+    uk: Вараждинська жупанія
+    ur: واراژدن کاؤنٹی
+    vi: Hạt Varazdin
+    lv: Varaždinas župānija
+    ceb: Varaždinska Županija
+    sr_Latn: Varaždinska županija
+    zh: 瓦拉日丁縣
+    sq: Zhupania e Varazhdinit
+    ccp: "\U0001111E\U00011122\U0001110C\U00011134\U00011113\U00011128\U0001111A\U00011134"
+    ga: Contae Varaždin
+    bs: Varaždinska županija
+    mk: Вараждинска жупанија
+    'no': Varaždin
+    az: Varajdin jupaniyası
+    cy: Sir Varaždin
+  comments:
+  type: county
+'06':
+  name: Koprivničko-križevačka županija
+  code: '06'
+  unofficial_names:
+  - Koprivnica-Križevci
+  geo:
+    latitude: 46.1568919
+    longitude: 16.8390826
+    min_latitude: 45.8802736
+    min_longitude: 16.3417055
+    max_latitude: 46.3551961
+    max_longitude: 17.3057121
+  translations:
+    en: Koprivnica-Križevci
+    ar: مقاطعة كوبريفنيكا-كريزفتسي
+    bg: Копривнишко-крижевска жупания
+    bn: কপ্রিভনিকা-ক্রিজেভচি কাউন্টি
+    ca: Comtat de Koprivnica-Križevci
+    cs: Koprivnicko-križevecká župa
+    da: Koprivnica-Križevci County
+    de: Gespanschaft Koprivnica-Križevci
+    el: Κοπριβνίτσα-Κριζέβσκι
+    es: Koprivnica-Križevci
+    et: Koprivnica-Križevci maakond
+    eu: Koprivnica-Križevci eskualdea
+    fa: کپریونیتسا-کریژوتسی
+    fr: Comitat de Koprivnica-Križevci
+    gu: કોપ્રીવ્નિકા-ક્રિઝેવ્કી કાઉન્ટી
+    hi: कोप्रिव्निका-क्रिझेव्की काउंटी
+    hr: Koprivničko-križevačka županija
+    hu: Kapronca-Körös megye
+    id: Kabupaten Koprivnica-Križevci
+    it: regione di Koprivnica e Križevci
+    ja: コプリヴニツァ＝クリジェヴツィ郡
+    kn: ಕೊಪ್ರಿನಿಕಾ-ಕ್ರಿಜ್ಜೆವಿ ಕೌಂಟಿ
+    ko: 코프리브니차크리제브치 주
+    lt: Koprivnicų–Križevcų apskritis
+    mr: कोप्रिविन्का-क्रीझेव्हि काउंटी
+    ms: Koprivnica-Krizevci County
+    nb: Koprivnica-Križevci
+    nl: Koprivnica-Križevci
+    pl: Koprivničko-križevačka županija
+    pt: Condado de Koprivnica-Križevci
+    ro: Cantonul Koprivnica-Križevci
+    ru: Копривницко-Крижевацкая жупания
+    si: කොප්රිවින්කා-ක්‍රිසේව්සි ප්‍රාන්තය
+    sk: Koprivnicko-križevatská župa
+    sl: Koprivničko-križevaška županija
+    sr: Копривничко-крижевачка жупанија
+    sv: Koprivnica-Križevcis län
+    ta: கோப்ரிவனிக்கா -க்ரிஸிவசி கவுண்டி
+    te: కోప్రివినికా-క్రిజేవ్చీ కౌంటీ
+    th: คอพรีฟนีตซา-ครีเชฟต์ซี
+    tr: Koprivnica-Križevci
+    uk: Копривницько-Крижевецька жупанія
+    ur: کوپریونیتسا-کریژیوتسی کاؤنٹی
+    vi: Hạt Koprivnica-Krizevci
+    lv: Koprivnica Križevci župānija
+    cy: Koprivnica-Križevci County
+    ceb: Koprivničko-Križevačka Županija
+    sr_Latn: Koprivničko-križevačka županija
+    zh: 科普里夫尼察-克里熱夫齊縣
+    sq: Zhupania e Koprivnicës dhe Krizhevcit
+    ccp: "\U00011107\U0001112E\U0001111B\U00011133\U00011122\U00011128\U0001111B\U00011134\U0001111A\U00011128\U00011107-
+      \U00011107\U00011133\U00011122\U00011128\U0001110E\U0001112C\U0001111B\U00011134\U00011125\U0001112D"
+    bs: Koprivničko-križevačka županija
+    mk: Копривничко-крижевачка жупанија
+    'no': Koprivnica-Križevci
+    az: Koprivniça-Krijevçi jupaniyası
+    fi: Koprivnica-Križevci
+    ga: Contae Koprivnica-Križevci
+  comments:
+  type: county
+'07':
+  name: Bjelovarsko-bilogorska županija
+  code: '07'
+  unofficial_names:
+  - Bjelovar-Bilogora
+  geo:
+    latitude: 45.7809992
+    longitude: 16.9936575
+    min_latitude: 45.4661945
+    min_longitude: 16.4888635
+    max_latitude: 46.088761
+    max_longitude: 17.4986747
+  translations:
+    en: Bjelovar-Bilogora
+    ar: مقاطعة بيلوفار-بيلوغورا
+    be: Белаварска-Білагорская жупанія
+    bg: Беловарско-билогорска жупания
+    bn: বিলোভার-বিলোগোরা কাউন্টি
+    ca: Comtat de Bjelovar-Bilogora
+    cs: Bjelovarsko-bilogorská župa
+    da: Bjelovar-Bilogora County
+    de: Gespanschaft Bjelovar-Bilogora
+    el: κομητεία Μπιέλοβαρ-Μπιλόγκονα
+    es: Bjelovar-Bilogora
+    et: Bjelovari-Bilo gora maakond
+    eu: Bjelovar-Bilogora eskualdea
+    fa: بیلوار-بیلگرا
+    fi: Bjelovar-Bilogora
+    fr: Comitat de Bjelovar-Bilogora
+    gu: બ્જેલોવર-બિલોગોરા કાઉન્ટી
+    hi: बिएलोवर-बिलोगोरा काउंटी
+    hr: Bjelovarsko-bilogorska županija
+    hu: Belovár-Bilogora megye
+    id: Kabupaten Bjelovar-Bilogora
+    it: regione di Bjelovar e della Bilogora
+    ja: ビェロヴァル＝ビロゴラ郡
+    ka: ბელოვარ-ბილოგორა
+    kn: ಬೆಲೋವೊವರ್-ಬಿಲೋಗೊರಾ ಕೌಂಟಿ
+    ko: 벨로바르빌로고라 주
+    lt: Bjelovaro–Bilogoros apskritis
+    mr: बेंजोवर- बिलोगोरा काउंटी
+    ms: Bjelovar-Bilogora County
+    nb: Bjelovar-Bilogora
+    nl: Bjelovar-Bilogora
+    pl: Bjelovarsko-bilogorska županija
+    pt: Condado de Bjelovar-Bilogora
+    ro: Cantonul Bjelovar-Bilogora
+    ru: Беловарско-Билогорская жупания
+    si: බ්ජෙලොවාර්-බිලොගොරා ප්‍රාන්තය
+    sk: Bjelovarsko-bilogorská župa
+    sl: Bjelovarsko-bilogorska županija
+    sr: Бјеловарско-билогорска жупанија
+    sv: Bjelovar-Bilogoras län
+    ta: பிஜெலோவர் -பிலோகோரா கவுண்டி
+    te: బెజెలోవర్-బిలోగ్రా కౌంటీ
+    th: บีเยลอวาร์-บีลอกอรา
+    tr: Bjelovar-Bilogora
+    uk: Беловарсько-Білогорська жупанія
+    ur: بیئلووار-بیلوگورا کاؤنٹی
+    vi: Bjelovar-Bilogora Hạt
+    lv: Bjelovaras-Bilogoras župānija
+    ceb: Bjelovarsko-Bilogorska Županija
+    sr_Latn: Bjelovarsko-bilogorska županija
+    zh: 別洛瓦爾-比洛戈拉縣
+    sq: Zhupania e Bjellovarit dhe Billogorit
+    ccp: "\U0001110E\U0001112C\U00011123\U0001112E\U0001111E\U00011122\U00011134-\U0001111D\U0001112D\U00011123\U0001112E\U00011109\U0001112E\U00011122"
+    bs: Bjelovarsko-bilogorska županija
+    mk: Бјеловарско-билогорска жупанија
+    'no': Bjelovar-Bilogora
+    az: Byelovar-Biloqora jupaniyası
+    cy: Sir Bjelovar-Bilogora
+    ga: Contae Bjelovar-Bilogora
+  comments:
+  type: county
+'08':
+  name: Primorsko-goranska županija
+  code: '08'
+  unofficial_names:
+  - Primorje-Gorski Kotar
+  geo:
+    latitude: 45.31739959999999
+    longitude: 14.8167466
+    min_latitude: 44.4406968
+    min_longitude: 14.1078905
+    max_latitude: 45.67344840000001
+    max_longitude: 15.2352703
+  translations:
+    en: Primorje-Gorski Kotar
+    ar: مقاطعة بريموريه-غورسكي كوتار
+    be: Прыморска-Горанская жупанія
+    bg: Приморско-горанска жупания
+    bn: প্রিমোজে-গোরস্কি কোটার কাউন্টি
+    ca: Comtat de Primorje – Gorski Kotar
+    cs: Přímořsko-gorskokotarská župa
+    da: Primorje-Gorski Kotar County
+    de: Gespanschaft Primorje-Gorski kotar
+    el: Πριμόρτζε-Γκόρσκι Κοτάρ
+    es: Primorje-Gorski Kotar
+    et: Primorje-Gora maakond
+    eu: Primorje-Gorski Kotar eskualdea
+    fi: Primorje-Gorski Kotar
+    fr: Comitat de Primorje-Gorski Kotar
+    gu: પ્રિમોર્જે-ગોર્સ્કી કોટાર કાઉન્ટી
+    he: פרימוריה-גורה
+    hi: प्रिमोर्ये-गर्स्की कोटार काउंटी
+    hr: Primorsko-goranska županija
+    hu: Tengermellék-Hegyvidék megye
+    hy: Պրիմորսկո Գորանսկա
+    id: Kabupaten Primorje-Gorski Kotar
+    it: regione litoraneo-montana
+    ja: プリモリェ＝ゴルスキ・コタル郡
+    kn: ಪ್ರಿಮೊರ್ಜೆ-ಗೋರ್ಸ್ಕಿ ಕೊಟಾರ್ ಕೌಂಟಿ
+    ko: 프리모레고르스키코타르 주
+    lt: Primorjės–Kalnų Kotaro apskritis
+    mr: प्रमोरेस-गर्स्की कोटार काउंटी
+    ms: Primorje-Gorski Kotar County
+    nb: Primorje-Gorski Kotar
+    nl: Primorje-Gorski Kotar
+    pl: Primorsko-goranska županija
+    pt: Condado Litoral-Serrano
+    ro: Cantonul Primorje-Gorski Kotar
+    ru: Приморско-Горанская жупания
+    si: ප්‍රිමොර්ජේ-ගොර්ස්කි කොටාර් ප්‍රාන්තය
+    sk: Prímorsko-gorskokotarská župa
+    sl: Primorsko-goranska županija
+    sr: Приморско-горанска жупанија
+    sv: Primorje-Gorski kotars län
+    ta: பிரிமொர்ஜே -கோர்ஸ்கி கோட்டர் கவுண்டி
+    te: ప్రైమోర్జె-గోర్స్కీ కోటార్ కౌంటీ
+    th: พริมอเจ กอร์สกิ คอตาร์
+    tr: Primorje-Gorski Kotar
+    uk: Приморсько-Ґоранська жупанія
+    ur: پریموریے-گورسکی کوتار کاؤنٹی
+    vi: Hạt Primorje-Gorski Kotar
+    lv: Primorskas-Goranskas župānija
+    ceb: Primorsko-Goranska Županija
+    sr_Latn: Primorsko-goranska županija
+    zh: 濱海和山區縣
+    fa: استان پریموری-گورسکی
+    sq: Zhupania bregdetaro-malore
+    ccp: "\U0001111B\U00011133\U00011122\U0001112D\U0001111F\U0001112E\U00011122\U00011134\U0001110E\U0001112C-\U00011109\U0001112E\U00011122\U00011134\U00011107\U00011128
+      \U00011107\U0001112E\U00011111\U00011122\U00011134"
+    bs: Primorsko-goranska županija
+    mk: Приморско-горска жупанија
+    'no': Primorje-Gorski Kotar
+    az: Primorye-Qorski jupaniyası
+    cy: Sir Primorje-Gorski Kotar
+    ga: Contae Primorje-Gorski Kotar
+  comments:
+  type: county
+'09':
+  name: Ličko-senjska županija
+  code: '09'
+  unofficial_names:
+  - Lika-Senj
+  geo:
+    latitude: 44.6192218
+    longitude: 15.4701608
+    min_latitude: 44.2712303
+    min_longitude: 14.6828545
+    max_latitude: 45.1228954
+    max_longitude: 16.1408169
+  translations:
+    en: Lika-Senj
+    ar: مقاطعة ليكا سني
+    bg: Лишко-сенска жупания
+    bn: লিকা-সেঞ্জ কাউন্টি
+    ca: Comtat de Lika-Senj
+    cs: Licko-senjská župa
+    da: Lika-Senj County
+    de: Gespanschaft Lika-Senj
+    el: Λίκα-Σεντζ
+    es: Lika-Senj
+    et: Lika-Senji maakond
+    eu: Lika-Senj eskualdea
+    fi: Lika-Senj
+    fr: Comitat de Lika-Senj
+    gu: લિકા-સેંજ કાઉન્ટી
+    hi: लिका-सेंज काउंटी
+    hr: Ličko-senjska županija
+    hu: Lika-Zengg megye
+    hy: Լիչկո Սենսկա
+    id: Kabupaten Lika-Senj
+    it: regione della Licca e di Segna
+    ja: リカ＝セニ郡
+    kn: ಲಿಕಾ-ಸೆನ್ಜ್ ಕೌಂಟಿ
+    ko: 리카센 주
+    lt: Likos–Senio apskritis
+    mr: लिका-सेनज काउंटी
+    ms: Lika-Senj County
+    nb: Lika-Senj
+    nl: Lika-Senj
+    pl: Ličko-senjska županija
+    pt: Condado de Lika-Senj
+    ro: Lika-Senj
+    ru: Лицко-Сеньская жупания
+    si: ලිකා-සේන්ජ් ප්‍රාන්තය
+    sk: Licko-senjská župa
+    sl: Ličko-senjska županija
+    sr: Личко-сењска жупанија
+    sv: Lika-Senjs län
+    ta: லிகா -செஞ் கவுண்டி
+    te: లికా-సెంజ్ కౌంటీ
+    th: เทศมณฑลลา-เซนจ์
+    tr: Lika-Senj
+    uk: Ліцько-Сенська жупанія
+    ur: لیکا-سینی کاؤنٹی
+    vi: Hạt Lika-Senj
+    lv: Likas-Seņas župānija
+    ceb: Ličko-Senjska Županija
+    sr_Latn: Ličko-senjska županija
+    zh: 利卡-塞尼縣
+    fa: شهرستان لیکا-سنی
+    sq: Zhupania e Likës dhe Senjit
+    ccp: "\U00011123\U00011128\U00011107-\U00011125\U0001111A\U00011134\U0001110E\U00011128"
+    he: מחוז ליקה-סני
+    bs: Ličko-senjska županija
+    mk: Личко-сењска жупанија
+    'no': Lika-Senj
+    az: Lika-Sen jupaniyası
+    be: Ліцка-Сеньская жупанія
+    cy: Sir Lika-Senj
+    ga: Contae Lika-Senj
+  comments:
+  type: county
+'10':
+  name: Virovitičko-podravska županija
+  code: '10'
+  unofficial_names:
+  - Virovitica-Podravina
+  geo:
+    latitude: 45.6557985
+    longitude: 17.7932472
+    min_latitude: 45.4725689
+    min_longitude: 17.1197372
+    max_latitude: 45.99621200000001
+    max_longitude: 18.0678268
+  translations:
+    en: Virovitica-Podravina
+    ar: مقاطعة فيروفيتيكا-بودرافينا
+    be: Віравіціцка-Падраўская жупанія
+    bg: Вировитишко-подравска жупания
+    bn: ভিরোভিটিকা-পোদ্রাভিনা কাউন্টি
+    ca: Comtat de Virovitica-Podravina
+    cs: Viroviticko-podrávská župa
+    da: Virovitica-Podravina County
+    de: Gespanschaft Virovitica-Podravina
+    el: Βιροβιτίκα-Ποντραβίνα
+    es: Virovitica-Podravina
+    et: Virovitica-Podravina maakond
+    eu: Virovitica-Podravina eskualdea
+    fi: Virovitica-Podravina
+    fr: Comitat de Virovitica-Podravina
+    gu: વિરોવિટિકા-પોડ્રાવીના કાઉન્ટી
+    hi: विरोविटिका-पॉडराविना काउंटी
+    hr: Virovitičko-Podravska županija
+    hu: Verőce-Drávamente megye
+    id: Kabupaten Virovitica-Podravina
+    it: regione di Virovitica e della Podravina
+    ja: ヴィロヴィティツァ＝ポドラヴィナ郡
+    kn: ವಿವೊರೊಟಿಕಾ-ಪೊಡ್ರವಿನಿ ಕೌಂಟಿ
+    ko: 비로비티차포드라비나 주
+    lt: Viroviticos–Podravinos apskritis
+    mr: विरोविटिका-पोड्राविना काउंटी
+    ms: Virovitica-Podravina County
+    nb: Virovitica-Podravina
+    nl: Virovitica-Podravina
+    pl: Virovitičko-podravska županija
+    pt: Condado de Virovitica-Podravina
+    ro: Cantonul Virovitica-Podravina
+    ru: Вировитицко-Подравская жупания
+    si: විරෝවිටිකා -පොද්‍රවිනා ප්‍රාන්තය
+    sk: Viroviticko-podrávska župa
+    sl: Virovitiško-podravska županija
+    sr: Вировитичко-подравска жупанија
+    sv: Virovitica-Podravinas län
+    ta: விப்ரோவிடிகா -போட்றாவினா கவுண்டி
+    te: విరోవిటికా-పోడ్రావినా కౌంటీ
+    th: เทศมณฑลวิโรวิติก้า-โพดราวินา
+    tr: Virovitica-Podravina
+    uk: Вировитицько-Подравська жупанія
+    ur: ویروسیتیتسا-پودراوینا کاؤنٹی
+    vi: Hạt Virovitica-Podravina
+    lv: Viroviticas–Podravinas župānija
+    ceb: Virovitičko-Podravska Županija
+    sr_Latn: Virovitičko-podravska županija
+    zh: 維羅維蒂察-波德拉維納縣
+    fa: شهرستان ویروویتیتسا-پودراوینا
+    sq: Zhupania e Viroviticës dhe Podravkës
+    ccp: "\U0001111E\U0001112D\U00011122\U0001112E\U0001111E\U00011128\U00011111\U00011128\U00011107-\U0001111B\U00011127\U00011113\U00011133\U00011122\U0001111E\U00011128\U0001111A"
+    bs: Virovitičko-podravska županija
+    mk: Вировитичко-подравска жупанија
+    'no': Virovitica-Podravina
+    az: Virovitiça-Podravina jupaniyası
+    cy: Sir Virovitica-Podravina
+    ga: Contae Virovitica-Podravina
+  comments:
+  type: county
+'11':
+  name: Požeško-slavonska županija
+  code: '11'
+  unofficial_names:
+  - Požega-Slavonia
+  geo:
+    latitude: 45.3417868
+    longitude: 17.8114359
+    min_latitude: 45.1823306
+    min_longitude: 16.9284931
+    max_latitude: 45.5801629
+    max_longitude: 18.1141807
+  translations:
+    en: Požega-Slavonia
+    ar: مقاطعة بوزيغا-سلافونيا
+    bg: Пожежко-славонска жупания
+    bn: পোজেগা-স্লাভনিয়া কাউন্টি
+    ca: Comtat de Požega-Eslavònia
+    cs: Požežsko-slavonská župa
+    da: Požega-Slavonia County
+    de: Gespanschaft Požega-Slawonien
+    el: Ποζέγκα-Σλαβονία
+    es: Požega-Eslavonia
+    et: Požega-Slavoonia maakond
+    eu: Požega-Eslavonia eskualdea
+    fi: Požega-Slavonia
+    fr: Comitat de Požega-Slavonie
+    gu: પોઝેગા-સ્લેવોનિયા કાઉન્ટી
+    hi: पोजेगा-स्लावोनिया काउंटी
+    hr: Požeško-slavonska županija
+    hu: Pozsega-Szlavónia megye
+    id: Kabupaten Požega-Slavonia
+    it: regione di Požega e della Slavonia
+    ja: ポジェガ＝スラヴォニア郡
+    kn: ಪೋಜೆಗಾ-ಸ್ಲಾವೊನಿಯಾ ಕೌಂಟಿ
+    ko: 포제가슬라보니아 주
+    lt: Požegos–Slavonijos apskritis
+    mr: पोझेगा-स्लाव्होनिया काउंटी
+    ms: Pozega-Slavonia County
+    nb: Požega-Slavonia
+    nl: Požega-Slavonië
+    pl: Požeško-slavonska županija
+    pt: Condado de Požega-Eslavônia
+    ro: Cantonul Požega-Slavonia
+    ru: Пожежско-Славонская жупания
+    si: පොසේගා ස්ලැවෝනියා ප්‍රාන්තය
+    sk: Požecko-slavónska župa
+    sl: Požeško-slavonska županija
+    sr: Пожешко-славонска жупанија
+    sv: Požega-Slavoniens län
+    ta: போஸிகா -ஸ்லாவோனியா கவுண்டி
+    te: పోజెగా-స్లావోనియా కౌంటీ
+    th: โปเซก้า สโลวาเนีย
+    tr: Požega-Slavonija
+    uk: Пожезько-Славонська жупанія
+    ur: پوژیگا-سلاونیا کاؤنٹی
+    vi: Hạt Pozega-Slavonia
+    lv: Požegas-Slavonskas župānija
+    ceb: Požeško-Slavonska Županija
+    sr_Latn: Požeško-slavonska županija
+    zh: 波熱加-斯拉沃尼亞縣
+    fa: شهرستان پوژگا-اسلاونیا
+    ccp: "\U0001111B\U00011127\U0001110E\U0001112C\U00011109-\U00011125\U00011133\U00011123\U0001111E\U0001112E\U0001111A\U00011128\U00011120"
+    be: Пожажска-Славонская жупанія
+    bs: Požeško-slavonska županija
+    mk: Пожешко-славонска жупанија
+    'no': Požega-Slavonia
+    az: Pojeqa-Slavoniya jupaniyası
+    cy: Sir Požega-Slavonia
+    ga: Contae Požega-Slavonia
+  comments:
+  type: county
+'12':
+  name: Brodsko-posavska županija
+  code: '12'
+  unofficial_names:
+  - Brod-Posavina
+  geo:
+    latitude: 45.2637951
+    longitude: 17.3264562
+    min_latitude: 45.0434571
+    min_longitude: 17.0736625
+    max_latitude: 45.39235980000001
+    max_longitude: 18.5746296
+  translations:
+    en: Brod-Posavina
+    ar: مقاطعة برود-بوسافينا
+    be: Бродска-Посаўская жупанія
+    bg: Бродско-посавска жупания
+    bn: ব্রড-পোসাভিনা কাউন্টি
+    ca: Comtat de Brod-Posavina
+    cs: Brodsko-posávská župa
+    da: Brod-Posavina
+    de: Gespanschaft Brod-Posavina
+    el: Μπρόντ-Ποσαβίνα
+    es: Brod-Posavina
+    et: Brodi-Posavina maakond
+    eu: Brod-Posavina eskualdea
+    fa: برد پساوینا
+    fi: Brod-Posavina
+    fr: Comitat de Brod-Posavina
+    gu: બ્રોડ-પોસવિના કાઉન્ટી
+    hi: ब्रोड-पोसाविना काउंटी
+    hr: Brodsko-posavska županija
+    hu: Bród-Szávamente megye
+    id: Kabupaten Brod-Posavina
+    it: regione di Brod e della Posavina
+    ja: ブロド＝ポサヴィナ郡
+    ka: ბროდ-პოსავინა
+    kn: ಬ್ರಾಡ್-ಪೊಸವಿನಾ ಕೌಂಟಿ
+    ko: 브로드포사비나 주
+    lt: Brodo–Posavinos apskritis
+    mr: ब्रॉड-पोसाव्हिना काउंटी
+    ms: Daerah Brod-Posavina
+    nb: Brod-Posavina
+    nl: Brod-Posavina
+    pl: Brodsko-posavska županija
+    pt: Condado de Brod-Posavina
+    ro: Cantonul Brod-Posavina
+    ru: Бродско-Посавская жупания
+    si: ", බ්‍රොඩ් - පොසවිනා ප්‍රාන්තය"
+    sk: Brodsko-posávska župa
+    sl: Brodsko-posavska županija
+    sr: Бродско-посавска жупанија
+    sv: Brod-Posavinas län
+    ta: ப்ரோட் -போசாவினா கவுண்டி
+    te: బ్రాడ్-పోసావినా కౌంటీ
+    th: เทศมณฑลบรอดโพแซวินา
+    tr: Brod-Posavina
+    uk: Бродсько-Посавська жупанія
+    ur: برود-پوساوینا کاؤنٹی
+    vi: Hạt Brod-Posavina
+    lv: Brodas-Posavinas župānija
+    ceb: Brodsko-Posavska Županija
+    sr_Latn: Brodsko-posavska županija
+    zh: 布羅德-波薩維納縣
+    sq: Zhupania e Brodit dhe Posavinës
+    ccp: "\U0001111D\U00011133\U00011122\U00011116\U00011134-\U0001111B\U0001112E\U00011125\U0001111E\U00011128\U0001111A"
+    bs: Brodsko-posavska županija
+    mk: Бродско-посавска жупанија
+    'no': Brod-Posavina
+    az: Brod-Posavina jupaniyası
+    cy: Sir Brod-Posavina
+    ga: Contae Brod-Posavina
+    he: ברוד-פוזבינה
+  comments:
+  type: county
+'13':
+  name: Zadarska županija
+  code: '13'
+  unofficial_names:
+  - Zadar
+  geo:
+    latitude: 44.146939
+    longitude: 15.6164943
+    min_latitude: 43.8228067
+    min_longitude: 14.5670193
+    max_latitude: 44.5384474
+    max_longitude: 16.2202414
+  translations:
+    en: Zadar
+    ar: مقاطعة زادار
+    be: Задарская жупанія
+    bg: Задарска жупания
+    bn: জারদার কাউন্টি
+    ca: Comtat de Zadar
+    cs: Zadarská župa
+    da: Zadar County
+    de: Gespanschaft Zadar
+    el: Ζαντάρ
+    es: Zadar
+    et: Zadari maakond
+    eu: Zadar eskualdea
+    fa: ایالت زادار
+    fi: Zadarin piirikunta
+    fr: Comitat de Zadar
+    gu: ઝેડર કાઉન્ટી
+    hi: ज़दार काउंटी
+    hr: Zadarska županija
+    hu: Zára megye
+    hy: Զադար
+    id: Kabupaten Zadar
+    it: regione zaratina
+    ja: ザダル郡
+    ka: ზადარის ოლქი
+    kn: ಝದರ್ ಕೌಂಟಿ
+    ko: 자다르 주
+    lt: Zadaro apskritis
+    mr: झदर काउंटी
+    ms: Zadar County
+    nb: Zadar
+    nl: Zadar
+    pl: Zadarska županija
+    pt: Condado de Zadar
+    ro: Cantonul Zadar
+    ru: Задарская жупания
+    si: සඩාර් ප්‍රාන්තය
+    sk: Zadarská župa
+    sl: Zadarska županija
+    sr: Задарска жупанија
+    sv: Zadars län
+    ta: சடார் கவுண்டி
+    te: జాదర్ కౌంటీ
+    th: ซาดาร์
+    tr: Zadar Bölgesi
+    uk: Задарська жупанія
+    ur: زدار کاؤنٹی
+    vi: Hạt Zadar
+    lv: Zadaras župānija
+    ceb: Zadarska Županija
+    sr_Latn: Zadarska županija
+    zh: 扎達爾縣
+    yue_Hans: 扎达尔县
+    sq: Zhupania e Zarës
+    ccp: "\U0001110E\U00011113\U00011122\U00011134"
+    he: מחוז זאדר
+    yue: 扎達爾縣
+    bs: Zadarska županija
+    mk: Задарска жупанија
+    'no': Zadar
+    az: Zadar jupaniyası
+    cy: Sir Zadar
+    ga: Contae Zadar
+  comments:
+  type: county
+'14':
+  name: Osječko-baranjska županija
+  code: '14'
+  unofficial_names:
+  - Osijek-Baranja
+  geo:
+    latitude: 45.5576428
+    longitude: 18.3942141
+    min_latitude: 45.2042832
+    min_longitude: 17.8840624
+    max_latitude: 45.9217976
+    max_longitude: 19.1025689
+  translations:
+    en: Osijek-Baranja
+    ar: مقاطعة أوسييك-بارانيا
+    be: Осіецка-Бараньская жупанія
+    bg: Осиешко-баранска жупания
+    bn: ওসিজেক-বারাঞ্জা কাউন্টি
+    ca: Comtat d’Osijek-Baranja
+    cs: Osijecko-baranjská župa
+    da: Osijek-Baranja County
+    de: Gespanschaft Osijek-Baranja
+    el: Οσιτζέκ-Μπαράντζα
+    es: Osijek-Baranja
+    et: Osijeki-Baranja maakond
+    eu: Osijek-Baranja eskualdea
+    fa: ایالت اوسییک-بارانجا
+    fi: Osijek-Baranja
+    fr: Comitat d’Osijek-Baranja
+    gu: ઓસ્જેક-બારંજા કાઉન્ટી
+    hi: ओसिएक-बरान्खा काउंटी
+    hr: Osječko-baranjska županija
+    hu: Eszék-Baranya megye
+    id: Kabupaten Osijek-Baranja
+    it: regione di Osijek e della Baranja
+    ja: オシエク＝バラニャ郡
+    kn: ಒಸಿಜೆಕ್-ಬರಾನ್ಜಾ ಕೌಂಟಿ
+    ko: 오시예크바라냐 주
+    lt: Osijeko–Baranijos apskritis
+    mr: ओस्जेक-बारानजा काउंटी
+    ms: Osijek-Baranja County
+    nb: Osijek-Baranja
+    nl: Osijek-Baranja
+    pl: Osječko-baranjska županija
+    pt: Condado de Osijek-Barânia
+    ro: Cantonul Osijek-Baranja
+    ru: Осиецко-Бараньская жупания
+    si: ඔසිජෙක්-බරන්ජා ප්‍රාන්තය
+    sk: Osijecko-baranjská župa
+    sl: Osiješko-baranjska županija
+    sr: Осјечко-барањска жупанија
+    sv: Osijek-Baranjas län
+    ta: ஓசிஜேக் -பரஞ்சா கவுண்டி
+    te: ఓసిజెక్-బరాంజా కౌంటీ
+    th: เมืองโอซิเจค-บารานจา
+    tr: Osijek-Baranya
+    uk: Осієцько-Баранська жупанія
+    ur: اوسیئک-بارانیا کاؤنٹی
+    vi: Hạt Osijek-Baranja
+    lv: Osijekas-Baranjas župānija
+    ceb: Osječko-Baranjska Županija
+    sr_Latn: Osječko-baranjska županija
+    zh: 奧西耶克-巴拉尼亞縣
+    sq: Zhupania e Osijekut dhe Baranjës
+    ccp: "\U00011103\U00011127\U00011125\U00011128\U0001110E\U0001112C\U00011107\U00011134-\U0001111D\U00011122\U0001111A\U00011134\U0001110E"
+    bs: Osječko-baranjska županija
+    mk: Осиечко-барањска жупанија
+    'no': Osijek-Baranja
+    az: Osiyek-Baranya jupaniyası
+    cy: Sir Osijek-Baranja
+    ga: Contae Osijek-Baranja
+  comments:
+  type: county
+'15':
+  name: Šibensko-kninska županija
+  code: '15'
+  unofficial_names:
+  - Šibenik-Knin
+  geo:
+    latitude: 43.9281485
+    longitude: 16.1037694
+    min_latitude: 43.4868297
+    min_longitude: 15.2068282
+    max_latitude: 44.2164979
+    max_longitude: 16.5426211
+  translations:
+    en: Šibenik-Knin
+    ar: مقاطعة شيبينيك-كنين
+    be: Шыбенска-Кнінская жупанія
+    bg: Шибенишко-книнска жупания
+    bn: সিবেনিক-নিন কাউন্টি
+    ca: Comtat de Šibenik-Knin
+    cs: Šibenicko-kninská župa
+    da: Šibenik-Knin County
+    de: Gespanschaft Šibenik-Knin
+    el: Σιμπένικ-Κνιν
+    es: Šibenik-Knin
+    et: Šibeniki-Knini maakond
+    eu: Šibenik-Knin eskualdea
+    fi: Šibenik-Knin
+    fr: Comitat de Šibenik-Knin
+    gu: સિબેનીક-નિન કાઉન્ટી
+    hi: सिबिनिक-निन काउंटी
+    hr: Šibensko-kninska županija
+    hu: Šibenik-Knin megye
+    hy: Շիբենիկ Կնին
+    id: Kabupaten Šibenik-Knin
+    it: regione di Sebenico e Tenin
+    ja: シベニク＝クニン郡
+    kn: ಸಿಬೆನಿಕ್-ನಿನ್ ಕೌಂಟಿ
+    ko: 시베니크크닌 주
+    lt: Šibeniko–Knino apskritis
+    mr: सिबिनिक-निन काउंटी
+    ms: Sibenik-Knin County
+    nb: Šibenik-Knin
+    nl: Šibenik-Knin
+    pl: Šibensko-kninska županija
+    pt: Condado de Šibenik-Knin
+    ro: Cantonul Šibenik-Knin
+    ru: Шибенско-Книнская жупания
+    si: සිබෙනික්-ක්නින් ප්‍රාන්තය
+    sk: Šibenicko-kninská župa
+    sl: Šibensko-kninska županija
+    sr: Шибенско-книнска жупанија
+    sv: Šibenik-Knins län
+    ta: சிபேனிக் -கானின் கவுண்டி
+    te: సిబెనిక్-క్నిన్ కౌంటీ
+    th: เทศมลฑลชีเบนิค-คนีน
+    tr: Šibenik-Knin
+    uk: Шибеницько-Кнінська жупанія
+    ur: شیبینک-کنین کاؤنٹی
+    vi: Hạt Sibenik-Knin
+    lv: Šibenikas-Kninas županija
+    ceb: Šibensko-Kninska Županija
+    sr_Latn: Šibensko-kninska županija
+    zh: 希貝尼克-克寧縣
+    fa: شهرستان شیبنیک-کنین
+    sq: Zhupania e Kninit dhe Shibenikut
+    ccp: "\U00011125\U00011128\U0001111D\U0001112C\U0001111A\U00011128\U00011107\U00011134-\U0001111A\U00011128\U0001111A\U00011134"
+    bs: Šibensko-kninska županija
+    mk: Шибенско-книнска жупанија
+    'no': Šibenik-Knin
+    az: Şibenik-Knin jupaniyası
+    cy: Sir Šibenik-Knin
+    ga: Contae Šibenik-Knin
+    he: מחוז שיבניק-קנין
+  comments:
+  type: county
+'16':
+  name: Vukovarsko-srijemska županija
+  code: '16'
+  unofficial_names:
+  - Vukovar-Sirmium
+  geo:
+    latitude: 45.1773552
+    longitude: 18.8053527
+    min_latitude: 44.8497502
+    min_longitude: 18.4948404
+    max_latitude: 45.4856329
+    max_longitude: 19.4480523
+  translations:
+    en: Vukovar-Syrmia
+    ar: مقاطعة فوكوفار-سيرميا
+    be: Вукаварска-Срэмская жупанія
+    bg: Вуковарско-сремска жупания
+    bn: ভুকোভার-সিরমিয়া
+    ca: Comtat de Vukovar-Srijem
+    cs: Vukovarsko-sremská župa
+    da: Vukovar-Syrmia County
+    de: Gespanschaft Vukovar-Srijem
+    el: Βούκοβαρ-Σρίτζεμ
+    es: Vukovar-Srijem
+    et: Vukovari-Srijemi maakond
+    eu: Vukovar-Syrmia eskualdea
+    fa: شهرستان ووکوار اسریجم
+    fi: Vukovar-Syrmia
+    fr: Comitat de Vukovar-Syrmie
+    gu: વકોવર-સિરમિઆ કાઉન્ટી
+    hi: वोकोवर-सीरमिया काउंटी
+    hr: Vukovarsko-srijemska županija
+    hu: Vukovár-Szerém megye
+    id: Kabupaten Vukovar-Syrmia
+    it: regione di Vukovar e della Sirmia
+    ja: ヴコヴァル＝スリイェム郡
+    kn: ವುಕೋವರ್ -ಸಿರ್ಮಿಯಾ ಕೌಂಟಿ
+    ko: 부코바르스리옘 주
+    lt: Vukovaro–Srijemo apskritis
+    mr: वक्वेर-सिरिमीया काउंटी
+    ms: Vukovar-Syrmia County
+    nb: Vukovar-Syrmia
+    nl: Vukovar-Srijem
+    pl: Vukovarsko-srijemska županija
+    pt: Condado de Vukovar-Sírmia
+    ro: Cantonul Vukovar-Srijem
+    ru: Вуковарско-Сремская жупания
+    si: වුකොවර්-සිර්මියා ප්‍රාන්තය
+    sk: Vukovarsko-sriemska župa
+    sl: Vukovarsko-srijemska županija
+    sr: Вуковарско-сријемска жупанија
+    sv: Vukovar-Srijems län
+    ta: வுக்கோவைர் -சிறுமியா கவுண்டி
+    te: వుకోవర్-సిమియా కౌంటీ
+    th: วูโควาร์
+    tr: Vukovar-Syrmia
+    uk: Вуковарсько-Сремська жупанія
+    ur: ووکووار-سریئیم کاؤنٹی
+    vi: Vukovar-Syrmia Hạt
+    lv: Vukovaras-Srijemas župānija
+    ceb: Vukovarsko-Srijemska Županija
+    sr_Latn: Vukovarsko-srijemska županija
+    zh: 武科瓦爾-斯里耶姆縣
+    sq: Zhupania e Vukovarit dhe Sremit
+    ccp: "\U0001111E\U0001112A\U00011107\U0001112E\U0001111E\U00011122\U00011134-\U00011125\U00011128\U00011122\U00011134\U0001111F\U00011128\U00011120"
+    bs: Vukovarsko-srijemska županija
+    mk: Вуковарско-сремска жупанија
+    'no': Vukovar-Syrmia
+    az: Vukovar-Sriyem jupaniyası
+    cy: Sir Vukovar-Syrmia
+    ga: Contae Vukovar-Syrmia
+  comments:
+  type: county
+'17':
+  name: Splitsko-dalmatinska županija
+  code: '17'
+  unofficial_names:
+  - Split-Dalmatia
+  geo:
+    latitude: 43.5240328
+    longitude: 16.8178377
+    min_latitude: 42.38713629999999
+    min_longitude: 15.709013
+    max_latitude: 43.9736159
+    max_longitude: 17.4510685
+  translations:
+    en: Split-Dalmatia
+    ar: مقاطعة سبليت-دالماسيا
+    be: Спліцка-Далмацінская жупанія
+    bg: Сплитско-далматинска жупания
+    bn: স্প্লিত-দাল্মেশিয়া কাউন্টি
+    ca: Comtat de Split-Dalmàcia
+    cs: Splitsko-dalmatská župa
+    da: Split-Dalmatia County
+    de: Gespanschaft Split-Dalmatien
+    el: Σπλιτ-Νταλματία
+    es: Split-Dalmacia
+    et: Spliti-Dalmaatsia maakond
+    eu: Split-Dalmazia eskualdea
+    fi: Split-Dalmatia
+    fr: Comitat de Split-Dalmatie
+    gu: સ્પ્લિટ-ડલ્માટિયા કાઉન્ટી
+    hi: स्प्लिट-डालमेशिया काउंटी
+    hr: Splitsko-dalmatinska županija
+    hu: Split-Dalmácia megye
+    hy: Սպլիտսկո Դալմատինսկա
+    id: Kabupaten Split-Dalmatia
+    it: regione spalatino-dalmata
+    ja: スプリト＝ダルマチア郡
+    kn: ಸ್ಪ್ಲಿಟ್-ಡಾಲ್ಮಾಟಿಯಾ ಕೌಂಟಿ
+    ko: 스플리트달마티아 주
+    lt: Splito–Dalmatijos apskritis
+    mr: स्प्लिट-डल्मॅटिया काउंटी
+    ms: Split-Dalmatia County
+    nb: Split-Dalmatia
+    nl: Split-Dalmatië
+    pl: Splitsko-dalmatinska županija
+    pt: Condado de Split-Dalmácia
+    ro: Cantonul Split-Dalmația
+    ru: Сплитско-Далматинская жупания
+    si: ස්ප්ලිට් ඩල්මටියා ප්‍රාන්තය
+    sk: Splitsko-dalmatínska župa
+    sl: Splitsko-dalmatinska županija
+    sr: Сплитско-далматинска жупанија
+    sv: Split-Dalmatiens län
+    ta: ஸ்ப்ளிட் -டால்மதிஆ கவுண்டி
+    te: స్ప్లిట్-డాల్మాటియా కౌంటీ
+    th: นอร์ทอีส ดิสทริค
+    tr: Split-Dalmaçya
+    uk: Сплітсько-Далматинська жупанія
+    ur: سپلیت-دالماتیا کاؤنٹی
+    vi: Hạt Split-Dalmatia
+    lv: Splitas-Dalmācijas župānija
+    ceb: Splitsko-Dalmatinska Županija
+    sr_Latn: Splitsko-dalmatinska županija
+    zh: 斯普利特-達爾馬提亞縣
+    fa: شهرستان اسپلیت-دالماسی
+    sq: Zhupania e Splitit dhe e Dalmacisë
+    ccp: "\U00011103\U00011128\U0001110C\U00011134\U0001111B\U00011133\U00011123\U00011128\U00011116\U00011134-\U00011113\U00011123\U00011134\U0001111F\U00011111\U00011128\U00011120"
+    bs: Splitsko-dalmatinska županija
+    mk: Сплитско-далматинска жупанија
+    'no': Split-Dalmatia
+    az: Split-Dalmatiya jupaniyası
+    cy: Sir Split-Dalmatia
+    ga: Contae Split-Dalmatia
+  comments:
+  type: county
+'18':
+  name: Istarska županija
+  code: '18'
+  unofficial_names:
+  - Istria
+  geo:
+    latitude: 45.1286455
+    longitude: 13.901542
+    min_latitude: 44.75755170000001
+    min_longitude: 13.4896865
+    max_latitude: 45.5196036
+    max_longitude: 14.2285896
+  translations:
+    en: Istria
+    ar: مقاطعة إستريا
+    bg: Истрийска жупания
+    bn: ইস্ত্রিয়া কাউন্টি
+    ca: Comtat d’Ístria
+    cs: Istrijská župa
+    da: Istria County
+    de: Gespanschaft Istrien
+    el: Ίστρια
+    es: Istria
+    et: Istra maakond
+    eu: Istria eskualdea
+    fa: ایستریا
+    fi: Istrian piirikunta
+    fr: Comitat d’Istrie
+    gu: આઇસ્ટ્રિયા કાઉન્ટી
+    hi: इस्ट्रिया काउंटी
+    hr: Istarska županija
+    hu: Isztria megye
+    hy: Իստրիա
+    id: Kabupaten Istria
+    it: regione istriana
+    ja: イストラ郡
+    ka: ისტრია
+    kn: ಇಸ್ಟ್ರಿಯಾ ಕೌಂಟಿ
+    ko: 이스트라 주
+    lt: Istrijos apskritis
+    mr: इस्रीया काउंटी
+    ms: Istria County
+    nb: Istria
+    nl: Istrië
+    pl: Istarska županija
+    pt: Condado de Ístria
+    ro: Cantonul Istria
+    ru: Истрийская жупания
+    si: ඉස්ට්‍රියා ප්‍රාන්තය
+    sk: Istrijská župa
+    sl: Istrska županija
+    sr: Истарска жупанија
+    sv: Istriens län
+    ta: இஸ்திரியா கவுண்டி
+    te: ఇస్ట్రియా కౌంటీ
+    th: เทศมณฑลอิสเตรีย
+    tr: İstriya
+    uk: Істрійська жупанія
+    ur: استریا کاؤنٹی
+    vi: Hạt Istria
+    lv: Istrijas župānija
+    ceb: Istarska Županija
+    sr_Latn: Istarska županija
+    zh: 伊斯特拉縣
+    sq: Zhupania e Istrës
+    ccp: "\U00011103\U00011128\U0001110C\U00011134\U00011111\U00011133\U00011122\U00011128\U00011120"
+    bs: Istarska županija
+    mk: Истарска жупанија
+    'no': Istria
+    az: İstriya jupaniyası
+    be: Істрыйская жупанія
+    cy: Sir Istria
+    ga: Contae Istria
+  comments:
+  type: county
+'19':
+  name: Dubrovačko-neretvanska županija
+  code: '19'
+  unofficial_names:
+  - Dubrovnik-Neretva
+  geo:
+    latitude: 43.0766588
+    longitude: 17.5268471
+    min_latitude: 42.3922402
+    min_longitude: 16.4876151
+    max_latitude: 43.17750849999999
+    max_longitude: 18.5337474
+  translations:
+    en: Dubrovnik-Neretva
+    ar: مقاطعة دوبروفنيك-نيريتفا
+    be: Дуброўніцка-Нерэтванская жупанія
+    bg: Дубровнишко-неретванска жупания
+    bn: দুব্রভনিক-নেরেতভা কাউন্টি
+    ca: Comtat de Dubrovnik-Neretva
+    cs: Dubrovnicko-neretvanská župa
+    da: Dubrovnik-Neretva County
+    de: Gespanschaft Dubrovnik-Neretva
+    el: Ντουμπρόβνικ-Νερέτβα
+    es: Dubrovnik-Neretva
+    et: Dubrovniki-Neretva maakond
+    eu: Dubrovnik-Neretva eskualdea
+    fa: دوبروونیک نرتوا
+    fi: Dubrovnik-Neretva
+    fr: Comitat de Dubrovnik-Neretva
+    gu: ડુબ્રૉવૉનિક-નેરેટ્વા કાઉન્ટી
+    hi: डूब्रोव्निक-नेरेट्वा काउंटी
+    hr: Dubrovačko-neretvanska županija
+    hu: Dubrovnik-Neretva megye
+    hy: Դուբրովնիկ Ներետվա
+    id: Kabupaten Dubrovnik-Neretva
+    it: regione raguseo-narentana
+    ja: ドゥブロヴニク＝ネレトヴァ郡
+    ka: დუბროვნიკ-ნერეტვა
+    kn: ಡುಬ್ರೊವ್ನಿಕ್-ನೆರೆಟ್ವಾ ಕೌಂಟಿ
+    ko: 두브로브니크네레트바 주
+    lt: Dubrovnikų–Neretvos apskritis
+    mr: डबरोवनिक-नेरेवा काउंटी
+    ms: Dubrovnik-Neretva County
+    nb: Dubrovnik-Neretva
+    nl: Dubrovnik-Neretva
+    pl: Dubrovačko-neretvanska županija
+    pt: Dubrovnik-Neretva
+    ro: Cantonul Dubrovnik-Neretva
+    ru: Дубровницко-Неретванская жупания
+    si: ඩබ්රෝව්නික් නෙරෙට්වා ප්‍රාන්තය
+    sk: Dubrovnícko-neretvianska župa
+    sl: Dubrovniško-neretvanska županija
+    sr: Дубровачко-неретванска жупанија
+    sv: Dubrovnik-Neretvas län
+    ta: துப்ரோவ்னிக் -நேரிட்டவா கவுண்டி
+    te: డుబ్రావోనిక్-నెరెట్వా కౌంటీ
+    th: จังหวัดชีรัค
+    tr: Dubrovnik-Neretva
+    uk: Дубровницько-Неретванська жупанія
+    ur: دوبروونیک-نیریتوا کاؤنٹی
+    vi: Hạt Dubrovnik-Neretva
+    lv: Dubrovnikas-Neretvas župānija
+    ceb: Dubrovačko-Neretvanska Županija
+    sr_Latn: Dubrovačko-neretvanska županija
+    zh: 杜布羅夫斯克-內雷特瓦縣
+    sq: Zhupania e Dubrovnikut dhe Neretvës
+    ccp: "\U00011113\U0001112A\U0001111D\U00011133\U00011122\U0001112E\U0001111B\U00011134\U0001111A\U00011128\U00011107\U00011134-\U0001111A\U0001112C\U00011122\U0001112C\U00011116\U00011134\U0001111E"
+    he: מחוז דוברובניק-נרטבה
+    bs: Dubrovačko-neretvanska županija
+    mk: Дубровничко-неретванска жупанија
+    'no': Dubrovnik-Neretva
+    az: Dubrovnik-Neretva jupaniyası
+    cy: Sir Dubrovnik-Neretva
+    ga: Contae Dubrovnik-Neretva
+  comments:
+  type: county
+'20':
+  name: Međimurska županija
+  code: '20'
+  unofficial_names:
+  - Međimurje
+  geo:
+    latitude: 46.3766644
+    longitude: 16.4213298
+    min_latitude: 46.2877571
+    min_longitude: 16.2384532
+    max_latitude: 46.5552234
+    max_longitude: 16.8580089
+  translations:
+    en: Međimurje
+    ar: مقاطعة ماجيموريه
+    bg: Меджимурска жупания
+    bn: মেডিমুরজে কাউন্টি
+    ca: Comtat de Međimurje
+    cs: Mezimuřská župa
+    da: Međimurje County
+    de: Gespanschaft Međimurje
+    el: Μεντιμούρτζε
+    es: Međimurje
+    et: Međimurje maakond
+    eu: Međimurje eskualdea
+    fi: Međimurje
+    fr: Comitat de Međimurje
+    gu: મેડીમુરજે કાઉન્ટી
+    hi: मेडीमुर्जे काउंटी
+    hr: Međimurska županija
+    hu: Muraköz megye
+    id: Kabupaten Međimurje
+    it: regione del Međimurje
+    ja: メジムリェ郡
+    kn: ಮೆಡಿಮೂರ್ಜೆ ಕೌಂಟಿ
+    ko: 메지무레 주
+    lt: Medžimurjės apskritis
+    mr: मेगेमूर्जे काउंटी
+    ms: Medimurje County
+    nb: Međimurje
+    nl: Međimurje
+    pl: Međimurska županija
+    pt: Condado de Međimurje
+    ro: Cantonul Međimurje
+    ru: Меджумурская жупания
+    si: මෙඩිමුර්ජේ ප්‍රාන්තය
+    sk: Medzimurská župa
+    sl: Medžimurska županija
+    sr: Међимурска жупанија
+    sv: Međimurjes län
+    ta: மெடிமிர்ஜே கவுண்டி
+    te: మెడిముర్జె కౌంటీ
+    th: เมดิเมอเจ
+    tr: Međimurje
+    uk: Меджимурська жупанія
+    ur: میجیموریے کاؤنٹی
+    vi: Hạt Medimurje
+    lv: Medžimurjes župānija
+    ceb: Međimurska Županija
+    sr_Latn: Međimurska županija
+    zh: 梅吉穆列縣
+    fa: شهرستان مجیموریه
+    sq: Zhupania e Megjimurës
+    ccp: "\U0001111F\U0001112C\U00011113\U00011128\U0001111F\U0001112A\U00011122\U00011134\U0001110E\U0001112C"
+    bs: Međimurska županija
+    mk: Меѓимурска жупанија
+    'no': Međimurje
+    az: Medjumur jupaniyası
+    cy: Sir Međimurje
+    ga: Contae Međimurje
+    hy: Մեջիմուրսկա
+  comments:
+  type: county
+'21':
+  name: Grad Zagreb
+  code: '21'
+  unofficial_names:
+  - City of Zagreb
+  geo:
+    latitude: 45.8150108
+    longitude: 15.981919
+    min_latitude: 45.7408527
+    min_longitude: 15.8216904
+    max_latitude: 45.9395392
+    max_longitude: 16.1069727
+  translations:
+    en: Zagreb
+    af: Zagreb
+    am: ዛግሬብ
+    ar: زغرب
+    az: Zaqreb
+    be: Заграб
+    bg: Загреб
+    bn: জাগরেব
+    ca: Zagreb
+    cs: Záhřeb
+    da: Zagreb
+    de: Zagreb
+    el: Ζάγκρεμπ²
+    es: Zagreb²
+    et: Zagreb
+    eu: Zagreb
+    fa: زاگرب
+    fi: Zagreb²
+    fr: Zagreb
+    gl: Zagreb
+    gu: જ઼ાગ્રેબ
+    he: זאגרב
+    hi: ज़ग्रेब
+    hr: Zagreb
+    hu: Zágráb
+    hy: Զագրեբ
+    id: Zagreb
+    is: Zagreb
+    it: Zagabria
+    ja: ザグレブ
+    ka: ზაგრები
+    kn: ಝಗ್ರೇಬ್
+    ko: 자그레브
+    lt: Zagrebas
+    lv: Zagreba
+    ml: സാഗ്രെബ്
+    mn: Загреб
+    mr: झाग्रेब
+    ms: Zagreb
+    nb: Zagreb²
+    ne: जग्रिब
+    nl: Zagreb²
+    pl: Zagrzeb
+    pt: Zagreb
+    ro: Zagreb
+    ru: Загреб
+    si: සාග්‍රබ්
+    sk: Záhreb
+    sl: Zagreb
+    sr: Загреб
+    sv: Zagreb
+    sw: Zagreb
+    ta: சாகிரேப்
+    te: జగ్రేబ్
+    th: ซาเกร็บ²
+    tk: Zagreb
+    tr: Zagreb
+    uk: Загреб
+    ur: زگریب
+    vi: Zagreb²
+    cy: Zagreb
+    ceb: Zagreb
+    sr_Latn: Zagreb
+    zh: 萨格勒布
+    yue_Hans: 萨格勒布
+    jv: Zagreb
+    sq: Zagrebi
+    ccp: "\U0001110E\U00011109\U00011133\U00011122\U0001112C\U0001111B\U00011134"
+    ga: Ságrab
+    ps: زګريب
+    ky: Загреб
+    pa: ਜ਼ਾਗਰਬ
+    kk: Загреб
+    yue: 薩格勒布
+    yo: Zagreb
+    uz: Zagreb
+    bs: Zagreb
+    mk: Загреб
+    'no': Zagreb²
+    yo_BJ: Zagreb
+    ha: Zagreb
+    ha_NE: Zagreb
+    lo: ຊາເກຣບ
+    sd: زغرب
+  comments:
+  type: city

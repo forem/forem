@@ -1,0 +1,51 @@
+---
+TL:
+  alpha2: TL
+  alpha3: TLS
+  continent: Asia
+  country_code: '670'
+  currency_code: IDR
+  distance_unit: KM
+  gec: TT
+  geo:
+    latitude: -8.874217
+    longitude: 125.727539
+    max_latitude: -8.048399999999999
+    max_longitude: 127.4249
+    min_latitude: -9.5303001
+    min_longitude: 124.0332
+    bounds:
+      northeast:
+        lat: -8.048399999999999
+        lng: 127.4249
+      southwest:
+        lat: -9.5303001
+        lng: 124.0332
+  international_prefix: None
+  ioc: TLS
+  iso_long_name: The Democratic Republic of Timor-Leste
+  iso_short_name: Timor-Leste
+  languages_official:
+  - pt
+  languages_spoken:
+  - pt
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: East Timorese
+  number: '626'
+  postal_code: false
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: TL
+  unofficial_names:
+  - East Timor
+  - Timor-Leste
+  - Timor oriental
+  - Timor Oriental
+  - 東ティモール
+  - Oost-Timor
+  world_region: APAC

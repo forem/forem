@@ -1,0 +1,1596 @@
+---
+AMA:
+  name: Amazonas
+  code: AMA
+  unofficial_names: Amazonas
+  geo:
+    latitude: -5.115146
+    longitude: -78.11082789999999
+    min_latitude: -6.976671
+    min_longitude: -78.712204
+    max_latitude: -2.990077
+    max_longitude: -77.1344191
+  translations:
+    en: Amazonas
+    ar: إقليم أمازوناس
+    be: Рэгіён Амасонас
+    bg: Амасонас
+    bn: আমাজুনাস অঞ্চল
+    ca: Regió de l’Amazones
+    cs: Amazonas
+    da: Amazonas
+    de: Amazonas
+    el: Αμαζόνες
+    es: Departamento de Amazonas
+    et: Amazonase piirkond
+    fa: ناحیه امازوناس
+    fi: Amazonasin alue
+    fr: Amazonas
+    gl: Amazonas
+    gu: એમેઝોનસ પ્રદેશ
+    hi: एमेज़ोनस क्षेत्र
+    hu: Amazonas megye
+    id: Region Amazonas
+    it: regione di Amazonas
+    ja: アマソナス県
+    ka: ამასონასი
+    kn: ಅಮೆಜೋನಾಸ್ ಪ್ರದೇಶ
+    ko: 아마소나스 주
+    lt: Amazonės departamentas
+    mr: अमॅझॉनस प्रदेश
+    ms: Wilayah Amazonas
+    nb: Amazonas
+    nl: Amazonas
+    pl: Region Amazonas
+    pt: Amazonas
+    ro: Amazonas
+    ru: Амасонас
+    si: ඇමසෝනාස් ප්‍රාන්තය
+    sr: Регион Амазонас
+    sv: Amazonas
+    ta: அமேசானாஸ் பகுதி
+    te: అమెజోనాస్ ప్రాంతం
+    th: แคว้นอามาโซนัส
+    tr: Amazonas Bölgesi
+    uk: Амазонас
+    ur: امازوناس علاقہ
+    vi: Khu vực Amazonas
+    zh: 亚马孙大区
+    lv: Amazonasas departaments
+    ceb: Amazonas
+    sr_Latn: Region Amazonas
+    ccp: "\U00011103\U0001111F\U0001110E\U0001112E\U0001111A\U0001110C\U00011134"
+    mk: Амазон
+    'no': Amazonas
+    hy: Ամազոնաս
+  comments:
+  type: region
+ANC:
+  name: Ancash
+  code: ANC
+  unofficial_names:
+  - Anqas
+  geo:
+    latitude: -9.3250497
+    longitude: -77.5619419
+    min_latitude: -10.7835641
+    min_longitude: -78.6806381
+    max_latitude: -8.013484
+    max_longitude: -76.7310711
+  translations:
+    en: Ancash
+    ar: منطقة أنكاش
+    be: Рэгіён Анкаш
+    bg: Анкаш
+    bn: আনকাশ অঞ্চল
+    ca: Regió d’Ancash
+    cs: Ancash
+    da: Ancash
+    de: Ancash
+    el: Ανκάς
+    es: Departamento de Áncash
+    fa: ناحیه انکاش
+    fi: Ancash
+    fr: Région d’Ancash
+    gl: Ancash
+    gu: એન્કેશ પ્રદેશ
+    he: מחוז אנקש
+    hi: एन्कैश क्षेत्र
+    hu: Ancash megye
+    hy: Անկաշ
+    id: Region Ancash
+    it: regione di Ancash
+    ja: アンカシュ県
+    ka: ანკაში
+    kn: ಅಂಕಾಶ್ ಪ್ರದೇಶ
+    ko: 앙카시 주
+    lt: Ankašo departamentas
+    mr: अनकॅश प्रदेश
+    ms: Wilayah Ancash
+    nb: Ancash
+    nl: Ancash
+    pl: Region Ancash
+    pt: Ancash
+    ro: Ancash
+    ru: Анкаш
+    si: ආන්කාශ් පළාත
+    sv: Ancash
+    ta: அஙகேஷ் பகுதி
+    te: అంకాశ్ ప్రాంతం
+    th: แคว้นอังกัช
+    tr: Ancash Bölgesi
+    uk: Анкаш
+    ur: انکاش علاقہ
+    vi: Vùng Ancash
+    lv: Ankašas departaments
+    ceb: Ancash
+    zh: 安卡什大区
+    ccp: "\U00011103\U0001111A\U00011134\U00011107\U0001110C\U00011134"
+    bs: Ancash
+    mk: Анкаш
+    'no': Ancash
+  comments:
+  type: region
+APU:
+  name: Apurímac
+  code: APU
+  unofficial_names: Apurímac
+  geo:
+    latitude: -14.0504533
+    longitude: -73.087749
+    min_latitude: -14.83203
+    min_longitude: -73.849785
+    max_latitude: -13.203756
+    max_longitude: -72.05669379999999
+  translations:
+    en: Apurímac
+    ar: إقليم أبوريماك
+    be: Рэгіён Апурымак
+    bg: Апуримак
+    bn: আপুরিমাক অঞ্চল
+    ca: Regió d’Apurímac
+    cs: Apurímac
+    da: Apurímac
+    de: Apurimac
+    el: Απουρίμακ
+    es: Departamento de Apurímac
+    fa: منطقه اپوریماک
+    fi: Apurímacin alue
+    fr: Région d’Apurímac
+    gl: Departamento de Apurímac
+    gu: અપુરિમક પ્રાંત
+    hi: अपुरिमक क्षेत्र
+    hu: Apurímac megye
+    id: Region Apurímac
+    it: regione di Apurímac
+    ja: アプリマク県
+    ka: აპურიმაკი
+    kn: ಅಪುರಿಮಾಕ್ ಪ್ರದೇಶ
+    ko: 아푸리막 주
+    lt: Apurimako departamentas
+    mr: अपुरिमक प्रदेश
+    ms: Wilayah Apurímac
+    nb: Apurímac
+    nl: Apurímac
+    pl: Region Apurímac
+    pt: Apurímac
+    ro: Apurímac
+    ru: Апуримак
+    si: අපුරිමක් කලාපය
+    sv: Apurímac
+    ta: அப்புரிமைக் பகுதி
+    te: అపూరిమాక్ ప్రాంతం
+    th: แคว้นอาปูรีมัก
+    tr: Apurímac Bölgesi
+    uk: Апурімак
+    ur: اپوریماک علاقہ
+    vi: Apurímac
+    lv: Apurimakas departaments
+    ceb: Apurimac
+    zh: 阿普里马克大区
+    ccp: "\U00011103\U0001111B\U0001112A\U00011122\U00011128\U0001111F\U00011107\U00011134"
+    ga: Apurímac
+    bs: Apurímac
+    mk: Апуримак
+    'no': Apurímac
+  comments:
+  type: region
+ARE:
+  name: Arequipa
+  code: ARE
+  unofficial_names:
+  - Areqepa
+  geo:
+    latitude: -16.4090474
+    longitude: -71.53745099999999
+    min_latitude: -16.4328333
+    min_longitude: -71.5646806
+    max_latitude: -16.3752714
+    max_longitude: -71.51334229999999
+  translations:
+    en: Arequipa
+    ar: مقاطعة أريكيبا
+    be: Рэгіён Арэкіпа
+    bg: Арекипа
+    bn: আরেকুপা অঞ্চল
+    ca: Regió d’Arequipa
+    cs: Arequipa
+    da: Arequipa
+    de: Arequipa
+    el: Επαρχία Αρεκουίπα
+    es: Arequipa
+    et: Arequipa piirkond
+    fa: منطقه ارکیپا
+    fi: Arequipan alue
+    fr: Région d’Arequipa
+    gl: Departamento de Arequipa
+    gu: અરેક્વીપા પ્રદેશ
+    hi: एरेकिपा प्रदेश
+    hu: Arequipa megye
+    id: Region Arequipa
+    it: regione di Arequipa
+    ja: アレキパ県
+    ka: არეკიპა
+    kn: ಅರೆಕ್ವಿಪಾ ಪ್ರದೇಶ
+    ko: 아레키파 주
+    lt: Arekipos departamentas
+    mr: अरेक्विपा प्रदेश
+    ms: Wilayah Arequipa
+    nb: Arequipa
+    nl: Arequipa
+    pl: Region Arequipa
+    pt: Arequipa
+    ro: Arequipa
+    ru: Арекипа
+    si: අරෙකුයිපා කලාපය
+    sv: Arequipa
+    ta: அரோகுய்ப்பா பகுதி
+    te: అరెక్విపా ప్రాంతం
+    th: แคว้นอาเรกีปา
+    tr: Arequipa bölgesi
+    uk: Арекіпа
+    ur: اریکیپا علاقہ
+    vi: Khu vực Arequipa
+    lv: Arekipa reģions
+    ceb: Arequipa
+    zh: 阿雷基帕大区
+    ccp: "\U00011103\U0001112C\U00011122\U00011107\U0001112D\U0001112A\U0001111B"
+    ml: അരെക്വിപ്പ
+    mk: Арекипа
+    'no': Arequipa
+    ga: Arequipa
+    he: ארקיפה
+    hy: Արեկիպա
+  comments:
+  type: region
+AYA:
+  name: Ayacucho
+  code: AYA
+  unofficial_names:
+  - Ayakuchu
+  geo:
+    latitude: -13.1638737
+    longitude: -74.22356409999999
+    min_latitude: -13.197473
+    min_longitude: -74.2445644
+    max_latitude: -13.1192574
+    max_longitude: -74.18004379999999
+  translations:
+    en: Ayacucho
+    ar: إقليم أياكوتشو
+    be: Рэгіён Аякуча
+    bg: Аякучо
+    bn: আয়াকুকো অঞ্চল
+    ca: Regió d’Ayacucho
+    cs: Ayacucho
+    da: Ayacucho
+    de: Ayacucho
+    el: Αγιακούτσο
+    es: Departamento de Ayacucho
+    eu: Ayacucho
+    fa: منطقه آیاکوچو
+    fi: Ayacuchon alue
+    fr: Région d’Ayacucho
+    gl: Departamento de Ayacucho
+    gu: આયાકુચો પ્રદેશ
+    he: מחוז אייקוצ׳ו
+    hi: अयाकुचो प्रदेश
+    hu: Ayacucho megye
+    id: Region Ayacucho
+    it: regione di Ayacucho
+    ja: アヤクーチョ県
+    ka: აიაკუჩო
+    kn: ಅಯಕುಚೊ ಪ್ರದೇಶ
+    ko: 아야쿠초 주
+    lt: Ajakučo departamentas
+    mr: आयॅकुचो प्रदेश
+    ms: Wilayah Ayacucho
+    nb: Ayacucho
+    nl: Ayacucho
+    pl: Region Ayacucho
+    pt: Ayacucho
+    ro: Ayacucho
+    ru: Аякучо
+    si: අයකුචෝ කලාපය
+    sv: Ayacucho
+    ta: அயசுக்கோ பகுதி
+    te: అయాకుచో ప్రాంతం
+    th: เขตอยาคัตโซ
+    tr: Ayacuchı Bölgesi
+    uk: Аякучо
+    ur: ایاکوچو علاقہ
+    vi: Vùng Ayacucho
+    lv: Ajakučo departaments
+    ceb: Ayacucho
+    zh: 阿亚库乔大区
+    ccp: "\U00011103\U00011128\U00011120\U00011107\U0001112A\U0001110C\U0001112E"
+    mk: Ајакучо
+    'no': Ayacucho
+  comments:
+  type: region
+CAJ:
+  name: Cajamarca
+  code: CAJ
+  unofficial_names: Cajamarca
+  geo:
+    latitude: -6.4549673
+    longitude: -78.8382644
+    min_latitude: -7.757741900000001
+    min_longitude: -79.4470061
+    max_latitude: -4.6272731
+    max_longitude: -77.7339101
+  translations:
+    en: Cajamarca
+    ar: كاخاماركا
+    be: Рэгіён Кахамарка
+    bg: Кахамарка
+    bn: কাজামার্কা অঞ্চল
+    ca: Regió de Cajamarca
+    cs: Cajamarca
+    da: Cajamarca
+    de: Cajamarca
+    el: Κατζαμάρκα
+    es: Departamento de Cajamarca
+    fa: منطقه کاخامارکا
+    fi: Cajamarcan alue
+    fr: Région de Cajamarca
+    gu: કાજમાર્કા પ્રદેશ
+    hi: कजमार्का क्षेत्र
+    hu: Cajamarca megye
+    id: Region Cajamarca
+    it: regione di Cajamarca
+    ja: カハマルカ県
+    ka: კახამარკა
+    kn: ಕ್ಯಾಜಮಾರ್ಕಾ ಪ್ರದೇಶ
+    ko: 카하마르카 주
+    lt: Kachamarkos departamentas
+    mr: कजमार्का प्रदेश
+    ms: Wilayah Cajamarca
+    nb: Cajamarca
+    nl: Cajamarca
+    pl: Region Cajamarca
+    pt: Cajamarca
+    ro: Cajamarca
+    ru: Кахамарка
+    si: කාජමර්කා කලාපය
+    sv: Cajamarca
+    ta: கஜமார்க்க பகுதி
+    te: కాజమార్కా ప్రాంతం
+    th: คาฮามาร์กา
+    tr: Cajamarca
+    uk: Кахамарка
+    ur: کاخامارکا علاقہ
+    vi: Cajamarca
+    lv: Kahamarkas departaments
+    ceb: Cajamarca
+    zh: 卡哈马卡大区
+    ccp: "\U00011107\U0001110E\U0001111F\U00011122\U00011134\U00011107"
+    mk: Кахамарка
+    'no': Cajamarca
+    he: קחמארקה
+  comments:
+  type: region
+CAL:
+  name: El Callao
+  code: CAL
+  unofficial_names: El Callao
+  geo:
+    latitude: -12.0508491
+    longitude: -77.1259843
+    min_latitude: -12.0703989
+    min_longitude: -77.158476
+    max_latitude: -11.9369042
+    max_longitude: -77.0768166
+  translations:
+    en: El Callao
+    ca: Regió de Callao
+    cs: Callao
+    da: Callao
+    es: Gobierno Regional del Callao
+    fi: Callaon alue
+    fr: Région de Callao
+    hu: Callao tartomány
+    id: Region Callao
+    it: regione di Callao
+    ja: カヤオ特別区
+    ka: კალიაო
+    ms: Wilayah Callao
+    nb: Callao
+    nl: Callao
+    pt: Callao
+    ru: Кальяо
+    sv: Callao
+    uk: Кальяо
+    ar: مقاطعة كالاو
+    zh: 卡亚俄大区
+    ccp: "\U00011103\U0001112C\U00011123\U00011134 \U00011107\U00011123\U00011103\U0001112E"
+    'no': Callao
+    ceb: Callao (lalawigan)
+    cy: Talaith Callao Constitutional
+    hy: Կալյաո
+    th: แคว้นกายาโอ
+  comments:
+  type: region
+CUS:
+  name: Cuzco [Cusco]
+  code: CUS
+  unofficial_names:
+  - Cuzco
+  - Qosqo
+  geo:
+    latitude: -13.53195
+    longitude: -71.96746259999999
+    min_latitude: -13.5626478
+    min_longitude: -72.02516560000001
+    max_latitude: -13.4973908
+    max_longitude: -71.8533325
+  translations:
+    en: Cusco
+    ar: إقليم كوسكو
+    be: Рэгіён Куска
+    bg: Куско
+    bn: কুসকু অঞ্চল
+    ca: Departament de Cusco
+    cs: Cuzco
+    da: Cusco
+    de: Cusco
+    el: Κούσκο
+    es: Departamento de Cuzco
+    eu: Cuscoko eskualdea
+    fa: منطقه کوزکو
+    fi: Cuscon alue
+    fr: Région de Cuzco
+    gu: કુસ્કો પ્રદેશ
+    hi: कुस्को प्रदेश
+    hu: Cusco megye
+    id: Region Cusco
+    it: regione di Cusco
+    ja: クスコ県
+    ka: კუსკო
+    kn: ಕುಸ್ಕೊ ಪ್ರದೇಶ
+    ko: 쿠스코 주
+    lt: Kusko departamentas
+    mr: कुस्को प्रदेश
+    ms: Wilayah Cusco
+    nb: Cusco
+    nl: Cuzco
+    pl: Region Cuzco
+    pt: Cusco
+    ro: Cusco
+    ru: Куско
+    si: කුස්කෝ කලාපය
+    sv: Cusco
+    ta: கஸ்கோ பகுதி
+    te: కుస్కో ప్రాంతం
+    th: แคว้นกุสโก
+    tr: Cusco Bölgesi
+    uk: Куско
+    ur: کوزکو علاقہ
+    vi: Khu vực Cusco
+    lv: Kusko departaments
+    ceb: Cusco
+    zh: 库斯科大区
+    ccp: "\U00011107\U0001112E\U0001110C\U00011134\U00011107\U0001112E"
+    mk: Куско
+    'no': Cusco
+    he: מחוז קוסקו
+  comments:
+  type: region
+HUC:
+  name: Huánuco
+  code: HUC
+  unofficial_names: Huánuco
+  geo:
+    latitude: -9.9298454
+    longitude: -76.24326529999999
+    min_latitude: -9.9442711
+    min_longitude: -76.4056207
+    max_latitude: -9.8383029
+    max_longitude: -76.18090509999999
+  translations:
+    en: Huánuco
+    ar: إقليم هانوكو
+    be: Рэгіён Гуанука
+    bg: Хуануко
+    bn: হোয়াঙ্কু অঞ্চল
+    ca: Departament de Huánuco
+    cs: Huánuco
+    da: Huánuco
+    de: Huánuco
+    el: Χουανούκο
+    es: Departamento de Huánuco
+    fa: منطقه اوانوکو
+    fi: Huánucon alue
+    fr: Région de Huánuco
+    gu: હુઆનુકો પ્રદેશ
+    hi: हुआनुको क्षेत्र
+    hu: Huánuco megye
+    id: Region Huánuco
+    it: regione di Huánuco
+    ja: ワヌコ県
+    ka: უანუკო
+    kn: ಹುನಾನ್ಕೊ ಪ್ರದೇಶ
+    ko: 우아누코 주
+    lt: Huanuko departamentas
+    mr: हुआनुको प्रदेश
+    ms: Wilayah Huánuco
+    nb: Huánuco
+    nl: Huánuco
+    pl: Region Huánuco
+    pt: Huánuco
+    ru: Уануко
+    si: හුවනුකෝ කලාපය
+    sv: Huánuco
+    ta: ஹஅணுகா பகுதி
+    te: హువానుకో ప్రాంతం
+    th: อัวนูโก
+    tr: Huanuco Region
+    uk: Уануко
+    ur: وانوکو علاقہ
+    vi: Khu vực Huánuco
+    lv: Vanuko departaments
+    ceb: Región de Huánuco
+    zh: 瓦努科大区
+    ccp: "\U00011126\U0001112A\U00011120\U0001111A\U0001112A\U00011107\U0001112E"
+    mk: Уануко
+    'no': Huánuco
+    he: וואנוקו
+  comments:
+  type: region
+HUV:
+  name: Huancavelica
+  code: HUV
+  unofficial_names: Huancavelica
+  geo:
+    latitude: -12.786389
+    longitude: -74.975556
+    min_latitude: -12.7912327
+    min_longitude: -74.9997568
+    max_latitude: -12.7743664
+    max_longitude: -74.9511767
+  translations:
+    en: Huancavelica
+    ar: إقليم هوانكافليكا
+    be: Рэгіён Гуанкавеліка
+    bg: Хуанкавелика (регион)
+    bn: হুয়াঙ্কাভেলিকা অঞ্চল
+    ca: Regió de Huancavelica
+    cs: Huancavelica
+    da: Huancavelica
+    de: Huancavelica
+    el: Χουανκαβελίκα
+    es: Departamento de Huancavelica
+    fa: منطقه اوانکاولیکا
+    fi: Huancavelican alue
+    fr: Région de Huancavelica
+    gu: હુઆન્કાવેલિકા પ્રદેશ
+    hi: हुआंकावेलिका प्रदेश
+    hu: Huancavelica megye
+    hy: Ուանկավելիկա
+    id: Region Huancavelica
+    it: regione di Huancavelica
+    ja: ワンカベリカ県
+    ka: უანკაველიკა
+    kn: ಹುವಾನ್ವೆವೆಲಿಕಾ ಪ್ರದೇಶ
+    ko: 우앙카벨리카 주
+    lt: Huankavelikos departamentas
+    mr: ह्वान्सवेलिका प्रदेश
+    ms: Wilayah Huancavelica
+    nb: Huancavelica
+    nl: Huancavelica
+    pl: Region Huancavelica
+    pt: Huancavelica
+    ru: Уанкавелика
+    si: හුඅන්කාවෙලිකා කලාපය
+    sl: Huancavelica
+    sv: Huancavelica
+    ta: ஹஅஞ்சவேலிக்கா பகுதி
+    te: హువాన్కావెలికా ప్రాంతం
+    th: แคว้นอวงกาเบลีกา
+    tr: Huancavelica Bölgesi
+    uk: Уанкавеліка
+    ur: وانکابیلیکا علاقہ
+    vi: Khu vực Huancavelica
+    lv: Vankavelikas departaments
+    ceb: Huancavelica
+    zh: 萬卡韋利卡大區
+    ccp: "\U00011126\U0001112A\U00011120\U0001111A\U00011134\U00011107\U0001111E\U0001112C\U00011123\U00011128\U00011107"
+    mk: Уанкавелика
+    'no': Huancavelica
+  comments:
+  type: region
+ICA:
+  name: Ica
+  code: ICA
+  unofficial_names: Ica
+  geo:
+    latitude: -13.9379378
+    longitude: -75.8007093
+    min_latitude: -15.4353454
+    min_longitude: -76.4667187
+    max_latitude: -12.9657768
+    max_longitude: -74.65894279999999
+  translations:
+    en: Ica
+    ar: مقاطعة إيكا
+    be: Рэгіён Іка
+    bg: Ика
+    bn: ইকা অঞ্চল
+    ca: Regió d’Ica
+    cs: Ica
+    da: Ica
+    de: Ica
+    el: Ίκα
+    es: Departamento de Ica
+    fa: منطقه ایکا
+    fi: Ican alue
+    fr: Région d’Ica
+    gu: આઈકા પ્રદેશ
+    hi: इका प्रदेश
+    hu: Ica megye
+    id: Region Ica
+    it: regione di Ica
+    ja: イカ県
+    ka: იკა
+    kn: ಇಕಾ ಪ್ರದೇಶ
+    ko: 이카 주
+    lt: Ikos departamentas
+    mr: आयसीए प्रदेश
+    ms: Wilayah Ica
+    nb: Ica
+    nl: Ica
+    pl: Region Ica
+    pt: Ica
+    ru: Ика
+    si: ඉකා කලාපය
+    sv: Ica
+    ta: ஈஸா பகுதி
+    te: ఇకా ప్రాంతం
+    th: เขตอิกา
+    tr: Ica Bölgesi
+    uk: Іка
+    ur: اکا علاقہ
+    vi: Khu vực Ica
+    lv: Ikas departaments
+    ceb: Ica
+    zh: 伊卡大区
+    ccp: "\U00011103\U0001112D\U00011107"
+    mk: Ика
+    'no': Ica
+  comments:
+  type: region
+JUN:
+  name: Junín
+  code: JUN
+  unofficial_names: Junín
+  geo:
+    latitude: -11.335798
+    longitude: -75.34121789999999
+    min_latitude: -12.6817741
+    min_longitude: -76.513082
+    max_latitude: -10.6655961
+    max_longitude: -73.3522989
+  translations:
+    en: Junín
+    ar: إقليم جونين
+    be: Рэгіён Хунін
+    bg: Хунин
+    bn: জুনিন অঞ্চল
+    ca: Regió de Junín
+    cs: Junín
+    da: Junín
+    de: Junín
+    el: Τζουνίν
+    es: Departamento de Junín
+    fa: منطقه خونین
+    fi: Junínin alue
+    fr: Région de Junín
+    gu: જુનિન પ્રદેશ
+    hi: जूनिन क्षेत्र
+    hu: Junín megye
+    id: Region Junín
+    it: regione di Junín
+    ja: フニン県
+    ka: ხუნინი
+    kn: ಜುನಿನ್ ಪ್ರದೇಶ
+    ko: 후닌 주
+    lt: Chunino departamentas
+    mr: जुनिन प्रदेश
+    ms: Wilayah Junín
+    nb: Junín
+    nl: Junín
+    pl: Region Junín
+    pt: Junín
+    ro: Junín
+    ru: Хунин
+    si: ජුනින් කලාපය
+    sv: Junín
+    ta: ஜூனின் பகுதி
+    te: జూనిన్ ప్రాంతం
+    th: จูนิน
+    tr: Junin Region
+    uk: Хунін
+    ur: خونین علاقہ
+    vi: Khu vực Junín
+    lv: Huninas departaments
+    ceb: Junín
+    zh: 胡宁大区
+    ccp: "\U0001110E\U0001112A\U0001111A\U00011128\U0001111A\U00011134"
+    mk: Хунин
+    'no': Junín
+  comments:
+  type: region
+LAL:
+  name: La Libertad
+  code: LAL
+  unofficial_names: La Libertad
+  geo:
+    latitude: -8.143593300000001
+    longitude: -78.4751945
+    min_latitude: -8.9774429
+    min_longitude: -79.68024
+    max_latitude: -6.95362
+    max_longitude: -76.89797279999999
+  translations:
+    en: La Libertad
+    ar: إقليم لا ليبرتاد
+    be: Рэгіён Ла-Лібертад
+    bg: Ла Либертад
+    bn: লা লিবার্টেড অঞ্চল
+    ca: Regió de La Libertad
+    cs: La Libertad
+    da: La Libertad
+    de: La Libertad
+    el: Λα Λιμπερτάντ
+    es: Departamento de La Libertad
+    fa: منطقه لا لیبرتاد
+    fi: La Libertad
+    fr: Région de La Libertad
+    gu: લા લિબર્ટાડ પ્રદેશ
+    hi: ला लिबर्टाड प्रदेश
+    hu: La Libertad megye
+    id: Region La Libertad
+    it: regione di La Libertad
+    ja: ラ・リベルタ県
+    ka: ლა-ლიბერტადი
+    kn: ಲಾ ಲಿಬರ್ಟಾಡ್ ಪ್ರದೇಶ
+    ko: 라리베르타드 주
+    lt: La Libertado departamentas
+    mr: ला लिबर्टद प्रदेश
+    ms: Wilayah La Libertad
+    nb: La Libertad
+    nl: La Libertad
+    pl: Region La Libertad
+    pt: Liberdade
+    ru: Ла-Либертад
+    si: ලා ලිබරෙටෙඩ් කලාපය
+    sv: La Libertad
+    ta: லா லிபேர்ட்டட் பகுதி
+    te: లా లిబర్టాడ్ ప్రాంతం
+    th: เขตลา ลิแบร์ตัด
+    tr: La Libertad Bölgesi
+    uk: Ла-Лібертад
+    ur: لا لیورتاد علاقہ
+    vi: Khu vực La Libertad
+    lv: Lalibertadas departaments
+    ceb: La Libertad
+    zh: 拉利伯塔德大区
+    ccp: "\U00011123 \U00011123\U00011128\U0001111D\U00011122\U00011134\U00011111\U00011116\U00011134"
+    mk: Ла Либертад
+    'no': La Libertad
+    hy: Լա Լիբերտադ
+  comments:
+  type: region
+LAM:
+  name: Lambayeque
+  code: LAM
+  unofficial_names: Lambayeque
+  geo:
+    latitude: -6.4776528
+    longitude: -79.9192702
+    min_latitude: -7.178573999999999
+    min_longitude: -80.6023481
+    max_latitude: -5.5400261
+    max_longitude: -79.131943
+  translations:
+    en: Lambayeque
+    ar: إقليم لمباييكه
+    be: Рэгіён Ламбаеке
+    bg: Ламбайеке
+    bn: লাম্বায়েক অঞ্চল
+    ca: Regió de Lambayeque
+    cs: Lambayeque
+    da: Lambayeque
+    de: Lambayeque
+    el: Λαμπαγιέκ
+    es: Departamento de Lambayeque
+    fa: منطقه لامبایکه
+    fi: Lambayequen alue
+    fr: Région de Lambayeque
+    gu: લાંબાયેક પ્રદેશ
+    hi: लैम्बेक प्रदेश
+    hu: Lambayeque megye
+    id: Region Lambayeque
+    it: regione di Lambayeque
+    ja: ランバイエケ県
+    ka: ლამბაიეკე
+    kn: ಲ್ಯಾಂಬಯೆಕ್ ಪ್ರದೇಶ
+    ko: 람바예케 주
+    lt: Lambajekės departamentas
+    mr: लांबीयुक प्रदेश
+    ms: Wilayah Lambayeque
+    nb: Lambayeque
+    nl: Lambayeque
+    pl: Region Lambayeque
+    pt: Lambayeque
+    ru: Ламбаеке
+    si: ලැම්බේ එක්වේ කලාපය
+    sv: Lambayeque
+    ta: லம்பாஏகியு ரீஜியன்
+    te: లాంబేఖ్ ప్రాంతం
+    th: แคว้นลัมบาเยเก
+    tr: Lambayaque Bölgesi
+    uk: Ламбаєке
+    ur: لامبایےکے علاقہ
+    vi: Khu vực Lambayeque
+    lv: Lambajekes departaments
+    ceb: Lambayeque
+    zh: 兰巴耶克大区
+    ccp: "\U00011123\U0001111F\U00011134\U0001111D\U00011120\U0001112C\U00011107\U00011134"
+    mk: Ламбајеке
+    'no': Lambayeque
+  comments:
+  type: region
+LIM:
+  name: Lima
+  code: LIM
+  unofficial_names: Lima
+  geo:
+    latitude: -12.046374
+    longitude: -77.0427934
+    min_latitude: -12.0798252
+    min_longitude: -77.0883395
+    max_latitude: -12.0308632
+    max_longitude: -77.0020311
+  translations:
+    en: Lima Region
+    ar: إقليم ليما
+    be: Рэгіён Ліма
+    bg: Лима
+    bn: লিমা অঞ্চল
+    ca: Regió de Lima
+    cs: Lima
+    da: Lima
+    de: Lima
+    el: Λίμα
+    es: Lima
+    fa: منطقه لیما
+    fi: Liman alue
+    fr: Lima
+    gu: લિમા પ્રદેશ
+    hi: लीमा क्षेत्र
+    hu: Lima megye
+    id: Region Lima
+    it: Lima
+    ja: リマ県
+    ka: ლიმა
+    kn: ಲಿಮಾ ಪ್ರದೇಶ
+    ko: 리마 주
+    lt: Limos departamentas
+    mr: लिमा प्रदेश
+    ms: Wilayah Lima
+    nb: Lima
+    nl: Lima
+    pl: Region Lima
+    pt: Lima
+    ru: Лима
+    si: ලිමා පළාත
+    sv: Lima
+    ta: லீமா பகுதி
+    te: లిమా ప్రాంతం
+    th: ลิมา
+    tr: Lima Bölgesi
+    uk: Ліма
+    ur: لیما علاقہ
+    vi: Khu vực Lima
+    lv: Limas departaments
+    zh: 利馬大區
+    ccp: "\U00011123\U00011128\U0001111F \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    mk: Лима
+    'no': Lima
+    az: Lima regionu
+    ceb: Lima (rehiyon)
+    eu: Lima
+    ga: Líoma
+    he: מחלקת לימה
+    hy: Լիմա
+  comments:
+  type: region
+LMA:
+  name: Lima Metropolitana
+  code: LMA
+  unofficial_names: Lima Metropolitana
+  geo:
+    latitude: -12.046374
+    longitude: -77.0427934
+    min_latitude: -12.0798252
+    min_longitude: -77.0883395
+    max_latitude: -12.0308632
+    max_longitude: -77.0020311
+  translations:
+    ar: محافظة ليما
+    be: правінцыя Ліма
+    bn: লিমা প্রদেশ
+    ca: Província de Lima
+    da: Lima²
+    de: Provinz Lima
+    el: Επαρχία Λίμας
+    en: Lima
+    es: Provincia de Lima
+    fi: Liman metropolialue
+    fr: province de Lima
+    gl: Provincia de Lima
+    gu: લિમા પ્રાંત
+    hi: लीमा प्रांत
+    id: Provinsi Lima
+    it: provincia di Lima
+    ja: リマ郡
+    ka: ლიმა²
+    kn: ಲಿಮಾ ಪ್ರಾಂತ್ಯ
+    ko: 리마 군
+    lt: Limos provincija
+    mr: लिमा प्रांत
+    ms: Lima Province
+    nb: Lima provins
+    nl: Lima²
+    pl: Prowincja Lima
+    pt: Lima²
+    ro: Provincia Lima
+    ru: Лима²
+    si: ලිමා පළාත²
+    sv: Lima²
+    ta: லிமா மாகாணம்
+    te: లిమా ప్రావిన్స్
+    th: จังหวัดลิมา
+    tr: Lima ili
+    uk: Ліма²
+    ur: لیما صوبہ
+    vi: Tỉnh Lima
+    lv: Limas province
+    ceb: Provincia de Lima
+    zh: 利馬省
+    ccp: "\U00011123\U00011128\U0001111F"
+    'no': Lima provins
+    cy: Talaith Lima
+    fa: استان لیما
+    hy: Լիմա²
+    jv: Propinsi Lima
+  comments:
+  type: municipality
+LOR:
+  name: Loreto
+  code: LOR
+  unofficial_names: Loreto
+  geo:
+    latitude: -4.232472899999999
+    longitude: -74.21793260000001
+    min_latitude: -8.697728999999999
+    min_longitude: -77.80600299999999
+    max_latitude: -0.012977
+    max_longitude: -69.94945500000001
+  translations:
+    en: Loreto
+    ar: إقليم لوريتو
+    be: Рэгіён Ларэта
+    bg: Лорето
+    bn: লরেতো অঞ্চল
+    ca: Departament de Loreto
+    cs: Loreto
+    da: Loreto
+    de: Loreto
+    el: Λορέτο
+    es: Departamento de Loreto
+    et: Loreto piirkond
+    eu: Loreto departamendua
+    fa: منطقه لورتو
+    fi: Loreton alue
+    fr: région de Loreto
+    gu: લોરેટો પ્રદેશ
+    hi: लोरेटो क्षेत्र
+    hu: Loreto megye
+    id: Region Loreto
+    it: regione di Loreto
+    ja: ロレート県
+    ka: ლორეტო
+    kn: ಲೊರೆಟೋ ಪ್ರದೇಶ
+    ko: 로레토 주
+    lt: Loreto departamentas
+    mr: लोरेरे प्रदेश
+    ms: Wilayah Loreto
+    nb: Loreto
+    nl: Loreto
+    pl: Region Loreto
+    pt: Loreto
+    ro: Loreto
+    ru: Лорето
+    si: ලොරෙටෝ කලාපය
+    sv: Loreto
+    ta: லொரேட்டோ பகுதி
+    te: లోరెటో ప్రాంతం
+    th: แคว้นโลเรโต
+    tr: Loreto Bölgesi
+    uk: Лорето
+    ur: لوریتو علاقہ
+    vi: Khu vực Loreto
+    lv: Loreto departaments
+    ceb: Loreto
+    zh: 洛雷托大区
+    ccp: "\U00011123\U0001112E\U00011122\U0001112C\U00011111\U0001112E"
+    mk: Лорето
+    'no': Loreto
+    hy: Լորետո
+  comments:
+  type: region
+MDD:
+  name: Madre de Dios
+  code: MDD
+  unofficial_names: Madre de Dios
+  geo:
+    latitude: -12.5986
+    longitude: -70.09058399999999
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Madre de Dios
+    ar: اقليم مادر دي ديوس
+    bg: Мадре де Диос
+    bn: মাদ্রি দি ডাইওস অঞ্চল
+    ca: Departament de Madre de Dios
+    cs: Madre de Dios
+    da: Madre de Dios
+    de: Madre de Dios
+    el: Μάντρε ντε Ρίος
+    es: Departamento de Madre de Dios
+    fa: منطقه مادره ده دیوس
+    fi: Madre de Diosin alue
+    fr: Région de Madre de Dios
+    gu: માદ્રે દે ડીઓસ પ્રદેશ
+    he: מדרה דה דיוס
+    hi: माद्रे डी डियोस क्षेत्र
+    hu: Madre de Dios megye
+    id: Region Madre de Dios
+    it: regione di Madre de Dios
+    ja: マードレ・デ・ディオス県
+    ka: მადრე-დე-დიოსი
+    kn: ಮ್ಯಾಡ್ರೆ ಡಿ ಡಿಯೊಸ್ ಪ್ರದೇಶ
+    ko: 마드레데디오스 주
+    lt: Madre de Dioso departamentas
+    mr: मादे डे डीस प्रदेश
+    ms: Wilayah Madre de Dios
+    nb: Madre de Dios
+    nl: Madre de Dios
+    pl: Region Madre de Dios
+    pt: Madre de Deus (região)
+    ru: Мадре-де-Дьос
+    si: මද්රේ ඩි ඩියෝස් කලාපය
+    sv: Madre de Dios
+    ta: மன்றே டே டியோஸ் பகுதி
+    te: మాడ్రే ద డియాస్ ప్రాంతం
+    th: เขตมาเดร เด ดิโอส
+    tr: Madre de Dior Bölgesi
+    uk: Мадре-де-Дьйос
+    ur: مادرے دے دیوس علاقہ
+    vi: Khu vực Madre de Dios
+    lv: Madre De Dios reģions
+    ceb: Madre de Dios
+    zh: 马德雷德迪奥斯大区
+    ccp: "\U0001111F\U00011113\U00011133\U00011122\U0001112C \U00011113\U0001112C
+      \U00011113\U00011128\U00011120\U0001112E\U0001110C\U00011134"
+    mk: Мадре де Диос
+    'no': Madre de Dios
+  comments:
+  type: region
+MOQ:
+  name: Moquegua
+  code: MOQ
+  unofficial_names: Moquegua
+  geo:
+    latitude: -17.1927361
+    longitude: -70.93281379999999
+    min_latitude: -17.2175438
+    min_longitude: -70.9717655
+    max_latitude: -17.1641233
+    max_longitude: -70.8882093
+  translations:
+    en: Moquegua
+    ar: إقليم موكيغوا
+    be: Рэгіён Макегуа
+    bg: Мокегуа
+    bn: মুকেগোয়া অঞ্চল
+    ca: Regió de Moquegua
+    cs: Moquegua
+    da: Moquegua
+    de: Moquegua
+    el: Μοκέγκουα
+    es: Departamento de Moquegua
+    fa: منطقه موکگوا
+    fi: Moqueguan alue
+    fr: Région de Moquegua
+    gu: મોકેગુઆ પ્રદેશ
+    hi: मोकेगुआ क्षेत्र
+    hu: Moquegua megye
+    id: Region Moquegua
+    it: regione di Moquegua
+    ja: モケグア県
+    ka: მოკეგუა
+    kn: ಮೊಕುಗುವಾ ಪ್ರದೇಶ
+    ko: 모케과 주
+    lt: Mokegvos departamentas
+    mr: मोकेगुआ प्रदेश
+    ms: Wilayah Moquegua
+    nb: Moquegua
+    nl: Moquegua
+    pl: Region Moquegua
+    pt: Moquegua
+    ro: Moquegua
+    ru: Мокегуа
+    si: මොක්වෙගුවා කලාපය
+    sv: Moquegua
+    ta: மொயூகுஞ் பகுதி
+    te: మాక్వెగా ప్రాంతం
+    th: แคว้นโมเกกวา
+    tr: Moquegua Bölgesi
+    uk: Мокеґуа
+    ur: موکیگوا علاقہ
+    vi: Khu vực Moquegua
+    lv: Mokegvas departaments
+    ceb: Departamento de Moquegua
+    zh: 莫克瓜大区
+    ccp: "\U0001111F\U00011127\U00011107\U0001112A\U00011120\U0001112C\U00011109\U0001112A\U00011120"
+    mk: Мокегва
+    'no': Moquegua
+    he: מחוז מוקגואה
+  comments:
+  type: region
+PAS:
+  name: Pasco
+  code: PAS
+  unofficial_names: Pasco
+  geo:
+    latitude: -10.4475753
+    longitude: -75.1545381
+    min_latitude: -11.134321
+    min_longitude: -76.704674
+    max_latitude: -9.431508
+    max_longitude: -74.1266931
+  translations:
+    en: Pasco
+    ar: إقليم باسكو
+    be: Рэгіён Паска
+    bg: Паско
+    bn: পাস্কু অঞ্চল
+    ca: Regió de Pasco
+    cs: Pasco
+    da: Pasco
+    de: Pasco
+    el: Πάσκο
+    es: Departamento de Pasco
+    fa: منطقه پاسکو
+    fi: Pascon alue
+    fr: Région de Pasco
+    gu: પાસ્કો પ્રદેશ
+    hi: पास्को प्रदेश
+    hu: Pasco megye
+    id: Region Pasco
+    it: regione di Pasco
+    ja: パスコ県
+    ka: პასკო
+    kn: ಪಾಸ್ಕೊ ಪ್ರದೇಶ
+    ko: 파스코 주
+    lt: Pasko departamentas
+    mr: पास्को प्रदेश
+    ms: Negeri Pasco
+    nb: Pasco
+    nl: Pasco
+    pl: Region Pasco
+    pt: Pasco
+    ro: Pasco
+    ru: Паско
+    si: පැස්කෝ ප්‍රාන්තය
+    sv: Pasco
+    ta: பாஸ்கோ பகுதி
+    te: పాస్కో ప్రాంతం
+    th: จังหวัดปาสโก
+    tr: Pasco Bölgesi
+    uk: Паско
+    ur: پاسکو علاقہ
+    vi: Khu vực Pasco
+    lv: Pasko departaments
+    ceb: Pasco
+    zh: 帕斯科大区
+    ccp: "\U0001111B\U0001110C\U00011134\U00011107\U0001112E"
+    mk: Паско
+    'no': Pasco
+  comments:
+  type: region
+PIU:
+  name: Piura
+  code: PIU
+  unofficial_names: Piura
+  geo:
+    latitude: -5.2
+    longitude: -80.633333
+    min_latitude: -5.2466696
+    min_longitude: -80.71834009999999
+    max_latitude: -5.1395019
+    max_longitude: -80.6152725
+  translations:
+    en: Piura
+    ar: مقاطعة بيورا
+    bg: Пиура
+    bn: পিউরা অঞ্চল
+    ca: Regió de Piura
+    cs: Piura
+    da: Piura
+    de: Piura
+    el: Πιούρα
+    es: Departamento de Piura
+    fa: پیورا
+    fi: Piuran alue
+    fr: Région de Piura
+    gu: પિયુરા પ્રદેશ
+    hi: पिउरा प्रदेश
+    hu: Piura megye
+    id: Region Piura
+    it: regione di Piura
+    ja: ピウラ県
+    ka: პიურა
+    kn: ಪಿಯುರಾ ಪ್ರದೇಶ
+    ko: 피우라 주
+    lt: Piuros departamentas
+    mr: पिउरा प्रदेश
+    ms: Wilayah Piura
+    nb: Piura
+    nl: Piura
+    pl: Region Piura
+    pt: Piura
+    ro: Piura
+    ru: Пьюра
+    si: පියුරා කලාපය
+    sv: Piura
+    ta: பியூரா பகுதி
+    te: పియూరా ప్రాంతం
+    th: แคว้นปิวรา
+    tr: Piura Bölgesi
+    uk: Піура
+    ur: پیورا علاقہ
+    vi: Khu vực Piura
+    lv: Pjuras departaments
+    ceb: Piura
+    zh: 皮乌拉地区
+    ccp: "\U0001111B\U0001112D\U00011105\U0001112A\U00011122"
+    mk: Пиура
+    'no': Piura
+  comments:
+  type: region
+PUN:
+  name: Puno
+  code: PUN
+  unofficial_names: Puno
+  geo:
+    latitude: -15.234875
+    longitude: -70.050314
+    min_latitude: -17.294243
+    min_longitude: -71.1451721
+    max_latitude: -13.0444181
+    max_longitude: -68.82681529999999
+  translations:
+    en: Puno
+    ar: بونو
+    be: Рэгіён Пуна
+    bg: Пуно
+    ca: Regió de Puno
+    cs: Puno
+    da: Puno
+    de: Puno
+    es: Departamento de Puno
+    fa: منطقه پونو
+    fi: Punon alue
+    fr: Région de Puno
+    he: פונו
+    hu: Puno megye
+    id: Region Puno
+    it: regione di Puno
+    ja: プーノ県
+    ka: პუნო
+    ko: 푸노 주
+    lt: Puno departamentas
+    ms: Wilayah Puno
+    nb: Puno
+    nl: Puno
+    pl: Region Puno
+    pt: Puno
+    ro: Puno
+    ru: Пуно
+    sv: Puno
+    th: แคว้นปูโน
+    uk: Пуно
+    ur: پونو علاقہ
+    vi: Puno
+    ceb: Puno
+    tr: Puno Bölgesi
+    zh: 普诺大区
+    ccp: "\U0001111B\U0001112A\U0001111A\U0001112E"
+    mk: Пуно
+    'no': Puno
+  comments:
+  type: region
+SAM:
+  name: San Martín
+  code: SAM
+  unofficial_names: San Martín
+  geo:
+    latitude: -7.244488100000001
+    longitude: -76.8259652
+    min_latitude: -8.796522
+    min_longitude: -77.780281
+    max_latitude: -5.394636999999999
+    max_longitude: -75.502786
+  translations:
+    en: San Martín
+    ar: إقليم سان مارتين
+    be: Рэгіён Сан-Марцін
+    bg: Сан Мартин
+    bn: সান মার্টিন অঞ্চল
+    ca: Departament de San Martín
+    cs: San Martín
+    da: San Martín
+    de: Region San Martín
+    el: Σαν Μάρτιν
+    es: Departamento de San Martín
+    fa: منطقه سن مارتین
+    fi: San Martínin alue
+    fr: Région de San Martín
+    gu: સેન માર્ટિન પ્રદેશ
+    he: סן מרטין
+    hi: सैन मार्टिन क्षेत्र
+    hu: San Martín megye
+    hy: Սան Մարտին տարածաշրջան
+    id: Region San Martín
+    it: regione di San Martín
+    ja: サン・マルティン県
+    ka: სან-მარტინი
+    kn: ಸ್ಯಾನ್ ಮಾರ್ಟಿನ್ ಪ್ರದೇಶ
+    ko: 산마르틴 주
+    lt: San Martino departamentas
+    mr: सॅन मार्टिन प्रदेश
+    ms: Wilayah San Martín
+    nb: San Martín
+    nl: San Martín
+    pl: Region San Martín
+    pt: San Martín
+    ru: Сан-Мартин
+    si: සැන් මාර්ටින් කලාපය
+    sv: San Martín
+    ta: சான் மார்ட்டின் பகுதி
+    te: సాన్ మార్టిన్ ప్రాంతం
+    th: แคว้นซานมาร์ติน
+    tr: San Martín Bölgesi
+    uk: Сан-Мартін
+    ur: سان مارتین علاقہ
+    vi: San Martín (tỉnh)
+    lv: Sanmartinas departaments
+    ceb: Región de San Martín
+    zh: 圣马丁大区
+    ccp: "\U00011125\U0001111A\U00011134 \U0001111F\U00011122\U00011134\U00011111\U00011128\U0001111A\U00011134"
+    mk: Сан Мартин
+    'no': San Martín
+  comments:
+  type: region
+TAC:
+  name: Tacna
+  code: TAC
+  unofficial_names: Tacna
+  geo:
+    latitude: -18.0065679
+    longitude: -70.2462741
+    min_latitude: -18.0900544
+    min_longitude: -70.3142166
+    max_latitude: -17.9556994
+    max_longitude: -70.1808773
+  translations:
+    en: Tacna
+    ar: اقليم تاكنا
+    be: Рэгіён Такна
+    bg: Такна
+    bn: তাকনা অঞ্চল
+    ca: Regió de Tacna
+    cs: Tacna
+    da: Tacna
+    de: Tacna
+    el: Τάκνα
+    es: Departamento de Tacna
+    et: Tacna piirkond
+    fa: منطقه تاکنا
+    fi: Tacnan alue
+    fr: Région de Tacna
+    gu: ટાક્ના પ્રાંત
+    hi: टैक्ना क्षेत्र
+    hu: Tacna megye
+    id: Region Tacna
+    it: regione di Tacna
+    ja: タクナ県
+    ka: ტაკნა
+    kn: ಟಕ್ನಾ ಪ್ರದೇಶ
+    ko: 타크나 주
+    lt: Taknos departamentas
+    mr: टाक्ना प्रदेश
+    ms: Wilayah Tacna
+    nb: Tacna
+    nl: Tacna
+    pl: Region Tacna
+    pt: Tacna
+    ro: Tacna
+    ru: Такна
+    si: ටක්නා කලාපය
+    sv: Tacna
+    ta: டாகின பகுதி
+    te: టాక్నా ప్రాంతం
+    th: เทคนา
+    tr: Tacna Bölge
+    uk: Такна
+    ur: تاکنا علاقہ
+    vi: Khu vựcTacna
+    lv: Taknas departaments
+    ceb: Tacna
+    zh: 塔克纳大区
+    ccp: "\U00011111\U0001112C\U00011107\U00011134\U0001111A"
+    mk: Такна
+    'no': Tacna
+  comments:
+  type: region
+TUM:
+  name: Tumbes
+  code: TUM
+  unofficial_names: Tumbes
+  geo:
+    latitude: -3.9338256
+    longitude: -80.54384499999999
+    min_latitude: -4.2320951
+    min_longitude: -81.0339359
+    max_latitude: -3.404815
+    max_longitude: -80.15360989999999
+  translations:
+    en: Tumbes
+    ar: إدارة تومبيس
+    be: Рэгіён Тумбес
+    bg: Тумбес
+    bn: তুম্বেস বিভাগ
+    ca: Regió de Tumbes
+    cs: Tumbes
+    da: Tumbes
+    de: Tumbes
+    el: Τάμπες
+    es: Departamento de Tumbes
+    fa: منطقه تومبس
+    fi: Tumbesin alue
+    fr: Région de Tumbes
+    gu: ટમ્બ્સ વિભાગ
+    hi: त्यूम्बेस विभाग
+    hu: Tumbes megye
+    id: Region Tumbes
+    it: regione di Tumbes
+    ja: トゥンベス県
+    ka: ტუმბესი
+    kn: ತುಂಬೇಸ್ ಇಲಾಖೆ
+    ko: 툼베스 주
+    lt: Tumbeso departamentas
+    mr: टुबेस विभाग
+    ms: Wilayah Tumbes
+    nb: Tumbes
+    nl: Tumbes
+    pl: Region Tumbes
+    pt: Tumbes
+    ru: Тумбес
+    si: ටම්බස් දෙපාර්තමේන්තුව
+    sv: Tumbes
+    ta: டும்பஸ் துறை
+    te: టంబెస్ డిపార్ట్మెంట్
+    th: แคว้นตุมเบส
+    tr: Tumbe Departmanı
+    uk: Тумбес
+    ur: تومبیس علاقہ
+    vi: Khu vực hành chính Tumbes
+    lv: Tumbesas departaments
+    ceb: Tumbes
+    zh: 通贝斯大区
+    ccp: "\U00011111\U0001112A\U0001111F\U00011134\U0001111D\U0001112C\U0001110C\U00011134"
+    mk: Тумбес
+    'no': Tumbes
+  comments:
+  type: region
+UCA:
+  name: Ucayali
+  code: UCA
+  unofficial_names: Ucayali
+  geo:
+    latitude: -9.8251183
+    longitude: -73.087749
+    min_latitude: -11.4428331
+    min_longitude: -75.96401209999999
+    max_latitude: -7.292605099999999
+    max_longitude: -70.49636090000001
+  translations:
+    en: Ucayali
+    ar: إقليم أوكايالي
+    be: Рэгіён Укаялі
+    bg: Укаяли
+    bn: ওকায়ালি অঞ্চল
+    ca: Departament d’Ucayali
+    cs: Ucayali
+    da: Ucayali
+    de: Ucayali
+    el: Ουκαγιάλι
+    es: Departamento de Ucayali
+    et: Ucayali piirkond
+    eu: Ucayali
+    fa: منطقهٔ اوکایالی
+    fi: Ucayalin alue
+    fr: Région d’Ucayali
+    gu: ઉકાયલી પ્રદેશ
+    hi: उकायली क्षेत्र
+    hu: Ucayali megye
+    id: Region Ucayali
+    it: regione di Ucayali
+    ja: ウカヤリ県
+    ka: უკაიალი
+    kn: ಉಕಯಾಲಿ ಪ್ರದೇಶ
+    ko: 우카얄리 주
+    lt: Ukajalio departamentas
+    mr: उकायली प्रदेश
+    ms: Ucayali Region
+    nb: Ucayali
+    nl: Ucayali
+    pl: Region Ukajali
+    pt: Ucayali
+    ru: Укаяли
+    si: උකායලි කලාපය
+    sv: Ucayali
+    ta: உகாயலி பகுதி
+    te: ఉకయాలి ప్రాంతం
+    th: จังหวัดดเจลฟา
+    tr: Ucayali Bölgesi
+    uk: Укаялі
+    ur: اکیالی علاقہ
+    vi: Ucayali
+    lv: Ukajali departaments
+    ceb: Ucayali
+    zh: 乌卡亚利大区
+    ccp: "\U00011105\U0001112A\U00011107\U0001112C\U00011120\U00011123\U00011128"
+    bs: Ucayali
+    mk: Укајали
+    'no': Ucayali
+  comments:
+  type: region

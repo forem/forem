@@ -1,0 +1,57 @@
+v1.0.0 01/20/21
+===============
+
+release v1, it's been stable for ages
+
+v0.3.0 06/17/21
+===============
+
+add travis badge to readme
+change readme to md
+fix markdown readme
+fix travis badge
+monkey-patch StringIO to try and fix jruby build
+override tty? for jruby build
+fix copyright statement
+use unicode.width instead of string.length
+remove unicode from requirements, use only if loaded
+display datum who's value is a FalseClass
+more colors with syntax-specific code/length limitations
+better code visualization in readme
+update readme
+remove broken rubinius build from CI
+fix length method to detect multibyte char width
+fix test for table with multi byte chars
+support multibyte characters
+update CI to 2.2.7, 2.3.4, and 2.4.1
+drop rubyforge_project from gemspec and rakefile
+change github reference to https
+change readme.rdoc to readme.md in gemspec
+
+v0.2.5 05/23/14
+===============
+
+* fix typo in readme
+* ensure indent is reset
+* add progress bar object
+* improve thread safety for progress bar
+
+v0.2.4 10/26/12
+===============
+
+* sort background colors higher
+* fix homepage link in gem metadata
+
+v0.2.3 05/18/12
+===============
+
+* fix nested hashes to allow for keys which contain periods
+
+v0.2.2 05/16/12
+===============
+
+* require stringio in tests
+* allow tests to pass without tty
+* label test groups
+* fix for redisplay width
+* allow tables to use nested hashes

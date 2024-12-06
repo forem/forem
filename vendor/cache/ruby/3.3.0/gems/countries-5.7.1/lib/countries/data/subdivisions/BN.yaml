@@ -1,0 +1,247 @@
+---
+BE:
+  name: Belait
+  code: BE
+  unofficial_names: Belait
+  geo:
+    latitude: 4.449758
+    longitude: 114.318703
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Belait
+    ar: مقاطعة بيلايت
+    bg: Белайт
+    bn: বেলাতি জেলা
+    da: Belait District
+    de: Belait
+    el: Μπελάιτ
+    es: Distrito de Belait
+    eu: Belait barrutia
+    fa: استان بلائیت
+    fi: Belait
+    fr: Belait
+    gl: Belait
+    gu: બેલેટે જિલ્લો
+    he: בלייט
+    hi: बेलैत जिला
+    id: Distrik Belait
+    it: distretto di Belait
+    ja: ブライト地区
+    kn: ಬೇಲೈತ್ ಜಿಲ್ಲೆ
+    ko: 블라잇 구
+    lt: Belaito rajonas
+    mr: बेलेट जिल्हा
+    ms: Daerah Belait
+    nb: Belait distrikt
+    nl: Belait
+    pl: Dystrykt Belait
+    ps: بيلائت ولسوالۍ
+    pt: Belait
+    ru: Белайт
+    si: බෙලයිට් දිස්ත්‍රික්කය
+    sv: Belait District
+    ta: பெட்லைட் மாவட்டம்
+    te: బెలెయిట్ జిల్లా
+    th: เขตเบอไลต์
+    tr: Belait District
+    uk: Белайт
+    ur: بیلائت ضلع
+    vi: Quận Belait
+    zh: 马来奕县
+    lv: Belaitas distrikts
+    ceb: Belait District
+    ccp: "\U0001111D\U0001112C\U00011123\U0001112D\U00011116\U00011134"
+    ca: Districte de Belait
+    'no': Belait distrikt
+    yue: 馬來奕縣
+    yue_Hans: 马来奕县
+  comments:
+  type: district
+BM:
+  name: Brunei-Muara
+  code: BM
+  unofficial_names: Brunei-Muara
+  geo:
+    latitude: 4.9311206
+    longitude: 114.9516869
+    min_latitude: 4.7286589
+    min_longitude: 114.771896
+    max_latitude: 5.045009900000001
+    max_longitude: 115.1262673
+  translations:
+    en: Brunei-Muara
+    ar: مقاطعة بروناي - موارا
+    bg: Бруней-Муара
+    bn: ব্রুনেই মোয়ারা জেলা
+    ca: Districte de Brunei Muara
+    da: Brunei-Muara District
+    de: Brunei-Muara
+    el: Μπρουνέι-Μουάρα
+    es: Brunei y Muara
+    eu: Brunei eta Muara
+    fa: استان برونئی-موآرا
+    fi: Brunei ja Muara
+    fr: Brunei-Muara
+    gl: Brunei e Muara
+    gu: બ્રુનેઈ-મુરા જિલ્લો
+    he: ברוניי ומוארה
+    hi: ब्रुनेई-मुरा जिला
+    id: Distrik Brunei-Muara
+    it: distretto di Brunei-Muara
+    ja: ブルネイ・ムアラ地区
+    kn: ಬ್ರೂನಿ-ಮುವಾರಾ ಜಿಲ್ಲೆ
+    ko: 브루네이무아라 구
+    lt: Brunėjaus–Muaros rajonas
+    mr: ब्रुनेई-मुरा जिल्हा
+    ms: Daerah Brunei Muara
+    nb: Brunei-Muara distrik
+    nl: Brunei en Muara
+    pl: Dystrykt Brunei i Muara
+    ps: بروناي-موارا ولسوالۍ
+    pt: Brunei e Muara
+    ru: Бруней-Муара
+    si: බ්රුනෙයි-මියුරා දිස්ත්‍රික්කය
+    sv: Brunei and Muara District
+    ta: ப்ருனெய் -முரா மாவட்டம்
+    te: బ్రూనీ-మువారా జిల్లా
+    th: เขตบรูไน-มัวรา
+    tr: Brunedi-Muara District
+    uk: Бруней-Муара
+    ur: برونائی-موارا ضلع
+    vi: Quận Brunei-Muara
+    lv: Bruneimuaras distrikts
+    ceb: Brunei and Muara District
+    zh: 汶莱摩拉县
+    ccp: "\U0001111D\U00011133\U00011122\U0001112A\U0001111A\U0001112C\U0001112D-\U0001111F\U00011127\U00011105\U0001112A\U00011122"
+    'no': Brunei-Muara distrik
+    yue: 摩拉縣
+    yue_Hans: 摩拉县
+  comments:
+  type: district
+TE:
+  name: Temburong
+  code: TE
+  unofficial_names: Temburong
+  geo:
+    latitude: 4.6204128
+    longitude: 115.141484
+    min_latitude: 4.296721
+    min_longitude: 115.022453
+    max_latitude: 4.9088199
+    max_longitude: 115.359444
+  translations:
+    en: Temburong
+    ar: مقاطعة تيمبورونغ
+    bg: Тембуронг
+    bn: টেম্বুরাং জেলা
+    da: Temburong District
+    de: Temburong
+    el: Τεμπουρόνγκ
+    es: Temburong
+    eu: Temburong barrutia
+    fa: استان تمبورونگ
+    fi: Temburong
+    fr: Temburong
+    gl: Temburong
+    gu: ટેમ્બુરોંગ જિલ્લો
+    he: טמבורונג
+    hi: टेम्ब्युरोंग जिला
+    id: Distrik Temburong
+    it: distretto di Temburong
+    ja: テンブロン地区
+    kn: ಟೆಂಬರ್ಂಗ್ ಜಿಲ್ಲೆ
+    ko: 템부롱 구
+    lt: Temburongo rajonas
+    mr: टेंबुरौँग जिल्हा
+    ms: Daerah Temburong
+    nb: Temburong distrikt
+    nl: Temburong
+    pl: Dystrykt Temburong
+    ps: تيمبورونگ ولسوالۍ
+    pt: Temburong
+    ru: Тембуронг
+    si: ටෙම්බුරෝන්ග් දිස්ත්‍රික්කය
+    sv: Temburong District
+    ta: டெம்புரோங்கு மாவட்டம்
+    te: టెంబురాంగ్ జిల్లా
+    th: เขตเติมบูรง
+    tr: Temburong District
+    uk: Тембуронґ
+    ur: تیمبورونگ ضلع
+    vi: Quận Temburong
+    lv: Temburonas distrikts
+    ceb: Temburong District
+    zh: 淡布隆县
+    ccp: "\U00011111\U0001112C\U0001111F\U00011134\U0001111D\U0001112A\U00011122\U00011127\U00011101"
+    cs: Temburong
+    ca: Districte de Temburong
+    'no': Temburong distrikt
+    hu: Temburong
+    yue: 淡布隆縣
+    yue_Hans: 淡布隆县
+  comments:
+  type: district
+TU:
+  name: Tutong
+  code: TU
+  unofficial_names: Tutong
+  geo:
+    latitude: 4.7140373
+    longitude: 114.6667939
+    min_latitude: 4.3042129
+    min_longitude: 114.5288525
+    max_latitude: 4.9333759
+    max_longitude: 114.8825069
+  translations:
+    en: Tutong
+    ar: مقاطعة توتونغ
+    bg: Тутонг
+    bn: তুতং জেলা
+    da: Tutong District
+    de: Tutong
+    el: Τουτόνγκ
+    es: Distrito de Tutong
+    eu: Tutong barrutia
+    fa: منطقه توتنگ
+    fi: Tutong
+    fr: Tutong
+    gl: Tutong
+    gu: ટુટૉંગ જિલ્લો
+    he: טוטונג
+    hi: टूटोंग जिला
+    id: Distrik Tutong
+    it: distretto di Tutong
+    ja: ツトン地区
+    kn: ಟುಟೊಂಗ್ ಜಿಲ್ಲೆ
+    ko: 투통 구
+    lt: Tutongo rajonas
+    mr: तुटोंग जिल्हा
+    ms: Daerah Tutong
+    nb: Tutong
+    nl: Tutong
+    pl: Dystrykt Tutong
+    ps: توتنگ ولسوالۍ
+    pt: Tutong
+    ru: Тутонг
+    si: ටුටොන්ග් දිස්ත්‍රික්කය
+    sv: Tutong District
+    ta: டுடோங் மாவட்டம்
+    te: ట్యుటాంగ్ జిల్లా
+    th: ตูตง
+    tr: Tutong District
+    uk: Тутонг
+    ur: توتنگ ضلع
+    vi: Quận Tutong
+    lv: Tutonas distrikts
+    ceb: Tutong District
+    zh: 都东县
+    ccp: "\U00011111\U00011128\U00011105\U0001112A\U00011116\U00011127\U00011101"
+    ca: Districte de Tutong
+    'no': Tutong
+    yue: 都東縣
+    yue_Hans: 都东县
+  comments:
+  type: district

@@ -1,0 +1,30 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ruby-prof-1.7.0/ext/ruby_prof
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ruby-prof-1.7.0/ext/ruby_prof
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-2wb2zh sitelibdir\=./.gem.20241205-149352-2wb2zh clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ruby-prof-1.7.0/ext/ruby_prof
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-2wb2zh sitelibdir\=./.gem.20241205-149352-2wb2zh
+compiling rp_allocation.c
+compiling rp_call_tree.c
+compiling rp_call_trees.c
+compiling rp_measure_allocations.c
+compiling rp_measure_memory.c
+compiling rp_measure_process_time.c
+compiling rp_measure_wall_time.c
+compiling rp_measurement.c
+compiling rp_method.c
+compiling rp_profile.c
+compiling rp_stack.c
+compiling rp_thread.c
+compiling ruby_prof.c
+linking shared-object ruby_prof.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ruby-prof-1.7.0/ext/ruby_prof
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-2wb2zh sitelibdir\=./.gem.20241205-149352-2wb2zh install
+/usr/bin/install -c -m 0755 ruby_prof.so ./.gem.20241205-149352-2wb2zh
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ruby-prof-1.7.0/ext/ruby_prof
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-2wb2zh sitelibdir\=./.gem.20241205-149352-2wb2zh clean

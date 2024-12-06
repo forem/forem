@@ -1,0 +1,12 @@
+/**!
+  Inserts all of the elements from #rhs into the array.
+*/
+define array->+(rhs::trait_forEach) => { 
+  local(a = .asCopy);
+  #rhs->forEach => {
+    #a->insert(#1)
+  }
+  return (#a)
+}
+
+define array->onCompare(n::null) => 1

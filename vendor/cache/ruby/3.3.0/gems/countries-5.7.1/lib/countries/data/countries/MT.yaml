@@ -1,0 +1,60 @@
+---
+MT:
+  alpha2: MT
+  alpha3: MLT
+  continent: Europe
+  country_code: '356'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: MT
+  geo:
+    latitude: 35.937496
+    longitude: 14.375416
+    max_latitude: 36.0853
+    max_longitude: 14.5765999
+    min_latitude: 35.79960000000001
+    min_longitude: 14.1801001
+    bounds:
+      northeast:
+        lat: 36.0853
+        lng: 14.5765999
+      southwest:
+        lat: 35.79960000000001
+        lng: 14.1801001
+  international_prefix: '00'
+  ioc: MLT
+  iso_long_name: The Republic of Malta
+  iso_short_name: Malta
+  languages_official:
+  - mt
+  - en
+  languages_spoken:
+  - mt
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '21'
+  nationality: Maltese
+  number: '470'
+  postal_code: true
+  postal_code_format: "[A-Z]{3} ?\\d{2,4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: MT
+  unofficial_names:
+  - Malta
+  - Malte
+  - マルタ
+  vat_rates:
+    standard: 18
+    reduced:
+    - 5
+    - 7
+    super_reduced:
+    parking:
+  world_region: EMEA

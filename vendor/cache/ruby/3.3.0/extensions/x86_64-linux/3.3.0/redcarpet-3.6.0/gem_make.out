@@ -1,0 +1,110 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/redcarpet-3.6.0/ext/redcarpet
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/redcarpet-3.6.0/ext/redcarpet
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-3s8jve sitelibdir\=./.gem.20241205-149352-3s8jve clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/redcarpet-3.6.0/ext/redcarpet
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-3s8jve sitelibdir\=./.gem.20241205-149352-3s8jve
+compiling autolink.c
+compiling buffer.c
+buffer.c: In function ‘bufcstr’:
+buffer.c:111:52: warning: passing argument 1 of ‘bufgrow’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  111 |         if (buf->size + 1 <= buf->asize || bufgrow(buf, buf->size + 1) == BUF_OK) {
+      |                                                    ^~~
+buffer.c:60:21: note: expected ‘struct buf *’ but argument is of type ‘const struct buf *’
+   60 | bufgrow(struct buf *buf, size_t neosz)
+      |         ~~~~~~~~~~~~^~~
+buffer.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling houdini_href_e.c
+compiling houdini_html_e.c
+compiling html.c
+compiling html_smartypants.c
+html_smartypants.c: In function ‘squote_len’:
+html_smartypants.c:104:46: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  104 |         static char* single_quote_list[] = { "'", "&#39;", "&#x27;", "&apos;", NULL };
+      |                                              ^~~
+html_smartypants.c:104:51: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  104 |         static char* single_quote_list[] = { "'", "&#39;", "&#x27;", "&apos;", NULL };
+      |                                                   ^~~~~~~
+html_smartypants.c:104:60: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  104 |         static char* single_quote_list[] = { "'", "&#39;", "&#x27;", "&apos;", NULL };
+      |                                                            ^~~~~~~~
+html_smartypants.c:104:70: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  104 |         static char* single_quote_list[] = { "'", "&#39;", "&#x27;", "&apos;", NULL };
+      |                                                                      ^~~~~~~~
+html_smartypants.c: In function ‘smartypants_squote’:
+html_smartypants.c:149:51: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+  149 |                         uint8_t next_char = (size > 1+next_squote_len) ? text[1+next_squote_len] : 0;
+      |                                                   ^
+html_smartypants.c: In function ‘smartypants_cb__ltag’:
+html_smartypants.c:385:55: warning: pointer targets in passing argument 2 of ‘strncmp’ differ in signedness [-Wpointer-sign]
+  385 |         if (next_to_closing_a && strncmp("&#39;", text+(i+1), 5) == 0) {
+      |                                                   ~~~~^~~~~~
+      |                                                       |
+      |                                                       const uint8_t * {aka const unsigned char *}
+In file included from html_smartypants.c:26:
+/usr/include/string.h:159:51: note: expected ‘const char *’ but argument is of type ‘const uint8_t *’ {aka ‘const unsigned char *’}
+  159 | extern int strncmp (const char *__s1, const char *__s2, size_t __n)
+      |                                       ~~~~~~~~~~~~^~~~
+html_smartypants.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling markdown.c
+markdown.c: In function ‘char_link’:
+markdown.c:1094:33: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+ 1094 |                                 else nb_p--; i++;
+      |                                 ^~~~
+markdown.c:1094:46: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+ 1094 |                                 else nb_p--; i++;
+      |                                              ^
+markdown.c: In function ‘sd_markdown_render’:
+markdown.c:2867:66: warning: passing argument 1 of ‘is_codefence’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+ 2867 |                 if (codefences_enabled && (is_codefence(document + beg, doc_size - beg, &fence_delim, NULL) != 0))
+      |                                                         ~~~~~~~~~^~~~~
+markdown.c:1402:23: note: expected ‘uint8_t *’ {aka ‘unsigned char *’} but argument is of type ‘const uint8_t *’ {aka ‘const unsigned char *’}
+ 1402 | is_codefence(uint8_t *data, size_t size, struct buf *curdelim, struct buf *syntax)
+      |              ~~~~~~~~~^~~~
+markdown.c: At top level:
+markdown.c:94:15: warning: ‘char_underline’ declared ‘static’ but never defined [-Wunused-function]
+   94 | static size_t char_underline(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size);
+      |               ^~~~~~~~~~~~~~
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling rc_markdown.c
+rc_markdown.c: In function ‘Init_redcarpet’:
+rc_markdown.c:174:6: warning: old-style function definition [-Wold-style-definition]
+  174 | void Init_redcarpet()
+      |      ^~~~~~~~~~~~~~
+rc_markdown.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling rc_render.c
+rc_render.c: In function ‘rndr_link_attributes’:
+rc_render.c:306:35: warning: variable ‘rndr’ set but not used [-Wunused-but-set-variable]
+  306 |         struct rb_redcarpet_rndr *rndr;
+      |                                   ^~~~
+rc_render.c: In function ‘Init_redcarpet_rndr’:
+rc_render.c:571:6: warning: old-style function definition [-Wold-style-definition]
+  571 | void Init_redcarpet_rndr()
+      |      ^~~~~~~~~~~~~~~~~~~
+rc_render.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+compiling stack.c
+linking shared-object redcarpet.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/redcarpet-3.6.0/ext/redcarpet
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-3s8jve sitelibdir\=./.gem.20241205-149352-3s8jve install
+/usr/bin/install -c -m 0755 redcarpet.so ./.gem.20241205-149352-3s8jve
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/redcarpet-3.6.0/ext/redcarpet
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-3s8jve sitelibdir\=./.gem.20241205-149352-3s8jve clean

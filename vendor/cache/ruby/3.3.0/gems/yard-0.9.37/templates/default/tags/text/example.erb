@@ -1,0 +1,12 @@
+<% if object.has_tag?(:example) %>
+
+Examples:
+---------
+
+<% object.tags(:example).each_with_index do |tag, i| %>
+<%= indent("# " + tag.name + "\n") if tag.name %>
+<%= indent(format_source(tag.text)) + "\n" %>
+<%= "\n" if i < object.tags(:example).size - 1 %>
+<% end %>
+<% end %>
+

@@ -1,0 +1,44 @@
+# postgresql is the default if no ADAPTER environment variable is set when running specs.
+
+postgresql:
+  adapter: postgresql
+  database: <%= ENV.fetch('POSTGRES_DB', 'rpush_test') %>
+  host: <%= ENV.fetch('POSTGRES_HOST', 'localhost') %>
+  username: <%= ENV.fetch('POSTGRES_USER', 'postgres') %>
+  password: <%= ENV.fetch('PGPASSWORD', '') %>
+
+jdbcpostgresql:
+  adapter: jdbcpostgresql
+  database: rpush_test
+  host: localhost
+  username: postgres
+  password: ""
+
+mysql2:
+  adapter: mysql2
+  database: rpush_test
+  host: localhost
+  username: rpush_test
+  password: ""
+  encoding: utf8
+
+jdbcmysql:
+  adapter: jdbcmysql
+  database: rpush_test
+  host: localhost
+  username: rpush_test
+  password: ""
+  encoding: utf8
+
+jdbch2:
+  adapter: h2
+  url: jdbc:h2:file:/tmp/rpush_test;AUTO_SERVER=TRUE
+  username: rpush_test
+  password: ""
+  pool: 128
+  timeout: 5000
+  encoding: utf8
+
+sqlite3:
+  adapter: sqlite3
+  database: spec/tmp/rpush_test.sqlite3

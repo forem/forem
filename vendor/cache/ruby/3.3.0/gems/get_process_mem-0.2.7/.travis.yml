@@ -1,0 +1,22 @@
+language: ruby
+os:
+  - linux
+  - osx
+
+before_install:
+  - gem install bundler -v 1.17.3
+
+rvm:
+  - 2.2
+  - 2.6
+  - ruby-head
+  - jruby-head
+  - truffleruby
+
+matrix:
+  allow_failures:
+    - rvm: 2.2
+      if: os = osx
+    - rvm: ruby-head
+    - rvm: jruby-head
+    - rvm: truffleruby

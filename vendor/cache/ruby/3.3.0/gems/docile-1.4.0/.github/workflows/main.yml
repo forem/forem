@@ -1,0 +1,31 @@
+name: Main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    name: 'CI Tests'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
+        ruby: [jruby, truffleruby, 2.5, 2.6, 2.7, '3.0', head]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle exec rspec
+      - uses: codecov/codecov-action@v1.5.0
+        with:
+          name: ${{ matrix.ruby }}
+          file: ./coverage/coverage.xml
+      - run: bundle exec rubocop
+        if: matrix.ruby == '3.0'

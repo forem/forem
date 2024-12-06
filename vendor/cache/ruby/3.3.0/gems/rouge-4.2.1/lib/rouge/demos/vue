@@ -1,0 +1,11 @@
+<template>
+  <div id="app">
+    {{ message }}
+  </div>
+</template>
+
+<script lang=coffee>
+  app = new Vue
+    el: '#app'
+    data: { message: 'Hello Vue!' }
+</script>

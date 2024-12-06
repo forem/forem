@@ -1,0 +1,66 @@
+---
+LV:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{region}}
+    {{city}} {{postalcode}}
+    {{country}}
+  alpha2: LV
+  alpha3: LVA
+  continent: Europe
+  country_code: '371'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: LG
+  geo:
+    latitude: 56.879635
+    longitude: 24.603189
+    max_latitude: 58.0855688
+    max_longitude: 28.2414029
+    min_latitude: 55.6747769
+    min_longitude: 20.8465999
+    bounds:
+      northeast:
+        lat: 58.0855688
+        lng: 28.2414029
+      southwest:
+        lat: 55.6747769
+        lng: 20.8465999
+  international_prefix: '00'
+  ioc: LAT
+  iso_long_name: The Republic of Latvia
+  iso_short_name: Latvia
+  languages_official:
+  - lv
+  languages_spoken:
+  - lv
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '8'
+  nationality: Latvian
+  number: '428'
+  postal_code: true
+  postal_code_format: LV-\d{4}
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: LV
+  unofficial_names:
+  - Latvia
+  - Lettland
+  - Lettonie
+  - Letonia
+  - ラトビア
+  - Letland
+  vat_rates:
+    standard: 21
+    reduced:
+    - 12
+    super_reduced:
+    parking:
+  world_region: EMEA

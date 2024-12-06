@@ -1,0 +1,83 @@
+# elements like %{queue} are variables and should not be translated
+vi: # <---- change this to your locale code
+  Dashboard: Bảng điều khiển
+  Status: Trạng thái
+  Time: Thời gian
+  Namespace: Không gian tên
+  Realtime: Thời gian thực
+  History: Lịch sử
+  Busy: Bận rộn
+  Processed: Đã xử lí
+  Failed: Đã thất bại
+  Scheduled: Đã lên lịch
+  Retries: Số lần thử
+  Enqueued: Đã xếp hàng đợi
+  Worker: Máy xử lí
+  LivePoll: Thăm dò trực tiếp
+  StopPolling: Ngừng thăm dò
+  Queue: Hàng đợi
+  Class: Lớp
+  Job: Tác vụ
+  Arguments: Tham số
+  Extras: Thêm
+  Started: Đã bắt đầu
+  ShowAll: Hiện tất cả
+  CurrentMessagesInQueue: Số lượng công việc trong <span class='title'>%{queue}</span>
+  Delete: Xóa
+  AddToQueue: Thêm vào hàng đợi
+  AreYouSureDeleteJob: Bạn có chắc là muốn xóa tác vụ này?
+  AreYouSureDeleteQueue: Bạn có chắc là muốn xóa %{queue} này?
+  Queues: Các hàng đợi
+  Size: Kích thước
+  Actions: Những hành động
+  NextRetry: Lần thử lại tiếp theo
+  RetryCount: Số lần thử lại
+  RetryNow: Thử lại ngay bây giờ
+  Kill: Giết
+  LastRetry: Lần thử cuối
+  OriginallyFailed: Đã thất bại từ đầu
+  AreYouSure: Bạn chắc chứ?
+  DeleteAll: Xóa hết
+  RetryAll: Thử lại tất cả
+  KillAll: Giết hết
+  NoRetriesFound: Không có lần thử nào được tìm thấy
+  Error: Lỗi
+  ErrorClass: Lớp lỗi
+  ErrorMessage: Tin nhắn lỗi
+  ErrorBacktrace: Dấu vết của lỗi
+  GoBack: ← Trở lại
+  NoScheduledFound: Không có tác vụ đã lên lịch nào được tìm thấy
+  When: Khi nào
+  ScheduledJobs: Những Tác Vụ Được Hẹn
+  idle: Đang chờ
+  active: Đang hoạt động
+  Version: Phiên bản
+  Connections: Các kết nối
+  MemoryUsage: Lượng bộ nhớ sử dụng
+  PeakMemoryUsage: Lượng bộ nhớ sử dụng đỉnh điểm
+  Uptime: Thời gian hệ thống đã online (days)
+  OneWeek: 1 tuần
+  OneMonth: 1 tháng
+  ThreeMonths: 3 tháng
+  SixMonths: 6 tháng
+  Failures: Các thất bại
+  DeadJobs: Những tác vụ đã chết
+  NoDeadJobsFound: Không có tác vụ đã chết nào được tìm thấy
+  Dead: Chết
+  Processes: Tiến trình xử lí
+  Thread: Luồng xử lí
+  Threads: Những luồng xử lí
+  Jobs: Các tác vụ
+  Paused: Đã tạm dừng
+  Stop: Dừng Lại
+  Quiet: Im lặng
+  StopAll: Dừng lại tất cả
+  QuietAll: Làm cho tất cả im lặng
+  PollingInterval: Khoảng thời gian giữa các lần thăm dò
+  Plugins: Hệ thống đính kèm
+  NotYetEnqueued: Chưa được bỏ vào hàng đợi
+  CreatedAt: Được tạo vào lúc
+  BackToApp: Trở về ứng dụng
+  Latency: Độ trễ
+  Pause: Tạm dừng
+  Unpause: Hủy tạm dừng

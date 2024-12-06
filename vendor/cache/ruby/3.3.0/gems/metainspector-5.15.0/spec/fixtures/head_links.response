@@ -1,0 +1,34 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Content-Type: text/html
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 4987
+X-Varnish: 2000423390
+Age: 0
+Via: 1.1 varnish
+
+<html>
+  <head>
+    <title>An example page</title>
+    <link
+        rel="canonical"
+        href="http://example.com/canonical-from-head"
+    />
+    <link rel="stylesheet" href="/stylesheets/screen.css">
+    <link rel="stylesheet" href="//example2.com/stylesheets/screen.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shorturl" href="http://gu.com/p/32v5a" />
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="http://foo/print.css"
+        media="print"
+        class="contrast"
+    />
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>

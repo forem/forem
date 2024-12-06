@@ -1,0 +1,272 @@
+pkg_config: checking for pkg-config for libffi... -------------------- [" ", "", "-lffi"]
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib pkg-config --exists libffi
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib pkg-config --libs libffi |
+=> "-lffi\n"
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby  -lm -lpthread  -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return !!argv[argc];
+6: }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.    -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi -lm -lpthread  -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return !!argv[argc];
+6: }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib pkg-config --cflags-only-I libffi |
+=> "\n"
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib pkg-config --cflags-only-other libffi |
+=> "\n"
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib pkg-config --libs-only-l libffi |
+=> "-lffi\n"
+package configuration for libffi
+incflags: 
+cflags: 
+ldflags: 
+libs: -lffi
+
+--------------------
+
+have_library: checking for ffi_prep_closure_loc() in -lffi... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed      -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: #include <ffi.h>
+ 4: 
+ 5: /*top*/
+ 6: extern int t(void);
+ 7: int main(int argc, char **argv)
+ 8: {
+ 9:   if (argc > 1000000) {
+10:     int (* volatile tp)(void)=(int (*)(void))&t;
+11:     printf("%d", (*tp)());
+12:   }
+13: 
+14:   return !!argv[argc];
+15: }
+16: int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_prep_closure_loc; return !p; }
+/* end */
+
+--------------------
+
+have_func: checking for ffi_prep_cif_var()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+conftest.c: In function ‘t’:
+conftest.c:14:57: error: ‘ffi_prep_cif_var’ undeclared (first use in this function)
+   14 | int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_prep_cif_var; return !p; }
+      |                                                         ^~~~~~~~~~~~~~~~
+conftest.c:14:57: note: each undeclared identifier is reported only once for each function it appears in
+conftest.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_prep_cif_var; return !p; }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: extern void ffi_prep_cif_var();
+15: int t(void) { ffi_prep_cif_var(); return 0; }
+/* end */
+
+--------------------
+
+have_func: checking for ffi_raw_call()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+conftest.c: In function ‘t’:
+conftest.c:14:57: error: ‘ffi_raw_call’ undeclared (first use in this function)
+   14 | int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_raw_call; return !p; }
+      |                                                         ^~~~~~~~~~~~
+conftest.c:14:57: note: each undeclared identifier is reported only once for each function it appears in
+conftest.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_raw_call; return !p; }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: extern void ffi_raw_call();
+15: int t(void) { ffi_raw_call(); return 0; }
+/* end */
+
+--------------------
+
+have_func: checking for ffi_prep_raw_closure()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+conftest.c: In function ‘t’:
+conftest.c:14:57: error: ‘ffi_prep_raw_closure’ undeclared (first use in this function)
+   14 | int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_prep_raw_closure; return !p; }
+      |                                                         ^~~~~~~~~~~~~~~~~~~~
+conftest.c:14:57: note: each undeclared identifier is reported only once for each function it appears in
+conftest.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))ffi_prep_raw_closure; return !p; }
+/* end */
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: extern void ffi_prep_raw_closure();
+15: int t(void) { ffi_prep_raw_closure(); return 0; }
+/* end */
+
+--------------------
+
+have_func: checking for rb_gc_mark_movable()... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -lffi  -lffi -lm -lpthread  -lc"
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: extern int t(void);
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     int (* volatile tp)(void)=(int (*)(void))&t;
+ 9:     printf("%d", (*tp)());
+10:   }
+11: 
+12:   return !!argv[argc];
+13: }
+14: int t(void) { void ((*volatile p)()); p = (void ((*)()))rb_gc_mark_movable; return !p; }
+/* end */
+
+--------------------
+
+append_ldflags: checking for whether -pthread is accepted as LDFLAGS... -------------------- yes
+
+LD_LIBRARY_PATH=.:/home/organicelectronics/.rbenv/versions/3.3.0/lib "gcc -o conftest -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/x86_64-linux -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0/ruby/backward -I/home/organicelectronics/.rbenv/versions/3.3.0/include/ruby-3.3.0 -I.     -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wdeprecated-declarations -Wdiv-by-zero -Wduplicated-cond -Wimplicit-function-declaration -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wold-style-definition -Wimplicit-fallthrough=0 -Wmissing-noreturn -Wno-cast-function-type -Wno-constant-logical-operand -Wno-long-long -Wno-missing-field-initializers -Wno-overlength-strings -Wno-packed-bitfield-compat -Wno-parentheses-equality -Wno-self-assign -Wno-tautological-compare -Wno-unused-parameter -Wno-unused-value -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wunused-variable -Wmisleading-indentation -Wundef  -fPIC  conftest.c  -L. -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L. -fstack-protector-strong -rdynamic -Wl,-export-dynamic -Wl,--no-as-needed     -lffi  -lffi -Wl,-rpath,/home/organicelectronics/.rbenv/versions/3.3.0/lib -L/home/organicelectronics/.rbenv/versions/3.3.0/lib -lruby -pthread -lm -lpthread  -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return !!argv[argc];
+6: }
+/* end */
+
+--------------------
+
+extconf.h is:
+/* begin */
+1: #ifndef EXTCONF_H
+2: #define EXTCONF_H
+3: #define HAVE_FFI_PREP_CIF_VAR 1
+4: #define HAVE_FFI_RAW_CALL 1
+5: #define HAVE_FFI_PREP_RAW_CLOSURE 1
+6: #define HAVE_RAW_API 1
+7: #define HAVE_RB_GC_MARK_MOVABLE 1
+8: #endif
+/* end */
+

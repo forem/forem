@@ -1,0 +1,45 @@
+---
+BV:
+  alpha2: BV
+  alpha3: BVT
+  continent: Antarctica
+  country_code: '47'
+  currency_code: NOK
+  distance_unit: KM
+  gec: BV
+  geo:
+    latitude: -54.4207915
+    longitude: 3.3464497
+    max_latitude: -54.3869298
+    max_longitude: 3.4332785
+    min_latitude: -54.4541004
+    min_longitude: 3.2858826
+    bounds:
+      northeast:
+        lat: -54.3869298
+        lng: 3.4332785
+      southwest:
+        lat: -54.4541004
+        lng: 3.2858826
+  international_prefix: ''
+  ioc:
+  iso_long_name: Bouvet Island
+  iso_short_name: Bouvet Island
+  languages_official: []
+  languages_spoken: []
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: ''
+  number: '074'
+  postal_code: false
+  region: ''
+  start_of_week: monday
+  subregion: ''
+  un_locode: BV
+  unofficial_names:
+  - Bouvet Island
+  - Bouvetinsel
+  - ブーベ島
+  - Bouveteiland
+  world_region: APAC

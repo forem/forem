@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Feedjira Blog</title>
+  <subtitle>A Blog for Feedjira</subtitle>
+  <id>http://feedjira.com/blog</id>
+  <link href="http://feedjira.com/blog"/>
+  <link href="http://feedjira.com/blog/feed.xml" rel="self"/>
+  <updated>2014-03-17T00:00:00Z</updated>
+  <author>
+    <name>Jon Allured</name>
+  </author>
+  <entry>
+    <title>Feedjira Goes One-Point-Oh</title>
+    <link rel="alternate" href="http://feedjira.com/blog/2014/03/17/feedjira-goes-one-point-oh.html"/>
+    <id>http://feedjira.com/blog/2014/03/17/feedjira-goes-one-point-oh.html</id>
+    <published>2014-03-17T00:00:00Z</published>
+    <updated>2014-03-17T08:02:45-05:00</updated>
+    <author>
+      <name>Jon Allured</name>
+    </author>
+    <content type="html">&lt;p&gt;Last fall, I asked &lt;a href="http://www.pauldix.net"&gt;Paul Dix&lt;/a&gt; if I could take over maintenance of his gem
+Feedzirra. My request was totally out of the blue, so I was pretty pumped when
+he got right back to me and said yes. He said that he didn&amp;rsquo;t have time to work
+on it anymore and so I should feel free to do whatever I thought was best.&lt;/p&gt;
+
+&lt;p&gt;Score!&lt;/p&gt;
+
+&lt;p&gt;My first order of business was to go through the many open issues and pull
+requests on GitHub. When I started there were over 60, a number that I&amp;rsquo;ve gotten
+down to just a few. I thought it was important to ensure that users saw me treat
+their issue as important and even if it was very old (which many were), I asked
+if there was anything I could do to help.&lt;/p&gt;
+
+&lt;p&gt;I was pleasantly surprised by the nice way many people responded and we got to
+work addressing their questions and issues.&lt;/p&gt;
+
+&lt;p&gt;As I was working through issues and pull requests, I kept &lt;a href="http://semver.org"&gt;SemVer&lt;/a&gt; in mind -
+bug fixes in patch releases and backward-compatible changes in minor releases.
+But I also realized that it was past time for this project to be at version 1.0.
+In the SemVer FAQ, they talk about when to release version 1.0 and Feedzirra fit
+the bill: it was being used in production, there was a stable API and I was
+taking backwards compatibilty seriously.&lt;/p&gt;
+
+&lt;p&gt;So I treated it as a project at 1.0 and I did my best to release versions that
+were backward compatible and added deprecations for what I wanted to do in 1.0.
+I saw things that I wanted to completely rewrite, but I resisted the urge to
+burn it all down and start again.&lt;/p&gt;
+
+&lt;p&gt;When I was close to being caught up on the backlog of issues and pull requests,
+I started thinking about releasing version 1.0, and I knew I wanted to create a
+website for the project. I worked with &lt;a href="http://danielariza.com"&gt;Daniel Ariza&lt;/a&gt; to make it happen. I
+ripped apart the README and rewrote just about all the sections.&lt;/p&gt;
+
+&lt;p&gt;There was an open issue on the project about renaming the Gem and I knew that
+launching the website and releasing 1.0 would be the perfect opportunity, so I
+went for it. There was a suggestion to change the name to Feedzilla, but since
+that is already a thing, I went with Feedjira. I bought the domain and setup an
+organization by that name on GitHub.&lt;/p&gt;
+
+&lt;p&gt;With those things in place, I needed to actually update the code for these
+changes. I wanted to make this transition as easy as possible and devised a
+simple way to use &lt;a href="/versions.html"&gt;three versions&lt;/a&gt; to make the jump to 1.0.&lt;/p&gt;
+
+&lt;p&gt;For most users, upgrading to 1.0 should be a breeze, but I have an &lt;a href="/upgrading.html"&gt;upgrade
+page&lt;/a&gt; to help with a couple details. If you have any trouble upgrading,
+please let me know by &lt;a href="https://github.com/feedjira/feedjira/issues"&gt;opening an issue&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;There are still lots of things I&amp;rsquo;d like to do with this Gem. I mentioned seeing
+things that I wanted to completely rewrite, so that&amp;rsquo;ll be something that I work
+on for a 2.0 release, but that&amp;rsquo;s a ways off. I&amp;rsquo;d like to officially support
+JRuby. Many people use Feedjira with Rails, so a separate project that helps
+those users get up and running quickly seems to have value.&lt;/p&gt;
+
+&lt;p&gt;The list goes on.&lt;/p&gt;
+
+&lt;p&gt;I do have a request before I finish this thing: I&amp;rsquo;d like to hear from users that
+have apps in production using Feedjira. If you&amp;rsquo;re using Feedjira for a
+commercial app, please &lt;a href="feedjira@gmail.com"&gt;email me&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;Thanks to everyone who has helped me accomplish this, but especially &lt;a href="http://www.pauldix.net"&gt;Paul
+Dix&lt;/a&gt; for creating such a fun project to work on, &lt;a href="http://danielariza.com"&gt;Daniel Ariza&lt;/a&gt; for a
+badass website design and the many people who opened issues or sent pull
+requests. Open source is fun to work on because of people like you!! &amp;lt;3 &amp;lt;3 &amp;lt;3&lt;/p&gt;
+</content>
+  </entry>
+</feed>

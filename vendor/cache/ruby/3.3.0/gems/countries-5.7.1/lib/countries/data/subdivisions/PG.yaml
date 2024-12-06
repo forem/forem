@@ -1,0 +1,1323 @@
+---
+CPK:
+  name: Chimbu
+  code: CPK
+  unofficial_names:
+  - Chimbu
+  - Simbúa
+  geo:
+    latitude: -6.308768199999999
+    longitude: 144.8731219
+    min_latitude: -6.8954711
+    min_longitude: 144.4285419
+    max_latitude: -5.775725
+    max_longitude: 145.33975
+  translations:
+    en: Chimbu
+    ar: محافظة تشيمبو
+    bg: Симбу
+    bn: চিম্বু প্রদেশ
+    cs: Chimbu
+    da: Chimbu Province
+    de: Chimbu Province
+    el: Σίμπου
+    es: Simbu
+    et: Chimbu
+    eu: Simbu
+    fa: استان چیمبو
+    fi: Chimbun lääni
+    fr: Simbu
+    gl: Simbu
+    gu: ચિમ્બુ પ્રાંત
+    hi: किम्बू प्रांत
+    id: Provinsi Simbu
+    it: provincia di Chimbu
+    ja: シンブ州
+    ka: სიმბუ
+    kn: ಚಿಂಬು ಪ್ರಾಂತ್ಯ
+    ko: 심부 주
+    mr: चिंब प्रांत
+    ms: Simbu
+    nb: Simbu provins
+    nl: Chimbu
+    pl: Simbu
+    pt: Simbu
+    ro: Provincia Simbu
+    ru: Симбу
+    si: චිම්බු පළාත
+    sv: Simbu
+    ta: சிம்பு மாகாணம்
+    te: చింబూ ప్రావిన్స్
+    th: จังหวัดชิมบู
+    tr: Chimbu
+    uk: Сімбу
+    ur: چیمبو صوبہ
+    vi: Simbu
+    zh: 欽布省
+    lv: Simbu (Čimbu) province
+    ceb: Chimbu Province
+    lt: Čimbu provincija
+    ccp: "\U0001110C\U00011128\U0001111F\U00011134\U0001111D\U0001112A"
+    'no': Simbu provins
+    ca: Chimbu
+    cy: Talaith Chimbu
+  comments:
+  type: province
+CPM:
+  name: Central
+  code: CPM
+  unofficial_names:
+  - Papua Central
+  geo:
+    latitude: -9.1360187
+    longitude: 147.4627259
+    min_latitude: -10.3948627
+    min_longitude: 146.381344
+    max_latitude: -7.773521
+    max_longitude: 149.6684618
+  translations:
+    en: Central
+    ar: المحافظة الوسطى
+    bg: Централна провинция
+    bn: সেন্ট্রাল প্রদেশ
+    ca: Província Central
+    da: Central Province
+    de: Central Province
+    el: Κεντρική Επαρχία, Παπούα Νέα Γουινέα
+    es: Provincia Central
+    et: Keskprovints
+    eu: Erdialdeko probintzia
+    fa: استان مرکزی
+    fi: Central Province
+    fr: Province centrale
+    gl: Central
+    gu: સેન્ટ્રલ પ્રાંત
+    hi: केंद्रीय प्रांत
+    id: Provinsi Tengah
+    it: provincia Centrale
+    ja: 中央州
+    ka: ცენტრალური პროვინცია
+    kn: ಮಧ್ಯ ಪ್ರಾಂತ್ಯ
+    ko: 중앙 주
+    mr: मध्यवर्ती प्रांत
+    ms: Central Province
+    nb: Central
+    nl: Central
+    pl: Prowincja Centralna
+    pt: Central
+    ro: Provincia Centrală
+    ru: Центральная провинция
+    si: මද්‍යම පළාත
+    sv: Central, Papua Nya Guinea
+    ta: சென்ட்ரல் மாகாணம்
+    te: సెంట్రల్ ప్రావిన్స్
+    th: เซ็นทรัล โพวิ้น
+    tr: Central Province
+    uk: Центральна провінція
+    ur: مرکزی صوبہ
+    vi: Tỉnh Trung Ương
+    lv: Centrālā province
+    ceb: Central Province (lalawigan sa Papua New Guinea)
+    lt: Centrinė provincija
+    zh: 中央省
+    'no': Central
+  comments:
+  type: province
+EBR:
+  name: East New Britain
+  code: EBR
+  unofficial_names:
+  - New Britain East
+  geo:
+    latitude: -4.612894300000001
+    longitude: 151.8877321
+    min_latitude: -6.068317899999999
+    min_longitude: 150.5976151
+    max_latitude: -4.0885039
+    max_longitude: 152.4966978
+  translations:
+    en: East New Britain
+    ar: شرق بريطانيا الجديدة
+    bg: Източна Нова Британия
+    bn: ইস্ট নিউ ব্রিটেন
+    da: East New Britain
+    de: East New Britain Province
+    el: Ανατολική Νέα Βρετανία
+    es: Nueva Bretaña del Este
+    et: Ida-Uus-Britannia
+    eu: Ekialdeko Britainia Berria
+    fa: استان بریتانیای نو شرقی
+    fi: East New Britain
+    fr: Nouvelle-Bretagne orientale
+    gl: Nova Bretaña Oriental
+    gu: ઇસ્ટ ન્યૂ બ્રિટન
+    hi: पूर्वी न्यू ब्रिटेन
+    id: Britania Baru Timur
+    it: provincia della Nuova Britannia Est
+    ja: 東ニューブリテン州
+    ka: აღმოსავლეთი ახალი ბრიტანეთი
+    kn: ಈಸ್ಟ್ ನ್ಯೂ ಬ್ರಿಟನ್
+    ko: 동뉴브리튼 주
+    mr: पूर्व न्यू ब्रिटन
+    ms: East New Britain
+    nb: Øst Ny Britland
+    nl: East New Britain
+    pl: Nowa Brytania Wschodnia
+    pt: Nova Bretanha Oriental
+    ru: Восточная Новая Британия
+    si: නැගෙනහිර නව බ්‍රිතාන්‍ය
+    sv: East New Britain
+    ta: கிழக்கு நியூ பிரிட்டன்
+    te: తూర్పు న్యూ బ్రిటన్
+    th: นิวบริเตนตะวันออก
+    tr: Doğu Yeni Britanya
+    uk: Східна Нова Британія
+    ur: مشرقی نیا برطانیہ صوبہ
+    vi: Đông New Britain
+    lv: Austrumjaunbritānijas province
+    ceb: East New Britain Province
+    lt: Rytinė Naujosios Britanijos provincija
+    zh: 東新不列顛省
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U0001111A\U00011131 \U0001111D\U00011133\U00011122\U00011128\U00011111\U0001112C\U0001111A\U00011134"
+    mk: Источна Нова Британија
+    'no': Øst Ny Britland
+    ca: East New Britain
+  comments:
+  type: province
+EHG:
+  name: Eastern Highlands
+  code: EHG
+  unofficial_names:
+  - Highlands East
+  geo:
+    latitude: -6.5861674
+    longitude: 145.6689636
+    min_latitude: -7.1572681
+    min_longitude: 144.985481
+    max_latitude: -5.853335
+    max_longitude: 146.149775
+  translations:
+    en: Eastern Highlands
+    ar: مقاطعة هايلاند الشرقية
+    bg: Източни височини
+    bn: পূর্ব হাইল্যান্ডস প্রদেশ
+    da: Eastern Highlands Province
+    de: Eastern Highlands Province
+    el: Ανατολικά Υψίπεδα
+    es: Tierras Altas Orientales
+    et: Eastern Highlands
+    eu: Ekialdeko Lur Garaiak
+    fa: استان ارتفاعات شرقی
+    fi: Eastern Highlands lääni
+    fr: Hautes-Terres orientales
+    gl: Eastern Highlands
+    gu: પૂર્વીય હાઈલેન્ડ્સ પ્રાંત
+    hi: पूर्वी हाइलैंड्स प्रांत
+    id: Provinsi Dataran Tinggi Timur
+    it: provincia degli Altopiani Orientali
+    ja: 東部山岳州
+    ka: ისტერნ ჰაილენდსი
+    kn: ಪೂರ್ವ ಹೈಲ್ಯಾಂಡ್ ಪ್ರಾಂತ್ಯ
+    ko: 이스턴하일랜즈 주
+    mr: पूर्व हाईलँड्स प्रांत
+    ms: Eastern Highlands Province
+    nb: Øst høylands provins
+    nl: Eastern Highlands
+    pl: Eastern Highlands
+    pt: Eastern Highlands
+    ru: Истерн-Хайлендс
+    si: නැගෙනහිර හයිලන්ඩ්ස්
+    sv: Eastern Highlands
+    ta: கிழக்கு ஹயிலான்ட்ஸ் மாகாணம்
+    te: తూర్పు దీవుల ప్రావిన్స్
+    th: อีสเทิร์นไฮแลนดส์
+    tr: Doğu Highlands
+    uk: Східний Гайлендс
+    ur: مشرقی سطح مرتفع صوبہ
+    vi: Tỉnh Eastern Highlands
+    lv: Austrumu kalnienes province
+    ceb: Eastern Highlands Province
+    lt: Rytų Kanų provincija
+    zh: 東高地省
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011126\U0001112D\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    'no': Øst høylands provins
+    ca: Eastern Highlands
+  comments:
+  type: province
+EPW:
+  name: Enga
+  code: EPW
+  unofficial_names: Enga
+  geo:
+    latitude: -5.3005849
+    longitude: 143.5635637
+    min_latitude: -5.9661789
+    min_longitude: 142.7393411
+    max_latitude: -5.0077089
+    max_longitude: 144.2541971
+  translations:
+    en: Enga
+    ar: مقاطعة إنغا
+    bg: Енга
+    bn: এঙ্গা প্রদেশ
+    da: Enga Province
+    de: Enga Province
+    el: Ένγκα
+    es: Enga
+    et: Enga
+    eu: Enga
+    fa: استان انگا
+    fi: Engan provinssi
+    fr: Enga
+    gl: Enga
+    gu: ઈંગા પ્રાંત
+    hi: एंगा प्रांत
+    id: Provinsi Enga
+    it: provincia di Enga
+    ja: エンガ州
+    ka: ენგა
+    kn: ಎಂಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 엥가 주
+    mr: एंगा प्रांत
+    ms: Enga Province
+    nb: Enga provins
+    nl: Enga
+    pl: Enga
+    pt: Enga
+    ru: Энга
+    si: එන්ගා පළාත
+    sv: Enga
+    ta: எங்க மாகாணம்
+    te: ఎంగా ప్రావిన్స్
+    th: จังหวัดเอนก้า
+    tr: Enga Province
+    uk: Енга
+    ur: انگا صوبہ
+    vi: Tỉnh Enga
+    lv: Engas province
+    ceb: Enga Province
+    lt: Engos provincija
+    zh: 恩加省
+    ccp: "\U00011103\U0001112C\U0001111A\U00011134\U00011109"
+    'no': Enga provins
+    bs: Enga
+    ca: Enga
+    cy: Talaith Enga
+  comments:
+  type: province
+ESW:
+  name: East Sepik
+  code: ESW
+  unofficial_names:
+  - Sepik East
+  geo:
+    latitude: -4.3150058
+    longitude: 143.045893
+    min_latitude: -5.151646
+    min_longitude: 141.314843
+    max_latitude: -3.1911646
+    max_longitude: 144.8318195
+  translations:
+    en: East Sepik
+    ar: محافظة سيبيك الشرقية
+    bg: Източен Сепик
+    bn: পূর্ব সেপিক প্রদেশ
+    da: East Sepik Province
+    de: East Sepik Province
+    el: Ανατολική Σέπικ
+    es: Sepik Oriental
+    et: Ida-Sepik
+    eu: Ekialdeko Sepik
+    fa: استان سپیک شرقی
+    fi: East Sepikin lääni
+    fr: Sepik oriental
+    gl: Sepik do Leste
+    gu: પૂર્વ સેપિક પ્રાંત
+    hi: पूर्वी सेपिक प्रांत
+    id: Provinsi Sepik Timur
+    it: provincia di Sepik Est
+    ja: 東セピック州
+    ka: აღმოსავლეთი სეპიკი
+    kn: ಈಸ್ಟ್ ಸೆಪಿಕ್ ಪ್ರಾಂತ್ಯ
+    ko: 동세픽 주
+    mr: पूर्व सेपिक प्रांत
+    ms: East Sepik Province
+    nb: East Sepik
+    nl: East Sepik
+    pl: Sepik Wschodni
+    pt: East Sepik
+    ru: Восточный Сепик
+    si: නැගෙනහිර සේපික් පළාත
+    sv: East Sepik
+    ta: கிழக்கு செபிக்க மாகாணம்
+    te: తూర్పు సెపిక్ ప్రావిన్స్
+    th: เซปิกตะวันออก
+    tr: Doğu Sepik Province
+    uk: Східний Сепік
+    ur: مشرقی سپیک صوبہ
+    vi: Tỉnh Đông Sepik
+    lv: Austrumu Sepikas province
+    ceb: East Sepik Province
+    lt: Rytų Sepiko provincija
+    zh: 东塞皮克省
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134 \U00011125\U0001112C\U0001111B\U0001112D\U00011107\U00011134"
+    'no': East Sepik
+    ca: East Sepik
+    cy: Talaith Dwyrain Sepik
+  comments:
+  type: province
+GPK:
+  name: Gulf
+  code: GPK
+  unofficial_names:
+  - Papua Gulf
+  geo:
+    latitude: -7.269182100000001
+    longitude: 145.1375834
+    min_latitude: -8.5877783
+    min_longitude: 143.00871
+    max_latitude: -6.700165999999999
+    max_longitude: 146.6471049
+  translations:
+    en: Gulf
+    ar: الخليج
+    bg: Гулф
+    bn: ডোলেঞ্জস্কা টপ্লিস পৌরসভা
+    da: Gulf
+    de: Gulf Province
+    el: Κόλπος, Παπούα Νέα Γουινέα
+    es: Provincia del Golfo
+    eu: Golkoa (Papua Ginea Berria)
+    fa: استان خلیج
+    fi: Gulf
+    fr: Golfe
+    gl: Gulf
+    gu: ગલ્ફ
+    hi: खाड़ी
+    id: Provinsi Teluk
+    it: provincia del Golfo
+    ja: 湾岸州
+    ka: გალფის პროვინცია
+    kn: ಗಲ್ಫ್
+    ko: 걸프 주
+    mr: गल्फ
+    ms: Gulf
+    nb: Gulf
+    nl: Gulf
+    pl: Gulf
+    pt: Gulf (província)
+    ru: Галф
+    si: ගල්ෆ්
+    sv: Gulf
+    ta: கோல்ப்
+    te: గల్ఫ్
+    th: กัฟ
+    tr: gulf
+    uk: Галф
+    ur: گلف صوبہ
+    vi: Gulf
+    lv: Galfa
+    ceb: Gulf Province
+    lt: Galfas
+    zh: 海灣省
+    ccp: "\U00011109\U00011127\U00011123\U00011134\U0001111B\U00011134"
+    et: Gulfi provints
+    'no': Gulf
+  comments:
+  type: province
+HLA:
+  name: Hela
+  code: HLA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Hela Province
+    en: Hela
+    es: Hela
+    eu: Hela
+    fa: استان هلا
+    fr: Hela
+    it: Provincia di Hela
+    ja: ヘラ州
+    ka: ჰელა
+    ko: 헬라 주
+    nl: Hela Province
+    ru: Хела
+    uk: Гела
+    ur: ہیلا صوبہ
+    ceb: Hela (lalawigan)
+    zh: 赫拉省
+    pl: Hela
+    ccp: "\U00011126\U0001112C\U00011123"
+    fi: Hela (maakunta)
+    pt: Hela
+    et: Hela provints
+    bs: Hela
+  comments:
+  type: province
+JWK:
+  name: Jiwaka
+  code: JWK
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Jiwaka Province
+    en: Jiwaka
+    es: Jiwaka
+    eu: Jiwaka (probintzia)
+    fa: استان جیواکا
+    fr: Jiwaka Province
+    it: Provincia di Jiwaka
+    ja: ジワカ州
+    ka: ჯივაკა
+    ko: 지와카 주
+    nl: Jiwaka Province
+    ru: Дживака
+    uk: Дживака
+    ur: جیواکا صوبہ
+    ceb: Jiwaka
+    zh: 吉瓦卡省
+    pl: Jiwaka
+    ccp: "\U0001110E\U00011128\U00011124\U00011107"
+    fi: Jiwaka
+    pt: Jiwaka
+    et: Jiwaka provints
+    bs: Jiwaka
+    cy: Talaith Jiwaka
+  comments:
+  type: province
+MBA:
+  name: Milne Bay
+  code: MBA
+  unofficial_names: Milne Bay
+  geo:
+    latitude: -10.4460842
+    longitude: 150.7214362
+    min_latitude: -10.5289949
+    min_longitude: 150.346527
+    max_latitude: -10.2622222
+    max_longitude: 150.8965302
+  translations:
+    en: Milne Bay
+    ar: محافظة خليج ميلن
+    bg: Милн Бей
+    bn: মিলনে বে প্রদেশ
+    da: Milne Bay Province
+    de: Milne Bay Province
+    el: Κόλπος Μίλνε
+    es: Provincia de Milne Bay
+    eu: Milne badia (probintzia)
+    fa: استان خلیج میلنه
+    fi: Milne Bayn provinssi
+    fr: Baie de Milne
+    gl: Milne Bay
+    gu: મિલને બે પ્રાંત
+    hi: मिल्ने खाड़ी प्रांत
+    id: Provinsi Teluk Milne
+    it: provincia di Baia di Milne
+    ja: ミルン湾州
+    ka: მილნ-ბეი
+    kn: ಮಿಲ್ನೆ ಬೇ ಪ್ರಾಂತ್ಯ
+    ko: 밀른베이 주
+    mr: मिलबे बे प्रांत
+    ms: Milne Bay Province
+    nb: Milne Bay
+    nl: Milne Bay
+    pl: Milne Bay
+    pt: Milne Bay
+    ru: Милн-Бей
+    si: මිල්නේ බේ පළාත
+    sv: Milne Bay
+    ta: மில்னே பே மாகாணம்
+    te: మిల్ని బే ప్రావిన్స్
+    th: จังหวัดมิลเน่ เบย์
+    tr: Milne Bay Province
+    uk: Мілн-Бей
+    ur: خلیج میلنے صوبہ
+    vi: Tỉnh Milne Bay
+    lv: Milnbejas province
+    ceb: Milne Bay Province
+    lt: Milne Bėjaus provincija
+    zh: 米爾恩灣省
+    ccp: "\U0001111F\U00011128\U00011123\U00011134\U0001111A\U0001112C \U0001111D\U0001112C"
+    'no': Milne Bay
+    ca: Milne Bay
+    et: Milne Bay provints
+  comments:
+  type: province
+MPL:
+  name: Morobe
+  code: MPL
+  unofficial_names: Morobe
+  geo:
+    latitude: -6.801373700000001
+    longitude: 146.561647
+    min_latitude: -8.031376999999999
+    min_longitude: 145.742827
+    max_latitude: -5.281522300000001
+    max_longitude: 148.1150151
+  translations:
+    en: Morobe
+    ar: محافظة موروب
+    bg: Моробе
+    bn: মোরবে প্রদেশের
+    da: Morobe Province
+    de: Morobe Province
+    el: Μορόμπε
+    es: Morobe
+    et: Morobe provints
+    eu: Morobe
+    fa: استان موروبه
+    fi: Moroben lääni
+    fr: Morobe
+    gl: Morobe
+    gu: મોરોબે પ્રાંત
+    hi: मोरोबे प्रांत
+    id: Provinsi Morobe
+    it: provincia di Morobe
+    ja: モロベ州
+    ka: მორობე
+    kn: ಮೊರೊಬ್ ಪ್ರಾಂತ್ಯ
+    ko: 모로베 주
+    mr: मोरोबे प्रांत
+    ms: Morobe Province
+    nb: Morobe provins
+    nl: Morobe
+    pl: Morobe
+    pt: Morobe
+    ru: Моробе
+    si: මොරෝබේ පළාත
+    sv: Morobe
+    ta: மோரா மாகாணம்
+    te: మోరోబ్ ప్రావిన్స్
+    th: จังหวัด โมโรเบ
+    tr: Morobe Province
+    uk: Моробе
+    ur: موروبے صوبہ
+    vi: Tỉnh Morobe
+    lv: Morobes province
+    ceb: Morobe Province
+    lt: Morobės provincija
+    zh: 莫雷贝省
+    ccp: "\U0001111F\U00011127\U00011122\U0001112E\U0001111D\U0001112C"
+    'no': Morobe provins
+    ca: Morobe
+    cy: Talaith Morobe
+  comments:
+  type: province
+MPM:
+  name: Madang
+  code: MPM
+  unofficial_names: Madang
+  geo:
+    latitude: -5.216667
+    longitude: 145.8
+    min_latitude: -5.2554161
+    min_longitude: 145.7496071
+    max_latitude: -5.203685699999999
+    max_longitude: 145.8166081
+  translations:
+    en: Madang
+    ar: مقاطعة مادانغ
+    bg: Маданг
+    bn: মাদাং প্রদেশ
+    da: Madang Province
+    de: Madang Province
+    el: Μάντανγκ
+    es: Provincia de Madang
+    et: Madangi provints
+    eu: Madang
+    fa: استان مادانگ
+    fi: Madang
+    fr: Madang
+    gl: Provincia de Madang
+    gu: મદાંગ પ્રાંત
+    hi: मदांग प्रांत
+    hu: Madang tartomány
+    id: Provinsi Madang
+    it: provincia di Madang
+    ja: マダン州
+    ka: მადანგი
+    kn: ಮಡಂಗ್ ಪ್ರಾಂತ್ಯ
+    ko: 마당 주
+    mr: मादंग प्रांत
+    ms: Madang Province
+    nb: Madang provins
+    nl: Madang
+    pl: Madang
+    pt: Madang
+    ru: Маданг
+    si: මඩාංග් පළාත
+    sv: Madang
+    ta: மடங்கி மாகாணம்
+    te: మడాంగ్ ప్రావిన్స్
+    th: จังหวัดมาดัง
+    tr: Madang ili
+    uk: Маданг
+    ur: مادنگ صوبہ
+    vi: Tỉnh Madang
+    lv: Madangas province
+    ceb: Madang Province
+    lt: Madango provincija
+    zh: 馬當省
+    ccp: "\U0001111F\U0001112C\U00011113\U0001110B\U00011134"
+    'no': Madang provins
+    ca: Madang
+    cy: Talaith Madang
+  comments:
+  type: province
+MRL:
+  name: Manus
+  code: MRL
+  unofficial_names:
+  - Great Admiralty Island
+  - Mwanus
+  geo:
+    latitude: -2.0941169
+    longitude: 146.8760951
+    min_latitude: -2.5770971
+    min_longitude: 142.8257212
+    max_latitude: -0.8726387000000001
+    max_longitude: 148.2065104
+  translations:
+    en: Manus
+    ar: محافظة مانوس
+    bg: Манус
+    bn: মানুস প্রদেশ
+    da: Manus Province
+    de: Manus Province
+    el: Μάνους
+    es: Provincia de Manus
+    eu: Manus
+    fa: استان مانوس
+    fi: Manus
+    fr: Manus
+    gl: Provincia de Manus
+    gu: મેનસ પ્રાંત
+    hi: मनुस प्रांत
+    id: Provinsi Manus
+    it: provincia di Manus
+    ja: マヌス州
+    ka: მანუსი
+    kn: ಮನುಸ್ ಪ್ರಾಂತ್ಯ
+    ko: 마누스 주
+    mr: मनुस प्रांत
+    ms: Manus Province
+    nb: Manus provins
+    nl: Manus
+    pl: Manus
+    pt: Manus (província)
+    ru: Манус
+    si: මනුස් පළාත
+    sv: Manus
+    ta: மனுஸ் மாகாணம்
+    te: మనుస్ ప్రావిన్స్
+    th: จังหวัดกรานมา
+    tr: Manus Province
+    uk: Манус (провінція)
+    ur: مانوس صوبہ
+    vi: Tỉnh Manus
+    lv: Manusas province
+    ceb: Manus Province
+    lt: Manuso provincija
+    zh: 馬努斯省
+    jv: Provinsi Manus
+    ccp: "\U0001111F\U0001111A\U0001112A\U0001110C\U00011134"
+    'no': Manus provins
+    ca: Província de Manus
+    cy: Talaith Manus
+    et: Manusi provints
+  comments:
+  type: province
+NCD:
+  name: National Capital District (Port Moresby)
+  code: NCD
+  unofficial_names: National Capital District (Port Moresby)
+  geo:
+    latitude: -9.443800399999999
+    longitude: 147.1802671
+    min_latitude: -9.5045786
+    min_longitude: 147.136652
+    max_latitude: -9.3703217
+    max_longitude: 147.2438668
+  translations:
+    en: Port Moresby
+    af: Port Moresby
+    am: ፖርት ሞርስቢ
+    ar: بورت مورسبي
+    az: Port Morsbi
+    be: Горад Порт-Морсбі
+    bg: Порт Морсби
+    bn: পোর্টমোরেস্বি
+    ca: Port Moresby
+    cs: Port Moresby
+    da: Port Moresby
+    de: Port Moresby
+    el: Πορτ Μόρεσμπι
+    es: Puerto Moresby
+    et: Port Moresby
+    eu: Port Moresby
+    fa: پورت مورسبی
+    fi: Port Moresby
+    fr: Port Moresby
+    gl: Port Moresby
+    gu: પોર્ટ મોર્સબી
+    he: פורט מורסבי
+    hi: पोर्ट मोरेस्बी
+    hr: Port Moresby
+    hu: Port Moresby
+    hy: Պորտ Մորսբի
+    id: Port Moresby
+    is: Port Moresby
+    it: Port Moresby
+    ja: ポートモレスビー
+    ka: პორტ-მორზბი
+    kn: ಪೋರ್ಟ್ ಮೊರೆಸ್ಬಿ
+    ko: 포트모르즈비
+    lt: Port Morsbis
+    lv: Portmorsbi
+    ml: പോർട്ട് മോറെസ്ബി
+    mn: Порт-Морсби
+    mr: पोर्ट मॉरेस्बी
+    ms: Port Moresby
+    nb: Port Moresby
+    nl: Port Moresby
+    pl: Port Moresby
+    pt: Port Moresby
+    ro: Port Moresby
+    ru: Порт-Морсби
+    si: පොර්ට් මොරෙස්බි
+    sk: Port Moresby
+    sl: Port Moresby
+    sr: Порт Морсби
+    sv: Port Moresby
+    sw: Port Moresby
+    ta: மார்சுபி துறைமுகம்
+    te: పోర్ట్ మోరెస్బీ
+    th: พอร์ตมอร์สบี
+    tk: Port-Morsbi
+    tr: Port Moresby
+    uk: Порт-Морсбі
+    ur: پورٹ مورسبی
+    vi: Port Moresby
+    cy: Port Moresby
+    ceb: Port Moresby
+    sr_Latn: Port Morsbi
+    zh: 莫尔兹比港
+    yue_Hans: 莫士比港
+    jv: Port Moresby
+    sq: Port Moresbi
+    ccp: "\U0001111B\U0001112E\U00011122\U00011134\U00011111\U00011134 \U0001111F\U0001112E\U00011122\U00011134\U0001111D\U0001112D"
+    ga: Port Moresby
+    ky: Порт-Морсби
+    pa: ਪੋਰਟ ਮੋਰੈਸਬੀ
+    kk: Порт-Морсби
+    yue: 莫士比港
+    yo: Port Moresby
+    uz: Port Morsbi
+    bs: Port Moresby
+    mk: Порт Морсби
+    ne: पोर्ट मोरेस्बी
+    'no': Port Moresby
+    yo_BJ: Port Moresby
+    ps: پورټ مورسب
+    so: Port Moresby
+  comments:
+  type: district
+NIK:
+  name: New Ireland
+  code: NIK
+  unofficial_names:
+  - Niu Ailan
+  geo:
+    latitude: -4.2853256
+    longitude: 152.9205918
+    min_latitude: -4.8519637
+    min_longitude: 149.5108796
+    max_latitude: -1.315154
+    max_longitude: 153.7421607
+  translations:
+    en: New Ireland
+    ar: محافظة نيو إريلاند
+    bg: Нова Ирландия
+    bn: নিউ আয়ারল্যান্ড প্রদেশ
+    da: New Ireland Province
+    de: New Ireland Province
+    el: Νέα Ιρλανδία
+    es: Provincia de Nueva Irlanda
+    et: Uus-Iirimaa provints
+    eu: Irlanda Berria (probintzia)
+    fa: استان ایرلند نو
+    fi: New Ireland
+    fr: Nouvelle-Irlande
+    gl: Provincia de Nova Irlanda
+    gu: ન્યૂ આયર્લેન્ડ પ્રાંત
+    hi: न्यू आयरलैंड प्रांत
+    id: Provinsi Irlandia Baru
+    it: provincia della Nuova Irlanda
+    ja: ニューアイルランド州
+    ka: ახალი ირლანდია
+    kn: ನ್ಯೂ ಐರ್ಲೆಂಡ್ ಪ್ರಾಂತ್ಯ
+    ko: 뉴아일랜드 주
+    mr: न्यू आयर्लंड प्रांत
+    ms: New Ireland Province
+    nb: Ny Irland provins
+    nl: New Ireland Province
+    pl: Nowa Irlandia
+    pt: Nova Irlanda
+    ru: Новая Ирландия
+    si: නව අයර්ලන්ත පළාත
+    sv: New Ireland
+    ta: நியூ இரேலண்ட் மாகாணம்
+    te: న్యూ ఐర్లండ్ ప్రావిన్స్
+    th: จังหวัดนิวไอร์แลนด์
+    tr: New Ireland Province
+    uk: Нова Ірландія
+    ur: نیو آئر لینڈ صوبہ
+    vi: Tỉnh New Ireland
+    lv: Jaunīrijas province
+    ceb: New Ireland Province
+    lt: Naujosios Airijos provincija
+    zh: 新愛爾蘭省
+    ccp: "\U0001111A\U00011128\U00011105\U0001112A \U00011103\U00011120\U00011122\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    'no': Ny Irland provins
+    ca: Província de Nova Irlanda
+  comments:
+  type: province
+NPP:
+  name: Northern
+  code: NPP
+  unofficial_names:
+  - Northern
+  geo:
+    latitude: -8.8988063
+    longitude: 148.1892921
+    min_latitude: -9.977337
+    min_longitude: 147.0030289
+    max_latitude: -8.002543
+    max_longitude: 149.439636
+  translations:
+    en: Oro
+    ar: مقاطعة أورو
+    bg: Оро
+    bn: ওরো প্রদেশ
+    da: Oro Province
+    de: Oro Province
+    el: Όρο (Βόρεια Επαρχία)
+    es: Provincia de Oro
+    et: Põhjaprovints
+    eu: Iparraldeko probintzia
+    fa: استان شمالی
+    fi: Oro
+    fr: Province nord
+    gl: Oro
+    gu: ઓરો પ્રાંત
+    hi: ओरो प्रांत
+    id: Provinsi Oro
+    it: provincia di Oro
+    ja: オロ州
+    ka: ორო
+    kn: ಓರೋ ಪ್ರಾಂತ್ಯ
+    ko: 오로 주
+    mr: ओरो प्रांत
+    ms: Oro Province
+    nb: Oro
+    nl: Northern
+    pl: Oro
+    pt: Oro
+    ro: Provincia Oro
+    ru: Оро
+    si: ඔරෝ පළාත
+    sv: Oro
+    ta: ஒரோ மாகாணம்
+    te: ఓరో ప్రావిన్స్
+    th: จังหวัดนอร์ทเทิร์น
+    tr: Oro Province
+    uk: Оро
+    ur: اورو صوبہ
+    vi: Tỉnh Oro
+    lv: Oro province
+    ceb: Northern Province (lalawigan sa Papua New Guinea)
+    lt: Oro provincija
+    zh: 北部省
+    ccp: "\U00011103\U00011127\U00011122\U0001112E"
+    'no': Oro
+    ca: Província d’Oro
+    cy: Talaith Oro
+    he: פרובינציית אורו
+  comments:
+  type: province
+NSB:
+  name: Bougainville
+  code: NSB
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة بوغانفيل ذات الحكم الذاتي
+    bg: Автономен регион Бугенвил
+    bn: বুগাইনভিলি
+    ca: Bougainville
+    cs: Autonomní území Bougainville
+    da: Bougainville
+    de: Bougainville
+    el: Μπουγκαϊνβίλε
+    en: Bougainville
+    es: Bougainville
+    eu: Bougainvilleko Eskualde Autonomoa
+    fa: استان خودمختار بوگاینویل
+    fi: Bougainville
+    fr: Bougainville
+    gl: Rexión Autónoma de Bougainville
+    gu: બૌગૈનવિલ
+    hi: बोगेनविल
+    id: Daerah Otonom Bougainville
+    it: regione autonoma di Bougainville
+    ja: ブーゲンビル州
+    ka: ბუგენვილის ავტონომიური რეგიონი
+    kn: ಬೌಗೆನ್ವಿಲ್ಲೆ
+    ko: 부건빌 주
+    mr: बोगनविले
+    ms: Bougainville
+    nb: Bougainville
+    nl: Bougainville
+    pl: Bougainville
+    pt: Bougainville
+    ru: Автономный регион Бугенвиль
+    si: බෝගෙන්විලි
+    sv: Bougainville
+    ta: போகஇன்வில்லே
+    te: బోగన్‌విల్లే
+    th: บูแก็งวีล
+    tr: Bougainville
+    uk: Автономний регіон Бугенвіль
+    ur: بووجاینویلی
+    vi: Khu tự trị Bougainville
+    lv: Bugenvile
+    ceb: Bougainville (lalawigan)
+    lt: Bugenvilis
+    zh: 布干维尔省
+    ccp: "\U0001111D\U0001112F\U00011109\U0001112C\U0001112D\U0001111A\U00011134\U0001111E\U00011128\U00011123\U0001112C"
+    'no': Bougainville
+    az: Bugenvil muxtar ərazisi
+    be: Аўтаномны рэгіён Бугенвіль
+    cy: Rhanbarth Ymreolaethol Bougainville
+    et: Bougainville’i autonoomne piirkond
+    hr: Bougainville
+    hu: Bougainville Autonóm Terület
+    is: Bougainville
+    mk: Бугенвил
+    sr: Аутономна покрајина Богенвил
+    sr_Latn: Autonomna pokrajina Bogenvil
+  comments:
+  type: autonomous_region
+SAN:
+  name: Sandaun [West Sepik]
+  code: SAN
+  unofficial_names:
+  - West Sepik
+  geo:
+    latitude: -3.7126179
+    longitude: 141.6834275
+    min_latitude: -5.370609
+    min_longitude: 140.998795
+    max_latitude: -2.6086511
+    max_longitude: 143.1048729
+  translations:
+    en: Sandaun
+    ar: محافظة سانداون
+    bg: Западен Сепик
+    bn: স্যানডুয়ান প্রদেশ
+    da: Sandaun Province
+    de: Sandaun Province
+    el: Σάντον
+    es: Sandaun
+    et: Sandaun
+    eu: Sandaun
+    fa: استان سپیک غربی
+    fi: Sandaunin lääni
+    fr: Sandaun
+    gl: Sandaun
+    gu: સાન્ડોન પ્રાંત
+    hi: सांडुन प्रांत
+    hr: Sandaun
+    id: Provinsi Sandaun
+    it: provincia di Sandaun
+    ja: サンダウン州
+    ka: სანდაუნი
+    kn: ಸಾಂಡನ್ ಪ್ರಾಂತ್ಯ
+    ko: 산다운 주
+    mr: सांडान प्रांत
+    ms: Sandaun Province
+    nb: Sandaun provins
+    nl: Sandaun
+    pl: Sandaun
+    pt: Sandaun
+    ru: Сандаун
+    si: සැන්ඩුආන් පළාත
+    sv: Sandaun
+    ta: சண்டையும் மாகாணம்
+    te: సాండౌన్ ప్రావిన్స్
+    th: จังหวัดซานดาอุน
+    tr: Sandaun Province
+    uk: Сандаун
+    ur: سانداون صوبہ
+    vi: Tỉnh Sandaun
+    lv: Sandaunas province
+    ceb: West Sepik Province
+    lt: Sandauno provincija
+    zh: 桑道恩省
+    ccp: "\U00011125\U0001111A\U00011134\U00011113\U00011105\U0001112A\U0001111A\U00011134"
+    'no': Sandaun provins
+    ca: West Sepik
+    cy: Talaith Sandaun
+    ha: Sandaun Province
+    ha_NE: Sandaun Province
+  comments:
+  type: province
+SHM:
+  name: Southern Highlands
+  code: SHM
+  unofficial_names:
+  - Highlands South
+  geo:
+    latitude: -6.5156911
+    longitude: 143.045893
+    min_latitude: -6.863055
+    min_longitude: 142.0664641
+    max_latitude: -4.971731999999999
+    max_longitude: 144.683789
+  translations:
+    en: Southern Highlands
+    ar: محافظة هايلاند الجنوبية
+    bg: Южни височини
+    bn: সাউদার্ন হাইল্যান্ড প্রদেশ
+    da: Southern Highlands Province
+    de: Southern Highlands Province
+    el: Νότια Υψίπεδα
+    es: Tierras Altas del Sur
+    et: Southern Highlands
+    fa: استان ارتفاعات جنوبی
+    fi: Southern Highlandsin lääni
+    fr: Hautes-Terres méridionales
+    gl: Southern Highlands
+    gu: દક્ષિણી હાઈલેન્ડ્સ પ્રાંત
+    hi: दक्षिणी हाइलैंड्स प्रांत
+    id: Provinsi Pegunungan Selatan
+    it: provincia degli Altopiani del Sud
+    ja: 南部山岳州
+    ka: საუტერნ ჰაილენდსი
+    kn: ದಕ್ಷಿಣ ಹೈಲ್ಯಾಂಡ್ ಪ್ರಾಂತ್ಯ
+    ko: 서던하일랜즈 주
+    mr: साऊथर्न हाईलँड्स प्रांत
+    ms: Southern Highlands Province
+    nb: Sør høylands provins
+    nl: Southern Highlands
+    pl: Southern Highlands
+    pt: Southern Highlands
+    ru: Саутерн-Хайлендс
+    si: දකුණු හයිලන්ඩ්ස් පළාත
+    sv: Southern Highlands
+    ta: தெற்கு ஹிக்ஹ்லான்ட்ஸ் மாகாணம்
+    te: దక్షిణ హైలాండ్స్ ప్రావిన్స్
+    th: เซาเทิร์นไฮแลนดส์
+    tr: Southern Highlands
+    uk: Південний Гайлендс
+    ur: جنوبی سطح مرتفع صوبہ
+    vi: Tỉnh Phía Nam Highlands
+    lv: Dienvidu kalnienes province
+    ceb: Southern Highlands Province
+    lt: Pietinis Kalnų regionas
+    zh: 南高地省
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011126\U0001112D\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    'no': Sør høylands provins
+    eu: Hegoaldeko Lur Garaiak
+  comments:
+  type: province
+WBK:
+  name: West New Britain
+  code: WBK
+  unofficial_names:
+  - New Britain West
+  geo:
+    latitude: -5.704743199999999
+    longitude: 150.0259466
+    min_latitude: -6.310895599999999
+    min_longitude: 148.3099281
+    max_latitude: -4.542134
+    max_longitude: 151.6839161
+  translations:
+    en: West New Britain
+    ar: مقاطعة غرب بريطانيا الجديدة
+    bg: Западна Нова Британия
+    bn: পশ্চিম নিউ ব্রিটেন প্রদেশ
+    da: West New Britain Province
+    de: West New Britain Province
+    el: Δυτική Νέα Βρετανία
+    es: Nueva Bretaña del Oeste
+    et: Lääne-Uus-Britannia
+    eu: Mendebaldeko Britainia Berria
+    fa: استان بریتانیای نو غربی
+    fi: Westnew Britainin provinssi
+    fr: Nouvelle-Bretagne occidentale
+    gl: Nova Bretaña Occidental
+    gu: પશ્ચિમ ન્યૂ બ્રિટન પ્રાંત
+    hi: वेस्ट न्यू ब्रिटेन प्रोविंस
+    id: Provinsi Britania Baru Barat
+    it: provincia della Nuova Britannia Ovest
+    ja: 西ニューブリテン州
+    ka: დასავლეთი ახალი ბრიტანეთი
+    kn: ವೆಸ್ಟ್ ನ್ಯೂ ಬ್ರಿಟನ್ ಪ್ರಾಂತ್ಯ
+    ko: 서뉴브리튼 주
+    mr: पश्चिम न्यू ब्रिटन प्रांत
+    ms: West New Britain Province
+    nb: Vest Nye Britiske provins
+    nl: West New Britain
+    pl: Nowa Brytania Zachodnia
+    pt: Nova Bretanha Ocidental
+    ru: Западная Новая Британия
+    si: බටහිර නව බ්‍රිතාන්‍ය පළාත
+    sv: West New Britain
+    ta: மேற்கு நியூ பிரிட்டன் மாகாணம்
+    te: వెస్ట్ న్యూ బ్రిటన్ ప్రావిన్స్
+    th: จังหวัดบริเทียนตะวันตกใหม่
+    tr: West New Britaion
+    uk: Західна Нова Британія
+    ur: مغربی نیا برطانیہ صوبہ
+    vi: Tỉnh Tây New Britain
+    lv: Rietumu Jaunbritānijas province
+    ceb: West New Britain Province
+    lt: Rytų Naujosios Britanijos provincija
+    zh: 西新不列顛省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U0001111A\U00011131
+      \U0001111D\U00011133\U00011122\U00011128\U00011111\U0001112C\U0001111A\U00011134"
+    mk: Западна Нова Британија
+    'no': Vest Nye Britiske provins
+    ca: West New Britain
+    cs: Západní Nová Británie
+  comments:
+  type: province
+WHM:
+  name: Western Highlands
+  code: WHM
+  unofficial_names:
+  - Highlands West
+  geo:
+    latitude: -5.6268128
+    longitude: 144.2593118
+    min_latitude: -6.3646218
+    min_longitude: 143.771268
+    max_latitude: -5.2128599
+    max_longitude: 144.5993042
+  translations:
+    en: Western Highlands
+    ar: مقاطعة الهضاب الغربية
+    bg: Западни височини
+    bn: ওয়েস্টার্ন হাইল্যান্ড প্রদেশ
+    da: Western Highlands Province
+    de: Western Highlands Province
+    el: Δυτικά Υψίπεδα
+    es: Tierras Altas Occidentales
+    et: Western Highlands
+    eu: Mendebaldeko Lur Garaiak
+    fa: استان ارتفاعات غربی
+    fi: Western Highlands - provinssi
+    fr: Hautes-Terres occidentales
+    gl: Western Highlands
+    gu: પશ્ચિમી હાઈલેન્ડ્સ પ્રાંત
+    hi: पश्चिमी हाइलैंड्स प्रांत
+    id: Provinsi Dataran Tinggi Barat
+    it: provincia degli Altopiani Occidentali
+    ja: 西部山岳州
+    ka: უესტერნ ჰაილენდსი
+    kn: ಪಶ್ಚಿಮ ಹೈಲ್ಯಾಂಡ್ ಪ್ರಾಂತ್ಯ
+    ko: 웨스턴하일랜즈 주
+    mr: पश्चिम हाईलँड्स प्रांत
+    ms: Western Highlands Province
+    nb: Vest Høyland provins
+    nl: Western Highlands
+    pl: Western Highlands
+    pt: Western Highlands
+    ru: Уэстерн-Хайлендс
+    si: බටහිර හයිලෑන්ඩ්ස්
+    sv: Western Highlands
+    ta: மேற்கு ஹயிலன்ட்ஸ் மாகாணம்
+    te: పశ్చిమ హైలాండ్స్ ప్రావిన్స్
+    th: จังหวัดเวสเทิร์น ไฮแลนด์
+    tr: Western Highlands Province
+    uk: Західний Гайлендс
+    ur: مغربی سطح مرتفع صوبہ
+    vi: Tỉnh Western Highlands
+    lv: Rietumu kalnienes province
+    ceb: Western Highlands Province
+    lt: Rytų Kalniečių provincija
+    zh: 西高地省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011126\U0001112D\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    'no': Vest Høyland provins
+    ca: Western Highlands
+  comments:
+  type: province
+WPD:
+  name: Western
+  code: WPD
+  unofficial_names:
+  - Papua West
+  - Western
+  geo:
+    latitude: -7.584644
+    longitude: 142.3613378
+    min_latitude: -9.3337498
+    min_longitude: 140.842865
+    max_latitude: -5.000000099999999
+    max_longitude: 143.9240419
+  translations:
+    en: Western
+    bg: Западна провинция
+    de: Western Province
+    es: Provincia Occidental
+    et: Lääneprovints
+    eu: Mendebaldeko probintzia
+    fa: استان غربی
+    fr: Province ouest
+    gl: Occidental, Papúa Nova Guinea
+    id: Provinsi Barat, Papua Nugini
+    it: provincia Occidentale
+    ja: 西部州
+    ka: დასავლეთი პროვინცია
+    ko: 서부 주
+    nl: Western
+    pl: Prowincja Zachodnia
+    pt: Província Ocidental
+    ru: Западная провинция
+    sr: Западна покрајина
+    sv: Western Province
+    uk: Західна провінція
+    ur: مغربی صوبہ
+    ceb: Western Province (lalawigan sa Papua New Guinea)
+    sr_Latn: Zapadna pokrajina
+    zh: 西部省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    fi: Western Province
+    ca: Western
+  comments:
+  type: province

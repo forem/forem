@@ -1,0 +1,24 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "invoiceitem.updated",
+  "object": "event",
+  "data": {
+    "object": {
+      "object": "invoiceitem",
+      "id": "ii_00000000000000",
+      "date": 1372126711,
+      "amount": 2500,
+      "livemode": false,
+      "proration": false,
+      "currency": "usd",
+      "customer": "cus_00000000000000",
+      "description": "Plan: Veteran's Club Signup Fee Plan Id: 4",
+      "invoice": "in_00000000000000"
+    },
+    "previous_attributes": {
+      "amount": 2121
+    }
+  }
+}

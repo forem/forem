@@ -1,0 +1,61 @@
+name: nio4r
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: >-
+      ${{matrix.os}}, ${{matrix.ruby}}
+    env:
+      CI: true
+      TESTOPTS: -v
+
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: 
+          - ubuntu-22.04
+          - macos-11
+          - windows-2022
+        ruby:
+          - "2.4"
+          - "2.5"
+          - "2.6"
+          - "2.7"
+          - "3.0"
+          - "3.1"
+          - "3.2"
+          - "head"
+          - "jruby"
+          - "truffleruby"
+        include:
+          - {os: ubuntu-20.04, ruby: "3.2"}
+          - {os: windows-2019, ruby: "3.2"}
+          - {os: windows-2022, ruby: ucrt}
+        exclude:
+          - {os: windows-2022, ruby: head}
+          - {os: windows-2022, ruby: jruby}
+          - {os: windows-2022, ruby: truffleruby}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set JAVA_HOME
+        if: |
+          startsWith(matrix.ruby, 'jruby')
+        shell: bash
+        run:  |
+          echo JAVA_HOME=$JAVA_HOME_11_X64 >> $GITHUB_ENV
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          bundler-cache: true
+
+      - name: Compile
+        run: bundle exec rake compile
+
+      - name: Test
+        run: bundle exec rake spec
+        timeout-minutes: 10

@@ -1,0 +1,33 @@
+name: activerecord
+on: [push, pull_request]
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        gemfile: [activerecord_4, activerecord_5, activerecord_6]
+        ruby: [2.5.9, 2.6.10, 2.7.7]
+        include:
+          - gemfile: activerecord_7
+            ruby: '3.2'
+          - gemfile: activerecord_7
+            ruby: '3.1'
+          - gemfile: activerecord_7
+            ruby: '3.0'
+          - gemfile: activerecord_6
+            ruby: '3.0'
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+      ADAPTER: active_record
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt-get install -y libsqlite3-dev
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run Tests
+        run: |
+          bundle exec rake

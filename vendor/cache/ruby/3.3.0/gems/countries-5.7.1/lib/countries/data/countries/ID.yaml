@@ -1,0 +1,61 @@
+---
+ID:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}}
+    {{region}} {{postalcode}}
+    {{country}}
+  alpha2: ID
+  alpha3: IDN
+  continent: Asia
+  country_code: '62'
+  currency_code: IDR
+  distance_unit: KM
+  g20_member: true
+  gec: ID
+  geo:
+    latitude: -0.789275
+    longitude: 113.921327
+    max_latitude: 6.216999899999999
+    max_longitude: 141.0425
+    min_latitude: -11.1082999
+    min_longitude: 94.7351
+    bounds:
+      northeast:
+        lat: 6.216999899999999
+        lng: 141.0425
+      southwest:
+        lat: -11.1082999
+        lng: 94.7351
+  international_prefix: '001'
+  ioc: INA
+  iso_long_name: The Republic of Indonesia
+  iso_short_name: Indonesia
+  languages_official:
+  - id
+  languages_spoken:
+  - id
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  - 10
+  - 11
+  national_prefix: '0'
+  nationality: Indonesian
+  number: '360'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: ID
+  unofficial_names:
+  - Indonesia
+  - Indonesien
+  - Indonésie
+  - インドネシア
+  - Indonesië
+  world_region: APAC

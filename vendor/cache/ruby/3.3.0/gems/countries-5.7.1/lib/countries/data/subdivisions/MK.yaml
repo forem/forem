@@ -1,0 +1,4564 @@
+---
+'101':
+  name: Veles
+  code: '101'
+  unofficial_names: Veles
+  geo:
+    latitude: 41.7138462
+    longitude: 21.7704092
+    min_latitude: 41.691838
+    min_longitude: 21.7434913
+    max_latitude: 41.737505
+    max_longitude: 21.7968535
+  translations:
+    bg: Велес
+    de: Opština Veles
+    en: Veles
+    es: Municipalidad de Veles
+    fa: ولس مونیکیپلیتی
+    fr: Vélès
+    hr: Općina Veles
+    hy: Վելեսի համայնք
+    it: Veles
+    ja: ヴェレス
+    ka: ველესის თემი
+    ko: 벨레스 시
+    nl: Veles
+    ro: Veles
+    ru: Велес
+    sr: Општина Велес
+    sv: Titov Veles Opština
+    uk: Велес
+    ur: ویلیس بلدیہ
+    ceb: Titov Veles Opština
+    sr_Latn: Opština Veles
+    zh: 韋萊斯區
+    sq: Komuna e Velesit
+    ccp: "\U0001111E\U00011123\U0001112C\U0001110C\U00011134"
+    mk: Општина Велес
+    cy: Bwrdeistref Veles
+    el: Δήμος Βελεσών
+    id: Munisipalitas Veles
+    pl: Gmina Wełes
+    pt: Município de Veles
+  comments:
+  type: municipality
+'102':
+  name: Gradsko
+  code: '102'
+  unofficial_names: Gradsko
+  geo:
+    latitude: 41.5750625
+    longitude: 21.9494531
+    min_latitude: 41.5631299
+    min_longitude: 21.9327078
+    max_latitude: 41.5846933
+    max_longitude: 21.9661031
+  translations:
+    ar: بلدية غرادسكو
+    bg: Градско
+    bn: গ্রাডস্কো পৌরসভা
+    da: Gradsko Municipality
+    de: Opština Gradsko
+    el: Δήμος Γκράντσκου
+    en: Gradsko
+    es: Municipalidad de Gradsko
+    fi: Gradskon kunta
+    fr: Gradsko
+    gu: ગ્રેડ્સ્કો મ્યુનિસિપાલિટી
+    hi: ग्रेड्सको नगरपालिका
+    hr: Općina Gradsko
+    hy: Գրադսկոյի համայնք
+    id: Kotamadya Gradsko
+    it: Gradsko
+    ja: グラドスコ
+    ka: გრადსკოს თემი
+    kn: ಗ್ರಾಡ್ಸ್ಕೊ ಪುರಸಭೆ
+    ko: 그라드스코 시
+    mr: ग्रॅडस्को म्युन्सिपाल्टी
+    ms: Gradsko Municipality
+    nb: Gradsko kommune
+    nl: Gradsko
+    pl: Gmina Gradsko
+    pt: Município de Glarus
+    ru: Градско
+    si: ග්‍රඩ්ස්කෝ නගර සභාව
+    sr: Општина Градско
+    sv: Gradsko
+    ta: க்ராட்ஸ்கொ நகராட்சி
+    te: గ్రాడ్స్కో మున్సిపాలిటీ
+    th: กราดสโค
+    tr: Gadsko Belediyesi
+    uk: Градсько
+    ur: گرادسکو بلدیہ
+    vi: Đô thị tự trị Gradsko
+    lv: Gradsko pašvaldība
+    ceb: Gradsko
+    sr_Latn: Opština Gradsko
+    lt: Gradsko savivaldybė
+    zh: 格拉茲科區
+    sq: Komuna e Grackës
+    ccp: "\U00011109\U00011133\U00011122\U00011116\U00011134\U00011125\U00011134\U00011107\U0001112E"
+    mk: Општина Градско
+    'no': Gradsko kommune
+    cs: Opština Gradsko
+    cy: Bwrdeistref Gradsko
+    fa: شهرداری گرادسکو
+  comments:
+  type: municipality
+'103':
+  name: Demir Kapija
+  code: '103'
+  unofficial_names: Demir Kapija
+  geo:
+    latitude: 41.411389
+    longitude: 22.242222
+    min_latitude: 41.39890399999999
+    min_longitude: 22.2329164
+    max_latitude: 41.4142979
+    max_longitude: 22.2562623
+  translations:
+    bg: Демир Капия
+    de: Opština Demir Kapija
+    en: Demir Kapija
+    es: Municipalidad de Demir Kapija
+    hr: Općina Demir Kapija
+    hy: Դեմիր Կապիայի համայնք
+    ja: デミル・カピヤ
+    ka: დემირ-კაპიის თემი
+    ko: 데미르카피야 시
+    pl: Gmina Demir Kapija
+    ru: Демир-Капия
+    sr: Општина Демир Капија
+    sv: Demir Kapija
+    tr: Demir Kapı Belediyesi
+    uk: Демир-Капія
+    ur: دیمیر کاپیا بلدیہ
+    ceb: Demir Kapija
+    sr_Latn: Opština Demir Kapija
+    zh: 德米尔卡皮雅区
+    sq: Komuna e Demir Kapisë
+    ccp: "\U00011113\U0001112C\U0001111F\U00011128\U00011122\U00011134 \U00011107\U0001111B\U00011128\U0001110E"
+    fr: Demir Kapija
+    pt: Município de Demir Kapija
+    mk: Општина Демир Капија
+    cs: Opština Demir Kapija
+    cy: Bwrdeistref Demir Kapija
+    el: Δήμος Ντέμιρ Κάπιγια
+    fa: شهرداری دمیر کاپیا
+    id: Munisipalitas Demir Kapija
+  comments:
+  type: municipality
+'104':
+  name: Kavadarci
+  code: '104'
+  unofficial_names: Kavadarci
+  geo:
+    latitude: 41.4329364
+    longitude: 22.0088861
+    min_latitude: 41.4218808
+    min_longitude: 21.9955194
+    max_latitude: 41.4443026
+    max_longitude: 22.026397
+  translations:
+    ar: بلدية كافادارتسي
+    bg: Кавадарци
+    bn: কার্ভাদারচি পৌরসভা
+    da: Kavadarci Municipality
+    de: Opština Kavadarci
+    el: Δήμος Καφανταρτσίου
+    en: Kavadarci
+    es: Municipalidad de Kavadarci
+    fi: Kavadarcin kunta
+    fr: Kavadarci
+    gu: કવાડર્સી મ્યુનિસિપાલિટી
+    hi: कवड़ारसी नगर पालिका
+    hr: Općina Kavadarci
+    id: Kotamadya Kavadarci
+    it: Kavadarci
+    ja: カヴァダルツィ
+    ka: კავადარცის თემი
+    kn: ಕವಡಾರ್ಸಿ ಪುರಸಭೆ
+    ko: 카바다르치 시
+    mr: कवडारची म्युन्सिपाल्टी
+    ms: Kavadarci Municipality
+    nb: Kavadarci kommune
+    nl: Kavadarci
+    pl: Gmina Kavadarci
+    pt: Município de Kavadarci
+    ru: Кавадарци
+    si: කවඩර්සි නගර සභාව
+    sr: Општина Кавадарци
+    sv: Opsjtina Kavadarci
+    ta: கவடற்சி நகராட்சி
+    te: కావోడార్సి మున్సిపాలిటీ
+    th: เมืองคาวาดาร์ชี
+    tr: Kavadarci Belediyesi
+    uk: Кавадарці
+    ur: کاوادارتسی بلدیہ
+    vi: Đô thị tự trị Kavadarci
+    lv: Kavadarci pašvaldība
+    ceb: Kavadarci
+    sr_Latn: Opština Kavadarci
+    lt: Kavadarčio savivaldybė
+    zh: 卡瓦達爾齊區
+    sq: Komuna e Kavadarit
+    ccp: "\U00011107\U0001111E\U00011113\U00011122\U00011134\U00011125\U00011128"
+    ca: Kavadarci
+    mk: Општина Кавадарци
+    'no': Kavadarci kommune
+    cs: Kavadarci
+    cy: Bwrdeistref Kavadarci
+    fa: شهرداری کاوادارسی
+  comments:
+  type: municipality
+'105':
+  name: Lozovo
+  code: '105'
+  unofficial_names: Lozovo
+  geo:
+    latitude: 41.780833
+    longitude: 21.901111
+    min_latitude: 41.7777045
+    min_longitude: 21.8945146
+    max_latitude: 41.7860898
+    max_longitude: 21.9099512
+  translations:
+    ar: بلدية لوزوفو
+    bg: Джумайлия
+    bn: লোজোভো পৌরসভা
+    da: Lozovo Municipality
+    de: Opština Lozovo
+    el: Δήμος Λοζόβου
+    en: Lozovo
+    es: Municipalidad de Lozovo
+    fi: Lozovon kunta
+    fr: Lozovo
+    gu: લોઝોવો મ્યુનિસિપાલિટી
+    hi: लोज़ोवो नगर पालिका
+    hr: Općina Lozovo
+    hy: Լոզովոյի համայնք
+    id: Kotamadya Lozovo
+    it: Lozovo
+    ja: ロゾヴォ
+    ka: ლოზოვოს თემი
+    kn: ಲೊಝೊವೊ ಪುರಸಭೆ
+    ko: 로조보 시
+    mr: लोझोवो म्युन्सिपाल्टी
+    ms: Lozovo Municipality
+    nb: Lozovo kommune
+    nl: Lozovo
+    pl: Gmina Łozowo
+    pt: Lozovo
+    ru: Лозово
+    si: ලොසොවෝ නගර සභාව
+    sr: Општина Лозово
+    sv: Lozovo
+    ta: லொஸ்ஒவோ நகராட்சி
+    te: లోజోవో మున్సిపాలిటీ
+    th: โลโซโว
+    tr: Lozova Belediyesi
+    uk: Лозово
+    ur: لوزوو بلدیہ
+    vi: Đô thị tự trị Lozovo
+    lv: Lozovo pašvaldība
+    ceb: Lozovo
+    sr_Latn: Opština Lozovo
+    lt: Lozovo savivaldybė
+    zh: 洛佐沃區
+    sq: Komuna e Llozovës
+    ccp: "\U00011123\U0001112E\U0001110E\U0001112E\U0001111E\U0001112E"
+    mk: Општина Лозово
+    'no': Lozovo kommune
+    cy: Bwrdeistref Lozovo
+    fa: شهرداری لوزوو
+  comments:
+  type: municipality
+'106':
+  name: Negotino
+  code: '106'
+  unofficial_names: Negotino
+  geo:
+    latitude: 41.4989985
+    longitude: 22.0953297
+    min_latitude: 41.348664
+    min_longitude: 21.9803289
+    max_latitude: 41.6542421
+    max_longitude: 22.3007181
+  translations:
+    ar: بلدية نيغوتينو
+    bg: Неготино
+    bn: নাগোটিনো পৌরসভা
+    ca: Negotino
+    da: Negotino Municipality
+    de: Opština Negotino
+    el: Δήμος Νεγκότινου
+    en: Negotino
+    es: Municipalidad de Negotino
+    fi: Negotinon kunta
+    fr: Municipalité de Negotino
+    gu: નેગોટીનો મ્યુનિસિપાલિટી
+    hi: नेगोतिनो नगर पालिका
+    hr: Općina Negotino
+    id: Kotamadya Negotino
+    it: Comune di Negotino
+    ja: ネゴティノ
+    ka: ნეგოტინოს თემი
+    kn: ನೆಗೊಟಿನೋ ಪುರಸಭೆ
+    ko: 네고티노 시
+    mr: नेगोतो म्युन्सिपाल्टी
+    ms: Negotino Municipality
+    nb: Negotino kommune
+    nl: Negotino
+    pl: Gmina Negotino
+    pt: Negotino
+    ru: Неготино
+    si: නෙගොටිනෝ නගර සභාව
+    sr: Општина Неготино
+    sv: Negotino
+    ta: னேகொட்டினோ நகராட்சி
+    te: నెగోటిని మున్సిపాలిటీ
+    th: นีโกติโน มูนิซิพัลลิตี้
+    tr: Negotino Belediyesi
+    uk: Неготино
+    ur: نیگوتینو بلدیہ
+    vi: Đô thị tự trị Negotino
+    lv: Negotino pašvaldība
+    ceb: Negotino
+    sr_Latn: Opština Negotino
+    lt: Negotino savivaldybė
+    zh: 內戈蒂諾區
+    sq: Komuna e Negotinës
+    ccp: "\U0001111A\U0001112C\U00011109\U0001112E\U00011111\U00011128\U0001111A\U0001112E"
+    mk: Општина Неготино
+    'no': Negotino kommune
+    cs: Opština Negotino
+    cy: Bwrdeistref Negotino
+    fa: شهرداری ناپینو
+  comments:
+  type: municipality
+'107':
+  name: Rosoman
+  code: '107'
+  unofficial_names: Rosoman
+  geo:
+    latitude: 41.4848006
+    longitude: 21.8807064
+    min_latitude: 41.4309889
+    min_longitude: 21.8100951
+    max_latitude: 41.555479
+    max_longitude: 21.984525
+  translations:
+    bg: Росоман
+    cs: Opština Rosoman
+    de: Opština Rosoman
+    en: Rosoman
+    es: Municipalidad de Rosoman
+    fr: Rosoman
+    hr: Općina Rosoman
+    it: Rosoman
+    ja: ロソマン
+    ka: როსომანის თემი
+    ko: 로소만 시
+    nl: Rosoman
+    sr: Општина Росоман
+    sv: Rosoman
+    uk: Росоман
+    ur: روسومان بلدیہ
+    ceb: Rosoman
+    sr_Latn: Opština Rosoman
+    zh: 羅索曼區
+    el: Δήμος του Ρόσομαν
+    sq: Komuna e Rosomanit
+    ccp: "\U00011122\U0001112E\U00011125\U0001112E\U0001111F\U0001111A\U00011134"
+    mk: Општина Росоман
+    cy: Bwrdeistref Rosoman
+    fa: شهرداری روزومان
+    id: Munisipalitas Rosoman
+    pl: Gmina Rosoman
+    pt: Município de Rosoman
+    ru: Росоман
+  comments:
+  type: municipality
+'108':
+  name: Sveti Nikole
+  code: '108'
+  unofficial_names: Sveti Nikole
+  geo:
+    latitude: 41.866667
+    longitude: 21.95
+    min_latitude: 41.8555619
+    min_longitude: 21.9269728
+    max_latitude: 41.8749934
+    max_longitude: 21.9508554
+  translations:
+    ar: بلدية سفيتي نيكولا
+    bg: Свети Никола
+    bn: ভেটি নিকোল পৌরসভা
+    da: Sveti Nikole Municipality
+    de: Opština Sveti Nikole
+    el: Δήμος Σβέτι Νίκολα
+    en: Sveti Nikole
+    es: Municipalidad de Sveti Nikole
+    fi: Sveti Nikolen kunta
+    fr: Sveti Nikolé
+    gu: સ્વેતી નિકોલ મ્યુનિસિપાલિટી
+    hi: स्वेती निकोल नगरपालिका
+    hr: Općina Sveti Nikole
+    id: Kotamadya Sveti Nikole
+    it: Sveti Nikole
+    ja: スヴェティ・ニコレ
+    ka: სვეტი-ნიკოლეს თემი
+    kn: ಸ್ವೆಟಿ ನಿಕೋಲ್ ಪುರಸಭೆ
+    ko: 스베티니콜레 시
+    mr: स्वेनटी निकोल म्युन्सिपाल्टी
+    ms: Sveti Nikole Municipality
+    nb: Sveti Nikole kommune
+    nl: Sveti Nikole
+    pl: Gmina Sveti Nikole
+    pt: Município de Sveki Nikole
+    ru: Свети-Николе
+    si: ස්වෙටි නිකොලේ නගර සභාව
+    sr: Општина Свети Никола
+    sv: Sveti Nikole (kommun)
+    ta: ஸ்வெடி நிக்கோல் நகராட்சி
+    te: స్వెెటి నికోల్ మున్సిపాలిటీ
+    th: เมืองบัตติคาโลอา
+    tr: Sveti Nikole Belediyesi
+    uk: Светий Николе
+    ur: سویتی نیلولے بلدیہ
+    vi: Đô thị tự trị Sveti Nikole
+    lv: Sveti Nikole pašvaldība
+    ceb: Sveti Nikole
+    sr_Latn: Opština Sveti Nikola
+    lt: Šventosios Nikolės savivaldybė
+    zh: 聖尼古萊區
+    sq: Komuna e Sveti Nikollës
+    ccp: "\U00011125\U00011133\U0001111E\U0001112C\U00011111\U00011128 \U0001111A\U00011128\U00011107\U0001112E\U00011123\U00011134"
+    mk: Општина Свети Николе
+    'no': Sveti Nikole kommune
+    cs: Opština Sveti Nikole
+    cy: Bwrdeistref Sveti Nikole
+    fa: شهرداری سوتی نیکول
+  comments:
+  type: municipality
+'109':
+  name: Čaška
+  code: '109'
+  unofficial_names: Čaška
+  geo:
+    latitude: 41.647438
+    longitude: 21.6914115
+    min_latitude: 41.6380384
+    min_longitude: 21.6835701
+    max_latitude: 41.6554159
+    max_longitude: 21.697113
+  translations:
+    ar: بلدية تشاشكا
+    bg: Чашка
+    bn: ক্যাস্কা পৌরসভা
+    ca: Čaška
+    cs: Opština Čaška
+    da: Čaška Municipality
+    de: Opština Čaška
+    el: Δήμος Τσάσκας
+    en: Čaška
+    es: Municipalidad de Čaška
+    fi: Čaškan kunta
+    fr: Tchachka
+    gu: કસ્કા મ્યુનિસિપાલિટી
+    hi: कास्का नगर पालिका
+    hr: Općina Čaška
+    id: Kotamadya Čaška
+    it: Čaška
+    ja: チャシュカ
+    ka: ჩაშკის თემი
+    kn: ಸಿಸ್ಕಾ ಪುರಸಭೆ
+    ko: 차슈카 시
+    mr: कॅस्क म्युन्सिपाल्टी
+    ms: Caska Municipality
+    nb: Caska Kommune
+    nl: Čaška
+    pl: Gmina Czaszka
+    pt: Município de Caska
+    ru: Чашка
+    si: කස්කා නගර සභාව
+    sr: Општина Чашка
+    sv: Casjka
+    ta: கஸ்கா நகராட்சி
+    te: కాస్కా మున్సిపాలిటీ
+    th: โอไลนี
+    tr: Caska Belediyesi
+    uk: Чашка
+    ur: چاشکا بلدیہ
+    vi: Đô thị tự trị Caska
+    lv: Čaškas pašvaldība
+    ceb: Opština Čaška
+    sr_Latn: Opština Čaška
+    lt: Čaškos savivaldybė
+    zh: 查什卡区
+    sq: Komuna e Çashkës
+    ccp: "\U00011107\U0001110C\U00011134\U00011107"
+    mk: Општина Чашка
+    'no': Caska Kommune
+    az: Çaşka
+    cy: Bwrdeistref Čaška
+  comments:
+  type: municipality
+'201':
+  name: Berovo
+  code: '201'
+  unofficial_names: Berovo
+  geo:
+    latitude: 41.71
+    longitude: 22.85
+    min_latitude: 41.6987916
+    min_longitude: 22.8312957
+    max_latitude: 41.7220225
+    max_longitude: 22.8621305
+  translations:
+    ar: بلدية بيروفو
+    bg: Берово (община)
+    bn: বেরোভো পৌরসভা
+    da: Berovo Municipality
+    de: Opština Berovo
+    el: Δήμος Μπερόβου
+    en: Berovo
+    es: Municipalidad de Berovo
+    fi: Berovon kunta
+    fr: Municipalité de Berovo
+    gu: બેરોવો મ્યુનિસિપાલિટી
+    hi: बेरोवो नगरपालिका
+    hr: Općina Berovo
+    hu: Berovo
+    id: Kotamadya Berovo
+    it: Berovo
+    ja: ベロヴォ (マケドニア)
+    ka: ბეროვოს თემი
+    kn: ಬೆರೊವೊ ಪುರಸಭೆ
+    ko: 베로보 시
+    mr: बेरोवो म्युन्सिपाल्टी
+    ms: Berovo Municipality
+    nb: Berovo kommune
+    nl: Berevo
+    pl: Gmina Berowo
+    pt: Município de Berovo
+    ru: Берово (община)
+    si: බෙරෝවො නගර සභාව
+    sr: Општина Берово
+    sv: Berovo
+    ta: பிராவோ நகராட்சி
+    te: బెరోవో మున్సిపాలిటీ
+    th: เมืองมารีบอร์
+    tr: Berovo Belediyesi
+    uk: Берово
+    ur: بیروو بلدیہ
+    vi: Đô thị tự trị Berovo
+    lv: Berovo pašvaldība
+    ceb: Berovo
+    sr_Latn: Opština Berovo
+    lt: Berovo savivaldybė
+    zh: 贝罗沃区
+    sq: Komuna e Berovës
+    ccp: "\U0001111D\U0001112C\U00011122\U0001112E\U0001111E\U0001112E"
+    mk: Општина Берово
+    'no': Berovo kommune
+    cs: Opština Berovo
+    cy: Bwrdeistref Berovo
+  comments:
+  type: municipality
+'202':
+  name: Vinica
+  code: '202'
+  unofficial_names: Vinica
+  geo:
+    latitude: 49.233083
+    longitude: 28.468217
+    min_latitude: 49.190448
+    min_longitude: 28.3681799
+    max_latitude: 49.27902
+    max_longitude: 28.5710879
+  translations:
+    ar: بلدية فينيتسا
+    bg: Виница
+    bn: ভিনিকা পৌরসভা
+    da: Vinica Municipality
+    de: Opština Vinica
+    el: Δήμος Βίνιτσας
+    en: Vinica
+    es: Municipalidad de Vinica
+    fi: Vinican kunta
+    fr: Municipalité de Vinitsa
+    gu: વિનીકા મ્યુનિસિપાલિટી
+    hi: विनिका नगर पालिका
+    hr: Općina Vinica
+    id: Kotamadya Vinica
+    it: Comune di Vinica
+    ja: ヴィニツァ
+    ka: ვინიცის თემი
+    kn: ವಿನಿಕ ಪುರಸಭೆ
+    ko: 비니차 시
+    mr: व्हिनीचा म्युन्सिपाल्टी
+    ms: Vinica Municipality
+    nb: Vinica Kommune
+    nl: Vinica
+    pl: Gmina Winica
+    pt: Município de Vinica
+    ru: Виница
+    si: විනිසා නගර සභාව
+    sr: Општина Виница
+    sv: Vinica (kommun)
+    ta: வினிக்கா நகராட்சி
+    te: వినికా మున్సిపాలిటీ
+    th: เมืองวินิก้า
+    tr: Vinica Belediyesi
+    uk: Виниця
+    ur: وینیتسا بلدیہ، مقدونیہ
+    vi: Đô thị tự trị Vinica
+    lv: Vinicas pašvaldība
+    ceb: Vinica
+    sr_Latn: Opština Vinica
+    lt: Vinicos savivaldybė, Makedonija
+    zh: 维尼察区
+    sq: Komuna e Vinicës
+    ccp: "\U0001111E\U00011128\U0001111A\U00011128\U00011107"
+    mk: Општина Виница
+    'no': Vinica Kommune
+    cs: Vinica
+    cy: Bwrdeistref Vinica
+    fa: شهرداری وینیکا (مقدونیه شمالی)
+  comments:
+  type: municipality
+'203':
+  name: Delčevo
+  code: '203'
+  unofficial_names: Delčevo
+  geo:
+    latitude: 41.9764
+    longitude: 22.7674
+    min_latitude: 41.9538413
+    min_longitude: 22.7602601
+    max_latitude: 41.9899275
+    max_longitude: 22.7877689
+  translations:
+    ar: بلدية ديلتشيفو
+    bg: Царево село
+    bn: ডেলচেভো পৌরসভা
+    ca: Delčevo
+    da: Delčevo Municipality
+    de: Opština Delčevo
+    el: Δήμος Ντελτσέβου
+    en: Delčevo
+    es: Municipalidad de Delčevo
+    fi: Delčevon kunta
+    fr: Municipalité de Deltchevo
+    gu: ડેલકેવો મ્યુનિસિપાલિટી
+    hi: डेल्केवो नगर पालिका
+    hr: Općina Delčevo
+    id: Kotamadya Delčevo
+    it: Delčevo
+    ja: デルチェヴォ
+    ka: დელჩევოს თემი
+    kn: ಡೆಲ್ಸೆವೊ ಪುರಸಭೆ
+    ko: 델체보 시
+    mr: डेलसेवो म्युन्सिपाल्टी
+    ms: Delcevo Municipality
+    nb: Delcevo Kommune
+    nl: Delčevo
+    pl: Gmina Dełczewo
+    pt: Município de Delcevo
+    ru: Делчево
+    si: ඩෙල්කෙවෝ නගර සභාව
+    sr: Општина Делчево
+    sv: Delčevo
+    ta: டெல்சவோ நகராட்சி
+    te: డెల్సేవో మున్సిపాలిటీ
+    th: เมืองเดลเซโว
+    tr: Delcevo Belediyesi
+    uk: Делчево
+    ur: بلدیہ دیلچیوو
+    vi: Đô thị tự trị Delcevo
+    lv: Delčevo pašvaldība
+    ceb: Opština Delčevo
+    sr_Latn: Opština Delčevo
+    lt: Delčevo savivaldybė
+    zh: 德尔塞沃区
+    sq: Komuna e Dellçevës
+    ccp: "\U00011113\U0001112C\U00011123\U00011134\U00011125\U00011128\U0001111A\U0001112E"
+    mk: Општина Делчево
+    'no': Delcevo Kommune
+    cs: Opština Delčevo
+    cy: Bwrdeistref Delčevo
+    fa: شهرداری دلچهو
+  comments:
+  type: municipality
+'204':
+  name: Zrnovci
+  code: '204'
+  unofficial_names: Zrnovci
+  geo:
+    latitude: 41.8228221
+    longitude: 22.4172256
+    min_latitude: 41.788068
+    min_longitude: 22.354366
+    max_latitude: 41.8693271
+    max_longitude: 22.4490741
+  translations:
+    ar: بلدية زرنوفتشي
+    bg: Зърновци
+    bn: জার্নোভচি পৌরসভা
+    da: Zrnovci Municipality
+    de: Opština Zrnovci
+    el: Δήμος Ζιρνοφτσίου
+    en: Zrnovci
+    es: Municipalidad de Zrnovci
+    fi: Zrnovcin kunta
+    fr: Zrnovtsi
+    gu: ઝ્રનૉવકી મ્યુનિસિપાલિટી
+    hi: ज़रनोव्की नगर पालिका
+    hr: Općina Zrnovci
+    id: Kotamadya Zrnovci
+    it: Zrnovci
+    ja: ズルノヴツィ
+    ka: ზრნოვცის თემი
+    kn: ಜರ್ನೋವಿ ಪುರಸಭೆ
+    ko: 즈르노브치 시
+    mr: झ्रो्नोव्ही म्युन्सिपाल्टी
+    ms: Zrnovci Municipality
+    nb: Zrnovci kommune
+    nl: Zrnovci
+    pl: Gmina Zrnovci
+    pt: Município de Zrnovci
+    ru: Зрновци
+    si: ස්රෝනොව්සි නගර සභාව
+    sr: Општина Зрновци
+    sv: Zrnovci (kommun)
+    ta: ஸ்ரனோவசி நகராட்சி
+    te: జర్నోవ్చీ మున్సిపాలిటీ
+    th: ซาโนวซิ
+    tr: Zmovci Belediyesi
+    uk: Зрновці (община)
+    ur: زرنووتسی بلدیہ
+    vi: Đô thị tự trị Zrnovci
+    lv: Zrnovci pašvaldība
+    ceb: Zrnovci
+    sr_Latn: Opština Zrnovci
+    lt: Zrnovcio savivaldybė
+    zh: 日尔诺维奇区
+    sq: Komuna e Zërnocit
+    ccp: "\U0001111A\U0001112E\U0001111B\U00011134\U00011125\U00011128"
+    mk: Општина Зрновци
+    'no': Zrnovci kommune
+    cy: Bwrdeistref Zrnovci
+    fa: شهرداری زرنوچی
+  comments:
+  type: municipality
+'205':
+  name: Karbinci
+  code: '205'
+  unofficial_names: Karbinci
+  geo:
+    latitude: 41.8180159
+    longitude: 22.2324758
+    min_latitude: 41.8096282
+    min_longitude: 22.2270155
+    max_latitude: 41.822406
+    max_longitude: 22.2458124
+  translations:
+    ar: كاربينتسي
+    bg: Карбинци
+    bn: কারাবিনকি
+    cs: Opština Karbinci
+    da: Karbinci
+    de: Opština Karbinci
+    el: Δήμος Καρμπιντσίου
+    en: Karbinci
+    es: Municipalidad de Karbinci
+    fi: Karbinci
+    fr: Karbintsi
+    gu: કર્બીંન્સી
+    hi: कारबिंची
+    hr: Općina Karbinci
+    id: Karbinci
+    it: Karbinci
+    ja: カルビンツィ
+    ka: კარბინცის თემი
+    kn: ಕಾರ್ಬಿನ್ಸಿ
+    ko: 카르빈치 시
+    mr: कार्बीन्ची
+    ms: Karbinci
+    nb: Karbinci
+    nl: Karbinci
+    pl: Karbinci
+    pt: Karbinci
+    ru: Карбинци
+    si: කර්බින්සි
+    sr: Општина Карбинци
+    sv: Karbinci
+    ta: கர்பின்சி
+    te: కార్బిన్చి
+    th: จังหวัดฮามาดาน
+    tr: Karbinci
+    uk: Карбинці
+    ur: کاربنتسی بلدیہ
+    vi: Karbinci
+    lv: Karbinci
+    ceb: Karbinci
+    sr_Latn: Opština Karbinci
+    lt: Karbinčio savivaldybė
+    zh: 卡尔宾奇区
+    sq: Komuna e Karbincës
+    ccp: "\U00011107\U00011122\U00011134\U0001111D\U00011128\U0001111A\U00011134\U00011125\U00011128"
+    mk: Општина Карбинци
+    'no': Karbinci
+    fa: شهرداری کربینچی
+  comments:
+  type: municipality
+'206':
+  name: Kočani
+  code: '206'
+  unofficial_names: Kočani
+  geo:
+    latitude: 41.91680480000001
+    longitude: 22.4082849
+    min_latitude: 41.9041297
+    min_longitude: 22.3931301
+    max_latitude: 41.93393890000001
+    max_longitude: 22.4394573
+  translations:
+    ar: بلدية كوتشاني
+    bg: Кочани
+    bn: কৈয়ানি পৌরসভা
+    da: Kocani
+    de: Opština Kočani
+    el: Δήμος Κότσανης
+    en: Kočani
+    es: Municipalidad de Kočani
+    fi: Kočanin kunta
+    fr: municipalité de Kotchani
+    gu: કોકની મ્યુનિસિપાલિટી
+    hi: कोसानी नगरपालिका
+    hr: Općina Kočani
+    id: Kotamadya Kočani
+    it: Comune di Kočani
+    ja: クアツェーニ
+    ka: კოჩანის თემი
+    kn: ಕೊಕ್ಕಾನಿ ಪುರಸಭೆ
+    ko: 코차니 시
+    mr: कोकनी म्युन्सिपाल्टी
+    ms: Kocani Municipality
+    nb: Kocani kommune
+    nl: Kotsjani
+    pl: Gmina Koczani
+    pt: Município de Kocani
+    ru: Кочани
+    si: කොකානි නගර සභාව
+    sr: Општина Кочани
+    sv: Kočani
+    ta: கொக்காணி நகராட்சி
+    te: కోకాని మున్సిపాలిటీ
+    th: เมืองโคซานิ
+    tr: Kocani Belediyesi
+    uk: Кочани (община)
+    ur: بلدیہ کوچانی
+    vi: Đô thị tự trị Kocani
+    lv: Kočanu pašvaldība
+    ceb: Opština Kočani
+    sr_Latn: Opština Kočani
+    lt: Kočanio savivaldybė
+    zh: 科查尼區
+    sq: Komuna e Koçanit
+    ccp: "\U00011107\U0001112E\U00011125\U0001111A\U00011128"
+    mk: Општина Кочани
+    'no': Kocani kommune
+    cs: Opština Kočani
+    cy: Bwrdeistref Kočani
+  comments:
+  type: municipality
+'207':
+  name: Makedonska Kamenica
+  code: '207'
+  unofficial_names: Makedonska Kamenica
+  geo:
+    latitude: 42.019722
+    longitude: 22.591667
+    min_latitude: 42.0103066
+    min_longitude: 22.5755525
+    max_latitude: 42.0301294
+    max_longitude: 22.5955296
+  translations:
+    ar: بلدية ماكيدونسكا كامينيكا
+    bg: Каменица
+    bn: মেকাডনস্কা কামেনিয়া পৌরসভা
+    da: Makedonska Kamenica Municipality
+    de: Opština Makedonska Kamenica
+    el: Δήμος Ματσεντόνσκα Καμένιτσα
+    en: Makedonska Kamenica
+    es: Municipalidad de Makedonska Kamenica
+    fi: Makedonska Kamenican kunta
+    fr: Makedonska Kamenitsa
+    gu: મેકેડોનસ્કા કેમેનિકા મ્યુનિસિપાલિટી
+    hi: मैकेडोंस्का कमैनिका नगरपालिका
+    hr: Općina Makedonska Kamenica
+    id: Kotamadya Makedonska Kamenica
+    it: Makedonska Kamenica
+    ja: マケドンスカ・カメニツァ
+    ka: მაკედონსკა-კამენიცის თემი
+    kn: ಮ್ಯಾಕೆಡೊನ್ಸ್ಕಾ ಕಾಮೆನಿಕ ಪುರಸಭೆ
+    ko: 마케돈스카카메니차 시
+    mr: मॅक्डोंस्का कामेंइका म्युन्सिपाल्टी
+    ms: Perbandaran Makedonska Kamenica
+    nb: Makedonska Kamencia kommune
+    nl: Makedonska Kamenica
+    pl: Gmina Makedonska Kamenica
+    pt: Makedonska Kamencia kommune
+    ru: Македонска-Каменица
+    si: මකෙඩොන්ස්කා කමෙනිකා නගර සභාව
+    sr: Општина Македонска Каменица
+    sv: Makedonska Kamenica
+    ta: மேடான்ஸ்கா கமெனிக்கா நகராட்சி
+    te: మాకెడోన్స్కా కామెనికా మున్సిపాలిటీ
+    th: เทศบาลมากาดอนสกา คาเมนิกา
+    tr: Makedonska Kamenica Belediyesi
+    uk: Македонська-Камениця
+    ur: ماکیدونسکا کامینیتسا بلدیہ
+    vi: Đô thị tự trị Makedonska Kamenica
+    lv: Maķedonijas Kamenicas province
+    ceb: Makedonska Kamenica
+    sr_Latn: Opština Makedonska Kamenica
+    lt: Makedonijos Kamenicos provincija
+    zh: 馬其頓卡梅尼察區
+    sq: Komuna e Kamenicës
+    ccp: "\U0001111F\U00011107\U0001112C\U00011113\U0001112E\U0001111A\U00011134\U00011107
+      \U00011107\U0001111F\U0001112C\U0001111A\U00011128\U00011107"
+    mk: Општина Македонска Каменица
+    'no': Makedonska Kamencia kommune
+    cs: Opština Makedonska Kamenica
+    cy: Bwrdeistref Makedonska Kamenica
+  comments:
+  type: municipality
+'208':
+  name: Pehčevo
+  code: '208'
+  unofficial_names: Pehčevo
+  geo:
+    latitude: 41.76
+    longitude: 22.88
+    min_latitude: 41.7562428
+    min_longitude: 22.8748494
+    max_latitude: 41.7662424
+    max_longitude: 22.8996384
+  translations:
+    ar: بلدية بيتسيفو
+    bg: Пехчево
+    bn: পেচেভো পৌরসভা
+    da: Pehčevo Municipality
+    de: Opština Pehčevo
+    el: Δήμος Πεχτσέβου
+    en: Pehčevo
+    es: Municipalidad de Pehčevo
+    fi: Pehčevon kunta
+    fr: Pehtchevo
+    gu: પેશેવો મ્યુનિસિપાલિટી
+    hi: पायसीवो नगरपालिका
+    hr: Općina Pehčevo
+    id: Kotamadya Pehčevo
+    it: Pehčevo
+    ja: ペフチェヴォ
+    ka: პეხჩევოს თემი
+    kn: ಪೆಹೆಸೆವೊ ಮುನ್ಸಿಪಾಲಿಟಿ
+    ko: 페흐체보 시
+    mr: पेयेवो म्युन्सिपाल्टी
+    ms: Pehcevo Municipality
+    nb: Pehcevo kommune
+    nl: Pehčevo
+    pl: Gmina Pehčevo
+    pt: Município de Pehcevo
+    ru: Пехчево
+    si: පෙසෙවෝ නගර සභාව
+    sr: Општина Пехчево
+    sv: Pehčevo (kommun)
+    ta: பெஹஸ்வோ நகராட்சி
+    te: పెహ్సేవో మున్సిపాలిటీ
+    th: เมืองเปคเซโว
+    tr: Pehcevo Belediyesi
+    uk: Пехчево (община)
+    ur: بلدیہ پیخچوو
+    vi: Đô thị tự trị Pehcevo
+    lv: Pehčevo pašvaldība
+    ceb: Opština Pehčevo
+    sr_Latn: Opština Pehčevo
+    lt: Pechčevo savivaldybė
+    zh: 佩赫塞沃區
+    sq: Komuna e Peçevës
+    ccp: "\U0001111B\U0001112C\U00011126\U00011134\U00011125\U0001112C\U0001111E\U0001112E"
+    mk: Општина Пехчево
+    'no': Pehcevo kommune
+    cs: Opština Pehčevo
+    cy: Bwrdeistref Pehčevo
+  comments:
+  type: municipality
+'209':
+  name: Probištip
+  code: '209'
+  unofficial_names: Probištip
+  geo:
+    latitude: 41.9948176
+    longitude: 22.1877315
+    min_latitude: 41.9841539
+    min_longitude: 22.1594237
+    max_latitude: 42.0117575
+    max_longitude: 22.1926832
+  translations:
+    ar: بلدية بروتشتيب
+    bg: Пробищип
+    bn: প্রবিস্টিপ পৌরসভা
+    da: Probištip Municipality
+    de: Opština Probištip
+    el: Δήμος Πρόμπιστιπ
+    en: Probištip
+    es: Municipalidad de Probištip
+    fi: Probištipin kunta
+    fr: Probichtip
+    gu: પ્રોબિસ્ટિપ મ્યુનિસિપાલિટી
+    hi: प्रोबिस्टिप नगर पालिका
+    hr: Općina Probištip
+    id: Kotamadya Probištip
+    it: Probištip
+    ja: プロビシュティプ
+    ka: პრობიშტიპის თემი
+    kn: ಪ್ರೋಬಿಸ್ಟಿಪ್ ಪುರಸಭೆ
+    ko: 프로비슈티프 시
+    mr: प्रोबिस्टिप म्युन्सिपाल्टी
+    ms: Probistip Municipality
+    nb: Probistip kommune
+    nl: Probištip
+    pl: Gmina Probištip
+    pt: Município de Probistip
+    ru: Пробиштип
+    si: ප්රෝබිස්ටිප් නගර සභාව
+    sr: Општина Пробиштип
+    sv: Probistip kommun
+    ta: ப்ரோபிஸ்டிப் நகராட்சி
+    te: ప్రోబిస్టిప్ మున్సిపాలిటీ
+    th: โปรบิสทิป
+    tr: Probistip Belediyesi
+    uk: Пробиштип
+    ur: بلدیہ پوربیشتیپ
+    vi: Probistip Đô thị tự trị
+    lv: Probištipas pašvaldība
+    ceb: Opština Probištip
+    sr_Latn: Opština Probištip
+    lt: Probištipo savivaldybė
+    zh: 普羅比什蒂普區
+    sq: Komuna e Probishtipit
+    ccp: "\U0001111B\U00011133\U00011122\U0001112E\U0001111D\U00011128\U0001110C\U00011134\U00011111\U00011128\U0001111B\U00011134"
+    mk: Општина Пробиштип
+    'no': Probistip kommune
+    cs: Opština Probištip
+    cy: Bwrdeistref Probištip
+    fa: شهرداری پروبیستیپ
+  comments:
+  type: municipality
+'210':
+  name: Češinovo-Obleševo
+  code: '210'
+  unofficial_names: Češinovo-Obleševo
+  geo:
+    latitude: 41.8639316
+    longitude: 22.262246
+    min_latitude: 41.788461
+    min_longitude: 22.187428
+    max_latitude: 41.948915
+    max_longitude: 22.39093
+  translations:
+    ar: بلدية تشيشينوفو- أبليشيفو
+    bg: Чешиново-Облешево
+    bn: চেচিনোভো-অব্লেচেভো পৌরসভা
+    da: Češinovo-Obleševo Municipality
+    de: Opština Češinovo-Obleševo
+    el: Δήμος Ομπλεσόβου
+    en: Češinovo-Obleševo
+    es: Municipalidad de Češinovo-Obleševo
+    fi: Češinovo-Obleševon kunta
+    fr: Tchéchinovo-Obléchévo
+    hi: केसिनोवो-ओब्लेसेवो नगरपालिका
+    hr: Općina Češinovo-Obleševo
+    id: Kotamadya Češinovo-Obleševo
+    it: Češinovo-Obleševo
+    ja: オブレシェヴォ
+    ka: ჩეშინოვო-ობლეშევოს თემი
+    kn: ಚೆಸಿನೋವೊ-ಓಲಿಸೆವೊ ಪುರಸಭೆ
+    ko: 체시노보오블레셰보 시
+    ms: Cesinovo-Oblesevo Municipality
+    nb: Cesinoco-Oblesevo Kommune
+    nl: Češinovo-Obleševo
+    pl: Gmina Czeszinowo-Obleszewo
+    pt: Cesinoco-Oblesevo
+    ru: Чешиново-Облешево
+    si: සෙන්සිනොවෝ-ඔබ්ලෙසේ වෝ නගර සභාව
+    sr: Општина Чешиново-Облешево
+    sv: Česjinovo-Oblesjevo
+    ta: சிசினோவோ -ஒப்ளேஸ்வோ நகராட்சி
+    te: సెసిినోవో-ఓబ్లెసేవో మున్సిపాలిటీ
+    th: เชสสิโนโว โอเบสชิโว
+    tr: Cesinovo-Oblesevo Belediyesi
+    uk: Чешиново-Облешево (община)
+    ur: بلدیہ چیشینوو-وبلیشوو
+    vi: Đô thị tự trị Cesinovo-Oblesevo
+    lv: Češinovo-Obleševo pašvaldība
+    ceb: Češinovo-Obleševo
+    sr_Latn: Opština Češinovo-Obleševo
+    lt: Češinovo-Oblešovo savivaldybė
+    zh: 切希诺沃-奥布莱舍沃区
+    sq: Komuna e Çeshinovo-Obleshevës
+    ccp: "\U00011125\U0001112C\U0001110C\U00011128\U0001111A\U0001112E\U0001111E\U0001112E-\U00011103\U00011127\U0001111B\U00011134\U00011123\U0001112C\U00011125\U0001112E\U0001111E\U0001112E"
+    hu: Csesinovo-Oblesevo
+    mk: Општина Чешиново-Облешево
+    'no': Cesinoco-Oblesevo Kommune
+    cs: Opština Češinovo-Obleševo
+    cy: Bwrdeistref Češinovo-Obleševo
+    gu: કેસિનોવો-ઓબ્લેસેવો મ્યુનિસિપાલિટી
+    mr: सिसिनोवो-ऑब्लेसेवो म्युन्सिपाल्टी
+  comments:
+  type: municipality
+'211':
+  name: Štip
+  code: '211'
+  unofficial_names: Štip
+  geo:
+    latitude: 41.737503
+    longitude: 22.193558
+    min_latitude: 41.72723939999999
+    min_longitude: 22.167642
+    max_latitude: 41.7626373
+    max_longitude: 22.2150422
+  translations:
+    ar: بلدية شتيب
+    bg: Щип
+    bn: স্টিপ পৌরসভা
+    da: Štip Municipality
+    de: Opština Štip
+    el: Δήμος Στιπ
+    en: Štip
+    es: Municipalidad de Štip
+    fi: Štipn kunta
+    fr: Municipalité de Chtip
+    gu: સ્ટિપ મ્યુનિસિપાલિટી
+    hi: स्तिप नगरपालिका
+    hr: Općina Štip
+    id: Kotamadya Štip
+    it: Štip
+    ja: シュティプ
+    ka: შტიპის თემი
+    kn: ಸ್ಟಿಪ್ ಪುರಸಭೆ
+    ko: 슈티프 시
+    mr: स्टिप म्युन्सिपाल्टी
+    ms: Stip Municipality
+    nb: Strip kommune
+    nl: Štip
+    pl: Gmina Štip
+    pt: Município de Stip
+    ru: Штип (община)
+    si: ස්ටිප් නගර සභාව
+    sr: Општина Штип
+    sv: Štip
+    ta: ஸ்டிப் நகராட்சி
+    te: స్టిప్ మున్సిపాలిటీ
+    th: เมืองสติป
+    tr: Stip Belediyesi
+    uk: Штип
+    ur: بلدیہ شتیپ
+    vi: Đô thị tự trị Stip
+    lv: Štipas pašvaldība
+    ceb: Opština Štip
+    sr_Latn: Opština Štip
+    lt: Štipo savivaldybė
+    zh: 什提普區
+    sq: Komuna e Shtipit
+    ccp: "\U0001110C\U00011133\U00011111\U00011128\U0001111B\U00011134"
+    mk: Општина Штип
+    'no': Strip kommune
+    cs: Opština Štip
+    cy: Bwrdeistref Štip
+    he: עיריית שטיפ
+  comments:
+  type: municipality
+'301':
+  name: Vevčani
+  code: '301'
+  unofficial_names: Vevčani
+  geo:
+    latitude: 41.2403
+    longitude: 20.5931
+    min_latitude: 41.2352363
+    min_longitude: 20.5857504
+    max_latitude: 41.25057229999999
+    max_longitude: 20.6043006
+  translations:
+    de: Opština Vevčani
+    en: Vevčani
+    es: Municipalidad de Vevčani
+    fr: Vevtchani
+    hr: Općina Vevčani
+    it: Vevčani
+    ja: ヴェヴチャニ
+    ka: ვევჩანის თემი
+    ko: 베브차니 시
+    nl: Vevčani
+    pt: Município de Vevčani
+    sr: Општина Вевчани
+    sv: Vevčani
+    uk: Вевчани (община)
+    ur: ویوچانی بلدیہ
+    ceb: Opština Vevčani
+    sr_Latn: Opština Vevčani
+    zh: 維夫查尼區
+    sq: Komuna e Veçanit
+    ccp: "\U0001111E\U0001112C\U0001111B\U00011134\U00011107\U0001111A\U00011128"
+    mk: Општина Вевчани
+    bg: община Вевчани
+    cs: Opština Vevčani
+    cy: Bwrdeistref Vevčani
+    el: Δήμος Βεύτσανης
+    fa: شهرداری ووچانی
+    id: Munisipalitas Vevčani
+    pl: Gmina Wewczani
+    ru: Вевчани
+  comments:
+  type: municipality
+'303':
+  name: Debar
+  code: '303'
+  unofficial_names: Debar
+  geo:
+    latitude: 41.5266768
+    longitude: 20.5239064
+    min_latitude: 41.4924262
+    min_longitude: 20.4922057
+    max_latitude: 41.54387060000001
+    max_longitude: 20.5436398
+  translations:
+    ar: بلدية ديبار
+    bg: Дебър
+    bn: দেবার পৌরসভা
+    da: Debar Municipality
+    de: Opština Debar
+    el: Δήμος Δίβρης
+    en: Debar
+    es: Municipalidad de Debar
+    fi: Debarin kunta
+    fr: Municipalité de Debar
+    gu: ડેબર મ્યુનિસિપાલિટી
+    hi: डेबार नगर पालिका
+    hr: Općina Debar
+    id: Kotamadya Debar
+    it: Debar
+    ja: デバル
+    ka: დებარის თემი
+    kn: ಡೆಬಾರ ಪುರಸಭೆ
+    ko: 데바르 시
+    mr: डेबर म्युन्सिपाल्टी
+    ms: Debar Municipality
+    nb: Debar kommune
+    nl: Debar
+    pl: Gmina Debar
+    pt: Município de Debar
+    ru: Дебар
+    si: ඩෙබාර් නගර සභාව
+    sr: Општина Дебар
+    sv: Debar
+    ta: டெபார் நகராட்சி
+    te: డెబార్ మున్సిపాలిటీ
+    th: เดบาร์
+    tr: Debre Belediyesi
+    uk: Дебар
+    ur: دیبار بلدیہ
+    vi: Đô thị tự trị Debar
+    lv: Debaras pašvaldība
+    ceb: Debar
+    sr_Latn: Opština Debar
+    lt: Debaro savivaldybė
+    zh: 德巴尔区
+    sq: Komuna e Dibrës
+    ccp: "\U00011113\U0001112C\U0001111D\U00011127\U00011122\U00011134"
+    mk: Општина Дебар
+    'no': Debar kommune
+    cs: Opština Debar
+    cy: Bwrdeistref Debar
+    fa: شهرداری دبار
+  comments:
+  type: municipality
+'304':
+  name: Debarca
+  code: '304'
+  unofficial_names: Debarca
+  geo:
+    latitude: 42.0010109
+    longitude: 21.4201574
+    min_latitude: 41.9992847
+    min_longitude: 21.4180968
+    max_latitude: 42.0021113
+    max_longitude: 21.4216447
+  translations:
+    ar: بلدية ديباركا
+    bg: Дебърца
+    bn: ডিবার্কা পৌরসভা
+    da: Debarca Municipality
+    de: Opština Debarca
+    el: Δήμος Ντεμπάρτσας
+    en: Debarca
+    es: Municipalidad de Debarca
+    fi: Debarcan kunta
+    fr: Debartsa
+    gu: ડેબાર્કા મ્યુનિસિપાલિટી
+    hi: डेबर्का नगर पालिका
+    hr: Općina Debarca
+    hu: Debarca
+    id: Kotamadya Debarca
+    it: Debarca
+    ja: デバルツァ
+    ka: დებარცის თემი
+    kn: ಡೆಬಾರ್ಕಾ ಪುರಸಭೆ
+    ko: 데바르차 시
+    mr: डेबेर्का म्युन्सिपाल्टी
+    ms: Debarca Municipality
+    nb: Debarca kommune
+    nl: Debarca
+    pl: Gmina Debarca
+    pt: Município de Debarca
+    ru: Дебарца
+    si: ඩෙබර්කා නගර සභාව
+    sr: Општина Дебарца
+    sv: Debarca
+    ta: டெபற்க்க நகராட்சி
+    te: డెబార్కా మున్సిపాలిటీ
+    th: เมืองเดอบาก้า
+    tr: Debarca Belediyesi
+    uk: Дебарця
+    ur: دیبرسا بلدیہ
+    vi: Đô thị tự trị Debarca
+    lv: Debarcas pašvaldība
+    ceb: Debarca
+    sr_Latn: Opština Debarca
+    lt: Debarcos savivaldybė
+    zh: 德巴尔查区
+    sq: Komuna e Debarcës
+    ccp: "\U00011113\U0001112C\U0001111D\U00011127\U00011122\U00011134\U00011107"
+    ro: Comuna Debarca
+    mk: Општина Дебарца
+    'no': Debarca kommune
+    cs: Opština Debarca
+    cy: Bwrdeistref Debarca
+    fa: شهرداری دبارکا
+  comments:
+  type: municipality
+'307':
+  name: Kičevo
+  code: '307'
+  unofficial_names: Kičevo
+  geo:
+    latitude: 41.5158412
+    longitude: 20.9586619
+    min_latitude: 41.4940576
+    min_longitude: 20.9361862
+    max_latitude: 41.5350852
+    max_longitude: 20.973544
+  translations:
+    ar: بلدية كيتشيفو
+    be: абшчына Кічава
+    bg: Кичево
+    bn: কিয়েভো পৌরসভা
+    da: Kičevo Municipality
+    de: Opština Kičevo
+    el: Δήμος Κιτσέβου
+    en: Kičevo
+    es: Municipalidad de Kičevo
+    fi: Kičevon kunta
+    fr: Kitchevo
+    gu: કિસેવો મ્યુનિસિપાલિટી
+    hi: किसेवो नगरपालिका
+    hr: Općina Kičevo
+    id: Kotamadya Kičevo
+    it: Kičevo
+    ja: キチェボ
+    ka: კიჩევოს თემი
+    kn: ಕಿಸೆವೊ ಪುರಸಭೆ
+    ko: 키체보 시
+    mr: किसिवो म्युन्सिपाल्टी
+    ms: Kicevo Municipality
+    nb: Kicevo kommune
+    nl: Kičevo
+    pl: Gmina Kičevo
+    pt: Município de Kicevo
+    ru: Кичево
+    si: කිසේවෝ නගර සභාව
+    sr: Општина Кичево
+    sv: Kicevo
+    ta: கிஸ்வோ நகராட்சி
+    te: కిసెవో మున్సిపాలిటీ
+    th: เมืองคิซีโว
+    tr: Kırçova Belediyesi
+    uk: Кичево
+    ur: کیچیوو بلدیہ
+    vi: Đô thị tự trị Kicevo
+    lv: Kičevo pasvaldība
+    ceb: Opština Kičevo
+    sr_Latn: Opština Kičevo
+    lt: Kičevo savivaldybė
+    zh: 基切沃區
+    sq: Komuna e Kërçovës
+    ccp: "\U00011107\U00011128\U00011125\U0001112C\U0001111E\U0001112E"
+    mk: Општина Кичево
+    'no': Kicevo kommune
+    cs: Opština Kičevo
+    cy: Bwrdeistref Kičevo
+    fa: شهرداری کیشوو
+  comments:
+  type: municipality
+'308':
+  name: Makedonski Brod
+  code: '308'
+  unofficial_names: Makedonski Brod
+  geo:
+    latitude: 41.5133088
+    longitude: 21.2174329
+    min_latitude: 41.5046204
+    min_longitude: 21.2085485
+    max_latitude: 41.5210334
+    max_longitude: 21.2262081
+  translations:
+    ar: بلدية ماكيدونسكي برود
+    bg: Брод (община)
+    bn: মেকাডনস্কি ব্রড পৌরসভা
+    da: Makedonski Brod Municipality
+    de: Opština Makedonski Brod
+    el: Δήμος Μακεντόσκι Μπροντ
+    en: Makedonski Brod
+    es: Municipalidad de Makedonski Brod
+    fi: Makedonski Brodin kunta
+    fr: Makedonski Brod
+    gu: મેકેડોન્સ્કી બ્રોડ મ્યુનિસિપાલિટી
+    hi: मैकेडोंसकी ब्रोड नगरपालिका
+    hr: Općina Makedonski Brod
+    id: Kotamadya Makedonski Brod
+    it: Makedonski Brod
+    ja: マケドンスキ・ブロド
+    ka: მაკედონსკი-ბროდის თემი
+    kn: ಮ್ಯಾಕ್ಡೊನ್ಸ್ಕಿ ಬ್ರಾಡ್ ಪುರಸಭೆ
+    ko: 마케돈스키브로드 시
+    mr: मॅक्डोंस्की ब्रॉड म्युन्सिपाल्टी
+    ms: Perbandaran Makedonski Brod
+    nb: Makedoniske Brod kommune
+    nl: Makedonski Brod
+    pl: Dystrykt Makedonski Brod
+    pt: Makedonski Brod
+    ru: Македонски-Брод
+    si: මකෙදොන්ස්කි බ්‍රොඩ් නගර සභාව
+    sr: Општина Македонски Брод
+    sv: Makedonski Brod
+    ta: மகெந்தோன்ஸ்கி ப்ரோட் நகராட்சி
+    te: మాకెడోన్స్కీ బ్రోడ్ మున్సిపాలిటీ
+    th: เทศบาลมเกดอนสกิบรอด
+    tr: Makedonski Brod Belediyesi
+    uk: Македонський Брод (община)
+    ur: ماکیدونسکی برود بلدیہ
+    vi: Đô thị tự trị Makedonski Brod
+    lv: Makedonskij-Brodas pašvaldība
+    ceb: Makedonski Brod
+    sr_Latn: Opština Makedonski Brod
+    lt: Makedonijos Brodo savivaldybė
+    zh: 馬其頓布羅德區
+    sq: Komuna e Brodit
+    ccp: "\U0001111F\U0001112C\U00011107\U00011113\U0001112E\U0001111A\U00011134\U00011107
+      \U0001111D\U00011133\U00011122\U0001112E\U00011116\U00011134"
+    mk: Општина Македонски Брод
+    'no': Makedoniske Brod kommune
+    cs: Opština Makedonski Brod
+    cy: Bwrdeistref Makedonski Brod
+    he: עיריית מקדונסקי ברוד
+  comments:
+  type: municipality
+'310':
+  name: Ohrid
+  code: '310'
+  unofficial_names: Ohrid
+  geo:
+    latitude: 41.1230977
+    longitude: 20.8016481
+    min_latitude: 41.0793365
+    min_longitude: 20.7540128
+    max_latitude: 41.148656
+    max_longitude: 20.8305932
+  translations:
+    ar: بلدية أوهريد
+    bg: Охрид
+    bn: ওহরিড পৌরসভা
+    ca: Municipi d’Ohrid
+    da: Ohrid Municipality
+    de: Opština Ohrid
+    el: Δήμος Οχρίδας
+    en: Ohrid
+    es: Municipalidad de Ohrid
+    fi: Ohridin kunta
+    fr: Municipalité de Ohrid
+    gu: ઓહ્રીદ મ્યુનિસિપાલિટી
+    hi: ओहरिड नगरपालिका
+    hr: Općina Ohrid
+    id: Kotamadya Ohrid
+    it: Comune di Ohrid
+    ja: オフリド
+    ka: ოჰრიდის თემი
+    kn: ಓಹಿರ್ದ್ ಪುರಸಭೆ
+    ko: 오흐리드 시
+    mr: ओहरीड म्युन्सिपाल्टी
+    ms: Ohrid Municipality
+    nb: Ohrid Kommune
+    nl: Ohrid
+    pl: Gmina Ochryda
+    pt: Município de Ohrid
+    ru: Охрид
+    si: ඔහ්රිඩ් නගර සභාව
+    sr: Општина Охрид
+    sv: Ohrid Opština
+    ta: ஓரிட் நகராட்சி
+    te: ఓహ్రిడ్ మున్సిపాలిటీ
+    th: โอริด
+    tr: Ohri Belediyesi
+    uk: Охрид (община)
+    ur: اوخرید بلدیہ
+    vi: Đô thị tự trị Ohrid
+    lv: Ohridas pašvaldība
+    ceb: Ohrid
+    sr_Latn: Opština Ohrid
+    lt: Ochrido savivaldybė
+    zh: 奧赫里德區
+    sq: Komuna e Ohrit
+    ccp: "\U00011103\U0001112E\U00011126\U00011134\U00011122\U00011128\U00011116\U00011134"
+    be: Охрыд
+    mk: Општина Охрид
+    'no': Ohrid Kommune
+    az: Oxrid bələdiyyəsi
+    cs: Opština Ochrid
+    cy: Bwrdeistref Ohrid
+    fa: شهرداری اوهرید
+    gl: Concello de Ohrid
+    hy: Օքրիդ մունիցիպալիտետ
+    ro: Comuna Ohrida
+  comments:
+  type: municipality
+'311':
+  name: Plasnica
+  code: '311'
+  unofficial_names: Plasnica
+  geo:
+    latitude: 41.45463489999999
+    longitude: 21.1056539
+    min_latitude: 41.406865
+    min_longitude: 21.038705
+    max_latitude: 41.48252400000001
+    max_longitude: 21.1960519
+  translations:
+    ar: بلدية بلاسنيكا
+    bg: Пласница
+    bn: প্লাস্নিকা পৌরসভা
+    da: Plasnica Municipality
+    de: Opština Plasnica
+    el: Δήμος Πλάσνιτσας
+    en: Plasnica
+    es: Municipalidad de Plasnica
+    fi: Plasnican kunta
+    fr: Plasnitsa
+    gu: પ્લાસ્નિકા મ્યુનિસિપાલિટી
+    hi: प्लेसनिका नगरपालिका
+    hr: Općina Plasnica
+    id: Kotamadya Plasnica
+    it: Plasnica
+    ja: プラスニツァ
+    ka: პლასნიცის თემი
+    kn: ಪ್ಲಾಸ್ನಿಕ್ ಪುರಸಭೆ
+    ko: 플라스니차 시
+    mr: प्लेसनीच म्युन्सिपाल्टी
+    ms: Plasnica Municipality
+    nb: Plasnica Kommune
+    nl: Plasnica
+    pl: Gmina Plasnica
+    pt: Município de Plasnica
+    ru: Пласница
+    si: ප්ලස්නිකා නගර සභාව
+    sr: Општина Пласница
+    sv: Plasnica
+    ta: பல்ஸனிக்கா நகராட்சி
+    te: ప్లాస్నికా మున్సిపాలిటీ
+    th: เมืองพลาสนิคา
+    tr: Plasniça Belediyesi
+    uk: Пласниця
+    ur: پلاسنیتسا بلدیہ
+    vi: Đô thị tự trị Plasnica
+    lv: Plasnicas pašvaldība
+    ceb: Plasnica
+    sr_Latn: Opština Plasnica
+    lt: Plasnicos savivaldybė
+    zh: 普拉斯尼察區
+    sq: Komuna e Plasnicës
+    ccp: "\U0001111B\U00011133\U00011123\U0001110C\U00011134\U0001111A\U00011128\U00011107"
+    mk: Општина Пласница
+    'no': Plasnica Kommune
+    cs: Opština Plasnica
+    cy: Bwrdeistref Plasnica
+    fa: شهرداری پلاسنیکا
+  comments:
+  type: municipality
+'312':
+  name: Struga
+  code: '312'
+  unofficial_names: Struga
+  geo:
+    latitude: 41.1778353
+    longitude: 20.6783258
+    min_latitude: 41.1677447
+    min_longitude: 20.6343199
+    max_latitude: 41.1973695
+    max_longitude: 20.7272307
+  translations:
+    ar: محافظة ستروغا
+    bg: Струга
+    bn: স্টুগা পৌরসভা]
+    da: Struga Municipality
+    de: Opština Struga
+    el: Δήμος Στρούγγας
+    en: Struga
+    es: Municipalidad de Struga
+    fi: Strugan kunta
+    fr: Struga
+    gu: સ્ટ્રગા મ્યુનિસિપાલિટી
+    hi: स्ट्रुगा नगर पालिका
+    hr: Općina Struga
+    id: Kotamadya Struga
+    it: Struga
+    ja: ストルガ基礎自治体
+    ka: სტრუგის თემი
+    kn: ಸ್ಟ್ರುಗ ಪುರಸಭೆ
+    ko: 스트루가 시
+    mr: स्त्रूग म्युन्सिपाल्टी
+    ms: Struga Municipality
+    nb: Struga kommune
+    nl: Struga
+    pl: Gmina Struga
+    pt: Município de Struga
+    ru: Струга
+    si: ස්ට්රුගා නගර සභාව
+    sr: Општина Струга
+    sv: Struga (kommun)
+    ta: ஸ்டருக்கா நகராட்சி
+    te: స్ట్రూగా మున్సిపాలిటీ
+    th: เมืองสตรูกา
+    tr: Struga Belediyesi
+    uk: Струга
+    ur: ستوگا بلدیہ
+    vi: Đô thị tự trị Struga
+    lv: Strugas pašvaldība
+    ceb: Struga
+    sr_Latn: Opština Struga
+    lt: Strugos savivaldybė
+    zh: 斯特魯加區
+    sq: Komuna e Strugës
+    ccp: "\U00011111\U00011133\U00011122\U0001112A\U00011109"
+    hu: Sztruga község
+    mk: Општина Струга
+    'no': Struga kommune
+    cs: Opština Struga
+    cy: Bwrdeistref Struga
+    fa: شهرداری استروگا
+  comments:
+  type: municipality
+'313':
+  name: Centar Župa
+  code: '313'
+  unofficial_names: Centar Župa
+  geo:
+    latitude: 41.47852779999999
+    longitude: 20.5602793
+    min_latitude: 41.47322459999999
+    min_longitude: 20.5503664
+    max_latitude: 41.48230540000001
+    max_longitude: 20.5659829
+  translations:
+    ar: بلدية سنتار جوبا
+    bg: Вапа
+    bn: সেন্টার জুপা পৌরসভা
+    da: Centar Župa Municipality
+    de: Opština Centar Župa
+    el: Δήμος Τσένταρ Ζούπα
+    en: Centar Župa
+    es: Municipalidad de Centar Župa
+    fi: Centar Župan kunta
+    fr: Tsentar Joupa
+    gu: સેન્ટર ઝુપા મ્યુનિસિપાલિટી
+    hi: केंद्रीय जूपा नगर पालिका
+    hr: Općina Centar Župa
+    id: Kotamadya Centar Župa
+    it: Centar Župa
+    ja: ツェンタル・ジュパ
+    ka: ცენტარ-ჟუპის თემი
+    kn: ಸೆಂಟರ್ ಝುಪಾ ಮುನ್ಸಿಪಾಲಿಟಿ
+    ko: 첸타르주파 시
+    mr: सेंटर झूपा म्युन्सिपाल्टी
+    ms: Centar Zupa Municipality
+    nb: Centar Zupa kommune
+    nl: Centar Župa
+    pl: Gmina Centar Żupa
+    pt: Município Central de Zupa
+    ru: Центар Жупа
+    si: මද්‍යම සුපා නගර සභාව
+    sr: Општина Центар Жупа
+    sv: Centar Župa
+    ta: சென்டர் ஸுபா நகராட்சி
+    te: సెంటార్ జూపా మున్సిపాలిటీ
+    th: เซนทา ซูพี มูนิซิพาลิตี้
+    tr: Merkez Jupa Belediyesi
+    uk: Центр-Жупа
+    ur: سینتر ژوپا بلدیہ
+    vi: Đô thị tự trị Centar Zupa
+    lv: Centaras Župas pašvaldība
+    ceb: Opština Centar Župa
+    sr_Latn: Opština Centar Župa
+    lt: Centrinės Župos savivaldybė
+    zh: 辛塔尔祖帕区
+    sq: Komuna e Qendrës Zhupa
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134 \U0001110E\U0001112A\U0001111B"
+    mk: Општина Центар Жупа
+    'no': Centar Zupa kommune
+    cs: Opština Centar Župa
+    cy: Bwrdeistref Centar Župa
+  comments:
+  type: municipality
+'401':
+  name: Bogdanci
+  code: '401'
+  unofficial_names: Bogdanci
+  geo:
+    latitude: 41.203138
+    longitude: 22.5754421
+    min_latitude: 41.1964168
+    min_longitude: 22.5654031
+    max_latitude: 41.2095342
+    max_longitude: 22.5874615
+  translations:
+    ar: بلدية بوجدانسى
+    bg: Богданци
+    bn: বোগদাঞ্চি পৌরসভা
+    da: Bogdanci Municipality
+    de: Opština Bogdanci
+    el: Δήμος Μπογδάντσας
+    en: Bogdanci
+    es: Municipalidad de Bogdanci
+    fi: Bogdancin kunta
+    fr: Municipalité de Bogdantsi
+    gu: બોગડાંસી મ્યુનિસિપાલિટી
+    hi: बोगडान्ची नगर पालिका
+    hr: Općina Bogdanci
+    hy: Բոգդանցիի համայնք
+    id: Kotamadya Bogdanci
+    it: Bogdanci
+    ja: ボグダンツィ
+    ka: ბოგდანცის თემი
+    kn: ಬೊಗ್ದಾನ್ಸಿ ಪುರಸಭೆ
+    ko: 보그단치 시
+    mr: बोगडांची म्युन्सिपाल्टी
+    ms: Bogdanci Municipality
+    nb: Bogdanci Kommune
+    nl: Bogdanci
+    pl: Gmina Bogdanci
+    pt: Município de Bogdanci
+    ru: Богданци
+    si: බෝග්ඩන්චි නගර සභාව
+    sr: Општина Богданци
+    sv: Bogdanci (kommun)
+    ta: போக்தான்சி நகராட்சி
+    te: బాగ్డాన్సి మున్సిపాలిటీ
+    th: บอกแดนซิ
+    tr: Bogdanci Municipality
+    uk: Богданці
+    ur: بوگدانتسی بلدیہ
+    vi: Đô thị tự trị Bogdanci
+    lv: Bogdancu pašvaldība
+    ceb: Bogdanci (munisipyo)
+    sr_Latn: Opština Bogdanci
+    lt: Bogdancio savivaldybė
+    zh: 博格丹奇区
+    sq: Komuna e Bogdancës
+    ccp: "\U0001111D\U00011127\U00011107\U00011134\U00011113\U0001111A\U00011134\U00011125\U00011128"
+    mk: Општина Богданци
+    'no': Bogdanci Kommune
+    cs: Opština Bogdanci
+    cy: Bwrdeistref Bogdanci
+    fa: شهرداری بوگدانچی
+  comments:
+  type: municipality
+'402':
+  name: Bosilovo
+  code: '402'
+  unofficial_names: Bosilovo
+  geo:
+    latitude: 41.4406
+    longitude: 22.7278
+    min_latitude: 41.4356014
+    min_longitude: 22.7187556
+    max_latitude: 41.4443203
+    max_longitude: 22.743305
+  translations:
+    ar: بلدية بوسيلوفو
+    bg: Босилово
+    bn: বসিলভো পৌরসভা
+    cs: Opština Bosilovo
+    da: Bosilovo
+    de: Opština Bosilovo
+    el: Δήμος Μποσιλόβου
+    en: Bosilovo
+    es: Municipalidad de Bosilovo
+    fi: Bosilovon kunta
+    fr: Bosilovo
+    gu: બોસિલોવો મ્યુનિસિપાલિટી
+    hi: बोसिलोवो महानगरपालिका
+    hr: Općina Bosilovo
+    id: Kotamadya Bosilovo
+    it: Bosilovo
+    ja: ボシロヴォ
+    ka: ბოსილოვოს თემი
+    kn: ಬೋಸಿಲೋವೊ ಪುರಸಭೆ
+    ko: 보실로보 시
+    mr: बॉसिलोवॊ म्युन्सिपाल्टी
+    ms: Perbandaran Bosilovo
+    nb: Bosiovo kommune
+    nl: Bosilovo
+    pl: Gmina Bosiłowo
+    pt: Município de Bosilovo
+    ru: Босилово
+    si: බොසිලොවෝ නගර සභාව
+    sr: Општина Босиљово
+    sv: Bosilovo
+    ta: பாசிலோவோ நகராட்சி
+    te: బోసిలోవో మున్సిపాలిటీ
+    th: เทศบาลบีโซโลโว
+    tr: Bosilovo Belediyesi
+    uk: Босилово
+    ur: بوسیلوو بلدیہ
+    vi: Đô thị tự trị Bosilovo
+    lv: Bosilovo pašvaldība
+    ceb: Bosilovo
+    sr_Latn: Opština Bosiljovo
+    lt: Bosiolovo savivaldybė
+    zh: 博西洛沃区
+    sq: Komuna e Bosilovës
+    ccp: "\U0001111D\U0001112E\U00011125\U00011128\U00011123\U0001112E\U0001111E\U0001112E"
+    mk: Општина Босилово
+    'no': Bosiovo kommune
+    cy: Bwrdeistref Bosilovo
+    fa: شهرداری بوسیلوو
+  comments:
+  type: municipality
+'403':
+  name: Valandovo
+  code: '403'
+  unofficial_names: Valandovo
+  geo:
+    latitude: 41.316944
+    longitude: 22.561111
+    min_latitude: 41.3123712
+    min_longitude: 22.5510478
+    max_latitude: 41.3221053
+    max_longitude: 22.5714327
+  translations:
+    bg: Валандово
+    de: Opština Valandovo
+    el: Δήμος Βαλάντοβο
+    en: Valandovo
+    es: Municipalidad de Valandovo
+    fr: Valandovo
+    hr: Općina Valandovo
+    it: Valandovo
+    ja: ヴァランドヴォ
+    ka: ვალანდოვოს თემი
+    ko: 발란도보 시
+    nl: Valandovo
+    ru: Валандово
+    sr: Општина Валандово
+    tr: Valandova Belediyesi
+    uk: Валандово
+    ur: والاندوو بلدیہ
+    ceb: Valandovo
+    sr_Latn: Opština Valandovo
+    zh: 瓦蘭多沃區
+    sq: Komuna e Vallandovës
+    ccp: "\U0001111E\U00011123\U0001111A\U00011134\U00011113\U0001112E\U0001111E\U0001112E"
+    mk: Општина Валандово
+    be: абшчына Валандава
+    ca: municipi de Valandovo
+    cs: Opština Valandovo
+    cy: Bwrdeistref Valandovo
+    fa: شهرداری والاندوو
+    id: Munisipalitas Valandovo
+    pl: Gmina Wałandowo
+    pt: Município de Valandovo
+  comments:
+  type: municipality
+'404':
+  name: Vasilevo
+  code: '404'
+  unofficial_names: Vasilevo
+  geo:
+    latitude: 41.5201985
+    longitude: 22.6437026
+    min_latitude: 41.456077
+    min_longitude: 22.499725
+    max_latitude: 41.631592
+    max_longitude: 22.731699
+  translations:
+    ar: فاسيليفو
+    bg: Василево
+    bn: ভাসিলেভো পৌরসভা
+    cs: Opština Vasilevo
+    da: Vasilevo Municipality
+    de: Opština Vasilevo
+    el: Δήμος Βασιλέβου
+    en: Vasilevo
+    es: Municipalidad de Vasilevo
+    fa: وسیلوو مونیکیپلیتی
+    fi: Vasilevon kunta
+    fr: Vasilevo
+    gu: વાસિલેવો મ્યુનિસિપાલિટી
+    hi: वसिलेवो नगरपालिका
+    hr: Općina Vasilevo
+    hu: Vaszilevói járás
+    id: Kotamadya Vasilevo
+    it: Vasilevo
+    ja: ヴァシレヴォ
+    ka: ვასილევოს თემი
+    kn: ವಾಸಿಲಿವೊ ಪುರಸಭೆ
+    ko: 바실레보 시
+    mr: वासिलीवो म्युन्सिपाल्टी
+    ms: Vasilevo Municipality
+    nb: Vasilevo kommune
+    nl: Vasilevo
+    pl: Gmina Vasilevo
+    pt: Vasilevo
+    ru: Василево
+    si: වසිලේවෝ නගර සභාව
+    sr: Општина Васиљево
+    sv: Vasilevo
+    ta: வசிலேவோ நகராட்சி
+    te: వాసిలెవో మున్సిపాలిటీ
+    th: วาซิเลโว
+    tr: Vasilev Municipality
+    uk: Василево
+    ur: واسیلیوو بلدیہ
+    vi: Đô thị tự trị Vasilevo
+    lv: Vasilevo pašvaldība
+    ceb: Vasilevo
+    sr_Latn: Opština Vasiljevo
+    lt: Vasilevo savivaldybė
+    zh: 瓦西列沃區
+    sq: Komuna e Vasilevës
+    ccp: "\U0001111E\U00011125\U00011128\U00011123\U0001112C\U0001111E\U0001112E"
+    mk: Општина Василево
+    'no': Vasilevo kommune
+    cy: Bwrdeistref Vasilevo
+  comments:
+  type: municipality
+'405':
+  name: Gevgelija
+  code: '405'
+  unofficial_names: Gevgelija
+  geo:
+    latitude: 41.140278
+    longitude: 22.502778
+    min_latitude: 41.1323508
+    min_longitude: 22.4868571
+    max_latitude: 41.1520004
+    max_longitude: 22.5183677
+  translations:
+    bg: Гевгели
+    de: Opština Gevgelija
+    el: Δήμος Γευγελής
+    en: Gevgelija
+    es: Municipalidad de Gevgelija
+    hr: Općina Gevgelija
+    hy: Գևգելիայի համայնք
+    it: Gevgelija
+    ja: ゲヴゲリヤ
+    ka: გევგელიის თემი
+    ko: 게브겔리야 시
+    nl: Gevgelija
+    ro: Comuna Gevgelija
+    ru: Гевгелия
+    sr: Општина Ђевђелија
+    tr: Gevgeli Belediyesi
+    uk: Гевгелія
+    ur: گیوگیلیا بلدیہ
+    ceb: Gevgelija
+    sr_Latn: Opština Đevđelija
+    zh: 蓋夫蓋利亞區
+    sq: Komuna e Gjevgjelisë
+    ccp: "\U00011109\U0001112C\U0001111B\U00011134\U00011109\U0001112C\U00011123\U00011128\U0001110E"
+    fr: Gevgelija
+    pt: Município de Gevgelija
+    mk: Општина Гевгелија
+    cs: Opština Gevgelija
+    cy: Bwrdeistref Gevgelija
+    fa: شهرداری گویگلیجا
+    id: Munisipalitas Gevgelija
+    pl: Gmina Gewgelija
+    sv: Gevgelija
+  comments:
+  type: municipality
+'406':
+  name: Dojran
+  code: '406'
+  unofficial_names: Dojran
+  geo:
+    latitude: 41.2436672
+    longitude: 22.6913764
+    min_latitude: 41.1488839
+    min_longitude: 22.5653611
+    max_latitude: 41.2946641
+    max_longitude: 22.7681351
+  translations:
+    bg: Дойран
+    cs: Dojran
+    de: Opština Dojran
+    en: Dojran
+    es: Municipalidad de Dojran
+    hr: Općina Dojran
+    hy: Դոյրան
+    it: Dojran
+    ja: ドイラン
+    ka: დოირანის თემი
+    ko: 도이란 시
+    nl: Dojran
+    ru: Дойран
+    sl: občina Dojran
+    sr: Општина Дојран
+    sv: Opština Dojran
+    tr: Doyran Belediyesi
+    uk: Дойран
+    ur: دویران بلدیہ
+    ceb: Opština Dojran
+    sr_Latn: Opština Dojran
+    zh: 多伊兰区
+    sq: Komuna e Dojranit
+    ccp: "\U00011113\U00011127\U0001110C\U00011134\U00011122\U0001111A\U00011134"
+    fr: Dojran
+    pt: Município de Dojran
+    mk: Општина Дојран
+    cy: Bwrdeistref Dojran
+    el: Δήμος Δοϊράνης (Βόρεια Μακεδονία)
+    fa: شهرداری دوجران
+    id: Munisipalitas Dojran
+    pl: Gmina Dojran
+  comments:
+  type: municipality
+'407':
+  name: Konče
+  code: '407'
+  unofficial_names: Konče
+  geo:
+    latitude: 41.4965779
+    longitude: 22.3829526
+    min_latitude: 41.4918386
+    min_longitude: 22.3740407
+    max_latitude: 41.4997406
+    max_longitude: 22.3924967
+  translations:
+    ar: بلدية كونتشه
+    bg: Конче
+    bn: কঞ্চি পৌরসভা
+    da: Konče Municipality
+    de: Opština Konče
+    el: Δήμος Κόντσε
+    en: Konče
+    es: Municipalidad de Konče
+    fi: Končen kunta
+    fr: Kontché
+    gu: કોન્સ મ્યુનિસિપાલિટી
+    hi: कोंचे नगर पालिका
+    hr: Općina Konče
+    id: Kotamadya Konče
+    it: Konče
+    ja: コンチェ
+    ka: კონჩეს თემი
+    kn: ಕೊನ್ಸೆ ಪುರಸಭೆ
+    ko: 콘체 시
+    mr: कोन्स म्युन्सिपाल्टी
+    ms: Konce Municipality
+    nb: Konce Kommune
+    nl: Konče
+    pl: Gmina Konče
+    pt: Município de Konce
+    ru: Конче
+    si: කොන්සේ නගර සභාව
+    sr: Општина Конче
+    sv: Konce
+    ta: கொன்ஸ் நகராட்சி
+    te: కోన్సె మున్సిపాలిటీ
+    th: เมืองคอนเซ่
+    tr: Konçe Belediyesi
+    uk: Конче
+    ur: کونچے بلدیہ
+    vi: Đô thị tự trị Konce
+    lv: Končes pašvaldība
+    ceb: Opština Konče
+    sr_Latn: Opština Konče
+    lt: Končės savivaldybė
+    zh: 孔切區
+    sq: Komuna e Konçës
+    ccp: "\U00011107\U00011127\U0001111A\U00011134"
+    mk: Општина Конче
+    'no': Konce Kommune
+    cs: Opština Konče
+    cy: Bwrdeistref Konče
+    fa: شهرداری کونسه
+  comments:
+  type: municipality
+'408':
+  name: Novo Selo
+  code: '408'
+  unofficial_names: Novo Selo
+  geo:
+    latitude: 41.413889
+    longitude: 22.880833
+    min_latitude: 41.4070199
+    min_longitude: 22.8698898
+    max_latitude: 41.4201658
+    max_longitude: 22.8911822
+  translations:
+    ar: بلدية نوفو سيلو
+    bg: Ново село
+    bn: নোভো সেলো পৌরসভা
+    cs: Opština Novo Selo
+    da: Novo Selo Municipality
+    de: Opština Novo Selo
+    el: Δήμος Νόβο Σέλο
+    en: Novo Selo
+    es: Municipalidad de Novo Selo
+    fi: Novo Selon kunta
+    fr: Novo Selo
+    gu: નોવો સેલો મ્યુનિસિપાલિટી
+    hi: नोवो सेलो नगर पालिका
+    hr: Općina Novo Selo
+    id: Kotamadya Novo Selo
+    it: Novo Selo
+    ja: ノヴォ・セロ
+    ka: ნოვო-სელოს თემი
+    kn: ನೊವೊ ಸೇಲೋ ಪುರಸಭೆ
+    ko: 노보셀로 시
+    mr: नोवो सेलो म्युन्सिपाल्टी
+    ms: Novo Selo Municipality
+    nb: Novo Selo kommune
+    nl: Novo Selo
+    pl: Gmina Novo Selo
+    pt: Município de Novo Selo
+    ru: Ново-Село
+    si: නොවෝ සෙලෝ නගර සභාව
+    sr: Општина Ново Село
+    sv: Novo Selo
+    ta: நோவோ சேலோ நகராட்சி
+    te: నావో సెలో మున్సిపాలిటీ
+    th: โนโว เซโล มูนิซิพัลลิโต
+    tr: Novo Selo Belediyesi
+    uk: Ново-Село
+    ur: نوو سیلو بلدیہ
+    vi: Novo Selo
+    lv: Novo Selo pašvaldība
+    ceb: Novo Selo
+    sr_Latn: Opština Novo Selo
+    lt: Novo Selo savivaldybė
+    zh: 諾沃塞洛區
+    sq: Komuna e Novosellës
+    ccp: "\U0001111A\U0001112E\U0001111E\U0001112E \U00011125\U0001112C\U00011123\U0001112E"
+    mk: Општина Ново Село
+    'no': Novo Selo kommune
+    cy: Bwrdeistref Novo Selo
+    fa: شهرداری نوو سلو
+  comments:
+  type: municipality
+'409':
+  name: Radoviš
+  code: '409'
+  unofficial_names: Radoviš
+  geo:
+    latitude: 41.636111
+    longitude: 22.466667
+    min_latitude: 41.62242029999999
+    min_longitude: 22.4439095
+    max_latitude: 41.64887359999999
+    max_longitude: 22.4798942
+  translations:
+    ar: بلدية رادوفيتش
+    bg: Радовиш
+    bn: রাডোভিস পৌরসভা
+    da: Radoviš Municipality
+    de: Opština Radoviš
+    el: Δήμος Ράντοβις
+    en: Radoviš
+    es: Municipalidad de Radoviš
+    fi: Radovišin kunta
+    fr: Radovich
+    gu: રાડોવીસ મ્યુનિસિપાલિટી
+    hi: रादोविस नगरपालिका
+    hr: Općina Radoviš
+    id: Kotamadya Radoviš
+    it: Comune di Radoviš
+    ja: ラドヴィシュ
+    ka: რადოვიშის თემი
+    kn: ರಾಡೋವಿಸ್ ಮುನ್ಸಿಪಾಲಿಟಿ
+    ko: 라도비시 시
+    mr: रॅडोवीस म्युन्सिपाल्टी
+    ms: Radovis Municipality
+    nb: Radovis kommune
+    nl: Radoviš
+    pl: Gmina Radoviš
+    pt: Município de Radovis
+    ru: Радовиш
+    si: රඩොවිස් නගර සභාව
+    sr: Општина Радовиш
+    sv: Radovisj
+    ta: ராடோவிஸ் நகராட்சி
+    te: రాడోవిస్ మున్సిపాలిటీ
+    th: เมืองราโดวิส
+    tr: Radoviş Belediyesi
+    uk: Радовиш
+    ur: رادوویش بلدیہ
+    vi: Đô thị tự trị Radovis
+    lv: Radovišas pašvaldība
+    ceb: Opština Radoviš
+    sr_Latn: Opština Radoviš
+    lt: Radovišo savivaldybė
+    zh: 拉多維什區
+    sq: Komuna e Radovishtit
+    ccp: "\U00011122\U00011113\U0001112E\U0001111E\U00011128\U0001110C\U00011134"
+    mk: Општина Радовиш
+    'no': Radovis kommune
+    cs: Opština Radoviš
+    cy: Bwrdeistref Radoviš
+    fa: شهرداری رادویچ
+  comments:
+  type: municipality
+'410':
+  name: Strumica
+  code: '410'
+  unofficial_names: Strumica
+  geo:
+    latitude: 41.4378004
+    longitude: 22.6427428
+    min_latitude: 41.4220055
+    min_longitude: 22.6253986
+    max_latitude: 41.45609169999999
+    max_longitude: 22.6640654
+  translations:
+    ar: بلدية ستروميتسا
+    bg: Струмица
+    bn: স্ট্রুমিকা পৌরসভা
+    da: Strumica Municipality
+    de: Opština Strumica
+    el: Δήμος Στρούμιτσας
+    en: Strumica
+    es: Municipalidad de Strumica
+    fi: Strumican kunta
+    fr: Municipalité de Stroumitsa
+    gu: સ્ટ્રુમિકા મ્યુનિસિપાલિટી
+    hi: स्ट्रूमिका नगरपालिका
+    hr: Općina Strumica
+    id: Kotamadya Strumica
+    it: Strumica
+    ja: ストルミツァ
+    ka: სტრუმიცის თემი
+    kn: ಸ್ಟ್ರುಮಿಕ ಪುರಸಭೆ
+    ko: 스트루미차 시
+    mr: स्टुमिका म्युन्सिपाल्टी
+    ms: Strumica Municipality
+    nb: Stumica kommune
+    nl: Strumica
+    pl: Gmina Strumica
+    pt: Município de Strumica
+    ru: Струмица
+    si: සට්රුමිකා නගර සභාව
+    sl: Strumica
+    sr: Општина Струмица
+    sv: Strumica (kommun)
+    ta: சற்றுமிகா நகராட்சி
+    te: స్ట్రూమికా మున్సిపాలిటీ
+    th: สตูไมกา มูนิซิพัลลิตี
+    tr: Ustrumca Belediyesi
+    uk: Струмиця
+    ur: سترومیتسا بلدیہ
+    vi: Đô thị tự trị Strumica
+    lv: Strumicas pašvaldība
+    ceb: Strumica
+    sr_Latn: Opština Strumica
+    lt: Strumicos savivaldybė
+    zh: 斯特魯米察區
+    sq: Komuna e Strumicës
+    ccp: "\U00011111\U00011133\U00011122\U0001112A\U0001111F\U00011128\U00011107"
+    mk: Општина Струмица
+    'no': Stumica kommune
+    cs: Opština Strumica
+    cy: Bwrdeistref Strumica
+    fa: شهرداری استرومیکا
+    hy: Ստրումիցա
+  comments:
+  type: municipality
+'501':
+  name: Bitola
+  code: '501'
+  unofficial_names: Bitola
+  geo:
+    latitude: 41.031944
+    longitude: 21.334722
+    min_latitude: 41.0027271
+    min_longitude: 21.2948782
+    max_latitude: 41.048879
+    max_longitude: 21.3622927
+  translations:
+    ar: بلدية بيتولا
+    bg: Битоля
+    bn: বিটোলা পৌরসভা
+    ca: municipi de Bitola
+    da: Bitola Municipality
+    de: Opština Bitola
+    el: Δήμος Μοναστηρίου
+    en: Bitola
+    es: Municipalidad de Bitola
+    fi: Bitolan kunta
+    fr: Bitola
+    gu: બિટોલા મ્યુનિસિપાલિટી
+    hi: बिटोला नगर पालिका
+    hr: Općina Bitolj
+    id: Kotamadya Bitola
+    it: Bitola
+    ja: ビトラ
+    ka: ბიტოლის თემი
+    kn: ಬಿಟೋಲಾ ಪುರಸಭೆ
+    ko: 비톨라 시
+    mr: बिटोला म्युन्सिपाल्टी
+    ms: Bitola Municipality
+    nb: Bitcola kommune
+    nl: Bitola
+    pl: Gmina Bitola
+    pt: Município de Bitola
+    ru: Битола
+    si: බිටෝලා නගර සභාව
+    sr: Општина Битољ
+    sv: Bitcola kommun
+    ta: பைடோலா நகராட்சி
+    te: బిటోలా మున్సిపాలిటీ
+    th: เทศบาลบิโตลา
+    tr: Manastır Belediyesi
+    uk: Бітола
+    ur: بیتولا بلدیہ
+    vi: Đô thị tự trị Bitola
+    lv: Bitolas pašvaldība
+    sr_Latn: Opština Bitolj
+    lt: Bitolos savivaldybė
+    zh: 比托拉区
+    sq: Komuna e Manastirit
+    ccp: "\U0001111D\U00011128\U00011111\U0001112E\U00011123"
+    mk: Општина Битола
+    'no': Bitcola kommune
+    be: Бітала
+    ceb: Bitola
+    cs: Opština Bitola
+    cy: Bwrdeistref Bitola
+    fa: شهرداری بیتولا
+    hu: Bitola község
+  comments:
+  type: municipality
+'502':
+  name: Demir Hisar
+  code: '502'
+  unofficial_names:
+  - Murgaševo
+  geo:
+    latitude: 41.22136039999999
+    longitude: 21.2025287
+    min_latitude: 41.212795
+    min_longitude: 21.1942202
+    max_latitude: 41.2294553
+    max_longitude: 21.2090261
+  translations:
+    bg: Демир Хисар
+    de: Opština Demir Hisar
+    en: Demir Hisar
+    es: Municipalidad de Demir Hisar
+    fa: دمیر هسار
+    hr: Općina Demir Hisar
+    hu: Demir Hiszar
+    it: Demir Hisar
+    ja: デミル・ヒサル
+    ka: დემირ-ჰისარის თემი
+    ko: 데미르히사르 시
+    nl: Demir Hisar
+    pl: Gmina Demir Hisar
+    ru: Демир-Хисар
+    sr: Општина Демир Хисар
+    sv: Demir Hisar (kommun)
+    tr: Demir Hisar Belediyesi
+    uk: Демир-Хисар
+    ur: دیمیر حسار بلدیہ
+    ceb: Demir Hisar
+    sr_Latn: Opština Demir Hisar
+    zh: 德米尔希萨尔区
+    el: Δήμος του Ντεμίρ Χισάρ
+    sq: Komuna e Demir Hisarit
+    ccp: "\U00011113\U0001112C\U0001111F\U00011128\U00011122\U00011134 \U00011126\U00011128\U00011125\U00011122\U00011134"
+    fr: Demir Hisar
+    pt: Município de Demir Hisar
+    mk: Општина Демир Хисар
+    cs: Opština Demir Hisar
+    cy: Bwrdeistref Demir Hisar
+    id: Munisipalitas Demir Hisar
+  comments:
+  type: municipality
+'503':
+  name: Dolneni
+  code: '503'
+  unofficial_names: Dolneni
+  geo:
+    latitude: 41.425278
+    longitude: 21.454444
+    min_latitude: 41.4207005
+    min_longitude: 21.4454475
+    max_latitude: 41.4306496
+    max_longitude: 21.459623
+  translations:
+    ar: بلدية دولنيني
+    bg: Долнени
+    bn: ডলনেনি পৌরসভা
+    ca: Dolneni
+    da: Dolneni
+    de: Opština Dolneni
+    el: Δήμος Ντολμένης
+    en: Dolneni
+    es: Municipalidad de Dolneni
+    fi: Dolnenin kunta
+    fr: Dolneni
+    gu: ડોલનેની મ્યુનિસિપાલિટી
+    hi: डोलनेनी नगरपालिका
+    hr: Općina Dolneni
+    id: Kotamadya Dolneni
+    it: Dolneni
+    ja: ドルネニ
+    ka: დოლნენის თემი
+    kn: ಡೊಲ್ನೆನಿ ಪುರಸಭೆ
+    ko: 돌네니 시
+    mr: डॉलनेनि म्युन्सिपाल्टी
+    ms: Perbandaran Dolneni
+    nb: Dolneni Kommune
+    nl: Dolneni
+    pl: Powiat Dolneni
+    pt: Município de Dolneni
+    ru: Долнени
+    si: දොල්නෙනි නගර සභාව
+    sr: Општина Долнени
+    sv: Dolneni
+    ta: டானெனி நகராட்சி
+    te: డోల్నేని మున్సిపాలిటీ
+    th: เทศบอลดอลเนนี่
+    tr: Dolneni Belediyesi
+    uk: Долнени
+    ur: دولنینی بلدیہ
+    vi: Đô thị tự trị Dolneni
+    lv: Dolnenu pašvaldība
+    ceb: Dolneni
+    sr_Latn: Opština Dolneni
+    lt: Dolnenio savivaldybė
+    zh: 多尔涅尼区
+    sq: Komuna e Dollnenit
+    ccp: "\U00011113\U0001112E\U00011123\U00011134\U0001111A\U0001112C\U0001111A\U00011128"
+    mk: Општина Долнени
+    'no': Dolneni Kommune
+    cs: Opština Dolneni
+    cy: Bwrdeistref Dolneni
+    fa: شهرداری دولننی
+  comments:
+  type: municipality
+'504':
+  name: Krivogaštani
+  code: '504'
+  unofficial_names: Krivogaštani
+  geo:
+    latitude: 41.30823059999999
+    longitude: 21.3679689
+    min_latitude: 41.245415
+    min_longitude: 21.3069439
+    max_latitude: 41.3876829
+    max_longitude: 21.428434
+  translations:
+    ar: بلدية كريفوغاشتاني
+    bg: Кривогащани
+    bn: ক্রিভোগাস্টানি পৌরসভা
+    da: Krivogaštani Municipality
+    de: Opština Krivogaštani
+    el: Δήμος Κριβοκάστανης
+    en: Krivogaštani
+    es: Municipalidad de Krivogaštani
+    fi: Krivogaštanin kunta
+    fr: Krivogachtani
+    gu: ક્રીવોગાસ્તાની મ્યુનિસિપાલિટી
+    hi: क्रिवोगस्तानी नगर पालिका
+    hr: Općina Krivogaštani
+    id: Kotamadya Krivogaštani
+    it: Krivogaštani
+    ja: クリヴォガシュタニ
+    ka: კრივოგაშტანის თემი
+    kn: ಕ್ರಿಯೋವಾಸ್ಟಾನಿ ಪುರಸಭೆ
+    ko: 크리보가슈타니 시
+    mr: क्रिओगस्टानी म्युन्सिपाल्टी
+    ms: Krivogastani Municipality
+    nb: Krivogasjtani kommune
+    nl: Krivogaštani
+    pl: Gmina Kriwogasztani
+    pt: Município de Krivogachtani
+    ru: Кривогаштани
+    si: ක්‍රිවෝගස්තානි නගර සභාව
+    sr: Општина Кривогаштани
+    sv: Krivogasjtani
+    ta: க்ரிவோகஸ்தானி நகராட்சி
+    te: క్రివోగాస్తాని మున్సిపాలిటీ
+    th: เมืองคริโวกาสตานี
+    tr: Krivogastani Belediyesi
+    uk: Кривогаштани
+    ur: بلدیہ کریووگاشتانی
+    vi: Đô thị tự trị Krivogastani
+    lv: Krivogaštanu pašvaldība
+    ceb: Opština Krivogaštani
+    sr_Latn: Opština Krivogaštani
+    lt: Krivogaštanio savivaldybė
+    zh: 克里沃加什塔尼区
+    sq: Komuna e Krivogashtanit
+    ccp: "\U00011107\U00011133\U00011122\U00011128\U0001111E\U0001112E\U00011109\U0001110C\U00011134\U00011111\U0001111A\U00011128"
+    mk: Општина Кривогаштани
+    'no': Krivogasjtani kommune
+    cs: Opština Krivogaštani
+    cy: Bwrdeistref Krivogaštani
+  comments:
+  type: municipality
+'505':
+  name: Kruševo
+  code: '505'
+  unofficial_names: Kruševo
+  geo:
+    latitude: 41.3801216
+    longitude: 21.2435597
+    min_latitude: 41.3796977
+    min_longitude: 21.2435457
+    max_latitude: 41.3801311
+    max_longitude: 21.2442461
+  translations:
+    ar: بلدية كروشيفو
+    bg: Крушево
+    bn: ক্রুসেভো পৌরসভা
+    da: Kruševo Municipality
+    de: Opština Kruševo
+    el: Δήμος Κρουσόβου
+    en: Kruševo
+    es: Municipalidad de Kruševo
+    fi: Kruševon kunta
+    fr: Krouchevo
+    gu: ક્રુસેવો મ્યુનિસિપાલિટી
+    hi: क्रुसेवो नगरपालिका
+    hr: Općina Kruševo
+    hu: Krusevói járás
+    id: Kotamadya Kruševo
+    it: Kruševo
+    ja: クルシェヴォ
+    ka: კრუშევოს თემი
+    kn: ಕ್ರುಸೇವೊ ಪುರಸಭೆ
+    ko: 크루셰보 시
+    mr: किरूसोवो म्युन्सिपाल्टी
+    ms: Krusevo Municipality
+    nb: Kursevo Kommune
+    nl: Kruševo
+    pl: Gmina Kruševo
+    pt: Município de Krusevo
+    ro: Crușova
+    ru: Крушево
+    si: කෘසේවෝ නගර සභාව
+    sr: Општина Крушево
+    sv: Krusjevo
+    ta: க்ருஸேவோ நகராட்சி
+    te: క్రుసేవో మున్సిపాలిటీ
+    th: คูเซวอ มูนิซิพัลลิตี้
+    tr: Krusevo Belediyesi
+    uk: Крушево
+    ur: بلدیہ کروشیوو
+    vi: Đô thị tự trị Krusevo
+    lv: Kruševo pašvaldība
+    ceb: Opština Kruševo
+    sr_Latn: Opština Kruševo
+    lt: Kruševo savivaldybė
+    zh: 克鲁舍沃区
+    sq: Komuna e Krushevës
+    ccp: "\U00011107\U00011133\U00011122\U0001112A\U00011125\U0001112C\U0001111E\U0001112E"
+    mk: Општина Крушево
+    'no': Kursevo Kommune
+    cs: Opština Kruševo
+    cy: Bwrdeistref Kruševo
+    fa: شهرداری کروشوو
+  comments:
+  type: municipality
+'506':
+  name: Mogila
+  code: '506'
+  unofficial_names: Mogila
+  geo:
+    latitude: 41.108056
+    longitude: 21.378333
+    min_latitude: 41.1013039
+    min_longitude: 21.3631968
+    max_latitude: 41.1192271
+    max_longitude: 21.3925414
+  translations:
+    bg: Могила
+    de: Opština Mogila
+    en: Mogila
+    es: Municipalidad de Mogila
+    fr: Mogila
+    hr: Općina Mogila
+    hu: Mogila
+    it: Mogila
+    ja: モギラ
+    ka: მოგილის თემი
+    ko: 모길라 시
+    nl: Mogila
+    sr: Општина Могила
+    sv: Mogila
+    uk: Могила (община)
+    ur: موگیلا بلدیہ
+    ceb: Mogila
+    sr_Latn: Opština Mogila
+    zh: 莫吉拉區
+    sq: Komuna e Mogillës
+    ru: Могила
+    ccp: "\U0001111F\U0001112E\U00011109\U00011128\U00011123"
+    mk: Општина Могила
+    cs: Opština Mogila
+    cy: Bwrdeistref Mogila
+    el: Δήμος Μόγκιλα
+    fa: شهرداری موگیلا
+    id: Munisipalitas Mogila
+    pl: Gmina Mogiła (Macedonia Północna)
+    pt: Município de Mogila
+  comments:
+  type: municipality
+'507':
+  name: Novaci
+  code: '507'
+  unofficial_names: Novaci
+  geo:
+    latitude: 45.18
+    longitude: 23.67
+    min_latitude: 45.1469974
+    min_longitude: 23.6471701
+    max_latitude: 45.2153314
+    max_longitude: 23.6997415
+  translations:
+    bg: Новаци
+    de: Opština Novaci
+    en: Novaci
+    es: Municipalidad de Novaci
+    fr: Novatsi
+    hr: Općina Novaci
+    it: Novaci
+    ja: ノヴァツィ
+    ka: ნოვაცის თემი
+    ko: 노바치 시
+    nl: Novaci
+    sr: Општина Новаци
+    sv: Novaci
+    uk: Новаці
+    ur: نواتسی بلدیہ
+    ceb: Novaci (munisipyo)
+    sr_Latn: Opština Novaci
+    zh: 諾瓦濟區
+    sq: Komuna e Novacit
+    ccp: "\U0001111A\U0001112E\U0001111E\U00011125\U00011128"
+    mk: Општина Новаци
+    cy: Bwrdeistref Novaci
+    el: Δήμος Νόβατσι
+    fa: شهرداری نواوسی
+    he: עיריית נובאצי
+    id: Munisipalitas Novaci
+    pl: Gmina Nowaci
+    pt: Município de Novaci
+    ru: Новаци
+    tr: Novatsi
+  comments:
+  type: municipality
+'508':
+  name: Prilep
+  code: '508'
+  unofficial_names: Prilep
+  geo:
+    latitude: 41.344444
+    longitude: 21.552778
+    min_latitude: 41.3232656
+    min_longitude: 21.5153933
+    max_latitude: 41.36455429999999
+    max_longitude: 21.5810538
+  translations:
+    ar: بلدية بريليب
+    bg: Прилеп (община)
+    bn: প্রিলেপ পৌরসভা
+    ca: Prilep
+    da: Prilep Municipality
+    de: Opština Prilep
+    el: Πρίλεπ
+    en: Prilep
+    es: Municipalidad de Prilep
+    fi: Prilepin kunta
+    fr: Municipalité de Prilep
+    gu: પ્રિલેપ મ્યુનિસિપાલિટી
+    hi: प्रिलेप नगर पालिका
+    hr: Općina Prilep
+    id: Kotamadya Prilep
+    it: Comune di Prilep
+    ja: プリレプ
+    ka: პრილეპის თემი
+    kn: ಪ್ರಿಲೆಪ್ ಪುರಸಭೆ
+    ko: 프릴레프 시
+    mr: प्रेलॅप म्युन्सिपाल्टी
+    ms: Prilep Municipality
+    nb: Prilep kommune
+    nl: Prilep
+    pl: Gmina Prilep
+    pt: Município de Prilep
+    ru: Прилеп
+    si: ප්‍රිලේප් නගර සභාව
+    sr: Општина Прилеп
+    sv: Prilep
+    ta: ப்ரிலேப் நகராட்சி
+    te: ప్రిలెప్ మున్సిపాలిటీ
+    th: เทศบาลเมืองปรีเลป
+    tr: Pirlepe Belediyesi
+    uk: Прилеп (община)
+    ur: پریلپ بلدیہ
+    vi: Đô thị tự trị Prilep
+    lv: Prilepas pašvaldība
+    ceb: Prilep (munisipyo)
+    sr_Latn: Opština Prilep
+    lt: Prilepo savivaldybė
+    zh: 普里萊普區
+    sq: Komuna e Prilepit
+    ccp: "\U0001111B\U00011133\U00011122\U00011128\U00011123\U0001112C\U0001111B\U00011134"
+    hy: Պրիլեպ մունիցիպիալիտետ
+    mk: Општина Прилеп
+    'no': Prilep kommune
+    az: Prilel
+    cs: Opština Prilep
+    cy: Bwrdeistref Prilep
+    fa: شهرداری پریلپ
+    he: עיריית פרילפ
+    hu: Prilep járás
+    ro: Prilep
+  comments:
+  type: municipality
+'509':
+  name: Resen
+  code: '509'
+  unofficial_names: Resen
+  geo:
+    latitude: 41.0889
+    longitude: 21.0122
+    min_latitude: 41.0795937
+    min_longitude: 20.9988428
+    max_latitude: 41.0996959
+    max_longitude: 21.0292053
+  translations:
+    ar: بلدية ريسن
+    bg: Ресен
+    bn: রাসেন পৌরসভা
+    da: Resen Municipality
+    de: Opština Resen
+    el: Δήμος Ρέσνας
+    en: Resen
+    es: Municipalidad de Resen
+    fa: رسن
+    fi: Resen
+    fr: Resen
+    gu: રેસન મ્યુનિસિપાલિટી
+    hi: रेसेन नगरपालिका
+    hr: Općina Resen
+    id: Kotamadya Resen
+    it: Resen
+    ja: レセン
+    ka: რესენის თემი
+    kn: ರೆಸೆನ್ ಪುರಸಭೆ
+    ko: 레센 시
+    mr: रिसें म्युन्सिपाल्टी
+    ms: Perbandaran Resen
+    nb: Resen kommune
+    nl: Resen
+    pl: Gmina Resen
+    pt: Município de Resen
+    ru: Ресен
+    si: රෙසෙන් නගර සභාව
+    sr: Општина Ресан
+    sv: Resen kommun
+    ta: ரேசன் நகராட்சி
+    te: రెసెన్ మున్సిపాలిటీ
+    th: เทศบาลเรเซน
+    tr: Resne Belediyesi
+    uk: Ресен
+    ur: ریسن بلدیہ
+    vi: Đô thị tự trị Resen
+    lv: Reseņas pašvaldība
+    ceb: Resen (munisipyo)
+    sr_Latn: Opština Resan
+    lt: Reseno savivaldybė
+    zh: 里森区
+    sq: Komuna e Resnjës
+    ccp: "\U00011122\U0001112C\U00011125\U0001112C\U0001111A\U00011134"
+    mk: Општина Ресен
+    'no': Resen kommune
+    cs: Opština Resen
+    cy: Bwrdeistref Resen
+  comments:
+  type: municipality
+'601':
+  name: Bogovinje
+  code: '601'
+  unofficial_names: Bogovinje
+  geo:
+    latitude: 41.9236371
+    longitude: 20.9163887
+    min_latitude: 41.9166969
+    min_longitude: 20.9023664
+    max_latitude: 41.9338751
+    max_longitude: 20.9272813
+  translations:
+    ar: بلدية بوغوفينج
+    bg: Боговине
+    bn: বগোভিঞ্জে পৌরসভা
+    da: Bogovinje Municipality
+    de: Opština Bogovinje
+    el: Δήμος Μπογοβίντσε
+    en: Bogovinje
+    es: Municipalidad de Bogovinje
+    fi: Bogovinjen kunta
+    fr: Bogovinyé
+    gu: બોગોવિન્જે મ્યુનિસિપાલિટી
+    hi: बोगोविने नगरपालिका
+    hr: Općina Bogovinje
+    id: Kotamadya Bogovinje
+    it: Bogovinje
+    ja: ボゴヴィニェ
+    ka: ბოგოვინიეს თემი
+    kn: ಬೊಗೊವಿನ್ಜೆ ಪುರಸಭೆ
+    ko: 보고비네 시
+    mr: बोगोविंकें म्युन्सिपाल्टी
+    ms: Bogovinje Municipality
+    nb: Bogovinje kommune
+    nl: Bogovinje
+    pl: Gmina Bogowińe
+    pt: Município de Bogovinje
+    ru: Боговинье
+    si: බෝගොවින්ජේ නගර සභාව
+    sr: Општина Боговиње
+    sv: Bogovinje
+    ta: போகோவ்ய்ஞ்சே நகராட்சி
+    te: బోగోవింజె మున్సిపాలిటీ
+    th: เมืองโบโกวินจี
+    tr: Bogonjinje Belediyesi
+    uk: Боговинє (община)
+    ur: بوگووینیہ بلدیہ
+    vi: Đô thị tự trị Bogovinje
+    lv: Bogovinjes pašvaldība
+    ceb: Bogovinje
+    sr_Latn: Opština Bogovinje
+    lt: Bogovinjės savivaldybė
+    zh: 博戈维涅区
+    sq: Komuna e Bogovinës
+    ccp: "\U0001111D\U0001112E\U00011109\U0001112E\U0001111E\U00011128\U0001111A\U00011134\U0001110E\U0001112C"
+    mk: Општина Боговиње
+    'no': Bogovinje kommune
+    cs: Opština Bogovinje
+    cy: Bwrdeistref Bogovinje
+    fa: شهرداری بوگووینژ
+  comments:
+  type: municipality
+'602':
+  name: Brvenica
+  code: '602'
+  unofficial_names: Brvenica
+  geo:
+    latitude: 41.9672
+    longitude: 20.9808
+    min_latitude: 41.9597614
+    min_longitude: 20.9733618
+    max_latitude: 41.97606649999999
+    max_longitude: 20.9886396
+  translations:
+    ar: بلدية برفينيتسا
+    bg: Бървеница
+    bn: ব্রভেনিকা পৌরসভা
+    ca: Brvenica
+    da: Brvenica Municipality
+    de: Opština Brvenica
+    el: Δήμος Μπρεβένιτσας
+    en: Brvenica
+    es: Municipalidad de Brvenica
+    fi: Brvenican kunta
+    fr: Brvenitsa
+    gu: બ્રવેનિકા મ્યુનિસિપાલિટી
+    hi: ब्रवेनिका नगरपालिका
+    hr: Općina Brvenica
+    id: Kotamadya Brvenica
+    it: Brvenica
+    ja: ブルヴェニツァ
+    ka: ბრვენიცის თემი
+    kn: ಬ್ರೆವ್ನಿಕಾ ಪುರಸಭೆ
+    ko: 브르베니차 시
+    mr: ब्रव्हेनी म्युन्सिपाल्टी
+    ms: Brvenica Municipality
+    nb: Brvenica Kommune
+    nl: Brvenica
+    pl: Gmina Brwenica
+    pt: Município de Brvenica
+    ru: Брвеница
+    si: බ්‍රවෙනිකා නගරසභාව
+    sr: Општина Брвеница
+    sv: Brvenica
+    ta: பிரவேனிக்கா நகராட்சி
+    te: బ్రెవెనికా మున్సిపాలిటీ
+    th: เมืองเบรนิคา
+    tr: Brevnica Belediyesi
+    uk: Брвениця
+    ur: بروینیسا بلدیہ
+    vi: Đô thị tự trị Brvenica
+    lv: Brvenicas pašvaldība
+    ceb: Brvenica
+    sr_Latn: Opština Brvenica
+    lt: Brvenicos savivaldybė
+    zh: 布尔韦尼察区
+    sq: Komuna e Bërvenicës
+    ccp: "\U0001111D\U00011133\U00011122\U0001111E\U0001112C\U0001111A\U00011128\U00011107"
+    mk: Општина Брвеница
+    'no': Brvenica Kommune
+    cs: Opština Brvenica
+    cy: Bwrdeistref Brvenica
+    fa: شهرداری بروونیکا
+  comments:
+  type: municipality
+'603':
+  name: Vrapčište
+  code: '603'
+  unofficial_names: Vrapčište
+  geo:
+    latitude: 41.83841779999999
+    longitude: 20.8858003
+    min_latitude: 41.8293341
+    min_longitude: 20.8794765
+    max_latitude: 41.8453661
+    max_longitude: 20.890842
+  translations:
+    bg: Врабчище
+    de: Opština Vrapčište
+    en: Vrapčište
+    es: Municipalidad de Vrapčište
+    fr: Vraptchichté
+    hr: Općina Vrapčište
+    it: Vrapčište
+    ja: ヴラプチシュテ
+    ka: ვრაპჩიშტეს თემი
+    ko: 브랍치슈테 시
+    nl: Vrapčište
+    ru: Врапчиште
+    sr: Општина Врапчиште
+    sv: Vrapcisjte
+    tr: Vrapçişte Belediyesi
+    uk: Врапчиште
+    ur: بلدیہ وراپچیشتے
+    ceb: Opština Vrapčište
+    sr_Latn: Opština Vrapčište
+    zh: 弗拉普契什泰區
+    sq: Komuna e Vrapçishtit
+    ccp: "\U0001111E\U00011133\U00011122\U0001111B\U00011134\U00011125\U00011128\U0001110C\U00011134\U00011111\U0001112C"
+    mk: Општина Врапчиште
+    cs: Opština Vrapčište
+    cy: Bwrdeistref Vrapčište
+    el: Δήμος Βραπτσίστα
+    id: Munisipalitas Vrapčište
+    pl: Gmina Wrapcziszte
+    pt: Município de Vrapčište
+  comments:
+  type: municipality
+'604':
+  name: Gostivar
+  code: '604'
+  unofficial_names: Gostivar
+  geo:
+    latitude: 41.8
+    longitude: 20.916667
+    min_latitude: 41.78423300000001
+    min_longitude: 20.8848596
+    max_latitude: 41.81792859999999
+    max_longitude: 20.9324742
+  translations:
+    ar: بلدية غوستيفار
+    bg: Гостивар
+    bn: গোস্টিভার পৌরসভা
+    da: Gostivar Municipality
+    de: Opština Gostivar
+    el: Δήμος Γκόστιβαρ
+    en: Gostivar
+    es: Municipalidad de Gostivar
+    fi: Gostivarin kunta
+    fr: Municipalité de Gostivar
+    gu: ગોસ્તિવર મ્યુનિસિપાલિટી
+    hi: गोस्टिवार नगर पालिका
+    hr: Općina Gostivar
+    id: Kotamadya Gostivar
+    it: Gostivar
+    ja: ゴスティヴァル
+    ka: გოსტივარის თემი
+    kn: ಗೋಸ್ಟಿವಾ್ ಪುರಸಭೆ
+    ko: 고스티바르 시
+    mr: गोस्टीवर म्युन्सिपाल्टी
+    ms: Gostivar Municipality
+    nb: Gostivar kommune
+    nl: Gostivar Municipality
+    pl: Gmina Gostivar
+    pt: Município de Gostivar
+    ro: Gostivar
+    ru: Гостивар
+    si: ගොස්ටිවාර් නගර සභාව
+    sr: Општина Гостивар
+    sv: Opsjtina Gostivar
+    ta: கோஸ்டிவார் நகராட்சி
+    te: గోస్టివార్ మున్సిపాలిటీ
+    th: กอสทิวาร์
+    tr: Gostivar Belediyesi
+    uk: Гостивар (община)
+    ur: گوستیوار بلدیہ
+    vi: Đô thị tự trị Gostivar
+    lv: Gostivaras pašvaldība
+    ceb: Gostivar (munisipyo)
+    sr_Latn: Opština Gostivar
+    lt: Gostivaro savivaldybė
+    zh: 戈斯蒂瓦区
+    sq: Komuna e Gostivarit
+    ccp: "\U00011109\U0001112E\U0001110C\U00011134\U00011111\U00011128\U0001111E\U00011122\U00011134"
+    hu: Gosztivari járás
+    mk: Општина Гостивар
+    'no': Gostivar kommune
+    cs: Opština Gostivar
+    cy: Bwrdeistref Gostivar
+    fa: شهرداری گوستیور
+  comments:
+  type: municipality
+'605':
+  name: Želino
+  code: '605'
+  unofficial_names: Želino
+  geo:
+    latitude: 41.98034190000001
+    longitude: 21.0609438
+    min_latitude: 41.9738654
+    min_longitude: 21.0548639
+    max_latitude: 41.9876251
+    max_longitude: 21.0698751
+  translations:
+    ar: بلدية تزيلينو
+    bg: Желино
+    bn: জেলিনো পৌরসভা
+    da: Želino Municipality
+    de: Opština Želino
+    el: Δήμος Ζέλινου
+    en: Želino
+    es: Municipalidad de Želino
+    fi: Želinon kunta
+    fr: Jelino
+    gu: ઝેલિનો મ્યુનિસિપાલિટી
+    hi: ज़ेलिनो नगरपालिका
+    hr: Općina Želino
+    id: Kotamadya Želino
+    it: Želino
+    ja: ジェリノ
+    ka: ჟელინოს თემი
+    kn: ಝೆಲಿನೋ ಪುರಸಭೆ
+    ko: 젤리노 시
+    mr: झेलिनो म्युन्सिपाल्टी
+    ms: Zelino Municipality
+    nb: Zelino kommune
+    nl: Želino
+    pl: Gmina Želino
+    pt: Município de Zelino
+    ru: Желино
+    si: සෙලිනෝ නගර සභාව
+    sr: Општина Желино
+    sv: Želino
+    ta: ஸிலினோ நகராட்சி
+    te: జెలినో మున్సిపాలిటీ
+    th: เมืองเซลิโน
+    tr: Zelino Belediyesi
+    uk: Желино
+    ur: بلدیہ ژیلینو
+    vi: Đô thị tự trị Zelino
+    lv: Želino pašvaldība
+    ceb: Opština Želino
+    sr_Latn: Opština Želino
+    lt: Želino savivaldybė
+    zh: 熱利諾區
+    sq: Komuna e Zhelinës
+    ccp: "\U0001110E\U0001112C\U00011123\U00011128\U0001111A\U0001112E"
+    mk: Општина Желино
+    'no': Zelino kommune
+    cs: Opština Želino
+    cy: Bwrdeistref Želino
+  comments:
+  type: municipality
+'606':
+  name: Jegunovce
+  code: '606'
+  unofficial_names: Jegunovce
+  geo:
+    latitude: 42.07407200000001
+    longitude: 21.1220478
+    min_latitude: 42.0686995
+    min_longitude: 21.1171566
+    max_latitude: 42.0776731
+    max_longitude: 21.128905
+  translations:
+    ar: بلدية جيغونوفس
+    bg: Йегуновце
+    bn: জেগুনোভচে পৌরসভা
+    da: Jegunovce Municipality
+    de: Opština Jegunovce
+    el: Δήμος Τζεγκούνοφτσε
+    en: Jegunovce
+    es: Municipalidad de Jegunovce
+    fi: Jegunovcen kunta
+    fr: Yégounovtsé
+    gu: જેગ્યુનોવેસ મ્યુનિસિપાલિટી
+    hi: जेगुनोव्स नगरपालिका
+    hr: Općina Jegunovce
+    id: Kotamadya Jegunovce
+    it: Jegunovce
+    ja: イェグノヴツェ
+    ka: იეგუნოვცეს თემი
+    kn: ಜೆಗುನೋವೆಸ್ ಪುರಸಭೆ
+    ko: 예구노브체 시
+    mr: जेगुनोव्हस म्युन्सिपाल्टी
+    ms: Jegunovce Municipality
+    nb: Jegunovce kommune
+    nl: Jegunovce
+    pl: Gmina Jegunovce
+    pt: Município de Jegunovce
+    ru: Егуновце
+    si: ජෙගොනොවිස් නගර සභාව
+    sr: Општина Јегуновце
+    sv: Jegunovce (kommun)
+    ta: ஜெகுனோவ்ஸ் நகராட்சி
+    te: జెగనోవ్స్ మున్సిపాలిటీ
+    th: เมืองเจกูโนวเซ่
+    tr: Jegunovce Belediyesi
+    uk: Єгуновце (община)
+    ur: یگونووتسہ بلدیہ
+    vi: Đô thị tự trị Jegunovce
+    lv: Jegunovces municipalitāte
+    ceb: Jegunovce
+    sr_Latn: Opština Jegunovce
+    lt: Jegunovcės savivaldybė
+    zh: 耶古诺夫策区
+    sq: Komuna e Jegunocit
+    ccp: "\U0001110E\U0001112C\U00011109\U0001112A\U0001111A\U0001112E\U0001111B\U00011134"
+    mk: Општина Јегуновце
+    'no': Jegunovce kommune
+    cs: Opština Jegunovce
+    cy: Bwrdeistref Jegunovce
+  comments:
+  type: municipality
+'607':
+  name: Mavrovo i Rostuša
+  code: '607'
+  unofficial_names: Mavrovo i Rostuša
+  geo:
+    latitude: 41.65
+    longitude: 20.733333
+    min_latitude: 41.6477431
+    min_longitude: 20.7295946
+    max_latitude: 41.6620718
+    max_longitude: 20.7384775
+  translations:
+    ar: بلدية مارفوفو و روستيشا
+    bg: Маврово и Ростуша
+    bn: মাভ্রোভো অ্যান্ড রোতুঁসা পৌরসভা
+    da: Mavrovo and Rostuša Municipality
+    de: Opština Mavrovo und Rostuša
+    el: Δήμος Μαυρόβου και Ροστούσας
+    en: Mavrovo and Rostuša
+    es: Municipalidad de Mavrovo y Rostuša
+    fi: Mavrovo and Rostušan
+    fr: Mavrovo et Rostoucha
+    gu: માવરોવો એન્ડ રોસ્તુસા મ્યુનિસિપાલિટી
+    hi: मावरोवो और रोस्तुसा नगर पालिका
+    hr: Općina Mavrovo i Rostuša
+    hu: Mavrovo i Rosztusa
+    id: Kotamadya Mavrovo dan Rostuša
+    it: Mavrovo e Rostuša
+    ja: マヴロヴォ・ロストゥシャ
+    ka: მავროვო და როსტუშის თემი
+    kn: ಮಾವ್ರೋವೊ ಮತ್ತು ರೊಸ್ಟುಸಾ ಪುರಸಭೆ
+    ko: 마브로보 로스투샤 시
+    mr: मवरोवो अँड रोस्तुसा म्युन्सिपाल्टी
+    ms: Mavrovo and Rostusa Municipality
+    nb: Mavrovo og Rostusa kommune
+    nl: Mavrovo en Rostuša
+    pl: Gmina Mawrowo-Rostusza
+    pt: Município de Mavroso e Rostusa
+    ru: Маврово и Ростуша
+    si: මව්රෝවෝ සහ රෝස්ටුසා නගර සභාව
+    sr: Општина Маврово и Ростуша
+    sv: Mavrovo i Rostusja
+    ta: மத்வரோவோ அண்ட் ரோஸ்டுசா நகராட்சி
+    te: మావ్రోవో మరియు రోస్టూసా మున్సిపాలిటీ
+    th: เมืองมาวโรโว แอน รอสตูซ่า
+    tr: Mavrova ve Rostuşa Belediyesi
+    uk: Маврово і Ростуша
+    ur: بلدیہ ماوروو اور روستوشا
+    vi: Đô thị tự trị Mavrovo và Rostusa
+    lv: Mavrovo un Rostušas pašvaldība
+    ceb: Opština Mavrovo i Rostuša
+    sr_Latn: Opština Mavrovo i Rostuša
+    lt: Marvrovo ir Rostušos savivaldybė
+    zh: 馬夫羅沃和羅斯圖沙區
+    sq: Komuna e Mavrovës dhe Radostushës
+    ccp: "\U0001111F\U0001111B\U00011134\U00011122\U0001112E\U0001111E\U0001112E \U00011103\U00011133\U00011103
+      \U00011122\U0001112E\U0001110C\U00011134\U00011111\U00011128\U00011105\U0001112A\U00011125"
+    mk: Општина Маврово и Ростуша
+    'no': Mavrovo og Rostusa kommune
+    be: абшчына Маўрава і Растуша
+    cs: Opština Mavrovo a Rostuša
+    cy: Bwrdeistref Mavrovo and Rostuša
+    fa: شهرداری مارووو و روستوچا
+  comments:
+  type: municipality
+'608':
+  name: Tearce
+  code: '608'
+  unofficial_names: Tearce
+  geo:
+    latitude: 42.0777511
+    longitude: 21.0534923
+    min_latitude: 42.0697506
+    min_longitude: 21.0445913
+    max_latitude: 42.0861885
+    max_longitude: 21.0603228
+  translations:
+    ar: بلدية تيارس
+    bg: Теарце
+    bn: টিয়ারচ পৌরসভা
+    da: Tearce Municipality
+    de: Opština Tearce
+    el: Δήμος Τέαρτσε
+    en: Tearce
+    es: Municipalidad de Tearce
+    fi: Tearcen kunta
+    fr: Téartsé
+    gu: ટીઅર્સ મ્યુનિસિપાલિટી
+    hi: टियरसे नगर पालिका
+    hr: Općina Tearce
+    id: Kotamadya Tearce
+    it: Tearce
+    ja: テアルツェ
+    ka: ტეარცეს თემი
+    kn: ಟಿಯರ್ಸ್ ಮುನ್ಸಿಪಾಲಿಟಿ
+    ko: 테아르체 시
+    mr: टीअरस म्युन्सिपाल्टी
+    ms: Tearce Municipality
+    nb: Tearce Kommune
+    nl: Tearce
+    pl: Gmina Tearce
+    pt: Município de Tearce
+    ru: Теарце
+    si: ටියර්ස් නගර සභාව
+    sr: Општина Теарце
+    sv: Tearce (kommun)
+    ta: டெர்ஸ் நகராட்சி
+    te: టియర్స్ మున్సిపాలిటీ
+    th: เมืองเทียเซ่
+    tr: Tearçe Belediyesi
+    uk: Теарце
+    ur: تیارتسے بلدیہ
+    vi: Đô thị tự trị Tearce
+    lv: Tearces pašvaldība
+    ceb: Tearce
+    sr_Latn: Opština Tearce
+    lt: Tercės savivaldybė
+    zh: 特阿爾塞區
+    sq: Komuna e Tearcës
+    ccp: "\U00011111\U00011128\U00011120\U00011122\U00011134\U0001110C\U00011134"
+    mk: Општина Теарце
+    'no': Tearce Kommune
+    cs: Opština Tearce
+    cy: Bwrdeistref Tearce
+    fa: شهرداری تره
+  comments:
+  type: municipality
+'609':
+  name: Tetovo
+  code: '609'
+  unofficial_names: Tetovo
+  geo:
+    latitude: 42
+    longitude: 20.966667
+    min_latitude: 41.9892736
+    min_longitude: 20.9485246
+    max_latitude: 42.0259693
+    max_longitude: 20.9893371
+  translations:
+    ar: بلدية تيتوفو
+    bg: Тетово (община)
+    bn: তেতোভো পৌরসভা
+    ca: Municipi de Tetovo
+    da: Tetovo Municipality
+    de: Opština Tetovo
+    el: Δήμος Τετόβου
+    en: Tetovo
+    es: Municipalidad de Tetovo
+    fi: Tetovon kunta
+    fr: Municipalité de Tetovo
+    gu: ટિટોવો મ્યુનિસિપાલિટી
+    hi: टेटवो नगरपालिका
+    hr: Općina Tetovo
+    id: Kotamadya Tetovo
+    it: Municipio di Tetovo
+    ja: テトヴォ
+    ka: ტეტოვოს თემი
+    kn: ಟೆಟವೊ ಪುರಸಭೆ
+    ko: 테토보 시
+    mr: टेटवो म्युन्सिपाल्टी
+    ms: Tetovo Municipality
+    nb: Tetovo kommune
+    nl: Tetovo
+    pl: Gmina Tetowo
+    pt: Município Tetovo
+    ru: Тетово
+    si: ටෙටෝවෝ නගර සභාව
+    sr: Општина Тетово
+    sv: Tetovo
+    ta: டேட்டாவோ நகராட்சி
+    te: టెటోవో మున్సిపాలిటీ
+    th: เตโทโว มูนิซิพัลลิตี
+    tr: Kalkandelen Belediyesi
+    uk: Тетово (община)
+    ur: تیتوو بلدیہ
+    vi: Đô thị tự trị Tetovo
+    lv: Tetovo pašvaldība
+    ceb: Tetovo
+    sr_Latn: Opština Tetovo
+    lt: Tetovo savivaldybė
+    zh: 特托沃區
+    sq: Komuna e Tetovës
+    ccp: "\U00011111\U0001112C\U00011111\U0001112E\U0001111E\U0001112E"
+    mk: Општина Тетово
+    'no': Tetovo kommune
+    cs: Opština Tetovo
+    cy: Bwrdeistref Tetovo
+    fa: شهرداری تتوو
+  comments:
+  type: municipality
+'701':
+  name: Kratovo
+  code: '701'
+  unofficial_names: Kratovo
+  geo:
+    latitude: 42.0800379
+    longitude: 22.1802799
+    min_latitude: 42.0729499
+    min_longitude: 22.1586944
+    max_latitude: 42.0853964
+    max_longitude: 22.1919322
+  translations:
+    ar: بلدية كراتوفو
+    bg: Кратово
+    bn: ক্রাটোভো পৌরসভা
+    cs: Opština Kratovo
+    da: Kratovo Municipality
+    de: Opština Kratovo
+    el: Δήμος Κρατόβου
+    en: Kratovo
+    es: Kratovo
+    fi: Kratovon kunta
+    fr: Kratovo
+    gu: ક્રેટોવો મ્યુનિસિપાલિટી
+    hi: क्रतोवो नगरपालिका
+    hr: Općina Kratovo
+    id: Kotamadya Kratovo
+    it: Kratovo
+    ja: クラトヴォ
+    ka: კრატოვოს თემი
+    kn: ಕ್ರಾಟೊವೊ ಪುರಸಭೆ
+    ko: 크라토보 시
+    mr: क्रटोवो म्युन्सिपाल्टी
+    ms: Kratovo Municipality
+    nb: Kratovo kommune
+    nl: Kratovo
+    pl: Gmina Kratowo
+    pt: Kratovo
+    ru: Кратово
+    si: ක්රටෝවෝ නගර සභාව
+    sr: Општина Кратово
+    sv: Kratovo Opština
+    ta: க்ராடோவோ நகராட்சி
+    te: క్రాటావో మున్సిపాలిటీ
+    th: เทศบาลเมืองคราโตโว
+    tr: Kratova Belediyesi
+    uk: Кратово
+    ur: کارتوو بلدیہ
+    vi: Đô thị tự trị Kratovo
+    lv: Kratovo pašvaldība
+    ceb: Kratovo Opština
+    sr_Latn: Opština Kratovo
+    lt: Kratovo savivaldybė
+    zh: 克拉托沃區
+    sq: Komuna e Kratovës
+    ccp: "\U00011107\U00011133\U00011122\U00011111\U0001112E\U0001111E\U0001112E"
+    mk: Општина Кратово
+    'no': Kratovo kommune
+    cy: Bwrdeistref Kratovo
+    fa: شهرداری کراتوو
+  comments:
+  type: municipality
+'702':
+  name: Kriva Palanka
+  code: '702'
+  unofficial_names: Kriva Palanka
+  geo:
+    latitude: 42.2058454
+    longitude: 22.3307965
+    min_latitude: 42.1902456
+    min_longitude: 22.3109686
+    max_latitude: 42.2233612
+    max_longitude: 22.3575425
+  translations:
+    ar: بلدية كريفا بالانكا
+    bg: Крива паланка
+    bn: ক্রিভা পালাঙ্কা পৌরসভা
+    cs: Opština Kriva Palanka
+    da: Kriva Palanka Municipality
+    de: Opština Kriva Palanka
+    el: Δήμος Κρίβα Παλάνκα
+    en: Kriva Palanka
+    es: Municipalidad de Kriva Palanka
+    fi: Kriva Palankan kunta
+    fr: Kriva Palanka
+    gu: ક્રિવા પલાંકા મ્યુનિસિપાલિટી
+    hi: क्रिवा पलांका नगरपालिका
+    hr: Općina Kriva Palanka
+    id: Kotamadya Kriva Palanka
+    it: Comune di Kriva Palanka
+    ja: クリヴァ・パランカ
+    ka: კრივა-პალანკის თემი
+    kn: ಕ್ರಿವಾ ಪಲಂಕಾ ಪುರಸಭೆ
+    ko: 크리바팔란카 시
+    mr: क्रिवि पालनक म्युन्सिपाल्टी
+    ms: Kriva Palanka Municipality
+    nb: Kriva Palanka kommune
+    nl: Kriva Palanka
+    pl: Gmina Kriwa Pałanka
+    pt: Município de Kriva Palanka
+    ru: Крива-Паланка
+    si: ක්‍රිවා පලන්කා නගර සභාව
+    sr: Општина Крива Паланка
+    sv: Kriva Palanka
+    ta: க்ரீவா பலன்கா நகராட்சி
+    te: క్రివా పాలంకా మున్సిపాలిటీ
+    th: เมืองคริวา ปาลานค่า
+    tr: Eğri Palanka Belediyesi
+    uk: Крива Паланка
+    ur: کریوا پالانکا بلدیہ
+    vi: Đô thị tự trị Kriva Palanka
+    lv: Kriva Palankas pašvaldība
+    ceb: Kriva Palanka
+    sr_Latn: Opština Kriva Palanka
+    lt: Kriva Palankos savivaldybė
+    zh: 克里瓦帕蘭卡區
+    sq: Komuna e Kriva Pallankës
+    ccp: "\U00011107\U00011133\U00011122\U00011128\U0001111E \U0001111B\U00011123\U0001111A\U00011134\U00011107"
+    mk: Општина Крива Паланка
+    'no': Kriva Palanka kommune
+    cy: Bwrdeistref Kriva Palanka
+    hu: Kriva Palanka község
+  comments:
+  type: municipality
+'703':
+  name: Kumanovo
+  code: '703'
+  unofficial_names: Kumanovo
+  geo:
+    latitude: 42.135833
+    longitude: 21.718056
+    min_latitude: 42.09290439999999
+    min_longitude: 21.6693091
+    max_latitude: 42.170783
+    max_longitude: 21.7575538
+  translations:
+    ar: بلدية كومانوفو
+    bg: Куманово
+    bn: কুমানোভো পৌরসভা
+    ca: municipi de Kumanovo
+    cs: Opština Kumanovo
+    da: Kumanovo Municipality
+    de: Opština Kumanovo
+    el: Δήμος Κουμανόβου
+    en: Kumanovo
+    es: Municipalidad de Kumanovo
+    fi: Kumanovon kunta
+    fr: Municipalité de Koumanovo
+    gu: કુમનોવો મ્યુનિસિપાલિટી
+    hi: कुमानोवो नगरपालिका
+    hr: Općina Kumanovo
+    id: Kotamadya Kumanovo
+    it: Comune di Kumanovo
+    ja: クマノヴォ
+    ka: კუმანოვოს თემი
+    kn: ಕುಮಾನೊವೊ ಪುರಸಭೆ
+    ko: 쿠마노보 시
+    mr: कुमनोवो म्युन्सिपाल्टी
+    ms: Kumanovo Municipality
+    nb: Kumanovo kommune
+    nl: Kumanovo
+    pl: Gmina Kumanowo
+    pt: Município de Kumanovo
+    ru: Куманово
+    si: කුමනොවෝ නගර සභාව
+    sr: Општина Куманово
+    sv: Kumanovo (kommun)
+    ta: குமனோவோ நகராட்சி
+    te: కుమనోవో మున్సిపాలిటీ
+    th: เทศบาลเมืองคูมาโนโว
+    tr: Kumanova Belediyesi
+    uk: Куманово
+    ur: کومانوو بلدیہ
+    vi: Đô thị tự trị Kumanovo
+    lv: Kumanovo pašvaldība
+    ceb: Kumanovo
+    sr_Latn: Opština Kumanovo
+    lt: Kumanovo savivaldybė
+    zh: 库马诺沃区
+    sq: Komuna e Kumanovës
+    ccp: "\U00011107\U0001112A\U0001111F\U00011134\U0001111A\U0001112E\U0001111E\U0001112E"
+    be: абшчына Куманава
+    mk: Општина Куманово
+    'no': Kumanovo kommune
+    cy: Bwrdeistref Kumanovo
+    fa: شهرداری کومانوو
+  comments:
+  type: municipality
+'704':
+  name: Lipkovo
+  code: '704'
+  unofficial_names: Lipkovo
+  geo:
+    latitude: 42.1561352
+    longitude: 21.5870744
+    min_latitude: 42.1479736
+    min_longitude: 21.5788866
+    max_latitude: 42.1622105
+    max_longitude: 21.5949798
+  translations:
+    ar: بلدية ليبكوفو
+    bg: Липково
+    bn: লিপকোভ পৌরসভা
+    cs: Opština Lipkovo
+    da: Lipkovo Municipality
+    de: Opština Lipkovo
+    el: Δήμος Λιπκόβου
+    en: Lipkovo
+    es: Municipalidad de Lipkovo
+    fi: Lipkovon kunta
+    fr: Lipkovo
+    gu: લિપકાવો મ્યુનિસિપાલિટી
+    hi: लिपकोवो नगर पालिका
+    hr: Općina Lipkovo
+    id: Kotamadya Lipkovo
+    it: Lipkovo
+    ja: リプコヴォ
+    ka: ლიპკოვოს თემი
+    kn: ಲಿಪ್ಕೋವೊ ಪುರಸಭೆ
+    ko: 립코보 시
+    mr: लिपकोवो म्युन्सिपाल्टी
+    ms: Lipkovo Municipality
+    nb: Lipkovo kommune
+    nl: Lipkovo
+    pl: Gmina Lipkovo
+    pt: Município de Lipkovo
+    ru: Община Липково
+    si: ලිප්කොවෝ නගර සභාව
+    sr: Општина Липково
+    sv: Opsjtina Lipkovo
+    ta: லிப்கோவோ நகராட்சி
+    te: లిప్కోవో మున్సిపాలిటీ
+    th: เมืองลิปโคโว
+    tr: Lipkovo Belediyesi
+    uk: Липково
+    ur: لیپکوو بلدیہ
+    vi: Đô thị tự trị Lipkovo
+    lv: Lipkovo pašvaldība
+    ceb: Opština Lipkovo
+    sr_Latn: Opština Lipkovo
+    lt: Lipkovo savivaldybė
+    zh: 里普科沃區
+    sq: Komuna e Likovës
+    ccp: "\U00011123\U00011128\U0001111B\U00011134\U00011107\U0001112E\U0001111E\U0001112E"
+    mk: Општина Липково
+    'no': Lipkovo kommune
+    cy: Bwrdeistref Lipkovo
+    fa: شهرداری لیپکوو
+  comments:
+  type: municipality
+'705':
+  name: Rankovce
+  code: '705'
+  unofficial_names: Rankovce
+  geo:
+    latitude: 42.1695387
+    longitude: 22.116195
+    min_latitude: 42.1639124
+    min_longitude: 22.1079684
+    max_latitude: 42.17991079999999
+    max_longitude: 22.1322583
+  translations:
+    ar: بلدية رانكوفيتسه
+    bg: Ранковце
+    bn: র‍্যাঙ্কোভচে পৌরসভা
+    cs: Opština Rankovce
+    da: Rankovce Municipality
+    de: Opština Rankovce
+    el: Δήμος Ρανκόβιτσε
+    en: Rankovce
+    es: Municipalidad de Rankovce
+    fi: Rankovcen kunta
+    fr: Rankovtsé
+    gu: રેન્કોવ્સે મ્યુનિસિપાલિટી
+    hi: रैनकोव्स नगरपालिका
+    hr: Općina Rankovce
+    id: Kotamadya Rankovce
+    it: Rankovce
+    ja: ランコヴツェ
+    ka: რანკოვცეს თემი
+    kn: ರಾಂಕೋವ್ಸ್ ಪುರಸಭೆ
+    ko: 란코브체 시
+    mr: रॅन्कोव्हस म्युन्सिपाल्टी
+    ms: Rankovce Municipality
+    nb: Rankovce kommune
+    nl: Rankovce
+    pl: Gmina Rankovce
+    pt: Município de Rankovce
+    ru: Ранковце
+    si: රන්කොව්සේ නගර සභාව
+    sr: Општина Ранковце
+    sv: Opsjtina Rankovce
+    ta: ரங்கோவ்ஸ் நகராட்சி
+    te: రాంకోవసె మున్సిపాలిటీ
+    th: จังหวัดอาลิกันเต
+    tr: Rankovce Belediyesi
+    uk: Ранковце
+    ur: رانکووتسے بلدیہ
+    vi: Đô thị tự trị Rankovce
+    lv: Rankovces pašvaldība
+    ceb: Opština Rankovce
+    sr_Latn: Opština Rankovce
+    lt: Rankovcės savivaldybė
+    zh: 蘭科夫采區
+    sq: Komuna e Rankocit
+    ccp: "\U00011122\U0001111A\U00011134\U0001111E\U0001112E\U0001111B\U00011134"
+    hu: Rankovce község
+    mk: Општина Ранковце
+    'no': Rankovce kommune
+    cy: Bwrdeistref Rankovce
+  comments:
+  type: municipality
+'706':
+  name: Staro Nagoričane
+  code: '706'
+  unofficial_names: Staro Nagoričane
+  geo:
+    latitude: 42.2
+    longitude: 21.833333
+    min_latitude: 42.1955399
+    min_longitude: 21.8216873
+    max_latitude: 42.2047782
+    max_longitude: 21.8368701
+  translations:
+    bg: Старо Нагоричане
+    cs: Opština Staro Nagoričane
+    de: Opština Staro Nagoričane
+    en: Staro Nagoričane
+    es: Municipalidad de Staro Nagoričane
+    fr: Staro Nagoritchané
+    it: Staro Nagoričane
+    ja: スタロ・ナゴリチャネ
+    ka: სტარო-ნაგორიჩანეს თემი
+    ko: 스타로나고리차네 시
+    nl: Staro Nagoričane
+    ro: Staro Nagoričane
+    sr: Општина Старо Нагоричано
+    sv: Staro Nagoricane
+    uk: Старо-Нагоричане (община)
+    ur: بلدیہ ستارو ناگوریچانے
+    ceb: Opština Staro Nagoricane
+    sr_Latn: Opština Staro Nagoričano
+    zh: 斯塔羅納戈里查內區
+    sq: Komuna e Nagoriçit të Vjetër
+    ccp: "\U0001110C\U00011133\U00011111\U00011122\U0001112E \U0001111A\U00011109\U0001112E\U00011122\U00011128\U00011107\U0001112C\U0001111A\U00011134"
+    mk: Општина Старо Нагоричане
+    cy: Bwrdeistref Staro Nagoričane
+    el: Δήμος Στάρο Ναγκορίτσανε
+    id: Munisipalitas Staro Nagoričane
+    pl: Gmina Staro Nagoriczane
+    pt: Município de Staro Nagoričane
+    ru: Старо-Нагоричане
+  comments:
+  type: municipality
+'801':
+  name: Aerodrom †
+  code: '801'
+  unofficial_names: Aerodrom †
+  geo:
+    latitude: 41.94643629999999
+    longitude: 21.4931713
+    min_latitude: 41.918271
+    min_longitude: 21.437095
+    max_latitude: 41.9776741
+    max_longitude: 21.554503
+  translations:
+    en: Aerodrom †
+    ccp: "\U00011103\U00011120\U0001112C\U00011122\U0001112E\U00011113\U00011133\U00011122\U0001112E\U0001111F\U00011134"
+    bg: Аеродрум
+    ca: Municipi d’Aeròdrom
+    ceb: Aerodrom
+    cs: Opština Aerodrom
+    cy: Bwrdeistref Aerodrom
+    da: Opsjtina Ajerodrom
+    de: Opština Aerodrom
+    el: Δήμος Άεροντρομ
+    es: Municipalidad de Aerodrom
+    fi: Aerodrom
+    fr: Aerodrom
+    hr: Općina Aerodrom
+    it: Aerodrom
+    ja: アエロドロム
+    ka: აეროდრომის თემი
+    ko: 아에로드롬시
+    mk: Општина Аеродром
+    nl: Aerodrom
+    pl: Gmina Aerodrom
+    pt: Município de Aerodrom
+    ru: Аэродром
+    sq: Komuna e Aeorodromit
+    sr: Општина Аеродром
+    sr_Latn: Opština Aerodrom
+    sv: Opsjtina Ajerodrom
+    tr: Aerodrom Belediyesi
+    uk: Аеродром
+    ur: آئرودروم بلدیہ
+  comments:
+  type: municipality
+'802':
+  name: Aračinovo
+  code: '802'
+  unofficial_names: Aracinovo
+  geo:
+    latitude: 42.0247381
+    longitude: 21.5766407
+    min_latitude: 41.9844389
+    min_longitude: 21.53742
+    max_latitude: 42.07069389999999
+    max_longitude: 21.633435
+  translations:
+    ar: بلدية أراتسينوفو
+    bg: Арачиново
+    bn: আরাকিনোভো পৌরসভা
+    ca: Aračinovo
+    da: Aračinovo Municipality
+    de: Opština Aračinovo
+    el: Δήμος Αρατσίνοβο
+    en: Aračinovo
+    es: Municipalidad de Aračinovo
+    fi: Aračinovon kunta
+    fr: Aratchinovo
+    gu: અરાકિનોવો મ્યુનિસિપાલિટી
+    hi: अराकीनोवो नगरपालिका
+    hr: Općina Aračinovo
+    hu: Aracsinovo
+    id: Kotamadya Aračinovo
+    it: Aračinovo
+    ja: アラチノヴォ
+    ka: არაჩინოვოს თემი
+    kn: ಅರಾಸಿನೊವೊ ಪುರಸಭೆ
+    ko: 아라치노보 시
+    mr: अरॅसिनोवो म्युन्सिपाल्टी
+    ms: Aracinovo Municipality
+    nb: Aracinovo Kommune
+    nl: Aračinovo
+    pl: Gmina Araczinowo
+    pt: Município de Aracinovo
+    ru: Арачиново
+    si: අරසිනොවෝ නගර සභාව
+    sr: Општина Арачиново
+    sv: Aračinovo (kommun i Makedonien)
+    ta: அரசினோவோ நகராட்சி
+    te: అరాసినోవో మున్సిపాలిటీ
+    th: เมืองอราซิโนโว
+    tr: Aracinovo Belediyesi
+    uk: Арачиново (община)
+    ur: بلدیہ آراچینوو
+    vi: Đô thị tự trị Aracinovo
+    zh: 阿拉津诺沃区
+    lv: Aračinovo pašvaldība
+    ceb: Opština Aračinovo
+    sr_Latn: Opština Aračinovo
+    lt: Aračinovo savivaldybė
+    sq: Komuna e Haraçinës
+    ccp: "\U00011103\U00011122\U00011125\U0001112C\U0001111A\U0001112E\U0001111E\U0001112E"
+    mk: Општина Арачиново
+    'no': Aracinovo Kommune
+    cs: Opština Aračinovo
+    cy: Bwrdeistref Aračinovo
+    fa: شهرداری آراچینوو
+  comments:
+  type: municipality
+'803':
+  name: Butel †
+  code: '803'
+  unofficial_names: Butel †
+  geo:
+    latitude: 42.0895068
+    longitude: 21.463361
+    min_latitude: 41.9966801
+    min_longitude: 21.376825
+    max_latitude: 42.1423902
+    max_longitude: 21.511645
+  translations:
+    en: Butel †
+    ccp: "\U0001111D\U0001112A\U00011111\U0001112C\U00011123\U00011134"
+    bg: Бутел
+    cs: Opština Butel
+    cy: Bwrdeistref Butel
+    de: Opština Butel
+    el: Δήμος Μπούτελ
+    es: Municipalidad de Butel
+    fa: شهرداری بوتل
+    fr: Butel
+    hr: Općina Butel
+    id: Munisipalitas Butel
+    it: Butel
+    ja: ブテル
+    ka: ბუტელის თემი
+    ko: 부텔시
+    mk: Општина Бутел
+    nl: Butel
+    pl: Gmina Buteł
+    pt: Município de Butel
+    ru: Бутел (община)
+    sq: Komuna e Butelit
+    sr: Општина Бутел
+    sr_Latn: Opština Butel
+    sv: Butel
+    tr: Butel Belediyesi
+    uk: Бутел (община)
+    ur: بلدیہ بوتل
+  comments:
+  type: municipality
+'804':
+  name: Gazi Baba †
+  code: '804'
+  unofficial_names: Gazi Baba †
+  geo:
+    latitude: 42.0162961
+    longitude: 21.4991334
+    min_latitude: 41.910186
+    min_longitude: 21.44421
+    max_latitude: 42.1012791
+    max_longitude: 21.582676
+  translations:
+    en: Gazi Baba †
+    ccp: "\U00011109\U0001110E\U00011128 \U0001111D\U0001111D"
+    bg: Гази баба
+    ceb: Gazi Baba
+    cy: Bwrdeistref Gazi Baba
+    de: Opština Gazi Baba
+    el: Δήμος Γκάζι Μπάμπα
+    es: Municipalidad de Gazi Baba
+    fa: شهرداری گازی بابا
+    fr: Gazi Baba
+    gl: Gazi Baba
+    he: עיריית גאזי באבא
+    hr: Općina Gazi Baba
+    id: Munisipalitas Gazi Baba
+    it: Gazi Baba
+    ja: ガジ・ババ
+    ka: გაზი-ბაბის თემი
+    ko: 가지바바시
+    mk: Општина Гази Баба
+    nl: Gazi Baba
+    pl: Gmina Gazi Baba
+    pt: Município de Gazi Baba
+    ru: Гази-Баба
+    sq: Komuna e Gazi Babës
+    sr: Општина Гази Баба
+    sr_Latn: Opština Gazi Baba
+    sv: Opsjtina Gazi Baba
+    tr: Gazi Baba Belediyesi
+    uk: Гази-Баба
+    ur: غازی بابا بلدیہ
+  comments:
+  type: municipality
+'805':
+  name: Gjorče Petrov †
+  code: '805'
+  unofficial_names: Gjorče Petrov †
+  geo:
+    latitude: 42.0606374
+    longitude: 21.3202736
+    min_latitude: 41.9834329
+    min_longitude: 21.242506
+    max_latitude: 42.1126457
+    max_longitude: 21.360891
+  translations:
+    en: Gjorče Petrov †
+    ccp: "\U0001110E\U0001112E\U00011122\U00011134 \U0001111B\U0001112C\U00011111\U00011133\U00011122\U0001112E\U0001111B\U00011134"
+    bg: Гьорче Петров
+    ceb: Opstina Gjorce Petrov
+    cs: Opština Gjorče Petrov
+    cy: Bwrdeistref Gjorče Petrov
+    de: Opština Ǵorče Petrov
+    el: Δήμος Γκιόρτσε Πέτροφ
+    es: Municipalidad de Ǵorče Petrov
+    fr: Ǵorče Petrov
+    hr: Općina Gjorče Petrov
+    id: Munisipalitas Gjorče Petrov
+    it: Gorče Petrov
+    ja: ジョルチェ・ペトロフ
+    ka: გიორჩე-პეტროვის თემი
+    ko: 조르체페트로프시
+    mk: Општина Ѓорче Петров
+    nl: Gorče Petrov
+    pl: Gmina Dźorcze Petrow
+    pt: Município de Gjorče Petrov
+    ru: Гёрче-Петров
+    sq: Komuna e Gjorçe Petrovit
+    sr: Општина Ђорче Петров
+    sr_Latn: Opština Đorče Petrov
+    sv: Opsjtina Ǵorče Petrov
+    tr: Gorçe Petrov Belediyesi
+    uk: Горче-Петров (община)
+    ur: گیورچہ پیتروو بلدیہ
+  comments:
+  type: municipality
+'806':
+  name: Zelenikovo
+  code: '806'
+  unofficial_names: Zelenikovo
+  geo:
+    latitude: 41.8733812
+    longitude: 21.602725
+    min_latitude: 41.8673996
+    min_longitude: 21.5935826
+    max_latitude: 41.8769431
+    max_longitude: 21.6099306
+  translations:
+    ar: بلدية زيلينيكوفو
+    bg: Община Зелениково
+    bn: জেলেনিকোভো পৌরসভা
+    da: Zelenikovo Municipality
+    de: Opština Zelenikovo
+    el: Δήμος Ζελενικόβου
+    en: Zelenikovo
+    es: Municipalidad de Zelenikovo
+    fi: Zelenikovon kunta
+    fr: Zelenikovo
+    gu: ઝેલેનિકોવો મ્યુનિસિપાલિટી
+    hi: ज़ेलेनिकोवो नगरपालिका
+    hr: Općina Zelenikovo
+    hy: Զելենիկովո
+    id: Kotamadya Zelenikovo
+    it: Zelenikovo
+    ja: ゼレニコヴォ
+    ka: ზელენიკოვოს თემი
+    kn: ಝೆಲೆನಿಕೋವೊ ಪುರಸಭೆ
+    ko: 젤레니코보 시
+    mr: झेलेणीकोवो म्युन्सिपाल्टी
+    ms: Zelenikovo Municipality
+    nb: Zelenikovo kommune
+    nl: Zelenikovo
+    pl: Gmina Zelenikovo
+    pt: Município de Zelenikovo
+    ru: Зелениково
+    si: සෙලෙනිකොවෝ නගර සභාව
+    sr: Општина Зелениково
+    sv: Zelenikovo (kommun)
+    ta: ஸிலேனிகோவோ நகராட்சி
+    te: జెలెనికోవో మున్సిపాలిటీ
+    th: เมืองเซเลนิโตโว
+    tr: Zelenikovo Belediyesi
+    uk: Зелениково
+    ur: زیلینیکوو بلدیہ
+    vi: Đô thị tự trị Zelenikovo
+    lv: Zelenikovo pašvaldība
+    ceb: Zelenikovo
+    sr_Latn: Opština Zelenikovo
+    lt: Zelenikovo savivaldybė
+    zh: 澤倫尼科沃區
+    sq: Komuna e Zelenikovës
+    ccp: "\U0001110E\U0001112C\U00011123\U0001112C\U0001111A\U00011128\U00011107\U0001112E\U0001111E\U0001112E"
+    mk: Општина Зелениково
+    'no': Zelenikovo kommune
+    cy: Bwrdeistref Zelenikovo
+    fa: شهرداری زلنیکوو
+  comments:
+  type: municipality
+'807':
+  name: Ilinden
+  code: '807'
+  unofficial_names: Ilinden
+  geo:
+    latitude: 41.98999999999999
+    longitude: 21.58
+    min_latitude: 41.9878302
+    min_longitude: 21.5397289
+    max_latitude: 42.0042037
+    max_longitude: 21.5856242
+  translations:
+    ar: بلدية إليندن
+    bg: Белимбегово
+    bn: ইলিন্ডেন পৌরসভা
+    ca: Ilinden
+    da: Ilinden Municipality
+    de: Opština Ilinden
+    el: Δήμος Ίλιντεν
+    en: Ilinden
+    es: Municipalidad de Ilinden
+    fi: Ilindenin kunta
+    fr: Ilinden
+    gu: ઇલિન્ડેન મ્યુનિસિપાલિટી
+    hi: इलिन्डेन नगर पालिका
+    hr: Općina Ilinden
+    id: Kotamadya Ilinden
+    it: Ilinden
+    ja: イリンデン
+    ka: ილინდენის თემი
+    kn: ಇಲಿನಂಡೆ ಪುರಸಭೆ
+    ko: 일린덴 시
+    mr: इलिन्डेन म्युन्सिपाल्टी
+    ms: Ilinden Municipality
+    nb: Ilinden Kommune
+    nl: Ilinden
+    pl: Gmina Ilinden
+    pt: Município de Ilinden
+    ru: Илинден
+    si: ලින්ඩෙන් නගර සභාව
+    sr: Општина Илинден
+    sv: Ilinden (kommun)
+    ta: லிண்டேன் நகராட்சி
+    te: ఇలిండెన్ మున్సిపాలిటీ
+    th: เมืองอีลินเดน
+    tr: IIinden Belediyesi
+    uk: Ілинден (община)
+    ur: ایلندن بلدیہ
+    vi: Đô thị tự trị Ilinden
+    lv: Ilindenas pašvaldība
+    ceb: Ilinden
+    sr_Latn: Opština Ilinden
+    lt: Ilindeno savivaldybė
+    zh: 伊林登區
+    sq: Komuna e Belimbegut
+    ccp: "\U00011103\U00011128\U00011123\U00011128\U0001111A\U00011134\U00011113\U0001112C\U0001111A\U00011134"
+    mk: Општина Илинден
+    'no': Ilinden Kommune
+    cy: Bwrdeistref Ilinden
+    fa: شهرداری ایلدن
+  comments:
+  type: municipality
+'808':
+  name: Karpoš †
+  code: '808'
+  unofficial_names: Karpoš †
+  geo:
+    latitude: 42.156389
+    longitude: 21.741111
+    min_latitude: 42.1460644
+    min_longitude: 21.727438
+    max_latitude: 42.1677295
+    max_longitude: 21.7596245
+  translations:
+    en: Karpoš †
+    ccp: "\U00011107\U00011122\U00011134\U0001111B\U0001112E\U0001110C\U00011134"
+    bg: Карпош
+    ceb: Opština Karpoš
+    cy: Bwrdeistref Karpoš
+    de: Opština Karpoš
+    el: Δήμος Κάρπος
+    es: Municipalidad de Karpoš
+    fa: شهرداری کارپوچ
+    fr: Karpoš
+    he: קרפוס
+    hr: Općina Karpoš
+    id: Munisipalitas Karpoš
+    it: Karpoš
+    ja: カルポシュ
+    ka: კარპოშის თემი
+    ko: 카르포시시
+    mk: Општина Карпош
+    nl: Karpoš
+    pl: Opsztina Karposz
+    pt: Município de Karpoš
+    ru: Карпош
+    sq: Komuna e Karposhit
+    sr: Општина Карпош
+    sr_Latn: Opština Karpoš
+    sv: Karposj
+    tr: Karpoş Belediyesi
+    uk: Карпош
+    ur: کارپوش بلدیہ
+  comments:
+  type: municipality
+'809':
+  name: Kisela Voda †
+  code: '809'
+  unofficial_names: Kisela Voda †
+  geo:
+    latitude: 41.92748
+    longitude: 21.4931713
+    min_latitude: 41.8891651
+    min_longitude: 21.425928
+    max_latitude: 41.9678721
+    max_longitude: 21.5344229
+  translations:
+    en: Kisela Voda †
+    ccp: "\U00011107\U00011128\U00011125\U0001112C\U00011123 \U00011123\U0001112E\U00011113"
+    bg: Кисела вода
+    ceb: Kisela Voda
+    cy: Bwrdeistref Kisela Voda
+    de: Opština Kisela Voda
+    el: Δήμος Κίσελα Βόντα
+    es: Municipalidad de Kisela Voda
+    fa: شهرداری کیسلا وودا
+    fr: Kisela Voda
+    hr: Općina Kisela Voda
+    id: Munisipalitas Kisela Voda
+    it: Kisela Voda
+    ja: キセラ・ヴォダ
+    ka: კისელა-ვოდის თემი
+    ko: 키셀라보다시
+    mk: Општина Кисела Вода
+    nl: Kisela Voda
+    pl: Gmina Kiseła Woda
+    pt: Município de Kisela Voda
+    ru: Кисела-Вода
+    sq: Komuna e Kisella Vodës
+    sr: Општина Кисела Вода
+    sr_Latn: Opština Kisela Voda
+    sv: Kisela Voda
+    tr: Ekşisu Belediyesi
+    uk: Кисела Вода (община)
+    ur: کیسالا وودا بلدیہ
+  comments:
+  type: municipality
+'810':
+  name: Petrovec
+  code: '810'
+  unofficial_names: Petrovec
+  geo:
+    latitude: 41.933333
+    longitude: 21.616667
+    min_latitude: 41.9278888
+    min_longitude: 21.5950228
+    max_latitude: 41.946245
+    max_longitude: 21.6286469
+  translations:
+    bg: Петровец
+    de: Opština Petrovec
+    en: Petrovec
+    es: Municipalidad de Petrovec
+    fr: Petrovets
+    hr: Općina Petrovec
+    it: Petrovec
+    ja: ペトロヴェツ
+    ka: პეტროვეცის თემი
+    ko: 페트로베츠 시
+    nl: Petrovec
+    sr: Општина Петровец
+    sv: Petrovec
+    uk: Петровець
+    ur: پیتروویتس بلدیہ
+    ceb: Petrovec
+    sr_Latn: Opština Petrovec
+    zh: 彼得羅韋茨區
+    el: Δήμος του Πέτροβετς
+    sq: Komuna e Petrovecit
+    ccp: "\U0001111B\U0001112C\U00011111\U00011133\U00011122\U0001112E\U0001111E\U0001112C\U00011107\U00011134"
+    mk: Општина Петровец
+    cy: Bwrdeistref Petrovec
+    fa: شهرداری پتروک
+    id: Munisipalitas Petrovec
+    pl: Gmina Petrowec
+    pt: Município de Petrovec
+    ru: Петровец
+  comments:
+  type: municipality
+'811':
+  name: Saraj †
+  code: '811'
+  unofficial_names: Saraj †
+  geo:
+    latitude: 41.477778
+    longitude: 22.7025
+    min_latitude: 41.4716933
+    min_longitude: 22.6946086
+    max_latitude: 41.4809557
+    max_longitude: 22.7108663
+  translations:
+    en: Saraj †
+    bg: Сарай
+    ceb: Saraj
+    cy: Bwrdeistref Saraj
+    de: Opština Saraj
+    el: Δήμος Σαράι
+    es: Municipalidad de Saraj
+    fa: شهرداری سراج
+    fr: Saraj
+    hr: Općina Saraj
+    hy: Սարայ
+    id: Munisipalitas Saraj
+    it: Saraj
+    ja: サライ
+    ka: სარაის თემი
+    ko: 사라이시
+    mk: Општина Сарај
+    nl: Saraj
+    pl: Gmina Saraj
+    pt: Município de Saraj
+    ru: Сарай (община)
+    sq: Komuna e Sarajit
+    sr: Општина Сарај
+    sr_Latn: Opština Saraj
+    sv: Saraj
+    tr: Saray Belediyesi
+    uk: Сарай
+    ur: سارای بلدیہ
+  comments:
+  type: municipality
+'812':
+  name: Sopište
+  code: '812'
+  unofficial_names: Sopište
+  geo:
+    latitude: 41.9500453
+    longitude: 21.4201362
+    min_latitude: 41.9434839
+    min_longitude: 21.4102507
+    max_latitude: 41.9634592
+    max_longitude: 21.4390469
+  translations:
+    ar: بلدية سوبيتشه
+    bg: Сопище
+    bn: সোপিসতেঁ পৌরসভা
+    da: Sopište Municipality
+    de: Opština Sopište
+    el: Δήμος Σόπιστας
+    en: Sopište
+    es: Municipalidad de Sopište
+    fi: Sopišten kunta
+    fr: Sopichté
+    gu: સોપિસ્તે મ્યુનિસિપાલિટી
+    hi: सौपिस्ते नगरपालिका
+    hr: Općina Sopište
+    id: Kotamadya Sopište
+    it: Sopište
+    ja: ソピシュテ
+    ka: სოპიშტეს თემი
+    kn: ಸೋಪಿಸ್ಟೆ ಪುರಸಭೆ
+    ko: 소피슈테 시
+    mr: सोपिएस्त म्युन्सिपाल्टी
+    ms: Sopiste Municipality
+    nb: Sopiste kommune
+    nl: Sopište
+    pl: Gmina Sopište
+    pt: Município de Sopiste
+    ru: Сопиште
+    si: සොපිස්ටේ නගර සභාව
+    sr: Општина Сопиште
+    sv: Sopisjte (kommun)
+    ta: சோபிஸ்ட் நகராட்சி
+    te: సోపిస్టే మున్సిపాలిటీ
+    th: เทศบาลโซพิซเต
+    tr: Sopiste Belediyesi
+    uk: Сопиште
+    ur: بلدیہ سوپیشتے
+    vi: Đô thị tự trị Sopiste
+    lv: Sopištes pašvaldība
+    ceb: Opština Sopište
+    sr_Latn: Opština Sopište
+    lt: Sopištės savivaldybė
+    zh: 蘇皮什特區
+    sq: Komuna e Sopishtit
+    ccp: "\U00011125\U0001112E\U0001111B\U00011128\U0001110C\U00011134\U00011111\U0001112C"
+    mk: Општина Сопиште
+    'no': Sopiste kommune
+    cs: Opština Sopiště
+    cy: Bwrdeistref Sopište
+    fa: شهرداری سوپیشت
+  comments:
+  type: municipality
+'813':
+  name: Studeničani
+  code: '813'
+  unofficial_names: Studeničani
+  geo:
+    latitude: 41.9225639
+    longitude: 21.5363965
+    min_latitude: 41.9109565
+    min_longitude: 21.5259503
+    max_latitude: 41.9318797
+    max_longitude: 21.5444898
+  translations:
+    ar: بلدية ستودنيتشاني
+    bg: Студеничани
+    bn: স্টুডেনিকানি পৌরসভা
+    da: Studeničani Municipality
+    de: Opština Studeničani
+    el: Δήμος Στουντενίτσανης
+    en: Studeničani
+    es: Municipalidad de Studeničani
+    fi: Studeničanin kunta
+    fr: Stoudenitchani
+    gu: સ્ટુડેનીકાની મ્યુનિસિપાલિટી
+    hi: स्टुदेनीकानी नगर पालिका
+    hr: Općina Studeničani
+    id: Kotamadya Studeničani
+    it: Studeničani
+    ja: ストゥデニチャニ
+    ka: სტუდენიჩანის თემი
+    kn: ಸ್ಟಡೀನಿಕಾನಿ ಪುರಸಭೆ
+    ko: 스투데니차니 시
+    mr: स्टूडेंनीकानी म्युन्सिपाल्टी
+    ms: Studenicani Municipality
+    nb: Studenicani Kommune
+    nl: Studeničani
+    pl: Gmina Studeničani
+    pt: Município de Studenicani
+    ru: Студеничани
+    si: සටුදෙනිකණි නගර සභාව
+    sr: Општина Студеничани
+    sv: Studenicani
+    ta: ஸ்டுடெனிசனி நகராட்சி
+    te: స్టూడెనికని మున్సిపాలిటీ
+    th: เมืองสติวเดนิคานิ
+    tr: Studenicani Belediyesi
+    uk: Студеничани
+    ur: بلدیہ ستودینیچانی
+    vi: Đô thị tự trị Studenicani
+    lv: Studeničanu pašvaldība
+    ceb: Opština Studeničani
+    sr_Latn: Opština Studeničani
+    lt: Studeničanio savivaldybė
+    zh: 斯圖登尼查尼區
+    sq: Komuna e Studeniçanit
+    ccp: "\U0001110C\U00011133\U00011111\U0001112A\U0001112A\U00011113\U0001112C\U0001111A\U00011128\U00011107\U0001111A\U00011128"
+    mk: Општина Студеничани
+    'no': Studenicani Kommune
+    cs: Opština Studeničani
+    cy: Bwrdeistref Studeničani
+  comments:
+  type: municipality
+'814':
+  name: Centar †
+  code: '814'
+  unofficial_names: Centar †
+  geo:
+    latitude: 41.9953628
+    longitude: 21.4246078
+    min_latitude: 41.9756039
+    min_longitude: 21.4058088
+    max_latitude: 42.0143879
+    max_longitude: 21.4509344
+  translations:
+    en: Centar †
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134"
+    bg: Център
+    ceb: Opština Centar
+    cs: Opština Centar
+    cy: Bwrdeistref Centar
+    de: Opština Centar
+    el: Δήμος Τσένταρ
+    es: Municipalidad de Centar (Skopje)
+    fa: شهرداری مرکزی (اسکوپیه)
+    fr: Centar
+    hr: Općina Centar
+    it: Centar
+    ja: ツェンタル
+    ka: ცენტარის თემი
+    ko: 첸타르시
+    mk: Општина Центар
+    nl: Centar
+    pl: Gmina Centar
+    ru: Центр
+    sq: Komuna e Qendrës
+    sr: Општина Центар
+    sr_Latn: Opština Centar
+    sv: Opsjtina Centar
+    tr: Merkez Belediyesi (Üsküp)
+    uk: Центр
+    ur: سینتر بلدیہ
+  comments:
+  type: municipality
+'815':
+  name: Čair †
+  code: '815'
+  unofficial_names: Čair †
+  geo:
+    latitude: 41.9930355
+    longitude: 21.4365318
+    min_latitude: 41.979931
+    min_longitude: 21.4271271
+    max_latitude: 41.998022
+    max_longitude: 21.4460089
+  translations:
+    en: Čair †
+    ccp: "\U00011125\U00011128\U00011120\U00011122\U00011134"
+    bg: Чаир
+    cy: Bwrdeistref Čair
+    de: Opština Čair
+    el: Δήμος Τσάιρ
+    es: Municipalidad de Čair
+    fr: Čair
+    hr: Općina Čair
+    id: Munisipalitas Čair
+    it: Čair
+    ja: チャイル
+    ka: ჩაირის თემი
+    ko: 차이르시
+    mk: Општина Чаир
+    nl: Čair
+    pl: Gmina Czair
+    pt: Município de Čair
+    ru: Чаир
+    sq: Komuna e Çairit
+    sr: Општина Чаир
+    sr_Latn: Opština Čair
+    sv: Čair
+    tr: Çayır Belediyesi
+    uk: Чаїр
+    ur: بلدیہ چائر
+  comments:
+  type: municipality
+'816':
+  name: Čučer-Sandevo
+  code: '816'
+  unofficial_names: Čučer-Sandevo
+  geo:
+    latitude: 42.0974773
+    longitude: 21.3877179
+    min_latitude: 42.0934038
+    min_longitude: 21.3779903
+    max_latitude: 42.1044702
+    max_longitude: 21.3955476
+  translations:
+    ar: بلدية تشوتشر سانديفو
+    bg: Чучер
+    bn: কুচার-সান্দেভো পৌরসভা
+    da: Čučer-Sandevo Municipality
+    de: Opština Čučer-Sandevo
+    el: Δήμος Τσούτσερ Σάντσεβο
+    en: Čučer-Sandevo
+    es: Municipalidad de Čučer-Sandevo
+    fi: Čučer-Sandevon kunta
+    fr: Tchoutcher Sandevo
+    gu: કુસેર-સેનડેવો મ્યુનિસિપાલિટી
+    hi: कुसेर-सेंदेवो नगरपालिका
+    hr: Općina Čučer-Sandevo
+    id: Kotamadya Čučer-Sandevo
+    it: Čučer-Sandevo
+    ja: チュチェル・サンデヴォ
+    ka: ჩუჩერ-სანდევოს თემი
+    kn: ಕ್ಯುಕರ್-ಸ್ಯಾಂಡೆವೊ ಪುರಸಭೆ
+    ko: 추체르산데보 시
+    mr: चुचेर-सॅनडेवो म्युन्सिपाल्टी
+    ms: Cucer-Sandevo Municipality
+    nb: Cucer-Sandevo kommune
+    nl: Čučer-Sandevo
+    pl: Gmina Czuczer-Sandewo
+    pt: Município Cucer-Sandevo
+    ro: Čučer-Sandevo
+    ru: Чучер-Сандево
+    si: කුසර්-සැන්ඩෙවෝ නගර සභාව
+    sr: Општина Чучер-Сандево
+    sv: Čučer-Sandevo (kommun i Makedonien)
+    ta: கஸ்ர்-சண்டேவோ நகராட்சி
+    te: క్యూసర్-సాండేవో మున్సిపాలిటీ
+    th: ซูเซอ-ซานเดโว มูนิซิพัลลิตี
+    tr: Cucer-Sandevo Belediyesi
+    uk: Чучер-Сандево (община)
+    ur: بلدیہ چوچر-ساندوو
+    vi: Đô thị tự trị Cucer-Sandevo
+    lv: Čučer-Sandevo pašvaldība
+    ceb: Opština Čučer-Sandevo
+    sr_Latn: Opština Čučer-Sandevo
+    lt: Čučer-Sandevo savivaldybė
+    zh: 楚塞尔桑德沃区
+    sq: Komuna e Çuçer-Sandevës
+    ccp: "\U00011125\U0001112A\U00011125\U0001112C\U00011122\U00011134-\U00011125\U0001111A\U00011134\U00011113\U0001112C\U0001111E\U0001112E"
+    mk: Општина Чучер-Сандево
+    'no': Cucer-Sandevo kommune
+    cs: Opština Čučer-Sandevo
+    cy: Bwrdeistref Čučer-Sandevo
+    fa: شهرداری چوچر-ساندوو
+  comments:
+  type: municipality
+'817':
+  name: Šuto Orizari †
+  code: '817'
+  unofficial_names: Šuto Orizari †
+  geo:
+    latitude: 42.0290416
+    longitude: 21.4097027
+    min_latitude: 42.009311
+    min_longitude: 21.388165
+    max_latitude: 42.0519889
+    max_longitude: 21.4261011
+  translations:
+    en: Šuto Orizari †
+    ccp: "\U00011125\U0001112A\U00011111\U0001112E \U00011103\U00011127\U00011122\U00011128\U0001110E\U00011122\U00011128"
+    bg: Шуто Оризари
+    ceb: Šuto Orizare
+    cs: Šuto Orizari
+    cy: Bwrdeistref Šuto Orizari
+    de: Opština Šuto Orizari
+    el: Δήμος Σούτο Ορυζάρι
+    es: Municipalidad de Šuto Orizari
+    fa: شهرداری اوتو اوریزاری
+    fr: Šuto Orizari
+    hr: Općina Šuto Orizari
+    id: Munisipalitas Šuto Orizari
+    it: Šuto Orizari
+    ja: シュトオリザリ
+    ka: შუტო-ორიზარის თემი
+    ko: 슈토오리자리시
+    mk: Општина Шуто Оризари
+    nl: Šuto Orizari
+    pl: Gmina Szuto Orizari
+    pt: Município de Šuto Orizari
+    ru: Шуто-Оризари
+    sq: Komuna e Shutkës
+    sr: Општина Шуто Оризари
+    sr_Latn: Opština Šuto Orizari
+    sv: Šuto Orizari
+    tr: Şuto Orizari Belediyesi
+    uk: Шуто-Оризарі
+    ur: شوتو اوریزاری بلدیہ
+  comments:
+  type: municipality

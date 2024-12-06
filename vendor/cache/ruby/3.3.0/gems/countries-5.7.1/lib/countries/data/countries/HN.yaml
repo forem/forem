@@ -1,0 +1,49 @@
+---
+HN:
+  alpha2: HN
+  alpha3: HND
+  continent: North America
+  country_code: '504'
+  currency_code: HNL
+  distance_unit: KM
+  gec: HO
+  geo:
+    latitude: 15.199999
+    longitude: -86.241905
+    max_latitude: 17.4677999
+    max_longitude: -83.0621001
+    min_latitude: 12.9808201
+    min_longitude: -89.3564822
+    bounds:
+      northeast:
+        lat: 17.4677999
+        lng: -83.0621001
+      southwest:
+        lat: 12.9808201
+        lng: -89.3564822
+  international_prefix: '00'
+  ioc: HON
+  iso_long_name: The Republic of Honduras
+  iso_short_name: Honduras
+  languages_official:
+  - es
+  languages_spoken:
+  - es
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  national_prefix: None
+  nationality: Honduran
+  number: '340'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Americas
+  start_of_week: monday
+  subregion: Central America
+  un_locode: HN
+  unofficial_names:
+  - Honduras
+  - ホンジュラス
+  world_region: AMER

@@ -1,0 +1,4 @@
+irb(main):001:0> puts "Hello, world!"
+Hello, world!
+irb(main):002:0> Object.new
+=> #<Object:0x0056182cb182b8>

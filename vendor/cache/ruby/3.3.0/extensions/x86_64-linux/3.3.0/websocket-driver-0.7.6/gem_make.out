@@ -1,0 +1,26 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/websocket-driver-0.7.6/ext/websocket-driver
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/websocket-driver-0.7.6/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-115dos sitelibdir\=./.gem.20241205-149352-115dos clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/websocket-driver-0.7.6/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-115dos sitelibdir\=./.gem.20241205-149352-115dos
+compiling websocket_mask.c
+websocket_mask.c: In function ‘Init_websocket_mask’:
+websocket_mask.c:26:6: warning: old-style function definition [-Wold-style-definition]
+   26 | void Init_websocket_mask()
+      |      ^~~~~~~~~~~~~~~~~~~
+websocket_mask.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+linking shared-object websocket_mask.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/websocket-driver-0.7.6/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-115dos sitelibdir\=./.gem.20241205-149352-115dos install
+/usr/bin/install -c -m 0755 websocket_mask.so ./.gem.20241205-149352-115dos
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/websocket-driver-0.7.6/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-115dos sitelibdir\=./.gem.20241205-149352-115dos clean

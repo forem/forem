@@ -1,0 +1,3 @@
+If Formatter.enable_escape! is called, this allows escaping into html
+or the parent format with a special delimiter. For example:
+<!<span style="text-decoration: underline">!>underlined text!<!</span>!>

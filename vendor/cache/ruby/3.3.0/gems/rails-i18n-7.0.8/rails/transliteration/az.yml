@@ -1,0 +1,24 @@
+az:
+  i18n:
+    transliterate:
+      rule:
+        c: "j"
+        ç: "ch"
+        ə: "e"
+        ğ: "gh"
+        x: "kh"
+        ı: "i"
+        j: "zh"
+        q: "g"
+        ş: "sh"
+        ü: "u"
+        C: "J"
+        Ç: "Ch"
+        Ə: "E"
+        Ğ: "Gh"
+        X: "Kh"
+        İ: "I"
+        J: "Zh"
+        Q: "G"
+        Ş: "Sh"
+        Ü: "U"

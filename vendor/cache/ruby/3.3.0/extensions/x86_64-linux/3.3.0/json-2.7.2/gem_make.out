@@ -1,0 +1,16 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/json-2.7.2/ext/json
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-9tbq5h sitelibdir\=./.gem.20241205-149352-9tbq5h clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-9tbq5h sitelibdir\=./.gem.20241205-149352-9tbq5h
+make: Nothing to be done for 'all'.
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-9tbq5h sitelibdir\=./.gem.20241205-149352-9tbq5h install
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/json-2.7.2/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-9tbq5h sitelibdir\=./.gem.20241205-149352-9tbq5h clean

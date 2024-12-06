@@ -1,0 +1,68 @@
+#!/bin/env ruby
+
+##
+# fastly_upload_vcl - upload raw VCL files to Fastly
+#
+# Author::   Fastly Inc <support@fastly.com>
+# Copyright:: Copyright (c) 2011 Fastly Inc
+# License::   Distributes under the same terms as Ruby
+#
+# = USAGE
+#
+#     fastly_upload_vcl <options> <service id or name> <path to vcl file>
+#
+# = CONFIGURATION
+#
+# You can either have a config file in either ~/.fastly or /etc/fastly with
+#
+#     api_key = <key>
+#
+# or a config file with
+#
+#     user     = <login>
+#     password = <password>
+#
+# Alternatively you can pass in any of those options on the command line
+#
+#     fastly_upload_vcl --api_key  <key> <service id or name> <path to vcl file>
+#     fastly_upload_vcl --user <login> --password <password> <service id or name> <path to vcl file>
+#
+
+require 'rubygems'
+require 'fastly'
+
+# :nodoc:
+def die(message)
+  warn message
+  exit(-1)
+end
+
+params      = Fastly.get_options("#{ENV['HOME']}/.fastly", '/etc/fastly')
+
+service_id  = ARGV.shift || die('You must pass in a service id')
+vcl_file    = ARGV.shift || die('You must pass in a vcl file')
+
+die("Couldn't find any of the config files - #{configs.join(',')}") unless params.keys.size > 0
+die("Couldn't find vcl file #{vcl_file}") unless File.file?(vcl_file)
+
+fastly  = Fastly.new(params)
+
+service = fastly.get_service(service_id) || die("Couldn't find service #{service_id}")
+version = service.version
+die "Can't upload a vcl file to the last (#{version.number}) version of #{service.name} (#{service.id}) because it's locked" if version.locked?
+puts "Uploading #{vcl_file} to version #{version.number}"
+begin
+  name    = File.basename(vcl_file, '.vcl')
+  content = File.new(vcl_file, 'r').read
+  vcl     = version.vcl(name)
+  if vcl
+    vcl.content = content
+    vcl.save!
+  else
+    version.upload_vcl(name, content)
+  end
+  # version.activate!
+rescue => e
+  die("Couldn't upload vcl: #{e}")
+end
+puts 'Done! You should now go and activate it at https://app.fastly.com/#configure'

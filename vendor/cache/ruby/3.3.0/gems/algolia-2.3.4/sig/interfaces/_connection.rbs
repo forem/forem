@@ -1,0 +1,16 @@
+interface _Connection
+
+  def options: () -> _ConnectionOptions
+
+  def run_request: (Symbol method, String path, Hash[Symbol, String|[String]] body, Hash[String, String] headers) -> Http::Response
+
+end
+
+interface _ConnectionOptions
+
+  def timeout: () -> Integer
+  def timeout=: (Integer timeout) -> Integer
+  def open_timeout: () -> Integer
+  def open_timeout=: (Integer timeout) -> Integer
+
+end

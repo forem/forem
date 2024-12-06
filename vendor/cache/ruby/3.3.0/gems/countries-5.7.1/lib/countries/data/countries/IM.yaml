@@ -1,0 +1,51 @@
+---
+IM:
+  alpha2: IM
+  alpha3: IMN
+  continent: Europe
+  country_code: '44'
+  currency_code: GBP
+  distance_unit: KM
+  gec: IM
+  geo:
+    latitude: 54.236107
+    longitude: -4.548056
+    max_latitude: 54.4369363
+    max_longitude: -4.270618199999999
+    min_latitude: 54.0186764
+    min_longitude: -4.8736609
+    bounds:
+      northeast:
+        lat: 54.4369363
+        lng: -4.270618199999999
+      southwest:
+        lat: 54.0186764
+        lng: -4.8736609
+  international_prefix: ''
+  ioc:
+  iso_long_name: The Isle of Man
+  iso_short_name: Isle of Man
+  languages_official:
+  - en
+  - gv
+  languages_spoken:
+  - en
+  - gv
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Manx
+  number: '833'
+  postal_code: true
+  postal_code_format: IM\d[\dA-Z]? ?\d[ABD-HJLN-UW-Z]{2}
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: IM
+  unofficial_names:
+  - Isle of Man
+  - Insel Man
+  - Île de Man
+  - Isla de Man
+  - マン島
+  world_region: EMEA

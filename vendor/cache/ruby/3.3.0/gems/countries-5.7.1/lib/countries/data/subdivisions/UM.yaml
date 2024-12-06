@@ -1,0 +1,742 @@
+---
+'67':
+  name: Johnston Atoll
+  code: '67'
+  unofficial_names: Johnston Atoll
+  geo:
+    latitude: 16.7322716
+    longitude: -169.5308371
+    min_latitude: 16.7265491
+    min_longitude: -169.5434875
+    max_latitude: 16.7411327
+    max_longitude: -169.5171051
+  translations:
+    en: Johnston Atoll
+    af: Johnston-atol
+    ar: جزيرة جونستون المرجانية
+    az: Conston rifi
+    be: Атол Джонстан
+    bn: জন্সটন আতোল
+    ca: Atol Johnston
+    cs: Johnstonův atol
+    da: Johnston Atoll
+    de: Johnston-Atoll
+    el: Ατόλλη Τζόνστον
+    es: Atolón Johnston
+    et: Johnstoni atoll
+    eu: Johnston Atoloia
+    fa: جزیره جانستون
+    fi: Johnstonin atolli
+    fr: Atoll Johnston
+    gl: Atol Johnston
+    gu: જોનસ્ટન એટોલ
+    he: אטול ג׳ונסטון
+    hi: जॉनस्टन एटोल
+    hr: Atol Johnston
+    hu: Johnston-atoll
+    hy: Ջոնստոն
+    id: Atol Johnston
+    is: Johnstoneyja
+    it: Atollo Johnston
+    ja: ジョンストン島
+    ka: ჯონსტონი
+    kn: ಜಾನ್ಸ್ಟನ್ ಅಟಾಲ್
+    ko: 존스턴 환초
+    lt: Džonstono atolas
+    lv: Džonstona atols
+    ml: ജോൺസ്റ്റൺ അറ്റോൾ
+    mr: जॉनस्टन एटॉल
+    ms: Atol Johnston
+    nb: Johnston Atoll
+    nl: Johnston
+    pl: Johnston
+    pt: Atol Johnston
+    ro: Atolul Johnston
+    ru: Джонстон
+    si: ජොන්ස්ටන් දුපත් සමූහය
+    sk: Johnston
+    sl: Johnstonov atol
+    sr: Атол Џонсон
+    sv: Johnstonatollen
+    ta: ஜான்ஸ்டன் பவளத்தீவு
+    te: జాన్స్‌స్టన్ అటోల్
+    th: จอห์นสตันอะทอลล์
+    tr: Johnston Atolü
+    uk: Джонстон
+    ur: جزیرہ جانسٹن
+    vi: Đảo Johnston
+    zh: 约翰斯顿环礁
+    ceb: Johnston Atoll
+    sr_Latn: Atol Džonson
+    yue_Hans: 强斯顿环礁
+    jv: Atol Johnston
+    ccp: "\U0001110E\U00011127\U0001111A\U00011134\U00011111\U00011127\U0001111A\U00011134
+      \U00011103\U00011111\U0001112E\U00011123\U00011134"
+    yue: 強斯頓環礁
+    bs: Atol Johnston
+    mk: Џонстонов Атол
+    'no': Johnston Atoll
+    bg: Атол Джонстън
+  comments:
+  type: group_of_islands
+'71':
+  name: Midway Islands
+  code: '71'
+  unofficial_names: Midway Islands
+  geo:
+    latitude: 28.2100759
+    longitude: -177.3761105
+    min_latitude: 28.1950941
+    min_longitude: -177.3967235
+    max_latitude: 28.218655
+    max_longitude: -177.3599096
+  translations:
+    en: Midway Atoll
+    af: Midway-atol
+    ar: جزر الميدواي
+    az: Miduey rifi
+    be: Атол Мідуэй
+    bg: Мидуей
+    bn: মিডওয়ে
+    ca: Atol Midway
+    cs: Midway
+    da: Midwayøerne
+    de: Midwayinseln
+    el: Ατόλλη Μίντγουαιη
+    es: Islas Midway
+    et: Midway saared
+    eu: Midway atoloia
+    fa: جزیره مرجانی میدوی
+    fi: Midwaysaaret
+    fr: îles Midway
+    gl: Atol de Midway
+    gu: મિડવે
+    he: אטול מידוויי
+    hi: मिडवे
+    hr: Atol Midway
+    hu: Midway-atoll
+    hy: Միդուեյ
+    id: Atol Midway
+    is: Midwayeyja
+    it: Atollo di Midway
+    ja: ミッドウェー島
+    ka: მიდუეი
+    kn: ಮಿಡ್‌ವೇ
+    ko: 미드웨이 환초
+    lt: Midvėjaus atolas
+    lv: Midveja atols
+    ml: മിഡ്‌വേ പവിഴദ്വീപുകൾ
+    mn: Мидвей
+    mr: मिडवे एटॉल
+    ms: Atol Midway
+    nb: Midwayøyene
+    ne: मिडवे अटोल
+    nl: Midway
+    pl: Midway
+    pt: Atol Midway
+    ro: Atolul Midway
+    ru: Мидуэй
+    si: මිඩ්වේ
+    sk: Midway
+    sl: Midwayski atol
+    sr: Мидвеј
+    sv: Midwayöarna
+    ta: மிட்வே தீவுகள்
+    te: మిడ్వే
+    th: มิดเวย์อะทอลล์
+    tk: Midueý
+    tr: Midway Adası
+    uk: Мідвей
+    ur: جزیرہ مڈوے
+    vi: Đảo san hô vòng Midway
+    ceb: Midway Islands
+    sr_Latn: Midvej
+    zh: 中途島
+    yue_Hans: 中途岛
+    jv: Atol Midway
+    sq: Miduej
+    ccp: "\U0001111F\U00011128\U00011116\U00011134\U00011103\U0001112E\U00011120\U0001112C
+      \U00011103\U00011111\U0001112E\U00011123\U00011134"
+    ky: Мидуэй атоллу
+    kk: Мидуэй
+    yue: 中途島
+    uz: Midway
+    bs: Atol Midway
+    mk: Мидвејски Атол
+    'no': Midwayøyene
+  comments:
+  type: group_of_islands
+'76':
+  name: Navassa Island
+  code: '76'
+  unofficial_names: Navassa Island
+  geo:
+    latitude: 18.4100689
+    longitude: -75.0114612
+    min_latitude: 18.3965558
+    min_longitude: -75.02838129999999
+    max_latitude: 18.4211503
+    max_longitude: -75.0000572
+  translations:
+    en: Navassa Island
+    af: Navassa
+    ar: جزيرة نافاسا
+    az: Navassa adası
+    be: Востраў Наваса
+    bg: Наваса
+    bn: নাউসা দ্বীপ
+    ca: Illa Navassa
+    cs: Navassa
+    da: Navassa
+    de: Navassa
+    el: Νήσος Ναβάσσα
+    es: Isla de Navaza
+    et: Navassa saar
+    eu: Navassa uhartea
+    fa: جزیره ناواسا
+    fi: Navassa
+    fr: île de la Navasse
+    gl: Illa Navassa
+    gu: નવાસા આઇલેન્ડ
+    he: נבאסה
+    hi: नावासा द्वीप
+    hr: Navassa
+    hu: Navassa-sziget
+    hy: Նավասա կղզի
+    id: Pulau Navassa
+    is: Navassaeyja
+    it: Isola Navassa
+    ja: ナヴァッサ島
+    ka: ნავასა
+    kn: ನವಸ್ಸಾ ದ್ವೀಪ
+    ko: 나배사 섬
+    lt: Navasa
+    lv: Navasa
+    ml: നവാസ്സ ദ്വീപ്
+    mr: नव्हासा द्वीप
+    ms: Pulau Navassa
+    nb: Navassaøya
+    nl: Navassa
+    pl: Navassa
+    pt: Ilha de Navassa
+    ro: Insula Navassa
+    ru: Навасса
+    si: නවස්සා දූපත
+    sk: Navassa
+    sr: Наваса
+    sv: Navassaön
+    sw: Navassa
+    ta: நவாசா தீவு
+    te: నావాసా దీవి
+    th: เกาะนาแวสซา
+    tr: Navassa Adası
+    uk: Навасса
+    ur: جزیرہ ناواسا
+    vi: Đảo Navassa
+    ceb: Navassa Island (administratibo nga pulo)
+    yo_BJ: Erékùshù Navassa
+    sr_Latn: Navasa
+    zh: 納弗沙島
+    yue_Hans: 纳弗沙岛
+    jv: Pulo Navassa
+    ccp: "\U0001111A\U0001111E\U00011125 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ky: Навасса аралы
+    pa: ਨਵਾਸ ਟਾਪੂ
+    kk: Навасса аралы
+    yue: 納弗沙島
+    yo: Erékùṣù Navassa
+    bs: Ostrvo Navasa
+    mk: Наваса
+    'no': Navassaøya
+  comments:
+  type: group_of_islands
+'79':
+  name: Wake Island
+  code: '79'
+  unofficial_names: Wake Island
+  geo:
+    latitude: 19.2823192
+    longitude: 166.647047
+    min_latitude: -0.3824678
+    min_longitude: 166.5989221
+    max_latitude: 28.3977184
+    max_longitude: -159.9849071
+  translations:
+    en: Wake Island
+    af: Wake-eiland
+    ar: جزيرة ويك
+    az: Ueyk rifi
+    be: Востраў Уэйк
+    bg: Уейк
+    bn: ওয়েক দ্বীপপুঞ্জ
+    ca: Illes Wake
+    cs: Wake
+    da: Wake Island
+    de: Wake
+    el: Νήσος Ουέηκ
+    es: Isla Wake
+    et: Wake’i saar
+    eu: Wake Uhartea
+    fa: جزیره ویک
+    fi: Wake
+    fr: Wake
+    gl: Illa Wake
+    gu: વેક આઇલેન્ડ
+    he: וייק
+    hi: वेक द्वीप
+    hr: Otok Wake
+    hu: Wake-sziget
+    hy: Ուեյք
+    id: Pulau Wake
+    is: Varsímaeyja
+    it: Isola di Wake
+    ja: ウェーク島
+    ka: უეიკი
+    kn: ವೇಕ್ ಐಲ್ಯಾಂಡ್
+    ko: 웨이크 섬
+    lt: Veiko sala
+    lv: Veika sala
+    ml: വേക് ദ്വീപ്
+    mr: वेक आयलंड
+    ms: Pulau Wake
+    nb: Wake Island
+    nl: Wake
+    pl: Wake
+    pt: Ilha Wake
+    ro: Insula Wake
+    ru: Уэйк
+    si: වේක් දුපත
+    sk: Wake
+    sl: Otok Wake
+    sr: Вејк
+    sv: Wake
+    ta: வேக் தீவு
+    te: వేక్ దీవి
+    th: เกาะเวก
+    tr: Wake Adası
+    uk: Вейк
+    ur: جزیرہ ویک
+    vi: Đảo Wake
+    ceb: Wake Island
+    yo_BJ: Erékùshù Wake
+    sr_Latn: Vejk
+    zh: 威克島
+    yue_Hans: 威克岛
+    jv: Pulo Wake
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U00011107\U00011134 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    pa: ਵੇਕ ਟਾਪੂ
+    kk: Уэйк аралы
+    yue: 威克島
+    yo: Erékùṣù Wake
+    bs: Ostrvo Wake
+    mk: Вејк
+    'no': Wake Island
+    sw: Kisiwa cha Wake
+  comments:
+  type: group_of_islands
+'81':
+  name: Baker Island
+  code: '81'
+  unofficial_names: Baker Island
+  geo:
+    latitude: 0.1936266
+    longitude: -176.476908
+    min_latitude: 0.1899033
+    min_longitude: -176.4867685
+    max_latitude: 0.2008295
+    max_longitude: -176.4701875
+  translations:
+    en: Baker Island
+    af: Baker-eiland
+    ar: جزيرة بيكر
+    az: Beyker adası
+    be: Востраў Бэйкер
+    bn: বাকের দ্বীপপুঞ্জ
+    ca: Illa Baker
+    cs: Bakerův ostrov
+    da: Baker Island
+    de: Bakerinsel
+    el: Μπαίηκερ
+    es: Isla Baker
+    et: Bakeri saar
+    eu: Baker Uhartea
+    fa: جزیره بیکر
+    fi: Baker
+    fr: île Baker
+    gl: Illa Baker
+    gu: બેકર આઇલેન્ડ
+    he: בייקר
+    hi: बेकर द्वीप
+    hr: Otok Baker
+    hu: Baker-sziget
+    hy: Բեյկերի Կղզի
+    id: Pulau Baker
+    is: Bakereyja
+    it: Isola Baker
+    ja: ベーカー島
+    ka: კუნძული ბეიკერი
+    kn: ಬೇಕರ್ ದ್ವೀಪ
+    ko: 베이커 섬
+    lt: Beikerio sala
+    lv: Beikera sala
+    ml: ബേക്കർ ദ്വീപ്
+    mr: बेकर बेट
+    ms: Pulau Baker
+    nb: Bakerøya
+    nl: Baker
+    pl: Baker
+    pt: Ilha Baker
+    ro: Insula Baker
+    ru: Бейкер
+    si: බේකර් දුපත්
+    sk: Baker
+    sl: Bakerjev otok
+    sr: Бејкер
+    sv: Bakerön
+    ta: பேக்கர் தீவு
+    te: బేకర్ దీవి
+    th: เกาะเบเกอร์
+    tr: Baker Adası
+    uk: Бейкер
+    ur: جزیرہ بیکر
+    vi: Đảo Baker
+    ceb: Baker Island (administratibo nga pulo)
+    yo_BJ: Erékùshù Baker
+    sr_Latn: Bejker
+    zh: 貝克島
+    yue_Hans: 贝克岛
+    jv: Pulo Baker
+    ccp: "\U0001111D\U00011107\U0001112C\U00011122\U00011134 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    kk: Бейкер аралы
+    yue: 貝克島
+    yo: Erékùṣù Baker
+    bs: Ostrvo Baker
+    mk: Бејкеров Остров
+    'no': Bakerøya
+    bg: Бейкър (остров)
+  comments:
+  type: group_of_islands
+'84':
+  name: Howland Island
+  code: '84'
+  unofficial_names: Howland Island
+  geo:
+    latitude: 0.8113218999999999
+    longitude: -176.6182736
+    min_latitude: 0.7952522000000001
+    min_longitude: -176.6238443
+    max_latitude: 0.8192775000000001
+    max_longitude: -176.6115152
+  translations:
+    en: Howland Island
+    af: Howland-eiland
+    ar: جزيرة هاولاند
+    az: Haulend adası
+    be: Востраў Хоўленд
+    bn: হল্যান্ড দ্বীপ
+    ca: Illa Howland
+    cs: Howlandův ostrov
+    da: Howland-øen
+    de: Howlandinsel
+    el: Χάουλαντ
+    es: Isla Howland
+    et: Howlandi saar
+    eu: Howland Uhartea
+    fa: جزیره هاولند
+    fi: Howland
+    fr: île Howland
+    gl: Illa Howland
+    gu: હોલેન્ડ આઇલેન્ડ
+    he: האולנד
+    hi: हॉउलैंड द्वीप
+    hr: Otok Howland
+    hu: Howland-sziget
+    hy: Հաուլենդ
+    id: Pulau Howland
+    is: Howlandeyja
+    it: Isola Howland
+    ja: ハウランド島
+    ka: ჰოულენდი
+    kn: ಹೌಲ್ಯಾಂಡ್ ದ್ವೀಪ
+    ko: 하울랜드 섬
+    lt: Houlando sala
+    lv: Haulenda sala
+    ml: ഹൗലാന്റ് ദ്വീപ്
+    mr: हॉवेँड आईसलँड
+    ms: Pulau Howland
+    nb: Howlandøya
+    nl: Howland
+    pl: Howland
+    pt: Ilha Howland
+    ro: Insula Howland
+    ru: Хауленд
+    si: හොලන්ඩ් දුපත
+    sk: Howland
+    sl: Howlandov otok
+    sr: Хауланд
+    sv: Howlandön
+    ta: ஹவுலாந்து தீவு
+    te: హోవ్లాండ్ దీవి
+    th: เกาะฮาวแลนด์
+    tr: Howland Adası
+    uk: Гауленд
+    ur: جزیرہ ہاولینڈ
+    vi: Đảo Howland
+    ceb: Howland Island (administratibo nga pulo)
+    yo_BJ: Erékùshù Howland
+    sr_Latn: Hauland
+    zh: 豪蘭島
+    yue_Hans: 豪兰岛
+    jv: Pulo Howland
+    ccp: "\U00011126\U00011105\U0001112A\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    kk: Хаулэнд аралы
+    yue: 豪蘭島
+    yo: Erékùṣù Howland
+    bs: Ostrvo Howland
+    mk: Хауленд
+    'no': Howlandøya
+    bg: Хауланд (остров)
+  comments:
+  type: group_of_islands
+'86':
+  name: Jarvis Island
+  code: '86'
+  unofficial_names: Jarvis Island
+  geo:
+    latitude: -0.3743503
+    longitude: -159.9967206
+    min_latitude: -0.3824678
+    min_longitude: -160.0134561
+    max_latitude: -0.3624568
+    max_longitude: -159.9849071
+  translations:
+    en: Jarvis Island
+    af: Jarvis-eiland
+    ar: جزيرة جارفيس
+    az: Carvis adası
+    be: Востраў Джарвіс
+    bg: Джарвис
+    bn: জারভিস দ্বীপ
+    ca: Illa Jarvis
+    cs: Jarvisův ostrov
+    da: Jarvis Island
+    de: Jarvisinsel
+    el: Τζάρβις
+    es: Isla Jarvis
+    et: Jarvise saar
+    eu: Jarvis Uhartea
+    fa: جزیره جارویس
+    fi: Jarvis
+    fr: Île Jarvis
+    gl: Illa Jarvis
+    gu: જાર્વિસ આઇલેન્ડ
+    he: ג׳רביס
+    hi: जार्विस द्वीप
+    hr: Otok Jarvis
+    hu: Jarvis-sziget
+    hy: Ջարվիս
+    id: Pulau Jarvis
+    is: Jarviseyja
+    it: Isola Jarvis
+    ja: ジャーヴィス島
+    ka: ჯერვისი
+    kn: ಜಾರ್ವಿಸ್ ದ್ವೀಪ
+    ko: 자르비스 섬
+    lt: Džervio sala
+    lv: Džērvisa sala
+    ml: ജാർവിസ് ദ്വീപ്
+    mr: जार्व्हिस आयलंड
+    ms: Pulau Jarvis
+    nb: Jarvisøya
+    nl: Jarvis
+    pl: Jarvis
+    pt: Ilha Jarvis
+    ro: Insula Jarvis
+    ru: Остров Джарвис
+    si: ජාර්විස් දුපත
+    sk: Jarvis
+    sl: Jarvisov otok
+    sr: Џарвис
+    sv: Jarvisön
+    ta: ஜார்விஸ் தீவு
+    te: జార్విస్ దీవి
+    th: เกาะจาร์วิส
+    tr: Jarvis Adası
+    uk: Джарвіс
+    ur: جزیرہ جاروس
+    vi: Đảo Jarvis
+    ceb: Jarvis Island
+    yo_BJ: Erékùshù Jarvis
+    sr_Latn: Džarvis
+    zh: 賈維斯島
+    yue_Hans: 贾维斯岛
+    jv: Pulo Jarvis
+    ccp: "\U0001110E\U00011122\U00011134\U0001111E\U00011128\U0001110C\U00011134 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    kk: Джарвис аралы
+    yue: 賈維斯島
+    yo: Erékùṣù Jarvis
+    bs: Ostrvo Jarvis
+    mk: Џарвисов Остров
+    'no': Jarvisøya
+  comments:
+  type: group_of_islands
+'89':
+  name: Kingman Reef
+  code: '89'
+  unofficial_names: Kingman Reef
+  geo:
+    latitude: 6.4331783
+    longitude: -162.387346
+    min_latitude: 6.3790511
+    min_longitude: -162.4195682
+    max_latitude: 6.4460001
+    max_longitude: -162.3323852
+  translations:
+    en: Kingman Reef
+    af: Kingman-rif
+    ar: شعب كينغمان المرجانية
+    az: Kinqmen rifi
+    be: Рыф Кінгмэн
+    bg: Кингман
+    bn: কিংম্যান রিফ
+    ca: Escull Kingman
+    cs: Kingmanův útes
+    da: Kingman Reef
+    de: Kingmanriff
+    el: Ύφαλος Κίνγκμαν
+    es: Arrecife Kingman
+    et: Kingmani riff
+    eu: Kingman Uharria
+    fa: آب‌سنگ کینگمن
+    fi: Kingmanin riutta
+    fr: Récif Kingman
+    gl: Arrecife Kingman
+    gu: કિંગમેન રીફ
+    he: שונית קינגמן
+    hi: किंगमैन रीफ
+    hr: Greben Kingman
+    hu: Kingman-zátony
+    hy: Քինգմեն խութ
+    id: Karang Kingman
+    is: Kingmanrif
+    it: Kingman Reef
+    ja: キングマン・リーフ
+    ka: კინგმენის რიფი
+    kn: ಕಿಂಗ್ಮ್ಯಾನ್ ರೀಫ್
+    ko: 킹먼 암초
+    lt: Kingmano rifas
+    lv: Kingmena rifs
+    ml: കിങ്ങ്മാൻ റീഫ്
+    mr: किंगमॅन रीफ
+    ms: Terumbu Kingman
+    nb: Kingman Reef
+    nl: Kingman
+    pl: Kingman
+    pt: Recife Kingman
+    ro: Reciful Kingman
+    ru: Риф Кингмен
+    si: කින්ග්මන් පරය
+    sk: Kingmanreef
+    sl: Kingmanov greben
+    sr: Кингмен
+    sv: Kingmanrevet
+    ta: கிங்மன் பாறை
+    te: కింగ్‌మన్ రీఫ్
+    th: คิงแมนรีฟ
+    tr: Kingman Resifi
+    uk: Кінгмен
+    ur: کنگمین ریف
+    vi: Đảo đá Kingman
+    ceb: Kingman Reef
+    sr_Latn: Kingmen
+    zh: 金曼礁
+    yue_Hans: 金曼礁
+    jv: Karang Kingman
+    ccp: "\U00011107\U00011128\U00011101\U0001111F\U00011133\U00011120\U0001111A\U00011134
+      \U00011122\U00011129\U0001111B\U00011134"
+    kk: Кингмен рифы
+    yue: 金曼礁
+    bs: Greben Kingman
+    mk: Кингменов Гребен
+    'no': Kingman Reef
+  comments:
+  type: group_of_islands
+'95':
+  name: Palmyra Atoll
+  code: '95'
+  unofficial_names: Palmyra Atoll
+  geo:
+    latitude: 5.883332999999999
+    longitude: -162.083333
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Palmyra Atoll
+    af: Palmyra-atol
+    ar: جزر بالميرا المرجانية
+    az: Palmira rifi
+    be: Атол Пальміра
+    bg: Палмира
+    bn: পলাইরা এটল
+    ca: Atol Palmyra
+    cs: Palmyra
+    da: Palmyra Atoll
+    de: Palmyra
+    el: Ατόλλη Παλμύρα
+    es: Atolón Palmyra
+    et: Palmyra atoll
+    eu: Palmyra Atoloia
+    fa: جزیره مرجانی پالمیرا
+    fi: Palmyran atolli
+    fr: Atoll Palmyra
+    gl: Atol Palmyra
+    gu: પાલ્મીરા એટોલ
+    he: אטול פאלמירה
+    hi: पाल्मीरा एटोल
+    hr: Atol Palmyra
+    hu: Palmyra-atoll
+    hy: Պալմիրա
+    id: Atol Palmyra
+    is: Palmyraeyja
+    it: Palmyra
+    ja: パルミラ環礁
+    ka: პალმირა
+    kn: ಪಾಲ್ಮಿರಾ ಅಟಾಲ್
+    ko: 팔미라 환초
+    lt: Palmyros atolas
+    lv: Palmiras atols
+    mr: पाल्मीरा एटोल
+    ms: Atol Palmyra
+    nb: Palmyra Atoll
+    nl: Palmyra
+    pl: Palmyra
+    pt: Atol Palmyra
+    ro: Atolul Palmyra
+    ru: Пальмира
+    si: පැල්මයිරා දුපත් සමුහය
+    sk: Palmyra
+    sr: Палмира
+    sv: Palmyraatollen
+    ta: பால்மைரா பவளத்தீவு
+    te: పాల్మయిరా అటోల్
+    th: แพลไมราอะทอลล์
+    tr: Palmyra Atolü
+    uk: Пальміра
+    ur: جزیرہ پالمیرا
+    vi: Đảo san hô Palmyra
+    ceb: Palmyra Atoll (administratibo nga pulo)
+    sr_Latn: Palmira
+    zh: 帕邁拉環礁
+    yue_Hans: 帕迈拉环礁
+    jv: Atol Palmyra
+    ccp: "\U0001111B\U00011123\U00011134\U0001111F\U0001112D\U00011122 \U00011103\U00011111\U0001112E\U00011123\U00011134"
+    ky: Пальмира атоллу
+    yue: 帕邁拉環礁
+    bs: Atol Palmyra
+    mk: Палмирски Атол
+    'no': Palmyra Atoll
+  comments:
+  type: group_of_islands

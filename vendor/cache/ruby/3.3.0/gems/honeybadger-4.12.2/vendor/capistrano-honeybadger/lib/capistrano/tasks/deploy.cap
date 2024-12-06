@@ -1,0 +1,89 @@
+namespace :honeybadger do
+  def sshkit_outdated?
+    !::SSHKit.config.command_map.respond_to?(:prefix)
+  end
+
+  desc 'Notify Honeybadger of the deployment.'
+  task :deploy => [:env, :'deploy:set_current_revision'] do
+    next if sshkit_outdated?
+    if server = fetch(:honeybadger_server)
+      revision = fetch(:current_revision)
+
+      on server do |host|
+        info 'Notifying Honeybadger of deploy.'
+
+        executable = fetch(:honeybadger, :honeybadger)
+
+        options = [
+          'deploy',
+          '--environment', fetch(:honeybadger_env, fetch(:rails_env, 'production')),
+          '--revision', revision,
+          '--repository', fetch(:repo_url),
+          '--user', fetch(:honeybadger_user, ENV['USER'] || ENV['USERNAME'])
+        ]
+
+        api_key = fetch(:honeybadger_api_key, ENV['HONEYBADGER_API_KEY'])
+        options += ['--api-key', api_key] if api_key
+        options << '--skip-rails-load' if fetch(:honeybadger_skip_rails_load, false)
+
+        if fetch(:honeybadger_async_notify, false)
+          ::SSHKit.config.command_map.prefix[:honeybadger].push(:nohup)
+          options << '>> /dev/null 2>&1 &'
+        end
+
+        within release_path do
+          execute executable, options, raise_on_non_zero_exit: false
+        end
+
+        info 'Honeybadger notification complete.'
+      end
+    end
+  end
+
+  desc 'Setup ENV for Honeybadger deploy rake task.'
+  task :env do
+    if sshkit_outdated?
+      run_locally do
+        warn 'Unable to notify Honeybadger: you are using an outdated version of SSHKIT. Please upgrade to >= 1.2.0.'
+      end
+      next
+    end
+
+    server = fetch(:honeybadger_server) do
+      if s = primary(:app)
+        set(:honeybadger_server, s.select?({exclude: :no_release}) ? s : nil)
+      end
+    end
+
+    unless server
+      run_locally do
+        warn 'Unable to notify Honeybadger: could not find app server for notification. Try setting honeybadger_server.'
+      end
+      next
+    end
+
+    on server do |host|
+      rails_env = fetch(:rails_env, 'production')
+      env = ["RAILS_ENV=#{rails_env}"]
+      ::SSHKit.config.command_map.prefix[:honeybadger].unshift(*env)
+    end
+  end
+end
+
+namespace :deploy do
+  task :set_current_revision do
+    # noop -- we just want to make sure this task exists prior to Capistrano
+    # 3.2, since we depend on it.
+  end
+end
+
+namespace :load do
+  task :defaults do
+    set :bundle_bins, fetch(:bundle_bins, []).push('honeybadger')
+    set :chruby_map_bins, fetch(:chruby_map_bins, []).push('honeybadger')
+    set :rbenv_map_bins, fetch(:rbenv_map_bins, []).push('honeybadger')
+    set :rvm_map_bins, fetch(:rvm_map_bins, []).push('honeybadger')
+  end
+end
+
+after 'deploy:finishing', 'honeybadger:deploy'

@@ -1,0 +1,15 @@
+module Datadog
+  module CI
+    module Contrib
+      module RSpec
+        module Patcher
+          include Datadog::Tracing::Contrib::Patcher
+
+          def self?.target_version: () -> untyped
+
+          def self?.patch: () -> untyped
+        end
+      end
+    end
+  end
+end

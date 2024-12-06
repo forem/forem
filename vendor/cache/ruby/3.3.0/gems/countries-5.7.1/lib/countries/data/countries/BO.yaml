@@ -1,0 +1,53 @@
+---
+BO:
+  alpha2: BO
+  alpha3: BOL
+  continent: South America
+  country_code: '591'
+  currency_code: BOB
+  distance_unit: KM
+  gec: BL
+  geo:
+    latitude: -16.290154
+    longitude: -63.58865299999999
+    max_latitude: -9.669323
+    max_longitude: -57.453803
+    min_latitude: -22.8980899
+    min_longitude: -69.64498999999999
+    bounds:
+      northeast:
+        lat: -9.669323
+        lng: -57.453803
+      southwest:
+        lat: -22.8980899
+        lng: -69.64498999999999
+  international_prefix: '0010'
+  ioc: BOL
+  iso_long_name: The Plurinational State of Bolivia
+  iso_short_name: Bolivia (Plurinational State of)
+  languages_official:
+  - es
+  - ay
+  - qu
+  languages_spoken:
+  - es
+  - ay
+  - qu
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '010'
+  nationality: Bolivian
+  number: '068'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: BO
+  unofficial_names:
+  - Bolivia
+  - Bolivien
+  - Bolivie
+  - ボリビア多民族国
+  world_region: AMER

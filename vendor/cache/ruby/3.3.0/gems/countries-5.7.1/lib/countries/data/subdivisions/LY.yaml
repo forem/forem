@@ -1,0 +1,1260 @@
+---
+BA:
+  name: Banghazi
+  code: BA
+  unofficial_names: Banghazi
+  geo:
+    latitude: 32.116667
+    longitude: 20.066667
+    min_latitude: 31.9760544
+    min_longitude: 19.9999527
+    max_latitude: 32.2094962
+    max_longitude: 20.2884299
+  translations:
+    en: Benghazi
+    ar: بنغازي
+    af: Benghazi
+    az: Benqazi
+    be: Горад Бенгазі
+    bg: Бенгази
+    bn: বেনগাজি
+    ca: Bengasi
+    cs: Benghází
+    da: Benghazi
+    de: Bengasi
+    el: Βεγγάζη
+    es: Bengasi
+    et: Banghāzī
+    eu: Bengazi
+    fa: بنغازی
+    fi: Bengasi
+    fr: Benghazi
+    gu: બેંઘાઝી
+    he: בנגאזי
+    hi: बेंघाज़ी
+    hr: Bengazi
+    hu: Bengázi
+    hy: Բենգազի
+    id: Benghazi
+    it: Bengasi
+    ja: ベンガジ
+    ka: ბენღაზი
+    kn: ಬೆಂಗಾಝಿ
+    ko: 벵가지
+    lt: Bengazis
+    lv: Bengāzī
+    mr: बेनगाझी
+    ms: Benghazi
+    nb: Benghazi
+    nl: Benghazi
+    pl: Bengazi
+    pt: Bengasi
+    ro: Benghazi
+    ru: Бенгази
+    si: බෙන්ගාසි
+    sk: Bengázi
+    sl: Bengazi
+    sr: Бенгази
+    sv: Benghazi
+    ta: பங்காசி
+    te: బెంఘాజి
+    th: เบงกาซี
+    tr: Bingazi
+    uk: Бенгазі
+    ur: بنغازی
+    vi: Benghazi
+    zh: 班加西
+    cy: Benghazi
+    ceb: Sha‘bīyat Banghāzī
+    sr_Latn: Bengazi
+    yue_Hans: 班加西
+    sq: Bengazi
+    ccp: "\U0001111D\U0001112C\U0001111A\U00011134\U0001110A\U0001110E\U00011128"
+    ga: Benghazi
+    is: Benghazi
+    pa: ਬਨਗ਼ਾਜ਼ੀ
+    kk: Бенгази
+    yue: 班加西
+    uz: Bingʻozi
+    bs: Bengazi
+    'no': Benghazi
+    ha: Benghazi
+    ha_NE: Benghazi
+    ps: بنغازی
+    sw: Benghazi
+    zu: Benghazi
+  comments:
+  type: popularate
+BU:
+  name: Al Butnan
+  code: BU
+  unofficial_names: Al Butnan
+  geo:
+    latitude: 29.7579854
+    longitude: 23.7632828
+    min_latitude: 27.971698
+    min_longitude: 23.0024879
+    max_latitude: 32.2137814
+    max_longitude: 25.1495356
+  translations:
+    en: Butnan
+    ar: شعبية البطنان
+    bg: Ал Бутнан
+    bn: বুটনান জেলা
+    ca: Al Butnan
+    da: Al Butnan
+    de: Munizip al-Butnan
+    el: Μπουτνάν
+    es: Al Butnan
+    eu: Al Butnan
+    fa: استان بطنان
+    fi: Butnan kaupunginosa
+    fr: Al Boutnan
+    gu: બુટ્નન જિલ્લો
+    hi: बटनान प्रांत
+    hu: Butnán tartomány
+    hy: Էլ-Բուտնան
+    id: Al Butnan
+    it: Municipalità di Butnan
+    ja: ブトナーン県
+    ka: ელ-ბუტნანი
+    kn: ಬಟ್ನಾನ್ ಜಿಲ್ಲೆ
+    ko: 알부트난 주
+    lt: Butnano savivaldybė
+    mr: बुटेनन जिल्हा
+    ms: Al Butnan
+    nb: Al Butnan
+    nl: Al Butnan
+    pl: Al-Butnan
+    pt: Al Butnan
+    ro: Districtul Al Butnan
+    ru: Эль-Бутнан
+    si: බුට්නාන් දිස්ත්‍රික්කය
+    sv: Al Butnan
+    ta: பட்னான் மாவட்டம்
+    te: బుట్నన్ జిల్లా
+    th: เขตบัตนัน
+    tr: El Butnan ili
+    uk: Ель-Бутнан
+    ur: بطنان ضلع
+    vi: Quận Butnan
+    lv: Butnānas šebīja
+    ceb: Sha‘bīyat al Buţnān
+    zh: 布特南省
+    ccp: "\U0001111D\U0001112A\U00011116\U00011134\U0001111A\U0001111A\U00011134"
+    be: Эль-Бутнан
+    'no': Al Butnan
+  comments:
+  type: popularate
+DR:
+  name: Darnah
+  code: DR
+  unofficial_names: Darnah
+  geo:
+    latitude: 32.766667
+    longitude: 22.633333
+    min_latitude: 32.7425359
+    min_longitude: 22.6118888
+    max_latitude: 32.7750619
+    max_longitude: 22.6741272
+  translations:
+    en: Derna
+    ar: شعبية درنة
+    bg: Дарна
+    ca: Derna
+    da: Darnah
+    de: Munizip Darna
+    es: Derna
+    eu: Derna
+    fa: استان درنه
+    fr: Darnah
+    hu: Darna tartomány
+    hy: Դերնա
+    it: Municipalità di Derna
+    ja: デルナ県
+    ka: დარნის რაიონი
+    ko: 다르나 주
+    lt: Darnos savivaldybė
+    nb: Darnah
+    nl: Derna
+    pl: Darna
+    pt: Darnah
+    ro: Districtul Darnah
+    ru: Дерна
+    sv: Darnah
+    uk: Дерна
+    ur: درنہ ضلع
+    ceb: Darnah
+    zh: 德爾納省
+    ccp: "\U00011113\U00011122\U00011134\U0001111A"
+    'no': Darnah
+  comments:
+  type: popularate
+GT:
+  name: Ghat
+  code: GT
+  unofficial_names: Ghat
+  geo:
+    latitude: 24.9640371
+    longitude: 10.1759285
+    min_latitude: 24.9340191
+    min_longitude: 10.148612
+    max_latitude: 24.9905903
+    max_longitude: 10.2097174
+  translations:
+    en: Ghat
+    ar: شعبية غات
+    bn: ঘাট জেলা
+    da: Ghat
+    de: Munizip Ghat
+    el: Γκατ
+    es: Ghat
+    eu: Ghat
+    fa: استان غات
+    fi: Ghatin kaupunginosa
+    fr: Ghat
+    gu: ઘાટ જિલ્લો
+    hi: घाट जिला
+    hu: Gát tartomány
+    id: Distrik Ghat
+    it: Municipalità di Ghat
+    ja: ガート県
+    ka: ღათის რაიონი
+    kn: ಘಾಟ್ ಜಿಲ್ಲೆ
+    ko: 가트 주
+    lt: Gato savivaldybė
+    mr: घाट जिल्हा
+    ms: Ghat District
+    nb: Ghat
+    nl: Ghat
+    pl: Ghat
+    pt: Ghat
+    ro: Districtul Ghat
+    ru: Гат
+    si: ඝට් දිස්ත්‍රික්කය
+    sv: Ghat
+    ta: காட் மாவட்டம்
+    te: ఘాట్ జిల్లా
+    th: วาราซดิน
+    tr: Ghat District
+    uk: Гат
+    ur: غات ضلع
+    vi: Quận Ghat
+    lv: Gātas šebīja
+    ceb: Sha‘bīyat Ghāt
+    zh: 加特省
+    ccp: "\U0001110A\U00011116\U00011134"
+    'no': Ghat
+    ca: Districte de Ghat
+  comments:
+  type: popularate
+JA:
+  name: Al Jabal al Akhḑar
+  code: JA
+  unofficial_names: Al Jabal al Akhḑar
+  geo:
+    latitude: 32.4032332
+    longitude: 21.6660725
+    min_latitude: 31.2525281
+    min_longitude: 21.3707509
+    max_latitude: 32.9385909
+    max_longitude: 22.0534001
+  translations:
+    en: Jabal al Akhdar
+    ar: شعبية الجبل الأخضر
+    bn: জাবাল আল আকদার
+    ca: Al Jabal al Akhdar
+    da: Al Jabal al Akhdar
+    de: Munizip al-Dschabal al-Achdar
+    el: Τζαμπάλ αλ Ακντάρ
+    es: Al Jabal al Akhdar
+    eu: Al Jabal al Akhdar
+    fi: Al Jabal al Akhdar
+    fr: Al Jabal al Akhdar
+    gu: જબલ અલ અખદર
+    hi: जबल अल अख्दर
+    hu: Dzsabal el-Ahdar tartomány
+    id: Al Jabal al Akhdar
+    it: Municipalità di Gebel el-Achdar
+    ja: ジャバル・アル・アフダル県
+    ka: ელ-ჯებალ-ელ-ახდარი
+    kn: ಜಬಲ್ ಅಲ್ ಅಖ್ದಾರ್
+    ko: 알자발알아크다르 주
+    lt: Džabal al Achdaro savivaldybė
+    mr: जबल अल अख़्दर्र
+    ms: Jabal al Akhdar
+    nb: Al Jabal al Akhdar
+    nl: Al Jabal al Akhdar
+    pl: Al-Dżabal al-Achdar
+    pt: Al Jabal al Akhdar
+    ro: Districtul Al Jabal al Akhdar
+    ru: Эль-Джебал-Эль-Ахдар
+    si: ජබාල් අල් අක්දාර්
+    sv: Al Jabal al Akhdar
+    ta: ஜபல் அல் அக்ஹடர்
+    te: జబల్ అల్ అఖదర్
+    th: จาเบล อัล อัคห์ดา
+    tr: Jabak Al Akhdar
+    uk: Ель-Джебал Ель-Ахдар
+    ur: جبل الاخضر
+    vi: Jabal al Akhdar
+    lv: Džabala al Ahdara
+    ceb: Sha‘bīyat al Jabal al Akhḑar
+    zh: 綠山省
+    ccp: "\U0001110E\U0001111D\U00011123\U00011134 \U00011103\U00011123\U00011134
+      \U00011103\U00011107\U00011134\U00011113\U00011122\U00011134"
+    'no': Al Jabal al Akhdar
+    az: Əl-Cəbəl əl-Əxdar
+    fa: الجبل الاخضر
+  comments:
+  type: popularate
+JG:
+  name: Al Jabal al Gharbī
+  code: JG
+  unofficial_names: Al Jabal al Gharbī
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Jabal al Gharbi
+    ar: شعبية الجبل الغربي
+    be: Муніцыпалітэт Эль-Джабал-эль-Гарбі
+    ca: Al Jabal al Gharbi
+    de: Munizip al-Dschabal al-Gharbi
+    es: Al Jabal al Gharbi
+    fa: استان جبل غربی
+    fr: Al Djabal al Gharbi
+    hu: Dzsabal el-Garbi tartomány
+    id: Distrik Al Jabal al Gharbi
+    it: Municipalità di Gebel Garbi
+    ja: ジャバル・アル・ガルビ県
+    ka: ელ-ჯაბალ-ელ-ღარბი
+    ko: 알자발알가르비 주
+    nl: Al Jabal al Gharbi
+    pl: Al-Dżabal al-Gharbi
+    ru: Эль-Джабал-эль-Гарби
+    sv: Al Jabal al Gharbi
+    uk: Ель-Джабал-ель-Ґарбі
+    ur: جبل الغربی ضلع
+    ceb: Sha‘bīyat al Jabal al Gharbī
+    zh: 西山省
+    ccp: "\U0001110E\U0001111D\U00011123\U00011134 \U00011103\U00011123\U00011134
+      \U0001110A\U00011122\U00011134\U0001111D\U00011128"
+    pt: Jabal Algarbi
+  comments:
+  type: popularate
+JI:
+  name: Al Jifarah
+  code: JI
+  unofficial_names: Al Jifarah
+  geo:
+    latitude: 32.4525904
+    longitude: 12.9435536
+    min_latitude: 32.236122
+    min_longitude: 12.678772
+    max_latitude: 32.756192
+    max_longitude: 13.1125019
+  translations:
+    en: Jafara
+    ar: شعبية الجفارة
+    be: Муніцыпалітэт Эль-Джыфара
+    bn: জাফারা পৌরসভা
+    ca: Al Jfara
+    da: Al Jfara
+    de: Munizip al-Dschifara
+    el: Τζαφάρα
+    es: Al Jfara
+    eu: Al Jfara
+    fi: Jafaran kunta
+    fr: Al Djfara
+    gu: જાફરા મ્યુનિસિપાલિટી
+    hi: जाफरा नगरपालिका
+    hu: Dzsifára tartomány
+    id: Kotamadya Jafara
+    it: Municipalità di Gefara
+    ja: ジファーラ県
+    ka: ელ-ჯიფარა
+    kn: ಜಫರಾ ಪುರಸಭೆ
+    ko: 알즈파라 주
+    lt: Džfaros savivaldybė
+    mr: जाफरा म्युन्सिपाल्टी
+    ms: Perbandaran Jafara
+    nb: Al Jfara
+    nl: Al Jfara
+    pl: Al-Dżifara
+    pt: Al Jifarah
+    ro: Districtul Al ‘Aziziyah
+    ru: Эль-Джифара
+    si: ජෆරා නගර සභාව
+    sv: Al Jfara
+    ta: ஜபாரா நகராட்சி
+    te: జఫారా మున్సిపాలిటీ
+    th: เทศาบาลจาฟารา
+    tr: El Cfara ili
+    uk: Ель-Джифара
+    ur: جفارہ
+    vi: Đô thị tự trị Jafara
+    lv: Džifāra
+    ceb: Sha‘bīyat al Jafārah
+    zh: 吉法拉省
+    ccp: "\U0001110E\U0001111C\U00011127\U00011122\U00011134"
+    'no': Al Jfara
+    fa: الجفاره
+  comments:
+  type: popularate
+JU:
+  name: Al Jufrah
+  code: JU
+  unofficial_names:
+  - Al Jufrah
+  - Jofra
+  geo:
+    latitude: 27.9835135
+    longitude: 16.912251
+    min_latitude: 26.03828
+    min_longitude: 14.263115
+    max_latitude: 29.8889149
+    max_longitude: 18.9787859
+  translations:
+    en: Jufra
+    ar: شعبية الجفرة
+    be: Муніцыпалітэт Эль-Джуфра
+    bn: জুফ্রা
+    ca: Al Jufrah
+    cs: Al-Džufra
+    da: Al Jufrah
+    de: Munizip al-Dschufra
+    el: Τζούφρα
+    es: Al Jufrah
+    eu: Al Jufrah
+    fa: استان جفره
+    fi: Jufra
+    fr: Al Djoufrah
+    gu: જુફ્રા
+    hi: जुफरा जिला
+    hu: Dzsufra tartomány
+    id: Jufra
+    it: Municipalità di Giofra
+    ja: ジュフラ県
+    ka: ელ-ჯუფრა
+    kn: ಜುಫ್ರಾ
+    ko: 알주프라 주
+    lt: Džufros savivaldybė
+    mr: जुफारा
+    ms: Jufra
+    nb: Al Jufrah
+    nl: Al Jufrah
+    pl: Al-Dżufra
+    pt: Al Jufrah
+    ro: Districtul Al Jufrah
+    ru: Эль-Джуфра
+    si: ජුෆ්රා
+    sv: Al Jufrah
+    ta: ஜூப்பிர
+    te: జుఫ్రా
+    th: จูฟรา
+    tr: El Cufra ili
+    uk: Ель-Джуфра
+    ur: جفرہ ضلع
+    vi: Jufra
+    lv: Džufras šebīja
+    ceb: Al Jufrah (distrito)
+    zh: 朱夫拉省
+    ccp: "\U0001110E\U0001112A\U0001111C\U00011133\U00011122"
+    'no': Al Jufrah
+  comments:
+  type: popularate
+KF:
+  name: Al Kufrah
+  code: KF
+  unofficial_names:
+  - Al Kufrah
+  - Kofra
+  - Kufra
+  - Cufra
+  geo:
+    latitude: 23.3112389
+    longitude: 21.8568586
+    min_latitude: 19.5080431
+    min_longitude: 18.9363769
+    max_latitude: 27.0215295
+    max_longitude: 25
+  translations:
+    en: Kufra
+    ar: شعبية الكفرة
+    be: Муніцыпалітэт Эль-Куфра
+    bn: কুফ্রা জেলা
+    ca: Al Kufrah
+    cs: Al-Kufra
+    da: Al Kufrah
+    de: Munizip al-Kufra
+    el: Κούφρα
+    es: Al Kufrah
+    eu: Al Kufrah
+    fa: استان کفره
+    fi: Kufran kaupunginosa
+    fr: Al-Koufrah
+    gu: કુફ્રા જિલ્લો
+    hi: कुफरा जिला
+    hu: Kufra tartomány
+    id: Al Kufrah
+    it: Municipalità di Cufra
+    ja: クフラ県
+    ka: ელ-კუფრა
+    kn: ಕುಫ್ರಾ ಜಿಲ್ಲೆ
+    ko: 알쿠프라 주
+    lt: Kufros savivaldybė
+    mr: कुफरा जिल्हा
+    ms: Al Kufrah
+    nb: Al Kufrah
+    nl: Al Kufrah
+    pl: Al-Kufra
+    pt: Al Kufrah
+    ro: Districtul Al Kufrah
+    ru: Эль-Куфра
+    si: කුෆ්රා දිස්ත්‍රික්කය
+    sv: Al Kufrah
+    ta: குப்பிர மாவட்டம்
+    te: కుఫ్రా జిల్లా
+    th: เขตคูฟรา
+    tr: El Kufra ili
+    uk: Ель-Куфра
+    ur: کفرہ ضلع
+    vi: Quận Kufra
+    lv: Kufras šebīja
+    ceb: Al Kufrah
+    zh: 庫夫拉省
+    ccp: "\U00011107\U0001112A\U0001111C\U00011133\U00011122"
+    'no': Al Kufrah
+    he: מחוז כופרה
+    ps: کفره
+  comments:
+  type: popularate
+MB:
+  name: Al Murqub
+  code: MB
+  unofficial_names:
+  - Al Murqub
+  - Al Marqab
+  - al-Morqib
+  geo:
+    latitude: 32.4599677
+    longitude: 14.1001326
+    min_latitude: 31.961752
+    min_longitude: 13.1125019
+    max_latitude: 32.783028
+    max_longitude: 14.6691879
+  translations:
+    en: Murqub
+    ar: شعبية المرقب
+    be: Муніцыпалітэт Эль-Маргаб
+    bn: মুরকাব পৌরসভা
+    ca: Al Murgub
+    da: Al Murgub
+    de: Munizip al-Murgub
+    el: Κοινότητα Μουρκούμπ
+    es: Al Murgub
+    eu: Al Murgub
+    fa: استان مرقب
+    fi: Murqubin kunta
+    fr: Al Mourqoub
+    gu: મુર્કબ મ્યુનિસિપાલિટી
+    hi: मरकब नगरपालिका
+    hu: Markab tartomány
+    id: Kotamadya Murqub
+    it: Municipalità di Margheb
+    ja: ムルクブ県
+    ka: ელ-მარღაბი
+    kn: ಮುರ್ಕ್ಬ್ ಪುರಸಭೆ
+    ko: 알무르굽 주
+    lt: Murgubo savivaldybė
+    mr: मुक्वब म्युन्सिपाल्टी
+    ms: Perbandaran Murqub
+    nb: Al Murgub
+    nl: Al Murgub
+    pl: Al-Marakib
+    pt: Al Marqab
+    ro: Districtul Al Murgub
+    ru: Эль-Маргаб
+    si: මුර්කුබ් නගර සභාව
+    sv: Al Murgub
+    ta: முற்குப் நகராட்சி
+    te: ముర్ఖుబ్ మున్సిపాలిటీ
+    th: เทศบาลเมอร์กอบ
+    tr: Murqup Belediyesi
+    uk: Ель-Марґаб
+    ur: مرقب ضلع
+    vi: Đô thị tự trị Murqub
+    lv: Murgūbas šebīja
+    ceb: Al Marqab
+    zh: 迈尔盖卜省
+    ccp: "\U0001111F\U0001112A\U00011122\U00011134\U00011107\U0001112A\U0001111B\U00011134"
+    'no': Al Murgub
+  comments:
+  type: popularate
+MI:
+  name: Mişrātah
+  code: MI
+  unofficial_names:
+  - Mişrātah
+  - Misurata
+  - Misratah
+  geo:
+    latitude: 32.377533
+    longitude: 15.092017
+    min_latitude: 32.1993655
+    min_longitude: 14.9191761
+    max_latitude: 32.4306869
+    max_longitude: 15.2752876
+  translations:
+    en: Misrata
+    ar: شعبية مصراتة
+    be: Муніцыпалітэт Місурата
+    bg: Мисрата
+    bn: মেসারাতা জেলা
+    ca: Misurata
+    da: Misrata District
+    de: Munizip Misrata
+    el: Μισράτα
+    es: Misurata
+    fa: استان مصراته
+    fi: Misratan kaupunginosa
+    fr: Misratah
+    gu: મિસ્રાતા જિલ્લો
+    hi: मिस्राटा जिला
+    hu: Miszráta tartomány
+    id: Distrik Misrata
+    it: distretto di Misurata
+    ja: ミスラタ県
+    ka: მისრათის რაიონი
+    kn: ಮಿಸ್ರಾಟಾ ಜಿಲ್ಲೆ
+    ko: 미스라타 주
+    lt: Misratos savivaldybė
+    mr: मिस्ट्रेट जिल्हा
+    ms: Daerah Misrata
+    nb: Misrata distrikt
+    nl: Misratah
+    pl: Misrata
+    pt: Misurata
+    ro: Districtul Misratah
+    ru: Мисурата
+    si: මිසරටා දිස්ත්‍රික්කය
+    sv: Misratah
+    ta: மிஸ்ரட்டா மாவட்டம்
+    te: మిస్రాటా జిల్లా
+    th: เขตมิสราทาห์
+    tr: Misrata District
+    uk: Місурата
+    ur: مصراتہ ضلع
+    vi: Quận Misrata
+    lv: Misrātas šebīja
+    ceb: Sha‘bīyat Mişrātah
+    zh: 米蘇拉塔省
+    ccp: "\U0001111F\U00011128\U00011125\U00011133\U00011122\U00011127\U00011116"
+    'no': Misrata distrikt
+  comments:
+  type: popularate
+MJ:
+  name: Al Marj
+  code: MJ
+  unofficial_names:
+  - Al Marj
+  - The Meadows
+  - Marj
+  geo:
+    latitude: 32.486667
+    longitude: 20.833889
+    min_latitude: 32.4698104
+    min_longitude: 20.7941151
+    max_latitude: 32.5197498
+    max_longitude: 20.8616169
+  translations:
+    en: Marj
+    ar: شعبية المرج
+    bn: মার্জ জেলা
+    ca: Al Marj
+    da: Al Marj
+    de: Munizip al-Mardsch
+    el: Μάρτζ
+    es: Al Marj
+    eu: Al Marj
+    fa: استان مرج
+    fi: Marjin kaupunginosa
+    fr: Al Marj
+    gu: માર્જ જિલ્લો
+    hi: मारज जिला
+    hu: Mardzs tartomány
+    id: Distrik Marj
+    it: Municipalità di Barca
+    ja: マルジュ県
+    ka: ელ-მარჯის რაიონი
+    kn: ಮರ್ಜ್ ಜಿಲ್ಲೆ
+    ko: 알마르즈 주
+    lt: Mardžo savivaldybė
+    mr: मर्ज जिल्हा
+    ms: Marj District
+    nb: Al Marj
+    nl: Al Marj
+    pl: Al-Mardż
+    pt: Al Marj
+    ro: Districtul Al Marj
+    ru: Эль-Мардж
+    si: මාර්ජ් දිස්ත්‍රික්කය
+    sv: Al Marj
+    ta: மெர்ஜ் மாவட்டம்
+    te: మార్జ్ జిల్లా
+    th: เขตมาร์จ
+    tr: Marj District
+    uk: Ель-Мардж
+    ur: مرج ضلع
+    vi: Quận Marj
+    lv: Mardžas šebīja
+    ceb: Al Marj
+    zh: 邁爾季省
+    ccp: "\U0001111F\U00011122\U00011134\U0001110E\U00011134"
+    'no': Al Marj
+  comments:
+  type: popularate
+MQ:
+  name: Murzuq
+  code: MQ
+  unofficial_names: Murzuq
+  geo:
+    latitude: 25.9182262
+    longitude: 13.9260001
+    min_latitude: 25.8892733
+    min_longitude: 13.8951154
+    max_latitude: 25.9427651
+    max_longitude: 13.9626293
+  translations:
+    en: Murzuq
+    ar: شعبية مرزق
+    be: Муніцыпалітэт Марзук
+    bn: মারজুক জেলা
+    cs: Murzuq
+    da: Marzuk
+    de: Munizip Murzuq
+    el: Μαρζούκ
+    es: Distrito de Murzuk
+    eu: Murzuq
+    fa: استان مرزق
+    fi: Murzuq District
+    fr: Mourzouq
+    gu: મુર્ઝુક જિલ્લો
+    hi: मुरज़ूक़ डिस्ट्रिक्ट
+    hu: Murzuk tartomány
+    id: Distrik Murzuq
+    it: Municipalità di Murzuch
+    ja: ムルズク県
+    ka: მარზუკის რაიონი
+    kn: ಮರ್ಜುಕ್ ಜಿಲ್ಲೆ
+    ko: 무르주크 주
+    lt: Murzuko savivaldybė
+    mr: मुर्झुक जिल्हा
+    ms: Murzuq District
+    nb: Murzuq distrikt
+    nl: Murzuq
+    pl: Marzuk
+    pt: Murzuq
+    ro: Districtul Murzuq
+    ru: Марзук
+    si: මර්සක් දිස්ත්‍රික්කය
+    sv: Murzuq
+    ta: முற்ஸுக் மாவட்டம்
+    te: ముర్జుఖ్ జిల్లా
+    th: เขตเมอซุก
+    tr: Murzuq District
+    uk: Марзук
+    ur: مرزق ضلع
+    vi: Quận Murzuq
+    lv: Murzūkas šebīja
+    ceb: Murzuq
+    zh: 邁爾祖格省
+    ccp: "\U0001111F\U0001112A\U00011122\U00011134\U0001110E\U0001112A\U00011107\U00011134"
+    hy: Մարզուկ
+    'no': Murzuq distrikt
+  comments:
+  type: popularate
+NL:
+  name: Nālūt
+  code: NL
+  unofficial_names: Nālūt
+  geo:
+    latitude: 31.868333
+    longitude: 10.9825
+    min_latitude: 31.8367114
+    min_longitude: 10.9610395
+    max_latitude: 31.8966715
+    max_longitude: 10.9945031
+  translations:
+    en: Nalut
+    ar: شعبية نالوت
+    be: Муніцыпалітэт Налут
+    ca: Nalut
+    da: Nalut
+    de: Nalut
+    es: Nalut
+    eu: Nalut
+    fa: استان نالوت
+    fr: Nalout
+    hu: Nálút tartomány
+    it: Municipalità di Nalut
+    ja: ナールート県
+    ka: ნალუთის რაიონი
+    ko: 날루트 주
+    lt: Naluto savivaldybė
+    nb: Nalut
+    nl: Nalut
+    pl: Nalut
+    pt: Nalut
+    ro: Districtul Nalut
+    ru: Налут
+    sv: Nalut
+    uk: Налут
+    ur: نالوت ضلع
+    ceb: Sha‘bīyat Nālūt
+    zh: 納盧特省
+    ccp: "\U0001111A\U00011123\U0001112A\U00011116\U00011134"
+    'no': Nalut
+  comments:
+  type: popularate
+NQ:
+  name: An Nuqaţ al Khams
+  code: NQ
+  unofficial_names:
+  - An Nuqaţ al Khams
+  - Nuqāṭ al Ḫams
+  geo:
+    latitude: 32.6914909
+    longitude: 11.8891721
+    min_latitude: 32.201754
+    min_longitude: 11.3924129
+    max_latitude: 33.1688603
+    max_longitude: 12.4340378
+  translations:
+    en: Nuqat al Khams
+    ar: شعبية النقاط الخمس
+    bg: Ан Нукат ал Хамс
+    bn: নোকাত আল খামস
+    ca: An Nuqat al Khams
+    da: An Nuqat al Khams
+    de: Munizip an-Nuqat al-Chams
+    el: Νουγκάτ Αλ Κχαμς
+    es: An Nuqat al Khams
+    et: An-Nuqāt al-Khams
+    eu: An Nuqat al Khams
+    fa: استان نقاط الخمس
+    fi: Nuqat al Khams
+    fr: An Nouqat al Khams
+    gu: નુકત અલ ખામ્સ
+    hi: नुकत अल खाम्स
+    hu: Nukát el-Hamsz tartomány
+    id: An Nuqat al Khams
+    it: Municipalità di Nuqat al Khams
+    ja: ヌカート・アル・ハムス県
+    ka: ენ-ნუგატ-ელ-ხუმსი
+    kn: ನುಖತ್ ಅಲ್ ಖಮ್ಸ್
+    ko: 안누카트알캄스 주
+    lt: Nukat al Chamso savivaldybė
+    mr: नुकात अल खाम्स
+    ms: Nuqat al Khams
+    nb: An Nuqat al Khams
+    nl: An Nuqat al Khams
+    pl: An-Nukat al-Chams
+    pt: An Nuqat al Khams
+    ro: Districtul An Nuqat al Khams
+    ru: Эн-Нугат-эль-Хумс
+    si: නුකට් අල් කම්ස්
+    sv: An Nuqat al Khams
+    ta: நுஃஆட் அல் கம்ஸ
+    te: నౌఖత్ అల్ ఖామ్స్
+    th: นูกัท อัล คาม
+    tr: Nuqat Al Khams
+    uk: Ен-Нуґат ель-Хумс
+    ur: نقاط الخمس
+    vi: Nuqat al Khams
+    lv: Nukāta al Hamsa
+    ceb: Sha‘bīyat an Nuqāţ al Khams
+    zh: 努加特海姆斯省
+    ccp: "\U0001111A\U0001112A\U00011107\U00011116\U00011134 \U00011103\U00011123\U00011134
+      \U00011108\U0001111F\U00011134\U0001110C\U00011134"
+    'no': An Nuqat al Khams
+  comments:
+  type: popularate
+SB:
+  name: Sabhā
+  code: SB
+  unofficial_names: Sabhā
+  geo:
+    latitude: 27.038889
+    longitude: 14.426389
+    min_latitude: 26.9692017
+    min_longitude: 14.3821335
+    max_latitude: 27.0898485
+    max_longitude: 14.5361138
+  translations:
+    en: Sabha
+    ar: شعبية سبها
+    bg: Сабха
+    bn: সাবা জেলা
+    da: Sabha District
+    de: Munizip Sabha
+    el: Σάμπχα
+    es: Sabha
+    eu: Sabha
+    fa: استان سبها
+    fi: Sabhan kaupunginosa
+    fr: Sebha
+    gu: સભા જિલ્લો
+    hi: सभा जिला
+    hu: Szabha tartomány
+    id: Distrik Sabha
+    it: Municipalità di Sebha
+    ja: サブハー県
+    ka: საბჰის რაიონი
+    kn: ಸಭಾ ಜಿಲ್ಲೆ
+    ko: 세바 주
+    lt: Sabhos savivaldybė
+    mr: सभा जिल्हा
+    ms: Sabha District
+    nb: Sabha
+    nl: Sabha
+    pl: Sabha
+    pt: Sabha
+    ro: Districtul Sabha
+    ru: Сабха
+    si: සභා දිස්ත්‍රික්කය
+    sv: Sabha
+    ta: சபா மாவட்டம்
+    te: సాభా జిల్లా
+    th: ซาบา
+    tr: Sabha District
+    uk: Сабха
+    ur: صبہہ ضلع
+    vi: Quận Sabha
+    lv: Sebhas šebīja
+    ceb: Sha‘bīyat Sabhā
+    zh: 塞卜哈省
+    ccp: "\U00011125\U0001111E"
+    'no': Sabha
+  comments:
+  type: popularate
+SR:
+  name: Sirte
+  code: SR
+  unofficial_names:
+  - Sirt
+  - Surt
+  geo:
+    latitude: 31.205314
+    longitude: 16.588936
+    min_latitude: 31.156979
+    min_longitude: 16.5155527
+    max_latitude: 31.2135519
+    max_longitude: 16.6286411
+  translations:
+    en: Sirte
+    ar: شعبية سرت
+    be: Муніцыпалітэт Сурт
+    ca: Sirte
+    cs: Surt
+    da: Surt
+    de: Munizip Surt
+    es: Sirte
+    fa: استان سرت
+    fr: Syrte
+    hu: Szurt tartomány
+    id: Surt
+    it: Municipalità di Sirte
+    ja: スルト県
+    ka: სურთის რაიონი
+    ko: 시르테 주
+    lt: Surto savivaldybė
+    nb: Surt
+    nl: Sirte
+    pl: Syrta
+    pt: Surt
+    ro: Districtul Surt
+    ru: Сирт
+    sv: Surt
+    uk: Сирт
+    ur: سرت ضلع
+    ceb: Surt (distrito sa Libya)
+    zh: 蘇爾特省
+    ccp: "\U00011125\U00011128\U00011122\U00011134\U00011111\U0001112C"
+    'no': Surt
+    eu: Surt
+  comments:
+  type: popularate
+TB:
+  name: Tarabulus
+  code: TB
+  unofficial_names:
+  - Ţarābulus
+  - Tripoli
+  - Tripoli
+  geo:
+    latitude: 32.8829369
+    longitude: 13.1883359
+    min_latitude: 32.8639441
+    min_longitude: 13.1531882
+    max_latitude: 32.9019297
+    max_longitude: 13.2234836
+  translations:
+    en: Tripoli
+    ar: شعبية طرابلس
+    be: Муніцыпалітэт Тарабулус
+    ca: Trípoli
+    de: Munizip Tripolis
+    es: Trípoli
+    fr: Tripoli
+    hu: Tripoli tartomány
+    it: Municipalità di Tripoli
+    ja: トリポリ県
+    ka: ტრიპოლის რაიონი
+    ko: 타라불루스 주
+    lt: Tripolio savivaldybė
+    nl: Tripoli
+    pl: Trypolis
+    ro: Districtul Tarabulus
+    ru: Тарабулус
+    sv: Tarabulus
+    tr: Trablus ili
+    uk: Триполі
+    ur: طرابلس ضلع، لیبیا
+    zh: 的黎波里省
+    ccp: "\U00011111\U00011133\U00011122\U00011128\U0001111B\U00011127\U00011123\U00011128"
+    hy: Տարաբուլուս
+    pt: Trípoli
+    et: Tripoli omavalitsus
+    fa: ناحیه طرابلس (لیبی)
+  comments:
+  type: popularate
+WA:
+  name: Al Wahat
+  code: WA
+  unofficial_names:
+  - Al Wahat
+  - The Oases
+  - Al Wahad
+  - Al Wahah
+  geo:
+    latitude: 32.3147011
+    longitude: 14.5032835
+    min_latitude: 32.3120172
+    min_longitude: 14.4937963
+    max_latitude: 32.3185818
+    max_longitude: 14.5151013
+  translations:
+    en: Al Wahat
+    ar: شعبية الواحات
+    be: Муніцыпалітэт Эль-Вахат
+    ca: Al Wahat
+    cs: Al Wáhát
+    da: Al Wahat
+    de: Munizip al-Wahat
+    es: Al Wahat
+    eu: Al Wahat
+    fa: استان واحات
+    fr: Al Wahat
+    hu: Váhát tartomány
+    it: Municipalità di el-Uahat
+    ja: アル・ワーハート県
+    ka: ელ-ვახატი
+    ko: 알와하트 주
+    lt: Vahato savivaldybė
+    nb: Al Wahat
+    nl: Al Wahat
+    pl: Al-Wahat
+    pt: Al Wahat
+    ro: Districtul Al Wahat
+    ru: Эль-Вахат
+    sv: Al Wahat
+    uk: Ель-Вахат
+    ur: الواحات ضلع
+    ceb: Sha‘bīyat al Wāḩāt
+    zh: 绿洲省
+    ccp: "\U00011103\U00011123\U00011134 \U00011124\U00011126\U00011116\U00011134"
+    'no': Al Wahat
+    he: מחוז אל-ואחאת
+  comments:
+  type: popularate
+WD:
+  name: Wādī al Ḩayāt
+  code: WD
+  unofficial_names: Wādī al Ḩayāt
+  geo:
+    latitude: 29.5240753
+    longitude: 31.2912463
+    min_latitude: 29.5026438
+    min_longitude: 31.2627233
+    max_latitude: 29.5447935
+    max_longitude: 31.305119
+  translations:
+    en: Wadi al Hayaa
+    ar: شعبية وادي الحياة
+    bn: ওয়াদি আল হায়া জেলা
+    ca: Wadi Al Hayaa
+    da: Wadi Al Hayaa
+    de: Munizip Wadi al-Haya
+    el: Γουάντι αλ Χάγιαα
+    es: Wadi Al Hayaa
+    eu: Wadi Al Hayaa
+    fa: استان وادی الحیاة
+    fi: Wadi al Hayaan kaupunginosa
+    fr: Wadi al Hayaat
+    gu: વાડી અલ હયા જિલ્લો
+    hi: वादी अल हया जिला
+    hu: Vádi el-Haját tartomány
+    id: Distrik Wadi al Hayaa
+    it: Municipalità di Uadi el-Agial
+    ja: ワジ・アル・ハヤー県
+    ka: ვადი-ელ-ჰაიატი
+    kn: ವಾಡಿ ಅಲ್ ಹಯಾಯಾ ಜಿಲ್ಲೆ
+    ko: 와디알하야 주
+    lt: Vadi al Hajos savivaldybė
+    mr: वाडी अल हाया जिल्हा
+    ms: Wadi al Hayaa District
+    nb: Wadi Al Hayaa
+    nl: Wadi Al Hayaa
+    pl: Wadi al-Hajat
+    pt: Wadi Al Hayat
+    ro: Districtul Wadi Al Hayaa
+    ru: Вади-эль-Хаят
+    si: වඩි අල් හයා දිස්ත්‍රික්කය
+    sv: Wadi Al Hayaa
+    ta: வாடி அல் ஹாயா மாவட்டம்
+    te: వాడిి అల్ హయా జిల్లా
+    th: เมืองวาดี อัล ฮายา
+    tr: Wadi Al Hayaa District
+    uk: Ваді-ель-Хаят
+    ur: وادی الحیاہ ضلع
+    vi: Quận Wadi al Hayaa
+    lv: Vādī el Hajātas šebīja
+    ceb: Sha‘bīyat Wādī al Ḩayāt
+    zh: 瓦迪哈耶特省
+    ccp: "\U00011124\U00011113\U00011128 \U00011103\U00011123\U00011134 \U00011126\U00011120"
+    'no': Wadi Al Hayaa
+  comments:
+  type: popularate
+WS:
+  name: Wādī ash Shāţiʾ
+  code: WS
+  unofficial_names: Wādī ash Shāţiʾ
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Wadi al Shatii
+    ar: شعبية وادي الشاطئ
+    bn: ওয়াদি আল সাথী জেলা
+    ca: Wadi Al Shatii
+    da: Wadi Al Shatii
+    de: Munizip Wadi asch-Schati’
+    el: Γουάντι αλ Σατί
+    es: Wadi Al Shatii
+    eu: Wadi Al Shatii
+    fi: Wadi al Shatiin kaupunginosa
+    fr: Wadi ach Chatii
+    gu: વાડી અલ શતી જિલ્લો
+    hi: वादी अल शातिल जिला
+    hu: Vádi es-Sáti tartomány
+    id: Distrik Wadi al Shatii
+    it: Municipalità di Uadi esc-Sciati
+    ja: ワジ・アル・シャーティー県
+    ka: ვადი-ეშ-შატი
+    kn: ವಾಡಿ ಅಲ್ ಶತಿ ಜಿಲ್ಲೆ
+    ko: 와디알샤티 주
+    lt: Vadi al Šati savivaldybė
+    mr: वाडी अल शाती जिल्हा
+    ms: Wadi al Shatii District
+    nb: Wadi al Shatii distrikt
+    nl: Wadi Al Shatii
+    pl: Wadi asz-Szati
+    pt: Ash Shatii
+    ro: Districtul Wadi Al Shatii
+    ru: Вади-эш-Шати
+    si: වඩි අල් ශටි දිස්ත්‍රික්කය
+    sv: Wadi Al Shatii
+    ta: வாடி அல் சாதி மாவட்டம்
+    te: వాడి ఎల్ షాటీ జిల్లా
+    th: เขตวาดิ อัล ชาทิ
+    tr: Vadi El Şati ili
+    uk: Ваді-еш-Шаті
+    ur: وادی الشاطی ضلع
+    vi: Tỉnh Wadi al Shatii
+    lv: Vādī el Šati šebīja
+    ceb: Sha‘bīyat Wādī ash Shāţi’
+    zh: 沙提省
+    ccp: "\U00011124\U00011113\U00011128 \U00011103\U00011123\U00011134 \U00011125\U00011111\U00011133\U00011126\U00011128"
+    hy: Վադի ալ-Շատի
+    'no': Wadi al Shatii distrikt
+    fa: استان وادیالشاطئ
+  comments:
+  type: popularate
+ZA:
+  name: Az Zawiyah
+  code: ZA
+  unofficial_names: Az Zawiyah
+  geo:
+    latitude: 32.5394906
+    longitude: 12.5298028
+    min_latitude: 32.2049039
+    min_longitude: 11.934911
+    max_latitude: 32.828812
+    max_longitude: 12.9854179
+  translations:
+    en: Zawiya
+    ar: شعبية الزاوية
+    bn: যাইয়া জেলা
+    ca: Zauiya
+    da: Zawiya District
+    de: Munizip az-Zawiya
+    el: Ζαγία
+    es: Zauiya
+    eu: Zawiya
+    fa: استان زاویه
+    fi: Zawiyan kaupunginosa
+    fr: Az Zaouiyah
+    gu: ઝાવિયા જિલ્લો
+    hi: ज़ाविया जिला
+    hu: Závija tartomány
+    id: Distrik Zawiya
+    it: Municipalità di Zauia
+    ja: ザーウィヤ県
+    ka: ეზ-ზავიის რაიონი
+    kn: ಝಾವಿಯಾ ಜಿಲ್ಲೆ
+    ko: 앗자위야 주
+    lt: Zavijos savivaldybė
+    mr: झाविया जिल्हा
+    ms: Zawiya District
+    nb: Az Zawiyah
+    nl: Az Zawiyah
+    pl: Az-Zawija
+    pt: Az Zawiyah
+    ro: Districtul Az Zawiyah
+    ru: Эз-Завия
+    si: සවියා දිස්ත්‍රික්කය
+    sv: Az Zawiyah
+    ta: சாவியா மாவட்டம்
+    te: జావియా జిల్లా
+    th: ซาวิยา
+    tr: Zawaiya District
+    uk: Ез-Завія
+    ur: زاویہ ضلع
+    vi: Quận Zawiya
+    lv: Zāvijas šebīja
+    ceb: Sha‘bīyat az Zāwiyah
+    zh: 扎維耶省
+    ccp: "\U0001110E\U00011103\U00011128\U00011120"
+    'no': Az Zawiyah
+  comments:
+  type: popularate

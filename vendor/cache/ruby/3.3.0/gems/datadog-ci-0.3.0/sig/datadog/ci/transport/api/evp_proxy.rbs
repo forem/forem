@@ -1,0 +1,19 @@
+module Datadog
+  module CI
+    module Transport
+      module Api
+        class EvpProxy < Base
+          @container_id: String?
+
+          def request: (path: String, payload: String, ?verb: ::String) -> Datadog::CI::Transport::HTTP::ResponseDecorator
+
+          private
+
+          def container_id: () -> String?
+
+          def headers: () -> Hash[String, String]
+        end
+      end
+    end
+  end
+end

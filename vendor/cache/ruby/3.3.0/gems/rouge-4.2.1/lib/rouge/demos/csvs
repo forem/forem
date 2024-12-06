@@ -1,0 +1,8 @@
+version 1.1
+@totalColumns 5
+@separator ','
+Transaction_Date: xDate
+Transaction_ID: notEmpty
+Originator_Name: notEmpty
+Originator_Address: any("yes","no")
+Originator_Country: notEmpty

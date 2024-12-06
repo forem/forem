@@ -1,0 +1,596 @@
+---
+CE:
+  name: Central
+  code: CE
+  unofficial_names: Central
+  geo:
+    latitude: -9.0516057
+    longitude: 160.1693949
+    min_latitude: -9.287286
+    min_longitude: 158.730864
+    max_latitude: -8.84783
+    max_longitude: 160.4130619
+  translations:
+    en: Central
+    ar: المقاطعة الوسطى
+    bn: সেন্ট্রাল প্রদেশ
+    ca: Província Central
+    da: Central Province
+    de: Central
+    el: Κεντρική Επαρχία, Νήσοι Σολομώντα
+    es: Provincia Central
+    eu: Probintzia Zentrala
+    fa: استان مرکزی
+    fi: Central Province
+    fr: Province centrale
+    gl: Central, Illas Salomón
+    gu: સેન્ટ્રલ પ્રાંત
+    hi: केंद्रीय प्रांत
+    hy: Կենտրոնական նահանգ
+    id: Provinsi Tengah
+    it: provincia Centrale
+    ja: 中央州
+    ka: ცენტრალური პროვინცია
+    kn: ಮಧ್ಯ ಪ್ರಾಂತ್ಯ
+    ko: 중부 주
+    lt: Centrinė provincija
+    mr: सेंट्रल प्रांत
+    ms: Central Province
+    nb: Sentral provins
+    nl: Central
+    pl: Prowincja Centralna
+    pt: Província Central
+    ru: Центральная провинция
+    si: මධ්‍යම පළාත
+    sv: Centrala provinsen
+    ta: சென்ட்ரல் மாகாணம்
+    te: సెంట్రల్ ప్రావిన్స్
+    th: จังหวัดเซ็นทรัล
+    tr: Central Province
+    ur: وسطی صوبہ
+    vi: Tỉnh Miền Trung
+    zh: 中部群島省
+    lv: Centrālā province
+    ceb: Central Province (lalawigan sa Kapupud-ang Solomon)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    uk: Центральна провінція
+    mk: Централна Провинција
+    'no': Sentral provins
+    cs: Centrální provincie
+  comments:
+  type: province
+CH:
+  name: Choiseul
+  code: CH
+  unofficial_names:
+  - Lauru
+  geo:
+    latitude: -7.0501494
+    longitude: 156.9511459
+    min_latitude: -7.486276999999999
+    min_longitude: 156.3830852
+    max_latitude: -6.5901809
+    max_longitude: 157.8805597
+  translations:
+    en: Choiseul
+    ar: ضاحية شويزل
+    bn: কৈসুল প্রদেশ
+    da: Choiseul Province
+    de: Choiseul
+    el: Τσοϊζέουλ
+    es: Choiseul
+    fa: استان چویسئول
+    fi: Choiseulin provinssi
+    fr: province de Choiseul
+    gl: Provincia de Choiseul
+    gu: ચોઇસુલ પ્રાંત
+    hi: चोइजोल प्रांत
+    hr: Choiseul
+    hy: Չոիսեուլ նահանգ
+    id: Provinsi Choiseul
+    it: provincia di Choiseul
+    ja: チョイスル州
+    ka: შუაზელის პროვინცია
+    kn: ಚಾಯ್ಸೂಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 슈아절 주
+    lt: Šuazelio provincija
+    mr: चॉइसेउई प्रांत
+    ms: Daerah Choiseul
+    nb: Chosieul provins
+    nl: Choiseul
+    pl: Prowincja Choiseul
+    pt: Província de Choiseul
+    ru: Шуазёль
+    si: චෝයිසෙඋල් පළාත
+    sv: Chosieul provinsen
+    ta: சொஇச்செயல் மாகாணம்
+    te: చోయిసియో ప్రావిన్స్
+    th: จังหวัดซัวเซิล
+    tr: Choiseul Province
+    ur: چویسیول صوبہ
+    vi: Tỉnh Choiseul
+    lv: Šuazelas province
+    ceb: Choiseul (lalawigan sa Kapupud-ang Solomon)
+    zh: 舒瓦瑟爾省
+    ccp: "\U00011107\U00011130\U00011131\U00011125\U00011128\U00011105\U0001112A\U00011123\U00011134"
+    uk: Провінція Шуазйоль
+    'no': Chosieul provins
+    cy: Talaith Choiseul
+  comments:
+  type: province
+CT:
+  name: Capital Territory (Honiara)
+  code: CT
+  unofficial_names: Capital Territory (Honiara)
+  geo:
+    latitude: -9.4343868
+    longitude: 159.9609892
+    min_latitude: -9.457228899999999
+    min_longitude: 159.9145083
+    max_latitude: -9.4211729
+    max_longitude: 160.0229509
+  translations:
+    en: Honiara
+    af: Honiara
+    am: ሆኒያራ
+    ar: هونيارا
+    az: Honiara
+    be: Горад Ханіяра
+    bg: Хониара
+    bn: হুনিয়ারা
+    ca: Honiara
+    cs: Honiara
+    da: Honiara
+    de: Honiara
+    el: Ονιάρα
+    es: Honiara
+    et: Honiara
+    eu: Honiara
+    fa: هونیارا
+    fi: Honiara
+    fr: Honiara
+    gl: Honiara
+    gu: હોનિયારા
+    he: הוניארה
+    hi: होनियारा
+    hr: Honiara
+    hu: Honiara
+    hy: Հոնիարա
+    id: Honiara
+    is: Honíara
+    it: Honiara
+    ja: ホニアラ
+    ka: ჰონიარა
+    kn: ಹೊನಿಯರ
+    ko: 호니아라
+    lt: Honiara
+    lv: Honiara
+    mr: होनियारा
+    ms: Honiara
+    nb: Honiara
+    nl: Honiara
+    pl: Honiara
+    pt: Honiara
+    ro: Honiara
+    ru: Хониара
+    si: හොනියාරා
+    sk: Honiara
+    sl: Honiara
+    sr: Хонијара
+    sv: Honiara
+    sw: Honiara
+    ta: ஓனியாரா
+    te: హోనియారా
+    th: โฮนีอารา
+    tr: Honiara
+    uk: Хоніара
+    ur: ہونیارا
+    vi: Honiara
+    cy: Honiara
+    ceb: Honiara (ulohang dakbayan)
+    sr_Latn: Honijara
+    zh: 霍尼亚拉
+    yue_Hans: 康尼艾华
+    ccp: "\U00011126\U00011127\U0001111A\U00011128\U00011120\U00011122"
+    ga: Hóiniára
+    so: Honiara
+    pa: ਹੋਨੀਆਰਾ
+    yue: 康尼艾華
+    yo: Honiara
+    uz: Xoniara
+    bs: Honiara
+    mk: Хонијара
+    'no': Honiara
+    yo_BJ: Honiara
+    ml: ഹോണിയറ
+    ps: هونیارا
+  comments:
+  type: capital_territory
+GU:
+  name: Guadalcanal
+  code: GU
+  unofficial_names: Guadalcanal
+  geo:
+    latitude: -9.577328399999999
+    longitude: 160.1455805
+    min_latitude: -9.9442284
+    min_longitude: 159.5873199
+    max_latitude: -9.2508648
+    max_longitude: 160.8318648
+  translations:
+    en: Guadalcanal
+    ar: مقاطعة غوادالكانال
+    bn: গুয়াডালক্যানাল প্রদেশ
+    da: Guadalcanal Province
+    de: Guadalcanal
+    el: Γκουανταλκανάλ
+    es: Guadalcanal
+    fa: استان گودال کانال
+    fi: Guadalcanalin provinssi
+    fr: province de Guadalcanal
+    gl: Provincia de Guadalcanal
+    gu: ગુઆડાલકેનાલ પ્રાંત
+    hi: गुएडलकैनाल प्रांत
+    hr: Guadalcanal
+    id: Provinsi Guadalcanal
+    it: provincia di Guadalcanal
+    ja: ガダルカナル州
+    ka: გუადალკანალის პროვინცია
+    kn: ಗ್ವಾಡಲ್ಕೆನಾಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 과달카날 주
+    lt: Gvadalkanalio provincija
+    mr: ग्वाडालकॅनाल प्रांत
+    ms: Daerah Guadalcanal
+    nb: Guadalcanal provins
+    nl: Guadalcanal
+    pl: Prowincja Guadalcanal
+    pt: Província de Guadalcanal
+    ru: Гуадалканал
+    si: ගුආඩල්කැනල් පළාත
+    sv: Guadalcanal provinsen
+    ta: குண்டால்க்கானால் மாகாணம்
+    te: గ్వాడాల్కెనాల్ ప్రావిన్స్
+    th: จังหวัดกัวดาลคานาล
+    tr: Guadalcanal Province
+    uk: Гуадалканал
+    ur: گوادالکانال صوبہ
+    vi: Tỉnh Guadalcanal
+    lv: Gvadalkanāla province
+    ceb: Guadalcanal Province
+    zh: 瓜達爾卡納爾省
+    ccp: "\U00011109\U0001112A\U00011120\U00011113\U00011123\U00011134\U00011107\U0001111A\U00011123\U00011134"
+    'no': Guadalcanal provins
+    ca: província de Guadalcanal
+  comments:
+  type: province
+IS:
+  name: Isabel
+  code: IS
+  unofficial_names: Isabel
+  geo:
+    latitude: -8.0592353
+    longitude: 159.1447081
+    min_latitude: -8.5734088
+    min_longitude: 157.9629997
+    max_latitude: -7.359185999999998
+    max_longitude: 159.922843
+  translations:
+    en: Isabel
+    ar: مقاطعة إيزابيل
+    bn: ইসাবেল প্রদেশ
+    ca: Isabel
+    da: Isabel Province
+    de: Isabel
+    el: Ιζαμπέλ
+    es: Isabel
+    fa: استان ایزابل
+    fi: Isabel
+    fr: province d’Isabel
+    gl: Isabel, Illas Salomón
+    gu: ઇસાબેલ પ્રાંત
+    hi: इसाबेल प्रांत
+    hr: Isabel
+    id: Provinsi Isabel
+    it: provincia di Isabel
+    ja: イサベル州
+    ka: ისაბელის პროვინცია
+    kn: ಇಸಾಬೆಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 이사벨 주
+    lt: Isabelės provincija
+    mr: इस्बाईल प्रांत
+    ms: Wilayah Isabel
+    nb: Isabel provins
+    nl: Isabel
+    pl: Prowincja Isabel
+    pt: Província de Isabel
+    ru: Исабель
+    si: ඉසබෙල් පළාත
+    sv: Isabel provinsen
+    ta: இசபெல் மாகாணம்
+    te: ఇజాబెల్ ప్రావిన్స్
+    th: จังหวัดอิซาเบล
+    tr: Isabel Province
+    ur: ایزابیل صوبہ
+    vi: Tỉnh Isabel
+    lv: Isabelas province
+    ceb: Isabel Province
+    zh: 伊莎貝爾省
+    ccp: "\U00011103\U00011128\U00011125\U0001111D\U0001112C\U00011123\U00011134"
+    uk: Провінція Ісабель
+    'no': Isabel provins
+    cy: Talaith Isabel
+  comments:
+  type: province
+MK:
+  name: Makira
+  code: MK
+  unofficial_names:
+  - San Cristóbal
+  geo:
+    latitude: -10.5737447
+    longitude: 161.8096941
+    min_latitude: -10.9010735
+    min_longitude: 161.2639239
+    max_latitude: -9.714576899999999
+    max_longitude: 162.4842479
+  translations:
+    en: Makira-Ulawa
+    de: Makira und Ulawa
+    es: Makira
+    fa: استان ماکیرا-اولاوا
+    fr: province de Makira-Ulawa
+    gl: Makira, Illas Salomón
+    hr: Makira-Ulawa
+    id: Provinsi Makira-Ulawa
+    it: provincia di Makira-Ulawa
+    ja: マキラ・ウラワ州
+    ka: მაკირა-ულავა
+    ko: 마키라울라와 주
+    lt: Makiros-Ulavos provincija
+    nl: Makira
+    pl: Prowincja Makira-Ulawa
+    pt: Província de Makira-Ulawa
+    ru: Макира-Улава
+    ur: ماکیرا-اولاوا صوبہ
+    vi: Makira-Ulawa
+    ceb: Makira-Ulawa Province
+    zh: 馬基拉-烏拉瓦省
+    ccp: "\U0001111F\U00011107\U00011128\U00011122-\U00011103\U00011123\U00011124"
+    uk: Макіра-Улава
+  comments:
+  type: province
+ML:
+  name: Malaita
+  code: ML
+  unofficial_names:
+  - Mala
+  geo:
+    latitude: -8.9446168
+    longitude: 160.9071236
+    min_latitude: -9.729862299999999
+    min_longitude: 160.5585766
+    max_latitude: -8.3105853
+    max_longitude: 161.5823776
+  translations:
+    en: Malaita
+    ar: محافظة مالايتا
+    bn: ম্যালাইটা প্রদেশ
+    da: Malaita Province
+    de: Malaita
+    el: Μαλάιτα
+    es: Malaita
+    fa: استان مالایتا
+    fi: Malaita provinssi
+    fr: province de Malaita
+    gl: Malaita, Illas Salomón
+    gu: મલાઈતા પ્રાંત
+    hi: मलाइटा प्रांत
+    hr: Malaita (provincija)
+    id: Provinsi Malaita
+    it: provincia di Malaita
+    ja: マライタ州
+    ka: მალაიტის პროვინცია
+    kn: ಮಲೈಟ ಪ್ರಾಂತ್ಯ
+    ko: 말라이타 주
+    lt: Malaitos provincija
+    mr: मलायत प्रांत
+    ms: Wilayah Malaita
+    nb: Malaita provins
+    nl: Malaita
+    pl: Prowincja Malaita
+    pt: Província de Malaita
+    ru: Малаита
+    si: මලයිටා පළාත
+    sv: Malaita Provinsen
+    ta: மாலைடா மாகாணம்
+    te: మాలైటా ప్రావిన్స్
+    th: จังหวัดมาไลตา
+    tr: Malaita Province
+    ur: مالایتا صوبہ
+    vi: Tỉnh Malaita
+    lv: Malaitas province
+    ceb: Malaita Province
+    zh: 馬萊塔省
+    ccp: "\U0001111F\U00011123\U0001112D\U00011111"
+    uk: Провінція Малаіта
+    'no': Malaita provins
+    ca: Malaita
+    cy: Talaith Malaita
+  comments:
+  type: province
+RB:
+  name: Rennell and Bellona
+  code: RB
+  unofficial_names: Rennell and Bellona
+  geo:
+    latitude: -11.6131435
+    longitude: 160.1693949
+    min_latitude: -11.8505741
+    min_longitude: 159.7519747
+    max_latitude: -11.2732136
+    max_longitude: 160.5820945
+  translations:
+    en: Rennell and Bellona
+    ar: محافظة رينيل و بيلونا
+    bn: রেন্নেল ও বেল্লনা প্রদেশ
+    ca: Rennell i Bellona
+    da: Rennell and Bellona Province
+    de: Rennell und Bellona
+    el: Ρένελ και Μπελόνα
+    es: Rennell y Bellona
+    fa: استان رنال و بلونا
+    fi: Rennell ja Bellona
+    fr: province de Rennell et Bellona
+    gl: Rennell e Bellona
+    gu: રેનેલ એન્ડ બેલોના પ્રાંત
+    hi: रेनेल और बेलोना प्रांत
+    hr: Rennell i Bellona
+    id: Provinsi Rennell dan Bellona
+    it: provincia di Rennell e Bellona
+    ja: レンネル・ベローナ州
+    ka: რენელი და ბელონა
+    kn: ರೆನೆಲ್ ಮತ್ತು ಬೆಲೋನಾ ಪ್ರಾಂತ್ಯ
+    ko: 렌넬벨로나 주
+    lt: Renelo ir Belonos provincija
+    mr: रेनेलला अँड बेलोणा प्रांत
+    ms: Rennell and Bellona Province
+    nb: Rennell and Bellona provins
+    nl: Rennell-Bellona
+    pl: Prowincja Rennell i Bellona
+    pt: Província de Rennell e Bellona
+    ru: Реннелл и Беллона
+    si: රෙනෙල් සහ බෙලොනා පළාත
+    sv: Rennell and Bellona provins
+    ta: ரெண்ணல் அண்ட் பெல்லோனா மாகாணம்
+    te: రెనెల్ మరియు బెలోనా ప్రావిన్స్
+    th: จังหวัดเรนเนล แอน เบลลอน
+    tr: Rennel and Bellona Province
+    ur: رینل اور بیلونا صوبہ
+    vi: Tỉnh Rennell và Bellona
+    lv: Renelas un Belonas province
+    ceb: Rennell and Bellona
+    zh: 拉納爾和貝羅納省
+    ccp: "\U00011122\U0001112C\U0001111A\U0001112C\U00011123\U00011134 \U00011103\U00011133\U00011103
+      \U0001111D\U0001112C\U00011123\U0001112E\U0001111A"
+    uk: Провінція Реннелл та Беллона
+    'no': Rennell and Bellona provins
+    eu: Rennell eta Bellonako probintzia
+  comments:
+  type: province
+TE:
+  name: Temotu
+  code: TE
+  unofficial_names:
+  - Eastern Islands
+  geo:
+    latitude: -10.686929
+    longitude: 166.0623979
+    min_latitude: -12.312529
+    min_longitude: 165.650482
+    max_latitude: -9.7597709
+    max_longitude: 168.8457699
+  translations:
+    en: Temotu
+    ar: محافظة تيموتو
+    bn: টেমোটু প্রদেশ
+    da: Temotu Province
+    de: Temotu
+    el: Τεμοτού
+    es: Temotu
+    fa: استان تموتو
+    fi: Temotu
+    fr: province de Temotu
+    gl: Temotu
+    gu: ટેમોટુ પ્રાંત
+    hi: टेमोटू प्रांत
+    hr: Temotu (provincija)
+    id: Provinsi Temotu
+    it: provincia di Temotu
+    ja: テモツ州
+    ka: ტემოტუ
+    kn: ತೆಮೊಟು ಪ್ರಾಂತ್ಯ
+    ko: 테모투 주
+    lt: Temotu provincija
+    mr: टेमोटो प्रांत
+    ms: Daerah Temotu
+    nb: Temotu-provinsen
+    nl: Temotu
+    pl: Prowincja Temotu
+    pt: Província de Temotu
+    ru: Темоту
+    si: ටෙමොටු පළාත
+    sv: Temotu provinsen
+    ta: டெமொட்டு மாகாணம்
+    te: టెమోటూ ప్రావిన్స్
+    th: จังหวัดเตโมตู
+    tr: Temotu Province
+    ur: تیموتو صوبہ
+    vi: Temotu
+    lv: Temotu province
+    ceb: Temotu Province
+    zh: 泰莫圖省
+    ccp: "\U00011111\U0001112C\U0001111F\U0001112E\U00011111\U0001112A"
+    uk: Провінція Темоту
+    'no': Temotu-provinsen
+    cy: Talaith Temotu
+    he: מחוז טמוטו
+  comments:
+  type: province
+WE:
+  name: Western
+  code: WE
+  unofficial_names: Western
+  geo:
+    latitude: -8.128037299999999
+    longitude: 157.4278119
+    min_latitude: -8.829506
+    min_longitude: 155.513278
+    max_latitude: -6.673965
+    max_longitude: 158.2985577
+  translations:
+    en: Western
+    ar: المحافظة الغربية
+    bg: Западна провинция
+    bn: ওয়েস্টার্ন প্রদেশ
+    da: Western Province
+    de: Western
+    el: Δυτική Επαρχία, Νήσοι Σολομώντα
+    es: Provincia Occidental
+    fa: استان غربی
+    fi: Western Province
+    fr: Province occidentale
+    gl: Occidental, Illas Salomón
+    gu: પશ્ચિમી પ્રાંત
+    hi: पश्चिमी प्रांत
+    hr: Zapadna provincija
+    id: Provinsi Barat
+    it: provincia Occidentale
+    ja: 西部州
+    ka: დასავლეთი პროვინცია
+    kn: ಪಶ್ಚಿಮ ಪ್ರಾಂತ್ಯ
+    ko: 서부 주
+    lt: Vakarų provincija
+    mr: पश्चिम प्रांत
+    ms: Western Province
+    nb: Vest provinsen
+    nl: Western
+    pl: Prowincja Zachodnia
+    pt: Província Ocidental (Ilhas Salomão)
+    ru: Западная провинция
+    si: බස්නාහිර පළාත
+    sv: Västprovinsen
+    ta: மேற்கு மாகாணம்
+    te: పశ్చిమ ప్రాంతం
+    th: เวสเทิร์น โพวิ้น
+    tr: Western Province
+    ur: مغربی صوبہ
+    vi: Tỉnh Phía Tây
+    lv: Rietumu province
+    ceb: Western Province
+    zh: 西部省
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    uk: Західна провінція
+    ca: Província Occidental
+    'no': Vest provinsen
+  comments:
+  type: province

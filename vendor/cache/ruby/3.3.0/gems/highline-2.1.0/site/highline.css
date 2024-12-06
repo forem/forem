@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background: #abc;
+  font: 13px Trebuchet MS, Lucida Sans Unicode, Arial, sans-serif;
+}
+
+#container {
+  margin: 0 auto;
+  margin-top: 10px;
+  position: relative;
+  width: 785px;
+  background: #fff repeat;
+  padding-top: 20px;
+}
+
+#container #header {
+  padding-top: 20px;
+  height: 141px;
+  width:  785px;
+  background: url(images/logo.png) center no-repeat;
+}
+
+#container #content {
+  text-align: left;
+  margin-left: 230px;
+  width: 500px;
+}
+
+#container #sidebar {
+  text-align: left;
+  position: absolute;
+  top: 181px;
+  left: 0;
+  width: 170px;
+  margin-right: 25px;
+}
+
+#container #footer {
+  font: 9px Arial;
+  padding: 4px;
+  border-top: 1px solid;
+  color: #aaa;
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  border-bottom: 1px solid #e8e8e8;
+  padding-top: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #15528a;
+}
+
+pre {
+  padding: 5px;
+  padding-left: 20px;
+  font: 11px Courier;
+}

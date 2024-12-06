@@ -1,0 +1,1259 @@
+---
+BGO:
+  name: Bengo
+  code: BGO
+  unofficial_names: Bengo
+  geo:
+    latitude: -9.104225699999999
+    longitude: 13.7289167
+    min_latitude: -10.473318
+    min_longitude: 13.1099769
+    max_latitude: -7.629126100000001
+    max_longitude: 14.7415391
+  translations:
+    en: Bengo
+    af: Bengo-provinsie
+    am: ቤንጎ
+    ar: مقاطعة بنغو
+    az: Benqo
+    be: Правінцыя Бенга
+    bg: Бенго
+    bn: বেনগো প্রদেশ
+    ca: Bengo
+    cs: Bengo
+    da: Bengo
+    de: Provinz Bengo
+    el: Μπένγκο
+    es: Bengo
+    et: Bengo provints
+    fa: استان بنگو
+    fi: Bengo
+    fr: Bengo
+    gl: Bengo
+    gu: બેન્ગો પ્રાંત
+    hi: बेंगो प्रांत
+    id: Bengo
+    it: provincia del Bengo
+    ja: ベンゴ州
+    ka: ბენგოს პროვინცია
+    kn: ಬೆಂಗೋ ಪ್ರಾಂತ್ಯ
+    ko: 벵구 주
+    lt: Bengo provincija
+    mr: बेनगो प्रांत
+    ms: Bengo Province
+    nb: Bengo
+    nl: Bengo
+    pl: Prowincja Bengo
+    pt: Bengo
+    ro: Provincia Bengo
+    ru: Бенго
+    si: බෙන්ගෝ පළාත
+    sr: Бенго
+    sv: Bengo
+    sw: Bengo
+    ta: பெங்கோ மாகாணம்
+    te: బెంగో ప్రావిన్స్
+    th: จังหวัดเบนโก
+    tk: Bengo
+    tr: Bengo Bölgesi
+    uk: Бенго
+    ur: بنگو صوبہ
+    vi: Bengo
+    zh: 本哥省
+    lv: Bengo province
+    ceb: Bengo Province
+    sr_Latn: Bengo
+    yue_Hans: 本哥省
+    ccp: "\U0001111D\U0001112C\U0001110B\U00011134\U00011109\U0001112E"
+    so: Bengo Province
+    yue: 本哥省
+    'no': Bengo
+    cy: Talaith Bengo
+  comments:
+  type: province
+BGU:
+  name: Benguela
+  code: BGU
+  unofficial_names: Benguela
+  geo:
+    latitude: -12.5905158
+    longitude: 13.416501
+    min_latitude: -12.6193441
+    min_longitude: 13.3585294
+    max_latitude: -12.5622063
+    max_longitude: 13.4346042
+  translations:
+    en: Benguela
+    af: Benguela-provinsie
+    am: ቤንጉዌላ
+    ar: مقاطعة بنغيلا
+    be: Правінцыя Бенгела
+    bg: Бенгела
+    bn: বেঙ্গুএলা প্রদেশ
+    ca: Benguela
+    cs: Benguela
+    da: Benguela
+    de: Provinz Benguela
+    el: Μπενγκουέλα
+    es: Benguela
+    fa: استان بنگوئلا
+    fi: Benguelan maakunta
+    fr: Benguela
+    gl: Provincia de Benguela
+    gu: બેન્ગ્યુલા પ્રાંત
+    hi: बेंगुला प्रांत
+    id: Provinsi Benguela
+    it: provincia di Benguela
+    ja: ベンゲラ州
+    ka: ბენგელის პროვინცია
+    kn: ಬೆಂಗ್ಯುಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 벵겔라 주
+    lt: Bengelos provincija
+    mr: बेंगुएला प्रांत
+    ms: Benguela Province
+    nb: Benguela
+    nl: Benguela
+    pl: Prowincja Benguela
+    pt: Benguela
+    ro: Provincia Benguela
+    ru: Бенгела
+    si: බෙන්ගාලා පළාත
+    sr: Бенгела
+    sv: Benguela
+    sw: Benguela
+    ta: பெங்கேலா மாகாணம்
+    te: బెంగ్యువెలా ప్రావిన్స్
+    th: เบงกีลา
+    tk: Bengela
+    tr: Benguela Bölgesi
+    uk: Бенгела
+    ur: بینگوئلا صوبہ
+    vi: Benguela
+    lv: Bengelas province
+    ceb: Benguela
+    sr_Latn: Bengela
+    zh: 本吉拉省
+    yue_Hans: 班圭拉省
+    ccp: "\U0001111D\U0001112C\U0001110B\U00011134\U00011109\U0001112A\U00011120\U0001112C\U00011123"
+    so: Benguela Province
+    yue: 班圭拉省
+    'no': Benguela
+    az: Benquela vilayəti
+    cy: Talaith Benguela
+    et: Benguela provints
+  comments:
+  type: province
+BIE:
+  name: Bié
+  code: BIE
+  unofficial_names: Bié
+  geo:
+    latitude: -12.5727907
+    longitude: 17.668887
+    min_latitude: -14.305984
+    min_longitude: 15.7335889
+    max_latitude: -10.572202
+    max_longitude: 19.2239829
+  translations:
+    en: Bié
+    af: Bié-provinsie
+    ar: مقاطعة بيي
+    be: Правінцыя Біе
+    bg: Бие
+    bn: বিই প্রদেশ
+    ca: Bié
+    cs: Bié
+    da: Bié
+    de: Provinz Bié
+    el: Μπιέ
+    es: Bié
+    fa: استان بیه
+    fi: Bié
+    fr: Bié
+    gl: Bié
+    gu: બાય પ્રાંત
+    hi: बिए प्रांत
+    id: Provinsi Bié
+    it: provincia di Bié
+    ja: ビエ州
+    ka: ბიეს პროვინცია
+    kn: ಬಿಯಿ ಪ್ರಾಂತ್ಯ
+    ko: 비에 주
+    lt: Bijės provincija
+    mr: बाय प्रांत
+    ms: Bie Province
+    nb: Bié
+    nl: Bié
+    pl: Prowincja Bié
+    pt: Bié
+    ro: Provincia Bié
+    ru: Бие
+    si: බියේ පළාත
+    sr: Бије
+    sv: Bié
+    sw: Bié
+    ta: பிஇ மாகாணம்
+    te: బై ప్రావిన్స్
+    th: จังหวัดบี้
+    tk: Biýe
+    tr: Bié Bölgesi
+    uk: Біє
+    ur: بئے صوبہ
+    vi: Bié
+    lv: Biē province
+    ceb: Província do Bié
+    sr_Latn: Bije
+    zh: 比耶省
+    yue_Hans: 比耶省
+    ccp: "\U0001111D\U00011128\U00011120\U0001112C"
+    so: Bié Province
+    yue: 比耶省
+    'no': Bié
+    cy: Talaith Bié
+    et: Bié provints
+  comments:
+  type: province
+CAB:
+  name: Cabinda
+  code: CAB
+  unofficial_names:
+  - Kabinda
+  geo:
+    latitude: -5.56
+    longitude: 12.19
+    min_latitude: -5.6216234
+    min_longitude: 12.1627235
+    max_latitude: -5.5409834
+    max_longitude: 12.2682953
+  translations:
+    en: Cabinda
+    af: Cabinda
+    ar: مقاطعة كابيندا
+    az: Kabinda
+    be: Правінцыя Кабінда
+    bg: Кабинда
+    bn: কাবিনডা প্রদেশ
+    ca: Cabinda
+    cs: Cabinda
+    da: Cabinda
+    de: Provinz Cabinda
+    el: Καμπίντα
+    es: Cabinda
+    eu: Kabinda
+    fa: استان کابیندا
+    fi: Cabinda
+    fr: Cabinda
+    gl: Cabinda
+    gu: કાબિન્ડા પ્રાંત
+    he: קבינדה
+    hi: कबिन्ड प्रांत
+    hr: Cabinda
+    hu: Cabinda
+    id: Provinsi Cabinda
+    it: provincia di Cabinda
+    ja: カビンダ
+    ka: კაბინდის პროვინცია
+    kn: ಕ್ಯಾಬಿಂಡಾ ಪ್ರಾಂತ್ಯ
+    ko: 카빈다 주
+    lt: Kabinda
+    mr: कांबीडा प्रांत
+    ms: Cabinda Province
+    nb: Cabinda
+    nl: Cabinda
+    pl: Prowincja Kabinda
+    pt: Cabinda
+    ro: Provincia Cabinda
+    ru: Кабинда
+    si: කාබින්ඩා පළාත
+    sr: Кабинда
+    sv: Kabinda
+    sw: Kabinda
+    ta: காபின்டா மாகாணம்
+    te: కాబిండా ప్రావిన్స్
+    th: รัฐโนวาสโกเชีย
+    tk: Kabinda
+    tr: Cabinda Bölgesi
+    uk: Кабінда
+    ur: کابیندا صوبہ
+    vi: Cabinda
+    lv: Kabindas province
+    cy: Cabinda
+    ceb: Cabinda
+    sr_Latn: Kabinda
+    zh: 喀丙達省
+    yue_Hans: 喀丙达省
+    ccp: "\U00011107\U0001111D\U00011128\U0001111A\U00011134\U00011118"
+    sk: Cabinda
+    so: Cabinda Province
+    yue: 喀丙達省
+    'no': Cabinda
+    ky: Кабинда
+  comments:
+  type: province
+CCU:
+  name: Cuando-Cubango
+  code: CCU
+  unofficial_names:
+  - Cuando-Cubango
+  geo:
+    latitude: -16.4180824
+    longitude: 18.8076195
+    min_latitude: -18.042076
+    min_longitude: 16.463013
+    max_latitude: -13.60931
+    max_longitude: 23.4281539
+  translations:
+    en: Cuando Cubango
+    af: Cuando Cubango-provinsie
+    am: ኩዋንዶ ኩባንጎ
+    ar: مقاطعة كواندو كوبانغو
+    be: Правінцыя Кванда-Кубанга
+    bg: Куандо Кубанго
+    bn: কুয়ান্ডু কুবাং প্রদেশ
+    ca: Cuando Cubango
+    cs: Cuando Cubango
+    da: Cuando Cubango
+    de: Provinz Cuando Cubango
+    el: Κουάντο
+    es: Cuando Cubango
+    fa: استان کواندو کوبانگو
+    fi: Cuando Cubango
+    fr: Kwando-Kubango
+    gu: કુઆન્ડો ક્યુબાંગો પ્રાંત
+    hi: कूय्न्डो कुबंगो प्रांत
+    id: Cuando Cubango
+    it: provincia di Cuando Cubango
+    ja: クアンド・クバンゴ州
+    ka: კუანდო-კუბანგოს პროვინცია
+    kn: ಕ್ವಾಂಡೋ ಕ್ಯುಬಾಂಗೊ ಪ್ರಾಂತ್ಯ
+    ko: 쿠안두쿠방구 주
+    lt: Kvandas Kubangas
+    mr: कुआंडो क्युबेंजो प्रांत
+    ms: Cuando Cubango Province
+    nb: Cuando Cubango
+    nl: Cuando Cubango
+    pl: Prowincja Cuando-Cubango
+    pt: Cuando-Cubango
+    ro: Provincia Cuando Cubango
+    ru: Квандо-Кубанго
+    si: කුඅන්ඩෝ කුබන්ගෝ පළාත
+    sr: Квандо Кубанго
+    sv: Cuando Cubango
+    sw: Cuando Cubango
+    ta: சுஅண்டோ சுபாங்கோ மாகாணம்
+    te: కువాండో క్యుబాంగో ప్రావిన్స్
+    th: จังหวัดควนโด คูบันโก
+    tk: Kwando-Kubango
+    tr: Cuando Cubango Bölgesi
+    uk: Квандо-Кубанго
+    ur: کواندو کوبانگو صوبہ
+    vi: Cuando Cubango
+    lv: Kvando-Kubango province
+    ceb: Kuando Kubango
+    sr_Latn: Kvando Kubango
+    zh: 庫安多古班哥省
+    yue_Hans: 库安多古班哥省
+    ccp: "\U00011107\U0001112A\U00011120\U0001111A\U00011134\U00011118\U0001112E \U00011107\U0001112A\U0001111D\U0001110B\U00011134\U00011109\U0001112E"
+    so: Cuando Cubango Province
+    yue: 庫安多古班哥省
+    'no': Cuando Cubango
+    et: Kuando Kubango provints
+  comments:
+  type: province
+CNN:
+  name: Cunene
+  code: CNN
+  unofficial_names: Cunene
+  geo:
+    latitude: -16.2802221
+    longitude: 16.1580937
+    min_latitude: -17.442467
+    min_longitude: 13.1554
+    max_latitude: -15.158318
+    max_longitude: 17.402746
+  translations:
+    en: Cunene
+    af: Cunene-provinsie
+    ar: مقاطعة كونيني
+    be: Правінцыя Куненэ
+    bg: Кунене
+    bn: কুনেনে প্রদেশ
+    ca: Cunene
+    da: Cunene
+    de: Provinz Cunene
+    el: Κουκένε
+    es: Cunene
+    fa: استان کونه‌نه
+    fi: Cunene
+    fr: Kunene
+    gu: કુનેન પ્રાંત
+    hi: कुनेने प्रांत
+    id: Cunene
+    it: provincia del Cunene
+    ja: クネネ州
+    ka: კუნენეს პროვინცია
+    kn: ಕುನೆನ್ ಪ್ರಾಂತ್ಯ
+    ko: 쿠네느 주
+    lt: Kunenės provincija
+    mr: कुनेन प्रांत
+    ms: Cunene Province
+    nb: Cunene
+    nl: Cunene
+    pl: Prowincja Cunene
+    pt: Cunene
+    ro: Provincia Cunene
+    ru: Кунене
+    si: සියුනින් පළාත
+    sr: Кунене
+    sv: Cunene
+    sw: Cunene
+    ta: குனேன் மாகாணம்
+    te: క్యూనెన్ ప్రావిన్స్
+    th: จังหวัดคูเนเน่
+    tk: Kunene
+    tr: Cunene Bölgesi
+    uk: Кунене
+    ur: کونینے صوبہ
+    vi: Cunene
+    lv: Kunenes province
+    ceb: Cunene Province
+    sr_Latn: Kunene
+    zh: 庫內納省
+    yue_Hans: 库内纳省
+    ccp: "\U00011107\U0001112A\U0001111A\U0001112C\U0001111A\U00011134"
+    so: Cunene Province
+    yue: 庫內納省
+    'no': Cunene
+    cy: Talaith Cunene
+    et: Cunene provints
+    gl: Provincia de Cunene
+  comments:
+  type: province
+CNO:
+  name: Cuanza Norte
+  code: CNO
+  unofficial_names:
+  - Cuanza-Norte
+  geo:
+    latitude: -9.2398513
+    longitude: 14.6587821
+    min_latitude: -9.787161
+    min_longitude: 13.9980831
+    max_latitude: -7.937077099999999
+    max_longitude: 15.830849
+  translations:
+    en: Cuanza Norte
+    af: Cuanza Norte-provinsie
+    ar: مقاطعة كوانزا نورت
+    be: Правінцыя Паўночная Кванза
+    bg: Куанза Норте
+    bn: কুয়াঞ্জা নর্টে প্রদেশ
+    ca: Kwanza-Nord
+    da: Cuanza Norte
+    de: Provinz Cuanza Norte
+    el: Κουάνζα Νόρτε
+    es: Cuanza Norte
+    fa: استان کوانزای شمالی
+    fi: Cuanza Norte
+    fr: Kwanza-Nord
+    gu: કુઆન્ઝા નોર્ટ પ્રાંત
+    hi: कुआंजा नोर्टे प्रांत
+    id: Cuanza Norte
+    it: provincia di Cuanza Nord
+    ja: クアンザ・ノルテ州
+    ka: ჩრდილოეთი კვანზა
+    kn: ಕ್ವಾನ್ಜಾ ನಾರ್ಟೆ ಪ್ರಾಂತ್ಯ
+    ko: 쿠안자노르트 주
+    lt: Šiaurės Kvanza
+    mr: चुएन्झा नॉरटे प्रांत
+    ms: Cuanza Norte Province
+    nb: Cuanza Norte
+    nl: Cuanza Norte
+    pl: Prowincja Kwanza Północna
+    pt: Kwanza-Norte
+    ro: Provincia Cuanza Norte
+    ru: Северная Кванза
+    si: කුඅන්සා නොර්ටේ පළාත
+    sr: Северна Кванза
+    sv: Cuanza Norte
+    sw: Cuanza Kaskazini
+    ta: ஸுஆன்ச நோர்ட் மாகாணம்
+    te: కువాంజా నోర్టె ప్రావిన్స్
+    th: ควนซาเหนือ
+    tk: Demirgazyk Kwanza
+    tr: Cuanza Norte Bölgesi
+    uk: Північна Кванза
+    ur: کوانزا شمالی صوبہ
+    vi: Cuanza Norte
+    lv: Ziemeļkvanzas province
+    ceb: Cuanza Norte Province
+    sr_Latn: Severna Kvanza
+    zh: 北廣薩省
+    yue_Hans: 北广萨省
+    ccp: "\U00011107\U0001112A\U00011120\U0001112E\U0001111A\U00011134\U0001110E \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    so: Cuanza Norte Province
+    yue: 北廣薩省
+    'no': Cuanza Norte
+    cy: Talaith Cuanza Norte
+    et: Põhja-Kwanza provints
+    gl: Cuanza Norte
+  comments:
+  type: province
+CUS:
+  name: Cuanza Sul
+  code: CUS
+  unofficial_names:
+  - Cuanza-Sul
+  geo:
+    latitude: -10.595191
+    longitude: 15.4068079
+    min_latitude: -12.22624
+    min_longitude: 13.4936401
+    max_latitude: -9.6833171
+    max_longitude: 16.6080669
+  translations:
+    en: Cuanza Sul
+    af: Cuanza Sul-provinsie
+    ar: مقاطعة كوانزا سول
+    be: Правінцыя Паўднёвая Кванза
+    bg: Куанза Сул
+    bn: কুয়ানজা সুল
+    ca: Kwanza-Sud
+    da: Cuanza Sul
+    de: Provinz Cuanza Sul
+    el: Κουάνζα Σούλ
+    es: Cuanza Sur
+    fa: استان کوانزای جنوبی
+    fi: Cuanza Sul
+    fr: Kwanza-Sud
+    gu: કુઆન્ઝા સુલ
+    hi: कुआंजा सुल प्रांत
+    id: Cuanza Sul
+    it: provincia di Cuanza Sud
+    ja: クアンザ・スル州
+    ka: სამხრეთი კვანზა
+    kn: ಕ್ವಾನ್ಜಾ ಸುಲ್
+    ko: 쿠안자술 주
+    lt: Pietų Kvanza
+    mr: कुआन्जा सुल्ल
+    ms: Cuanza Sul
+    nb: Cuanza Sul
+    nl: Cuanza Sul
+    pl: Prowincja Kwanza Południowa
+    pt: Kwanza-Sul
+    ro: Provincia Cuanza Sul
+    ru: Южная Кванза
+    si: කුවන්සා සල්
+    sr: Јужна Кванза
+    sv: Cuanza Sul
+    sw: Cuanza Kusini
+    ta: சுயநஜா சூல்
+    te: కువాంజా సుల్
+    th: แอนเซบ้า
+    tk: Günorta Kwanza
+    tr: Cuanza Sul Bölgesi
+    uk: Південна Кванза
+    ur: کوانزا جنوبی صوبہ
+    vi: Cuanza Sul
+    lv: Dienvidkvanza
+    ceb: Kwanza Sul
+    sr_Latn: Južna Kvanza
+    zh: 南廣薩省
+    yue_Hans: 南广萨省
+    ccp: "\U00011107\U0001112A\U00011120\U0001112E\U0001111A\U00011134\U0001110E \U00011125\U0001112A\U00011123\U00011134"
+    so: Cuanza Sul Province
+    yue: 南廣薩省
+    'no': Cuanza Sul
+    et: Lõuna-Kwanza provints
+    gl: Cuanza Sul
+  comments:
+  type: province
+HUA:
+  name: Huambo
+  code: HUA
+  unofficial_names: Huambo
+  geo:
+    latitude: -12.766667
+    longitude: 15.733333
+    min_latitude: -12.8151062
+    min_longitude: 15.68882
+    max_latitude: -12.7248395
+    max_longitude: 15.7939885
+  translations:
+    en: Huambo
+    af: Huambo-provinsie
+    ar: مقاطعة هوامبو
+    be: Правінцыя Уамба
+    bg: Уамбо
+    bn: হুয়াম্বো প্রদেশ
+    ca: Huambo
+    cs: Huambo
+    da: Huambo
+    de: Provinz Huambo
+    el: Χουάμπο
+    es: Provincia de Huambo
+    et: Huambo provints
+    fa: استان هوامبو
+    fi: Huambon maakunta
+    fr: Huambo
+    gu: હુઆમ્બો પ્રાંત
+    hi: हुआंबो प्रांत
+    id: Provinsi Huambo
+    it: provincia di Huambo
+    ja: ウアンボ州
+    ka: უამბოს პროვინცია
+    kn: ಹುಮಾಂಬೊ ಪ್ರಾಂತ್ಯ
+    ko: 우암부 주
+    lt: Huambo provincija
+    mr: हुअम्बो प्रांत
+    ms: Huambo Province
+    nb: Huambo
+    nl: Huambo
+    pl: Prowincja Huambo
+    pt: Huambo
+    ro: Provincia Huambo
+    ru: Уамбо
+    si: හුඅම්බෝ පළාත
+    sr: Хуамбо
+    sv: Huambo
+    sw: Huambo
+    ta: ஹுவாம்போ மாகாணம்
+    te: హువాంబో ప్రావిన్స్
+    th: ฮูแอมโบ
+    tk: Uambo
+    tr: Huambo Bölgesi
+    uk: Уамбо
+    ur: ہوامبو صوبہ
+    vi: Huambo
+    lv: Hvambo province
+    ceb: Huambo (lalawigan)
+    sr_Latn: Huambo
+    zh: 万博省
+    yue_Hans: 万博省
+    ccp: "\U00011126\U00011105\U0001112A\U0001111F\U00011134\U0001111D\U0001112E"
+    so: Huambo Province
+    yue: 萬博省
+    'no': Huambo
+    cy: Talaith Huambo
+  comments:
+  type: province
+HUI:
+  name: Huíla
+  code: HUI
+  unofficial_names: Huíla
+  geo:
+    latitude: -14.9280553
+    longitude: 14.6587821
+    min_latitude: -16.3515149
+    min_longitude: 13.2254381
+    max_latitude: -13.364136
+    max_longitude: 16.753408
+  translations:
+    en: Huíla
+    af: Huíla-provinsie
+    ar: محافظة هويلا
+    be: Правінцыя Уіла
+    bg: Уила
+    bn: ইলা প্রদেশ
+    ca: Huíla
+    da: Huíla
+    de: Provinz Huíla
+    el: Χουίλα
+    es: Huila
+    fa: استان هوییلا
+    fi: Huila
+    fr: Huila
+    gu: હુઈલા પ્રાંત
+    hi: हुइला प्रांत
+    id: Provinsi Huíla
+    it: provincia di Huíla
+    ja: ウイラ州
+    ka: უილის პროვინცია
+    kn: ಹುಯಿಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 우일라 주
+    lt: Huilos provincija
+    mr: हुईला प्रांत
+    ms: Huila
+    nb: Huíla
+    nl: Huíla
+    pl: Prowincja Huíla
+    pt: Huíla
+    ro: Provincia Huíla
+    ru: Уила
+    si: හුයිලා පළාත
+    sr: Хуила
+    sv: Huíla
+    sw: Huíla
+    ta: ஹுஇல மாகாணம்
+    te: హుయిలా ప్రావిన్స్
+    th: จังหวัดฮุยลา
+    tk: Uila
+    tr: Huíla Bölgesi
+    uk: Уїла
+    ur: ہوئلا صوبہ
+    vi: Huíla
+    lv: Uilas province
+    ceb: Huila Province
+    sr_Latn: Huila
+    zh: 威拉省
+    yue_Hans: 威拉省
+    ccp: "\U00011126\U0001112A\U00011103\U00011128\U00011123"
+    so: Huíla Province
+    yue: 威拉省
+    'no': Huíla
+    cy: Rhanbarth Huila
+    et: Huíla provints
+  comments:
+  type: province
+LNO:
+  name: Lunda Norte
+  code: LNO
+  unofficial_names: Lunda Norte
+  geo:
+    latitude: -8.352502200000002
+    longitude: 19.1880047
+    min_latitude: -10.451853
+    min_longitude: 17.286396
+    max_latitude: -6.911378
+    max_longitude: 21.942862
+  translations:
+    en: Lunda Norte
+    af: Lunda Norte-provinsie
+    ar: مقاطعة لوندا نورتي
+    be: Паўночная Лунда
+    bg: Лунда Норте
+    bn: লুন্ডা নর্টে প্রদেশ
+    ca: Lunda Norte
+    da: Lunda Norte
+    de: Provinz Lunda Norte
+    el: Λούντα Νόρτε
+    es: Lunda Norte
+    fa: استان لوندای شمالی
+    fi: Lunda Norte
+    fr: Lunda-Nord
+    gu: લુન્ડા નોર્ટ પ્રાંત
+    hi: लुंडा नोर्टे प्रांत
+    id: Provinsi Lunda Norte
+    it: provincia di Lunda Nord
+    ja: ルンダ・ノルテ州
+    ka: ჩრდილოეთი ლუნდა
+    kn: ಲುಂಡಾ ನಾರ್ಟೆ ಪ್ರಾಂತ್ಯ
+    ko: 룬다노르트 주
+    lt: Šiaurės Lunda
+    mr: लुंडा नॉर्ट प्रांत
+    ms: Daerah Lunda Norte
+    nb: Lunda Norte
+    nl: Lunda Norte
+    pl: Prowincja Lunda Północna
+    pt: Lunda-Norte
+    ro: Provincia Lunda Norte
+    ru: Северная Лунда
+    si: ලුන්ඩා නොර්ටේ පළාත
+    sr: Северна Лунда
+    sv: Lunda Norte
+    sw: Lunda Kaskazini
+    ta: லூண்டா நோர்ட் மாகாணம்
+    te: లుండా నార్టి ప్రావిన్స్
+    th: จังหวัดลันดานอร์เต
+    tk: Demirgazyk Lunda
+    tr: Lunda Norte Bölgesi
+    uk: Північна Лунда
+    ur: لوندا شمالی صوبہ
+    vi: Lunda Norte
+    lv: Ziemeļlundas province
+    ceb: Lunda Norte Province
+    sr_Latn: Severna Lunda
+    zh: 北倫達省
+    yue_Hans: 北伦达省
+    ccp: "\U00011123\U0001112A\U0001111A\U00011134\U00011118 \U0001111A\U00011127\U00011122\U00011134\U00011111\U0001112C"
+    so: Lunda Norte Province
+    yue: 北倫達省
+    'no': Lunda Norte
+    cy: Talaith Lunda Norte
+    et: Põhja-Lunda provints
+  comments:
+  type: province
+LSU:
+  name: Lunda Sul
+  code: LSU
+  unofficial_names: Lunda Sul
+  geo:
+    latitude: -10.2866578
+    longitude: 20.7122465
+    min_latitude: -11.5039
+    min_longitude: 18.481274
+    max_latitude: -8.4244639
+    max_longitude: 22.3292389
+  translations:
+    en: Lunda Sul
+    af: Lunda Sul-provinsie
+    ar: مقاطعة لوندا سول
+    be: Правінцыя Паўднёвая Лунда
+    bg: Лунда Сул
+    bn: লুন্ডা সুল প্রদেশ
+    ca: Lunda Sul
+    da: Lunda Sul
+    de: Provinz Lunda Sul
+    el: Λούντα Σουλ
+    es: Lunda Sul
+    fa: استان لوندای جنوبی
+    fi: Lunda Sul
+    fr: Lunda-Sud
+    gu: લુન્ડા સુલ પ્રાંત
+    hi: लुंडा सुल प्रांत
+    id: Provinsi Lunda Sul
+    it: provincia di Lunda Sud
+    ja: ルンダ・スル州
+    ka: სამხრეთი ლუნდა
+    kn: ಲುಂಡಾ ಸುಲ್ ಪ್ರಾಂತ್ಯ
+    ko: 룬다술 주
+    lt: Pietų Lunda
+    mr: लुंडा सौ प्रांत
+    ms: Daerah Lunda Sul
+    nb: Lunda Sul
+    nl: Lunda Sul
+    pl: Prowincja Lunda Południowa
+    pt: Lunda-Sul
+    ro: Provincia Lunda Sul
+    ru: Южная Лунда
+    si: ලුන්ඩා සුල් පළාත
+    sr: Јужна Лунда
+    sv: Lunda Sul
+    sw: Lunda Kusini
+    ta: லுண்ட சூல் மாகாணம்
+    te: లుండా సుల్ ప్రావిన్స్
+    th: จังหวัดลันดาซูล
+    tk: Günorta Lunda
+    tr: Lunda Sul Bölgesi
+    uk: Південна Лунда
+    ur: لوندا جنوبی صوبہ
+    vi: Lunda Sul
+    lv: Dienvidlundas province
+    ceb: Lunda Sul
+    sr_Latn: Južna Lunda
+    zh: 南倫達省
+    yue_Hans: 南伦达省
+    ccp: "\U00011123\U0001112A\U0001111A\U00011134\U00011118 \U00011125\U0001112A\U00011123\U00011134"
+    so: Lunda Sul Province
+    yue: 南倫達省
+    'no': Lunda Sul
+    cy: Talaith Lunda Sul
+    et: Lõuna-Lunda provints
+  comments:
+  type: province
+LUA:
+  name: Luanda
+  code: LUA
+  unofficial_names: Luanda
+  geo:
+    latitude: -8.838333
+    longitude: 13.234444
+    min_latitude: -8.9509107
+    min_longitude: 13.1580869
+    max_latitude: -8.756154
+    max_longitude: 13.4101221
+  translations:
+    en: Luanda
+    af: Luanda-provinsie
+    ar: مقاطعة لواندا
+    be: правінцыя Луанда
+    bg: Луанда
+    bn: লুয়ান্ডা প্রদেশ
+    ca: Província de Luanda
+    cs: Luanda
+    da: Luanda
+    de: Provinz Luanda
+    el: Λουάντα
+    es: Provincia de Luanda
+    fa: استان لوآندا
+    fi: Luandan maakunta
+    fr: Luanda
+    gl: Provincia de Luanda
+    gu: લુઆંડા પ્રાંત
+    hi: लुआण्डा प्रांत
+    id: Provinsi Luanda
+    it: provincia di Luanda
+    ja: ルアンダ州
+    ka: ლუანდის პროვინცია
+    kn: ಲುವಾಂಡಾ ಪ್ರಾಂತ್ಯ
+    ko: 루안다 주
+    lt: Luandos provincija
+    mr: लुआंडा प्रांत
+    ms: Wilayah Luanda
+    nb: Luanda
+    nl: Luanda
+    pl: Prowincja Luanda
+    pt: Luanda
+    ro: Provincia Luanda
+    ru: Луанда
+    si: ලුඅන්ඩා පළාත
+    sr: Луанда
+    sv: Luanda
+    sw: Luanda
+    ta: லுஅன்டா மாகாணம்
+    te: లువాండా ప్రావిన్స్
+    th: จังหวัดลูอันดา
+    tk: Luanda
+    tr: Luanda Bölgesi
+    uk: Луанда
+    ur: لواندا صوبہ
+    vi: Luanda
+    lv: Luandas province
+    ceb: Luanda Province
+    sr_Latn: Luanda
+    zh: 羅安達省
+    yue_Hans: 罗安达省
+    ccp: "\U00011123\U0001112A\U0001111A\U00011134\U00011118"
+    so: Luanda Province
+    yue: 羅安達省
+    'no': Luanda
+    cy: Talaith Luanda
+    et: Luanda provints
+    ml: ലുവാണ്ട പ്രവശ്യ
+  comments:
+  type: province
+MAL:
+  name: Malange
+  code: MAL
+  unofficial_names:
+  - Malange
+  geo:
+    latitude: -9.546899999999999
+    longitude: 16.3387
+    min_latitude: -9.572059699999999
+    min_longitude: 16.2992908
+    max_latitude: -9.5124286
+    max_longitude: 16.3876533
+  translations:
+    en: Malanje
+    af: Malanje-provinsie
+    ar: مقاطعة مالانجي
+    be: Правінцыя Маланжэ
+    bg: Маланже
+    bn: মালাঞ্জি প্রদেশ
+    ca: Malanje
+    da: Malanje
+    de: Provinz Malanje
+    el: Μαλαντζέ
+    es: Malanje
+    fa: استان مالانژه
+    fi: Malanjen maakunta
+    fr: Malanje
+    gu: મલાંજે પ્રાંત
+    hi: मलंजे प्रांत
+    id: Provinsi Malanje
+    it: provincia di Malanje
+    ja: マランジェ州
+    ka: მალანჟეს პროვინცია
+    kn: ಮಲಾನ್ಜೆ ಪ್ರಾಂತ್ಯ
+    ko: 말란즈 주
+    lt: Malanžės provincija
+    mr: मालांजे प्रांत
+    ms: Malanje Province
+    nb: Malanje
+    nl: Malanje
+    pl: Prowincja Malanje
+    pt: Malanje
+    ro: Provincia Malanje
+    ru: Маланже
+    si: මලන්ජේ පළාත
+    sr: Маланже
+    sv: Malanje
+    sw: Malanje
+    ta: மலஞ்சே மாகாணம்
+    te: మలాంజె ప్రావిన్స్
+    th: จังหวัดมาลันเจ
+    tk: Malanže
+    tr: Malanje Bölgesi
+    uk: Маланже
+    ur: مالانجے صوبہ
+    vi: Malanje
+    lv: Malanžes province
+    ceb: Malanje Province
+    sr_Latn: Malanže
+    zh: 馬蘭哲省
+    yue_Hans: 马兰哲省
+    ccp: "\U0001111F\U00011123\U0001111A\U00011134\U0001110E\U0001112C"
+    so: Malanje Province
+    yue: 馬蘭哲省
+    'no': Malanje
+    cy: Talaith Malanje
+    et: Malanje provints
+  comments:
+  type: province
+MOX:
+  name: Moxico
+  code: MOX
+  unofficial_names: Moxico
+  geo:
+    latitude: -13.4293579
+    longitude: 20.3308814
+    min_latitude: -16.207985
+    min_longitude: 17.922985
+    max_latitude: -10.58553
+    max_longitude: 24.0821189
+  translations:
+    en: Moxico
+    af: Moxico-provinsie
+    ar: مقاطعة موكسيكو
+    be: Правінцыя Мошыка
+    bg: Мошико
+    bn: মক্সিকো প্রদেশ
+    ca: Moxico
+    da: Moxico
+    de: Provinz Moxico
+    el: Μοξίκο
+    es: Moxico
+    et: Moxico provints
+    fa: استان موشیکو
+    fi: Moxico
+    fr: Moxico
+    gu: મોક્સીકો પ્રાંત
+    hi: मोक्सिको प्रांत
+    id: Provinsi Moxico
+    it: provincia di Moxico
+    ja: モシコ州
+    ka: მოშიკოს პროვინცია
+    kn: ಮೊಕ್ಸಿಕೊ ಪ್ರಾಂತ್ಯ
+    ko: 모시쿠 주
+    lt: Mošiko provincija
+    mr: मोक्सिको प्रांत
+    ms: Moxico Province
+    nb: Moxico
+    nl: Moxico
+    pl: Prowincja Moxico
+    pt: Moxico
+    ro: Provincia Moxico
+    ru: Мошико
+    si: මොක්සිකෝ පළාත
+    sr: Мошико
+    sv: Moxico
+    sw: Moxico
+    ta: மெக்ஸிகோ மாகாணம்
+    te: మోక్సికో ప్రావిన్స్
+    th: จังหวัดมอกซิโก
+    tk: Moşyko
+    tr: Moxico Bölgesi
+    uk: Мошико
+    ur: موشیکو صوبہ
+    vi: Moxico
+    lv: Mošiko province
+    ceb: Moxico
+    sr_Latn: Mošiko
+    zh: 莫希科省
+    yue_Hans: 莫西古省
+    ccp: "\U0001111F\U00011133\U00011120\U00011107\U00011134\U00011125\U00011128\U00011107\U0001112E"
+    gl: Provincia de Moxico
+    so: Moxico Province
+    cs: Moxico
+    yue: 莫西古省
+    'no': Moxico
+    cy: Talaith Moxico
+  comments:
+  type: province
+NAM:
+  name: Namibe
+  code: NAM
+  unofficial_names: Namibe
+  geo:
+    latitude: -15.195278
+    longitude: 12.150833
+    min_latitude: -15.218767
+    min_longitude: 12.120602
+    max_latitude: -15.1747363
+    max_longitude: 12.1851254
+  translations:
+    en: Namibe
+    af: Namibe-provinsie
+    ar: مقاطعة ناميبي
+    be: Правінцыя Намібэ
+    bg: Намибе
+    bn: নামিবে প্রদেশ
+    ca: Namibe
+    da: Namibe
+    de: Provinz Namibe
+    el: Ναμίμπε
+    es: Namibe
+    eu: Namibe
+    fa: استان نامیبه
+    fi: Namiben maakunta
+    fr: Namibe
+    gu: નામીબે પ્રાંત
+    hi: नेमिबे प्रांत
+    hu: Namibe Provincia
+    id: Provinsi Namibe
+    it: provincia di Namibe
+    ja: ナミベ州
+    ka: ნამიბეს პროვინცია
+    kn: ನಾಮಿಬ್ ಪ್ರಾಂತ್ಯ
+    ko: 나미브 주
+    lt: Namibo provincija
+    mr: नमीब प्रांत
+    ms: Namibe Province
+    nb: Namibe
+    nl: Namibe
+    pl: Prowincja Namibe
+    pt: Namibe
+    ro: Provincia Namibe
+    ru: Намибе
+    si: නමිබේ පළාත
+    sr: Намибе
+    sv: Namibe
+    sw: Namibe
+    ta: நமிபே மாகாணம்
+    te: నమీబీ ప్రావిన్స్
+    th: จังหวัดนามิบี
+    tk: Namibe
+    tr: Namibe Bölgesi
+    uk: Намібе
+    ur: نامیبے صوبہ
+    vi: Namibe
+    lv: Namibes province
+    ceb: Namibe Province
+    sr_Latn: Namibe
+    zh: 納米貝省
+    yue_Hans: 纳米贝省
+    ccp: "\U0001111A\U0001111F\U00011128\U0001111D\U0001112C"
+    so: Namibe Province
+    yue: 納米貝省
+    'no': Namibe
+    cy: Talaith Namibe
+    et: Namibe provints
+  comments:
+  type: province
+UIG:
+  name: Uíge
+  code: UIG
+  unofficial_names: Uíge
+  geo:
+    latitude: -7.616667
+    longitude: 15.05
+    min_latitude: -7.6323089
+    min_longitude: 15.0356484
+    max_latitude: -7.5901119
+    max_longitude: 15.0770187
+  translations:
+    en: Uíge
+    af: Uíge-provinsie
+    ar: مقاطعة أوجي
+    be: Правінцыя Уіжэ
+    bg: Уиже
+    bn: উগে প্রদেশ
+    ca: Uige
+    da: Uíge
+    de: Provinz Uíge
+    el: Ουίγκε
+    es: Uige
+    fa: استان اوییگه
+    fi: Uigen maakunta
+    fr: Uíge
+    gu: ઉએગે પ્રાંત
+    hi: उइगे प्रांत
+    id: Provinsi Uíge
+    it: provincia di Uíge
+    ja: ウイジェ州
+    ka: უიჟეს პროვინცია
+    kn: ಯುಯಿಜ್ ಪ್ರಾಂತ್ಯ
+    ko: 우이즈 주
+    lt: Uižės provincija
+    mr: उइगे प्रांत
+    ms: Uíge Province
+    nb: Uíge
+    nl: Uíge
+    pl: Prowincja Uíge
+    pt: Uíge
+    ro: Provincia Uíge
+    ru: Уиже
+    si: උයිගේ පළාත
+    sr: Ујиже
+    sv: Uíge
+    sw: Uíge
+    ta: உய்ஜ் மாகாணம்
+    te: ఉయిగె ప్రావిన్స్
+    th: จังหวัดอาแวรง
+    tk: Uiže
+    tr: Uíge Bölgesi
+    uk: Уїже
+    ur: اوئگے صوبہ
+    vi: Uíge
+    lv: Uižes province
+    ceb: Província do Uíge
+    sr_Latn: Ujiže
+    zh: 威熱省
+    yue_Hans: 威热省
+    ccp: "\U00011105\U0001112A\U00011103\U00011128\U00011109\U0001112C"
+    so: Uíge Province
+    yue: 威熱省
+    'no': Uíge
+    cy: Talaith Uíge
+    et: Uíge provints
+  comments:
+  type: province
+ZAI:
+  name: Zaire
+  code: ZAI
+  unofficial_names: Zaire
+  geo:
+    latitude: -6.573345799999999
+    longitude: 13.1740348
+    min_latitude: -7.8169699
+    min_longitude: 12.2700424
+    max_latitude: -5.841628099999999
+    max_longitude: 15.0035509
+  translations:
+    en: Zaire
+    af: Zaire-provinsie
+    ar: مقاطعة زائير
+    be: Правінцыя Заірэ
+    bg: Зайре
+    bn: জেইরে প্রদেশ
+    ca: Zaire
+    da: Zaire
+    de: Provinz Zaire
+    el: Ζαΐρε
+    es: Provincia de Zaire
+    fa: استان زئیر
+    fi: Zairen maakunta
+    fr: Zaïre
+    gu: ઝૈર પ્રાંત
+    hi: ज़ैरे प्रांत
+    id: Provinsi Zaire
+    it: provincia dello Zaire
+    ja: ザイーレ州
+    ka: ზაირეს პროვინცია
+    kn: ಝೈರ್ ಪ್ರಾಂತ್ಯ
+    ko: 자이르 주
+    lt: Zairo provincija
+    mr: झैर प्रांत
+    ms: Zaire Province
+    nb: Zaire
+    nl: Zaire
+    pl: Prowincja Zaire
+    pt: Zaire
+    ro: Provincia Zaire
+    ru: Заире
+    si: සයිරේ පළාත
+    sr: Заире
+    sv: Zaire
+    sw: Zaire
+    ta: சய்யர் மாகாணம்
+    te: జైర్ ప్రావిన్స్
+    th: จังหวัดแซร์
+    tk: Zaire
+    tr: Zaire Bölgesi
+    uk: Заїре
+    ur: زائیر صوبہ
+    vi: Zaire
+    lv: Zaires province
+    ceb: Zaire (lalawigan sa Angola)
+    sr_Latn: Zaire
+    zh: 薩伊省
+    yue_Hans: 萨伊省
+    ccp: "\U0001110E\U00011120\U00011122\U00011134"
+    yue: 薩伊省
+    'no': Zaire
+    cy: Talaith Zaire
+    et: Zaire provints
+    gl: Provincia de Zaire
+  comments:
+  type: province

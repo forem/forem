@@ -1,0 +1,7 @@
+<ul>
+  <% @checks.each do |check| %>
+    <%# check queries shouldn't have variables, but in any case, don't pass them to url helpers %>
+    <li><%= link_to check.query.name, query_url(check.query_id) %> <%= check.state %></li>
+  <% end %>
+</ul>
+<p><%= link_to "Manage checks", checks_url %></p>

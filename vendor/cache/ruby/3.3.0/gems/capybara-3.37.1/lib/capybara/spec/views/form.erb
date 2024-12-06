@@ -1,0 +1,716 @@
+<h1>Form</h1>
+
+<button type="button" tabindex="1">A Button</button>
+
+<label>
+  An Input
+  <input type="text" tabindex="2">
+</label>
+
+<form action="/form" method="post" novalidate>
+
+  <p>
+    <label for="form_title">Title</label>
+    <select name="form[title]" id="form_title" class="title" tabindex="3">
+      <option class="title">Mrs</option>
+      <option class="title">Mr</option>
+      <option>Miss</option>
+      <option disabled="disabled">Other</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="customer_name">Customer Name
+      <input type="text" name="form[customer_name]" value="Blah" id="customer_name" disabled="disabled"/>
+    </label>
+  </p>
+
+  <p>
+    <label for="customer_email">Customer Email
+      <input type="text" name="form[customer_email]" value="ben@ben.com" id="customer_email"/>
+    </label>
+  </p>
+
+  <p>
+    <label for="customer_other_email">Customer Other Email
+      <input type="text" name="form[customer_other_email]" value="notben@notben.com" id="customer_other_email"/>
+    </label>
+  </p>
+
+  <p>
+    <label for="form_other_title">Other title</label>
+    <select name="form[other_title]" id="form_other_title">
+      <option>Mrs</option>
+      <option>Mr</option>
+      <option>Miss</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="form_first_name">
+      First Name
+      <input type="text" name="form[first_name]" value="John" id="form_first_name" placeholder="FirstName"/>
+    </label>
+  </p>
+
+  <p>
+    <label for="form_last_name">Last Name</label>
+    <input type="text" name="form[last_name]" value="Smith" id="form_last_name"/>
+  </p>
+
+  <p>
+    <label for="form_name_explanation">Explanation of Name</label>
+    <textarea name="form[name_explanation]" id="form_name_explanation"></textarea>
+  </p>
+
+  <p>
+    <label for="form_name">Name</label>
+    <input type="text" name="form[name]" value="John Smith" id="form_name"/>
+  </p>
+
+  <p>
+    <label for="form_age">Age</label>
+    <input type="range" name="form[age]" value="18" min="13" max="100" step="0.5" id="form_age"/>
+  </p>
+
+  <p>
+    <label for="form_schmooo">Schmooo</label>
+    <input type="schmooo" name="form[schmooo]" value="This is Schmooo!" id="form_schmooo"/>
+  </p>
+
+  <p>
+    <label>Street<br/>
+      <input type="text" maxlength="" name="form[street]" value="Sesame street 66"/>
+    </label>
+  </p>
+
+  <p>
+    <label for="form_phone">Phone</label>
+    <input name="form[phone]" value="+1 555 7021" id="form_phone"/>
+  </p>
+
+  <p>
+    <label for="form_password">Password</label>
+    <input type="password" name="form[password]" value="seeekrit" id="form_password"/>
+  </p>
+
+  <p>
+    <label for="form_terms_of_use">Terms of Use</label>
+    <input type="hidden" name="form[terms_of_use]" value="0" id="form_terms_of_use_default">
+    <input type="checkbox" name="form[terms_of_use]" value="1" id="form_terms_of_use">
+  </p>
+
+  <p>
+    <label for="form_image">Image</label>
+    <input type="file" name="form[image]" id="form_image"/>
+  </p>
+
+  <p>
+    <label for="form_hidden_image">Hidden Image</label>
+    <input type="file" name="form[hidden_image]" id="form_hidden_image" style="display: none"/>
+  </p>
+
+  <p>
+    <input type="hidden" name="form[token]" value="12345" id="form_token"/>
+  </p>
+
+  <p>
+    <label for="form_locale">Locale</label>
+    <select name="form[locale]" id="form_locale">
+      <option value="sv">Swedish</option>
+      <option selected="selected" value="en">English</option>
+      <option value="fi">Finnish</option>
+      <option value="no">Norwegian</option>
+      <option value="jo">John's made-up language</option>
+      <option value="jbo"> Lojban </option>
+    </select>
+  </p>
+
+  <p>
+    <label for="form_region">Region</label>
+    <select name="form[region]" id="form_region">
+      <option>Sweden</option>
+      <option selected="selected">Norway</option>
+      <option>Finland</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="form_city">City</label>
+    <select name="form[city]" id="form_city">
+      <option>London</option>
+      <option>Stockholm</option>
+      <option>Paris</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="form_zipcode">Zipcode</label>
+    <input type="text" maxlength="5" name="form[zipcode]" id="form_zipcode" pattern="[0-9]{5,9}" />
+  </p>
+
+  <p>
+    <input maxlength="35" id="long_length" />
+  </p>
+
+  <p>
+    <label for="form_tendency">Tendency</label>
+    <select name="form[tendency]" id="form_tendency"></select>
+  </p>
+
+  <p>
+    <label for="form_description">Description</label></br>
+    <textarea name="form[description]" id="form_description">Descriptive text goes here</textarea>
+  <p>
+
+  <p>
+    <label for="form_newline">NewLine</label></br>
+    <textarea name="form[newline]" id="form_newline">
+
+New line after and before textarea tag
+</textarea>
+  </p>
+
+  <p>
+    <input type="radio" name="form[gender]" value="male" id="gender_male"/>
+    <label for="gender_male">Male</label>
+    <input type="radio" name="form[gender]" value="female" id="gender_female" checked="checked"/>
+    <label for="gender_female">Female</label>
+    <input type="radio" name="form[gender]" value="both" id="gender_both" readonly="readonly"/>
+    <label for="gender_both">Both</label>
+  </p>
+
+  <p>
+    <input type="radio" name="form[party]" value="democrat" id="party_democrat" style="display:none"/>
+    <label for="party_democrat">Democrat</label>
+    <input type="radio" name="form[party]" value="republican" id="party_republican" style="display:none"/>
+    <label for="party_republican">Republican</label>
+    <input type="radio" name="form[party]" value="independent" id="party_independent" checked="checked" style="display:none"/>
+    <label for="party_independent">Independent</label>
+  </p>
+
+  <p>
+    <input type="checkbox" id="no_attr_value_checked" value="1" checked/>
+  </p>
+
+  <p>
+    <input type="checkbox" value="dog" name="form[pets][]" id="form_pets_dog" checked="checked"/>
+    <label for="form_pets_dog">Dog</label>
+    <input type="checkbox" value="cat" name="form[pets][]" id="form_pets_cat"/>
+    <label for="form_pets_cat">Cat</label>
+    <input type="checkbox" value="hamster" name="form[pets][]" id="form_pets_hamster" checked="checked"/>
+    <label for="form_pets_hamster">Hamster</label>
+  </p>
+
+  <p>
+    <input type="checkbox" value="jaguar" name="form[cars][]" id="form_cars_jaguar" checked="checked" style="display: none"/>
+    <label for="form_cars_jaguar">Jaguar</label>
+    <input type="checkbox" value="tesla" name="form[cars][]" id="form_cars_tesla" style="display: none"/>
+    <label for="form_cars_tesla">Tesla</label>
+    <input type="checkbox" value="ferrari" name="form[cars][]" id="form_cars_ferrari" checked="checked" style="display: none"/>
+    <label for="form_cars_ferrari">Ferrari</label>
+    <input type="checkbox" value="pagani" name="form[cars][]" id="form_cars_pagani" style="position: absolute; left: -9999px"/>
+    <label for="form_cars_pagani">Pagani</label>
+    <div style="position: relative;">
+      <input type="checkbox" value="bugatti" name="form[cars][]" id="form_cars_bugatti"/>
+      <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-color: #fff;">
+        <label for="form_cars_bugatti">Bugatti</label>
+      </div>
+    </div>
+    <input type="checkbox" value="ariel" name="form[cars][]" id="form_cars_ariel" style="display: none"/>
+    <input type="checkbox" value="porsche" name="form[cars][]" id="form_cars_porsche" checked="checked" style="display: none"/>
+    <label>
+      McLaren
+      <input type="checkbox" value="mclaren" name="form[cars][]" id="form_cars_mclaren" style="display: none"/>
+    </label>
+    <label>
+      Koenigsegg
+      <input type="checkbox" value="koenigsegg" name="form[cars][]" id="form_cars_koenigsegg" checked="checked" style="display: none"/>
+    </label>
+    <input type="checkbox" value="maserati" name="form[cars][]" id="form_cars_maserati" disabled="disabled"/>
+    <label for="form_cars_maserati">Maserati</label>
+    <input type="checkbox" value="lotus" name="form[cars][]" id="form_cars_lotus" style="display: none"/>
+    <label for="form_cars_lotus"><a href="#" onclick="return false;">Link here</a>Lotus</label>
+  </p>
+
+  <p>
+    <input type="text" name="form[manufacturer]" list="manufacturers" id="manufacturer"/>
+    <datalist id="manufacturers">
+      <option value="Jaguar">J</option>
+      <option value="Audi">
+      <option value="Mercedes" disabled>
+    </datalist>
+  </p>
+
+  <p>
+    <input type="checkbox" name="form[valueless_checkbox]" id="valueless_checkbox" checked="checked"/>
+    <label for="valueless_checkbox">Valueless Checkbox</label>
+    <input type="radio" name="form[valueless_radio]" id="valueless_radio" checked="checked"/>
+    <label for="valueless_radio">Valueless Radio</label>
+  </p>
+
+  <p>
+    <label for="form_languages">Languages</label>
+    <select name="form[languages][]" id="form_languages" multiple="multiple">
+      <option>Ruby</option>
+      <option>SQL</option>
+      <option>HTML</option>
+      <option>Javascript</option>
+    </select>
+  </p>
+
+  <p>
+    <label for="form_underwear">Underwear</label>
+    <select name="form[underwear][]" id="form_underwear" multiple="multiple">
+      <option selected="selected">Boxerbriefs</option>
+      <option>Boxers</option>
+      <option selected="selected">Briefs</option>
+      <option selected="selected">Commando</option>
+      <option selected="selected">Frenchman's Pantalons</option>
+      <option selected="selected" value="thermal">Long Johns</option>
+    </select>
+  </p>
+
+  <!-- invisible select and options -->
+  <p style="display: none">
+    <label for="form_icecream">Icecream</label>
+    <select name="form[icecream]" id="form_icecream">
+      <option selected="selected">Chocolate</option>
+      <option>Vanilla</option>
+      <option>Strawberry</option>
+    </select>
+  </p>
+
+  <!-- invisible multiselect and options -->
+  <p style="display: none">
+    <label for="form_dessert">Dessert</label>
+    <select name="form[dessert]" id="form_dessert" multiple="multiple">
+      <option selected="selected">Pudding</option>
+      <option>Lava cake</option>
+      <option selected="selected">Tiramisu</option>
+      <option>Panna cotta</option>
+    </select>
+  </p>
+
+  <!-- visible select with invisible selected option (which some browsers may treat as visible) -->
+  <p>
+    <label for="form_sorbet">Sorbet</label>
+    <select name="form[sorbet]" id="form_sorbet">
+      <option>Chocolate</option>
+      <option selected="selected" style="display: none">Vanilla</option>
+      <option>Strawberry</option>
+    </select>
+  </p>
+
+  <!-- visible multiselect with invisible selected options (which some browsers may treat as visible) -->
+  <p>
+    <label for="form_cake">Cake</label>
+    <select name="form[cake]" id="form_cake" multiple="multiple">
+      <option>Butter Cake</option>
+      <option selected="selected" style="display: none">Chocolate Cake</option>
+      <option>Strawberry Cake</option>
+      <option selected="selected" style="display: none">Sponge Cake</option>
+    </select>
+  </p>
+
+  <p>
+    <span>First address<span>
+    <label for='address1_street'>Street</label>
+    <input type="text" name="form[addresses][][street]" value="" id="address1_street">
+
+    <label for='address1_city'>City</label>
+    <input type="text" name="form[addresses][][city]" value="" id="address1_city">
+
+    <label for='address1_country'>Country</label>
+    <select name="form[addresses][][country]" id="address1_country">
+      <option selected>France</option>
+      <option>Ukraine</option>
+    </select>
+  </p>
+
+  <p>
+    <span>Second address<span>
+    <label for='address2_street'>Street</label>
+    <input type="text" name="form[addresses][][street]" value="" id="address2_street">
+
+    <label for='address2_city'>City</label>
+    <input type="text" name="form[addresses][][city]" value="" id="address2_city">
+
+    <label for='address2_country'>Country</label>
+    <select name="form[addresses][][country]" id="address2_country">
+      <option>France</option>
+      <option selected>Ukraine</option>
+    </select>
+  </p>
+
+  <div style="display:none;">
+    <label for="form_first_name_hidden">
+      Super Secret
+      <input type="text" name="form[super_secret]" value="test123" id="form_super_secret"/>
+    </label>
+  </div>
+
+  <p>
+    <label for="form_disabled_text_field">
+      Disabled Text Field
+      <input type="text" name="form[disabled_text_field]" value="Should not see me" id="form_disabled_text_field" disabled="disabled" />
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_textarea">
+      Disabled Textarea
+      <textarea name="form[disabled_textarea]" value="Should not see me" id="form_disabled_textarea" disabled="disabled"></textarea>
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_checkbox">
+      Disabled Checkbox
+      <input type="checkbox" name="form[disabled_checkbox]" value="Should not see me" id="form_disabled_checkbox" checked="checked" disabled="disabled" />
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_unchecked_checkbox">
+      Disabled Unchecked Checkbox
+      <input type="checkbox" name="form[disabled_unchecked_checkbox]" value="Should not see me" id="form_disabled_unchecked_checkbox" disabled="disabled" />
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_radio">
+      Disabled Radio
+      <input type="radio" name="form[disabled_radio]" value="Should not see me" id="form_disabled_radio" checked="checked" disabled="disabled" />
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_select">
+      Disabled Select
+      <select name="form[disabled_select]" id="form_disabled_select" disabled="disabled">
+        <option value="Should not see me" selected="selected">Should not see me</option>
+        <optgroup>
+          <option value="Disabled too">Disabled too</option>
+        </optgroup>
+      </select>
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_select2">
+      Disabled Select 2
+      <select name="form[disabled_select2]" id="form_disabled_select2" disabled>
+        <option value="Should not see me" selected="selected">Should not see me</option>
+      </select>
+    </label>
+  </p>
+
+  <p>
+    <label for="form_disabled_file">
+      Disabled File
+      <input type="file" name="form[disabled_file]" value="/should/not/see/me" id="form_disabled_file" disabled="disabled" />
+    </label>
+  </p>
+
+  <fieldset>
+    <input name="form[enabled_fieldset_child]" id="form_enabled_fieldset_child"/>
+  </fieldset>
+
+  <fieldset disabled="disabled" id="form_disabled_fieldset">
+    <legend>Disabled Child</legend>
+    <input name="form[disabled_fieldset_child]" id="form_disabled_fieldset_child"/>
+    <select>
+      <option>Disabled Child Option</option>
+    </select>
+  </fieldset>
+
+  <fieldset disabled="disabled">
+    <legend>
+      Nested Disabled
+      <input type="checkbox" name="form[disabled_fieldeset_legend_child]" id="form_disabled_fieldset_legend_child"/>
+    </legend>
+    <legend>
+      Another WLegend
+      <input type="checkbox" name="form[disabled_fieldeset_second_legend_child]" id="form_disabled_fieldset_second_legend_child"/>
+    </legend>
+    <fieldset>
+      <legend>
+        Disabled?
+        <input id="form_disabled_fieldset_descendant_legend_child">
+      </legend>
+      <input name="form[disabled_fieldset_descendant]" id="form_disabled_fieldset_descendant"/>
+    </fieldset>
+  </fieldset>
+
+  <p>
+    <select data-test-id="my_test_id">
+      <optgroup label="Level One">
+       <option> A.1 </option>
+      </optgroup>
+      <optgroup label="Level Two" disabled="disabled">
+       <option> A.B.1 </option>
+      </optgroup>
+      <option> A.2 </option>
+    </select>
+  </p>
+
+  <p>
+    <input type="button" aria-label="Aria button" name="form[fresh]" id="fresh_btn" value="i am fresh"/>
+    <input type="submit" name="form[awesome]" id="awe123" data-test-id="test_id_button" title="What an Awesome Button" value="awesome"/>
+    <input type="submit" name="form[crappy]" id="crap321" value="crappy"/>
+    <input type="image" name="form[okay]" id="okay556" title="Okay 556 Image" value="okay" alt="oh hai thar"/>
+    <button type="submit" id="click_me_123" title="Click Title button" value="click_me">Click me!</button>
+    <button type="submit" name="form[no_value]">No Value!</button>
+    <button id="no_type">No Type!</button>
+    <button><img alt="A horse eating hay"/></button>
+    <button id="button_with_label"></button>
+    <label for="button_with_label">button with label element</label>
+    <label>
+      button within label element
+      <button></button>
+    </label>
+    <label>
+      role=button within label element
+      <span role="button">with other text</span>
+    </label>
+    <input type="button" disabled="disabled" value="Disabled button"/>
+    <span role="button">ARIA button</span>
+  </p>
+
+  <p>
+    <input type="date" name="form[date]" id="form_date"/>
+    <input type="time" name="form[time]" id="form_time"/>
+    <input type="datetime-local" name="form[datetime]" id="form_datetime">
+  </p>
+
+  <p>
+    <input id="readonly" name="form[readonly_test]" readonly/>
+    <input id="not_readonly" name="form[readonly_test]" />
+  </p>
+
+  <p>
+    <input id="required" name="form[required]" required />
+    <input id="length" name="form[length]" minlength="4" maxlength="4" />
+  </p>
+</form>
+
+<input type="text" name="form[outside_input]" value="outside_input" form="form1"/>
+
+<label>
+  Nested Label
+  <input type="text" name="nested_label" id="nested_label"/>
+</label>
+
+<label id="wrapper_label">
+  Wrapper Label
+  <input type="checkbox"/>
+</label>
+
+<form id="form1" action="/form" method="post">
+  <input type="text" name="form[which_form]" value="form1" id="form_which_form"/>
+  <input type="text" name="form[for_form2]" value="for_form2" form="form2"/>
+  <input type="submit" name="form[submit_form1]" value="submit_form1" id="submit_form1"/>
+</form>
+
+<button type="submit" name="form[outside_button]" value="outside_button" form="form2">Outside!</button>
+
+<form id="form2" action="/form" method="post">
+  <input type="text" name="form[which_form]" value="form2" id="form_which_form2"/>
+  <input type="submit" name="form[unused]" value="unused"/>
+  <button type="submit" name="form[other_form_button]" value="other_form_button" form="form1">Form1</button>
+</form>
+
+<button type="submit" name="form[no_form_button]" value="no_form_button">No Form</button>
+
+<textarea name="form[outside_textarea]" form="form1">Some text here</textarea>
+<select name="form[outside_select]" form="form1">
+  <option>Lisp</option>
+  <option selected="selected">Ruby</option>
+  <option>Php</option>
+</select>
+
+<input type="submit" name="form[outside_submit]" value="outside_submit" form="form1"/>
+
+<form id="get-form" action="/form/get?foo=bar" method="get">
+  <p>
+    <label for="form_middle_name">Middle Name</label>
+    <input type="text" name="form[middle_name]" value="Darren" id="form_middle_name"/>
+  </p>
+
+  <p>
+    <input type="submit" name="form[mediocre]" id="mediocre" value="med" aria-label="Mediocre Button"/>
+    <input type="submit" formaction="/form/get?bar=foo" id="mediocre2" value="med2"/>
+  <p>
+</form>
+
+<form action="/upload_empty" method="post" enctype="multipart/form-data">
+  <p>
+    <label for="form_file_name">File Name</label>
+    <input type="file" name="form[file]" id="form_file"/>
+  </p>
+
+  <p>
+    <input type="hidden" name="form[dummy]" value="ensure params[:form] exists"/>
+    <input type="submit" value="Upload Empty"/>
+  <p>
+</form>
+
+<form action="/upload_empty" method="post" enctype="multipart/form-data">
+  <p>
+    <label>
+      <input type="file" name="form[file]" multiple="multiple"/>
+      Multiple empty files
+    </label>
+  </p>
+
+  <p>
+    <input type="hidden" name="form[dummy]" value="ensure params[:form] exists"/>
+    <input type="submit" value="Upload Empty Multiple"/>
+  <p>
+</form>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <p>
+    <label for="form_file_name">File Name</label>
+    <input type="file" name="form[file_name]" id="form_file_name"/>
+  </p>
+
+  <p>
+    <label for="form_document">Single Document</label>
+    <input type="file" name="form[document]" id="form_document"/>
+  </p>
+
+  <p>
+    <input type="submit" value="Upload Single"/>
+  <p>
+</form>
+
+<form action="/upload_multiple" method="post" enctype="multipart/form-data">
+  <p>
+    <label for="form_multiple_file_name">File Name</label>
+    <input type="file" name="form[multiple_file_name]" id="form_multiple_file_name"/>
+  </p>
+
+  <p>
+    <label for="form_multiple_documents">Multiple Documents</label>
+    <input type="file" name="form[multiple_documents][]" id="form_multiple_documents" multiple="multiple" />
+  </p>
+
+  <p>
+    <label for="form_directory_upload">Directory Upload</label>
+    <input type="file" name="form[multiple_documents][]" id="form_directory_upload" multiple="multiple" webkitdirectory="webkitdirectory" mozdirectory="mozdirectory" />
+  </p>
+
+  <p>
+    <input type="submit" value="Upload Multiple"/>
+  <p>
+</form>
+
+<form action="/redirect" method="post">
+  <p>
+    <input type="submit" value="Go FAR"/>
+  </p>
+
+  <input type="hidden" name="form[data]" value="TWTW"/>
+  <p>
+    <button formaction='/redirect_307'>Go 307</button>
+  </p>
+  <p>
+    <button formaction='/redirect_308'>Go 308</button>
+  </p>
+</form>
+
+<form action="/form" method="post">
+  <p>
+    <label for="html5_email">Html5 Email</label>
+    <input type="email" name="form[html5_email]" value="person@email.com" id="html5_email"/>
+  </p>
+  <p>
+    <label for="html5_multiple_email">Html5 Multiple Email</label>
+    <input type="email" multiple name="form[html5_multiple_email]" value="person@email.com" id="html5_multiple_email"/>
+  </p>
+  <p>
+    <label for="html5_url">Html5 Url</label>
+    <input type="url" name="form[html5_url]" value="http://www.example.com" id="html5_url"/>
+  </p>
+  <p>
+    <label for="html5_search">Html5 Search</label>
+    <input type="search" name="form[html5_search]" value="what are you looking for" id="html5_search"/>
+  </p>
+  <p id="emergency">Emergency Number</p>
+  <p>
+    <label for="html5_tel">Html5 Tel</label>
+    <input type="tel" aria-labelledby="emergency" name="form[html5_tel]" value="911" id="html5_tel"/>
+  </p>
+  <p>
+    <label for="html5_color">Html5 Color</label>
+    <input type="color" name="form[html5_color]" value="#FFFFFF" id="html5_color"/>
+  </p>
+
+  <p>
+    <input type="submit" name="form[html5_submit]" value="html5_submit"/>
+  </p>
+</form>
+
+<form action="/form" method="post">
+  <p>
+    <button type="submit" name="form[button]" value="button_first">Just an input that came first</button>
+    <button type="submit" name="form[button]" value="button_second">Just an input</button>
+    <input type="submit" name="form[button]" value="Just a button that came first"/>
+    <input type="submit" name="form[button]" value="Just a button"/>
+  </p>
+</form>
+
+<form action="/other_form" method="post">
+  <p>
+    <input type="text" name="form[which_form]" value="formaction form" aria-label="Unlabelled Input"/>
+  </p>
+  <input type="submit" name="form[button]" formaction="/form" value="Formaction button"/>
+  <input type="submit" name="form[button]" formaction="/form/get" formmethod="get" value="Formmethod button"/>
+</form>
+
+<form action="relative" method="post">
+  <p>
+    <input type="submit" name="form[relative]" value="Relative Action" />
+  </p>
+</form>
+
+<form method="post">
+  <p>
+    <input type="submit" name="form[no_action]" value="No Action" />
+  </p>
+</form>
+
+<label>Confusion
+  <input type="checkbox" id="confusion_checkbox" class="confusion-checkbox confusion"/>
+</label>
+
+<label>Confusion
+  <input type="text" id="confusion_text" class="confusion-text confusion"/>
+</label>
+
+<label>Confusion
+  <textarea id="confusion_textarea" class="confusion confusion-textarea"></textarea>
+</label>
+
+<p>
+  <label for="asterisk_input">With Asterisk<abbr title="required">*</abbr></label>
+  <input id="asterisk_input" type="number"value="2016"/>
+</p>
+
+<p>
+  <input id="special" {custom}="abcdef" value="custom attribute"/>
+</p>
+
+
+<label for="multi_label_checkbox">
+  Label to click
+</label>
+<div>Something random that justifies the usage of a separate label</div>
+<label>
+  <div>
+    <input type="checkbox" id="multi_label_checkbox" style="display: none"/>
+    <div>Visual representation of the checkbox</div>
+  </div>
+</label>

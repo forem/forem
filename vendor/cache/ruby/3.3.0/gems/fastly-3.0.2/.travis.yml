@@ -1,0 +1,13 @@
+language: ruby
+script: 'bundle exec rake test:unit'
+sudo: false
+matrix:
+  include:
+    - rvm: 2.3.8
+      gemfile: gemfiles/HEAD.gemfile
+    - rvm: 2.4.5
+      gemfile: gemfiles/HEAD.gemfile
+    - rvm: 2.5.3
+      gemfile: gemfiles/HEAD.gemfile
+    - rvm: 2.6.0
+      gemfile: gemfiles/HEAD.gemfile

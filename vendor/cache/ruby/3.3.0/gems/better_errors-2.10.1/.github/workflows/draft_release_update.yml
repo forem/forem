@@ -1,0 +1,22 @@
+---
+
+name: Draft Release
+
+on:
+  push:
+    # Run on change of the main branch, which covers merged pull requests
+    branches:
+      - main
+      - master
+
+jobs:
+  update:
+    name: "Update"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        with:
+          # Not sure what autolabeler would do in the main branch, but it wouldn't make sense.
+          disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

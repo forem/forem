@@ -1,0 +1,17 @@
+# Unless explicitly stated otherwise all files in this repository are licensed
+# under the Apache License Version 2.0. This product includes software
+# developed at Datadog (https://www.datadoghq.com/). Copyright 2021-Present
+# Datadog, Inc.
+
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: datadog_profiling
+Description: Contains common code used to implement Datadog's Continuous Profilers. (Dynamic linking variant, sets rpath)
+Version: 
+Requires:
+Libs: -L${libdir} -ldatadog_profiling -Wl,-rpath,${libdir}
+Libs.private:
+Cflags: -I${includedir}

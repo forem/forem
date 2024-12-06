@@ -1,0 +1,7094 @@
+---
+AD:
+  name: Adygeya, Respublika
+  code: AD
+  unofficial_names:
+  - Adygei Republic
+  - Adygeja
+  geo:
+    latitude: 44.8229155
+    longitude: 40.1754463
+    min_latitude: 43.757678
+    min_longitude: 38.6818529
+    max_latitude: 45.21684
+    max_longitude: 40.7744969
+  translations:
+    ru: Адыгея
+    af: Adigea
+    ar: أديغيا
+    az: Adıgey
+    be: Адыгея
+    bg: Адигея
+    bn: আদিগিয়া রিপাবলিক
+    ca: Adiguèsia
+    cs: Adygsko
+    da: Adygejien
+    de: Adygeja
+    el: Δημοκρατία της Αντιγκέα
+    en: Adygea
+    es: Adigueya
+    et: Adõgee
+    eu: Adigea
+    fa: آدیغیه
+    fi: Adygeia
+    fr: Adyguée
+    gl: Adiguesia
+    gu: રિપબ્લિક ઓફ અદિગેઅ
+    he: אדיגיה
+    hi: आदिगेया
+    hr: Adigejska
+    hu: Adigeföld
+    hy: Ադիգեա
+    id: Adygea
+    is: Adigea
+    it: Adighezia
+    ja: アディゲ共和国
+    ka: ადიღე
+    kn: ಆಡಿಜಿಯಾ ಗಣರಾಜ್ಯ
+    ko: 아디게야 공화국
+    lt: Adygėja
+    lv: Adigeja
+    mn: Адыгей
+    mr: अदिगेया प्रजासत्ताक
+    ms: Adygea
+    nb: Adygia
+    nl: Adygea
+    pl: Adygeja
+    pt: Adiguésia
+    ro: Adîgheia
+    si: අඩිගියා ජනරජය
+    sk: Adygejsko
+    sl: Adigeja
+    sr: Адигеја
+    sv: Adygeiska republiken
+    sw: Adygea
+    ta: அடிகேயா
+    te: అడీగియా రిపబ్లిక్
+    th: สาธารณรัฐอะดีเกยา
+    tr: Adıge Cumhuriyeti
+    uk: Адигея
+    ur: ادیگیا
+    vi: Adygea
+    zh: 阿迪格共和国
+    cy: Adygea
+    ceb: Respublika Adygeya
+    sr_Latn: Adigeja
+    yue_Hans: 阿迪格
+    sq: Adigjeja
+    ccp: "\U00011103\U00011113\U00011128\U00011109\U00011128\U00011120"
+    ga: Adygea
+    ky: Адыгэ Республикасы
+    kk: Адыгея
+    yue: 阿迪格
+    am: አድጌያ
+    uz: Adigeya
+    bs: Adigeja
+    mk: Адигеја
+    'no': Adygia
+  comments:
+  type: republic
+AL:
+  name: Altay, Respublika
+  code: AL
+  unofficial_names:
+  - Altaj
+  - Altay
+  - Gorno-Altaj
+  geo:
+    latitude: 55.7671943
+    longitude: 37.606158
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ru: Республика Алтай
+    af: Altai
+    ar: جمهورية ألطاي
+    az: Altay Respublikası
+    be: Рэспубліка Алтай
+    bg: Алтай
+    bn: আলতাই প্রজাতন্ত্র
+    ca: República de l’Altai
+    cs: Republika Altaj
+    da: Altai
+    de: Republik Altai
+    el: Δημοκρατία των Αλτάι
+    en: Altai
+    es: Altái
+    et: Altai Vabariik
+    eu: Altaiko Errepublika
+    fa: جمهوری آلتایی
+    fi: Altain tasavalta
+    fr: République de l’Altaï
+    gl: República de Altai
+    gu: અલ્તાઇ રિપબ્લિક
+    he: אלטאי
+    hi: अल्ताई गणराज्य
+    hr: Altajska
+    hu: Altaj Köztársaság
+    hy: Ալթայի հանրապետություն
+    id: Republik Altai
+    it: Repubblica dell’Altaj
+    ja: アルタイ共和国
+    ka: ალთაის რესპუბლიკა
+    kn: ಆಲ್ಟಾಯ್ ರಿಪಬ್ಲಿಕ್
+    ko: 알타이 공화국
+    lt: Altajaus Respublika
+    lv: Altaja Republika
+    mn: Алтайн Бүгд Найрамдах Улс
+    mr: आल्ताय प्रजासत्ताक
+    ms: Republik Altai
+    nb: Altaj
+    nl: Altaj
+    pl: Republika Ałtaju
+    pt: Altai (república)
+    ro: Republica Altai
+    si: අල්ටායි ජනරජය
+    sk: Altajsko
+    sl: Republika Altaj
+    sr: Алтај
+    sv: Altajrepubliken
+    sw: Jamhuri ya Altai
+    ta: அல்த்தாய் குடியரசு
+    te: అల్టాయి రిపబ్లిక్
+    th: อัลไต
+    tr: Altay Cumhuriyeti
+    uk: Республіка Алтай
+    ur: التائی جمہوریہ
+    vi: Cộng hòa Altai
+    zh: 阿尔泰共和国
+    cy: Gweriniaeth Altai
+    ceb: Respublika Altay
+    sr_Latn: Altaj
+    yue_Hans: 阿尔泰
+    ccp: "\U00011103\U00011123\U00011134\U00011111\U0001112D"
+    ga: Poblacht Altae
+    ky: Алтай Республикасы
+    kk: Алтай Республикасы
+    yue: 阿爾泰
+    uz: Oltoy Respublikasi
+    bs: Altajska republika
+    mk: Република Алтај
+    'no': Altaj
+    ps: التای جمهوریت
+    sq: Republika e Altait
+    tk: Altaý Respublikasy
+  comments:
+  type: republic
+ALT:
+  name: Altayskiy kray
+  code: ALT
+  unofficial_names:
+  - Altai Kray
+  - Altajskij Kray
+  - Altajskiy Kraj
+  - Altaj
+  geo:
+    latitude: 51.7936298
+    longitude: 82.6758596
+    min_latitude: 50.6395136
+    min_longitude: 77.8891551
+    max_latitude: 54.45086
+    max_longitude: 87.16908889999999
+  translations:
+    ru: Алтайский край
+    af: Altai-krai
+    ar: ألطاي كراي
+    az: Altay diyarı
+    be: Алтайскі край
+    bg: Алтайски край
+    bn: আলতাই ক্রাই
+    ca: Territori de l’Altai
+    cs: Altajský kraj
+    da: Altaj kraj
+    de: Region Altai
+    el: Κράι Αλτάι
+    en: Altai Krai
+    es: Krai de Altái
+    et: Altai krai
+    eu: Altai kraia
+    fa: سرزمین آلتایی
+    fi: Altain aluepiiri
+    fr: kraï de l’Altaï
+    gu: અલ્તાઇ ક્રાઇ
+    he: מחוז אלטאי
+    hi: अल्ताई क्राय
+    hr: Altajski kraj
+    hu: Altaji határterület
+    hy: Ալթայի երկրամաս
+    id: Krai Altai
+    it: Territorio dell’Altaj
+    ja: アルタイ地方
+    ka: ალთაის მხარე
+    kn: ಆಲ್ಟಾಯ್ ಕ್ರೈ
+    ko: 알타이 지방
+    lt: Altajaus kraštas
+    lv: Altaja novads
+    mn: Алтайн хязгаар
+    mr: आल्ताय क्राय
+    ms: Jajahan Altai
+    nb: Altaj²
+    nl: Kraj Altaj
+    pl: Kraj Ałtajski
+    pt: Krai de Altai
+    ro: Ținutul Altai
+    si: අල්ටායි ක්‍රයි
+    sk: Altajský kraj
+    sr: Алтајска Покрајина
+    sv: Altaj kraj
+    sw: Altai Krai
+    ta: அல்த்தாய் பிரதேசம்
+    te: అల్టాయ్ క్రే
+    th: อัลไตไคร
+    tr: Altay Krayı
+    uk: Алтайський край
+    ur: التائی کرائی
+    vi: Altai
+    zh: 阿尔泰边疆区
+    cy: Crai Altai
+    ceb: Altayskiy Kray
+    sr_Latn: Altajska Pokrajina
+    yue_Hans: 阿尔泰边疆区
+    ccp: "\U00011103\U00011123\U00011134\U00011111\U0001112D \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Altae
+    ky: Алтай крайы
+    pa: ਅਲਤਾਈ ਕ੍ਰਾਈ
+    yue: 阿爾泰邊疆區
+    uz: Oltoy oʻlkasi
+    bs: Altajski kraj
+    mk: Алтајски крај
+    'no': Altaj²
+    gl: Krai de Altai
+    is: Altaífylki
+  comments:
+  type: administrative_territory
+AMU:
+  name: Amurskaya oblast'
+  code: AMU
+  unofficial_names:
+  - Amurskaja Oblast
+  geo:
+    latitude: 54.60350649999999
+    longitude: 127.4801721
+    min_latitude: 48.852265
+    min_longitude: 119.66795
+    max_latitude: 57.0585329
+    max_longitude: 134.920255
+  translations:
+    ru: Амурская область
+    af: Amoer-oblast
+    ar: أمور أوبلاست
+    az: Amur vilayəti
+    be: Амурская вобласць
+    bg: Амурска област
+    bn: আমুর ওব্লাস্ট
+    ca: Província de l’Amur
+    cs: Amurská oblast
+    da: Amur oblast
+    de: Oblast Amur
+    el: Περιφέρεια Αμούρ
+    en: Amur
+    es: Amur
+    et: Amuuri oblast
+    eu: Amur oblasta
+    fa: استان آمور
+    fi: Amurin alue
+    fr: Oblast d’Amour
+    gl: Óblast de Amur
+    gu: અમુર ઓબ્લાસ્ટ
+    he: מחוז אמור
+    hi: आमुर ओब्लास्ट
+    hr: Amurska oblast
+    hu: Amuri terület
+    hy: Ամուրի մարզ
+    id: Oblast Amur
+    is: Amúrfylki
+    it: Oblast’ dell’Amur
+    ja: アムール州
+    ka: ამურის ოლქი
+    kn: ಅಮುರ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 아무르 주
+    lt: Amūro sritis
+    lv: Amūras apgabals
+    mr: आमूर ओब्लास्त
+    ms: Wilayah Amur
+    nb: Amur
+    nl: Oblast Amoer
+    pl: Obwód amurski
+    pt: Oblast de Amur
+    ro: Regiunea Amur
+    si: අමුර් ප්‍රාන්තය
+    sk: Amurská oblasť
+    sl: Amurska oblast
+    sr: Амурска област
+    sv: Amur oblast
+    sw: Amur Oblast
+    ta: அமுர் ஓபலாசுத்து
+    te: అమూర్ ఓబ్లాస్ట్
+    th: แคว้นปกครองอามูร์
+    tr: Amur Oblastı
+    uk: Амурська область
+    ur: آمور اوبلاست
+    vi: Amur
+    zh: 阿穆尔州
+    cy: Oblast Amur
+    ceb: Amurskaya Oblast’
+    sr_Latn: Amurska oblast
+    yue_Hans: 阿穆尔州
+    ccp: "\U00011103\U0001111F\U0001112A\U00011122\U00011134"
+    ga: Cúige Amur
+    yue: 阿穆爾州
+    uz: Amur viloyati
+    bs: Amurska oblast
+    mk: Амурска област
+    'no': Amur
+    mn: Амур муж
+    ps: آمور
+    sd: آمور اوبلاسٽ
+  comments:
+  type: administrative_region
+ARK:
+  name: Arkhangel'skaya oblast'
+  code: ARK
+  unofficial_names:
+  - Arhangelskaja Oblast
+  - Arhangelsk
+  geo:
+    latitude: 63.2852803
+    longitude: 42.5884191
+    min_latitude: 60.63212300000001
+    min_longitude: 35.502945
+    max_latitude: 81.8581221
+    max_longitude: 69.04823499999999
+  translations:
+    ru: Архангельская область
+    af: Archangelsk-oblast
+    ar: أرخانجيلسك أوبلاست
+    az: Arxangelsk vilayəti
+    be: Архангельская вобласць
+    bg: Архангелска област
+    bn: আরখানগেলস্ক ওব্লাস্ট
+    ca: Província d’Arkhànguelsk
+    cs: Archangelská oblast
+    da: Arkhangelsk oblast
+    de: Oblast Archangelsk
+    el: Περιφέρεια Αρχάγγελσκ
+    en: Arkhangelsk
+    es: Óblast de Arjánguelsk
+    et: Arhangelski oblast
+    eu: Arkhangelsk oblasta
+    fa: استان آرخانگلسک
+    fi: Arkangelin alue
+    fr: Oblast d’Arkhangelsk
+    gl: Óblast de Arjánguelsk
+    gu: અર્ખાંગેલસ્ક ઓબ્લાસ્ટ
+    he: מחוז ארכנגלסק
+    hi: अर्खांगेल्स्क ओब्लास्ट
+    hr: Arhangelska oblast
+    hu: Arhangelszki terület
+    hy: Արխանգելսկի մարզ
+    id: Oblast Arkhangelsk
+    is: Arkangelskfylki
+    it: Oblast’ di Arcangelo
+    ja: アルハンゲリスク州
+    ka: არხანგელსკის ოლქი
+    kn: ಆರ್ಖಾಂಗೆಲ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 아르한겔스크 주
+    lt: Archangelsko sritis
+    lv: Arhangeļskas apgabals
+    mn: Архангельск муж
+    mr: अर्खांगेल्स्क ओब्लास्त
+    ms: Wilayah Arkhangelsk
+    nb: Arkhangelsk
+    nl: Oblast Archangelsk
+    pl: Obwód archangielski
+    pt: Oblast de Arkhangelsk
+    ro: Regiunea Arhanghelsk
+    si: අර්කන්ගේල්ස්ක් ප්‍රාන්තය
+    sk: Archangeľská oblasť
+    sl: Arhangelska oblast
+    sr: Архангелска област
+    sv: Archangelsk oblast
+    sw: Arkhangelsk Oblast
+    ta: ஆர்க்காங்கெல்சிக் ஓபலாசுத்து
+    te: అర్కాజెల్స్క్ ఓబ్లాస్ట్
+    th: อาร์คันเกลสค์
+    tr: Arhangelsk Oblastı
+    uk: Архангельська область
+    ur: آرخانگلسک اوبلاست
+    vi: Arkhangelsk
+    zh: 阿尔汉格尔斯克州
+    cy: Oblast Arkhangelsk
+    ceb: Arkhangel’skaya Oblast’
+    sr_Latn: Arhangelska oblast
+    yue_Hans: 阿尔汉格尔斯克州
+    ccp: "\U00011103\U00011122\U00011134\U00011108\U0001111A\U00011134\U00011109\U0001112C\U00011123\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Arkhangelsk
+    kk: Архангельск облысы
+    yue: 阿爾漢格爾斯克州
+    uz: Arxangel viloyati
+    bs: Arhangelska oblast
+    mk: Архангелска област
+    'no': Arkhangelsk
+    sd: آرکينگيلسڪ آبلاسٽ
+  comments:
+  type: administrative_region
+AST:
+  name: Astrakhanskaya oblast'
+  code: AST
+  unofficial_names:
+  - Astrahanska Oblast
+  - Astrahan
+  geo:
+    latitude: 46.1321166
+    longitude: 48.0610115
+    min_latitude: 45.17255590000001
+    min_longitude: 44.9707619
+    max_latitude: 48.8653439
+    max_longitude: 49.279398
+  translations:
+    ru: Астраханская область
+    af: Astrachan-oblast
+    ar: أوبلاست أستراخان
+    az: Həştərxan vilayəti
+    be: Астраханская вобласць
+    bg: Астраханска област
+    bn: আস্ট্রখান ওব্লাস্ট
+    ca: Província d’Àstrakhan
+    cs: Astrachaňská oblast
+    da: Astrakhan oblast
+    de: Oblast Astrachan
+    el: Περιφέρεια Άστραχαν
+    en: Astrakhan
+    es: Astracán
+    et: Astrahani oblast
+    eu: Astrakhan oblasta
+    fa: استان آستراخان
+    fi: Astrahanin alue
+    fr: Oblast d’Astrakhan
+    gl: Óblast de Astrakán
+    gu: એસ્ટ્રાખાનન ઓબ્લાસ્ટ
+    he: מחוז אסטרחן
+    hi: अस्त्राखान ओब्लास्ट
+    hr: Astrahanska oblast
+    hu: Asztraháni terület
+    hy: Աստրախանի մարզ
+    id: Oblast Astrakhan
+    is: Astrakanfylki
+    it: Oblast’ di Astrachan’
+    ja: アストラハン州
+    ka: ასტრახანის ოლქი
+    kn: ಆಸ್ಟ್ರಾಖಾನ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 아스트라한 주
+    lt: Astrachanės sritis
+    lv: Astrahaņas apgabals
+    mr: आस्त्राखान ओब्लास्त
+    ms: Wilayah Astrakhan
+    nb: Astrakhan
+    nl: Oblast Astrachan
+    pl: Obwód astrachański
+    pt: Oblast de Astracã
+    ro: Regiunea Astrahan
+    si: අස්ට්‍රාඛාන් ප්‍රාන්තය
+    sk: Astrachánska oblasť
+    sl: Astrahanska oblast
+    sr: Астраханска област
+    sv: Astrachan oblast
+    sw: Astrakhan Oblast
+    ta: அஸ்த்ரகான் ஒப்லாஸ்து
+    te: ఆస్ట్రాఖాన్ ఓబ్లాస్ట్
+    th: แอสทรัคฮาน โอแบลส
+    tr: Astrahan Oblastı
+    uk: Астраханська область
+    ur: استراخان اوبلاست
+    vi: Astrakhan
+    zh: 阿斯特拉罕州
+    cy: Oblast Astrakhan
+    ceb: Astrakhanskaya Oblast’
+    sr_Latn: Astrahanska oblast
+    yue_Hans: 阿斯特拉罕州
+    ccp: "\U00011103\U0001110C\U00011134\U00011111\U00011133\U00011122\U00011108\U0001111A\U00011134"
+    ga: Cúige na hAstracháine
+    kk: Астрахан облысы
+    yue: 阿斯特拉罕州
+    uz: Astraxan viloyati
+    bs: Astrahanska oblast
+    mk: Астраханска област
+    'no': Astrakhan
+    mn: Астрахань муж
+    sd: آستراخان اوبلاسٽ
+  comments:
+  type: administrative_region
+BA:
+  name: Bashkortostan, Respublika
+  code: BA
+  unofficial_names:
+  - Baškortostan
+  geo:
+    latitude: 54.2312172
+    longitude: 56.1645257
+    min_latitude: 51.57122589999999
+    min_longitude: 53.1579969
+    max_latitude: 56.53352
+    max_longitude: 60.00295010000001
+  translations:
+    ru: Башкортостан
+    af: Basjkortostan
+    ar: باشكورستان
+    az: Başqırdıstan
+    be: Башкартастан
+    bg: Башкирия
+    bn: রিপাবলিক অফ বাশকুরতুস্তান
+    ca: Baixkíria
+    cs: Baškortostán
+    da: Basjkortostan
+    de: Baschkortostan
+    el: Δημοκρατία του Μπασκορτοστάν
+    en: Bashkortostan
+    es: Bashkortostán
+    et: Baškortostan
+    eu: Baxkortostan
+    fa: باشقیرستان
+    fi: Baškortostan
+    fr: Bachkirie
+    gl: Bashkortostán
+    gu: રિપબ્લિક ઓફ બાશ્કોર્ટોસ્તાન
+    he: בשקורטוסטן
+    hi: बश्कोरतोस्तान
+    hr: Baškirska
+    hu: Baskíria
+    hy: Բաշկորտոստան
+    id: Bashkortostan
+    is: Basjkortostan
+    it: Baschiria
+    ja: バシコルトスタン共和国
+    ka: ბაშკირეთი
+    kn: ಬ್ಯಾಷ್ಕಾರ್ಟೊಸ್ಟಾನ್ ಗಣರಾಜ್ಯ
+    ko: 바시키르 공화국
+    lt: Baškirija
+    lv: Baškortostāna
+    ml: ബാഷ്കോർടോസ്ഥാൻ
+    mn: Башкортостан
+    mr: बाश्कोर्तोस्तान प्रजासत्ताक
+    ms: Bashkortostan
+    nb: Basjkortostan
+    nl: Basjkirostan
+    pl: Baszkiria
+    pt: Bascortostão
+    ro: Bașchiria
+    si: බාෂ්කොර්ටොස්ටාන් ජනරජය
+    sk: Baškirsko
+    sl: Baškortostan
+    sr: Башкортостан
+    sv: Basjkirien
+    sw: Bashkortostan
+    ta: பாஷ்கொர்டொஸ்தான்
+    te: బష్కొర్తోస్తాన్
+    th: สาธารณรัฐบัชคอร์โตสถาน
+    tk: Başgyrdystan
+    tr: Başkurdistan
+    uk: Башкортостан
+    ur: باشکورتوستان
+    vi: Bashkortostan
+    zh: 巴什科尔托斯坦共和国
+    cy: Bashkortostan
+    ceb: Bashkortostan
+    sr_Latn: Baškortostan
+    yue_Hans: 巴什科尔托斯坦
+    sq: Bashkortostani
+    ccp: "\U0001111D\U0001110C\U00011134\U00011107\U00011127\U00011122\U00011134\U00011111\U00011127\U0001110C\U00011134\U00011111\U0001111A\U00011134"
+    ga: An Bhaisceartastáin
+    ky: Башкортостан
+    pa: ਬਸ਼ਕੋਰਤੋਸਤਾਨ
+    kk: Башқұртстан
+    yue: 巴什科爾托斯坦
+    am: ባሽኮርቶስታን
+    uz: Boshqirdiston
+    bs: Baškortostan
+    mk: Башкортостан
+    'no': Basjkortostan
+  comments:
+  type: republic
+BEL:
+  name: Belgorodskaya oblast'
+  code: BEL
+  unofficial_names:
+  - Belgorodskaja Oblast
+  geo:
+    latitude: 50.71069259999999
+    longitude: 37.7533377
+    min_latitude: 49.796403
+    min_longitude: 35.3285271
+    max_latitude: 51.4325619
+    max_longitude: 39.2751271
+  translations:
+    ru: Белгородская область
+    af: Belgorod-oblast
+    ar: أوبلاست بيلغورود
+    az: Belqorod vilayəti
+    be: Белгародская вобласць
+    bg: Белгородска област
+    bn: বেল্গ্রোদ ওব্লাস্ট
+    ca: Província de Bèlgorod
+    cs: Belgorodská oblast
+    da: Belgorod oblast
+    de: Oblast Belgorod
+    el: Περιφέρεια Μπέλγκοροντ
+    en: Belgorod
+    es: Óblast de Bélgorod
+    et: Belgorodi oblast
+    eu: Belgorod oblasta
+    fa: استان بلگورود
+    fi: Belgorodin alue
+    fr: oblast de Belgorod
+    gu: બેલ્ગોરોડ ઓબ્લાસ્ટ
+    he: מחוז בלגורוד
+    hi: बेल्गोरोद ओब्लास्त
+    hr: Belgorodska oblast
+    hu: Belgorodi terület
+    hy: Բելգորոդի մարզ
+    id: Oblast Belgorod
+    is: Belgorodfylki
+    it: Oblast’ di Belgorod
+    ja: ベルゴロド州
+    ka: ბელგოროდის ოლქი
+    kn: ಬೆಲ್ಗೊರೊಡ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 벨고로드 주
+    lt: Belgorodo sritis
+    lv: Belgorodas apgabals
+    mr: बेल्गोरोद ओब्लास्त
+    ms: Wilayah Belgorod
+    nb: Belgorod
+    nl: Oblast Belgorod
+    pl: Obwód biełgorodzki
+    pt: Oblast de Belgorod
+    ro: Regiunea Belgorod
+    si: බෙල්ගොරඩ් ප්‍රාන්තය
+    sk: Belgorodská oblasť
+    sl: Belgorodska oblast
+    sr: Белгородска област
+    sv: Belgorod oblast
+    sw: Belgorod Oblast
+    ta: பெல்கோரத் ஒப்லாஸ்து
+    te: బెల్గోరోడ్ ఓబ్లాస్ట్
+    th: แคว้นเบลโกรอด
+    tr: Belgorod Oblastı
+    uk: Бєлгородська область
+    ur: بلگورود اوبلاست
+    vi: Belgorod
+    zh: 别尔哥罗德州
+    cy: Oblast Belgorod
+    ceb: Belgorodskaya Oblast’
+    sr_Latn: Belgorodska oblast
+    yue_Hans: 别尔哥罗德州
+    ccp: "\U0001111D\U0001112C\U00011123\U00011134\U00011109\U00011127\U00011122\U00011127\U00011116\U00011134"
+    ga: Cúige Bhelgorod
+    yue: 別爾哥羅德州
+    uz: Belgorod viloyati
+    bs: Belgorodska oblast
+    mk: Белгородска област
+    'no': Belgorod
+    gl: Óblast de Belgorod
+    mn: Белгород муж
+    ps: بلګورود
+    sd: بلگورود اوبلاست
+  comments:
+  type: administrative_region
+BRY:
+  name: Bryanskaya oblast'
+  code: BRY
+  unofficial_names:
+  - Brjanskaja Oblast
+  - Brjansk
+  geo:
+    latitude: 53.0408599
+    longitude: 33.2690899
+    min_latitude: 51.844038
+    min_longitude: 31.24210489999999
+    max_latitude: 54.03629910000001
+    max_longitude: 35.32127810000001
+  translations:
+    ru: Брянская область
+    af: Brjansk-oblast
+    ar: بريانسك أوبلاست
+    az: Bryansk vilayəti
+    be: Бранская вобласць
+    bg: Брянска област
+    bn: ব্রিয়ানস্ক ওব্লাস্ট
+    ca: Província de Briansk
+    cs: Brjanská oblast
+    da: Brjansk oblast
+    de: Oblast Brjansk
+    el: Περιφέρεια Μπριάνσκ
+    en: Bryansk
+    es: Óblast de Briansk
+    et: Brjanski oblast
+    eu: Briansk oblasta
+    fa: استان بریانسک
+    fi: Brjanskin alue
+    fr: Oblast de Briansk
+    gu: બ્રાયનસ્ક ઓબ્લાસ્ટ
+    he: מחוז בריאנסק
+    hi: ब्रियांस्क ओब्लास्ट
+    hr: Brjanska oblast
+    hu: Brjanszki terület
+    hy: Բրյանսկի մարզ
+    id: Oblast Bryansk
+    it: Oblast’ di Brjansk
+    ja: ブリャンスク州
+    ka: ბრიანსკის ოლქი
+    kn: ಬ್ರಿಯಾನ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 브랸스크 주
+    lt: Briansko sritis
+    lv: Brjanskas apgabals
+    mn: Брянск муж
+    mr: ब्र्यान्स्क ओब्लास्त
+    ms: Wilayah Bryansk
+    nb: Brjansk
+    ne: ब्रान्स्क ओब्लास्ट
+    nl: Oblast Brjansk
+    pl: Obwód briański
+    pt: Oblast de Briansk
+    ro: Regiunea Briansk
+    si: බ්‍රයන්ස්ක් ප්‍රාන්තය
+    sk: Brianska oblasť
+    sl: Brjanska oblast
+    sr: Брјанска област
+    sv: Brjansk oblast
+    sw: Bryansk Oblast
+    ta: ப்ரையன்ஸ்க் ஒப்லாஸ்து
+    te: బ్రయాంక్స్ ఓబ్లాస్ట్
+    th: แคว้นบรีอันสค์
+    tr: Bryansk Oblastı
+    uk: Брянська область
+    ur: بریانسک اوبلاست
+    vi: Bryansk
+    zh: 布良斯克州
+    cy: Oblast Bryansk
+    ceb: Bryanskaya Oblast’
+    sr_Latn: Brjanska oblast
+    yue_Hans: 布良斯克州
+    ccp: "\U0001111D\U00011133\U00011122\U0001112D\U00011120\U0001111A\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Bryansk
+    yue: 布良斯克州
+    uz: Bryansk viloyati
+    bs: Brjanska oblast
+    mk: Брјанска област
+    'no': Brjansk
+    is: Brjanskfylki
+    ps: بریانسک
+    sd: برائنسڪ آبلاسٽ
+  comments:
+  type: administrative_region
+BU:
+  name: Buryatiya, Respublika
+  code: BU
+  unofficial_names:
+  - Buryat Republic
+  - Burjatija
+  geo:
+    latitude: 55.7685161
+    longitude: 37.6425744
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ru: Бурятия
+    af: Boerjatië
+    ar: بورياتيا
+    az: Buryatiya
+    be: Бурація
+    bg: Бурятия
+    bn: বুরিয়াত রিপাবলিক
+    ca: Buriàtia
+    cs: Burjatsko
+    da: Burjatien
+    de: Burjatien
+    el: Δημοκρατία της Μπουργιατίας
+    en: Buryat
+    es: Buriatia
+    et: Burjaatia
+    eu: Buriatia
+    fa: بوریاتیا
+    fi: Burjatia
+    fr: Bouriatie
+    gl: Buriatia
+    gu: બુરયટ રિપબ્લિક
+    he: בוריאטיה
+    hi: बुर्यातिया
+    hr: Burjatska
+    hu: Burjátföld
+    hy: Բուրյաթիա
+    id: Buryatia
+    it: Buriazia
+    ja: ブリヤート共和国
+    ka: ბურიატეთი
+    kn: ಬುರಿತ್ ರಿಪಬ್ಲಿಕ್
+    ko: 부랴트 공화국
+    lt: Buriatija
+    lv: Burjatija
+    mn: Бүгд Найрамдах Буриад Улс
+    mr: बुर्यातिया
+    ms: Republik Buryatia
+    nb: Burjatia
+    nl: Boerjatië
+    pl: Buriacja
+    pt: Buriácia
+    ro: Buriația
+    si: බර්යට් ජනරජය
+    sk: Buriatsko
+    sl: Burjatija
+    sr: Бурјатија
+    sv: Burjatien
+    sw: Buryatia
+    ta: புரியாத்தியா
+    te: బుర్యాట్ రిపబ్లిక్
+    th: สาธารณรัฐบูเรียตียา
+    tr: Buryatya
+    uk: Бурятія
+    ur: بوریاتیا
+    vi: Buryatia
+    zh: 布里亞特共和國
+    ceb: Respublika Buryatiya
+    sr_Latn: Burjatija
+    yue_Hans: 布里亚特
+    sq: Burjatia
+    ccp: "\U0001111D\U0001112A\U00011122\U00011128\U00011120\U00011116\U00011134"
+    ga: An Bhuiriáit
+    ky: Бурятия
+    kk: Бурятия
+    yue: 布里亞特
+    am: ቡርያቲያ
+    uz: Buryatiya
+    bs: Burjatija
+    mk: Бурјатија
+    'no': Burjatia
+    cy: Gweriniaeth Buryatia
+  comments:
+  type: republic
+CE:
+  name: Chechenskaya Respublika
+  code: CE
+  unofficial_names:
+  - Chechen
+  - Chechenia
+  - Ichkeria
+  - Ičkeria
+  - Čečens
+  - Čečenskaja Respublika
+  - Čečenija
+  geo:
+    latitude: 55.7521689
+    longitude: 37.5886438
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ru: Чечня
+    af: Tsjetsjnië
+    ar: الشيشان
+    az: Çeçenistan
+    be: Чачня
+    bg: Чеченска република
+    bn: চেচনিয়া
+    ca: Txetxènia
+    cs: Čečensko
+    da: Tjetjenien
+    de: Tschetschenien
+    el: Δημοκρατία της Τσετσενίας
+    en: Chechen
+    es: Chechenia
+    et: Tšetšeeni Vabariik
+    eu: Txetxenia
+    fa: چچن
+    fi: Tšetšenia
+    fr: Tchétchénie
+    gu: ચેચન રિપબ્લિક
+    he: צ׳צ׳ניה
+    hi: चेचन्या
+    hr: Čečenija
+    hu: Csecsenföld
+    hy: Չեչնիա
+    id: Chechnya
+    is: Téténía
+    it: Cecenia
+    ja: チェチェン共和国
+    ka: ჩეჩნეთი
+    kn: ಚೆಚೆನ್ ರಿಪಬ್ಲಿಕ್
+    ko: 체첸 공화국
+    lt: Čečėnija
+    lv: Čečenija
+    ml: ചെച്‌നിയ
+    mn: Чечень
+    mr: चेचन्या
+    ms: Chechnya
+    nb: Tsjetsjenia
+    nl: Tsjetsjenië
+    pl: Czeczenia
+    pt: Chechênia
+    ro: Cecenia
+    si: චෙච්නියා
+    sk: Čečensko
+    sl: Čečenija
+    sr: Чеченија
+    sv: Tjetjenien
+    sw: Chechnya
+    ta: செச்சினியா
+    te: చెచెన్ రిపబ్లిక్
+    th: สาธารณรัฐเชเชน
+    tr: Çeçenistan
+    uk: Чечня
+    ur: شیشان
+    vi: Chechnya
+    zh: 车臣共和国
+    cy: Tsietsnia
+    ceb: Chechenskaya Respublika
+    sr_Latn: Čečenija
+    yue_Hans: 车臣共和国
+    jv: Chechnya
+    sq: Çeçenia
+    ccp: "\U0001110C\U0001112C\U0001110C\U0001112C\U0001111A\U00011134"
+    sd: چيچنيا
+    ga: An tSeisnia
+    ky: Чеченстан
+    so: Jeejniya
+    pa: ਚੈਚਨੀਆ
+    yue: 車臣共和國
+    am: ቸችኒያ
+    uz: Checheniston
+    bs: Čečenija
+    mk: Чеченија
+    'no': Tsjetsjenia
+    kk: Шешенстан
+    ps: چيچنيا
+  comments:
+  type: republic
+CHE:
+  name: Chelyabinskaya oblast'
+  code: CHE
+  unofficial_names:
+  - Cheljabinsk
+  - Čeljabinskaja Oblast
+  - Čeljabinsk
+  geo:
+    latitude: 54.43194219999999
+    longitude: 60.87889629999999
+    min_latitude: 51.990638
+    min_longitude: 57.1300707
+    max_latitude: 56.3648829
+    max_longitude: 63.3492892
+  translations:
+    ru: Челябинская область
+    af: Tsjeljabinsk-oblast
+    ar: أوبلاست تشيليابنسك
+    az: Çelyabinsk vilayəti
+    be: Чалябінская вобласць
+    bg: Челябинска област
+    bn: চেলিয়াবিনস্ক ওব্লাস্ট
+    ca: Província de Txeliàbinsk
+    cs: Čeljabinská oblast
+    da: Tjeljabinsk oblast
+    de: Oblast Tscheljabinsk
+    el: Περιφέρεια Τσελιάμπινσκ
+    en: Chelyabinsk
+    es: Cheliábinsk
+    et: Tšeljabinski oblast
+    eu: Txeliabinskeko oblasta
+    fa: استان چلیابینسک
+    fi: Tšeljabinskin alue
+    fr: Oblast de Tcheliabinsk
+    gu: ચેલ્યાબિન્સ્ક ઓબ્લાસ્ટ
+    he: מחוז צ׳ליאבינסק
+    hi: चेल्याबिन्स्क ओब्लास्त
+    hr: Čeljabinska oblast
+    hu: Cseljabinszki terület
+    hy: Չելյաբինսկի մարզ
+    id: Oblast Chelyabinsk
+    it: Oblast’ di Čeljabinsk
+    ja: チェリャビンスク州
+    ka: ჩელიაბინსკის ოლქი
+    kn: ಚೆಲ್ಯಾಬಿನ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 첼랴빈스크 주
+    lt: Čeliabinsko sritis
+    lv: Čeļabinskas apgabals
+    mn: Челябинск муж
+    mr: चेलियाबिन्स्क ओब्लास्त
+    ms: Wilayah Chelyabinsk
+    nb: Tsjeljabinsk
+    nl: Oblast Tsjeljabinsk
+    pl: Obwód czelabiński
+    pt: Oblast de Cheliabinsk
+    ro: Regiunea Celiabinsk
+    si: චෙලිඅබින්ස්ක් ප්‍රාන්තය
+    sk: Čeľabinská oblasť
+    sl: Čeljabinska oblast
+    sr: Чељабинска област
+    sv: Tjeljabinsk oblast
+    sw: Chelyabinsk Oblast
+    ta: செல்யபின்ஸ்க் ஒப்லாஸ்து
+    te: చెల్యాబిన్స్క్ ఓబ్లాస్ట్
+    th: แคว้นเชเลียบินสค์
+    tr: Çelyabinsk Oblastı
+    uk: Челябінська область
+    ur: چیلیابنسک اوبلاست
+    vi: Chelyabinsk
+    zh: 车里雅宾斯克州
+    cy: Oblast Chelyabinsk
+    ceb: Chelyabinskaya Oblast’
+    sr_Latn: Čeljabinska oblast
+    yue_Hans: 车里雅宾斯克州
+    ccp: "\U0001110C\U0001112C\U00011123\U00011128\U00011120\U0001111D\U00011128\U0001111A\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Chelyabinsk
+    kk: Челябі облысы
+    yue: 車里雅賓斯克州
+    uz: Chelyabinsk viloyati
+    bs: Čeljabinska oblast
+    mk: Чељабинска област
+    'no': Tsjeljabinsk
+    is: Tsjeljabinskfylki
+    sd: چيليابنسڪ آبلاسٽ
+  comments:
+  type: administrative_region
+CHU:
+  name: Chukotskiy avtonomnyy okrug
+  code: CHU
+  unofficial_names:
+  - Chuckchi
+  - Čukotskij Avtonomnyj Okrug
+  - Čukči
+  - Čukotka
+  geo:
+    latitude: 65.6298355
+    longitude: 171.6952159
+    min_latitude: 61.8096659
+    min_longitude: 157.732108
+    max_latitude: 71.59401129999999
+    max_longitude: -168.9996789
+  translations:
+    ru: Чукотский автономный округ
+    af: Tsjoekotka
+    ar: أوكروغ تشوكوتكا الذاتية
+    az: Çukotka Muxtar Dairəsi
+    be: Чукоцкая аўтаномная акруга
+    bg: Чукотски автономен окръг
+    bn: চুকোটকা স্বায়ত্তশাসিত ওব্লাস্ট
+    ca: Txukotka
+    cs: Čukotský autonomní okruh
+    da: Tjuktjien
+    de: Autonomer Kreis der Tschuktschen
+    el: Αυτόνομος θύλακας Τσουκότκα
+    en: Chukotka Okrug
+    es: Chukotka
+    et: Tšuktšimaa
+    eu: Txukotk
+    fa: چوکوتکا
+    fi: Tšukotka
+    fr: Tchoukotka
+    gl: Chukotka
+    gu: ચુકોત્કા ઓટોનોમસ ઓક્રગ
+    he: צ׳וקוטקה
+    hi: चुकोतका स्वायत्त ऑक्रग
+    hr: Čukotski autonomni okrug
+    hu: Csukcsföld
+    hy: Չուկոտկայի ինքնավար օկրուգ
+    id: Okrug otonom Chukotka
+    it: Circondario autonomo della Čukotka
+    ja: チュクチ自治管区
+    ka: ჩუკოტკის ავტონომიური ოკრუგი
+    kn: ಚುಕೊಟ್ಕಾ ಸ್ವಾಯತ್ತ ಒಕ್ರುಗ್
+    ko: 축치 자치구
+    lt: Čiukčių autonominė apygarda
+    lv: Čukotkas autonomais apvidus
+    mr: चुकोत्का स्वायत्त ऑक्रूग
+    ms: Negeri autonomi Chukotka
+    nb: Tsjukotka
+    nl: Tsjoekotka
+    pl: Czukocki Okręg Autonomiczny
+    pt: Chukotka
+    ro: Districtul autonom Ciukotka
+    si: චුකොට්කා ස්වාධීන පළාත
+    sk: Čukotka
+    sl: Čukotka
+    sr: Чукотка
+    sv: Tjuktjien
+    sw: Okrug huru ya Chukotka
+    ta: சுகோத்கா தன்னாட்சி வட்டாரம்
+    te: చుకోట్కా అటానమస్ ఓకుర్గ్
+    th: เขตปกครองตนเองชูคอตคา
+    tr: Çukotka Özerk Okrugu
+    uk: Чукотський автономний округ
+    ur: چوکوتکا خود مختار آکرگ
+    vi: Khu tự trị Chukotka
+    zh: 楚科奇自治区
+    cy: Ocrwg Ymreolaethol Chukotka
+    ceb: Chukotskiy Avtonomnyy Okrug
+    sr_Latn: Čukotka
+    yue_Hans: 楚科奇自治区
+    ccp: "\U0001110C\U0001112A\U00011107\U0001112E\U00011116\U00011134\U00011107 \U00011103\U0001112E\U00011107\U00011134\U00011122\U0001112A\U00011107\U00011134"
+    ga: Ceantar Féinrialaitheach na Siuicsíoch
+    yue: 楚科奇自治區
+    uz: Chukotka muhtor okrugi
+    bs: Čukotski autonomni okrug
+    mk: Чукотски автономен округ
+    'no': Tsjukotka
+    ky: Чукча автономия округу
+    mn: Чукоткийн өөртөө засах тойрог
+  comments:
+  type: autonomous_district
+CU:
+  name: Chuvashskaya Respublika
+  code: CU
+  unofficial_names:
+  - Chuvash Republic
+  - Chuvashskaya Respublika
+  - Čuvašskaja Respublika
+  - Čuvašija
+  geo:
+    latitude: 55.55959920000001
+    longitude: 46.9283536
+    min_latitude: 54.6260479
+    min_longitude: 45.91057199999999
+    max_latitude: 56.3299659
+    max_longitude: 48.416765
+  translations:
+    ru: Чувашия
+    af: Tsjoewasjië
+    ar: تشوفاشيا
+    az: Çuvaşıstan
+    be: Чувашыя
+    bg: Чувашия
+    bn: চুভাস রিপাবলিক
+    ca: Txuvàixia
+    cs: Čuvašsko
+    da: Tjuvasjien
+    de: Tschuwaschien
+    el: Τσουβασία
+    en: Chuvash
+    es: Chuvasia
+    et: Tšuvaššia
+    eu: Txuvaxia
+    fa: چواشستان
+    fi: Tšuvassia
+    fr: Tchouvachie
+    gl: Chuvashia
+    gu: ચુવાશ રિપબ્લિક
+    he: צ׳ובשיה
+    hi: चुवैश गणतंत्र
+    hr: Čuvaška
+    hu: Csuvasföld
+    hy: Չուվաշիա
+    id: Chuvashia
+    it: Ciuvascia
+    ja: チュヴァシ共和国
+    ka: ჩუვაშეთი
+    kn: ಚುವಾಶ್ ರಿಪಬ್ಲಿಕ್
+    ko: 추바시 공화국
+    lt: Čiuvašija
+    lv: Čuvašija
+    mn: Чуваш
+    mr: चुवाशिया प्रजासत्ताक
+    ms: Chuvashia
+    nb: Tsjuvasjia
+    nl: Tsjoevasjië
+    pl: Czuwaszja
+    pt: Chuváchia
+    ro: Ciuvașia
+    si: චුවාෂ් ජනරජය
+    sk: Čuvašsko
+    sl: Čuvašija
+    sr: Чувашија
+    sv: Tjuvasjien
+    sw: Chuvashia
+    ta: சுவாசியா
+    te: చువాశ్ రిపబ్లిక్
+    th: สาธารณรัฐชูวัช
+    tk: Çuwaşystan
+    tr: Çuvaşistan
+    uk: Чуваська Республіка
+    ur: چوواشیا
+    vi: Chuvashia
+    zh: 楚瓦什共和国
+    ceb: Chuvashskaya Respublika
+    sr_Latn: Čuvašija
+    yue_Hans: 楚瓦什共和国
+    sq: Çuvashia
+    ccp: "\U0001110C\U0001112A\U0001111E\U0001110C\U00011134"
+    ga: An tSuvais
+    yue: 楚瓦什共和國
+    am: ቹቫሺያ
+    uz: Chuvashiya
+    bs: Čuvašija
+    mk: Чувашија
+    'no': Tsjuvasjia
+    ky: Чувашстан
+  comments:
+  type: republic
+DA:
+  name: Dagestan, Respublika
+  code: DA
+  unofficial_names: Dagestan, Respublika
+  geo:
+    latitude: 55.7599606
+    longitude: 37.6504362
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ru: Дагестан
+    af: Dagestan
+    ar: داغستان
+    az: Dağıstan
+    be: Дагестан
+    bg: Дагестан
+    bn: রিপাবলিক অফ ডাগেস্টান
+    ca: Daguestan
+    cs: Dagestán
+    da: Dagestan
+    de: Dagestan
+    el: Δημοκρατία του Νταγκεστάν
+    en: Dagestan
+    es: Daguestán
+    et: Dagestan
+    eu: Dagestan
+    fa: داغستان
+    fi: Dagestan
+    fr: Daghestan
+    gu: રિપબ્લિક ઓફ ડૅગેસ્ટન
+    he: דאגסטן
+    hi: दाग़िस्तान
+    hr: Dagestan
+    hu: Dagesztán
+    hy: Դաղստան
+    id: Dagestan
+    is: Dagestan
+    it: Daghestan
+    ja: ダゲスタン共和国
+    ka: დაღესტანი
+    kn: ಡಾಗೆಸ್ತಾನ್ನ ಗಣರಾಜ್ಯ
+    ko: 다게스탄 공화국
+    lt: Dagestanas
+    lv: Dagestāna
+    ml: ദാഗസ്താൻ
+    mn: Дагестан
+    mr: दागिस्तान प्रजासत्ताक
+    ms: Dagestan
+    nb: Dagestan
+    nl: Dagestan
+    pl: Dagestan
+    pt: Daguestão
+    ro: Daghestan
+    si: ඩගේස්ටාන් ජනරජය
+    sk: Dagestan
+    sl: Dagestan
+    sr: Дагестан
+    sv: Dagestan
+    sw: Dagestan
+    ta: தாகெஸ்தான்
+    te: రిపబ్లిక్ ఆఫ్ డాగెస్తాన్
+    th: เมืองจวนพิล
+    tk: Dagystan
+    tr: Dağıstan
+    uk: Дагестан
+    ur: داغستان
+    vi: Dagestan
+    zh: 达吉斯坦共和国
+    ceb: Dagestan
+    sr_Latn: Dagestan
+    yue_Hans: 达吉斯坦
+    jv: Dagestan
+    sq: Dagestani
+    ccp: "\U00011113\U00011109\U0001112C\U0001110C\U00011134\U00011111\U0001111A\U00011134"
+    ga: An Dagastáin
+    ky: Дагстан
+    pa: ਦਾਗਿਸਤਾਨ
+    kk: Дағыстан
+    yue: 達吉斯坦
+    am: ዳገስታን
+    uz: Dogʻiston
+    bs: Dagestan
+    mk: Дагестан
+    'no': Dagestan
+    cy: Dagestan
+    sd: داغستان
+  comments:
+  type: republic
+IN:
+  name: Ingushskaya Respublika [Respublika Ingushetiya]
+  code: IN
+  unofficial_names:
+  - Ingushetija
+  - Ingušetija
+  geo:
+    latitude: 43.4051698
+    longitude: 44.82029989999999
+    min_latitude: 42.614831
+    min_longitude: 44.4769308
+    max_latitude: 43.6107959
+    max_longitude: 45.1902339
+  translations:
+    ru: Ингушетия
+    af: Ingoesjetië
+    ar: إنغوشيتيا
+    az: İnquşetiya
+    be: Інгушэція
+    bg: Ингушетия
+    ca: Ingúixia
+    cs: Ingušsko
+    da: Ingusjien
+    de: Inguschetien
+    el: Δημοκρατία της Ινγκουσετίας
+    en: Ingushetia
+    es: Ingusetia
+    et: Inguššia
+    eu: Inguxetia
+    fa: اینگوشتیا
+    fi: Ingušia
+    fr: Ingouchie
+    gl: Ingusetia
+    he: אינגושטיה
+    hi: इन्गुशेतिया
+    hr: Inguška
+    hu: Ingusföld
+    hy: Ինգուշեթիա
+    id: Ingushetia
+    it: Inguscezia
+    ja: イングーシ共和国
+    ka: ინგუშეთი
+    ko: 인구시 공화국
+    lt: Ingušija
+    lv: Ingušija
+    mn: Ингушет
+    mr: इंगुशेतिया
+    ms: Ingushetia
+    nb: Ingusjetia
+    nl: Ingoesjetië
+    pl: Inguszetia
+    pt: Inguchétia
+    ro: Ingușetia
+    sk: Ingušsko
+    sl: Ingušetija
+    sr: Ингушетија
+    sv: Ingusjien
+    sw: Ingushetia
+    ta: இங்குசேத்தியா
+    tr: İnguşetya
+    uk: Інгушетія
+    ur: انگوشتیا
+    vi: Ingushetiya
+    zh: 印古什共和国
+    sr_Latn: Ingušetija
+    bn: ইঙ্গুশেতিয়া
+    yue_Hans: 印古什
+    jv: Ingushetia
+    ccp: "\U00011103\U00011128\U0001111A\U00011134\U00011109\U0001112A\U00011125\U0001112C\U00011111\U00011128\U00011120"
+    ga: An Iongúiséit
+    ky: Ингушстан
+    kk: Ингушетия
+    yue: 印古什
+    am: ኢንጉሼቲያ
+    uz: Ingushiya
+    bs: Ingušetija
+    mk: Ингушетија
+    'no': Ingusjetia
+    ceb: Respublika Ingushetiya
+    cy: Gweriniaeth Ingushetia
+    sq: Ingushetia
+    th: สาธารณรัฐอิงกูเชเตีย
+  comments:
+  type: republic
+IRK:
+  name: Irkutskaya oblast'
+  code: IRK
+  unofficial_names:
+  - Irkutskaja Oblast
+  geo:
+    latitude: 56.13214199999999
+    longitude: 103.948625
+    min_latitude: 51.1373171
+    min_longitude: 95.65773999999999
+    max_latitude: 64.31695599999999
+    max_longitude: 119.1306879
+  translations:
+    ru: Иркутская область
+    af: Irkoetsk-oblast
+    ar: إركوتسك أوبلاست
+    az: İrkutsk vilayəti
+    be: Іркуцкая вобласць
+    bg: Иркутска област
+    bn: ইরকুটস্ক ওব্লাস্ট
+    ca: Província d’Irkutsk
+    cs: Irkutská oblast
+    da: Irkutsk oblast
+    de: Oblast Irkutsk
+    el: Περιφέρεια Ιρκούτσκ
+    en: Irkutsk
+    es: Irkutsk
+    et: Irkutski oblast
+    eu: Irkutsk oblasta
+    fa: استان ایرکوتسک
+    fi: Irkutskin alue
+    fr: Oblast d’Irkoutsk
+    gu: ઇર્ક્ટ્સ્ક ઓબ્લાસ્ટ
+    he: מחוז אירקוטסק
+    hi: इरकुत्स्क ओब्लास्त
+    hr: Irkutska oblast
+    hu: Irkutszki terület
+    hy: Իրկուտսկի մարզ
+    id: Oblast Irkutsk
+    it: Oblast’ di Irkutsk
+    ja: イルクーツク州
+    ka: ირკუტსკის ოლქი
+    kn: ಇರ್ಕುಟ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 이르쿠츠크 주
+    lt: Irkutsko sritis
+    lv: Irkutskas apgabals
+    mn: Эрхүү муж
+    mr: इरकुत्स्क ओब्लास्त
+    ms: Wilayah Irkutsk
+    nb: Irkutsk
+    nl: Oblast Irkoetsk
+    pl: Obwód irkucki
+    pt: Oblast de Irkutsk
+    ro: Regiunea Irkutsk
+    si: ඉර්කුට්ස්ක් ප්‍රාන්තය
+    sk: Irkutská oblasť
+    sl: Irkutska oblast
+    sr: Иркутска област
+    sv: Irkutsk oblast
+    sw: Irkutsk Oblast
+    ta: இர்கூத்ஸ்க் ஒப்லாஸ்து
+    te: ఇర్కుట్స్క్ ఓబ్లాస్ట్
+    th: แคว้นอีร์คุตสค์
+    tr: İrkutsk Oblastı
+    uk: Іркутська область
+    ur: ارکتسک اوبلاست
+    vi: Irkutsk
+    zh: 伊尔库茨克州
+    cy: Oblast Irkutsk
+    ceb: Irkutskaya Oblast’
+    sr_Latn: Irkutska oblast
+    yue_Hans: 伊尔库茨克州
+    ccp: "\U00011103\U00011128\U00011122\U00011134\U0001110E\U0001112A\U00011116\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Irkutsk
+    yue: 伊爾庫茨克州
+    uz: Irkutsk viloyati
+    bs: Irkutska oblast
+    mk: Иркутска област
+    'no': Irkutsk
+    gl: oblast de Irkutsk
+    is: Irkútskfylki
+  comments:
+  type: administrative_region
+IVA:
+  name: Ivanovskaya oblast'
+  code: IVA
+  unofficial_names:
+  - Ivanovskaja Oblast
+  geo:
+    latitude: 57.1056854
+    longitude: 41.4830084
+    min_latitude: 56.3503961
+    min_longitude: 39.3779529
+    max_latitude: 57.74272199999999
+    max_longitude: 43.3058696
+  translations:
+    ru: Ивановская область
+    af: Iwanowo-oblast
+    ar: إيفانوفو أوبلاست
+    az: İvanovo vilayəti
+    be: Іванаўская вобласць
+    bg: Ивановска област
+    bn: ইভানোভো ওব্লাস্ট
+    ca: Província d’Ivànovo
+    cs: Ivanovská oblast
+    da: Ivanovo oblast
+    de: Oblast Iwanowo
+    el: Περιφέρεια Ιβάνοβο
+    en: Ivanovo
+    es: Óblast de Ivánovo
+    et: Ivanovo oblast
+    eu: Ivanovo oblasta
+    fa: استان ایوانوف
+    fi: Ivanovon alue
+    fr: Oblast d’Ivanovo
+    gu: ઇવાનહો ઓબ્લાસ્ટ
+    he: מחוז איבנובו
+    hi: इवानोवो ओब्लास्ट
+    hr: Ivanovska oblast
+    hu: Ivanovói terület
+    hy: Իվանովոյի մարզ
+    id: Oblast Ivanovo
+    it: Oblast’ di Ivanovo
+    ja: イヴァノヴォ州
+    ka: ივანოვოს ოლქი
+    kn: ಇವಾನೊವೊ ಒಬ್ಲಾಸ್ಟ್
+    ko: 이바노보 주
+    lt: Ivanovo sritis
+    lv: Ivanovas apgabals
+    mn: Иваново муж
+    mr: इवानोवो ओब्लास्त
+    ms: Wilayah Ivanovo
+    nb: Ivanovo
+    nl: Oblast Ivanovo
+    pl: Obwód iwanowski
+    pt: Oblast de Ivanovo
+    ro: Regiunea Ivanovo
+    si: ඉවනොවෝ ප්‍රාන්තය
+    sk: Ivanovská oblasť
+    sl: Ivanovska oblast
+    sr: Ивановска област
+    sv: Ivanovo oblast
+    sw: Ivanovo Oblast
+    ta: இவானோவா ஒப்லாஸ்து
+    te: ఇవానోవో ఓబ్లాస్ట్
+    th: แคว้นอีวาโนโว
+    tr: İvanovo Oblastı
+    uk: Івановська область
+    ur: ایوانوو اوبلاست
+    vi: Ivanovo
+    zh: 伊万诺沃州
+    cy: Oblast Ivanovo
+    ceb: Ivanovskaya Oblast’
+    sr_Latn: Ivanovska oblast
+    yue_Hans: 伊凡诺禾州
+    ccp: "\U00011103\U00011128\U0001111E\U0001111A\U0001112E\U0001111E\U0001112E"
+    ga: Cúige Ivanovo
+    yue: 伊凡諾禾州
+    uz: Ivanovo viloyati
+    bs: Ivanovska oblast
+    mk: Ивановска област
+    'no': Ivanovo
+    is: Ívanovófylki
+  comments:
+  type: administrative_region
+KAM:
+  name: Kamchatskaya oblast'
+  code: KAM
+  unofficial_names:
+  - Kamchatskaya Oblast
+  - Kamčatskaja Oblast
+  - Kamčatka
+  geo:
+    latitude: 55.743583
+    longitude: 37.5880195
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Kamchatka Krai
+    ru: Камчатский край
+    af: Kamtsjatka-krai
+    ar: كراي كامشاتكا
+    az: Kamçatka diyarı
+    be: Камчацкі край
+    bg: Камчатски край
+    bn: কামচাটকাক্রাই
+    ca: Territori de Kamtxatka
+    cs: Kamčatský kraj
+    da: Kamtjatka kraj
+    de: Region Kamtschatka
+    el: Κράι Καμτσάτκα
+    es: Kamchatka
+    et: Kamtšatka krai
+    eu: Kamtxatka kraia
+    fa: سرزمین کامچاتکا
+    fi: Kamtšatkan aluepiiri
+    fr: Kraï du Kamtchatka
+    gu: કામચાટ્કા ક્રાઇ
+    he: מחוז קמצ׳טקה
+    hi: कमचातका क्राय
+    hr: Kamčatski kraj
+    hu: Kamcsatkai határterület
+    id: Krai Kamchatka
+    is: Kamtsjatka skagi
+    it: Territorio della Kamčatka
+    ja: カムチャツカ地方
+    ka: კამჩატკა
+    kn: ಕಂಚಟ್ಕಾ ಕ್ರಾಯಿ
+    ko: 캄차카 지방
+    lt: Kamčiatkos kraštas
+    lv: Kamčatkas novads
+    mn: Камчаткын Хязгаар
+    mr: कामचत्का क्राय
+    ms: Jajahan Kamchatka
+    nb: Kamtsjatka
+    nl: Kraj Kamtsjatka
+    pl: Kraj Kamczacki
+    pt: Krai de Kamtchatka
+    ro: Ținutul Kamceatka
+    si: කම්චත්කා ක්‍රායි
+    sk: Kamčatský kraj
+    sl: Kamčatski kraj
+    sr: Камчатска Покрајина
+    sv: Kamtjatka kraj
+    sw: Kamchatka Krai
+    ta: கம்சாத்கா பிரதேசம்
+    te: కమ్చత్కా క్రాయ్
+    th: ดินแดนคัมชัตคา
+    tk: Kamçatka Kraý
+    tr: Kamçatka Krayı
+    uk: Камчатський край
+    ur: کامچاٹکا کرائی
+    vi: Kamchatka
+    zh: 堪察加邊疆區
+    cy: Crai Kamchatka
+    ceb: Kamtchatski Kray
+    sr_Latn: Kamčatska Pokrajina
+    yue_Hans: 琴察加边疆区
+    sq: Kamçatka Krai
+    ccp: "\U00011107\U0001111F\U00011134\U0001110C\U00011116\U00011134\U00011107 \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Kamchatka
+    ky: Камчатка крайы
+    yue: 琴察加邊疆區
+    uz: Kamchatka oʻlkasi
+    bs: Kamčatski kraj
+    mk: Камчатски крај
+    'no': Kamtsjatka
+    gl: Krai de Kamchatka
+    hy: Կամչատկայի երկրամաս
+  comments:
+  type: administrative_territory
+KB:
+  name: Kabardino-Balkarskaya Respublika
+  code: KB
+  unofficial_names:
+  - Kabardino-Balkarian Republic
+  - Kabardino-Balkarskaja Respublika
+  - Kabardino-Balkarija
+  geo:
+    latitude: 43.3932469
+    longitude: 43.5628498
+    min_latitude: 42.8891
+    min_longitude: 42.3981201
+    max_latitude: 44.0228141
+    max_longitude: 44.47055100000001
+  translations:
+    ru: Кабардино-Балкария
+    af: Kabardino-Balkarië
+    ar: قبردينو - بلقاريا
+    az: Kabardin-Balkariya
+    be: Кабардзіна-Балкарыя
+    bg: Кабардино-Балкария
+    bn: কাবার্ডিনো-বল্কার রিপাবলিক
+    ca: Kabardino-Balkària
+    cs: Kabardsko-Balkarsko
+    da: Kabardino-Balkarien
+    de: Kabardino-Balkarien
+    el: Δημοκρατία της Καμπαρντίνο - Μπαλκάρια
+    en: Kabardino-Balkar
+    es: Kabardia-Balkaria
+    et: Kabardi-Balkaaria
+    eu: Kabardino-Balkaria
+    fa: کاباردینو-بالکاریا
+    fi: Kabardi-Balkaria
+    fr: Kabardino-Balkarie
+    gl: Kabardino-Balkaria
+    gu: કબાર્ડિનો બાલ્કર રિપબ્લિક
+    he: קברדינו-בלקריה
+    hi: काबारदीनो-बल्कारिया
+    hr: Kabardsko-Balkarska
+    hu: Kabard- és Balkárföld
+    hy: Կաբարդա-Բալկարիա
+    id: Kabardino-Balkaria
+    it: Cabardino-Balcaria
+    ja: カバルダ・バルカル共和国
+    ka: ყაბარდო-ბალყარეთი
+    kn: ಕಬಾರ್ಡಿನ-ರಿಪಬ್ಲಿಕ್ ರಿಪಬ್ಲಿಕ್
+    ko: 카바르디노발카르 공화국
+    lt: Kabarda-Balkarija
+    lv: Kabarda-Balkārija
+    mn: Кабардино-Балкар
+    mr: काबार्डिनो-बाल्कारिया प्रजासत्ताक
+    ms: Kabardino-Balkaria
+    nb: Kabardino-Balkaria
+    nl: Kabardië-Balkarië
+    pl: Kabardo-Bałkaria
+    pt: Cabárdia-Balcária
+    ro: Cabardino-Balcaria
+    si: කබර්දිනෝ -බල්කාර් ජනරජය
+    sk: Kabardsko-Balkarsko
+    sl: Kabardino-Balkarija
+    sr: Кабардино-Балкарија
+    sv: Kabardinien-Balkarien
+    sw: Kabardino-Balkaria
+    ta: கபர்தினோ-பல்கரீயா
+    te: కబార్డినో-బాల్కర్ రిపబ్లిక్
+    th: สาธารณรัฐ คาบาดิโน-บอลเกอร์
+    tr: Kabardino-Balkarya
+    uk: Кабардино-Балкарія
+    ur: کباردینو-بالکاریا جمہوریہ
+    vi: Kabardino-Balkaria
+    zh: 卡巴爾達-巴爾卡爾共和國
+    cy: Kabardino-Balkaria
+    ceb: Kabardino-Balkarskaya Respublika
+    sr_Latn: Kabardino-Balkarija
+    yue_Hans: 卡巴尔达-巴尔卡尔
+    ccp: "\U00011107\U0001111A\U00011122\U00011134\U00011113\U00011128\U0001111A\U0001112E-\U0001111D\U00011123\U00011134\U00011107\U00011122\U00011134"
+    ga: An Chabairdín-Bhalcáir
+    ky: Кабарда-Балкария
+    kk: Қабарда-Балқария
+    yue: 卡巴爾達-巴爾卡爾
+    am: ካባርዲኖ-ባልካሪያ
+    uz: Kabarda-balkariya
+    bs: Kabardino-Balkarija
+    mk: Кабардино-Балкарија
+    'no': Kabardino-Balkaria
+    sq: Kabardino-Balkaria
+  comments:
+  type: republic
+KC:
+  name: Karachayevo-Cherkesskaya Respublika
+  code: KC
+  unofficial_names:
+  - Karachay-Cherkessian
+  - Karačajevo-Čerkesskaja Respublika
+  - Karačaj-Čerkessija
+  geo:
+    latitude: 43.8845143
+    longitude: 41.730394
+    min_latitude: 43.187437
+    min_longitude: 40.6833698
+    max_latitude: 44.49697889999999
+    max_longitude: 42.6780321
+  translations:
+    ru: Карачаево-Черкесия
+    af: Karatsjai-Tsjerkessië
+    ar: قراتشاي - تشيركيسيا
+    az: Qaraçay-Çerkesiya
+    be: Карачаева-Чаркесія
+    bg: Карачаево-Черкезия
+    bn: কারাকায় চেরকিস রিপাবলিক
+    ca: Karatxai-Txerkèssia
+    cs: Karačajevsko-Čerkesko
+    da: Karatjajevo-Tjerkessien
+    de: Karatschai-Tscherkessien
+    el: Δημοκρατία των Καρατσάι - Τσερκεσίων
+    en: Karachay-Cherkess
+    es: Karacháyevo-Cherkesia
+    et: Karatšai-Tšerkessia
+    eu: Karatxai-Txerkesia
+    fa: قره‌چای و چرکس
+    fi: Karatšai-Tšerkessia
+    fr: Karatchaïévo-Tcherkessie
+    gl: Karachay-Cherkessia
+    gu: કરાચાય-ચેર્કેસ રિપબ્લિક
+    he: קאראצ׳אי-צ׳רקסיה
+    hi: काराचाए-चरकस्सिया
+    hr: Karačajevsko-Čerkeska
+    hu: Karacsáj- és Cserkeszföld
+    hy: Կարաչայ-Չերքեզիա
+    id: Karachay-Cherkessia
+    it: Karačaj-Circassia
+    ja: カラチャイ・チェルケス共和国
+    ka: ყარაჩაი-ჩერქეზეთი
+    kn: ಚಾರ್ಕೆಸ್-ರಿಪಬ್ಲಿಕ್
+    ko: 카라차예보체르케스카야 공화국
+    lt: Karačiajų Čerkesija
+    lv: Karačaja-Čerkesija
+    mn: Карачай-Черкесс
+    mr: काराचाय-चेर्केस प्रजासत्ताक
+    ms: Karachay-Cherkessia
+    nb: Karatsjajevo-Tsjerkessia
+    nl: Karatsjaj-Tsjerkessië
+    pl: Karaczajo-Czerkiesja
+    pt: Carachai-Circássia
+    ro: Karaciai-Cerchezia
+    si: කරචේ-චෙර්කෙස් ජනරජය
+    sk: Karačajsko-Čerkesko
+    sl: Karačaj-Čerkezija
+    sr: Карачајево-Черкезија
+    sv: Karatjajen-Tjerkessien
+    sw: Karachaevo-Cherkesia
+    ta: காராசாய்-செர்கெஸ்ஸியா
+    te: కరాచే-చెర్కెస్ రిపబ్లిక్
+    th: การาชาย-ชาร์คเคส
+    tr: Karaçay-Çerkesya
+    uk: Карачаєво-Черкесія
+    ur: کراچائے-چرکیسیا
+    vi: Karachay-Cherkessia
+    zh: 卡拉恰伊-切尔克斯共和国
+    ceb: Karachayevo-Cherkesiya
+    sr_Latn: Karačajevo-Čerkezija
+    yue_Hans: 卡拉恰伊-切尔克斯共和国
+    ccp: "\U00011107\U00011122\U0001110C\U0001112C-\U00011107\U00011122\U00011134\U00011107\U0001112C\U0001110C\U00011134"
+    ga: An Charaitsé-Shiorcáis
+    ky: Карачай-Черкисия
+    kk: Қарашай-Черкесия
+    yue: 卡拉恰伊-切爾克斯共和國
+    am: ካራቻይ-ቸርከሢያ
+    uz: Qorachoy-Cherkasiya
+    bs: Karačajevo-Čerkezija
+    mk: Карачаево-Черкесија
+    'no': Karatsjajevo-Tsjerkessia
+    sq: Karaçaj-Çerkesia
+  comments:
+  type: republic
+KDA:
+  name: Krasnodarskiy kray
+  code: KDA
+  unofficial_names:
+  - Krasnodarskij Kraj
+  geo:
+    latitude: 45.6415289
+    longitude: 39.7055977
+    min_latitude: 43.3848639
+    min_longitude: 36.5980539
+    max_latitude: 46.8802379
+    max_longitude: 41.7476441
+  translations:
+    ru: Краснодарский край
+    af: Krasnodar-krai
+    ar: كراسنودار كراي
+    az: Krasnodar diyarı
+    be: Краснадарскі край
+    bg: Краснодарски край
+    bn: কারস্নুদার কারি
+    ca: Territori de Krasnodar
+    cs: Krasnodarský kraj
+    da: Krasnodar kraj
+    de: Region Krasnodar
+    el: Κράι Κρασνοντάρ
+    en: Krasnodar Krai
+    es: Krai de Krasnodar
+    et: Krasnodari krai
+    eu: Krasnodar kraia
+    fa: سرزمین کراسنودار
+    fi: Krasnodarin aluepiiri
+    fr: Kraï de Krasnodar
+    gl: Krai de Krasnodar
+    gu: ક્રાન્સ્નોદર ક્રાઇ
+    he: מחוז קרסנודאר
+    hi: क्रास्नोदार क्राय
+    hr: Krasnodarski kraj
+    hu: Krasznodari határterület
+    hy: Կրասնոդարի երկրամաս
+    id: Krai Krasnodar
+    is: Krasnodarfylki
+    it: Territorio di Krasnodar
+    ja: クラスノダール地方
+    ka: კრასნოდარის მხარე
+    kn: ಕ್ರಾಸ್ನೋಡರ್ ಕ್ರೈ
+    ko: 크라스노다르 지방
+    lt: Krasnodaro kraštas
+    lv: Krasnodaras novads
+    mn: Краснодарын хязгаар
+    mr: क्रास्नोदर क्राय
+    ms: Jajahan Krasnodar
+    nb: Krasnodar
+    nl: Kraj Krasnodar
+    pl: Kraj Krasnodarski
+    pt: Krai de Krasnodar
+    ro: Ținutul Krasnodar
+    si: ක්‍රස්නොදාර් ක්‍රයි
+    sk: Krasnodarský kraj
+    sl: Krasnodarski kraj
+    sr: Краснодарска Покрајина
+    sv: Krasnodar kraj
+    sw: Krasnodar Krai
+    ta: கிராஸ்னதார் பிரதேசம்
+    te: క్రాస్నోడర్ క్రే
+    th: คราสโนดา ไคร
+    tr: Krasnodar Krayı
+    uk: Краснодарський край
+    ur: کریسنوڈار کرائی
+    vi: Krasnodar
+    zh: 克拉斯诺达尔边疆区
+    cy: Crai Krasnodar
+    ceb: Krasnodarskiy Kray
+    sr_Latn: Krasnodarska Pokrajina
+    yue_Hans: 克拉斯诺达尔边疆区
+    ccp: "\U00011107\U00011133\U00011122\U0001110C\U00011134\U0001111A\U0001112E\U00011113\U00011122\U00011134
+      \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Krasnodar
+    ky: Краснодар крайы
+    yue: 克拉斯諾達爾邊疆區
+    uz: Krasnodar oʻlkasi
+    bs: Krasnodarski kraj
+    mk: Краснодарски крај
+    'no': Krasnodar
+  comments:
+  type: administrative_territory
+KEM:
+  name: Kemerovskaya oblast'
+  code: KEM
+  unofficial_names:
+  - Kemerovskaja Oblast
+  geo:
+    latitude: 54.7574648
+    longitude: 87.4055288
+    min_latitude: 52.1605449
+    min_longitude: 84.450098
+    max_latitude: 56.83512
+    max_longitude: 89.399602
+  translations:
+    ru: Кемеровская область
+    af: Kemerowo-oblast
+    ar: كيميروفو أوبلاست
+    az: Kemerovo vilayəti
+    be: Кемераўская вобласць
+    bg: Кемеровска област
+    bn: কেমেরোভো ওব্লাস্ট
+    ca: Província de Kèmerovo
+    cs: Kemerovská oblast
+    da: Kemerovo oblast
+    de: Oblast Kemerowo
+    el: Περιφέρεια Κεμέροβο
+    en: Kemerovo
+    es: Kémerovo
+    et: Kemerovo oblast
+    eu: Kemerovo oblasta
+    fa: استان کمروو
+    fi: Kemerovon alue
+    fr: oblast de Kemerovo
+    gu: કેમેરોવો ઓબ્લાસ્ટ
+    he: מחוז קמרובו
+    hi: केमेरोवो ओब्लास्ट
+    hr: Kemerovska oblast
+    hu: Kemerovói terület
+    hy: Կեմերովոյի մարզ
+    id: Oblast Kemerovo
+    it: Oblast’ di Kemerovo
+    ja: ケメロヴォ州
+    ka: კემეროვოს ოლქი
+    kn: ಕೆಮೆರೊ ಒಬ್ಲಾಸ್ಟ್
+    ko: 케메로보 주
+    lt: Kemerovo sritis
+    lv: Kemerovas apgabals
+    mn: Кемерово муж
+    mr: केमेरोवो ओब्लास्त
+    ms: Wilayah Kemerovo
+    nb: Kemerovo
+    nl: Oblast Kemerovo
+    pl: Obwód kemerowski
+    pt: Oblast de Kemerovo
+    ro: Regiunea Kemerovo
+    si: කෙමෙරොවෝ ප්‍රාන්තය
+    sk: Kemerovská oblasť
+    sl: Kemerovska oblast
+    sr: Кемеровска област
+    sv: Kemerovo oblast
+    sw: Kemerovo Oblast
+    ta: கெமரோவோ ஒப்லாஸ்து
+    te: కెమెరోవో ఓబ్లాస్ట్
+    th: มณฑลเคเมโรโว
+    tr: Kemerovo Oblastı
+    uk: Кемеровська область
+    ur: کیمیروو اوبلاست
+    vi: Kemerovo
+    zh: 科麦罗沃州
+    cy: Oblast Kemerovo
+    ceb: Kemerovskaya Oblast’
+    sr_Latn: Kemerovska oblast
+    yue_Hans: 克麦罗禾州
+    ccp: "\U00011107\U0001112C\U0001111F\U0001112C\U00011122\U0001112E\U0001111E\U0001112E"
+    ga: Cúige Kemerovo
+    yue: 克麥羅禾州
+    uz: Kemerovo viloyati
+    bs: Kemerovska oblast
+    mk: Кемеровска област
+    'no': Kemerovo
+    is: Kemeróvofylki
+  comments:
+  type: administrative_region
+KGD:
+  name: Kaliningradskaya oblast'
+  code: KGD
+  unofficial_names:
+  - Kaliningradskaja Oblast
+  geo:
+    latitude: 54.8235292
+    longitude: 21.4816163
+    min_latitude: 54.318845
+    min_longitude: 19.6388525
+    max_latitude: 55.2944458
+    max_longitude: 22.886888
+  translations:
+    ru: Калининградская область
+    af: Kaliningrad-oblast
+    ar: أوبلاست كالينينغرادسكايا
+    az: Kalininqrad vilayəti
+    be: Калінінградская вобласць
+    bg: Калининградска област
+    bn: কালিনিনগ্রাদ ওব্লাস্ট
+    ca: Província de Kaliningrad
+    cs: Kaliningradská oblast
+    da: Kaliningrad oblast
+    de: Oblast Kaliningrad
+    el: Περιφέρεια Καλίνινγκραντ
+    en: Kaliningrad
+    es: Óblast de Kaliningrado
+    et: Kaliningradi oblast
+    eu: Kaliningrad oblasta
+    fa: استان کالینینگراد
+    fi: Kaliningradin alue
+    fr: Oblast de Kaliningrad
+    gl: Óblast de Kaliningrado
+    gu: કેલિનિનગ્રેડ ઓબ્લાસ્ટ
+    he: מחוז קלינינגרד
+    hi: कलिनिनग्रैड ओब्लास्ट
+    hr: Kalinjingradska oblast
+    hu: Kalinyingrádi terület
+    hy: Կալինինգրադի մարզ
+    id: Oblast Kaliningrad
+    it: oblast’ di Kaliningrad
+    ja: カリーニングラード州
+    ka: კალინინგრადის ოლქი
+    kn: ಕಲಿನಿನ್ಗ್ರಾಡ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 칼리닌그라드 주
+    lt: Karaliaučiaus sritis
+    lv: Kaļiņingradas apgabals
+    ml: കലീന്യിൻഗ്രാഡ് ഒബ്ലാസ്റ്റ്
+    mn: Калининград муж
+    mr: कालिनिनग्राद ओब्लास्त
+    ms: Wilayah Kaliningrad
+    nb: Kaliningrad
+    nl: Oblast Kaliningrad
+    pl: Obwód kaliningradzki
+    pt: Oblast de Kaliningrado
+    ro: Regiunea Kaliningrad
+    si: කාලිනිනිග්රඩ් ප්‍රාන්තය
+    sk: Kaliningradská oblasť
+    sl: Kaliningrajska oblast
+    sr: Калињинградска област
+    sv: Kaliningrad oblast
+    sw: Kaliningrad Oblast
+    ta: கலினின்கிராட் ஒப்லாஸ்து
+    te: కాలినింగ్రాడ్ ఓబ్లాస్ట్
+    th: คาลินินกราดโอบลาสต์
+    tr: Kaliningrad Oblastı
+    uk: Калінінградська область
+    ur: کیلننگراڈ اوبلاست
+    vi: Kaliningrad
+    zh: 加里宁格勒州
+    cy: Oblast Kaliningrad
+    ceb: Kaliningradskaya Oblast’
+    sr_Latn: Kalinjingradska oblast
+    yue_Hans: 加里宁格勒州
+    ccp: "\U00011107\U00011123\U00011128\U0001111A\U00011128\U0001111A\U00011134\U00011109\U00011133\U00011122\U00011116\U00011134"
+    ga: Cúige Kaliningrad
+    yue: 加里寧格勒州
+    am: ካሊኒንግራድ ኦብላስት
+    yo: Kaliningrad Oblast
+    uz: Kaliningrad viloyati
+    bs: Kalinjingradska oblast
+    mk: Калининградска област
+    'no': Kaliningrad
+    yo_BJ: Kaliningrad Oblast
+    is: Kaliníngradfylki
+  comments:
+  type: administrative_region
+KGN:
+  name: Kurganskaya oblast'
+  code: KGN
+  unofficial_names:
+  - Kurganskaja Oblast
+  geo:
+    latitude: 55.4481548
+    longitude: 65.11809749999999
+    min_latitude: 54.1874291
+    min_longitude: 61.9661031
+    max_latitude: 56.8420819
+    max_longitude: 68.7217089
+  translations:
+    ru: Курганская область
+    af: Koergan-oblast
+    ar: أوبلاست كورغان
+    az: Kurqan vilayəti
+    be: Курганская вобласць
+    bg: Курганска област
+    bn: কুরগ্যান ওব্লাস্ট
+    ca: Província de Kurgan
+    cs: Kurganská oblast
+    da: Kurgan oblast
+    de: Oblast Kurgan
+    el: Περιφέρεια Κουργκάν
+    en: Kurgan
+    es: Kurgán
+    et: Kurgani oblast
+    eu: Kurgan oblasta
+    fa: استان کورگان
+    fi: Kurganin alue
+    fr: Oblast de Kourgan
+    gu: કુર્ગન ઓબ્લાસ્ટ
+    he: מחוז קורגן
+    hi: कुर्गन ओब्लास्ट
+    hr: Kurganska oblast
+    hu: Kurgani terület
+    hy: Կուրգանի մարզ
+    id: Oblast Kurgan
+    it: Oblast’ di Kurgan
+    ja: クルガン州
+    ka: კურგანის ოლქი
+    kn: ಕುರ್ಗನ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 쿠르간 주
+    lt: Kurgano sritis
+    lv: Kurgānas apgabals
+    mn: Курган муж
+    mr: कुर्गान ओब्लास्त
+    ms: Wilayah Kurgan
+    nb: Kurgan
+    nl: Oblast Koergan
+    pl: Obwód kurgański
+    pt: Oblast de Kurgan
+    ro: Regiunea Kurgan
+    si: කර්ගන් ප්‍රාන්තය
+    sk: Kurganská oblasť
+    sl: Kurganska oblast
+    sr: Курганска област
+    sv: Kurgan oblast
+    sw: Kurgan Oblast
+    ta: குர்கன் ஒப்லாஸ்து
+    te: కుర్గన్ ఓబ్లాస్ట్
+    th: คูแกน อบลาส
+    tr: Kurgan Oblastı
+    uk: Курганська область
+    ur: کورگان اوبلاست
+    vi: Kurgan
+    zh: 库尔干州
+    cy: Oblast Kurgan
+    ceb: Kurganskaya Oblast’
+    sr_Latn: Kurganska oblast
+    yue_Hans: 库尔干州
+    ccp: "\U00011107\U0001112A\U00011122\U00011134\U00011109\U00011133\U00011120\U0001111A\U00011134"
+    ga: Cúige Kurgan
+    kk: Қорған облысы
+    yue: 庫爾幹州
+    uz: Koʻrgan viloyati
+    bs: Kurganska oblast
+    mk: Курганска област
+    'no': Kurgan
+    is: Kúrganfylki
+  comments:
+  type: administrative_region
+KHA:
+  name: Khabarovskiy kray
+  code: KHA
+  unofficial_names:
+  - Habarovskij Kray
+  - Habarovsk
+  geo:
+    latitude: 50.5888431
+    longitude: 135
+    min_latitude: 46.6347189
+    min_longitude: 130.3886411
+    max_latitude: 62.5246119
+    max_longitude: 147.2038518
+  translations:
+    ru: Хабаровский край
+    af: Chabarofsk-krai
+    ar: خاباروفسك كراي
+    az: Xabarovsk diyarı
+    be: Хабараўскі край
+    bg: Хабаровски край
+    bn: খাবারোভস্ক ক্রাই
+    ca: Territori de Khabàrovsk
+    cs: Chabarovský kraj
+    da: Khabarovsk kraj
+    de: Region Chabarowsk
+    el: Κράι Χαμπάροφσκ
+    en: Khabarovsk Krai
+    es: Jabárovsk
+    et: Habarovski krai
+    eu: Khabarovsk kraia
+    fa: سرزمین خاباروفسک
+    fi: Habarovskin aluepiiri
+    fr: Kraï de Khabarovsk
+    gl: Krai de Khabarovsk
+    gu: ખાબરોવ્સ્ક ક્રાઇ
+    he: מחוז חברובסק
+    hi: ख़ाबारोव्स्क क्राय
+    hr: Habarovski kraj
+    hu: Habarovszki határterület
+    hy: Խաբարովսկի երկրամաս
+    id: Krai Khabarovsk
+    it: Territorio di Chabarovsk
+    ja: ハバロフスク地方
+    ka: ხაბაროვსკის მხარე
+    kn: ಖಬರೋವ್ಸ್ಕ್ ಕ್ರಾಯಿ
+    ko: 하바롭스크 지방
+    lt: Chabarovsko kraštas
+    lv: Habarovskas novads
+    mn: Хабаровскийн хязгаар
+    mr: खबारोव्स्क क्राय
+    ms: Jajahan Khabarovsk
+    nb: Khabarovsk
+    ne: खाबारोभ्स्क क्राइ
+    nl: Kraj Chabarovsk
+    pl: Kraj Chabarowski
+    pt: Krai de Khabarovsk
+    ro: Ținutul Habarovsk
+    si: කම්බාරොව්ස්ක් ක්‍රායි
+    sk: Chabarovský kraj
+    sr: Хабаровска Покрајина
+    sv: Chabarovsk kraj
+    sw: Khabarovsk Krai
+    ta: கபரோவ்சுக் பிரதேசம்
+    te: ఖబారోవస్క్ క్రే
+    th: เขตบาซาราเบอัสกา
+    tr: Habarovsk Krayı
+    uk: Хабаровський край
+    ur: خابارووسک کرائی
+    vi: Khabarovsk
+    zh: 哈巴罗夫斯克边疆区
+    cy: Crai Khabarovsk
+    ceb: Khabarovskiy Kray
+    sr_Latn: Habarovska Pokrajina
+    yue_Hans: 哈巴罗夫斯克边疆区
+    ccp: "\U00011108\U0001111D\U00011122\U0001112E\U0001111B\U00011134\U00011125\U00011134\U00011107
+      \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Khabarovsk
+    ky: Хабаров крайы
+    yue: 哈巴羅夫斯克邊疆區
+    uz: Xabarovsk oʻlkasi
+    bs: Habarovski kraj
+    mk: Хабаровски крај
+    'no': Khabarovsk
+    is: Kabarovskfylki
+  comments:
+  type: administrative_territory
+KHM:
+  name: Khanty-Mansiyskiy avtonomnyy okrug [Yugra]
+  code: KHM
+  unofficial_names:
+  - Hanty-Mansijskij Avtonomnyj Okrug
+  - Hanty-Mansija
+  geo:
+    latitude: 62.2287062
+    longitude: 70.6410058
+    min_latitude: 58.5764188
+    min_longitude: 59.19747880000001
+    max_latitude: 65.71070100000001
+    max_longitude: 85.9728444
+  translations:
+    ru: Ханты-Мансийский автономный округ — Югра
+    af: Chanto-Mansië
+    ar: أوكروغ خانتي-مانسي ذاتية الحكم
+    az: Xantı-Mansi Muxtar Dairəsi
+    be: Ханты-Мансійская аўтаномная акруга — Югра
+    bg: Ханти-Мансийски автономен окръг - Югра
+    bn: কান্তি-মান্সি স্বায়ত্তশাসিত ওব্লাস্ট
+    ca: Khàntia-Mànsia
+    cs: Chantymansijský autonomní okruh - Jugra
+    da: Hanti-Mansi autonome okrug
+    de: Autonomer Kreis der Chanten und Mansen/Jugra
+    el: Αυτόνομος θύλακας της Χαντίας - Μανσίας
+    en: Khanty-Mansi
+    es: Janti-Mansi
+    et: Handi-Mansimaa
+    eu: Khanti-Mansi
+    fa: خانتی-مانسی
+    fi: Hanti-Mansia
+    fr: Khantys-Mansis
+    gu: ખંતી-માનસી ઓટોનોમસ ઓર્કગ
+    he: המחוז האוטונומי חנטי ומנסי
+    hi: खांति-मानसी स्वायत्त ऑक्रग
+    hr: Hantijsko-Mansijski autonomni okrug — Jugra
+    hu: Hanti- és Manysiföld
+    hy: Խանտի-Մանսիական Ինքնավար Շրջան
+    id: Khantia-Mansia
+    it: Circondario autonomo degli Chanty-Mansi-Jugra
+    ja: ハンティ・マンシ自治管区・ユグラ
+    ka: ხანტი-მანსის ავტონომიური ოკრუგი
+    kn: ಖಂತಿ-ಮನ್ಸಿ ಸ್ವಾಯತ್ತ ಒಕ್ರುಗ್
+    ko: 한티만시 자치구
+    lt: Chantų Mansija
+    lv: Hantu-mansu autonomais apvidus-Jugra
+    mr: खान्ती-मान्सी स्वायत्त ऑक्रूग
+    ms: Negeri autonomi Khanty-Mansi
+    nb: Khanty-Mansia
+    nl: Chanto-Mansië
+    pl: Chanty-Mansyjski Okręg Autonomiczny - Jugra
+    pt: Khantia-Mansia
+    ro: Districtul autonom Hantî-Mansi
+    si: ඛන්ටි-මන්සි ස්වාධින කලාපය
+    sk: Chantyjsko-Mansijsko
+    sr: Хантија-Мансија
+    sv: Chantien-Mansien
+    sw: Mkoa Huru wa Hanty-Mansi
+    ta: கான்டி-மான்ஸி தன்னாட்சி வட்டாரம்
+    te: ఖాంటీ-మాన్సి అటానమస్ ఓక్రుగ్
+    th: ฮันตี-มันซี
+    tr: Hantı-Mansi Özerk Okrugu
+    uk: Ханти-Мансійський автономний округ — Югра
+    ur: خانتی-مانسی خود مختار آکرگ
+    vi: Khantia-Mansia
+    zh: 汉特-曼西自治区
+    cy: Ocrwg Ymreolaethol Khanty-Mansi
+    ceb: Khanty-Mansiyskiy Avtonomnyy Okrug-Yugra
+    sr_Latn: Hantija-Mansija
+    yue_Hans: 汉特-曼西
+    ccp: "\U00011108\U0001111A\U00011134\U00011111\U00011128-\U0001111F\U0001111A\U00011134\U00011125\U00011128"
+    ga: Ceantar Féinrialaitheach na gCántach is na Mainseach
+    ky: Ханты-Манси автономия округу
+    yue: 漢特-曼西
+    uz: Xanti-Mansilar muxtor okrugi
+    bs: Hantijsko-Mansijski autonomni okrug
+    mk: Ханти-Мансиски автономен округ
+    'no': Khanty-Mansia
+    mn: Ханты-Мансийн өөртөө засах тойрог
+  comments:
+  type: autonomous_district
+KIR:
+  name: Kirovskaya oblast'
+  code: KIR
+  unofficial_names:
+  - Kirovskaja Oblast
+  geo:
+    latitude: 58.4198529
+    longitude: 50.2097248
+    min_latitude: 56.061146
+    min_longitude: 46.2618118
+    max_latitude: 61.0629159
+    max_longitude: 53.9431012
+  translations:
+    ru: Кировская область
+    af: Kirof-oblast
+    ar: أوبلاست كيروف
+    az: Kirov vilayəti
+    be: Кіраўская вобласць
+    bg: Кировска област
+    bn: কিরোভ ওব্লাস্ট
+    ca: Província de Kírov
+    cs: Kirovská oblast
+    da: Kirov oblast
+    de: Oblast Kirow
+    el: Περιφέρεια Κίροβ
+    en: Kirov
+    es: Kírov
+    et: Kirovi oblast
+    eu: Kirov oblasta
+    fa: استان کیروف
+    fi: Kirovin alue
+    fr: Oblast de Kirov
+    gu: કિરોવ ઓબ્લાસ્ટ
+    he: מחוז קירוב
+    hi: किरोव ओब्लास्ट
+    hr: Kirovska oblast
+    hu: Kirovi terület
+    hy: Կիրովի մարզ
+    id: Oblast Kirov
+    it: Oblast’ di Kirov
+    ja: キーロフ州
+    ka: კიროვის ოლქი
+    kn: ಕಿರೊವ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 키로프 주
+    lt: Kirovo sritis
+    lv: Kirovas apgabals
+    mn: Киров муж
+    mr: किरोव ओब्लास्त
+    ms: Wilayah Kirov
+    nb: Kirov
+    nl: Oblast Kirov
+    pl: Obwód kirowski
+    pt: Oblast de Kirov
+    ro: Regiunea Kirov
+    si: කිරෝව් දිස්ත්‍රිකය
+    sk: Kirovská oblasť
+    sl: Kirovska oblast
+    sr: Кировска област
+    sv: Kirov oblast
+    sw: Kirov Oblast
+    ta: கீரோவ் ஒப்லாஸ்து
+    te: కిరోవ్ ఓబ్లాస్ట్
+    th: แคว้นปกครองคิโรฟ
+    tr: Kirov Oblastı
+    uk: Кіровська область
+    ur: کیروف اوبلاست
+    vi: Kirov
+    zh: 基洛夫州
+    cy: Oblast Kirov
+    ceb: Kirovskaya Oblast’
+    sr_Latn: Kirovska oblast
+    yue_Hans: 基洛夫州
+    ccp: "\U00011107\U00011128\U00011122\U0001112E\U0001111B\U00011134"
+    ga: Cúige Kirov
+    yue: 基洛夫州
+    uz: Kirov viloyati
+    bs: Kirovska oblast
+    mk: Кировска област
+    'no': Kirov
+    is: Kírovfylki
+  comments:
+  type: administrative_region
+KK:
+  name: Khakasiya, Respublika
+  code: KK
+  unofficial_names:
+  - Khakass Republic
+  - Hakasija
+  geo:
+    latitude: 53.0452281
+    longitude: 90.3982145
+    min_latitude: 51.28421179999999
+    min_longitude: 87.8758369
+    max_latitude: 55.43188689999999
+    max_longitude: 91.9249129
+  translations:
+    ru: Хакасия
+    af: Chakassië
+    ar: خقاسيا
+    az: Xakasiya
+    be: Хакасія
+    bg: Хакасия
+    bn: রিপাাবলিক অফ খাকসিয়া
+    ca: Khakàssia
+    cs: Chakasie
+    da: Khakasien
+    de: Chakassien
+    el: Δημοκρατία της Χακασίας
+    en: Khakassia
+    es: Jakasia
+    et: Hakassia
+    eu: Khakasia
+    fa: خاکاسیا
+    fi: Hakassia
+    fr: Khakassie
+    gl: Khakassia
+    gu: ખાકાસિયા રિપબ્લિક
+    he: חקסיה
+    hi: ख़कासिया
+    hr: Hakasija
+    hu: Hakaszföld
+    hy: Խակասիա
+    id: Khakassia
+    it: Chakassia
+    ja: ハカス共和国
+    ka: ხაკასეთი
+    kn: ಖಕಾಸ್ಸಿಯಾ ಗಣರಾಜ್ಯ
+    ko: 하카스 공화국
+    lt: Chakasija
+    lv: Hakasija
+    mn: Хакас
+    mr: खाकाशिया प्रजासत्ताक
+    ms: Khakassia
+    nb: Khakasia
+    nl: Chakassië
+    pl: Chakasja
+    pt: Cacássia
+    ro: Hacasia
+    si: ඛකසියා ජනරජය
+    sk: Chakasko
+    sl: Hakasija
+    sr: Хакасија
+    sv: Chakassien
+    sw: Khakasia
+    ta: அக்காசியா
+    te: ఖకాసియా రిపబ్లిక్
+    th: เมืองคาคาซเซีย
+    tr: Hakasya
+    uk: Хакасія
+    ur: خاکاسیا
+    vi: Khakassia
+    zh: 哈卡斯共和国
+    ceb: Respublika Khakasiya
+    sr_Latn: Hakasija
+    yue_Hans: 哈卡斯
+    ccp: "\U00011108\U00011107\U00011125\U00011128\U00011120"
+    ga: An Chacáis
+    ky: Хакасия
+    kk: Хақас Республикасы
+    yue: 哈卡斯
+    uz: Xakasiya
+    bs: Hakasija
+    mk: Хакасија
+    'no': Khakasia
+    sq: Hakasia
+  comments:
+  type: republic
+KL:
+  name: Kalmykiya, Respublika
+  code: KL
+  unofficial_names:
+  - Halmg-Tangč
+  - Kalmyk Republic
+  - Khalmg-Tangch
+  - Kalmykija
+  geo:
+    latitude: 46.5676845
+    longitude: 45.7731614
+    min_latitude: 44.7639349
+    min_longitude: 41.6327159
+    max_latitude: 48.2743179
+    max_longitude: 47.601117
+  translations:
+    ru: Калмыкия
+    af: Kalmikië
+    ar: كالميكيا
+    az: Kalmıkiya
+    be: Калмыкія
+    bg: Калмикия
+    bn: কাল্মিয়াকিয়া রিপাবলিক
+    ca: Calmúquia
+    cs: Kalmycko
+    da: Kalmykien
+    de: Kalmückien
+    el: Δημοκρατία της Καλμίκια
+    en: Kalmykia
+    es: Kalmukia
+    et: Kalmõkkia
+    eu: Kalmukia
+    fa: قالموقستان
+    fi: Kalmukia
+    fr: Kalmoukie
+    gl: Kalmykia
+    gu: કાલ્મીકિયા રિપબ્લિક
+    he: קלמיקיה
+    hi: कालमिकिया
+    hr: Kalmička
+    hu: Kalmükföld
+    hy: Կալմիկիա
+    id: Kalmykia
+    it: Calmucchia
+    ja: カルムイク共和国
+    ka: ყალმუხეთი
+    kn: ಕಲ್ಮೀಕಿಯಾ ಗಣರಾಜ್ಯ
+    ko: 칼미크 공화국
+    lt: Kalmukija
+    lv: Kalmikija
+    mn: Бүгд Найрамдах Халимаг Улс
+    mr: काल्मिकिया प्रजासत्ताक
+    ms: Kalmykia
+    nb: Kalmykia
+    nl: Kalmukkië
+    pl: Kałmucja
+    pt: Calmúquia
+    ro: Calmîchia
+    si: කල්මීකියා
+    sk: Kalmycko
+    sl: Kalmikija
+    sr: Калмикија
+    sv: Kalmuckien
+    sw: Kalmykia
+    ta: கால்மீக்கியா
+    te: రిపబ్లిక్ ఆప్ కాల్మైకియా
+    th: สาธารณรัฐคัลมืยคียา
+    tr: Kalmukya
+    uk: Калмикія
+    ur: کلمیکیا
+    vi: Kalmykia
+    zh: 卡尔梅克共和国
+    cy: Gweriniaeth Kalmykia
+    ceb: Kalmykiya
+    sr_Latn: Kalmikija
+    yue_Hans: 卡尔梅克
+    ccp: "\U00011107\U00011123\U00011134\U0001111F\U00011128\U00011120\U00011107\U00011128\U00011120"
+    ga: An Chailmíc
+    ky: Калмакстан
+    kk: Қалмақстан
+    yue: 卡爾梅克
+    am: ካልምኪያ
+    uz: Qalmogʻiston
+    bs: Kalmikija
+    mk: Калмикија
+    'no': Kalmykia
+    sq: Kalmikia
+  comments:
+  type: republic
+KLU:
+  name: Kaluzhskaya oblast'
+  code: KLU
+  unofficial_names:
+  - Kaluzhskaya Oblast
+  - Kalužskaja Oblast
+  geo:
+    latitude: 54.3872666
+    longitude: 35.1889094
+    min_latitude: 53.2759969
+    min_longitude: 33.4465778
+    max_latitude: 55.3402639
+    max_longitude: 37.2756489
+  translations:
+    ru: Калужская область
+    af: Kaloega-oblast
+    ar: كالوغا أوبلاست
+    az: Kaluqa vilayəti
+    be: Калужская вобласць
+    bg: Калужка област
+    bn: কালুগা ওব্লাস্ট
+    ca: Província de Kaluga
+    cs: Kalužská oblast
+    da: Kaluga oblast
+    de: Oblast Kaluga
+    el: Περιφέρεια Καλούγκα
+    en: Kaluga
+    es: Kaluga
+    et: Kaluga oblast
+    eu: Kalugako oblasta
+    fa: استان کالوگا
+    fi: Kalugan alue
+    fr: Oblast de Kalouga
+    gu: કાલુગો ઓબ્લાસ્ટ
+    he: מחוז קלוגה
+    hi: कलुगा ओब्लास्ट
+    hr: Kaluška oblast
+    hu: Kalugai terület
+    hy: Կալուգայի մարզ
+    id: Oblast Kaluga
+    it: Oblast’ di Kaluga
+    ja: カルーガ州
+    ka: კალუგის ოლქი
+    kn: ಕಲುಗು ಒಬ್ಲಾಸ್ಟ್
+    ko: 칼루가 주
+    lt: Kalugos sritis
+    lv: Kalugas apgabals
+    mr: कालुगा ओब्लास्त
+    ms: Wilayah Kaluga
+    nb: Kaluga
+    nl: Oblast Kaloega
+    pl: Obwód kałuski
+    pt: Oblast de Kaluga
+    ro: Regiunea Kaluga
+    si: කළුගා ප්‍රාන්තය
+    sk: Kalužská oblasť
+    sl: Kaluška oblast
+    sr: Калушка област
+    sv: Kaluga oblast
+    sw: Kaluga Oblast
+    ta: களுகா ஒப்லாஸ்து
+    te: కాలుగా ఓబ్లాస్ట్
+    th: เขตคาลูกา
+    tr: Kaluga Oblastı
+    uk: Калузька область
+    ur: کالوگا اوبلاست
+    vi: Kaluga
+    zh: 卡卢加州
+    cy: Oblast Kaluga
+    ceb: Kaluzhskaya Oblast’
+    sr_Latn: Kaluška oblast
+    yue_Hans: 卡卢加州
+    ccp: "\U00011107\U00011123\U0001112A\U00011109"
+    ga: Cúige Kaluga
+    yue: 卡盧加州
+    uz: Kaluga oblasti
+    bs: Kaluška oblast
+    mk: Калушка област
+    'no': Kaluga
+    is: Kalúgafylki
+    mn: Калуга муж
+  comments:
+  type: administrative_region
+KO:
+  name: Komi, Respublika
+  code: KO
+  unofficial_names: Komi, Respublika
+  geo:
+    latitude: 63.8630539
+    longitude: 54.8312689
+    min_latitude: 59.196101
+    min_longitude: 45.4046569
+    max_latitude: 68.42287689999999
+    max_longitude: 66.2523211
+  translations:
+    ru: Республика Коми
+    af: Republiek van Komi
+    ar: جمهورية كومي
+    az: Komi Respublikası
+    be: Рэспубліка Комі
+    bg: Коми
+    bn: কোমি রিপাবলিক
+    ca: República de Komi
+    cs: Republika Komi
+    da: Republikken Komi
+    de: Republik Komi
+    el: Δημοκρατία των Κόμι
+    en: Komi
+    es: Komi
+    et: Komi
+    eu: Komi
+    fa: کومی
+    fi: Komin tasavalta
+    fr: République des Komis
+    gl: República de Komi
+    gu: કોમી રિપબ્લિક
+    he: רפובליקת קומי
+    hi: कोमी गणराज्य
+    hr: Komi
+    hu: Komiföld
+    hy: Կոմի Հանրապետություն
+    id: Republik Komi
+    it: Repubblica dei Komi
+    ja: コミ共和国
+    ka: კომის რესპუბლიკა
+    kn: ಕೋಮಿ ಗಣರಾಜ್ಯ
+    ko: 코미 공화국
+    lt: Komijos Respublika
+    lv: Komi
+    mn: Коми
+    mr: कोमी प्रजासत्ताक
+    ms: Republik Komi
+    nb: Komi
+    nl: Komi
+    pl: Republika Komi
+    pt: República de Komi
+    ro: Republica Komi
+    si: කෝමි ජනරජය
+    sk: Komijsko
+    sl: Komi
+    sr: Коми
+    sv: Komi
+    sw: Jamhuri ya Komi
+    ta: கோமி
+    te: కోమి రిపబ్లిక్
+    th: โคมิ
+    tr: Komi Cumhuriyeti
+    uk: Республіка Комі
+    ur: کومی جمہوریہ
+    vi: Cộng hòa Komi
+    zh: 科米共和国
+    ceb: Komi
+    sr_Latn: Komi
+    yue_Hans: 科密
+    ccp: "\U00011107\U0001112E\U0001111F\U00011128"
+    ga: Poblacht Choimí
+    ky: Коми Республикасы
+    kk: Коми Республикасы
+    yue: 科密
+    am: የኮሚ ሪፐብሊክ
+    uz: Komi
+    bs: Komi
+    mk: Коми
+    'no': Komi
+    sq: Komiu
+  comments:
+  type: republic
+KOS:
+  name: Kostromskaya oblast'
+  code: KOS
+  unofficial_names:
+  - Kostromskaja Oblast
+  geo:
+    latitude: 58.5501069
+    longitude: 43.9541103
+    min_latitude: 57.277828
+    min_longitude: 40.3997611
+    max_latitude: 59.62038
+    max_longitude: 47.6446471
+  translations:
+    ru: Костромская область
+    af: Kostroma-oblast
+    ar: كوستروما أوبلاست
+    az: Kostroma vilayəti
+    be: Кастрамская вобласць
+    bg: Костромска област
+    bn: কস্ট্রোমা ওব্লাস্ট
+    ca: Província de Kostromà
+    cs: Kostromská oblast
+    da: Kostroma oblast
+    de: Oblast Kostroma
+    el: Περιφέρεια Κοστρομά
+    en: Kostroma
+    es: Óblast de Kostromá
+    et: Kostroma oblast
+    eu: Kostroma oblasta
+    fa: استان کوستروما
+    fi: Kostroman alue
+    fr: Oblast de Kostroma
+    gu: કોસ્ટ્રોમા ઓબ્લાસ્ટ
+    he: מחוז קוסטרומה
+    hi: कोस्ट्रोमा ओब्लास्ट
+    hr: Kostromska oblast
+    hu: Kosztromai terület
+    hy: Կոստրոմայի մարզ
+    id: Oblast Kostroma
+    it: Oblast’ di Kostroma
+    ja: コストロマ州
+    ka: კოსტრომის ოლქი
+    kn: ಕೋಸ್ಟ್ರೋಮಾ ಒಬ್ಲಾಸ್ಟ್
+    ko: 코스트로마 주
+    lt: Kostromos sritis
+    lv: Kostromas apgabals
+    mr: कोस्त्रोमा ओब्लास्त
+    ms: Wilayah Kostroma
+    nb: Kostroma
+    ne: कोस्त्रोमा ओब्लास्ट
+    nl: Oblast Kostroma
+    pl: Obwód kostromski
+    pt: Oblast de Kostroma
+    ro: Regiunea Kostroma
+    si: කොස්ට්‍රොමා ප්‍රාන්තය
+    sk: Kostromská oblasť
+    sl: Kostromska oblast
+    sr: Костромска област
+    sv: Kostroma oblast
+    sw: Kostroma Oblast
+    ta: கொஸ்ட்ரோமா ஒப்லாஸ்து
+    te: కాస్ట్రోమా ఓబ్లాస్ట్
+    th: โคลโตรมา โอแบลส
+    tr: Kostroma Oblastı
+    uk: Костромська область
+    ur: کوستروما اوبلاست
+    vi: Kostroma
+    zh: 科斯特罗马州
+    cy: Oblast Kostroma
+    ceb: Kostromskaya Oblast’
+    sr_Latn: Kostromska oblast
+    yue_Hans: 科斯特罗马州
+    ccp: "\U00011107\U0001112E\U0001110C\U00011134\U00011111\U00011133\U00011122\U00011127\U0001111F"
+    ga: Cúige Kostroma
+    yue: 科斯特羅馬州
+    uz: Kostroma viloyati
+    bs: Kostromska oblast
+    mk: Костромска област
+    'no': Kostroma
+    is: Kostrómafylki
+    mn: Кострома муж
+  comments:
+  type: administrative_region
+KR:
+  name: Kareliya, Respublika
+  code: KR
+  unofficial_names:
+  - Karelian Republic
+  - Karelija
+  geo:
+    latitude: 63.15587019999999
+    longitude: 32.9905552
+    min_latitude: 60.68576710000001
+    min_longitude: 29.3102922
+    max_latitude: 66.6732639
+    max_longitude: 37.9320522
+  translations:
+    ru: Республика Карелия
+    af: Republiek van Karelië
+    ar: جمهورية كاريليا
+    az: Kareliya Respublikası
+    be: Карэлія
+    bg: Република Карелия
+    bn: কারেলিয়া প্রজাতন্ত্র
+    ca: República de Carèlia
+    cs: Republika Karélie
+    da: Karelen
+    de: Republik Karelien
+    el: Δημοκρατία της Καρελίας
+    en: Karelia
+    es: República de Carelia
+    et: Karjala Vabariik
+    eu: Kareliako Errepublika
+    fa: جمهوری کارلیا
+    fi: Karjalan tasavalta
+    fr: République de Carélie
+    gl: República de Carelia
+    gu: કરેલિયા રિપબ્લિક
+    he: קרליה
+    hi: कारेलिया गणतंत्र
+    hr: Karelija
+    hu: Karélia
+    hy: Կարելիայի Հանրապետություն
+    id: Republik Karelia
+    it: Repubblica di Carelia
+    ja: カレリア共和国
+    ka: კარელიის რესპუბლიკა
+    kn: ಕರೀಲಿಯಾ
+    ko: 카렐리야 공화국
+    lt: Karelijos Respublika
+    lv: Karēlijas Republika
+    mn: Бүгд Найрамдах Карель Улс
+    mr: कॅरेलिया प्रजासत्ताक
+    ms: Republik Karelia
+    nb: Karelia
+    nl: Karelië
+    pl: Karelia
+    pt: República da Carélia
+    ro: Republica Carelia
+    si: කරෙලියා ජනරජය
+    sk: Karelsko
+    sl: Republika Karelija
+    sr: Карелија
+    sv: Karelska republiken
+    sw: Karelia
+    ta: கரேலியா
+    te: రిపబ్లిక్ ఆఫ్ కారేలియా
+    th: สาธารณรัฐคาเรเลีย
+    tr: Karelya Cumhuriyeti
+    uk: Республіка Карелія
+    ur: جمہوریہ کریلیا
+    vi: Cộng hòa Kareliya
+    zh: 卡累利阿共和国
+    ceb: Respublika Kareliya
+    sr_Latn: Karelija
+    yue_Hans: 卡累利阿共和国
+    sq: Karelia
+    ccp: "\U00011107\U00011122\U0001112C\U00011123\U00011128\U00011120"
+    ga: Poblacht na Cairéile
+    ky: Карилия
+    kk: Карелия Республикасы
+    yue: 卡累利阿共和國
+    am: የካሬሊያ ሪፐብሊክ
+    uz: Kareliya
+    bs: Karelija
+    mk: Република Карелија
+    'no': Karelia
+  comments:
+  type: republic
+KRS:
+  name: Kurskaya oblast'
+  code: KRS
+  unofficial_names:
+  - Kurskaja Oblast
+  geo:
+    latitude: 51.76340260000001
+    longitude: 35.3811812
+    min_latitude: 50.9034249
+    min_longitude: 34.0821881
+    max_latitude: 52.4405099
+    max_longitude: 38.5257578
+  translations:
+    ru: Курская область
+    af: Koersk-oblast
+    ar: كورسك أوبلاست
+    az: Kursk vilayəti
+    be: Курская вобласць
+    bg: Курска област
+    bn: কুরস্ক ওব্লাস্ট
+    ca: Província de Kursk
+    cs: Kurská oblast
+    da: Kursk oblast
+    de: Oblast Kursk
+    el: Περιφέρεια Κουρσκ
+    en: Kursk
+    es: óblast de Kursk
+    et: Kurski oblast
+    eu: Kursk oblasta
+    fa: استان کورسک
+    fi: Kurskin alue
+    fr: Oblast de Koursk
+    gu: કુર્સ્ક ઓબ્લાસ્ટ
+    he: מחוז קורסק
+    hi: कुर्सक ओब्लास्ट
+    hr: Kurska oblast
+    hu: Kurszki terület
+    hy: Կուրսկի մարզ
+    id: Oblast Kursk
+    it: Oblast’ di Kursk
+    ja: クルスク州
+    ka: კურსკის ოლქი
+    kn: ಕುರ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 쿠르스크 주
+    lt: Kursko sritis
+    lv: Kurskas apgabals
+    mr: कुर्स्क ओब्लास्त
+    ms: Wilayah Kursk
+    nb: Kursk
+    nl: Oblast Koersk
+    pl: Obwód kurski
+    pt: Oblast de Kursk
+    ro: Regiunea Kursk
+    si: කර්ස්ක් ප්‍රාන්තය
+    sk: Kurská oblasť
+    sl: Kurska oblast
+    sr: Курска област
+    sv: Kursk oblast
+    sw: Kursk Oblast
+    ta: கூர்ஸ்க் ஒப்லாஸ்து
+    te: కుర్సుక్ ఓబ్లాస్ట్
+    th: เคิกส์ โอแบลส
+    tr: Kursk Oblastı
+    uk: Курська область
+    ur: کورسک اوبلاست
+    vi: Kursk
+    zh: 库尔斯克州
+    cy: Oblast Kursk
+    ceb: Kurskaya Oblast’
+    sr_Latn: Kurska oblast
+    yue_Hans: 库尔斯克州
+    ccp: "\U00011107\U00011122\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Kursk
+    yue: 庫爾斯克州
+    uz: Kursk viloyati
+    bs: Kurska oblast
+    mk: Курска област
+    'no': Kursk
+    is: Kúrskfylki
+    mn: Курск муж
+  comments:
+  type: administrative_region
+KYA:
+  name: Krasnoyarskiy kray
+  code: KYA
+  unofficial_names:
+  - Krasnojarsk
+  - Krasnojarskij Kraj
+  - Krasnojarsk
+  geo:
+    latitude: 64.24797579999999
+    longitude: 95.11041759999999
+    min_latitude: 51.7734569
+    min_longitude: 76.1117517
+    max_latitude: 81.2663089
+    max_longitude: 113.9162833
+  translations:
+    ru: Красноярский край
+    af: Krasnojarsk-krai
+    ar: كراسنويارسك كراي
+    az: Krasnoyarsk diyarı
+    be: Краснаярскі край
+    bg: Красноярски край
+    bn: ক্রাস্নোয়ারস্ক ক্রা
+    ca: Territori de Krasnoiarsk
+    cs: Krasnojarský kraj
+    da: Krasnojarsk kraj
+    de: Region Krasnojarsk
+    el: Κράι Κρασνογιάρσκ
+    en: Krasnoyarsk Krai
+    es: Krasnoyarsk
+    et: Krasnojarski krai
+    eu: Krasnoiarsk kraia
+    fa: سرزمین کراسنویارسک
+    fi: Krasnojarskin aluepiiri
+    fr: Kraï de Krasnoïarsk
+    gu: ક્રાસ્નોયાર્સ્ક ક્રેઇ
+    he: מחוז קרסנויארסק
+    hi: क्रस्नोयार्स्क क्राय
+    hr: Krasnojarski kraj
+    hu: Krasznojarszki határterület
+    hy: Կրասնոյարսկի երկրամաս
+    id: Krai Krasnoyarsk
+    it: Territorio di Krasnojarsk
+    ja: クラスノヤルスク地方
+    ka: კრასნოიარსკის მხარე
+    kn: ಕ್ರಾಸ್ನೊಯಾರ್ಸ್ಕ್ ಕ್ರೈ
+    ko: 크라스노야르스크 지방
+    lt: Krasnojarsko kraštas
+    lv: Krasnojarskas novads
+    mn: Красноярскийн хязгаар
+    mr: क्रास्नोयार्स्क क्राय
+    ms: Jajahan Krasnoyarsk
+    nb: Krasnojarsk
+    nl: Kraj Krasnojarsk
+    pl: Kraj Krasnojarski
+    pt: Krai de Krasnoiarsk
+    ro: Krasnoiarsk
+    si: ජජහන් ක්‍රස්නොයාර්ස්ක්
+    sk: Krasnojarský kraj
+    sl: Krasnojarski kraj
+    sr: Краснојарска Покрајина
+    sv: Krasnojarsk kraj
+    sw: Krasnoyarsk Krai
+    ta: கிராஸ்னயார்சுக் பிரதேசம்
+    te: క్రాస్నోయార్క్ క్రే
+    th: ดินแดนครัสโนยาสค์
+    tr: Krasnoyarsk Krayı
+    uk: Красноярський край
+    ur: کراسنویارسک کرائی
+    vi: Krasnoyarsk
+    zh: 克拉斯諾亞爾斯克邊疆區
+    cy: Crai Krasnoyarsk
+    ceb: Krasnoyarskiy Kray
+    sr_Latn: Krasnojarska Pokrajina
+    yue_Hans: 克拉斯诺亚尔斯克边疆区
+    ccp: "\U00011107\U00011133\U00011122\U0001110C\U00011134\U0001111A\U00011131\U00011122\U00011134\U00011125\U00011134\U00011107\U00011134
+      \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Krasnoyarsk
+    ky: Краснояр крайы
+    yue: 克拉斯諾亞爾斯克邊疆區
+    uz: Krasnoyarsk oʻlkasi
+    bs: Krasnojarski kraj
+    mk: Краснојарски крај
+    'no': Krasnojarsk
+    gl: Krai de Krasnoiarsk
+    is: Krasnojarskfylki
+  comments:
+  type: administrative_territory
+LEN:
+  name: Leningradskaya oblast'
+  code: LEN
+  unofficial_names:
+  - Leningradskaja Oblast
+  geo:
+    latitude: 60.0793208
+    longitude: 31.8926644
+    min_latitude: 58.4147179
+    min_longitude: 27.740038
+    max_latitude: 61.3297682
+    max_longitude: 35.6959784
+  translations:
+    ru: Ленинградская область
+    af: Leningrad-oblast
+    ar: لينينغراد أوبلاست
+    az: Leninqrad vilayəti
+    be: Ленінградская вобласць
+    bg: Ленинградска област
+    bn: লেনিনগ্রাড ওব্লাস্ট
+    ca: Província de Leningrad
+    cs: Leningradská oblast
+    da: Leningrad oblast
+    de: Oblast Leningrad
+    el: Περιφέρεια Λένινγκραντ
+    en: Leningrad
+    es: Óblast de Leningrado
+    et: Leningradi oblast
+    eu: Leningrad oblasta
+    fa: استان لنینگراد
+    fi: Leningradin alue
+    fr: Oblast de Léningrad
+    gu: લેનિનગ્રાડ ઓબ્લાસ્ટ
+    he: מחוז לנינגרד
+    hi: लेनिनग्राद ओब्लास्ट
+    hr: Lenjingradska oblast
+    hu: Leningrádi terület
+    hy: Լենինգրադի մարզ
+    id: Oblast Leningrad
+    is: Leníngradfylki
+    it: Oblast’ di Leningrado
+    ja: レニングラード州
+    ka: ლენინგრადის ოლქი
+    kn: ಲೆನಿನ್ಗ್ರಾಡ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 레닌그라드 주
+    lt: Leningrado sritis
+    lv: Ļeņingradas apgabals
+    mn: Ленинград муж
+    mr: लेनिनग्राद ओब्लास्त
+    ms: Wilayah Leningrad
+    nb: Leningrad
+    ne: लेलिनग्राड ओब्लास्ट
+    nl: Oblast Leningrad
+    pl: Obwód leningradzki
+    pt: Oblast de Leningrado
+    ro: Regiunea Leningrad
+    si: ලේනින්ග්රඩ් ප්‍රාන්තය
+    sk: Leningradská oblasť
+    sl: Leningrajska oblast
+    sr: Лењинградска област
+    sv: Leningrad oblast
+    sw: Leningrad Oblast
+    ta: லெனின்கிராடு ஓப்லசுது
+    te: లెనిన్‌గ్రాడ్ ఓబ్లాస్ట్
+    th: แคว้นเลนินกราด
+    tr: Leningrad eyaleti
+    uk: Ленінградська область
+    ur: لیننگراڈ اوبلاست
+    vi: Leningrad
+    zh: 列宁格勒州
+    cy: Oblast Leningrad
+    ceb: Leningradskaya Oblast’
+    sr_Latn: Lenjingradska oblast
+    yue_Hans: 列宁格勒州
+    ccp: "\U00011123\U0001112C\U00011123\U00011128\U0001111A\U00011134\U00011109\U00011133\U00011122\U00011116\U00011134"
+    ga: Cúige Leningrad
+    pa: ਲੈਨਿਨਗ੍ਰਾਦ ਓਬਲਾਸਤ
+    yue: 列寧格勒州
+    uz: Leningrad viloyati
+    bs: Lenjingradska oblast
+    mk: Ленинградска област
+    'no': Leningrad
+  comments:
+  type: administrative_region
+LIP:
+  name: Lipetskaya oblast'
+  code: LIP
+  unofficial_names:
+  - Lipeckaja Oblast
+  - Lipeck
+  geo:
+    latitude: 52.5264702
+    longitude: 39.2032269
+    min_latitude: 51.8867799
+    min_longitude: 37.7224471
+    max_latitude: 53.5848638
+    max_longitude: 40.764882
+  translations:
+    ru: Липецкая область
+    af: Lipetsk-oblast
+    ar: ليبيتسك أوبلاست
+    az: Lipetsk vilayəti
+    be: Ліпецкая вобласць
+    bg: Липецка област
+    bn: লিপেটস্ক ওব্লাস্ট
+    ca: Província de Lípetsk
+    cs: Lipecká oblast
+    da: Lipetsk oblast
+    de: Oblast Lipezk
+    el: Περιφέρεια Λίπετσκ
+    en: Lipetsk
+    es: Óblast de Lípetsk
+    et: Lipetski oblast
+    eu: Lipetsk oblasta
+    fa: استان لیپتسک
+    fi: Lipetskin alue
+    fr: oblast de Lipetsk
+    gl: Provincia de Lipetsk
+    gu: લિપેટ્સક ઓબ્લાસ્ટ
+    he: מחוז ליפצק
+    hi: लिपेट्सक ओब्लास्ट
+    hr: Lipecka oblast
+    hu: Lipecki terület
+    hy: Լիպեցկի մարզ
+    id: Oblast Lipetsk
+    it: Oblast’ di Lipeck
+    ja: リペツク州
+    ka: ლიპეცკის ოლქი
+    kn: ಲಿಪೆಟ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 리페츠크 주
+    lt: Lipecko sritis
+    lv: Ļipeckas apgabals
+    mr: लिपेत्स्क ओब्लास्त
+    ms: Wilayah Lipetsk
+    nb: Lipetsk
+    nl: Oblast Lipetsk
+    pl: Obwód lipiecki
+    pt: Oblast de Lipetsk
+    ro: Regiunea Lipețk
+    si: ලිපෙට්ස්ක් ප්‍රාන්තය
+    sk: Lipecká oblasť
+    sl: Lipecka oblast
+    sr: Липецка област
+    sv: Lipetsk oblast
+    sw: Lipetsk Oblast
+    ta: லிபெட்ஸ்க் ஒப்லாஸ்து
+    te: లిపెట్క్ ఓబ్లాస్ట్
+    th: เมืองลีเปตสค์
+    tr: Lipetsk Oblastı
+    uk: Липецька область
+    ur: لیپٹسک اوبلاست
+    vi: Lipetsk
+    zh: 利佩茨克州
+    cy: Oblast Lipetsk
+    ceb: Lipetskaya Oblast’
+    sr_Latn: Lipecka oblast
+    yue_Hans: 利佩茨克州
+    ccp: "\U00011123\U00011128\U0001111B\U0001112C\U00011116\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Lipetsk
+    ky: Липецкий областы
+    kk: Липецк облысы
+    yue: 利佩茨克州
+    uz: Lipetsk viloyati
+    bs: Lipecka oblast
+    mk: Липецка област
+    'no': Lipetsk
+    is: Lípetskfylki
+    mn: Липецк муж
+  comments:
+  type: administrative_region
+MAG:
+  name: Magadanskaya oblast'
+  code: MAG
+  unofficial_names:
+  - Magadanskaja Oblast
+  geo:
+    latitude: 62.66434169999999
+    longitude: 153.9149909
+    min_latitude: 58.83734889999999
+    min_longitude: 144.722207
+    max_latitude: 66.33609200000001
+    max_longitude: 163.4827849
+  translations:
+    ru: Магаданская область
+    af: Magadan-oblast
+    ar: ماغادان أوبلاست
+    az: Maqadan vilayəti
+    be: Магаданская вобласць
+    bg: Магаданска област
+    bn: মাগাদান ওব্লাস্ট
+    ca: Província de Magadan
+    cs: Magadanská oblast
+    da: Magadan oblast
+    de: Oblast Magadan
+    el: Περιφέρεια Μαγκαντάν
+    en: Magadan
+    es: Magadán
+    et: Magadani oblast
+    eu: Magadan oblasta
+    fa: استان ماگادان
+    fi: Magadanin alue
+    fr: Oblast de Magadan
+    gu: મેગેડન ઓબ્લાસ્ટ
+    he: מחוז מגדן
+    hi: मागादान ओब्लास्त
+    hr: Magadanska oblast
+    hu: Magadani terület
+    hy: Մագադանի մարզ
+    id: Oblast Magadan
+    it: Oblast’ di Magadan
+    ja: マガダン州
+    ka: მაგადანის ოლქი
+    kn: ಮಗಾಡನ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 마가단 주
+    lt: Magadano sritis
+    lv: Magadanas apgabals
+    mn: Магадан муж
+    mr: मागादान ओब्लास्त
+    ms: Wilayah Magadan
+    nb: Magadan
+    nl: Oblast Magadan
+    pl: Obwód magadański
+    pt: Oblast de Magadan
+    ro: Regiunea Magadan
+    si: මගඩන් ප්‍රාන්තය
+    sk: Magadanská oblasť
+    sl: Magadanska oblast
+    sr: Магаданска област
+    sv: Magadan oblast
+    sw: Magadan Oblast
+    ta: மகதன் ஒப்லாஸ்து
+    te: మగాడాన్ ఓబ్లాస్ట్
+    th: เขตมากาดาน
+    tr: Magadan Oblastı
+    uk: Магаданська область
+    ur: ماگادان اوبلاست
+    vi: Magadan
+    zh: 马加丹州
+    cy: Oblast Magadan
+    ceb: Magadanskaya Oblast’
+    sr_Latn: Magadanska oblast
+    yue_Hans: 马加丹州
+    ccp: "\U0001111F\U00011109\U00011113\U0001111A\U00011134"
+    ga: Cúige Mhagadan
+    is: Magadanfylki
+    yue: 馬加丹州
+    uz: Magadan viloyati
+    bs: Magadanska oblast
+    mk: Магаданска област
+    'no': Magadan
+  comments:
+  type: administrative_region
+ME:
+  name: Mariy El, Respublika
+  code: ME
+  unofficial_names:
+  - Mariy El
+  - Marij El
+  geo:
+    latitude: 56.438457
+    longitude: 47.9607757
+    min_latitude: 55.8266931
+    min_longitude: 45.6197337
+    max_latitude: 57.3436309
+    max_longitude: 50.2000648
+  translations:
+    ru: Марий Эл
+    af: Mari El
+    ar: ماري إل
+    az: Mari El
+    be: Марый Эл
+    bg: Марий Ел
+    bn: মারাি এল প্রজাতন্ত্র
+    ca: Marí El
+    cs: Marij El
+    da: Mari El
+    de: Mari El
+    el: Δημοκρατία της Μαρί Ελ
+    en: Mari El
+    es: Mari-El
+    et: Marimaa
+    eu: Mari El
+    fa: ماری ال
+    fi: Marin tasavalta
+    fr: République des Maris
+    gl: Mari El
+    gu: મારી અલ રિપબ્લિક
+    he: מארי אל
+    hi: मरी ऍल
+    hr: Marijska
+    hu: Mariföld
+    hy: Մարիյ Էլ
+    id: Mari El
+    it: Repubblica dei Mari
+    ja: マリ・エル共和国
+    ka: მარი ელი
+    kn: ಮಾರಿ ಎಲ್ ರಿಪಬ್ಲಿಕ್
+    ko: 마리옐 공화국
+    lt: Marių Respublika
+    lv: Marijela
+    mn: Мари Эл
+    mr: मारी एल प्रजासत्ताक
+    ms: Mari El
+    nb: Mari El
+    nl: Mari El
+    pl: Mari El
+    pt: Mari El
+    ro: Mari El
+    si: මාරි එල් ජනරජය
+    sk: Marijsko
+    sl: Marij El
+    sr: Мариј Ел
+    sv: Marij El
+    sw: Mari El
+    ta: மாரீ எல்
+    te: మారిఎల్ రిపబ్లిక్
+    th: มาริ เอล
+    tr: Mari El
+    uk: Марій Ел
+    ur: ماری ال
+    vi: Cộng hòa Mari El
+    zh: 马里埃尔共和国
+    cy: Mari El
+    ceb: Respublika Mariy-El
+    sr_Latn: Marij El
+    yue_Hans: 马里埃尔
+    ccp: "\U0001111F\U00011122\U00011128 \U00011103\U00011128\U00011123\U00011134"
+    ga: Mairí El
+    ky: Марий Эл Республикасы
+    kk: Марий Эл
+    yue: 馬里埃爾
+    uz: Mariy el
+    bs: Marij El
+    mk: Мариј Ел
+    'no': Mari El
+    sq: Mari El
+  comments:
+  type: republic
+MO:
+  name: Mordoviya, Respublika
+  code: MO
+  unofficial_names:
+  - Mordovian Republic
+  - Mordovija
+  geo:
+    latitude: 54.2369441
+    longitude: 44.0683969
+    min_latitude: 53.6542969
+    min_longitude: 42.170382
+    max_latitude: 55.1882439
+    max_longitude: 46.7113749
+  translations:
+    ru: Мордовия
+    af: Mordowië
+    ar: موردوفيا
+    az: Mordoviya
+    be: Мардовія
+    bg: Мордовия
+    bn: মরডোভিয়া প্রজাতন্ত্র
+    ca: Mordòvia
+    cs: Mordvinsko
+    da: Mordva
+    de: Mordwinien
+    el: Δημοκρατία της Μορδοβίας
+    en: Mordovia
+    es: Mordovia
+    et: Mordva
+    eu: Mordovia
+    fa: موردوویا
+    fi: Mordva
+    fr: Mordovie
+    gl: Mordovia
+    gu: મોર્દોવિઆ રિપબ્લિક
+    he: מורדוביה
+    hi: मॉर्डोविया गणराज्य
+    hr: Mordvinska
+    hu: Mordvinföld
+    hy: Մորդովիա
+    id: Mordovia
+    it: Mordovia
+    ja: モルドヴィア共和国
+    ka: მორდვეთი
+    kn: ಮೊರ್ಡೋವಿಯ ಗಣರಾಜ್ಯ
+    ko: 모르도바 공화국
+    lt: Mordvija
+    lv: Mordovija
+    mn: Мордова
+    mr: मोर्दोविया प्रजासत्ताक
+    ms: Mordovia
+    nb: Mordovia
+    nl: Mordovië
+    pl: Mordowia
+    pt: Mordóvia
+    ro: Mordovia
+    si: මොර්ඩොවියා ජනරජය
+    sk: Mordviansko
+    sl: Mordovija
+    sr: Мордовија
+    sv: Mordvinien
+    sw: Mordovia
+    ta: மொர்தோவியா
+    te: మోర్డోవియా రిపబ్లిక్
+    th: มอร์โดวิยา
+    tr: Mordovya
+    uk: Мордовія
+    ur: موردوویا
+    vi: Mordovia
+    zh: 莫尔多瓦共和国
+    ceb: Respublika Mordoviya
+    sr_Latn: Mordovija
+    yue_Hans: 莫尔多瓦
+    ccp: "\U0001111F\U00011127\U00011122\U00011134\U00011113\U0001112E\U0001111E\U00011128\U00011120"
+    ga: An Mhordóiv
+    ky: Мордва республикасы
+    kk: Мордовия
+    yue: 莫爾多瓦
+    uz: Mordoviya
+    bs: Mordovija
+    mk: Мордовија
+    'no': Mordovia
+  comments:
+  type: republic
+MOS:
+  name: Moskovskaya oblast'
+  code: MOS
+  unofficial_names:
+  - Moskovskaja Oblast
+  geo:
+    latitude: 55.340396
+    longitude: 38.2917651
+    min_latitude: 54.254261
+    min_longitude: 35.149022
+    max_latitude: 56.962834
+    max_longitude: 40.2060071
+  translations:
+    ru: Московская область
+    af: Moskou-oblast
+    ar: محافظة موسكو
+    az: Moskva vilayəti
+    be: Маскоўская вобласць
+    bg: Московска област
+    bn: মস্কো ওব্লাস্ট
+    ca: Província de Moscou
+    cs: Moskevská oblast
+    da: Moskva oblast
+    de: Oblast Moskau
+    el: Περιφέρεια Μόσχας
+    en: Moscow Province
+    es: Óblast de Moscú
+    et: Moskva oblast
+    eu: Moskuko oblasta
+    fa: استان مسکو
+    fi: Moskovan alue
+    fr: oblast de Moscou
+    gu: મોસ્કો ઓબ્લાસ્ટ
+    he: מחוז מוסקבה
+    hi: मास्को ओब्लास्ट
+    hr: Moskovska oblast
+    hu: Moszkvai terület
+    hy: Մոսկվայի մարզ
+    id: Oblast Moskwa
+    it: Oblast’ di Mosca
+    ja: モスクワ州
+    ka: მოსკოვის ოლქი
+    kn: ಮಾಸ್ಕೋ ಒಬ್ಲಾಸ್ಟ್
+    ko: 모스크바 주
+    lt: Maskvos sritis
+    lv: Maskavas apgabals
+    mn: Москва муж
+    mr: मॉस्को ओब्लास्त
+    ms: Wilayah Moscow
+    nb: Moskva oblast
+    nl: Oblast Moskou
+    pl: Obwód moskiewski
+    pt: Oblast de Moscou
+    ro: regiunea Moscova
+    si: මොස්කව් ප්‍රාන්තය
+    sk: Moskovská oblasť
+    sl: Moskovska oblast
+    sr: Московска област
+    sv: Moskva oblast
+    sw: Moscow Oblast
+    ta: மாஸ்கோ ஓப்லஸ்து
+    te: మాస్కో ఓబ్లాస్ట్
+    th: เขตดิอัวร์เบล
+    tr: Moskova Oblastı
+    uk: Московська область
+    ur: ماسکو اوبلاست
+    vi: Moskva
+    zh: 莫斯科州
+    cy: Oblast Moscfa
+    ceb: Moscow Oblast
+    sr_Latn: Moskovska oblast
+    yue_Hans: 莫斯科州
+    ccp: "\U0001111F\U00011127\U0001110C\U00011134\U00011107\U0001112E \U0001111B\U00011133\U00011122\U00011127\U0001111E\U00011128\U0001111A\U00011134\U0001110C\U00011134"
+    ga: Cúige Mhoscó
+    ky: Москва областы
+    yue: 莫斯科州
+    uz: Moskva oblasti
+    bs: Moskovska oblast
+    mk: Московска област
+    'no': Moskva
+    is: Moskvufylki
+  comments:
+  type: administrative_region
+MOW:
+  name: Moskva
+  code: MOW
+  unofficial_names:
+  - Moskva
+  - Moskau
+  - Moscou
+  - Moscú
+  geo:
+    latitude: 55.755826
+    longitude: 37.6173
+    min_latitude: 55.48992699999999
+    min_longitude: 37.3193288
+    max_latitude: 56.009657
+    max_longitude: 37.9456611
+  translations:
+    ru: Москва
+    af: Moskou
+    am: ሞስኮ
+    ar: موسكو
+    az: Moskva
+    be: Масква
+    bg: Москва
+    bn: মস্কো
+    ca: Moscou
+    cs: Moskva
+    da: Moskva
+    de: Moskau
+    el: Μόσχα
+    en: Moscow
+    es: Moscú
+    et: Moskva
+    eu: Mosku
+    fa: مسکو
+    fi: Moskova
+    fr: Moscou
+    gl: Moscova
+    gu: મોસ્કો
+    he: מוסקבה
+    hi: मास्को
+    hr: Moskva
+    hu: Moszkva
+    hy: Մոսկվա
+    id: Moskwa
+    is: Moskva
+    it: Mosca
+    ja: モスクワ
+    ka: მოსკოვი
+    kn: ಮಾಸ್ಕೋ
+    ko: 모스크바
+    lt: Maskva
+    lv: Maskava
+    ml: മോസ്കോ
+    mn: Москва
+    mr: मॉस्को
+    ms: Moscow
+    nb: Moskva²
+    ne: मस्को
+    nl: Moskou
+    or: ମସ୍କୋ
+    pl: Moskwa
+    ps: مسکو
+    pt: Moscovo
+    ro: Moscova
+    si: මොස්කව්
+    sk: Moskva
+    sl: Moskva
+    sr: Москва
+    sv: Moskva
+    sw: Moscow
+    ta: மாஸ்கோ
+    te: మాస్కో
+    th: มอสโก
+    tk: Moskwa
+    tr: Moskova
+    uk: Москва
+    ur: ماسکو
+    vi: Moskva²
+    zh: 莫斯科
+    zu: IMoskwa
+    cy: Moscfa
+    ceb: Moscow
+    yo_BJ: Mɔsko
+    sr_Latn: Moskva
+    yue_Hans: 莫斯科
+    jv: Moskwa
+    sq: Moska
+    ccp: "\U0001111F\U00011127\U0001110C\U00011134\U00011107\U0001112E"
+    sd: ماسڪو
+    ga: Moscó
+    ky: Москва
+    ha: Moscow
+    so: Moskow
+    pa: ਮਾਸਕੋ
+    kk: Мәскеу
+    yue: 莫斯科
+    my: မော်စကိုမြို့
+    yo: Mọsko
+    uz: Moskva
+    bs: Moskva
+    mk: Москва
+    ha_NE: Moscow
+    'no': Moskva²
+    lo: ມອດໂກ
+  comments:
+  type: autonomous_city
+MUR:
+  name: Murmanskaya oblast'
+  code: MUR
+  unofficial_names:
+  - Murmanskaja Oblast
+  geo:
+    latitude: 67.84426739999999
+    longitude: 35.0884101
+    min_latitude: 66.0565385
+    min_longitude: 28.4163852
+    max_latitude: 69.9520907
+    max_longitude: 41.4017088
+  translations:
+    ru: Мурманская область
+    af: Moermansk-oblast
+    ar: مورمانسك أوبلاست
+    az: Murmansk vilayəti
+    be: Мурманская вобласць
+    bg: Мурманска област
+    bn: মুরমানস্ক ওব্লাস্ট
+    ca: Província de Múrmansk
+    cs: Murmanská oblast
+    da: Murmansk oblast
+    de: Oblast Murmansk
+    el: Περιφέρεια Μούρμανσκ
+    en: Murmansk
+    es: Óblast de Múrmansk
+    et: Murmanski oblast
+    eu: Murmansk oblasta
+    fa: استان مورمانسک
+    fi: Murmanskin alue
+    fr: Oblast de Mourmansk
+    gl: Óblast de Múrmansk
+    gu: મર્માન્સ્ક ઓબ્લાસ્ટ
+    he: מחוז מורמנסק
+    hi: मूरमान्स्क ओब्लास्त
+    hr: Murmanska oblast
+    hu: Murmanszki terület
+    hy: Մուրմանսկի մարզ
+    id: Oblast Murmansk
+    it: Oblast’ di Murmansk
+    ja: ムルマンスク州
+    ka: მურმანსკის ოლქი
+    kn: ಮರ್ಮನ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 무르만스크 주
+    lt: Murmansko sritis
+    lv: Murmanskas apgabals
+    mn: Мурманск муж
+    mr: मुर्मान्स्क ओब्लास्त
+    ms: Wilayah Murmansk
+    nb: Murmansk
+    nl: Oblast Moermansk
+    pl: Obwód murmański
+    pt: Oblast de Murmansk
+    ro: Regiunea Murmansk
+    si: මර්මන්ස්ක් ප්‍රාන්තය
+    sk: Murmanská oblasť
+    sl: Murmanska oblast
+    sr: Мурманска област
+    sv: Murmansk oblast
+    sw: Murmansk Oblast
+    ta: முர்மான்சுக் ஒப்லாஸ்து
+    te: ముర్మాన్స్క్ ఓబ్లాస్ట్
+    th: เมอร์แมนสกายา
+    tr: Murmansk Oblastı
+    uk: Мурманська область
+    ur: مورمانسک اوبلاست
+    vi: Murmansk
+    zh: 摩爾曼斯克州
+    cy: Oblast Murmansk
+    ceb: Murmanskaya Oblast’
+    sr_Latn: Murmanska oblast
+    yue_Hans: 莫曼斯克州
+    ccp: "\U0001111F\U00011122\U00011134\U0001111F\U00011133\U00011120\U0001111A\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Mhurmansk
+    yue: 莫曼斯克州
+    uz: Murmansk viloyati
+    bs: Murmanska oblast
+    mk: Мурманска област
+    'no': Murmansk
+    is: Múrmanskfylki
+  comments:
+  type: administrative_region
+NEN:
+  name: Nenetskiy avtonomnyy okrug
+  code: NEN
+  unofficial_names:
+  - Nenetskij Avtonomnyj Okrug
+  geo:
+    latitude: 67.6078337
+    longitude: 57.63383309999999
+    min_latitude: 65.823471
+    min_longitude: 43.2703527
+    max_latitude: 70.4649036
+    max_longitude: 65.6777838
+  translations:
+    ru: Ненецкий автономный округ
+    af: Nenetsië
+    ar: أوكروغ نينيتس الذاتية
+    az: Nenets Muxtar Dairəsi
+    be: Ненецкая аўтаномная акруга
+    bg: Ненецки автономен окръг
+    bn: নেনেটস স্বায়ত্তশাসিত অক্রুগ
+    ca: Nenètsia
+    cs: Něnecký autonomní okruh
+    da: Nenets autonome okrug
+    de: Autonomer Kreis der Nenzen
+    el: Αυτόνομος θύλακας της Νενετσίας
+    en: Nenets
+    es: Nenetsia
+    et: Neenetsimaa
+    eu: Nenetsia
+    fa: ننتسیا
+    fi: Nenetsia
+    fr: Nénétsie
+    gu: નેનેટ્સ ઓટોનોમસ ઓક્રગ
+    he: הניינץ
+    hi: नेनेट्स औटोनोमस ओक्रुग
+    hr: Nenečki autonomni okrug
+    hu: Nyenyecföld
+    hy: Նենեցյան ինքնավար օկրուգ
+    id: Nenetsia
+    it: Circondario autonomo dei Nenec
+    ja: ネネツ自治管区
+    ka: ნენთა ავტონომიური ოკრუგი
+    kn: ನೆನೆಟ್ಸ್ ಸ್ವಾಯತ್ತ ಒಕ್ರುಗ್
+    ko: 네네츠 자치구
+    lt: Nencų autonominė apygarda
+    lv: Ņencu autonomais apvidus
+    mr: नेनेत्स स्वायत्त ऑक्रूग
+    ms: Negeri autonomi Nenets
+    nb: Nenetsk
+    nl: Nenetsië
+    pl: Nieniecki Okręg Autonomiczny
+    pt: Nenetsia
+    ro: Districtul autonom Neneția
+    si: නෙනේට්ස් ස්වාධින කලාපය
+    sk: Nenecko
+    sr: Ненеција
+    sv: Nentsien
+    sw: Okrug Huru wa Nenets
+    ta: நெனெத்து தன்னாட்சி வட்டாரம்
+    te: నెనేట్స్ ఆటానమస్ ఓక్రుగ్
+    th: เนเน็ท ออโตโนมัส โอครัค
+    tr: Nenets Özerk Okrugu
+    uk: Ненецький автономний округ
+    ur: نینیتس خود مختار آکرگ
+    vi: Nenetsia
+    zh: 涅涅茨自治区
+    cy: Ocrwg Ymreolaethol Nenets
+    ceb: Nenetskiy Avtonomnyy Okrug
+    sr_Latn: Nenecija
+    yue_Hans: 涅涅茨自治区
+    ccp: "\U0001111A\U0001111A\U0001112C\U00011116\U00011134\U0001110C\U00011134"
+    ga: Ceantar Féinrialaitheach na Neinéitseach
+    ky: Ненец автономия округу
+    yue: 涅涅茨自治區
+    uz: Nenetslar muxtor okrugi
+    bs: Nenečki autonomni okrug
+    mk: Ненецки автономен округ
+    'no': Nenetsk
+    mn: Ненецийн өөртөө засах тойрог
+  comments:
+  type: autonomous_district
+NGR:
+  name: Novgorodskaya oblast'
+  code: NGR
+  unofficial_names:
+  - Novgorodskaja Oblast
+  geo:
+    latitude: 58.2427552
+    longitude: 32.5665191
+    min_latitude: 56.917883
+    min_longitude: 29.62305709999999
+    max_latitude: 59.44515209999999
+    max_longitude: 36.2195299
+  translations:
+    ru: Новгородская область
+    af: Nowgorod-oblast
+    ar: نوفغورود أوبلاست
+    az: Novqorod vilayəti
+    be: Наўгародская вобласць
+    bg: Новгородска област
+    bn: নোভগরদ ওব্লাস্ট
+    ca: Província de Nóvgorod
+    cs: Novgorodská oblast
+    da: Novgorod oblast
+    de: Oblast Nowgorod
+    el: Περιφέρεια Νόβγκοροντ
+    en: Novgorod
+    es: Óblast de Nóvgorod
+    et: Novgorodi oblast
+    eu: Novgorod oblasta
+    fa: استان نووگورود
+    fi: Novgorodin alue
+    fr: oblast de Novgorod
+    gu: નોવગોરોડ ઓબ્લાસ્ટ
+    he: מחוז נובגורוד
+    hi: नोवगोरोड ओब्लास्ट
+    hr: Novgorodska oblast
+    hu: Novgorodi terület
+    hy: Նովգորոդի մարզ
+    id: Oblast Novgorod
+    it: Oblast’ di Novgorod
+    ja: ノヴゴロド州
+    ka: ნოვგოროდის ოლქი
+    kn: ನವ್ಗೊರೊಡ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 노브고로드 주
+    lt: Novgorodo sritis
+    lv: Novgorodas apgabals
+    mr: नॉवगोरोद ओब्लास्त
+    ms: Wilayah Novgorod
+    nb: Novgorod
+    nl: Oblast Novgorod
+    pl: Obwód nowogrodzki
+    pt: Oblast de Novgorod
+    ro: Regiunea Novgorod
+    si: නොව්ගොරොඩ් ප්‍රාන්තය
+    sk: Novgorodská oblasť
+    sl: Novgorodska oblast
+    sr: Новгородска област
+    sv: Novgorod oblast
+    sw: Novgorod Oblast
+    ta: நொவ்கோரோட் ஒப்லாஸ்து
+    te: నావ్‌గొరోడ్ ఓబ్లాస్ట్
+    th: นอวกอรอด โอแบลส
+    tr: Novgorod Oblastı
+    uk: Новгородська область
+    ur: نووگورود اوبلاست
+    vi: Novgorod
+    zh: 諾夫哥羅德州
+    cy: Oblast Novgorod
+    ceb: Novgorodskaya Oblast’
+    sr_Latn: Novgorodska oblast
+    yue_Hans: 诺夫哥罗德州
+    ccp: "\U0001111A\U0001112E\U0001111B\U00011134\U00011109\U0001112E\U00011122\U00011127\U00011116\U00011134"
+    ga: Cúige Novgorod
+    yue: 諾夫哥羅德州
+    uz: Novgorod viloyati
+    bs: Novgorodska oblast
+    mk: Новгородска област
+    'no': Novgorod
+    is: Novgorodfylki
+    mn: Новгород муж
+  comments:
+  type: administrative_region
+NIZ:
+  name: Nizhegorodskaya oblast'
+  code: NIZ
+  unofficial_names:
+  - Gorki
+  - Gorkij
+  - Gorky
+  - Nizhegorodskaya Oblast
+  - Nižegorodskaja Oblast
+  - Nižnij Novgorod
+  geo:
+    latitude: 55.7995159
+    longitude: 44.0296769
+    min_latitude: 54.47186689999999
+    min_longitude: 41.775117
+    max_latitude: 58.0889949
+    max_longitude: 47.7473761
+  translations:
+    ru: Нижегородская область
+    af: Nizjni Nowgorod-oblast
+    ar: نيجني نوفغورود أوبلاست
+    az: Nijeqorod vilayəti
+    be: Ніжагародская вобласць
+    bg: Нижегородска област
+    bn: নিঝনি ওব্লাস্ট
+    ca: Província de Nijni Nóvgorod
+    cs: Nižněnovgorodská oblast
+    da: Nisjnij Novgorod oblast
+    de: Oblast Nischni Nowgorod
+    el: Περιφέρεια Νίζνι Νόβγκοροντ
+    en: Nizhny Novgorod
+    es: Óblast de Nizhni Nóvgorod
+    et: Nižni Novgorodi oblast
+    eu: Nizhni Novgorod oblasta
+    fa: استان نیژنی نووگورود
+    fi: Nižni Novgorodin alue
+    fr: oblast de Nijni Novgorod
+    gu: નિઝની નોવ્ગોરોડ ઓબ્લાસ્ટ
+    he: מחוז ניז׳ני נובגורוד
+    hi: निज़नी नोवोगोरोड ओब्लास्ट
+    hr: Nižnjenovgorodska oblast
+    hu: Nyizsnyij Novgorod-i terület
+    hy: Նիժնի Նովգորոդի մարզ
+    id: Oblast Nizhny Novgorod
+    it: Oblast’ di Nižnij Novgorod
+    ja: ニジニ・ノヴゴロド州
+    ka: ნიჟნი-ნოვგოროდის ოლქი
+    kn: ನಿಜ್ನಿ ನವ್ಗೊರೊಡ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 니즈니노브고로드 주
+    lt: Žemutinio Naugardo sritis
+    lv: Ņižņijnovgorodas apgabals
+    mn: Нижегород муж
+    mr: निज्नी नॉवगोरोद ओब्लास्त
+    ms: Wilayah Nizhny Novgorod
+    nb: Nizjnij Novgorod
+    nl: Oblast Nizjni Novgorod
+    pl: Obwód niżnonowogrodzki
+    pt: Oblast de Níjni Novgorod
+    ro: Regiunea Nijni Novgorod
+    si: නිස්නි නොව්ගොරොඩ් ප්‍රාන්තය
+    sk: Nižnonovgorodská oblasť
+    sl: Niženovgorodska oblast
+    sr: Нижегородска област
+    sv: Nizjnij Novgorod oblast
+    sw: Nizhny Novgorod Oblast
+    ta: நீஷ்னி நொவ்கோரோட் ஒப்லாஸ்து
+    te: నిజ్నీ నోవ్‌గోరోడ్ ఓబ్లాస్ట్
+    th: นิจนีนอฟโกรอด
+    tr: Nijniy Novgorod Oblastı
+    uk: Нижньогородська область
+    ur: نزہنی نووگورود اوبلاست
+    vi: Nizhny Novgorod
+    zh: 下诺夫哥罗德州
+    cy: Oblast Nizhny Novgorod
+    ceb: Nizhegorodskaya Oblast’
+    sr_Latn: Nižegorodska oblast
+    yue_Hans: 下诺夫哥罗德州
+    ccp: "\U0001111A\U00011128\U0001110C\U00011134\U0001111A\U00011128 \U0001111A\U0001112E\U0001111B\U00011134\U00011109\U0001112E\U00011122\U00011127\U00011116\U00011134"
+    ga: Cúige Nizhny Novgorod
+    yue: 下諾夫哥羅德州
+    uz: Nijegorod viloyati
+    bs: Nižnjenovgorodska oblast
+    mk: Нижегородска област
+    'no': Nizjnij Novgorod
+    is: Nisjníj-Novgorodfylki
+  comments:
+  type: administrative_region
+NVS:
+  name: Novosibirskaya oblast'
+  code: NVS
+  unofficial_names:
+  - Novosibirskaja Oblast
+  geo:
+    latitude: 55.4467133
+    longitude: 80.1043924
+    min_latitude: 53.2909191
+    min_longitude: 75.08785499999999
+    max_latitude: 57.236193
+    max_longitude: 85.11756299999999
+  translations:
+    ru: Новосибирская область
+    af: Nowosibirsk-oblast
+    ar: نوفوسيبيرسك أوبلاست
+    az: Novosibirsk vilayəti
+    be: Новасібірская вобласць
+    bg: Новосибирска област
+    bn: নভোসিবিরস্ক ওব্লাস্ট
+    ca: Província de Novosibirsk
+    cs: Novosibirská oblast
+    da: Novosibirsk oblast
+    de: Oblast Nowosibirsk
+    el: Περιφέρεια Νοβοσιμπίρσκ
+    en: Novosibirsk
+    es: Novosibirsk
+    et: Novosibirski oblast
+    eu: Novosibirsk oblasta
+    fa: استان نووسیبیرسک
+    fi: Novosibirskin alue
+    fr: Oblast de Novossibirsk
+    gu: નોવોસિબિર્સ્ક ઓબ્લાસ્ટ
+    he: מחוז נובוסיבירסק
+    hi: नोवोसिबिर्स्क ओब्लास्ट
+    hr: Novosibirska oblast
+    hu: Novoszibirszki terület
+    hy: Նովոսիբիրսկի մարզ
+    id: Oblast Novosibirsk
+    it: Oblast’ di Novosibirsk
+    ja: ノヴォシビルスク州
+    ka: ნოვოსიბირსკის ოლქი
+    kn: ನೋವೊಸಿಬಿರ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 노보시비르스크 주
+    lt: Novosibirsko sritis
+    lv: Novosibirskas apgabals
+    mr: नोवोसिबिर्स्क ओब्लास्त
+    ms: Wilayah Novosibirsk
+    nb: Novosibirsk
+    nl: Oblast Novosibirsk
+    pl: Obwód nowosybirski
+    pt: Oblast de Novosibirsk
+    ro: Regiunea Novosibirsk
+    si: නොසිබිරිස්ක් ප්‍රාන්තය
+    sk: Novosibirská oblasť
+    sl: Novosibirska oblast
+    sr: Новосибирска област
+    sv: Novosibirsk oblast
+    sw: Novosibirsk Oblast
+    ta: நோவசிபீர்ஸ்க் ஒப்லாஸ்து
+    te: నోవాోసిబ్రిస్క్ ఓబ్లాస్ట్
+    th: แคว้นโนโวซีบีสค์
+    tr: Novosibirsk Oblastı
+    uk: Новосибірська область
+    ur: نووسیبرسک اوبلاست
+    vi: Novosibirsk
+    zh: 新西伯利亚州
+    cy: Oblast Novosibirsk
+    ceb: Novosibirskaya Oblast’
+    sr_Latn: Novosibirska oblast
+    yue_Hans: 新西伯利亚州
+    ccp: "\U0001111A\U00011127\U0001111E\U0001112E\U00011125\U00011128\U0001111D\U00011128\U00011122\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Novosibirsk
+    kk: Новосібір облысы
+    yue: 新西伯利亞州
+    uz: Novosibirsk viloyati
+    bs: Novosibirska oblast
+    mk: Новосибирска област
+    'no': Novosibirsk
+    is: Novosíbírskfylki
+    mn: Новосибирск муж
+  comments:
+  type: administrative_region
+OMS:
+  name: Omskaya oblast'
+  code: OMS
+  unofficial_names:
+  - Omskaja Oblast
+  geo:
+    latitude: 55.0554669
+    longitude: 73.3167343
+    min_latitude: 53.43512399999999
+    min_longitude: 70.35473710000001
+    max_latitude: 58.5741489
+    max_longitude: 76.3037678
+  translations:
+    ru: Омская область
+    af: Omsk-oblast
+    ar: أوبلاست أومسك
+    az: Omsk vilayəti
+    be: Омская вобласць
+    bg: Омска област
+    bn: ওমস্ক ওব্লাস্ট
+    ca: Província d’Omsk
+    cs: Omská oblast
+    da: Omsk oblast
+    de: Oblast Omsk
+    el: Περιφέρεια Ομσκ
+    en: Omsk
+    es: Omsk
+    et: Omski oblast
+    eu: Omsk oblasta
+    fa: استان اومسک
+    fi: Omskin alue
+    fr: Oblast d’Omsk
+    gu: ઓમ્સ્ક ઓબ્લાસ્ટ
+    he: מחוז אומסק
+    hi: ओम्स्क ओब्लास्ट
+    hr: Omska oblast
+    hu: Omszki terület
+    hy: Օմսկի մարզ
+    id: Oblast Omsk
+    it: Oblast’ di Omsk
+    ja: オムスク州
+    ka: ომსკის ოლქი
+    kn: ಓಮ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 옴스크 주
+    lt: Omsko sritis
+    lv: Omskas apgabals
+    mr: ओम्स्क ओब्लास्त
+    ms: Wilayah Omsk
+    nb: Omsk
+    nl: Oblast Omsk
+    pl: Obwód omski
+    pt: Oblast de Omsk
+    ro: Regiunea Omsk
+    si: ඔම්ස්ක් ප්‍රාන්තය
+    sk: Omská oblasť
+    sl: Omska oblast
+    sr: Омска област
+    sv: Omsk oblast
+    sw: Omsk Oblast
+    ta: ஒம்ஸ்க் ஒப்லாஸ்து
+    te: ఓమస్క్ ఓబ్లాస్ట్
+    th: มณฑลโอมสค์
+    tr: Omsk Oblastı
+    uk: Омська область
+    ur: اومسک اوبلاست
+    vi: Omsk
+    zh: 鄂木斯克州
+    cy: Oblast Omsk
+    ceb: Omskaya Oblast’
+    sr_Latn: Omska oblast
+    yue_Hans: 鄂木斯克州
+    ccp: "\U00011103\U0001112E\U0001111F\U0001110C\U00011134\U00011107\U00011134"
+    ga: Cúige Omsk
+    ky: Омь областы
+    kk: Омбы облысы
+    yue: 鄂木斯克州
+    uz: Omsk viloyati
+    bs: Omska oblast
+    mk: Омска област
+    'no': Omsk
+    is: Omskfylki
+    mn: Омск муж
+  comments:
+  type: administrative_region
+ORE:
+  name: Orenburgskaya oblast'
+  code: ORE
+  unofficial_names:
+  - Orenburgskaja Oblast
+  geo:
+    latitude: 51.76340260000001
+    longitude: 54.6188188
+    min_latitude: 50.494961
+    min_longitude: 50.7683845
+    max_latitude: 54.36583
+    max_longitude: 61.6907461
+  translations:
+    ru: Оренбургская область
+    af: Orenburg-oblast
+    ar: أورنبرغ أوبلاست
+    az: Orenburq vilayəti
+    be: Арэнбургская вобласць
+    bg: Оренбургска област
+    bn: ওরেনবার্গ ওব্লাস্ট
+    ca: Província d’Orenburg
+    cs: Orenburská oblast
+    da: Orenburg oblast
+    de: Oblast Orenburg
+    el: Περιφέρεια Ορενμπούργκ
+    en: Orenburg
+    es: Óblast de Oremburgo
+    et: Orenburgi oblast
+    eu: Orenburg oblasta
+    fa: استان ارنبورگ
+    fi: Orenburgin alue
+    fr: Oblast d’Orenbourg
+    gu: ઓરેનબર્ગ ઓબ્લાસ્ટ
+    he: מחוז אורנבורג
+    hi: ओरेनबूर्ग ओब्लास्त
+    hr: Orenburška oblast
+    hu: Orenburgi terület
+    hy: Օրենբուրգի մարզ
+    id: Oblast Orenburg
+    it: Oblast’ di Orenburg
+    ja: オレンブルク州
+    ka: ორენბურგის ოლქი
+    kn: ಓರೆನ್ಬರ್ಗ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 오렌부르크 주
+    lt: Orenburgo sritis
+    lv: Orenburgas apgabals
+    mn: Оренбург муж
+    mr: ओरेनबर्ग ओब्लास्त
+    ms: Wilayah Orenburg
+    nb: Orenburg
+    nl: Oblast Orenburg
+    pl: Obwód orenburski
+    pt: Oblast de Oremburgo
+    ro: Regiunea Orenburg
+    si: ඔරෙන්බර්ග් ප්‍රාන්තය
+    sk: Orenburská oblasť
+    sl: Orenburška oblast
+    sr: Оренбуршка област
+    sv: Orenburg oblast
+    sw: Orenburg Oblast
+    ta: ஒரன்பூர்க் ஒப்லாஸ்து
+    te: ఓరెెంబర్గ్ ఓబ్లాస్ట్
+    th: โอเรนบุร์ก
+    tr: Orenburg Oblastı
+    uk: Оренбурзька область
+    ur: اورنبرگ اوبلاست
+    vi: Orenburg
+    zh: 奧倫堡州
+    cy: Oblast Orenburg
+    ceb: Orenburgskaya Oblast’
+    sr_Latn: Orenburška oblast
+    yue_Hans: 奥伦堡州
+    ccp: "\U00011103\U00011127\U00011122\U0001112C\U0001111A\U00011134\U0001111D\U00011122\U00011134\U00011107\U00011134"
+    ga: Cúige Orenburg
+    ky: Оренбург областы
+    kk: Орынбор облысы
+    yue: 奧倫堡州
+    uz: Orenburg viloyati
+    bs: Orenburška oblast
+    mk: Оренбуршка област
+    'no': Orenburg
+    is: Orenbúrgfylki
+  comments:
+  type: administrative_region
+ORL:
+  name: Orlovskaya oblast'
+  code: ORL
+  unofficial_names:
+  - Orlovskaja Oblast
+  - Orjol
+  geo:
+    latitude: 52.7450189
+    longitude: 36.4849627
+    min_latitude: 51.9367449
+    min_longitude: 34.7917679
+    max_latitude: 53.6372159
+    max_longitude: 38.0644791
+  translations:
+    ru: Орловская область
+    af: Orjol-oblast
+    ar: أوريول أوبلاست
+    az: Orlov vilayəti
+    be: Арлоўская вобласць
+    bg: Орловска област
+    bn: ওরিওল ওব্লাস্ট
+    ca: Província d’Oriol
+    cs: Orelská oblast
+    da: Orjol oblast
+    de: Oblast Orjol
+    el: Περιφέρεια Οριόλ
+    en: Oryol
+    es: Oriol
+    et: Orjoli oblast
+    eu: Oriol oblasta
+    fa: استان اریول
+    fi: Orjolin alue
+    fr: Oblast d’Orel
+    gu: ઓરીઓલ ઓબ્લાસ્ટ
+    he: מחוז אוריול
+    hi: ओर्योल ओब्लास्ट
+    hr: Orelska oblast
+    hu: Orjoli terület
+    hy: Օրյոլի մարզ
+    id: Oblast Oryol
+    it: Oblast’ di Orël
+    ja: オリョール州
+    ka: ორიოლის ოლქი
+    kn: ಓರೊಲ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 오룔 주
+    lt: Oriolo sritis
+    lv: Orlas apgabals
+    mn: Орёл муж
+    mr: ओरियोल ओब्लास्त
+    ms: Wilayah Oryol
+    nb: Orjol
+    nl: Oblast Orjol
+    pl: Obwód orłowski
+    pt: Oblast de Oriol
+    ro: Regiunea Oriol
+    si: ඔර්යෝල් ප්‍රාන්තය
+    sk: Oriolská oblasť
+    sl: Orjolska oblast
+    sr: Орелска област
+    sv: Orjol oblast
+    sw: Oryol Oblast
+    ta: ஒர்யோல் ஒப்லாஸ்து
+    te: ఓర్యోల్ ఓబ్లాస్ట్
+    th: ออยอล โอแบลส
+    tr: Oryol Oblastı
+    uk: Орловська область
+    ur: اوریول اوبلاست
+    vi: Oryol
+    zh: 奥廖尔州
+    cy: Oblast Oryol
+    ceb: Orlovskaya Oblast’
+    sr_Latn: Orelska oblast
+    yue_Hans: 奥廖尔州
+    ccp: "\U00011103\U00011127\U00011122\U00011128\U00011120\U0001112E\U00011123\U00011134"
+    ga: Cúige Oryol
+    yue: 奧廖爾州
+    uz: Oryol viloyati
+    bs: Orelska oblast
+    mk: Орловска област
+    'no': Orjol
+    is: Orjolfylki
+  comments:
+  type: administrative_region
+PER:
+  name: Perm
+  code: PER
+  unofficial_names:
+  - Permskaja Oblast
+  geo:
+    latitude: 58.00000000000001
+    longitude: 56.316667
+    min_latitude: 57.864017
+    min_longitude: 55.8117439
+    max_latitude: 58.176955
+    max_longitude: 56.65680709999999
+  translations:
+    en: Perm Krai
+    ru: Пермский край
+    af: Perm-krai
+    ar: بيرم كراي
+    az: Perm diyarı
+    be: Пермскі край
+    bg: Пермски край
+    bn: পেরম ক্রায়
+    ca: Territori de Perm
+    cs: Permský kraj
+    da: Perm kraj
+    de: Region Perm
+    el: Κράι Περμ
+    es: Perm
+    et: Permi krai
+    eu: Perm kraia
+    fa: سرزمین پرم
+    fi: Permin aluepiiri
+    fr: Kraï de Perm
+    gu: પર્મ ક્રેઇ
+    he: מחוז פרם
+    hi: पेर्म क्राय
+    hr: Permski kraj
+    hu: Permi határterület
+    hy: Պերմի երկրամաս
+    id: Krai Perm
+    it: Territorio di Perm’
+    ja: ペルミ地方
+    ka: პერმის მხარე
+    kn: ಪೆರ್ಮ್ ಕ್ರೇ
+    ko: 페름 지방
+    lt: Permės kraštas
+    lv: Permas novads
+    mr: पर्म क्राय
+    ms: Jajahan Perm
+    nb: Perm
+    nl: Kraj Perm
+    pl: Kraj Permski
+    pt: Krai de Perm
+    ro: Ținutul Perm
+    si: පර්ම් ක්‍රයි
+    sk: Permský kraj
+    sr: Пермска Покрајина
+    sv: Perm kraj
+    sw: Perm Krai
+    ta: பேர்ம் பிரதேசம்
+    te: పర్మ్ క్రే
+    th: เพิร์ม ไกร
+    tr: Perm Krayı
+    uk: Пермський край
+    ur: پیرم کرائی
+    vi: Perm
+    zh: 彼爾姆邊疆區
+    cy: Crai Perm
+    ceb: Perm Krai
+    sr_Latn: Permska Pokrajina
+    yue_Hans: 彼尔姆边疆区
+    ccp: "\U0001111B\U00011122\U00011134\U0001111F\U00011134 \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Pherm
+    yue: 彼爾姆邊疆區
+    uz: Permskiy oʻlkasi
+    bs: Permski kraj
+    mk: Пермски крај
+    'no': Perm
+    is: Permfylki
+    mn: Пермийн хязгаар
+  comments:
+  type: administrative_territory
+PNZ:
+  name: Penzenskaya oblast'
+  code: PNZ
+  unofficial_names:
+  - Penzenskaja Oblast
+  geo:
+    latitude: 53.1412105
+    longitude: 44.0940048
+    min_latitude: 52.3048359
+    min_longitude: 42.091744
+    max_latitude: 54.0281089
+    max_longitude: 46.985298
+  translations:
+    ru: Пензенская область
+    af: Penza-oblast
+    ar: بانزا أوبلاست
+    az: Penza vilayəti
+    be: Пензенская вобласць
+    bg: Пензенска област
+    bn: পেঞ্জা ওব্লাস্ট
+    ca: Província de Penza
+    cs: Penzenská oblast
+    da: Penza oblast
+    de: Oblast Pensa
+    el: Περιφέρεια Πένζα
+    en: Penza
+    es: Óblast de Penza
+    et: Penza oblast
+    eu: Penza oblasta
+    fa: استان پنزا
+    fi: Penzan alue
+    fr: oblast de Penza
+    gu: પેન્ઝા ઓબ્લાસ્ટ
+    he: מחוז פנזה
+    hi: पेन्ज़ा ओब्लास्ट
+    hr: Penzjanska oblast
+    hu: Penzai terület
+    hy: Պենզայի մարզ
+    id: Oblast Penza
+    it: Oblast’ di Penza
+    ja: ペンザ州
+    ka: პენზის ოლქი
+    kn: ಪೆನ್ಜಾ ಒಬ್ಲಾಸ್ಟ್
+    ko: 펜자 주
+    lt: Penzos sritis
+    lv: Penzas apgabals
+    mr: पेन्झा ओब्लास्त
+    ms: Wilayah Penza
+    nb: Penza
+    nl: Oblast Penza
+    pl: Obwód penzeński
+    pt: Oblast de Penza
+    ro: Regiunea Penza
+    si: පෙන්සා ප්‍රාන්තය
+    sk: Penzianska oblasť
+    sl: Penzenska oblast
+    sr: Пензенска област
+    sv: Penza oblast
+    sw: Penza Oblast
+    ta: பென்சா ஒப்லாஸ்து
+    te: పెంజా ఓబ్లాస్ట్
+    th: เพนซา
+    tr: Penza Oblastı
+    uk: Пензенська область
+    ur: پینزا اوبلاست
+    vi: Penza
+    zh: 奔萨州
+    cy: Oblast Penza
+    ceb: Penzenskaya Oblast’
+    sr_Latn: Penzenska oblast
+    yue_Hans: 奔萨州
+    ccp: "\U0001111B\U0001112C\U0001111A\U00011134\U0001110E"
+    ga: Cúige Phenza
+    yue: 奔薩州
+    uz: Penza viloyati
+    bs: Penzjanska oblast
+    mk: Пензенска област
+    'no': Penza
+    is: Pensafylki
+    mn: Пенза муж
+  comments:
+  type: administrative_region
+PRI:
+  name: Primorskiy kray
+  code: PRI
+  unofficial_names:
+  - Primorskij
+  - Primorskij Kraj
+  - Primorje
+  geo:
+    latitude: 45.0525641
+    longitude: 135
+    min_latitude: 42.2883814
+    min_longitude: 130.39465
+    max_latitude: 48.4587049
+    max_longitude: 139.021501
+  translations:
+    ru: Приморский край
+    af: Primorski-krai
+    ar: بريمورسكي كراي
+    az: Primorsk diyarı
+    be: Прыморскі край
+    bg: Приморски край
+    bn: প্রাইমিরস্কি ক্রাই
+    ca: Territori de Primórie
+    cs: Přímořský kraj
+    da: Primorskij kraj
+    de: Primorje
+    el: Κράι Πριμόρσκι
+    en: Primorsky Krai
+    es: Primorie
+    et: Primorje krai
+    eu: Primorski kraia
+    fa: سرزمین پریمورسکی
+    fi: Primorjen aluepiiri
+    fr: Kraï du Primorie
+    gu: પ્રિમોર્સ્કી ક્રાઇ
+    he: פרימוריה
+    hi: प्रिमोर्स्की क्राय
+    hr: Primorski kraj
+    hu: Tengermelléki határterület
+    hy: Պրիմորիեի երկրամաս
+    id: Krai Primorsky
+    it: Territorio del Litorale
+    ja: 沿海地方
+    ka: პრიმორიე
+    kn: ಪ್ರಿಮಾರ್ಸ್ಕಿ ಕ್ರೈ
+    ko: 프리모르스키 지방
+    lt: Primorės kraštas
+    lv: Piejūras novads
+    mr: प्रिमोर्स्की क्राय
+    ms: Jajahan Primorsky
+    nb: Primorskij
+    nl: Kraj Primorski
+    pl: Kraj Nadmorski
+    pt: Krai do Litoral
+    ro: Ținutul Primorie
+    si: ප්රිමොර්ස්කි ක්‍රායි
+    sk: Prímorský kraj
+    sl: Primorski kraj
+    sr: Приморска Покрајина
+    sv: Primorje kraj
+    sw: Primorsky Krai
+    ta: பிறிமோர்சுக்கி நிலப்பரப்பு
+    te: ప్రైమోర్స్కీ క్రే
+    th: เขตการปกครองปริมอร์สกี
+    tr: Primorskiy Krayı
+    uk: Приморський край
+    ur: پریمورسکی کرائی
+    vi: Primorsky
+    zh: 滨海边疆区
+    cy: Crai Primorsky
+    ceb: Primorskiy Kray
+    sr_Latn: Primorska Pokrajina
+    yue_Hans: 滨海边疆区
+    ccp: "\U0001111B\U00011133\U00011122\U0001112D\U0001111F\U0001112E\U00011122\U00011134\U0001110C\U00011133\U00011107\U0001112D
+      \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Phrimorsky
+    ky: Приморье крайы
+    is: Prímorja
+    yue: 濱海邊疆區
+    uz: Primorsk oʻlkasi
+    bs: Primorski kraj
+    mk: Приморски крај
+    'no': Primorskij
+    gl: Krai de Primorie
+    mn: Приморийн хязгаар
+  comments:
+  type: administrative_territory
+PSK:
+  name: Pskovskaya oblast'
+  code: PSK
+  unofficial_names:
+  - Pihkva
+  - Pleskau
+  - Pskovskaja Oblast
+  geo:
+    latitude: 56.7708599
+    longitude: 29.094009
+    min_latitude: 55.5896019
+    min_longitude: 27.323293
+    max_latitude: 59.01885189999999
+    max_longitude: 31.51626409999999
+  translations:
+    ru: Псковская область
+    af: Pskof-oblast
+    ar: بسكوف أوبلاست
+    az: Pskov vilayəti
+    be: Пскоўская вобласць
+    bg: Псковска област
+    bn: পেস্কোভ ওব্লাস্ট
+    ca: Província de Pskov
+    cs: Pskovská oblast
+    da: Pskov oblast
+    de: Oblast Pskow
+    el: Περιφέρεια Πσκοβ
+    en: Pskov
+    es: Óblast de Pskov
+    et: Pihkva oblast
+    eu: Pskov oblasta
+    fa: استان پسکوف
+    fi: Pihkovan alue
+    fr: Oblast de Pskov
+    gu: પસ્કોવ ઓબ્લાસ્ટ
+    he: מחוז פסקוב
+    hi: प्सकोव ओब्लास्ट
+    hr: Pskovska oblast
+    hu: Pszkovi terület
+    hy: Պսկովի մարզ
+    id: Oblast Pskov
+    it: Oblast’ di Pskov
+    ja: プスコフ州
+    ka: ფსკოვის ოლქი
+    kn: ಪ್ಸ್ಕೋವ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 프스코프 주
+    lt: Pskovo sritis
+    lv: Pleskavas apgabals
+    mr: प्स्कोव ओब्लास्त
+    ms: Wilayah Pskov
+    nb: Pskov
+    nl: Oblast Pskov
+    pl: Obwód pskowski
+    pt: Oblast de Pskov
+    ro: Regiunea Pskov
+    si: ප්ස්කොව් ප්‍රාන්තය
+    sk: Pskovská oblasť
+    sl: Pskovska oblast
+    sr: Псковска област
+    sv: Pskov oblast
+    sw: Pskov Oblast
+    ta: பிசுக்கோவ் ஒப்லாசுது
+    te: ప్సాకోవ్ ఓబ్లాస్ట్
+    th: ไซโคฟ โอเบลส
+    tr: Pskov Oblastı
+    uk: Псковська область
+    ur: پسکوف اوبلاست
+    vi: Pskov
+    zh: 普斯科夫州
+    cy: Oblast Pskov
+    ceb: Pskovskaya Oblast’
+    sr_Latn: Pskovska oblast
+    yue_Hans: 普斯科夫州
+    ccp: "\U0001110C\U00011133\U00011107\U00011127\U0001111B\U00011134"
+    ga: Cúige Pskov
+    yue: 普斯科夫州
+    uz: Pskov viloyati
+    bs: Pskovska oblast
+    mk: Псковска област
+    'no': Pskov
+    is: Pskovfylki
+    ky: Псков областы
+    mn: Псков муж
+  comments:
+  type: administrative_region
+ROS:
+  name: Rostovskaya oblast'
+  code: ROS
+  unofficial_names:
+  - Rostovskaja Oblast
+  geo:
+    latitude: 47.6853247
+    longitude: 41.8258952
+    min_latitude: 45.9521199
+    min_longitude: 38.2223739
+    max_latitude: 50.2123279
+    max_longitude: 44.3225439
+  translations:
+    ru: Ростовская область
+    af: Rostof-oblast
+    ar: روستوف أوبلاست
+    az: Rostov vilayəti
+    be: Растоўская вобласць
+    bg: Ростовска област
+    bn: রসতোভ ওব্লাস্ট
+    ca: Província de Rostov
+    cs: Rostovská oblast
+    da: Rostov oblast
+    de: Oblast Rostow
+    el: Περιφέρεια Ροστόβ
+    en: Rostov
+    es: Rostov
+    et: Rostovi oblast
+    eu: Rostov oblasta
+    fa: استان روستوف
+    fi: Rostovin alue
+    fr: Oblast de Rostov
+    gl: Óblast de Rostov
+    gu: રૉસ્ટોવ ઓબ્લાસ્ટ
+    he: מחוז רוסטוב
+    hi: रोस्तोव ओब्लास्ट
+    hr: Rostovska oblast
+    hu: Rosztovi terület
+    hy: Ռոստովի մարզ
+    id: Oblast Rostov
+    it: Oblast’ di Rostov
+    ja: ロストフ州
+    ka: როსტოვის ოლქი
+    kn: ರೊಸ್ತೊವ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 로스토프 주
+    lt: Rostovo sritis
+    lv: Rostovas apgabals
+    mn: Ростов муж
+    mr: रोस्तोव ओब्लास्त
+    ms: Wilayah Rostov
+    nb: Rostov
+    nl: Oblast Rostov
+    pl: Obwód rostowski
+    pt: Oblast de Rostov
+    ro: Regiunea Rostov
+    si: රස්ටෝව් ප්‍රාන්තය
+    sk: Rostovská oblasť
+    sl: Rostovska oblast
+    sr: Ростовска област
+    sv: Rostov oblast
+    sw: Rostov Oblast
+    ta: ரஸ்தோவ் ஒப்லாஸ்து
+    te: రోస్టోవ్ ఓబ్లాస్ట్
+    th: มณฑลราสทอฟ
+    tk: Rostow oblasty
+    tr: Rostov Oblastı
+    uk: Ростовська область
+    ur: روستوف اوبلاست
+    vi: Rostov
+    zh: 罗斯托夫州
+    cy: Oblast Rostov
+    ceb: Rostovskaya Oblast’
+    sr_Latn: Rostovska oblast
+    yue_Hans: 罗斯托夫州
+    ccp: "\U00011122\U0001112E\U0001110C\U00011134\U00011111\U0001112E\U0001111B\U00011134"
+    ga: Cúige Rostov
+    yue: 羅斯托夫州
+    uz: Rostov viloyati
+    bs: Rostovska oblast
+    mk: Ростовска област
+    'no': Rostov
+    is: Rostovfylki
+  comments:
+  type: administrative_region
+RYA:
+  name: Ryazanskaya oblast'
+  code: RYA
+  unofficial_names:
+  - Rjazanskaja Oblast
+  - Rjazan
+  geo:
+    latitude: 54.3875964
+    longitude: 41.259566
+    min_latitude: 53.3123849
+    min_longitude: 38.6651351
+    max_latitude: 55.3661119
+    max_longitude: 42.694238
+  translations:
+    ru: Рязанская область
+    af: Rjazan-oblast
+    ar: ريازان أوبلاست
+    az: Ryazan vilayəti
+    be: Разанская вобласць
+    bg: Рязанска област
+    bn: রেয়াজান ওব্লাস্ট
+    ca: Província de Riazan
+    cs: Rjazaňská oblast
+    da: Rjasan oblast
+    de: Oblast Rjasan
+    el: Περιφέρεια Ριαζάν
+    en: Ryazan
+    es: Óblast de Riazán
+    et: Rjazani oblast
+    eu: Riazan oblasta
+    fa: استان ریازان
+    fi: Rjazanin alue
+    fr: Oblast de Riazan
+    gu: રિયાઝન ઓબ્લાસ્ટ
+    he: מחוז ריאזאן
+    hi: रियाज़ान ओब्लास्ट
+    hr: Rjazanjska oblast
+    hu: Rjazanyi terület
+    hy: Ռյազանի մարզ
+    id: Oblast Ryazan
+    it: Oblast’ di Rjazan’
+    ja: リャザン州
+    ka: რიაზანის ოლქი
+    kn: ರಿಯಾಜಾನ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 랴잔 주
+    lt: Riazanės sritis
+    lv: Rjazaņas apgabals
+    mn: Рязань муж
+    mr: रायझन ओब्लास्त
+    ms: Wilayah Ryazan
+    nb: Rjazan
+    nl: Oblast Rjazan
+    pl: Obwód riazański
+    pt: Oblast de Riazan
+    ro: Regiunea Reazan
+    si: රයසාන් ප්‍රාන්තය
+    sk: Riazanská oblasť
+    sl: Rjazanska oblast
+    sr: Рјазањска област
+    sv: Rjazan oblast
+    sw: Ryazan Oblast
+    ta: ரயாசன் ஒப்லாஸ்து
+    te: రయాజన్ ఓబ్లాస్ట్
+    th: จังหวัดมาซันดะรอน
+    tr: Ryazan Oblastı
+    uk: Рязанська область
+    ur: ریازان اوبلاست
+    vi: Ryazan
+    zh: 梁赞州
+    cy: Oblast Ryazan
+    ceb: Ryazanskaya Oblast’
+    sr_Latn: Rjazanjska oblast
+    yue_Hans: 梁赞州
+    ccp: "\U00011122\U00011128\U00011120\U0001110E\U0001111A\U00011134"
+    ga: Cúige Ryazan
+    yue: 梁贊州
+    uz: Ryazan viloyati
+    bs: Rjazanjska oblast
+    mk: Рјазањска област
+    'no': Rjazan
+    is: Rjasanfylki
+  comments:
+  type: administrative_region
+SA:
+  name: Sakha, Respublika [Yakutiya]
+  code: SA
+  unofficial_names:
+  - Jakutija
+  - Sakha
+  - Yakutsk-Sakha
+  - Saha
+  geo:
+    latitude: 66.7613451
+    longitude: 124.1237531
+    min_latitude: 55.4906601
+    min_longitude: 105.529348
+    max_latitude: 76.7581309
+    max_longitude: 162.858423
+  translations:
+    ru: Якутия
+    af: Jakoetië
+    ar: ياقوتيا
+    az: Saxa Respublikası
+    be: Якуція
+    bg: Якутия
+    bn: সাখা রিপাবলিক
+    ca: Sakhà
+    cs: Sacha
+    da: Sakha
+    de: Sacha
+    el: Δημοκρατία των Σαχά
+    en: Sakha
+    es: Sajá
+    et: Sahha
+    eu: Yakutia
+    fa: یاقوتستان
+    fi: Sahan tasavalta
+    fr: République de Sakha
+    gl: República de Sakha
+    gu: સખા રિપબ્લિક
+    he: רפובליקת סאחה-יקוטיה
+    hi: साख़ा गणतंत्र
+    hr: Jakutska
+    hu: Jakutföld
+    hy: Սախա-Յակուտիայի հանրապետություն
+    id: Sakha
+    is: Saka
+    it: Sacha-Jacuzia
+    ja: サハ共和国
+    ka: სახა
+    kn: ಸಖ ರಿಪಬ್ಲಿಕ್
+    ko: 사하 공화국
+    lt: Jakutija
+    lv: Saha
+    mn: Саха
+    mr: साखा प्रजासत्ताक
+    ms: Republik Sakha
+    nb: Sakha
+    nl: Jakoetië
+    pl: Jakucja
+    pt: Iacútia
+    ro: Iacuția
+    si: සඛා ජනරජය
+    sk: Jakutsko
+    sl: Jakutija
+    sr: Јакутија
+    sv: Sacha
+    sw: Yakutia
+    ta: சகா குடியரசு
+    te: సాఖా రిపబ్లిక్
+    th: สาธารณรัฐซาฮา
+    tr: Yakutistan
+    uk: Республіка Саха
+    ur: سخا جمہوریہ
+    vi: Cộng hòa Sakha
+    zh: 萨哈共和国
+    cy: Gweriniaeth Sakha
+    ceb: Respublika Sakha
+    sr_Latn: Jakutija
+    yue_Hans: 萨哈
+    sq: Sahaja
+    ccp: "\U00011125\U00011108"
+    ga: Poblacht Shácha
+    ky: Якутия
+    pa: ਸਾਖਾ ਗਣਰਾਜ
+    kk: Саха Республикасы
+    yue: 薩哈
+    am: ሳኻ ሪፐብሊክ
+    uz: Saxa
+    bs: Republika Saha
+    mk: Јакутија
+    'no': Sakha
+  comments:
+  type: republic
+SAK:
+  name: Sakhalinskaya oblast'
+  code: SAK
+  unofficial_names:
+  - Sahalinskaya Oblast
+  - Sahalin
+  geo:
+    latitude: 49.9807847
+    longitude: 143.3738129
+    min_latitude: 43.3608536
+    min_longitude: 141.1964501
+    max_latitude: 54.416035
+    max_longitude: 156.5116784
+  translations:
+    ru: Сахалинская область
+    af: Sachalin-oblast
+    ar: ساخالين أوبلاست
+    az: Saxalin vilayəti
+    be: Сахалінская вобласць
+    bg: Сахалинска област
+    bn: শাখালিন ওব্লাস্ট
+    ca: Província de Sakhalín
+    cs: Sachalinská oblast
+    da: Sakhalin oblast
+    de: Oblast Sachalin
+    el: Περιφέρεια Σαχαλίνης
+    en: Sakhalin
+    es: Sajalín
+    et: Sahhalini oblast
+    eu: Sakhalin oblasta
+    fa: استان ساخالین
+    fi: Sahalinin alue
+    fr: oblast de Sakhaline
+    gl: Óblast de Sakhalin
+    gu: સાખાલિન ઓબ્લાસ્ટ
+    he: מחוז סחלין
+    hi: सखलिन ओब्लास्ट
+    hr: Sahalinska oblast
+    hu: Szahalini terület
+    hy: Սախալինի մարզ
+    id: Oblast Sakhalin
+    is: Sakalínfylki
+    it: Oblast’ di Sachalin
+    ja: サハリン州
+    ka: სახალინის ოლქი
+    kn: ಸಖಾಲಿನ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 사할린 주
+    lt: Sachalino sritis
+    lv: Sahalīnas apgabals
+    mn: Сахалин муж
+    mr: साखालिन ओब्लास्त
+    ms: Wilayah Sakhalin
+    nb: Sakhalin
+    nl: Oblast Sachalin
+    pl: Obwód sachaliński
+    pt: Oblast de Sacalina
+    ro: Regiunea Sahalin
+    si: සකහලින් ප්‍රාන්තය
+    sk: Sachalinská oblasť
+    sl: Sahalinska oblast
+    sr: Сахалинска област
+    sv: Sachalin oblast
+    sw: Sakhalin Oblast
+    ta: சகாலின் ஒப்லாஸ்து
+    te: సఖాలిన్ ఓబ్లాస్ట్
+    th: ซาคาลิน
+    tr: Sahalin Oblastı
+    uk: Сахалінська область
+    ur: سخالن اوبلاست
+    vi: Sakhalin
+    zh: 萨哈林州
+    cy: Oblast Sakhalin
+    ceb: Sakhalinskaya Oblast’
+    sr_Latn: Sahalinska oblast
+    yue_Hans: 萨哈林州
+    ccp: "\U00011125\U00011108\U00011123\U00011128\U0001111A\U00011134"
+    ga: Cúige Shakhalin
+    pa: ਸਾਖਾਲਿਨ ਓਬਲਾਸਤ
+    yue: 薩哈林州
+    uz: Saxalin viloyati
+    bs: Sahalinska oblast
+    mk: Сахалинска област
+    'no': Sakhalin
+    jv: Oblast Sakhalin
+  comments:
+  type: administrative_region
+SAM:
+  name: Samarskaya oblast'
+  code: SAM
+  unofficial_names:
+  - Samarskaja Oblast
+  geo:
+    latitude: 53.41838389999999
+    longitude: 50.4725528
+    min_latitude: 51.773957
+    min_longitude: 47.9246881
+    max_latitude: 54.678024
+    max_longitude: 52.555451
+  translations:
+    ru: Самарская область
+    af: Samara-oblast
+    ar: سمارا أوبلاست
+    az: Samara vilayəti
+    be: Самарская вобласць
+    bg: Самарска област
+    bn: সামারা ওব্লাস্ট
+    ca: Província de Samara
+    cs: Samarská oblast
+    da: Samara oblast
+    de: Oblast Samara
+    el: Περιφέρεια Σαμάρα
+    en: Samara
+    es: Óblast de Samara
+    et: Samara oblast
+    eu: Samarako oblasta
+    fa: استان سامارا
+    fi: Samaran alue
+    fr: Oblast de Samara
+    gu: સમારા ઓબ્લાસ્ટ
+    he: מחוז סמרה
+    hi: समारा ओब्लास्त
+    hr: Samarska oblast
+    hu: Szamarai terület
+    hy: Սամարայի մարզ
+    id: Oblast Samara
+    it: Oblast’ di Samara
+    ja: サマラ州
+    ka: სამარის ოლქი
+    kn: ಸಮರ ಒಬ್ಲಾಸ್ಟ್
+    ko: 사마라 주
+    lt: Samaros sritis
+    lv: Samaras apgabals
+    mr: समारा ओब्लास्त
+    ms: Wilayah Samara
+    nb: Samara
+    nl: Oblast Samara
+    pl: Obwód samarski
+    pt: Oblast de Samara
+    ro: Regiunea Samara
+    si: සමරා ප්‍රාන්තය
+    sk: Samarská oblasť
+    sl: Samarska oblast
+    sr: Самарска област
+    sv: Samara oblast
+    sw: Samara Oblast
+    ta: சமாரா ஒப்லாஸ்து
+    te: సమారా ఓబ్లాస్ట్
+    th: เมืองซามารา
+    tr: Samara Oblastı
+    uk: Самарська область
+    ur: سمارا اوبلاست
+    vi: Samara
+    zh: 萨马拉州
+    cy: Oblast Samara
+    ceb: Samarskaya Oblast’
+    sr_Latn: Samarska oblast
+    yue_Hans: 萨马拉州
+    ccp: "\U00011125\U0001111F\U00011122"
+    ga: Cúige Shamara
+    yue: 薩馬拉州
+    uz: Samara viloyati
+    bs: Samarska oblast
+    mk: Самарска област
+    'no': Samara
+    is: Samarafylki
+    mn: Самара муж
+  comments:
+  type: administrative_region
+SAR:
+  name: Saratovskaya oblast'
+  code: SAR
+  unofficial_names:
+  - Saratovskaja Oblast
+  geo:
+    latitude: 51.83692629999999
+    longitude: 46.7539397
+    min_latitude: 49.800981
+    min_longitude: 42.5132981
+    max_latitude: 52.814547
+    max_longitude: 50.8330918
+  translations:
+    ru: Саратовская область
+    af: Saratof-oblast
+    ar: ساراتوف أوبلاست
+    az: Saratov vilayəti
+    be: Саратаўская вобласць
+    bg: Саратовска област
+    bn: সারাতোভ ওব্লাস্ট
+    ca: Província de Saràtov
+    cs: Saratovská oblast
+    da: Saratov oblast
+    de: Oblast Saratow
+    el: Περιφέρεια Σαράτοβ
+    en: Saratov
+    es: Óblast de Sarátov
+    et: Saratovi oblast
+    eu: Saratov oblasta
+    fa: استان ساراتوف
+    fi: Saratovin alue
+    fr: Oblast de Saratov
+    gu: સારાટોવ ઓબ્લાસ્ટ
+    he: מחוז סראטוב
+    hi: साराटोव ओब्लास्ट
+    hr: Saratovska oblast
+    hu: Szaratovi terület
+    hy: Սարատովի մարզ
+    id: Oblast Saratov
+    it: Oblast’ di Saratov
+    ja: サラトフ州
+    ka: სარატოვის ოლქი
+    kn: ಸಾರಾಟೊವ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 사라토프 주
+    lt: Saratovo sritis
+    lv: Saratovas apgabals
+    mr: सारातोव ओब्लास्त
+    ms: Wilayah Saratov
+    nb: Saratov
+    nl: Oblast Saratov
+    pl: Obwód saratowski
+    pt: Oblast de Saratov
+    ro: Regiunea Saratov
+    si: සරතොව් ඔබ්ලාස්ට්
+    sk: Saratovská oblasť
+    sl: Saratovska oblast
+    sr: Саратовска област
+    sv: Saratov oblast
+    sw: Saratov Oblast
+    ta: சராத்தவ் ஓப்லஸ்து
+    te: సరాటోవ్ ఓబ్లాస్ట్
+    th: แคว้นปกครองซาลาตอฟ
+    tr: Saratov Oblastı
+    uk: Саратовська область
+    ur: ساراتوو اوبلاست
+    vi: Saratov
+    zh: 萨拉托夫州
+    cy: Oblast Saratov
+    ceb: Saratovskaya Oblast’
+    sr_Latn: Saratovska oblast
+    yue_Hans: 萨拉托夫州
+    ccp: "\U00011125\U00011122\U00011111\U0001112E\U0001111B\U00011134"
+    ga: Cúige Sharatov
+    yue: 薩拉托夫州
+    uz: Saratov viloyati
+    bs: Saratovska oblast
+    mk: Саратовска област
+    'no': Saratov
+    is: Saratovfylki
+    mn: Саратов муж
+  comments:
+  type: administrative_region
+SE:
+  name: Severnaya Osetiya, Respublika [Alaniya] [Respublika Severnaya Osetiya-Alaniya]
+  code: SE
+  unofficial_names:
+  - Alania
+  - North Ossetian Republic
+  - Osetija
+  - Alanija
+  geo:
+    latitude: 43.0451302
+    longitude: 44.2870972
+    min_latitude: 42.5470799
+    min_longitude: 43.4103983
+    max_latitude: 43.839755
+    max_longitude: 44.956779
+  translations:
+    ru: Республика Северная Осетия-Алания
+    af: Noord-Ossetië-Alanië
+    ar: أوسيتيا الشمالية-ألانيا
+    az: Şimali Osetiya
+    be: Паўночная Асеція — Аланія
+    bg: Северна Осетия
+    bn: উত্তর ওশেতিয়া-আলানিয়া
+    ca: Ossètia del Nord - Alània
+    cs: Severní Osetie-Alanie
+    da: Nordossetien
+    de: Nordossetien-Alanien
+    el: Δημοκρατία της Βόρειας Οσετίας - Αλανίας
+    en: North Ossetia-Alania
+    es: Osetia del Norte - Alania
+    et: Põhja-Osseetia
+    eu: Ipar Osetia-Alania
+    fa: اوستیای شمالی-آلانیا
+    fi: Pohjois-Ossetia-Alania
+    fr: Ossétie-du-Nord-Alanie
+    gl: Osetia do Norte-Alania
+    gu: રીપબ્લિક ઓફ નોર્થ ઓસેટીયા-એલાનિયા
+    he: צפון אוסטיה - אלניה
+    hi: उत्तर ओसेतिया-आलानिया
+    hr: Sjeverna Osetija-Alanija
+    hu: Észak-Oszétia
+    hy: Հյուսիսային Օսիա
+    id: Ossetia Utara-Alania
+    is: Norður-Ossetía
+    it: Ossezia Settentrionale-Alania
+    ja: 北オセチア共和国
+    ka: ჩრდილოეთი ოსეთი
+    kn: ಉತ್ತರ ಒಸ್ಸೆಟಿಯಾ-ಅಲನಿಯ ಗಣರಾಜ್ಯ
+    ko: 세베로오세티야 공화국
+    lt: Šiaurės Osetija
+    lv: Ziemeļosetija-Alānija
+    mn: Хойд Осет-Алани
+    mr: उत्तर ओसेशिया-अलानिया
+    ms: Ossetia Utara-Alania
+    nb: Nord-Ossetia
+    nl: Noord-Ossetië
+    pl: Osetia Północna
+    pt: Ossétia do Norte-Alânia
+    ro: Osetia de Nord
+    si: උතුරු ඔසේටියා-ඇලනියා ජනරජය
+    sk: Severné Osetsko
+    sl: Severna Osetija-Alanija
+    sr: Северна Осетија — Аланија
+    sv: Nordossetien
+    sw: Kaskazi Ossetia-Alania
+    ta: வடக்கு ஒசேத்திய-அலனீயா
+    te: రిపబ్లిక్ ఆఫ్ నార్త్ ఒసేటియా-అలేనియా
+    th: โอเซเทีย อลาเนีย เหนือ
+    tr: Kuzey Osetya-Alanya
+    uk: Північна Осетія
+    ur: شمالی اوسیشیا-الانیا
+    vi: Bắc Osetiya-Alaniya
+    zh: 北奥塞梯-阿兰共和国
+    cy: Gogledd Ossetia
+    ceb: North Ossetia
+    sr_Latn: Severna Osetija — Alanija
+    yue_Hans: 北奥塞梯-阿兰
+    sq: Osetia e Veriut-Alania
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011103\U00011127\U00011125\U0001112C\U00011111\U00011128\U00011120-\U00011103\U00011123\U0001111A\U00011128\U00011120"
+    ga: An Oiséit Thuaidh-An Aláin
+    yue: 北奧塞梯-阿蘭
+    am: ስሜን ኦሤትያ-አላኒያ
+    uz: Shimoliy Osetiya Alaniya
+    bs: Sjeverna Osetija-Alanija
+    mk: Северна Осетија-Аланија
+    'no': Nord-Ossetia
+    kk: Солтүстік Осетия
+    ky: Түндүк Осетия
+  comments:
+  type: republic
+SMO:
+  name: Smolenskaya oblast'
+  code: SMO
+  unofficial_names:
+  - Smolenskaja Oblast
+  geo:
+    latitude: 54.9882994
+    longitude: 32.6677378
+    min_latitude: 53.414513
+    min_longitude: 30.7486752
+    max_latitude: 56.07094379999999
+    max_longitude: 35.3920447
+  translations:
+    ru: Смоленская область
+    af: Smolensk-oblast
+    ar: أوبلاست سمولينسك
+    az: Smolensk vilayəti
+    be: Смаленская вобласць
+    bg: Смоленска област
+    bn: সি্মো স্মোলেনস্ক ওব্লাস্ট
+    ca: Província de Smolensk
+    cs: Smolenská oblast
+    da: Smolensk oblast
+    de: Oblast Smolensk
+    el: Περιφέρεια Σμολένσκ
+    en: Smolensk
+    es: Smolensk
+    et: Smolenski oblast
+    eu: Smolensk oblasta
+    fa: استان اسمولنسک
+    fi: Smolenskin alue
+    fr: Oblast de Smolensk
+    gu: સ્મોલેન્સ્ક ઓબ્લાસ્ટ
+    he: סמולנסק
+    hi: स्मोलेंस्क ओब्लास्ट
+    hr: Smolenska oblast
+    hu: Szmolenszki terület
+    hy: Սմոլենսկի մարզ
+    id: Oblast Smolensk
+    it: Oblast’ di Smolensk
+    ja: スモレンスク州
+    ka: სმოლენსკის ოლქი
+    kn: ಸ್ಮೊಲೆನ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 스몰렌스크 주
+    lt: Smolensko sritis
+    lv: Smoļenskas apgabals
+    mr: स्मोलेन्स्क ओब्लास्त
+    ms: Wilayah Smolensk
+    nb: Smolensk
+    nl: Oblast Smolensk
+    pl: Obwód smoleński
+    pt: Oblast de Smolensk
+    ro: Regiunea Smolensk
+    si: ස්මොලේන්ස්ක් ප්‍රාන්තය
+    sk: Smolenská oblasť
+    sl: Smolenska oblast
+    sr: Смоленска област
+    sv: Smolensk oblast
+    sw: Smolensk Oblast
+    ta: ஸ்மொலென்ஸ்க் ஒபிலாஸ்ட்
+    te: స్మోలెన్స్క్ ఓబ్లాస్ట్
+    th: มณฑลสมอเลนสค์
+    tr: Smolensk Oblastı
+    uk: Смоленська область
+    ur: سمولنسک اوبلاست
+    vi: Smolensk
+    zh: 斯摩棱斯克州
+    cy: Oblast Smolensk
+    ceb: Smolenskaya Oblast’
+    sr_Latn: Smolenska oblast
+    yue_Hans: 斯摩棱斯克州
+    ccp: "\U0001110C\U00011133\U0001111F\U00011127\U00011123\U0001112C\U0001111A\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Smolensk
+    yue: 斯摩棱斯克州
+    uz: Smolensk viloyati
+    bs: Smolenska oblast
+    mk: Смоленска област
+    'no': Smolensk
+    is: Smolenskfylki
+    kk: Смоленск облысы
+    mn: Смоленск муж
+  comments:
+  type: administrative_region
+SPE:
+  name: Sankt-Peterburg
+  code: SPE
+  unofficial_names:
+  - San Pietroburgo
+  - Sankt-Peterburg
+  - Sankt Petersburg
+  - Saint-Pétersbourg
+  - San Petersburgo
+  geo:
+    latitude: 59.9342802
+    longitude: 30.3350986
+    min_latitude: 59.74521590000001
+    min_longitude: 30.090332
+    max_latitude: 60.089675
+    max_longitude: 30.559783
+  translations:
+    ru: Санкт-Петербург
+    af: Sint Petersburg
+    am: ሳንክት ፔቴርቡርግ
+    ar: سانت بطرسبرغ
+    az: Sankt-Peterburq
+    be: Санкт-Пецярбург
+    bg: Санкт Петербург
+    bn: সেন্ট পিটার্সবার্গ
+    ca: Sant Petersburg
+    cs: Petrohrad
+    da: Sankt Petersborg
+    de: Sankt Petersburg
+    el: Αγία Πετρούπολη
+    en: Saint Petersburg
+    es: San Petersburgo
+    et: Peterburi
+    eu: San Petersburgo
+    fa: سن پترزبورگ
+    fi: Pietari
+    fr: Saint-Pétersbourg
+    gl: San Petersburgo
+    gu: સેન્ટ પીટર્સબર્ગ
+    he: סנקט פטרבורג
+    hi: सेंट पीटर्सबर्ग
+    hr: Sankt Peterburg
+    hu: Szentpétervár
+    hy: Սանկտ Պետերբուրգ
+    id: St. Petersburg
+    is: Sankti Pétursborg
+    it: San Pietroburgo
+    ja: サンクトペテルブルク
+    ka: სანქტ-პეტერბურგი
+    kn: ಸೇಂಟ್ ಪೀಟರ್ಸ್‌ಬರ್ಗ್
+    ko: 상트페테르부르크
+    lt: Sankt Peterburgas
+    lv: Sanktpēterburga
+    ml: സെന്റ് പീറ്റേഴ്സ്ബർഗ്
+    mn: Санкт-Петербург
+    mr: सेंट पीटर्सबर्ग
+    ms: Saint Petersburg
+    nb: St. Petersburg
+    ne: सेन्ट पिटर्सवर्ग
+    nl: Sint-Petersburg
+    pl: Petersburg
+    pt: São Petersburgo
+    ro: Sankt Petersburg
+    si: සාන්ත පීටර්ස්බර්ග්
+    sk: Petrohrad
+    sl: Sankt Peterburg
+    sr: Санкт Петербург
+    sv: Sankt Petersburg
+    sw: Sankt Peterburg
+    ta: சென் பீட்டர்ஸ்பேர்க்
+    te: సెయింట్ పీటర్స్‌బర్గ్
+    th: เซนต์ปีเตอร์สเบิร์ก
+    tk: Sankt-Peterburg
+    tr: Sankt Petersburg
+    uk: Санкт-Петербург
+    ur: سینٹ پیٹرز برگ
+    vi: Sankt-Peterburg
+    zh: 圣彼得堡
+    cy: St Petersburg
+    ceb: Saint Petersburg
+    sr_Latn: Sankt Peterburg
+    yue_Hans: 圣彼得堡
+    jv: St. Petersburg
+    sq: Shën Petersburgu
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134 \U0001111B\U00011128\U00011111\U00011122\U00011134\U0001111D\U00011122\U00011134\U00011107\U00011134"
+    ga: Cathair Pheadair
+    ky: Санкт-Петербург
+    ha: Saint-Petersburg
+    so: Saint Petersburg
+    pa: ਸੇਂਟ ਪੀਟਰਸਬਰਗ
+    kk: Санкт-Петербург
+    yue: 聖彼得堡
+    my: စိန့်ပီတာစဘတ်မြို့
+    yo: Saint Petersburg
+    uz: Sankt-Peterburg
+    bs: Sankt Peterburg
+    mk: Санкт Петербург
+    ha_NE: Saint-Petersburg
+    'no': St. Petersburg
+    yo_BJ: Saint Petersburg
+    sd: سينٽ پيٽرسبرگ
+  comments:
+  type: autonomous_city
+STA:
+  name: Stavropol'skiy kray
+  code: STA
+  unofficial_names:
+  - Stavropolskij Kraj
+  geo:
+    latitude: 44.6680993
+    longitude: 43.520214
+    min_latitude: 43.658068
+    min_longitude: 40.8430621
+    max_latitude: 46.2299116
+    max_longitude: 45.7189749
+  translations:
+    ru: Ставропольский край
+    af: Stawropol-krai
+    ar: ستافروبول كراي
+    az: Stavropol diyarı
+    be: Стаўрапольскі край
+    bg: Ставрополски край
+    bn: স্ট্যাভরোপোল ক্রাই
+    ca: Territori de Stàvropol
+    cs: Stavropolský kraj
+    da: Stavropol kraj
+    de: Region Stawropol
+    el: Κράι Σταυρούπολης
+    en: Stavropol Krai
+    es: Stávropol
+    et: Stavropoli krai
+    eu: Stavropol kraia
+    fa: سرزمین استاوروپول
+    fi: Stavropolin aluepiiri
+    fr: Kraï de Stavropol
+    gl: Krai de Stavropol
+    he: מחוז סטברופול
+    hi: स्ताव्रोपोल क्राय
+    hr: Stavropoljski kraj
+    hu: Sztavropoli határterület
+    hy: Ստավրոպոլի երկրամաս
+    id: Krai Stavropol
+    it: Territorio di Stavropol’
+    ja: スタヴロポリ地方
+    ka: სტავროპოლის მხარე
+    kn: ಸ್ಟಾವ್ರೋಪೋಲ್ ಕ್ರೇ
+    ko: 스타브로폴 지방
+    lt: Stavropolio kraštas
+    lv: Stavropoles novads
+    mn: Ставрополийн хязгаар
+    mr: स्ताव्रोपोल क्राय
+    ms: Jajahan Stavropol
+    nb: Stavropol
+    nl: Kraj Stavropol
+    pl: Kraj Stawropolski
+    pt: Krai de Stavropol
+    ro: Ținutul Stavropol
+    si: ස්ටව්රෝපොල් ක්‍රායි
+    sk: Stavropoľský kraj
+    sr: Ставропољска Покрајина
+    sv: Stavropol kraj
+    sw: Stavropol Krai
+    ta: இசுதாவ்ரபோல் நிலப்பரப்பு
+    te: స్టావరోపోల్ క్రే
+    th: เขตสตัฟโรปอล
+    tr: Stavropol Krayı
+    uk: Ставропольський край
+    ur: سٹاوروپول کرائی
+    vi: Stavropol
+    zh: 斯塔夫罗波尔边疆区
+    cy: Crai Stavropol
+    ceb: Stavropol’skiy Kray
+    sr_Latn: Stavropoljska Pokrajina
+    yue_Hans: 斯塔夫罗波尔边疆区
+    ccp: "\U0001110C\U00011133\U00011111\U0001111B\U00011134\U00011122\U0001112E\U0001111B\U0001112E\U00011123\U00011134
+      \U00011107\U00011133\U00011122\U0001112D"
+    ga: Críoch Stavropol
+    yue: 斯塔夫羅波爾邊疆區
+    uz: Stavropol oʻlkasi
+    bs: Stavropoljski kraj
+    mk: Ставрополски крај
+    'no': Stavropol
+    gu: સ્ટાવ્રોપોલ ક્રાઇ
+    is: Stavrópolfylki
+  comments:
+  type: administrative_territory
+SVE:
+  name: Sverdlovskaya oblast'
+  code: SVE
+  unofficial_names:
+  - Sverdlovskaja Oblast
+  geo:
+    latitude: 59.007735
+    longitude: 61.9316226
+    min_latitude: 56.0562339
+    min_longitude: 57.2360151
+    max_latitude: 61.94590299999999
+    max_longitude: 66.178652
+  translations:
+    ru: Свердловская область
+    af: Swerdlofsk-oblast
+    ar: أوبلاست سفردلوفسك
+    az: Sverdlovsk vilayəti
+    be: Свярдлоўская вобласць
+    bg: Свердловска област
+    bn: ভার্দলোভস্ক ওব্লাস্ট
+    ca: Província de Sverdlovsk
+    cs: Sverdlovská oblast
+    da: Sverdlovsk oblast
+    de: Oblast Swerdlowsk
+    el: Περιφέρεια Σβερντλόβσκ
+    en: Sverdlovsk
+    es: Sverdlovsk
+    et: Sverdlovski oblast
+    eu: Sverdlovsk oblasta
+    fa: استان سوردلوفسک
+    fi: Sverdlovskin alue
+    fr: Oblast de Sverdlovsk
+    gu: સ્વેર્ડલોવ્સ્ક ઓબ્લાસ્ટ
+    he: מחוז סברדלובסק
+    hi: स्वर्दलोव्स्क ओब्लास्ट
+    hr: Sverdlovska oblast
+    hu: Szverdlovszki terület
+    hy: Սվերդլովսկի մարզ
+    id: Oblast Sverdlovsk
+    it: Oblast’ di Sverdlovsk
+    ja: スヴェルドロフスク州
+    ka: სვერდლოვსკის ოლქი
+    kn: ಸ್ವೆರ್ಡ್ಲೋವ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 스베르들롭스크 주
+    lt: Sverdlovsko sritis
+    lv: Sverdlovskas apgabals
+    mr: स्वेर्दलोव्स्क ओब्लास्त
+    ms: Wilayah Sverdlovsk
+    nb: Sverdlovsk
+    nl: Oblast Sverdlovsk
+    pl: Obwód swierdłowski
+    pt: Oblast de Sverdlovsk
+    ro: Regiunea Sverdlovsk
+    si: ස්වෙර්ද්ලොව්ස්ක් ප්‍රාන්තය
+    sk: Sverdlovská oblasť
+    sl: Sverdlovska oblast
+    sr: Свердловска област
+    sv: Sverdlovsk oblast
+    sw: Sverdlovsk Oblast
+    ta: ஸ்வெர்த்லோவ்ஸ்க் ஒப்லாஸ்து
+    te: స్వెర్డ్‌లోవస్క్ ఓబ్లాస్ట్
+    th: สเวอรลอฟ โอแบลส
+    tr: Sverdlovsk Oblastı
+    uk: Свердловська область
+    ur: سوردلووسک اوبلاست
+    vi: Sverdlovsk
+    zh: 斯維爾德洛夫斯克州
+    cy: Oblast Sverdlovsk
+    ceb: Sverdlovskaya Oblast’
+    sr_Latn: Sverdlovska oblast
+    yue_Hans: 斯维尔德洛夫斯克州
+    ccp: "\U0001110C\U00011133\U0001111E\U0001112C\U00011122\U00011134\U00011113\U00011134\U00011123\U0001112E\U0001111B\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Sverdlovsk
+    kk: Свердлов облысы
+    yue: 斯維爾德洛夫斯克州
+    uz: Sverdlovsk viloyati
+    bs: Sverdlovska oblast
+    mk: Свердловска област
+    'no': Sverdlovsk
+    is: Sverdlovskfylki
+    mn: Свердловск муж
+  comments:
+  type: administrative_region
+TA:
+  name: Tatarstan, Respublika
+  code: TA
+  unofficial_names: Tatarstan, Respublika
+  geo:
+    latitude: 55.1802364
+    longitude: 50.7263945
+    min_latitude: 53.976026
+    min_longitude: 47.2586476
+    max_latitude: 56.6772159
+    max_longitude: 54.2602891
+  translations:
+    ru: Татарстан
+    af: Tartarstan
+    ar: تتارستان
+    az: Tatarıstan
+    be: Татарстан
+    bg: Татарстан
+    bn: তাতারস্তান
+    ca: Tatarstan
+    cs: Tatarstán
+    da: Tatarstan
+    de: Tatarstan
+    el: Δημοκρατία του Ταταρστάν
+    en: Tatarstan
+    es: Tartaristán
+    et: Tatarstan
+    eu: Tatarstan
+    fa: تاتارستان
+    fi: Tatarstan
+    fr: Tatarstan
+    gl: Tartaristán
+    gu: રિપબ્લિક ઓફ તાતરસ્તાન
+    he: טטרסטן
+    hi: तातारस्तान
+    hr: Tatarstan
+    hu: Tatárföld
+    hy: Թաթարստան
+    id: Tatarstan
+    is: Tatarstan
+    it: Tatarstan
+    ja: タタールスタン共和国
+    ka: თათრეთი
+    kn: ಟಾಟರ್ಸ್ತಾನ್ ಗಣರಾಜ್ಯ
+    ko: 타타르 공화국
+    lt: Tatarstanas
+    lv: Tatarstāna
+    ml: ടാട്ടർസ്താൻ
+    mn: Татарстан
+    mr: तातरस्तान
+    ms: Tatarstan
+    nb: Tatarstan
+    nl: Tatarije
+    pl: Tatarstan
+    pt: Tartaristão
+    ro: Tatarstan
+    si: ටටාර්ස්ථාන්
+    sk: Tatársko
+    sl: Tatarstan
+    sr: Татарстан
+    sv: Tatarstan
+    sw: Tatarstan
+    ta: தர்தாரிஸ்தான்
+    te: టాటర్ స్టాన్
+    th: สาธารณรัฐตาตาร์สถาน
+    tk: Tatarystan
+    tr: Tataristan
+    uk: Татарстан
+    ur: تاتارستان
+    vi: Tatarstan
+    zh: 鞑靼斯坦共和国
+    ceb: Tatarstan
+    sr_Latn: Tatarstan
+    yue_Hans: 鞑靼斯坦共和国
+    sq: Tataristani
+    ccp: "\U00011111\U00011111\U00011122\U00011134\U0001110C\U00011133\U00011111\U0001111A\U00011134"
+    ga: An Tatarstáin
+    ky: Татарстан
+    kk: Татарстан
+    yue: 韃靼斯坦共和國
+    am: ታታርስታን
+    uz: Tatariston
+    bs: Tatarstan
+    mk: Татарстан
+    'no': Tatarstan
+    my: တာ့တာစတန်
+  comments:
+  type: republic
+TAM:
+  name: Tambovskaya oblast'
+  code: TAM
+  unofficial_names:
+  - Tambovskaja Oblast
+  geo:
+    latitude: 52.6416589
+    longitude: 41.4216451
+    min_latitude: 51.589638
+    min_longitude: 39.9170968
+    max_latitude: 53.8228889
+    max_longitude: 43.244815
+  translations:
+    ru: Тамбовская область
+    af: Tambof-oblast
+    ar: تامبوف أوبلاست
+    az: Tambov vilayəti
+    be: Тамбоўская вобласць
+    bg: Тамбовска област
+    bn: তাম্বোভ ওব্লাস্ট
+    ca: Província de Tambov
+    cs: Tambovská oblast
+    da: Tambov oblast
+    de: Oblast Tambow
+    el: Περιφέρεια Ταμπόβ
+    en: Tambov
+    es: Tambov
+    et: Tambovi oblast
+    eu: Tambov oblasta
+    fa: استان تامبوف
+    fi: Tambovin alue
+    fr: oblast de Tambov
+    gu: તેમ્બો ઓબ્લાસ્ટ
+    he: מחוז טמבוב
+    hi: तांबोव ओब्लास्ट
+    hr: Tambovska oblast
+    hu: Tambovi terület
+    hy: Տամբովի մարզ
+    id: Oblast Tambov
+    it: Oblast’ di Tambov
+    ja: タンボフ州
+    ka: ტამბოვის ოლქი
+    kn: ಟಾಂಬೊವ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 탐보프 주
+    lt: Tambovo sritis
+    lv: Tambovas apgabals
+    mr: तांबोव ओब्लास्त
+    ms: Wilayah Tambov
+    nb: Tambov
+    nl: Oblast Tambov
+    pl: Obwód tambowski
+    pt: Oblast de Tambov
+    ro: Regiunea Tambov
+    si: ටම්බොව් ප්‍රාන්තය
+    sk: Tambovská oblasť
+    sl: Tambovska oblast
+    sr: Тамбовска област
+    sv: Tambov oblast
+    sw: Tambov Oblast
+    ta: தம்போவ் ஓப்லஸ்து
+    te: టాంబోవ్ ఓబ్లాస్ట్
+    th: ทัมโบว โอแบลส
+    tr: Tambov Oblastı
+    uk: Тамбовська область
+    ur: تیمبوف اوبلاست
+    vi: Tambov
+    zh: 坦波夫州
+    cy: Oblast Tambov
+    ceb: Tambovskaya Oblast’
+    sr_Latn: Tambovska oblast
+    yue_Hans: 坦波夫州
+    ccp: "\U00011111\U0001111F\U00011134\U0001111D\U0001112E\U0001111B\U00011134"
+    ga: Cúige Thambov
+    yue: 坦波夫州
+    uz: Tambov viloyati
+    bs: Tambovska oblast
+    mk: Тамбовска област
+    'no': Tambov
+    is: Tambovfylki
+    mn: Тамбов муж
+  comments:
+  type: administrative_region
+TOM:
+  name: Tomskaya oblast'
+  code: TOM
+  unofficial_names:
+  - Tomskaja Oblast
+  geo:
+    latitude: 58.8969882
+    longitude: 82.67654999999999
+    min_latitude: 55.66864
+    min_longitude: 75.0574591
+    max_latitude: 61.0335298
+    max_longitude: 89.37532709999999
+  translations:
+    ru: Томская область
+    af: Tomsk-oblast
+    ar: تومسك أوبلاست
+    az: Tomsk vilayəti
+    be: Томская вобласць
+    bg: Томска област
+    bn: টোমস্ক ওব্লাস্ট
+    ca: Província de Tomsk
+    cs: Tomská oblast
+    da: Tomsk oblast
+    de: Oblast Tomsk
+    el: Περιφέρεια Τομσκ
+    en: Tomsk
+    es: Tomsk
+    et: Tomski oblast
+    eu: Tomsk oblasta
+    fa: استان تومسک
+    fi: Tomskin alue
+    fr: Oblast de Tomsk
+    gu: ટોમ્સ્ક ઓબ્લાસ્ટ
+    he: מחוז טומסק
+    hi: टॉमस्क ओब्लास्ट
+    hr: Tomska oblast
+    hu: Tomszki terület
+    id: Oblast Tomsk
+    it: Oblast’ di Tomsk
+    ja: トムスク州
+    ka: ტომსკის ოლქი
+    kn: ಟಾಮ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 톰스크 주
+    lt: Tomsko sritis
+    lv: Tomskas apgabals
+    mr: तोम्स्क ओब्लास्त
+    ms: Wilayah Tomsk
+    nb: Tomsk
+    nl: Oblast Tomsk
+    pl: Obwód tomski
+    pt: Oblast de Tomsk
+    ro: Regiunea Tomsk
+    si: ටෝම්ස්ක් ප්‍රාන්තය
+    sk: Tomská oblasť
+    sl: Tomska oblast
+    sr: Томска област
+    sv: Tomsk oblast
+    sw: Tomsk Oblast
+    ta: தோம்ஸ்க் ஒப்லாஸ்து
+    te: టామస్క్ ఓబ్లాస్ట్
+    th: ทอมส์ค โอแบลส
+    tr: Tomsk Oblastı
+    uk: Томська область
+    ur: تومسک اوبلاست
+    vi: Tomsk
+    zh: 托木斯克州
+    cy: Oblast Tomsk
+    ceb: Tomskaya Oblast’
+    sr_Latn: Tomska oblast
+    yue_Hans: 托木斯克州
+    ccp: "\U00011111\U00011127\U0001111F\U00011133\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Thomsk
+    hy: Տոմսկի մարզ
+    yue: 托木斯克州
+    uz: Tomsk viloyati
+    bs: Tomska oblast
+    mk: Томска област
+    'no': Tomsk
+    is: Tomskfylki
+    mn: Томск муж
+  comments:
+  type: administrative_region
+TUL:
+  name: Tul'skaya oblast'
+  code: TUL
+  unofficial_names:
+  - Tulskaja Oblast
+  geo:
+    latitude: 54.163768
+    longitude: 37.5649507
+    min_latitude: 52.9556001
+    min_longitude: 35.8963269
+    max_latitude: 54.8505721
+    max_longitude: 38.952968
+  translations:
+    ru: Тульская область
+    af: Toela-oblast
+    ar: تولا أوبلاست
+    az: Tula vilayəti
+    be: Тульская вобласць
+    bg: Тулска област
+    bn: তুলা ওব্লাস্ট
+    ca: Província de Tula
+    cs: Tulská oblast
+    da: Tula oblast
+    de: Oblast Tula
+    el: Περιφέρεια Τούλα
+    en: Tula
+    es: Óblast de Tula
+    et: Tula oblast
+    eu: Tula oblasta
+    fa: استان تولا
+    fi: Tulan alue
+    fr: Oblast de Toula
+    gu: તુલા ઓબ્લાસ્ટ
+    he: טולה
+    hi: टूला ओब्लास्ट
+    hr: Tulska oblast
+    hu: Tulai terület
+    hy: Տուլայի մարզ
+    id: Oblast Tula
+    it: Oblast’ di Tula
+    ja: トゥーラ州
+    ka: ტულის ოლქი
+    kn: ತುಲಾ ಒಬ್ಲಾಸ್ಟ್
+    ko: 툴라 주
+    lt: Tulos sritis
+    lv: Tulas apgabals
+    mn: Тула муж
+    mr: तुला ओब्लास्त
+    ms: Wilayah Tula
+    nb: Tula
+    nl: Oblast Toela
+    pl: Obwód tulski
+    pt: Oblast de Tula
+    ro: Regiunea Tula
+    si: ටුලා ප්‍රාන්තය
+    sk: Tuľská oblasť
+    sl: Tulska oblast
+    sr: Тулска област
+    sv: Tula oblast
+    sw: Tula Oblast
+    ta: தூலா ஒப்லாஸ்து
+    te: టూలా ఓబ్లాస్ట్
+    th: มณฑลตูลา
+    tr: Tula Oblastı
+    uk: Тульська область
+    ur: تولا اوبلاست
+    vi: Tula
+    zh: 图拉州
+    cy: Oblast Tula
+    ceb: Tul’skaya Oblast’
+    sr_Latn: Tulska oblast
+    yue_Hans: 图拉州
+    ccp: "\U00011111\U0001112A\U00011123"
+    ga: Cúige Thula
+    yue: 圖拉州
+    uz: Tula viloyati
+    bs: Tulska oblast
+    mk: Тулска област
+    'no': Tula
+    is: Túlafylki
+  comments:
+  type: administrative_region
+TVE:
+  name: Tverskaya oblast'
+  code: TVE
+  unofficial_names:
+  - Tverskaja Oblast
+  geo:
+    latitude: 57.0021654
+    longitude: 33.9853142
+    min_latitude: 55.6322698
+    min_longitude: 30.7768341
+    max_latitude: 58.8721109
+    max_longitude: 38.31839
+  translations:
+    ru: Тверская область
+    af: Twer-oblast
+    ar: تفير أوبلاست
+    az: Tver vilayəti
+    be: Цвярская вобласць
+    bg: Тверска област
+    bn: টেভার ওব্লাস্ট
+    ca: Província de Tver
+    cs: Tverská oblast
+    da: Tver oblast
+    de: Oblast Twer
+    el: Περιφέρεια Τβερ
+    en: Tver
+    es: Óblast de Tver
+    et: Tveri oblast
+    eu: Tver oblasta
+    fa: استان تور
+    fi: Tverin alue
+    fr: Oblast de Tver
+    gu: ટવર ઓબ્લાસ્ટ
+    he: מחוז טבר
+    hi: त्वेर ओब्लास्ट
+    hr: Tverska oblast
+    hu: Tveri terület
+    hy: Տվերի մարզ
+    id: Oblast Tver
+    it: Oblast’ di Tver’
+    ja: トヴェリ州
+    ka: ტვერის ოლქი
+    kn: ಟ್ವೆರ್ಸ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 트베리 주
+    lt: Tverės sritis
+    lv: Tveras apgabals
+    mn: Тверь муж
+    mr: त्वेर ओब्लास्त
+    ms: Wilayah Tver
+    nb: Tver
+    nl: Oblast Tver
+    pl: Obwód twerski
+    pt: Oblast de Tver
+    ro: Regiunea Tver
+    si: ටිවර්-ප්‍රාන්තය
+    sk: Tverská oblasť
+    sl: Tverska oblast
+    sr: Тверска област
+    sv: Tver oblast
+    sw: Tver Oblast
+    ta: வெர் ஒபிலாஸ்ட்
+    te: ట్వర్ ఓబ్లాస్ట్
+    th: จังหวัดจัมบี
+    tr: Tver Oblastı
+    uk: Тверська область
+    ur: توور اوبلاست
+    vi: Tver
+    zh: 特维尔州
+    cy: Oblast Tver
+    ceb: Tverskaya Oblast’
+    sr_Latn: Tverska oblast
+    yue_Hans: 特维尔州
+    ccp: "\U0001111E\U0001112C\U00011122\U00011134"
+    ga: Cúige Tver
+    yue: 特維爾州
+    uz: Tver viloyati
+    bs: Tverska oblast
+    mk: Тверска област
+    'no': Tver
+    is: Tverfylki
+  comments:
+  type: administrative_region
+TY:
+  name: Tyva, Respublika [Tuva]
+  code: TY
+  unofficial_names:
+  - Tuva
+  geo:
+    latitude: 51.8872669
+    longitude: 95.62601719999999
+    min_latitude: 49.7417159
+    min_longitude: 88.7985341
+    max_latitude: 53.727431
+    max_longitude: 99.269666
+  translations:
+    ru: Тыва
+    af: Tiwa
+    ar: توفا
+    az: Tıva
+    be: Тува
+    bg: Тува
+    bn: তুভা প্রজাতন্ত্র
+    ca: Tuvà
+    cs: Tuva
+    da: Tuva
+    de: Tuwa
+    el: Δημοκρατία της Τιβά
+    en: Tuva
+    es: Tuvá
+    et: Tõva
+    eu: Tuva
+    fa: تووا
+    fi: Tuva
+    fr: Touva
+    gl: Tuva
+    gu: તુવા રિપબ્લિક
+    he: טובה
+    hi: तूवा
+    hr: Tuva
+    hu: Tuva
+    hy: Տիվա
+    id: Tuva
+    it: Tuva
+    ja: トゥヴァ共和国
+    ka: ტუვა
+    kn: ತುವಾ ರಿಪಬ್ಲಿಕ್
+    ko: 투바 공화국
+    lt: Tuva
+    lv: Tuva
+    mn: Бүгд Найрамдах Тува Улс
+    mr: तुवा प्रजासत्ताक
+    ms: Tuva
+    nb: Tuva
+    ne: टुभा गणतन्त्र
+    nl: Toeva
+    pl: Tuwa
+    pt: Tuva
+    ro: Tuva
+    si: තුවා ජනරාජය
+    sk: Tuviansko
+    sl: Tuva
+    sr: Тива
+    sv: Tuva
+    sw: Tuva
+    ta: டுவா
+    te: టువా రిపబ్లిక్
+    th: สาธารณรัฐตูวา
+    tr: Tuva Cumhuriyeti
+    uk: Тива
+    ur: تووا
+    vi: Tuva
+    zh: 图瓦共和国
+    ceb: Respublika Tyva
+    sr_Latn: Tiva
+    yue_Hans: 图瓦
+    sq: Tëvaja
+    ccp: "\U00011111\U0001112A\U0001111E"
+    ga: Túva
+    ky: Тыва Республикасы
+    kk: Тыуа
+    yue: 圖瓦
+    am: ቱቫ
+    uz: Tiva
+    bs: Tuva
+    mk: Тува
+    'no': Tuva
+    cy: Gweriniaeth Twfa
+    tk: Tuwa Respublikasy
+  comments:
+  type: republic
+TYU:
+  name: Tyumenskaya oblast'
+  code: TYU
+  unofficial_names:
+  - Tjumenskaja Oblast
+  - Tumen
+  - Tjumen
+  geo:
+    latitude: 56.9634387
+    longitude: 66.948278
+    min_latitude: 55.145467
+    min_longitude: 64.8277999
+    max_latitude: 59.9896339
+    max_longitude: 75.19419900000001
+  translations:
+    ru: Тюменская область
+    af: Tjoemen-oblast
+    ar: تيومين أوبلاست
+    az: Tümen vilayəti
+    be: Цюменская вобласць
+    bg: Тюменска област
+    bn: তিউমেন ওব্লাস্ট
+    ca: Província de Tiumén
+    cs: Ťumeňská oblast
+    da: Tjumen oblast
+    de: Oblast Tjumen
+    el: Περιφέρεια Τιουμέν
+    en: Tyumen
+    es: Tiumén
+    et: Tjumeni oblast
+    eu: Tiumen oblasta
+    fa: استان تیومن
+    fi: Tjumenin alue
+    fr: Oblast de Tioumen
+    gu: ટ્યુમેન ઓબ્લાસ્ટ
+    he: מחוז טיומן
+    hi: ट्युमेन ओब्लास्ट
+    hr: Tjumenjska oblast
+    hu: Tyumenyi terület
+    hy: Տյումենի մարզ
+    id: Oblast Tyumen
+    it: Oblast’ di Tjumen’
+    ja: チュメニ州
+    ka: ტიუმენის ოლქი
+    kn: ತ್ಯುಮೆನ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 튜멘 주
+    lt: Tiumenės sritis
+    lv: Tjumeņas apgabals
+    mr: त्युमेन ओब्लास्त
+    ms: Wilayah Tyumen
+    nb: Tjumen
+    nl: Oblast Tjoemen
+    pl: Obwód tiumeński
+    pt: Oblast de Tiumen
+    ro: Regiunea Tiumen
+    si: ට්යුමෙන් ප්‍රාන්තය
+    sk: Ťumenská oblasť
+    sl: Tjumenska oblast
+    sr: Тјумењска област
+    sv: Tiumen oblast
+    sw: Tyumen Oblast
+    ta: தியூமென் ஒப்லாஸ்து
+    te: ట్యూమన్ ఓబ్లాస్ట్
+    th: มณฑลตูย์เมน
+    tr: Tümen Oblastı
+    uk: Тюменська область
+    ur: تیومن اوبلاست
+    vi: Tyumen
+    zh: 秋明州
+    cy: Oblast Tyumen
+    ceb: Tyumenskaya Oblast’
+    sr_Latn: Tjumenjska oblast
+    yue_Hans: 秋明州
+    ccp: "\U00011111\U0001112D\U00011120\U0001112A\U0001111F\U0001112C\U0001111A\U00011134"
+    ga: Cúige Tyumen
+    kk: Түмен облысы
+    yue: 秋明州
+    uz: Tyumen viloyati
+    bs: Tjumenjska oblast
+    mk: Тјумењска област
+    'no': Tjumen
+    is: Tjúmenfylki
+    mn: Тюмень муж
+  comments:
+  type: administrative_region
+UD:
+  name: Udmurtskaya Respublika
+  code: UD
+  unofficial_names:
+  - Udmurt Republic
+  - Udmurtskaya Respublika
+  - Udmurtija
+  geo:
+    latitude: 57.0670218
+    longitude: 53.0277948
+    min_latitude: 55.8642715
+    min_longitude: 51.1226019
+    max_latitude: 58.545039
+    max_longitude: 54.42754619999999
+  translations:
+    ru: Удмуртия
+    af: Oedmoertië
+    am: ኡድሙርቲያ
+    ar: أودمورتيا
+    az: Udmurtiya
+    be: Удмуртыя
+    bg: Удмуртия
+    bn: আডমুর্ত রিপাবলিক
+    ca: Udmúrtia
+    cs: Udmurtsko
+    da: Udmurtien
+    de: Udmurtien
+    el: Δημοκρατία των Ουντμούρτ
+    en: Udmurt
+    es: Udmurtia
+    et: Udmurtia
+    eu: Udmurtia
+    fa: اودمورتیا
+    fi: Udmurtia
+    fr: Oudmourtie
+    gl: Udmurtia
+    gu: ઉદમુર્ત રિપબ્લિક
+    he: אודמורטיה
+    hi: उदमूर्तिया
+    hr: Udmurtska
+    hu: Udmurtföld
+    hy: Ուդմուրտիա
+    id: Udmurtia
+    is: Údmúrtía
+    it: Udmurtia
+    ja: ウドムルト共和国
+    ka: უდმურტეთი
+    kn: ಉಡ್ಮರ್ಟ್ ರಿಪಬ್ಲಿಕ್
+    ko: 우드무르트 공화국
+    lt: Udmurtija
+    lv: Udmurtija
+    mn: Удмурт
+    mr: उद्मुर्तिया प्रजासत्ताक
+    ms: Udmurtia
+    nb: Udmurtia
+    nl: Oedmoertië
+    pl: Udmurcja
+    pt: Udmúrtia
+    ro: Udmurtia
+    si: උඩ්මුර්ට් ජනරජය
+    sk: Udmurtsko
+    sl: Udmurtija
+    sr: Удмуртија
+    sv: Udmurtien
+    sw: Udmurtia
+    ta: உத்மூர்த்தியா
+    te: ఉడ్మర్ట్ రిపబ్లిక్
+    th: สาธารณรัฐอูมอร์ท
+    tr: Udmurtya
+    uk: Удмуртія
+    ur: ادمورتیا
+    vi: Udmurtia
+    zh: 乌德穆尔特共和国
+    ceb: Udmurtskaya Respublika
+    sr_Latn: Udmurtija
+    yue_Hans: 乌德穆尔特
+    ccp: "\U00011105\U0001112A\U00011116\U00011134\U0001111F\U00011122\U00011134\U00011111\U00011134"
+    ga: An Udmairt
+    ky: Удмуртия
+    yue: 烏德穆爾特
+    uz: Udmurtiya
+    bs: Udmurtija
+    mk: Удмуртија
+    'no': Udmurtia
+    kk: Ұдмұртия
+    sq: Udmurtia
+  comments:
+  type: republic
+ULY:
+  name: Ul'yanovskaya oblast'
+  code: ULY
+  unofficial_names:
+  - Uljanovskaja Oblast
+  - Uljanovsk
+  geo:
+    latitude: 53.9793357
+    longitude: 47.7762426
+    min_latitude: 52.5380879
+    min_longitude: 45.7949271
+    max_latitude: 54.891972
+    max_longitude: 50.2391649
+  translations:
+    ru: Ульяновская область
+    af: Oeljanofsk-oblast
+    ar: أوليانوفسك أوبلاست
+    az: Ulyanovsk vilayəti
+    be: Ульянаўская вобласць
+    bg: Уляновска област
+    bn: উলিয়ানভস্ক ওব্লাস্ট
+    ca: Província d’Uliànovsk
+    cs: Uljanovská oblast
+    da: Uljanovsk oblast
+    de: Oblast Uljanowsk
+    el: Περιφέρεια Ουλιάνοβσκ
+    en: Ulyanovsk
+    es: Uliánovsk
+    et: Uljanovski oblast
+    eu: Ulianovsk oblasta
+    fa: استان اولیانوفسک
+    fi: Uljanovskin alue
+    fr: Oblast d’Oulianovsk
+    gu: ઉલ્યાનોવ્સ્ક ઓબ્લાસ્ટ
+    he: מחוז אולייאנובסק
+    hi: उल्यानोव्स्क ओब्लास्ट
+    hr: Uljanovska oblast
+    hu: Uljanovszki terület
+    hy: Ուլյանովսկի մարզ
+    id: Oblast Ulyanovsk
+    it: Oblast’ di Ul’janovsk
+    ja: ウリヤノフスク州
+    ka: ულიანოვსკის ოლქი
+    kn: ಉಲ್ಯನೋವ್ಸ್ಕ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 울리야놉스크 주
+    lt: Uljanovsko sritis
+    lv: Uļjanovskas apgabals
+    mn: Ульяновск муж
+    mr: उल्यानोव्स्क ओब्लास्त
+    ms: Wilayah Ulyanovsk
+    nb: Uljanovsk
+    nl: Oblast Oeljanovsk
+    pl: Obwód uljanowski
+    pt: Oblast de Ulianovsk
+    ro: Regiunea Ulianovsk
+    si: වැලේ ඩු බන්ඩමා දිස්ත්‍රික්කය
+    sk: Ulianovská oblasť
+    sl: Uljanovska oblast
+    sr: Уљановска област
+    sv: Uljanovsk oblast
+    sw: Ulyanovsk Oblast
+    ta: உலியானவ்ஸ்க் ஓப்லஸ்து
+    te: ఉల్యనోవస్క్ ఓబ్లాస్ట్
+    th: อุลยานอฟสค์ โอแบลส
+    tr: Ulyanovsk Oblastı
+    uk: Ульяновська область
+    ur: اولیانووسک اوبلاست
+    vi: Ulyanovsk
+    zh: 乌里扬诺夫斯克州
+    cy: Oblast Ulyanovsk
+    ceb: Ulyanovsk Oblast
+    sr_Latn: Uljanovska oblast
+    yue_Hans: 乌里扬诺夫斯克州
+    ccp: "\U00011105\U0001112A\U00011123\U0001112D\U00011120\U0001111A\U0001112E\U0001111B\U00011134\U00011125\U00011134\U00011107\U00011134"
+    ga: Cúige Ulyanovsk
+    yue: 烏里揚諾夫斯克州
+    uz: Ulyanov viloyati
+    bs: Uljanovska oblast
+    mk: Уљјановска област
+    'no': Uljanovsk
+    is: Úljanovskfylki
+  comments:
+  type: administrative_region
+VGG:
+  name: Volgogradskaya oblast'
+  code: VGG
+  unofficial_names:
+  - Volgogradskaja Oblast
+  geo:
+    latitude: 49.7604522
+    longitude: 45
+    min_latitude: 47.44145899999999
+    min_longitude: 41.167564
+    max_latitude: 51.2443039
+    max_longitude: 47.4312876
+  translations:
+    ru: Волгоградская область
+    af: Wolgograd-oblast
+    ar: فولغوغراد أوبلاست
+    az: Volqoqrad vilayəti
+    be: Валгаградская вобласць
+    bg: Волгоградска област
+    bn: ভল্গোগ্রাড ওব্লাস্ট
+    ca: Província de Volgograd
+    cs: Volgogradská oblast
+    da: Volgograd oblast
+    de: Oblast Wolgograd
+    el: Περιφέρεια Βολγκογκράντ
+    en: Volgograd
+    es: Volgogrado
+    et: Volgogradi oblast
+    eu: Volgograd oblasta
+    fa: استان ولگوگراد
+    fi: Volgogradin alue
+    fr: oblast de Volgograd
+    gu: વોલ્ગોગ્રાદ ઓબ્લાસ્ટ
+    he: וולגוגרד
+    hi: वोल्गोग्राद ओब्लास्ट
+    hr: Volgogradska oblast
+    hu: Volgográdi terület
+    hy: Վոլգոգրադի մարզ
+    id: Oblast Volgograd
+    it: Oblast’ di Volgograd
+    ja: ヴォルゴグラード州
+    ka: ვოლგოგრადის ოლქი
+    kn: ವೋಲ್ಗೊಗ್ರಾಡ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 볼고그라드 주
+    lt: Volgogrado sritis
+    lv: Volgogradas apgabals
+    mr: वोल्गोग्राद ओब्लास्त
+    ms: Wilayah Volgograd
+    nb: Volgograd
+    nl: Oblast Wolgograd
+    pl: Obwód wołgogradzki
+    pt: Oblast de Volgogrado
+    ro: Regiunea Volgograd
+    si: වෝල්ගොග්රඩ් ප්‍රාන්තය
+    sk: Volgogradská oblasť
+    sl: Volgograjska oblast
+    sr: Волгоградска област
+    sv: Volgograd oblast
+    sw: Volgograd Oblast
+    ta: வோல்கோகிராட் வட்டாரம்
+    te: వోల్గోగ్రాడ్
+    th: วอลโกกราด
+    tr: Volgograd Oblastı
+    uk: Волгоградська область
+    ur: وولگوگراڈ اوبلاست
+    vi: Volgograd
+    zh: 伏尔加格勒州
+    cy: Oblast Volgograd
+    ceb: Volgogradskaya Oblast’
+    sr_Latn: Volgogradska oblast
+    yue_Hans: 伏尔加格勒州
+    ccp: "\U0001111E\U0001112E\U00011123\U00011134\U00011109\U0001112E\U0001111B\U00011133\U00011122\U00011116\U00011134"
+    ga: Cúige Volgograd
+    ky: Волгоград областы
+    kk: Волгоград облысы
+    yue: 伏爾加格勒州
+    uz: Volgograd viloyati
+    bs: Volgogradska oblast
+    mk: Волгоградска област
+    'no': Volgograd
+    is: Volgógradfylki
+    mn: Волгоград муж
+  comments:
+  type: administrative_region
+VLA:
+  name: Vladimirskaya oblast'
+  code: VLA
+  unofficial_names:
+  - Vladimirskaja Oblast
+  geo:
+    latitude: 56.1553465
+    longitude: 40.5926685
+    min_latitude: 55.103193
+    min_longitude: 38.272862
+    max_latitude: 56.81697
+    max_longitude: 42.977175
+  translations:
+    ru: Владимирская область
+    af: Wladimir-oblast
+    ar: فلاديمير أوبلاست
+    az: Vladimir vilayəti
+    be: Уладзімірская вобласць
+    bg: Владимирска област
+    bn: ভ্লাদিমির ওব্লাস্ট
+    ca: Província de Vladímir
+    cs: Vladimirská oblast
+    da: Vladimir oblast
+    de: Oblast Wladimir
+    el: Περιφέρεια Βλαντίμιρ
+    en: Vladimir
+    es: Óblast de Vladímir
+    et: Vladimiri oblast
+    eu: Vladimir oblasta
+    fa: استان ولادیمیر
+    fi: Vladimirin alue
+    fr: Oblast de Vladimir
+    gu: વ્લાદિમીર ઓબ્લાસ્ટ
+    he: ולדימיר
+    hi: व्लादिमीर ओब्लास्ट
+    hr: Vladimirska oblast
+    hu: Vlagyimiri terület
+    hy: Վլադիմիրի մարզ
+    id: Oblast Vladimir
+    it: Oblast’ di Vladimir
+    ja: ヴラジーミル州
+    ka: ვლადიმირის ოლქი
+    kn: ವ್ಲಾಡಿಮಿರ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 블라디미르 주
+    lt: Vladimiro sritis
+    lv: Vladimiras apgabals
+    mn: Владимир муж
+    mr: व्लादिमिर ओब्लास्त
+    ms: Wilayah Vladimir
+    nb: Vladimir
+    nl: Oblast Vladimir
+    pl: Obwód włodzimierski
+    pt: Oblast de Vladimir
+    ro: Regiunea Vladimir
+    si: ව්ලමිදර් ප්‍රාන්තය
+    sk: Vladimírska oblasť
+    sl: Vladimirska oblast
+    sr: Владимирска област
+    sv: Vladimir oblast
+    sw: Vladimir Oblast
+    ta: விளாடிமிர் ஒபிலாஸ்ட்
+    te: వ్లాదిమీర్ ఓబ్లాస్ట్
+    th: วลาดีมีร์ โอแบลส
+    tr: Vladimir Oblastı
+    uk: Владимирська область
+    ur: ولادیمیر اوبلاست
+    vi: Vladimir
+    zh: 弗拉基米尔州
+    cy: Oblast Vladimir
+    ceb: Vladimirskaya Oblast’
+    sr_Latn: Vladimirska oblast
+    yue_Hans: 伏拉迪米尔州
+    ccp: "\U0001111E\U00011133\U00011123\U00011113\U00011128\U0001111F\U00011128\U00011122\U00011134"
+    ga: Cúige Vladimir
+    ky: Владимир областы
+    yue: 伏拉迪米爾州
+    uz: Vladimir viloyati
+    bs: Vladimirska oblast
+    mk: Владимирска област
+    'no': Vladimir
+    is: Vladimírfylki
+  comments:
+  type: administrative_region
+VLG:
+  name: Vologodskaya oblast'
+  code: VLG
+  unofficial_names:
+  - Vologodskaja Oblast
+  geo:
+    latitude: 59.8706711
+    longitude: 40.6555411
+    min_latitude: 58.4831769
+    min_longitude: 34.7161178
+    max_latitude: 61.607277
+    max_longitude: 47.1578849
+  translations:
+    ru: Вологодская область
+    af: Wologda-oblast
+    ar: فولوغدا أوبلاست
+    az: Voloqda vilayəti
+    be: Валагодская вобласць
+    bg: Вологодска област
+    bn: ভোলোগদা ওব্লাস্ট
+    ca: Província de Vólogda
+    cs: Vologdská oblast
+    da: Vologda oblast
+    de: Oblast Wologda
+    el: Περιφέρεια Βόλογκντα
+    en: Vologda
+    es: Óblast de Vólogda
+    et: Vologda oblast
+    eu: Vologda oblasta
+    fa: استان ولوگدا
+    fi: Vologdan alue
+    fr: Oblast de Vologda
+    gu: વોલોગ્ડા ઓબ્લાસ્ટ
+    he: מחוז וולוגדה
+    hi: वोलोडा ओब्लास्ट
+    hr: Vologodska oblast
+    hu: Vologdai terület
+    hy: Վոլոգդայի մարզ
+    id: Oblast Vologda
+    is: Vologdafylki
+    it: Oblast’ di Vologda
+    ja: ヴォログダ州
+    ka: ვოლოგდის ოლქი
+    kn: ವೊಲೊಗ್ಡಾ ಒಬ್ಲಾಸ್ಟ್
+    ko: 볼로그다 주
+    lt: Vologdos sritis
+    lv: Vologdas apgabals
+    mr: वोलोग्दा ओब्लास्त
+    ms: Wilayah Vologda
+    nb: Vologda
+    nl: Oblast Vologda
+    pl: Obwód wołogodzki
+    pt: Oblast de Vologda
+    ro: Regiunea Vologda
+    si: වොලෝග්ඩා ප්‍රාන්තය
+    sk: Vologdská oblasť
+    sl: Vologdska oblast
+    sr: Вологдска област
+    sv: Vologda oblast
+    sw: Vologda Oblast
+    ta: வொலக்தா ஓப்லஸ்து
+    te: వోోలోగ్డా ఓబ్లాస్ట్
+    th: มณฑลโวลอคดา
+    tr: Vologda Oblastı
+    uk: Вологодська область
+    ur: ولوگدا اوبلاست
+    vi: Vologda
+    zh: 沃洛格达州
+    cy: Oblast Vologda
+    ceb: Vologodskaya Oblast’
+    sr_Latn: Vologdska oblast
+    yue_Hans: 禾洛格达州
+    ccp: "\U0001111E\U0001112E\U00011123\U0001112E\U00011107\U00011134\U00011113"
+    ga: Cúige Vologda
+    ky: Вологда областы
+    yue: 禾洛格達州
+    uz: Vologda viloyati
+    bs: Vologodska oblast
+    mk: Вологодска област
+    'no': Vologda
+    mn: Вологда муж
+  comments:
+  type: administrative_region
+VOR:
+  name: Voronezhskaya oblast'
+  code: VOR
+  unofficial_names:
+  - Voronežskaja Oblast
+  - Voronež
+  geo:
+    latitude: 50.8589713
+    longitude: 39.8644375
+    min_latitude: 49.556056
+    min_longitude: 38.13708
+    max_latitude: 52.102429
+    max_longitude: 42.944786
+  translations:
+    ru: Воронежская область
+    af: Woronezj-oblast
+    ar: فورونيج أوبلاست
+    az: Voronej vilayəti
+    be: Варонежская вобласць
+    bg: Воронежка област
+    bn: ভোরওনেঝ ওব্লাস্ট
+    ca: Província de Vorónej
+    cs: Voroněžská oblast
+    da: Voronezj oblast
+    de: Oblast Woronesch
+    el: Περιφέρεια Βορόνεζ
+    en: Voronezh
+    es: Óblast de Vorónezh
+    et: Voroneži oblast
+    eu: Voronezh oblasta
+    fa: استان ورونژ
+    fi: Voronežin alue
+    fr: oblast de Voronej
+    gu: વોરોનેઝ ઓબ્લાસ્ટ
+    he: מחוז וורונז׳
+    hi: वोरोनेज़ ओब्लास्ट
+    hr: Voronješka oblast
+    hu: Voronyezsi terület
+    hy: Վորոնեժի մարզ
+    id: Oblast Voronezh
+    it: Oblast’ di Voronež
+    ja: ヴォロネジ州
+    ka: ვორონეჟის ოლქი
+    kn: ವೊರೊನೆಜ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 보로네시 주
+    lt: Voronežo sritis
+    lv: Voroņežas apgabals
+    mn: Воронеж муж
+    mr: वोरोनेझ ओब्लास्त
+    ms: Wilayah Voronezh
+    nb: Voronezj
+    nl: Oblast Voronezj
+    pl: Obwód woroneski
+    pt: Oblast de Voronej
+    ro: Regiunea Voronej
+    si: වොරෝනෙස් ප්‍රාන්තය
+    sk: Voronežská oblasť
+    sl: Voroneška oblast
+    sr: Вороњешка област
+    sv: Voronezj oblast
+    sw: Voronezh Oblast
+    ta: வரனியோஷ் ஒப்லாஸ்து
+    te: వోరోనెజ్ ఓబ్లాస్ట్
+    th: มณฑลโวรอนเนซ
+    tr: Voronej Oblastı
+    uk: Воронезька область
+    ur: ورونیش اوبلاست
+    vi: Voronezh
+    zh: 沃罗涅日州
+    cy: Oblast Voronezh
+    ceb: Voronezhskaya Oblast’
+    sr_Latn: Voronješka oblast
+    yue_Hans: 佛洛尼兹州
+    ccp: "\U0001111E\U0001112E\U00011122\U0001112E\U0001111A\U0001112C\U0001110C\U00011134"
+    ga: Cúige Voronezh
+    ky: Воронеж областы
+    yue: 佛洛尼茲州
+    uz: Voronej viloyati
+    bs: Voronješka oblast
+    mk: Воронешка област
+    'no': Voronezj
+    is: Voronesjfylki
+  comments:
+  type: administrative_region
+YAN:
+  name: Yamalo-Nenetskiy avtonomnyy okrug
+  code: YAN
+  unofficial_names:
+  - Jamalija
+  - Jamalo-Nenetskij Avtonomnyj Okrug
+  - Jamalo-Nenets
+  geo:
+    latitude: 66.0653057
+    longitude: 76.9345194
+    min_latitude: 62.1900029
+    min_longitude: 62.0121153
+    max_latitude: 73.5224935
+    max_longitude: 86.01397010000001
+  translations:
+    ru: Ямало-Ненецкий автономный округ
+    af: Jamalië
+    ar: أوكروغ يامالو-نينيتس الذاتية
+    az: Yamalo-Nenets Muxtar Dairəsi
+    be: Ямала-Ненецкая аўтаномная акруга
+    bg: Ямало-Ненецки автономен окръг
+    bn: ইয়ামালো-নেনেটস স্বায়ত্তশাসিত অক্রুগ
+    ca: Iamàlia
+    cs: Jamalo-něnecký autonomní okruh
+    da: Jamalo-Nenets autonome okrug
+    de: Autonomer Kreis der Jamal-Nenzen
+    el: Αυτόνομος θύλακας των Γιαμάλων Νένετς
+    en: Yamalo-Nenets Okrug
+    es: Yamalia-Nenetsia
+    et: Jamali Neenetsi autonoomne ringkond
+    eu: Jamalia-Nenetsia
+    fa: یامالو-ننتس
+    fi: Jamalin Nenetsia
+    fr: Iamalie
+    gu: યમાલો-નેનેટ્સ ઓટોનોમસ ઓર્કગ
+    he: ימלו-ננץ
+    hi: यामालो-नेनेट ऑटोनॉमस ऑक्रग
+    hr: Jamalskonenečki autonomni okrug
+    hu: Jamali Nyenyecföld
+    hy: Յամալ-Նենեցյան ինքնավար օկրուգ
+    id: Yamalia
+    it: Circondario autonomo Jamalo-Nenec
+    ja: ヤマロ・ネネツ自治管区
+    ka: იამალ-ნენთა ავტონომიური ოკრუგი
+    kn: ಯಮಲೊ-ನೆನೆಟ್ಸ್ ಸ್ವಾಯತ್ತ ಒಕ್ರುಗ್
+    ko: 야말로네네츠 자치구
+    lt: Jamalo Nencų autonominė apygarda
+    lv: Jamalas Ņencu autonomais apvidus
+    mr: यमेलो-नेनेत्स स्वायत्त ऑक्रूग
+    ms: Negeri autonomi Yamalo-Nenets
+    nb: Jamalo-Nenetsk
+    nl: Jamalië
+    pl: Jamalsko-Nieniecki Okręg Autonomiczny
+    pt: Iamália
+    ro: Districtul autonom Iamalia-Neneția
+    si: යමාලෝ-නෙනෙට්ස් ස්වාධින ප්‍රාන්තය
+    sk: Jamalsko
+    sr: Јамалија
+    sv: Jamalo-Nentsien
+    sw: Mkoa Huru wa Yamalo-Nenets
+    ta: யமலோ-நெனெத்து தன்னாட்சி வட்டாரம்
+    te: యమాలో-నెనెట్స్ అటానమస్ ఓక్రుగ్
+    th: ยามาโล เนเนท ออโตโนมัส โอเคริก
+    tr: Yamalo-Nenets Özerk Okrugu
+    uk: Ямало-Ненецький автономний округ
+    ur: یامالو-نینیتس خود مختار آکرگ
+    vi: Yamalo-Nenets
+    zh: 亚马尔-涅涅茨自治区
+    cy: Ocrwg Ymreolaethol Yamalo-Nenets
+    ceb: Yamalo-Nenetskiy Avtonomnyy Okrug
+    sr_Latn: Jamalija
+    yue_Hans: 亚马尔-涅涅茨
+    ccp: "\U00011103\U00011128\U00011120\U0001111F\U00011134\U00011123\U0001112E-\U0001111A\U0001111A\U0001112C\U00011116\U00011134\U0001110C\U00011134
+      \U00011103\U0001112E\U00011107\U00011134\U00011122\U00011107\U00011134"
+    ga: Ceantar Féinrialaitheach Neinéitseach Iamáil
+    ky: Ямал-Ненец автономиялуу округу
+    yue: 亞馬爾-涅涅茨
+    uz: Yamal Nenetslari muxtor okrugi
+    bs: Jamalskonenečki autonomni okrug
+    mk: Јамало-Ненецки автономен округ
+    'no': Jamalo-Nenetsk
+    mn: Ямало-Ненецийн өөртөө засах тойрог
+  comments:
+  type: autonomous_district
+YAR:
+  name: Yaroslavskaya oblast'
+  code: YAR
+  unofficial_names:
+  - Jaroslavskaja Oblast
+  - Jaroslavl
+  geo:
+    latitude: 57.8991523
+    longitude: 38.8388633
+    min_latitude: 56.5401059
+    min_longitude: 37.3243239
+    max_latitude: 58.95002100000001
+    max_longitude: 41.178673
+  translations:
+    ru: Ярославская область
+    af: Jaroslawl-oblast
+    ar: ياروسلافل أوبلاست
+    az: Yaroslavl vilayəti
+    be: Яраслаўская вобласць
+    bg: Ярославска област
+    bn: ইয়রোস্লাভ্ল ওব্লাস্ট
+    ca: Província de Iaroslavl
+    cs: Jaroslavská oblast
+    da: Jaroslavl oblast
+    de: Oblast Jaroslawl
+    el: Περιφέρεια Γιαροσλάβλ
+    en: Yaroslavl
+    es: Óblast de Yaroslavl
+    et: Jaroslavli oblast
+    eu: Jaroslavl oblasta
+    fa: استان یاروسلاول
+    fi: Jaroslavlin alue
+    fr: Oblast de Iaroslavl
+    gu: યારોસ્લાવ ઓબ્લાસ્ટ
+    he: ירוסלבל
+    hi: यरोस्लावी ओब्लास्ट
+    hr: Jaroslavska oblast
+    hu: Jaroszlavli terület
+    hy: Յարոսլավլի մարզ
+    id: Oblast Yaroslavl
+    it: Oblast’ di Jaroslavl’
+    ja: ヤロスラヴリ州
+    ka: იაროსლავლის ოლქი
+    kn: ಯಾರೊಸ್ಲಾವ್ಬ್ ಒಬ್ಲಾಸ್ಟ್
+    ko: 야로슬라블 주
+    lt: Jaroslavlio sritis
+    lv: Jaroslavļas apgabals
+    mr: यारोस्लाव ओब्लास्त
+    ms: Wilayah Yaroslavl
+    nb: Jaroslavl
+    nl: Oblast Jaroslavl
+    pl: Obwód jarosławski
+    pt: Oblast de Iaroslavl
+    ro: Regiunea Iaroslavl
+    si: යෝරෝස්ලාවී ප්‍රාන්තය
+    sk: Jaroslavlianska oblasť
+    sl: Jaroslaveljska oblast
+    sr: Јарославска област
+    sv: Jaroslavl oblast
+    sw: Yaroslavl Oblast
+    ta: யாரோஸ்லாவ் ஒப்லாஸ்து
+    te: యారాస్లావి ఓబ్లాస్ట్
+    th: มณฑลยาดรสลาฟ
+    tr: Yaroslavl Oblastı
+    uk: Ярославська область
+    ur: یاروسلاول اوبلاست
+    vi: Yaroslavl
+    zh: 雅羅斯拉夫爾州
+    cy: Oblast Yaroslavl
+    ceb: Yaroslavskaya Oblast’
+    sr_Latn: Jaroslavska oblast
+    yue_Hans: 雅罗斯拉夫尔州
+    ccp: "\U00011103\U00011128\U00011120\U00011122\U0001112E\U0001110C\U00011134\U00011123\U0001111B\U00011134"
+    ga: Cúige Yaroslavl
+    yue: 雅羅斯拉夫爾州
+    uz: Yaroslavl viloyati
+    bs: Jaroslavljska oblast
+    mk: Јарославска област
+    'no': Jaroslavl
+    is: Yaroslavlfylki
+    mn: Ярославль муж
+  comments:
+  type: administrative_region
+YEV:
+  name: Yevreyskaya avtonomnaya oblast'
+  code: YEV
+  unofficial_names:
+  - Jevrejskaja Oblast
+  - Jevrejskaja Respublika
+  - Jewish Autonomous Oblast
+  - Yevreyskaya Oblast
+  - Jevrej
+  geo:
+    latitude: 48.4808147
+    longitude: 131.7657367
+    min_latitude: 47.65943799999999
+    min_longitude: 130.5212439
+    max_latitude: 49.4938831
+    max_longitude: 134.9953569
+  translations:
+    ru: Еврейская автономная область
+    af: Joodse Outonome Oblast
+    ar: الأوبلاست اليهودية الذاتية
+    az: Yəhudi Muxtar Vilayəti
+    be: Яўрэйская аўтаномная вобласць
+    bg: Еврейска автономна област
+    bn: জুয়িশ স্বায়ত্তশাসিত ওব্লাস্ট
+    ca: Província Autònoma dels Hebreus
+    cs: Židovská autonomní oblast
+    da: Jødiske autonome oblast
+    de: Jüdische Autonome Oblast
+    el: Εβραϊκή Αυτόνομη Περιφέρεια
+    en: Jewish
+    es: Óblast Autónomo Hebreo
+    et: Juudi autonoomne oblast
+    eu: Juduen Probintzia Autonomoa
+    fa: استان خودگردان یهودی
+    fi: Juutalaisten autonominen alue
+    fr: Oblast autonome juif
+    gl: Oblast Autónomo Hebreo
+    gu: જેવીશ ઔટોનોમસ ઓબ્લાસ્ટ
+    he: המחוז היהודי האוטונומי
+    hi: ज्यूइश ऑटोनौमस ओब्लास्ट
+    hr: Židovska autonomna oblast
+    hu: Zsidó autonóm terület
+    hy: Հրեական ինքնավար մարզ
+    id: Oblast Otonom Yahudi
+    is: Hebreska sjálfstjórnarfylkið
+    it: Oblast’ autonoma ebraica
+    ja: ユダヤ自治州
+    ka: ებრაელთა ავტონომიური ოლქი
+    kn: ಯಹೂದಿ ಸ್ವಾಯತ್ತ ಒಬ್ಲಾಸ್ಟ್
+    ko: 유대인 자치주
+    lt: Žydų autonominė sritis
+    lv: Ebreju autonomais apgabals
+    mr: ज्यूईश स्वायत्त ओब्लास्त
+    ms: Wilayah autonomi Yahudi
+    nb: Den jødiske autonome oblast
+    nl: Joodse Autonome Oblast
+    pl: Żydowski Obwód Autonomiczny
+    pt: Oblast Autônomo Judaico
+    ro: Regiunea Autonomă Evreiască
+    si: ජෙවිෂ් ස්වාධින ප්‍රාන්තය
+    sk: Židovská autonómna oblasť
+    sr: Јеврејска аутономна област
+    sv: Judiska autonoma länet
+    sw: Oblast huru ya Kiyahudi
+    ta: யூதர்களின் தன்னாட்சி மாகாணம்
+    te: జ్యూవిష్ అటానమస్ ఓబ్లాస్ట్
+    th: จิววิช ออโตโนมัส โอแบลส
+    tr: Yahudi Özerk Oblastı
+    uk: Єврейська автономна область
+    ur: یہودی خود مختار اوبلاست
+    vi: Tỉnh tự trị Do Thái
+    zh: 犹太自治州
+    cy: Oblast Ymreolaethol Iddewig
+    ceb: Yevreyskaya Avtonomnaya Oblast’
+    sr_Latn: Jevrejska autonomna oblast
+    yue_Hans: 犹太自治州
+    ccp: "\U0001110E\U0001112C\U00011105\U0001112A\U00011120\U00011128\U0001110C\U00011134"
+    ga: Cúige Féinrialaitheach na nGiúdach
+    ky: Еврей автономия облусу
+    kk: Еврей Автономиялы Облысы
+    yue: 猶太自治州
+    uz: Yahudiylar muxtor viloyati
+    bs: Jevrejska autonomna oblast
+    mk: Еврејска автономна област
+    'no': Den jødiske autonome oblast
+    ml: ജൂത സ്വയംഭരണ ഒബ്ലാസ്റ്റ്
+    mn: Еврейн өөртөө засах муж
+  comments:
+  type: autonomous_district
+ZAB:
+  name: Zabaykal'skij kray
+  code: ZAB
+  unofficial_names:
+  - Zabajkal'skij kraj
+  - Zabajkal'skij
+  - Zabaykal'skij kray
+  geo:
+    latitude: 53.0928771
+    longitude: 116.967656
+    min_latitude: 49.1551025
+    min_longitude: 107.736142
+    max_latitude: 58.435147
+    max_longitude: 122.1303228
+  translations:
+    ru: Забайкальский край
+    af: Zabaikalski-krai
+    ar: زابايكالسكي كراي
+    az: Zabaykalsk diyarı
+    be: Забайкальскі край
+    bg: Забайкалски край
+    bn: জাবায়কালস্কি ক্রা
+    ca: Territori de Zabaikal
+    cs: Zabajkalský kraj
+    da: Zabajkalskij kraj
+    de: Region Transbaikalien
+    el: Κράι Υπερβαϊκάλης
+    en: Zabaykalsky Krai
+    es: Zabaikalie
+    et: Taga-Baikali krai
+    eu: Zabaikalski kraia
+    fa: سرزمین زابایکالسکی
+    fi: Taka-Baikalian aluepiiri
+    fr: Kraï de Transbaïkalie
+    gu: ઝાબેકલ્સકી ક્રેઇ
+    he: מחוז עבר הבאיקל
+    hi: ज़बायकाल्स्की क्राय
+    hr: Zabajkalski kraj
+    hu: Bajkálontúli határterület
+    hy: Անդրբայկալյան երկրամաս
+    id: Krai Zabaykalsky
+    it: Territorio della Transbajkalia
+    ja: ザバイカリエ地方
+    ka: იმიერბაიკალეთის მხარე
+    kn: ಝಬಾಯಕಲ್ಕಿ ಕ್ರೈ
+    ko: 자바이칼 지방
+    lt: Užbaikalės kraštas
+    lv: Aizbaikāla novads
+    mn: Өвөр Байгалын хязгаар
+    mr: झबायकल्स्की क्राय
+    ms: Jajahan Zabaykalsky
+    nb: Zabajkalskij
+    nl: Kraj Transbaikal
+    pl: Kraj Zabajkalski
+    pt: Krai de Zabaykalsky
+    ro: Regiunea Transbaikal
+    si: සබෙකල්ස්කි ක්‍රයි
+    sk: Zabajkalský kraj
+    sr: Забајкалска Покрајина
+    sv: Zabajkalskij kraj
+    sw: Zabaykalsky Krai
+    ta: சபைக்கால்சுக்கி பிரதேசம்
+    te: జాబేకాల్స్కీ క్రే
+    th: ซาเบคาลสกี ไกร
+    tr: Zabaykalskiy Krayı
+    uk: Забайкальський край
+    ur: زابایکالسکی کرائی
+    vi: Zabaykalsky
+    zh: 外貝加爾邊疆區
+    cy: Crai Zabaykalsky
+    ceb: Zabaykal’skiy Kray
+    sr_Latn: Zabajkalska Pokrajina
+    yue_Hans: 外贝加尔边疆区
+    ccp: "\U0001110E\U0001111D\U0001112C\U00011107\U00011123\U00011134\U0001110C\U00011133\U00011107\U0001112D
+      \U00011107\U00011133\U00011122\U0001112D"
+    ga: Zabaykalsky Krai
+    yue: 外貝加爾邊疆區
+    uz: Zabaykal oʼlkasi
+    bs: Zabajkalski kraj
+    mk: Забајкалски крај
+    'no': Zabajkalskij
+    is: Tsabajkalfylki
+  comments:
+  type: administrative_territory

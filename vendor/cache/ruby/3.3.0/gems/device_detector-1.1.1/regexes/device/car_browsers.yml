@@ -1,0 +1,32 @@
+###############
+# Device Detector - The Universal Device Detection library for parsing User Agents
+#
+# @link https://matomo.org
+# @license http://www.gnu.org/licenses/lgpl.html LGPL v3 or later
+###############
+
+# Tesla Model S
+Tesla:
+  regex: '(?:Tesla/(?:(?:develop|feature|terminal-das-fsd-eap)-)?[0-9.]+|QtCarBrowser)'
+  device: 'car browser'
+  models:
+    - regex: 'QtCarBrowser'
+      model: 'Model S'
+    - regex: 'Tesla/[0-9.]+'
+      model: ''
+
+# Mac Audio
+MAC AUDIO:
+  regex: 'Mac Audio Spro'
+  device: 'car browser'
+  models:
+    - regex: 'Spro'
+      model: 'S Pro'
+
+# Topway
+Topway:
+  regex: 'sp9853i_1h10_vmm'
+  device: 'car browser'
+  models:
+    - regex: 'sp9853i_1h10_vmm'
+      model: 'TS9'

@@ -1,0 +1,6 @@
+delete :: !a !.(Set a) -> Set a | < a
+delete x Tip = Tip
+delete x (Bin _ y l r)
+  | x < y     = balanceR y (delete x l) r
+  | x > y     = balanceL y l (delete x r)
+  | otherwise = glue l r

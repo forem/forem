@@ -1,0 +1,29 @@
+Retrieve ruby core source files.
+
+This can be used by any C extension gem that needs Ruby core headers (*.h and *.inc)
+
+Usage:
+
+  Ruby_core_source::create_makefile_with_core(hdr_check_proc, gem_name)
+takes the place of
+  create_makefile(gem_name)
+in your extconf.rb
+
+This will:
+  If hdr_check_proc is true, call create_makefile(gem_name)
+  Else: if core headers already exist, and hdr_check_proc is true, call create_makefile(gem_name)
+  Else: fetch and extract the core headers, check hdr_check_proc, and call create_makefile(gem_name)
+  Else: return false
+
+Note that for Ruby preview releases, the corresponding RUBY_REVISION needs to be maintained in
+http://cloud.github.com/downloads/mark-moseley/ruby_core_source/preview_revision.yml
+
+Example use in extconf.rb:
+
+require 'ruby_core_source'
+hdrs = proc { have_header("vm_core.h") and have_header("iseq.h") }
+dir_config("ruby") # allow user to pass in non-standard core include directory
+if !Ruby_core_source::create_makefile_with_core(hdrs, "foo")
+  # error
+  exit(1)
+end

@@ -1,0 +1,114 @@
+[
+  {
+    "id": "d962f7ddb3f55041e39195a60ff79d4814a7c331",
+    "name": "US Passport Scanner",
+    "key": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "passport",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 8
+        }
+      }
+    },
+    "value": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "\\b[0-9A-Z]{9}\\b|\\b[0-9]{6}[A-Z][0-9]{2}\\b",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 8
+        }
+      }
+    },
+    "tags": {
+      "type": "passport_number",
+      "category": "pii"
+    }
+  },
+  {
+    "id": "ac6d683cbac77f6e399a14990793dd8fd0fca333",
+    "name": "US Vehicle Identification Number Scanner",
+    "key": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "vehicle[_\\s-]*identification[_\\s-]*number|vin",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 3
+        }
+      }
+    },
+    "value": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "\\b[A-HJ-NPR-Z0-9]{17}\\b",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 17
+        }
+      }
+    },
+    "tags": {
+      "type": "vin",
+      "category": "pii"
+    }
+  },
+  {
+    "id": "de0899e0cbaaa812bb624cf04c912071012f616d",
+    "name": "UK National Insurance Number Scanner",
+    "key": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "national[\\s_]?(?:insurance(?:\\s+number)?)?|NIN|NI[\\s_]?number|insurance[\\s_]?number",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 3
+        }
+      }
+    },
+    "value": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "\\b[A-Z]{2}\\d{6}[A-Z]?\\b",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 8
+        }
+      }
+    },
+    "tags": {
+      "type": "uk_nin",
+      "category": "pii"
+    }
+  },
+  {
+    "id": "450239afc250a19799b6c03dc0e16fd6a4b2a1af",
+    "name": "Canadian Social Insurance Number Scanner",
+    "key": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "social[\\s_]?(?:insurance(?:\\s+number)?)?|SIN|Canadian[\\s_]?(?:social[\\s_]?(?:insurance)?|insurance[\\s_]?number)?",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 3
+        }
+      }
+    },
+    "value": {
+      "operator": "match_regex",
+      "parameters": {
+        "regex": "\\b\\d{3}-\\d{3}-\\d{3}\\b",
+        "options": {
+          "case_sensitive": false,
+          "min_length": 11
+        }
+      }
+    },
+    "tags": {
+      "type": "canadian_sin",
+      "category": "pii"
+    }
+  }
+]

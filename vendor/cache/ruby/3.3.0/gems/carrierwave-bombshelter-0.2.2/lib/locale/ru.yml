@@ -1,0 +1,5 @@
+ru:
+  errors:
+    messages:
+      pixel_dimensions_error: "Изображение не должно превышать размера %{x_size}x%{y_size}"
+      unsupported_image_type: "Изображение имеет неподдерживаемый тип"

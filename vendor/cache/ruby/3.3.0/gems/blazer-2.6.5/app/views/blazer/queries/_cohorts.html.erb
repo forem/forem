@@ -1,0 +1,48 @@
+<% unless @only_chart %>
+  <%= render partial: "caching" %>
+  <p class="text-muted" style="margin-bottom: 10px;">
+    <%= pluralize(@rows.size, "cohort") %>
+  </p>
+<% end %>
+<% if @rows.any? %>
+  <div class="results-container">
+    <table class="table results-table">
+      <thead>
+        <tr>
+          <th style="min-width: 100px;">Cohort</th>
+          <% 12.times do |i| %>
+            <th style="width: 7.5%; text-align: right;"><%= @conversion_period.titleize %> <%= i + 1 %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @rows.each do |row| %>
+          <tr>
+            <td>
+              <%= row[0] %>
+              <div style="font-size: 12px; color: #999;"><%= row[1] == 1 ? "1 user" : "#{number_with_delimiter(row[1])} users" %></div>
+            </td>
+            <% 12.times do |i| %>
+              <td style="text-align: right;">
+                <% num = row[i + 2] %>
+                <% if num %>
+                  <% denom = row[1] %>
+                  <% if denom > 0 %>
+                    <%= (100.0 * num / denom).round %>%
+                  <% else %>
+                    -
+                  <% end %>
+                  <div style="font-size: 12px; color: #999;"><%= number_with_delimiter(num) %></div>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% elsif @only_chart %>
+  <p class="text-muted">No cohorts</p>
+<% end %>

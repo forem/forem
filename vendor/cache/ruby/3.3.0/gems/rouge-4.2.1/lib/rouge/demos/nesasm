@@ -1,0 +1,11 @@
+  .bank 0
+  .org $C000
+Reset:	
+        jsr WaitSync	; wait for VSYNC
+        jsr ClearRAM	; clear RAM
+        jsr WaitSync	; wait for VSYNC (and PPU warmup)
+
+	lda #$3f	; $3F -> A register
+        ldy #$00	; $00 -> Y register
+        sta PPU_ADDR	; write #HIGH byte first
+        sty PPU_ADDR    ; $3F00 -> PPU address

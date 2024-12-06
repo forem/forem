@@ -1,0 +1,8 @@
+<div class="example-1" markdown="1">
+![inside](src.png)
+</div>
+
+<div class="example-2" markdown="1">
+[text](website.html)
+</div>
+

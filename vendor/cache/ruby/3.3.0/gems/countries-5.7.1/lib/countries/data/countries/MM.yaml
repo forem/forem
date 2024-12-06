@@ -1,0 +1,49 @@
+---
+MM:
+  alpha2: MM
+  alpha3: MMR
+  continent: Asia
+  country_code: '95'
+  currency_code: MMK
+  distance_unit: MI
+  gec: BM
+  geo:
+    latitude: 21.916221
+    longitude: 95.955974
+    max_latitude: 28.5478351
+    max_longitude: 101.1702717
+    min_latitude: 9.4518
+    min_longitude: 92.171808
+    bounds:
+      northeast:
+        lat: 28.5478351
+        lng: 101.1702717
+      southwest:
+        lat: 9.4518
+        lng: 92.171808
+  international_prefix: '00'
+  ioc: MYA
+  iso_long_name: The Republic of the Union of Myanmar
+  iso_short_name: Myanmar
+  languages_official:
+  - my
+  languages_spoken:
+  - my
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  national_prefix: None
+  nationality: Myanmarian
+  number: '104'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Asia
+  start_of_week: monday
+  subregion: South-Eastern Asia
+  un_locode: MM
+  unofficial_names:
+  - Myanmar (Burma)
+  - ミャンマー
+  world_region: APAC

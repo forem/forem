@@ -1,0 +1,11 @@
+#include <cstdio>
+
+__global__ void helloFromGPU() {
+    std::printf("Hello World\n");
+    __syncthreads();
+}
+
+int main() {
+    dim3 block(1, 10);
+    helloFromGPU<<<1, block>>>();
+}

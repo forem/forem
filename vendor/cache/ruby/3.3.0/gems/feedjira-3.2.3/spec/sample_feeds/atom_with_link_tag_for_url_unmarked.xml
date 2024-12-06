@@ -1,0 +1,31 @@
+
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+  <title>Planet innoQ</title>
+  <link rel="self" href="http://www.innoq.com/planet/atom.xml"/>
+  <link href="http://www.innoq.com/planet/"/>
+  <id>http://www.innoq.com/planet/atom.xml</id>
+  <updated>2009-07-10T12:30:05+00:00</updated>
+  <generator uri="http://www.planetplanet.org/">Planet/1.0 +http://www.planetplanet.org</generator>
+ 
+  <entry>
+    <title type="html">ja,</title>
+    <link href="http://www.innoq.com/blog/phaus/2009/07/ja.html"/>
+    <id>tag:www.innoq.com,2009:/blog/phaus//25.3526</id>
+    <updated>2009-07-01T22:20:05+00:00</updated>
+    <content type="html" xml:lang="en">ich lebe noch.
+Sobald mir mehr einfällt, schreibe ich mal wieder was :-).</content>
+    <author>
+      <name>Philipp Haussleiter</name>
+      <uri>http://www.innoq.com/blog/phaus/</uri>
+    </author>
+    <source>
+      <title type="html">Philipps paper equivalent Blog</title>
+      <link rel="self" href="http://www.innoq.com/blog/phaus/atom.xml"/>
+      <id>tag:www.innoq.com,2009:/blog/phaus//25</id>
+      <updated>2009-07-01T22:20:05+00:00</updated>
+    </source>
+  </entry>
+ 
+</feed>

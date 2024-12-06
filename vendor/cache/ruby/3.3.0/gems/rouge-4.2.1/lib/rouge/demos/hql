@@ -1,0 +1,5 @@
+SELECT e.first_name, e.last_name, d.department_name
+FROM   employees e
+JOIN   departments d ON e.department_id = d.department_id;
+
+update `table` set name='abc', date=${date}, test_interpolation="${var1}.${var2}" where xyz is null;

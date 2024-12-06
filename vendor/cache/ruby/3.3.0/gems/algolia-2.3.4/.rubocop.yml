@@ -1,0 +1,189 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  NewCops: enable
+
+# Metrics
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+# Lint
+Lint/UnreachableCode:
+  Exclude:
+    - 'Dangerfile'
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+# Naming
+Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/VariableName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  AllowedNames:
+    - 'autoGenerateObjectIDIfNotExist'
+
+# Disabled since it's not working when using variables instead of a name
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
+# Layout
+Layout/LineLength:
+  Enabled: false
+
+Layout/SpaceAroundOperators:
+  Enabled: false
+
+Layout/IndentationWidth:
+  Enabled: false
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/RescueEnsureAlignment:
+  Enabled: false
+
+Layout/IndentationConsistency:
+  Exclude:
+    - 'app/helpers/demos_helper.rb'
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+  IndentationWidth: 2
+
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: start_of_line
+
+Layout/ExtraSpacing:
+  AllowBeforeTrailingComments: true
+  # When true, forces the alignment of `=` in assignments on consecutive lines.
+  ForceEqualSignAlignment: true
+
+# Style
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/WhileUntilModifier:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/EmptyMethod:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+Style/NegatedIf:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: true
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Style/SignalException:
+  Exclude:
+    - 'Dangerfile'
+
+Style/PreferredHashMethods:
+  EnforcedStyle: verbose
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/Lambda:
+  EnforcedStyle: literal
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    default: '()'
+    '%w': '()'
+    '%W': '()'
+    '%i': '()'
+
+Style/MutableConstant:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/RedundantBegin:
+  Enabled: false

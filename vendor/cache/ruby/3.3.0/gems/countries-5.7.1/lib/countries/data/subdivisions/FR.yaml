@@ -1,0 +1,8942 @@
+---
+'01':
+  name: Ain
+  code: '01'
+  unofficial_names: Ain
+  geo:
+    latitude: 46.2475706
+    longitude: 5.1307681
+    min_latitude: 45.611093
+    min_longitude: 4.728066999999999
+    max_latitude: 46.519953
+    max_longitude: 6.170198099999999
+  translations:
+    af: Ain
+    ar: أين
+    be: Дэпартамент Эн
+    bg: Ен
+    bn: আইন
+    ca: Ain
+    cs: Ain
+    da: Ain
+    de: Département Ain
+    el: Αν
+    en: Ain
+    es: Ain
+    et: Aini departemang
+    eu: Ain
+    fa: ان
+    fi: Ain
+    fr: Ain
+    gl: Ain
+    gu: ઐન
+    he: אן
+    hi: एन
+    hu: Ain
+    hy: Էն
+    id: Ain
+    it: Ain
+    ja: アン県
+    ka: ენი
+    kn: ಐನ್
+    ko: 앵 주
+    lt: Enas
+    lv: Ēna
+    mr: एन, फ्रान्स
+    ms: Ain
+    nb: Ain
+    nl: Ain
+    pl: Ain
+    pt: Ain
+    ro: Ain
+    ru: Эн
+    si: අයින්
+    sk: Ain
+    sl: Ain
+    sr: Ен
+    sv: Ain
+    sw: Ain
+    ta: ஆயின்
+    te: ఎయిన్
+    th: จังหวัดแอ็ง
+    tr: Ain
+    uk: Ен
+    ur: ان، فرانس
+    vi: Ain
+    zh: 安省
+    cy: Ain
+    ceb: Ain
+    sr_Latn: En
+    yue_Hans: 安
+    jv: Ain
+    sq: Ain
+    ccp: "\U00011103\U0001112D\U0001111A\U00011134"
+    ky: Эн
+    kk: Эн
+    yue: 安
+    az: En (departament)
+    'no': Ain
+    ga: Ain
+    mk: Ен
+  comments:
+  type: metropolitan_department
+'02':
+  name: Aisne
+  code: '02'
+  unofficial_names: Aisne
+  geo:
+    latitude: 49.4769199
+    longitude: 3.4417368
+    min_latitude: 48.837212
+    min_longitude: 2.9582769
+    max_latitude: 50.0694951
+    max_longitude: 4.255678899999999
+  translations:
+    af: Aisne
+    ar: أيسن
+    be: Дэпартамент Эна
+    bg: Ен²
+    bn: আইস্নে
+    ca: Aisne
+    cs: Aisne
+    da: Aisne
+    de: Département Aisne
+    el: Αιν
+    en: Aisne
+    es: Aisne
+    et: Aisne’i departemang
+    eu: Aisne
+    fa: انه
+    fi: Aisne
+    fr: Aisne
+    gl: Aisne
+    gu: એશને
+    he: אן²
+    hi: एयेन
+    hu: Aisne
+    hy: Էնա
+    id: Aisne
+    it: Aisne
+    ja: エーヌ県
+    ka: ენა
+    kn: ಐಸ್ನೆ
+    ko: 엔 주
+    lt: Ena
+    lv: Ēna²
+    mr: अएन
+    ms: Aisne
+    nb: Aisne
+    nl: Aisne
+    pl: Aisne
+    pt: Aisne
+    ro: Aisne
+    ru: Эна
+    si: අයිස්නේ
+    sk: Aisne
+    sl: Aisne
+    sr: Ен²
+    sv: Aisne
+    sw: Aisne
+    ta: ஐஸின்
+    te: ఏయిస్న్
+    th: จังหวัดแอน
+    tr: Aisne
+    uk: Ена
+    ur: اینہ
+    vi: Aisne
+    zh: 埃纳省
+    cy: Aisne
+    ceb: Aisne
+    sr_Latn: En²
+    yue_Hans: 埃纳
+    jv: Aisne
+    sq: Aisne
+    ccp: "\U00011103\U0001112D\U0001110C\U00011134\U0001111A\U0001112C"
+    kk: Эна
+    yue: 埃納
+    az: Ena departamenti
+    mk: Ена
+    'no': Aisne
+    ga: Aisne
+    ml: അൽസ്നെ
+  comments:
+  type: metropolitan_department
+'03':
+  name: Allier
+  code: '03'
+  unofficial_names: Allier
+  geo:
+    latitude: 46.3115552
+    longitude: 3.4167655
+    min_latitude: 45.9307329
+    min_longitude: 2.2767951
+    max_latitude: 46.804293
+    max_longitude: 4.0057391
+  translations:
+    af: Allier
+    ar: أليي
+    be: Дэпартамент Алье
+    bg: Алие
+    bn: আলিয়ের
+    ca: Alier
+    cs: Allier
+    da: Allier
+    de: Département Allier
+    el: Αλλιέ
+    en: Allier
+    es: Allier
+    et: Allier’ departemang
+    eu: Allier
+    fa: آلیه
+    fi: Allier
+    fr: Allier
+    gl: Allier
+    gu: એલિયર
+    he: אלייה
+    hi: एलियर
+    hu: Allier
+    hy: Ալյե
+    id: Allier
+    it: Allier
+    ja: アリエ県
+    ka: ალე
+    kn: ಅಲಿಯರ್
+    ko: 알리에 주
+    lt: Aljė
+    lv: Aljē
+    mr: आल्ये
+    ms: Allier
+    nb: Allier
+    nl: Allier
+    os: Alèir
+    pl: Allier
+    pt: Allier
+    ro: Allier
+    ru: Алье
+    si: අල්ලීර්
+    sk: Allier
+    sl: Allier
+    sr: Алије
+    sv: Allier
+    sw: Allier
+    ta: அள்ளியர்
+    te: ఆలియర్
+    th: จังหวัดอาลีเย
+    tr: Allier
+    uk: Альє
+    ur: الیے
+    vi: Allier
+    zh: 阿列省
+    cy: Allier
+    ceb: Allier
+    sr_Latn: Alije
+    yue_Hans: 阿列
+    jv: Allier
+    sq: Allier
+    ccp: "\U00011103\U00011123\U00011133\U00011126\U00011128\U00011120\U00011122\U00011134"
+    kk: Алье
+    yue: 阿列
+    az: Alye
+    'no': Allier
+    mk: Алје
+  comments:
+  type: metropolitan_department
+'04':
+  name: Alpes-de-Haute-Provence
+  code: '04'
+  unofficial_names: Alpes-de-Haute-Provence
+  geo:
+    latitude: 44.07787159999999
+    longitude: 6.2375947
+    min_latitude: 43.6683251
+    min_longitude: 5.496792999999999
+    max_latitude: 44.6599989
+    max_longitude: 6.969039
+  translations:
+    af: Alpes-de-Haute-Provence
+    ar: ألب البروفنس العليا
+    be: Альпы Верхняга Праванса
+    bg: Алп дьо От Прованс
+    bn: অ্যাসপলস দি হাউতে প্রদেশ
+    ca: Alps de l’Alta Provença
+    cs: Alpes-de-Haute-Provence
+    da: Alpes-de-Haute-Provence
+    de: Alpes-de-Haute-Provence
+    el: Αλπ-ντε-Ωτ-Προβάνς
+    en: Alpes-de-Haute-Provence
+    es: Alpes de Alta Provenza
+    et: Alpes-de-Haute-Provence
+    eu: Alpes-de-Haute-Provence
+    fa: آلپ-دو-اوت-پرووانس
+    fi: Alpes-de-Haute-Provence
+    fr: Alpes-de-Haute-Provence
+    gl: Alpes da Alta Provenza
+    gu: આલ્પ્સ-દે-હૌટ-પ્રોવેન્સ
+    he: האלפים של פרובאנס עילית
+    hi: एल्पेस-डी-ओट-प्रोवेंस
+    hu: Alpes-de-Haute-Provence
+    hy: Վերին Ալպերի Պրովանս
+    id: Alpes-de-Haute-Provence
+    it: Alpi dell’Alta Provenza
+    ja: アルプ＝ド＝オート＝プロヴァンス県
+    ka: ზემო პროვანსის ალპები
+    kn: ಆಲ್ಪೆಸ್-ಡಿ-ಹಾಟೆ-ಪ್ರೊವೆನ್ಸ್
+    ko: 알프드오트프로방스 주
+    lt: Aukštutinio Provanso Alpės
+    lv: Augšprovansas Alpi
+    mr: आल्प-दा-ऑत-प्रोव्हाँस
+    ms: Alpes-de-Haute-Provence
+    nb: Alpes-de-Haute-Provence
+    nl: Alpes-de-Haute-Provence
+    pl: Alpy Górnej Prowansji
+    pt: Alpes da Alta Provença
+    ro: Alpes-de-Haute-Provence
+    ru: Альпы Верхнего Прованса
+    si: ඇල්ප්ස්-ඩි-හවුටේ පළාත
+    sk: Alpes-de-Haute-Provence
+    sl: Alpes-de-Haute-Provence
+    sr: Горњопровансалски Алпи
+    sv: Alpes-de-Haute-Provence
+    sw: Alpes-de-Haute-Provence
+    ta: ஆல்ப்ஸ் -டே -அவுட் -ப்ரொவென்ஸ்
+    te: ఆల్పెస్-డి-హాటి-ప్రావిన్స్
+    th: จังหวัดอาลป์-เดอ-โอต-พรอว็องส์
+    tr: Alpes-de-Haute-Provence
+    uk: Альпи Верхнього Провансу
+    ur: آلپ-دو-بالائی-پروانس
+    vi: Alpes-de-Haute-Provence
+    zh: 上普罗旺斯阿尔卑斯省
+    cy: Alpes-de-Haute-Provence
+    ceb: Alpes-de-Haute-Provence
+    sr_Latn: Gornjoprovansalski Alpi
+    yue_Hans: 上普罗旺斯阿尔卑斯
+    sq: Alpes-de-Haute-Provence
+    ccp: "\U00011103\U00011127\U00011123\U00011134\U0001111B\U0001112C\U0001110C\U00011134-\U00011113\U0001112C-\U00011126\U00011105\U0001112A\U00011116\U00011134-\U0001111B\U00011133\U00011122\U00011127\U0001111E\U0001112C\U0001111A\U00011134\U0001110C\U00011134"
+    kk: Жоғарғы Прованс Альпілері
+    yue: 上普羅旺斯阿爾卑斯
+    az: Yuxarı Provans Alpları (departament)
+    mk: Горнопровансалски Алпи
+    'no': Alpes-de-Haute-Provence
+  comments:
+  type: metropolitan_department
+'05':
+  name: Hautes-Alpes
+  code: '05'
+  unofficial_names: Hautes-Alpes
+  geo:
+    latitude: 44.6008723
+    longitude: 6.322607199999999
+    min_latitude: 44.186442
+    min_longitude: 5.4183639
+    max_latitude: 45.12685099999999
+    max_longitude: 7.077154999999999
+  translations:
+    af: Hautes-Alpes
+    ar: الألب العليا
+    be: Верхнія Альпы
+    bg: Отз Алп
+    bn: হাউতেস আল্পিস
+    ca: Alts Alps
+    cs: Hautes-Alpes
+    da: Hautes-Alpes
+    de: Département Hautes-Alpes
+    el: Ωτ-Αλπ
+    en: Hautes-Alpes
+    es: Altos Alpes
+    et: Hautes-Alpes
+    eu: Alpe Garaiak
+    fa: اوت-آلپ
+    fi: Hautes-Alpes
+    fr: Hautes-Alpes
+    gl: Alpes Altos
+    gu: હોટસ-આલ્પ્સ
+    he: האלפים העליונים
+    hi: ओटेस-एल्पेस
+    hu: Hautes-Alpes
+    hy: Վերին Ալպեր
+    id: Hautes-Alpes
+    it: Alte Alpi
+    ja: オート＝アルプ県
+    ka: ზემო ალპები
+    kn: ಹೌಟೆಸ್-ಆಲ್ಪ್ಸ್
+    ko: 오트잘프 주
+    lt: Aukštutinės Alpės
+    lv: Augšalpi
+    mr: ऑत-आल्प
+    ms: Hautes-Alpes
+    nb: Hautes-Alpes
+    nl: Hautes-Alpes
+    pl: Alpy Wysokie
+    pt: Altos Alpes
+    ro: Hautes-Alpes
+    ru: Верхние Альпы
+    si: හවුටෙස්-ඇල්ප්ස්
+    sk: Hautes-Alpes
+    sl: Hautes-Alpes
+    sr: Горњи Алпи
+    sv: Hautes-Alpes
+    sw: Hautes-Alpes
+    ta: ஹஉட்ஸ்-ஆல்ப்ஸ்
+    te: హాట్స్-ఆల్పెస్
+    th: จังหวัดโอตซาลป์
+    tr: Hautes-Alpes
+    uk: Верхні Альпи
+    ur: بالائی-آلپ
+    vi: Hautes-Alpes
+    zh: 上阿尔卑斯省
+    cy: Hautes-Alpes
+    ceb: Hautes-Alpes
+    sr_Latn: Gornji Alpi
+    yue_Hans: 上阿尔卑斯
+    sq: Hautes-Alpes
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011103\U00011123\U00011134\U0001111B\U0001112C\U0001110C\U00011134"
+    kk: Жоғарғы Альпілер
+    yue: 上阿爾卑斯
+    az: Yuxarı Alplar
+    'no': Hautes-Alpes
+    mk: Горни Алпи
+  comments:
+  type: metropolitan_department
+'06':
+  name: Alpes-Maritimes
+  code: '06'
+  unofficial_names: Alpes-Maritimes
+  geo:
+    latitude: 43.9466791
+    longitude: 7.179025999999999
+    min_latitude: 43.48030199999999
+    min_longitude: 6.635411899999999
+    max_latitude: 44.3611549
+    max_longitude: 7.718992999999998
+  translations:
+    af: Alpes-Maritimes
+    ar: الألب البحرية
+    be: Дэпартамент Альпы Прыморскія
+    bg: Алп Маритим
+    bn: অ্যাপলস মেরিতাইম
+    ca: Alps Marítims
+    cs: Alpes-Maritimes
+    da: Alpes-Maritimes
+    de: Alpes-Maritimes
+    el: Αλπ-Μαριτίμ
+    en: Alpes-Maritimes
+    es: Alpes Marítimos
+    et: Alpes-Maritimes
+    eu: Itsas Alpeak
+    fa: آلپ-ماریتیم
+    fi: Alpes-Maritimes
+    fr: Alpes-Maritimes
+    gl: Alpes Marítimos
+    gu: આલ્પ્સ-મેરીટાઇમ્સ
+    he: האלפים הימיים
+    hi: एल्प्स-मैरिटाइम्स
+    hr: Alpes-Maritimes
+    hu: Alpes-Maritimes
+    hy: Ծովափնյա Ալպեր
+    id: Alpes-Maritimes
+    it: Alpi Marittime
+    ja: アルプ＝マリティーム県
+    ka: ზღვისპირა ალპები
+    kn: ಆಲ್ಪೆಸ್-ಮಾರಿಟೈಮ್ಸ್
+    ko: 알프마리팀 주
+    lt: Pajūrio Alpės
+    lv: Piejūras Alpi
+    mr: आल्प-मरितीम
+    ms: Alpes-Maritimes
+    nb: Alpes-Maritimes
+    nl: Alpes-Maritimes
+    pl: Alpy Nadmorskie
+    pt: Alpes Marítimos
+    ro: Alpes-Maritimes
+    ru: Приморские Альпы
+    si: ඇල්ප්ස්-මැරිටයිම්ස්
+    sk: Alpes-Maritimes
+    sl: Alpes-Maritimes
+    sr: Приморски Алпи
+    sv: Alpes-Maritimes
+    sw: Alpes-Maritimes
+    ta: ஆல்ப்ஸ் -மாரிடிம்ஸ்
+    te: ఆల్పెస్-మారిటైమ్స్
+    th: จังหวัดอาลป์-มารีตีม
+    tr: Alpes-Maritimes
+    uk: Приморські Альпи
+    ur: آلپ-ماریتیم
+    vi: Alpes-Maritimes
+    zh: 滨海阿尔卑斯省
+    cy: Alpes-Maritimes
+    ceb: Alpes-Maritimes
+    sr_Latn: Primorski Alpi
+    yue_Hans: 滨海阿尔卑斯
+    sq: Alpes-Maritimes
+    ccp: "\U00011103\U00011123\U00011134\U0001111B\U0001112C\U0001110C\U00011134-\U0001111F\U0001112C\U00011122\U00011128\U00011111\U0001112D\U0001111F\U00011134\U0001110C\U00011134"
+    kk: Альпі-Маритим
+    yue: 濱海阿爾卑斯
+    az: Dənizkənarı Alplar
+    mk: Приморски Алпи
+    'no': Alpes-Maritimes
+  comments:
+  type: metropolitan_department
+'07':
+  name: Ardèche
+  code: '07'
+  unofficial_names: Ardèche
+  geo:
+    latitude: 44.759629
+    longitude: 4.5624426
+    min_latitude: 44.26434099999999
+    min_longitude: 3.8611
+    max_latitude: 45.3662
+    max_longitude: 4.8864709
+  translations:
+    en: Ardèche
+    af: Ardèche
+    ar: الأرديش
+    be: Ардэш
+    bg: Ардеш
+    bn: আর্দেচে
+    ca: Ardecha
+    cs: Ardèche
+    da: Ardèche
+    de: Ardèche
+    el: Αρντές
+    es: Ardéche
+    et: Ardèche’i departemang
+    eu: Ardèche
+    fa: آردش
+    fi: Ardèche
+    fr: Ardèche
+    gl: Ardèche
+    gu: અર્ડેચે
+    he: ארדש
+    hi: आरडेश
+    hu: Ardèche
+    hy: Արդեշ
+    id: Ardèche
+    it: Ardèche
+    ja: アルデシュ県
+    ka: არდეში
+    kn: ಆರ್ಡೆಚೆ
+    ko: 아르데슈 주
+    lt: Ardešas
+    lv: Ardēša
+    mr: आर्देश
+    ms: Ardèche
+    nb: Ardèche
+    nl: Ardèche
+    pl: Ardèche
+    pt: Ardèche
+    ro: Ardèche
+    ru: Ардеш
+    si: අර්ඩෙචේ
+    sk: Ardèche
+    sl: Ardèche
+    sr: Ардеш
+    sv: Ardèche
+    sw: Ardèche
+    ta: அர்டெச்சே
+    te: ఆర్డెచ్
+    th: จังหวัดอาร์แด็ช
+    tr: Ardèche
+    uk: Ардеш
+    ur: آردیش
+    vi: Ardèche
+    zh: 阿尔代什省
+    cy: Ardèche
+    ceb: Ardèche
+    sr_Latn: Ardeš
+    yue_Hans: 阿尔代什
+    sq: Ardèche
+    ccp: "\U00011103\U00011122\U00011134\U00011113\U0001112C\U0001110C\U00011134"
+    kk: Ардеш
+    yue: 阿爾代什
+    az: Ardeş (departament)
+    mk: Ардеш
+    'no': Ardèche
+  comments:
+  type: metropolitan_department
+'08':
+  name: Ardennes
+  code: '08'
+  unofficial_names: Ardennes
+  geo:
+    latitude: 49.7624642
+    longitude: 4.6285053
+    min_latitude: 49.22697489999999
+    min_longitude: 4.0244631
+    max_latitude: 50.169162
+    max_longitude: 5.394246
+  translations:
+    en: Ardennes
+    af: Ardennes
+    ar: الأردين
+    be: дэпартамент Ардэны
+    bg: Арден
+    bn: আরদেনেস
+    ca: Ardenes
+    cs: Ardensko
+    da: Ardennes
+    de: Département Ardennes
+    el: Αρδέννες
+    es: Ardenas
+    et: Ardennesi departemang
+    eu: Ardenak
+    fa: آردن
+    fi: Ardennes
+    fr: Ardennes
+    gl: Ardenas - Ardennes
+    gu: અર્ડેન્સ
+    he: ארדן
+    hi: आर्देनेस
+    hr: Ardennes
+    hu: Ardennes
+    hy: Արդեններ
+    id: Ardennes
+    it: Ardenne
+    ja: アルデンヌ県
+    ka: არდენი
+    kn: ಆರ್ಡೆನ್ನೆಸ್
+    ko: 아르덴 주
+    lt: Ardėnai
+    lv: Ardēni
+    mr: अ‍ॅर्देन
+    ms: Ardennes
+    nb: Ardennes
+    nl: Ardennes
+    pl: Ardeny
+    pt: Ardenas
+    ro: Ardennes
+    ru: Арденны
+    si: අර්ඩෙන්නෙස්
+    sk: Ardennes
+    sl: Ardennes
+    sr: Ардени
+    sv: Ardennes
+    sw: Ardennes
+    ta: அர்டேன்னெஸ்
+    te: అర్డెన్నెస్
+    th: จังหวัดอาร์แดน
+    tr: Ardennes
+    uk: Арденни
+    ur: اردن
+    vi: Ardennes
+    zh: 阿登省
+    cy: Ardennes
+    ceb: Ardennes
+    sr_Latn: Ardeni
+    yue_Hans: 亚丁
+    sq: Ardennes
+    ccp: "\U00011103\U00011122\U00011134\U00011113\U0001112C\U0001111A\U00011134\U00011125\U0001112C\U0001110C\U00011134"
+    kk: Арденне
+    yue: 亞丁
+    az: Ardenlər (departament)
+    mk: Ардени
+    'no': Ardennes
+  comments:
+  type: metropolitan_department
+'09':
+  name: Ariège
+  code: '09'
+  unofficial_names: Ariège
+  geo:
+    latitude: 42.9326292
+    longitude: 1.443469
+    min_latitude: 42.571489
+    min_longitude: 0.825994
+    max_latitude: 43.3162221
+    max_longitude: 2.1758469
+  translations:
+    af: Ariège
+    ar: أرييج
+    bg: Ариеж
+    bn: অ্যারিগে
+    ca: Arieja
+    cs: Ariège
+    da: Ariège
+    de: Département Ariège
+    el: Αριέζ
+    en: Ariège
+    es: Ariège
+    et: Ariège’i departemang
+    eu: Ariège
+    fa: آرییژ
+    fi: Ariège
+    fr: Ariège
+    gl: Ariège
+    gu: એરિંગે
+    he: ארייז׳
+    hi: एरीज
+    hu: Ariège
+    hy: Արյեժ
+    id: Ariège
+    it: Ariège
+    ja: アリエージュ県
+    ka: არეჟი
+    kn: ಅರಿಯೆಜ್
+    ko: 아리에주 주
+    lt: Arježas
+    lv: Arjēža
+    mr: आर्येज
+    ms: Ariège
+    nb: Ariège
+    nl: Ariège
+    pl: Ariège
+    pt: Ariège
+    ro: Ariège
+    ru: Арьеж
+    si: අරීගේ
+    sk: Ariège
+    sl: Ariège
+    sr: Арјеж
+    sv: Ariège
+    sw: Ariège
+    ta: அரிஏஜே
+    te: ఆరియేజ్
+    th: จังหวัดอาเรียฌ
+    tr: Ariège
+    uk: Арʼєж
+    ur: اریج
+    vi: Ariège
+    zh: 阿列日省
+    cy: Ariège
+    ceb: Ariège
+    sr_Latn: Arjež
+    yue_Hans: 阿列日
+    sq: Ariège
+    ccp: "\U00011103\U00011127\U00011122\U00011128\U00011120\U0001112C\U0001110C\U00011134"
+    kk: Арьеж
+    yue: 阿列日
+    az: Aryej
+    'no': Ariège
+    mk: Арјеж
+  comments:
+  type: metropolitan_department
+'10':
+  name: Aube
+  code: '10'
+  unofficial_names: Aube
+  geo:
+    latitude: 48.1563418
+    longitude: 4.3732462
+    min_latitude: 47.923696
+    min_longitude: 3.3836479
+    max_latitude: 48.716736
+    max_longitude: 4.864605099999999
+  translations:
+    af: Aube
+    ar: أوب
+    be: Дэпартамент Об
+    bg: Об
+    bn: অবে
+    ca: Aube
+    cs: Aube
+    da: Aube
+    de: Département Aube
+    el: Ωμπ
+    en: Aube
+    es: Aube
+    et: Aube’i departemang
+    eu: Aube
+    fa: اوب
+    fi: Aube
+    fr: Aube
+    gl: Aube
+    gu: ઔબે
+    he: אוב
+    hi: ऑबे
+    hr: Aube
+    hu: Aube
+    hy: Օբ
+    id: Aube
+    it: Aube
+    ja: オーブ県
+    ka: ობი
+    kn: ಆಯುಬ್
+    ko: 오브 주
+    lt: Obas
+    lv: Oba
+    mr: ऑब
+    ms: Aube
+    nb: Aube
+    nl: Aube
+    pl: Aube
+    pt: Aube
+    ro: Aube
+    ru: Об
+    si: ඖබේ
+    sk: Aube
+    sl: Aube
+    sr: Об
+    sv: Aube
+    sw: Aube
+    ta: ஆபே
+    te: ఆబ్
+    th: จังหวัดโอบ
+    tr: Aube
+    uk: Об
+    ur: اوب
+    vi: Aube
+    zh: 奥布省
+    cy: Aube
+    ceb: Aube
+    sr_Latn: Ob
+    yue_Hans: 奥布
+    sq: Aube
+    ccp: "\U00011103\U00011127\U00011105\U0001112A\U0001111D\U0001112C"
+    kk: Об
+    yue: 奧布
+    az: Ob (departament)
+    mk: Об
+    'no': Aube
+  comments:
+  type: metropolitan_department
+'11':
+  name: Aude
+  code: '11'
+  unofficial_names: Aude
+  geo:
+    latitude: 43.0724667
+    longitude: 2.3813621
+    min_latitude: 42.648912
+    min_longitude: 1.688426
+    max_latitude: 43.460066
+    max_longitude: 3.240139
+  translations:
+    af: Aude
+    ar: أود
+    be: Дэпартамент Од
+    bg: Од
+    bn: ওদ
+    ca: Aude
+    cs: Aude
+    da: Aude
+    de: Département Aude
+    el: Ωντ
+    en: Aude
+    es: Aude
+    et: Aude’i departemang
+    eu: Aude
+    fa: اود
+    fi: Aude
+    fr: Aude
+    gl: Aude
+    gu: ઔડ
+    he: אוד
+    hi: ओडे
+    hu: Aude
+    hy: Օդ
+    id: Aude
+    it: Aude
+    ja: オード県
+    ka: ოდი
+    kn: ಔಡೆ
+    ko: 오드 주
+    lt: Odas
+    lv: Oda
+    mn: Од аймаг
+    mr: ऑद
+    ms: Aude
+    nb: Aude
+    nl: Aude
+    pl: Aude
+    pt: Aude
+    ro: Aude
+    ru: Од
+    si: ඖඩේ
+    sk: Aude
+    sl: Aude
+    sr: Од
+    sv: Aude
+    sw: Aude
+    ta: ஆடி
+    te: ఆడ్
+    th: จังหวัดโอด
+    tr: Aude
+    uk: Од
+    ur: اود
+    vi: Aude
+    zh: 奥德省
+    cy: Aude
+    ceb: Aude
+    sr_Latn: Od
+    yue_Hans: 奥德
+    sq: Aude
+    ccp: "\U00011103\U00011127\U00011105\U0001112A\U00011113\U0001112C"
+    kk: Од
+    yue: 奧德
+    az: Od (departament)
+    'no': Aude
+    mk: Од
+  comments:
+  type: metropolitan_department
+'12':
+  name: Aveyron
+  code: '12'
+  unofficial_names: Aveyron
+  geo:
+    latitude: 44.2179747
+    longitude: 2.6189273
+    min_latitude: 43.690619
+    min_longitude: 1.839313
+    max_latitude: 44.941441
+    max_longitude: 3.4517541
+  translations:
+    af: Aveyron
+    ar: أفيرون
+    be: Аверон
+    bg: Аверон
+    bn: এভেরন
+    ca: Avairon
+    cs: Aveyron
+    da: Aveyron
+    de: Département Aveyron
+    el: Αβεϊρόν
+    en: Aveyron
+    es: Aveyron
+    et: Aveyroni departemang
+    eu: Aveyron
+    fa: آویرون
+    fi: Aveyron
+    fr: Aveyron
+    gl: Aveyron
+    gu: એવેરોન
+    he: אוורון
+    hi: एवेरौन
+    hu: Aveyron
+    hy: Ավերոն
+    id: Aveyron
+    it: Aveyron
+    ja: アヴェロン県
+    ka: ავერონი
+    kn: ಅವೇಯ್ರ್ಓನ್
+    ko: 아베롱 주
+    lt: Averonas
+    lv: Aveirona
+    mr: अ‍ॅव्हेरों
+    ms: Aveyron
+    nb: Aveyron
+    nl: Aveyron
+    pl: Aveyron
+    pt: Aveyron
+    ro: Aveyron
+    ru: Аверон
+    si: අවෙයිරොන්
+    sk: Aveyron
+    sl: Aveyron
+    sr: Аверон
+    sv: Aveyron
+    sw: Aveyron
+    ta: அவேய்றோன்
+    te: అవేరాన్
+    th: จังหวัดอาแวรง
+    tr: Aveyron
+    uk: Аверон
+    ur: اویرون
+    vi: Aveyron
+    zh: 阿韦龙省
+    cy: Aveyron
+    ceb: Aveyron
+    sr_Latn: Averon
+    yue_Hans: 阿韦龙
+    sq: Aveyron
+    ccp: "\U00011103\U00011127\U0001111E\U0001112C\U00011122\U00011127\U0001111A\U00011134"
+    kk: Аверон
+    yue: 阿韋龍
+    az: Averon (departament)
+    mk: Аверон
+    'no': Aveyron
+  comments:
+  type: metropolitan_department
+'13':
+  name: Bouches-du-Rhône
+  code: '13'
+  unofficial_names: Bouches-du-Rhône
+  geo:
+    latitude: 43.59116789999999
+    longitude: 5.3102505
+    min_latitude: 43.1573841
+    min_longitude: 4.230207
+    max_latitude: 43.924136
+    max_longitude: 5.8134309
+  translations:
+    af: Bouches-du-Rhône
+    ar: بوش دي رون
+    be: Буш-дзю-Рон
+    bg: Буш дю Рон
+    bn: বুচেস-ডু-রোন
+    ca: Boques del Roine
+    cs: Bouches-du-Rhône
+    da: Bouches-du-Rhône
+    de: Département Bouches-du-Rhône
+    el: Μπους-ντυ-Ρον
+    en: Bouches-du-Rhône
+    es: Bocas del Ródano
+    et: Bouches-du-Rhône
+    eu: Bouches-du-Rhône
+    fa: بوش دو رون
+    fi: Bouches-du-Rhône
+    fr: Bouches-du-Rhône
+    gl: Bocas de Ródano
+    gu: બોચેસ-ડુ-રૉન
+    he: שפך הרון
+    hi: बोचेस-डु-रोन
+    hu: Bouches-du-Rhône
+    hy: Բուշ-դյու-Ռոն
+    id: Bouches-du-Rhône
+    it: Bocche del Rodano
+    ja: ブーシュ＝デュ＝ローヌ県
+    ka: ბუშ-დიუ-რონი
+    kn: ಬೌಚೆಸ್-ಡು-ರೋನ್
+    ko: 부슈뒤론 주
+    lt: Ronos delta
+    lv: Bušdirona
+    mr: बुश-द्यु-रोन
+    ms: Bouches-du-Rhône
+    nb: Bouches-du-Rhône
+    nl: Bouches-du-Rhône
+    pl: Delta Rodanu
+    pt: Bocas do Ródano
+    ro: Bouches-du-Rhône
+    ru: Буш-дю-Рон
+    si: බෞචෙස්-ඩු-රෝනේ
+    sk: Bouches-du-Rhône
+    sl: Bouches-du-Rhône
+    sr: Ушће Роне
+    sv: Bouches-du-Rhône
+    sw: Bouches-du-Rhône
+    ta: பௌச்ஸ் -டு -ரஹானே
+    te: బౌచెస్-డు-రోన్
+    th: จังหวัดบุช-ดูว์-โรน
+    tr: Bouches-du-Rhône
+    uk: Буш-дю-Рон
+    ur: بوش-دو-رون
+    vi: Bouches-du-Rhône
+    zh: 罗讷河口省
+    cy: Bouches-du-Rhône
+    ceb: Bouches-du-Rhône
+    sr_Latn: Ušće Rone
+    yue_Hans: 隆河河口
+    sq: Bouches-du-Rhône
+    ccp: "\U0001111D\U00011105\U0001112A\U0001111A\U00011134\U0001110C\U00011134-\U00011113\U0001112A-\U00011122\U0001112E\U0001111A\U00011134"
+    kk: Буш-дю-Рон
+    yue: 隆河河口
+    az: Buş-dü-Ron
+    'no': Bouches-du-Rhône
+    mk: Устие на Рона
+  comments:
+  type: metropolitan_department
+'14':
+  name: Calvados
+  code: '14'
+  unofficial_names: Calvados
+  geo:
+    latitude: 49.1213315
+    longitude: -0.4330578
+    min_latitude: 48.751681
+    min_longitude: -1.159777
+    max_latitude: 49.4299189
+    max_longitude: 0.4464769
+  translations:
+    en: Calvados
+    af: Calvados
+    ar: كالفادوس
+    az: Kalvados
+    be: Дэпартамент Кальвадос
+    bg: Калвадос
+    bn: ক্যাালভাডোস
+    ca: Calvados
+    cs: Calvados
+    da: Calvados
+    de: Département Calvados
+    el: Καλβαντός
+    es: Calvados
+    et: Calvadosi departemang
+    eu: Calvados
+    fa: کالوادوس
+    fi: Calvados
+    fr: Calvados
+    gl: Calvados
+    gu: કેલ્વાડોસ
+    he: קלבדוס
+    hi: सेल्वाडोस
+    hu: Calvados
+    hy: Կալվադոս
+    id: Calvados
+    it: Calvados
+    ja: カルヴァドス県
+    ka: კალვადოსი
+    kn: ಕ್ಯಾಲ್ವಾಡೋಸ್
+    ko: 칼바도스 주
+    lt: Kalvadosas
+    lv: Kalvadosa
+    mr: काल्व्हादोस
+    ms: Calvados
+    nb: Calvados
+    nl: Calvados
+    pl: Calvados
+    pt: Calvados
+    ro: Calvados
+    ru: Кальвадос
+    si: කල්වඩෝස්
+    sk: Calvados
+    sl: Calvados
+    sr: Калвадос
+    sv: Calvados
+    sw: Calvados
+    ta: சால்வடோஸ்
+    te: కాల్వాడోస్
+    th: จังหวัดกาลวาโดส
+    tr: Calvados
+    uk: Кальвадос
+    ur: کالوادوس
+    vi: Calvados
+    zh: 卡爾瓦多斯省
+    cy: Calvados
+    ceb: Calvados
+    sr_Latn: Kalvados
+    yue_Hans: 卡尔华多斯
+    jv: Calvados
+    sq: Calvados
+    ccp: "\U00011107\U00011133\U00011120\U00011122\U00011134\U0001111E\U00011113\U0001112E\U0001110C\U00011134"
+    kk: Кальвадос
+    yue: 卡爾華多斯
+    'no': Calvados
+    ga: Calvados
+    mk: Калвадос
+    ml: കാൽവഡോസ്
+  comments:
+  type: metropolitan_department
+'15':
+  name: Cantal
+  code: '15'
+  unofficial_names: Cantal
+  geo:
+    latitude: 45.1191997
+    longitude: 2.6326062
+    min_latitude: 44.61577579999999
+    min_longitude: 2.062882
+    max_latitude: 45.4834729
+    max_longitude: 3.371465
+  translations:
+    en: Cantal
+    af: Cantal
+    ar: كانتال
+    be: Дэпартамент Канталь
+    bg: Кантал
+    bn: ক্যান্টাল
+    ca: Cantal
+    cs: Cantal
+    da: Cantal
+    de: Département Cantal
+    el: Καντάλ
+    es: Cantal
+    et: Cantali departemang
+    eu: Cantal
+    fa: کانتال
+    fi: Cantal
+    fr: Cantal
+    gl: Cantal
+    gu: કેન્ટલ
+    he: קנטל
+    hi: कैंटाल
+    hu: Cantal
+    hy: Կանտալ
+    id: Cantal
+    it: Cantal
+    ja: カンタル県
+    ka: კანტალი
+    kn: ಕ್ಯಾಂಟಲ್
+    ko: 캉탈 주
+    lt: Kantalis
+    lv: Kantāla
+    mr: कांतॅल
+    ms: Cantal
+    nb: Cantal
+    nl: Cantal
+    pl: Cantal
+    pt: Cantal
+    ro: Cantal
+    ru: Канталь
+    si: කැන්ටල්
+    sk: Cantal
+    sl: Cantal
+    sr: Кантал
+    sv: Cantal
+    sw: Cantal
+    ta: காண்டல்
+    te: కాంటాల్
+    th: จังหวัดก็องตาล
+    tr: Cantal
+    uk: Канталь
+    ur: کانتال
+    vi: Cantal
+    zh: 康塔爾省
+    cy: Cantal
+    ceb: Cantal
+    sr_Latn: Kantal
+    yue_Hans: 康塔尔
+    sq: Cantal
+    ccp: "\U00011107\U00011133\U00011120\U0001111A\U00011134\U00011111\U00011123\U00011134"
+    kk: Канталь
+    yue: 康塔爾
+    az: Kantal
+    'no': Cantal
+    mk: Кантал
+  comments:
+  type: metropolitan_department
+'16':
+  name: Charente
+  code: '16'
+  unofficial_names: Charente
+  geo:
+    latitude: 45.7519958
+    longitude: 0.1534761
+    min_latitude: 45.1916819
+    min_longitude: -0.463103
+    max_latitude: 46.140851
+    max_longitude: 0.9471240999999999
+  translations:
+    ar: شارنت
+    be: Шаранта
+    bg: Шарант
+    bn: চারেন্ট
+    ca: Charente
+    cs: Charente
+    da: Charente
+    de: Département Charente
+    el: Σαράντ
+    en: Charente
+    es: Charente
+    et: Charente’i departemang
+    eu: Charente
+    fa: شارانت
+    fi: Charente
+    fr: Charente
+    gl: Charente
+    gu: શેરેન્ટે
+    he: שראנט
+    hi: चेरंटी
+    hu: Charente
+    hy: Շարանտ
+    id: Charente
+    it: Charente
+    ja: シャラント県
+    ka: შარანტა
+    kn: ಚರೆನ್
+    ko: 샤랑트 주
+    lt: Šaranta
+    lv: Šaranta
+    mr: शारांत
+    ms: Charente
+    nb: Charente
+    nl: Charente
+    pl: Charente
+    pt: Charente
+    ro: Charente
+    ru: Шаранта
+    si: චරෙන්ටේ
+    sk: Charente
+    sl: Charente
+    sr: Шарант
+    sv: Charente
+    sw: Charente
+    ta: சாரெண்டே
+    te: చారెంట్
+    th: จังหวัดชาร็องต์
+    tr: Charente
+    uk: Шаранта
+    ur: شارنت
+    vi: Charente
+    zh: 夏朗德省
+    cy: Charente
+    af: Charente
+    ceb: Charente
+    sr_Latn: Šarant
+    yue_Hans: 沙蓝特
+    sq: Charente
+    ccp: "\U00011107\U00011122\U0001112C\U0001111A\U00011134\U00011111\U00011128"
+    kk: Шаранта
+    yue: 沙藍特
+    az: Şaranta (departament)
+    'no': Charente
+    mk: Шаранта
+  comments:
+  type: metropolitan_department
+'17':
+  name: Charente-Maritime
+  code: '17'
+  unofficial_names: Charente-Maritime
+  geo:
+    latitude: 45.74948999999999
+    longitude: -0.7733188
+    min_latitude: 45.0887499
+    min_longitude: -1.5626689
+    max_latitude: 46.371485
+    max_longitude: 0.005972
+  translations:
+    af: Charente-Maritime
+    ar: شارنت البحرية
+    be: Дэпартамент Шаранта Прыморская
+    bg: Шарант Маритим
+    bn: শারন্ত্‌-ম্যারিটাইম
+    ca: Charente Marítim
+    cs: Charente-Maritime
+    da: Charente-Maritime
+    de: Département Charente-Maritime
+    el: Σαράντ-Μαριτίμ
+    en: Charente-Maritime
+    es: Charente Marítimo
+    et: Charente-Maritime
+    eu: Charente-Maritime
+    fa: شرانت-ماریتیم
+    fi: Charente-Maritime
+    fr: Charente-Maritime
+    gl: Charente Marítimo
+    gu: બામાકો
+    he: השראנט הימי
+    hi: चेरंटी-मेरीटाइम
+    hu: Charente-Maritime
+    hy: Ծովափնյա Շարանտ
+    id: Charente-Maritime
+    it: Charente Marittima
+    ja: シャラント＝マリティーム県
+    ka: ზღვისპირა შარანტა
+    kn: ಚರೆನ್ಟೆ-ಮಾರಿಟೈಮ್
+    ko: 샤랑트마리팀 주
+    lt: Pajūrio Šaranta
+    lv: Piejūras Šaranta
+    mr: शारांत-मरितीम
+    ms: Charente-Maritime
+    nb: Charente-Maritime
+    nl: Charente-Maritime
+    pl: Charente-Maritime
+    pt: Charente-Maritime
+    ro: Charente-Maritime
+    ru: Приморская Шаранта
+    si: චරෙන්ටේ-මරිටයිම්
+    sk: Charente-Maritime
+    sl: Charente-Maritime
+    sr: Приморски Шарант
+    sv: Charente-Maritime
+    sw: Charente-Maritime
+    ta: சாரெண்டே -மாரிடைம்
+    te: చారెంట్-మారిటైమ్
+    th: จังหวัดชาร็องต์-มารีตีม
+    tr: Charente-Maritime
+    uk: Приморська Шаранта
+    ur: شارنت-ماریتیم
+    vi: Charente-Maritime
+    zh: 滨海夏朗德省
+    cy: Charente-Maritime
+    ceb: Charente-Maritime
+    sr_Latn: Primorski Šarant
+    yue_Hans: 滨海沙蓝特
+    sq: Charente-Maritime
+    ccp: "\U00011107\U00011122\U0001112C\U0001111A\U00011134\U00011111\U00011128-\U0001111F\U0001112C\U00011122\U00011128\U00011111\U0001112D\U0001111F\U00011134"
+    kk: Шаранта-Маритим
+    yue: 濱海沙藍特
+    az: Dənizkənarı Şaranta
+    mk: Приморска Шаранта
+    'no': Charente-Maritime
+  comments:
+  type: metropolitan_department
+'18':
+  name: Cher
+  code: '18'
+  unofficial_names: Cher
+  geo:
+    latitude: 46.954005
+    longitude: 2.4671908
+    min_latitude: 46.4204769
+    min_longitude: 1.773677
+    max_latitude: 47.629116
+    max_longitude: 3.0797451
+  translations:
+    ar: شير
+    be: Шэр, дэпартамент
+    bg: Шер
+    bn: চের
+    ca: Cher
+    cs: Cher
+    da: Cher
+    de: Département Cher
+    el: Σερ
+    en: Cher
+    es: Cher
+    et: Cheri departemang
+    eu: Cher
+    fa: شر
+    fi: Cher
+    fr: Cher
+    gl: Cher
+    gu: ચેર
+    hi: चेर
+    hu: Cher
+    hy: Շեր
+    id: Cher
+    is: Cher
+    it: Cher
+    ja: シェール県
+    ka: შერი
+    kn: ಚೆರ್
+    ko: 셰르 주
+    lt: Šeras
+    lv: Šēra
+    mr: शेर
+    ms: Cher
+    nb: Cher
+    nl: Cher
+    pl: Cher
+    pt: Cher
+    ro: Cher
+    ru: Шер
+    si: චෙර්
+    sk: Cher
+    sl: Cher
+    sr: Шер
+    sv: Cher
+    sw: Cher
+    ta: செர்
+    te: చెర్
+    th: จังหวัดแชร์
+    tr: Cher
+    uk: Шер
+    ur: شر
+    vi: Cher, Centre
+    zh: 谢尔省
+    cy: Cher
+    af: Cher (département)
+    ceb: Cher
+    sr_Latn: Šer
+    yue_Hans: 些尔
+    sq: Cher
+    ccp: "\U0001110C\U0001112C\U00011122\U00011134"
+    kk: Шер
+    yue: 些爾
+    az: Şer (departament)
+    'no': Cher
+    he: שר (מחוז)
+    mk: Шер
+  comments:
+  type: metropolitan_department
+'19':
+  name: Corrèze
+  code: '19'
+  unofficial_names: Corrèze
+  geo:
+    latitude: 45.372114
+    longitude: 1.873739
+    min_latitude: 45.32584199999999
+    min_longitude: 1.822327
+    max_latitude: 45.40995909999999
+    max_longitude: 1.921707
+  translations:
+    ar: كوريز
+    be: Карэз
+    bg: Корез
+    bn: কুরেজে
+    ca: Corresa
+    cs: Corrèze
+    da: Corrèze
+    de: Département Corrèze
+    el: Κορέζ
+    en: Corrèze
+    es: Corréze
+    et: Corrèze’i departemang
+    eu: Corrèze
+    fa: کورز
+    fi: Corrèze
+    fr: Corrèze
+    gl: Corrèze
+    gu: કોરેઝ
+    hi: कॉरीज़
+    hu: Corrèze
+    hy: Կորեզ
+    id: Corrèze
+    it: Corrèze
+    ja: コレーズ県
+    ka: კორეზი
+    kn: ಕಾರ್ರೀಜ್
+    ko: 코레즈 주
+    lt: Korezas
+    lv: Korēza
+    mr: कोरेझ
+    ms: Corrèze
+    nb: Corrèze
+    nl: Corrèze
+    pl: Corrèze
+    pt: Corrèze
+    ro: Corrèze
+    ru: Коррез
+    si: කොර්රෙසේ
+    sk: Corrèze
+    sl: Corrèze
+    sr: Корез
+    sv: Corrèze
+    sw: Corrèze
+    ta: கார்ப்ரேஸி
+    te: కోరెజ్
+    th: จังหวัดกอแรซ
+    tr: Corrèze
+    uk: Коррез
+    ur: کوریز
+    vi: Corrèze
+    zh: 科雷兹省
+    cy: Corrèze
+    af: Corrèze
+    ceb: Corrèze
+    sr_Latn: Korez
+    yue_Hans: 科雷兹
+    sq: Corrèze
+    ccp: "\U00011107\U0001112E\U00011122\U0001112C\U0001110C\U00011134"
+    he: קורז
+    kk: Коррез
+    yue: 科雷茲
+    az: Korrez
+    'no': Corrèze
+    mk: Корез
+  comments:
+  type: metropolitan_department
+20R:
+  name: Corse
+  unofficial_names:
+  - Corse
+  - Corsica
+  translations:
+    af: Korsika
+    ar: كورسيكا
+    az: Korsika
+    be: Корсіка
+    bg: Корсика
+    bn: কর্স
+    ca: Còrsega
+    cs: Korsika
+    da: Korsika
+    de: Korsika
+    el: Κορσική
+    en: Corsica
+    es: Córcega
+    et: Korsika
+    eu: Korsika
+    fa: جزیره کرس
+    fi: Korsika
+    fr: Corse
+    gl: Córsega
+    he: קורסיקה
+    hi: कोर्सिका
+    hr: Korzika
+    hu: Korzika
+    hy: Կորսիկա
+    id: Korsika
+    is: Korsíka
+    it: Corsica
+    ja: コルシカ島
+    ka: კორსიკა
+    kn: ಕಾರ್ಸಿಕ
+    ko: 코르시카
+    lt: Korsika
+    lv: Korsika
+    mr: कॉर्स
+    ms: Corse
+    nb: Korsika
+    nl: Corsica
+    pl: Korsyka
+    pt: Córsega
+    ro: Corsica
+    ru: Корсика
+    sk: Korzika
+    sl: Korzika
+    sr: Корзика
+    sv: Korsika
+    sw: Korsika
+    ta: கோர்சிகா
+    th: คอร์ซิกา
+    tr: Korsika
+    uk: Корсика
+    ur: کورسیکا
+    vi: Corse
+    zh: 科西嘉岛
+    cy: Corsica
+    ceb: Corse
+    sr_Latn: Korzika
+    yue_Hans: 科西嘉
+    jv: Korsika
+    sq: Korsika
+    ccp: "\U00011107\U0001112E\U00011122\U00011134\U0001110C\U00011134"
+    ga: An Chorsaic
+    ky: Корсика
+    ha: Korsika
+    so: Coorsica
+    pa: ਕਾਰਸਿਕਾ
+    kk: Корсика аралы
+    yue: 科西嘉
+    am: ኮርሲካ
+    uz: Korsika
+    bs: Korzika
+    mk: Корзика
+    ha_NE: Korsika
+    'no': Korsika
+    mn: Корсика
+    my: ကော်စီကာ
+  comments:
+  geo:
+    latitude: 42.180721
+    longitude: 9.04704
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: 20R
+  type: metropolitan_collectivity_with_special_status
+'21':
+  name: Côte-d'Or
+  code: '21'
+  unofficial_names: Côte-d'Or
+  geo:
+    latitude: 47.5126795
+    longitude: 4.635412
+    min_latitude: 46.899847
+    min_longitude: 4.065189999999999
+    max_latitude: 48.0313109
+    max_longitude: 5.518767
+  translations:
+    ar: كوت دور
+    ca: Costa d’Or
+    cs: Côte-d’Or
+    da: Côte-d’Or
+    de: Département Côte-d’Or
+    el: Κοτ-ντ’Ορ
+    en: Côte-d’Or
+    es: Côte-d’Or
+    et: Côte-d’Ori departemang
+    eu: Côte-d’Or
+    fa: کوت دور
+    fi: Côte-d’Or
+    fr: Côte-d’Or
+    gl: Côte-d’Or
+    gu: કોટ-ડી‘ઓર
+    hi: कोटे-डीओर
+    hu: Côte-d’Or
+    id: Côte-d’Or
+    it: Côte-d’Or
+    ja: コート＝ドール県
+    kn: ಕೋಟ್-ಡಿ‘ಒರ್
+    ko: 코트도르 주
+    lt: Kot d’Oras
+    lv: Kotdora
+    mr: कोत-द’ओर
+    ms: Côte-d’Or
+    nb: Côte-d’Or
+    nl: Côte-d’Or
+    pl: Côte-d’Or
+    pt: Côte-d’Or
+    ro: Côte-d’Or
+    si: කෝටේ -ඩිඕර්
+    sk: Côte-d’Or
+    sl: Côte-d’Or
+    sr: Златна обала
+    sv: Côte-d’Or
+    sw: Côte-d’Or
+    ta: கோட்-டி ‘ஓர்
+    te: కోటె-డిఓర్
+    th: จังหวัดโกต-ดอร์
+    tr: Côte-d’Or
+    uk: Кот-дʼОр
+    ur: کوت دور
+    vi: Côte-d’Or
+    zh: 科多尔省
+    cy: Côte-d’Or
+    af: Côte-d’Or
+    ceb: Côte-d’Or
+    sr_Latn: Zlatna obala
+    bn: কোট-ডী‘অর
+    yue_Hans: 黄金丘
+    jv: Côte-d’Or
+    sq: Côte-d’Or
+    ccp: "\U00011107\U0001112E\U00011116\U00011134-\U00011113\U00011128‘\U00011103\U00011127\U00011122\U00011134"
+    is: Côte-d’Or
+    he: קוט ד׳ור
+    kk: Кот-д’Ор
+    yue: 黃金丘
+    az: Kot-d’Or
+    mk: Златен Брег
+    'no': Côte-d’Or
+  comments:
+  type: metropolitan_department
+'22':
+  name: Côtes-d'Armor
+  code: '22'
+  unofficial_names:
+  - Côtes-du-Nord
+  geo:
+    latitude: 48.5108101
+    longitude: -3.3263676
+    min_latitude: 48.0325681
+    min_longitude: -3.665906
+    max_latitude: 48.90093599999999
+    max_longitude: -1.909064
+  translations:
+    af: Côtes-d’Armor
+    ar: كوت درمور
+    ca: Costes del Nord
+    cs: Côtes-d’Armor
+    da: Côtes-d’Armor
+    de: Département Côtes-d’Armor
+    el: Κοτ-ντ’Αρμόρ
+    en: Côtes-d’Armor
+    es: Côtes-d’Armor
+    et: Côtes-d’Armori departemang
+    eu: Côtes-d’Armor
+    fa: کوت-دارمور
+    fi: Côtes-d’Armor
+    fr: Côtes-d’Armor
+    gl: Côtes-d’Armor
+    gu: કોટ્સ-ડી‘આર્મર
+    he: קוט-ד׳ארמור
+    hi: कोटेस-डी‘आर्मोर
+    hu: Côtes-d’Armor
+    id: Côtes-d’Armor
+    is: Côtes-d’Armor
+    it: Côtes-d’Armor
+    ja: コート＝ダルモール県
+    kn: ಕೋಟ್ಸ್-ಡಿಆರ್ಮರ್
+    ko: 코트다르모르 주
+    lt: Kot d’Armoras
+    lv: Kotdarmora
+    mr: कोत-द’आर्मोर
+    ms: Côtes-d’Armor
+    nb: Côtes-d’Armor
+    nl: Côtes-d’Armor
+    pl: Côtes-d’Armor
+    pt: Côtes-d’Armor
+    ro: Côtes-d’Armor
+    si: කෝටෙස් -ඩි අර්මර්
+    sk: Côtes-d’Armor
+    sl: Côtes-d’Armor
+    sr: Обале Армора
+    sv: Côtes-d’Armor
+    sw: Côtes-d’Armor
+    ta: காட்ஸ் -ட’அர்மோர்
+    te: కోటెస్-డి ఆర్మర్
+    th: จังหวัดโกต-ดาร์มอร์
+    tr: Côtes-d’Armor
+    uk: Кот-дʼАрмор
+    ur: کوت درمور
+    vi: Côtes-d’Armor
+    zh: 阿摩尔滨海省
+    cy: Aodoù-an-Arvor
+    ceb: Côtes-d’Armor
+    sr_Latn: Obale Armora
+    bn: কোট-ডি‘আমর
+    yue_Hans: 阿摩尔滨海
+    ccp: "\U00011107\U0001112E\U00011116\U00011134-\U00011113\U00011128‘\U00011103\U00011122\U00011134\U0001111F\U0001112E\U00011122\U00011134"
+    kk: Кот-д’Армор
+    yue: 阿摩爾濱海
+    az: Kot-d’Armor
+    'no': Côtes-d’Armor
+    mk: Арморски Брег
+  comments:
+  type: metropolitan_department
+'23':
+  name: Creuse
+  code: '23'
+  unofficial_names: Creuse
+  geo:
+    latitude: 46.03776329999999
+    longitude: 2.0627832
+    min_latitude: 45.663551
+    min_longitude: 1.3726041
+    max_latitude: 46.45536999999999
+    max_longitude: 2.6112931
+  translations:
+    ar: كروز
+    be: Кроз, дэпартамент
+    bg: Крьоз
+    bn: ক্রুজ
+    ca: Cruesa
+    cs: Creuse
+    da: Creuse
+    de: Département Creuse
+    el: Κρεζ
+    en: Creuse
+    es: Creuse
+    et: Creuse’i departemang
+    eu: Creuse
+    fa: کروز
+    fi: Creuse
+    fr: Creuse
+    gl: Creuse
+    gu: ક્રેયુઝ
+    he: קרז
+    hi: क्रूसे
+    hu: Creuse
+    hy: Կրյոզ
+    id: Creuse
+    it: Creuse
+    ja: クルーズ県
+    ka: კრეზი
+    kn: ಕ್ರೂಸ್
+    ko: 크뢰즈 주
+    lt: Krezas
+    lv: Krēza
+    mr: क्रूझ
+    ms: Creuse
+    nb: Creuse
+    nl: Creuse
+    pl: Creuse
+    pt: Creuse
+    ro: Creuse
+    ru: Крёз
+    si: ක්‍රෙයූස්
+    sk: Creuse
+    sl: Creuse
+    sr: Крез
+    sv: Creuse
+    sw: Creuse
+    ta: கிரெஸெ
+    te: క్రియూస్
+    th: จังหวัดเคริซ
+    tr: Creuse
+    uk: Крез
+    ur: کروز
+    vi: Creuse
+    zh: 克勒兹省
+    cy: Creuse
+    af: Creuse
+    ceb: Creuse
+    sr_Latn: Krez
+    yue_Hans: 克勒兹
+    sq: Creuse
+    ccp: "\U00011107\U00011133\U00011122\U0001112C\U00011105\U0001112A\U0001110C\U00011134"
+    kk: Крёз
+    yue: 克勒茲
+    az: Kröz
+    'no': Creuse
+    mk: Крез
+  comments:
+  type: metropolitan_department
+'24':
+  name: Dordogne
+  code: '24'
+  unofficial_names: Dordogne
+  geo:
+    latitude: 45.14694859999999
+    longitude: 0.7572205
+    min_latitude: 44.570736
+    min_longitude: -0.041877
+    max_latitude: 45.7147689
+    max_longitude: 1.448245
+  translations:
+    ar: دوردونيي
+    be: Дардонь
+    bg: Дордон
+    bn: দোর্দোগ্নে
+    ca: Dordonya
+    cs: Dordogne
+    da: Dordogne
+    de: Département Dordogne
+    el: Ντορντόνι
+    en: Dordogne
+    es: Dordoña
+    et: Dordogne’i departemang
+    eu: Dordoina
+    fa: دوردون
+    fi: Dordogne
+    fr: Dordogne
+    gl: Dordoña
+    gu: દોર્દોગ્ને
+    he: דורדון
+    hi: दोर्दोंग
+    hu: Dordogne
+    hy: Դորդոն
+    id: Dordogne
+    it: Dordogna
+    ja: ドルドーニュ県
+    ka: დორდონი
+    kn: ಡೋರ್ಡೋಗ್ನೆ
+    ko: 도르도뉴 주
+    lt: Dordonė
+    lv: Dordoņa
+    mr: दोर्गोन्य
+    ms: Dordogne
+    nb: Dordogne
+    nl: Dordogne
+    pl: Dordogne
+    pt: Dordonha
+    ro: Dordogne
+    ru: Дордонь
+    si: ඩොර්ඩොග්නේ
+    sk: Dordogne
+    sl: Dordogne
+    sr: Дордоња
+    sv: Dordogne
+    sw: Dordogne
+    ta: டோர்டோக்னே
+    te: డార్డోని
+    th: จังหวัดดอร์ดอญ
+    tr: Dordogne
+    uk: Дордонь
+    ur: ڈورڈوین
+    vi: Dordogne
+    zh: 多爾多涅省
+    cy: Dordogne
+    af: Dordogne
+    ceb: Dordogne
+    sr_Latn: Dordonja
+    yue_Hans: 多尔多涅
+    sq: Dordogne
+    ccp: "\U00011113\U00011127\U00011122\U00011134\U00011113\U00011127\U00011107\U00011134"
+    kk: Дордонь
+    yue: 多爾多涅
+    az: Dordon
+    mk: Дордоња
+    'no': Dordogne
+    ga: Dordogne
+    ml: ഡോർഡോഗ്നെ
+  comments:
+  type: metropolitan_department
+'25':
+  name: Doubs
+  code: '25'
+  unofficial_names: Doubs
+  geo:
+    latitude: 46.92760000000001
+    longitude: 6.349000999999999
+    min_latitude: 46.9157861
+    min_longitude: 6.330692
+    max_latitude: 46.9485301
+    max_longitude: 6.3995831
+  translations:
+    ar: دوبس
+    be: Дэпартамент Ду
+    bg: Ду
+    bn: ডুবস
+    ca: Doubs
+    cs: Doubs
+    da: Doubs
+    de: Département Doubs
+    el: Ντουμπ
+    en: Doubs
+    es: Doubs
+    et: Doubs’ departemang
+    eu: Doubs
+    fa: دو
+    fi: Doubs
+    fr: Doubs
+    gl: Doubs
+    gu: ડોબ્સ
+    he: דו
+    hi: डूब्स
+    hu: Doubs
+    hy: Դու
+    id: Doubs
+    it: Doubs
+    ja: ドゥー県
+    ka: დუ
+    kn: ಡೌಬ್ಸ್
+    ko: 두 주
+    lt: Du
+    lv: Dū
+    mr: दूब
+    ms: Doubs
+    nb: Doubs
+    nl: Doubs
+    pl: Doubs
+    pt: Doubs
+    ro: Doubs
+    ru: Ду
+    si: ඩඋබ්ස්
+    sk: Doubs
+    sl: Doubs
+    sr: Ду
+    sv: Doubs
+    sw: Doubs
+    ta: டௌப்ஸ்
+    te: డౌబ్స్
+    th: จังหวัดดู
+    tr: Doubs
+    uk: Ду
+    ur: ڈو
+    vi: Doubs
+    zh: 杜省
+    cy: Doubs
+    af: Doubs (département)
+    ceb: Doubs
+    sr_Latn: Du
+    yue_Hans: 杜
+    sq: Doubs
+    ccp: "\U00011113\U0001112F\U0001111B\U00011134\U0001110C\U00011134"
+    kk: Ду
+    yue: 杜
+    az: Du (departament)
+    'no': Doubs
+    ga: Doubs
+    mk: Ду
+  comments:
+  type: metropolitan_department
+'26':
+  name: Drôme
+  code: '26'
+  unofficial_names: Drôme
+  geo:
+    latitude: 44.73118960000001
+    longitude: 5.2266675
+    min_latitude: 44.115494
+    min_longitude: 4.6468618
+    max_latitude: 45.343976
+    max_longitude: 5.830446
+  translations:
+    ar: دروم
+    be: Дэпартамент Дром
+    bg: Дром
+    bn: দ্রোম
+    ca: Droma
+    cs: Drôme
+    da: Drôme
+    de: Département Drôme
+    el: Ντρομ
+    en: Drôme
+    es: Drôme
+    et: Drôme’i departemang
+    eu: Drôme
+    fa: دروم
+    fi: Drôme
+    fr: Drôme
+    gl: Drôme
+    gu: ડ્રોમ
+    hi: ड्रोमे
+    hu: Drôme
+    hy: Դրոմ
+    id: Drôme
+    it: Drôme
+    ja: ドローム県
+    ka: დრომი
+    kn: ಡ್ರೊಮ್
+    ko: 드롬 주
+    lt: Dromas
+    lv: Droma
+    mr: द्रोम
+    ms: Drôme
+    nb: Drôme
+    nl: Drôme
+    pl: Drôme
+    pt: Drôme
+    ro: Drôme
+    ru: Дром
+    si: ඩ්රෝමේ
+    sk: Drôme
+    sl: Drôme
+    sr: Дром
+    sv: Drôme
+    sw: Drôme
+    ta: ட்ராம்
+    te: డ్రోమ్
+    th: จังหวัดโดรม
+    tr: Drôme
+    uk: Дром
+    ur: ڈروم
+    vi: Drôme
+    zh: 德龙省
+    cy: Drôme
+    af: Drôme
+    ceb: Drôme
+    sr_Latn: Drom
+    yue_Hans: 德龙
+    sq: Drôme
+    ccp: "\U00011113\U00011133\U00011122\U0001112E\U0001111F\U00011134"
+    he: דרום
+    kk: Дром
+    yue: 德龍
+    az: Drom (departament)
+    'no': Drôme
+    mk: Дром
+  comments:
+  type: metropolitan_department
+'27':
+  name: Eure
+  code: '27'
+  unofficial_names: Eure
+  geo:
+    latitude: 49.11817629999999
+    longitude: 0.9582113999999999
+    min_latitude: 48.666427
+    min_longitude: 0.2967251
+    max_latitude: 49.485283
+    max_longitude: 1.8031109
+  translations:
+    af: Eure
+    ar: أور
+    be: Дэпартамент Эр
+    bg: Йор
+    bn: ইউর
+    ca: Eure
+    cs: Eure
+    da: Eure
+    de: Département Eure
+    el: Ερ
+    en: Eure
+    es: Eure
+    et: Eure’i departemang
+    eu: Eure
+    fa: شهرستان اور
+    fi: Eure
+    fr: Eure
+    gl: Eure
+    gu: યુરે
+    he: אר
+    hi: यूरे
+    hu: Eure
+    hy: Էր
+    id: Eure
+    it: Eure
+    ja: ウール県
+    ka: ერი
+    kn: ಯುಯೂರ್
+    ko: 외르 주
+    lt: Eras
+    lv: Ēra
+    mr: युर
+    ms: Eure
+    nb: Eure
+    nl: Eure
+    pl: Eure
+    pt: Eure
+    ro: Eure
+    ru: Эр
+    si: ඉයුරේ
+    sk: Eure
+    sl: Eure
+    sr: Ер
+    sv: Eure
+    sw: Eure
+    ta: ஐரே
+    te: యుూర్
+    th: จังหวัดเออร์
+    tr: Eure
+    uk: Ер
+    ur: اور
+    vi: Eure
+    zh: 厄尔省
+    cy: Eure
+    ceb: Eure
+    sr_Latn: Er
+    yue_Hans: 厄尔
+    ccp: "\U00011103\U00011128\U00011105\U0001112A\U00011122\U00011128"
+    kk: Эр
+    yue: 厄爾
+    az: Er (departament)
+    mk: Ер
+    'no': Eure
+    ga: Eure
+  comments:
+  type: metropolitan_department
+'28':
+  name: Eure-et-Loir
+  code: '28'
+  unofficial_names: Eure-et-Loir
+  geo:
+    latitude: 48.5525242
+    longitude: 1.1989814
+    min_latitude: 47.95381800000001
+    min_longitude: 0.755676
+    max_latitude: 48.941029
+    max_longitude: 1.99456
+  translations:
+    af: Eure-et-Loir
+    ar: أور ولوار
+    be: Эр і Луар
+    bg: Йор е Лоар
+    bn: ইউরে-এট-লয়ের
+    ca: Eure i Loir
+    cs: Eure-et-Loir
+    da: Eure-et-Loir
+    de: Département Eure-et-Loir
+    el: Ερ-ε-Λουάρ
+    en: Eure-et-Loir
+    es: Eure y Loir
+    et: Eure-et-Loiri departemang
+    eu: Eure-et-Loir
+    fa: اور-ا-لوآر
+    fi: Eure-et-Loir
+    fr: Eure-et-Loir
+    gl: Eure e Loir
+    gu: યુરે-એટ-લોઈર
+    he: אר ולואר
+    hi: यूरे-एट-लोइर
+    hu: Eure-et-Loir
+    hy: Էր և Լուար
+    id: Eure-et-Loir
+    is: Eure-et-Loir
+    it: Eure-et-Loir
+    ja: ウール＝エ＝ロワール県
+    ka: ერი და ლუარი
+    kn: ಯುರೆ-ಎಟ್-ಲೋಯಿರ್
+    ko: 외르에루아르 주
+    lt: Eras ir Luara
+    lv: Ēra un Luāra
+    mr: युर-ए-लुआर
+    ms: Eure-et-Loir
+    nb: Eure-et-Loir
+    nl: Eure-et-Loir
+    pl: Eure-et-Loir
+    pt: Eure-et-Loir
+    ro: Eure-et-Loir
+    ru: Эр и Луар
+    si: ඉයුරේ-එට්‌-ලොයිර්
+    sk: Eure-et-Loir
+    sl: Eure-et-Loir
+    sr: Ер и Лоар
+    sv: Eure-et-Loir
+    sw: Eure-et-Loir
+    ta: யுயிர் -எட் -லோயர்
+    te: యూర్-ఎట్-లోయర్
+    th: จังหวัดเออเรลัวร์
+    tr: Eure-et-Loir
+    uk: Ер і Луар
+    ur: اور-اے-لوار
+    vi: Eure-et-Loir
+    zh: 厄尔-卢瓦尔省
+    cy: Eure-et-Loir
+    ceb: Eure-et-Loir
+    sr_Latn: Er i Loar
+    yue_Hans: 厄尔－卢华
+    ccp: "\U00011103\U00011128\U00011105\U0001112A\U00011122\U0001112C-\U00011103\U0001112C\U00011116\U00011134-\U00011123\U00011130\U00011122\U00011134"
+    kk: Эр және Луар
+    yue: 厄爾－盧華
+    az: Er və Luar
+    mk: Ер и Лоар
+    'no': Eure-et-Loir
+  comments:
+  type: metropolitan_department
+'29':
+  name: Finistère
+  code: '29'
+  unofficial_names: Finistère
+  geo:
+    latitude: 48.2520249
+    longitude: -3.9300525
+    min_latitude: 47.701242
+    min_longitude: -5.141292099999999
+    max_latitude: 48.7535
+    max_longitude: -3.3866189
+  translations:
+    af: Finistère
+    ar: فنستير
+    be: Фіністэр
+    bg: Финистер
+    bn: ফিনিস্তে
+    ca: Finisterre
+    cs: Finistère
+    da: Finistère
+    de: Département Finistère
+    el: Φινιστέρ
+    en: Finistère
+    es: Finisterre
+    et: Finistère
+    eu: Finistère
+    fa: فینیستر
+    fi: Finistère
+    fr: Finistère
+    gl: Finistère
+    gu: ફિનિસ્તર
+    he: פיניסטר
+    hi: फिनिस्तेर
+    hu: Finistère
+    hy: Ֆինիստեր
+    id: Finistère
+    is: Finistère
+    it: Finistère
+    ja: フィニステール県
+    ka: ფინისტერი
+    kn: ಫಿನಿಸ್ಟ್ರೆ
+    ko: 피니스테르 주
+    lt: Finisteras
+    lv: Finistēra
+    mr: फिनिस्तर
+    ms: Finistère
+    nb: Finistère
+    nl: Finistère
+    pl: Finistère
+    pt: Finistère
+    ro: Finistère
+    ru: Финистер
+    si: ෆිනිස්ටේරේ
+    sk: Finistère
+    sl: Finistère
+    sr: Финистер
+    sv: Finistère
+    sw: Finistère
+    ta: பினிஸ்ட்டர்
+    te: ఫినిస్టియర్
+    th: จังหวัดฟีนิสแตร์
+    tr: Finistère
+    uk: Фіністер
+    ur: فینیستیر
+    vi: Finistère
+    zh: 非尼斯泰尔省
+    cy: Penn-ar-Bed
+    ceb: Finistère
+    sr_Latn: Finister
+    yue_Hans: 菲尼斯泰尔
+    sq: Finistère
+    ccp: "\U0001111C\U00011128\U0001111A\U00011128\U0001110C\U00011134\U00011111\U00011122\U00011134"
+    ga: Penn-ar-Bed
+    kk: Финистер
+    yue: 菲尼斯泰爾
+    az: Finister
+    mk: Финистер
+    'no': Finistère
+    mn: Финистер (департамент)
+  comments:
+  type: metropolitan_department
+2A:
+  name: Corse-du-Sud
+  code: 2A
+  unofficial_names: Corse-du-Sud
+  geo:
+    latitude: 41.8102633
+    longitude: 8.9245343
+    min_latitude: 41.333543
+    min_longitude: 8.539899199999999
+    max_latitude: 42.381519
+    max_longitude: 9.408043000000001
+  translations:
+    ar: كورسيكا الجنوبية
+    be: Корсіка Паўднёвая
+    bg: Южна Корсика
+    bn: কোর্স ডু সৌদ
+    ca: Còrsega del Sud
+    cs: Corse-du-Sud
+    da: Corse-du-Sud
+    de: Département Corse-du-Sud
+    el: Νότια Κορσική
+    en: Corse-du-Sud
+    es: Córcega del Sur
+    et: Corse du Sud
+    eu: Hego Korsika
+    fa: کرس جنوبی
+    fi: Corse-du-Sud
+    fr: Corse-du-Sud
+    gl: Córsega do Sur
+    gu: કૉર્સ-ડુ-સુદ
+    he: קורסיקה הדרומית
+    hi: कोरसे-डु-सड
+    hr: Corse-du-Sud
+    hu: Corse-du-Sud
+    hy: Հարավային Կորսիկա
+    id: Corse-du-Sud
+    it: Corsica del Sud
+    ja: コルス＝デュ＝シュド県
+    ka: სამხრეთი კორსიკა
+    kn: ಕೋರ್ಸ್-ಡು-ಸುಡ್
+    ko: 코르스뒤쉬드 주
+    lt: Pietų Korsika
+    lv: Dienvidkorsika
+    mr: कॉर्स-द्यु-सुद
+    ms: Corse-du-Sud
+    nb: Corse-du-Sud
+    nl: Corse-du-Sud
+    pl: Korsyka Południowa
+    pt: Córsega do Sul
+    ro: Corse-du-Sud
+    ru: Южная Корсика
+    si: කොර්ස්-ඩු-සුඩ්
+    sk: Corse-du-Sud
+    sl: Corse-du-Sud
+    sr: Јужна Корзика
+    sv: Corse-du-Sud
+    sw: Corse-du-Sud
+    ta: கோர்ஸ் -டு -சுட்
+    te: కోర్స్-డ్యూ-సద్
+    th: จังหวัดกอร์ส-ดูว์-ซูด
+    tr: Corse-du-Sud
+    uk: Південна Корсика
+    ur: کورس-جنوبی
+    vi: Corse-du-Sud
+    zh: 南科西嘉
+    cy: Corse-du-Sud
+    af: Corse-du-Sud
+    ceb: Corse-du-Sud
+    sr_Latn: Južna Korzika
+    yue_Hans: 南歌斯嘉
+    sq: Corse-du-Sud
+    ccp: "\U00011107\U0001112E\U00011122\U00011134-\U00011113\U0001112A-\U00011125\U00011116\U00011134"
+    kk: Оңтүстік Корсика
+    yue: 南歌斯嘉
+    az: Cənubi Korsika
+    'no': Corse-du-Sud
+    ga: Corse-du-Sud
+    mk: Јужна Корзика
+  comments:
+  type: metropolitan_department
+2B:
+  name: Haute-Corse
+  code: 2B
+  unofficial_names: Haute-Corse
+  geo:
+    latitude: 42.4097877
+    longitude: 9.2785583
+    min_latitude: 41.832168
+    min_longitude: 8.5733069
+    max_latitude: 43.0276781
+    max_longitude: 9.560067799999999
+  translations:
+    ar: كورسيكا العليا
+    be: Корсіка Верхняя
+    bg: От Корс
+    bn: হোতে-কোর্স
+    ca: Alta Còrsega
+    cs: Haute-Corse
+    da: Haute-Corse
+    de: Département Haute-Corse
+    el: Άνω Κορσική
+    en: Haute-Corse
+    es: Alta Córcega
+    et: Haute-Corse’i departemang
+    eu: Korsika Garaia
+    fa: کرس شمالی
+    fi: Haute-Corse
+    fr: Haute-Corse
+    gl: Alta Córsega
+    gu: હૌટ-કૉર્સ
+    he: קורסיקה עילית
+    hi: ओट-कोरसे
+    hr: Haute-Corse
+    hu: Haute-Corse
+    hy: Վերին Կորսիկա
+    id: Haute-Corse
+    it: Alta Corsica
+    ja: オート＝コルス県
+    ka: ჩრდილოეთი კორსიკა
+    kn: ಹಾಟ್-ಕೋರ್ಸ್
+    ko: 오트코르스 주
+    lt: Aukštutinė Korsika
+    lv: Augškorsika
+    mr: ऑत-कॉर्स
+    ms: Haute-Corse
+    nb: Haute-Corse
+    nl: Haute-Corse
+    pl: Górna Korsyka
+    pt: Alta Córsega
+    ro: Haute-Corse
+    ru: Верхняя Корсика
+    si: හෞටේ-කොර්ස්
+    sk: Haute-Corse
+    sl: Haute-Corse
+    sr: Горња Корзика
+    sv: Haute-Corse
+    sw: Haute-Corse
+    ta: ஹூட் -கோர்ஸ்
+    te: హాట్-కోర్స్
+    th: จังหวัดโอต-กอร์ส
+    tr: Haute-Corse
+    uk: Верхня Корсика
+    ur: بالائی-کورس
+    vi: Haute-Corse
+    zh: 上科西嘉
+    cy: Haute-Corse
+    af: Haute-Corse
+    ceb: Haute-Corse
+    sr_Latn: Gornja Korzika
+    yue_Hans: 上歌斯嘉
+    sq: Haute-Corse
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011107\U0001112E\U00011122\U00011134\U0001110C\U00011134"
+    kk: Жоғарғы Корсика
+    yue: 上歌斯嘉
+    az: Yuxarı Korsika
+    'no': Haute-Corse
+    ga: Haute-Corse
+    mk: Горна Корзика
+  comments:
+  type: metropolitan_department
+'30':
+  name: Gard
+  code: '30'
+  unofficial_names: Gard
+  geo:
+    latitude: 43.9446996
+    longitude: 4.1513764
+    min_latitude: 43.460159
+    min_longitude: 3.261869
+    max_latitude: 44.4596639
+    max_longitude: 4.845564
+  translations:
+    af: Gard
+    ar: غارد
+    be: Дэпартамент Гар
+    bg: Гар
+    bn: গার্ড
+    ca: Gard
+    cs: Gard
+    da: Gard
+    de: Gard
+    el: Γκαρ
+    en: Gard
+    es: Gard
+    et: Gard’i departemang
+    eu: Gard
+    fa: گار
+    fi: Gard
+    fr: Gard
+    gl: Gard
+    gu: ગાર્ડ
+    hi: गर्ड
+    hu: Gard
+    hy: Գար
+    id: Gard
+    it: Gard
+    ja: ガール県
+    ka: გარი
+    kn: ಗಾರ್ಡ್
+    ko: 가르 주
+    lt: Garas
+    lv: Gāra
+    mn: Гар аймаг
+    mr: गार्द
+    ms: Gard
+    nb: Gard
+    nl: Gard
+    pl: Gard
+    pt: Gard
+    ro: Gard
+    ru: Гар
+    si: ගාර්ඩ්
+    sk: Gard
+    sl: Gard
+    sr: Гар
+    sv: Gard
+    sw: Gard
+    ta: கார்ட்
+    te: గార్డ్
+    th: จังหวัดการ์
+    tr: Gard
+    uk: Гар
+    ur: گار
+    vi: Gard
+    zh: 加尔省
+    cy: Gard
+    ceb: Gard
+    sr_Latn: Gar
+    yue_Hans: 加尔
+    ccp: "\U00011109\U00011122\U00011134\U00011113\U00011134"
+    he: גאר
+    kk: Гар
+    yue: 加爾
+    az: Qar (departament)
+    'no': Gard
+    mk: Гар
+  comments:
+  type: metropolitan_department
+'31':
+  name: Haute-Garonne
+  code: '31'
+  unofficial_names: Haute-Garonne
+  geo:
+    latitude: 43.4010462
+    longitude: 1.135302
+    min_latitude: 42.6893299
+    min_longitude: 0.4416861
+    max_latitude: 43.92153099999999
+    max_longitude: 2.048299
+  translations:
+    ar: غارون العليا
+    be: Гарона Верхняя
+    bg: От Гарон
+    bn: হাউটে-গারনে
+    ca: Alta Garona
+    cs: Haute-Garonne
+    da: Haute-Garonne
+    de: Département Haute-Garonne
+    el: Ωτ-Γκαρόν
+    en: Haute-Garonne
+    es: Alto Garona
+    et: Haute-Garonne
+    eu: Garona Garaia
+    fa: اوت-گارون
+    fi: Haute-Garonne
+    fr: Haute-Garonne
+    gl: Alta Garona
+    gu: હૌટ-ગરોન
+    he: גארון עילית
+    hi: ओट-गरोन
+    hu: Haute-Garonne
+    hy: Վերին Գարոն
+    id: Haute-Garonne
+    it: Alta Garonna
+    ja: オート＝ガロンヌ県
+    ka: ზემო გარონა
+    kn: ಹೌಟೆ-ಗ್ಯಾರೋನೆ
+    ko: 오트가론 주
+    lt: Aukštutinė Garona
+    lv: Augšgaronna
+    mr: ऑत-गारोन
+    ms: Haute-Garonne
+    nb: Haute-Garonne
+    nl: Haute-Garonne
+    pl: Górna Garonna
+    pt: Alta Garona
+    ro: Haute-Garonne
+    ru: Верхняя Гаронна
+    si: හෞටේ -ගරොන්නේ
+    sk: Haute-Garonne
+    sl: Haute-Garonne
+    sr: Горња Гарона
+    sv: Haute-Garonne
+    sw: Haute-Garonne
+    ta: ஹூட் -கரோன்
+    te: హూట్ గారోనీ
+    th: จังหวัดโอต-การอน
+    tr: Haute-Garonne
+    uk: Верхня Гаронна
+    ur: بالائی-گارون
+    vi: Haute-Garonne
+    zh: 上加龙省
+    cy: Haute-Garonne
+    af: Haute-Garonne
+    ceb: Haute-Garonne
+    sr_Latn: Gornja Garona
+    yue_Hans: 上加龙
+    sq: Haute-Garonne
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011109\U00011133\U00011120\U00011122\U0001112E\U0001111A\U00011133\U00011126\U00011128"
+    kk: Жоғарғы Гаронна
+    yue: 上加龍
+    'no': Haute-Garonne
+    az: Yuxarı Qaronna
+    ga: Haute-Garonne
+    mk: Горна Гарона
+  comments:
+  type: metropolitan_department
+'32':
+  name: Gers
+  code: '32'
+  unofficial_names: Gers
+  geo:
+    latitude: 43.6366479
+    longitude: 0.4502368
+    min_latitude: 43.310868
+    min_longitude: -0.282299
+    max_latitude: 44.0800249
+    max_longitude: 1.203249
+  translations:
+    ar: جارس
+    be: Дэпартамент Жэр
+    bg: Жерс
+    bn: গেরস
+    ca: Gers
+    cs: Gers
+    da: Gers
+    de: Département Gers
+    el: Ζερς
+    en: Gers
+    es: Gers
+    et: Gers’i departemang
+    eu: Gers
+    fa: ژر
+    fi: Gers
+    fr: Gers
+    gl: Gers
+    gu: ગેર્સ
+    hi: गेर्स
+    hu: Gers
+    hy: Ժեր
+    id: Gers
+    it: Gers
+    ja: ジェール県
+    ka: ჟერი
+    kn: ಗರ್ಸ್
+    ko: 제르 주
+    lt: Žeras
+    lv: Žēra
+    mr: जेर
+    ms: Gers
+    nb: Gers
+    nl: Gers
+    pl: Gers
+    pt: Gers
+    ro: Gers
+    ru: Жер
+    si: ජෙර්ස්
+    sk: Gers
+    sl: Gers
+    sr: Жерс
+    sv: Gers
+    sw: Gers
+    ta: ஜெர்ஸ்
+    te: జెర్స్
+    th: จังหวัดแฌร์
+    tr: Gers
+    uk: Жер
+    ur: جرس
+    vi: Gers
+    zh: 热尔省
+    cy: Gers
+    af: Gers
+    ceb: Gers
+    sr_Latn: Žers
+    yue_Hans: 热尔
+    sq: Gers
+    ccp: "\U00011109\U00011122\U00011134\U0001110C\U00011134"
+    he: ז׳ר
+    kk: Жер
+    yue: 熱爾
+    'no': Gers
+    am: ዠርስ
+    az: Jer (departament)
+    ga: Gers
+    mk: Жер
+  comments:
+  type: metropolitan_department
+'33':
+  name: Gironde
+  code: '33'
+  unofficial_names: Gironde
+  geo:
+    latitude: 44.84966499999999
+    longitude: -0.4502368
+    min_latitude: 44.1939019
+    min_longitude: -1.2614241
+    max_latitude: 45.573636
+    max_longitude: 0.315137
+  translations:
+    ar: جيروند
+    az: Jirond
+    be: Жыронда
+    bg: Жиронд
+    bn: গিরন্ড
+    ca: Gironda
+    cs: Gironde
+    da: Gironde
+    de: Département Gironde
+    el: Ζιρόντ
+    en: Gironde
+    es: Gironda
+    et: Gironde’i departemang
+    eu: Gironda
+    fa: ژیروند
+    fi: Gironde
+    fr: Gironde
+    gl: Xironda
+    gu: ગિરોન્દ
+    he: ז׳ירונד
+    hi: गिरोंदे
+    hu: Gironde
+    hy: Ժիրոնդ
+    id: Gironde
+    it: Gironda
+    ja: ジロンド県
+    ka: ჟირონდა
+    kn: ಗಿರೊಂಡೆ
+    ko: 지롱드 주
+    lt: Žironda
+    lv: Žironda
+    mr: जिरोंद
+    ms: Gironde
+    nb: Gironde
+    nl: Gironde
+    pl: Żyronda
+    pt: Gironda
+    ro: Gironde
+    ru: Жиронда
+    si: ගිරෝන්ඩේ
+    sk: Gironde
+    sl: Gironde
+    sr: Жиронда
+    sv: Gironde
+    sw: Gironde
+    ta: கிராண்டே
+    te: గిరోండె
+    th: จังหวัดฌีรงด์
+    tr: Gironde
+    uk: Жиронда
+    ur: جیروند
+    vi: Gironde
+    zh: 吉倫特省
+    cy: Gironde
+    af: Gironde
+    ceb: Gironde
+    sr_Latn: Žironda
+    yue_Hans: 吉伦特
+    jv: Dhépartemèn Gironde
+    sq: Gironda
+    ccp: "\U00011109\U0001112D\U00011122\U0001112E\U0001111A\U00011134\U00011113\U0001112C"
+    kk: Жиронда
+    yue: 吉倫特
+    mk: Жиронда (департман)
+    'no': Gironde
+  comments:
+  type: metropolitan_department
+'34':
+  name: Hérault
+  code: '34'
+  unofficial_names: Hérault
+  geo:
+    latitude: 43.5912356
+    longitude: 3.2583626
+    min_latitude: 43.2102099
+    min_longitude: 2.539549
+    max_latitude: 43.9727599
+    max_longitude: 4.1945401
+  translations:
+    af: Hérault
+    ar: هيرولت
+    be: Дэпартамент Эро
+    bg: Еро
+    bn: হেরাল্ট
+    ca: Erau
+    cs: Hérault
+    da: Hérault
+    de: Département Hérault
+    el: Ερώ
+    en: Hérault
+    es: Hérault
+    et: Hérault’ departemang
+    eu: Hérault
+    fa: شهرستان ارو، فرانسه
+    fi: Hérault
+    fr: Hérault
+    gl: Hérault
+    gu: હેરોલ્ટ
+    he: ארו
+    hi: हेरौल्ट
+    hr: Hérault
+    hu: Hérault
+    hy: Էրո
+    id: Hérault
+    it: Hérault
+    ja: エロー県
+    ka: ერო
+    kn: ಹೆರಾಲ್ಟ್
+    ko: 에로 주
+    lt: Hero
+    lv: Ēro
+    mn: Эро аймаг
+    mr: एरॉ
+    ms: Hérault
+    nb: Hérault
+    nl: Hérault
+    pl: Hérault
+    pt: Hérault
+    ro: Hérault
+    ru: Эро
+    si: ", හේරාඋල්ට්"
+    sk: Hérault
+    sl: Hérault
+    sr: Еро
+    sv: Hérault
+    sw: Hérault
+    ta: ஹெரால்
+    te: హెరాల్ట్
+    th: จังหวัดเอโร
+    tr: Hérault
+    uk: Еро
+    ur: ایرو
+    vi: Hérault
+    zh: 埃罗省
+    cy: Hérault
+    ceb: Hérault
+    sr_Latn: Ero
+    yue_Hans: 埃罗
+    ccp: "\U00011126\U0001112C\U00011122\U00011105\U0001112A\U00011123\U00011133\U00011111\U00011134"
+    kk: Эро
+    yue: 埃羅
+    bs: Hérault
+    mk: Еро
+    'no': Hérault
+    az: Ero (departament)
+    ga: Hérault
+  comments:
+  type: metropolitan_department
+'35':
+  name: Ille-et-Vilaine
+  code: '35'
+  unofficial_names: Ille-et-Vilaine
+  geo:
+    latitude: 48.2292016
+    longitude: -1.5300695
+    min_latitude: 47.631614
+    min_longitude: -2.289611
+    max_latitude: 48.721737
+    max_longitude: -1.0156211
+  translations:
+    af: Ille-et-Vilaine
+    ar: إيل وفيلان
+    be: Іль і Вілен
+    bg: Ил е Вилен
+    bn: ইল্লে-এট-ভিলাইন
+    ca: Ille i Vilaine
+    cs: Ille-et-Vilaine
+    da: Ille-et-Vilaine
+    de: Département Ille-et-Vilaine
+    el: Ιλ-ε-Βιλαίν
+    en: Ille-et-Vilaine
+    es: Ille y Vilaine
+    et: Ille-et-Vilaine’i departemang
+    eu: Ille-et-Vilaine
+    fa: ایل-ا-ویلن
+    fi: Ille-et-Vilaine
+    fr: Ille-et-Vilaine
+    gl: Ille e Vilaine
+    gu: ઈલે-એટ-વિલૈન
+    he: איל ווילן
+    hi: इल-एट-वीलेन
+    hu: Ille-et-Vilaine
+    hy: Իլ և Վիլեն
+    id: Ille-et-Vilaine
+    is: Ille-et-Vilaine
+    it: Ille-et-Vilaine
+    ja: イル＝エ＝ヴィレーヌ県
+    ka: ილი და ვილენი
+    kn: ಇಲೆ-ಎಟ್-ವಿಲೇನ್
+    ko: 일에빌렌 주
+    lt: Ilis ir Vilenas
+    lv: Ila un Vilēna
+    mr: इल-ए-व्हिलेन
+    ms: Ille-et-Vilaine
+    nb: Ille-et-Vilaine
+    nl: Ille-et-Vilaine
+    pl: Ille-et-Vilaine
+    pt: Ille-et-Vilaine
+    ro: Ille-et-Vilaine
+    ru: Иль и Вилен
+    si: ඉල්ලෙ-එට්-විලයිනේ
+    sk: Ille-et-Vilaine
+    sl: Ille-et-Vilaine
+    sr: Ил и Вилен
+    sv: Ille-et-Vilaine
+    sw: Ille-et-Vilaine
+    ta: இல்லே -எட் -விலைனே
+    te: ఇల్లె-ఎట్-విలేన్
+    th: จังหวัดอีเลวีแลน
+    tr: Ille-et-Vilaine
+    uk: Іль і Вілен
+    ur: ایل-اے-ویلن
+    vi: Ille-et-Vilaine
+    zh: 伊勒-维莱讷省
+    cy: Îl-ha-Gwilun
+    ceb: Ille-et-Vilaine
+    sr_Latn: Il i Vilen
+    yue_Hans: 伊勒-维莱讷
+    sq: Ille-et-Vilaine
+    ccp: "\U00011103\U00011128\U00011123\U00011133\U00011126\U00011128-\U00011103\U0001112C\U00011116\U00011134-\U0001111E\U00011128\U00011123\U0001112D\U0001111A\U0001112C"
+    kk: Иль және Вилен
+    yue: 伊勒-維萊訥
+    'no': Ille-et-Vilaine
+    az: İl və Vilen
+    ga: Ille-et-Vilaine
+    mk: Ил и Вилен
+  comments:
+  type: metropolitan_department
+'36':
+  name: Indre
+  code: '36'
+  unofficial_names: Indre
+  geo:
+    latitude: 46.6613966
+    longitude: 1.4482662
+    min_latitude: 46.3469059
+    min_longitude: 0.8674139
+    max_latitude: 47.277465
+    max_longitude: 2.204572
+  translations:
+    ar: أندر
+    be: Дэпартамент Эндр
+    bg: Ендър
+    bn: ইনড্রে
+    ca: Indre
+    cs: Indre
+    da: Indre
+    de: Département Indre
+    el: Αντρ
+    en: Indre
+    es: Indre
+    et: Indre’i departemang
+    eu: Indre
+    fa: اندر
+    fi: Indre
+    fr: Indre
+    gl: Indre
+    gu: ઈન્ડ્રે
+    he: אנדר
+    hi: आइन्द्रे
+    hu: Indre
+    hy: Էնդր
+    id: Indre
+    is: Indre
+    it: Indre
+    ja: アンドル県
+    ka: ენდრი
+    kn: ಇಂದರ್
+    ko: 앵드르 주
+    lt: Endras
+    lv: Endra
+    mr: एंद्र
+    ms: Indre
+    nb: Indre
+    nl: Indre
+    pl: Indre
+    pt: Indre
+    ro: Indre
+    ru: Эндр
+    si: ඉන්ඩ්රේ
+    sk: Indre
+    sl: Indre
+    sr: Ендр
+    sv: Indre
+    sw: Indre
+    ta: இன்றே
+    te: ఇండ్రె
+    th: จังหวัดแอ็งดร์
+    tr: Indre
+    uk: Ендр
+    ur: آندر
+    vi: Indre
+    zh: 安德尔省
+    cy: Indre
+    af: Indre (département)
+    ceb: Indre
+    sr_Latn: Endr
+    yue_Hans: 安德尔
+    sq: Indre
+    ccp: "\U00011103\U00011128\U0001111A\U00011134\U00011113\U00011133\U00011122\U0001112C"
+    kk: Эндр
+    yue: 安德爾
+    az: Endr
+    'no': Indre
+    mk: Ендр
+  comments:
+  type: metropolitan_department
+'37':
+  name: Indre-et-Loire
+  code: '37'
+  unofficial_names: Indre-et-Loire
+  geo:
+    latitude: 47.28949249999999
+    longitude: 0.816097
+    min_latitude: 46.736714
+    min_longitude: 0.0527369
+    max_latitude: 47.7098679
+    max_longitude: 1.366049
+  translations:
+    ar: أندر ولوار
+    be: Эндр і Луара
+    bg: Ендър е Лоар
+    bn: ইন্দ্রে-এট-লয়ের
+    ca: Indre i Loira
+    cs: Indre-et-Loire
+    da: Indre-et-Loire
+    de: Département Indre-et-Loire
+    el: Αντρ-ε-Λουάρ
+    en: Indre-et-Loire
+    es: Indre y Loira
+    et: Indre-et-Loire’i departemang
+    eu: Indre-et-Loire
+    fa: اندر الوآر
+    fi: Indre-et-Loire
+    fr: Indre-et-Loire
+    gl: Indre e Loira
+    gu: એન્ડ્રે-એટ-લોઈર
+    he: אנדר ולואר
+    hi: आंद्रे-एट-लोइर
+    hu: Indre-et-Loire
+    hy: Էնդր և Լուար
+    id: Indre-et-Loire
+    is: Indre-et-Loire
+    it: Indre e Loira
+    ja: アンドル＝エ＝ロワール県
+    ka: ენდრი და ლუარა
+    kn: ಇಂಡ್ರೆ-ಎಟ್-ಲೋರೆ
+    ko: 앵드르에루아르 주
+    lt: Endras ir Luara
+    lv: Endra un Luāra
+    mr: एंद्र-ए-लावार
+    ms: Indre-et-Loire
+    nb: Indre-et-Loire
+    nl: Indre-et-Loire
+    pl: Indre-et-Loire
+    pt: Indre-et-Loire
+    ro: Indre-et-Loire
+    ru: Эндр и Луара
+    si: ඉන්ද්‍රේ-එට්-ලොයිරේ
+    sk: Indre-et-Loire
+    sl: Indre-et-Loire
+    sr: Ендр и Лоара
+    sv: Indre-et-Loire
+    sw: Indre-et-Loire
+    ta: இன்றே -எட் -லோஇரே
+    te: ఇండ్రె-ఎట్-లోయిర్
+    th: จังหวัดแอ็งเดรลัวร์
+    tr: Indre-et-Loire
+    uk: Ендр і Луара
+    ur: آندر-اے-لوار
+    vi: Indre-et-Loire
+    zh: 安德尔-卢瓦尔省
+    cy: Indre-et-Loire
+    af: Indre-et-Loire
+    ceb: Indre-et-Loire
+    sr_Latn: Endr i Loara
+    yue_Hans: 安德尔-卢华尔
+    sq: Indre-et-Loire
+    ccp: "\U00011103\U00011128\U0001111A\U00011134\U00011113\U00011133\U00011122\U0001112C-\U00011103\U0001112C\U00011116\U00011134-\U00011123\U00011130\U00011122\U00011134"
+    kk: Эндр және Луара
+    yue: 安德爾-盧華爾
+    mk: Ендр и Лоара
+    'no': Indre-et-Loire
+    az: Endr və Luara
+  comments:
+  type: metropolitan_department
+'38':
+  name: Isère
+  code: '38'
+  unofficial_names: Isère
+  geo:
+    latitude: 44.9957745
+    longitude: 5.9293476
+    min_latitude: 44.695873
+    min_longitude: 4.7425939
+    max_latitude: 45.883397
+    max_longitude: 6.359309
+  translations:
+    ar: إزار
+    be: Дэпартамент Ізер
+    bg: Изер
+    bn: ইসে
+    ca: Isèra
+    cs: Isère
+    da: Isère
+    de: Département Isère
+    el: Ιζέρ
+    en: Isère
+    es: Isère
+    et: Isère’i departemang
+    eu: Isère
+    fa: ایزر
+    fi: Isère
+    fr: Isère
+    gl: Isère
+    gu: ઇસેર
+    he: איזר
+    hi: इसेरे
+    hu: Isère
+    hy: Իզեր
+    id: Isère
+    it: Isère
+    ja: イゼール県
+    ka: იზერი
+    kn: ಇಶೆರ್
+    ko: 이제르 주
+    lt: Izeras
+    lv: Izēra
+    mr: इझेर
+    ms: Isère
+    nb: Isère
+    nl: Isère
+    pl: Isère
+    pt: Isère
+    ro: Isère
+    ru: Изер
+    si: ඉසේරේ
+    sk: Isère
+    sl: Isère
+    sr: Изер
+    sv: Isère
+    sw: Isère
+    ta: இசேரே
+    te: ఇసియర్
+    th: จังหวัดอีแซร์
+    tr: Isère
+    uk: Ізер
+    ur: ایزار
+    vi: Isère
+    zh: 伊泽尔省
+    cy: Isère
+    af: Isère
+    ceb: Isère
+    sr_Latn: Izer
+    yue_Hans: 伊泽尔
+    sq: Isère
+    ccp: "\U00011103\U0001112D\U00011125\U00011122\U00011134"
+    kk: Изер
+    yue: 伊澤爾
+    'no': Isère
+    az: İzer (departament)
+    hr: Isère (departman)
+    mk: Изер
+  comments:
+  type: metropolitan_department
+'39':
+  name: Jura
+  code: '39'
+  unofficial_names: Jura
+  geo:
+    latitude: 46.76247499999999
+    longitude: 5.6729159
+    min_latitude: 46.260695
+    min_longitude: 5.251316
+    max_latitude: 47.30594379999999
+    max_longitude: 6.207189
+  translations:
+    ar: جورا
+    be: Дэпартамент Юра
+    bg: Жура
+    bn: জুরা
+    ca: Jura
+    cs: Jura
+    da: Jura
+    de: Département Jura
+    el: Ζυρά
+    en: Jura
+    es: Jura
+    et: Jura departemang
+    eu: Jura
+    fa: ژورا
+    fi: Jura
+    fr: Jura
+    gl: Jura
+    gu: જુરા
+    hi: ज़ुरा
+    hu: Jura
+    hy: Յուրա
+    id: Jura
+    it: Giura
+    ja: ジュラ県
+    ka: იურა
+    kn: ಜೂರಾ
+    ko: 쥐라 주
+    lt: Jura
+    lv: Jura
+    mr: श्युरॅ
+    ms: Jura
+    nb: Jura
+    nl: Jura
+    pl: Jura
+    pt: Jura
+    ro: Jura
+    ru: Юра
+    si: ජුරා
+    sk: Jura
+    sl: Jura
+    sr: Јура
+    sv: Jura
+    sw: Jura
+    ta: ஜூரா
+    te: జూరా
+    th: จังหวัดฌูว์รา
+    tr: Jura
+    uk: Жура
+    ur: جورا
+    vi: Jura, Franche-Comté
+    zh: 汝拉省
+    cy: Jura
+    af: Jura (département)
+    ceb: Jura
+    sr_Latn: Jura
+    yue_Hans: 侏罗省
+    sq: Jura
+    ccp: "\U0001110E\U0001112A\U00011122"
+    he: ז׳ורה
+    kk: Юра
+    yue: 侏羅省
+    'no': Jura
+    az: Yura (departament)
+    mk: Јура
+  comments:
+  type: metropolitan_department
+'40':
+  name: Landes
+  code: '40'
+  unofficial_names: Landes
+  geo:
+    latitude: 43.9412045
+    longitude: -0.7532808999999999
+    min_latitude: 43.48743
+    min_longitude: -1.5235748
+    max_latitude: 44.532381
+    max_longitude: 0.1366911
+  translations:
+    ar: لاند
+    be: Дэпартамент Ланды
+    bg: Ланд
+    bn: লান্ডেশ
+    ca: Landes
+    cs: Landes
+    da: Landes
+    de: Département Landes
+    el: Λαντ
+    en: Landes
+    es: Landas
+    et: Landes’i departemang
+    eu: Landak
+    fa: لاند
+    fi: Landes
+    fr: Landes
+    gl: Landes
+    gu: લાંદેસ
+    hi: लैंडेस
+    hu: Landes
+    hy: Լանդեր
+    id: Landes
+    it: Landes
+    ja: ランド県
+    ka: ლანდი
+    kn: ಲ್ಯಾಂಡೆಸ್
+    ko: 랑드 주
+    lt: Landai
+    lv: Landa
+    mr: लांदेस
+    ms: Landes
+    nb: Landes
+    nl: Landes
+    pl: Landy
+    pt: Landes
+    ro: Landes
+    ru: Ланды
+    si: ලන්ඩිස්
+    sk: Landes
+    sl: Landes
+    sr: Ланд
+    sv: Landes
+    sw: Landes
+    ta: லேண்ட்ஸ்
+    te: లాండెస్
+    th: จังหวัดล็องด์
+    tr: Landes
+    uk: Ланди
+    ur: لانڈیس
+    vi: Landes
+    zh: 朗德省
+    cy: Landes
+    af: Landes
+    ceb: Landes
+    sr_Latn: Land
+    yue_Hans: 朗德省
+    sq: Landes
+    ccp: "\U00011123\U00011133\U00011120\U0001111A\U00011134\U00011113\U0001112C\U0001110C\U00011134"
+    he: לונד
+    kk: Ландтер
+    yue: 朗德省
+    mk: Ланд (департман)
+    'no': Landes
+    mn: Ланд аймаг
+  comments:
+  type: metropolitan_department
+'41':
+  name: Loir-et-Cher
+  code: '41'
+  unofficial_names: Loir-et-Cher
+  geo:
+    latitude: 47.6761905
+    longitude: 1.4159072
+    min_latitude: 47.186391
+    min_longitude: 0.5804869
+    max_latitude: 48.133235
+    max_longitude: 2.247891
+  translations:
+    ar: لوار وشير
+    be: Луар і Шэр
+    bg: Лоар е Шер
+    bn: লয়ের-এত-চের
+    ca: Loir i Cher
+    cs: Loir-et-Cher
+    da: Loir-et-Cher
+    de: Département Loir-et-Cher
+    el: Λουάρ-ε-Σερ
+    en: Loir-et-Cher
+    es: Loir y Cher
+    et: Loir-et-Cheri departemang
+    eu: Loir-et-Cher
+    fa: لوآر-ا-شر
+    fi: Loir-et-Cher
+    fr: Loir-et-Cher
+    gl: Loir e Cher
+    gu: લોઈર-એટ-ચેર
+    hi: लोइर-एट-चेर
+    hu: Loir-et-Cher
+    hy: Լուար և Շեր
+    id: Loir-et-Cher
+    is: Loir-et-Cher
+    it: Loir-et-Cher
+    ja: ロワール＝エ＝シェール県
+    ka: ლუარი და შერი
+    kn: ಲೋಯಿರ್-ಎಟ್-ಚೆರ್
+    ko: 루아르에셰르 주
+    lt: Luaras ir Šeras
+    lv: Luāra un Šēra
+    mr: लुआर-ए-शेर
+    ms: Loir-et-Cher
+    nb: Loir-et-Cher
+    nl: Loir-et-Cher
+    pl: Loir-et-Cher
+    pt: Loir-et-Cher
+    ro: Loir-et-Cher
+    ru: Луар и Шер
+    si: ලයර්-එට්-චෙර්
+    sk: Loir-et-Cher
+    sl: Loir-et-Cher
+    sr: Лоар и Шер
+    sv: Loir-et-Cher
+    sw: Loir-et-Cher
+    ta: லோயர்-எட் -செர்
+    te: లోయిర్-ఎట్-చెర్
+    th: จังหวัดลัวเรแชร์
+    tr: Loir-et-Cher
+    uk: Луар і Шер
+    ur: لوار-اے-شر
+    vi: Loir-et-Cher
+    zh: 卢瓦尔-谢尔省
+    cy: Loir-et-Cher
+    af: Loir-et-Cher
+    ceb: Loir-et-Cher
+    sr_Latn: Loar i Šer
+    yue_Hans: 卢华－些尔
+    ccp: "\U00011123\U00011130\U00011122\U00011134-\U00011103\U0001112C\U00011116\U00011134-\U0001110C\U0001112C\U00011122\U00011134"
+    he: לואר ושר
+    kk: Луар және Шер
+    yue: 盧華－些爾
+    mk: Лоар и Шер
+    'no': Loir-et-Cher
+    am: ሏር-ኤ-ሼር
+    az: Luar və Şer
+  comments:
+  type: metropolitan_department
+'42':
+  name: Loire
+  code: '42'
+  unofficial_names: Loire
+  geo:
+    latitude: 45.9846475
+    longitude: 4.052544999999999
+    min_latitude: 45.23104
+    min_longitude: 3.688893
+    max_latitude: 46.276589
+    max_longitude: 4.760375
+  translations:
+    ar: لوار
+    be: Дэпартамент Луара
+    bg: Лоар
+    bn: লইরা
+    ca: Loira
+    cs: Loire
+    da: Loire
+    de: Département Loire
+    el: Λουάρ
+    en: Loire
+    es: Loira
+    et: Loire’i departemang
+    eu: Loire
+    fa: لوآر
+    fi: Loire
+    fr: Loire
+    gl: Loira, Francia
+    gu: લોઈરે
+    he: לואר
+    hi: लोयर
+    hr: Loire
+    hu: Loire
+    hy: Լուար
+    id: Loire
+    it: Loira
+    ja: ロワール県
+    ka: ლუარა
+    kn: ಲೋಯರ್
+    ko: 루아르 주
+    lt: Luara
+    lv: Luāra
+    mr: लावार
+    ms: Loire
+    nb: Loire
+    nl: Loire
+    pl: Loara
+    pt: Loire
+    ro: Loire
+    ru: Луара
+    si: ලොයිරේ
+    sk: Loire
+    sl: Loire
+    sr: Лоара
+    sv: Loire
+    sw: Loire
+    ta: லோயர்
+    te: లోయిర్
+    th: จังหวัดลัวร์
+    tr: Loire
+    uk: Луара
+    ur: لویری
+    vi: Loire
+    zh: 卢瓦尔省
+    cy: Loire
+    af: Loire
+    ceb: Loire
+    sr_Latn: Loara
+    yue_Hans: 卢华尔
+    ccp: "\U00011123\U00011130\U00011122\U00011134"
+    kk: Луара
+    yue: 盧華爾
+    az: Luara (departament)
+    'no': Loire
+    mk: Лоара
+    sq: Loire
+  comments:
+  type: metropolitan_department
+'43':
+  name: Haute-Loire
+  code: '43'
+  unofficial_names: Haute-Loire
+  geo:
+    latitude: 45.0821226
+    longitude: 3.9266366
+    min_latitude: 44.743961
+    min_longitude: 3.082197
+    max_latitude: 45.42760879999999
+    max_longitude: 4.490819
+  translations:
+    ar: لوار العليا
+    az: Ot-Luağ
+    be: Дэпартамент Луара Верхняя
+    bg: От Лоар
+    bn: হাউততে লুইর
+    ca: Alt Loira
+    cs: Haute-Loire
+    da: Haute-Loire
+    de: Département Haute-Loire
+    el: Ωτ-Λουάρ
+    en: Haute-Loire
+    es: Alto Loira
+    et: Haute-Loire’i departemang
+    eu: Haute-Loire
+    fa: اوت-لوار
+    fi: Haute-Loire
+    fr: Haute-Loire
+    gl: Alto Loira
+    gu: હૌટ-લોઈર
+    hi: ओट-लोइर
+    hr: Haute-Loire
+    hu: Haute-Loire
+    hy: Վերին Լուար
+    id: Haute-Loire
+    it: Alta Loira
+    ja: オート＝ロワール県
+    ka: ზემო ლუარა
+    kn: ಹಾಟೆ-ಲೋಯರ್
+    ko: 오트루아르 주
+    lt: Aukštutinė Luara
+    lv: Augšluāra
+    mr: ऑत-लावार
+    ms: Haute-Loire
+    nb: Haute-Loire
+    nl: Haute-Loire
+    pl: Górna Loara
+    pt: Haute-Loire
+    ro: Haute-Loire
+    ru: Верхняя Луара
+    si: හෞටේ-ලොයිරේ
+    sk: Haute-Loire
+    sl: Haute-Loire
+    sr: Горња Лоара
+    sv: Haute-Loire
+    sw: Haute-Loire
+    ta: ஹூட் -லோயிரே
+    te: హాట్-లోయిర్
+    th: จังหวัดโอต-ลัวร์
+    tr: Haute-Loire
+    uk: Верхня Луара
+    ur: بالائی-لوار
+    vi: Haute-Loire
+    zh: 上盧瓦爾省
+    cy: Haute-Loire
+    af: Haute-Loire
+    ceb: Haute-Loire
+    sr_Latn: Gornja Loara
+    yue_Hans: 上卢华尔
+    sq: Haute-Loire
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011123\U00011130\U00011122\U00011134"
+    he: לואר עילי
+    kk: Жоғарғы Луара
+    yue: 上盧華爾
+    'no': Haute-Loire
+    mk: Горна Лоара
+  comments:
+  type: metropolitan_department
+'44':
+  name: Loire-Atlantique
+  code: '44'
+  unofficial_names: Loire-Atlantique
+  geo:
+    latitude: 47.27804680000001
+    longitude: -1.8157647
+    min_latitude: 46.860073
+    min_longitude: -2.559609
+    max_latitude: 47.835927
+    max_longitude: -0.9243831
+  translations:
+    af: Loire-Atlantique
+    ar: لوار الأطلسية
+    az: Luar-Atlantik
+    be: Луара Атлантычная
+    bg: Лоар Атлантик
+    bn: লইরে-আটলান্তিক
+    ca: Loira Atlàntic
+    cs: Loire-Atlantique
+    da: Loire-Atlantique
+    de: Département Loire-Atlantique
+    el: Λουάρ-Ατλαντίκ
+    en: Loire-Atlantique
+    es: Loira Atlántico
+    et: Loire-Atlantique
+    eu: Loire-Atlantique
+    fa: لوآر-آتلانتیک
+    fi: Loire-Atlantique
+    fr: Loire-Atlantique
+    gl: Loira Atlántico
+    gu: લોઅર-એટલાન્ટિક
+    he: הלואר האטלנטי
+    hi: लोइर-अटलांटिक
+    hu: Loire-Atlantique
+    hy: Ատլանտյան Լուար
+    id: Loire-Atlantique
+    it: Loira Atlantica
+    ja: ロワール＝アトランティック県
+    ka: ატლანტიკის ლუარა
+    kn: ಲೊಯಿರ್-ಅಟ್ಲಾಂಟಿಕ್
+    ko: 루아르아틀랑티크 주
+    lt: Atlanto Luara
+    lv: Atlantijas Luāra
+    mr: लावार-अतलांतिक
+    ms: Loire-Atlantique
+    nb: Loire-Atlantique
+    nl: Loire-Atlantique
+    pl: Loara Atlantycka
+    pt: Loire-Atlantique
+    ro: Loire-Atlantique
+    ru: Атлантическая Луара
+    si: ලොයිරේ-අත්ලාන්තික්
+    sk: Loire-Atlantique
+    sl: Loire-Atlantique
+    sr: Атлантска Лоара
+    sv: Loire-Atlantique
+    sw: Loire-Atlantique
+    te: లోయర్-అట్లాంటిక్
+    th: จังหวัดลัวรัตล็องติก
+    tr: Loire-Atlantique
+    uk: Атлантична Луара
+    ur: لوار-اتلانتیک
+    vi: Loire-Atlantique
+    zh: 大西洋卢瓦尔省
+    cy: Loire-Atlantique
+    ceb: Loire-Atlantique
+    sr_Latn: Atlantska Loara
+    yue_Hans: 卢华尔-大西洋
+    sq: Loire-Atlantique
+    ccp: "\U00011123\U00011130\U00011122\U00011134-\U00011103\U00011116\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011134\U00011111\U00011128\U00011107\U00011134"
+    kk: Атлантикалық Луара
+    yue: 盧華爾-大西洋
+    'no': Loire-Atlantique
+    ga: Liger-Atlantel
+    mk: Атлантска Лоара
+    mn: Атлантын Луар (департамент)
+  comments:
+  type: metropolitan_department
+'45':
+  name: Loiret
+  code: '45'
+  unofficial_names: Loiret
+  geo:
+    latitude: 47.900771
+    longitude: 2.2018172
+    min_latitude: 47.483027
+    min_longitude: 1.51145
+    max_latitude: 48.344954
+    max_longitude: 3.1284099
+  translations:
+    ar: لواريت
+    be: Луарэ
+    bg: Лоаре
+    bn: লইরেত
+    ca: Loiret
+    cs: Loiret
+    da: Loiret
+    de: Département Loiret
+    el: Λουαρέ
+    en: Loiret
+    es: Loiret
+    et: Loiret’ departemang
+    eu: Loiret
+    fa: لوآره
+    fi: Loiret
+    fr: Loiret
+    gl: Loiret
+    gu: લોઈરેટ
+    he: לוארה
+    hi: लोइरेट
+    hu: Loiret
+    hy: Լուարե
+    id: Loiret
+    is: Loiret
+    it: Loiret
+    ja: ロワレ県
+    ka: ლუარე
+    kn: ಲೊರೆಟ್
+    ko: 루아레 주
+    lt: Luarė
+    lv: Luarē
+    mr: लुआरे
+    ms: Loiret
+    nb: Loiret
+    nl: Loiret
+    pl: Loiret
+    pt: Loiret
+    ro: Loiret
+    ru: Луаре
+    si: ලොයිරෙට්
+    sk: Loiret
+    sl: Loiret
+    sr: Лоаре
+    sv: Loiret
+    sw: Loiret
+    ta: லோஇரேட்
+    te: లోయిరెట్
+    th: จังหวัดลัวแร
+    tr: Loiret
+    uk: Луаре
+    ur: لوارے
+    vi: Loiret
+    zh: 卢瓦雷省
+    cy: Loiret
+    af: Loiret
+    ceb: Loiret
+    sr_Latn: Loare
+    yue_Hans: 卢华雷
+    sq: Loiret
+    ccp: "\U00011123\U00011130\U00011122\U0001112C\U00011116\U00011134"
+    kk: Луаре
+    yue: 盧華雷
+    az: Luare (departament)
+    'no': Loiret
+    mk: Лоаре
+  comments:
+  type: metropolitan_department
+'46':
+  name: Lot
+  code: '46'
+  unofficial_names: Lot
+  geo:
+    latitude: 44.5379358
+    longitude: 1.6760691
+    min_latitude: 44.20334810000001
+    min_longitude: 0.9815220999999998
+    max_latitude: 45.046684
+    max_longitude: 2.210891
+  translations:
+    ar: لوت
+    be: Дэпартамент Ло
+    bg: Лот
+    bn: লট
+    ca: Òlt
+    cs: Lot
+    da: Lot
+    de: Département Lot
+    el: Λο
+    en: Lot
+    es: Lot
+    et: Loti departemang
+    eu: Lot
+    fa: لو
+    fi: Lot
+    fr: Lot
+    gl: Lot
+    gu: લોટ
+    he: לוט
+    hi: लॉट
+    hu: Lot
+    hy: Լո
+    id: Lot
+    it: Lot
+    ja: ロット県
+    ka: ლო
+    kn: ಲಾಟ್
+    ko: 로트 주
+    lt: Lo
+    lv: Lo
+    mr: लॉत
+    ms: Lot
+    nb: Lot
+    nl: Lot
+    pl: Lot
+    pt: Lot
+    ro: Lot
+    ru: Ло
+    si: ලොට්
+    sk: Lot
+    sl: Lot
+    sr: Лот
+    sv: Lot
+    sw: Lot
+    ta: லோட்
+    te: లోట్
+    th: จังหวัดล็อต
+    tr: Lot
+    uk: Лот
+    ur: لوت
+    vi: Lot, Midi-Pyrénées
+    zh: 洛特省
+    cy: Lot
+    af: Lot
+    ceb: Lot
+    sr_Latn: Lot
+    yue_Hans: 洛特
+    ccp: "\U00011122\U00011127\U00011116\U00011134"
+    kk: Ло
+    yue: 洛特
+    az: Lo (departament)
+    mk: Лот
+    'no': Lot
+  comments:
+  type: metropolitan_department
+'47':
+  name: Lot-et-Garonne
+  code: '47'
+  unofficial_names: Lot-et-Garonne
+  geo:
+    latitude: 44.2470173
+    longitude: 0.4502368
+    min_latitude: 43.9725879
+    min_longitude: -0.140673
+    max_latitude: 44.765678
+    max_longitude: 1.078341
+  translations:
+    ar: لوت وغارون
+    be: Дэпартамент Ло і Гарона
+    bg: Лот е Гарон
+    bn: লট-এট-গ্যারোন
+    ca: Òlt i Garona
+    cs: Lot-et-Garonne
+    da: Lot-et-Garonne
+    de: Département Lot-et-Garonne
+    el: Λοτ-ε-Γκαρόν
+    en: Lot-et-Garonne
+    es: Lot y Garona
+    et: Lot-et-Garonne’i departemang
+    eu: Lot-et-Garona
+    fa: لو-ا-گرون
+    fi: Lot-et-Garonne
+    fr: Lot-et-Garonne
+    gl: Lot e Garona
+    gu: લોટ-એટ-ગેરોન
+    he: לוט וגארון
+    hi: लूत-एट-गोरोन
+    hu: Lot-et-Garonne
+    hy: Լո և Գարոն
+    id: Lot-et-Garonne
+    it: Lot e Garonna
+    ja: ロット＝エ＝ガロンヌ県
+    ka: ლო და გარონა
+    kn: ಲಾಟ್ ಎಟ್-ಗ್ಯಾರೋನೆ
+    ko: 로트에가론 주
+    lt: Lo ir Garona
+    lv: Lo un Garonna
+    mr: लोत-एत-गारोन
+    ms: Lot-et-Garonne
+    nb: Lot-et-Garonne
+    nl: Lot-et-Garonne
+    pl: Lot-et-Garonne
+    pt: Lot e Garona
+    ro: Lot-et-Garonne
+    ru: Ло и Гаронна
+    si: ලොට්-එට්-ගරෝන්නේ
+    sk: Lot-et-Garonne
+    sl: Lot-et-Garonne
+    sr: Лот и Гарона
+    sv: Lot-et-Garonne
+    sw: Lot-et-Garonne
+    ta: லோட் -எட் -காரோணனே
+    te: లాటె్-ఎట్-గ్యారన్
+    th: จังหวัดลอเตการอน
+    tr: Lot-et-Garonne
+    uk: Лот і Гаронна
+    ur: لوت-اے-گارون
+    vi: Lot-et-Garonne
+    zh: 洛特-加龍省
+    cy: Lot-et-Garonne
+    af: Lot-et-Garonne
+    ceb: Lot-et-Garonne
+    sr_Latn: Lot i Garona
+    yue_Hans: 洛特-加龙
+    sq: Lot-et-Garonne
+    ccp: "\U00011123\U00011127\U00011116\U00011134-\U00011103\U0001112C\U00011116\U00011134-\U00011109\U00011122\U0001112E\U0001111A\U00011133\U00011126\U00011128"
+    kk: Ло және Гаронна
+    yue: 洛特-加龍
+    az: Lo və Qaronna
+    'no': Lot-et-Garonne
+    mk: Лот и Гарона
+    mn: Ло – Гаронна
+  comments:
+  type: metropolitan_department
+'48':
+  name: Lozère
+  code: '48'
+  unofficial_names: Lozère
+  geo:
+    latitude: 44.494203
+    longitude: 3.5812692
+    min_latitude: 44.1095909
+    min_longitude: 2.981197
+    max_latitude: 44.975761
+    max_longitude: 3.998366
+  translations:
+    af: Lozère
+    ar: لوزار
+    be: Дэпартамент Лазер
+    bg: Лозер
+    bn: লোজের
+    ca: Losera
+    cs: Lozère
+    da: Lozère
+    de: Département Lozère
+    el: Λοζέρ
+    en: Lozère
+    es: Lozère
+    et: Lozère’i departemang
+    eu: Lozère
+    fa: لوزر
+    fi: Lozère
+    fr: Lozère
+    gl: Lozère
+    gu: લોઝેરે
+    he: לוזר
+    hi: लोज़ेरे
+    hu: Lozère
+    hy: Լոզեր
+    id: Lozère
+    it: Lozère
+    ja: ロゼール県
+    ka: ლოზერი
+    kn: ಲೊಝೆರೆ
+    ko: 로제르 주
+    lt: Lozeras
+    lv: Lozēra
+    mr: लोझेर
+    ms: Lozère
+    nb: Lozère
+    nl: Lozère
+    pl: Lozère
+    pt: Lozère
+    ro: Lozère
+    ru: Лозер
+    si: ලොසෙරේ
+    sk: Lozère
+    sl: Lozère
+    sr: Лозер
+    sv: Lozère
+    sw: Lozère
+    ta: லோஸிர்
+    te: లోజియర్
+    th: จังหวัดลอแซร์
+    tr: Lozère
+    uk: Лозер
+    ur: لوزیر
+    vi: Lozère
+    zh: 洛泽尔省
+    cy: Lozère
+    ceb: Lozère
+    sr_Latn: Lozer
+    yue_Hans: 洛泽尔
+    sq: Lozère
+    ccp: "\U00011123\U0001112E\U00011121\U00011120\U0001112C\U00011122\U00011134"
+    kk: Лозер
+    yue: 洛澤爾
+    'no': Lozère
+    az: Lozer
+    mk: Лозер
+    mn: Лозер
+  comments:
+  type: metropolitan_department
+'49':
+  name: Maine-et-Loire
+  code: '49'
+  unofficial_names: Maine-et-Loire
+  geo:
+    latitude: 47.2913545
+    longitude: -0.4877852
+    min_latitude: 46.9688829
+    min_longitude: -1.3505026
+    max_latitude: 47.809978
+    max_longitude: 0.234549
+  translations:
+    af: Maine-et-Loire
+    ar: ماين ولوار
+    be: Мен і Луара
+    bg: Мен е Лоар
+    bn: মেইন ইট লরি
+    ca: Maine i Loira
+    cs: Maine-et-Loire
+    da: Maine-et-Loire
+    de: Département Maine-et-Loire
+    el: Μαιν-ε-Λουάρ
+    en: Maine-et-Loire
+    es: Maine y Loira
+    et: Maine-et-Loire
+    eu: Maine-et-Loire
+    fa: من الوآر
+    fi: Maine-et-Loire
+    fr: Maine-et-Loire
+    gl: Maine e Loira
+    gu: મૈન-એટ-લોઈર
+    he: מן ולואר
+    hi: मेन-एट-लोइर
+    hu: Maine-et-Loire
+    hy: Մեն և Լուար
+    id: Maine-et-Loire
+    it: Maine e Loira
+    ja: メーヌ＝エ＝ロワール県
+    ka: მენი და ლუარა
+    kn: ಮೈನೆ-ಎಟ್-ಲೋರೆ
+    ko: 멘에루아르 주
+    lt: Menas ir Luara
+    lv: Mēna un Luāra
+    mr: मेन-एत-लावार
+    ms: Maine-et-Loire
+    nb: Maine-et-Loire
+    nl: Maine-et-Loire
+    pl: Maine-et-Loire
+    pt: Maine-et-Loire
+    ro: Maine-et-Loire
+    ru: Мен и Луара
+    si: මයිනේ-එට්-ලොයිරේ
+    sk: Maine-et-Loire
+    sl: Maine-et-Loire
+    sr: Мен и Лоара
+    sv: Maine-et-Loire
+    sw: Maine-et-Loire
+    ta: மைனி-எட் -லோயிரே
+    te: మెయినె-ఎట్-లోయర్
+    th: จังหวัดแมเนลัวร์
+    tr: Maine-et-Loire
+    uk: Мен і Луара
+    ur: مین-اے-لوار
+    vi: Maine-et-Loire
+    zh: 曼恩-卢瓦尔省
+    cy: Maine-et-Loire
+    ceb: Maine-et-Loire
+    sr_Latn: Men i Loara
+    yue_Hans: 曼恩-卢华尔
+    sq: Maine-et-Loire
+    ccp: "\U0001111F\U0001112D\U0001111A\U00011134-\U00011103\U0001112C\U00011116\U00011134-\U00011123\U00011130\U00011122\U00011134"
+    kk: Мен және Луара
+    yue: 曼恩-盧華爾
+    az: Men və Luara
+    'no': Maine-et-Loire
+    ga: Maine-et-Loire
+    mk: Мен и Лоара
+  comments:
+  type: metropolitan_department
+'50':
+  name: Manche
+  code: '50'
+  unofficial_names: Manche
+  geo:
+    latitude: 49.114712
+    longitude: -1.3115949
+    min_latitude: 48.45579679999999
+    min_longitude: -1.954995
+    max_latitude: 49.727762
+    max_longitude: -0.7348169000000001
+  translations:
+    af: Manche
+    ar: المانش
+    be: Дэпартамент Манш
+    bg: Манш
+    bn: মানছে
+    ca: Manche
+    cs: Manche
+    da: Manche
+    de: Département Manche
+    el: Μανς
+    en: Manche
+    es: Mancha
+    et: Manche’i departemang
+    eu: Manche
+    fa: مانش
+    fi: Manche
+    fr: Manche
+    gl: Mancha
+    gu: માંચે
+    he: מאנש
+    hi: मान्शे
+    hu: Manche
+    hy: Մանշ
+    id: Manche
+    it: Manica
+    ja: マンシュ県
+    ka: მანში
+    kn: ಮಂಚೆ
+    ko: 망슈 주
+    lt: Manšas
+    lv: Manša
+    mr: मांच
+    ms: Manche
+    nb: Manche
+    nl: Manche
+    pl: Manche
+    pt: Mancha
+    ro: Manche
+    ru: Манш
+    si: මන්චේ
+    sk: Manche
+    sl: Manche
+    sr: Манш
+    sv: Manche
+    sw: Manche
+    ta: மாஞ்சே
+    te: మాంచి
+    th: จังหวัดม็องช์
+    tr: Manche
+    uk: Манш
+    ur: مانش
+    vi: Manche
+    zh: 芒什省
+    cy: Manche
+    ceb: Manche
+    sr_Latn: Manš
+    yue_Hans: 芒什
+    sq: Manche
+    ccp: "\U0001111F\U0001111A\U00011134\U0001110C\U0001112C"
+    kk: Манш
+    yue: 芒什
+    az: Manş (departament)
+    'no': Manche
+    ga: Manche
+    mk: Манш
+  comments:
+  type: metropolitan_department
+'51':
+  name: Marne
+  code: '51'
+  unofficial_names: Marne
+  geo:
+    latitude: 49.128754
+    longitude: 4.1475445
+    min_latitude: 48.515251
+    min_longitude: 3.395865
+    max_latitude: 49.40782799999999
+    max_longitude: 5.039668
+  translations:
+    ar: المارن
+    be: Дэпартамент Марна
+    bg: Марн
+    bn: মার্নে
+    ca: Marne
+    cs: Marne
+    da: Marne
+    de: Département Marne
+    el: Μαρν
+    en: Marne
+    es: Marne
+    et: Marne’i departemang
+    eu: Marne
+    fa: مرن
+    fi: Marne
+    fr: Marne
+    gl: Marne
+    gu: માર્ને
+    hi: मार्ने
+    hr: Marne
+    hu: Marne
+    hy: Մարն
+    id: Marne
+    it: Marna
+    ja: マルヌ県
+    ka: მარნა
+    kn: ಮರ್ನೆ
+    ko: 마른 주
+    lt: Marna
+    lv: Marna
+    mr: मार्न
+    ms: Marne
+    nb: Marne
+    nl: Marne
+    pl: Marna
+    pt: Marne
+    ro: Marne
+    ru: Марна
+    si: මර්නේ
+    sk: Marne
+    sl: Marne
+    sr: Марна
+    sv: Marne
+    sw: Marne
+    ta: மாறனே
+    te: మార్నె
+    th: จังหวัดมาร์น
+    tr: Marne
+    uk: Марна
+    ur: مارن، فرانس
+    vi: Marne
+    zh: 马恩省
+    cy: Marne
+    af: Marne
+    ceb: Marne
+    sr_Latn: Marna
+    yue_Hans: 马恩
+    sq: Marne
+    ccp: "\U0001111F\U00011122\U00011134\U0001111A\U0001112C"
+    he: מארן (מחוז)
+    kk: Марна
+    yue: 馬恩
+    az: Marna (departament)
+    'no': Marne
+    mk: Марна
+  comments:
+  type: metropolitan_department
+'52':
+  name: Haute-Marne
+  code: '52'
+  unofficial_names: Haute-Marne
+  geo:
+    latitude: 48.1260968
+    longitude: 5.1071322
+    min_latitude: 47.576566
+    min_longitude: 4.6266029
+    max_latitude: 48.689322
+    max_longitude: 5.891043
+  translations:
+    ar: المارن العليا
+    be: Дэпартамент Марна Верхняя
+    bg: От Марн
+    bn: হোতে-মার্নে
+    ca: Alt Marne
+    cs: Haute-Marne
+    da: Haute-Marne
+    de: Département Haute-Marne
+    el: Ωτ-Μαρν
+    en: Haute-Marne
+    es: Alto Marne
+    et: Haute-Marne’i departemang
+    eu: Haute-Marne
+    fa: اوت-مارن
+    fi: Haute-Marne
+    fr: Haute-Marne
+    gl: Alto Marne
+    gu: હૌટ-માર્ને
+    he: הוט-מארן
+    hi: ओट-मार्न
+    hr: Haute-Marne
+    hu: Haute-Marne
+    hy: Վերին Մարն
+    id: Haute-Marne
+    it: Alta Marna
+    ja: オート＝マルヌ県
+    ka: ზემო მარნა
+    kn: ಹೌಟೆ-ಮರ್ನೆ
+    ko: 오트마른 주
+    lt: Aukštutinė Marna
+    lv: Augšmarna
+    mr: ऑत-मार्न
+    ms: Haute-Marne
+    nb: Haute-Marne
+    nl: Haute-Marne
+    pl: Górna Marna
+    pt: Haute-Marne
+    ro: Haute-Marne
+    ru: Верхняя Марна
+    si: හෞටේ මර්නේ
+    sk: Haute-Marne
+    sl: Haute-Marne
+    sr: Горња Марна
+    sv: Haute-Marne
+    sw: Haute-Marne
+    ta: ஹூட் -மார்னே
+    te: హాట్-మార్నె
+    th: จังหวัดโอต-มาร์น
+    tr: Haute-Marne
+    uk: Верхня Марна
+    ur: بالائی-مارن
+    vi: Haute-Marne
+    zh: 上马恩省
+    cy: Haute-Marne
+    af: Haute-Marne
+    ceb: Haute-Marne
+    sr_Latn: Gornja Marna
+    yue_Hans: 上马恩
+    sq: Haute-Marne
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U0001111F\U00011122\U00011134\U0001111A\U0001112C"
+    kk: Жоғарғы Марна
+    yue: 上馬恩
+    az: Yuxarı Marna
+    'no': Haute-Marne
+    ga: Haute-Marne
+    mk: Горна Марна
+  comments:
+  type: metropolitan_department
+'53':
+  name: Mayenne
+  code: '53'
+  unofficial_names: Mayenne
+  geo:
+    latitude: 48.3061239
+    longitude: -0.620935
+    min_latitude: 48.2778439
+    min_longitude: -0.6502759
+    max_latitude: 48.33539690000001
+    max_longitude: -0.5777470000000001
+  translations:
+    af: Mayenne
+    ar: ماين
+    be: Дэпартамент Маен
+    bg: Майен
+    bn: মায়েন
+    ca: Mayenne
+    cs: Mayenne
+    da: Mayenne
+    de: Mayenne
+    el: Μαγιέν
+    en: Mayenne
+    es: Mayenne
+    et: Mayenne’i departemang
+    eu: Mayenne
+    fa: ماین
+    fi: Mayenne
+    fr: Mayenne
+    gl: Mayenne
+    gu: માયેન
+    he: מאיין
+    hi: मेयेन
+    hu: Mayenne
+    hy: Մայեն
+    id: Mayenne
+    it: Mayenne
+    ja: マイエンヌ県
+    ka: მაიენი
+    kn: ಮಾಯೆನ್ನೆ
+    ko: 마옌 주
+    lt: Majenas
+    lv: Majenna
+    mr: मायेन
+    ms: Mayenne
+    nb: Mayenne
+    nl: Mayenne
+    pl: Mayenne
+    pt: Mayenne
+    ro: Mayenne
+    ru: Майен
+    si: මෙයෙන්නේ
+    sk: Mayenne
+    sl: Mayenne
+    sr: Мајен
+    sv: Mayenne
+    sw: Mayenne
+    ta: மாயென்னே
+    te: మేయెన్
+    th: จังหวัดมาแยน
+    tr: Mayenne
+    uk: Майєнн
+    ur: ماین
+    vi: Mayenne
+    zh: 马耶讷省
+    cy: Mayenne
+    ceb: Mayenne
+    sr_Latn: Majen
+    yue_Hans: 马耶讷
+    sq: Mayenne
+    ccp: "\U0001111F\U00011120\U0001112C\U0001111A\U00011133\U00011126\U00011128"
+    kk: Майен
+    yue: 馬耶訥
+    az: Mayen (departament)
+    'no': Mayenne
+    mk: Мајен
+  comments:
+  type: metropolitan_department
+'54':
+  name: Meurthe-et-Moselle
+  code: '54'
+  unofficial_names: Meurthe-et-Moselle
+  geo:
+    latitude: 48.7997007
+    longitude: 6.094701400000001
+    min_latitude: 48.348987
+    min_longitude: 5.426108
+    max_latitude: 49.56326800000001
+    max_longitude: 7.123213100000001
+  translations:
+    af: Meurthe-et-Moselle
+    ar: مورت وموزيل
+    be: Дэпартамент Мёрт і Мозель
+    bg: Мьорт е Мозел
+    bn: মুর্থ -এট-মোসেল্লে
+    ca: Meurthe i Mosel·la
+    cs: Meurthe-et-Moselle
+    da: Meurthe-et-Moselle
+    de: Département Meurthe-et-Moselle
+    el: Μερτ-ε-Μοζέλ
+    en: Meurthe-et-Moselle
+    es: Meurthe y Mosela
+    et: Meurthe-et-Moselle’i departemang
+    eu: Meurthe-et-Moselle
+    fa: مورت موزل
+    fi: Meurthe-et-Moselle
+    fr: Meurthe-et-Moselle
+    gl: Meurthe e Mosela
+    gu: મ્યુર્થે-એટ-મોસ્લે
+    he: מרת ומוזל
+    hi: माउर्थे-एट-मोसेल
+    hu: Meurthe-et-Moselle
+    hy: Մյորթ և Մոզել
+    id: Meurthe-et-Moselle
+    it: Meurthe e Mosella
+    ja: ムルト＝エ＝モゼル県
+    ka: მერთი და მოზელი
+    kn: ಮೂರ್ಥೆ-ಎಟ್-ಮೊಸೆಲ್ಲೆ
+    ko: 뫼르트에모젤 주
+    lt: Mertas ir Mozelis
+    lv: Merta un Mozele
+    mr: म्युर्ते-ए-मोझेल
+    ms: Meurthe-et-Moselle
+    nb: Meurthe-et-Moselle
+    nl: Meurthe-et-Moselle
+    pl: Meurthe-et-Moselle
+    pt: Meurthe-et-Moselle
+    ro: Meurthe-et-Moselle
+    ru: Мёрт и Мозель
+    si: මෙඋර්තේ එට් මොසේල්ලේ
+    sk: Meurthe-et-Moselle
+    sl: Meurthe-et-Moselle
+    sr: Мерт и Мозел
+    sv: Meurthe-et-Moselle
+    sw: Meurthe-et-Moselle
+    ta: மேயுர்தே-எட் -மொசெல்லே
+    te: మెయుర్తె-ఎట్-మోసెల్లె
+    th: จังหวัดเมอร์เตมอแซล
+    tr: Meurthe-et-Moselle
+    uk: Мерт і Мозель
+    ur: مرتے-اے-موزیل
+    vi: Meurthe-et-Moselle
+    zh: 默尔特-摩泽尔省
+    cy: Meurthe-et-Moselle
+    ceb: Meurthe-et-Moselle
+    sr_Latn: Mert i Mozel
+    yue_Hans: 默尔特-摩泽尔
+    sq: Meurthe-et-Moselle
+    ccp: "\U0001111F\U0001112C\U00011105\U0001112A\U00011122\U00011134\U00011117\U00011128-\U00011103\U0001112C\U00011116\U00011134-\U0001111F\U0001112E\U00011125\U0001112C\U00011123\U00011133\U00011126\U00011128"
+    kk: Мёрт және Мозель
+    yue: 默爾特-摩澤爾
+    az: Mört və Mözel
+    mk: Мерт и Мозел
+    'no': Meurthe-et-Moselle
+    ga: Meurthe-et-Moselle
+  comments:
+  type: metropolitan_department
+'55':
+  name: Meuse
+  code: '55'
+  unofficial_names: Meuse
+  geo:
+    latitude: 49.0824319
+    longitude: 5.282399700000001
+    min_latitude: 48.4089919
+    min_longitude: 4.8883769
+    max_latitude: 49.616864
+    max_longitude: 5.8542058
+  translations:
+    af: Meuse
+    ar: موز
+    be: Дэпартамент Мёз
+    bg: Мьоз
+    bn: মিউস
+    ca: Mosa
+    cs: Meuse
+    da: Meuse
+    de: Département Meuse
+    el: Μεζ
+    en: Meuse
+    es: Mosa
+    et: Meuse’i departemang
+    eu: Meuse
+    fa: موز
+    fi: Meuse
+    fr: Meuse
+    gl: Mosa
+    gu: મીયુઝ
+    he: מז
+    hi: म्यूसे
+    hu: Meuse
+    hy: Մյոզ
+    id: Meuse
+    it: Mosa
+    ja: ムーズ県
+    ka: მეზის დეპარტამენტი
+    kn: ಮೇಸ್
+    ko: 뫼즈 주
+    lt: Mezas
+    lv: Mēza
+    mr: म्युझ
+    ms: Meuse
+    nb: Meuse
+    nl: Meuse
+    pl: Moza
+    pt: Meuse
+    ro: Meuse
+    ru: Мёз
+    si: මෙයුසේ
+    sk: Meuse
+    sl: Meuse
+    sr: Меза
+    sv: Meuse
+    sw: Meuse
+    ta: மீஉஸ்
+    te: మియూజ్
+    th: จังหวัดเมิซ
+    tr: Meuse
+    uk: Мез
+    ur: موز
+    vi: Meuse
+    zh: 默兹省
+    cy: Meuse
+    ceb: Meuse
+    sr_Latn: Meza
+    yue_Hans: 默兹
+    ccp: "\U0001111F\U0001112C\U00011103\U00011128\U00011103\U0001112A\U0001110C\U00011134"
+    kk: Мез
+    yue: 默茲
+    az: Möz (departament)
+    mk: Меза
+    'no': Meuse
+  comments:
+  type: metropolitan_department
+'56':
+  name: Morbihan
+  code: '56'
+  unofficial_names: Morbihan
+  geo:
+    latitude: 47.8852929
+    longitude: -2.9001865
+    min_latitude: 47.27785290000001
+    min_longitude: -3.7349149
+    max_latitude: 48.21088899999999
+    max_longitude: -2.0353381
+  translations:
+    af: Morbihan
+    ar: موربيهان
+    be: Марбіян
+    bg: Морбиан
+    bn: মরবিহান
+    ca: Ar Mor-Bihan
+    cs: Morbihan
+    da: Morbihan
+    de: Département Morbihan
+    el: Μορμπιχάν
+    en: Morbihan
+    es: Morbihan
+    et: Morbihani departemang
+    eu: Morbihan
+    fa: موربیان
+    fi: Morbihan
+    fr: Morbihan
+    gl: Morbihan
+    gu: મોરબીહાન
+    he: מורביאן
+    hi: मोरबिहन
+    hu: Morbihan
+    hy: Մորբիան
+    id: Morbihan
+    is: Morbihan
+    it: Morbihan
+    ja: モルビアン県
+    ka: მორბიანი
+    kn: ಮೊರ್ಬಿಹಾನ್
+    ko: 모르비앙 주
+    lt: Morbihanas
+    lv: Morbiāna
+    mr: मॉर्बियां
+    ms: Morbihan
+    nb: Morbihan
+    nl: Morbihan
+    pl: Morbihan
+    pt: Morbihan
+    ro: Morbihan
+    ru: Морбиан
+    si: මොර්බිහාන්
+    sk: Morbihan
+    sl: Morbihan
+    sr: Морбијан
+    sv: Morbihan
+    sw: Morbihan
+    ta: மோர்பிஹன்
+    te: మోర్బిహాన్
+    th: จังหวัดมอร์บีอ็อง
+    tr: Morbihan
+    uk: Морбіан
+    ur: موربیاں
+    vi: Morbihan
+    zh: 莫尔比昂省
+    cy: Mor-Bihan
+    ceb: Morbihan
+    sr_Latn: Morbijan
+    yue_Hans: 莫尔比昂
+    sq: Morbihan
+    ccp: "\U0001111F\U00011127\U00011122\U00011134\U0001111D\U00011128\U00011126\U0001111A\U00011134"
+    kk: Морбиан
+    yue: 莫爾比昂
+    az: Morbian
+    mk: Морбијан
+    'no': Morbihan
+  comments:
+  type: metropolitan_department
+'57':
+  name: Moselle
+  code: '57'
+  unofficial_names: Moselle
+  geo:
+    latitude: 49.0983839
+    longitude: 6.5527641
+    min_latitude: 48.5267229
+    min_longitude: 5.891857099999999
+    max_latitude: 49.515124
+    max_longitude: 7.640046900000001
+  translations:
+    af: Moselle
+    ar: موزيل
+    be: Дэпартамент Мозель
+    bg: Мозел
+    bn: মোসেল্যে
+    ca: Mosel·la
+    cs: Moselle
+    da: Moselle
+    de: Département Moselle
+    el: Μοζέλ
+    en: Moselle
+    es: Mosela
+    et: Moselle’i departemang
+    eu: Moselle
+    fa: موزل
+    fi: Moselle
+    fr: Moselle
+    gl: Mosela
+    gu: મોસેલે
+    he: מוזל
+    hi: मॉसेल
+    hr: Moselle
+    hu: Moselle
+    hy: Մոզել
+    id: Moselle
+    it: Mosella
+    ja: モゼル県
+    ka: მოზელი
+    kn: ಮೋಸೆಲ್ಲೆ
+    ko: 모젤 주
+    lt: Mozelis
+    lv: Mozele
+    mr: मोझेल
+    ms: Moselle
+    nb: Moselle
+    nl: Moselle
+    pl: Mozela
+    pt: Mosela
+    ro: Moselle
+    ru: Мозель
+    si: මොසෙලේ
+    sk: Moselle
+    sl: Moselle
+    sr: Мозел
+    sv: Moselle
+    sw: Moselle
+    ta: மோசெல்லே
+    te: మోసెల్లె
+    th: จังหวัดมอแซล
+    tr: Moselle
+    uk: Мозель
+    ur: موسیلی
+    vi: Moselle
+    zh: 摩泽尔省
+    cy: Moselle
+    ceb: Moselle
+    sr_Latn: Mozel
+    yue_Hans: 摩泽尔
+    sq: Moselle
+    ccp: "\U0001111F\U0001112E\U00011125\U0001112C\U00011123\U00011133\U00011123\U00011128"
+    kk: Мозель
+    yue: 摩澤爾
+    az: Mozel
+    mk: Мозел
+    'no': Moselle
+    ga: Moselle
+  comments:
+  type: metropolitan_department
+'58':
+  name: Nièvre
+  code: '58'
+  unofficial_names: Nièvre
+  geo:
+    latitude: 47.2381708
+    longitude: 3.5294522
+    min_latitude: 46.651024
+    min_longitude: 2.8459898
+    max_latitude: 47.5882881
+    max_longitude: 4.23191
+  translations:
+    ar: نيافر
+    be: Дэпартамент Ньеўр
+    bg: Ниевър
+    bn: নিভ্রে
+    ca: Nièvre
+    cs: Nièvre
+    da: Nièvre
+    de: Département Nièvre
+    el: Νιέβρ
+    en: Nièvre
+    es: Nièvre
+    et: Nièvre’i departemang
+    eu: Nièvre
+    fa: نی‌یور
+    fi: Nièvre
+    fr: Nièvre
+    gl: Nièvre
+    gu: નીએવ્રે
+    hi: निएवरे
+    hu: Nièvre
+    hy: Նյևր
+    id: Nièvre
+    it: Nièvre
+    ja: ニエーヴル県
+    ka: ნიევრი
+    kn: ನೀವೆವ್ರೆ
+    ko: 니에브르 주
+    lt: Njevras
+    lv: Njevra
+    mr: न्येव्र
+    ms: Nièvre
+    nb: Nièvre
+    nl: Nièvre
+    pl: Nièvre
+    pt: Nièvre
+    ro: Nièvre
+    ru: Ньевр
+    si: නයිව්රේ
+    sk: Nièvre
+    sl: Nièvre
+    sr: Нијевр
+    sv: Nièvre
+    sw: Nièvre
+    ta: நிஐவரே
+    te: నీవర్
+    th: จังหวัดเนียฟวร์
+    tr: Nièvre
+    uk: Ньєвр
+    ur: نیاور
+    vi: Nièvre
+    zh: 涅夫勒省
+    cy: Nièvre
+    af: Nièvre
+    ceb: Nièvre
+    sr_Latn: Nijevr
+    yue_Hans: 涅夫勒
+    ccp: "\U0001111A\U0001112D\U0001111B\U00011134\U00011122\U00011128"
+    he: נייוור
+    kk: Ньевр
+    yue: 涅夫勒
+    az: Nyevr
+    'no': Nièvre
+    ga: Nièvre
+    mk: Њевр
+  comments:
+  type: metropolitan_department
+'59':
+  name: Nord
+  code: '59'
+  unofficial_names: Nord
+  geo:
+    latitude: 50.3851246
+    longitude: 3.2642436
+    min_latitude: 49.9690609
+    min_longitude: 2.089297
+    max_latitude: 51.08899
+    max_longitude: 4.2316779
+  translations:
+    af: Nord
+    ar: نور
+    be: Дэпартамент Нор
+    bg: Нор
+    bn: নর্ড
+    ca: Nord
+    cs: Nord
+    da: Nord
+    de: Département Nord
+    el: Νορ
+    en: Nord
+    es: Norte
+    et: Nord’i departemang
+    eu: Nord
+    fa: نور
+    fi: Nord
+    fr: Nord
+    gl: Norte, Francia
+    gu: નોર્ડ
+    he: נור
+    hi: नोर्ड
+    hu: Nord
+    hy: Նոր
+    id: Nord, Perancis
+    it: Nord
+    ja: ノール県
+    ka: ნორი
+    kn: ನಾರ್ಡ್
+    ko: 노르 주
+    lt: Šiaurė
+    lv: Nora
+    mr: नोर
+    ms: Nord
+    nb: Nord
+    nl: Noorderdepartement
+    pl: Nord
+    pt: Norte (departamento)
+    ro: Nord
+    ru: Нор
+    si: නොර්ඩ්
+    sk: Nord
+    sl: Nord
+    sr: Нор
+    sv: Nord
+    sw: Nord
+    ta: நொர்ட்
+    te: నార్డ్
+    th: จังหวัดนอร์
+    tr: Nord
+    uk: Нор
+    ur: نور
+    vi: Nord, Nord-Pas-de-Calais
+    zh: 诺尔省
+    cy: Nord
+    ceb: Nord
+    sr_Latn: Nor
+    yue_Hans: 诺尔
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011113\U00011134"
+    kk: Нор
+    yue: 諾爾
+    az: Nor
+    mk: Север
+    'no': Nord
+  comments:
+  type: metropolitan_department
+'60':
+  name: Oise
+  code: '60'
+  unofficial_names: Oise
+  geo:
+    latitude: 49.42145679999999
+    longitude: 2.4146396
+    min_latitude: 49.060525
+    min_longitude: 1.6888659
+    max_latitude: 49.76392209999999
+    max_longitude: 3.166125
+  translations:
+    ar: واز
+    be: Дэпартамент Уаза
+    bg: Оаз
+    bn: ওয়িজ
+    ca: Oise
+    cs: Oise
+    da: Oise
+    de: Département Oise
+    el: Ουάζ
+    en: Oise
+    es: Oise
+    et: Oise’i departemang
+    eu: Oise
+    fa: اوآز
+    fi: Oise
+    fr: Oise
+    gl: Oise
+    gu: ઓઇસ
+    hi: ओइस
+    hu: Oise
+    hy: Ուազ
+    id: Oise
+    it: Oise
+    ja: オワーズ県
+    ka: უაზა
+    kn: ಒಯ್ಸ್
+    ko: 우아즈 주
+    lt: Uaza
+    lv: Uāza
+    mr: वाझ
+    ms: Oise
+    nb: Oise
+    nl: Oise
+    pl: Oise
+    pt: Oise
+    ro: Oise
+    ru: Уаза
+    si: ඔයිසේ
+    sk: Oise
+    sl: Oise
+    sr: Оаза
+    sv: Oise
+    sw: Oise
+    ta: சாய்ஸ்
+    te: ఓయిస్
+    th: จังหวัดอวซ
+    tr: Oise
+    uk: Уаза
+    ur: واز
+    vi: Oise
+    zh: 瓦兹省
+    cy: Oise
+    af: Oise
+    ceb: Oise
+    sr_Latn: Oaza
+    yue_Hans: 华兹
+    sq: Oise
+    ccp: "\U00011103\U0001112E\U00011103\U00011128\U0001110C\U00011134"
+    he: אואז
+    kk: Уаза
+    yue: 華茲
+    az: Uaza (departament)
+    mk: Оаза
+    'no': Oise
+    hr: Oise
+  comments:
+  type: metropolitan_department
+'61':
+  name: Orne
+  code: '61'
+  unofficial_names: Orne
+  geo:
+    latitude: 48.6388567
+    longitude: 0.0848201
+    min_latitude: 48.17988500000001
+    min_longitude: -0.860575
+    max_latitude: 48.972535
+    max_longitude: 0.976576
+  translations:
+    af: Orne
+    ar: أورن
+    be: Дэпартамент Орн
+    bg: Орн
+    bn: ওর্নে
+    ca: Orne
+    cs: Orne
+    da: Orne
+    de: Département Orne
+    el: Ορν
+    en: Orne
+    es: Orne
+    et: Orne’i departemang
+    eu: Orne
+    fa: اورن
+    fi: Orne
+    fr: Orne
+    gl: Orne
+    gu: ઓરને
+    he: אורן
+    hi: ओर्न
+    hu: Orne
+    hy: Օրն
+    id: Orne
+    it: Orne
+    ja: オルヌ県
+    ka: ორნი
+    kn: ಒರ್ನೆ
+    ko: 오른 주
+    lt: Ornas
+    lv: Orna
+    mr: ऑर्न
+    ms: Orne
+    nb: Orne
+    nl: Orne
+    pl: Orne
+    pt: Orne
+    ro: Orne
+    ru: Орн
+    si: ඔර්නේ
+    sk: Orne
+    sl: Orne
+    sr: Орн
+    sv: Orne
+    sw: Orne
+    ta: ஓரனே
+    te: ఆర్నె
+    th: จังหวัดออร์น
+    tr: Orne
+    uk: Орн
+    ur: اورن
+    vi: Orne
+    zh: 奧恩省
+    cy: Orne
+    ceb: Orne
+    sr_Latn: Orn
+    yue_Hans: 奥恩
+    sq: Orne
+    ccp: "\U00011103\U00011127\U00011122\U00011134\U0001111A\U0001112C"
+    kk: Орн
+    yue: 奧恩
+    az: Orn
+    'no': Orne
+    ga: Orne
+    mk: Орн
+    ml: ഓർനെ
+  comments:
+  type: metropolitan_department
+'62':
+  name: Pas-de-Calais
+  code: '62'
+  unofficial_names: Pas-de-Calais
+  geo:
+    latitude: 50.5732769
+    longitude: 2.3244679
+    min_latitude: 50.01976
+    min_longitude: 1.555598
+    max_latitude: 51.0067741
+    max_longitude: 3.1881861
+  translations:
+    af: Pas-de-Calais
+    ar: باد كاليه
+    be: Дэпартамент Па-дэ-Кале
+    bg: Па дьо Кале
+    bn: পাস-দে-ক্যালাইস
+    ca: Pas-de-Calais
+    cs: Pas-de-Calais
+    da: Pas-de-Calais
+    de: Département Pas-de-Calais
+    el: Πα-ντε-Καλαί
+    en: Pas-de-Calais
+    es: Paso de Calais
+    et: Pas-de-Calais’ departemang
+    eu: Pas-de-Calais
+    fa: پا-دو-کاله
+    fi: Pas-de-Calais
+    fr: Pas-de-Calais
+    gl: Pas-de-Calais
+    gu: પાસ-દે-કાલાઈસ
+    he: פה-דה-קאלה
+    hi: पास-डी-कलाइस
+    hu: Pas-de-Calais
+    hy: Պա-դը-Կալե
+    id: Pas-de-Calais
+    it: Passo di Calais
+    ja: パ＝ド＝カレー県
+    ka: პა-დე-კალე
+    kn: ಪಾಸ್-ಡೆ-ಕ್ಯಾಲೈಸ್
+    ko: 파드칼레 주
+    lt: Pa de Kalė
+    lv: Padekalē
+    mr: पा-द-कॅले
+    ms: Pas-de-Calais
+    nb: Pas-de-Calais
+    nl: Pas-de-Calais
+    pl: Pas-de-Calais
+    pt: Pas-de-Calais
+    ro: Pas-de-Calais
+    ru: Па-де-Кале
+    si: පස්-ඩේ-කලයිස්
+    sk: Pas-de-Calais
+    sl: Pas-de-Calais
+    sr: Па де Кале
+    sv: Pas-de-Calais
+    sw: Pas-de-Calais
+    ta: பாஸ்-டி -கலாய்ஸ்
+    te: పాస్-ద-కాలెయిస్
+    th: จังหวัดปาดกาแล
+    tr: Pas-de-Calais
+    uk: Па-де-Кале
+    ur: پا دے کالے
+    vi: Pas-de-Calais
+    zh: 加来海峡省
+    cy: Pas-de-Calais
+    ceb: Pas-de-Calais
+    sr_Latn: Pa de Kale
+    yue_Hans: 加来海峡
+    sq: Pas-de-Calais
+    ccp: "\U0001111B\U0001110C\U00011134-\U00011113\U0001112C-\U00011107\U00011133\U00011120\U00011123\U0001112D\U0001110C\U00011134"
+    kk: Па-де-Кале
+    yue: 加來海峽
+    mk: Па де Кале
+    'no': Pas-de-Calais
+  comments:
+  type: metropolitan_department
+'63':
+  name: Puy-de-Dôme
+  code: '63'
+  unofficial_names: Puy-de-Dôme
+  geo:
+    latitude: 45.7725738
+    longitude: 2.9644431
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    'no': Puy-de-Dôme
+    af: Puy-de-Dôme
+    ar: بوي دي دوم
+    be: Дэпартамент Пюі-дэ-Дом
+    bg: Пюи дьо Дом
+    bn: পুয়-দে-ডোম
+    ca: Puèi Domat
+    ccp: "\U0001111C\U0001112D-\U00011113\U0001112C-\U00011113\U0001112E\U0001111F\U00011134"
+    ceb: Puy-de-Dôme
+    cs: Puy-de-Dôme
+    cy: Puy-de-Dôme
+    da: Puy-de-Dôme
+    de: Département Puy-de-Dôme
+    el: Πουί-ντε-Ντομ
+    en: Puy-de-Dôme
+    es: Puy-de-Dôme
+    et: Puy-de-Dôme’i departemang
+    eu: Puy-de-Dôme
+    fa: پوی ددوم
+    fi: Puy-de-Dôme
+    fr: Puy-de-Dôme
+    gl: Puy-de-Dôme
+    gu: પ્યુ-દે-ડોમ
+    he: פויי-דה-דום
+    hi: पुए-डे-डोम
+    hu: Puy-de-Dôme
+    hy: Պյուի-դը-Դոմ
+    id: Puy-de-Dôme
+    it: Puy-de-Dôme
+    ja: ピュイ＝ド＝ドーム県
+    ka: პუი-დე-დომი
+    kk: Пюи-де-Дом
+    kn: ಪೂ-ಡಿ-ಡೋಮ್
+    ko: 퓌드돔 주
+    lt: Piui de Domas
+    lv: Pijdedoma
+    mr: पुय-दे-दोम
+    ms: Puy-de-Dôme
+    nb: Puy-de-Dôme
+    nl: Puy-de-Dôme
+    pl: Puy-de-Dôme
+    pt: Puy-de-Dôme
+    ro: Puy-de-Dôme
+    ru: Пюи-де-Дом
+    si: පුයි-ඩෙ-ඩෝමේ
+    sk: Puy-de-Dôme
+    sl: Puy-de-Dôme
+    sq: Puy-de-Dôme
+    sr_Latn: Pij de Dom
+    sr: Пиј де Дом
+    sv: Puy-de-Dôme
+    sw: Puy-de-Dôme
+    ta: பூய்-டி -டோமே
+    te: పుయ్-డె-డోమ్
+    th: จังหวัดปุย-เดอ-โดม
+    tr: Puy-de-Dôme
+    uk: Пюї-де-Дом
+    ur: پوی-دو-دوم
+    vi: Puy-de-Dôme
+    yue_Hans: 多姆山
+    yue: 多姆山
+    zh: 多姆山省
+    az: Püi-de-Dom
+    mk: Пиј де Дом
+  comments:
+  type: metropolitan_department
+'64':
+  name: Pyrénées-Atlantiques
+  code: '64'
+  unofficial_names: Pyrénées-Atlantiques
+  geo:
+    latitude: 43.3269942
+    longitude: -0.7532808999999999
+    min_latitude: 42.777531
+    min_longitude: -1.7923251
+    max_latitude: 43.59672490000001
+    max_longitude: 0.029807
+  translations:
+    af: Pyrénées-Atlantiques
+    ar: البرانيس الأطلسية
+    be: Пірэнеі Атлантычныя
+    bg: Пирене Атлантик
+    bn: পিরেনিস-আটলান্টিস
+    ca: Pirineus Atlàntics
+    cs: Pyrénées-Atlantiques
+    da: Pyrénées-Atlantiques
+    de: Département Pyrénées-Atlantiques
+    el: Ατλαντικά Πυρηναία
+    en: Pyrénées-Atlantiques
+    es: Pirineos Atlánticos
+    et: Pyrénées-Atlantiques
+    eu: Pirinio Atlantikoak
+    fa: پیرنه-آتلانتیک
+    fi: Pyrénées-Atlantiques
+    fr: Pyrénées-Atlantiques
+    gl: Pireneos Atlánticos
+    gu: પીરેનેસ-એટલાન્ટીક
+    he: הפירנאים האטלנטיים
+    hi: पायरेनीज़-अटलांटिकेस
+    hr: Atlantski Pireneji
+    hu: Pyrénées-Atlantiques
+    hy: Ատլանտյան Պիրենեյներ
+    id: Pyrénées-Atlantiques
+    it: Pirenei Atlantici
+    ja: ピレネー＝アトランティック県
+    ka: ატლანტური პირენეები
+    kn: ಪೈರಿನೀಸ್-ಅಟ್ಲಾಂಟಿಕ್ಸ್
+    ko: 피레네자틀랑티크 주
+    lt: Atlanto Pirėnai
+    lv: Atlantijas Pireneji
+    mr: पिरेने-अतलांतिक
+    ms: Pyrénées-Atlantiques
+    nb: Pyrénées-Atlantiques
+    nl: Pyrénées-Atlantiques
+    pl: Pireneje Atlantyckie
+    pt: Pirineus Atlânticos
+    ro: Pyrénées-Atlantiques
+    ru: Атлантические Пиренеи
+    si: පිරෙනීස් අට්ලාන්ටික්ස්
+    sk: Pyrénées-Atlantiques
+    sl: Pyrénées-Atlantiques
+    sr: Атлантски Пиринеји
+    sv: Pyrénées-Atlantiques
+    sw: Pyrénées-Atlantiques
+    ta: பெயரெனீஸ் -அட்லான்டியூஸ்
+    te: పైరెనీస్-అట్లాంటిక్స్
+    th: จังหวัดปีเรเน-อัตล็องติก
+    tr: Pyrénées-Atlantiques
+    uk: Атлантичні Піренеї
+    ur: پیرینے-اتلانتیک
+    vi: Pyrénées-Atlantiques
+    zh: 比利牛斯-大西洋省
+    cy: Pyrénées-Atlantiques
+    ceb: Pyrénées-Atlantiques
+    sr_Latn: Atlantski Pirineji
+    yue_Hans: 比利牛斯－大西洋
+    sq: Pyrénées-Atlantiques
+    ccp: "\U0001111B\U0001112D\U00011122\U0001112C\U0001111A\U00011128\U0001110C\U00011134-\U00011103\U00011116\U00011134\U00011123\U0001111A\U00011134\U00011111\U00011128\U00011107\U00011134\U0001110C\U00011134"
+    kk: Атлантикалық Пиреней
+    yue: 比利牛斯－大西洋
+    az: Atlantik Pireney
+    'no': Pyrénées-Atlantiques
+    ga: Pyrénées-Atlantiques
+    mk: Атлантски Пиринеи
+  comments:
+  type: metropolitan_department
+'65':
+  name: Hautes-Pyrénées
+  code: '65'
+  unofficial_names: Hautes-Pyrénées
+  geo:
+    latitude: 43.0193924
+    longitude: 0.1494988
+    min_latitude: 42.6733059
+    min_longitude: -0.32716
+    max_latitude: 43.61333399999999
+    max_longitude: 0.6461191
+  translations:
+    ar: البرانيس العليا
+    be: Дэпартамент Пірэнеі Верхнія
+    bg: От Пирене
+    bn: হাউতেস পায়রেন্স
+    ca: Alts Pirineus
+    cs: Hautes-Pyrénées
+    da: Hautes-Pyrénées
+    de: Département Hautes-Pyrénées
+    el: Άνω Πυρηναία
+    en: Hautes-Pyrénées
+    es: Altos Pirineos
+    et: Hautes-Pyrénées
+    eu: Pirinio Garaiak
+    fa: اوپیرنه
+    fi: Hautes-Pyrénées
+    fr: Hautes-Pyrénées
+    gl: Altos Pireneos
+    gu: હોટ્સ-પિરેનેસ
+    hi: ओट्स-पायरेनीज़
+    hu: Hautes-Pyrénées
+    hy: Վերին Պիրենեյներ
+    id: Hautes-Pyrénées
+    it: Alti Pirenei
+    ja: オート＝ピレネー県
+    ka: ზემო პირენეები
+    kn: ಹೌಟೆಸ್-ಪೈರಿನೀಸ್
+    ko: 오트피레네 주
+    lt: Aukštutiniai Pirėnai
+    lv: Augšpireneji
+    mr: ऑत-पिरेने
+    ms: Hautes-Pyrénées
+    nb: Hautes-Pyrénées
+    nl: Hautes-Pyrénées
+    pl: Pireneje Wysokie
+    pt: Altos Pirenéus
+    ro: Hautes-Pyrénées
+    ru: Верхние Пиренеи
+    si: හෞටිස්-පයිරෙනිස්
+    sk: Hautes-Pyrénées
+    sl: Hautes-Pyrénées
+    sr: Високи Пиринеји
+    sv: Hautes-Pyrénées
+    sw: Hautes-Pyrénées
+    ta: ஹூட்ஸ் -பெயரெனீஸ்
+    te: హాట్స్ పైరెనీస్
+    th: จังหวัดโอต-ปีเรเน
+    tr: Hautes-Pyrénées
+    uk: Верхні Піренеї
+    ur: بالائی-پیرینے
+    vi: Hautes-Pyrénées
+    zh: 上比利牛斯省
+    cy: Hautes-Pyrénées
+    af: Hautes-Pyrénées
+    ceb: Hautes-Pyrénées
+    sr_Latn: Visoki Pirineji
+    yue_Hans: 上比利牛斯
+    sq: Hautes-Pyrénées
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U0001111B\U0001112D\U00011122\U0001112C\U0001111A\U00011128\U0001110C\U00011134"
+    he: הפירנאים העליונים
+    kk: Жоғарғы Пиреней
+    yue: 上比利牛斯
+    az: Yuxarı Pireney
+    mk: Горни Пиринеи
+    'no': Hautes-Pyrénées
+    ga: Hautes-Pyrénées
+  comments:
+  type: metropolitan_department
+'66':
+  name: Pyrénées-Orientales
+  code: '66'
+  unofficial_names: Pyrénées-Orientales
+  geo:
+    latitude: 42.6012912
+    longitude: 2.539603
+    min_latitude: 42.333014
+    min_longitude: 1.7216351
+    max_latitude: 42.9185399
+    max_longitude: 3.177833
+  translations:
+    af: Pyrénées-Orientales
+    ar: البرانيس الشرقية
+    be: Дэпартамент Пірэнеі Усходнія
+    bg: Източни Пиренеи
+    bn: পাইরিনিস-ওরিয়েন্টালিস
+    ca: Pirineus Orientals
+    cs: Pyrénées-Orientales
+    da: Pyrénées-Orientales
+    de: Département Pyrénées-Orientales
+    el: Ανατολικά Πυρηναία
+    en: Pyrénées-Orientales
+    es: Pirineos Orientales
+    et: Pyrénées-Orientales
+    eu: Ekialdeko Pirinioak
+    fa: پیرنه اوریانتل
+    fi: Pyrénées-Orientales
+    fr: Pyrénées-Orientales
+    gl: Pireneos Orientais
+    gu: પિરેનેસ-ઓરિએંટાલેસ
+    he: הפירנאים המזרחיים
+    hi: पायरेनीस-ओरियंटल्स
+    hu: Pyrénées-Orientales
+    hy: Արևելյան Պիրենեյներ
+    id: Pyrénées-Orientales
+    it: Pirenei Orientali
+    ja: ピレネー＝オリアンタル県
+    ka: აღმოსავლეთ პირენეის დეპარტამენტი
+    kn: ಪೈರಿನೀಸ್-ಓರಿಯಂಟೆಸ್
+    ko: 피레네조리앙탈 주
+    lt: Rytų Pirėnai
+    lv: Austrumpireneji
+    mn: Дорно Пиреней
+    mr: पिरेने-ओरिएंताल
+    ms: Pyrénées-Orientales
+    nb: Pyrénées-Orientales
+    nl: Pyrénées-Orientales
+    pl: Pireneje Wschodnie
+    pt: Pirineus Orientais
+    ro: Pyrénées-Orientales
+    ru: Восточные Пиренеи
+    si: පය්රෙනිස්-ඔරියෙන්ටලිස්
+    sk: Pyrénées-Orientales
+    sl: Pyrénées-Orientales
+    sr: Источни Пиринеји
+    sv: Pyrénées-Orientales
+    sw: Pyrénées-Orientales
+    ta: ப்ய்ரநீஸ் -ஒரீஎண்ட்லெஸ்
+    te: పైరెనీస్-ఓరియెంటేల్స్
+    th: จังหวัดปีเรเน-ออรีย็องตาล
+    tr: Pyrénées-Orientales
+    uk: Східні Піренеї
+    ur: پیرینے-اورینتال
+    vi: Pyrénées-Orientales
+    zh: 东比利牛斯省
+    cy: Pyrénées-Orientales
+    ceb: Pyrénées-Orientales
+    sr_Latn: Istočni Pirineji
+    yue_Hans: 东比利牛斯省
+    sq: Pyrénées-Orientales
+    ccp: "\U0001111B\U0001112D\U00011122\U0001112C\U0001111A\U00011128\U0001110C\U00011134-\U00011103\U00011127\U00011122\U00011128\U00011103\U0001112C\U0001111A\U00011134\U00011111\U00011123\U00011134\U0001110C\U00011134"
+    kk: Шығыс Пиреней
+    yue: 東比利牛斯省
+    az: Şərqi Pireney
+    'no': Pyrénées-Orientales
+    mk: Источни Пиринеи
+  comments:
+  type: metropolitan_department
+'67':
+  name: Bas-Rhin
+  code: '67'
+  unofficial_names: Bas-Rhin
+  geo:
+    latitude: 48.6343172
+    longitude: 7.525293800000001
+    min_latitude: 48.120387
+    min_longitude: 6.9406139
+    max_latitude: 49.0778581
+    max_longitude: 8.2335491
+  translations:
+    af: Bas-Rhin
+    ar: الراين الأسفل
+    be: Рэйн Ніжні
+    bg: Ба Рен
+    bn: বাস-হ্রিন
+    ca: Baix Rin
+    cs: Bas-Rhin
+    da: Bas-Rhin
+    de: Département Bas-Rhin
+    el: Κάτω Ρήνος
+    en: Bas-Rhin
+    es: Bajo Rin
+    et: Bas-Rhini departemang
+    eu: Bas-Rhin
+    fa: با-رن
+    fi: Bas-Rhin
+    fr: Bas-Rhin
+    gl: Baixo Rin
+    gu: બાસ-રાઈન
+    he: ריין תחתון
+    hi: बास-राइन
+    hr: Bas-Rhin
+    hu: Bas-Rhin
+    hy: Ներքին Ռեն
+    id: Bas-Rhin
+    it: Basso Reno
+    ja: バ＝ラン県
+    ka: ქვემო რეინი
+    kn: ಬಾಸ್-ರೈನ್
+    ko: 바랭 주
+    lt: Žemutinis Reinas
+    lv: Lejasreina
+    mr: बास-ऱ्हिन
+    ms: Bas-Rhin
+    nb: Bas-Rhin
+    nl: Bas-Rhin
+    pl: Dolny Ren
+    pt: Baixo Reno
+    ro: Bas-Rhin
+    ru: Нижний Рейн
+    si: බාස්-රින්
+    sk: Bas-Rhin
+    sl: Bas-Rhin
+    sr: Доња Рајна
+    sv: Bas-Rhin
+    sw: Bas-Rhin
+    ta: பஸ் -ரஹீன்
+    te: బాస్-రైన్
+    th: จังหวัดบา-แร็ง
+    tr: Bas-Rhin
+    uk: Нижній Рейн
+    ur: زیریں-رن
+    vi: Bas-Rhin
+    zh: 下莱茵省
+    cy: Bas-Rhin
+    ceb: Bas-Rhin
+    sr_Latn: Donja Rajna
+    yue_Hans: 下莱茵
+    sq: Bas-Rhin
+    ccp: "\U0001111D\U0001110C\U00011134-\U00011122\U0001112D\U0001111A\U00011134"
+    kk: Төменгі Рейн
+    yue: 下萊茵
+    az: Aşağı Reyn
+    mk: Долна Рајна
+    'no': Bas-Rhin
+    ga: Bas-Rhin
+    ml: ബാസ്-റിൻ
+  comments:
+  type: metropolitan_department
+'68':
+  name: Haut-Rhin
+  code: '68'
+  unofficial_names: Haut-Rhin
+  geo:
+    latitude: 47.9315041
+    longitude: 7.2441099
+    min_latitude: 47.4202619
+    min_longitude: 6.841025999999999
+    max_latitude: 48.311198
+    max_longitude: 7.622121099999998
+  translations:
+    af: Haut-Rhin
+    ar: الراين الأعلى
+    be: Рэйн Верхні
+    bg: О Рен
+    bn: হন্ত-রিন
+    ca: Alt Rin
+    cs: Haut-Rhin
+    da: Haut-Rhin
+    de: Département Haut-Rhin
+    el: Άνω Ρήνος
+    en: Haut-Rhin
+    es: Alto Rin
+    et: Haut-Rhini departemang
+    eu: Haut-Rhin
+    fa: اوت-رن
+    fi: Haut-Rhin
+    fr: Haut-Rhin
+    gl: Alto Rin
+    gu: હોટ-રીન
+    he: או-רן
+    hi: हौत-रिन
+    hr: Haut-Rhin
+    hu: Haut-Rhin
+    hy: Վերին Հռենոս
+    id: Haut-Rhin
+    it: Alto Reno
+    ja: オー＝ラン県
+    ka: ზემო რეინი
+    kn: ಹೌಟ್-ರೈನ್
+    ko: 오랭 주
+    lt: Aukštutinis Reinas
+    lv: Augšreina
+    mr: ऑत-ऱ्हिन
+    ms: Haut-Rhin
+    nb: Haut-Rhin
+    nl: Haut-Rhin
+    pl: Górny Ren
+    pt: Alto Reno
+    ro: Haut-Rhin
+    ru: Верхний Рейн
+    si: හවුට් -රින්
+    sk: Haut-Rhin
+    sl: Haut-Rhin
+    sr: Горња Рајна
+    sv: Haut-Rhin
+    sw: Haut-Rhin
+    ta: ஹூட் -ரஹீன்
+    te: హాట్-రైన్
+    th: จังหวัดโอ-แร็ง
+    tr: Haut-Rhin
+    uk: Верхній Рейн
+    ur: بلند-رن
+    vi: Haut-Rhin
+    zh: 上莱茵省
+    cy: Haut-Rhin
+    ceb: Haut-Rhin
+    sr_Latn: Gornja Rajna
+    yue_Hans: 上莱茵
+    sq: Alto Rin
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011122\U0001112D\U0001111A\U00011134"
+    ky: Жогорку Рейн ойдуңу
+    kk: Жоғарғы Рейн
+    yue: 上萊茵
+    az: Yuxarı Reyn
+    mk: Горна Рајна
+    'no': Haut-Rhin
+    ga: Haut-Rhin
+  comments:
+  type: metropolitan_department
+'69':
+  name: Rhône
+  code: '69'
+  unofficial_names: Rhône
+  geo:
+    latitude: 45.7351456
+    longitude: 4.6108043
+    min_latitude: 45.45413
+    min_longitude: 4.243647
+    max_latitude: 46.30650199999999
+    max_longitude: 5.1601089
+  translations:
+    ar: رون
+    be: Рона
+    bg: Рон
+    bn: রোন্
+    ca: Roine
+    cs: Rhône
+    da: Rhône
+    de: Département Rhône
+    el: Ρον
+    en: Rhône
+    es: Ródano
+    et: Rhône’i departemang
+    eu: Rodano
+    fa: رون
+    fi: Rhône
+    fr: Rhône
+    gl: Ródano
+    gu: રૉન
+    he: רון
+    hi: रोन (विभाग)
+    hu: Rhône
+    hy: Ռոն
+    id: Rhône
+    it: Rodano
+    ja: ローヌ県
+    ka: რონის დეპარტამენტი
+    kn: ರೋನ್
+    ko: 론 주
+    lt: Rona
+    lv: Rona
+    mr: रोन
+    ms: Rhône
+    nb: Rhône
+    nl: Rhône
+    pl: Rodan
+    pt: Ródano
+    ro: Rhône
+    ru: Рона
+    si: රෝනේ
+    sk: Rhône
+    sl: Rhône
+    sr: Рона
+    sv: Rhône
+    sw: Rhône
+    ta: ரஹானே
+    te: రోన్
+    th: จังหวัดโรน
+    tr: Rhône
+    uk: Рона
+    ur: رون
+    vi: Rhône
+    zh: 罗讷省
+    cy: "‘department’ y Rhône"
+    af: Rhône (département)
+    ceb: Rhône
+    sr_Latn: Rona
+    yue_Hans: 隆河省
+    sq: Rhône
+    ccp: "\U00011122\U0001112E\U0001111A\U00011134"
+    kk: Рона
+    yue: 隆河省
+    az: Rona (departament)
+    mk: Рона
+    'no': Rhône
+  comments:
+  type: metropolitan_department
+69M:
+  name: Métropole de Lyon
+  code: 69M
+  unofficial_names: Métropole de Lyon
+  geo:
+    latitude: 45.7351456
+    longitude: 4.6108043
+    min_latitude: 45.45413
+    min_longitude: 4.243647
+    max_latitude: 46.30650199999999
+    max_longitude: 5.1601089
+  translations:
+    fr: Métropole de Lyon
+    en: Lyon Metropolis
+    ja: メトロポール・ド・リヨン
+  comments:
+  type: metropolitan_collectivity_with_special_status
+6AE:
+  name: Alsace
+  code: 6AE
+  unofficial_names: Alsace
+  type: european_collectivity
+  translations:
+    fr: Alsace
+    en: Alsace
+    ca: Col·lectivitat europea d’Alsàcia
+    cs: Collectivité européenne d’Alsace
+    de: Europäische Gebietskörperschaft Elsass
+    el: Ελληνική Συλλογικότητα της Αλσατίας
+    es: Colectividad Europea de Alsacia
+    fi: Collectivité européenne d’Alsace
+    ja: アルザス地域圏
+    sv: Europeiska förvaltningsområdet Alsace
+    tr: Avrupa Alsas Kolektivitesi
+    zh: 阿尔萨斯欧洲集体
+'70':
+  name: Haute-Saône
+  code: '70'
+  unofficial_names: Haute-Saône
+  geo:
+    latitude: 47.7569806
+    longitude: 6.1556282
+    min_latitude: 47.2525531
+    min_longitude: 5.366937099999999
+    max_latitude: 48.024154
+    max_longitude: 6.8249469
+  translations:
+    ar: سون العليا
+    be: Дэпартамент Сона Верхняя
+    bg: От Сон
+    bn: হোতে-সাওন
+    ca: Alt Saona
+    cs: Haute-Saône
+    da: Haute-Saône
+    de: Département Haute-Saône
+    el: Ωτ-Σον
+    en: Haute-Saône
+    es: Alto Saona
+    et: Haute-Saône’i departemang
+    eu: Haute-Saône
+    fa: اوت-سئون
+    fi: Haute-Saône
+    fr: Haute-Saône
+    gl: Alto Saona
+    gu: હૌટ-સઓન
+    hi: ओट-साओन
+    hr: Gornja Saôna
+    hu: Haute-Saône
+    hy: Վերին Սոն
+    id: Haute-Saône
+    it: Alta Saona
+    ja: オート＝ソーヌ県
+    ka: ზემო სონა
+    kn: ಹಾಟೆ-ಸೊನೆ
+    ko: 오트손 주
+    lt: Aukštutinė Sona
+    lv: Augšsona
+    mr: ऑत-सॉन
+    ms: Haute-Saône
+    nb: Haute-Saône
+    nl: Haute-Saône
+    pl: Górna Saona
+    pt: Haute-Saône
+    ro: Haute-Saône
+    ru: Верхняя Сона
+    si: හෞටේ -සඕනේ
+    sk: Haute-Saône
+    sl: Haute-Saône
+    sr: Горња Саона
+    sv: Haute-Saône
+    sw: Haute-Saône
+    ta: ஹூட்-ஷொனே
+    te: హాట్-సయోని
+    th: จังหวัดโอต-โซน
+    tr: Haute-Saône
+    uk: Верхня Сона
+    ur: بالائی-سون
+    vi: Haute-Saône
+    zh: 上索恩省
+    cy: Haute-Saône
+    af: Haute-Saône
+    ceb: Haute-Saône
+    sr_Latn: Gornja Saona
+    yue_Hans: 上索恩
+    sq: Haute-Saône
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011125\U00011103\U0001112E\U0001111A\U00011128"
+    he: סון עילית
+    kk: Жоғарғы Сона
+    yue: 上索恩
+    az: Yuxarı Sona
+    mk: Горна Сона
+    'no': Haute-Saône
+  comments:
+  type: metropolitan_department
+'71':
+  name: Saône-et-Loire
+  code: '71'
+  unofficial_names: Saône-et-Loire
+  geo:
+    latitude: 46.5827512
+    longitude: 4.486670999999999
+    min_latitude: 46.15607
+    min_longitude: 3.622593
+    max_latitude: 47.155772
+    max_longitude: 5.465288999999999
+  translations:
+    ar: سون ولوار
+    be: Дэпартамент Сона і Луара
+    bg: Сон е Лоар
+    bn: সোনে ইট লরি
+    ca: Saona i Loira
+    cs: Saône-et-Loire
+    da: Saône-et-Loire
+    de: Département Saône-et-Loire
+    el: Σον-ε-Λουάρ
+    en: Saône-et-Loire
+    es: Saona y Loira
+    et: Saône-et-Loire’i departemang
+    eu: Saône-et-Loire
+    fa: سائون-ا-لوآر
+    fi: Saône-et-Loire
+    fr: Saône-et-Loire
+    gl: Saona e Loira
+    gu: સાઓન-એટ-લોઈર
+    hi: साओन-एट-लोइर
+    hu: Saône-et-Loire
+    hy: Սոն-է-Լուար
+    id: Saône-et-Loire
+    it: Saona e Loira
+    ja: ソーヌ＝エ＝ロワール県
+    ka: სონა და ლუარა
+    kn: ಸೌನೆ-ಎಟ್-ಲೋರೆ
+    ko: 손에루아르 주
+    lt: Sona ir Luara
+    lv: Sona un Luāra
+    mr: सॉन-ए-लावार
+    ms: Saône-et-Loire
+    nb: Saône-et-Loire
+    nl: Saône-et-Loire
+    pl: Saona i Loara
+    pt: Saône-et-Loire
+    ro: Saône-et-Loire
+    ru: Сона и Луара
+    si: සොනේ-එට්‌-ලොයිර්
+    sk: Saône-et-Loire
+    sl: Saône-et-Loire
+    sr: Саона и Лоара
+    sv: Saône-et-Loire
+    sw: Saône-et-Loire
+    ta: சேயோன்-எட் -லோயிரே
+    te: సావన్-ఎట్-లోయర్
+    th: จังหวัดโซเนลัวร์
+    tr: Saône-et-Loire
+    uk: Сона і Луара
+    ur: سون-اے-لوآر
+    vi: Saône-et-Loire
+    zh: 索恩-卢瓦尔省
+    cy: Saône-et-Loire
+    af: Saône-et-Loire
+    ceb: Saône-et-Loire
+    sr_Latn: Saona i Loara
+    yue_Hans: 索恩卢瓦
+    sq: Saône-et-Loire
+    ccp: "\U00011125\U00011103\U0001112E\U0001111A\U00011128-\U00011103\U0001112C\U00011116\U00011134-\U00011123\U00011130\U00011122\U00011134"
+    he: סון ולואר
+    kk: Сона және Луара
+    yue: 索恩盧瓦
+    az: Sona və Luara
+    'no': Saône-et-Loire
+    ga: Saône-et-Loire
+    mk: Сона и Лоара
+  comments:
+  type: metropolitan_department
+'72':
+  name: Sarthe
+  code: '72'
+  unofficial_names: Sarthe
+  geo:
+    latitude: 47.9217014
+    longitude: 0.1655803
+    min_latitude: 47.56840099999999
+    min_longitude: -0.4480631
+    max_latitude: 48.48502
+    max_longitude: 0.9166388999999999
+  translations:
+    af: Sarthe
+    ar: سارت
+    be: Дэпартамент Сарта
+    bg: Сарт
+    bn: সাঁর্তে
+    ca: Sarthe
+    cs: Sarthe
+    da: Sarthe
+    de: Département Sarthe
+    el: Σαρτ
+    en: Sarthe
+    es: Sarthe
+    et: Sarthe’i departemang
+    eu: Sarthe
+    fa: سرت
+    fi: Sarthe
+    fr: Sarthe
+    gl: Sarthe
+    gu: સર્થે
+    he: סארת
+    hi: सार्थे
+    hu: Sarthe
+    hy: Սարթ
+    id: Sarthe
+    it: Sarthe
+    ja: サルト県
+    ka: სარტა
+    kn: ಸಾರ್ಥೆ
+    ko: 사르트 주
+    lt: Sartas
+    lv: Sarta
+    mr: सार्त
+    ms: Sarthe
+    nb: Sarthe
+    nl: Sarthe
+    pl: Sarthe
+    pt: Sarthe
+    ro: Sarthe
+    ru: Сарта
+    si: සර්තේ
+    sk: Sarthe
+    sl: Sarthe
+    sr: Сарт
+    sv: Sarthe
+    sw: Sarthe
+    ta: சேர்த்தே
+    te: సార్థె
+    th: จังหวัดซาร์ต
+    tr: Sarthe
+    uk: Сарта
+    ur: سارت
+    vi: Sarthe
+    zh: 萨尔特省
+    cy: Sarthe
+    ceb: Sarthe
+    sr_Latn: Sart
+    yue_Hans: 萨尔特
+    sq: Sarthe
+    ccp: "\U00011125\U00011122\U00011134\U00011117\U0001112C"
+    kk: Сарта
+    yue: 薩爾特
+    az: Sarta
+    'no': Sarthe
+    mk: Сарта
+  comments:
+  type: metropolitan_department
+'73':
+  name: Savoie
+  code: '73'
+  unofficial_names: Savoie
+  geo:
+    latitude: 44.771079
+    longitude: 5.742806000000001
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    'no': Savoie
+    af: Savoie
+    ar: سافوا
+    az: Savoyya
+    be: Дэпартамент Савоя
+    bg: Савоа
+    bn: সাভুয়ে
+    ca: Savoia
+    ccp: "\U00011125\U00011127\U0001111E\U00011130"
+    ceb: Savoie
+    cs: Savojsko
+    cy: Savoie
+    da: Savoie
+    de: Département Savoie
+    el: Σαβοΐα
+    en: Savoie
+    es: Saboya
+    et: Savoia departemang
+    eu: Savoia
+    fa: سووآ
+    fi: Savoie
+    fr: Savoie
+    gl: Savoia
+    gu: સાવોઈ
+    he: סבואה
+    hi: सवोई
+    hu: Savoie
+    hy: Սավոյ
+    id: Savoie
+    it: Savoia
+    ja: サヴォワ県
+    ka: სავოია
+    kk: Савойя
+    kn: ಸವೊಯಿ
+    ko: 사부아 주
+    lt: Savoja
+    lv: Savoja
+    mk: Савоја
+    mr: साव्वा
+    ms: Savoie
+    nb: Savoie
+    ne: साभोए
+    nl: Savoie
+    pl: Sabaudia
+    pt: Saboia
+    ro: Savoie
+    ru: Савойя
+    si: සැවෝයි
+    sk: Savoie
+    sl: Savoie
+    sq: Savoia
+    sr_Latn: Savoja
+    sr: Савоја
+    sv: Savoie
+    sw: Savoie
+    ta: சாவோய்
+    te: సవోయీ
+    th: จังหวัดซาวัว
+    tr: Savoie
+    uk: Савойя
+    ur: ساووا
+    vi: Savoie
+    yue_Hans: 萨华
+    yue: 薩華
+    zh: 萨瓦省
+    ga: Savoie
+  comments:
+  type: metropolitan_department
+'74':
+  name: Haute-Savoie
+  code: '74'
+  unofficial_names: Haute-Savoie
+  geo:
+    latitude: 46.1756788
+    longitude: 6.5389621
+    min_latitude: 45.681659
+    min_longitude: 5.80502
+    max_latitude: 46.408243
+    max_longitude: 7.0450649
+  translations:
+    ar: سافوا العليا
+    be: Дэпартамент Верхняя Савоя
+    bg: От Савоа
+    bn: হাঊত সেভুয়ে
+    ca: Alta Savoia
+    cs: Horní Savojsko
+    da: Haute-Savoie
+    de: Département Haute-Savoie
+    el: Άνω Σαβοΐα
+    en: Haute-Savoie
+    es: Alta Saboya
+    et: Haute-Savoie departemang
+    eu: Savoia Garaia
+    fa: اوت سووآ
+    fi: Haute-Savoie
+    fr: Haute-Savoie
+    gl: Alta Savoia
+    gu: હૌટ-સેવોઇ
+    he: סבואה עילית
+    hi: ओट-सेवॉइ
+    hu: Haute-Savoie
+    hy: Վերին Սավոյ
+    id: Haute-Savoie
+    it: Alta Savoia
+    ja: オート＝サヴォワ県
+    ka: ზემო სავოია
+    kn: ಹೌಟೆ-ಸವೊಯಿ
+    ko: 오트사부아 주
+    lt: Aukštutinė Savoja
+    lv: Augšsavoja
+    mr: ऑत-साव्वा
+    ms: Haute-Savoie
+    nb: Haute-Savoie
+    nl: Haute-Savoie
+    pl: Górna Sabaudia
+    pt: Alta Saboia
+    ro: Haute-Savoie
+    ru: Верхняя Савойя
+    si: හෞටේ -සැවෝයි
+    sk: Haute-Savoie
+    sl: Haute-Savoie
+    sr: Горња Савоја
+    sv: Haute-Savoie
+    sw: Haute-Savoie
+    ta: ஹூட்-சாவையே
+    te: హాట్-సావోయ్
+    th: จังหวัดโอต-ซาวัว
+    tr: Haute-Savoie
+    uk: Верхня Савойя
+    ur: بالائی-ساووا
+    vi: Haute-Savoie
+    zh: 上萨瓦省
+    cy: Haute-Savoie
+    af: Haute-Savoie
+    ceb: Haute-Savoie
+    sr_Latn: Gornja Savoja
+    yue_Hans: 上萨华
+    sq: Haute-Savoie
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011125\U00011127\U0001111E\U00011130"
+    kk: Жоғарғы Савойя
+    yue: 上薩華
+    az: Yuxarı Savoyya
+    yo: Haute-Savoie
+    'no': Haute-Savoie
+    yo_BJ: Haute-Savoie
+    mk: Горна Савоја
+  comments:
+  type: metropolitan_department
+75C:
+  name: Paris
+  code: 75C
+  unofficial_names: Paris
+  geo:
+    latitude: 48.856614
+    longitude: 2.3522219
+    min_latitude: 48.815573
+    min_longitude: 2.224199
+    max_latitude: 48.9021449
+    max_longitude: 2.4699208
+  translations:
+    af: Parys
+    am: ፓሪስ
+    ar: باريس
+    az: Paris
+    be: Парыж
+    bg: Париж
+    bn: প্যারিস
+    ca: París
+    cs: Paříž
+    da: Paris
+    de: Paris
+    el: Παρίσι
+    en: Paris
+    es: París
+    et: Pariis
+    eu: Paris
+    fa: پاریس
+    fi: Pariisi
+    fr: Paris
+    gl: París
+    gu: પૅરિસ
+    he: פריז
+    hi: पैरिस
+    hr: Pariz
+    hu: Párizs
+    hy: Փարիզ
+    id: Paris
+    is: París
+    it: Parigi
+    ja: パリ
+    ka: პარიზი
+    km: ប៉ារីស
+    kn: ಪ್ಯಾರಿಸ್
+    ko: 파리
+    lo: ປາລີ
+    lt: Paryžius
+    lv: Parīze
+    ml: പാരിസ്
+    mn: Парис
+    mr: पॅरिस
+    ms: Paris
+    nb: Paris
+    ne: पेरिस
+    nl: Parijs
+    or: ପ୍ୟାରିସ
+    pl: Paryż
+    ps: پاريس
+    pt: Paris
+    ro: Paris
+    ru: Париж
+    si: පැරිස්
+    sk: Paríž
+    sl: Pariz
+    sr: Париз
+    sv: Paris
+    sw: Paris
+    ta: பாரிஸ்
+    te: పారిస్
+    th: ปารีส
+    tk: Pariž
+    tr: Paris
+    uk: Париж
+    ur: پیرس
+    vi: Paris
+    zh: 巴黎
+    zu: IParisi
+    cy: Paris
+    ceb: Paris
+    sr_Latn: Pariz
+    yue_Hans: 巴黎
+    jv: Paris
+    sq: Parisi
+    ccp: "\U0001111B\U0001112C\U00011122\U00011128\U0001110C\U00011134"
+    sd: پيرس
+    ga: Páras
+    ky: Париж
+    ha: Pariis
+    so: Baariis
+    pa: ਪੈਰਿਸ
+    kk: Париж
+    yue: 巴黎
+    my: ပါရီမြို့
+    yo: Parisi
+    uz: Parij
+    bs: Pariz
+    mk: Париз
+    ha_NE: Faris
+    'no': Paris
+    yo_BJ: Parisi
+    as: পেৰিছ
+  comments:
+  type: metropolitan_collectivity_with_special_status
+'76':
+  name: Seine-Maritime
+  code: '76'
+  unofficial_names: Seine-Maritime
+  geo:
+    latitude: 49.922992
+    longitude: 1.077483
+    min_latitude: 49.899252
+    min_longitude: 1.0399821
+    max_latitude: 49.9408489
+    max_longitude: 1.1269969
+  translations:
+    af: Seine-Maritime
+    ar: السان البحرية
+    be: Сена Прыморская
+    bg: Сен Маритим
+    bn: সেইন-মেরিটাইম
+    ca: Sena Marítim
+    cs: Seine-Maritime
+    da: Seine-Maritime
+    de: Département Seine-Maritime
+    el: Σεν-Μαριτίμ
+    en: Seine-Maritime
+    es: Sena Marítimo
+    et: Seine-Maritime’i departemang
+    eu: Seine-Maritime
+    fa: سن ماریتیم
+    fi: Seine-Maritime
+    fr: Seine-Maritime
+    gl: Seine-Maritime
+    gu: સેઇન-મેરીટાઇમ
+    he: סן-מריטים
+    hi: सीन-मेरीटाइम
+    hu: Seine-Maritime
+    hy: Ծովամերձ Սեն
+    id: Seine-Maritime
+    it: Senna Marittima
+    ja: セーヌ＝マリティーム県
+    ka: ზღვისპირა სენა
+    kn: ಸೀನ್-ಮಾರಿಟೈಮ್
+    ko: 센마리팀 주
+    lt: Pajūrio Sena
+    lv: Piejūras Sēna
+    mr: सीन-मरितीम
+    ms: Seine-Maritime
+    nb: Seine-Maritime
+    nl: Seine-Maritime
+    pl: Seine-Maritime
+    pt: Sena Marítimo
+    ro: Seine-Maritime
+    ru: Приморская Сена
+    si: සීනේ-මාරිටයිම්
+    sk: Seine-Maritime
+    sl: Seine-Maritime
+    sr: Приморска Сена
+    sv: Seine-Maritime
+    sw: Seine-Maritime
+    ta: சேனே-மரிடைம்
+    te: సెయిని-మారిటైమ్
+    th: จังหวัดแซน-มารีตีม
+    tr: Seine-Maritime
+    uk: Приморська Сена
+    ur: سین-ماریتیم
+    vi: Seine-Maritime
+    zh: 滨海塞纳省
+    cy: Seine-Maritime
+    ceb: Seine-Maritime
+    sr_Latn: Primorska Sena
+    yue_Hans: 滨海塞纳
+    ccp: "\U00011125\U0001112D\U0001111A\U00011134-\U0001111F\U0001112C\U00011122\U00011128\U00011111\U0001112D\U0001111F\U00011134"
+    kk: Сен-Маритим
+    yue: 濱海塞納
+    az: Dənizkənarı Sena
+    bs: Seine-Maritime
+    'no': Seine-Maritime
+    mk: Приморска Сена
+  comments:
+  type: metropolitan_department
+'77':
+  name: Seine-et-Marne
+  code: '77'
+  unofficial_names: Seine-et-Marne
+  geo:
+    latitude: 48.841082
+    longitude: 2.999366
+    min_latitude: 48.1200811
+    min_longitude: 2.3923261
+    max_latitude: 49.1178979
+    max_longitude: 3.5590069
+  translations:
+    ar: السان ومارن
+    be: Дэпартамент Сена і Марна
+    bg: Сен е Марн
+    bn: সেইন-এট-মার্নে
+    ca: Sena i Marne
+    cs: Seine-et-Marne
+    da: Seine-et-Marne
+    de: Département Seine-et-Marne
+    el: Σεν-ε-Μαρν
+    en: Seine-et-Marne
+    es: Sena y Marne
+    et: Seine-et-Marne
+    eu: Seine-et-Marne
+    fa: سن-ا-مارن
+    fi: Seine-et-Marne
+    fr: Seine-et-Marne
+    gl: Sena e Marne
+    gu: સેઇન-એટ-માર્ને
+    he: סן ומארן
+    hi: सीन-एट-मार्न
+    hu: Seine-et-Marne
+    hy: Սեն-է-Մարն
+    id: Seine-et-Marne
+    it: Senna e Marna
+    ja: セーヌ＝エ＝マルヌ県
+    ka: სენა და მარნა
+    kn: ಸೀನ್-ಎಟ್-ಮರ್ನೆ
+    ko: 센에마른 주
+    lt: Sena ir Marna
+    lv: Sēna un Marna
+    mr: सीन-एत-मार्न
+    ms: Seine-et-Marne
+    nb: Seine-et-Marne
+    nl: Seine-et-Marne
+    pl: Sekwana i Marna
+    pt: Sena e Marne
+    ro: Seine-et-Marne
+    ru: Сена и Марна
+    si: සෙයිනේ-එට්-මර්නේ
+    sk: Seine-et-Marne
+    sl: Seine-et-Marne
+    sr: Сена и Марна
+    sv: Seine-et-Marne
+    sw: Seine-et-Marne
+    ta: செய்ன்-எட்-மார்னே
+    te: సియేన్-ఎట్-మార్నె
+    th: จังหวัดแซเนมาร์น
+    tr: Seine-et-Marne
+    uk: Сена і Марна
+    ur: سین-اے-مارن
+    vi: Seine-et-Marne
+    zh: 塞纳-马恩省
+    cy: Seine-et-Marne
+    af: Seine-et-Marne
+    ceb: Seine-et-Marne
+    sr_Latn: Sena i Marna
+    yue_Hans: 塞纳-马恩
+    sq: Seine-et-Marne
+    ccp: "\U00011125\U0001112D\U0001111A\U00011134-\U00011103\U0001112C\U00011116\U00011134-\U0001111F\U00011122\U00011134\U0001111A\U0001112C"
+    kk: Сена және Марна
+    yue: 塞納-馬恩
+    az: Sena və Marna
+    'no': Seine-et-Marne
+    ga: Seine-et-Marne
+    mk: Сена и Марна
+  comments:
+  type: metropolitan_department
+'78':
+  name: Yvelines
+  code: '78'
+  unofficial_names: Yvelines
+  geo:
+    latitude: 48.7850939
+    longitude: 1.8256572
+    min_latitude: 48.43855689999999
+    min_longitude: 1.44617
+    max_latitude: 49.0854481
+    max_longitude: 2.2291269
+  translations:
+    af: Yvelines
+    ar: الإيفلين
+    be: Івелін
+    bg: Ивлин
+    bn: ইয়েভলিন্স
+    ca: Yvelines
+    cs: Yvelines
+    da: Yvelines
+    de: Département Yvelines
+    el: Υβελίν
+    en: Yvelines
+    es: Yvelines
+    et: Yvelines
+    eu: Yvelines
+    fa: ایولین
+    fi: Yvelines
+    fr: Yvelines
+    gl: Yvelines
+    gu: યવેલાઈન્સ
+    he: איוולין
+    hi: यूवेलीन्स
+    hu: Yvelines
+    hy: Իվելին
+    id: Yvelines
+    it: Yvelines
+    ja: イヴリーヌ県
+    ka: იველინი
+    kn: ಯವೆಲೆನ್ಸ್
+    ko: 이블린 주
+    lt: Ivlinas
+    lv: Ivelīna
+    mr: इव्हलिन
+    ms: Yvelines
+    nb: Yvelines
+    nl: Yvelines
+    pl: Yvelines
+    pt: Yvelines
+    ro: Yvelines
+    ru: Ивелин
+    si: යුවෙලයින්ස්
+    sk: Yvelines
+    sl: Yvelines
+    sr: Ивлин
+    sv: Yvelines
+    sw: Yvelines
+    ta: யவேலின்ஸ்
+    te: యెవెలైన్స్
+    th: จังหวัดอีฟว์ลีน
+    tr: Yvelines
+    uk: Івлін
+    ur: یولنس
+    vi: Yvelines
+    zh: 伊夫林省
+    cy: Yvelines
+    ceb: Yvelines
+    sr_Latn: Ivlin
+    yue_Hans: 伊夫林
+    sq: Yvelines
+    ccp: "\U0001111E\U0001112C\U00011123\U0001112D\U0001111A\U0001112C\U0001110C\U00011134"
+    kk: Ивелин
+    yue: 伊夫林
+    az: İvelin
+    mk: Ивлин
+    'no': Yvelines
+  comments:
+  type: metropolitan_department
+'79':
+  name: Deux-Sèvres
+  code: '79'
+  unofficial_names: Deux-Sèvres
+  geo:
+    latitude: 46.5926541
+    longitude: -0.3962844
+    min_latitude: 45.969669
+    min_longitude: -0.9036799999999999
+    max_latitude: 47.1085489
+    max_longitude: 0.220405
+  translations:
+    ar: دو سيفر
+    be: Дзё-Сеўр
+    bg: Дьо Севър
+    bn: ডুয়েক্স-সেভ্রে
+    ca: Deux-Sèvres
+    cs: Deux-Sèvres
+    da: Deux-Sèvres
+    de: Département Deux-Sèvres
+    el: Ντε-Σεβρ
+    en: Deux-Sèvres
+    es: Deux-Sèvres
+    et: Deux-Sèvres
+    eu: Deux-Sèvres
+    fa: دو-سور
+    fi: Deux-Sèvres
+    fr: Deux-Sèvres
+    gl: Deux-Sèvres
+    gu: ડ્યુક્સ-સેવ્રેસ
+    he: דה-סוור
+    hi: ड्यू-सेवरेस
+    hu: Deux-Sèvres
+    hy: Դյու-Սևր
+    id: Deux-Sèvres
+    it: Deux-Sèvres
+    ja: ドゥー＝セーヴル県
+    ka: დე-სევრი
+    kn: ಡಿಯಕ್ಸ್-ಸೆವೆರೆಸ್
+    ko: 되세브르 주
+    lt: De Sevras
+    lv: Desevra
+    mr: द्यू-सेव्र
+    ms: Deux-Sèvres
+    nb: Deux-Sèvres
+    nl: Deux-Sèvres
+    pl: Deux-Sèvres
+    pt: Deux-Sèvres
+    ro: Deux-Sèvres
+    ru: Дё-Севр
+    si: ඩියුක්ස්- සෙව්රෙස්
+    sk: Deux-Sèvres
+    sl: Deux-Sèvres
+    sr: Де Севр
+    sv: Deux-Sèvres
+    sw: Deux-Sèvres
+    ta: டெஸ்-செவரெஸ்
+    te: డ్యూక్స్-సెవ్రెస్
+    th: จังหวัดเดอ-แซฟวร์
+    tr: Deux-Sèvres
+    uk: Де-Севр
+    ur: ڈو-سیور
+    vi: Deux-Sèvres
+    zh: 德塞夫勒省
+    cy: Deux-Sèvres
+    af: Deux-Sèvres
+    ceb: Deux-Sèvres
+    sr_Latn: De Sevr
+    yue_Hans: 德塞夫勒
+    sq: Deux-Sèvres
+    ccp: "\U00011113\U0001112A\U00011120\U0001112C\U00011107\U00011134-\U00011125\U0001112C\U0001111B\U00011134\U00011122\U0001112C\U0001110C\U00011134"
+    kk: Де-Севр
+    yue: 德塞夫勒
+    az: Dö-Sevr
+    'no': Deux-Sèvres
+    mk: Де Севр
+  comments:
+  type: metropolitan_department
+'80':
+  name: Somme
+  code: '80'
+  unofficial_names: Somme
+  geo:
+    latitude: 49.914518
+    longitude: 2.2707095
+    min_latitude: 49.5716231
+    min_longitude: 1.379663
+    max_latitude: 50.3663219
+    max_longitude: 3.203045
+  translations:
+    ar: سوم
+    be: Дэпартамент Сома
+    bg: Сом
+    bn: সোম্যে
+    ca: Somme
+    cs: Somme
+    da: Somme
+    de: Département Somme
+    el: Σομ
+    en: Somme
+    es: Somme
+    et: Somme’i departemang
+    eu: Somme
+    fa: سم (فرانسه)
+    fi: Somme
+    fr: Somme
+    gl: Somme
+    gu: સોમે
+    he: סום
+    hi: सोमे
+    hu: Somme
+    hy: Սոմ
+    id: Somme
+    it: Somme
+    ja: ソンム県
+    ka: სომა
+    kn: ಸೊಮ್ಮೆ
+    ko: 솜 주
+    lt: Soma
+    lv: Somma
+    mr: सोम, फ्रान्स
+    ms: Somme
+    nb: Somme
+    nl: Somme
+    pl: Somma
+    pt: Somme
+    ro: Somme
+    ru: Сомма
+    si: සොම්මේ
+    sk: Somme
+    sl: Somme
+    sr: Сома
+    sv: Somme
+    sw: Somme
+    ta: செம்மே
+    te: సోమె
+    th: จังหวัดซอม
+    tr: Somme
+    uk: Сомма
+    ur: سوم
+    vi: Somme
+    zh: 索姆省
+    cy: Somme
+    af: Somme (département)
+    ceb: Somme
+    sr_Latn: Soma
+    yue_Hans: 索姆
+    sq: Somme
+    ccp: "\U00011125\U00011127\U0001111F\U00011133\U00011126\U0001112C"
+    kk: Сомма
+    yue: 索姆
+    az: Somma
+    mk: Сома
+    'no': Somme
+    ga: Somme
+  comments:
+  type: metropolitan_department
+'81':
+  name: Tarn
+  code: '81'
+  unofficial_names: Tarn
+  geo:
+    latitude: 43.9264401
+    longitude: 1.9881527
+    min_latitude: 43.3822819
+    min_longitude: 1.535198
+    max_latitude: 44.201493
+    max_longitude: 2.937474
+  translations:
+    ar: تارن
+    be: Дэпартамент Тарн
+    bg: Тарн
+    bn: টারন
+    ca: Tarn
+    cs: Tarn
+    da: Tarn
+    de: Département Tarn
+    el: Ταρν
+    en: Tarn
+    es: Tarn
+    et: Tarni departemang
+    eu: Tarn
+    fa: تارن
+    fi: Tarn
+    fr: Tarn
+    gl: Tarn
+    gu: ટાર્ન
+    he: טארן
+    hi: टार्न
+    hr: Tarn
+    hu: Tarn
+    hy: Թարն
+    id: Tarn
+    it: Tarn
+    ja: タルヌ県
+    ka: ტარნი
+    kn: ಟಾರ್ನ್
+    ko: 타른 주
+    lt: Tarnas
+    lv: Tarna
+    mr: तार्न
+    ms: Tarn
+    nb: Tarn
+    nl: Tarn
+    pl: Tarn
+    pt: Tarn
+    ro: Tarn
+    ru: Тарн
+    si: ටාර්න්
+    sk: Tarn
+    sl: Tarn
+    sr: Тарн
+    sv: Tarn
+    sw: Tarn
+    ta: டர்ன்
+    te: టార్న్
+    th: จังหวัดตาร์น
+    tr: Tarn
+    uk: Тарн
+    ur: تارن
+    vi: Tarn
+    zh: 塔恩省
+    cy: Tarn
+    af: Tarn
+    ceb: Tarn
+    sr_Latn: Tarn
+    yue_Hans: 塔恩
+    sq: Tarn
+    ccp: "\U00011111\U00011122\U00011134\U0001111A\U00011134"
+    kk: Тарн
+    yue: 塔恩
+    az: Tarn (departament)
+    'no': Tarn
+    mk: Тарн
+  comments:
+  type: metropolitan_department
+'82':
+  name: Tarn-et-Garonne
+  code: '82'
+  unofficial_names: Tarn-et-Garonne
+  geo:
+    latitude: 44.0126679
+    longitude: 1.2891036
+    min_latitude: 43.7675901
+    min_longitude: 0.7378110999999999
+    max_latitude: 44.39392489999999
+    max_longitude: 2.000898
+  translations:
+    ar: تارن وغارون
+    be: Тарн і Гарона
+    bg: Тарн е Гарон
+    bn: টার্ন-এট-গ্যারোন
+    ca: Tarn i Garona
+    cs: Tarn-et-Garonne
+    da: Tarn-et-Garonne
+    de: Département Tarn-et-Garonne
+    el: Ταρν-ε-Γκαρόν
+    en: Tarn-et-Garonne
+    es: Tarn y Garona
+    et: Tarn-et-Garonne
+    eu: Tarn eta Garona
+    fa: تارن-ا-گارون
+    fi: Tarn-et-Garonne
+    fr: Tarn-et-Garonne
+    gl: Tarn-et-Garonne
+    gu: તાર્ન-એટ-ગરોન
+    he: טארן וגארון
+    hi: टार्न-एट-गैरेन
+    hu: Tarn-et-Garonne
+    hy: Թարն-է-Գարոն
+    id: Tarn-et-Garonne
+    it: Tarn e Garonna
+    ja: タルヌ＝エ＝ガロンヌ県
+    ka: ტარნი და გარონა
+    kn: ಟಾರ್ನ್-ಇಟ್-ಗ್ಯಾರೋನೆ
+    ko: 타른에가론 주
+    lt: Tarnas ir Garona
+    lv: Tarna un Garonna
+    mr: तार्न-एत-गारोन
+    ms: Tarn-et-Garonne
+    nb: Tarn-et-Garonne
+    nl: Tarn-et-Garonne
+    pl: Tarn i Garonna
+    pt: Tarn-et-Garonne
+    ro: Tarn-et-Garonne
+    ru: Тарн и Гаронна
+    si: ටාර්න්-එට් -ගරෝනේ
+    sk: Tarn-et-Garonne
+    sl: Tarn-et-Garonne
+    sr: Тарн и Гарона
+    sv: Tarn-et-Garonne
+    sw: Tarn-et-Garonne
+    ta: டர்ன் -எட் -காரோணனே
+    te: టార్న్-ఎట్-గారోన్
+    th: จังหวัดตาร์เนการอน
+    tr: Tarn-et-Garonne
+    uk: Тарн і Гаронна
+    ur: تارن-اے-گارون
+    vi: Tarn-et-Garonne
+    zh: 塔恩-加龙省
+    cy: Tarn-et-Garonne
+    af: Tarn-et-Garonne
+    ceb: Tarn-et-Garonne
+    sr_Latn: Tarn i Garona
+    yue_Hans: 塔恩-加龙
+    sq: Tarn-et-Garonne
+    ccp: "\U00011111\U00011122\U00011134\U0001111A\U00011134-\U00011103\U0001112C\U00011116\U00011134-\U00011109\U00011133\U00011120\U00011122\U0001112E\U0001111A\U00011133\U00011126\U00011128"
+    kk: Тарн және Гаронна
+    yue: 塔恩-加龍
+    az: Tarn və Qaronna
+    'no': Tarn-et-Garonne
+    mk: Тарн и Гарона
+  comments:
+  type: metropolitan_department
+'83':
+  name: Var
+  code: '83'
+  unofficial_names: Var
+  geo:
+    latitude: 43.46764599999999
+    longitude: 6.2375947
+    min_latitude: 42.98199810000001
+    min_longitude: 5.6559
+    max_latitude: 43.808881
+    max_longitude: 6.933446
+  translations:
+    ar: فار
+    be: Дэпартамент Вар
+    bg: Вар
+    bn: ভার
+    ca: Var
+    cs: Var
+    da: Var
+    de: Département Var
+    el: Βαρ
+    en: Var
+    es: Var
+    et: Var’i departemang
+    eu: Var
+    fa: ور
+    fi: Var
+    fr: Var
+    gl: Var
+    gu: વાર
+    hi: वार
+    hu: Var
+    hy: Վար
+    id: Var
+    it: Varo
+    ja: ヴァール県
+    ka: ვარი
+    kn: ವಾರ್
+    ko: 바르 주
+    lt: Varas
+    lv: Vāra
+    mr: व्हार
+    ms: Var
+    nb: Var
+    nl: Var
+    pl: Var
+    pt: Var
+    ro: Var
+    ru: Вар
+    si: වාර්
+    sk: Var
+    sl: Var
+    sr: Вар
+    sv: Var
+    sw: Var
+    ta: வார்
+    te: వార్
+    th: จังหวัดวาร์
+    tr: Var
+    uk: Вар
+    ur: وار
+    vi: Var
+    zh: 瓦尔省
+    cy: Var
+    af: Var
+    ceb: Var
+    sr_Latn: Var
+    yue_Hans: 华尔
+    sq: Var
+    ccp: "\U0001111E\U00011122\U00011134"
+    kk: Вар
+    yue: 華爾
+    az: Var (departament)
+    'no': Var
+    he: ואר (מחוז)
+    mk: Вар
+  comments:
+  type: metropolitan_department
+'84':
+  name: Vaucluse
+  code: '84'
+  unofficial_names: Vaucluse
+  geo:
+    latitude: 44.0565054
+    longitude: 5.1432068
+    min_latitude: 43.658718
+    min_longitude: 4.649082
+    max_latitude: 44.4315659
+    max_longitude: 5.757334999999999
+  translations:
+    af: Vaucluse
+    ar: فوكلوز
+    be: Ваклюз
+    bg: Воклюз
+    bn: ভক্লুস
+    ca: Valclusa
+    cs: Vaucluse
+    da: Vaucluse
+    de: Département Vaucluse
+    el: Βωκλύζ
+    en: Vaucluse
+    es: Vaucluse
+    et: Vaucluse’i departemang
+    eu: Vaucluse
+    fa: وکلوز
+    fi: Vaucluse
+    fr: Vaucluse
+    gl: Vaucluse
+    gu: વૌક્લોઝ
+    he: ווקלוז
+    hi: वॉक्लूस
+    hu: Vaucluse
+    hy: Վոքլյուզ
+    id: Vaucluse
+    it: Vaucluse
+    ja: ヴォクリューズ県
+    ka: ვოკლიუზი
+    kn: ವಾಕ್ಲುಸ್
+    ko: 보클뤼즈 주
+    lt: Vokliūzas
+    lv: Voklīza
+    mr: व्हॉक्ल्युझ
+    ms: Vaucluse
+    nb: Vaucluse
+    nl: Vaucluse
+    pl: Vaucluse
+    pt: Vaucluse
+    ro: Vaucluse
+    ru: Воклюз
+    si: වවුක්ලුසේ
+    sk: Vaucluse
+    sl: Vaucluse
+    sr: Воклиз
+    sv: Vaucluse
+    sw: Vaucluse
+    ta: வாக்கிலுசே
+    te: వాక్లూజ్
+    th: จังหวัดโวกลูซ
+    tr: Vaucluse
+    uk: Воклюз
+    ur: وکلوز
+    vi: Vaucluse
+    zh: 沃克吕兹省
+    cy: Vaucluse
+    ceb: Vaucluse
+    sr_Latn: Vokliz
+    yue_Hans: 禾克吕兹
+    sq: Vaucluse
+    ccp: "\U0001111E\U00011105\U0001112A\U00011107\U00011133\U00011123\U0001112A\U0001110C\U00011134"
+    kk: Воклюз
+    yue: 禾克呂茲
+    az: Voklüz (departament)
+    'no': Vaucluse
+    mk: Воклиз
+  comments:
+  type: metropolitan_department
+'85':
+  name: Vendée
+  code: '85'
+  unofficial_names: Vendée
+  geo:
+    latitude: 46.6613966
+    longitude: -1.4482662
+    min_latitude: 46.26653899999999
+    min_longitude: -2.3998896
+    max_latitude: 47.0850081
+    max_longitude: -0.538134
+  translations:
+    af: Vendée
+    ar: فونديه
+    be: Вандэя
+    bg: Вандея
+    bn: ভেন্ডি
+    ca: Vendée
+    cs: Vendée
+    da: Vendée
+    de: Département Vendée
+    el: Βαντέ
+    en: Vendée
+    es: Vandea
+    et: Vendée
+    eu: Vendée
+    fa: وانده
+    fi: Vendée
+    fr: Vendée
+    gl: Vendée
+    gu: વેન્ડી
+    he: ונדה
+    hi: वेंडी
+    hr: Vendée
+    hu: Vendée
+    hy: Վանդե
+    id: Vendée
+    is: Vendée
+    it: Vandea
+    ja: ヴァンデ県
+    ka: ვანდეია
+    kn: ವೆಂಡಿ
+    ko: 방데 주
+    lt: Vandėja
+    lv: Vandeja
+    mr: वांदे
+    ms: Vendée
+    nb: Vendée
+    nl: Vendée
+    pl: Wandea
+    pt: Vendeia
+    ro: Vendée
+    ru: Вандея
+    si: වෙන්ඩි
+    sk: Vendée
+    sl: Vendée
+    sr: Вандеја
+    sv: Vendée
+    sw: Vendée
+    ta: வேண்டீ
+    te: వెండీ
+    th: จังหวัดว็องเด
+    tr: Vendée
+    uk: Вандея
+    ur: واندے
+    vi: Vendée
+    zh: 旺代省
+    cy: Vendée
+    ceb: Vendée
+    sr_Latn: Vandeja
+    yue_Hans: 旺代
+    sq: Vendée
+    ccp: "\U0001111E\U0001112C\U0001111A\U00011134\U00011118\U00011133\U00011126\U00011128"
+    kk: Вандея
+    yue: 旺代
+    az: Vandeya
+    mk: Вандеја (департман)
+    'no': Vendée
+  comments:
+  type: metropolitan_department
+'86':
+  name: Vienne
+  code: '86'
+  unofficial_names: Vienne
+  geo:
+    latitude: 45.525587
+    longitude: 4.874339
+    min_latitude: 45.4867009
+    min_longitude: 4.837251999999999
+    max_latitude: 45.557463
+    max_longitude: 4.923409899999999
+  translations:
+    ar: فيين
+    bg: Виен
+    bn: ভিএনা
+    ca: Viena
+    cs: Vienne
+    da: Vienne
+    de: Département Vienne
+    el: Βιέν
+    en: Vienne
+    es: Vienne
+    et: Vienne’i departemang
+    eu: Vienne
+    fa: وین
+    fi: Vienne
+    fr: Vienne
+    gl: Vienne
+    gu: વિયેન
+    he: ויין
+    hi: वियने
+    hr: Vienne
+    hu: Vienne
+    hy: Վյեն
+    id: Vienne
+    it: Vienne
+    ja: ヴィエンヌ県
+    ka: ვიენა
+    kn: ವೈನ್ನೆ
+    ko: 비엔 주
+    lt: Vjenas
+    lv: Vjenna
+    mr: व्हियेन
+    ms: Vienne
+    nb: Vienne
+    nl: Vienne
+    pl: Vienne
+    pt: Vienne
+    ro: Vienne
+    ru: Вьенна
+    si: වියෙන්නේ
+    sk: Vienne
+    sl: Vienne
+    sr: Вијен
+    sv: Vienne
+    sw: Vienne
+    ta: வியென்னே
+    te: వియెన్
+    th: จังหวัดเวียน
+    tr: Vienne
+    uk: Вʼєнна
+    ur: ویئن
+    vi: Vienne
+    zh: 维埃纳省
+    cy: Vienne
+    af: Vienne
+    ceb: Vienne
+    sr_Latn: Vijen
+    yue_Hans: 维埃纳
+    jv: Vienne
+    sq: Vienne
+    ccp: "\U0001111E\U0001112D\U00011120\U0001112C\U0001111A\U00011133\U00011126\U00011128"
+    kk: Вьенна
+    yue: 維埃納
+    az: Vyenna
+    mk: Вјена
+    'no': Vienne
+    is: Vienne
+  comments:
+  type: metropolitan_department
+'87':
+  name: Haute-Vienne
+  code: '87'
+  unofficial_names: Haute-Vienne
+  geo:
+    latitude: 45.7435173
+    longitude: 1.4025484
+    min_latitude: 45.43663
+    min_longitude: 0.62925
+    max_latitude: 46.40158599999999
+    max_longitude: 1.9110789
+  translations:
+    ar: فيين العليا
+    bg: От Виен
+    bn: হাউতে-ভিয়েনে
+    ca: Alta Viena
+    cs: Haute-Vienne
+    da: Haute-Vienne
+    de: Département Haute-Vienne
+    el: Ωτ-Βιέν
+    en: Haute-Vienne
+    es: Alto Vienne
+    et: Haute-Vienne
+    eu: Haute-Vienne
+    fa: اوت-وین
+    fi: Haute-Vienne
+    fr: Haute-Vienne
+    gl: Alto Vienne
+    gu: હૌટ-વિયેન
+    he: ויין עילית
+    hi: ओट-वियने
+    hu: Haute-Vienne
+    hy: Օտ-Վյեն
+    id: Haute-Vienne
+    it: Alta Vienne
+    ja: オート＝ヴィエンヌ県
+    ka: ზემო ვიენა
+    kn: ಹಾಟೆ-ವಿಯೆನ್
+    ko: 오트비엔 주
+    lt: Aukštutinis Vjenas
+    lv: Augšvjenna
+    mr: ऑत-व्हियेन
+    ms: Haute-Vienne
+    nb: Haute-Vienne
+    nl: Haute-Vienne
+    pl: Haute-Vienne
+    pt: Haute-Vienne
+    ro: Haute-Vienne
+    ru: Верхняя Вьенна
+    si: හෞටේ -විඑනේ
+    sk: Haute-Vienne
+    sl: Haute-Vienne
+    sr: Горњи Вијен
+    sv: Haute-Vienne
+    sw: Haute-Vienne
+    ta: ஹூட் -விஏன்னே
+    te: హాట్-వియెన్
+    th: จังหวัดโอต-เวียน
+    tr: Haute-Vienne
+    uk: Верхня Вʼєнна
+    ur: بالائی-ویئن
+    vi: Haute-Vienne
+    zh: 上维埃纳省
+    cy: Haute-Vienne
+    af: Haute-Vienne
+    ceb: Haute-Vienne
+    sr_Latn: Gornji Vijen
+    yue_Hans: 上维埃纳
+    sq: Haute-Vienne
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U0001111E\U0001112D\U00011120\U0001112C\U0001111A\U00011133\U00011126\U00011128"
+    kk: Жоғарғы Вьенна
+    yue: 上維埃納
+    az: Yuxarı Vyenna
+    mk: Горна Вјена
+    'no': Haute-Vienne
+  comments:
+  type: metropolitan_department
+'88':
+  name: Vosges
+  code: '88'
+  unofficial_names: Vosges
+  geo:
+    latitude: 48.1446427
+    longitude: 6.3355935
+    min_latitude: 47.8132981
+    min_longitude: 5.3936269
+    max_latitude: 48.513663
+    max_longitude: 7.198364
+  translations:
+    af: Vosges
+    ar: فوج
+    be: Дэпартамент Вагезы
+    bg: Вож
+    bn: ভজগেস
+    ca: Vosges
+    cs: Vosges
+    da: Vosges
+    de: Département Vosges
+    el: Βοζ
+    en: Vosges
+    es: Vosgos
+    et: Vosges’i departemang
+    eu: Vosges
+    fa: ووژ
+    fi: Vosges
+    fr: Vosges
+    gl: Vosgos
+    gu: વોસ્ગેસ
+    he: ווז׳
+    hi: वोशस
+    hu: Vosges
+    hy: Վոգեզներ
+    id: Vosges
+    it: Vosgi
+    ja: ヴォージュ県
+    ka: ვოგეზი
+    kn: ವೊಸ್ಜೆಸ್
+    ko: 보주 주
+    lt: Vogėzai
+    lv: Vogēzi
+    mr: व्हॉझ
+    ms: Vosges
+    nb: Vosges
+    nl: Vosges
+    pl: Wogezy
+    pt: Vosges
+    ro: Vosges
+    ru: Вогезы
+    si: ", වොස්ගෙස්"
+    sk: Vosges
+    sl: Vosges
+    sr: Вогези
+    sv: Vosges
+    sw: Vosges
+    ta: வோஸ்ஜ்ஸ்
+    te: వోస్గెస్
+    th: จังหวัดโวฌ
+    tr: Vosges
+    uk: Вогези
+    ur: ووژ
+    vi: Vosges
+    zh: 孚日省
+    cy: Vosges
+    ceb: Vosges
+    sr_Latn: Vogezi
+    yue_Hans: 孚日
+    sq: Vosgos
+    ccp: "\U0001111E\U0001112E\U0001110C\U00011134\U00011109\U0001112C\U0001110C\U00011134"
+    kk: Вогез
+    yue: 孚日
+    az: Vogezlər
+    mk: Вогези
+    'no': Vosges
+    ga: Vosges
+    ml: വോസ്ഗെസ്
+  comments:
+  type: metropolitan_department
+'89':
+  name: Yonne
+  code: '89'
+  unofficial_names: Yonne
+  geo:
+    latitude: 47.8652728
+    longitude: 3.6079823
+    min_latitude: 47.310363
+    min_longitude: 2.848432
+    max_latitude: 48.400061
+    max_longitude: 4.340295999999999
+  translations:
+    ar: يون
+    be: Дэпартамент Іона
+    bg: Йон
+    bn: ইয়োন্যে
+    ca: Yonne
+    cs: Yonne
+    da: Yonne
+    de: Département Yonne
+    el: Ιόν
+    en: Yonne
+    es: Yonne
+    et: Yonne’i departemang
+    eu: Yonne
+    fa: یون
+    fi: Yonne
+    fr: Yonne
+    gl: Yonne, Francia
+    gu: યોન
+    he: יון
+    hi: योने
+    hu: Yonne
+    hy: Յոն
+    id: Yonne
+    it: Yonne
+    ja: ヨンヌ県
+    ka: იონა
+    kn: ಯೋನೆ
+    ko: 욘 주
+    lt: Jonas
+    lv: Jona
+    mr: योन
+    ms: Yonne
+    nb: Yonne
+    nl: Yonne
+    pl: Yonne
+    pt: Yonne
+    ro: Yonne
+    ru: Йонна
+    si: යෝන්නේ
+    sk: Yonne
+    sl: Yonne
+    sr: Јон
+    sv: Yonne
+    sw: Yonne
+    ta: யொன்னே
+    te: యోన్నె
+    th: จังหวัดอียอน
+    tr: Yonne
+    uk: Йонна
+    ur: یوننے
+    vi: Yonne
+    zh: 约讷省
+    cy: Yonne
+    af: Yonne
+    ceb: Yonne
+    sr_Latn: Jon
+    yue_Hans: 约讷
+    sq: Yonne
+    ccp: "\U00011103\U00011128\U00011120\U0001112E\U0001111A\U00011133\U00011126\U00011128"
+    kk: Йонна
+    yue: 約訥
+    az: Yonna
+    'no': Yonne
+    ga: Yonne
+    mk: Јона
+    ml: യോന്നെ
+  comments:
+  type: metropolitan_department
+'90':
+  name: Territoire de Belfort
+  code: '90'
+  unofficial_names: Territoire de Belfort
+  geo:
+    latitude: 47.59465729999999
+    longitude: 6.920771599999999
+    min_latitude: 47.433383
+    min_longitude: 6.756256
+    max_latitude: 47.82511299999999
+    max_longitude: 7.143381
+  translations:
+    ar: إقليم بلفور
+    be: Тэрыторыя Бельфор
+    bg: Теритоар дьо Белфор
+    bn: টেরিটোরি ডি বেলফোর্ট
+    ca: Territori de Belfort
+    cs: Territoire de Belfort
+    da: Territoire de Belfort
+    de: Territoire de Belfort
+    el: Έδαφος του Μπελφόρ
+    en: Territoire de Belfort
+    es: Territorio de Belfort
+    et: Belfort’i departemang
+    eu: Belfort Herrialdea
+    fa: تریتوآر دو بلفور
+    fi: Territoire de Belfort
+    fr: Territoire de Belfort
+    gl: Territorio de Belfort
+    gu: ટેરિટોઇરા દે બેલ્ફોર્ટ
+    he: טריטוריית בלפור
+    hi: टेरेटोइर डी बेल्फोर्ट
+    hu: Territoire de Belfort
+    hy: Բելֆորի տարածք
+    id: Territoire de Belfort
+    it: Territorio di Belfort
+    ja: テリトワール・ド・ベルフォール県
+    ka: ბელფორის ტერიტორია
+    kn: ಟೆರಿಟೊಯಿರ್ ಡಿ ಬೆಲ್ಫೋರ್ಟ್
+    ko: 테리투아르드벨포르 주
+    lt: Belforo teritorija
+    lv: Belfora
+    mr: तेरितॉर दे बेल्फॉर
+    ms: Territoire de Belfort
+    nb: Territoire de Belfort
+    nl: Territoire de Belfort
+    pl: Territoire-de-Belfort
+    pt: Território de Belfort
+    ro: Territoire de Belfort
+    ru: Территория Бельфор
+    si: බෙල්ෆෝර්ට් පළාත
+    sk: Territoire de Belfort
+    sl: Territoire de Belfort
+    sr: Територија Белфор
+    sv: Territoire de Belfort
+    sw: Territoire de Belfort
+    ta: டெரரிடோனிரே டி பெலஃபோர்ட்
+    te: టెరిటోయిర్ డి బెల్ఫోర్ట్
+    th: จังหวัดแตรีตัวร์เดอแบลฟอร์
+    tr: Territoire de Belfort
+    uk: Територія Бельфор
+    ur: تیریتوار دو بیلفور
+    vi: Lãnh thổ Belfort
+    zh: 贝尔福地区
+    cy: Territoire de Belfort
+    af: Territoire de Belfort
+    ceb: Territoire de Belfort
+    sr_Latn: Teritorija Belfor
+    yue_Hans: 贝尔福地区
+    sq: Territoire de Belfort
+    ccp: "\U00011111\U0001112C\U00011122\U00011133\U00011126\U00011128\U00011111\U00011130\U00011122\U00011134
+      \U00011113\U0001112C \U0001111D\U0001112C\U00011123\U00011134\U0001111C\U0001112E\U00011122\U00011134\U00011111\U00011134"
+    kk: Территория-де-Бельфор
+    yue: 貝爾福地區
+    az: Belfor ərazisi
+    mk: Територија Белфор
+    'no': Territoire de Belfort
+    ga: Territoire de Belfort
+  comments:
+  type: metropolitan_department
+'91':
+  name: Essonne
+  code: '91'
+  unofficial_names: Essonne
+  geo:
+    latitude: 48.4585698
+    longitude: 2.1569416
+    min_latitude: 48.28455599999999
+    min_longitude: 1.9145131
+    max_latitude: 48.7761319
+    max_longitude: 2.5856331
+  translations:
+    ar: إيسون
+    be: Дэпартамент Эсон
+    bg: Есон
+    bn: এসোনে
+    ca: Essonne
+    cs: Essonne
+    da: Essonne
+    de: Département Essonne
+    el: Εσσόν
+    en: Essonne
+    es: Essonne
+    et: Essonne’i departemang
+    eu: Essonne
+    fa: اسون
+    fi: Essonne
+    fr: Essonne
+    gl: Essonne
+    gu: એસોન
+    he: אסון
+    hi: एसोने
+    hu: Essonne
+    hy: Էսոն
+    id: Essonne
+    it: Essonne
+    ja: エソンヌ県
+    ka: ესონა
+    kn: ಎಸ್ಸೊನೆ
+    ko: 에손 주
+    lt: Esonas
+    lv: Esona
+    mr: एसोन
+    ms: Essonne
+    nb: Essonne
+    ne: एस्सोन्मे
+    nl: Essonne
+    pl: Essonne
+    pt: Essonne
+    ro: Essonne
+    ru: Эсон
+    si: එස්සොන්නේ
+    sk: Essonne
+    sl: Essonne
+    sr: Есон
+    sv: Essonne
+    sw: Essonne
+    ta: எஸ்ஸோன்னே
+    te: ఎస్సన్
+    th: จังหวัดเอซอน
+    tr: Essonne
+    uk: Ессонн
+    ur: ایسون
+    vi: Essonne
+    zh: 埃松省
+    cy: Essonne
+    af: Essonne
+    ceb: Essonne
+    sr_Latn: Eson
+    yue_Hans: 埃松
+    sq: Essonne
+    ccp: "\U00011103\U00011128\U00011125\U00011133\U00011126\U0001112E\U0001111A\U00011133\U00011126\U00011128"
+    kk: Эсон
+    yue: 埃松
+    az: Eson
+    mk: Есона
+    'no': Essonne
+  comments:
+  type: metropolitan_department
+'92':
+  name: Hauts-de-Seine
+  code: '92'
+  unofficial_names: Hauts-de-Seine
+  geo:
+    latitude: 48.828508
+    longitude: 2.2188068
+    min_latitude: 48.729351
+    min_longitude: 2.145702
+    max_latitude: 48.9509619
+    max_longitude: 2.336941
+  translations:
+    ar: هوت دو سين
+    az: O-de-Sen
+    be: О-дэ-Сен
+    bg: О дьо Сен
+    bn: হোতস-দে-সেইন
+    ca: Alts del Sena
+    cs: Hauts-de-Seine
+    da: Hauts-de-Seine
+    de: Département Hauts-de-Seine
+    el: Ω-ντε-Σεν
+    en: Hauts-de-Seine
+    es: Altos del Sena
+    et: Hauts-de-Seine
+    eu: Hauts-de-Seine
+    fa: او-دو-سن
+    fi: Hauts-de-Seine
+    fr: Hauts-de-Seine
+    gl: Hauts-de-Seine
+    gu: હોટ્સ-દે-સેઇન
+    he: רמות הסן
+    hi: ओट्स-डी-सीन
+    hu: Hauts-de-Seine
+    hy: Օ-դը-Սեն
+    id: Hauts-de-Seine
+    it: Hauts-de-Seine
+    ja: オー＝ド＝セーヌ県
+    ka: ო-დე-სენა
+    kn: ಹೌಟ್ಸ್-ಡೆ-ಸೀನ್
+    ko: 오드센 주
+    lt: Aukštutinė Sena
+    lv: Odesēna
+    mr: ऑत-दे-सीन
+    ms: Hauts-de-Seine
+    nb: Hauts-de-Seine
+    nl: Hauts-de-Seine
+    pl: Hauts-de-Seine
+    pt: Altos do Sena
+    ro: Hauts-de-Seine
+    ru: О-де-Сен
+    si: හෞට්ස්-ඩි සෙයිනේ
+    sk: Hauts-de-Seine
+    sl: Hauts-de-Seine
+    sr: Сенски висови
+    sv: Hauts-de-Seine
+    sw: Hauts-de-Seine
+    ta: ஹூட்ஸ் -டி -ஷைனி
+    te: హాట్స్-డి-సియెన్
+    th: จังหวัดโอดแซน
+    tr: Hauts-de-Seine
+    uk: О-де-Сен
+    ur: بلند-دو-سین
+    vi: Hauts-de-Seine
+    zh: 上塞纳省
+    cy: Hauts-de-Seine
+    af: Hauts-de-Seine
+    ceb: Hauts-de-Seine
+    sr_Latn: Senski visovi
+    yue_Hans: 上塞纳省
+    jv: Hauts-de-Seine
+    sq: Hauts-de-Seine
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011113\U0001112C-\U00011125\U0001112D\U0001111A\U00011134"
+    kk: О-де-Сен
+    yue: 上塞納省
+    mk: Сенски Висови
+    'no': Hauts-de-Seine
+  comments:
+  type: metropolitan_department
+'93':
+  name: Seine-Saint-Denis
+  code: '93'
+  unofficial_names: Seine-Saint-Denis
+  geo:
+    latitude: 48.9137455
+    longitude: 2.4845729
+    min_latitude: 48.807248
+    min_longitude: 2.2883109
+    max_latitude: 49.012329
+    max_longitude: 2.6032919
+  translations:
+    ar: سين سان دوني
+    be: Сен-Сен-Дэні
+    bg: Сен Сен Дьони
+    bn: সেইন-সেন্ট-ডেনিস
+    ca: Sena Saint-Denis
+    cs: Seine-Saint-Denis
+    da: Seine-Saint-Denis
+    de: Département Seine-Saint-Denis
+    el: Σεν-Σαιν-Ντενί
+    en: Seine-Saint-Denis
+    es: Sena-Saint Denis
+    et: Seine-Saint-Denis
+    eu: Seine-Saint-Denis
+    fa: سن-سن-دونی
+    fi: Seine-Saint-Denis
+    fr: Seine-Saint-Denis
+    gl: Sena-San Denis
+    gu: સેઇન-સેન્ટ-ડેનિસ
+    he: סן-סן-דני
+    hi: सीन-सेंट-डेनिस
+    hu: Seine-Saint-Denis
+    hy: Սեն-Սեն-Դենի
+    id: Seine-Saint-Denis
+    it: Senna-Saint-Denis
+    ja: セーヌ＝サン＝ドニ県
+    ka: სენა-სენ-დენი
+    kn: ಸೈನ್-ಸೇಂಟ್-ಡೆನಿಸ್
+    ko: 센생드니 주
+    lt: Sena-Sen Deni
+    lv: Sēna-Sendenī
+    mr: सीन-सेंत-देनिस
+    ms: Seine-Saint-Denis
+    nb: Seine-Saint-Denis
+    nl: Seine-Saint-Denis
+    pl: Seine-Saint-Denis
+    pt: Seine-Saint-Denis
+    ro: Seine-Saint-Denis
+    ru: Сен-Сен-Дени
+    si: සෙයිනේ-ශාන්ත-ඩෙනිස්
+    sk: Seine-Saint-Denis
+    sl: Seine-Saint-Denis
+    sr: Сена-Сен Дени
+    sv: Seine-Saint-Denis
+    sw: Seine-Saint-Denis
+    ta: ஷைனி -செயின்ட் -டெனிஸ்
+    te: సీన్-సెయింట్-డెనిస్
+    th: จังหวัดแซน-แซ็ง-เดอนี
+    tr: Seine-Saint-Denis
+    uk: Сена-Сен-Дені
+    ur: سین-سینٹ-دونی
+    vi: Seine-Saint-Denis
+    zh: 塞纳-圣但尼省
+    cy: Seine-Saint-Denis
+    af: Seine-Saint-Denis
+    ceb: Seine-Saint-Denis
+    sr_Latn: Sena-Sen Deni
+    yue_Hans: 塞纳－圣但尼
+    sq: Seine-Saint-Denis
+    ccp: "\U00011125\U0001112D\U0001111A\U00011134-\U00011125\U0001112C\U0001111A\U00011134-\U00011113\U0001112C\U0001111A\U00011128\U0001110C\U00011134"
+    kk: Сена-Сен-Дени
+    yue: 塞納－聖但尼
+    az: Sen-Sen-Deni
+    mk: Сена-Сен Дени
+    'no': Seine-Saint-Denis
+  comments:
+  type: metropolitan_department
+'94':
+  name: Val-de-Marne
+  code: '94'
+  unofficial_names: Val-de-Marne
+  geo:
+    latitude: 48.7931426
+    longitude: 2.4740337
+    min_latitude: 48.68764300000001
+    min_longitude: 2.3086759
+    max_latitude: 48.861484
+    max_longitude: 2.6156419
+  translations:
+    ar: فال دو مارن
+    be: Валь-дэ-Марн
+    bg: Вал дьо Марн
+    bn: ভাল-ডে-মার্ন
+    ca: Val-de-Marne
+    cs: Val-de-Marne
+    da: Val-de-Marne
+    de: Département Val-de-Marne
+    el: Βαλ-ντε-Μαρν
+    en: Val-de-Marne
+    es: Valle del Marne
+    et: Val-de-Marne
+    eu: Val-de-Marne
+    fa: ول دو مرن
+    fi: Val-de-Marne
+    fr: Val-de-Marne
+    gl: Val do Marne
+    gu: વાલ-દે-માર્ને
+    he: עמק המארן
+    hi: वैल-डी-मार्ने
+    hu: Val-de-Marne
+    hy: Վալ-դը-Մարն
+    id: Val-de-Marne
+    it: Valle della Marna
+    ja: ヴァル＝ド＝マルヌ県
+    ka: ვალ-დე-მარნი
+    kn: ವ್ಯಾಲ್-ಡಿ-ಮರ್ನೆ
+    ko: 발드마른 주
+    lt: Marnos slėnis
+    lv: Valdemarna
+    mr: व्हाल-दे-मार्न
+    ms: Val-de-Marne
+    nb: Val-de-Marne
+    nl: Val-de-Marne
+    pl: Dolina Marny
+    pt: Val-de-Marne
+    ro: Val-de-Marne
+    ru: Валь-де-Марн
+    si: වල්-ඩේ-මර්නේ
+    sk: Val-de-Marne
+    sl: Val-de-Marne
+    sr: Долина Марне
+    sv: Val-de-Marne
+    sw: Val-de-Marne
+    ta: வால் -டி -மரனே
+    te: వాల్క్-డి-మార్నె
+    th: จังหวัดวาล-เดอ-มาร์น
+    tr: Val-de-Marne
+    uk: Валь-де-Марн
+    ur: ول-دو-مارن
+    vi: Val-de-Marne
+    zh: 马恩河谷省
+    cy: Val-de-Marne
+    af: Val-de-Marne
+    ceb: Val-de-Marne
+    sr_Latn: Dolina Marne
+    yue_Hans: 马恩河谷
+    sq: Val-de-Marne
+    ccp: "\U0001111E\U00011127\U00011123\U00011134-\U00011113\U0001112C-\U0001111F\U00011122\U00011134\U0001111A\U0001112C"
+    kk: Валь-де-Марн
+    yue: 馬恩河谷
+    az: Val-de-Marn
+    'no': Val-de-Marne
+    mk: Долина на Марна
+  comments:
+  type: metropolitan_department
+'95':
+  name: Val-d'Oise
+  code: '95'
+  unofficial_names: Val-d'Oise
+  geo:
+    latitude: 49.0615901
+    longitude: 2.1581351
+    min_latitude: 48.9086749
+    min_longitude: 1.6087331
+    max_latitude: 49.241504
+    max_longitude: 2.5949791
+  translations:
+    'no': Val-d’Oise
+    af: Val-d’Oise
+    ar: فال دواز
+    az: Val-d’Uaz
+    bn: ভাল-ডি‘অইস
+    ca: Val-d’Oise
+    ccp: "\U0001111E\U00011127\U00011123\U00011134-\U00011113\U00011128‘\U00011103\U0001112E\U00011103\U00011128\U0001110C\U00011134"
+    ceb: Val-d’Oise
+    cs: Val-d’Oise
+    cy: Val-d’Oise
+    da: Val-d’Oise
+    de: Département Val-d’Oise
+    el: Βαλ-ντ’Ουάζ
+    en: Val-d’Oise
+    es: Valle del Oise
+    et: Val-d’Oise
+    eu: Val-d’Oise
+    fa: ول-دوآز
+    fi: Val-d’Oise
+    fr: Val-d’Oise
+    gl: Val do Oise
+    gu: વેલ-ડી‘ઓઇસ
+    he: עמק האואז
+    hi: वेल-डी‘ओइस
+    hu: Val-d’Oise
+    hy: Վալ-դը-Ուազ
+    id: Val-d’Oise
+    it: Val-d’Oise
+    ja: ヴァル＝ドワーズ県
+    kk: Валь-д’Уаз
+    kn: ವ್ಯಾಲ್-ಡೈಸ್
+    ko: 발두아즈 주
+    lt: Uazos slėnis
+    lv: Valduāza
+    mr: व्हाल-द्वाज
+    ms: Val-d’Oise
+    nb: Val-d’Oise
+    nl: Val-d’Oise
+    pl: Val-d’Oise
+    pt: Val-d’Oise
+    ro: Val-d’Oise
+    si: වල් ඩි ඔයිස්
+    sk: Val-d’Oise
+    sl: Val-d’Oise
+    sq: Val-d’Oise
+    sr_Latn: Dolina Oaze
+    sr: Долина Оазе
+    sv: Val-d’Oise
+    sw: Val-d’Oise
+    ta: வால் -டி‘ஒய்ஸ்
+    te: వాల్-దిఓయిస్
+    th: จังหวัดวาล-ดวซ
+    tr: Val-d’Oise
+    uk: Валь-дʼУаз
+    ur: ول-دواز
+    vi: Val-d’Oise
+    yue_Hans: 华兹河谷
+    yue: 華茲河谷
+    zh: 瓦勒德瓦兹省
+    mk: Долина на Оаза
+  comments:
+  type: metropolitan_department
+'971':
+  name: Guadeloupe
+  code: '971'
+  unofficial_names:
+  geo:
+    latitude: 16.1730949
+    longitude: -61.4054001
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Guadeloupe
+    fr: Guadeloupe
+    ccp: "\U00011109\U0001112A\U00011120\U00011113\U0001112C\U00011123\U0001112F\U0001111B\U00011134"
+    af: Guadeloupe
+    am: ጓድሉፕ
+    ar: غوادلوب
+    az: Qvadelupa
+    be: Гвадэлупа
+    bg: Гваделупа
+    bn: গুয়াদলুপ
+    bs: Gvadalupe
+    ca: Guadalupe
+    ceb: Guadeloupe
+    cs: Guadeloupe
+    cy: Guadeloupe
+    da: Guadeloupe
+    de: Guadeloupe
+    el: Γουαδελούπη
+    es: Guadalupe
+    et: Guadeloupe
+    eu: Guadalupe
+    fa: جزیره گوادلوپ
+    fi: Guadeloupe
+    ga: Guadalúip
+    gl: Guadalupe
+    gu: ગ્વાડેલોપ
+    he: גוואדלופ
+    hi: गुआदेलूप
+    hr: Gvadalupa
+    hu: Guadeloupe
+    hy: Գվադելուպա
+    id: Guadeloupe
+    is: Gvadelúpeyjar
+    it: Guadalupa
+    ja: グアドループ
+    jv: Guadeloupe
+    ka: გვადელუპა
+    kk: Гваделупа
+    kn: ಗುಡೆಲೋಪ್
+    ko: 과들루프
+    ky: Гваделупа
+    lt: Gvadelupa
+    lv: Gvadelupa
+    mk: Гваделуп
+    ml: ഗ്വാദെലൂപ്
+    mr: ग्वादेलोप
+    ms: Guadeloupe
+    my: ဂွါဒလ်ကျွန်း
+    ne: ग्वाडलप
+    nl: Guadeloupe
+    pa: ਗੁਆਡਲੂਪ
+    pl: Gwadelupa
+    pt: Guadalupe
+    ro: Guadelupa
+    ru: Гваделупа
+    si: ගඩෙලුපේ
+    sk: Guadeloupe
+    sl: Gvadelup
+    sq: Guadalupa
+    sr: Гваделуп
+    sr_Latn: Gvadelup
+    sv: Guadeloupe
+    sw: Guadeloupe
+    ta: குவாதலூப்பே
+    te: గ్వాడెలోప్
+    th: กัวเดอลุป
+    tr: Guadeloupe
+    uk: Гваделупа
+    ur: گواڈیلوپ
+    uz: Gvadelupa
+    vi: Guadeloupe
+    yo: Guadeloupe
+    yo_BJ: Guadeloupe
+    yue: 瓜德羅普
+    yue_Hans: 瓜德罗普
+    zh: 瓜德羅普
+  comments:
+  type: overseas_departmental_collectivity
+'972':
+  name: Martinique
+  code: '972'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Martinique
+    ccp: "\U0001111F\U00011122\U00011134\U00011111\U00011128\U0001111A\U00011128\U00011107\U00011134"
+    ja: マルティニーク
+  comments:
+  type: overseas_unique_territorial_collectivity
+'973':
+  name: Guyane (française)
+  unofficial_names:
+  - La Guyane
+  translations:
+    en: French Guiana
+    fr: Guyane
+    ccp: "\U0001111C\U00011133\U00011122\U0001112C\U0001111A\U00011134\U0001110C\U00011134\U00011109\U0001112D\U0001112A\U00011120\U0001111A"
+    ja: フランス領ギアナ
+  code: '973'
+  type: overseas_unique_territorial_collectivity
+'974':
+  name: La Réunion
+  code: '974'
+  unofficial_names:
+  - Île Bourbon
+  geo:
+    latitude: 48.8499
+    longitude: 2.637
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: La Réunion
+    ccp: "\U00011123 \U00011122\U0001112C\U00011105\U0001112A\U0001111A\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    ja: レユニオン
+  comments:
+  type: overseas_departmental_collectivity
+'976':
+  name: Mayotte
+  code: '976'
+  unofficial_names:
+  geo:
+    latitude: -12.809645
+    longitude: 45.130741
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Mayotte
+    fr: Mayotte
+    ccp: "\U0001111F\U00011120\U0001112E\U00011116\U00011133\U00011120\U0001112C"
+    ja: マヨット
+  comments:
+  type: overseas_departmental_collectivity
+ARA:
+  name: Auvergne-Rhône-Alpes
+  code: ARA
+  unofficial_names:
+  - Auvergne-Rhône-Alpes
+  - Auvèrnhe-Ròse-Aups
+  - Ôvèrgne-Rôno-Arpes
+  geo:
+    latitude: 45.46035
+    longitude: 4.62416
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: أوفرن-رون ألب
+    az: Overn-Rona-Alp
+    be: Авернь — Рона-Альпы
+    bg: Оверн-Рона-Алпи
+    ca: Alvèrnia - Roine-Alps
+    cs: Auvergne-Rhône-Alpes
+    da: Auvergne-Rhône-Alpes
+    de: Auvergne-Rhône-Alpes
+    el: Ωβέρνη-Ρον-Αλπ
+    en: Auvergne-Rhône-Alpes
+    es: Auvernia-Ródano-Alpes
+    et: Auvergne-Rhône-Alpes
+    eu: Auvernia-Rhône-Alpeak
+    fa: اوورنی-رون-آلپ
+    fi: Auvergne-Rhône-Alpes
+    fr: Auvergne-Rhône-Alpes
+    gl: Auvernia-Ródano-Alpes
+    he: אוברן-רון-אלפ
+    hu: Auvergne-Rhône-Alpes
+    id: Auvergne-Rhône-Alpes
+    is: Auvergne-Rhône-Alpes
+    it: Alvernia-Rodano-Alpi
+    ja: オーヴェルニュ＝ローヌ＝アルプ地域圏
+    ko: 오베르뉴론알프
+    lt: Overnė-Rona-Alpės
+    lv: Overņa-Rona-Alpi
+    nl: Auvergne-Rhône-Alpes
+    oc: Auvèrnhe Ròse Aups
+    pl: Owernia-Rodan-Alpy
+    pt: Auvérnia-Ródano-Alpes
+    ro: Auverge-Ron-Alpi
+    ru: Овернь — Рона — Альпы
+    sk: Auvergne-Rhône-Alpes
+    sv: Auvergne-Rhône-Alpes
+    sw: Auvergne-Rhône-Alpes
+    th: แคว้นโอแวร์ญ-โรนาลป์
+    uk: Овернь-Рона-Альпи
+    ur: اوویغنئے-غون-آلپ
+    vi: Auvergne-Rhône-Alpes
+    zh: 奧文尼-隆-阿爾卑斯
+    cy: Auvergne-Rhône-Alpes
+    af: Auvergne-Rhône-Alpes
+    ceb: Auvergne-Rhône-Alpes
+    tr: Auvergne-Rhône-Alpes
+    sr_Latn: Overnja-Rona-Alpi
+    yue_Hans: 奥文尼－隆河－阿尔卑斯
+    hi: ऑवेरगन-रोन-एल्प्स
+    sq: Auvernia-Rhône-Alpes
+    ccp: "\U00011103\U00011127\U00011105\U0001112A\U0001111E\U00011122\U00011134-\U00011122\U0001112E\U0001111A\U00011134-\U00011103\U00011123\U00011134\U0001111B\U0001112C\U0001110C\U00011134"
+    sr: Оверња-Рона-Алпи
+    yue: 奧文尼－隆河－阿爾卑斯
+    nb: Auvergne-Rhône-Alpes
+    mk: Оверњ-Рона-Алпи
+    'no': Auvergne-Rhône-Alpes
+    bn: ওভের্ন-রোন-আল্প
+    hy: Օվրեն-Ռոն-Ալպեր
+    mn: Овернь-Рона-Альп
+    mr: ऑव्हेर्न्य-रोन-आल्प
+    sl: Auvergne-Rona-Alpe
+  comments:
+  type: metropolitan_region
+BFC:
+  name: Bourgogne-Franche-Comté
+  code: BFC
+  unofficial_names:
+  - Bourgogne-Franche-Comté
+  - Borgogne-Franche-Comtât
+  geo:
+    latitude: 47.278111
+    longitude: 4.99421
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    'no': Bourgogne-Franche-Comté
+    af: Boergondië-Franche-Comté
+    ar: تصنيف:بورغوني- فرانش كومتيه
+    az: Burqundiya—Franş—Konte
+    bg: Бургундия-Франш Конте
+    ca: Borgonya - Franc Comtat
+    ccp: "\U0001111D\U0001112F\U00011122\U00011134\U00011109\U00011127\U00011107\U00011134-\U0001111C\U00011133\U00011122\U0001111A\U00011134\U0001110C\U00011134-\U00011107\U00011127\U0001111F\U00011134\U00011111\U00011128"
+    ceb: Bourgogne-Franche-Comté
+    cs: Burgundsko-Franche-Comté
+    cy: Bourgogne-Franche-Comté
+    da: Bourgogne-Franche-Comté
+    de: Bourgogne-Franche-Comté
+    el: Βουργουνδία-Φρανς-Κοντέ
+    en: Burgundy-Franche-Comté
+    es: Borgoña-Franco Condado
+    eu: Borgoina-Franche-Comté
+    fa: بورگوین-فرانش-کنته
+    fi: Bourgogne-Franche-Comté
+    fr: Bourgogne-Franche-Comté
+    gl: Borgoña-Franco Condado
+    he: בורגון-פראנש-קונטה
+    hi: बोरगोग्न-फ़्रेन्च-कोम्टे
+    id: Bourgogne-Franche-Comté
+    it: Borgogna-Franca Contea
+    ja: ブルゴーニュ＝フランシュ＝コンテ地域圏
+    ko: 부르고뉴프랑슈콩테
+    lt: Burgundija–Franš Kontė
+    mn: Бургунд муж
+    nb: Bourgogne-Franche-Comté
+    nl: Bourgogne-Franche-Comté
+    pl: Burgundia-Franche-Comté
+    pt: Borgonha-Franco-Condado
+    ru: Бургундия — Франш-Конте
+    sk: Burgundsko-Franche-Comté
+    sq: Burgonja-Franche-Comté
+    sr_Latn: Burgundija-Franš-Konte
+    sr: Бургундија-Франш-Конте
+    sv: Bourgogne-Franche-Comté
+    th: แคว้นบูร์กอญ-ฟร็องช์-กงเต
+    uk: Бургундія-Франш-Конте
+    ur: بورغونئے-فغانش-کومتے
+    vi: Bourgogne-Franche-Comté
+    yue_Hans: 布尔冈-法朗殊-康堤
+    yue: 布爾岡-法朗殊-康堤
+    zh: 勃艮第-弗朗什-孔泰大區
+    bn: বুর্গোইন-ফ্রঁশ-কোঁতে
+    et: Bourgogne-Franche-Comté
+    is: Búrgund-Franche-Comté
+    lv: Burgundija—Franškontē
+    mk: Бургундија-Франш Конте
+    mr: बूर्गान्य-फ्रांश-कोंते
+    ro: Burgundia-Franche-Comté
+    tr: Bourgogne-Franche-Comté
+  comments:
+  type: metropolitan_region
+BL:
+  name: Saint-Barthélemy
+  code: BL
+  unofficial_names:
+  - St. Barthélemy
+  - Saint Barthélemy
+  translations:
+    en: Saint Barthélemy
+    fr: Saint Barthélemy
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134 \U0001111D\U00011122\U00011134\U00011117\U0001112C\U00011123\U0001112C\U0001111F\U00011128"
+    ja: サン・バルテルミー島
+  geo:
+    latitude: 17.9139222
+    longitude: -62.8338521
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  comments:
+  type: metropolitan_region
+BRE:
+  name: Bretagne
+  code: BRE
+  unofficial_names:
+  - Bretagne
+  - Breizh
+  geo:
+    latitude: 47.002789
+    longitude: 1.68221
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Bretagne
+    ar: بريتاني
+    az: Bretan
+    be: Брэтань
+    bg: Бретан
+    bn: ব্রতাইন
+    br: Breizh
+    ca: Bretanya
+    cs: Bretaň
+    da: Bretagne
+    de: Bretagne
+    el: Βρετάνη
+    en: Brittany
+    es: Bretaña
+    et: Bretagne
+    eu: Bretainia
+    fa: بریتانی (فرانسه)
+    fi: Bretagne
+    fr: Bretagne
+    gl: Bretaña - Breizh
+    he: ברטאן
+    hr: Bretanja
+    hu: Bretagne
+    hy: Բրետան
+    id: Bretagne
+    is: Bretanía
+    it: Bretagna
+    ja: ブルターニュ地域圏
+    ka: ბრეტანი
+    ko: 브르타뉴
+    lt: Bretanė
+    lv: Bretaņa
+    mn: Бретань муж
+    mr: ब्रत्तान्य
+    ms: Bretagne
+    nb: Bretagne
+    nl: Bretagne
+    pl: Bretania
+    pt: Bretanha
+    ro: Bretania
+    ru: Бретань
+    sk: Bretónsko
+    sl: Bretanja
+    sr: Бретања
+    sv: Bretagne
+    sw: Bretagne
+    th: แคว้นเบรอตาญ
+    tr: Bretonya
+    uk: Бретань
+    ur: بریتانیہ
+    vi: Bretagne
+    zh: 布列塔尼
+    am: ብረታኝ
+    bs: Bretanja
+    ccp: "\U0001111D\U00011133\U00011122\U00011111\U0001112C\U00011107\U00011134"
+    ceb: Bretagne
+    cy: Bretagne
+    jv: Bretagne
+    mk: Бретања
+    'no': Bretagne
+    sq: Bretagne
+    sr_Latn: Bretanja
+    uz: Bretan
+    yue: 布禮斯大區
+    yue_Hans: 布礼斯大区
+    ga: an Bhriotáin
+    ky: Бретан
+  type: metropolitan_region
+CP:
+  name: Clipperton
+  code: CP
+  unofficial_names:
+  - Clipperton Island
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Clipperton Island
+    ccp: "\U00011107\U00011133\U00011123\U00011128\U0001111B\U00011122\U00011134\U00011111\U00011127\U0001111A\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ja: クリッパートン島
+  comments:
+  type: metropolitan_region
+CVL:
+  name: Centre-Val de Loire
+  unofficial_names:
+  - Centre-Val de Loire
+  - Centre Region
+  - Centre-Loire Valley
+  translations:
+    af: Centre-Val de Loire
+    ar: سانتر-فال دو لوار
+    az: Sentr
+    be: Рэгіён Цэнтр
+    bg: Център-Вал дьо Лоар
+    bn: সঁত্র্‌
+    ca: Centre
+    cs: Centre
+    da: Centre
+    de: Centre-Val de Loire
+    el: Κεντρική Περιοχή
+    en: Centre-Val de Loire
+    es: Centro-Valle de Loira
+    et: Keskpiirkond
+    eu: Centre
+    fa: سانتر
+    fi: Centre
+    fr: Centre-Val de Loire
+    gl: Centro
+    he: סאנטר-עמק הלואר
+    hr: Centre
+    hu: Centre-Val de Loire
+    id: Centre, Perancis
+    is: Centre
+    it: Centro-Valle della Loira
+    ja: サントル地域圏
+    ka: ცენტრი
+    ko: 상트르
+    lt: Centras
+    lv: Centrs
+    mr: साँत्र
+    ms: Centre
+    nb: Centre
+    nl: Centre-Val de Loire
+    pl: Region Centralny-Dolina Loary
+    pt: Centro-Vale do Loire
+    ro: Centru
+    ru: Центральная Долина Луары
+    sk: Centre
+    sl: Center, Francija
+    sv: Centre
+    sw: Mkoa wa Centre
+    th: แคว้นซ็องทร์-วาลเดอลัวร์
+    tr: Merkez
+    uk: Центр
+    ur: سانتر-وال دو لوار
+    vi: Centre
+    zh: 中央
+    bs: Centre
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134-\U0001111E\U00011127\U00011123\U00011134
+      \U00011113\U0001112C \U00011123\U00011130\U00011122\U0001112C"
+    ceb: Centre
+    cy: Centre
+    hi: सेंटर-वैल दे लोयर
+    jv: Centre
+    mk: Центар-Долина на Лоара
+    'no': Centre
+    pa: ਸੌਂਤਰ
+    sq: Centre
+    yue: 中央－盧華爾山谷大區
+    yue_Hans: 中央－卢华尔山谷大区
+    am: ሶንትር-ቫል ደ ሏር
+    hy: Լուարի Կենտրոնական Հովիտ
+    mn: Төв-Вал де Луар
+  geo:
+    latitude: 47.64405
+    longitude: 1.59046
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  code: CVL
+  type: metropolitan_region
+GES:
+  name: Grand Est
+  code: GES
+  unofficial_names:
+  - Grand Est
+  geo:
+    latitude: 49.92086
+    longitude: 4.41123
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Grand Est
+    ar: غراند إيست
+    bg: Гранд Ест
+    ca: Gran Est
+    cs: Grand Est
+    da: Alsace-Champagne-Ardenne-Lorraine
+    de: der Große Osten
+    el: Αλσατία-Καμπανία-Αρδέννες-Λωρραίνη
+    en: Grand-Est
+    es: Gran Este
+    eu: Grand Est
+    fa: آلزاس-شامپاین-آردن-لورن
+    fi: Alsace-Champagne-Ardenne-Lorraine
+    fr: Grand Est
+    gl: Alsacia-Champaña-Ardenas-Lorena
+    he: גראנד אסט
+    id: Timur Raya
+    it: Grand Est
+    ja: グラン・テスト地域圏
+    ko: 그랑테스트
+    lb: de Grouss Osten
+    nl: Grand Est
+    pl: Grand Est
+    pt: Alsácia-Champanha-Ardenas-Lorena
+    ru: Гранд-Эст
+    sk: Alsasko-Champagne-Ardenne-Lotrinsko
+    sr: Гран ест
+    sv: Alsace-Champagne-Ardenne-Lorraine
+    th: แคว้นกร็องแต็สต์
+    uk: Гранд-Ест
+    ur: گرایت است
+    zh: 阿爾薩斯-香檳-阿登-洛林
+    cy: Dwyrain Mawr
+    ceb: Grand Est
+    tr: Grand Est
+    sr_Latn: Gran est
+    vi: Grand Est
+    yue_Hans: 大东部
+    hi: ग्रांड एस्ट
+    sq: Lindja e madhe
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134-\U00011103\U00011128\U0001110C\U00011134\U00011111\U00011134"
+    ga: Alsace-Champagne-Ardenne-Lorraine
+    hy: Գրանդ Էստ
+    yue: 大東部
+    az: Qrand Est
+    nb: Grand Est
+    be: Гранд Эст
+    mk: Голем Исток
+    'no': Grand Est
+    bn: গ্রঁতেস্ত
+    et: Grand Est
+    hr: Grand Est
+    is: Grand Est
+    lt: Grand Estas
+    lv: Grandesta
+    mn: Гранд Эст
+    mr: ग्रांद एस्त
+    ro: Grand Est
+    sl: Grand Est
+  comments:
+  type: metropolitan_region
+HDF:
+  name: Hauts-de-France
+  code: HDF
+  unofficial_names:
+  - Hauts-de-France
+  geo:
+    latitude:
+    longitude: 2.81877
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Hauts-de-France
+    bg: О дьо Франс
+    ca: Alts de França
+    cs: Hauts-de-France
+    da: Nord-Pas-de-Calais-Picardie
+    de: Hauts-de-France
+    el: Ω-ντε-Φρανς
+    en: Hauts-de-France
+    es: Hauts-de-France
+    eu: Hauts-de-France
+    fa: نور-پا-دو-کاله-پیکاردی
+    fi: Nord-Pas-de-Calais-Picardie
+    fr: Hauts-de-France
+    gl: Altos de Francia
+    he: או-דה-פראנס
+    hu: Felső-Franciaország
+    id: Nord-Pas-de-Calais-Picardie
+    it: Alta Francia
+    ja: オー＝ド＝フランス地域圏
+    ko: 오드프랑스
+    nb: Hauts-de-France
+    nl: Opper-Frankrijk
+    pl: Hauts-de-France
+    pt: Norte-Passo de Calais-Picardia
+    ru: О-де-Франс
+    sk: Nord-Pas-de-Calais-Pikardia
+    sv: Nord-Pas-de-Calais-Picardie
+    th: แคว้นโอดฟร็องส์
+    uk: О-де-Франс
+    ur: او دے فرانس
+    zh: 北-加來-皮卡第
+    ceb: Hauts-de-France
+    tr: Hauts-de-France
+    sr_Latn: O de Frans
+    lt: Aukštutinė Prancūzija
+    vi: Hauts-de-France
+    yue_Hans: 上法兰西
+    hi: हाउत्स-दे-फ्रांस
+    sq: Epërmet e Francës
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U00011113\U0001112C-\U0001111C\U00011133\U00011122\U0001111A\U00011134\U0001110C\U00011134"
+    sr: О де Франс
+    hy: Օ-դը-Ֆրանս
+    yue: 上法蘭西
+    az: O-de-Frans
+    be: рэгіён О-дэ-Франс
+    mk: Горна Франција
+    'no': Hauts-de-France
+    cy: Nord-Pas-de-Calais-Picardie
+    ar: أوت دو فرانس
+    bn: ও-দ্য-ফ্রঁস
+    et: Hauts-de-France
+    is: Hauts-de-France
+    lv: Odefransa
+    mn: О-де-Франс
+    mr: ऑत-दा-फ्रान्स
+    ro: Hauts-de-France
+  comments:
+  type: metropolitan_region
+IDF:
+  name: Île-de-France
+  unofficial_names:
+  - Île-de-France
+  - Région Parisienne
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Île-de-France
+    ar: إيل دو فرانس
+    az: İl de Frans
+    be: Іль-дэ-Франс
+    bg: Ил дьо Франс
+    bn: ইল্‌-দ্য-ফ্রঁস
+    ca: Illa de França
+    cs: Île-de-France
+    da: Île-de-France
+    de: Île-de-France
+    el: Ιλ-ντε-Φρανς
+    en: Île-de-France
+    es: Isla de Francia
+    et: Île-de-France
+    eu: Île-de-France
+    fa: ایل-دو-فرانس
+    fi: Île-de-France
+    fr: Île-de-France
+    gl: Illa de Francia
+    he: איל-דה-פראנס
+    hi: इल-दा-फ़्रान्स
+    hr: Île-de-France
+    hu: Île-de-France
+    id: Île-de-France
+    is: Île-de-France
+    it: Île-de-France
+    ja: イル＝ド＝フランス地域圏
+    ka: ილ-დე-ფრანსი
+    km: អ៊ីលដឺហ្រ្វែន
+    ko: 일드프랑스
+    lt: Il de Fransas
+    lv: Ildefransa
+    mn: Иль-де-Франс
+    mr: इल-दा-फ्रान्स
+    ms: Île-de-France
+    nb: Île-de-France
+    nl: Île-de-France
+    pl: Île-de-France
+    pt: Ilha de França
+    ro: Île-de-France
+    ru: Иль-де-Франс
+    sk: Île-de-France
+    sl: Île-de-France
+    sv: Île-de-France
+    sw: Île-de-France
+    ta: இல் ட பிரான்சு
+    th: แคว้นอีล-เดอ-ฟร็องส์
+    tr: Île-de-France
+    uk: Іль-де-Франс
+    ur: ایل-دو-فرانس
+    vi: Île-de-France
+    zh: 法兰西岛
+    cy: Île-de-France
+    ceb: Île-de-France
+    yue_Hans: 法兰西岛大区
+    jv: Île-de-France
+    sq: Île-de-France
+    ccp: "\U00011103\U0001112D\U00011123\U0001112C-\U00011113\U0001112C-\U0001111C\U00011133\U00011122\U0001111A\U00011134\U0001110C\U00011134"
+    ga: Île-de-France
+    hy: Իլ-դը-Ֆրանս
+    pa: ਫ਼ਰਾਂਸ ਦਾ ਟਾਪੂ
+    yue: 法蘭西島大區
+    am: ኢል-ደ-ፍራንስ
+    uz: Il-de-frans
+    bs: Île-de-France
+    mk: Ил де Франс
+    'no': Île-de-France
+  comments:
+  code: IDF
+  type: metropolitan_region
+MF:
+  name: Saint-Martin
+  code: MF
+  unofficial_names:
+  - St. Martin
+  - Saint Martin
+  translations:
+    en: St. Martin
+    fr: Saint-Martin
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134 \U0001111F\U00011122\U00011134\U00011111\U00011128\U0001111A\U00011134"
+    ja: サン・マルタン
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  comments:
+  type: metropolitan_region
+NAQ:
+  name: Nouvelle-Aquitaine
+  code: NAQ
+  unofficial_names:
+  - Nouvelle-Aquitaine
+  geo:
+    latitude: 45.7087
+    longitude: 0.6269
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Nieu-Akwitanië
+    be: Новая Аквітанія
+    bg: Нова Аквитания
+    ca: Nova Aquitània
+    cs: Nová Akvitánie
+    da: Aquitaine-Limousin-Poitou-Charentes
+    de: Nouvelle-Aquitaine
+    en: Nouvelle-Aquitaine
+    es: Nueva Aquitania
+    eu: Akitania Berria
+    fa: آکیتن-لیموزن-پواتو-شرانت
+    fi: Aquitaine-Limousin-Poitou-Charentes
+    fr: Nouvelle-Aquitaine
+    gl: Aquitania-Lemosín-Poitou-Charentes
+    he: אקיטן החדשה
+    hu: Új-Aquitania
+    id: Aquitaine-Baru
+    it: Nuova Aquitania
+    ja: ヌーヴェル＝アキテーヌ地域圏
+    ko: 누벨아키텐
+    nl: Nouvelle-Aquitaine
+    oc: Nòva Aquitània
+    pl: Nowa Akwitania
+    pt: Nova-Aquitânia
+    ru: Новая Аквитания
+    sk: Nové Akvitánsko
+    sv: Aquitaine-Limousin-Poitou-Charentes
+    th: แคว้นนูแวลากีแตน
+    uk: Нова Аквітанія
+    ur: نوویل-ایکیتین
+    zh: 阿基坦-利木森-普瓦圖-夏朗特
+    lv: Jaunakvitānija
+    cy: Nouvelle-Aquitaine
+    ceb: Nouvelle-Aquitaine
+    ar: آكيتن جديد
+    tr: Nouvelle-Aquitaine
+    sr_Latn: Nova Akvitanija
+    vi: Nouvelle-Aquitaine
+    yue_Hans: 新阿杰坦
+    el: Νέα Ακουιτανία
+    hi: नॉवेले एक्विटाइन
+    sq: Akuitania e Re
+    ccp: "\U0001111A\U0001112F\U0001111E\U0001112C\U00011123\U0001112C-\U00011103\U00011127\U00011107\U0001112D\U0001112A\U00011111\U0001112C\U0001112D\U0001111A\U00011134"
+    sr: Нова Аквитанија
+    hy: Նոր Ակվիտանիա
+    is: Nýja-Akvitanía
+    hr: Nova Akvitanija
+    yue: 新阿傑坦
+    az: Akvitaniya-Limuzen-Puatu-Şaranta
+    nb: Nouvelle-Aquitaine
+    uz: Yangi Akvitaniya
+    mk: Нова Аквитанија
+    'no': Nouvelle-Aquitaine
+    am: ኑቨል-አኪተን
+    bn: নুভেল-আকিতেন
+    ga: Nouvelle-Aquitaine
+    lt: Naujoji Akvitanija
+    mn: Нувел-Аквитани
+    mr: नुव्हेल-अॅकितेन
+    ro: Nouvelle-Aquitaine
+    sl: Nova Akvitanija
+  comments:
+  type: metropolitan_region
+NC:
+  name: New Caledonia
+  code: NC
+  unofficial_names: Nouvelle-Calédonie
+  translations:
+    en: New Caledonia
+    fr: Nouvelle-Calédonie
+    ccp: "\U0001111A\U00011131 \U00011107\U00011127\U00011123\U0001112C\U00011113\U0001112E\U0001111A\U00011128\U00011120"
+    ja: ニューカレドニア
+  geo:
+    latitude: 35.7595731
+    longitude: -79.01929969999999
+    min_latitude: 33.8409689
+    min_longitude: -84.32186899999999
+    max_latitude: 36.5881568
+    max_longitude: -75.4599515
+  comments:
+  type: metropolitan_region
+NOR:
+  name: Normandie
+  code: NOR
+  unofficial_names:
+  - Normandie
+  - Normaundie
+  geo:
+    latitude: 48.8499
+    longitude: 2.637
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Normandië
+    ar: نورماندي
+    az: Normandiya
+    be: Рэгіён Нармандыя
+    bg: Нормандия
+    ca: Normandia
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U0001111F\U0001111A\U00011134\U00011113\U0001112D"
+    cs: Normandie
+    cy: Normandi
+    da: Normandie
+    de: Normandie
+    el: Νορμανδία
+    en: Normandie
+    es: Normandía
+    eu: Normandia
+    fa: نرماندی
+    fi: Normandia
+    fr: Normandie
+    gl: Normandía
+    he: נורמנדי
+    hi: नोर्मंडी
+    it: Normandia
+    ja: ノルマンディー地域圏
+    ka: ნორმანდია
+    ko: 노르망디
+    mk: Нормандија
+    nl: Normandië
+    pl: Normandia
+    pt: Normandia
+    ru: Нормандия
+    sk: Normandia
+    sq: Normandia
+    sv: Normandie (region)
+    th: แคว้นนอร์ม็องดี
+    tr: Normandiya
+    uk: Нормандія
+    ur: نورمینڈی
+    vi: Normandie
+    yue_Hans: 诺曼第
+    yue: 諾曼第
+    zh: 诺曼底大区
+    bn: নরমঁদি
+    ga: An Normainn
+    ha: Normandie
+    ha_NE: Normandie
+    hy: Նորմանդիա
+    mn: Норманди
+    mr: नॉर्मंदी (प्रशासकीय प्रदेश)
+    ro: Normandia (regiune administrativă)
+    sl: Normandija
+    ta: நார்மாண்டி
+  type: metropolitan_region
+OCC:
+  name: Occitanie
+  code: OCC
+  unofficial_names:
+  - Occitanie
+  - Occitania
+  - Occitània
+  geo:
+    latitude: 43.8927
+    longitude: 3.2828
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Oksitanië
+    ar: الأوكيتانية
+    bg: Окситания
+    ca: Occitània
+    da: Languedoc-Roussillon-Midi-Pyrénées
+    de: Okzitanien
+    en: Occitanie
+    es: Occitania
+    eu: Okzitania
+    fa: لانگداک-روسیون-پیرنه میانه
+    fi: Languedoc-Roussillon-Midi-Pyrénées
+    fr: Occitanie
+    he: אוקסיטניה
+    it: Occitania
+    ja: オクシタニー地域圏
+    ko: 옥시타니
+    oc: Occitània
+    nl: Occitanie
+    pt: Occitânia
+    ru: Окситания
+    sv: Languedoc-Roussillon-Midi-Pyrénées
+    th: แคว้นอ็อกซีตานี
+    ur: اوکیتانی
+    zh: 朗格多克-魯西永-南部-庇里牛斯
+    cy: Ocsitania
+    ceb: Occitanie
+    tr: Occitanie
+    sr_Latn: Oksitanija
+    vi: Occitanie
+    pl: Oksytania
+    yue_Hans: 奥斯坦尼
+    el: Οξιτανία
+    hi: ओसीटानिया
+    sq: Oksitania
+    ccp: "\U00011103\U00011127\U00011107\U00011134\U00011125\U00011128\U00011111\U0001111A\U0001112D"
+    sr: Окситанија
+    hy: Օկսիտանիա
+    gl: Occitania
+    id: Ositania
+    sk: Occitánia
+    uk: Окситанія
+    cs: Okcitánie
+    yue: 奧斯坦尼
+    az: Lanqedok-Russillyon-Midi-Pirenei
+    nb: Occitanie
+    be: рэгіён Аксітанія
+    'no': Occitanie
+    bn: অক্সিতানি
+    ga: An Ocsatáin
+    ha: Occitanie
+    ha_NE: Occitanie
+    hu: Okcitánia
+    is: Occitanie
+    lt: Oksitanija (regionas)
+    lv: Oksitānija
+    mk: Окситанија
+    mn: Окситани (муж)
+    mr: ऑक्सितानी
+    ro: Occitania
+    sl: Oksitanija
+  comments:
+  type: metropolitan_region
+PAC:
+  unofficial_names:
+  - Provence-Alpes-Côte d'Azur
+  - PACA
+  - Région Sud
+  translations:
+    'no': Provence-Alpes-Côte d’Azur
+    af: Provence-Alpes-Côte d’Azur
+    ar: بروفنس ألب كوت دازور
+    az: Provans-Alp-Kot d’Azur
+    be: Праванс-Альпы-Лазурны бераг
+    bg: Прованс-Алпи-Лазурен бряг
+    bn: প্রোভঁস-আল্প-কোত দাজ্যুর
+    ca: Provença – Alps – Costa Blava
+    ccp: "\U0001111B\U00011133\U00011122\U00011127\U0001111E\U0001112C\U0001111A\U00011134\U0001110C\U00011134-\U00011103\U00011127\U00011118\U00011134\U0001111B\U0001112C\U0001110C\U00011134-\U00011107\U0001112E\U00011111\U0001112C-\U00011113\U00011128‘\U00011103\U00011127\U0001110F\U0001112A\U00011122\U00011134"
+    ceb: Provence-Alpes-Côte d’Azur
+    cs: Provence-Alpes-Côte d’Azur
+    cy: Provence-Alpes-Côte d’Azur
+    da: Provence-Alpes-Côte d’Azur
+    de: Provence-Alpes-Côte d’Azur
+    el: Προβηγκία-Άλπεις-Κυανή Ακτή
+    en: Provence-Alpes-Côte-d’Azur
+    es: Provenza-Alpes-Costa Azul
+    et: Provence-Alpes-Côte d’Azur
+    eu: Provence-Alpes-Côte d’Azur
+    fa: پروانس آلپ‌-کوت دازور
+    fi: Provence-Alpes-Côte d’Azur
+    fr: Provence-Alpes-Côte d’Azur
+    ga: Provence-Alpes-Côte d’Azur
+    gl: Provenza-Alpes-Costa Azul
+    he: פרובאנס-אלפ-קוט ד׳אזור
+    hi: प्रोवेंस-एल्पस-कोट डी‘आज़ुर
+    hr: Provansa-Alpe-Azurna obala
+    hu: Provence-Alpes-Côte d’Azur
+    hy: Պրովանս-Ալպեր-Լազուր ափ
+    id: Provence-Alpes-Côte d’Azur
+    it: Provenza-Alpi-Costa Azzurra
+    ja: プロヴァンス＝アルプ＝コート・ダジュール地域圏
+    jv: Provence-Alpes-Côte d’Azur
+    ka: პროვანსი-ალპები-ლაჟვარდოვანი ნაპირი
+    ko: 프로방스알프코트다쥐르
+    lt: Provansas-Alpės-Žydrasis Krantas
+    lv: Provansa-Alpi-Azūra Krasts
+    mk: Прованса-Алпи-Азурен Брег
+    mr: प्रोव्हाँस-आल्प-कोत देझ्युर
+    ms: Provence-Alpes-Côte d’Azur
+    nb: Provence-Alpes-Côte d’Azur
+    nl: Provence-Alpes-Côte d’Azur
+    oc: Provença-Aups-Còsta d'Azur
+    pa: ਪ੍ਰੋਵਾਂਸ-ਆਲਪ-ਅਸਮਾਨੀ ਤਟ
+    pl: Prowansja-Alpy-Lazurowe Wybrzeże
+    pt: Provença-Alpes-Costa Azul
+    ro: Provența-Alpi-Coasta de Azur
+    ru: Прованс — Альпы — Лазурный Берег
+    sk: Provence-Alpes-Côte d’Azur
+    sl: Provansa-Alpe-Azurna obala
+    sq: Provence-Alpes-Côte d’Azur
+    sr_Latn: Provansa-Alpi-Azurna obala
+    sr: Прованса-Алпи-Азурна обала
+    sv: Provence-Alpes-Côte d’Azur
+    sw: Provence-Alpes-Côte d’Azur
+    th: แคว้นพรอว็องซาลป์-โกตดาซูร์
+    tr: Provence-Alpes-Côte d’Azur
+    uk: Прованс-Альпи-Лазурний берег
+    ur: پروانس-آلپ-کوت دازور
+    vi: Provence-Alpes-Côte d’Azur
+    yue_Hans: 普罗旺斯-阿尔卑斯-蔚蓝海岸
+    yue: 普羅旺斯-阿爾卑斯-蔚藍海岸
+    zh: 普罗旺斯-阿尔卑斯-蓝色海岸
+    is: Provence-Alpes-Côte d’Azur
+    mn: Прованс-Альп-Номин эрэг
+  geo:
+    latitude: 43.9352
+    longitude: 6.0679
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  name: Provence-Alpes-Côte d'Azur
+  code: PAC
+  type: metropolitan_region
+PDL:
+  name: Pays de la Loire
+  code: PDL
+  unofficial_names:
+  - Pays de la Loire
+  - Broioù al Liger
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Pays-de-la-Loire
+    af: Pays de la Loire
+    ar: وادي اللوار
+    az: Pei dö lə Luar
+    be: Землі Луары
+    bg: Пеи дьо ла Лоар
+    bn: পেই দ্য লা লোয়ার
+    ca: País del Loira
+    cs: Pays de la Loire
+    da: Pays de la Loire
+    de: Pays de la Loire
+    el: Χώρα του Λίγηρα
+    es: Países del Loira
+    et: Pays de la Loire
+    eu: Pays de la Loire
+    fa: پیی دو لا لوآر
+    fi: Pays de la Loire
+    fr: Pays de la Loire
+    gl: País do Loira
+    he: פיי דה לה לואר
+    hr: Regija Loire
+    hu: Loire mente
+    hy: Լուարայի երկիր
+    id: Pays de la Loire
+    it: Paesi della Loira
+    ja: ペイ・ド・ラ・ロワール地域圏
+    ka: ლუარის რეგიონი
+    ko: 페이드라루아르
+    lt: Luaros kraštas
+    lv: Luāra
+    mr: पेई दा ला लोआर
+    ms: Pays de la Loire
+    nb: Pays de la Loire
+    nl: Pays de la Loire
+    pl: Kraj Loary
+    pt: País do Loire
+    ro: Pays de la Loire
+    ru: Земли Луары
+    sk: Pays-de-la-Loire
+    sl: Loire
+    sr: Регион Лоара
+    sv: Pays de la Loire
+    sw: Pays de la Loire
+    th: แคว้นเปอีเดอลาลัวร์
+    tr: Pays de la Loire
+    uk: Пеї-де-ла-Луар
+    ur: پئی دو لا لوار
+    vi: Pays de la Loire
+    zh: 卢瓦尔河地区
+    cy: Pays de la Loire
+    ceb: Pays-de-la-Loire
+    sr_Latn: Region Loara
+    yue_Hans: 卢华尔河区
+    hi: पेस़ दे ला लोइर
+    jv: Pays de la Loire
+    sq: Pays de la Loire
+    ccp: "\U0001111B\U0001112C\U0001112D\U0001110C\U00011134-\U00011113\U0001112C-\U00011123-\U00011123\U00011130\U00011122\U00011134"
+    ga: Pays de la Loire
+    pa: ਲੋਆਰ ਦੀ ਧਰਤੀ
+    yue: 盧華爾河區
+    mk: Лоарски Крај
+    'no': Pays de la Loire
+    ha: Pays de la Loire
+    ha_NE: Pays de la Loire
+    is: Pays de la Loire
+    mn: Пеи де ла Луар
+  comments:
+  type: metropolitan_region
+PF:
+  name: Polynésie française
+  code: PF
+  unofficial_names:
+  - Polynésie française
+  - La Polynésie française
+  translations:
+    en: French Polynesia
+    fr: Polynésie française
+    ccp: "\U0001111C\U00011133\U00011122\U0001112C\U0001111A\U00011134\U0001110C\U00011134
+      \U0001111B\U00011127\U00011123\U00011128\U0001111A\U0001112C\U00011125\U00011128\U00011120"
+    ja: フランス領ポリネシア
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  comments:
+  type: overseas_collectivity
+PM:
+  name: Saint-Pierre-et-Miquelon
+  code: PM
+  unofficial_names:
+  - Saint Pierre et Miquelon
+  - St. Pierre and Miquelon
+  translations:
+    en: St. Pierre & Miquelon
+    fr: Saint Pierre et Miquelon
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134 \U0001111B\U00011128\U00011122\U0001112C
+      & \U0001111F\U00011128\U00011107\U0001112D\U0001112A\U00011123\U00011127\U0001111A\U00011134"
+    ja: サンピエール島・ミクロン島
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  comments:
+  type: overseas_collectivity
+TF:
+  name: Terres Australes Françaises
+  unofficial_names: Terres Australes Françaises
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: French Southern Territories
+    fr: Terres australes et antarctiques françaises
+    ccp: "\U0001111B\U00011133\U00011122\U0001112C\U0001111A\U00011134\U0001110C\U00011134
+      \U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C
+      \U00011122\U0001112C\U0001110E\U00011133\U00011120\U00011127\U0001111A\U00011128"
+    ja: フランス領南方・南極地域
+  comments:
+  code: TF
+  type: overseas_collectivity
+WF:
+  name: Wallis-et-Futuna
+  unofficial_names:
+  - Wallis et Futuna
+  - Wallis and Futuna
+  translations:
+    en: Wallis & Futuna
+    ccp: "\U00011124\U00011123\U00011133\U00011126\U00011128\U0001110C\U00011134 &
+      \U0001111C\U00011128\U00011105\U0001112A\U00011111\U0001111A"
+    ja: ウォリス・フツナ
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  comments:
+  code: WF
+  type: overseas_collectivity

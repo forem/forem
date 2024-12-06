@@ -1,0 +1,2 @@
+--no-private
+--exclude lib/unaccent/accentmap.rb

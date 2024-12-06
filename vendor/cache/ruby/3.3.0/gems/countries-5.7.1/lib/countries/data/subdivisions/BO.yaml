@@ -1,0 +1,624 @@
+---
+B:
+  name: El Beni
+  code: B
+  unofficial_names: El Beni
+  geo:
+    latitude: -14.3782747
+    longitude: -65.0957792
+    min_latitude: -16.4470401
+    min_longitude: -67.54975999999999
+    max_latitude: -10.400086
+    max_longitude: -61.50248
+  translations:
+    en: Beni
+    ar: محافظة بني
+    bg: Бени
+    bn: বেনি বিভাগ
+    ca: Departament de Beni
+    da: Beni
+    de: Departamento Beni
+    el: Μπένι
+    es: Departamento del Beni
+    et: El Beni departemang
+    eu: Beni
+    fa: بنی
+    fi: Beni
+    fr: département de Beni
+    gl: Departamento del Beni
+    gu: બેની વિભાગ
+    hi: बेनी विभाग
+    hr: Beni
+    id: Departemen Beni
+    it: dipartimento di Beni
+    ja: ベニ県
+    ka: ბენის დეპარტამენტი
+    kn: ಬೆನಿ ಇಲಾಖೆ
+    ko: 베니 주
+    lt: Beni departamentas
+    lv: Beni departaments
+    mr: बेनी विभाग
+    ms: Beni
+    nb: Beni
+    nl: Beni
+    pl: Beni
+    pt: Beni
+    ro: Beni
+    ru: Бени
+    si: බෙනි දෙපාර්තමේන්තුව
+    sr: Бени
+    sv: Beni
+    sw: Mkoa wa Beni
+    ta: பெனி துறை
+    te: బేని డిపార్ట్మెంట్
+    th: เอลเบนิ
+    tr: Beni Departmanı
+    uk: Бені
+    ur: محکمہ بینی
+    vi: Khu vực hành chính Beni
+    zh: 贝尼省
+    ceb: El Beni
+    sr_Latn: Beni
+    ccp: "\U0001111D\U0001112C\U0001111A\U00011128"
+    mk: Бени
+    'no': Beni
+    he: מחוז בני
+    yue: 啤尼省
+    yue_Hans: 啤尼省
+  comments:
+  type: department
+C:
+  name: Cochabamba
+  code: C
+  unofficial_names: Cochabamba
+  geo:
+    latitude: -17.383333
+    longitude: -66.166667
+    min_latitude: -17.4648665
+    min_longitude: -66.2222293
+    max_latitude: -17.3232136
+    max_longitude: -66.10552179999999
+  translations:
+    en: Cochabamba
+    ar: إدارة كوتشابامبا
+    bg: Кочабамба
+    bn: কোচাবম্বা বিভাগ
+    ca: Departament de Cochabamba
+    da: Cochabamba
+    de: Cochabamba
+    el: Κοτσαμπάμπα
+    es: Departamento de Cochabamba
+    et: Cochabamba departemang
+    eu: Cochabambako departamendua
+    fi: Cochabamba
+    fr: département de Cochabamba
+    gl: Departamento de Cochabamba
+    gu: કોચબંબા વિભાગ
+    hi: कोचाबाम्बा विभाग
+    hr: Cochabamba
+    id: Departemen Cochabamba
+    it: dipartimento di Cochabamba
+    ja: コチャバンバ県
+    ka: კოჩაბამბის დეპარტამენტი
+    kn: ಕೊಚಬಂಬಾ ಇಲಾಖೆ
+    ko: 코차밤바 주
+    lt: Kočabambos departamentas
+    lv: Kočabambas departaments
+    mr: कोचाबम्बा विभाग
+    ms: Cochabamba Department
+    nb: Cochabamba
+    nl: Cochabamba
+    pl: Cochabamba
+    pt: Cochabamba
+    ro: Cochabamba
+    ru: Кочабамба
+    si: කොචබම්බා දෙපාර්තමේන්තුව
+    sr: Кочабамба
+    sv: Cochabamba
+    sw: Mkoa wa Cochabamba
+    ta: கொச்சபம்பா துறை
+    te: కోచబాంబా డిపార్ట్మెంట్
+    th: รัฐนิวบรันสวิก
+    tr: Cochabamba Departmanı
+    uk: Кочабамба
+    ur: محکمہ کوچابامبا
+    vi: Khu vực hành chính Cochabamba
+    ceb: Departamento de Cochabamba
+    sr_Latn: Kočabamba
+    zh: 科恰班巴省
+    fa: شهرستان کوچوبامبا
+    ccp: "\U00011107\U00011127\U0001110C\U0001111D\U0001111F\U00011134\U0001111D"
+    mk: Кочабамба
+    'no': Cochabamba
+    az: Koçabamba
+    be: дэпартамент Качабамба
+    he: מחוז קוצ׳במבה
+    yue: 哥茶班巴省
+    yue_Hans: 哥茶班巴省
+  comments:
+  type: department
+H:
+  name: Chuquisaca
+  code: H
+  unofficial_names: Chuquisaca
+  geo:
+    latitude: -20.0249144
+    longitude: -64.1478236
+    min_latitude: -21.4982254
+    min_longitude: -65.69594599999999
+    max_latitude: -18.3504239
+    max_longitude: -62.19985999999999
+  translations:
+    en: Chuquisaca
+    ar: إدارة شوكيساكا
+    bg: Чукисака
+    bn: চুকুইসাকা বিভাগ
+    ca: Departament de Chuquisaca
+    da: Chuquisaca
+    de: Chuquisaca
+    el: Τσουκουισάκα
+    es: Departamento de Chuquisaca
+    eu: Chuquisaca
+    fi: Chuquisaca
+    fr: département de Chuquisaca
+    gl: Departamento de Chuquisaca
+    gu: ચુકુસકા વિભાગ
+    hi: चुकिसाका विभाग
+    hr: Chuquisaca
+    id: Departemen Chuquisaca
+    it: dipartimento di Chuquisaca
+    ja: チュキサカ県
+    ka: ჩუკისაკის დეპარტამენტი
+    kn: ಚುಕ್ವಿಸ್ಕಾ ಇಲಾಖೆ
+    ko: 추키사카 주
+    lt: Čukisakos departamentas
+    lv: Čukisakas departaments
+    mr: चक्कीसास्क विभाग
+    ms: Chuquisaca
+    nb: Chuquisaca
+    nl: Chuquisaca
+    pl: Chuquisaca
+    pt: Chuquisaca
+    ro: Chuquisaca
+    ru: Чукисака
+    si: චුකුඉසකා දෙපාර්තමේන්තුව
+    sr: Чукисака
+    sv: Chuquisaca
+    sw: Mkoa wa Chuquisaca
+    ta: சுகுய்சாகா துறை
+    te: చుక్విసాకా డిపార్ట్మెంట్
+    th: เมืองชูควิซากา
+    tr: Chuquisaca Departmanı
+    uk: Чукісака
+    ur: محکمہ چوکویساکا
+    vi: Khu vực hành chính Chuquisaca
+    ceb: Departamento de Chuquisaca
+    sr_Latn: Čukisaka
+    zh: 丘基萨卡省
+    fa: شهرستان چوکیساکا
+    ccp: "\U00011125\U00011107\U0001112D\U0001112A\U00011125\U00011107"
+    mk: Чукисака
+    'no': Chuquisaca
+    be: дэпартамент Чукісака
+    he: מחוז צ׳וקיסאקה
+    yue: 朱基薩卡省
+    yue_Hans: 朱基萨卡省
+  comments:
+  type: department
+L:
+  name: La Paz
+  code: L
+  unofficial_names: La Paz
+  geo:
+    latitude: -16.5
+    longitude: -68.14999999999999
+    min_latitude: -16.6168651
+    min_longitude: -68.2368618
+    max_latitude: -16.4245596
+    max_longitude: -68.01129329999999
+  translations:
+    en: La Paz
+    ar: إدارة لا باز
+    bg: Ла Пас
+    bn: লা পাজ বিভাগ
+    ca: Departament de la Paz
+    da: La Paz
+    de: La Paz
+    el: Λα Παζ
+    es: La Paz
+    eu: La Pazko departamendua
+    fi: La Pazin departementti
+    fr: département de La Paz
+    gl: Departamento de La Paz
+    gu: લા પાઝ વિભાગ
+    hi: ला पास विभाग, बोलिविया
+    hr: La Paz
+    id: Departemen La Paz
+    it: La Paz
+    ja: ラパス県
+    ka: ლა-პასის დეპარტამენტი
+    kn: ಲಾ ಪಾಜ್ ಇಲಾಖೆ
+    ko: 라파스 주
+    lt: La Paso departamentas
+    lv: Lapasas departaments
+    mr: ला पाझ विभाग
+    ms: La Paz Department
+    nb: La Paz
+    nl: La Paz
+    pl: La Paz
+    pt: La Paz
+    ro: La Paz
+    ru: Ла-Пас
+    si: ලා පාස් දෙපාර්තමේන්තුව
+    sr: Ла Паз
+    sv: La Paz
+    sw: Mkoa wa La Paz
+    ta: லா பஸ் துறை
+    te: లా పాజ్ డిపార్ట్మెంట్
+    th: ลาปาซ
+    tr: La Paz Departmanı
+    uk: Ла-Пас
+    ur: محکمہ لا پاز
+    vi: Khu vực hành chính La Paz
+    ceb: Departamento de La Paz (departamento sa Bolivia)
+    sr_Latn: La Paz
+    zh: 拉巴斯省
+    fa: شهرستان لاپاز
+    ccp: "\U00011123 \U0001111B\U0001110C\U00011134"
+    mk: Ла Паз
+    'no': La Paz
+    az: La-Pas departamenti
+    cs: Departement La Paz
+    he: מחוז לה פאס
+    yue: 拉巴士省 (玻利維亞)
+    yue_Hans: 拉巴士省 (玻利维亚)
+  comments:
+  type: department
+N:
+  name: Pando
+  code: N
+  unofficial_names: Pando
+  geo:
+    latitude: -10.7988901
+    longitude: -66.9988011
+    min_latitude: -12.5000421
+    min_longitude: -69.56644399999999
+    max_latitude: -9.680567
+    max_longitude: -65.27995299999999
+  translations:
+    en: Pando
+    ar: إدارة باندو
+    bg: Пандо
+    bn: পান্ডো বিভাগ
+    ca: Departament de Pando
+    da: Pando Department
+    de: Pando
+    el: Πάντο
+    es: Departamento de Pando
+    eu: Pando
+    fi: Pando
+    fr: département de Pando
+    gl: Departamento de Pando
+    gu: પાંડો વિભાગ
+    hi: पान्दो विभाग
+    hr: Pando
+    id: Departemen Pando
+    it: dipartimento di Pando
+    ja: パンド県
+    ka: პანდოს დეპარტამენტი
+    kn: ಪಾಂಡೊ ಇಲಾಖೆ
+    ko: 판도 주
+    lt: Pando departamentas
+    lv: Pando departaments
+    mr: पांडो विभाग
+    ms: Pando
+    nb: Pando
+    nl: Pando
+    pl: Pando
+    pt: Pando
+    ro: Pando
+    ru: Пандо
+    si: පැන්ඩෝ දෙපාර්තමේන්තුව
+    sr: Пандо
+    sv: Pando
+    sw: Mkoa wa Pando
+    ta: பண்டோ துறை
+    te: పాండో డిపార్ట్మెంట్
+    th: พานโด ดีพาร์ทเม้น
+    tr: Pando Departmanı
+    uk: Пандо
+    ur: محکمہ پاندو
+    vi: Pando
+    ceb: Departamento de Pando
+    sr_Latn: Pando
+    zh: 潘多省
+    fa: شهرستان پاندو
+    ccp: "\U0001111B\U0001111A\U00011134\U00011113\U0001112E"
+    mk: Пандо
+    'no': Pando
+    et: Pando departemang
+    he: מחוז פנדו
+    yue: 攀多省
+    yue_Hans: 攀多省
+  comments:
+  type: department
+O:
+  name: Oruro
+  code: O
+  unofficial_names: Oruro
+  geo:
+    latitude: -17.966667
+    longitude: -67.11666699999999
+    min_latitude: -18.0166098
+    min_longitude: -67.1474076
+    max_latitude: -17.9058956
+    max_longitude: -67.02750209999999
+  translations:
+    en: Oruro
+    ar: إدارة أورورو
+    bg: Оруро
+    bn: ওরুরু বিভাগ
+    ca: Departament d’Oruro
+    da: Oruro
+    de: Departamento Oruro
+    el: Ορούρο
+    es: Departamento de Oruro
+    eu: Oruroko departamendua
+    fi: Oruron departementti
+    fr: département d’Oruro
+    gl: Departamento de Oruro
+    gu: ઓરૂરો વિભાગ
+    hi: ओरूरो विभाग
+    hr: Oruro
+    id: Departemen Oruro
+    it: dipartimento di Oruro
+    ja: オルロ県
+    ka: ორუროს დეპარტამენტი
+    kn: ಒರೊರೊ ಇಲಾಖೆ
+    ko: 오루로 주
+    lt: Oruro departamentas
+    lv: Oruro departaments
+    mr: ओरुरोज विभाग
+    ms: Oruro
+    nb: Oruro
+    nl: Oruro
+    pl: Oruro
+    pt: Oruro
+    ro: Oruro
+    ru: Оруро
+    si: ඔරුරෝ දෙපාර්තමේන්තුව
+    sr: Оруро
+    sv: Oruro
+    sw: Mkoa wa Oruro
+    ta: ஒருரோ துறை
+    te: ఓరురో డిపార్ట్మెంట్
+    th: แคว้นโอรูโร
+    tr: Oruro Departmanı
+    uk: Оруро
+    ur: محکمہ اورورو
+    vi: Khu vực hành chính Oruro
+    ceb: Departamento de Oruro
+    sr_Latn: Oruro
+    zh: 奥鲁罗省
+    fa: شهرستان اورورو
+    ccp: "\U00011103\U00011127\U00011122\U0001112A\U00011122\U0001112E"
+    mk: Оруро
+    'no': Oruro
+    cs: Departement Oruro
+    et: Oruro departemang
+    he: מחוז אורורו
+    hy: Օրուրո
+    yue: 柯魯羅省
+    yue_Hans: 柯鲁罗省
+  comments:
+  type: department
+P:
+  name: Potosí
+  code: P
+  unofficial_names: Potosí
+  geo:
+    latitude: -19.5722805
+    longitude: -65.7550063
+    min_latitude: -19.610703
+    min_longitude: -65.79208729999999
+    max_latitude: -19.5315718
+    max_longitude: -65.70968959999999
+  translations:
+    en: Potosí
+    ar: إدارة بوتوسي
+    bg: Потоси
+    bn: পুটুসি বিভাগ
+    ca: Departament de Potosí
+    da: Potosí
+    de: Potosí
+    el: Ποτοσί
+    es: Departamento de Potosí
+    eu: Potosiko departamendua
+    fi: Potosí
+    fr: département de Potosí
+    gl: Departamento de Potosí
+    gu: પોટોસી વિભાગ
+    hi: पोतोसी विभाग
+    hr: Potosí
+    id: Departemen Potosí
+    it: dipartimento di Potosí
+    ja: ポトシ県
+    ka: პოტოსის დეპარტამენტი
+    kn: ಪೋಟೊಸಿ ಇಲಾಖೆ
+    ko: 포토시 주
+    lt: Potosi departamentas
+    lv: Potosi departaments
+    mr: पोटोसी विभाग
+    ms: Potosi
+    nb: Potosí
+    nl: Potosí
+    pl: Potosí
+    pt: Potosí
+    ro: Potosí
+    ru: Потоси
+    si: පොටොසි දෙපාර්තමේන්තුව
+    sr: Потоси
+    sv: Potosí
+    sw: Mkoa wa Potosí
+    ta: போடோசி துறை
+    te: పోటోసి డిపార్ట్మెంట్
+    th: โปโตสไอ ดีพาทเม้น
+    tr: Potosi Departmanı
+    uk: Потосі
+    ur: محکمہ پوتوسی
+    vi: Khu vực hành chính Potosi
+    ceb: Departamento de Potosí
+    sr_Latn: Potosi
+    zh: 波托西省
+    fa: شهرستان پوتوسی
+    yue_Hans: 波托西省
+    ccp: "\U0001111B\U00011127\U00011111\U0001112E\U00011125\U00011128"
+    yue: 波托西省
+    mk: Потоси
+    'no': Potosí
+    cs: Departement Potosí
+    et: Potosí departemang
+    he: מחוז פוטוסי
+  comments:
+  type: department
+S:
+  name: Santa Cruz
+  code: S
+  unofficial_names: Santa Cruz
+  geo:
+    latitude: -17.866667
+    longitude: -63
+    min_latitude: -18.0244453
+    min_longitude: -63.25768960000001
+    max_latitude: -17.4908405
+    max_longitude: -62.76557929999999
+  translations:
+    en: Santa Cruz
+    ar: إدارة سانتا كروز
+    be: дэпартамент Санта-Крус
+    bg: Санта Крус
+    bn: সান্তা ক্রুজ বিভাগ
+    ca: Departament de Santa Cruz
+    da: Santa Cruz
+    de: Santa Cruz
+    el: Σάντα Κρούζ
+    es: Departamento de Santa Cruz
+    et: Santa Cruzi departemang
+    eu: Santa Cruzko departamendua
+    fi: Santa Cruz
+    fr: département de Santa Cruz
+    gl: Departamento de Santa Cruz
+    gu: સાન્તા ક્રૂઝ વિભાગ
+    hi: सान्ता क्रूस विभाग, बोलिविया
+    hr: Santa Cruz
+    id: Departemen Santa Cruz
+    it: dipartimento di Santa Cruz
+    ja: サンタクルス県
+    ka: სანტა-კრუსის დეპარტამენტი
+    kn: ಸಾಂಟಾ ಕ್ರೂಜ್ ಇಲಾಖೆ
+    ko: 산타크루스 주
+    lt: Santa Kruso departamentas
+    lv: Santakrusas departaments
+    mr: सांता क्रूझ विभाग
+    ms: Santa Cruz Department
+    nb: Santa Cruz
+    nl: Santa Cruz
+    pl: Santa Cruz
+    pt: Santa Cruz
+    ro: Santa Cruz
+    ru: Санта-Крус
+    si: සැන්ටා කෘස් දෙපාර්තමේන්තුව
+    sk: Santa Cruz
+    sr: Санта Круз
+    sv: Santa Cruz
+    sw: Mkoa wa Santa Cruz
+    ta: சாண்டா கிருஸ் துறை
+    te: శాంటా క్రజ్ డిపార్ట్మెంట్
+    th: เมืองซานตาครูซ
+    tr: Santa Cruz Departmanı
+    uk: Санта-Крус
+    ur: محکمہ سانتا کروز
+    vi: Vùng Santa Cruz
+    ceb: Departamento de Santa Cruz
+    sr_Latn: Santa Kruz
+    zh: 聖克魯斯省 (玻利維亞)
+    fa: شهرستان سانتا کروز
+    yue_Hans: 圣克鲁斯省 (玻利维亚)
+    ccp: "\U00011125\U0001111A\U00011134\U00011111 \U00011107\U00011133\U00011122\U0001112A\U0001110C\U00011134"
+    yue: 聖克魯斯省 (玻利維亞)
+    mk: Санта Круз
+    'no': Santa Cruz
+    cs: departement Santa Cruz
+    he: מחלקת סנטה קרוז
+    hy: Սանտա Կրուզ
+  comments:
+  type: department
+T:
+  name: Tarija
+  code: T
+  unofficial_names: Tarija
+  geo:
+    latitude: -21.533333
+    longitude: -64.733333
+    min_latitude: -21.5695183
+    min_longitude: -64.7762489
+    max_latitude: -21.4734153
+    max_longitude: -64.6748944
+  translations:
+    en: Tarija
+    ar: إدارة تاريا
+    bg: Тариха
+    bn: তারিজা বিভাগ
+    ca: Departament de Tarija
+    da: Tarija Department
+    de: Departamento Tarija
+    el: Ταρίτζα
+    es: Departamento de Tarija
+    eu: Tarijako departamendua
+    fi: Tarija
+    fr: département de Tarija
+    gl: Departamento de Tarija
+    gu: તરિજા વિભાગ
+    hi: तारिहा विभाग
+    hr: Tarija
+    id: Departemen Tarija
+    it: dipartimento di Tarija
+    ja: タリハ県
+    ka: ტარიხას დეპარტამენტი
+    kn: ತಾರಿಜಾ ಇಲಾಖೆ
+    ko: 타리하 주
+    lt: Tarichos departamentas
+    lv: Tarihas departaments
+    mr: तारिया विभाग
+    ms: Tarija
+    nb: Tarija
+    nl: Tarija
+    pl: Tarija
+    pt: Tarija
+    ro: Tarija (departament)
+    ru: Тариха
+    si: ටරිජා දෙපාර්තමේන්තුව
+    sl: Tarija
+    sr: Тариха
+    sv: Tarija
+    sw: Mkoa wa Tarija
+    ta: தரிஜா துறை
+    te: టారిజా డిపార్ట్మెంట్
+    th: ตาริจา
+    tr: Tarija Departmanı
+    uk: Таріха
+    ur: محکمہ تاریخا
+    vi: Khu vực hành chính Tarija
+    ceb: Departamento de Tarija
+    sr_Latn: Tariha
+    zh: 塔里哈省
+    fa: شهرستان تاریزا
+    yue_Hans: 塔里哈省
+    ccp: "\U00011111\U00011122\U00011128\U0001110E"
+    yue: 塔里哈省
+    mk: Тариха
+    'no': Tarija
+    et: Tarija departemang
+    he: מחוז טאריחה
+  comments:
+  type: department

@@ -1,0 +1,14 @@
+module Algolia
+  module Http
+    class Response
+      attr_reader status: String
+      attr_reader body: String
+      attr_reader error: String
+      attr_reader headers: String
+      attr_reader has_timed_out: bool
+      attr_reader network_failure: bool
+
+      def initialize: (?::Hash[Symbol, String|bool] opts) -> untyped
+    end
+  end
+end

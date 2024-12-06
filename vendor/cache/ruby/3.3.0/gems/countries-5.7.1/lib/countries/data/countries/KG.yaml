@@ -1,0 +1,55 @@
+---
+KG:
+  alpha2: KG
+  alpha3: KGZ
+  continent: Asia
+  country_code: '996'
+  currency_code: KGS
+  distance_unit: KM
+  gec: KG
+  geo:
+    latitude: 41.20438
+    longitude: 74.766098
+    max_latitude: 43.2653569
+    max_longitude: 80.2281514
+    min_latitude: 39.180254
+    min_longitude: 69.250998
+    bounds:
+      northeast:
+        lat: 43.2653569
+        lng: 80.2281514
+      southwest:
+        lat: 39.180254
+        lng: 69.250998
+  international_prefix: '00'
+  ioc: KGZ
+  iso_long_name: The Kyrgyz Republic
+  iso_short_name: Kyrgyzstan
+  languages_official:
+  - ky
+  - ru
+  languages_spoken:
+  - ky
+  - ru
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Kirghiz
+  number: '417'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Asia
+  start_of_week: monday
+  subregion: Central Asia
+  un_locode: KG
+  unofficial_names:
+  - Kyrgyzstan
+  - Kirgisistan
+  - Kirghizistan
+  - Kirguizistán
+  - キルギス
+  - Kirgizië
+  - Kyrgzstan
+  world_region: EMEA

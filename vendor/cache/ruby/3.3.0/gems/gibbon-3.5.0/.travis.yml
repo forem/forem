@@ -1,0 +1,13 @@
+language: ruby
+sudo: false
+cache: bundler
+before_install:
+  - gem install bundler # -v 1.7.14 if a specific version is needed
+rvm:
+  - 2.4.5
+  - 2.5.7
+  - 2.6.5
+  - 2.7
+  - 3.0.0
+  - 3.1
+  - 3.2

@@ -1,0 +1,8 @@
+.DS_Store
+*.gem
+/test/rails_app/tmp/*
+/test/rails_app/log/*
+*.sqlite3
+
+Gemfile.lock
+gemfiles/*.lock

@@ -1,0 +1,21 @@
+module Algolia
+  module Transport
+    class StatefulHost
+      include CallType
+
+      attr_reader url: untyped
+
+      attr_reader protocol: untyped
+
+      attr_reader accept: untyped
+
+      attr_accessor last_use: untyped
+
+      attr_accessor retry_count: untyped
+
+      attr_accessor up: untyped
+
+      def initialize: (String url, ?::Hash[Symbol|String, untyped] opts) -> void
+    end
+  end
+end

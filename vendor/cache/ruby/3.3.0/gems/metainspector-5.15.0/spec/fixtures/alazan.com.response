@@ -1,0 +1,377 @@
+HTTP/1.1 200 OK
+Date: Mon, 30 May 2011 09:58:20 GMT
+Server: Microsoft-IIS/6.0
+X-Powered-By: PleskWin
+X-Powered-By: ASP.NET
+Cache-Control: private
+Content-Length: 25902
+Content-Type: text/html
+Expires: Sun, 29 May 2011 09:58:18 GMT
+Set-Cookie: ASPSESSIONIDCSBSQADC=AHENHHKBGGDIFJLHHCCJBHMP; path=/
+Cache-control: private
+
+
+<html>
+<head>
+<title>Dise&ntilde;o p&aacute;ginas web al mejor precio - Desarrollo Multimedia - Alaz&aacute;n Internet</title>
+<META name="keywords" content="paginas web, diseño web, sitio web, internet, programacion, aplicaciones, creacion,desarrollo, web, bases de datos,boletin de noticias,buscadores,cd card,cd rom,comercio electronico,descuento,dinero,diseño,dominio,extranet,gestion dominios,gestor de contenidos,gratis,hosting,intranet,lista correo,llave en mano,marketing,mejor precio,mejora página,multimedia,negocio,página,pagina web,pequeña y mediana empresa,pequeño negocio,plantillas diseño,portal,precio,prediseñadas,presencia,presentacion flash,profesional,programacion,promocion buscadores,publicidad,red,sitio,webcam,websolution,zona privada">
+<meta name="description" content="Alazán Internet - Páginas web profesionales al mejor precio. Presencia en Internet desde 20 euros/mes. GRATIS alta en buscadores.">
+<meta name="author" content="Alazán Internet">
+<META NAME="robots" content="index,follow">
+<meta name="Revisit" content="15 days">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<LINK REL=stylesheet HREF="estilos01.css" TYPE="text/css">
+<LINK REL=stylesheet HREF="estiloshome.css" TYPE="text/css">
+<script language="JavaScript" src="js/rollover_tablas.js"></script>
+<script language="JavaScript" src="js/ventanas.js"></script>
+<script language="JavaScript">
+//<!--
+var navegador = 'NS'
+if (top.location != self.location) 
+{
+	top.location = 'index.asp?mes=';
+};
+
+//-->
+</script>
+<script language="JavaScript" src="js/menus_desplegables.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+var imagenesCargadas = false;
+
+
+if (document.images)
+{
+
+	img_entraroff = new Image(); img_entraroff.src = "http://www.alazan.com/imagenes/boton_entrar.gif";
+
+}
+
+function preCargaImagenes()
+{  
+
+    if (document.images) 
+	{
+
+	
+		img_entraron = new Image(); img_entraron.src = "http://www.alazan.com/imagenes/boton_entrar_hover.gif";
+       	return (imagenesCargadas = true); 
+    }
+}
+
+function rollIn(imgName) 
+{  
+    if (document.images && (imagenesCargadas == true)) 
+	{		 
+		 document[imgName].src = eval(imgName + "on.src");		
+  	}
+}
+
+function rollOut(imgName) 
+{
+	if (document.images)
+	{
+        	document[imgName].src = eval(imgName + "off.src");
+    	}
+}
+//-->
+</SCRIPT>
+<style type="text/css">
+<!--
+.Estilo1 {
+	color: #FF6600;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body bgcolor="848484" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="preCargaImagenes()">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" background="imagenes/fondocab.jpg" bgcolor="#999999">
+  <tr> 
+    <td><a href="index.asp"><img src="imagenes/logo.jpg"  alt="Dise&ntilde;o de  p&aacute;ginas web al mejor precio -  WebSolution B&aacute;sico: 20 euros / mes -  -  WebSolution Profesional: 60 euros / mes -  WebSolution Premium: 90 euros / mes -  GRATIS alta en buscadores. Desarrollo, creacion, programacion y diseño de paginas web a medida" width="174" height="68"  hspace="2" border="0"></a></td>
+    <td align="right" valign="bottom"><a href="index.asp" onMouseOver="window.status='Inicio'; return true" onMouseOut="window.status=''; return true"><img src="imagenes/menu_dch_inicio.gif" alt="Inicio" width="44" height="9" hspace="10" vspace="10" border="0"></a><a href="javascript:abreVentanaCentrada('contacte.asp','400','460','0')" onMouseOver="window.status='Contacte'; return true" onMouseOut="window.status=''; return true"><img src="imagenes/menu_dch_contacte.gif" alt="Contacte" width="70" height="9" hspace="10" vspace="10" border="0"></a><a href="javascript:abreVentanaCentrada('mapa.asp','450','340','0')" onMouseOver="window.status='Mapa del sitio'; return true" onMouseOut="window.status=''; return true"><img src="imagenes/menu_dch_mapa.gif" alt="Mapa del sitio" width="98" height="9" hspace="10" vspace="10" border="0"></a><a href="soporte.asp"><img src="imagenes/menu_dch_soporte.gif" alt="Soporte" width="66" height="9" hspace="10" vspace="10" border="0"></a></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" background="imagenes/fondocab.jpg">
+  <tr> 
+    <td valign="middle" background="imagenes/menu.gif" bgcolor="#CCCCCC"><img src="imagenes/sp.gif" align="absmiddle" width="1" height="24"><a href="empresa.asp" onMouseOver="window.status='Empresa'; mostrarMenu('menu1'); return true" onMouseOut="window.status=''; establecerTemporizador(tiempoMenus); return true;"><img src="imagenes/menu_empresa.gif" alt="Empresa" width="51" height="8" hspace="20" border="0" align="absmiddle"></a><img src="imagenes/menusep.gif" align="absmiddle" width="2" height="20"><a href="quehacemos.asp" onMouseOver="window.status='Qué hacemos'; mostrarMenu('menu2'); return true" onMouseOut="window.status=''; establecerTemporizador(tiempoMenus); return true;"><img src="imagenes/menu_que.gif" alt="Qu&eacute; hacemos" width="71" height="8" hspace="20" border="0" align="absmiddle"></a><img src="imagenes/menusep.gif" align="absmiddle" width="2" height="20"><a href="websolution.asp" onMouseOver="window.status='Websolution'; mostrarMenu('menu3'); return true" onMouseOut="window.status=''; establecerTemporizador(tiempoMenus); return true;"><img src="imagenes/menu_websolution.gif" alt="Websolution" width="73" height="8" hspace="20" border="0" align="absmiddle"></a><img src="imagenes/menusep.gif" align="absmiddle" width="2" height="20"><a href="distribuidores.asp"><img src="imagenes/menu_distribuidores.gif" alt="Distribuidores" width="71" height="7" hspace="20" border="0" align="absmiddle"></a></a><img src="imagenes/menusep.gif" align="absmiddle" width="2" height="20"></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+<tr>
+<td height="100%" width="1%" valign="top" background="imagenes/lat_fondo.gif">
+<table height="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#E5E5E5">
+        <tr> 
+          <td background="imagenes/fondo_cabecera.gif" bgcolor="#666666"><img src="imagenes/cabecera_extranet.gif" alt="Panel de Control" width="120" height="14" hspace="5" vspace="5"></td>
+        </tr>
+        <tr> 
+          <td align="center" background="imagenes/lat_fondo.gif" bgcolor="#FFFFFF"> 
+            <form name="panelcontrol" method="post" action="comun/password.asp">
+              <table width="100%" border="0" cellspacing="2" cellpadding="2" height="20">
+                <tr> 
+                  <td align="right"><font class="menuizqsub">Usuario:</font></td>
+                  <td> <input name="usuario" type="text" class="menuizqsub" size="5" maxlength="80"> 
+                  </td>
+                </tr>
+                <tr> 
+                  <td align="right"><font class="menuizqsub">Clave:</font></td>
+                  <td> <input name="clave" type="password" class="menuizqsub" size="5" maxlength="15"> 
+                  </td>
+                </tr>
+                <tr> 
+                  <td colspan="2" align="center"><a href="javascript:document.forms[0].submit();" onMouseOver="rollIn('img_entrar');" onMouseOut="rollOut('img_entrar');"><img name="img_entrar" src="imagenes/boton_entrar.gif" alt="Entrar" width="41" height="19" border="0"></a> 
+                  </td>
+                </tr>
+                <tr> 
+                  <td colspan="2" align="center"> 
+                    
+					<table width="117" cellspacing="0" cellpadding="0" border="0">
+						<tr><td colspan="3" bgcolor="white"><img src="imagenes/sp.gif" height="1" width="117"></td></tr>
+						<tr><td width="1" bgcolor="white"><img src="imagenes/sp.gif" height="1" width="1"></td><td width="115" align="center" class="menuizqsub"><a href="#" onClick="window.open('olclave.asp','password','top=120,left=120,width=350,height=260')" class="menuizqsub">¿olvidó su clave?</a></td><td width="1" bgcolor="white"><img src="imagenes/sp.gif" height="1" width="1"></td></tr>
+						<tr><td colspan="3" bgcolor="white"><img src="imagenes/sp.gif" height="1" width="117"></td></tr>
+					</table>
+                    
+				  </td>
+                </tr>
+              </table>
+            </form></td>
+        </tr>
+		<tr> 
+          <td align=center background="imagenes/lat_fondo.gif"> <IMG SRC="imagenes/bannertelef2.gif" BORDER="0" ALT="SERVICIO DE ATENCION TELEFONICA: 91 464 93 88" width="124" height="185" vspace=2> 
+            <a href="http://www.sigmadata.es" target="_blank"><IMG SRC="imagenes/banner-sigmadata.gif" title="Sigma Data" alt="LOPD LSSI Extremadura" width="123" height="137" vspace=15 BORDER="0"></a> 
+            <a href="oferta.asp"><a href="oferta.asp"><img src="imagenes/bannercamara.gif" BORDER="0" ALT="OFERTA CAMARA DIGITAL" vspace=5></a>	
+          </td>
+        </tr>
+		<tr> 
+          <td height="100%" background="imagenes/lat_fondo.gif"><img src="imagenes/sp.gif" width="138" height="2"></td>
+        </tr>
+      </table>
+</td>
+<td width="1%" valign="top">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td background="imagenes/menu2.gif"><img src="imagenes/sp.gif" width="1" height="7"></td>
+        </tr>
+</table>
+<table width="600" border="0" cellspacing="0" cellpadding="0">
+<!-- <tr>
+<td background="imagenes/webcams-a3.gif" style="width:598px;height:168px;">
+<p style="padding:60px 10px 0 130px;font: normal normal normal 10px Verdana, Tahoma, Arial;">
+<a href="webcams.asp" style="color:#FF6600">&gt; <strong>Más información sobre webcams</strong></a><br/>
+<a href="http://www.antena3.com/a3n2004/servlet/Noticias?destino=../a3n/noticia/noticia.jsp&sidicom=si&id=9607054" target="_blank">&gt; Ver reportaje de Antena3</a>
+</p>
+</td>
+</tr> -->
+<tr> 
+<td>
+<a href="websolution.asp"><img src="imagenes/index_principal1.jpg" border=0><img src="imagenes/index_principal2.gif" border=0></a>
+</td>
+</tr>
+		<tr> 
+          <td><IMG SRC="imagenes/index_barrverd2.gif" WIDTH="600" HEIGHT="23" BORDER="0" ALT=""></td>
+        </tr> 
+</table>
+<p class="indextxt" id="quehacemos"><img src="imagenes/nh_que-hacemos.gif" width="105" height="17" align="baseline"> <span class="indexnospq">En Alazán Internet estamos especializados en:</span></p>
+
+<table width="96%"  border="0" cellspacing="0" cellpadding="2" align="center">
+<tr>
+
+<td width="32%" valign="top" class="indexnospq servicios" id="sinrallado">    <a href="dominios.asp"><img src="imagenes/nh-dominios.gif" width="83" height="27" border="0"></a><br>    
+  <strong><a href="dominios.asp">Registro de dominios</a>.</strong><br />
+    El dominio es la direcci&oacute;n de su p&aacute;gina web (tipo <strong>www.suempresa.com</strong>) <a href="dominios.asp"><img src="imagenes/mas.gif" width="9" height="9" border="0"></a><br>
+<br>
+<div id="comprobardominio">
+<span class="enlacepie">Compruebe ahora si est&aacute; libre su dominio:</span><br>	
+<form name="form1" method="post" action="dominios2.asp" style="margin:3px;">
+		  <input name="sld" type="text" size="10" class="menuizqsub" value="suempresa">
+			<select name="tld" class="menuizqsub">
+			<option value="com">.com</option>
+			<option value="net">.net</option>
+			<option value="org">.org</option>
+			<!-- <option value="info">.info</option>
+			<option value="biz">.biz</option>
+			<option value="ws">.ws</option> -->
+			</select>
+			<input type="submit" name="Submit" value="Enviar" class="menuizqsub">
+			</form>
+</div>
+<strong><br>
+<br>
+<a href="paginas.asp"><img src="imagenes/nh-desarrollo-web.gif" border="0"></a><br>
+
+<a href="paginas.asp">Dise&ntilde;o y programaci&oacute;n de p&aacute;ginas web.</a></strong><br />
+Creaci&oacute;n de sitio web de acuerdo a sus necesidades, utilizando las m&aacute;s modernas tecnolog&iacute;as: FLASH, ASP, PHP, SQL-SERVER, (X)HTML, CSS... <a href="paginas.asp"><img src="imagenes/mas.gif" width="9" height="9" border="0"></a><br>
+<br>
+<br>
+<a href="alojamiento.asp"><img src="imagenes/nh-alojamiento.gif" width="100" height="27" border="0"></a><br>
+<strong>
+<a href="alojamiento.asp">Hosting profesional al mejor precio.</a></strong><br />
+Una vez creada su p&aacute;gina web, debe ser albergada en un servidor, para que pueda accederse a ella a trav&eacute;s de Internet. <a href="alojamiento.asp"><img src="imagenes/mas.gif" width="9" height="9" border="0"></a><br>
+<br>
+<br>
+
+  </td>
+<td width="32%" valign="top" class="indexnospq servicios"><a href="websolution.asp"><img src="imagenes/nh-gestor-contenidos.gif" width="106" height="27" border="0"></a><strong><br>
+   Tener su p&aacute;gina web nunca fue tan f&aacute;cil</strong><a href="websolution.asp">. </a><br>
+
+  WebSolution es la soluci&oacute;n global que incluye  todo lo que necesita para tener una presencia profesional en Internet:
+  <ul style="margin:12px; padding:0;">
+    <li><strong>dominio propio </strong></li>
+    <li><strong>creaci&oacute;n de  p&aacute;gina web</strong> con: formularios de contacto, buscador interno, boletines de noticias, &aacute;rea privada, estad&iacute;sticas, cat&aacute;logo de productos, tienda virtual con comercio electr&oacute;nico, marquesina, etc.</li>
+    <li><strong>alojamiento</strong> y <strong>cuentas de correo</strong> </li>
+    <li><strong>alta en buscadores  </strong></li>
+  </ul>
+  <strong>Gestor de contenidos<br>
+  </strong> Una vez creada su p&aacute;gina,  Ud. mismo podr&aacute; modificar sus contenidos  (textos, im&aacute;genes, cat&aacute;logo de productos, etc.) de una manera sencilla, sin necesidad de tener conocimientos de programaci&oacute;n. <br>
+  <br>
+  <strong>Sin ataduras</strong><br>
+  WebSolution es un servicio que se abona mensualmente, por lo que Ud. puede probarlo y darse de baja si no queda satisfecho. <a href="websolution.asp"><img src="imagenes/mas.gif" width="9" height="9" border="0"></a> <a href="websolution.asp"><span class="Estilo1">leer m&aacute;s </span></a> </td>
+
+<td width="32%" valign="top" class="indexnospq servicios">
+  <a href="cdroms.asp"><img src="imagenes/nh-cdroms.gif" width="130" height="27" border="0"></a><br>
+  <strong>
+  <a href="cdroms.asp">Programaci&oacute;n y duplicaci&oacute;n de CD-ROMS y CD-CARDS.</a></strong><br />
+Dise&ntilde;o de aplicaciones multimedia interactivas 
+              para sus presentaciones de empresa, dosieres, cat&aacute;logos de productos, etc.
+              <a href="cdroms.asp"><img src="imagenes/mas.gif" width="9" height="9" border="0"></a><br>
+              <br>
+			  
+              <a href="webcams.asp"><img src="imagenes/nh-webcams.gif" width="91" height="27" border="0"></a><br>
+<strong>
+  <a href="webcams.asp">Instalación y configuración de c&aacute;maras web.</a></strong><br />
+  Las webcams tienen múltiples aplicaciones, entre las que destaca su uso en <strong>guarderías</strong> para que los padres puedan ver a sus hijos a través de Internet.
+  <a href="webcams.asp"><img src="imagenes/mas.gif" width="9" height="9" border="0"></a><br>
+
+              <br>
+          <img src="imagenes/webcam_guarderia_02.jpg" width="64" height="100" hspace="40"><br>
+          <br>
+          <img src="imagenes/nh-otros-servicios.gif" width="122" height="27"><br>
+          <strong>Soluciones a medida</strong> de comercio electr&oacute;nico, tiendas virtuales, aplicaciones de gesti&oacute;n log&iacute;stica, intranets, sindicaci&oacute;n de contenidos (RSS),... <br>
+          <a href="javascript:abreVentanaCentrada('contacte.asp','400','460','0')" onMouseOver="window.status='Contacte'; return true" onMouseOut="window.status=''; return true"><span class="Estilo1"><img src="imagenes/mas.gif" width="9" height="9" border="0">&nbsp;solicite presupuesto sin compromiso </span></a></td>
+</tr>
+</table>
+ 
+</td>
+<td width="99%" valign="top">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td background="imagenes/menu2.gif" width="100%"><img src="imagenes/sp.gif" width="1" height="15"></td>
+        </tr>
+</table>
+
+</td>
+</tr>
+</table>
+<table name="abajo" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#848484">
+<tr>
+<td width="1%" background="imagenes/abajo_fondo_lat.gif"><img src="imagenes/sp.gif" height="18" width="138"></td>
+<td width="99%" background="imagenes/abajo_fondo.gif"><img src="imagenes/sp.gif" height="18" width="2"></td>
+</tr> 
+<tr> 
+<td colspan=2 height="20" valign="top" align="center" class="textopie"><a href="http://www.alazan.com" class="textopie">www.alazan.com</a> 
+      :: 91 464 93 88 :: <a href="javascript:enviarCorreo('info','alazan','com','');" class="enlacepie"><img src="imagenes/correo_info.gif" align="absmiddle" border="0"></a></td>
+</tr> 
+</table>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function enviarCorreo(usuario,dominio,extension,asunto)
+{
+	window.location="mailto:"+usuario+"@"+dominio+"."+extension+"?subject="+asunto
+}
+//-->
+</SCRIPT>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-225168-1";
+urchinTracker();
+</script>
+<div id="menu1" style="position:absolute; width:146px; height:75px; z-index:1; left: -1px; top: 84px; visibility: hidden;"> 
+  <table width="1" border="0" cellpadding="0" cellspacing="0" bgcolor="#626262">
+    <tr> 
+      <td><table width="1" border="0" cellpadding="0" cellspacing="1" bgcolor="#626262" onMouseover="changeto(event, '#FFFFFF')" onMouseout="changeback(event, '#E3E2E2')">
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="quienes.asp" onMouseOver="borrarTemporizador(); window.status='Quiénes somos'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_quienes.gif" alt="Qui&eacute;nes somos" width="113" height="8" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="tecnologia.asp" onMouseOver="borrarTemporizador(); window.status='Tecnología'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_tecnologia.gif" alt="Tecnolog&iacute;a" width="113" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="trabaja.asp" onMouseOver="borrarTemporizador(); window.status='Trabaja con nosotros'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_trabaja.gif" alt="Trabaja con nosotros" width="113" height="7" hspace="9" vspace="6" border="0"></a></td>
+          </tr>
+        </table></td>
+    </tr>
+  </table>
+</div>
+
+<div id="menu2" style="position:absolute; width:122px; height:159px; z-index:1; left: 92px; top: 84px; visibility: hidden;"> 
+  <table width="1" border="0" cellpadding="0" cellspacing="0" bgcolor="#626262">
+    <tr> 
+      <td><table width="1" border="0" cellpadding="0" cellspacing="1" bgcolor="#626262" onMouseover="changeto(event, '#FFFFFF')" onMouseout="changeback(event, '#E3E2E2')">
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="paginas.asp" onMouseOver="borrarTemporizador(); window.status='Páginas web'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_paginas.gif" alt="P&aacute;ginas web" width="96" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="intranets.asp" onMouseOver="borrarTemporizador(); window.status='Intranets'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_intranets.gif" alt="Intranets" width="96" height="7" hspace="9" vspace="6" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="cdroms.asp" onMouseOver="borrarTemporizador(); window.status='CD ROMs / CD Cards'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_cdroms.gif" alt="CD ROMs / CD Cards" width="96" height="8" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="webcams.asp" onMouseOver="borrarTemporizador(); window.status='Web cams'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_webcams.gif" alt="Web cams" width="96" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="alojamiento.asp" onMouseOver="borrarTemporizador(); window.status='Alojamiento'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_alojamiento.gif" alt="Alojamiento" width="96" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+        </table></td>
+    </tr>
+  </table>
+</div>
+
+<div id="menu3" style="position:absolute; width:158px; height:115px; z-index:1; left: 205px; top: 84px; visibility: hidden;"> 
+  <table width="1" border="0" cellpadding="0" cellspacing="0" bgcolor="#626262">
+    <tr> 
+      <td><table width="1" border="0" cellpadding="0" cellspacing="1" bgcolor="#626262" onMouseover="changeto(event, '#FFFFFF')" onMouseout="changeback(event, '#E3E2E2')">
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="basico.asp" onMouseOver="borrarTemporizador(); window.status='WebSolution Básico'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_basico.gif" alt="WebSolution Básico" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="profesional.asp" onMouseOver="borrarTemporizador(); window.status='WebSolution Profesional'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_profesional.gif" alt="WebSolution Profesional" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="premium.asp" onMouseOver="borrarTemporizador(); window.status='WebSolution Premium'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_premium.gif" alt="WebSolution Premium" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="tabla.asp" onMouseOver="borrarTemporizador(); window.status='Tabla comparativa'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_tabla.gif" alt="Tabla Comparativa" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>		  
+		  <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="ventajas.asp" onMouseOver="borrarTemporizador(); window.status='Ventajas'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_ventajas.gif" alt="Ventajas" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="demo.asp" onMouseOver="borrarTemporizador(); window.status='Demo'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_demo.gif" alt="Demo" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="preguntas.asp" onMouseOver="borrarTemporizador(); window.status='Preguntas frecuentes'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_preguntas.gif" alt="Preguntas frecuentes" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="oferta.asp" onMouseOver="borrarTemporizador(); window.status='Oferta'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_oferta.gif" alt="Oferta" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+          <tr> 
+            <td align="left" valign="middle" bgcolor="#E3E2E2"><a href="contratar.asp" onMouseOver="borrarTemporizador(); window.status='Contratar WebSolution'; return true" onMouseOut="establecerTemporizador(tiempoOpciones); window.status=''; return true;"><img src="imagenes/desplegable_contratar.gif" alt="Contratar WebSolution" width="120" height="7" hspace="9" vspace="7" border="0"></a></td>
+          </tr>
+        </table></td>
+    </tr>
+  </table>
+</div>
+<script language="Javascript">
+menus_desplegables_activados="si";
+</script>
+<!-- Paginas web profesionales al mejor precio. Presencia en Internet desde 20 euros/mes. GRATIS alta en buscadores. -->
+</body>
+</html>

@@ -1,0 +1,55 @@
+---
+AS:
+  alpha2: AS
+  alpha3: ASM
+  continent: Australia
+  country_code: '1'
+  currency_code: USD
+  distance_unit: MI
+  gec: AQ
+  geo:
+    latitude: -14.270972
+    longitude: -170.132217
+    max_latitude: -13.4056506
+    max_longitude: -169.2059326
+    min_latitude: -14.7217608
+    min_longitude: -171.0076904
+    bounds:
+      northeast:
+        lat: -13.4056506
+        lng: -169.2059326
+      southwest:
+        lat: -14.7217608
+        lng: -171.0076904
+  international_prefix: '011'
+  ioc: ASA
+  iso_long_name: The Territory of American Samoa
+  iso_short_name: American Samoa
+  languages_official:
+  - en
+  - sm
+  languages_spoken:
+  - en
+  - sm
+  nanp_prefix: '1684'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: American Samoan
+  number: '016'
+  postal_code: true
+  postal_code_format: "(96799)(?:[ \\-](\\d{4}))?"
+  region: Oceania
+  start_of_week: monday
+  subregion: Polynesia
+  un_locode: AS
+  unofficial_names:
+  - American Samoa
+  - Amerikanisch-Samoa
+  - Samoa américaines
+  - Samoa Americana
+  - アメリカ領サモア
+  - Amerikaans Samoa
+  world_region: APAC

@@ -1,0 +1,797 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:thr="http://purl.org/syndication/thread/1.0">
+    <title>Amazon Web Services Blog</title>
+    <link rel="self" type="application/atom+xml" href="http://aws.typepad.com/aws/atom.xml" />
+    <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/" />
+    <link rel="service.post" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998" title="Amazon Web Services Blog" /> 
+    <id>tag:typepad.com,2003:weblog-73998</id>
+    <updated>2009-01-16T18:21:00Z</updated>
+    <subtitle>Amazon Web Services, Products, Tools, and Developer Information...</subtitle>
+    <generator uri="http://www.typepad.com/">TypePad</generator>
+    <entry>
+        <title>AWS Job: Architect &amp; Designer Position in Turkey</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/aws-job-architect-designer-position-in-turkey.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=61484736" title="AWS Job: Architect &amp; Designer Position in Turkey" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/aws-job-architect-designer-position-in-turkey.html" thr:count="0"/>
+        <id>tag:typepad.com,2003:post-61484736</id>
+        <published>2009-01-16T10:21:00-08:00</published>
+        <updated>2009-01-16T18:21:00Z</updated>
+        <summary>Late last year an entrepreneur from Turkey visited me at Amazon HQ in Seattle. We talked about his plans to use AWS as part of his new social video portal startup. I won&#39;t spill any beans before he&#39;s ready to...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Turkey" />
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Seattle" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;
+  Late last year an entrepreneur from Turkey visited me at Amazon HQ in Seattle.
+
+  We talked about his plans to use AWS as part of his new social video
+  portal startup. I won&#39;t spill any beans before he&#39;s ready to talk
+  about it himself, but I will say that he has a really good concept,
+  strong backers, and infectious enthusiasm for the online world.&lt;/p&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  He&#39;s now ready to hire a software architect and designer in order to
+  bring his vision to life. I&#39;ve posted the job below; you can 
+  send your resume to &lt;a href=&quot;mailto:apply@web.tv&quot;&gt;apply@web.tv&lt;/a&gt;
+  if you are interested, qualified, and located in the right part
+  of the world.
+&lt;/p&gt;
+
+&lt;div style=&quot;padding:10px;margin-left:20px;margin-right:20px;margin-bottom:10px;border:1px dotted black;background-color:#e0e0e0;&quot;&gt;
+
+&lt;div style=&quot;text-align:center;font-size:120%;font-weight:bold;&quot;&gt;Software Architect &amp; Designer&lt;/div&gt;
+
+&lt;p&gt;
+  We are a reputable Internet technology, software services and e-commerce company based
+  in
+  &lt;a href=&quot;http://en.wikipedia.org/wiki/Istanbul&quot;&gt;Istanbul&lt;/a&gt; and
+  &lt;a href=&quot;http://en.wikipedia.org/wiki/Bursa&quot;&gt;Bursa&lt;/a&gt;,
+  &lt;a href=&quot;http://en.wikipedia.org/wiki/Turkey&quot;&gt;Turkey&lt;/a&gt;.
+  We are looking for a talented Software Architect who will
+  be working in Istanbul for a certain period of time, for our new global scale
+  &quot;social video portal&quot; project. Below are the qualifications required and job
+  description for the position to be held. 
+&lt;p&gt;
+
+&lt;style&gt;
+  .li20090116 {padding-bottom:6px;}
+&lt;/style&gt;
+
+&lt;p&gt;Qualifications:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li class=&quot;li20090116&quot; &gt;Extensive knowledge of web technologies.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Experienced in web based application design and development.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Solid bacground in object oriented design and development.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Preferrably experienced in live broadcasting over the internet, video streaming, video sharing and social networking web site development and design.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Knowledge and experience of design and development of multi-tier, distributed, massively multi-user systems.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Experienced in Cloud Computing applications (preferably with AWS).&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Very good command of PHP or Python.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Experinced in relational database design.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Familarity with Erlang, and knowledge or experience of Java, C/C++, Ajax, Adobe Flex, mySQL is a plus.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Self motivated, enthusiastic, team player.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Job Description:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Will be mainly responsible for designing the overall system for a multi-tier, massively multi-user live video multi-casting, videosharing web site which will also have features of a social network.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Will be involved in Design and Development phases of software development cycle. Will contribute to the Analysis phase.&lt;/li&gt;
+  &lt;li class=&quot;li20090116&quot;&gt;Will lead the Software Development Team for the period of the contract and report to the Project Coordinator.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;-- Jeff;&lt;/p&gt;
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>Mainframes in the Cloud?</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/mainframes-in-the-cloud.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=61406896" title="Mainframes in the Cloud?" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/mainframes-in-the-cloud.html" thr:count="0"/>
+        <id>tag:typepad.com,2003:post-61406896</id>
+        <published>2009-01-15T07:11:16-08:00</published>
+        <updated>2009-01-15T15:17:20Z</updated>
+        <summary>Almost! Micro Focus just deployed a managed mainframe emulation environment that runs on top of Amazon EC2. The beauty of this environment is that you can execute CICS or IMS code in the cloud, essentially unmodified. Micro Focus’ innovation has...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;&lt;img src=&quot;http://www.microfocus.com/000/logomicrofocus_tcm21-8292.jpg&quot; height=&quot;36&quot; width=&quot;142&quot; hspace=&quot;5&quot; vspace=&quot;5&quot; align=&quot;right&quot;&gt;Almost! &lt;a href=&quot;http://www.microfocus.com&quot;&gt;Micro Focus&lt;/a&gt; just deployed a managed mainframe emulation environment that runs on top of &lt;a href=&quot;http://aws.amazon.com/ec2/&quot;&gt;Amazon EC2&lt;/a&gt;. The beauty of this environment is that you can execute &lt;a href=&quot;http://en.wikipedia.org/wiki/CICS&quot;&gt;CICS&lt;/a&gt; or &lt;a href=&quot;http://www-01.ibm.com/software/data/ims/&quot;&gt;IMS&lt;/a&gt; code in the cloud, essentially unmodified. Micro Focus’ innovation has three significant benefits: (a) your existing code investment is protected, (b) costs are much, much lower than an in-house mainframe, and (c) the application execution environment is managed, complete with the same sort of service level agreements that are expected in the mainframe world.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.microfocus.com/AboutMicroFocus/at-a-glance/Management/haynie.asp&quot;&gt;Mark Haynie&lt;/a&gt;, the Micro Focus CTO of Application Modernization, says that in his opinion “Cloud computing is about services, not languages”. Since Micro Focus Enterprise Cloud Services allows COBOL CICS and IMS applications run in the cloud as easily as they run in on-premises datacenter, the consumer of those services will not know or care what language they were written in. &lt;/p&gt;
+
+&lt;p&gt;Darryl Taft at &lt;a href=&quot;http://www.eweek.com&quot;&gt;eWeek&lt;/a&gt; also wrote an article about this, which you can read &lt;a href=&quot;http://www.eweek.com/c/a/Cloud-Computing/Micro-Focus-takes-COBOL-to-the-Cloud-with-Amazon-EC2/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The announcement is about more than bringing mainframe applications to the Amazon Cloud. In my opinion, it is also another example of an entire ISV ecosystem that is cloud-enabled. Because Micro Focus’ own development community is supported by Enterprise Cloud Services, there is a new business opportunity for many developers that blends tradition with innovation. It’s easy to forget that mainframes are at the core of many enterprises; and for that reason I believe that interest will be significant.
+You can learn more at &lt;a href=&quot;http://cloudservices.microfocus.com/&quot;&gt;cloudservices.microfocus.com&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>SimpleDB Developer&#39;s Brown Bag</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/simpledb-developers-forum.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=60613886" title="SimpleDB Developer's Brown Bag" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/simpledb-developers-forum.html" thr:count="2" thr:when="2009-01-20T19:16:18Z"/>
+        <id>tag:typepad.com,2003:post-60613886</id>
+        <published>2009-01-12T11:24:00-08:00</published>
+        <updated>2009-01-20T21:56:36Z</updated>
+        <summary>You are invited to join the Amazon SimpleDB team on Tuesday, January 20, 2009 at 9am PST for the first session of our new Developers’ Brown Bag. During these once monthly webinar sessions, developers will hear from the technical experts...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Amazon SDB" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;&lt;a href=&quot;http://aws.amazon.com/sdb&quot;&gt;&lt;img src=&quot;http://aws.typepad.com/files/simpledb_logo.png&quot; style=&quot;padding-left:10px;padding-bottom:10px;float:right;&quot;&gt;&lt;/a&gt;You are invited to join the &lt;a href=&quot;http://aws.amazon.com/sdb&quot;&gt;Amazon SimpleDB&lt;/a&gt; team on Tuesday, January 20, 2009 at 9am PST for the first session of our new Developers’ Brown Bag.  During these once monthly webinar sessions, developers will hear from the technical experts behind SimpleDB, and have the opportunity to engage in live Q&amp;amp;A.&lt;/p&gt;
+
+&lt;p&gt;Interested developers may register by emailing &lt;a href=&quot;mailto:simpledb-developer-brownbag@amazon.com&quot;&gt;simpledb-developer-brownbag@amazon.com&lt;/a&gt;.  Please include name &amp;amp; AWS Account ID. Here&#39;s where to find your AWS Account ID (that&#39;s not my real ID so don&#39;t try anything funny):&lt;/p&gt;
+
+&lt;div style=&quot;text-align:center;&quot; &gt;
+&lt;img src=&quot;http://aws.typepad.com/files/aws_account_number.png&quot; /&gt; 
+&lt;/div&gt;
+
+&lt;p&gt;In addition, developers are encouraged to pre-submit any questions they may have, to allow for a more thorough response during the live webinar.  For those struggling with the development of a new application, sample code and a description of the intended application may also be submitted for review and discussion.&lt;/p&gt;
+
+&lt;p&gt;The team is looking forward to speaking with developers on the 20th.&lt;/p&gt;
+
+&lt;p&gt;-- Jeff;&lt;/p&gt;
+
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>CloudFront Management Tool Roundup</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/cloudfront-management-tools.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=61130594" title="CloudFront Management Tool Roundup" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/cloudfront-management-tools.html" thr:count="2" thr:when="2009-01-12T19:00:07Z"/>
+        <id>tag:typepad.com,2003:post-61130594</id>
+        <published>2009-01-09T17:51:58-08:00</published>
+        <updated>2009-01-12T19:00:07Z</updated>
+        <summary>Amazon CloudFront was designed to make it really easy to distribute content to users at high speed with low latency. Here are some new tools which provide a nice end-user interface to CloudFront. The newest Freeware release of the CloudBerry...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;style&gt;
+
+.itemdiv20090109
+  {
+    border-bottom:  4px solid orange;
+    padding:        5px;
+    margin:         5px;
+    margin-bottom: 10px;
+  }
+
+  .imgwrap20090109
+  {
+    text-align:    center;
+    margin-bottom: 5px;
+  }
+
+  .img20090109
+  {
+    border:        0px;
+    float:         right;
+    margin-left:   5px;
+  }
+
+  .img20090109b
+  {
+    border:        1px solid black;
+    float:         right;
+    margin-left:   5px;
+  }
+&lt;/style&gt;
+
+&lt;p&gt;
+  Amazon
+  &lt;a href=&quot;http://aws.amazon.com/cloudfront/&quot;&gt;CloudFront&lt;/a&gt;
+  was designed to make it really easy to distribute content to users at high speed 
+  with low latency. Here are some new tools which provide a nice end-user interface
+  to CloudFront.
+&lt;/p&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;http://www.cloudberrylab.com/&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/cloudberry_explorer_box.jpg&quot; class=&quot;img20090109&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    The newest Freeware release of the
+    &lt;a href=&quot;http://www.cloudberrylab.com/&quot;&gt;CloudBerry Explorer&lt;/a&gt;
+    now includes CloudFront support. You can create and manage distributions,
+    assign CNAMES, and even
+    &lt;a href=&quot;http://www.cloudberrylab.com/?id=14&quot;&gt;automate&lt;/a&gt; the entire process using the 
+    &lt;a href=&quot;http://www.microsoft.com/windowsserver2003/technologies/management/powershell/default.mspx&quot;&gt;Windows PowerShell.&lt;/a&gt; CloudBerry Explorer also includes some powerful support for 
+    batched changes to &lt;a href=&quot;http://aws.amazon.com/s3&quot;&gt;S3&lt;/a&gt; object Access Control Lists.
+    There are a couple of helpful videos &lt;a href=&quot;http://www.cloudberrylab.com/default.aspx?id=18&quot; &gt;here&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;http://www.streamincloud.com/&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/streamincloud.png&quot; class=&quot;img20090109&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    &lt;a href=&quot;http://www.streamincloud.com/&quot;&gt;StreamInCloud&lt;/a&gt; is a free
+    &lt;a href=&quot;http://en.wikipedia.org/wiki/FLV&quot;&gt;FLV&lt;/a&gt; (Flash Video) encoder. 
+    You simply create an S3 bucket and give StreamInCloud permission to read and
+    write it. It then monitors the bucket for new videos, encodes them into
+    the FLV format, and places the encoded version in the bucket. Of course, if
+    the bucket is part of a CloudFront distribution, the encoded content
+    is then available worldwide at high speed with low latency.
+  &lt;/p&gt;
+  
+  &lt;p&gt;
+    StreamInCloud encodes the videos at 512kbps and leaves the size as-is.
+    This service is free; an advanced version with additional features and options will
+    be available later at an additional charge.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;http://cyberduck.ch/&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/cyberduck.jpg&quot;  class=&quot;img20090109&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    &lt;a href=&quot;http://www.cyberduck.ch&quot;&gt;Cyberduck&lt;/a&gt; is a Mac OS X client for
+    &lt;a href=&quot;http://aws.amazon.com/s3&quot;&gt;Amazon S3&lt;/a&gt; and
+    &lt;a href=&quot;http://aws.amazon.com/cloudfront&quot;&gt;CloudFront&lt;/a&gt;, with added support for
+    FTP, SFTP, WebDav, and other online storage facilities. The product has a very long
+    &lt;a href=&quot;http://cyberduck.ch/&quot;&gt;feature list&lt;/a&gt;, is
+    &lt;a href=&quot;http://svn.cyberduck.ch/trunk/AppleScript%20Samples/&quot;&gt;&quot;scriptable via AppleScript&lt;/a&gt;,
+    and, like CloudBerry Explorer, is Freeware.&lt;/p&gt;
+
+    &lt;p&gt;
+      Full &lt;a href=&quot;http://cyberduck.ch/source/&quot;&gt;source code&lt;/a&gt; is available as well.
+    &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;http://www.ylastic.com/&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/ylastic_homepage.png&quot; class=&quot;img20090109b&quot;/&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    As I noted earlier this week, &lt;a href=&quot;http://www.ylastic.com/&quot;&gt;Ylastic&lt;/a&gt;
+    allows you to manage your CloudFront distributions
+    from your iPhone.
+
+    There&#39;s now &lt;a href=&quot;http://blog.ylastic.com/?p=77&quot;&gt;support&lt;/a&gt; for the Google Android Phone as well.
+
+    Watch the &lt;a href=&quot;http://ylastic.com/screencasts.html&quot;&gt;screencasts&lt;/a&gt; to learn more.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;http://www.codeplex.com/MgrAmazonCloudfront&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/cloudfront_manager.png&quot; class=&quot;img20090109b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    &lt;a href=&quot;http://www.affirmaconsulting.com/&quot;&gt;Affirma Consulting&lt;/a&gt; has developed the
+    &lt;a href=&quot;http://www.codeplex.com/MgrAmazonCloudfront&quot;&gt;Manager For Amazon CloudFront&lt;/a&gt;
+    in
+    &lt;a href=&quot;http://msdn.microsoft.com/en-us/vcsharp/aa336809.aspx&quot;&gt;C#&lt;/a&gt;. The project is
+    hosted on CodePlex and &lt;a href=&quot;http://www.codeplex.com/MgrAmazonCloudfront/SourceControl/ListDownloadableCommits.aspx&quot;&gt;full source code&lt;/a&gt;
+    is available. It supports direct streaming of data into S3 and uses multiple threads to manage
+    simultaneous uploads, downloads, and live statistics.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/cloudbuddy.png&quot; class=&quot;img20090109&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    On the surface,
+    &lt;a href=&quot;http://www.mycloudbuddy.com/&quot;&gt;CloudBuddy&lt;/a&gt;
+    looks like a free S3 bucket explorer tool with full support for CloudFront.
+    However, there&#39;s quite a bit more beneath the surface. It is actually a 
+    platform with a highly refined
+    &lt;a href=&quot;http://www.mycloudbuddy.com/technology.html&quot;&gt;architecture&lt;/a&gt;.
+    All CloudBuddy operations are exposed as
+    &lt;a href=&quot;http://www.mycloudbuddy.com/sdk.html&quot;&gt;APIs&lt;/a&gt;. &lt;/p&gt;
+
+  &lt;p&gt;
+    The distribution includes a
+    &lt;a href=&quot;http://www.amazon.com/s/ref=nb_ss_gw?url=search-alias%3Daps&amp;field-keywords=microsoft+office&amp;x=0&amp;y=0&quot;&gt;Microsoft Office&lt;/a&gt;
+    plug-in to help you to manage your documents,
+    workbooks, emails, presentations, and projects in the cloud. 
+    &lt;a href=&quot;http://code.google.com/p/cloudbuddy/&quot;&gt;Source code&lt;/a&gt;
+    is available.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090109&quot;&gt;
+  &lt;div class=&quot;imgwrap20090109&quot;&gt;
+    &lt;a href=&quot;http://www.bucketexplorer.com/&quot;&gt;
+      &lt;img src=&quot;http://aws_blog.s3.amazonaws.com/images/bucketexplorer.png&quot; class=&quot;img20090109b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    &lt;a href=&quot;http://www.bucketexplorer.com/&quot;&gt;Bucket Explorer&lt;/a&gt; also has a number of unique and very handy features including the ability
+    to copy objects from one S3 account to another along with
+    &lt;a href=&quot;http://www.bucketexplorer.com/documentation/amazon-s3--bucket-commander.html&quot;&gt;timed backups to S3.&lt;/a&gt; It is available
+    for Windows, Mac, and Linux.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Enjoy, and &lt;a href=&quot;mailto:awseditor@amazon.com&quot;&gt;let us know&lt;/a&gt; how you have put CloudFront to use.&lt;/p&gt;
+
+&lt;p&gt;-- Jeff;&lt;/p&gt;
+
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>Manage Amazon EC2 With New Web-Based AWS Management Console</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/manage-amazon-ec2-with-new-webbased-console.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=60059208" title="Manage Amazon EC2 With New Web-Based AWS Management Console" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/manage-amazon-ec2-with-new-webbased-console.html" thr:count="14" thr:when="2009-01-13T13:16:18Z"/>
+        <id>tag:typepad.com,2003:post-60059208</id>
+        <published>2009-01-08T19:04:40-08:00</published>
+        <updated>2009-01-13T13:16:18Z</updated>
+        <summary>Today we’re announcing the availability of the Web-based AWS Management Console, which in this first release provides management of your Amazon EC2 environment via a point-and-click interface. A number of management tools already exist: for example a popular Firefox extension...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Amazon EC2" />
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Announcements" />
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Developer Tools" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;Today we’re announcing the availability of the &lt;a href=&quot;https://console.aws.amazon.com/index&quot;&gt;Web-based AWS Management Console&lt;/a&gt;, which in this first release provides management of your &lt;a href=&quot;http://aws.amazon.com/ec2/&quot;&gt;Amazon EC2&lt;/a&gt; environment via a point-and-click interface. A number of management tools already exist: for example a popular Firefox extension known as &lt;a href=&quot;http://developer.amazonwebservices.com/connect/entry.jspa?externalID=609&amp;amp;categoryID=88&quot;&gt;Elasticfox&lt;/a&gt;; however as you read more of this post I believe you’ll agree that the new console is compelling--especially when it’s time to log in as a new AWS developer.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://console.aws.amazon.com/&quot;&gt;&lt;img  src=&quot;http://mculver-images.s3.amazonaws.com/Console_thumb.png&quot; vspace=&quot;5&quot; width=&quot;175&quot; align=&quot;right&quot; border=&quot;0&quot; height=&quot;131&quot; hspace=&quot;5&quot;&gt;&lt;/a&gt;For starters, it’s easier than ever to gain access to your Amazon EC2 environment. The console provides access via your Amazon username and password. No more certificates or public/secret keys to manage! If you’re like me, I never seem to have my own computer at hand when I need to check the status of the Amazon EC2 farm, or for that matter when I need to launch a new instance. It’s a lot easier to log in with a username and password than to use those same credentials to retrieve my keys, configure Firefox (if it’s even on the borrowed computer) and then log in. &lt;/p&gt;
+&lt;p&gt;Then there’s the new point-and-click AJAX user interface for managing Amazon EC2 resources. No more page refreshes every time something updates; and a timer refreshes management console components, such as the status of running instances, every few seconds. &lt;/p&gt;
+&lt;p&gt;The AWS community creates an amazing selection of innovative Amazon Machine Images, or AMIs. In fact, the count is now a staggering 1200 AMIs and growing! That’s quite a menu to choose from—especially if you are a first-time user. The new Launch Instance Wizard walks you through starting your first instance; offering a short list of Linux and Windows server choices. Choose one of these AMIs, and then the wizard even suggests which ports to open in the firewall. It’s smart enough to suggest that you open SSH (port 22) for Linux images, and RDP (port 3389) for Windows instances. The wizard even suggests settings that restrict Amazon EC2 access to “your computer only”. &lt;/p&gt;
+&lt;p&gt;And as I hinted in the opening paragraph, this is just the first in a set of Console interfaces that will provide a UI layer on top of AWS infrastructure services. We’ll be adding additional Amazon Web Services in the future. &lt;/p&gt;
+&lt;p&gt;The console feature list is extensive, and provides intuitive management of all these things: &lt;/p&gt;
+&lt;ul type=&quot;”square”&quot;&gt;
+&lt;li&gt;AMI Management: browse and search AMIs, launch instances from AMIs, deregister and register AMIs 
+&lt;/li&gt;
+&lt;li&gt;Instance Management: launch, reboot, terminate, get console output, RDP/SSH help, etc. 
+&lt;/li&gt;
+&lt;li&gt;Security Group Management: create and delete security groups, add and remove permissions, configure firewall settings, open and close ports 
+&lt;/li&gt;
+&lt;li&gt;Elastic IP Management: create and release IP Addresses, associate IPs to instances 
+&lt;/li&gt;
+&lt;li&gt;Elastic Block Store: create, delete, attach and detach volumes. Take snapshots and manage snapshots. 
+&lt;/li&gt;
+&lt;li&gt;Key Pair management: create and delete public/private key pairs. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you’d like to take a six minute tour of the console, I created a &lt;a href=&quot;http://media.amazonwebservices.com/console/AwsConsole.html&quot;&gt;video&lt;/a&gt; (Flash format).&lt;/p&gt;
+&lt;p&gt;Finally, do you have a feature suggestion, or some other type of feedback? Feedback links are at the bottom of each page, and we welcome your input. &lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;i&gt;Mike&lt;/i&gt;&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>Cloud Computing and Biomedical Research Roundtable in San Diego</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/cloud-computing-and-biomedical-research-roundtable-in-san-diego.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=61040234" title="Cloud Computing and Biomedical Research Roundtable in San Diego" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/cloud-computing-and-biomedical-research-roundtable-in-san-diego.html" thr:count="0"/>
+        <id>tag:typepad.com,2003:post-61040234</id>
+        <published>2009-01-08T05:47:59-08:00</published>
+        <updated>2009-01-08T14:21:58Z</updated>
+        <summary>Cirrhus9 (mentioned yesterday) and Pfizer are co-sponsors of a roundtable discussion on the topic of cloud computing and biomedical research. Amazon CTO Werner Vogels will be in attendance at this unique event, where they&#39;ll discuss the emerging demands of biomedical...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Conferences &amp; User Groups" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;&lt;a href=&quot;http://www.cirrhus9.com/index.php/component/dtregister/&quot;&lt;img src=&quot;http://aws.typepad.com/files/cirrhus_roundtable.gif&quot; style=&quot;float:right;margin-left:10px;margin-bottom:10px;border:1px solid black;&quot;&gt;&lt;/a&gt;
+
+&lt;a href=&quot;http://www.cirrhus9.com&quot;&gt;Cirrhus9&lt;/a&gt; (mentioned yesterday) and &lt;a href=&quot;http://www.pfizer.com&quot;&gt;Pfizer&lt;/a&gt; are co-sponsors of a &lt;a href=&quot;http://www.cirrhus9.com/index.php/component/dtregister/&quot;&gt;roundtable discussion on the topic of cloud computing and biomedical research&lt;/a&gt;. Amazon CTO 
+&lt;a href=&quot;http://www.allthingsdistributed.com&quot;&gt;Werner Vogels&lt;/a&gt; will be in attendance at this unique event, where they&#39;ll discuss the emerging demands of biomedical research and how they can be met using cloud computing.&lt;/p&gt;
+
+&lt;p&gt;The roundtable will be help at 2 PM on January 14th at the Pfizer building in San Diego.&lt;/p&gt;
+
+&lt;p&gt;There are just 7 seats left so you&#39;d better go ahead and &lt;a href=&quot;http://www.cirrhus9.com/index.php/component/dtregister/&quot;&gt;register now&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;-- Jeff;&lt;/p&gt;
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>AWS Links - Wednesday, January 7, 2009</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/aws-links-wednesday-january-7-2009.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=61005796" title="AWS Links - Wednesday, January 7, 2009" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/aws-links-wednesday-january-7-2009.html" thr:count="1" thr:when="2009-01-07T23:32:54Z"/>
+        <id>tag:typepad.com,2003:post-61005796</id>
+        <published>2009-01-07T11:09:12-08:00</published>
+        <updated>2009-01-08T13:35:29Z</updated>
+        <summary>As usual, I&#39;ve got plenty to blog about. Here&#39;s a glimpse at some of the interesting things that have recently landed in my inbox. On Thursday, January 8th, Information Week and Amazon will present a Webcast titled How To Plug...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;style&gt;
+  .itemdiv20090107
+  {
+    border-bottom:  4px solid orange;
+    padding:        5px;
+    margin:         5px;
+    margin-bottom: 10px;
+  }
+
+  .imgwrap20090107
+  {
+    text-align:    center;
+    margin-bottom: 5px;
+  }
+
+  .img20090107
+  {
+    border:        0px;
+    float:         right;
+    margin-left:   5px;
+  }
+
+  .img20090107b
+  {
+    border:        1px solid black;
+    float:         right;
+    margin-left:   5px;
+  }
+
+&lt;/style&gt;
+
+&lt;p&gt;As usual, I&#39;ve got plenty to blog about. Here&#39;s a glimpse at some of 
+the interesting things that have recently landed in my inbox.&lt;/p&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://www.informationweek.com/cloud-computing/blog/archives/2009/01/how_eli_lilly_t.html&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/webcast_lilly.gif&quot; class=&quot;img20090107b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    On Thursday, January 8th, Information Week and Amazon
+    will present a Webcast titled
+    &lt;a href=&quot;https://www.techwebonlineevents.com/ars/eventregistration.do?mode=eventreg&amp;F=1001313&amp;K=4ON&quot;&gt;How To Plug Into The Cloud&lt;/a&gt;.
+    Attendees
+    will learn how &lt;a href=&quot;http://www.lilly.com/&quot;&gt;Eli Lilly&lt;/a&gt;
+    has used Amazon&#39;s
+    &lt;a href=&quot;http://aws.amazon.com/ec2&quot;&gt;EC2&lt;/a&gt; servers and
+    &lt;a href=&quot;http://aws.amazon.com/s3&quot;&gt;S3&lt;/a&gt; storage
+    to support its pharmaceuticals research. Presenters will
+    include Dave Powers from Eli Lilly and Adam Selipsky from
+    Amazon Web Services. Attendance is free but you do need
+    to &lt;a href=&quot;https://www.techwebonlineevents.com/ars/eventregistration.do?mode=eventreg&amp;F=1001313&amp;K=4ON&quot;&gt;preregister&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://www.rpath.com/corp/techtuesday&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/rpath_rbuilder.gif&quot; class=&quot;img20090107b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    The folks at &lt;a href=&quot;http://www.rpath.com&quot;&gt;rPath&lt;/a&gt; will be conducting a series of tech events on
+    alternate &lt;a href=&quot;http://www.rpath.com/corp/techtuesday&quot;&gt;Tuesdays&lt;/a&gt; starting on January 13th. Attendees
+    at the first event will learn how to build a virtual appliance using
+    &lt;a href=&quot;http://www.rpath.org/&quot;&gt;rBuilder Online&lt;/a&gt;
+    and launch it on &lt;a href=&quot;http://aws.amazon.com/ec2&quot;&gt;Amazon EC2&lt;/a&gt;. Once again, attendance
+    is free but &lt;a href=&quot;http://www.rpath.com/corp/techtuesday&quot;&gt;preregistation&lt;/a&gt; is a must!
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://contentworkspace.com/solutions/amazon_s3.asp&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/contentworkspace.gif&quot; class=&quot;img20090107b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    &lt;a href=&quot;http://contentworkspace.com/&quot;&gt;Content Workspace&lt;/a&gt; has built a document scanning
+    and indexing service around
+    &lt;a href=&quot;http://aws.amazon.com/s3&quot;&gt;Amazon S3&lt;/a&gt; and the
+    &lt;a href=&quot;http://www.mturk.com&quot;&gt;Amazon Mechanical Turk&lt;/a&gt;.
+    Access to the Mechanical Turk workforce gives them the ability to
+    offer document and form classification, document indexing, data entry,
+    translation, detection of duplicates, and
+    &lt;a href=&quot;http://contentworkspace.com/solutions/mturk.asp&quot;&gt;more&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://www.cloudfoundry.com/&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/cloudfoundry.gif&quot; class=&quot;img20090107b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    I met
+    &lt;a href=&quot;http://www.cloudfoundry.com/aboutus.html&quot;&gt;Chris Richardson&lt;/a&gt; a year or two
+    ago at a conference in Philadelphia. Since then
+    we&#39;ve stayed in touch and have bumped in to each other at conferences on the east
+    and west coast. His &lt;a href=&quot;http://code.google.com/p/cloudtools/&quot;&gt;Cloud Tools&lt;/a&gt;
+    project makes it easy to deploy, test, and manage Java EE applications on
+    &lt;a href=&quot;http://aws.amazon.com/ec2&quot;&gt;EC2&lt;/a&gt;. Now, Chris has created the 
+    &lt;a href=&quot;http://www.cloudfoundry.com/&quot;&gt;Cloud Foundry&lt;/a&gt; in order to make this
+    process even easier. You can simply drop your application&#39;s &quot;.war&quot; files
+    into a container managed by Cloud Factory and running on EC2. You can choose
+    between a number of runtime topologies and can manage your entire cluster
+    with one button. Learn more by watching the
+    &lt;a href=&quot;http://14mxqsr8atw1gws4dm82.123108screencast.s3.amazonaws.com/screencast.html&quot;&gt;Cloud Foundry screencast&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://www.cirrhus9.com/&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/cirrhus.gif&quot; class=&quot;img20090107b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    Mike from &lt;a href=&quot;http://www.cirrhus9.com&quot;&gt;Cirrhus9&lt;/a&gt; wrote to tell about
+    his company and their cloud computing service offerings. They focus on the
+    Life Sciences industry, with 3 of the 4 founders coming from the pharmaceuticals
+    business. They got together as a &quot;Cloud Integrator&quot; to help IT managers navigate
+    and leverage cloud computing. Their
+    &lt;a href=&quot;http://www.cirrhus9.com/index.php/services.html&quot;&gt;offerings&lt;/a&gt;
+    include an evaluation methodology
+    to evaluate the feasibility of moving individual applications to the cloud. They
+    also understand the FDA Qualification and Validation process and can work
+    with companies that would like to move health care applications into the 
+    cloud. 
+  &lt;/p&gt;
+  &lt;p&gt;
+    They&#39;ve also created
+    &lt;a href=&quot;http://www.cirrhus9.com/index.php/opennx.html&quot;&gt;CloudBuntu&lt;/a&gt;, a 
+    lightweight managed desktop running on EC2 and accessible through a 
+    web browser.&lt;/a&gt;
+
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://blog.ylastic.com/?p=72&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/ylastic_iphone.gif&quot; class=&quot;img20090107&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    By way of the &lt;a href=&quot;http://blog.ylastic.com/?p=72&quot;&gt;Ylastic blog&lt;/a&gt; comes
+    news that their very
+    &lt;a href=&quot;http://ylastic.com/features.html&quot;&gt;full-featured AWS management application&lt;/a&gt;
+    can now be run on an Apple
+    &lt;a href=&quot;http://www.apple.com/iphone/&quot;&gt;iPhone&lt;/a&gt;. Using Ylastic you can
+    architect, manage, and monitor your AWS cloud computing environment. 
+    Watch this application in action  on the
+    &lt;a href=&quot;http://ylastic.com/screencasts.html&quot;&gt;Ylastic screencast&lt;/a&gt;.
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://www.econsteve.com/?p=124&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/econ_steve_ruby_xml.gif&quot; class=&quot;img20090107b&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+  I now have proof that cloud computing can be hereditary! My son
+  &lt;a href=&quot;http://www.econsteve.com/&quot;&gt;Stephen&lt;/a&gt; is studying Applied Math and Economics at the University of Washington. He&#39;s 
+  also working on a really interesting research project in the Economics department. The
+  project makes use of the Mechanical Turk in a very unique way. The paper is still
+  being written and I&#39;ll be sure to link to it when it finally arrives. Over the holiday
+  break Stephen needed to parse some large XML files. The parsing was taking forever
+  on his laptop, so he launched an Extra Large &lt;a href=&quot;http://aws.amazon.com/ec2&quot;&gt;EC2&lt;/a&gt;
+  instance and did his work there instead. In 
+  &lt;a href=&quot;http://www.econsteve.com/?p=124&quot;&gt;his post&lt;/a&gt;, he explains what he did and
+  also provides a photo-illustrated tour of how he set up EC2 and
+  &lt;a href=&quot;http://aws.amazon.com/ebs&quot;&gt;EBS&lt;/a&gt;.
+
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;itemdiv20090107&quot;&gt;
+  &lt;div class=&quot;imgwrap20090107&quot;&gt;
+    &lt;a href=&quot;http://arxiv.org/abs/0901.0029&quot;&gt;
+      &lt;img src=&quot;http://aws.typepad.com/files/uw_scientific_computing.gif&quot; class=&quot;img20090107&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;p&gt;
+    Finally (I am out of time, not material) Researchers in the
+    &lt;a href=&quot;http://www.phys.washington.edu/&quot;&gt;Physics Department at the University
+    of Washington&lt;/a&gt; has prepared a
+    report on the topic of
+    &lt;a href=&quot;http://arxiv.org/abs/0901.0029&quot;&gt;Scientific Computing in
+      the Cloud&lt;/a&gt;.
+    They have investigated the feasibility performing scientific
+     computing in the cloud (using EC2) as an alternative to
+    traditional computational tools. They note that
+
+    &quot;For research groups, cloud computing provides convenient access
+    to reliable, high performance clusters and storage, without the
+    need to purchase and maintain sophisticated hardware. For
+    developers, virtualization allows scientific codes to be optimized
+    and pre-installed on machine images, facilitating control over the
+    computational environment.&quot;
+    
+  &lt;/p&gt;
+  &lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And that&#39;s it for today. Send me information about what you are doing with
+AWS and I&#39;ll do my best to fit you in.&lt;/p&gt;
+
+&lt;p&gt;--Jeff;&lt;/p&gt;
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>Bits For Sale - The New Amazon S3 Requester Pays Model</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2009/01/bits-for-sale-amazon-s3-requester-payment-model.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=60729402" title="Bits For Sale - The New Amazon S3 Requester Pays Model" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2009/01/bits-for-sale-amazon-s3-requester-payment-model.html" thr:count="5" thr:when="2009-01-06T00:48:31Z"/>
+        <id>tag:typepad.com,2003:post-60729402</id>
+        <published>2009-01-02T14:34:15-08:00</published>
+        <updated>2009-01-06T00:58:00Z</updated>
+        <summary>We rolled out a powerful new feature for Amazon S3 in the final hours of 2008. This new feature, dubbed Requester Pays, works at the level of an S3 bucket. If the bucket&#39;s owner flags it as Requester Pays, then...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;We rolled out a powerful new feature for &lt;a href=&quot;http://aws.amazon.com/s3&quot;&gt;Amazon S3&lt;/a&gt; in the final hours of 2008.&lt;/p&gt;
+
+&lt;p&gt;This new feature, dubbed Requester Pays, works at the level of an S3 bucket. If the bucket&#39;s owner flags it as Requester Pays, then all data transfer and request costs are paid by the party accessing the data.&lt;/p&gt;
+
+&lt;p&gt;The Requester Pays model can be used in two ways.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://docs.amazonwebservices.com/AmazonS3/latest/index.html?RequesterPaysBuckets.html&quot;&gt;
+&lt;img src=&quot;http://aws.typepad.com/files/s3_dev_guide_2009_01_02.png&quot; style=&quot;float: right; margin-left: 10px; margin-bottom: 10px;&quot;&gt;&lt;/a&gt;First, by simply marking a bucket as Requester Pays, data owners can provide access to large data sets without incurring charges for data transfer or requests. For example, they could make available a 1 GB dataset at a cost of just 15 cents per month (18 cents if stored in the European instance of S3). Requesters use signed and specially flagged requests to identify themselves to AWS, paying for S3 GET requests and data transfer at the usual rates — 17 cents per GB for data transfer (even less at high volumes) and 1 cent for every 10,000 GET requests. The newest version of the 
+&lt;a href=&quot;http://docs.amazonwebservices.com/AmazonS3/latest/index.html?RequesterPaysBuckets.html&quot;&gt;S3 Developer Guide&lt;/a&gt; contains the information needed to make use of S3 in this way.&lt;/p&gt;
+
+&lt;div style=&quot;clear:both;&quot;&gt;&amp;nbsp;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://docs.amazonwebservices.com/AmazonDevPay/latest/DevPayDeveloperGuide/index.html?S3RequesterPays.html&quot;&gt;&lt;img src=&quot;http://aws.typepad.com/files/devpay_reqpay_flow.png&quot; style=&quot;float: right; margin-left: 10px; margin-bottom: 10px;&quot;&gt;&lt;/a&gt;Second, the Requester Pays feature can be used in conjunction with &lt;a href=&quot;http://aws.amazon.com/devpay/&quot;&gt;Amazon DevPay&lt;/a&gt;. Content owners charge a markup for access to the data. The price can include a monthly fee, a markup on the data transfer costs, and a markup on the cost of each GET. The newest version of the
+&lt;a href=&quot;http://docs.amazonwebservices.com/AmazonDevPay/latest/DevPayDeveloperGuide/index.html?S3RequesterPays.html&quot;&gt;DevPay Developer Guide&lt;/a&gt; has all of the information needed to set this up, including some helpful diagrams. Organizations with large amounts of valuable data can now use DevPay to expose and monetize the data, with payment by the month or by access (or some combination). For example, I could create a database of all dog kennels in the United States, and make it available for $20 per month, with no charge for access. My AWS account would not be charged for the data transfer and request charges, only for the data storage.&lt;/p&gt;
+
+&lt;p&gt;I firmly believe that business model innovation is as important as technical innovation. This new feature gives you the ability to create the new, innovative, and very efficient business models that you will need to have in order to succeed in 2009!&lt;/p&gt;
+
+-- Jeff;&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>Please Vote: AWS and AWS-Powered Applications Are Crunchies Finalists</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2008/12/please-vote-aws-and-aws-applications-are-finalists-for-crunchies.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=60563682" title="Please Vote: AWS and AWS-Powered Applications Are Crunchies Finalists" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2008/12/please-vote-aws-and-aws-applications-are-finalists-for-crunchies.html" thr:count="1" thr:when="2009-01-11T18:00:14Z"/>
+        <id>tag:typepad.com,2003:post-60563682</id>
+        <published>2008-12-29T12:14:58-08:00</published>
+        <updated>2009-01-11T18:00:14Z</updated>
+        <summary>AWS is a finalist in two categories of the Crunchies awards, Best Enterprise and Best Overall. In addition to that, AWS-powered applications from Animoto and SlideRocket are candidates for Best Design; eBuddy and Fotonauts are up for Best International; DropBox...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;AWS is a finalist in two categories of the &lt;a href=&quot;http://crunchies2008.techcrunch.com/&quot;&gt;Crunchies&lt;/a&gt; awards, Best Enterprise and Best Overall.&lt;/p&gt;
+
+&lt;p&gt;In addition to that, AWS-powered applications from &lt;a href=&quot;http://www.animoto.com/&quot;&gt;Animoto&lt;/a&gt; and &lt;a href=&quot;http://www.sliderocket.com&quot;&gt;SlideRocket&lt;/a&gt; are candidates for Best Design; &lt;a href=&quot;http://www.ebuddy.com/&quot;&gt;eBuddy&lt;/a&gt; and &lt;a href=&quot;http://www.fotonauts.com/&quot;&gt;Fotonauts&lt;/a&gt; are up for Best International; &lt;a href=&quot;http://www.getdropbox.com/&quot;&gt;DropBox&lt;/a&gt; for Best New Startup of 2008; and &lt;a href=&quot;http://www.twitter.com&quot;&gt;Twitter&lt;/a&gt; (competing with AWS) for Best Overall. &lt;a href=&quot;http://www.goodguide.com/&quot;&gt;GoodGuide&lt;/a&gt; is a finalist in the Most Likely To Make The World A Better Place category, as is &lt;a href=&quot;http://akoha.com&quot;&gt;Akoha&lt;/a&gt;. &lt;a href=&quot;http://www.meebo.com&quot;&gt;Meebo&lt;/a&gt; is a candidate for Best Application.&lt;/p&gt;
+
+&lt;p&gt;If you could take the time to &lt;a href=&quot;&quot;&gt;vote&lt;/a&gt; that would be great! Here are some direct links to make it really easy:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best Enterprise - AWS&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=23&amp;category_id=5&quot; &gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/5.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best Overall - AWS&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=76&amp;category_id=15&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/15.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best Overall - Twitter&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=80&amp;category_id=15&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/15.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best Design - Animoto&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=17&amp;category_id=4&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/4.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best Design - SlideRocket&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=22&amp;category_id=4&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/4.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best International - eBuddy&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=34&amp;category_id=7&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/7.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best International - Fotonauts&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=35&amp;category_id=7&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/7.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best New Startup of 2008 - DropBox&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=70&amp;category_id=14&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/14.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Most Likely To Make The World A Better Place - GoodGuide&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=58&amp;category_id=11&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/11.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Most Likely To Make The World A Better Place - Akoha&lt;br/&gt;&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=55&amp;category_id=11&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/11.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;padding-bottom:10px;&quot;&gt;Best Application - Meebo&lt;br/&gt;
+&lt;a href=&quot;http://crunchies2008.techcrunch.com/votes/?nominee_id=47&amp;category_id=9&quot;&gt;&lt;img src=&quot;http://crunchies2008.techcrunch.com/wp-content/themes/crunchies/images/vote_badges/9.png&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;-- Jeff;&lt;/p&gt;
+
+&lt;p&gt;PS - If I missed any AWS-powered applications, drop me a &lt;a href=&quot;mailto:awseditor@amazon.com&quot;&gt;note&lt;/a&gt; and I&#39;ll update this post!&lt;/p&gt;
+&lt;/div&gt;
+</content>
+
+
+    </entry>
+    <entry>
+        <title>Solve for Efficiency With Amazon Mechanical Turk</title>
+        <link rel="alternate" type="text/html" href="http://aws.typepad.com/aws/2008/12/solve-for-efficiency-with-amazon-mechanical-turk.html" />
+        <link rel="service.edit" type="application/atom+xml" href="http://www.typepad.com/t/atom/weblog/blog_id=73998/entry_id=60566782" title="Solve for Efficiency With Amazon Mechanical Turk" />
+        <link rel="replies" type="text/html" href="http://aws.typepad.com/aws/2008/12/solve-for-efficiency-with-amazon-mechanical-turk.html" thr:count="1" thr:when="2008-12-30T13:44:28Z"/>
+        <id>tag:typepad.com,2003:post-60566782</id>
+        <published>2008-12-29T12:10:35-08:00</published>
+        <updated>2008-12-30T13:44:28Z</updated>
+        <summary>This is a quick post about another great use of Amazon Mechanical Turk. Over on Friend Feed Jean-Claude Bradley posted a blog post called “Mechanical Turk Does Solubility on Google Spreadsheet”, which talks about using Mechanical Turk to process solubility...</summary>
+        <author>
+            <name>AWS Editor</name>
+        </author>
+        <category scheme="http://www.sixapart.com/ns/types#category" term="Mechanical Turk" />
+        
+        
+<content type="html" xml:lang="en-US" xml:base="http://aws.typepad.com/aws/">
+&lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;p&gt;&lt;img  src=&quot;http://2.bp.blogspot.com/_R3jz5f_NkRo/SVjTj_6EpCI/AAAAAAAAAjQ/6Itd78gddLA/s400/nitrobenzmethanol.jpg&quot; vspace=&quot;5&quot; width=&quot;400&quot; align=&quot;right&quot; height=&quot;311&quot; hspace=&quot;5&quot;&gt;This is a quick post about another great use of &lt;a href=&quot;http://aws.amazon.com/mturk/&quot;&gt;Amazon Mechanical Turk&lt;/a&gt;. Over on &lt;a href=&quot;http://friendfeed.com/e/2b5d0f22-b68e-7bf5-19f1-acbb9d4479d0/Mechanical-Turk-Does-Solubility-on-Google/&quot;&gt;Friend Feed&lt;/a&gt; Jean-Claude Bradley posted a blog post called “&lt;a href=&quot;http://usefulchem.blogspot.com/2008/12/mechanical-turk-does-solubility-on.html&quot;&gt;Mechanical Turk Does Solubility on Google Spreadsheet&lt;/a&gt;”, which talks about using Mechanical Turk to process solubility data for the &lt;a href=&quot;http://onschallenge.wikispaces.com/&quot;&gt;Open Notebook Science Challenge&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;What I believe is revolutionary here is that rather than rely on government funding to help process results, scientists are able to use Crowdsourcing to process results in real time—and at a very fine unit of granularity. When you combine those characteristics with the Open Notebook Science Challenge, the result is unprecedented transparency.&lt;/p&gt;
+&lt;p&gt;The blog post referenced above inspired another, titled “&lt;a href=&quot;http://researchremix.wordpress.com/2008/12/29/generalizability-coefficient-for-mechanical-turk-annotations/&quot;&gt; Generalizability coefficient for Mechanical Turk annotations&lt;/a&gt;”, that describes using Amazon Mechanical Turk and Crowdsourcing to generate annotations of a thesis. Wow, eliminating (or more likely reducing) one of the biggest pains associated with a thesis. Doctoral candidates everywhere should take note.&lt;/p&gt;
+&lt;p&gt;It’s about more than Grad Student pain relief though: by Crowdsourcing mechanical tasks such as annotation, students are free to focus on data collection and analysis. That makes the entire process more efficient. &lt;/p&gt;
+&lt;p&gt;These innovative uses of Amazon Mechanical Turk combined with the new &lt;a href=&quot;http://aws.amazon.com/publicdatasets/&quot;&gt;Public Data Sets&lt;/a&gt;, are an exciting time in both Cloud Computing and in science.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Mike&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;
+</content>
+
+
+    </entry>
+ 
+</feed>
+<!-- ph=1 -->
+<!-- nhm:from_kauri -->

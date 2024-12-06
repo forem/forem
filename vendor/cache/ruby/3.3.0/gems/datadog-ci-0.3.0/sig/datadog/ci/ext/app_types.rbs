@@ -1,0 +1,9 @@
+module Datadog
+  module CI
+    module Ext
+      module AppTypes
+        TYPE_TEST: String
+      end
+    end
+  end
+end

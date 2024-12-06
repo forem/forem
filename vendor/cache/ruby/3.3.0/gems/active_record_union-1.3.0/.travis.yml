@@ -1,0 +1,11 @@
+language: ruby
+addons:
+  postgresql: "9.4"
+rvm:
+  - 2.3.6
+gemfile:
+  - rails_4_2.gemfile
+  - rails_5_0.gemfile
+  - rails_5_1.gemfile
+  - rails_5_2.gemfile
+script: bundle exec rspec

@@ -1,0 +1,140 @@
+PATH
+  remote: .
+  specs:
+    cypress-rails (0.7.0)
+      puma (>= 3.8.0)
+      railties (>= 5.2.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    actionpack (7.1.3)
+      actionview (= 7.1.3)
+      activesupport (= 7.1.3)
+      nokogiri (>= 1.8.5)
+      racc
+      rack (>= 2.2.4)
+      rack-session (>= 1.0.1)
+      rack-test (>= 0.6.3)
+      rails-dom-testing (~> 2.2)
+      rails-html-sanitizer (~> 1.6)
+    actionview (7.1.3)
+      activesupport (= 7.1.3)
+      builder (~> 3.1)
+      erubi (~> 1.11)
+      rails-dom-testing (~> 2.2)
+      rails-html-sanitizer (~> 1.6)
+    activesupport (7.1.3)
+      base64
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      mutex_m
+      tzinfo (~> 2.0)
+    ast (2.4.2)
+    base64 (0.2.0)
+    bigdecimal (3.1.6)
+    builder (3.2.4)
+    concurrent-ruby (1.2.3)
+    connection_pool (2.4.1)
+    crass (1.0.6)
+    drb (2.2.0)
+      ruby2_keywords
+    erubi (1.12.0)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
+    io-console (0.7.2)
+    irb (1.11.2)
+      rdoc
+      reline (>= 0.4.2)
+    loofah (2.22.0)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.12.0)
+    mini_portile2 (2.8.5)
+    minitest (5.15.0)
+    mutex_m (0.2.0)
+    nio4r (2.7.0)
+    nokogiri (1.16.2)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    parallel (1.22.1)
+    parser (3.1.2.0)
+      ast (~> 2.4.1)
+    psych (5.1.2)
+      stringio
+    puma (6.4.2)
+      nio4r (~> 2.0)
+    racc (1.7.3)
+    rack (3.0.9)
+    rack-session (2.0.0)
+      rack (>= 3.0.0)
+    rack-test (2.1.0)
+      rack (>= 1.3)
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
+    rails-dom-testing (2.2.0)
+      activesupport (>= 5.0.0)
+      minitest
+      nokogiri (>= 1.6)
+    rails-html-sanitizer (1.6.0)
+      loofah (~> 2.21)
+      nokogiri (~> 1.14)
+    railties (7.1.3)
+      actionpack (= 7.1.3)
+      activesupport (= 7.1.3)
+      irb
+      rackup (>= 1.0.0)
+      rake (>= 12.2)
+      thor (~> 1.0, >= 1.2.2)
+      zeitwerk (~> 2.6)
+    rainbow (3.1.1)
+    rake (13.0.6)
+    rdoc (6.6.2)
+      psych (>= 4.0.0)
+    regexp_parser (2.4.0)
+    reline (0.4.2)
+      io-console (~> 0.5)
+    rexml (3.2.5)
+    rubocop (1.29.1)
+      parallel (~> 1.10)
+      parser (>= 3.1.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.17.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.18.0)
+      parser (>= 3.1.1.0)
+    rubocop-performance (1.13.3)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    ruby-progressbar (1.11.0)
+    ruby2_keywords (0.0.5)
+    standard (1.12.1)
+      rubocop (= 1.29.1)
+      rubocop-performance (= 1.13.3)
+    stringio (3.1.0)
+    thor (1.3.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    unicode-display_width (2.1.0)
+    webrick (1.8.1)
+    zeitwerk (2.6.13)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler
+  cypress-rails!
+  minitest (~> 5.0)
+  rake (~> 13.0)
+  standard (>= 0.2.0)
+
+BUNDLED WITH
+   2.3.13

@@ -1,0 +1,19 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/debug-1.9.2/ext/debug
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/debug-1.9.2/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j4m2si sitelibdir\=./.gem.20241205-149352-j4m2si clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/debug-1.9.2/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j4m2si sitelibdir\=./.gem.20241205-149352-j4m2si
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/debug-1.9.2/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j4m2si sitelibdir\=./.gem.20241205-149352-j4m2si install
+/usr/bin/install -c -m 0755 debug.so ./.gem.20241205-149352-j4m2si/debug
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/debug-1.9.2/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j4m2si sitelibdir\=./.gem.20241205-149352-j4m2si clean

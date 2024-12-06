@@ -1,0 +1,3248 @@
+---
+AN:
+  name: Andaman and Nicobar Islands
+  code: AN
+  unofficial_names: Andaman and Nicobar Islands
+  geo:
+    latitude: 11.7400867
+    longitude: 92.6586401
+    min_latitude: 6.7535159
+    min_longitude: 92.2080496
+    max_latitude: 13.6746932
+    max_longitude: 94.3014984
+  translations:
+    en: Andaman and Nicobar Islands
+    af: Andaman- en Nicobar-eilande
+    ar: جزر أندمان ونيكوبار
+    as: আন্দামান আৰু নিকোবৰ দ্বীপপুঞ্জ
+    be: Андаманскія і Нікабарскія астравы
+    bg: Андамански и Никобарски острови
+    bn: আন্দামান ও নিকোবর দ্বীপপুঞ্জ
+    ca: Illes Andaman i Nicobar
+    cs: Andamany a Nikobary
+    da: Andamanerne og Nicobarerne
+    de: Andamanen und Nikobaren
+    el: Νησιά Άνταμαν και Νίκομπαρ
+    es: Islas Andamán y Nicobar
+    et: Andamanid ja Nicobarid
+    eu: Andaman eta Nicobar uharteak
+    fa: جزایر آندامان و نیکوبار
+    fi: Andamaanit ja Nikobaarit
+    fr: Îles Andaman-et-Nicobar
+    gl: Andaman e Nicobar
+    gu: અંદામાન અને નિકોબાર દ્વીપસમૂહ
+    he: איי אנדמן וניקובר
+    hi: अण्डमान और निकोबार द्वीपसमूह
+    hr: Andamanski i Nikobarski otoci
+    hu: Andamán- és Nikobár-szigetek
+    id: Kepulauan Andaman dan Nikobar
+    is: Andaman- og Níkóbareyjar
+    it: Andamane e Nicobare
+    ja: アンダマン・ニコバル諸島
+    ka: ანდამანის და ნიკობარის კუნძულები
+    kn: ಅಂಡಮಾನ್ ಮತ್ತು ನಿಕೊಬಾರ್ ದ್ವೀಪಗಳು
+    ko: 안다만 니코바르 제도
+    lt: Andamanų ir Nikobarų salos
+    lv: Andamanu un Nikobaru Salas
+    ml: ആന്തമാൻ നിക്കോബാർ ദ്വീപുകൾ
+    mr: अंदमान आणि निकोबार
+    ms: Kepulauan Andaman dan Nicobar
+    nb: Andamanene og Nikobarene
+    ne: अण्डमान र निकोबार द्वीप समूह
+    nl: Andamanerna och Nikobarerna
+    or: ଆଣ୍ଡମାନ ଓ ନିକୋବର ଦ୍ଵୀପପୁଞ୍ଜ
+    pl: Andamany i Nikobary
+    pt: Andamão e Nicobar
+    ro: Insulele Andaman și Nicobar
+    ru: Андаманские и Никобарские острова
+    si: අන්දමන් සහ නිකොබාර් දූපත්
+    sk: Andamany a Nikobary
+    sl: Andamanski in Nikobarski otoki
+    sr: Андамани и Никобари
+    sv: Andamanerna och Nikobarerna
+    sw: Visiwa vya Andaman na Nicobar
+    ta: அந்தமான் நிக்கோபார் தீவுகள்
+    te: అండమాన్ నికోబార్ దీవులు
+    th: หมู่เกาะอันดามันและนิโคบาร์
+    tr: Andaman ve Nikobar adaları
+    uk: Андаманські і Нікобарські острови
+    ur: جزائر انڈمان و نکوبار
+    vi: Quần đảo Andaman và Nicobar
+    zh: 安达曼-尼科巴群岛
+    ceb: Union Territory of Andaman and Nicobar Islands
+    yo_BJ: Àwɔn Erékùshù Andaman àti Nicobar
+    sr_Latn: Andamani i Nikobari
+    yue_Hans: 安达曼-尼科巴群岛
+    jv: Kapuloan Andaman lan Nikobar
+    ccp: "\U00011103\U0001111A\U00011134\U00011113\U0001111F\U0001111A\U00011134 \U00011103\U00011133\U00011103
+      \U0001111A\U00011128\U00011107\U0001112E\U0001111D\U00011127\U00011122\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    ky: Андаман жана Никобар аралдары
+    pa: ਅੰਡੇਮਾਨ ਅਤੇ ਨਿਕੋਬਾਰ ਦੀਪ ਸਮੂਹ
+    yue: 安達曼-尼科巴群島
+    my: ကပ္ပလီကျွန်း
+    yo: Àwọn Erékùṣù Andaman àti Nicobar
+    uz: Andaman va Nikobar orollari
+    bs: Andamani i Nikobari
+    mk: Андамани и Никобари
+    'no': Andamanene og Nikobarene
+    az: Andaman və Nikobar adaları
+    ga: Oileáin Andaman agus Nicobar
+    ha: Tsibiran Andaman da Nicobar
+    ha_NE: Tsibiran Andaman da Nicobar
+    ps: اندامان او نیکوبار ټاپو
+  comments:
+  type: state
+AP:
+  name: Andhra Pradesh
+  code: AP
+  unofficial_names: Andhra Pradesh
+  geo:
+    latitude: 15.9128998
+    longitude: 79.7399875
+    min_latitude: 12.596836
+    min_longitude: 76.749786
+    max_latitude: 19.1565479
+    max_longitude: 84.7919452
+  translations:
+    en: Andhra Pradesh
+    ar: أندرا برديش
+    as: অন্ধ্ৰপ্ৰদেশ
+    az: Andhra Pradeş
+    be: Андхра-Прадэш
+    bg: Андхра Прадеш
+    bn: অন্ধ্রপ্রদেশ
+    ca: Andhra Pradesh
+    cs: Ándhrapradéš
+    da: Andhra Pradesh
+    de: Andhra Pradesh
+    el: Άντρα Πραντές
+    es: Andhra Pradesh
+    et: Andhra Pradesh
+    eu: Andhra Pradesh
+    fa: آندرا پرادش
+    fi: Andhra Pradesh
+    fr: Andhra Pradesh
+    gl: Andra Pradex
+    gu: આંધ્ર પ્રદેશ
+    he: אנדרה פרדש
+    hi: आन्ध्र प्रदेश
+    hr: Andhra Pradesh
+    hu: Ándhra Prades
+    hy: Անդհրա-Պրադեշ
+    id: Andhra Pradesh
+    is: Andhra Pradesh
+    it: Andhra Pradesh
+    ja: アーンドラ・プラデーシュ州
+    ka: ანდჰრა-პრადეში
+    kn: ಆಂಧ್ರ ಪ್ರದೇಶ
+    ko: 안드라프라데시 주
+    lt: Andhra Pradešas
+    lv: Āndhra Pradēša
+    ml: ആന്ധ്രാപ്രദേശ്‌
+    mn: Андра Прадеш
+    mr: आंध्र प्रदेश
+    ms: Andhra Pradesh
+    nb: Andhra Pradesh
+    ne: आन्ध्र प्रदेश
+    nl: Andhra Pradesh
+    or: ଆନ୍ଧ୍ର ପ୍ରଦେଶ
+    pl: Andhra Pradesh
+    ps: آندرا پرديش
+    pt: Andhra Pradesh
+    ro: Andhra Pradesh
+    ru: Андхра-Прадеш
+    si: ආන්ද්‍ර ප්‍රදේශ්
+    sk: Ándhrapradéš
+    sr: Андра Прадеш
+    sv: Andhra Pradesh
+    sw: Andhra Pradesh
+    ta: ஆந்திரப் பிரதேசம்
+    te: ఆంధ్ర ప్రదేశ్
+    th: รัฐอานธรประเทศ
+    tr: Andhra Pradeş
+    uk: Андхра-Прадеш
+    ur: آندھرا پردیش
+    vi: Andhra Pradesh
+    cy: Andhra Pradesh
+    af: Andhra Pradesh
+    ceb: State of Andhra Pradesh
+    sr_Latn: Andra Pradeš
+    zh: 安得拉邦
+    yue_Hans: 安德拉邦
+    sq: Andra Pradesh
+    ccp: "\U00011103\U0001111A\U00011134\U00011119\U00011133\U00011122\U00011127 \U0001111B\U00011133\U00011122\U00011127\U00011118\U0001112C\U0001110C\U00011134"
+    ga: Andhra Pradesh
+    pa: ਆਂਧਰਾ ਪ੍ਰਦੇਸ਼
+    kk: Андхра-Прадеш
+    yue: 安德拉邦
+    am: አንድረ ፕረደሽ
+    my: အန်ဒရာပရာဒစ် ပြည်နယ်
+    yo: Andhra Pradesh
+    uz: Andhra Pradesh
+    bs: Andhra Pradesh
+    mk: Андра Прадеш
+    'no': Andhra Pradesh
+    yo_BJ: Andhra Pradesh
+    ha: Andhra Pradesh
+    ha_NE: Andhra Pradesh
+    sd: آنڌرا پرديش
+  comments:
+  type: state
+AR:
+  name: Arunachal Pradesh
+  code: AR
+  unofficial_names: Arunachal Pradesh
+  geo:
+    latitude: 28.2179994
+    longitude: 94.7277528
+    min_latitude: 26.64258
+    min_longitude: 91.558064
+    max_latitude: 29.453453
+    max_longitude: 97.403297
+  translations:
+    en: Arunachal Pradesh
+    ar: أروناجل برديش
+    as: অৰুণাচল প্ৰদেশ
+    be: Аруначал-Прадэш
+    bg: Аруначал Прадеш
+    bn: অরুণাচল প্রদেশ
+    ca: Arunachal Pradesh
+    cs: Arunáčalpradéš
+    da: Arunachal Pradesh
+    de: Arunachal Pradesh
+    el: Αρουνάτσαλ Πραντές
+    es: Arunachal Pradesh
+    et: Arunāchal Pradesh
+    eu: Arunachal Pradesh
+    fa: آروناچال پرادش
+    fi: Arunachal Pradesh
+    fr: Arunachal Pradesh
+    gu: અરુણાચલ પ્રદેશ
+    he: ארונאצ׳ל פרדש
+    hi: अरुणाचल प्रदेश
+    hr: Arunachal Pradesh
+    hu: Arunácsal Prades
+    hy: Արունաչալ Պրադեշ
+    id: Arunachal Pradesh
+    is: Arunachal Pradesh
+    it: Arunachal Pradesh
+    ja: アルナーチャル・プラデーシュ州
+    ka: არუნაჩალ-პრადეში
+    kn: ಅರುಣಾಚಲ ಪ್ರದೇಶ
+    ko: 아루나찰프라데시 주
+    lt: Arunačal Pradešas
+    lv: Arunāčala Pradēša
+    ml: അരുണാചൽ പ്രദേശ്
+    mn: Аруначалпрадеш
+    mr: अरुणाचल प्रदेश
+    ms: Arunachal Pradesh
+    nb: Arunachal Pradesh
+    ne: अरुणाचल प्रदेश
+    nl: Arunachal Pradesh
+    or: ଅରୁଣାଚଳ ପ୍ରଦେଶ
+    pl: Arunachal Pradesh
+    ps: اروناچل پرديش
+    pt: Arunachal Pradesh
+    ro: Arunachal Pradesh
+    ru: Аруначал-Прадеш
+    si: අරුනාචල් ප්‍රදේශ්
+    sk: Arunáčalpradéš
+    sr: Аруначал Прадеш
+    sv: Arunachal Pradesh
+    sw: Arunachal Pradesh
+    ta: அருணாசலப் பிரதேசம்
+    te: అరుణాచల్ ప్రదేశ్
+    th: รัฐอรุณาจัลประเทศ
+    tk: Arunachal Pradesh
+    tr: Arunaçhal Pradesh
+    uk: Аруначал-Прадеш
+    ur: اروناچل پردیش
+    vi: Arunachal Pradesh
+    cy: Arunachal Pradesh
+    ceb: State of Arunāchal Pradesh
+    sr_Latn: Arunačal Pradeš
+    zh: 阿鲁纳恰尔邦
+    yue_Hans: 阿鲁纳恰尔
+    sq: Arunaçal Pradesh
+    ccp: "\U00011103\U00011122\U0001112A\U0001111A\U0001111A\U00011134\U0001110C\U00011127\U00011123\U00011134
+      \U0001111B\U00011133\U00011122\U00011127\U00011118\U0001112C\U0001110C\U00011134"
+    ga: Arunachal Pradesh
+    gl: Arunachal Pradesh
+    pa: ਅਰੁਨਾਚਲ ਪ੍ਰਦੇਸ਼
+    yue: 阿魯納恰爾
+    am: አረናቸል ፕረዴሽ
+    yo: Arunachal Pradesh
+    uz: Arunachal-Pradesh
+    mk: Аруначал Прадеш
+    'no': Arunachal Pradesh
+    yo_BJ: Arunachal Pradesh
+    az: Arunaçal-Pradeş
+    ha: Arunachal Pradesh
+    ha_NE: Arunachal Pradesh
+    jv: Arunachal Pradesh
+    sd: اروناچل پرديش
+  comments:
+  type: state
+AS:
+  name: Assam
+  code: AS
+  unofficial_names: Assam
+  geo:
+    latitude: 26.2006043
+    longitude: 92.9375739
+    min_latitude: 24.1384989
+    min_longitude: 89.68563789999999
+    max_latitude: 27.968216
+    max_longitude: 96.0131609
+  translations:
+    en: Assam
+    af: Assam
+    ar: أسام
+    as: অসম
+    be: Асам
+    bg: Асам
+    bn: আসাম
+    ca: Assam
+    cs: Ásám
+    da: Assam
+    de: Assam
+    el: Ασσάμ
+    es: Assam
+    et: Assam
+    eu: Assam
+    fa: آسام
+    fi: Assam
+    fr: Assam
+    gl: Assam
+    gu: આસામ
+    he: אסאם
+    hi: असम
+    hr: Assam
+    hu: Asszám
+    hy: Ասսամ
+    id: Assam
+    is: Assam
+    it: Assam
+    ja: アッサム州
+    ka: ასამი
+    kn: ಅಸ್ಸಾಂ
+    ko: 아삼 주
+    lt: Asamas
+    lv: Asama
+    ml: ആസാം
+    mn: Ассам
+    mr: आसाम
+    ms: Assam
+    nb: Assam
+    ne: आसाम
+    nl: Assam
+    or: ଆସାମ
+    pl: Asam
+    ps: آسام
+    pt: Assam
+    ro: Assam
+    ru: Ассам
+    si: ඇසෑම්
+    sk: Ásam
+    sr: Асам
+    sv: Assam
+    sw: Assam
+    ta: அசாம்
+    te: అసోం
+    th: รัฐอัสสัม
+    tr: Assam
+    uk: Ассам
+    ur: آسام
+    vi: Assam
+    cy: Assam
+    ceb: Assam
+    sr_Latn: Asam
+    zh: 阿萨姆邦
+    yue_Hans: 阿萨姆邦
+    jv: Assam
+    sq: Assam
+    ccp: "\U00011103\U00011125\U0001111F\U00011134"
+    sd: آسام
+    ga: Assam
+    pa: ਅਸਾਮ
+    kk: Ассам
+    yue: 阿薩姆邦
+    az: Assam
+    am: አሳም
+    my: အာသံပြည်နယ်
+    yo: Assam
+    uz: Accom
+    mk: Асам
+    'no': Assam
+    yo_BJ: Assam
+    ha: Assam
+    ha_NE: Assam
+  comments:
+  type: state
+BR:
+  name: Bihar
+  code: BR
+  unofficial_names: Bihar
+  geo:
+    latitude: 25.0960742
+    longitude: 85.31311939999999
+    min_latitude: 24.286278
+    min_longitude: 83.31777
+    max_latitude: 27.520895
+    max_longitude: 88.289752
+  translations:
+    en: Bihar
+    af: Bihar
+    ar: بيهار
+    as: বিহাৰ
+    az: Bihar
+    be: Біхар
+    bg: Бихар
+    bn: বিহার
+    ca: Bihar
+    cs: Bihár
+    da: Bihar
+    de: Bihar
+    el: Μπιχάρ
+    es: Bihar
+    et: Bihār
+    eu: Bihar
+    fa: بیهار
+    fi: Bihar
+    fr: Bihar
+    gl: Bihar
+    gu: બિહાર
+    he: ביהר
+    hi: बिहार
+    hr: Bihar
+    hu: Bihár
+    hy: Բիհար
+    id: Bihar
+    is: Bíhar
+    it: Bihar
+    ja: ビハール州
+    ka: ბიჰარი
+    kn: ಬಿಹಾರ
+    ko: 비하르 주
+    lt: Biharas
+    lv: Bihāra
+    ml: ബിഹാർ
+    mn: Бихар
+    mr: बिहार
+    ms: Bihar
+    nb: Bihar
+    ne: बिहार
+    nl: Bihar
+    or: ବିହାର
+    pl: Bihar
+    ps: بهار
+    pt: Bihar
+    ro: Bihar
+    ru: Бихар
+    si: බිහාරය
+    sk: Bihár
+    sr: Бихар
+    sv: Bihar
+    sw: Bihar
+    ta: பீகார்
+    te: బీహార్
+    th: รัฐพิหาร
+    tr: Bihar
+    uk: Біхар
+    ur: بہار
+    vi: Bihar
+    cy: Bihar
+    ceb: State of Bihār
+    sr_Latn: Bihar
+    zh: 比哈尔邦
+    yue_Hans: 比哈尔邦
+    ccp: "\U0001111D\U00011126\U00011122\U00011134"
+    ga: Bihar
+    pa: ਬਿਹਾਰ
+    yue: 比哈爾邦
+    am: ብሓር
+    my: ဘီဟာပြည်နယ်
+    yo: Bihar
+    uz: Bihar
+    mk: Бихар
+    'no': Bihar
+    yo_BJ: Bihar
+    ha: Bihar
+    ha_NE: Bihar
+    sd: بھار (رياست)
+    sq: Bihar
+  comments:
+  type: state
+CH:
+  name: Chandigarh
+  code: CH
+  unofficial_names: Chandigarh
+  geo:
+    latitude: 30.7333148
+    longitude: 76.7794179
+    min_latitude: 30.5944928
+    min_longitude: 76.6798587
+    max_latitude: 30.7958938
+    max_longitude: 76.8529701
+  translations:
+    en: Chandigarh
+    af: Chandigarh
+    ar: شانديغار
+    be: Чандыгарх
+    bg: Чандигарх
+    bn: চণ্ডীগড়
+    ca: Chandigar
+    cs: Čandígarh
+    da: Chandigarh
+    de: Chandigarh
+    el: Τσαντιγκάρ
+    es: Chandigarh
+    et: Chandīgarh
+    eu: Chandigarh
+    fa: چندی‌گر
+    fi: Chandigarh
+    fr: Chandigarh
+    gu: ચંડીગઢ
+    he: צ׳אנדיגאר
+    hi: चण्डीगढ़
+    hr: Chandigarh
+    hu: Csandígarh
+    id: Chandigarh
+    is: Chandigarh
+    it: Chandigarh
+    ja: チャンディーガル
+    ka: ჩანდიგარჰი
+    kn: ಚಂಡೀಗಡ
+    ko: 찬디가르
+    lt: Čandigarchas
+    lv: Čandīgarha
+    ml: ചണ്ഡീഗഢ്
+    mr: चंदिगढ
+    ms: Chandigarh
+    nb: Chandigarh
+    ne: चण्डिगढ
+    nl: Chandigarh
+    or: ଚଣ୍ଡୀଗଡ଼
+    pl: Czandigarh
+    ps: چندي گړ
+    pt: Chandigarh
+    ro: Chandigarh
+    ru: Чандигарх
+    sd: چندي ڳڙھ
+    si: චන්දිගාර්
+    sk: Čandígarh
+    sr: Чандигар
+    sv: Chandigarh
+    sw: Chandigarh
+    ta: சண்டிகர்
+    te: చండీగఢ్
+    th: จัณฑีครห์
+    tr: Çhandigarh
+    uk: Чандігарх
+    ur: چندی گڑھ
+    vi: Chandigarh
+    ceb: Union Territory of Chandīgarh
+    sr_Latn: Čandigar
+    zh: 昌迪加尔
+    yue_Hans: 昌迪加尔
+    ccp: "\U0001110C\U0001111A\U00011134\U00011118\U00011128\U0001110A\U00011127\U00011122\U00011134\U00011126\U00011134"
+    ga: Chandigarh
+    pa: ਚੰਡੀਗੜ੍ਹ
+    yue: 昌迪加爾
+    yo: Chandigarh
+    uz: Chandigarh
+    mk: Чандигар
+    'no': Chandigarh
+    yo_BJ: Chandigarh
+    as: চণ্ডীগড়
+    az: Çandiqarh
+  comments:
+  type: union_territory
+CT:
+  name: Chhattisgarh
+  code: CT
+  unofficial_names: Chhattisgarh
+  geo:
+    latitude: 21.2786567
+    longitude: 81.8661442
+    min_latitude: 17.782531
+    min_longitude: 80.2439
+    max_latitude: 24.1187091
+    max_longitude: 84.39599799999999
+  translations:
+    en: Chhattisgarh
+    ar: تشاتيسغار
+    as: ছত্তীছগঢ়
+    be: Чхатысгарх
+    bg: Чхатисгарх
+    bn: ছত্তীসগঢ়
+    ca: Chhattisgarh
+    cs: Čhattísgarh
+    da: Chattisgarh
+    de: Chhattisgarh
+    el: Τσατίσγκαρ
+    es: Chhattisgarh
+    et: Chhattīsgarh
+    eu: Chhattisgarh
+    fa: چتیسگر
+    fi: Chhattisgarh
+    fr: Chhattisgarh
+    gu: છત્તીસગઢ
+    he: צ׳האטיסגאר
+    hi: छत्तीसगढ़
+    hr: Chhattisgarh
+    hu: Cshattíszgarh
+    id: Chhattisgarh
+    is: Chhattisgarh
+    it: Chhattisgarh
+    ja: チャッティースガル州
+    ka: ჩატისგარჰი
+    kn: ಛತ್ತೀಸ್‌ಘಡ್
+    ko: 차티스가르 주
+    lt: Čatisgarchas
+    lv: Čhatīsgarha
+    ml: ഛത്തീസ്‌ഗഢ്
+    mn: Чаттисгар
+    mr: छत्तीसगढ
+    ms: Chhattisgarh
+    nb: Chhattisgarh
+    ne: छत्तीसगढ
+    nl: Chhattisgarh
+    or: ଛତିଶଗଡ଼
+    pl: Chhattisgarh
+    ps: چتيس گړ
+    pt: Chhattisgarh
+    ro: Chhattisgarh
+    ru: Чхаттисгарх
+    si: චට්ටිස්ගාර්
+    sk: Čhattísgarh
+    sr: Чатисгар
+    sv: Chhattisgarh
+    sw: Chhattisgarh
+    ta: சத்தீசுகர்
+    te: ఛత్తీస్‌గఢ్
+    th: รัฐฉัตตีสครห์
+    tr: Chhattisgarh
+    uk: Чхаттісґарх
+    ur: چھتیس گڑھ
+    vi: Chhattisgarh
+    cy: Chhattisgarh
+    ceb: State of Chhattīsgarh
+    sr_Latn: Čatisgar
+    zh: 恰蒂斯加尔邦
+    yue_Hans: 恰蒂斯加尔邦
+    sq: Çatisgar
+    ccp: "\U0001110D\U00011111\U00011133\U00011126\U00011128\U0001110C\U00011134\U0001110A\U00011127\U00011122\U00011134\U00011126\U00011134"
+    ga: Chhattisgarh
+    pa: ਛੱਤੀਸਗੜ੍ਹ
+    yue: 恰蒂斯加爾邦
+    am: ጨቲስገርህ
+    yo: Chhattisgarh
+    uz: Chhattisgarh
+    mk: Чатисгар
+    'no': Chhattisgarh
+    yo_BJ: Chhattisgarh
+    az: Çhattisqarh
+    ha: Chhattisgarh
+    ha_NE: Chhattisgarh
+    hy: Չհատիսգարխ
+    sd: ڇتيس ڳڙھ
+  comments:
+  type: state
+DH:
+  translations:
+    en: Dādra and Nagar Haveli and Damān and Diu
+    ar: دادرا وناغار هافيلي ودامان وديو
+    as: দাদৰা আৰু নগৰ হাভেলী আৰু দমন আৰু দিউ
+    be: Дадра і Нагархавелі і Даман і Дыу
+    bn: দাদরা ও নগর হাভেলি এবং দমন ও দিউ
+    ca: Dadra i Nagar Haveli i Daman i Diu
+    cs: Dádra a Nagar Havélí a Daman a Díu
+    de: Dadra und Nagar Haveli und Daman und Diu
+    es: Dadra y Nagar Haveli y Damán y Diu
+    fa: دادرا و نگر حویلی و دامان و دیو
+    fi: Dadra ja Nagar Haveli ja Daman ja Diu
+    fr: Dadra et Nagar Haveli et Daman et Diu
+    gu: દાદરા અને નગર હવેલી અને દમણ અને દીવ
+    he: דאדרה ונאגר הבלי ודאמאן ודיו
+    hi: दादरा और नगर हवेली और दमन और दीव
+    it: Dadra e Nagar Haveli e Daman e Diu
+    ja: ダードラー・ナガル・ハヴェーリーおよびダマン・ディーウ連邦直轄領
+    kn: ದಾದ್ರಾ ಮತ್ತು ನಗರ್ ಹವೇಲಿ ಮತ್ತು ದಮನ್ ಮತ್ತು ದಿಯು
+    ko: 다드라 나가르하벨리 다만 디우
+    ml: ദാദ്രാ, നഗർ ഹവേലിയും ദാമൻ, ദിയുവും
+    mr: दादरा व नगर हवेली आणि दमण व दीव
+    nl: Dadra en Nagar Haveli en Daman en Diu
+    pt: Dadrá e Nagar Aveli e Damão e Diu
+    ro: Dadra și Nagar Haveli și Daman și Diu
+    ru: Дадра и Нагар-Хавели и Даман и Диу
+    ta: தாத்ரா & நகர் ஹவேலி மற்றும் தாமன் & தியூ
+    te: దాద్రా నగర్ హవేలీ, డామన్ డయ్యూ
+    th: ดาดราและนครหเวลี และดามันและดีอู
+    ur: دادرا و نگر حویلی و دمن و دیو
+    vi: Dadra và Nagar Haveli và Daman và Diu
+  name: Dādra and Nagar Haveli and Damān and Diu
+  code: DH
+  type: union_territory
+DL:
+  name: Delhi
+  code: DL
+  unofficial_names: Delhi
+  geo:
+    latitude: 28.6139391
+    longitude: 77.2090212
+    min_latitude: 28.4010669
+    min_longitude: 76.8396999
+    max_latitude: 28.889816
+    max_longitude: 77.3418147
+  translations:
+    en: Delhi
+    af: Delhi
+    am: ዴሊ
+    ar: دلهي
+    as: দিল্লী
+    az: Dehli
+    be: Горад Дэлі
+    bg: Делхи
+    bn: দিল্লি
+    ca: Delhi
+    cs: Dillí
+    da: Delhi
+    de: Delhi
+    el: Δελχί
+    es: Delhi
+    et: Delhi
+    eu: Delhi
+    fa: دهلی
+    fi: Delhi
+    fr: Delhi
+    gl: Delhi
+    gu: દિલ્હી
+    he: דלהי
+    hi: दिल्ली
+    hr: Delhi
+    hu: Delhi
+    hy: Դելի
+    id: Delhi
+    is: Delí
+    it: Delhi
+    ja: デリー
+    ka: დელი
+    kn: ದೆಹಲಿ
+    ko: 델리
+    lt: Delis
+    lv: Deli
+    ml: ഡെൽഹി
+    mn: Дели
+    mr: दिल्ली
+    ms: Delhi
+    nb: Delhi
+    ne: दिल्ली
+    nl: Delhi
+    or: ଦିଲ୍ଲୀ
+    pl: Delhi
+    ps: ډېلي
+    pt: Deli
+    ro: Delhi
+    ru: Дели
+    sd: دهلي
+    si: දිල්ලිය
+    sk: Dillí
+    sl: Delhi
+    sr: Делхи
+    sv: Delhi
+    sw: Delhi
+    ta: தில்லி
+    te: ఢిల్లీ
+    th: เดลี
+    tk: Deli
+    tr: Delhi
+    uk: Делі
+    ur: دلی
+    vi: Delhi
+    cy: Delhi
+    sr_Latn: Delhi
+    zh: 德里
+    yue_Hans: 德里
+    ccp: "\U00011118\U00011128\U00011123\U00011133\U00011123\U00011128"
+    ga: Delhi
+    ky: Дели шаары
+    pa: ਦਿੱਲੀ
+    kk: Дели
+    yue: 德里
+    my: ဒေလီမြို့
+    yo: Delhi
+    uz: Dehli
+    bs: Delhi
+    mk: Делхи
+    'no': Delhi
+    yo_BJ: Delhi
+    km: ដេលី
+    sq: Delhi
+  comments:
+  type: union_territory
+GA:
+  name: Goa
+  code: GA
+  unofficial_names: Goa
+  geo:
+    latitude: 15.2993265
+    longitude: 74.12399599999999
+    min_latitude: 14.8971223
+    min_longitude: 73.6894238
+    max_latitude: 15.799917
+    max_longitude: 74.3405329
+  translations:
+    en: Goa
+    af: Goa
+    ar: غوا
+    as: গোৱা
+    az: Qoa
+    be: Гоа
+    bg: Гоа
+    bn: গোয়া
+    ca: Goa
+    cs: Goa
+    da: Goa
+    de: Goa
+    el: Γκόα
+    es: Goa
+    et: Goa osariik
+    eu: Goa
+    fa: گوا
+    fi: Goa
+    fr: Goa
+    gu: ગોઆ
+    he: גואה
+    hi: गोआ
+    hr: Goa
+    hu: Goa
+    id: Goa, India
+    is: Góa
+    it: Goa
+    ja: ゴア州
+    ka: გოა
+    kn: ಗೋವಾ
+    ko: 고아 주
+    lt: Goa
+    lv: Goa
+    ml: ഗോവ
+    mn: Гоа
+    mr: गोवा
+    ms: Goa
+    nb: Goa
+    ne: गोआ
+    nl: Goa
+    or: ଗୋଆ
+    pl: Goa
+    ps: گوا
+    pt: Goa
+    ro: Goa
+    ru: Гоа
+    si: ගෝවා
+    sk: Goa
+    sl: Goa
+    sr: Гоа
+    sv: Goa
+    sw: Goa
+    ta: கோவா
+    te: గోవా
+    th: รัฐกัว
+    tr: Goa
+    uk: Гоа
+    ur: گوا
+    vi: Goa
+    cy: Goa
+    ceb: Goa
+    sr_Latn: Goa
+    zh: 果阿邦
+    yue_Hans: 果阿
+    sq: Goa
+    ccp: "\U00011109\U0001112E\U00011120"
+    ga: Goa
+    hy: Գոա
+    gl: Goa
+    pa: ਗੋਆ
+    kk: Гоа
+    yue: 果阿
+    am: ጎዋ
+    my: ဂိုအာ
+    yo: Goa
+    uz: Goa
+    mk: Гоа
+    'no': Goa
+    yo_BJ: Goa
+    ha: Goa
+    ha_NE: Goa
+    sd: گووا
+  comments:
+  type: state
+GJ:
+  name: Gujarat
+  code: GJ
+  unofficial_names: Gujarat
+  geo:
+    latitude: 22.258652
+    longitude: 71.1923805
+    min_latitude: 20.127954
+    min_longitude: 68.1915379
+    max_latitude: 24.705709
+    max_longitude: 74.4764881
+  translations:
+    en: Gujarat
+    ar: غوجارات
+    as: গুজৰাট
+    az: Qucarat
+    be: Гуджарат
+    bg: Гуджарат
+    bn: গুজরাত
+    ca: Gujarat
+    cs: Gudžarát
+    da: Gujarat
+    de: Gujarat
+    el: Γκουτζαράτ
+    es: Guyarat
+    et: Gujarāt
+    eu: Gujarat
+    fa: گجرات
+    fi: Gujarat
+    fr: Gujarat
+    gu: ગુજરાત
+    he: גוג׳ראט
+    hi: गुजरात
+    hr: Gudžerat
+    hu: Gudzsarát
+    hy: Գուջարաթ
+    id: Gujarat
+    is: Gujarat
+    it: Gujarat
+    ja: グジャラート州
+    ka: გუჯარათი
+    kn: ಗುಜರಾತ್
+    ko: 구자라트 주
+    lt: Gudžaratas
+    lv: Gudžarāta
+    ml: ഗുജറാത്ത്‌
+    mn: Гужарат
+    mr: गुजरात
+    ms: Gujarat
+    nb: Gujarat
+    ne: गुजरात
+    nl: Gujarat
+    or: ଗୁଜରାଟ
+    pl: Gudźarat
+    ps: گوجرات
+    pt: Gujarate
+    ro: Gujarat
+    ru: Гуджарат
+    sd: گوجارات
+    si: ගුජරාටය
+    sk: Gudžarát
+    sl: Gudžarat
+    sr: Гуџарат
+    sv: Gujarat
+    sw: Gujarat
+    ta: குசராத்
+    te: గుజరాత్
+    th: รัฐคุชราต
+    tk: Güjerat
+    tr: Gucerat
+    uk: Гуджарат
+    ur: گجرات
+    vi: Gujarat
+    cy: Gujarat
+    af: Gujarat
+    ceb: State of Gujarāt
+    sr_Latn: Gudžarat
+    zh: 古吉拉特邦
+    yue_Hans: 古吉拉特邦
+    sq: Guxharat
+    ccp: "\U00011109\U0001112A\U0001110C\U00011134\U00011122\U00011116\U00011134"
+    ga: An Ghúisearáit
+    pa: ਗੁਜਰਾਤ
+    yue: 古吉拉特邦
+    am: ጉጀራት
+    yo: Gujarat
+    uz: Gujarot
+    mk: Гуџарат
+    'no': Gujarat
+    yo_BJ: Gujarat
+    ha: Gujarat
+    ha_NE: Gujarat
+    my: ဂုဇရာတ်
+  comments:
+  type: state
+HP:
+  name: Himachal Pradesh
+  code: HP
+  unofficial_names: Himachal Pradesh
+  geo:
+    latitude: 31.1048294
+    longitude: 77.17339009999999
+    min_latitude: 30.382469
+    min_longitude: 75.5874709
+    max_latitude: 33.257958
+    max_longitude: 79.003309
+  translations:
+    en: Himachal Pradesh
+    ar: هيماجل برديش
+    as: হিমাচল প্ৰদেশ
+    az: Himaçal Pradeş
+    be: Хімачал-Прадэш
+    bg: Химачал Прадеш
+    bn: হিমাচল প্রদেশ
+    ca: Himachal Pradesh
+    cs: Himáčalpradéš
+    da: Himachal Pradesh
+    de: Himachal Pradesh
+    el: Χιμάτσαλ Πραντές
+    es: Himachal Pradesh
+    et: Himachal Pradesh
+    eu: Himachal Pradesh
+    fa: هیماچال پرادش
+    fi: Himachal Pradesh
+    fr: Himachal Pradesh
+    gu: હિમાચલ પ્રદેશ
+    he: הימאצ׳ל פרדש
+    hi: हिमाचल प्रदेश
+    hr: Himachal Pradesh
+    hu: Himácsal Prades
+    hy: Հիմաչալ-Պրադեշ
+    id: Himachal Pradesh
+    is: Himachal Pradesh
+    it: Himachal Pradesh
+    ja: ヒマーチャル・プラデーシュ州
+    ka: ჰიმაჩალ-პრადეში
+    kn: ಹಿಮಾಚಲ ಪ್ರದೇಶ
+    ko: 히마찰프라데시 주
+    lt: Himačal Pradešas
+    lv: Himāčala Pradēša
+    ml: ഹിമാചൽ പ്രദേശ്‌
+    mn: Химачалпрадеш
+    mr: हिमाचल प्रदेश
+    ms: Himachal Pradesh
+    nb: Himachal Pradesh
+    ne: हिमाचल प्रदेश
+    nl: Himachal Pradesh
+    or: ହିମାଚଳ ପ୍ରଦେଶ
+    pl: Himachal Pradesh
+    ps: هماچل پرديش
+    pt: Himachal Pradesh
+    ro: Himachal Pradesh
+    ru: Химачал-Прадеш
+    si: හිමාචල් ප්‍රදේශ්
+    sk: Himáčalpradéš
+    sl: Himačal Pradeš
+    sr: Химачал Прадеш
+    sv: Himachal Pradesh
+    sw: Himachal Pradesh
+    ta: இமாசலப் பிரதேசம்
+    te: హిమాచల్ ప్రదేశ్
+    th: รัฐหิมาจัลประเทศ
+    tk: Himachal Pradesh
+    tr: Himaçhal Pradeş
+    uk: Гімачал-Прадеш
+    ur: ہماچل پردیش
+    vi: Himachal Pradesh
+    cy: Himachal Pradesh
+    ceb: State of Himāchal Pradesh
+    sr_Latn: Himačal Pradeš
+    zh: 喜马偕尔邦
+    yue_Hans: 喜马偕尔邦
+    ccp: "\U00011126\U00011128\U0001111F\U0001110C\U00011127\U00011123\U00011134 \U0001111B\U00011133\U00011122\U00011127\U00011118\U0001112C\U0001110C\U00011134"
+    ga: Himachal Pradesh
+    pa: ਹਿਮਾਚਲ ਪ੍ਰਦੇਸ਼
+    yue: 喜馬偕爾邦
+    am: ሂማቸል ፕረዴሽ
+    yo: Himachal Pradesh
+    uz: Ximachalpradesh
+    mk: Химачал Прадеш
+    'no': Himachal Pradesh
+    yo_BJ: Himachal Pradesh
+    ha: Himachal Pradesh
+    ha_NE: Himachal Pradesh
+    sd: هماچل پرديش
+  comments:
+  type: state
+HR:
+  name: Haryana
+  code: HR
+  unofficial_names: Haryana
+  geo:
+    latitude: 29.0587757
+    longitude: 76.085601
+    min_latitude: 27.6529931
+    min_longitude: 74.457616
+    max_latitude: 30.9128649
+    max_longitude: 77.59544799999999
+  translations:
+    en: Haryana
+    af: Harjana
+    ar: هاريانا
+    as: হাৰিয়ানা
+    bg: Харяна
+    bn: হরিয়ানা
+    ca: Haryana
+    cs: Harijána
+    da: Haryana
+    de: Haryana
+    el: Χαρυάνα
+    es: Haryana
+    et: Haryana
+    eu: Haryana
+    fa: هاریانا
+    fi: Haryana
+    fr: Haryana
+    gl: Haryana
+    gu: હરિયાણા
+    he: הריאנה
+    hi: हरियाणा
+    hr: Haryana
+    hu: Harijána
+    hy: Հարյանա
+    id: Haryana
+    is: Haryana
+    it: Haryana
+    ja: ハリヤーナー州
+    ka: ჰარიანა
+    kn: ಹರಿಯಾಣ
+    ko: 하리아나 주
+    lt: Harjana
+    lv: Harjāna
+    ml: ഹരിയാണ
+    mn: Харяна
+    mr: हरियाणा
+    ms: Haryana
+    nb: Haryana
+    ne: हरियाणा
+    nl: Haryana
+    or: ହରିୟାଣା
+    pl: Hariana
+    ps: هريانه
+    pt: Haryana
+    ro: Haryana
+    ru: Харьяна
+    si: හර්යාන
+    sk: Harijána
+    sr: Харајана
+    sv: Haryana
+    sw: Haryana
+    ta: அரியானா
+    te: హర్యానా
+    th: รัฐหรยาณา
+    tr: Haryana
+    uk: Харʼяна
+    ur: ہریانہ
+    vi: Haryana
+    cy: Haryana
+    ceb: State of Haryāna
+    sr_Latn: Harajana
+    zh: 哈里亚纳邦
+    yue_Hans: 哈里亚纳邦
+    ccp: "\U00011126\U00011127\U00011122\U00011128\U00011120\U0001111A"
+    ga: Haryana
+    pa: ਹਰਿਆਣਾ
+    yue: 哈里亞納邦
+    am: ሀርያና
+    yo: Haryana
+    uz: Xaryana
+    mk: Харајана
+    'no': Haryana
+    yo_BJ: Haryana
+    az: Haryana
+    ha: Haryana
+    ha_NE: Haryana
+    sd: هريانا
+    sl: Harjana
+  comments:
+  type: state
+JH:
+  name: Jharkhand
+  code: JH
+  unofficial_names:
+  - Vananchal
+  geo:
+    latitude: 23.6101808
+    longitude: 85.2799354
+    min_latitude: 21.9729309
+    min_longitude: 83.32382799999999
+    max_latitude: 25.328823
+    max_longitude: 87.947529
+  translations:
+    en: Jharkhand
+    ar: جهارخاند
+    be: Джхаркханд
+    bg: Джаркханд
+    bn: ঝাড়খণ্ড
+    ca: Jharkhand
+    cs: Džhárkhand
+    da: Jharkhand
+    de: Jharkhand
+    el: Τζαρκάντ
+    es: Jharkhand
+    et: Jharkhand
+    eu: Jharkhand
+    fa: جارکند
+    fi: Jharkhand
+    fr: Jharkhand
+    gu: ઝારખંડ
+    he: ג׳הרקאנד
+    hi: झारखण्ड
+    hr: Jharkhand
+    hu: Dzshárkhand
+    id: Jharkhand
+    is: Jharkhand
+    it: Jharkhand
+    ja: ジャールカンド州
+    ka: ჯარხანდი
+    kn: ಝಾರ್ಖಂಡ್
+    ko: 자르칸드 주
+    lt: Džarkandas
+    lv: Džhārkhanda
+    ml: ഝാർഖണ്ഡ്‌
+    mn: Жарканд
+    mr: झारखंड
+    ms: Jharkhand
+    nb: Jharkhand
+    ne: झारखण्ड
+    nl: Jharkhand
+    or: ଝାଡ଼ଖଣ୍ଡ
+    pl: Jharkhand
+    ps: جارکنډ
+    pt: Jharkhand
+    ro: Jharkhand
+    ru: Джаркханд
+    si: ජාර්ක්හාන්ඩ්
+    sk: Džhárkhand
+    sr: Џарканд
+    sv: Jharkhand
+    sw: Jharkhand
+    ta: சார்க்கண்ட்
+    te: జార్ఖండ్
+    th: รัฐฌารขัณฑ์
+    tr: Jharkhand
+    uk: Джхаркханд
+    ur: جھاڑکھنڈ
+    vi: Jharkhand
+    cy: Jharkhand
+    ceb: State of Jharkhand
+    as: ঝাড়খণ্ড
+    sr_Latn: Džarkand
+    zh: 贾坎德邦
+    yue_Hans: 乍拉肯德邦
+    ccp: "\U0001110F\U00011122\U00011134\U00011108\U00011127\U0001111A\U00011134\U00011113\U00011127"
+    ga: Jharkhand
+    pa: ਝਾਰਖੰਡ
+    yue: 乍拉肯德邦
+    am: ጃርኸንድ
+    yo: Jharkhand
+    mk: Џарканд
+    'no': Jharkhand
+    yo_BJ: Jharkhand
+    az: Charkhand
+    ha: Jharkhand
+    ha_NE: Jharkhand
+    hy: Ջարկխանդ
+    sd: جھرکنڊ
+  comments:
+  type: state
+JK:
+  name: Jammu and Kashmir
+  code: JK
+  unofficial_names: Jammu and Kashmir
+  geo:
+    latitude: 34.1490875
+    longitude: 76.8259652
+    min_latitude: 32.252741
+    min_longitude: 73.7632221
+    max_latitude: 35.5042109
+    max_longitude: 79.56429290000001
+  translations:
+    en: Jammu and Kashmir
+    ar: جامو وكشمير
+    as: জম্মু আৰু কাশ্মীৰ
+    be: Джаму і Кашмір
+    bg: Джаму и Кашмир
+    bn: জম্মু ও কাশ্মীর
+    ca: Jammu i Caixmir
+    cs: Džammú a Kašmír
+    da: Jammu and Kashmir
+    de: Jammu und Kashmir
+    el: Γιαμού και Κασμίρ
+    es: Jammu y Cachemira
+    et: Jammu ja Kashmir
+    eu: Jammu eta Kaxmir
+    fa: جامو و کشمیر
+    fi: Jammu ja Kashmir
+    fr: Jammu-et-Cachemire
+    gu: જમ્મુ અને કાશ્મીર
+    he: ג׳אמו וקשמיר
+    hi: जम्मू और कश्मीर
+    hr: Jammu i Kashmir
+    hu: Dzsammu és Kasmír
+    hy: Ջամմու և Քաշմիր
+    id: Jammu dan Kashmir
+    is: Jammú og Kasmír
+    it: Jammu e Kashmir
+    ja: ジャンムー・カシミール州
+    ka: ჯამუ და ქაშმირი
+    kn: ಜಮ್ಮು ಮತ್ತು ಕಾಶ್ಮೀರ
+    ko: 잠무 카슈미르 주
+    lt: Džamu ir Kašmyras
+    lv: Džammu un Kašmīra
+    ml: ജമ്മു-കശ്മീർ
+    mn: Жамму-Кашмир
+    mr: जम्मू आणि काश्मीर
+    ms: Jammu dan Kashmir
+    nb: Jammu og Kashmir
+    ne: जम्मु कश्मीर
+    nl: Jammu en Kasjmir
+    or: ଜମ୍ମୁ ଓ କଶ୍ମୀର
+    pl: Dżammu i Kaszmir
+    ps: جمو او کشمير
+    pt: Jammu e Caxemira
+    ro: Jammu și Cașmir
+    ru: Джамму и Кашмир
+    si: ජම්මු සහ කාශ්මීරය
+    sk: Džammú a Kašmír
+    sr: Џаму и Кашмир
+    sv: Jammu och Kashmir
+    ta: சம்மு காசுமீர்
+    te: జమ్మూ కాశ్మీరు
+    th: รัฐชัมมูและกัศมีร์
+    tr: Cemmu ve Keşmir
+    uk: Джамму й Кашмір
+    ur: جموں و کشمیر
+    vi: Jammu và Kashmir
+    cy: Jammu a Kashmir
+    ceb: State of Jammu and Kashmīr
+    sr_Latn: Džamu i Kašmir
+    zh: 查谟－克什米尔邦
+    yue_Hans: 查谟-克什米尔邦
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111F\U0001112A \U00011103\U00011133\U00011103
+      \U00011107\U0001110C\U00011134\U0001111F\U00011128\U00011122\U00011134"
+    ga: Jammu agus Kashmir
+    sl: Džamu in Kašmir
+    pa: ਜੰਮੂ ਅਤੇ ਕਸ਼ਮੀਰ
+    yue: 查謨-克什米爾邦
+    az: Cammu və Kəşmir
+    am: ጃሙና ካሽሚር
+    my: ဂျမ်မူး နှင့် ကက်ရှမီးယားပြည်နယ်
+    yo: Jammu àti Kashmir
+    uz: Jammu va kashmir
+    bs: Jammu i Kashmir
+    mk: Џаму-Кашмир
+    'no': Jammu og Kashmir
+    yo_BJ: Jammu àti Kashmir
+    sq: Xhamu dhe Kashmiri (territori i bashkimit)
+  comments:
+  type: union_territory
+KA:
+  name: Karnataka
+  code: KA
+  unofficial_names:
+  - Kanara
+  geo:
+    latitude: 15.3172775
+    longitude: 75.7138884
+    min_latitude: 11.593352
+    min_longitude: 74.0928802
+    max_latitude: 18.4411689
+    max_longitude: 78.5860101
+  translations:
+    en: Karnataka
+    af: Karnataka
+    ar: كارناتاكا
+    as: কৰ্ণাটক
+    be: Карнатака
+    bg: Карнатака
+    bn: কর্ণাটক
+    ca: Estat de Karnataka
+    cs: Karnátaka
+    da: Karnataka
+    de: Karnataka
+    el: Καρνάτακα
+    es: Karnataka
+    et: Karnataka
+    eu: Karnataka
+    fa: کارناتاکا
+    fi: Karnataka
+    fr: Karnataka
+    gu: કર્ણાટક
+    he: קרנאטקה
+    hi: कर्नाटक
+    hr: Karnataka
+    hu: Karnátaka
+    hy: Կառնատակա
+    id: Karnataka
+    is: Karnataka
+    it: Karnataka
+    ja: カルナータカ州
+    ka: კარნატაკა
+    kn: ಕರ್ನಾಟಕ
+    ko: 카르나타카 주
+    lt: Karnataka
+    lv: Karnātaka
+    ml: കർണാടക
+    mn: Карнатака
+    mr: कर्नाटक
+    ms: Karnataka
+    nb: Karnataka
+    ne: कर्नाटक
+    nl: Karnataka
+    or: କର୍ଣ୍ଣାଟକ
+    pl: Karnataka
+    ps: کرناټک
+    pt: Karnataka
+    ro: Karnataka
+    ru: Карнатака
+    si: කමටකා
+    sk: Karnátaka
+    sr: Карнатака
+    sv: Karnataka
+    sw: Karnataka
+    ta: கருநாடகம்
+    te: కర్ణాటక
+    th: รัฐกรณาฏกะ
+    tr: Karnataka
+    uk: Карнатака
+    ur: کرناٹک
+    vi: Karnataka
+    cy: Karnataka
+    ceb: State of Karnātaka
+    sr_Latn: Karnataka
+    zh: 卡纳塔克邦
+    yue_Hans: 卡纳塔克邦
+    ccp: "\U00011107\U00011127\U00011122\U00011134\U0001111A\U00011116\U00011134\U00011107"
+    ga: Karnataka
+    pa: ਕਰਨਾਟਕ
+    yue: 卡納塔克邦
+    am: ካርናተከ
+    yo: Karnataka
+    uz: Karnataka
+    mk: Карнатака
+    'no': Karnataka
+    yo_BJ: Karnataka
+    az: Karnataka
+    ha: Karnataka
+    ha_NE: Karnataka
+    my: ကာနာတာကာပြည်နယ်
+    sd: ڪرناٽڪا
+  comments:
+  type: state
+KL:
+  name: Kerala
+  code: KL
+  unofficial_names: Kerala
+  geo:
+    latitude: 10.8505159
+    longitude: 76.2710833
+    min_latitude: 8.294896999999999
+    min_longitude: 74.8649065
+    max_latitude: 12.7883001
+    max_longitude: 77.3956369
+  translations:
+    en: Kerala
+    af: Kerala
+    am: ኬረለ
+    ar: كيرلا
+    be: Керала
+    bg: Керала
+    bn: কেরল
+    ca: Kerala
+    cs: Kérala
+    da: Kerala
+    de: Kerala
+    el: Κεράλα
+    es: Kerala
+    et: Kerala
+    eu: Kerala
+    fa: کرالا
+    fi: Kerala
+    fr: Kerala
+    gu: કેરળ
+    he: קרלה
+    hi: केरल
+    hr: Kerala
+    hu: Kerala
+    hy: Կերալա
+    id: Kerala
+    is: Kerala
+    it: Kerala
+    ja: ケーララ州
+    ka: კერალა
+    kn: ಕೇರಳ
+    ko: 케랄라 주
+    lt: Kerala
+    lv: Kerala
+    ml: കേരളം
+    mn: Керала
+    mr: केरळ
+    ms: Kerala
+    nb: Kerala
+    ne: केरल
+    nl: Kerala
+    or: କେରଳ
+    pl: Kerala
+    ps: کيرالا
+    pt: Kerala
+    ro: Kerala
+    ru: Керала
+    si: කේරල
+    sk: Kérala
+    sr: Керала
+    sv: Kerala
+    sw: Kerala
+    ta: கேரளம்
+    te: కేరళ
+    th: รัฐเกรละ
+    tr: Kerala
+    uk: Керала
+    ur: کیرلا
+    vi: Kerala
+    cy: Kerala
+    ceb: State of Kerala
+    as: কেৰেলা
+    sr_Latn: Kerala
+    zh: 喀拉拉邦
+    yue_Hans: 基拉拉邦
+    sq: Kerala
+    ccp: "\U00011107\U0001112C\U00011122\U0001112C\U00011123"
+    ga: Kerala
+    sl: Kerala
+    pa: ਕੇਰਲਾ
+    yue: 基拉拉邦
+    yo: Kerala
+    uz: Kerala
+    bs: Kerala
+    mk: Керала
+    'no': Kerala
+    yo_BJ: Kerala
+    az: Kerala
+    ha: Kerala
+    ha_NE: Kerala
+    sd: ڪيرالا
+  comments:
+  type: state
+LA:
+  name: Ladakh
+  code: LA
+  unofficial_names:
+  geo:
+    latitude: 34.0522342
+    longitude: -118.2436849
+    min_latitude: 33.7036519
+    min_longitude: -118.6681759
+    max_latitude: 34.3373061
+    max_longitude: -118.1552891
+  translations:
+    en: Ladakh
+    ar: لداخ
+    as: লাডাখ
+    be: Ладакх
+    bn: লাদাখ
+    ca: Ladakh
+    ceb: Ladākh
+    cs: Ladak
+    de: Ladakh
+    el: Λαντάχ
+    es: Ladakh
+    eu: Ladakh
+    fa: لداخ
+    fi: Ladakh
+    fr: Ladakh
+    ga: Ladakh
+    gu: લડાખ
+    he: לדאק
+    hi: लद्दाख़
+    hu: Ladak
+    id: Ladakh
+    it: Ladakh
+    ja: ラダック
+    ka: ლადაქი
+    kn: ಲಡಾಖ್
+    ko: 라다크
+    lt: Ladakas
+    lv: Ladākha
+    ml: ലഡാക്
+    mn: Ладакх
+    mr: लडाख
+    ms: Ladakh
+    my: လာတက်
+    ne: लदाख
+    nl: Ladakh
+    or: ଲଦାଖ
+    pa: ਲਦਾਖ਼
+    pl: Ladakh
+    pt: Ladaque
+    ro: Ladakh
+    ru: Ладакх
+    sl: Ladak
+    sv: Ladakh
+    ta: லடாக்
+    te: లడఖ్
+    th: ลาดัก
+    tr: Ladakh
+    uk: Ладакх
+    ur: لداخ
+    uz: Ladakh
+    vi: Ladakh
+    yue: 拉達克
+    yue_Hans: 拉达克
+  comments:
+  type: union_territory
+LD:
+  name: Lakshadweep
+  code: LD
+  unofficial_names:
+  - Laccadive
+  - Lakkadiven
+  geo:
+    latitude: 10.0760115
+    longitude: 73.6303446
+    min_latitude: 8.2658179
+    min_longitude: 71.8844221
+    max_latitude: 12.3934258
+    max_longitude: 73.6848297
+  translations:
+    en: Lakshadweep
+    ar: لكشديب
+    be: Лакшадвіп
+    bg: Лакшадвип
+    bn: লক্ষদ্বীপ
+    ca: Lakshadweep
+    cs: Lakadivy
+    da: Lakshadweep
+    de: Lakshadweep
+    el: Λακσαντγουίπ
+    es: Laquedivas
+    et: Lakshadweep
+    eu: Lakshadweep
+    fa: لاکشادویپ
+    fi: Lakkadiivit
+    fr: Lakshadweep
+    gu: લક્ષદ્વીપ
+    he: לקשאדוויפ
+    hi: लक्षद्वीप
+    hr: Lakadivi
+    hu: Laksadíva
+    id: Lakshadweep
+    is: Lakshadweep
+    it: Laccadive
+    ja: ラクシャディープ諸島
+    ka: ლაქშადვიპი
+    kn: ಲಕ್ಷದ್ವೀಪ
+    ko: 락샤드위프 제도
+    lt: Lakšadvipas
+    lv: Lakšadvīpa
+    ml: ലക്ഷദ്വീപ്
+    mr: लक्षद्वीप
+    ms: Lakshadweep
+    nb: Lakkadivene
+    ne: लक्षद्वीप
+    nl: Laccadiven
+    or: ଲାକ୍ଷାଦ୍ଵୀପ
+    pl: Lakszadiwy
+    pt: Laquedivas
+    ro: Lakshadweep
+    ru: Лакшадвип
+    si: ලක්ෂද්වීප්
+    sk: Lakadivy
+    sr: Лакадиви
+    sv: Lakshadweep
+    sw: Lakshadweep
+    ta: இலட்சத்தீவுகள்
+    te: లక్షద్వీపములు
+    th: ลักษทวีป
+    tr: Lakşadvip Adaları
+    uk: Лакшадвіп
+    ur: لکشادیپ
+    vi: Lakshadweep
+    ceb: Union Territory of Lakshadweep
+    sr_Latn: Lakadivi
+    zh: 拉克沙群島
+    yue_Hans: 拉克沙群岛
+    ccp: "\U00011123\U00011107\U00011134\U00011125\U00011128\U00011113\U00011129\U0001111B\U00011134"
+    pa: ਲਕਸ਼ਦੀਪ
+    yue: 拉克沙群島
+    yo: Lakshadweep
+    uz: Lakshadvip
+    mk: Лакадиви
+    'no': Lakkadivene
+    yo_BJ: Lakshadweep
+    as: লাক্ষাদ্বীপ
+    ha: Lakshadweep
+    ha_NE: Lakshadweep
+  comments:
+  type: union_territory
+MH:
+  name: Maharashtra
+  code: MH
+  unofficial_names: Maharashtra
+  geo:
+    latitude: 19.7514798
+    longitude: 75.7138884
+    min_latitude: 15.6024121
+    min_longitude: 72.659363
+    max_latitude: 22.028441
+    max_longitude: 80.890924
+  translations:
+    en: Maharashtra
+    ar: ماهاراشترا
+    az: Maxaraştra
+    be: Махараштра
+    bg: Махаращра
+    bn: মহারাষ্ট্র
+    ca: Maharashtra
+    cs: Maháráštra
+    da: Maharashtra
+    de: Maharashtra
+    el: Μαχαράστρα
+    es: Maharastra
+    et: Mahārāshtra
+    eu: Maharashtra
+    fa: مهاراشترا
+    fi: Maharashtra
+    fr: Maharashtra
+    gu: મહારાષ્ટ્ર
+    he: מהאראשטרה
+    hi: महाराष्ट्र
+    hr: Maharashtra
+    hu: Mahárástra
+    hy: Մահարաշտրա
+    id: Maharashtra
+    is: Maharashtra
+    it: Maharashtra
+    ja: マハーラーシュトラ州
+    ka: მაჰარაშტრა
+    kn: ಮಹಾರಾಷ್ಟ್ರ
+    ko: 마하라슈트라 주
+    lt: Maharaštra
+    lv: Mahārāštra
+    ml: മഹാരാഷ്ട്ര
+    mn: Махараштра
+    mr: महाराष्ट्र
+    ms: Maharashtra
+    nb: Maharashtra
+    ne: महाराष्ट्र
+    nl: Maharashtra
+    or: ମହାରାଷ୍ଟ୍ର
+    pl: Maharasztra
+    ps: مهاراشترا
+    pt: Maharashtra
+    ro: Maharashtra
+    ru: Махараштра
+    si: මහාරාෂ්ට්‍රා
+    sk: Maháraštra
+    sl: Maharaštra
+    sr: Махараштра
+    sv: Maharashtra
+    sw: Maharashtra
+    ta: மகாராட்டிரம்
+    te: మహారాష్ట్ర
+    th: รัฐมหาราษฏระ
+    tr: Maharaştra
+    uk: Махараштра
+    ur: مہاراشٹر
+    vi: Maharashtra
+    cy: Maharashtra
+    af: Maharashtra
+    ceb: State of Mahārāshtra
+    as: মহাৰাষ্ট্ৰ
+    sr_Latn: Maharaštra
+    zh: 马哈拉施特拉邦
+    yue_Hans: 马哈拉施特拉邦
+    ccp: "\U0001111F\U00011127\U00011126\U00011122\U0001110C\U00011134\U00011116\U00011133\U00011122\U00011127"
+    ga: Maharashtra
+    ky: Махараштра
+    pa: ਮਹਾਰਾਸ਼ਟਰ
+    kk: Махараштра
+    yue: 馬哈拉施特拉邦
+    am: ማሃራሽትራ
+    yo: Maharashtra
+    uz: Maharashtra
+    mk: Махараштра
+    'no': Maharashtra
+    yo_BJ: Maharashtra
+    ha: Maharashtra
+    ha_NE: Maharashtra
+    sd: مھاراشٽر
+  comments:
+  type: state
+ML:
+  name: Meghalaya
+  code: ML
+  unofficial_names: Meghalaya
+  geo:
+    latitude: 25.4670308
+    longitude: 91.366216
+    min_latitude: 25.0333579
+    min_longitude: 89.815674
+    max_latitude: 26.1204059
+    max_longitude: 92.80226599999999
+  translations:
+    en: Meghalaya
+    ar: ميغالايا
+    as: মেঘালয়
+    be: Мегхалая
+    bg: Мегхалая
+    bn: মেঘালয়
+    ca: Meghalaya
+    cs: Méghálaja
+    da: Meghalaya
+    de: Meghalaya
+    el: Μεγκαλάγια
+    es: Megalaya
+    et: Meghālaya
+    eu: Meghalaya
+    fa: مگالایا
+    fi: Meghalaya
+    fr: Meghalaya
+    gu: મેઘાલય
+    he: מגהלאיה
+    hi: मेघालय
+    hr: Meghalaya
+    hu: Meghálaja
+    hy: Մեգհալայա
+    id: Meghalaya
+    is: Meghalaya
+    it: Meghalaya
+    ja: メーガーラヤ州
+    ka: მეგჰალაია
+    kn: ಮೆಘಾಲಯ
+    ko: 메갈라야 주
+    lt: Meghalaja
+    lv: Meghālaja
+    ml: മേഘാലയ
+    mn: Мегалая
+    mr: मेघालय
+    ms: Meghalaya
+    nb: Meghalaya
+    ne: मेघालय
+    nl: Meghalaya
+    or: ମେଘାଳୟ
+    pl: Meghalaya
+    ps: ميگالايا
+    pt: Meghalaya
+    ro: Meghalaya
+    ru: Мегалая
+    si: මෙඝාලයා
+    sk: Meghálaj
+    sr: Мегхалаја
+    sv: Meghalaya
+    sw: Meghalaya
+    ta: மேகாலயா
+    te: మేఘాలయ
+    th: รัฐเมฆาลัย
+    tr: Meghalaya
+    uk: Меґхалая
+    ur: میگھالیہ
+    vi: Meghalaya
+    cy: Meghalaya
+    ceb: Meghālaya
+    sr_Latn: Meghalaja
+    zh: 梅加拉亚邦
+    yue_Hans: 梅加拉亚邦
+    ccp: "\U0001111F\U0001112C\U0001110A\U00011123\U00011127\U00011120\U00011134"
+    ga: Meghalaya
+    pa: ਮੇਘਾਲਿਆ
+    yue: 梅加拉亞邦
+    yo: Meghalaya
+    uz: Meghalaya
+    mk: Мегхалаја
+    'no': Meghalaya
+    yo_BJ: Meghalaya
+    az: Meqhalaya
+    ha: Meghalaya
+    ha_NE: Meghalaya
+    my: မေဃာလယ
+  comments:
+  type: state
+MN:
+  name: Manipur
+  code: MN
+  unofficial_names: Manipur
+  geo:
+    latitude: 24.6637173
+    longitude: 93.90626879999999
+    min_latitude: 23.8360479
+    min_longitude: 92.97107799999999
+    max_latitude: 25.691874
+    max_longitude: 94.74324
+  translations:
+    en: Manipur
+    af: Manipoer
+    ar: مانيبور
+    as: মণিপুৰ
+    az: Manipur
+    be: Маніпур
+    bg: Манипур
+    bn: মণিপুর
+    ca: Manipur
+    cs: Manípur
+    da: Manipur
+    de: Manipur
+    el: Μανιπούρ
+    es: Manipur
+    et: Manipur
+    eu: Manipur
+    fa: مانیپور
+    fi: Manipur
+    fr: Manipur
+    gu: મણિપુર
+    he: מניפור
+    hi: मणिपुर
+    hr: Manipur
+    hu: Manipur
+    hy: Մանիպուր
+    id: Manipur
+    is: Manipur
+    it: Manipur
+    ja: マニプル州
+    ka: მანიპური
+    kn: ಮಣಿಪುರ
+    ko: 마니푸르 주
+    lt: Manipuras
+    lv: Manipura
+    ml: മണിപ്പൂർ
+    mn: Манипур
+    mr: मणिपूर
+    ms: Manipur
+    nb: Manipur
+    ne: मणिपुर
+    nl: Manipur
+    or: ମଣିପୁର
+    pl: Manipur
+    ps: منيپور
+    pt: Manipur
+    ro: Manipur
+    ru: Манипур
+    si: මනිපූර්
+    sk: Manípur
+    sl: Manipur
+    sr: Манипур
+    sv: Manipur
+    sw: Manipur
+    ta: மணிப்பூர்
+    te: మణిపూర్
+    th: รัฐมณีปุระ
+    tr: Manipur
+    uk: Маніпур
+    ur: منی پور
+    vi: Manipur
+    cy: Manipur
+    ceb: Manipur
+    sr_Latn: Manipur
+    zh: 曼尼普尔邦
+    yue_Hans: 曼尼普尔邦
+    ccp: "\U0001111F\U00011127\U0001111A\U00011128\U0001111B\U0001112A\U00011122\U00011134"
+    ga: Manipur
+    pa: ਮਨੀਪੁਰ
+    yue: 曼尼普爾邦
+    am: መኒፑር
+    my: မဏိပူရပြည်နယ်
+    yo: Manipur
+    uz: Manipur
+    mk: Манипур
+    'no': Manipur
+    yo_BJ: Manipur
+    gl: Manipur
+    ha: Manipur
+    ha_NE: Manipur
+    kk: Манипур
+  comments:
+  type: state
+MP:
+  name: Madhya Pradesh
+  code: MP
+  unofficial_names: Madhya Pradesh
+  geo:
+    latitude: 22.9734229
+    longitude: 78.6568942
+    min_latitude: 21.0799139
+    min_longitude: 74.0362481
+    max_latitude: 26.8681089
+    max_longitude: 82.809674
+  translations:
+    en: Madhya Pradesh
+    ar: ماديا براديش
+    as: মধ্য প্ৰদেশ
+    bg: Мадхя Прадеш
+    bn: মধ্যপ্রদেশ
+    ca: Madhya Pradesh
+    cs: Madhjapradéš
+    da: Madhya Pradesh
+    de: Madhya Pradesh
+    el: Μάντια Πραντές
+    es: Madhya Pradesh
+    et: Madhya Pradesh
+    eu: Madhya Pradesh
+    fa: مادایا پرادش
+    fi: Madhya Pradesh
+    fr: Madhya Pradesh
+    gu: મધ્ય પ્રદેશ
+    he: מאדהיה פרדש
+    hi: मध्य प्रदेश
+    hr: Madhya Pradesh
+    hu: Madhja Prades
+    hy: Մադհյա Պրադեշ
+    id: Madhya Pradesh
+    is: Madhya Pradesh
+    it: Madhya Pradesh
+    ja: マディヤ・プラデーシュ州
+    ka: მადჰია-პრადეში
+    kn: ಮಧ್ಯ ಪ್ರದೇಶ
+    ko: 마디아프라데시 주
+    lt: Madhja Pradešas
+    lv: Madhja Pradēša
+    ml: മധ്യപ്രദേശ്‌
+    mn: Мадхья-Прадеш
+    mr: मध्य प्रदेश
+    ms: Madhya Pradesh
+    nb: Madhya Pradesh
+    ne: मध्य प्रदेश
+    nl: Madhya Pradesh
+    or: ମଧ୍ୟ ପ୍ରଦେଶ
+    pl: Madhya Pradesh
+    ps: مدهيه پرديش
+    pt: Madhya Pradesh
+    ro: Madhya Pradesh
+    ru: Мадхья-Прадеш
+    si: මද්‍ය ප්‍රදේශ්
+    sk: Madhjapradéš
+    sl: Umarkot
+    sr: Мадја Прадеш
+    sv: Madhya Pradesh
+    sw: Madhya Pradesh
+    ta: மத்தியப் பிரதேசம்
+    te: మధ్య ప్రదేశ్
+    th: รัฐมัธยประเทศ
+    tr: Madhya Pradesh
+    uk: Мадхʼя-Прадеш
+    ur: مدھیہ پردیش
+    vi: Madhya Pradesh
+    cy: Madhya Pradesh
+    ceb: Madhya Pradesh
+    sr_Latn: Madja Pradeš
+    zh: 中央邦
+    yue_Hans: 中央邦
+    ccp: "\U0001111F\U00011127\U00011116\U00011134\U00011119\U00011133\U00011120\U00011127
+      \U0001111B\U00011133\U00011122\U00011127\U00011118\U0001112C\U0001110C\U00011134"
+    sd: مڌيا پرديش
+    ga: Madhya Pradesh
+    ky: Мадхья-Прадеш
+    pa: ਮੱਧ ਪ੍ਰਦੇਸ਼
+    kk: Мадхья-Прадеш
+    yue: 中央邦
+    am: ማድየ ፕረዴሽ
+    my: မဇ္ဈဒေသ ပြည်နယ်
+    yo: Madhya Pradesh
+    uz: Madhya-pradesh
+    mk: Мадја Прадеш
+    'no': Madhya Pradesh
+    yo_BJ: Madhya Pradesh
+    af: Madja Pradesj
+    az: Madhya-Pradeş
+    ha: Madhya Pradesh
+    ha_NE: Madhya Pradesh
+  comments:
+  type: state
+MZ:
+  name: Mizoram
+  code: MZ
+  unofficial_names: Mizoram
+  geo:
+    latitude: 23.164543
+    longitude: 92.9375739
+    min_latitude: 21.946661
+    min_longitude: 92.258479
+    max_latitude: 24.5174359
+    max_longitude: 93.4375611
+  translations:
+    en: Mizoram
+    ar: ميزورام
+    as: মিজোৰাম
+    az: Mizoram
+    be: Мізарам
+    bg: Мизорам
+    bn: মিজোরাম
+    ca: Mizoram
+    cs: Mizóram
+    da: Mizoram
+    de: Mizoram
+    el: Μιζόραμ
+    es: Mizorán
+    et: Mizoram
+    eu: Mizoram
+    fa: میزورام
+    fi: Mizoram
+    fr: Mizoram
+    gu: મિઝોરમ
+    he: מיזוראם
+    hi: मिज़ोरम
+    hr: Mizoram
+    hu: Mizoram
+    id: Mizoram
+    is: Mizoram
+    it: Mizoram
+    ja: ミゾラム州
+    ka: მიზორამი
+    kn: ಮಿಝೋರಂ
+    ko: 미조람 주
+    lt: Mizoramas
+    lv: Mizorāma
+    ml: മിസോറം
+    mn: Мизорам
+    mr: मिझोरम
+    ms: Mizoram
+    nb: Mizoram
+    ne: मिजोरम
+    nl: Mizoram
+    or: ମିଜୋରାମ
+    pl: Mizoram
+    ps: ميزورام
+    pt: Mizoram
+    ro: Mizoram
+    ru: Мизорам
+    si: මිසොරම්
+    sk: Mizorám
+    sr: Мизорам
+    sv: Mizoram
+    sw: Mizoram
+    ta: மிசோரம்
+    te: మిజోరాం
+    th: รัฐมิโซรัม
+    tr: Mizoram
+    uk: Мізорам
+    ur: میزورم
+    vi: Mizoram
+    cy: Mizoram
+    ceb: Mizoram
+    sr_Latn: Mizoram
+    zh: 米佐拉姆邦
+    yue_Hans: 米佐拉姆邦
+    sq: Mizoram
+    ccp: "\U0001111F\U00011128\U0001110E\U0001112E\U00011122\U0001111F\U00011134"
+    ga: Mizoram
+    pa: ਮਿਜ਼ੋਰਮ
+    yue: 米佐拉姆邦
+    yo: Mizoram
+    mk: Мизорам
+    'no': Mizoram
+    yo_BJ: Mizoram
+    ha: Mizoram
+    ha_NE: Mizoram
+    hy: Միզորամ
+    my: မီဇိုရမ်ပြည်နယ်
+    uz: Mizoram
+  comments:
+  type: state
+NL:
+  name: Nagaland
+  code: NL
+  unofficial_names: Nagaland
+  geo:
+    latitude: 26.1584354
+    longitude: 94.5624426
+    min_latitude: 25.198068
+    min_longitude: 93.327578
+    max_latitude: 27.036123
+    max_longitude: 95.244715
+  translations:
+    en: Nagaland
+    af: Nagaland
+    ar: ناجالاند
+    as: নাগালেণ্ড
+    az: Naqalend
+    be: Нагаленд
+    bg: Нагаланд
+    bn: নাগাল্যান্ড
+    ca: Nagaland
+    cs: Nágáland
+    da: Nagaland
+    de: Nagaland
+    el: Ναγκαλάντ
+    es: Nagaland
+    et: Nagaland
+    eu: Nagaland
+    fa: ناگالند
+    fi: Nagaland
+    fr: Nagaland
+    gu: નાગાલેંડ
+    he: נאגאלנד
+    hi: नागालैण्ड
+    hr: Nagaland
+    hu: Nágaföld
+    id: Nagaland
+    is: Nagaland
+    it: Nagaland
+    ja: ナガランド州
+    ka: ნაგალენდი
+    kn: ನಾಗಲ್ಯಂಡ್
+    ko: 나갈랜드 주
+    lt: Nagalandas
+    lv: Nāgālenda
+    ml: നാഗാലാ‌ൻഡ്
+    mn: Нагаланд
+    mr: नागालँड
+    ms: Nagaland
+    nb: Nagaland
+    ne: नागाल्याण्ड
+    nl: Nagaland
+    or: ନାଗାଲାଣ୍ଡ
+    pl: Nagaland
+    ps: ناگالېډ
+    pt: Nagaland
+    ro: Nagaland
+    ru: Нагаленд
+    si: නාගලන්තය
+    sk: Nágsko
+    sr: Нагаланд
+    sv: Nagaland
+    sw: Nagaland
+    ta: நாகாலாந்து
+    te: నాగాలాండ్
+    th: รัฐนาคาแลนด์
+    tr: Nagaland
+    uk: Нагаленд
+    ur: ناگالینڈ
+    vi: Nagaland
+    cy: Nagaland
+    ceb: State of Nāgāland
+    sr_Latn: Nagaland
+    zh: 那加兰邦
+    yue_Hans: 那加兰邦
+    sq: Nagaland
+    ccp: "\U0001111A\U00011109\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: Nagaland
+    pa: ਨਾਗਾਲੈਂਡ
+    yue: 那加蘭邦
+    am: ናገላንድ
+    yo: Nagaland
+    uz: Nagalend
+    mk: Нагаланд
+    'no': Nagaland
+    yo_BJ: Nagaland
+    ha: Nagaland
+    ha_NE: Nagaland
+    hy: Նագալենդ
+    kk: Нагаленд
+    my: နာဂလန်ပြည်နယ်
+  comments:
+  type: state
+OR:
+  name: Orissa
+  code: OR
+  unofficial_names: Orissa
+  geo:
+    latitude: 20.9516658
+    longitude: 85.0985236
+    min_latitude: 17.8120961
+    min_longitude: 81.388607
+    max_latitude: 22.5700271
+    max_longitude: 87.483385
+  translations:
+    en: Odisha
+    af: Odisha
+    ar: أوريسا
+    as: উৰিষ্যা
+    az: Odisha
+    be: Арыса
+    bg: Ориса
+    bn: ওড়িশা
+    ca: Odisha
+    cs: Urísa
+    da: Odisha
+    de: Odisha
+    el: Ορίσα
+    es: Odisha
+    et: Odisha
+    eu: Odisha
+    fa: اوریسا
+    fi: Odisha
+    fr: Odisha
+    gl: Odisha
+    gu: ઑડિશા
+    he: אודישה
+    hi: ओडिशा
+    hr: Odisha
+    hu: Orisza
+    id: Odisha
+    is: Odisha
+    it: Odisha
+    ja: オリッサ州
+    ka: ორისა
+    kn: ಒರಿಸ್ಸಾ
+    ko: 오디샤 주
+    lt: Orisa
+    lv: Orisa
+    ml: ഒഡീഷ
+    mn: Орисса
+    mr: ओडिशा
+    ms: Odisha
+    nb: Odisha
+    ne: उड़िसा
+    nl: Odisha
+    or: ଓଡ଼ିଶା
+    pl: Orisa
+    ps: اوړېشه
+    pt: Odisha
+    ro: Odisha
+    ru: Орисса
+    si: ඔරිස්සා
+    sk: Urísa
+    sr: Ориса
+    sv: Odisha
+    sw: Odisha
+    ta: ஒடிசா
+    te: ఒరిస్సా
+    th: รัฐโอริศา
+    tr: Odisha
+    uk: Орісса
+    ur: اڑیسہ
+    vi: Odisha
+    cy: Odisha
+    ceb: State of Odisha
+    sr_Latn: Orisa
+    zh: 奥里萨邦
+    yue_Hans: 奥里萨邦
+    jv: Odisha
+    sq: Odisha
+    ccp: "\U00011103\U0001112E\U00011122\U00011128\U00011125"
+    ga: Odisha
+    ky: Орисса
+    pa: ਓਡੀਸ਼ਾ
+    yue: 奧里薩邦
+    am: ኦዲሣ
+    my: သြရိဿပြည်နယ်
+    yo: Odisha
+    uz: Odisha
+    mk: Одиша
+    'no': Odisha
+    yo_BJ: Odisha
+    ha: Odisha
+    ha_NE: Odisha
+    sd: اوڙيسيا
+  comments:
+  type: state
+PB:
+  name: Punjab
+  code: PB
+  unofficial_names: Punjab
+  geo:
+    latitude: 31.1471305
+    longitude: 75.34121789999999
+    min_latitude: 29.537147
+    min_longitude: 73.8708879
+    max_latitude: 32.4981352
+    max_longitude: 76.92175809999999
+  translations:
+    en: Punjab
+    ar: بنجاب
+    as: পঞ্জাব, ভাৰত
+    az: Pəncab ştatı
+    be: Пенджаб, Індыя
+    bg: Пенджаб
+    bn: পাঞ্জাব, ভারত
+    ca: Panjab
+    cs: Paňdžáb
+    da: Punjab
+    de: Punjab
+    el: Παντζάμπ
+    es: Punyab
+    et: Pandžab
+    eu: Punjab
+    fa: پنجاب (هند)
+    fi: Punjab
+    fr: Pendjab
+    gu: પંજાબ, ભારત
+    he: פנג׳אב
+    hi: पंजाब
+    hr: Punjab
+    hu: Pandzsáb
+    hy: Փենջաբ
+    id: Punjab
+    is: Púnjab
+    it: Punjab
+    ja: パンジャーブ州
+    ka: პენჯაბი
+    kn: ಪಂಜಾಬ್
+    ko: 펀자브 주
+    lt: Pandžabas
+    lv: Pendžāba
+    ml: പഞ്ചാബ്
+    mn: Панжаб
+    mr: पंजाब
+    ms: Punjab
+    nb: Punjab
+    ne: पञ्जाब
+    nl: Punjab
+    or: ପଞ୍ଜାବ
+    pl: Pendżab
+    pt: Punjab
+    ro: Punjab
+    ru: Пенджаб
+    sk: Pandžáb
+    sl: Punjab
+    sr: Панџаб
+    sv: Punjab
+    sw: Punjab
+    ta: பஞ்சாப்
+    te: పంజాబ్
+    th: รัฐปัญจาบ
+    tr: Pencap
+    uk: Пенджаб
+    ur: پنجاب
+    vi: Punjab
+    cy: Punjab
+    ceb: State of Punjab
+    sr_Latn: Pandžab
+    zh: 旁遮普邦
+    yue_Hans: 旁遮普邦
+    ccp: "\U0001111B\U0001111A\U00011134\U0001110E\U0001111B\U00011134"
+    ps: پنجاب
+    pa: ਪੰਜਾਬ
+    yue: 旁遮普邦
+    am: ፐንጃብ፣ ሕንድ
+    yo: Punjab
+    uz: Panjob
+    mk: Пенџаб
+    'no': Punjab
+    yo_BJ: Punjab
+    bs: Punjab
+    gl: Punjab
+    ha: Punjab (Indiya)
+    ha_NE: Punjab (Indiya)
+  comments:
+  type: state
+PY:
+  name: Pondicherry
+  code: PY
+  unofficial_names: Pondicherry
+  geo:
+    latitude: 11.9138598
+    longitude: 79.8144722
+    min_latitude: 11.8994375
+    min_longitude: 79.7857511
+    max_latitude: 11.973176
+    max_longitude: 79.84057229999999
+  translations:
+    en: Puducherry
+    ar: بودوتشيري
+    be: Пандышэры
+    bg: Пондичери
+    bn: পুদুচেরি
+    ca: Pondicherry
+    cs: Puduččéri
+    da: Pondicherry
+    de: Puducherry
+    el: Ποντιτσερί
+    es: Puducherry
+    et: Puducherry liiduterritoorium
+    eu: Puducherry
+    fa: پودوچری
+    fi: Puducherry
+    fr: Territoire de Pondichéry
+    gu: પૉંડિચેરી
+    he: פודוצ׳רי
+    hi: पुदुच्चेरी
+    hr: Pondicherry
+    hu: Puduccseri
+    id: Puducherry
+    is: Puducherry
+    it: Pondicherry
+    ja: ポンディシェリ連邦直轄領
+    ka: პონდიშერი
+    kn: ಪುದುಚೇರಿ
+    ko: 푸두체리
+    lt: Pudučeris
+    lv: Pudučerri
+    ml: പുതുച്ചേരി
+    mr: पुडुचेरी
+    ms: Puducherry
+    nb: Puducherry
+    ne: पुदुचेरी
+    nl: Puducherry
+    or: ପୁଡୁଚେରୀ
+    pl: Puducherry
+    pt: Puducherry
+    ro: Puducherry
+    ru: Пондичерри
+    si: පුදුචේරි
+    sk: Puttučéri
+    sr: Територија Пондишери
+    sv: Pondicherry
+    sw: Puducherry
+    ta: புதுச்சேரி
+    te: పుదుచ్చేరి
+    th: ปุทุจเจรี
+    tk: Puducherry
+    tr: Puduçeri
+    uk: Пудучеррі
+    ur: پونڈیچری
+    vi: Puducherry
+    cy: Puducherry
+    ceb: Puducherry
+    sr_Latn: Teritorija Pondišeri
+    zh: 本地治里
+    yue_Hans: 本地治里
+    ccp: "\U0001111B\U0001112A\U00011118\U0001112A\U0001110C\U0001112C\U00011122\U00011128"
+    so: Puducherry
+    pa: ਪਾਂਡੀਚਰੀ
+    yue: 本地治里
+    yo: Puducherry
+    mk: Пондишери
+    'no': Puducherry
+    yo_BJ: Puducherry
+    as: পুডুছেৰী
+    ha: Puducherry (yanki)
+    ha_NE: Puducherry (yanki)
+    hy: Պոնդիչերրի
+  comments:
+  type: union_territory
+RJ:
+  name: Rajasthan
+  code: RJ
+  unofficial_names: Rajasthan
+  geo:
+    latitude: 27.0238036
+    longitude: 74.21793260000001
+    min_latitude: 23.0632669
+    min_longitude: 69.483734
+    max_latitude: 30.195124
+    max_longitude: 78.26338109999999
+  translations:
+    en: Rajasthan
+    ar: راجستان
+    as: ৰাজস্থান
+    be: Раджастхан
+    bg: Раджастан
+    bn: রাজস্থান
+    ca: Rajasthan
+    cs: Rádžasthán
+    da: Rajasthan
+    de: Rajasthan
+    el: Ράτζασταν
+    es: Rajastán
+    et: Rājasthān
+    eu: Rajasthan
+    fa: راجستان
+    fi: Rajasthan
+    fr: Rajasthan
+    gu: રાજસ્થાન
+    he: ראג׳סטאן
+    hi: राजस्थान
+    hr: Radžastan
+    hu: Rádzsasztán
+    hy: Ռաջասթան
+    id: Rajasthan
+    is: Rajasthan
+    it: Rajasthan
+    ja: ラージャスターン州
+    ka: რაჯასტანი
+    kn: ರಾಜಸ್ಥಾನ
+    ko: 라자스탄 주
+    lt: Radžastanas
+    lv: Rādžastāna
+    ml: രാജസ്ഥാൻ
+    mn: Ражастан
+    mr: राजस्थान
+    ms: Rajasthan
+    nb: Rajasthan
+    ne: राजस्थान
+    nl: Rajasthan
+    or: ରାଜସ୍ଥାନ
+    pl: Radżastan
+    ps: راجستهان
+    pt: Rajastão
+    ro: Rajasthan
+    ru: Раджастхан
+    si: රාජස්තාන්
+    sk: Radžastan
+    sl: Radžastan
+    sr: Раџастан
+    sv: Rajasthan
+    sw: Rajasthan
+    ta: இராச்சசுத்தான்
+    te: రాజస్థాన్
+    th: รัฐราชสถาน
+    tr: Racasthan
+    uk: Раджастхан
+    ur: راجستھان
+    vi: Rajasthan
+    cy: Rajasthan
+    ceb: State of Rājasthān
+    sr_Latn: Radžastan
+    zh: 拉贾斯坦邦
+    yue_Hans: 拉贾斯坦邦
+    ccp: "\U00011122\U0001110C\U00011134\U0001110C\U00011133\U00011112\U0001111A\U00011134"
+    sd: راجستان
+    ga: Rajasthan
+    pa: ਰਾਜਸਥਾਨ
+    kk: Раджастхан
+    yue: 拉賈斯坦邦
+    az: Racastan
+    am: ራጀስጣን
+    my: ရာဇဌာန်ပြည်နယ်
+    yo: Rajasthan
+    uz: Rojasthon
+    mk: Раџастан
+    'no': Rajasthan
+    yo_BJ: Rajasthan
+    ha: Rajasthan
+    ha_NE: Rajasthan
+    jv: Rajasthan
+  comments:
+  type: state
+SK:
+  name: Sikkim
+  code: SK
+  unofficial_names:
+  - Denjong
+  geo:
+    latitude: 27.5329718
+    longitude: 88.5122178
+    min_latitude: 27.079261
+    min_longitude: 88.0063541
+    max_latitude: 28.128759
+    max_longitude: 88.9108059
+  translations:
+    en: Sikkim
+    af: Sikkim
+    ar: سيكيم
+    as: ছিক্কিম
+    az: Sikkim
+    be: Сікім
+    bg: Сиким
+    bn: সিক্কিম
+    ca: Sikkim
+    cs: Sikkim
+    da: Sikkim
+    de: Sikkim
+    el: Σικκίμ
+    es: Sikkim
+    et: Sikkim
+    eu: Sikkim
+    fa: سیکیم
+    fi: Sikkim
+    fr: Sikkim
+    gl: Sikkim
+    gu: સિક્કિમ
+    he: סיקים
+    hi: सिक्किम
+    hr: Sikkim
+    hu: Szikkim
+    id: Sikkim
+    is: Sikkim
+    it: Sikkim
+    ja: シッキム州
+    ka: სიკიმი
+    kn: ಸಿಕ್ಕಿಂ
+    ko: 시킴 주
+    lt: Sikimas
+    lv: Sikima
+    ml: സിക്കിം
+    mn: Сикким
+    mr: सिक्किम
+    ms: Sikkim
+    nb: Sikkim
+    ne: सिक्किम
+    nl: Sikkim
+    or: ସିକିମ
+    pl: Sikkim
+    ps: سيکيم
+    pt: Siquim
+    ro: Sikkim
+    ru: Сикким
+    si: සිකිම්
+    sk: Sikkim
+    sr: Сиким
+    sv: Sikkim
+    sw: Sikkim
+    ta: சிக்கிம்
+    te: సిక్కిం
+    th: รัฐสิกขิม
+    tr: Sikkim
+    uk: Сіккім
+    ur: سکم
+    vi: Sikkim
+    cy: Sikkim
+    ceb: Sikkim
+    sr_Latn: Sikim
+    zh: 锡金邦
+    yue_Hans: 锡金
+    sq: Sikkim
+    ccp: "\U00011125\U00011128\U00011107\U00011134\U00011107\U00011128\U0001111F\U00011134"
+    ga: Sikkim
+    pa: ਸਿੱਕਮ
+    yue: 錫金
+    am: ሲኪም
+    my: ဆစ်ကင်ပြည်နယ်
+    yo: Sikkim
+    bs: Sikkim
+    mk: Сиким
+    'no': Sikkim
+    yo_BJ: Sikkim
+    ha: Sikkim
+    ha_NE: Sikkim
+    sl: Sikim
+    uz: Sekkim
+  comments:
+  type: state
+TG:
+  name: तेलंगाना
+  code: TG
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: تيلانغانا
+    as: তেলেংগানা
+    az: Telanqana
+    bg: Телангана
+    bn: তেলঙ্গানা
+    ca: Telangana
+    cs: Telangána
+    da: Telangana
+    de: Telangana
+    el: Τελανγκάνα
+    en: Telangana
+    es: Telingana
+    et: Telangana
+    fa: تلنگانا
+    fi: Telangana
+    fr: Telangana
+    gl: Telangana
+    gu: તેલંગાણા
+    he: טלנגאנה
+    hi: तेलंगाना
+    hu: Telangána
+    id: Telangana
+    it: Telangana
+    ja: テランガナ
+    ka: ტელანგანა
+    kn: ತೆಲಂಗಾಣ
+    ko: 텔랑가나 주
+    lt: Telangana
+    lv: Telangāna
+    ml: തെലങ്കാന
+    mn: Телангана
+    mr: तेलंगणा
+    ms: Telangana
+    nb: Telangana
+    ne: तेलंगाना
+    nl: Telangana
+    or: ତେଲେଙ୍ଗାନା
+    pl: Telangana
+    pt: Telangana
+    ro: Telangana
+    ru: Телангана
+    sr: Телангана
+    sv: Telangana
+    sw: Telangana
+    ta: தெலுங்கானா
+    te: తెలంగాణ
+    th: รัฐเตลันกานา
+    uk: Телангана
+    ur: تیلنگانا
+    vi: Telangana
+    cy: Telangana
+    ceb: Telangana
+    tr: Telangana
+    sr_Latn: Telangana
+    zh: 特伦甘纳邦
+    yue_Hans: 泰伦加纳邦
+    ccp: "\U00011111\U0001112C\U00011123\U0001111A\U00011134\U00011109\U0001111A"
+    ga: Telangana
+    pa: ਤੇਲੰਗਾਨਾ
+    yue: 泰倫加納邦
+    mk: Телангана
+    'no': Telangana
+    eu: Telangana
+    ha: Telangana
+    ha_NE: Telangana
+    hy: Տելանգանա
+    sd: تلنگانا
+  comments:
+  type: state
+TN:
+  name: Tamil Nadu
+  code: TN
+  unofficial_names: Tamil Nadu
+  geo:
+    latitude: 11.1271225
+    longitude: 78.6568942
+    min_latitude: 8.0774077
+    min_longitude: 76.23055409999999
+    max_latitude: 13.496666
+    max_longitude: 80.3464511
+  translations:
+    en: Tamil Nadu
+    af: Tamil Nadu
+    ar: تامل نادو
+    as: তামিলনাডু
+    be: Тамілнад
+    bg: Тамил Наду
+    bn: তামিলনাড়ু
+    ca: Tamil Nadu
+    cs: Tamilnádu
+    da: Tamil Nadu
+    de: Tamil Nadu
+    el: Ταμίλ Ναντού
+    es: Tamil Nadu
+    et: Tamil Nadu
+    eu: Tamil Nadu
+    fa: تامیل نادو
+    fi: Tamil Nadu
+    fr: Tamil Nadu
+    gl: Tamil Nadu
+    gu: તમિલનાડુ
+    he: טאמיל נאדו
+    hi: तमिल नाडु
+    hr: Tamil Nadu
+    hu: Tamilnádu
+    hy: Տամիլանդ
+    id: Tamil Nadu
+    is: Tamil Nadu
+    it: Tamil Nadu
+    ja: タミル・ナードゥ州
+    ka: ტამილნადუ
+    kn: ತಮಿಳುನಾಡು
+    ko: 타밀나두 주
+    lt: Tamilnadas
+    lv: Tamilnāda
+    ml: തമിഴ്‌നാട്
+    mn: Тамилнаду
+    mr: तमिळनाडू
+    ms: Tamil Nadu
+    nb: Tamil Nadu
+    ne: तमिलनाडु
+    nl: Tamil Nadu
+    or: ତାମିଲନାଡୁ
+    pl: Tamilnadu
+    ps: تامل ناډو
+    pt: Tamil Nadu
+    ro: Tamil Nadu
+    ru: Тамилнад
+    si: තමිල්නාඩුව
+    sk: Tamilnádu
+    sr: Тамил Наду
+    sv: Tamil Nadu
+    sw: Tamil Nadu
+    ta: தமிழ்நாடு
+    te: తమిళనాడు
+    th: รัฐทมิฬนาฑู
+    tr: Tamil Nadu
+    uk: Тамілнаду
+    ur: تامل ناڈو
+    vi: Tamil Nadu
+    cy: Tamil Nadu
+    ceb: State of Tamil Nādu
+    sr_Latn: Tamil Nadu
+    zh: 泰米尔纳德邦
+    yue_Hans: 淡米尔纳德邦
+    sq: Tamil Nadu
+    ccp: "\U00011111\U0001111F\U00011128\U00011123\U00011134 \U0001111A\U00011113\U0001112A"
+    ga: Tamil Nadu
+    pa: ਤਾਮਿਲ ਨਾਡੂ
+    kk: Тамилнад
+    yue: 淡米爾納德邦
+    az: Tamilnad
+    am: ታሚል ናዱ
+    my: မဒရပ်ပြည်နယ်
+    yo: Tamil Nadu
+    uz: Tamilnad
+    mk: Тамил Наду
+    'no': Tamil Nadu
+    yo_BJ: Tamil Nadu
+    ha: Tamil Nadu
+    ha_NE: Tamil Nadu
+    jv: Tamil Nadu
+    ky: Тамил Наду
+    sd: تامل ناڊو
+  comments:
+  type: state
+TR:
+  name: Tripura
+  code: TR
+  unofficial_names: Tripura
+  geo:
+    latitude: 23.9408482
+    longitude: 91.9881527
+    min_latitude: 22.929054
+    min_longitude: 91.15093189999999
+    max_latitude: 24.533733
+    max_longitude: 92.336001
+  translations:
+    en: Tripura
+    af: Tripoera
+    ar: ترايبورا
+    as: ত্ৰিপুৰা
+    az: Tripura
+    be: Трыпура
+    bg: Трипура
+    bn: ত্রিপুরা
+    ca: Tripura
+    cs: Tripura
+    da: Tripura
+    de: Tripura
+    el: Τρίπουρα
+    es: Tripura
+    et: Tripura
+    eu: Tripura
+    fa: تریپورا
+    fi: Tripura
+    fr: Tripura
+    gu: ત્રિપુરા
+    he: טריפורה
+    hi: त्रिपुरा
+    hr: Tripura
+    hu: Tripura
+    hy: Տրիպուրա
+    id: Tripura
+    is: Tripura
+    it: Tripura
+    ja: トリプラ州
+    ka: ტრიპურა
+    kn: ತ್ರಿಪುರ
+    ko: 트리푸라 주
+    lt: Tripura
+    lv: Tripura
+    ml: ത്രിപുര
+    mn: Трипура
+    mr: त्रिपुरा
+    ms: Tripura
+    nb: Tripura
+    ne: त्रिपुरा
+    nl: Tripura
+    or: ତ୍ରିପୁରା
+    pl: Tripura
+    ps: تريپوره
+    pt: Tripura
+    ro: Tripura
+    ru: Трипура
+    si: ට්‍රිපුර
+    sk: Tripura
+    sr: Трипура
+    sv: Tripura
+    sw: Tripura
+    ta: திரிபுரா
+    te: త్రిపుర
+    th: รัฐตริปุระ
+    tr: Tripura
+    uk: Тріпура
+    ur: تری پورہ
+    vi: Tripura
+    cy: Tripura
+    ceb: Tripura
+    sr_Latn: Tripura
+    zh: 特里普拉邦
+    yue_Hans: 特里普拉邦
+    sq: Tripura
+    ccp: "\U00011111\U00011133\U00011122\U00011128\U0001111B\U0001112A\U00011122"
+    ga: Tripura
+    pa: ਤ੍ਰਿਪੁਰਾ
+    kk: Трипура
+    yue: 特里普拉邦
+    am: ትሪፑረ
+    yo: Tripura
+    uz: Tripura
+    mk: Трипура
+    'no': Tripura
+    yo_BJ: Tripura
+    ha: Tripura
+    ha_NE: Tripura
+  comments:
+  type: state
+UP:
+  name: Uttar Pradesh
+  code: UP
+  unofficial_names: Uttar Pradesh
+  geo:
+    latitude: 27.5705886
+    longitude: 80.0981869
+    min_latitude: 23.870839
+    min_longitude: 77.0924369
+    max_latitude: 30.411635
+    max_longitude: 84.6743269
+  translations:
+    en: Uttar Pradesh
+    af: Oetarpradesj
+    ar: أتر برديش
+    as: উত্তৰ প্ৰদেশ
+    az: Uttar Pradeş
+    be: Утар-Прадэш
+    bg: Утар Прадеш
+    bn: উত্তরপ্রদেশ
+    ca: Uttar Pradesh
+    cs: Uttarpradéš
+    da: Uttar Pradesh
+    de: Uttar Pradesh
+    el: Ούταρ Πραντές
+    es: Uttar Pradesh
+    et: Uttar Pradesh
+    eu: Uttar Pradesh
+    fa: اوتار پرادش
+    fi: Uttar Pradesh
+    fr: Uttar Pradesh
+    gl: Uttar Pradesh
+    gu: ઉત્તર પ્રદેશ
+    he: אוטר פרדש
+    hi: उत्तर प्रदेश
+    hr: Uttar Pradesh
+    hu: Uttar Prades
+    hy: Ուտան Պրադեչ
+    id: Uttar Pradesh
+    is: Uttar Pradesh
+    it: Uttar Pradesh
+    ja: ウッタル・プラデーシュ州
+    ka: უტარ-პრადეში
+    kn: ಉತ್ತರ ಪ್ರದೇಶ
+    ko: 우타르프라데시 주
+    lt: Utar Pradešas
+    lv: Utarpradēša
+    ml: ഉത്തർ‌പ്രദേശ്
+    mn: Уттар Прадеш
+    mr: उत्तर प्रदेश
+    ms: Uttar Pradesh
+    nb: Uttar Pradesh
+    ne: उत्तर प्रदेश
+    nl: Uttar Pradesh
+    or: ଉତ୍ତର ପ୍ରଦେଶ
+    pl: Uttar Pradesh
+    pt: Uttar Pradesh
+    ro: Uttar Pradesh
+    ru: Уттар-Прадеш
+    si: උත්තර් ප්‍රදේශ්
+    sk: Uttarpradéš
+    sl: Uttar Pradesh
+    sr: Утар Прадеш
+    sv: Uttar Pradesh
+    sw: Uttar Pradesh
+    ta: உத்தரப் பிரதேசம்
+    te: ఉత్తర ప్రదేశ్
+    th: รัฐอุตตรประเทศ
+    tr: Uttar Pradeş
+    uk: Уттар-Прадеш
+    ur: اتر پردیش
+    vi: Uttar Pradesh
+    cy: Uttar Pradesh
+    ceb: Uttar Pradesh
+    sr_Latn: Utar Pradeš
+    zh: 北方邦
+    yue_Hans: 北方邦
+    sq: Uttar Pradesh
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111B\U00011133\U00011122\U00011127\U00011118\U0001112C\U0001110C\U00011134"
+    ga: Uttar Pradesh
+    ps: اتر پرديش
+    pa: ਉੱਤਰ ਪ੍ਰਦੇਸ਼
+    yue: 北方邦
+    am: ኡተር ፕረዴሽ
+    my: ဥတ်တရဒသေ
+    yo: Uttar Pradesh
+    uz: Uttarpradesh
+    mk: Утар Прадеш
+    'no': Uttar Pradesh
+    yo_BJ: Uttar Pradesh
+    ha: Uttar Pradesh
+    ha_NE: Uttar Pradesh
+    jv: Uttar Pradesh
+    sd: اتر پرديش
+  comments:
+  type: state
+UT:
+  name: उत्तराखण्ड
+  code: UT
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: أوتاراخند
+    as: উত্তৰাখণ্ড
+    be: Утаракханд
+    bg: Утаракханд
+    bn: উত্তরাখণ্ড
+    ca: Uttarakhand
+    cs: Uttarákhand
+    da: Uttarakhand
+    de: Uttarakhand
+    el: Ουταράχαντ
+    en: Uttarakhand
+    es: Uttarakhand
+    et: Uttarakhand
+    eu: Uttarakhand
+    fa: اوتاراکند
+    fi: Uttarakhand
+    fr: Uttarakhand
+    gu: ઉત્તરાખંડ
+    he: אוטראקהאנד
+    hi: उत्तराखण्ड
+    hr: Uttarakhand
+    hu: Uttarakhand
+    id: Uttarakhand
+    is: Uttarakhand
+    it: Uttarakhand
+    ja: ウッタラーカンド州
+    ka: უტარაკჰანდი
+    kn: ಉತ್ತರಾಖಂಡ
+    ko: 우타라칸드 주
+    lt: Utarakhandas
+    lv: Utarakhanda
+    ml: ഉത്തരാഖണ്ഡ്
+    mn: Уттараканд
+    mr: उत्तराखंड
+    ms: Uttarakhand
+    nb: Uttarakhand
+    ne: उत्तराखण्ड
+    nl: Uttarakhand
+    or: ଉତ୍ତରାଖଣ୍ଡ
+    pl: Uttarakhand
+    ps: اتر کنډ
+    pt: Uttarakhand
+    ro: Uttarakhand
+    ru: Уттаракханд
+    si: උට්ටරඛාන්ඩ්
+    sk: Uttarákhand
+    sr: Утараханд
+    sv: Uttarakhand
+    sw: Uttarakhand
+    ta: உத்தராகண்டம்
+    te: ఉత్తరాఖండ్
+    th: รัฐอุตตราขัณฑ์
+    tr: Uttarakhand
+    uk: Уттаракханд
+    ur: اتراکھنڈ
+    vi: Uttarakhand
+    cy: Uttarakhand
+    ceb: State of Uttarakhand
+    sr_Latn: Utarahand
+    zh: 北阿坎德邦
+    yue_Hans: 北阿坎德邦
+    sq: Uttarakand
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U00011103\U00011108\U00011127\U0001111A\U00011134\U00011113\U00011127"
+    ga: Uttarakhand
+    pa: ਉੱਤਰਖੰਡ
+    yue: 北阿坎德邦
+    am: ኡተራኸንድ
+    yo: Uttarakhand
+    mk: Утараканд
+    'no': Uttarakhand
+    yo_BJ: Uttarakhand
+    az: Uttarakhand
+    gl: Uttarakhand
+    ha: Uttarakhand
+    ha_NE: Uttarakhand
+    hy: Ուտարկխանդ
+    sd: اتراکنڊ
+  comments:
+  type: state
+WB:
+  name: West Bengal
+  code: WB
+  unofficial_names:
+  - West Bengal
+  geo:
+    latitude: 22.9867569
+    longitude: 87.8549755
+    min_latitude: 21.528355
+    min_longitude: 85.82095799999999
+    max_latitude: 27.220707
+    max_longitude: 89.880039
+  translations:
+    en: West Bengal
+    af: Wes-Bengale
+    ar: بنغال الغربية
+    as: পশ্চিমবঙ্গ
+    be: Заходняя Бенгалія
+    bg: Западна Бенгалия
+    bn: পশ্চিমবঙ্গ
+    ca: Bengala Occidental
+    cs: Západní Bengálsko
+    da: Vestbengalen
+    de: Westbengalen
+    el: Δυτική Βενγκάλη
+    es: Bengala Occidental
+    et: Lääne-Bengali osariik
+    eu: Mendebaldeko Bengala
+    fa: بنگال غربی
+    fi: Länsi-Bengali
+    fr: Bengale-Occidental
+    gu: પશ્ચિમ બંગાળ
+    he: מערב בנגל
+    hi: पश्चिम बंगाल
+    hr: Zapadni Bengal
+    hu: Nyugat-Bengál
+    hy: Արևմտյան Բենգալիա
+    id: Benggala Barat
+    is: Vestur-Bengal
+    it: Bengala Occidentale
+    ja: 西ベンガル州
+    ka: დასავლეთი ბენგალი
+    kn: ಪಶ್ಚಿಮ ಬಂಗಾಳ
+    ko: 서벵골 주
+    lt: Vakarų Bengalija
+    lv: Rietumbengāle
+    ml: പശ്ചിമ ബംഗാൾ
+    mn: Өрнө Бенгал
+    mr: पश्चिम बंगाल
+    ms: Bengal Barat
+    nb: Vest-Bengal
+    ne: पश्चिम बङ्गाल
+    nl: West-Bengalen
+    or: ପଶ୍ଚିମବଙ୍ଗ
+    pl: Bengal Zachodni
+    ps: مغربي بنگال
+    pt: Bengala Ocidental
+    ro: Bengalul de Vest
+    ru: Западная Бенгалия
+    si: බටහිර බෙංගාලය
+    sk: Západné Bengálsko
+    sr: Западни Бенгал
+    sv: Västbengalen
+    sw: West Bengal
+    ta: மேற்கு வங்காளம்
+    te: పశ్చిమ బెంగాల్
+    th: รัฐเบงกอลตะวันตก
+    tk: West Bengal
+    tr: Batı Bengal
+    uk: Західний Бенгал
+    ur: مغربی بنگال
+    vi: Tây Bengal
+    cy: Gorllewin Bengal
+    ceb: West Bengal
+    yo_BJ: Ìwɔòrùn Bɛ̀ngál
+    sr_Latn: Zapadni Bengal
+    zh: 西孟加拉邦
+    yue_Hans: 西孟加拉邦
+    sq: Bengali Perëndimor
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U0001110C\U00011134 \U0001111D\U0001112C\U00011101\U00011109\U00011127\U00011123\U00011134"
+    sd: اولھ بنگال
+    ga: Beangál Thiar
+    gl: Bengala Occidental
+    sl: Zahodna Bengalija
+    pa: ਪੱਛਮੀ ਬੰਗਾਲ
+    kk: Батыс Бенгал
+    yue: 西孟加拉邦
+    am: ምዕራብ ቤንጋል
+    yo: Ìwọòrùn Bẹ̀ngál
+    uz: Gʻarbiy bengaliya
+    mk: Западен Бенгал
+    'no': Vest-Bengal
+    az: Qərbi Benqaliya
+    ha: Bengal ta Yamma
+    ha_NE: Bengal ta Yamma
+    ky: Батыш Бенгалерт
+  comments:
+  type: state

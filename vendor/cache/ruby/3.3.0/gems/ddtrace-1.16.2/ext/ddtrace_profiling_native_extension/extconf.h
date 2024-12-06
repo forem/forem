@@ -1,0 +1,5 @@
+#ifndef EXTCONF_H
+#define EXTCONF_H
+#define HAVE_PTHREAD_GETCPUCLOCKID 1
+#define HAVE_TYPE_ATOMIC_INT 1
+#endif

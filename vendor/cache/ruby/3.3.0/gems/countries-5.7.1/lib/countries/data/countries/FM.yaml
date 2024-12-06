@@ -1,0 +1,51 @@
+---
+FM:
+  alpha2: FM
+  alpha3: FSM
+  continent: Australia
+  country_code: '691'
+  currency_code: USD
+  distance_unit: KM
+  gec: FM
+  geo:
+    latitude: 7.425554
+    longitude: 150.550812
+    max_latitude: 10.2770863
+    max_longitude: 163.5177612
+    min_latitude: 0.1538084
+    min_longitude: 136.9226075
+    bounds:
+      northeast:
+        lat: 10.2770863
+        lng: 163.5177612
+      southwest:
+        lat: 0.1538084
+        lng: 136.9226075
+  international_prefix: '011'
+  ioc: FSM
+  iso_long_name: The Federated States of Micronesia
+  iso_short_name: Micronesia (Federated States of)
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: '1'
+  nationality: Micronesian
+  number: '583'
+  postal_code: true
+  postal_code_format: "(9694[1-4])(?:[ \\-](\\d{4}))?"
+  region: Oceania
+  start_of_week: monday
+  subregion: Micronesia
+  un_locode: FM
+  unofficial_names:
+  - Micronesia
+  - Mikronesien
+  - Micronésie
+  - ミクロネシア連邦
+  - Micronesië
+  world_region: APAC

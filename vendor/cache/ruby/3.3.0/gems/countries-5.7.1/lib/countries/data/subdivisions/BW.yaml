@@ -1,0 +1,984 @@
+---
+CE:
+  name: Central
+  code: CE
+  unofficial_names: Central
+  geo:
+    latitude: -21.1672276
+    longitude: 26.419389
+    min_latitude: -23.956503
+    min_longitude: 23.885815
+    max_latitude: -19.0024569
+    max_longitude: 29.3607809
+  translations:
+    en: Central
+    af: Sentraal distrik, Botswana
+    ar: المقاطعة المركزية
+    be: Цэнтральная акруга, Батсвана
+    bg: Централна област
+    bn: সেন্ট্রাল জেলা
+    da: Central District
+    de: Central District
+    el: Κεντρική Περιφέρεια
+    es: Distrito Central
+    eu: Erdialdea
+    fi: Central District
+    fr: District Central
+    gu: સેન્ટ્રલ જિલ્લો
+    hi: मध्य जिला (इज़राइल)
+    id: Distrik Central
+    it: distretto Centrale
+    ja: セントラル地区
+    ka: ცენტრალური ოლქი
+    kn: ಕೇಂದ್ರ ಜಿಲ್ಲೆ
+    ko: 중부 구
+    lt: Centrinis rajonas
+    mr: मध्यवर्ती जिल्हा
+    ms: Central District
+    nb: Central
+    nl: Central
+    pl: Dystrykt Centralny
+    pt: Central
+    ro: Districtul Central, Botswana
+    ru: Центральный округ
+    si: මධ්‍යම දිස්ත්‍රික්කය
+    sv: Central
+    ta: சென்ட்ரல் மாவட்டம்
+    te: సెంట్రల్ జిల్లా
+    th: เซ็นทรัล ดิสทริค
+    tr: Merkez Bölgesi
+    uk: Центральний округ
+    ur: وسطی ضلع
+    vi: Quận Miền Trung
+    zh: 中部區
+    lv: Centrālais distrikts
+    ceb: Central District (distrito sa Botswana)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    ca: Districte Central
+    mk: Централен округ
+    'no': Central
+    fa: بخش مرکزی (بوتسوانا)
+    hy: Կենտրոնական շրջան
+    sw: Wilaya ya Central (Botswana)
+    zu: Central District, Butswana
+  comments:
+  type: district
+CH:
+  name: Chobe
+  code: CH
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Chobe District
+    en: Chobe
+    es: Distrito Chobe
+    fr: Chobe
+    it: Distretto di Chobe
+    ja: チョベ地区
+    nb: Chobe
+    sv: Chobe
+    ur: چوبے ضلع
+    zh: 乔贝区
+    ccp: "\U00011107\U0001112E\U0001111D\U0001112C"
+    'no': Chobe
+    af: Chobedistrik
+    fa: ناحیه چوبه
+    id: Distrik Chobe
+    pt: Chobe
+    ru: Чобе
+  comments:
+  type: district
+FR:
+  name: Francistown
+  code: FR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Francistown
+    ar: فرانسيس
+    az: Frensistaun
+    be: Горад Франсістаўн
+    bg: Франсистаун
+    bn: ফ্রাঞ্চিসটাউন
+    da: Francistown
+    de: Francistown
+    el: Φράνσισταουν
+    en: Francistown
+    es: Francistown
+    et: Francistown
+    fa: فرانسیستوون، بوتسوانا
+    fi: Francistown
+    fr: Francistown
+    gu: ફ્રાન્સિસટાઉન
+    he: פרנסיסטאון
+    hi: फ्रांसिसटाउन
+    hr: Francistown
+    id: Francistown
+    it: Francistown
+    ja: フランシスタウン
+    ka: ფრანსისთაუნი
+    kn: ಫ್ರಾನ್ಸಿಸ್ಟೌನ್
+    ko: 프랜시스타운
+    lt: Frensistaunas
+    mr: फ्रॅन्सिसटाउन
+    ms: Francistown
+    nb: Francistown
+    nl: Francistown
+    pl: Francistown
+    pt: Francistown
+    ro: Francistown
+    ru: Франсистаун
+    si: ෆ්‍රැන්සිස්ටවුන්
+    sv: Francistown
+    ta: பிரான்சீஸ்நகரம்
+    te: ఫ్రాన్సిస్‌టౌన్
+    th: แฟรนซิสทาวน์
+    tr: Francistown
+    uk: Франсистаун
+    ur: فرانسس ٹاؤن
+    vi: Francistown
+    lv: Frensistauna
+    ceb: Francistown
+    zh: 弗朗西斯敦
+    ccp: "\U0001111C\U00011133\U00011122\U0001111A\U00011134\U00011125\U00011128\U0001110C\U00011134\U00011111\U00011105\U0001112A\U0001111A\U00011134"
+    cs: Francistown
+    ca: Francistown
+    mk: Франсистаун
+    'no': Francistown
+    eu: Francistown
+    hy: Ֆրանսիսթաուն
+    sr: Франсистаун
+    sr_Latn: Fransistaun
+  comments:
+  type: city
+GA:
+  name: Gaborone
+  code: GA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Gaborone
+    am: ጋበሮኔ
+    ar: جابورون
+    az: Qaborone
+    be: Горад Габаронэ
+    bg: Габороне
+    bn: গ্যাবোরোন
+    ca: Gaborone
+    cs: Gaborone
+    da: Gaborone
+    de: Gaborone
+    el: Γκαμπορόνε
+    en: Gaborone
+    es: Gaborone
+    et: Gaborone
+    eu: Gaborone
+    fa: گابورون
+    fi: Gaborone
+    fr: Gaborone
+    gl: Gaborone
+    gu: ગૅબરોન
+    he: גאבורון
+    hi: गोबोर्नी
+    hr: Gaborone
+    hu: Gaborone
+    hy: Գաբորոնե
+    id: Gaborone
+    is: Gaboróne
+    it: Gaborone
+    ja: ハボローネ
+    ka: გაბორონე
+    kn: ಗೆಬರೋನ್
+    ko: 가보로네
+    lt: Gaboronas
+    lv: Gaborone
+    mn: Габороне
+    mr: गॅबारोनी
+    ms: Gaborone
+    nb: Gaborone
+    nl: Gaborone
+    pl: Gaborone
+    pt: Gaborone
+    ro: Gaborone
+    ru: Габороне
+    si: ගැබරෝන්
+    sk: Gaborone
+    sl: Gaborone
+    sr: Габороне
+    sv: Gaborone
+    sw: Gaborone
+    ta: காபரோனி
+    te: గాబరోనె
+    th: กาโบโรเน
+    tk: Gabaron
+    tr: Gaborone
+    uk: Габороне
+    ur: گبرون
+    vi: Gaborone
+    cy: Gaborone
+    ceb: Gaborone
+    sr_Latn: Gaborone
+    zh: 嘉柏隆里
+    yue_Hans: 嘉波隆里
+    jv: Gaborone
+    sq: Gaborone
+    ccp: "\U00011109\U00011133\U00011120\U0001111D\U00011127\U00011122\U00011127\U0001111A\U00011134"
+    ga: Gaborone
+    ky: Габороне
+    ha: Gaborone
+    so: Gaborone
+    pa: ਗਾਬੋਰੋਨੀ
+    ml: ഗാബറോൺ
+    yue: 嘉波隆里
+    yo: Gaborone
+    zu: IGaborone
+    uz: Gaborone
+    bs: Gaborone
+    mk: Габороне
+    ha_NE: Gaborone
+    'no': Gaborone
+    yo_BJ: Gaborone
+    my: ဂါဘိုရိုနေမြို့
+    ps: ګابورون
+  comments:
+  type: city
+GH:
+  name: Ghanzi
+  code: GH
+  unofficial_names:
+  - Ghansi
+  - Khanzi
+  geo:
+    latitude: -21.698306
+    longitude: 21.64872
+    min_latitude: -21.7141347
+    min_longitude: 21.6237544
+    max_latitude: -21.6784066
+    max_longitude: 21.6658974
+  translations:
+    en: Ghanzi
+    af: Ghanzi distrik
+    ar: مقاطعةغانزي
+    be: Акруга Ганзі
+    bg: Ганзи
+    bn: গাঞ্জি জেলা
+    da: Ghanzi District
+    de: Ghanzi District
+    el: Περιφέρεια Γκάνζι
+    es: Ghanzi
+    eu: Ghanzi
+    fi: Ghanzi
+    fr: District de Ghanzi
+    gu: ઘાંઝી જિલ્લો
+    hi: घनजी जिला
+    id: Distrik Ghanzi
+    it: distretto di Ghanzi
+    ja: ハンツィ地区
+    ka: განზი
+    kn: ಖಾನ್ಜಿ ಜಿಲ್ಲೆ
+    ko: 간지 구
+    lt: Ganzio rajonas
+    mr: घनझी जिल्हा
+    ms: Ghanzi District
+    nb: Ghanzi
+    nl: Ghanzi
+    pl: Dystrykt Ghanzi
+    pt: Ghanzi
+    ro: Districtul Ghanzi
+    ru: Ганзи
+    si: ගන්සි දිස්ත්‍රික්කය
+    sv: Ghanzi
+    ta: கண்ஜி மாவட்டம்
+    te: ఘాంజి జిల్లా
+    th: เขตกานจิ
+    tr: Ghanzi Bölgesi
+    uk: Ганзі
+    ur: غانزی ضلع
+    vi: Quận Ghanzi
+    lv: Ganzi distrikts
+    ceb: Ghanzi District
+    zh: 杭濟區
+    ccp: "\U0001110A\U0001111A\U00011134\U0001110E\U00011128"
+    ca: Districte de Ghanzi
+    mk: Ганзи
+    'no': Ghanzi
+    fa: منطقه قانزی
+  comments:
+  type: district
+JW:
+  name: Jwaneng
+  code: JW
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Jwaneng
+    ar: غوانينغ
+    bn: জোওনেং
+    da: Jwaneng
+    de: Jwaneng
+    el: Τζουανένγκ
+    en: Jwaneng
+    es: Jwaneng
+    fa: یواننگ، بوتسوانا
+    fi: Jwaneng
+    fr: Jwaneng
+    gu: જ્વાનેંગ
+    hi: ज्वानेंग
+    id: Jwaneng
+    it: Jwaneng
+    ja: ジュワネン
+    kn: ಜ್ವಾಂಗ್ಂಗ್
+    ko: 주아넹
+    mr: जुवानेंग
+    ms: Jwaneng
+    nb: Jwaneng
+    nl: Jwaneng
+    pl: Jwaneng
+    pt: Jwaneng
+    ro: Jwaneng
+    ru: Джваненг
+    si: ජෙවන්නේන්ග්
+    sv: Jwaneng
+    ta: ஜவானிங்
+    te: జ్వానెంగ్
+    th: จวาเนง
+    tr: Jwaneng
+    ur: جوانینگ
+    vi: Jwaneng
+    lv: Džavanenga
+    ceb: Jwaneng
+    lt: Džvanengas
+    zh: 朱瓦能
+    ccp: "\U0001110E\U00011133\U0001111D\U00011127\U0001111A\U0001112C\U00011101"
+    uk: Джваненг
+    az: Cvanenq
+    ca: Jwaneng
+    'no': Jwaneng
+  comments:
+  type: town
+KG:
+  name: Kgalagadi
+  code: KG
+  unofficial_names: Kgalagadi
+  geo:
+    latitude: -24.7550285
+    longitude: 21.8568586
+    min_latitude: -26.9072461
+    min_longitude: 19.999615
+    max_latitude: -23.277603
+    max_longitude: 24.4867379
+  translations:
+    en: Kgalagadi
+    af: Kgalagadi distrik
+    ar: مقاطعة كغالاجادي
+    be: Акруга Кгалагадзі
+    bg: Област Кгалагади
+    bn: কগালাগাডি জেলা
+    da: Kgalagadi District
+    de: Kgalagadi District
+    el: Περιφέρεια Κγκαλαγκάντι
+    es: Kgalagadi
+    eu: Kgalagadi
+    fi: Kgalagadi
+    fr: District de Kgalagadi
+    gu: કગાલાગાદી જિલ્લો
+    hi: कगालगाड़ी जिला
+    id: Distrik Kgalagadi
+    it: distretto di Kgalagadi
+    ja: カラハリ地区
+    ka: კგალაგადი
+    kn: ಕಲಾಗಗಡಿ ಜಿಲ್ಲೆ
+    ko: 크갈라가디 구
+    lt: Kgalagadžio rajonas
+    mr: कागलगडी जिल्हा
+    ms: Kgalagadi District
+    nb: Kgalagadi
+    nl: Kgalagadi
+    pl: Dystrykt Kgaladi
+    pt: Kgalagadi
+    ro: Districtul Kgalagadi
+    ru: Кгалагади
+    si: ක්ගලගාඩි දිස්ත්‍රික්කය
+    sv: Kgalagadi
+    ta: ககளகடி மாவட்டம்
+    te: కెగాలగడి జిల్లా
+    th: เขตคาลากาดี
+    tr: Kgalagadi Bölgesi
+    uk: Кгалагаді
+    ur: کگالاگادی ضلع
+    vi: Quận Kgalagadi
+    lv: Khalahadi distrikts
+    ceb: Kgalagadi District
+    zh: 卡拉哈迪區
+    ccp: "\U00011109\U00011123\U00011109\U00011113\U00011128"
+    ca: Districte de Kgalagadi
+    mk: Кгалагади
+    'no': Kgalagadi
+    fa: منطقه کگالاگادی
+    hy: Կգալագադի
+  comments:
+  type: district
+KL:
+  name: Kgatleng
+  code: KL
+  unofficial_names: Kgatleng
+  geo:
+    latitude: -24.1970445
+    longitude: 26.2304616
+    min_latitude: -24.6919435
+    min_longitude: 25.9028879
+    max_latitude: -23.5624137
+    max_longitude: 26.9604493
+  translations:
+    en: Kgatleng
+    af: Kgatleng distrik
+    ar: مقاطعة كغاتلنغ
+    be: Акруга Кгатленг
+    bg: Област Кгатленг
+    bn: ঘালেং জেলা
+    da: Kgatleng District
+    de: Kgatleng District
+    el: Περιφέρεια Κγκατλένγκ
+    es: Kgatleng
+    eu: Kgatleng
+    fa: ناحیه کگاتلنگ
+    fi: Kgatleng
+    fr: District de Kgatleng
+    gu: કેગાટલેંગ જિલ્લો
+    hi: गैटलेंग जिला
+    id: Distrik Kgatleng
+    it: distretto di Kgatleng
+    ja: カトレン地区
+    ka: კგატლენგი
+    kn: ಕೆಗ್ಲಾಂಗ್ ಜಿಲ್ಲೆ
+    ko: 크가틀렝 구
+    lt: Kgatlengo rajonas
+    mr: किगटाँग जिल्हा
+    ms: Kgatleng District
+    nb: Kgatleng
+    nl: Kgatleng
+    pl: Dystrykt Kgatleng
+    pt: Kgatleng
+    ro: Districtul Kgatleng
+    ru: Кгатленг
+    si: ක්ගට්ලෙන්ග් දිස්ත්‍රික්කය
+    sv: Kgatleng
+    ta: க்கடலேங் மாவட்டம்
+    te: గాట్లెంగ్ జిల్లా
+    th: เขตคกาทเลนจ์
+    tr: Kgatleng Bölgesi
+    uk: Кгатленг
+    ur: کگاٹلینگ ضلع
+    vi: Quận Kgatleng
+    lv: Khatlenas distrikts
+    ceb: Kgatleng District
+    zh: 卡特倫區
+    ccp: "\U00011109\U00011116\U00011134\U00011123\U0001112C\U00011101"
+    ca: Districte de Kgatleng
+    mk: Кгатленг
+    'no': Kgatleng
+    hy: Կգատլենգ
+  comments:
+  type: district
+KW:
+  name: Kweneng
+  code: KW
+  unofficial_names: Kweneng
+  geo:
+    latitude: -23.8367249
+    longitude: 25.2837585
+    min_latitude: -24.7757569
+    min_longitude: 22.9627589
+    max_latitude: -22.955476
+    max_longitude: 26.0196919
+  translations:
+    en: Kweneng
+    af: Kweneng distrik
+    ar: مقاطعة كويننغ
+    be: Акруга Квененг
+    bg: Куененг
+    bn: কেনেং জেলা
+    da: Kweneng
+    de: Kweneng District
+    el: Περιφέρεια Κουενένγκ
+    es: Kweneng
+    eu: Kweneng
+    fi: Kweneng
+    fr: District de Kweneng
+    gu: ક્વાનેંગ જિલ્લો
+    hi: क्वेनेंग जिला
+    id: Distrik Kweneng
+    it: distretto di Kweneng
+    ja: クウェネン地区
+    ka: კვენენგი
+    kn: ಕ್ವೆನೆಂಗ್ ಜಿಲ್ಲೆ
+    ko: 퀘넹 구
+    lt: Kvenengo rajonas
+    mr: क्वेनेन्ग जिल्हा
+    ms: Kweneng District
+    nb: Kweneng
+    nl: Kweneng
+    pl: Dystrykt Kweneng
+    pt: Kweneng
+    ro: Districtul Kweneng
+    ru: Квененг
+    si: ක්වෙනේන්ග් දිස්ත්‍රික්කය
+    sv: Kweneng
+    ta: கேனெங் மாவட்டம்
+    te: క్వెనెంగ్ జిల్లా
+    th: เขตคเวเนง
+    tr: Kweneng Bölgesi
+    uk: Квененг
+    ur: کوینینگ ضلع
+    vi: Quận Kweneng
+    lv: Kvenenas distrikts
+    ceb: Kweneng District
+    zh: 奎嫩區
+    ccp: "\U00011107\U0001112A\U00011120\U0001112C\U0001111A\U0001112C\U00011101"
+    ca: Districte de Kweneng
+    mk: Квененг
+    'no': Kweneng
+    fa: منطقه کوئننگ
+  comments:
+  type: district
+LO:
+  name: Lobatse
+  code: LO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Lobatse
+    ar: لوباتس
+    bg: Лобаце
+    bn: লোবাৎসে
+    da: Lobatse
+    de: Lobatse
+    el: Λομπάτσε
+    en: Lobatse
+    es: Lobatse
+    et: Lobatse
+    fa: لوباتس، بوتسوانا
+    fi: Lobatse
+    fr: Lobatse
+    gu: લોબેટ્સ
+    hi: लोबात्से
+    hr: Lobatse
+    hu: Lobatse
+    id: Lobatse
+    it: Lobatse
+    ja: ロバツェ
+    kn: ಲೊಬಾಟ್ಸೆ
+    ko: 로바체
+    mr: लोबेटे
+    ms: Lobatse
+    nb: Lobatse
+    nl: Lobatse
+    pl: Lobatse
+    pt: Lobatse
+    ro: Lobatse
+    ru: Лобаце
+    si: ලොබට්සේ
+    sv: Lobatse
+    ta: லோபட்ஸ்
+    te: లోబాట్సే
+    th: เมืองโลบัตเซ
+    tr: Lobatse
+    ur: لوباٹسے
+    vi: Lobatse
+    lv: Lobatse
+    ceb: Lobatse
+    lt: Lobatsė
+    zh: 洛巴策
+    ccp: "\U00011122\U00011127\U0001111D\U00011116\U00011134\U00011125\U0001112C"
+    uk: Лобаце
+    ca: Lobatse
+    'no': Lobatse
+  comments:
+  type: town
+NE:
+  name: North-East
+  code: NE
+  unofficial_names: North-East
+  geo:
+    latitude: -20.9030555
+    longitude: 27.4556388
+    min_latitude: -21.571556
+    min_longitude: 27.2119901
+    max_latitude: -20.473381
+    max_longitude: 28.013578
+  translations:
+    en: North East
+    af: Noord-Oos distrik, Botswana
+    ar: مقاطعة الشمال الشرقي
+    be: Паўночна-усходняя акруга, Батсвана
+    bn: নর্থ-ইস্ট জেলা
+    da: North-East District
+    de: North-East District
+    el: Βορειοανατολική Περιφέρεια
+    es: Distrito Noreste
+    eu: Ipar-ekialdea
+    fi: North-East District
+    fr: District du Nord-Est
+    gu: ઉત્તર-પૂર્વ જિલ્લો
+    hi: उत्तर-पूर्व जिला
+    id: Distrik Timur Laut, Botswana
+    it: distretto Nordorientale
+    ja: ノースイースト地区
+    ka: ჩრდილო-აღმოსავლეთის ოლქი
+    kn: ಈಶಾನ್ಯ ಜಿಲ್ಲೆ
+    ko: 북동부 구
+    lt: Šiaurės rytų rajonas
+    mr: पूर्व-पूर्व जिल्हा
+    ms: North-East District
+    nb: North-East
+    nl: North-East
+    pl: Dystrykt Północno-Wschodni
+    pt: Nordeste
+    ro: Districtul North-East, Botswana
+    ru: Северо-Восточный округ
+    si: උතුරු නැගෙනහිර දිස්ත්‍රික්කය
+    sv: Northeast
+    ta: வடக்கு -கிழக்கு மாவட்டம்
+    te: ఈశాన్య జిల్లా
+    th: ซาเรมา
+    tr: Kuzeydoğu Bölgesi
+    uk: Північно-Східний округ
+    ur: شمال-مشرقی ضلع
+    vi: Quận Đông-Bắc
+    lv: Ziemeļaustrumu distrikts
+    ceb: North East District (distrito sa Botswana)
+    zh: 東北區
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111B\U0001112A\U00011107\U00011134"
+    ca: Districte del Nord-est
+    mk: Североисточен округ
+    'no': North-East
+    fa: ناحیه شمال شرقی (بوتسوانا)
+  comments:
+  type: district
+NW:
+  name: North-West
+  code: NW
+  unofficial_names: North-West
+  geo:
+    latitude: -19.1905321
+    longitude: 23.0011989
+    min_latitude: -21.0002549
+    min_longitude: 20.9969499
+    max_latitude: -17.780813
+    max_longitude: 25.9879499
+  translations:
+    en: North West
+    af: Noord-Wes distrik, Botswana
+    ar: مقاطغة شمال غرب
+    be: Паўночна-заходняя акруга, Батсвана
+    bg: Северозападна област
+    bn: নর্থ ওয়েস্ট জেলা
+    da: North-West District
+    de: North West District
+    el: Βορειοδυτική Περιφέρεια
+    es: Distrito Noroeste
+    eu: Ipar-mendebaldea
+    fi: North-West District
+    fr: District du Nord-Ouest
+    gu: ઉત્તર-પશ્ચિમ જિલ્લો
+    hi: उत्तर-पश्चिमी जिला (बोत्सवाना)
+    id: Distrik Barat Laut, Botswana
+    it: distretto Nordoccidentale
+    ja: ノースウェスト地区
+    ka: ჩრდილო-დასავლეთის ოლქი
+    kn: ವಾಯುವ್ಯ ಜಿಲ್ಲೆ
+    ko: 북서부 구
+    lt: Šiaurės vakarų rajonas
+    mr: उत्तर-पश्चिम जिल्हा
+    ms: North-West District
+    nb: North-West
+    nl: North-West
+    pl: Dystrykt Północno-Zachodni
+    pt: Noroeste
+    ro: Districtul North-West, Botswana
+    ru: Северо-Западный округ
+    si: වයඹ දිස්ත්‍රික්කය
+    sv: Northwest
+    ta: வடக்கு -மேற்கு மாவட்டம்
+    te: నార్త్-వెస్ట్ జిల్లా
+    th: เขตนอร์ท เวส
+    tr: Kuzeybatı Bölgesi
+    uk: Північно-Західний округ
+    ur: شمال-مغربی ضلع
+    vi: Quận Tây-Bắc
+    lv: Ziemeļrietumu distrikts
+    ceb: North West District
+    zh: 西北區
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134"
+    ca: Districte del Nord-oest
+    mk: Северозападен округ
+    'no': North-West
+    fa: ناحیه شمال غربی (بوتسوانا)
+  comments:
+  type: district
+SE:
+  name: South-East
+  code: SE
+  unofficial_names: South-East
+  geo:
+    latitude: -24.9366094
+    longitude: 25.8048521
+    min_latitude: -25.4709631
+    min_longitude: 25.5438541
+    max_latitude: -24.511588
+    max_longitude: 26.1813639
+  translations:
+    en: South East
+    af: Suid-Oos distrik, Botswana
+    ar: المقاطعة الجنوب شرقية
+    be: Паўднёва-усходняя акруга, Батсвана
+    bg: Югоизточна област
+    bn: সাউথ ইস্ট জেলা
+    da: South-East District
+    de: South-East District
+    el: Νοτιοανατολική Περιφέρεια
+    es: Distrito Sudeste
+    eu: Hego-ekialdea
+    fa: ناحیه جنوب شرقی
+    fi: South-East District
+    fr: District du Sud-Est
+    gu: દક્ષિણ-પૂર્વ જિલ્લો
+    hi: दक्षिण-पूर्व जिला
+    id: Distrik Tenggara, Botswana
+    it: distretto Sudorientale
+    ja: サウスイースト地区
+    ka: სამხრეთ-აღმოსავლეთის ოლქი
+    kn: ಆಗ್ನೇಯ ಜಿಲ್ಲೆ
+    ko: 남동부 구
+    lt: Pietryčių rajonas
+    mr: दक्षिण-पूर्व जिल्हा
+    ms: South-East District
+    nb: South-East
+    nl: South-East
+    pl: Dystrykt Południowo-Wschodni
+    pt: Sudeste
+    ro: Districtul South-East, Botswana
+    ru: Юго-Восточный округ
+    si: දකුණු නැගෙනහිර දිස්ත්‍රික්කය
+    sv: Southeast
+    ta: தெற்கு -கிழக்கு மாவட்டம்
+    te: ఆగ్నేయ జిల్లా
+    th: เซาท์ อีส ดิสทริค
+    tr: Güneydoğu Bölgesi
+    uk: Південно-Східний округ
+    ur: جنوب-مشرقی ضلع
+    vi: Quận Đông-Nam
+    lv: Dienvidaustrumu distrikts
+    ceb: South East District
+    zh: 東南區
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U0001111B\U0001112A\U00011107\U00011134"
+    ca: Districte del Sud-est
+    mk: Југоисточен округ
+    'no': South-East
+  comments:
+  type: district
+SO:
+  name: Southern
+  code: SO
+  unofficial_names: Southern
+  geo:
+    latitude: -24.823384
+    longitude: 24.7142918
+    min_latitude: -25.8257559
+    min_longitude: 23.048267
+    max_latitude: -23.9969671
+    max_longitude: 25.693459
+  translations:
+    en: Southern
+    af: Suid distrik, Botswana
+    ar: المقاطعة الجنوبية
+    be: Паўднёвая акруга, Батсвана
+    bg: Южна област
+    bn: সাউদার্ন জেলা
+    da: Southern District
+    de: Southern District
+    el: Νότια Περιφέρεια
+    es: Distrito Sur
+    eu: Hegoaldea
+    fi: Southern District
+    fr: District du Sud
+    gu: દક્ષિણી જિલ્લો
+    hi: दक्षिणी जिला (बोत्स्वाना
+    id: Distrik Selatan, Botswana
+    it: distretto Meridionale
+    ja: サザン地区
+    ka: სამხრეთის ოლქი
+    kn: ದಕ್ಷಿಣ ಜಿಲ್ಲೆ
+    ko: 남부 구
+    lt: Pietų rajonas
+    mr: दक्षिणी जिल्हा
+    ms: Southern District
+    nb: Southern
+    nl: Southern
+    pl: Dystrykt Południowy
+    pt: Distrito do Sul
+    ro: Districtul Southern, Botswana
+    ru: Южный округ
+    si: දකුණු දිස්ත්‍රික්කය
+    sv: Southern
+    ta: தெற்கு மாவட்டம்
+    te: దక్షిణ జిల్లా
+    th: เขตภาคใต้ (บอตสวานา)
+    tr: Güney Bölgesi
+    uk: Південний округ
+    ur: سدرن ضلع
+    vi: Quận Miền Nam
+    lv: Dienvidu distrikts
+    ceb: Southern District
+    zh: 南部區
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U0001112E\U00011118\U00011128"
+    az: Cənubi dairə
+    ca: Districte del Sud
+    mk: Јужен округ
+    'no': Southern
+    fa: بخش جنوبی (بوتسوانا)
+  comments:
+  type: district
+SP:
+  name: Selibe Phikwe
+  code: SP
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Selebi-Phikwe
+    ar: سيليبي-فيكوي
+    bn: সেলেবি-পিখবে
+    ca: Selebi-Phikwe
+    da: Selebi-Phikwe
+    de: Selebi-Phikwe
+    el: Σελέμπι-Φίκουε
+    en: Selibe Phikwe
+    es: Selebi-Phikwe
+    fa: سلیب فیکوه، بوتسوانا
+    fi: Selebi-Pikwe
+    fr: Selebi-Phikwe
+    gu: સેલેબી-ફિકવે
+    hi: सेलेबी-फिकवे
+    hr: Selebi-Phikwe
+    id: Selebi-Phikwe
+    it: Selebi Pikwe
+    ja: セレビ・ピクウェ
+    kn: ಸೆಲೆಬಿ-ಫಿಕ್ವೆ
+    ko: 셀레비피퀘
+    lt: Selebi Pikvė
+    mr: सेलीबी-फिक्वे
+    ms: Selebi-Phikwe
+    nb: Selebi-Phikwe
+    nl: Selebi-Phikwe
+    pl: Selebi-Pikwe
+    pt: Selebi-Phikwe
+    ro: Selibe Phikwe
+    ru: Селеби-Пхикве
+    si: සෙලෙබි-පික්වේ
+    sv: Selebi-Phikwe
+    ta: செலிபி-பிக்வெ
+    te: సెలెబి-ఫిక్వే
+    th: เซเลบิ พคิควี
+    tr: Selibe-Phikwe
+    uk: Селебі-Пхікве
+    ur: سیلیبی-فیکوے
+    vi: Selebi-Phikwe
+    lv: Selebi-Phikve
+    ceb: Selebi-Phikwe
+    zh: 塞莱比-皮奎
+    ccp: "\U00011125\U0001112C\U00011123\U00011128\U0001111D\U0001112C \U0001111C\U00011128\U00011107\U0001112E\U00011120\U0001112C"
+    'no': Selebi-Phikwe
+    eu: Selebi-Phikwe
+  comments:
+  type: town
+ST:
+  name: Sowa Town
+  code: ST
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Sowa, Botswana
+    ar: سوا، بوتسوانا
+    bn: সোবা, বতসোয়ানা
+    da: Sowa, Botswana
+    de: Sowa
+    el: Σόβα, Μποτσβάνα
+    en: Sowa Town
+    es: Ciudad del Sowa
+    fi: Sowa, Botswana
+    fr: Sowa Town
+    gu: સોવા, બોત્સવાના
+    hi: सोवा, बोत्सवाना
+    id: Sowa, Botswana
+    it: Sowa Town
+    ja: ソワ
+    kn: ಸೊವಾ, ಬೊಟ್ಸ್ವಾನಾ
+    ko: 소와, 보츠와나
+    mr: सोवा, बोत्सवाना
+    ms: Sowa, Botswana
+    nb: Sowa
+    nl: Sowa, Botswana
+    pl: Sowa, Botswana
+    pt: Sowa, Botswana
+    ro: Sowa, Botswana
+    ru: Сова
+    si: සොවා බොට්ස්වානා
+    sv: Sowa Town
+    ta: சோவா , போட்ஸ்வானா
+    te: సోవా, బోత్స్వానా
+    th: โซวา บอตสวานา
+    tr: Sowa, Botswana
+    ur: سووا
+    vi: Sowa, Botswana
+    lv: Sova, Botsvana
+    lt: Sova, Botsvana
+    ccp: "\U00011125\U00011131 \U00011111\U00011105\U0001112A\U0001111A\U00011134"
+    uk: Сова
+    ca: Sowa
+    'no': Sowa
+  comments:
+  type: town

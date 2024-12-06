@@ -1,0 +1,31 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/puma-5.6.9/ext/puma_http11
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+checking for pkg-config for openssl... [" ", "", "-lssl -lcrypto"]
+using OpenSSL pkgconfig (openssl.pc)
+checking for openssl/bio.h... yes
+checking for DTLS_method() in openssl/ssl.h... yes
+checking for TLS_server_method() in openssl/ssl.h... yes
+checking for SSL_CTX_set_min_proto_version(NULL, 0) in openssl/ssl.h... yes
+checking for X509_STORE_up_ref()... yes
+checking for SSL_CTX_set_ecdh_auto(NULL, 0) in openssl/ssl.h... yes
+checking for SSL_CTX_set_dh_auto(NULL, 0) in openssl/ssl.h... yes
+checking for SSL_get1_peer_certificate() in openssl/ssl.h... yes
+checking for Random.bytes... yes
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/puma-5.6.9/ext/puma_http11
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-apkhww sitelibdir\=./.gem.20241205-149352-apkhww clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/puma-5.6.9/ext/puma_http11
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-apkhww sitelibdir\=./.gem.20241205-149352-apkhww
+compiling http11_parser.c
+compiling mini_ssl.c
+compiling puma_http11.c
+linking shared-object puma/puma_http11.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/puma-5.6.9/ext/puma_http11
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-apkhww sitelibdir\=./.gem.20241205-149352-apkhww install
+/usr/bin/install -c -m 0755 puma_http11.so ./.gem.20241205-149352-apkhww/puma
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/puma-5.6.9/ext/puma_http11
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-apkhww sitelibdir\=./.gem.20241205-149352-apkhww clean

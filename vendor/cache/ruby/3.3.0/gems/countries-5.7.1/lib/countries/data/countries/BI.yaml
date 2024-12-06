@@ -1,0 +1,49 @@
+---
+BI:
+  alpha2: BI
+  alpha3: BDI
+  continent: Africa
+  country_code: '257'
+  currency_code: BIF
+  distance_unit: KM
+  gec: BY
+  geo:
+    latitude: -3.373056
+    longitude: 29.918886
+    max_latitude: -2.3097301
+    max_longitude: 30.84954
+    min_latitude: -4.4693288
+    min_longitude: 29.000968
+    bounds:
+      northeast:
+        lat: -2.3097301
+        lng: 30.84954
+      southwest:
+        lat: -4.4693288
+        lng: 29.000968
+  international_prefix: '00'
+  ioc: BDI
+  iso_long_name: The Republic of Burundi
+  iso_short_name: Burundi
+  languages_official:
+  - fr
+  - rn
+  languages_spoken:
+  - fr
+  - rn
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Burundian
+  number: '108'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: BI
+  unofficial_names:
+  - Burundi
+  - ブルンジ
+  world_region: EMEA

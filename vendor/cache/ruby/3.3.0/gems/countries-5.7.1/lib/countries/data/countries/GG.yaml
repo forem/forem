@@ -1,0 +1,52 @@
+---
+GG:
+  alpha2: GG
+  alpha3: GGY
+  continent: Europe
+  country_code: '44'
+  currency_code: GBP
+  distance_unit: KM
+  gec: GK
+  geo:
+    latitude: 49.4481982
+    longitude: -2.58949
+    max_latitude: 49.5094108
+    max_longitude: -2.5016885
+    min_latitude: 49.4167199
+    min_longitude: -2.6745361
+    bounds:
+      northeast:
+        lat: 49.5094108
+        lng: -2.5016885
+      southwest:
+        lat: 49.4167199
+        lng: -2.6745361
+  international_prefix: ''
+  ioc:
+  iso_long_name: The Bailiwick of Guernsey
+  iso_short_name: Guernsey
+  languages_official:
+  - en
+  - fr
+  languages_spoken:
+  - en
+  - fr
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Channel Islander
+  number: '831'
+  postal_code: true
+  postal_code_format: GY\d[\dA-Z]? ?\d[ABD-HJLN-UW-Z]{2}
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: GG
+  unofficial_names:
+  - Guernsey and Alderney
+  - Guernsey und Alderney
+  - Guernsey et Alderney
+  - Guernsey y Alderney
+  - ガーンジー
+  - Guernsey
+  world_region: EMEA

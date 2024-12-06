@@ -1,0 +1,515 @@
+---
+BA:
+  name: Baluchistan (en)
+  code: BA
+  unofficial_names: Baluchistan (en)
+  geo:
+    latitude: 28.4907332
+    longitude: 65.0957792
+    min_latitude: 24.890663
+    min_longitude: 60.87859700000001
+    max_latitude: 32.064602
+    max_longitude: 70.259517
+  translations:
+    en: Balochistan
+    ar: بلوشستان
+    az: Bəlucistan
+    be: Правінцыя Белуджыстан
+    bg: Белуджистан
+    bn: বেলুচিস্তান
+    ca: Balutxistan Oriental
+    cs: Balúčistán
+    da: Baluchistan
+    de: Belutschistan
+    el: Μπαλοτσιστάν
+    es: Baluchistán
+    et: Belutšistani provints
+    eu: Balutxistan
+    fa: ایالت بلوچستان پاکستان
+    fi: Balochistan
+    fr: Baloutchistan
+    gl: Baluchistán
+    gu: બલુચિસ્તાન
+    he: בלוצ׳יסטן
+    hi: बलूचिस्तान
+    hu: Beludzsisztán
+    id: Balochistan
+    it: Belucistan
+    ja: バローチスターン州
+    ka: ბელუჯისტანი
+    kn: ಬಲೂಚಿಸ್ತಾನ್
+    ko: 발루치스탄 주
+    lt: Beludžistanas
+    lv: Beludžistāna
+    ml: ബലൂചിസ്ഥാൻ
+    mn: Балучистан
+    mr: बलुचिस्तान
+    ms: Balochistan
+    nb: Balutsjistan
+    ne: बलुचिस्तान
+    nl: Beloetsjistan
+    pl: Beludżystan
+    ps: بلوچستان
+    pt: Baluchistão
+    ro: Belucistan
+    ru: Белуджистан
+    sd: بلوچستان
+    si: බලොස්චිස්ථානය
+    sr: Белуџистан
+    sv: Baluchistan
+    ta: பலூசிஸ்தான்
+    te: బలూచిస్తాన్
+    th: บาลอนคริสตัน
+    tr: Belucistan Eyaleti
+    uk: Белуджистан
+    ur: بلوچستان
+    vi: Balochistan
+    zh: 俾路支省
+    sr_Latn: Beludžistan
+    yue_Hans: 俾路支省
+    ccp: "\U0001111D\U00011123\U0001112A\U0001110C\U00011128\U0001110C\U00011134\U00011111\U0001111A\U00011134"
+    ga: An Bhalúcastáin
+    pa: ਬਲੋਚਿਸਤਾਨ
+    yue: 俾路支省
+    uz: Balujiston
+    'no': Balutsjistan
+    hr: Beludžistan (Pakistan)
+    hy: Բելուջիստան
+    ky: Балучистан (Пакистан)
+    sq: Baloçistan, Pakistan
+  comments:
+  type: province
+GB:
+  name: Gilgit-Baltistan
+  code: GB
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: غلغت-بلتستان
+    bg: Северна провинция
+    bn: গিলগিত-বালতিস্তান
+    ca: Gilgit-Baltistan
+    cs: Gilgit - Baltistán
+    da: Gilgit-Baltistan
+    de: Gilgit-Baltistan
+    el: Γκιλγκίτ-Μπαλτιστάν
+    en: Gilgit-Baltistan
+    es: Gilgit-Baltistán
+    et: Põhjaalad
+    eu: Iparraldeko Eremuak
+    fa: گلگت-بلتستان
+    fi: Gilgit-Baltistan
+    fr: Gilgit-Baltistan
+    gu: ગિલગીટ-બાલ્તિસ્તાન
+    he: גילגיט-בלטיסטן
+    hi: गिलगित-बाल्तिस्तान
+    id: Gilgit–Baltistan
+    it: Gilgit-Baltistan
+    ja: ギルギット・バルティスタン州
+    ka: გილგის-ბალტისტანი
+    kn: ಗಿಲ್ಗಿಟ್-ಬಾಲ್ಟಿಸ್ತಾನ್
+    ko: 길기트발티스탄 주
+    lt: Gilgitas-Baltistanas
+    ml: ഗിൽഗിറ്റ്-ബാൾട്ടിസ്ഥാൻ
+    mr: गिलगीट-बाल्टिस्तान
+    ms: Gilgit-Baltistan
+    nb: Gilgit-Baltistan
+    ne: गिल्गित-बाल्तिस्तान
+    nl: Gilgit-Baltistan
+    pl: Gilgit-Baltistan
+    ps: گېلگېت بالتستان
+    pt: Gilgit-Baltistão
+    ru: Гилгит-Балтистан
+    sd: گلگت بلتستان
+    si: ගිල්ගිට්-බල්ටිස්ටාන්
+    sr: Гилгит-Балтистан
+    sv: Gilgit-Baltistan
+    ta: வடக்கு நிலங்கள்
+    te: గిల్జిత్-బాల్టిస్టాన్
+    th: กิลกิต บัลทิสสถาน
+    tr: Gilgit-Baltistan
+    uk: Гілгіт-Балтистан
+    ur: گلگت بلتستان
+    vi: Gilgit-Baltistan
+    lv: Gilgita-Baltistāna
+    cy: Ardaloedd y Gogledd
+    ceb: Northern Areas
+    sr_Latn: Gilgit-Baltistan
+    zh: 吉尔吉特-巴尔蒂斯坦
+    ccp: "\U00011109\U00011128\U00011123\U00011134\U00011109\U00011128\U00011116\U00011134-\U0001111D\U00011123\U00011134\U00011111\U00011128\U0001110C\U00011134\U00011111\U0001111A\U00011134"
+    pa: ਗਿਲਗਿਤ-ਬਾਲਤਿਸਤਾਨ
+    az: Gilgit-Baltistan
+    be: Гілгіт-Балтыстан
+    'no': Gilgit-Baltistan
+    ky: Гилгит-Балтистан
+    sl: Gilgit-Baltistan
+  comments:
+  type: pakistan_administered_area
+IS:
+  name: Islamabad
+  code: IS
+  unofficial_names: Islamabad
+  geo:
+    latitude: 33.7293882
+    longitude: 73.0931461
+    min_latitude: 33.5993931
+    min_longitude: 72.7928352
+    max_latitude: 33.7566789
+    max_longitude: 73.1771194
+  translations:
+    en: Islamabad
+    ar: ناحية بايتختي اسلام‌آباد
+    bg: Федерално управляеми племенни територии
+    ca: Territori Capital Islamabad
+    de: Hauptstadtterritorium Islamabad
+    fa: ناحیه پایتختی اسلام‌آباد
+    fr: Territoire fédéral d’Islamabad
+    hi: इस्लामाबाद राजधानी क्षेत्र
+    hr: Teritorij glavnoga grada Islamabada
+    it: Territorio della capitale Islamabad
+    ja: イスラーマーバード首都圏
+    ko: 이슬라마바드 수도권
+    nb: Islamabad hovedstadsterritorium
+    nl: Hoofdstedelijk Territorium Islamabad
+    pl: Stołeczne Terytorium Islamabadu
+    pt: Território da Capital Islamabad
+    ru: Федеральная столичная территория
+    ta: இசுலாமாபாத் தலைநகர ஆட்புலம்
+    tr: İslamabad Başkent Bölgesi
+    uk: Федеральна столична територія
+    ur: وفاقی دارالحکومت
+    vi: Lãnh thổ Thủ đô Islamabad
+    ceb: Islāmābād Capital Territory
+    zh: 伊斯兰堡首都区
+    bn: ইসলামাবাদ রাজধানী অঞ্চল
+    ccp: "\U00011103\U00011128\U0001110C\U00011134\U00011123\U0001111F\U0001111D\U00011116\U00011134"
+    ka: ისლამაბადის ფედერალური ტერიტორია
+    id: Wilayah Ibu Kota Islamabad
+    ml: ഇസ്ലാമബാദ് തലസ്ഥാന പ്രദേശം
+    be: Федэральная сталічная тэрыторыя
+    th: ดินแดนนครหลวงอิสลามาบัด
+    'no': Islamabad hovedstadsterritorium
+    he: טריטוריית הבירה הפדרלית
+    hy: դաշնային մայրաքաղաքային տարածք
+    ne: इस्लामाबाद राजधानी क्षेत्र
+    sd: اسلام آبادجو وفاقي گاديءَ وارو علائقو
+    sv: Huvudstadsregionen Islamabad
+  comments:
+  type: federal_capital_territory
+JK:
+  name: Azad Kashmir
+  code: JK
+  unofficial_names: Azad Kashmir
+  geo:
+    latitude: 33.8866588
+    longitude: 73.93598209999999
+    min_latitude: 32.766542
+    min_longitude: 73.394989
+    max_latitude: 35.1311
+    max_longitude: 75.2642401
+  translations:
+    en: Azad Kashmir
+    ar: آزاد كشمير
+    az: Azad Kəşmir
+    be: Азад Кашмір
+    bg: Азад Кашмир
+    bn: আজাদ কাশ্মীর
+    ca: Azad Kashmir
+    cs: Ázád Kašmír
+    da: Azad Kashmir
+    de: Asad Jammu und Kaschmir
+    el: Αζάντ Κασμίρ
+    es: Azad Cachemira
+    eu: Azad Kaxmir
+    fa: کشمیر آزاد
+    fi: Azad Kashmir
+    fr: Azad Cachemire
+    gu: આઝાદ કાશ્મીર
+    he: אזאד קשמיר
+    hi: आज़ाद कश्मीर
+    hy: Ազադ Քաշմիր
+    id: Azad Kashmir
+    it: Azad Kashmir
+    ja: アザド・カシミール
+    kn: ಆಜಾದ್ ಕಾಶ್ಮೀರ
+    ko: 아자드 카슈미르 주
+    lt: Laisvasis Kašmyras
+    lv: Azadkašmīra
+    ml: ആസാദ് കശ്മീർ
+    mr: पाकव्याप्त काश्मीर
+    ms: Azad Kashmir
+    nb: Azad Kashmir
+    ne: आजाद कश्मीर
+    nl: Azad Kasjmir
+    pl: Azad Dżammu i Kaszmir
+    ps: آزاد کشمير
+    pt: Caxemira Livre
+    ru: Азад Кашмир
+    sd: آزاد ڪشمير
+    si: අසාද් කාශ්මීර්
+    sr: Азад Кашмир
+    sv: Azad Kashmir
+    ta: ஆசாத் காஷ்மீர்
+    te: ఆజాద్ కశ్మీర్
+    th: อาซาดแคชเมียร์
+    tr: Azad Keşmir
+    uk: Азад Кашмір
+    ur: آزاد کشمیر
+    vi: Azad Kashmir
+    ceb: Azad Kashmir
+    sr_Latn: Azad Kašmir
+    zh: 自由克什米爾
+    ccp: "\U00011103\U0001110E\U00011116\U00011134 \U00011107\U0001110C\U00011134\U0001111F\U00011128\U00011122\U00011134"
+    ka: აზად-ქაშმირი
+    ky: Азад Кашмир
+    pa: ਅਜ਼ਾਦ ਕਸ਼ਮੀਰ
+    'no': Azad Kashmir
+    hr: Azad Kašmir
+    sl: Azad Kašmir
+  comments:
+  type: pakistan_administered_area
+KP:
+  name: Khyber Pakhtunkhwa
+  code: KP
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: خیبر بختونخوا
+    bg: Северозападна погранична провинция
+    bn: খাইবার পাখতুনখাওয়া
+    ca: Província de la Frontera del Nord-oest
+    cs: Chajbar Paštúnchwá
+    da: Khyber Pakhtunkhwa
+    de: Khyber Pakhtunkhwa
+    en: Khyber Pakhtunkhwa
+    es: Jaiber Pastunjuá
+    et: Loodepiiriprovints
+    eu: Khyber Pakhtunkhwa
+    fa: خیبر پختونخوا
+    fi: Khyber Pakhtunkhwa
+    fr: Khyber Pakhtunkhwa
+    he: ח׳ייבר פח׳טונח׳ווה
+    hi: ख़ैबर-पख़्तूनख़्वा
+    hu: Hajber-Pahtunhva
+    id: Khyber Pakhtunkhwa
+    it: Khyber Pakhtunkhwa
+    ja: カイバル・パクトゥンクワ州
+    ka: ხაიბერ-პახტუნხვა
+    ko: 카이베르파크툰크와 주
+    lt: Chaiber Pachtunchva
+    ml: ഖൈബർ പഖ്തുൻഖ്വ
+    mr: खैबर पख्तूनख्वा
+    ms: Khyber Pakhtunkhwa
+    nb: Khyber Pakhtunkhwa
+    nl: Khyber-Pakhtunkhwa
+    pl: Chajber Pachtunchwa
+    ps: خيبر پښتونخوا
+    pt: Khyber Pakhtunkhwa
+    ru: Хайбер-Пахтунхва
+    sd: خيبر پختونخوا
+    sr: Хајбер-Пахтунва
+    sv: Khyber Pukhtunkhwa
+    ta: வடமேற்கு எல்லைப்புற மாகாணம்
+    th: แคว้นไคเบอร์ปัคตูนควา
+    tr: Kuzeybatı Sınır Eyaleti
+    uk: Хайбер-Пахтунхва
+    ur: خیبر پختونخوا
+    vi: Khyber Pakhtunkhwa
+    lv: Haibara Pahtūnhva
+    cy: Khyber Pakhtunkhwa
+    ceb: Khyber Pakhtunkhwa Province
+    sr_Latn: Hajber-Pahtunva
+    zh: 开伯尔－普赫图赫瓦省
+    yue_Hans: 西北边境省
+    ccp: "\U00011108\U0001112D\U0001111D\U0001112C\U00011122\U00011134 \U0001111B\U00011107\U00011134\U00011111\U0001112A\U0001111A\U00011134\U00011108\U00011127\U00011124"
+    pa: ਖ਼ੈਬਰ ਪਖ਼ਤੋਨਖ਼ਵਾ
+    yue: 西北邊境省
+    be: Хайбер-Пахтунхва
+    uz: Shimoliy-gʻarbiy chegara viloyati
+    ne: खैबर पख्तुनख्वा
+    'no': Khyber Pakhtunkhwa
+    az: Xayber-Paxtunxva
+    hr: Hajber Pahtunva
+    hy: Խյբեր Փախթունխվա
+    ro: Khyber Pakhtunkhwa
+  comments:
+  type: province
+PB:
+  name: Punjab
+  code: PB
+  unofficial_names: Punjab
+  geo:
+    latitude: 31.1704063
+    longitude: 72.7097161
+    min_latitude: 27.705111
+    min_longitude: 69.33357699999999
+    max_latitude: 34.016032
+    max_longitude: 75.3818661
+  translations:
+    en: Punjab
+    ar: البنجاب
+    az: Pəncab
+    be: Пенджаб
+    bg: Пенджаб
+    bn: পাঞ্জাব, পাকিস্তান
+    ca: Panjab
+    cs: Paňdžáb
+    da: Punjab
+    de: Punjab
+    el: Παντζάμπ
+    es: Punyab
+    et: Pandžab
+    eu: Punjab
+    fa: پنجاب
+    fi: Punjab
+    fr: Pendjab
+    gl: Punjab
+    gu: પંજાબ
+    hi: पंजाब
+    hu: Pandzsáb
+    id: Punjab
+    it: Punjab
+    ja: パンジャーブ州
+    ka: პენჯაბი
+    kn: ಪಂಜಾಬ್
+    ko: 펀자브 주
+    lt: Pandžabas
+    lv: Pendžāba
+    ml: പഞ്ചാബ്
+    mn: Панжаб
+    mr: पंजाब
+    ms: Punjab
+    nb: Punjab
+    ne: पंजाब (पाकिस्तान)
+    nl: Punjab
+    or: ପଞ୍ଜାବ
+    pl: Pendżab
+    ps: پنجاب
+    pt: Punjab
+    ro: Punjab
+    ru: Пенджаб
+    si: පන්ජාබ්
+    sr: Панџаб
+    sv: Punjab
+    ta: பஞ்சாப்
+    te: పంజాబ్
+    th: แคว้นปัญจาบ
+    tr: Pencap Eyaleti
+    uk: Пенджаб
+    ur: پنجاب
+    vi: Punjab
+    cy: Punjab
+    ceb: Punjab
+    sr_Latn: Pandžab
+    zh: 旁遮普省
+    yue_Hans: 频渣别省
+    sq: Panxhab, Pakistan
+    ccp: "\U0001111B\U0001111A\U00011134\U0001110E\U0001111B\U00011134"
+    hy: Փենջաբ
+    sk: Pandžáb (Pakistan)
+    pa: ਪੰਜਾਬ
+    yue: 頻渣別省
+    'no': Punjab
+    he: פנג׳אב
+    hr: Pandžab (Pakistan)
+    my: ပန်ဂျပ်၊ ပါကစ္စတန်
+    uz: Panjob (viloyat)
+  comments:
+  type: province
+SD:
+  name: Sind (en)
+  code: SD
+  unofficial_names: Sind (en)
+  geo:
+    latitude: 25.8943018
+    longitude: 68.52471489999999
+    min_latitude: 23.6946945
+    min_longitude: 66.6546894
+    max_latitude: 28.5015481
+    max_longitude: 71.12440509999999
+  translations:
+    en: Sindh
+    ar: السند
+    be: Правінцыя Сінд
+    bg: Синд
+    bn: সিন্ধু প্রদেশ
+    ca: Sind
+    cs: Sindh
+    da: Sindh
+    de: Sindh
+    el: Σιντ
+    es: Sind
+    et: Sindh
+    eu: Sindh
+    fa: استان سند
+    fi: Sindh
+    fr: Sind
+    gl: Sind
+    gu: સિંધ
+    he: סינד
+    hi: सिंध
+    hr: Sind
+    hu: Szindh
+    id: Sindh
+    it: Sindh
+    ja: シンド州
+    ka: სინდის პროვინცია
+    kn: ಸಿಂಧ್
+    ko: 신드 주
+    lt: Sindas
+    lv: Sinda
+    ml: സിന്ധ്
+    mr: सिंध
+    ms: Sindh
+    nb: Sind
+    ne: सिन्ध
+    nl: Sindh
+    pl: Sindh
+    ps: سند
+    pt: Sind
+    ro: Sindh
+    ru: Синд
+    sd: سنڌ
+    si: සින්ධ්
+    sl: Sindh
+    sr: Синд
+    sv: Sindh
+    ta: சிந்து மாகாணம்
+    te: సింధ్
+    th: แคว้นสินธ์
+    tr: Sind Eyaleti
+    uk: Сінд
+    ur: سندھ
+    vi: Sindh
+    ceb: Sindh
+    sr_Latn: Sind
+    zh: 信德省
+    yue_Hans: 信德省
+    sq: Sind
+    ccp: "\U00011125\U00011128\U0001111A\U00011134\U00011119\U00011134"
+    ga: An tSind
+    hy: Սինդ
+    is: Sind
+    so: Sind
+    pa: ਸਿੰਧ
+    yue: 信德省
+    yo: Sindh
+    uz: Sind
+    mk: Синд
+    'no': Sind
+    yo_BJ: Sindh
+    az: Sind əyaləti
+  comments:
+  type: province

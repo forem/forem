@@ -1,0 +1,9 @@
+public class with sharing Trigger {
+    @Deprecated
+    public void resolveSum(int x, int y) {
+        System.debug('x is ' + x);
+        System.debug('y is ' + y);
+
+        System.debug('x + y = ' + (x+y));
+    }
+}

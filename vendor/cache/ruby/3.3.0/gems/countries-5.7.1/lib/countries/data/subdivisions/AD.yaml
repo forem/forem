@@ -1,0 +1,117 @@
+---
+'02':
+  name: Canillo
+  code: '02'
+  unofficial_names: Canillo
+  geo:
+    latitude: 42.5666535
+    longitude: 1.5994581
+    min_latitude: 42.5650681
+    min_longitude: 1.596212
+    max_latitude: 42.5679867
+    max_longitude: 1.6037142
+  translations:
+    en: Canillo
+    ja: カニーリョ教区
+  comments:
+  type: parish
+'03':
+  name: Encamp
+  code: '03'
+  unofficial_names: Encamp
+  geo:
+    latitude: 42.5362652
+    longitude: 1.5830224
+    min_latitude: 42.5292109
+    min_longitude: 1.5711714
+    max_latitude: 42.5395096
+    max_longitude: 1.5901645
+  translations:
+    en: Encamp
+    ja: アンカム教区
+  comments:
+  type: parish
+'04':
+  name: La Massana
+  code: '04'
+  unofficial_names: La Massana
+  geo:
+    latitude: 42.545625
+    longitude: 1.5147392
+    min_latitude: 42.5366981
+    min_longitude: 1.5084028
+    max_latitude: 42.5501711
+    max_longitude: 1.5204314
+  translations:
+    en: La Massana
+    ja: ラ・マサナ教区
+  comments:
+  type: parish
+'05':
+  name: Ordino
+  code: '05'
+  unofficial_names: Ordino
+  geo:
+    latitude: 42.5556547
+    longitude: 1.5330732
+    min_latitude: 42.552393
+    min_longitude: 1.531403
+    max_latitude: 42.5596833
+    max_longitude: 1.5374774
+  translations:
+    en: Ordino
+    ja: オルディノ教区
+  comments:
+  type: parish
+'06':
+  name: Sant Julià de Lòria
+  code: '06'
+  unofficial_names:
+  - Saint Julia de Loria
+  geo:
+    latitude: 42.4657861
+    longitude: 1.4921277
+    min_latitude: 42.4613938
+    min_longitude: 1.4893715
+    max_latitude: 42.4727386
+    max_longitude: 1.4963642
+  translations:
+    en: Sant Julià de Lòria
+    ja: サン・ジュリア・デ・ロリア教区
+  comments:
+  type: parish
+'07':
+  name: Andorra la Vella
+  code: '07'
+  unofficial_names:
+  - Andorra la Vieja
+  - Andorre-la-Vieille
+  geo:
+    latitude: 42.50631740000001
+    longitude: 1.5218355
+    min_latitude: 42.4966062
+    min_longitude: 1.5053926
+    max_latitude: 42.513564
+    max_longitude: 1.5353385
+  translations:
+    en: Andorra la Vella
+    ja: アンドラ・ラ・ベリャ教区
+  comments:
+  type: parish
+'08':
+  name: Escaldes-Engordany
+  code: '08'
+  unofficial_names:
+  - Les Escaldes
+  geo:
+    latitude: 42.5100804
+    longitude: 1.5387862
+    min_latitude: 42.5067774
+    min_longitude: 1.5285531
+    max_latitude: 42.5168669
+    max_longitude: 1.5532685
+  translations:
+    en: Escaldes-Engordany
+    ja: エスカルデス＝エンゴルダニ教区
+  comments:
+  type: parish

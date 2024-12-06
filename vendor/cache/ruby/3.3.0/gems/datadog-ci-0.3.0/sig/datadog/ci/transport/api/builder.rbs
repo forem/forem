@@ -1,0 +1,12 @@
+module Datadog
+  module CI
+    module Transport
+      module Api
+        module Builder
+          def self.build_ci_test_cycle_api: (untyped settings) -> Datadog::CI::Transport::Api::CiTestCycle
+          def self.build_evp_proxy_api: (untyped agent_settings) -> Datadog::CI::Transport::Api::EvpProxy
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,15 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/test/reports/
+/tmp/
+.idea/
+
+# rspec failure tracking
+.rspec_status
+
+/examples/**/*.lock

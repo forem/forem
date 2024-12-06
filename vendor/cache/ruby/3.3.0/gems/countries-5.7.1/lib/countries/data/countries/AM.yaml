@@ -1,0 +1,53 @@
+---
+AM:
+  alpha2: AM
+  alpha3: ARM
+  continent: Asia
+  country_code: '374'
+  currency_code: AMD
+  distance_unit: KM
+  gec: AM
+  geo:
+    latitude: 40.069099
+    longitude: 45.038189
+    max_latitude: 41.300993
+    max_longitude: 46.6342219
+    min_latitude: 38.840244
+    min_longitude: 43.4472601
+    bounds:
+      northeast:
+        lat: 41.300993
+        lng: 46.6342219
+      southwest:
+        lat: 38.840244
+        lng: 43.4472601
+  international_prefix: '00'
+  ioc: ARM
+  iso_long_name: The Republic of Armenia
+  iso_short_name: Armenia
+  languages_official:
+  - hy
+  - ru
+  languages_spoken:
+  - hy
+  - ru
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '8'
+  nationality: Armenian
+  number: '051'
+  postal_code: true
+  postal_code_format: "(?:37)?\\d{4}"
+  region: Asia
+  start_of_week: monday
+  subregion: Western Asia
+  un_locode: AM
+  unofficial_names:
+  - Armenia
+  - Armenien
+  - Arménie
+  - アルメニア
+  - Armenië
+  world_region: EMEA

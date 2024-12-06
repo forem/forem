@@ -1,0 +1,26 @@
+module Datadog
+  module CI
+    module Contrib
+      module RSpec
+        class Integration
+          extend Datadog::CI::Contrib::Integration::ClassMethods
+          include Datadog::CI::Contrib::Integration::InstanceMethods
+
+          MINIMUM_VERSION: Gem::Version
+
+          def self.version: () -> untyped
+
+          def self.loaded?: () -> untyped
+
+          def compatible?: () -> bool
+
+          def auto_instrument?: () -> false
+
+          def new_configuration: () -> untyped
+
+          def patcher: () -> untyped
+        end
+      end
+    end
+  end
+end

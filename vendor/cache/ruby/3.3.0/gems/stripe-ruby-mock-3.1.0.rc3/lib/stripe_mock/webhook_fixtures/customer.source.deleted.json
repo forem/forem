@@ -1,0 +1,32 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "customer.source.deleted",
+  "object": "event",
+  "data": {
+    "object": {
+      "id": "card_VALID",
+      "object": "card",
+      "last4": "4242",
+      "type": "Visa",
+      "brand": "Visa",
+      "funding": "credit",
+      "exp_month": 3,
+      "exp_year": 2020,
+      "fingerprint": "wXWJT135mEK107G8",
+      "customer": "cus_VALID",
+      "country": "US",
+      "name": "Testy Tester",
+      "address_line1": null,
+      "address_line2": null,
+      "address_city": null,
+      "address_state": null,
+      "address_zip": null,
+      "address_country": null,
+      "cvc_check": "pass",
+      "address_line1_check": null,
+      "address_zip_check": null
+    }
+  }
+}

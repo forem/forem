@@ -1,0 +1,16 @@
+include "MUMPS"
+
+// Parameters
+func f = 1.;
+
+// Mesh
+int nn = 25;	//Mesh quality
+mesh Th = square(nn, nn);
+
+// Fespace
+func Pk = P2;
+fespace Uh(Th, Pk);
+Uh u;
+
+// Plot
+plot(u, nbiso=30, fill=true, value=true, cmm="A");

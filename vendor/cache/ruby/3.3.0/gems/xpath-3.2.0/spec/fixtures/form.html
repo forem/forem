@@ -1,0 +1,201 @@
+<h1>Form</h1>
+
+<p>
+  <a id="awesome-link" data="link-text" href="#link">An awesome link</a>
+  <a id="some-id" data="link-id" href="#id">With id</a>
+  <a title="My title" data="link-title" href="#title">A cool title</a>
+  <a href="#image" data="link-img"><img src="foo.png" alt="Alt link"/></a>
+  <a title="This title is too long" data="link-fuzzy" href="#bar">A link at a time</a>
+  <a title="This title" data="link-exact" href="#foo">A link</a>
+  <a href="#bar" data="link-img-fuzzy"><img src="foo.png" alt="An image that is beautiful"/></a>
+  <a href="#foo" data="link-img-exact"><img src="foo.ong" alt="An image"/></a>
+  <a href="http://www.example.com" data="link-href">Href-ed link</a>
+  <a>Wrong Link</a>
+  <a href="#spacey" data="link-whitespace">    My
+
+      whitespaced
+    link</a>
+  <a href="#has-children" data="link-children">
+    An <em>emphatic</em> link with some children
+  </a>
+</p>
+
+<p>
+  <input type="submit" id="submit-with-id" data="id-submit" value="Has ID"/>
+  <input type="submit" value="submit-with-value" data="value-submit"/>
+  <input type="submit" value="not exact value submit" data="not-exact-value-submit"/>
+  <input type="submit" value="exact value submit" data="exact-value-submit"/>
+  <input type="submit" title="My submit title" value="submit-with-title" data="title-submit">
+  <input type="submit" title="Exact submit title" value="exact title submit" data="exact-title-submit">
+  <input type="submit" title="Not Exact submit title" value="exact title submit" data="not-exact-title-submit">
+
+  <input type="reset" id="reset-with-id" data="id-reset" value="Has ID"/>
+  <input type="reset" value="reset-with-value" data="value-reset"/>
+  <input type="reset" value="not exact value reset" data="not-exact-value-reset"/>
+  <input type="reset" value="exact value reset" data="exact-value-reset"/>
+  <input type="reset" title="My reset title" value="reset-with-title" data="title-reset">
+  <input type="reset" title="Exact reset title" value="exact title reset" data="exact-title-reset">
+  <input type="reset" title="Not Exact reset title" value="exact title reset" data="not-exact-title-reset">
+
+  <input type="button" id="button-with-id" data="id-button" value="Has ID"/>
+  <input type="button" value="button-with-value" data="value-button"/>
+  <input type="button" value="not exact value button" data="not-exact-value-button"/>
+  <input type="button" value="exact value button" data="exact-value-button"/>
+  <input type="button" title="My button title" value="button-with-title" data="title-button">
+  <input type="button" title="Not Exact button title" value="not exact title button" data="not-exact-title-button">
+  <input type="button" title="Exact button title" value="exact title button" data="exact-title-button">
+
+  <input type="image" id="imgbut-with-id" data="id-imgbut" value="Has ID"/>
+  <input type="image" value="imgbut-with-value" data="value-imgbut"/>
+  <input type="image" alt="imgbut-with-alt" data="alt-imgbut"/>
+  <input type="image" value="not exact value imgbut" data="not-exact-value-imgbut"/>
+  <input type="image" value="exact value imgbut" data="exact-value-imgbut"/>
+  <input type="image" title="My imgbut title" value="imgbut-with-title" data="title-imgbut">
+  <input type="image" title="Not Exact imgbut title" value="not exact title imgbut" data="not-exact-title-imgbut">
+  <input type="image" title="Exact imgbut title" value="exact title imgbut" data="exact-title-imgbut">
+
+  <button id="btag-with-id" data="id-btag" value="Has ID"></button>
+  <button value="btag-with-value" data="value-btag"></button>
+  <button value="not exact value btag" data="not-exact-value-btag"></button>
+  <button value="exact value btag" data="exact-value-btag"></button>
+
+  <button data="text-btag">btag-with-text</button>
+  <button data="not-exact-text-btag">not exact text btag</button>
+  <button data="exact-text-btag">exact text btag</button>
+  <button title="My btag title" data="title-btag">btag-with-title</button>
+  <button title="Not Exact btag title" data="not-exact-title-btag">not exact title btag</button>
+  <button title="Exact btag title" data="exact-title-btag">exact title btag</button>
+
+  <button data="btag-with-whitespace">    My
+
+      whitespaced
+    button</button>
+  <button data="btag-with-children">
+    An <em>emphatic</em> button with some children
+  </button>
+
+  <input type="schmoo" value="schmoo button" data="schmoo"/>
+  <label for="text-with-id">Label text <input type="text" id="text-with-id" data="id-text" value="monkey"/></label>
+  <label for="problem-text-with-id">Label text's got an apostrophe <input type="text" id="problem-text-with-id" data="id-problem-text" value="monkey"/></label>
+
+  <input disabled type="submit" id="disabled-submit" data="submit-disabled" value=""/>
+</p>
+
+<p>
+  <fieldset id="some-fieldset-id" data="fieldset-id"></fieldset>
+  <fieldset data="fieldset-legend"><legend>Some Legend</legend></fieldset>
+  <fieldset data="fieldset-legend-span"><legend><span>Span Legend</span></legend></fieldset>
+  <fieldset data="fieldset-fuzzy"><legend>Long legend yo</legend></fieldset>
+  <fieldset data="fieldset-exact"><legend>Long legend</legend></fieldset>
+  <fieldset data="fieldset-outer"><legend>Outer legend</legend>
+    <fieldset data="fieldset-inner"><legend>Inner legend</legend></fieldset>
+  </fieldset>
+</p>
+
+<p>
+  <select>
+    <optgroup label="Group A" data="optgroup-a"></optgroup>
+    <optgroup label="Group B" data="optgroup-b"></optgroup>
+    <option data="option-with-text-data">Option with text</option>
+  </select>
+</p>
+
+<h2>Tables</h2>
+
+  <table id="table-with-id" data="table-with-id-data">
+    <tr><td>First</td><td>Second</td></tr>
+  </table>
+
+  <table data="table-with-caption-data">
+    <caption>Table with caption</caption>
+    <tr><td>First</td><td>Second</td></tr>
+  </table>
+
+  <table id="whitespaced-table" data="table-with-whitespace">
+    <tr>
+      <td data="cell-whitespaced">I have
+        <span>nested whitespace</span>
+      </td>
+      <td>I don't</td>
+    </tr>
+  </table>
+
+
+<p>
+  <h2>Fields</h2>
+
+  <h4>With id</h4>
+  <input id="input-with-id" value="correct-value" data="input-with-id-data"/>
+  <input type="text" id="input-text-with-id" data="input-text-with-id-data"/>
+  <input type="file" id="input-file-with-id" data="input-file-with-id-data"/>
+  <input type="password" id="input-password-with-id" data="input-password-with-id-data"/>
+  <input type="custom" id="input-custom-with-id" data="input-custom-with-id-data"/>
+  <textarea id="textarea-with-id" data="textarea-with-id-data">Correct value</textarea>
+  <select id="select-with-id" data="select-with-id-data"></select>
+  <input type="submit" id="input-submit-with-id" data="input-submit-with-id-data"/>
+  <input type="image" id="input-image-with-id" data="input-image-with-id-data"/>
+  <input type="hidden" id="input-hidden-with-id" data="input-hidden-with-id-data"/>
+  <input type="checkbox" id="input-checkbox-with-id" data="input-checkbox-with-id-data"/>
+  <input type="radio" id="input-radio-with-id" data="input-radio-with-id-data"/>
+
+  <h4>With name</h4>
+  <input name="input-with-name" data="input-with-name-data"/>
+  <input type="text" name="input-text-with-name" data="input-text-with-name-data"/>
+  <input type="file" name="input-file-with-name" data="input-file-with-name-data"/>
+  <input type="password" name="input-password-with-name" data="input-password-with-name-data"/>
+  <input type="custom" name="input-custom-with-name" data="input-custom-with-name-data"/>
+  <textarea name="textarea-with-name" data="textarea-with-name-data"></textarea>
+  <select name="select-with-name" data="select-with-name-data"></select>
+  <input type="submit" name="input-submit-with-name" data="input-submit-with-name-data"/>
+  <input type="image" name="input-image-with-name" data="input-image-with-name-data"/>
+  <input type="hidden" name="input-hidden-with-name" data="input-hidden-with-name-data"/>
+  <input type="checkbox" name="input-checkbox-with-name" data="input-checkbox-with-name-data"/>
+  <input type="radio" name="input-radio-with-name" data="input-radio-with-name-data"/>
+
+  <h4>With placeholder</h4>
+  <input name="input-with-placeholder" data="input-with-placeholder-data"/>
+  <input type="text" placeholder="input-text-with-placeholder" data="input-text-with-placeholder-data"/>
+  <input type="password" placeholder="input-password-with-placeholder" data="input-password-with-placeholder-data"/>
+  <input type="custom" placeholder="input-custom-with-placeholder" data="input-custom-with-placeholder-data"/>
+  <textarea placeholder="textarea-with-placeholder" data="textarea-with-placeholder-data"></textarea>
+  <input type="hidden" placeholder="input-hidden-with-placeholder" data="input-hidden-with-placeholder-data"/>
+
+  <h4>With referenced label</h4>
+  <label for="input-with-label">Input with label</label><input id="input-with-label" data="input-with-label-data"/>
+  <label for="input-text-with-label">Input text with label</label><input type="text" id="input-text-with-label" data="input-text-with-label-data"/>
+  <label for="input-file-with-label">Input file with label</label><input type="file" id="input-file-with-label" data="input-file-with-label-data"/>
+  <label for="input-password-with-label">Input password with label</label><input type="password" id="input-password-with-label" data="input-password-with-label-data"/>
+  <label for="input-custom-with-label">Input custom with label</label><input type="custom" id="input-custom-with-label" data="input-custom-with-label-data"/>
+  <label for="textarea-with-label">Textarea with label</label><textarea id="textarea-with-label" data="textarea-with-label-data"></textarea>
+  <label for="select-with-label">Select with label</label><select id="select-with-label" data="select-with-label-data"></select>
+  <label for="input-submit-with-label">Input submit with label</label><input type="submit" id="input-submit-with-label" data="input-submit-with-label-data"/>
+  <label for="input-image-with-label">Input image with label</label><input type="image" id="input-image-with-label" data="input-image-with-label-data"/>
+  <label for="input-hidden-with-label">Input hidden with label</label><input type="hidden" id="input-hidden-with-label" data="input-hidden-with-label-data"/>
+  <label for="input-checkbox-with-label">Input checkbox with label</label><input type="checkbox" id="input-checkbox-with-label" data="input-checkbox-with-label-data"/>
+  <label for="input-radio-with-label">Input radio with label</label><input type="radio" id="input-radio-with-label" data="input-radio-with-label-data"/>
+
+  <h4>With parent label</h4>
+  <label>Input with parent label<input data="input-with-parent-label-data"/></label>
+  <label>Input text with parent label<input type="text" data="input-text-with-parent-label-data"/></label>
+  <label>Input file with parent label<input type="file" data="input-file-with-parent-label-data"/></label>
+  <label>Input password with parent label<input type="password" data="input-password-with-parent-label-data"/></label>
+  <label>Input custom with parent label<input type="custom" data="input-custom-with-parent-label-data"/></label>
+  <label>Textarea with parent label<textarea data="textarea-with-parent-label-data"></textarea></label>
+  <label>Select with parent label<select data="select-with-parent-label-data"></select></label>
+  <label>Input submit with parent label<input type="submit" data="input-submit-with-parent-label-data"/></label>
+  <label>Input image with parent label<input type="image" data="input-image-with-parent-label-data"/></label>
+  <label>Input hidden with parent label<input type="hidden" data="input-hidden-with-parent-label-data"/></label>
+  <label>Input checkbox with parent label<input type="checkbox" data="input-checkbox-with-parent-label-data"/></label>
+  <label>Input radio with parent label<input type="radio" data="input-radio-with-parent-label-data"/></label>
+
+  <h4>Disabled</h4>
+  <input disabled id="input-disabled" value="correct-value" data="input-data"/>
+  <input disabled type="text" id="input-text-disabled" data="input-text-data"/>
+  <input disabled type="file" id="input-file-disabled" data="input-file-data"/>
+  <input disabled type="password" id="input-password-disabled" data="input-password-data"/>
+  <input disabled type="custom" id="input-custom-disabled" data="input-custom-data"/>
+  <textarea disabled id="textarea-with-id-data-disabled">Correct value</textarea>
+  <select disabled id="select-with-id-data-disabled"></select>
+  <input disabled type="checkbox" id="input-checkbox-disabled" data="input-checkbox-data"/>
+  <input disabled type="radio" id="input-radio-disabled" data="input-radio-data"/>
+</p>

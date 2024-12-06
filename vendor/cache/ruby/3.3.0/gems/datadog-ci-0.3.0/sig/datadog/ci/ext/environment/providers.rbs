@@ -1,0 +1,13 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        module Providers
+          PROVIDERS: ::Array[untyped]
+
+          def self.for_environment: (Hash[String, String?] env) -> Providers::Base
+        end
+      end
+    end
+  end
+end

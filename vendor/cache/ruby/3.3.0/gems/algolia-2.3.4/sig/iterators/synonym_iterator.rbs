@@ -1,0 +1,5 @@
+module Algolia
+  class SynonymIterator < PaginatorIterator
+    def get_endpoint: () -> String
+  end
+end

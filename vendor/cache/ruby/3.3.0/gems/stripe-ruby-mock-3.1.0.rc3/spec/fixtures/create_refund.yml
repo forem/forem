@@ -1,0 +1,126 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/charges/ch_4fX3f4kErVLRcj
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.15.0
+      Authorization:
+      - Bearer sk_test_sZQU6LreNksFlmewtO4JqBK1
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - ! '{"bindings_version":"1.15.0","lang":"ruby","lang_version":"1.9.3 p125 (2012-02-16)","platform":"x86_64-darwin10.8.0","publisher":"stripe","uname":"Darwin
+        airwater.local 13.1.0 Darwin Kernel Version 13.1.0: Thu Jan 16 19:40:37 PST
+        2014; root:xnu-2422.90.20~2/RELEASE_X86_64 x86_64"}'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Wed, 27 Aug 2014 19:21:23 GMT
+      Content-Type:
+      - application/json;charset=utf-8
+      Content-Length:
+      - '1158'
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Stripe-Version:
+      - '2014-08-04'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: US-ASCII
+      string: ! "{\n  \"id\": \"ch_4fX3f4kErVLRcj\",\n  \"object\": \"charge\",\n
+        \ \"created\": 1409167282,\n  \"livemode\": false,\n  \"paid\": true,\n  \"amount\":
+        555,\n  \"currency\": \"usd\",\n  \"refunded\": false,\n  \"card\": {\n    \"id\":
+        \"card_4fX3v7mm7FZQxN\",\n    \"object\": \"card\",\n    \"last4\": \"4242\",\n
+        \   \"brand\": \"Visa\",\n    \"funding\": \"credit\",\n    \"exp_month\":
+        9,\n    \"exp_year\": 2018,\n    \"fingerprint\": \"wXWJT135mEK107G8\",\n
+        \   \"country\": \"US\",\n    \"name\": null,\n    \"address_line1\": null,\n
+        \   \"address_line2\": null,\n    \"address_city\": null,\n    \"address_state\":
+        null,\n    \"address_zip\": null,\n    \"address_country\": null,\n    \"cvc_check\":
+        \"pass\",\n    \"address_line1_check\": null,\n    \"address_zip_check\":
+        null,\n    \"customer\": null\n  },\n  \"captured\": true,\n  \"refunds\":
+        {\n    \"object\": \"list\",\n    \"total_count\": 0,\n    \"has_more\": false,\n
+        \   \"url\": \"/v1/charges/ch_4fX3f4kErVLRcj/refunds\",\n    \"data\": []\n
+        \ },\n  \"balance_transaction\": \"txn_4fX3u6H5sC09M0\",\n  \"failure_message\":
+        null,\n  \"failure_code\": null,\n  \"amount_refunded\": 0,\n  \"customer\":
+        null,\n  \"invoice\": null,\n  \"description\": null,\n  \"dispute\": null,\n
+        \ \"metadata\": {},\n  \"statement_description\": null,\n  \"receipt_email\":
+        null\n}\n"
+    http_version: 
+  recorded_at: Wed, 27 Aug 2014 19:21:22 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/charges/ch_4fX3f4kErVLRcj/refunds
+    body:
+      encoding: US-ASCII
+      string: amount=555
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.15.0
+      Authorization:
+      - Bearer sk_test_sZQU6LreNksFlmewtO4JqBK1
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - ! '{"bindings_version":"1.15.0","lang":"ruby","lang_version":"1.9.3 p125 (2012-02-16)","platform":"x86_64-darwin10.8.0","publisher":"stripe","uname":"Darwin
+        airwater.local 13.1.0 Darwin Kernel Version 13.1.0: Thu Jan 16 19:40:37 PST
+        2014; root:xnu-2422.90.20~2/RELEASE_X86_64 x86_64"}'
+      Content-Length:
+      - '10'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Wed, 27 Aug 2014 19:21:25 GMT
+      Content-Type:
+      - application/json;charset=utf-8
+      Content-Length:
+      - '215'
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Stripe-Version:
+      - '2014-08-04'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: US-ASCII
+      string: ! "{\n  \"id\": \"re_4fX3sdHZN1mfba\",\n  \"amount\": 555,\n  \"currency\":
+        \"usd\",\n  \"created\": 1409167284,\n  \"object\": \"refund\",\n  \"balance_transaction\":
+        \"txn_4fX3vOQMq1HTQt\",\n  \"metadata\": {},\n  \"charge\": \"ch_4fX3f4kErVLRcj\"\n}\n"
+    http_version: 
+  recorded_at: Wed, 27 Aug 2014 19:21:23 GMT
+recorded_with: VCR 2.6.0

@@ -1,0 +1,35 @@
+% Functional Recursion: ;
+fact IS RECUR [ 0 =, 1 first, pass, product, -1 +] % from wikipedia; 
+ 
+% Product of a range: ; 
+fact IS * count;
+
+% Plain recursion: ;
+fact IS OPERATION x {
+  if x = 0 then 1 else x * fact (x - 1) endif
+  };
+
+% While loop: ;
+fact IS OPERATION x {
+prod := 1;
+  WHILE x > 0 DO
+      prod := prod * x;
+      x := x - 1;
+  ENDWHILE;
+  prod
+}
+
+     % A basic divide by zero error: ;
+     1 / 0
+# OUTPUT:
+?div
+
+     % Errors are also values called faults, giving you their location: ;
+     5 / 5 10 0 8
+# OUTPUT:
+1. 0.5 ?div 0.625
+
+     % You can also define custom faults using 'fault': ;
+     fault 'this is an error'
+# OUTPUT:
+this is an error

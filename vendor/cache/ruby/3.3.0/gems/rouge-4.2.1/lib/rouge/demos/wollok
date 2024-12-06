@@ -1,0 +1,11 @@
+object pepita {
+    var energy = 100
+
+    method energy() = energy
+
+    method fly(kilometers) {
+        energy -= kilometers + 10
+    }
+
+    method sayHi() = "Coo!"
+}

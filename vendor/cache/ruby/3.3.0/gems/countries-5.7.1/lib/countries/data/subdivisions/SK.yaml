@@ -1,0 +1,579 @@
+---
+BC:
+  name: Banskobystrický kraj
+  code: BC
+  unofficial_names: Banskobystrický kraj
+  geo:
+    latitude: 48.5312499
+    longitude: 19.382874
+    min_latitude: 48.0536532
+    min_longitude: 18.4786941
+    max_latitude: 48.946956
+    max_longitude: 20.469993
+  translations:
+    en: Banská Bystrica
+    ar: إقليم بانسكا بيستريتسا
+    az: Banska Bistritsa bölgəsi
+    be: Банскабістрыцкі край
+    bg: Банскобистришки край
+    bn: বান্সাকা বাইস্ট্রিকা অঞ্চল
+    ca: Regió de Banská Bystrica
+    cs: Banskobystrický kraj
+    da: Banská Bystrica
+    de: Banskobystrický kraj
+    el: Μπανσκά Μπιστρίκα
+    es: Región de Banská Bystrica
+    et: Banská Bystrica maakond
+    eu: Banská Bystrica eskualdea
+    fa: منطقه بانسکا بیستریتسا
+    fi: Banská Bystrican alue
+    fr: Région de Banská Bystrica
+    gu: બાન્સ્કા બાયસ્ટ્રીકા પ્રદેશ
+    he: באנסקה ביסטריצה
+    hi: बैंस्का बिस्त्रिका क्षेत्र
+    hr: Banskobystrický kraj
+    hu: Besztercebánya megye
+    id: Region Banská Bystrica
+    it: regione di Banská Bystrica
+    ja: バンスカー・ビストリツァ県
+    ka: ბანსკა-ბისტრიცის მხარე
+    kn: ಬನ್ಸ್ಕಾ ಬೈಸ್ಟ್ರಿಕಾ ಪ್ರದೇಶ
+    ko: 반스카비스트리차 주
+    lt: Banska Bistricos kraštas
+    lv: Banska Bistricas apgabals
+    mr: बांस्का बायाट्रिक प्रदेश
+    ms: Daerah Banská Bystrica
+    nb: Banská Bystrica
+    nl: Banská Bystrica
+    pl: Kraj bańskobystrzycki
+    pt: Banská Bystrica
+    ro: Regiunea Banská Bystrica
+    ru: Банскобистрицкий край
+    si: බන්ස්කා බිස්ට්‍රිකා කලාපය
+    sk: Banskobystrický kraj
+    sr: Банскобистрички крај
+    sv: Banská Bystrica
+    ta: பன்ஸ்கா பிஸ்ட்ரிகா ரீஜியன்
+    te: బాంస్కా బిస్ట్రికా ప్రాంతం
+    th: บันสกาบิสตริกา
+    tr: Banská Bystrica Bölgesi
+    uk: Банськобистрицький край
+    ur: بانسکا بسٹریکا ریجن
+    vi: Khu vực Banská Bystrica
+    zh: 班斯卡·比斯特理察州
+    ceb: Banskobystrický kraj
+    sr_Latn: Banskobistrički kraj
+    ccp: "\U0001111D\U0001111A\U00011134\U00011107 \U0001111D\U00011120\U00011111\U00011133\U00011122\U00011128\U00011107"
+    bs: Banska Bistrica
+    'no': Banská Bystrica
+    hy: Բանսկա Բիստրիցկա շրջան
+    ps: بانسکا بیستریتسا
+    sl: Banskobistriški okraj
+  comments:
+  type: region
+BL:
+  name: Bratislavský kraj
+  code: BL
+  unofficial_names: Bratislavský kraj
+  geo:
+    latitude: 48.3118304
+    longitude: 17.1973299
+    min_latitude: 48.0066865
+    min_longitude: 16.833182
+    max_latitude: 48.6543947
+    max_longitude: 17.522104
+  translations:
+    en: Bratislava
+    ar: إقليم براتيسلافا
+    az: Bratislava bölgəsi
+    be: Браціслаўскі край
+    bg: Братиславски край
+    bn: ব্রাতিসাবা অঞ্চল
+    ca: Regió de Bratislava
+    cs: Bratislavský kraj
+    da: Bratislava
+    de: Bratislavský kraj
+    el: Μπρατισλάβα
+    es: Región de Bratislava
+    et: Bratislava maakond
+    eu: Bratislava eskualdea
+    fa: منطقه براتیسلاوا
+    fi: Bratislavan alue
+    fr: Région de Bratislava
+    gu: બ્રેટિસ્લાવા પ્રદેશ
+    hi: ब्रातिस्लावा प्रदेश
+    hr: Bratislavský kraj
+    hu: Pozsony megye
+    hy: Բրատիսլավայի երկրամաս
+    id: Region Bratislava
+    it: regione di Bratislava
+    ja: ブラチスラヴァ県
+    ka: ბრატისლავის მხარე
+    kn: ಬ್ರಾಟಿಸ್ಲಾವಾ ಪ್ರದೇಶ
+    ko: 브라티슬라바 주
+    lt: Bratislavos kraštas
+    lv: Bratislavas apgabals
+    mn: Братислав аймаг
+    mr: ब्रॅटिस्लावा प्रदेश
+    ms: Daerah Bratislava
+    nb: Bratislava
+    nl: Bratislava
+    pl: Kraj bratysławski
+    pt: Bratislava
+    ro: Regiunea Bratislava
+    ru: Братиславский край
+    si: බ්‍රටිස්ලවා කලාපය
+    sk: Bratislavský kraj
+    sr: Братиславски крај
+    sv: Bratislava
+    ta: ப்ரடீஸ்லவா பகுதி
+    te: బ్రాటిస్లావా ప్రాంతం
+    th: เขตบราติสลาวา
+    tr: Bratislava Bölgesi
+    uk: Братиславський край
+    ur: براتیسلاوا ریجن
+    vi: Bratislava
+    ceb: Bratislavský kraj
+    sr_Latn: Bratislavski kraj
+    zh: 布拉迪斯拉發州
+    ccp: "\U0001111D\U00011133\U00011122\U00011111\U00011128\U0001110C\U00011134\U00011123\U0001111E"
+    bs: Bratislava
+    mk: Братиславски крај
+    'no': Bratislava
+    he: ברטיסלאבה (מחוז)
+    ps: براتیسلاوا سیمه
+    sl: Bratislavski okraj
+  comments:
+  type: region
+KI:
+  name: Košický kraj
+  code: KI
+  unofficial_names: Košický kraj
+  geo:
+    latitude: 48.6375737
+    longitude: 21.0834225
+    min_latitude: 48.33251449999999
+    min_longitude: 20.1811385
+    max_latitude: 49.0197507
+    max_longitude: 22.3877253
+  translations:
+    en: Košice
+    ar: إقليم كوشيتسه
+    az: Koşitse bölgəsi
+    be: Кошыцкі край
+    bg: Кошицки край
+    bn: কোসিক অঞ্চল
+    ca: Regió de Košice
+    cs: Košický kraj
+    da: Košice
+    de: Košický kraj
+    el: Κοσίκε
+    es: Región de Košice
+    et: Košice maakond
+    eu: Košice eskualdea
+    fa: منطقه کوشیتسه
+    fi: Košicen alue
+    fr: Région de Košice
+    gu: કોસિસ પ્રદેશ
+    hi: कोसिस क्षेत्र
+    hr: Košický kraj
+    hu: Kassa megye
+    id: Region Košice
+    it: regione di Košice
+    ja: コシツェ県
+    ka: კოშიცეს მხარე
+    kn: ಕೋಸೀಸ್ ಪ್ರದೇಶ
+    ko: 코시체 주
+    lt: Košicės kraštas
+    lv: Košices apgabals
+    mr: कॉसिस प्रदेश
+    ms: Daerah Košice
+    nb: Košice
+    nl: Košice
+    pl: Kraj koszycki
+    pt: Košice
+    ro: Regiunea Košice
+    ru: Кошицкий край
+    si: කොසයිස් කලාපය
+    sk: Košický kraj
+    sr: Кошички крај
+    sv: Košice
+    ta: கோசிஸ் பகுதி
+    te: కోయిస్ ప్రాంతం
+    th: โคไซซี
+    tr: Košice Bölgesi
+    uk: Кошицький край
+    ur: کوشیسہ علاقہ
+    vi: Khu vực Kosice
+    ceb: Košický kraj
+    sr_Latn: Košički kraj
+    zh: 科希策州
+    ccp: "\U00011107\U0001112E\U00011125\U0001112D\U0001110C\U00011134"
+    bs: Košice
+    'no': Košice
+    he: קושיצה
+    hy: Կոշիցկի երկրամաս
+    mk: Кошички крај
+    sl: Regija Košice
+  comments:
+  type: region
+NI:
+  name: Nitriansky kraj
+  code: NI
+  unofficial_names: Nitriansky kraj
+  geo:
+    latitude: 48.0143765
+    longitude: 18.5416505
+    min_latitude: 47.7313783
+    min_longitude: 17.7072734
+    max_latitude: 48.7145252
+    max_longitude: 19.0724064
+  translations:
+    en: Nitra
+    ar: إقليم نيترا
+    az: Nitra bölgəsi
+    be: Нітранскі край
+    bg: Нитрански край
+    bn: নিট্রা অঞ্চল
+    ca: Regió de Nitra
+    cs: Nitranský kraj
+    da: Nitra
+    de: Nitriansky kraj
+    el: Νίτρα
+    es: Región de Nitra
+    et: Nitra maakond
+    eu: Nitra eskualdea
+    fa: منطقه نیترا
+    fi: Nitran alue
+    fr: Région de Nitra
+    gu: નિટ્રા પ્રદેશ
+    hi: निट्रा क्षेत्र
+    hr: Nitriansky kraj
+    hu: Nyitra megye
+    id: Region Nitra
+    it: regione di Nitra
+    ja: ニトラ県
+    ka: ნიტრის მხარე
+    kn: ನೈಟ್ರಾ ಪ್ರದೇಶ
+    ko: 니트라 주
+    lt: Nitros kraštas
+    lv: Nitras apgabals
+    mr: निट्रा प्रदेश
+    ms: Daerah Nitra
+    nb: Nitra
+    nl: Nitra
+    pl: Kraj nitrzański
+    pt: Nitra
+    ro: Regiunea Nitra
+    ru: Нитранский край
+    si: නිට්‍රා කලාපය
+    sk: Nitriansky kraj
+    sr: Њитрански крај
+    sv: Nitra
+    ta: நித்ரா பகுதி
+    te: నిట్రా ప్రాంతం
+    th: เขตนิตรา
+    tr: Nitra Bölgesi
+    uk: Нітранський край
+    ur: نیترا علاقہ
+    vi: Nitra
+    ceb: Nitriansky kraj
+    sr_Latn: Njitranski kraj
+    zh: 尼特拉州
+    ccp: "\U0001111A\U00011128\U00011111\U00011133\U00011122"
+    bs: Nitra
+    'no': Nitra
+    he: ניטרה
+    ps: نیترا سیمه
+    sl: Nitranski okraj
+  comments:
+  type: region
+PV:
+  name: Prešovský kraj
+  code: PV
+  unofficial_names: Prešovský kraj
+  geo:
+    latitude: 49.1716773
+    longitude: 21.3742001
+    min_latitude: 48.762623
+    min_longitude: 19.8690332
+    max_latitude: 49.4608248
+    max_longitude: 22.5658602
+  translations:
+    en: Prešov
+    ar: إقليم بريشوف
+    az: Preşov bölgəsi
+    be: Прэшаўскі край
+    bg: Прешовски край
+    bn: প্রেসো অঞ্চল
+    ca: Regió de Prešov
+    cs: Prešovský kraj
+    da: Prešov
+    de: Prešovský kraj
+    el: Πρεσόβ
+    es: Región de Prešov
+    et: Prešovi maakond
+    eu: Prešov eskualdea
+    fa: منطقه پرشوف
+    fi: Prešovin alue
+    fr: Région de Prešov
+    gu: પ્રેસોવ પ્રદેશ
+    he: מחוז פרשוב
+    hi: प्रीसोव क्षेत्र
+    hr: Prešovský kraj
+    hu: Eperjes megye
+    id: Region Prešov
+    it: regione di Prešov
+    ja: プレショウ県
+    ka: პრეშოვის მხარე
+    kn: ಪ್ರೆಸೋವ್ ಪ್ರದೇಶ
+    ko: 프레쇼프 주
+    lt: Prešovo kraštas
+    lv: Prešovas apgabals
+    mr: प्रीसोव प्रदेश
+    ms: Wilayah Prešov
+    nb: Prešov
+    nl: Prešov
+    pl: Kraj preszowski
+    pt: Prešov
+    ro: Regiunea Prešov
+    ru: Прешовский край
+    si: ප්රෙසොව් කලාපය
+    sk: Prešovský kraj
+    sr: Прешовски крај
+    sv: Prešov
+    ta: ப்ரேஸோவ் பகுதி
+    te: ప్రెసోవ్ ప్రాంతం
+    th: แคว้นเพรชอฟ
+    tr: Prešov Bölgesi
+    uk: Пряшівський край
+    ur: پریسوو ریجن
+    vi: Vùng Prešov
+    ceb: Prešovský kraj
+    sr_Latn: Prešovski kraj
+    zh: 普列索夫州
+    ccp: "\U0001111B\U00011133\U00011122\U0001112C\U00011125\U0001112E\U0001111B\U00011134"
+    bs: Prešov
+    'no': Prešov
+    hy: Պրեշովյան շրջան
+    ps: پرشوف سیمه
+    sl: Prešovski okraj
+  comments:
+  type: region
+TA:
+  name: Trnavský kraj
+  code: TA
+  unofficial_names: Trnavský kraj
+  geo:
+    latitude: 48.3943898
+    longitude: 17.7216205
+    min_latitude: 47.7574508
+    min_longitude: 16.933916
+    max_latitude: 48.8782091
+    max_longitude: 17.9854498
+  translations:
+    en: Trnava
+    ar: إقليم ترنافا
+    az: Trnava bölgəsi
+    be: Трнаўскі край
+    bg: Търнавски край
+    bn: তানাভা অঞ্চল
+    ca: Regió de Trnava
+    cs: Trnavský kraj
+    da: Trnava
+    de: Trnavský kraj
+    el: Τρνάβα
+    es: Región de Trnava
+    et: Trnava maakond
+    eu: Trnava eskualdea
+    fa: منطقه ترناوا
+    fi: Trnavan alue
+    fr: Région de Trnava
+    gu: ટર્નાવા પ્રદેશ
+    he: מחוז טרנבה
+    hi: ट्रनवा क्षेत्र
+    hr: Trnavský kraj
+    hu: Nagyszombat megye
+    hy: Տրնավայի երկրամաս
+    id: Region Trnava
+    it: regione di Trnava
+    ja: トルナヴァ県
+    ka: ტრნავის მხარე
+    kn: ಟ್ರಾನ್ವಾ ಪ್ರದೇಶ
+    ko: 트르나바 주
+    lt: Trnavos kraštas
+    lv: Trnavas apgabals
+    mn: Трнав аймаг
+    mr: ट्र्नव्हा प्रदेश
+    ms: Daerah Trnava
+    nb: Trnava
+    nl: Trnava
+    pl: Kraj trnawski
+    pt: Trnava
+    ro: Regiunea Trnava
+    ru: Трнавский край
+    si: ට්‍ර්නවා කලාපය
+    sk: Trnavský kraj
+    sr: Трнавски крај
+    sv: Trnava
+    ta: ட்றனவா பகுதி
+    te: ట్రనావా ప్రాంతం
+    th: เตอร์นาวา
+    tr: Trnava Bölgesi
+    uk: Трнавський край
+    ur: ترناوا ریجن
+    vi: Trnava
+    ceb: Trnavský kraj
+    sr_Latn: Trnavski kraj
+    zh: 特爾納瓦州
+    ccp: "\U00011111\U00011133\U00011122\U0001111A\U0001111E"
+    bs: Trnava
+    'no': Trnava
+    ps: ترناوا ښار
+    sl: Trnavski okraj
+  comments:
+  type: region
+TC:
+  name: Trenciansky kraj
+  code: TC
+  unofficial_names: Trenciansky kraj
+  geo:
+    latitude: 48.8086758
+    longitude: 18.2324027
+    min_latitude: 48.4855226
+    min_longitude: 17.3541989
+    max_latitude: 49.31953009999999
+    max_longitude: 18.8268433
+  translations:
+    en: Trenčín
+    ar: إقليم ترنتشين
+    az: Trençin bölgəsi
+    be: Трэнчынскі край
+    bg: Тренчински край
+    bn: ট্রেঙ্কিন অঞ্চল
+    ca: Regió de Trenčín
+    cs: Trenčínský kraj
+    da: Trenčín
+    de: Trenčiansky kraj
+    el: Τρένκιν
+    es: Región de Trenčín
+    et: Trenčíni maakond
+    eu: Trenčín eskualdea
+    fa: منطقه ترنچین
+    fi: Trenčínin alue
+    fr: Région de Trenčín
+    gu: ટ્રેનસિન પ્રદેશ
+    he: מחוז טרנצ׳ין
+    hi: ट्रेन्सिन क्षेत्र
+    hr: Trenčiansky kraj
+    hu: Trencsén megye
+    id: Region Trenčín
+    it: regione di Trenčín
+    ja: トレンチーン県
+    ka: ტრენჩინის მხარე
+    kn: ಟ್ರೆನ್ಸಿನ್ ಪ್ರದೇಶ
+    ko: 트렌친 주
+    lt: Trenčyno kraštas
+    lv: Trenčīnas apgabals
+    mr: ट्रेंटिन प्रदेश
+    ms: Daerah Trenčín
+    nb: Trenčín
+    nl: Trenčín
+    pl: Kraj trenczyński
+    pt: Trenčín
+    ro: Regiunea Trenčín
+    ru: Тренчинский край
+    si: ට්‍රන්සින් කලාපය
+    sk: Trenčiansky kraj
+    sr: Тренчински крај
+    sv: Trenčín
+    ta: ட்ரெஸின் பகுதி
+    te: ట్రెన్సిన్ ప్రాంతం
+    th: เขตเทรนซิน
+    tr: Trenčín Bölgesi
+    uk: Тренчинський край
+    ur: ترینکین ریجن
+    vi: Trenčín
+    ceb: Trenčiansky kraj
+    sr_Latn: Trenčinski kraj
+    zh: 特倫欽州
+    ccp: "\U00011111\U00011133\U00011122\U0001112C\U0001111A\U00011134\U00011125\U00011128\U0001111A\U00011134"
+    hy: Տենչինի երկրամաս
+    bs: Trenčin
+    'no': Trenčín
+    sl: Trenčinski okraj
+  comments:
+  type: region
+ZI:
+  name: Žilinský kraj
+  code: ZI
+  unofficial_names: Žilinský kraj
+  geo:
+    latitude: 49.2031435
+    longitude: 19.3645733
+    min_latitude: 48.7412625
+    min_longitude: 18.3226616
+    max_latitude: 49.6138171
+    max_longitude: 20.0600755
+  translations:
+    en: Žilina
+    ar: إقليم جيلينا
+    az: Jilina bölgəsi
+    be: Жылінскі край
+    bg: Жилински край
+    bn: জিলিনা অঞ্চল
+    ca: Regió de Žilina
+    cs: Žilinský kraj
+    da: Žilina
+    de: Žilinský kraj
+    el: Επαρχία Ζιλίνα
+    es: Región de Žilina
+    et: Žilina maakond
+    eu: Žilina eskualdea
+    fa: منطقه ژیلینا
+    fi: Žilinan alue
+    fr: Région de Žilina
+    gu: ઝીલીના પ્રદેશ
+    he: מחוז ז׳ילינה
+    hi: ज़िलिना प्रदेश
+    hr: Žilinský kraj
+    hu: Zsolna megye
+    id: Region Žilina
+    it: regione di Žilina
+    ja: ジリナ県
+    ka: ჟილინის მხარე
+    kn: ಝಿಲಿನಾ ಪ್ರದೇಶ
+    ko: 질리나 주
+    lt: Žilinos kraštas
+    lv: Žilinas apgabals
+    mn: Жилин аймаг
+    mr: जिलेटिना प्रदेश
+    ms: Daerah Žilina
+    nb: Žilina
+    nl: Žilina
+    pl: Kraj żyliński
+    pt: Žilina
+    ro: Regiunea Žilina
+    ru: Жилинский край
+    si: සිලිනා කලාපය
+    sk: Žilinský kraj
+    sr: Жилински крај
+    sv: Žilina
+    ta: ஜிலீனா பகுதி
+    te: జిలినా ప్రాంతం
+    th: เขตซิลินา
+    tr: Žilina Bölgesi
+    uk: Жилінський край
+    ur: ژیلینا علاقہ
+    vi: Khu vực Zilina
+    ceb: Žilinský kraj
+    sr_Latn: Žilinski kraj
+    zh: 日利納州
+    ccp: "\U0001110E\U00011128\U00011123\U00011128\U0001111A"
+    bs: Žilina
+    'no': Žilina
+    hy: Ժիլինայի շրջան
+    ps: جیلینا سیمه
+    sl: Žilinski okraj
+  comments:
+  type: region

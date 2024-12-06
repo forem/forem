@@ -1,0 +1,11 @@
+<% if @active_experiments.any? %>
+  <h1>Active Experiments</h1>
+
+  <%= render partial: "experiments", locals: {experiments: @active_experiments} %>
+<% end %>
+
+<% if @completed_experiments.any? %>
+  <h1>Completed Experiments</h1>
+
+  <%= render partial: "experiments", locals: {experiments: @completed_experiments} %>
+<% end %>

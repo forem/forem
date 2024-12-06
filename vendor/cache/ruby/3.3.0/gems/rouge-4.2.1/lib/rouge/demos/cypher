@@ -1,0 +1,5 @@
+// Cypher Mode for Rouge
+CREATE (john:Person {name: 'John'})
+MATCH (user)-[:friend]->(follower)
+WHERE user.name IN ['Joe', 'John', 'Sara', 'Maria', 'Steve'] AND follower.name =~ 'S.*'
+RETURN user.name, follower.name

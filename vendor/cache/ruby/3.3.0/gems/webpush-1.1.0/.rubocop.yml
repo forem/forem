@@ -1,0 +1,30 @@
+require: rubocop-performance
+
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 100
+
+Metrics/ModuleLength:
+  Max: 100
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/IndentHeredoc:
+  Enabled: false

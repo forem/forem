@@ -1,0 +1,53 @@
+---
+MR:
+  alpha2: MR
+  alpha3: MRT
+  continent: Africa
+  country_code: '222'
+  currency_code: MRU
+  distance_unit: KM
+  gec: MR
+  geo:
+    latitude: 21.00789
+    longitude: -10.940835
+    max_latitude: 27.3158916
+    max_longitude: -4.833334799999999
+    min_latitude: 14.721273
+    min_longitude: -17.0687276
+    bounds:
+      northeast:
+        lat: 27.3158916
+        lng: -4.833334799999999
+      southwest:
+        lat: 14.721273
+        lng: -17.0687276
+  international_prefix: '00'
+  ioc: MTN
+  iso_long_name: The Islamic Republic of Mauritania
+  iso_short_name: Mauritania
+  languages_official:
+  - ar
+  - fr
+  languages_spoken:
+  - ar
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: '0'
+  nationality: Mauritanian
+  number: '478'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: MR
+  unofficial_names:
+  - Mauritania
+  - موريتانيا
+  - Mauretanien
+  - Mauritanie
+  - モーリタニア
+  - Mauritanië
+  world_region: EMEA

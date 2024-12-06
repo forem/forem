@@ -1,0 +1,1143 @@
+---
+'01':
+  name: Johor
+  code: '01'
+  unofficial_names: Johor
+  geo:
+    latitude: 1.4853682
+    longitude: 103.7618154
+    min_latitude: 1.2657421
+    min_longitude: 102.4681251
+    max_latitude: 2.8332919
+    max_longitude: 104.5511515
+  translations:
+    en: Johor
+    ar: جوهور
+    az: Cohor
+    bg: Джохор
+    bn: জহর
+    ca: Johor
+    cs: Johor
+    da: Johor
+    de: Johor
+    el: Τζοχόρ
+    es: Johor
+    et: Johori osariik
+    fa: جوهور
+    fi: Johor
+    fr: Johor
+    gl: Johor
+    gu: જોહોર
+    he: ג׳והור
+    hi: जोहोर
+    hu: Johor
+    id: Johor
+    it: Johor
+    ja: ジョホール州
+    ka: ჯოჰორი
+    kn: ಜೊಹೊರ್
+    ko: 조호르 주
+    lt: Džohoras
+    mr: जोहोर
+    ms: Johor
+    nb: Johor
+    nl: Johor
+    pl: Johor
+    pt: Johor
+    ru: Джохор
+    si: ජොහොර්
+    sv: Johor
+    ta: ஜொகூர்
+    te: జోహోర్
+    th: รัฐยะโฮร์
+    tr: Johore
+    uk: Джохор
+    ur: جوھر
+    vi: Johor
+    zh: 柔佛州
+    lv: Džohora
+    ceb: Johor (estado)
+    yue_Hans: 柔佛州
+    jv: Johor
+    ccp: "\U0001110E\U00011127\U00011126\U00011127\U00011122\U00011134"
+    eu: Johor
+    yue: 柔佛州
+    mk: Џохор
+    'no': Johor
+    hy: Ջոհոր
+    ro: Johor
+    sr: Џохор
+    sr_Latn: Džohor
+    uz: Johor
+  comments:
+  type: state
+'02':
+  name: Kedah
+  code: '02'
+  unofficial_names: Kedah
+  geo:
+    latitude: 6.1183964
+    longitude: 100.3684595
+    min_latitude: 5.0764409
+    min_longitude: 99.64064549999999
+    max_latitude: 6.545039099999999
+    max_longitude: 101.127224
+  translations:
+    en: Kedah
+    ar: قدح
+    az: Kedah
+    bg: Кедах
+    bn: কেদাহ
+    ca: Kedah
+    da: Kedah
+    de: Kedah
+    el: Κεντά
+    es: Kedah
+    fa: کداح
+    fi: Kedah
+    fr: Kedah
+    gl: Kedah
+    gu: કેડાહ
+    he: קדה
+    hi: केडा
+    hu: Kedah
+    id: Kedah
+    it: Kedah
+    ja: ケダ州
+    kn: ಕಟಾಹ
+    ko: 크다 주
+    lt: Kedahas
+    mr: कदा
+    ms: Kedah
+    nb: Kedah
+    nl: Kedah
+    pl: Kedah
+    pt: Quedá
+    ru: Кедах
+    si: කෙඩා
+    sv: Kedah
+    ta: கெடா
+    te: కెడాహ్
+    th: รัฐเกอดะฮ์
+    tr: Kedah
+    uk: Кедах
+    ur: قدح
+    vi: Kedah
+    zh: 吉打
+    lv: Kedaha
+    ceb: Kedah (estado sa Malasya)
+    yue_Hans: 吉打
+    ccp: "\U00011107\U0001112C\U00011113\U00011126\U00011134"
+    eu: Kedah
+    et: Kedah
+    yue: 吉打
+    mk: Кедах
+    'no': Kedah
+    cs: Kedah
+  comments:
+  type: state
+'03':
+  name: Kelantan
+  code: '03'
+  unofficial_names: Kelantan
+  geo:
+    latitude: 6.1253969
+    longitude: 102.238071
+    min_latitude: 4.5463078
+    min_longitude: 101.33334
+    max_latitude: 6.2439087
+    max_longitude: 102.6665539
+  translations:
+    en: Kelantan
+    ar: كيلانتان
+    az: Kelantan
+    bg: Келантан
+    bn: কেলানতানা
+    ca: Kelantan
+    cs: Kelantan
+    da: Kelantan
+    de: Kelantan
+    el: Κελάνταν
+    es: Kelantan
+    et: Kelantani osariik
+    fa: کلانتان
+    fi: Kelantan
+    fr: Kelantan
+    gl: Kelatan
+    gu: કેલંતન
+    he: קלנטן
+    hi: केलंतन
+    hu: Kelantan
+    id: Kelantan
+    it: Kelantan
+    ja: クランタン州
+    kn: ಕೆಲಾಂತಾನ್
+    ko: 클란탄 주
+    lt: Kelantanas
+    mr: कलांतान
+    ms: Kelantan
+    nb: Kelantan
+    nl: Kelantan
+    pl: Kelantan
+    pt: Kelantan
+    ru: Келантан
+    si: කෙලන්ටන්
+    sv: Kelantan
+    ta: கிளாந்தான்
+    te: కెలాంటన్
+    th: รัฐกลันตัน
+    tr: Kelantan
+    uk: Келантан
+    ur: کیلانتن
+    vi: Kelantan
+    zh: 吉兰丹
+    lv: Kelantana
+    ceb: Kelantan
+    yue_Hans: 吉兰丹
+    jv: Kelantan
+    ccp: "\U00011107\U0001112C\U00011123\U0001111A\U00011134\U00011111\U0001111A\U00011134"
+    eu: Kelantan
+    yue: 吉蘭丹
+    mk: Келантан
+    'no': Kelantan
+  comments:
+  type: state
+'04':
+  name: Melaka
+  code: '04'
+  unofficial_names: Melaka
+  geo:
+    latitude: 2.189594
+    longitude: 102.2500868
+    min_latitude: 2.1544178
+    min_longitude: 102.1557088
+    max_latitude: 2.309435
+    max_longitude: 102.4327931
+  translations:
+    en: Malacca
+    af: Malakka
+    ar: ملقا
+    az: Malakka
+    bg: Малака
+    bn: মালাক্কা
+    ca: Malaca
+    cs: Malakka
+    da: Melaka
+    de: Malakka
+    el: Μαλάκα
+    es: Malaca
+    et: Melaka osariik
+    eu: Malaka
+    fa: ایالت ملاکا
+    fi: Malakka
+    fr: Malacca
+    gl: Malaca
+    gu: મલાકા
+    he: מלאקה
+    hi: मेलाका
+    hu: Melaka
+    id: Melaka
+    it: Malacca
+    ja: ムラカ州
+    kn: ಮಲಕ್ಕಾ
+    ko: 믈라카 주
+    ml: മലാക്കാ
+    mr: मलाक्का
+    ms: Melaka
+    nb: Malakka
+    nl: Malakka
+    pl: Malakka
+    pt: Malaca
+    ro: Malacca
+    ru: Малакка
+    si: මලක්කා
+    sv: Malacka
+    ta: மலாக்கா
+    te: మలాకా
+    th: รัฐมะละกา
+    tr: Malakka
+    uk: Губернаторство Малакка
+    ur: ملاکا
+    vi: Melaka
+    zh: 马六甲
+    lv: Malaka
+    cy: Melaka
+    ceb: Melaka
+    lt: Malaka
+    yue_Hans: 马六甲州
+    jv: Melaka
+    ccp: "\U0001111F\U00011123\U00011107\U00011133\U00011126"
+    yue: 馬六甲州
+    mk: Малака
+    'no': Malakka
+  comments:
+  type: state
+'05':
+  name: Negeri Sembilan
+  code: '05'
+  unofficial_names:
+  - Negri Sembilan
+  geo:
+    latitude: 2.7258058
+    longitude: 101.9423782
+    min_latitude: 2.3897718
+    min_longitude: 101.702142
+    max_latitude: 3.289874
+    max_longitude: 102.7020759
+  translations:
+    en: Negeri Sembilan
+    ar: نكري سمبيلن
+    az: Neqeri Sembilan
+    bg: Негери Сембилан
+    bn: নেগেরি সেম্বিলান
+    ca: Negeri Sembilan
+    da: Negeri Sembilan
+    de: Negeri Sembilan
+    el: Νεγκέρι Σεμπίλαν
+    es: Negeri Sembilan
+    fa: نگاری سمبیلان
+    fi: Negeri Sembilan
+    fr: Negeri Sembilan
+    gu: નેગેરી સેમ્બિલન
+    he: נגרי סמבילן
+    hi: नेगेरी सेमबिलान
+    hu: Negeri Sembilan
+    id: Negeri Sembilan
+    it: Negeri Sembilan
+    ja: ヌグリ・スンビラン州
+    kn: ನೆಗೆರಿ ಸೆಂಬಿಲಾನ್
+    ko: 느그리슴빌란 주
+    mr: नगरी संबिलान
+    ms: Negeri Sembilan
+    nb: Negeri Sembilan
+    nl: Negeri Sembilan
+    pl: Negeri Sembilan
+    pt: Negeri Sembilan
+    ru: Негери-Сембилан
+    si: නෙගෙරි සෙම්බිලන්
+    sv: Negeri Sembilan
+    ta: நெகிரி செம்பிலான்
+    te: నెగెరి సెంబిలాన్
+    th: รัฐเนอเกอรีเซิมบีลัน
+    tr: Negeri Sembilan
+    uk: Негері-Сембелан
+    ur: نگری سمبیلان
+    vi: Negeri Sembilan
+    zh: 森美兰
+    lv: Negerisembulana
+    ceb: Negeri Sembilan
+    lt: Negeri Sambilanas
+    yue_Hans: 森美兰
+    jv: Negeri Sembilan
+    ccp: "\U0001111A\U0001112C\U00011109\U0001112C\U00011122\U00011128 \U00011125\U0001112C\U0001111F\U00011134\U0001111D\U00011128\U00011123\U0001111A\U00011134"
+    eu: Negeri Sembilan
+    yue: 森美蘭
+    mk: Негери Сембилан
+    'no': Negeri Sembilan
+    cs: Negeri Sembilan
+    ml: നെഗേരി സെമ്പിലാൻ
+  comments:
+  type: state
+'06':
+  name: Pahang
+  code: '06'
+  unofficial_names: Pahang
+  geo:
+    latitude: 3.8126318
+    longitude: 103.3256204
+    min_latitude: 2.4593609
+    min_longitude: 101.3324141
+    max_latitude: 4.779313
+    max_longitude: 104.2235135
+  translations:
+    en: Pahang
+    ar: فهغ
+    az: Pahanq
+    bg: Паханг
+    bn: পেহাং
+    ca: Pahang
+    cs: Pahang
+    da: Pahang
+    de: Pahang
+    el: Πάχανγκ
+    es: Pahang
+    et: Pahangi osariik
+    fa: پاهانگ
+    fi: Pahang
+    fr: Pahang
+    gu: પહાંગ
+    he: פהנג
+    hi: पाहांग
+    hu: Pahang
+    id: Pahang
+    it: Pahang
+    ja: パハン州
+    kn: ಪಹಾಂಗ್
+    ko: 파항 주
+    lt: Pahangas
+    mr: पाहांग
+    ms: Pahang
+    nb: Pahang
+    nl: Pahang
+    pl: Pahang
+    pt: Pahang
+    ru: Паханг
+    si: පහන්ග්
+    sv: Pahang
+    ta: பகாங்
+    te: పహాంగ్
+    th: รัฐปะหัง
+    tr: Pahang
+    uk: Паханг
+    ur: پاہانگ
+    vi: Pahang
+    zh: 彭亨
+    lv: Pahana
+    ceb: Pahang
+    yue_Hans: 彭亨
+    ccp: "\U0001111B\U00011126\U0001110B\U00011134"
+    eu: Pahang
+    ml: പഹാങ്ങ്
+    yue: 彭亨
+    mk: Паханг
+    'no': Pahang
+    sr: Паханг
+    sr_Latn: Pahang
+  comments:
+  type: state
+'07':
+  name: Pulau Pinang
+  code: '07'
+  unofficial_names: Pulau Pinang
+  geo:
+    latitude: 5.4141675
+    longitude: 100.3287589
+    min_latitude: 5.122673
+    min_longitude: 100.1751347
+    max_latitude: 5.585334899999999
+    max_longitude: 100.55062
+  translations:
+    en: Penang
+    ar: بينانق
+    az: Pinanq
+    bg: Пенанг
+    bn: পেনাং
+    ca: Penang
+    cs: Penang
+    da: Penang
+    de: Penang
+    el: Πένανγκ
+    es: Penang
+    fa: پنانگ
+    fi: Penang
+    fr: Penang
+    gu: પેનાંગ
+    he: פננג
+    hi: पिनांग
+    hu: Pinang
+    hy: Պինանգ
+    id: Pulau Pinang
+    it: Penang
+    ja: ペナン州
+    kn: ಪೆನಾಂಗ್
+    ko: 풀라우피낭 주
+    lv: Penanga
+    ml: പെനാംഗ്
+    mr: पेनांग
+    ms: Pulau Pinang
+    nb: Penang
+    nl: Penang
+    pl: Penang
+    pt: Penang
+    ru: Пинанг
+    si: පෙනන්ග්
+    sv: Pinang
+    ta: பினாங்கு
+    te: పెనాంగ్
+    th: รัฐปีนัง
+    tr: Penang
+    uk: Пенанг
+    ur: پینانگ
+    vi: Pulau Pinang
+    zh: 槟城
+    ceb: Pulau Pinang (estado)
+    lt: Penangas
+    yue_Hans: 槟城
+    jv: Pulo Pinang
+    ccp: "\U0001111B\U0001111A\U0001110B\U00011134"
+    eu: Penang
+    pa: ਪੀਨਾਂਗ
+    yue: 檳城
+    mk: Пенанг
+    'no': Penang
+    sr: Пенанг
+    sr_Latn: Penang
+  comments:
+  type: state
+'08':
+  name: Perak
+  code: '08'
+  unofficial_names: Perak
+  geo:
+    latitude: 4.5921126
+    longitude: 101.090109
+    min_latitude: 3.6678983
+    min_longitude: 100.3606155
+    max_latitude: 5.93451
+    max_longitude: 101.7526549
+  translations:
+    en: Perak
+    ar: فيرق
+    az: Perak
+    bg: Перак
+    bn: পেরাক
+    ca: Perak
+    da: Perak
+    de: Perak
+    el: Περάκ
+    es: Perak
+    et: Peraki osariik
+    fa: پراک
+    fi: Perak
+    fr: Perak
+    gl: Perak
+    gu: પેરક
+    he: פרק
+    hi: पेराक
+    hu: Perak
+    id: Perak
+    it: Perak
+    ja: ペラ州
+    ka: პერაკი
+    kn: ಪೆರಾಕ್
+    ko: 페락 주
+    lt: Perakas
+    mr: पराक
+    ms: Negeri Perak
+    nb: Perak
+    nl: Perak
+    pl: Perak
+    pt: Perak
+    ru: Перак
+    si: පෙරක්
+    sv: Perak
+    ta: பேராக்
+    te: పెరాక్
+    th: รัฐเประก์
+    tr: Perak
+    uk: Перак
+    ur: پیراک
+    vi: Perak
+    zh: 霹靂州
+    lv: Peraka
+    ceb: Perak (estado sa Malasya)
+    yue_Hans: 霹雳州
+    ccp: "\U0001111B\U0001112C\U00011122\U00011107\U00011134"
+    eu: Perak
+    yue: 霹靂州
+    be: Перак
+    mk: Перак
+    'no': Perak
+    cs: Perak
+  comments:
+  type: state
+'09':
+  name: Perlis
+  code: '09'
+  unofficial_names: Perlis
+  geo:
+    latitude: 6.444912899999999
+    longitude: 100.2047691
+    min_latitude: 6.2531897
+    min_longitude: 100.1169497
+    max_latitude: 6.726748000000001
+    max_longitude: 100.3705678
+  translations:
+    en: Perlis
+    ar: برليس
+    az: Perlis
+    bg: Перлис
+    bn: পার্লিস
+    ca: Perlis
+    cs: Perlis
+    da: Perlis
+    de: Perlis
+    el: Πέρλις
+    es: Perlis
+    fa: پرلیس
+    fi: Perlis
+    fr: Perlis
+    gu: પર્લીસ
+    he: פרליס
+    hi: पेरलिस
+    hu: Perlis
+    id: Perlis
+    it: Perlis
+    ja: プルリス州
+    ka: პერლისი
+    kn: ಪೆರ್ಲಿಸ್
+    ko: 프를리스 주
+    mr: पर्लिस
+    ms: Perlis
+    nb: Perlis
+    nl: Perlis
+    pl: Perlis
+    pt: Perlis
+    ru: Перлис
+    si: පෙර්ලිස්
+    sv: Perlis
+    ta: பெர்லிஸ்
+    te: పెర్లిస్
+    th: รัฐปะลิส
+    tr: Perlis
+    uk: Перліс
+    ur: پرلس
+    vi: Perlis
+    zh: 玻璃市
+    lv: Perlis
+    ceb: Perlis (estado sa Malasya)
+    lt: Perlis
+    yue_Hans: 玻璃市
+    ccp: "\U0001111B\U0001112C\U00011122\U00011134\U00011123\U00011128\U0001110C\U00011134"
+    eu: Perlis
+    yue: 玻璃市
+    mk: Перлис
+    'no': Perlis
+  comments:
+  type: state
+'10':
+  name: Selangor
+  code: '10'
+  unofficial_names: Selangor
+  geo:
+    latitude: 3.0738379
+    longitude: 101.5183469
+    min_latitude: 2.59424
+    min_longitude: 100.788148
+    max_latitude: 3.8683526
+    max_longitude: 101.970064
+  translations:
+    en: Selangor
+    ar: سلاغور
+    az: Selanqor
+    bg: Селангор
+    bn: সেলাঙ্গর
+    ca: Selangor
+    cs: Selangor
+    da: Selangor
+    de: Selangor
+    el: Σελανγκόρ
+    es: Selangor
+    fa: سلانگور
+    fi: Selangor
+    fr: Selangor
+    gl: Selangor
+    gu: સેલેન્જર
+    he: סלנגור
+    hi: सेलांगोर
+    hu: Selangor
+    id: Selangor
+    it: Selangor
+    ja: セランゴール州
+    kn: ಸೆಲಾಂಗೋರ್
+    ko: 슬랑오르 주
+    lt: Selangoras
+    mr: सलांगोर
+    ms: Selangor
+    nb: Selangor
+    nl: Selangor
+    pl: Selangor
+    pt: Selangor
+    ro: Selangor
+    ru: Селангор
+    si: සෙලන්ගොර්
+    sv: Selangor
+    ta: சிலாங்கூர்
+    te: సెలాంగోర్
+    th: รัฐเซอลาโงร์
+    tr: Selangor
+    uk: Селангор
+    ur: سلنگور
+    vi: Selangor
+    zh: 雪蘭莪
+    lv: Selanora
+    ceb: Selangor
+    yue_Hans: 雪兰莪州
+    ccp: "\U00011125\U00011128\U00011123\U0001111A\U00011134\U00011109\U0001112E\U00011122\U00011134"
+    eu: Selangor
+    yue: 雪蘭莪州
+    be: Селангор
+    mk: Селангор
+    'no': Selangor
+    jv: Selangor
+  comments:
+  type: state
+'11':
+  name: Terengganu
+  code: '11'
+  unofficial_names: Terengganu
+  geo:
+    latitude: 5.3116916
+    longitude: 103.1324154
+    min_latitude: 3.8808629
+    min_longitude: 102.379055
+    max_latitude: 5.964046199999999
+    max_longitude: 103.6905754
+  translations:
+    en: Terengganu
+    ar: ترغكانو
+    az: Trenqanu
+    bg: Теренггану
+    bn: তেরেঙ্গানু
+    ca: Terengganu
+    da: Terengganu
+    de: Terengganu
+    el: Τερενγκάνου
+    es: Terengganu
+    et: Terengganu osariik
+    fa: ترنگانو
+    fi: Terengganu
+    fr: Terengganu
+    gu: તેરેંગાનુ
+    he: טרנגנו
+    hi: तेरेंगानू
+    hu: Terengganu
+    id: Terengganu
+    it: Terengganu
+    ja: トレンガヌ州
+    kn: ತರೆಂಗ್ಗನು
+    ko: 트렝가누 주
+    lt: Terenganu
+    mr: तरेंगानू
+    ms: Terengganu
+    nb: Terengganu
+    nl: Terengganu
+    pl: Terengganu
+    pt: Terengganu
+    ro: Terengganu
+    ru: Тренгану
+    si: ටෙරෙන්ගානු
+    sv: Terengganu
+    ta: தரங்கானு
+    te: టెరెంగాను
+    th: รัฐตรังกานู
+    tr: Terengganu
+    uk: Теренггану
+    ur: تیرنگانو
+    vi: Terengganu
+    zh: 登嘉樓
+    lv: Terenganu
+    ceb: Terengganu
+    yue_Hans: 登嘉楼
+    jv: Terengganu
+    ccp: "\U00011111\U0001112C\U00011122\U0001112C\U0001111A\U00011134\U00011109\U0001111A\U0001110C\U00011134"
+    eu: Terengganu
+    yue: 登嘉樓
+    mk: Теренгану
+    'no': Terengganu
+    cs: Terengganu
+    ga: Terengganu
+  comments:
+  type: state
+'12':
+  name: Sabah
+  code: '12'
+  unofficial_names: Sabah
+  geo:
+    latitude: 5.978839799999999
+    longitude: 116.0753199
+    min_latitude: 4.102767
+    min_longitude: 115.341583
+    max_latitude: 7.362708199999999
+    max_longitude: 119.267502
+  translations:
+    en: Sabah
+    ar: صباح
+    az: Sabah
+    be: Сабах
+    bg: Сабах
+    bn: সাবাহ
+    ca: Sabah
+    cs: Sabah
+    da: Sabah
+    de: Sabah
+    el: Σαμπάχ
+    es: Sabah
+    fa: صباح
+    fi: Sabah
+    fr: Sabah
+    gu: સબાહ
+    he: סבה
+    hi: साबाह राज्य
+    hu: Sabah
+    hy: Սաբահ
+    id: Sabah
+    it: Sabah
+    ja: サバ州
+    ka: საბაჰი
+    kn: ಸಬಾಹ್
+    ko: 사바 주
+    lt: Sabahas
+    mr: साबा
+    ms: Sabah
+    nb: Sabah
+    nl: Sabah
+    pl: Sabah
+    pt: Sabá
+    ro: Sabah
+    ru: Сабах
+    si: සබාහ්
+    sv: Sabah
+    sw: Sabah
+    ta: சபா
+    te: సబా
+    th: รัฐซาบะฮ์
+    tr: Sabah
+    uk: Сабах
+    ur: صباح
+    vi: Sabah
+    zh: 沙巴
+    lv: Sabaha
+    ceb: Sabah (estado)
+    yue_Hans: 沙巴
+    jv: Sabah
+    ccp: "\U00011125\U0001111D\U00011126\U00011134"
+    eu: Sabah
+    kk: Сабах
+    ml: ഷബഹ്
+    yue: 沙巴
+    mk: Сабах
+    'no': Sabah
+    gl: Sabah
+    my: ဆာဘား
+    sr: Сабах
+    sr_Latn: Sabah
+  comments:
+  type: state
+'13':
+  name: Sarawak
+  code: '13'
+  unofficial_names: Sarawak
+  geo:
+    latitude: 1.5532783
+    longitude: 110.3592127
+    min_latitude: 0.8640901
+    min_longitude: 109.5390388
+    max_latitude: 4.9815669
+    max_longitude: 115.68341
+  translations:
+    en: Sarawak
+    ar: سراوق
+    az: Saravak
+    be: Саравак
+    bg: Саравак
+    bn: সারাওয়াক
+    ca: Sarawak
+    cs: Sarawak
+    da: Sarawak
+    de: Sarawak
+    el: Σαραγουάκ
+    es: Sarawak
+    fa: ساراواک
+    fi: Sarawak
+    fr: Sarawak
+    gu: સારાવક
+    he: סראוואק
+    hi: सारावाक
+    hu: Sarawak
+    id: Serawak
+    it: Sarawak
+    ja: サラワク州
+    kn: ಸರವಾಕ್
+    ko: 사라왁 주
+    lt: Saravakas
+    mr: सारावाक
+    ms: Sarawak
+    nb: Sarawak
+    nl: Sarawak
+    pl: Sarawak
+    pt: Sarawak
+    ro: Sarawak
+    ru: Саравак
+    si: සරවක්
+    sr: Саравак
+    sv: Sarawak
+    sw: Sarawak
+    ta: சரவாக்
+    te: సరావక్
+    th: รัฐซาราวะก์
+    tr: Saravak
+    uk: Саравак
+    ur: سراواک
+    vi: Sarawak
+    zh: 砂拉越
+    lv: Saravaka
+    ceb: Sarawak
+    sr_Latn: Saravak
+    yue_Hans: 沙捞越
+    jv: Sarawak
+    ccp: "\U00011125\U00011122\U00011124\U00011107\U00011134"
+    hy: Սարավակ
+    sk: Sarawak
+    eu: Sarawak
+    et: Sarawak
+    ml: സാരവാക്ക്
+    yue: 沙撈越
+    my: ဆာရာဝပ်နယ်
+    mk: Саравак
+    'no': Sarawak
+    gl: Sarawak
+  comments:
+  type: state
+'14':
+  name: Wilayah Persekutuan Kuala Lumpur
+  code: '14'
+  unofficial_names: Wilayah Persekutuan Kuala Lumpur
+  geo:
+    latitude: 3.1569486
+    longitude: 101.712303
+    min_latitude: 3.0336329
+    min_longitude: 101.61545
+    max_latitude: 3.2433789
+    max_longitude: 101.758529
+  translations:
+    en: Kuala Lumpur
+    af: Kuala Lumpur
+    am: ኩዋላ ሉምፑር
+    ar: كوالالمبور
+    as: কুয়ালা লামপুৰ
+    az: Kuala Lumpur
+    be: Горад Куала-Лумпур
+    bg: Куала Лумпур
+    bn: কুয়ালালামপুর
+    ca: Kuala Lumpur
+    cs: Kuala Lumpur
+    da: Kuala Lumpur
+    de: Kuala Lumpur
+    el: Κουάλα Λουμπούρ
+    es: Kuala Lumpur
+    et: Kuala Lumpur
+    eu: Kuala Lumpur
+    fa: کوالالامپور
+    fi: Kuala Lumpur
+    fr: Kuala Lumpur
+    gl: Kuala Lumpur
+    gu: કુઆલા લંપુર
+    he: קואלה לומפור
+    hi: कुआ लालम्पुर
+    hr: Kuala Lumpur
+    hu: Kuala Lumpur
+    hy: Կուալա Լումպուր
+    id: Kuala Lumpur
+    is: Kúala Lúmpúr
+    it: Kuala Lumpur
+    ja: クアラルンプール
+    ka: კუალა-ლუმპური
+    km: គូឡាឡាំពួ
+    kn: ಕೌಲಾಲಂಪುರ್
+    ko: 쿠알라룸푸르
+    lo: ກົວລາລໍາເປີ
+    lt: Kvala Lumpūras
+    lv: Kualalumpura
+    ml: കോലാലമ്പൂർ
+    mn: Куала Лумпур
+    mr: क्वालालंपूर
+    ms: Kuala Lumpur
+    nb: Kuala Lumpur
+    ne: क्वालालम्पुर
+    nl: Kuala Lumpur
+    or: କୁଆଲାଲୁମ୍ପୁର
+    pl: Kuala Lumpur
+    ps: کوالالامپور
+    pt: Kuala Lumpur
+    ro: Kuala Lumpur
+    ru: Куала-Лумпур
+    si: ක්වාලාලම්පූර්
+    sk: Kuala Lumpur
+    sl: Kuala Lumpur
+    sr: Куала Лумпур
+    sv: Kuala Lumpur
+    sw: Kuala Lumpur
+    ta: கோலாலம்பூர்
+    te: క్వాలాలంపూర్
+    th: กัวลาลัมเปอร์
+    tk: Kuala Lumpur
+    tr: Kuala Lumpur
+    uk: Куала-Лумпур
+    ur: کوالالمپور
+    vi: Kuala Lumpur
+    zh: 吉隆坡
+    cy: Kuala Lumpur
+    ceb: Kuala Lumpur (estado)
+    sr_Latn: Kuala Lumpur
+    yue_Hans: 吉隆坡
+    jv: Kuala Lumpur
+    sq: Kuala Lumpur
+    ccp: "\U00011107\U0001112A\U00011120\U00011123 \U00011123\U0001112A\U0001111F\U00011134\U0001111B\U0001112A\U00011122\U00011134"
+    sd: ڪوالالمپور
+    ga: Kuala Lumpur
+    ky: Куала-Лумпур
+    ha: Kuala Lumpur
+    so: Kuwala Lumbuur
+    pa: ਕੁਆਲਾ ਲਮਪੁਰ
+    kk: Куала Лумпур
+    yue: 吉隆坡
+    my: ကွာလာလမ်ပူမြို့
+    yo: Kuala Lumpur
+    uz: Kuala Lumpur
+    bs: Kuala Lumpur
+    mk: Куала Лумпур
+    ha_NE: Kuala Lumpur
+    'no': Kuala Lumpur
+    yo_BJ: Kuala Lumpur
+  comments:
+  type: federal_territory
+'15':
+  name: Wilayah Persekutuan Labuan
+  code: '15'
+  unofficial_names: Wilayah Persekutuan Labuan
+  geo:
+    latitude: 5.2770169
+    longitude: 115.2435769
+    min_latitude: 5.2178242
+    min_longitude: 115.1209787
+    max_latitude: 5.3877618
+    max_longitude: 115.3263058
+  translations:
+    en: Labuan
+    ar: لابوان
+    be: Лабуан
+    bg: Лабуан
+    bn: লাবুয়ান
+    ca: Labuan
+    cs: Labuan
+    da: Labuan
+    de: Labuan
+    el: Λαμπουάν
+    es: Labuan
+    fa: لابوآن
+    fi: Labuan
+    fr: Labuan
+    gu: લાબુઆન
+    he: לבואן
+    hi: लबूअन
+    id: Labuan
+    it: Labuan
+    ja: ラブアン
+    ka: ლაბუანი
+    kn: ಲಬುವಾನ್
+    ko: 라부안
+    mr: लाबुआन
+    ms: Labuan
+    nb: Labuan
+    nl: Labuan
+    pl: Labuan
+    pt: Labuan
+    ru: Лабуан
+    si: ලබුවාන්
+    sv: Labuan
+    ta: லாபுவான்
+    te: లాబువాన్
+    th: ลาบวน
+    tr: Labuan
+    uk: Лабуан
+    ur: لابوان
+    vi: Labuan
+    zh: 纳闽
+    lv: Labuana
+    ceb: Labuan
+    lt: Labuanas
+    sw: Labuan
+    yue_Hans: 纳闵
+    ccp: "\U00011123\U0001111D\U0001112A\U00011120\U0001111A\U00011134"
+    eu: Labuan
+    yue: 納閔
+    az: Labuan
+    mk: Лабуан
+    'no': Labuan
+  comments:
+  type: federal_territory
+'16':
+  name: Wilayah Persekutuan Putrajaya
+  code: '16'
+  unofficial_names: Wilayah Persekutuan Putrajaya
+  geo:
+    latitude: 2.9353556
+    longitude: 101.6912831
+    min_latitude: 2.8762049
+    min_longitude: 101.6600299
+    max_latitude: 2.9765179
+    max_longitude: 101.7328308
+  translations:
+    en: Putrajaya
+    af: Putrajaya
+    ar: بوتراجاي
+    az: Putracaya
+    bg: Путраджая
+    bn: পুত্রজায়া
+    ca: Putrajaya
+    cs: Putrajaya
+    da: Putrajaya
+    de: Putrajaya
+    el: Πουτρατζάγια
+    es: Putrajaya
+    et: Putrajaya
+    eu: Putrajaya
+    fa: پوتراجایا
+    fi: Putrajaya
+    fr: Putrajaya
+    gl: Putrajaya
+    gu: પુટ્રાજયા
+    he: פוטרג׳איה
+    hi: पुत्रजय
+    hr: Putrajaya
+    hu: Putrajaya
+    id: Putrajaya
+    is: Putrajaya
+    it: Putrajaya
+    ja: プトラジャヤ
+    ka: პუტრაჯაია
+    kn: ಪುತ್ರಜಯ
+    ko: 푸트라자야
+    lv: Putradžaja
+    mr: पुत्रजय
+    ms: Putrajaya
+    nb: Putrajaya
+    nl: Putrajaya
+    pl: Putrajaya
+    pt: Putrajaya
+    ro: Putrajaya
+    ru: Путраджая
+    si: පුත්‍රජයා
+    sk: Putrajaya
+    sl: Putrajaya
+    sv: Putrajaya
+    sw: Putrajaya
+    ta: புத்ராஜாயா
+    te: పుత్రాజయ
+    th: ปูตราจายา
+    tr: Putrajaya
+    uk: Путраджая
+    ur: پتراجایا
+    vi: Putrajaya
+    zh: 布城
+    zu: Putrajaya
+    cy: Putrajaya
+    ceb: Putrajaya
+    lt: Putradžaja
+    yue_Hans: 布城
+    jv: Putrajaya
+    ccp: "\U0001111B\U0001112A\U00011116\U00011133\U00011122\U00011127\U0001110E\U00011127\U00011120\U00011134"
+    ga: Putrajaya
+    hy: Պուտրաջայա
+    ky: Путражайя
+    pa: ਪੁੱਤਰਜੈ
+    ml: പുത്രജയ
+    yue: 布城
+    mk: Путраџаја
+    'no': Putrajaya
+    km: ពុត្រាចាយ៉ា
+    sr: Путраџаја
+    sr_Latn: Putradžaja
+  comments:
+  type: federal_territory

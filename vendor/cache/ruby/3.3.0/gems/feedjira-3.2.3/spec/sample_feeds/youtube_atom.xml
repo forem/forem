@@ -1,0 +1,395 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+ <link rel="self" href="http://www.youtube.com/feeds/videos.xml?user=google"/>
+ <id>yt:channel:UCK8sQmJBp8GCxrOtXWBpyEA</id>
+ <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+ <title>Google</title>
+ <link rel="alternate" href="http://www.youtube.com/user/Google"/>
+ <author>
+  <name>Google Author</name>
+  <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+ </author>
+ <published>2005-09-18T22:37:10+00:00</published>
+ <updated>2015-05-04T00:01:27+00:00</updated>
+ <entry>
+  <id>yt:video:5shykyfmb28</id>
+  <yt:videoId>5shykyfmb28</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>The Google app: Questions Title</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=5shykyfmb28"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-05-04T00:01:27+00:00</published>
+  <updated>2015-05-13T17:38:30+00:00</updated>
+  <media:group>
+   <media:title>The Google app: Questions</media:title>
+   <media:content url="https://www.youtube.com/v/5shykyfmb28?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/5shykyfmb28/hqdefault.jpg" width="480" height="360"/>
+   <media:description>A question is the most powerful force in the world. It can start you on an adventure or spark a connection. See where a question can take you. The Google app is available on iOS and Android. Download the app here: http://www.google.com/search/about/download</media:description>
+   <media:community>
+    <media:starRating count="3546" average="4.79" min="1" max="5"/>
+    <media:statistics views="251497"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:xfFHnBQ6nQg</id>
+  <yt:videoId>xfFHnBQ6nQg</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Project Fi: Innovating in connectivity and communication</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=xfFHnBQ6nQg"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-04-23T15:29:38+00:00</published>
+  <updated>2015-05-13T18:32:00+00:00</updated>
+  <media:group>
+   <media:title>Project Fi: Innovating in connectivity and communication</media:title>
+   <media:content url="https://www.youtube.com/v/xfFHnBQ6nQg?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/xfFHnBQ6nQg/hqdefault.jpg" width="480" height="360"/>
+   <media:description>A behind-the-scenes look at Project Fi. Find out more at fi.google.com.</media:description>
+   <media:community>
+    <media:starRating count="3915" average="4.77" min="1" max="5"/>
+    <media:statistics views="498948"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:faacIELjUeI</id>
+  <yt:videoId>faacIELjUeI</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Project Fi: A new way to say hello</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=faacIELjUeI"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-04-23T15:29:11+00:00</published>
+  <updated>2015-05-13T17:51:58+00:00</updated>
+  <media:group>
+   <media:title>Project Fi: A new way to say hello</media:title>
+   <media:content url="https://www.youtube.com/v/faacIELjUeI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/faacIELjUeI/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Introducing Project Fi, a new way to say hello. Find out more at fi.google.com.</media:description>
+   <media:community>
+    <media:starRating count="2963" average="4.83" min="1" max="5"/>
+    <media:statistics views="204324"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:hydLZJXG3Tk</id>
+  <yt:videoId>hydLZJXG3Tk</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Smartbox by Inbox: the mailbox of tomorrow, today</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=hydLZJXG3Tk"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-04-01T01:00:28+00:00</published>
+  <updated>2015-05-13T17:41:04+00:00</updated>
+  <media:group>
+   <media:title>Smartbox by Inbox: the mailbox of tomorrow, today</media:title>
+   <media:content url="https://www.youtube.com/v/hydLZJXG3Tk?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/hydLZJXG3Tk/hqdefault.jpg" width="480" height="360"/>
+   <media:description>We’re excited to introduce Smartbox—a better, smarter mailbox that fuses physical mail with everything you love about the electronic kind.
+
+Smartbox isn't real. But Inbox by Gmail is. Email inbox@google.com from an @gmail.com address to request an invite.
+
+https://www.google.com/inbox</media:description>
+   <media:community>
+    <media:starRating count="13463" average="4.75" min="1" max="5"/>
+    <media:statistics views="1376473"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:1lxNpMHhJFA</id>
+  <yt:videoId>1lxNpMHhJFA</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>The Google app: Windy</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=1lxNpMHhJFA"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-03-18T19:27:58+00:00</published>
+  <updated>2015-05-13T06:50:30+00:00</updated>
+  <media:group>
+   <media:title>The Google app: Windy</media:title>
+   <media:content url="https://www.youtube.com/v/1lxNpMHhJFA?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/1lxNpMHhJFA/hqdefault.jpg" width="480" height="360"/>
+   <media:description>“Ok Google, how windy is it right now?”
+Talk to Google to get answers, find stuff nearby, and get things done. The Google app. Available on iOS and Android. Go to g.co/googleapp on your mobile browser to download.</media:description>
+   <media:community>
+    <media:starRating count="2211" average="4.42" min="1" max="5"/>
+    <media:statistics views="204663"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:PRU2ShMzQRg</id>
+  <yt:videoId>PRU2ShMzQRg</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Building Bridges with Pope Francis and Students Over the Web</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=PRU2ShMzQRg"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-03-12T16:33:46+00:00</published>
+  <updated>2015-05-13T13:58:33+00:00</updated>
+  <media:group>
+   <media:title>Building Bridges with Pope Francis and Students Over the Web</media:title>
+   <media:content url="https://www.youtube.com/v/PRU2ShMzQRg?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/PRU2ShMzQRg/hqdefault.jpg" width="480" height="360"/>
+   <media:description>On February 5th, Pope Francis hosted a Google+ Hangout on how technology can help improve the education of students with disabilities. In the Hangout, which was led by Scholas Occurrentes, The Pope was joined by students from around the world including India, Spain, Brazil, and the United States.
+
+Watch the full Hangout here: http://goo.gl/f3ZpkD</media:description>
+   <media:community>
+    <media:starRating count="3187" average="4.22" min="1" max="5"/>
+    <media:statistics views="914420"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:t4vkQAByALc</id>
+  <yt:videoId>t4vkQAByALc</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Introducing Google Calendar for iPhone</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=t4vkQAByALc"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-03-10T17:26:23+00:00</published>
+  <updated>2015-05-13T07:37:22+00:00</updated>
+  <media:group>
+   <media:title>Introducing Google Calendar for iPhone</media:title>
+   <media:content url="https://www.youtube.com/v/t4vkQAByALc?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/t4vkQAByALc/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Meet Google Calendar for iPhone. It’s designed to be a helpful assistant, so you can spend less time managing your day, and more time enjoying it.
+
+Learn more at http://g.co/calendar</media:description>
+   <media:community>
+    <media:starRating count="3294" average="4.14" min="1" max="5"/>
+    <media:statistics views="915335"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:C57obdJnxQo</id>
+  <yt:videoId>C57obdJnxQo</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Student Becomes Teacher - Google Compare</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=C57obdJnxQo"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-03-05T18:10:24+00:00</published>
+  <updated>2015-05-13T15:44:10+00:00</updated>
+  <media:group>
+   <media:title>Student Becomes Teacher - Google Compare</media:title>
+   <media:content url="https://www.youtube.com/v/C57obdJnxQo?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i4.ytimg.com/vi/C57obdJnxQo/hqdefault.jpg" width="480" height="360"/>
+   <media:description>When two generations come together, each learns something from the other. In this heartfelt story, when grandpa and granddaughter spend time together fixing up an old classic car they both learn something new. The lesson for all of us is to spend less time online and more time on the road; spend less time looking for car insurance and more time doing the things you like with the people you love, with help from Google Compare.
+
+See how you can compare multiple car insurance quotes easily on your mobile, desktop, or tablet at www.google.com/compare</media:description>
+   <media:community>
+    <media:starRating count="1348" average="4.66" min="1" max="5"/>
+    <media:statistics views="86705"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:z3v4rIG8kQA</id>
+  <yt:videoId>z3v4rIG8kQA</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Google's Proposal for North Bayshore</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=z3v4rIG8kQA"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-02-27T18:54:22+00:00</published>
+  <updated>2015-05-13T18:43:42+00:00</updated>
+  <media:group>
+   <media:title>Google's Proposal for North Bayshore</media:title>
+   <media:content url="https://www.youtube.com/v/z3v4rIG8kQA?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/z3v4rIG8kQA/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Vice President of Real Estate Dave Radcliffe and architects Thomas Heatherwick and Bjarke Ingels discuss our proposed Master Plan for our new campus in Mountain View, California. With our proposal, our focus is on creating space for people, nature and ideas to thrive.</media:description>
+   <media:community>
+    <media:starRating count="8893" average="4.75" min="1" max="5"/>
+    <media:statistics views="1180615"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:RyRbsmmRKnE</id>
+  <yt:videoId>RyRbsmmRKnE</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>HolaGoogle: Soy Kary on Google+ Photos</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=RyRbsmmRKnE"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2015-02-02T22:15:17+00:00</published>
+  <updated>2015-05-13T03:00:34+00:00</updated>
+  <media:group>
+   <media:title>HolaGoogle: Soy Kary on Google+ Photos</media:title>
+   <media:content url="https://www.youtube.com/v/RyRbsmmRKnE?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/RyRbsmmRKnE/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Kary Pérez chose travel over the traditional quinceañera. From monuments in Istanbul to cafes in Madrid, Kary's story continues as she explores the world around her. Learn how she uses Google+ Photos.
+
+Kary’s story is featured on Holagoogle.soy, which aims to bring the best of Google to the Hispanic community in a culturally relevant way. The site highlights our users and the cool things they are doing with Google products. Visit holagoogle.soy to discover other Latinos doing cool things with Google products and share your own story.</media:description>
+   <media:community>
+    <media:starRating count="1438" average="4.37" min="1" max="5"/>
+    <media:statistics views="91894"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:DVwHCGAr_OE</id>
+  <yt:videoId>DVwHCGAr_OE</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Google - Year in Search 2014</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=DVwHCGAr_OE"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2014-12-16T06:57:19+00:00</published>
+  <updated>2015-05-13T16:44:47+00:00</updated>
+  <media:group>
+   <media:title>Google - Year in Search 2014</media:title>
+   <media:content url="https://www.youtube.com/v/DVwHCGAr_OE?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/DVwHCGAr_OE/hqdefault.jpg" width="480" height="360"/>
+   <media:description>In 2014 we searched trillions of times. What do these searches say about us? Explore the Year in Search http://www.google.com/2014 and follow the conversation on #YearInSearch
+
+Watch past Year in Search videos: http://goo.gl/LXA4nQ
+
+Soundtrack is ‘Divinity’, by Porter Robinson
+Porter Robinon's new album 'Worlds' is available on Google Play: http://goo.gl/q6ljz4
+
+Nicky Minaj's new album 'The Pinkprint' is available on Google Play: http://goo.gl/utOZxd
+HBO’s Game of Thrones is available on Google Play (not all countries are eligible): http://goo.gl/xOgofr
+
+Credits:
+Two people hugging: Dida Mulder
+Boy with 3D Printed hand: E-NABLE/RIT University News/RIT MAGIC Center
+Ebola doctors and patients: Plan International
+Perth passenger train footage: vision courtesy of the Public Transport Authority of Western Australia
+Malala Yousafzai collecting the Nobel Peace Prize: Nobel Media AB
+Bill Nye's voice over: Big Think. Original video: http://goo.gl/aK9yDI
+Follow Big Think on YouTube: http://goo.gl/CPTsV5</media:description>
+   <media:community>
+    <media:starRating count="101801" average="4.68" min="1" max="5"/>
+    <media:statistics views="32470726"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:8IP7Y5B2-Io</id>
+  <yt:videoId>8IP7Y5B2-Io</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>.SOY, un dominio para Latinos</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=8IP7Y5B2-Io"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2014-12-04T01:35:21+00:00</published>
+  <updated>2015-05-13T15:11:37+00:00</updated>
+  <media:group>
+   <media:title>.SOY, un dominio para Latinos</media:title>
+   <media:content url="https://www.youtube.com/v/8IP7Y5B2-Io?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/8IP7Y5B2-Io/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Presentando .SOY, un nuevo dominio para la comunidad latina. La web está creciendo y .SOY es una manera nueva para expresarte en línea. Para tu sitio web para tu arte, tu negocio o tus ideas -- utiliza .SOY. Visita iam.soy para conseguir tu propio dominio hoy mismo.</media:description>
+   <media:community>
+    <media:starRating count="1522" average="3.90" min="1" max="5"/>
+    <media:statistics views="226952"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:ayFAQ2OoJaA</id>
+  <yt:videoId>ayFAQ2OoJaA</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Meet your new Inbox</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=ayFAQ2OoJaA"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2014-11-19T18:45:37+00:00</published>
+  <updated>2015-05-13T18:24:06+00:00</updated>
+  <media:group>
+   <media:title>Meet your new Inbox</media:title>
+   <media:content url="https://www.youtube.com/v/ayFAQ2OoJaA?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/ayFAQ2OoJaA/hqdefault.jpg" width="480" height="360"/>
+   <media:description>Welcome to the inbox that works for you. Learn about the key features of Inbox by Gmail to help you get started.</media:description>
+   <media:community>
+    <media:starRating count="26688" average="4.81" min="1" max="5"/>
+    <media:statistics views="2068228"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:otCe903imh0</id>
+  <yt:videoId>otCe903imh0</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Google Hindi Input</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=otCe903imh0"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2014-11-14T22:44:47+00:00</published>
+  <updated>2015-05-13T14:50:21+00:00</updated>
+  <media:group>
+   <media:title>Google Hindi Input</media:title>
+   <media:content url="https://www.youtube.com/v/otCe903imh0?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i4.ytimg.com/vi/otCe903imh0/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This video introduces new features of Google Hindi Input, including material design, Hinglish suggestion, full-screen handwriting etc.
+
+Download Google Hindi input at:
+https://play.google.com/store/apps/details?id=com.google.android.apps.inputmethod.hindi&amp;hl=en</media:description>
+   <media:community>
+    <media:starRating count="1586" average="3.83" min="1" max="5"/>
+    <media:statistics views="237388"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:8ztbpW3THmI</id>
+  <yt:videoId>8ztbpW3THmI</yt:videoId>
+  <yt:channelId>UCK8sQmJBp8GCxrOtXWBpyEA</yt:channelId>
+  <title>Veterans Make Great Googlers.  Find your team: Specialists</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=8ztbpW3THmI"/>
+  <author>
+   <name>Google</name>
+   <uri>http://www.youtube.com/channel/UCK8sQmJBp8GCxrOtXWBpyEA</uri>
+  </author>
+  <published>2014-11-11T17:25:52+00:00</published>
+  <updated>2015-05-12T16:22:28+00:00</updated>
+  <media:group>
+   <media:title>Veterans Make Great Googlers.  Find your team: Specialists</media:title>
+   <media:content url="https://www.youtube.com/v/8ztbpW3THmI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/8ztbpW3THmI/hqdefault.jpg" width="480" height="360"/>
+   <media:description>There are many departments at Google that enable our engineering and sales organizations to thrive. Be one of the specialists at Google who plays a vital role in keeping our business running, including hiring, legal, finance and security.
+
+http://www.google.com/careers/veterans</media:description>
+   <media:community>
+    <media:starRating count="592" average="3.97" min="1" max="5"/>
+    <media:statistics views="61469"/>
+   </media:community>
+  </media:group>
+ </entry>
+</feed>

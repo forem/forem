@@ -1,0 +1,13 @@
+function Verb-Noun
+{
+    <#
+    .SYNOPSIS
+    Tells you what it does
+
+    .DESCRIPTION
+    Tells you what it does with more detail.
+    #>
+    param ([string]$Name, [string]$Extension = "txt", [string]$foo="bar")
+    $name = $name + "." + $extension
+    $name
+}

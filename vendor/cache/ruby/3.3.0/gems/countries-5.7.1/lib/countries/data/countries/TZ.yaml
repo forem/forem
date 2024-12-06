@@ -1,0 +1,53 @@
+---
+TZ:
+  alpha2: TZ
+  alpha3: TZA
+  continent: Africa
+  country_code: '255'
+  currency_code: TZS
+  distance_unit: KM
+  gec: TZ
+  geo:
+    latitude: -6.369028
+    longitude: 34.888822
+    max_latitude: -0.9843968000000001
+    max_longitude: 40.6398
+    min_latitude: -11.7612539
+    min_longitude: 29.34
+    bounds:
+      northeast:
+        lat: -0.9843968000000001
+        lng: 40.6398
+      southwest:
+        lat: -11.7612539
+        lng: 29.34
+  international_prefix: '000'
+  ioc: TAN
+  iso_long_name: The United Republic of Tanzania
+  iso_short_name: Tanzania, United Republic of
+  languages_official:
+  - sw
+  - en
+  languages_spoken:
+  - sw
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Tanzanian
+  number: '834'
+  postal_code: true
+  postal_code_format: "\\d{4,5}"
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: TZ
+  unofficial_names:
+  - Tanzania
+  - Tansania
+  - Tanzanie
+  - タンザニア
+  - Tanzania United Republic
+  world_region: EMEA

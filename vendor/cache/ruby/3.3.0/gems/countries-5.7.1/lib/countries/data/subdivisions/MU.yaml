@@ -1,0 +1,741 @@
+---
+AG:
+  name: Agalega Islands
+  code: AG
+  unofficial_names: Agalega Islands
+  geo:
+    latitude: -10.4681988
+    longitude: 56.690672
+    min_latitude: -10.4908943
+    min_longitude: 56.58613399999999
+    max_latitude: -10.343819
+    max_longitude: 56.7038727
+  translations:
+    en: Agaléga
+    ar: أغاليغا
+    be: Архіпелаг Агалега
+    bn: আগালেগা
+    ca: Agalega
+    da: Agaléga
+    de: Agalega-Inseln
+    el: Αγκαλέγκα
+    es: Islas Agalega
+    et: Agalega
+    fa: جزایر آگالگا
+    fi: Agaléga
+    fr: Agaléga
+    gl: Agalega
+    gu: અગાલેગા
+    hi: अपालेगा
+    id: Agaléga
+    it: Agalega
+    ja: アガレガ諸島
+    ka: აგალეგა
+    kn: ಅಗಾಲೆಗಾ
+    ko: 아갈레가 제도
+    lt: Agalega
+    mr: अगालेगा
+    ms: Agalega
+    nb: Agalegaøyene
+    nl: Agalega-eilanden
+    pl: Wyspy Agalega
+    pt: Agalega
+    ro: Insulele Agalega
+    ru: Агалега
+    si: අගලේගා
+    sr: Агалега острва
+    sv: Agalega
+    sw: Agalega
+    ta: அகலேகா
+    te: అగాలెగా
+    th: อกาเลก้า
+    tr: Agaléga Adaları
+    uk: Агалега
+    ur: آگالگا
+    vi: Agaléga
+    zh: 阿加萊加群島
+    lv: Agalega
+    ceb: Agalega Islands
+    yo_BJ: Àwɔn Erékùshù Agalega
+    sr_Latn: Agalega ostrva
+    yue_Hans: 阿加莱加群岛
+    ccp: "\U00011103\U00011109\U00011123\U0001112C\U00011109"
+    cs: Agalegské ostrovy
+    yue: 阿加萊加群島
+    yo: Àwọn Erékùṣù Agalega
+    'no': Agalegaøyene
+    eu: Agaléga
+    hy: Ագալեգա
+    ps: آګالګا ټاپوګان
+  comments:
+  type: dependency
+BL:
+  name: Black River
+  code: BL
+  unofficial_names: Black River
+  geo:
+    latitude: -20.34756
+    longitude: 57.3651898
+    min_latitude: -20.3596977
+    min_longitude: 57.3608296
+    max_latitude: -20.3339857
+    max_longitude: 57.3702022
+  translations:
+    en: Rivière Noire
+    ar: النهر الأسود
+    bn: রিভেরি নয়রে জেলা
+    ca: Rivière Noire
+    da: Riviere Noire District
+    de: Black River
+    el: Μπλακ Ρίβερ
+    es: Distrito de Black River
+    fi: Rivière Noiren kaupunginosa
+    fr: Rivière Noire
+    gu: રિવિએર નોઇર જિલ્લો
+    hi: रिवेयर नोयर जिला
+    id: Distrik Rivière Noire
+    it: Distretto di Black River
+    ja: ブラックリバー県
+    ka: რივერ-ნუარი
+    kn: ರಿವಿಯರ್ ನೂರ್ ಜಿಲ್ಲೆ
+    ko: 블랙리버 구
+    lt: Blek Riverio rajonas
+    mr: रिव्हिएर नोयर जिल्हा
+    ms: Riviere Noire District
+    nb: Black River
+    nl: Black River
+    pl: Black River
+    pt: Black River
+    ro: Districtul Black River
+    ru: Ривьер-Нуар
+    si: රිවයිරේ නොයිරේ දිස්ත්‍රික්කය
+    sr: Блек Ривер Маурицијус
+    sv: Black River
+    ta: றிவைரே நோயிரே மாவட்டம்
+    te: రివియర్ నోయర్ జిల్లా
+    th: เขตริเวียเรนัวร์
+    tr: Black River Bölgesi
+    ur: ریویر نوار ضلع
+    vi: Quận Rivière Noire
+    lv: Blekriveras distrikts
+    ceb: Black River District
+    sr_Latn: Blek River Mauricijus
+    zh: 黑河區
+    yue_Hans: 黑河区
+    jv: Black River
+    ccp: "\U00011122\U00011128\U0001111E\U00011128\U00011120\U00011122\U00011134 \U0001111A\U00011130\U00011120\U00011122\U00011134"
+    uk: Район Рівʼер-Нуар
+    yue: 黑河區
+    'no': Black River
+    af: Rivière Noire-distrik
+    fa: ناحیه ریویر نوآیر
+  comments:
+  type: district
+CC:
+  name: Cargados Carajos Shoals [Saint Brandon Islands]
+  code: CC
+  unofficial_names: Cargados Carajos Shoals [Saint Brandon Islands]
+  geo:
+    latitude: -16.6333333
+    longitude: 59.6333333
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Cargados Carajos
+    ar: كارغادوس كارايوس
+    be: Каргадас-Карахас
+    bg: Каргадос-Карахос
+    bn: কার্গাডোস কারাজুস
+    ca: Cargados Carajos
+    cs: Cargados Carajos
+    da: Cargados Carajos
+    de: Cargados-Carajos-Inseln
+    el: Καργκάντος Καράτζος (Σαίντ Μπράντον)
+    es: Cargados Carajos
+    et: Cargados Carajos
+    fi: Cargados Carajos
+    fr: Saint-Brandon
+    gl: Cargados Carajos
+    gu: કાર્ગાડોસ કારાજોસ
+    hi: कार्गाडोस काराओस
+    id: Cargados Carajos
+    it: Cargados Carajos
+    ja: カルガドス・カラホス諸島
+    ka: კარგადოს-კარახოსი
+    kn: ಕಾರ್ಗಡೋಸ್ ಕ್ಯಾರಾಜೊಸ್
+    ko: 카르가도스 카라호스 제도
+    lt: Kargados Karachos
+    mr: कार्गाडो कॅरजोस
+    ms: Cargados Carajos
+    nb: Cargados Carajos
+    nl: Cargados Carajos
+    pl: Cargados Carajos
+    pt: Cargados Carajos
+    ro: Cargados Carajos
+    ru: Каргадос-Карахос
+    si: කාර්ගඩොස් කරජෝස්
+    sr: Каргадос Карахос
+    sv: Cargados Carajos
+    sw: Cargados Carajos
+    ta: கார்கடோஸ் கராஜொஸ்
+    te: కార్గడోస్ కారాజోస్
+    th: คาร์กาดอส คาราจอส
+    tr: Cargados-Carajos Adaları
+    ur: سینٹ برینڈن
+    vi: Cargados Carajos
+    lv: Sentbrendona salas
+    sr_Latn: Kargados Karahos
+    zh: 卡加多斯-卡拉若斯群岛
+    ccp: "\U00011107\U00011122\U00011134\U00011109\U00011113\U0001112E\U0001110C\U00011134
+      \U00011107\U00011122\U00011134\U0001110E\U0001112E\U0001110C\U00011134"
+    uk: Каргадос-Карахос
+    yo: Cargados Carajos
+    'no': Cargados Carajos
+    yo_BJ: Cargados Carajos
+    ceb: Cargados Carajos Shoals
+    eu: Cargados Carajos
+  comments:
+  type: dependency
+FL:
+  name: Flacq
+  code: FL
+  unofficial_names: Flacq
+  geo:
+    latitude: -20.2257836
+    longitude: 57.7119274
+    min_latitude: -20.3324041
+    min_longitude: 57.61632109999999
+    max_latitude: -20.107765
+    max_longitude: 57.800854
+  translations:
+    en: Flacq
+    ar: مقاطعة فلاسك
+    bn: ফ্লাকা জেলা
+    ca: Flacq
+    da: Flacq District
+    de: Flacq
+    el: Φλακ
+    es: Distrito de Flacq
+    fa: ناحیه فلاک
+    fi: Flacqin kaupunginosa
+    fr: Flacq
+    gu: ફ્લેક જિલ્લો
+    hi: फ्लैक जिला
+    id: Distrik Flacq
+    it: Flacq
+    ja: フラック県
+    ka: ფლაკი
+    kn: ಫ್ಲಾಕ್ ಡಿಸ್ಟ್ರಿಕ್ಟ್
+    ko: 플라크 구
+    lt: Flako rajonas
+    mr: फ्लॅक्स जिल्हा
+    ms: Flacq District
+    nb: Flacq
+    nl: Flacq
+    pl: Flacq
+    pt: Flacq
+    ro: Districtul Flacq
+    ru: Флак
+    si: ෆ්ලාක් දිස්ත්‍රික්කය
+    sr: Флак
+    sv: Flacq
+    ta: பிளக்கு மாவட்டம்
+    te: ఫ్లాక్ జిల్లా
+    th: เขตเฟลค
+    tr: Flacq Bölgesi
+    ur: فلاق ضلع
+    vi: Quận Flacq
+    lv: Flakas distrikts
+    ceb: Flacq District
+    sr_Latn: Flak
+    zh: 弗拉克區
+    yue_Hans: 弗拉克区
+    ccp: "\U0001111C\U00011133\U00011123\U00011107\U00011134"
+    he: מחוז פלאק
+    uk: Район Флак
+    yue: 弗拉克區
+    'no': Flacq
+  comments:
+  type: district
+GP:
+  name: Grand Port
+  code: GP
+  unofficial_names: Grand Port
+  geo:
+    latitude: -20.3851546
+    longitude: 57.6665742
+    min_latitude: -20.4977424
+    min_longitude: 57.520995
+    max_latitude: -20.313135
+    max_longitude: 57.77633979999999
+  translations:
+    en: Grand Port
+    ar: مقاطعة غراند بورت
+    bn: গ্র্যান্ড পোর্ট জেলা
+    da: Grand Port District
+    de: Grand Port
+    el: Γκραντ Πορτ
+    es: Distrito de Grand Port
+    fa: ناحیه گرند پورت
+    fi: Grand Portin kaupunginosa
+    fr: Grand Port
+    gu: ગ્રાન્ડ પોર્ટ જિલ્લો
+    hi: ग्रैंड पोर्ट जिला
+    id: Distrik Grand Port
+    it: Grand Port
+    ja: グラン・ポール県
+    ka: გრანდ-პორტი
+    kn: ಗ್ರ್ಯಾಂಡ್ ಪೋರ್ಟ್ ಜಿಲ್ಲೆ
+    ko: 그랑포르 구
+    lt: Gran Porto rajonas
+    mr: ग्रँड पोर्ट जिल्हा
+    ms: Grand Port District
+    nb: Grand Port
+    nl: Grand Port
+    pl: Grand Port
+    pt: Grand Port
+    ro: Districtul Grand Port
+    ru: Гранд-Порт
+    si: ග්‍රෑන්ඩ් පොර්ට් දිස්ත්‍රික්කය
+    sr: Гранд Порт
+    sv: Grand Port
+    ta: கிராண்ட் போர்ட் மாவட்டம்
+    te: గ్రాండ్ పోర్ట్ జిల్లా
+    th: แกรนด์ พอร์ท
+    tr: Grand Port Bölgesi
+    ur: گرینڈ پورٹ ضلع
+    vi: Quận Grand Port
+    lv: Granporas distrikts
+    ceb: Grand Port District
+    sr_Latn: Grand Port
+    zh: 大港區
+    yue_Hans: 大港区
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134 \U0001111B\U0001112E\U00011122\U00011134\U00011111\U00011134"
+    ml: ഗ്രാൻഡ് പോർട്ട് ജില്ല
+    uk: Район Гранд-Порт
+    yue: 大港區
+    'no': Grand Port
+    gl: Grand Port
+  comments:
+  type: district
+MO:
+  name: Moka
+  code: MO
+  unofficial_names: Moka
+  geo:
+    latitude: -20.219
+    longitude: 57.496
+    min_latitude: -20.2391669
+    min_longitude: 57.48081200000001
+    max_latitude: -20.2121464
+    max_longitude: 57.53708469999999
+  translations:
+    en: Moka
+    ar: مقاطعة موكا
+    bn: মকা জেলা
+    ca: Moka
+    da: Moka
+    de: Moka
+    el: Μόκα
+    es: Distrito de Moka
+    fa: ناحیه موکا
+    fi: Moka
+    fr: Moka
+    gu: મોકા જિલ્લો
+    hi: मोका जिला
+    id: Distrik Moka
+    it: Distretto di Moka
+    ja: モカ県
+    ka: მოკის ოლქი
+    kn: ಮೊಕಾ ಜಿಲ್ಲೆ
+    ko: 모카 구
+    lt: Mokos rajonas
+    mr: मोका जिल्हा
+    ms: Moka District
+    nb: Moka
+    nl: Moka
+    pl: Moka
+    pt: Moka
+    ro: Districtul Moka
+    ru: Мока
+    si: මොකා දිස්ත්‍රික්කය
+    sr: Мока Маурицијус
+    sv: Moka
+    ta: மோக்கா மாவட்டம்
+    te: మోకా జిల్లా
+    th: โมค่า
+    tr: Moka Bölgesi
+    ur: موکا ضلع
+    vi: Quận Moka
+    lv: Mokas distrikts
+    ceb: Moka District
+    sr_Latn: Moka Mauricijus
+    zh: 莫卡區
+    yue_Hans: 莫卡区
+    ccp: "\U0001111F\U0001112E\U00011107"
+    uk: Мока
+    yue: 莫卡區
+    'no': Moka
+  comments:
+  type: district
+PA:
+  name: Pamplemousses
+  code: PA
+  unofficial_names: Pamplemousses
+  geo:
+    latitude: -20.116667
+    longitude: 57.58333299999999
+    min_latitude: -20.1210344
+    min_longitude: 57.5670416
+    max_latitude: -20.0948687
+    max_longitude: 57.59561029999999
+  translations:
+    en: Pamplemousses
+    ar: منطقة بامبلموسز
+    bn: পামপ্লেমোসেস জেলা
+    ca: Pamplemousses
+    da: Pamplemousses
+    de: Pamplemousses
+    el: Παμπλεμούς
+    es: Distrito de Pamplemousses
+    fa: ناحیه پامپلموسس
+    fi: Pamplemoussesin kaupunginosa
+    fr: Pamplemousses
+    gu: પેમ્પલમાઉસેસ જિલ્લો
+    hi: पैम्पलमूसेस जिला
+    hr: Pamplemousses
+    id: Distrik Pamplemousses
+    it: Pamplemousses
+    ja: パンプルムース県
+    ka: პამპლემუსი
+    kn: ಪಂಪ್ಮೌಸಸ್ ಜಿಲ್ಲೆ
+    ko: 팜플레무스 구
+    lt: Pamplemuso rajonas
+    mr: पंपमामाउस जिल्हा
+    ms: Pamplemousses District
+    nb: Pamplemousses
+    nl: Pamplemousses
+    pl: Pamplemousses
+    pt: Pamplemousses
+    ro: Districtul Pamplemousses
+    ru: Памплемус
+    si: පැම්ප්ලේමුසෙස් දිස්ත්‍රික්කය
+    sv: Distrikt Pamplemousses
+    ta: பாம்பிளேமோவ்ஸ்செஸ் மாவட்டம்
+    te: పాంప్లిమోసెస్ జిల్లా
+    th: แพมเพิลมูสเซส
+    tr: Pamplemousses Bölgesi
+    ur: پامپلیموس ضلع
+    vi: Quận Pamplemousses
+    lv: Pamplmusas distrikts
+    ceb: Pamplemousses District
+    zh: 龐波慕斯區
+    yue_Hans: 庞波慕斯区
+    ccp: "\U0001111B\U0001111F\U00011134\U0001111B\U00011133\U00011123\U00011128\U0001111F\U0001112F\U00011125\U0001112C\U0001110C\U00011134"
+    uk: Район Памплемус
+    yue: 龐波慕斯區
+    'no': Pamplemousses
+    af: Pamplemousses-distrik
+  comments:
+  type: district
+PL:
+  name: Port Louis City
+  code: PL
+  unofficial_names: Port Louis City
+  geo:
+    latitude: -20.166667
+    longitude: 57.516667
+    min_latitude: -20.2016751
+    min_longitude: 57.42768760000001
+    max_latitude: -20.124287
+    max_longitude: 57.5659989
+  translations:
+    en: Port Louis District
+    da: Port Louis District
+    de: Port Louis
+    es: Distrito de Port Louis
+    fa: ناحیه پورت لوئیس
+    fr: Port Louis
+    gl: Port Louis
+    it: Distretto di Port Louis
+    ja: ポートルイス県
+    ka: პორტ-ლუის ოლქი
+    ko: 포트루이스 구
+    lt: Port Luiso rajonas
+    nb: Port Louis
+    nl: Port Louis
+    pl: Port Louis
+    pt: Port Louis
+    ro: Districtul Port Louis
+    ru: Порт-Луи
+    sv: Port Louis
+    ta: போர்ட் லூயிஸ் மாவட்டம்
+    tr: Port Louis ilçesi
+    ur: پورٹ لوئس ضلع
+    zh: 路易港區
+    yue_Hans: 路易港区
+    ccp: "\U0001111B\U0001112E\U00011122\U00011134\U00011111\U00011134 \U00011123\U0001112A\U00011103\U00011128\U0001110C\U00011134
+      \U0001110E\U0001112C\U00011123"
+    uk: Порт-Луї²
+    yue: 路易港區
+    'no': Port Louis
+    az: Port-Lui (rayon)
+    ca: Districte de Port Louis
+  comments:
+  type: district
+PW:
+  name: Plaines Wilhems
+  code: PW
+  unofficial_names: Plaines Wilhems
+  geo:
+    latitude: -20.3054872
+    longitude: 57.48535609999999
+    min_latitude: -20.4237189
+    min_longitude: 57.43777499999999
+    max_latitude: -20.187828
+    max_longitude: 57.5981641
+  translations:
+    en: Plaines Wilhems
+    ar: مقاطعة بلينز ويلهمز
+    bn: প্লেইন্স উইলহেম জেলা
+    ca: Plaines Wilhems
+    da: Plaines Wilhems District
+    de: Plaines Wilhems
+    el: Πλέινς Γουίλχεμς
+    es: Distrito de Plaines Wilhems
+    fa: ناحیه پلن ویلهم
+    fi: Plaines Wilhemsin kaupunginosa
+    fr: Plaines Wilhems
+    gu: પ્લેઇન્સ વિલહેમ્સ જિલ્લો
+    hi: प्लेन्स विल्हेम्स जिला
+    id: Distrik Plaines Wilhems
+    it: Plaines Wilhems
+    ja: プレーン・ウィルヘルム県
+    ka: პლენ-ვილემი
+    kn: ಪ್ಲೈನ್ಸ್ ವಿಲ್ಹೆಮ್ಸ್ ಜಿಲ್ಲೆ
+    ko: 플랭윌렐름 구
+    lt: Plen Vilemo rajonas
+    mr: प्लेन्स विल्हेम्स जिल्हा
+    ms: Plaines Wilhems District
+    nb: Plaines Wilhems
+    nl: Plaines Wilhems
+    pl: Plaines Wilhems
+    pt: Plaines Wilhems
+    ro: Districtul Plaines Wilhems
+    ru: Плен-Вилем
+    si: ප්ලේන්ස් විල්හෙම්ස් දිස්ත්‍රික්කය
+    sv: Plaines Wilhems
+    ta: பிலெய்ன்சு வில்ஹெம்சு மாவட்டம்
+    te: ప్లెయిన్స్ విల్హెమ్స్ జిల్లా
+    th: เขตเพลนส์ วิลเฮล์ม
+    tr: Plaines Wilhems Bölgesi
+    ur: پلیئن ویلیمز ضلع
+    vi: Quận Plaines Wilhems
+    lv: Plēnvilemsas distrikts
+    ceb: Plaines Wilhems District
+    zh: 威廉平原區
+    yue_Hans: 威廉平原区
+    ccp: "\U0001111B\U00011133\U00011123\U0001112D\U0001111A\U0001112C\U0001110C\U00011134
+      \U00011105\U0001112A\U00011103\U00011128\U00011123\U00011134\U00011126\U0001112C\U0001111F\U00011134"
+    uk: Район Плен-Вілем
+    yue: 威廉平原區
+    'no': Plaines Wilhems
+    eu: Plaines Wilhems
+    he: מחוז פליינס וילהלמס
+  comments:
+  type: district
+RO:
+  name: Rodrigues Island
+  code: RO
+  unofficial_names: Rodrigues Island
+  geo:
+    latitude: -19.7245385
+    longitude: 63.4272185
+    min_latitude: -19.7743364
+    min_longitude: 63.328886
+    max_latitude: -19.6657049
+    max_longitude: 63.5035945
+  translations:
+    en: Rodrigues
+    af: Rodrigues
+    ar: رودريغوس
+    be: Востраў Радрыгес
+    bn: রডরিগুয়েজ
+    ca: Illa de Rodrigues
+    cs: Rodrigues
+    da: Rodrigues
+    de: Rodrigues
+    el: Ροντρίγκες
+    es: Rodrigues
+    eu: Rodrigues
+    fa: جزیره رودریگز
+    fi: Rodrigues
+    fr: Rodrigues
+    gl: Rodrigues
+    gu: રોડ્રીગ્યુએસ
+    he: רודריגז
+    hi: रोड्रिग्ज़
+    id: Rodrigues
+    it: Rodrigues
+    ja: ロドリゲス島
+    ka: როდრიგესი
+    kn: ರೊಡ್ರಿಗಸ್
+    ko: 로드리게스 섬
+    lt: Rodrigesas
+    mr: रॉड्रिग्ज
+    ms: Rodrigues
+    nb: Rodrigues
+    nl: Rodrigues
+    pl: Rodrigues
+    pt: Rodrigues
+    ro: Insula Rodrigues
+    ru: Родригес
+    si: රොඩ්රිගුස්
+    sr: Родригез
+    sv: Rodrigues
+    sw: Rodrigues
+    ta: ரொட்ரிக்கஸ்
+    te: రోడ్రిగ్స్
+    th: เกาะโรดรีก
+    tr: Rodrigues
+    uk: Родрігес
+    ur: روڈریگس
+    vi: Rodrigues
+    lv: Rodrigesa
+    ceb: Rodrigues
+    sr_Latn: Rodrigez
+    zh: 罗德里格斯岛
+    yue_Hans: 罗德里格斯岛
+    ccp: "\U00011122\U0001112E\U00011113\U00011133\U00011122\U00011128\U00011109\U0001112A\U00011120\U0001112C\U0001110C\U00011134"
+    yue: 羅德里格斯島
+    yo: Rodrigues
+    'no': Rodrigues
+    yo_BJ: Rodrigues
+    hr: Rodrigues
+    hu: Rodriguez-sziget
+    ky: Родригес
+    ml: റോഡ്രിഗസ്
+    sk: Rodrigues
+  comments:
+  type: dependency
+RR:
+  name: Rivière du Rempart
+  code: RR
+  unofficial_names: Rivière du Rempart
+  geo:
+    latitude: -20.0905351
+    longitude: 57.6949177
+    min_latitude: -20.1159055
+    min_longitude: 57.6779652
+    max_latitude: -20.0736276
+    max_longitude: 57.7115289
+  translations:
+    en: Rivière du Rempart
+    ar: مقاطعة ريفير دو ريمبارت
+    bn: রিভেরি ডো রেম্প জেলা
+    da: Riviere du Rempart District
+    de: Rivière du Rempart
+    el: Ριβιέρ ντου Ρεμπάρτ
+    es: Distrito de Rivière du Rempart
+    fa: ناحیه ریویر دو رمپار
+    fi: Rivière du Rempartin kaupunginosa
+    fr: Rivière du Rempart
+    gu: રિવિએરે ડુ રેમ્પર્ટ જિલ્લો
+    hi: रिवेयर डू रेम्पार्ट जिला
+    id: Distrik Rivière du Rempart
+    it: Rivière du Rempart
+    ja: リヴィエール・デュ・ランパール県
+    ka: რივიერ-დუ-რემპარი
+    kn: ರಿವಿಯೆರೆ ಡು ರೆಮ್ಪಾಟ್ ಜಿಲ್ಲೆ
+    ko: 리비에르뒤랑파르 구
+    lt: Rivjer diu Ramparo rajonas
+    mr: रिव्हिएरे डु रेमर्ट जिल्हा
+    ms: Riviere du Rempart District
+    nb: Rivière du Rempart
+    nl: Rivière du Rempart
+    pl: Rivière du Rempart
+    pt: Rivière du Rempart
+    ro: Districtul Rivière du Rempart
+    ru: Ривьер-дю-Рампар
+    si: රිවයිරේ ඩු රෙම්පර්ට් දිස්ත්‍රික්කය
+    sv: Rivière du Rempart
+    ta: றிவைரே டு ரெம்பர்ட் மாவட்டம்
+    te: రివియర్ డూ రెంపార్ట్ జిల్లా
+    th: เขตริเวียเร ดู เรมพาร์ท
+    tr: Riviere du Rempart Bölgesi
+    ur: ریویر دو ریمپار ضلع
+    vi: Quận Rivière du Rempart
+    lv: Rivjēras di Ramparas distrikts
+    ceb: Rivière du Rempart District
+    zh: 朗帕河區
+    yue_Hans: 朗帕河区
+    ccp: "\U00011122\U00011128\U0001111E\U00011128\U00011120\U00011122\U00011134 \U00011113\U0001112A
+      \U00011122\U00011128\U0001111F\U00011134\U0001111B\U00011127\U00011122\U00011134\U00011111\U00011134"
+    uk: Район Рівʼер-дю-Рампар
+    yue: 朗帕河區
+    'no': Rivière du Rempart
+    af: Rivière du Rempart-distrik
+    he: מחוז ריבייר דו רמפאר
+  comments:
+  type: district
+SA:
+  name: Savanne
+  code: SA
+  unofficial_names: Savanne
+  geo:
+    latitude: -20.473953
+    longitude: 57.48535609999999
+    min_latitude: -20.5254986
+    min_longitude: 57.37086850000001
+    max_latitude: -20.396972
+    max_longitude: 57.6193767
+  translations:
+    en: Savanne
+    ar: مقاطعة سافاني
+    bn: সাবানে জেলা
+    ca: Savanne
+    da: Savanne District
+    de: Savanne
+    el: Σαβάν
+    es: Distrito de Savanne
+    fa: ناحیه ساوانه
+    fi: Savannen kaupunginosa
+    fr: Savanne
+    gu: સવાને જિલ્લો
+    hi: सवाने जिला
+    id: Distrik Savanne
+    it: Savanne
+    ja: サバンナ県
+    ka: სავანის ოლქი
+    kn: ಸವನ್ನೆ ಜಿಲ್ಲೆ
+    ko: 사반 구
+    lt: Savano rajonas
+    mr: सवाना जिल्हा
+    ms: Savanne District
+    nb: Savanne
+    nl: Savanne
+    pl: Savanne
+    pt: Savanne
+    ro: Districtul Savanne
+    ru: Саван
+    si: සවන්නේ දිස්ත්‍රික්කය
+    sv: Savanne
+    ta: சவன்னே மாவட்டம்
+    te: సావెన్ జిల్లా
+    th: เขตซาวาน
+    tr: Savanne Bölgesi
+    ur: ساوانے ضلع
+    vi: Quận Savanne
+    lv: Savannas distrikts
+    ceb: Savanne District
+    zh: 薩凡納區
+    yue_Hans: 萨凡纳区
+    ccp: "\U00011125\U0001111E\U0001111A\U00011134"
+    uk: Район Саван
+    yue: 薩凡納區
+    'no': Savanne
+    ml: സവന്നെ ജില്ല
+  comments:
+  type: district

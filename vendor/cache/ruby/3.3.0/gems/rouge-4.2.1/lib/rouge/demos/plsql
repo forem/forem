@@ -1,0 +1,2 @@
+SELECT q'{a quoted string}' AS s, TO_CHAR(SYSDATE,'MM/DD/YYYY') AS "Current Date" FROM DUAL
+WHERE 1=1;

@@ -1,0 +1,51 @@
+---
+IR:
+  alpha2: IR
+  alpha3: IRN
+  continent: Asia
+  country_code: '98'
+  currency_code: IRR
+  distance_unit: KM
+  gec: IR
+  geo:
+    latitude: 32.427908
+    longitude: 53.688046
+    max_latitude: 39.782056
+    max_longitude: 63.3333366
+    min_latitude: 24.8066999
+    min_longitude: 44.0326949
+    bounds:
+      northeast:
+        lat: 39.782056
+        lng: 63.3333366
+      southwest:
+        lat: 24.8066999
+        lng: 44.0326949
+  international_prefix: '00'
+  ioc: IRI
+  iso_long_name: The Islamic Republic of Iran
+  iso_short_name: Iran (Islamic Republic of)
+  languages_official:
+  - fa
+  languages_spoken:
+  - fa
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: '0'
+  nationality: Iranian
+  number: '364'
+  postal_code: true
+  postal_code_format: "\\d{5}-?\\d{5}"
+  region: Asia
+  start_of_week: saturday
+  subregion: Southern Asia
+  un_locode: IR
+  unofficial_names:
+  - Iran
+  - Irán
+  - Iran (Islamic Republic Of)
+  - イラン・イスラム共和国
+  - Islamic Republic of Iran
+  world_region: EMEA

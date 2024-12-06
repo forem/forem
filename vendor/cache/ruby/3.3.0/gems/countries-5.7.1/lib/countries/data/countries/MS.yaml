@@ -1,0 +1,48 @@
+---
+MS:
+  alpha2: MS
+  alpha3: MSR
+  continent: North America
+  country_code: '1'
+  currency_code: XCD
+  distance_unit: KM
+  gec: MH
+  geo:
+    latitude: 16.742498
+    longitude: -62.187366
+    max_latitude: 16.8260672
+    max_longitude: -62.14262009999999
+    min_latitude: 16.671007
+    min_longitude: -62.242584
+    bounds:
+      northeast:
+        lat: 16.8260672
+        lng: -62.14262009999999
+      southwest:
+        lat: 16.671007
+        lng: -62.242584
+  international_prefix: '011'
+  ioc:
+  iso_long_name: Montserrat
+  iso_short_name: Montserrat
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1664'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Montserratian
+  number: '500'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: MS
+  unofficial_names:
+  - Montserrat
+  - モントセラト
+  world_region: EMEA

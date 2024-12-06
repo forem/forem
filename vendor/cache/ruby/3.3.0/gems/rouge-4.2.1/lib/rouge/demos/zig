@@ -1,0 +1,6 @@
+const std = @import("std");
+const warn = std.debug.warn;
+
+fn add_floats(x: f16, y: f16) f16 {
+    return x + y;
+}

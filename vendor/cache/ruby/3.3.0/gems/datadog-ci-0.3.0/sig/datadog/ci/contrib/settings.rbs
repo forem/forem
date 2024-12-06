@@ -1,0 +1,25 @@
+module Datadog
+  module CI
+    module Contrib
+      class Settings
+        include Core::Configuration::Base
+        extend Datadog::Core::Configuration::Options::ClassMethods
+        include Datadog::Core::Configuration::Options::InstanceMethods
+
+        extend Datadog::Core::Configuration::Base::ClassMethods
+
+        def configure: (?::Hash[Symbol, untyped] options) ?{ (Datadog::CI::Contrib::Settings) -> Datadog::CI::Contrib::Settings } -> Datadog::CI::Contrib::Settings?
+
+        def []: (Symbol name) -> Datadog::CI::Contrib::Settings
+
+        def []=: (untyped name, untyped value) -> untyped
+
+        # default configuration options
+        #
+        def enabled: () -> bool
+        def service_name: () -> String
+        def operation_name: () -> String
+      end
+    end
+  end
+end

@@ -1,0 +1,266 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Mon, 23 Jul 2012 08:44:12 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Status: 200 OK
+X-Ua-Compatible: IE=Edge,chrome=1
+Etag: "c4f3d4aaf12acce6a909714618e08934"
+Cache-Control: max-age=0, private, must-revalidate
+Set-Cookie: _markupvalidator_site_session=BAh7B0kiD3Nlc3Npb25faWQGOgZFRkkiJTJiMWU0NzVkNjJjNDliMDRlZGI3MjI5OTVlN2U4MjU5BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMTlWUmVSMEVlTWNuV0t4cTFuNHUvQVozZCttMjhxRTEvWFhYYW5hOXRFdUk9BjsARg%3D%3D--7e9d3e900c9531363297f469f8baa3e3ed31336a; path=/; HttpOnly
+X-Request-Id: 33ca78a4044d244e673d273a59fa4ebc
+X-Runtime: 0.017688
+X-Rack-Cache: miss
+Content-Length: 12923
+X-Varnish: 647613022
+Age: 0
+Via: 1.1 varnish
+
+<!DOCTYPE html>
+<html>
+
+<head><script type="text/javascript">var NREUMQ=NREUMQ||[];NREUMQ.push(["mark","firstbyte",new Date().getTime()]);</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Whole site HTML validator | MarkupValidator</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <meta name="description" content="Site-wide markup validation tool. Validate the markup of your whole site with just one click." />
+  <meta name="keywords" content="html, markup, validation, validator, tool, w3c, development, standards, free" />
+    <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Terminal+Dosis:400,600" rel="stylesheet" type="text/css" />
+  <link href="/assets/application-9da2f67bc1bc6e19a801cb7685a0b497.css" media="screen" rel="stylesheet" type="text/css" />
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="9VReR0EeMcnWKxq1n4u/AZ3d+m28qE1/XXXana9tEuI=" name="csrf-token" />
+  <script src="/assets/application-4e8aa1a929a0aeab6bdf339edecbeaa6.js" type="text/javascript"></script>
+<script src="/assets/pages-7270767b2a9e9fff880aa5de378ca791.js" type="text/javascript"></script>
+<script src="https://apis.google.com/js/plusone.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-122379-37']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+
+  <div id="flash_message"><div><span id="flash_message_text"></span><a class="close-message" href="#" onclick="closeMsgBar();">X</a></div></div>
+
+
+
+  <div class="row top-bar">
+    <div class="content">
+      <header>
+        <div class="header">
+          <h1><a href="/" title="MarkupValidator">MarkupValidator</a></h1>
+          <nav>
+            <a href="#" class="nav_button"></a>
+            <ul class="nav">
+              <li><a href="/faqs" class='active'>FAQs</a></li>
+              <li><a href="/plans-and-pricing" >Plans and pricing</a></li>
+              <li><a href="/contact" >Contact</a></li>
+              <li><a href="/charts/errors" >Top 100 Errors</a></li>
+            </ul>
+          </nav>
+
+
+          <div id="sign_in">
+              <a href="/credits" class="label warning" id="credits_count">10 Credits</a>
+
+              <a href="/signin" class="label success">Sign in</a>
+            </div>
+          </div>
+        </header>
+      </div>
+    </div>
+
+  <div id="faqs" class="row hero">
+
+    <div class="content">
+
+      <h2>FAQs</h2>
+      <h3>Frequently Asked Questions</h3>
+
+    </div>
+
+</div>
+
+
+<div class="row description">
+
+    <div class="content">
+
+    <h4 id="what_is_markupvalidator">What is MarkupValidator?</h4>
+    <p>
+      MarkupValidator is a site-wide markup validation tool. It allows you to check the validity of the markup of several pages
+      from your website, and gives you a summary of the most common errors and warnings, with a single click.
+    </p>
+
+    <h4 id="why_not_just_use_the_official_w3c_validator">Why not just use the official W3C validator?</h4>
+    <p>
+      The <a href="http://validator.w3.org">official W3C validator</a> does not yet provide a way to submit several URLs at once. So, if you want to check your whole
+      website, you need to submit each of your URLs individually, which is a slow process. MarkupValidator provides a simpler, faster way to
+      submit several pages at once.
+    </p>
+
+    <h4 id="how_can_i_submit_my_site_for_validation">How can I submit a site for validation?</h4>
+    <p>
+      To submit a site, just enter its URL on the <a href="/">front page</a>, and click the "Validate" button. The MarkupValidator spider will crawl the site
+      in search for internal links, validate each of them, and then compile all errors and warnings in one summary.
+    </p>
+
+    <h4 id="how_can_i_specify_the_exact_urls_i_want_to_validate">How can I specify the exact URLs I want to validate?</h4>
+    <p>
+      The MarkupValidator spider will crawl the provided URL in search for internal links, but you can also provide an <a href="http://www.sitemaps.org/">XML sitemap</a> with the exact URLs
+      you need to validate.
+    </p>
+
+    <h4 id="is_there_a_limit_on_the_number_of_urls">Is there a limit on the number of URLs to validate?</h4>
+    <p>
+      Yes, there is a limit of 250 URLs per each sitemap submitted. This should be enough for most sites to get a good idea of the
+      validation status of the site, and saves processing time for both MarkupValidator and the W3C validator.
+    </p>
+
+    <h4 id="how_can_i_resubmit_a_site">How can I resubmit a site?</h4>
+    <p>
+      Just click on the "Re-check" buttons. You can recheck the whole sitemap or individual pages.
+    </p>
+
+    <h4 id="can_i_store_my_sitemaps_list">Can I store my sitemaps list?</h4>
+    <p>
+      Yes, MarkupValidator lets you store for free a list of the sitemaps you're interested in validating. Just sign in with your Twitter, Facebook or Google account and every sitemap you validate will appear on your sitemaps list.
+    </p>
+
+    <h4 id="how_do_credits_work">How do credits work?</h4>
+    <p>
+      When you sign up for the first time at MarkupValidator, you're given 100 initial credits so you can try the service for free.
+    </p>
+    <p>
+      For every single web page validation that you make using our service, you're charged 1 credit. So, for example, if you start with 100 credits and you validate a site that has 30 web pages, you end up with 70 credits.
+    </p>
+    <p>
+      Once you spend all your credits, you can't make more validations until you recharge them.
+    </p>
+
+    <h4 id="how_can_i_recharge_my_credits">How can I recharge my credits?</h4>
+    <p>
+      The easiest way to recharge your credits is through a monthly subscription.
+    </p>
+    <p>
+      This way, your credits will be recharged every month up to the monthly limit of your chosen plan.
+    </p>
+    <p>
+      Check out the <a href="/plans-and-pricing">Plans and pricing</a> page to see what plan is best for you. If you're not sure about how many validations you need, you can buy packs of validations.
+    </p>
+
+    <h4 id="how_can_i_sign_in_with_another_account">I've signed in from one account, how can I sign in with a different one?</h4>
+    <p>
+      For your convenience, you're first shown 3 ways to sign in: Twitter, Facebook and Google. When you use one of those, MarkupValidator will remember your preference and offer just this one.
+    </p>
+    <p>
+      If you'd like to change this preference, just sign in again with your preferred account:<br/>
+      <a href='#' onclick='window.location="/auth/twitter"; return false;' style='color:white;'><span class='label success'>twitter</span></a>, <a href='#' onclick='window.location="/auth/facebook"; return false;' style='color:white;'><span class='label success'>facebook</span></a> or <a href='#' onclick='window.location="/auth/google_oauth2"; return false;' style='color:white;'><span class='label success'>google</span></a>.
+    </p>
+
+    <h4 id="who_is_behind_all_this">Who is behind all this?</h4>
+    <p>
+      MarkupValidator is a personal project maintained by <a href="http://jaimeiniesta.com/">Jaime Iniesta</a>, an independent web developer who loves working with Ruby on Rails. That's me. :)
+    </p>
+
+    <h4 id="how_did_this_project_start">How did this project start?</h4>
+    <p>
+      During March 2011 I took the Ruby Core Skills course at the <a href="http://mendicantuniversity.org/">Mendicant University</a>, an intense three week course that takes you through several important topic areas every Ruby developer should be comfortable on. You can <a href="http://jaimeiniesta.posterous.com/rbmu-a-better-way-to-learn-ruby">read more</a> about it at my blog.
+    </p>
+    <p>
+      With the help of <a href="http://majesticseacreature.com/">Gregory Brown</a> and the rest of the <a href="http://school.mendicantuniversity.org/alumni/2011">Mendicant University Alumni</a>, I built the <a href="https://github.com/jaimeiniesta/site_validator">site_validator</a> gem that allows you to do site-wide markup validation from the command line.
+    </p>
+    <p>
+      Afterwards, I built this <a href="http://markupvalidator.com">markupvalidator.com</a> site to make it easier for everyone to do site-wide markup validation, with a nicer HTML interface, storing the results for later, rechecking, etc.
+    </p>
+    <p>
+      I want to express my gratitude to all the Mendicant University community, all of them are still helping me making MarkupValidator a better tool for everyone. Thank you!
+    </p>
+
+    <h4 id="is_this_free">Is this free?</h4>
+    <p>
+      No, this is a paid service, but you can try it for free.
+    </p>
+
+    <h4 id="is_there_an_open_source_version">Is there an open source version?</h4>
+    <p>
+      Yes! There's a free, standalone version that you can install on your computer. It's packed as a Ruby gem and it's open source, so you can examine the code and contribute to it if you wish.
+    </p>
+    <p>
+      You can find the <a href="https://github.com/jaimeiniesta/site_validator">site_validator gem at Github</a>.
+    </p>
+
+    <h4 id="is_there_an_api">Is there an API?</h4>
+    <p>
+      Yes! I've started building an API. It's not finished yet, but you can already validate sitemaps and pages with it. Read more about it at the <a href="/api_v1_reference">API V1 Reference</a> page.
+    </p>
+
+    </div>
+</div>
+
+
+  <div class="row footer">
+    <div class="content">
+      <footer>
+        <p>
+                  <!-- Begin MailChimp Signup Form -->
+                  <div id="mc_embed_signup">
+                    <form action="http://markupvalidator.us4.list-manage.com/subscribe/post?u=6af3ab69c286561d0f0f25671&amp;id=04a0dab609" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate shadowins">
+                      <label for="mce-EMAIL">Subscribe to our newsletter:</label>
+                      <input type="email" value="your email" name="EMAIL" class="email" id="mce-EMAIL" placeholder="your email" onfocus="this.value='';" required>
+                      <div class="clear"><input type="submit" value="♥" name="subscribe" id="mc-embedded-subscribe" class="button btn"></div>
+                    </form>
+                  </div>
+                  <!--End mc_embed_signup-->
+
+        <ul class="social_share">
+  <li class="twitter_follow"><a href="https://twitter.com/markupvalidator" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#999999" data-show-count="false">Follow</a></li>
+  <li class="tweets_count"><a href="http://twitter.com/share" style="display:block;" class="twitter-share-button" data-count="horizontal" data-via="markupvalidator" data-lang="en">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></li>
+  <li class="gplus_count"><div class="g-plusone" data-size="medium" data-count="true"></div></li>
+</ul>
+        </p>
+        <p class="clearb"><strong>MarkupValidator</strong> lets you <strong>validate entire sites</strong> with one click. This is an independent project, not associated with the W3C. By making use of this website you agree to the <a href="/terms_of_service">Terms of service</a>.<br /><br />Follow us on <a href="http://twitter.com/MarkupValidator">Twitter</a> and <a href="http://us4.campaign-archive1.com/home/?u=6af3ab69c286561d0f0f25671&id=04a0dab609">subscribe to our monthly newsletter</a>.</p>
+      </footer>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  var uvOptions = {};
+  (function() {
+    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/nhy6YD24GjgADgFX3h5z4w.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+  })();
+</script>
+              <script type="text/javascript">
+//<![CDATA[
+
+              var menuVisible = false;
+              $('.nav_button').on('click', showHideMenu);
+
+//]]>
+</script>
+
+<script type="text/javascript">if (!NREUMQ.f) { NREUMQ.f=function() {
+NREUMQ.push(["load",new Date().getTime()]);
+var e=document.createElement("script");
+e.type="text/javascript";e.async=true;e.src="https://d1ros97qkrwjf5.cloudfront.net/39/eum/rum.js";
+document.body.appendChild(e);
+if(NREUMQ.a)NREUMQ.a();
+};
+NREUMQ.a=window.onload;window.onload=NREUMQ.f;
+};
+NREUMQ.push(["nrfj","beacon-1.newrelic.com","96fc3f1db6",415027,"c1hbQUcNWlhQQhsNWVdfakNaDkJVUlUbFVFXUkYaRgpZQw==",0.0,14,new Date().getTime(),"","","","",""])</script></body>
+</html>

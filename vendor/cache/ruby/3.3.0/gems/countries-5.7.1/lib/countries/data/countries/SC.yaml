@@ -1,0 +1,50 @@
+---
+SC:
+  alpha2: SC
+  alpha3: SYC
+  continent: Africa
+  country_code: '248'
+  currency_code: SCR
+  distance_unit: KM
+  gec: SE
+  geo:
+    latitude: -4.679574
+    longitude: 55.491977
+    max_latitude: -3.7091721
+    max_longitude: 56.3928224
+    min_latitude: -10.4716073
+    min_longitude: 45.9832764
+    bounds:
+      northeast:
+        lat: -3.7091721
+        lng: 56.3928224
+      southwest:
+        lat: -10.4716073
+        lng: 45.9832764
+  international_prefix: '00'
+  ioc: SEY
+  iso_long_name: The Republic of Seychelles
+  iso_short_name: Seychelles
+  languages_official:
+  - fr
+  - en
+  languages_spoken:
+  - fr
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  national_prefix: None
+  nationality: Seychellois
+  number: '690'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: SC
+  unofficial_names:
+  - Seychelles
+  - Seychellen
+  - セーシェル
+  world_region: EMEA

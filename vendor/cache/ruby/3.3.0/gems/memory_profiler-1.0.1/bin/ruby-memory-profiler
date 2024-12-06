@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+
+require "memory_profiler"
+
+exit MemoryProfiler::CLI.new.run(ARGV)

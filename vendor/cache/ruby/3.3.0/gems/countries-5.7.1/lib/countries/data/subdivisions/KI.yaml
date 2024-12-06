@@ -1,0 +1,192 @@
+---
+G:
+  name: Gilbert Islands
+  code: G
+  unofficial_names: Gilbert Islands
+  geo:
+    latitude: -1.3611379
+    longitude: 176.4521827
+    min_latitude: -2.6717827
+    min_longitude: 169.5233729
+    max_latitude: 3.3917201
+    max_longitude: 176.847766
+  translations:
+    en: Gilbert Islands
+    ar: جزر جلبرت
+    be: Астравы Гілберта
+    bg: Гилбъртови острови
+    cs: Gilbertovy ostrovy
+    da: Gilbertøerne
+    de: Gilbertinseln
+    el: Νησιά Γκίλμπερτ
+    es: Islas Gilbert
+    et: Gilberti saared
+    fa: جزایر گیلبرت
+    fi: Gilbertsaaret
+    fr: Îles Gilbert
+    gl: Illas Gilbert
+    he: איי גילברט
+    hr: Gilbertovi otoci
+    hy: Գիլբերտի կղզիներ
+    it: Isole Gilbert
+    ja: ギルバート諸島
+    ka: გილბერტის კუნძულები
+    kn: ಗಿಲ್ಬರ್ಟ್ ದ್ವೀಪಗಳು
+    ko: 길버트 제도
+    lt: Gilberto salos
+    lv: Gilberta salas
+    mr: गिल्बर्ट द्वीपसमूह
+    nb: Gilbertøyene
+    nl: Gilberteilanden
+    pl: Wyspy Gilberta
+    pt: Ilhas Gilbert
+    ru: Острова Гилберта
+    sl: Gilbertovi otoki
+    sv: Gilbertöarna
+    th: หมู่เกาะกิลเบิร์ต
+    tr: Gilbert Adaları
+    uk: Острови Гілберта
+    vi: Quần đảo Gilbert
+    zh: 吉尔伯特群岛
+    ceb: Gilbert Islands (kapuloan)
+    yue_Hans: 骄拔群岛
+    hi: गिल्बर्ट द्वीप समूह
+    ccp: "\U00011109\U00011128\U00011123\U00011134\U0001111D\U00011122\U00011134\U00011111\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    ky: Гилберт аралдары
+    is: Gilbertseyjar
+    id: Kepulauan Gilbert
+    kk: Гилберт аралдары
+    yue: 驕拔群島
+    uz: Gilbert orollari
+    mk: Гилбертови Острови
+    'no': Gilbertøyene
+    ca: Illes Gilbert
+    cy: Ynysoedd Gilbert
+    eu: Gilbert Uharteak
+    hu: Gilbert-szigetek
+    sk: Gilbertove ostrovy
+  comments:
+  type: group_of_islands
+L:
+  name: Line Islands
+  code: L
+  unofficial_names: Line Islands
+  geo:
+    latitude: 0
+    longitude: -157
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Line Islands
+    be: Астравы Лайн
+    bg: Лайн
+    ca: Illes de la Línia
+    cs: Liniové ostrovy
+    da: Linje-øerne
+    de: Line Islands
+    el: Νησιά Γραμμής Ισημερινού
+    es: Islas de la Línea
+    et: Line’i saared
+    eu: Lerroko uharteak
+    fa: جزایر لاین
+    fi: Linesaaret
+    fr: Îles de la Ligne
+    gl: Illas da Liña
+    he: איי ליין
+    id: Kepulauan Line
+    is: Línueyjar
+    it: Sporadi equatoriali
+    ja: ライン諸島
+    ka: ლაინის კუნძულები
+    ko: 라인 제도
+    lt: Linijinės salos
+    lv: Lainas salas
+    ml: ലൈൻ ദ്വീപുകൾ
+    nb: Linjeøyene
+    nl: Line-eilanden
+    pl: Line Islands
+    pt: Espórades Equatoriais
+    ro: Insulele Line
+    ru: Острова Лайн
+    sv: Line Islands
+    uk: Острови Лайн
+    vi: Quần đảo Line
+    zh: 莱恩群岛
+    ccp: "\U00011123\U0001112D\U0001111A\U00011134 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    'no': Linjeøyene
+  comments:
+  type: group_of_islands
+P:
+  name: Phoenix Islands
+  code: P
+  unofficial_names:
+  - Abariringa
+  - Canton
+  - Gardner
+  - Hull
+  - Kanton
+  - Kemins
+  - Manra
+  - Mary Island
+  - Nikumaroro
+  - Orona
+  - Phoenix
+  - Rawaki
+  - Sydney
+  geo:
+    latitude: -4.453147899999999
+    longitude: -171.2449677
+    min_latitude: -4.6957871
+    min_longitude: -174.5464169
+    max_latitude: -2.7657678
+    max_longitude: -170.7084199
+  translations:
+    en: Phoenix Islands
+    be: Астравы Фенікс
+    bg: Феникс
+    ca: Illes Fènix
+    cs: Phoenixské ostrovy
+    de: Phoenixinseln
+    el: Νησιά Φοίνικα
+    es: Islas Fénix
+    et: Fööniksisaared
+    fa: جزایر فینیکس
+    fi: Phoenixsaaret
+    fr: Îles Phœnix
+    gl: Illas Fénix
+    he: איי פניקס
+    hr: Otočje Phoenix
+    id: Kepulauan Phoenix
+    it: Isole della Fenice
+    ja: フェニックス諸島
+    ka: ფენიქსის კუნძულები
+    ko: 피닉스 제도
+    lt: Fenikso salos
+    lv: Fēniksa salas
+    nb: Phoenixøyene
+    nl: Phoenixeilanden
+    pl: Feniks
+    pt: Ilhas Fénix
+    ro: Insulele Phoenix
+    ru: Острова Феникс
+    sk: Phoenixské ostrovy
+    sv: Phoenixöarna
+    uk: Острови Фенікс
+    vi: Quần đảo Phoenix
+    ceb: Phoenix Islands (kapuloan)
+    ar: جزر فينيكس
+    tr: Phoenix Adaları
+    zh: 菲尼克斯群岛
+    yue_Hans: 凤凰群岛
+    ccp: "\U0001111B\U00011127\U0001111A\U00011128\U00011107\U00011133\U00011125\U00011134
+      \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    is: Fönixeyjar
+    yue: 鳳凰群島
+    mk: Феникс
+    'no': Phoenixøyene
+    hu: Phoenix-szigetek
+  comments:
+  type: group_of_islands

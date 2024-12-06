@@ -1,0 +1,17 @@
+query myQuery($variable: Boolean) {
+  # Queries can have comments!
+  friends(ids: ["a1", "a2"]) {
+    id
+    name
+
+    ...someFields
+
+    ... @include(if: $variable) {
+      foo
+    }
+
+    ... @skip(if: true) {
+      bar
+    }
+  }
+}

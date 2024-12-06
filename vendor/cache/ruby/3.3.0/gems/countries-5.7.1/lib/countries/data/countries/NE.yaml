@@ -1,0 +1,49 @@
+---
+NE:
+  alpha2: NE
+  alpha3: NER
+  continent: Africa
+  country_code: '227'
+  currency_code: XOF
+  distance_unit: KM
+  gec: NG
+  geo:
+    latitude: 17.607789
+    longitude: 8.081666
+    max_latitude: 23.4999997
+    max_longitude: 15.9990339
+    min_latitude: 11.693756
+    min_longitude: 0.1617177
+    bounds:
+      northeast:
+        lat: 23.4999997
+        lng: 15.9990339
+      southwest:
+        lat: 11.693756
+        lng: 0.1617177
+  international_prefix: '00'
+  ioc: NIG
+  iso_long_name: The Republic of the Niger
+  iso_short_name: Niger
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Nigerian
+  number: '562'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: NE
+  unofficial_names:
+  - Niger
+  - Níger
+  - ニジェール
+  world_region: EMEA

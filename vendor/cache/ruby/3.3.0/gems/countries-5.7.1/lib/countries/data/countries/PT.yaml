@@ -1,0 +1,62 @@
+---
+PT:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}} {{region_short}}
+    {{country}}
+  alpha2: PT
+  alpha3: PRT
+  continent: Europe
+  country_code: '351'
+  currency_code: EUR
+  distance_unit: KM
+  eea_member: true
+  eu_member: true
+  gec: PO
+  geo:
+    latitude: 39.39987199999999
+    longitude: -8.224454
+    max_latitude: 42.1543111
+    max_longitude: -6.189159200000001
+    min_latitude: 32.2895
+    min_longitude: -31.4647999
+    bounds:
+      northeast:
+        lat: 42.1543111
+        lng: -6.189159200000001
+      southwest:
+        lat: 32.2895
+        lng: -31.4647999
+  international_prefix: '00'
+  ioc: POR
+  iso_long_name: The Portuguese Republic
+  iso_short_name: Portugal
+  languages_official:
+  - pt
+  languages_spoken:
+  - pt
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: None
+  nationality: Portuguese
+  number: '620'
+  postal_code: true
+  postal_code_format: "\\d{4}-\\d{3}"
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: PT
+  unofficial_names:
+  - Portugal
+  - ポルトガル
+  vat_rates:
+    standard: 23
+    reduced:
+    - 6
+    - 13
+    super_reduced:
+    parking: 13
+  world_region: EMEA

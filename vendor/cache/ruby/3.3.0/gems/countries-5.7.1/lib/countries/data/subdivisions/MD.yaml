@@ -1,0 +1,2303 @@
+---
+AN:
+  name: Anenii Noi
+  code: AN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة أنيني نوي
+    bg: Новоаненски район
+    bn: আনেনি নোই জেলা
+    ca: Districte d’Anenii Noi
+    cs: Okres Anenii Noi
+    da: Anenii Noi District
+    de: Rajon Anenii Noi
+    el: Ανένιι Νόι
+    en: Anenii Noi
+    es: Distrito de Anenii Noi
+    fi: Anenii Noin piiri
+    fr: Raion d’Anenii Noi
+    gu: અનેની નોઇ જિલ્લો
+    hi: अननीई नोई जिला
+    hu: Anenii Noi járás
+    id: Raionul Anenii Noi
+    it: distretto di Anenii Noi
+    ja: アネニイ・ノイ県
+    ka: ანენი-ნოის რაიონი
+    kn: ಅನೆನಿ ನೋಯಿ ಜಿಲ್ಲೆ
+    ko: 아네니노이 구
+    lt: Naujųjų Anėnų rajonas
+    mr: अननी नोई जिल्हा
+    ms: Anenii Noi District
+    nb: Anenii Noi
+    nl: Anenii Noi
+    pl: Rejon Anenii Noi
+    pt: Anenii Noi (condado)
+    ro: raionul Anenii Noi
+    ru: Новоаненский район
+    si: අනෙන්ලි නොයි දිස්ත්‍රික්කය
+    sk: Anenii Noi (okres)
+    sv: Anenii Noi (distrikt)
+    ta: அனேநீ நாய் மாவட்டம்
+    te: అెనీ నోయి జిల్లా
+    th: อาเนอิลนอย
+    tr: Anenii Noi District
+    uk: Аненій-Нойський район
+    ur: انینئی نوی ضلع
+    vi: Quận Anenii Noi
+    zh: 新阿內尼區
+    lv: Aneni Nojas rajons
+    ceb: Anenii Noi
+    sq: Raionul Anenii Noi
+    ccp: "\U00011103\U0001111A\U0001112C\U0001111A\U00011128 \U0001111A\U00011130"
+    'no': Anenii Noi
+    az: Novoannen rayonu
+    mk: Нови Анени (реон)
+  comments:
+  type: district
+BA:
+  name: Balti
+  code: BA
+  unofficial_names: Balti
+  geo:
+    latitude: 47.7539947
+    longitude: 27.9184148
+    min_latitude: 47.7226969
+    min_longitude: 27.8344632
+    max_latitude: 47.81119469999999
+    max_longitude: 27.9682947
+  translations:
+    en: Bălţi
+    af: Bălţi
+    am: በልጺ
+    ar: بالتسي
+    az: Belsı
+    be: Горад Бельцы
+    bg: Белци
+    bn: বালতি
+    ca: Bălți
+    cs: Bălți
+    da: Bălți
+    de: Bălți
+    el: Μπέλτσι
+    es: Bălți
+    et: Bălți
+    eu: Bălți
+    fa: بالتی
+    fi: Bălți
+    fr: Municipalité de Bălți
+    gu: બાલ્ટી
+    he: בלץ
+    hi: बाल्टी
+    hr: Bălți
+    hu: Bălți
+    hy: Բելցի
+    id: Bălţi
+    is: Bălţi
+    it: Bălți
+    ja: バルツィ
+    ka: ბელცი
+    kn: ಬಾಲ್ಟಿ
+    ko: 벌치
+    lt: Belcis
+    lv: Belci
+    mn: Балць
+    mr: बाल्टी
+    ms: Bălţi
+    nb: Bălți
+    nl: Bălți
+    pl: Bielce
+    pt: Bălţi
+    ro: Municipiul Bălți
+    ru: Бельцы
+    si: බාල්ටි
+    sk: Bălţi
+    sl: Bălţi
+    sr: Балци
+    sv: Bălţi
+    sw: Bălţi
+    ta: பாலடீ
+    te: బాల్టి
+    th: บัลตส์
+    tr: Bălţi
+    uk: Бєльці
+    ur: بالتسی
+    vi: Bălţi
+    zh: 伯爾茲
+    cy: Bălţi
+    ceb: Municipiul Bălți
+    sr_Latn: Balci
+    yue_Hans: 伯尔兹
+    ccp: "\U0001111D\U00011123\U00011134\U00011111\U00011128"
+    ga: Bălți
+    yue: 伯爾茲
+    uz: Bălţi
+    bs: Bălți
+    mk: Белци
+    'no': Bălți
+  comments:
+  type: city
+BD:
+  name: Bender [Tighina]
+  code: BD
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Bender
+    ar: بيندر، مولدوفيا
+    az: Bender
+    be: Горад Бендэр
+    bg: Бендери
+    bn: বেন্ডার
+    ca: Bender
+    cs: Bender
+    da: Bender
+    de: Bender
+    el: Μπέντερ
+    en: Bender
+    es: Bender
+    et: Bender
+    eu: Bender
+    fa: بندر، مولداوی
+    fi: Bender
+    fr: Municipalité de Bender
+    gl: Bender
+    gu: બેન્ડર
+    he: טיגינה
+    hi: बेंडर
+    hr: Bender
+    hu: Bender
+    hy: Բենդերի
+    id: Bender
+    is: Bender
+    it: Bender
+    ja: ベンデル
+    ka: ბენდერი
+    kn: ಬೆಂಡರ್
+    ko: 벤데르
+    lt: Benderai
+    lv: Bendera
+    mr: बेन्डर
+    ms: Bender
+    nb: Bender
+    nl: Bender
+    pl: Bender
+    pt: Bender
+    ro: Municipiul Bender
+    ru: Бендеры
+    si: බෙන්ඩෙර්
+    sk: Bender
+    sl: Bender
+    sr: Бендер
+    sv: Bender
+    sw: Bender
+    ta: பெண்டெர்
+    te: బెండెర్
+    th: เบนเดอร์
+    tr: Bender
+    uk: Бендери
+    ur: بیندر، مالدووا
+    vi: Bender
+    zh: 賓傑里
+    zu: Bender
+    cy: Bender
+    ceb: Bender
+    sr_Latn: Bender
+    jv: Bender
+    ccp: "\U0001111D\U0001112C\U0001111A\U00011134\U00011113\U00011122\U00011134"
+    ga: Bender
+    ig: Bender
+    ha: Bender
+    so: Bender
+    yo: Bender
+    uz: Bender
+    bs: Bender
+    mk: Бендер
+    ha_NE: Bender
+    'no': Bender
+    yo_BJ: Bender
+  comments:
+  type: city
+BR:
+  name: Briceni
+  code: BR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة بريسيني
+    bg: Бриченски район
+    bn: ব্রিকেনি জেলা
+    ca: Districte de Briceni
+    cs: Okres Briceni
+    da: Briceni District
+    de: Rajon Briceni
+    el: Μπριτσένι
+    en: Briceni
+    es: Distrito de Briceni
+    fi: Bricenin piiri
+    fr: Raion de Briceni
+    gu: બ્રિસેની જિલ્લો
+    hi: ब्रिसेनी जिला
+    hu: Briceni járás
+    id: Raionul Briceni
+    it: distretto di Briceni
+    ja: ブリチェニー県
+    ka: ბრიჩენის რაიონი
+    kn: ಬ್ರಿಕೆನಿ ಜಿಲ್ಲೆ
+    ko: 브리체니 구
+    lt: Bričenio rajonas
+    mr: ब्रिसनी जिल्हा
+    ms: Briceni District
+    nb: Briceni
+    nl: Briceni
+    pl: Rejon Briceni
+    pt: Briceni
+    ro: raionul Briceni
+    ru: Бричанский район
+    si: බ්‍රිසෙනි දිස්ත්‍රික්කය
+    sk: Briceni
+    sv: Briceni (distrikt)
+    ta: பிரிசினி மாவட்டம்
+    te: బ్రిసేని జిల్లా
+    th: เมืองเอสเตลี
+    tr: Briceni District
+    uk: Бричанський район
+    ur: بریچینی ضلع
+    vi: Quận Briceni
+    zh: 布里切尼區
+    lv: Bričenu rajons
+    ceb: Briceni
+    sq: Raionul Briceni
+    ccp: "\U0001111D\U00011133\U00011122\U00011128\U00011125\U0001112C\U0001111A\U00011128"
+    be: Брычанскі раён
+    'no': Briceni
+    az: Briçan rayonu
+    fa: ناحیه بریسنی
+    mk: Бричени (реон)
+  comments:
+  type: district
+BS:
+  name: Basarabeasca
+  code: BS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة باسارابيسكا
+    bg: Бесарабски район
+    bn: বাশারাবিয়াস্কা জেলা
+    ca: Districte de Basarabeasca
+    cs: Okres Basarabeasca
+    da: Basarabeasca District
+    de: Rajon Basarabeasca
+    el: Μπασαραμπεάσκα
+    en: Basarabeasca
+    es: Distrito de Basarabeasca
+    et: Basarabeasca rajoon
+    fi: Basarabeascan piiri
+    fr: Raion de Basarabeasca
+    gu: બાસારબેશા જિલ્લો
+    hi: बसाराबीसाका ज़िला
+    hu: Basarabeasca járás
+    id: Raionul Basarabeasca
+    it: distretto di Basarabeasca
+    ja: バサラベアスカ県
+    ka: ბასარაბეასკის რაიონი
+    kn: ಬಸಾರಬೀಸ್ಕಾ ಜಿಲ್ಲೆ
+    ko: 바사라베아스카 구
+    lt: Basarabiaskos rajonas
+    mr: बसराबेसा जिल्हा
+    ms: Basarabeasca District
+    nb: Basarabeasca
+    nl: Basarabeasca
+    pl: Rejon Basarabeasca
+    pt: Basarabeasca
+    ro: raionul Basarabeasca
+    ru: Бессарабский район
+    si: බසරබිස්කා දිස්ත්‍රික්කය
+    sk: Basarabeasca
+    sv: Basarabeasca (distrikt)
+    ta: பசரபேக்காஸ்கே மாவட்டம்
+    te: బసారాబీస్కా జిల్లా
+    th: จังหวัดลูอันดา
+    tr: Basarabeasca District
+    uk: Бессарабський район
+    ur: باسارابیاسکا ضلع
+    vi: Quận Basarabeasca
+    zh: 巴薩拉貝亞斯卡區
+    lv: Besarabjaskas rajons
+    ceb: Basarabeasca
+    sq: Raionul Basarabeasca
+    ccp: "\U0001111D\U00011125\U00011122\U00011134\U0001111D\U00011128\U00011120\U0001110C\U00011134\U00011107"
+    'no': Basarabeasca
+    mk: Бесарабјаска (реон)
+  comments:
+  type: district
+CA:
+  name: Cahul
+  code: CA
+  unofficial_names: Cahul
+  geo:
+    latitude: 45.8939404
+    longitude: 28.1890275
+    min_latitude: 45.8736666
+    min_longitude: 28.1741595
+    max_latitude: 45.9423021
+    max_longitude: 28.231709
+  translations:
+    en: Cahul
+    ar: مقاطعة كاهول
+    bg: Кахулски район
+    bn: কাহোল জেলা
+    ca: Districte de Cahul
+    cs: Okres Cahul
+    da: Cahul District
+    de: Rajon Cahul
+    el: Καχούλ
+    es: Distrito de Cahul
+    fi: Cahulin piiri
+    fr: Raion de Cahul
+    gu: કાહુલ જિલ્લો
+    hi: काहुल जिला
+    hu: Cahul járás
+    id: Raionul Cahul
+    it: distretto di Cahul
+    ja: カフル県
+    ka: კაგულის რაიონი
+    kn: ಕಾಹುಲ್ ಜಿಲ್ಲೆ
+    ko: 카훌 구
+    lt: Kahulio rajonas
+    mr: काहुल जिल्हा
+    ms: Cahul District
+    nb: Cahul
+    nl: Cahul
+    pl: Rejon Kaguł
+    pt: Cahul (distrito)
+    ro: raionul Cahul
+    ru: Кагульский район
+    si: කාහුල් දිස්ත්‍රික්කය
+    sk: Cahul (okres)
+    sv: Cahul rajon
+    ta: சாஹுல் மாவட்டம்
+    te: కాహుల్ జిల్లా
+    th: เขตคาฮูล
+    tr: Cahul District
+    uk: Кагульський район
+    ur: کاہول ضلع
+    vi: Quận Cahul
+    zh: 卡胡爾區
+    lv: Kahulas rajons
+    ceb: Raionul Cahul
+    sq: Raionul Cahul
+    ccp: "\U00011107\U00011126\U0001112A\U00011123\U00011134"
+    'no': Cahul
+  comments:
+  type: district
+CL:
+  name: Călărași
+  code: CL
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة كالاراسي
+    be: Каларашскі раён
+    bg: Кълърашки район
+    bn: কালারাসি জেলা
+    ca: Districte de Călărași
+    da: Calarasi District
+    de: Rajon Călărași
+    el: Καλαράσι
+    en: Călărași
+    es: Distrito de Călărași
+    fi: Călărașin piiri
+    fr: Raion de Călărași
+    gl: Distrito de Călărași
+    gu: કેલારાસી જિલ્લો
+    hi: कालारासी जिला
+    hu: Călăraşi járás
+    id: Raionul Călăraşi
+    it: distretto di Călărași
+    ja: カララシ県 (モルドヴァ)
+    ka: კელერაშის რაიონი
+    kn: ಕ್ಯಾಲಾರಾಶಿ ಜಿಲ್ಲೆ
+    ko: 컬러라시 구
+    lt: Kelerašio rajonas
+    mr: कॅलॅझी जिल्हा
+    ms: Calarasi District
+    nb: Călărași
+    nl: Călărași
+    pl: Rejon Călăraşi
+    pt: Călărași
+    ro: raionul Călărași
+    ru: Каларашский район
+    si: කලාරසි දිස්ත්‍රික්කය
+    sk: Călăraşi (okres)
+    sv: Călărași
+    ta: கலாரசி மாவட்டம்
+    te: కాలారాసి జిల్లా
+    th: คาลาราชี
+    tr: Quận Calarasi
+    uk: Калараський район
+    ur: کالاراشی ضلع
+    vi: Quận Calarasi
+    zh: 卡拉拉什區
+    lv: Kelerasu rajons
+    ceb: Raionul Călărași
+    sq: Raionul Călărași
+    ccp: "\U00011107\U00011123\U00011122\U00011125\U00011128"
+    'no': Călărași
+    he: קלראש (נפה)
+  comments:
+  type: district
+CM:
+  name: Cimișlia
+  code: CM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة تشيميشليا
+    bg: Чимишлийски район
+    bn: কিমিসিলা জেলা
+    ca: Districte de Cimişlia
+    da: Cimișlia District
+    de: Rajon Cimișlia
+    el: Κιμισλία
+    en: Cimișlia
+    es: Distrito de Cimişlia
+    fi: Cimișlian kaupunginosa
+    fr: Raion de Cimișlia
+    gu: સિમિસ્લિયા જિલ્લો
+    hi: किमिस्लिया जिला
+    hu: Cimişlia járás
+    id: Raionul Cimişlia
+    it: distretto di Cimişlia
+    ja: チミシリア県
+    ka: ჩიმიშლიის რაიონი
+    kn: ಸಿಮಿಸ್ಲಿಯಾ ಜಿಲ್ಲೆ
+    ko: 치미슐리아 구
+    lt: Čimišlijos rajonas
+    mr: सिमिस्टलिया जिल्हा
+    ms: Mukim Cimislia
+    nb: Cimișlia
+    nl: Cimișlia
+    pl: Rejon Cimişlia
+    pt: Cimişlia
+    ro: raionul Cimișlia
+    ru: Чимишлийский район
+    si: සිමිසිලා දිස්ත්‍රික්කය
+    sk: Cimişlia
+    sv: Cimişlia (distrikt)
+    ta: சிமிஸ்லீலா மாவட்டம்
+    te: సిమిస్లియా జిల్లా
+    th: ิซิมิสเลีย แบงค์
+    tr: Cimislia District
+    uk: Чимішлійський район
+    ur: چیمیشلیا ضلع
+    vi: Quận Cimislia
+    zh: 奇米什利亞區
+    lv: Čimišlijas rajons
+    ceb: Cimișlia (distrito)
+    sq: Raionul Cimișlia
+    ccp: "\U00011125\U00011128\U0001111F\U00011128\U0001110C\U00011134\U00011123\U00011128\U00011120"
+    'no': Cimișlia
+  comments:
+  type: district
+CR:
+  name: Criuleni
+  code: CR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة كريوليني
+    bg: Криуленски район
+    bn: ক্রিলেনি জেলা
+    ca: Districte de Criuleni
+    da: Criuleni District
+    de: Rajon Criuleni
+    el: Κριουλένι
+    en: Criuleni
+    es: Distrito de Criuleni
+    fi: Criulenin kaupunginosa
+    fr: Raion de Criuleni
+    gu: ક્રિઉલેની જિલ્લો
+    hi: क्रिऊलेनी जिला
+    id: Raionul Criuleni
+    it: distretto di Criuleni
+    ja: クリウレニ県
+    ka: კრიულენის რაიონი
+    kn: ಕ್ರೂಲೆನಿ ಜಿಲ್ಲೆ
+    ko: 크리울레니 구
+    lt: Kriulenio rajonas
+    mr: शिउलेने जिल्हा
+    ms: Criuleni District
+    nb: Criuleni
+    nl: District Criuleni
+    pl: Rejon Criuleni
+    pt: Criuleni (condado)
+    ro: raionul Criuleni
+    ru: Криулянский район
+    si: ක්රියුලෙනි දිස්ත්‍රික්කය
+    sk: Criuleni (okres)
+    sv: Criuleni (distrikt)
+    ta: சிரியலெனி மாவட்டம்
+    te: క్రియులెని జిల్లా
+    th: เขตครูเลนิ
+    tr: Criuelni District
+    uk: Кріуленський район
+    ur: کریولینی ضلع
+    vi: Quận Criuleni
+    zh: 克留萊尼區
+    lv: Krjulenu rajons
+    ceb: Criuleni
+    sq: Raionul Criuleni
+    ccp: "\U00011107\U00011133\U00011122\U0001112D\U00011105\U0001112A\U00011123\U0001112C\U0001111A\U00011128"
+    'no': Criuleni
+    fa: ناحیه کریولنی
+  comments:
+  type: district
+CS:
+  name: Căușeni
+  code: CS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة كوسيني
+    bg: Каушенски район
+    bn: কাসেরি জেলা
+    ca: Districte de Căuşeni
+    da: Căușeni District
+    de: Rajon Căușeni
+    el: Κοσένι
+    en: Căușeni
+    es: Distrito de Căuşeni
+    fi: Căușenin kaupunginosa
+    fr: Raion de Căușeni
+    gu: કાઉસેની જિલ્લો
+    hi: कौसेनी जिला
+    hu: Căuşeni járás
+    id: Raionul Căuşeni
+    it: distretto di Căuşeni
+    ja: カウシェニ県
+    ka: კეუშენის რაიონი
+    kn: ಕಯೂಸ್ಸೆನಿ ಜಿಲ್ಲೆ
+    ko: 커우셰니 구
+    lt: Keušenio rajonas
+    mr: कुसेनी जिल्हा
+    ms: Causeni District
+    nb: Căușeni
+    nl: Căușeni
+    pl: Rejon Căuşeni
+    pt: Căuşeni (condado)
+    ro: raionul Căușeni
+    ru: Каушанский район
+    si: කාඋසේනි දිස්ත්‍රික්කය
+    sk: Căuşeni (okres)
+    sv: Raionul Căuşeni
+    ta: காசெனி மாவட்டம்
+    te: కాసెని జిల్లా
+    th: เขตคัวซินี
+    tr: Causeni Distict
+    uk: Каушенський район
+    ur: کاؤشینی ضلع
+    vi: Quận Causeni
+    zh: 克烏謝尼區
+    lv: Keušenu rajons
+    ceb: Raionul Căușeni
+    sq: Raionul Căușeni
+    ccp: "\U00011107\U0001112F\U00011125\U0001112C\U0001111A\U00011128"
+    'no': Căușeni
+    az: Kauşanski rayonu
+    gl: Distrito de Căușeni
+  comments:
+  type: district
+CT:
+  name: Cantemir
+  code: CT
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة كانتيمير
+    bg: Кантемирски район
+    bn: কান্তেমির জেলা
+    ca: Districte de Cantemir
+    cs: Okres Cantemir
+    da: Cantemir District
+    de: Rajon Cantemir
+    el: Καντεμίρ
+    en: Cantemir
+    es: Distrito de Cantemir
+    fi: Cantemirin kaupunginosa
+    fr: raion de Cantemir
+    gu: કેન્ટેમિર જિલ્લો
+    hi: कैन्तेमिर जिला
+    hu: Cantemir járás
+    id: Raionul Cantemir
+    it: distretto di Cantemir
+    ja: カンテミール県
+    ka: კანტემირის რაიონი
+    kn: ಕ್ಯಾಂಟೆಮಿರ್ ಜಿಲ್ಲೆ
+    ko: 칸테미르 구
+    lt: Kantemyro rajonas
+    mr: कांटिमिर जिल्हा
+    ms: Cantemir District
+    nb: Cantemir
+    nl: Cantemir
+    pl: Rejon Cantemir
+    pt: Cantemir
+    ro: raionul Cantemir
+    ru: Кантемирский район
+    si: කන්ටෙමීර් දිස්ත්‍රික්කය
+    sk: Cantemir
+    sv: Cantemir (distrikt)
+    ta: காண்டெமிர் மாவட்டம்
+    te: కాంటెమిర్ జిల్లా
+    th: เมืองเซนทิเมอ
+    tr: Cantemir District
+    uk: Кантемірський район
+    ur: کانتیمیر ضلع
+    vi: Quận Cantemir
+    zh: 岡代米爾區
+    lv: Kantemiras rajons
+    ceb: Cantemir
+    sq: Raionul Cantemir
+    ccp: "\U00011107\U0001111A\U00011134\U00011111\U0001112C\U0001111F\U00011128\U00011122\U00011134"
+    'no': Cantemir
+    az: Kantemir rayonu
+    fa: ناحیه کانتمیر
+  comments:
+  type: district
+CU:
+  name: Chisinau
+  code: CU
+  unofficial_names: Chisinau
+  geo:
+    latitude: 47.0240102
+    longitude: 28.8313156
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Chișinău
+    af: Chişinău
+    am: ኪሺንው
+    ar: كيشيناو
+    az: Kişinyov
+    be: Кішынёў
+    bg: Кишинев
+    bn: চিসিনাউ
+    ca: Chișinău
+    cs: Kišiněv
+    da: Chișinău
+    de: Chișinău
+    el: Κισινάου
+    es: Chisináu
+    et: Chișinău
+    eu: Chisinau
+    fa: کیشیناو
+    fi: Chișinău
+    fr: Municipalité de Chișinău
+    gl: Chișinău
+    gu: કીશિનેવ
+    he: קישינב
+    hi: चिशिनाउ
+    hr: Kišinjev
+    hu: Chișinău
+    hy: Քիշնև
+    id: Kishinev
+    is: Kisínev
+    it: Chișinău
+    ja: キシナウ
+    ka: კიშინიოვი
+    kn: ಚಿಸಿನಾವ್
+    ko: 키시너우
+    lt: Kišiniovas
+    lv: Kišiņeva
+    mn: Кишинёв
+    mr: चिशिनाउ
+    ms: Chişinău
+    nb: Chișinău
+    nl: Chisinau
+    pl: Kiszyniów
+    pt: Chișinău
+    ro: Municipiul Chișinău
+    ru: Кишинёв
+    si: චිසිනාවු
+    sk: Kišiňov
+    sl: Kišinjev
+    sr: Кишињев
+    sv: Chișinău
+    sw: Kishineu
+    ta: சிஷினோ
+    te: చిషినో
+    th: คีชีเนา
+    tk: Kişinew
+    tr: Kişinev
+    uk: Кишинів
+    ur: کیشیناو
+    vi: Chişinău
+    zh: 基希讷乌
+    cy: Chişinău
+    ceb: Municipiul Chișinău
+    sr_Latn: Kišinjev
+    yue_Hans: 基希涅夫
+    jv: Chişinău
+    sq: Municipiul Chișinău
+    ccp: "\U00011107\U00011128\U00011125\U00011128\U0001111A\U0001112F"
+    ga: Císineá
+    ky: Кишинёв
+    pa: ਕਿਸ਼ਨਾਓ
+    kk: Кишинев
+    yue: 基希涅夫
+    yo: Chişinău
+    uz: Kishinyov
+    bs: Kišinjev
+    mk: Кишињев
+    'no': Chișinău
+    yo_BJ: Chişinău
+  comments:
+  type: city
+DO:
+  name: Dondușeni
+  code: DO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة دوندوسيني
+    bg: Дондушенски район
+    bn: ডনডোসেনি জেলা
+    ca: Districte de Dondușeni
+    da: Dondușeni District
+    de: Rajon Dondușeni
+    el: Ντοντουσένι
+    en: Dondușeni
+    es: Distrito de Dondușeni
+    fi: Dondușenin kaupunginosa
+    fr: Raion de Dondușeni
+    gu: ડોન્ડ્યુસેની જિલ્લો
+    hi: दोंदुसेनी जिला
+    id: Raionul Donduşeni
+    it: distretto di Donduşeni
+    ja: ドンドゥセニ県
+    ka: დონდუშენის რაიონი
+    kn: ಡೋಂಡುಸ್ಸೆನಿ ಜಿಲ್ಲೆ
+    ko: 돈두셰니 구
+    lt: Dondušenio rajonas
+    mr: दोंडिसेनी जिल्हा
+    ms: Donduseni District
+    nb: Dondușeni
+    nl: Dondușeni
+    pl: Rejon Donduşeni
+    pt: Donduşeni
+    ro: raionul Dondușeni
+    ru: Дондюшанский район
+    si: ඩොන්ඩුසෙනි දිස්ත්‍රික්කය
+    sk: Donduşeni
+    sv: Donduşeni (distrikt)
+    ta: டோண்டுஸ்இனி மாவட்டம்
+    te: డోండూసేని జిల్లా
+    th: เขตดอนดูเซนิ
+    tr: Donduseni District
+    uk: Дондушенський район
+    ur: دوندوشینی ضلع
+    vi: Quận Donduseni
+    zh: 棟杜謝尼區
+    lv: Dondušenu rajons
+    ceb: Dondușeni
+    sq: Raionul Dondușeni
+    ccp: "\U00011113\U00011127\U0001111A\U00011134\U00011113\U0001112A\U00011125\U0001112C\U0001111A\U00011128"
+    'no': Dondușeni
+    be: Дандзюшанскі раён
+  comments:
+  type: district
+DR:
+  name: Drochia
+  code: DR
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة دروتشيا
+    bg: Дрокиевски район
+    bn: ড্রোকাইয়া জেলা
+    ca: Districte de Drochia
+    da: Drochia District
+    de: Rajon Drochia
+    el: Ντρότσια
+    en: Drochia
+    es: Distrito de Drochia
+    fi: Drochian piiri
+    fr: Raion de Drochia
+    gu: ડ્રોચિયા જિલ્લો
+    hi: द्रोचिया जिला
+    id: Raionul Drochia
+    it: distretto di Drochia
+    ja: ドロキア県
+    ka: დროკიის რაიონი
+    kn: ಡ್ರೋಶಿಯಾ ಜಿಲ್ಲೆ
+    ko: 드로키아 구
+    lt: Drokijos rajonas
+    mr: ड्रॉचीया जिल्हा
+    ms: Drochia District
+    nb: Drochia
+    nl: Drochia
+    pl: Rejon Drochia
+    pt: Drochia
+    ro: raionul Drochia
+    ru: Дрокиевский район
+    si: ඩ්රෝචියා දිස්ත්‍රික්කය
+    sk: Drochia
+    sv: Drochia rajon
+    ta: ட்ராசியா மாவட்டம்
+    te: డ్రోచియా జిల్లా
+    th: เขตโดรเชีย
+    tr: Drochia District
+    uk: Дрокійський район
+    ur: دروکیا ضلع
+    vi: Quận Drochia
+    zh: 德羅基亞區
+    lv: Drokijas rajons
+    ceb: Raionul Drochia
+    sq: Raionul Drochia
+    ccp: "\U00011113\U00011133\U00011122\U0001112E\U0001110C\U00011128\U00011120"
+    be: Дрокіеўскі раён
+    'no': Drochia
+    az: Drokievsk rayonu
+    fa: ناحیه دروچیا
+  comments:
+  type: district
+DU:
+  name: Dubăsari
+  code: DU
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة دوباساري
+    bg: Дубосарски район
+    bn: ডোবাসারি জেলা
+    ca: Districte de Dubăsari
+    cs: Okres Dubăsari
+    da: Dubăsari District
+    de: Rajon Dubăsari
+    el: Ντουμπασάρι
+    en: Dubăsari
+    es: Distrito de Dubăsari
+    fi: Dubăsarin kaupunginosa
+    fr: Raion de Dubăsari
+    gu: દુબાસારી જિલ્લો
+    hi: दुबेसरी जिला
+    id: Raionul Dubăsari
+    it: distretto di Dubăsari
+    ja: ドゥベサリ県
+    ka: დუბესარის რაიონი
+    kn: ಡುಬಸರಿ ಜಿಲ್ಲೆ
+    ko: 두버사리 구
+    lt: Dubosarų rajonas
+    mr: दुबेसीरी जिल्हा
+    ms: Dubasari District
+    nb: Dubășari
+    nl: Dubăsari
+    pl: Rejon Dubosary
+    pt: Dubăsari
+    ro: raionul Dubăsari
+    ru: Дубоссарский район
+    si: ඩුබාසරි දිස්ත්‍රික්කය
+    sk: Dubăsari
+    sv: Raionul Dubăsari
+    ta: டூபசரி மாவட்டம்
+    te: డుబాసారి జిల్లా
+    th: ดูบาซาริ
+    tr: Dubasari District
+    uk: Дубесарський район
+    ur: دوباساری ضلع
+    vi: Quận Dubasari
+    zh: 杜伯薩里區
+    lv: Dubesaru rajons
+    ceb: Raionul Dubăsari
+    sq: Raionul Dubăsari
+    ccp: "\U00011113\U0001112A\U0001111D\U00011125\U00011122\U00011128"
+    'no': Dubășari
+    az: Dubasari rayonu
+    fa: ناحیه دوبوساری
+  comments:
+  type: district
+ED:
+  name: Edinet
+  code: ED
+  unofficial_names: Edinet
+  geo:
+    latitude: 48.1678991
+    longitude: 27.2936143
+    min_latitude: 48.1522871
+    min_longitude: 27.2787093
+    max_latitude: 48.1892079
+    max_longitude: 27.3280621
+  translations:
+    en: Edineț
+    ar: مقاطعة إيدينت
+    bg: Единецки район
+    bn: এডিনেত জেলা
+    ca: Districte d’Edineț
+    da: Edineț District
+    de: Rajon Edineț
+    el: Εντινέτ
+    es: Distrito de Edineț
+    fi: Edinețin kaupunginosa
+    fr: Raion d’Edineț
+    gu: એડિનેટ જિલ્લો
+    hi: एडिनेट जिला
+    id: Raionul Edineţ
+    it: distretto di Edineț
+    ja: エディネツ県
+    ka: ედინეცის რაიონი
+    kn: ಎಡಿನೆಟ್ ಜಿಲ್ಲೆ
+    ko: 에디네츠 구
+    lt: Jedineco rajonas
+    mr: एडिनट जिल्हा
+    ms: Edinet District
+    nb: Edineț
+    nl: Edineț
+    pl: Rejon Jedyńce
+    pt: Edineţ
+    ro: raionul Edineț
+    ru: Единецкий район
+    si: එදිනෙට් දිස්ත්‍රික්කය
+    sk: Edineţ
+    sv: Raionul Edineţ
+    ta: எடின்ட் மாவட்டம்
+    te: ఎడినెట్ జిల్లా
+    th: เขตอีดิเนท
+    tr: Edinet District
+    uk: Єдинецький район
+    ur: ایدینیتس ضلع
+    vi: Quận Edinet
+    zh: 埃迪內茨區
+    lv: Jedinecas rajons
+    ceb: Raionul Edineț
+    sq: Raionul Edineț
+    ccp: "\U00011103\U0001112C\U00011113\U00011128\U0001111A\U0001112C\U00011116\U00011134"
+    'no': Edineț
+    be: Едзінецкі раён
+  comments:
+  type: district
+FA:
+  name: Fălești
+  code: FA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة فاليستي
+    bg: Фалещки район
+    bn: ফালেস্তি জেলা
+    ca: Districte de Faleşti
+    cs: Okres Fălești
+    da: Fălești District
+    de: Rajon Fălești
+    el: Φαλέστι
+    en: Fălești
+    es: Distrito de Fălești
+    fi: Făleștin kaupunginosa
+    fr: Raion de Falești
+    gu: ફલેસ્ટી જિલ્લો
+    hi: फैलेस्टी जिला
+    id: Raionul Făleşti
+    it: distretto di Făleşti
+    ja: ファレシュティ県
+    ka: ფელეშტის რაიონი
+    kn: ಫಾಲೆಸ್ಟಿ ಜಿಲ್ಲೆ
+    ko: 펄레슈티 구
+    lt: Feleščio rajonas
+    mr: फलेस्टी जिल्हा
+    ms: Falesti District
+    nb: Fălești
+    nl: Fălești
+    pl: Rejon Făleşti
+    pt: Făleşti
+    ro: raionul Fălești
+    ru: Фалештский район
+    si: ෆාලෙස්ටි දිස්ත්‍රික්කය
+    sk: Făleşti
+    sv: Făleşti (distrikt)
+    ta: பால்ஸ்தீ மாவட்டம்
+    te: ఫాలెస్టి జిల్లా
+    th: เมืองฟาเรสตี
+    tr: Falesti District
+    uk: Фалештський район
+    ur: فالیشتی ضلع
+    vi: Quận Falesti
+    zh: 弗萊什蒂區
+    lv: Feleštu rajons
+    ceb: Fălești
+    sq: Raionul Falești
+    ccp: "\U0001111C\U00011123\U0001112C\U0001110C\U00011134\U00011111\U00011128"
+    'no': Fălești
+    az: Faleşt rayonu
+  comments:
+  type: district
+FL:
+  name: Florești
+  code: FL
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة فلوريستي
+    be: Фларэшцкі раён
+    bg: Флорещки район
+    bn: ফ্লরেস্তি জেলা
+    ca: Districte de Floreşti
+    cs: Okres Florești
+    da: Florești
+    de: Rajon Florești
+    el: Φλορέστι
+    en: Florești
+    es: Distrito de Florești
+    fi: Floreștin kaupunginosa
+    fr: Raion de Florești
+    gu: ફ્લોરેસ્ટી જિલ્લો
+    hi: फ्लोरेस्टी जिला
+    id: Raionul Floreşti
+    it: distretto di Florești
+    ja: フロレシュティ県
+    ka: ფლორეშტის რაიონი
+    kn: ಫ್ಲೋರೆಸ್ಟಿ ಜಿಲ್ಲೆ
+    ko: 플로레슈티 구
+    lt: Floreščio rajonas
+    mr: फ्लॉरेस्टी जिल्हा
+    ms: Floresti District
+    nb: Florești
+    nl: Florești
+    pl: Rejon Floreşti
+    pt: Floreşti
+    ro: raionul Florești
+    ru: Флорештский район
+    si: ෆ්ලොරෙස්ටි දිස්ත්‍රික්කය
+    sk: Floreşti
+    sv: Floreşti (distrikt)
+    ta: பிலாஸ்டி மாவட்டம்
+    te: ఫ్లోరెస్టి జిల్లా
+    th: เขตฟลอเรสติ
+    tr: Floresti District
+    uk: Флорештський район
+    ur: فلوریشتی ضلع
+    vi: Quận Floresti
+    zh: 弗洛雷什蒂區
+    lv: Floreštu rajons
+    ceb: Florești (distrito)
+    sq: Raionul Florești
+    ccp: "\U0001111C\U00011133\U00011123\U0001112E\U00011122\U0001112C\U0001110C\U00011134\U00011111\U00011128"
+    'no': Florești
+    fa: ناحیه فلورشتی
+  comments:
+  type: district
+GA:
+  name: Gagauzia, Unitate Teritoriala Autonoma (UTAG)
+  code: GA
+  unofficial_names: Gagauzia, Unitate Teritoriala Autonoma (UTAG)
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Gagauzia
+    af: Gagausië
+    ar: غاغاوزيا
+    az: Qaqauziya
+    be: Гагаузія
+    bg: Гагаузия
+    bn: গাগুজিয়া
+    ca: Gagaúsia
+    cs: Gagauzsko
+    da: Gagauzien
+    de: Gagausien
+    el: Γκαγκαουζία
+    es: Gagauzia
+    et: Gagauusia
+    eu: Gagauzia
+    fa: گاگائوزیا
+    fi: Gagauzia
+    fr: Gagaouzie
+    gl: Gagauzia
+    gu: ગાગાઉઝિયા
+    he: גגאוזיה
+    hi: गगाउज़िया
+    hr: Gagauzija
+    hu: Gagauzia
+    id: Gagauzia
+    is: Gagásía
+    it: Gagauzia
+    ja: ガガウズ自治区
+    ka: გაგაუზია
+    kn: ಗಾಗುಜಿಯ
+    ko: 가가우지아
+    lt: Gagaūzija
+    lv: Gagauzija
+    mn: Гагауз нутаг
+    mr: गॅगाउझिया
+    ms: Gagauzia
+    nb: Gagaus
+    nl: Gagaoezië
+    pl: Gagauzja
+    pt: Gagaúzia
+    ro: Găgăuzia
+    ru: Гагаузия
+    si: ගාගෝසියා
+    sk: Gagauzsko
+    sr: Гагаузија
+    sv: Gagauzien
+    ta: காகவுசிங்
+    te: గగావూజియా
+    th: กาเกาเซีย
+    tr: Gagavuzya
+    uk: Гагаузія
+    ur: گاگاؤزیا
+    vi: Gagauzia
+    zh: 加告茲自治區
+    cy: Gagauzia
+    ceb: Găgăuzia
+    sr_Latn: Gagauzija
+    sq: Gagauzia
+    ccp: "\U00011109\U00011109\U00011105\U0001112A\U0001110E\U00011128\U00011120"
+    ky: Гагаузия
+    kk: Гәгәузия
+    mk: Гагаузија
+    tk: Gagauzystan
+    'no': Gagaus
+  comments:
+  type: autonomous_territorial_unit
+GL:
+  name: Glodeni
+  code: GL
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة غلوديني
+    bg: Голденски район
+    bn: গ্লুডেনি জেলা
+    ca: Districte de Glodeni
+    cs: Okres Glodeni
+    da: Glodeni District
+    de: Rajon Glodeni
+    el: Γκλοντένι
+    en: Glodeni
+    es: Distrito de Glodeni
+    fi: Glodenin piiri
+    fr: Raion de Glodeni
+    gu: ગ્લોડેની જિલ્લો
+    hi: ग्लोडेनी जिला
+    id: Raionul Glodeni
+    it: distretto di Glodeni
+    ja: グロデニ県
+    ka: გლოდენის რაიონი
+    kn: ಗ್ಲೋಡೆನಿ ಜಿಲ್ಲೆ
+    ko: 글로데니 구
+    lt: Glodenio rajonas
+    mr: ग्लोडेनी जिल्हा
+    ms: Glodeni District
+    nb: Glodeni
+    nl: Glodeni
+    pl: Rejon Glodeni
+    pt: Glodeni
+    ro: raionul Glodeni
+    ru: Глодянский район
+    si: ග්ලොඩෙනි දිස්ත්‍රික්කය
+    sk: Glodeni
+    sv: Glodeni (distrikt)
+    ta: கிலோடெனி மாவட்டம்
+    te: గ్లోడెని జిల్లా
+    th: เขตโกลเดนี
+    tr: Glodeni District
+    uk: Глоденський район
+    ur: گلودینی ضلع
+    vi: Quận Glodeni
+    zh: 格洛代尼區
+    lv: Glodenu rajons
+    ceb: Glodeni (distrito)
+    sq: Raionul Glodeni
+    ccp: "\U00011109\U00011133\U00011123\U0001112E\U00011113\U0001112C\U0001111A\U00011128"
+    'no': Glodeni
+    fa: ناحیه گلودنی
+  comments:
+  type: district
+HI:
+  name: Hîncești
+  code: HI
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة هينسيستي
+    bg: Хънчещки район
+    bn: হিনকেস্তি জেলা
+    ca: Districte de Hînceşti
+    da: Hîncești District
+    de: Rajon Hîncești
+    el: Χινκέστι
+    en: Hîncești
+    es: Distrito de Hînceşti
+    fi: Hînceștin kaupunginosa
+    fr: Raion de Hîncești
+    gu: હિન્સેસ્ટી જિલ્લો
+    hi: हिंसेस्टी जिला
+    id: Raionul Hînceşti
+    it: distretto di Hînceşti
+    ja: ヒンチェシュティ県
+    ka: ჰინჩეშტის რაიონი
+    kn: ಹಿನ್ಸ್ಟಿ ಜಿಲ್ಲೆ
+    ko: 흔체슈티 구
+    lt: Hinčeščio rajonas
+    mr: हेंस्टेटी जिल्हा
+    ms: Hincesti District
+    nb: Hîncești
+    nl: Hîncești
+    pl: Rejon Hînceşti
+    pt: Hînceşti
+    ro: raionul Hîncești
+    ru: Хынчештский район
+    si: හින්සේස්ටි දිස්ත්‍රික්කය
+    sk: Hînceşti
+    sv: Hînceşti (distrikt)
+    ta: இன்செஸ்ட்டி மாவட்டம்
+    te: హిన్సెస్టి జిల్లా
+    th: เขตฮินเชสติ
+    tr: Hinceşti District
+    uk: Гинчештський район
+    ur: ہینچیشتی ضلع
+    vi: Quận Hincesti
+    zh: 亨切什蒂區
+    lv: Hinčeštu rajons
+    ceb: Hîncești (distrito)
+    sq: Raionul Hîncești
+    ccp: "\U00011126\U00011128\U0001111A\U00011134\U00011125\U0001112C\U0001110C\U00011134\U00011111\U00011128"
+    hy: Հնչեշտի շրջան
+    'no': Hîncești
+    az: Hinçesti rayonu
+    be: Хынчэшцкі раён
+  comments:
+  type: district
+IA:
+  name: Ialoveni
+  code: IA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة إيلوفيني
+    bg: Яловенски район
+    bn: লালোভেনি জেলা
+    ca: Districte de Ialoveni
+    cs: Okres Ialoveni
+    da: Ialoveni District
+    de: Rajon Ialoveni
+    el: Ιαλοβένι
+    en: Ialoveni
+    es: Distrito de Ialoveni
+    fi: Ialovenin hallintopiiri
+    fr: Raion de Ialoveni
+    gu: ઈઅલોવેની જિલ્લો
+    hi: लालोवेनी जिला
+    id: Raionul Ialoveni
+    it: distretto di Ialoveni
+    ja: ヤロベニ県
+    ka: იალოვენის რაიონი
+    kn: ಐಲೋವೆನಿ ಜಿಲ್ಲೆ
+    ko: 이알로베니 구
+    lt: Jalovenio rajonas
+    mr: इलावेनी जिल्हा
+    ms: Ialoveni District
+    nb: Ialoveni
+    nl: Ialoveni
+    pl: Rejon Ialoveni
+    pt: Ialoveni (distrito)
+    ro: raionul Ialoveni
+    ru: Яловенский район
+    si: ලලොවෙනි දිස්ත්‍රික්කය
+    sk: Ialoveni (okres)
+    sv: Ialoveni
+    ta: இஅலோவேனி மாவட்டம்
+    te: లాలోవెని జిల్లా
+    th: เขตลาเลิฟนิ
+    tr: ialoveni District
+    uk: Яловенський район
+    ur: یالووہنی ضلع
+    vi: Quận Ialoveni
+    zh: 亞洛韋尼區
+    lv: Jalovenu rajons
+    ceb: Ialoveni
+    sq: Raionul Ialoveni
+    ccp: "\U00011103\U0001112D\U00011103\U00011123\U0001112E\U0001111E\U0001112C\U0001111A\U00011128"
+    'no': Ialoveni
+    fa: ناحیه ایالوونی
+  comments:
+  type: district
+LE:
+  name: Leova
+  code: LE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة ليوفا
+    bg: Леовски район
+    bn: লিওভা জেলা
+    ca: Districte de Leova
+    cs: Okres Leova
+    da: Leova District
+    de: Rajon Leova
+    el: Λεόβα
+    en: Leova
+    es: Distrito de Leova
+    fi: Leovan kaupunginosa
+    fr: Raion de Leova
+    gu: લિઓવા જિલ્લો
+    hi: लिओवा जिला
+    id: Raionul Leova
+    it: distretto di Leova
+    ja: レオバ県
+    ka: ლეოვის რაიონი
+    kn: ಲೆವಾ ಜಿಲ್ಲೆ
+    ko: 레오바 구
+    lt: Leovos rajonas
+    mr: लिओवा जिल्हा
+    ms: Leova District
+    nb: Leova
+    nl: Leova
+    pl: Rejon Leova
+    pt: Leova
+    ro: raionul Leova
+    ru: Леовский район
+    si: ලියෝවා දිස්ත්‍රික්කය
+    sk: Leova
+    sv: Leova (distrikt)
+    ta: லேசாவ மாவட்டம்
+    te: లియోవా జిల్లా
+    th: เขตลีโอวา
+    tr: Leova District
+    uk: Леовський район
+    ur: لیووا ضلع
+    vi: Quận Leova
+    zh: 萊奧瓦區
+    lv: Leovas rajons
+    ceb: Leova
+    sq: Raionul Leova
+    ccp: "\U00011123\U00011128\U00011103\U0001112E\U0001111E"
+    'no': Leova
+  comments:
+  type: district
+NI:
+  name: Nisporeni
+  code: NI
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة نيسبوريني
+    bg: Ниспоренски район
+    bn: নিস্পরেনি জেলা
+    ca: Districte de Nisporeni
+    da: Nisporeni District
+    de: Rajon Nisporeni
+    el: Νισπορένι
+    en: Nisporeni
+    es: Distrito de Nisporeni
+    fi: Nisporenin kaupunginosa
+    fr: Raion de Nisporeni
+    gu: નિસ્પોરેની જિલ્લો
+    hi: निस्पोरनी जिला
+    id: Raionul Nisporeni
+    it: distretto di Nisporeni
+    ja: ニスポレニ県
+    ka: ნისპორენის რაიონი
+    kn: ನಿಸ್ಪೊರೆನಿ ಜಿಲ್ಲೆ
+    ko: 니스포레니 구
+    lt: Nisporenio rajonas
+    mr: निस्पोरनी जिल्हा
+    ms: Nisporeni District
+    nb: Nisporeni
+    nl: Nisporeni
+    pl: Rejon Nisporeni
+    pt: Nisporeni
+    ro: raionul Nisporeni
+    ru: Ниспоренский район
+    si: නිස්පොරෙනි දිස්ත්‍රික්කය
+    sk: Nisporeni
+    sv: Nisporeni (distrikt)
+    ta: நிஸ்ப்பூனி மாவட்டம்
+    te: నిస్పోరెని జిల్లా
+    th: เขตนิสโปเรนี
+    tr: Nisporeni District
+    uk: Ніспоренський район
+    ur: نیسپورینی ضلع
+    vi: Quận Nisporeni
+    zh: 尼斯波雷尼區
+    lv: Nisperonu rajons
+    ceb: Nisporeni
+    sq: Raionul Nisporeni
+    ccp: "\U0001111A\U00011128\U0001110C\U00011134\U0001111B\U00011127\U00011122\U0001112C\U0001111A\U00011128"
+    'no': Nisporeni
+    fa: ناحیه نیسپورنی
+  comments:
+  type: district
+OC:
+  name: Ocnița
+  code: OC
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة أونيتا
+    bg: Окницки район
+    bn: ওকনিতা জেলা
+    ca: Districte d’Ocniţa
+    cs: Okres Ocniţa
+    da: Ocnița District
+    de: Rajon Ocnița
+    el: Οκνίτα
+    en: Ocniţa
+    es: Distrito de Ocniţa
+    fi: Ocnițan piiri
+    fr: Raion d’Ocnița
+    gu: ઓસ્નીટા જિલ્લો
+    hi: ऑकनिटा जिला
+    id: Raionul Ocniţa
+    it: distretto di Ocniţa
+    ja: オクニタ県
+    ka: ოკნიცის რაიონი
+    kn: ಓಕ್ನಿಟಾ ಜಿಲ್ಲೆ
+    ko: 오크니차 구
+    lt: Oknicos rajonas
+    mr: ओकिन्टा जिल्हा
+    ms: Ocnita District
+    nb: Ocnița
+    nl: Ocnița
+    pl: Rejon Ocniţa
+    pt: Ocniţa
+    ro: raionul Ocnița
+    ru: Окницкий район
+    si: ඔක්නිටා දිස්ත්‍රික්කය
+    sk: Ocniţa
+    sv: Raionul Ocniţa
+    ta: ஓக்நீதா மாவட்டம்
+    te: ఒసినిత జిల్లా
+    th: เขตอ็อกนีตซา
+    tr: Ornita District
+    uk: Окницький район
+    ur: اوکنیتسا ضلع
+    vi: Quận Ocnita
+    zh: 奧克尼察區
+    lv: Oknicas rajons
+    ceb: Raionul Ocnița
+    sq: Raionul Ocnița
+    ccp: "\U00011103\U00011127\U00011107\U00011134\U0001111A\U00011128\U00011111"
+    'no': Ocnița
+    be: Окніцкі раён
+  comments:
+  type: district
+OR:
+  name: Orhei
+  code: OR
+  unofficial_names: Orhei
+  geo:
+    latitude: 47.383333
+    longitude: 28.816667
+    min_latitude: 47.333195
+    min_longitude: 28.7943291
+    max_latitude: 47.40391169999999
+    max_longitude: 28.8649678
+  translations:
+    en: Orhei
+    ar: مقاطعة أورهي
+    bg: Орхеевски район
+    bn: ওরহেয় জেলা
+    ca: Districte d’Orhei
+    cs: Okres Orhei
+    da: Orhei District
+    de: Rajon Orhei
+    el: Ορχέι
+    es: Distrito de Orhei
+    fi: Orhein kaupunginosa
+    fr: Raion d’Orhei
+    gu: ઓરહેઇ જિલ્લો
+    hi: औरहेई ज़िला
+    id: Raionul Orhei
+    it: distretto di Orhei
+    ja: オルゲイ県
+    ka: ორჰეის რაიონი
+    kn: ಒರೈ ಜಿಲ್ಲೆ
+    ko: 오르헤이 구
+    lt: Orhėjaus rajonas
+    mr: ओरिई जिल्हा
+    ms: Orhei District
+    nb: Orhei
+    nl: Orhei
+    pl: Rejon Orgiejów
+    pt: Orhei
+    ro: raionul Orhei
+    ru: Оргеевский район
+    si: ඔර්හෙයි දිස්ත්‍රික්කය
+    sk: Orhei
+    sv: Orhei rajon
+    ta: போர்ஹெய் மாவட்டம்
+    te: ఓర్హె జిల్లా
+    th: รัฐบารีนัส
+    tr: Orhei District
+    uk: Оргіївський район
+    ur: اورہئی ضلع
+    vi: Quận Orhei
+    zh: 奧爾海伊區
+    lv: Orhejas rajons
+    ceb: Orhei
+    sq: Raionul Orhei
+    ccp: "\U00011103\U00011127\U00011122\U00011134\U00011126\U0001112C\U0001112D"
+    'no': Orhei
+    fa: ناحیه اورهئی
+  comments:
+  type: district
+RE:
+  name: Rezina
+  code: RE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة ريزاينا
+    bg: Резински район
+    bn: রেজিনা জেলা
+    ca: Districte de Rezina
+    da: Rezina District
+    de: Rajon Rezina
+    el: Ρεζίνα
+    en: Rezina
+    es: Distrito de Rezina
+    fi: Rezinan kaupunginosa
+    fr: Raion de Rezina
+    gu: રેઝીના જિલ્લો
+    hi: रेजिना जिला
+    id: Raionul Rezina
+    it: distretto di Rezina
+    ja: レジナ県
+    ka: რეზინის რაიონი
+    kn: ರೆಝಿನಾ ಜಿಲ್ಲೆ
+    ko: 레지나 구
+    lt: Rezinos rajonas
+    mr: रेजिना जिल्हा
+    ms: Rezina District
+    nb: Rezina
+    nl: Rezina
+    pl: Rejon Rezina
+    pt: Rezina
+    ro: raionul Rezina
+    ru: Резинский район
+    si: රෙසිනා දිස්ත්‍රික්කය
+    sk: Rezina
+    sv: Rezina (distrikt)
+    ta: ரெஜினா மாவட்டம்
+    te: రెజీనా జిల్లా
+    th: เขตเรซีนา
+    tr: Rezina District
+    uk: Резинський район
+    ur: ریزینا ضلع
+    vi: Quận Rezina
+    zh: 雷濟納區
+    lv: Rezinas rajons
+    ceb: Rezina
+    sq: Raionul Rezina
+    ccp: "\U00011122\U0001112C\U0001110E\U0001111A"
+    'no': Rezina
+    fa: ناحیه رزینا
+  comments:
+  type: district
+RI:
+  name: Rîșcani
+  code: RI
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة روشكاني
+    bg: Ръшкански район
+    bn: রিসকানি জেলা
+    ca: Districte de Rîşcani
+    da: Rîșcani District
+    de: Rajon Rîșcani
+    el: Ρισκάνι
+    en: Rîșcani
+    es: Distrito de Rîșcani
+    fi: Rîșcanin kaupunginosa
+    fr: Raion de Rîșcani
+    gl: Distrito de Rîșcani
+    gu: રિસની જિલ્લો
+    hi: रिस्कानी जिला
+    id: Raionul Rîşcani
+    it: distretto di Rîşcani
+    ja: リスカニ県
+    ka: რიშკანის რაიონი
+    kn: ರಿಸ್ಕನಿ ಜಿಲ್ಲೆ
+    ko: 르슈카니 구
+    lt: Raškanio rajonas
+    mr: रिसकानी जिल्हा
+    ms: Riscani District
+    nb: Rîșcani
+    nl: Rîșcani
+    pl: Rejon Rîşcani
+    pt: Rîşcani
+    ro: raionul Rîșcani
+    ru: Рышканский район
+    si: රිස්කානි දිස්ත්‍රික්කය
+    sk: Rîşcani
+    sv: Rîşcani (distrikt)
+    ta: ரிஸ்கேணி மாவட்டம்
+    te: రిస్కాని జిల్లా
+    th: เขตริชคานี
+    tr: Riscani District
+    uk: Ришканський район
+    ur: ریشکانی ضلع
+    vi: Quận Riscani
+    zh: 雷什卡內區
+    lv: Riškanu rajons
+    ceb: Rîșcani
+    sq: Raionul Rîșcani
+    ccp: "\U00011122\U00011128\U0001110C\U00011134\U00011107\U0001111A\U00011128"
+    'no': Rîșcani
+    fa: ناحیه ریچانی
+  comments:
+  type: district
+SD:
+  name: Șoldănești
+  code: SD
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة شولدانيشتي
+    bg: Шолданещки район
+    bn: সোল্ডানেস্তি জেলা
+    ca: Districte de Şoldăneşti
+    cs: Okres Şoldăneşti
+    da: Soldanesti District
+    de: Rajon Șoldănești
+    el: Επαρχία Σολντανέστι
+    en: Șoldănești
+    es: Distrito de Șoldănești
+    fi: Șoldăneștin kaupunginosa
+    fr: Raion de Șoldănești
+    gl: Distrito de Șoldănești
+    gu: સોલ્ડેનેસ્ટી જિલ્લો
+    hi: सोल्डानेस्ती जिला
+    id: Raionul Şoldăneşti
+    it: distretto di Şoldăneşti
+    ja: ソルダネシュティ県
+    ka: შოლდენეშტის რაიონი
+    kn: ಸಲ್ಡಾನೆಸ್ಟಿ ಜಿಲ್ಲೆ
+    ko: 숄더네슈티 구
+    lt: Šoldeneščio rajonas
+    mr: सोल्डनेस्टी जिल्हा
+    ms: Daerah Soldanesti
+    nb: Șoldănești
+    nl: Șoldănești
+    pl: Rejon Şoldăneşti
+    pt: Şoldăneşti
+    ro: raionul Șoldănești
+    ru: Шолданештский район
+    si: සෝල්දානෙස්ටි දිස්ත්‍රික්කය
+    sk: Şoldăneşti
+    sv: Şoldăneşti (distrikt)
+    ta: ஸ்ஓல்டன்ஸ்தி மாவட்டம்
+    te: సోల్డానెస్టి జిల్లా
+    th: เขตโซแดเนสติ
+    tr: Soldanesti Dstric
+    uk: Шолданештський район
+    ur: شولدانیشتی ضلع
+    vi: Quận Soldanesti
+    zh: 紹爾德內什蒂區
+    lv: Šoldeneštu rajons
+    ceb: Șoldănești
+    sq: Raionul Șoldănești
+    ccp: "\U00011125\U0001112E\U00011123\U00011134\U00011113\U0001111A\U0001112C\U0001110C\U00011134\U00011111\U00011128"
+    'no': Șoldănești
+    hu: Șoldănești járás
+  comments:
+  type: district
+SI:
+  name: Sîngerei
+  code: SI
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة سونجري
+    bg: Сънджерейски район
+    bn: সিঙ্গেরি জেলা
+    ca: Districte de Sîngerei
+    da: Sîngerei District
+    de: Rajon Sîngerei
+    el: Σίνγκερεϊ
+    en: Sîngerei
+    es: Distrito de Sîngerei
+    fi: Sîngerein piiri
+    fr: Raion de Sîngerei
+    gu: સિન્ગેરી જિલ્લો
+    hi: सिंगेरी जिला
+    id: Raionul Sîngerei
+    it: distretto di Sîngerei
+    ja: シンジェレイ県
+    ka: სინჯერეის რაიონი
+    kn: ಸಿಂಗೇರಿ ಜಿಲ್ಲೆ
+    ko: 슨제레이 구
+    lt: Sindžerėjaus rajonas
+    mr: सिनेगेरी जिल्हा
+    ms: Singerei District
+    nb: Sîngerei
+    nl: Sîngerei
+    pl: Rejon Sîngerei
+    pt: Sîngerei
+    ro: raionul Sîngerei
+    ru: Сынжерейский район
+    si: සින්ගේරෙයි දිස්ත්‍රික්කය
+    sk: Sîngerei
+    sv: Sîngerei (distrikt)
+    ta: சிகெரெய் மாவட்டம்
+    te: సింగరీ జిల్లా
+    th: เขตซินกีไร
+    tr: Singerei District
+    uk: Синжерейський район
+    ur: سینگیرئی ضلع
+    vi: Quận Singerei
+    zh: 森傑雷區
+    lv: Sindžerejas rajons
+    ceb: Sîngerei
+    sq: Raionul Sîngerei
+    ccp: "\U00011125\U00011128\U0001111A\U00011134\U00011109\U0001112C\U00011122\U0001112D"
+    'no': Sîngerei
+    be: Сынжарэйскі раён
+  comments:
+  type: district
+SN:
+  name: Stînga Nistrului, unitatea teritoriala din
+  code: SN
+  unofficial_names: Stînga Nistrului, unitatea teritoriala din
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Transnistria
+    be: Аўтаномнае тэрытарыяльнае ўтварэнне з асаблівым прававым статусам Прыднястроўе
+    cs: Autonomní územně správní jednotka se zvláštním statusem Podněstří
+    es: Unidad territorial autónoma con un estatus jurídico especial Transnistria
+    fr: Transnistrie
+    ja: 沿ドニエストル地域
+    ko: 트란스니스트리아 자치 영토 단위
+    ro: Unitățile Administrativ-Teritoriale din Stînga Nistrului
+    ru: Административно-территориальные единицы левобережья Днестра
+    uk: Придністровʼя
+    ur: ٹرینسنیسٹریا خود مختار علاقائی اکائی مع خصوصی قانونی حیثیت
+    zh: 德涅斯特河沿岸自治领土单位
+    ceb: Unitatea Teritorială din Stînga Nistrului
+    ccp: "\U00011111\U00011133\U00011122\U0001111A\U00011134\U0001111A\U00011128\U0001110C\U00011134\U00011111\U00011133\U00011122\U00011128\U00011120"
+    ar: ترانسنيستريا
+    ca: Unitats Administratives Territorials de la Ribera Esquerra del Dnièster
+    da: Administrative territoriale enheder på venstre bred af Dnestr
+    et: Dnestri vasakkalda autonoomne territoriaalüksus
+    fa: واحدهای اداری-سرزمینی کرانه چپ دنیستر
+  comments:
+  type: territorial_unit
+SO:
+  name: Soroca
+  code: SO
+  unofficial_names: Soroca
+  geo:
+    latitude: 48.166667
+    longitude: 28.3
+    min_latitude: 48.1209551
+    min_longitude: 28.2504846
+    max_latitude: 48.1874054
+    max_longitude: 28.3286763
+  translations:
+    en: Soroca
+    ar: مقاطعة سوروكا
+    bg: Сорокски район
+    bn: সরোকা জেলা
+    ca: Districte de Soroca
+    cs: Okres Soroca
+    da: Soroca District
+    de: Rajon Soroca
+    el: Σορόκα
+    es: Distrito de Soroca
+    fi: Sorocan kaupunginosa
+    fr: Raion de Soroca
+    gu: સોરોકા જિલ્લો
+    hi: सोरोका जिला
+    id: Raionul Soroca
+    it: distretto di Soroca
+    ja: ソロカ県
+    ka: სოროკის რაიონი
+    kn: ಸೊರೊಕಾ ಜಿಲ್ಲೆ
+    ko: 소로카 구
+    lt: Sorokos rajonas
+    mr: सोरकोआ जिल्हा
+    ms: Soroca District
+    nb: Soroca
+    nl: Soroca
+    pl: Rejon Soroca
+    pt: Distrito de Soroca
+    ro: raionul Soroca
+    ru: Сорокский район
+    si: සොරෝකා දිස්ත්‍රික්කය
+    sk: Soroca (okres)
+    sv: Soroca rajon
+    ta: ஸோரோசா மாவட்டம்
+    te: సొరోకా జిల్లా
+    th: โซโรคา
+    tr: Soroco District
+    uk: Сороцький район
+    ur: سوروکا ضلع
+    vi: Quận Soroca
+    zh: 索羅卡區
+    lv: Sorokas rajons
+    ceb: Raionul Soroca
+    sq: Raionul Soroca
+    ccp: "\U00011125\U00011127\U00011122\U0001112E\U00011107"
+    hy: Սորոկի շրջան
+    'no': Soroca
+    fa: ناحیه سوروکا
+    mk: Сорока (реон)
+  comments:
+  type: district
+ST:
+  name: Strășeni
+  code: ST
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة ستراسيني
+    be: Страшэнскі раён
+    bg: Страшенски район
+    bn: স্ট্রাসেনি জেলা
+    ca: Districte de Străşeni
+    da: Strășeni District
+    de: Rajon Strășeni
+    el: Στρασένι
+    en: Strășeni
+    es: Distrito de Străşeni
+    fi: Strășenin kaupunginosa
+    fr: Raion de Strășeni
+    gu: સ્ટ્રાસેની જિલ્લો
+    hi: स्त्रसेनी जिला
+    id: Raionul Străşeni
+    it: distretto di Strășeni
+    ja: ストラセニ県
+    ka: სტრეშენის რაიონი
+    kn: ಸ್ಟ್ರಾಷೆನಿ ಜಿಲ್ಲೆ
+    ko: 스트러셰니 구
+    lt: Strešenio rajonas
+    mr: स्ट्रसेनी जिल्हा
+    ms: Straseni District
+    nb: Strășeni
+    nl: Strășeni
+    pl: Rejon Străşeni
+    pt: Străşeni
+    ro: raionul Strășeni
+    ru: Страшенский район
+    si: ස්ට්රාසෙනි දිස්ත්‍රික්කය
+    sk: Străşeni
+    sv: Raionul Străşeni
+    ta: ஸ்டரசேனி மாவட்டம்
+    te: స్ట్రాసెని జిల్లా
+    th: เขตสตราเซนิ
+    tr: Straseni District
+    uk: Страшенський район
+    ur: ستراشینی ضلع
+    vi: Quận Straseni
+    zh: 斯特勒謝尼區
+    lv: Strešenu rajons
+    ceb: Raionul Strășeni
+    sq: Raionul Strășeni
+    ccp: "\U00011111\U00011133\U00011122\U00011125\U0001112C\U0001111A\U00011128"
+    'no': Strășeni
+  comments:
+  type: district
+SV:
+  name: Ștefan Vodă
+  code: SV
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة ستيفان فودا
+    bg: Щефанводски район
+    bn: স্টেফান ভোদা জেলা
+    ca: Districte de Ştefan Vodă
+    cs: Okres Ștefan Vodă
+    da: Stefan Voda
+    de: Rajon Ștefan Vodă
+    el: Στεφάν Βόντα
+    en: Ştefan Vodă
+    es: Distrito de Ştefan Vodă
+    fi: Ștefan Vodăn piiri
+    fr: raion de Ștefan Vodă
+    gu: સ્ટેફન વોડા જિલ્લો
+    hi: स्टेफन वोडा जिला
+    id: Raionul Ştefan Vodă
+    it: distretto di Ştefan Vodă
+    ja: シュテファン・ボーダ県
+    ka: შტეფან-ვოდეს რაიონი
+    kn: ಸ್ಟೆಫಾನ್ ವೋಡಾ ಜಿಲ್ಲೆ
+    ko: 슈테판보더 구
+    lt: Štefan Vodės rajonas
+    mr: सेट्फ़न वोडा जिल्हा
+    ms: Stefan Voda District
+    nb: Ștefan Vodă
+    nl: Ștefan Vodă
+    pl: Rejon Ştefan Vodă
+    pt: Ştefan Vodă (condado)
+    ro: raionul Ștefan Vodă
+    ru: Штефан-Водский район
+    si: ස්ටෙෆාන් වොඩා දිස්ත්‍රික්කය
+    sk: Ştefan Vodă (okres)
+    sv: Raionul Ştefan Vodă
+    ta: ஸ்டீபன் வோடா மாவட்டம்
+    te: స్టెఫాన్ వోడా జిల్లా
+    th: เขตสเตฟาน แบงค์
+    tr: Stefan Voda
+    uk: Штефан-Водський район
+    ur: شتیفان وودا ضلع
+    vi: Quận Stefan Voda
+    zh: 斯特凡大公區
+    lv: Štefanvodes rajons
+    ceb: Raionul Ștefan Vodă
+    sq: Raionul Ștefan Vodă
+    ccp: "\U0001110C\U00011133\U00011111\U0001112C\U0001111C\U0001111A\U00011134 \U0001111E\U0001112E\U00011113"
+    'no': Ștefan Vodă
+    mk: Штефан Вода (реон)
+  comments:
+  type: district
+TA:
+  name: Taraclia
+  code: TA
+  unofficial_names: Taraclia
+  geo:
+    latitude: 46.5703
+    longitude: 29.11559999999999
+    min_latitude: 46.547203
+    min_longitude: 29.0931702
+    max_latitude: 46.5827462
+    max_longitude: 29.1362143
+  translations:
+    en: Taraclia
+    ar: مقاطعة تاراكليا
+    be: Тараклійскі раён
+    bg: Тараклийски район
+    bn: তারাকলিয়া জেলা
+    ca: Districte de Taraclia
+    da: Taraclia District
+    de: Rajon Taraclia
+    el: Ταράκλια
+    es: Distrito de Taraclia
+    fi: Taraclian kaupunginosa
+    fr: Raion de Taraclia
+    gu: તરાક્લિયા જિલ્લો
+    hi: टेराक्लाया जिला
+    id: Raionul Taraclia
+    it: distretto di Taraclia
+    ja: タラクリア県
+    ka: ტარაკლიის რაიონი
+    kn: ಟರಾಕ್ಲಿಯಾ ಜಿಲ್ಲೆ
+    ko: 타라클리아 구
+    lt: Taraklijos rajonas
+    mr: तारकिया जिल्हा
+    ms: Taraclia District
+    nb: Taraclia
+    nl: Taraclia
+    pl: Rejon Taraclia
+    pt: Taraclia
+    ro: raionul Taraclia
+    ru: Тараклийский район
+    si: ටරසිලා දිස්ත්‍රික්කය
+    sk: Taraclia
+    sv: Taraclia rajon
+    ta: ட்ரைகிளியா மாவட்டம்
+    te: టారాస్లియా జిల్లా
+    th: เขตตาราเคลีย
+    tr: Taraclia District
+    uk: Тараклійський район
+    ur: تاراکلیا ضلع
+    vi: Quận Taraclia
+    zh: 塔拉克利亞區
+    lv: Taraklijas rajons
+    ceb: Taraclia
+    sq: Raionul Taraclia
+    ccp: "\U00011111\U00011122\U00011107\U00011134\U00011123\U00011128\U00011120"
+    'no': Taraclia
+    et: Taraclia rajoon
+    fa: ناحیه تاراکلیا
+  comments:
+  type: district
+TE:
+  name: Telenești
+  code: TE
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة تيلينيشتي
+    bg: Телнещки район
+    bn: তেলেনেস্তি জেলা
+    ca: Districte de Teleneşti
+    da: Telenești District
+    de: Rajon Telenești
+    el: Τελενέστι
+    en: Telenești
+    es: Distrito de Teleneşti
+    fi: Teleneștin kaupunginosa
+    fr: Raion de Telenești
+    gu: ટેલેનેસ્ટી જિલ્લો
+    hi: टेलेनेस्टी जिला
+    id: Raionul Teleneşti
+    it: distretto di Telenești
+    ja: テレネシュティ県
+    ka: ტელენეშტის რაიონი
+    kn: ಟೆಲೆನೆಸ್ತಿ ಜಿಲ್ಲೆ
+    ko: 텔레네슈티 구
+    lt: Teleneščio rajonas
+    mr: तेलनेस्टी जिल्हा
+    ms: Telenesti District
+    nb: Telenești
+    nl: Telenești
+    pl: Rejon Teleneşti
+    pt: Teleneşti (condado)
+    ro: raionul Telenești
+    ru: Теленештский район
+    si: ටෙලෙන්ස්ටි දිස්ත්‍රික්කය
+    sk: Teleneşti (okres)
+    sv: Teleneşti (distrikt)
+    ta: டெலென்ஸ்தி மாவட்டம்
+    te: టెలినెస్టి జిల్లా
+    th: เขตเทเลเนสติ
+    tr: Teleneşti District
+    uk: Теленештський район
+    ur: تیلینیشتی ضلع
+    vi: Quận Telenesti
+    zh: 泰萊內什蒂區
+    lv: Teleneštu rajons
+    ceb: Telenești (distrito)
+    sq: Raionul Telenești
+    ccp: "\U00011111\U0001112C\U00011123\U0001112C\U0001111A\U0001112C\U0001110C\U00011134\U00011111\U00011128"
+    be: Целянешцкі раён
+    'no': Telenești
+  comments:
+  type: district
+UN:
+  name: Ungheni
+  code: UN
+  unofficial_names: Ungheni
+  geo:
+    latitude: 47.216667
+    longitude: 27.816667
+    min_latitude: 47.1690154
+    min_longitude: 27.7592753
+    max_latitude: 47.2493487
+    max_longitude: 27.8279203
+  translations:
+    en: Ungheni
+    ar: مقاطعة اونغيني
+    bg: Унгенски район
+    bn: আনগেনি জেলা
+    ca: Districte d’Ungheni
+    cs: Okres Ungheni
+    da: Ungheni District
+    de: Rajon Ungheni
+    el: Ουνγκένι
+    es: Distrito de Ungheni
+    et: Ungheni maakond
+    fi: Unghenin kaupunginosa
+    fr: Raion d’Ungheni
+    gu: ઉંઘેની જિલ્લો
+    hi: उंगेनी जिला
+    id: Raionul Ungheni
+    it: distretto di Ungheni
+    ja: ウンゲニ県
+    ka: უნგენის რაიონი
+    kn: ಉಂಗೆನಿ ಜಿಲ್ಲೆ
+    ko: 운게니 구
+    lt: Ungenio rajonas
+    mr: ऊनघेणी जिल्हा
+    ms: Ungheni District
+    nb: Ungheni
+    nl: Ungheni
+    pl: Rejon Ungheni
+    pt: Ungheni
+    ro: raionul Ungheni
+    ru: Унгенский район
+    si: උන්ගෙනි දිස්ත්‍රික්කය
+    sk: Ungheni
+    sv: Ungheni rajon
+    ta: உங்க்கேணி மாவட்டம்
+    te: ఉంగేని జిల్లా
+    th: อูนเกนี
+    tr: Ungheni District
+    uk: Унгенський район
+    ur: اونگینی ضلع
+    vi: Quận Ungheni
+    zh: 溫格內區
+    lv: Ungenu rajons
+    ceb: Raionul Ungheni
+    sq: Raionul Ungheni
+    ccp: "\U00011103\U0001111A\U00011134\U0001110A\U0001112C\U0001111A\U00011128"
+    'no': Ungheni
+  comments:
+  type: district

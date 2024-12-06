@@ -1,0 +1,8 @@
+# These are our own config values defined by the app
+simple-app {
+    answer = 42
+}
+
+# Here we override some values used by a library
+simple-lib.foo = "This value comes from simple-app's application.conf"
+simple-lib.whatever = "This value comes from simple-app's application.conf"

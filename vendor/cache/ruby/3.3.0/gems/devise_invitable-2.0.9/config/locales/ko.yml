@@ -1,0 +1,24 @@
+ko:
+  devise:
+    failure:
+      invited: "귀하께로 초대장이 발부되었습니다. 초대를 수락하면 계정을 생성할 수 있습니다. "
+    invitations:
+      send_instructions: "초대 이메일이 %{email}에게로 발송되었습니다."
+      invitation_token_invalid: "제공된 초대장 토큰이 유효하지 않습니다!"
+      updated: "비밀번호가 성공적으로 설정되었으며, 현재 로그인 상태입니다."
+      updated_not_active: "비밀번호가 성공적으로 설정되었습니다."
+      no_invitations_remaining: "남은 초대장이 없습니다."
+      invitation_removed: "귀하께로 온 초대장이 삭제되었습니다."
+      new:
+        header: "초대장 발송"
+        submit_button: "발송하기"
+      edit:
+        header: "비밀번호 설정"
+        submit_button: "설정하기"
+    mailer:
+      invitation_instructions:
+        subject: "초대장 안내메일"
+        hello: "%{email}님 안녕하세요."
+        someone_invited_you: "귀하는 %{url}로 초대되었습니다. 아래의 링크를 클릭하여 초대를 수락할 수 있습니다."
+        accept: "초대수락"
+        ignore: "초대를 원치 않을 경우 이 이메일을 무시해도 됩니다.<br />위의 링크로 접속하여 귀하의 비밀번호를 설정하여 계정을 생성할 수 있습니다."

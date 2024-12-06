@@ -1,0 +1,1 @@
+require 'sassc/rails/railtie'

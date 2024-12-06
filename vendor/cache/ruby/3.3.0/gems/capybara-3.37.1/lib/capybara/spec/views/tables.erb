@@ -1,0 +1,130 @@
+
+<form action="/form" method="post">
+  <table id="agent_table">
+    <caption>Agent</caption>
+
+    <tr onclick="this.querySelector('td label').innerHTML = 'Clicked'">
+      <td>
+        <label for="form_agent_name">Name</label>
+      </td>
+      <td>
+        <input type="text" name="form[agent_name]" value="James" id="form_agent_name"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="Create"/>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<form action="/form" method="post">
+  <table id="girl_table">
+    <caption>Girl</caption>
+
+    <tr>
+      <td>
+        <label for="form_girl_name">Name</label>
+      </td>
+      <td>
+        <input type="text" name="form[girl_name]" value="Vesper" id="form_girl_name"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="Create"/>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<form action="/form" method="post">
+  <table id="villain_table">
+    <caption>Villain</caption>
+
+    <tr>
+      <td>
+        <label for="form_villain_name">Name</label>
+      </td>
+      <td>
+        <input type="text" name="form[villain_name]" value="Ernst" id="form_villain_name"/>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="Create"/>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<table>
+  <caption>Horizontal Headers</caption>
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>City</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Thomas</td>
+      <td>Walpole</td>
+      <td>Oceanside</td>
+    </tr>
+    <tr>
+     <td>Danilo</td>
+     <td>Wilkinson</td>
+     <td>Johnsonville</td>
+    </tr>
+    <tr>
+      <td>Vern</td>
+      <td>Konopelski</td>
+      <td>Everette</td>
+    </tr>
+    <tr>
+      <td>Ratke</td>
+      <td>Lawrence</td>
+      <td>East Sorayashire</td>
+    </tr>
+    <tr>
+      <td>Palmer</td>
+      <td>Sawayn</td>
+      <td>West Trinidad</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <caption>Vertical Headers</caption>
+  <tr>
+    <th>First Name</th>
+    <td>Thomas</td>
+    <td>Danilo</td>
+    <td>Vern</td>
+    <td>Ratke</td>
+    <td>Palmer</td>
+  </tr>
+  <tr>
+    <th>Last Name</th>
+    <td>Walpole</td>
+    <td>Wilkinson</td>
+    <td>Konopelski</td>
+    <td>Lawrence</td>
+    <td>Sawayn</td>
+  </tr>
+  <tr>
+    <th>City</th>
+    <td>Oceanside</td>
+    <td>Johnsonville</td>
+    <td>Everette</td>
+    <td>East Sorayashire</td>
+    <td>West Trinidad</td>
+  </tr>
+</table>
+

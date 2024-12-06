@@ -1,0 +1,2095 @@
+---
+B:
+  name: Région de Boké
+  code: B
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: إقليم بوكيه
+    be: Рэгіён Баке
+    bg: Боке
+    bn: বুকে অঞ্চল
+    da: Boké Region
+    de: Region Boké
+    el: Μποκέ
+    en: Boké Region
+    es: Boké
+    fi: Bokén alue
+    fr: Région de Boké
+    gu: બોક પ્રદેશ
+    hi: बोके क्षेत्र
+    id: Wilayah Boké
+    it: regione di Boké
+    ja: ボケ州
+    kn: ಬೊಕೆ ಪ್ರದೇಶ
+    ko: 보케 주
+    lt: Bokės regionas
+    mr: बोके प्रदेश
+    ms: Boke Region
+    nb: Boké
+    nl: Boké
+    pl: Boké
+    pt: Boké
+    ro: Regiunea Boké
+    ru: Боке
+    si: බොකේ කලාපය
+    sv: Boke Region
+    ta: போக்கே பகுதி
+    te: బోకె ప్రాంతం
+    th: จังหวัดบูกิ
+    tr: Boké Bölgesi
+    ur: بوک ریجن
+    vi: Khu vực Boké
+    zh: 博凱大區
+    lv: Bokes reģions
+    ceb: Boke Region
+    ccp: "\U0001111D\U0001112E\U00011107\U00011134 \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Bokéko eskualdea
+    uk: Регіон Боке
+    ca: Regió de Boké
+    'no': Boké
+    fa: ناحیه بوکه
+    hy: Բոկե
+  comments:
+  type: administrative_region
+BE:
+  name: Beyla
+  code: BE
+  unofficial_names: Beyla
+  geo:
+    latitude: 8.683333
+    longitude: -8.633333
+    min_latitude: 8.6760634
+    min_longitude: -8.6646938
+    max_latitude: 8.7033838
+    max_longitude: -8.623409200000001
+  translations:
+    en: Beyla
+    ar: محافظة بيلا
+    bg: Бейла
+    bn: বেলা প্রশাসনিক অঞ্চল
+    da: Beyla Prefecture
+    de: Beyla (Präfektur)
+    el: Μπεϋλά
+    es: Beyla
+    fi: Beylan prefektuuri
+    fr: préfecture de Beyla
+    gu: બેયલા પ્રીફેકચર
+    hi: बेयला प्रीफेक्चर
+    id: Prefektur Beyla
+    it: Prefettura di Beyla
+    ja: ベイラ県
+    kn: ಬೇಲಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 베일라 지방 행정 구역
+    mr: बेयला प्रीफेक्चअर
+    ms: Beyla Prefecture
+    nb: Beyla
+    nl: Beyla Prefecture
+    pl: Prefektura Beyla
+    pt: Beyla
+    ru: Префектура Бейла
+    si: බෙයිලා ප්‍රාන්තය
+    sv: Beyla Prefecture
+    ta: பெய்ல ப்ரீபெக்ட்டுறே
+    te: బేయ్‌లా ప్రిఫెక్చర్
+    th: จังหวัดเบย์ลา
+    tr: Beyla Prefecture
+    ur: بیئلا پریفیکچور
+    vi: Quận Beyla
+    lv: Beilas prefektūra
+    ceb: Beyla Prefecture
+    lt: Beilos prefektūra
+    zh: 貝拉省
+    ccp: "\U0001111D\U0001112C\U00011123"
+    uk: Префектура Бейла
+    'no': Beyla
+    ca: Beyla
+    fa: استان بیلا
+  comments:
+  type: prefecture
+BF:
+  name: Boffa
+  code: BF
+  unofficial_names: Boffa
+  geo:
+    latitude: 10.1808254
+    longitude: -14.0391615
+    min_latitude: 10.1706568
+    min_longitude: -14.050312
+    max_latitude: 10.1955781
+    max_longitude: -14.0259361
+  translations:
+    en: Boffa
+    ar: محافظة بوفا
+    bn: বোফ্যা প্রশাসনিক অঞ্চল
+    da: Boffa Prefecture
+    de: Boffa (Präfektur)
+    el: Μποφφά
+    es: Ayuntamiento del Boffa
+    fi: Boffan prefektuuri
+    fr: préfecture de Boffa
+    gu: બોફે પ્રીફેકચર
+    hi: बोफ़ा प्रीफेक्चर
+    id: Prefektur Boffa
+    it: Prefettura di Boffa
+    ja: ボッファ県
+    kn: ಬೋಫಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 보파 지방 행정 구역
+    mr: बोफो प्रीफेक्चअर
+    ms: Boffa Prefecture
+    nb: Boffa
+    nl: Boffa Prefecture
+    pl: Prefektura Boffa
+    pt: Prefeitura de Boffa
+    ru: Префектура Боффа
+    si: බෝඵා ප්‍රාන්තය
+    sv: Boffa (prefektur)
+    ta: போப்பாய ப்ரீபெக்ட்டுறே
+    te: బోఫా ప్రిఫెక్చర్
+    th: จังหวัดบูฟฟา
+    tr: Boffa Prefecture
+    ur: بوفا پریفیکچور
+    vi: Quận Boffa
+    lv: Bofas prefektūra
+    ceb: Boffa (prepektura)
+    lt: Bofos prefektūra
+    zh: 博法省
+    ccp: "\U0001111D\U0001112E\U0001111C"
+    uk: Префектура Бофа
+    'no': Boffa
+    fa: استان بوفا
+  comments:
+  type: prefecture
+BK:
+  name: Boké
+  code: BK
+  unofficial_names: Boké
+  geo:
+    latitude: 11.1864672
+    longitude: -14.1001326
+    min_latitude: 9.810391599999999
+    min_longitude: -15.0782058
+    max_latitude: 12.67622
+    max_longitude: -12.555448
+  translations:
+    en: Boké
+    de: Boké (Präfektur)
+    el: Μποκέ²
+    fr: préfecture de Boké
+    it: Prefettura di Boké
+    ja: ボケ県
+    nb: Boké²
+    nl: Boké Prefecture
+    pl: Prefektura Boké
+    sv: Boke Prefecture
+    ur: بوکے پریفیکچور
+    ceb: Boke Prefecture
+    ar: بریفيكجور بوكه
+    zh: 博凱省
+    ccp: "\U0001111D\U00011127\U00011107\U00011134"
+    es: Boké²
+    pt: Boké²
+    'no': Boké²
+    fa: استان بوکه
+  comments:
+  type: prefecture
+C:
+  name: Conakry
+  code: C
+  unofficial_names: Conakry
+  geo:
+    latitude: 9.509167
+    longitude: -13.712222
+    min_latitude: 9.5007226
+    min_longitude: -13.7279041
+    max_latitude: 9.770441199999999
+    max_longitude: -13.4295724
+  translations:
+    en: Conakry
+    af: Conakry
+    am: ኮናክሪ
+    ar: كوناكري
+    az: Konakri
+    be: Горад Конакры
+    bg: Конакри
+    bn: কোনাক্রি
+    ca: Conakry
+    cs: Conakry
+    da: Conakry
+    de: Conakry
+    el: Κονακρί
+    es: Conakri
+    et: Conakry
+    eu: Konakry
+    fa: کوناکری
+    fi: Conakry
+    fr: Conakry
+    gl: Conakry
+    gu: કોનાક્રી
+    he: קונאקרי
+    hi: कोनाक्री
+    hr: Conakry
+    hu: Conakry
+    hy: Կոնակրի
+    id: Conakry
+    is: Kónakrí
+    it: Conakry
+    ja: コナクリ
+    ka: კონაკრი
+    kn: ಕೊನಾಕ್ರಿ
+    ko: 코나크리
+    lt: Konakris
+    lv: Konakri
+    mn: Конакри
+    mr: कोनाक्री
+    ms: Conakry
+    nb: Conakry
+    nl: Conakry
+    pl: Konakry
+    pt: Conacri
+    ro: Conakry
+    ru: Конакри
+    si: කොනක්‍රි
+    sk: Konakry
+    sl: Conakry
+    sr: Конакри
+    sv: Conakry
+    sw: Conakry
+    ta: கொனாக்ரி
+    te: కోనాక్రీ
+    th: โคนาครี
+    tk: Konakri
+    tr: Konakri
+    uk: Конакрі
+    ur: کوناکری
+    vi: Conakry
+    cy: Conakry
+    ceb: Conakry Region
+    sr_Latn: Konakri
+    zh: 科納克里
+    yue_Hans: 康纳克立
+    jv: Conakry
+    sq: Konakri
+    ccp: "\U00011107\U00011127\U0001111A\U00011107\U00011133\U00011122\U00011128"
+    ga: Conacraí
+    ky: Конакри
+    ha: Conakry
+    so: Konakri
+    pa: ਕੋਨਾਕਰੀ
+    ml: കൊണാക്രി
+    yue: 康納克立
+    yo: Conakry
+    uz: Konakri
+    bs: Conakry
+    mk: Конакри
+    ha_NE: Conakry
+    'no': Conakry
+    yo_BJ: Conakry
+    ps: کوناکری
+  comments:
+  type: governorate
+CO:
+  name: Coyah
+  code: CO
+  unofficial_names: Coyah
+  geo:
+    latitude: 9.7
+    longitude: -13.383333
+    min_latitude: 9.692723899999999
+    min_longitude: -13.4085811
+    max_latitude: 9.7186919
+    max_longitude: -13.3728929
+  translations:
+    en: Coyah
+    ar: محافظة كويا
+    bn: কোয়াহ প্রশাসনিক অঞ্চল
+    da: Coyah Prefecture
+    de: Coyah
+    el: Κογιά
+    es: Coyah
+    fi: Coyahin prefektuuri
+    fr: préfecture de Coyah
+    gu: કોયાહ પ્રીફેકચર
+    hi: कोयाह प्रीफेक्चर
+    id: Prefektur Coyah
+    it: Prefettura di Coyah
+    ja: コヤ県
+    kn: ಕೊಯಾಹ್ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 코야 지방 행정 구역
+    mr: कोयाह प्रीफेक्चर
+    ms: Coyah Prefecture
+    nb: Coyah
+    nl: Coyah Prefecture
+    pl: Prefektura Coyah
+    pt: Coyah
+    ru: Префектура Койя
+    si: කොයාහ් ප්‍රාන්තය
+    sv: Coyah (prefektur)
+    ta: கோயத் ப்ரீபெக்ட்டுறே
+    te: కోయా ప్రిఫెక్చర్
+    th: โคย่า พรีเพคเตอ
+    tr: Coyah Prefecture
+    ur: کویاہ پریفیکچور
+    vi: Quận Coyah
+    lv: Kojahas prefektūra
+    ceb: Coyah
+    lt: Kojos Prefektūra
+    zh: 科亞省
+    ccp: "\U00011107\U0001112E\U00011120\U00011126\U00011134"
+    uk: Префектура Койя
+    'no': Coyah
+    ca: Coyah
+    fa: استان کویا
+  comments:
+  type: prefecture
+D:
+  name: Région de Kindia
+  code: D
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: إقليم كينديا
+    be: Рэгіён Кіндыя
+    bg: Киндия
+    bn: কিন্ডিয়া অঞ্চল
+    ca: Regió de Kindia
+    da: Kindia Region
+    de: Region Kindia
+    el: Κιντιά
+    en: Kindia Region
+    es: Kindia
+    fi: Kindian alue
+    fr: Région de Kindia
+    gu: કિંડિયા પ્રદેશ
+    hi: केंडिया क्षेत्र
+    id: Wilayah Kindia
+    it: regione di Kindia
+    ja: キンディア州
+    kn: ಕಿಂಡಿಯಾ ಪ್ರದೇಶ
+    ko: 킨디아 주
+    lt: Kindijos regionas
+    mr: केंडिया प्रदेश
+    ms: Kindia Region
+    nb: Kindia
+    nl: Kindia
+    pl: Kindia
+    pt: Kindia
+    ro: Regiunea Kindia
+    ru: Киндия
+    si: කින්ඩියා කලාපය
+    sv: Kindia Region
+    ta: கிண்டினா பகுதி
+    te: కిండియా ప్రాంతం
+    th: คินเดีย
+    tr: Kindia Bölgesi
+    uk: Кіндія
+    ur: کیندیا علاقہ
+    vi: Khu vực Kindia
+    lv: Kindijas reģions
+    ceb: Kindia Region
+    zh: 金迪亞大區
+    ccp: "\U00011107\U00011128\U0001111A\U00011134\U00011113\U00011128\U00011120 \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Kindiako eskualdea
+    'no': Kindia
+    fa: ناحیه کیندیا
+    he: קינדייה
+    hy: Կինդիա
+  comments:
+  type: administrative_region
+DB:
+  name: Dabola
+  code: DB
+  unofficial_names: Dabola
+  geo:
+    latitude: 10.75
+    longitude: -11.116667
+    min_latitude: 10.7100748
+    min_longitude: -11.142025
+    max_latitude: 10.7523239
+    max_longitude: -11.0782528
+  translations:
+    en: Dabola
+    ar: محافظة دابولا
+    bn: দাবোলা
+    da: Dabola Prefecture
+    de: Dabola (Präfektur)
+    el: Νταμπολά
+    es: Ayuntamiento del Dabola
+    fi: Dabolan prefektuuri
+    fr: préfecture de Dabola
+    gu: ડાબોલા પ્રીફેકચર
+    hi: दबोला प्रीफेक्चर
+    id: Prefektur Dabola
+    it: Prefettura di Dabola
+    ja: ダボラ県
+    kn: ಡಬೋಲಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 다보라 지방 행정 구역
+    mr: दबोला प्रीफेक्चअर
+    ms: Dabola Prefecture
+    nb: Dabola
+    nl: Dabola Prefecture
+    pl: Prefektura Dabola
+    pt: Preeitura de Dabola
+    ru: Префектура Дабола
+    si: ඩබෝලා ප්‍රාන්තය
+    sv: Dabola
+    ta: தபலா ப்ரீபெக்ட்டுர்
+    te: డాబోలా ప్రిఫెక్చర్
+    th: จังหวัดคูเนโอ
+    tr: Dabola Prefecture
+    ur: دابولا پریفیکچور
+    vi: Tỉnh Dabola
+    lv: Dabolas prefektūra
+    ceb: Dabola (prepektura)
+    lt: Dabolos prefektūra
+    zh: 達波拉省
+    ccp: "\U00011113\U0001111D\U0001112E\U00011123"
+    uk: Префектура Дабола
+    ca: prefactura de Dabola
+    'no': Dabola
+    fa: استان دابولا
+  comments:
+  type: prefecture
+DI:
+  name: Dinguiraye
+  code: DI
+  unofficial_names: Dinguiraye
+  geo:
+    latitude: 11.3
+    longitude: -10.716667
+    min_latitude: 11.2771965
+    min_longitude: -10.7283639
+    max_latitude: 11.3052249
+    max_longitude: -10.6942462
+  translations:
+    en: Dinguiraye
+    ar: محافظة دينغويراي
+    bn: ডিঙ্গুইরায় প্রশাসনিক অঞ্চল
+    da: Dinguiraye Prefecture
+    de: Dinguiraye (Präfektur)
+    el: Ντινγιράιγ
+    es: Ayuntamiento del Dinguiraye
+    fi: Dinguirayen prefektuuri
+    fr: préfecture de Dinguiraye
+    gu: ડિંગુઇરાયે પ્રીફેકચર
+    hi: डिंगुइरे प्रीफेक्चर
+    id: Prefektur Dinguiraye
+    it: Prefettura di Dinguiraye
+    ja: ダンギレ県
+    kn: ಡಿಂಗ್ಯುರಾಯೆ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 딩기라예 지방 행정 구역
+    mr: दिंगुइराये प्रीफेक्चर
+    ms: Dinguiraye Prefecture
+    nb: Dinguiraye
+    nl: Dinguiraye Prefecture
+    pl: Prefektura Dinguiraye
+    pt: Prefeitura de Dinguiraye
+    ru: Префектура Дингирайе
+    si: දින්ගුයිරයේ ප්‍රාන්තය
+    sv: Dinguiraye Prefecture
+    ta: டிங்குகிறாயே ப்ரீபெக்ட்டுறே
+    te: డింగ్వైరే ప్రిఫెక్చర్
+    th: ดินกุยเรย์ พรีเฟ็คเตอร์
+    tr: Ginguiraye Prefecture
+    ur: دنگویرائے پریفیکچور
+    vi: Quận Dinguiraye
+    lv: Dingirajes prefektūra
+    ceb: Dinguiraye Prefecture
+    lt: Dingirajės prefektūra
+    zh: 丁吉拉伊省
+    ccp: "\U00011113\U00011128\U00011101\U00011109\U0001112D\U0001112A\U00011122\U00011120\U0001112C"
+    uk: Префектура Дінгірае
+    'no': Dinguiraye
+    fa: استان دوگینیرای
+  comments:
+  type: prefecture
+DL:
+  name: Dalaba
+  code: DL
+  unofficial_names: Dalaba
+  geo:
+    latitude: 10.166667
+    longitude: -9.383333
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Dalaba
+    ar: محافظة دالابا
+    bn: বালাবা প্রশাসনিক অঞ্চল
+    da: Dalaba Prefecture
+    de: Dalaba
+    el: Νταλαμπά
+    es: Ayuntamiento del Dalaba
+    fi: Dalaban prefektuuri
+    fr: préfecture de Dalaba
+    gu: દલાબા પ્રીફેકચર
+    hi: दलाबा प्रान्त
+    id: Prefektur Dalaba
+    it: Prefettura di Dalaba
+    ja: ダラバ県
+    kn: ದಲಾಬಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 달라바 지방 행정 구역
+    mr: डलबा प्रान्त
+    ms: Dalaba Prefecture
+    nb: Dalaba
+    nl: Dalaba Prefecture
+    pl: Prefektura Dalaba
+    pt: Dalaba
+    ru: Префектура Далаба
+    si: ඩලබා ප්‍රාන්තය
+    sv: Dalaba (prefektur)
+    ta: டலபா ப்ரீபெக்ட்டுர்
+    te: డాలాబా ప్రిఫెక్చర్
+    th: ดาลาบา พรีเฟ็คเตอร์
+    tr: Dalaba Prefecture
+    ur: دالابا پریفیکچور
+    vi: Tỉnh Dalaba
+    lv: Dalabas prefektūra
+    ceb: Dalaba (prepektura)
+    lt: Dalabos prefektūra
+    zh: 達拉巴省
+    ccp: "\U00011113\U00011123\U0001111D"
+    uk: Префектура Далаба
+    'no': Dalaba
+    fa: استان دالابا
+  comments:
+  type: prefecture
+DU:
+  name: Dubréka
+  code: DU
+  unofficial_names: Dubréka
+  geo:
+    latitude: 9.783332999999999
+    longitude: -13.516667
+    min_latitude: 9.769929800000002
+    min_longitude: -13.5531284
+    max_latitude: 9.807793799999999
+    max_longitude: -13.472023
+  translations:
+    en: Dubréka
+    ar: محافظة دوبريكا
+    bn: দেব্রেকা প্রশাসনিক অঞ্চল
+    da: Dubréka Prefecture
+    de: Dubréka (Präfektur)
+    el: Ντουμπρεκά
+    es: Dubréka
+    fi: Dubrékan prefektuuri
+    fr: préfecture de Dubréka
+    gu: ડુબ્રેકા પ્રિફેક્ચર
+    hi: डब्रेका प्रान्त
+    id: Prefektur Dubréka
+    it: Prefettura di Dubréka
+    ja: ドュブレカ県
+    kn: ಡುಬ್ರೆಕಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 두브레카 지방 행정 구역
+    mr: डब्रेका प्रीफेक्चर
+    ms: Dubreka Prefecture
+    nb: Dubréka
+    nl: Dubréka Prefecture
+    pl: Prefektura Dubréka
+    pt: Prefeitura de Dubreka
+    ru: Префектура Дубрека
+    si: ඩුබ්රෙකා ප්‍රාන්තය
+    sv: Préfecture de Dubréka
+    ta: டூப்ரேகா ப்ரீபெக்ட்டுறே
+    te: డుబ్రెకా ప్రిఫెక్చర్
+    th: ดูเบรก้า พรีเฟคเตอร์
+    tr: Dubréka Prefecture
+    ur: دوبریکا پریفیکچور
+    vi: Quận Dubréka
+    lv: Dubrekas prefektūra
+    ceb: Préfecture de Dubréka
+    lt: Dubrekos prefektūra
+    zh: 杜布雷卡省
+    ccp: "\U00011113\U0001112A\U0001111D\U00011133\U00011122\U0001112C\U00011107"
+    uk: Префектура Дубрека
+    'no': Dubréka
+    fa: استان دوبریکا
+  comments:
+  type: prefecture
+F:
+  name: Région de Faranah
+  code: F
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Рэгіён Фарана
+    bg: Фарана
+    de: Region Faranah
+    el: Φαρανά
+    en: Faranah Region
+    es: Faranah
+    fi: Faranahin alue
+    fr: Région de Faranah
+    it: regione di Faranah
+    ja: ファラナ州
+    ko: 파라나 주
+    lt: Faranos regionas
+    nb: Faranah
+    nl: Faranah
+    pl: Faranah
+    pt: Faranah
+    ro: Regiunea Faranah
+    ru: Фарана
+    sv: Faranah Region (region i Guinea)
+    ur: فاراناہ علاقہ
+    ceb: Faranah Region
+    zh: 法拉納大區
+    ccp: "\U0001111C\U00011122\U00011134\U0001111A\U00011126\U00011134 \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Faranahko eskualdea
+    ca: Faranah
+    'no': Faranah
+    fa: ناحیه فرانه
+    hy: Ֆարանա
+    id: Region Faranah
+    uk: Фарана
+  comments:
+  type: administrative_region
+FA:
+  name: Faranah
+  code: FA
+  unofficial_names: Faranah
+  geo:
+    latitude: 10.033333
+    longitude: -10.733333
+    min_latitude: 10.0104814
+    min_longitude: -10.7830811
+    max_latitude: 10.0750513
+    max_longitude: -10.7218838
+  translations:
+    en: Faranah
+    de: Faranah (Präfektur)
+    el: Φαρανά²
+    fr: préfecture de Faranah
+    it: Prefettura di Faranah
+    ja: ファラナ県
+    nb: Faranah²
+    nl: Faranah Prefecture
+    pl: Prefektura Faranah
+    sv: Faranah Prefecture
+    ur: فاراناہ پریفیکچور
+    ceb: Faranah Prefecture
+    zh: 法拉納省
+    ccp: "\U0001111C\U00011122\U0001111A\U00011126\U00011134"
+    es: Faranah²
+    'no': Faranah²
+    fa: استان فرانه
+    pt: Faranah²
+  comments:
+  type: prefecture
+FO:
+  name: Forécariah
+  code: FO
+  unofficial_names:
+  - Forécaria
+  geo:
+    latitude: 9.433333
+    longitude: -13.083333
+    min_latitude: 9.4211622
+    min_longitude: -13.1032728
+    max_latitude: 9.444088899999999
+    max_longitude: -13.0725472
+  translations:
+    en: Forécariah
+    de: Forécariah (Präfektur)
+    el: Φορεκαριά
+    fr: préfecture de Forécariah
+    it: Prefettura di Forécariah
+    ja: フォレカリア県
+    nb: Forécariah
+    nl: Forécariah Prefecture
+    pl: Prefektura Forécariah
+    sv: Préfecture de Forécariah
+    ur: فوریکاریاہ پریفیکچور
+    ceb: Préfecture de Forécariah
+    zh: 福雷卡里亞省
+    ccp: "\U0001111C\U0001112E\U00011122\U00011134\U00011107\U0001112C\U00011122\U00011128\U00011120\U00011126\U00011134"
+    es: Forécariah
+    'no': Forécariah
+    ar: محافظة فوريكاريا
+    fa: استان فورکاریا
+  comments:
+  type: prefecture
+FR:
+  name: Fria
+  code: FR
+  unofficial_names: Fria
+  geo:
+    latitude: 10.3674543
+    longitude: -13.5841871
+    min_latitude: 10.3439033
+    min_longitude: -13.5969328
+    max_latitude: 10.3925134
+    max_longitude: -13.5586739
+  translations:
+    en: Fria
+    ar: محافظة فريا
+    bn: ফ্রিয়া প্রশাসনিক অঞ্চল
+    da: Fria Prefecture
+    de: Fria (Präfektur)
+    el: Φριά
+    es: Ayuntamiento Veszprém
+    fi: Frian prefektuuri
+    fr: préfecture de Fria
+    gu: ફ્રિયા પ્રીફેકચર
+    hi: फ्रिया प्रीफेक्चर
+    id: Prefektur Fria
+    it: Prefettura di Fria
+    ja: フリア県
+    kn: ಪ್ಹ್ರಿಯಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 프리아 지방 행정 구역
+    mr: फ्रीआ प्रिफेक्चर
+    ms: Fria Prefecture
+    nb: Fria
+    nl: Fria Prefecture
+    pl: Prefektura Fria
+    pt: Fria
+    ru: Префектура Фрия
+    si: ෆ්‍රියා ප්‍රාන්තය
+    sv: Fria
+    ta: பிரியா ப்ரீபெக்ட்டுறே
+    te: ఫ్రియా ప్రిఫెక్చర్
+    th: เพรีย พรีเฟคเตอร์
+    tr: Fria Prefecture
+    ur: فریا پریفیکچور
+    vi: Quận Fria
+    lv: Fria prefektūra
+    ceb: Fria
+    lt: Frijos prefektūra
+    zh: 弗里亞省
+    ccp: "\U0001111C\U00011133\U00011122\U0001112D\U00011120"
+    uk: Префектура Фріа
+    'no': Fria
+    be: прэфектура Фрыя
+    fa: استان فریا
+  comments:
+  type: prefecture
+GA:
+  name: Gaoual
+  code: GA
+  unofficial_names: Gaoual
+  geo:
+    latitude: 11.75
+    longitude: -13.2
+    min_latitude: 11.7405713
+    min_longitude: -13.2174969
+    max_latitude: 11.7684275
+    max_longitude: -13.1911039
+  translations:
+    en: Gaoual
+    ar: محافظة غاوال
+    bn: গাউল প্রশাসনিক অঞ্চল
+    da: Gaoual Prefecture
+    de: Gaoual
+    el: Γκαουάλ
+    es: Ayuntamiento Gaoual
+    fi: Gaoualin prefektuuri
+    fr: préfecture de Gaoual
+    gu: ગાઓઉલ પ્રીફેકચર
+    hi: गाओल प्रीफेक्चर
+    id: Prefektur Gaoual
+    it: Prefettura di Gaoual
+    ja: ガワル県
+    kn: ಗೌೌಲ್ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 가우알 지방 행정 구역
+    mr: गाओल प्रीफेक्चर
+    ms: Gaoual Prefecture
+    nb: Gaoual
+    nl: Gaoual Prefecture
+    pl: Prefektura Gaoual
+    pt: Gaoual
+    ru: Префектура Гауаль
+    si: ගොඋඅල් ප්‍රාන්තය
+    sv: Gaoual Prefecture
+    ta: காயல் ப்ரீபெக்ட்டுறே
+    te: గావువల్ ప్రిఫెక్చర్
+    th: เกาอล พรีเฟ็คเตอร์
+    tr: Gaoual Prefecture
+    ur: گاؤال پریفیکچور
+    vi: Quận Gaoual
+    lv: Gavalas prefektūra
+    ceb: Gaoual Prefecture
+    lt: Gauvalo prefektūra
+    zh: 加瓦爾省
+    ccp: "\U00011109\U00011105\U0001112A\U00011120\U00011123\U00011134"
+    uk: Префектура Гауаль
+    'no': Gaoual
+    fa: استان گائول
+  comments:
+  type: prefecture
+GU:
+  name: Guékédou
+  code: GU
+  unofficial_names: Guékédou
+  geo:
+    latitude: 8.566666999999999
+    longitude: -10.133333
+    min_latitude: 8.5333639
+    min_longitude: -10.1548433
+    max_latitude: 8.597061199999999
+    max_longitude: -10.094719
+  translations:
+    en: Guéckédou
+    ar: محافظة غوكيدو
+    bg: Гекеду
+    bn: গুয়েকেদু প্রশাসনিক অঞ্চল
+    da: Guéckédou Prefecture
+    de: Guéckédou
+    el: Γκουεκεντού
+    es: Guéckédou
+    fi: Guéckédoun prefektuuri
+    fr: préfecture de Guéckédou
+    gu: ગ્યુએકેડોઉ પ્રિફેક્ચર
+    hi: ग्वेकेडू प्रीफेक्चर
+    id: Prefektur Guéckédou
+    it: Prefettura di Guéckédou
+    ja: ゲケドゥ県
+    kn: ಗುಕೆಡೆವ್ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 게케두 지방 행정 구역
+    mr: गुएकदौ प्रीफेक्चअर
+    ms: Gueckedou Prefecture
+    nb: Guéckédou
+    nl: Guéckédou Prefecture
+    pl: Prefektura Guéckédou
+    pt: Prefeitura de Guéckédou
+    ru: Префектура Гекеду
+    si: ගුවෙකෙඩොවූ ප්‍රාන්තය
+    sv: Préfecture de Guékédou
+    ta: குய்க்கெடோடு ப்ரீபெக்ட்டுறே
+    te: గుయెక్‌డ్యూ
+    th: อำเภอกุคเคโดว
+    tr: Guéckéedou Prefecture
+    ur: گویکیدؤ پریفیکچور
+    vi: Quận Guéckédou
+    lv: Gekedu prefektūra
+    ceb: Préfecture de Guékédou
+    lt: Gekedo prefektūra
+    zh: 蓋凱杜省
+    ccp: "\U00011109\U0001112A\U00011107\U0001112C\U00011113\U0001112F"
+    uk: Гекеду
+    'no': Guéckédou
+    fa: استان گوکدو
+  comments:
+  type: prefecture
+K:
+  name: Région de Kankan
+  code: K
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: إقليم كانكان
+    be: Рэгіён Канкан
+    bg: Канкан
+    bn: কানকান অঞ্চল
+    da: Kankan Region
+    de: Region Kankan
+    el: Κανκάν
+    en: Kankan Region
+    es: Kankan
+    fi: Kankanin alue
+    fr: Région de Kankan
+    gu: કાંકન પ્રદેશ
+    hi: कांकन प्रदेश
+    id: Wilayah Kankan
+    it: regione di Kankan
+    ja: カンカン州
+    kn: ಕಂಕಾನ್ ಪ್ರದೇಶ
+    ko: 캉칸 주
+    lt: Kankano regionas
+    mr: काकण प्रदेश
+    ms: Kankan Region
+    nb: Kankan
+    nl: Kankan
+    pl: Kankan
+    pt: Kankan
+    ro: Regiunea Kankan
+    ru: Канкан
+    si: කන්කන් කලාපය
+    sv: Kankan Region
+    ta: கங்கன் பகுதி
+    te: కంకన్ ప్రాంతం
+    th: กานกาน
+    tr: Kankan Bölgesi
+    ur: کانکان علاقہ
+    vi: Khu vực Kankan
+    lv: Kankanas reģions
+    ceb: Kankan Region
+    zh: 康康大區
+    ccp: "\U00011107\U0001111A\U00011134\U00011107\U0001111A\U00011134 \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Kankango eskualdea
+    uk: Канкан
+    'no': Kankan
+    az: Kankan bölgəsi
+    ca: Regió de Kankan
+    fa: ناحیه کانکان
+    he: קאנקאן (מחוז)
+    hy: Կանկան
+  comments:
+  type: administrative_region
+KA:
+  name: Kankan
+  code: KA
+  unofficial_names: Kankan
+  geo:
+    latitude: 10.120923
+    longitude: -9.5450974
+    min_latitude: 8.7616421
+    min_longitude: -10.90847
+    max_latitude: 12.5026249
+    max_longitude: -7.947203899999999
+  translations:
+    en: Kankan
+    de: Kankan
+    el: Κανκάν²
+    fr: préfecture de Kankan
+    it: Prefettura di Kankan
+    ja: カンカン県
+    nb: Kankan²
+    nl: Kankan Prefecture
+    pl: Prefektura Kankan
+    sv: Kankan Prefecture
+    ur: کانکان پریفیکچور
+    ceb: Kankan Prefecture
+    zh: 康康省
+    ccp: "\U00011107\U0001111A\U00011134\U00011107\U0001111A\U00011134"
+    es: Kankan²
+    'no': Kankan²
+    ar: محافظة كانكان
+    fa: استان کانکان
+    he: קאנקאן (נפה)
+  comments:
+  type: prefecture
+KB:
+  name: Koubia
+  code: KB
+  unofficial_names: Koubia
+  geo:
+    latitude: 11.583333
+    longitude: -11.9
+    min_latitude: 11.5748048
+    min_longitude: -11.9058323
+    max_latitude: 11.5942277
+    max_longitude: -11.8801688
+  translations:
+    en: Koubia
+    ar: محافظة كوبيا
+    bn: কুবিয়া প্রশাসনিক অঞ্চল
+    da: Koubia Prefecture
+    de: Koubia
+    el: Κουμπιά
+    es: Ayuntamiento Koubia
+    fi: Koubian prefektuuri
+    fr: préfecture de Koubia
+    gu: રિકિયવિક
+    hi: कूबिया प्रीफेक्चर
+    id: Prefektur Koubia
+    it: Prefettura di Koubia
+    ja: クビア県
+    kn: ಕ್ಯುಬಿಯಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 쿠비아 지방 행정 구역
+    mr: कौबिया प्रीफेक्चअर
+    ms: Koubia Prefecture
+    nb: Koubia
+    nl: Koubia Prefecture
+    pl: Prefektura Koubia
+    pt: Koubia
+    ru: Префектура Кубия
+    si: කොඋබියා ප්‍රාන්තය
+    sv: Koubia (prefektur)
+    ta: கௌபீஆ ப்ரீபெக்ட்டுர்
+    te: కౌబియా ప్రిఫెక్చర్
+    th: คัวเบีย พรีเฟ็คเตอร์
+    tr: Koubia Prefectura
+    ur: کؤبیا پریفیکچور
+    vi: Tỉnh Koubia
+    lv: Kubijas prefektūra
+    ceb: Koubia
+    lt: Kubijos prefektūra
+    zh: 庫比亞省
+    ccp: "\U00011107\U0001112F\U0001111D\U00011128\U00011120"
+    uk: Префектура Кубія
+    'no': Koubia
+    ca: Koubia
+    fa: استان کوبیا
+  comments:
+  type: prefecture
+KD:
+  name: Kindia
+  code: KD
+  unofficial_names: Kindia
+  geo:
+    latitude: 10.066667
+    longitude: -12.85
+    min_latitude: 10.0121295
+    min_longitude: -12.8973483
+    max_latitude: 10.0824454
+    max_longitude: -12.8158951
+  translations:
+    en: Kindia
+    de: Kindia (Präfektur)
+    el: Κιντιά²
+    fr: préfecture de Kindia
+    it: Prefettura di Kindia
+    ja: キンディア県
+    nb: Kindia²
+    nl: Kindia Prefecture
+    pl: Prefektura Kindia
+    ur: کیندیا پریفیکچور
+    zh: 金迪亞省
+    ccp: "\U00011107\U00011128\U0001111A\U00011134\U00011113\U00011128\U00011120"
+    es: Kindia²
+    pt: Quindia (prefeitura)
+    'no': Kindia²
+    ar: محافظة كنديا
+    ceb: Kindia (prepektura)
+    fa: استان کیندیا
+    sv: Kindia (prefektur)
+  comments:
+  type: prefecture
+KE:
+  name: Kérouané
+  code: KE
+  unofficial_names: Kérouané
+  geo:
+    latitude: 9.266667
+    longitude: -9.016667
+    min_latitude: 9.2568165
+    min_longitude: -9.023037
+    max_latitude: 9.282653
+    max_longitude: -8.9937686
+  translations:
+    en: Kérouané
+    ar: مقاطعة كيرونيه
+    bn: কেরুয়ানে প্রশাসনিক অঞ্চল
+    da: Kérouané Prefecture
+    de: Kérouané
+    el: Κερουανέ
+    es: Kérouané
+    fi: Kérouanén prefektuuri
+    fr: préfecture de Kérouane
+    gu: કેરોઉન પ્રીફેકચર
+    hi: केरोवां प्रीफेक्चर
+    id: Prefektur Kérouané
+    it: Prefettura di Kérouané
+    ja: ケルワヌ県
+    kn: ಕೆರೋನೆ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 케로우아네 지방 행정 구역
+    mr: केरोवां प्रीफेक्चर
+    ms: Kerouane Prefecture
+    nb: Kérouané
+    nl: Kérouané Prefecture
+    pl: Prefektura Kérouané
+    pt: Kérouané
+    ru: Префектура Керуане
+    si: කෙරෝඅනේ ප්‍රාන්තය
+    sv: Kerouane Prefecture
+    ta: கேரோவனே ப்ரீபெக்ட்டுறே
+    te: కెరోవేన్ ప్రిఫెక్చర్
+    th: คีรัวเน่ พรีเฟคเตอร์
+    tr: Kérouane Prefecture
+    ur: کیرؤانے پریفیکچور
+    vi: Quận Kérouané
+    lv: Keruanes prefektūra
+    ceb: Kerouane Prefecture
+    lt: Kervano prefektūra
+    zh: 凱魯阿內省
+    ccp: "\U00011107\U0001112C\U00011122\U0001112F\U00011120\U0001111A\U00011128"
+    uk: Префектура Керуане
+    'no': Kérouané
+    ca: Kérouané
+    fa: استان کاروانه
+  comments:
+  type: prefecture
+KN:
+  name: Koundara
+  code: KN
+  unofficial_names: Koundara
+  geo:
+    latitude: 12.483333
+    longitude: -13.3
+    min_latitude: 12.4696819
+    min_longitude: -13.3191205
+    max_latitude: 12.5115815
+    max_longitude: -13.2766341
+  translations:
+    en: Koundara
+    ar: محافظة كاوندارا
+    bn: কুন্ডারা প্রশাসনিক অঞ্চল
+    da: Koundara Prefecture
+    de: Koundara
+    el: Κουνταρά
+    es: Ayuntamiento Koundara
+    fi: Koundaran prefektuuri
+    fr: préfecture de Koundara
+    gu: ખોવ્દ
+    hi: कौन्डारा प्रीफेक्चर
+    id: Prefektur Koundara
+    it: Prefettura di Koundara
+    ja: クンダラ県
+    kn: ಕೌಂಡಾರಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 쿤다라 지방 행정 구역
+    mr: कोंडारा प्रीफेक्चअर
+    ms: Koundara Prefecture
+    nb: Koundara
+    nl: Koundara Prefecture
+    pl: Prefektura Koundara
+    pt: Koundara
+    ru: Префектюр-де-Кундара
+    si: කවුන්ඩරා ප්‍රාන්තය
+    sv: Koundara Prefecture
+    ta: கௌண்டரா ப்ரீபெக்டர்
+    te: కౌండారా ప్రిఫెక్చర్
+    th: ควนดารา พรีเฟ็คเตอร์
+    tr: Koundrata Prefecture
+    ur: کؤندارا پریفیکچور
+    vi: Tỉnh Koundara
+    lv: Kundaras prefektūra
+    ceb: Koundara Prefecture
+    lt: Koundaros prefektūra
+    zh: 孔達拉省
+    ccp: "\U00011107\U0001112F\U0001111A\U00011134\U00011113\U00011122"
+    uk: Префектура Кундара
+    'no': Koundara
+    be: прэфектура Кундара
+    ca: Koundara
+    fa: استان کوندره
+  comments:
+  type: prefecture
+KO:
+  name: Kouroussa
+  code: KO
+  unofficial_names: Kouroussa
+  geo:
+    latitude: 10.65
+    longitude: -9.883333
+    min_latitude: 10.6314216
+    min_longitude: -9.9002372
+    max_latitude: 10.6671028
+    max_longitude: -9.866494999999999
+  translations:
+    en: Kouroussa
+    ar: مقاطعة كوروسا
+    bn: করৌস্যা প্রশাসনিক অঞ্চল
+    da: Kouroussa Prefecture
+    de: Kouroussa
+    el: Κουρουσσά
+    es: Kouroussa
+    fi: Kouroussan prefektuuri
+    fr: préfecture de Kouroussa
+    gu: કૌરૌસા પ્રીફેકચર
+    hi: कौरुसा प्रीफेक्चर
+    id: Prefektur Kouroussa
+    it: Prefettura di Kouroussa
+    ja: クールーサ県
+    kn: ಕೌರೌಸ್ಸಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 쿠루사 지방 행정 구역
+    mr: कुरौसा प्रिफेक्चुअर
+    ms: Kouroussa Prefecture
+    nb: Kouroussa
+    nl: Kouroussa Prefecture
+    pl: Prefektura Kouroussa
+    pt: Kouroussa
+    ru: Префектура Курусса
+    si: කුරුස්සා ප්‍රාන්තය
+    sv: Kouroussa
+    ta: கௌரியஸ்ஸா ப்ரீபெக்ட்டுர்
+    te: కొరౌసా ప్రిఫెక్చర్
+    th: เคาเราส์ซา
+    tr: Kouroussa Prefecture
+    ur: کؤرؤسا پریفیکچور
+    vi: Tỉnh Kouroussa
+    lv: Kuruso prefektūra
+    ceb: Kouroussa
+    lt: Kurusos prefektūra
+    zh: 庫魯薩省
+    ccp: "\U00011107\U0001112F\U00011122\U0001112F\U00011125\U00011133\U00011126"
+    uk: Префектура Куруса
+    'no': Kouroussa
+    ca: Kouroussa
+    fa: استان کوروسا
+  comments:
+  type: prefecture
+KS:
+  name: Kissidougou
+  code: KS
+  unofficial_names: Kissidougou
+  geo:
+    latitude: 9.183333
+    longitude: -10.1
+    min_latitude: 9.1458251
+    min_longitude: -10.1441575
+    max_latitude: 9.234620999999999
+    max_longitude: -10.0576401
+  translations:
+    en: Kissidougou
+    ar: محافظة كيسيدوغو
+    bn: কিস্যিদোগু প্রশাসনিক অঞ্চল
+    da: Kissidougou Prefecture
+    de: Kissidougou
+    el: Κισσιντουγκού
+    es: Kissidougou
+    fi: Kissidougoun prefektuuri
+    fr: préfecture de Kissidougou
+    gu: કિસિડૌગૌ પ્રીફેકચર
+    hi: किसिडूगू प्रीफेक्चर
+    id: Prefektur Kissidougou
+    it: Prefettura di Kissidougou
+    ja: キシドゥグ県
+    kn: ಕಿಸ್ಡೌಗ್ಗೌ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 키시두구 지방 행정 구역
+    mr: किस्सीडॉगौ प्रीफेक्चुअर
+    ms: Kissidougou Prefecture
+    nb: Kissidougou
+    nl: Kissidougou Prefecture
+    pl: Prefektura Kissidougou
+    pt: Kissidougou
+    ru: Киссидугу
+    si: කිස්සිඩොඋගු ප්‍රාන්තය
+    sv: Kissidougou
+    ta: கிஸ்ஸிடௌகௌ ப்ரீபெக்ட்டுர்
+    te: కిసిడాగో ప్రిఫెక్చర్
+    th: คิสสิโดวกูว พรีเฟ็คเตอร์
+    tr: Kissidougou Prefecture
+    ur: کیسیدؤگؤ پریفیکچور
+    vi: Tỉnh Kissidougou
+    lv: Kisidugo prefektūra
+    ceb: Kissidougou (prepektura)
+    lt: Kisidugo prefektūra
+    zh: 基西杜古省
+    ccp: "\U00011107\U00011128\U00011125\U00011128\U00011113\U0001112F\U00011109\U0001112F"
+    uk: Префектура Кісідугу
+    ca: prefectura de Kissidougou
+    'no': Kissidougou
+    fa: استان کیسیدوگو
+  comments:
+  type: prefecture
+L:
+  name: Région de Labé
+  code: L
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Рэгіён Лабэ
+    bg: Лабе
+    de: Region Labé
+    el: Λαμπέ
+    en: Labé Region
+    es: Labé
+    fi: Labén alue
+    fr: Région de Labé
+    it: regione di Labé
+    ja: ラベ州
+    ko: 라베 주
+    lt: Labės regionas
+    nb: Labé
+    nl: Labé
+    pl: Labé
+    pt: Labé
+    ro: Regiunea Labé
+    ru: Лабе
+    sv: Labé Region
+    ur: لابی ریجن
+    ceb: Labé Region
+    zh: 拉貝大區
+    ccp: "\U00011123\U0001111D\U0001112C \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Labéko eskualdea
+    uk: Лабе²
+    'no': Labé
+    ar: إقليم لابي
+    he: לאבה
+    hy: Լաբե
+    id: Region Labé
+  comments:
+  type: administrative_region
+LA:
+  name: Labé
+  code: LA
+  unofficial_names: Labé
+  geo:
+    latitude: 11.641159
+    longitude: -11.8891721
+    min_latitude: 11.0049169
+    min_longitude: -13.027551
+    max_latitude: 12.4428371
+    max_longitude: -11.109311
+  translations:
+    en: Labé
+    ar: محافظة لابي
+    bn: লাবি প্রশাসনিক অঞ্চল
+    da: Labé Prefecture
+    de: Labé
+    el: Λαμπέ²
+    es: Labé²
+    fi: Labén prefektuuri
+    fr: préfecture de Labé
+    gu: લાબે પ્રીફેકચર
+    hi: लाबे प्रीफेक्चर
+    id: Prefektur Labé
+    it: Prefettura di Labé
+    ja: ラベ県
+    kn: ಲ್ಯಾಬ್ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 라베 지방 행정 구역
+    mr: लॅबे प्रीफेक्चर
+    ms: Labe Prefecture
+    nb: Labé²
+    nl: Labé Prefecture
+    pl: Prefektura Labé
+    pt: Labé²
+    ru: Префектура Лабе
+    si: ලබේ ප්‍රාන්තය
+    sv: Labe Prefecture
+    ta: லபே ப்ரீபெக்ட்டுறே
+    te: లాబె ప్రిఫెక్చర్
+    th: ลาเบ พรีเฟคเตอร์
+    tr: Labé Prefecture
+    ur: لابی پریفیکچر
+    vi: Quận Labé
+    lv: Labes prefektūra
+    ceb: Labe Prefecture
+    lt: Labės prefektūra
+    zh: 拉貝省
+    ccp: "\U00011123\U00011127\U0001111D\U0001112C"
+    uk: Лабе
+    'no': Labé²
+    fa: استان لابی
+  comments:
+  type: prefecture
+LE:
+  name: Lélouma
+  code: LE
+  unofficial_names: Lélouma
+  geo:
+    latitude: 11.4739967
+    longitude: -12.6675575
+    min_latitude: 11.102719
+    min_longitude: -13.027551
+    max_latitude: 11.831968
+    max_longitude: -12.424321
+  translations:
+    en: Lélouma
+    ar: محافظة ليلوما
+    bn: লিলুমা প্রশাসনিক অঞ্চল
+    da: Lélouma Prefecture
+    de: Lélouma
+    el: Λελουμά
+    es: Ayuntamiento del Lélouma
+    fi: Lélouman prefektuuri
+    fr: préfecture de Lélouma
+    gu: લેલૌમા પ્રીફેકચર
+    hi: लेलौमा प्रीफेक्चर
+    id: Prefektur Lélouma
+    it: Prefettura di Lélouma
+    ja: レルーマ県
+    kn: ಲೆಲೊಮಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 렐루마 지방 행정 구역
+    mr: लेमुमा प्रिफेक्चुअर
+    ms: Lelouma Prefecture
+    nb: Lélouma
+    nl: Lélouma Prefecture
+    pl: Prefektura Lélouma
+    pt: Prefeitura de Lélouma
+    ru: Префектура Лелума
+    si: ලේලොඋමා ප්‍රාන්තය
+    sv: Lelouma Prefecture
+    ta: லெலூமா ப்ரீபெக்ட்டுர்
+    te: లెలోమా ప్రిఫెక్చర్
+    th: เลลัวมา พรีเฟ็คเตอร์
+    tr: Lélouma Prefecure
+    ur: لیلؤما پریفیکچور
+    vi: Tỉnh Lélouma
+    lv: Lelumas prefektūra
+    ceb: Lelouma Prefecture
+    lt: Lelumos prefektūra
+    zh: 萊盧馬省
+    ccp: "\U00011123\U0001112C\U00011123\U0001112F\U0001111F"
+    uk: Префектура Лелоума
+    'no': Lélouma
+  comments:
+  type: prefecture
+LO:
+  name: Lola
+  code: LO
+  unofficial_names: Lola
+  geo:
+    latitude: 7.8
+    longitude: -8.533332999999999
+    min_latitude: 7.784528399999999
+    min_longitude: -8.5487326
+    max_latitude: 7.8204807
+    max_longitude: -8.5110372
+  translations:
+    en: Lola
+    ar: ولاية لولا
+    bn: লোলা প্রশাসনিক অঞ্চল
+    da: Lola Prefecture
+    de: Lola
+    el: Λολά
+    es: Lola
+    fi: Lolan prefektuuri
+    fr: préfecture de Lola
+    gu: લોલા પ્રીફેકચર
+    hi: लोला प्रीफेक्चर
+    id: Prefektur Lola
+    it: Prefettura di Lola
+    ja: ローラ県
+    kn: ಲೋಲಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 롤라 지방 행정 구역
+    mr: लोला प्रिफेक्चर
+    ms: Lola Prefecture
+    nb: Lola
+    nl: Lola Prefecture
+    pl: Prefektura Lola
+    pt: Lola
+    ru: Префектура Лола
+    si: ලොලා ප්‍රාන්තය
+    sv: Lola (prefektur)
+    ta: லோலா ப்ரீபெக்ட்டுர்
+    te: లోలా ప్రిఫెక్చర్
+    th: โลล่า พนีเฟคเตอร์
+    tr: Lola Prefecture
+    ur: لولا پریفیکچور
+    vi: Quận Lola
+    lv: Lolas prefektūra
+    ceb: Lola (prepektura)
+    lt: Lolos prefektūra
+    zh: 洛拉省
+    ccp: "\U00011123\U00011127\U00011123"
+    uk: Префектура Лола
+    'no': Lola
+    ca: Lola
+  comments:
+  type: prefecture
+M:
+  name: Région de Mamou
+  code: M
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة مامو
+    be: Рэгіён Маму
+    bg: Маму
+    bn: মামু অঞ্চল
+    da: Mamou Region
+    de: Region Mamou
+    el: Μαμού
+    en: Mamou Region
+    es: Mamou
+    fi: Mamoun alue
+    fr: Région de Mamou
+    gu: મામો પ્રદેશ
+    hi: मैमू प्रांत
+    id: Wilayah Mamou
+    it: regione di Mamou
+    ja: マムー州
+    kn: ಮಾಮೌ ಪ್ರದೇಶ
+    ko: 마무 주
+    lt: Mamu regionas
+    mr: मामु प्रदेश
+    ms: Daerah Mamou
+    nb: Mamou
+    nl: Mamou
+    pl: Mamou
+    pt: Mamou
+    ro: Regiunea Mamou
+    ru: Маму
+    si: මමෞ කලාපය
+    sv: Mamou Region
+    ta: மமோஉ பகுதி
+    te: మామో ప్రాంతం
+    th: เขตมามัว
+    tr: Mamou Bölgesi
+    ur: مامؤ علاقہ
+    vi: Khu vực Mamou
+    lv: Mamū reģions
+    ceb: Mamou Region
+    zh: 馬木大區
+    ccp: "\U0001111F\U0001111F\U0001112F \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Mamouko eskualdea
+    uk: Ругіон Маму
+    'no': Mamou
+    fa: ناحیه مامو
+    hy: Մամու
+  comments:
+  type: administrative_region
+MC:
+  name: Macenta
+  code: MC
+  unofficial_names: Macenta
+  geo:
+    latitude: 8.549999999999999
+    longitude: -9.466667
+    min_latitude: 8.516344799999999
+    min_longitude: -9.496479
+    max_latitude: 8.563367999999999
+    max_longitude: -9.4360541
+  translations:
+    en: Macenta
+    ar: ولاية ماسينتا
+    bn: ম্যাসেন্টা প্রশাসনিক অঞ্চল
+    da: Macenta Prefecture
+    de: Macenta
+    el: Μασεντά
+    es: Macenta
+    fi: Macentan prefektuuri
+    fr: préfecture de Macenta
+    gu: મકેન્ટા પ્રીફેક્ચર
+    hi: मैसेन्टा प्रीफेक्चर
+    id: Prefektur Macenta
+    it: Prefettura di Macenta
+    ja: マサンタ県
+    kn: ಮ್ಯಾಕೆಂತಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 마센타 지방 행정 구역
+    mr: मॅन्टा प्रीफेक्चर
+    ms: Macenta Prefecture
+    nb: Macenta
+    nl: Macenta Prefecture
+    pl: Prefektura Macenta
+    pt: Macenta
+    ru: Префектура Масента
+    si: මසේන්ටා ප්‍රාන්තය
+    sv: Macenta (prefektur)
+    ta: மசெண்ட ப்ரீபெக்ட்டுறே
+    te: మాసెంటా ప్రిపెక్చర్
+    th: จังหวัดมาเซนตา
+    tr: Macenta Prefecture
+    ur: میکینٹا پریفیکٹوری
+    vi: Quận Macenta
+    lv: Masentas prefektūra
+    ceb: Macenta (prepektura)
+    lt: Macentos prefektūra
+    zh: 馬桑塔省
+    ccp: "\U0001111F\U00011125\U0001112C\U0001111A\U00011134\U00011111"
+    uk: Масента
+    'no': Macenta
+    ca: Macenta
+  comments:
+  type: prefecture
+MD:
+  name: Mandiana
+  code: MD
+  unofficial_names: Mandiana
+  geo:
+    latitude: 10.6172827
+    longitude: -8.6985716
+    min_latitude: 10.6024858
+    min_longitude: -8.7058068
+    max_latitude: 10.640026
+    max_longitude: -8.6830616
+  translations:
+    en: Mandiana
+    ar: محافظة مانديانا
+    bn: মান্দিয়ানা প্রশাসনিক অঞ্চল
+    da: Mandiana Prefecture
+    de: Mandiana
+    el: Μαντιανά
+    es: Ayuntamiento Mandiana
+    fi: Mandianan prefektuuri
+    fr: préfecture de Mandiana
+    gu: મૅન્ડિયાના પ્રીફેકચર
+    hi: मैन्दियाना प्रीफेक्चर
+    id: Prefektur Mandiana
+    it: Prefettura di Mandiana
+    ja: マンディアナ県
+    kn: ಮಾಂಡಿಯಾನ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 만디아나 지방 행정 구역
+    mr: मेडियाना परफेक्चुअर
+    ms: Mandiana Prefecture
+    nb: Mandiana
+    nl: Mandiana Prefecture
+    pl: Prefektura Mandiana
+    pt: Prefeitura de Mandiana
+    ru: Префектура Мандиана
+    si: මැන්ඩියානා ප්‍රාන්තය
+    sv: Mandiana Prefecture
+    ta: மண்டியானா ப்ரீபெக்ட்டுர்
+    te: మాండియానా ప్రిఫెక్చర్
+    th: แมนเดียนา พรีเฟ็คเตอร์
+    tr: Mandiana Prefecture
+    ur: ماندیانا پریفیکچور
+    vi: Tỉnh Mandiana
+    lv: Mandianas prefektūra
+    ceb: Mandiana Prefecture
+    lt: Mandijanos prefektūra
+    zh: 芒賈納省
+    ccp: "\U0001111F\U00011133\U00011120\U0001111A\U00011134\U00011113\U00011128\U00011120\U0001111A"
+    uk: Префектура Мандіана
+    'no': Mandiana
+  comments:
+  type: prefecture
+ML:
+  name: Mali
+  code: ML
+  unofficial_names: Mali
+  geo:
+    latitude: 12.083333
+    longitude: -12.3
+    min_latitude: 12.0613546
+    min_longitude: -12.310524
+    max_latitude: 12.087919
+    max_longitude: -12.2849035
+  translations:
+    en: Mali
+    ar: ولاية مالي
+    bn: মালি প্রশাসনিক অঞ্চল
+    da: Mali Prefecture
+    de: Mali
+    el: Μαλί
+    es: Ayuntamiento del Mali
+    fi: Malin prefektuuri
+    fr: préfecture de Mali
+    gu: માલી પ્રીફેકચર
+    hi: माली प्रीफेक्चर
+    id: Prefektur Mali
+    it: Prefettura di Mali
+    ja: マリ県
+    kn: ಮಾಲಿ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 말리 지방 행정 구역
+    mr: माली प्रीफेक्चअर
+    ms: Mali Prefecture
+    nb: Mali
+    nl: Mali Prefecture
+    pl: Prefektura Mali
+    pt: Prefeitura de Mali
+    ru: Префектура Мали
+    si: මාලි ප්‍රාන්තය
+    sv: Mali Prefecture
+    ta: மலி ப்ரீபெக்ட்டுர்
+    te: మాలి ప్రిఫెక్ఛర్
+    th: เมืองแมลิ
+    tr: Mali Prefecture
+    ur: مالی پریفیکچور
+    vi: Tỉnh Mali
+    lv: Mali prefektūra
+    ceb: Mali Prefecture
+    lt: Malio prefektūra
+    zh: 馬里省
+    ccp: "\U0001111F\U00011123\U00011128"
+    uk: Префектура Малі
+    'no': Mali
+  comments:
+  type: prefecture
+MM:
+  name: Mamou
+  code: MM
+  unofficial_names: Mamou
+  geo:
+    latitude: 10.5736024
+    longitude: -11.8891721
+    min_latitude: 9.871374999999999
+    min_longitude: -12.976967
+    max_latitude: 11.335539
+    max_longitude: -11.3715681
+  translations:
+    en: Mamou
+    de: Mamou
+    el: Μαμού²
+    fr: préfecture de Mamou
+    it: Prefettura di Mamou
+    ja: マムー県
+    nb: Mamou²
+    nl: Mamou Prefecture
+    pl: Prefektura Mamou
+    sv: Mamou Prefecture
+    ur: مامؤ پریفیکچور
+    ceb: Mamou Prefecture
+    zh: 馬木省
+    ru: Маму²
+    ccp: "\U0001111F\U0001111F\U0001112F"
+    es: Mamou²
+    pt: Mamou²
+    'no': Mamou²
+    ar: محافظة مامو
+  comments:
+  type: prefecture
+N:
+  name: Région de Nzérékoré
+  code: N
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: إقليم نزيريكوري
+    be: Рэгіён Нзерэкарэ
+    bg: Нзерекоре
+    bn: এনজেরেকুরে অঞ্চল
+    da: Nzerekore Region
+    de: Region Nzérékoré
+    el: Νζερεκορέ
+    en: Nzérékoré Region
+    es: Nzérékoré
+    fi: Nzérékoré
+    fr: Région de Nzérékoré
+    gu: નઝેરેકોરે પ્રદેશ
+    hi: ज़ेरीकोर प्रदेश
+    id: Wilayah Nzérékoré
+    it: regione di Nzérékoré
+    ja: ンゼレコレ州
+    kn: ಎನ್ಜೆರ್ಕೆರೆ ಪ್ರದೇಶ
+    ko: 은제레코레 주
+    lt: Nzerekorės regionas
+    mr: नझेरेकोरे प्रदेश
+    ms: Nzerekore Region
+    nb: Nzérékoré
+    nl: Nzérékoré
+    pl: Nzérékoré
+    pt: Nzérékoré
+    ro: Regiunea Nzérékoré
+    ru: Нзерекоре
+    si: එන්සේරෙකොරේ කලාපය
+    sv: Nzerekore Region
+    ta: நஸிரிகோரே பகுதி
+    te: ఎన్జియర్కోర్ ప్రాంతం
+    th: แถบเอ็นเซเรโคเร
+    tr: Nzérékoré Bölgesi
+    ur: نزیریکورے علاقہ
+    vi: Khu vực Nzérékoré
+    lv: Nzerekores reģions
+    ceb: Nzerekore Region
+    zh: 恩澤雷科雷大區
+    ccp: "\U0001110E\U0001112C\U00011122\U0001112C\U00011107\U0001112E\U00011122\U0001112C
+      \U00011122\U00011128\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    eu: Nzérékoréko eskualdea
+    uk: Регіон Нзерекоре
+    'no': Nzérékoré
+    hy: Նզերեկորե
+  comments:
+  type: administrative_region
+NZ:
+  name: Nzérékoré
+  code: NZ
+  unofficial_names: Nzérékoré
+  geo:
+    latitude: 7.75
+    longitude: -8.816666999999999
+    min_latitude: 7.7149041
+    min_longitude: -8.845367399999999
+    max_latitude: 7.803350799999999
+    max_longitude: -8.780307800000001
+  translations:
+    en: Nzérékoré
+    de: Nzérékoré
+    el: Νζερεκορέ²
+    fr: préfecture de Nzérékoré
+    it: Prefettura di Nzérékoré
+    ja: ンゼレコレ県
+    nb: Nzérékoré²
+    nl: Nzérékoré Prefecture
+    pl: Prefektura Nzérékoré
+    sv: Nzerekore Prefecture
+    ur: نزیریکورے پریفیکچور
+    ceb: Nzerekore Prefecture
+    zh: 恩澤雷科雷省
+    ccp: "\U0001110E\U0001112C\U00011122\U0001112C\U00011107\U0001112E\U00011122\U0001112C"
+    es: Nzérékoré²
+    'no': Nzérékoré²
+    ar: محافظة نزريكوري
+  comments:
+  type: prefecture
+PI:
+  name: Pita
+  code: PI
+  unofficial_names: Pita
+  geo:
+    latitude: 11.059568
+    longitude: -12.395582
+    min_latitude: 11.0282726
+    min_longitude: -12.4155379
+    max_latitude: 11.0790367
+    max_longitude: -12.370305
+  translations:
+    en: Pita
+    ar: محافظة بيتا
+    bn: পিটা প্রশাসনিক অঞ্চল
+    da: Pita Prefecture
+    de: Pita
+    el: Πιτά
+    es: Ayuntamiento Pita
+    fi: Pitan prefektuuri
+    fr: préfecture de Pita
+    gu: પિટા પ્રીફેકચર
+    hi: पीटा प्रीफेक्चर
+    id: Prefektur Pita
+    it: Prefettura di Pita
+    ja: ピタ県
+    kn: ಪಿಟಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 피타 지방 행정 구역
+    mr: पिटा प्रीफेक्चुअर
+    ms: Pita Prefecture
+    nb: Pita
+    nl: Pita Prefecture
+    pl: Pita (prefektura)
+    pt: Pita
+    ru: Префектура Пита
+    si: පිටා ප්‍රාන්තය
+    sv: Pita (prefektur)
+    ta: பிட ப்ரீபெக்ட்டுர்
+    te: పీటా ప్రిఫెక్చర్
+    th: พิต้า พรีเฟ็คเตอร์
+    tr: Pita Prefecture
+    ur: پیتا پریفیکچور
+    vi: Tỉnh Pita
+    lv: Pitas prefektūra
+    ceb: Pita
+    lt: Pitos prefektūra
+    zh: 皮塔省
+    ccp: "\U0001111B\U00011128\U00011111"
+    uk: Префектура Піта
+    'no': Pita
+    ca: Pita
+  comments:
+  type: prefecture
+SI:
+  name: Siguiri
+  code: SI
+  unofficial_names: Siguiri
+  geo:
+    latitude: 11.416667
+    longitude: -9.166667
+    min_latitude: 11.3927665
+    min_longitude: -9.2001034
+    max_latitude: 11.440052
+    max_longitude: -9.1520426
+  translations:
+    en: Siguiri
+    ar: محافظة سيغيري
+    bn: সিগুইরি প্রশাসনিক অঞ্চল
+    ca: prefectura de Siguiri
+    da: Siguiri Prefecture
+    de: Siguiri
+    el: Σιγκιρί
+    es: Condado de Siguiri
+    fi: Siguirin prefektuuri
+    fr: préfecture de Siguiri
+    gu: સિગુઈરી પ્રીફેકચર
+    hi: सिगुइरी प्रीफेक्चर
+    id: Prefektur Siguiri
+    it: Prefettura di Siguiri
+    ja: シギリ県
+    kn: ಸಿಗುರಿ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 시기리 현
+    mr: सिगुई प्रीफेक्चर
+    ms: Siguiri Prefecture
+    nb: Siguiri
+    nl: Siguiri Prefecture
+    pl: Prefektura Siguiri
+    pt: Siguiri
+    ru: Префектура Сигири
+    si: සින්ගුයිරි ප්‍රාන්තය
+    sv: Siguiri Prefecture
+    ta: சீக்குயிரி ப்ரீபெக்ட்டுர்
+    te: సిగైరి ప్రిఫెక్చర్
+    th: ซิกูอิรี พรีเฟคเตอร์
+    tr: Siguiri Prefecture
+    ur: سیگویری پریفیکچور
+    vi: Quận Siguiri
+    lv: Sigiri prefektūra
+    ceb: Siguiri Prefecture
+    lt: Siguirio prefektūra
+    zh: 錫吉里省
+    ccp: "\U00011125\U00011128\U00011109\U0001112D\U0001112A\U00011122\U00011128"
+    uk: Префектура Сігірі
+    'no': Siguiri
+  comments:
+  type: prefecture
+TE:
+  name: Télimélé
+  code: TE
+  unofficial_names: Télimélé
+  geo:
+    latitude: 10.9
+    longitude: -13.033333
+    min_latitude: 10.8810167
+    min_longitude: -13.0482388
+    max_latitude: 10.9323432
+    max_longitude: -13.0202578
+  translations:
+    en: Télimélé
+    ar: محافظة تيليميلي
+    bn: টেলিমেলি প্রশাসনিক অঞ্চল
+    da: Télimélé Prefecture
+    de: Télimélé
+    el: Τελιμελέ
+    es: Télimélé
+    fa: تلیمله، گینه
+    fi: Télimélén prefektuuri
+    fr: préfecture de Télimélé
+    gu: ટેલીમેલે પ્રીફેકચર
+    hi: टेलेमिले प्रीफेक्चर
+    id: Prefektur Télimélé
+    it: Prefettura di Télimélé
+    ja: テリメレ県
+    kn: ಟೆಲಿಲಿಫೆ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 텔리멜리 지방 행정 구역
+    mr: टेलिमेले प्रीफेक्चर
+    ms: Telimele Prefecture
+    nb: Télimélé
+    nl: Télimélé Prefecture
+    pl: Prefektura Télimélé
+    pt: Télimélé
+    ru: Префектура Телимеле
+    si: ටෙලිමෙලේ ප්‍රාන්තය
+    sv: Telimele Prefecture
+    ta: டெலிமெலே ப்ரீபெக்ட்டுறே
+    te: టెలిమిలి ప్రిఫెక్చర్
+    th: เทลิเมเล
+    tr: Télimélé Prefecture
+    ur: تیلیمیلے پریفیکچور
+    vi: Quận Télimélé
+    lv: Telimeles prefektūra
+    ceb: Telimele Prefecture
+    lt: Telimelės prefektūra
+    zh: 泰利梅萊省
+    ccp: "\U00011111\U0001112C\U00011123\U00011128\U0001111F\U0001112C\U00011123\U0001112C"
+    uk: Префектура Телімеле
+    'no': Télimélé
+    ca: Télimélé
+  comments:
+  type: prefecture
+TO:
+  name: Tougué
+  code: TO
+  unofficial_names: Tougué
+  geo:
+    latitude: 11.4464221
+    longitude: -11.6641388
+    min_latitude: 11.4313187
+    min_longitude: -11.6786385
+    max_latitude: 11.4590797
+    max_longitude: -11.6549492
+  translations:
+    en: Tougué
+    ar: محافظة توغيه
+    bn: তউগু প্রশাসনিক অঞ্চল
+    da: Tougué Prefecture
+    de: Tougué
+    el: Τουγκουέ
+    es: Tougué
+    fi: Touguén prefektuuri
+    fr: préfecture de Tougué
+    gu: ટુગ્યુએ પ્રીફેકચર
+    hi: तुगुए प्रीफेक्चर
+    id: Prefektur Tougué
+    it: Prefettura di Tougué
+    ja: トゥゲ県
+    kn: ಟೌಗೇ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 투구 지방 행정 구역
+    mr: टुगेई प्रीफेक्चर
+    ms: Tougue Prefecture
+    nb: Tougué
+    nl: Tougué Prefecture
+    pl: Prefektura Tougué
+    pt: Prefeitura de Tougué
+    ru: Префектура Туге
+    si: ටෝඌ ගු ප්‍රාන්තය
+    sv: Tougue Prefecture
+    ta: டௌகுவே ப்ரீபெக்ட்டுறே
+    te: టౌగ్ ప్రిఫెక్చర్
+    th: ตูวกูว พรีเฟคเตอร์
+    tr: Tougué Prefecture
+    ur: تؤگوے پریفیکچور
+    vi: Quận Tougué
+    lv: Tuges prefektūra
+    ceb: Tougue Prefecture
+    lt: Togės prefektūra
+    zh: 圖蓋省
+    ccp: "\U00011112\U0001110B\U00011134"
+    uk: Префектура Туге
+    'no': Tougué
+    ca: Tougué
+  comments:
+  type: prefecture
+YO:
+  name: Yomou
+  code: YO
+  unofficial_names: Yomou
+  geo:
+    latitude: 7.566000000000001
+    longitude: -9.2533
+    min_latitude: 7.5576959
+    min_longitude: -9.2723751
+    max_latitude: 7.5800725
+    max_longitude: -9.2434503
+  translations:
+    en: Yomou
+    ar: محافظة يومو
+    bn: ইয়োমু প্রশাসনিক অঞ্চল
+    da: Yomou Prefecture
+    de: Yomou
+    el: Γιομού
+    es: Yomou
+    fi: Yomoun prefektuuri
+    fr: préfecture de Yomou
+    gu: યોમોઉ પ્રીફેક્ચર
+    hi: यौमो प्रीफेक्चर
+    id: Prefektur Yomou
+    it: Prefettura di Yomou
+    ja: ヨムー県
+    kn: ಯೋಮೌ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 요무 지방 행정 구역
+    mr: योमोऊ प्रीफेक्चअर
+    ms: Yomou Prefecture
+    nb: Yomou
+    nl: Yomou Prefecture
+    pl: Prefektura Yomou
+    pt: Prefeitura de Yomou
+    ru: Префектура Йому
+    si: යොමෞ ප්‍රාන්තය
+    sv: Yomou (prefektur)
+    ta: யோமோஉ ப்ரீபெக்ட்டுறே
+    te: యోమోవు ప్రిఫెక్చర్
+    th: โยวมุ พรีเพคเตอร์
+    tr: Yomou Prefecture
+    ur: یومو پرفکترے
+    vi: Quận Yomou
+    lv: Jomu prefektūra
+    ceb: Yomou
+    lt: Jumou prefektūra
+    zh: 約穆省
+    ccp: "\U00011103\U00011128\U00011120\U0001111F\U0001112F"
+    uk: Префектура Йому
+    'no': Yomou
+  comments:
+  type: prefecture

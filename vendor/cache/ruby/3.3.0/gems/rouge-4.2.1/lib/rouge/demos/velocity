@@ -1,0 +1,9 @@
+#*
+ There is multi-line comment.
+ see this text because the Velocity Templating Engine will ignore it.
+*#
+<h3>List</h3>
+## This is a single line comment.
+#if( $allProducts )
+<p>not found.</p>
+#end

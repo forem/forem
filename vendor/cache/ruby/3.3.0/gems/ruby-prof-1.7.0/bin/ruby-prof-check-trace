@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+stacks = Hash.new{|h,k| h[k] = Hash.new{|h,k| h[k] = []}}
+i = 0
+File.open(ARGV[0]).each_line do |l|
+  i += 1
+  unless l =~ /^(\d+):(\d+): *\d+ms *([^ ]+) *(.*): *(\d+) *(.+)$/
+    next if l =~/^ *$/
+    puts "line doesn't match: #{l}"
+    next
+  end
+  details = $1.to_i, $2.to_i, $3, $4, $5.to_i, $6
+  thread, fiber, event, file, line, method = *details
+  # puts method
+  stack = stacks[thread][fiber]
+  case event
+  when 'call', 'c-call'
+    stack << method
+  when 'return', 'c-return'
+    last_method = stack.pop
+    if last_method != method
+      puts "LINE #{i}: return event without call: #{method}"
+      puts "STACK: #{stack.inspect}"
+      if stack.find(method)
+        puts "fixing stack"
+        while (popped = stack.pop) && (popped != method)
+          puts "popped #{popped}"
+        end
+      else
+        raise "stack unfixable"
+      end
+      # stack << last_method
+    end
+  when 'line'
+    last_method = stack[-1]
+    if last_method != method
+      unless stack.find(method)
+        raise "LINE #{i}: line event without call: #{method}"
+      end
+    end
+  else
+    puts "unkown event"
+  end
+end
+puts stacks.inspect

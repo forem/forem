@@ -1,0 +1,54 @@
+<header class="row">
+  <div class="col-sm-5">
+    <h3>
+    <%= t('Changelog Entries') %>
+    </h3>
+  </div>
+  <form action="<%= root_path %>changelogs" class="form form-inline" method="get">
+    <%= csrf_tag %>
+    <input name="filter" class="form-control" type="text" value="<%= @filter %>" />
+    <button class="btn btn-default" type="submit">
+    <%= t('Filter') %>
+    </button>
+  </form>
+  <% if @changelogs.any? && @total_size > @count.to_i %>
+  <div class="col-sm-4">
+    <%= erb unique_template(:_paging), locals: { url: "#{root_path}changelogs" } %>
+  </div>
+  <% end %>
+</header>
+<% if @changelogs.any? %>
+<div class="table_container">
+  <form action="<%= root_path %>changelogs/delete_all" method="get">
+    <input class="btn btn-danger btn-xs" type="submit" name="delete_all" value="<%= t('DeleteAll') %>" data-confirm="<%= t('AreYouSure') %>" />
+  </form>
+  <br/>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th><%= t('Time') %></th>
+        <th><%= t('Digest') %></th>
+        <th><%= t('Script') %></th>
+        <th><%= t('JID') %></th>
+        <th><%= t('Prev JID') %></th>
+        <th><%= t('Message') %></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @changelogs.each do |changelog| %>
+      <tr  class="changelog-row">
+        <td><%= safe_relative_time(changelog["time"]) %></td>
+        <td><%= changelog["digest"] %></td>
+        <td><%= changelog["script"] %></td>
+        <td><%= changelog["job_id"] %></td>
+        <td><%= changelog["prev_jid"] %></td>
+        <td><%= changelog["message"] %></th>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <form action="<%= root_path %>changelogs/delete_all" method="get">
+    <input class="btn btn-danger btn-xs" type="submit" name="delete_all" value="<%= t('DeleteAll') %>" data-confirm="<%= t('AreYouSure') %>" />
+  </form>
+</div>
+<% end %>

@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>Solargraph Environment</title>
+  </head>
+  <h1>
+    Solargraph Environment Info
+  </h1>
+  <h2>
+    System
+  </h2>
+  <ul>
+    <li>
+      Platform: <%= RUBY_PLATFORM %>
+    </li>
+    <li>
+      Shell: <%= ENV['SHELL'] %>
+    </li>
+    <li>
+      Ruby Version: <%= RUBY_VERSION %>
+    </li>
+    <li>
+      RuboCop Version: <%= RuboCop::Version::STRING %>
+    </li>
+  </ul>
+  <h2>
+    Solargraph
+  </h2>
+  <ul>
+    <li>
+      Solargraph Version: <%= Solargraph::VERSION %>
+    </li>
+    <li>
+      Core Documentation Version: N/A <%# @todo Fix %>
+    </li>
+    <li>
+      Core Cache Directory: N/A <%# @todo Fix %>
+    </li>
+    <% unless Solargraph::Parser.rubyvm? %>
+      <li>
+        Parser Target Version: <%= Solargraph::Parser.version %>
+      </li>
+    <% end %>
+    <li>
+      Using Bundler: <%= ENV.key?('BUNDLE_BIN_PATH') %>
+    </li>
+  </ul>
+  <h2>
+    Project
+  </h2>
+  <ul>
+    <li>
+      Config: <%= config %>
+    </li>
+    <li>
+      Workspace folders: <%= folders %>
+    </li>
+  </ul>
+</html>

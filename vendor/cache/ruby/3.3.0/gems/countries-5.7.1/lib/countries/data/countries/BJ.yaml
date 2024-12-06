@@ -1,0 +1,48 @@
+---
+BJ:
+  alpha2: BJ
+  alpha3: BEN
+  continent: Africa
+  country_code: '229'
+  currency_code: XOF
+  distance_unit: KM
+  gec: BN
+  geo:
+    latitude: 9.30769
+    longitude: 2.315834
+    max_latitude: 12.4086111
+    max_longitude: 3.8433429
+    min_latitude: 6.2061001
+    min_longitude: 0.7754124000000001
+    bounds:
+      northeast:
+        lat: 12.4086111
+        lng: 3.8433429
+      southwest:
+        lat: 6.2061001
+        lng: 0.7754124000000001
+  international_prefix: '00'
+  ioc: BEN
+  iso_long_name: The Republic of Benin
+  iso_short_name: Benin
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Beninese
+  number: '204'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: BJ
+  unofficial_names:
+  - Benin
+  - Bénin
+  - ベナン
+  world_region: EMEA

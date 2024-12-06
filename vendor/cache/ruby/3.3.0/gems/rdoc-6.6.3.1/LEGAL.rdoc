@@ -1,0 +1,50 @@
+# coding: UTF-8
+
+= Legal Notice Information
+
+The files in this distribution are covered by the Ruby license (see LICENSE) except the features mentioned below:
+
+Darkfish::
+  Darkfish was written by Michael Granger and is included under the BSD 3-Clause
+  license.  Darkfish contains images from the Silk Icons set by Mark James.
+
+  See lib/rdoc/generator/darkfish.rb for license information.
+
+  * lib/rdoc/generator/darkfish.rb
+  * lib/rdoc/generator/template/darkfish/*
+  * lib/rdoc/generator/template/darkfish/images
+
+SDoc::
+  Portions of SDoc by (Володя Колесников) Vladimir Kolesnikov are included
+  under the MIT license as RDoc::Generator::JsonIndex.  See
+  lib/rdoc/generator/json_index.rb for license information.
+
+  * lib/rdoc/generator/json_index.rb
+  * lib/rdoc/generator/template/json_index/*
+  * The +#search_index+ methods on RDoc::CodeObject subclasses were derived
+    from sdoc.
+  * RDoc::ClassModule#document_self_or_methods comes from SDoc.
+
+peg-markdown::
+  RDoc's Markdown support is derived from peg-markdown by John MacFarlane.  It
+  is used under the MIT license.  See RDoc::Markdown for license details.
+
+MarkdownTest::
+  test/test_rdoc_markdown_test.rb uses MarkdownTest 1.0.3's source files which
+  are included as test/MarkdownTest_1.0.3/*.text which are Copyright (c)
+  2004-2005 John Gruber http://daringfireball.net and is included under the
+  same terms as Perl itself.
+
+  See http://dev.perl.org/licenses/ for the terms of the Perl license.
+
+Fonts::
+  Source Code Pro is (c) 2010, 2012 Adobe Systems Incorporated.
+
+  Lato is (c) 2010 Łukasz Dziedzic.
+
+  Both fonts are used under the SIL Open Font License, Version 1.1.  The
+  license is available at http://scripts.sil.org/OFL
+
+  See lib/rdoc/generator/template/darkfish/fonts.css for complete copyright
+  and license information, including a copy of the OFL.
+

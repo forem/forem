@@ -1,0 +1,16 @@
+{
+  "algorithm": "HMAC-SHA256",
+  "expires": 1308988800,
+  "issued_at": 1308985018,
+  "oauth_token": "111111111111111|2.AQBAttRlLVnwqNPZ.3600.1111111111.1-111111111111111|T49w3BqoZUegypru51Gra70hED8",
+  "user":
+  {
+    "country": "de",
+    "locale": "en_US",
+    "age":
+    {
+      "min": 21
+    }
+  },
+  "user_id": "111111111111111"
+}

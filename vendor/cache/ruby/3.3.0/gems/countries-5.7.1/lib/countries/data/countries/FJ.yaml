@@ -1,0 +1,55 @@
+---
+FJ:
+  alpha2: FJ
+  alpha3: FJI
+  continent: Australia
+  country_code: '679'
+  currency_code: FJD
+  distance_unit: KM
+  gec: FJ
+  geo:
+    latitude: -17.713371
+    longitude: 178.065032
+    max_latitude: -12.2084957
+    max_longitude: -177.8686523
+    min_latitude: -20.8998713
+    min_longitude: 176.7919922
+    bounds:
+      northeast:
+        lat: -12.2084957
+        lng: -177.8686523
+      southwest:
+        lat: -20.8998713
+        lng: 176.7919922
+  international_prefix: '00'
+  ioc: FIJ
+  iso_long_name: The Republic of Fiji
+  iso_short_name: Fiji
+  languages_official:
+  - en
+  - fj
+  - hi
+  - ur
+  languages_spoken:
+  - en
+  - fj
+  - hi
+  - ur
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Fijian
+  number: '242'
+  postal_code: false
+  region: Oceania
+  start_of_week: monday
+  subregion: Melanesia
+  un_locode: FJ
+  unofficial_names:
+  - Fiji
+  - Fidschi
+  - Fidji
+  - フィジー
+  world_region: APAC

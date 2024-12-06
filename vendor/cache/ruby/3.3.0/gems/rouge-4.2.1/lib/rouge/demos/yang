@@ -1,0 +1,17 @@
+module petstore {
+    namespace "http://autlan.dt/gribok/yang/example";
+    prefix ex;
+
+    revision 2020-04-01 {
+        description "Example yang";
+    }
+
+    container pets {
+        list dogs {
+            key name;
+            leaf name {
+                type string;
+            }
+        }
+    }
+}

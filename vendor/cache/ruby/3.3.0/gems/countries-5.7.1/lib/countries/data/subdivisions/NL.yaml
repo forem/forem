@@ -1,0 +1,1275 @@
+---
+AW:
+  name: Aruba
+  code: AW
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Aruba
+    ccp: "\U00011103\U00011122\U0001112A\U0001111D"
+    ja: アルバ
+  comments:
+  type: country
+BQ1:
+  name: Bonaire
+  code: BQ1
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Bonaire
+    ar: بونير
+    az: Boneyr adası
+    be: Востраў Банайрэ
+    bg: Бонер
+    bn: বোনাইর
+    ca: Bonaire
+    cs: Bonaire
+    da: Bonaire
+    de: Bonaire
+    el: Μποναίρ
+    en: Bonaire
+    es: Bonaire
+    et: Bonaire
+    eu: Bonaire
+    fa: بونیر
+    fi: Bonaire
+    fr: Bonaire
+    gl: Bonaire
+    gu: બોનારે
+    he: בונייר
+    hi: बोनेयेर
+    hr: Bonaire
+    hu: Bonaire
+    hy: Բոնեյրե
+    id: Bonaire
+    it: Bonaire
+    ja: ボネール島
+    ka: ბონეირი
+    kn: ಬೊನೈರ್
+    ko: 보네르 섬
+    lt: Boneras
+    lv: Bonaire
+    mr: बोनरे
+    ms: Bonaire
+    nb: Bonaire
+    nl: Bonaire
+    pl: Bonaire
+    pt: Bonaire
+    ro: Bonaire
+    ru: Бонэйр
+    si: බොනයිරේ
+    sk: Bonaire
+    sr: Бонер
+    sv: Bonaire
+    sw: Bonaire
+    ta: பொனெய்ர்
+    te: బోనెయిర్
+    th: โบแนเรอ
+    tr: Bonaire
+    uk: Бонайре
+    ur: بونایر
+    vi: Bonaire
+    zh: 波内赫
+    cy: Bonaire
+    ceb: Bonaire (pulo ug munisipyo espesyal)
+    sr_Latn: Boner
+    yue_Hans: 博奈尔岛
+    ccp: "\U0001111D\U00011127\U0001111A\U0001112D\U00011120\U00011122\U00011134"
+    pa: ਬੋਨੇਅਰ
+    kk: Бонэйр
+    yue: 博奈爾島
+    yo: Bonaire
+    mk: Бонер
+    'no': Bonaire
+    yo_BJ: Bonaire
+    uz: Bonayre
+  comments:
+  type: special_municipality
+BQ2:
+  name: Saba
+  code: BQ2
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Saba
+    ar: سابا
+    az: Saba
+    be: Востраў Саба
+    bg: Саба
+    bn: সাবা
+    ca: Illa de Saba
+    cs: Saba
+    da: Saba
+    de: Saba
+    el: Σάμπα
+    en: Saba
+    es: Saba
+    et: Saba saar
+    eu: Saba
+    fa: سیبا
+    fi: Saba
+    fr: Saba
+    gl: Saba
+    he: סאבא
+    hr: Saba
+    hu: Saba
+    hy: Սաբա կղզի
+    id: Saba
+    it: Saba
+    ja: サバ島
+    ka: საბა
+    ko: 사바 섬
+    lt: Saba
+    lv: Saba
+    nb: Saba
+    nl: Saba
+    pl: Saba
+    pt: Saba
+    ro: Saba
+    ru: Саба
+    sr: Саба
+    sv: Saba
+    sw: Saba
+    ta: சேபா
+    th: ซาบา
+    tr: Saba
+    uk: Саба
+    ur: صبا
+    vi: Saba
+    ceb: Saba Island
+    sr_Latn: Saba
+    zh: 薩巴
+    yue_Hans: 萨巴岛
+    ccp: "\U00011125\U0001111D"
+    pa: ਸਾਬਾ
+    kk: Саба
+    yue: 薩巴島
+    bs: Saba
+    mk: Саба
+    'no': Saba
+    ga: Saba
+    hi: साबा
+  comments:
+  type: special_municipality
+BQ3:
+  name: Sint Eustatius
+  code: BQ3
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Sint Eustatius
+    ar: سينت أوستاتيوس
+    az: Sint-Estatius
+    be: Востраў Сінт-Эстаціус
+    bg: Свети Евстатиус
+    bn: সিন্ট এউস্তাতিউস
+    ca: Sint Eustatius
+    cs: Svatý Eustach
+    da: Sint Eustatius
+    de: Sint Eustatius
+    el: Άγιος Ευστάθιος
+    en: Sint Eustatius
+    es: San Eustaquio
+    et: Sint-Eustatius
+    eu: Sint Eustatius
+    fa: سینت یوستیشس
+    fi: Sint Eustatius
+    fr: Saint-Eustache
+    gl: San Eustaquio
+    gu: સિન્ટ ઓસ્ટેટિયસ
+    he: סנט אוסטטיוס
+    hi: सिंट यूस्टेशियस
+    hr: Sveti Eustasius
+    hu: Sint Eustatius
+    hy: Սինտ Էվստատիուս
+    id: Sint Eustatius
+    it: Sint Eustatius
+    ja: シント・ユースタティウス島
+    ka: სინტ-ესტატიუსი
+    kn: ಸಿಂಟ್ ಯೂಸ್ಟಾಟಿಯಸ್
+    ko: 신트외스타티위스 섬
+    lt: Sint Eustatijus
+    lv: Sintēstatiusa
+    mr: सिंट उस्ताशिअस
+    ms: Sint Eustatius
+    nb: Sint Eustatius
+    nl: Sint Eustatius
+    pl: Sint Eustatius
+    pt: Santo Eustáquio
+    ro: Sint Eustatius
+    ru: Синт-Эстатиус
+    si: සින්ට් ඉයුස්ටේටියස්
+    sr: Свети Еустахије
+    sv: Sint Eustatius
+    sw: Sint Eustatius
+    ta: சின்டு யுசுடாசியசு
+    te: సింట్ యూస్టేటియస్
+    th: ซินต์เอิสตาซียึส
+    tr: Sint Eustatius
+    uk: Сінт-Естатіус
+    ur: سینٹ ایوسٹائیس
+    vi: Sint Eustatius
+    ceb: Sint Eustatius
+    sr_Latn: Sveti Eustahije
+    zh: 圣尤斯特歇斯
+    yue_Hans: 圣犹士坦岛
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011134 \U00011103\U00011128\U00011105\U0001112A\U0001110C\U00011134\U00011111\U00011111\U00011128\U00011120\U0001110C\U00011134"
+    pa: ਸਿੰਟ ਯੂਸਟੇਸ਼ਸ
+    kk: Синт-Эстатиус
+    yue: 聖猶士坦島
+    mk: Свети Евстахиј
+    'no': Sint Eustatius
+    sl: Sveti Evstahij (otok)
+  comments:
+  type: special_municipality
+CW:
+  name: Curaçao
+  code: CW
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Curaçao
+    ccp: "\U00011107\U00011128\U00011105\U0001112A\U00011122\U00011107\U00011103\U0001112E"
+    ja: キュラソー島
+  comments:
+  type: country
+DR:
+  name: Drenthe
+  code: DR
+  unofficial_names: Drenthe
+  geo:
+    latitude: 52.9476012
+    longitude: 6.623058599999999
+    min_latitude: 52.6121857
+    min_longitude: 6.1198503
+    max_latitude: 53.2037415
+    max_longitude: 7.0929356
+  translations:
+    en: Drenthe
+    af: Drenthe
+    ar: درينته
+    be: Дрэнтэ
+    bg: Дренте
+    bn: ড্রেন্তে
+    ca: Drenthe
+    cs: Drenthe
+    da: Drenthe
+    de: Provinz Drente
+    el: Ντρέντε
+    es: Drente
+    et: Drenthe provints
+    eu: Drenthe
+    fa: درنته
+    fi: Drenthe
+    fr: Drenthe
+    gl: Drenthe
+    gu: ડ્રેન્થે
+    he: דרנתה
+    hi: ड्रेंठे
+    hu: Drenthe
+    hy: Դրենթե
+    id: Drenthe
+    is: Drenthe
+    it: Drenthe
+    ja: ドレンテ州
+    ka: დრენთე
+    kn: ಡ್ರೆಂಟೆ
+    ko: 드렌터 주
+    lt: Drentė
+    lv: Drente
+    mr: द्रेंथ
+    ms: Drenthe
+    nb: Drenthe
+    ne: ड्रेन्थे
+    nl: Drenthe
+    pl: Drenthe
+    pt: Drente
+    ro: Drenthe
+    ru: Дренте
+    si: ඩ්රෙන්තේ
+    sk: Drenthe
+    sr: Дренте
+    sv: Drenthe
+    sw: Drenthe
+    ta: டிரென்த்
+    te: డ్రెంతె
+    th: จังหวัดเดรนเทอ
+    tr: Drenthe
+    uk: Дренте
+    ur: درینتے
+    vi: Drenthe
+    cy: Drenthe
+    ceb: Provincie Drenthe
+    sr_Latn: Drente
+    zh: 德伦特省
+    yue_Hans: 德伦特
+    jv: Drenthe
+    sq: Drenthe
+    ccp: "\U00011113\U00011133\U00011122\U0001112C\U0001111A\U00011134\U00011117\U0001112C"
+    ga: Drenthe
+    so: Drenthe
+    yue: 德倫特
+    mk: Дренте
+    'no': Drenthe
+    ps: درنته
+    sl: Drenthe
+  comments:
+  type: province
+FL:
+  name: Flevoland
+  code: FL
+  unofficial_names: Flevoland
+  geo:
+    latitude: 52.5279781
+    longitude: 5.595350799999999
+    min_latitude: 52.2526254
+    min_longitude: 5.1221244
+    max_latitude: 52.8440468
+    max_longitude: 6.011667099999999
+  translations:
+    en: Flevoland
+    af: Flevoland
+    ar: فليفولاند
+    be: Флеваланд
+    bg: Флеволанд
+    bn: ফ্রিলে ফ্লেভোল্যান্ড
+    ca: Flevoland
+    cs: Flevoland
+    da: Flevoland
+    de: Provinz Flevoland
+    el: Φλέβολαντ
+    es: Flevoland
+    et: Flevoland
+    eu: Flevoland
+    fa: فلیوولاند
+    fi: Flevoland
+    fr: Flevoland
+    gl: Flevoland
+    gu: ફ્લેવોલેન્ડ
+    he: פלבולנד
+    hi: फ्लेवोलैंड
+    hu: Flevoland
+    hy: Ֆլևոլանդ
+    id: Flevoland
+    is: Flevoland
+    it: Flevoland
+    ja: フレヴォラント州
+    ka: ფლევოლანდი
+    kn: ಫ್ಲೀವೋಲ್ಯಾಂಡ್
+    ko: 플레볼란트 주
+    lt: Flevolandas
+    lv: Flevolande
+    mr: फ्लेव्होलांड
+    ms: Flevoland
+    nb: Flevoland
+    ne: फ्लेभोल्यान्ड
+    nl: Flevoland
+    pl: Flevoland
+    pt: Flevolândia
+    ro: Flevoland
+    ru: Флеволанд
+    si: ෆ්ලෙවෝලන්ඩ්
+    sk: Flevoland
+    sr: Флеволанд
+    sv: Flevoland
+    sw: Flevoland
+    ta: ஃபிலொவோலாந்து
+    te: ఫ్రెవోలాండ్
+    th: จังหวัดเฟลโฟลันด์
+    tr: Flevoland
+    uk: Флеволанд
+    ur: فلیولانت
+    vi: Flevoland
+    cy: Flevoland
+    ceb: Provincie Flevoland
+    sr_Latn: Flevoland
+    zh: 弗莱福兰省
+    yue_Hans: 傅利禾兰
+    jv: Flevoland
+    sq: Flevoland
+    ccp: "\U0001111C\U00011133\U00011122\U0001112C\U0001111E\U0001112E\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: Flevoland
+    so: Flevoland
+    yue: 傅利禾蘭
+    mk: Флеволанд
+    'no': Flevoland
+  comments:
+  type: province
+FR:
+  name: Friesland
+  code: FR
+  unofficial_names: Friesland
+  geo:
+    latitude: 53.1641642
+    longitude: 5.7817542
+    min_latitude: 52.8006928
+    min_longitude: 4.8455655
+    max_latitude: 53.5145975
+    max_longitude: 6.4274762
+  translations:
+    en: Friesland
+    af: Friesland
+    ar: فرايزلاند
+    be: Фрысландыя
+    bg: Фризия
+    bn: ফ্রাইসল্যান্ড
+    ca: Província de Frísia
+    cs: Frísko
+    da: Frisland
+    de: Provinz Friesland
+    el: Φρίσλαντ
+    es: Frisia
+    et: Friisimaa provints
+    eu: Frisia
+    fa: فریسلاند
+    fi: Friisinmaa
+    fr: Frise
+    gl: Frisia - Fryslân
+    gu: ફ્રાઈસલેન્ડ
+    he: פריסלנד
+    hi: फ्राइजलैंड
+    hu: Frízföld
+    id: Friesland
+    is: Frísland
+    it: Frisia
+    ja: フリースラント州
+    ka: ფრისლანდია
+    kn: ಫ್ರೈಸ್ಲ್ಯಾಂಡ್
+    ko: 프리슬란트 주
+    lt: Fryzija
+    lv: Frīzlande
+    mr: फ्रीसलंड
+    ms: Friesland
+    nb: Friesland
+    ne: फ्राइजल्यान्ड
+    nl: Friesland
+    pl: Fryzja
+    pt: Frísia
+    ro: Provincia Frizia
+    ru: Фрисландия
+    si: ෆ්‍රීස්ලන්ත්
+    sk: Frízsko
+    sr: Фризија
+    sv: Friesland
+    sw: Friesland
+    ta: பிரைஸ்லாந்து
+    te: ఫ్రైస్ లాండ్
+    th: จังหวัดฟรีสลันด์
+    tr: Frizya
+    uk: Фрисландія
+    ur: فریسلانت
+    vi: Friesland
+    cy: Fryslân
+    ceb: Provincie Friesland
+    sr_Latn: Frizija
+    zh: 弗里斯兰省
+    yue_Hans: 菲士兰
+    jv: Friesland
+    sq: Friesland
+    ccp: "\U0001111C\U00011133\U00011122\U0001112D\U00011120\U0001112C\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: Friesland
+    hy: Ֆրիսլանդիա
+    so: Friesland
+    yue: 菲士蘭
+    mk: Фризија
+    'no': Friesland
+    az: Frislandiya
+    sl: Frizija
+  comments:
+  type: province
+GE:
+  name: Gelderland
+  code: GE
+  unofficial_names:
+  - Gueldre
+  geo:
+    latitude: 52.045155
+    longitude: 5.871823399999999
+    min_latitude: 51.7336076
+    min_longitude: 4.9938809
+    max_latitude: 52.5220087
+    max_longitude: 6.833041799999999
+  translations:
+    en: Gelderland
+    af: Gelderland
+    ar: خيلدرلند
+    be: правінцыя Гелдэрланд
+    bg: Гелдерланд
+    bn: গেল্ডারল্যান্ড
+    ca: Gelderland
+    cs: Gelderland
+    da: Gelderland
+    de: Provinz Gelderland
+    el: Χέλντερλαντ
+    es: Güeldres
+    et: Gelderlandi provints
+    eu: Gelderland
+    fa: خلدرلاند
+    fi: Gelderland
+    fr: Gueldre
+    gl: Gueldria - Gelderland
+    gu: ગેલ્ડરલેન્ડ
+    he: חלדרלנד
+    hi: गेल्डरलैंड
+    hr: Gelderland
+    hu: Gelderland
+    hy: Խելդեռլանդ
+    id: Gelderland
+    is: Gelderland
+    it: Gheldria
+    ja: ヘルダーラント州
+    ka: გელდერლანდი
+    kn: ಗೆಲ್ಡರ್ಲ್ಯಾಂಡ್
+    ko: 헬데를란트 주
+    lt: Gelderlandas
+    lv: Gelderlande
+    mn: Гелдерланд
+    mr: गेल्डरलांड
+    ms: Gelderland
+    nb: Gelderland
+    ne: गेल्डरल्यान्ड
+    nl: Gelderland
+    pl: Geldria
+    pt: Guéldria
+    ro: Gelderland
+    ru: Гелдерланд
+    si: ගෙලඩර්ලන්තය
+    sk: Gelderland
+    sr: Хелдерланд
+    sv: Gelderland
+    sw: Gelderland
+    ta: கெல்டர்லாந்து
+    te: గెల్డర్లాండ్
+    th: จังหวัดเกลเดอร์ลันด์
+    tr: Gelderland
+    uk: Гелдерланд
+    ur: خیلدرلنت
+    vi: Gelderland
+    cy: Gelderland
+    ceb: Provincie Gelderland
+    sr_Latn: Helderland
+    zh: 海尔德兰省
+    yue_Hans: 希德兰
+    jv: Gelderland
+    sq: Gelderland
+    ccp: "\U00011109\U0001112C\U00011123\U00011134\U00011113\U00011122\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: Gelderland
+    so: Gelderland
+    yue: 希德蘭
+    mk: Гелдерланд
+    'no': Gelderland
+    ps: خلدرلنډ
+    sl: Gelderland
+  comments:
+  type: province
+GR:
+  name: Groningen
+  code: GR
+  unofficial_names:
+  - Groningue
+  - Groninga
+  geo:
+    latitude: 53.2193835
+    longitude: 6.566501799999999
+    min_latitude: 53.1786842
+    min_longitude: 6.4625995
+    max_latitude: 53.26472589999999
+    max_longitude: 6.6669044
+  translations:
+    en: Groningen
+    af: Groningen
+    ar: مقاطعة خرونينغن
+    az: Xroninqen
+    be: Правінцыя Гронінген
+    bg: Гронинген
+    bn: গ্রোনিনজেন
+    ca: Província de Groningen
+    cs: Groningen
+    da: Groningen
+    de: Provinz Groningen
+    el: Χρόνινγκεν
+    es: Provincia de Groninga
+    et: Groningeni provints
+    eu: Groningen
+    fa: خرونینگن
+    fi: Groningen
+    fr: Groningue
+    gl: Provincia de Groninga - Provincie Groningen
+    gu: ગ્રૉનિન્જેન
+    he: חרונינגן
+    hi: ग्रोनिंगन
+    hu: Groningen
+    hy: Խրոնինգեն
+    id: Groningen
+    is: Groningen
+    it: Groninga
+    ja: フローニンゲン州
+    ka: გრონინგენის პროვინცია
+    kn: ಗ್ರೊನಿನ್ಗೆನ್
+    ko: 흐로닝언 주
+    lt: Groningeno provincija
+    lv: Groningena
+    mr: ग्रोनिंगन (प्रांत)
+    ms: Groningen
+    nb: Groningen
+    ne: ग्रोनिजेन
+    nl: Groningen
+    pl: Groningen
+    pt: Groninga
+    ro: Groningen
+    ru: Гронинген
+    si: ග්රෝනින්ජෙන්
+    sk: Groningen
+    sr: Гронинген
+    sv: Groningen
+    sw: Mkoa wa Groningen
+    ta: கிரோனிஞென்
+    te: గ్రోనింగెన్
+    th: จังหวัดโกรนิงเงิน
+    tr: Groningen
+    uk: Гронінген
+    ur: خرونیگین
+    vi: Groningen
+    cy: Groningen
+    ceb: Provincie Groningen
+    sr_Latn: Groningen
+    zh: 格罗宁根省
+    yue_Hans: 古罗宁亨
+    jv: Provinsi Groningen
+    sq: Groningen
+    ccp: "\U00011109\U00011133\U00011122\U0001112E\U0001111A\U00011128\U0001111A\U00011134\U0001110E\U0001112C\U0001111A\U00011134"
+    ga: Groningen
+    so: Groningen
+    yue: 古羅寧亨
+    mk: Гронинген
+    'no': Groningen
+  comments:
+  type: province
+LI:
+  name: Limburg
+  code: LI
+  unofficial_names: Limburg
+  geo:
+    latitude: 51.4427238
+    longitude: 6.0608726
+    min_latitude: 50.75038379999999
+    min_longitude: 5.5660666
+    max_latitude: 51.778577
+    max_longitude: 6.226801399999999
+  translations:
+    en: Limburg
+    af: Limburg, Nederland
+    ar: ليمبورخ
+    be: Лімбург
+    bg: Лимбург
+    bn: লিম্বার্গ
+    ca: Limburg
+    cs: Limburg
+    da: Limburg (nederlandsk provins)
+    de: Provinz Limburg
+    el: Λιμβουργία
+    es: Limburgo
+    et: Limburgi provints
+    eu: Limburg
+    fa: لیمبورخ
+    fi: Limburg
+    fr: Limbourg
+    gl: Limburgo - Limburg
+    gu: લિમ્બર્ગ
+    he: לימבורג
+    hi: लिम्बर्ग (नीदरलैंड्स)
+    hr: Limburg
+    hu: Limburg
+    hy: Լիմբուրխ
+    id: Limburg
+    is: Limburg
+    it: Limburgo
+    ja: リンブルフ州
+    ka: ლიმბურგის პროვინცია
+    kn: ಲಿಂಬರ್ಗ್
+    ko: 림뷔르흐 주
+    lt: Limburgo provincija
+    lv: Limburga
+    mr: लिमबर्ग
+    ms: Limburg
+    nb: Limburg
+    ne: लिमबर्ग
+    nl: Limburg
+    pl: Limburgia
+    pt: Limburgo
+    ro: Limburg
+    ru: Лимбург
+    si: ලිම්බර්ග්
+    sk: Limbursko
+    sr: Лимбург
+    sv: Limburg
+    sw: Limburg, Uholanzi
+    ta: லிம்பெர்க்
+    te: లింబర్గ్
+    th: จังหวัดลิมบูร์ก
+    tr: Limburg, Hollanda
+    uk: Лімбург
+    ur: لمبرخ
+    vi: Limburg
+    cy: Limburg
+    sr_Latn: Limburg
+    zh: 林堡省
+    yue_Hans: 林堡
+    jv: Limburg
+    sq: Limburgu
+    ccp: "\U00011123\U00011128\U0001111F\U0001111D\U00011122\U00011134\U00011109\U00011134"
+    ga: Limburg
+    so: Limburg
+    yue: 林堡
+    mk: Лимбург
+    'no': Limburg
+    az: Limburq
+    sl: Limburg (Nizozemska)
+  comments:
+  type: province
+NB:
+  name: Noord-Brabant
+  code: NB
+  unofficial_names: Noord-Brabant
+  geo:
+    latitude: 51.4826537
+    longitude: 5.2321687
+    min_latitude: 51.2209373
+    min_longitude: 4.190081
+    max_latitude: 51.8307142
+    max_longitude: 6.047724
+  translations:
+    en: North Brabant
+    af: Noord-Brabant
+    ar: شمال برابنت
+    az: Şimali Brabant
+    be: Паўночны Брабант
+    bg: Северен Брабант
+    bn: উত্তর ব্রাবান্ট
+    ca: Brabant Septentrional
+    cs: Severní Brabantsko
+    da: Noord-Brabant
+    de: Provinz Nordbrabant
+    el: Βόρεια Βραβάντη
+    es: Brabante Septentrional
+    et: Põhja-Brabant
+    eu: Ipar Brabante
+    fa: برابانت شمالی
+    fi: Pohjois-Brabant
+    fr: Brabant-Septentrional
+    gl: Brabante do Norte - Noord Brabant
+    gu: નોર્થ બ્રેબેન્ટ
+    he: צפון בראבנט
+    hi: उत्तरी ब्रबैंट
+    hr: Sjeverni Brabant
+    hu: Észak-Brabant
+    hy: Հյուսիսային Բրաբանդ
+    id: Brabant Utara
+    is: Norður-Brabant
+    it: Brabante Settentrionale
+    ja: 北ブラバント州
+    ka: ჩრდილოეთი ბრაბანტი
+    kn: ನಾರ್ತ್ ಬ್ರಬಂಟ್
+    ko: 노르트브라반트 주
+    lt: Šiaurės Brabantas
+    lv: Ziemeļbrabante
+    mn: Умар Брабант
+    mr: नूर्द-ब्राबांत
+    ms: Noord-Brabant
+    nb: Noord-Brabant
+    nl: Noord-Brabant
+    pl: Brabancja Północna
+    pt: Brabante do Norte
+    ro: Brabantul de Nord
+    ru: Северный Брабант
+    si: උතුරු බ්‍රබන්ට්
+    sk: Severné Brabantsko
+    sr: Северни Брабант
+    sv: Noord-Brabant
+    sw: Noord-Brabant
+    ta: வடக்கு பிரபான்ட்
+    te: ఉత్తర బ్రాబంట్
+    th: จังหวัดนอร์ทบราแบนต์
+    tr: Kuzey Brabant
+    uk: Північний Брабант
+    ur: شمالی برابانٹ
+    vi: Noord-Brabant
+    cy: Noord-Brabant
+    ceb: Provincie Noord-Brabant
+    sr_Latn: Severni Brabant
+    zh: 北布拉班特省
+    yue_Hans: 北布拉班
+    jv: Brabant Lor
+    sq: Brabanta Veriore
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111D\U00011133\U00011122\U0001111D\U0001111A\U00011134\U00011111\U00011134"
+    ga: Brabant Thuaidh
+    so: Waqooyiga Brabant
+    yue: 北布拉班
+    mk: Северен Брабант
+    'no': Noord-Brabant
+    ps: شمالي برابانټ
+  comments:
+  type: province
+NH:
+  name: Noord-Holland
+  code: NH
+  unofficial_names: Noord-Holland
+  geo:
+    latitude: 52.5205869
+    longitude: 4.788474
+    min_latitude: 52.1657716
+    min_longitude: 4.4937415
+    max_latitude: 53.1833322
+    max_longitude: 5.328279999999999
+  translations:
+    en: North Holland
+    af: Noord-Holland
+    ar: شمال-هولندا
+    az: Şimali Hollandiya
+    be: Паўночная Галандыя
+    bg: Северна Холандия
+    bn: উত্তর হল্যান্ড
+    ca: Holanda Septentrional
+    cs: Severní Holandsko
+    da: Noord-Holland
+    de: Provinz Nordholland
+    el: Βόρεια Ολλανδία
+    es: Holanda Septentrional
+    et: Põhja-Holland
+    eu: Ipar Holanda
+    fa: هلند شمالی
+    fi: Pohjois-Hollanti
+    fr: Hollande-Septentrionale
+    gl: Holanda Setentrional - Noord-Holland
+    gu: નોર્થ હોલેન્ડ
+    he: צפון הולנד
+    hi: उत्तर हॉलैंड
+    hu: Észak-Holland
+    hy: Հյուսիսային Հոլանդիա
+    id: Holland Utara
+    is: Norður-Holland
+    it: Olanda Settentrionale
+    ja: 北ホラント州
+    ka: ჩრდილოეთი ჰოლანდია
+    kn: ಉತ್ತರ ಹಾಲೆಂಡ್
+    ko: 노르트홀란트 주
+    lt: Šiaurės Olandija
+    lv: Ziemeļholande
+    mn: Умар Холланд
+    mr: नूर्द-हॉलंड
+    ms: Noord-Holland
+    nb: Noord-Holland
+    ne: उत्तरी हल्यान्ड
+    nl: Noord-Holland
+    pl: Holandia Północna
+    pt: Holanda do Norte
+    ro: Olanda de Nord
+    ru: Северная Голландия
+    si: උතුරු ඕලන්දය
+    sk: Severný Holland
+    sl: Severna Holandija
+    sr: Северна Холандија
+    sv: Noord-Holland
+    sw: Noord-Holland
+    ta: வட ஹாலந்து
+    te: ఉత్తర హాలాండ్
+    th: จังหวัดนอร์ทฮอลแลนด์
+    tr: Kuzey Hollanda
+    uk: Північна Голландія
+    ur: شمالی ہولانت
+    vi: Noord-Holland
+    cy: Noord-Holland
+    ceb: Provincie Noord-Holland
+    sr_Latn: Severna Holandija
+    zh: 北荷兰省
+    yue_Hans: 北荷兰
+    jv: Holland Lor
+    sq: Hollanda e Veriut
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011126\U0001112E\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: An Ollainn Thuaidh
+    so: Waqooyiga Holland
+    yue: 北荷蘭
+    mk: Северна Холандија
+    'no': Noord-Holland
+    ps: شمالي هالنډ
+  comments:
+  type: province
+OV:
+  name: Overijssel
+  code: OV
+  unofficial_names: Overijssel
+  geo:
+    latitude: 52.4387814
+    longitude: 6.5016411
+    min_latitude: 52.118023
+    min_longitude: 5.7778252
+    max_latitude: 52.85423489999999
+    max_longitude: 7.0727632
+  translations:
+    en: Overijssel
+    af: Overijssel
+    ar: أوفرايسل
+    be: Аверэйсел
+    bg: Оверейсел
+    bn: ওভেরিসসেল
+    ca: Overijssel
+    cs: Overijssel
+    da: Overijssel
+    de: Provinz Overijssel
+    el: Οφεράισσελ
+    es: Overijssel
+    et: Overijsseli provints
+    eu: Overijssel
+    fa: افریسل
+    fi: Overijssel
+    fr: Overijssel
+    gl: Overijssel
+    gu: ઓવરજ્સેલ
+    he: אוברייסל
+    hi: ओवरिस्सेल
+    hu: Overijssel
+    hy: Օվերեյսել
+    id: Overijssel
+    is: Overijssel
+    it: Overijssel
+    ja: オーファーアイセル州
+    ka: ოვერეისელი
+    kn: ಓವರ್ಜಿಸೆಲ್
+    ko: 오버레이설 주
+    lt: Overeiselis
+    lv: Overeisela
+    mr: ओव्हराईजल
+    ms: Overijssel
+    nb: Overijssel
+    ne: ओभेरिज्स्सेल
+    nl: Overijssel
+    pl: Overijssel
+    pt: Overissel
+    ro: Overijssel
+    ru: Оверэйсел
+    si: ඔවෙරිජෙස්සෙල්
+    sk: Overijssel
+    sr: Оверејсел
+    sv: Overijssel
+    sw: Overijssel
+    ta: ஓவர்ரிஜ்செல்
+    te: ఓవరిజ్సెల్
+    th: จังหวัดโอเฟอไรส์เซิล
+    tr: Overijssel
+    uk: Оверейсел
+    ur: اوفریسل
+    vi: Overijssel
+    cy: Overijssel
+    ceb: Provincie Overijssel
+    sr_Latn: Overejsel
+    zh: 上艾瑟尔省
+    yue_Hans: 上艾修
+    jv: Overijssel
+    sq: Overijssel
+    ccp: "\U00011103\U0001112E\U0001111E\U00011122\U00011128\U0001110C\U00011134\U00011125\U0001112C\U00011123\U00011134"
+    ga: Overijssel
+    so: Overijssel
+    yue: 上艾修
+    mk: Оверејсел
+    'no': Overijssel
+    az: Overijssel
+    ps: افریسل
+    sl: Overijssel
+  comments:
+  type: province
+SX:
+  name: Sint Maarten
+  code: SX
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Sint Maarten
+    ccp: "\U00011125\U00011128\U00011120\U0001111A\U00011134\U00011111\U00011134 \U0001111F\U00011122\U00011134\U00011111\U0001112C\U0001111A\U00011134"
+    ja: シント・マールテン
+  comments:
+  type: country
+UT:
+  name: Utrecht
+  code: UT
+  unofficial_names: Utrecht
+  geo:
+    latitude: 52.09073739999999
+    longitude: 5.1214201
+    min_latitude: 52.02611109999999
+    min_longitude: 4.9697758
+    max_latitude: 52.1422624
+    max_longitude: 5.1952072
+  translations:
+    en: Utrecht
+    af: Utrecht
+    ar: مقاطعة أوترخت
+    be: правінцыя Утрэхт
+    bg: Утрехт
+    bn: উট্রেখট
+    ca: Província d’Utrecht
+    cs: Utrecht
+    da: Utrecht
+    de: Provinz Utrecht
+    el: Ουτρέχτη
+    es: Provincia de Utrecht
+    et: Utrechti provints
+    eu: Utrecht probintzia
+    fa: استان اوترخت
+    fi: Utrecht
+    fr: Utrecht
+    gl: Provincia de Utrecht - Provincie Utrecht
+    gu: ઉટ્રેક્ટ
+    he: אוטרכט
+    hi: यूट्रेक्ट
+    hu: Utrecht
+    id: Utrecht
+    is: Utrecht
+    it: Utrecht
+    ja: ユトレヒト州
+    ka: უტრეხტის პროვინცია
+    kn: ಉಟ್ರೆಕ್ಟ್
+    ko: 위트레흐트 주
+    lt: Utrechto provincija
+    lv: Utrehta
+    mr: उट्रेख्त
+    ms: Utrecht
+    nb: Utrecht
+    ne: उट्रेच्ट
+    nl: Utrecht
+    pl: Utrecht
+    pt: Utrecht
+    ro: Utrecht
+    ru: Утрехт
+    si: උට්‍රෙච්ට්
+    sk: Utrecht
+    sr: Утрехт
+    sv: Utrecht
+    sw: Mkoa wa Utrecht
+    ta: யூடிரெக்ட்
+    te: యూట్రెక్ట్
+    th: จังหวัดยูเทรกต์
+    tr: Utrecht
+    uk: Утрехт
+    ur: اوتریخت
+    vi: Utrecht
+    cy: Utrecht
+    ceb: Provincie Utrecht
+    sr_Latn: Utreht
+    zh: 乌得勒支省
+    yue_Hans: 宇德历
+    jv: Provinsi Utrecht
+    sq: Utrecht
+    ccp: "\U00011105\U0001112A\U00011111\U00011133\U00011122\U0001112C\U0001110C\U00011134\U00011111\U00011134"
+    ga: Utrecht
+    so: Utrecht
+    sl: Utrecht
+    yue: 宇德歷
+    az: Utrext vilayəti
+    mk: Утрехт
+    'no': Utrecht
+    hy: Ուտրեխտ
+  comments:
+  type: province
+ZE:
+  name: Zeeland
+  code: ZE
+  unofficial_names: Zeeland
+  geo:
+    latitude: 51.4940309
+    longitude: 3.8496815
+    min_latitude: 51.2003318
+    min_longitude: 3.357962
+    max_latitude: 51.75842100000001
+    max_longitude: 4.279691
+  translations:
+    en: Zeeland
+    af: Zeeland
+    ar: زيلند
+    be: Зеландыя
+    bg: Зеландия
+    bn: জিল্যান্ড
+    ca: Zelanda
+    cs: Zeeland
+    da: Zeeland
+    de: Zeeland
+    el: Ζηλανδία
+    es: Zelanda
+    et: Zeelandi provints
+    eu: Zeelanda
+    fa: زیلاند
+    fi: Zeeland
+    fr: Zélande
+    gl: Celandia - Zeeland
+    gu: ઝીલેન્ડ
+    he: זיילנד
+    hi: ज़ीलैंड
+    hu: Zeeland
+    hy: Զեյլանդ
+    id: Zeeland
+    is: Sjáland
+    it: Zelanda
+    ja: ゼーラント州
+    ka: ზელანდიის პროვინცია
+    kn: ಜೀಲ್ಯಾಂಡ್
+    ko: 제일란트 주
+    lt: Zelandijos provincija
+    lv: Zēlande
+    mr: झीलंड
+    ms: Zeeland
+    nb: Zeeland
+    ne: जिल्यान्ड
+    nl: Zeeland
+    pl: Zelandia
+    pt: Zelândia
+    ro: Zeelanda
+    ru: Зеландия
+    si: සීලන්ඩ්
+    sk: Zéland
+    sr: Зеланд
+    sv: Zeeland
+    sw: Zeeland
+    ta: சீலாந்து
+    te: జీలాండ్
+    th: จังหวัดเซลันด์
+    tr: Zelanda
+    uk: Зеландія
+    ur: زی لینڈ
+    vi: Zeeland
+    cy: Zeeland
+    ceb: Provincie Zeeland
+    sr_Latn: Zeland
+    zh: 泽兰省
+    yue_Hans: 西兰
+    sq: Zeeland
+    ccp: "\U0001110E\U00011129\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: Zeeland
+    so: Zeeland
+    yue: 西蘭
+    mk: Зеланд
+    'no': Zeeland
+    ps: ځیلاند
+    sl: Zeeland
+  comments:
+  type: province
+ZH:
+  name: Zuid-Holland
+  code: ZH
+  unofficial_names: Zuid-Holland
+  geo:
+    latitude: 52.0207975
+    longitude: 4.4937836
+    min_latitude: 51.656067
+    min_longitude: 3.8393205
+    max_latitude: 52.3282742
+    max_longitude: 5.1492625
+  translations:
+    en: South Holland
+    af: Suid-Holland
+    ar: جنوب هولندا
+    az: Cənubi Hollandiya
+    be: Паўднёвая Галандыя
+    bg: Южна Холандия
+    bn: সাউথ হল্যান্ড
+    ca: Holanda Meridional
+    cs: Jižní Holandsko
+    da: Zuid-Holland
+    de: Provinz Südholland
+    el: Νότια Ολλανδία
+    es: Holanda Meridional
+    et: Lõuna-Holland
+    eu: Hego Holanda
+    fa: هلند جنوبی
+    fi: Etelä-Hollanti
+    fr: Hollande-Méridionale
+    gl: Holanda Meridional - Zuid-Holland
+    gu: સાઉથ હોલેન્ડ
+    he: דרום הולנד
+    hi: दक्षिण हॉलैंड
+    hu: Dél-Holland
+    hy: Հարավային Հոլանդիա
+    id: Holland Selatan
+    is: Suður-Holland
+    it: Olanda Meridionale
+    ja: 南ホラント州
+    ka: სამხრეთი ჰოლანდია
+    kn: ಸೌತ್ ಹಾಲೆಂಡ್
+    ko: 자위트홀란트 주
+    lt: Pietų Olandija
+    lv: Dienvidholande
+    mn: Өмнө Холланд
+    mr: झाउड-हॉलंड
+    ms: Zuid-Holland
+    nb: Zuid-Holland
+    ne: दक्षिण हल्यान्ड
+    nl: Zuid-Holland
+    pl: Holandia Południowa
+    pt: Holanda do Sul
+    ro: Olanda de Sud
+    ru: Южная Голландия
+    si: දකුණු ඕලන්දය
+    sk: Južný Holland
+    sl: Južna Holandija
+    sr: Јужна Холандија
+    sv: Zuid-Holland
+    sw: Zuid-Holland
+    ta: தெற்கு ஹாலந்து
+    te: ద7ిణ హాలండ్
+    th: จังหวัดเซาท์ฮอลแลนด์
+    tr: Güney Hollanda
+    uk: Південна Голландія
+    ur: جنوبی ہولانت
+    vi: Zuid-Holland
+    cy: Zuid-Holland
+    ceb: Provincie Zuid-Holland
+    sr_Latn: Južna Holandija
+    zh: 南荷蘭省
+    yue_Hans: 南荷兰
+    jv: Holland Kidul
+    sq: Hollanda e Jugut
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U00011126\U0001112E\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    ga: An Ollainn Theas
+    so: Koofurta Holland
+    yue: 南荷蘭
+    mk: Јужна Холандија
+    'no': Zuid-Holland
+    ps: سویلي هالنډ
+  comments:
+  type: province

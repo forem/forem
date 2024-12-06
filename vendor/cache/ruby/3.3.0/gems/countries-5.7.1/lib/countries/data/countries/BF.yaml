@@ -1,0 +1,49 @@
+---
+BF:
+  alpha2: BF
+  alpha3: BFA
+  continent: Africa
+  country_code: '226'
+  currency_code: XOF
+  distance_unit: KM
+  gec: UV
+  geo:
+    latitude: 12.238333
+    longitude: -1.561593
+    max_latitude: 15.0840397
+    max_longitude: 2.4043596
+    min_latitude: 9.4104717
+    min_longitude: -5.5132416
+    bounds:
+      northeast:
+        lat: 15.0840397
+        lng: 2.4043596
+      southwest:
+        lat: 9.4104717
+        lng: -5.5132416
+  international_prefix: '00'
+  ioc: BUR
+  iso_long_name: Burkina Faso
+  iso_short_name: Burkina Faso
+  languages_official:
+  - fr
+  - ff
+  languages_spoken:
+  - fr
+  - ff
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Burkinabe
+  number: '854'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: BF
+  unofficial_names:
+  - Burkina Faso
+  - ブルキナファソ
+  world_region: EMEA

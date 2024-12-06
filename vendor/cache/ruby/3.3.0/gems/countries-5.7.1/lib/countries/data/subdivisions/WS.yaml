@@ -1,0 +1,639 @@
+---
+AA:
+  name: A'ana
+  code: AA
+  unofficial_names: A'ana
+  geo:
+    latitude: -13.898418
+    longitude: -171.9752995
+    min_latitude: -13.9828759
+    min_longitude: -172.053955
+    max_latitude: -13.8038838
+    max_longitude: -171.887704
+  translations:
+    en: A’ana
+    ar: آنا
+    da: A’ana
+    de: A’ana
+    el: Άανα
+    es: A’ana
+    fa: آنا، ساموآ
+    fi: A’ana
+    fr: A’ana
+    gu: આના
+    hi: ऐना
+    hr: A’ana
+    id: A’ana
+    it: A’ana
+    ja: アアーナ
+    ka: აანა
+    kn: ಅನಾ
+    ko: 아아나 구
+    mr: अ’ना
+    ms: A’ana
+    nb: A’ana
+    nl: A’ana
+    pl: A’ana
+    pt: A’ana
+    ru: Аана
+    si: ආනා
+    sk: A’ana
+    sv: A’ana
+    ta: அ’அனா
+    te: ఆనా
+    th: อาน่า
+    tr: A’ana
+    ur: آنا، سامووا
+    vi: A’ana
+    zh: 阿纳
+    lv: Aana
+    ceb: A’ana
+    lt: Aana
+    bn: এ’আনা
+    ccp: "\U00011103‘\U0001111A"
+    eu: A’ana
+    uk: Аана
+    'no': A’ana
+  comments:
+  type: district
+AL:
+  name: Aiga-i-le-Tai
+  code: AL
+  unofficial_names: Aiga-i-le-Tai
+  geo:
+    latitude: -13.8513791
+    longitude: -172.0325401
+    min_latitude: -13.8878389
+    min_longitude: -172.046524
+    max_latitude: -13.8370255
+    max_longitude: -172.00878
+  translations:
+    en: Aiga-i-le-Tai
+    ar: إيغايليتاي
+    bn: আইগা-ই-লে-তাই
+    da: Aiga-i-le-Tai
+    de: Aiga-i-le-Tai
+    el: Αϊγκα-ι-λε-Τάι
+    es: Aiga-i-le-Tai
+    fa: ایگا-ای-لو-تای
+    fi: Aiga-i-le-Tai
+    fr: Aiga-i-le-Tai
+    gu: આઇગ-આઇ-લે-તાઇ
+    hi: ऐगा-आई-ले-ताई
+    hr: Aiga-i-le-Tai
+    id: Aiga-i-le-Tai
+    it: Aiga-i-le-Tai
+    ja: アイガイレタイ
+    ka: აიგა-ი-ლე-ტაი
+    kn: ಐಗಾ-ಇ-ಲೆ-ತೈ
+    ko: 아이가이레타이 구
+    mr: आयग-आय-ले-ताई
+    ms: Aiga-i-le-Tai
+    nb: Aiga-i-le-Tai
+    nl: Aiga-i-le-Tai
+    pl: Aiga-i-le-Tai
+    pt: Aiga-i-le-Tai
+    ru: Аига-и-ле-Таи
+    si: අයිගා-ඉ-ලෙ-ටයි
+    sk: Aiga-i-le-Tai
+    sv: Aiga-i-le-Tai
+    ta: ஐகா-ஐ-லீ-டாய்
+    te: అయిగా-ఇ-లె-టాయ్
+    th: เขตคัชคาดาริโอ
+    tr: Aiga-i-le-Tai
+    ur: آیگا-ای-لو-تائی
+    vi: Aiga-i-le-Tai
+    lv: Aiga-i-le-Tai
+    ceb: Aiga-i-le-Tai
+    lt: Aiga-i-le-Tajus
+    zh: 艾加伊勒泰
+    ccp: "\U00011103\U0001112D\U0001110E-\U00011103\U00011128-\U00011123\U00011128-\U00011111\U0001112D"
+    eu: Aiga-i-le-Tai
+    uk: Аіга-і-ле-Таі
+    'no': Aiga-i-le-Tai
+    mk: Аига-и-ле-Таи
+  comments:
+  type: district
+AT:
+  name: Atua
+  code: AT
+  unofficial_names: Atua
+  geo:
+    latitude: -13.9787053
+    longitude: -171.6254283
+    min_latitude: -14.0407277
+    min_longitude: -171.727493
+    max_latitude: -13.8610281
+    max_longitude: -171.4177249
+  translations:
+    en: Atua
+    ar: أتوا
+    bn: আতুয়া
+    da: Atua
+    de: Atua
+    el: Άτουα
+    es: Atua
+    fi: Atua
+    fr: Atua
+    gu: એટુઆ
+    hi: एटुआ
+    hr: Atua
+    id: Atua
+    it: Atua
+    ja: アトゥア
+    ka: ატუა
+    kn: ಅಟ್ವಾ
+    ko: 아투아 구
+    mr: एटुआ
+    ms: Atua
+    nb: Atua
+    nl: Atua
+    pl: Atua
+    pt: Atua
+    ru: Атуа
+    si: අටුවා
+    sk: Atua
+    sv: Atua
+    ta: அட்வா
+    te: ఆటువా
+    th: อทัว
+    tr: Atua
+    ur: اتوا
+    vi: Atua
+    lv: Atua
+    ceb: Atua (distrito)
+    lt: Atua
+    zh: 阿图阿
+    ccp: "\U00011103\U00011111\U0001112A\U00011120"
+    eu: Atua
+    uk: Район Атуа
+    'no': Atua
+    fa: بخش آتوآ
+  comments:
+  type: district
+FA:
+  name: Fa'asaleleaga
+  code: FA
+  unofficial_names: Fa'asaleleaga
+  geo:
+    latitude: -13.6307638
+    longitude: -172.2365981
+    min_latitude: -13.797492
+    min_longitude: -172.336349
+    max_latitude: -13.5512859
+    max_longitude: -172.1738909
+  translations:
+    en: Fa’asaleleaga
+    ar: فاساليلياغا
+    da: Fa’asaleleaga
+    de: Fa’asaleleaga
+    el: Φάασαλελεαγκα
+    es: Fa’asaleleaga
+    fi: Fa’asaleleaga
+    fr: Fa’asaleleaga
+    gu: ફાસાલેલેગા
+    hi: फा‘असालेलीगा
+    hr: Fa’asaleleaga
+    id: Fa’asaleleaga
+    it: Fa’asaleleaga
+    ja: ファアセールリーガ
+    ka: ფაასალელეაგა
+    kn: ಫಾಸಲೇಲಿಗಾ
+    ko: 파아살렐레아가 구
+    mr: फासालेलेगा
+    ms: Fa’asaleleaga
+    nb: Fa’asaleleaga
+    nl: Fa’asaleleaga
+    pl: Fa’asaleleaga
+    pt: Fa’asaleleaga
+    ru: Фаасалелеага
+    si: ෆා අස්ලෙලෙඅගා
+    sk: Fa’asaleleaga
+    sv: Fa‘asaleleaga
+    ta: பா ‘அசலிலேயாக
+    te: ఫాఆసాలెలీగా
+    th: ฟาอะซาเลเลอากา
+    tr: Fa’asaleleaga
+    ur: فآسالیلیاگا
+    vi: Fa’asaleleaga
+    lv: Faasaleleaga
+    ceb: Fa‘asaleleaga
+    lt: Faasalelaga
+    zh: 法塞萊萊阿加
+    bn: ফা‘আসালেলিগা
+    ccp: "\U0001111C‘\U00011103\U00011125\U00011123\U0001112C\U00011123\U00011128\U00011109"
+    eu: Fa’asaleleaga
+    uk: Фаасалелеага
+    'no': Fa’asaleleaga
+    mk: Фасалелеага
+  comments:
+  type: district
+GE:
+  name: Gaga'emauga
+  code: GE
+  unofficial_names: Gaga'emauga
+  geo:
+    latitude: -13.5428666
+    longitude: -172.366887
+    min_latitude: -14.00063
+    min_longitude: -172.419285
+    max_latitude: -13.4400333
+    max_longitude: -171.87703
+  translations:
+    en: Gaga’emauga
+    ar: غاغايموجا
+    da: Gaga’emauga
+    de: Gaga’emauga
+    el: Γκαγκάεμαουγκα
+    es: Gaga’emauga
+    fi: Gaga’emauga
+    fr: Gaga’emauga
+    gu: ગાગા‘માઉગા
+    hi: गागा‘एमाउगा
+    hr: Gaga’emauga
+    id: Gaga’emauga
+    it: Gaga’emauga
+    ja: ガガイーモーガ
+    ka: გაგაემაუგა
+    kn: ಗಾಗಾಮೌಗ
+    ko: 가가에마우가 구
+    mr: गगामोगा
+    ms: Gaga’emauga
+    nb: Gaga’emauga
+    nl: Gaga’emauga
+    pl: Gaga’emauga
+    pt: Gaga’emauga
+    ru: Гагаэмауга
+    si: ගගඑමෞගා
+    sk: Gaga’emauga
+    sv: Gaga‘emauga
+    ta: காகா ‘ஏமாயுக
+    te: గాగాఎమాగా
+    th: กากาเมากา
+    tr: Gaga’emauga
+    ur: گاگآئماوگا
+    vi: Gaga’emauga
+    lv: Gagajemauga
+    ceb: Gaga‘emauga
+    lt: Gagajemauga
+    zh: 加加埃毛加
+    bn: গাগা‘এমগা
+    ccp: "\U00011109\U00011109‘ \U00011103\U00011128\U0001111F\U00011105\U0001112A\U00011109"
+    eu: Gaga’emauga
+    uk: Гагаемауга
+    'no': Gaga’emauga
+    fa: گاگاسموگا
+    he: גגאמאוגה
+    mk: Гагаемауга
+  comments:
+  type: district
+GI:
+  name: Gagaifomauga
+  code: GI
+  unofficial_names: Gagaifomauga
+  geo:
+    latitude: -13.5468007
+    longitude: -172.4969331
+    min_latitude: -13.623739
+    min_longitude: -172.614889
+    max_latitude: -13.4459932
+    max_longitude: -172.3743356
+  translations:
+    en: Gaga’ifomauga
+    ar: غاغايفوماغا
+    bn: গাগা ইফোমাউগা
+    da: Gaga’ifomauga
+    de: Gaga’ifomauga
+    el: Γκαγκάιφομαουγκα
+    es: Gaga’ifomauga
+    fi: Gaga’ifomauga
+    fr: Gaga’ifomauga
+    gu: ગાગા‘ઈફોમાઉગા
+    hi: गागा‘इफ़ोमौगा
+    hr: Gaga’ifomauga
+    id: Gaga’ifomauga
+    it: Gaga’ifomauga
+    ja: ガガイフォモーガ
+    ka: გაგაიფომაუგა
+    kn: ಗಾಗಾಫಿಯೊಮಾಗ
+    ko: 가가이포마우가 구
+    mr: गागा‘फोमागा
+    ms: Gaga’ifomauga
+    nb: Gaga’ifomauga
+    nl: Gaga’ifomauga
+    pl: Gaga’ifomauga
+    pt: Gaga’ifomauga
+    ru: Гагаифомауга
+    si: ගගාඉෆොමඋගා
+    sk: Gaga’ifomauga
+    sv: Gagaifomauga
+    ta: காகா ‘இபோமுகா
+    te: గాగాఇఫోమాగా
+    th: กาจา ไอโฟมัวกา
+    tr: Gaga’ifomauga
+    ur: گاگآانفوماوگا
+    vi: Gaga’ifomauga
+    lv: Gagaifomauga
+    ceb: Gagaifomauga
+    lt: Gagaifaumaga
+    zh: 加蓋福毛加
+    ccp: "\U00011109\U00011109‘ \U00011103\U00011128\U0001111C\U0001112E\U0001111F\U00011105\U0001112A\U00011109"
+    eu: Gaga’ifomauga
+    uk: Гагаіфомауга
+    bg: Гагаифомауга
+    'no': Gaga’ifomauga
+    he: גגאיפומאוגה
+    mk: Гагаифомауга
+  comments:
+  type: district
+PA:
+  name: Palauli
+  code: PA
+  unofficial_names: Palauli
+  geo:
+    latitude: -13.7294579
+    longitude: -172.4536115
+    min_latitude: -13.8020479
+    min_longitude: -172.616592
+    max_latitude: -13.61528
+    max_longitude: -172.2228389
+  translations:
+    en: Palauli
+    ar: بالولي
+    bg: Палаули
+    bn: পালাউলি
+    da: Palauli
+    de: Palauli
+    el: Παλάουλι
+    es: Palauli
+    fi: Palauli
+    fr: Palauli
+    gu: પલોલી
+    hi: पलौली
+    hr: Palauli
+    id: Palauli
+    it: Palauli
+    ja: パラウリ
+    ka: პალაული
+    kn: ಪಲುಲಿ
+    ko: 팔라울리 구
+    mr: पलाऊली
+    ms: Palauli
+    nb: Palauli
+    nl: Palauli
+    pl: Palauli
+    pt: Palauli
+    ru: Палаули
+    si: පලෞලී
+    sk: Palauli
+    sv: Palauli
+    ta: பலாலி
+    te: పాలెౌలి
+    th: เขตปาเลาลี
+    tr: Palauli
+    ur: پالاولی
+    vi: Palauli
+    lv: Palauli
+    ceb: Palauli
+    lt: Palaulis
+    zh: 帕劳利
+    ccp: "\U0001111B\U00011123\U00011105\U0001112A\U00011123\U00011128"
+    eu: Palauli
+    uk: Палаулі
+    'no': Palauli
+    fa: پالائولی
+    mk: Палаули
+  comments:
+  type: district
+SA:
+  name: Satupa'itea
+  code: SA
+  unofficial_names: Satupa'itea
+  geo:
+    latitude: -13.7731169
+    longitude: -172.3302677
+    min_latitude: -13.7761505
+    min_longitude: -172.3329163
+    max_latitude: -13.7511529
+    max_longitude: -172.3194839
+  translations:
+    en: Satupa’itea
+    ar: سافوبايتيا
+    bn: সাতুোপাইতিয়া
+    da: Satupa’itea
+    de: Satupa’itea
+    el: Σατουπάιτεα
+    es: Satupa’itea
+    fi: Satupa’itea
+    fr: Satupa’itea
+    gu: સટુપેટે
+    hi: सैटूपेटी
+    hr: Satupa’itea
+    id: Satupa’itea
+    it: Satupa’itea
+    ja: サチューパイテア
+    ka: სატუპაიტეა
+    kn: ಸತುಪಾಯ್ಯ
+    ko: 사투파이테아 구
+    mr: सतपैती
+    ms: Satupa’itea
+    nb: Satupa’itea
+    nl: Satupa’itea
+    pl: Satupa’itea
+    pt: Satupa’itea
+    ru: Сатупаитеа
+    si: සටුපා‘ඉටියා
+    sk: Satupa’itea
+    sv: Satupa‘itea
+    ta: சாட்டுப ‘இடீ
+    te: సాటుపేటియా
+    th: จังหวัดกาญจนบุรี
+    tr: Satupa’itea
+    ur: ساتوپآیتیا
+    vi: Satupa’itea
+    lv: Satupaitea
+    ceb: Satupa‘itea
+    lt: Satupajitėja
+    zh: 萨图帕伊泰阿
+    ccp: "\U00011125\U00011111\U0001112A\U0001111B‘\U00011103\U00011128\U00011111\U00011128\U00011120"
+    eu: Satupa’itea
+    uk: Сатупаітеа
+    'no': Satupa’itea
+    mk: Сатупаитеја
+  comments:
+  type: district
+TU:
+  name: Tuamasaga
+  code: TU
+  unofficial_names: Tuamasaga
+  geo:
+    latitude: -13.9163592
+    longitude: -171.8224362
+    min_latitude: -14.0409279
+    min_longitude: -171.9204024
+    max_latitude: -13.7929299
+    max_longitude: -171.6964743
+  translations:
+    en: Tuamasaga
+    ar: توماساجا
+    bg: Туамасага
+    bn: তুয়ামাসাগা
+    da: Tuamasaga
+    de: Tuamasaga
+    el: Τουαμασάγκα
+    es: Tuamasaga
+    fi: Tuamasaga
+    fr: Tuamasaga
+    gu: તુમાસાગા
+    hi: तुमासागा
+    hr: Tuamasaga
+    id: Tuamasaga
+    it: Tuamasaga
+    ja: ツアマサガ
+    ka: ტუამასაგა
+    kn: ತುಮಾಸಾಗಾ
+    ko: 투아마사가 구
+    mr: तुमासगा
+    ms: Tuamasaga
+    nb: Tuamasaga
+    nl: Tuamasaga
+    pl: Tuamasaga
+    pt: Tuamasaga
+    ru: Туамасага
+    si: ටුවමසන්ගා
+    sk: Tuamasaga
+    sv: Tuamasaga
+    ta: துவம்ஸஹ
+    te: టువామసాగా
+    th: ทัวมาซาก้า
+    tr: Tuarmasaga
+    ur: تواماساگا
+    vi: Tuamasaga
+    lv: Tuamasaga
+    ceb: Tuamasaga
+    lt: Tuamasaga
+    zh: 图阿马萨加
+    ccp: "\U00011111\U0001112A\U00011120\U0001111F\U00011134\U00011125\U00011109"
+    eu: Tuamasaga
+    uk: Туамасага
+    'no': Tuamasaga
+    fa: تواماساگا
+    hu: Tuamasaga
+    hy: Տուամասագա
+  comments:
+  type: district
+VF:
+  name: Va'a-o-Fonoti
+  code: VF
+  unofficial_names: Va'a-o-Fonoti
+  geo:
+    latitude: -13.9470903
+    longitude: -171.5431872
+    min_latitude: -13.9789719
+    min_longitude: -171.6066749
+    max_latitude: -13.8730601
+    max_longitude: -171.4819119
+  translations:
+    en: Va’a-o-Fonoti
+    ar: فاووفونوتي
+    bn: ভেআঁ-ও-ফনোটি
+    da: Va’a-o-Fonoti
+    de: Va’a-o-Fonoti
+    el: Βάα-ο-Φονότι
+    es: Va’a-o-Fonoti
+    fi: Va’a-o-Fonoti
+    fr: Va’a-o-Fonoti
+    gu: વાઓ -ઓ-ફોનોટી
+    hi: वा‘-ओ-फोनोटी
+    hr: Va’a-o-Fonoti
+    id: Va’a-o-Fonoti
+    it: Va’a-o-Fonoti
+    ja: ヴァアオフォノチ
+    ka: ვაა-ო-ფონოტი
+    kn: ವಾ-ಒ-ಫೋನೊಟಿ
+    ko: 바아오포노티 구
+    mr: व-ओ-फोनॉटी
+    ms: Va’a-o-Fonoti
+    nb: Va’a-o-Fonoti
+    nl: Va’a-o-Fonoti
+    pl: Va’a-o-Fonoti
+    pt: Va’a-o-Fonoti
+    ru: Ваа-о-Фоноти
+    si: වා -ඕ -ෆොනොටි
+    sk: Va’a-o-Fonoti
+    sv: Va‘a-o-Fonoti
+    ta: வா ‘அ-ஓ -போணோடி
+    te: వా-ఓ-ఫోనోటి
+    th: วาอาร์โอโฟโนติ
+    tr: Va-o-Fonoti
+    ur: وآ-او-فونوتی
+    vi: Va’a-o-Fonoti
+    lv: Vaa-o-Fonoti
+    ceb: Va‘a-o-Fonoti
+    lt: Vao Fonotis
+    zh: 瓦奥福诺蒂
+    ccp: "\U0001111E‘\U00011103-\U00011103\U0001112E-\U0001111C\U0001112E\U0001111A\U0001112E\U00011111\U00011128"
+    uk: Ваа-о-Фоноті
+    'no': Va’a-o-Fonoti
+    mk: Ва-о-Фоноти
+  comments:
+  type: district
+VS:
+  name: Vaisigano
+  code: VS
+  unofficial_names: Vaisigano
+  geo:
+    latitude: -13.5413827
+    longitude: -172.7023383
+    min_latitude: -13.6072749
+    min_longitude: -172.7985991
+    max_latitude: -13.4902919
+    max_longitude: -172.6121398
+  translations:
+    en: Vaisigano
+    ar: فايسيجانو
+    bg: Ваисигано
+    bn: ভাইসিগানু
+    da: Vaisigano
+    de: Vaisigano
+    el: Βαϊσιγκάνο
+    es: Vaisigano
+    fi: Vaisigano
+    fr: Vaisigano
+    gu: વૈસિગાનો
+    hi: वैसिगैनो
+    hr: Vaisigano
+    id: Vaisigano
+    it: Vaisigano
+    ja: ベサイガーノ
+    ka: ვაისიგანო
+    kn: ವೈಸಿಗಾನೋ
+    ko: 바이시가노 구
+    mr: वैशिगानो
+    ms: Vaisigano
+    nb: Vaisigano
+    nl: Vaisigano
+    pl: Vaisigano
+    pt: Vaisigano
+    ru: Ваисигано
+    si: වයිසිගානෝ
+    sk: Vaisigano
+    sv: Vaisigano
+    ta: வைசிகனோ
+    te: వైసిగానో
+    th: ไวซิกาโน
+    tr: Vaisigano
+    ur: وایسیگانو
+    vi: Vaisigano
+    lv: Vaisigano
+    ceb: Vaisigano
+    lt: Vaisiganas
+    zh: 韋西加諾
+    ccp: "\U0001111E\U0001112D\U00011125\U00011128\U00011109\U0001111A\U0001112E"
+    eu: Vaisigano
+    uk: Ваісігано
+    'no': Vaisigano
+    fa: وایسیگانو
+    mk: Ваисигано
+  comments:
+  type: district

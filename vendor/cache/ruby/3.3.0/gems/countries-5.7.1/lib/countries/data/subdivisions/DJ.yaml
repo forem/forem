@@ -1,0 +1,420 @@
+---
+AR:
+  name: Arta
+  code: AR
+  unofficial_names: Arta
+  geo:
+    latitude: 11.5255528
+    longitude: 42.8479474
+    min_latitude: 11.5173265
+    min_longitude: 42.8388475
+    max_latitude: 11.5316867
+    max_longitude: 42.8639103
+  translations:
+    en: Arta
+    ar: إقليم عرتا
+    be: Рэгіён Арта
+    bg: Арта (регион)
+    bn: আরটা অঞ্চল
+    da: Arta Region
+    de: Arta (Region)
+    el: Περιφέρεια Άρτα
+    es: Región de Arta
+    et: Arta piirkond
+    fa: منطقه عرتا
+    fi: Artan maakunta
+    fr: Région d’Arta
+    gu: આર્ટા પ્રદેશ
+    hi: आर्टा क्षेत्र
+    hu: Arta régió
+    id: Wilayah Arta
+    it: regione di Arta
+    ja: アルタ州
+    ka: არტის რეგიონი
+    kn: ಆರ್ಟಾ ಪ್ರದೇಶ
+    ko: 아르타 주
+    lt: Artos regionas
+    mr: आर्टा प्रदेश
+    ms: Arta Region
+    nb: Arta
+    nl: Arta
+    pl: Region Arta
+    pt: Região de Arta
+    ro: Regiunea Arta
+    ru: Арта (регион)
+    si: අර්ටා කලාපය
+    sv: Arta (region)
+    ta: ஆர்டா பகுதி
+    te: ఆర్జె్టా ప్రాంతం
+    th: เทศมณฑลลิเมอริก
+    tr: Arta Bölgesi
+    uk: Арта
+    ur: ارتا علاقہ
+    vi: Khu vực Arta
+    zh: 阿爾塔州 (吉布提)
+    lv: Artas reģions
+    ceb: Arta Region
+    ccp: "\U00011103\U00011122\U00011134\U00011111"
+    ca: Regió d’Arta
+    'no': Arta
+    bs: Arta (regija)
+    eu: Arta eskualdea
+    so: Gobolka Carta
+    zu: Arta Region
+  comments:
+  type: region
+AS:
+  name: Ali Sabieh
+  code: AS
+  unofficial_names:
+  - Ali Sabieh
+  - Ali Sabih
+  geo:
+    latitude: 11.15
+    longitude: 42.716667
+    min_latitude: 11.136424
+    min_longitude: 42.6945505
+    max_latitude: 11.1627947
+    max_longitude: 42.7215384
+  translations:
+    en: Ali Sabieh
+    ar: إقليم علي صبيح
+    bg: Али Сабих
+    bn: আলি সাবি অঞ্চল
+    da: Ali Sabieh Region
+    de: Ali Sabieh
+    el: Περιφέρεια Αλί Σαμπί
+    es: Región de Ali Sabieh
+    et: Ali Sabiehi piirkond
+    fa: اقلیم علی صبیح
+    fi: Ali Sabiehin alue
+    fr: Région d’Ali Sabieh
+    gu: અલી સબેહ પ્રદેશ
+    hi: अली सबीह प्रदेश
+    hy: Ալի Սաբիյեհ
+    id: Wilayah Ali Sabieh
+    it: regione di Ali Sabieh
+    ja: アリ・サビエ州
+    ka: ალი-საბიეს რეგიონი
+    kn: ಅಲಿ ಸಬೀಹ್ ಪ್ರದೇಶ
+    ko: 알리사비에 주
+    lt: Ali Sabiho regionas
+    mr: अली साबेह प्रदेश
+    ms: Ali Sabieh Region
+    nb: Ali Sabieh
+    nl: Ali Sabieh
+    pl: Region Ali Sabieh
+    pt: Região de Ali Sabieh
+    ro: Regiunea Ali Sabieh
+    ru: Али Сабье
+    si: අලි සබී කලාපය
+    sv: Ali Sabieh
+    ta: அலி சபிஏஹ் பகுதி
+    te: అలీ సాబియె ప్రాంతం
+    th: เขตอาลีซาบีห์
+    tr: Ali Sabieh Bölgesi
+    uk: Алі-Сабіх
+    ur: علی صبیح علاقہ
+    vi: Khu vực Ali Sabieh
+    lv: Alī Sabīhas reģions
+    ceb: Ali Sabieh Region
+    zh: 阿里薩比州
+    ccp: "\U00011103\U00011123\U00011128 \U00011125\U0001111D\U00011128\U00011120\U0001112C\U00011126\U00011134"
+    ca: Regió d’Ali Sabieh
+    'no': Ali Sabieh
+    bs: Ali Sabieh (regija)
+    eu: Ali Sabieh eskualdea
+    he: עלי סביח
+  comments:
+  type: region
+DI:
+  name: Dikhil
+  code: DI
+  unofficial_names:
+  - Dikhil
+  - Dikkil
+  geo:
+    latitude: 11.1054336
+    longitude: 42.3704744
+    min_latitude: 11.0995738
+    min_longitude: 42.362981
+    max_latitude: 11.1124048
+    max_longitude: 42.3815967
+  translations:
+    en: Dikhil
+    ar: دخيل
+    be: Рэгіён Дыхіл
+    bg: Дихил
+    bn: ডিকি অঞ্চল
+    da: Dikhil Region
+    de: Dikhil
+    el: Περιφέρεια Ντικίλ
+    es: Dikhil
+    et: Dikhili piirkond
+    fa: منطقه دخیل
+    fi: Dikhilin maakunta
+    fr: Région de Dikhil
+    gu: દિખિલ પ્રદેશ
+    hi: दिखील क्षेत्र
+    hy: Դիխիլ
+    id: Wilayah Dikhil
+    it: regione di Dikhil
+    ja: ディキル州
+    ka: დიკილის რეგიონი
+    kn: ಡಿಖಿಲ್ ಪ್ರದೇಶ
+    ko: 디킬 주
+    lt: Dikilio regionas
+    mr: दिखीख प्रदेश
+    ms: Dikhil Region
+    nb: Dikhil
+    nl: Dikhil
+    pl: Region Dikhil
+    pt: Região de Dikhil
+    ro: Regiunea Dikhil
+    ru: Дихил
+    si: ඩික්හිල් කලාපය
+    sv: Dikhil
+    ta: டிஃஹில் பகுதி
+    te: డిఖిల్ ప్రాంతం
+    th: ดิคฮิล
+    tr: Dikhil Bölgesi
+    uk: Дікіль
+    ur: دخیل علاقہ
+    vi: Khu vực Dikhil
+    lv: Dihilas reģions
+    ceb: Dikhil
+    zh: 迪基爾州
+    ccp: "\U00011113\U00011128\U00011108\U00011128\U00011123\U00011134"
+    ca: Regió de Dikhil
+    'no': Dikhil
+    bs: Dikhil (regija)
+    eu: Dikhil eskualdea
+  comments:
+  type: region
+DJ:
+  name: Djibouti
+  code: DJ
+  unofficial_names:
+  - Djibouti
+  geo:
+    latitude: 11.588333
+    longitude: 43.145
+    min_latitude: 11.5259804
+    min_longitude: 43.1276753
+    max_latitude: 11.6233909
+    max_longitude: 43.1837897
+  translations:
+    en: Djibouti
+    af: Djiboeti
+    am: ጅቡቲ
+    ar: جيبوتي
+    az: Cibuti
+    be: Горад Джыбуці
+    bg: Джибути
+    bn: জিবুতি
+    ca: Djibouti
+    cs: Džíbútí
+    da: Djibouti
+    de: Dschibuti
+    el: Τζιμπουτί
+    es: Yibuti
+    et: Djibouti
+    eu: Djibuti
+    fa: جیبوتی
+    fi: Djibouti
+    fr: Djibouti
+    gl: Xibutí
+    gu: જીબોટી
+    he: ג׳יבוטי
+    hi: जिबूटी
+    hr: Djibouti
+    hu: Dzsibuti
+    hy: Ջիբութի
+    id: Djibouti
+    is: Djíbútí
+    it: Gibuti
+    ja: ジブチ市
+    ka: ჯიბუტი
+    kn: ಡಿಜಿಬೌಟಿ
+    ko: 지부티
+    lt: Džibutis
+    lv: Džibuti
+    mn: Жибути
+    mr: जिबूती
+    ms: Djibouti
+    nb: Djibouti
+    nl: Djibouti
+    pl: Dżibuti
+    pt: Djibouti
+    ro: Djibouti
+    ru: Джибути
+    si: ජිබුටි
+    sk: Džibuti
+    sl: Džibuti
+    sr: Џибути
+    sv: Djibouti
+    sw: Jibuti
+    ta: சிபூட்டி
+    te: జిబోటి
+    th: จิบูตี
+    tk: Jibuti
+    tr: Cibuti
+    uk: Джибуті
+    ur: جبوتی علاقہ
+    vi: Djibouti
+    cy: Dinas Djibouti
+    ceb: Djibouti
+    sr_Latn: Džibuti
+    zh: 吉布地市
+    yue_Hans: 吉布提城
+    jv: Djibouti
+    sq: Xhibuti
+    ccp: "\U0001110E\U00011128\U0001111D\U0001112F\U00011111\U00011128"
+    ga: Diobúití
+    ky: Жибути шаары
+    ha: Jibuti
+    so: Jabuuti
+    pa: ਜਿਬੂਤੀ
+    kk: Джибути
+    yue: 吉布提城
+    yo: Ìlú Djibouti
+    uz: Jibuti
+    bs: Djibouti
+    mk: Џибути
+    ha_NE: Jibuti
+    'no': Djibouti
+    yo_BJ: Ìlú Djibouti
+  comments:
+  type: city
+OB:
+  name: Obock
+  code: OB
+  unofficial_names:
+  - Obock
+  - Obok
+  geo:
+    latitude: 11.9647465
+    longitude: 43.2884071
+    min_latitude: 11.9593636
+    min_longitude: 43.2825709
+    max_latitude: 11.9751386
+    max_longitude: 43.29488430000001
+  translations:
+    en: Obock
+    ar: إقليم أوبوك
+    be: Рэгіён Абок
+    bg: Обок
+    bn: ওবাক অঞ্চল
+    da: Obock Region
+    de: Obock
+    el: Περιφέρεια Ομπόκ
+    es: Región de Obock
+    et: Obocki piirkond
+    fa: منطقه اوبوک
+    fi: Obockin maakunta
+    fr: Région d’Obock
+    gu: ઓબોક પ્રદેશ
+    hi: ओबॉक क्षेत्र
+    hy: Օբոքի երկրամաս
+    id: Wilayah Obock
+    it: regione di Obock
+    ja: オボック州
+    ka: ობოკის რეგიონი
+    kn: ಒಬಾಕ್ ಪ್ರದೇಶ
+    ko: 오보크 주
+    lt: Oboko regionas
+    mr: ओबॉक प्रदेश
+    ms: Obock Region
+    nb: Obock
+    nl: Obock
+    pl: Region Obock
+    pt: Região de Obock
+    ro: Regiunea Obock
+    ru: Обок
+    si: ඔබොක් ප්‍රාන්තය
+    sv: Obock
+    ta: ஒபோக் பகுதி
+    te: ఓబాక్ ప్రాంతం
+    th: โอบ๊อค
+    tr: Obuk Bölgesi
+    uk: Обок
+    ur: اوبوک علاقہ
+    vi: Khu vực Obock
+    lv: Ubukas reģions
+    ceb: Obock
+    zh: 奧博克州
+    ccp: "\U00011103\U0001112E\U0001111D\U0001112E\U00011107\U00011134"
+    ca: Regió d’Obock
+    'no': Obock
+    az: Obok regionu
+    bs: Obock (regija)
+    eu: Obock eskualdea
+    he: מחוז אובוק
+  comments:
+  type: region
+TA:
+  name: Tadjourah
+  code: TA
+  unofficial_names:
+  - Tadjoura
+  - Tadjourah
+  - Tajura
+  geo:
+    latitude: 11.7913106
+    longitude: 42.87962270000001
+    min_latitude: 11.7876882
+    min_longitude: 42.87557109999999
+    max_latitude: 11.7946021
+    max_longitude: 42.8837972
+  translations:
+    en: Tadjourah
+    ar: إقليم تاجورة
+    be: Рэгіён Таджура
+    bg: Таджура
+    bn: তাজুরাহ অঞ্চল
+    ca: Regió de Tadjoura
+    da: Tadjourah Region
+    de: Tadjoura
+    el: Περιφέρεια Ταντζουρά
+    es: Tadjoura
+    et: Tadjoura piirkond
+    fa: منطقه تاجوره
+    fi: Tadjourahin maakunta
+    fr: Région de Tadjourah
+    gu: તજૌરહ પ્રદેશ
+    hi: तदजौरा क्षेत्र
+    hy: Թանջուրահ
+    id: Wilayah Tadjourah
+    it: regione di Tagiura
+    ja: タジュラ州
+    ka: ტაჯურის რეგიონი
+    kn: ಟಾಡ್ಜೌರಾ ಪ್ರದೇಶ
+    ko: 타주라 주
+    lt: Tadžuros regionas
+    mr: तदजौरा रिजन
+    ms: Tadjourah Region
+    nb: Tadjourah
+    nl: Tadjourah
+    pl: Region Tadżura
+    pt: Região de Tadjourah
+    ro: Regiunea Tadjourah
+    ru: Таджурах
+    si: ටඩ්ජෝරා කලාපය
+    sv: Tadjourah
+    ta: டாட்ஜயராஹ் பகுதி
+    te: టాడ్‌జౌరా ప్రాంతం
+    th: ทัดโจรา
+    tr: Tadjourah Bölgesi
+    uk: Таджура
+    ur: تاجورہ علاقہ
+    vi: Khu vực Tadjourah
+    lv: Tedžūras reģions
+    ceb: Tadjourah
+    zh: 塔朱拉州
+    ccp: "\U00011112\U00011116\U00011134\U00011107\U0001112F\U00011122\U00011126\U00011134"
+    'no': Tadjourah
+    bs: Tadjourah (regija)
+    eu: Tadjourah eskualdea
+    he: טאג׳ורה
+  comments:
+  type: region

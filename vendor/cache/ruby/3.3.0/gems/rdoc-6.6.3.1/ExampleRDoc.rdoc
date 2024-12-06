@@ -1,0 +1,208 @@
+This document contains example output to show RDoc styling.  This file was
+created from a RDoc Markup file.
+
+== Headings
+
+You should not use headings beyond level 3, it is a sign of poor organization
+of your code or documentation.  It also becomes difficult for the user to
+figure out what you are attempting to explain to them as they have to track
+the multiple layers of nesting.
+
+= Heading level 1
+
+Above is a level one heading.
+
+These paragraphs are filler that exist so you can see how the heading
+interacts with paragraphs before and after the heading.  As you can see each
+different heading has a different amount of margin above and below.
+
+This should be sufficient to give you a proper picture of how it will appear in
+your documentation.
+
+== Heading level 2
+
+Above is a level two heading.
+
+These paragraphs are filler that exist so you can see how the heading
+interacts with paragraphs before and after the heading.  As you can see each
+different heading has a different amount of margin above and below.
+
+This should be sufficient to give you a proper picture of how it will appear in
+your documentation.
+
+=== Heading level 3
+
+Above is a level three heading.
+
+These paragraphs are filler that exist so you can see how the heading
+interacts with paragraphs before and after the heading.  As you can see each
+different heading has a different amount of margin above and below.
+
+This should be sufficient to give you a proper picture of how it will appear in
+your documentation.
+
+==== Heading level 4
+
+Above is a level four heading.
+
+These paragraphs are filler that exist so you can see how the heading
+interacts with paragraphs before and after the heading.  As you can see each
+different heading has a different amount of margin above and below.
+
+This should be sufficient to give you a proper picture of how it will appear in
+your documentation.
+
+===== Heading level 5
+
+Above is a level five heading.
+
+These paragraphs are filler that exist so you can see how the heading
+interacts with paragraphs before and after the heading.  As you can see each
+different heading has a different amount of margin above and below.
+
+This should be sufficient to give you a proper picture of how it will appear in
+your documentation.
+
+====== Heading level 6
+
+Above is a level six heading.
+
+These paragraphs are filler that exist so you can see how the heading
+interacts with paragraphs before and after the heading.  As you can see each
+different heading has a different amount of margin above and below.
+
+This should be sufficient to give you a proper picture of how it will appear in
+your documentation.
+
+== Paragraphs
+
+This is how a paragraph looks.  Since it is difficult to generate good content
+for paragraphs I have chosen to use {Riker Ipsum}[http://rikeripsum.com] for
+nonsense filler content.  In the previous sentence you can see how a link is
+formatted.
+
+Here is an example of *bold* and _emphasis_ styling.  Try not to combine the
+two or use them too often.  Here is an example of <code>inline verbatim
+text</code>.  That should be enough of a taste of inline markup in paragraphs.
+The Riker Ipsum filler follows:
+
+Shields up! Rrrrred alert! Well, I'll say this for him - he's sure of himself.
+and attack the Romulans. Worf, It's better than music. It's jazz. This should
+be interesting. When has justice ever been as simple as a rule book? Flair is
+what marks the difference between artistry and mere competence.
+
+Sorry, Data. I think you've let your personal feelings cloud your judgement. We
+finished our first sensor sweep of the neutral zone. Yes, absolutely, I do
+indeed concur, wholeheartedly! Mr. Worf, you do remember how to fire phasers? A
+lot of things can change in twelve years, Admiral. Your shields were failing,
+sir.
+
+== Verbatim sections
+
+A verbatim section typically contains source code or example output.  This is
+how verbatim blocks of code looks:
+
+  def local responder
+    responder.ping do |value|
+      return value
+    end
+  end
+  
+  def ping uri
+    @uri = uri
+    @remote = DRb::DRbObject.new_with_uri @uri
+  
+    @remote.ping do |value|
+      return value
+    end
+  end
+
+This is a paragraph following the verbatim block so you can see how leading and trailing paragraphs interact with it.
+
+== Unordered lists
+
+Here is an unordered list.  As you can see it uses non-numeral markers for each list item:
+
+* This is the top-most item in the list.
+* This is a second item in the list.
+
+  Unlike the first item, this item has more than one paragraph so you can see
+  how they interact.
+* This is a third item in the list.  Like the item before it, this item has a
+  second paragraph.
+
+  Here is the second paragraph in the list item.
+* A final list item.
+
+== Ordered lists
+
+Here is an ordered list.  As you can see it uses numeral markers for each list
+item:
+
+1. This is the first item in the list.
+1. This is the second item in the list.
+
+   Unlike the first item, this item has more than one paragraph so you can see
+   how they interact.
+1. This is the third item in the list.  Like the item before it, this item has
+   a second paragraph.
+
+   Here is the second paragraph in the third list item.
+1. The fourth and final list item.
+
+== Definition lists
+
+=== "Note" list
+
+The "note" syntax can be used to create a definition list:
+
+  note::
+    description
+
+Here is such a definition list:
+
+cat::
+  A cat is a small mammal that is commonly kept as a pet.
+
+dog::
+  A dog is a mammal that is also kept as a pet.  A dog may range in size from
+  smaller than a cat to larger than a human.
+
+  Typically dogs are easier to train to respond to commands than cats.
+
+rabbit::
+  Rabbits are also mammals, but are infrequently kept as pets.  Most rabbits
+  are wild.
+
+=== "Label" list
+
+The "label" syntax can be used to create a definition list:
+
+  [label]
+    description
+
+Here is such a definition list:
+
+[cat]
+  A cat is a small mammal that is commonly kept as a pet.
+
+[dog]
+  A dog is a mammal that is also kept as a pet.  A dog may range in size from
+  smaller than a cat to larger than a human.
+
+  Typically dogs are easier to train to respond to commands than cats.
+
+[rabbit]
+  Rabbits are also mammals, but are infrequently kept as pets.  Most rabbits
+  are wild.
+
+== Rule
+
+A rule is a horizontal divider between two paragraphs.  Following this
+paragraph is a rule.
+
+---
+
+In historic versions of RDoc you could control the height of the rule in HTML
+output.  This is no longer true as HTML 5 does not support this.
+

@@ -1,0 +1,83 @@
+# elements like %{queue} are variables and should not be translated
+lt:
+  Dashboard: Valdymo skydas
+  Status: Būsena
+  Time: Laikas
+  Namespace: Vardų erdvė
+  Realtime: Realiu laiku
+  History: Istorija
+  Busy: Užimti
+  Processed: Įvykdyti
+  Failed: Nepavykę
+  Scheduled: Suplanuoti
+  Retries: Kartojami
+  Enqueued: Eilėje
+  Worker: Darbuotojas
+  LivePoll: Užklausti gyvai
+  StopPolling: Stabdyti užklausas
+  Queue: Eilė
+  Class: Klasė
+  Job: Darbas
+  Arguments: Parametrai
+  Extras: Papildomi
+  Started: Pradėti
+  ShowAll: Rodyti Visus
+  CurrentMessagesInQueue: Esami darbai eilėje <span class='title'>%{queue}</span>
+  Delete: Pašalinti
+  AddToQueue: Pridėti į eilę
+  AreYouSureDeleteJob: Ar tikrai norite pašalinti šį darbą?
+  AreYouSureDeleteQueue: Ar tikrai norite pašalinti šią eilę %{queue}?
+  Queues: Eilės
+  Size: Dydis
+  Actions: Veiksmai
+  NextRetry: Sekantis Kartojimas
+  RetryCount: Kartojimų Skaičius
+  RetryNow: Kartoti Dabar
+  Kill: Priverstinai Nutraukti
+  LastRetry: Paskutinis Kartojimas
+  OriginallyFailed: Iš pradžių Nepavykę
+  AreYouSure: Ar jūs įsitikinę?
+  DeleteAll: Pašalinti Visus
+  RetryAll: Kartoti Visus
+  KillAll: Priverstinai Nutraukti Visus
+  NoRetriesFound: Nerasta kartojimų
+  Error: Klaida
+  ErrorClass: Klaidos Klasė
+  ErrorMessage: Klaidos Žinutė
+  ErrorBacktrace: Klaidos Pėdsakai
+  GoBack: ← Atgal
+  NoScheduledFound: Planuojamų darbų nerasta
+  When: Kada
+  ScheduledJobs: Planuojami Darbai
+  idle: neveiksnus
+  active: aktyvus
+  Version: Versija
+  Connections: Ryšiai
+  MemoryUsage: Atminties Vartojimas
+  PeakMemoryUsage: Atminties Vartojimo Pikas
+  Uptime: Gyvavimo laikas (dienomis)
+  OneWeek: 1 savaitė
+  OneMonth: 1 mėnuo
+  ThreeMonths: 3 mėnesiai
+  SixMonths: 6 mėnesiai
+  Failures: Nesėkmingi vykdymai
+  DeadJobs: Negyvi Darbai
+  NoDeadJobsFound: Negyvų darbų nerasta
+  Dead: Negyvi
+  Processes: Procesai
+  Thread: Gija
+  Threads: Gijos
+  Jobs: Darbai
+  Paused: Pristabdytas
+  Stop: Sustabdyti
+  Quiet: Nutildyti
+  StopAll: Sustabdyti Visus
+  QuietAll: Nutildyti Visus
+  PollingInterval: Užklausimų intervalas
+  Plugins: Įskiepiai
+  NotYetEnqueued: Dar neįtraukti į eilę
+  CreatedAt: Sukurta
+  BackToApp: Atgal į Aplikaciją
+  Latency: Vėlavimas
+  Pause: Pristabdyti
+  Unpause: Pratęsti

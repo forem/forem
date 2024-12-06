@@ -1,0 +1,59 @@
+---
+IN:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{region}}
+    {{city}} {{postalcode}}
+    {{country}}
+  alpha2: IN
+  alpha3: IND
+  continent: Asia
+  country_code: '91'
+  currency_code: INR
+  distance_unit: KM
+  g20_member: true
+  gec: IN
+  geo:
+    latitude: 20.593684
+    longitude: 78.96288
+    max_latitude: 35.513327
+    max_longitude: 97.39535869999999
+    min_latitude: 6.4626999
+    min_longitude: 68.1097
+    bounds:
+      northeast:
+        lat: 35.513327
+        lng: 97.39535869999999
+      southwest:
+        lat: 6.4626999
+        lng: 68.1097
+  international_prefix: '00'
+  ioc: IND
+  iso_long_name: The Republic of India
+  iso_short_name: India
+  languages_official:
+  - hi
+  - en
+  languages_spoken:
+  - hi
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 10
+  national_prefix: '0'
+  nationality: Indian
+  number: '356'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Asia
+  start_of_week: monday
+  subregion: Southern Asia
+  un_locode: IN
+  unofficial_names:
+  - India
+  - Indien
+  - Inde
+  - インド
+  world_region: APAC

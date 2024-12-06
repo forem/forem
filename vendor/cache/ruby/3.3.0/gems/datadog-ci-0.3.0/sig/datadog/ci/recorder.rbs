@@ -1,0 +1,18 @@
+module Datadog
+  module CI
+    module Recorder
+      self.@environment_tags: Hash[String, String]
+
+      def self.trace: (untyped span_name, ?::Hash[untyped, untyped] options) ?{ (untyped, untyped) -> untyped } -> untyped
+      def self.set_tags!: (untyped trace, untyped span, ?::Hash[untyped, untyped] tags) -> untyped
+
+      def self.passed!: (untyped span) -> untyped
+
+      def self.failed!: (untyped span, ?untyped? exception) -> untyped
+
+      def self.skipped!: (untyped span, ?untyped? exception) -> untyped
+
+      def self.set_environment_runtime_tags!: (untyped span) -> untyped
+    end
+  end
+end

@@ -1,0 +1,53 @@
+---
+MF:
+  alpha2: MF
+  alpha3: MAF
+  continent: North America
+  country_code: '590'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: true
+  euvat_member: false
+  gec: RN
+  geo:
+    latitude: 18.08255
+    longitude: -63.05225100000001
+    max_latitude: 18.1356001
+    max_longitude: -62.9613001
+    min_latitude: 18.0462883
+    min_longitude: -63.1630001
+    bounds:
+      northeast:
+        lat: 18.1356001
+        lng: -62.9613001
+      southwest:
+        lat: 18.0462883
+        lng: -63.1630001
+  international_prefix: ''
+  ioc:
+  iso_long_name: The Collectivity of Saint-Martin
+  iso_short_name: Saint Martin (French part)
+  languages_official:
+  - en
+  - fr
+  - nl
+  languages_spoken:
+  - en
+  - fr
+  - nl
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: French
+  number: '663'
+  postal_code: true
+  postal_code_format: 9[78][01]\d{2}
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: MF
+  unofficial_names:
+  - Saint Martin
+  - サン・マルタン（フランス領）
+  - Saint-Martin
+  world_region: AMER

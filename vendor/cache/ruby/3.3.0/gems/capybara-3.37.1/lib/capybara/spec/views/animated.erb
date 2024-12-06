@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>with_animation</title>
+    <script src="/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      $(document).on('contextmenu', function(e){ e.preventDefault(); });
+    </script>
+    <style>
+      div {
+        width: 400px;
+        height: 400px;
+        position: absolute;
+      }
+      #obscured {
+        z-index: 1;
+        background-color: red;
+      }
+      #cover {
+        z-index: 2;
+        background-color: blue;
+      }
+      #offscreen {
+        top: 2000px;
+        left: 2000px;
+        background-color: green;
+      }
+      #offscreen_wrapper {
+        top: 2000px;
+        left: 2000px;
+        overflow-x: scroll;
+        background-color: yellow;
+      }
+    </style>
+  </head>
+
+  <body id="with_animation">
+    <div id="obscured">
+      <input id="obscured_input"/>
+    </div>
+    <div id="cover"></div>
+    <div id="offscreen_wrapper">
+      <div id="offscreen"></div>
+    </div>
+  </body>
+
+  <iframe id="frameOne" src="/frame_one"></iframe>
+</html>

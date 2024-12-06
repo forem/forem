@@ -1,0 +1,66 @@
+<p>Oops!  When I released <a href="http://nokogiri.rubyforge.org/" onclick="javascript:urchinTracker ('/outbound/article/nokogiri.rubyforge.org');">nokogiri</a> version 1.0.7, I totally forgot to talk about Nokogiri::Slop() feature that was added.  Why is it called "slop"?  It lets you sloppily explore documents.  Basically, it decorates your document with method_missing() that allows you to search your document via method calls.</p>
+<p>Given this document:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">doc = Nokogiri::Slop<span class="br0">&#40;</span>&lt;&lt;-eohtml<span class="br0">&#41;</span><br />
+&lt;html&gt;<br />
+&nbsp; &lt;body&gt;<br />
+&nbsp; &nbsp; &lt;p&gt;hello&lt;/p&gt;<br />
+&nbsp; &nbsp; &lt;p <span class="kw1">class</span>=<span class="st0">&quot;bold&quot;</span>&gt;bold hello&lt;/p&gt;<br />
+&nbsp; &lt;body&gt;<br />
+&lt;/html&gt;<br />
+eohtml</div>
+</div>
+<p>You may look through the tree like so:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">doc.<span class="me1">html</span>.<span class="me1">body</span>.<span class="kw3">p</span><span class="br0">&#40;</span>'.<span class="me1">bold</span>'<span class="br0">&#41;</span>.<span class="me1">text</span> <span class="co1"># =&gt; 'bold hello' </span></div>
+</div>
+<p>The way this works is that method missing is implemented on every node in the document tree.  That method missing method creates an xpath or css query by using the method name and method arguments.  This means that a new search is executed for every method call.  It's fun for playing around, but you definitely won't get the same performance as using one specific CSS search.</p>
+<p>My favorite part is that method missing is actually in the <a href="http://github.com/tenderlove/nokogiri/tree/master/lib/nokogiri/decorators/slop.rb" onclick="javascript:urchinTracker ('/outbound/article/github.com');">slop decorator</a>.  When you use the Nokogiri::Slop() method, it adds the decorator to a list that gets mixed in to every node instance at runtime using Module#extend.  That lets me have sweet method missing action, without actually putting method missing in my Node class.</p>
+<p>Here is a simplified example:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw1">module</span> Decorator<br />
+&nbsp; <span class="kw1">def</span> method_a<br />
+&nbsp; &nbsp; <span class="st0">&quot;method a&quot;</span><br />
+&nbsp; <span class="kw1">end</span></p>
+<p>&nbsp; <span class="kw1">def</span> method_b<br />
+&nbsp; &nbsp; <span class="st0">&quot;method b: #{super}&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p><span class="kw1">class</span> Foo<br />
+&nbsp; <span class="kw1">def</span> method_b<br />
+&nbsp; &nbsp; <span class="st0">&quot;inside foo&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p>foo = Foo.<span class="me1">new</span><br />
+foo.<span class="me1">extend</span><span class="br0">&#40;</span>Decorator<span class="br0">&#41;</span></p>
+<p><span class="kw3">puts</span> foo.<span class="me1">method_a</span> <span class="co1"># =&gt; 'method a'</span><br />
+<span class="kw3">puts</span> foo.<span class="me1">method_b</span> <span class="co1"># =&gt; 'method b: inside foo'</span></p>
+<p>foo2 = Foo.<span class="me1">new</span><br />
+<span class="kw3">puts</span> foo2.<span class="me1">method_b</span> <span class="co1"># =&gt; 'inside foo'</span><br />
+<span class="kw3">puts</span> foo2.<span class="me1">method_a</span> <span class="co1"># =&gt; NoMethodError </span></div>
+</div>
+<p>Module#extend is used to add functionality to the <strong>instance</strong> 'foo', but not 'foo2'.  Both 'foo' and 'foo2' are instances of Foo, but using Module#extend, we can conditionally add functionality <strong>without monkey patching</strong> and keeping a clean separation of concerns.  You can even reach previous functionality by calling super.</p>
+<p>But wait!  There's more!  You can stack up these decorators as much as you want.  For example:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw1">module</span> AddAString<br />
+&nbsp; <span class="kw1">def</span> method<br />
+&nbsp; &nbsp; <span class="st0">&quot;Added a string: #{super}&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p><span class="kw1">module</span> UpperCaseResults<br />
+&nbsp; <span class="kw1">def</span> method<br />
+&nbsp; &nbsp; <span class="kw1">super</span>.<span class="me1">upcase</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p><span class="kw1">class</span> Foo<br />
+&nbsp; <span class="kw1">def</span> method<br />
+&nbsp; &nbsp; <span class="st0">&quot;foo&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p>foo = Foo.<span class="me1">new</span><br />
+foo.<span class="me1">extend</span><span class="br0">&#40;</span>AddAString<span class="br0">&#41;</span><br />
+foo.<span class="me1">extend</span><span class="br0">&#40;</span>UpperCaseResults<span class="br0">&#41;</span></p>
+<p><span class="kw3">puts</span> foo.<span class="me1">method</span> <span class="co1"># =&gt; 'ADDED A STRING: FOO' </span></div>
+</div>
+<p>Conditional functionality added to methods with no weird "alias method chain" involvement.  Awesome!</p>
+<p>I love ruby!</p>

@@ -1,0 +1,10 @@
+<ul class="pagination pull-right flip">
+  <% if @prev_cursor %>
+  <li>
+    <a href="<%= url %>?<%= cparams(filter: @filter, cursor: @prev_cursor, prev_cursor: @next_cursor) %>">Previous <%= @count %></a>
+  </li>
+  <% end %>
+  <li>
+    <a href="<%= url %>?<%= cparams(filter: @filter, cursor: @next_cursor, prev_cursor: @current_cursor) %>">Next <%= @count %></a>
+  </li>
+</ul>

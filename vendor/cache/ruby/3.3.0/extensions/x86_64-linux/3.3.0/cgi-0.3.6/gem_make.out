@@ -1,0 +1,18 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cgi-0.3.6/ext/cgi/escape
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cgi-0.3.6/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-14xaf9 sitelibdir\=./.gem.20241205-149352-14xaf9 clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cgi-0.3.6/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-14xaf9 sitelibdir\=./.gem.20241205-149352-14xaf9
+compiling escape.c
+linking shared-object cgi/escape.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cgi-0.3.6/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-14xaf9 sitelibdir\=./.gem.20241205-149352-14xaf9 install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20241205-149352-14xaf9/cgi
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cgi-0.3.6/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-14xaf9 sitelibdir\=./.gem.20241205-149352-14xaf9 clean

@@ -1,0 +1,18 @@
+en:
+  attributes:
+    id: 'id'
+  ransack:
+    attributes:
+      person:
+        name: Full Name
+        only_admin: admin uSer Only
+        salary: wages
+        awesome: ransack is really awesome
+      article:
+        body: maiN BoDy
+  activerecord:
+    attributes:
+      namespace/article:
+        title: AR Namespaced Title
+      namespace_article:
+        title: Old Ransack Namespaced Title

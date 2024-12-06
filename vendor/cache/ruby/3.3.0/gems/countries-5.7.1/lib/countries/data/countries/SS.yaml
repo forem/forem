@@ -1,0 +1,51 @@
+---
+SS:
+  alpha2: SS
+  alpha3: SSD
+  continent: Africa
+  country_code: '211'
+  currency_code: SSP
+  distance_unit: KM
+  gec: OD
+  geo:
+    latitude: 6.876991899999999
+    longitude: 31.3069788
+    max_latitude: 12.236389
+    max_longitude: 35.9489971
+    min_latitude: 3.48898
+    min_longitude: 23.4408491
+    bounds:
+      northeast:
+        lat: 12.236389
+        lng: 35.9489971
+      southwest:
+        lat: 3.48898
+        lng: 23.4408491
+  international_prefix: '0'
+  ioc:
+  iso_long_name: The Republic of South Sudan
+  iso_short_name: South Sudan
+  languages_official:
+  - ar
+  - en
+  languages_spoken:
+  - ar
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: South Sudanese
+  number: '728'
+  postal_code: false
+  region: Africa
+  start_of_week: sunday
+  subregion: Northern Africa
+  un_locode: SS
+  unofficial_names:
+  - South Sudan
+  - Südsudan
+  - 南スーダン
+  - Zuid-Soedan
+  world_region: EMEA

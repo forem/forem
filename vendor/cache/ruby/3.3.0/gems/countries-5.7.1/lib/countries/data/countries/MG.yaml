@@ -1,0 +1,52 @@
+---
+MG:
+  alpha2: MG
+  alpha3: MDG
+  continent: Africa
+  country_code: '261'
+  currency_code: MGA
+  distance_unit: KM
+  gec: MA
+  geo:
+    latitude: -18.766947
+    longitude: 46.869107
+    max_latitude: -11.4369999
+    max_longitude: 50.9985001
+    min_latitude: -26.2146
+    min_longitude: 42.7368
+    bounds:
+      northeast:
+        lat: -11.4369999
+        lng: 50.9985001
+      southwest:
+        lat: -26.2146
+        lng: 42.7368
+  international_prefix: '00'
+  ioc: MAD
+  iso_long_name: The Republic of Madagascar
+  iso_short_name: Madagascar
+  languages_official:
+  - fr
+  - mg
+  languages_spoken:
+  - fr
+  - mg
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: None
+  nationality: Malagasy
+  number: '450'
+  postal_code: true
+  postal_code_format: "\\d{3}"
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: MG
+  unofficial_names:
+  - Madagascar
+  - Madagaskar
+  - the Republic of Madagascar
+  - マダガスカル
+  world_region: EMEA

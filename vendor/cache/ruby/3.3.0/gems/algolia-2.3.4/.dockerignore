@@ -1,0 +1,38 @@
+# rspec failure tracking
+.rspec_status
+
+## MAC OS
+.DS_Store
+.idea/
+
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## PROJECT::GENERAL
+coverage
+rdoc
+pkg
+.rvmrc
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+## PROJECT::SPECIFIC
+spec/integration_spec_conf.rb
+data.sqlite3
+
+debug.log

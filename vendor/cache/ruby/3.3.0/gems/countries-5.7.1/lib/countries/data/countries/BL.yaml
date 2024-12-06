@@ -1,0 +1,47 @@
+---
+BL:
+  alpha2: BL
+  alpha3: BLM
+  continent: North America
+  country_code: '590'
+  currency_code: EUR
+  distance_unit: KM
+  gec: TB
+  geo:
+    latitude: 17.9
+    longitude: -62.833333
+    max_latitude: 17.978
+    max_longitude: -62.7869
+    min_latitude: 17.8663
+    min_longitude: -62.9559999
+    bounds:
+      northeast:
+        lat: 17.978
+        lng: -62.7869
+      southwest:
+        lat: 17.8663
+        lng: -62.9559999
+  international_prefix: ''
+  ioc:
+  iso_long_name: The Collectivity of Saint-Barthélemy
+  iso_short_name: Saint Barthélemy
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Saint Barthélemy Islander
+  number: '652'
+  postal_code: true
+  postal_code_format: 9[78][01]\d{2}
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: BL
+  unofficial_names:
+  - Saint Barthélemy
+  - Saint-Barthélemy
+  - サン・バルテルミー
+  world_region: APAC

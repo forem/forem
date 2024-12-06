@@ -1,0 +1,29 @@
+HTTP/1.1 200 OK
+Server: nginx/0.7.67
+Date: Fri, 18 Nov 2011 21:46:46 GMT
+Content-Type: text/html
+Connection: keep-alive
+Last-Modified: Mon, 14 Nov 2011 16:53:18 GMT
+Content-Length: 4987
+X-Varnish: 2000423390
+Age: 0
+Via: 1.1 varnish
+
+<html>
+  <head>
+    <title>Malformed hrefs</title>
+  </head>
+  <body>
+    <h1>Good links</h1>
+    <a href="/faqs">FAQs</a>
+    <a href="skype:joeuser?call">a skype link</a>
+    <a href="telnet://telnet.cdrom.com">a telnet link</a>
+    <a href="javascript:alert('ok');">ok</a>
+    <a href="tel:08 8267 3255">telephone</a>
+    <a href="http://#">root anchor</a>
+
+    <h1>Bad links due to malformed href</h1>
+    <a href="javascript://">oops</a>
+    <a href="mailto:email(at)example.com">
+  </body>
+</html>

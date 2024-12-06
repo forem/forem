@@ -1,0 +1,61 @@
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+This atom/xml feed is an index to active advisories, watches and warnings 
+issued by the National Weather Service.  This index file is not the complete 
+Common Alerting Protocol (CAP) alert message.  To obtain the complete CAP 
+alert, please follow the links for each entry in this index.  Also note the 
+CAP message uses a style sheet to convey the information in a human readable 
+format.  Please view the source of the CAP message to see the complete data 
+set.  Not all information in the CAP message is contained in this index of 
+active alerts.
+-->
+<feed 
+  xmlns = "http://www.w3.org/2005/Atom" 
+  xmlns:cap = "urn:oasis:names:tc:emergency:cap:1.1" 
+  xmlns:ha = "http://www.alerting.net/namespace/index_1.0"
+  >
+  <!-- TZN = <EST> -->
+  <!-- TZO = <-5> -->
+  <!-- http-date = Wed, 07 Nov 2012 02:17:00 GMT -->
+  <id>http://alerts.weather.gov/cap/wwaatmget.php?x=MEC015&amp;y=0</id>
+  <generator>NWS CAP Server</generator>
+  <updated>2012-11-07T09:17:00-05:00</updated>
+  <author>
+    <name>w-nws.webmaster@noaa.gov</name>
+  </author>
+  <title>Current Watches, Warnings and Advisories for Lincoln (MEC015) Maine Issued by the National Weather Service</title>
+  <link href="http://alerts.weather.gov/cap/wwaatmget.php?x=MEC015&amp;y=0"/>
+  <entry>
+    <id>http://alerts.weather.gov/cap/wwacapget.php?x=ME124CCF70CDD4.WinterWeatherAdvisory.124CCF729F10ME.CARWSWCAR.b113b32cf3dd0946aab63451118d16e7</id>
+    <updated>2012-11-07T04:09:00-05:00</updated>
+    <published>2012-11-07T04:09:00-05:00</published>
+    <author>
+      <name>w-nws.webmaster@noaa.gov</name>
+    </author>
+    <title>Winter Weather Advisory issued November 07 at 4:09AM EST until November 08 at 12:00PM EST by NWS</title>
+    <link href="http://alerts.weather.gov/cap/wwacapget.php?x=ME124CCF70CDD4.WinterWeatherAdvisory.124CCF729F10ME.CARWSWCAR.b113b32cf3dd0946aab63451118d16e7"/>
+    <summary>...WINTER WEATHER ADVISORY IN EFFECT FROM 7 PM THIS EVENING TO NOON EST THURSDAY... THE NATIONAL WEATHER SERVICE IN CARIBOU HAS ISSUED A WINTER WEATHER ADVISORY FOR SNOW AND MIXED PRECIPITATION...WHICH IS IN EFFECT FROM 7 PM THIS EVENING TO NOON EST THURSDAY. * PRECIPITATION TYPE...SNOW...SLEET AND FREEZING RAIN</summary>
+    <cap:event>Winter Weather Advisory</cap:event>
+    <cap:effective>2012-11-07T04:09:00-05:00</cap:effective>
+    <cap:expires>2012-11-07T16:00:00-05:00</cap:expires>
+    <cap:status>Actual</cap:status>
+    <cap:msgType>Alert</cap:msgType>
+    <cap:category>Met</cap:category>
+    <cap:urgency>Expected</cap:urgency>
+    <cap:severity>Minor</cap:severity>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:areaDesc>Central Penobscot; Central Washington; Interior Hancock; Northern Penobscot; Northern Washington; Southeast Aroostook; Southern Penobscot; Southern Piscataquis</cap:areaDesc>
+    <cap:polygon/>
+    <cap:geocode>
+      <valueName>FIPS6</valueName>
+      <value>023003 023009 023019 023021 023029</value>
+      <valueName>UGC</valueName>
+      <value>MEZ005 MEZ006 MEZ011 MEZ015 MEZ016 MEZ017 MEZ031 MEZ032</value>
+    </cap:geocode>
+    <cap:parameter>
+      <valueName>VTEC</valueName>
+      <value>/O.NEW.KCAR.WW.Y.0024.121108T0000Z-121108T1700Z/</value>
+    </cap:parameter>
+  </entry>
+</feed>

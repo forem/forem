@@ -1,0 +1,637 @@
+---
+AD:
+  name: Adamaoua
+  code: AD
+  unofficial_names:
+  - Adamawa
+  geo:
+    latitude: 6.9181954
+    longitude: 12.8054753
+    min_latitude: 5.992985
+    min_longitude: 11.173742
+    max_latitude: 8.1690449
+    max_longitude: 15.2492441
+  translations:
+    en: Adamawa
+    ar: محافظة آداماوا
+    be: Рэгіён Адамава
+    bg: Адамауа (Камерун)
+    bn: আদামাওয়া
+    ca: Regió d’Adamawa
+    da: Adamawa
+    de: Adamaoua
+    el: Ανταμάουα
+    es: Región Adamawa
+    et: Adamaoua piirkond
+    fa: استان آداماوا
+    fi: Adamawa
+    fr: Région de l’Adamaoua
+    gu: આદમાવા
+    hi: अदामावा
+    id: Region Adamawa
+    it: regione di Adamaoua
+    ja: アダマワ州
+    kn: ಆಡಮಾವಾ
+    ko: 아다마와 주 (카메룬)
+    lt: Adamavos regionas
+    lv: Adamavas reģions
+    ml: അഡമാവാ
+    mr: आदावा
+    ms: Adamawa
+    nb: Adamawa
+    nl: Adamaoua
+    pl: Adamawa (region)
+    pt: Adamawa (região dos Camarões)
+    ro: Provincia Adamawa
+    ru: Адамава (регион Камеруна)
+    si: අඩමවා
+    sv: Adamaouaregionen
+    ta: அடமாவா
+    te: ఆడమావా
+    th: รัฐอดามาวา
+    tr: Adamawa Bölgesi
+    ur: آداماوا علاقہ
+    vi: Adamawa
+    zh: 阿达马瓦区
+    ceb: Adamaoua Region
+    ccp: "\U00011103\U00011113\U0001111F\U00011124"
+    ka: ადამავის რეგიონი
+    he: מחוז אדמאווה
+    uk: Адамава
+    'no': Adamawa
+    eu: Adamawa (Kamerungo probintzia)
+    sw: Mkoa wa Adamawa
+  comments:
+  type: region
+CE:
+  name: Centre
+  code: CE
+  unofficial_names: Centre
+  geo:
+    latitude: 4.6298411
+    longitude: 11.7068294
+    min_latitude: 3.139809
+    min_longitude: 10.2618951
+    max_latitude: 6.262233999999999
+    max_longitude: 13.248086
+  translations:
+    en: Centre
+    ar: سنتر
+    be: Цэнтральны рэгіён, Камерун
+    bg: Централен регион
+    bn: সেন্টার
+    ca: Regió Central
+    da: Centre
+    de: Centre
+    el: Κεντρική Περιφέρεια, Καμερούν
+    es: Región del Centro
+    et: Keskpiirkond
+    fi: Centre
+    fr: Région du Centre
+    gu: કેન્દ્ર
+    he: מחוז המרכז
+    hi: सेंटर
+    id: Region Tengah, Kamerun
+    it: regione Centrale
+    ja: 中央州
+    kn: ಕೇಂದ್ರ
+    ko: 중앙 주
+    lt: Centrinis regionas
+    lv: Centrālais reģions
+    mr: सेंटर
+    ms: Centre
+    nb: Centre
+    nl: Centre
+    pl: Region Centralny
+    pt: Centro
+    ro: Provincia Centru, Camerun
+    ru: Центральный регион
+    si: සෙන්ටර්
+    sv: Centrumregionen
+    ta: சென்டர்
+    te: సెంటర్
+    th: จังหวัดโอต-โซน
+    tr: Merkez Bölgesi
+    uk: Центральний регіон
+    ur: وسطی علاقہ
+    vi: Vùng Miền Trung
+    ceb: Centre Region
+    zh: 中部区
+    fa: منطقه مرکز
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011122\U00011134"
+    ka: ცენტრალური რეგიონი
+    yo: àárín
+    'no': Centre
+    yo_BJ: àárín
+    eu: Erdialdea (Kamerun)
+    sw: Mkoa wa Kati, Kamerun
+  comments:
+  type: region
+EN:
+  name: Far North
+  code: EN
+  unofficial_names: Far North
+  geo:
+    latitude: 10.6315589
+    longitude: 14.6587821
+    min_latitude: 9.9244931
+    min_longitude: 13.363565
+    max_latitude: 12.9797045
+    max_longitude: 15.683687
+  translations:
+    en: Far North
+    ar: الشمال الأقصى
+    be: Крайні Паўночны рэгіён
+    bg: Далечен Север
+    bn: ফার নর্থ
+    ca: Regió de l’Extrem Nord
+    da: Far North Region
+    de: Extrême-Nord
+    el: Περιφέρεια Απώτερου Βορρά
+    es: Región del Extremo Norte
+    et: Kaug-Põhjapiirkond
+    fi: Extrême-Nord
+    fr: Région de l’Extrême-Nord
+    gu: ફાર નોર્થ
+    hi: सुदूर उत्तर
+    id: Region Ujung Utara
+    it: regione dell’Estremo Nord
+    ja: 極北州
+    kn: ದೂರದ ಉತ್ತರ
+    ko: 극북부 주
+    lt: Tolimosios Šiaurės regionas
+    lv: Galējo Ziemeļu reģions
+    mr: फर नॉर्थ
+    ms: Far North
+    nb: Extrême-Nord
+    nl: Extrême-Nord
+    pl: Region Dalekiej Północy
+    pt: Extremo Norte
+    ro: Provincia Extrem Nord
+    ru: Крайнесеверный регион
+    si: ෆාර් නොර්ත්
+    sv: Nordligaste regionen
+    ta: பார் வடக்கு
+    te: ఫార్ నార్త్
+    th: ฟาร์ น็อท
+    tr: Far North Bölgesi
+    ur: بعید شمالی علاقہ
+    vi: Far North
+    ceb: Far North Region
+    zh: 極北區
+    fa: منطقه شمال دور
+    ccp: "\U0001111C\U00011122\U00011134 \U0001111A\U00011127\U00011122\U00011133\U00011117\U00011134"
+    ka: უკიდურესი ჩრდილოეთის რეგიონი
+    he: מחוז הצפון הרחוק
+    uk: Крайньопівнічний регіон
+    'no': Extrême-Nord
+    eu: Iparralde Urruna (Kamerun)
+    sw: Mkoa wa Kaskazini ya Mbali, Kamerun
+  comments:
+  type: region
+ES:
+  name: East
+  code: ES
+  unofficial_names: East
+  geo:
+    latitude: 3.950512799999999
+    longitude: 13.914399
+    min_latitude: 1.6525479
+    min_longitude: 12.5253721
+    max_latitude: 6.0856641
+    max_longitude: 16.1921161
+  translations:
+    en: East
+    ar: الشرق
+    be: Усходні рэгіён
+    bg: Източен регион
+    bn: ইস্ট
+    ca: Regió Est
+    da: East
+    de: Est
+    el: Περιφέρεια Ανατολής, Καμερούν
+    es: Región del Este
+    et: Idapiirkond
+    fi: East
+    fr: Région de l’Est
+    gu: ઇસ્ટ
+    hi: पूर्व
+    id: Region Timur
+    it: regione dell’Est
+    ja: 東部州
+    kn: ಪೂರ್ವ
+    ko: 동부 주
+    lt: Rytų regionas
+    lv: Austrumu reģions
+    mr: पूर्व
+    ms: East
+    nb: Est
+    nl: Est
+    pl: Region Wschodni
+    pt: Região Leste
+    ro: Regiunea de Est
+    ru: Восточный регион
+    si: නැගෙනහිර
+    sv: Östra regionen (region i Kamerun)
+    ta: ஈஸ்ட்
+    te: తూర్పు
+    th: อีส
+    tr: Doğu Bölgesi
+    ur: مشرقی علاقہ
+    vi: East
+    ceb: East Region
+    zh: 东部区
+    fa: منطقه شرق
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134"
+    ka: აღმოსავლეთის რეგიონი
+    hy: Արևելյան շրջան
+    he: מחוז המזרח
+    uk: Східний Регіон
+    yo: ilà oòrùn
+    'no': Est
+    yo_BJ: ilà oòrùn
+    eu: Ekialdea (Kamerun)
+    sw: Mkoa wa Mashariki, Kamerun
+  comments:
+  type: region
+LT:
+  name: Littoral
+  code: LT
+  unofficial_names: Littoral
+  geo:
+    latitude: 4.1682138
+    longitude: 10.0807298
+    min_latitude: 3.2601088
+    min_longitude: 9.328249399999999
+    max_latitude: 5.3471799
+    max_longitude: 11.133462
+  translations:
+    en: Littoral
+    ar: ليتورال
+    be: Прыбярэжны рэгіён
+    bg: Литорал
+    bn: লিট্টোরাল
+    ca: Regió Litoral
+    da: Littoral
+    de: Littoral
+    el: Λιττοράλ
+    es: Región del Litoral
+    et: Rannikupiirkond
+    fi: Littoral
+    fr: Région du Littoral
+    gu: લેટોરલ
+    hi: लिटोरल
+    id: Region Littoral
+    it: regione del Litorale
+    ja: リトラル州
+    kn: ಲಿಟೊರಲ್
+    ko: 리토랄 주
+    lt: Pakrantės regionas
+    lv: Piekrastes reģions
+    mr: लिट्टोरॅल
+    ms: Littoral
+    nb: Littoral
+    nl: Littoral
+    pl: Region Nadmorski
+    pt: Litoral
+    ro: Provincia Litoral
+    ru: Прибрежный регион
+    si: ලිට්ටොරල්
+    sv: Kustregionen
+    ta: லிட்டோரால்
+    te: లిటోరల్
+    th: ลิทโทรอล
+    tr: Littoral Bölgesi
+    uk: Прибережний регіон
+    ur: لیتورال علاقہ
+    vi: Littoral
+    ceb: Littoral Region
+    zh: 濱海區
+    fa: منطقه لیتورال
+    ccp: "\U00011123\U00011128\U00011111\U0001112E\U00011122\U00011123\U00011134"
+    ka: სანაპირო რეგიონი
+    hy: Լիտտորալ
+    he: מחוז החוף
+    'no': Littoral
+    eu: Kostaldea (Kamerun)
+    sw: Mkoa wa Pwani, Kamerun
+  comments:
+  type: region
+'NO':
+  name: North
+  code: 'NO'
+  unofficial_names:
+  - Bénoué
+  geo:
+    latitude: 8.580901299999999
+    longitude: 13.914399
+    min_latitude: 7.029078999999999
+    min_longitude: 12.2255
+    max_latitude: 10.219281
+    max_longitude: 15.598204
+  translations:
+    en: North
+    ar: المنطقة الشمالية، الكاميرون
+    be: Паўночны рэгіён
+    bg: Северен регион
+    bn: নর্থ
+    ca: Regió del Nord
+    da: North
+    de: Nord
+    el: Περιφέρεια του Βορρά, Καμερούν
+    es: Región del Norte
+    et: Põhjapiirkond
+    fi: North
+    fr: Région du Nord
+    gu: નોર્થ
+    hi: उत्तर
+    id: Region Utara
+    it: regione del Nord
+    ja: 北部州
+    kn: ಉತ್ತರ
+    ko: 북부 주
+    lt: Šiaurės regionas
+    lv: Ziemeļu reģions
+    mr: उत्तर
+    ms: North
+    nb: Nord
+    nl: Nord
+    pl: Region Północny
+    pt: Região Norte
+    ro: Provincia de Nord
+    ru: Северный регион
+    si: උතුරු
+    sv: Norra regionen (region i Kamerun)
+    ta: நோர்த்
+    te: ఉత్తర
+    th: แถบทางเหนือแคเมอรูน
+    tr: Kuzey Bölgesi
+    ur: شمالی علاقہ
+    vi: Phía Bắc
+    ceb: North Region
+    zh: 北部區
+    fa: منطقه شمال
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134"
+    ka: ჩრდილოეთის რეგიონი
+    he: מחוז הצפון
+    uk: Північний регіон
+    yo: Àríwá
+    'no': Nord
+    yo_BJ: Àríwá
+    eu: Iparraldea (Kamerun)
+    sw: Mkoa wa Kaskazini, Kamerun
+  comments:
+  type: region
+NW:
+  name: North-West
+  code: NW
+  unofficial_names: North-West
+  geo:
+    latitude: 6.470373899999999
+    longitude: 10.439656
+    min_latitude: 5.733760999999999
+    min_longitude: 9.6307759
+    max_latitude: 7.1616911
+    max_longitude: 11.194967
+  translations:
+    en: Northwest
+    ar: إقليم الشمال الغربي
+    be: Паўночна-Заходні рэгіён
+    bg: Северозападен регион
+    bn: নর্থওয়েস্ট
+    ca: Regió del Nord-oest
+    da: Northwest
+    de: Nord-Ouest
+    el: Βορειοδυτική Περιφέρεια, Καμερούν
+    es: Región del Noroeste
+    et: Loodepiirkond
+    fi: Luoteisalue
+    fr: Région du Nord-Ouest
+    gu: નોર્થવેસ્ટ
+    hi: उत्तरपूर्व
+    id: Region Barat Laut
+    it: regione del Nordovest
+    ja: 北西州
+    kn: ವಾಯುವ್ಯ ಕ್ಯಾಮರೂನ್ ಪ್ರದೇಶ
+    ko: 북서부 주
+    lt: Šiaurės Vakarų regionas
+    lv: Ziemeļrietumu reģions
+    mr: नॉर्थवेस्ट
+    ms: Northwest
+    nb: Nord-Ouest
+    nl: Nord-Ouest
+    pl: Region Północno-Zachodni
+    pt: Noroeste
+    ro: Provincia de Nord-Vest
+    ru: Северо-Западный регион
+    si: වයඹ
+    sv: Nordvästra regionen
+    ta: நர்தவ்ஸ்ட்
+    te: వాయవ్యం
+    th: นอร์ทเวสต์
+    tr: Kuzeybatı Bölgesi
+    ur: شمال مغربی علاقہ
+    vi: Vùng Tây Bắc
+    ceb: North-West Region
+    zh: 西北區
+    fa: منطقه شمال غربی
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U0001112E\U00011118\U00011128"
+    ka: ჩრდილო-დასავლეთის რეგიონი
+    he: מחוז צפון-מערב
+    uk: Північно-Західний регіон
+    'no': Nord-Ouest
+    eu: Ipar-mendebaldea (Kamerun)
+    sw: Mkoa wa Kaskazini-Magharibi, Kamerun
+  comments:
+  type: region
+OU:
+  name: West
+  code: OU
+  unofficial_names: West
+  geo:
+    latitude: 5.4638158
+    longitude: 10.8000051
+    min_latitude: 4.897807999999999
+    min_longitude: 9.881679
+    max_latitude: 6.2716239
+    max_longitude: 11.3210561
+  translations:
+    en: West
+    ar: الغرب
+    be: Заходні рэгіён, Камерун
+    bn: ওয়েস্ট
+    ca: Regió Oest
+    da: Vest Region
+    de: Ouest
+    el: Δυτική Περιφέρεια, Καμερούν
+    es: Región del Oeste
+    et: Läänepiirkond
+    fi: West
+    fr: Région de l’Ouest
+    gu: વેસ્ટ
+    hi: पश्चिम
+    id: Region Barat, Kamerun
+    it: regione dell’Ovest
+    ja: 西部州
+    kn: ಪಶ್ಚಿಮ
+    ko: 서부 주
+    lt: Vakarų regionas
+    lv: Rietumu reģions
+    mr: पश्चिम
+    ms: West Region, Cameroon
+    nb: Ouest
+    nl: Ouest
+    pl: Region Zachodni
+    pt: Oeste
+    ro: Provincia de Vest, Camerun
+    ru: Западный регион
+    si: බස්නාහිර
+    sv: Västra regionen
+    ta: வெஸ்ட்
+    te: పశ్చిమ
+    th: เวส
+    tr: Batı Bölgesi
+    ur: مغربی علاقہ
+    vi: Khu vực Phía Tây
+    ceb: West Region
+    yo_BJ: ìwɔ̀ oòrùn
+    zh: 西部区
+    fa: منطقه غرب
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134"
+    ka: დასავლეთის რეგიონი
+    hy: Արևմտյան շրջան
+    he: מחוז המערב
+    uk: Західний регіон
+    yo: ìwọ̀ oòrùn
+    'no': Ouest
+    eu: Mendebaldea (Kamerun)
+    sw: Mkoa wa Magharibi, Kamerun
+  comments:
+  type: region
+SU:
+  name: South
+  code: SU
+  unofficial_names: South
+  geo:
+    latitude: 2.7202832
+    longitude: 11.7068294
+    min_latitude: 2.1588319
+    min_longitude: 9.820998
+    max_latitude: 3.6768781
+    max_longitude: 13.681523
+  translations:
+    en: South
+    ar: جنوب
+    be: Паўднёвы рэгіён
+    ca: Regió del Sud
+    da: Syd Region
+    de: Sud
+    el: Περιφέρεια του Νότου, Καμερούν
+    es: Región del Sur
+    et: Lõunapiirkond
+    fi: South
+    fr: Région du Sud
+    gu: દક્ષિણ
+    hi: दक्षिण
+    id: Region Selatan
+    it: regione del Sud
+    ja: 南部州
+    kn: ದಕ್ಷಿಣ
+    ko: 남부 주
+    lt: Pietų regionas
+    lv: Dienvidu reģions
+    mr: दक्षिण
+    ms: South Region, Cameroon
+    nb: Sud
+    nl: Sud
+    pl: Region Południowy
+    pt: Região Sul
+    ro: Provincia de Sud
+    ru: Южный регион
+    si: දකුණ
+    sv: Södra regionen (region i Kamerun)
+    ta: சவுத்
+    te: దక్షిణ
+    th: เซาท์
+    tr: Güney Bölgesi
+    ur: جنوبی علاقہ
+    vi: Khu vực Phía Nam
+    ceb: South Region
+    zh: 南部区
+    bn: দক্ষিন/সাউথ
+    fa: منطقه جنوب
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134"
+    ka: სამხრეთის რეგიონი
+    he: מחוז הדרום
+    uk: Південий регіон
+    yo: Gúúsù
+    'no': Sud
+    yo_BJ: Gúúsù
+    az: Cənub bölgəsi
+    eu: Hegoaldea (Kamerun)
+    sw: Mkoa wa Kusini, Kamerun
+  comments:
+  type: region
+SW:
+  name: South-West
+  code: SW
+  unofficial_names: South-West
+  geo:
+    latitude: 5.1573493
+    longitude: 9.367308399999999
+    min_latitude: 3.9221987
+    min_longitude: 8.4947634
+    max_latitude: 6.530783899999999
+    max_longitude: 10.15105
+  translations:
+    en: Southwest
+    ar: جنوب غرب
+    be: Паўднёва-Заходні рэгіён, Камерун
+    bn: সাউথওয়েস্ট
+    ca: Regió del Sud-oest
+    da: Sydvest region
+    de: Sud-Ouest
+    el: Νοτιοδυτική Περιφέρεια, Καμερούν
+    es: Región del Sudoeste
+    et: Edelapiirkond
+    fi: Southwest
+    fr: Région du Sud-Ouest
+    gu: સાઉથવેસ્ટ
+    hi: दक्षिण पश्चिम
+    id: Region Barat Daya, Kamerun
+    it: regione del Sudovest
+    ja: 南西州
+    kn: ನೈಋತ್ಯ
+    ko: 남서부 주
+    lt: Pietvakarių regionas
+    lv: Dienvidrietumu reģions
+    mr: साऊथवेस्ट
+    ms: Southwest
+    nb: Sud-Ouest
+    nl: Sud-Ouest
+    pl: Region Południowo-Zachodni
+    pt: Sudoeste
+    ro: Provincia de Sud-Vest, Camerun
+    ru: Юго-Западный регион
+    si: දකුණු බටහිර
+    sv: Sydvästra regionen (region i Kamerun)
+    ta: சௌதவெஸ்ட்
+    te: వాయవ్య
+    th: เซาร์ทเวส
+    tr: Güneybatı Bölgesi
+    ur: جنوب مغربی علاقہ
+    vi: Vùng Tây Nam
+    ceb: South-West Region
+    zh: 西南区
+    fa: منطقه جنوب غربی
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U0001112E\U00011118\U00011128"
+    ka: სამხრეთ-დასავლეთის რეგიონი
+    hy: Հարավարևմտյան շրջան
+    he: מחוז דרום-מערב
+    uk: Південно-Західний регіон
+    'no': Sud-Ouest
+    az: Cənub-qərb bölgəsi
+    eu: Hego-mendebaldea (Kamerun)
+    sw: Mkoa wa Kusini-Magharibi, Kamerun
+  comments:
+  type: region

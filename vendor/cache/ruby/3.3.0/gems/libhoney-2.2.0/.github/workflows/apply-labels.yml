@@ -1,0 +1,10 @@
+name: Apply project labels
+on: [issues, pull_request_target, label]
+jobs:
+  apply-labels:
+    runs-on: ubuntu-latest
+    name: Apply common project labels
+    steps:
+      - uses: honeycombio/oss-management-actions/labels@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

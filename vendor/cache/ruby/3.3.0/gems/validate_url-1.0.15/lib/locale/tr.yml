@@ -1,0 +1,4 @@
+tr:
+  errors:
+    messages:
+      url: Geçerli bir URL değil

@@ -1,0 +1,6 @@
+require 'ffi-compiler/compile_task'
+
+FFI::Compiler::CompileTask.new('http-parser-ext') do |t|
+  t.cflags << "-Wall -Wextra -O3"
+  t.cflags << "-D_GNU_SOURCE=1" if RbConfig::CONFIG["host_os"].downcase =~ /mingw/
+end

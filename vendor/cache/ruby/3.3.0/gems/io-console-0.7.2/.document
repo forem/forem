@@ -1,0 +1,5 @@
+LICENSE.txt
+README.md
+docs/
+ext/
+lib/io/console/size.rb

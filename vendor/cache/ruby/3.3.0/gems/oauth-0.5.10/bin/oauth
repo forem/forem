@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/oauth"
+require "oauth/cli"
+
+Signal.trap("INT") { puts; exit(1) } # don't dump a backtrace on a ^C
+
+ARGV << "help" if ARGV.empty?
+command = ARGV.shift
+
+OAuth::CLI.new(STDOUT, STDIN, STDERR, command, ARGV).run

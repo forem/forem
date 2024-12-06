@@ -1,0 +1,19 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        module Providers
+          class AwsCodePipeline < Base
+            def self.handles?: (Hash[String, String?] env) -> bool
+
+            def provider_name: () -> "awscodepipeline"
+
+            def pipeline_id: () -> String?
+
+            def ci_env_vars: () -> String?
+          end
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,570 @@
+---
+AJ:
+  name: "'Ajmān"
+  code: AJ
+  unofficial_names: "-إمارة عجمانّ - Ujman"
+  geo:
+    latitude: 25.3995
+    longitude: 55.4796
+    min_latitude: 25.3488018
+    min_longitude: 55.4239777
+    max_latitude: 25.450004
+    max_longitude: 55.6371712
+  translations:
+    en: Ajman
+    ar: عجمان
+    be: Эмірат Аджман
+    bg: Аджман
+    bn: আজমান এমিরাত
+    ca: Ajman
+    cs: Adžmán
+    da: Ajman
+    de: Adschman
+    el: Αϊμάν
+    es: Ajmán
+    eu: Ajman
+    fa: عجمان
+    fi: Ajmān
+    fr: Ajman
+    gu: અજમાન અમીરાત
+    he: עג׳מאן
+    hi: अजमान
+    hr: Ajman
+    hy: Աջմանի Էմիրություն
+    id: Ajman
+    is: Adsman
+    it: Ajman
+    ja: アジュマーン
+    ka: აჯმანის საამირო
+    kn: ಅಜ್ಮಾನ್ ಎಮಿರೇಟ್
+    ko: 아지만 토후국
+    lt: Adžmanas
+    lv: Adžmāna
+    ml: അജ്‌മാൻ
+    mn: Эмирт Ажман
+    mr: अजमान
+    ms: Ajman
+    nb: Emiratet Ajman
+    nl: Ajman
+    pl: Adżman
+    pt: Ajman
+    ro: Ajman
+    ru: Аджман
+    si: අජ්මන් එමිරේටය
+    sk: Adžmán
+    sr: Аџман
+    sv: Emiratet Ajman
+    ta: அஜ்மான்
+    te: అజ్మన్ ఎమిరేట్
+    th: รัฐอัจมาน
+    tk: Ajman
+    tr: Acman
+    uk: Аджман
+    ur: عجمان
+    vi: Ajman
+    zh: 阿吉曼
+    ceb: "‘Ajmān"
+    sr_Latn: Adžman
+    sw: Ajmān
+    yue_Hans: 阿治曼酋长国
+    ccp: "\U00011103\U0001110C\U00011134\U0001111F\U0001111A\U00011134"
+    pa: ਅਜਮਾਨ
+    kk: Аджман
+    yue: 阿治曼酋長國
+    yo: Ajman
+    'no': Emiratet Ajman
+    yo_BJ: Ajman
+    bs: Ajman (emirat)
+  comments:
+  type: emirate
+AZ:
+  name: Abū Z̧aby [Abu Dhabi]
+  code: AZ
+  unofficial_names:
+  - أبو ظبي
+  - Abu Zabi
+  - Abu Zaby
+  - Abū Z̨abī
+  - Abu Dhabi
+  - Abu Dhabi
+  geo:
+    latitude: 24.466667
+    longitude: 54.36666700000001
+    min_latitude: 24.1517661
+    min_longitude: 54.268856
+    max_latitude: 24.6213301
+    max_longitude: 54.8509598
+  translations:
+    en: Abu Dhabi
+    af: Aboe Dhabi
+    ar: إمارة أبوظبي
+    az: Əbu-Dabi
+    be: Эмірат Абу-Дабі
+    bg: Абу Даби
+    bn: আবুধাবি আমিরাত
+    ca: Abu Dhabi
+    cs: Abú Zabí
+    da: Emiratet Abu Dhabi
+    de: Abu Dhabi
+    el: Άμπου Ντάμπι
+    es: Abu Dabi
+    et: Abu Dhabi emiraat
+    eu: Abu Dhabi
+    fa: ابوظبی (امارت)
+    fi: Abu Dhabi Emirate
+    fr: Abou Dabi
+    gl: Emirato de Abu Dabi
+    gu: અબુ ધાબી અમીરાત
+    he: אבו דאבי
+    hi: अबू धाबी अमीरात
+    hr: Abu Dhabi
+    hy: Աբու Դաբիի Էմիրություն
+    id: Abu Dhabi Emirate
+    it: Abu Dhabi
+    ja: アブダビ
+    ka: აბუ-დაბის საამირო
+    kn: ಅಬುಧಾಬಿ ಎಮಿರೇಟ್
+    ko: 아부다비
+    lt: Abu Dabio emyratas
+    lv: Abū Dabī
+    ml: അബുദാബി
+    mn: Эмирт Абу-Даби
+    mr: अबू धाबी अमिरात
+    ms: Abu Dhabi Emirate
+    nb: Emiratet Abu Dhabi
+    nl: Abu Dhabi
+    pl: Abu Zabi
+    pt: Emirados Abu Dhabi
+    ro: Abu Dhabi
+    ru: Абу-Даби
+    si: අබුඩාබි එමිරේට්
+    sk: Abú Zabí
+    sr: Абу Даби
+    sv: Emiratet Abu Dhabi
+    ta: அபூ ழபீ
+    te: అబు ధాబి ఎమిరేట్
+    th: รัฐอาบูดาบี
+    tk: Abu Dabi
+    tr: Abu Dabi Emirliği
+    uk: Абу-Дабі
+    ur: ابوظہبی
+    vi: Abu Dhabi
+    sr_Latn: Abu Dabi
+    zh: 阿布扎比
+    yue_Hans: 阿布扎比酋长国
+    jv: Abu Dhabi
+    ccp: "\U00011103\U0001111D\U0001112A \U00011119\U0001111D\U00011128"
+    ky: Абу-Даби
+    pa: ਅਬੂ ਧਾਬੀ
+    kk: Абу-Даби
+    yue: 阿布扎比酋長國
+    mk: Абу Даби
+    'no': Emiratet Abu Dhabi
+    bs: Abu Dhabi (emirat)
+    ha: Abu Dhabi (Masarauta)
+    ha_NE: Abu Dhabi (Masarauta)
+  comments:
+  type: emirate
+DU:
+  name: Dubayy
+  code: DU
+  unofficial_names:
+  - دبي
+  - Dubai
+  geo:
+    latitude: 25.2048493
+    longitude: 55.2707828
+    min_latitude: 24.7914099
+    min_longitude: 54.895991
+    max_latitude: 25.356306
+    max_longitude: 55.56369770000001
+  translations:
+    en: Dubai
+    af: Doebai
+    ar: امارة دبي
+    az: Dubay
+    be: Эмірат Дубай
+    bg: Дубай
+    bn: দুবাই আমিরাত
+    ca: Dubai
+    cs: Dubaj
+    de: Dubai
+    el: Εμιράτο του Ντουμπάι
+    es: Dubái
+    et: Dubai emiraat
+    eu: Dubai
+    fa: دبی، امارات
+    fr: Dubaï
+    gl: Dubai
+    he: דובאי
+    hr: Dubai
+    hu: Dubaj
+    hy: Դուբայի Էմիրություն
+    it: Dubai
+    ja: ドバイ首長国
+    ka: დუბაის საამირო
+    ko: 두바이
+    lv: Dubaijas emirāts
+    mn: Эмирт Дубай
+    nb: Emiratet Dubai
+    ne: दुबईको अमिरात
+    nl: Dubai
+    or: ଦୁବାଇ
+    pl: Dubaj
+    ro: Emiratul Dubai
+    ru: Дубай
+    sk: Dubaj
+    sl: Dubaj
+    sr: Дубаи
+    sv: Emiratet Dubai
+    sw: Dubai
+    th: รัฐดูไบ
+    tk: Dubaý
+    tr: Dubai Emirliği
+    uk: Дубай
+    ur: امارت دبئی
+    vi: Dubai
+    ceb: Dubai
+    sr_Latn: Dubai
+    zh: 迪拜酋长国
+    yue_Hans: 杜拜酋长国
+    sq: Emirati i Dubait
+    ccp: "\U00011118\U0001112A\U0001111D\U0001112D"
+    da: Dubai
+    fi: Dubai
+    ky: Дубай
+    id: Keamiran Dubai
+    kk: Дубай
+    yue: 杜拜酋長國
+    uz: Dubay
+    bs: Dubai
+    'no': Emiratet Dubai
+    ga: Dubai
+    ha: Dubai
+    ha_NE: Dubai
+    ms: Amiriah Dubai
+  comments:
+  type: emirate
+FU:
+  name: Al Fujayrah
+  code: FU
+  unofficial_names:
+  - الفجيرة
+  - Al Fujayrah
+  - Fujairah
+  geo:
+    latitude: 25.4110762
+    longitude: 56.24822769999999
+    min_latitude: 24.907855
+    min_longitude: 55.96323
+    max_latitude: 25.667782
+    max_longitude: 56.3760899
+  translations:
+    en: Fujairah
+    ar: الفجيرة
+    be: Эмірат Эль-Фуджайра
+    bg: Фуджейра
+    bn: ফুজায়রা
+    ca: Fujairah
+    cs: Fudžajra
+    da: Fujairah
+    de: Fudschaira
+    el: Φουτζέιρα
+    es: Fuyaira
+    et: Al-Fujayrah’ emiraat
+    eu: Fujaira
+    fa: فجیره
+    fi: Fudžaira
+    fr: Fujaïrah
+    gu: ફુજૈરા
+    he: פוג׳יירה
+    hi: फ़ुजैरा
+    hr: Fujairah
+    hy: Ֆուջեյրայի Էմիրություն
+    id: Fujairah
+    it: Fujaira
+    ja: フジャイラ
+    kn: ಫುಜೈರಾ
+    ko: 푸자이라 토후국
+    lt: Fudžeira
+    lv: Fudžeiras emirāts
+    ml: ഫുജൈറ
+    mr: फुजैरा
+    ms: Fujairah
+    nb: Emiratet Fujairah
+    nl: Fujairah
+    pl: Fudżajra
+    pt: Al Fujayrah
+    ro: Fujairah
+    ru: Эль-Фуджайра
+    si: ෆුජයිරා
+    sk: Fujairah
+    sr: Фуџејра
+    sv: Emiratet Fujairah
+    ta: புஜைரா
+    te: ఫుజాయిరా
+    th: รัฐฟูไจราห์
+    tk: Fujeýra
+    tr: Füceyre
+    uk: Фуджейра
+    ur: فجیرہ
+    vi: Fujairah
+    ceb: Al Fujayrah
+    sr_Latn: Fudžejra
+    zh: 富吉拉
+    sw: Fujairah
+    yue_Hans: 富查伊拉酋长国
+    sq: Fuxhaira
+    ccp: "\U0001111C\U0001110E\U0001112D\U00011122\U00011126\U00011134"
+    pa: ਫ਼ੁਜੈਰਾ
+    yue: 富查伊拉酋長國
+    az: Əl-Füceyrə əmirliyi
+    yo: Fujairah
+    'no': Emiratet Fujairah
+    yo_BJ: Fujairah
+    bs: Fujairah (emirat)
+    is: Fúdsaíra
+    ka: ალ-ფუჯაირას საამირო
+  comments:
+  type: emirate
+RK:
+  name: Ra's al Khaymah
+  code: RK
+  unofficial_names:
+  - إمارة رأس الخيمة
+  - Ras al-Khaimah
+  geo:
+    latitude: 25.8006926
+    longitude: 55.9761994
+    min_latitude: 25.540431
+    min_longitude: 55.8637944
+    max_latitude: 25.9116106
+    max_longitude: 56.0727597
+  translations:
+    en: Ras al-Khaimah
+    ar: رأس الخيمة
+    be: Эмірат Рас-эль-Хайма
+    bg: Рас ал-Хайм
+    bn: রাস আল-খাইমাহ
+    ca: Ras al-Khaimah
+    cs: Rás al-Chajma
+    da: Ras al-Khaimah
+    de: Ra’s al-Chaima
+    el: Ρας αλ-Καϊμά
+    es: Ras al-Jaima
+    et: Ra’s al-Khaymah’ emiraat
+    eu: Ras al-Khaima
+    fa: رأس‌الخیمه
+    fi: Ra’s al-Khaima
+    fr: Ras el Khaïmah
+    gu: રાસ અલ-ખૈમાહ
+    he: ראס אל-ח׳ימה
+    hi: रस अल खैमा
+    hr: Ras al-Khaimah
+    hu: Rász el-Haima
+    hy: Ռաս-ալ-Խայմայի էմիրություն
+    id: Ras al-Khaimah
+    it: Ras al-Khaima
+    ja: ラアス・アル＝ハイマ
+    kn: ರಾಸ್ ಅಲ್ ಖೈಮಾ
+    ko: 라스알카이마 토후국
+    lt: Ras al Chaima
+    lv: Rāselhaima
+    ml: റാസ് അൽ ഖൈമ
+    mr: रास अल-खैमाह
+    ms: Ras al-Khaimah
+    nb: Emiratet Ras al-Khaimah
+    nl: Ras al-Khaimah
+    pl: Ras al-Chajma
+    pt: Ras al-Khaimah
+    ro: Ras Al-Khaimah
+    ru: Рас-эль-Хайма
+    si: රස් අල් කයිමාහ්
+    sk: Rás al-Chajmá
+    sr: Рас ел Хајма
+    sv: Emiratet Ras al-Khaimah
+    sw: Ras al-Khaimah
+    ta: ரஃஸ் அல்-கைமா
+    te: రాస్ అల్-ఖైమా
+    th: รัฐราสอัลไคมาห์
+    tk: Ras al-Haýma
+    tr: Resü’l-Hayme
+    uk: Рас-ель-Хайма
+    ur: راس الخیمہ
+    vi: Ras al-Khaimah
+    ceb: Ras al-Khaimah
+    sr_Latn: Ras el Hajma
+    zh: 拉斯海玛
+    yue_Hans: 拉斯海玛酋长国
+    sq: Ras el-Haime
+    ccp: "\U00011122\U0001110C\U00011134 \U00011103\U00011123\U00011134-\U00011108\U0001112D\U0001111F\U00011126\U00011134"
+    pa: ਰਾਸ ਅਲ-ਖ਼ੈਮਾ
+    yue: 拉斯海瑪酋長國
+    yo: Ras al Khaimah
+    mk: Рас ел-Хајма
+    'no': Emiratet Ras al-Khaimah
+    yo_BJ: Ras al Khaimah
+    bs: Ras al-Khaimah (emirat)
+    gl: Ras al-Jaimah
+    is: Ras al-Kaíma
+  comments:
+  type: emirate
+SH:
+  name: Ash Shariqah [Sharjah]
+  code: SH
+  unofficial_names:
+  - إمارة الشارقةّ
+  - Ash Shariqah
+  geo:
+    latitude: 25.3575
+    longitude: 55.390833
+    min_latitude: 25.2344614
+    min_longitude: 55.34973
+    max_latitude: 25.3988264
+    max_longitude: 55.6726397
+  translations:
+    en: Sharjah
+    ar: إمارة الشارقة
+    az: Şarja
+    be: Эмірат Шарджа
+    bg: Шарджа
+    bn: শারজাহ আমিরাত
+    ca: Xarjah
+    cs: Šardžá
+    da: Sharjah
+    de: Schardscha
+    el: Σαρτζάχ Εμιράτε οφ Σαρτζάχ
+    es: Sharjah
+    et: Ash-Shāriqah’ emiraat
+    eu: Xarja
+    fa: شارجه
+    fi: Šardža
+    fr: Charjah
+    gl: Emirato de Sharjah
+    gu: શારજાહ અમીરાત
+    he: שארג׳ה
+    hi: शारजाह
+    hr: Sharjah (emirat)
+    hy: Շարժայի Էմիրություն
+    id: Sharjah
+    it: Sharja
+    ja: シャールジャ
+    ka: შარჯის საამირო
+    kn: ಶಾರ್ಜ
+    ko: 샤르자
+    lt: Šardža
+    ml: ഷാർജ
+    mr: शारजा अमीरात
+    ms: Sharjah
+    nb: Emiratet Sharjah
+    nl: Sharjah
+    pl: Szardża
+    pt: Sharjah
+    ro: Sharjah
+    ru: Шарджа
+    si: සාජා එමිරේට්
+    sk: Šardžá
+    sr: Шарџа
+    sv: Emiratet Sharjah
+    sw: Sharjah
+    ta: சார்ஜா
+    te: షార్జా ఎమిరేట్
+    th: รัฐชาร์จาห์
+    tm: Şarja
+    tr: Sharjah Emirliği
+    uk: Шарджа
+    ur: شارجہ
+    vi: Sharjah
+    lv: Šārdžas emirāts
+    ceb: Ash Shāriqah
+    sr_Latn: Šardža
+    zh: 夏尔迦
+    yue_Hans: 沙迦酋长国
+    ccp: "\U00011125\U00011122\U00011134\U0001110E\U00011126\U00011134"
+    pa: ਸ਼ਾਰਜਾ
+    yue: 沙迦酋長國
+    yo: Sharjah
+    'no': Emiratet Sharjah
+    yo_BJ: Sharjah
+    bs: Sharjah (emirat)
+  comments:
+  type: emirate
+UQ:
+  name: Umm al Qaywayn
+  code: UQ
+  unofficial_names:
+  - أمّ القيوين
+  - Umm al-Quwain
+  geo:
+    latitude: 25.5204824
+    longitude: 55.7133909
+    min_latitude: 25.323967
+    min_longitude: 55.5175201
+    max_latitude: 25.6954771
+    max_longitude: 55.953869
+  translations:
+    en: Umm al-Quwain
+    ar: أم القيوين
+    be: Эмірат Ум-эль-Кайвайн
+    bg: Ум ал-Куейн
+    bn: উম্মুল কুয়াইন
+    ca: Umm al-Qaiwain
+    cs: Umm al-Kuvajn
+    da: Umm Al Quwain
+    de: Umm al-Qaiwain
+    el: Ούμ Αλ Κουβέιν
+    es: Umm al-Qaywayn
+    et: Umm al-Qaywayni emiraat
+    eu: Umm al-Qaiwain
+    fa: ام‌القوین
+    fi: Umm al-Qaiwain
+    fr: Oumm al Qaïwaïn
+    gl: Emirato de Umm al Qaywayn
+    gu: ઉમ અલ-કુવૈન
+    he: אום אל-קיוין
+    hi: उम अल क्वैन
+    hr: Umm al-Quwain
+    hy: Ումմ ալ-Քուվեյնի Էմիրություն
+    id: Umm al-Qaiwain
+    it: Umm al-Qaywayn
+    ja: ウンム・アル＝カイワイン
+    ka: უმ-ელ-კაივაინის საამირო
+    kn: ಉಮ್ ಅಲ್ ಕ್ವೈನ್
+    ko: 움알쿠와인 토후국
+    lt: Um al Kuvainas
+    ml: ഉം അൽ കുവൈൻ
+    mr: उम अल-कुवैन
+    ms: Umm al-Qaiwain
+    nb: Emiratet Umm al-Qaiwain
+    nl: Umm al-Qaiwain
+    pl: Umm al-Kajwajn
+    pt: Umm al Qaywayn
+    ro: Umm Al-Qaiwain
+    ru: Умм-эль-Кайвайн
+    si: උම් අල්-ක්වේන්
+    sk: Umm al-Kuvajn
+    sr: Ум ел Кајвејн
+    sv: Emiratet Umm al-Qaywayn
+    sw: Umm al-Quwain
+    ta: உம் அல்-குவைன்
+    te: ఉమ్ అల్-క్వివెయిన్
+    th: รัฐอุมม์อัลไกไวน์
+    tk: Umm al-Kuweýn
+    tr: Ummül-Kayveyn Emirliği
+    uk: Умм-ель-Кувейн
+    ur: ام القوین
+    vi: Umm al-Quwain
+    lv: Ummelkaivainas emirāts
+    ceb: Umm al Qaywayn
+    sr_Latn: Um el Kajvejn
+    zh: 欧姆古温
+    yue_Hans: 欧姆古温酋长国
+    ccp: "\U00011105\U0001112A\U0001111F\U00011134 \U00011103\U00011123\U00011134-\U00011107\U0001112A\U00011120\U00011103\U00011128\U0001111A\U00011134"
+    pa: ਉਮ ਅਲ-ਕਿਵੇਨ
+    yue: 歐姆古溫酋長國
+    yo: Um Al Quwain
+    'no': Emiratet Umm al-Qaiwain
+    yo_BJ: Um Al Quwain
+    bs: Umm al-Quwain (emirat)
+  comments:
+  type: emirate

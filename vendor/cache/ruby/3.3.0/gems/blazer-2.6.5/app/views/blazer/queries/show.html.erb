@@ -1,0 +1,80 @@
+<% blazer_title @query.name %>
+
+<% if @success %>
+  <% run_data = {statement: @query.statement, query_id: @query.id, data_source: @query.data_source, variables: variable_params(@query)} %>
+  <% run_data.merge!(forecast: "t") if params[:forecast] %>
+  <% run_data.merge!(cohort_period: params[:cohort_period]) if params[:cohort_period] %>
+  <% run_data.transform_keys!(&:to_s) if Rails::VERSION::MAJOR < 6 %>
+<% end %>
+
+<div class="topbar">
+  <div class="container">
+    <div class="row" style="padding-top: 13px;">
+      <div class="col-sm-9">
+        <%= render partial: "blazer/nav" %>
+        <h3 style="line-height: 34px; display: inline; margin-left: 5px;">
+          <%= @query.name %>
+        </h3>
+      </div>
+      <div class="col-sm-3 text-right">
+        <%= link_to "Edit", edit_query_path(@query, params: variable_params(@query)), class: "btn btn-default", disabled: !@query.editable?(blazer_user) %>
+        <%= link_to "Fork", new_query_path(params: variable_params(@query).merge(fork_query_id: @query.id, data_source: @query.data_source, name: @query.name)), class: "btn btn-info" %>
+
+        <% if !@error && @success %>
+          <%= button_to "Download", run_queries_path(format: "csv"), params: run_data, class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-bottom: 60px;"></div>
+
+<% if @sql_errors.any? %>
+  <div class="alert alert-danger">
+    <ul>
+      <% @sql_errors.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<% if @query.description.present? %>
+  <p><%= @query.description %></p>
+<% end %>
+
+<%= render partial: "blazer/variables", locals: {action: query_path(@query)} %>
+
+<pre id="code"><code><%= @statement.display_statement %></code></pre>
+
+<% if @success %>
+  <div id="results">
+    <p class="text-muted">Loading...</p>
+  </div>
+
+  <script>
+    function showRun(data) {
+      $("#results").html(data)
+      $("#results table").stupidtable(stupidtableCustomSettings).stickyTableHeaders({fixedOffset: 60})
+    }
+
+    function showError(message) {
+      $("#results").addClass("query-error").html(message)
+    }
+
+    <%= blazer_js_var "data", run_data %>
+
+    runQuery(data, showRun, showError)
+  </script>
+<% end %>
+
+<% unless %w(mongodb).include?(Blazer.data_sources[@query.data_source].adapter) %>
+  <script>
+    // do not highlight really long queries
+    // this can lead to performance issues
+    if ($("code").text().length < 10000) {
+      hljs.highlightBlock(document.getElementById("code"));
+    }
+  </script>
+<% end %>

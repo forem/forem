@@ -1,0 +1,20 @@
+---
+
+name: Pull Request
+
+on:
+  pull_request:
+    # Run on new/reopened/renamed pull requests so that autolabeling happens
+    types: [opened, reopened, edited]
+
+jobs:
+  label:
+    name: "Label"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        with:
+          # Don't run the releaser from the PR, because that will create a draft PR containing the current PR even though it's not merged.
+          disable-releaser: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

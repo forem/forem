@@ -1,0 +1,48 @@
+---
+SR:
+  alpha2: SR
+  alpha3: SUR
+  continent: South America
+  country_code: '597'
+  currency_code: SRD
+  distance_unit: KM
+  gec: NS
+  geo:
+    latitude: 3.919305
+    longitude: -56.027783
+    max_latitude: 6.1295999
+    max_longitude: -53.94289999999999
+    min_latitude: 1.837306
+    min_longitude: -58.07050590000001
+    bounds:
+      northeast:
+        lat: 6.1295999
+        lng: -53.94289999999999
+      southwest:
+        lat: 1.837306
+        lng: -58.07050590000001
+  international_prefix: '00'
+  ioc: SUR
+  iso_long_name: The Republic of Suriname
+  iso_short_name: Suriname
+  languages_official:
+  - nl
+  languages_spoken:
+  - nl
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  national_prefix: '0'
+  nationality: Surinamer
+  number: '740'
+  postal_code: false
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: SR
+  unofficial_names:
+  - Suriname
+  - Surinam
+  - スリナム
+  world_region: AMER

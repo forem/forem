@@ -1,0 +1,16 @@
+module Datadog
+  module CI
+    module Configuration
+      module Settings
+        extend Datadog::Core::Configuration::Options::ClassMethods
+        include Datadog::Core::Configuration::Options::InstanceMethods
+
+        extend Datadog::Core::Configuration::Base::ClassMethods
+
+        def self.extended: (untyped base) -> untyped
+
+        def self.add_settings!: (untyped base) -> untyped
+      end
+    end
+  end
+end

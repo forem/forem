@@ -1,0 +1,4 @@
+function hello(name:String):void
+{
+	trace("hello " + name);
+}

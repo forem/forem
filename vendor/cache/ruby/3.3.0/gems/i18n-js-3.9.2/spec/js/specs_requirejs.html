@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Jasmine Spec Runner</title>
+        <link rel="stylesheet" href="jasmine/jasmine.css" type="text/css">
+    </head>
+
+    <body>
+        <!-- load jasmine -->
+        <script type="text/javascript" src="jasmine/jasmine.js"></script>
+        <script type="text/javascript" src="jasmine/jasmine-html.js"></script>
+
+        <!-- load your javascript files -->
+        <script type="text/javascript" src="require.js"></script>
+
+        <script type="text/javascript">
+        // Prepare requirejs shims to wrap each test so that it will work with the
+        // require syntax loading
+        var testScripts = [
+                "./translate.spec.js",
+                "./currency.spec.js",
+                "./current_locale.spec.js",
+                "./dates.spec.js",
+                "./defaults.spec.js",
+                "./interpolation.spec.js",
+                "./localization.spec.js",
+                "./numbers.spec.js",
+                "./placeholder.spec.js",
+                "./pluralization.spec.js",
+                "./prepare_options.spec.js",
+                "./translate.spec.js",
+                "./utility_functions.spec.js",
+                "./extend.spec.js"
+                ];
+        var shims = {};
+        for(var i = 0; i < testScripts.length; i++) {
+                shims[ testScripts[i] ] = {
+                        "deps": ["i18n"]
+                };
+        }
+        require.config(
+            {
+                "baseUrl" : "./",
+                "paths": {
+                    "i18n": "../../app/assets/javascripts/i18n"
+                },
+		/* Since the i18n.js file explicitly names its module 'i18n', but each
+		   spec uses the full path in the require statement, it appears that
+		   loading fails. This map will map the full path to the short form.
+		   */
+		"map": {
+		    "*": {
+		    	"../../app/assets/javascripts/i18n": "i18n"
+		    }
+		},
+                "shim": shims
+            });
+        require((["i18n", './translations']).concat(testScripts),
+                        function(I18n, translationFactory) {
+            // Example for using the translation factory
+            I18n.translations = translationFactory();
+            console.log(I18n.t('hello'));
+
+            // Execute the specs
+            jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+            jasmine.getEnv().execute();
+        });
+        </script>
+
+    </body>
+</html>

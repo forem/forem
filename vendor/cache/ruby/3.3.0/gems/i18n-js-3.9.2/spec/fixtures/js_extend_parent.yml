@@ -1,0 +1,6 @@
+fallbacks: false
+js_extend: false
+
+translations:
+  - file: "tmp/i18n-js/js_extend_parent.js"
+    only: "*.date.formats"

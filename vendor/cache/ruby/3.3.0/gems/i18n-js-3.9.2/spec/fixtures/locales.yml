@@ -1,0 +1,133 @@
+en:
+  number:
+    human:
+      decimal_units:
+        units:
+          million: Million
+    format:
+      separator: "."
+      delimiter: ","
+      precision: 3
+    currency:
+      format:
+        format: "%u%n"
+        unit: "$"
+        separator: "."
+        delimiter: ","
+        precision: 2
+  date:
+    formats:
+      default: "%Y-%m-%d"
+      short: "%b %d"
+      long: "%B %d, %Y"
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    # order: [ :year, :month, :day ]
+  time:
+    formats:
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"
+    am: "am"
+    pm: "pm"
+  admin:
+    show:
+      title: "Show"
+      note: "more details"
+    edit:
+      title: "Edit"
+  foo: "Foo"
+  fallback_test: "Success"
+  null_test: "fallback for null"
+  merge_plurals:
+    one: Apple
+    other: Apples
+  merge_plurals_with_no_overrides:
+    zero: "No Apple"
+    one: Apple
+    other: Apples
+  merge_plurals_with_partial_overrides:
+    one: Cat
+    other: Cats
+
+es:
+  number:
+    human:
+      decimal_units:
+        units:
+          million:
+            one: millón
+            other: millones
+
+ru:
+  merge_plurals_with_no_overrides:
+    one: кот
+    few: кошек
+    many: кошка
+    other: кошек
+
+de:
+  fallback_test: "Erfolg"
+  null_test: ~
+
+fr:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%e %b"
+      long: "%e %B %Y"
+      long_ordinal: "%e %B %Y"
+      only_day: "%e"
+    day_names: [dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]
+    abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
+    month_names: [~, janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre]
+    abbr_month_names: [~, jan., fév., mar., avr., mai, juin, juil., août, sept., oct., nov., déc.]
+    # order: [ :day, :month, :year ]
+  time:
+    formats:
+      default: "%d %B %Y %H:%M"
+      time: "%H:%M"
+      short: "%d %b %H:%M"
+      long: "%A %d %B %Y %H:%M:%S %Z"
+      long_ordinal: "%A %d %B %Y %H:%M:%S %Z"
+      only_second: "%S"
+    am: 'am'
+    pm: 'pm'
+  number:
+    format:
+      precision: 3
+      separator: ','
+      delimiter: ' '
+    currency:
+      format:
+        unit: '€'
+        precision: 2
+        format: '%n %u'
+  admin:
+    show:
+      title: "Visualiser"
+      note: "plus de détails"
+    edit:
+      title: "Editer"
+  merge_plurals:
+    zero: Pomme
+    one: Pomme
+    other: Pommes
+
+en-US:
+  merge_plurals_with_no_overrides:
+    zero:
+    one:
+    other:
+  merge_plurals_with_partial_overrides:
+    one: Cat
+    few:
+    many:
+    other:
+
+ja:
+  admin:
+    show:
+      title: "Ignore me"

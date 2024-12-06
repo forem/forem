@@ -1,0 +1,590 @@
+---
+BR:
+  name: Brestskaya voblasts' (be) Brestskaya oblast' (ru)
+  code: BR
+  unofficial_names:
+  - Bierascie
+  - Brest-Litovsk
+  - Brestskaja Oblastʿ
+  - Brestskaja Voblastsʿ
+  - Brestskaya Oblastʿ
+  - Brestskaya Voblastsʿ
+  - Brisk
+  - Brześć nad Bugiem
+  - Brześć-Litewski
+  geo:
+    latitude: 52.5296641
+    longitude: 25.460648
+    min_latitude: 51.4980539
+    min_longitude: 23.1783377
+    max_latitude: 53.4118989
+    max_longitude: 27.5825019
+  translations:
+    en: Brest
+    ar: بريست أوبلاست
+    az: Brest vilayəti
+    be: Брэсцкая вобласць
+    bg: Брестка област
+    bn: ব্রেস্ট অঞ্চল
+    ca: Província de Brest
+    cs: Brestská oblast
+    da: Brest oblast
+    de: Breszkaja Woblasz
+    el: Μπρεστ
+    es: Provincia de Brest
+    et: Bresti oblast
+    eu: Bresteko oblasta
+    fi: Brestin alue
+    fr: Voblast de Brest
+    gl: Rexión de Bierascie
+    gu: બ્રેસ્ટ પ્રદેશ
+    he: ברסט
+    hi: ब्रेस्ट प्रदेश
+    hr: Brestska oblast
+    hu: Breszti terület
+    hy: Բրեստի մարզ
+    id: Provinsi Brest
+    it: Regione di Brėst
+    ja: ブレスト州
+    ka: ბრესტის ოლქი
+    kn: ಬ್ರೆಸ್ಟ್ ಪ್ರದೇಶ
+    ko: 브레스트 주
+    lt: Bresto sritis
+    lv: Brestas apgabals
+    mr: ब्रेस्ट प्रदेश
+    ms: Brest Region
+    nb: Brest
+    nl: Oblast Brest
+    pl: Obwód brzeski
+    pt: Brest
+    ro: Regiunea Brest
+    ru: Брестская область
+    si: බ්‍රෙස්ට් කලාපය
+    sk: Brestská oblasť
+    sr: Брестска област
+    sv: Brests voblast
+    ta: பர்ஸ்ட் பகுதி
+    te: బ్రెస్ట్ ప్రాంతం
+    th: เขคเบรสต์
+    tr: Brest Voblastı
+    uk: Берестейська область
+    ur: بریسٹ علاقہ
+    vi: Khu vực Brest
+    zh: 布列斯特州
+    ceb: Brest Oblast
+    sr_Latn: Brestska oblast
+    fa: منطقه بریست
+    ccp: "\U0001111D\U00011133\U00011122\U0001112C\U00011125\U00011133\U00011111\U00011134"
+    uz: Brest viloyati
+    bs: Brestska oblast
+    'no': Brest
+  comments:
+  type: oblast
+HM:
+  name: Мінск
+  code: HM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Minsk
+    am: ሚንስክ
+    ar: مينسك
+    az: Minsk
+    be: Мінск
+    bg: Минск
+    bn: মিন্‌স্ক
+    ca: Minsk
+    cs: Minsk
+    da: Minsk
+    de: Minsk
+    el: Μινσκ
+    en: Minsk
+    es: Minsk
+    et: Minsk
+    eu: Minsk
+    fa: مینسک
+    fi: Minsk
+    fr: Minsk
+    gl: Minsk
+    gu: મિન્સ્ક
+    he: מינסק
+    hi: मिन्‍स्‍क
+    hr: Minsk
+    hu: Minszk
+    hy: Մինսկ
+    id: Minsk
+    is: Minsk
+    it: Minsk
+    ja: ミンスク
+    ka: მინსკი
+    kn: ಮಿನ್ಸ್ಕ್
+    ko: 민스크
+    lt: Minskas
+    lv: Minska
+    ml: മിൻസ്ക്
+    mn: Минск
+    mr: मिन्‍स्‍क
+    ms: Minsk
+    nb: Minsk
+    ne: मिन्स्क
+    nl: Minsk
+    pl: Mińsk
+    pt: Minsk
+    ro: Minsk
+    ru: Минск
+    si: මින්ස්ක්
+    sk: Minsk
+    sl: Minsk
+    sr: Минск
+    sv: Minsk
+    sw: Minsk
+    ta: மின்ஸ்க்
+    te: మిన్స్క్
+    th: มินสค์
+    tk: Minsk
+    tr: Minsk
+    uk: Мінськ
+    ur: منسک
+    vi: Minsk
+    zh: 明斯克
+    zu: Minsk
+    cy: Minsk
+    ceb: Minsk
+    sr_Latn: Minsk
+    yue_Hans: 明斯克
+    jv: Minsk
+    sq: Minsk
+    ccp: "\U0001111F\U0001111A\U00011134\U00011125\U00011133\U00011107\U00011134"
+    ga: Minsc
+    ky: Минск
+    pa: ਮਿੰਸਕ
+    kk: Минск
+    yue: 明斯克
+    yo: Minsk
+    uz: Minsk
+    bs: Minsk
+    mk: Минск
+    'no': Minsk
+    yo_BJ: Minsk
+    ha: Miniska
+    ha_NE: Miniska
+    ps: مینسک
+  comments:
+  type: city
+HO:
+  name: Homyel'skaya voblasts' (be) Gomel'skaya oblast' (ru)
+  code: HO
+  unofficial_names:
+  - Gomel
+  - Gomelskaja Oblastʿ
+  - Gomelskaya Oblastʿ
+  - Gomelʿ
+  - Homelskaja Voblastsʿ
+  - Homelskaya Voblastsʿ
+  - Homiel
+  - Homyel
+  geo:
+    latitude: 52.1648754
+    longitude: 29.1333251
+    min_latitude: 51.2620722
+    min_longitude: 27.2441409
+    max_latitude: 53.3679551
+    max_longitude: 31.7992701
+  translations:
+    en: Homel
+    ar: غومل أوبلاست
+    az: Qomel vilayəti
+    be: Гомельская вобласць
+    bg: Гомелска област
+    bn: গোমেল অঞ্চল
+    ca: Província de Hòmiel
+    cs: Homelská oblast
+    da: Homel voblast
+    de: Woblast Homel
+    el: Γκόμελ
+    es: Provincia de Gómel
+    et: Homieli oblast
+    eu: Homelgo oblasta
+    fa: منطقه گومل
+    fi: Homelin alue
+    fr: voblast de Homiel
+    gl: Rexión de Homieĺ
+    gu: ગોમેલ પ્રદેશ
+    he: הומל
+    hi: गोमेल क्षेत्र
+    hr: Gomelska oblast
+    hu: Homeli terület
+    hy: Գոմելի մարզ
+    id: Provinsi Homiel
+    it: Regione di Homel’
+    ja: ホメリ州
+    ka: გომელის ოლქი
+    kn: ಗೊಮೆಲ್ ಪ್ರದೇಶ
+    ko: 호멜 주
+    lt: Gomelio sritis
+    lv: Gomeļas apgabals
+    mr: गोमेल प्रदेश
+    ms: Gomel Region
+    nb: Homjel
+    nl: Oblast Homel
+    pl: obwód homelski
+    pt: Voblast de Homiel
+    ro: Regiunea Gomel
+    ru: Гомельская область
+    si: ගොමෙල් කලාපය
+    sk: Homeľská oblasť
+    sr: Гомељска област
+    sv: Homels voblast
+    ta: கோமேல் பகுதி
+    te: గోమెల్ ప్రాంతం
+    th: กอร์เมล
+    tr: Homyel Voblastı
+    uk: Гомельська область
+    ur: گومل علاقہ
+    vi: Khu vực Gomel
+    zh: 戈梅利州
+    ceb: Gomel Oblast
+    sr_Latn: Gomeljska oblast
+    ccp: "\U00011126\U0001112E\U0001111F\U0001112C\U00011123\U00011134"
+    uz: Gomel viloyati
+    bs: Gomelska oblast
+    mk: Гомељска област
+    'no': Homjel
+  comments:
+  type: oblast
+HR:
+  name: Hrodzenskaya voblasts' (be) Grodnenskaya oblast' (ru)
+  code: HR
+  unofficial_names:
+  - Gardinas
+  - Grodnenskaja Oblastʿ
+  - Grodnenskaya Oblastʿ
+  - Grodno
+  - Horadnia
+  - Hrodno
+  - Hrodzenskaja Voblastsʿ
+  - Hrodzenskaya Voblastsʿ
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Hrodna
+    ar: أوبلاست جردونه
+    az: Qrodno vilayəti
+    be: Гродзенская вобласць
+    bg: Гродненска област
+    bn: গ্রোদনো অঞ্চল
+    ca: Província de Hrodna
+    cs: Hrodenská oblast
+    da: Hrodna oblast
+    de: Woblast Hrodna
+    el: Περιφέρεια Γκροντνό
+    es: Provincia de Grodno
+    et: Hrodna oblast
+    eu: Hrodnako oblasta
+    fa: منطقه گرودنو
+    fi: Hrodnan alue
+    fr: Voblast de Hrodna
+    gu: ગ્રોડનો પ્રદેશ
+    he: הורדנה
+    hi: ग्रोद्नो क्षेत्र
+    hr: Grodnenska oblast
+    hu: Hrodnai terület
+    hy: Գրոդնոյի մարզ
+    id: Provinsi Hrodna
+    it: Regione di Hrodna
+    ja: フロドナ州
+    ka: გროდნოს ოლქი
+    kn: ಗ್ರೋಡ್ನೊ ಪ್ರದೇಶ
+    ko: 흐로드나 주
+    lt: Gardino sritis
+    lv: Grodņas apgabals
+    mr: ग्रोडनो प्रदेश
+    ms: Grodno Region
+    nb: Hrodna
+    nl: Oblast Hrodna
+    pl: Obwód grodzieński
+    pt: Hrodna
+    ro: Regiunea Hrodna
+    ru: Гродненская область
+    si: ග්රෝඩ්නෝ කලාපය
+    sk: Hrodnianska oblasť
+    sr: Гродњенска област
+    sv: Hrodnas voblast
+    ta: கரோடனோ பகுதி
+    te: గ్రాడ్నో ప్రాంతం
+    th: กลอดนอร์
+    tr: Hrodna Voblastı
+    uk: Гродненська область
+    ur: گرودنو علاقہ
+    vi: Khu vực Grodno
+    zh: 格羅德諾州
+    ceb: Grodno Oblast
+    sr_Latn: Grodnjenska oblast
+    ccp: "\U00011126\U00011127\U00011122\U00011127\U0001111A\U00011134\U00011113"
+    uz: Grodno viloyati
+    bs: Grodnenska oblast
+    mk: Гродненска област
+    'no': Hrodna
+  comments:
+  type: oblast
+MA:
+  name: Mahilyowskaya voblasts' (be) Mogilevskaya oblast' (ru)
+  code: MA
+  unofficial_names:
+  - Mahiljov
+  - Mahiljowskaja Voblastsʿ
+  - Mahilyov
+  - Mahilyowskaya Voblastsʿ
+  - Mahilëv
+  - Mahilëŭ
+  - Mogilev
+  - Mogiliov
+  - Mogiljovskaja Oblastʿ
+  - Mogilov
+  - Mogilyovskaya Oblast
+  - Mogilëv
+  - Mogilʿov
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Magileu
+    ar: موغيليوف أوبلاست
+    az: Mogilyov vilayəti
+    be: Магілёўская вобласць
+    bg: Могильовска област
+    bn: মুগিলেভ অঞ্চল
+    ca: Província de Mahiliou
+    cs: Mohylevská oblast
+    da: Mahiljow voblast
+    de: Woblast Mahiljou
+    el: Μογκίλεφ
+    es: Provincia de Maguilov
+    et: Mahiloŭ oblast
+    eu: Mahiliouko oblasta
+    fa: منطقه موگیلف
+    fi: Mahiljoun alue
+    fr: voblast de Moguilev
+    gl: Rexión de Mahilioŭ
+    gu: મોગીલેવ પ્રદેશ
+    he: מחוז מוהילב
+    hi: मोगिलेव क्षेत्र
+    hr: Mogilevska oblast
+    hu: Mahiljovi terület
+    hy: Մոգիլյովի մարզ
+    id: Provinsi Mahilyow
+    it: Regione di Mahilëŭ
+    ja: マヒリョウ州
+    ka: მოგილევის ოლქი
+    kn: ಮೋಗಿಲೆವ್ ಪ್ರದೇಶ
+    ko: 마힐료우 주
+    lt: Mogiliavo sritis
+    lv: Mogiļevas apgabals
+    mr: मोगिलेव्ह प्रदेश
+    ms: Mogilev Region
+    nb: Mahiljow
+    ne: मोगिलेभ क्षेत्र
+    nl: Oblast Mahiljow
+    pl: Obwód mohylewski
+    pt: Voblast de Mahilou
+    ro: Regiunea Moghilău
+    ru: Могилёвская область
+    si: මොගිලෙව් කලාපය
+    sk: Mahiľovská oblasť
+    sr: Могиљовска област
+    sv: Mahiljoŭs voblast
+    ta: மோகிளேவ் பகுதி
+    te: మోగిలేవ్ ప్రాంతం
+    th: จังหวัดโบลิวาร์
+    tr: Mahilyov Voblastı
+    uk: Могильовська область
+    ur: موگیلیف علاقہ
+    vi: Khu vực Mogilev
+    zh: 莫吉廖夫州
+    ceb: Mogilyov Oblast
+    sr_Latn: Mogiljovska oblast
+    ccp: "\U0001111F\U00011133\U00011120\U00011109\U00011128\U00011123\U00011128\U00011105\U0001112A"
+    ky: Могилёв областы
+    kk: Могилев облысы
+    uz: Mogilyov viloyati
+    bs: Mogiljovska oblast
+    'no': Mahiljow
+  comments:
+  type: oblast
+MI:
+  name: Minskaya voblasts' (be) Minskaya oblast' (ru)
+  code: MI
+  unofficial_names:
+  - Minskaja Oblastʿ
+  - Minskaya Oblastʿ
+  - Minskaya Voblastsʿ
+  geo:
+    latitude: 53.4718561
+    longitude: 27.6969909
+    min_latitude: 52.37261179999999
+    min_longitude: 26.06101
+    max_latitude: 55.017477
+    max_longitude: 29.487841
+  translations:
+    en: Minsk Region
+    ar: إقليم مينسك
+    az: Minsk vilayəti
+    be: Мінская вобласць
+    bg: Минска област
+    bn: মিন্সক অঞ্চল
+    ca: Província de Minsk
+    cs: Minská oblast
+    da: Minsk voblast
+    de: Woblast Minsk
+    el: Περιφέρεια Μινσκ
+    es: Provincia de Minsk
+    et: Minski oblast
+    eu: Minskeko oblasta
+    fa: منطقه مینسک
+    fi: Minskin alue
+    fr: Voblast de Minsk
+    gl: Rexión de Minsk
+    gu: મિન્સ્ક પ્રદેશ
+    he: מינסק²
+    hi: मिन्स्क क्षेत्र
+    hr: Minska oblast
+    hu: Minszki terület
+    hy: Մինսկի մարզ
+    id: Provinsi Minsk
+    it: Regione di Minsk
+    ja: ミンスク州
+    ka: მინსკის ოლქი
+    kn: ಮಿನ್ಸ್ಕ್ ಪ್ರದೇಶ
+    ko: 민스크 주
+    lt: Minsko sritis
+    lv: Minskas apgabals
+    mr: मिन्स्क प्रदेश
+    ms: Minsk Region
+    nb: Minsk²
+    nl: Oblast Minsk
+    pl: Obwód miński
+    pt: Voblast de Minsk
+    ro: Regiunea Minsk
+    ru: Минская область
+    si: මින්ස්ක් කලාපය
+    sk: Minská oblasť
+    sl: regija Minsk
+    sr: Минска област
+    sv: Minsks voblast
+    ta: மின்ஸ்க் பகுதி
+    te: మిన్సెక్ ప్రాంతం
+    th: มินสก์
+    tr: Minsk Voblastı
+    uk: Мінська область
+    ur: منسک علاقہ
+    vi: Khu vực Minsk
+    zh: 明斯克州
+    cy: Minsk Region
+    ceb: Minsk Oblast
+    sr_Latn: Minska oblast
+    ccp: "\U0001111F\U00011128\U0001111A\U00011134\U00011125\U00011133\U00011107\U00011134
+      \U00011122\U0001112C\U0001110E\U00011128\U00011120\U00011127\U0001111A\U00011134"
+    uz: Minsk viloyati
+    bs: Minska oblast
+    mk: Минска област
+    'no': Minsk²
+    ga: Réigiún Mhionsc
+  comments:
+  type: oblast
+VI:
+  name: Vitsyebskaya voblasts' (be) Vitebskaya oblast' (ru)
+  code: VI
+  unofficial_names:
+  - Vicebskaja Voblastsʿ
+  - Vicebskaya Voblastsʿ
+  - Viciebsk
+  - Vicjebsk
+  - Vitebsk
+  - Vitebskaja Oblastʿ
+  - Vitebskaya Oblastʿ
+  - Vitsyebsk
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Vitebsk
+    ar: فيتسبك أوبلاست
+    az: Vitebsk vilayəti
+    be: Віцебская вобласць
+    bg: Витебска област
+    bn: ভিটেবস্ক অঞ্চল
+    ca: Província de Vítsiebsk
+    cs: Vitebská oblast
+    da: Vitebsk voblast
+    de: Woblast Wizebsk
+    el: Περιφέρεια Βιτσέμπσκ
+    es: Provincia de Vítebsk
+    et: Viciebski oblast
+    eu: Vitsebskeko oblasta
+    fa: منطقه ویتبسک
+    fi: Vitsebskin alue
+    fr: Voblast de Vitebsk
+    gu: વિટેબ્સ્ક પ્રદેશ
+    he: ויטבסק
+    hi: वाईटेब्स्क प्रांत
+    hr: Vitebska oblast
+    hu: Vicebszki terület
+    hy: Վիտեբսկի մարզ
+    id: Provinsi Vitsebsk
+    it: Regione di Vicebsk
+    ja: ヴィーツェプスク州
+    ka: ვიტებსკის ოლქი
+    kn: ವೀಟೆಬ್ಸ್ಕ್ ಪ್ರದೇಶ
+    ko: 비쳅스크 주
+    lt: Vitebsko sritis
+    lv: Vitebskas apgabals
+    mr: विटेब्स्क प्रदेश
+    ms: Daerah Vitebsk
+    nb: Vitebsk
+    nl: Oblast Vitebsk
+    pl: obwód witebski
+    pt: Voblast de Viciebsk
+    ro: Regiunea Vițebsk
+    ru: Витебская область
+    si: විටෙබ්ස්ක් කලාපය
+    sk: Vicebská oblasť
+    sr: Витепска област
+    sv: Vitsebsks voblast
+    ta: விடேபஸ்க் பகுதி
+    te: విటెస్క్ ప్రాంతం
+    th: เขตไวเทบสก์
+    tr: Vitsebsk Voblastı
+    uk: Вітебська область
+    ur: ویٹبسک علاقہ
+    vi: Khu vực Vitebsk
+    zh: 维捷布斯克州
+    ceb: Vitebsk Oblast
+    sr_Latn: Vitepska oblast
+    ccp: "\U0001111E\U0001112D\U00011111\U0001112C\U0001111B\U00011134\U00011125\U00011133\U00011107\U00011134"
+    ky: Витебск облусу
+    uz: Vitebsk viloyati
+    bs: Vitebska oblast
+    mk: Витепска област
+    'no': Vitebsk
+    sl: Vitebska oblast
+  comments:
+  type: oblast

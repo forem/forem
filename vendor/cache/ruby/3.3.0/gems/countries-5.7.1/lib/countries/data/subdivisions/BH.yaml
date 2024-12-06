@@ -1,0 +1,211 @@
+---
+'13':
+  name: Al Manamah (Al ‘Asimah)
+  code: '13'
+  unofficial_names:
+  - Manāmah
+  - al-Manāmah
+  - Manama
+  - Manama
+  - Manama
+  geo:
+    latitude: 26.2285161
+    longitude: 50.5860497
+    min_latitude: 26.1945071
+    min_longitude: 50.51370679999999
+    max_latitude: 26.247324
+    max_longitude: 50.6259022
+  translations:
+    en: Capital
+    ar: محافظة العاصمة
+    bg: Столична провинция
+    es: Capital
+    fa: استان عاصمه
+    fr: Gouvernorat de la capitale
+    hu: Főváros kormányzóság
+    id: Kegubernuran Ibu Kota
+    it: Governatorato della Capitale
+    ja: 首都県
+    ko: 수도 주
+    lt: Sostinės muchafaza
+    nb: Hovedstadsguvernementet
+    nl: Hoofdstad
+    pl: Muhafazat al-Asima
+    ps: محافظه پلازمېنه(بحرين)
+    pt: Província da Capital
+    ru: Столичная мухафаза
+    sv: Capital Governorate
+    uk: Столична мухафаза
+    ur: محافظہ دارالحکومت، بحرین
+    zh: 首都省
+    ceb: Capital Governorate
+    ccp: "\U00011107\U00011133\U00011120\U0001111B\U00011128\U00011111\U00011123\U00011134"
+    eu: Hiriburuaren eskualdea
+    de: Hauptstadt-Gouvernement
+    ca: Governació de la Capital
+    'no': Hovedstadsguvernementet
+    el: Κυβερνείο της Πρωτεύουσας
+    he: מחוז הבירה
+    ta: தலைநகர ஆளுநரகம்
+    tr: Başkent (il, Bahreyn)
+  comments:
+  type: governorate
+'14':
+  name: Al Janubiyah
+  code: '14'
+  unofficial_names:
+  - Eastern
+  - Hawa
+  - Juzur H̨awār
+  - Southern
+  - ash Sharqiyah
+  - aš-Šarqīyah
+  geo:
+    latitude: 25.9381018
+    longitude: 50.5756887
+    min_latitude: 25.5798401
+    min_longitude: 50.4545967
+    max_latitude: 26.138158
+    max_longitude: 50.8223101
+  translations:
+    en: Southern
+    ar: جنوبية
+    bg: Южна провинция
+    es: Sur
+    fa: جنوبیه
+    fr: Gouvernorat méridional
+    hu: Déli kormányzóság
+    id: Kegubernuran Selatan
+    it: Governatorato Meridionale
+    ja: 南部県
+    ko: 남부 주
+    lt: Pietų muchafaza
+    nb: Sørlige guvernement
+    nl: Zuid
+    pl: Al-Muhafazat al-Dżanubijja
+    ps: محافظه جنوبيه
+    pt: Província do Sul
+    ru: Южная мухафаза
+    sv: Southern Governorate
+    tr: Güney Valiliği
+    ur: محافظہ جنوبیہ
+    ceb: Southern Governorate
+    zh: 南方省
+    ccp: "\U00011125\U00011105\U0001112A\U00011118\U00011122\U00011133\U0001111A\U00011134"
+    hy: Հարավային մուհաֆազա
+    eu: Hegoaldeko eskualdea
+    ca: Governació del Sud
+    'no': Sørlige guvernement
+    az: Cənub qubernatorluğu
+    da: Sydlige Guvernement
+    de: Südliches Gouvernement
+    he: מחוז הדרום
+    ta: தெற்கு ஆளுநரகம்
+  comments:
+  type: governorate
+'15':
+  name: Al Muharraq
+  code: '15'
+  unofficial_names: Al Muharraq
+  geo:
+    latitude: 26.266941
+    longitude: 50.63839
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Muharraq
+    ar: محافظة المحرق
+    bg: Мухарак
+    bn: মুহাররাক গভর্নোরেট
+    ca: Governació d’al-Muharraq
+    da: Muharraq Governorate
+    de: Gouvernement Muharraq
+    el: Μουχαράκ
+    es: Muharraq
+    fa: استان محرق
+    fi: Muharraqn kuvernoraatti
+    fr: Gouvernorat de Muharraq
+    gu: મુહારક ગવર્નોરેટ
+    hi: मुहरक गवर्नरेट
+    hu: Muharrak kormányzóság
+    id: Kegubernuran Al Muharraq
+    it: Governatorato di Muharraq
+    ja: ムハッラク県
+    kn: ಮುಹರಾಕ್ ಗವರ್ನೇಟ್
+    ko: 무하라크 주
+    lt: Muharako muchafaza
+    mr: मुहरक गव्हर्नोरेट
+    ms: Pentadbiran Al Muharraq
+    nb: Muharraq guvernement
+    nl: Muharraq Governorate
+    pl: Muhafazat al-Muharrak
+    ps: محافظه محرق
+    pt: Província de Muharraq
+    ru: Мухаррак
+    si: මුහරක් පළාත
+    sv: Muharraq Governorate
+    ta: முஹர்ரக் கோவெர்னோரே
+    te: ముహార్రక్ గవర్నరేట్
+    th: เขตมุฮัรร็อก
+    tr: Muharraq Yönetimi
+    ur: محافظہ محرق
+    vi: Tỉnh Muharraq
+    lv: Muharrakas muhāfaza
+    ceb: Muharraq Governorate
+    zh: 穆哈拉格省
+    ccp: "\U0001111F\U0001112A\U00011126\U00011122\U00011107\U00011134"
+    eu: Muharraq eskualdea
+    uk: Муніципалітет Мухаррак
+    'no': Muharraq guvernement
+  comments:
+  type: governorate
+'17':
+  name: Ash Shamaliyah
+  code: '17'
+  unofficial_names:
+  - Northern
+  - al-Mintaqa ash Shamaliyah
+  - ash Shamaliyah
+  geo:
+    latitude: 26.1551914
+    longitude: 50.4825173
+    min_latitude: 26.04768
+    min_longitude: 50.3788254
+    max_latitude: 26.235592
+    max_longitude: 50.5664624
+  translations:
+    en: Northern
+    ar: شمالية
+    bg: Северна провинция
+    es: Norte
+    fa: شمالیه
+    fr: Gouvernorat septentrional
+    hu: Északi kormányzóság
+    id: Kegubernuran Utara
+    it: Governatorato Settentrionale
+    ja: 北部県 (バーレーン)
+    ko: 북부 주
+    lt: Šiaurės muchafaza
+    nb: Nordlige guvernement
+    nl: Noord
+    pl: Al-Muhafazat asz-Szimalijja
+    ps: محافظه شماليه
+    pt: Província do Norte
+    ru: Северная мухафаза
+    sv: Northern Governorate
+    tr: Kuzey Valiliği
+    ur: محافظہ شمالیہ
+    ceb: Northern Governorate
+    zh: 北方省
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011118\U00011122\U00011133\U0001111A\U00011134"
+    eu: Iparraldeko eskualdea
+    ca: Governació del Nord
+    'no': Nordlige guvernement
+    de: Nördliches Gouvernement
+    el: Βόρειο Κυβερνείο
+    he: מחוז הצפון
+    ta: வடக்கு ஆளுநரகம்
+  comments:
+  type: governorate

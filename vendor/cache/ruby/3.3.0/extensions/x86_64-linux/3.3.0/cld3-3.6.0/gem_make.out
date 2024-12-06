@@ -1,0 +1,42 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cld3-3.6.0/ext/cld3
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cld3-3.6.0/ext/cld3
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-xj5yy3 sitelibdir\=./.gem.20241205-149352-xj5yy3 clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cld3-3.6.0/ext/cld3
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-xj5yy3 sitelibdir\=./.gem.20241205-149352-xj5yy3
+compiling base.cc
+compiling embedding_feature_extractor.cc
+compiling embedding_network.cc
+compiling feature_extractor.cc
+compiling feature_types.cc
+compiling fixunicodevalue.cc
+compiling fml_parser.cc
+compiling generated_entities.cc
+compiling generated_ulscript.cc
+compiling getonescriptspan.cc
+compiling lang_id_nn_params.cc
+compiling language_identifier_features.cc
+compiling nnet_language_identifier.cc
+compiling nnet_language_identifier_c.cc
+compiling offsetmap.cc
+compiling registry.cc
+compiling relevant_script_feature.cc
+compiling sentence_features.cc
+compiling task_context.cc
+compiling task_context_params.cc
+compiling text_processing.cc
+compiling unicodetext.cc
+compiling utf8statetable.cc
+compiling utils.cc
+compiling workspace.cc
+linking shared-object cld3_ext.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cld3-3.6.0/ext/cld3
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-xj5yy3 sitelibdir\=./.gem.20241205-149352-xj5yy3 install
+/usr/bin/install -c -m 0755 cld3_ext.so ./.gem.20241205-149352-xj5yy3
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/cld3-3.6.0/ext/cld3
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-xj5yy3 sitelibdir\=./.gem.20241205-149352-xj5yy3 clean

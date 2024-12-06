@@ -1,0 +1,922 @@
+---
+BG:
+  name: Bong
+  code: BG
+  unofficial_names: Bong
+  geo:
+    latitude: 6.829501899999999
+    longitude: -9.367308399999999
+    min_latitude: 6.397581
+    min_longitude: -10.4769088
+    max_latitude: 7.430014999999999
+    max_longitude: -9.094152
+  translations:
+    en: Bong
+    ar: مقاطعة بونغ
+    be: Бонг
+    bg: Бонг
+    bn: বং কাউন্টি
+    ca: Bong
+    da: Bong County
+    de: Bong County
+    el: Μπονγκ
+    es: Bong
+    eu: Bong
+    fi: Bong
+    fr: Comté de Bong
+    gu: બોંગ કાઉન્ટી
+    hi: बोंग काउंटी
+    hy: Բոնգ երկրամաս
+    id: Bong County
+    it: contea di Bong
+    ja: ボン郡
+    kn: ಬೊಂಗ್ ಕೌಂಟಿ
+    ko: 봉 주
+    lt: Bongo apskritis
+    mr: बोंग काउंटी
+    ms: Bong County
+    nb: Bong
+    nl: Bong
+    pl: Hrabstwo Bong
+    pt: Bong
+    ru: Бонг
+    si: බොන්ග් ප්‍රාන්තය
+    sv: Bong County
+    ta: போங் கவுண்டி
+    te: బాంగ్ కౌంటీ
+    th: เทศมณฑลบอง
+    tr: Bong County
+    uk: Бонг
+    ur: بونگ کاؤنٹی
+    vi: Hạt Bong
+    zh: 邦县
+    lv: Bongas grāfiste
+    ceb: Bong County
+    fa: شهرستان بونگ
+    ccp: "\U0001111D\U00011127\U00011101"
+    ka: ბონგის საგრაფო
+    'no': Bong
+    cy: Sir Bong
+    uz: Bong okrugi
+  comments:
+  type: county
+BM:
+  name: Bomi
+  code: BM
+  unofficial_names: Bomi
+  geo:
+    latitude: 6.7562926
+    longitude: -10.8451467
+    min_latitude: 6.479747
+    min_longitude: -11.0814981
+    max_latitude: 6.970269
+    max_longitude: -10.4870661
+  translations:
+    en: Bomi
+    ar: مقاطعة بومي
+    be: Бомі
+    bg: Боми
+    bn: বমি কাউন্টি
+    ca: Bomi
+    da: Bomi
+    de: Bomi County
+    el: Μπόμι
+    es: Bomi
+    et: Bomi maakond
+    eu: Bomi
+    fi: Bomi
+    fr: Comté de Bomi
+    gl: Condado de Bomi
+    gu: બોમી કાઉન્ટી
+    hi: बोमी काउंटी
+    hy: Բոմի երկրամաս
+    id: Bomi County
+    it: contea di Bomi
+    ja: ボミ郡
+    kn: ಬೊಮಿ ಕೌಂಟಿಯು
+    ko: 보미 주
+    lt: Bomi apskritis
+    lv: Bomi grāfiste
+    mr: बोमी काउंटी
+    ms: Bomi County
+    nb: Bomi
+    nl: Bomi
+    pl: Hrabstwo Bomi
+    pt: Bomi
+    ru: Боми
+    si: බෝමි ප්‍රාන්තය
+    sv: Bomi County
+    ta: போமி கவுண்டி
+    te: బోమి కౌంటీ
+    th: เทศมณฑลโบมี
+    tr: Bomi County
+    uk: Бомі
+    ur: بومی کاؤنٹی
+    vi: Hạt Bomi
+    ceb: Bomi County
+    zh: 伯米县
+    fa: شهرستان بومی
+    ccp: "\U0001111D\U0001112E\U0001111F\U00011128"
+    ka: ბომის საგრაფო
+    'no': Bomi
+    cy: Sir Bomi
+    uz: Bomi okrugi
+  comments:
+  type: county
+CM:
+  name: Grand Cape Mount
+  code: CM
+  unofficial_names: Grand Cape Mount
+  geo:
+    latitude: 7.0467758
+    longitude: -11.0711758
+    min_latitude: 6.577183
+    min_longitude: -11.486138
+    max_latitude: 7.527846999999999
+    max_longitude: -10.5165701
+  translations:
+    en: Grand Cape Mount
+    ar: مقاطعة غراند كيب ماونت
+    be: Гранд-Кейп-Маўнт
+    bg: Гранд Кейп Маунт
+    bn: গ্র্যান্ড কেপ মাউন্ট কাউন্টি
+    ca: Grand Cape Mount
+    da: Grand Cape Mount County
+    de: Grand Cape Mount County
+    el: Γκραντ Κέιπ Μάουντ
+    es: Grand Cape Mount
+    eu: Grand Cape Mount
+    fi: Grand Cape Mountin kunta
+    fr: Comté de Grand Cape Mount
+    gu: ગ્રાન્ડ કેપ માઉન્ટ કાઉન્ટી
+    hi: ग्रैंड केप माउंट काउंटी
+    hy: Գրանդ Քեյփ-Մաունթ երկրամաս
+    id: Grand Cape Mount County
+    it: contea di Grand Cape Mount
+    ja: グランドケープマウント郡
+    kn: ಗ್ರ್ಯಾಂಡ್ ಕೇಪ್ ಮೌಂಟ್ ಕೌಂಟಿ
+    ko: 그랜드케이프마운트 주
+    lt: Grand Keip Maunto apskritis
+    mr: ग्रँड केप माउंट काउंटी
+    ms: Grand Cape Mount County
+    nb: Grand Cape Mount
+    nl: Grand Cape Mount
+    pl: Hrabstwo Grand Cape Mount
+    pt: Grand Cape Mount
+    ru: Гранд-Кейп-Маунт
+    si: ග්‍රෑන්ඩ් කේප් මවුන්ට් ප්‍රාන්තය
+    sv: Grand Cape Mount County
+    ta: கிராண்ட் காப்பே மவுண்ட் கவுண்டி
+    te: గ్రాండ్ కేప్ మౌంట్ కౌంటీ
+    th: เทศมณฑลแกรนด์เคปเมานต์
+    tr: Grand Cape Mount County
+    uk: Гранд-Кейп-Маунт
+    ur: گرینڈ کیپ ماؤنٹ کاؤنٹی
+    vi: Hạt Grand Cape Mount
+    lv: Grandkeipmauntas grāfiste
+    ceb: Grand Cape Mount County
+    zh: 大角山县
+    fa: شهرستان گرند کیپ مانت
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134 \U00011107\U00011133\U00011120\U0001111B\U00011134
+      \U0001111F\U00011105\U0001112A\U0001111A\U00011133\U00011111\U00011134"
+    'no': Grand Cape Mount
+  comments:
+  type: county
+GB:
+  name: Grand Bassa
+  code: GB
+  unofficial_names: Grand Bassa
+  geo:
+    latitude: 6.2308452
+    longitude: -9.8124935
+    min_latitude: 5.5731877
+    min_longitude: -10.3763649
+    max_latitude: 6.7131769
+    max_longitude: -9.0244939
+  translations:
+    en: Grand Bassa
+    ar: مقاطعة غراند باسا
+    be: Гранд-Баса
+    bg: Гранд Баса
+    bn: গ্রান্ড বাসসা কাউন্টি
+    ca: Grand Bassa
+    da: Grand Bassa County
+    de: Grand Bassa County
+    el: Γκραντ Μπάσσα
+    es: Grand Bassa
+    eu: Grand Bassa
+    fi: Grand Bassan kunta
+    fr: Comté de Grand Bassa
+    gu: ગ્રાન્ડ બાસા કાઉન્ટી
+    hi: ग्रैंड बासा काउंटी
+    hy: Գրանդ Բասսա երկրամաս
+    id: Grand Bassa County
+    it: contea di Grand Bassa
+    ja: グランドバッサ郡
+    kn: ಗ್ರ್ಯಾಂಡ್ ಬಾಸ್ಸ ಕೌಂಟಿ
+    ko: 그랜드바사 주
+    lt: Grand Basos apskritis
+    mr: ग्रँड बासा काउंटी
+    ms: Grand Bassa County
+    nb: Grand Bassa
+    nl: Grand Bassa
+    pl: Grand Bassa
+    pt: Grand Bassa
+    ru: Гранд-Баса
+    si: ග්‍රෑන්ඩ් බස්සා ප්‍රාන්තය
+    sv: Grand Bassa County
+    ta: கிராண்ட் பஸ்ஸா கவுண்டி
+    te: గ్రాంండ్ బాసా కౌంటీ
+    th: เทศมณฑลแกรนด์แบสซา
+    tr: Grand Bassa County
+    uk: Гранд-Баса
+    ur: گرینڈ باسا کاؤنٹی
+    vi: Hạt Grand Bassa
+    lv: Grandbasas grāfiste
+    ceb: Grand Bassa County
+    zh: 大巴萨县
+    fa: شهرستان گرند باسا
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134 \U0001111D\U00011125"
+    'no': Grand Bassa
+  comments:
+  type: county
+GG:
+  name: Grand Gedeh
+  code: GG
+  unofficial_names:
+  - Grand Gedah
+  geo:
+    latitude: 5.9222078
+    longitude: -8.2212979
+    min_latitude: 5.514285
+    min_longitude: -9.0887029
+    max_latitude: 6.505594899999999
+    max_longitude: -7.371477899999999
+  translations:
+    en: Grand Gedeh
+    ar: مقاطعة غراند غيده
+    be: Гранд-Гедэ
+    bg: Гранд Гедех
+    bn: গ্রান্ড গাদেহ কাউন্টি
+    ca: Grand Gedeh
+    da: Grand Gedeh County
+    de: Grand Gedeh County
+    el: Γκραντ Γκεντέ
+    es: Grand Gedeh
+    eu: Grand Gedeh
+    fi: Grand Gedehin kunta
+    fr: Comté de Grand Gedeh
+    gu: ગ્રાન્ડ ગેડેહ કાઉન્ટી
+    hi: ग्रैंड गेदेह काउंटी
+    hy: Գրանդ Գեդեհ երկրամաս
+    id: Grand Gedeh County
+    it: contea di Grand Gedeh
+    ja: グランドゲデ郡
+    kn: ಗ್ರ್ಯಾಂಡ್ ಗೆಡೆಹ್ ಕೌಂಟಿ
+    ko: 그랜드 게데 주
+    lt: Grand Gedeho apskritis
+    mr: ग्रँड गीदह काउंटी
+    ms: DaerahGrand Gedeh
+    nb: Grand Gedeh
+    nl: Grand Gedeh
+    pl: Grand Gedeh
+    pt: Grand Gedeh
+    ru: Гранд-Геде
+    si: ග්රාන්ඩ් ගෙඩේහ් ප්‍රාන්තය
+    sv: Grand Gedeh County
+    ta: கிராண்ட் கெதேஹ் கவுண்டி
+    te: గ్రాండ్ గెడే కౌంటీ
+    th: เทศมณฑลแกรนด์เกเดห์
+    tr: Grand Gedeh County
+    uk: Гранд-Геде
+    ur: گرینڈ گیدیہ کاؤنٹی
+    vi: Hạt Grand Gedeh
+    lv: Grandgedes grāfiste
+    ceb: Grand Gedeh County
+    zh: 大各德县
+    fa: شهرستان گرند گدهی
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134 \U00011109\U00011113\U0001112C\U00011126\U00011134"
+    'no': Grand Gedeh
+  comments:
+  type: county
+GK:
+  name: Grand Kru
+  code: GK
+  unofficial_names: Grand Kru
+  geo:
+    latitude: 4.7613862
+    longitude: -8.2212979
+    min_latitude: 4.434164
+    min_longitude: -8.6776371
+    max_latitude: 5.233399899999999
+    max_longitude: -7.759545999999999
+  translations:
+    en: Grand Kru
+    ar: مقاطعة غراند كرو
+    be: Гранд-Кру
+    bg: Гранд Кру
+    bn: গ্র্যান্ড ক্রু কাউন্টি
+    ca: Grand Kru
+    da: Grand Kru County
+    de: Grand Kru County
+    el: Γκραντ Κρου
+    es: Grand Kru
+    eu: Grand Kru
+    fi: Grand Krun kunta
+    fr: Comté de Grand Kru
+    gu: ગ્રાન્ડ ક્રુ કાઉન્ટી
+    hi: ग्रैंड क्रू काउंटी
+    hy: Գրանդ Կրու երկրամաս
+    id: Grand Kru County
+    it: contea di Grand Kru
+    ja: グランドクル郡
+    kn: ಗ್ರ್ಯಾಂಡ್ ಕ್ರು ಕೌಂಟಿ
+    ko: 그랜드크루 주
+    lt: Grand Kru apskritis
+    mr: ग्रँड क्रू काउंटी
+    ms: Grand Kru County
+    nb: Grand Kru
+    nl: Grand Kru
+    pl: Hrabstwo Grand Kru
+    pt: Grand Kru
+    ru: Гранд-Кру
+    si: ග්‍රෑන්ඩ් කෘ ප්‍රාන්තය
+    sv: Grand Kru County
+    ta: கிராண்ட் க்ரூ கவுண்டி
+    te: గ్రాండ్ క్రూ కౌంటీ
+    th: เทศมณฑลแกรนด์ครู
+    tr: Grand Kru County
+    uk: Гранд-Кру
+    ur: گرینڈ کرو کاؤنٹی
+    vi: Hạt Grand Kru
+    lv: Grandkru grāfiste
+    ceb: Grand Kru County
+    zh: 大克鲁县
+    fa: شهرستان گرند کرو
+    ccp: "\U00011109\U00011133\U00011122\U0001111A\U00011133\U00011113\U00011134 \U00011107\U00011133\U00011122\U0001112A"
+    'no': Grand Kru
+    cy: Sir Grand Kru
+  comments:
+  type: county
+GP:
+  name: Gbarpolu
+  code: GP
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة غباربولو
+    be: Гбарпалу
+    bg: Гбарполу
+    bn: গ্যবারপলু কাউন্টি
+    ca: Gbarpolu
+    da: Gbarpolu County
+    de: Gbarpolu County
+    el: Γκπαρπόλου
+    en: Gbarpolu
+    es: Gbarpolu
+    eu: Gbarpolu
+    fi: Gbarpolu
+    fr: Comté de Gbarpolu
+    gu: ગબારપોલુ કાઉન્ટી
+    hi: बारपोलू काउंटी
+    hy: Գբարպոլու երկրամաս
+    id: Gbarpolu County
+    it: contea di Gbarpolu
+    ja: バルポル郡
+    kn: ಗರ್ಬೊಲು ಕೌಂಟಿ
+    ko: 바르폴루 주
+    lt: Gbarpolu apskritis
+    mr: गबाररपोलु काउंटी
+    ms: Gbarpolu County
+    nb: Gbarpolu
+    nl: Gbarpolu
+    pl: Hrabstwo Gbarpolu
+    pt: Gbarpolu
+    ru: Гбарполу
+    si: ජිබාපොලු ප්‍රාන්තය
+    sv: Gbarpolu County
+    ta: க்பார்போலு கவுண்டி
+    te: గబార్పోలు కౌంటీ
+    th: เทศมณฑลบาร์โพลู
+    tr: Gbarpolu County
+    uk: Гбарполу
+    ur: گبارپولو کاؤنٹی
+    vi: Hạt Gbarpolu
+    lv: Gbarpolu grāfiste
+    ceb: Gbarpolu County
+    zh: 巴波卢县
+    fa: شهرستان گبارپولو
+    ccp: "\U0001111D\U00011122\U00011134\U0001111B\U0001112E\U00011123"
+    'no': Gbarpolu
+    cy: Sir Gbarpolu
+  comments:
+  type: county
+LO:
+  name: Lofa
+  code: LO
+  unofficial_names: Lofa
+  geo:
+    latitude: 8.191118399999999
+    longitude: -9.7232673
+    min_latitude: 7.178834999999999
+    min_longitude: -10.606035
+    max_latitude: 8.551791099999999
+    max_longitude: -9.343918
+  translations:
+    en: Lofa
+    ar: مقاطعة لوفا
+    be: Лофа
+    bg: Лофа
+    bn: লোফা কাউন্টি
+    ca: Lofa
+    da: Lofa County
+    de: Lofa County
+    el: Λόφα
+    es: Lofa
+    eu: Lofa
+    fi: Lofa
+    fr: Comté de Lofa
+    gu: લોફા કાઉન્ટી
+    hi: लोफ़ा काउंटी
+    hy: Լոֆա երկրամաս
+    id: Lofa County
+    it: contea di Lofa
+    ja: ロファ郡
+    kn: ಲೋಫಾ ಕೌಂಟಿ
+    ko: 로파 주
+    lt: Lofos apskritis
+    mr: लोफा काउंटी
+    ms: Lofa County
+    nb: Lofa
+    nl: Lofa
+    pl: Hrabstwo Lofa
+    pt: Lofa
+    ru: Лофа
+    si: ලොෆා ප්‍රාන්තය
+    sv: Lofa County
+    ta: லோபா கவுண்டி
+    te: లోఫా కౌంటీ
+    th: เทศมณฑลโลฟา
+    tr: Lofa County
+    uk: Лофа
+    ur: لوفا کاؤنٹی
+    vi: Hạt Lofa
+    lv: Lofas grāfiste
+    ceb: Lofa County
+    zh: 洛法县
+    fa: شهرستان لوفا
+    ccp: "\U00011123\U0001112E\U0001111C"
+    'no': Lofa
+    cy: Sir Lofa
+    uz: Lofa okrugi
+  comments:
+  type: county
+MG:
+  name: Margibi
+  code: MG
+  unofficial_names: Margibi
+  geo:
+    latitude: 6.5151875
+    longitude: -10.3048897
+    min_latitude: 6.138984300000001
+    min_longitude: -10.647893
+    max_latitude: 6.8118709
+    max_longitude: -9.722209
+  translations:
+    en: Margibi
+    ar: مقاطعة مارجيبي
+    be: Маргібі
+    bg: Маргиби
+    bn: মারগিবি কাউন্টি
+    ca: Margibi
+    da: Margibi County
+    de: Margibi County
+    el: Μάργκιμπι
+    es: Margibi
+    eu: Margibi
+    fi: Margibin kunta
+    fr: Comté de Margibi
+    gu: માર્ગિબી કાઉન્ટી
+    hi: मारजीबी काउंटी
+    hy: Մարգիբի երկրամաս
+    id: Margibi County
+    it: contea di Margibi
+    ja: マージビ郡
+    kn: ಮಾರ್ಗಿ ಕೌಂಟಿ
+    ko: 마르지비 주
+    lt: Margibio apskritis
+    mr: मार्गबि काउंटी
+    ms: Margibi County
+    nb: Margibi
+    nl: Margibi
+    pl: Hrabstwo Margibi
+    pt: Margibi
+    ru: Маргиби
+    si: මර්ගිබි ප්‍රාන්තය
+    sv: Margibi County
+    ta: மார்ஜிபி கவுண்டி
+    te: మార్జిబి కౌంటీ
+    th: เทศมณฑลมาร์กีบี
+    tr: Margibi County
+    uk: Маргібі
+    ur: مارگیبی کاؤنٹی
+    vi: Hạt Margibi
+    lv: Margibi grāfiste
+    ceb: Margibi County
+    zh: 马及比县
+    fa: شهرستان مارجیبای
+    ccp: "\U0001111F\U00011122\U00011134\U0001110E\U00011128\U0001111D\U00011128"
+    'no': Margibi
+    cy: Sir Margibi
+  comments:
+  type: county
+MO:
+  name: Montserrado
+  code: MO
+  unofficial_names: Montserrado
+  geo:
+    latitude: 6.5525815
+    longitude: -10.5296115
+    min_latitude: 6.220479999999999
+    min_longitude: -10.9532799
+    max_latitude: 6.8513641
+    max_longitude: -10.3692761
+  translations:
+    en: Montserrado
+    ar: مقاطعة مونتسرادو
+    be: Мантсерада
+    bg: Монтсерадо
+    bn: মন্টসেররাডো কাউন্টি
+    ca: Montserrado
+    da: Montserrado County
+    de: Montserrado County
+    el: Μοντσεράντο
+    es: Condado de Montserrado
+    eu: Montserrado
+    fi: Montserrado
+    fr: Comté de Montserrado
+    gu: મોન્ટરાડો કાઉન્ટી
+    hi: मोंटसेरैडो काउंटी
+    hy: Մոնտսերադո երկրամաս
+    id: Montserrado County
+    it: contea di Montserrado
+    ja: モンセラード郡
+    kn: ಮೋಂಟ್ಸೆರಾಡೋ ಕೌಂಟಿ
+    ko: 몽세라도 주
+    lt: Montserado apskritis
+    mr: मॉन्स्टेराडो काउंटी
+    ms: Montserrado County
+    nb: Montserrado
+    nl: Montserrado
+    pl: Hrabstwo Montserrado
+    pt: Montserrado
+    ru: Монтсеррадо
+    si: මොන්ට්සෙරාඩෝ ප්‍රාන්තය
+    sv: Montserrado County
+    ta: மொன்டசேர்றடோ கவுண்டி
+    te: మాంట్సెరాడో కౌంటీ
+    th: เทศมณฑลมอนต์เซอร์ราโด
+    tr: Montserrado County
+    uk: Монтсеррадо
+    ur: مونٹسیراڈا کاؤنٹی
+    vi: Montserrado
+    lv: Montserado grāfiste
+    ceb: Montserrado County
+    zh: 蒙特塞拉多县
+    fa: شهرستان مانتسرادو
+    ccp: "\U0001111F\U00011127\U0001111A\U00011134\U0001110C\U00011133\U00011111\U00011122\U00011134\U00011122\U00011113\U0001112E"
+    'no': Montserrado
+    cy: Sir Montserrado
+    so: Montserrado County
+  comments:
+  type: county
+MY:
+  name: Maryland
+  code: MY
+  unofficial_names: Maryland
+  geo:
+    latitude: 4.7258878
+    longitude: -7.741670300000001
+    min_latitude: 4.3541994
+    min_longitude: -8.0795251
+    max_latitude: 5.130764999999999
+    max_longitude: -7.5213661
+  translations:
+    en: Maryland
+    ar: مقاطعة ماريلاند
+    be: Акруга Мэрыленд
+    bg: Мериленд
+    bn: ম্যারিল্যান্ড কাউন্টি
+    ca: Maryland
+    da: Maryland
+    de: Maryland County
+    el: Μέριλαντ
+    es: Condado de Maryland
+    eu: Maryland
+    fi: Maryland
+    fr: Comté de Maryland
+    gu: મેરીલેન્ડ કાઉન્ટી
+    hi: मेरीलैंड काउंटी
+    hy: Մերիլենդ երկրամաս
+    id: Maryland County
+    it: contea di Maryland
+    ja: メリーランド郡
+    kn: ಮೇರಿಲ್ಯಾಂಡ್ ಕೌಂಟಿ
+    ko: 메릴랜드 주
+    lt: Merilando apskritis
+    mr: मेरीलँड काउंटी
+    ms: Maryland County
+    nb: Maryland
+    nl: Maryland
+    pl: Hrabstwo Maryland
+    pt: Maryland
+    ru: Мэриленд
+    si: මේරිලන්ඩ් ප්‍රාන්තය
+    sv: Maryland County
+    ta: மரிலாண்ட் கவுண்டி
+    te: మేరీలాండ్ కౌంటీ
+    th: เทศมณฑลแมริแลนด์
+    tr: Maryland County
+    uk: Меріленд
+    ur: میری لینڈ کاؤنٹی، لائبیریا
+    vi: Hạt Maryland
+    lv: Merilendas grāfiste
+    ceb: Maryland County
+    zh: 馬里蘭縣
+    fa: شهرستان مریلند
+    ccp: "\U0001111F\U0001112C\U00011122\U00011128\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    'no': Maryland
+    cy: Sir Maryland
+    uz: Maryland okrugi
+  comments:
+  type: county
+NI:
+  name: Nimba
+  code: NI
+  unofficial_names: Nimba
+  geo:
+    latitude: 6.8427612
+    longitude: -8.6600586
+    min_latitude: 5.823793999999999
+    min_longitude: -9.2169951
+    max_latitude: 7.696163100000001
+    max_longitude: -8.27361
+  translations:
+    en: Nimba
+    ar: مقاطعة نيمبا
+    be: Німба
+    bg: Нимба
+    bn: নিম্বা
+    ca: Nimba
+    da: Nimba
+    de: Nimba County
+    el: Νίμπα
+    es: Nimba
+    eu: Nimba
+    fi: Nimba
+    fr: Comté de Nimba
+    gu: નિમ્બા
+    hi: निम्बा
+    hy: Նիմբա երկրամաս
+    id: Nimba
+    it: contea di Nimba
+    ja: ニンバ郡
+    kn: ನಿಂಬಾ
+    ko: 님바 주
+    lt: Nimbos apskritis
+    mr: निंबा
+    ms: Nimba
+    nb: Nimba
+    nl: Nimba
+    pl: Hrabstwo Nimba
+    pt: Nimba
+    ru: Нимба
+    si: නිම්බා
+    sv: Nimba County
+    ta: நிம்பா
+    te: నింబా
+    th: เทศมณฑลนิมบา
+    tr: Nimba
+    uk: Німба
+    ur: نمبا کاؤنٹی
+    vi: Nimba
+    lv: Nimba
+    ceb: Nimba County
+    zh: 寧巴縣
+    fa: شهرستان نیمبا
+    ccp: "\U0001111A\U0001111F\U00011134\U0001111D"
+    'no': Nimba
+    uz: Nimba okrugi
+  comments:
+  type: county
+RG:
+  name: River Gee
+  code: RG
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة ريفر جي
+    be: Рывер-Гі
+    bg: Ривър Джий
+    bn: রিভার গি কাউন্টি
+    ca: River Gee
+    da: River Gee County
+    de: River Gee County
+    el: Ρίβερ Γκι
+    en: River Gee
+    es: River Gee
+    eu: River Gee
+    fi: River Geen kunta
+    fr: Comté de River Gee
+    gu: નદી ગી કાઉન્ટી
+    hi: रिवर जी काउंटी
+    hy: Ռիվր Գի երկրամաս
+    id: River Gee County
+    it: contea di River Gee
+    ja: リバージー郡
+    kn: ರಿವರ್ ಗೀ ಕೌಂಟಿ
+    ko: 리버지 주
+    lt: River Gi apskritis
+    lv: Rivergī grāfiste
+    mr: रिव्हर जी काउंटी
+    ms: River Gee County
+    nb: River Gee
+    nl: River Gee
+    pl: Hrabstwo River Gee
+    pt: River Gee
+    ru: Ривер-Ги
+    si: රිවර් ගී ප්‍රාන්තය
+    sv: River Gee County
+    ta: ரிவேர் கீ கவுண்டி
+    te: రివర్ జీ కౌంటీ
+    th: เทศมณฑลริเวอร์กี
+    tr: River Gee County
+    uk: Рівер-Гі
+    ur: دریائے جی کاؤنٹی
+    vi: Hạt River Gee
+    ceb: River Gee County
+    zh: 吉河县
+    fa: شهرستان ریور جی
+    ccp: "\U00011122\U00011128\U0001111E\U00011122\U00011134 \U00011109\U00011128"
+    'no': River Gee
+    uz: River Gee okrugi
+  comments:
+  type: county
+RI:
+  name: Rivercess
+  code: RI
+  unofficial_names: Rivercess
+  geo:
+    latitude: 5.902532799999999
+    longitude: -9.456155
+    min_latitude: 5.269763
+    min_longitude: -9.733108999999999
+    max_latitude: 6.378757
+    max_longitude: -9.058736
+  translations:
+    en: Rivercess
+    ar: مقاطعة ريفرسيس
+    be: Акруга Рывер-Сес
+    bg: Ривър Сес
+    bn: রিভারকেস কাউন্টি
+    da: Rivercess County
+    de: River Cess County
+    el: Ρίβερκες
+    es: Condado de Rivercess
+    eu: River Cess
+    fi: Rivercessin kunta
+    fr: Comté de River Cess
+    gu: રિવરસેસ કાઉન્ટી
+    hi: रिवरसेस काउंटी
+    hy: Ռիվրցես երկրամաս
+    id: Rivercess County
+    it: contea di River Cess
+    ja: リバーセス郡
+    kn: ರಿವರ್ಸಸ್ ಕೌಂಟಿ
+    ko: 리버세스 주
+    lt: River Seso apskritis
+    mr: रिवरेट काउंटी
+    ms: Rivercess County
+    nb: Rivercess
+    nl: River Cess
+    pl: Hrabstwo River Cess
+    pt: River Cess
+    ru: Ривер-Сесс
+    si: රිවර්සෙස් ප්‍රාන්තය
+    sv: River Cess County
+    ta: ரிவேர்ஸ்ஸ்ஸ் கவுண்டி
+    te: రివర్సెస్ కౌంటీ
+    th: เทศมณฑลริเวอร์เซสส์
+    tr: Rivercess County
+    uk: Рівер-Сесс (графство)
+    ur: ریویرکیس کاؤنٹی
+    vi: Hạt Rivercess
+    lv: Riversesas grāfiste
+    ceb: River Cess County
+    zh: 里弗塞斯縣
+    fa: شهرستان ریورسس
+    ccp: "\U00011122\U00011128\U0001111E\U00011122\U00011134\U00011125\U0001112C\U0001110C\U00011134"
+    'no': Rivercess
+  comments:
+  type: county
+SI:
+  name: Sinoe
+  code: SI
+  unofficial_names: Sinoe
+  geo:
+    latitude: 5.49871
+    longitude: -8.6600586
+    min_latitude: 4.804354
+    min_longitude: -9.4184888
+    max_latitude: 5.844906
+    max_longitude: -8.2341789
+  translations:
+    en: Sinoe
+    ar: مقاطعة سينو
+    be: Сіноэ
+    bg: Синое
+    bn: সিনো কাউন্টি
+    ca: Sinoe
+    da: Sinoe County
+    de: Sinoe County
+    el: Σινόε
+    es: Sinoe
+    eu: Sinoe
+    fi: Sinoe
+    fr: Comté de Sinoe
+    gu: સીનોએ કાઉન્ટી
+    hi: सीनो काउंटी
+    hy: Սինոե երկրամաս
+    id: Sinoe County
+    it: contea di Sinoe
+    ja: シノエ郡
+    kn: ಸಿನೊ ಕೌಂಟಿ
+    ko: 시노에 주
+    lt: Sinoės apskritis
+    mr: सुनी काउंटी
+    ms: Sinoe County
+    nb: Sinoe
+    nl: Sinoe
+    pl: Hrabstwo Sinoe
+    pt: Sinoe
+    ru: Синоэ
+    si: සිනොයි ප්‍රාන්තය
+    sv: Sinoe County
+    ta: சினோ கவுண்டி
+    te: సినోయి కౌంటీ
+    th: เทศมณฑลไซโน
+    tr: Sinoe County
+    uk: Сіное
+    ur: سینؤ کاؤنٹی
+    vi: Hạt Sinoe
+    lv: Sinoe grāfiste
+    ceb: Sinoe County
+    zh: 錫諾縣
+    fa: شهرستان ساینو
+    ccp: "\U00011125\U00011128\U0001111A\U0001112E\U00011120\U00011128"
+    'no': Sinoe
+    cy: Sir Sinoe
+  comments:
+  type: county
+X1~:
+  name: Gbarpolu
+  code: X1~
+  unofficial_names: Gbarpolu
+  geo:
+    latitude: 7.495263700000001
+    longitude: -10.0807298
+    min_latitude: 6.829072
+    min_longitude: -10.9533111
+    max_latitude: 7.998692
+    max_longitude: -9.636509
+  translations:
+    en: Gbarpolu
+  comments:
+  type: county
+X2~:
+  name: River Gee
+  code: X2~
+  unofficial_names: River Gee
+  geo:
+    latitude: 5.2604894
+    longitude: -7.872159999999999
+    min_latitude: 4.8041949
+    min_longitude: -8.328244999999999
+    max_latitude: 5.6097129
+    max_longitude: -7.365113
+  translations:
+    en: River Gee
+  comments:
+  type: county

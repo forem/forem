@@ -1,0 +1,43 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    docker:
+      # specify the version you desire here
+      # https://circleci.com/developer/images/image/cimg/ruby
+      - image: cimg/ruby:3.2.1
+        environment:
+          CODECLIMATE_REPO_TOKEN: b6626e682a8e97e0c5978febc92c3526792a2d018b41b8e1b52689da37fb7d92
+
+    working_directory: ~/knapsack_pro-ruby
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v2-dependencies-bundler-{{ checksum "knapsack_pro.gemspec" }}
+          # fallback to using the latest cache if no exact match is found
+          - v2-dependencies-bundler-
+
+      - run:
+          name: install ruby dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - run: gem install rubocop
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v2-dependencies-bundler-{{ checksum "knapsack_pro.gemspec" }}
+
+      # enforce `frozen_string_literal: true` in the gem files
+      - run: rubocop -A --only Style/FrozenStringLiteralComment,Layout/EmptyLineAfterMagicComment lib/
+
+      - run: bundle exec rspec spec

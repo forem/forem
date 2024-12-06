@@ -1,0 +1,2823 @@
+---
+AH:
+  unofficial_names: Anhui
+  translations:
+    en: Anhui
+    af: Anhui
+    ar: آنهوي
+    az: Anhoy
+    be: Правінцыя Аньхой
+    bg: Анхуей
+    bn: আনহুয়েই
+    ca: Anhui
+    cs: An-chuej
+    da: Anhui
+    de: Anhui
+    el: Ανχουί
+    es: Anhui
+    et: Anhui
+    eu: Anhui
+    fa: آن‌هوئی
+    fi: Anhui
+    fr: Anhui
+    gl: Anhui
+    gu: અનહુઇ
+    he: אנחווי
+    hi: अनहुइ
+    hr: Anhui
+    hu: Anhuj
+    hy: Անհոյ
+    id: Anhui
+    it: Anhui
+    ja: 安徽省
+    ka: ანხოი
+    kn: ಅನ್ಹುಯಿ
+    ko: 안후이 성
+    lt: Anhui
+    lv: Aņhui
+    mn: Аньхуй муж
+    mr: आंह्वी
+    ms: Anhui
+    nb: Anhui
+    nl: Anhui
+    pl: Anhui
+    pt: Anhui
+    ro: Anhui
+    ru: Аньхой
+    si: අන්හුයි
+    sk: An-chuej
+    sr: Анхуеј
+    sv: Anhui
+    sw: Anhui
+    ta: அன்ஹுயி மாகாணம்
+    te: అన్హూయి
+    th: มณฑลอานฮุย
+    tr: Anhui
+    uk: Аньхой
+    ur: انہوئی
+    vi: An Huy
+    zh: 安徽省
+    bs: Anhui
+    ceb: Anhui Sheng
+    cy: Anhui
+    ga: Anhui
+    kk: Аньхой
+    mk: Анхуеј
+    ml: ആൻഹുയി
+    my: အန်းဟွေးပြည်နယ်
+    'no': Anhui
+    pa: ਅਨਹੁਈ
+    sr_Latn: Anhuej
+    uz: Anxoy
+    yue: 安徽
+    yue_Hans: 安徽
+    is: Anhui
+    sd: اينھئي صوبو
+  geo:
+    latitude: 31.861184
+    longitude: 117.284923
+    min_latitude: 29.3930379
+    min_longitude: 114.8827517
+    max_latitude: 34.6542338
+    max_longitude: 119.6491442
+  name: Anhui
+  code: AH
+  type: province
+BJ:
+  unofficial_names:
+  - Beijing
+  - Pekín
+  translations:
+    en: Beijing
+    af: Beijing
+    am: ቤዪጂንግ
+    ar: بكين
+    as: বেইজিং
+    az: Pekin
+    be: Пекін
+    bg: Пекин
+    bn: বেইজিং
+    ca: Pequín
+    cs: Peking
+    da: Beijing
+    de: Peking
+    el: Πεκίνο
+    es: Pekín
+    et: Peking
+    eu: Pekin
+    fa: پکن
+    fi: Peking
+    fr: Pékin
+    gl: Pequín
+    gu: બેઇજિંગ
+    he: בייג׳ינג
+    hi: बीजिंग
+    hr: Peking
+    hu: Peking
+    hy: Պեկին
+    id: Beijing
+    is: Beijing
+    it: Pechino
+    ja: 北京市
+    ka: პეკინი
+    km: ប៉េកាំង
+    kn: ಬೀಜಿಂಗ್
+    ko: 베이징 시
+    lo: ປັກກິ່ງ
+    lt: Pekinas
+    lv: Pekina
+    ml: ബെയ്‌ജിങ്ങ്‌
+    mn: Бээжин
+    mr: बीजिंग
+    ms: Beijing
+    nb: Beijing
+    ne: बेइजिङ
+    nl: Peking
+    or: ବେଜିଂ
+    pl: Pekin
+    ps: بېجنګ
+    pt: Pequim
+    ro: Beijing
+    ru: Пекин
+    si: බෙයිජිං
+    sk: Peking
+    sl: Peking
+    sr: Пекинг
+    sv: Peking
+    sw: Beijing
+    ta: பெய்ஜிங்
+    te: బీజింగ్
+    th: ปักกิ่ง
+    tk: Pekin
+    tr: Pekin
+    uk: Пекін
+    ur: بیجنگ
+    vi: Bắc Kinh
+    zh: 北京市
+    bs: Peking
+    ceb: Beijing
+    cy: Beijing
+    ga: Béising
+    ha: Beijing
+    ha_NE: Beijing
+    jv: Beijing
+    kk: Бейжің
+    ky: Бейжин
+    mk: Пекинг
+    my: ပေကျင်းမြို့
+    'no': Beijing
+    pa: ਬੀਜਿੰਗ
+    so: Beijing
+    sq: Pekini
+    sr_Latn: Peking
+    uz: Pekin
+    yo: Beijing
+    yo_BJ: Beijing
+    yue: 北京
+    yue_Hans: 北京
+    zu: Beijing
+  geo:
+    latitude: 39.904211
+    longitude: 116.407395
+    min_latitude: 39.4427581
+    min_longitude: 115.4234115
+    max_latitude: 41.0608158
+    max_longitude: 117.5146251
+  name: Beijing
+  code: BJ
+  type: municipality
+CQ:
+  unofficial_names: Chongqing
+  translations:
+    en: Chongqing
+    af: Tsjongtsjing
+    ar: تشونغتشينغ
+    az: Çuntsin
+    be: Горад Чунцын
+    bg: Чунцин
+    bn: ছোংছিং
+    ca: Txungking
+    cs: Čchung-čching
+    da: Chongqing
+    de: Chongqing
+    el: Τσονγκίνγκ
+    es: Chongqing
+    et: Chongqing Shi
+    eu: Chongqing
+    fa: چونگ‌کینگ
+    fi: Chongqing
+    fr: Chongqing
+    gl: Chongqing
+    gu: ચૉંગકિંગ
+    he: צ׳ונגצ׳ינג
+    hi: चोंग्किंग
+    hr: Chongqing
+    hu: Csungking
+    id: Chongqing
+    is: Chongqing
+    it: Chongqing
+    ja: 重慶市
+    ka: ჩუნცინი
+    kn: ಚಾಂಗ್‍ಕಿಂಗ್
+    ko: 충칭 시
+    lt: Čongčingas
+    lv: Čuncjina
+    ml: ചോങ്ചിങ്
+    mn: Чунцин
+    mr: चोंगछिंग
+    ms: Chongqing
+    nb: Chongqing
+    nl: Chongqing
+    pl: Chongqing
+    pt: Chongqing
+    ro: Chongqing
+    ru: Чунцин
+    si: චොන්කින්
+    sk: Čchung-čching
+    sl: Chongqing
+    sr: Чунгкинг
+    sv: Chongqing
+    ta: சோங்கிங்
+    te: చాంగ్ కింగ్
+    th: ฉงชิ่ง
+    tk: Çunszin
+    tr: Çongçing
+    uk: Чунцін
+    ur: چونگ کینگ
+    vi: Trùng Khánh
+    zh: 重庆市
+    am: ቾንግጪንግ
+    bs: Chongqing
+    ceb: Chongqing Shi
+    cy: Chongqing
+    ga: Chongqing
+    ha: Chongqing
+    ha_NE: Chongqing
+    mk: Чунгќинг
+    my: ချုံချင့်မြို့
+    'no': Chongqing
+    pa: ਚੌਂਗਕਿੰਗ
+    sq: Çongqing
+    sr_Latn: Čungking
+    uz: Chunsin
+    yue: 重慶
+    yue_Hans: 重庆
+    hy: Չունցին
+    ky: Чунцин
+    sw: Chongqing
+  geo:
+    latitude: 29.56301
+    longitude: 106.551557
+    min_latitude: 28.1602253
+    min_longitude: 105.2897606
+    max_latitude: 32.2011871
+    max_longitude: 110.1998582
+  name: Chongqing
+  code: CQ
+  type: municipality
+FJ:
+  unofficial_names: Fujian
+  translations:
+    en: Fujian
+    af: Foekien
+    ar: فوجيان
+    az: Fucyen
+    be: Правінцыя Фуцзянь
+    bg: Фудзиен
+    bn: ফুচিয়েন
+    ca: Fujian
+    cs: Fu-ťien
+    da: Fujian
+    de: Fujian
+    el: Φουτσιάν
+    es: Fujian
+    et: Fujian
+    eu: Fujian
+    fa: فوجیان
+    fi: Fujian
+    fr: Fujian
+    he: פוג׳יין
+    hi: फ़ूज्यान
+    hr: Fujian
+    hu: Fucsien
+    hy: Ֆուցզյան
+    id: Fujian
+    it: Fujian
+    ja: 福建省
+    ka: ფუძიანი
+    ko: 푸젠 성
+    lt: Fudzianas
+    lv: Fudzjaņa
+    mn: Фужянь муж
+    mr: फूच्यान
+    ms: Fujian
+    nb: Fujian
+    nl: Fujian
+    pl: Fujian
+    pt: Fujian
+    ro: Fujian
+    ru: Фуцзянь
+    sr: Фуђен
+    sv: Fujian
+    sw: Fujian
+    ta: புஜியான் மாகாணம்
+    th: มณฑลฝูเจี้ยน
+    tr: Fujian
+    uk: Фуцзянь
+    ur: فوجیان
+    vi: Phúc Kiến
+    zh: 福建省
+    bs: Fujian
+    ceb: Fujian Sheng
+    cy: Fujian
+    ga: Fujian
+    jv: Fujian
+    mk: Фуѓен
+    my: ဖူကျန့်ပြည်နယ်
+    'no': Fujian
+    pa: ਫੂਜਾਨ
+    sr_Latn: Fuđen
+    uz: Futszyan
+    yue: 福建
+    yue_Hans: 福建
+    is: Fujian
+    kk: Фуцзянь
+  geo:
+    latitude: 26.10078
+    longitude: 119.295144
+    min_latitude: 23.528783
+    min_longitude: 115.8522901
+    max_latitude: 28.3129013
+    max_longitude: 120.7270943
+  name: Fujian
+  code: FJ
+  type: province
+GD:
+  unofficial_names: Guangdong
+  translations:
+    en: Guangdong
+    af: Kwangdong
+    ar: غوانغدونغ
+    be: Правінцыя Гуандун
+    bg: Гуандун
+    bn: কুয়াংতুঙ
+    ca: Guangdong
+    cs: Kuang-tung
+    da: Guangdong
+    de: Guangdong
+    el: Κουανγκτόνγκ
+    es: Provincia de Cantón
+    et: Guangdong
+    eu: Guangdong
+    fa: گوانگ‌دونگ
+    fi: Guangdong
+    fr: Guangdong
+    gu: ગુઆંગડોંગ
+    he: גואנגדונג
+    hi: गुआंगदोंग
+    hr: Guangdong
+    hu: Kuangtung
+    hy: Գուանդուն
+    id: Guangdong
+    is: Guangdong
+    it: Guangdong
+    ja: 広東省
+    ka: გუანდუნი
+    kn: ಗುವಾಂಗ್ಡಾಂಗ್
+    ko: 광둥 성
+    lt: Guangdongas
+    lv: Guanduna
+    mn: Гуандун муж
+    mr: क्वांगतोंग
+    ms: Guangdong
+    nb: Guangdong
+    nl: Guangdong
+    pl: Guangdong
+    pt: Guangdong
+    ro: Guangdong
+    ru: Гуандун
+    si: ගුවන්ග්ඩොන්ග්
+    sl: Guangdong
+    sr: Гуангдунг
+    sv: Guangdong
+    sw: Guangdong
+    ta: குவாங்டாங்
+    te: గ్వాంగ్‌డాంగ్
+    th: มณฑลกวางตุ้ง
+    tr: Guangdong
+    uk: Гуандун
+    ur: گوانگڈونگ
+    vi: Quảng Đông
+    zh: 广东省
+    bs: Guangdong
+    ceb: Guangdong Sheng
+    cy: Guangdong
+    ga: Guangdong
+    kk: Гуандун
+    mk: Гуангдунг
+    ml: ഗ്വാങ്‌ഡോങ്
+    my: ကွမ်တုန်းပြည်နယ်
+    'no': Guangdong
+    pa: ਗੁਆਂਗਦੋਂਗ
+    sr_Latn: Guangdung
+    uz: Guangun
+    yue: 廣東
+    yue_Hans: 广东
+    az: Quandun əyaləti
+    sd: گوئينگڊانگ صوبو
+  geo:
+    latitude: 23.132191
+    longitude: 113.266531
+    min_latitude: 20.2209735
+    min_longitude: 109.668994
+    max_latitude: 25.5167714
+    max_longitude: 117.3185073
+  name: Guangdong
+  code: GD
+  type: province
+GS:
+  unofficial_names: Gansu
+  translations:
+    en: Gansu
+    af: Gansu
+    ar: قانسو
+    az: Qansu
+    be: Правінцыя Ганьсу
+    bg: Гансу
+    bn: কানসু
+    ca: Gansu
+    cs: Kan-su
+    da: Gansu
+    de: Gansu
+    el: Γκανσού
+    es: Gansu
+    et: Gansu
+    eu: Gansu
+    fa: گانسو
+    fi: Gansu
+    fr: Gansu
+    gu: ગન્સુ
+    he: גאנסו
+    hi: गांसू
+    hr: Gansu
+    hu: Kanszu
+    id: Gansu
+    it: Gansu
+    ja: 甘粛省
+    ka: განსუ
+    kn: ಗ್ಯಾನ್ಸು
+    ko: 간쑤 성
+    lt: Gansu
+    lv: Gaņsu
+    mn: Ганьсү
+    mr: कान्सू
+    ms: Gansu
+    nb: Gansu
+    nl: Gansu
+    pl: Gansu
+    pt: Gansu
+    ro: Gansu
+    ru: Ганьсу
+    si: ගන්සූ
+    sl: Gansu
+    sr: Гансу
+    sv: Gansu
+    sw: Gansu
+    ta: கான்சு
+    te: గాన్సు
+    th: มณฑลกานซู่
+    tr: Kansu
+    uk: Ґаньсу
+    ur: گانسو
+    vi: Cam Túc
+    zh: 甘肃省
+    bs: Gansu
+    ceb: Gansu Sheng
+    cy: Gansu
+    ga: Gansu
+    kk: Ганьсу
+    mk: Гансу
+    my: ကန်းစုပြည်နယ်
+    'no': Gansu
+    sr_Latn: Gansu
+    uz: Gansu
+    yue: 甘肅
+    yue_Hans: 甘肃
+    hy: Գանսու
+    is: Gansu
+    sd: گينسو صوبو
+  geo:
+    latitude: 36.059561
+    longitude: 103.826447
+    min_latitude: 32.5941106
+    min_longitude: 92.33914659999999
+    max_latitude: 42.7951629
+    max_longitude: 108.7123363
+  name: Gansu
+  code: GS
+  type: province
+GX:
+  unofficial_names:
+  - Guangxi Zhuang
+  translations:
+    en: Guangxi
+    af: Guangxi
+    ar: قوانغشي
+    az: Quansi-Çjuan muxtar rayonu
+    be: Гуансі-Чжуанскі аўтаномны раён
+    bg: Гуанси-джуански автономен регион
+    bn: কুয়াংশি
+    ca: Guangxi
+    cs: Kuang-si
+    da: Guangxi
+    de: Guangxi
+    el: Κουανγκσί
+    es: Guangxi
+    et: Guangxi
+    eu: Guangxi
+    fa: گوانگشی
+    fi: Guangxi
+    fr: Guangxi
+    gl: Guangxi
+    gu: ગુઆન્ક્સી ઝુઆંગ ઓટોનોમસ પ્રદેશ
+    he: גואנגשי
+    hi: गुआंगशी
+    hr: Guangxi
+    hu: Kuanghszi-Csuang Autonóm Terület
+    hy: Գուանսի-Չժոունի ինքնավար շրջան
+    id: Guangxi
+    it: Guangxi
+    ja: 広西チワン族自治区
+    ka: გუანსი-ჯუანი
+    kn: ಗುವಾಂಗ್ಕ್ಸಿ ಝುವಾಂಗ್ ಸ್ವಾಯತ್ತ ಪ್ರದೇಶ
+    ko: 광시 좡족 자치구
+    lt: Guangsi
+    lv: Guansji Džuanu autonomais reģions
+    ml: ഗുവാങ്ക്സി
+    mr: क्वांग्शी
+    ms: Guangxi
+    nb: Guangxi
+    nl: Guangxi
+    pl: Kuangsi
+    pt: Guangxi
+    ro: Guangxi
+    ru: Гуанси-Чжуанский автономный район
+    si: ගුඅන්ක්සි සුආන්ග් ස්වාධීන කලාපය
+    sr: Гуангси
+    sv: Guangxi
+    sw: Guangxi
+    ta: குவாங்ஷி
+    te: గువాంగ్జీ జువాంగ్ అటానమస్ ప్రాంతం
+    th: เขตปกครองตนเองกว่างซีจ้วง
+    tr: Guangxi Zhuang Özerk Bölgesi
+    uk: Гуансі-Чжуанський автономний район
+    ur: گوانگشی
+    vi: Quảng Tây
+    zh: 广西壮族自治区
+    bs: Guangxi
+    ceb: Guangxi Zhuangzu Zizhiqu
+    cy: Guangxi
+    ga: Guangxi
+    mk: Гуангси
+    'no': Guangxi
+    sr_Latn: Guangsi
+    uz: Guansi-chjuan muxtor rayoni
+    yue: 廣西
+    yue_Hans: 广西
+    is: Guangxi
+    ky: Гуаңси-Жуан өзэркин ооданы
+    my: ကွမ်ရှီး (ကျွမ့်ကိုယ်ပိုင်အုပ်ချုပ်ခွင့်ရဒေသ)
+    sd: گئانگشي
+    sl: Guangši
+  geo:
+    latitude: 22.815478
+    longitude: 108.327546
+    min_latitude: 20.8998362
+    min_longitude: 104.4501321
+    max_latitude: 26.3855658
+    max_longitude: 112.0618507
+  name: Guangxi
+  code: GX
+  type: autonomous_region
+GZ:
+  unofficial_names: Guizhou
+  translations:
+    en: Guizhou
+    af: Guizhou
+    ar: قويتشو
+    be: Правінцыя Гуйчжоу
+    bg: Гуейджоу
+    bn: কুয়েইচৌ
+    ca: Guizhou
+    cs: Kuej-čou
+    da: Guizhou
+    de: Guizhou
+    el: Κουιτσού
+    es: Guizhou
+    et: Guizhou
+    eu: Guizhou
+    fa: گوئیژو
+    fi: Guizhou
+    fr: Guizhou
+    gu: ગુઇઝોઉ
+    he: גוויג׳ואו
+    hi: गुइझोऊ
+    hr: Guizhou
+    hu: Kujcsou
+    hy: Գույչժոու
+    id: Guizhou
+    it: Guizhou
+    ja: 貴州省
+    ka: გუიჯოუ
+    kn: ಗುಯಿಝೌ
+    ko: 구이저우 성
+    lt: Guidžou
+    lv: Guidžou
+    mn: Гуйжоу муж
+    mr: क्वीचौ
+    ms: Guizhou
+    nb: Guizhou
+    nl: Guizhou
+    pl: Kuejczou
+    pt: Guizhou
+    ro: Guizhou
+    ru: Гуйчжоу
+    si: ගුයිෂු
+    sr: Гуејџоу
+    sv: Guizhou
+    sw: Guizhou
+    ta: குயிசூ
+    te: గుయిజో
+    th: มณฑลกุ้ยโจว
+    tr: Guizhou
+    uk: Ґуйчжоу
+    ur: گوئیژو
+    vi: Quý Châu
+    zh: 贵州省
+    ceb: Guizhou Sheng
+    cy: Guizhou
+    ga: Guizhou
+    mk: Гуејџоу
+    'no': Guizhou
+    sr_Latn: Guejdžou
+    uz: Guychjou
+    yue: 貴州
+    yue_Hans: 贵州
+    is: Guizhou
+    sd: گزھو صوبو
+    sl: Guidžov
+  geo:
+    latitude: 26.598194
+    longitude: 106.70741
+    min_latitude: 24.6199195
+    min_longitude: 103.6014388
+    max_latitude: 29.2212757
+    max_longitude: 109.5977559
+  name: Guizhou
+  code: GZ
+  type: province
+HA:
+  unofficial_names: Henan
+  translations:
+    en: Henan
+    af: Henan
+    ar: خنان
+    be: Правінцыя Хэнань
+    bg: Хънан
+    bn: হ্যনান
+    ca: Henan
+    cs: Che-nan
+    da: Henan
+    de: Henan
+    el: Χενάν
+    es: Henan
+    et: Henan
+    eu: Henan
+    fa: استان هنان
+    fi: He’nan
+    fr: Henan
+    gl: Henan
+    gu: હેનન
+    he: חנאן
+    hi: हेनान
+    hr: Henan
+    hu: Honan
+    hy: Հենան
+    id: Henan
+    it: Henan
+    ja: 河南省
+    ka: ხენანი
+    kn: ಹೆನಾನ್
+    ko: 허난 성
+    lt: Henanas
+    lv: Henaņa
+    mn: Хэнань
+    mr: हनान
+    ms: Henan
+    nb: Henan
+    nl: Henan
+    pl: Henan
+    pt: Henan
+    ro: Henan
+    ru: Хэнань
+    si: හෙනන්
+    sl: Henan
+    sr: Хенан
+    sv: Henan
+    sw: Henan
+    ta: ஹெய்நான்
+    te: హెనాన్
+    th: มณฑลเหอหนาน
+    tr: Henan
+    uk: Хенань
+    ur: ہینان
+    vi: Hà Nam
+    zh: 河南省
+    ceb: Henan Sheng
+    cy: Henan
+    ga: Henan
+    kk: Хэнань
+    mk: Хенан
+    ml: ഹെനാൻ
+    'no': Henan
+    pa: ਹੇਨਾਨ
+    sr_Latn: Henan
+    uz: Xenan
+    yue: 河南
+    yue_Hans: 河南
+    is: Henan
+    my: ဟယ်နန်
+    sd: ھينان صوبو
+  geo:
+    latitude: 34.765515
+    longitude: 113.753602
+    min_latitude: 31.382371
+    min_longitude: 110.3604761
+    max_latitude: 36.3665602
+    max_longitude: 116.6522322
+  name: Henan
+  code: HA
+  type: province
+HB:
+  unofficial_names: Hubei
+  translations:
+    en: Hubei
+    af: Hubei
+    ar: خوبي
+    be: Правінцыя Хубэй
+    bg: Хубей
+    bn: হুপেই
+    ca: Hubei
+    cs: Chu-pej
+    da: Hubei
+    de: Hubei
+    el: Χουπέι
+    es: Hubei
+    et: Hubei
+    eu: Hubei
+    fa: هوبئی
+    fi: Hubei
+    fr: Hubei
+    gu: હુબેઇ
+    he: חוביי
+    hi: हूबेई
+    hr: Hubei
+    hu: Hupej
+    id: Hubei
+    is: Hubei
+    it: Hubei
+    ja: 湖北省
+    ka: ხუბეი
+    kn: ಹುಬೈ
+    ko: 후베이 성
+    lt: Hubėjus
+    lv: Hubei
+    mr: हूपै
+    ms: Hubei
+    nb: Hubei
+    nl: Hubei
+    pl: Hubei
+    pt: Hubei
+    ro: Hubei
+    ru: Хубэй
+    si: හුබෙයි
+    sl: Hubei
+    sr: Хубеј
+    sv: Hubei
+    sw: Hubei
+    ta: ஹுபேய் மாகாணம்
+    te: హుబే
+    th: มณฑลหูเป่ย์
+    tr: Hubei
+    uk: Хубей
+    ur: ہوبئی
+    vi: Hồ Bắc
+    zh: 湖北省
+    ceb: Hubei Sheng
+    cy: Hubei
+    ga: Hubei
+    kk: Хубэй
+    mk: Хубеј
+    'no': Hubei
+    pa: ਹੂਬੇਈ
+    sr_Latn: Hubej
+    uz: Xubey
+    yue: 湖北
+    yue_Hans: 湖北
+    az: Hubey əyaləti
+    hy: Հուբեյ
+    mn: Хүбэй
+    my: ဟူပေပြည်နယ်
+    ne: हुबेई
+    sd: ھوبئي صوبو
+    sk: Chu-pej
+  geo:
+    latitude: 30.546498
+    longitude: 114.341862
+    min_latitude: 29.0294884
+    min_longitude: 108.3669646
+    max_latitude: 33.2756161
+    max_longitude: 116.1345773
+  name: Hubei
+  code: HB
+  type: province
+HE:
+  unofficial_names: Hebei
+  translations:
+    en: Hebei
+    af: Hebei
+    ar: خبي
+    az: Hebei
+    be: Правінцыя Хэбэй
+    bg: Хъбей
+    bn: হ্যপেই
+    ca: Hebei
+    cs: Che-pej
+    da: Hebei
+    de: Hebei
+    el: Χεπέι
+    es: Hebei
+    et: Hebei
+    eu: Hebei
+    fa: هبئی
+    fi: Hebei
+    fr: Hebei
+    gu: હેબી
+    he: חביי
+    hi: हेबेई
+    hr: Hebei
+    hu: Hopej
+    hy: Հեբեյ
+    id: Hebei
+    it: Hebei
+    ja: 河北省
+    ka: ხებეი
+    kn: ಹೆಬಿ
+    ko: 허베이 성
+    lt: Hebei
+    lv: Hebei
+    mn: Хэбэй
+    mr: हपै
+    ms: Hebei
+    nb: Hebei
+    nl: Hebei
+    pl: Hebei
+    pt: Hebei
+    ro: Hebei
+    ru: Хэбэй
+    si: හෙබෙයි
+    sl: Hebei
+    sr: Хебеј
+    sv: Hebei
+    sw: Hebei
+    ta: ஏபெய் மாகாணம்
+    te: హెబీ
+    th: มณฑลเหอเป่ย์
+    tr: Hebei
+    uk: Хебей
+    ur: ہیبئی
+    vi: Hà Bắc
+    zh: 河北省
+    ceb: Hebei Sheng
+    cy: Hebei
+    ga: Hebei
+    mk: Хебеј
+    ml: ഹെബെയ്
+    'no': Hebei
+    sr_Latn: Hebej
+    uz: Xebey
+    yue: 河北
+    yue_Hans: 河北
+    is: Hebei
+    ne: हेवेई
+    sd: ھيبئي صوبو
+  geo:
+    latitude: 38.037057
+    longitude: 114.468665
+    min_latitude: 36.0482067
+    min_longitude: 113.4653687
+    max_latitude: 42.6197178
+    max_longitude: 119.8710782
+  name: Hebei
+  code: HE
+  type: province
+HI:
+  unofficial_names: Hainan
+  translations:
+    en: Hainan
+    af: Hainan
+    ar: هاينان
+    az: Haynan
+    be: Правінцыя Хайнань
+    bg: Хайнан
+    bn: হাইনান
+    ca: Hainan
+    cs: Chaj-nan
+    da: Hainan
+    de: Hainan
+    el: Χαϊνάν
+    es: Hainan
+    et: Hainan
+    eu: Hainan
+    fa: هاینان
+    fi: Hainan
+    fr: Hainan
+    gl: Hainan
+    gu: હૈનન
+    he: האינאן
+    hi: हाइनान
+    hr: Hainan
+    hu: Hajnan
+    id: Hainan
+    is: Hainan
+    it: Hainan
+    ja: 海南省
+    ka: ხაინანი
+    kn: ಹೈನಾನ್
+    ko: 하이난 성
+    lt: Hainanas
+    lv: Hainaņa
+    mn: Хайнань
+    mr: हाइनान
+    ms: Hainan
+    nb: Hainan
+    nl: Hainan
+    pl: Hajnan
+    pt: Hainan
+    ro: Hainan
+    ru: Хайнань
+    si: හයිනන්
+    sk: Chaj-nan
+    sr: Хајнан
+    sv: Hainan
+    sw: Hainan
+    ta: ஆய்னான்
+    te: హైనన్
+    th: มณฑลไหหลำ
+    tr: Hainan
+    uk: Хайнань
+    ur: ہائنان
+    vi: Hải Nam
+    zh: 海南省
+    am: ሃይናን
+    ceb: Hainan Sheng
+    cy: Hainan
+    ga: Hainan
+    kk: Хайнань аралы
+    ky: Хайнань
+    mk: Хајнан
+    'no': Hainan
+    pa: ਹਾਈਨਾਨ
+    sr_Latn: Hajnan
+    uz: Xaynan
+    yue: 海南
+    yue_Hans: 海南
+    sd: ھائنان صوبو
+  geo:
+    latitude: 20.017378
+    longitude: 110.349229
+    min_latitude: 18.1576157
+    min_longitude: 108.6164681
+    max_latitude: 20.1589349
+    max_longitude: 111.2785748
+  name: Hainan
+  code: HI
+  type: province
+HK:
+  unofficial_names:
+  - Xianggang
+  - Hongkong
+  translations:
+    en: Hong Kong
+    zh: 香港
+    af: Hongkong
+    am: ሆንግ ኮንግ
+    ar: هونغ كونغ
+    as: হংকং
+    az: Honkonq
+    be: Ганконг
+    bg: Хонконг
+    bn: হংকং
+    bs: Hong Kong
+    ca: Hong Kong
+    ceb: Hong Kong
+    cs: Hongkong
+    cy: Hong Cong
+    da: Hongkong
+    de: Hongkong
+    el: Χονγκ Κονγκ
+    es: Hong Kong
+    et: Hongkong
+    eu: Hong Kong
+    fa: هنگ کنگ
+    fi: Hongkong
+    fr: Hong Kong
+    ga: Hong Cong
+    gl: Hong Kong
+    gu: હોંગકોંગ
+    ha: Hong Kong
+    ha_NE: Hong Kong
+    he: הונג קונג
+    hi: हांगकांग
+    hr: Hong Kong
+    hu: Hongkong
+    hy: Հոնկոնգ
+    id: Hong Kong
+    ig: Hong Kong
+    is: Hong Kong
+    it: Hong Kong
+    ja: 香港
+    jv: Hong Kong
+    ka: ჰონგ-კონგი
+    kk: Гонконг
+    km: ហុងកុង
+    kn: ಹಾಂಗ್ ಕಾಂಗ್
+    ko: 홍콩
+    ky: Гонконг
+    lo: ຮົງກົງ
+    lt: Honkongas
+    lv: Honkonga
+    mk: Хонгконг
+    ml: ഹോങ്കോങ്
+    mn: Хонг Конг
+    mr: हाँग काँग
+    ms: Hong Kong
+    my: ဟောင်ကောင်
+    ne: हङकङ
+    nl: Hongkong
+    'no': Hongkong
+    or: ହଂକଂ
+    pa: ਹਾਂਗ ਕਾਂਗ
+    pl: Hongkong
+    ps: هانګ کانګ
+    pt: Hong Kong
+    ro: Hong Kong
+    ru: Гонконг
+    si: හොංකොං
+    sk: Hongkong
+    sl: Hong Kong
+    so: Hong Kong
+    sq: Hong Kong
+    sr: Хонгконг
+    sr_Latn: Hongkong
+    sv: Hongkong
+    sw: Hong Kong
+    ta: ஃகொங்கொங்
+    te: హాంగ్‌కాంగ్
+    th: เขตบริหารพิเศษฮ่องกง
+    tk: Gonkong
+    tr: Hong Kong
+    uk: Гонконг
+    ur: ہانگ کانگ
+    uz: Gonkong
+    vi: Hồng Kông
+    yo: Họ́ng Kọng
+    yo_BJ: Hɔ́ng Kɔng
+    yue: 香港
+    yue_Hans: 香港
+    sd: هانگ ڪانگ
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  name: Xianggang (zh) **
+  code: HK
+  type: special_administrative_region
+HL:
+  unofficial_names: Heilongjiang
+  translations:
+    en: Heilongjiang
+    af: Heilongjiang
+    ar: هيلونغجيانغ
+    be: Правінцыя Хэйлунцзян
+    bg: Хъйлундзян
+    bn: হেইলোংচিয়াং
+    ca: Heilongjiang
+    cs: Chej-lung-ťiang
+    da: Heilongjiang
+    de: Heilongjiang
+    el: Χεϊλονγκτσιάνγκ
+    es: Heilongjiang
+    et: Heilongjiang
+    eu: Heilongjiang
+    fa: هیلونگ‌جیانگ
+    fi: Heilongjiang
+    fr: Heilongjiang
+    gl: Heilongjiang
+    gu: હેયલોંગજિયાંગ
+    he: חיילונגג׳יאנג
+    hi: हेइलोंगजियांग
+    hr: Heilongjiang
+    hu: Hejlungcsiang
+    hy: Հեյլունցզյան
+    id: Heilongjiang
+    it: Heilongjiang
+    ja: 黒竜江省
+    ka: ხეილუნძიანი
+    kn: ಹೀಲೋಂಗ್ಜಿಯಾಂಗ್
+    ko: 헤이룽장 성
+    lt: Heilongdziangas
+    lv: Heilundzjana
+    mn: Хармөрөн
+    mr: हैलोंगच्यांग
+    ms: Heilongjiang
+    nb: Heilongjiang
+    nl: Heilongjiang
+    pl: Heilongjiang
+    pt: Heilongjiang
+    ro: Heilongjiang
+    ru: Хэйлунцзян
+    si: හෙලිඔන්ග්ජියාන්ග්
+    sr: Хејлунгђанг
+    sv: Heilongjiang
+    sw: Heilongjiang
+    ta: கெய்லோங்சியாங்
+    te: హీలాంగ్‌జియాంగ్
+    th: มณฑลเฮย์หลงเจียง
+    tr: Heilongjiang
+    uk: Провінція Хейлунцзян
+    ur: ہیلونگجیانگ
+    vi: Hắc Long Giang
+    zh: 黑龙江省
+    ceb: Heilongjiang Sheng
+    cy: Heilongjiang
+    ga: Heilongjiang
+    mk: Хејлунгѓанг
+    'no': Heilongjiang
+    sr_Latn: Hejlungđang
+    uz: Xeylunszyan
+    yue: 黑龍江
+    yue_Hans: 黑龙江
+    az: Heyluntszyan
+    is: Heilongjiang
+    sd: ھيلانگجيئينگ صوبو
+  geo:
+    latitude: 45.74236699999999
+    longitude: 126.661665
+    min_latitude: 43.4257985
+    min_longitude: 121.1817531
+    max_latitude: 53.5636239
+    max_longitude: 135.0956699
+  name: Heilongjiang
+  code: HL
+  type: province
+HN:
+  unofficial_names: Hunan
+  translations:
+    en: Hunan
+    af: Hunan
+    ar: خونان
+    az: Xunan
+    be: Правінцыя Хунань
+    bg: Хунан
+    bn: হুনান
+    ca: Hunan
+    cs: Chu-nan
+    da: Hunan
+    de: Hunan
+    el: Χουνάν
+    es: Hunan
+    et: Hunan
+    eu: Hunan
+    fa: هونان
+    fi: Hunan
+    fr: Hunan
+    gu: હુનાન
+    he: חונאן
+    hi: हूनान
+    hr: Hunan
+    hu: Hunan
+    id: Hunan
+    it: Hunan
+    ja: 湖南省
+    ka: ხუნანი
+    kn: ಹುನಾನ್
+    ko: 후난 성
+    lt: Hunanas
+    lv: Hunaņa
+    mn: Хүнань
+    mr: हूनान
+    ms: Hunan
+    nb: Hunan
+    nl: Hunan
+    pl: Hunan
+    pt: Hunan
+    ro: Hunan
+    ru: Хунань
+    si: හුනාන්
+    sl: Hunan
+    sr: Хунан
+    sv: Hunan
+    sw: Hunan
+    ta: ஹுனான் மாகாணம்
+    te: హునాన్
+    th: มณฑลหูหนาน
+    tr: Hunan
+    uk: Хунань
+    ur: ہونان
+    vi: Hồ Nam
+    zh: 湖南省
+    ceb: Hunan Sheng
+    cy: Hunan
+    ga: Hunan
+    mk: Хунан
+    ml: ഹുനാൻ
+    'no': Hunan
+    sr_Latn: Hunan
+    uz: Xunan
+    yue: 湖南
+    yue_Hans: 湖南
+    gl: Hunan
+    hy: Հունան
+    is: Hunan
+    my: ဟူနန်ပြည်နယ်
+    sd: ھونان صوبو
+  geo:
+    latitude: 28.112449
+    longitude: 112.98381
+    min_latitude: 24.6363234
+    min_longitude: 108.7908413
+    max_latitude: 30.126363
+    max_longitude: 114.2612647
+  name: Hunan
+  code: HN
+  type: province
+JL:
+  unofficial_names: Jilin
+  translations:
+    en: Jilin
+    af: Jilin
+    ar: جيلين
+    be: Правінцыя Гірын
+    bg: Дзилин
+    bn: চিলিন
+    ca: Jilin
+    cs: Ťi-lin
+    da: Jilin
+    de: Jilin
+    el: Τζιλίν
+    es: Jilin
+    et: Jilini provints
+    eu: Jilin
+    fa: جی‌لین
+    fi: Jilin
+    fr: Jilin
+    gl: Jilin
+    gu: જિલિન
+    he: ג׳ילין
+    hi: जीलिन
+    hr: Jilin
+    hu: Csilin
+    hy: Գիրին
+    id: Jilin
+    it: Jilin
+    ja: 吉林省
+    ka: გირინი
+    kn: ಜಿಲಿನ್
+    ko: 지린 성
+    lt: Dzilinas
+    lv: Dzjiliņa
+    mn: Гирин
+    mr: चीलिन
+    ms: Jilin
+    nb: Jilin
+    nl: Jilin
+    pl: Jilin
+    pt: Jilin
+    ro: Jilin
+    ru: Гирин
+    si: ජිලින්
+    sr: Ђилин
+    sv: Jilin
+    sw: Jilin
+    ta: சிலின் மாகாணம்
+    te: జిలిన్
+    th: มณฑลจี๋หลิน
+    tr: Jilin
+    uk: Цзілінь
+    ur: جیلن
+    vi: Cát Lâm
+    zh: 吉林省
+    ceb: Jilin Sheng
+    cy: Jilin
+    ga: Jilin
+    jv: Jilin
+    mk: Ѓилин
+    'no': Jilin
+    pa: ਜੀਲਿਨ
+    sr_Latn: Đilin
+    uz: Girin
+    yue: 吉林
+    yue_Hans: 吉林
+    is: Jilin
+    sd: جيلن صوبو
+  geo:
+    latitude: 43.837883
+    longitude: 126.549572
+    min_latitude: 42.5614763
+    min_longitude: 125.6457386
+    max_latitude: 44.6481581
+    max_longitude: 127.9247254
+  name: Jilin
+  code: JL
+  type: province
+JS:
+  unofficial_names: Jiangsu
+  translations:
+    en: Jiangsu
+    af: Jiangsu
+    ar: جيانغسو
+    az: Cianqsu
+    be: Правінцыя Цзянсу
+    bg: Дзянсу
+    bn: চিয়াংসু
+    ca: Jiangsu
+    cs: Ťiang-su
+    da: Jiangsu
+    de: Jiangsu
+    el: Τσιανγκσού
+    es: Jiangsu
+    et: Jiangsu
+    eu: Jiangsu
+    fa: جیانگسو
+    fi: Jiangsu
+    fr: Jiangsu
+    gu: જિઆંગ્સુ
+    he: ג׳יאנגסו
+    hi: जिआंगसू
+    hr: Jiangsu
+    hu: Csiangszu
+    hy: Ցզյանսու
+    id: Jiangsu
+    it: Jiangsu
+    ja: 江蘇省
+    ka: ძიანსუ
+    kn: ಜಿಯಾಂಗ್ಸು
+    ko: 장쑤 성
+    lt: Dziangsu
+    lv: Dzjansu
+    mn: Жянсү
+    mr: च्यांग्सू
+    ms: Jiangsu
+    nb: Jiangsu
+    nl: Jiangsu
+    pl: Jiangsu
+    pt: Jiangsu
+    ro: Jiangsu
+    ru: Цзянсу
+    si: ජියන්ග්සු
+    sl: Džiangsu
+    sr: Ђангсу
+    sv: Jiangsu
+    sw: Jiangsu
+    ta: சியாங்சு
+    te: జియాంగ్సు
+    th: มณฑลเจียงซู
+    tr: Jiangsu
+    uk: Цзянсу
+    ur: جیانگسو
+    vi: Giang Tô
+    zh: 江苏省
+    ceb: Jiangsu Sheng
+    cy: Jiangsu
+    ga: Jiangsu
+    mk: Ѓангсу
+    ml: ജാങ്സൂ
+    'no': Jiangsu
+    sr_Latn: Đangsu
+    uz: Szyansu
+    yue: 江蘇
+    yue_Hans: 江苏
+    is: Jiangsu
+    sd: جئانگسو صوبو
+  geo:
+    latitude: 32.061707
+    longitude: 118.763232
+    min_latitude: 30.7578406
+    min_longitude: 116.3619604
+    max_latitude: 35.1245136
+    max_longitude: 121.9627784
+  name: Jiangsu
+  code: JS
+  type: province
+JX:
+  unofficial_names: Jiangxi
+  translations:
+    en: Jiangxi
+    af: Jiangsji
+    ar: جيانغشي
+    az: Jianqxi
+    be: Правінцыя Цзянсі
+    bg: Дзянси
+    bn: চিয়াংশি
+    ca: Jiangxi
+    cs: Ťiang-si
+    da: Jiangxi
+    de: Jiangxi
+    el: Τσιανγκσί
+    es: Jiangxi
+    et: Jiangxi
+    eu: Jiangxi
+    fa: جیانگشی
+    fi: Jiangxi
+    fr: Jiangxi
+    gu: જીએન્ક્સી
+    he: ג׳יאנגשי
+    hi: जिआंगशी
+    hr: Jiangxi
+    hu: Csianghszi
+    hy: Ցզյանսի
+    id: Jiangxi
+    it: Jiangxi
+    ja: 江西省
+    ka: ძიანსი
+    kn: ಜಿಯಾಂಗ್ಕ್ಸಿ
+    ko: 장시 성
+    lt: Dziangsi
+    lv: Dzjansji
+    mn: Жянши муж
+    mr: च्यांग्शी
+    ms: Jiangxi
+    nb: Jiangxi
+    nl: Jiangxi
+    pl: Jiangxi
+    pt: Jiangxi
+    ro: Jiangxi
+    ru: Цзянси
+    si: ජියන්ග්ක්සි
+    sr: Ђангси
+    sv: Jiangxi
+    sw: Jiangxi
+    ta: ஜியாங்சி மாகாணம்
+    te: జియాంగ్సీ
+    th: มณฑลเจียงซี
+    tr: Jiangxi
+    uk: Цзянсі
+    ur: جیانگشی
+    vi: Giang Tây
+    zh: 江西省
+    ceb: Jiangxi Sheng
+    cy: Jiangxi
+    ga: Jiangxi
+    mk: Ѓангси
+    'no': Jiangxi
+    sr_Latn: Đangsi
+    uz: Szyansi
+    yue: 江西
+    yue_Hans: 江西
+    is: Jiangxi
+    pa: ਜਿਆਂਗਸੀ
+    sd: جئانگشي صوبو
+  geo:
+    latitude: 28.675697
+    longitude: 115.909228
+    min_latitude: 24.4862522
+    min_longitude: 113.5781862
+    max_latitude: 30.0749464
+    max_longitude: 118.4871059
+  name: Jiangxi
+  code: JX
+  type: province
+LN:
+  unofficial_names: Liaoning
+  translations:
+    en: Liaoning
+    af: Liaoning
+    ar: لياونينغ
+    be: Правінцыя Ляанін
+    bg: Ляонин
+    bn: লিয়াওনিং
+    ca: Liaoning
+    cs: Liao-ning
+    da: Liaoning
+    de: Liaoning
+    el: Λιαόνινγκ
+    es: Liaoning
+    et: Liaoning
+    eu: Liaoning
+    fa: لیائونینگ
+    fi: Liaoning
+    fr: Liaoning
+    gl: Liaoning
+    gu: લિયોનિંગ
+    he: ליאונינג
+    hi: लियाओनिंग
+    hr: Liaoning
+    hu: Liaoning
+    hy: Լյաոնին
+    id: Liaoning
+    it: Liaoning
+    ja: 遼寧省
+    ka: ლიაონინი
+    kn: ಲಿಯಾನಿಂಗ್
+    ko: 랴오닝 성
+    lt: Liaoningas
+    lv: Liaonina
+    mn: Ляонин
+    mr: ल्याओनिंग
+    ms: Liaoning
+    nb: Liaoning
+    nl: Liaoning
+    pl: Liaoning
+    pt: Liaoning
+    ro: Liaoning
+    ru: Ляонин
+    si: ලියෝනින්ග්
+    sl: Liaoning
+    sr: Љаонинг
+    sv: Liaoning
+    sw: Liaoning
+    ta: லியாவோனிங்
+    te: లియోవానింగ్
+    th: มณฑลเหลียวหนิง
+    tr: Liaoning
+    uk: Ляонін
+    ur: لیاؤننگ
+    vi: Liêu Ninh
+    zh: 辽宁省
+    ceb: Liaoning Sheng
+    cy: Liaoning
+    ga: Liaoning
+    mk: Љаонинг
+    my: လျောင်းနင်ပြည်နယ်
+    'no': Liaoning
+    pa: ਲੀਆਓਨਿੰਗ
+    sr_Latn: Ljaoning
+    uz: Lyaonin
+    yue: 遼寧
+    yue_Hans: 辽宁
+    is: Liaoning
+    sd: لئائوننگ صوبو
+  geo:
+    latitude: 41.836175
+    longitude: 123.431383
+    min_latitude: 38.7224309
+    min_longitude: 118.845467
+    max_latitude: 43.4909841
+    max_longitude: 125.7914594
+  name: Liaoning
+  code: LN
+  type: province
+MO:
+  unofficial_names: Aomen (zh) ***
+  translations:
+    en: Macau
+    zh: 澳門
+    af: Macau
+    am: ማካው
+    ar: ماكاو
+    as: মাকাও
+    az: Makao
+    be: Макаа
+    bg: Макао
+    bn: মাকাও
+    bs: Makao
+    ca: Macau
+    ceb: Macau
+    cs: Macao
+    cy: Macau
+    da: Macao
+    de: Macau
+    el: Μακάου
+    es: Macao
+    et: Macau
+    eu: Macao
+    fa: ماکائو
+    fi: Macao
+    fr: Macao
+    ga: Macau
+    gu: મકાઉ
+    ha: Macau
+    ha_NE: Macau
+    he: מקאו
+    hi: मकाउ
+    hr: Makao
+    hu: Makaó
+    hy: Մակաու
+    id: Makau
+    is: Makaó
+    it: Macao
+    ja: マカオ
+    jv: Makau
+    ka: მაკაო
+    kk: Аумын
+    km: ម៉ាកាវ
+    kn: ಮಕಾವು
+    ko: 마카오
+    ky: Макао
+    lt: Makao
+    lv: Makao
+    mk: Макао
+    ml: മകൗ
+    mn: Макао
+    mr: मकाओ
+    ms: Makau
+    my: မကာအို
+    ne: मकाउ
+    nl: Macau
+    'no': Macao
+    or: ମକାଉ
+    pa: ਮਕਾਉ
+    pl: Makau
+    pt: Macau
+    ro: Macao
+    ru: Макао
+    si: මකාවෝ
+    sk: Macao
+    sl: Macao
+    so: Makaw
+    sq: Makao
+    sr: Макао
+    sr_Latn: Makao
+    sv: Macao
+    sw: Macau
+    ta: மக்காவு
+    te: మకావు
+    th: มาเก๊า
+    tk: Makao
+    tr: Makao
+    uk: Аоминь
+    ur: مکاؤ
+    uz: Makao
+    vi: Ma Cao
+    yo: Màkáù
+    yo_BJ: Màkáù
+    yue: 澳門
+    yue_Hans: 澳门
+    gl: Macau
+    ps: مکاو
+    sd: ميڪائو
+  geo:
+    latitude: 52.07663429999999
+    longitude: 4.313052
+    min_latitude: 52.07662879999999
+    min_longitude: 4.3130354
+    max_latitude: 52.0766395
+    max_longitude: 4.313068599999999
+  name: Aomen (zh) ***
+  code: MO
+  type: special_administrative_region
+NM:
+  unofficial_names:
+  - Inner Mongolia
+  - Nei Monggol
+  translations:
+    en: Inner Mongolia
+    af: Binne-Mongolië
+    ar: منغوليا الداخلية
+    az: Daxili Monqolustan Muxtar Rayonu
+    be: Унутраная Манголія
+    bg: Вътрешна Монголия
+    bn: অন্তর্দেশীয় মঙ্গোলিয়া
+    ca: Mongòlia Interior
+    cs: Vnitřní Mongolsko
+    da: Indre Mongoliet
+    de: Innere Mongolei
+    el: Εσωτερική Μογγολία
+    es: Mongolia Interior
+    et: Sise-Mongoolia
+    eu: Barne Mongolia
+    fa: مغولستان داخلی
+    fi: Sisä-Mongolia
+    fr: Mongolie-Intérieure
+    gl: Mongolia Interior
+    gu: ઇનર મંગોલિયા
+    he: מונגוליה הפנימית
+    hi: भीतरी मंगोलिया
+    hr: Unutarnja Mongolija
+    hu: Belső-Mongólia Autonóm Terület
+    id: Mongolia Dalam
+    it: Mongolia Interna
+    ja: 内モンゴル自治区
+    ka: შიგა მონღოლეთი
+    kn: ಇನ್ನರ್ ಮಂಗೋಲಿಯಾ
+    ko: 내몽골 자치구
+    lt: Vidinė Mongolija
+    lv: Iekšējā Mongolija
+    ml: ഇന്നർ മംഗോളിയ
+    mn: Өвөр Монголын Өөртөө Засах Орон
+    mr: आंतरिक मंगोलिया
+    ms: Mongolia Dalam
+    nb: Indre Mongolia
+    ne: भित्री मङ्गोलिया
+    nl: Binnen-Mongolië
+    pl: Mongolia Wewnętrzna
+    pt: Mongólia Interior
+    ro: Mongolia Interioară
+    ru: Внутренняя Монголия
+    si: ඇතුල් මොන්ගෝලියාව
+    sk: Vnútorné Mongolsko
+    sr: Унутрашња Монголија
+    sv: Inre Mongoliet
+    sw: Mongolia ya Kichina
+    ta: உள் மங்கோலியா
+    te: ఇన్నర్ మంగోలియా
+    th: เขตปกครองตนเองมองโกเลียใน
+    tr: İç Moğolistan
+    uk: Внутрішня Монголія
+    ur: اندرونی منگولیا
+    vi: Nội Mông
+    zh: 内蒙古自治区
+    bs: Unutrašnja Mongolija
+    ceb: Inner Mongolia Autonomous Region
+    cy: Mongolia Fewnol
+    ga: An Ion-Mhongóil
+    kk: Ішкі Моңғолия
+    mk: Внатрешна Монголија
+    'no': Indre Mongolia
+    pa: ਅੰਦਰੂਨੀ ਮੰਗੋਲੀਆ
+    sr_Latn: Unutrašnja Mongolija
+    uz: Ichki Mongoliya
+    yue: 內蒙古
+    yue_Hans: 内蒙古
+    hy: Ներքին Մոնղոլիա
+    is: Innri Mongólía
+    ky: Ички Моңголия
+  geo:
+    latitude: 40.81739
+    longitude: 111.76629
+    min_latitude: 37.4067797
+    min_longitude: 97.17276269999999
+    max_latitude: 53.33717799999999
+    max_longitude: 126.0755856
+  name: Nei Mongol (mn)
+  code: NM
+  type: autonomous_region
+NX:
+  unofficial_names:
+  - Ningxia Hui
+  translations:
+    en: Ningxia
+    af: Ningxia
+    ar: نينغشيا
+    az: Ninsya-Huey Muxtar Rayonu
+    be: Нінся-Хуэйскі аўтаномны раён
+    bg: Нинся-хуейски автономен регион
+    bn: নিংশিয়া
+    ca: Ningxia
+    cs: Ning-sia
+    da: Ningxia
+    de: Ningxia
+    el: Νινγκσιά
+    es: Ningxia
+    et: Ningxia
+    eu: Ningxia
+    fa: نینگ‌شیا
+    fi: Ningxia
+    fr: Níngxià
+    gl: Ningxia
+    gu: નિંગઝિયા હુઈ ઓટોનોમસ પ્રદેશ
+    he: נינגשיה
+    hi: निंगशिया
+    hr: Ningxia
+    hu: Ninghszia-Huj Autonóm Terület
+    hy: Նինսյա-Խուեյ
+    id: Ningxia
+    it: Ningsia
+    ja: 寧夏回族自治区
+    ka: ნინსია-ხუეი
+    kn: ನಿಂಗ್ಕ್ಸಿಯಾ ಹುಯಿ ಸ್ವಾಯತ್ತ ಪ್ರದೇಶ
+    ko: 닝샤 후이족 자치구
+    lt: Ningsia
+    lv: Ninsjas Hueju autonomais reģions
+    ml: നിൻഗ്സിയ
+    mn: Ниншя - Хотонгийн өөртөө засах орон
+    mr: निंग्स्या
+    ms: Ningxia
+    nb: Ningxia
+    nl: Ningxia
+    pl: Ningxia
+    pt: Ningxia
+    ro: Ningxia
+    ru: Нинся-Хуэйский автономный район
+    si: නින්ග්ක්සියා හුයි ස්‌වාධීන කලාපය
+    sr: Нингсја
+    sv: Ningxia
+    sw: Ningxia
+    ta: நின்ஷியா தன்னாட்சிப் பகுதி
+    te: నింజీియా హూయి అటానమస్ ప్రాంతం
+    th: เขตปกครองตนเองหนิงเซี่ยหุย
+    tr: Ningxia Huizu Özerk Bölgesi
+    uk: Нінся-Хуейський автономний район
+    ur: نینگشیا
+    vi: Ninh Hạ
+    zh: 宁夏回族自治区
+    ceb: Ningxia Huizu Zizhiqu
+    cy: Ningxia
+    ga: Ningxia
+    jv: Ningxia
+    kk: Нинся
+    mk: Нингсја
+    'no': Ningxia
+    sr_Latn: Ningsja
+    uz: Ninsya-Xuey muxtor rayoni
+    yue: 寧夏
+    yue_Hans: 宁夏
+    ig: Ningxia
+    is: Ningxia
+    sd: ننگشيا
+    sl: Ningšja
+  geo:
+    latitude: 38.471318
+    longitude: 106.258754
+    min_latitude: 35.2383034
+    min_longitude: 104.2870392
+    max_latitude: 39.3815692
+    max_longitude: 107.6592744
+  name: Ningxia
+  code: NX
+  type: autonomous_region
+QH:
+  unofficial_names: Qinghai
+  translations:
+    en: Qinghai
+    af: Qinghai
+    ar: تشينغهاي
+    be: Правінцыя Цынхай
+    bg: Цинхай
+    bn: ছিংহাই
+    ca: Qinghai
+    cs: Čching-chaj
+    da: Qinghai
+    de: Qinghai
+    el: Κινγκχάι
+    es: Qinghai
+    et: Qinghai
+    eu: Qinghai
+    fa: چینگهای
+    fi: Qinghai
+    fr: Qinghai
+    gl: Qinghai
+    gu: ક્વિઘાઈ
+    he: צ׳ינגהאי
+    hi: चिंगहई
+    hr: Qinghai
+    hu: Csinghaj
+    hy: Ցինհայ
+    id: Qinghai
+    it: Qinghai
+    ja: 青海省
+    ka: ცინხაი
+    kn: ಕ್ವಿಂಗ್ಹೈ
+    ko: 칭하이 성
+    lt: Činghai
+    lv: Cjinhai
+    mn: Хөхнуур
+    mr: छिंगहाय
+    ms: Qinghai
+    nb: Qinghai
+    nl: Qinghai
+    pl: Qinghai
+    pt: Qinghai
+    ro: Qinghai
+    ru: Цинхай
+    si: කින්ග්හයි
+    sr: Ћингхај
+    sv: Qinghai
+    sw: Qinghai
+    ta: கிங்ஹாய் மாகாணம்
+    te: ఖింగాయ్
+    th: มณฑลชิงไห่
+    tr: Çinghay
+    uk: Цінхай
+    ur: چنگھائی
+    vi: Thanh Hải
+    zh: 青海省
+    ceb: Qinghai Sheng
+    cy: Qinghai
+    ga: Qinghai
+    mk: Ќингхај
+    'no': Qinghai
+    sr_Latn: Ćinghaj
+    uz: Sinxay
+    yue: 青海
+    yue_Hans: 青海
+    is: Qinghai
+    sd: چنگھائي صوبو
+    sl: Činghaj
+  geo:
+    latitude: 36.620938
+    longitude: 101.780251
+    min_latitude: 31.5986623
+    min_longitude: 89.40442469999999
+    max_latitude: 39.2083444
+    max_longitude: 103.0709708
+  name: Qinghai
+  code: QH
+  type: province
+SC:
+  unofficial_names: Sichuan
+  translations:
+    en: Sichuan
+    af: Sitsjuan
+    ar: سيتشوان
+    az: Sıçuan
+    be: Правінцыя Сычуань
+    bg: Съчуан
+    bn: সিছুয়ান
+    ca: Sichuan
+    cs: S’-čchuan
+    da: Sichuan
+    de: Sichuan
+    el: Σιτσουάν
+    es: Sichuan
+    et: Sichuan
+    eu: Sichuan
+    fa: سیچوآن
+    fi: Sichuan
+    fr: Sichuan
+    gu: સિચુઆન
+    he: סצ׳ואן
+    hi: सिचुआन
+    hr: Sečuan
+    hu: Szecsuan
+    hy: Սիչուան
+    id: Sichuan
+    is: Sesúan
+    it: Sichuan
+    ja: 四川省
+    ka: სიჩუანი
+    kn: ಸಿಚುವಾನ್
+    ko: 쓰촨 성
+    lt: Sičuanas
+    lv: Sičuaņa
+    mn: Сычуань муж
+    mr: स-च्वान
+    ms: Sichuan
+    nb: Sichuan
+    nl: Sichuan
+    pl: Syczuan
+    pt: Sichuan
+    ro: Sichuan
+    ru: Сычуань
+    si: සිචුවාන්
+    sk: S’-čchuan
+    sl: Sečuan
+    sr: Сичуан
+    sv: Sichuan
+    sw: Sichuan
+    ta: சிச்சுவான்
+    te: సిచువాన్
+    th: มณฑลเสฉวน
+    tr: Siçuan
+    uk: Сичуань
+    ur: سیچوان
+    vi: Tứ Xuyên
+    zh: 四川省
+    bs: Sečuan
+    ceb: Sichuan Sheng
+    cy: Sichuan
+    ga: Sichuan
+    kk: Сычуань
+    mk: Сечуан
+    ml: സിഷ്വാൻ
+    'no': Sichuan
+    sr_Latn: Sičuan
+    uz: Sichuan
+    yue: 四川
+    yue_Hans: 四川
+    gl: Sichuan
+    my: စီချွမ်
+    sd: سيچوان صوبو
+  geo:
+    latitude: 30.651652
+    longitude: 104.075931
+    min_latitude: 26.0458656
+    min_longitude: 97.34808160000001
+    max_latitude: 34.313
+    max_longitude: 108.5467123
+  name: Sichuan
+  code: SC
+  type: province
+SD:
+  unofficial_names: Shandong
+  translations:
+    en: Shandong
+    af: Sjandong
+    ar: شاندونغ
+    be: Правінцыя Шаньдун
+    bg: Шандун
+    bn: শানতুং
+    ca: Shandong
+    cs: Šan-tung
+    da: Shandong
+    de: Shandong
+    el: Σαν-τούνγκ
+    es: Shandong
+    et: Shandong
+    eu: Shandong
+    fa: شاندونگ
+    fi: Shandong
+    fr: Shandong
+    gu: શાનડોંગ
+    he: שאנדונג
+    hi: शानदोंग
+    hr: Shandong
+    hu: Santung
+    hy: Շանդուն
+    id: Shandong
+    it: Shandong
+    ja: 山東省
+    ka: შანდუნი
+    kn: ಷಾಂಡಾಂಗ್
+    ko: 산둥 성
+    lt: Šandongas
+    lv: Šaņduna
+    mn: Шаньдун
+    mr: षांतोंग
+    ms: Shandong
+    nb: Shandong
+    nl: Shandong
+    pl: Szantung
+    pt: Shandong
+    ro: Shandong
+    ru: Шаньдун
+    si: ශැන්ඩොන්ග්
+    sl: Šandong
+    sr: Шандунг
+    sv: Shandong
+    sw: Shandong
+    ta: சாண்டோங்
+    te: షాండాంగ్
+    th: มณฑลซานตง
+    tr: Şantung
+    uk: Шаньдун
+    ur: شانڈونگ
+    vi: Sơn Đông
+    zh: 山东省
+    ceb: Shandong Sheng
+    cy: Shandong
+    ga: Shandong
+    mk: Шандунг
+    ml: ശാൻഡോങ്
+    'no': Shandong
+    sr_Latn: Šandung
+    uz: Shandun
+    yue: 山東
+    yue_Hans: 山东
+    az: Şantun
+    is: Shandong
+    sd: شئنڊانگ صوبو
+    sq: Shandong
+  geo:
+    latitude: 36.66853
+    longitude: 117.020359
+    min_latitude: 34.3773522
+    min_longitude: 114.8246302
+    max_latitude: 38.4011447
+    max_longitude: 122.7100401
+  name: Shandong
+  code: SD
+  type: province
+SH:
+  unofficial_names:
+  - Schanghai
+  translations:
+    en: Shanghai
+    af: Sjanghai
+    am: ሻንግሃይ
+    ar: شانغهاي
+    as: ছাংহাই
+    az: Şanxay
+    be: Шанхай
+    bg: Шанхай
+    bn: সাংহাই
+    ca: Xangai
+    cs: Šanghaj
+    da: Shanghai
+    de: Shanghai
+    el: Σαγκάη
+    es: Shanghái
+    et: Shanghai
+    eu: Shanghai
+    fa: شانگهای
+    fi: Shanghai
+    fr: Shanghai
+    gl: Shanghai
+    gu: શંઘાઈ
+    he: שאנגחאי
+    hi: शंघाई
+    hr: Šangaj
+    hu: Sanghaj
+    hy: Շանհայ
+    id: Shanghai
+    is: Sjanghæ
+    it: Shanghai
+    ja: 上海市
+    ka: შანხაი
+    kn: ಶಾಂಘೈ
+    ko: 상하이 시
+    lo: ຊຽງໄຮ້
+    lt: Šanchajus
+    lv: Šanhaja
+    ml: ഷാങ്ഹായ്
+    mn: Шанхай
+    mr: शांघाय
+    ms: Shanghai
+    nb: Shanghai
+    ne: शाङ्घाई
+    nl: Shanghai
+    pl: Szanghaj
+    ps: شانګهای
+    pt: Xangai
+    ro: Shanghai
+    ru: Шанхай
+    si: ෂැංහයි
+    sk: Šanghaj
+    sl: Šanghaj
+    sr: Шангај
+    sv: Shanghai
+    sw: Shanghai
+    ta: சாங்காய்
+    te: షాంఘై
+    th: เซี่ยงไฮ้
+    tk: Şanhaý
+    tr: Şanghay
+    uk: Шанхай
+    ur: شنگھائی
+    vi: Thượng Hải
+    zh: 上海市
+    bs: Šangaj
+    ceb: Shanghai
+    cy: Shanghai
+    ga: Shang-hai
+    ha: Shanghai
+    ha_NE: Shanghai
+    jv: Shanghai
+    kk: Шанхай
+    ky: Шанхай
+    mk: Шангај
+    my: ရှန်ဟိုင်းမြို့
+    'no': Shanghai
+    pa: ਸ਼ੰਘਾਈ
+    sq: Shangai
+    sr_Latn: Šangaj
+    uz: Shanxay
+    yue: 上海
+    yue_Hans: 上海
+    km: ស៊ាងហៃ
+  geo:
+    latitude: 31.230416
+    longitude: 121.473701
+    min_latitude: 30.68027
+    min_longitude: 120.8582174
+    max_latitude: 31.868217
+    max_longitude: 122.2470663
+  name: Shanghai
+  code: SH
+  type: municipality
+SN:
+  unofficial_names: Shaanxi
+  translations:
+    en: Shaanxi
+    af: Sjaanxi
+    ar: شنشي
+    be: Правінцыя Шэньсі
+    bg: Шънси
+    bn: শ্যানসি
+    ca: Shaanxi
+    cs: Šen-si
+    da: Shaanxi
+    de: Shaanxi
+    el: Σαάνξι
+    es: Shaanxi
+    et: Shaanxi
+    eu: Shaanxi
+    fa: شاآنشی
+    fi: Shaanxi
+    fr: Shaanxi
+    gu: શાંક્ષી
+    he: שאאנשי
+    hi: शान्शी
+    hr: Shaanxi
+    hu: Senhszi
+    hy: Շենսի
+    id: Shaanxi
+    it: Shaanxi
+    ja: 陝西省
+    ka: შენსი
+    kn: ಶಾಂಕ್ಸಿ²
+    ko: 산시 성²
+    lt: Šaansi
+    lv: Šaaņsji
+    ml: ഷാങ്സി
+    mn: Шэньси муж
+    mr: षा‘न्शी
+    ms: Shaanxi
+    nb: Shaanxi
+    nl: Shaanxi
+    pl: Shaanxi
+    pt: Shaanxi
+    ro: Shaanxi
+    ru: Шэньси
+    si: ශාන්ක්සි
+    sr: Шенси
+    sv: Shaanxi
+    sw: Shaanxi
+    ta: சென்சி மாகாணம்
+    te: షాంక్సి²
+    th: มณฑลส่านซี
+    tr: Şensi
+    uk: Шеньсі
+    ur: شانسی
+    vi: Thiểm Tây
+    zh: 陕西省
+    bs: Shaanxi
+    ceb: Shaanxi
+    cy: Shaanxi
+    ga: Shaanxi
+    mk: Шенси
+    'no': Shaanxi
+    pa: ਸ਼ੈਨਸ਼ੀ
+    sr_Latn: Šensi
+    uz: Shensi
+    yue: 陝西
+    yue_Hans: 陕西
+    is: Shaanxi
+    sd: شانڪسي صوبو
+    sl: Šaanši
+  geo:
+    latitude: 34.265472
+    longitude: 108.954239
+    min_latitude: 31.7050598
+    min_longitude: 105.491949
+    max_latitude: 39.5870105
+    max_longitude: 111.2480544
+  name: Shaanxi
+  code: SN
+  type: province
+SX:
+  unofficial_names: Shanxi
+  translations:
+    en: Shanxi
+    af: Shanxi
+    ar: شانسي
+    be: Правінцыя Шаньсі
+    bg: Шанси
+    bn: শানসি
+    ca: Shanxi
+    cs: Šan-si
+    da: Shanxi
+    de: Shanxi
+    el: Σανσί
+    es: Shanxi
+    et: Shanxi
+    eu: Shanxi
+    fa: شانشی
+    fi: Shanxi
+    fr: Shanxi
+    gu: શાન્ક્સી
+    he: שאנשי
+    hi: शन्शी
+    hr: Shanxi
+    hu: Sanhszi
+    hy: Շանսի
+    id: Shanxi
+    it: Shanxi
+    ja: 山西省
+    ka: შანსი
+    kn: ಶಾಂಕ್ಸಿ
+    ko: 산시 성
+    lt: Šansi
+    lv: Šaņsji
+    mn: Шаньси муж
+    mr: षान्शी
+    ms: Shanxi
+    nb: Shanxi
+    nl: Shanxi
+    pl: Shanxi
+    pt: Shanxi
+    ro: Shanxi
+    ru: Шаньси
+    si: ශන්ක්සි
+    sl: Shanxi
+    sr: Шанси
+    sv: Shanxi
+    sw: Shanxi
+    ta: சான்சி
+    te: షాంక్సి
+    th: มณฑลซานซี
+    tr: Şansi
+    uk: Шаньсі
+    ur: شنسی
+    vi: Sơn Tây
+    zh: 山西省
+    ceb: Shanxi Sheng
+    cy: Shanxi
+    ga: Shanxi
+    mk: Шанси
+    'no': Shanxi
+    pa: ਸ਼ਾਨਸ਼ੀ
+    sr_Latn: Šansi
+    uz: Shansi
+    yue: 山西
+    yue_Hans: 山西
+    az: Şansi
+    is: Shansi
+  geo:
+    latitude: 37.873532
+    longitude: 112.562398
+    min_latitude: 34.5819351
+    min_longitude: 110.2302481
+    max_latitude: 40.7373522
+    max_longitude: 114.5689224
+  name: Shanxi
+  code: SX
+  type: province
+TJ:
+  unofficial_names: Tianjin
+  translations:
+    en: Tianjin
+    af: Tianjin
+    ar: تيانجين
+    az: Tyantszin
+    bg: Тиендзин
+    bn: থিয়েনচিন
+    ca: Tientsin
+    cs: Tchien-ťin
+    da: Tianjin
+    de: Tianjin
+    el: Τιαντσίν
+    es: Tianjin
+    et: Tianjin Shi
+    eu: Tianjin
+    fa: تیانجین
+    fi: Tianjin
+    fr: Tianjin
+    gl: Tianjin
+    gu: તિયાન્જીન
+    he: טיינג׳ין
+    hi: तिआंजिन
+    hr: Tianjin
+    hu: Tiencsin
+    hy: Տյանցզին
+    id: Tianjin
+    is: Tianjin
+    it: Tientsin
+    ja: 天津市
+    ka: ტიანძინი
+    kn: ಟಿಯಾಂಜಿನ್
+    ko: 톈진 시
+    lt: Tiandzinas
+    lv: Tjaņdziņa
+    ml: ടിയാൻജിൻ
+    mn: Тяньжинь
+    mr: त्यांजिन
+    ms: Tianjin
+    nb: Tianjin
+    nl: Tianjin
+    pl: Tiencin
+    pt: Tianjin
+    ro: Tianjin
+    ru: Тяньцзинь
+    si: ටියන්ජින්
+    sk: Tiencin
+    sl: Tjandžin
+    sr: Тјенцин
+    sv: Tianjin
+    ta: தியான்ஜின்
+    te: టియాంజిన్
+    th: เทียนจิน
+    tk: Týanszin
+    tr: Tientsin
+    uk: Тяньцзінь
+    ur: تیانجین
+    vi: Thiên Tân
+    zh: 天津市
+    am: ትየንጂን
+    bs: Tianjin
+    ceb: Tianjin Shi
+    cy: Tianjin
+    ga: Tianjin
+    ha: Tianjin
+    ha_NE: Tianjin
+    kk: Тяньцзинь
+    mk: Тјенѓин
+    my: ထျန်းကျင်းမြို့
+    'no': Tianjin
+    pa: ਥਿਆਨਚਿਨ
+    sq: Tianxhin
+    sr_Latn: Tjencin
+    uz: Tyantszin
+    yue: 天津
+    yue_Hans: 天津
+    be: Цяньцзінь
+    ky: Тяньцзинь
+    sw: Tianjin
+  geo:
+    latitude: 39.084158
+    longitude: 117.200983
+    min_latitude: 38.5555781
+    min_longitude: 116.7080286
+    max_latitude: 40.2532141
+    max_longitude: 118.0656116
+  name: Tianjin
+  code: TJ
+  type: municipality
+TW:
+  unofficial_names: Taiwan *
+  translations:
+    en: Taiwan
+    zh: 台湾省 (中华人民共和国)
+    ar: مقاطعة تايوان، جمهورية الصين الشعبية
+    bn: তাইওয়ান প্রদেশ
+    ca: Taiwan
+    cs: Tchaj-wan (Čínská lidová republika)
+    de: Provinz Taiwan
+    el: Επαρχία Ταϊβάν (Λαϊκή Δημοκρατία της Κίνας)
+    es: Provincia de Taiwán
+    fa: استان تایوان
+    fr: province de Taiwan
+    id: Provinsi Taiwan, Republik Rakyat Tiongkok
+    it: provincia di Taiwan (Repubblica Popolare Cinese)
+    ja: 台湾省
+    ko: 타이완성
+    mk: Тајван (покрајина)
+    nl: Taiwan Province (Volksrepubliek China)
+    pl: Tajwan (Chińska Republika Ludowa)
+    pt: Província de Taiwan
+    ru: Тайвань
+    sr: Тајван (покрајина)
+    sr_Latn: Tajvan (pokrajina)
+    sv: Taiwan-provinsen i Folkrepubliken Kina
+    th: มณฑลไต้หวัน
+    tr: Tayvan
+    uk: Тайвань (провінція Китайської Народної Республіки)
+    ur: صوبہ تائیوان، عوامی جمہوریہ چین
+    vi: Đài Loan
+    yue: 臺灣省 (中華人民共和國)
+    yue_Hans: 台湾省 (中华人民共和国)
+    sd: تائيوان صوبو
+  geo:
+    latitude: 23.69781
+    longitude: 120.960515
+    min_latitude: 20.5862202
+    min_longitude: 116.7118602
+    max_latitude: 26.3836884
+    max_longitude: 123.4934282
+  name: Taiwan *
+  code: TW
+  type: province
+XJ:
+  unofficial_names:
+  - Uighur
+  - Uygur
+  translations:
+    en: Xinjiang
+    af: Xinjiang
+    ar: سنجان
+    be: Сіньцзян-Уйгурскі аўтаномны раён
+    bg: Синдзян-уйгурски автономен регион
+    bn: শিনচিয়াং
+    ca: Xinjiang
+    cs: Sin-ťiang
+    da: Xinjiang
+    de: Xinjiang
+    el: Σιντζιάνγκ
+    es: Sinkiang
+    et: Xinjiang
+    eu: Xinjiang
+    fa: سین‌کیانگ
+    fi: Xinjiang
+    fr: Xinjiang
+    gl: Xinjiang
+    gu: ઝિંજિયાંગ
+    he: שינג׳יאנג
+    hi: शिंजियांग
+    hr: Xinjiang
+    hu: Hszincsiang-Ujgur Autonóm Terület
+    id: Xinjiang
+    is: Xinjiang
+    it: Sinkiang
+    ja: 新疆ウイグル自治区
+    ka: სინძიანი
+    kn: ಕ್ಸಿನ್ಜಿಯಾಂಗ್
+    ko: 신장 위구르 자치구
+    lt: Sindziangas
+    lv: Siņdzjana
+    ml: സിൻജിയാങ്
+    mn: Шиньжян - Уйгурын өөртөө засах орон
+    mr: शिंच्यांग
+    ms: Xinjiang
+    nb: Xinjiang
+    nl: Sinkiang
+    pl: Sinciang
+    pt: Xinjiang
+    ro: Xinjiang
+    ru: Синьцзян-Уйгурский автономный район
+    si: ක්සින්ග්ජියන්ග්
+    sk: Sin-ťiang
+    sr: Сикјанг
+    sv: Xinjiang
+    ta: சிஞ்சியாங்
+    te: జింజియాంగ్
+    th: เขตปกครองตนเองซินเจียงอุยกูร์
+    tr: Sincan Uygur Özerk Bölgesi
+    uk: Сіньцзян-Уйгурський автономний район
+    ur: سنکیانگ
+    vi: Tân Cương
+    zh: 新疆维吾尔自治区
+    am: ሢንጅያንግ
+    ceb: Xinjiang Uygur Zizhiqu
+    cy: Xinjiang
+    ga: Xinjiang
+    jv: Xinjiang
+    kk: Шыңжаң Ұйғыр аутономиялық ауданы
+    ky: Шинжаң-Уйгур автоном району
+    mk: Синѓанг
+    'no': Xinjiang
+    pa: ਸ਼ਿਨਚਿਆਂਙ
+    sq: Sinkiang
+    sr_Latn: Sikjang
+    tk: Hinjiýan uýgur awtonom etraby
+    uz: Sinszyan-Uygʻur muxtor rayoni
+    yue: 新疆
+    yue_Hans: 新疆
+    az: Sincan-Uyğur Muxtar Rayonu
+    hy: Սինծյան
+    my: ရှင်းကျန်း
+    ne: सिनजियाङ
+    ps: سینګیانګ
+    sd: سنڪيانگ
+    sl: Šindžjang
+  geo:
+    latitude: 43.793026
+    longitude: 87.627704
+    min_latitude: 34.334503
+    min_longitude: 73.502355
+    max_latitude: 49.1823419
+    max_longitude: 96.38619419999999
+  name: Xinjiang
+  code: XJ
+  type: autonomous_region
+XZ:
+  unofficial_names:
+  - Tibet
+  translations:
+    en: Tibet
+    af: Tibet
+    ar: منطقة التبت ذاتية الحكم
+    az: Tibet muxtar rayonu
+    be: Тыбецкі аўтаномны раён
+    bg: Тибетски автономен регион
+    bn: তিব্বত স্বায়ত্তশাসিত অঞ্চল
+    ca: Regió Autònoma del Tibet
+    cs: Tibetská autonomní oblast
+    da: Autonom Region Tibet
+    de: Autonomes Gebiet Tibet
+    el: Θιβέτ
+    es: Tíbet
+    et: Tiibeti autonoomne piirkond
+    eu: Tibeteko eskualde autonomoa
+    fa: منطقه خودمختار تبت
+    fi: Tiibetin autonominen alue
+    fr: Région autonome du Tibet
+    gl: Rexión Autónoma do Tíbet
+    he: המחוז האוטונומי הטיבטי
+    hi: बोड स्वायत्त क्षेत्र
+    hr: Tibet
+    hu: Tibeti Autonóm Terület
+    hy: Տիբեթի ինքնավար շրջան
+    id: Tibet
+    is: Tíbet
+    it: regione autonoma del Tibet
+    ja: チベット自治区
+    ka: ტიბეტის ავტონომიური რეგიონი
+    ko: 티베트 자치구
+    lt: Tibeto autonominis regionas
+    lv: Tibetas autonomais reģions
+    ml: തിബെത്ത് സ്വയംഭരണപ്രദേശം
+    mn: Төвөдийн өөртөө засах орон
+    mr: तिबेट स्वायत्त प्रदेश
+    ms: Kawasan Autonomi Tibet
+    nb: Tibet
+    nl: Tibetaanse Autonome Regio
+    or: ତିବ୍ବତ
+    pl: Tybetański Region Autonomiczny
+    pt: Região Autônoma do Tibete
+    ro: Regiunea autonomă Tibet
+    ru: Тибетский автономный район
+    sk: Tibet
+    sr: Тибет
+    sv: Autonoma regionen Tibet
+    ta: திபெத் தன்னாட்சிப் பகுதி
+    te: టిబెట్ స్వాధికార ప్రాంతం
+    th: เขตปกครองตนเองทิเบต
+    tr: Tibet Özerk Bölgesi
+    uk: Тибетський автономний район
+    ur: تبت خود مختار علاقہ
+    vi: Khu tự trị Tây Tạng
+    zh: 西藏自治区
+    as: তিব্বত স্বায়ত্তশাসিত অঞ্চল
+    bs: Tibet
+    ceb: Tibet Autonomous Region
+    cy: Ardal hunanlywodraethol Tibet
+    mk: Тибет
+    'no': Tibet
+    pa: ਤਿੱਬਤ ਖ਼ੁਦਮੁਖ਼ਤਿਆਰ ਸੂਬਾ
+    sq: Tibet
+    sr_Latn: Tibet
+    uz: Tibet muxtor rayoni
+    yo: Agbègbè Aladawa Tibet
+    yo_BJ: Agbègbè Aladawa Tibet
+    yue: 西藏
+    yue_Hans: 西藏
+    ga: An Tibéid
+    ky: Тибет Өзэркин Району
+    sl: Avtonomna regija Tibet
+    tk: Tibet Awtonom Sebiti
+  geo:
+    latitude: 29.646923
+    longitude: 91.117212
+    min_latitude: 26.8548157
+    min_longitude: 78.3955448
+    max_latitude: 36.4833345
+    max_longitude: 99.116241
+  name: Xizang
+  code: XZ
+  type: autonomous_region
+YN:
+  unofficial_names: Yunnan
+  translations:
+    en: Yunnan
+    af: Yunnan
+    ar: يونان
+    be: Правінцыя Юньнань
+    bg: Юнан
+    bn: ইউনান
+    ca: Yunnan
+    cs: Jün-nan
+    da: Yunnan
+    de: Yunnan
+    el: Γιουνάν
+    es: Yunnan
+    et: Yunnan
+    eu: Yunnan
+    fa: یون‌نان
+    fi: Yunnan
+    fr: Yunnan
+    gu: યુન્નન
+    he: יונאן
+    hi: युन्नान
+    hr: Yunnan
+    hu: Jünnan
+    hy: Յունան
+    id: Yunnan
+    is: Yunnan
+    it: Yunnan
+    ja: 雲南省
+    ka: იუნანი
+    kn: ಯುನ್ನಾನ್
+    ko: 윈난 성
+    lt: Junanas
+    lv: Juņnaņa
+    mn: Юньнань муж
+    mr: युइन्नान
+    ms: Yunan
+    nb: Yunnan
+    nl: Yunnan
+    pl: Junnan
+    pt: Yunnan
+    ro: Yunnan
+    ru: Юньнань
+    si: යුනාන්
+    sk: Jün-nan
+    sl: Yunnan
+    sr: Јунан
+    sv: Yunnan
+    sw: Yunnan
+    ta: யுன்னான்
+    te: యునాన్
+    th: มณฑลยูนนาน
+    tr: Yünnan
+    uk: Юньнань
+    ur: یوننان
+    vi: Vân Nam
+    zh: 云南省
+    ceb: Yunnan Sheng
+    cy: Yunnan
+    ga: Yunnan
+    mk: Јунан
+    ml: യുന്നാൻ
+    my: ယူနန်ပြည်နယ်
+    'no': Yunnan
+    sr_Latn: Junan
+    uz: Yunnan
+    yue: 雲南
+    yue_Hans: 云南
+    km: ខេត្តយូណាន
+    sd: يونان صوبو
+  geo:
+    latitude: 25.045806
+    longitude: 102.710002
+    min_latitude: 21.1417698
+    min_longitude: 97.5279786
+    max_latitude: 29.2233271
+    max_longitude: 106.1977227
+  name: Yunnan
+  code: YN
+  type: province
+ZJ:
+  unofficial_names: Zhejiang
+  translations:
+    en: Zhejiang
+    af: Zhejiang
+    ar: تشيجيانغ
+    be: Правінцыя Чжэцзян
+    bg: Джъдзян
+    bn: চেচিয়াং
+    ca: Zhejiang
+    cs: Če-ťiang
+    da: Zhejiang
+    de: Zhejiang
+    el: Τσετσιάνγκ
+    es: Zhejiang
+    et: Zhejiang
+    eu: Zhejiang
+    fa: چجیانگ
+    fi: Zhejiang
+    fr: Zhejiang
+    gu: ઝેજીઆંગ
+    he: ג׳ג׳יאנג
+    hi: झेजियांग
+    hr: Zhejiang
+    hu: Csöcsiang
+    id: Zhejiang
+    it: Zhejiang
+    ja: 浙江省
+    ka: ჯეძიანი
+    kn: ಝೆಜಿಯಾಂಗ್
+    ko: 저장 성
+    lt: Džedziangas
+    lv: Džedzjana
+    mn: Жөжян
+    mr: च-च्यांग
+    ms: Zhejiang
+    nb: Zhejiang
+    ne: झेजिआङ
+    nl: Zhejiang
+    pl: Zhejiang
+    pt: Zhejiang
+    ro: Zhejiang
+    ru: Чжэцзян
+    si: සෙජියාන්ග්
+    sk: Če-ťiang
+    sl: Žeijang
+    sr: Џеђанг
+    sv: Zhejiang
+    sw: Zhejiang
+    ta: செஜியாங் மாகாணம்
+    te: జీజంగ్
+    th: มณฑลเจ้อเจียง
+    tr: Zhejiang
+    uk: Чжецзян
+    ur: ژجیانگ
+    vi: Chiết Giang
+    zh: 浙江省
+    az: Çjetszyan
+    ceb: Zhejiang Sheng
+    cy: Zhejiang
+    ga: Zhejiang
+    hy: Չժեցզյան
+    mk: Џеѓанг
+    'no': Zhejiang
+    sr_Latn: Džeđang
+    uz: Chjetszyan
+    yue: 浙江
+    yue_Hans: 浙江
+    is: Zhejiang
+    my: ကျဲ့ကျန်းပြည်နယ်
+    sd: ججيئانگ صوبو
+  geo:
+    latitude: 30.267443
+    longitude: 120.152792
+    min_latitude: 27.041518
+    min_longitude: 118.028279
+    max_latitude: 31.1787821
+    max_longitude: 122.9494378
+  name: Zhejiang
+  code: ZJ
+  type: province

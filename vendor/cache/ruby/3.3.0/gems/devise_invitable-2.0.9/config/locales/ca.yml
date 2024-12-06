@@ -1,0 +1,32 @@
+
+ca:
+  devise:
+    failure:
+      invited: "Tens una invitació pendent, accepta-la per acabar de crear el teu compte."
+    invitations:
+      send_instructions: "S'ha enviat una invitació a %{email}."
+      invitation_token_invalid: "La invitació no es vàlida!"
+      updated: "S'ha configurat la seva contrasenya i s'ha ingressat al sistema"
+      updated_not_active: "La seva contrasenya s'ha configurat correctament."
+      no_invitations_remaining: "No queden invitacions"
+      invitation_removed: "S'ha retirat la seva invitació"
+      new:
+        header: "Enviar Invitació"
+        submit_button: "Envia una invitació"
+      edit:
+        header: "Establir contrasenya"
+        submit_button: "Guardar la meva contrasenya"
+    mailer:
+      invitation_instructions:
+        subject: "Instruccions de la invitació"
+        hello: "Hola %{email}"
+        someone_invited_you: "Has estat invitat a %{url}, pots acceptar-ho seguint el següent enllaç"
+        accept: "Aceptar la invitació"
+        accept_until: "Aquesta invitació expirarà en %{due_date}."
+        ignore: "Si no li interessa aquesta invitació, simplement ignori aquest correu. No es crearà el teu compte fins que accedeixis a l'anterior enllaç i creïs una contrasenya"
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%d de %B de %Y, %H:%M"

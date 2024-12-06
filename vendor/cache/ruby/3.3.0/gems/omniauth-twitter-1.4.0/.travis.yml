@@ -1,0 +1,13 @@
+dist: trusty
+
+rvm:
+  - 2.1.10
+  - 2.2.6
+  - 2.3.3
+  - 2.4.0
+  - jruby-1.7.26
+  - rbx-3
+
+matrix:
+  allow_failures:
+    - rvm: rbx-3

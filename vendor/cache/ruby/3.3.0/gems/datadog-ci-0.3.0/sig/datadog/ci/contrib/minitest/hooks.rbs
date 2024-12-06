@@ -1,0 +1,19 @@
+module Datadog
+  module CI
+    module Contrib
+      module Minitest
+        module Hooks : ::Minitest::Test
+          include ::Minitest::Test::LifecycleHooks
+
+          def before_setup: () -> (nil | untyped)
+
+          def after_teardown: () -> untyped
+
+          private
+
+          def configuration: () -> untyped
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,56 @@
+---
+NG:
+  alpha2: NG
+  alpha3: NGA
+  continent: Africa
+  country_code: '234'
+  currency_code: NGN
+  distance_unit: KM
+  gec: NI
+  geo:
+    latitude: 9.081999
+    longitude: 8.675277
+    max_latitude: 13.8856449
+    max_longitude: 14.677982
+    min_latitude: 4.1821001
+    min_longitude: 2.676932
+    bounds:
+      northeast:
+        lat: 13.8856449
+        lng: 14.677982
+      southwest:
+        lat: 4.1821001
+        lng: 2.676932
+  international_prefix: '009'
+  ioc: NGR
+  iso_long_name: The Federal Republic of Nigeria
+  iso_short_name: Nigeria
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  national_prefix: '0'
+  nationality: Nigerian
+  number: '566'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: NG
+  unofficial_names:
+  - Nigeria
+  - Nigéria
+  - the Federal Republic of Nigeria
+  - ナイジェリア
+  vat_rates:
+    standard: 5
+    reduced: []
+    super_reduced:
+    parking:
+  world_region: EMEA

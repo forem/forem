@@ -1,0 +1,61 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://api.knapsackpro.test:3000/v1/build_distributions/subset
+    body:
+      encoding: UTF-8
+      string: '{"fixed_test_suite_split":true,"cache_read_attempt":true,"commit_hash":"abcdefg","branch":"master","node_total":"2","node_index":"1","ci_build_id":"missing-build-id"}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      Knapsack-Pro-Client-Name:
+      - knapsack_pro-ruby
+      Knapsack-Pro-Client-Version:
+      - 3.5.0
+      Knapsack-Pro-Test-Suite-Token:
+      - 3fa64859337f6e56409d49f865d13fd7
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"1f643e3528e8ff45d9d2d67ab7e32be1"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 9b378323-c960-4868-894e-5ae0cdab8840
+      X-Runtime:
+      - '0.273775'
+      Server-Timing:
+      - sql.active_record;dur=55.90, start_processing.action_controller;dur=0.00,
+        unpermitted_parameters.action_controller;dur=0.01, instantiation.active_record;dur=10.69,
+        process_action.action_controller;dur=92.24
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"code":"TEST_SUITE_SPLIT_CACHE_MISS"}'
+  recorded_at: Thu, 08 Dec 2022 23:27:07 GMT
+recorded_with: VCR 6.1.0

@@ -1,0 +1,527 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	>
+
+<channel>
+	<title>Tender Lovemaking</title>
+	<atom:link href="http://tenderlovemaking.com/feed/" rel="self" type="application/rss+xml" />
+	<link>http://tenderlovemaking.com</link>
+	<description>The act of making love, tenderly.</description>
+	<pubDate>Mon, 29 Dec 2008 07:51:19 +0000</pubDate>
+	<generator>http://wordpress.org/?v=2.7</generator>
+	<language>en</language>
+	<lastBuildDate>Sat, 07 Sep 2002 09:42:31 GMT</lastBuildDate>
+	<ttl>60</ttl>
+	<image>
+		<url>https://tenderlovemaking.com/images/header-logo-text-trimmed.png</url>
+		<title>Tender Lovemaking</title>
+		<link>http://tenderlovemaking.com</link>
+		<width>766</width>
+		<height>138</height>
+		<description>The act of making love, tenderly.</description>
+	</image>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+		<atom:link rel="hub" href="http://pubsubhubbub.appspot.com/"/>
+		<item>
+		<title>Nokogiri&#8217;s Slop Feature</title>
+		<link>http://tenderlovemaking.com/2008/12/04/nokogiris-slop-feature/</link>
+		<comments>http://tenderlovemaking.com/2008/12/04/nokogiris-slop-feature/#comments</comments>
+		<pubDate>Thu, 04 Dec 2008 17:17:49 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[computadora]]></category>
+
+		<category><![CDATA[nokogiri]]></category>
+
+		<category><![CDATA[rails]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=198</guid>
+		<description><![CDATA[Oops!  When I released nokogiri version 1.0.7, I totally forgot to talk about Nokogiri::Slop() feature that was added.  Why is it called "slop"?  It lets you sloppily explore documents.  Basically, it decorates your document with method_missing() that allows you to search your document via method calls.
+Given this document:
+
+doc = Nokogiri::Slop&#40;&#60;&#60;-eohtml&#41;
+&#60;html&#62;
+&#160; &#60;body&#62;
+&#160; [...]]]></description>
+			<content:encoded><![CDATA[<p>Oops!  When I released <a href="http://nokogiri.rubyforge.org/" onclick="javascript:urchinTracker ('/outbound/article/nokogiri.rubyforge.org');">nokogiri</a> version 1.0.7, I totally forgot to talk about Nokogiri::Slop() feature that was added.  Why is it called "slop"?  It lets you sloppily explore documents.  Basically, it decorates your document with method_missing() that allows you to search your document via method calls.</p>
+<p>Given this document:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">doc = Nokogiri::Slop<span class="br0">&#40;</span>&lt;&lt;-eohtml<span class="br0">&#41;</span><br />
+&lt;html&gt;<br />
+&nbsp; &lt;body&gt;<br />
+&nbsp; &nbsp; &lt;p&gt;hello&lt;/p&gt;<br />
+&nbsp; &nbsp; &lt;p <span class="kw1">class</span>=<span class="st0">&quot;bold&quot;</span>&gt;bold hello&lt;/p&gt;<br />
+&nbsp; &lt;body&gt;<br />
+&lt;/html&gt;<br />
+eohtml</div>
+</div>
+<p>You may look through the tree like so:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">doc.<span class="me1">html</span>.<span class="me1">body</span>.<span class="kw3">p</span><span class="br0">&#40;</span>'.<span class="me1">bold</span>'<span class="br0">&#41;</span>.<span class="me1">text</span> <span class="co1"># =&gt; 'bold hello' </span></div>
+</div>
+<p>The way this works is that method missing is implemented on every node in the document tree.  That method missing method creates an xpath or css query by using the method name and method arguments.  This means that a new search is executed for every method call.  It's fun for playing around, but you definitely won't get the same performance as using one specific CSS search.</p>
+<p>My favorite part is that method missing is actually in the <a href="http://github.com/tenderlove/nokogiri/tree/master/lib/nokogiri/decorators/slop.rb" onclick="javascript:urchinTracker ('/outbound/article/github.com');">slop decorator</a>.  When you use the Nokogiri::Slop() method, it adds the decorator to a list that gets mixed in to every node instance at runtime using Module#extend.  That lets me have sweet method missing action, without actually putting method missing in my Node class.</p>
+<p>Here is a simplified example:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw1">module</span> Decorator<br />
+&nbsp; <span class="kw1">def</span> method_a<br />
+&nbsp; &nbsp; <span class="st0">&quot;method a&quot;</span><br />
+&nbsp; <span class="kw1">end</span></p>
+<p>&nbsp; <span class="kw1">def</span> method_b<br />
+&nbsp; &nbsp; <span class="st0">&quot;method b: #{super}&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p><span class="kw1">class</span> Foo<br />
+&nbsp; <span class="kw1">def</span> method_b<br />
+&nbsp; &nbsp; <span class="st0">&quot;inside foo&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p>foo = Foo.<span class="me1">new</span><br />
+foo.<span class="me1">extend</span><span class="br0">&#40;</span>Decorator<span class="br0">&#41;</span></p>
+<p><span class="kw3">puts</span> foo.<span class="me1">method_a</span> <span class="co1"># =&gt; 'method a'</span><br />
+<span class="kw3">puts</span> foo.<span class="me1">method_b</span> <span class="co1"># =&gt; 'method b: inside foo'</span></p>
+<p>foo2 = Foo.<span class="me1">new</span><br />
+<span class="kw3">puts</span> foo2.<span class="me1">method_b</span> <span class="co1"># =&gt; 'inside foo'</span><br />
+<span class="kw3">puts</span> foo2.<span class="me1">method_a</span> <span class="co1"># =&gt; NoMethodError </span></div>
+</div>
+<p>Module#extend is used to add functionality to the <strong>instance</strong> 'foo', but not 'foo2'.  Both 'foo' and 'foo2' are instances of Foo, but using Module#extend, we can conditionally add functionality <strong>without monkey patching</strong> and keeping a clean separation of concerns.  You can even reach previous functionality by calling super.</p>
+<p>But wait!  There's more!  You can stack up these decorators as much as you want.  For example:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw1">module</span> AddAString<br />
+&nbsp; <span class="kw1">def</span> method<br />
+&nbsp; &nbsp; <span class="st0">&quot;Added a string: #{super}&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p><span class="kw1">module</span> UpperCaseResults<br />
+&nbsp; <span class="kw1">def</span> method<br />
+&nbsp; &nbsp; <span class="kw1">super</span>.<span class="me1">upcase</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p><span class="kw1">class</span> Foo<br />
+&nbsp; <span class="kw1">def</span> method<br />
+&nbsp; &nbsp; <span class="st0">&quot;foo&quot;</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></p>
+<p>foo = Foo.<span class="me1">new</span><br />
+foo.<span class="me1">extend</span><span class="br0">&#40;</span>AddAString<span class="br0">&#41;</span><br />
+foo.<span class="me1">extend</span><span class="br0">&#40;</span>UpperCaseResults<span class="br0">&#41;</span></p>
+<p><span class="kw3">puts</span> foo.<span class="me1">method</span> <span class="co1"># =&gt; 'ADDED A STRING: FOO' </span></div>
+</div>
+<p>Conditional functionality added to methods with no weird "alias method chain" involvement.  Awesome!</p>
+<p>I love ruby!</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/12/04/nokogiris-slop-feature/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Cross Compiling Ruby Gems for win32</title>
+		<link>http://tenderlovemaking.com/2008/11/21/cross-compiling-ruby-gems-for-win32/</link>
+		<comments>http://tenderlovemaking.com/2008/11/21/cross-compiling-ruby-gems-for-win32/#comments</comments>
+		<pubDate>Sat, 22 Nov 2008 04:27:02 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[computadora]]></category>
+
+		<category><![CDATA[nokogiri]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=187</guid>
+		<description><![CDATA[While I was developing nokogiri, I had to learn how to cross compile gems for win32.  I don't have a compiler on windows, so I had to do this on OS X.  I just want to dump a few notes here so that other people might benefit, and so that I won't forget [...]]]></description>
+			<content:encoded><![CDATA[<p>While I was developing <a href="http://github.com/tenderlove/nokogiri/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">nokogiri</a>, I had to learn how to cross compile gems for win32.  I don't have a compiler on windows, so I had to do this on OS X.  I just want to dump a few notes here so that other people might benefit, and so that I won't forget in the future.</p>
+<p>As far as I can tell, there are 4 major steps to getting your native gem cross compiled for windows:</p>
+<ol>
+<li>Get a cross compiler (mingw)</li>
+<li>Cross compile ruby</li>
+<li>Cross compile your gem</li>
+<li>Building your gemspec</li>
+</ol>
+<h3>Step 1, The Cross Compiler</h3>
+<p>This step is pretty easy.  I used Mac Ports to install mingw32.  I just did:</p>
+<div class="codesnip-container" >$ sudo port install i386-mingw32-binutils i386-mingw32-gcc i386-mingw32-runtime i386-mingw32-w32api</div>
+<p>After a while, I could run i386-mingw32-gcc to compile stuff.  Next up, cross compiling ruby.</p>
+<h3>Step 2, Cross Compile Ruby</h3>
+<p>This seemed like the hardest step to me.  I was able to get ruby cross compiling to work after studying documentation at <a href="http://eigenclass.org/hiki/cross+compiling+rcovrt" onclick="javascript:urchinTracker ('/outbound/article/eigenclass.org');">eigenclass</a>, and reading Matt's excellent notes in <a href="http://github.com/jbarnette/johnson/tree/master/cross-compile.txt" onclick="javascript:urchinTracker ('/outbound/article/github.com');">Johnson</a>.</p>
+<p>First, you have to download ruby, so I wrote a rake task to do just that.  This rake task downloads ruby in to a "stash" directory:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">namespace :build <span class="kw1">do</span><br />
+&nbsp; file <span class="st0">&quot;stash/ruby-1.8.6-p287.tar.gz&quot;</span> <span class="kw1">do</span> |t|<br />
+&nbsp; &nbsp; <span class="kw3">puts</span> <span class="st0">&quot;downloading ruby&quot;</span><br />
+&nbsp; &nbsp; FileUtils.<span class="me1">mkdir_p</span><span class="br0">&#40;</span>'stash'<span class="br0">&#41;</span><br />
+&nbsp; &nbsp; Dir.<span class="me1">chdir</span><span class="br0">&#40;</span>'stash'<span class="br0">&#41;</span> <span class="kw1">do</span> <br />
+&nbsp; &nbsp; &nbsp; url = <span class="br0">&#40;</span><span class="st0">&quot;ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p287.tar.gz&quot;</span><span class="br0">&#41;</span><br />
+&nbsp; &nbsp; &nbsp; <span class="kw3">system</span><span class="br0">&#40;</span><span class="st0">&quot;wget #{url} || curl -O #{url}&quot;</span><span class="br0">&#41;</span><br />
+&nbsp; &nbsp; <span class="kw1">end</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>Next you have to apply a patch to Makefile.in so that it will work with the cross compiler.  Once that patch is applied, you can compile ruby with mingw32.  Here is my rake task to do that, and unfortunately the strange Makefile.in patch is very necessary:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">namespace :build <span class="kw1">do</span><br />
+&nbsp; namespace :win32 <span class="kw1">do</span><br />
+&nbsp; &nbsp; file 'cross/bin/ruby.<span class="me1">exe</span>' =&gt; <span class="br0">&#91;</span>'cross/ruby<span class="nu0">-1.8</span><span class="nu0">.6</span>-p287'<span class="br0">&#93;</span> <span class="kw1">do</span><br />
+&nbsp; &nbsp; &nbsp; Dir.<span class="me1">chdir</span><span class="br0">&#40;</span>'cross/ruby<span class="nu0">-1.8</span><span class="nu0">.6</span>-p287'<span class="br0">&#41;</span> <span class="kw1">do</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; str = ''<br />
+&nbsp; &nbsp; &nbsp; &nbsp; File.<span class="kw3">open</span><span class="br0">&#40;</span>'Makefile.<span class="kw1">in</span>', 'rb'<span class="br0">&#41;</span> <span class="kw1">do</span> |f|<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; f.<span class="me1">each_line</span> <span class="kw1">do</span> |line|<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="kw1">if</span> line =~ /^\s*ALT_SEPARATOR =/<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; str += <span class="st0">&quot;<span class="es0">\t</span><span class="es0">\t</span>&nbsp; &nbsp; &quot;</span> + 'ALT_SEPARATOR = <span class="st0">&quot;<span class="es0">\\</span><span class="es0">\\</span><span class="es0">\&quot;</span>; <span class="es0">\'</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; str += &quot;</span>\n<span class="st0">&quot;<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; str += line<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end<br />
+&nbsp; &nbsp; &nbsp; &nbsp; end<br />
+&nbsp; &nbsp; &nbsp; &nbsp; File.open('Makefile.in', 'wb') { |f| f.write str }<br />
+&nbsp; &nbsp; &nbsp; &nbsp; buildopts = if File.exists?('/usr/bin/i586-mingw32msvc-gcc')<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;</span>--host=i586-mingw32msvc --target=i386-mingw32 --build=i686-linux<span class="st0">&quot;<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;</span>--host=i386-mingw32 --target=i386-mingw32<span class="st0">&quot;<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; end<br />
+&nbsp; &nbsp; &nbsp; &nbsp; sh(&lt;&lt;-eocommand)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; env ac_cv_func_getpgrp_void=no <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ac_cv_func_setpgrp_void=yes <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rb_cv_negative_time_t=no <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ac_cv_func_memcmp_working=yes <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rb_cv_binary_elf=no <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ./configure <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #{buildopts} <span class="es0">\</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; --prefix=#{File.expand_path(File.join(Dir.pwd, '..'))}<br />
+&nbsp; &nbsp; &nbsp; &nbsp; eocommand<br />
+&nbsp; &nbsp; &nbsp; &nbsp; sh 'make'<br />
+&nbsp; &nbsp; &nbsp; &nbsp; sh 'make install'<br />
+&nbsp; &nbsp; &nbsp; end<br />
+&nbsp; &nbsp; end</p>
+<p>&nbsp; &nbsp; desc 'build cross compiled ruby'<br />
+&nbsp; &nbsp; task :ruby =&gt; 'cross/bin/ruby.exe'<br />
+&nbsp; end<br />
+end </span></div>
+</div>
+<p>After executing that task (which will take a while), you should have a cross compiled ruby that you can link against.</p>
+<h3>Step 3, Cross compiling your extension</h3>
+<p>The final part is cross compiling the extension.  Now that you have your cross compiled ruby, you just need to cross compile your extension.  The only thing special you need to do here is change the '-I' flag you send to ruby when executing 'extconf.rb'.  Here is a slightly simplified version of my task to do that:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">namespace :build<br />
+&nbsp; task :win32 <span class="kw1">do</span><br />
+&nbsp; &nbsp; dash_i = File.<span class="me1">expand_path</span><span class="br0">&#40;</span><br />
+&nbsp; &nbsp; &nbsp; File.<span class="me1">join</span><span class="br0">&#40;</span>File.<span class="me1">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span>, 'cross/lib/ruby/<span class="nu0">1.8</span>/i386-mingw32/'<span class="br0">&#41;</span><br />
+&nbsp; &nbsp; <span class="br0">&#41;</span><br />
+&nbsp; &nbsp; Dir.<span class="me1">chdir</span><span class="br0">&#40;</span>'ext/nokogiri'<span class="br0">&#41;</span> <span class="kw1">do</span><br />
+&nbsp; &nbsp; &nbsp; ruby <span class="st0">&quot; -I #{dash_i} extconf.rb&quot;</span><br />
+&nbsp; &nbsp; &nbsp; sh 'make'<br />
+&nbsp; &nbsp; <span class="kw1">end</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>Once that is completed, it is time to package the gem.  In order to do that, you need to generate your gemspec.</p>
+<h3>Step 4, generating the gemspec</h3>
+<p>I typically use Hoe for packaging my gems.  Hoe makes generating my gemspecs pretty easy.  One little problem though is that hoe makes assumptions for your gemspec based on the system you are currently running.  Since we're cross compiling, we need to muck with the gemspec in order to package our win32 gem.</p>
+<p>To modify the gemspec, what I do is assign the new Hoe object to a constant like so:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">HOE = Hoe.<span class="me1">new</span><span class="br0">&#40;</span>'nokogiri', Nokogiri::VERSION<span class="br0">&#41;</span> <span class="kw1">do</span> |p|<br />
+&nbsp; <span class="kw3">p</span>.<span class="me1">developer</span><span class="br0">&#40;</span>'Aaron Patterson', 'aaronp@rubyforge.<span class="me1">org</span>'<span class="br0">&#41;</span><br />
+&nbsp; <span class="kw3">p</span>.<span class="me1">developer</span><span class="br0">&#40;</span>'Mike Dalessio', 'mike.<span class="me1">dalessio</span>@gmail.<span class="me1">com</span>'<span class="br0">&#41;</span><br />
+&nbsp; <span class="kw3">p</span>.<span class="me1">clean_globs</span> = <span class="br0">&#91;</span><br />
+&nbsp; &nbsp; 'ext/nokogiri/Makefile',<br />
+&nbsp; &nbsp; 'ext/nokogiri/*.<span class="br0">&#123;</span>o,so,bundle,a,log,dll<span class="br0">&#125;</span>',<br />
+&nbsp; &nbsp; 'ext/nokogiri/conftest.<span class="me1">dSYM</span>',<br />
+&nbsp; &nbsp; GENERATED_PARSER,<br />
+&nbsp; &nbsp; GENERATED_TOKENIZER,<br />
+&nbsp; &nbsp; 'cross',<br />
+&nbsp; <span class="br0">&#93;</span><br />
+&nbsp; <span class="kw3">p</span>.<span class="me1">spec_extras</span> = <span class="br0">&#123;</span> :extensions =&gt; <span class="br0">&#91;</span><span class="st0">&quot;Rakefile&quot;</span><span class="br0">&#93;</span> <span class="br0">&#125;</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>Then when I'm building my win32 gemspec, I modify the gemspec with win32 specific bits and write out the gemspec.  This task modifies the gemspec file list to include any binary files such as dll's and so files that I've built, assigns the platform to mswin32, and tells the gemspec that there are no extensions to be built:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">namespace :gem <span class="kw1">do</span><br />
+&nbsp; namespace :win32 <span class="kw1">do</span><br />
+&nbsp; &nbsp; task :spec =&gt; <span class="br0">&#91;</span>'build:win32'<span class="br0">&#93;</span> <span class="kw1">do</span><br />
+&nbsp; &nbsp; &nbsp; File.<span class="kw3">open</span><span class="br0">&#40;</span><span class="st0">&quot;#{HOE.name}.gemspec&quot;</span>, 'w'<span class="br0">&#41;</span> <span class="kw1">do</span> |f|<br />
+&nbsp; &nbsp; &nbsp; &nbsp; HOE.<span class="me1">spec</span>.<span class="me1">files</span> += Dir<span class="br0">&#91;</span>'ext/nokogiri/**.<span class="br0">&#123;</span>dll,so<span class="br0">&#125;</span>'<span class="br0">&#93;</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; HOE.<span class="me1">spec</span>.<span class="me1">platform</span> = 'x86-mswin32<span class="nu0">-60</span>'<br />
+&nbsp; &nbsp; &nbsp; &nbsp; HOE.<span class="me1">spec</span>.<span class="me1">extensions</span> = <span class="br0">&#91;</span><span class="br0">&#93;</span><br />
+&nbsp; &nbsp; &nbsp; &nbsp; f.<span class="me1">write</span><span class="br0">&#40;</span>HOE.<span class="me1">spec</span>.<span class="me1">to_ruby</span><span class="br0">&#41;</span><br />
+&nbsp; &nbsp; &nbsp; <span class="kw1">end</span><br />
+&nbsp; &nbsp; <span class="kw1">end</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>We have to modify the file list and remove any extension building tasks because the gem is going to be shipped with the pre-built windows binaries.  Setting the platform to that hardcoded string is a total hack, but I couldn't figure out a different way.  If you were building this spec on windows, you should use "Gem::Platform::CURRENT" instead of that string.  After executing this task, you should end up with a file named "packagename.gemspec".  Just run "gem build packagename.gemspec", and you'll have your win32 gem, completely windows free!</p>
+<h3>Final Notes</h3>
+<p>Unfortunately just because it compiled, doesn't mean it will run.  My workflow for testing was to package the gem, transfer it to a windows machine, run "gem unpack" on the gem.  After unpacking the gem, I could go in to the directory and run my tests.  Once I was satisfied that all tests passed, I would release the gem.</p>
+<p>One final thing....  Nokogiri ships with the libxml and libxslt dll files.  In order to get those files to be found with dlopen (or whatever it is that windows uses), they must be in your PATH.  Yes.  Your PATH.  So Nokogiri changes the environment's PATH to include the directory where the DLL's are located.  You can see the hot PATH manipulation code <a href="http://github.com/tenderlove/nokogiri/tree/master/lib%2Fnokogiri.rb#L10" onclick="javascript:urchinTracker ('/outbound/article/github.com');">here</a>.</p>
+<p>If you want to see all of the uncensored nitty gritty of the cross compilation action, check out the <a href="http://github.com/tenderlove/nokogiri/tree/master/Rakefile" onclick="javascript:urchinTracker ('/outbound/article/github.com');">Nokogiri Rakefile</a> located <a href="http://github.com/tenderlove/nokogiri/tree/master/Rakefile" onclick="javascript:urchinTracker ('/outbound/article/github.com');">here</a>.</p>
+<p>Good luck, and don't forget about those windows people.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/11/21/cross-compiling-ruby-gems-for-win32/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Underpant-Free Excitement</title>
+		<link>http://tenderlovemaking.com/2008/11/18/underpant-free-excitement/</link>
+		<comments>http://tenderlovemaking.com/2008/11/18/underpant-free-excitement/#comments</comments>
+		<pubDate>Tue, 18 Nov 2008 21:17:38 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[computadora]]></category>
+
+		<category><![CDATA[nokogiri]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=114</guid>
+		<description><![CDATA[Underpant-Free Excitement, or, why Nokogiri works for me.
+Nokogiri is an HTML/XML/XSLT parser that can be searched via XPath or CSS3 selectors.  The library wraps libxml and libxslt, but the API is based off Hpricot.  I wrote this library (with the help of super awesome ruby hacker Mike Dalessio) because I was unhappy with [...]]]></description>
+			<content:encoded><![CDATA[<p>Underpant-Free Excitement, or, why <a href="http://nokogiri.rubyforge.org/" onclick="javascript:urchinTracker ('/outbound/article/nokogiri.rubyforge.org');">Nokogiri</a> works for me.</p>
+<p><a href="http://github.com/tenderlove/nokogiri/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">Nokogiri</a> is an HTML/XML/XSLT parser that can be searched via XPath or CSS3 selectors.  The library wraps libxml and libxslt, but the API is based off Hpricot.  I wrote this library (with the help of super awesome ruby hacker <a href="http://mike.daless.io/" onclick="javascript:urchinTracker ('/outbound/article/mike.daless.io');">Mike Dalessio</a>) because I was unhappy with the API of libxml-ruby, and I was unhappy with the support, speed, and broken html support of Hpricot.  I wanted something with an awesome API like Hpricot, but fast like libxml-ruby and with better XPath and CSS support.</p>
+<p>I want to talk about the underpinnings, speed, and some interesting implementation details of nokogiri.  But first, lets look at a quick example of parsing google just to whet your appetite.</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw3">require</span> 'nokogiri'<br />
+<span class="kw3">require</span> 'open-uri'</p>
+<p>doc = Nokogiri.<span class="me1">HTML</span><span class="br0">&#40;</span><span class="kw3">open</span><span class="br0">&#40;</span>'http://google.<span class="me1">com</span>/search?q=tenderlove'<span class="br0">&#41;</span>.<span class="me1">read</span><span class="br0">&#41;</span><br />
+doc.<span class="me1">search</span><span class="br0">&#40;</span>'h3.<span class="me1">r</span> &gt; a.<span class="me1">l</span>'<span class="br0">&#41;</span>.<span class="me1">each</span> <span class="kw1">do</span> |link|<br />
+&nbsp; <span class="kw3">puts</span> link.<span class="me1">inner_text</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>This sample searches google for the string "tenderlove", then searches the document with the given CSS selector "h3.r > a.l", and prints out the inner text of each found node.  It's as simple as that.  You can get fancier, with sub searches, or using XPath, but you'll have to explore that on your own for now.</p>
+<h3>Underpinnings</h3>
+<p>Nokogiri is a wrapper around libxml2 and libxslt, but also includes a CSS selector parser.  I chose libxml2 because it is very fast, it's available for many platforms, it corrects broken HTML, has built in XPath search support, it is popular, and the list goes on.</p>
+<p>Given these reasons, I felt that there was no reason for me to write my own HTML parser and corrector when there is an existing library that has all of these good qualities.  The best thing to do in this situation is leverage this existing library and expose a friendly ruby API.  In fact, the only thing that libxml is missing is an API to search documents via CSS.  Most of the API calls in Nokogiri are implemented inside libxml except for the CSS selector parser, and even that leverages the XPath API.</p>
+<p>Since Nokogiri leverages libxml2, consumers get (among other things) fast parsing, i13n support, fast searching, standards based XPath support, namespace support, and mature HTML correction algorithms.</p>
+<p>Re-using existing popular code like libxml2 also has some nice side benefits.  More people are testing, and most importantly, bugs get squashed quickly.</p>
+<h3>Speed</h3>
+<p>People keep asking me about speed.  Is Nokogiri fast?  Yes.  Is it faster than Hpricot?  Yes.  Faster than Hpricot 2?  Yes.  All tests in <a href="http://gist.github.com/24605" onclick="javascript:urchinTracker ('/outbound/article/gist.github.com');">this benchmark</a> show Nokogiri to be faster in all aspects.  But you shouldn't believe me.  I am just some (incredibly attractive) dude on the internet.  Try it out for yourself.  Clone <a href="http://gist.github.com/24605" onclick="javascript:urchinTracker ('/outbound/article/gist.github.com');">this gist</a> and run the benchmarks!  Write your own benchmarks!  I don't want you to believe me.  I want you to find out for yourself.</p>
+<p>If you write any benchmarks, send them back to me!  I like adding to the list, even if they show Nokogiri to be slower.  It helps me know where to improve!</p>
+<h3>Implementation Details</h3>
+<p>I've already touched on the underpinnings of Nokogiri.  Specifically that it wraps libxml2 which gives us parsing, and XPath searching for free.  One thing I'd like to talk about is the CSS selector implementation.  I found this part of Nokogiri to be particularly challenging and fun!</p>
+<p>The way the CSS selector search works is Nokogiri parses the selector, then converts it in to XPath, then leverages the XPath search to return results.  I was able to take the <a href="http://www.w3.org/TR/css3-selectors/#w3cselgrammar" onclick="javascript:urchinTracker ('/outbound/article/www.w3.org');">grammar and lexer</a> from the W3C, and output a tokenizer and parser.  I used RACC to generate the parser, and FREX (my fork of REX) to output a tokenizer.  The generated parser outputs an AST.  I implemented a visitor which walks the AST and turns it in to an XPath query.  That's it!  Really no magic necessary.</p>
+<h3>Conclusion</h3>
+<p>Nokogiri works for me because re-uses a popular, fast, standards based, and well maintained library.  But that is why it works for <b>me</b>.  I encourage you to download it and try it out yourself.  I think you'll be pleased!</p>
+<p>I am so happy with this project, that I will be eventually deprecating the use of Hpricot in Mechanize.  Nokogiri's API is so similar to Hpricot that I doubt there will be any surprises.  If you are just using mechanize's public API, you should not have to change anything.  If you dive in to the parser and use hpricot selectors, you might need to change some things.  The Nokogiri API is very much like Hpricot, so I think that most people won't need to do anything.</p>
+<h3>In the meantime.....</h3>
+<p>If you find any problems, <a href="http://nokogiri.lighthouseapp.com/projects/19607-nokogiri/tickets?q=all" onclick="javascript:urchinTracker ('/outbound/article/nokogiri.lighthouseapp.com');">file a ticket</a>!  The source code is <a href="http://github.com/tenderlove/nokogiri/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">hosted on github</a>.  If you'd like to see more examples, check out <a href="http://github.com/tenderlove/nokogiri/tree/master/README.txt" onclick="javascript:urchinTracker ('/outbound/article/github.com');">the readme</a>, and <a href="http://github.com/tenderlove/nokogiri/wikis" onclick="javascript:urchinTracker ('/outbound/article/github.com');">the wiki</a>.</p>
+<p>Thanks for reading!</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/11/18/underpant-free-excitement/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>RubyConf Slides</title>
+		<link>http://tenderlovemaking.com/2008/11/11/rubyconf-slides/</link>
+		<comments>http://tenderlovemaking.com/2008/11/11/rubyconf-slides/#comments</comments>
+		<pubDate>Wed, 12 Nov 2008 03:49:30 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[life]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=172</guid>
+		<description><![CDATA[Hey everyone!  I've finally settled myself after returning from RubyConf.
+Here are the slides from the Seattle.RB presentation at RubyConf.
+Enjoy!
+]]></description>
+			<content:encoded><![CDATA[<p>Hey everyone!  I've finally settled myself after returning from <a href="http://rubyconf.org" onclick="javascript:urchinTracker ('/outbound/article/rubyconf.org');">RubyConf</a>.</p>
+<p><a href="http://tenderlovemaking.com/seattlerb.pdf" >Here are the slides</a> from the Seattle.RB presentation at RubyConf.</p>
+<p>Enjoy!</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/11/11/rubyconf-slides/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Easily Add Growl Notifications to Autotest</title>
+		<link>http://tenderlovemaking.com/2008/11/03/easily-add-growl-notifications-to-autotest/</link>
+		<comments>http://tenderlovemaking.com/2008/11/03/easily-add-growl-notifications-to-autotest/#comments</comments>
+		<pubDate>Mon, 03 Nov 2008 23:06:39 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[computadora]]></category>
+
+		<category><![CDATA[meow]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=165</guid>
+		<description><![CDATA[I recently released a new version of meow which is a ruby library to easily integrate growl notifications in to your applications.  The main feature I added was to make it easy to add growl notifications for autotest.
+All you have to do is add "require 'meow/autotest'" to your .autotest file.
+Here is a screencast.  [...]]]></description>
+			<content:encoded><![CDATA[<p>I recently released a new version of <a href="http://meow.rubyforge.org/meow/" onclick="javascript:urchinTracker ('/outbound/article/meow.rubyforge.org');">meow</a> which is a ruby library to easily integrate growl notifications in to your applications.  The main feature I added was to make it easy to add growl notifications for autotest.</p>
+<p>All you have to do is add "require 'meow/autotest'" to your .autotest file.</p>
+<p>Here is a screencast.  Please be kind.  This is my first screencast!  (that is why I use all the features!)</p>
+<p><object type="application/x-shockwave-flash" width="499" height="312" data="http://www.flickr.com/apps/video/stewart.swf?v=61761" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="flashvars" value="intl_lang=en-us&amp;photo_secret=57c3d12116&amp;photo_id=2993705321"></param><param name="movie" value="http://www.flickr.com/apps/video/stewart.swf?v=61761"></param><param name="bgcolor" value="#000000"></param><param name="allowFullScreen" value="true"></param><embed type="application/x-shockwave-flash" src="http://www.flickr.com/apps/video/stewart.swf?v=61761" bgcolor="#000000" allowfullscreen="true" flashvars="intl_lang=en-us&amp;photo_secret=57c3d12116&amp;photo_id=2993705321" height="312" width="499"></embed></object></p>
+<p><a href='http://tenderlovemaking.com/wp-content/uploads/2008/11/meow_autotest.mov'>Direct Download</a>.</p>
+<p>I forgot to mention.  Make sure you're running OS X 10.5.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/11/03/easily-add-growl-notifications-to-autotest/feed/</wfw:commentRss>
+<enclosure url="http://tenderlovemaking.com/wp-content/uploads/2008/11/meow_autotest.mov" length="6961598" type="video/quick" />
+		</item>
+		<item>
+		<title>Nokogiri Is Released</title>
+		<link>http://tenderlovemaking.com/2008/10/30/nokogiri-is-released/</link>
+		<comments>http://tenderlovemaking.com/2008/10/30/nokogiri-is-released/#comments</comments>
+		<pubDate>Fri, 31 Oct 2008 03:36:31 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[life]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=156</guid>
+		<description><![CDATA[Hey internet.  How are you doing?  Ya.  It's been a while.  I know, I know.  I suck at blogging.  Couldn't you tell by my horrible layout?  But seriously, I've been really busy lately.  We used to have such good times together.  I'd write a blog post, [...]]]></description>
+			<content:encoded><![CDATA[<p>Hey internet.  How are you doing?  Ya.  It's been a while.  I know, I know.  I suck at blogging.  Couldn't you tell by my horrible layout?  But seriously, I've been really busy lately.  We used to have such good times together.  I'd write a blog post, you would show it to everyone on the internet.  But that spark just doesn't seem to be there anymore.</p>
+<p>Well, I'm doing my best to keep this relationship together.  With the help of super awesome ruby hacker <a href="http://mike.daless.io/" onclick="javascript:urchinTracker ('/outbound/article/mike.daless.io');">Mike Dalessio</a>, I wrote an XML/HTML parsing library for ruby called <a href="http://github.com/tenderlove/nokogiri/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">Nokogiri</a>.  What is so great about Nokogiri?  Well, for one it is really easy to parse HTML or XML:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw3">require</span> 'nokogiri'</p>
+<p>doc = Nokogiri::HTML<span class="br0">&#40;</span>&lt;&lt;-eohtml<span class="br0">&#41;</span><br />
+&lt;html&gt;<br />
+&nbsp; &lt;body&gt;<br />
+&nbsp; &nbsp; &lt;div id=<span class="st0">&quot;wrapper&quot;</span>&gt;<br />
+&nbsp; &nbsp; &nbsp; &lt;h1&gt;Hello world&lt;/h1&gt;<br />
+&nbsp; &nbsp; &nbsp; &lt;p&gt;Paragraph&lt;/p&gt;<br />
+&nbsp; &nbsp; &lt;/div&gt;<br />
+&nbsp; &lt;/body&gt;<br />
+&lt;/html&gt;<br />
+eohtml</div>
+</div>
+<p>Oh, I know what you're saying internet.  Ya, sure, it's easy to parse, but is it easy to search?  Well, it is.  I promise.  You know XPath, right?  Well you can search by XPath very easily:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">doc.<span class="me1">xpath</span><span class="br0">&#40;</span>'//<span class="kw3">p</span>'<span class="br0">&#41;</span>.<span class="me1">each</span> <span class="kw1">do</span> |paragraph|<br />
+&nbsp; <span class="kw3">puts</span> paragraph.<span class="me1">text</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>Oh, you don't know XPath very well?  That's OK.  I know you know CSS.  You use it everywhere!  I've viewed your source (<em>wink</em> <em>wink</em>).  Well you can search using CSS selectors as well:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">doc.<span class="me1">css</span><span class="br0">&#40;</span>'div<span class="co1">#wrapper').each do |div_with_wrapper_id|</span><br />
+&nbsp; <span class="kw3">puts</span> div_with_wrapper_id<span class="br0">&#91;</span>'id'<span class="br0">&#93;</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>Oh, I see how it is.  You don't want to commit.  You want to search with CSS selectors <em>and</em> XPath.  Well fine.  You can have that too.  Just use the "search" method, and you can mix and match your selectors:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">css.<span class="me1">search</span><span class="br0">&#40;</span>'//<span class="kw3">p</span>', 'div<span class="co1">#wrapper') do |node|</span><br />
+&nbsp; <span class="kw3">puts</span> node.<span class="me1">name</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>Well, I hope you're feeling better about our relationship now.  I just want to tell you that you shouldn't worry about that old legacy code that uses Hpricot.  Nokogiri can be used as a drop in replacement!  Really!  Nokogiri doesn't reproduce the bugs that are in Hpricot, but should work in most cases.  Just use "Nokogir::Hpricot()" to parse your HTML.  Of course, I've tried to keep the syntax of Hpricot that I like.  For example, you can use slashes for searching, subsearching:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="br0">&#40;</span>doc/'div'<span class="br0">&#41;</span>.<span class="me1">each</span> <span class="br0">&#123;</span> |div| <span class="kw3">puts</span> div.<span class="me1">at</span><span class="br0">&#40;</span>'<span class="kw3">p</span>'<span class="br0">&#41;</span>.<span class="me1">text</span> <span class="br0">&#125;</span></div>
+</div>
+<p>You even get a <a href="http://gist.github.com/18533" onclick="javascript:urchinTracker ('/outbound/article/gist.github.com');">speed increase</a>.  For free!</p>
+<p>Want to install Nokogiri?  No problem.  Just do "gem install nokogiri".  It's that easy!</p>
+<p>Well, now that we're back together, why don't you send some <a href="http://twitter.com/tenderlove" onclick="javascript:urchinTracker ('/outbound/article/twitter.com');">twitters</a> if you like it!  Thanks innernet.  I promise to update you more often.  I swear.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/10/30/nokogiri-is-released/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Mushrooms, Beef Jerky, and Programming</title>
+		<link>http://tenderlovemaking.com/2008/09/08/mushrooms-beef-jerky-and-programming/</link>
+		<comments>http://tenderlovemaking.com/2008/09/08/mushrooms-beef-jerky-and-programming/#comments</comments>
+		<pubDate>Mon, 08 Sep 2008 15:41:14 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[life]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=151</guid>
+		<description><![CDATA[This weekend I went mushroom hunting and found about 6 Chanterelle mushrooms, and they were delicious!  I made cream of mushroom soup with Chanterelles for the main course, and a Tres Leches cake for desert.  I still have about three pound left.  I think I'll go hunting them again next weekend.  [...]]]></description>
+			<content:encoded><![CDATA[<p>This weekend I went mushroom hunting and found about 6 Chanterelle mushrooms, and they were delicious!  I made cream of mushroom soup with Chanterelles for the main course, and a Tres Leches cake for desert.  I still have about three pound left.  I think I'll go hunting them again next weekend.  I can't wait!  I'm thinking about giving a few to <a href="http://blog.zenspider.com/" onclick="javascript:urchinTracker ('/outbound/article/blog.zenspider.com');">zenspider</a> a few since I know how much he loves them.</p>
+<p><a href="http://www.flickr.com/photos/aaronp/2839251628/" title="IMG_0206.JPG by fakebeard, on Flickr" onclick="javascript:urchinTracker ('/outbound/article/www.flickr.com');"><img src="http://farm4.static.flickr.com/3161/2839251628_324a917154_m.jpg" width="240" height="160" alt="IMG_0206.JPG" /></a><a href="http://www.flickr.com/photos/aaronp/2839260336/" title="IMG_0210.JPG by fakebeard, on Flickr" onclick="javascript:urchinTracker ('/outbound/article/www.flickr.com');"><img src="http://farm4.static.flickr.com/3123/2839260336_b521b745d3_m.jpg" width="240" height="160" alt="IMG_0210.JPG" /></a></p>
+<p>Recently, I've been refactoring Mechanize and I've added support for a few new things.  First, mechanize now (and when I say "now", I mean <a href="http://github.com/tenderlove/mechanize/tree" onclick="javascript:urchinTracker ('/outbound/article/github.com');">whats checked in</a>) supports "file://" urls.  For example:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">agent = WWW::Mechanize.<span class="me1">new</span><br />
+page = agent.<span class="me1">get</span><span class="br0">&#40;</span><span class="st0">&quot;file:///Users/aaron/some_file.html&quot;</span><span class="br0">&#41;</span></div>
+</div>
+<p>Directories work too.  Mechanize will turn directories in to a list of links for your navigation convenience.  I've also added criteria based searching to links and frames.  For example:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">agent = WWW::Mechanize.<span class="me1">new</span><br />
+agent.<span class="me1">get</span><span class="br0">&#40;</span>'http://google.<span class="me1">com</span>/'<span class="br0">&#41;</span> <span class="kw1">do</span> |page|<br />
+&nbsp; page = page.<span class="me1">form_with</span><span class="br0">&#40;</span>:name =&gt; 'f'<span class="br0">&#41;</span> <span class="kw1">do</span> |form|<br />
+&nbsp; &nbsp; form.<span class="me1">q</span> = 'Aaron Patterson'<br />
+&nbsp; <span class="kw1">end</span>.<span class="me1">submit</span></p>
+<p>&nbsp; page.<span class="me1">links_with</span><span class="br0">&#40;</span>:text =&gt; /tender/i<span class="br0">&#41;</span>.<span class="me1">each</span> <span class="kw1">do</span> |link|<br />
+&nbsp; &nbsp; <span class="kw3">puts</span> link.<span class="me1">text</span><br />
+&nbsp; <span class="kw1">end</span><br />
+<span class="kw1">end</span></div>
+</div>
+<p>There is a singular and plural form.  So you can locate many or one form, link, iframes, etc.</p>
+<p>These changes will go in to an 0.8.0 release.  However, I'm planning larger changes for a 1.0.0 release.  I want to get rid of the WWW namespace, and stick with just Mechanize.  I think that would probably be the largest change between 0.8.0 and 1.0.0 that I can think of.  If you'd like to try out the new changes, just grab the gem from github: "gem install tenderlove-mechanize -s http://gems.github.com".</p>
+<p>Finally, I will be teaching the <a href="http://www.extension.washington.edu/ext/certificates/rby/rby_gen.asp" onclick="javascript:urchinTracker ('/outbound/article/www.extension.washington.edu');">Ruby Certificate</a> course at the UW.  There are 3 courses, beginning Ruby, Ruby with Rails, and Advanced Topics in Ruby.  <a href="http://blog.zenspider.com/" onclick="javascript:urchinTracker ('/outbound/article/blog.zenspider.com');">Ryan</a> will be teaching the beginning course, I'll be teaching the Rails course, and I will be co-instructing the advanced course with Ryan.  I am considering using <a href="http://www.amazon.com/Rails-Way-Addison-Wesley-Professional-Ruby/dp/0321445619/ref=pd_bbs_sr_1?ie=UTF8&amp;s=books&amp;qid=1220884544&amp;sr=8-1" onclick="javascript:urchinTracker ('/outbound/article/www.amazon.com');">The Rails Way</a> or <a href="http://pragprog.com/titles/rails3/agile-web-development-with-rails-third-edition" onclick="javascript:urchinTracker ('/outbound/article/pragprog.com');">Agile Web Development with Rails (3rd ed)</a>.  I'm leaning towards the Agile book, but we'll see!  Anyway, you should sign up!</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/09/08/mushrooms-beef-jerky-and-programming/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Identifying unknown music with Ruby</title>
+		<link>http://tenderlovemaking.com/2008/08/04/identifying-unknown-music-with-ruby/</link>
+		<comments>http://tenderlovemaking.com/2008/08/04/identifying-unknown-music-with-ruby/#comments</comments>
+		<pubDate>Mon, 04 Aug 2008 18:44:49 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[earworm]]></category>
+
+		<category><![CDATA[icanhasaudio]]></category>
+
+		<category><![CDATA[life]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=147</guid>
+		<description><![CDATA[Ben Bleything inspired me (or rather distracted me from my yak shaving) to get my music library cleaned up and remove duplicates.  Unfortunately my duplicates don't necessarily have ID3 tags, and they may be in different formats, so I wrote a gem called "earworm" which will identify unknown music.  First I'll give you [...]]]></description>
+			<content:encoded><![CDATA[<p><a href="http://blog.bleything.net/" onclick="javascript:urchinTracker ('/outbound/article/blog.bleything.net');">Ben Bleything</a> inspired me (or rather distracted me from my <a href="http://github.com/aaronp/zomg/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">yak</a> <a href="http://github.com/aaronp/nokogiri/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">shaving</a>) to get my music library cleaned up and remove duplicates.  Unfortunately my duplicates don't necessarily have ID3 tags, and they may be in different formats, so I wrote a gem called "<a href="http://earworm.rubyforge.org/earworm/" onclick="javascript:urchinTracker ('/outbound/article/earworm.rubyforge.org');">earworm</a>" which will identify unknown music.  First I'll give you a code sample, then explain how to get earworm working, and finally explain how earworm works.</p>
+<p>Here is the code sample:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;">ew = Earworm::Client.<span class="me1">new</span><span class="br0">&#40;</span>'MY Music DNS Key'<span class="br0">&#41;</span><br />
+info = ew.<span class="me1">identify</span><span class="br0">&#40;</span>:file =&gt; '/home/aaron/unknown.<span class="me1">wav</span>'<span class="br0">&#41;</span><br />
+<span class="kw3">puts</span> <span class="st0">&quot;#{info.artist_name} - #{info.title}&quot;</span></div>
+</div>
+<p>Earworm just needs a MusicDNS key and a file name to return information about your unknown audio.</p>
+<p>Okay, now for getting  the gem to work.  Unfortunately this takes a little work right now.  You need to install a few libraries before earworm will work.  These libraries let you decode and identify mp3, ogg, and wav files.</p>
+<p>For OS X (assuming you have MacPorts already installed) do this:</p>
+<div class="codesnip-container" >$ sudo port install libogg libvorbis lame libofa</div>
+<p>For Linux:</p>
+<div class="codesnip-container" >$ sudo yum install libogg-devel libvorbis-devel lame-devel libofa</div>
+<p>Then just install the gem like so:</p>
+<div class="codesnip-container" >$ sudo gem install earworm</div>
+<p>The final thing you need is a key from <a href="http://www.musicip.com/dns/index.jsp" onclick="javascript:urchinTracker ('/outbound/article/www.musicip.com');">MusicDNS</a> which you can obtain <a href="http://www.musicip.com/dns/license.jsp" onclick="javascript:urchinTracker ('/outbound/article/www.musicip.com');">here</a>.  The key is free for non-commercial applications.  Now you should be set!  Earworm will automatically decode mp3 files and ogg files for you, so you don't have to do that yourself.</p>
+<p>How does earworm work?  First, it relies on <a href="http://icanhasaudio.com/" onclick="javascript:urchinTracker ('/outbound/article/icanhasaudio.com');">icanhasaudio</a> for audio decoding.  Second, it uses <a href="http://ruby-doc.org/stdlib/libdoc/dl/rdoc/index.html" onclick="javascript:urchinTracker ('/outbound/article/ruby-doc.org');">DL</a> to wrap <a href="http://code.google.com/p/musicip-libofa/" onclick="javascript:urchinTracker ('/outbound/article/code.google.com');">libofa</a>.  libofa takes between 10 and 135 seconds of audio and generates a hash.  After getting the hash for the audio snippet, earworm posts the hash (along with your key and some other info) to MusicDNS's web service.  The web services returns an XML document with information about the audio snippet.  Earworm parses the XML document and returns a nice object containing the information you requested.  Thats it!  No magic, and very simple (IMO) <a href="http://github.com/aaronp/earworm/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">source code</a>.</p>
+<p>Enjoy!</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/08/04/identifying-unknown-music-with-ruby/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Back Home!</title>
+		<link>http://tenderlovemaking.com/2008/07/08/back-home/</link>
+		<comments>http://tenderlovemaking.com/2008/07/08/back-home/#comments</comments>
+		<pubDate>Tue, 08 Jul 2008 18:34:06 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[life]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=146</guid>
+		<description><![CDATA[I'm finally back home.  I went to Japan a few weeks ago for vacation, and I also spoke at Ruby Kaigi 2008.  Ruby Kaigi was so much fun!  I've been studying Japanese for a little over a year, but I've never been to Japan.  It was exciting and fun to talk [...]]]></description>
+			<content:encoded><![CDATA[<p>I'm finally back home.  I went to Japan a few weeks ago for vacation, and I also spoke at <a href="http://jp.rubyist.net/RubyKaigi2008/" onclick="javascript:urchinTracker ('/outbound/article/jp.rubyist.net');">Ruby Kaigi 2008</a>.  Ruby Kaigi was so much fun!  I've been studying Japanese for a little over a year, but I've never been to Japan.  It was exciting and fun to talk to people, and I made a bunch of new Japanese friends.  I'd really like to thank Leonard Chin for helping out at the Kaigi.  My language skills aren't good enough, and he was kind enough to fill in the gaps.  Thank you!</p>
+<p>While I was in Japan, I noticed <a href="http://en.wikipedia.org/wiki/QR_Code" onclick="javascript:urchinTracker ('/outbound/article/en.wikipedia.org');">QR Codes</a> everywhere.  QR Codes are basically really awesome bar codes.  They can hold much more information in a smaller amount of space.  They can be easily decoded from images taken with digital cameras.  They have these codes everywhere in Japan, and the idea is that people can take a photo with the camera on their cell phone, then the phone decodes the QR Code.  I believe most of the QR codes contain information about the company, or possibly a URL to the company's website.</p>
+<p>The company that created the format says that the format is open, but unfortunately I have to pay for the spec.  I can download the spec in Japanese for free, but my Japanese isn't that good!  So unfortunately I'm stuck with either the <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=43655" onclick="javascript:urchinTracker ('/outbound/article/www.iso.org');">ISO spec</a> (which is over $200) or the <a href="https://www.aimglobal.org/estore/ProductDetails.aspx?ProductID=31" onclick="javascript:urchinTracker ('/outbound/article/www.aimglobal.org');">AIM spec</a> ($85).  I don't understand why they are so expensive.....  I think I'll buy the AIM one, and hope that it is the same as the ISO one.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/07/08/back-home/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Meow meow meow meow meow</title>
+		<link>http://tenderlovemaking.com/2008/06/06/meow-meow-meow-meow-meow/</link>
+		<comments>http://tenderlovemaking.com/2008/06/06/meow-meow-meow-meow-meow/#comments</comments>
+		<pubDate>Fri, 06 Jun 2008 19:56:52 +0000</pubDate>
+		<dc:creator>Aaron Patterson</dc:creator>
+
+		<category><![CDATA[computadora]]></category>
+
+		<category><![CDATA[meow]]></category>
+
+		<guid isPermaLink="false">http://tenderlovemaking.com/?p=141</guid>
+		<description><![CDATA[The other day I wrote an app called dejour to give me growl notifications from all the *jour gems out there.  I used Eric Hodel's awesome ruby-growl library.  Unfortunately it does all communications over the interweb, so you have to tweak some knobs in Growl to get it to work.  I stumbled [...]]]></description>
+			<content:encoded><![CDATA[<p>The other day I wrote an app called <a href="http://github.com/aaronp/dejour/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">dejour</a> to give me growl notifications from <a href="http://github.com/chad/gitjour/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">all</a> <a href="http://github.com/evanphx/gemjour/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">the</a> <a href="http://github.com/jbarnette/pastejour/tree/master" onclick="javascript:urchinTracker ('/outbound/article/github.com');">*jour</a> gems out there.  I used Eric Hodel's awesome <a href="http://segment7.net/projects/ruby/growl/" onclick="javascript:urchinTracker ('/outbound/article/segment7.net');">ruby-growl</a> library.  Unfortunately it does all communications over the interweb, so you have to tweak some knobs in Growl to get it to work.  I stumbled across a ruby/cocoa example using Growl, fixed it up, and released a gem called "Meow".</p>
+<p>Meow lets you post notifications to your local machine without adjusting Growl.  If you're on OS X 10.5, just do:</p>
+<div class="codesnip-container" >$ gem install meow</div>
+<p>Then you can do this:</p>
+<div class="codesnip-container" >$ ruby -r rubygems -e'require "meow"; Meow.notify("meow", "meow", "meow")'</div>
+<p>No growl tweaks required!  Here is a code sample that is a little more explanatory:</p>
+<div class="codesnip-container" >
+<div class="codesnip" style="font-family: monospace;"><span class="kw3">require</span> 'rubygems'<br />
+<span class="kw3">require</span> 'meow'</p>
+<p>meep = Meow.<span class="me1">new</span><span class="br0">&#40;</span>'My Application Name'<span class="br0">&#41;</span><br />
+meep.<span class="me1">notify</span><span class="br0">&#40;</span>'Message Title', 'Message Description'<span class="br0">&#41;</span></div>
+</div>
+<p>Be sure to check out <a href="http://meow.rubyforge.org/" onclick="javascript:urchinTracker ('/outbound/article/meow.rubyforge.org');">the documentation</a>.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://tenderlovemaking.com/2008/06/06/meow-meow-meow-meow-meow/feed/</wfw:commentRss>
+		</item>
+	</channel>
+</rss>

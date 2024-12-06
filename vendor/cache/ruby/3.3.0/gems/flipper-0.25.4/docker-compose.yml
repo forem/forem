@@ -1,0 +1,37 @@
+version: "2.4"
+services:
+  # postgres:
+  #   container_name: flipper_postgres
+  #   image: postgres:9.4
+  redis:
+    container_name: flipper_redis
+    image: redis:6.2.5
+  mongo:
+    container_name: flipper_mongo
+    image: mongo:4.4.8
+  memcached:
+    container_name: flipper_memcached
+    image: memcached:1.4.33
+  app:
+    container_name: flipper_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/srv/app
+    volumes_from:
+      - bundle_cache
+    links:
+      # - postgres
+      - redis
+      - mongo
+      - memcached
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_HOST=mongo
+      - MEMCACHED_URL=memcached:11211
+  bundle_cache:
+    container_name: flipper_bundle_cache
+    image: busybox
+    volumes:
+      - /bundle_cache

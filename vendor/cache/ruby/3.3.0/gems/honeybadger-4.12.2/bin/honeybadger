@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require File.expand_path('../../lib/honeybadger/cli.rb', __FILE__)
+
+Honeybadger::CLI.start(ARGV)

@@ -1,0 +1,317 @@
+  3.5. HTTP/2 Connection Preface
+      Sends invalid connection preface    ✓ Sends invalid connection preface
+
+  4.2. Frame Size
+      Sends large size frame that exceeds the SETTINGS_MAX_FRAME_SIZE    ✓ Sends large size frame that exceeds the SETTINGS_MAX_FRAME_SIZE
+
+  4.3. Header Compression and Decompression
+      Sends invalid header block fragment    ✓ Sends invalid header block fragment
+      Sends Dynamic Table Size Update (RFC 7541, 6.3)    ✓ Sends Dynamic Table Size Update (RFC 7541, 6.3)
+      Encodes Dynamic Table Size Update (RFC 7541, 6.3) after common header fields    × Encodes Dynamic Table Size Update (RFC 7541, 6.3) after common header fields
+      - The endpoint MUST terminate the connection with a connection error of type COMPRESSION_ERROR.
+        Expected: GOAWAY frame (ErrorCode: COMPRESSION_ERROR)
+                  Connection close
+          Actual: DATA frame (Length: 22, Flags: 1)
+
+  5.1. Stream States
+      idle: Sends a DATA frame    ✓ idle: Sends a DATA frame
+      idle: Sends a RST_STREAM frame    ✓ idle: Sends a RST_STREAM frame
+      idle: Sends a WINDOW_UPDATE frame    ✓ idle: Sends a WINDOW_UPDATE frame
+      idle: Sends a CONTINUATION frame    ✓ idle: Sends a CONTINUATION frame
+      half closed (remote): Sends a DATA frame    × half closed (remote): Sends a DATA frame
+      - The endpoint MUST respond with a stream error (Section 5.4.2) of type STREAM_CLOSED.
+        Expected: GOAWAY frame (ErrorCode: STREAM_CLOSED)
+                  RST_STREAM frame (ErrorCode: STREAM_CLOSED)
+                  Connection close
+          Actual: WINDOW_UPDATE frame (Length: 4, Flags: 0)
+      half closed (remote): Sends a HEADERS frame    × half closed (remote): Sends a HEADERS frame
+      - The endpoint MUST respond with a stream error (Section 5.4.2) of type STREAM_CLOSED.
+        Expected: GOAWAY frame (ErrorCode: STREAM_CLOSED)
+                  RST_STREAM frame (ErrorCode: STREAM_CLOSED)
+                  Connection close
+          Actual: DATA frame (Length: 22, Flags: 1)
+      half closed (remote): Sends a CONTINUATION frame    × half closed (remote): Sends a CONTINUATION frame
+      - The endpoint MUST respond with a stream error (Section 5.4.2) of type STREAM_CLOSED.
+        Expected: GOAWAY frame (ErrorCode: STREAM_CLOSED)
+                  RST_STREAM frame (ErrorCode: STREAM_CLOSED)
+                  GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: DATA frame (Length: 22, Flags: 1)
+      closed: Sends a CONTINUATION frame    × closed: Sends a CONTINUATION frame
+      - The endpoint MUST treat this as a stream error (Section 5.4.2) of type STREAM_CLOSED.
+        Expected: GOAWAY frame (ErrorCode: STREAM_CLOSED)
+                  RST_STREAM frame (ErrorCode: STREAM_CLOSED)
+                  GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: Test timeout
+
+    5.1.1. Stream Identifiers
+        Sends even-numbered stream identifier      ✓ Sends even-numbered stream identifier
+
+    5.1.2. Stream Concurrency
+        Sends HEADERS frames that causes their advertised concurrent stream limit to be exceeded      × Sends HEADERS frames that causes their advertised concurrent stream limit to be exceeded
+        - The endpoint MUST treat this as a stream error (Section 5.4.2) of type PROTOCOL_ERROR or REFUSED_STREAM
+          Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                    RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                    GOAWAY frame (ErrorCode: REFUSED_STREAM)
+                    RST_STREAM frame (ErrorCode: REFUSED_STREAM)
+                    Connection close
+            Actual: HEADERS frame (Length: 3, Flags: 4)
+
+  5.3. Stream Priority
+    5.3.1. Stream Dependencies
+        Sends HEADERS frame that depend on itself      × Sends HEADERS frame that depend on itself
+        - The endpoint MUST treat this as a stream error of type PROTOCOL_ERROR
+          Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                    RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                    Connection close
+            Actual: DATA frame (Length: 22, Flags: 1)
+        Sends PRIORITY frame that depend on itself      × Sends PRIORITY frame that depend on itself
+        - The endpoint MUST treat this as a stream error of type PROTOCOL_ERROR
+          Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                    RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                    Connection close
+            Actual: Test timeout
+
+  5.5. Extending HTTP/2
+      Sends an unknown extension frame    ✓ Sends an unknown extension frame
+      Sends an unknown extension frame in the middle of a header block    × Sends an unknown extension frame in the middle of a header block
+      - The endpoint MUST treat as a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: Test timeout
+
+  6.1. DATA
+      Sends a DATA frame with 0x0 stream identifier    ✓ Sends a DATA frame with 0x0 stream identifier
+      Sends a DATA frame on the stream that is not in "open" or "half-closed (local)" state    × Sends a DATA frame on the stream that is not in "open" or "half-closed (local)" state
+      - The endpoint MUST respond with a stream error (Section 5.4.2) of type STREAM_CLOSED.
+        Expected: GOAWAY frame (ErrorCode: STREAM_CLOSED)
+                  RST_STREAM frame (ErrorCode: STREAM_CLOSED)
+                  Connection close
+          Actual: WINDOW_UPDATE frame (Length: 4, Flags: 0)
+      Sends a DATA frame with invalid pad length    ✓ Sends a DATA frame with invalid pad length
+
+  6.2. HEADERS
+      Sends a HEADERS frame followed by any frame other than CONTINUATION    ✓ Sends a HEADERS frame followed by any frame other than CONTINUATION
+      Sends a HEADERS frame followed by a frame on a different stream    × Sends a HEADERS frame followed by a frame on a different stream
+      - The endpoint MUST treat the receipt of a frame on a different stream as a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: Test timeout
+      Sends a HEADERS frame with 0x0 stream identifier    ✓ Sends a HEADERS frame with 0x0 stream identifier
+      Sends a HEADERS frame with invalid pad length    ✓ Sends a HEADERS frame with invalid pad length
+
+  6.3. PRIORITY
+      Sends a PRIORITY frame with 0x0 stream identifier    ✓ Sends a PRIORITY frame with 0x0 stream identifier
+      Sends a PRIORITY frame with a length other than 5 octets    × Sends a PRIORITY frame with a length other than 5 octets
+      - The endpoint MUST respond with a stream error of type FRAME_SIZE_ERROR.
+        Expected: GOAWAY frame (ErrorCode: FRAME_SIZE_ERROR)
+                  RST_STREAM frame (ErrorCode: FRAME_SIZE_ERROR)
+                  Connection close
+          Actual: GOAWAY frame (Length: 8, Flags: 0, ErrorCode: PROTOCOL_ERROR)
+
+  6.4. RST_STREAM
+      Sends a RST_STREAM frame with 0x0 stream identifier    ✓ Sends a RST_STREAM frame with 0x0 stream identifier
+      Sends a RST_STREAM frame on a idle stream    ✓ Sends a RST_STREAM frame on a idle stream
+      Sends a RST_STREAM frame with a length other than 4 octets    × Sends a RST_STREAM frame with a length other than 4 octets
+      - The endpoint MUST respond with a connection error of type FRAME_SIZE_ERROR.
+        Expected: GOAWAY frame (ErrorCode: FRAME_SIZE_ERROR)
+                  Connection close
+          Actual: GOAWAY frame (Length: 8, Flags: 0, ErrorCode: PROTOCOL_ERROR)
+
+  6.5. SETTINGS
+      Sends a SETTINGS frame    ✓ Sends a SETTINGS frame
+      Sends a SETTINGS frame that is not a zero-length with ACK flag    ✓ Sends a SETTINGS frame that is not a zero-length with ACK flag
+      Sends a SETTINGS frame with the stream identifier that is not 0x0    ✓ Sends a SETTINGS frame with the stream identifier that is not 0x0
+      Sends a SETTINGS frame with a length other than a multiple of 6 octets    ✓ Sends a SETTINGS frame with a length other than a multiple of 6 octets
+
+    6.5.2. Defined SETTINGS Parameters
+        SETTINGS_ENABLE_PUSH (0x2): Sends the value other than 0 or 1      ✓ SETTINGS_ENABLE_PUSH (0x2): Sends the value other than 0 or 1
+        SETTINGS_INITIAL_WINDOW_SIZE (0x4): Sends the value above the maximum flow control window size      × SETTINGS_INITIAL_WINDOW_SIZE (0x4): Sends the value above the maximum flow control window size
+        - The endpoint MUST respond with a connection error of type FLOW_CONTROL_ERROR.
+          Expected: GOAWAY frame (ErrorCode: FLOW_CONTROL_ERROR)
+                    Connection close
+            Actual: GOAWAY frame (Length: 8, Flags: 0, ErrorCode: PROTOCOL_ERROR)
+        SETTINGS_MAX_FRAME_SIZE (0x5): Sends the value below the initial value      ✓ SETTINGS_MAX_FRAME_SIZE (0x5): Sends the value below the initial value
+        SETTINGS_MAX_FRAME_SIZE (0x5): Sends the value above the maximum allowed frame size      ✓ SETTINGS_MAX_FRAME_SIZE (0x5): Sends the value above the maximum allowed frame size
+
+  6.7. PING
+      Sends a PING frame    ✓ Sends a PING frame
+      Sends a PING frame with the stream identifier that is not 0x0    × Sends a PING frame with the stream identifier that is not 0x0
+      - The endpoint MUST respond with a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: PING frame (Length: 8, Flags: 1)
+      Sends a PING frame with a length field value other than 8    ✓ Sends a PING frame with a length field value other than 8
+
+  6.8. GOAWAY
+      Sends a GOAWAY frame with the stream identifier that is not 0x0    × Sends a GOAWAY frame with the stream identifier that is not 0x0
+      - The endpoint MUST respond with a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: Test timeout
+
+  6.9. WINDOW_UPDATE
+      Sends a WINDOW_UPDATE frame    × Sends a WINDOW_UPDATE frame
+      - The endpoint is expected to send the DATA frame based on the window size.
+        Expected: DATA frame
+          Actual: Test timeout
+      Sends a WINDOW_UPDATE frame with a flow control window increment of 0    × Sends a WINDOW_UPDATE frame with a flow control window increment of 0
+      - The endpoint MUST respond with a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: Test timeout
+      Sends a WINDOW_UPDATE frame with a flow control window increment of 0 on a stream    × Sends a WINDOW_UPDATE frame with a flow control window increment of 0 on a stream
+      - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: SETTINGS frame (Length: 0, Flags: 1)
+      Sends a WINDOW_UPDATE frame with a length other than a multiple of 4 octets    × Sends a WINDOW_UPDATE frame with a length other than a multiple of 4 octets
+      - The endpoint MUST respond with a connection error of type FRAME_SIZE_ERROR.
+        Expected: GOAWAY frame (ErrorCode: FRAME_SIZE_ERROR)
+                  Connection close
+          Actual: GOAWAY frame (Length: 8, Flags: 0, ErrorCode: PROTOCOL_ERROR)
+
+    6.9.1. The Flow Control Window
+        Sends multiple WINDOW_UPDATE frames on a connection increasing the flow control window to above 2^31-1      × Sends multiple WINDOW_UPDATE frames on a connection increasing the flow control window to above 2^31-1
+        - The endpoint MUST sends a GOAWAY frame with a FLOW_CONTROL_ERROR code.
+          Expected: GOAWAY frame (ErrorCode: FLOW_CONTROL_ERROR)
+            Actual: Test timeout
+        Sends multiple WINDOW_UPDATE frames on a stream increasing the flow control window to above 2^31-1      × Sends multiple WINDOW_UPDATE frames on a stream increasing the flow control window to above 2^31-1
+        - The endpoint MUST send a RST_STREAM with the error code of FLOW_CONTROL_ERROR code.
+          Expected: RST_STREAM frame (ErrorCode: FLOW_CONTROL_ERROR)
+                    GOAWAY frame (ErrorCode: FLOW_CONTROL_ERROR)
+            Actual: Test timeout
+
+    6.9.2. Initial Flow Control Window Size
+        Sends a SETTINGS_INITIAL_WINDOW_SIZE settings with an exceeded maximum window size value      × Sends a SETTINGS_INITIAL_WINDOW_SIZE settings with an exceeded maximum window size value
+        - The endpoint MUST respond with a connection error of type FLOW_CONTROL_ERROR.
+          Expected: GOAWAY frame (ErrorCode: FLOW_CONTROL_ERROR)
+                    Connection close
+            Actual: GOAWAY frame (Length: 8, Flags: 0, ErrorCode: PROTOCOL_ERROR)
+
+  6.10. CONTINUATION
+      Sends a CONTINUATION frame    ✓ Sends a CONTINUATION frame
+      Sends multiple CONTINUATION frames    ✓ Sends multiple CONTINUATION frames
+      Sends a CONTINUATION frame followed by any frame other than CONTINUATION    × Sends a CONTINUATION frame followed by any frame other than CONTINUATION
+      - The endpoint MUST treat as a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: Test timeout
+      Sends a CONTINUATION frame followed by a frame on a different stream    ✓ Sends a CONTINUATION frame followed by a frame on a different stream
+      Sends a CONTINUATION frame with the stream identifier that is 0x0    ✓ Sends a CONTINUATION frame with the stream identifier that is 0x0
+      Sends a CONTINUATION frame after the frame other than HEADERS, PUSH_PROMISE or CONTINUATION    × Sends a CONTINUATION frame after the frame other than HEADERS, PUSH_PROMISE or CONTINUATION
+      - The endpoint MUST treat as a connection error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: WINDOW_UPDATE frame (Length: 4, Flags: 0)
+
+  8.1. HTTP Request/Response Exchange
+      Sends a HEADERS frame as HEAD request    × Sends a HEADERS frame as HEAD request
+      - The endpoint should respond with no DATA frame or empty DATA frame.
+        Expected: HEADERS frame (Flags: 1)
+                  DATA frame (Length: 0, Flags: 1)
+          Actual: DATA frame (Length: 22, Flags: 1)
+      Sends a HEADERS frame containing trailer part    ✓ Sends a HEADERS frame containing trailer part
+      Sends a second HEADERS frame without the END_STREAM flag    × Sends a second HEADERS frame without the END_STREAM flag
+      - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+        Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                  RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                  Connection close
+          Actual: WINDOW_UPDATE frame (Length: 4, Flags: 0)
+
+    8.1.2. HTTP Header Fields
+        Sends a HEADERS frame that contains the header field name in uppercase letters      × Sends a HEADERS frame that contains the header field name in uppercase letters
+        - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+          Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                    RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                    Connection close
+            Actual: DATA frame (Length: 22, Flags: 1)
+
+      8.1.2.1. Pseudo-Header Fields
+          Sends a HEADERS frame that contains the pseudo-header field defined for response        × Sends a HEADERS frame that contains the pseudo-header field defined for response
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame that contains the invalid pseudo-header field        × Sends a HEADERS frame that contains the invalid pseudo-header field
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame that contains a pseudo-header field that appears in a header block after a regular header field        × Sends a HEADERS frame that contains a pseudo-header field that appears in a header block after a regular header field
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+
+      8.1.2.2. Connection-Specific Header Fields
+          Sends a HEADERS frame that contains the connection-specific header field        × Sends a HEADERS frame that contains the connection-specific header field
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame that contains the TE header field that contain any value other than "trailers"        × Sends a HEADERS frame that contains the TE header field that contain any value other than "trailers"
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+
+      8.1.2.3. Request Pseudo-Header Fields
+          Sends a HEADERS frame that omits mandatory pseudo-header fields        × Sends a HEADERS frame that omits mandatory pseudo-header fields
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame that omits just ':method' pseudo-header field.        × Sends a HEADERS frame that omits just ':method' pseudo-header field.
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame that omits just ':scheme' pseudo-header field.        × Sends a HEADERS frame that omits just ':scheme' pseudo-header field.
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame that omits just ':path' pseudo-header field.        × Sends a HEADERS frame that omits just ':path' pseudo-header field.
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+          Sends a HEADERS frame containing more than one pseudo-header fields with the same name        × Sends a HEADERS frame containing more than one pseudo-header fields with the same name
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 22, Flags: 1)
+
+      8.1.2.6. Malformed Requests and Responses
+          Sends a HEADERS frame that contains the "content-length" header field which does not equal the sum of the DATA frame payload lengths        × Sends a HEADERS frame that contains the "content-length" header field which does not equal the sum of the DATA frame payload lengths
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 29, Flags: 1)
+          Sends a HEADERS frame that contains the "content-length" header field which does not equal the sum of the multiple DATA frame payload lengths        × Sends a HEADERS frame that contains the "content-length" header field which does not equal the sum of the multiple DATA frame payload lengths
+          - The endpoint MUST respond with a stream error of type PROTOCOL_ERROR.
+            Expected: GOAWAY frame (ErrorCode: PROTOCOL_ERROR)
+                      RST_STREAM frame (ErrorCode: PROTOCOL_ERROR)
+                      Connection close
+              Actual: DATA frame (Length: 33, Flags: 1)
+
+  8.2. Server Push
+      Sends a PUSH_PROMISE frame    ✓ Sends a PUSH_PROMISE frame
+
+73 tests, 33 passed, 0 skipped, 40 failed

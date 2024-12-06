@@ -1,0 +1,92 @@
+[
+  {
+    "id": "processor-001",
+    "generator": "extract_schema",
+    "conditions": [
+      {
+        "operator": "equals",
+        "parameters": {
+          "inputs": [
+            {
+              "address": "waf.context.processor",
+              "key_path": [
+                "extract-schema"
+              ]
+            }
+          ],
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "parameters": {
+      "mappings": [
+        {
+          "inputs": [
+            {
+              "address": "server.request.body"
+            }
+          ],
+          "output": "_dd.appsec.s.req.body"
+        },
+        {
+          "inputs": [
+            {
+              "address": "server.request.headers.no_cookies"
+            }
+          ],
+          "output": "_dd.appsec.s.req.headers"
+        },
+        {
+          "inputs": [
+            {
+              "address": "server.request.query"
+            }
+          ],
+          "output": "_dd.appsec.s.req.query"
+        },
+        {
+          "inputs": [
+            {
+              "address": "server.request.path_params"
+            }
+          ],
+          "output": "_dd.appsec.s.req.params"
+        },
+        {
+          "inputs": [
+            {
+              "address": "server.request.cookies"
+            }
+          ],
+          "output": "_dd.appsec.s.req.cookies"
+        },
+        {
+          "inputs": [
+            {
+              "address": "server.response.headers.no_cookies"
+            }
+          ],
+          "output": "_dd.appsec.s.res.headers"
+        },
+        {
+          "inputs": [
+            {
+              "address": "server.response.body"
+            }
+          ],
+          "output": "_dd.appsec.s.res.body"
+        }
+      ],
+      "scanners": [
+        {
+          "tags": {
+            "category": "pii"
+          }
+        }
+      ]
+    },
+    "evaluate": false,
+    "output": true
+  }
+]

@@ -1,0 +1,14 @@
+Dim f As FolderItem
+f = GetOpenFolderItem(FileTypes1.jpeg) // defined in the File Type Set editor
+rem - we should check for nil!
+If not f.Exists Then
+  Beep 'Just for fun
+  MsgBox("The file " + f.NativePath + "doesn't ""exist.""")
+Else // document exists
+  ImageWell1.image=Picture.Open(f)
+End If
+if f isa folderitem then
+  msgbox(f.name)
+end if
+Exception err As NilObjectException
+  MsgBox("Invalid pathname!")

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>with_jquery_animation</title>
+    <style>
+      body {
+        height: 2000px;
+      }
+    </style>
+  </head>
+
+  <body id="with_animation">
+    <a href="#" id='scroll'>scroll top 500</a>
+
+    <script src="/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script type='text/javascript'>
+      $('#scroll').click(function(e){
+        e.preventDefault();
+        $('html, body').animate({ scrollTop: 500 }, 'slow');
+      });
+    </script>
+  </body>
+</html>

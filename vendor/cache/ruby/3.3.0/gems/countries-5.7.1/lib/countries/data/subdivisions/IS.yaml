@@ -1,0 +1,1544 @@
+---
+'0':
+  name: Reykjavík
+  code: '0'
+  unofficial_names: Reykjavík
+  geo:
+    latitude: 64.133333
+    longitude: -21.933333
+    min_latitude: 64.0898138
+    min_longitude: -21.9865021
+    max_latitude: 64.1750702
+    max_longitude: -21.7183826
+  translations:
+    en: Reykjavík
+    ccp: "\U00011122\U00011128\U00011120\U0001110E\U0001111E\U00011128\U00011107\U00011134"
+    ja: レイキャヴィーク
+  comments:
+  type: region
+'1':
+  name: Höfuðborgarsvæði utan Reykjavíkur
+  code: '1'
+  unofficial_names: Höfuðborgarsvæði utan Reykjavíkur
+  geo:
+    latitude: 64.1475182
+    longitude: -21.9428079
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Capital
+    ar: إقليم العاصمة
+    az: Hövüdborqarsvaydid
+    be: Хёвюдбаргарсвайдыд
+    bn: কােপিটাল অঞ্চল
+    ca: Gran Reykjavik
+    cs: Höfuðborgarsvæðið
+    da: Höfuðborgarsvæðið
+    de: Höfuðborgarsvæðið
+    el: Περιφέρεια Πρωτεύουσας της Ισλανδίας
+    es: Höfuðborgarsvæði
+    et: Höfuðborgarsvæði
+    eu: Höfuðborgarsvæðið
+    fa: منطقه پایتخت ایسلند
+    fi: Höfuðborgarsvæðið
+    fr: Höfuðborgarsvæðið
+    gl: Höfuðborgarsvæði
+    gu: કેપિટલ પ્રદેશ
+    hi: राजधानी क्षेत्र
+    hu: Nagy-Reykjavík
+    hy: Հյովյուդբորգարսվայդիդ
+    id: Wilayah Reykjavík Raya
+    is: Höfuðborgarsvæðið
+    it: Höfuðborgarsvæðið
+    ja: 大レイキャヴィーク
+    ka: ჰიოვიუდბორგარსვაიდიდი
+    kn: ರಾಜಧಾನಿ ಪ್ರದೇಶ
+    ko: 회뷔드보르가르스바이디
+    lt: Sostinės regionas
+    lv: Galvaspilsētas reģions
+    mr: राजधानी प्रदेश
+    ms: Capital Region
+    nb: Höfuðborgarsvæðið
+    nl: Höfuðborgarsvæðið
+    pl: Höfuðborgarsvæðið
+    pt: Höfuðborgarsvæði
+    ru: Хёвюдборгарсвайдид
+    si: ප්‍රධාන කලාපය
+    sr: Рејкјавик
+    sv: Höfuðborgarsvæðið
+    ta: கேப்பிடல் பகுதி
+    te: క్యాపిటల్ ప్రాంతం
+    th: คาปิทอล
+    tr: Başkent Bölgesi
+    uk: Гефюдборґарсвайдід
+    ur: دارالحکومت علاقہ
+    vi: Khu vực Thủ đô
+    zh: 大雷克雅未克区
+    cy: Reykjavík Fawr
+    ceb: Höfuðborgarsvæði
+    sr_Latn: Rejkjavik
+    sq: Rajoni i Kryeqytetit
+    ccp: "\U00011107\U00011133\U00011120\U0001111B\U00011128\U00011111\U00011123\U00011134"
+    ga: Höfuðborgarsvæði
+    mk: Престолнински регион
+    'no': Höfuðborgarsvæðið
+    he: רייקיאוויק
+    ps: آیسلنډ مرکزي سیمه
+  comments:
+  type: region
+'2':
+  name: Suðurnes
+  code: '2'
+  unofficial_names: Suðurnes
+  geo:
+    latitude: 63.91548030000001
+    longitude: -22.3649667
+    min_latitude: 63.8000178
+    min_longitude: -22.7544665
+    max_latitude: 64.08244680000001
+    max_longitude: -21.7119429
+  translations:
+    en: Southern Peninsula
+    af: Suðurnes
+    ar: شبه الجزيرة الجنوبية
+    az: Sudurnes
+    be: Судурнэс
+    bn: সাউদার্ন পেনিনসোলা অঞ্চল
+    ca: Suðurnes
+    da: Suðurnes
+    de: Suðurnes
+    el: Νότια Χερσόνησος
+    es: Suðurnes
+    et: Suðurnes
+    eu: Suðurnes
+    fa: شبه‌جزیره جنوبی ایسلند
+    fi: Suðurnes
+    fr: Suðurnes
+    gl: Suðurnes
+    gu: દક્ષિણી પેનિનસુલા પ્રદેશ
+    hi: दक्षिणी प्रायद्वीप क्षेत्र
+    hy: Սուդուրնես
+    id: Suðurnes
+    is: Suðurnes
+    it: Suðurnes
+    ja: 南西アイスランド
+    ka: სუდურნესი
+    kn: ದಕ್ಷಿಣ ಪೆನಿನ್ಸುಲಾ ಪ್ರದೇಶ
+    ko: 쉬뒤르네스
+    lt: Sudurnesas
+    lv: Dienvidu pussala
+    mr: सौथर्न पेनीनसुला प्रदेश
+    ms: Daerah Selatan Semenanjung, Iceland
+    nb: Suðurnes
+    nl: Suðurnes
+    pl: Półwysep Reykjanes
+    pt: Suðurnes
+    ru: Судурнэс
+    si: දකුණු පෙනින්සුලා කලාපය
+    sr: Сидирнес
+    sv: Suðurnes
+    ta: தெற்கு பெனின்சுலா பகுதி
+    te: దక్షిణ పెనిన్సులా ప్రాంతం
+    th: เขตคาบสมุทรเหนือ(ไอซ์แลนด์)
+    tr: Güney Yarımadası
+    uk: Судурнес
+    ur: جنوبی جزیرہ نما
+    vi: Khu vực Phía Nam Peninsula
+    cy: Reykjanesskagi
+    ceb: Suðurnes
+    sr_Latn: Sidirnes
+    zh: 西南區
+    sq: Gadishulli Jugor
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U0001111B\U0001112C\U0001111A\U00011128\U0001111A\U00011134\U00011125\U0001112A\U00011123"
+    ga: Suðurnes
+    mk: Јужен Полуостров
+    'no': Suðurnes
+    he: סוד׳ורנס
+    hu: Déli-félszigeti régió (Izland)
+    ps: سودورنس
+  comments:
+  type: region
+'3':
+  name: Vesturland
+  code: '3'
+  unofficial_names: Vesturland
+  geo:
+    latitude: 64.770434
+    longitude: -21.5341294
+    min_latitude: 64.302399
+    min_longitude: -24.0609395
+    max_latitude: 65.51733899999999
+    max_longitude: -19.7810714
+  translations:
+    en: Western
+    ar: الإقليم الغربي
+    az: Vesturland
+    bn: ওয়স্টার্ন অঞ্চল
+    ca: Vesturland
+    da: Vesturland
+    de: Vesturland
+    el: Δυτική Ισλανδία
+    es: Vesturland
+    et: Vesturland
+    eu: Vesturland
+    fa: منطقه غربی ایسلند
+    fi: Vesturland
+    fr: Vesturland
+    gl: Vesturland
+    gu: પશ્ચિમી પ્રદેશ
+    he: מערב איסלנד
+    hi: पश्चिमी क्षेत्र
+    hy: Վեստուրլանդ
+    id: Vesturland
+    is: Vesturland
+    it: Vesturland
+    ja: 西アイスランド
+    ka: ვესტურლანდი
+    kn: ಪಾಶ್ಚಾತ್ಯ ಪ್ರದೇಶ
+    ko: 베스튀를란드
+    lt: Vesturlandas
+    lv: Rietumu reģions
+    mr: पश्चिम प्रदेश
+    ms: Western Region
+    nb: Vesturland
+    nl: Vesturland
+    pl: Okręg Wschodni
+    pt: Vesturland
+    ru: Вестурланд
+    si: බටහිර කලාපය
+    sr: Вестиртланд
+    sv: Vesturland
+    ta: மேற்கு பகுதி
+    te: పశ్చిమ ప్రాంతం
+    th: เวอเตอร์แลนด์
+    tr: Western Region
+    uk: Вестурланд
+    ur: مغربی علاقہ
+    vi: Khu vực Phía Tây
+    cy: Rhanbarth y Gorllewin
+    ceb: Vesturland
+    sr_Latn: Vestirtland
+    zh: 西部區
+    sq: Rajoni Perëndimor
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ga: Vesturland
+    mk: Западен регион
+    bg: Вестюрланд
+    'no': Vesturland
+    be: Вестурланд
+    cs: Vesturland
+    hu: Nyugati régió (Izland)
+    ps: وستورلنډ
+  comments:
+  type: region
+'4':
+  name: Vestfirðir
+  code: '4'
+  unofficial_names: Vestfirðir
+  geo:
+    latitude: 65.91961500000001
+    longitude: -21.8811763
+    min_latitude: 64.96292199999999
+    min_longitude: -24.5465237
+    max_latitude: 66.46997069999999
+    max_longitude: -20.9746663
+  translations:
+    en: Westfjords
+    ar: إقليم المضايق
+    az: Vestfirdir
+    be: Вестфірдзір
+    bn: ওয়েস্টফোর্ডস অঞ্চল
+    ca: Vestfirðir
+    cs: Vestfirðir
+    da: Vestfirðir
+    de: Vestfirðir
+    el: Δυτικά Φιόρδ
+    es: Vestfirðir
+    et: Vestfirðir
+    eu: Vestfirðir
+    fa: وستفیوردز
+    fi: Länsivuonot
+    fr: Vestfirðir
+    gl: Vestfirðir
+    gu: પશ્ચિમજોર્ડ્સ પ્રદેશ
+    he: הפיורדים המערביים של איסלנד
+    hi: वेस्ट फ्योर्ड प्रदेश
+    hu: Vestfirðir
+    hy: Վեստֆիրդիր
+    id: Vestfirðir
+    is: Vestfirðir
+    it: Vestfirðir
+    ja: 西部フィヨルド
+    ka: ვესტფირდირი
+    kn: ವೆಸ್ಟ್ಫಾರ್ಡ್ಸ್ ಪ್ರದೇಶ
+    ko: 베스트피르디르
+    lt: Vestfirdiras
+    lv: Rietumfjordi
+    mr: वेस्टफॉर्दज प्रदेश
+    ms: Westfjords Region
+    nb: Vestfirðir
+    nl: Vestfirðir
+    pl: Vestfirðir
+    pt: Vestfirðir
+    ru: Вестфирдир
+    si: වෙස්ට්ෆ්ජෝර්ඩ්ස් පළාත
+    sr: Вестфирдир (регион)
+    sv: Västfjordarna
+    ta: வெஸ்டபிஜோர்டஸ் பகுதி
+    te: వెస్ట్‌ఫియార్డ్స్ ప్రాంతం
+    th: เวสท์ฟยอร์ด
+    tr: Wesfjırds Bölgesi
+    uk: Вестфірдір
+    ur: ویستفجوردس ریجن
+    vi: Khu vực Westfjords
+    cy: Vestfirðir
+    sr_Latn: Vestfirdir (region)
+    zh: 西峽灣區
+    sq: Fjordet Perëndimore
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U0001110C\U00011134\U0001110E\U0001112E\U00011122\U00011134\U00011113\U00011134\U00011125\U00011134"
+    ga: Vestfirðir
+    mk: Западни Фјордови
+    'no': Vestfirðir
+    bg: Северозападен полуостров
+    ceb: Vestfirðir (rehiyon)
+    ps: وست فیردیر
+  comments:
+  type: region
+'5':
+  name: Norðurland vestra
+  code: '5'
+  unofficial_names: Norðurland vestra
+  geo:
+    latitude: 65.19625049999999
+    longitude: -19.2425804
+    min_latitude: 64.773222
+    min_longitude: -21.1190769
+    max_latitude: 66.1600471
+    max_longitude: -18.295774
+  translations:
+    en: Northwestern
+    ar: الإقليم الشمالي الغربي
+    az: Nordurland Vestra
+    bn: নর্থ ওয়েস্টার্ন অঞ্চল
+    ca: Norðurland vestra
+    da: Norðurland vestra
+    de: Norðurland vestra
+    el: Βορειοδυτική Ισλανδία
+    es: Norðurland Vestra
+    et: Norðurland vestra
+    eu: Norðurland vestra
+    fa: منطقه شمال غربی ایسلند
+    fi: Norðurland vestra
+    fr: Norðurland vestra
+    gl: Norðurland Vestra
+    gu: ઉત્તરપશ્ચિમી પ્રદેશ
+    hi: उत्तर पश्चिमी क्षेत्र
+    hy: Նորդուրլանդ Վեստրա
+    id: Norðurland vestra
+    is: Norðurland vestra
+    it: Norðurland vestra
+    ja: 北アイスランド西部
+    ka: ნორდურლენდ-ვესტრა
+    kn: ವಾಯುವ್ಯ ಪ್ರದೇಶ
+    ko: 노르뒤를란드 베스트라
+    lt: Vakarų Nordurlandas
+    lv: Ziemeļrietumu reģions
+    mr: वायव्य प्रदेश
+    ms: Northwestern Region
+    nb: Norðurland vestra
+    nl: Norðurland vestra
+    pl: Okręg Północno-Zachodni
+    pt: Norðurland Vestra
+    ru: Нордурланд Вестра
+    si: උතුරු බටහිර කලාපය
+    sr: Нордиртланд Вестра
+    sv: Norðurland vestra
+    ta: நோர்த்வெஸ்டேர்ன் பகுதி
+    te: వాయవ్య ప్రాంతం
+    th: แถบภาคตะวันตกเฉียงเหนือ
+    tr: Kuzey Batı Bölgesi
+    uk: Нордурланд-Вестра
+    ur: شمال مغربی علاقہ
+    vi: Khu vực Tây Bắc
+    cy: Norðurland vestra
+    ceb: Norðurland Vestra
+    sr_Latn: Nordirtland Vestra
+    zh: 西北區
+    sq: Rajoni Veriperëndimor
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ga: Norðurland vestra
+    mk: Северозападен регион
+    'no': Norðurland vestra
+    be: Нордурланд-Вестра
+    he: נורד׳ורלנד וסטרה
+    hu: Északnyugati régió (Izland)
+    ps: نوردورلند وسترا
+  comments:
+  type: region
+'6':
+  name: Norðurland eystra
+  code: '6'
+  unofficial_names: Norðurland eystra
+  geo:
+    latitude: 65.4713712
+    longitude: -17.0280279
+    min_latitude: 64.4100729
+    min_longitude: -19.0427822
+    max_latitude: 66.5637741
+    max_longitude: -14.5419811
+  translations:
+    en: Northeastern
+    ar: الإقليم الشمالي الشرقي
+    az: Nordürland Eystra
+    be: рэгіён Нордурланд-Эйстра
+    bn: নর্থ ইস্টার্ন অঞ্চল
+    ca: Norðurland eystra
+    da: Norðurland eystra
+    de: Norðurland eystra
+    el: Βορειοανατολική Ισλανδία
+    es: Norðurland Eystra
+    et: Norðurland eystra
+    eu: Norðurland eystra
+    fa: منطقه شمال شرقی ایسلند
+    fi: Norðurland eystra
+    fr: Norðurland eystra
+    gl: Norðurland Eystra
+    gu: ઉત્તરપૂર્વીય પ્રદેશ
+    he: צפון איסלנד
+    hi: पूर्वोत्तर क्षेत्र
+    hy: Նորդուրլանդ Էյստրա
+    id: Norðurland eystra
+    is: Norðurland eystra
+    it: Norðurland eystra
+    ja: 北アイスランド東部
+    ka: ნორდურლანდ-ისტრა
+    kn: ಈಶಾನ್ಯ ಪ್ರದೇಶ
+    ko: 노르뒤를란드 에이스트라
+    lt: Rytų Nordurlandas
+    lv: Ziemeļaustrumu reģions
+    mr: पूर्वोत्तर प्रदेश
+    ms: Northeastern Region
+    nb: Norðurland eystra
+    nl: Norðurland eystra
+    pl: Okręg Północno-Wschodni
+    pt: Norðurland Eystra
+    ru: Нордюрланд-Эйстра
+    si: උතුරු නැගෙනහිර කලාපය
+    sr: Нордиртланд Ејстра
+    sv: Norðurland eystra
+    ta: வடக்கு கிழக்கு பகுதி
+    te: ఈశాన్య ప్రాంతం
+    th: นอร์ทเทสเทิร์น
+    tr: Kuzeydoğu Bölgesi
+    uk: Нордурланд-Ейстра
+    ur: شمال مشرقی علاقہ
+    vi: Khu vực Đông Bắc
+    cy: Norðurland eystra
+    ceb: Norðurland Eystra
+    sr_Latn: Nordirtland Ejstra
+    zh: 東北區
+    sq: Rajoni Verilindor
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ga: Norðurland eystra
+    mk: Североисточен регион
+    'no': Norðurland eystra
+    hu: Északkeleti régió (Izland)
+    ps: نوردورلند ایسترا
+  comments:
+  type: region
+'7':
+  name: Austurland
+  code: '7'
+  unofficial_names: Austurland
+  geo:
+    latitude: 64.8329974
+    longitude: -15.7433981
+    min_latitude: 63.77613830000001
+    min_longitude: -17.3681851
+    max_latitude: 66.1899378
+    max_longitude: -13.4958154
+  translations:
+    en: Eastern
+    ar: الإقليم الشرقي
+    az: Eystürland
+    bg: Аустурланд
+    bn: ইস্টার্ন অঞ্চল
+    ca: Austurland
+    da: Austurland
+    de: Austurland
+    el: Ανατολική Ισλανδία
+    es: Austurland
+    et: Austurland
+    eu: Austurland
+    fa: منطقه شرقی ایسلند
+    fi: Austurland
+    fr: Austurland
+    gl: Austurland
+    gu: પૂર્વીય પ્રદેશ
+    he: מזרח איסלנד
+    hi: पूर्वी क्षेत्र
+    hy: Էյստյուրլանդ
+    id: Austurland
+    is: Austurland
+    it: Austurland
+    ja: 東アイスランド
+    ka: აუსტურლანდი
+    kn: ಪೂರ್ವ ಪ್ರದೇಶ
+    ko: 외이스튀를란드
+    lt: Austurlandas
+    lv: Austrumu reģions
+    mr: इस्टर्न प्रदेश
+    ms: Eastern Region
+    nb: Austurland
+    nl: Austurland
+    pl: Okręg Wschodni²
+    pt: Austurland
+    ru: Эйстюрланд
+    si: නැගෙනහිර කලාපය
+    sr: Ејстиртланд
+    sv: Austurland
+    ta: கிழக்கு பகுதி
+    te: తూర్పు ప్రాంతం
+    th: อัสเตอร์แลนด์
+    tr: Doğu Bölgesi
+    uk: Аустурланд
+    ur: مشرقی علاقہ
+    vi: Khu vực Eastern
+    cy: Austurland
+    ceb: Austurland
+    sr_Latn: Ejstirtland
+    zh: 東部區
+    sq: Rajoni Lindor
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ga: Austurland
+    mk: Источен регион
+    'no': Austurland
+    hu: Keleti régió (Izland)
+    ps: استورلند
+  comments:
+  type: region
+'8':
+  name: Suðurland
+  code: '8'
+  unofficial_names: Suðurland
+  geo:
+    latitude: 64.2661426
+    longitude: -18.8158138
+    min_latitude: 63.2973824
+    min_longitude: -21.9220031
+    max_latitude: 64.87730599999999
+    max_longitude: -17.2659519
+  translations:
+    en: Southern
+    ar: الإقليم الجنوبي
+    az: Südürland
+    be: Судурланд
+    bn: সাউদার্ন অঞ্চল
+    ca: Suðurland
+    da: Suðurland
+    de: Suðurland
+    el: Νότια Ισλανδία
+    es: Suðurland
+    et: Suðurland
+    eu: Suðurland
+    fa: منطقه جنوبی ایسلند
+    fi: Suðurland
+    fr: Suðurland
+    gl: Suðurland
+    gu: દક્ષિણી પ્રદેશ
+    he: דרום איסלנד
+    hi: दक्षिणी क्षेत्र
+    hr: Suðurland
+    hy: Սյուդյուրլանդ
+    id: Suðurland
+    is: Suðurland
+    it: Suðurland
+    ja: 南アイスランド
+    ka: სუდურლანდი
+    kn: ದಕ್ಷಿಣ ವಲಯ
+    ko: 쉬뒤를란드
+    lt: Sudurlandas
+    lv: Dienvidu reģions
+    mr: दक्षिणी प्रदेश
+    ms: Southern Region
+    nb: Suðurland
+    nl: Suðurland
+    pl: Okręg Południowy
+    pt: Suðurland
+    ru: Сюдюрланд
+    si: දකුණු කලාපය
+    sr: Сидиртланд
+    sv: Suðurland
+    ta: தெற்கு பகுதி
+    te: దక్షిణ ప్రాంతం
+    th: เซ้าท์เทิร์น รีเจี้ยน
+    tr: Southern Bölgesi
+    uk: Судурланд
+    ur: جنوبی علاقہ
+    vi: Khu vực Southern
+    cy: Suðurland
+    ceb: Suðurland
+    sr_Latn: Sidirtland
+    zh: 南部區
+    sq: Rajoni Jugor
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    ga: Suðurland
+    mk: Јужен регион
+    'no': Suðurland
+    hu: Déli régió (Izland)
+    ps: سودورلند
+  comments:
+  type: region
+AKH:
+  translations:
+    en: Akrahreppur
+    bg: Акрахрепур
+    ceb: Akrahreppur
+    de: Akrahreppur
+    es: Akrahreppur
+    eu: Akrahreppur
+    fa: اکراهرپور
+    fr: Akrahreppur
+    hu: Akrahreppur
+    id: Akrahreppur
+    is: Akrahreppur
+    it: Akrahreppur
+    ja: アークラフレップル
+    ms: Akrahreppur
+    nl: Akrahreppur
+    pl: Akrahreppur
+    pt: Akrahreppur
+    ru: Акрахреппюр
+    sq: Akrahreppur
+    sv: Akrahreppur
+  name: Akrahreppur
+  code: AKH
+  type: municipality
+AKN:
+  translations:
+    en: Akraneskaupstaður
+    ar: أكرانيس
+    bg: Акранес
+    ca: Akranes
+    ceb: Akraneskaupstaður (lalawigan sa Islandya)
+    cs: Akranes
+    cy: Akranes
+    da: Akraneskaupstaður
+    de: Akranes
+    el: Άκρανες
+    es: Akranes
+    et: Akranes
+    eu: Akranes
+    fa: اکرانس
+    fi: Akranes
+    fr: Akranes
+    ga: Akranes
+    gl: Akranes
+    he: אקרנס
+    hu: Akranes
+    id: Akranes
+    is: Akraneskaupstaður
+    it: Akranes
+    ja: アクラネース
+    ka: აკრანესი
+    kk: Акранес
+    ko: 아크라네스
+    lt: Akranesas
+    mk: Акранес
+    ms: Akranes
+    nl: Akraneskaupstaður
+    pl: Akraneskaupstaður
+    pt: Akranes
+    ro: Akranes
+    ru: Акранескёйпстадюр
+    sq: Akranes
+    sr: Акранес
+    sr_Latn: Akranes
+    sv: Akraneskaupstaður
+    tr: Akranes
+    uk: Акранес
+    ur: آکرانیس
+    vi: Akranes
+  name: Akraneskaupstaður
+  code: AKN
+  type: municipality
+AKU:
+  translations:
+    en: Akureyrarbær
+    af: Akureyri
+    ar: أكوريري
+    az: Aküreyri
+    be: Акурэйры
+    bg: Акюрейри
+    ca: Akureyri
+    cs: Akureyri
+    cy: Akureyri
+    da: Akureyri
+    de: Akureyri
+    el: Άκουρεϋρι
+    es: Akureyri
+    et: Akureyri
+    eu: Akureyri
+    fa: آکوریری
+    fi: Akureyri
+    fr: Akureyri
+    ga: Akureyri
+    gl: Akureyri
+    he: אקוריירי
+    hr: Akureyri
+    hu: Akureyri
+    hy: Աքուրեյրի
+    id: Akureyri
+    is: Akureyri
+    it: Akureyri
+    ja: アークレイリ
+    ka: აკურეირი
+    kk: Акюрейри
+    ko: 아쿠레이리
+    lt: Akureiris
+    lv: Agireiri
+    mk: Акирејри
+    ms: Akureyri
+    nl: Akureyri
+    pl: Akureyri
+    pt: Akureyri
+    ro: Akureyri
+    ru: Акюрейри
+    sk: Akureyri
+    sl: Akureyri
+    sq: Akureyri
+    sr: Акирејри
+    sr_Latn: Akirejri
+    sv: Akureyri
+    sw: Akureyri
+    th: อาคือเรย์รี
+    tr: Akureyri
+    uk: Акурейрі
+    ur: آکوریرے
+    vi: Akureyri
+    yue: 阿克雷里
+    yue_Hans: 阿克雷里
+  name: Akureyrarbær
+  code: AKU
+  type: municipality
+ARN:
+  translations:
+    en: Árneshreppur
+    ceb: Árneshreppur
+    de: Árnes
+    es: Árneshreppur
+    eu: Árneshreppur
+    fi: Árnes
+    fr: Árneshreppur
+    hu: Árneshreppur
+    id: Árneshreppur
+    is: Árneshreppur
+    it: Árnes
+    ja: アゥルネースフレップル
+    nl: Árneshreppur
+    pl: Árneshreppur
+    pt: Árneshreppur
+    ru: Аурнесхреппюр
+    sq: Árneshreppur
+    sv: Árneshreppur
+  name: Árneshreppur
+  code: ARN
+  type: municipality
+ASA:
+  translations:
+    en: Ásahreppur
+    ca: Ásahreppur
+    ceb: Ásahreppur
+    de: Ásahreppur
+    es: Ásahreppur
+    eu: Ásahreppur
+    fr: Ásahreppur
+    hu: Ásahreppur
+    id: Ásahreppur
+    is: Ásahreppur
+    it: Ásahreppur
+    ja: アゥサフレップル
+    nl: Ásahreppur
+    pl: Ásahreppur
+    pt: Ásahreppur
+    ru: Аусахреппюр
+    sl: Ásahreppur
+    sq: Ásahreppur
+    sv: Ásahreppur
+  name: Ásahreppur
+  code: ASA
+  type: municipality
+BLA:
+  translations:
+    en: Bláskógabyggð
+    ca: Bláskógabyggð
+    ceb: Bláskógabyggð
+    da: Bláskógabyggð
+    de: Bláskógabyggð
+    es: Bláskógabyggð
+    eu: Bláskógabyggð
+    fi: Bláskógabyggð
+    fr: Bláskógabyggð
+    hu: Bláskógabyggð
+    id: Bláskógabyggð
+    is: Bláskógabyggð
+    it: Bláskógabyggð
+    ja: ブラゥスコゥガビッグズ
+    lt: Blaskogabigas
+    nl: Bláskógabyggð
+    pl: Bláskógabyggð
+    pt: Bláskógabyggð
+    ru: Блаускоугабиггд
+    sq: Bláskógabyggð
+    sv: Bláskógabyggð
+  name: Bláskógabyggð
+  code: BLA
+  type: municipality
+BLO:
+  translations:
+    en: Blönduósbær
+    be: Блёндуос
+    ceb: Blönduósbær
+    cs: Blönduós
+    cy: Blönduós
+    da: Blönduós
+    de: Blönduós
+    es: Blönduósbær
+    eu: Blönduós
+    fa: بلوندوس
+    fi: Blönduós
+    fr: Blönduós
+    hu: Blönduós
+    id: Blönduósbær
+    is: Blönduósbær
+    it: Blönduós
+    ja: ブリョンドゥオゥス
+    ka: ბლენდუოუსი
+    ko: 블뢴뒤오스
+    ms: Blönduós
+    nl: Blönduósbær
+    pl: Blönduósbær
+    pt: Blönduós
+    ru: Блёндюоусбайр
+    sq: Blönduós
+    sv: Blönduósbær
+    uk: Бльондюоус
+  name: Blönduósbær
+  code: BLO
+  type: municipality
+BOG:
+  translations:
+    en: Borgarbyggð
+    ceb: Borgarbyggð
+    da: Borgarbyggð
+    de: Borgarbyggð
+    es: Borgarbyggð
+    eu: Borgarbyggð
+    fi: Borgarbyggð
+    fr: Borgarbyggð
+    hu: Borgarbyggð
+    is: Borgarbyggð
+    it: Borgarbyggð
+    ja: ボルガルビッグズ
+    lt: Borgaras
+    nl: Borgarbyggð
+    pl: Borgarbyggð
+    pt: Borgarbyggð
+    ru: Боргарбигд
+    sq: Borgarbyggd
+    sv: Borgarbyggð
+    uk: Боргарбігд
+  name: Borgarbyggð
+  code: BOG
+  type: municipality
+BOL:
+  translations:
+    en: Bolungarvíkurkaupstaður
+    ca: Bolungarvík
+    ceb: Bolungarvíkurkaupstaður
+    cs: Bolungarvík
+    da: Bolungarvíkurkaupstaður
+    de: Bolungarvík
+    es: Bolungarvík
+    eu: Bolungarvík
+    fa: بولونگارویک
+    fr: Bolungarvík
+    ga: Bolungarvík
+    hu: Bolungarvík
+    id: Bolungarvík
+    is: Bolungarvíkurkaupstaður
+    it: Bolungarvík
+    ja: ボルンガルヴィーク
+    ka: ბოლუნგავიკი
+    ko: 볼룽가르비크
+    lt: Bolungarvikas
+    nl: Bolungarvíkurkaupstaður
+    pl: Bolungarvíkurkaupstaður
+    pt: Bolungarvík
+    sq: Bolungarvík
+    sv: Bolungarvíkurkaupstaður
+    tr: Bolungarvík
+  name: Bolungarvíkurkaupstaður
+  code: BOL
+  type: municipality
+DAB:
+  translations:
+    en: Dalabyggð
+    ceb: Dalabyggð
+    de: Dalabyggð
+    es: Dalabyggð
+    eu: Dalabyggð
+    fa: دالابیگگی
+    fr: Dalabyggð
+    hu: Dalabyggð
+    id: Dalabyggð
+    is: Dalabyggð
+    it: Dalabyggð
+    ja: ダーラビッグズ
+    nl: Dalabyggð
+    pl: Dalabyggð
+    pt: Dalabyggð
+    ru: Далабиггд
+    sq: Dalabyggd
+    sv: Dalabyggð
+  name: Dalabyggð
+  code: DAB
+  type: municipality
+DAV:
+  translations:
+    en: Dalvíkurbyggð
+    ceb: Dalvíkurbyggð (lalawigan sa Islandya)
+    de: Dalvíkurbyggð
+    es: Dalvíkurbyggð
+    eu: Dalvíkurbyggð
+    fa: دالویکوربیگگی
+    fr: Dalvíkurbyggð
+    hu: Dalvíkurbyggð
+    id: Dalvíkurbyggð
+    is: Dalvíkurbyggð
+    it: Dalvíkurbyggð
+    ja: ダールヴィークルビッグズ
+    nl: Dalvíkurbyggð
+    pl: Dalvíkurbyggð
+    pt: Dalvíkurbyggð
+    ru: Дальвикюрбиггд
+    sq: Dalvíkurbyggd
+    sv: Dalvíkurbyggð
+  name: Dalvíkurbyggð
+  code: DAV
+  type: municipality
+EOM:
+  translations:
+    en: Eyja- og Miklaholtshreppur
+    ceb: Eyja- og Miklaholtshreppur
+    de: Eyjar og Miklaholt
+    es: Eyja- og Miklaholtshreppur
+    eu: Eyja- og Miklaholtshreppur
+    fa: ایجا- اوگ میکلاهولتشرپور
+    fr: Eyja- og Miklaholtshreppur
+    hu: Eyja- og Miklaholtshreppur
+    id: Eyja- og Miklaholtshreppur
+    is: Eyja- og Miklaholtshreppur
+    it: Eyjar og Miklaholt
+    ja: エイヤ＝ミクラホルスフレップル
+    nl: Eyja- og Miklaholtshreppur
+    pl: Eyja- og Miklaholtshreppur
+    pt: Eyja- og Miklaholtshreppur
+    ru: Эйя-ог-Миклахольтсхреппюр
+    sq: Eyja- og Miklaholtshreppur
+    sv: Eyja- og Miklaholtshreppur
+  name: Eyja- og Miklaholtshreppur
+  code: EOM
+  type: municipality
+EYF:
+  translations:
+    en: Eyjafjarðarsveit
+    ceb: Eyjafjarðarsveit
+    de: Eyjafjarðarsveit
+    es: Eyjafjarðarsveit
+    eu: Eyjafjarðarsveit
+    fr: Eyjafjarðarsveit
+    hu: Eyjafjarðarsveit
+    id: Eyjafjarðarsveit
+    is: Eyjafjarðarsveit
+    it: Eyjafjarðarsveit
+    ja: エイヤフィヤルザルスヴェイト
+    nl: Eyjafjarðarsveit
+    pl: Eyjafjarðarsveit
+    pt: Eyjafjarðarsveit
+    ru: Эйяфьярдарсвейт
+    sq: Eyjafjardarsveit
+    sv: Eyjafjarðarsveit
+  name: Eyjafjarðarsveit
+  code: EYF
+  type: municipality
+FJD:
+  translations:
+    en: Fjarðabyggð
+    ar: فياردابيغد
+    be: Фіёрдабігд
+    ca: Fjarðabyggð
+    cy: Fjarðabyggð
+    da: Fjarðabyggð
+    de: Fjarðabyggð
+    el: Φιαρδαμπίγκδ
+    es: Fjarðabyggð
+    et: Fjarðabyggð
+    eu: Fjarðabyggð
+    fi: Fjarðabyggð
+    fr: Fjarðabyggð
+    hu: Fjarðabyggð
+    id: Fjarðabyggð
+    is: Fjarðabyggð
+    it: Fjarðabyggð
+    ja: フィヤルザビッグズ
+    lt: Fjardabigdas
+    ms: Fjarðabyggð
+    nl: Fjarðabyggð
+    pl: Fjarðabyggð
+    pt: Fjarðabyggð
+    ro: Fjarðabyggð
+    ru: Фьярдабиггд
+    sq: Fjarðabyggð
+    sv: Fjarðabyggð
+    uk: Фьярдабіггд
+  name: Fjarðabyggð
+  code: FJD
+  type: municipality
+FJL:
+  translations:
+    en: Fjallabyggð
+    ceb: Fjallabyggð
+    de: Fjallabyggð
+    es: Fjallabyggð
+    eu: Fjallabyggð
+    fr: Fjallabyggð
+    hu: Fjallabyggð
+    id: Fjallabyggð
+    is: Fjallabyggð
+    it: Fjallabyggð
+    ja: フィヤトラビッグズ
+    ka: ფიალაბიგდი
+    nl: Fjallabyggð
+    pl: Fjallabyggð
+    pt: Fjallabyggð
+    sq: Fjallabyggd
+    sv: Fjallabyggð
+  name: Fjallabyggð
+  code: FJL
+  type: municipality
+FLA:
+  translations:
+    en: Flóahreppur
+    ceb: Flóahreppur
+    de: Flóahreppur
+    es: Flóahreppur
+    eu: Flóahreppur
+    fr: Flóahreppur
+    hu: Flóahreppur
+    id: Flóahreppur
+    is: Flóahreppur
+    it: Flói
+    ja: フロゥアフレップル
+    nl: Flóahreppur
+    pl: Flóahreppur
+    pt: Flóahreppur
+    sq: Flóahreppur
+    sv: Flóahreppur
+  name: Flóahreppur
+  code: FLA
+  type: municipality
+FLR:
+  translations:
+    en: Fljótsdalshreppur
+    ca: Fljótsdalshreppur
+    ceb: Fljótsdalshreppur
+    da: Fljótsdalshreppur
+    de: Fljótsdalur
+    es: Fljótsdalshreppur
+    eu: Fljótsdalshreppur
+    fr: Fljótsdalshreppur
+    hu: Fljótsdalshreppur
+    id: Fljótsdalshreppur
+    is: Fljótsdalshreppur
+    it: Fljótsdalur
+    ja: フリョゥスダールスフレップル
+    nl: Fljótsdalshreppur
+    pl: Fljótsdalshreppur
+    pt: Fljótsdalshreppur
+    ru: Фльоутсдальсхреппюр
+    sq: Fljótsdalshreppur
+    sv: Fljótsdalshreppur
+  name: Fljótsdalshreppur
+  code: FLR
+  type: municipality
+GAR:
+  translations:
+    en: Garðabær
+  name: Garðabær
+  code: GAR
+  type: municipality
+GOG:
+  translations:
+    en: Grímsnes- og Grafningshreppur
+    ja: グリムスネース＝グラプニンフスフレップル
+  name: Grímsnes- og Grafningshreppur
+  code: GOG
+  type: municipality
+GRN:
+  translations:
+    en: Grindavíkurbær
+    ceb: Grindavíkurbær
+    da: Grindavíkurbær
+    de: Grindavíkurbær
+    fr: Grindavíkurbær
+    is: Grindavíkurbær
+    nl: Grindavíkurbær
+    pl: Grindavíkurbær
+    ru: Гриндавикюрбайр
+    sv: Grindavíkurbær
+  name: Grindavíkurbær
+  code: GRN
+  type: municipality
+GRU:
+  translations:
+    en: Grundarfjarðarbær
+    cs: Grundarfjörður
+    cy: Grundarfjarðarbær
+    da: Grundarfjarðarbær
+    de: Grundarfjörður
+    es: Grundarfjörður
+    et: Grundarfjörður
+    eu: Grundarfjörður
+    fr: Grundarfjörður
+    he: גרונדרפיורדור
+    hu: Grundarfjörður
+    id: Grundarfjarðarbær
+    is: Grundarfjarðarbær
+    it: Grundarfjörður
+    ja: グルンダルフィヨルズル
+    nl: Grundarfjörður
+    pl: Grundarfjörður
+    pt: Grundarfjörður
+    ro: Grundarfjörður
+    ru: Грюндарфьярдарбай
+    sq: Grundarfjörður
+    sv: Grundarfjörður
+  name: Grundarfjarðarbær
+  code: GRU
+  type: municipality
+GRY:
+  translations:
+    en: Grýtubakkahreppur
+    ja: グリートゥバッカフレップル
+  name: Grýtubakkahreppur
+  code: GRY
+  type: municipality
+HAF:
+  translations:
+    en: Hafnarfjarðarkaupstaður
+  name: Hafnarfjarðarkaupstaður
+  code: HAF
+  type: municipality
+HEL:
+  translations:
+    en: Helgafellssveit
+    ja: ヘルガフェルススヴェイト
+  name: Helgafellssveit
+  code: HEL
+  type: municipality
+HRG:
+  translations:
+    en: Hörgársveit
+  name: Hörgársveit
+  code: HRG
+  type: municipality
+HRU:
+  translations:
+    en: Hrunamannahreppur
+    ja: フルーナマンナフレップル
+  name: Hrunamannahreppur
+  code: HRU
+  type: municipality
+HUT:
+  translations:
+    en: Húnavatnshreppur
+    ja: フーナヴァスフレップル
+  name: Húnavatnshreppur
+  code: HUT
+  type: municipality
+HUV:
+  translations:
+    en: Húnaþing vestra
+    az: Hunapinq
+    ceb: Húnaþing Vestra
+    de: Húnaþing vestra
+    es: Húnaþing vestra
+    eu: Húnaþing vestra
+    fr: Húnaþing vestra
+    hu: Húnaþing vestra
+    id: Húnaþing vestra
+    is: Húnaþing vestra
+    it: Húnaþing vestra
+    ja: フーナシンク・ヴェストラ
+    ms: Húnaþing vestra
+    nl: Húnaþing vestra
+    pl: Húnaþing vestra
+    pt: Húnaþing vestra
+    ru: Хунатинг-Вестра
+    sq: Húnaþing vestra
+    sv: Húnaþing vestra
+  name: Húnaþing vestra
+  code: HUV
+  type: municipality
+HVA:
+  translations:
+    en: Hvalfjarðarsveit
+    ja: クヴァールフィヤルザルスヴェイト
+  name: Hvalfjarðarsveit
+  code: HVA
+  type: municipality
+HVE:
+  translations:
+    en: Hveragerðisbær
+  name: Hveragerðisbær
+  code: HVE
+  type: municipality
+ISA:
+  translations:
+    en: Ísafjarðarbær
+    ja: イーサフィヤルザルバイル
+  name: Ísafjarðarbær
+  code: ISA
+  type: municipality
+KAL:
+  translations:
+    en: Kaldrananeshreppur
+    ja: カルドゥラナネースフレップル
+  name: Kaldrananeshreppur
+  code: KAL
+  type: municipality
+KJO:
+  translations:
+    en: Kjósarhreppur
+    ja: キョゥサルフレップル
+  name: Kjósarhreppur
+  code: KJO
+  type: municipality
+KOP:
+  translations:
+    en: Kópavogsbær
+  name: Kópavogsbær
+  code: KOP
+  type: municipality
+LAN:
+  translations:
+    en: Langanesbyggð
+    ja: ラゥンガネースビッグズ
+  name: Langanesbyggð
+  code: LAN
+  type: municipality
+MOS:
+  translations:
+    en: Mosfellsbær
+    ja: モスフェルスバイル
+  name: Mosfellsbær
+  code: MOS
+  type: municipality
+MUL:
+  translations:
+    en: Múlaþing
+    ca: Múlaþing
+    da: Múlaþing
+    de: Múlaþing
+    fi: Múlaþing
+    fr: Múlaþing
+    hu: Múlaþing
+    is: Múlaþing
+    pl: Múlaþing
+    ru: Мулатинг
+    sv: Múlaþing
+  name: Múlaþing
+  code: MUL
+  type: municipality
+MYR:
+  translations:
+    en: Mýrdalshreppur
+    ja: ミールダルスフレップル
+  name: Mýrdalshreppur
+  code: MYR
+  type: municipality
+NOR:
+  translations:
+    en: Norðurþing
+    ja: ノルズルシンク
+  name: Norðurþing
+  code: NOR
+  type: municipality
+RGE:
+  translations:
+    en: Rangárþing eystra
+    ja: ラゥングアゥルシンク・エイストラ
+  name: Rangárþing eystra
+  code: RGE
+  type: municipality
+RGY:
+  translations:
+    en: Rangárþing ytra
+    ja: ラゥングアゥルシンク・イートラ
+  name: Rangárþing ytra
+  code: RGY
+  type: municipality
+RHH:
+  translations:
+    en: Reykhólahreppur
+    ja: レイクホゥラフレップル
+  name: Reykhólahreppur
+  code: RHH
+  type: municipality
+RKN:
+  translations:
+    en: Reykjanesbær
+    ja: レイキャネースバイル
+  name: Reykjanesbær
+  code: RKN
+  type: municipality
+RKV:
+  translations:
+    en: Reykjavíkurborg
+  name: Reykjavíkurborg
+  code: RKV
+  type: municipality
+SBH:
+  translations:
+    en: Svalbarðshreppur
+    ja: スヴァルバルズスフレップル
+  name: Svalbarðshreppur
+  code: SBH
+  type: municipality
+SBT:
+  translations:
+    en: Svalbarðsstrandarhreppur
+    ja: スヴァルバルズスストラゥンダルフレップル
+  name: Svalbarðsstrandarhreppur
+  code: SBT
+  type: municipality
+SDN:
+  translations:
+    en: Suðurnesjabær
+  name: Suðurnesjabær
+  code: SDN
+  type: municipality
+SDV:
+  translations:
+    en: Súðavíkurhreppur
+    ceb: Súðavíkurhreppur
+    da: Súðavíkurhreppur
+    de: Súðavíkurhreppur
+    es: Súðavíkurhreppur
+    eu: Súðavíkurhreppur
+    fr: Súðavíkurhreppur
+    hu: Súðavíkurhreppur
+    id: Súðavíkurhreppur
+    is: Súðavíkurhreppur
+    ja: スーザヴィークルフレップル
+    nl: Súðavíkurhreppur
+    pl: Súðavíkurhreppur
+    ru: Судавикюрхреппюр
+    sv: Súðavíkurhreppur
+  name: Súðavíkurhreppur
+  code: SDV
+  type: municipality
+SEL:
+  translations:
+    en: Seltjarnarnesbær
+  name: Seltjarnarnesbær
+  code: SEL
+  type: municipality
+SFA:
+  translations:
+    en: Sveitarfélagið Árborg
+    ar: أربورغ
+    cs: Árborg
+    cy: Árborg
+    da: Árborg
+    de: Árborg
+    es: Árborg
+    eu: Árborg
+    fi: Árborg
+    fr: Árborg
+    hu: Árborg
+    id: Árborg
+    is: Sveitarfélagið Árborg
+    it: Árborg
+    ja: アゥルボルグ
+    ms: Árborg
+    nl: Árborg
+    pl: Árborg
+    pt: Árborg
+    ro: Árborg
+    ru: Аурборг
+    sq: Árborg
+    sv: Árborg
+    uk: Аурборг
+  name: Sveitarfélagið Árborg
+  code: SFA
+  type: municipality
+SHF:
+  translations:
+    en: Sveitarfélagið Hornafjörður
+  name: Sveitarfélagið Hornafjörður
+  code: SHF
+  type: municipality
+SKF:
+  translations:
+    en: Skaftárhreppur
+    ja: スカフタアゥルフレップル
+  name: Skaftárhreppur
+  code: SKF
+  type: municipality
+SKG:
+  translations:
+    en: Skagabyggð
+    ja: スカーガビッグズ
+  name: Skagabyggð
+  code: SKG
+  type: municipality
+SKO:
+  translations:
+    en: Skorradalshreppur
+    ja: スコッラダールスフレップル
+  name: Skorradalshreppur
+  code: SKO
+  type: municipality
+SKU:
+  translations:
+    en: Skútustaðahreppur
+    ja: スクートゥスターザフレップル
+  name: Skútustaðahreppur
+  code: SKU
+  type: municipality
+SNF:
+  translations:
+    en: Snæfellsbær
+    ja: スナイフェルスバイル
+  name: Snæfellsbær
+  code: SNF
+  type: municipality
+SOG:
+  translations:
+    en: Skeiða- og Gnúpverjahreppur
+    ja: スキェイザ＝グヌープヴェーリャフレップル
+  name: Skeiða- og Gnúpverjahreppur
+  code: SOG
+  type: municipality
+SOL:
+  translations:
+    en: Sveitarfélagið Ölfus
+  name: Sveitarfélagið Ölfus
+  code: SOL
+  type: municipality
+SSF:
+  translations:
+    en: Sveitarfélagið Skagafjörður
+  name: Sveitarfélagið Skagafjörður
+  code: SSF
+  type: municipality
+SSS:
+  translations:
+    en: Sveitarfélagið Skagaströnd
+    af: Sveitarfélagið Skagaströnd
+    ca: Sveitarfélagið Skagaströnd
+    ceb: Sveitarfélagið Skagaströnd
+    cs: Sveitarfélagið Skagaströnd
+    cy: Sveitarfélagið Skagaströnd
+    da: Sveitarfélagið Skagaströnd
+    de: Sveitarfélagið Skagaströnd
+    es: Sveitarfélagið Skagaströnd
+    et: Sveitarfélagið Skagaströnd
+    eu: Sveitarfélagið Skagaströnd
+    fi: Sveitarfélagið Skagaströnd
+    fr: Sveitarfélagið Skagaströnd
+    ga: Sveitarfélagið Skagaströnd
+    gl: Sveitarfélagið Skagaströnd
+    hr: Sveitarfélagið Skagaströnd
+    hu: Sveitarfélagið Skagaströnd
+    is: Sveitarfélagið Skagaströnd
+    it: Sveitarfélagið Skagaströnd
+    lt: Sveitarfélagið Skagaströnd
+    lv: Sveitarfélagið Skagaströnd
+    nl: Sveitarfélagið Skagaströnd
+    pl: Sveitarfélagið Skagaströnd
+    pt: Sveitarfélagið Skagaströnd
+    ro: Sveitarfélagið Skagaströnd
+    ru: Община Скагастрёнд
+    sk: Sveitarfélagið Skagaströnd
+    sl: Sveitarfélagið Skagaströnd
+    sq: Sveitarfélagið Skagaströnd
+    sv: Sveitarfélagið Skagaströnd
+    tr: Sveitarfélagið Skagaströnd
+  name: Sveitarfélagið Skagaströnd
+  code: SSS
+  type: municipality
+STR:
+  translations:
+    en: Strandabyggð
+    ja: ストラゥンダビッグズ
+  name: Strandabyggð
+  code: STR
+  type: municipality
+STY:
+  translations:
+    en: Stykkishólmsbær
+  name: Stykkishólmsbær
+  code: STY
+  type: municipality
+SVG:
+  translations:
+    en: Sveitarfélagið Vogar
+  name: Sveitarfélagið Vogar
+  code: SVG
+  type: municipality
+TAL:
+  translations:
+    en: Tálknafjarðarhreppur
+    ja: タゥルクナフィヤルザルフレップル
+  name: Tálknafjarðarhreppur
+  code: TAL
+  type: municipality
+THG:
+  translations:
+    en: Þingeyjarsveit
+    ja: シンクエイヤルスヴェイト
+  name: Þingeyjarsveit
+  code: THG
+  type: municipality
+TJO:
+  translations:
+    en: Tjörneshreppur
+    ja: チョールネースフレップル
+  name: Tjörneshreppur
+  code: TJO
+  type: municipality
+VEM:
+  translations:
+    en: Vestmannaeyjabær
+  name: Vestmannaeyjabær
+  code: VEM
+  type: municipality
+VER:
+  translations:
+    en: Vesturbyggð
+    ja: ヴェストゥルビッグズ
+  name: Vesturbyggð
+  code: VER
+  type: municipality
+VOP:
+  translations:
+    en: Vopnafjarðarhreppur
+    ja: ヴォプナフィヤルザルフレップル
+  name: Vopnafjarðarhreppur
+  code: VOP
+  type: municipality

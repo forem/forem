@@ -1,0 +1,1092 @@
+---
+BB:
+  name: Bubanza
+  code: BB
+  unofficial_names: Bubanza
+  geo:
+    latitude: -3.083333
+    longitude: 29.4
+    min_latitude: -3.0908079
+    min_longitude: 29.3869686
+    max_latitude: -3.078209
+    max_longitude: 29.4021606
+  translations:
+    en: Bubanza
+    ar: مقاطعة بوبانزا
+    bg: Бубанза
+    bn: বুবাঞ্জা প্রদেশ
+    da: Bubanza Province
+    de: Bubanza
+    el: Μπουμπάνζα
+    es: Provincia de Bubanza
+    eu: Bubanza probintzia
+    fi: Bubanzan provinssi
+    fr: province de Bubanza
+    gl: Provincia de Bubanza
+    gu: બુબાન્ઝા પ્રાંત
+    hi: बुबांज़ा प्रांत
+    hy: Բուբանզա շրջան
+    id: Provinsi Bubanza
+    it: provincia di Bubanza
+    ja: ブバンザ県
+    ka: ბუბანზის პროვინცია
+    kn: ಬುಬನ್ಜಾ ಪ್ರಾಂತ್ಯ
+    ko: 부반자 주
+    lt: Bubanzos provincija
+    mr: बुबांझा प्रांत
+    ms: Bubanza Province
+    nb: Bubanza
+    nl: Bubanza
+    pl: Prowincja Bubanza
+    pt: Bubanza
+    ro: Provincia Bubanza
+    ru: Бубанза
+    si: බුබන්සා පළාත
+    sv: Bubanza
+    sw: Mkoa wa Bubanza
+    ta: புபனேஜா மாகாணம்
+    te: బుబాంజా ప్రావిన్స్
+    th: จังหวัดบูบันซา
+    tr: Bubanza ili
+    uk: Бубанза
+    ur: بوبونزا صوبہ
+    vi: Tỉnh Bubanza
+    zh: 布班扎省
+    lv: Bubanzas province
+    ceb: Bubanza Province
+    fa: استان بوبانزا
+    ccp: "\U0001111D\U0001112A\U0001111D\U00011127\U0001111A\U00011134\U0001110E"
+    ca: Província de Bubanza
+    'no': Bubanza
+    cy: Talaith Bubanza
+    et: Bubanza provints
+    zu: Bubanza Province
+  comments:
+  type: province
+BJ:
+  name: Bujumbura
+  code: BJ
+  unofficial_names: Bujumbura
+  geo:
+    latitude: -3.383333
+    longitude: 29.366667
+    min_latitude: -3.4532631
+    min_longitude: 29.3013954
+    max_latitude: -3.2973383
+    max_longitude: 29.4093703
+  translations:
+    en: Bujumbura
+    ja: ブジュンブラ
+  comments:
+  type: province
+BL:
+  name: province de Bujumbura rural
+  code: BL
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة بويمبورا الريفية
+    bn: বুজাম্বুরা রুরাল প্রদেশ
+    da: Bujumbura Rural Province
+    de: Bujumbura Rural
+    el: Μπουζουμπουρά-Ρουράλ
+    en: Bujumbura Rural
+    es: Provincia de Buyumbura Rural
+    et: Bujumbura maaprovints
+    eu: Bujumbura Rural probintzia
+    fi: Bujumbura Rural
+    fr: province de Bujumbura rural
+    gl: Bujumbura Rural
+    gu: બુજુમ્બુરા રૂરલ પ્રાંત
+    hi: बुखुम्बुरा ग्रामीण प्रांत
+    id: Provinsi Bujumbura Rural
+    it: provincia di Bujumbura Rurale
+    ja: ブジュンブラ近郊県
+    ka: ბუჟუმბურა-რურალი
+    kn: ಬುಜುಂಬುರಾ ಗ್ರಾಮೀಣ ಪ್ರಾಂತ್ಯ
+    ko: 부줌부라 교외주
+    lt: Bužumbūros kaimiškoji provincija
+    mr: बुजुंबुरा ग्रामीण प्रांत
+    ms: Bujumbura Rural Province
+    nb: Bujumbura Rural
+    nl: Bujumbura Rural
+    pl: Prowincja Bużumbura
+    pt: Bujumbura Rural
+    ro: Provincia Bujumbura Rurală
+    ru: Бужумбура-Рурал
+    si: බුජුම්බුරා දුෂ්කර පළාත
+    sv: Bujumbura Rural
+    ta: பூஜும்புறா ரூரல் மாகாணம்
+    te: బుజుంబుర రూరల్ ప్రావిన్స్
+    th: จังหวัดบูจุมบูรา รูเลล
+    tr: Bujumbura Rural ili
+    uk: Бужумбура
+    ur: بوجمبورا دیہی صوبہ
+    vi: Tỉnh Bujumbura Rural
+    lv: Bužumburas lauku province
+    ceb: Bujumbura Rural Province
+    zh: 布松布拉鄉村省
+    sw: Bujumbura Vijijini
+    ccp: "\U0001111D\U0001112A\U0001110E\U0001112A\U0001111F\U00011134\U0001111D\U0001112A\U00011122
+      \U00011122\U0001112A\U00011122\U00011123\U00011134"
+    'no': Bujumbura Rural
+    ca: Bujumbura
+    fa: استان بوجومبورا
+  comments:
+  type: province
+BM:
+  name: province de Bujumbura Mairie
+  code: BM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: مقاطعة بويومبورا مايري
+    bn: বুজুম্বুরা মাইরি প্রদেশ
+    da: Bujumbura Mairie Province
+    de: Bujumbura Mairie
+    el: Μπουτζουμπούρα
+    en: Bujumbura
+    es: Provincia de Buyumbura Mairie
+    et: Bujumbura linnaprovints
+    eu: Bujumbura Mairie probintzia
+    fi: Bujumbura Mairie
+    fr: province de Bujumbura Mairie
+    gl: Bujumbura Mairie
+    gu: બુજુમ્બુરા મૈરી પ્રાંત
+    hi: बुखुम्बरा मैरी प्रांत
+    id: Provinsi Bujumbura Mairie
+    it: provincia di Bujumbura Mairie
+    ja: ブジュンブラ・メリー県
+    ka: ბუჟუმბურა-მერი
+    kn: ಬುಜುಂಬುರಾ ಮೈರೈ ಪ್ರಾಂತ್ಯ
+    ko: 부줌부라 도시주
+    mr: बुजुंबुरा मारी प्रांत
+    ms: Bujumbura Mairie Province
+    nb: Bujumbura Mairie
+    nl: Bujumbura Mairie
+    pl: Prowincja Miasto Bużumbura
+    pt: Bujumbura Mairie
+    ro: Provincia Bujumbura Mairie
+    ru: Бужумбура-Мэри
+    si: බුජුම්බුරා මෛරියේ
+    sv: Bujumbura Mairie
+    ta: பூஜும்புறா மேரியே மாகாணம்
+    te: బుజుంబురా మెయిరీ ప్రావిన్స్
+    th: จังหวัดบูจุมบูรา ไมรี่
+    tr: Bujumbra Mairie Province
+    uk: Бужумбура-Мері
+    ur: بوجمبورا میری صوبہ
+    vi: Tỉnh Bujumbura Mairie
+    lv: Bužumburas Mērijas province
+    ceb: Bujumbura Mairie Province
+    lt: Budžumbura Meri provincija
+    sw: Bujumbura Mjini
+    ccp: "\U0001111D\U0001112A\U0001110E\U0001112A\U0001111F\U00011134\U0001111D\U0001112A\U00011122"
+    'no': Bujumbura Mairie
+    az: Bujumbura-Meri vilayəti
+    cy: Talaith Bujumbura Mairie
+  comments:
+  type: province
+BR:
+  name: Bururi
+  code: BR
+  unofficial_names: Bururi
+  geo:
+    latitude: -3.95
+    longitude: 29.616667
+    min_latitude: -3.9569072
+    min_longitude: 29.61484909999999
+    max_latitude: -3.9389683
+    max_longitude: 29.6364892
+  translations:
+    en: Bururi
+    ar: محافظة بوروري
+    bn: বুরুরি প্রদেশ
+    da: Bururi Province
+    de: Bururi
+    el: Μπουρούρι
+    es: Provincia de Bururi
+    eu: Bururi probintzia
+    fi: Bururin provinssi
+    fr: province de Bururi
+    gl: Provincia de Bururi
+    gu: બુરીરી પ્રાંત
+    hi: बुरीरी प्रांत
+    id: Provinsi Bururi
+    it: provincia di Bururi
+    ja: ブルリ県
+    ka: ბურურის პროვინცია
+    kn: ಬುರುರಿ ಪ್ರಾಂತ್ಯ
+    ko: 부루리 주
+    lt: Bururio provincija
+    mr: बुरुरी प्रांत
+    ms: Bururi Province
+    nb: Bururi
+    nl: Bururi
+    pl: Prowincja Bururi
+    pt: Bururi
+    ro: Provincia Bururi
+    ru: Бурури
+    si: බුරුරි පළාත
+    sv: Bururi
+    sw: Mkoa wa Bururi
+    ta: புரூரி மாகாணம்
+    te: బురూరి ప్రావిన్స్
+    th: ซูว์แด็สต์
+    tr: Bururi ili
+    uk: Бурурі (провінція)
+    ur: بوروری صوبہ
+    vi: Tỉnh Bururi
+    lv: Bururi province
+    ceb: Bururi Province
+    zh: 布鲁里省
+    fa: استان بوروری
+    ccp: "\U0001111D\U0001112A\U00011122\U0001112A\U00011122\U00011128"
+    'no': Bururi
+    ca: Bururi
+    cy: Talaith Bururi
+    et: Bururi provints
+  comments:
+  type: province
+CA:
+  name: Cankuzo
+  code: CA
+  unofficial_names: Cankuzo
+  geo:
+    latitude: -3.2196819
+    longitude: 30.5466187
+    min_latitude: -3.227476
+    min_longitude: 30.5413656
+    max_latitude: -3.2114974
+    max_longitude: 30.5516804
+  translations:
+    en: Cankuzo
+    ar: محافظة كانكوزو
+    bn: ক্যানকুযো প্রদেশ
+    da: Cankuzo Province
+    de: Cankuzo
+    el: Κανκούζο
+    es: Provincia de Cankuzo
+    eu: Cankuzo probintzia
+    fi: Cankuzon provinssi
+    fr: province de Cankuzo
+    gl: Provincia de Cankuzo
+    gu: સેંકુઝો પ્રાંત
+    hi: कैन्कुज़ो प्रांत
+    id: Provinsi Cankuzo
+    it: provincia di Cankuzo
+    ja: カンクゾ県
+    ka: ჩანკუზოს პროვინცია
+    kn: ಕಂಕುಝೋ ಪ್ರಾಂತ್ಯ
+    ko: 캉쿠조 주
+    lt: Kankuzo provincija
+    mr: कँकुझो प्रांत
+    ms: Cankuzo Province
+    nb: Cankuzo
+    nl: Cankuzo
+    pl: Prowincja Cankuzo
+    pt: Cankuzo
+    ro: Provincia Cankuzo
+    ru: Чанкузо
+    si: කන්කුසෝ පළාත
+    sv: Cankuzo
+    sw: Mkoa wa Cankuzo
+    ta: சங்குஸ்வ் மாகாணம்
+    te: కాంకుజో ప్రావిన్స్
+    th: จังหวัดแคนคูโซ
+    tr: Cankuzo ili
+    ur: کانکوزو صوبہ
+    vi: Tỉnh Cankuzo
+    lv: Ķankuzo province
+    ceb: Cankuzo Province
+    zh: 坎庫佐省
+    fa: استان کانکوزو
+    ccp: "\U00011107\U00011133\U00011120\U0001111A\U00011134\U00011107\U0001112A\U0001110E\U0001112E"
+    uk: Провінція Чанкузо
+    'no': Cankuzo
+    cy: Talaith Cankuzo
+    et: Cankuzo provints
+  comments:
+  type: province
+CI:
+  name: Cibitoke
+  code: CI
+  unofficial_names: Cibitoke
+  geo:
+    latitude: -2.888611
+    longitude: 29.11999999999999
+    min_latitude: -2.8941594
+    min_longitude: 29.1163767
+    max_latitude: -2.8800368
+    max_longitude: 29.1288114
+  translations:
+    en: Cibitoke
+    ar: محافظة سيبيتوك
+    bn: চিবিটক প্রদেশ
+    da: Cibitoke Province
+    de: Cibitoke
+    el: Κιμπιτόκε
+    es: Provincia de Cibitoke
+    et: Cibitoke provints
+    eu: Cibitoke probintzia
+    fi: Cibitoken provinssi
+    fr: province de Cibitoke
+    gl: Provincia de Cibitoke
+    gu: સિબિટૉક પ્રાંત
+    hi: सिबिटोक प्रांत
+    id: Provinsi Cibitoke
+    it: provincia di Cibitoke
+    ja: チビトケ県
+    ka: ჩიბიტოკეს პროვინცია
+    kn: ಸಿಬಿಟೋಕ್ ಪ್ರಾಂತ್ಯ
+    ko: 치비토케 주
+    lt: Kibitokės provincija
+    mr: सिबिटोक प्रांत
+    ms: Cibitoke Province
+    nb: Cibitoke
+    nl: Cibitoke
+    pl: Prowincja Cibitoke
+    pt: Cibitoke
+    ro: Provincia Cibitoke
+    ru: Кибитоке
+    si: සිබිටෝකේ පළාත
+    sv: Cibitoke
+    sw: Mkoa wa Cibitoke
+    ta: சிபிடோகே மாகாணம்
+    te: సిబిటోకె ప్రావిన్స్
+    th: เมืองซิบิโตเก
+    tr: Cibitoke Province
+    ur: سیبیتوکے صوبہ
+    vi: Tỉnh Cibitoke
+    lv: Ķibotokes province
+    ceb: Cibitoke Province
+    zh: 锡比托凯省
+    ccp: "\U00011125\U00011128\U0001111D\U00011128\U00011111\U0001112E\U00011107\U00011134"
+    uk: Провінція Кібітоке
+    'no': Cibitoke
+    ca: província de Cibitoke
+    cy: Talaith Cibitoke
+    fa: استان سیبیتوکه
+  comments:
+  type: province
+GI:
+  name: Gitega
+  code: GI
+  unofficial_names:
+  - Kitega
+  geo:
+    latitude: -3.428803
+    longitude: 29.924903
+    min_latitude: -3.4452258
+    min_longitude: 29.91053579999999
+    max_latitude: -3.4176378
+    max_longitude: 29.940319
+  translations:
+    en: Gitega
+    ar: مقاطعة جيتيغا
+    bn: গিটেগা প্রদেশ
+    da: Gitega Province
+    de: Gitega
+    el: Γκιτέγκα
+    es: Provincia de Gitega
+    eu: Gitega probintzia
+    fi: Gitegan provinssi
+    fr: province de Gitega
+    gl: Provincia de Gitega
+    gu: ગીતેગા પ્રાંત
+    hi: गिटेगा प्रांत
+    id: Provinsi Gitega
+    it: provincia di Gitega
+    ja: ギテガ県
+    ka: გიტეგას პროვინცია
+    kn: ಗೈಟ್ಗಾ ಪ್ರಾಂತ್ಯ
+    ko: 기테가 주
+    lt: Gitegos provincija
+    mr: गितेगा प्रांत
+    ms: Gitega Province
+    nb: Gitega
+    nl: Gitega
+    pl: Prowincja Gitega
+    pt: Gitega
+    ro: Provincia Gitega
+    ru: Гитега
+    si: ගිටෙගා පළාත
+    sv: Gitega
+    sw: Mkoa wa Gitega
+    ta: கிடேகா மாகாணம்
+    te: గిటేగా ప్రావిన్స్
+    th: จังหวัดกิเตกา
+    tr: Gitega Province
+    uk: Гітега
+    ur: گیتیگا صوبہ
+    vi: Tỉnh Gitega
+    lv: Gitegas province
+    ceb: Gitega Province
+    zh: 基特加省
+    ccp: "\U00011109\U0001112D\U00011116\U00011134\U00011109"
+    'no': Gitega
+    az: Giteqa vilayəti
+    ca: Gitega
+    cy: Talaith Gitega
+    et: Gitega provints
+    fa: استان گیتگا
+    hy: Գիտեգա
+  comments:
+  type: province
+KI:
+  name: Kirundo
+  code: KI
+  unofficial_names: Kirundo
+  geo:
+    latitude: -2.5848378
+    longitude: 30.0961296
+    min_latitude: -2.5880304
+    min_longitude: 30.0930977
+    max_latitude: -2.5823715
+    max_longitude: 30.0979042
+  translations:
+    en: Kirundo
+    ar: مقاطعة كيروندو
+    bn: কিরুন্ডো প্রদেশ
+    da: Kirundo Province
+    de: Kirundo
+    el: Κιρούντο
+    es: Provincia de Kirundo
+    et: Kirundo provints
+    eu: Kirundo probintzia
+    fi: Kirundon provinssi
+    fr: province de Kirundo
+    gl: Provincia de Kirundo
+    gu: કિરુન્ડો પ્રાંત
+    hi: किरुन्विभाग प्रांत
+    hy: Կիրունդո շրջան
+    id: Provinsi Kirundo
+    it: provincia di Kirundo
+    ja: キルンド県
+    ka: კირუნდოს პროვინცია
+    kn: ಕಿರುಂಡೊ ಪ್ರಾಂತ್ಯ
+    ko: 키룬도 주
+    lt: Kirundo provincija
+    mr: किरुंदो प्रांत
+    ms: Kirundo Province
+    nb: Kirundo
+    nl: Kirundo
+    pl: Prowincja Kirundo
+    pt: Kirundo
+    ro: Provincia Kirundo
+    ru: Кирундо
+    si: කිරුන්ඩෝ පළාත
+    sv: Kirundo
+    sw: Mkoa wa Kirundo
+    ta: கிறுண்டோ மாகாணம்
+    te: కిరుండో ప్రావిన్స్
+    th: คิรันโด
+    tr: Kirundo Province
+    ur: کیروندو صوبہ
+    vi: Tỉnh Kirundo
+    lv: Kirundo province
+    ceb: Kirundo Province
+    zh: 基龍多省
+    fa: استان کیروندو
+    ccp: "\U00011107\U00011128\U00011122\U0001112A\U0001111A\U00011134\U00011118\U0001112E"
+    uk: Провінція Кірундо
+    'no': Kirundo
+    cy: Talaith Kirundo
+  comments:
+  type: province
+KR:
+  name: Karuzi
+  code: KR
+  unofficial_names:
+  - Karusi
+  geo:
+    latitude: -3.1
+    longitude: 30.166667
+    min_latitude: -3.114891
+    min_longitude: 30.1540375
+    max_latitude: -3.0940647
+    max_longitude: 30.1710264
+  translations:
+    en: Karuzi
+    ar: محافظة كاروزي
+    bn: কারুজি প্রদেশ
+    da: Karuzi Province
+    de: Karuzi
+    el: Καρούζι
+    es: Provincia de Karuzi
+    eu: Karuzi probintzia
+    fi: Karuzin provinssi
+    fr: province de Karuzi
+    gl: Provincia de Karuzi
+    gu: કરુઝી પ્રાંત
+    hi: कारुज़ी प्रांत
+    hy: Կարուզի շրջան
+    id: Provinsi Karuzi
+    it: provincia di Karuzi
+    ja: カルジ県
+    ka: კარუზის პროვინცია
+    kn: ಕರುಜಿ ಪ್ರಾಂತ್ಯ
+    ko: 카루지 주
+    lt: Karuzio provincija
+    mr: कारुंझी प्रांत
+    ms: Karuzi Province
+    nb: Karuzi
+    nl: Karuzi
+    pl: Prowincja Karuzi
+    pt: Karuzi
+    ro: Provincia Karuzi
+    ru: Карузи
+    si: කරුසි පළාත
+    sv: Karuzi
+    sw: Mkoa wa Karuzi
+    ta: கருசி மாகாணம்
+    te: కారూజి ప్రావిన్స్
+    th: จังหวัดคูรูซี
+    tr: Karuzi
+    ur: کاروزی صوبہ
+    vi: Tỉnh Karuzi
+    lv: Karuzi province
+    ceb: Karuzi Province
+    zh: 卡鲁济省
+    fa: استان کاروزی
+    ccp: "\U00011107\U00011122\U0001112A\U0001110E\U00011128"
+    uk: Провінція Карузі
+    'no': Karuzi
+    be: правінцыя Карузі
+    cy: Talaith Karuzi
+    et: Karuzi provints
+  comments:
+  type: province
+KY:
+  name: Kayanza
+  code: KY
+  unofficial_names: Kayanza
+  geo:
+    latitude: -2.9218531
+    longitude: 29.6252858
+    min_latitude: -2.9284688
+    min_longitude: 29.6181107
+    max_latitude: -2.9145823
+    max_longitude: 29.6350192
+  translations:
+    en: Kayanza
+    ar: مقاطعة كايانزا
+    bn: কানজা প্রদেশ
+    da: Kayanza Province
+    de: Kayanza
+    el: Καγιάνζα
+    es: Provincia de Kayanza
+    eu: Kayanza probintzia
+    fi: Kayanzan provinssi
+    fr: province de Kayanza
+    gl: Provincia de Kayanza
+    gu: કાન્જા પ્રાંત
+    hi: कयांजा प्रांत
+    id: Provinsi Kayanza
+    it: provincia di Kayanza
+    ja: カヤンザ県
+    ka: კაიანზის პროვინცია
+    kn: ಕಯಾನ್ಜಾ ಪ್ರಾಂತ್ಯ
+    ko: 카얀자 주
+    lt: Kajanzos provincija
+    mr: कानाझा प्रांत
+    ms: Kayanza Province
+    nb: Kayanza
+    nl: Kayanza
+    pl: Prowincja Kayanza
+    pt: Kayanza
+    ro: Provincia Kayanza
+    ru: Каянза
+    si: කයන්සා පළාත
+    sv: Kayanza
+    sw: Mkoa wa Kayanza
+    ta: கயன்ச மாகாணம்
+    te: కాయంజా ప్రావిన్స్
+    th: จังหวัดคายานซา
+    tr: Kayanza Province
+    uk: Кайанза
+    ur: کایانزا صوبہ
+    vi: Tỉnh Kayanza
+    lv: Kajanzas province
+    ceb: Kayanza Province
+    zh: 卡揚扎省
+    fa: استان کایانزا
+    ccp: "\U00011107\U00011120\U0001111A\U00011134\U0001110E"
+    'no': Kayanza
+    ca: província de Kayanza
+    cy: Talaith Kayanza
+    et: Kayanza provints
+  comments:
+  type: province
+MA:
+  name: Makamba
+  code: MA
+  unofficial_names: Makamba
+  geo:
+    latitude: -4.133332999999999
+    longitude: 29.8
+    min_latitude: -4.1440429
+    min_longitude: 29.796574
+    max_latitude: -4.1278846
+    max_longitude: 29.8164654
+  translations:
+    en: Makamba
+    ar: محافظة ماكامبا
+    bn: মাকাম্বা প্রদেশ
+    da: Makamba Province
+    de: Makamba
+    el: Μακάμπα
+    es: Provincia de Makamba
+    eu: Makamba probintzia
+    fi: Makamban provinssi
+    fr: province de Makamba
+    gl: Provincia de Makamba
+    gu: મકામ્બા પ્રાંત
+    hi: मकम्बा प्रांत
+    id: Provinsi Makamba
+    it: provincia di Makamba
+    ja: マカンバ県
+    ka: მაკამბის პროვინცია
+    kn: ಮಕಾಂಬ ಪ್ರಾಂತ್ಯ
+    ko: 마캄바 주
+    lt: Makambos provincija
+    mr: मकुम्बा प्रांत
+    ms: Makamba Province
+    nb: Makamba
+    nl: Makamba
+    pl: Prowincja Makamba
+    pt: Makamba
+    ro: Provincia Makamba
+    ru: Макамба
+    si: මකම්බා පළාත
+    sv: Makamba
+    sw: Mkoa wa Makamba
+    ta: மகாம்பா மாகாணம்
+    te: మకాంబా ప్రావిన్స్
+    th: จังหวัดมาคัมบา
+    tr: Makamba Province
+    ur: ماکامبا صوبہ
+    vi: Tỉnh Makamba
+    lv: Makambas province
+    ceb: Makamba Province
+    zh: 馬坎巴省
+    fa: استان ماکامبا
+    ccp: "\U0001111F\U00011107\U0001111F\U00011134\U0001111D"
+    uk: Провінція Макамба
+    'no': Makamba
+    cy: Talaith Makamba
+    et: Makamba provints
+  comments:
+  type: province
+MU:
+  name: Muramvya
+  code: MU
+  unofficial_names:
+  - Muramuya
+  geo:
+    latitude: -3.2675245
+    longitude: 29.62238779999999
+    min_latitude: -3.2741165
+    min_longitude: 29.6133901
+    max_latitude: -3.2618627
+    max_longitude: 29.6345044
+  translations:
+    en: Muramvya
+    ar: محافظة مورامفيا
+    bn: মুরাম্ভিয়া প্রদেশ
+    da: Muramvya Province
+    de: Muramvya
+    el: Μουράμβια
+    es: Provincia de Muramvya
+    eu: Muramvya probintzia
+    fi: Muramvyan provinssi
+    fr: province de Muramvya
+    gl: Provincia de Muramvya
+    gu: મુરામવ્યા પ્રાંત
+    hi: मुरम्व्य प्रांत
+    hy: Մուրամվյա շրջան
+    id: Provinsi Muramvya
+    it: provincia di Muramvya
+    ja: ムランヴィヤ県
+    ka: მურამვიის პროვინცია
+    kn: ಮುರಾಮ್ವ ಪ್ರಾಂತ್ಯ
+    ko: 무람비야 주
+    lt: Muramvjos provincija
+    mr: मुरमावं प्रांत
+    ms: Muramvya Province
+    nb: Muramvya
+    nl: Muramvya
+    pl: Prowincja Muramvya
+    pt: Muramvya
+    ro: Provincia Muramvya
+    ru: Мурамвия
+    si: මුරම්ව්‍යා පළාත
+    sv: Muramvya
+    sw: Mkoa wa Muramvya
+    ta: முரம்வியா மாகாணம்
+    te: మురామ్వ్యా ప్రావిన్స్
+    th: มูรามวยา
+    tr: Muramvya Province
+    uk: Мурамвія
+    ur: مورامویا صوبہ
+    vi: Tỉnh Muramvya
+    lv: Muranvjas province
+    ceb: Muramvya Province
+    zh: 穆拉姆维亚省
+    fa: استان مورامویا
+    ccp: "\U0001111F\U0001112A\U00011122\U0001111F\U00011134\U0001111E\U00011128\U00011120"
+    'no': Muramvya
+    ca: província de Muramvya
+    cy: Talaith Muramvya
+    et: Muramvya provints
+  comments:
+  type: province
+MW:
+  name: Mwaro
+  code: MW
+  unofficial_names: Mwaro
+  geo:
+    latitude: -3.511985
+    longitude: 29.6991642
+    min_latitude: -3.5229303
+    min_longitude: 29.6926975
+    max_latitude: -3.5021983
+    max_longitude: 29.7108936
+  translations:
+    en: Mwaro
+    ar: محافظة موارو
+    bn: ম্বারো প্রদেশ
+    da: Mwaro Province
+    de: Mwaro
+    el: Μουάρο
+    es: Provincia de Mwaro
+    eu: Mwaro probintzia
+    fi: Mwaron provinssi
+    fr: province de Mwaro
+    gl: Provincia de Mwaro
+    gu: મવારો પ્રાંત
+    hi: मवारो प्रांत
+    id: Provinsi Mwaro
+    it: provincia di Mwaro
+    ja: ムワロ県
+    ka: მვაროს პროვინცია
+    kn: ಮ್ವಾರೋ ಪ್ರಾಂತ್ಯ
+    ko: 음와로 주
+    lt: Mvaro provincija
+    mr: मवारो प्रांत
+    ms: Mwaro Province
+    nb: Mwaro
+    nl: Mwaro
+    pl: Prowincja Mwaro
+    pt: Mwaro
+    ro: Provincia Mwaro
+    ru: Мваро
+    si: එම්වරෝ පළාත
+    sv: Mwaro
+    sw: Mkoa wa Mwaro
+    ta: மவரோ மாகாணம்
+    te: మ్వారో ప్రావిన్స్
+    th: จังหวัดมะวาโร
+    tr: Mwaro Province
+    ur: موارو صوبہ
+    vi: Tỉnh Mwaro
+    lv: Mvaro province
+    ceb: Province de Mwaro
+    zh: 穆瓦洛省
+    ccp: "\U0001111F\U00011133\U00011126\U00011127\U00011122\U0001112E"
+    uk: Провінція Мваро
+    'no': Mwaro
+    cy: Talaith Mwaro
+    et: Mwaro provints
+    fa: استان موارو
+  comments:
+  type: province
+MY:
+  name: Muyinga
+  code: MY
+  unofficial_names:
+  - Muhinga
+  geo:
+    latitude: -2.85
+    longitude: 30.333333
+    min_latitude: -2.8562907
+    min_longitude: 30.3324412
+    max_latitude: -2.834775
+    max_longitude: 30.3525294
+  translations:
+    en: Muyinga
+    ar: محافظة موينغا
+    bn: মুইজিং প্রদেশ
+    da: Muyinga Province
+    de: Muyinga
+    el: Μουγίνγκα
+    es: Provincia de Muyinga
+    eu: Muyinga probintzia
+    fi: Muyingan provinssi
+    fr: province de Muyinga
+    gl: Provincia de Muyinga
+    gu: મુઇંગા પ્રાંત
+    hi: मयिंगा प्रांत
+    id: Provinsi Muyinga
+    it: provincia di Muyinga
+    ja: ムインガ県
+    ka: მუიინგის პროვინცია
+    kn: ಮುಯಿಂಗ ಪ್ರಾಂತ್ಯ
+    ko: 무잉가 주
+    lt: Mujingos provincija
+    mr: मुईिंगा प्रांत
+    ms: Muyinga Province
+    nb: Muyinga
+    nl: Muyinga
+    pl: Prowincja Muyinga
+    pt: Muyinga
+    ro: Provincia Muyinga
+    ru: Муйинга
+    si: මුයින්ගා පළාත
+    sv: Muyinga
+    sw: Mkoa wa Muyinga
+    ta: முயங்க மாகாணம்
+    te: ముయింగా ప్రావిన్స్
+    th: จังหวัดมูยินกา
+    tr: Muyinga Province
+    ur: موئینگا صوبہ
+    vi: Tỉnh Muyinga
+    lv: Mujingas province
+    ceb: Muyinga Province
+    zh: 穆因加省
+    ccp: "\U0001111F\U0001112A\U00011120\U00011128\U00011101\U00011109"
+    uk: Провінція Муйінга
+    'no': Muyinga
+    cy: Talaith Muyinga
+  comments:
+  type: province
+NG:
+  name: Ngozi
+  code: NG
+  unofficial_names: Ngozi
+  geo:
+    latitude: -2.9
+    longitude: 29.833333
+    min_latitude: -2.9199827
+    min_longitude: 29.8056935
+    max_latitude: -2.8970525
+    max_longitude: 29.840777
+  translations:
+    en: Ngozi
+    ar: مقاطعة نغوزي
+    bn: গোজি প্রদেশ
+    da: Ngozi Province
+    de: Ngozi
+    el: Νγκόζι
+    es: Provincia de Ngozi
+    eu: Ngozi probintzia
+    fa: استان نگوزی
+    fi: Ngozin provinssi
+    fr: province de Ngozi
+    gl: Provincia de Ngozi
+    gu: એન્ગોઝી પ્રાંત
+    hi: नोगोज़ी प्रांत
+    id: Provinsi Ngozi
+    it: provincia di Ngozi
+    ja: ンゴジ県
+    ka: ნგოზის პროვინცია
+    kn: ಎನ್ಗೊಜಿ ಪ್ರಾಂತ್ಯ
+    ko: 응고지 주
+    lt: Ngozio provincija
+    mr: नागोझी प्रांत
+    ms: Ngozi Province
+    nb: Ngozi
+    nl: Ngozi
+    pl: Prowincja Ngozi
+    pt: Ngozi
+    ro: Provincia Ngozi
+    ru: Нгози
+    si: න්ගොසි පළාත
+    sv: Ngozi
+    sw: Mkoa wa Ngozi
+    ta: ங்கோஜி மாகாணம்
+    te: ఎన్గోజీ ప్రావిన్స్
+    th: จังหวัดโงซิ
+    tr: Ngozi Province
+    uk: Нгозі
+    ur: نگوزی صوبہ
+    vi: Tỉnh Ngozi
+    lv: Ngozi province
+    ceb: Ngozi Province
+    zh: 恩戈齊省
+    ccp: "\U00011109\U0001112E\U0001110E\U00011128"
+    'no': Ngozi
+    be: правінцыя Нгазі
+    ca: Ngozi
+    cy: Talaith Ngozi
+    et: Ngozi provints
+  comments:
+  type: province
+RM:
+  name: Province de Rumonge
+  code: RM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Rumonge
+    en: Rumonge
+    fi: Rumongen provinssi
+    fr: Province de Rumonge
+    it: Provincia di Rumonge
+    ja: ルモンゲ県
+    ko: 루몽게 주
+    nl: Rumonge
+    sv: Rumonge
+    ur: رومونگی صوبہ
+    zh: 鲁蒙盖省
+    fa: استان رومونگه
+    ccp: "\U00011122\U0001111F\U00011127\U00011101\U00011109\U0001112C"
+    es: Provincia de Rumonge
+    ar: إقليم رومنغي
+    cy: Talaith Rumonge
+    et: Rumonge provints
+    ru: Румонге
+    sw: Mkoa wa Rumonge
+    vi: Rumonge (tỉnh)
+  comments:
+  type: province
+RT:
+  name: Rutana
+  code: RT
+  unofficial_names: Rutana
+  geo:
+    latitude: -3.9257199
+    longitude: 29.9899512
+    min_latitude: -3.9334453
+    min_longitude: 29.9858952
+    max_latitude: -3.9175183
+    max_longitude: 29.9962807
+  translations:
+    en: Rutana
+    ar: مقاطعة روتانا
+    bn: রুটানা প্রদেশ
+    da: Rutana Province
+    de: Rutana
+    el: Ρουτάνα
+    es: Provincia de Rutana
+    eu: Rutana probintzia
+    fi: Rutanan provinssi
+    fr: province de Rutana
+    gl: Provincia de Rutana
+    gu: રુટાના પ્રાંત
+    hi: रुटाना प्रांत
+    hy: Ռուտանա շրջան
+    id: Provinsi Rutana
+    it: provincia di Rutana
+    ja: ルタナ県
+    ka: რუტანის პროვინცია
+    kn: ರುತಾನ ಪ್ರಾಂತ್ಯ
+    ko: 루타나 주
+    lt: Rutanos provincija
+    mr: रूटाणा प्रांत
+    ms: Wilayah Rutana
+    nb: Rutana
+    nl: Rutana
+    pl: Prowincja Rutana
+    pt: Rutana
+    ro: Provincia Rutana
+    ru: Рутана
+    si: රුටානා ප්‍රාන්තය
+    sv: Rutana
+    sw: Mkoa wa Rutana
+    ta: ருடனா மாகாணம்
+    te: రుటానా ప్రావిన్స్
+    th: จังหวัดรุทานา
+    tr: Rutana Province
+    ur: روتانا صوبہ
+    vi: Tỉnh Rutana
+    lv: Rutanas province
+    ceb: Rutana Province
+    zh: 魯塔納省
+    fa: استان روتانا
+    ccp: "\U00011122\U0001112A\U00011111\U0001111A"
+    uk: Провінція Рутана
+    'no': Rutana
+    cy: Talaith Rutana
+    et: Rutana provints
+  comments:
+  type: province
+RY:
+  name: Ruyigi
+  code: RY
+  unofficial_names: Ruyigi
+  geo:
+    latitude: -3.4750027
+    longitude: 30.2483881
+    min_latitude: -3.4831793
+    min_longitude: 30.2396965
+    max_latitude: -3.4652736
+    max_longitude: 30.253687
+  translations:
+    en: Ruyigi
+    ar: محافظة روييغي
+    bn: রুইগি প্রদেশ
+    da: Ruyigi Province
+    de: Ruyigi
+    el: Ρουγίγκι
+    es: Provincia de Ruyigi
+    eu: Ruyigi probintzia
+    fi: Ruyigin provinssi
+    fr: province de Ruyigi
+    gl: Provincia de Ruyigi
+    gu: રુઇગી પ્રાંત
+    hi: रुइगी प्रांत
+    id: Provinsi Ruyigi
+    it: provincia di Ruyigi
+    ja: ルイギ県
+    ka: რუიიგის პროვინცია
+    kn: ರೂಯಿಗಿ ಪ್ರಾಂತ್ಯ
+    ko: 루이기 주
+    lt: Rujigio provincija
+    mr: रुइगी प्रांत
+    ms: Ruyigi Province
+    nb: Ruyigi
+    nl: Ruyigi
+    pl: Prowincja Ruyigi
+    pt: Ruyigi
+    ro: Provincia Ruyigi
+    ru: Руйиги
+    si: රුයිගි පළාත
+    sv: Ruyigi
+    sw: Mkoa wa Ruyigi
+    ta: ருயிகி மாகாணம்
+    te: రూయిగి ప్రావిన్స్
+    th: จังหวัดรูยิกิ
+    tr: Ruyigi Province
+    ur: روئیگی صوبہ
+    vi: Tỉnh Ruyigi
+    lv: Rujigi province
+    ceb: Ruyigi Province
+    zh: 鲁伊吉省
+    ccp: "\U00011122\U0001112A\U00011103\U00011128\U00011109\U00011128"
+    uk: Муніципалітет Руйігі
+    'no': Ruyigi
+    ca: Província de Ruyigi
+    cy: Talaith Ruyigi
+    et: Ruyigi provints
+    fa: استان روییگی
+  comments:
+  type: province

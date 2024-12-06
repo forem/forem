@@ -1,0 +1,31 @@
+ua:
+  devise:
+    failure:
+      invited: "Вас очікує ще не прийняте запрошення, прийміть його, щоб завершити створення облікового запису."
+    invitations:
+      send_instructions: 'Лист з запрошенням було відправлено на %{email}.'
+      invitation_token_invalid: 'Передано неправильний токен запрошення!'
+      updated: 'Пароль успішно встановлено. Ви успішно увійшли.'
+      updated_not_active: "Ваш пароль успішно встановлено."
+      no_invitations_remaining: "Не лишилось запрошень"
+      invitation_removed: 'Ваше запрошення було видалено.'
+      new:
+        header: "Надсилання запрошення"
+        submit_button: "Надіслати запрошення"
+      edit:
+        header: "Встановіть ваш пароль"
+        submit_button: "Встановити мій пароль"
+    mailer:
+      invitation_instructions:
+        subject: 'Інструкції для запрошення'
+        hello: 'Вітаємо, %{email}'
+        someone_invited_you: 'Дехто запросив вас на %{url}, ви можете прийняти запрошення за посиланням нижче.'
+        accept: 'Прийняти запрошення'
+        accept_until: "Це запрошення дійсне до %{due_date}."
+        ignore: "Якщо ви не хочете приймати запрошення, будь ласка, ігноруйте цього листа.<br />Ваш акаунт не буде створено, доти, доки ви не перейдете за посиланням вище і не встановите свій пароль."
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%I:%M %p %B %d, %Y"

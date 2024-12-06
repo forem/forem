@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/dead_end/api"
+
+DeadEnd::Cli.new(
+  argv: ARGV
+).call

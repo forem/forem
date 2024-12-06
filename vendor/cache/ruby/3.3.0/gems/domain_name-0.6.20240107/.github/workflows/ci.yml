@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  ruby-versions:
+    uses: ruby/actions/.github/workflows/ruby_versions.yml@master
+    with:
+      engine: cruby
+      min_version: 2.7
+
+  test:
+    needs: ruby-versions
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu]
+        ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
+
+    name: >-
+      ${{matrix.os}}:ruby-${{matrix.ruby}}
+    runs-on: ${{matrix.os}}-latest
+    continue-on-error: ${{matrix.ruby == 'head' || matrix.ruby == 'jruby'}}
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up ruby and bundle
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          bundler-cache: true
+
+      - name: Run rake
+        run: |
+          bundle exec rake

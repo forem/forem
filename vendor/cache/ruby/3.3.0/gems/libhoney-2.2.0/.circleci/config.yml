@@ -1,0 +1,160 @@
+version: 2.1
+
+# YAML Anchors to reduce copypasta
+
+# This is necessary for job to run when a tag is created
+filters_always: &filters_always
+  filters:
+    tags:
+      only: /.*/
+
+# Restrict running to only be on tags starting with vNNNN
+filters_publish: &filters_publish
+  filters:
+    tags:
+      only: /^v[0-9].*/
+    branches:
+      ignore: /.*/
+
+matrix_rubyversions: &matrix_rubyversions
+  matrix:
+    parameters:
+      rubyversion: ["2.4", "2.5", "2.6", "2.7", "3.0"]
+
+# Default version of ruby to use for lint and publishing
+default_rubyversion: &default_rubyversion "3.0"
+
+executors:
+  ruby:
+    parameters:
+      rubyversion:
+        type: string
+        default: *default_rubyversion
+    docker:
+      - image: cimg/ruby:<< parameters.rubyversion >>
+  github:
+    docker:
+      - image: cibuilds/github:0.13.0
+
+commands:
+  publish_github:
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: "Artifacts being published"
+          command: |
+            echo "about to publish to tag ${CIRCLE_TAG}"
+            ls -l ~/artifacts/*
+      - run:
+          name: "GHR Draft"
+          command: ghr -draft -n ${CIRCLE_TAG} -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ~/artifacts
+  publish_rubygems:
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: "Artifacts being published"
+          command: |
+            echo "about to publish to tag ${CIRCLE_TAG}"
+            ls -l ~/artifacts/*
+      - checkout
+      - run:
+          name: Setup Rubygems
+          command: bash .circleci/setup-rubygems.sh
+      - run:
+          name: Publish to Rubygems
+          command: |
+            gem push ~/artifacts/*.gem
+
+jobs:
+  test:
+    parameters:
+      rubyversion:
+        type: string
+        default: *default_rubyversion
+    executor:
+      name: ruby
+      rubyversion: "<< parameters.rubyversion >>"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "libhoney.gemspec" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            bundle config set --local path 'vendor/bundle'
+            bundle install --jobs=4 --retry=3
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "libhoney.gemspec" }}
+      - run:
+          name: run rubocop
+          command: bundle exec rake rubocop
+      - run:
+          name: run tests
+          command: bundle exec rake test
+      - store_test_results:
+          path: test/reports
+
+  build_artifacts:
+    executor:
+      name: ruby
+    steps:
+      - checkout
+      - run: mkdir -p ~/artifacts
+      - run: gem build libhoney.gemspec
+      - run: cp libhoney-*.gem ~/artifacts/
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - artifacts
+      - store_artifacts:
+          path: ~/artifacts
+
+  publish_github:
+    executor: github
+    steps:
+      - publish_github
+
+  publish_rubygems:
+    executor:
+      name: ruby
+    steps:
+      - publish_rubygems
+
+workflows:
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - test:
+          <<: *matrix_rubyversions
+  build:
+    jobs:
+      - test:
+          <<: *filters_always
+          <<: *matrix_rubyversions
+      - build_artifacts:
+          <<: *filters_always
+          requires:
+            - test
+      - publish_github:
+          <<: *filters_publish
+          context: Honeycomb Secrets for Public Repos
+          requires:
+            - build_artifacts
+      - publish_rubygems:
+          <<: *filters_publish
+          context: Honeycomb Secrets for Public Repos
+          requires:
+            - build_artifacts

@@ -1,0 +1,49 @@
+---
+BW:
+  alpha2: BW
+  alpha3: BWA
+  continent: Africa
+  country_code: '267'
+  currency_code: BWP
+  distance_unit: KM
+  gec: BC
+  geo:
+    latitude: -22.328474
+    longitude: 24.684866
+    max_latitude: -17.7781369
+    max_longitude: 29.375304
+    min_latitude: -26.9075448
+    min_longitude: 19.998903
+    bounds:
+      northeast:
+        lat: -17.7781369
+        lng: 29.375304
+      southwest:
+        lat: -26.9075448
+        lng: 19.998903
+  international_prefix: '00'
+  ioc: BOT
+  iso_long_name: The Republic of Botswana
+  iso_short_name: Botswana
+  languages_official:
+  - en
+  - tn
+  languages_spoken:
+  - en
+  - tn
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Motswana
+  number: '072'
+  postal_code: false
+  region: Africa
+  start_of_week: monday
+  subregion: Southern Africa
+  un_locode: BW
+  unofficial_names:
+  - Botswana
+  - ボツワナ
+  world_region: EMEA

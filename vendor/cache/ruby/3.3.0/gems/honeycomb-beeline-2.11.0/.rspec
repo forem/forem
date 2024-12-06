@@ -1,0 +1,7 @@
+<% if ENV['CI'] %>
+--format RspecJunitFormatter
+--out test/reports/result.xml
+<% end %>
+--format documentation
+--color
+--require spec_helper

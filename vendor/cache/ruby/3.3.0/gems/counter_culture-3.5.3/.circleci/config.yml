@@ -1,0 +1,108 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@1.8
+
+jobs:
+  test:
+    parameters:
+      ruby-version:
+        type: string
+      rails-version:
+        type: string
+      database:
+        type: string
+    docker:
+      - image: cimg/ruby:<< parameters.ruby-version >>
+      - image: cimg/postgres:14.1
+      - image: cimg/mysql:8.0
+    steps:
+      - checkout
+      - run:
+          name: gem update --system --no-ri --no-rdoc
+          # bundles sporadically fail with a weird Psych error if I don't do
+          # this. It's annoying since it's slow but it's better than
+          # non-deterministic build failures.
+          command: sudo gem update --system
+      - run:
+          name: bundle update --no-ri --no-rdoc
+          command: BUNDLE_GEMFILE=gemfiles/rails_<< parameters.rails-version >>.gemfile bundle update
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Wait for Postgres
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Wait for MySQL
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run:
+          name: rspec
+          command: DB=<< parameters.database >> rspec spec
+
+workflows:
+  test:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              ruby-version: ["2.6", "2.7", "3.0", "3.1", "3.2", "3.3"]
+              rails-version: ["5.2", "6.0", "6.1", "7.0", "7.1"]
+              database: ["postgresql", "sqlite3", "mysql2"]
+            exclude:
+              - ruby-version: "3.0"
+                rails-version: "5.2"
+                database: "postgresql"
+              - ruby-version: "3.0"
+                rails-version: "5.2"
+                database: "mysql2"
+              - ruby-version: "3.0"
+                rails-version: "5.2"
+                database: "sqlite3"
+              - ruby-version: "3.1"
+                rails-version: "5.2"
+                database: "postgresql"
+              - ruby-version: "3.1"
+                rails-version: "5.2"
+                database: "mysql2"
+              - ruby-version: "3.1"
+                rails-version: "5.2"
+                database: "sqlite3"
+              - ruby-version: "3.2"
+                rails-version: "5.2"
+                database: "postgresql"
+              - ruby-version: "3.2"
+                rails-version: "5.2"
+                database: "mysql2"
+              - ruby-version: "3.2"
+                rails-version: "5.2"
+                database: "sqlite3"
+              - ruby-version: "3.3"
+                rails-version: "5.2"
+                database: "postgresql"
+              - ruby-version: "3.3"
+                rails-version: "5.2"
+                database: "mysql2"
+              - ruby-version: "3.3"
+                rails-version: "5.2"
+                database: "sqlite3"
+              - ruby-version: "2.6"
+                rails-version: "7.0"
+                database: "postgresql"
+              - ruby-version: "2.6"
+                rails-version: "7.0"
+                database: "sqlite3"
+              - ruby-version: "2.6"
+                rails-version: "7.0"
+                database: "mysql2"
+              - ruby-version: "2.6"
+                rails-version: "7.1"
+                database: "postgresql"
+              - ruby-version: "2.6"
+                rails-version: "7.1"
+                database: "sqlite3"
+              - ruby-version: "2.6"
+                rails-version: "7.1"
+                database: "mysql2"

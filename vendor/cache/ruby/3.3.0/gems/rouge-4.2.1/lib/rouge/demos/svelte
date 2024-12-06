@@ -1,0 +1,29 @@
+<!-- This file is made up from several examples on https://svelte.dev/examples and is not expected to function. -->
+<script lang="ts">
+    import Image from './Image.svelte';
+
+    let src: string = '/tutorial/image.gif';
+    let count: number = 1;
+    $: doubled = count * 2;  // the `$:` is special in svelte
+</script>
+
+<Image {src} bind:alt="{name.capitalize()} dancing" user={name.toUpperCase(false, 42, {key: 'value'})}
+       tooltip="I'm helping" false text=asdf on:message={handleMessage} />
+
+{#await loadSrc(src)}
+    loading...
+{:then data}
+    {#each cats as { name }, i}
+        <li>{name}</li>
+    {/each}
+
+    <!-- Keyed Each Block -->
+    {#each cats as cat (cat.id)}
+        <li>{cat.name}</li>
+    {/each}
+{:catch err}
+    {@debug err}
+    {#await solveErr(err, {x: 'asdf'}) then reason}{@html reason}{/await}
+{/await}
+
+<style>p {font-family: 'Comic Sans MS', cursive;}</style>

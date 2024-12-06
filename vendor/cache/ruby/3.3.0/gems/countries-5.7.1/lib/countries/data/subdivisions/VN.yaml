@@ -1,0 +1,4021 @@
+---
+'01':
+  name: Lai Chau
+  code: '01'
+  unofficial_names: Lai Chau
+  geo:
+    latitude: 22.3686613
+    longitude: 103.3119085
+    min_latitude: 21.6847368
+    min_longitude: 102.3274711
+    max_latitude: 22.8214739
+    max_longitude: 103.985241
+  translations:
+    en: Lai Châu
+    ar: مقاطعة لاي تشاو
+    bg: Лай Тяу
+    bn: লাই চাও
+    da: Lai Châu
+    de: Lai Châu
+    el: Λάι Τσάου
+    es: Lai Châu
+    fa: استان لای چو
+    fi: Lai Châu
+    fr: Province de Lai Châu
+    gu: લાઇ ચુ
+    hi: लाइ चाउ प्रांत
+    id: Provinsi Lai Chau
+    it: provincia di Lai Chau
+    ja: ライチャウ省
+    kn: ಲೈ ಚಿಯು
+    ko: 라이쩌우 성
+    mr: लाइ चाउ
+    ms: Lai Chau
+    nb: La Chau
+    nl: Lai Châu
+    pl: Prowincja Lai Châu
+    pt: Lai Chau
+    ro: Lai Châu
+    ru: Лайтяу
+    si: ලායි චාඋ
+    sv: Lai Chau
+    sw: Mkoa wa Lai Châu
+    ta: லாய் சாவு
+    te: లాయి చావూ
+    th: จังหวัดลายเจิว
+    tr: Lai Chau
+    uk: Лайтяу
+    ur: لائی چاو صوبہ
+    vi: Lai Châu
+    zh: 萊州省
+    lv: Lajķou province
+    ceb: Tỉnh Lai Châu
+    lt: Lai Čau provincija
+    yue_Hans: 莱州
+    ccp: "\U00011123\U0001112D \U0001110C\U00011105\U0001112A"
+    cs: Lai Chau
+    yue: 萊州
+    ca: Lai Châu
+    'no': La Chau
+    cy: Lai Châu
+    he: לאי צ׳או
+    my: လိုင်ချောင်ပြည်နယ်
+  comments:
+  type: province
+'02':
+  name: Lao Cai
+  code: '02'
+  unofficial_names: Lao Cai
+  geo:
+    latitude: 22.3380865
+    longitude: 104.1487055
+    min_latitude: 21.8772199
+    min_longitude: 103.529518
+    max_latitude: 22.848793
+    max_longitude: 104.626443
+  translations:
+    en: Lào Cai
+    ar: محافظة لاو كاي
+    bg: Лао Кай
+    bn: লাও কায়
+    da: Lào Cai
+    de: Lào Cai
+    el: Λάο Κάι
+    es: Lào Cai
+    fa: استان لائو کای
+    fi: Lào Cai
+    fr: Province de Lào Cai
+    gu: લાઓ કાઈ
+    hi: लाओ काई प्रांत
+    id: Provinsi Lao Cai
+    it: provincia di Lao Cai
+    ja: ラオカイ省
+    kn: ಲಾಯ್ ಕೈ
+    ko: 라오까이 성
+    mn: Лау Гаая
+    mr: लाओ काई
+    ms: Lao Cai
+    nb: Lao Cai
+    nl: Lào Cai
+    pl: Prowincja Lào Cai
+    pt: Lao Cai
+    ro: Lào Cai
+    ru: Лаокай
+    si: ලාඕ කායි
+    sv: Lao Cai
+    sw: Mkoa wa Lào Cai
+    ta: லாவோ காய்
+    te: లావో కాయి
+    th: จังหวัดหล่าวกาย
+    tr: Lao Cai
+    uk: Лаокай
+    ur: لاو کائے صوبہ
+    vi: Lào Cai
+    zh: 老街省
+    lv: Laokajas province
+    ceb: Tỉnh Lào Cai
+    lt: Lao Kai provincija
+    yue_Hans: 老街
+    ccp: "\U00011123\U00011103\U0001112E \U00011125\U0001112D"
+    cs: Provincie Lao Cai
+    yue: 老街
+    'no': Lao Cai
+    he: לאו קאי
+    km: ខេត្តឡាវកាយ
+    my: လောင်ကိုင်ပြည်နယ်
+  comments:
+  type: province
+'03':
+  name: Ha Giang
+  code: '03'
+  unofficial_names: Ha Giang
+  geo:
+    latitude: 22.7662056
+    longitude: 104.9388853
+    min_latitude: 22.166518
+    min_longitude: 104.3361501
+    max_latitude: 23.3888341
+    max_longitude: 105.5752411
+  translations:
+    en: Hà Giang
+    ar: مقاطعة ها جيانج
+    bg: Ха Жианг
+    bn: হা জিয়াং
+    da: Hà Giang
+    de: Hà Giang
+    el: Χα Γκιάνγκ
+    es: Hà Giang
+    fa: استان ها گیانگ
+    fi: Hà Giang
+    fr: Province de Hà Giang
+    gu: હા ગિઆંગ
+    hi: हा जियांग
+    id: Provinsi Ha Giang
+    it: provincia di Ha Giang
+    ja: ハザン省
+    kn: ಹ್ಯಾ ಜಿಯಾಂಗ್
+    ko: 하장 성
+    mn: Хай Жяан
+    mr: हा जिआंग
+    ms: Ha Giang
+    nb: Ha Giang
+    nl: Hà Giang
+    pl: Prowincja Hà Giang
+    pt: Ha Giang
+    ru: Хазянг
+    si: හා ජියැන්ග්
+    sv: Ha Giang
+    sw: Mkoa wa Hà Giang
+    ta: ஹா ஜியாங்
+    te: హా గియాంగ్
+    th: จังหวัดห่าซาง
+    tr: Ha Giang
+    uk: Хазянг
+    ur: ہا گیانگ صوبہ
+    vi: Hà Giang
+    zh: 河江省
+    lv: Hazana
+    ceb: Tỉnh Hà Giang
+    lt: Chadžiangas
+    yue_Hans: 河江
+    ccp: "\U00011126 \U0001110E\U00011128\U00011120\U00011101"
+    cs: Ha Giang (provincie)
+    yue: 河江
+    'no': Ha Giang
+    he: הא זאנג
+    km: ខេត្តហាយ៉ាង
+    my: ဟာကျန်ပြည်နယ်
+  comments:
+  type: province
+'04':
+  name: Cao Bang
+  code: '04'
+  unofficial_names: Cao Bang
+  geo:
+    latitude: 22.635689
+    longitude: 106.2522143
+    min_latitude: 22.35741
+    min_longitude: 105.2724999
+    max_latitude: 23.1186219
+    max_longitude: 106.826317
+  translations:
+    en: Cao Bằng
+    ar: مقاطعة كاو بانج
+    bg: Као Банг
+    bn: কাও ব্যাং
+    da: Cao Bằng
+    de: Cao Bằng
+    el: Κάο Μπάνγκ
+    es: Cao Bằng
+    fa: استان کائو بانگ
+    fi: Cao Bằng
+    fr: Province de Cao Bằng
+    gu: કાઓ બાંન્ગ
+    hi: केओ बैंग
+    id: Provinsi Cao Bang
+    it: provincia di Cao Bang
+    ja: カオバン省
+    kn: ಕಾವೊ ಬ್ಯಾಂಗ್
+    ko: 까오방 성
+    mn: Гау Бан
+    mr: काओ बिंग
+    ms: Cao Bang
+    nb: Cao Bang
+    nl: Cao Bằng
+    pl: Prowincja Cao Bằng
+    pt: Cao Bang
+    ru: Каобанг
+    si: කඕ බෑන්ග්
+    sv: Cao Bang
+    sw: Mkoa wa Cao Bằng
+    ta: கேயோ பாங்
+    te: కావో బాంగ్
+    th: จังหวัดกาวบั่ง
+    tr: Cao Bằng ili
+    uk: Каобанг
+    ur: کاؤ بانگ صوبہ
+    vi: Cao Bằng
+    zh: 高平省
+    lv: Kaobana
+    ceb: Tỉnh Cao Bằng
+    lt: Kao Bangas
+    yue_Hans: 高平
+    ccp: "\U00011107\U00011103\U0001112E \U0001111D\U00011101"
+    cs: Cao Bang
+    yue: 高平
+    'no': Cao Bang
+    ca: Cao Bang
+    he: קאו באנג
+    km: ខេត្តកាវបាង
+  comments:
+  type: province
+'05':
+  name: Son La
+  code: '05'
+  unofficial_names: Son La
+  geo:
+    latitude: 21.3270341
+    longitude: 103.9141288
+    min_latitude: 21.2237815
+    min_longitude: 103.8084413
+    max_latitude: 21.4172762
+    max_longitude: 104.0360641
+  translations:
+    en: Sơn La
+    ar: مقاطعة سن لا
+    bg: Сон Ла
+    bn: সন লা
+    da: Sơn La
+    de: Sơn La
+    el: Σον Λα
+    es: Sơn La
+    fa: استان سون لا
+    fi: Sơn La
+    fr: Province de Sơn La
+    gu: સોન લા
+    hi: सॉन ला
+    id: Provinsi Son La
+    it: provincia di Son La
+    ja: ソンラ省
+    kn: ಸೋನ್ ಲಾ
+    ko: 선라 성
+    mr: सोन ला
+    ms: Son La
+    nb: Son La
+    nl: Sơn La
+    pl: Prowincja Sơn La
+    pt: Son La
+    ro: Sơn La
+    ru: Шонла
+    si: සෝන් ලා
+    sr: Сон Ла
+    sv: Son La
+    sw: Mkoa wa Sơn La
+    ta: சன் லா
+    te: సోన్ లా
+    th: จังหวัดเซินลา
+    tr: Son la
+    uk: Шонла
+    ur: سون لا صوبہ
+    vi: Sơn La
+    zh: 山羅省
+    lv: Sonla
+    ceb: Tỉnh Sơn La
+    sr_Latn: Son La
+    lt: Sonla
+    yue_Hans: 山罗
+    ccp: "\U00011125\U00011127\U0001111A\U00011134 \U00011123"
+    cs: Son La
+    yue: 山羅
+    'no': Son La
+    ca: Son La
+    he: סן לה
+  comments:
+  type: province
+'06':
+  name: Yen Bai
+  code: '06'
+  unofficial_names: Yen Bai
+  geo:
+    latitude: 21.6837923
+    longitude: 104.4551361
+    min_latitude: 21.3273449
+    min_longitude: 103.887402
+    max_latitude: 22.291081
+    max_longitude: 105.100925
+  translations:
+    en: Yên Bái
+    ar: مقاطعة وين باي
+    bg: Йен Бай
+    bn: ইয়েন বাই
+    da: Yen Bai
+    de: Yên Bái
+    el: Γιέν Μπάι
+    es: Yên Bái
+    fa: استان ین بای
+    fi: Yên Bái
+    fr: Province de Yên Bái
+    gu: યેન બૈ
+    hi: येन बाई प्रांत
+    id: Provinsi Yen Bai
+    it: provincia di Yen Bai
+    ja: イエンバイ省
+    kn: ಯೆನ್ ಬಾಯ್
+    ko: 옌바이 성
+    mn: Иэньбай
+    mr: येन बाई
+    ms: Yen Bai
+    nb: Yen Bai
+    nl: Yên Bái
+    pl: Prowincja Yên Bái
+    pt: Yen Bai
+    ro: Yên Bái
+    ru: Йенбай
+    si: යේන් බායි
+    sv: Yen Bai
+    sw: Mkoa wa Yên Bái
+    ta: ஏன் பை
+    te: యెన్ బే
+    th: จังหวัดเอียนบ๊าย
+    tr: Yen Bai
+    uk: Єнбай
+    ur: یین با پراونس
+    vi: Yên Bái
+    zh: 安沛省
+    lv: Jenbajas province
+    ceb: Tỉnh Yên Bái
+    lt: Jen Bėjus
+    yue_Hans: 安沛
+    ccp: "\U00011103\U00011128\U00011120\U0001112C\U0001111A\U00011134 \U0001111D\U0001112D"
+    cs: Yen Bai
+    yue: 安沛
+    'no': Yen Bai
+    ca: Yên Bái
+    he: יין באי
+  comments:
+  type: province
+'07':
+  name: Tuyen Quang
+  code: '07'
+  unofficial_names: Tuyen Quang
+  geo:
+    latitude: 22.1726708
+    longitude: 105.3131185
+    min_latitude: 21.501763
+    min_longitude: 104.848572
+    max_latitude: 22.694384
+    max_longitude: 105.597397
+  translations:
+    en: Tuyên Quang
+    ar: مقاطعة توين كوانج
+    bg: Туйен Куанг
+    bn: তুয়েন কুয়াং
+    da: Tuyên Quang
+    de: Tuyên Quang
+    el: Τουγιέν Κουάνγκ
+    es: Tuyên Quang
+    fa: استان توین کوانگ
+    fi: Tuyên Quang
+    fr: Province de Tuyên Quang
+    gu: તુએન ક્વાંગ
+    hi: तुएन कैंग
+    id: Provinsi Tuyen Quang
+    it: provincia di Tuyen Quang
+    ja: トゥエンクアン省
+    kn: ತುಯೆನ್ ಕ್ವಾಂಗ್
+    ko: 뚜옌꽝 성
+    mn: Туэньгуан
+    mr: तुयेन कुआंग
+    ms: Tuyen Quang
+    nb: Tuyenn Quang
+    nl: Tuyên Quang
+    pl: Prowincja Tuyên Quang
+    pt: Tuyen Quang
+    ro: Tuyên Quang (provincie)
+    ru: Туенкуанг
+    si: ටුයෙන් කුවාන්ග්
+    sr: Тујен Кванг
+    sv: Tuyen Quang
+    sw: Mkoa wa Tuyên Quang
+    ta: தாயின் குஅங்
+    te: టుయెన్ క్వాంగ్
+    th: จังหวัดเตวียนกวาง
+    tr: Tuyen Quang
+    uk: Туєнкуанг (провінція)
+    ur: توین قوانگ صوبہ
+    vi: Tuyên Quang
+    zh: 宣光省
+    lv: Tujenkuana
+    ceb: Tỉnh Tuyên Quang
+    sr_Latn: Tujen Kvang
+    lt: Tujen Kvango provincija
+    yue_Hans: 宣光
+    ccp: "\U00011111\U0001112A\U00011120\U0001112C\U0001111A\U00011134 \U00011107\U0001112A\U00011120\U0001112C\U0001111A\U00011134"
+    yue: 宣光
+    'no': Tuyenn Quang
+    cs: Tuyên Quang
+    km: ខេត្តទ្វៀនក្វាង
+    my: တူယန်ကွမ်းပြည်နယ်
+  comments:
+  type: province
+'09':
+  name: Lang Son
+  code: '09'
+  unofficial_names: Lang Son
+  geo:
+    latitude: 21.8563705
+    longitude: 106.6291304
+    min_latitude: 21.3245939
+    min_longitude: 106.0948229
+    max_latitude: 22.4613169
+    max_longitude: 107.370491
+  translations:
+    en: Lạng Sơn
+    ar: مقاطعة لانغ صن
+    bg: Ланг Сон
+    bn: ল্যাং সন
+    da: Lang Son
+    de: Lạng Sơn
+    el: Λανγκ Σον
+    es: Lạng Sơn
+    fa: استان لانگ سون
+    fi: Lạng Sơn
+    fr: Province de Lạng Sơn
+    gu: લાંગ સોન
+    hi: लांग सोन
+    id: Provinsi Lang Son
+    it: provincia di Lang Son
+    ja: ランソン省
+    kn: ಲಾಂಗ್ ಸೋನ್
+    ko: 랑선 성
+    mn: Ланшонь
+    mr: लाँग सोन
+    ms: Lang Son
+    nb: Lang Son
+    nl: Lạng Sơn
+    pl: Prowincja Lạng Sơn
+    pt: Lang Son
+    ro: Lạng Sơn
+    ru: Лангшон
+    si: ලැන්ග් සෝන්
+    sr: Ланг Сон
+    sv: Lang Son
+    sw: Mkoa wa Lạng Sơn
+    ta: லாங் சன்
+    te: లాంగ్ సాన్
+    th: จังหวัดหลั่งเซิน
+    tr: Lang Son
+    uk: Лангшон
+    ur: لانگ سون صوبہ
+    vi: Lạng Sơn
+    zh: 諒山省
+    lv: Lanšona
+    ceb: Tỉnh Lạng Sơn
+    sr_Latn: Lang Son
+    lt: Langšonas
+    yue_Hans: 谅山
+    ccp: "\U00011123\U00011101 \U00011125\U00011127\U0001111A\U00011134"
+    cs: Lang Son
+    yue: 諒山
+    'no': Lang Son
+    ca: Lang Son
+    he: לאנג סן
+    km: ខេត្តឡាំងសឹន
+  comments:
+  type: province
+'13':
+  name: Quang Ninh
+  code: '13'
+  unofficial_names: Quang Ninh
+  geo:
+    latitude: 21.006382
+    longitude: 107.2925144
+    min_latitude: 20.7164602
+    min_longitude: 106.439682
+    max_latitude: 21.6654891
+    max_longitude: 108.0736009
+  translations:
+    en: Quảng Ninh
+    ar: مقاطعة كوانج ننه
+    bg: Куанг Нин
+    bn: কুয়াং নিন
+    da: Quảng Ninh
+    de: Quảng Ninh
+    el: Κουάνγκ Νινχ
+    es: Quảng Ninh
+    fa: استان کوانگ نین
+    fi: Quảng Ninh
+    fr: Province de Quảng Ninh
+    gu: ક્વાંગ નિંહ
+    hi: क्वैंग निन्ह
+    id: Provinsi Quang Ninh
+    it: provincia di Quang Ninh
+    ja: クアンニン省
+    kn: ಕ್ವಾಂಗ್ ನಿನ್ಹ್
+    ko: 꽝닌 성
+    mn: Гуан Нэн
+    mr: क्विंग निन्ह
+    ms: Quang Ninh
+    nb: Quang Ninh
+    nl: Quảng Ninh
+    pl: Prowincja Quảng Ninh
+    pt: Quang Ninh
+    ro: Quảng Ninh
+    ru: Куангнинь
+    si: කුආන්ග් නින්හ්
+    sr: Кванг Нин
+    sv: Quang Ninh
+    sw: Mkoa wa Quảng Ninh
+    ta: குணங் நின்ஹ்
+    te: క్వాంంగ్ నిన్హ్
+    th: จังหวัดกว๋างนิญ
+    tr: Quang Ninh
+    uk: Куангнінь
+    ur: قوانگ ننہ صوبہ
+    vi: Quảng Ninh
+    zh: 廣寧省
+    lv: Kuangniņa
+    ceb: Tỉnh Quảng Ninh
+    sr_Latn: Kvang Nin
+    lt: Kuang Nino provincija
+    yue_Hans: 广宁
+    ccp: "\U00011107\U0001112A\U00011120\U00011101 \U0001111A\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Quang Ninh
+    yue: 廣寧
+    'no': Quang Ninh
+    ca: Quang Ninh
+    he: קואנג נינג
+    km: ខេត្តក្វាងនិញ
+  comments:
+  type: province
+'14':
+  name: Hoa Binh
+  code: '14'
+  unofficial_names: Hoa Binh
+  geo:
+    latitude: 20.6861265
+    longitude: 105.3131185
+    min_latitude: 20.3047901
+    min_longitude: 104.8349999
+    max_latitude: 21.1126179
+    max_longitude: 105.8611979
+  translations:
+    en: Hòa Bình
+    ar: محافظة هوا بنه
+    bg: Хоа Бин
+    bn: হোয়া বিহ্ন
+    da: Hòa Bình
+    de: Hòa Bình
+    el: Χόα Μπινχ
+    es: Hòa Bình
+    fa: استان هوا بین
+    fi: Hòa Bình
+    fr: Province de Hòa Bình
+    gu: હો બિન્હ
+    hi: हो बिन्ह
+    id: Provinsi Hoa Binh
+    it: provincia di Hoa Binh
+    ja: ホアビン省
+    kn: ಹೌ ಬಿನ್
+    ko: 호아빈 성
+    mn: Хуа Бэн
+    mr: हो बिन
+    ms: Hoa Binh
+    nb: Hoa Binh
+    nl: Hòa Bình
+    pl: Prowincja Hoà Bình
+    pt: Hoa Binh
+    ru: Хоабинь
+    si: හොආ බින්හ්
+    sv: Hoa Binh
+    sw: Mkoa wa Hòa Bình
+    ta: ஹோஆ பின்ஹ்
+    te: హోవా బిన్హ్
+    th: จังหวัดฮหว่าบิ่ญ
+    tr: Hoa Binh
+    uk: Хоабінь
+    ur: ہوا بنہ صوبہ
+    vi: Hòa Bình
+    zh: 和平省
+    lv: Hoabiņa
+    ceb: Tỉnh Hòa Bình
+    lt: Hoa Binas
+    yue_Hans: 和平
+    ccp: "\U00011126\U0001112E\U00011120 \U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Hoa Binh
+    yue: 和平
+    'no': Hoa Binh
+    ca: Hòa Bình
+    he: קואנג בין
+  comments:
+  type: province
+'18':
+  name: Ninh Binh
+  code: '18'
+  unofficial_names: Ninh Binh
+  geo:
+    latitude: 20.2129969
+    longitude: 105.92299
+    min_latitude: 19.9628219
+    min_longitude: 105.5424731
+    max_latitude: 20.4552341
+    max_longitude: 106.1685398
+  translations:
+    en: Ninh Bình
+    af: Ninh Bình
+    ar: مقاطعة ننه بنه
+    bg: Нин Бин
+    bn: নিহ্ন বিহ্ন
+    cs: Ninh Binh
+    da: Ninh Bình
+    de: Ninh Bình
+    el: Νινχ Μπινχ
+    es: Ninh Binh
+    fa: استان نین بین
+    fi: Ninh Bình
+    fr: Province de Ninh Bình
+    gu: નિન્હ બિંહ
+    hi: निन्ह बिन्ह
+    id: Provinsi Ninh Bình
+    is: Ninh Bình
+    it: provincia di Ninh Binh
+    ja: ニンビン省
+    kn: ನಿನ್ಹ್ ಬಿನ್ಹ್
+    ko: 닌빈 성
+    mn: Нэн Бэн
+    mr: निन्ह बिन्ह
+    ms: Ninh Binh
+    nb: Ninh Bình
+    nl: Ninh Bình
+    pl: Prowincja Ninh Bình
+    pt: Ninh Binh
+    ro: Ninh Bình
+    ru: Ниньбинь
+    si: නින්හ් බින්හ්
+    sr: Нин Бин
+    sv: Ninh Binh
+    sw: Mkoa wa Ninh Bình
+    ta: நின்ஹ் பின்ஹ்
+    te: నిన్హ్ బిన్హ్
+    th: จังหวัดนิญบิ่ญ
+    tr: Ninh Bình
+    uk: Ніньбінь
+    ur: ننہ بنہ صوبہ
+    vi: Ninh Bình
+    zh: 寧平省
+    lv: Niņbiņa
+    ceb: Tỉnh Ninh Bình
+    sr_Latn: Nin Bin
+    lt: Nin Binas
+    yue_Hans: 宁平
+    ccp: "\U0001111A\U00011128\U0001111A\U00011134\U00011126\U00011134 \U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    yue: 寧平
+    'no': Ninh Bình
+    ca: Ninh Binh
+  comments:
+  type: province
+'20':
+  name: Thai Binh
+  code: '20'
+  unofficial_names: Thai Binh
+  geo:
+    latitude: 20.4463471
+    longitude: 106.3365828
+    min_latitude: 20.3997838
+    min_longitude: 106.2962436
+    max_latitude: 20.5060988
+    max_longitude: 106.3930608
+  translations:
+    en: Thái Bình
+    ar: مقاطعة ثاي بنه
+    bg: Тхай Бин
+    bn: তাই বিন
+    ca: Thái Bình
+    da: Thai Bình
+    de: Thái Bình
+    el: Τάι Μπινχ
+    es: Thái Bình
+    fa: استان تای بین
+    fi: Thái Bình
+    fr: Province de Thái Bình
+    gu: થાઈ બિંહ
+    hi: थाई बिन प्रांत
+    id: Provinsi Thai Binh
+    it: provincia di Thai Binh
+    ja: タイビン省
+    kn: ಥಿ ಬೆನ್
+    ko: 타이빈 성
+    mn: Таая Бэн
+    mr: थाई बिन्ह
+    ms: Thai Binh
+    nb: Thái Bình
+    nl: Thái Bình
+    pl: Prowincja Thái Bình
+    pt: Thai Binh
+    ro: Thái Bình
+    ru: Тхайбинь
+    si: තායි බින්හ්
+    sv: Thai Binh
+    sw: Mkoa wa Thái Bình
+    ta: தாய் பிநஹ்
+    te: థాాయి బిన్
+    th: จังหวัดท้ายบิ่ญ
+    tr: Tha, Binh
+    uk: Тхайбінь
+    ur: تھائی بنہ صوبہ
+    vi: Thái Bình
+    zh: 太平省
+    lv: Thajbiņas province
+    ceb: Tỉnh Thái Bình
+    lt: Tai Binas
+    yue_Hans: 太平
+    ccp: "\U00011117\U0001112D \U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Thai Binh
+    yue: 太平
+    'no': Thái Bình
+    he: טאי בינה
+  comments:
+  type: province
+'21':
+  name: Thanh Hoa
+  code: '21'
+  unofficial_names: Thanh Hoa
+  geo:
+    latitude: 20.1291279
+    longitude: 105.3131185
+    min_latitude: 19.2866772
+    min_longitude: 104.378349
+    max_latitude: 20.6708141
+    max_longitude: 106.0758351
+  translations:
+    en: Thanh Hóa
+    ar: محافظة تان هوا
+    bg: Тхан Хоа
+    bn: থাহ্ন হোয়া
+    cs: Thanh Hoa
+    da: Thanh Hóa
+    de: Thanh Hóa
+    el: Θανχ Χόα
+    es: Thanh Hóa
+    fa: تان هوا (استان)
+    fi: Thanh Hóa
+    fr: Province de Thanh Hóa
+    gu: થાન હોયા
+    hi: थांह होआ
+    id: Provinsi Thanh Hoa
+    it: provincia di Thanh Hoa
+    ja: タインホア省
+    kn: ಥಾನ್ ಹೊಯಾ
+    ko: 타인호아 성
+    mr: थान हो
+    ms: Thanh Hoa
+    nb: Thanh Hoa
+    nl: Thanh Hóa
+    pl: Prowincja Thanh Hóa
+    pt: Thanh Hoa
+    ro: Thanh Hóa
+    ru: Тханьхоа
+    si: තනහ් හොආ
+    sv: Thanh Hoa
+    sw: Mkoa wa Thanh Hóa
+    ta: தன்ஹ ஹோஆ
+    te: తాన్హ్ హోవా
+    th: ธานห์โฮ
+    tr: Thanh Hóa
+    uk: Тханьхоа
+    ur: تھان ہوا صوبہ
+    vi: Thanh Hóa
+    zh: 清化省
+    lv: Thaņhoa province
+    ceb: Tỉnh Thanh Hóa
+    lt: Tan Choa provincija
+    yue_Hans: 清化
+    ccp: "\U00011117\U0001111A\U00011134\U00011126\U00011134 \U00011126\U0001112E\U00011120"
+    yue: 清化
+    'no': Thanh Hoa
+    ca: Thanh Hoa
+    he: טהאינג הואה
+  comments:
+  type: province
+'22':
+  name: Nghe An
+  code: '22'
+  unofficial_names: Nghe An
+  geo:
+    latitude: 19.2342489
+    longitude: 104.9200365
+    min_latitude: 18.5531651
+    min_longitude: 103.876259
+    max_latitude: 19.999296
+    max_longitude: 105.806644
+  translations:
+    en: Nghệ An
+    ar: محافظة ني أن
+    bg: Нге Ан
+    bn: নেহেয়ান
+    cs: Nghệ An
+    da: Nghệ An
+    de: Nghệ An
+    el: Νγκχε Αν
+    es: Nghệ An
+    fa: استان نه آن
+    fi: Nghệ An
+    fr: Province de Nghệ An
+    gu: એન્ઘે એન
+    hi: नाघिए एन
+    hy: Նգեան
+    id: Provinsi Nghệ An
+    it: provincia di Nghe An
+    ja: ゲアン省
+    kn: ನ್ಘೇ ಆನ್
+    ko: 응에안 성
+    mr: नघे अन
+    ms: Nghe An
+    nb: Nghe An
+    nl: Nghệ An
+    pl: Prowincja Nghệ An
+    pt: Nghe An
+    ro: Nghệ An
+    ru: Нгеан
+    si: එන්ඝේ අන්
+    sl: Nghe An
+    sv: Nghe An
+    sw: Mkoa wa Nghệ An
+    ta: நஃஹீ அன்
+    te: నేగ్ ఆన్
+    th: จังหวัดเหงะอาน
+    tr: Nghe An
+    uk: Нгеан
+    ur: نگہ آن صوبہ
+    vi: Nghệ An
+    zh: 乂安省
+    lv: Ngeana
+    ceb: Tỉnh Nghệ An
+    lt: Ngeanas
+    yue_Hans: 乂安
+    ccp: "\U0001110A\U0001112C \U00011103\U0001111A\U00011134"
+    yue: 乂安
+    mk: Нге Ан
+    'no': Nghe An
+    be: Нгеан
+    he: נגה אן
+  comments:
+  type: province
+'23':
+  name: Ha Tinh
+  code: '23'
+  unofficial_names: Ha Tinh
+  geo:
+    latitude: 18.2943776
+    longitude: 105.6745247
+    min_latitude: 17.915977
+    min_longitude: 105.108635
+    max_latitude: 18.7626158
+    max_longitude: 106.5042068
+  translations:
+    en: Hà Tĩnh
+    ar: مقاطعة ها تنه
+    bg: Ха Тин
+    bn: হা তিহ্ন
+    da: Hà Tĩnh
+    de: Hà Tĩnh
+    el: Χα Τινχ
+    es: Hà Tĩnh
+    fa: استان ها تین
+    fi: Hà Tĩnh
+    fr: Province de Hà Tĩnh
+    gu: હા તિન્હ
+    hi: हे तिन्ह
+    id: Provinsi Ha Tinh
+    it: provincia di Ha Tinh
+    ja: ハティン省
+    kn: ಹಾ ಟನ್ಹ್
+    ko: 하띤 성
+    mr: हा तिन्ह
+    ms: Ha Tinh
+    nb: Ha Tinh
+    nl: Hà Tĩnh
+    pl: Prowincja Hà Tĩnh
+    pt: Ha Tinh
+    ru: Хатинь
+    si: හා ටින්හ්
+    sr: Ха Тин
+    sv: Ha Tinh
+    sw: Mkoa wa Hà Tĩnh
+    ta: ஹா டின்ஹ்
+    te: హా టిన్హ్
+    th: จังหวัดห่าติ๋ญ
+    tr: Hà Tĩnh
+    uk: Хатінь
+    ur: صوبہ ہاتنہ
+    vi: Hà Tĩnh
+    zh: 河靜省
+    lv: Hatiņas province
+    ceb: Tỉnh Hà Tĩnh
+    sr_Latn: Ha Tin
+    lt: Natino provincija
+    yue_Hans: 河静
+    ccp: "\U00011126 \U00011111\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Ha Tinh
+    yue: 河靜
+    'no': Ha Tinh
+    ca: Provincia de Hà Tĩnh
+    he: הא טינג
+  comments:
+  type: province
+'24':
+  name: Quang Binh
+  code: '24'
+  unofficial_names: Quang Binh
+  geo:
+    latitude: 17.6102715
+    longitude: 106.3487474
+    min_latitude: 16.924024
+    min_longitude: 105.617928
+    max_latitude: 18.089871
+    max_longitude: 106.995214
+  translations:
+    en: Quảng Bình
+    af: Quang Binh
+    ar: محافظة كوانغ بنه
+    be: Куангбінь
+    bg: Куанг Бин
+    bn: কুয়াং বিন প্রদেশ
+    ca: Província de Quảng Bình
+    cs: Quang Binh
+    da: Quang Binh
+    de: Quảng Bình
+    el: Κουάνγκ Μπινχ
+    es: Quảng Bình
+    et: Quảng Bìnhi provints
+    eu: Quang Binh probintzia
+    fa: استان کوانگ‌بن
+    fi: Quảng Bình
+    fr: Province de Quảng Bình
+    gl: Provincia de Quảng Bình
+    gu: ક્વાંગ બિંહ
+    hi: कैंग बिन्ह
+    hr: Quảng Bình
+    hu: Quang Binh
+    id: Provinsi Quang Binh
+    it: provincia di Quang Binh
+    ja: クアンビン省
+    kn: ಕ್ವಾಂಗ್ ಬಿನ್
+    ko: 꽝빈 성
+    lo: ແຂວງກວາງບິນ
+    lt: Kvangbinio provincija
+    lv: Kuanbiņa
+    mr: क्विंग बिन
+    ms: Quang Binh
+    nb: Quang Binh
+    nl: Quảng Bình
+    pl: Prowincja Quảng Bình
+    pt: Quang Binh
+    ro: Quảng Bình
+    ru: Куангбинь
+    si: ක්වාන්ග් බින්හ්
+    sk: Quảng Bình
+    sl: Quảng Bình
+    sr: Куангбин
+    sv: Quang Binh
+    sw: Quang Binh
+    ta: குஅங் பிநஹ்
+    te: క్వాంగ్ బిన్
+    th: จังหวัดกว๋างบิ่ญ
+    tr: Quang Binh
+    uk: Куангбінь
+    ur: صوبہ کوانگ بن
+    vi: Quảng Bình
+    zh: 廣平省
+    ceb: Quang Binh
+    sr_Latn: Kuangbin
+    yue_Hans: 广平省
+    jv: Provinsi Quang Binh
+    sq: Provinca Quang Binh
+    ccp: "\U00011107\U0001112A\U00011120\U00011101 \U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    ga: Quang Binh
+    he: קוואנג בין
+    so: Quang Binh
+    pa: ਕੂਏਂਗ ਬਿਨਾਹ ਸੂਬਾ
+    yue: 廣平省
+    am: ኳንግ ቢን ክፍላገር
+    'no': Quang Binh
+  comments:
+  type: province
+'25':
+  name: Quang Tri
+  code: '25'
+  unofficial_names: Quang Tri
+  geo:
+    latitude: 16.7943472
+    longitude: 106.963409
+    min_latitude: 16.3023949
+    min_longitude: 106.553429
+    max_latitude: 17.165551
+    max_longitude: 107.3883289
+  translations:
+    en: Quảng Trị
+    ar: مقاطعة كوانج تري
+    bg: Куанг Чи
+    bn: কুয়াং ত্রি
+    cs: Quang Tri
+    da: Quảng Trị
+    de: Quảng Trị
+    el: Κουάνγκ Τρι
+    es: Quảng Trị
+    fa: استان کوانگ تری
+    fi: Quảng Trị
+    fr: Province de Quảng Trị
+    gu: ક્યાંગ ટ્રી
+    hi: क्वांग ट्राय
+    id: Provinsi Quang Tri
+    it: provincia di Quang Tri
+    ja: クアンチ省
+    kn: ಕ್ವಾಂಗ್ ಟ್ರುಟೊ
+    ko: 꽝찌 성
+    mr: क्यूअंग ट्री
+    ms: Quang Trị
+    nb: Quang Tri
+    nl: Quảng Trị
+    pl: Prowincja Quảng Trị
+    pt: Quang Tri
+    ro: Quảng Trị
+    ru: Куангчи
+    si: ක්වාන්ග් ට්‍රි
+    sl: provinca Quảng Trị
+    sv: Quang Tri
+    sw: Mkoa wa Quảng Trị
+    ta: குங்க ட்ரி
+    te: క్వాంగ్ ట్రి
+    th: จังหวัดกว๋างจิ
+    tr: Quảng Trị
+    uk: Куангчі
+    ur: قوانگ تری صوبہ
+    vi: Quảng Trị
+    zh: 廣治省
+    lv: Kuanči province
+    ceb: Tỉnh Quảng Trị
+    lt: Kvangčio provincija
+    yue_Hans: 广治
+    ccp: "\U00011107\U0001112A\U00011120\U00011101 \U00011111\U00011133\U00011122\U0001112D"
+    yue: 廣治
+    be: Куангчы
+    'no': Quang Tri
+    he: קואנג צ׳י
+  comments:
+  type: province
+'26':
+  name: Thua Thien-Hue
+  code: '26'
+  unofficial_names: Thua Thien-Hue
+  geo:
+    latitude: 16.467397
+    longitude: 107.5905326
+    min_latitude: 15.994803
+    min_longitude: 107.0167731
+    max_latitude: 16.741354
+    max_longitude: 108.1925689
+  translations:
+    en: Thừa Thiên–Huế
+    ar: مقاطعة ثوا ثن هوي
+    bg: Тхуа Тхиен-Хюе
+    bn: থুুয়া থিয়েন-হু
+    da: Huế
+    de: Thừa Thiên-Huế
+    el: Θούα Θιέν-Χουέ
+    es: Thừa Thiên-Huế
+    fi: Thừa Thiên-Huế
+    fr: Province de Thừa Thiên-Huế
+    gu: થુઆ થિએન-હુએ
+    hi: थुरा थिएन-हुअए
+    id: Provinsi Thua Thien-Hue
+    it: provincia di Thua Thien-Hue
+    ja: トゥアティエン＝フエ省
+    kn: ಥಿಯಾ ಥಿನ್-ಹೂ
+    ko: 투아티엔후에 성
+    mr: थाय थिएन-हुएंग
+    ms: Thua Thien-Hue
+    nb: Thua Thien-Hue
+    nl: Thừa Thiên-Huế
+    pl: Prowincja Thừa Thiên-Huế
+    pt: Thua Thien-Hue
+    ro: Thừa Thiên - Huế
+    ru: Тхыатхьен-Хюэ
+    si: ට්ඨුවා තියන් හියු
+    sv: Thua Thien-Hué
+    sw: Mkoa wa Thừa Thiên - Huế
+    ta: துஆ தீயின்-ஹுய்
+    te: తురా తియెన్-హ్యూ
+    th: จังหวัดเถื่อเทียน-เว้
+    tr: Thừa Thiên - Huế
+    uk: Тхиатхьєн-Хюе
+    ur: تھوا تھیئن-ہوائے صوبہ
+    vi: Thừa Thiên - Huế
+    zh: 承天順化省
+    lv: Thiathjenas-Hue province
+    ceb: Tỉnh Thừa Thiên-Huế
+    lt: TchiaTjenchujaus provincija
+    yue_Hans: 承天顺化
+    ccp: "\U00011117\U0001112A\U00011120 \U00011117\U00011128\U00011120\U0001112C\U0001111A\U00011134-\U00011126\U0001112A\U00011120\U0001112C"
+    cs: Thua Thien-Hue
+    yue: 承天順化
+    'no': Thua Thien-Hue
+    ca: Thừa Thiên-Huế
+    he: טהיאה טהיין-הואה
+    hu: Thừa Thiên-Huế
+  comments:
+  type: province
+'27':
+  name: Quang Nam
+  code: '27'
+  unofficial_names: Quang Nam
+  geo:
+    latitude: 15.5393538
+    longitude: 108.019102
+    min_latitude: 14.951885
+    min_longitude: 107.217789
+    max_latitude: 16.066077
+    max_longitude: 108.7379948
+  translations:
+    en: Quảng Nam
+    ar: مقاطعة كوانج نام
+    bg: Куанг Нам
+    bn: কুয়াং নাম
+    cs: Quảng Nam
+    da: Quang Nam
+    de: Quảng Nam
+    el: Κουάνγκ Ναμ
+    es: Quảng Nam
+    fa: استان کوانگ نام
+    fi: Quảng Nam
+    fr: Province de Quảng Nam
+    gu: કુંગ નામ
+    hi: कैंग नाम
+    id: Provinsi Quang Nam
+    it: provincia di Quang Nam
+    ja: クアンナム省
+    kn: ಕ್ವಾಂಗ್ ನಾಮ್
+    ko: 꽝남 성
+    mr: क्ंग नाम
+    ms: Quang Nam
+    nb: Quang Nam
+    nl: Quảng Nam
+    pl: Prowincja Quảng Nam
+    pt: Quang Nam
+    ro: Quảng Nam
+    ru: Куангнам
+    si: ක්වන්ග් නම්
+    sr: Кванг Нам
+    sv: Quang Nam
+    sw: Mkoa wa Quảng Nam
+    ta: குணங் நம்
+    te: క్వాంగ్ నామ్
+    th: จังหวัดกว๋างนาม
+    tr: Quang Nam
+    uk: Куангнам
+    ur: قوانگ نام صوبہ
+    vi: Quảng Nam
+    zh: 廣南省
+    lv: Kuannama
+    ceb: Tỉnh Quảng Nam
+    sr_Latn: Kvang Nam
+    lt: Kvangnamas
+    yue_Hans: 广南
+    ccp: "\U00011107\U0001112A\U00011120\U00011101 \U0001111A\U0001111F\U00011134"
+    yue: 廣南
+    'no': Quang Nam
+    ca: Quảng Nam
+  comments:
+  type: province
+'28':
+  name: Kon Tum
+  code: '28'
+  unofficial_names: Kon Tum
+  geo:
+    latitude: 14.3497403
+    longitude: 108.0004606
+    min_latitude: 14.2307742
+    min_longitude: 107.8523969
+    max_latitude: 14.4549609
+    max_longitude: 108.088045
+  translations:
+    en: Kon Tum
+    ar: محافظة كون توم
+    bg: Кон Тум
+    bn: কন্ তুম
+    da: Kon Tum
+    de: Kon Tum
+    el: Κον Τουμ
+    es: Kon Tum
+    fa: استان کون توم
+    fi: Kon Tum
+    fr: Province de Kon Tum
+    gu: કોન તુમ
+    hi: कॉन टम प्रांत
+    id: Provinsi Kon Tum
+    it: provincia di Kon Tum
+    ja: コントゥム省
+    kn: ಕಾನ್ ತುಮ್
+    ko: 꼰뚬 성
+    mr: कोण टूम
+    ms: Kon Tum
+    nb: Kon Tum (provins)
+    nl: Kon Tum
+    pl: Prowincja Kon Tum
+    pt: Kon Tum
+    ro: Kon Tum
+    ru: Контум
+    si: කොන් ටුම්
+    sr: Контум
+    sv: Kon Tum
+    sw: Mkoa wa Kon Tum
+    ta: கொண் டும்
+    te: కోన్ టుమ్
+    th: จังหวัดกอนตูม
+    tr: Kon Tum
+    uk: Контум
+    ur: کون تم صوبہ
+    vi: Kon Tum
+    zh: 崑嵩省
+    lv: Kontumas province
+    ceb: Kon Tum
+    sr_Latn: Kontum
+    lt: Kon Tumo provincija
+    yue_Hans: 昆嵩
+    ccp: "\U00011107\U0001112E\U0001111A\U00011134 \U00011111\U0001112A\U0001111F\U00011134"
+    cs: Kon Tum
+    yue: 崑嵩
+    'no': Kon Tum (provins)
+    ga: Cúige Kon Tum
+    he: קון טום
+  comments:
+  type: province
+'29':
+  name: Quang Ngai
+  code: '29'
+  unofficial_names: Quang Ngai
+  geo:
+    latitude: 15.1213873
+    longitude: 108.8044145
+    min_latitude: 15.0926163
+    min_longitude: 108.7603999
+    max_latitude: 15.216273
+    max_longitude: 108.9229524
+  translations:
+    en: Quảng Ngãi
+    ar: مقاطعة كوانج نجاي
+    bg: Куанг Нгай
+    bn: কুয়াং গাই
+    cs: Quảng Ngãi
+    da: Quảng Ngãi
+    de: Quảng Ngãi
+    el: Κουάνγκ Νγκάι
+    es: Quảng Ngãi
+    fa: استان کوانگ نگای
+    fi: Quảng Ngãi
+    fr: Province de Quảng Ngãi
+    gu: કુઆંગ નગાઈ
+    hi: कैंग गाई
+    hy: Կուանգնգայ
+    id: Provinsi Quang Ngai
+    it: provincia di Quang Ngai
+    ja: クアンガイ省
+    kn: ಕ್ವಾಂಗ್ ನ್ಗಾಯಿ
+    ko: 꽝응아이 성
+    mr: कुआंग नगाई
+    ms: Quang Ngai
+    nb: Quang Ngai
+    nl: Quảng Ngãi
+    pl: Prowincja Quảng Ngãi
+    pt: Quang Ngai
+    ro: Quảng Ngãi
+    ru: Куангнгай
+    si: ක්වන්ග් එන්ගායි
+    sr: Кванг Нгај
+    sv: Quang Ngai
+    sw: Mkoa wa Quảng Ngãi
+    te: క్వాంగ్ ఎన్గాయ్
+    th: จังหวัดกว๋างหงาย
+    tr: Quang Ngai
+    uk: Куангнгай
+    ur: قوانگ نگائی صوبہ
+    vi: Quảng Ngãi
+    zh: 廣義省
+    lv: Kuanngaja
+    ceb: Tỉnh Quảng Ngãi
+    sr_Latn: Kvang Ngaj
+    lt: Kvang Ngajus
+    yue_Hans: 广刈省
+    ccp: "\U00011107\U0001112A\U00011120\U00011101 \U00011109\U0001112D"
+    yue: 廣刈省
+    be: Куангнгай
+    'no': Quang Ngai
+    he: קואנג נגאי
+  comments:
+  type: province
+'30':
+  name: Gia Lai
+  code: '30'
+  unofficial_names: Gia Lai
+  geo:
+    latitude: 13.8078943
+    longitude: 108.109375
+    min_latitude: 12.9962269
+    min_longitude: 107.3392181
+    max_latitude: 14.602364
+    max_longitude: 108.8727541
+  translations:
+    en: Gia Lai
+    ar: محافظة زا لاي
+    bg: Жиа Лай
+    bn: জিয়া লিয়া
+    da: Gia Lai
+    de: Gia Lai
+    el: Γκία Λέι
+    es: Gia Lai
+    fa: استان گیا لای
+    fi: Gia Lai
+    fr: Province de Gia Lai
+    gu: જીઆ લાઈ
+    hi: जिया लाई प्रांत
+    id: Provinsi Gia Lai
+    it: provincia di Gia Lai
+    ja: ザライ省
+    kn: ಜಿಯಾ ಲೈ
+    ko: 잘라이 성
+    mr: जिया लाइ
+    ms: Gia Lai
+    nb: Gia Lai
+    nl: Gia Lai
+    pl: Prowincja Gia Lai
+    pt: Gia Lai
+    ru: Зялай
+    si: ජියා ලායි
+    sr: Ђа Лај
+    sv: Gia Lai
+    sw: Mkoa wa Gia Lai
+    ta: கியா லாய்
+    te: గియా లాయ్
+    th: ยาลาย
+    tr: Gia Lai
+    uk: Зялай
+    ur: گیا لائی صوبہ
+    vi: Gia Lai
+    zh: 嘉萊省
+    lv: Zalaja
+    ceb: Gia Lai
+    sr_Latn: Đa Laj
+    lt: Baklėjus
+    yue_Hans: 嘉莱
+    ccp: "\U0001110E\U00011128\U00011120\U0001112D \U00011123\U0001112D"
+    ml: ഗിയ ലായ് പ്രൊവിൻസ്
+    cs: Gia Lai
+    yue: 嘉萊
+    'no': Gia Lai
+    ca: Gia Lai
+    he: יה לאי
+    km: ចារ៉ាយ
+  comments:
+  type: province
+'31':
+  name: Binh Dinh
+  code: '31'
+  unofficial_names: Binh Dinh
+  geo:
+    latitude: 13.7829673
+    longitude: 109.2196634
+    min_latitude: 13.669688
+    min_longitude: 109.1325188
+    max_latitude: 13.899993
+    max_longitude: 109.3000072
+  translations:
+    en: Bình Định
+    ar: محافظة بنه دنه
+    bg: Бин Дин
+    bn: বিহ্ন দিহ্ন
+    da: Bình Dinh
+    de: Bình Định
+    el: Μπινχ Ντινχ
+    es: Bình Định
+    fa: استان بین دین
+    fi: Bình Định
+    fr: Province de Bình Định
+    gu: બિંહ દિંહ
+    hi: बिन्ह दिन्ह
+    id: Provinsi Binh Dinh
+    it: provincia di Binh Dinh
+    ja: ビンディン省
+    kn: ಬೈನ್ ಧೀನ್ಹ್
+    ko: 빈딘 성
+    mr: बिनह डँन्ह
+    ms: Binh Dinh
+    nb: Binh Dinh
+    nl: Bình Định
+    pl: Prowincja Bình Định
+    pt: Binh Dinh
+    ru: Биньдинь
+    si: බින්හ් ඩින්හ්
+    sv: Binh Dinh
+    sw: Mkoa wa Bình Định
+    ta: பிநஹ் டிநஹ்
+    te: బిన్హ్ డిన్
+    th: จังหวัดบิ่ญดิ่ญ
+    tr: Binh Dinh
+    uk: Біньдінь
+    ur: بنہ دینہ صوبہ
+    vi: Bình Định
+    zh: 平定省
+    lv: Biņdiņas province
+    ceb: Tỉnh Bình Định
+    lt: Bindino provincija
+    yue_Hans: 平定
+    ccp: "\U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134 \U00011113\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Binh Dinh
+    yue: 平定
+    'no': Binh Dinh
+    he: בין דינג
+  comments:
+  type: province
+'32':
+  name: Phu Yen
+  code: '32'
+  unofficial_names: Phu Yen
+  geo:
+    latitude: 13.0881861
+    longitude: 109.0928764
+    min_latitude: 12.705112
+    min_longitude: 108.672809
+    max_latitude: 13.694343
+    max_longitude: 109.4588245
+  translations:
+    en: Phú Yên
+    ar: محافظة فو أين
+    bg: Фу Йен
+    bn: ফু ইয়েন
+    ca: Phú Yên
+    da: Phú Yên
+    de: Phú Yên
+    el: Φου Γιέν
+    es: Phú Yên
+    fa: استان فو ین
+    fi: Phú Yên
+    fr: Province de Phú Yên
+    gu: ફુ યેન
+    hi: फु येन प्रांत
+    id: Provinsi Phu Yen
+    it: provincia di Phu Yen
+    ja: フーイエン省
+    kn: ಫು ಯೆನ್
+    ko: 푸옌 성
+    mr: फू यें
+    ms: Phu Yen
+    nb: Phu Yen
+    nl: Phú Yên
+    pl: Prowincja Phú Yên
+    pt: Phu Yen
+    ro: Phú Yên
+    ru: Фуйен
+    si: ෆු යෙන්
+    sv: Phu Yen
+    sw: Mkoa wa Phú Yên
+    ta: ப்ஹு என்
+    te: ఫ్యూ యెన్
+    th: จังหวัดพู เหยิน
+    tr: Phu Yen
+    uk: Фуєн
+    ur: فو ین صوبہ
+    vi: Phú Yên
+    zh: 富安省
+    lv: Fujena
+    ceb: Tỉnh Phú Yên
+    lt: Fujenas
+    yue_Hans: 富安
+    ccp: "\U0001111C\U0001112A \U00011103\U00011128\U00011120\U0001112C\U0001111A\U00011134"
+    cs: Phu Yen
+    yue: 富安
+    'no': Phu Yen
+    he: פו יין
+  comments:
+  type: province
+'33':
+  name: Dac Lac
+  code: '33'
+  unofficial_names: Dac Lac
+  geo:
+    latitude: 12.7100116
+    longitude: 108.2377519
+    min_latitude: 12.16056
+    min_longitude: 107.4892809
+    max_latitude: 13.4162268
+    max_longitude: 108.994509
+  translations:
+    en: Đắk Lắk
+    ar: محافظة داك لاك
+    bg: Дак Лак
+    bn: ডাক লাক
+    da: Đắk Lắk
+    de: Đắk Lắk
+    el: Ντακ Λακ
+    es: Đắk Lắk
+    fa: استان داک لاک
+    fi: Đắk Lắk
+    fr: Đắk Lắk
+    gu: ડાક લાક
+    hi: डाक लाक
+    id: Provinsi Dak Lak
+    it: provincia di Dak Lak
+    ja: ダクラク省
+    kn: ಡಕ್ ಲಿಕ್
+    ko: 닥락 성
+    mr: डाक लाक
+    ms: Dak Lak
+    nb: Dak Lak
+    nl: Đắk Lắk
+    pl: Prowincja Đăk Lăk
+    pt: Dac Lac
+    ru: Даклак
+    si: ඩාක් ලාක්
+    sr: Дак Лак
+    sv: Dak Lak
+    sw: Mkoa wa Đắk Lắk
+    ta: டக் லாக்
+    te: డాకా్ లాక్
+    th: จังหวัดดั๊กลัก
+    tr: Dak Lak
+    uk: Даклак
+    ur: داک لاک صوبہ
+    vi: Đắk Lắk
+    zh: 多樂省
+    lv: Daklaka
+    sr_Latn: Dak Lak
+    lt: Daklakas
+    yue_Hans: 多乐
+    ccp: "\U00011113\U00011107\U00011134 \U00011123\U00011107\U00011134"
+    cs: Dak Lak
+    yue: 多樂
+    'no': Dak Lak
+    ca: Dac Lak
+    ceb: Tỉnh Đắk Lắk
+    he: דאקלאק
+  comments:
+  type: province
+'34':
+  name: Khanh Hoa
+  code: '34'
+  unofficial_names: Khanh Hoa
+  geo:
+    latitude: 12.2585098
+    longitude: 109.0526076
+    min_latitude: 11.8045669
+    min_longitude: 108.671521
+    max_latitude: 12.8655891
+    max_longitude: 109.4615432
+  translations:
+    en: Khánh Hòa
+    ar: محافظة كان هوا
+    bg: Кхан Хоа
+    bn: খান হোয়া
+    da: Khánh Hòa
+    de: Khánh Hòa
+    el: Κανχ Χόα
+    es: Khánh Hòa
+    fa: استان خانح هوآ
+    fi: Khánh Hòa
+    fr: Province de Khánh Hòa
+    gu: ખાંહ હોઆ
+    hi: खांह हो
+    id: Provinsi Khanh Hoa
+    it: provincia di Khanh Hoa
+    ja: カインホア省
+    kn: ಖಾನ್ಹ್ ಹೋ
+    ko: 카인호아 성
+    mr: खानह हो
+    ms: Khanh Hoa
+    nb: Khanh Hoa
+    nl: Khánh Hòa
+    pl: Prowincja Khánh Hòa
+    pt: Khanh Hoa
+    ru: Кханьхоа
+    si: ඛාන් හොආ
+    sr: Кан Хоа
+    sv: Khanh Hoa
+    sw: Mkoa wa Khánh Hòa
+    ta: கான்ஹ் ஹோஆ
+    te: ఖాన్ హోవా
+    th: จังหวัดคั้ญฮหว่า
+    tr: Khanh Hoa
+    uk: Кханьхоа
+    ur: خانھ ہوا صوبہ
+    vi: Khánh Hòa
+    zh: 慶和省
+    lv: Haņhoa
+    ceb: Tỉnh Khánh Hòa
+    sr_Latn: Kan Hoa
+    lt: Kanchoa
+    yue_Hans: 庆和
+    ccp: "\U00011108\U0001111A\U00011134\U00011126\U00011134 \U00011126\U0001112E\U00011120"
+    ro: provincia Khánh Hòa
+    cs: Khanh Hoa
+    yue: 慶和
+    ca: Khánh Hòa
+    'no': Khanh Hoa
+    he: חאן הואה
+    km: កៅធរៈ
+  comments:
+  type: province
+'35':
+  name: Lam Dong
+  code: '35'
+  unofficial_names: Lam Dong
+  geo:
+    latitude: 11.9404192
+    longitude: 108.4583132
+    min_latitude: 11.8051867
+    min_longitude: 108.3107758
+    max_latitude: 12.002635
+    max_longitude: 108.5906696
+  translations:
+    en: Lâm Đồng
+    ar: محافظة لام دونغ
+    bg: Лам Донг
+    bn: লাম ডং
+    da: Lâm Đồng
+    de: Lâm Đồng
+    el: Λαμ Ντόνγκ
+    es: Lâm Đồng
+    fa: استان لام دونگ
+    fi: Lâm Đồng
+    fr: Province de Lâm Đồng
+    gu: લેમ ડોંગ
+    hi: लाम दोंग
+    id: Provinsi Lam Dong
+    it: provincia di Lam Dong
+    ja: ラムドン省
+    kn: ಲಮ್ ಡಾಂಗ್
+    ko: 럼동 성
+    mr: लॅम डाँग
+    ms: Lam Dong
+    nb: Lam Dong
+    nl: Lâm Đồng
+    pl: Prowincja Lâm Đồng
+    pt: Lam Dong
+    ro: Lâm Đồng
+    ru: Ламдонг
+    si: ලාම් ඩෝන්ග්
+    sr: Лам Донг
+    sv: Lam Dong
+    sw: Mkoa wa Lâm Đồng
+    ta: லாம் டோங்
+    te: లామ్ డాంగ్
+    th: จังหวัดเลิมด่ง
+    tr: Lâm Đồng
+    uk: Ламдонг
+    ur: لام ڈونگ صوبہ
+    vi: Lâm Đồng
+    zh: 林同省
+    lv: Lomdonas province
+    ceb: Tỉnh Lâm Đồng
+    sr_Latn: Lam Dong
+    lt: Lamdongo provincija
+    yue_Hans: 林同
+    ccp: "\U00011123\U0001111F\U00011134 \U00011113\U00011127\U00011101"
+    cs: Lam Dong
+    yue: 林同
+    'no': Lam Dong
+    ca: Lam Dong
+    he: לם דאונגם
+  comments:
+  type: province
+'36':
+  name: Ninh Thuan
+  code: '36'
+  unofficial_names: Ninh Thuan
+  geo:
+    latitude: 11.6738767
+    longitude: 108.8629572
+    min_latitude: 11.3070363
+    min_longitude: 108.55301
+    max_latitude: 12.163288
+    max_longitude: 109.2379444
+  translations:
+    en: Ninh Thuận
+    ar: محافظة ننه توان
+    bg: Нин Тхуан
+    bn: নিহ্ন থুয়ান
+    da: Ninh Thuận
+    de: Ninh Thuận
+    el: Νινχ Θουάν
+    es: Ninh Thuận
+    fa: استان نین توان
+    fi: Ninh Thuận
+    fr: Province de Ninh Thuận
+    gu: નિંહ થુઆન
+    hi: निन्ह थुआन
+    id: Provinsi Ninh Thuan
+    it: provincia di Ninh Thuan
+    ja: ニントゥアン省
+    kn: ನಿನ್ಹ್ ಥುವಾನ್
+    ko: 닌투언 성
+    mr: निन्ह थुंन
+    ms: Ninh Thuan
+    nb: Ninh Thuận
+    nl: Ninh Thuận
+    pl: Prowincja Ninh Thuận
+    pt: Ninh Thuan
+    ro: Ninh Thuận
+    ru: Ниньтхуан
+    si: නින්හ් තුවාන්
+    sl: provinca Ninh Thuận
+    sv: Ninh Thuan
+    sw: Mkoa wa Ninh Thuận
+    ta: நின்ஹ் துதான்
+    te: నిన్హ్ తువాన్
+    th: จังหวัดนิญถ่วน
+    tr: Ninh Thuận
+    uk: Ніньтхуан
+    ur: ننہ تھوان صوبہ
+    vi: Ninh Thuận
+    zh: 寧順省
+    lv: Niņthuona
+    ceb: Tỉnh Ninh Thuận
+    lt: Nintchuanas
+    yue_Hans: 宁顺
+    ccp: "\U0001111A\U00011128\U0001111A\U00011134\U00011126\U00011134 \U00011112\U0001112A\U00011120\U0001111A\U00011134"
+    cs: Ninh Thuan
+    yue: 寧順
+    'no': Ninh Thuận
+    be: Ніньтхуан
+    so: Ninh Thuan
+  comments:
+  type: province
+'37':
+  name: Tay Ninh
+  code: '37'
+  unofficial_names: Tay Ninh
+  geo:
+    latitude: 11.3675415
+    longitude: 106.1192802
+    min_latitude: 11.2912109
+    min_longitude: 106.0719681
+    max_latitude: 11.4389323
+    max_longitude: 106.1909722
+  translations:
+    en: Tây Ninh
+    ar: مقاطعة تاي ننه
+    bg: Тай Нин
+    bn: তায় নিহ্ন
+    da: Tay Ninh
+    de: Tây Ninh
+    el: Τάι Νινχ
+    es: Tây Ninh
+    fa: استان تای نینها
+    fi: Tây Ninh
+    fr: Province de Tây Ninh
+    gu: તાય નિન્હ
+    hi: ताय निन्ह
+    id: Provinsi Tay Ninh
+    it: provincia di Tay Ninh
+    ja: タイニン省
+    km: ខេត្តរោងដំរី
+    kn: ಟೈ ನಿನ್ಹ್
+    ko: 떠이닌 성
+    mr: ताय निन्ह
+    ms: Tay Ninh
+    nb: Tay Ninh
+    nl: Tây Ninh
+    pl: Prowincja Tây Ninh
+    pt: Tay Ninh
+    ro: Tây Ninh
+    ru: Тэйнинь
+    si: ටේ නින්හ්
+    sv: Tay Ninh
+    sw: Mkoa wa Tây Ninh
+    ta: டேய் நின்ஹ்
+    te: టే నిన్హ్
+    th: จังหวัดเต็ยนิญ
+    tr: Tây Ninh
+    uk: Тейнінь
+    ur: تاے ننہ صوبہ
+    vi: Tây Ninh
+    zh: 西寧省
+    lv: Tojniņa
+    ceb: Tỉnh Tây Ninh
+    lt: Teinino provincija
+    yue_Hans: 西宁
+    ccp: "\U00011111\U0001112C \U0001111A\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Tay Ninh
+    yue: 西寧
+    'no': Tay Ninh
+    ca: Tay-Ninh
+    he: טאי נין
+  comments:
+  type: province
+'39':
+  name: Dong Nai
+  code: '39'
+  unofficial_names: Dong Nai
+  geo:
+    latitude: 11.0686305
+    longitude: 107.1675976
+    min_latitude: 10.582153
+    min_longitude: 106.7527479
+    max_latitude: 11.5814941
+    max_longitude: 107.5747849
+  translations:
+    en: Đồng Nai
+    ar: مقاطعة دونج ناي
+    bg: Донг Най
+    de: Đồng Nai
+    es: Đồng Nai
+    fa: استان دونگ نای
+    fi: Đồng Nai
+    fr: Province de Đồng Nai
+    id: Provinsi Dong Nai
+    it: provincia di Dong Nai
+    ja: ドンナイ省
+    ko: 동나이 성
+    nl: Đồng Nai
+    pl: Prowincja Đồng Nai
+    pt: Dong Nai
+    ru: Донгнай
+    sr: Донг Нај
+    sv: Dong Nai
+    sw: Mkoa wa Đồng Nai
+    uk: Донгнай
+    ur: دونگ نائی صوبہ
+    vi: Đồng Nai
+    zh: 同奈省
+    ceb: Tỉnh Đồng Nai
+    sr_Latn: Dong Naj
+    yue_Hans: 同奈
+    hi: डौंग नाय प्रान्त
+    ccp: "\U00011113\U00011127\U00011101 \U0001111A\U0001112D"
+    ga: Dong Nai
+    cs: Dong Nai
+    yue: 同奈
+    th: จังหวัดด่งนาย
+    be: Донгнай
+    ca: Đồng Nai
+    he: דג׳ונג נאי
+    tr: Đồng Nai ili
+  comments:
+  type: province
+'40':
+  name: Binh Thuan
+  code: '40'
+  unofficial_names: Binh Thuan
+  geo:
+    latitude: 10.933333
+    longitude: 108.1
+    min_latitude: 10.7712849
+    min_longitude: 107.9904427
+    max_latitude: 11.0238032
+    max_longitude: 108.3558984
+  translations:
+    en: Bình Thuận
+    ar: مقاطعة بنه ثوان
+    bg: Бин Тхуан
+    bn: হাবিহ্ন থুয়ান
+    da: Bình Thuận
+    de: Bình Thuận
+    el: Μπινχ Θουάν
+    es: Bình Thuận
+    fa: استان بین توآن
+    fi: Bình Thuận
+    fr: Bình Thuận
+    gu: બિન્હ થૂઆન
+    hi: बिन्ह थुआन
+    id: Provinsi Binh Thuan
+    it: provincia di Binh Thuan
+    ja: ビントゥアン省
+    kn: ಬೈನ್ ಥುನ್ನ್
+    ko: 빈투언 성
+    mr: बिन्स थुंन
+    ms: Binh Thuan
+    nb: Binh Thuan
+    nl: Bình Thuận
+    pl: Prowincja Bình Thuận
+    pt: Binh Thuan
+    ru: Биньтхуан
+    si: බින්හ් තුවාන්
+    sv: Binh Thuan
+    sw: Mkoa wa Bình Thuận
+    ta: பின்ஹ் தான்
+    te: బిన్హ్ తుయాన్
+    th: จังหวัดบิ่ญถ่วน
+    tr: Binh Thuan
+    uk: Біньтхуан
+    ur: بنہ تھوان صوبہ
+    vi: Bình Thuận
+    zh: 平順省
+    lv: Biņthuanas province
+    ceb: Tỉnh Bình Thuận
+    lt: Bin Tuano provincija
+    yue_Hans: 平顺
+    ccp: "\U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134 \U00011117\U0001112A\U00011120\U0001111A\U00011134"
+    cs: Binh Thuan
+    yue: 平順
+    'no': Binh Thuan
+  comments:
+  type: province
+'41':
+  name: Long An
+  code: '41'
+  unofficial_names: Long An
+  geo:
+    latitude: 10.5330098
+    longitude: 106.4052541
+    min_latitude: 10.4757429
+    min_longitude: 106.346712
+    max_latitude: 10.5754034
+    max_longitude: 106.4600945
+  translations:
+    en: Long An
+    ar: محافظة لونغ أن
+    bg: Лонг Ан
+    bn: লং আন
+    cs: Long An
+    da: Long An
+    de: Long An
+    el: Λονγκ Άν
+    es: Long An
+    fa: استان لونگ آن
+    fi: Long An
+    fr: Province de Long An
+    gu: લોંગ એન
+    hi: लॉन्ग एन
+    id: Provinsi Long An
+    it: provincia di Long An
+    ja: ロンアン省
+    km: ខេត្តកំពង់គោ
+    kn: ಲಾಂಗ್ ಆನ್
+    ko: 롱안 성
+    mr: लॉन्ग एन
+    ms: Long An
+    nb: Long An
+    nl: Long An
+    pl: Prowincja Long An
+    pt: Long An
+    ro: Long An
+    ru: Лонган
+    si: ලෝන්ගාන්
+    sr: Лонг Ан
+    sv: Long An
+    sw: Mkoa wa Long An
+    ta: லாங் அன்
+    te: లాంగ్ ఆన్
+    th: จังหวัดล็องอาน
+    tr: Long An
+    uk: Лонган
+    ur: لونگ آن صوبہ
+    vi: Long An
+    zh: 隆安省
+    lv: Lonana
+    ceb: Long An
+    sr_Latn: Long An
+    lt: Long Anas
+    yue_Hans: 隆安
+    ccp: "\U00011123\U00011127\U00011101 \U00011103\U0001111A\U00011134"
+    yue: 隆安
+    'no': Long An
+    be: Ланган
+    ca: Long An
+    he: לאונגם אנג
+  comments:
+  type: province
+'43':
+  name: Ba Ria - Vung Tau
+  code: '43'
+  unofficial_names: Ba Ria - Vung Tau
+  geo:
+    latitude: 10.5417397
+    longitude: 107.2429976
+    min_latitude: 10.3202097
+    min_longitude: 106.9980384
+    max_latitude: 10.8039479
+    max_longitude: 107.5830259
+  translations:
+    en: Bà Rịa–Vũng Tàu
+    ar: مقاطعة با ريا فونج تاو
+    bg: Ба Зя-Вунг Тау
+    bn: বা রিয়া ভুং তাও
+    da: Bà Rịa–Vũng Tàu
+    de: Bà Rịa-Vũng Tàu
+    el: Μπα Ρία-Βούνγκ Τάου
+    es: Bà Rịa-Vũng Tàu
+    fa: استان با ریا-وونگ تائو
+    fi: Bà Rịa-Vũng Tàu
+    fr: Province de Bà Rịa-Vũng Tàu
+    gu: બા રિયા-વાંગ તાઉ
+    hi: बा रिया-वुंग तौ
+    id: Provinsi Bà Rịa–Vũng Tàu
+    it: provincia di Ba Ria-Vung Tau
+    ja: バリア＝ヴンタウ省
+    kn: ಬಾ ರಿಜಾ-ವಂಗ್ ತೌ
+    ko: 바리어붕따우 성
+    mr: बा रांग-वांग टु
+    ms: Ba Ria–Vung Tau
+    nb: Ba Ria Vung Tau
+    nl: Bà Rịa-Vũng Tàu
+    pl: Prowincja Bà Rịa-Vũng Tàu
+    pt: Ba Ria-Vung Tau
+    ro: Bà Rịa - Vũng Tàu
+    ru: Бариа-Вунгтау
+    si: බා රියා-වුන්ග් ටාඋ
+    sv: Ba Ria-Vung Tau
+    sw: Mkoa wa Bà Rịa - Vũng Tàu
+    ta: பா ரியா–உங் டா
+    te: బా రియా-వుంగ్ తావ్
+    th: จังหวัดบ่าเสียะ–หวุงเต่า
+    tr: Bà Rịa-Vũng Tàu
+    uk: Барія-Вунгтау
+    ur: با ریا-وؤنگ تاو صوبہ
+    vi: Bà Rịa - Vũng Tàu
+    zh: 巴地頭頓省
+    lv: Baria-Vungtau
+    ceb: Tỉnh Bà Rịa-Vũng Tàu
+    lt: Barijos-Vungtau provincija
+    yue_Hans: 巴地头顿
+    ccp: "\U0001111D \U00011122\U00011128\U00011103\U0001112E-\U0001111E\U00011101
+      \U00011111\U00011105\U0001112A"
+    cs: Ba Ria-Vung Tau
+    yue: 巴地頭頓
+    'no': Ba Ria Vung Tau
+    ca: Bà Rịa-Vũng Tàu
+    et: Bà Rịa–Vũng Tàu provints
+    km: ខេត្តអូរកាប់
+  comments:
+  type: province
+'44':
+  name: An Giang
+  code: '44'
+  unofficial_names: An Giang
+  geo:
+    latitude: 10.5215836
+    longitude: 105.1258955
+    min_latitude: 10.1824999
+    min_longitude: 104.7775209
+    max_latitude: 10.9559351
+    max_longitude: 105.5719318
+  translations:
+    en: An Giang
+    ar: مقاطعة آن جيانج
+    bg: Ан Жианг
+    bn: আন জাং
+    da: An Giang
+    de: An Giang
+    el: Αν Γκιάνγκ
+    es: An Giang
+    et: An Giang
+    fa: استان ان گینگ
+    fi: An Giang
+    fr: Province d’An Giang
+    gu: અન જિઆંગ
+    hi: एन गियांग
+    id: Provinsi An Giang
+    it: provincia di An Giang
+    ja: アンザン省
+    km: ខេត្តមាត់ជ្រូក
+    kn: ಜಿಯಾಂಗ್
+    ko: 안장 성
+    mr: अन जिआंग
+    ms: Wilayah An Giang
+    nb: An Giang
+    nl: An Giang
+    pl: Prowincja An Giang
+    pt: An Giang
+    ro: An Giang
+    ru: Анзянг
+    si: අන් ගියාන්ග්
+    sv: An Giang
+    sw: Mkoa wa An Giang
+    ta: அன் ஜியாங்
+    te: ఆన్ గియాంగ్
+    th: จังหวัดอานซาง
+    tr: An Giang
+    uk: Анзянг
+    ur: آن گیانگ صوبہ
+    vi: An Giang
+    zh: 安江省
+    lv: Anzana
+    ceb: An Giang
+    lt: Anziango provincija
+    yue_Hans: 安江省
+    ccp: "\U00011103\U0001111A\U00011134 \U0001110E\U00011128\U00011120\U00011101"
+    cs: An Giang
+    yue: 安江省
+    'no': An Giang
+    ca: An Giang
+    he: אנג יאנג
+  comments:
+  type: province
+'45':
+  name: Dong Thap
+  code: '45'
+  unofficial_names: Dong Thap
+  geo:
+    latitude: 10.4937989
+    longitude: 105.6881788
+    min_latitude: 10.1387694
+    min_longitude: 105.1887371
+    max_latitude: 10.9664691
+    max_longitude: 105.944197
+  translations:
+    en: Đồng Tháp
+    ar: محافظة دون تاب
+    bg: Донг Тхап
+    bn: দোং থাপ প্রদেশ
+    da: Dong Thap Province
+    de: Đồng Tháp
+    el: Ντονγκ Θαπ
+    es: Đồng Tháp
+    fa: استان دونگ تاپ
+    fi: Đồng Tháp
+    fr: Đồng Tháp
+    gu: ડોંગ થાપ પ્રાંત
+    hi: दांग थाप प्रांत
+    id: Provinsi Dong Thap
+    it: provincia di Dong Thap
+    ja: ドンタップ省
+    km: ខេត្តផ្សារដែក
+    kn: ಡಾಂಗ್ ಥ್ಯಾಪ್ ಪ್ರಾಂತ್ಯ
+    ko: 동탑 성
+    mr: डोंग थाप प्रांत
+    ms: Dong Thap Province
+    nb: Dong Thap provins
+    nl: Đồng Tháp
+    pl: Prowincja Đồng Tháp
+    pt: Dong Thap
+    ru: Донгтхап
+    si: ඩොන්ග් තාප් පළාත
+    sv: Dong Thap
+    sw: Mkoa wa Đồng Tháp
+    ta: டோங் தப் மாகாணம்
+    te: డాంగ్ థాప్
+    th: จังหวัดด่งท้าป
+    tr: Đồng Tháp
+    uk: Донгтхап
+    ur: دونگ تھاپ صوبہ
+    vi: Tỉnh Đồng Tháp
+    zh: 同塔省
+    lv: Donthapas province
+    ceb: Tỉnh Đồng Tháp
+    lt: Dongtchapo provincija
+    yue_Hans: 同塔
+    ccp: "\U00011113\U00011127\U00011101 \U00011117\U0001111B\U00011134"
+    cs: Dong Thap
+    yue: 同塔
+    'no': Dong Thap provins
+    ca: Đồng Tháp
+    he: דאונגם טהאפ
+  comments:
+  type: province
+'46':
+  name: Tien Giang
+  code: '46'
+  unofficial_names: Tien Giang
+  geo:
+    latitude: 10.4493324
+    longitude: 106.3420504
+    min_latitude: 10.213442
+    min_longitude: 105.8196079
+    max_latitude: 10.5871
+    max_longitude: 106.788528
+  translations:
+    en: Tiền Giang
+    ar: مقاطعة تين جيانج
+    bg: Тиен Жианг
+    bn: তিয়েন গিয়াং
+    da: Tien Giang
+    de: Tiền Giang
+    el: Τιέν Γκιάνγκ
+    es: Tiền Giang
+    fa: استان تین گیانگ
+    fi: Tiền Giang
+    fr: Province de Tiền Giang
+    gu: ટીએન જિઆંગ
+    hi: तिएन जीआंग
+    id: Provinsi Tien Giang
+    it: provincia di Tien Giang
+    ja: ティエンザン省
+    kn: ತಿಯಾನ್ ಜಿಯಾಂಗ್
+    ko: 띠엔장 성
+    mr: तिएन जिआंग
+    ms: Tien Giang
+    nb: Tein Giang
+    nl: Tiền Giang
+    pl: Prowincja Tiền Giang
+    pt: Tien Giang
+    ro: Tiền Giang
+    ru: Тьензянг
+    si: ටියෙන් ගියන්ග්
+    sv: Tien Giang
+    sw: Mkoa wa Tiền Giang
+    ta: டைன் ஜியாங்
+    te: టియెన్ గియాంగ్
+    th: จังหวัดเตี่ยนซาง
+    tr: Tiền Giang
+    uk: Тьєнзянг
+    ur: تیئن گیانگ صوبہ
+    vi: Tiền Giang
+    zh: 前江省
+    lv: Thenzana
+    ceb: Tỉnh Tiền Giang
+    lt: Tien Giangas
+    yue_Hans: 前江
+    ccp: "\U00011111\U00011128\U00011120\U0001112C\U0001111A\U00011134 \U0001110E\U00011128\U00011120\U00011101"
+    cs: Tien Giang
+    yue: 前江
+    'no': Tein Giang
+    be: Цьензянг
+    ca: Tien Giang
+    he: טיין יאנג
+  comments:
+  type: province
+'47':
+  name: Kien Giang
+  code: '47'
+  unofficial_names: Kien Giang
+  geo:
+    latitude: 9.8249587
+    longitude: 105.1258955
+    min_latitude: 9.381122999999999
+    min_longitude: 104.3223179
+    max_latitude: 10.538596
+    max_longitude: 105.538959
+  translations:
+    en: Kiên Giang
+    ar: محافظة كن زانغ
+    bg: Киен Жианг
+    bn: কিয়েন গিয়াং
+    da: Kiên Giang
+    de: Kiên Giang
+    el: Κιέν Γκιάνγκ
+    es: Kiên Giang
+    fa: استان کین گیانگ
+    fi: Kiên Giang
+    fr: Province de Kiên Giang
+    gu: કીન ગિઆંગ
+    hi: कीन गियांग
+    id: Provinsi Kien Giang
+    it: provincia di Kien Giang
+    ja: キエンザン省
+    km: ខេត្តក្រមួនស
+    kn: ಕೀನ್ ಜಿಯಾಂಗ್
+    ko: 끼엔장 성
+    mr: केआन गियांग
+    ms: Kien Giang
+    nb: Kien Giang
+    nl: Kiên Giang
+    pl: Prowincja Kiên Giang
+    pt: Kien Giang
+    ru: Кьензянг
+    si: කියෙන් ජියැන්ග්
+    sv: Kien Giang
+    sw: Mkoa wa Kiên Giang
+    ta: கின் ஜியாங்
+    te: కియెన్ గియాంగ్
+    th: จังหวัดเกียนซาง
+    tr: Kien Giang
+    uk: Кьєнзянг
+    ur: کیئن گیانگ صوبہ
+    vi: Kiên Giang
+    zh: 堅江省
+    lv: Kjenzana
+    ceb: Tỉnh Kiến Giang
+    lt: Kjengiangas
+    yue_Hans: 坚江
+    ccp: "\U00011107\U00011128\U00011120\U0001112C\U0001111A\U00011134 \U0001110E\U00011128\U00011120\U00011101"
+    cs: Kien Giang
+    yue: 堅江
+    'no': Kien Giang
+    ca: Kien Giang
+    he: קיינג יאנג
+    so: Kien Giang
+  comments:
+  type: province
+'49':
+  name: Vinh Long
+  code: '49'
+  unofficial_names: Vinh Long
+  geo:
+    latitude: 10.2448442
+    longitude: 105.958865
+    min_latitude: 10.2191458
+    min_longitude: 105.8777602
+    max_latitude: 10.2759884
+    max_longitude: 105.9974669
+  translations:
+    en: Vĩnh Long
+    ar: مقاطعة فنه لونج
+    bg: Вин Лонг
+    bn: ভিন লং
+    da: Vĩnh Long
+    de: Vĩnh Long
+    el: Βινχ Λονγκ
+    es: Vĩnh Long
+    fa: استان وین لونگ
+    fi: Vĩnh Long
+    fr: Province de Vĩnh Long
+    gu: વિંહ લોંગ
+    hi: विन्ह लॉन्ग
+    id: Provinsi Vinh Long
+    it: provincia di Vinh Long
+    ja: ヴィンロン省
+    km: ខេត្តលង់ហោរ
+    kn: ವಿನ್ ಲಾಂಗ್
+    ko: 빈롱 성
+    mr: विन्ह लोंग
+    ms: Vinh Long
+    nb: Ving Long
+    nl: Vĩnh Long
+    pl: Prowincja Vĩnh Long
+    pt: Vinh Long
+    ro: Vĩnh Long
+    ru: Виньлонг
+    si: වින්හ් ලෝන්ග්
+    sr: Вињ Лонг
+    sv: Vinh Long
+    sw: Mkoa wa Vĩnh Long
+    ta: வின்ஹ் லாங்
+    te: విన్ లాంగ్
+    th: วินฮ์ ลอง
+    tr: Ving Long
+    uk: Віньлонг
+    ur: وینہ لونگ صوبہ
+    vi: Vĩnh Long
+    zh: 永隆省
+    lv: Viņlona
+    ceb: Tỉnh Vĩnh Long
+    sr_Latn: Vinj Long
+    lt: Vin Longas
+    yue_Hans: 永隆
+    ccp: "\U0001111E\U00011128\U0001111A\U00011134\U00011126\U00011134 \U00011123\U00011127\U00011101"
+    cs: Vinh Long
+    yue: 永隆
+    'no': Ving Long
+    be: Віньлонг
+  comments:
+  type: province
+'50':
+  name: Ben Tre
+  code: '50'
+  unofficial_names: Ben Tre
+  geo:
+    latitude: 10.1081553
+    longitude: 106.4405872
+    min_latitude: 9.808341
+    min_longitude: 106.0147733
+    max_latitude: 10.3373171
+    max_longitude: 106.7976299
+  translations:
+    en: Bến Tre
+    ar: محافظة بن تشي
+    bg: Бен Че
+    bn: বেন ত্রে
+    da: Bến Tre
+    de: Bến Tre
+    el: Μπεν Τρε
+    es: Bến Tre
+    fa: استان بن تر
+    fi: Bến Tre (maakunta)
+    fr: Province de Bến Tre
+    gu: બેન ટ્રે
+    hi: बैन ट्रे
+    id: Provinsi Ben Tre
+    it: provincia di Ben Tre
+    ja: ベンチェ省
+    kn: ಬೆನ್ ಟ್ರೆ
+    ko: 벤째 성
+    mr: बेन ट्री
+    ms: Ben Tre
+    nb: Ben Tre
+    nl: Bến Tre
+    pl: Prowincja Bến Tre
+    pt: Ben Tre
+    ru: Бенче
+    si: බේන් ට්‍රේ
+    sr: Бен Че
+    sv: Ben Tre
+    sw: Mkoa wa Bến Tre
+    ta: பெண் ட்ரே
+    te: బెన్ ట్రె
+    th: จังหวัดเบนแตร
+    tr: Ben Tre
+    uk: Бенче
+    ur: بئن تر صوبہ
+    vi: Bến Tre
+    zh: 檳椥省
+    lv: Benčes province
+    ceb: Tỉnh Bến Tre
+    sr_Latn: Ben Če
+    lt: Benčės provincija
+    yue_Hans: 槟椥
+    ccp: "\U0001111D\U0001112C\U0001111A\U00011134 \U00011111\U00011133\U00011122\U0001112C"
+    cs: Ben Tre
+    yue: 檳椥
+    'no': Ben Tre
+    be: Бенчэ
+    ca: Ben Tre
+    he: בן צ׳ה
+    km: ខេត្តកំពង់ឫស្សី
+  comments:
+  type: province
+'51':
+  name: Tra Vinh
+  code: '51'
+  unofficial_names: Tra Vinh
+  geo:
+    latitude: 9.933333
+    longitude: 106.35
+    min_latitude: 9.8867569
+    min_longitude: 106.3002563
+    max_latitude: 10.0126486
+    max_longitude: 106.3883399
+  translations:
+    en: Trà Vinh
+    ar: مقاطعة ترا فنه
+    be: Чавінь
+    bg: Ча Вин
+    bn: ত্রা ভিহ্ন
+    da: Tra Vinh
+    de: Trà Vinh
+    el: Τρα Βινχ
+    es: Trà Vinh
+    fa: استان ترا وین
+    fi: Trà Vinh
+    fr: Province de Trà Vinh
+    gu: ટ્રા વિન્હ
+    hi: ट्रा विन प्रांत
+    id: Provinsi Tra Vinh
+    it: provincia di Tra Vinh
+    ja: チャーヴィン省
+    km: ខេត្តព្រះត្រពាំង
+    kn: ತ್ರಿಕ ವಿನ್
+    ko: 짜빈 성
+    mr: ट्रा विन्ह
+    ms: Tra Vinh
+    nb: Tra Vinh
+    nl: Trà Vinh
+    pl: Prowincja Trà Vinh
+    pt: Tra Vinh
+    ro: Trà Vinh
+    ru: Чавинь
+    si: ට්‍රා වින්හ්
+    sv: Tra Vinh
+    sw: Mkoa wa Trà Vinh
+    ta: ட்ரா விந்த்
+    te: ట్రా విన్
+    th: จังหวัดจ่าวิญ
+    tr: Tra Vinh
+    uk: Чавінь
+    ur: ترا وینہ صوبہ
+    vi: Trà Vinh
+    zh: 茶榮省
+    lv: Čaviņas province
+    ceb: Tỉnh Trà Vinh
+    lt: Čavinas
+    yue_Hans: 茶荣
+    ccp: "\U00011111\U00011133\U00011122 \U0001111E\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Tra Vinh
+    yue: 茶榮
+    'no': Tra Vinh
+    he: טרווינה
+  comments:
+  type: province
+'52':
+  name: Soc Trang
+  code: '52'
+  unofficial_names: Soc Trang
+  geo:
+    latitude: 9.6003688
+    longitude: 105.9599539
+    min_latitude: 9.2386673
+    min_longitude: 105.5439898
+    max_latitude: 9.9332116
+    max_longitude: 106.293053
+  translations:
+    en: Sóc Trăng
+    ar: مقاطعة سك ترانج
+    bg: Сок Чанг
+    bn: সখ তাং
+    da: Sóc Trăng
+    de: Sóc Trăng
+    el: Σοκ Τρανγκ
+    es: Sóc Trăng
+    fa: استان سوک ترانگ
+    fi: Sóc Trăng
+    fr: Province de Sóc Trăng
+    gu: સોક ટ્રાંગ
+    hi: सोक ट्रांग
+    id: Provinsi Soc Trang
+    it: provincia di Soc Trang
+    ja: ソクチャン省
+    km: ខេត្តឃ្លាំង
+    kn: ಸೊಕ್ ಟ್ರಾಂಗ್
+    ko: 속짱 성
+    mr: सोक ट्रँग
+    ms: Soc Trang
+    nb: Soc Trang
+    nl: Sóc Trăng
+    pl: Prowincja Sóc Trăng
+    pt: Soc Trang
+    ro: Sóc Trăng
+    ru: Шокчанг
+    si: සොක් ට්රාන්ග්
+    sr: Сок Транг
+    sv: Soc Trang
+    sw: Mkoa wa Sóc Trăng
+    ta: சொக் ட்ரங்
+    te: ఎస్ఓసి ట్రాంగ్
+    th: จังหวัดซ้อกจัง
+    tr: Soc Trang
+    uk: Шокчанг
+    ur: سوک ترانگ صوبہ
+    vi: Sóc Trăng
+    zh: 朔莊省
+    lv: Šokčana
+    ceb: Tỉnh Sóc Trăng
+    sr_Latn: Sok Trang
+    lt: Sok Čiangas
+    yue_Hans: 朔庄
+    ccp: "\U00011125\U0001112E\U00011107\U00011134 \U00011111\U00011133\U00011122\U00011101"
+    cs: Soc Trang
+    yue: 朔莊
+    'no': Soc Trang
+    be: Шакчанг
+    ca: Província de Sóc Trăng
+    he: שאוקפ צ׳אנג
+  comments:
+  type: province
+'53':
+  name: Bac Can
+  code: '53'
+  unofficial_names: Bac Can
+  geo:
+    latitude: 22.1329032
+    longitude: 105.8407722
+    min_latitude: 22.051914
+    min_longitude: 105.7767105
+    max_latitude: 22.2115634
+    max_longitude: 105.9308625
+  translations:
+    en: Bắc Kạn
+    ar: مقاطعة باك كان
+    bg: Бак Кан
+    de: Bắc Kạn
+    es: Bắc Kạn
+    fa: استان باک کان
+    fi: Bắc Kạn
+    fr: Province de Bắc Kạn
+    id: Provinsi Bac Kan
+    it: provincia di Bac Kan
+    ja: バックカン省
+    ko: 박깐 성
+    mn: Бак Гайн
+    nl: Bắc Kạn
+    pl: Prowincja Bắc Kạn
+    pt: Bac Kan
+    ro: Bắc Kạn
+    ru: Баккан
+    sv: Bac Kan
+    sw: Mkoa wa Bắc Kạn
+    th: จังหวัดบั๊กกั่น
+    uk: Баккан
+    ur: باک کان صوبہ
+    vi: Bắc Kạn
+    zh: "北\U00023D13省"
+    ceb: Tỉnh Bắc Kạn
+    yue_Hans: "北\U00023D13"
+    hi: बाक कैन प्रान्त
+    ccp: "\U0001111D\U00011107\U00011134 \U00011107\U0001111A\U00011134"
+    ml: ബാക് കാൻ പ്രവിശ്യ
+    cs: Bac Kan
+    yue: "北\U00023D13"
+    he: באק קאן
+    km: ខេត្តបាកកាន
+    tr: Bắc Kạn (il)
+  comments:
+  type: province
+'54':
+  name: Bac Giang
+  code: '54'
+  unofficial_names: Bac Giang
+  geo:
+    latitude: 21.3014947
+    longitude: 106.6291304
+    min_latitude: 21.121762
+    min_longitude: 105.881726
+    max_latitude: 21.6256549
+    max_longitude: 107.033035
+  translations:
+    en: Bắc Giang
+    ar: محافظة باك زانغ
+    bg: Бак Жианг
+    bn: বাক গিয়াং
+    da: Bắc Giang
+    de: Bắc Giang
+    el: Μπακ Γκιάνγκ
+    es: Bắc Giang
+    fa: استان باک گیانگ
+    fi: Bắc Giang
+    fr: Province de Bắc Giang
+    gu: બેક જિઆંગ
+    hi: बीक गियांग
+    id: Provinsi Bac Giang
+    it: provincia di Bac Giang
+    ja: バクザン省
+    kn: ಬಿಗ್ ಜಿಯಾಂಗ್
+    ko: 박장 성
+    mn: Бак Жяан
+    mr: बॅक जिआंग
+    ms: Bac Giang
+    nb: Bac Giang
+    nl: Bắc Giang
+    pl: Prowincja Bắc Giang
+    pt: Bac Giang
+    ru: Бакзянг
+    si: බාක් ගියන්ග්
+    sv: Bac Giang
+    sw: Mkoa wa Bắc Giang
+    ta: பாக் ஜியாங்
+    te: బాక్ గియాంగ్
+    th: จังหวัดบั๊กซาง
+    tr: Bắc Giang
+    uk: Бакзянг
+    ur: باک گیانگ صوبہ
+    vi: Bắc Giang
+    zh: 北江省
+    lv: Bakzanas province
+    ceb: Tỉnh Bắc Giang
+    lt: Bakdžiango provincija
+    yue_Hans: 北江
+    ccp: "\U0001111D\U00011107\U00011134 \U0001110E\U00011128\U00011120\U00011101"
+    cs: Bac Giang
+    yue: 北江
+    ca: Bắc Giang
+    'no': Bac Giang
+    he: באק זאנג
+    km: ខេត្តបាកយ៉ាង
+  comments:
+  type: province
+'55':
+  name: Bac Lieu
+  code: '55'
+  unofficial_names: Bac Lieu
+  geo:
+    latitude: 9.251555500000002
+    longitude: 105.5136472
+    min_latitude: 8.595139200000002
+    min_longitude: 105.2332641
+    max_latitude: 9.637118899999999
+    max_longitude: 106.7433943
+  translations:
+    en: Bạc Liêu
+    ar: مقاطعة باك ليو
+    bg: Бак Лиеу
+    bn: বাক লিও
+    da: Bạc Liêu
+    de: Bạc Liêu
+    el: Μπακ Λιέου
+    es: Bạc Liêu
+    fa: استان باک لیئو
+    fi: Bạc Liêu
+    fr: Province de Bạc Liêu
+    gu: બાક લીઉ
+    hi: बैक लिऊ
+    id: Provinsi Bac Lieu
+    it: provincia di Bac Lieu
+    ja: バクリエウ省
+    km: ខេត្តពលលាវ
+    kn: ಬಾಕ್ ಲಿಯು
+    ko: 박리에우 성
+    mr: बांग लीए
+    ms: Bac Lieu
+    nb: Bac Lieu
+    nl: Bạc Liêu
+    pl: Prowincja Bạc Liêu
+    pt: Bac Lieu
+    ru: Бакльеу
+    si: බක් ලියු
+    sv: Bac Lieu
+    sw: Mkoa wa Bạc Liêu
+    ta: பாக் லீஐ
+    te: బాక్ లూ
+    th: จังหวัดบักเลียว
+    tr: Bac Lieu
+    uk: Бакльєу
+    ur: باک لیئو صوبہ
+    vi: Bạc Liêu
+    zh: 薄遼省
+    lv: Bakljeu
+    ceb: Tỉnh Bạc Liêu
+    lt: Bakleu
+    yue_Hans: 薄辽
+    ccp: "\U0001111D\U00011107\U00011134 \U00011123\U00011128\U00011105\U0001112A"
+    cs: Bac Lieu
+    yue: 薄遼
+    'no': Bac Lieu
+    he: בק ליאו
+  comments:
+  type: province
+'56':
+  name: Bac Ninh
+  code: '56'
+  unofficial_names: Bac Ninh
+  geo:
+    latitude: 21.121444
+    longitude: 106.1110501
+    min_latitude: 20.969552
+    min_longitude: 105.9041419
+    max_latitude: 21.263603
+    max_longitude: 106.3089509
+  translations:
+    en: Bắc Ninh
+    ar: مقاطعة باك ننه
+    bg: Бак Нин
+    bn: ব্যাক নিহ্ন
+    ca: Bac Ninh
+    da: Bắc Ninh
+    de: Bắc Ninh
+    el: Μπακ Νινχ
+    es: Bắc Ninh
+    fa: استان باک نین
+    fi: Bắc Ninh
+    fr: Province de Bắc Ninh
+    gu: બેક નિંહ
+    hi: बक निन्ह
+    id: Provinsi Bac Ninh
+    it: provincia di Bac Ninh
+    ja: バクニン省
+    kn: ಬಿಕ್ ನಿನ್ಹ್
+    ko: 박닌 성
+    mn: Бак Нэн
+    mr: बॅक निन्ह
+    ms: Wilayah Bac Ninh
+    nb: Bac Ninh
+    nl: Bắc Ninh
+    pl: Prowincja Bắc Ninh
+    pt: Bac Ninh
+    ru: Бакнинь
+    si: බැක් නින්හ්
+    sr: Бак Нин
+    sv: Bac Ninh
+    sw: Mkoa wa Bắc Ninh
+    ta: பாக் நின்ஹ்
+    te: బాక్ నిన్హ్
+    th: จังหวัดบั๊กนิญ
+    tr: Bắc Ninh
+    uk: Бакнінь
+    ur: باک ننہ صوبہ
+    vi: Bắc Ninh
+    zh: 北寧省
+    lv: Bakniņas province
+    ceb: Tỉnh Bắc Ninh
+    sr_Latn: Bak Nin
+    lt: Baknino provincija
+    yue_Hans: 北宁
+    ccp: "\U0001111D\U00011107\U00011134 \U0001111A\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Bac Ninh
+    yue: 北寧
+    'no': Bac Ninh
+    he: באק נינג
+  comments:
+  type: province
+'57':
+  name: Binh Duong
+  code: '57'
+  unofficial_names: Binh Duong
+  geo:
+    latitude: 11.3254024
+    longitude: 106.477017
+    min_latitude: 10.8636351
+    min_longitude: 106.335735
+    max_latitude: 11.5000023
+    max_longitude: 106.9676759
+  translations:
+    en: Bình Dương
+    ar: مقاطعة بنه ديونج
+    bg: Бин Дуонг
+    bn: বিহ্ন ডুওং
+    da: Bình Dương
+    de: Bình Dương
+    el: Μπινχ Ντούονγκ
+    es: Bình Dương
+    fa: استان بین دونگ
+    fi: Bình Dương
+    fr: Bình Dương
+    gu: બિન્હ ડ્યુરોંગ
+    hi: बिन्ह ड्यूओंग
+    id: Provinsi Bình Dương
+    it: provincia di Binh Duong
+    ja: ビンズオン省
+    kn: ಬಿನ್ಹ್ ಡಂಗ್ಂಗ್
+    ko: 빈즈엉 성
+    mr: बिन्ह दुओंग
+    ms: Binh Duong
+    nb: Binh Duong
+    nl: Bình Dương
+    pl: Prowincja Bình Dương
+    pt: Binh Duong
+    ru: Биньзыонг
+    si: බින්හ් ඩු ඔන්ග්
+    sv: Binh Duong
+    sw: Mkoa wa Bình Dương
+    ta: பின்ஹ் டுயோங்
+    te: బిన్హ్ డురాంగ్
+    th: จังหวัดบิ่ญเซือง
+    tr: Binh Duonb
+    uk: Біньзионг
+    ur: بنہ دیونگ صوبہ
+    vi: Bình Dương
+    zh: 平陽省
+    lv: Biņziona
+    ceb: Tỉnh Bình Dương
+    lt: Bin Dongo provincija
+    yue_Hans: 平阳省
+    ccp: "\U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134 \U00011113\U0001112F\U00011103\U00011127\U00011101"
+    cs: Binh Duong
+    yue: 平陽省
+    'no': Binh Duong
+    be: Біньзыонг
+    he: בין ייאנג
+  comments:
+  type: province
+'58':
+  name: Binh Phuoc
+  code: '58'
+  unofficial_names: Binh Phuoc
+  geo:
+    latitude: 11.7511894
+    longitude: 106.7234639
+    min_latitude: 11.300705
+    min_longitude: 106.417961
+    max_latitude: 12.29071
+    max_longitude: 107.4282521
+  translations:
+    en: Bình Phước
+    ar: محافظة بنه فوك
+    bg: Бин Фуок
+    bn: বিন পো
+    da: Bình Phuoc
+    de: Bình Phước
+    el: Μπινχ Φουόκ
+    es: Bình Phước
+    fa: استان بین فوک
+    fi: Bình Phước
+    fr: Bình Phước
+    gu: બિંહ ફૂઓક
+    hi: बिन्ह फु‘ओक प्रांत
+    id: Provinsi Binh Phuoc
+    it: provincia di Binh Phuoc
+    ja: ビンフオック省
+    kn: ಬಿನ್ಹ್ ಫುಂಗ್
+    ko: 빈프억 성
+    mr: बिन्ह फुऊक
+    ms: Binh Phuoc
+    nb: Binh Phuroc
+    nl: Bình Phước
+    pl: Prowincja Bình Phước
+    pt: Binh Phuoc
+    ru: Биньфыок
+    si: බින්හ් පුඔක්
+    sv: Binh Phuoc
+    sw: Mkoa wa Bình Phước
+    ta: பிநஹ் ப்ஹுஅ
+    te: బిన్హ్ ఫ్యూరోక్
+    th: จังหวัดบิ่ญเฟื้อก
+    tr: Bình Phước
+    uk: Біньфиок
+    ur: بنہ فووک صوبہ
+    vi: Bình Phước
+    zh: 平福省
+    lv: Biņfioka
+    ceb: Tỉnh Bình Phước
+    lt: Binfijokas
+    yue_Hans: 平福
+    ccp: "\U0001111D\U00011128\U0001111A\U00011134\U00011126\U00011134 \U0001111C\U0001112A\U00011120\U0001112E\U00011107\U00011134"
+    cs: Binh Phuoc
+    yue: 平福
+    'no': Binh Phuroc
+    he: בין פייק
+  comments:
+  type: province
+'59':
+  name: Ca Mau
+  code: '59'
+  unofficial_names: Ca Mau
+  geo:
+    latitude: 8.962409899999999
+    longitude: 105.1258955
+    min_latitude: 8.4127295
+    min_longitude: 104.5229252
+    max_latitude: 9.55968
+    max_longitude: 105.4185013
+  translations:
+    en: Cà Mau
+    ar: محافظة كا ماو
+    bg: Ка Мау
+    bn: ক্যা মাউ
+    da: Ca Mau
+    de: Cà Mau
+    el: Κα Μάου
+    es: Cà Mau
+    fa: ایالت کا مائو
+    fi: Cà Mau
+    fr: Province de Cà Mau
+    gu: કા માઉ
+    hi: का माउ प्रांत
+    id: Provinsi Ca Mau
+    it: provincia di Ca Mau
+    ja: カマウ省
+    km: ខេត្តទឹកខ្មៅ
+    kn: ಕಾ ಮೌ
+    ko: 까마우 성
+    mr: सीए मऊ
+    ms: Wilayah Ca Mau
+    nb: Ca Mau
+    nl: Cà Mau
+    pl: Prowincja Cà Mau
+    pt: Cà Mau
+    ru: Камау
+    si: කා මෞ
+    sr: Ка Мау
+    sv: Ca Mau
+    sw: Mkoa wa Cà Mau
+    ta: கா மாவ்
+    te: సిఏ మావ్
+    th: จังหวัดก่าเมา
+    tr: Ca Mau
+    uk: Камау
+    ur: کآ ماو صوبہ
+    vi: Cà Mau
+    zh: 金甌省
+    lv: Kamau
+    ceb: Tỉnh Cà Mau
+    sr_Latn: Ka Mau
+    lt: Kamau
+    yue_Hans: 金瓯
+    ccp: "\U00011107 \U0001111F\U00011105\U0001112A"
+    cs: Cà Mau
+    yue: 金甌
+    'no': Ca Mau
+    be: Камау
+    cy: Cà Mau
+    he: קה מאו
+  comments:
+  type: province
+'61':
+  name: Hai Duong
+  code: '61'
+  unofficial_names: Hai Duong
+  geo:
+    latitude: 20.9385958
+    longitude: 106.3206861
+    min_latitude: 20.691178
+    min_longitude: 106.126308
+    max_latitude: 21.231167
+    max_longitude: 106.6127538
+  translations:
+    en: Hải Dương
+    ar: مقاطعة هاي دونج
+    bg: Хай Дуонг
+    bn: হাই দুওং
+    da: Hải Dương
+    de: Hải Dương
+    el: Χάι Ντουόνγκ
+    es: Hải Dương
+    fa: استان های دونگ
+    fi: Hải Dương
+    fr: Province de Hải Dương
+    gu: હાઈ ડ્યુઓંગ
+    hi: हाई दुरोंग
+    id: Provinsi Hai Duong
+    it: provincia di Hai Duong
+    ja: ハイズオン省
+    kn: ಹಾಯ್ ಡೌಂಗ್
+    ko: 하이즈엉 성
+    mn: Хайя Зыон
+    mr: हाई ड्यूयॉन्ग
+    ms: Hai Duong
+    nb: Hai Doung
+    nl: Hải Dương
+    pl: Prowincja Hải Dương
+    pt: Hai Duong
+    ru: Хайзыонг
+    si: හායි ඩුඔන්ග්
+    sv: Hai Duong
+    sw: Mkoa wa Hải Dương
+    ta: ஹை டுவ்ங்
+    te: హాయి డురోంగ్
+    th: จังหวัดหายเซือง
+    tr: Hai Duong
+    uk: Хайзионг
+    ur: ہائی دیونگ صوبہ
+    vi: Hải Dương
+    zh: 海陽省
+    lv: Hajziona
+    ceb: Tỉnh Hải Dương
+    lt: Chaisiongas
+    yue_Hans: 海阳
+    ccp: "\U00011126\U0001112D \U00011113\U0001112F\U00011103\U00011127\U00011101"
+    yue: 海陽
+    'no': Hai Doung
+    cs: Hải Dương
+    he: האי זיינג
+  comments:
+  type: province
+'63':
+  name: Ha Nam
+  code: '63'
+  unofficial_names: Ha Nam
+  geo:
+    latitude: 20.5835196
+    longitude: 105.92299
+    min_latitude: 20.3626781
+    min_longitude: 105.7697231
+    max_latitude: 20.703745
+    max_longitude: 106.183102
+  translations:
+    en: Hà Nam
+    ar: مقاطعة ها نام
+    bg: Хай Дуонг²
+    bn: হ্য নাম
+    da: Hà Nam
+    de: Hà Nam
+    el: Χα Ναμ
+    es: Hà Nam
+    fa: استان ها نام
+    fi: Hà Nam
+    fr: Hà Nam
+    gu: હા નામ
+    he: אה נם
+    hi: हा नाम
+    id: Provinsi Ha Nam
+    it: provincia di Ha Nam
+    ja: ハナム省
+    kn: ಹ್ಯಾ ನ್ಯಾಮ್
+    ko: 하남 성
+    mn: Хай Наам
+    mr: हा नाम
+    ms: Ha Nam
+    nb: Ha Nam
+    nl: Hà Nam
+    pl: Prowincja Hà Nam
+    pt: Hà Nam
+    ru: Ханам
+    si: හා නම්
+    sv: Ha Nam
+    sw: Mkoa wa Hà Nam
+    ta: ஹா நம்
+    te: హా నామ్
+    th: จังหวัดห่านาม
+    tr: Ha Nam
+    uk: Ханам
+    ur: صوبہ ہانام
+    vi: Hà Nam
+    zh: 河南省
+    lv: Hanamas province
+    ceb: Tỉnh Hà Nam
+    lt: Chanamo provincija
+    yue_Hans: 河南
+    ccp: "\U00011126 \U0001111A\U0001111F\U00011134"
+    cs: Ha Nam
+    yue: 河南
+    'no': Ha Nam
+  comments:
+  type: province
+'66':
+  name: Hung Yen
+  code: '66'
+  unofficial_names: Hung Yen
+  geo:
+    latitude: 20.8525711
+    longitude: 106.0169971
+    min_latitude: 20.602892
+    min_longitude: 105.8954829
+    max_latitude: 21.006161
+    max_longitude: 106.269346
+  translations:
+    en: Hưng Yên
+    ar: مقاطعة هونج ين
+    bg: Хунг Йен
+    de: Hưng Yên
+    es: Hưng Yên
+    fa: استان هونگ ین
+    fi: Hưng Yên
+    fr: Province de Hưng Yên
+    id: Provinsi Hung Yen
+    it: provincia di Hung Yen
+    ja: フンイエン省
+    ko: 흥옌 성
+    mn: Хыниэнь
+    nl: Hưng Yên
+    pl: Prowincja Hưng Yên
+    pt: Hung Yen
+    ru: Хынгйен
+    sv: Hung Yen
+    sw: Mkoa wa Hưng Yên
+    th: จังหวัดฮึงเอียน
+    uk: Хингʼєн
+    ur: ہونگ ین صوبہ
+    vi: Hưng Yên
+    zh: 興安省
+    ceb: Tỉnh Hưng Yên
+    yue_Hans: 兴安
+    hi: हुंग येन प्रान्त
+    ccp: "\U00011126\U0001112A\U00011120\U00011101 \U00011103\U00011128\U00011120\U0001112C\U0001111A\U00011134"
+    cs: Hung Yen
+    yue: 興安
+    ca: Província de Hưng Yên
+    he: הונגם יין
+    tr: Hưng Yên (il)
+  comments:
+  type: province
+'67':
+  name: Nam Dinh
+  code: '67'
+  unofficial_names: Nam Dinh
+  geo:
+    latitude: 20.2791804
+    longitude: 106.2051484
+    min_latitude: 19.968296
+    min_longitude: 105.924061
+    max_latitude: 20.4996661
+    max_longitude: 106.5649637
+  translations:
+    en: Nam Định
+    ar: محافظة نام دنه
+    bg: Нам Дин
+    bn: নাম দিহ্ন
+    da: Nam Dinh
+    de: Nam Định
+    el: Ναμ Ντίνχ
+    es: Nam Định
+    fa: استان نام دین
+    fi: Nam Định
+    fr: Province de Nam Định
+    gu: નામ દિંહ
+    hi: नाम दिन्ह
+    id: Provinsi Nam Định
+    it: provincia di Nam Dinh
+    ja: ナムディン省
+    kn: ನಾಮ್ ಧೀನ್ಹ್
+    ko: 남딘 성
+    mn: Наам Дэн
+    mr: नाम डँन्ह
+    ms: Nam Dinh
+    nb: Nam Dinh
+    nl: Nam Định
+    pl: Prowincja Nam Định
+    pt: Nam Dinh
+    ro: Nam Định
+    ru: Намдинь
+    si: නම් දින්හ්
+    sv: Nam Dinh
+    sw: Mkoa wa Nam Định
+    ta: நம் டின்ஹ்
+    te: నామ డిన్హ్
+    th: จังหวัดนามดิ่ญ
+    tr: Nam Dinh
+    uk: Намдінь
+    ur: نام دینہ صوبہ
+    vi: Nam Định
+    zh: 南定省
+    lv: Namdiņa
+    ceb: Tỉnh Nam Định
+    lt: Namdinas
+    yue_Hans: 南定
+    ccp: "\U0001111A\U0001111F\U00011134 \U00011113\U00011128\U0001111A\U00011134\U00011126\U00011134"
+    cs: Nam Định
+    yue: 南定
+    'no': Nam Dinh
+  comments:
+  type: province
+'68':
+  name: Phu Tho
+  code: '68'
+  unofficial_names: Phu Tho
+  geo:
+    latitude: 21.268443
+    longitude: 105.2045573
+    min_latitude: 20.917282
+    min_longitude: 104.8163571
+    max_latitude: 21.719738
+    max_longitude: 105.4579171
+  translations:
+    en: Phú Thọ
+    ar: محافظة فو تاه
+    bg: Фу Тхо
+    bn: ফু থ
+    da: Phu Tho
+    de: Phú Thọ
+    el: Φου Θο
+    es: Phú Thọ
+    fa: استان فو تو
+    fi: Phú Thọ
+    fr: Province de Phú Thọ
+    gu: ફુ થા
+    hi: फू ठो
+    id: Provinsi Phu Tho
+    it: provincia di Phu Tho
+    ja: フート省
+    kn: ಫು ಥೋ
+    ko: 푸토 성
+    mn: Фү Тоо
+    mr: फू थॅ
+    ms: Phe Thọ
+    nb: Phu Tho
+    nl: Phú Thọ
+    pl: Prowincja Phú Thọ
+    pt: Phu Tho
+    ro: Phú Thọ
+    ru: Футхо
+    si: ෆු -තෝ
+    sv: Phu Tho
+    sw: Mkoa wa Phú Thọ
+    ta: ப்ஹு தொ
+    te: ఫూ తో
+    th: จังหวัดฟู้เถาะ
+    tr: Phu Tho
+    uk: Футхо
+    ur: فو تھو صوبہ
+    vi: Phú Thọ
+    zh: 富壽省
+    lv: Futuo
+    lt: Futo
+    yue_Hans: 富寿
+    ccp: "\U0001111C\U0001112A \U00011117\U0001112E"
+    cs: Phu Tho
+    yue: 富壽
+    'no': Phu Tho
+    ca: Phú Thọ
+    ceb: Tỉnh Phú Thọ
+    he: פו טהו
+    km: ខេត្តហ៊្វូថោះ
+  comments:
+  type: province
+'69':
+  name: Thai Nguyen
+  code: '69'
+  unofficial_names:
+  - Central Highlands
+  geo:
+    latitude: 21.5613771
+    longitude: 105.876004
+    min_latitude: 21.324607
+    min_longitude: 105.4771269
+    max_latitude: 22.047269
+    max_longitude: 106.23657
+  translations:
+    en: Thái Nguyên
+    ar: مقاطعة ثاي نجوين
+    bg: Тай Нгуен
+    bn: তৈইয়ূআন
+    da: Thái Nguyên
+    de: Thái Nguyên
+    el: Τάι Νγκουγιέν
+    es: Thái Nguyên
+    fa: استان تای نگوین
+    fi: Thái Nguyên
+    fr: Province de Thái Nguyên
+    gu: થાઈ એનગ્યુએન
+    hi: थाई ग्युएन प्रांत
+    id: Provinsi Thai Nguyen
+    it: provincia di Thai Nguyen
+    ja: タイグエン省
+    kn: ಥಿ ನ್ಗುಯೆನ್
+    ko: 타이응우옌 성
+    mn: Тайнюэнь
+    mr: थै नगुयेन
+    ms: Thai Nguyen
+    nb: Thai Nguyen
+    nl: Thái Nguyên
+    pl: Prowincja Thái Nguyên
+    pt: Thái Nguyên
+    ro: Thái Nguyên
+    ru: Тхайнгуен
+    si: තායි එන්ගුයෙන්
+    sr: Тај Нгујен
+    sv: Thai Nguyen
+    sw: Mkoa wa Thái Nguyên
+    ta: தாய் ங்குயின்
+    te: థాయి గుయెన్
+    th: จังหวัดท้ายเงวียน
+    tr: Thai Nguyen
+    uk: Тхайнгуєн
+    ur: تھائی نگوین صوبہ
+    vi: Thái Nguyên
+    zh: 太原省
+    lv: Thajngujenas province
+    ceb: Tỉnh Thái Nguyên
+    sr_Latn: Taj Ngujen
+    lt: Tai Ngujenas
+    yue_Hans: 太原
+    ccp: "\U00011117\U0001112D \U00011109\U0001112A\U00011120\U0001112C\U0001111A\U00011134"
+    cs: Thai Nguyen
+    yue: 太原
+    'no': Thai Nguyen
+    he: טהאי נגויאן
+    km: ខេត្តថាយង្វៀន
+  comments:
+  type: province
+'70':
+  name: Vinh Phuc
+  code: '70'
+  unofficial_names: Vinh Phuc
+  geo:
+    latitude: 21.3608805
+    longitude: 105.5474373
+    min_latitude: 21.10479
+    min_longitude: 105.322971
+    max_latitude: 21.573348
+    max_longitude: 105.7897179
+  translations:
+    en: Vĩnh Phúc
+    ar: مقاطعة فنه فو
+    bg: Вин Фук
+    bn: ভিহ্ন ফুক
+    da: Vĩnh Phúc
+    de: Vĩnh Phúc
+    el: Βινχ Φουκ
+    es: Vĩnh Phúc
+    fa: استان وین فوک
+    fi: Vĩnh Phúc
+    fr: Province de Vĩnh Phúc
+    gu: વિન્હ ફૂકુ
+    hi: विन्ह फूक
+    id: Provinsi Vinh Phuc
+    it: provincia di Vinh Phuc
+    ja: ヴィンフック省
+    kn: ವನ್ಹ್ ಫುಕ್
+    ko: 빈푹 성
+    mn: Вэн Фүк
+    mr: विनह फुक
+    ms: Vinh Phuc
+    nb: Vinh Phuc
+    nl: Vĩnh Phúc
+    pl: Prowincja Vĩnh Phúc
+    pt: Vinh Phuc
+    ro: Vĩnh Phúc
+    ru: Виньфук
+    si: වින්හ් පුක්
+    sv: Vinh Phuc
+    sw: Mkoa wa Vĩnh Phúc
+    ta: வின்ஹ் பிஹுக்
+    te: విన్ ఫుక్
+    th: จังหวัดหวิญฟุก
+    tr: Vĩnh Phúc
+    uk: Віньфук
+    ur: وینہ فوک صوبہ
+    vi: Vĩnh Phúc
+    zh: 永福省
+    lv: Viņfukas province
+    ceb: Tỉnh Vĩnh Phúc
+    lt: Vinfuko provincija
+    yue_Hans: 永福
+    ccp: "\U0001111E\U00011128\U0001111A\U00011134\U00011126\U00011134 \U0001111C\U0001112A\U00011107\U00011134"
+    cs: Vinh Phuc
+    yue: 永福
+    'no': Vinh Phuc
+    ca: Vinh Phu
+    he: מחוז וין פוק
+  comments:
+  type: province
+'71':
+  name: Dien Bien
+  code: '71'
+  unofficial_names: Dien Bien
+  geo:
+    latitude: 21.8042309
+    longitude: 103.1076525
+    min_latitude: 20.869232
+    min_longitude: 102.1482091
+    max_latitude: 22.5563429
+    max_longitude: 103.6003289
+  translations:
+    en: Điện Biên
+    ar: محافظة دين بين
+    bg: Диен Биен
+    bn: দিয়েন বিয়েন
+    da: Dien Bien
+    de: Điện Biên
+    el: Ντιέν Μπιέν
+    es: Điện Biên
+    fa: استان دین‌بین
+    fi: Điện Biên
+    fr: Province de Điện Biên
+    gu: ડીએન બીએન
+    hi: दिएन बिएन प्रांत
+    id: Provinsi Dien Bien
+    it: provincia di Dien Bien
+    ja: ディエンビエン省
+    kn: ಡಿಯೆನ್ ಬಿಯೆನ್
+    ko: 디엔비엔 성
+    mr: डीएन बिएन
+    ms: Dien Bien
+    nb: Dien Bien
+    nl: Điện Biên
+    pl: Prowincja Điện Biên
+    pt: Dien Bien
+    ru: Дьенбьен
+    si: ඩියෙන් බියෙන්
+    sr: Дијен Бијен
+    sv: Dien Bien
+    sw: Mkoa wa Điện Biên
+    ta: டின் பியன்
+    te: డీన్ బీన్
+    th: จังหวัดเดี่ยนเบียน
+    tr: Dien Bien
+    uk: Дьєнбʼєн
+    ur: دیئن بیئن صوبہ
+    vi: Điện Biên
+    zh: 奠邊省
+    lv: Djenbjenas province
+    ceb: Tỉnh Ðiện Biên
+    sr_Latn: Dijen Bijen
+    lt: Djenbjenas
+    yue_Hans: 奠边
+    ccp: "\U00011113\U00011128\U00011120\U0001112C\U0001111A\U00011134 \U0001111D\U0001112D\U00011120\U0001112C\U0001111A\U00011134"
+    cs: Dien Bien
+    yue: 奠邊
+    'no': Dien Bien
+  comments:
+  type: province
+'72':
+  name: Dak Nong
+  code: '72'
+  unofficial_names: Dak Nong
+  geo:
+    latitude: 12.2646476
+    longitude: 107.609806
+    min_latitude: 11.748865
+    min_longitude: 107.2079091
+    max_latitude: 12.8117129
+    max_longitude: 108.115932
+  translations:
+    en: Đắk Nông
+    ar: مقاطعة داك نانج
+    bg: Дак Нонг
+    bn: ডাক নোং
+    da: Dak Nong
+    de: Đắk Nông
+    el: Ντακ Νονγκ
+    es: Đăk Nông
+    fa: استان داک نونگ
+    fi: Đắk Nông
+    fr: Đắk Nông
+    gu: ડક નોંગ
+    hi: डाक नोंग
+    id: Provinsi Dak Nong
+    it: provincia di Dak Nong
+    ja: ダクノン省
+    kn: ಡಕ್ ನಾಂಗ್
+    ko: 닥농 성
+    mr: डक नॉन्ग
+    ms: Dak Nong
+    nb: Dak Nong
+    nl: Đắk Nông
+    pl: Prowincja Đăk Nông
+    pt: Dak Nong
+    ru: Дакнонг
+    si: ඩක් නොන්ග්
+    sv: Dak Nong
+    sw: Mkoa wa Đắk Nông
+    ta: டாக் நாங்
+    te: డాక్ నాంగ్
+    th: จังหวัดดักโนง
+    tr: Dak Nong
+    uk: Дакнонг
+    ur: داک نونگ صوبہ
+    vi: Đắk Nông
+    zh: 得農省
+    lv: Daknona
+    ceb: Ðắk Nông
+    lt: Daknongas
+    yue_Hans: 得农
+    ccp: "\U00011113\U00011107\U00011134 \U0001111A\U00011127\U00011101"
+    cs: Đắk Nông
+    yue: 得農
+    'no': Dak Nong
+    he: דאק נאונגם
+  comments:
+  type: province
+'73':
+  name: Hau Giang
+  code: '73'
+  unofficial_names: Hau Giang
+  geo:
+    latitude: 9.757897999999999
+    longitude: 105.6412527
+    min_latitude: 9.5820831
+    min_longitude: 105.328687
+    max_latitude: 9.9928138
+    max_longitude: 105.8934326
+  translations:
+    en: Hậu Giang
+    ar: محافظة هو زانغ
+    bg: Хау Жианг
+    bn: হাু গিয়াং
+    da: Hậu Giang
+    de: Hậu Giang
+    el: Χο Γκιάνγκ
+    es: Hậu Giang
+    fa: استان هائو گیانگ
+    fi: Hậu Giang
+    fr: Province de Hậu Giang
+    gu: હુઉ ગિઆંગ
+    hi: हाउ जिएंग
+    id: Provinsi Hau Giang
+    it: provincia di Hau Giang
+    ja: ハウザン省
+    kn: ಹು ಜಿಯಾಂಗ್
+    ko: 하우장 성
+    mr: ह्यू गियांग
+    ms: Hau Giang
+    nb: Hau Giang
+    nl: Hậu Giang
+    pl: Prowincja Hậu Giang
+    pt: Hau Giang
+    ru: Хаузянг
+    si: හෞ ජියැන්ග්
+    sv: Hau Giang
+    sw: Mkoa wa Hậu Giang
+    te: హావు గియాంగ్
+    th: จังหวัดรูเซ
+    tr: Hau Giang
+    uk: Хаузянг
+    ur: ہآو گیانگ صوبہ
+    vi: Hậu Giang
+    zh: 後江省
+    lv: Houzana
+    ceb: Hau Giang
+    lt: Haudžiango provincija
+    yue_Hans: 后江
+    ccp: "\U00011126\U00011127\U00011105\U0001112A \U0001110E\U00011128\U00011120\U00011101"
+    yue: 後江
+    'no': Hau Giang
+    cs: Hậu Giang
+    he: הא זאנג²
+    sk: Hậu Giang
+  comments:
+  type: province
+CT:
+  name: Can Tho
+  code: CT
+  unofficial_names: Can Tho
+  geo:
+    latitude: 10.0451618
+    longitude: 105.7468535
+    min_latitude: 9.993702899999999
+    min_longitude: 105.7170582
+    max_latitude: 10.0746025
+    max_longitude: 105.7959312
+  translations:
+    af: Can Tho
+    ar: كان ثو
+    bg: Кан Тхо
+    bn: কান থো
+    ca: Cần Thơ
+    cs: Can Tho
+    da: Can Tho
+    de: Cần Thơ
+    el: Καν Θο
+    en: Can Tho
+    es: Cần Thơ
+    eu: Can Tho
+    fa: کان تو
+    fi: Cần Thơ
+    fr: Cần Thơ
+    gl: Can Tho
+    gu: કાન થો
+    he: קאנטחו
+    hi: कैन थो
+    id: Cần Thơ
+    it: Cần Thơ
+    ja: カントー
+    km: ទីក្រុងព្រែកឫស្សី
+    kn: ಸಿನ್ ತೊ
+    ko: 껀터
+    lt: Kantas
+    mn: Кантхо
+    mr: कॉ थो
+    ms: Can Tho
+    nb: Can Tho
+    nl: Cần Thơ
+    pl: Cần Thơ
+    pt: Can Tho
+    ru: Кантхо
+    si: කාන් තො
+    sr: Кантхо
+    sv: Can Tho
+    sw: Can Tho
+    ta: கேன் தொ
+    te: కాన్ తో
+    th: เกิ่นเทอ
+    tr: Cần Thơ
+    uk: Кантхо
+    ur: کآن تھؤ
+    vi: Cần Thơ
+    zh: 芹苴市
+    lv: Kontho
+    ceb: Thành Phố Cần Thơ (lalawigan sa Vietnam)
+    sr_Latn: Kantho
+    yue_Hans: 芹苴
+    ccp: "\U00011107\U0001111A\U00011134 \U00011117\U0001112E"
+    ky: Кантхо
+    hu: Cần Thơ
+    ha: Can Tho
+    yue: 芹苴
+    be: Кантхо
+    ha_NE: Can Tho
+    'no': Can Tho
+    ga: Cần Thơ
+  comments:
+  type: municipality
+DN:
+  name: Da Nang
+  code: DN
+  unofficial_names: Da Nang, thanh pho
+  geo:
+    latitude: 16.0544068
+    longitude: 108.2021667
+    min_latitude: 15.999203
+    min_longitude: 108.1779956
+    max_latitude: 16.0941455
+    max_longitude: 108.2354165
+  translations:
+    af: Da Nang
+    ar: دا نانغ
+    az: Dananq
+    be: Горад Дананг
+    bg: Дананг
+    bn: ডানাং
+    ca: Da Nang
+    cs: Danang
+    da: Da Nang
+    de: Đà Nẵng
+    el: Ντα Νανγκ
+    en: Da Nang
+    es: Đà Nẵng
+    et: Đà Nẵng
+    eu: Da Nang
+    fa: دانانگ
+    fi: Đà Nẵng
+    fr: Đà Nẵng
+    gl: Đà Nẵng
+    gu: દાનાંગ
+    he: דננג
+    hi: दा नांग
+    hr: Đà Nẵng
+    hu: Đà Nẵng
+    hy: Դանանգ
+    id: Đà Nẵng
+    it: Da Nang
+    ja: ダナン
+    kn: ದಾನಂಗ್
+    ko: 다낭
+    lt: Danangas
+    lv: Dananga
+    mn: Данан
+    mr: दानांग
+    ms: Da Nang
+    nb: Da Nang
+    nl: Đà Nẵng
+    pl: Đà Nẵng
+    pt: Da Nang
+    ro: Da Nang
+    ru: Дананг
+    si: ඩනන්
+    sk: Đà Nẵng
+    sr: Да Нанг
+    sv: Da Nang
+    sw: Da Nang
+    ta: தா நாங்
+    te: డానాంగ్
+    th: ดานัง
+    tk: Da Nang
+    tr: Đà Nẵng
+    uk: Дананг
+    ur: دا نانگ
+    vi: Đà Nẵng
+    zh: 岘港市
+    zu: IDanang
+    cy: Da Nang
+    ceb: Da Nang
+    sr_Latn: Da Nang
+    yue_Hans: 岘港市
+    jv: Da Nang
+    sq: Da Nang
+    ccp: "\U00011113 \U0001111A\U00011127\U00011101"
+    ig: Da Nang
+    ha: Da Nang
+    yue: 峴港市
+    am: ዳ ናንግ
+    my: ဒါနန်မြို့
+    uz: Danang
+    mk: Да Нанг
+    ha_NE: Da Nang
+    'no': Da Nang
+    ga: Da Nang
+    km: ដាណាំង
+    ky: Дананг
+  comments:
+  type: municipality
+HN:
+  name: Ha Noi
+  code: HN
+  unofficial_names: Ha Noi, thu do
+  geo:
+    latitude: 21.0277644
+    longitude: 105.8341598
+    min_latitude: 20.9950991
+    min_longitude: 105.7974815
+    max_latitude: 21.0502942
+    max_longitude: 105.8764459
+  translations:
+    af: Hanoi
+    am: ሀኖይ
+    ar: هانوي
+    az: Hanoy
+    be: Горад Ханой
+    bg: Ханой
+    bn: হ্যানয়
+    ca: Hanoi
+    cs: Hanoj
+    da: Hanoi
+    de: Hanoi
+    el: Ανόι
+    en: Hanoi
+    es: Hanói
+    et: Hanoi
+    eu: Hanoi
+    fa: هانوی
+    fi: Hanoi
+    fr: Hanoï
+    gl: Hanoi
+    gu: હનોઈ
+    he: האנוי
+    hi: हनोई
+    hr: Hanoi
+    hu: Hanoi
+    hy: Հանոյ
+    id: Hanoi
+    is: Hanoí
+    it: Hanoi
+    ja: ハノイ
+    ka: ჰანოი
+    km: ទីក្រុងហានូយ
+    kn: ಹಾನೊಯ್
+    ko: 하노이
+    lt: Hanojus
+    lv: Hanoja
+    ml: ഹാനോയ്
+    mn: Ханой
+    mr: हनोई
+    ms: Hanoi
+    nb: Hanoi
+    ne: हनोइ
+    nl: Hanoi
+    or: ହାନୋଇ
+    pl: Hanoi
+    pt: Hanói
+    ro: Hanoi
+    ru: Ханой
+    si: හැනෝයි
+    sk: Hanoj
+    sl: Hanoj
+    sr: Ханој
+    sv: Hanoi
+    sw: Hanoi
+    ta: ஹனோய்
+    te: హనోయ్
+    th: ฮานอย
+    tk: Hanoýi
+    tr: Hanoi
+    uk: Ханой
+    ur: ہنوئی
+    vi: Hà Nội
+    zh: 河內市
+    cy: Hanoi
+    ceb: Hanoi
+    sr_Latn: Hanoj
+    yue_Hans: 河内
+    jv: Hanoi
+    sq: Hanoi
+    ccp: "\U00011126\U0001111A\U00011130"
+    ga: Ha Noi
+    ky: Ханой
+    ha: Hanoi
+    pa: ਹਨੋਈ
+    kk: Ханой
+    yue: 河內
+    my: ဟနွိုင်းမြို့
+    yo: Hanoi
+    uz: Xanoy
+    bs: Hanoi
+    mk: Ханој
+    lo: ຮ່າໂນ້ຍ
+    ha_NE: Hanoi
+    'no': Hanoi
+    yo_BJ: Hanoi
+    ps: هانوی
+  comments:
+  type: municipality
+HP:
+  name: Hai Phong
+  code: HP
+  unofficial_names: Hai Phong, thanh pho
+  geo:
+    latitude: 20.8449115
+    longitude: 106.6880841
+    min_latitude: 20.814211
+    min_longitude: 106.6375924
+    max_latitude: 20.8792627
+    max_longitude: 106.759901
+  translations:
+    af: Hai Phong
+    ar: هايفونغ
+    be: Горад Хайфон
+    bg: Хайфонг
+    bn: হাইফোং
+    cs: Haiphong
+    da: Hai Phong
+    de: Hải Phòng
+    el: Χάι Φονγκ
+    en: Haiphong
+    es: Hải Phòng
+    et: Hải Phòng
+    eu: Hai Phong
+    fa: هایفونگ
+    fi: Hải Phòng
+    fr: Hải Phòng
+    gu: હૈફંગ
+    he: היפונג
+    hi: हाईफोंग
+    hu: Hải Phòng
+    hy: Հայֆոն
+    id: Hải Phòng
+    it: Haiphong
+    ja: ハイフォン
+    kn: ಹಾಫಿಂಗ್
+    ko: 하이퐁
+    lt: Haifongas
+    ml: ഹൈ ഫോങ്
+    mr: हाय फाँग
+    ms: Haiphong
+    nb: Haiphong
+    nl: Hải Phòng
+    pl: Hajfong
+    pt: Haiphong
+    ru: Хайфон
+    si: හයි ෆොන්ග්
+    sr: Хајфонг
+    sv: Hai Phong
+    sw: Hai Phong
+    ta: ஹாய் பாங்
+    te: హైఫోంగ్
+    th: ไฮฟอง
+    tr: Hải Phòng
+    uk: Хайфонг
+    ur: ہائیفونگ
+    vi: Hải Phòng
+    zh: 海防市
+    lv: Haifona
+    ceb: Haiphong
+    sr_Latn: Hajfong
+    yue_Hans: 海防
+    ccp: "\U00011126\U0001112D\U0001111C\U00011127\U00011101"
+    ha: Haiphong
+    or: ହାଈ ଫୋଙ୍ଗ
+    yue: 海防
+    ca: Hai Phong
+    ha_NE: Haiphong
+    'no': Haiphong
+    ga: Haiphong
+    km: ហៃហ្វុង
+    ky: Хайфон
+    ro: Haiphong
+    uz: Xayfon
+  comments:
+  type: municipality
+SG:
+  name: Ho Chi Minh
+  code: SG
+  unofficial_names: Sai Gon
+  geo:
+    latitude: 10.8230989
+    longitude: 106.6296638
+    min_latitude: 10.3766885
+    min_longitude: 106.3638784
+    max_latitude: 11.1602136
+    max_longitude: 107.0248468
+  translations:
+    af: Ho Chi Minh-stad
+    am: ሆ ቺ ሚን ከተማ
+    ar: هو تشي منه
+    az: Hoşimin
+    be: Горад Хашымін
+    bg: Хошимин
+    bn: হো চি মিন সিটি
+    ca: Ciutat Ho Chi Minh
+    cs: Ho Či Minovo Město
+    da: Ho Chi Minh-byen
+    de: Ho-Chi-Minh-Stadt
+    el: Χο Τσι Μινχ
+    en: Ho Chi Minh City
+    es: Ciudad Ho Chi Minh
+    et: Hồ Chí Minh
+    eu: Ho Chi Minh Hiria
+    fa: هوشی‌مین
+    fi: Hồ Chí Minhin kaupunki
+    fr: Hô-Chi-Minh-Ville
+    gl: Cidade Ho Chi Minh
+    gu: હો ચી મિન સિટી
+    he: הו צ׳י מין סיטי
+    hi: हो ची मिन्ह शहर
+    hr: Ho Ši Min
+    hu: Ho Si Minh-város
+    hy: Հոշիմին
+    id: Kota Hồ Chí Minh
+    is: Ho Chi Minh-borg
+    it: Ho Chi Minh
+    ja: ホーチミン市
+    ka: ხოშიმინი
+    km: ក្រុងព្រៃនគរ
+    kn: ಹೊ ಚಿ ಮಿನ್ ನಗರ
+    ko: 호찌민 시
+    lt: Hošiminas
+    lv: Hošimina
+    ml: ഹോ ചി മിൻ നഗരം
+    mn: Хо Ши Мин хот
+    mr: हो चि मिन्ह सिटी
+    ms: Bandar Raya Ho Chi Minh
+    nb: Ho Chi Minh-byen
+    nl: Ho Chi Minhstad
+    or: ସାଇଗନ
+    pl: Ho Chi Minh
+    pt: Cidade de Ho Chi Minh
+    ro: Ho Și Min
+    ru: Хошимин
+    si: හෝ චි මින් නගරය
+    sk: Hočiminovo Mesto
+    sl: Hošiminh
+    sr: Хо Ши Мин
+    sv: Ho Chi Minh-staden
+    sw: Mji wa Ho Chi Minh
+    ta: ஹோ சி மின் நகரம்
+    te: హోచిమిన్ సిటీ
+    th: นครโฮจิมินห์
+    tk: Ho Şi Miň Şäheri
+    tr: Ho Chi Minh Kenti
+    uk: Хошимін
+    ur: ہو چی من
+    vi: Thành phố Hồ Chí Minh
+    zh: 胡志明市
+    cy: Dinas Ho Chi Minh
+    ceb: Dakbayan sa Ho Chi Minh
+    sr_Latn: Ho Ši Min
+    yue_Hans: 胡志明市
+    jv: Kutha Ho Chi Minh
+    sq: Ho-Chi-Minh-Qytet
+    ccp: "\U00011126\U0001112E \U0001110C\U00011128 \U0001111F\U00011128\U0001111A\U00011134\U00011126\U00011134
+      \U0001110C\U00011128\U00011111\U00011128"
+    ga: Cathair Ho Chi Minh
+    ig: Ho Chi Minh City
+    ky: Хошимин
+    ha: Birnin Ho Chi Minh
+    so: Ho Chi Minh City
+    kk: Хошимин
+    yue: 胡志明市
+    my: ဟိုချီမင်းစီးတီး
+    zu: IHochiminh
+    uz: Xoshimin
+    bs: Ho Ši Min Grad
+    mk: Хо Ши Мин
+    ha_NE: Birnin Ho Chi Minh
+    'no': Ho Chi Minh-byen
+    lo: ເມືອງໂຮ່ຈິມິນ
+    pa: ਹੋ ਚੀ ਮਿਨ ਸ਼ਹਿਰ
+  comments:
+  type: municipality

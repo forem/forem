@@ -1,0 +1,1988 @@
+---
+'00':
+  name: Belgrade
+  code: '00'
+  unofficial_names: Belgrade
+  geo:
+    latitude: 44.786568
+    longitude: 20.4489216
+    min_latitude: 44.6880454
+    min_longitude: 20.2217102
+    max_latitude: 44.9424453
+    max_longitude: 20.6189345
+  translations:
+    en: Beograd
+    af: Belgrado
+    am: በልግራድ
+    ar: بلغراد
+    az: Belqrad
+    be: Бялград
+    bg: Белград
+    bn: বেলগ্রেড
+    ca: Belgrad
+    cs: Bělehrad
+    da: Beograd
+    de: Belgrad
+    el: Βελιγράδι
+    es: Belgrado
+    et: Belgrad
+    eu: Belgrad
+    fa: بلگراد
+    fi: Belgrad
+    fr: Belgrade
+    gl: Belgrado
+    gu: બેલગ્રેડ
+    he: בלגרד
+    hi: बॅलग्रेड
+    hr: Beograd
+    hu: Belgrád
+    hy: Բելգրադ
+    id: Beograd
+    is: Belgrad
+    it: Belgrado
+    ja: ベオグラード
+    ka: ბელგრადი
+    kn: ಬೆಲ್ಗ್ರೇಡ್
+    ko: 베오그라드
+    lt: Belgradas
+    lv: Belgrada
+    ml: ബെൽഗ്രേഡ്
+    mn: Белград
+    mr: बेलग्रेड
+    ms: Belgrade
+    nb: Beograd
+    nl: Belgrado
+    pl: Belgrad
+    pt: Belgrado
+    ro: Belgrad
+    ru: Белград
+    si: බෙල්ග්‍රේඩ්
+    sk: Belehrad
+    sl: Beograd
+    sr: Београд
+    sv: Belgrad
+    sw: Belgrad
+    ta: பெல்கிறேட்
+    te: బెల్గ్రేడ్
+    th: เบลเกรด
+    tk: Belgrad
+    tr: Belgrad
+    uk: Белград
+    ur: بلغراد
+    vi: Beograd
+    zh: 贝尔格莱德
+    cy: Beograd
+    ceb: Belgrado
+    sr_Latn: Beograd
+    yue_Hans: 贝尔格莱德
+    jv: Beograd
+    sq: Beogradi
+    ccp: "\U0001111D\U00011128\U00011103\U0001112E\U00011109\U00011133\U00011122\U00011116\U00011134"
+    ga: Béalgrád
+    ky: Белград
+    so: Belgaraad
+    pa: ਬੈਲਗ੍ਰਾਦ
+    kk: Белград
+    yue: 貝爾格萊德
+    yo: Belgrade
+    uz: Belgrad
+    bs: Beograd
+    mk: Белград
+    'no': Beograd
+    yo_BJ: Belgrade
+  comments:
+  type: city
+'01':
+  name: Severna Backa
+  code: '01'
+  unofficial_names: Severna Backa
+  geo:
+    latitude: 45.9803394
+    longitude: 19.5907
+    min_latitude: 45.6242571
+    min_longitude: 19.3011208
+    max_latitude: 46.1912459
+    max_longitude: 19.875136
+  translations:
+    en: North Bačka
+    ar: مقاطعة شمال باكشتا
+    be: Паўночна-Бацкая акруга
+    bg: Севернобачки окръг
+    bn: নর্থ বাক্কা জেলা
+    ca: Districte de Bačka del Nord
+    cs: Severobačský okruh
+    da: North Bačka District
+    de: Okrug Severna Bačka
+    el: Βόρειο Μπάκα
+    es: Distrito de Bačka del Norte
+    et: Põhja-Bačka
+    fi: Pohjois-Bačka
+    fr: Bačka septentrionale
+    gu: ઉત્તર બાક્કા જિલ્લો
+    he: מחוז באצ׳קה הצפוני
+    hi: उत्तर बाक्का जिला
+    hr: Sjevernobački upravni okrug
+    hu: Észak-bácskai körzet
+    id: Distrik Bačka Utara
+    it: Distretto della Bačka Settentrionale
+    ja: 北バチュカ郡
+    ka: ჩრდილო-ბაჩის რაიონი
+    kn: ನಾರ್ತ್ ಬಾಕ್ಕಾ ಜಿಲ್ಲೆ
+    ko: 북바치카 구
+    mr: नॉर्थ बाक्का जिल्हा
+    ms: North Backa District
+    nb: Nord Backa distrikt
+    nl: Noord-Bačka
+    pl: Okręg północnobacki
+    pt: Distrito Norte de Backa
+    ro: Districtul Bačka de Nord
+    ru: Северно-Бачский округ
+    si: උතුරු බාකා දිස්ත්‍රික්කය
+    sr: Севернобачки управни округ
+    sv: Norra Bačka
+    ta: வடக்கு பாக்கா மாவட்டம்
+    te: ఉత్తర బాకా జిల్లా
+    th: เขตนอร์ท แบคค่า
+    tr: Kuzey Bačka İlçesi
+    uk: Північно-Бацький округ
+    ur: شمالی باچکا ضلع
+    vi: Quận Bắc Backa
+    lv: Ziemeļbačkas apgabals
+    sr_Latn: Severnobački upravni okrug
+    lt: Šiaurinis Bačkos regionas
+    zh: 北巴奇卡州
+    jv: Bačka Lor
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111D\U00011107"
+    mn: Умар Бачка аймаг
+    'no': Nord Backa distrikt
+    bs: Sjevernobački upravni okrug
+    fa: ناحیه باچکای شمالی
+  comments:
+  type: district
+'02':
+  name: Srednji Banat
+  code: '02'
+  unofficial_names: Srednji Banat
+  geo:
+    latitude: 45.4788485
+    longitude: 20.6082522
+    min_latitude: 45.0783
+    min_longitude: 20.027785
+    max_latitude: 45.811237
+    max_longitude: 21.0307331
+  translations:
+    en: Central Banat
+    ar: مقاطعة سنترال بانات
+    bg: Среднобанатски окръг
+    bn: সেন্ট্রাল বানাট জেলা
+    ca: Districte de Banat Central
+    cs: Středobanátský okruh
+    da: Central Banat District
+    de: Okrug Srednji Banat
+    el: Κεντρικό Μπανάτ (Σέντραλ Μπανάτ)
+    es: Distrito de Banato Central
+    et: Kesk-Banat
+    fi: Keski-Banat
+    fr: Banat central
+    gl: Banato Central
+    gu: સેન્ટ્રલ બનાટ જિલ્લો
+    he: מחוז באנאט המרכזי
+    hi: केंद्रीय बनाट जिला
+    hr: Srednjobanatski upravni okrug
+    hu: Közép-bánsági körzet
+    id: Distrik Central Banat
+    it: Distretto del Banato Centrale
+    ja: 中央バナト郡
+    ka: შუა-ბანატის რაიონი
+    kn: ಕೇಂದ್ರ ಬನತ್ ಜಿಲ್ಲೆ
+    ko: 중앙바나트 구
+    mr: सेंट्रल बनत जिल्हा
+    ms: Daerah Banat Tengah
+    nb: Sentral Banat distrikt
+    nl: Centraal-Banaat
+    pl: Okręg środkowobanacki
+    pt: Distrito Central de Banat
+    ro: Banatul Central
+    ru: Средне-Банатский округ
+    si: මද්‍යම බැනට් දිස්ත්‍රික්කය
+    sr: Средњобанатски управни округ
+    sv: Mellersta Banatet
+    ta: சென்றல் பானட் மாவட்டம்
+    te: సెంట్రల్ బనాట్ జిల్లా
+    th: เขตเซ็นทรัลบาต
+    tr: Orta Banat İlçesi
+    uk: Середньо-Банатський округ
+    ur: وسطی بانات ضلع
+    vi: Quận Trung Banat
+    lv: Centrālbanatas apgabals
+    sr_Latn: Srednjobanatski upravni okrug
+    lt: Centrinio Banato apskritis
+    zh: 中巴納特州
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134
+      \U0001111D\U0001111A\U00011116\U00011134"
+    mn: Төв Банат аймаг
+    'no': Sentral Banat distrikt
+    bs: Srednjobanatski upravni okrug
+    fa: ناحیه بانات مرکزی
+  comments:
+  type: district
+'03':
+  name: Severni Banat
+  code: '03'
+  unofficial_names: Severni Banat
+  geo:
+    latitude: 45.906839
+    longitude: 19.9993417
+    min_latitude: 45.598248
+    min_longitude: 19.7715084
+    max_latitude: 46.178631
+    max_longitude: 20.665928
+  translations:
+    en: North Banat
+    ar: شمال مقاطعة بانات
+    bg: Севернобанатски окръг
+    bn: নর্থ বানাট জেলা
+    ca: Districte de Banat del Nord
+    cs: Severobanátský okruh
+    da: North Banat District
+    de: Okrug Severni Banat
+    el: Βόρειο Μπανάτ
+    es: Distrito de Banato del Norte
+    et: Põhja-Banat
+    fi: North Banatin kaupunginosa
+    fr: Banat septentrional
+    gl: Banato Norte
+    gu: ગુઆમ
+    hi: उत्तरी बनाट जिला
+    hr: Sjevernobanatski upravni okrug
+    hu: Észak-bánsági körzet
+    id: Distrik Banat Utara
+    it: Distretto del Banato Settentrionale
+    ja: 北バナト郡
+    ka: ჩრდილო-ბანატის რაიონი
+    kn: ಉತ್ತರ ಬನತ್ ಜಿಲ್ಲೆ
+    ko: 북바나트 구
+    mn: Умар Банат аймаг
+    mr: उत्तर बनत जिल्हा
+    ms: North Banat District
+    nb: Nord Banat distrikt
+    nl: Noord-Banaat
+    pl: Okręg północnobanacki
+    pt: Distrito Norte de Banat
+    ro: Banatul de Nord
+    ru: Северно-Банатский округ
+    si: උතුරු බනට් දිස්ත්‍රික්කය
+    sr: Севернобанатски управни округ
+    sv: Norra Banatet
+    ta: வடக்கு பானட் மாவட்டம்
+    te: ఉత్తర బనాట్ జిల్లా
+    th: เขตนอร์ทบานัท
+    tr: Kuzey Banat İlçesi
+    uk: Північно-Банатський округ
+    ur: شمالی بانات ضلع
+    vi: Quận Bắc Banat
+    lv: Ziemeļbanatas apgabals
+    sr_Latn: Severnobanatski upravni okrug
+    lt: Šiaurės Banato apskritis
+    zh: 北巴納特州
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U0001111D\U0001111A\U00011116\U00011134"
+    sk: Severobanátsky okres
+    be: Паўночна-Банацкая акруга
+    'no': Nord Banat distrikt
+    bs: Sjevernobanatski upravni okrug
+    fa: ناحیه بانات شمالی
+  comments:
+  type: district
+'04':
+  name: Južni Banat
+  code: '04'
+  unofficial_names: Južni Banat
+  geo:
+    latitude: 45.0027457
+    longitude: 21.0542509
+    min_latitude: 44.65840499999999
+    min_longitude: 20.41565
+    max_latitude: 45.334724
+    max_longitude: 21.56465
+  translations:
+    en: South Banat
+    ar: مقاطعة جنوب بانات
+    be: Паўднёва-Банацкая акруга
+    bg: Южнобанатски окръг
+    bn: সাউথ বানাত জেলা
+    ca: Districte de Banat del Sud
+    cs: Jihobanátský okruh
+    da: South Banat District
+    de: Okrug Južni Banat
+    el: Νότιο Μπανάτ
+    es: Distrito de Banato del Sur
+    et: Lõuna-Banat
+    fi: South Banatin kaupunginosa
+    fr: Banat méridional
+    gl: Banato Sur
+    gu: દક્ષિણ બનાત જિલ્લો
+    he: מחוז באנאט הדרומי
+    hi: दक्षिणी बनाट ज़िला
+    hr: Južnobanatski upravni okrug
+    hu: Dél-bánsági körzet
+    id: Distrik Banat Selatan
+    it: Distretto del Banato Meridionale
+    ja: 南バナト郡
+    ka: სამხრეთ-ბანატის რაიონი
+    kn: ದಕ್ಷಿಣ ಬನತ್ ಜಿಲ್ಲೆ
+    ko: 남바나트 구
+    mr: दक्षिण बनत जिल्हा
+    ms: South Banat District
+    nb: Sør Banat distrikt
+    nl: Zuid-Banaat
+    pl: Okręg południowobanacki
+    pt: Distrito Sul de Banat
+    ro: Banatul de Sud
+    ru: Южно-Банатский округ
+    si: දකුණු බැනට් දිස්ත්‍රික්කය
+    sr: Јужнобанатски управни округ
+    sv: Södra Banatet
+    ta: தெற்கு பானட் மாவட்டம்
+    te: దక్షిణ బనాట్ జిల్లా
+    th: รัฐโลเวอร์ออสเตรีย
+    tr: Güney Banat İlçesi
+    uk: Південно-Банатський округ
+    ur: جنوبی بانات ضلع
+    vi: Quận Nam Banat
+    lv: Dienvidbanatas apgabals
+    sr_Latn: Južnobanatski upravni okrug
+    lt: Pietų Banato apskritis
+    zh: 南巴納特州
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U0001111D\U0001111A\U00011116\U00011134"
+    mn: Өмнө Банат аймаг
+    bs: Južnobanatski upravni okrug
+    mk: Јужнобанатски округ
+    'no': Sør Banat distrikt
+    fa: ناحیه بانات جنوبی
+  comments:
+  type: district
+'05':
+  name: Zapadna Backa
+  code: '05'
+  unofficial_names: Zapadna Backa
+  geo:
+    latitude: 45.7355385
+    longitude: 19.1897364
+    min_latitude: 45.436847
+    min_longitude: 18.8493741
+    max_latitude: 46.0410499
+    max_longitude: 19.6157879
+  translations:
+    en: West Bačka
+    ar: مقاطعة غرب باكشتا
+    be: Заходне-Бацкая акруга
+    bg: Западнобачки окръг
+    bn: ওয়েস্ট বাক্কা জেলা
+    ca: Districte de Bačka de l’Oest
+    cs: Západobačský okruh
+    da: West Bačka District
+    de: Okrug Zapadna Bačka
+    el: Γουέστ Μπάκα
+    es: Distrito de Bačka del Oeste
+    et: Lääne-Bačka
+    fi: Länsi-Bačka
+    fr: Bačka occidentale
+    gu: પશ્ચિમ બાક્કા જિલ્લો
+    hi: पश्चिम बाका जिला
+    hr: Zapadnobački upravni okrug
+    hu: Nyugat-bácskai körzet
+    id: Distrik Bačka Barat
+    it: Distretto della Bačka Occidentale
+    ja: 西バチュカ郡
+    ka: დასავლეთ-ბაჩის რაიონი
+    kn: ವೆಸ್ಟ್ ಬಾಕ್ಕಾ ಜಿಲ್ಲೆ
+    ko: 서바치카 구
+    mr: पश्चिम बाकाका जिल्हा
+    ms: West Backa District
+    nb: Vest Backa Distrikt
+    nl: West-Bačka
+    pl: Okręg zachodniobacki
+    pt: Distrito de Backa Oeste
+    ro: Districtul Bačka de Vest
+    ru: Западно-Бачский округ
+    si: බටහිර බක්කා දිස්ත්‍රික්කය
+    sr: Западнобачки управни округ
+    sv: Västra Bačka
+    ta: மேற்கு பாக்கா மாவட்டம்
+    te: పశ్చిమ బాకా జిల్లా
+    th: เขตเวส เบคค่า
+    tr: Batı Bačka İlçesi
+    uk: Західно-Бацький округ
+    ur: مغربی باچکا ضلع
+    vi: Quận Tây Backa
+    lv: Rietumbačkas apgabals
+    sr_Latn: Zapadnobački upravni okrug
+    lt: Vakarų Bačkos apskritis
+    zh: 西巴奇卡州
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134 \U0001111D\U00011107"
+    mn: Өрнө Бачка аймаг
+    bs: Zapadnobački upravni okrug
+    'no': Vest Backa Distrikt
+    fa: ناحیه باچکای غربی
+  comments:
+  type: district
+'06':
+  name: Južna Backa
+  code: '06'
+  unofficial_names: Južna Backa
+  geo:
+    latitude: 45.4890344
+    longitude: 19.6976187
+    min_latitude: 45.133575
+    min_longitude: 18.981784
+    max_latitude: 45.7750259
+    max_longitude: 20.313821
+  translations:
+    en: South Bačka
+    ar: مقاطعة جنوب باتشكا
+    be: Паўднёва-Бачская акруга
+    bg: Южнобачки окръг
+    bn: সাউথ বাক্কা জেলা
+    ca: Districte de Bačka del Sud
+    cs: Jihobačský okruh
+    da: South Bačka District
+    de: Okrug Južna Bačka
+    el: Νότια Μπάκα
+    es: Distrito de Bačka del Sur
+    et: Lõuna-Bačka
+    fi: Etelä-Bačka
+    fr: Bačka méridionale
+    gu: દક્ષિણ બાક્કા જિલ્લો
+    he: מחוז באצ׳קה הדרומי
+    hi: दक्षिण बाकाका जिला
+    hr: Južnobački upravni okrug
+    hu: Dél-bácskai körzet
+    id: Distrik Bačka Selatan
+    it: Distretto della Bačka Meridionale
+    ja: 南バチュカ郡
+    ka: სამხრეთ-ბაჩის რაიონი
+    kn: ಸೌತ್ ಬಾಕ್ಕಾ ಜಿಲ್ಲೆ
+    ko: 남바치카 구
+    mr: दक्षिण बाकाका जिल्हा
+    ms: South Backa District
+    nb: Sør Backa
+    nl: Zuid-Bačka
+    pl: Okręg południowobacki
+    pt: Distrito Sul de Backa
+    ro: Districtul Bačka de Sud
+    ru: Южно-Бачский округ
+    si: දකුණු බකා දිස්ත්‍රික්කය
+    sk: Juhobáčsky obvod
+    sr: Јужнобачки управни округ
+    sv: Södra Bačka
+    ta: தெற்கு பாக்க மாவட்டம்
+    te: దక్షిణ బక్కా జిల్లా
+    th: เซาร์ท แบคค่า ดิสทริค
+    tr: Güney Bačka İlçesi
+    uk: Південно-Бацький округ
+    ur: جنوبی باچکا ضلع
+    vi: Quận Nam Backa
+    lv: Dienvidbačkas apgabals
+    sr_Latn: Južnobački upravni okrug
+    lt: Pietų Bačkos apskritis
+    zh: 南巴奇卡州
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134 \U0001111D\U00011107"
+    mn: Өмнө Бачка аймаг
+    'no': Sør Backa
+    bs: Južnobački upravni okrug
+    fa: ناحیه باچکای جنوبی
+    hy: Հարավային Բաչկայի շրջան
+  comments:
+  type: district
+'07':
+  name: Srem
+  code: '07'
+  unofficial_names: Srem
+  geo:
+    latitude: 45.0029171
+    longitude: 19.8013773
+    min_latitude: 44.6294639
+    min_longitude: 18.9884937
+    max_latitude: 45.21000900000001
+    max_longitude: 20.361306
+  translations:
+    en: Srem
+    ar: مقاطعة سريم
+    be: Срэмская акруга
+    bg: Сремски окръг
+    bn: স্রেম জেলা
+    ca: Districte de Sirmia
+    cs: Sremský okruh
+    da: Srem District
+    de: Okrug Srem
+    el: Περιφέρεια Σρεμ
+    es: Distrito de Sirmia
+    et: Sremi ringkond
+    fi: Sremin kaupunginosa
+    fr: Syrmie
+    gu: સરેમ જિલ્લો
+    he: מחוז סרם
+    hi: सरेम जिला
+    hr: Srijemski upravni okrug
+    hu: Szerémségi körzet
+    id: Distrik Srem
+    it: Distretto della Sirmia
+    ja: スレム郡
+    ka: სრემის რაიონი
+    kn: ಎಸ್ರೆಮ್ ಜಿಲ್ಲೆ
+    ko: 스렘 구
+    mr: सरेम जिल्हा
+    ms: Srem District
+    nb: Srem Distrikt
+    nl: Srem
+    pl: Okręg sremski
+    pt: Distrito de Srem
+    ro: Districtul Srem
+    ru: Сремский округ
+    si: ස්ට්‍රෙම් දිස්ත්‍රික්කය
+    sr: Сремски управни округ
+    sv: Srem (distrikt)
+    ta: ஸ்ரெம் மாவட்டம்
+    te: స్రెమ్ జిల్లా
+    th: เขตซเร็ม
+    tr: Srem İlçesi
+    uk: Сремський округ
+    ur: سریم ضلع
+    vi: Syrmia
+    lv: Sremas apgabals
+    sr_Latn: Sremski upravni okrug
+    lt: Sremo apskritis
+    zh: 斯雷姆州
+    ccp: "\U00011125\U00011133\U00011122\U0001112C\U0001111F\U00011134"
+    'no': Srem Distrikt
+    bs: Sremski upravni okrug
+    fa: ناحیه سرم
+    hy: Սրեմի շրջան
+    mk: Сремски Округ
+    mn: Срем аймаг
+  comments:
+  type: district
+'08':
+  name: Macva
+  code: '08'
+  unofficial_names: Macva
+  geo:
+    latitude: 44.5925314
+    longitude: 19.5082246
+    min_latitude: 44.1124741
+    min_longitude: 19.10721
+    max_latitude: 44.94040200000001
+    max_longitude: 20.000317
+  translations:
+    en: Mačva
+    ar: مقاطعة ماتشفا
+    be: Мачванская акруга
+    bg: Мачвански окръг
+    bn: ম্যাকভা জেলা
+    ca: Districte de Mačva
+    da: Mačva District
+    de: Okrug Mačva
+    el: Περιφέρεια Μάτσβα
+    es: Distrito de Mačva
+    fi: Mačva
+    fr: Mačva
+    gu: માક્વા જિલ્લો
+    he: מחוז מאצ׳בה
+    hi: मकवा जिला
+    hr: Mačvanski upravni okrug
+    id: Distrik Mačva
+    it: Distretto di Mačva
+    ja: マチュヴァ郡
+    ka: მაჩვანის რაიონი
+    kn: ಮ್ಯಾಕ್ವಾ ಜಿಲ್ಲೆ
+    ko: 마치바 구
+    mr: मेवा जिल्हा
+    ms: Macva District
+    nb: Macva distrikt
+    nl: Mačva
+    pl: Okręg maczwański
+    pt: Distrito de Mačva
+    ro: Districtul Mačva
+    ru: Мачванский округ
+    si: මක්වා දිස්ත්‍රික්කය
+    sr: Мачвански управни округ
+    sv: Mačva
+    ta: மகிவா மாவட்டம்
+    te: మాక్వా జిల్లా
+    th: เขตแม็กเวย์
+    tr: Maçva İlçesi
+    ur: ماچوا ضلع
+    vi: Quận Macva
+    lv: Mačvas apgabals
+    sr_Latn: Mačvanski upravni okrug
+    lt: Mačvos apskritis
+    zh: 馬切萬州
+    ccp: "\U0001111F\U00011133\U00011120\U00011107\U00011134\U0001111E"
+    uk: Район Мачва
+    bs: Mačvanski upravni okrug
+    'no': Macva distrikt
+    az: Maçva dairəsi
+    cs: Mačvanský okruh
+    fa: ناحیه ماچوا
+    hy: Մաչվանսկի օկրուգ, շրջան Սերբիայում
+    mk: Мачвански Округ
+    mn: Мачва аймаг
+  comments:
+  type: district
+'09':
+  name: Kolubara
+  code: '09'
+  unofficial_names: Kolubara
+  geo:
+    latitude: 44.2674361
+    longitude: 19.8980841
+    min_latitude: 44.26653839999999
+    min_longitude: 19.8946778
+    max_latitude: 44.2683338
+    max_longitude: 19.9014904
+  translations:
+    en: Kolubara
+    ar: مقاطعة كولوبارا
+    be: Калубарская акруга
+    bg: Колубарски окръг
+    bn: কুলোবারা জেলা
+    ca: Districte de Kolubara
+    cs: Kolubarský okruh
+    da: Kolubara District
+    de: Okrug Kolubara
+    el: Περιφέρεια Κολούμπαρα
+    es: Distrito de Kolubara
+    fi: Kolubara
+    fr: Kolubara
+    gu: કોલુબરા જિલ્લો
+    he: מחוז קולובארה
+    hi: कोलुबरा जिला
+    hr: Kolubarski upravni okrug
+    id: Distrik Kolubara
+    it: Distretto di Kolubara
+    ja: コルバラ郡
+    ka: კოლუბარის რაიონი
+    kn: ಕೊಲುಬರಾ ಜಿಲ್ಲೆ
+    ko: 콜루바라 구
+    mr: कोल्लुबा जिल्हा
+    ms: Kolubara District
+    nb: Kolubare distrikt
+    nl: Kolubara
+    pl: Okręg kolubarski
+    pt: Distrito de Kolubara
+    ro: Districtul Kolubara
+    ru: Колубарский округ
+    si: කොලුබරා දිස්ත්‍රික්කය
+    sr: Колубарски управни округ
+    sv: Kolubare (distrikt)
+    ta: கொலுபரா மாவட்டம்
+    te: కొలూబరా జిల్లా
+    th: เขตโคลูบารา
+    tr: Kolubara İlçesi
+    ur: کولوبارا ضلع
+    vi: Quận Kolubara
+    lv: Kolubaras apgabals
+    sr_Latn: Kolubarski upravni okrug
+    lt: Kolubaros apskritis
+    zh: 科盧巴拉州
+    ccp: "\U00011107\U0001112E\U00011123\U0001112A\U0001111D\U00011122"
+    uk: Район Колубара
+    mn: Колубар аймаг
+    bs: Kolubarski upravni okrug
+    'no': Kolubare distrikt
+    az: Kolubar dairəsi
+    fa: ناحیه کولوبارا
+    mk: Колубарски Округ
+  comments:
+  type: district
+'10':
+  name: Podunavlje
+  code: '10'
+  unofficial_names: Podunavlje
+  geo:
+    latitude: 44.4729156
+    longitude: 20.9901426
+    min_latitude: 44.208296
+    min_longitude: 20.7518259
+    max_latitude: 44.7212919
+    max_longitude: 21.203335
+  translations:
+    en: Podunavlje
+    ar: مقاطعة بودونافلي
+    bg: Подунавски окръг
+    bn: পোডুনাভজে জেলা
+    ca: Districte de Podunavlje
+    da: Podunavlje District
+    de: Okrug Podunavlje
+    el: Παραδουνάβια Οκρούγκ
+    es: Distrito de Podunavlje
+    fi: Podunavljen kaupunginosa
+    fr: Podunavlje
+    gu: પડુનવલ્જે જિલ્લો
+    he: מחוז פודונאביה
+    hi: पोडूनाव्लिये जिला
+    hr: Podunavski upravni okrug
+    id: Distrik Podunavlje
+    it: Distretto di Podunavlje
+    ja: ポドゥナヴリェ郡
+    ka: პოდუნაის რაიონი
+    kn: ಪೊಡುನವ್ಲ್ಜೆ ಜಿಲ್ಲೆ
+    ko: 포두나블레 구
+    mn: Подунай аймаг
+    mr: पोदुनावल जिल्हा
+    ms: Podunavlje District
+    nb: Podunavlje distrikt
+    nl: Podunavlje
+    pl: Okręg podunajski
+    pt: Distrito de Podunavlje
+    ro: Districtul Podunavlje
+    ru: Подунайский округ
+    si: පොදුනව්ල්ජේ දිස්ත්‍රික්කය
+    sr: Подунавски управни округ
+    sv: Podunavlje (distrikt)
+    ta: பொதுநவ்லஜே மாவட்டம்
+    te: పోడున్వాల్యే జిల్లా
+    th: เทศบาลเมืองคูเคส
+    tr: Podunavlye İlçesi
+    ur: پودوناولیے ضلع
+    vi: Quận Podunavlje
+    lv: Podunavļes apgabals
+    sr_Latn: Podunavski upravni okrug
+    lt: Podunavlės apskritis
+    zh: 波杜那瓦州
+    ccp: "\U0001111B\U00011127\U00011113\U0001112A\U0001111A\U0001111B\U00011134\U0001110E\U0001112C"
+    uk: Подунайський Район
+    mk: Подунавски округ
+    'no': Podunavlje distrikt
+    bs: Podunavski upravni okrug
+    cs: Podunajský okruh
+    fa: ناحیه پودوناولیه
+  comments:
+  type: district
+'11':
+  name: Branicevo
+  code: '11'
+  unofficial_names: Branicevo
+  geo:
+    latitude: 44.705
+    longitude: 21.538333
+    min_latitude: 44.6723152
+    min_longitude: 21.5239334
+    max_latitude: 44.7191731
+    max_longitude: 21.5884781
+  translations:
+    en: Braničevo
+    ar: مقاطعة برانيتشيفو
+    be: Бранічаўская акруга
+    bg: Браничевски окръг
+    bn: ব্রানিকেভো জেলা
+    ca: Districte de Braničevo
+    cs: Braničevský okruh
+    da: Braničevo District
+    de: Okrug Braničevo
+    el: Μπρανιτσέβο
+    es: Distrito de Braničevo
+    eu: Braničevo barrutia
+    fi: Braničevo
+    fr: Braničevo
+    gu: બ્રેનિસોવો જિલ્લો
+    he: מחוז בראניצ׳בו
+    hi: ब्रनिसवो जिला
+    hr: Braničevski upravni okrug
+    id: Distrik Braničevo
+    it: Distretto di Braničevo
+    ja: ブラニチェヴォ郡
+    ka: ბრანიჩევის რაიონი
+    kn: ಬ್ರಾನಿಶೆವೊ ಜಿಲ್ಲೆ
+    ko: 브라니체보 구
+    mn: Браничев аймаг
+    mr: ब्रँनिएव्हो जिल्हा
+    ms: Branicevo District
+    nb: Branicevo distrikt
+    nl: Braničevo
+    pl: Okręg braniczewski
+    pt: Braničevo
+    ro: Districtul Braničevo
+    ru: Браничевский округ
+    si: බ්‍රනිසෙවෝ දිස්ත්‍රික්කය
+    sr: Браничевски управни округ
+    sv: Branicevo (distrikt)
+    ta: ப்ரனிசெவ்வ் மாவட்டம்
+    te: బ్రానిసేవో జిల్లా
+    th: เขตบรานิเชโว
+    tr: Braniçevo İlçesi
+    ur: برانیچیوو ضلع
+    vi: Quận Branicevo
+    lv: Braničevas apgabals
+    sr_Latn: Braničevski upravni okrug
+    lt: Braničevo apskritis
+    zh: 布蘭尼切夫州
+    ccp: "\U0001111D\U00011133\U00011122\U0001111A\U00011128\U00011125\U0001112C\U0001111E\U0001112E"
+    uk: Бранічевський район
+    'no': Branicevo distrikt
+    bs: Braničevski upravni okrug
+    fa: ناحیه برانیچوو
+    hy: Բռանիչևսկյան շրջան
+    mk: Браничевски Округ
+  comments:
+  type: district
+'12':
+  name: Šumadija
+  code: '12'
+  unofficial_names: Šumadija
+  geo:
+    latitude: 44.20506779999999
+    longitude: 20.7856565
+    min_latitude: 43.796296
+    min_longitude: 20.410712
+    max_latitude: 44.441987
+    max_longitude: 21.159204
+  translations:
+    en: Šumadija
+    ar: مقاطعة شوماديا
+    bg: Шумадийски окръг
+    bn: সোমাডিজা জেলা
+    ca: Districte de Šumadija
+    cs: Šumadijský okruh
+    da: Šumadija District
+    de: Okrug Šumadija
+    el: Σουμάντια
+    es: Distrito de Šumadija
+    fi: Šumadijan kaupunginosa
+    fr: Šumadija
+    gu: સુમદીજા જિલ્લો
+    he: מחוז שומאדיה
+    hi: सुमादिया जिला
+    hr: Šumadijski upravni okrug
+    id: Distrik Šumadija
+    it: Distretto di Šumadija
+    ja: シュマディヤ郡
+    ka: შუმადიის რაიონი
+    kn: ಸುಮದಾಜಾ ಜಿಲ್ಲೆ
+    ko: 슈마디야 구
+    mn: Шумад аймаг
+    mr: सुमादिजे जिल्हा
+    ms: Sumadija District
+    nb: Sumadija distrikt
+    nl: Šumadija
+    pl: Okręg szumadijski
+    pt: Distrito de Sumadija
+    ro: Districtul Šumadija
+    ru: Шумадийский округ
+    si: සුමඩිජා දිස්ත්‍රික්කය
+    sr: Шумадијски управни округ
+    sv: Sumadija (distrikt)
+    ta: சுமடிஜா மாவட்டம்
+    te: సుమాడిజా జిల్లా
+    th: เขตซูมาดิจา
+    tr: Šumadija İlçesi
+    ur: شومادیا ضلع
+    vi: Quận Sumadija
+    lv: Šumadijas apgabals
+    sr_Latn: Šumadijski upravni okrug
+    lt: Šumadijos apskritis
+    zh: 舒馬迪亞州
+    ccp: "\U00011125\U0001112A\U0001111F\U00011113\U00011128\U0001110E"
+    uk: Район Шумадія
+    be: Шумадыйская акруга
+    bs: Šumadijski upravni okrug
+    'no': Sumadija distrikt
+    az: Şumadiya dairəsi
+    fa: ناحیه شومادئیا
+    mk: Шумадиски Округ
+  comments:
+  type: district
+'13':
+  name: Pomoravlje
+  code: '13'
+  unofficial_names: Pomoravlje
+  geo:
+    latitude: 43.95913789999999
+    longitude: 21.271353
+    min_latitude: 43.7114669
+    min_longitude: 20.929701
+    max_latitude: 44.310024
+    max_longitude: 21.839969
+  translations:
+    en: Pomoravlje
+    ar: مقاطعة بومورافليه
+    bg: Поморавски окръг
+    bn: পোমোরাভজে জেলা
+    ca: Districte de Pomoravlje
+    da: Pomoravlje District
+    de: Okrug Pomoravlje
+    el: Πομοράβλτζε
+    es: Distrito de Pomoravlje
+    fi: Pomoravlje
+    fr: Pomoravlje
+    gu: પોમરવલ્જે જિલ્લો
+    he: מחוז פומוראביה
+    hi: पोमोराव्लिये जिला
+    hr: Pomoravski upravni okrug
+    id: Distrik Pomoravlje
+    it: Distretto di Pomoravlje
+    ja: ポモラヴリェ郡
+    ka: პომორავის რაიონი
+    kn: ಪೊಮೊರಾವ್ಲೆ ಜಿ
+    ko: 포모라블레 구
+    mr: पोमोरेल्ले जिल्हा
+    ms: Pomoravlje District
+    nb: Pomoravlje distrikt
+    nl: Pomoravlje
+    pl: Okręg pomorawski
+    pt: Pomoravlje
+    ro: Districtul Pomoravlje
+    ru: Поморавский округ
+    si: පොමොරව්ල්ජේ දිස්ත්‍රික්කය
+    sr: Поморавски управни округ
+    sv: Pomoravlje (distrikt)
+    ta: போமோரவ்லஜே மாவட்டம்
+    te: పోమోరావల్జె జిల్లా
+    th: เขตโปโมราฟลีเย
+    tr: Pomoravlje District
+    ur: پوموراولیے ضلع
+    vi: Quận Pomoravlje
+    lv: Pomoravļes apgabals
+    sr_Latn: Pomoravski upravni okrug
+    lt: Pomoravlės apskritis
+    zh: 波莫拉夫列州
+    ccp: "\U0001111B\U00011127\U0001111F\U0001112E\U00011122\U0001111B\U00011134\U0001110E\U0001112C"
+    uk: Поморавський Район
+    mn: Поморав аймаг
+    bs: Pomoravski upravni okrug
+    'no': Pomoravlje distrikt
+    az: Pomorav dairəsi
+    cs: Pomoravský okruh
+    fa: ناحیه پوموراولیه
+    mk: Поморавски Округ
+  comments:
+  type: district
+'14':
+  name: Bor
+  code: '14'
+  unofficial_names: Bor
+  geo:
+    latitude: 44.0698918
+    longitude: 22.0985086
+    min_latitude: 44.0400952
+    min_longitude: 21.9936849
+    max_latitude: 44.1460006
+    max_longitude: 22.1439743
+  translations:
+    en: Bor
+    ar: مقاطعة بور
+    bg: Борски окръг
+    bn: বোর জেলা
+    ca: Districte de Bor
+    cs: Borský okruh
+    da: Bor District
+    de: Okrug Bor
+    el: Περιφέρεια Μπορ
+    es: Distrito de Bor
+    eu: Bor barrutia
+    fi: Borin piirikunta
+    fr: Bor
+    gu: બોર જિલ્લો
+    he: מחוז בור
+    hi: बोर जिला
+    hr: Borski upravni okrug
+    hu: Bor körzet
+    id: Distrik Bor
+    it: Distretto di Bor
+    ja: ボル郡
+    ka: ბორის რაიონი
+    kn: ಬೊರ್ ಜಿಲ್ಲೆ
+    ko: 보르 구
+    mr: बोर जिल्हा
+    ms: Bor District
+    nb: Bor distrikt
+    nl: Bor
+    pl: Okręg borski
+    pt: Bor
+    ro: Districtul Bor
+    ru: Борский округ
+    si: බෝර් දිස්ත්‍රික්කය
+    sr: Борски управни округ
+    sv: Bor distriktet
+    ta: போர் மாவட்டம்
+    te: బోర్ జిల్లా
+    th: เขตบอร์
+    tr: Bor İlçesi
+    ur: بور ضلع
+    vi: Quận Bor
+    lv: Boras apgabals
+    ceb: Borski Okrug
+    sr_Latn: Borski upravni okrug
+    lt: Boro apskritis
+    zh: 博爾州
+    ccp: "\U0001111D\U0001112E\U00011122\U00011134"
+    uk: Район Бор
+    'no': Bor distrikt
+    bs: Borski upravni okrug
+    fa: ناحیه بور
+    mk: УО Бор
+    mn: Бор аймаг
+  comments:
+  type: district
+'15':
+  name: Zajecar
+  code: '15'
+  unofficial_names: Zajecar
+  geo:
+    latitude: 43.9015048
+    longitude: 22.2738011
+    min_latitude: 43.8638665
+    min_longitude: 22.1834563
+    max_latitude: 43.9716926
+    max_longitude: 22.3112583
+  translations:
+    en: Zaječar
+    ar: مقاطعة زاييتشار
+    bg: Зайчарски окръг
+    bn: জাজেকার জেলা
+    ca: Districte de Zaječar
+    da: Zaječar District
+    de: Okrug Zaječar
+    el: Περιφέρεια Ζάγιετσαρ
+    es: Distrito de Zaječar
+    fi: Zaječarin piirikunta
+    fr: Zaječar
+    gu: ઝાજેકર જિલ્લો
+    he: מחוז זאייצ׳אר
+    hi: ज़जेका जिला
+    hr: Zaječarski upravni okrug
+    id: Distrik Zaječar
+    it: Distretto di Zaječar
+    ja: ザイェチャル郡
+    ka: ზაეჩარის რაიონი
+    kn: ಝಜೆಕರ್ ಜಿಲ್ಲೆ
+    ko: 자예차르 구
+    mr: झजेकर जिल्हा
+    ms: Zajecar District
+    nb: Zajecar distrikt
+    nl: Zaječar
+    pl: Okręg zajeczarski
+    pt: Distrito de Zajecar
+    ro: Zaječar
+    ru: Заечарский округ
+    si: සජෙකාර් දිස්ත්‍රික්කය
+    sr: Зајечарски управни округ
+    sv: Zajecar (distrikt)
+    ta: சாஜகார் மாவட்டம்
+    te: జాజెకర్ జిల్లా
+    th: ซาเจคาร์
+    tr: Zayeçar İlçesi
+    ur: زایئچار ضلع
+    vi: Quận Zajecar
+    lv: Zaječaras apgabals
+    sr_Latn: Zaječarski upravni okrug
+    lt: Zaječaro apskritis
+    zh: 扎耶查爾州
+    ccp: "\U0001110E\U0001110E\U0001112C\U00011107\U00011122\U00011134"
+    uk: Заєчарський район
+    mn: Заечар аймаг
+    'no': Zajecar distrikt
+    be: Заечарская акруга
+    bs: Zaječarski upravni okrug
+    cs: Zaječarský okruh
+    fa: ناحیه زایچار
+    hu: Zaječar körzet
+    hy: Զաեչարի օկրուգ
+    mk: Заечарски Округ
+  comments:
+  type: district
+'16':
+  name: Zlatibor
+  code: '16'
+  unofficial_names: Zlatibor
+  geo:
+    latitude: 43.6554553
+    longitude: 19.6633226
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Zlatibor
+    ar: مقاطعة زلاتيبور
+    bg: Златиборски окръг
+    bn: জাতিবোর জেলা
+    ca: Districte de Zlatibor
+    da: Zlatibor District
+    de: Okrug Zlatibor
+    el: Οκρούγκ Ζλάτιμπορ
+    es: Distrito de Zlatibor
+    fi: Zlatibor
+    fr: Zlatibor
+    gu: ઝલાટિબોર જિલ્લો
+    he: מחוז זלאטיבור
+    hi: ज़लातिबोर जिला
+    hr: Zlatiborski upravni okrug
+    hu: Zlatibor körzet
+    id: Distrik Zlatibor
+    it: Distretto di Zlatibor
+    ja: ズラティボル郡
+    ka: ზლატიბორის რაიონი
+    kn: ಝ್ಲಾಟಿಬರ್ ಜಿಲ್ಲೆ
+    ko: 즐라티보르 구
+    mn: Златибор аймаг
+    mr: झ्लाटिबोर जिल्हा
+    ms: Zlatibor District
+    nb: Zlatibor distrikt
+    nl: Zlatibor
+    pl: Okręg zlatiborski
+    pt: Distrito de Zlatibor
+    ro: Districtul Zlatibor
+    ru: Златиборский округ
+    si: ස්ලටිබෝර් දිස්ත්‍රික්කය
+    sk: Zlatiborský obvod
+    sr: Златиборски управни округ
+    sv: Zlatibor (distrikt)
+    ta: ஸ்ளட்டிபோர் மாவட்டம்
+    te: జ్లాటిబోర్ జిల్లా
+    th: เขตซเลติบอร์
+    tr: Zlatibor District
+    ur: زلاتیبور ضلع
+    vi: Quận Zlatibor
+    lv: Zlatiboras apgabals
+    sr_Latn: Zlatiborski upravni okrug
+    lt: Zlatiboro apskritis
+    zh: 茲拉提波爾州
+    ccp: "\U0001110E\U00011133\U00011123\U00011111\U00011128\U0001111D\U0001112E\U00011122\U00011134"
+    uk: Район Златибор
+    be: Злацібарская акруга
+    bs: Zlatiborski upravni okrug
+    'no': Zlatibor distrikt
+    az: Zlatiborski dairəsi
+    cs: Zlatiborský okruh
+    fa: ناحیه زلاتیبور
+    mk: Златиборски Округ
+  comments:
+  type: district
+'17':
+  name: Moravica
+  code: '17'
+  unofficial_names: Moravica
+  geo:
+    latitude: 43.5393662
+    longitude: 21.7117215
+    min_latitude: 43.5364745
+    min_longitude: 21.7100169
+    max_latitude: 43.542258
+    max_longitude: 21.7134261
+  translations:
+    en: Moravica
+    ar: مقاطعة مورافيكا
+    be: Маравіцкая акруга
+    bg: Моравишки окръг
+    bn: মোরাভিকাজেলা
+    ca: Districte de Moravica
+    cs: Moravický okruh
+    da: Moravica District
+    de: Okrug Moravica
+    el: Περιφέρεια Μοράβιτσα
+    es: Distrito de Moravica
+    fi: Moravica
+    fr: Moravica
+    gu: મોરાવિકા જિલ્લો
+    he: מחוז מוראביצה
+    hi: मोराविका जिला
+    hr: Moravički upravni okrug
+    id: Distrik Moravica
+    it: Distretto di Moravica
+    ja: モラヴィツァ郡
+    ka: მორავიჩის რაიონი
+    kn: ಮೊರಾವಿಕಾ ಜಿಲ್ಲೆ
+    ko: 모라비차 구
+    mr: मोराविका जिल्हा
+    ms: Moravica District
+    nb: Moravica distrikt
+    nl: Moravica
+    pl: Okręg morawicki
+    pt: Distrito de Moravica
+    ro: Districtul Moravica
+    ru: Моравичский округ
+    si: මොරවිකා දිස්ත්‍රික්කය
+    sr: Моравички управни округ
+    sv: Moravica (distrikt)
+    ta: மொறவிக்கா மாவட்டம்
+    te: మోరావికా జిల్లా
+    th: เขตโมราวิค่า
+    tr: Moravica District
+    ur: موراویتسا ضلع
+    vi: Quận Moravica
+    lv: Moravicas apgabals
+    sr_Latn: Moravički upravni okrug
+    lt: Moravicos apskritis
+    zh: 莫拉瓦州
+    ccp: "\U0001111F\U0001112E\U00011122\U0001111E\U00011128\U00011107"
+    uk: Моравичський район
+    mn: Моравич аймаг
+    bs: Moravički upravni okrug
+    'no': Moravica distrikt
+    az: Moraviça dairəsi
+    fa: ناحیه موراویتسا
+    hy: Մորավիցայի շրջան
+    mk: Моравички Округ
+  comments:
+  type: district
+'18':
+  name: Raška
+  code: '18'
+  unofficial_names: Raška
+  geo:
+    latitude: 43.291944
+    longitude: 20.615556
+    min_latitude: 43.2702688
+    min_longitude: 20.5972195
+    max_latitude: 43.3038197
+    max_longitude: 20.6399633
+  translations:
+    en: Raška
+    ar: مقاطعة راشكا
+    be: Рашская акруга
+    bg: Рашки окръг
+    bn: রাস্কা জেলা
+    ca: Districte de Raška
+    da: Raška District
+    de: Okrug Raška
+    el: Περιφέρεια Ράσκα
+    es: Distrito de Raška
+    fi: Raškan kaupunginosa
+    fr: Raška
+    gu: રસ્કા જિલ્લો
+    he: מחוז ראשקה
+    hi: रस्का जिला
+    hr: Raški upravni okrug
+    id: Distrik Raška
+    it: distretto di Raška
+    ja: ラシュカ郡
+    ka: რაშის რაიონი
+    kn: ರಸ್ಕ್ ಜಿಲ್ಲೆ
+    ko: 라슈카 구
+    mn: Рашка аймаг
+    mr: रस्का जिल्हा
+    ms: Raska District
+    nb: Raska distrikt
+    nl: Raška
+    pl: Okręg raski
+    pt: Ráscia
+    ro: Districtul Raška
+    ru: Рашский округ
+    si: රස්කා දිස්ත්‍රික්කය
+    sr: Рашки управни округ
+    sv: Raska (distrikt)
+    ta: ராஸ்கா மாவட்டம்
+    te: రస్కా జిల్లా
+    th: เขตราสกา
+    tr: Raska District
+    ur: راشکا ضلع
+    vi: Quận Raska
+    lv: Raškas apgabals
+    sr_Latn: Raški upravni okrug
+    lt: Raškos apskritis
+    zh: 拉什卡州
+    ccp: "\U00011122\U0001110C\U00011134\U00011107"
+    uk: Район Рашка
+    bs: Raški upravni okrug
+    'no': Raska distrikt
+    az: Raşka dairəsi
+    cs: Rašský okruh
+    fa: ناحیه راشکا
+    hu: Raskai körzet
+    hy: Ռաշկայի շրջան
+    mk: Рашки Округ
+  comments:
+  type: district
+'19':
+  name: Rasina
+  code: '19'
+  unofficial_names: Rasina
+  geo:
+    latitude: 43.5789182
+    longitude: 21.3484472
+    min_latitude: 43.5644288
+    min_longitude: 21.3434582
+    max_latitude: 43.5934076
+    max_longitude: 21.3534361
+  translations:
+    en: Rasina
+    ar: مقاطعة راسينا
+    be: Расінская акруга
+    bg: Расински окръг
+    bn: রাসিনা জেলা
+    ca: Districte de Rasina
+    da: Rasina District
+    de: Okrug Rasina
+    el: Περιφέρεια Ράσινα
+    es: Distrito de Rasina
+    fi: Rasina
+    fr: Rasina
+    gu: રસિના જિલ્લો
+    he: מחוז ראסינה
+    hi: रसीना जिला
+    hr: Rasinski upravni okrug
+    id: Distrik Rasina
+    it: Distretto di Rasina
+    ja: ラシナ郡
+    ka: რასინის რაიონი
+    kn: ರೇಸಿನಾ ಜಿಲ್ಲೆ
+    ko: 라시나 구
+    mr: रसिना जिल्हा
+    ms: Rasina District
+    nb: Rasina distrikt
+    nl: Rasina
+    pl: Okręg rasiński
+    pt: Distrito de Rasina
+    ro: Districtul Rasina
+    ru: Расинский округ
+    si: රසිනා දිස්ත්‍රික්කය
+    sr: Расински управни округ
+    sv: Rasina (distrikt)
+    ta: ரசினா மாவட்டம்
+    te: రసినా జిల్లా
+    th: เขตราสินา
+    tr: Rasina District
+    ur: راسینا ضلع
+    vi: Quận Rasina
+    lv: Rasinas apgabals
+    sr_Latn: Rasinski upravni okrug
+    lt: Rasinos apskritis
+    zh: 拉辛那州
+    ccp: "\U00011122\U00011125\U00011128\U0001111A"
+    uk: Район Расина
+    mn: Расин аймаг
+    bs: Rasinski okrug
+    'no': Rasina distrikt
+    az: Rasina dairəsi
+    cs: Rasinský okruh
+    fa: ناحیه راسینا
+    hu: Rasina körzet
+    mk: Расински Округ
+  comments:
+  type: district
+'20':
+  name: Nišava
+  code: '20'
+  unofficial_names: Nišava
+  geo:
+    latitude: 43.3738902
+    longitude: 21.9322331
+    min_latitude: 43.075654
+    min_longitude: 21.4754701
+    max_latitude: 43.82438
+    max_longitude: 22.3710859
+  translations:
+    en: Nišava
+    ar: مقاطعة نيشافا
+    be: Нішаўская акруга
+    bg: Нишавски окръг
+    bn: নিসাবা জেলা
+    ca: Districte de Nišava
+    cs: Nišavský okruh
+    da: Nišava District
+    de: Nišavski okrug
+    el: Νίσαβα
+    es: Distrito de Nišava
+    fi: Nišin piirikunta
+    fr: Nišava
+    gu: નિસાવા જિલ્લો
+    he: מחוז נישאבה
+    hi: निसावा जिला
+    hr: Nišavski upravni okrug
+    id: Distrik Nišava
+    it: Distretto di Nišava
+    ja: ニシャヴァ郡
+    ka: ნიშავის რაიონი
+    kn: ನಿಸವ ಜಿಲ್ಲೆ
+    ko: 니샤바 구
+    mn: Нишав аймаг
+    mr: निसाव जिल्हा
+    ms: Nisava District
+    nb: Nisava Distrikt
+    nl: Nišava
+    pl: Okręg niszawski
+    pt: Distrito de Nisava
+    ro: Districtul Nišava
+    ru: Нишавский округ
+    si: නිසාවා දිස්ත්‍රික්කය
+    sr: Нишавски управни округ
+    sv: Nisava (distrikt)
+    ta: நிஷாவா மாவட்டம்
+    te: నిసావా జిల్లా
+    th: เขตนิชาวา
+    tr: Nišava İlçesi
+    ur: نیشاوا ضلع
+    vi: Quận Nisava
+    lv: Nišavas apgabals
+    ceb: Nišavski Okrug
+    sr_Latn: Nišavski upravni okrug
+    lt: Nišavos apskritis
+    zh: 尼沙瓦州
+    ccp: "\U0001111A\U00011128\U00011125\U0001111E"
+    uk: Нишавський район
+    'no': Nisava Distrikt
+    bs: Nišavski upravni okrug
+    fa: ناحیه نیشاوا
+    mk: Нишавски Округ
+  comments:
+  type: district
+'21':
+  name: Toplica
+  code: '21'
+  unofficial_names: Toplica
+  geo:
+    latitude: 43.1906592
+    longitude: 21.3407762
+    min_latitude: 42.868147
+    min_longitude: 20.9121709
+    max_latitude: 43.4087109
+    max_longitude: 21.836189
+  translations:
+    en: Toplica
+    ar: مقاطعة توبليكا
+    bg: Топлишки окръг
+    bn: টপ্লিকা জেলা
+    ca: Districte de Toplica
+    da: Toplica District
+    de: Okrug Toplica
+    el: Περιφέρεια Τόπλιτσα
+    es: Distrito de Toplica
+    fi: Toplican kaupunginosa
+    fr: Toplica
+    gu: ટોપલીકા જિલ્લો
+    he: מחוז טופליצה
+    hi: टॉपलिका जिला
+    hr: Toplički upravni okrug
+    id: Distrik Toplica
+    it: Distretto di Toplica
+    ja: トプリツァ郡
+    ka: ტოპლიჩის რაიონი
+    kn: ಟಾಪ್ಲಿಕಾ ಜಿಲ್ಲೆ
+    ko: 토플리차 구
+    mr: टोपलीका जिल्हा
+    ms: Toplica District
+    nb: Toplica distrikt
+    nl: Toplica
+    pl: Okręg toplicki
+    pt: Distrito de Toplica
+    ro: Districtul Toplica
+    ru: Топличский округ
+    si: ටොප්ලිකා දිස්ත්‍රික්කය
+    sr: Топлички управни округ
+    sv: Toplica distriktet
+    ta: டொப்ளிகா மாவட்டம்
+    te: టోప్లికా జిల్లా
+    th: เขตโทปิคา
+    tr: Toplica Dstrict
+    ur: توپلیتسا ضلع
+    vi: Quận Toplica
+    lv: Toplicas apgabals
+    sr_Latn: Toplički upravni okrug
+    lt: Toplicos apskritis
+    zh: 托普利卡州
+    sq: Rrethi Toplica
+    ccp: "\U00011111\U00011127\U0001111B\U00011134\U00011123\U00011128\U00011107"
+    uk: Район Топліка
+    mn: Топлич аймаг
+    'no': Toplica distrikt
+    bs: Toplički upravni okrug
+    cs: Toplický okruh
+    fa: ناحیه توپلیکا
+    mk: Топлички Округ
+  comments:
+  type: district
+'22':
+  name: Pirot
+  code: '22'
+  unofficial_names: Pirot
+  geo:
+    latitude: 43.1557012
+    longitude: 22.5856812
+    min_latitude: 43.1039909
+    min_longitude: 22.5426578
+    max_latitude: 43.2034866
+    max_longitude: 22.6113225
+  translations:
+    en: Pirot
+    ar: مقاطعة بيروت
+    bg: Пиротски окръг
+    bn: পিরট জেলা
+    ca: Districte de Pirot
+    da: Pirot District
+    de: Okrug Pirot
+    el: Οκρούγκ Πίροτ
+    es: Distrito de Pirot
+    fi: Pirot
+    fr: Pirot
+    gu: પિરૉટ જિલ્લો
+    he: מחוז פירוט
+    hi: पिरोट जिला
+    hr: Pirotski upravni okrug
+    id: Distrik Pirot
+    it: Distretto di Pirot
+    ja: ピロト郡
+    ka: პიროტის რაიონი
+    kn: ಪೈರೋಟ್ ಜಿಲ್ಲೆ
+    ko: 피로트 구
+    mr: पिरोट जिल्हा
+    ms: Pirot District
+    nb: Pirot distrikt
+    nl: Pirot
+    pl: Okręg pirocki
+    pt: Distrito de Pirot
+    ro: Districtul Pirot
+    ru: Пиротский округ
+    si: පයිරෝට් දිස්ත්‍රික්කය
+    sr: Пиротски управни округ
+    sv: Pirot (distrikt)
+    ta: பிராட் மாவட்டம்
+    te: పైరోట్ జిల్లా
+    th: เขตไพรอท
+    tr: Pirot İlçesi
+    ur: پیروت ضلع
+    vi: Quận Pirot
+    lv: Pirotas apgabals
+    sr_Latn: Pirotski upravni okrug
+    lt: Piroto apskritis
+    zh: 皮羅特州
+    ccp: "\U0001111B\U0001112D\U00011122\U00011127\U00011116\U00011134"
+    uk: Район Пірот
+    mn: Пирот аймаг
+    'no': Pirot distrikt
+    bs: Pirotski upravni okrug
+    cs: Pirotský okruh
+    fa: ناحیه پیروت
+    mk: Пиротски Округ
+  comments:
+  type: district
+'23':
+  name: Jablanica
+  code: '23'
+  unofficial_names: Jablanica
+  geo:
+    latitude: 43.443889
+    longitude: 21.271389
+    min_latitude: 43.3905789
+    min_longitude: 21.2557983
+    max_latitude: 43.47304099999999
+    max_longitude: 21.3261795
+  translations:
+    en: Jablanica
+    ar: محافظة يابلانيكا
+    be: Ябланіцкая акруга
+    bg: Ябланишки окръг
+    bn: জাব্লানিকা জেলা
+    ca: Districte de Jablanica
+    cs: Jablanický okruh
+    da: Jablanica District
+    de: Okrug Jablanica
+    el: Περιφέρεια Γιαμπλάνιτσα
+    es: Distrito de Jablanica
+    fa: رده:ناحیه یابلانیتسا
+    fi: Jablanican piirikunta
+    fr: Jablanica
+    gu: જબલાનિકા જિલ્લો
+    he: מחוז יאבלניצה
+    hi: जब्लानिका जिला
+    hr: Jablanički upravni okrug
+    id: Distrik Jablanica
+    it: Distretto di Jablanica
+    ja: ヤブラニツァ郡
+    ka: იაბლანიჩის რაიონი
+    kn: ಜಬ್ಲಾನಿಕ್ ಜಿಲ್ಲೆ
+    ko: 야블라니차 구
+    mr: जलनालका जिल्हा
+    ms: Jablanica District
+    nb: Jablanica distrikt
+    nl: Jablanica
+    pl: Okręg jablanicki
+    pt: Distrito de Jablanica
+    ro: Districtul Jablanica
+    ru: Ябланичский округ
+    si: ජබ්ලනිකා දිස්ත්‍රික්කය
+    sr: Јабланички управни округ
+    sv: Jablanica (distrikt)
+    ta: ஜாப்லனிக்கா மாவட்டம்
+    te: జబ్లానికా జిల్లా
+    th: จาบลานิคา
+    tr: Jablanica İlçesi
+    ur: جبلانیکاضلع
+    vi: Quận Jablanica
+    lv: Jablanikas distrikts
+    sr_Latn: Jablanički upravni okrug
+    lt: Jablanikos apskritis
+    zh: 雅布蘭尼卡州
+    sq: Rrethi Jablanica
+    ccp: "\U0001110E\U0001111A\U00011134\U00011123\U0001111A\U00011128\U00011107"
+    uk: Район Ябланіка
+    mn: Ябланич аймаг
+    mk: Јабланички округ
+    'no': Jablanica distrikt
+    bs: Jablanički upravni okrug
+  comments:
+  type: district
+'24':
+  name: Pcinja
+  code: '24'
+  unofficial_names: Pcinja
+  geo:
+    latitude: 42.5836362
+    longitude: 22.1430215
+    min_latitude: 42.2448299
+    min_longitude: 21.526959
+    max_latitude: 42.8436209
+    max_longitude: 22.5690361
+  translations:
+    en: Pčinja
+    ar: مقاطعة باتشبنيا
+    bg: Пчински окръг
+    bn: পিচিঞ্জা জেলা
+    ca: Districte de Pčinja
+    da: Pčinja District
+    de: Okrug Pčinja
+    el: Περιφέρεια Πτσίνια
+    es: Distrito de Pčinja
+    fi: Pčinja
+    fr: Pčinja
+    gu: પીસીંજા જિલ્લો
+    he: מחוז פצ׳יניה
+    hi: प्सेंजे जिला
+    hr: Pčinjski upravni okrug
+    id: Distrik Pčinja
+    it: Distretto di Pčinja
+    ja: プチニャ郡
+    ka: პჩინის რაიონი
+    kn: ಪಿಚಿನ್ಜಾ ಜಿಲ್ಲೆ
+    ko: 프치나 구
+    mr: पिसीना जिल्हा
+    ms: Pcinja District
+    nb: Pcinja distrikt
+    nl: Pčinja
+    pl: Okręg pczyński
+    pt: Distrito de Pcinja
+    ro: Districtul Pčinja
+    ru: Пчиньский округ
+    si: පිසින්ජා දිස්ත්‍රික්කය
+    sr: Пчињски управни округ
+    sv: Pcinja (distrikt)
+    ta: பிசிஞ்சா மாவட்டம்
+    te: పిసింజా జిల్లా
+    th: เขตพซินจา
+    tr: Pčinja İlçesi
+    ur: پچینیا ضلع
+    vi: Quận Pcinja
+    lv: Pčiņas apgabals
+    sr_Latn: Pčinjski upravni okrug
+    lt: Pčinjos apskritis
+    zh: 普奇尼亞州
+    sq: Qarku i Pçinjës
+    ccp: "\U00011125\U00011128\U0001111A\U00011134\U0001110E"
+    uk: Район Пчінья
+    mk: Пчињски округ
+    'no': Pcinja distrikt
+    bs: Pčinjski upravni okrug
+    cs: Pčinja
+    fa: ناحیه پچینیا
+  comments:
+  type: district
+'25':
+  name: Kosovo
+  code: '25'
+  unofficial_names: Kosovo
+  geo:
+    latitude: 44.016521
+    longitude: 21.005859
+    min_latitude: 42.231503
+    min_longitude: 18.8385221
+    max_latitude: 46.190032
+    max_longitude: 23.0063095
+  translations:
+    en: Kosovo
+    ca: Districte de Kosovo
+    de: Okrug Kosovo
+    el: Οκρούγκ Κοσσυφοπεδίου
+    fr: Kosovo
+    he: מחוז קוסובו
+    ja: コソボ郡
+    ka: კოსოვოს რაიონი
+    ko: 코소보 구
+    nl: Kosovski upravni okrug
+    pl: Okręg Kosowo
+    pt: Distrito de Kosovo
+    ru: Косовский округ
+    sr: Косовски управни округ
+    tr: Kosova İlçesi
+    ur: کوسووہ ضلع
+    sr_Latn: Kosovski upravni okrug
+    zh: 科索沃州
+    ccp: "\U00011107\U00011127\U00011125\U0001112E\U0001111E\U0001112E"
+    es: distrito de Kosovo
+    mn: Косов аймаг
+    ar: مديرية كوسوفو
+    az: Kosovo dairəsi
+    fa: ناحیه کوزوو
+    id: Distrik Kosovo
+  comments:
+  type: district
+'26':
+  name: Pec´
+  code: '26'
+  unofficial_names: Pec´
+  geo:
+    latitude: 43.5725
+    longitude: 19.8797222
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Peć
+    ca: Districte de Peć
+    ja: ペチ郡
+    ka: პეჩის რაიონი
+    ko: 페치 구
+    nl: Pećki upravni okrug
+    pl: Okręg Peć
+    ru: Печский округ
+    sr: Пећки управни округ
+    uk: Пецький округ
+    ur: پیچ ضلع
+    sr_Latn: Pećki upravni okrug
+    ccp: "\U0001111B\U0001112C\U00011107\U00011134"
+    fr: Peć
+    mn: Печ аймаг
+    be: Печская акруга
+    de: Okrug Peć
+    fa: ناحیه پج
+  comments:
+  type: district
+'27':
+  name: Prizren
+  code: '27'
+  unofficial_names: Prizren
+  geo:
+    latitude: 43.6930556
+    longitude: 19.28
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Prizren
+    ca: Districte de Prizren (Sèrbia)
+    de: Okrug Prizren
+    el: Οκρούγκ Πρίζρεν
+    fr: Prizren
+    ja: プリズレン郡
+    ka: პრიზრენის რაიონი
+    ko: 프리즈렌 구
+    nl: Prizren
+    pl: Okręg Prizren
+    ru: Призренский округ
+    sr: Призренски управни округ
+    uk: Прізренський округ
+    ur: پریزرین ضلع
+    sr_Latn: Prizrenski upravni okrug
+    ccp: "\U0001111B\U00011133\U00011122\U0001112D\U0001110C\U00011134\U00011122\U0001112C\U0001111A\U00011134"
+    mn: Призрен аймаг
+    fa: ناحیه پرازیرن صربستان
+  comments:
+  type: district
+'28':
+  name: Kosovska Mitrovica
+  code: '28'
+  unofficial_names: Kosovska Mitrovica
+  geo:
+    latitude: 44.9980615
+    longitude: 19.8087171
+    min_latitude: 44.9979345
+    min_longitude: 19.8018674
+    max_latitude: 44.998271
+    max_longitude: 19.815715
+  translations:
+    en: Kosovska Mitrovica
+    ca: Districte de Kosovska Mitrovica
+    de: Okrug Kosovska Mitrovica
+    ja: コソヴスカ・ミトロヴィツァ郡
+    ko: 코소브스카미트로비차 구
+    nl: Kosovskomitrovački upravni okrug
+    sr: Косовскомитровачки управни округ
+    ur: کوسووسکا میتروویتسا ضلع
+    sr_Latn: Kosovskomitrovački upravni okrug
+    zh: 科索夫斯卡米特罗维察州
+    ccp: "\U00011107\U00011127\U00011125\U0001112E\U0001111B\U00011134\U0001110C\U00011133\U00011107
+      \U0001111F\U00011128\U00011111\U00011133\U00011122\U0001112E\U0001111E\U00011128\U00011107"
+    fr: Kosovska Mitrovica
+    mn: Косов-Митровиц аймаг
+    fa: ناحیه کوسووسکا میترویتسا صربستان
+  comments:
+  type: district
+'29':
+  name: Kosovo-Pomoravlje
+  code: '29'
+  unofficial_names: Kosovo-Pomoravlje
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Kosovo-Pomoravlje
+    ca: Districte de Kosovo-Pomoravlje
+    de: Okrug Kosovo-Pomoravlje
+    fr: District de Kosovo-Pomoravlje
+    he: מחוז קוסובו-פומוראבייה
+    ja: コソボ・ポモラヴリェ郡
+    ka: კოსოვო-პომორავის რაიონი
+    ko: 코소보포모라블레 구
+    nl: Kosovskopomoravski upravni okrug
+    pl: Okręg Kosovo-Pomoravlje
+    ru: Косовско-Поморавский округ
+    sr: Косовскопоморавски управни округ
+    ur: کوسووہ پوموراولیے ضلع
+    sr_Latn: Kosovskopomoravski upravni okrug
+    zh: 科索沃-波莫拉夫列州
+    sq: Anamorava
+    ccp: "\U00011107\U00011127\U00011125\U0001112E\U0001111E\U0001112E \U0001111B\U00011127\U0001111F\U0001112E\U00011122\U0001111B\U00011134\U0001110E\U0001112C"
+    mn: Косов-Поморав аймаг
+    fa: ناحیه کوزوو-پوموراولیه
+    id: Distrik Kosovo-Pomoravlje
+  comments:
+  type: district
+KM:
+  name: Косово и Метохија
+  code: KM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    be: Косава і Мятохія
+    ca: Província autònoma de Kosovo i Metòkhia
+    cs: Autonomní oblast Kosovo a Metohije
+    de: Autonome Provinz Kosovo und Metochien
+    el: Αυτόνομη Επαρχία του Κόσοβο και Μετόχια
+    en: Kosovo-Metohija
+    es: Provincia Autónoma de Kosovo y Metohija
+    fa: استان خودمختار کوزوو و متوهیا
+    fr: Kossovo-et-Métochie
+    hu: Koszovó és Metóhia Autonóm Tartomány
+    it: Provincia autonoma del Kosovo
+    ja: コソボ・メトヒヤ自治州
+    ko: 코소보 메토히야 자치주
+    nl: Autonome Provincie Kosovo en Metohija
+    pt: Província Autônoma de Kosovo e Metohija
+    ro: Provincia Autonomă Kosovo și Metohia
+    ru: Косово и Метохия
+    sr: Косово и Метохија
+    tr: Kosova ve Metohiya Özerk Bölgesi
+    uk: Автономний край Косово і Метохія
+    ar: مقاطعة كوسوفو وميتوهيا المتمتعة بالحكم الذاتي
+    sr_Latn: Kosovo i Metohija
+    zh: 科索沃和梅托希亚自治省
+    sq: Krahina Autonome e Kosovës dhe Metohisë
+    ccp: "\U00011107\U00011127\U00011125\U0001112E\U0001111E\U0001112C-\U0001111F\U0001112C\U00011111\U0001112E\U00011126\U00011128\U0001110E"
+    id: Kosovo dan Metohija
+    az: Kosova ve Metohiya muxtar vilayəti
+    mn: Косов-Метох
+    bs: Autonomna Pokrajina Kosovo i Metohija
+    da: Autonome Provins af Kosovo og Metohija
+    et: Kosovo ja Metohija autonoomne provints
+    eu: Kosovo eta Metohiako Probintzia Autonomoa
+    hr: Kosovo i Metohija
+    hy: Կոսովո և Մեթոխիա
+    ka: კოსოვოსა და მეტოხიის ავტონომიური მხარე
+    mk: Косово и Метохија
+    sv: Autonoma provinsen Kosovo och Metohija
+    uz: Kosovo va metoxiya
+  comments:
+  type: autonomous_province
+VO:
+  name: Војводина
+  code: VO
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Vojvodina
+    ar: فويفودينا
+    az: Voevodina
+    be: аўтаномны край Ваяводзіна
+    bg: Войводина
+    ca: Voivodina
+    cs: Vojvodina
+    da: Vojvodina
+    de: Vojvodina
+    el: Βοϊβοντίνα
+    en: Vojvodina
+    es: Voivodina
+    et: Vojvodina
+    eu: Voivodina
+    fa: استان وجوودینا
+    fi: Vojvodina
+    fr: Voïvodine
+    gl: Voivodina
+    he: וויבודינה
+    hr: Vojvodina
+    hu: Vajdaság Autonóm Tartomány
+    hy: Վոյեվոդինա
+    id: Vojvodina
+    it: Voivodina
+    ja: ヴォイヴォディナ
+    ka: ვოევოდინა
+    ko: 보이보디나
+    lt: Voivodina
+    lv: Vojevodina
+    mn: Воеводин
+    mr: व्हॉयव्होडिना
+    ms: Vojvodina
+    nb: Vojvodina
+    nl: Vojvodina
+    pl: Wojwodina
+    pt: Voivodina
+    ro: Voivodina
+    ru: Воеводина
+    sk: Vojvodina
+    sl: Vojvodina
+    sr: Војводина
+    sv: Vojvodina
+    th: วอยวอดีนา
+    tr: Voyvodina
+    uk: Воєводина
+    ur: وئوودینا
+    vi: Vojvodina
+    cy: Vojvodina
+    ceb: Autonomna Pokrajina Vojvodina
+    sr_Latn: Vojvodina
+    ta: வொய்வொதீனா
+    zh: 伏伊伏丁那
+    jv: Vojvodina
+    sq: Vojvodina
+    ccp: "\U0001111E\U0001112E\U0001110C\U00011134\U0001111E\U0001112E\U00011113\U00011128\U0001111A"
+    ga: An Vóvaidín
+    yo: Vojvodina
+    uz: Voyevodina
+    bs: Vojvodina
+    mk: Војводина
+    'no': Vojvodina
+    yo_BJ: Vojvodina
+    ky: Воеводина
+    ps: ویوودینا
+    yue: 禾獲甸拿
+    yue_Hans: 禾获甸拿
+  comments:
+  type: autonomous_province

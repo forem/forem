@@ -1,0 +1,54 @@
+---
+SD:
+  alpha2: SD
+  alpha3: SDN
+  continent: Africa
+  country_code: '249'
+  currency_code: SDG
+  distance_unit: KM
+  gec: SU
+  geo:
+    latitude: 12.862807
+    longitude: 30.217636
+    max_latitude: 22.224918
+    max_longitude: 38.69379989999999
+    min_latitude: 9.3472209
+    min_longitude: 21.8146345
+    bounds:
+      northeast:
+        lat: 22.224918
+        lng: 38.69379989999999
+      southwest:
+        lat: 9.3472209
+        lng: 21.8146345
+  international_prefix: '00'
+  ioc: SUD
+  iso_long_name: The Republic of the Sudan
+  iso_short_name: Sudan
+  languages_official:
+  - ar
+  - en
+  languages_spoken:
+  - ar
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 9
+  national_prefix: '0'
+  nationality: Sudanese
+  number: '729'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Africa
+  start_of_week: monday
+  subregion: Northern Africa
+  un_locode: SD
+  unofficial_names:
+  - Sudan
+  - السودان
+  - Soudan
+  - Sudán
+  - スーダン
+  - Soedan
+  world_region: EMEA

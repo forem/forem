@@ -1,0 +1,8 @@
+Description:
+    Generates a serializer for the given model.
+
+Example:
+    rails generate serializer Movie
+
+    This will create:
+        app/serializers/movie_serializer.rb

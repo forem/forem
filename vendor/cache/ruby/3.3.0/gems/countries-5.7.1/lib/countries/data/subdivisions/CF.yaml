@@ -1,0 +1,1038 @@
+---
+AC:
+  name: Ouham
+  code: AC
+  unofficial_names: Ouham
+  geo:
+    latitude: 7.090910999999999
+    longitude: 17.668887
+    min_latitude: 5.609916
+    min_longitude: 16.6884561
+    max_latitude: 8.57583
+    max_longitude: 19.068794
+  translations:
+    en: Ouham
+    ar: مقاطعة أوهام
+    bg: Уам
+    bn: ওউহাম প্রশাসনিক অঞ্চল
+    ca: Ouham
+    da: Ouham Prefecture
+    de: Ouham
+    el: Ούχαμ
+    es: Ouham
+    fa: اوهام (جمهوری آفریقای مرکزی)
+    fi: Ouham
+    fr: Ouham
+    gu: ઔહમ પ્રીફેકચર
+    hi: औहम
+    id: Prefektur Ouham
+    it: prefettura di Ouham
+    ja: ウハム州
+    ka: უამი
+    kn: ಔಹಾಮ್ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 우암 주
+    lt: Uhamas
+    mr: औहम प्रीफेक्चुअर
+    ms: Ouham Prefecture
+    nb: Ouham
+    nl: Ouham
+    pl: Prefektura Ouham
+    pt: Ouham
+    ro: Prefectura Ouham, Republica Centrafricană
+    ru: Уам
+    si: ඖර්ග්ලා පළාත
+    sv: Ouham (prefektur)
+    ta: யஹம் ப்ரீபெக்ட்டுர்
+    te: ఓహామ్ ప్రిఫెక్చర్
+    th: อูวแฮม พรีเฟคเตอร์
+    tr: Ouham Bölgesi
+    uk: Уам
+    ur: اوہام
+    vi: Tỉnh Ouham
+    zh: 瓦姆省
+    lv: Vamas prefektūra
+    ceb: Ouham (prepektura)
+    sq: Ouham
+    ccp: "\U00011103\U00011127\U00011105\U0001112A\U00011126\U0001111F\U00011134"
+    'no': Ouham
+  comments:
+  type: prefecture
+BB:
+  name: Bamingui-Bangoran
+  code: BB
+  unofficial_names: Bamingui-Bangoran
+  geo:
+    latitude: 8.2733455
+    longitude: 20.7122465
+    min_latitude: 7.021317
+    min_longitude: 18.862459
+    max_latitude: 9.794469999999999
+    max_longitude: 22.399819
+  translations:
+    en: Bamingui-Bangoran
+    ar: محافظة بامينغوي بانغوران
+    bg: Баминги-Бангоран
+    bn: বামিঙ্গুই-ব্যাঙ্গোরান প্রশাসনিক অঞ্চল
+    ca: Bamingui-Bangoran
+    da: Bamingui-Bangoran Prefecture
+    de: Bamingui-Bangoran
+    el: Μπαμινγκούι-Μπανγκοράν
+    es: Bamingui-Bangoran
+    fi: Bamingui-Bangoran
+    fr: Bamingui-Bangoran
+    gu: બેમિંગુઇ-બેંગોરન પ્રીફેકચર
+    hi: बमिंगुई-बंगोरन प्रीफेक्चर
+    id: Bamingui-Bangoran
+    it: prefettura di Bamingui-Bangoran
+    ja: バミンギ・バンゴラン州
+    ka: ბამინგი-ბანგორანი
+    kn: ಬಮಿಂಗ್ಯುಯಿ-ಬಂಗೊರಾನ್ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 바밍기방고랑 주
+    lt: Bamingis-Bangoranas
+    mr: बमूडूई-बंगरान प्रिफेक्चर
+    ms: Bamingui-Bangoran Prefecture
+    nb: Bamingui-Bangoran
+    nl: Bamingui-Bangoran
+    pl: Prefektura Bamingui-Bangoran
+    pt: Bamingui-Bangoran
+    ro: Bamingui-Bangoran
+    ru: Баминги-Бангоран
+    si: බමින්ගුයි-බන්ගොරන් ප්‍රාන්තය
+    sv: Bamingui-Bangoran
+    ta: பாமிங்குஇ -பங்கோரன் ப்ரீபெக்ட்டுறே
+    te: బామింగ్వి-బంగోరాన్ ప్రిఫెక్చర్
+    th: เขตบามินกุย-บางโกรัน
+    tr: Bamingui-Bangoran
+    uk: Бамбінґі-Банґоран
+    ur: بامینگوئی-بانگوران
+    vi: Bamingui-Bangoran
+    lv: Bamingi-Bangoranas prefektūra
+    ceb: Bamingui-Bangoran
+    zh: 巴明吉-班戈兰省
+    sq: Bamingui-Bangoran
+    ccp: "\U0001111D\U00011127\U0001111F\U00011128\U00011101\U00011109\U0001112D\U0001112A-\U0001111D\U00011101\U00011109\U0001112E\U00011122\U0001111A\U00011134"
+    'no': Bamingui-Bangoran
+    fa: بامینگی-بانگوران
+    he: מחוז במינגי-במגוראן
+    hy: Բամինգի Բանգորան
+  comments:
+  type: prefecture
+BGF:
+  name: Bangui
+  code: BGF
+  unofficial_names: Bangui
+  geo:
+    latitude: 4.366667
+    longitude: 18.583333
+    min_latitude: 4.3240908
+    min_longitude: 18.512392
+    max_latitude: 4.4323538
+    max_longitude: 18.6420063
+  translations:
+    en: Bangui
+    af: Bangui
+    am: ባንጊ
+    ar: بانغي
+    az: Bangi
+    be: Горад Бангі
+    bg: Банги
+    bn: বাঙ্গুই
+    ca: Bangui
+    cs: Bangui
+    da: Bangui
+    de: Bangui
+    el: Μπανγκί
+    es: Bangui
+    et: Bangui
+    eu: Bangi
+    fa: بانگوئی
+    fi: Bangui
+    fr: Bangui
+    gl: Bangui
+    gu: બાન્ગુઈ
+    he: בנגי
+    hi: बैंगुई
+    hr: Bangui
+    hu: Bangui
+    hy: Բանգի
+    id: Bangui
+    is: Bangví
+    it: Bangui
+    ja: バンギ
+    ka: ბანგი
+    kn: ಬಾಂಗಿ
+    ko: 방기
+    lt: Bangis
+    lv: Bangi
+    mn: Банги
+    mr: बांगुई
+    ms: Bangui
+    nb: Bangui
+    nl: Bangui
+    pl: Bangi
+    pt: Bangui
+    ro: Bangui
+    ru: Банги
+    si: බාන්ගී
+    sk: Bangui
+    sl: Bangui
+    sr: Банги
+    sv: Bangui
+    sw: Bangui
+    ta: பாங்கி
+    te: బాంగ్‌వీ
+    th: บังกี
+    tk: Bangi
+    tr: Bangui
+    uk: Бангі
+    ur: بانگوئی
+    vi: Bangui
+    cy: Bangui
+    ceb: Bangui
+    sr_Latn: Bangi
+    zh: 班基
+    yue_Hans: 班基
+    jv: Bangui
+    sq: Bangui
+    ccp: "\U0001111D\U00011101\U00011109\U0001112D\U0001112A"
+    ga: Bangui
+    ky: Банги
+    ha: Bangui
+    so: Bangui
+    pa: ਬਾਂਗੀ
+    kk: Банги
+    ml: ബാൻഗുയി
+    yue: 班基
+    my: ဘန်ဂီမြို့
+    yo: Bangui
+    uz: Bangi
+    bs: Bangui
+    mk: Банги
+    ha_NE: Bangui
+    'no': Bangui
+    yo_BJ: Bangui
+    ps: بانګویی
+  comments:
+  type: commune
+BK:
+  name: Basse-Kotto
+  code: BK
+  unofficial_names: Basse-Kotto
+  geo:
+    latitude: 4.8719319
+    longitude: 21.2845025
+    min_latitude: 4.221498
+    min_longitude: 20.4503059
+    max_latitude: 5.734375
+    max_longitude: 22.1584359
+  translations:
+    en: Basse-Kotto
+    ar: محافظة باس-كوتو
+    bg: Бас-Кото
+    bn: বাস্যি-কোতো প্রশাসনিক অঞ্চল
+    ca: Basse-Kotto
+    da: Basse-Kotto
+    de: Basse-Kotto
+    el: Μπάσσε-Κόττο
+    es: Basse-Kotto
+    fi: Basse-Kotto
+    fr: Basse-Kotto
+    gu: બાસે-કોટો પ્રીફેક્ચર
+    hi: बैसे-कोटो प्रीफेक्चर
+    id: Prefektur Basse-Kotto
+    it: prefettura di Basse-Kotto
+    ja: バス・コト州
+    ka: ქვემო კოტო
+    kn: ಬಸ್-ಕೊಟೊ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 바스코토 주
+    lt: Žemutinis Kotas
+    mr: बेससी-कोटो प्रीफेक्चअर
+    ms: Basse-Kotto Prefecture
+    nb: Basse-Kotto
+    nl: Basse-Kotto
+    pl: Prefektura Basse-Kotto
+    pt: Basse-Kotto
+    ro: Prefectura Basse-Kotto
+    ru: Нижнее Котто
+    si: බැසේ-කොටෝ ප්‍රාන්තය
+    sv: Basse-Kotto
+    ta: பஸ்ஸே -கொட்டோ ப்ரீபெக்ட்டுறே
+    te: బస్సే-కోట్టో ప్రిఫెక్చర్
+    th: บัส โคตโตะ พรีเฟคเตอร์
+    tr: Basse-Kotto Prefecture
+    uk: Нижнє Котто
+    ur: زیریں-کوتو
+    vi: Basse-Kotto
+    lv: Lejaskoto prefektūra
+    ceb: Basse-Kotto
+    zh: 下科托省
+    sq: Basse-Kotto
+    ccp: "\U0001111D\U00011125\U0001112C-\U00011107\U00011127\U00011111\U00011133\U00011126\U00011127"
+    'no': Basse-Kotto
+    fa: باس کوتو
+    hy: Ստորին Կոտտո
+  comments:
+  type: prefecture
+HK:
+  name: Haute-Kotto
+  code: HK
+  unofficial_names: Haute-Kotto
+  geo:
+    latitude: 7.7964379
+    longitude: 23.3823545
+    min_latitude: 5.466806
+    min_longitude: 21.108126
+    max_latitude: 9.245301
+    max_longitude: 24.6123979
+  translations:
+    en: Haute-Kotto
+    ar: محافظة هوت-كوتو
+    bg: От-Кото
+    bn: হাউতে-কোতো প্রশাসনিক অঞ্চল
+    ca: Haute-Kotto
+    da: Haute-Kotto Prefecture
+    de: Haute-Kotto
+    el: Χότε-Κόττο
+    es: Haute-Kotto
+    fa: هاوته-کوتو
+    fi: Haute-Kotto
+    fr: Haute-Kotto
+    gu: હૌટ-કોટો પ્રીફેકચર
+    hi: ओट-कोटो प्रीफेक्चर
+    id: Prefektur Haute-Kotto
+    it: prefettura di Haute-Kotto
+    ja: オート・コト州
+    ka: ზემო კოტო
+    kn: ಹಾಟೆ-ಕೊಟೊ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 오트코토 주
+    lt: Aukštutinis Kotas
+    mr: हौट-कोटो प्रीफेक्चर
+    ms: Haute-Kotto Prefecture
+    nb: Haute-Kotto
+    nl: Haute-Kotto
+    pl: Prefektura Haute-Kotto
+    pt: Haute-Kotto
+    ro: Haute-Kotto
+    ru: Верхнее Котто
+    si: හෞටේ-කොට්ටෝ ප්‍රාන්තය
+    sv: Haute-Kotto
+    ta: ஹூட் -கொட்டோ ப்ரீபெக்ட்டுறே
+    te: హాట్-కోటో ప్రిఫెక్చర్
+    th: จังหวัดโอต-มาร์น
+    tr: Haute-Kotto
+    uk: Верхнє Котто
+    ur: بالائی-کوتو
+    vi: Tỉnh Haute-Kotto
+    lv: Augškoto
+    ceb: Haute-Kotto
+    zh: 上科托省
+    sq: Haute-Kotto
+    ccp: "\U00011126\U00011105\U0001112A\U00011111\U0001112C-\U00011107\U00011127\U00011111\U00011133\U00011126\U00011127"
+    'no': Haute-Kotto
+  comments:
+  type: prefecture
+HM:
+  name: Haut-Mbomou
+  code: HM
+  unofficial_names:
+  - Haut-Mʿbomou
+  geo:
+    latitude: 6.2537134
+    longitude: 25.4733554
+    min_latitude: 4.905525
+    min_longitude: 24.2550301
+    max_latitude: 8.28228
+    max_longitude: 27.4634209
+  translations:
+    en: Haut-Mbomou
+    ar: هوت مبومو
+    bg: От-Мбому
+    bn: হাাউত-ম্বমৌ প্রশাসনিক অঞ্চল
+    ca: Haut-Mbomou
+    da: Haut-Mbomou Prefecture
+    de: Haut-Mbomou
+    el: Χοτ-Μπόμου
+    es: Haut-Mbomou
+    fi: Haut-Mbomou
+    fr: Haut-Mbomou
+    gu: હૌટ-મોબોમો પ્રીફેકચર
+    hi: ओट-बोमू प्रीफेक्चर
+    id: Prefektur Haut-Mbomou
+    it: prefettura di Haut-Mbomou
+    ja: オー・ムボム州
+    ka: ზემო მბომუ
+    kn: ಹೌಟ್-ಮೊಮೊಮ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 오트음보무 주
+    lt: Aukštutinis Mbomu
+    mr: हौंट-एमबीओएम प्रीफेक्चुअर
+    ms: Wilayah Haut-Mbomou
+    nb: Haut-Mbomou
+    nl: Haut-Mbomou
+    pl: Prefektura Haut-Mbomou
+    pt: Haut-Mbomou
+    ro: Haut-Mbomou
+    ru: Верхнее Мбому
+    si: හෞට් -එඔමෞ ප්‍රාන්තය
+    sv: Haut-Mbomou
+    ta: ஹூட் -ம்பொமௌ பிரேபிக்டூர்
+    te: హాట్-ఎంబోమో ప్రిఫెక్చర్
+    th: จังหวัดเฮาท์มโบมู
+    tr: Haut-Mbomou
+    uk: Верхнє Мбому
+    ur: بالا-مبومؤ
+    vi: Quận Haut-Mbomou
+    lv: Augšmbomu prefektūra
+    ceb: Haut-Mbomou
+    zh: 上姆博穆省
+    sq: Haut-Mbomou
+    ccp: "\U00011126\U00011105\U0001112A\U00011116\U00011134-\U0001111D\U00011127\U0001111F\U0001112F"
+    'no': Haut-Mbomou
+    fa: هاوت امبومو
+  comments:
+  type: prefecture
+HS:
+  name: Mambéré-Kadéï
+  code: HS
+  unofficial_names:
+  - Haut-Sangha
+  geo:
+    latitude: 4.7055653
+    longitude: 15.9699878
+    min_latitude: 3.8017399
+    min_longitude: 14.677551
+    max_latitude: 5.484882
+    max_longitude: 17.083333
+  translations:
+    en: Mambéré-Kadéï
+    ar: مامبرة كاديي
+    bg: Мамбере-Кадеи
+    bn: মেম্বার-কাদেই
+    ca: Mambéré-Kadéï
+    da: Mambéré-Kadéï
+    de: Mambéré-Kadéï
+    el: Μαμπέρε-Καντέι
+    es: Mambéré-Kadéï
+    fa: مامبره کادئی
+    fi: Mambéré-Kadéï
+    fr: Mambéré-Kadéï
+    gu: મેમ્બેરે-કાડેઇ
+    hi: मेम्बरे-कैडी
+    id: Mambéré-Kadéï
+    it: prefettura di Mambéré-Kadéï
+    ja: マンベレ・カデイ州
+    ka: მამბერე-კადეი
+    kn: ಮಾಂಬೆರೆ-ಕ್ಯಾಡೆಯಿ
+    ko: 맘베레카데이 주
+    lt: Mamberė-Kadėjus
+    mr: मेम्बरे-कॅडिए
+    ms: Mambere-Kadei
+    nb: Mambéré-Kadéï
+    nl: Mambéré-Kadéï
+    pl: Prefektura Mambéré-Kadéï
+    pt: Mambéré-Kadéï
+    ro: Mambéré-Kadéï
+    ru: Мамбере-Кадеи
+    si: මම්බේරේ-කඩේයි
+    sv: Mambéré-Kadéï
+    ta: மாம்பெரே-கதிர்
+    te: మాంబియర్-కడే
+    th: แมมเบเร่ คาเดย
+    tr: Mambéré-Kadei
+    uk: Мамбере-Кадеї
+    ur: مامبیرے-کادئی
+    vi: Mambéré-Kadéi
+    lv: Mambere-Kadei
+    ceb: Mambéré-Kadéï
+    zh: 曼貝雷-卡代省
+    sq: Mambéré-Kadéï
+    ccp: "\U0001111F\U0001111F\U00011134\U0001111D\U0001112C\U00011122\U0001112C-\U00011107\U00011113\U0001112C\U0001112D"
+    'no': Mambéré-Kadéï
+  comments:
+  type: prefecture
+KB:
+  name: Nana-Grébizi
+  code: KB
+  unofficial_names:
+  - Gribingui
+  - Nana-Grébisi
+  geo:
+    latitude: 7.184860700000001
+    longitude: 19.3783206
+    min_latitude: 6.475724
+    min_longitude: 18.64814
+    max_latitude: 8.569668
+    max_longitude: 20.144611
+  translations:
+    en: Nana-Grébizi
+    ar: نانا-جريبيزي
+    bg: Нана-Гребизи
+    bn: নানা-গ্রেবিজি অর্থনৈতিক প্রশাসনিক অঞ্চল
+    ca: Nana-Grébizi
+    da: Nana-Grébizi Economic Prefecture
+    de: Nana-Grébizi
+    el: Νάνα-Γκρέμπιζι
+    es: Nana-Grébizi
+    fi: Nana-Grébizi
+    fr: Nana-Grébizi
+    gu: નાના-ગ્રેબિઝી ઇકોનોમિક પ્રીફેકચર
+    hi: नाना-ग्रेबेज़ी इकॉनोमिक प्रीफेक्चर
+    id: Prefektur Ekonomi Nana-Grébizi
+    it: prefettura di Nana-Grébizi
+    ja: ナナ・グリビジ州
+    ka: ნანა-გრებიზი
+    kn: ನಾನಾ-ಗ್ರೆಬಿಝಿ ಆರ್ಥಿಕ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 나나그레비지 주
+    lt: Nana-Grebizis
+    mr: नाना-ग्रीबिया इकॉनॉमिक प्रीफेक्चर
+    ms: Nana-Grebizi Economic Prefecture
+    nb: Nana-Grébizi
+    nl: Nana-Grébizi
+    pl: Prefektura Ekonomiczna Nana-Grébizi
+    pt: Nana-Grébizi
+    ro: Nana-Grébizi
+    ru: Нана-Гребизи
+    sv: Préfecture de la Nana-Grébizi
+    ta: நானா -க்ரெபிஜி எகனாமிக் ப்ரீபெக்ட்டுர்
+    te: నానా-గ్రెబిజి ఎకనామిక్ ప్రిపెక్చర్
+    th: จังหวัดเศรษฐกิจนานา-กรีบิซี
+    tr: Nana-Grébizi
+    uk: Нана-Гребізі
+    ur: نانا-گریبیزی
+    vi: Tỉnh Nana-Grébizi Economic
+    lv: Nana-Grebizi ekonomiskā prefektūra
+    ceb: Préfecture de la Nana-Grébizi
+    zh: 纳纳-格里比齐省
+    sq: Nana-Grébizi
+    ccp: "\U0001111F\U00011127\U0001111A-\U00011109\U00011133\U00011122\U0001112C\U0001111D\U00011128\U0001110E\U00011128"
+    'no': Nana-Grébizi
+    fa: نانا گریبیزی
+  comments:
+  type: economic_prefecture
+KG:
+  name: Kémo
+  code: KG
+  unofficial_names:
+  - Kémo Gribingui
+  geo:
+    latitude: 5.8867794
+    longitude: 19.3783206
+    min_latitude: 4.9221769
+    min_longitude: 18.5926698
+    max_latitude: 6.594858100000001
+    max_longitude: 19.9979729
+  translations:
+    en: Kémo
+    ar: مقاطعة كيمو
+    bg: Кемо
+    bn: কেমো প্রশাসনিক অঞ্চল
+    ca: Kémo
+    da: Kémo Prefecture
+    de: Kémo
+    el: Κέμο
+    es: Kémo
+    fi: Kémo
+    fr: Kémo
+    gu: કેમો પ્રીફેકચર
+    hi: केमो प्रीफेक्चर
+    id: Prefektur Kémo
+    it: prefettura di Kémo
+    ja: ケモ州
+    ka: კემო
+    kn: ಕೆಮೋ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 케모 주
+    lt: Kemas
+    mr: केमो प्रीफ़ेक्चर
+    ms: Kemo Prefecture
+    nb: Kémo
+    nl: Kémo
+    pl: Prefektura Kémo
+    pt: Kémo
+    ro: Kémo
+    ru: Кемо
+    si: කේමෝ ප්‍රාන්තය
+    sv: Préfecture de la Kémo
+    ta: கேமோ ப்ரீபெக்ட்டுர்
+    te: కెమో ప్రిఫెక్చర్
+    th: เกโม
+    tr: Kémo
+    uk: Кемо
+    ur: کئمو
+    vi: Tỉnh Kémo
+    lv: Kemo prefektūra
+    ceb: Préfecture de la Kémo
+    zh: 凱莫省
+    sq: Kémo
+    ccp: "\U00011107\U0001112C\U0001111F\U0001112E"
+    'no': Kémo
+    fa: کمو
+  comments:
+  type: prefecture
+LB:
+  name: Lobaye
+  code: LB
+  unofficial_names: Lobaye
+  geo:
+    latitude: 4.3525981
+    longitude: 17.4795173
+    min_latitude: 3.471089
+    min_longitude: 16.6658131
+    max_latitude: 5.1063829
+    max_longitude: 18.6350959
+  translations:
+    en: Lobaye
+    ar: لوبايه
+    bg: Лобайе
+    bn: লোবায় প্রিফেকচার
+    ca: Lobaye
+    da: Lobaye
+    de: Lobaye
+    el: Επαρχία Λομπάγιε
+    es: Lobaye
+    fa: لوبایه
+    fi: Lobaye
+    fr: Lobaye
+    gu: લોબેયે પ્રીફેકચર
+    hi: लोबाये प्रीफेक्चर
+    id: Lobaye
+    it: prefettura di Lobaye
+    ja: ロバイエ州
+    ka: ლობაე
+    kn: ಲೊಬೇಯಿ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 로바예 주
+    lt: Lobajė
+    mr: लोबेये प्रीफेक्चुअर
+    ms: Wilayah Lobaye
+    nb: Lobaye
+    nl: Lobaye
+    pl: Prefektura Lobaye
+    pt: Lobaye
+    ro: Mambéré-Kadéï²
+    ru: Лобае
+    si: ලොබයේ ප්‍රාන්තය
+    sv: Lobaye (prefektur)
+    ta: லோபாஏ ப்ரெபெக்டர்
+    te: లోబేయి ప్రిఫెక్చర్
+    th: จังหวัดโลบาย
+    tr: Lobaye Kaymakamlığı
+    uk: Лобае
+    ur: لوبایے
+    vi: Tỉnh Lobaye
+    lv: Lobajes prefektūra
+    ceb: Lobaye (prepektura)
+    zh: 洛巴耶省
+    sq: Lobaye
+    ccp: "\U00011123\U00011127\U0001111D\U00011120\U0001112C"
+    'no': Lobaye
+  comments:
+  type: prefecture
+MB:
+  name: Mbomou
+  code: MB
+  unofficial_names:
+  - Mʿbomou
+  geo:
+    latitude: 5.556837000000001
+    longitude: 23.7632828
+    min_latitude: 4.1120941
+    min_longitude: 21.747055
+    max_latitude: 6.768256999999999
+    max_longitude: 25.201216
+  translations:
+    en: Mbomou
+    ar: مبومو
+    bg: Мбому
+    bn: ম্বমৌ প্রশাসনিক অঞ্চল
+    ca: Mbomou
+    da: Mbomou Prefecture
+    de: Mbomou
+    el: Μπόμου
+    es: Mbomou
+    fi: Mbomou
+    fr: Mbomou
+    gu: એમ્બોમો પ્રીફેકચર
+    hi: बोमू प्रीफेक्चर
+    id: Prefektur Mbomou
+    it: Prefettura di Mbomou
+    ja: ムボム州
+    ka: მბომუ
+    kn: ಮ್ಬೋಮೌ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 음보무 주
+    lt: Mbomu
+    mr: मोंबोमो प्रीफेक्चुअर
+    ms: Mbomou Prefecture
+    nb: Mbomou
+    nl: Mbomou
+    pl: Prefektura Mbomou
+    pt: Mbomou
+    ro: Mbomou
+    ru: Мбому
+    si: එම්බෞ ප්‍රාන්තය
+    sv: Mbomou (prefektur)
+    ta: ம்போமௌ ப்ரீபெக்ட்டுர்
+    te: బోమో ప్రిఫెక్చర్
+    th: เมืองมโบมู
+    tr: Mbomou Bölgesi
+    uk: Мбому
+    ur: مبومؤ
+    vi: Tỉnh Mbomou
+    lv: Mbomu prefektūra
+    ceb: Mbomou
+    zh: 姆博穆省
+    sq: Mbomou
+    ccp: "\U0001111D\U00011127\U0001111F\U0001112F"
+    'no': Mbomou
+    fa: امبومو
+  comments:
+  type: prefecture
+MP:
+  name: Ombella-Mpoko
+  code: MP
+  unofficial_names:
+  - Ombella-Mʿpoko
+  - Ombelle Mpoko
+  geo:
+    latitude: 5.1188825
+    longitude: 18.4276047
+    min_latitude: 3.885441
+    min_longitude: 16.457023
+    max_latitude: 5.965332
+    max_longitude: 19.1128831
+  translations:
+    en: Ombella-M’Poko
+    ar: أومبلامبوكو
+    ca: Ombella-M’Poko
+    da: Ombella-M’Poko Prefecture
+    de: Ombella-Mpoko
+    el: Ομπέλα-Μπόκο
+    es: Ombella-M’Poko
+    fa: اومبلامپوکو
+    fi: Ombella-Mpoko
+    fr: Ombella-M’Poko
+    gu: ઑમ્બેલા-મપોકો પ્રીફેકચર
+    hi: ओम्बेला-मोपोको प्रीफेक्चर
+    id: Prefektur Ombella-M’Poko
+    it: prefettura di Ombella-M’Poko
+    ja: オンベラ・ムポコ州
+    ka: ომბელა-მპოკო
+    kn: ಓಂಬೆಲ್ಲಾ- ಎಂ ಪೊಕೊ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 옴벨라음포코 주
+    lt: Ombela-Mpokas
+    mr: ओम्बेला-मोपोक प्रीफायचर
+    ms: Ombella-M’Poko Prefecture
+    nb: Ombella-M’Poko
+    nl: Ombella-M’Poko
+    pl: Prefektura Ombella-M’Poko
+    pt: Ombella-M’Poko
+    ro: Ombella-M’Poko
+    ru: Омбелла-Мпоко
+    si: ඔම්බෙලා-එම්පොකෝ ප්‍රාන්තය
+    sv: Ombella-Mpoko
+    ta: ஓம்பெல்லா -ம் ‘போகோ ப்ரீபெக்ட்டுர்
+    te: ఒంబెల్లా-ఎంపోకో ప్రిఫెక్చర్
+    th: อมเบลล่า มโพโค่ พรีเฟ็คเตอร์
+    tr: Ombella-Mpoko
+    uk: Омбелла-Мпоко
+    ur: اومبیلا-مپوکو
+    vi: Tỉnh Ombella-M’Poko
+    lv: Ombelas-Mpoko prefektūra
+    ceb: Ombella-Mpoko
+    zh: 翁貝拉－姆波科省
+    bn: ওম্বেলা-ম’পোকো প্রশাসনিক অঞ্চল
+    sq: Ombella-M’Poko
+    ccp: "\U00011103\U00011127\U0001111F\U00011134\U0001111D\U0001112C\U00011123-\U00011103\U0001112C\U0001111F‘\U0001111B\U00011127\U00011107\U0001112E"
+    'no': Ombella-M’Poko
+  comments:
+  type: prefecture
+NM:
+  name: Nana-Mambéré
+  code: NM
+  unofficial_names: Nana-Mambéré
+  geo:
+    latitude: 5.6932135
+    longitude: 15.2194808
+    min_latitude: 5.116158
+    min_longitude: 14.420097
+    max_latitude: 6.888406
+    max_longitude: 16.503668
+  translations:
+    en: Nana-Mambéré
+    ar: محافظة نانا مامبيري
+    bg: Нана-Мамбере
+    bn: নানা-মাম্বিরি প্রশাসনিক অঞ্চল
+    ca: Nana-Mambéré
+    da: Nana-Mambéré Prefecture
+    de: Nana-Mambéré
+    el: Νανά-Μαμπέρε
+    es: Nana-Mambéré
+    fa: نانا-مامبره
+    fi: Nana-Mambéré
+    fr: Nana-Mambéré
+    gu: નના-મમ્બેરે પ્રીફેકચર
+    hi: नाना-मेम्बरे प्रीफेक्चर
+    id: Prefektur Nana-Mambéré
+    it: prefettura di Nana-Mambéré
+    ja: ナナ・メンベレ州
+    ka: ნანა-მამბერე
+    kn: ನಾನಾ-ಮಾಂಬೆರೆ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 나나맘베레 주
+    lt: Nana-Mamberė
+    mr: नाना-मंबारे प्रीफेक्चुर
+    ms: Nana-Mambere Prefecture
+    nb: Nana-Mambéré
+    nl: Nana-Mambéré
+    pl: Prefektura Nana-Mambéré
+    pt: Nana-Mambéré
+    ro: Nana-Mambéré
+    ru: Нана-Мамбере
+    si: නානා-මම්බේරේ ප්‍රාන්තය
+    sv: Préfecture de la Nana-Mambéré
+    ta: நானா -மம்பெரே ப்ரீபெக்ட்டுரே
+    te: నానా-మాంబెరె ప్రిఫెక్చర్
+    th: นานา แมมเบเร่ พรีเฟคเตอร์
+    tr: Nana-Mambéré
+    uk: Нана-Мамбере
+    ur: نانا-مامبیرے
+    vi: Quận Nana-Mambéré
+    lv: Nana-Mamberes prefektūra
+    ceb: Préfecture de la Nana-Mambéré
+    zh: 納納-曼貝雷省
+    sq: Nana-Mambéré
+    ccp: "\U0001111A\U0001111A-\U0001111F\U0001111F\U00011134\U0001111D\U0001112C\U00011122\U0001112C"
+    'no': Nana-Mambéré
+  comments:
+  type: prefecture
+OP:
+  name: Ouham-Pendé
+  code: OP
+  unofficial_names: Ouham-Pendé
+  geo:
+    latitude: 6.4850984
+    longitude: 16.1580937
+    min_latitude: 5.642713
+    min_longitude: 15.1015139
+    max_latitude: 7.880190000000001
+    max_longitude: 17.0902031
+  translations:
+    en: Ouham-Pendé
+    ar: أوهام-بيندي
+    bg: Уам-Пенде
+    bn: ওউহাম-পেন্ডে প্রশাসনিক অঞ্চল
+    ca: Ouham-Pendé
+    da: Ouham-Pendé Prefecture
+    de: Ouham-Pendé
+    el: Ούχαμ-Πεντέ
+    es: Ouham-Pendé
+    fi: Ouham-Pendé
+    fr: Ouham-Pendé
+    gu: ઓહમ-પેન્ડે પ્રીફેકચર
+    hi: ओउहम-पेंदे प्रीफेक्चर
+    id: Prefektur Ouham-Pendé
+    it: prefettura di Ouham-Pendé
+    ja: ウハム・ペンデ州
+    ka: უამ-პენდე
+    kn: ಔಹಾಮ್-ಪೆಂಡೆ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 우암펭데 주
+    lt: Uhamas-Pendė
+    mr: औहम-पेंडे प्रीफेक्चर
+    ms: Ouham-Pende Prefecture
+    nb: Ouham-Pendé
+    nl: Ouham-Pendé
+    pl: Prefektura Ouham-Pendé
+    pt: Ouham-Pendé
+    ro: Ouham-Pendé
+    ru: Уам-Пенде
+    sv: Préfecture de l’Ouham-Pendé
+    ta: யஹம் -பெண்டே ப்ரீபெக்ட்டுறே
+    te: ఔహామ్-పెండె ప్రిఫెక్చర్
+    th: อัวแฮม-เพนเด
+    tr: Quận Ouham-Pendé
+    uk: Уам-Пенде
+    ur: اوہام-پاندے
+    vi: Quận Ouham-Pendé
+    lv: Vama-Pende
+    ceb: Préfecture de l’Ouham-Pendé
+    zh: 瓦姆-彭代省
+    sq: Ouham-Pendé
+    ccp: "\U00011103\U00011127\U00011105\U0001112E\U00011126\U0001111F\U00011134-\U0001111B\U0001112C\U0001111A\U00011134\U00011113\U0001112C"
+    'no': Ouham-Pendé
+    fa: اوهام-پنده
+  comments:
+  type: prefecture
+SE:
+  name: Sangha-Mbaéré
+  code: SE
+  unofficial_names:
+  - Mbaeré
+  - Sangha
+  geo:
+    latitude: 3.4368607
+    longitude: 16.3463791
+    min_latitude: 2.2205141
+    min_longitude: 15.193566
+    max_latitude: 4.3382231
+    max_longitude: 17.394213
+  translations:
+    en: Sangha-Mbaéré
+    ar: محافظة سانغا مبايري الاقتصادية
+    bg: Санга-Мбаере
+    bn: সাঙ্ঘা-ম্বাইরি প্রশাসনিক অঞ্চল
+    ca: Sangha-Mbaéré
+    da: Sangha-Mbaéré Economic Prefecture
+    de: Sangha-Mbaéré
+    el: Σάνγκα-Μπαέρε
+    es: Sangha-Mbaéré
+    fi: Sangha-Mbaéré
+    fr: Sangha-Mbaéré
+    gu: સાંઘા-એમ્બેરે ઇકોનોમિક પ્રીફેક્ચર
+    hi: संघा-एम्बेरे इकॉनोमिक प्रीफेक्चर
+    id: Prefektur Ekonomi Sangha-Mbaéré
+    it: prefettura di Sangha-Mbaéré
+    ja: サンガ・ムバエレ州
+    ka: სანგა-მბაერე
+    kn: ಸಂಘ-ಮೀಬರೆ ಆರ್ಥಿಕ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 상가음바에레 주
+    lt: Sanga-Mbaerė
+    mr: सांगा-म्ब्रे इकॉनॉमिक प्रीफेक्चर
+    ms: Sangha-Mbaere Economic Prefecture
+    nb: Sangha-Mbaéré
+    nl: Sangha-Mbaéré
+    pl: Prefektura Ekonomiczna Sangha-Mbaéré
+    pt: Sangha-Mbaéré
+    ro: Sangha-Mbaéré
+    ru: Санга-Мбаэре
+    si: සංඝා-එම්බයෙරේ ආර්ථික ප්‍රාන්තය
+    sv: Préfecture de la Sangha-Mbaéré
+    ta: ஷங்ஹா -ம்பயரே எகனாமிக் ப்ரீபெக்ட்டுர்
+    te: సంగా-ఎంబేర్ ఎకనామిక్ ప్రిఫెక్చర్
+    th: แซงฮา มเบย์เรย์ อีโคโนมิค พรีเฟคเตอร์
+    tr: Sangha-Mbaéré
+    uk: Санга-Мбаере
+    ur: سانگھا-مبایرے
+    vi: Tỉnh Kinh tế Sangha-Mbaéré
+    lv: Sangas-Mbaeres ekonomiskā prefektūra
+    ceb: Préfecture de la Sangha-Mbaéré
+    zh: 桑加-姆巴埃雷省
+    sq: Sangha-Mbaéré
+    ccp: "\U00011125\U00011101\U00011126-\U0001111D\U00011103\U00011128\U00011122\U0001112C"
+    'no': Sangha-Mbaéré
+    fa: سنگا-مبائر
+  comments:
+  type: economic_prefecture
+UK:
+  name: Ouaka
+  code: UK
+  unofficial_names: Ouaka
+  geo:
+    latitude: 6.3168216
+    longitude: 20.7122465
+    min_latitude: 4.5449659
+    min_longitude: 19.450571
+    max_latitude: 7.7220399
+    max_longitude: 21.930511
+  translations:
+    en: Ouaka
+    ar: محافظة أواكا
+    bg: Уака
+    bn: ওউকা প্রশাসনিক অঞ্চল
+    ca: Ouaka
+    da: Ouaka Prefecture
+    de: Ouaka
+    el: Ουάκα
+    es: Ouaka
+    fa: اوآکا
+    fi: Ouaka
+    fr: Ouaka
+    gu: ઓકાકા પ્રીફેકચર
+    hi: ओका प्रीफेक्चर
+    id: Prefektur Ouaka
+    it: prefettura di Ouaka
+    ja: ワカ州
+    kn: ಒವಾಕಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 와카 주
+    lt: Uaka
+    mr: औअका परफेक्चुअर
+    ms: Ouaka Prefecture
+    nb: Ouaka
+    nl: Ouaka
+    pl: Prefektura Ouaka
+    pt: Ouaka
+    ro: Prefectura Ouaka, Republica Centrafricană
+    ru: Уака
+    si: ඔඋකා ප්‍රාන්තය
+    sv: Ouaka (prefektur)
+    ta: ஓவகா ப்ரீபெக்ட்டுர்
+    te: ఓయువాకా ప్రిఫెక్చర్
+    th: อัวกา
+    tr: Ouaka Bölgesi
+    uk: Уака
+    ur: اواکا
+    vi: Tỉnh Ouaka
+    lv: Vakas prefektūra
+    ceb: Ouaka
+    zh: 瓦卡省
+    sq: Ouaka
+    ccp: "\U00011103\U00011127\U00011105\U0001112A\U00011107"
+    ka: უაკა
+    'no': Ouaka
+    he: מחוז אואקה
+  comments:
+  type: prefecture
+VK:
+  name: Vakaga
+  code: VK
+  unofficial_names: Vakaga
+  geo:
+    latitude: 9.5113296
+    longitude: 22.2384017
+    min_latitude: 8.591192
+    min_longitude: 20.8247621
+    max_latitude: 11.0075691
+    max_longitude: 23.697866
+  translations:
+    en: Vakaga
+    ar: فاكاجا
+    bg: Вакага
+    bn: ভাকাগা প্রশাসনিক অঞ্চল
+    ca: Vakaga
+    da: Vakaga Prefecture
+    de: Vakaga
+    el: Βακάγκα
+    es: Vakaga
+    fi: Vakaga
+    fr: Vakaga
+    gu: વાકાગા પ્રીફેકચર
+    hi: वकागा प्रीफेक्चर
+    id: Prefektur Vakaga
+    it: prefettura di Vakaga
+    ja: バカガ州
+    ka: ვაკაგა
+    kn: ವಕಾಗಾ ಪ್ರಿಫೆಕ್ಚರ್
+    ko: 바카가 주
+    lt: Vakaga
+    mr: वकागा प्रीफेक्चुअर
+    ms: Wilayah Vakaga
+    nb: Vakaga
+    nl: Vakaga
+    pl: Prefektura Vakaga
+    pt: Vakaga
+    ro: Vakaga
+    ru: Вакага
+    si: වකගා ප්‍රාන්තය
+    sv: Vakaga (prefektur)
+    ta: வாகாக பிரேபிக்டூர்
+    te: వకాగా ప్రిఫెక్చర్
+    th: จังหวัดวากากา
+    tr: Vakaga
+    uk: Вакага
+    ur: واکاگا
+    vi: Tỉnh Vakaga
+    lv: Vakagas prefektūra
+    ceb: Vakaga
+    zh: 瓦卡加省
+    sq: Vakaga
+    ccp: "\U0001111E\U00011107\U0001110E"
+    'no': Vakaga
+    fa: واکاگا
+    he: מחוז ווקגה
+  comments:
+  type: prefecture

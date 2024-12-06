@@ -1,0 +1,11 @@
+<% if object.has_tag?(:see) %>
+See Also:
+---------
+
+<% for tag in object.tags(:see) %>
+<% text = "- " + tag.name %>
+<% text += " - " + tag.text if tag.text && !tag.text.empty? %>
+<%= indent(wrap(text)) %>
+<% end %>
+<% end %>
+

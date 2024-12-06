@@ -1,0 +1,43 @@
+module Datadog
+  module CI
+    module Ext
+      module Test
+        CONTEXT_ORIGIN: String
+
+        TAG_ARGUMENTS: String
+
+        TAG_FRAMEWORK: String
+
+        TAG_FRAMEWORK_VERSION: String
+
+        TAG_NAME: String
+
+        TAG_SKIP_REASON: String
+
+        TAG_STATUS: String
+
+        TAG_SUITE: String
+
+        TAG_TRAITS: String
+
+        TAG_TYPE: String
+        TAG_OS_ARCHITECTURE: String
+
+        TAG_OS_PLATFORM: String
+
+        TAG_RUNTIME_NAME: String
+
+        TAG_RUNTIME_VERSION: String
+        TAG_SPAN_KIND: String
+
+        module Status
+          PASS: String
+
+          FAIL: String
+
+          SKIP: String
+        end
+      end
+    end
+  end
+end

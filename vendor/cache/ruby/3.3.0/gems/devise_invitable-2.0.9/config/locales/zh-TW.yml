@@ -1,0 +1,31 @@
+zh-TW:
+  devise:
+    failure:
+      invited: "你有已經有一個建立帳號的邀請，請接受邀請來建立帳號"
+    invitations:
+      send_instructions: "邀請已發送至%{email)。"
+      invitation_token_invalid: "提供認證已無效!"
+      updated: "你的密碼已設置成功，你現在已經登入了。"
+      updated_not_active: "密碼設置成功。"
+      no_invitations_remaining: "沒有名額可以給您邀請其他人"
+      invitation_removed: "你的邀請已被刪除。"
+      new:
+        header: "發送邀請"
+        submit_button: "發送邀請"
+      edit:
+        header: "設置密碼"
+        submit_button: "設置密碼"
+    mailer:
+      invitation_instructions:
+        subject: "邀請教學"
+        hello: "%{email} 你好"
+        someone_invited_you: "你已被邀請成為會員，你可以通過此連結接受邀請並創立帳號：%{url}"
+        accept: "接受邀請"
+        accept_until: "此邀請將於 %{due_date} 後過期。"
+        ignore: "如果你不想接受邀請, 請忽略此電子郵件。在你透過上面的連結設置密碼前，都不會建立您的帳號。"
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"

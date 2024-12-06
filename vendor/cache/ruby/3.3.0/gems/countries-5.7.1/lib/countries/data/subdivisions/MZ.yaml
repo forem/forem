@@ -1,0 +1,719 @@
+---
+A:
+  name: Niassa
+  code: A
+  unofficial_names: Niassa
+  geo:
+    latitude: -12.7826202
+    longitude: 36.6093926
+    min_latitude: -15.5072889
+    min_longitude: 34.60633
+    max_latitude: -11.2596681
+    max_longitude: 38.4838371
+  translations:
+    en: Niassa
+    af: Niassa
+    ar: محافظة نياسا
+    bg: Няса
+    bn: নিয়াসসা প্রদেশ
+    ca: Província de Niassa
+    da: Niassa
+    de: Provinz Niassa
+    el: Επαρχία Νιάσα
+    es: Niassa
+    eu: Niassa probintzia
+    fa: نیاسا
+    fi: Niassa
+    fr: province de Niassa
+    gu: નિઆસા પ્રાંત
+    hi: निआसा प्रांत
+    id: Provinsi Niassa
+    it: provincia di Niassa
+    ja: ニアサ州
+    ka: ნიასის პროვინცია
+    kn: ನಿಯಾಸಾ ಪ್ರಾಂತ್ಯ
+    ko: 니아사 주
+    lt: Njasos provincija
+    mr: नियास प्रांत
+    ms: Niassa Province
+    nb: Niassa
+    nl: Niassa
+    pl: Niasa
+    pt: Niassa
+    ro: Provincia Niassa
+    ru: Ньяса
+    si: නියස්සා පළාත
+    sv: Niassa
+    sw: Mkoa wa Niassa
+    ta: நிஅஸ்ஸா மாகாணம்
+    te: నియాసా ప్రావిన్స్
+    th: จังหวัดเนียสซา
+    tr: Niassa Bölgesi
+    uk: Ньяса
+    ur: نیاسا صوبہ
+    vi: Tỉnh Niassa
+    zh: 尼亚萨省
+    lv: Ņasas province
+    ceb: Niassa Province
+    yue_Hans: 尼亚萨省
+    ccp: "\U0001111A\U00011128\U00011120\U00011125"
+    yue: 尼亞薩省
+    mk: Њаса
+    'no': Niassa
+    cy: Talaith Niassa
+    ps: نیاسا
+    zu: Niassa (Isifundazwe)
+  comments:
+  type: province
+B:
+  name: Manica
+  code: B
+  unofficial_names: Manica
+  geo:
+    latitude: -19.5059787
+    longitude: 33.438353
+    min_latitude: -21.58149
+    min_longitude: 32.3667179
+    max_latitude: -16.3896211
+    max_longitude: 34.576135
+  translations:
+    en: Manica
+    af: Manica
+    ar: محافظة مانيكا
+    bg: Маника
+    bn: মনিকা প্রদেশ
+    ca: Manica
+    da: Manica
+    de: Provinz Manica
+    el: Μανίκα
+    es: Manica
+    et: Manica provints
+    eu: Manica probintzia
+    fa: مانیکا
+    fi: Manica
+    fr: province de Manica
+    gu: મેનિકા પ્રાંત
+    hi: मानिका प्रांत
+    id: Provinsi Manica
+    it: provincia di Manica
+    ja: マニッカ州
+    ka: მანიკის პროვინცია
+    kn: ಮನಿಕಾ ಪ್ರಾಂತ್ಯ
+    ko: 마니카 주
+    lt: Manikos provincija
+    mr: मानिका प्रांत
+    ms: Manica Province
+    nb: Manica
+    nl: Manica
+    pl: Manica
+    pt: Manica
+    ro: Provincia Manica
+    ru: Маника
+    si: මනිකා කලාපය
+    sv: Manica
+    sw: Mkoa wa Manica
+    ta: மணிக்கா மாகாணம்
+    te: మానికా ప్రావిన్స్
+    th: เมืองอิสตอก
+    tr: Manica Bölgesi
+    uk: Маніка
+    ur: مانیکا صوبہ
+    vi: Tỉnh Manica
+    lv: Manikas province
+    ceb: Manica Province
+    zh: 马尼卡省
+    ccp: "\U0001111F\U00011127\U0001111A\U00011128\U00011107"
+    'no': Manica
+    cy: Talaith Manica
+    he: מניקה
+  comments:
+  type: province
+G:
+  name: Gaza
+  code: G
+  unofficial_names: Gaza
+  geo:
+    latitude: -23.0221928
+    longitude: 32.7181375
+    min_latitude: -25.3720382
+    min_longitude: 31.3063011
+    max_latitude: -21.309147
+    max_longitude: 34.492104
+  translations:
+    en: Gaza
+    af: Gaza
+    ar: محافظة غزة
+    bg: Газа
+    bn: গাজা প্রদেশ
+    ca: Província de Gaza
+    da: Gaza
+    de: Provinz Gaza
+    el: Γάζα
+    es: Provincia de Gaza
+    et: Gaza provints
+    eu: Gaza probintzia
+    fi: Gaza
+    fr: province de Gaza
+    gu: ગાઝા પ્રાંત
+    he: מחוז גזה, מוזמביק
+    hi: गाजा प्रांत
+    id: Provinsi Gaza
+    it: provincia di Gaza
+    ja: ガザ州
+    ka: გაზის პროვინცია
+    kn: ಗಾಜಾ ಪ್ರಾಂತ್ಯ
+    ko: 가자 주
+    lt: Gazos provincija
+    mr: गाझा प्रांत
+    ms: Wilayah Gaza
+    nb: Gaza
+    nl: Gaza
+    pl: Gaza
+    pt: Gaza
+    ro: Provincia Gaza
+    ru: Газа
+    si: ගාසා තීරය
+    sv: Gaza
+    sw: Mkoa wa Gaza
+    ta: காஜா மாகாணம்
+    te: గాజా ప్రావిన్స్
+    th: จังหวัดกาซา
+    tr: Gaza Bölgesi
+    uk: Газа
+    ur: غزہ صوبہ
+    vi: Tỉnh Gaza
+    lv: Gazas province
+    ceb: Gaza Province
+    zh: 加扎省
+    fa: استان گازا
+    ccp: "\U00011109\U0001110E"
+    ml: ഗാസ പ്രവിശ്യ
+    'no': Gaza
+    cy: Talaith Gaza
+    hy: Գազա
+  comments:
+  type: province
+I:
+  name: Inhambane
+  code: I
+  unofficial_names: Inhambane
+  geo:
+    latitude: -23.866667
+    longitude: 35.383333
+    min_latitude: -23.9394282
+    min_longitude: 35.3777797
+    max_latitude: -23.8608789
+    max_longitude: 35.4259301
+  translations:
+    en: Inhambane
+    af: Inhambane
+    ar: مقاطعة إنهامبان
+    bg: Инямбане
+    bn: ইনহাম্বানে প্রদেশ
+    ca: Província d’Inhambane
+    da: Inhambane
+    de: Provinz Inhambane
+    el: Ινχαμπάνε
+    es: Inhambane
+    et: Inhambane provints
+    eu: Inhambane probintzia
+    fi: Inhambane
+    fr: province d’Inhambane
+    gu: ઈન્હામબેન પ્રાંત
+    hi: इनैम्बाने प्रांत
+    id: Provinsi Inhambane
+    it: provincia di Inhambane
+    ja: イニャンバネ州
+    ka: ინიამბანეს პროვინცია
+    kn: ಇನ್ಹಾಂಬೇನ್ ಪ್ರಾಂತ್ಯ
+    ko: 이냠바느 주
+    lt: Injambanės provincija
+    mr: इनम्बेन प्रांत
+    ms: Inhambane Province
+    nb: Inhambane
+    nl: Inhambane
+    pl: Inhambane
+    pt: Inhambane
+    ro: Provincia Inhambane
+    ru: Иньямбане
+    si: ඉන්හම්බනේ පළාත
+    sv: Inhambane
+    sw: Mkoa wa Inhambane
+    ta: இகம்பனே மாகாணம்
+    te: ఇన్హాంబేన్ ప్రావిన్స్
+    th: จังหวัดอินแฮมเบน
+    tr: Inhambane Bölgesi
+    uk: Іньямбане
+    ur: انہامبان صوبہ
+    vi: Tỉnh Inhambane
+    lv: Iņambanes province
+    ceb: Inhambane Province
+    zh: 伊尼扬巴内省
+    fa: استان اینهامبانه
+    ccp: "\U00011103\U00011128\U0001111A\U00011134\U00011126\U0001111F\U00011134\U0001111D\U0001111A\U00011134"
+    'no': Inhambane
+    cy: Talaith Inhambane
+  comments:
+  type: province
+L:
+  name: Maputo
+  code: L
+  unofficial_names: Maputo
+  geo:
+    latitude: -25.966667
+    longitude: 32.583333
+    min_latitude: -25.9839604
+    min_longitude: 32.5233079
+    max_latitude: -25.8085457
+    max_longitude: 32.6980592
+  translations:
+    en: Maputo Province
+    af: Maputo
+    bg: Мапуто
+    ca: Província de Maputo
+    da: Maputo
+    de: Provinz Maputo
+    el: Μαπούτο
+    es: Provincia de Maputo
+    eu: Maputo probintzia
+    fi: Maputo
+    fr: province de Maputo
+    id: Provinsi Maputo
+    it: provincia di Maputo
+    ja: マプト州
+    ka: მაპუტუს პროვინცია
+    ko: 마푸투 주
+    lt: Maputu provincija
+    nb: Maputo
+    nl: Maputo
+    pl: Maputo
+    pt: Maputo
+    ro: Provincia Maputo
+    ru: Мапуту
+    sv: Maputo
+    sw: Mkoa wa Maputo
+    tr: Maputo Bölgesi
+    uk: Мапуту
+    ur: ماپوتو صوبہ
+    ceb: Maputo Province
+    sr_Latn: Maputo (pokrajina)
+    zh: 马普托省
+    ccp: "\U0001111F\U0001111B\U0001112A\U00011111\U0001112E \U0001111B\U00011133\U00011122\U0001112E\U0001111E\U00011128\U0001111A\U00011134\U0001110C\U00011134"
+    sr: Мапуто (покрајина)
+    'no': Maputo
+    cy: Talaith Maputo
+    fa: استان ماپوتو
+    hy: Մապուտո նահանգ
+  comments:
+  type: province
+MPM:
+  name: Maputo City
+  code: MPM
+  unofficial_names: Maputo City
+  geo:
+    latitude: -25.966667
+    longitude: 32.583333
+    min_latitude: -25.9839604
+    min_longitude: 32.5233079
+    max_latitude: -25.8085457
+    max_longitude: 32.6980592
+  translations:
+    en: Maputo
+    af: Maputo²
+    am: ማፑቶ
+    ar: مابوتو
+    az: Maputu
+    be: Горад Мапуту
+    bg: Мапуто²
+    bn: মাপুটো
+    ca: Maputo
+    cs: Maputo
+    da: Maputo²
+    de: Maputo
+    el: Μαπούτο²
+    es: Maputo
+    et: Maputo
+    eu: Maputo
+    fa: ماپوتو
+    fi: Maputo²
+    fr: Maputo
+    gl: Maputo
+    gu: મૈપુટો
+    he: מפוטו
+    hi: मपूटो
+    hr: Maputo
+    hu: Maputo
+    hy: Մապուտու
+    id: Maputo
+    is: Mapútó
+    it: Maputo
+    ja: マプト
+    ka: მაპუტუ
+    kn: ಮಪುಟೋ
+    ko: 마푸투
+    lt: Maputu
+    lv: Maputu
+    ml: മപൂട്ടോ
+    mn: Мапуто
+    mr: मापुतो
+    ms: Maputo
+    nb: Maputo²
+    nl: Maputo²
+    pl: Maputo²
+    pt: Maputo²
+    ro: Maputo
+    ru: Мапуту²
+    si: මපුටෝ
+    sk: Maputo
+    sl: Maputo
+    sr: Мапуто
+    sv: Maputo²
+    sw: Maputo
+    ta: மபூட்டோ
+    te: మాపూటో
+    th: มาปูโต
+    tk: Maputu
+    tr: Maputo
+    uk: Мапуту²
+    ur: ماپوتو
+    vi: Maputo
+    cy: Maputo
+    ceb: Maputo
+    sr_Latn: Maputo
+    zh: 马普托
+    yue_Hans: 马布多
+    jv: Maputo
+    sq: Maputo
+    ccp: "\U0001111F\U0001111B\U0001112A\U00011111\U0001112E"
+    ga: Maputo
+    ky: Мапуту
+    ha: Maputo
+    so: Mabuto
+    pa: ਮਾਪੂਤੋ
+    yue: 馬布多
+    yo: Maputo
+    uz: Maputu
+    bs: Maputo
+    mk: Мапуто
+    ha_NE: Maputo
+    'no': Maputo²
+    yo_BJ: Maputo
+    kk: Мапуту
+  comments:
+  type: city
+N:
+  name: Nampula
+  code: N
+  unofficial_names: Nampula
+  geo:
+    latitude: -15.116667
+    longitude: 39.266667
+    min_latitude: -15.1570817
+    min_longitude: 39.21147759999999
+    max_latitude: -15.0862734
+    max_longitude: 39.3180005
+  translations:
+    en: Nampula
+    af: Nampula
+    ar: محافظة نامبولا
+    bg: Нампула
+    bn: নম্পুলা প্রদেশ
+    ca: Província de Nampula
+    da: Nampula
+    de: Provinz Nampula
+    el: Επαρχία Ναμπούλα
+    es: Provincia de Nampula
+    eu: Nampula probintzia
+    fi: Nampula
+    fr: province de Nampula
+    gu: નમ્પુલા પ્રાંત
+    hi: नम्पुला प्रांत
+    id: Provinsi Nampula
+    it: provincia di Nampula
+    ja: ナンプーラ州
+    ka: ნამპულის პროვინცია
+    kn: ನಂಪುಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 남풀라 주
+    lt: Nampulos provincija
+    mr: नम्पुला प्रांत
+    ms: Nampula Province
+    nb: Nampula
+    nl: Nampula
+    pl: Nampula
+    pt: Nampula
+    ro: Provincia Nampula
+    ru: Нампула
+    si: නම්පුලා පළාත
+    sv: Nampula
+    sw: Mkoa wa Nampula
+    ta: நம்பூலா மாகாணம்
+    te: నంపులా ప్రావిన్స్
+    th: จังหวัดนัมปูลา
+    tr: Nampula Bölgesi
+    uk: Нампула
+    ur: نامپولا صوبہ
+    vi: Tỉnh Nampula
+    lv: Nampulas province
+    ceb: Nampula
+    zh: 楠普拉省
+    fa: استان نامپولا
+    ccp: "\U0001111A\U0001111F\U00011134\U0001111B\U0001112A\U00011123"
+    'no': Nampula
+    cy: Talaith Nampula
+    he: מחוז נמפולה
+  comments:
+  type: province
+P:
+  name: Cabo Delgado
+  code: P
+  unofficial_names: Cabo Delgado
+  geo:
+    latitude: -12.3335474
+    longitude: 39.3206241
+    min_latitude: -14.162181
+    min_longitude: 37.9843029
+    max_latitude: -10.4729195
+    max_longitude: 40.7165883
+  translations:
+    en: Cabo Delgado
+    af: Cabo Delgado
+    ar: محافظة كابو ديلغادو
+    bg: Кабо Делгадо
+    bn: ক্যাবো ডেল্গাদো প্রদেশ
+    ca: Cabo Delgado
+    da: Cabo Delgado
+    de: Provinz Cabo Delgado
+    el: Κάμπο Ντελγκάντο
+    es: Cabo Delgado
+    eu: Cabo Delgado probintzia
+    fi: Cabo Delgado
+    fr: province de Cabo Delgado
+    gu: કાબો ડેલગાડો પ્રાંત
+    hi: काबो डेलगाडो प्रांत
+    id: Cabo Delgado
+    it: provincia di Cabo Delgado
+    ja: カボ・デルガード州
+    ka: კაბუ-დელგადუს პროვინცია
+    kn: ಕಾಬೊ ಡೆಲ್ಗಾಡೊ ಪ್ರಾಂತ್ಯ
+    ko: 카부델가두 주
+    lt: Kabo Delgado provincija
+    mr: कॅबो डेलगाडो प्रांत
+    ms: Cabo Delgado
+    nb: Cabo Delgado
+    nl: Cabo Delgado
+    pl: Cabo Delgado
+    pt: Cabo Delgado
+    ro: Provincia Cabo Delgado
+    ru: Кабу-Делгаду
+    si: කබෝ ඩෙල්ගඩෝ පළාත
+    sv: Cabo Delgado
+    sw: Mkoa wa Cabo Delgado
+    ta: கோபோ டேல்கடோ மாகாணம்
+    te: కాబో డెల్గాడో ప్రావిన్స్
+    th: จังหวัดคาโบเดลกาโด
+    tr: Cabo Delgado Bölgesi
+    uk: Кабу-Делгаду
+    ur: کابو دیلگادو صوبہ
+    vi: Tỉnh Cabo Delgado
+    lv: Kabu Delgadu province
+    ceb: Cabo Delgado Province
+    zh: 德尔加杜角省
+    fa: استان کابو دلگادو
+    yue_Hans: 卡布德加多省
+    ccp: "\U00011107\U0001111D\U0001112E \U00011113\U0001112C\U00011123\U00011134\U00011109\U00011113\U0001112E"
+    he: מחוז קאבו דלגאדו
+    yue: 卡布德加多省
+    be: Кабу-Дэлгаду
+    'no': Cabo Delgado
+    cy: Talaith Cabo Delgado
+    hu: Cabo Delgado
+    ml: ക്യാബോ ദെൽഗാഡോ പ്രവിശ്യ
+  comments:
+  type: province
+Q:
+  name: Zambézia
+  code: Q
+  unofficial_names: Zambézia
+  geo:
+    latitude: -16.5638987
+    longitude: 36.6093926
+    min_latitude: -18.9168009
+    min_longitude: 35.147209
+    max_latitude: -14.989042
+    max_longitude: 39.1333621
+  translations:
+    en: Zambezia
+    af: Zambezia
+    ar: مقاطعة زامبيزيا
+    bg: Замбезия
+    bn: জাম্বেজিয়া প্রদেশ
+    ca: Zambézia
+    da: Zambezia
+    de: Provinz Zambézia
+    el: Επαρχία Ζαμβεζία
+    es: Zambezia
+    eu: Zambezia probintzia
+    fi: Zambezia
+    fr: province de Zambézie
+    gu: ઝામ્બઝિયા પ્રાંત
+    hi: ज़म्बेज़िया प्रांत
+    id: Provinsi Zambezia
+    it: provincia di Zambezia
+    ja: ザンベジア州
+    ka: ზამბეზიის პროვინცია
+    kn: ಜಂಬೇಜಿಯಾ ಪ್ರಾಂತ್ಯ
+    ko: 잠베지아 주
+    lt: Zambezijos provincija
+    mr: जांबेझिया प्रांत
+    ms: Daerah Zambezia
+    nb: Zambezia
+    nl: Zambezia
+    pl: Zambézia
+    pt: Zambézia
+    ro: Provincia Zambezia
+    ru: Замбезия
+    si: සම්බෙසියා පළාත
+    sv: Zambezia
+    sw: Mkoa wa Zambezia
+    ta: சாம்பேஜிஆ மாகாணம்
+    te: జాంబీజియా ప్రావిన్స్
+    th: จังหวัดแซมเบเซีย
+    tr: Zambezia Bölgesi
+    uk: Замбезія
+    ur: زامبیزیا صوبہ
+    vi: Tỉnh Zambezia
+    lv: Zambezijas province
+    ceb: Província de Zambézia
+    zh: 赞比西亚省
+    fa: استان زامبزیا
+    ccp: "\U0001110E\U0001111F\U00011134\U0001111D\U0001112C\U0001110E\U00011128\U00011120"
+    'no': Zambezia
+    cy: Talaith Zambezia
+  comments:
+  type: province
+S:
+  name: Sofala
+  code: S
+  unofficial_names: Sofala
+  geo:
+    latitude: -19.2039073
+    longitude: 34.8624166
+    min_latitude: -21.3156439
+    min_longitude: 33.3992959
+    max_latitude: -16.810862
+    max_longitude: 36.1929811
+  translations:
+    en: Sofala
+    af: Sofala
+    ar: مقاطعة سوفالا
+    bg: Софала
+    bn: সোফালা প্রদেশ
+    ca: Província de Sofala
+    da: Sofala
+    de: Provinz Sofala
+    el: Σοφάλα
+    es: Sofala
+    et: Sofala provints
+    eu: Sofala probintzia
+    fi: Sofala
+    fr: province de Sofala
+    gu: સોફાલા પ્રાંત
+    hi: सोफला प्रांत
+    id: Provinsi Sofala
+    it: provincia di Sofala
+    ja: ソファラ州
+    ka: სოფალის პროვინცია
+    kn: ಸೋಫಾಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 소팔라 주
+    lt: Sofalos provincija
+    mr: सोफला प्रांत
+    ms: Sofala Province
+    nb: Sofala
+    nl: Sofala
+    pl: Sofala
+    pt: Sofala
+    ro: Provincia Sofala
+    ru: Софала
+    si: සොෆලා පළාත
+    sv: Sofala
+    sw: Mkoa wa Sofala
+    ta: சோபாலா மாகாணம்
+    te: సోఫాలా ప్రావిన్స్
+    th: จังหวัดโซฟาลา
+    tr: Sofala Bölgesi
+    uk: Софала
+    ur: سافولا صوبہ
+    vi: Tỉnh Sofala
+    lv: Sofalas province
+    ceb: Sofala Province
+    zh: 索法拉省
+    fa: استان سوفالا
+    ccp: "\U00011125\U0001112E\U0001111C\U00011123"
+    'no': Sofala
+    cy: Talaith Sofala
+    he: מחוז סופאלה
+  comments:
+  type: province
+T:
+  name: Tete
+  code: T
+  unofficial_names: Tete
+  geo:
+    latitude: -16.166667
+    longitude: 33.6
+    min_latitude: -16.1891847
+    min_longitude: 33.55608369999999
+    max_latitude: -16.0807983
+    max_longitude: 33.6530061
+  translations:
+    en: Tete
+    af: Tete
+    ar: مقاطعة تيتي
+    bg: Тете
+    bn: তেতে প্রদেশ
+    ca: Província de Tete
+    da: Tete
+    de: Provinz Tete
+    el: Επαρχία Τέτε
+    es: Provincia de Tete
+    et: Tete provints
+    eu: Tete probintzia
+    fa: تته (استان)
+    fi: Tete
+    fr: province de Tete
+    gu: ટેટે પ્રાંત
+    he: טטה
+    hi: टेटे प्रांत
+    id: Provinsi Tete
+    it: provincia di Tete
+    ja: テテ州
+    ka: ტეტეს პროვინცია
+    kn: ಟೆಟೆ ಪ್ರಾಂತ್ಯ
+    ko: 테트 주
+    lt: Tetės provincija
+    mr: टेटी प्रांत
+    ms: Tete Province
+    nb: Tete
+    nl: Tete
+    pl: Tete
+    pt: Tete
+    ro: Provincia Tete
+    ru: Тете
+    si: ටෙටේ පළාත
+    sv: Tete
+    sw: Mkoa wa Tete
+    ta: டேட் மாகாணம்
+    te: టెటె ప్రావిన్స్
+    th: จังหวัดเทที
+    tr: Tete Bölgesi
+    uk: Тете
+    ur: تیتے صوبہ
+    vi: Tỉnh Tete
+    lv: Tetes province
+    cy: Talaith Tete
+    ceb: Tete
+    zh: 太特省
+    ccp: "\U00011111\U0001112C\U00011111\U0001112C"
+    'no': Tete
+  comments:
+  type: province

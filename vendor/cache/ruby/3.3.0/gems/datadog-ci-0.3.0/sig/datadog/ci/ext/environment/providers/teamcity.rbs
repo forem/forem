@@ -1,0 +1,17 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        module Providers
+          class Teamcity < Extractor
+            def provider_name: () -> "teamcity"
+
+            def job_name: () -> String?
+
+            def job_url: () -> String?
+          end
+        end
+      end
+    end
+  end
+end

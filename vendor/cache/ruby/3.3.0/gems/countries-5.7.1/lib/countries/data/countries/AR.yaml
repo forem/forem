@@ -1,0 +1,61 @@
+---
+AR:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{postalcode}} {{city}}
+    {{region}}
+    {{country}}
+  alpha2: AR
+  alpha3: ARG
+  continent: South America
+  country_code: '54'
+  currency_code: ARS
+  distance_unit: KM
+  g20_member: true
+  gec: AR
+  geo:
+    latitude: -38.416097
+    longitude: -63.61667199999999
+    max_latitude: -21.7810459
+    max_longitude: -53.637481
+    min_latitude: -55.1250224
+    min_longitude: -73.5603601
+    bounds:
+      northeast:
+        lat: -21.7810459
+        lng: -53.637481
+      southwest:
+        lat: -55.1250224
+        lng: -73.5603601
+  international_prefix: '00'
+  ioc: ARG
+  iso_long_name: The Argentine Republic
+  iso_short_name: Argentina
+  languages_official:
+  - es
+  - gn
+  languages_spoken:
+  - es
+  - gn
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  - 9
+  national_prefix: '0'
+  nationality: Argentinean
+  number: '032'
+  postal_code: true
+  postal_code_format: "((?:[A-HJ-NP-Z])?\\d{4})([A-Z]{3})?"
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: AR
+  unofficial_names:
+  - Argentina
+  - Argentinien
+  - Argentine
+  - アルゼンチン
+  - Argentinië
+  world_region: AMER

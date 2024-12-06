@@ -1,0 +1,12 @@
+/* I like a teacher who gives you something to take
+   home to think about besides homework. */
+let gpa_score = 5.0;
+type schoolPerson = Teacher | Director | Student(string);
+
+let greeting = person =>
+  switch (person) {
+  | Teacher => "Hey Professor!"
+  | Director => "Hello Director."
+  | Student("Richard") => "Still here Ricky?"
+  | Student(anyOtherName) => "Hey, " ++ anyOtherName ++ "."
+  };

@@ -1,0 +1,35 @@
+# inherit_from:
+  # - rubocop-todo.yml
+
+LineLength:
+  Enabled: false
+
+HashSyntax:
+  Enabled: false
+
+BracesAroundHashParameters:
+  Enabled: false
+
+BlockNesting:
+  Enabled: false
+
+AssignmentInCondition:
+  Enabled: false
+
+CollectionMethods:
+  Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+PerlBackrefs:
+  Enabled: false
+
+RescueModifier:
+  Enabled: false
+
+HandleExceptions:
+  Enabled: false

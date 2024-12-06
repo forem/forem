@@ -1,0 +1,53 @@
+---
+MD:
+  alpha2: MD
+  alpha3: MDA
+  continent: Europe
+  country_code: '373'
+  currency_code: MDL
+  distance_unit: KM
+  gec: MD
+  geo:
+    latitude: 47.411631
+    longitude: 28.369885
+    max_latitude: 48.492029
+    max_longitude: 30.1635898
+    min_latitude: 45.4674379
+    min_longitude: 26.6164248
+    bounds:
+      northeast:
+        lat: 48.492029
+        lng: 30.1635898
+      southwest:
+        lat: 45.4674379
+        lng: 26.6164248
+  international_prefix: '00'
+  ioc: MDA
+  iso_long_name: The Republic of Moldova
+  iso_short_name: Moldova (Republic of)
+  languages_official:
+  - ro
+  languages_spoken:
+  - ro
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: '0'
+  nationality: Moldovan
+  number: '498'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Eastern Europe
+  un_locode: MD
+  unofficial_names:
+  - Moldova
+  - Moldawien
+  - Moldavie
+  - Moldavia
+  - the Republic of Moldova
+  - モルドバ共和国
+  - Moldavië
+  world_region: EMEA

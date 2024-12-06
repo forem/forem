@@ -1,0 +1,49 @@
+---
+SN:
+  alpha2: SN
+  alpha3: SEN
+  continent: Africa
+  country_code: '221'
+  currency_code: XOF
+  distance_unit: KM
+  gec: SG
+  geo:
+    latitude: 14.497401
+    longitude: -14.452362
+    max_latitude: 16.6929572
+    max_longitude: -11.3457683
+    min_latitude: 12.2649001
+    min_longitude: -17.6879999
+    bounds:
+      northeast:
+        lat: 16.6929572
+        lng: -11.3457683
+      southwest:
+        lat: 12.2649001
+        lng: -17.6879999
+  international_prefix: '00'
+  ioc: SEN
+  iso_long_name: The Republic of Senegal
+  iso_short_name: Senegal
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: Senegalese
+  number: '686'
+  postal_code: true
+  postal_code_format: "\\d{5}"
+  region: Africa
+  start_of_week: monday
+  subregion: Western Africa
+  un_locode: SN
+  unofficial_names:
+  - Senegal
+  - Sénégal
+  - セネガル
+  world_region: EMEA

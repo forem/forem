@@ -1,0 +1,18 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ddtrace-1.16.2/ext/ddtrace_profiling_loader
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ddtrace-1.16.2/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-mft2fr sitelibdir\=./.gem.20241205-149352-mft2fr clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ddtrace-1.16.2/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-mft2fr sitelibdir\=./.gem.20241205-149352-mft2fr
+compiling ddtrace_profiling_loader.c
+linking shared-object ddtrace_profiling_loader.3.3.0_x86_64-linux.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ddtrace-1.16.2/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-mft2fr sitelibdir\=./.gem.20241205-149352-mft2fr install
+/usr/bin/install -c -m 0755 ddtrace_profiling_loader.3.3.0_x86_64-linux.so ./.gem.20241205-149352-mft2fr
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/ddtrace-1.16.2/ext/ddtrace_profiling_loader
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-mft2fr sitelibdir\=./.gem.20241205-149352-mft2fr clean

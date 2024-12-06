@@ -1,0 +1,20 @@
+
+Get_Variable("EUSER","ENV","USERNAME");
+
+Message("Le Login Windows est : %EUSER%");
+
+Get_Variable("st","JOB","FOLDER1.date_err.SYSTEM.STATUS");
+
+
+AFFECT("filter1", '%%/"t"');
+AFFECT("filter2", '%%/"pi"');
+JSONTOSQL("%{jsonpath}%/file.json", "",
+        " JSONPATH like '%filter1%' ", "a = JSONVALUE",
+        " JSONPATH like '%filter2%' ", "b = JSONVALUE; output(json_data, a, b)");
+
+
+Affect(VAR1,'%TEST%'); //Créer et affecter la variable VAR1 avec une chaîne
+select * from TABLE1 where COL1 like %VAR1%; //utiliser la variable VAR1 dans une requête
+
+select * from TEST_TABLE; //exécution d'une requête Select pour ramener des valeurs
+Affect_LastColumns("TEST1"); //création du paramètre TEST1

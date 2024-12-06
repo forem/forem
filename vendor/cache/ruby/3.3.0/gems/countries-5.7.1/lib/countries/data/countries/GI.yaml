@@ -1,0 +1,48 @@
+---
+GI:
+  alpha2: GI
+  alpha3: GIB
+  continent: Europe
+  country_code: '350'
+  currency_code: GIP
+  distance_unit: KM
+  gec: GI
+  geo:
+    latitude: 36.140751
+    longitude: -5.353585
+    max_latitude: 36.1551186
+    max_longitude: -5.334499999999999
+    min_latitude: 36.1038999
+    min_longitude: -5.3721
+    bounds:
+      northeast:
+        lat: 36.1551186
+        lng: -5.334499999999999
+      southwest:
+        lat: 36.1038999
+        lng: -5.3721
+  international_prefix: '00'
+  ioc:
+  iso_long_name: Gibraltar
+  iso_short_name: Gibraltar
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 8
+  national_prefix: None
+  nationality: Gibraltar
+  number: '292'
+  postal_code: true
+  postal_code_format: GX11 1AA
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: GI
+  unofficial_names:
+  - Gibraltar
+  - ジブラルタル
+  world_region: EMEA

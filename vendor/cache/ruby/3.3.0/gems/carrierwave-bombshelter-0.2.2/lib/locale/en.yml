@@ -1,0 +1,5 @@
+en:
+  errors:
+    messages:
+      pixel_dimensions_error: "Image size should be less than or equal to %{x_size}x%{y_size}"
+      unsupported_image_type: "Image has an unsupported type"

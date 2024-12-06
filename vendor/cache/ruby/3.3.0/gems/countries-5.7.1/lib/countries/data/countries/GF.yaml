@@ -1,0 +1,53 @@
+---
+GF:
+  alpha2: GF
+  alpha3: GUF
+  continent: South America
+  country_code: '594'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: true
+  euvat_member: false
+  gec: FG
+  geo:
+    latitude: 3.933889
+    longitude: -53.125782
+    max_latitude: 5.9548
+    max_longitude: -51.6164491
+    min_latitude: 2.109287
+    min_longitude: -54.5544379
+    bounds:
+      northeast:
+        lat: 5.9548
+        lng: -51.6164491
+      southwest:
+        lat: 2.109287
+        lng: -54.5544379
+  international_prefix: '00'
+  ioc:
+  iso_long_name: Guyane
+  iso_short_name: French Guiana
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: None
+  nationality: French Guianan
+  number: '254'
+  postal_code: true
+  postal_code_format: 9[78]3\d{2}
+  region: Americas
+  start_of_week: monday
+  subregion: South America
+  un_locode: GF
+  unofficial_names:
+  - French Guiana
+  - Französisch Guyana
+  - Guayana Francesa
+  - フランス領ギアナ
+  - Frans-Guyana
+  world_region: AMER

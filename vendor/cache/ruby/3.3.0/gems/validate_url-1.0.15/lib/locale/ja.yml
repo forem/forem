@@ -1,0 +1,4 @@
+ja:
+  errors:
+    messages:
+      url: は不正なURLです

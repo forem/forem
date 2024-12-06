@@ -1,0 +1,619 @@
+---
+'01':
+  name: Western
+  code: '01'
+  unofficial_names: Western
+  geo:
+    latitude: -15.9454906
+    longitude: 23.3823545
+    min_latitude: -17.6392799
+    min_longitude: 21.999371
+    max_latitude: -13.709041
+    max_longitude: 25.52071
+  translations:
+    en: Western
+    af: Westelike Provinsie
+    ar: المحافظة الغربية، زامبيا
+    be: Заходняя правінцыя
+    bg: Западна провинция
+    bn: ওয়েস্টার্ন প্রদেশ
+    da: Vestprovinsen
+    de: Westprovinz
+    el: Δυτική Επαρχία
+    es: Provincia del Oeste
+    et: Lääneprovints
+    eu: Mendebaldea
+    fi: Läntinen lääni
+    fr: Province Occidentale
+    gu: પશ્ચિમી પ્રાંત
+    hi: पश्चिमी प्रांत
+    id: Provinsi Barat, Zambia
+    it: provincia Occidentale
+    ja: 西部州 (ザンビア)
+    ka: დასავლეთის პროვინცია
+    kn: ಪಶ್ಚಿಮ ಪ್ರಾಂತ್ಯ
+    ko: 서부 주
+    lt: Vakarų provincija
+    mr: पश्चिम प्रांत
+    ms: Western Province
+    nb: Western
+    nl: Western
+    pl: Prowincja Zachodnia
+    pt: Província Ocidental
+    ro: Provincia de Vest
+    ru: Западная провинция
+    si: බටහිර පළාත
+    sv: Western
+    sw: Mkoa wa Magharibi
+    ta: மேற்கு மாகாணம்
+    te: వెస్ట్రన్ ప్రావిన్స్
+    th: จังหวัดเวสเทิร์น
+    tr: Batı Bölgesi
+    uk: Західна провінція
+    ur: مغربی صوبہ، زیمبیا
+    vi: Tỉnh Phía Tây
+    zh: 西方省
+    lv: Rietumu province
+    ceb: Western Province (lalawigan sa Zambia)
+    ccp: Western
+    hy: Արևմտյան պրովինցիա
+    'no': Western
+    ca: Província Occidental
+    fa: استان غربی (زامبیا)
+    he: מחוז המערב
+    zu: Western Province, Zambiya
+  comments:
+  type: province
+'02':
+  name: Central
+  code: '02'
+  unofficial_names: Central
+  geo:
+    latitude: -14.3112263
+    longitude: 28.299435
+    min_latitude: -15.7121141
+    min_longitude: 25.350383
+    max_latitude: -12.0036589
+    max_longitude: 31.4494591
+  translations:
+    en: Central
+    af: Sentrale Provinsie (Zambië)
+    ar: المحافظة الوسطى، زامبيا
+    be: Цэнтральная правінцыя, Замбія
+    bg: Централна провинция (Замбия)
+    bn: সেন্ট্রাল প্রদেশ
+    ca: Província Central (Zàmbia)
+    da: Central Province
+    de: Zentralprovinz
+    el: Κεντρική Επαρχία (Ζάμπια)
+    es: Provincia Central (Zambia)
+    et: Keskprovints
+    eu: Erdialdea (Zambia)
+    fi: Central Province
+    fr: Province Centrale
+    gu: સેન્ટ્રલ પ્રાંત
+    hi: केंद्रीय प्रांत
+    id: Provinsi Central
+    it: provincia Centrale
+    ja: 中央州 (ザンビア)
+    ka: ცენტრალური პროვინცია
+    kn: ಮಧ್ಯ ಪ್ರಾಂತ್ಯ
+    ko: 중부 주 (잠비아)
+    lt: Centrinė provincija (Zambija)
+    mr: मध्यवर्ती प्रांत
+    ms: Central Province
+    nb: Central
+    nl: Central
+    pl: Prowincja Centralna (Zambia)
+    pt: Província Central (Zâmbia)
+    ro: Provincia Centrală, Zambia
+    ru: Центральная провинция
+    si: මධ්‍යම පළාත
+    sv: Central (Zambia)
+    sw: Mkoa wa Kati (Zambia)
+    ta: சென்ட்ரல் மாகாணம்
+    te: సెంట్రల్ ప్రావిన్స్
+    th: เซ็นทรัล โพวิ้น
+    tr: Merkez Bölgesi
+    uk: Центральна провінція
+    ur: وسطی صوبہ، زیمبیا
+    vi: Tỉnh Miền Trung
+    lv: Centrālā province
+    ceb: Central Province
+    zh: 中央省 (赞比亚)
+    ccp: Central
+    cs: Centrální provincie (Zambie)
+    'no': Central
+    fa: استان مرکزی، زامبیا
+  comments:
+  type: province
+'03':
+  name: Eastern
+  code: '03'
+  unofficial_names: Eastern
+  geo:
+    latitude: -13.8056187
+    longitude: 31.99280779999999
+    min_latitude: -14.997233
+    min_longitude: 29.98652989999999
+    max_latitude: -10.3251301
+    max_longitude: 33.6895011
+  translations:
+    en: Eastern
+    af: Oostelike Provinsie
+    ar: المحافظة الشرقية، زامبيا
+    be: Усходняя правінцыя
+    bg: Източна провинция
+    bn: ইস্টার্ন প্রদেশ
+    da: Eastern Province
+    de: Ostprovinz
+    el: Ανατολική Επαρχία
+    es: Provincia del Este
+    et: Idaprovints
+    fi: Itäinen maakunta
+    fr: Province orientale
+    gu: પૂર્વીય પ્રાંત
+    hi: पूर्वी प्रांत
+    id: Provinsi Timur, Zambia
+    it: Zambia orientale
+    ja: 東部州 (ザンビア)
+    ka: აღმოსავლეთის პროვინცია
+    kn: ಪೂರ್ವ ಪ್ರಾಂತ್ಯ
+    ko: 동부 주
+    lt: Rytų provincija
+    mr: पूर्व प्रांत
+    ms: Eastern Province
+    nb: Eastern
+    nl: Eastern
+    pl: Prowincja Wschodnia
+    pt: Província Oriental
+    ro: Provincia de Est
+    ru: Восточная Замбия
+    si: නැගෙනහිර පළාත
+    sv: Eastern
+    sw: Mkoa wa Mashariki
+    ta: கிழக்கு மாகாணம்
+    te: తూర్పు ప్రావిన్స్
+    th: อีสเทิร์น โพวิ้น
+    tr: Doğu Bölgesi
+    uk: Східна провінція
+    ur: مشرقی صوبہ، زیمبیا
+    vi: Tỉnh Phía Đông
+    lv: Austrumu province
+    ceb: Eastern Province (lalawigan sa Zambia)
+    zh: 东方省
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    'no': Eastern
+    ca: Província de l’Est
+    fa: استان شرقی (زامبیا)
+    he: האזור המזרחי
+  comments:
+  type: province
+'04':
+  name: Luapula
+  code: '04'
+  unofficial_names: Luapula
+  geo:
+    latitude: -11.564831
+    longitude: 29.0459927
+    min_latitude: -12.471966
+    min_longitude: 28.3809699
+    max_latitude: -8.375692899999999
+    max_longitude: 30.46612799999999
+  translations:
+    en: Luapula
+    af: Luapula
+    ar: لوابولا
+    be: Правінцыя Луапула
+    bg: Луапула
+    bn: লুয়াপুলা প্রদেশ
+    da: Luapula
+    de: Luapula
+    el: Λουαπούλα
+    es: Provincia de Luapula
+    et: Luapula provints
+    fi: Luapulan provinssi
+    fr: Province de Luapula
+    gu: લ્યુપુલા પ્રાંત
+    hi: लुआपला प्रांत
+    id: Provinsi Luapula
+    it: provincia di Luapula
+    ja: ルアプラ州
+    ka: ლუაპულის პროვინცია
+    kn: ಲುಪುಪುಲಾ ಪ್ರಾಂತ್ಯ
+    ko: 루아풀라 주
+    lt: Luapulos provincija
+    mr: लुआपला प्रांत
+    ms: Luapula Province
+    nb: Luapula
+    nl: Luapula
+    pl: Prowincja Luapula
+    pt: Luapula
+    ro: Provincia Luapula, Zambia
+    ru: Луапула
+    si: ලුආපුලා පළාත
+    sv: Luapula
+    sw: Mkoa wa Luapula
+    ta: லுப்புல மாகாணம்
+    te: లువాపులా ప్రావిన్స్
+    th: จังหวัดลัวปูลา
+    tr: Luapula Bölgesi
+    uk: Луапула
+    ur: لواپولا صوبہ
+    vi: Tỉnh Luapula
+    lv: Luapalas province
+    ceb: Luapula Province
+    zh: 卢阿普拉省
+    ccp: "\U00011123\U0001112A\U00011120\U0001111B\U0001112A\U00011123"
+    ca: província de Luapula
+    'no': Luapula
+    cs: Provincie Luapula
+    fa: استان لوآپولا
+    hu: Luapula
+  comments:
+  type: province
+'05':
+  name: Northern
+  code: '05'
+  unofficial_names: Northern
+  geo:
+    latitude: -9.7670177
+    longitude: 30.8958242
+    min_latitude: -13.4275721
+    min_longitude: 29.10338
+    max_latitude: -8.251887
+    max_longitude: 33.705704
+  translations:
+    en: Northern
+    af: Noordelike Provinsie
+    ar: المحافظة الشمالية، زامبيا
+    be: Паўночная правінцыя, Замбія
+    bg: Северна провинция
+    bn: নর্দান প্রদেশ
+    da: Northern Province
+    de: Nordprovinz
+    el: Βόρεια Επαρχία
+    es: Provincia del Norte
+    fi: Pohjoinen lääni
+    fr: Province Septentrionale
+    gu: નોર્ધન પ્રાંત
+    hi: उत्तरी प्रांत
+    id: Provinsi Utara, Zambia
+    it: provincia Settentrionale
+    ja: 北部州 (ザンビア)
+    ka: ჩრდილოეთის პროვინცია
+    kn: ಉತ್ತರ ಪ್ರಾಂತ್ಯ
+    ko: 북부 주
+    lt: Šiaurės provincija
+    mr: उत्तर प्रांत
+    ms: Northern Province
+    nb: Northern
+    nl: Northern
+    pl: Prowincja Północna
+    pt: Província do Norte
+    ro: Provincia de Nord, Zambia
+    ru: Северная провинция
+    si: උතුරු පළාත
+    sv: Northern
+    sw: Mkoa wa Kaskazini
+    ta: வடக்கு மாகாணம்
+    te: ఉత్తర ప్రావిన్స్
+    th: จังหวัดนอร์ท เทิร์น
+    tr: Kuzey Bölgesi
+    uk: Північна провінція
+    ur: شمالی صوبہ، زیمبیا
+    vi: Tỉnh Phía Bắc
+    lv: Ziemeļu province
+    ceb: Northern Province
+    zh: 北方省
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    'no': Northern
+    fa: استان شمالی (زامبیا)
+    he: אזור הצפון
+  comments:
+  type: province
+'06':
+  name: North-Western
+  code: '06'
+  unofficial_names: North-Western
+  geo:
+    latitude: -13.0050258
+    longitude: 24.9042208
+    min_latitude: -14.72759
+    min_longitude: 21.999899
+    max_latitude: -10.885152
+    max_longitude: 27.6016581
+  translations:
+    en: North-Western
+    af: Noordwestelike Provinsie
+    ar: المحافظة الشمالية الغربية، زامبيا
+    be: Паўночна-Заходняя правінцыя
+    bg: Северозападна провинция
+    bn: নর্থ-ওয়েস্টার্ন প্রদেশ
+    da: Northwestern Province
+    de: Nordwestprovinz
+    el: Βορειοδυτική Επαρχία
+    es: Provincia del Noroeste
+    et: Loodeprovints
+    fi: Luoteisprovinssi
+    fr: Province Nord-Occidentale
+    gu: ઉત્તરપશ્ચિમી પ્રાંત
+    hi: उत्तर पश्चिमी प्रांत, जाम्बिया
+    id: Provinsi Barat Laut, Zambia
+    it: provincia Nord-Occidentale
+    ja: 北西州
+    ka: ჩრდილო-დასავლეთის პროვინცია
+    kn: ವಾಯವ್ಯ ಪ್ರಾಂತ್ಯ
+    ko: 북서부 주
+    lt: Šiaurės vakarų provincija
+    mr: नॉर्थवेस्टर्न प्रांत
+    ms: Northwestern Province
+    nb: North-Western
+    nl: North-Western
+    pl: Prowincja Północno-Zachodnia
+    pt: Noroeste
+    ro: Provincia de Nord-Vest
+    ru: Северо-Западная провинция
+    si: වයඹ පළාත
+    sv: North-Western
+    sw: Mkoa wa Kaskazini-Magharibi
+    ta: வடக்கு தவெஸ்டேர்ன் மாகாணம்
+    te: వాయవ్య ప్రావిన్స్
+    th: จังหวัดนอร์ทเวสเทินส์
+    tr: Kuzeybatı Bölgesi
+    uk: Північно-Західна провінція
+    ur: شمال مغربی صوبہ، زیمبیا
+    vi: Tỉnh Tây Bắc
+    lv: Ziemeļrietumu province
+    ceb: North-Western Province
+    zh: 西北省
+    yue_Hans: 西北省
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134-\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    yue: 西北省
+    'no': North-Western
+    ca: Província del Nord-oest
+    fa: استان شمال غربی (زامبیا)
+  comments:
+  type: province
+'07':
+  name: Southern
+  code: '07'
+  unofficial_names: Southern
+  geo:
+    latitude: -16.9620634
+    longitude: 26.419389
+    min_latitude: -18.079473
+    min_longitude: 24.9715499
+    max_latitude: -15.293982
+    max_longitude: 28.912453
+  translations:
+    en: Southern
+    af: Suidelike Provinsie
+    ar: المحافظة الجنوبية، زامبيا
+    be: Паўднёвая правінцыя
+    bg: Южна провинция
+    bn: সাউদার্ন প্রদেশ
+    da: Southern Province
+    de: Südprovinz
+    el: Νότια Επαρχία
+    es: Provincia del Sur
+    et: Lõunaprovints
+    eu: Hegoaldea
+    fi: Eteläinen lääni
+    fr: Province Méridionale
+    gu: દક્ષિણી પ્રાંત
+    hi: दक्षिणी प्रांत
+    id: Provinsi Selatan, Zambia
+    it: provincia Meridionale
+    ja: 南部州 (ザンビア)
+    ka: სამხრეთის პროვინცია
+    kn: ದಕ್ಷಿಣ ಪ್ರಾಂತ್ಯ
+    ko: 남부 주
+    lt: Pietų provincija
+    mr: दक्षिण प्रांत
+    ms: Southern Province
+    nb: Southern
+    nl: Southern
+    pl: Prowincja Południowa
+    pt: Província do Sul
+    ro: Provincia de Sud
+    ru: Южная провинция
+    si: දකුණු කලාපය
+    sv: Southern
+    sw: Mkoa wa Kusini
+    ta: தெற்கு மாகாணம்
+    te: దక్షిణ ప్రావిన్స్
+    th: เซร์าเทิน โพวิ้น
+    tr: Güney Bölgesi
+    uk: Південна провінція
+    ur: جنوبی صوبہ، زیمبیا
+    vi: Tỉnh Phía Nam
+    lv: Dienvidu province
+    ceb: Southern Province
+    zh: 南部省
+    ccp: "\U00011118\U00011127\U0001110A\U00011128\U0001111A\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    'no': Southern
+    ca: Província Meridional
+    fa: استان جنوبی (زامبیا)
+    ga: Cúige an Deiscirt
+  comments:
+  type: province
+'08':
+  name: Copperbelt
+  code: '08'
+  unofficial_names: Copperbelt
+  geo:
+    latitude: -13.0570073
+    longitude: 27.5495846
+    min_latitude: -13.9245529
+    min_longitude: 26.801156
+    max_latitude: -12.218456
+    max_longitude: 29.0201341
+  translations:
+    en: Copperbelt
+    af: Koperstreek
+    ar: كوبربيلت
+    be: Правінцыя Капербелт
+    bg: Копърбелт
+    bn: কপারবেলাট প্রদেশ
+    cs: Copperbelt
+    da: Copperbelt Province
+    de: Copperbelt
+    el: Κόππερμπελτ
+    es: Provincia de Copperbelt (Zambia)
+    et: Copperbelt
+    fa: استان کوپربلت
+    fi: Copperbeltin provinssi
+    fr: Copperbelt
+    gu: કૉપરબેલ્ટ પ્રાંત
+    hi: कॉपरबेल्ट प्रांत
+    id: Provinsi Copperbelt
+    it: provincia di Copperbelt
+    ja: カッパーベルト州
+    ka: კოპერბელტის პროვინცია
+    kn: ಕಾಪರ್ಬೆಲ್ಟ್ ಪ್ರಾಂತ್ಯ
+    ko: 코퍼벨트 주
+    lt: Vario Juostos provincija
+    mr: कॉपरबेल्ट प्रांत
+    ms: Copperbelt Province
+    nb: Copperbelt
+    nl: Copperbelt
+    pl: Prowincja Pasa Miedzionośnego
+    pt: Copperbelt
+    ro: Provincia Copperbelt
+    ru: Коппербелт
+    si: කොපර්බෙල්ට් පළාත
+    sv: Copperbelt
+    sw: Mkoa wa Copperbelt
+    ta: காப்பெற்பெல்ட் மாகாணம்
+    te: కాపర్ బెల్ట్ ప్రావిన్స్
+    th: จังหวัดเปอเบลท์
+    tr: Copperbelt Bölgesi
+    uk: Коппербелт
+    ur: کاپربیلٹ صوبہ
+    vi: Tỉnh Copperbelt
+    lv: Koperbeltas province
+    ceb: Copperbelt Province
+    zh: 铜带省
+    ccp: "\U00011107\U0001112E\U0001111B\U0001112C\U00011122\U00011134\U0001111D\U0001112C\U00011123\U00011134\U00011111\U00011134"
+    ca: província de Copperbelt
+    'no': Copperbelt
+    he: מחוז קופרבלט
+  comments:
+  type: province
+'09':
+  name: Lusaka
+  code: '09'
+  unofficial_names: Lusaka
+  geo:
+    latitude: -15.416667
+    longitude: 28.283333
+    min_latitude: -15.5344065
+    min_longitude: 28.1987555
+    max_latitude: -15.2992532
+    max_longitude: 28.4887506
+  translations:
+    en: Lusaka
+    af: Lusaka
+    ar: لوساكا
+    be: Правінцыя Лусака
+    bg: Лусака
+    bn: লুকাকা প্রদেশ
+    da: Lusaka Province
+    de: Lusaka
+    el: Λουσάκα
+    es: Provincia de Lusaka
+    fi: Lusakan lääni
+    fr: Province de Lusaka
+    gu: લુસાકા પ્રાંત
+    hi: लुसाका प्रांत
+    id: Provinsi Lusaka
+    it: provincia di Lusaka
+    ja: ルサカ州
+    ka: ლუსაკის პროვინცია
+    kn: ಲುಸಾಕಾ ಪ್ರಾಂತ್ಯ
+    ko: 루사카 주
+    lt: Lusakos provincija
+    mr: लुसाका प्रांत
+    ms: Lusaka Province
+    nb: Lusaka
+    nl: Lusaka
+    pl: Prowincja Lusaka
+    pt: Lusaka
+    ro: Provincia Lusaka
+    ru: Лусака
+    si: ලුසකා පළාත
+    sv: Lusaka
+    sw: Mkoa wa Lusaka
+    ta: லூசாக மாகாணம்
+    te: లుసాకా ప్రావిన్స్
+    th: จังหวัดลูซากา
+    tr: Lusaka Bölgesi
+    uk: Лусака
+    ur: لوساکا صوبہ
+    vi: Tỉnh Lusaka
+    lv: Lusakas province
+    ceb: Lusaka Province
+    zh: 卢萨卡省
+    ccp: "\U00011123\U0001112A\U00011125\U00011107"
+    'no': Lusaka
+    ca: Lusaka
+    cy: Talaith Lusaka
+    fa: استان لوساکا
+  comments:
+  type: province
+'10':
+  name: Muchinga
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة موتشينغا
+    bn: মোসিঙ্গা প্রদেশ
+    da: Muchinga Province
+    de: Provinz Muchinga
+    el: Μουτσίνγκα
+    en: Muchinga
+    es: Provincia de Muchinga
+    fi: Muchingan lääni
+    fr: Province de Muchinga
+    gu: મચીંગા પ્રાંત
+    hi: मुशिंगा प्रांत
+    id: Provinsi Muchinga
+    it: Provincia di Muchinga
+    ja: ムチンガ州
+    ka: მუჩინგის პროვინცია
+    kn: ಮುಚಿಂಗ ಪ್ರಾಂತ್ಯ
+    ko: 무칭가 주
+    mr: मचिंगा प्रांत
+    ms: Muchinga Province
+    nb: Muchinga
+    nl: Muchinga Province
+    pl: Prowincja Muchinga
+    pt: Província de Muchinga
+    ru: Мучинга
+    si: මුචින්ගා පළාත
+    sv: Muchinga
+    ta: முச்சீங்க மாகாணம்
+    te: ముచింగా ప్రావిన్స్
+    th: จังหวัดมูชินกา
+    tr: Muchinga Bölgesi
+    uk: Мучинга
+    ur: موچنگا صوبہ
+    vi: Tỉnh Muchinga
+    lv: Mučingas province
+    ceb: Muchinga Province
+    lt: Mučingos provincija
+    zh: 穆欽加省
+    ccp: "\U0001111F\U0001112A\U0001110C\U00011128\U00011101\U00011109"
+    'no': Muchinga
+    cy: Talaith Muchinga
+    fa: استان موچینگا
+  comments:
+  type: province

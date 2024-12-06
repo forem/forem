@@ -1,0 +1,53 @@
+---
+KZ:
+  alpha2: KZ
+  alpha3: KAZ
+  continent: Asia
+  country_code: '7'
+  currency_code: KZT
+  distance_unit: KM
+  gec: KZ
+  geo:
+    latitude: 48.019573
+    longitude: 66.923684
+    max_latitude: 55.4419839
+    max_longitude: 87.315415
+    min_latitude: 40.5685841
+    min_longitude: 46.493672
+    bounds:
+      northeast:
+        lat: 55.4419839
+        lng: 87.315415
+      southwest:
+        lat: 40.5685841
+        lng: 46.493672
+  international_prefix: '810'
+  ioc: KAZ
+  iso_long_name: The Republic of Kazakhstan
+  iso_short_name: Kazakhstan
+  languages_official:
+  - kk
+  - ru
+  languages_spoken:
+  - kk
+  - ru
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '8'
+  nationality: Kazakhstani
+  number: '398'
+  postal_code: true
+  postal_code_format: "\\d{6}"
+  region: Asia
+  start_of_week: monday
+  subregion: Central Asia
+  un_locode: KZ
+  unofficial_names:
+  - Kazakhstan
+  - Kasachstan
+  - Kazajistán
+  - カザフスタン
+  - Kazachstan
+  world_region: EMEA

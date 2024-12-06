@@ -1,0 +1,54 @@
+---
+TC:
+  alpha2: TC
+  alpha3: TCA
+  continent: North America
+  country_code: '1'
+  currency_code: USD
+  distance_unit: MI
+  gec: TK
+  geo:
+    latitude: 21.694025
+    longitude: -71.797928
+    max_latitude: 22.0016285
+    max_longitude: -71.05949989999999
+    min_latitude: 21.1459922
+    min_longitude: -72.52069999999999
+    bounds:
+      northeast:
+        lat: 22.0016285
+        lng: -71.05949989999999
+      southwest:
+        lat: 21.1459922
+        lng: -72.52069999999999
+  international_prefix: '011'
+  ioc:
+  iso_long_name: The Turks and Caicos Islands
+  iso_short_name: Turks and Caicos Islands
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  nanp_prefix: '1649'
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Turks and Caicos Islander
+  number: '796'
+  postal_code: true
+  postal_code_format: TKCA 1ZZ
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: TC
+  unofficial_names:
+  - Turks and Caicos Islands
+  - Turks- und Caicosinseln
+  - Îles Turks et Caïcos
+  - Islas Turks y Caicos
+  - タークス・カイコス諸島
+  - Turks- en Caicoseilanden
+  - Turks and Caicos
+  world_region: APAC

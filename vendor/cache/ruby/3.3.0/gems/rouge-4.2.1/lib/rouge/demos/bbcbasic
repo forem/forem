@@ -1,0 +1,6 @@
+REM > DefaultFilename
+REM Ordinary comment
+FOR n=1 TO 10
+PRINTTAB(n)"Hello there ";FNnumber(n)DIV3+1
+NEXT:END
+DEFFNnumber(x%)=ABS(x%-4)

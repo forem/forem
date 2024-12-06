@@ -1,0 +1,6 @@
+_private _method test_object.init()
+	## initializer
+	.slot1 << _self.default_value
+	_return _self
+_endmethod
+$

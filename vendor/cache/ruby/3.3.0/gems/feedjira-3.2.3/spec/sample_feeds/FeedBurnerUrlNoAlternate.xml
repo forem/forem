@@ -1,0 +1,28 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/atom10full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title>QQQQ</title>
+
+  <link href="http://example.com/"/>
+  <updated>2010-09-18T10:02:20-07:00</updated>
+  <id>QQQQ</id>
+  <author>
+    <name>QQQQ</name>
+    <email>QQQQ@example.com</email>
+  </author>
+
+
+  <atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/atom+xml"
+               href="http://feeds.feedburner.com/QQQQ"/>
+  <feedburner:info xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" uri="QQQQ"/>
+  <atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/"/>
+  <entry>
+    <title>QQQQ</title>
+    <link href="http://example.com/QQQQ.html"/>
+    <updated>2010-08-11T00:00:00-07:00</updated>
+    <id>http://example.com/QQQQ.html</id>
+    <content type="html">QQQQ</content>
+  </entry>
+</feed>

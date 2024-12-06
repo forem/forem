@@ -1,0 +1,52 @@
+---
+NF:
+  alpha2: NF
+  alpha3: NFK
+  continent: Australia
+  country_code: '672'
+  currency_code: AUD
+  distance_unit: KM
+  gec: NF
+  geo:
+    latitude: -29.040835
+    longitude: 167.954712
+    max_latitude: -28.9929014
+    max_longitude: 167.9985523
+    min_latitude: -29.137506
+    min_longitude: 167.9134083
+    bounds:
+      northeast:
+        lat: -28.9929014
+        lng: 167.9985523
+      southwest:
+        lat: -29.137506
+        lng: 167.9134083
+  international_prefix: '00'
+  ioc:
+  iso_long_name: The Territory of Norfolk Island
+  iso_short_name: Norfolk Island
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 6
+  national_prefix: None
+  nationality: Norfolk Islander
+  number: '574'
+  postal_code: true
+  postal_code_format: '2899'
+  region: Oceania
+  start_of_week: monday
+  subregion: Australia and New Zealand
+  un_locode: NF
+  unofficial_names:
+  - Norfolk Island
+  - Norfolkinsel
+  - Île de Norfolk
+  - Isla de Norfolk
+  - ノーフォーク島
+  - Norfolkeiland
+  world_region: APAC

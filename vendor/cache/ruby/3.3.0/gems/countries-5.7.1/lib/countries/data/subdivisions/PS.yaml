@@ -1,0 +1,804 @@
+---
+BTH:
+  name: محافظة بيت لحم
+  code: BTH
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة بيت لحم
+    bn: বেথেলহাম গভর্নোরেট
+    ca: Governació de Betlem
+    da: Bethlehem Governorate
+    de: Bethlehem Gouvernement
+    el: Βηθλεέμ Γκοβερνορατόρε
+    en: Bethlehem
+    es: Gobernación de Belén
+    fa: استان بیت‌لحم
+    fi: Bethlehemin kuvernoraatti
+    fr: Gouvernorat de Bethléem
+    gu: બેથલેહેમ ગવર્નોરેટ
+    he: בית לחם
+    hi: बेथलेहम गवर्नरेट
+    hu: Betlehem kormányzóság
+    id: Bethlehem Governorate
+    it: Governatorato di Betlemme
+    ja: ベツレヘム
+    kn: ಬೆಥ್ ಲೆಹೆಮ್ ಗವರ್ನೇಟ್
+    ko: 베들레헴 주
+    lt: Betliejaus muchafaza
+    mr: बेथलहेम गव्हर्नोरेट
+    ms: Bethlehem Governorate
+    nb: Bethlehem Governorate
+    nl: Bethlehem
+    pl: Gubernatorstwo Betlejem
+    pt: Governamento de Belém
+    ro: Guvernoratul Betleem
+    ru: Вифлеем
+    si: බෙත්ලෙහෙම් පළාත
+    sv: Bethlehem Governorate
+    ta: பெத்லகேம் கோவெர்னோரேட்
+    te: బెత్లెహామ్ గవర్నరేట్
+    th: เขตการปกครองเบธเลเฮม
+    tr: Bethlehem Yönetimi
+    uk: Вифлеєм (провінція)
+    ur: محافظہ بیت لحم
+    vi: Tỉnh Bethlehem
+    zh: 伯利恒省
+    lv: Bētlemes muhāfaza
+    ccp: "\U0001111D\U0001112C\U00011117\U0001112C\U00011123\U00011134\U00011126\U0001111F\U00011134"
+    be: Віфлеем
+    'no': Bethlehem Governorate
+    cy: Llywodraethiaeth Bethlehem
+  comments:
+  type: governorate
+DEB:
+  name: الوسطى
+  code: DEB
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: الوسطى
+    bn: দেইর আল-বালাহ গভর্নোরেট
+    ca: Governació de Deir al-Balah
+    da: Deir al-Balah Governorate
+    de: Gouvernement Dair al-Balah
+    el: Ντέιρ Αλ Μπαλάχ
+    en: Deir al-Balah
+    es: Gobernación de Deir el-Balah
+    fa: استان دیرالبلح
+    fi: Deir al-Balahn kuvernoraatti
+    fr: Gouvernorat de Deir Al-Balah
+    gu: દેઇર અલ-બાલાહ ગવર્નોરેટ
+    hi: देिर अल-बालाह गवर्नरेट
+    hu: Dejr el-Balah kormányzóság
+    id: Kegubernuran Deir al-Balah
+    it: Governatorato di Deir al-Balah
+    ja: ディール・バラフ
+    kn: ಡಿಯರ್ ಅಲ್-ಬಾಲಾ ಗವರ್ನೇಟ್
+    ko: 데이르알발라 주
+    mr: देर अल-बालाह गव्हर्नोरेट
+    ms: Deir al-Balah Governorate
+    nl: Deir el-Balah
+    pl: Gubernatorstwo Deir al-Balah
+    ps: محافظه دير البلح
+    ro: Guvernoratul Deir al-Balah
+    ru: Дейр эль-Балах
+    si: ඩයර් අල්-බලා පළාත
+    sv: Deir al-Balah
+    ta: டேஇரு அல்-பலாஹ் கோவெர்னோரே
+    te: డెయిర్ అల్-బలాహ్ గవర్నరేట్
+    th: แดร์ อัล บาลา
+    tr: Deir al-Balah Yönetimi
+    ur: محافظہ دیر البلح
+    vi: Tỉnh Deir al-Balah
+    lv: Deirelbelehas muhāfaza
+    ceb: Deir Al Balah
+    lt: Deir al-Bachalo gubernija
+    zh: 代尔拜莱赫省
+    ccp: "\U00011113\U0001112C\U00011103\U00011128\U00011122\U00011134 \U00011103\U00011123\U00011134
+      \U0001111D\U00011123\U00011126\U00011134"
+    he: דיר אל-בלח (נפה)
+    uk: Муніципалітет Дейр-ель-Балах
+    cy: Llywodraethiaeth Deir al-Balah
+  comments:
+  type: governorate
+GZA:
+  name: محافظة غزة
+  code: GZA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة غزة
+    ca: Governació de Gaza
+    de: Gouvernement Gaza
+    en: Gaza
+    es: Gobernación de Gaza
+    fa: استان غزه
+    fr: Gouvernorat de Gaza
+    hu: Gáza kormányzóság
+    id: Kegubernuran Gaza
+    ja: ガザ県
+    ko: 가자 주
+    nl: Gaza
+    ps: محافظه غزه
+    ro: Guvernoratul Gaza
+    ru: Газа
+    tr: Gazze valiliği
+    ur: محافظہ غزہ
+    zh: 加沙省
+    pl: Gaza
+    ccp: "\U00011109\U0001110E"
+    he: עזה (נפה)
+    it: governatorato di Gaza
+    uk: мугафаза Ґаза
+    bn: গাজা গভর্নরেট
+    cy: Llywodraethiaeth Gaza
+    el: Κυβερνείο Γάζας
+    ta: காசா ஆளுநரகம்
+  comments:
+  type: governorate
+HBN:
+  name: محافظة الخليل
+  code: HBN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة الخليل
+    bn: হেবরন গভর্নোরেট
+    ca: Governació d’Hebron
+    da: Hebron Governorate
+    de: Hebron Governorate
+    el: Χέμπρον
+    en: Hebron
+    es: Gobernación de Hebrón
+    fa: استان الخلیل
+    fi: Hebronn kuvernoraatti
+    fr: Gouvernorat de Hébron
+    gu: હેબ્રોન ગવર્નોરેટ
+    he: חברון
+    hi: हेब्रोन गवर्नरेट
+    hu: Hebron kormányzóság
+    id: Hebron Governorate
+    it: Governatorato di Hebron
+    ja: ヘブロン
+    kn: ಹೆಬ್ರೋನ್ ಗವರ್ನೇಟ್
+    ko: 헤브론 주
+    lt: Hebrono muchafaza
+    mr: हेब्रोन गव्हर्नोरेट
+    ms: Hebron Governorate
+    nb: Herbron Governorate
+    nl: Hebron
+    pl: Gubernatorstwo Hebron
+    pt: Governamento de Hebron
+    ro: Guvernoratul Hebron
+    ru: Хеврон
+    si: හෙබ්‍රොන් පළාත
+    sv: Herbron Governorate
+    ta: ஹெப்ரோன் கோவெர்னோரே
+    te: హెబ్రన్ గవర్నరేట్
+    th: ฮีบรอน
+    tr: Hebron Valiliği
+    uk: Хеврон (провінція)
+    ur: محافظہ الخلیل
+    vi: Tỉnh Hebron
+    lv: Hebronas muhāfaza
+    zh: 希布伦省
+    ccp: "\U00011126\U0001112C\U0001111D\U00011133\U00011122\U00011127\U0001111A\U00011134"
+    'no': Herbron Governorate
+    ceb: Al Khalil
+    cy: Llywodraethiaeth Hebron
+  comments:
+  type: governorate
+JEM:
+  name: القدس
+  code: JEM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: القدس
+    ca: Governació de Jerusalem
+    el: Κυβερνείο Ιερουσαλήμ
+    en: Jerusalem
+    es: Gobernación de Jerusalén
+    fa: استان قدس
+    fr: gouvernorat de Jérusalem
+    he: אל-קודס
+    hu: Jeruzsálem kormányzóság
+    it: Governatorato di Gerusalemme
+    ja: エルサレム県
+    ko: 예루살렘 주
+    lt: Jeruzalės muchafaza
+    nl: Jeruzalem
+    ro: Guvernoratul Ierusalim
+    ru: Иерусалим
+    sv: Jerusalems provins
+    ur: محافظہ یروشلم
+    zh: 耶路撒冷省
+    pl: Jerozolima
+    ccp: "\U0001110E\U0001112C\U00011122\U0001112A\U0001110E\U00011123\U0001112C\U0001111F\U00011134"
+    de: Gouvernement Jerusalem
+    be: Іерусалім
+    cy: Llywodraethiaeth Jeriwsalem
+    id: Kegubernuran Yerusalem
+    tr: Kudüs valiliği
+  comments:
+  type: governorate
+JEN:
+  name: جنين
+  code: JEN
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: جنين
+    ca: Governació de Jenin
+    de: Jenin Governorate
+    en: Jenin
+    es: Gobernación de Yenín
+    fa: استان جنین
+    fr: Gouvernorat de Jénine
+    he: ג׳נין
+    hu: Dzsenín kormányzóság
+    id: Kegubernuran Jenin
+    it: Governatorato di Jenin
+    ja: ジェニーン
+    ko: 제닌 주
+    lt: Dženino muchafaza
+    nl: Jenin
+    pt: Província de Jenin
+    ro: Guvernoratul Jenin
+    ru: Джанин
+    tr: Cenin valiliği
+    ur: محافظہ جنین
+    zh: 杰宁省
+    pl: Dżanin
+    ccp: "\U0001110E\U0001112C\U0001111A\U00011128\U0001111A\U00011134"
+    cy: Llywodraethiaeth Jenin
+    el: Κυβερνείο Τζενίν
+    ta: ஜெனின் ஆளுநரகம்
+    th: เขตผู้ว่าการญินีน
+  comments:
+  type: governorate
+JRH:
+  name: أريحا
+  code: JRH
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: أريحا
+    ca: Governació de Jericó
+    en: Jericho
+    es: Gobernación de Jericó
+    fa: استان اریحا
+    fr: Gouvernorat de Jéricho
+    he: יריחו
+    hu: Jerikó kormányzóság
+    it: Governatorato di Gerico
+    ja: エリコ
+    ko: 예리코 주
+    lt: Jericho muchafaza
+    nl: Jericho
+    ro: Guvernoratul Ierihon
+    ru: Иерихон
+    ur: محافظہ اریحا
+    zh: 杰里科省
+    pl: Jerycho
+    ccp: "\U0001110E\U0001112C\U00011122\U00011128\U00011107\U0001112E"
+    cy: Llywodraethiaeth Jericho
+    de: Gouvernement Jericho
+    el: Κυβερνείο Ιεριχούς
+    ta: எரிக்கோ ஆளுநரகம்
+    tr: Eriha valiliği
+  comments:
+  type: governorate
+KYS:
+  name: محافظة خان يونس
+  code: KYS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة خان يونس
+    ca: Governació de Khan Yunis
+    de: Gouvernement Chan Yunis
+    en: Khan Yunis
+    es: Gobernación de Jan Yunis
+    fa: استان خان‌یونس
+    fr: Gouvernorat de Khan Younès
+    hu: Hán Júnisz kormányzóság
+    id: Kegubernuran Khan Yunis
+    ja: ハーン・ユーニス
+    ko: 칸유니스 주
+    nl: Khan Yunis
+    ps: محافظه خان يونس
+    ro: Guvernoratul Khan Yunis
+    ru: Хан-Юнис
+    tr: Han Yunus valiliği
+    ur: محافظہ خان یونس
+    ceb: Khan Yunis Governorate
+    zh: 汉尤尼斯省
+    pl: Chan Junus
+    ccp: "\U00011108\U0001111A\U00011134 \U00011103\U00011128\U00011105\U0001112A\U0001111A\U0001112A\U0001110C\U00011134"
+    he: ח׳אן יונס (נפה)
+    it: governatorato di Khan Yunis
+    cy: Llywodraethiaeth Khan Yunis
+    el: Κυβερνείο Χαν Γιουνίς
+    ta: கான் யூனிஸ் ஆளுநரகம்
+  comments:
+  type: governorate
+NBS:
+  name: محافظة نابلس
+  code: NBS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة نابلس
+    be: Наблус
+    bn: নাব্লুস গভর্নোরেট
+    ca: Governació de Nablus
+    da: Nablus Governorate
+    de: Gouvernement Nablus
+    el: Νάμπλους Γκοβερνοράτε
+    en: Nablus
+    es: Gobernación de Naplusa
+    fa: استان نابلس
+    fi: Nablusin kuvernoraatti
+    fr: Gouvernorat de Naplouse
+    gu: નાબલુસ ગવર્નોરેટ
+    he: שכם
+    hi: नबलस गवर्नरेट
+    hu: Náblusz kormányzóság
+    id: Nablus Governorate
+    it: Governatorato di Nablus
+    ja: ナーブルス
+    kn: ನಬ್ಲಸ್ ಗವರ್ನೇಟ್
+    ko: 나블루스 주
+    lt: Nabluso muchafaza
+    mr: नाबलूस गव्हर्नोरेट
+    ms: Nablus Governorate
+    nb: Nablus Governorate
+    nl: Nablus
+    pl: Gubernatorstwo Nablus
+    pt: Província de Nablus
+    ro: Guvernoratul Nablus
+    ru: Наблус
+    si: නබ්ලස් පළාත
+    sv: Nablus Governorate
+    ta: நப்லஸ் கோவெர்னோரேட்
+    te: నాబ్లస్ గవర్నరేట్
+    th: เขตการปกครองแนบลูส
+    tr: Nablus Yönetimi
+    ur: محافظہ نابلس
+    vi: Tỉnh Nablus
+    lv: Nablusas muhāfaza
+    zh: 纳布卢斯省
+    ccp: "\U0001111A\U0001111B\U00011134\U00011123\U0001110C\U00011134"
+    uk: Муніципалітет Наблус
+    'no': Nablus Governorate
+    cy: Llywodraethiaeth Nablus
+    hy: Նաբլուս
+  comments:
+  type: governorate
+NGZ:
+  name: شمال غزة
+  code: NGZ
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: شمال غزة
+    bn: উত্তর গাজা গভর্নোরেট
+    ca: Governació de Gaza Nord
+    da: North Gaza Governorate
+    de: Gouvernement Nordgaza
+    el: Βόρεια Γάζα
+    en: North Gaza
+    es: Gobernación de Gaza del Norte
+    fa: استان شمال غزه
+    fi: North Gazan kuvernoraatti
+    fr: Gouvernorat de Gaza-Nord
+    gu: નોર્થ ગાઝા ગવર્નોરેટ
+    hi: उत्तर गाजा गवर्नरेट
+    hu: Észak-Gáza kormányzóság
+    id: Kegubernuran Gaza Utara
+    it: Governatorato di Nord Gaza
+    ja: 北ガザ県
+    kn: ಉತ್ತರ ಗಾಜಾ ಗವರ್ನರ್
+    ko: 북가자 주
+    mr: नॉर्थ गाझा गव्हर्नोरेट
+    ms: North Gaza Governorate
+    nb: Nord Gaza Governorate
+    nl: Noord Gaza
+    pl: Gubernatorstwo Północnej Gazy
+    ps: محافظه شمالي غزه
+    pt: Governamento Nord de Gaza
+    ro: Guvernoratul Gaza de Nord
+    ru: Северная Газа
+    si: උතුරු ගාසා පළාත
+    sv: Norra Gaza Governorate
+    ta: வடக்கு காசா கோவெர்னோரே
+    te: ఉత్తర గాజా గవర్నరేట్
+    th: กาซาเหนือ
+    tr: Kuzey Gazze valiliği
+    ur: محافظہ شمالی غزہ
+    vi: Tỉnh Bắc Gaza
+    lv: Ziemeļgazas muhāfaza
+    lt: Šiaurinė Gazos gubernija
+    zh: 北加沙省
+    ccp: "\U00011105\U00011127\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134
+      \U00011109\U0001110E"
+    he: צפון עזה (נפה)
+    uk: Муніципалітет Північна Газа
+    'no': Nord Gaza Governorate
+    cy: Llywodraethiaeth Gogledd Gaza
+  comments:
+  type: governorate
+QQA:
+  name: محافظة قلقيلية
+  code: QQA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة قلقيلية
+    bn: কাল্কিলিয়া গভর্নোরেট
+    ca: Governació de Qalqilya
+    da: Qalqilya Governorate
+    de: Gouvernement Qalqilya
+    el: Καλκίλγια
+    en: Qalqilya
+    es: Gobernación de Calquelia
+    fa: استان قلقیلیه
+    fi: Qalqilyan kuvernoraatti
+    fr: Gouvernorat de Qalqilya
+    gu: કેલકીલ્યા ગવર્નોરેટ
+    he: קלקיליה
+    hi: कालकिया गवर्नरेट
+    hu: Kalkílija kormányzóság
+    id: Kegubernuran Qalqilya
+    it: Governatorato di Qalqilya
+    ja: カルキーリヤ
+    kn: ಕಲ್ಕಿಲಿಯಾ ಗವರ್ನೇಟ್
+    ko: 칼킬리야 주
+    lt: Kalkiljos muchafaza
+    mr: कॅलकियला गव्हर्नोरेट
+    ms: Qalqilya Governorate
+    nb: Qalqilya
+    nl: Qalqilya
+    pl: Gubernatorstwo Qalqilya
+    pt: Qalqilya
+    ro: Guvernoratul Qalqilya
+    ru: Калькилия
+    si: කල්කිල්‍යා පළාත
+    sv: Qalqilya
+    ta: கியாழக்கிலிய கோவெர்னோரே
+    te: ఖాల్గిల్యా గవర్నరేట్
+    th: คาลคิลยา
+    tr: Qalqilya District
+    ur: محافظہ قلقیلیہ
+    vi: Tỉnh Qalqilya
+    lv: Kalkīljas muhāfaza
+    zh: 盖勒吉利耶省
+    ccp: "\U00011107\U0001112A\U00011120\U00011123\U00011134\U00011107\U0001112A\U00011123\U00011128\U00011120"
+    uk: Муніципалітет Калькілія
+    'no': Qalqilya
+    ceb: Qalqilya
+    cy: Llywodraethiaeth Qalqilya
+  comments:
+  type: governorate
+RBH:
+  name: رام الله والبيرة
+  code: RBH
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: رام الله والبيرة
+    bn: রামাল্লাহ ও আল-বিরেহ গভর্নোরেট
+    ca: Governació de Ramal·lah i al-Bireh
+    da: Ramallah and al-Bireh Governorate
+    de: Gouvernement Ramallah und al-Bireh
+    el: Ραμάλα και αλ-Μπίρεχ
+    en: Ramallah and al-Bireh
+    es: Gobernación de Ramala y Al Bireh
+    fa: استان رام‌الله و البیره
+    fi: Ramallah ja al-Birehn kuvernoraatti
+    fr: Gouvernorat de Ramallah et Al-Bireh
+    gu: રામલ્લાહ એન્ડ અલ-બિરેહ ગવર્નોરેટ
+    he: נפת רמאללה ואל-בירה
+    hi: रामल्लाह और अल-बिरेह गवर्नरेट
+    hu: Rámalláh és el-Bíra kormányzóság
+    id: Ramallah and al-Bireh Governorate
+    it: Governatorato di Ramallah e al-Bireh
+    ja: ラマッラー・アル＝ビーレ県
+    kn: ರಾಮಾಲ್ಲಾಹ್ ಮತ್ತು ಅಲ್-ಬೈರೆ ಗವರ್ನೇಟ್
+    ko: 라말라알비레 주
+    lt: Ramalos ir Biros muchafaza
+    mr: रामाल्ला अँड अल-बिरेहचे गव्हर्नोरेट
+    ms: Ramallah and al-Bireh Governorate
+    nb: Ramallah og al-Bireh
+    nl: Ramallah & Al-Bireh
+    pl: Gubernatorstwo Ramallah and al-Bireh
+    pt: Ramallah og al-Bireh
+    ro: Guvernoratul Ramallah ṣi al-Bireh
+    ru: Рамалла и эль-Бира
+    si: රමල්ලා සහ අල්-බිරේ පළාත
+    sv: Ramallah och al-Bireh
+    ta: ராமல்லாஹ் அண்ட் அல் -பிரெஹ் கோவெர்னோரே
+    te: రామల్లా మరియు అల్-బిరేహ్ గవర్నరేట్
+    th: รามัลลาฮ์ แอนด์ อัล ไบเรฮ์ โกเวอโนเรท
+    tr: Ramallah ve al-Bireh Valiliği
+    ur: محافظہ رام الله اور البیرہ
+    vi: Tỉnh Ramallah và al-Bireh
+    lv: Rāmallas un Bīras muhāfaza
+    zh: 拉马拉和比雷赫省
+    ccp: "\U00011122\U0001111F\U00011123\U00011133\U00011123\U00011126\U00011134 \U00011103\U00011133\U00011103
+      \U00011103\U00011123\U00011134-\U0001111D\U00011128\U00011122\U0001112C\U00011126\U00011134"
+    uk: Муніципалітет Рамалла та ель-Біра
+    'no': Ramallah og al-Bireh
+    cy: Llywodraethiaeth Ramal-lâh ac Al-Bireh
+  comments:
+  type: governorate
+RFH:
+  name: محافظة رفح الفلسطينية
+  code: RFH
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة رفح الفلسطينية
+    ca: Governació de Rafah
+    de: Gouvernement Rafah
+    en: Rafah
+    es: Gobernación de Rafah
+    et: Rafaḩi kubernerkond
+    fa: استان رفح
+    fr: Gouvernorat de Rafah
+    he: רפיח
+    hu: Rafah kormányzóság
+    id: Kegubernuran Rafah
+    ja: ラファハ
+    ko: 라파 주
+    nl: Rafah
+    ps: محافظه رفح
+    ro: Guvernoratul Rafah
+    ru: Рафах
+    uk: Рафах
+    ur: محافظہ رفح
+    zh: 拉法省
+    pl: Rafah
+    ccp: "\U00011122\U0001111C\U00011126\U00011134"
+    it: governatorato di Rafah
+    cy: Llywodraethiaeth Rafah
+    el: Κυβερνείο Ράφαχ
+    ta: ரஃபா ஆளுநரகம்
+    tr: Refah valiliği
+  comments:
+  type: governorate
+SLT:
+  name: محافظة سلفيت
+  code: SLT
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة سلفيت
+    bn: সালফিত গভর্নোরেট
+    ca: Governació de Salfit
+    da: Salfit Governorate
+    de: Gouvernement Salfit
+    el: Σαλφίτ Γκοβερνοράτε
+    en: Salfit
+    es: Gobernación de Salfit
+    fa: استان سلفیت
+    fi: Salfitin kuvernoraatti
+    fr: Gouvernorat de Salfit
+    gu: સેલ્ફિટ ગવર્નોરેટ
+    he: סלפית
+    hi: साल्फीट गवर्नरेट
+    hu: Szalfít kormányzóság
+    id: Salfit Governorate
+    it: Governatorato di Salfit
+    ja: サルフィート
+    kn: ಸಫೀಟ್ ಗವರ್ನೇಟ್
+    ko: 살피트 주
+    lt: Salfito muchafaza
+    mr: सलटेट गव्हनर्टेट
+    ms: Salfit Governorate
+    nb: Salfit Governorate
+    nl: Salfit
+    pl: Gubernatorstwo Salfit
+    pt: Província de Salfit
+    ro: Guvernoratul Salfit
+    ru: Сальфит
+    si: සල්ෆිට් පළාත
+    sv: Salfit Governorate
+    ta: சாலபிட் கோவெர்னோரே
+    te: సాల్ఫిట్ గవర్నరేట్
+    th: ฟรอเรียนา
+    tr: Salfint Yönetimi
+    ur: محافظہ سلفیت
+    vi: Tỉnh Salfit
+    lv: Selfītas muhāfaza
+    zh: 萨尔费特省
+    ccp: "\U00011125\U00011123\U00011134\U0001111C\U00011128\U00011116\U00011134"
+    uk: Муніципалітет Салфіт
+    'no': Salfit Governorate
+    cy: Llywodraethiaeth Salfit
+  comments:
+  type: governorate
+TBS:
+  name: محافظة طوباس
+  code: TBS
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة طوباس
+    ca: Governació de Tubas
+    en: Tubas
+    es: Gobernación de Tubas
+    fa: استان طوباس
+    fr: Gouvernorat de Tubas
+    he: טובאס
+    hu: Túbász kormányzóság
+    id: Kegubernuran Tubas
+    ja: トゥーバース
+    ko: 투바스 주
+    lt: Tubaso muchafaza
+    nl: Tubas
+    pt: Tubas Governorate
+    ro: Guvernoratul Tubas
+    ru: Тубас
+    tr: Tubas valiliği
+    ur: محافظہ طوباس
+    zh: 图巴斯省
+    pl: Tubas
+    ccp: "\U00011111\U0001112A\U0001111D\U0001110C\U00011134"
+    it: governatorato di Tubas
+    bn: তুবাস গভর্নরেট
+    cy: Rhanbarth Tubas
+    de: Gouvernement Tubas
+    el: Κυβερνείο Τουμπάς
+    ta: துபாஸ் ஆளுநரகம்
+  comments:
+  type: governorate
+TKM:
+  name: محافظة طولكرم
+  code: TKM
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة طولكرم
+    bn: তুল্কারম গভর্নোরেট
+    ca: Governació de Tulkarem
+    da: Tulkarm Governorate
+    de: Gouvernement Tulkarm
+    el: Τουλκάρμ
+    en: Tulkarm
+    es: Gobernación de Tulcarem
+    fa: استان طولکرم
+    fi: Tulkarmin kuvernoraatti
+    fr: Gouvernorat de Tulkarem
+    gu: ટુલકાર્મ ગવર્નોરેટ
+    he: טולכרם
+    hi: तुलकार्म गवर्नरेट
+    hu: Túlkarm kormányzóság
+    id: Tulkarm Governorate
+    it: Governatorato di Tulkarm
+    ja: トゥールカリム
+    kn: ತುಲ್ಕಾರಮ್ ಗವರ್ನೇಟ್
+    ko: 툴카름 주
+    lt: Tulkarmo muchafaza
+    mr: तुळकर्म गव्हर्नोरेट
+    ms: Tulkarm Governorate
+    nb: Tulkarm
+    nl: Tulkarm
+    pl: Gubernatorstwo Tulkarm
+    pt: Tulkarm
+    ro: Guvernoratul Tulkarm
+    ru: Тулькарм
+    si: ටුල්කාර්ම් පළාත
+    sv: Tulkarm
+    ta: துல்கார்ம் கோவெர்னோரே
+    te: టుల్కామ్ గవర్నరేట్
+    th: ทัลคาม โกเวอโนเรท
+    tr: Tulkarm Yönetimi
+    ur: محافظہ طولکرم
+    vi: Tỉnh Tulkarm
+    lv: Tūlkarmas muhāfaza
+    zh: 图勒凯尔姆省
+    ccp: "\U00011111\U0001112A\U00011123\U00011134\U00011107\U00011122\U00011134\U0001111F\U00011134"
+    uk: Муніципалітет Тулькарм
+    'no': Tulkarm
+    cy: Rhanbarth Tulkarm
+  comments:
+  type: governorate

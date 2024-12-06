@@ -1,0 +1,22 @@
+<p>There's lots to like about Google's new web browser, <a href="http://www.google.com/chrome">Chrome</a>, which was released today.&nbsp; When I read the awesome <a href="http://www.google.com/googlebooks/chrome/">comic strip introduction</a> yesterday, however, the thing that stood out most for me was in very small type: the name Lars Bak attached to the V8 JavaScript engine.&nbsp; I know of Lars from his work on Self, Strongtalk, HotSpot and OOVM, and his involvement in V8 says a lot about the kind of language implementation it will be.&nbsp; David Griswold has posted some <a href="http://groups.google.com/group/strongtalk-general/browse_thread/thread/40eb8f405fbd3041">more information </a>on the Strongtalk list:
+
+</p><blockquote><p>
+The V8 development team has multiple members of the original
+Animorphic team; it is headed by Lars Bak, who was the technical lead
+for both Strongtalk and the HotSpot Java VM (as well as a huge
+contributor to the original Self VM).&nbsp; &nbsp;I think that you will find
+that V8 has a lot of the creamy goodness of the Strongtalk and Self
+VMs, with many big architectural improvements
+</p></blockquote><p>
+
+I'll post more on this later, but things are getting interesting...</p>
+
+<p>Update: the V8 code is already <a href="http://code.google.com/apis/v8/">available</a>, and builds and runs fine on Mac OS X.&nbsp; From the <a href="http://code.google.com/apis/v8/design.html">design docs</a>, it's pretty clear that this is indeed what I was hoping for: a mainstream, open source dynamic language implementation that learned and applies the lessons from Smalltalk, Self and Strongtalk.&nbsp; Most telling are that the only two papers cited in that document are titled &quot;An Efficient Implementation of Self&quot; and &quot;An Efficient Implementation of the Smalltalk-80 System&quot;.</p>
+
+<p>The &quot;classes as nodes in a state machine&quot; trick for expando properties is especially neat.</p>
+
+<p>The bad news: V8 is over 100,000 lines of C++.</p>
+
+<p>&nbsp;</p>
+
+<p><img src="http://www.avibryant.com/files/picture_19.png" /></p>

@@ -1,0 +1,105 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "invoice.payment_failed",
+  "object": "event",
+  "data": {
+    "object": {
+      "date": 1380674206,
+      "id": "in_00000000000000",
+      "period_start": 1378082075,
+      "period_end": 1380674075,
+      "lines": {
+        "object": "list",
+        "count": 3,
+        "url": "/v1/invoices/in_00000000000000/lines",
+        "data": [
+          {
+            "id": "ii_00000000000000",
+            "object": "line_item",
+            "type": "invoiceitem",
+            "livemode": false,
+            "amount": 19000,
+            "currency": "usd",
+            "proration": true,
+            "period": {
+              "start": 1393765661,
+              "end": 1393765661
+            },
+            "quantity": null,
+            "plan": null,
+            "description": "Remaining time on Platinum after 02 Mar 2014",
+            "metadata": {}
+          },
+          {
+            "id": "ii_00000000000001",
+            "object": "line_item",
+            "type": "invoiceitem",
+            "livemode": false,
+            "amount": -9000,
+            "currency": "usd",
+            "proration": true,
+            "period": {
+              "start": 1393765661,
+              "end": 1393765661
+            },
+            "quantity": null,
+            "plan": null,
+            "description": "Unused time on Gold after 05 Mar 2014",
+            "metadata": {}
+          },
+          {
+            "id": "su_00000000000000",
+            "object": "line_item",
+            "type": "subscription",
+            "livemode": false,
+            "amount": 20000,
+            "currency": "usd",
+            "proration": false,
+            "period": {
+              "start": 1383759053,
+              "end": 1386351053
+            },
+            "quantity": 1,
+            "plan": {
+              "interval": "month",
+              "product": "pr_00000000000000",
+              "created": 1300000000,
+              "amount": 20000,
+              "currency": "usd",
+              "id": "platinum",
+              "object": "plan",
+              "livemode": false,
+              "interval_count": 1,
+              "trial_period_days": null,
+              "metadata": {}
+            },
+            "description": null,
+            "metadata": null
+          }
+        ]
+      },
+      "subtotal": 30000,
+      "total": 30000,
+      "customer": "cus_00000000000000",
+      "object": "invoice",
+      "attempted": true,
+      "closed": false,
+      "paid": false,
+      "livemode": false,
+      "attempt_count": 1,
+      "amount_due": 30000,
+      "currency": "usd",
+      "starting_balance": 0,
+      "ending_balance": 0,
+      "next_payment_attempt": 1380760475,
+      "charge": "ch_00000000000000",
+      "discount": null,
+      "application_fee": null,
+      "subscription": "su_00000000000000",
+      "metadata": {},
+      "description": null
+    }
+  }
+}

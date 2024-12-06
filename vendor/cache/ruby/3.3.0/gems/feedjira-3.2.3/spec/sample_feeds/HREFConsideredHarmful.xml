@@ -1,0 +1,314 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+  xmlns:admin="http://webns.net/mvcb/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:cc="http://web.resource.org/cc/"
+  xmlns="http://purl.org/rss/1.0/">
+
+<channel rdf:about="http://www.avibryant.com/">
+<title>HREF Considered Harmful</title>
+<link>http://www.avibryant.com/</link>
+<description>Avi Bryant</description>
+<dc:language>en-US</dc:language>
+<dc:creator></dc:creator>
+<dc:date>2008-09-02T12:50:07-07:00</dc:date>
+<admin:generatorAgent rdf:resource="http://www.typepad.com/" />
+
+
+<items>
+<rdf:Seq><rdf:li rdf:resource="http://www.avibryant.com/2008/09/chrome-v8-and-s.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2008/06/maglev-recap.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2008/05/maglev.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2008/05/those-who-misre.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2008/03/ive-had-a-numbe.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2008/01/dont-panic.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2008/01/dna-as-code.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2007/10/code-as-screenp.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2007/09/code-generation.html" />
+<rdf:li rdf:resource="http://www.avibryant.com/2007/07/moving.html" />
+</rdf:Seq>
+</items>
+
+</channel>
+
+<item rdf:about="http://www.avibryant.com/2008/09/chrome-v8-and-s.html">
+<title>Chrome, V8 and Strongtalk</title>
+<link>http://www.avibryant.com/2008/09/chrome-v8-and-s.html</link>
+<description>There&#39;s lots to like about Google&#39;s new web browser, Chrome, which was released today. When I read the awesome comic strip introduction yesterday, however, the thing that stood out most for me was in very small type: the name Lars...</description>
+<content:encoded>&lt;p&gt;There&#39;s lots to like about Google&#39;s new web browser, &lt;a href=&quot;http://www.google.com/chrome&quot;&gt;Chrome&lt;/a&gt;, which was released today.&amp;nbsp; When I read the awesome &lt;a href=&quot;http://www.google.com/googlebooks/chrome/&quot;&gt;comic strip introduction&lt;/a&gt; yesterday, however, the thing that stood out most for me was in very small type: the name Lars Bak attached to the V8 JavaScript engine.&amp;nbsp; I know of Lars from his work on Self, Strongtalk, HotSpot and OOVM, and his involvement in V8 says a lot about the kind of language implementation it will be.&amp;nbsp; David Griswold has posted some &lt;a href=&quot;http://groups.google.com/group/strongtalk-general/browse_thread/thread/40eb8f405fbd3041&quot;&gt;more information &lt;/a&gt;on the Strongtalk list:
+
+&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;
+The V8 development team has multiple members of the original
+Animorphic team; it is headed by Lars Bak, who was the technical lead
+for both Strongtalk and the HotSpot Java VM (as well as a huge
+contributor to the original Self VM).&amp;nbsp; &amp;nbsp;I think that you will find
+that V8 has a lot of the creamy goodness of the Strongtalk and Self
+VMs, with many big architectural improvements
+&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;
+
+I&#39;ll post more on this later, but things are getting interesting...&lt;/p&gt;
+
+&lt;p&gt;Update: the V8 code is already &lt;a href=&quot;http://code.google.com/apis/v8/&quot;&gt;available&lt;/a&gt;, and builds and runs fine on Mac OS X.&amp;nbsp; From the &lt;a href=&quot;http://code.google.com/apis/v8/design.html&quot;&gt;design docs&lt;/a&gt;, it&#39;s pretty clear that this is indeed what I was hoping for: a mainstream, open source dynamic language implementation that learned and applies the lessons from Smalltalk, Self and Strongtalk.&amp;nbsp; Most telling are that the only two papers cited in that document are titled &amp;quot;An Efficient Implementation of Self&amp;quot; and &amp;quot;An Efficient Implementation of the Smalltalk-80 System&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;The &amp;quot;classes as nodes in a state machine&amp;quot; trick for expando properties is especially neat.&lt;/p&gt;
+
+&lt;p&gt;The bad news: V8 is over 100,000 lines of C++.&lt;/p&gt;
+
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://www.avibryant.com/files/picture_19.png&quot; /&gt;&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-09-02T12:50:07-07:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2008/06/maglev-recap.html">
+<title>MagLev recap</title>
+<link>http://www.avibryant.com/2008/06/maglev-recap.html</link>
+<description>There has been a huge response to the MagLev demo I gave on Friday, most of it enthusiastic, though not without the inevitable skepticism that comes with any announcement. For those who weren&#39;t at RailsConf, here&#39;s a quick summary of...</description>
+<content:encoded>&lt;p&gt;There has been a huge response to the MagLev &lt;a href=&quot;http://www.avibryant.com/2008/05/maglev.html&quot;&gt;demo&lt;/a&gt; I gave on Friday, &lt;a href=&quot;http://blog.obiefernandez.com/content/2008/05/maglev-is-gemst.html&quot;&gt;most&lt;/a&gt; &lt;a href=&quot;http://www.cincomsmalltalk.com/userblogs/antony/blogView?showComments=true&amp;printTitle=MagLev,_game_over_..._very_possibly.&amp;entry=3389637476&quot;&gt;of&lt;/a&gt; &lt;a href=&quot;http://dotneverland.blogspot.com/2008/04/maglev-ruby-vm.html&quot;&gt;it&lt;/a&gt; &lt;a href=&quot;http://antoniocangiano.com/2008/05/31/maglev-rocks/&quot;&gt;enthusiastic&lt;/a&gt;, though not without the inevitable &lt;a href=&quot;http://headius.blogspot.com/2008/06/maglev.html&quot;&gt;skepticism&lt;/a&gt; that comes with any announcement.&lt;/p&gt;
+
+&lt;p&gt;For those who weren&#39;t at RailsConf, here&#39;s a quick summary of how the demo went.&lt;/p&gt;
+
+&lt;p&gt;I started off by describing MagLev as a &quot;full stack Ruby implementation&quot;, in the same way that Rails is a full stack web framework.  To understand what I mean by that, see my &lt;a href=&quot;http://www.avibryant.com/2008/03/ive-had-a-numbe.html&quot;&gt;earlier post&lt;/a&gt; on the Gemstone architecture: not only does MagLev provide a new (and fast) VM for Ruby, but it also provides an integrated shared memory object cache, and integrated transparent persistence.  This fully replaces the typical Rails stack of many mongrel instances + several memcached instances + MySQL.&lt;/p&gt;
+
+&lt;p&gt;As a first demo, I showed a &quot;magic trick&quot; with two maglev instances running an irb-like shell in side by side terminal windows.  A $hat global was defined in each, which just wraps an array and lets you put things in it.  In the left window, I put a Rabbit into the $hat.  I then looked at the $hat on the right and showed that the Rabbit had magically been transported there.&lt;/p&gt;
+
+&lt;pre&gt;
+&gt;&gt; $hat
+=&gt; #&amp;lt;Hat:0x0c184bfd01 @contents=[
+ () ()
+( &#39;.&#39; )
+(&quot;)_(&quot;)
+]&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;How is this possible? Because they&#39;re the same hat.  The integrated VMs, cache, and storage conspire to create an illusion that global state is shared across all instances: no matter how many VMs you add, over however many machines, they all see and work with the same set of Ruby objects.&lt;/p&gt;
+
+&lt;p&gt;There&#39;s no limit to what kinds of objects can be shared this way: procs and classes work just as well as arrays and strings.  This isn&#39;t RPC - the objects are copied into a shared cache when they&#39;re created or modified, and if (but only if) another VM needs the object, it will pull it out of the cache and work on the local copy.  All of these copies are kept in sync, and any changes are also written to disk by the storage engine so that the entire model is persistent.&lt;/p&gt;
+
+&lt;p&gt;This only applies to globally reachable objects - local variables, method arguments and so on aren&#39;t generally shared.&lt;/p&gt;
+
+&lt;p&gt;Obviously, with this kind of synchronization there has to be some concern for concurrency.  MagLev handles this with transactions.  Each VM has its own transaction state.  When a VM enters a transaction, all of its changes are only locally visible until it is asked to commit.  At that point, all of its changes get recorded to the cache and to disk and are available to every other VM.&lt;/p&gt;
+
+&lt;p&gt;A transaction can be aborted, in which case *everything* that has happened in that VM since the last commit (object modifications, creation, method or class definition, etc) will get rolled back.  A transaction commit can also fail if it conflicts with concurrent changes elsewhere (for example, two VMs modifying the same instance variable of the same object at once).&lt;/p&gt;
+
+&lt;p&gt;Because these shared objects are stored on disk, and are lazily loaded into the VMs only when needed, it means you can work with datasets that have many, many more objects than would fit into available RAM.  I showed a dataset that I had loaded in which contained 100 million movie reviews, and took up somewhere around 10GB.  I could instantly pull in a single movie, modify it, and commit that change, without needing to load the other couple hundred million objects into RAM.&lt;/p&gt;
+
+&lt;p&gt;As a final demo, I showed how far MagLev has currently gotten with compatibility by running a simple WEBrick servlet.&lt;/p&gt;
+
+&lt;p&gt;At this point, Bob Walker took over.  He gave some company background on Gemstone (they&#39;ve been working on multi-user persistent dynamic language VMs since 1982), and some technical details on MagLev (the VM is a modified version of their Gemstone/S Smalltalk VM, with some Ruby-specific bytecodes; the bytecode is JITted to native code before execution).  Then he showed some micro-benchmarks: for what it&#39;s worth, MagLev is anywhere from 6 times to (in the extreme case) 111 times faster than the standard 1.8.6 Ruby interpreter on things like fibonacci, block execution, method dispatch, and so on.&lt;/p&gt;
+
+&lt;p&gt;Bob then talked about scale.  Gemstone has many customers running things like commodities exchanges, derivatives trading, container shipping, and so on that operate at very large scale on top of the same underlying technology as MagLev.  Here are a couple of recent unsolicited quotes from a &lt;a href=&quot;http://discuss.joelonsoftware.com/default.asp?biz.5.594244.20&quot;&gt;thread&lt;/a&gt; on the Joel on Software forums:&lt;/p&gt;
+
+&lt;blockquote&gt;
+ &quot;I work for a major shipping company. We have a massive OODB and  
+ Smalltalk Application (500 gig range) with 3 million lines of code.  
+ We have 2000 plus daily users. We can do 700 transactions a second  
+ before slowing down. We also have a Java + SQL +EMS system. On a  
+ good day they can do 70 transactions a second, with three times the  
+ hardware.&quot;   --Timo (Saturday, February 16, 2008)
+
+&lt;p&gt; &quot;Along side with the major shipping company, we are a major  &lt;br /&gt;
+ commodities exchange using GS and ST and while our operational DB is  &lt;br /&gt;
+ small (about 5 GB at the start of the trading day to less than 75 GB  &lt;br /&gt;
+ and the end) we are probably one of the fastest.  We easily handle  &lt;br /&gt;
+ transaction rates approaching 6000/sec with about 8000+ daily  &lt;br /&gt;
+ users.  Our average data center round trip times are in the 2-3 ms  &lt;br /&gt;
+ range.&quot; --GemStone Weenie (Monday, February 18, 2008)&lt;br /&gt;
+&lt;/blockquote&gt;&lt;/p&gt;
+
+&lt;p&gt;It&#39;s worth noting that that&#39;s 6000 writes per second, sustained, and that this application peaks at about 3x that.  By comparison, Twitter was once reported as having 600 requests/s (read and write).&lt;/p&gt;
+
+&lt;p&gt;Bob then moved onto the vision for MagLev going forward.  A few important points:&lt;br /&gt;
+&lt;ul&gt;&lt;br /&gt;
+&lt;li&gt;It doesn&#39;t run Rails yet, but it will.&lt;br /&gt;
+&lt;li&gt;It will be RubySpec compliant.&lt;br /&gt;
+&lt;li&gt;The Ruby source will be released.  The C source code for the VM most likely will remain closed (but anything is possible).&lt;br /&gt;
+&lt;li&gt;There will be a free version which will work for most uses, and a paid version for large-scale deployment.&lt;br /&gt;
+&lt;li&gt;Look for another announcement/demo at RailsConf Europe in September.&lt;br /&gt;
+&lt;/ul&gt;&lt;/p&gt;
+
+&lt;p&gt;After that we retired to the DoubleTree for a keg of Ruby ale.&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-06-01T11:36:26-07:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2008/05/maglev.html">
+<title>MagLev</title>
+<link>http://www.avibryant.com/2008/05/maglev.html</link>
+<description>People have by now probably gotten a little sick of me saying that we really need to take Smalltalk technology and apply it to Ruby - see, for example, pretty much anything I wrote in November 2006, or my RailsConf...</description>
+<content:encoded>&lt;p&gt;People have by now probably gotten a little sick of me saying that we really need to take Smalltalk technology and apply it to Ruby - see, for example, pretty much anything I wrote in &lt;a href=&quot;http://www.avibryant.com/2006/11/index.html&quot;&gt;November 2006&lt;/a&gt;, or my &lt;a href=&quot;http://railsconf.blip.tv/file/568689/&quot;&gt;RailsConf keynote&lt;/a&gt; from last year.&lt;/p&gt;
+
+&lt;p&gt;This year, I&#39;m going back to RailsConf, but with some concrete good news: we&#39;ve finally &lt;a href=&quot;http://ruby.gemstone.com/&quot;&gt;done it&lt;/a&gt;, and it rocks.&lt;/p&gt;
+
+&lt;p&gt;If you&#39;re want to see the first real demo* of Ruby running on Gemstone&#39;s very cool originally-for-Smalltalk platform, drop by on &lt;a href=&quot;http://en.oreilly.com/rails2008/public/schedule/detail/4351&quot;&gt;Friday afternoon&lt;/a&gt;.  I&#39;m excited to see what everyone thinks.&lt;/p&gt;
+
+&lt;p&gt;(* I did do a teaser at &lt;a href=&quot;http://www.meshconference.com/meshu/avi-bryant.php&quot;&gt;MeshU&lt;/a&gt;)&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-05-28T21:47:20-07:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2008/05/those-who-misre.html">
+<title>Those who misremember history...</title>
+<link>http://www.avibryant.com/2008/05/those-who-misre.html</link>
+<description>In Dynamic Languages Strike Back, Steve Yegge says StrongTalk was really interesting. They added a static type system, an optional static type system on top of Smalltalk that sped it up like 20x, or maybe it was 12x. Why do...</description>
+<content:encoded>&lt;p&gt;In &lt;a href=&quot;http://steve-yegge.blogspot.com/2008/05/dynamic-languages-strike-back.html&quot;&gt;Dynamic Languages Strike Back&lt;/a&gt;, Steve Yegge says&lt;br /&gt;
+&lt;blockquote&gt;&lt;br /&gt;
+StrongTalk was really interesting. They added a static type system, an optional static type system on top of Smalltalk that sped it up like 20x, or maybe it was 12x.&lt;br /&gt;
+&lt;/blockquote&gt;&lt;/p&gt;
+
+&lt;p&gt;Why do people make this stuff up?  The following two statements are true:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Strongtalk has an optional static type system.
+&lt;li&gt;Strongtalk is 15-20x faster than most other Smalltalk systems.
+&lt;/ol&gt;
+
+&lt;p&gt;What&#39;s false is the causal link Steve is claiming between them.  They are entirely independent.  Strongtalk was that much faster whether you used the &lt;i&gt;optional&lt;/i&gt; static type system or not.  Strongtalk&#39;s optimizing compiler completely ignored the types, and it made your program run not one iota faster to add them.&lt;/p&gt;
+
+&lt;p&gt;Update: see also Dave Griswold on&lt;a href=&quot;http://www.strongtalk.org/history.html&quot;&gt;Strongtalk&#39;s history&lt;/a&gt;:&lt;br /&gt;
+&lt;blockquote&gt;&lt;br /&gt;
+ ... we had a type system and a compilation technology, which together were perfectly suited for a great production Smalltalk system, since they were independent of each other. This independence was critical, since the system would need to accept untyped as well as typed code, so that people could use the type system as much or as little as they wanted to, without impacting performance.&lt;br /&gt;
+&lt;/blockquote&gt;&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-05-12T16:50:25-07:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2008/03/ive-had-a-numbe.html">
+<title>Ruby and other gems</title>
+<link>http://www.avibryant.com/2008/03/ive-had-a-numbe.html</link>
+<description>I&#39;ve had a number of conversations recently about Gemstone Smalltalk, largely in the wake of their announcement of support for my web framework, Seaside. It&#39;s complicated to explain Gemstone to people. It&#39;s not just an object database (though it is...</description>
+<content:encoded>&lt;p&gt;I&#39;ve had a number of conversations recently about Gemstone Smalltalk, largely in the wake of their announcement of support for my web framework, Seaside.  It&#39;s complicated to explain Gemstone to people.  It&#39;s not just an object database (though it is that), and it&#39;s not just a Smalltalk implementation (though it&#39;s that, too).  The best thing I can compare it to is a Ruby on Rails deployment: not the framework, but the entire cluster of servers and software that goes into a large scale Rails app.  Which is to say, perhaps, that Gemstone is best understood not as a piece of software but as an architecture.&lt;/p&gt;
+
+&lt;p&gt;At a high level, a typical Rails deployment looks like this: a cluster of servers supports one storage engine, several memory caches, and many worker processes.  In Rails, the storage engine is always a relational database (usually MySQL), and sits on an especially hefty server by itself.  Any number of other smaller, identical servers are each configured to run one memory cache (memcached) and 8-12 or so worker processes (Ruby interpreters running Rails and the Mongrel web server, generally just referred to as &quot;mongrels&quot;).&lt;/p&gt;
+
+&lt;p&gt;The mongrels accept the web requests and run the actual application code.  The objects inside these worker processes are live objects: they&#39;re sending and receiving messages, executing methods, changing state, and so on.  They exist only inside the memory of a particular mongrel, for the duration of a single request that the mongrel is processing.&lt;/p&gt;
+
+&lt;p&gt;Many objects need to be persisted for longer than that, and these get written to and read from the storage engine - in Rails, using ActiveRecord.  The storage engine is centralized (though it may be replicated to protect against failure), so that all of the worker processes see a consistent view of the data: if one of the mongrels modifies an object and commits that change to MySQL, the others will see that change the next time they need to load that object.  The objects inside the storage engine are dead - they don&#39;t do anything until they&#39;re loaded into a worker process - but they&#39;re well preserved: they&#39;re kept on disk, not memory, so they&#39;ll survive a server reboot or other catastrophe.&lt;/p&gt;
+
+&lt;p&gt;Loading from and saving to the storage engine is relatively slow, and keeping objects there eats disk space, so the memory cache is an important third player in this game.  A mongrel that&#39;s gone to the work of retrieving an object from MySQL might stash a copy in memcached for the other mongrels to retrieve, more quickly, if and when they need the same one.  An object that&#39;s expensive to build - like a piece of complex HTML - but not important enough to save to disk might also be placed there for the convenience of the other workers on the same server.  In Rails, the cache has to be managed carefully, so that you don&#39;t get out of sync with the consistent view of data maintained by the storage engine, but the work pays off with lower loads and faster response times.  Objects in the cache are dead - usually marshalled into a meaningless string - and also transient, since the cache is purely in memory.&lt;/p&gt;
+
+&lt;p&gt;What about Gemstone?  As it happens, the architecture is exactly the same: there&#39;s a single storage engine (called a &quot;stone&quot;), a memory cache on each server (the &quot;shared page cache&quot;), and any number of Smalltalk VM worker processes (&quot;gems&quot;).  The gems handle the requests and run the code, and they stash objects in the page cache for speed and in the stone for persistence.  The difference is, in Gemstone, these have all been designed from the ground up to work together as quickly and seamlessly as possible.  In particular, this means two things:&lt;/p&gt;
+
+&lt;p&gt;1. Each part of the architecture uses exactly the same format to store the objects: whether it&#39;s a live object running in a gem, a cached object in the page cache, or a stored object on disk, the sequence of bytes is exactly the same.  Unlike in Rails, where you have to be mapping and marshalling at every step, in Gemstone copying objects from storage to cache to worker process is pretty much just that - a simple byte copy.  This makes it &lt;b&gt;fast&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;2. Objects are automatically kept in sync between each part of the system.  The worker processes always load objects from the memory cache, because they can trust it to grab a recent copy from storage if needed.  They also always save to the cache, because it will write the same change through to the storage without being asked.  The gems also keep track of which objects have changed so that you don&#39;t have to, and will update the cache - and get updates from other gems back - automatically and transparently.  The effect is as if all of your worker processes were running their objects inside a single, consistent and impossibly large chunk of persistent memory.  This makes it &lt;b&gt;easy&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;To be extra clear, here&#39;s the mapping I&#39;m trying to describe:&lt;/p&gt;
+
+&lt;table border=&quot;1&quot;&gt;
+&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th colspan=&quot;2&quot;&gt;Rails&lt;/th&gt;&lt;th colspan=&quot;2&quot;&gt;Gemstone&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Provided By&lt;/th&gt;&lt;th&gt;Stores&lt;/th&gt;&lt;th&gt;Provided By&lt;/th&gt;&lt;th&gt;Stores&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Storage Engine&lt;/th&gt;&lt;td&gt;MySQL&lt;/td&gt;&lt;td&gt;objects mapped to relational tables&lt;/td&gt;&lt;td&gt;&quot;Stone&quot; object store&lt;/td&gt;&lt;td&gt;Smalltalk objects&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Memory Cache&lt;/th&gt;&lt;td&gt;memcached&lt;/td&gt;&lt;td&gt;objects marshalled to strings&lt;/td&gt;&lt;td&gt;Shared page cache&lt;/td&gt;&lt;td&gt;Smalltalk objects&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Worker Process&lt;/th&gt;&lt;td&gt;MRI/Mongrel&lt;/td&gt;&lt;td&gt;Ruby objects&lt;/td&gt;&lt;td&gt;&quot;Gem&quot; Smalltalk VM&lt;/td&gt;&lt;td&gt;Smalltalk objects&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;So there you have it: Gemstone, it&#39;s like Rails, but faster and easier.  If only it ran Ruby...&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-03-08T01:02:38-08:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2008/01/dont-panic.html">
+<title>Don&#39;t Panic</title>
+<link>http://www.avibryant.com/2008/01/dont-panic.html</link>
+<description>So what happened was, I was at my house on Galiano Island with my shiny new iPhone and without, at the time, either high speed internet or EDGE coverage, and I thought &quot;gee, wouldn&#39;t it be nice if...&quot;. And I...</description>
+<content:encoded>&lt;p&gt;So &lt;a href=&quot;http://www.tbray.org/ongoing/When/200x/2003/04/06/WhatHappenedWas&quot;&gt;what happened was&lt;/a&gt;, I was at my house on &lt;a href=&quot;http://en.wikipedia.org/wiki/Galiano_Island&quot;&gt;Galiano Island&lt;/a&gt; with my shiny new iPhone and without, at the time, either high speed internet or EDGE coverage, and I thought &quot;gee, wouldn&#39;t it be nice if...&quot;.  And I did some hacking, and then I mentioned it to &lt;a href=&quot;http://collison.ie&quot;&gt;Patrick Collison&lt;/a&gt; who was sharing office space with us and he ignored my hacking and did a ton of his own, and even though I now have DSL and EDGE out there it *is* nice: all of Wikipedia, stored and searchable in 2GB of your iPhone&#39;s flash drive.  Get it &lt;a href=&quot;http://collison.ie/wikipedia-iphone/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It&#39;s not perfect yet - there&#39;s no images, just text, and the parser is pretty basic and doesn&#39;t know about tables and stuff, and clicking on links can be flaky and slow, and if you do happen to have a network around it&#39;s probably a better experience to just go to wikipedia.org, but: there&#39;s really nothing quite like holding the sum of human knowledge in the palm of your hand.  Patrick, I owe you many drams of whiskey whenever you&#39;re back in town.&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-01-21T00:43:00-08:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2008/01/dna-as-code.html">
+<title>DNA as Code</title>
+<link>http://www.avibryant.com/2008/01/dna-as-code.html</link>
+<description>Over the holidays I was chatting with my brother the biophysicist about his research. Roughly speaking, he is trying to create DNA sequences that encode molecular motors. I was trying to understand what it meant to hack DNA from a...</description>
+<content:encoded>&lt;p&gt;Over the holidays I was chatting with my brother the biophysicist about his research.  Roughly speaking, he is trying to create DNA sequences that encode molecular motors.  I was trying to understand what it meant to hack DNA from a programmer&#39;s perspective.  Today I read &lt;a href=&quot;http://ds9a.nl/amazing-dna/index.html&quot;&gt;this&lt;/a&gt;, which is in a very similar spirit.  Two interesting data points from our conversation: one, the code my brother is &quot;writing&quot; is a few kilobase long, and could be represented in well under one kB of binary data.  Two, his edit/compile/run cycle is about three weeks long, although he can do a dozen or so in parallel.&lt;/p&gt;
+
+&lt;p&gt;I thought these numbers were impressively small, especially that you could produce a working motor from a few hundred bytes of information (try that in Autocad...).  He thought of them as huge, because they made it infeasible to brute-force the design by generating all the random variations and seeing which ones worked.&lt;/p&gt;
+
+&lt;p&gt;I&#39;m certainly glad it doesn&#39;t take me three weeks to do a new build...&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2008-01-02T18:55:23-08:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2007/10/code-as-screenp.html">
+<title>Code as Screenplay</title>
+<link>http://www.avibryant.com/2007/10/code-as-screenp.html</link>
+<description>Giles Bowkett writes Debugger support is like nail-biting support, or farting-in-public support. Its absence is a feature. You want to avoid supporting bad habits. If programmers have to break their bad habits, that&#39;s a good thing. I have a confession...</description>
+<content:encoded>&lt;p&gt;Giles Bowkett &lt;a href=&quot;http://gilesbowkett.blogspot.com/2007/10/debugger-support-considered-harmful.html&quot;&gt;writes&lt;/a&gt;&lt;br /&gt;
+&lt;blockquote&gt;&lt;br /&gt;
+Debugger support is like nail-biting support, or farting-in-public support. Its absence is a feature. You want to avoid supporting bad habits. If programmers have to break their bad habits, that&#39;s a good thing.&lt;br /&gt;
+&lt;/blockquote&gt;&lt;/p&gt;
+
+&lt;p&gt;I have a confession to make: I bite my nails.  That&#39;s a bad habit, and I readily admit it.  I also use a debugger.  That&#39;s not.&lt;/p&gt;
+
+&lt;p&gt;Let me explain.  Giles&#39; argument seems to rest on this point:&lt;br /&gt;
+&lt;blockquote&gt;&lt;br /&gt;
+Debuggers are based on the idea that the code base has enough places bugs could happen that the work of locating the bug is involved enough to justify machine assistance. This is not true of well-tested code. It is not true of code you understand, either.&lt;br /&gt;
+&lt;/blockquote&gt;&lt;/p&gt;
+
+&lt;p&gt;What Giles glosses over is how you come to understand the code in the first place.  &lt;b&gt;Nothing&lt;/b&gt; helps you understand code - whether you wrote it or someone else did - better than stepping through it in a debugger.  Since Giles is a sometime &lt;a href=&quot;http://gilesgoatboy.blogspot.com/2007/03/wrote-screenplay.html&quot;&gt;screenwriter&lt;/a&gt;, maybe this analogy is appropriate: reading the code is like reading a screenplay.  Writing tests is maybe like drawing storyboards (they help you visualize the final product).  Using a debugger is like &lt;b&gt;actually watching the damn movie&lt;/b&gt;.  With a jog wheel so you can slow it down.  And no matter how good a screenwriter you are, no matter how good your director&#39;s storyboards are, when it comes time to cut the film you&#39;re going to find out that you didn&#39;t understand the movie as well as you thought you did, and you&#39;re going to need to watch the footage, sometimes frame by frame, and modify the movie accordingly.&lt;/p&gt;
+
+&lt;p&gt;Programs are the same way.  Writing tests and reading code show you your program the way you want it to be, but only a debugger shows you the way your program &lt;i&gt;is&lt;/i&gt;.  Maybe screenwriters sit around in bars in LA and talk about how &lt;i&gt;real&lt;/i&gt; filmmakers just read scripts, and the movies themselves are a crutch - me, I guess I like crutches.&lt;/p&gt;
+
+&lt;p&gt;See also: &lt;a href=&quot;http://collison.ie/blog/?p=25&quot;&gt;Patrick Collison&lt;/a&gt;, &lt;a href=&quot;http://programming.reddit.com/info/5yle2/comments/c029w0a&quot;&gt;Ben Matasar&lt;/a&gt;, and &lt;a href=&quot;http://programming.reddit.com/info/5yle2/comments/c029w7w&quot;&gt;Slava Pestov&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2007-10-18T14:23:24-07:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2007/09/code-generation.html">
+<title>Code generation in Smalltalk and Ruby</title>
+<link>http://www.avibryant.com/2007/09/code-generation.html</link>
+<description>Neal Ford had a recent post about the difference between code-generation (he calls it &quot;meta-programming&quot;, but that&#39;s an overloaded and ambiguous term) in Ruby and Smalltalk. The core of his point is this: in Ruby, code generation is done at...</description>
+<content:encoded>&lt;p&gt;Neal Ford had a recent &lt;a href=&quot;http://memeagora.blogspot.com/2007/09/ruby-matters-meta-programming-synthesis.html&quot;&gt;post&lt;/a&gt; about the difference between code-generation (he calls it &quot;meta-programming&quot;, but that&#39;s an overloaded and ambiguous term) in Ruby and Smalltalk.  The core of his point is this: in Ruby, code generation is done at runtime, which means that what gets checked into your source code repository is a high level statement like &quot;has_many :foo&quot;, which then generates the code when it is executed.  In Smalltalk, code generation is done at development time (triggered by some custom wizard-like extension to the IDE), and so the generated code itself is checked in and the intent, according to Neal, is lost (as a trade-off for other benefits, like the ability to take the generated code into consideration when doing refactorings and so on, whereas in Ruby that code is invisible to any static analysis).&lt;/p&gt;
+
+&lt;p&gt;This is a straw man: Smalltalkers understand the need to capture (and later modify) the intent as well as anyone else does.  The solution is to make the generated code round-trippable.  If you look at any real Smalltalk tools that generate code based on a custom tool (the &lt;a href=&quot;http://www.refactory.com/Software/SmaCC/&quot;&gt;SmaCC&lt;/a&gt; parser generator is a good example), it will preserve the settings from that tool, for example in a class comment, and the tool will let you inspect the intent, modify the intent, and regenerate the code.&lt;/p&gt;
+
+&lt;p&gt;To be concrete: any self-respecting Smalltalk tool that let you generate all the code associated with a &quot;has_many&quot; expression would annotate those methods with the &quot;has_many&quot; intent, in a way that the tools could understand, present to the user, and modify.&lt;/p&gt;
+
+&lt;p&gt;(James Robertson &lt;a href=&quot;http://www.cincomsmalltalk.com/blog/blogView?showComments=true&amp;entry=3366525548&quot;&gt;points out&lt;/a&gt; that ORM tools in Smalltalk tend not to use code generation anyway, but I don&#39;t think that really answers Neal&#39;s point.)&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2007-09-06T13:46:17-07:00</dc:date>
+</item>
+<item rdf:about="http://www.avibryant.com/2007/07/moving.html">
+<title>Moving</title>
+<link>http://www.avibryant.com/2007/07/moving.html</link>
+<description>Just a quick note that I&#39;ve moved this blog to a new platform (typepad) and a new URL (www.avibryant.com). If you were subscribed to the old one, you shouldn&#39;t have to do anything, because the feeds are redirected. However, although...</description>
+<content:encoded>&lt;p&gt;Just a quick note that I&#39;ve moved this blog to a new platform (typepad) and a new URL (www.avibryant.com).  If you were subscribed to the old one, you shouldn&#39;t have to do anything, because the feeds are redirected.  However, although all of the old posts are imported, the old permalinks are currently broken.  When I find the time over the next week I&#39;ll set up the mapping for them but for now, if you came here from a link to a specific post, I apologize.&lt;/p&gt;</content:encoded>
+
+
+
+<dc:creator>Avi</dc:creator>
+<dc:date>2007-07-04T23:15:25-07:00</dc:date>
+</item>
+
+
+</rdf:RDF>
+<!-- ph=1 -->
+<!-- nhm:dynamic-ssi -->

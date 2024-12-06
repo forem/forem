@@ -1,0 +1,9 @@
+module Datadog
+  module CI
+    module Transport
+      module Gzip
+        def self?.compress: (String input) -> String
+      end
+    end
+  end
+end

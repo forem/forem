@@ -1,0 +1,13 @@
+module Datadog
+  module CI
+    module TestVisibility
+      module Serializers
+        module Factories
+          module TestLevel
+            def self?.serializer: (Datadog::Tracing::TraceSegment trace, Datadog::Tracing::Span span) -> Datadog::CI::TestVisibility::Serializers::Base
+          end
+        end
+      end
+    end
+  end
+end

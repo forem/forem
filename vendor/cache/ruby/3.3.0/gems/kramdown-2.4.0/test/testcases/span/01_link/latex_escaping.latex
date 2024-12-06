@@ -1,0 +1,6 @@
+\href{https://example.com/~tilde/}{https://example.com/\ensuremath{\sim}tilde/}
+
+\href{http://example.com/percent\%20percent}{http://example.com/percent\%20percent}
+
+\href{http://example.com/hash#hash}{http://example.com/hash\#hash}
+

@@ -1,0 +1,22 @@
+declare namespace html = "http://www.w3.org/1999/xhtml";
+
+declare function local:test-function($catalog as document-node()) {
+  <html>
+    <head>
+      <title>XQuery example for the Rouge highlighter</title>
+      <link href="style.css"/>
+    </head>
+    <body>
+      <h1>List</h1>
+      <ul>
+        {for $product in $catalog/items/product[@sell-by > current-date()] return
+        <li>
+          <ul>
+            <li>{data($product/name)}</li>
+            <li>{$product/price * (1 + $product/tax)}$</li>
+          </ul>
+        </li>}
+      </ul>
+    </body>
+  </html>
+};

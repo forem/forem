@@ -1,0 +1,1046 @@
+---
+'1':
+  name: मध्यमाञ्चल विकास क्षेत्र
+  code: '1'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: المنطقة التنموية الوسطى
+    bg: Мадхяманчал
+    bn: মধ্যমাঞ্চল বিকাস ক্ষেত্র, নেপাল
+    ca: Regió Central
+    de: Entwicklungsregion Mitte
+    el: Κεντρική αναπτυξιακή περιοχή
+    en: Central
+    es: Región Central
+    eu: Erdialdeko eskualdea
+    fi: Keskinen kehitysalue
+    fr: Région de développement Centre
+    hi: मध्यमाञ्चल विकास क्षेत्र
+    it: regione di Sviluppo Centrale
+    ja: 中部開発区域
+    ko: 중부 개발 지구
+    ne: मध्यमाञ्चल विकास क्षेत्र
+    nl: Central Region
+    pl: Central Development Region
+    pt: Centro
+    ru: Центральный регион
+    uk: Центральний регіон
+    ur: مرکزی ترقیاتی علاقہ، نیپال
+    vi: Trung Nepal
+    zh: 中部發展區
+    ceb: Madhyamanchal
+    ta: மத்திய வளர்ச்சி பிராந்தியம், நேபாளம்
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    hy: Կենտրոնական շրջան
+  comments:
+  type: development_region
+'2':
+  name: मध्य-पश्चिमाञ्चल विकास क्षेत्र
+  code: '2'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: المنطقة التنموية الغربية الوسطى
+    bn: মধ্য-পশ্চিমাঞ্চল বিকাস ক্ষেত্র, নেপাল
+    de: Entwicklungsregion Mittelwest
+    el: Μεσοδυτική αναπτυξιακή περιοχή
+    en: Madhya Pashchimanchal
+    eu: Erdi-mendebaldeko eskualdea
+    fi: Keskilännen kehitysalue
+    fr: Région de développement Moyen-Ouest
+    hi: मध्य-पश्चिमाञ्चल विकास क्षेत्र
+    it: regione di Sviluppo del Medio Occidente
+    ja: 中西部開発区域
+    ko: 중서부 개발 지구
+    ne: मध्य-पश्चिमाञ्चल विकास क्षेत्र
+    nl: Mid-Western Region
+    pl: Mid-Western Development Region
+    pt: Centro-Oeste
+    ru: Среднезападный регион
+    uk: Середньозахідний регіон
+    ur: وسط-مغربی ترقیاتی علاقہ، نیپال
+    vi: Trung Tây Nepal
+    ta: மத்தியமேற்கு வளர்ச்சி பிராந்தியம், நேபாளம்
+    zh: 中西部發展區
+    ccp: "\U0001111F\U00011127\U00011116\U00011134\U00011119\U00011133\U00011120\U00011127
+      \U0001111B\U00011127\U0001110C\U00011134\U00011125\U00011128\U0001111F\U0001111A\U00011134\U0001110C\U00011127\U00011123\U00011134"
+    ceb: Madhya Pashchimanchal
+    hy: Միջին արևմտյան տարածաշրջան
+  comments:
+  type: development_region
+'3':
+  name: पश्चिमाञ्चल विकास क्षेत्र
+  code: '3'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: المنطقة التنموية الغربية
+    be: Заходні рэгіён
+    bg: Пашчиманчал
+    bn: পশ্চিমাঞ্চল বিকাস ক্ষেত্র, নেপাল
+    de: Entwicklungsregion West
+    el: Δυτική αναπτυξιακή περιοχή
+    en: Western
+    eu: Mendebaldeko eskualdea
+    fi: Läntinen kehitysalue
+    fr: Région de développement Ouest
+    hi: पश्चिमाञ्चल विकास क्षेत्र
+    it: regione di Sviluppo Occidentale
+    ja: 西部開発区域
+    ko: 서부 개발 지구
+    ne: पश्चिमाञ्चल विकास क्षेत्र
+    nl: Western Region
+    pl: Western Development Region
+    pt: Oeste
+    ru: Западный регион
+    uk: Західний регіон
+    ur: مغربی ترقیاتی علاقہ، نیپال
+    vi: Tây Nepal
+    ceb: Pashchimanchal
+    ta: மேற்கு வளர்ச்சி பிராந்தியம், நேபாளம்
+    zh: 西部发展区
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    hy: Արևմտյան շրջան
+    ca: Regió Occidental
+  comments:
+  type: development_region
+'4':
+  name: पूर्वाञ्चल विकास क्षेत्र
+  code: '4'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: المنطقة التنموية الشرقية
+    bn: পূর্বাঞ্চল বিকাস ক্ষেত্র
+    de: Entwicklungsregion Ost
+    el: Ανατολική αναπτυξιακή περιοχή
+    en: Purwanchal
+    es: región de desarrollo Este
+    eu: Ekialdeko eskualdea
+    fi: Itäinen kehitysalue
+    fr: Région de développement Est
+    hi: पूर्वाञ्चल विकास क्षेत्र
+    it: regione di Sviluppo Orientale
+    ja: 東部開発区域
+    ko: 동부 개발 지구
+    ne: पूर्वाञ्चल विकास क्षेत्र
+    nl: Eastern Development Region
+    pl: Eastern Development Region
+    pt: Região Leste
+    ru: Восточный регион
+    uk: Східний регіон
+    ur: مشرقی ترقیاتی علاقہ، نیپال
+    vi: Đông Nepal
+    ceb: Purwanchal
+    ta: கிழக்கு வளர்ச்சி பிராந்தியம், நேபாளம்
+    zh: 東部發展區
+    ccp: "\U0001111B\U0001112A\U00011122\U00011134\U00011124\U0001111A\U00011134\U0001110C\U00011127\U00011123\U00011134"
+    ca: Regió de Desenvolupament Est
+  comments:
+  type: development_region
+'5':
+  name: सुदूर-पश्चिमाञ्चल विकास क्षेत्र
+  code: '5'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: المنطقة التنموية الغربية البعيدة
+    bn: সুদূর পশ্চিমাঞ্চল বিকাস ক্ষেত্র, নেপাল
+    de: Entwicklungsregion Fernwest
+    el: Άπω δυτική αναπτυξιακή περιοχή
+    en: Sudur Pashchimanchal
+    eu: Mendebaldeko Urruneko eskualdea
+    fi: Kaukolännen kehitysalue
+    fr: Région de développement Extrême-Ouest
+    hi: सुदूर-पश्चिमाञ्चल विकास क्षेत्र
+    it: regione di Sviluppo dell’Estremo Occidente
+    ja: 極西部開発区域
+    ko: 극서부 개발 지구
+    ne: सुदूर-पश्चिमाञ्चल विकास क्षेत्र
+    nl: Far-Western Development Region, Nepal
+    pl: Far-Western Development Region
+    pt: Extremo-Oeste
+    ru: Дальнезападный регион
+    uk: Далекозахідний регіон
+    ur: بعید-مغربی ترقیاتی علاقہ، نیپال
+    vi: Viễn Tây Nepal
+    ta: தூரமேற்கு வளர்ச்சி பிராந்தியம், நேபாளம்
+    zh: 遠西部發展區
+    ccp: "\U00011125\U0001112A\U00011118\U0001112A\U00011122\U00011134 \U0001111B\U00011127\U0001110C\U00011134\U00011125\U00011128\U0001111F\U0001111A\U00011134\U0001110C\U00011127\U00011123\U00011134"
+    ceb: Sudur Pashchimanchal
+  comments:
+  type: development_region
+BA:
+  name: Bagmati
+  code: BA
+  unofficial_names: Bagmati
+  geo:
+    latitude: 28.0367577
+    longitude: 85.4375574
+    min_latitude: 27.3182049
+    min_longitude: 84.62609499999999
+    max_latitude: 28.3420049
+    max_longitude: 86.06501
+  translations:
+    en: Bagmati
+    ar: مديرية باجماتي
+    bg: Багмати
+    bn: বাগমতী অঞ্চল
+    ca: Zona de Bagmati
+    da: Bagmati Zone
+    de: Bagmati
+    el: Μπαγκμάτι
+    es: Zona de Bagmati
+    eu: Bagmati Gunea
+    fi: Bagmati
+    fr: Bagmati
+    gu: બાગમતી પ્રાંત
+    hi: बागमती प्रान्त
+    id: Zona Bagmati
+    it: Bagmati
+    ja: バグマティ県
+    kn: ಬಾಗ್ಮತಿ ವಲಯ
+    ko: 바그마티 구
+    mr: बागमती झोन
+    ms: Bagmati Zone
+    nb: Bagmati Sone
+    ne: बागमती अञ्चल
+    nl: Bagmati
+    pl: Bagmati
+    pt: Bagmati
+    ru: Багмати
+    si: බග්මටි කලාපය
+    sk: Bágmatí
+    sv: Bagmati Zone
+    ta: பாக்மாடி சோன்
+    te: బాగ్మతి జోన్
+    th: เขตบากมาติ
+    tr: Bagmati Zon
+    ur: باگمتی زون
+    vi: Vùng Bagmati
+    lv: Bāgmati zona
+    ceb: Bāgmatī Zone
+    lt: Bagmačio zona
+    zh: 巴格馬蒂專區
+    ccp: "\U0001111D\U00011107\U00011134\U0001111F\U00011111\U00011128"
+    uk: Багматі
+    'no': Bagmati Sone
+  comments:
+  type: zone
+BH:
+  name: Bheri
+  code: BH
+  unofficial_names: Bheri
+  geo:
+    latitude: 28.517456
+    longitude: 81.77870209999999
+    min_latitude: 27.85854
+    min_longitude: 80.98443600000002
+    max_latitude: 29.135872
+    max_longitude: 82.45864910000002
+  translations:
+    en: Bheri
+    ar: مديرية بهري
+    bg: Бхери
+    bn: ভেরী অঞ্চল
+    da: Bheri Zone
+    de: Bheri
+    el: Μπέρι
+    es: Zona de Bheri
+    eu: Bheri Gunea
+    fi: Bheri
+    fr: Bheri
+    gu: ભેરી પ્રાંત
+    hi: भेरी अंचल
+    id: Bheri Zone
+    it: Bheri
+    ja: ベリ県
+    kn: ಭೇರಿ ವಲಯ
+    ko: 베리 구
+    mr: बेरी झोन
+    ms: Bheri Zone
+    nb: Bheri sone
+    ne: भेरी अञ्चल
+    nl: Bheri
+    pl: Bheri
+    pt: Bheri
+    ru: Бхери
+    si: භේරි කලාපය
+    sk: Bherí
+    sv: Bheri
+    ta: பஹிரி ஸ்யோனே
+    te: భేరీ జోన్
+    th: เขตเบรี
+    tr: Bheri Zone
+    ur: بھیری زون
+    vi: Vùng Bheri
+    lv: Berio zona
+    ceb: Bherī Zone
+    lt: Bherio zona
+    zh: 佩里專區
+    ccp: "\U0001111E\U0001112C\U00011122\U00011128"
+    uk: Бхері
+    'no': Bheri sone
+    fa: منطقه بری
+  comments:
+  type: zone
+DH:
+  name: Dhawalagiri
+  code: DH
+  unofficial_names: Dhawalagiri
+  geo:
+    latitude: 28.611176
+    longitude: 83.5070203
+    min_latitude: 27.9980379
+    min_longitude: 82.869958
+    max_latitude: 29.3155821
+    max_longitude: 84.19720490000002
+  translations:
+    en: Dhawalagiri
+    ar: مديرية دهوالاجيري
+    bg: Дхавалагири
+    bn: ধলাগিরি অঞ্চল
+    da: Dhaulagiri Zone
+    de: Dhaulagiri
+    el: Νταουλαγκίρι
+    es: Zona de Dhawalagiri
+    eu: Dhawalagiri Gunea
+    fi: Dhawalagiri
+    fr: Dhawalagiri
+    gu: ધવલાગિરી પ્રાંત
+    hi: धौलागिरी अंचल
+    id: Dhaulagiri Zone
+    it: Dhawalagiri
+    ja: ダウラギリ県
+    kn: ಧೌಲಗಿರಿ ವಲಯ
+    ko: 다울라기리 구
+    mr: धौलगरी झोन
+    ms: Dhaulagiri Zone
+    nb: Dhaulagiri sone
+    ne: धौलागिरी अञ्चल
+    nl: Dhawalagiri
+    pl: Dhawalagiri
+    pt: Dhaulagiri (zona)
+    ru: Дхаулагири
+    si: දවුලගිරි කලාපය
+    sk: Dhawalágiri
+    sv: Dhaulagiri Zone
+    ta: தவுலகிரி சோன்
+    te: డౌలగిరి జోన్
+    th: ดาฮ์ลากิริ โซน
+    tr: Dhaulagiri Zon
+    ur: دھولاگیری زون
+    vi: Vùng Dhaulagiri
+    lv: Dhaulāgiri zona
+    ceb: Dhawalāgiri Zone
+    lt: Dulagirio zona
+    zh: 道拉吉里专区
+    ccp: "\U00011119\U00011127\U00011124\U00011123\U00011109\U00011128\U00011122\U00011128"
+    kk: Дхаулагири
+    uk: Дгаулагірі
+    'no': Dhaulagiri sone
+    hy: Դհաուլագիրի
+  comments:
+  type: zone
+GA:
+  name: Gandaki
+  code: GA
+  unofficial_names: Gandaki
+  geo:
+    latitude: 28.3732037
+    longitude: 84.4382721
+    min_latitude: 27.7426719
+    min_longitude: 83.4406971
+    max_latitude: 28.91346
+    max_longitude: 85.19313799999999
+  translations:
+    en: Gandaki
+    ar: مديرية غانداكي
+    bg: Гандаки
+    bn: গণ্ডকী অঞ্চল
+    da: Gandaki Zone
+    de: Gandaki
+    el: Γκαντάκι
+    es: Zona de Gandaki
+    eu: Gandaki Gunea
+    fi: Gandaki
+    fr: Gandaki
+    gu: ગંડકી પ્રાંત
+    hi: गंडकी अंचल
+    id: Gandaki Zone
+    it: Gandaki
+    ja: ガンダキ県
+    kn: ಗಂಡಕಿ ವಲಯ
+    ko: 간다키 구
+    mr: गंडकी झोन
+    ms: Gandaki Zone
+    nb: Gandaki sone
+    ne: गण्डकी अञ्चल
+    nl: Gandaki
+    pl: Gandaki
+    pt: Gandaki
+    ru: Гандаки
+    si: ගන්ඩකි කලාපය
+    sk: Gandakí
+    sv: Gandaki Zone
+    ta: கண்டகி ஸ்ஒன்
+    te: గండాకి జోన్
+    th: เมืองการ์ตาโก
+    tr: Gandaki Zon
+    ur: گنداکی زون
+    vi: Vùng Gandaki
+    lv: Gandakī zona
+    ceb: Gandakī Zone
+    lt: Gandakio zona
+    zh: 甘达基专区
+    ccp: "\U00011109\U00011127\U0001111A\U00011134\U00011118\U00011127\U00011107\U00011128"
+    hy: Գանդակի
+    uk: Гандакі
+    ca: zona de Gandaki
+    'no': Gandaki sone
+  comments:
+  type: zone
+JA:
+  name: Janakpur
+  code: JA
+  unofficial_names: Janakpur
+  geo:
+    latitude: 26.728611
+    longitude: 85.925
+    min_latitude: 26.6703051
+    min_longitude: 85.8793826
+    max_latitude: 26.8383167
+    max_longitude: 85.9942174
+  translations:
+    en: Janakpur
+    ar: مديرية جاناكبور
+    bg: Джанакпур
+    bn: জনকপুর অঞ্চল
+    da: Janakpur Zone
+    de: Janakpur
+    el: Τζανακπούρ
+    es: Zona de Janakpur
+    eu: Janakpur Gunea
+    fi: Janakpur
+    fr: Janakpur
+    gu: જનકપુર પ્રાંત
+    hi: जनकपुर अंचल
+    id: Janakpur Zone
+    it: Janakapura
+    ja: ジャナクプル県
+    kn: ಜನಕ್ಪುರ್ ವಲಯ
+    ko: 자낙푸르 구
+    mr: जनकपूर झोन
+    ms: Janakpur Zone
+    nb: Janakpur sone
+    ne: जनकपुर अञ्चल
+    nl: Janakpur
+    pl: Dźanakpur
+    pt: Janakpur
+    ru: Джанакпур
+    si: ජනක්පුර් කලාපය
+    sk: Džanakpur
+    sv: Janakpur Zone
+    ta: ஜனக்பூர் ஸ்ஒன்
+    te: జనక్పూర్ జోన్
+    th: จานักปูร์ โซน
+    tr: Janakpur Zon
+    ur: جنکپور زون
+    vi: Vùng Janakpur
+    lv: Džanakpuras zona
+    ceb: Janakpur Zone
+    lt: Džanakpuro zona
+    zh: 賈納克布爾專區
+    fa: جاناکپور
+    ccp: "\U0001110E\U0001111A\U00011127\U00011107\U00011134\U0001111B\U0001112A\U00011122\U00011134"
+    uk: Джанакпур
+    'no': Janakpur sone
+  comments:
+  type: zone
+KA:
+  name: Karnali
+  code: KA
+  unofficial_names: Karnali
+  geo:
+    latitude: 29.3862555
+    longitude: 82.38857829999999
+    min_latitude: 28.7097791
+    min_longitude: 81.255875
+    max_latitude: 30.4333931
+    max_longitude: 83.6897499
+  translations:
+    en: Karnali
+    ar: مديرية كارنالي
+    bg: Карнали
+    bn: কর্ণালী অঞ্চল
+    da: Karnali Zone
+    de: Karnali
+    el: Καρνάλι
+    es: Zona de Karnali
+    eu: Karnali Gunea
+    fi: Karnali
+    fr: Karnali
+    gu: કર્ણાલી પ્રાંત
+    hi: कर्णाली अंचल
+    id: Karnali Zone
+    it: Karnali
+    ja: カルナリ県
+    kn: ಕರ್ನಾಲಿ ವಲಯ
+    ko: 카르날리 구
+    mr: कर्णली झोन
+    ms: Zon Karnali
+    nb: Karnali sone
+    ne: कर्णाली अञ्चल
+    nl: Karnali
+    pl: Karnali
+    pt: Karnali
+    ru: Карнали
+    si: කමලි කලාපය
+    sk: Karnálí
+    sv: Karnali Zone
+    ta: கர்னாலி ஸ்வ்ன்
+    te: కర్నాలి జోన్
+    th: คาร์นาลี
+    tr: Kamali Zon
+    ur: کرنالی زون
+    vi: Vùng Karnali
+    lv: Karnālī zona
+    ceb: Karnālī Zone
+    lt: Karnalio zona
+    zh: 格爾納利專區
+    ccp: "\U00011107\U00011122\U00011134\U0001111A\U00011123\U00011128"
+    uk: Карналі
+    'no': Karnali sone
+  comments:
+  type: zone
+KO:
+  name: Kosi [Koshi]
+  code: KO
+  unofficial_names: Kosi [Koshi]
+  geo:
+    latitude: 26.5459247
+    longitude: 86.93737159999999
+    min_latitude: 25.396598
+    min_longitude: 86.4182005
+    max_latitude: 26.8262154
+    max_longitude: 87.26650049999999
+  translations:
+    en: Kosi
+    ar: مديرية كوسي
+    bg: Коси
+    bn: কোশী অঞ্চল
+    ca: Kosi
+    de: Kosi
+    es: Zona de Kosi
+    eu: Koshi Gunea
+    fi: Kosi
+    fr: Koshi
+    gu: કોશી પ્રાંત
+    hi: कोशी अंचल
+    it: Kosi
+    ja: コシ県
+    ko: 코시 구
+    ne: कोशी अञ्चल
+    nl: Kosi
+    pl: Kośi
+    pt: Kosi
+    ru: Коси
+    sk: Koší
+    ta: கோசி மண்டலம்
+    ur: کوسی زون
+    ceb: Kosī Zone
+    zh: 戈西專區
+    ccp: "\U00011107\U0001112E\U00011125\U00011128"
+    uk: Косі
+  comments:
+  type: zone
+LU:
+  name: Lumbini
+  code: LU
+  unofficial_names: Lumbini
+  geo:
+    latitude: 27.45
+    longitude: 83.25
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Lumbini
+    ar: مديرية لومبيني
+    be: Лумбіні
+    bg: Лумбини
+    bn: লুম্বিনী অঞ্চল
+    de: Lumbini
+    el: Λουμπίνι
+    es: Zona de Lumbini
+    et: Luṁbinī ringkond
+    eu: Lumbini Gunea
+    fi: Lumbini
+    fr: Lumbinî
+    gu: લુમ્બિની પ્રાંત
+    it: Lumbini
+    ja: ルンビニ県
+    ko: 룸비니 구
+    ne: लुम्बिनी अञ्चल
+    nl: Lumbini
+    pl: Lumbini
+    pt: Lumbini
+    ru: Лумбини
+    sk: Lumbiní
+    ta: லும்பினி மண்டலம்
+    ur: لومبینی زون
+    ceb: Lumbinī Zone
+    zh: 藍毗尼專區
+    ccp: "\U00011123\U0001112A\U0001111F\U00011134\U0001111D\U00011128\U0001111A\U00011128"
+    hy: Լումբինի
+    mk: Лумбини
+  comments:
+  type: zone
+MA:
+  name: Mahakali
+  code: MA
+  unofficial_names: Mahakali
+  geo:
+    latitude: 29.39
+    longitude: 80.3
+    min_latitude: 29.3691794
+    min_longitude: 80.2704906
+    max_latitude: 29.4097501
+    max_longitude: 80.33278229999999
+  translations:
+    en: Mahakali
+    ar: مديرية ماهاكالي
+    bg: Махакали
+    bn: মহাকালী অঞ্চল
+    da: Mahakali Zone
+    de: Mahakali
+    el: Μαχακάλι
+    es: Zona de Mahakali
+    eu: Mahakali Gunea
+    fi: Mahakali
+    fr: Mahakali
+    gu: મહાકાલી પ્રાંત
+    hi: महाकाली जोन
+    id: Mahakali Zone
+    it: Mahakali
+    ja: マハカリ県
+    kn: ಮಹಾಕಾಳಿ ವಲಯ
+    ko: 마하칼리 구
+    mr: महाकाली झोन
+    ms: Zon Mahakali
+    nb: Mahakali Sone
+    ne: महाकाली अञ्चल
+    nl: Mahakali
+    pl: Mahakali
+    pt: Mahakali
+    ru: Махакали
+    si: මහාකාලි කලාපය
+    sk: Mahákálí
+    sv: Mahakali Zone
+    ta: மஹாகாளி ஸ்வ்ன்
+    te: మహాకాళి జోన్
+    th: เขตมหากาลี
+    tr: Mahakali zone
+    ur: مہاکالی زون
+    vi: Vùng Mahakali
+    lv: Mahākālī zona
+    ceb: Mahākālī Zone
+    lt: Mahakalio zona
+    zh: 馬哈卡利專區
+    ccp: "\U0001111F\U00011127\U00011126\U00011107\U00011127\U00011123\U00011128"
+    uk: Махакалі
+    'no': Mahakali Sone
+  comments:
+  type: zone
+ME:
+  name: Mechi
+  code: ME
+  unofficial_names: Mechi
+  geo:
+    latitude: 26.8760007
+    longitude: 87.9334803
+    min_latitude: 26.361404
+    min_longitude: 87.4689351
+    max_latitude: 27.9174019
+    max_longitude: 88.19932589999999
+  translations:
+    en: Mechi
+    ar: مديرية ميتشي
+    bg: Мечи
+    bn: মেচী অঞ্চল
+    da: Mechi Zone
+    de: Mechi
+    el: Μέτσι
+    es: Zona de Mechi
+    eu: Mechi Gunea
+    fi: Mechi
+    fr: Mechi
+    gu: મેચી પ્રાંત
+    hi: मेची अञ्चल
+    id: Mechi Zone
+    it: Mechi
+    ja: メチ県
+    kn: ಮೆಚಿ ವಲಯ
+    ko: 메치 구
+    mr: मेची झोन
+    ms: Mechi Zone
+    nb: Mechi
+    ne: मेची अञ्चल
+    nl: Mechi
+    pl: Meći
+    pt: Mechi
+    ru: Мечи
+    si: මෙචි කලාපය
+    sk: Mečhí
+    sv: Mechi
+    ta: மெச்சி ஸ்யோனே
+    te: మెచి జోన్
+    th: เมจิ
+    tr: Mechi Zon
+    ur: میچی زون
+    vi: Vùng Mechi
+    lv: Mečī zona
+    ceb: Mechī Zone
+    lt: Mečio zona
+    zh: 梅吉專區
+    ccp: "\U0001111F\U0001112C\U0001110C\U00011128"
+    uk: Мечі
+    'no': Mechi
+  comments:
+  type: zone
+NA:
+  name: Narayani
+  code: NA
+  unofficial_names: Narayani
+  geo:
+    latitude: 27.5863482
+    longitude: 84.3226488
+    min_latitude: 27.5510084
+    min_longitude: 84.1606619
+    max_latitude: 27.6141404
+    max_longitude: 84.344962
+  translations:
+    en: Narayani
+    ar: مديرية ناراياني
+    bg: Нараяни
+    bn: নারায়ণী অঞ্চল
+    da: Narayani Zone
+    de: Narayani
+    el: Ναραγιάνι
+    es: Zona de Narayani
+    eu: Narayani Gunea
+    fi: Narayani
+    fr: Narayani
+    gu: નારાયણી પ્રાંત
+    hi: नारायणी जोन
+    id: Narayani Zone
+    it: Narayani
+    ja: ナラヤニ県
+    kn: ನಾರಾಯಣಿ ವಲಯ
+    ko: 나라야니 구
+    mr: नारायणी झोन
+    ms: Narayani Zone
+    nb: Narayani Sone
+    ne: नारायणी अञ्चल
+    nl: Narayani
+    pl: Narajani
+    pt: Narayani (Nepal)
+    ru: Нараяни
+    si: නරයනි කලාපය
+    sk: Nárájaní
+    sv: Narayani Zone
+    ta: நாராயணி ஸ்யோனே
+    te: నారాయని జోన్
+    th: นารางานิ
+    tr: Narayani Zon
+    ur: نارائنی زون
+    vi: Vùng Narayani
+    lv: Nārājanī zona
+    ceb: Nārāyanī Zone
+    lt: Narajanio zona
+    zh: 納拉亞尼專區
+    ccp: "\U0001111A\U00011122\U00011120\U00011127\U0001111A\U00011128"
+    uk: Нараяні
+    'no': Narayani Sone
+  comments:
+  type: zone
+P1:
+  name: Province 1
+  code: P1
+  unofficial_names:
+  geo:
+  translations:
+    en: Province 1
+  comments:
+  type: province
+P2:
+  name: Province 2
+  code: P2
+  unofficial_names:
+  geo:
+  translations:
+    en: Province 2
+  comments:
+  type: province
+P3:
+  name: Province 3
+  code: P3
+  unofficial_names:
+  geo:
+  translations:
+    en: Province 3
+  comments:
+  type: province
+P4:
+  name: Gandaki²
+  code: P4
+  unofficial_names:
+  geo:
+    latitude: 28.394857
+    longitude: 84.12400799999999
+    min_latitude: 26.3473741
+    min_longitude: 80.05846980000001
+    max_latitude: 30.4473898
+    max_longitude: 88.20182969999999
+  translations:
+    en: Gandaki²
+  comments:
+  type: province
+P5:
+  name: Province 5
+  code: P5
+  unofficial_names:
+  geo:
+  translations:
+    en: Province 5
+  comments:
+  type: province
+P6:
+  name: Karnali²
+  code: P6
+  unofficial_names:
+  geo:
+    latitude: 28.394857
+    longitude: 84.12400799999999
+    min_latitude: 26.3473741
+    min_longitude: 80.05846980000001
+    max_latitude: 30.4473898
+    max_longitude: 88.20182969999999
+  translations:
+    en: Karnali²
+  comments:
+  type: province
+P7:
+  name: Province 7
+  code: P7
+  unofficial_names:
+  geo:
+  translations:
+    en: Province 7
+  comments:
+  type: province
+RA:
+  name: Rapti
+  code: RA
+  unofficial_names: Rapti
+  geo:
+    latitude: 28.274347
+    longitude: 82.38857829999999
+    min_latitude: 27.682508
+    min_longitude: 81.7472689
+    max_latitude: 28.99212589999999
+    max_longitude: 83.1547849
+  translations:
+    en: Rapti
+    ar: مديرية رابتي
+    bg: Рапти
+    bn: রাপ্তী অঞ্চল
+    da: Rapti Zone
+    de: Rapti
+    el: Ράπτι
+    es: Zona de Rapti
+    eu: Rapti Gunea
+    fi: Rapti
+    fr: Rapti
+    gu: રાપ્તી પ્રાંત
+    hi: रैप्टी जोन
+    id: Rapti Zone
+    it: Rapti
+    ja: ラプティ県
+    kn: ರಾಪ್ತಿ ವಲಯ
+    ko: 랍티 구
+    mr: राती झोन
+    ms: Rapti Zone
+    nb: Rapti sone
+    ne: राप्ती अञ्चल
+    nl: Rapti
+    pl: Rapti
+    pt: Rapti
+    ru: Рапти
+    si: රප්ටි කලාපය
+    sk: Ráptí
+    sv: Rapti Zone
+    ta: ராப்தி ஸ்யோனே
+    te: రాప్తి జోన్
+    th: แรฟติโซน
+    tr: Rapti Zone
+    ur: راپتی زون
+    vi: Vùng Rapti
+    lv: Rāptī zona
+    ceb: Rāptī Zone
+    lt: Rapčio zona
+    zh: 拉布蒂專區
+    ccp: "\U00011122\U0001111B\U00011134\U00011111\U00011128"
+    uk: Рапті
+    'no': Rapti sone
+    hy: Ռապտի
+  comments:
+  type: zone
+SA:
+  name: Sagarmatha
+  code: SA
+  unofficial_names: Sagarmatha
+  geo:
+    latitude: 27.9878093
+    longitude: 86.9249842
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Sagarmatha
+    ar: مديرية ساجارماثا
+    bg: Сагарматха
+    bn: সগরমাথা অঞ্চল
+    da: Sagarmatha Zone
+    de: Sagarmatha
+    el: Σαγκαρμάθα
+    es: Zona de Sagarmatha
+    eu: Sagarmatha Gunea
+    fi: Sagarmatha
+    fr: Sagarmatha
+    gu: સગરમાથા પ્રાંત
+    hi: सगरमाथा अंचल
+    id: Sagarmatha Zone
+    it: Sagarmatha
+    ja: サガルマタ県
+    kn: ಸಾಗರ್ಮಾತಾ ವಲಯ
+    ko: 사가르마타 구
+    mr: सागरमाथा झोन
+    ms: Sagarmatha Zone
+    nb: Sagarmatha Sone
+    ne: सगरमाथा अञ्चल
+    nl: Sagarmatha
+    pl: Sagarmatha
+    pt: Sagarmatha
+    ru: Сагарматха
+    si: සාගර්මාතා කලාපය
+    sk: Sagarmáthá
+    sv: Sagarmatha
+    ta: சகர்மாதா ஸ்வ்ன்
+    te: సాగర్మాత జోన్
+    th: เขตสกรมาธา
+    tr: Sagarmatha Zon
+    ur: ساگرمتھا زون
+    vi: Vùng Sagarmatha
+    lv: Sagarmāthas zona
+    ceb: Sagarmāthā Zone
+    lt: Sagarmatos zona
+    zh: 萨加玛塔专区
+    ccp: "\U00011125\U00011109\U00011127\U00011122\U00011134\U0001111F\U00011117"
+    uk: Сагарматха
+    ca: zona del Sagarmatha
+    'no': Sagarmatha Sone
+    fa: منطقه ساگارماسا
+    sr: зона Сагармата
+    sr_Latn: zona Sagarmata
+  comments:
+  type: zone
+SE:
+  name: Seti
+  code: SE
+  unofficial_names: Seti
+  geo:
+    latitude: 29.6905427
+    longitude: 81.3399414
+    min_latitude: 28.394239
+    min_longitude: 80.5038579
+    max_latitude: 30.0715771
+    max_longitude: 81.815972
+  translations:
+    en: Seti
+    ar: مديرية سيتي
+    bg: Сети
+    bn: সেতী অঞ্চল
+    da: Seti Zone
+    de: Seti
+    el: Σέτι
+    es: Zona de Seti
+    eu: Seti Gunea
+    fi: Seti
+    fr: Seti
+    gu: સેતી પ્રાંત
+    hi: सेती अंचल
+    id: Seti Zone
+    it: Seti
+    ja: セティ県
+    kn: ಸೆಟಿ ವಲಯ
+    ko: 세티 구
+    mr: सेटी झोन
+    ms: Seti Zone
+    nb: Seti
+    ne: सेती अञ्चल
+    nl: Seti
+    pl: Seti
+    pt: Seti
+    ru: Сетхи
+    si: සෙටි කලාපය
+    sk: Setí
+    sv: Seti
+    ta: செடி ஸ்ஒன்
+    te: సేటి జోన్
+    th: กราเซีย อ อิออส
+    tr: Seti Zon
+    ur: سیتی زون
+    vi: Vùng Seti
+    lv: Setī zona
+    ceb: Setī Zone
+    lt: Sečio zona
+    zh: 塞蒂專區
+    ccp: "\U00011125\U0001112C\U00011111\U00011128"
+    uk: Сеті
+    'no': Seti
+  comments:
+  type: zone

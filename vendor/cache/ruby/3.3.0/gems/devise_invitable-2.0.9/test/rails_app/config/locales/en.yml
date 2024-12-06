@@ -1,0 +1,17 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  hello: "Hello world"
+  time:
+    formats:
+      short: "%b %d"
+  devise:
+    free_invitations:
+      send_instructions: 'An invitation email has been sent to %{email}.'
+    admins:
+      send_instructions: 'An invitation email has been sent to %{email}.'
+  mongoid:
+    errors:
+      messages:
+        taken: "has already been taken"

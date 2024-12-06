@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'rpush'
+Rpush::CLI.start(ARGV)

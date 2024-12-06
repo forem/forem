@@ -1,0 +1,6 @@
+fallbacks: false
+
+translations:
+  - file: "tmp/i18n-js/js_extend_segment.js"
+    js_extend: false
+    only: "*.date.formats"

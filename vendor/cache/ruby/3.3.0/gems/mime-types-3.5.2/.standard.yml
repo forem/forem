@@ -1,0 +1,4 @@
+parallel: true
+ruby_version: 2.3
+ignore:
+  - 'mime-types.gemspec'

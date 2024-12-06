@@ -1,0 +1,301 @@
+---
+A:
+  name: Toamasina
+  code: A
+  unofficial_names:
+  - Tamatave
+  geo:
+    latitude: -18.15
+    longitude: 49.416667
+    min_latitude: -18.1902246
+    min_longitude: 49.3536083
+    max_latitude: -18.0708419
+    max_longitude: 49.4305587
+  translations:
+    en: Toamasina
+    ar: مقاطعة تواماسينا
+    bg: Тоамасина
+    ca: Província de Toamasina
+    da: Toamasina-provinsen
+    de: Toamasina
+    el: Επαρχία Τοαμασίνα
+    es: Provincia de Toamasina
+    et: Toamasina provints
+    fa: تواماسینا
+    fr: province de Tamatave
+    id: Provinsi Toamasina
+    it: provincia di Toamasina
+    ja: トアマシナ州
+    ka: ტუამასინის პროვინცია
+    ko: 토아마시나 주
+    nb: Toamasina
+    nl: Toamasina
+    pl: Prowincja Toamasina
+    pt: Toamasina
+    ru: Туамасина
+    sv: Toamasina
+    uk: Туамасіна
+    ur: تواماسینا صوبہ
+    zh: 圖阿馬西納省
+    yue_Hans: 图阿马西纳省
+    ccp: "\U00011111\U0001112E\U0001111F\U00011125\U00011128\U0001111A"
+    yue: 圖阿馬西納省
+    uz: Tuamasina
+    'no': Toamasina
+    cy: Talaith Toamasina
+    eu: Toamasinako probintzia
+    he: מחוז טומאסינה
+    ro: Provincia Toamasina
+    zu: Toamasina Province
+  comments:
+  type: province
+D:
+  name: Antsiranana
+  code: D
+  unofficial_names:
+  - Antseranana
+  - Diégo Suarez
+  geo:
+    latitude: -12.3231349
+    longitude: 49.2942833
+    min_latitude: -12.3658257
+    min_longitude: 49.2734241
+    max_latitude: -12.2668974
+    max_longitude: 49.3142177
+  translations:
+    en: Antsiranana
+    ar: مقاطعة أنتسيرانانا
+    bg: Антсиранана
+    ca: Província d’Antsiranana
+    da: Antsiranana-provinsen
+    de: Antsiranana
+    el: Επαρχία Αντσιρανάνα
+    es: Provincia de Antsiranana
+    et: Antsiranana provints
+    fa: آنسیرانانا
+    fr: province de Diego-Suarez
+    id: Provinsi Antsiranana
+    it: provincia di Antsiranana
+    ja: アンツィラナナ州
+    ka: ანცირანანის პროვინცია
+    ko: 안치라나나 주
+    lt: Ancerananos provincija
+    nb: Antsiranana
+    nl: Antsiranana
+    pl: Prowincja Antsiranana
+    pt: Antsiranana
+    ru: Анциранана
+    sv: Antsiranana
+    ta: அண்ட்சிரனனா மாகாணம்
+    uk: Анціранана (провінція)
+    ur: انتسیرانانا صوبہ
+    vi: Antsiranana
+    zh: 安齊拉納納省
+    ccp: "\U00011103\U0001111A\U00011134\U00011111\U00011134\U00011125\U00011128\U00011122\U0001111A\U0001111A\U00011134"
+    uz: Antsiranana
+    'no': Antsiranana
+    cy: Talaith Antsiranana
+    eu: Antsirananako probintzia
+    he: מחוז אנצינאנאנה
+    ro: Provincia Antsiranana
+  comments:
+  type: province
+F:
+  name: Fianarantsoa
+  code: F
+  unofficial_names:
+  - Fianar
+  geo:
+    latitude: -21.453611
+    longitude: 47.085833
+    min_latitude: -21.4888523
+    min_longitude: 47.04122539999999
+    max_latitude: -21.4065204
+    max_longitude: 47.1303177
+  translations:
+    en: Fianarantsoa
+    ar: مقاطعة فيانارانتسوا
+    bg: Фианарантсоа
+    ca: Província de Fianarantsoa
+    da: Fianarantsoa-provinsen
+    de: Fianarantsoa
+    el: Επαρχία Φιαναραντσόα
+    es: Provincia de Fianarantsoa
+    et: Fianarantsoa provints
+    fa: فیانارانسوا
+    fr: province de Fianarantsoa
+    he: מחוז פיאנארנצוה
+    id: Provinsi Fianarantsoa
+    it: provincia di Fianarantsoa
+    ja: フィアナランツァ州
+    ka: ფიანარანცუის პროვინცია
+    ko: 피아나란초아 주
+    nb: Fianarantsoa
+    nl: Fianarantsoa
+    pl: Prowincja Fianarantsoa
+    pt: Fianarantsoa
+    ru: Фианаранцуа
+    sv: Fianarantsoa
+    uk: Фіанаранцуа
+    ur: فیانارانتسوا صوبہ
+    zh: 菲亞納蘭楚阿省
+    ccp: "\U0001111C\U00011128\U00011120\U0001111A\U00011122\U0001111A\U0001111A\U00011134\U00011111\U00011134\U00011125\U0001112E\U00011120"
+    uz: Fianarantsua
+    'no': Fianarantsoa
+    cy: Talaith Fianarantsoa
+    eu: Fianarantsoako probintzia
+    ro: Provincia Fianarantsoa
+  comments:
+  type: province
+M:
+  name: Mahajanga
+  code: M
+  unofficial_names:
+  - Majunga
+  geo:
+    latitude: -15.716667
+    longitude: 46.316667
+    min_latitude: -15.7284058
+    min_longitude: 46.294654
+    max_latitude: -15.6463868
+    max_longitude: 46.3819599
+  translations:
+    en: Mahajanga
+    ar: مقاطعة ماهاجانجا
+    bg: Махаджанга
+    ca: Província de Mahajanga
+    da: Mahajanga-provinsen
+    de: Mahajanga
+    el: Επαρχία Μαχατζάνγκα
+    es: Provincia de Mahajanga
+    fa: ماهاجانگا
+    fr: province de Majunga
+    id: Provinsi Mahajanga
+    it: provincia di Mahajanga
+    ja: マジュンガ州
+    ka: მაჰაძანგის პროვინცია
+    ko: 마하장가 주
+    nb: Mahajanga
+    nl: Mahajanga
+    pl: Prowincja Mahajanga
+    pt: Mahajanga
+    ru: Махадзанга
+    sv: Mahajanga
+    uk: Махадзанга (провінція)
+    ur: ماہاجانگا صوبہ
+    vi: Mahajanga
+    zh: 馬哈贊加省
+    yue_Hans: 马哈赞加省
+    ccp: "\U0001111F\U00011126\U00011134\U0001110E\U0001111A\U00011134\U00011109"
+    he: מחוז מאהאז׳אנגה
+    yue: 馬哈贊加省
+    uz: Maxadzanga
+    'no': Mahajanga
+    cy: Talaith Mahajanga
+    eu: Mahajangako probintzia
+    ro: Provincia Mahajanga
+  comments:
+  type: province
+T:
+  name: Antananarivo
+  code: T
+  unofficial_names:
+  - Tananarive
+  geo:
+    latitude: -18.933333
+    longitude: 47.516667
+    min_latitude: -19.0278715
+    min_longitude: 47.4191379
+    max_latitude: -18.747587
+    max_longitude: 47.60607719999999
+  translations:
+    en: Antananarivo
+    ar: مقاطعة فيانارانتسوا²
+    bg: Антананариво
+    ca: Província d’Antananarivo
+    da: Antananarivo-provinsen
+    de: Antananarivo
+    el: Επαρχία Ανταναναρίβο
+    es: Provincia de Antananarivo
+    et: Antananarivo provints
+    fa: آنتاناناریوو
+    fi: Antananarivon provinssi
+    fr: province d’Antananarivo
+    gl: Provincia de Antananarivo
+    hu: Antananarivo megye
+    id: Provinsi Antananarivo
+    it: provincia di Antananarivo
+    ja: アンタナナリボ州
+    ka: ანტანანარივუს პროვინცია
+    ko: 안타나나리보 주
+    lt: Antananaryvo provincija
+    ms: Wilayah Antananarivo
+    nb: Antananarivo
+    nl: Antananarivo
+    pl: Prowincja Antananarywa
+    pt: Antananarivo
+    ru: Антананариву
+    sv: Antananarivo
+    uk: Антананаріву
+    ur: انتاناناریوو صوبہ
+    ceb: Antananarivo Province
+    zh: 塔那那利佛省
+    ccp: "\U00011103\U0001111A\U00011134\U00011111\U0001111A\U0001111A\U00011122\U00011128\U0001111E\U0001112E"
+    be: правінцыя Антананарыву
+    uz: Antananarivu
+    'no': Antananarivo
+    cy: Talaith Antananarivo
+    eu: Antananarivoko probintzia
+    ro: Provincia Antananarivo
+  comments:
+  type: province
+U:
+  name: Toliara
+  code: U
+  unofficial_names:
+  - Toliara
+  - Tuléar
+  geo:
+    latitude: -23.35
+    longitude: 43.666667
+    min_latitude: -23.3970146
+    min_longitude: 43.6393261
+    max_latitude: -23.314592
+    max_longitude: 43.73601439999999
+  translations:
+    en: Toliara
+    ar: مقاطعة توليارا
+    bg: Толиара
+    ca: Província de Toliara
+    de: Toliara
+    el: Επαρχία Τολιάρα
+    es: Provincia de Toliara
+    fa: تولیارا
+    fr: province de Toliara
+    he: טוליארה
+    hr: Provincija Toliara
+    id: Provinsi Toliara
+    it: provincia di Toliara
+    ja: トゥリアラ州
+    ka: ტულიარის პროვინცია
+    ko: 톨리아라 주
+    nb: Toliara
+    nl: Toliara
+    pl: Prowincja Toliara
+    pt: Toliara
+    ru: Тулиара
+    sv: Toliara
+    uk: Туліара (провінція)
+    ur: تولیارا صوبہ
+    ceb: Toliara Province
+    sr_Latn: Toliara
+    zh: 圖利亞拉省
+    ccp: "\U00011111\U0001112E\U00011123\U00011128\U00011120\U00011122"
+    sr: Толиара
+    uz: Tuliara
+    'no': Toliara
+    cy: Talaith Toliara
+    eu: Toliarako probintzia
+    ro: Provincia Toliara
+  comments:
+  type: province

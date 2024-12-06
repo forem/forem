@@ -1,0 +1,1360 @@
+---
+AB:
+  name: Abyan
+  code: AB
+  unofficial_names: Abyan
+  geo:
+    latitude: 13.6343413
+    longitude: 46.0563212
+    min_latitude: 12.9191754
+    min_longitude: 45.046048
+    max_latitude: 14.303409
+    max_longitude: 47.166517
+  translations:
+    en: Abyan
+    ar: محافظة أبين
+    bg: Абян
+    bn: আবিয়ান গভর্নোরেট
+    ca: Governació d’Abyan
+    cs: Abján
+    da: Abyan Governorate
+    de: Gouvernement Abyan
+    el: Αμπγιάν
+    es: Gobernación de Abyan
+    eu: Abyan gobernantzia
+    fa: استان ابین
+    fi: Abyan
+    fr: Gouvernorat d’Abyan
+    gu: અબ્યાન ગવર્નોરેટ
+    he: אבין
+    hi: अबयन प्रान्त
+    hr: Abyan
+    hu: Abjan kormányzóság
+    id: Kegubernuran Abyan
+    it: governatorato di Abyan
+    ja: アビヤン県
+    ka: აბიანის მუჰაფაზა
+    kn: ಅಬ್ಯಾನ್ ಗವರ್ನೇಟ್
+    ko: 아브얀 주
+    mr: अब्यानं गव्हर्नोरेट
+    ms: Abyan Governorate
+    nb: Abyan
+    nl: Abyan
+    pl: Abjan
+    pt: Abyan
+    ro: Guvernoratul Abyan
+    ru: Абьян
+    si: අබ්යන් පළාත
+    sv: Abyan
+    sw: Wilaya ya Abyan
+    ta: அபயன் கோவெர்னோரே
+    te: అబ్యాన్ గవర్నరేట్
+    th: อับยัน
+    tr: Abyan ili
+    uk: Абʼян
+    ur: محافظہ ابین
+    vi: Tỉnh Abyan
+    zh: 阿比扬省
+    lv: Abjānas muhāfaza
+    lt: Abjano gubernija
+    ccp: "\U00011103\U0001111D\U00011128\U00011120\U0001111A\U00011134"
+    az: Abya mühafazası
+    'no': Abyan
+  comments:
+  type: governorate
+AD:
+  name: ʿAdan
+  code: AD
+  unofficial_names:
+  - Adan
+  - ʿAdan
+  - Aden
+  - Aden
+  - Adén
+  geo:
+    latitude: 12.8257481
+    longitude: 44.7943804
+    min_latitude: 12.6697487
+    min_longitude: 44.4078031
+    max_latitude: 12.92427
+    max_longitude: 45.0821905
+  translations:
+    en: "’Adan"
+    ar: محافظة عدن
+    bg: Аден
+    de: Gouvernement Adan
+    es: Gobernación de ‘Adan
+    eu: "‘Adan gobernantzia"
+    fa: استان عدن
+    fi: Aden
+    fr: Gouvernorat d’Aden
+    he: עדן
+    hi: अदन प्रान्त
+    hr: Adan
+    hu: Áden kormányzóság
+    id: Kegubernuran ‘Adan
+    ja: アデン県
+    ka: ადენის მუჰაფაზა
+    ko: 아덴 주
+    nl: Aden
+    pl: Aden
+    pt: Áden
+    ro: Guvernoratul ‘Adan
+    ru: Аден
+    sv: Aden
+    sw: Wilaya ya Adan
+    tr: Aden ili
+    uk: Аден
+    ur: محافظہ عدن
+    zh: 亞丁省
+    ccp: "\U00011103\U00011113\U0001111A\U00011134"
+    az: Aden mühafazası
+    ca: Governació d’Adan
+    th: เขตผู้ว่าการเอเดน
+  comments:
+  type: governorate
+AM:
+  name: "'Amran"
+  code: AM
+  unofficial_names: "'Amran"
+  geo:
+    latitude: 16.2569214
+    longitude: 43.9436788
+    min_latitude: 15.488677
+    min_longitude: 43.524034
+    max_latitude: 16.641641
+    max_longitude: 44.3594831
+  translations:
+    en: Amran
+    ar: محافظة عمران
+    bg: Амран
+    bn: আমরান গভর্নোরেট
+    ca: Governació d’Amran
+    da: Amran
+    el: Αμράν Γκοβερνοράτε
+    es: Gobernación de ‘Amran
+    eu: "‘Amran gobernantzia"
+    fa: استان عمران
+    fi: Amran
+    fr: Gouvernorat d’Amran
+    gu: અમ્રાન ગવર્નોરેટ
+    he: עמראן
+    hi: अमरान प्रान्त
+    hr: Amran
+    hu: Amrán kormányzóság
+    id: Kegubernuran ‘Amran
+    ja: アムラーン県
+    ka: ამრანის მუჰაფაზა
+    kn: ಅಮ್ರಾನ್ ಗವರ್ನೇಟೇಟ್
+    ko: 암란 주
+    mr: अम्रान गव्हनर्टेट
+    ms: Pentadbiran Amran
+    nl: "‘Amran"
+    pl: Amran
+    pt: "‘Amran"
+    ro: Guvernoratul ‘Amran
+    ru: Амран
+    si: අම්රන් පළාත
+    sv: Amran
+    sw: Wilaya ya Amran
+    ta: அம்ரான் கோவெர்னோரேட்
+    te: అమ్రాన్ గవర్నోరేట్
+    th: เขตการปกครองแอมรัน
+    tr: Amran ili
+    uk: Амран
+    ur: محافظہ عمران
+    vi: "‘Amrān"
+    lv: Amrānas muhāfaza
+    lt: Amrano gubernija
+    zh: 阿姆蘭省
+    ccp: "\U00011103\U0001111F\U00011122\U0001111A\U00011134"
+    az: Amran mühafazası
+  comments:
+  type: governorate
+BA:
+  name: Al Bayḑā’
+  code: BA
+  unofficial_names:
+  - Al Baida
+  geo:
+    latitude: 14.3588662
+    longitude: 45.4498065
+    min_latitude: 13.806784
+    min_longitude: 44.58074209999999
+    max_latitude: 14.7964711
+    max_longitude: 46.0480639
+  translations:
+    en: Al Bayda
+    ar: محافظة البيضاء
+    bg: Ал Бейда
+    bn: আল-বায়দাহ গভর্নোরেট
+    da: Al Bayda’ Governorate
+    de: Gouvernement al-Baida’
+    el: Αλ Μπάιντα
+    es: Gobernación de Al Bayda’
+    eu: Al Bayda’ gobernantzia
+    fa: شهر البیضاء
+    fi: Al Bayda
+    fr: Gouvernorat d’Al Bayda’
+    gu: અલ બાયડા ‘ગવર્નોરેટ
+    he: אל-ביידא
+    hi: अल-बैदा प्रान्त
+    hr: Al Baida’
+    hu: Bajdá kormányzóság
+    id: Kegubernuran Al-Bayda’
+    it: governatorato di al-Bayda’
+    ja: バイダー県
+    ka: ელ-ბეიდის მუჰაფაზა
+    kn: ಅಲ್ ಬೇಡಾ ‘ಗವರ್ನೇಟ್
+    ko: 바이다 주
+    mr: अल बेडा गव्हर्नोरेट
+    ms: Al Bayda’ Governorate
+    nb: Al Bayda’
+    nl: Al Bayda’
+    pl: Al-Bajda
+    pt: Al Bayda’
+    ro: Guvernoratul Al Bayda’
+    ru: Эль-Бейда
+    si: අල් බඩ්යා පළාත
+    sv: Al-Bayda
+    sw: Wilaya ya Al Bayda
+    ta: அல் பயடா‘ கோவெர்னோரே
+    te: అల్ బేడా గవర్నరేట్
+    th: อัลไบย์ดา
+    tr: El Beyda ili
+    uk: Ель-Бейда
+    ur: محافظہ البیضاء
+    vi: Tỉnh Al Bayda’
+    lv: Baidas muhāfaza
+    lt: Al Beidos gubernija
+    zh: 贝达省
+    ccp: "\U00011103\U00011123\U00011134 \U0001111D\U0001112C\U00011113"
+    ca: Governació d’Al Bayda
+    'no': Al Bayda’
+  comments:
+  type: governorate
+DA:
+  name: Ad¸ D¸ali'
+  code: DA
+  unofficial_names: Ad¸ D¸ali'
+  geo:
+    latitude: 13.696667
+    longitude: 44.730833
+    min_latitude: 13.6921764
+    min_longitude: 44.7181321
+    max_latitude: 13.7195688
+    max_longitude: 44.7446966
+  translations:
+    en: Dhale
+    ar: محافظة الضالع
+    bg: Ал Дали
+    bn: আদ দালি গভর্নোরেট
+    da: Ad Dali’ Governorate
+    de: Gouvernement ad-Dali’
+    el: Αντ Νταλί
+    es: Gobernación de Ad Dali’
+    eu: Ad Dali’ gobernantzia
+    fa: استان ضالع
+    fi: Al Dali
+    fr: Gouvernorat d’Ad Dali’
+    gu: એડ દાલી ગવર્નોરેટ
+    he: א-דאלע
+    hi: अद-दाली प्रान्त
+    hr: Ad Dali’
+    hu: Dáli kormányzóság
+    id: Kegubernuran Ad-Dali’
+    it: governatorato di al-Dali’
+    ja: ダーリウ県
+    ka: ელ-დალის მუჰაფაზა
+    kn: ಆಡ್ ಡಾಲಿ ‘ಗವರ್ನರ್
+    ko: 달리 주
+    mr: ऍड दाली गव्हर्नोरेट
+    ms: Ad Dali’ Governorate
+    nb: Ad Dali’
+    nl: Ad Dali’
+    pl: Ad-Dali
+    pt: Ad Dali’
+    ro: Guvernoratul Ad Dali’
+    ru: Ад-Дали
+    si: අඩ් ඩලි පළාත
+    sv: Ad-Dali
+    sw: Wilaya ya Ad Dali
+    ta: அட டாலி ‘ கோவெர்னோரே
+    te: అడ్రా్ డాలి గవర్నరేట్
+    th: อัด ดาลี โกเวอโนเรท
+    tr: Ed Dali ili
+    uk: Ед-Даля
+    ur: محافظہ الضالع
+    vi: Tỉnh Ad Dali’
+    lv: Dālī muhāfaza
+    lt: Ad Dalio gubernija
+    zh: 达利省
+    ccp: "\U00011119\U00011123\U00011128"
+    ca: Governació d’Ad Dali
+    'no': Ad Dali’
+    kk: Әз-Зали
+  comments:
+  type: governorate
+DH:
+  name: Dhamar
+  code: DH
+  unofficial_names:
+  - Dhamar
+  - Dhomar
+  - Đomar
+  geo:
+    latitude: 14.7195344
+    longitude: 44.2479015
+    min_latitude: 14.031811
+    min_longitude: 43.475584
+    max_latitude: 14.9834611
+    max_longitude: 44.8365489
+  translations:
+    en: Dhamar
+    ar: محافظة ذمار
+    bg: Дамар
+    bn: দামার গভর্নোরেট
+    ca: Governació de Dhamar
+    da: Dhamar Governorate
+    de: Gouvernement Dhamar
+    el: Νταμάρ
+    es: Gobernación de Dhamar
+    eu: Dhamar gobernantzia
+    fa: استان ذمار
+    fi: Dhamar
+    fr: Gouvernorat de Dhamar
+    gu: ધમર ગવર્નોરેટ
+    he: ד׳מאר
+    hi: दमार प्रान्त
+    hr: Dhamar
+    hu: Dzamár kormányzóság
+    id: Kegubernuran Dhamar
+    it: governatorato di Dhamar
+    ja: ザマール県
+    ka: დამარის მუჰაფაზა
+    kn: ಧಮರ್ ಗವರ್ನೇಟ್
+    ko: 다마르 주
+    mr: धरम गव्हर्नोरेट
+    ms: Dhamar Governorate
+    nb: Dhamar
+    nl: Dhamar
+    pl: Zamar
+    pt: Dhamar
+    ro: Guvernoratul Dhamar
+    ru: Дамар
+    si: ධමාර් පළාත
+    sv: Dhamar
+    sw: Wilaya ya Dhamar
+    ta: தாமர் கோவெர்னோரே
+    te: ఢామర్ గవర్నరేట్
+    th: ดะมาร์
+    tr: Zamar ili
+    uk: Дамар
+    ur: محافظہ ذمار
+    vi: Tỉnh Dhamar
+    lv: Demāras muhāfaza
+    lt: Damaro gubernija
+    zh: 扎玛尔省
+    ccp: "\U00011119\U0001111F\U00011122\U00011134"
+    az: Damar mühafazası
+    'no': Dhamar
+  comments:
+  type: governorate
+HD:
+  name: Hadramawt
+  code: HD
+  unofficial_names:
+  - Hadramout
+  geo:
+    latitude: 16.9304135
+    longitude: 49.36531489999999
+    min_latitude: 12.1115582
+    min_longitude: 46.2974891
+    max_latitude: 19.002331
+    max_longitude: 54.53053990000001
+  translations:
+    en: Hadramaut
+    ar: محافظة حضرموت
+    bg: Хадрамаут
+    bn: হাধরামাউত গভর্নোরেট
+    ca: Governació d’Hadramaut
+    da: Hadhramaut Governorate
+    de: Gouvernement Hadramaut
+    el: Χαντχραμάουτ
+    es: Gobernación de Hadramaut
+    eu: Hadramaut gobernantzia
+    fa: استان حضرموت
+    fi: Hadramaut
+    fr: Gouvernorat de l’Hadramaout
+    gu: હાધ્રમૌટ ગવર્નોરેટ
+    he: חצרמוות
+    hi: हदरामौत प्रान्त
+    hr: Hadramaut
+    hu: Hadramaut kormányzóság
+    id: Kegubernuran Hadhramaut
+    it: governatorato di Hadramawt
+    ja: ハドラマウト県
+    ka: ჰადრამავთის მუჰაფაზა
+    kn: ಹಧ್ರಮೌತ್ ಗವರ್ನೇಟ್
+    ko: 하드라마우트 주
+    mr: हधर्मउट गव्हर्नोरेट
+    ms: Hadhramaut Governorate
+    nb: Guvernementet Hadhramaut
+    nl: Hadramaut
+    pl: Hadramaut
+    pt: Hadramaute
+    ro: Guvernoratul Hadhramaut
+    ru: Хадрамаут
+    si: හද්රමවුට් පළාත
+    sv: Guvernementet Hadhramaut
+    sw: Wilaya ya Hadhramaut
+    ta: அத்ரமௌட் கோவெர்னோகைட்
+    te: హధ్రామట్ గవర్నరేట్
+    th: เขตกรีทเตอร์ อักกรา
+    tr: Hadramut ili
+    uk: Хадрамаут
+    ur: محافظہ حضرموت
+    vi: Tỉnh Hadhramaut
+    lv: Hadramautas muhāfaza
+    lt: Hadramuto gubernija
+    zh: 哈德拉毛省
+    ccp: "\U00011126\U00011113\U00011133\U00011122\U0001112D\U0001111F\U00011127\U00011105\U0001112A\U00011116\U00011134"
+    'no': Guvernementet Hadhramaut
+    az: Hadramaut mühafəzəsi
+    cs: Guvernorát Hadramaut
+  comments:
+  type: governorate
+HJ:
+  name: Hajjah
+  code: HJ
+  unofficial_names: Hajjah
+  geo:
+    latitude: 16.1180631
+    longitude: 43.329466
+    min_latitude: 15.463984
+    min_longitude: 42.778236
+    max_latitude: 16.6797261
+    max_longitude: 43.766581
+  translations:
+    en: Hajjah
+    ar: محافظة حجة
+    bg: Хаджа
+    bn: হাজ্জা গভর্নোরেট
+    da: Hajjah Governorate
+    de: Gouvernement Haddscha
+    el: Χάτζα
+    es: Gobernación de Hajjah
+    eu: Hajjah gobernantzia
+    fa: استان حجه
+    fi: Hajjah
+    fr: Gouvernorat de Hajjah
+    gu: હઝહ ગવર્નોરેટ
+    he: חג׳ה
+    hi: हज्जाह प्रान्त
+    hr: Hajjah
+    hu: Haddzsa kormányzóság
+    id: Kegubernuran Hajjah
+    it: governatorato di Hajja
+    ja: ハッジャ県
+    ka: ჰაჯის მუჰაფაზა
+    kn: ಹಜ್ಜಾ ಗವರ್ನೇಟ್
+    ko: 하자 주
+    mr: हजराज गव्हनर्टेट
+    ms: Hajjah Governorate
+    nb: Hajjah
+    nl: Hajjah
+    pl: Hadżdża
+    pt: Hajjah
+    ro: Guvernoratul Hajjah
+    ru: Хадджа
+    si: හජ්ජා පළාත
+    sv: Hajjah
+    sw: Wilaya ya Hajjah
+    ta: ஹஜ்ஜஹ் கோவெர்னோரே
+    te: హజ్జా గవర్నరేట్
+    th: เขตฮัจจะห์
+    tr: Hacca ili
+    uk: Хадджа
+    ur: محافظہ حجہ
+    vi: Tỉnh Hajjah
+    lv: Hadžas muhāfaza
+    sr_Latn: Hadžah
+    lt: Hadžos gubernija
+    zh: 哈杰省
+    ccp: "\U00011126\U0001110E\U00011133\U00011126\U00011126\U00011134"
+    sr: Хаџах
+    ca: Governació d’Hajjah
+    'no': Hajjah
+  comments:
+  type: governorate
+HU:
+  name: Al Ḩudaydah
+  code: HU
+  unofficial_names:
+  - Hodeida
+  - Hodeidah
+  - Hodeïah
+  - H̨udaydah
+  - al-Hudaydah
+  geo:
+    latitude: 15.3053072
+    longitude: 43.0194897
+    min_latitude: 13.6042295
+    min_longitude: 41.8160553
+    max_latitude: 15.9224578
+    max_longitude: 43.777108
+  translations:
+    en: Al Hudaydah
+    ar: محافظة الحديدة
+    bg: Ходейда
+    bn: আল হুদায়দাহ গভর্নোরেট
+    ca: Governació d’al-Hudaydah
+    da: Al Hudaydah Governorate
+    de: Gouvernement al-Hudaida
+    el: Αλ Χουντάγντια
+    es: Gobernación de Al Hudayda
+    eu: Al-Hudaida gobernantzia
+    fa: استان حدیده
+    fi: Hodeida
+    fr: Gouvernorat d’Al Hudaydah
+    gu: અલ હુદાયદાહ ગવર્નોરેટ
+    he: אל-חודיידה
+    hi: अल-हुदैदाह प्रान्त
+    hr: Al Hudaida
+    hu: Hudajda kormányzóság
+    id: Kegubernuran Al-Hudaydah
+    it: governatorato di al-Hudayda
+    ja: フダイダ県
+    ka: ჰოდეიდის მუჰაფაზა
+    kn: ಅಲ್ ಹದಾದಾ ಗವರ್ನೇಟ್
+    ko: 호데이다 주
+    mr: अल हुडायदाह गव्हर्नोरेट
+    ms: Al Hudaydah Governorate
+    nb: Al Huaydah
+    nl: Al Hudaydah
+    pl: Al-Hudajda
+    pt: Al Hudaydah
+    ro: Guvernoratul Al Hudaydah
+    ru: Ходейда
+    si: අල් හුඩේඩා පළාත
+    sv: Al-Hudaydah
+    sw: Wilaya ya Al Hudaydah
+    ta: அல் ஹுடையத கோவெர்னோரே
+    te: అల్ హుదాయ్‌దా గవర్నరేట్
+    th: อัล ฮูไมย์ดะฮ์
+    tr: El Hudeyde ili
+    uk: Ходейда
+    ur: محافظہ الحدیدہ
+    vi: Tỉnh Al Hudaydah
+    lv: Hudeidas muhāfaza
+    sr_Latn: El Hudaida
+    lt: Al Hudaidos gubernija
+    zh: 荷台达省
+    ccp: "\U00011103\U00011123\U00011134 \U00011126\U0001112A\U00011113\U0001112C\U00011118\U00011126\U00011134"
+    sr: Ел Худаида
+    'no': Al Huaydah
+  comments:
+  type: governorate
+IB:
+  name: Ibb
+  code: IB
+  unofficial_names: Ibb
+  geo:
+    latitude: 14.1415717
+    longitude: 44.2479015
+    min_latitude: 13.674915
+    min_longitude: 43.647663
+    max_latitude: 14.433573
+    max_longitude: 44.6729879
+  translations:
+    en: Ibb
+    ar: محافظة إب
+    bg: Иб
+    bn: ইব্ব গভর্নোরেট
+    da: Ibb
+    de: Gouvernement Ibb
+    el: Ιμπ
+    es: Gobernación de Ibb
+    eu: Ibb gobernantzia
+    fa: استان اب
+    fi: Ibb
+    fr: Gouvernorat d’Ibb
+    gu: ઈબ્બ ગવર્નોરેટ
+    he: איב
+    hi: इब्ब प्रान्त
+    hr: Ibb
+    hu: Ibb kormányzóság
+    id: Kegubernuran Ibb
+    it: governatorato di Ibb
+    ja: イッブ県
+    ka: იბის მუჰაფაზა
+    kn: ಇಬ್ಬ್ ಗವರ್ನೇಟ್
+    ko: 이브 주
+    mr: इब्ब गव्हर्नोरेट
+    ms: Ibb Governorate
+    nb: Ibb
+    nl: Ibb
+    pl: Ibb
+    pt: Ibb
+    ro: Guvernoratul Ibb
+    ru: Ибб
+    si: ඉබ් පළාත
+    sv: Ibb
+    sw: Wilaya ya Ibb
+    ta: இபப கோவெர்னோரே
+    te: ఇబ్ గవర్నరేట్
+    th: อิบบ์
+    tr: İb ili
+    uk: Ібб
+    ur: محافظہ اب
+    vi: Tỉnh Ibb
+    lv: Ibas muhāfaza
+    ceb: Ibb (lalawigan)
+    lt: Ibo gubernija
+    zh: 伊卜省
+    ccp: "\U00011103\U00011128\U0001111B\U00011133\U00011126\U00011134"
+    az: İbb mühafazası
+    ca: Governació d’Ibb
+    'no': Ibb
+  comments:
+  type: governorate
+JA:
+  name: Al Jawf
+  code: JA
+  unofficial_names: Al Jawf
+  geo:
+    latitude: 16.7901819
+    longitude: 45.29938620000001
+    min_latitude: 15.722451
+    min_longitude: 44.067691
+    max_latitude: 17.4041709
+    max_longitude: 47.0087311
+  translations:
+    en: Al Jawf
+    ar: محافظة الجوف
+    bg: Джауф
+    bn: আল জাওয়াফ গভর্নোরেট
+    ca: Governació d’Al Jawf
+    da: Al Jawf Governorate
+    de: Gouvernement al-Dschauf
+    el: Αλ Τζόφ
+    es: Gobernación de Yauf
+    eu: Al Jawf gobernantzia
+    fa: استان جوف
+    fi: Al Jawf
+    fr: Gouvernorat d’Al Jawf
+    gu: અલ જૌફ ગવર્નોરેટ
+    he: אל-ג׳וף
+    hi: अल-जौफ़ प्रान्त
+    hr: Al Jawf
+    hu: Dzsauf kormányzóság
+    id: Kegubernuran Al-Jawf
+    it: governatorato di al-Jawf
+    ja: ジャウフ県
+    ka: ელ-ჯაუფის მუჰაფაზა
+    kn: ಅಲ್ ಜಾವ್ ಗವರ್ನೇಟ್
+    ko: 자우프 주
+    mr: अल जौफ गव्हर्नोरेट
+    ms: Al Jawf Governorate
+    nb: Al Jawf
+    nl: Al Jawf
+    pl: Al-Dżauf
+    pt: Al Jawf
+    ro: Guvernoratul Al Jawf
+    ru: Эль-Джауф
+    si: අල් ජෝෆ් පළාත
+    sv: Al-Jawf
+    sw: Wilaya ya Al Jawf
+    ta: அல் ஜாவ்ப் கோவெர்னோரே
+    te: అల్ జాాఫ్ గవర్నరేట్
+    th: อัลเจาฟ์
+    tr: El Cavf ili
+    uk: Ель-Джауф
+    ur: محافظہ الجوف
+    vi: Tỉnh Al Jawf
+    lv: Džaufas muhāfaza
+    sr_Latn: El Džauf
+    lt: Al Džafo gubernija
+    zh: 焦夫省
+    ccp: "\U00011103\U00011123\U00011134 \U0001110E\U0001112E\U0001111B\U00011134"
+    sr: Ел Џауф
+    be: Эль-Джауф
+    'no': Al Jawf
+  comments:
+  type: governorate
+LA:
+  name: Laḩij
+  code: LA
+  unofficial_names:
+  - Lahej
+  - Lahj
+  geo:
+    latitude: 16.4022222
+    longitude: 44.3238889
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Lahij
+    ar: محافظة لحج
+    bg: Лахидж
+    de: Gouvernement Lahidsch
+    es: Gobernación de Lahij
+    eu: Lahij gobernantzia
+    fa: استان لحج
+    fi: Lahij
+    fr: Gouvernorat de Lahij
+    he: לחג׳
+    hi: लहिज प्रान्त
+    hr: Lahij
+    hu: Lahidzs kormányzóság
+    id: Kegubernuran Lahij
+    it: governatorato di Lahij
+    ja: ラヒジュ県
+    ka: ლაჰჯის მუჰაფაზა
+    ko: 라히즈 주
+    nb: Lahij
+    nl: Lahij
+    pl: Lahidż
+    pt: Lahij
+    ro: Guvernoratul Lahij
+    ru: Лахдж
+    sv: Lahij
+    sw: Wilaya ya Lahij
+    tr: Lahic ili
+    uk: Лахдж
+    ur: محافظہ لحج
+    zh: 拉赫季省
+    ccp: "\U00011123\U0001111D\U00011126\U00011128\U0001110C\U00011134"
+    ca: Governació de Lahij
+    'no': Lahij
+    az: Lahc mühafəzəsi
+    th: เขตผู้ว่าการละฮิจญ์
+  comments:
+  type: governorate
+MA:
+  name: Ma'rib
+  code: MA
+  unofficial_names:
+  - Marab
+  - Mareb
+  geo:
+    latitude: 15.4700312
+    longitude: 45.3228575
+    min_latitude: 15.4511678
+    min_longitude: 45.2984496
+    max_latitude: 15.4981702
+    max_longitude: 45.3470603
+  translations:
+    en: Ma’rib
+    ar: محافظة مأرب
+    bg: Мариб
+    da: Ma’rib Governorate
+    de: Gouvernement Ma’rib
+    el: Μαρίμπ
+    es: Gobernación de Mareb
+    eu: Ma’rib gobernantzia
+    fa: استان مأرب
+    fi: Marib
+    fr: Gouvernorat de Ma’rib
+    gu: મરીબ ગવર્નોરેટ
+    he: מארב
+    hi: मारिब प्रान्त
+    hr: Ma’rib
+    hu: Marib kormányzóság
+    id: Kegubernuran Ma’rib
+    it: governatorato di Ma’rib
+    ja: マアリブ県
+    ka: მარიბის მუჰაფაზა
+    kn: ಮಾರಿಬ್ ಗವರ್ನೇಟ್
+    ko: 마리브 주
+    mr: मारीब गव्हर्नोरेट
+    ms: Ma’rib Governorate
+    nb: Ma’rib
+    nl: Ma’rib
+    pl: Marib
+    pt: Ma’rib
+    ro: Guvernoratul Ma’rib
+    ru: Мариб
+    si: මාරිබ් පළාත
+    sv: Marib
+    sw: Wilaya ya Marib
+    ta: ம ‘ரிப் கோவெர்னோரே
+    te: మారిబ్ గవర్నరేట్
+    th: มะริบ
+    tr: Ma’rib ili
+    uk: Маріб
+    ur: محافظہ مآرب
+    vi: Tỉnh Ma’rib
+    lv: Maaribas muhāfaza
+    lt: Maribo gubernija
+    zh: 马里卜省
+    bn: মা‘রিব গভর্নোরেট
+    ccp: "\U0001111F‘\U00011122\U00011128\U0001111B\U00011134"
+    ca: Governació de Marib
+    'no': Ma’rib
+  comments:
+  type: governorate
+MR:
+  name: Al Mahrah
+  code: MR
+  unofficial_names: Al Mahrah
+  geo:
+    latitude: 16.5238423
+    longitude: 51.6834275
+    min_latitude: 15.0801567
+    min_longitude: 50.1137559
+    max_latitude: 19.002331
+    max_longitude: 53.0783
+  translations:
+    en: Al Mahrah
+    ar: محافظة المهرة
+    bg: Махра
+    bn: আল মাহরাহ গভর্নোরেট
+    ca: Governació d’al-Mahra
+    da: Al Mahrah Governorate
+    de: Gouvernement al-Mahra
+    el: Αλ Μαχράχ
+    es: Gobernación de Al Mahrah
+    eu: Al Mahrah gobernantzia
+    fa: استان مهره
+    fi: Mahra
+    fr: Mahra
+    gu: અલ મહ્રાહ ગવર્નોરેટ
+    he: אל-מהרה
+    hi: अल-महराह प्रान्त
+    hr: Al Mahra
+    hu: Mahra kormányzóság
+    id: Kegubernuran Al-Mahrah
+    it: governatorato di al-Mahra
+    ja: マフラ県
+    ka: ელ-მაჰრის მუჰაფაზა
+    kn: ಅಲ್ ಮಹ್ರಾ ಗವರ್ನೇಟ್
+    ko: 마라 주
+    mr: अल माहह गव्हर्नोरेट
+    ms: Al Mahrah Governorate
+    nb: Al-Mahrah
+    nl: Al Mahrah
+    pl: Al-Mahra
+    pt: Al Mahra
+    ro: Guvernoratul Al Mahrah
+    ru: Эль-Махра
+    si: අල් මරා පළාත
+    sv: Al-Mahrah
+    sw: Wilaya ya Al Mahrah
+    ta: அல் மஹரஹ கோவெர்னோரே
+    te: అంల్ మహారాహ్ గవర్నరేట్
+    th: อัล มาฮืราฮ์ โกเวอโนเรท
+    tr: El Mahra ili
+    uk: Ель-Махра
+    ur: محافظہ المہرہ
+    vi: Tỉnh Al Mahrah
+    lv: Mahras muhāfaza
+    ceb: Al Mahrah
+    lt: Al Machros gubernija
+    zh: 马哈拉省
+    ccp: "\U00011103\U00011123\U00011134 \U0001111F\U00011126\U00011134\U00011122\U00011126\U00011134"
+    'no': Al-Mahrah
+    az: Əl-Məhra mühafəzəsi
+    ml: അൽ മഹ്രഹ് സംസ്ഥാനം
+  comments:
+  type: governorate
+MW:
+  name: Al Mahwit
+  code: MW
+  unofficial_names: Al Mahwit
+  geo:
+    latitude: 15.3963229
+    longitude: 43.5606946
+    min_latitude: 15.006784
+    min_longitude: 43.25229710000001
+    max_latitude: 15.5304159
+    max_longitude: 43.924874
+  translations:
+    en: Al Mahwit
+    ar: محافظة المحويت
+    bg: Махуит
+    bn: আল মাহিত গভর্নোরেট
+    da: Al Mahwit Governorate
+    de: Gouvernement al-Mahwit
+    el: Αλ Μαχβίτ Γκοβερνοράτε
+    es: Gobernación de Al Mahwit
+    eu: Al Mahwit gobernantzia
+    fa: استان محویت
+    fi: Al Mahwit
+    fr: Gouvernorat d’Al Mahwit
+    gu: અલ માહવિટ ગવર્નોરેટ
+    he: אל-מחוית
+    hi: अल-महवीत प्रान्त
+    hr: Al Mahwit
+    hu: Mahvít kormányzóság
+    id: Kegubernuran Al-Mahwit
+    it: governatorato di al-Mahwit
+    ja: マフウィート県
+    ka: ელ-მაჰვიტის მუჰაფაზა
+    kn: ಅಲ್ ಮಹ್ವಿತ್ ಗವರ್ನೇಟ್
+    ko: 마위트 주
+    mr: अल मेहविट गव्हर्नोरेट
+    ms: Al Mahwit Governorate
+    nb: Al Mahwit
+    nl: Al Mahwit
+    pl: Al-Mahwit
+    pt: Al Mahwit
+    ro: Guvernoratul Al Mahwit
+    ru: Махвит
+    si: අල් මහ්විට් පළාත
+    sv: Al-Mahwit
+    sw: Wilaya ya Al Mahwit
+    ta: அல் மஹவிட் கோவெர்னோரேட்
+    te: అల్ మహ్విత్ గవర్నరేట్
+    th: อัล มะห์วิท กอฟเวอโนเลท
+    tr: El Mahvit ili
+    uk: Махвіт
+    ur: محافظہ المحویت
+    vi: Tỉnh Al Mahwit
+    lv: Mehvītas muhāfaza
+    ceb: Al Maḩwīt
+    lt: Al Machvito gubernija
+    zh: 迈赫维特省
+    ccp: "\U00011103\U00011123\U00011134 \U0001111F\U00011126\U00011134\U00011103\U0001112A\U00011103\U00011128\U00011116\U00011134"
+    ca: Governació d’Al Mahwit
+    'no': Al Mahwit
+  comments:
+  type: governorate
+RA:
+  name: محافظة ريمة
+  code: RA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة ريمة
+    bg: Райма
+    bn: রায়মাহ গভর্নোরেট
+    da: Raymah Governorate
+    de: Gouvernement Raima
+    el: Ρέιμαχ
+    en: Raymah
+    es: Gobernación de Raymah
+    eu: Raymah gobernantzia
+    fa: استان ریمه
+    fi: Raima
+    fr: Gouvernorat de Raima
+    gu: રેમેહ ગવર્નોરેટ
+    he: רימה
+    hi: रेमाह प्रान्त
+    hr: Raima
+    hu: Rajma kormányzóság
+    id: Kegubernuran Raymah
+    it: governatorato di Rayma
+    ja: ライマ県
+    ka: რაიმის მუჰაფაზა
+    kn: ರೇಮಾ ಗವರ್ನೇಟ್
+    ko: 라이마 주
+    mr: रेमह गव्हर्नोरेट
+    ms: Raymah Governorate
+    nb: Raymah
+    nl: Raymah
+    pl: Rajma
+    pt: Raymah
+    ro: Guvernoratul Raymah
+    ru: Райма
+    si: රේමාහ් පළාත
+    sv: Raymah
+    sw: Wilaya ya Raymah
+    ta: ரெய்மாஹ் கோவெர்னோகைட்
+    te: రేమా గవర్నరేట్
+    th: เรมาฮ์ โกเวอโนเรท
+    tr: Rayima ili
+    uk: Рейма
+    ur: محافظہ ریمہ
+    vi: Tỉnh Raymah
+    lv: Raimas muhāfaza
+    lt: Raimos gubernija
+    zh: 赖马省
+    ccp: "\U00011122\U0001112C\U0001111F\U00011126\U00011134"
+    ca: Governació de Raimah
+    'no': Raymah
+  comments:
+  type: governorate
+SA:
+  name: صنعاء
+  code: SA
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    af: Sanaa
+    am: ሳና
+    ar: صنعاء
+    az: Sana
+    be: Горад Сана
+    bg: Сана
+    bn: সানা
+    ca: Sanà
+    cs: San’á
+    da: Sanaá
+    de: Sanaa
+    el: Σαναά
+    en: Amanat Al Asimah
+    es: Saná
+    eu: Sana
+    fa: صنعا
+    fi: Sanaa
+    fr: Sanaa
+    gl: Saná
+    gu: સાના
+    he: צנעא
+    hi: साना
+    hr: Sana
+    hu: Szanaa
+    hy: Սանաա
+    id: Sana’a
+    is: Sana
+    it: Sana’a
+    ja: サヌア
+    ka: სანა
+    kn: ಸನಾ
+    ko: 사나
+    lt: Sana
+    lv: Sana
+    ml: സന
+    mn: Санаа хот
+    mr: साना
+    ms: Sana’a
+    nb: Sanaá
+    ne: साना
+    nl: Sanaa
+    pl: Sana
+    ps: صنعا
+    pt: Sana
+    ro: Sana’a
+    ru: Сана
+    si: සැනා
+    sk: Saná
+    sl: Sana
+    sr: Сана
+    sv: Sanaa
+    sw: Sana’a
+    ta: சன்ஆ
+    te: సనా
+    th: ซานา
+    tk: Sana
+    tr: San’a
+    uk: Сана
+    ur: صنعاء
+    vi: Sana’a
+    cy: Sana’a
+    ceb: Sanaa
+    sr_Latn: Sana
+    zh: 萨那
+    yue_Hans: 萨那
+    sq: Sana
+    ccp: "\U00011103\U0001111F\U0001111A\U00011127\U00011116\U00011134 \U00011103\U00011123\U00011134
+      \U00011103\U0001112A\U00011125\U00011128\U0001111F\U00011126\U00011134"
+    ga: San’a
+    ky: Сана
+    so: Sana’a
+    pa: ਸਨਾ
+    kk: Сана
+    yue: 薩那
+    yo: Sana’a
+    uz: Sano
+    bs: Sana’a
+    mk: Сана
+    'no': Sanaá
+    yo_BJ: Sana’a
+  comments:
+  type: municipality
+SD:
+  name: Sa`dah
+  code: SD
+  unofficial_names:
+  - Saʿadah
+  geo:
+    latitude: 16.9509413
+    longitude: 43.7477743
+    min_latitude: 16.9213471
+    min_longitude: 43.7216377
+    max_latitude: 16.9842336
+    max_longitude: 43.7776101
+  translations:
+    en: Sa’dah
+    ar: محافظة صعدة
+    bg: Саада
+    bn: সাঁদা গভর্নোরেট
+    ca: Governació de Sa’dah
+    cs: Provincie Sa’ada
+    da: Saada Governorate
+    de: Gouvernement Sa’da
+    el: Σαάντα Γκοβερνοράτε
+    es: Gobernación de Sa’dah
+    eu: Sa’dah gobernantzia
+    fa: استان صعده
+    fi: Saada
+    fr: Gouvernorat de Sa’dah
+    gu: સાદા ગવર્નોરેટ
+    he: צעדה
+    hi: सआदाह प्रान्त
+    hr: Sa’da
+    hu: Szaada kormányzóság
+    id: Kegubernuran Saada
+    it: governatorato di Sa’da
+    ja: サアダ県
+    ka: საადის მუჰაფაზა
+    kn: ಸಾಡ ಗವರ್ನರ್
+    ko: 사다 주
+    mr: सादा गव्हर्नोरेट
+    ms: Saada Governorate
+    nb: Sa’dah
+    nl: Sa’dah
+    pl: Sada
+    pt: Sa’dah
+    ro: Guvernoratul Sa’dah
+    ru: Саада
+    si: සාදා පළාත
+    sv: Sadah
+    sw: Wilaya ya Sadah
+    ta: சாதா கோவெர்னோரேட்
+    te: సాదా గవర్నరేట్
+    th: ซาดา กอฟเวอโนเลต
+    tr: Saada ili
+    uk: Саада
+    ur: سادہ گوورنوراتے
+    vi: Tỉnh Saada
+    lv: Saadas muhāfaza
+    lt: Saados gubernija
+    zh: 萨达省
+    ccp: "\U00011125‘\U00011113\U00011126\U00011134"
+    'no': Sa’dah
+  comments:
+  type: governorate
+SH:
+  name: Shabwah
+  code: SH
+  unofficial_names:
+  - Shabwah
+  geo:
+    latitude: 15.368889
+    longitude: 47.023611
+    min_latitude: 15.3665084
+    min_longitude: 47.0220423
+    max_latitude: 15.3717846
+    max_longitude: 47.0317305
+  translations:
+    en: Shabwah
+    ar: محافظة شبوة
+    bg: Шабуа
+    bn: সাবাহ গভর্নোরেট
+    ca: Governació de Xabwa
+    da: Shabwah Governorate
+    de: Gouvernement Schabwa
+    el: Σαμπγουά Γκοβερνοράτε
+    es: Gobernación de Shabwah
+    fa: استان شبوه
+    fi: Šabwa
+    fr: Shabwah
+    gu: શેબવા ગવર્નોરેટ
+    he: שבוה
+    hi: शबवाह प्रान्त
+    hr: Shabwa
+    hu: Sabva kormányzóság
+    id: Kegubernuran Shabwah
+    it: governatorato di Shabwa
+    ja: シャブワ県
+    ka: შაბვის მუჰაფაზა
+    kn: ಷಬ್ವಾ ಗವರ್ನೇಟ್
+    ko: 샤브와 주
+    mr: शबवा गव्हर्नोरेट
+    ms: Shabwah Governorate
+    nb: Shabwah
+    nl: Shabwah
+    pl: Szabwa
+    pt: Shabwa
+    ro: Guvernoratul Shabwah
+    ru: Шабва
+    si: ශබ්වා පළාත
+    sl: Šabva
+    sv: Shabwah
+    sw: Wilaya ya Shabwah
+    ta: ஷபவாஹ கோவெர்னோரேட்
+    te: షబ్వా గవర్నరేట్
+    th: ชัปว๊ะห์ เกอเวอโนเลต
+    tr: Şabva ili
+    uk: Шабва
+    ur: محافظہ شبوہ
+    vi: Tỉnh Shabwah
+    lv: Šebvas muhāfaza
+    ceb: Shabwah
+    sr_Latn: Šabva
+    lt: Šabvos gubernija
+    zh: 舍卜沃省
+    ccp: "\U00011125\U0001111B\U00011134\U00011124\U00011126\U00011134"
+    sr: Шабва
+    'no': Shabwah
+    az: Şəbva mühafəzəsi
+  comments:
+  type: governorate
+SN:
+  name: Sanʿā
+  code: SN
+  unofficial_names:
+  - Sana
+  - Sanaa
+  - Sanaʿa
+  - Sanaʿa City
+  - Sanʿaʿ
+  geo:
+    latitude: 16.0905301
+    longitude: 49.6554124
+    min_latitude: 16.08029
+    min_longitude: 49.64571480000001
+    max_latitude: 16.0981446
+    max_longitude: 49.6662712
+  translations:
+    en: Sana’a
+    ar: محافظة صنعاء
+    bg: Сана²
+    de: Gouvernement Sanaa
+    es: Gobernación de Saná
+    fa: استان صنعا
+    fi: Sanaa²
+    fr: Gouvernorat de Sanaa
+    he: צנעא²
+    hi: सनआ प्रान्त
+    hr: Sana²
+    hu: Szanaa kormányzóság
+    id: Kegubernuran Sana’a
+    it: governatorato di San’a’
+    ja: サナア県
+    ka: სანის მუჰაფაზა
+    ko: 사나 주
+    nb: Sanaá²
+    nl: Sanaa²
+    pl: Sana²
+    pt: Sana²
+    ro: Guvernoratul Sana’a
+    ru: Сана²
+    sv: Guvernementet Sana’a
+    sw: Wilaya ya Sana’a
+    tr: San’a ili
+    uk: Сана²
+    ur: محافظہ صنعاء
+    ceb: Sanaa²
+    zh: 薩那省
+    ccp: "\U00011125\U0001111A‘\U00011103\U00011127"
+    ca: Governació de Sanà
+    be: Сана
+    'no': Sanaá²
+    az: Səna mühafəzəsi
+    th: เขตผู้ว่าการซานา
+  comments:
+  type: governorate
+SU:
+  name: محافظة أرخبيل سقطرى
+  code: SU
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: محافظة أرخبيل سقطرى
+    de: Gouvernement Sokotra
+    en: Arkhabil Suqutra
+    fa: استان ارخبیل سقطری
+    fr: Gouvernorat de Socotra
+    it: governatorato di Socotra
+    ja: ソコトラ県
+    ko: 소코트라 주
+    ur: محافظہ سقطری
+    ceb: Socotra
+    zh: 索科特拉省
+    ccp: "\U00011103\U00011122\U00011134\U00011108\U0001111D\U00011128\U00011123\U00011134
+      \U00011125\U0001112A\U00011107\U00011111\U00011133\U00011122"
+    es: Gobernación de Socotra
+    ca: Governació de Socotra
+    th: เขตผู้ว่าการโซโคตรา
+    uk: Сокотра (мухафаза)
+  comments:
+  type: governorate
+TA:
+  name: Taʿizz
+  code: TA
+  unofficial_names:
+  - Taiz
+  geo:
+    latitude: 13.4131166
+    longitude: 43.6375314
+    min_latitude: 12.6340961
+    min_longitude: 43.2397839
+    max_latitude: 13.887883
+    max_longitude: 44.510999
+  translations:
+    en: Taiz
+    ar: محافظة تعز
+    bg: Таиз
+    da: Ta’izz Governorate
+    de: Gouvernement Ta’izz
+    el: Ταΐζ Γκοβερνοράτε
+    es: Gobernación de Ta’izz
+    fa: استان تعز
+    fi: Taizz
+    fr: Gouvernorat de Ta’izz
+    gu: તા‘ઝ ગવર્નોરેટ
+    he: תעז
+    hi: ताइज़ प्रान्त
+    hr: Taizz
+    hu: Taizz kormányzóság
+    id: Kegubernuran Ta’izz
+    it: governatorato di Ta’izz
+    ja: タイズ県
+    ka: ტაიზის მუჰაფაზა
+    kn: ತಾಯಿಜ್ ಗವರ್ನೇಟ್
+    ko: 타이즈 주
+    mr: ता‘ज गव्हरेनरेट
+    ms: Ta’izz Governorate
+    nb: Ta’izz
+    nl: Ta’izz
+    pl: Taizz
+    pt: Ta’izz
+    ro: Guvernoratul Ta’izz
+    ru: Таиз
+    si: ටාඉස් පළාත
+    sv: Taizz
+    sw: Wilaya ya Taizz
+    ta: டா ‘இஸ்ஸ் கோவெர்னோராட்
+    te: టాయిజ్
+    th: ทา อิซ กอฟเวอโนเลท
+    tr: Taiz ili
+    uk: Таїз
+    ur: محافظہ تعز
+    vi: Tỉnh Ta’izz
+    lv: Taizas muhāfaza
+    sr_Latn: Taiz
+    lt: Taiz gubernija
+    zh: 塔伊茲省
+    bn: তা‘ইজ গভর্নোরেট
+    ccp: "\U00011111\U0001112D\U0001110C\U00011134"
+    sr: Таиз
+    ca: Governació de Taizz
+    'no': Ta’izz
+    be: мухафаза Таіз
+    eu: Ta’izz Herrizaintza
+    kk: Тағиз
+  comments:
+  type: governorate

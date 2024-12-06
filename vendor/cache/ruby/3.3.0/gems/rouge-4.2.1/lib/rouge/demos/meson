@@ -1,0 +1,10 @@
+project('tutorial', 'c', version: '0.2.3')
+executable('demo', 'main.c')
+
+version_array = meson.project_version().split('.')
+api_version = '@0@.@1@'.format(version_array[0], version_array[1])
+
+d = dependency('foo', required : get_option('myfeature'))
+if d.found()
+  app = executable('app', 'app.c', dependencies : [d])
+endif

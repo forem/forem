@@ -1,0 +1,6 @@
+node count(init: int; reset, event: bool) returns (c: int);
+let
+	c = init -> if reset then init
+					else if event then pre(c)+1
+					else pre(c);
+tel;

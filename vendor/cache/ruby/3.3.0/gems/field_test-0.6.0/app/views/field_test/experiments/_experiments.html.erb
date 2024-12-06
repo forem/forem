@@ -1,0 +1,61 @@
+<% experiments.each do |experiment| %>
+  <h2>
+    <%= experiment.name %>
+    <% if experiment.active? && experiment.closed? %><small class="closed">Closed</small><% end %>
+    <small><%= link_to "Details", experiment_path(experiment.id) %></small>
+  </h2>
+
+  <% if experiment.description %>
+    <p class="description"><%= experiment.description %></p>
+  <% end %>
+
+  <% experiment.goals.each do |goal| %>
+    <% results = experiment.results(goal: goal) %>
+
+    <% if experiment.multiple_goals? %>
+      <h3><%= goal.titleize %></h3>
+    <% end %>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Variant</th>
+          <th style="width: 20%;">Participants</th>
+          <th style="width: 20%;">Conversions</th>
+          <th style="width: 20%;">Conversion Rate</th>
+          <th style="width: 20%;">Prob Winning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% results.each do |variant, result| %>
+          <tr>
+            <td>
+              <%= variant %>
+              <% if variant == experiment.winner %>
+                <span class="check">✓</span>
+              <% end %>
+            </td>
+            <td><%= result[:participated] %></td>
+            <td><%= result[:converted] %></td>
+            <td>
+              <% if result[:conversion_rate] %>
+                <%= (100.0 * result[:conversion_rate]).round(FieldTest.precision) %>%
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td>
+              <% if result[:prob_winning] %>
+                <% if result[:prob_winning] < 0.01 %>
+                  &lt; 1%
+                <% else %>
+                  <%= (100.0 * result[:prob_winning]).round(FieldTest.precision) %>%
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>

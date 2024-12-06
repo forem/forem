@@ -1,0 +1,55 @@
+---
+VI:
+  alpha2: VI
+  alpha3: VIR
+  continent: North America
+  country_code: '1'
+  currency_code: USD
+  distance_unit: MI
+  gec: VQ
+  geo:
+    latitude: 18.335765
+    longitude: -64.896335
+    max_latitude: 18.4239
+    max_longitude: -64.4391
+    min_latitude: 17.5482999
+    min_longitude: -65.1101
+    bounds:
+      northeast:
+        lat: 18.4239
+        lng: -64.4391
+      southwest:
+        lat: 17.5482999
+        lng: -65.1101
+  international_prefix: '011'
+  ioc: ISV
+  iso_long_name: The Virgin Islands of the United States
+  iso_short_name: Virgin Islands (U.S.)
+  languages_official:
+  - en
+  languages_spoken:
+  - en
+  national_destination_code_lengths:
+  - 3
+  national_number_lengths:
+  - 10
+  national_prefix: '1'
+  nationality: Virgin Islander
+  number: '850'
+  postal_code: true
+  postal_code_format: "(008(?:(?:[0-4]\\d)|(?:5[01])))(?:[ \\-](\\d{4}))?"
+  region: Americas
+  start_of_week: monday
+  subregion: Caribbean
+  un_locode: VI
+  unofficial_names:
+  - Virgin Islands of the United States
+  - Amerikanische Jungferninseln
+  - Îles Vierges américaines
+  - Islas Vírgenes de los Estados Unidos
+  - アメリカ領ヴァージン諸島
+  - Amerikaanse Maagdeneilanden
+  - Virgin Islands (U.S.)
+  - United States Virgin Islands
+  - U.S. Virgin Islands
+  world_region: AMER

@@ -1,0 +1,77 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.2
+references:
+  run_tests: &run_tests
+    run:
+      name: Run test suite
+      command: bundle exec rake test
+  # Needed because tests execute raw git commands
+  set_git_config: &set_git_config
+    run:
+      name: Set Git config
+      command: git config --global user.email "you@example.com"; git config --global user.name "Your Name"
+  restore: &restore
+    restore_cache:
+      keys:
+        - v1_bundler_deps-{{ .Environment.CIRCLE_JOB }}
+  save: &save
+    save_cache:
+      paths:
+        - ./vendor/bundle
+      key: v1_bundler_deps-{{ .Environment.CIRCLE_JOB }} # CIRCLE_JOB e.g. "ruby-2.5"
+  bundle: &bundle
+    run:
+      name: install dependencies
+      command: |
+        echo "export BUNDLE_JOBS=4" >> $BASH_ENV
+        echo "export BUNDLE_RETRY=3" >> $BASH_ENV
+        echo "export BUNDLE_PATH=$(pwd)/vendor/bundle" >> $BASH_ENV
+        echo "export BUNDLE_GEMFILE=$(pwd)/gemfiles/$GEMFILE_NAME" >> $BASH_ENV
+        source $BASH_ENV
+
+        bundle install
+        bundle update
+        bundle clean
+  mysteps: &mysteps
+    steps:
+      - checkout
+      - <<: *set_git_config
+      - <<: *restore
+      - <<: *bundle
+      - <<: *run_tests
+      - <<: *save
+
+jobs:
+  test:
+    parameters:
+      ruby_version:
+        type: string
+      gemfile:
+        type: string
+    docker:
+      - image: "ruby:<< parameters.ruby_version >>"
+    environment:
+      GEMFILE_NAME: <<parameters.gemfile>>
+    steps:
+      - checkout
+      - <<: *set_git_config
+      - <<: *restore
+      - <<: *bundle
+      - <<: *run_tests
+      - <<: *save
+
+workflows:
+  all-tests:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              ruby_version: ["2.5.8", "2.7.2", "3.0.0"]
+              gemfile: ["rails_5_2.gemfile", "rails_6_1.gemfile", "rails_git.gemfile"]
+            exclude:
+              - ruby_version: "3.0.0"
+                gemfile: rails_5_2.gemfile
+              - ruby_version: "2.5.8"
+                gemfile: rails_git.gemfile
+          name: test-ruby-<<matrix.ruby_version>>-<<matrix.gemfile>>

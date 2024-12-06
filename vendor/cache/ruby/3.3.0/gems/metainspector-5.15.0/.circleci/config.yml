@@ -1,0 +1,58 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.0.4
+jobs:
+  test_2_6:
+    docker:
+      - image: cimg/ruby:2.6.10
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Run tests
+          command: bundle exec rake
+  test_2_7:
+    docker:
+      - image: cimg/ruby:2.7.6
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Run tests
+          command: bundle exec rake
+  test_3_0:
+    docker:
+      - image: cimg/ruby:3.0.4
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Run tests
+          command: bundle exec rake
+  test_3_1:
+    docker:
+      - image: cimg/ruby:3.1.2
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Run tests
+          command: bundle exec rake
+  test_3_2:
+    docker:
+      - image: cimg/ruby:3.2.1
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Run tests
+          command: bundle exec rake
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - test_2_6
+      - test_2_7
+      - test_3_0
+      - test_3_1
+      - test_3_2

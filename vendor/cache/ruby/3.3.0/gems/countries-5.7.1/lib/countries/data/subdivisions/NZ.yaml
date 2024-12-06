@@ -1,0 +1,1030 @@
+---
+AUK:
+  name: Auckland
+  code: AUK
+  unofficial_names: Auckland
+  geo:
+    latitude: -36.8484597
+    longitude: 174.7633315
+    min_latitude: -37.0654751
+    min_longitude: 174.4438016
+    max_latitude: -36.660571
+    max_longitude: 175.2871371
+  translations:
+    en: Auckland
+    ar: إقليم أوكلاند
+    be: Окленд
+    bg: Окланд
+    bn: অকল্যান্ড অঞ্চল
+    ca: Regió d’Auckland
+    da: Auckland Region
+    de: Region Auckland
+    el: Περιοχή του Ώκλαντ
+    es: Región de Auckland
+    eu: Auckland eskualdea
+    fi: Aucklandin hallintoalue
+    fr: Auckland
+    gl: Rexión de Auckland
+    gu: ઓકલેન્ડ પ્રદેશ
+    he: אוקלנד
+    hi: ऑकलैंड क्षेत्र
+    hr: Auckland
+    hu: Auckland régió
+    hy: Օքլենդ
+    id: Region Auckland
+    it: Auckland
+    ja: オークランド地方
+    ka: ოკლენდის რეგიონი
+    kn: ಆಕ್ಲೆಂಡ್ ಪ್ರದೇಶ
+    ko: 오클랜드 지방
+    mr: ऑकलंड प्रदेश
+    ms: Wilayah Auckland
+    nb: Auckland
+    nl: Auckland
+    pl: Auckland
+    pt: Auckland
+    ru: Окленд
+    si: ඕක්ලන්ඩ් කලාපය
+    sv: Auckland
+    ta: ஆக்கலன்ட் பகுதி
+    te: అక్లాండ్ ప్రాంతం
+    th: ออคแลนด์
+    tr: Auckland Bölgesi
+    uk: Окленд
+    ur: آکلینڈ علاقہ
+    vi: Vùng Auckland
+    zh: 奥克兰大区
+    lv: Oklendas reģions
+    ceb: Auckland
+    lt: Oklendo regionas
+    ccp: "\U00011103\U00011127\U00011107\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    mk: Окленд
+    'no': Auckland
+    az: Oklend regionu
+    cs: Auckland
+    fa: منطقه آوکلند
+    ro: Auckland
+  comments:
+  type: region
+BOP:
+  name: Bay of Plenty
+  code: BOP
+  unofficial_names: Bay of Plenty
+  geo:
+    latitude: -37.6825027
+    longitude: 176.1880232
+    min_latitude: -38.9363223
+    min_longitude: 175.8517874
+    max_latitude: -37.2644254
+    max_longitude: 178.1075597
+  translations:
+    en: Bay of Plenty
+    ar: إقليم خليج بانتي
+    bg: Бей ъф Пленти
+    bn: প্লেন্টি উপসাগর অঞ্চল
+    ca: Bay of Plenty
+    da: Bay of Plenty Region
+    de: Bay of Plenty
+    el: Μπέι οφ Πλέντι
+    es: Bay of Plenty
+    eu: Bay of Plenty eskualdea
+    fi: Bay of Plenty
+    fr: baie de l’Abondance
+    gu: બે ઓફ પ્લેન્ટી પ્રદેશ
+    he: ביי אוף פלנטי
+    hi: बे ऑफ प्लेंटी क्षेत्र
+    hr: Bay of Plenty
+    hy: Բեյ օֆ Փլենթի
+    id: Wilayah Bay of Plenty
+    it: Bay of Plenty
+    ja: ベイ・オブ・プレンティ地方
+    ka: ბეი-ოვ-პლენტის რეგიონი
+    kn: ಬೇ ಆಫ್ ಪ್ಲೆಂಟಿ ಪ್ರದೇಶ
+    ko: 베이오브플렌티 지방
+    mr: बे ऑफ प्लेनटी प्रदेश
+    ms: Wilayah Bay of Plenty
+    nb: Bay of Plenty
+    nl: Bay of Plenty
+    pl: Bay of Plenty
+    pt: Região da Baia de Plenty
+    ru: Бей-оф-Пленти
+    si: ප්ලේන්ටි කලපු කලාපය
+    sv: Bay of Plenty
+    ta: ப்ளெண்ட்டி பகுதி பே
+    te: బే ఆఫ్ ప్లెంటీ ప్రాంతం
+    th: เบย์ ออฟ เพลนตี้
+    tr: Bay of Plenty Bölgesi
+    uk: Бей оф Пленті
+    ur: بے آف پلینٹی علاقہ
+    vi: Khu vực Bay Of Plenty
+    lv: Bejofplenti reģions
+    lt: Plenčio įlankos regionas
+    zh: 普伦蒂湾大区
+    ccp: "\U0001111D\U0001112C \U00011103\U00011127\U0001111B\U00011134 \U0001111B\U00011133\U00011123\U0001112C\U0001111A\U00011134\U00011111\U00011128"
+    cs: Bay of Plenty
+    mk: Залив Пленти
+    'no': Bay of Plenty
+    be: рэгіён Бэй-оф-Пленці
+    ceb: Bay of Plenty
+    ga: Réigiún Bhá na Flúirse
+  comments:
+  type: region
+CAN:
+  name: Canterbury
+  code: CAN
+  unofficial_names: Canterbury
+  geo:
+    latitude: -43.7542275
+    longitude: 171.1637245
+    min_latitude: -44.9402681
+    min_longitude: 169.8520438
+    max_latitude: -41.9073951
+    max_longitude: 174.0956747
+  translations:
+    en: Canterbury
+    ar: كانتربيري - نيوزلندا
+    bg: Кентърбъри
+    bn: ক্যান্টাবেরি অঞ্চল
+    ca: Canterbury
+    cs: Canterbury
+    da: Canterbury
+    de: Canterbury
+    el: Καντέρμπερι
+    es: Canterbury
+    et: Canterbury ringkond
+    eu: Canterbury eskualdea
+    fa: ناحیه کانتربوری
+    fi: Canterbury
+    fr: Canterbury
+    gu: કેન્ટરબરી પ્રદેશ
+    he: קנטרברי
+    hi: कैंटरबरी, न्यूजीलैंड
+    hu: Canterbury régió
+    id: Canterbury
+    is: Canterbury
+    it: Canterbury
+    ja: カンタベリー地方
+    ka: კენტერბერის რეგიონი
+    kn: ಕ್ಯಾಂಟರ್ಬರಿ ಪ್ರದೇಶ
+    ko: 캔터베리 지방
+    mr: कँटरबरी प्रदेश
+    ms: Wilayah Canterbury
+    nb: Canterbury
+    nl: Canterbury
+    pl: Canterbury
+    pt: Canterbury
+    ru: Кентербери
+    si: කැන්ටබරි කලාපය
+    sv: Canterbury, Nya Zeeland
+    ta: கான்டெர்புரி ரீஜியன்
+    te: సెంట్రర్బరీ ప్రాంతం
+    th: แคนเทอเบอรี่
+    tr: Canterbury Region
+    uk: Кантербері
+    ur: کینٹربری، نیوزی لینڈ
+    vi: Canterbury
+    lv: Kenterberijas reģions
+    lt: Kanterburio regionas
+    zh: 坎特伯雷
+    ccp: "\U00011107\U0001111A\U00011134\U00011111\U00011122\U00011134\U0001111D\U0001112A\U00011122\U00011128"
+    mk: Кантербери
+    'no': Canterbury
+    af: Canterbury streek
+    ceb: Canterbury, Nueva Zelanda
+    hy: Քանթերբերիի շրջան
+  comments:
+  type: region
+CIT:
+  name: Chatham Islands Territory
+  code: CIT
+  unofficial_names:
+  geo:
+    latitude: -43.9120964
+    longitude: -176.5433025
+    min_latitude: -44.4343162
+    min_longitude: -176.8940878
+    max_latitude: -43.5631344
+    max_longitude: -175.8314073
+  translations:
+    ar: جزر تشاتام
+    az: Çatem
+    be: Астравы Чатэм
+    bg: Чатъм
+    bn: চ্যাথাম আইল্যান্ডস
+    ca: Illes Chatham
+    cs: Chathamské ostrovy
+    da: Chatham Øerne
+    de: Chathaminseln
+    el: Νησιά Τσάταμ
+    en: Chatham Islands
+    es: Islas Chatham
+    et: Chathami saared
+    eu: Chatham Islands
+    fa: جزایر چاتام
+    fi: Chathamsaaret
+    fr: Îles Chatham
+    gl: Illas Chatham
+    gu: ચૅથમ આઇલેન્ડ્સ
+    he: איי צ׳טהאם
+    hi: चाथम द्वीपसमूह
+    hr: Chathamski otoci
+    hu: Chatham-szigetek
+    hy: Չաթեմ կղզիներ
+    id: Kepulauan Chatham
+    it: Isole Chatham
+    ja: チャタム諸島
+    ka: ჩატემის კუნძულები
+    kn: ಚಾಥಮ್ ದ್ವೀಪಗಳು
+    ko: 채텀 제도
+    lt: Čatamo salos
+    lv: Četema salas
+    mr: चॅथम आईसलँडस
+    ms: Kepulauan Chatham
+    nb: Chathamøyene
+    nl: Chathameilanden
+    pl: Wyspy Chatham
+    pt: Ilhas Chatham
+    ru: Чатем
+    si: චැතැම් දූපත්
+    sr: Четем острва
+    sv: Chathamöarna
+    ta: சத்தாம் தீவு
+    te: చాతమ్ దీవులు
+    th: หมู่เกาะแชทัม
+    tr: Chatham Adaları
+    uk: Чатем
+    ur: چاتھم آئی لینڈ
+    vi: Quần đảo Chatham
+    ceb: Chatham Islands (rehiyon)
+    sr_Latn: Četem ostrva
+    zh: 查塔姆群岛
+    ccp: "\U00011107\U00011117\U0001111F\U00011134 \U00011103\U00011128\U0001110C\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134\U00011125\U00011134"
+    'no': Chathamøyene
+    uz: Chatem
+    yo: Àwọn Erékùṣù Chatham
+    yo_BJ: Àwɔn Erékùshù Chatham
+    yue: 漆咸群島
+    yue_Hans: 漆咸群岛
+  comments:
+  type: special_island_authority
+GIS:
+  name: Gisborne
+  code: GIS
+  unofficial_names: Gisborne
+  geo:
+    latitude: -38.662334
+    longitude: 178.017649
+    min_latitude: -38.710757
+    min_longitude: 177.9373069
+    max_latitude: -38.6219639
+    max_longitude: 178.115354
+  translations:
+    en: Gisborne
+    ar: إقليم جيسبورن
+    bg: Гисбърн
+    bn: গিসবন অঞ্চল
+    ca: Regió de Gisborne
+    da: Gisborne region
+    de: Gisborne Region
+    el: Γκίσμπερν
+    es: Gisborne
+    fi: Gisbornen maakunta
+    fr: Gisborne
+    gu: ગિસબોર્ન પ્રદેશ
+    hi: जिस्बॉर्न क्षेत्र
+    hr: Gisborne
+    hy: Գիսբորն
+    id: Wilayah Gisborne
+    it: Gisborne
+    ja: ギズボーン地方
+    ka: გიზბორნის რეგიონი
+    kn: ಗಿಸ್ಬೋರ್ನ್ ಪ್ರದೇಶ
+    ko: 기즈번 지방
+    mr: जिस्बर्न प्रदेश
+    ms: Wilayah Gisborne
+    nb: Gisborne
+    nl: Gisborne
+    pl: Gisborne
+    pt: Gisborne
+    ru: Гисборн
+    si: ගිස්බෝර්නේ කලාපය
+    sv: Gisborne
+    ta: கிசுபர்ன் பகுதி
+    te: గిస్బార్న్ ప్రాంతం
+    th: เนเรทา
+    tr: Gisborne Bölgesi
+    uk: Гісборн
+    ur: ضلع گسبورن
+    vi: Khu vực Gisborne
+    lv: Gisbornas reģions
+    ceb: Gisborne
+    lt: Gisborno apskritis
+    zh: 吉斯伯恩大区
+    ccp: "\U00011109\U00011128\U0001110C\U00011134\U0001111D\U00011127\U00011122\U00011134\U0001111A\U00011134"
+    mk: Гизборн
+    'no': Gisborne
+  comments:
+  type: region
+HKB:
+  name: Hawke's Bay
+  code: HKB
+  unofficial_names: Hawke's Bay
+  geo:
+    latitude: -39.7711616
+    longitude: 176.7416374
+    min_latitude: -40.440783
+    min_longitude: 175.8300119
+    max_latitude: -38.1752186
+    max_longitude: 178.002017
+  translations:
+    en: Hawke’s Bay
+    ar: إقليم هاوكس باي
+    bg: Хоукс Бей
+    bn: হাকেস বে অঞ্চল
+    ca: Hawke’s Bay
+    cs: Hawke’s Bay
+    da: Hawke’s Bay Region
+    de: Hawke’s Bay
+    es: Hawke’s Bay
+    eu: Hawke’s Bay eskualdea
+    fi: Hawke’s Bayn maakunta
+    fr: Hawke’s Bay
+    gu: હૉક્સ બે પ્રાંત
+    he: הוקס ביי
+    hi: हॉक्स बे क्षेत्र
+    hr: Hawke’s Bay
+    id: Wilayah Hawke’s Bay
+    it: Hawke’s Bay
+    ja: ホークス・ベイ地方
+    ka: ჰოკს-ბეის რეგიონი
+    kn: ಹಾಕ್ಸ್ ಬೇ ಪ್ರದೇಶ
+    ko: 호크스베이 지방
+    mr: हॉकस बे प्रदेश
+    ms: Wilayah Hawke’s Bay
+    nb: Hawke’s Bay
+    nl: Hawke’s Bay
+    pl: Hawke’s Bay
+    pt: Hawke’s Bay
+    ru: Хокс-Бей
+    si: හොකෙස් කලපු කලාපය
+    sv: Hawke’s Bay
+    ta: ஹவ்க்கி ‘ஸ் பே பகுதி
+    te: హాక్స్ బే ప్రాంతం
+    th: ฮอว์ค เบย์
+    tr: Hawke Limano Bölgesi
+    uk: Хоукіс Бей
+    ur: ہاکس بے علاقہ
+    vi: Khu vực Hawke’s Bay
+    lv: Hoksbejas reģions
+    ceb: Hawke’s Bay
+    lt: Houkis Bėjaus regionas
+    zh: 霍克湾大区
+    ccp: "\U00011126\U00011127\U00011107\U0001112C\U0001110C\U00011134 \U0001111D\U0001112C"
+    mk: Хоков Залив
+    'no': Hawke’s Bay
+    az: Xoks-Bey
+    cy: Te Matau-a-Māui
+  comments:
+  type: region
+MBH:
+  name: Marlborough
+  code: MBH
+  unofficial_names: Marlborough
+  geo:
+    latitude: -41.57269
+    longitude: 173.4216613
+    min_latitude: -42.3366886
+    min_longitude: 172.7185518
+    max_latitude: -40.66335100000001
+    max_longitude: 174.3922804
+  translations:
+    en: Marlborough
+    ar: إقليم مارلبورو
+    bg: Марлборо
+    bn: মার্লবোরো অঞ্চল
+    ca: Marlborough
+    da: Marlborough Region
+    de: Marlborough
+    es: Marlborough
+    fi: Marlborough
+    fr: Marlborough
+    gu: માર્લબોરો પ્રદેશ
+    hi: मार्लबोरो क्षेत्र
+    id: Wilayah Marlborough
+    it: Marlborough
+    ja: マールボロ地方
+    ka: მარლბოროს რეგიონი
+    kn: ಮಾರ್ಲ್ಬರೋ ಪ್ರದೇಶ
+    ko: 말버러 지방
+    mr: मार्लबोरो प्रदेश
+    ms: Wilayah Marlborough
+    nb: Marlborough
+    nl: Marlborough
+    pl: Marlborough
+    pt: Região de Marborough
+    ru: Марлборо
+    si: මාල්බරෝ කලාපය
+    sv: Marlborough, Nya Zeeland
+    ta: மார்ல்போராகஹ் பகுதி
+    te: మాల్‌బొరో ప్రాంతం
+    th: มาโบเราท์
+    tr: Marlborough Bölgesi
+    uk: Мальбороу
+    ur: مارلبورو علاقہ
+    vi: Khu vực Marlborough
+    lv: Mārlboro reģions
+    cy: Marlborough
+    ceb: Marlborough
+    lt: Mariburo regionas
+    zh: 马尔堡
+    ccp: "\U0001111F\U00011122\U00011134\U00011123\U00011134"
+    mk: Марлборо
+    'no': Marlborough
+    eu: Marlborough eskualdea
+  comments:
+  type: region
+MWT:
+  name: Manawatu-Wanganui
+  code: MWT
+  unofficial_names:
+  - Wanganui-Manawatu
+  geo:
+    latitude: -39.7273356
+    longitude: 175.4375574
+    min_latitude: -40.7824838
+    min_longitude: 174.7620864
+    max_latitude: -38.4877777
+    max_longitude: 176.632784
+  translations:
+    en: Manawatu-Wanganui
+    ar: ماناواتو - وانجانوي
+    bg: Манавату-Уонгануи
+    bn: মানাওয়াতু ওয়াংগানাই অঞ্চল
+    ca: Manawatu-Wanganui region
+    da: Manawatu-Wanganui Region
+    de: Manawatu-Wanganui
+    el: Μαναουάτου-Γουανγκανούι
+    es: Manawatu-Wanganui
+    eu: Manawatu-Wanganui eskualdea
+    fi: Manawatu-Wanganuin
+    fr: Manawatu-Wanganui
+    gu: માનાવાતુ-વાંગનુઇ પ્રદેશ
+    he: מנוואטו-ונגנאוי
+    hi: मनावातु-वांगनुई प्रदेश
+    hr: Manawatu-Wanganui
+    id: Wilayah Manawatu-Wanganui
+    it: Manawatu-Wanganui
+    ja: マナワツ・ワンガヌイ地方
+    ka: მანავატუ-უანგანუის რეგიონი
+    kn: ಮನಾವುಟು-ವಂಗನ್ಯು ಪ್ರದೇಶ
+    ko: 마너와투왕거누이 지방
+    mr: मॅनवाटू-वांगनुइ प्रदेश
+    ms: Wilayah Manawatu-Wanganui
+    nb: Manawatu-Wanganui
+    nl: Manawatu-Wanganui
+    pl: Manawatu-Wanganui
+    pt: Manawatu-Wanganui
+    ru: Манавату-Уангануи
+    si: මනවටු වන්ගනුයි කලාපය
+    sv: Manawatu-Wanganui
+    ta: மனவாடு-வாங்கணுய் பகுதி
+    te: మనావటు-వాంగనూయి ప్రాంతం
+    th: เขตมานาวาทูแวนกานู
+    tr: Manawatu-Wanguni Bölgesi
+    uk: Манавату-Вангануї
+    ur: ماناواتو-وانگانوی
+    vi: Khu vực Manawatu-Wanganui
+    lv: Manavatu-Vanganuji
+    ceb: Manawatu-Wanganui
+    lt: Manavatu-Vanganujis
+    zh: 马纳瓦图－旺加努伊
+    ccp: "\U0001111F\U0001111A\U00011124\U00011111\U0001112A-\U00011124\U0001110B\U00011134\U00011109\U0001111A\U0001112D\U0001112A"
+    mk: Манавату-Вангануи
+    'no': Manawatu-Wanganui
+  comments:
+  type: region
+NSN:
+  name: Nelson
+  code: NSN
+  unofficial_names: Nelson
+  geo:
+    latitude: -41.2706319
+    longitude: 173.2839653
+    min_latitude: -41.347096
+    min_longitude: 173.189612
+    max_latitude: -41.22283849999999
+    max_longitude: 173.342576
+  translations:
+    en: Nelson
+    de: Nelson
+    fr: Nelson
+    hi: नेल्सन क्षेत्र
+    kn: ನೆಲ್ಸನ್ ಪ್ರದೇಶ
+    nl: Nelson
+    pl: Nelson
+    ru: Нельсон
+    ceb: Nelson
+    sv: Nelson
+    ja: ネルソン地方
+    ccp: "\U0001111A\U0001112C\U00011123\U00011134\U00011125\U00011127\U0001111A\U00011134"
+    ko: 넬슨 지방
+    be: Нельсан
+    mk: Нелсон
+  comments:
+  type: region
+NTL:
+  name: Northland
+  code: NTL
+  unofficial_names: Northland
+  geo:
+    latitude: -35.5795461
+    longitude: 173.7624053
+    min_latitude: -36.396875
+    min_longitude: 172.0297516
+    max_latitude: -34.1295578
+    max_longitude: 174.7832097
+  translations:
+    en: Northland
+    af: Northland
+    ar: مقاطعة نورثلاند
+    bg: Нортланд
+    bn: নর্থল্যান্ড অঞ্চল
+    ca: Northland
+    da: Northland Region
+    de: Northland
+    es: Northland
+    eu: Northland eskualdea
+    fa: منطقه نورثلند
+    fi: Northland
+    fr: Northland
+    gu: નોર્થલેંડ પ્રદેશ
+    he: נורת׳לנד
+    hi: नॉर्थलैंड प्रदेश
+    hr: Northland
+    hu: Northland
+    hy: Նորթլենդ
+    id: Region Northland
+    it: Northland
+    ja: ノースランド地方
+    ka: ნორთლენდის რეგიონი
+    kn: ಉತ್ತರ ಪ್ರದೇಶ
+    ko: 노스랜드 지방
+    mr: नॉर्थलँड प्रदेश
+    ms: Wilayah Northland
+    nb: Northland
+    nl: Northland
+    pl: Northland
+    pt: Northland
+    ro: Northland
+    ru: Нортленд
+    si: නොර්ට්ලන්ඩ් කලාපය
+    sv: Northland
+    ta: வடக்கு லன்ட் பகுதி
+    te: నార్త్ లాండ్ ప్రాంతం
+    th: จังหวัดนอร์ธเลนด์
+    tr: Northland Bölgesi
+    uk: Нортленд
+    ur: نارتھ لینڈ علاقہ
+    vi: Northland
+    lv: Nortlendas reģions
+    ceb: Northland
+    lt: Nortlendo regionas
+    zh: 北地大区
+    ccp: "\U0001111A\U00011127\U00011122\U00011134\U00011112\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    mk: Нортленд
+    'no': Northland
+    cs: Northland
+    gl: Rexión de Northland
+  comments:
+  type: region
+OTA:
+  name: Otago
+  code: OTA
+  unofficial_names: Otago
+  geo:
+    latitude: -44.8280041
+    longitude: 169.6345253
+    min_latitude: -46.638692
+    min_longitude: 168.1163886
+    max_latitude: -43.7888995
+    max_longitude: 171.1554182
+  translations:
+    en: Otago
+    ar: إقليم أوتاغو
+    bg: Отаго
+    bn: ওটাগো অঞ্চল
+    ca: Otago
+    cs: Otago
+    da: Otago Region
+    de: Otago
+    es: Otago
+    eu: Otago eskualdea
+    fi: Otago
+    fr: Otago
+    gu: ઑટાગો પ્રદેશ
+    he: אוטגו
+    hi: ओटागो क्षेत्र
+    hu: Otago régió
+    id: Wilayah Otago
+    it: Otago
+    ja: オタゴ地方
+    ka: ოტაგოს რეგიონი
+    kn: ಒಟಾಗೋ ಪ್ರದೇಶ
+    ko: 오타고 지방
+    mr: ओटॅगो प्रदेश
+    ms: Wilayah Otago
+    nb: Otago
+    nl: Otago
+    pl: Otago
+    pt: Otago
+    ro: Otago
+    ru: Отаго
+    si: ඔටාගෝ කලාපය
+    sv: Otago
+    ta: ஒடாகோ
+    te: ఓటాగో ప్రాంతం
+    th: เขตโอทาโก
+    tr: Otago Bölgesi
+    uk: Отаго
+    ur: اوٹاگو
+    vi: Khu vực Otago
+    lv: Otago reģions
+    cy: Otago
+    ceb: Otago
+    lt: Otagas
+    zh: 奥塔哥大区
+    fa: اوتاگو
+    ccp: "\U00011103\U00011127\U00011111\U00011109\U0001112E"
+    mk: Отаго
+    'no': Otago
+    gl: Rexión de Otago
+    hy: Օտագոյի շրջան
+  comments:
+  type: region
+STL:
+  name: Southland
+  code: STL
+  unofficial_names: Southland
+  geo:
+    latitude: -45.84891589999999
+    longitude: 167.6755387
+    min_latitude: -47.2899505
+    min_longitude: 166.426128
+    max_latitude: -44.290561
+    max_longitude: 169.4939393
+  translations:
+    en: Southland
+    ar: إقليم سوثلاند
+    bg: Саутланд
+    bn: সাউথল্যান্ড অঞ্চল
+    ca: Southland
+    da: Southland Region
+    de: Southland (Region)
+    el: Σάουθλαντ
+    es: Southland
+    eu: Southland eskualdea
+    fa: سرزمین جنوبی، نیوزیلند
+    fi: Southland
+    fr: Southland
+    gu: દક્ષિણલેન્ડ પ્રદેશ
+    he: סאות׳לנד
+    hi: साउथलैंड क्षेत्र
+    id: Wilayah Southland
+    it: Southland
+    ja: サウスランド地方
+    ka: საუთლანდის რეგიონი
+    kn: ಸೌತ್ಲ್ಯಾಂಡ್ ಪ್ರದೇಶ
+    ko: 사우스랜드 지방
+    mr: साउथलँड प्रदेश
+    ms: Wilayah Southland
+    nb: Southland
+    nl: Southland
+    pl: Southland
+    pt: Southland
+    ru: Саутленд
+    si: සවුත්ලන්ඩ් කලාපය
+    sv: Southland
+    ta: தெற்கு லாந்து பகுதி
+    te: సౌత్‌లాండ్ ప్రాంతం
+    th: เซาท์แลนด์
+    tr: Southland Bölgesi
+    uk: Саутленд
+    ur: ساؤتھ لینڈ، نیوزی لینڈ
+    vi: Khu vực Southland
+    lv: Sautlendas reģions
+    ceb: Southland
+    lt: Soutlando regionas
+    zh: 南地大区
+    ccp: "\U00011125\U00011105\U0001112A\U00011116\U00011134\U00011123\U00011133\U00011120\U0001111A\U00011133\U00011113\U00011134"
+    mk: Саутленд
+    'no': Southland
+    be: Саўтленд
+    hy: Սաութլենդ
+  comments:
+  type: region
+TAS:
+  name: Tasman
+  code: TAS
+  unofficial_names: Tasman
+  geo:
+    latitude: -41.2122123
+    longitude: 172.7347142
+    min_latitude: -42.3055977
+    min_longitude: 172.093419
+    max_latitude: -40.4980299
+    max_longitude: 173.2318855
+  translations:
+    en: Tasman
+    ar: مقاطعة تاسمان
+    bg: Тасман
+    bn: তাসমান জেলা
+    ca: Tasman
+    da: Tasman District
+    de: Tasman
+    el: Τασμάν
+    es: Tasman
+    eu: Tasman eskualdea
+    fi: Tasman
+    fr: Tasman
+    gu: તાસ્માન જિલ્લો
+    hi: तस्मान जिला
+    id: Distrik Tasman
+    it: Tasman
+    ja: タスマン地方
+    ka: ტასმანის რეგიონი
+    kn: ತಾಸ್ಮನ್ ಜಿಲ್ಲೆ
+    ko: 태즈먼 지방
+    mr: तस्मान जिल्हा
+    ms: Wilayah Tasman
+    nb: Tasman
+    nl: Tasman
+    pl: Tasman
+    pt: Tasman
+    ru: Тасман
+    si: ටස්මන් දිස්ත්‍රික්කය
+    sv: Tasman
+    ta: டாஸ்மான் மாவட்டம்
+    te: టాస్మాన్ జిల్లా
+    th: แทสมัน
+    tr: Tasman Dstrict
+    uk: Тасман
+    ur: ضلع تسمان
+    vi: Quận Tasman
+    lv: Tasmanas reģions
+    ceb: Tasman District
+    lt: Tasmano apskritis
+    zh: 塔斯曼
+    ccp: "\U00011111\U0001110C\U00011134\U0001111F\U00011133\U00011120\U0001111A\U00011134"
+    mk: Тасман
+    'no': Tasman
+    he: מחוז טזמן
+  comments:
+  type: region
+TKI:
+  name: Taranaki
+  code: TKI
+  unofficial_names: Taranaki
+  geo:
+    latitude: -39.3538149
+    longitude: 174.4382721
+    min_latitude: -39.869374
+    min_longitude: 173.751323
+    max_latitude: -38.706394
+    max_longitude: 174.9761954
+  translations:
+    en: Taranaki
+    ar: إقليم تاراناكي
+    bg: Таранаки
+    bn: তারানাকি অঞ্চল
+    ca: Taranaki
+    da: Taranaki Region
+    de: Taranaki
+    el: Ταρανάκι
+    es: Taranaki
+    eu: Taranaki eskualdea
+    fi: Taranakin alue
+    fr: Taranaki
+    gu: તારાનાકી પ્રદેશ
+    he: טראנאקי
+    hi: तारानाकी
+    hr: Taranaki
+    id: Taranaki
+    it: Taranaki
+    ja: タラナキ地方
+    ka: ტარანაკის რეგიონი
+    kn: ತರಣಕಿ ಪ್ರದೇಶ
+    ko: 타라나키 지방
+    mr: तारानाकी प्रदेश
+    ms: Wilayah Taranaki
+    nb: Taranaki
+    nl: Taranaki
+    pl: Taranaki
+    pt: Taranaki
+    ru: Таранаки
+    si: ටරනකි කලාපය
+    sv: Taranaki
+    ta: தரானாகி பகுதி
+    te: తారానాకి ప్రాంతం
+    th: ทารานากิ
+    tr: Taranaki Bölgesi
+    uk: Таранакі
+    ur: تاراناکی
+    vi: Khu vực Taranaki
+    lv: Taranaki reģions
+    ceb: Taranaki
+    lt: Taranakio regionas
+    zh: 塔拉纳基大区
+    ccp: "\U00011111\U00011122\U0001111A\U00011107\U00011128"
+    mk: Таранаки
+    'no': Taranaki
+  comments:
+  type: region
+WGN:
+  name: Wellington
+  code: WGN
+  unofficial_names: Wellington
+  geo:
+    latitude: -41.2864603
+    longitude: 174.776236
+    min_latitude: -41.3624551
+    min_longitude: 174.613084
+    max_latitude: -41.126285
+    max_longitude: 174.9106252
+  translations:
+    en: Wellington
+    ar: إقليم ويلينغتون
+    bg: Уелингтън
+    bn: ওয়েলিংটন অঞ্চল
+    ca: Regió de Wellington
+    da: Wellington Region
+    de: Wellington
+    el: Περιοχή του Γουέλινγκτον
+    es: Región de Wellington
+    eu: Wellington eskualdea
+    fi: Wellingtonin hallintoalue
+    fr: Wellington
+    gu: વેલિંગ્ટન પ્રદેશ
+    he: ולינגטון
+    hi: वेलिंग्टन क्षेत्र
+    hr: Wellington
+    id: Wilayah Wellington
+    it: Wellington
+    ja: ウェリントン地方
+    ka: ველინგტონის რეგიონი
+    kn: ವೆಲ್ಲಿಂಗ್ಟನ್ ಪ್ರದೇಶ
+    ko: 웰링턴 지방
+    mr: वेलिंग्टन प्रदेश
+    ms: Wilayah Wellington
+    nb: Wellington
+    nl: Wellington
+    pl: Wellington
+    pt: Wellington
+    ru: Веллингтон
+    si: වෙලින්ටන් කලාපය
+    sv: Wellington
+    ta: வெலிங்டன் பகுதி
+    te: వెల్లింగ్టన్ ప్రాంతం
+    th: เวลลิงตัน
+    tr: Wellington Bölgesi
+    uk: Веллінгтон
+    ur: ویلنگٹن علاقہ
+    vi: Khu vực Wellington
+    lv: Velingtonas reģions
+    ceb: Wellington
+    lt: Velingtono regionas
+    zh: 惠灵顿大区
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U00011123\U00011128\U00011101\U00011111\U00011127\U0001111A\U00011134"
+    mk: Велингтон
+    'no': Wellington
+    be: Велінгтан
+    hy: Վելինգթոն
+    ro: Wellington
+    sr: Велингтон (регија)
+    sr_Latn: Velington (regija)
+  comments:
+  type: region
+WKO:
+  name: Waikato
+  code: WKO
+  unofficial_names: Waikato
+  geo:
+    latitude: -38.0594263
+    longitude: 175.4375574
+    min_latitude: -39.300639
+    min_longitude: 174.6134234
+    max_latitude: -36.42871969999999
+    max_longitude: 176.6632954
+  translations:
+    en: Waikato
+    ar: إقليم وايكاتو
+    be: Рэгіён Вайката
+    bg: Уайкато
+    bn: ওয়াইকাতু অঞ্চল
+    ca: Waikato
+    da: Waikato Region
+    de: Waikato
+    el: Γουαϊκάτο
+    es: Waikato
+    eu: Waikato eskualdea
+    fa: وایکاتو
+    fi: Waikaton maakunta
+    fr: Waikato
+    gu: વાઇકાટો પ્રદેશ
+    he: ואיקטו
+    hi: वाइकाटो क्षेत्र
+    hr: Waikato
+    hu: Waikato
+    hy: Ուակիթո
+    id: Waikato
+    it: Waikato
+    ja: ワイカト地方
+    ka: უაიკატოს რეგიონი
+    kn: ವೈಕಾಟೊ ಪ್ರದೇಶ
+    ko: 와이카토 지방
+    mr: वाइकाटो प्रदेश
+    ms: Wilayah Waikato
+    nb: Waikato
+    nl: Waikato
+    pl: Waikato
+    pt: Waikato
+    ru: Уаикато
+    si: වයිකටෝ කලාපය
+    sv: Waikato
+    ta: வைகாடோ பகுதி
+    te: వైకాటో ప్రాంతం
+    th: ไวกาโต
+    tr: Waikato Bölgesi
+    uk: Ваікато
+    ur: وائکاٹو
+    vi: Khu vực Waikato
+    lv: Vaitako reģions
+    ceb: Waikato
+    lt: Vaikato regionas
+    zh: 懷卡托
+    ccp: "\U00011103\U0001112E\U00011120\U00011107\U00011111\U0001112E"
+    mk: Ваикато
+    'no': Waikato
+    cs: Waikato (region)
+    ro: Waikato
+  comments:
+  type: region
+WTC:
+  name: West Coast
+  code: WTC
+  unofficial_names: West Coast
+  geo:
+    latitude: -42.4064185
+    longitude: 171.6911559
+    min_latitude: -44.7743752
+    min_longitude: 168.0529071
+    max_latitude: -41.16730769999999
+    max_longitude: 172.4800189
+  translations:
+    en: West Coast
+    ar: إقليم الساحل الغربي
+    bg: Уест Коуст
+    bn: ওয়েস্ট কোস্ট অঞ্চল
+    ca: West Coast
+    da: West Coast Region
+    de: West Coast
+    el: Δυτική Ακτή
+    es: West Coast
+    eu: West Coast eskualdea
+    fi: West Coast
+    fr: West Coast
+    gu: પશ્ચિમ કોસ્ટ પ્રદેશ
+    he: החוף המערבי
+    hi: वेस्ट कोस्ट क्षेत्र
+    id: West Coast, Selandia Baru
+    it: West Coast
+    ja: ウェスト・コースト地方
+    ka: უესტ-კოსტის რეგიონი
+    kn: ಪಶ್ಚಿಮ ಕರಾವಳಿ ಪ್ರದೇಶ
+    ko: 웨스트코스트 지방
+    mr: पश्चिम कोस्ट प्रदेश
+    ms: Wilayah Pantai Barat
+    nb: West Coast
+    nl: West Coast
+    pl: West Coast
+    pt: Costa Oeste
+    ru: Уэст-Кост
+    si: වෙස්ට් කෝස්ට් කලාපය
+    sv: West Coast
+    ta: மேற்கு கோஸ்ட் பகுதி
+    te: పశ్చిమ తీర ప్రాంతం
+    th: เวส คอส
+    tr: Batı Sahili Bölgesi
+    uk: Вест Коаст
+    ur: ویسٹ کوسٹ، نیوزی لینڈ
+    vi: Khu vực West Coast
+    lv: Vestkostas reģions
+    ceb: West Coast
+    lt: Vakarinės pakrantės regionas
+    zh: 西岸大区
+    ccp: "\U00011103\U0001112E\U00011120\U0001112C\U0001110C\U00011134 \U00011107\U0001112E\U0001110C\U00011134\U00011111\U00011134"
+    mk: Западно Крајбрежје
+    'no': West Coast
+    fa: وست کوست، نیوزیلند
+    hu: West Coast régió
+  comments:
+  type: region

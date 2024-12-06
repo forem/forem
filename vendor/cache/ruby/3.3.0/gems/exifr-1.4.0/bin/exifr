@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+
+require 'exifr/jpeg'
+require 'exifr/tiff'
+include EXIFR
+
+def pp_jpeg(fname)
+  jpeg = JPEG.new(fname)
+  ks = %w(width height comment bits)
+  ks += jpeg.exif.to_hash.keys.map{|a|a.to_s}.sort{|a,b|a<=>b} if jpeg.exif?
+
+  l = []
+  ks[0..3].each do |k|
+    v = jpeg.send(k)
+    l << [k, v.inspect] if v
+  end
+  ks[4..-1].each do |k|
+    v = jpeg.exif.to_hash[k.to_sym]
+    l << [k, v.inspect] if v
+  end
+  pp(fname, l)
+end
+
+def pp_tiff(fname)
+  tiff = TIFF.new(fname)
+  tiff.each_with_index do |img,index|
+    l = []
+    l << ['width', img.width] << ['height', img.height]
+    img.to_hash.keys.map{|a|a.to_s}.sort{|a,b|a<=>b}.each do |key|
+      l << [key, img.to_hash[key.to_sym].inspect]
+    end
+    pp(tiff.size == 1 ? fname : "#{fname}[#{index}]", l)
+  end
+end
+
+def pp(fname, l)
+  puts "#{fname}:"
+  f = "  %#{l.sort{|a,b|a[0].size <=> b[0].size}.last[0].size}s = %s\n"
+  l.each{|k,v|puts f  % [k, [v].flatten.map{|t|t.to_s}.join(', ')]}
+end
+
+if ARGV.size == 0
+  STDERR.puts "Usage: #{$0} FILE .."
+elsif ARGV[0] == "--dump-exif"
+  ARGV[1..-1].each do |fname|
+    STDOUT.write JPEG.new(fname).exif_data
+  end
+elsif ARGV[0] == "--dump-thumbnail"
+  ARGV[1..-1].each do |fname|
+    STDOUT.write JPEG.new(fname).thumbnail
+  end
+else
+  ARGV.each do |fname|
+    case fname
+    when /\.(jpg|jpeg)$/i; pp_jpeg fname
+    when /\.(tif|tiff)$/i; pp_tiff fname
+    end
+    puts
+  end
+end

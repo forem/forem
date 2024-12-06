@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= @page_title ? "#{@page_title} // " : "" %>Flipper</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="<%= bootstrap_css[:src] %>" integrity="<%= bootstrap_css[:hash] %>" crossorigin="anonymous">
+    <link rel="stylesheet" href="<%= script_name %>/css/application.css">
+  </head>
+  <body class="py-4">
+    <div class="container mw-600">
+      <%- unless Flipper::UI.configuration.banner_text.nil? -%>
+        <div class="alert alert-<%= Flipper::UI.configuration.banner_class %> text-center font-weight-bold">
+          <%== Sanitize.fragment(Flipper::UI.configuration.banner_text, Sanitize::Config::BASIC) %>
+        </div>
+      <%- end -%>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-white border align-items-center mb-4">
+          <% @breadcrumbs.each do |breadcrumb| %>
+            <li class="breadcrumb-item <% if breadcrumb.active? %>active<% end %>">
+              <% if breadcrumb.active? %>
+                <%= breadcrumb.text %>
+              <% else %>
+                <a href="<%= breadcrumb.href %>"><%= breadcrumb.text %></a>
+              <% end %>
+            </li>
+          <% end %>
+        </ol>
+      </nav>
+
+      <div>
+        <%== yield %>
+      </div>
+
+      <% if Flipper::UI.configuration.cloud_recommendation %>
+        <div class="d-flex justify-content-center mt-5">
+          <div class="row" style="max-width: 350px;">
+            <div class="col-auto d-flex align-items-center">
+              <a href="https://www.flippercloud.io/?utm_source=oss&utm_medium=ui&utm_campaign=spread_the_love">
+                <img src="<%= script_name %>/images/logo.png" width="50" />
+              </a>
+            </div>
+            <div class="col text-muted p-0">
+              <small>For support, audit history, finer-grained permissions, multi-environment sync, and all your projects in one place check out <a href="https://www.flippercloud.io/?utm_source=oss&utm_medium=ui&utm_campaign=spread_the_love">Flipper&nbsp;Cloud</a>.</small>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <script src="<%= jquery_js[:src] %>" integrity="<%= jquery_js[:hash] %>" crossorigin="anonymous"></script>
+    <script src="<%= popper_js[:src] %>" integrity="<%= popper_js[:hash] %>" crossorigin="anonymous"></script>
+    <script src="<%= bootstrap_js[:src] %>" integrity="<%= bootstrap_js[:hash] %>" crossorigin="anonymous"></script>
+    <script src="<%= script_name %>/js/application.js"></script>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.6
+  - 2.7
+  - 3.0
+  - ruby-head
+before_install:
+  - gem update --system --no-doc
+  - gem install bundler
+script:
+  - bundle exec rspec
+  - bundle exec rubocop
+  - bundle exec codeclimate-test-reporter
+jobs:
+  allow_failures:
+    - rvm: ruby-head
+addons:
+  code_climate:
+    repo_token:
+      secure: cgk8uvht7GhBupk3mYwjMVx73r/YzJ0YaiwKI66x150CIfvqS5bheZR/Wn6wb09llB1giuyEh32TLqbScQoPW/dFynO7FsvXIMHxn4Gup2Nkc36LkQhg+8EN3xxrzirNoqfxfaFWzJh7X/jbNdmLKLQvlh+5ey+nNPF+gdPVerXhqxg8AjE4EbDbeq3JnCi+jHlr/SxMB+zJe4PipLbeVSONSfSbraN/1IPJzHvItfQWSnEGIpRnAAb7URt2SAWcje/5CiH6QUA9C/ZyztfPEeCPfO2L1V3dp3pxbAyxzrhBtbVhw66mBO+Q6xB1xK8qv5LBQhlosn+TPOA66GMfHGo/tFP+aksq3CiVj6YfMaVy6AqzT0uocXFKvweznAfgiF5N+k4rq4+YBRXPEUtqmfaDka2hekKfewvMTDFGWQaoetU1Z/9WWJqaVlJQVSdeqYYLYpwur1wEeiPrz2nR0z3xn2LpdyGAeCpZW08dLBr/ASsjQhKGs3woIV+ZKSH3fJMmEh0CIulIm4qkcXN7izUUrNaPfNi4sUvaNNiomdLkaVbuv9hLlJByGciPHbBzajeqYFsPrGQWynHHDoFZ4/Tt2kTryNLqXGzqAqe0GozSRYx13z7frrGBYAXXMLPtViA2y568W2wiRh/MXM4noBRTQY8rETAfuaS+XuKfqTw=

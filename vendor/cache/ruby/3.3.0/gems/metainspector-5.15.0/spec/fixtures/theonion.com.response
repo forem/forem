@@ -1,0 +1,1061 @@
+HTTP/1.1 200 OK
+Date: Mon, 30 May 2011 09:52:44 GMT
+Server: PWS/1.7.2.3
+X-Px: ms mad-agg-n11 ( mad-agg-n12), rf-ms mad-agg-n12 ( origin>CONN)
+Cache-Control: max-age=600
+Expires: Mon, 30 May 2011 10:02:45 GMT
+Age: 0
+Content-Length: 38752
+Content-Type: text/html; charset=utf-8
+Last-Modified: Mon, 30 May 2011 00:36:13 GMT
+Connection: keep-alive
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<script type="text/javascript">
+try {
+    var agent = navigator.userAgent;
+    if(/mobile=false/.test(window.location.href) || /mobile=false/.test(document.cookie)) {
+        var expire = new Date();
+        expire.setTime(new Date().getTime() + 3600000*24*5);
+        document.cookie = "mobile=false;expires="+expire.toGMTString()+";domain=.theonion.com;path=/;";
+    }
+    else {
+        if(agent && agent !== undefined) {
+            if(/iphone|ipod|android|blackberry|iemobile|symbian/i.test(agent) && !/mobile=/.test(window.location.href)) {
+                var url = window.location.href.replace("www","mobile").replace("test","testmobile").split("?");
+                window.location = url[0] + "?mobile=true";
+            }
+        }
+    }
+} catch(err) {
+}
+</script>
+
+
+
+    
+    <link rel="stylesheet" type="text/css" href="http://o.onionstatic.com/css/combined/onion.41478933.0.css" />
+    
+
+    
+    
+
+    
+    
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="http://o.onionstatic.com/css/IE7.css" />
+    <![endif]-->
+    <!--[if IE 6]>
+    <link rel="stylesheet" href="http://o.onionstatic.com/css/IE6.css" />
+    <![endif]-->
+
+    
+    <script type="text/javascript" src="http://o.onionstatic.com/js/combined/onion.26423693.0.js"></script>
+    
+
+    
+    
+
+    <script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js">
+</script>
+
+<script type="text/javascript">
+try{
+  GS_googleAddAdSenseService("ca-pub-3411085762582526");
+  GS_googleEnableAllServices();
+}catch(e){}
+</script>
+
+<script type="text/javascript">
+  GA_googleAddSlot("ca-pub-3411085762582526", "1x1_customsectioncallout");
+  GA_googleAddSlot("ca-pub-3411085762582526", "1024x30_adhat");
+  GA_googleAddSlot("ca-pub-3411085762582526", "wallpaper_masterslot");
+  GA_googleAddSlot("ca-pub-3411085762582526", "premercial_masterslot");
+  GA_googleAddSlot("ca-pub-3411085762582526", "100x12_avfocus");
+  GA_googleAddSlot("ca-pub-3411085762582526", "header_masterslot");
+  GA_googleAddSlot("ca-pub-3411085762582526", "promo_frame_1");
+  GA_googleAddSlot("ca-pub-3411085762582526", "promo_frame_2");
+  GA_googleAddSlot("ca-pub-3411085762582526", "promo_frame_3");
+  GA_googleAddSlot("ca-pub-3411085762582526", "promo_frame_4");
+  GA_googleAddSlot("ca-pub-3411085762582526", "976x100_sponsoredchannel");
+  GA_googleAddSlot("ca-pub-3411085762582526", "954x60_primary");
+  GA_googleAddSlot("ca-pub-3411085762582526", "storypage_banner");
+  GA_googleAddSlot("ca-pub-3411085762582526", "1x1_specialreportlogo");
+  GA_googleAddSlot("ca-pub-3411085762582526", "300x250_sponsorvideo");
+  GA_googleAddSlot("ca-pub-3411085762582526", "300x250_primary");
+  GA_googleAddSlot("ca-pub-3411085762582526", "twitter_sponsoredchannel");
+  GA_googleAddSlot("ca-pub-3411085762582526", "300x130_feature");
+  GA_googleAddSlot("ca-pub-3411085762582526", "300x250_secondary");
+  GA_googleAddSlot("ca-pub-3411085762582526", "300x250_tertiary");
+
+  GA_googleAddAttr("site", "theonion");
+  GA_googleAddAttr("pagetype", "article");
+  GA_googleAddAttr("articletype", "news");
+  GA_googleAddAttr("onion_articleid", "2772");
+  GA_googleAddAttr("channel", "science-technology");
+  GA_googleAddAttr("google_ad_target", "site_theonion_pagetype_article_articletype_news_onion_articleid_2772_channel_science-technology");
+  if (typeof(afns_video_ad) != "undefined" && afns_video_ad.gam_attribute) {
+    GA_googleAddAttr("video_target", afns_video_ad.gam_attribute);
+  }
+  if (typeof(afns_referrer_type) != "undefined") {
+    GA_googleAddAttr("referrertype", afns_referrer_type);
+  }
+GA_googleUseSyncSRARendering();
+GA_googleFetchAds();
+</script>
+
+
+
+
+
+
+    
+    
+    
+
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta property="fb:page_id" content="20950654496" />
+    <title>Apple Claims New iPhone Only Visible To Most Loyal Of Customers | The Onion - America's Finest News Source</title>
+
+    <!-- CHARTBEAT start point -->
+    <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+
+    <!-- set media base_url -->
+    <script type="text/javascript">
+    var afns_media_url = "http://o.onionstatic.com/";
+    </script>
+
+    
+<script type="text/javascript">
+$(document).ready(function() {
+    setTimeout('$(".article_body").afns_enlargeArticleImages()', 100);
+    terminator(".article_body p:last", "http://o.onionstatic.com/", "news");
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+    <!--[if IE 6]>
+    <link rel="stylesheet" href="http://o.onionstatic.com/css/IE6.css" />
+    <script type="text/javascript">
+    ads_ieWallpaper();
+    </script>
+    <![endif]-->
+
+    
+    <link rel="canonical" href="http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/" />
+    
+
+    <link rel="alternate" type="application/rss+xml" title="The Onion: Daily News" href="http://feeds.theonion.com/theonion/daily" />
+
+    
+<meta name="title" content="Apple Claims New iPhone Only Visible To Most Loyal Of Customers" />
+<meta name="description" content="SAN FRANCISCO&amp;mdash;&amp;ldquo;Not only does it look awesome, but it can do pretty much anything you want as long as you believe in it,&amp;rdquo; said Paul Conrad, a loyal Apple consumer." />
+<meta name="copyright" content="2011" />
+<meta name="site" content="theonion.com" />
+
+<meta property="og:title" content="Apple Claims New iPhone Only Visible To Most Loyal Of Customers" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/" />
+
+<meta property="og:image" content="http://o.onionstatic.com/images/articles/article/2772/Apple-Claims-600w-R_jpg_130x110_q85.jpg" />
+
+
+
+    
+    
+<script type="text/javascript">
+google_channel = 'Science & Technology';
+google_type = 'News';
+</script>
+
+    <script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-223393-1']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+try {
+  if(google_channel !== "") {
+      google_channel.replace("&","-");
+      google_channel = google_channel.replace(/\s+/g,"_");
+      _gaq.push(['_setCustomVar', 1, "channel", google_channel, 3]);
+  }
+  if (google_type !== "") {
+      google_type = google_type.replace(/\s+/g,"_");
+      _gaq.push(['_setCustomVar', 2, "type", google_type, 3]);
+  }
+}
+catch(err) {
+}
+_gaq.push(['_trackPageview']);
+_gaq.push(['_trackPageLoadTime']);
+try {
+  if(google_channel !== "" && google_type !== "") {
+      _gaq.push(['setVar', google_channel+":"+google_type]);
+  }
+}
+catch(err) { }
+</script>
+    
+
+</head>
+<body id="science-technology" class="site_onion article news tech-issue-2010 science-technology" >
+
+<!-- <script type="text/javascript">GA_googleFillSlot("1x1_customsectioncallout");</script> -->
+
+
+
+<script type="text/javascript">GA_googleFillSlot("1024x30_adhat");</script>
+
+<script type="text/javascript">GA_googleFillSlot("wallpaper_masterslot");</script>
+
+<!--WRAPPER-->
+<div id="wrapper">
+
+<script type="text/javascript">GA_googleFillSlot("premercial_masterslot");</script>
+
+
+<!-- <script type="text/javascript">GA_googleFillSlot("100x12_avfocus");</script> -->
+
+
+<div id="empire">
+    <ul>
+        <!--
+        <li>
+            <a target="_blank" title="The Onion" href="http://www.theonion.com/">
+              The Onion
+            </a>
+        </li>
+        -->
+        <li>
+            <a target="_blank" title="A.V. CLUB" href="http://www.avclub.com/">
+                A.V. CLUB
+            </a>
+        </li>
+        <li>
+            <a target="_blank" title="Onion Store" href="http://store.theonion.com/">
+                Store
+            </a>
+        </li>
+        <li>
+            <a target="_blank" title="Onion Personals" href="http://affiliate.zantracker.com/rd/r.php?sid=164&pub=500111&c1=ON&c2=&c3=DatingTab">
+                Dating
+            </a>
+        </li>
+        <li class="last">
+            <a target="_blank" title="Contests" href="/features/contest/">
+                Contests
+            </a>
+        </li>
+    </ul>
+
+<!-- site specific -->
+<div class="promotion">
+    
+
+    <h2>
+        <span class="empire_avclub"><span class="icon avclub"></span> <span><a href="http://www.avclub.com/articles/san-francisco-924-gilman-stlike-a-west-coast-cbgb,56692/">Video: San Francisco - 924 Gilman St.</a></span></span>
+        <span class="empire_store"><span class="icon store"></span> <span><a href="http://store.theonion.com/category/graduation-gifts,54/?utm_source=newempire">Grad gifts at The Onion Store
+</a></span></span>
+        <span class="avclub_ad"><script type="text/javascript">GA_googleFillSlot("100x12_avfocus");</script></span>
+    </h2>
+
+    <script type="text/javascript">
+      var empire_links = new Array("avclub","store");
+      $(".empire_"+empire_links[Math.floor(Math.random()*empire_links.length)]).hide();
+    </script>
+
+
+</div>
+<form action="/search/">
+    <input type="image" value="Search" name="submit" src="http://o.onionstatic.com/img/buttons/search_submit.png" alt="Search the Onion" />
+    <input type="text" value="SEARCH THE ONION" name="q" onclick="this.value=''; return false;" />
+</form>
+<!-- end site specific -->
+
+</div>
+
+
+
+<div id="header">
+
+
+    <div id="masthead">
+        <a href="/"><span>The Onion: America&rsquo;s Finest News Source</span></a>
+    </div>
+    <div class="ad dogear left"></div>
+    <div class="ad dogear right"></div>
+    <div id="header_masterslot_wrapper"><script type="text/javascript">GA_googleFillSlot("header_masterslot");</script></div>
+
+
+
+<!-- start main nav -->
+
+<ul id="site_nav" class="tab_nav">
+    <li class="home major"><a href="/">Home</a></li>
+    <li class="video major"><a href="/articles/latest/video/">Video</a></li>
+    <li class="tv major">
+      <a href="#"><span>TV</span><span class="arrow"></span></a>
+      <ul id="tv_dropdown">
+          <li><a href="http://www.onionsportsnetwork.com/channels/sportsdome/" target="_blank">Sportsdome on Comedy Central</a></li>
+          <li class="last"><a href="/channels/ifc/">Onion News Network On IFC</a></li>
+      </ul>
+    </li>
+    <li class="sports major"><a href="/section/sports/">Sports</a></li>
+
+    <li class="radio_news"><a href="/articles/latest/radio-news/">Radio</a></li>
+    <li class="opinion"><a href="/section/opinion/">Opinion</a></li>
+    <li class="politics"><a href="/section/politics/">Politics</a></li>
+    <li class="local"><a href="/section/local/">Local</a></li>
+    <li class="economy"><a href="/section/economy/">Economy</a></li>
+    <li class="scitech"><a href="/section/science-technology/">Sci/Tech</a></li>
+    <li class="entertainment"><a href="/section/entertainment/">Entertainment</a></li>
+    <li class="archive last"><a href="/archive/">Archive</a></li>
+</ul>
+
+<!-- end main nav -->
+
+
+
+
+
+
+</div>
+
+
+    <script type="text/javascript">GA_googleFillSlot("promo_frame_1");</script>
+    <script type="text/javascript">GA_googleFillSlot("promo_frame_2");</script>
+    <script type="text/javascript">GA_googleFillSlot("promo_frame_3");</script>
+    <script type="text/javascript">GA_googleFillSlot("promo_frame_4");</script>
+    
+        <div id="promotionnav">
+        <iframe  width="976" scrolling="no" height="100" frameborder="no" src="/promotion_frame/" style="clear: both;"></iframe>
+        </div>
+        
+
+
+
+<script type="text/javascript">GA_googleFillSlot("976x100_sponsoredchannel");</script>
+
+
+
+
+    
+    
+
+    
+    <div id="top_ad_954"><script type="text/javascript">GA_googleFillSlot("954x60_primary");</script></div>
+    <div id="special_channel_banner"></div>
+    
+
+    
+
+
+
+<h2 class="section_title"><span><a href="/features/news/">News</a></span></h2>
+
+
+
+
+
+    
+
+    
+
+
+
+    <!--MAIN-->
+    <div id="main">
+    
+        <div id="content_wrapper">
+
+            <!--CONTENT-->
+            <div id="content">
+            
+<script type="text/javascript">GA_googleFillSlot("storypage_banner");</script>
+<div class="story">
+
+    
+        
+    
+
+    
+    <!-- <script type="text/javascript">GA_googleFillSlot("1x1_specialreportlogo");</script> -->
+    
+    
+
+    
+        <h2 class="title">Apple Claims New iPhone Only Visible To Most Loyal Of Customers</h2>
+    
+
+    
+        
+    
+
+    
+    <p class="meta">
+        July 28, 2009  |
+        
+        <a href="/issue/4652/" title="The Onion: Issue 4652">ISSUE 46&bull;52</a> <a href="/issue/4531/" title="The Onion: Issue 4531">ISSUE 45&bull;31</a>
+        
+    </p>
+    
+
+    
+
+    
+    
+        <div class="article_photo_lead">
+            
+
+
+
+<div class="image feature_image">
+  <img src="http://o.onionstatic.com/images/articles/article/2772/Apple-Claims-600w-R_jpg_600x345_crop-smart_upscale_q85.jpg" width="600" height="345"  class="has_caption" alt="" />
+  <span class="credit"></span>
+  <span class="caption">Thousands of devoted Apple customers have already purchased the light-weight 3GI.</span>
+</div>
+
+
+
+        </div>
+    
+    
+    
+
+    
+        <div class="toolbar_side" id="toolbar_2772_side">
+        
+<!-- share tools -->
+<div class="share_tools vertical">
+    <h6>Article Tools</h6>
+    <ul>
+        <li class="twitter">
+          <span class="tweetshare" style="padding: 0; margin: 0;"></span><script type="text/javascript">tweetco('article', 2772, 'http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/');</script>
+        </li>
+        <li class="facebook">
+          <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/&amp;layout=button_count&amp;show_faces=false&amp;width=130&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="width:100px; height:25px;" allowTransparency="true"></iframe>
+        </li>
+        <li class="topspace emtfbox">
+            <span class="icon emtf"></span><a href="#" onclick="return sharetools_bubble('emtf_vertical_2772');">Email</a>
+                <div class="bubble emtf" id="emtf_vertical_2772">
+                    <span class="pointer"></span>
+                    <a href="#" onclick="$('.bubble').hide(); return false;" class="close"></a>
+                    <form action="" method="POST">
+                    <h3>Email</h3>
+                    <p>To: <input type="text" class="email_to" name="email" value="" /></p>
+                    <p>From: <input type="text" class="email_from" name="from" value="" /></p>
+                    <input type="submit" class="submit"
+                        onclick="return article_tools_email_submit('http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/','emtf_vertical_2772');"
+                        value="Send" />
+                    <input name="article_id" class="article_id" type="hidden" value="2772" />
+                    <p class="status"></p>
+                    </form>
+                </div>
+        </li>
+        
+        <li class="topspace print">
+            <span class="icon print"></span><a href="javascript:window.print();">Print</a>
+        </li>
+        <li class="topspace last">
+            <span class="icon share"></span><a href="#" onclick="return sharetools_bubble('share_vertical_2772');">Share</a>
+                <div class="bubble social" id="share_vertical_2772">
+                    <span class="pointer"></span>
+                    <a href="#" onclick="$('.bubble').hide(); return false;" class="close"></a>
+                    <div>
+                    <h3>Share</h3>
+                    <ul>
+                        <li><a href="http://www.facebook.com/sharer.php?u=http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/&t=Apple%20Claims%20New%20iPhone%20Only%20Visible%20To%20Most%20Loyal%20Of%20Customers"><span class="icon fb"></span>Facebook</a></li>
+                        <li><a href="http://digg.com/submit?url=http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/&title=Apple%20Claims%20New%20iPhone%20Only%20Visible%20To%20Most%20Loyal%20Of%20Customers"><span class="icon digg"></span>Digg</a></li>
+                        <li><a href="http://www.stumbleupon.com/submit?url=http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/&title=Apple%20Claims%20New%20iPhone%20Only%20Visible%20To%20Most%20Loyal%20Of%20Customers"><span class="icon stumble"></span>Stumble</a></li>
+                        <li><a href="http://reddit.com/submit?url=http://www.theonion.com/articles/apple-claims-new-iphone-only-visible-to-most-loyal,2772/&title=Apple%20Claims%20New%20iPhone%20Only%20Visible%20To%20Most%20Loyal%20Of%20Customers"><span class="icon reddit"></span>Reddit</a></li>
+                    </ul>
+                    </div>
+                </div>
+        </li>
+        
+    </ul>
+</div>
+<!-- end share tools -->
+
+        
+            
+
+<div id="related">
+<h5>Related Articles</h5>
+<ul>
+
+<li class="related">
+<a href="/articles/cranberry-juice-industry-hoping-2009-a-big-year-fo,6495/?utm_source=related">Cranberry Juice Industry Hoping 2009 A Big Year For Urinary Tract Infections</a><br />
+<span class="timestamp">12.12.08</span>
+</li>
+
+<li class="related">
+<a href="/articles/man-on-internet-almost-falls-into-world-of-diy-mus,17013/?utm_source=related">Man On Internet Almost Falls Into World Of DIY Mustard Enthusiasts</a><br />
+<span class="timestamp">03.11.10</span>
+</li>
+
+</ul>
+</div>
+
+
+        
+        </div>
+    
+
+    
+    <div class="article_body">
+        <p>SAN FRANCISCO&#8212;In a move expected to revolutionize the mobile device industry, Apple launched its fastest and most powerful iPhone to date Tuesday, an innovative new model that can only be seen by the company's hippest and most dedicated customers.</p>
+<p>"I am proud today to introduce to those who really, truly deserve it, our most incredible iPhone yet," announced Apple CEO Steve Jobs, extending his seemingly empty left palm toward the eagerly awaiting crowd. "Not only is this our lightest and slimmest model ever, but as any truly savvy Apple customer can clearly see, it's also the most handsome product we've ever designed."</p>
+<p>The packed auditorium, which had been listening to Jobs in hushed reverence for several minutes, then erupted into applause, with hundreds of men and women suddenly jumping to their feet and shouting, "I can see it!" "Look, there it is!" and "God, it's so beautiful!"</p>
+<p><span class="image" rel="http://o.onionstatic.com/images/articles/article/2772/Apple-Claims-Keynote-600w-R_jpg_600x1000_q85.jpg"><img src="http://o.onionstatic.com/images/articles/article/2772/Apple-Claims-Keynote-600w-R_jpg_250x1000_q85.jpg" alt="" title="" /><span class="caption">Steve Jobs unveils the updated iPhone exclusively to those who really, really want to see it.</span></span></p>
+<p>Screams of "Of course, yes, I too can see the phone," were also heard at this time.</p>
+<p>According to Apple, the new iPhone 3GI boasts significant hardware and software upgrades, superior processing speeds, and a multi-touch interface that provides those who are "cool enough" with a rich user experience. The wide-screen display reportedly also features the most brilliant colors and finest resolution ever imagined.</p>
+<p>"The new 3GI is as light as air," said Apple senior vice president Philip Schiller, reaching inside an empty display case, apparently to remove the mobile device. "See how thin that is? It's like it's not even there."</p>
+<p>"Those who really understand what we do here at Apple are going to love this new product," Schiller continued. "Unless, you know, they happen to be totally lame."</p>
+<p>Retailing for $599, the iPhone 3GI offers only the most special Apple consumers&#8212;the ones who believe in the company more than anything else in the world, and who would never, ever dream of questioning it&#8212;the ability to open dozens of powerful applications at once. In addition, the new multimedia device will provide true Apple fans with a high-definition video camera, one-tap editing with Final Cut Pro, and cut and paste.</p>
+<p>Like thousands of others, New York resident Kelly Delaney called in sick to work so that she could join the line outside the Apple Store's trendy SoHo location days before the 3GI went on sale.</p>
+<p><span class="image" rel="http://o.onionstatic.com/images/articles/article/2772/Apple-Claims-In-Store-600w-R_jpg_600x1000_q85.jpg"><img src="http://o.onionstatic.com/images/articles/article/2772/Apple-Claims-In-Store-600w-R_jpg_250x1000_q85.jpg" alt="" title="" /></span></p>
+<p>"Oh my God, I can't believe how much faster you can get online with this," said Delaney, who exited the store holding a cupped hand up to her ear and yelling into her wrist about how wonderful the new phone was. "The reception is so clear, and you can pretty much get a signal no matter where you go."</p>
+<p>"Hold on a sec," continued Delaney, suddenly shaking her hand up and down. "I think my battery is dying."</p>
+<p>According to Apple, the new iPhone launched in 22 countries and sold a record-breaking 8 million units on its first day.</p>
+<p>"The selection of colors is amazing," said Paul Conrad, a Fairfield, VA native who purchased phones in black, white, and silver. "Not only does it look awesome, but it can do pretty much anything you want as long as you believe in it."</p>
+<p>"The AppleCare Plan doesn't cover dropping your phone, though, so I'd recommend buying one of these designer protective cases," Conrad added.</p>
+<p>While the new iPhone has been greatly admired and widely touted for its impressive voice and data communication capabilities, some Americans remain skeptical.</p>
+<p>"Daddy isn't talking into anything at all," said 4-year-old Ella Conrad, pointing at her father, Paul, who has been obsessively staring at, playing with, and customizing the invisible phone since purchasing it Monday. "Daddy's pretending to be on hold with an operator."</p>
+    </div>
+    
+
+    
+
+    
+    
+    
+
+    
+    <div id="pagination">
+    <h5>More News</h5>
+    <ul class="pagination">
+      <li class="previous">
+	
+	
+	<a href="/articles/china-strong,2756/?utm_source=morenews" title="China Strong">
+	  <i>&#171;</i>
+	  China Strong</a>
+	<span>(July 27, 2009)</span>
+	
+	
+      </li>
+      <li class="next">
+	
+	
+	<a href="/articles/recent-rise-in-international-disputes-traced-back,2774/?utm_source=morenews" title="Recent Rise In International Disputes Traced Back To Cute U.N. Tour Guide">
+	  Recent Rise In International Disputes Traced ...</a> <i>&#187;</i>
+	<span>(July 31, 2009)</span>
+	
+	
+	</li>
+      </ul>
+    </div>
+    
+
+    
+        <!-- related media -->
+        
+        
+        
+    
+
+    
+    
+
+    
+
+
+
+<div class="slideable recent_slider" id="recent_slider">
+    <h6><a href="/features/news/">Recent News <span>&raquo;</span></a></h6>
+    <div class="wrapper">
+        <ul class="slides">
+            
+            <li class="slide element_0">
+                <a class="image" href="/articles/i-spilled-my-soda-report-nations-dopes,20530/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20530/I_Spilled_R_jpg_140x140_crop-smart_upscale_q85.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/i-spilled-my-soda-report-nations-dopes,20530/?utm_source=recentnews">
+                    'I Spilled My Soda,' Report Nation's Dopes
+                    <span class="timestamp">05.28.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_1">
+                <a class="image" href="/articles/economists-gently-suggest-american-manufacturing-m,20529/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20529/smoove.theonion-1.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/economists-gently-suggest-american-manufacturing-m,20529/?utm_source=recentnews">
+                    Economists Gently Suggest American Manufacturing Maybe Start Again With Something Simple Like A Ball
+                    <span class="timestamp">05.26.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_2">
+                <a class="image" href="/articles/update-giant-bin-laden-destroys-new-york-washingto,20536/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20536/Enraged_500-Foot_R_jpg_140x140_crop-smart_upscale_q85.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/update-giant-bin-laden-destroys-new-york-washingto,20536/?utm_source=recentnews">
+                    UPDATE: Giant Bin Laden Destroys New York, Washington
+                    <span class="timestamp">05.25.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_3">
+                <a class="image" href="/articles/maple-syrup-reactors-safe-canadian-prime-minister,20511/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20511/Maple_Syrup_Reactors_R_jpg_140x140_crop-smart_upscale_q85.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/maple-syrup-reactors-safe-canadian-prime-minister,20511/?utm_source=recentnews">
+                    Maple Syrup Reactors Safe, Canadian Prime Minister Reassures
+                    <span class="timestamp">05.23.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_4">
+                <a class="image" href="/articles/mans-life-riddled-with-continuity-errors,20492/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20492/manslife_jpg_140x140_crop-smart_upscale_q85.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/mans-life-riddled-with-continuity-errors,20492/?utm_source=recentnews">
+                    Man's Life Riddled With Continuity Errors
+                    <span class="timestamp">05.21.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_5">
+                <a class="image" href="/video/cashstrapped-pbs-releases-nova-special-on-physics,20508/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20508/www.theonion_1.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/video/cashstrapped-pbs-releases-nova-special-on-physics,20508/?utm_source=recentnews">
+                    Cash-Strapped PBS Releases Nova Special On Physics Behind Rhythmically Bouncing Breasts
+                    <span class="timestamp">05.20.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_6">
+                <a class="image" href="/articles/nation-down-to-last-hundred-grownups,20491/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20491/grownups_jpg_140x140_crop-smart_upscale_q85.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/nation-down-to-last-hundred-grownups,20491/?utm_source=recentnews">
+                    Nation Down To Last Hundred Grown-Ups
+                    <span class="timestamp">05.19.11</span>
+                </a>
+            </li>
+            
+            <li class="slide element_7">
+                <a class="image" href="/articles/planned-parenthood-opens-8-billion-abortionplex,20476/?utm_source=recentnews">
+                    
+                    
+                    
+                    
+                    
+    
+
+    
+        <img src="http://o.onionstatic.com/images/articles/article/20476/Planned_Parenthood_R_jpg_140x140_crop-smart_upscale_q85.jpg" width="140" height="140"  alt="" />
+    
+
+
+                    
+                    
+                </a>
+                <a class="title" href="/articles/planned-parenthood-opens-8-billion-abortionplex,20476/?utm_source=recentnews">
+                    Planned Parenthood Opens $8 Billion Abortionplex
+                    <span class="timestamp">05.18.11</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    <div class="navigation">
+        <p class="previous"><a href="#">Previous</a></p>
+        <p class="next"><a href="#">Next</a></p>
+    </div>
+</div>
+<script type="text/javascript">
+htmlReady(function(){
+    if (numslides == undefined || numslides == "") {
+        var numslides = 4;
+    }
+    new Slideable("recent_slider", {
+        slidesVisible: numslides,
+        slideSpeed: 250,
+        slideWidth: 156
+        });
+});
+</script>
+
+</div>
+<div id="image_holder">
+    <img src="http://o.onionstatic.com/img/icons/onion_tiny.png" alt="The Onion" />
+    <p class="close">[x] Click to close</p>
+    <div>
+        <img src="" id="expand_target" />
+        <p class="caption"></p>
+        <p><b>&copy; Copyright 2011, Onion, Inc. All rights reserved.</b></p>
+    </div>
+</div>
+
+            </div>
+            <!--END CONTENT-->
+
+            <!--SIDEBAR-->
+            <div id="sidebar">
+            
+
+            
+    <script type="text/javascript">GA_googleFillSlot("300x250_sponsorvideo");</script>
+
+
+            
+            <div class="standard_box">
+              <script type="text/javascript">GA_googleFillSlot("300x250_primary");</script>
+            </div>
+            
+
+            <script type="text/javascript">GA_googleFillSlot("twitter_sponsoredchannel");</script>
+
+            
+            <div id="socialbox">
+
+<!-- facebook -->
+<div id="tabcontent_facebook" class="entries standard_box">
+    <h5><span class="icon_facebook"></span>Facebook</h5>
+    <iframe scrolling="no" style="border: medium none; overflow: hidden; height: 300px; width: 300px;" src="http://www.facebook.com/plugins/activity.php?border_color=white&amp;header=false&amp;height=300&amp;locale=en_US&amp;site=www.theonion.com&amp;width=300" frameborder="0" border="0"></iframe>
+</div>
+
+
+
+</div>
+
+            
+
+            
+            <div id="zoosk" class="standard_box">
+            <script type="text/javascript">
+var items = [["http://affiliate.zantracker.com/rd/r.php?sid=164&pub=500111&c1=ON&c2=&c3=F5", "zoosk_f_v1.jpg"],
+             ["http://affiliate.zantracker.com/rd/r.php?sid=164&pub=500111&c1=ON&c2=&c3=F2", "zoosk_f_v2.jpg"],
+             ["http://affiliate.zantracker.com/rd/r.php?sid=164&pub=500111&c1=ON&c2=&c3=F3", "zoosk_f_v3.jpg"],
+             ["http://affiliate.zantracker.com/rd/r.php?sid=164&pub=500111&c1=ON&c2=&c3=M1", "zoosk_m_v1.jpg"]];
+var image_number = Math.floor(Math.random()*4);
+document.write('<div style="clear: both;"><a href="'+items[image_number][0]+'"><img src="http://o.onionstatic.com/img/ads/zoosk/'+items[image_number][1]+'" width="299" height="159" /></a></div>');
+</script>
+
+            </div>
+            
+
+            
+            
+                <div id="from_our_sponsors" class="standard_box section"><script type="text/javascript">GA_googleFillSlot("300x130_feature");</script></div>
+            
+            
+
+            
+<!-- start connect box -->
+<div id="connectbox" class="standard_box">
+    <p class="label">Follow The Onion</p>
+    <div id="signup">
+        <span class="email"></span>
+        <form action="http://www.theonion.com/newsletters/subscribe/" method="post">
+            <p><b style="display:block">Sign Up For The Newsletter</b></p>
+            <p style="display:block;float:left;">
+            <input style="margin-left:0px" type="checkbox" name="newsletters" value="1" /> Daily
+            <input type="checkbox" name="newsletters" value="3" /> Weekly
+            <input type="checkbox" name="newsletters" value="2" /> Video
+            </p>
+            <p>
+            <input type="text" name="address" value="your email" onclick="this.value=''; return false;" class="subscribe" />
+            <input type="submit" value="" class="submit" />
+            </p>
+            <p>
+            </p>
+        </form>
+    </div>
+    <div id="follow">
+        <span>Other Options:</span>
+        <ul>
+            <li class="twitter"><a href="http://twitter.com/TheOnion"></a></li>
+            <li class="facebook"><a href="http://facebook.com/TheOnion"></a></li>
+            <li class="digital"><a href="http://store.theonion.com/category/iphone-app,50/"></a></li>
+            <li class="rss last"><a href="/feeds/daily/"></a></li>
+        </ul>
+    </div>
+    <div class="fatborder"></div>
+</div>
+<script type="text/javascript">
+$("#connectbox li").mouseover(function() {
+    $(this).addClass("over");
+}).mouseout(function() {
+    $(this).removeClass("over");
+});
+</script>
+<!-- end connect box -->
+
+
+            
+            <div class="standard_box"><script type="text/javascript">GA_googleFillSlot("300x250_secondary");</script></div>
+            
+
+            
+<div class="partner standard_box">
+    <h5><span class="icon_avclub"></span></h5>
+    <ul>
+        
+        <li><a href="http://feeds.theonion.com/~r/avclub/daily/~3/sDhORzcbWgY/">TV: The Simpsons (Classic): &quot;I Married Marge&quot;</a></li>
+        
+        <li><a href="http://feeds.theonion.com/~r/avclub/daily/~3/5i8QADQMgU0/">Music: Newswire: R.I.P. Gil Scott-Heron</a></li>
+        
+        <li><a href="http://feeds.theonion.com/~r/avclub/daily/~3/4DugP_PjA4o/">TV: The X-Files/Millennium: &quot;Kill Switch&quot;/&quot;Goodbye, Charlie&quot;</a></li>
+        
+        <li><a href="http://feeds.theonion.com/~r/avclub/daily/~3/q4tKczLg1w0/">TV: Friday Night Lights: &quot;Perfect Record&quot;</a></li>
+        
+    </ul>
+</div>
+
+
+
+            
+            <div class="standard_box">
+            <script type="text/javascript">GA_googleFillSlot("300x250_tertiary");</script>
+            </div>
+            
+
+            
+            </div>
+            <div style="clear:both"></div>
+            <!--END SIDEBAR-->
+
+            
+            
+
+            
+            
+
+        </div>
+    
+    </div>
+    <!--END MAIN-->
+
+    
+
+    
+<!--FOOTER-->
+<div id="footer">
+    <ul>
+      <li><a href="/faq/">Help</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/privacy/">Privacy Policy</a></li>
+      <li><a href="http://mediakit.theonion.com">Media Kit</a></li>
+      <li><a href="/jobs/">Jobs</a></li>
+      <li><a href="http://www.theonionnation.com/">Franchising</a></li>
+      <li class="last"><a href="http://www.theonion.com/feeds/daily/">RSS</a></li>
+      <li class="last" style="float: right;">
+          <p><i>The Onion</i> is not intended for readers under 18 years of age. <br /> &copy; Copyright 2011 Onion Inc. All rights reserved.</p>
+          <p id="disclaimer"></p>
+      </li>
+    </ul>
+</div>
+<!--END FOOTER-->
+
+<!-- forces wrapper to set bgcolor -->
+<div style="clear: both;"></div>
+
+    
+<script type="text/javascript" src="http://content.dl-rms.com/rms/mother/5781/nodetag.js"></script>
+
+
+
+
+</div>
+<!--END WRAPPER-->
+
+
+<!-- metrics -->
+
+<!-- quantcast -->
+<script type="text/javascript">
+_qoptions={
+    qacct:"p-39FYaAGOYli_-"
+};
+</script>
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<noscript>
+    <img src="http://pixel.quantserve.com/pixel/p-39FYaAGOYli_-.gif" style="display: none;" border="0" height="1" width="1" alt="Quantcast"/>
+</noscript>
+<script type="text/javascript">
+if(google_type !== "") {
+    var _sf_async_config={uid:1762,domain:"theonion.com"};
+    _sf_async_config.sections = google_type;
+}
+</script>
+
+<!-- chartbeat -->
+<script type="text/javascript">
+var cbjspath = "static.chartbeat.com/js/chartbeat.js?uid=1762&domain=theonion.com";
+var cbjsprotocol = (("https:" == document.location.protocol) ? "https://s3.amazonaws.com/" : "http://");
+document.write(unescape("%3Cscript src='"+cbjsprotocol+cbjspath+"' type='text/javascript'%3E%3C/script%3E"))
+</script>
+
+<!-- comscore -->
+<script>
+ document.write(unescape("%3Cscript src='" + (document.location.protocol == "https:" ? "https://sb" : "http://b")
++ ".scorecardresearch.com/beacon.js' %3E%3C/script%3E"));
+</script>
+
+<script>
+ COMSCORE.beacon({
+  c1:2,
+  c2:"6036328",
+  c3:"",
+  c4:"",
+  c5:"",
+  c6:"",
+  c15:""
+ });
+</script>
+<noscript>
+ <img src="http://b.scorecardresearch.com/b?c1=2&c2=6036328&c3=&c4=&c5=&c6=&c15=&cv=1.3&cj=1"
+style="display:none" width="0" height="0" alt="" />
+</noscript>
+<!-- nielsen -->
+<script type="text/javascript">
+  (function () {
+    var d = new Image(1, 1);
+    d.onerror = d.onload = function () {
+      d.onerror = d.onload = null;
+    };
+    d.src = ["//secure-us.imrworldwide.com/cgi-bin/m?ci=us-703755h&cg=0&cc=1&si=", escape(window.location.href), "&rp=", escape(document.referrer), "&ts=compact&rnd=", (new Date()).getTime()].join('');
+  })();
+</script>
+<noscript>
+  <div>
+    <img src="//secure-us.imrworldwide.com/cgi-bin/m?ci=us-703755h&amp;cg=0&amp;cc=1&amp;ts=noscript"
+    width="1" height="1" alt="" />
+  </div>
+</noscript>
+<!-- vertical acuity -->
+<script src="http://scripts.verticalacuity.com/vat/mon/vt.js" type="text/javascript"></script>
+
+
+
+
+
+</body>
+</html>

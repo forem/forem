@@ -1,0 +1,1071 @@
+---
+AN:
+  name: Andijon
+  code: AN
+  unofficial_names:
+  - Andijon
+  - Andizhan
+  - Andižan
+  geo:
+    latitude: 40.8153561
+    longitude: 72.28375
+    min_latitude: 40.6814191
+    min_longitude: 72.2175981
+    max_latitude: 40.8773096
+    max_longitude: 72.4216927
+  translations:
+    en: Andijan
+    ar: ولاية أنديجان
+    az: Əndican vilayəti
+    be: Андыжанскі вілает
+    bg: Андижанска област
+    bn: আন্ডিজান অঞ্চল
+    ca: Província d’Andijan
+    da: Andijan Region
+    de: Provinz Andijon
+    el: Αντιτζάν
+    es: Provincia de Andillán
+    et: Andijoni vilajett
+    eu: Andijan probintzia
+    fa: استان اندیجان
+    fi: Andižanin alue
+    fr: province d’Andijan
+    gl: Provincia de Andijon
+    gu: એન્ડિજાન પ્રદેશ
+    he: מחוז אנדיז׳ן
+    hi: अन्दीझ़ान प्रान्त
+    id: Provinsi Andijan
+    it: Regione di Andijan
+    ja: アンディジャン州
+    kn: ಆಂಡಿಜನ್ ಪ್ರದೇಶ
+    ko: 안디잔 주
+    lt: Andižano vilajetas
+    mr: अंदिजोन विलायती
+    ms: Wilayah Andijan
+    nb: Andijan region
+    nl: Andizan
+    pl: Wilajet andiżański
+    pt: Andijan
+    ru: Андижанская область
+    si: අන්ඩිජන් කලාපය
+    sv: Andizjan
+    ta: ஆண்டிஜன் பகுதி
+    te: ఆండిజాన్ ప్రాంతం
+    th: แอนดิจาน
+    tk: Andijan
+    tr: Andican ili
+    uk: Андижанська область
+    ur: اندیجان صوبہ
+    vi: Andijon
+    zh: 安集延州
+    lv: Andidžonas vilojats
+    jv: Andijon
+    ccp: "\U00011103\U0001111A\U00011134\U00011113\U00011128\U0001110E\U0001111A\U00011134"
+    ky: Андижан облусу
+    pa: ਅੰਦੀਜਾਨ ਪ੍ਰਾਂਤ
+    kk: Андижан облысы
+    uz: Andijon
+    mk: Андиџанска област
+    'no': Andijan region
+    hy: Անդիժանի մարզ
+    ka: ანდიჯანის ოლქი
+    ml: അൻഡിജാൻ പ്രവിശ്യ
+    sr: Андижанска област
+    sr_Latn: Andižanska oblast
+  comments:
+  type: region
+BU:
+  name: Buxoro
+  code: BU
+  unofficial_names:
+  - Boukhara
+  - Buchara
+  - Buhara
+  - Buhoro
+  - Bukhara
+  - Bukhoro
+  geo:
+    latitude: 39.7680827
+    longitude: 64.4555769
+    min_latitude: 39.7309658
+    min_longitude: 64.3438338
+    max_latitude: 39.8241068
+    max_longitude: 64.5017624
+  translations:
+    en: Bukhara
+    ar: ولاية بخارى
+    az: Buxara vilayəti
+    bg: Бухарска област
+    bn: বুকহারা অঞ্চল
+    da: Bukhara Region
+    de: Provinz Buxoro
+    el: Μπουχάρα
+    es: Provincia de Bujara
+    et: Buxoro vilajett
+    eu: Bukhara probintzia
+    fa: استان بخارا
+    fi: Buharan alue
+    fr: province de Boukhara
+    gl: Provincia de Buxoro
+    gu: બુખારા પ્રદેશ
+    hi: बुख़ारा प्रान्त
+    id: Provinsi Buxoro
+    it: Regione di Bukhara
+    ja: ブハラ州
+    kn: ಬುಖರಾ ಪ್ರದೇಶ
+    ko: 부하라 주
+    lt: Bucharos vilajetas
+    mr: बुझोरो विलायती
+    ms: Wilayah Buxoro
+    nb: Bukhara region
+    nl: Buxoro
+    pl: Wilajet bucharski
+    pt: Bukhara
+    ru: Бухарская область
+    si: බුක්හරා කලාපය
+    sv: Buchara
+    ta: புகாரா பகுதி
+    te: బుఖారా ప్రాంతం
+    th: บูโคโร
+    tk: Buhara
+    tr: Buhara ili
+    uk: Бухарська область
+    ur: بخارا صوبہ
+    vi: Buxoro
+    lv: Buhāras vilojats
+    ceb: Bukhara Province
+    zh: 布哈拉州
+    jv: Buxoro
+    ccp: "\U0001111D\U0001112A\U00011108\U00011122"
+    hy: Բուխարայի մարզ
+    ky: Бухара облусу
+    pa: ਬੁਖਾਰਾ ਪ੍ਰਾਂਤ
+    kk: Бұхара облысы
+    uz: Buxoro viloyati
+    mk: Бухарска област
+    'no': Bukhara region
+    be: Бухарская вобласць
+    ca: província de Bukharà
+    ka: ბუხარის ოლქი
+    ml: ബുഖാറ പ്രവിശ്യ
+    sr: Бухарска област
+    sr_Latn: Buharska oblast
+  comments:
+  type: region
+FA:
+  name: Farg‘ona
+  code: FA
+  unofficial_names:
+  - Farghona
+  - Fergana
+  - Ferghana
+  - Ferghona
+  geo:
+    latitude: 40.386389
+    longitude: 71.786389
+    min_latitude: 40.3326582
+    min_longitude: 71.7195224
+    max_latitude: 40.4268914
+    max_longitude: 71.8614006
+  translations:
+    en: Fergana
+    ar: ولاية فرغانة
+    az: Fərqanə vilayəti
+    be: Ферганскі вілает
+    bg: Ферганска област
+    bn: ফেরগানা অঞ্চল
+    da: Fergana Region
+    de: Provinz Fargʻona
+    el: Φεργκάνα
+    es: Provincia de Fergana
+    eu: Fergana probintzia
+    fa: استان فرغانه
+    fi: Ferganan alue
+    fr: province de Ferghana
+    gl: Provincia de Fergana
+    gu: ફેરગના પ્રદેશ
+    he: מחוז פרגנה
+    hi: फ़रग़ना प्रान्त
+    id: Provinsi Fergana
+    it: Regione di Fergana
+    ja: フェルガナ州
+    kn: ಫೆರ್ಗಾನಾ ಪ್ರದೇಶ
+    ko: 페르가나 주
+    lt: Ferganos vilajetas
+    mr: फर्गोना विलायती
+    ms: Wilayah Fergana
+    nb: Fergana region
+    nl: Fargʻona
+    pl: Wilajet fergański
+    pt: Fergana
+    ro: Regiunea Fergana
+    ru: Ферганская область
+    si: ෆෙර්ගනා කලාපය
+    sv: Fergana
+    ta: பெர்கனா பகுதி
+    te: ఫెర్గానా ప్రాంతం
+    th: ลากูเนส
+    tk: Fergana
+    tr: Fergana ili
+    uk: Ферганська область
+    ur: فرغانہ صوبہ
+    vi: Farg’ona
+    lv: Fergānas vilojats
+    ceb: Fergana
+    zh: 費爾干納州
+    ccp: "\U0001111C\U00011122\U00011134\U00011109\U0001111A"
+    ka: ფერღანის ოლქი
+    ky: Фергана облусу
+    pa: ਫ਼ਰਗਨਾ ਖੇਤਰ
+    uz: Fargʻona viloyati
+    mk: Ферганска област
+    'no': Fergana region
+    ca: província de Ferganà
+    ml: ഫെർഗാന പ്രവിശ്യ
+    sr: Ферганска област
+    sr_Latn: Ferganska oblast
+  comments:
+  type: region
+JI:
+  name: Jizzax
+  code: JI
+  unofficial_names:
+  - Cizah
+  - Cizak
+  - Djizak
+  - Dzhizak
+  - Džizak
+  - Jizzakh
+  geo:
+    latitude: 40.11583299999999
+    longitude: 67.84222199999999
+    min_latitude: 40.0458832
+    min_longitude: 67.7763748
+    max_latitude: 40.1917254
+    max_longitude: 67.9324151
+  translations:
+    en: Jizzakh
+    ar: ولاية جيزك
+    az: Cizzəx vilayəti
+    be: Джызакская вобласць
+    bg: Джизакска област
+    bn: জিজাক অঞ্চল
+    da: Jizzakh Region
+    de: Provinz Jizzax
+    el: Επαρχία Τζιζάκ
+    es: Provincia de Djizaks
+    et: Jizzaxi vilajett
+    fa: استان جیزک
+    fi: Jizzaxin alue
+    fr: province de Djizak
+    gl: Provincia de Jizzax
+    gu: જીઝાખ પ્રદેશ
+    hi: जिज़ाख़ प्रान्त
+    id: Provinsi Jizzakh
+    it: Regione di Djizak
+    ja: ジザフ州
+    kn: ಜಿಝಾಕ್ ಪ್ರದೇಶ
+    ko: 지자흐 주
+    lt: Džizako vilajetas
+    mr: जिझाक्स विलायती
+    ms: Daerah Jizzakh
+    nb: Jizzakh region
+    nl: Jizzax
+    pl: Wilajet dżyzacki
+    pt: Jizzakh
+    ru: Джизакская область
+    si: ජිසාක් කලාපය
+    sv: Dzjizzach
+    ta: ஜிஸ்சாக்ஹ் பகுதி
+    te: జిజక్ ప్రాంతం
+    th: เขตยิซซัค
+    tk: Jyzak
+    tr: Cizzak ili
+    uk: Джиззацька область
+    ur: جیزخ صوبہ
+    vi: Jizzax
+    lv: Džizahas vilojats
+    ceb: Jizzakh Province
+    zh: 吉扎克州
+    ccp: "\U0001110E\U00011128\U0001110E\U00011133\U00011126\U00011107\U00011134"
+    ky: Жызак облусу
+    pa: ਜਿਜ਼ਾਖ ਸੂਬਾ
+    uz: Jizzax viloyati
+    mk: Џизачка област
+    'no': Jizzakh region
+    ca: província de Djizak
+    ka: ჯიზახის ოლქი
+    ml: ജിസ്സക്ത് പ്രവിശ്യ
+    sr: Џизакска област
+    sr_Latn: Džizakska oblast
+  comments:
+  type: region
+NG:
+  name: Namangan
+  code: NG
+  unofficial_names:
+  - Namangan
+  - Namaņgan
+  geo:
+    latitude: 41.001111
+    longitude: 71.66833299999999
+    min_latitude: 40.8836945
+    min_longitude: 71.5340768
+    max_latitude: 41.0572407
+    max_longitude: 71.7551683
+  translations:
+    en: Namangan
+    ar: ولاية نمنغان
+    az: Namangan Vilayəti
+    bg: Наманганска област
+    bn: নামানগান অঞ্চল
+    ca: Província de Namangan
+    da: Namangan Region
+    de: Provinz Namangan
+    el: Νάμανγκαν
+    es: Provincia de Namangán
+    et: Namangani vilajett
+    fa: استان نمنگان
+    fi: Namanganin alue
+    fr: province de Namangan
+    gl: Provincia de Namangan
+    gu: નામાનગન પ્રદેશ
+    hi: नमन्गान प्रान्त
+    id: Provinsi Namangan
+    it: Regione di Namangan
+    ja: ナマンガン州
+    kn: ನಾಮಾಂಗನ್ ಪ್ರದೇಶ
+    ko: 나망간 주
+    lt: Namangano vilajetas
+    mr: नमनगन विलायती
+    ms: Wilayah Namangan
+    nb: Namangan region
+    nl: Namangan
+    pl: Wilajet namangański
+    pt: Namangan
+    ro: Regiunea Namangan
+    ru: Наманганская область
+    si: නමන්ගන් කලාපය
+    sv: Namangan
+    ta: நாமங்கன் பகுதி
+    te: నామంగాన్ ప్రాంతం
+    th: เขตนามันกัน
+    tk: Namangan
+    tr: Namangan ili
+    uk: Наманганська область
+    ur: نمنگان صوبہ
+    vi: Namangan
+    lv: Namanganas vilojats
+    ceb: Namangan Province
+    zh: 納曼干州
+    ccp: "\U0001111A\U0001111F\U0001111A\U00011134\U00011109\U0001111A\U00011134"
+    ky: Наманган облусу
+    pa: ਨਮਾਗਾਨ ਵਿਲੋਇਤੀ
+    be: Наманганскі вілает
+    uz: Namangan
+    mk: Наманганска област
+    'no': Namangan region
+    ka: ნამანგანის ოლქი
+    kk: Наманган облысы
+    ml: നമനഗാൻ പ്രവിശ്യ
+    sr: Наманганска област
+    sr_Latn: Namanganska oblast
+  comments:
+  type: region
+NW:
+  name: Navoiy
+  code: NW
+  unofficial_names:
+  - Navoi
+  - Navoj
+  - Navoy
+  geo:
+    latitude: 40.084444
+    longitude: 65.379167
+    min_latitude: 40.0655921
+    min_longitude: 65.3061677
+    max_latitude: 40.130427
+    max_longitude: 65.4370594
+  translations:
+    en: Navoiy
+    ar: ولاية نواوي
+    az: Nəvai vilayəti
+    be: Навойскі вілает
+    bg: Навойска област
+    bn: নাভুই অঞ্চল
+    ca: Província de Navoiy
+    da: Navoiy Region
+    de: Provinz Navoiy
+    el: Ναβόιγ
+    es: Provincia de Navoi
+    et: Navoiy vilajett
+    fa: استان نوایی
+    fi: Navoiyn alue
+    fr: province de Navoï
+    gl: Provincia de Navoiy
+    gu: નવોય પ્રદેશ
+    hi: नवोई प्रान्त
+    id: Provinsi Navoiy
+    it: Regione di Navoiy
+    ja: ナヴァーイー州
+    kn: ನವೋಯಿ ಪ್ರದೇಶ
+    ko: 나보이 주
+    lt: Navojo vilajetas
+    mr: नावोयी विलायती
+    ms: Wilayah Navoiy
+    nb: Navoiy region
+    nl: Navoiy
+    pl: Wilajet nawojski
+    pt: Navoiy
+    ru: Навоийская область
+    si: නවොයි කලාපය
+    sv: Navoi
+    ta: நவோய் பகுதி
+    te: నావోయ్ ప్రాంతం
+    th: นาวอยย์
+    tk: Nawoýy
+    tr: Navoiy ili
+    uk: Навоїйська область
+    ur: نوائی صوبہ
+    vi: Navoiy
+    lv: Navoji vilojats
+    ceb: Navoiy Province
+    zh: 納沃伊州
+    ccp: "\U0001111A\U0001111E\U00011130\U00011120\U00011128"
+    ky: Навоий облусу
+    pa: ਨਵੋਈ ਵਿਲੋਇਤੀ
+    kk: Науаи облысы
+    uz: Navoiy viloyati
+    mk: Навојска област
+    'no': Navoiy region
+    hu: Navoj tartomány
+    ka: ნავოის ოლქი
+    ml: നവൊഇയി പ്രവിശ്യ
+    ro: Regiunea Navoi
+    sr: Навојска област
+    sr_Latn: Navojska oblast
+  comments:
+  type: region
+QA:
+  name: Qashqadaryo
+  code: QA
+  unofficial_names:
+  - Kashkadar
+  - Kashkadaria
+  - Kashkadarya
+  - Kaskadar
+  - Qashqadar
+  - Qasqadar
+  - Qaşqadar
+  - Ķaşķadar
+  geo:
+    latitude: 38.8986231
+    longitude: 66.0463534
+    min_latitude: 38.0266721
+    min_longitude: 64.331024
+    max_latitude: 39.5323751
+    max_longitude: 67.683914
+  translations:
+    en: Qashqadaryo
+    ar: ولاية قشقداريا
+    az: Qaşqadərya vilayəti
+    bg: Кашкадаринска област
+    bn: কাাশকাড্রায়ো অঞ্চল
+    da: Qashqadaryo Region
+    de: Provinz Qashqadaryo
+    el: Κασκαντάριο
+    es: Provincia de Kashkadar
+    et: Qashqadaryo vilajett
+    fa: استان قشقه‌دریا
+    fi: Qashqadaryon alue
+    fr: province de Kachkadaria
+    gl: Provincia de Qashqadaryo
+    gu: કશકડાર્યો પ્રદેશ
+    hi: क़श्क़ादरिया प्रान्त
+    hy: Կաշկադարյայի մարզ
+    id: Provinsi Qashqadaryo
+    it: Regione di Kashkadarya
+    ja: カシュカダリヤ州
+    kn: ಖಶ್ಕಡರಿಯೋ ಪ್ರದೇಶ
+    ko: 카슈카다리야 주
+    lt: Kaškadarjos vilajetas
+    mr: काशकादर्यो विलायती
+    ms: Wilayah Qashqadaryo
+    nb: Qashqadryo region
+    nl: Qashqadaryo
+    pl: Wilajet kaszkadaryjski
+    pt: Qashqadaryo
+    ro: Regiunea Kașkadaria
+    ru: Кашкадарьинская область
+    si: කෂ්කදර්යෝ කලාපය
+    sv: Qasjqadarja
+    ta: கஷ்கிஆடயோ பகுதி
+    te: కాష్కాడార్యో ప్రాంతం
+    th: เทศมณฑลลีทริม
+    tk: Kaşkaderýa
+    tr: Kaşkaderya
+    uk: Кашкадарʼїнська область
+    ur: قشقہ دریا صوبہ
+    vi: Qashqadaryo
+    lv: Kaškadarjas vilojats
+    ceb: Qashqadaryo Province
+    zh: 卡什卡達里亞州
+    ccp: "\U00011107\U00011127\U00011120\U0001110C\U00011134\U00011107\U00011113\U00011122\U00011128\U00011103\U0001112E"
+    ky: Кашкадарыя облусу
+    pa: ਕਸ਼ਕਾਦਰਯੋ ਵਿਲੋਇਤੀ
+    uz: Qashqadaryo viloyati
+    mk: Кашкадарјанска област
+    'no': Qashqadryo region
+    ca: província del Qashqa Darya
+    ka: კაშკადარიის ოლქი
+    ml: ക്വഷക്വദര്യോ പ്രവിശ്യ
+    sr: Кашкадаринска област
+    sr_Latn: Kaškadarinska oblast
+  comments:
+  type: region
+QR:
+  name: Qoraqalpog‘iston Respublikasi
+  code: QR
+  unofficial_names:
+  - Karakalpakistan
+  - Qoraqalpoghiston
+  - Qoraqalpogiston
+  geo:
+    latitude: 43.8041334
+    longitude: 59.4457988
+    min_latitude: 40.993829
+    min_longitude: 55.996635
+    max_latitude: 45.60519
+    max_longitude: 62.37159389999999
+  translations:
+    en: Karakalpakstan
+    ar: قرقل باغستان
+    az: Qaraqalpaqıstan Respublikası
+    be: Каракалпакстан
+    bg: Каракалпакстан
+    bn: কারাকালপাকতান
+    ca: Karakalpakistan
+    cs: Karakalpakstán
+    da: Karakalpakstan
+    de: Karakalpakistan
+    el: Καρακαλπακστάν
+    es: Karakalpakia
+    et: Karakalpakkia
+    eu: Karakalpakstan
+    fa: قره‌قالپاقستان
+    fi: Karakalpakia
+    fr: Karakalpakistan
+    gu: કરકાલપાકસ્તાન
+    he: קרקלפקסטן
+    hi: क़ाराक़ालपाक़स्तान
+    hu: Karakalpaksztán
+    id: Karakalpakstan
+    it: Karakalpakstan
+    ja: カラカルパクスタン共和国
+    ka: ყარაყალპაკეთის რესპუბლიკა
+    kn: ಕರಕಲ್ಪಕ್ಸ್ತಾನ್
+    ko: 카라칼파크스탄 공화국
+    lt: Karakalpakija
+    lv: Karakalpakstāna
+    ml: കരാകല്പക്സ്ഥാൻ
+    mn: Хархалпак орон
+    mr: करकालपाकस्तान
+    ms: Karakalpakistan
+    nb: Karakalpakstan
+    nl: Karakalpakië
+    pl: Karakałpacja
+    pt: Caracalpaquistão
+    ro: Karakalpakstan
+    ru: Каракалпакстан
+    si: කරකල්පක්ස්ථානය
+    sk: Karakalpacko
+    sr: Каракалпакија
+    sv: Karakalpakstan
+    ta: காரகல்பக்ஸ்தான்
+    te: కారాకల్పక్‌స్తాన్
+    th: การากัลปักสถาน
+    tk: Garagalpagystan
+    tr: Karakalpakistan
+    uk: Каракалпакстан
+    ur: کاراکالپکستان
+    vi: Qaraqalpaqstan
+    af: Karakalpakië
+    ceb: Karakalpakstan
+    sr_Latn: Karakalpakija
+    zh: 卡拉卡爾帕克斯坦自治共和國
+    ccp: "\U00011107\U00011122\U00011107\U00011123\U00011134\U0001111B\U00011107\U00011134\U00011111\U0001111A\U00011134"
+    ky: Каракалпакстан Республикасы
+    pa: ਕਰਾਕਲਪਕਸਤਾਨ
+    kk: Қарақалпақстан
+    uz: Qoraqalpogʻiston
+    mk: Каракалпакстан
+    'no': Karakalpakstan
+    bs: Karakalpakstan
+    cy: Karakalpakstan
+    gl: Karakalpaquistán
+  comments:
+  type: republic
+SA:
+  name: Samarqand
+  code: SA
+  unofficial_names:
+  - Samarqand
+  - Samarķand
+  - Samarkand
+  - Samarkand
+  geo:
+    latitude: 39.6542
+    longitude: 66.9597
+    min_latitude: 39.5408509
+    min_longitude: 66.8023682
+    max_latitude: 39.7405258
+    max_longitude: 67.1334059
+  translations:
+    en: Samarqand
+    ar: ولاية سمرقند
+    az: Səmərqənd vilayəti
+    be: Самаркандская вобласць
+    bg: Самаркандска област
+    bn: সামারকান্ড অঞ্চল
+    ca: Província de Samarcanda
+    da: Samarqand Region
+    de: Provinz Samarqand
+    el: Σαμαρκάντ
+    es: Provincia de Samarcanda
+    et: Samarqandi vilajett
+    eu: Samarkanda probintzia
+    fa: استان سمرقند
+    fi: Samarkandin alue
+    fr: province de Samarcande
+    gl: Provincia de Samarcanda
+    gu: સમરકંદ પ્રદેશ
+    hi: समरक़न्द प्रान्त
+    id: Provinsi Samarqand
+    it: Regione di Samarcanda
+    ja: サマルカンド州
+    kn: ಸಮರ್ಖಂಡ್ ಪ್ರದೇಶ
+    ko: 사마르칸트 주
+    lt: Samarkando vilajetas
+    mr: समरकंद विलायती
+    ms: Wilayah Samarqand
+    nb: Samarqand region
+    nl: Samarkand
+    pl: Wilajet samarkandzki
+    pt: Samarcanda
+    ro: Regiunea Samarkand
+    ru: Самаркандская область
+    si: සමර්කන්ද් කලාපය
+    sv: Samarkand
+    ta: சமர்கின்ட் பகுதி
+    te: సముర్‌ఖండ్ ప్రాంతం
+    th: ซามาร์แคนด์
+    tk: Samarkand
+    tr: Semerkand ili
+    uk: Самаркандська область
+    ur: سمرقند صوبہ
+    vi: Samarqand
+    lv: Samarkandas vilojats
+    ceb: Samarqand Viloyati
+    zh: 撒馬爾罕州
+    ccp: "\U00011125\U0001111F\U00011122\U00011134\U00011107\U0001111A\U00011133\U00011113\U00011134"
+    ky: Самарканд облусу
+    pa: ਸਮਰਕੰਦ ਵਿਲੋਇਤੀ
+    kk: Самарқан облысы
+    uz: Samarqand viloyati
+    mk: Самаркандска област
+    'no': Samarqand region
+    hy: Սամարղանդի շրջան
+    ka: სამარყანდის ოლქი
+    ml: സമർഖണ്ട് പ്രവിശ്യ
+    sr: Самаркандска област
+    sr_Latn: Samarkandska oblast
+  comments:
+  type: region
+SI:
+  name: Sirdaryo
+  code: SI
+  unofficial_names:
+  - Sirdare
+  - Syrdarja
+  - Syrdarya
+  geo:
+    latitude: 40.85
+    longitude: 68.666667
+    min_latitude: 40.8027001
+    min_longitude: 68.642063
+    max_latitude: 40.8751355
+    max_longitude: 68.6985825
+  translations:
+    en: Sirdaryo
+    ar: ولاية سرداريا
+    az: Sırdərya vilayəti
+    bg: Сърдаринска област
+    bn: সিড্রায়ো অঞ্চল
+    da: Sirdaryo Region
+    de: Provinz Sirdaryo
+    el: Σιρντάριο
+    es: Provincia de Sirdarín
+    et: Sirdaryo vilajett
+    eu: Sirdaryo probintzia
+    fa: استان سیردریا
+    fi: Sirdaryon alue
+    fr: province de Syr-Daria
+    gu: શિરદાર્યો પ્રદેશ
+    hi: सिरदरिया प्रान्त
+    id: Provinsi Sirdaryo
+    it: Regione di Sirdarya
+    ja: シルダリヤ州
+    kn: ಸಿರ್ಡೇರಿಯೋ ಪ್ರದೇಶ
+    ko: 시르다리야 주
+    lt: Syrdarjos vilajetas
+    mr: सीरदर्यो विलायती
+    ms: Wilayah Sirdaryo
+    nb: Sirdarya region
+    nl: Sirdaryo
+    pl: Wilajet syrdaryjski
+    pt: Sirdaryo
+    ro: Regiunea Sârdaria
+    ru: Сырдарьинская область
+    si: සර්දර්යෝ කලාපය
+    sv: Syr-Darja
+    ta: சீர்தரயோ பகுதி
+    te: సిర్డార్యో ప్రాంతం
+    th: ซีร์ดาริโอ
+    tk: Syrderýa
+    tr: Sirderya ili
+    uk: Сирдарʼїнська область
+    ur: سیر دریا صوبہ
+    vi: Sirdaryo
+    lv: Sirdarjas vilojats
+    ceb: Sirdaryo (lalawigan)
+    zh: 錫爾河州
+    ccp: "\U00011125\U00011128\U00011122\U00011134\U00011113\U00011122\U00011128\U00011103\U0001112E"
+    ky: Сырдарыя облусу
+    pa: ਸਿਰਦਾਰਿਓ ਸੂਬਾ
+    uz: Sirdaryo viloyati
+    mk: Сирдарјанска област
+    'no': Sirdarya region
+    ca: província de Sirdarió
+    hy: Սիրդարիայի մարզ
+    ka: სირდარიის ოლქი
+    kk: Сырдария облысы
+    ml: സിർദയോ പ്രവിശ്യ
+    sr: Сирдаринска област
+    sr_Latn: Sirdarinska oblast
+  comments:
+  type: region
+SU:
+  name: Surxondaryo
+  code: SU
+  unofficial_names:
+  - Surkhondar
+  geo:
+    latitude: 37.9409005
+    longitude: 67.57085359999999
+    min_latitude: 37.1843299
+    min_longitude: 66.51777609999999
+    max_latitude: 39.078876
+    max_longitude: 68.402641
+  translations:
+    en: Surxondaryo
+    ar: ولاية صرخنداريا
+    az: Surxandərya vilayəti
+    bg: Сурхандаринска област
+    bn: সাক্সোনদারিয়ো অঞ্চল
+    ca: Surjandarin
+    cs: Surchandarijský kraj
+    da: Surxondaryo Region
+    de: Provinz Surxondaryo
+    el: Επαρχία Σουρξοντάριο
+    es: Provincia de Surjandarín
+    et: Surxondaryo vilajett
+    fa: استان سرخان‌دریا
+    fi: Surxondaryon alue
+    fr: province de Sourkhan-Daria
+    gu: સર્કસોંડરયો પ્રાંત
+    he: מחוז סורח׳אן-דריא
+    hi: सुरख़ानदरिया प्रान्त
+    hy: Սուրխանդարյայի մարզ
+    id: Provinsi Surxondaryo
+    it: Regione di Surkhandarya
+    ja: スルハンダリヤ州
+    ka: სურხანდარიის ოლქი
+    kn: ಸರ್ಕ್ಸಾಂಡರಿಯೋ ಪ್ರದೇಶ
+    ko: 수르한다리야 주
+    lt: Surchandarjos vilajetas
+    mr: सुर्झोनदर्यो विलायती
+    ms: Wilayah Surxondaryo
+    nb: Surxondaryo region
+    nl: Surxondaryo
+    pl: Wilajet surchandaryjski
+    pt: Surxondaryo
+    ro: Regiunea Surhandaria
+    ru: Сурхандарьинская область
+    si: සර්කොන්ඩර්යෝ කලාපය
+    sv: Surchondarja
+    ta: சூர்ஸோன்றயோ பகுதி
+    te: సురక్సాండార్యో ప్రాంతం
+    th: เขตซูร์คอนดาริโอ
+    tk: Surhanderýa
+    tr: Surhanderya
+    uk: Сурхандарʼїнська область
+    ur: سرخان دریا صوبہ
+    vi: Surxondaryo
+    lv: Surhondarjas vilojats
+    ceb: Surxondaryo Viloyati
+    zh: 蘇爾漢河州
+    ccp: "\U00011125\U00011122\U00011134\U0001110E\U00011127\U0001111A\U00011134\U00011113\U00011122\U00011128\U00011103\U0001112E"
+    ky: Сурхандарыя облусу
+    pa: ਸੁਰਖਾਨਦਰਿਆ ਸੂਬਾ
+    uz: Surxondaryo viloyati
+    mk: Сурхандарјанска област
+    'no': Surxondaryo region
+    sr: Сурхандаринска област
+    sr_Latn: Surhandarinska oblast
+  comments:
+  type: region
+TK:
+  name: Toshkent City
+  code: TK
+  unofficial_names: Toshkent City
+  geo:
+    latitude: 41.266667
+    longitude: 69.216667
+    min_latitude: 41.166637
+    min_longitude: 69.1465116
+    max_latitude: 41.3985579
+    max_longitude: 69.41222189999999
+  translations:
+    en: Tashkent
+    af: Tasjkent
+    am: ታሽኬንት
+    ar: طشقند
+    az: Daşkənd
+    be: Ташкент
+    bg: Ташкент
+    bn: তাশখন্দ
+    ca: Taixkent
+    cs: Taškent
+    da: Tasjkent
+    de: Taschkent
+    el: Τασκένδη
+    es: Taskent
+    et: Toshkent
+    eu: Tashkent
+    fa: تاشکند
+    fi: Taškent
+    fr: Tachkent
+    gl: Tashkent
+    gu: તાશકેન્ટ
+    he: טשקנט
+    hi: ताशकन्द
+    hr: Taškent
+    hu: Taskent
+    hy: Տաշքենդ
+    id: Tashkent
+    is: Taskent
+    it: Tashkent
+    ja: タシュケント
+    ka: ტაშკენტი
+    kn: ತಾಷ್ಕೆಂಟ್
+    ko: 타슈켄트
+    lt: Taškentas
+    lv: Taškenta
+    ml: താഷ്കന്റ്
+    mn: Ташкент
+    mr: ताश्कंद
+    ms: Tashkent
+    nb: Tasjkent
+    ne: ट्यासकेन्ट
+    nl: Tasjkent
+    pl: Taszkent
+    ps: تاشکند
+    pt: Tashkent
+    ro: Tașkent
+    ru: Ташкент
+    si: ටෂ්කෙන්ට්
+    sk: Taškent
+    sl: Taškent
+    sr: Ташкент
+    sv: Tasjkent
+    sw: Tashkent
+    ta: தாஷ்கந்து
+    te: తాష్కెంట్
+    th: ทาชเคนต์
+    tk: Daşkent
+    tr: Taşkent
+    uk: Ташкент
+    ur: تاشقند
+    vi: Tashkent
+    cy: Tashkent
+    ceb: Toshkent Shahri
+    sr_Latn: Taškent
+    zh: 塔什干
+    yue_Hans: 塔什干
+    sq: Tashkenti
+    ccp: "\U00011111\U0001110C\U00011134\U00011107\U0001112C\U0001111A\U00011134\U00011111\U00011134"
+    ga: Tashkent
+    ky: Ташкен
+    pa: ਤਾਸ਼ਕੰਦ
+    kk: Ташкент
+    yue: 塔什干
+    yo: Tashkent
+    uz: Toshkent
+    bs: Taškent
+    mk: Ташкент
+    'no': Tasjkent
+    yo_BJ: Tashkent
+    my: တာ့ရှ်ကန့်မြို့
+    sd: تاشڪند
+  comments:
+  type: capital_city
+TO:
+  name: Toshkent
+  code: TO
+  unofficial_names:
+  - Taškent
+  - Toshkent
+  - Toşkent
+  - Toshkent
+  - Taschkent
+  - Tachkent
+  geo:
+    latitude: 41.266667
+    longitude: 69.216667
+    min_latitude: 41.166637
+    min_longitude: 69.1465116
+    max_latitude: 41.3985579
+    max_longitude: 69.41222189999999
+  translations:
+    en: Tashkent Province
+    ar: ولاية طشقند
+    az: Daşkənd vilayəti
+    be: Ташкенцкі вілает
+    bg: Ташкентска област
+    bn: তাসকেন্ট অঞ্চল
+    da: Tashkent Region
+    de: Provinz Taschkent
+    el: Τασκέντ
+    es: Provincia de Taskent
+    et: Toshkendi vilajett
+    eu: Toshkent probintzia
+    fa: استان تاشکند
+    fi: Taškentin alue
+    fr: province de Tachkent
+    gl: Provincia de Tashkent
+    gu: તાશ્કેંટ પ્રદેશ
+    hi: ताशकेंत प्रान्त
+    hu: Taskenti terület
+    id: Provinsi Toshkent
+    it: Regione di Tashkent
+    ja: タシュケント州
+    kn: ತಾಷ್ಕೆಂಟ್ ಪ್ರದೇಶ
+    ko: 타슈켄트 주
+    lt: Taškento vilajetas
+    mr: तोश्केंत विलायती
+    ms: Wilayah Toshkent
+    nb: Tashkent region
+    nl: Tasjkent²
+    pl: Wilajet taszkencki
+    pt: Tashkent²
+    ro: Regiunea Tașkent
+    ru: Ташкентская область
+    si: ටශ්කෙන්ට් කලාපය
+    sv: Tasjkent²
+    ta: தாஷ்கண்ட் பகுதி
+    te: టాష్కెంట్ ప్రాంతం
+    th: ทอชเคนต์
+    tk: Daşkent welaýaty
+    tr: Taşkent ili
+    uk: Ташкентська область
+    ur: تاشقند صوبہ
+    vi: Toshkent
+    lv: Taškentas vilojats
+    ceb: Toshkent Viloyati
+    zh: 塔什干州
+    ccp: "\U00011111\U0001110C\U00011134\U00011107\U0001112C\U0001111A\U00011134\U00011111\U00011134
+      \U0001111B\U00011133\U00011122\U0001112E\U0001111E\U00011128\U0001111A\U00011134\U0001110C\U00011134"
+    ky: Ташкент облусу
+    pa: ਤਾਸ਼ਕੇਂਤ ਸੂਬਾ
+    ca: Regió de Taixkent
+    uz: Toshkent viloyati
+    mk: Ташкентска област
+    'no': Tashkent region
+    he: מחוז טשקנט
+    ka: ტაშკენტის ოლქი
+    ml: താഷ്കെന്റ് പ്രവിശ്യ
+    sr: Ташкентска област
+    sr_Latn: Taškentska oblast
+  comments:
+  type: region
+XO:
+  name: Xorazm
+  code: XO
+  unofficial_names:
+  - Khorazm
+  geo:
+    latitude: 41.3565336
+    longitude: 60.8566686
+    min_latitude: 40.564991
+    min_longitude: 60.06019589999999
+    max_latitude: 42.004252
+    max_longitude: 62.35982399999999
+  translations:
+    en: Xorazm
+    ar: ولاية خوارزم
+    az: Xarəzm vilayəti
+    bg: Хорезъмска област
+    bn: জোরাম অঞ্চল
+    da: Xorazm Region
+    de: Provinz Xorazm
+    el: Ξοράζμ
+    es: Provincia de Corasmia
+    et: Xorazm
+    fa: استان خوارزم
+    fi: Xorazmin alue
+    fr: province de Khorezm
+    gl: Provincia de Corasmia
+    gu: ઝોરજ્મ પ્રદેશ
+    hi: ख़ोरज़्म प्रान्त
+    hy: Խորեզմի մարզ
+    id: Provinsi Xorazm
+    it: Regione di Khorezm
+    ja: ホラズム州
+    kn: ಝೊರಾಝಮ್ ಪ್ರದೇಶ
+    ko: 호레즘 주
+    lt: Chorezmo vilajetas
+    mr: झोराझ्म विलायती
+    ms: Wilayah Xorazm
+    nb: Xorazm region
+    nl: Xorazm
+    pl: Wilajet chorezmijski
+    pt: Khorazm
+    ru: Хорезмская область
+    si: ක්සොරාස්ම් කලාපය
+    sv: Khwarezm
+    ta: ஸோராஸ்ம் பகுதி
+    te: జోరాజమ్ ప్రాంతం
+    th: โซรัซ
+    tk: Horezm
+    tr: Harezm ili
+    uk: Хорезмська область
+    ur: خوارزم صوبہ
+    vi: Xorazm
+    lv: Horezmas vilojats
+    ceb: Xorazm Viloyati
+    zh: 花拉子模州
+    ccp: "\U0001110E\U0001112E\U00011122\U0001110C\U00011134\U0001111F\U00011134"
+    ky: Хорезм облусу
+    pa: ਖੋਰੇਜਮ ਸੂਬਾ
+    kk: Хорезм облысы
+    be: Харэзмская вобласць
+    uz: Xorazm viloyati
+    mk: Хорезмска област
+    'no': Xorazm region
+    ca: regió de Coràsmia
+    ka: ხორეზმის ოლქი
+    ml: ക്സൊരസ്മ് പ്രവിശ്യ
+    sr: Хорезмска област
+    sr_Latn: Horezmska oblast
+  comments:
+  type: region

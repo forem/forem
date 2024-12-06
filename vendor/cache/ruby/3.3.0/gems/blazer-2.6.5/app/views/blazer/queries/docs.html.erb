@@ -1,0 +1,137 @@
+<% blazer_title "Docs: #{@data_source.name}" %>
+
+<h1>Docs: <%= @data_source.name %></h1>
+
+<hr />
+
+<h2>Smart Variables</h2>
+
+<% if @smart_variables.any? %>
+  <p>Use these variable names to get a dropdown of values.</p>
+
+  <table class="table" style="max-width: 500px;">
+    <thead>
+      <tr>
+        <th>Variable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @smart_variables.each do |k, _| %>
+        <tr>
+          <td><code>{<%= k %>}</code></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p>Use <code>{start_time}</code> and <code>{end_time}</code> for a date range selector. End a variable name with <code>_at</code> for a date selector.</p>
+<% else %>
+  <p>None set - add them in <code>config/blazer.yml</code>.</p>
+<% end %>
+
+<h2>Linked Columns</h2>
+
+<% if @linked_columns.any? %>
+  <p>Use these column names to link results to other pages.</p>
+
+  <table class="table" style="max-width: 500px;">
+    <thead>
+      <tr>
+        <th style="width: 20%;">Name</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @linked_columns.each do |k, v| %>
+        <tr>
+          <td><%= k %></td>
+          <td><%= v %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p>Values that match the format of a URL will be linked automatically.</p>
+<% else %>
+  <p>None set - add them in <code>config/blazer.yml</code>.</p>
+<% end %>
+
+<h2>Smart Columns</h2>
+
+<% if @smart_columns.any? %>
+  <p>Use these column names to show additional data.</p>
+
+  <table class="table" style="max-width: 500px;">
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @smart_columns.each do |k, _| %>
+        <tr>
+          <td><%= k %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>None set - add them in <code>config/blazer.yml</code>.</p>
+<% end %>
+
+<h2>Charts</h2>
+
+<p>Use specific combinations of column types to generate charts.</p>
+
+<table class="table" style="max-width: 500px;">
+  <thead>
+    <tr>
+      <th style="width: 20%;">Chart</th>
+      <th>Column Types</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Line</td>
+      <td>2+ columns - timestamp, numeric(s)</td>
+    </tr>
+    <tr>
+      <td>Line</td>
+      <td>3 columns - timestamp, string, numeric</td>
+    </tr>
+    <tr>
+      <td>Column</td>
+      <td>2+ columns - string, numeric(s)</td>
+    </tr>
+    <tr>
+      <td>Column</td>
+      <td>3 columns - string, string, numeric</td>
+    </tr>
+    <tr>
+      <td>Scatter</td>
+      <td>2 columns - both numeric</td>
+    </tr>
+    <tr>
+      <td>Pie</td>
+      <td>2 columns - string, numeric - and last column named <code>pie</code></td>
+    </tr>
+    <tr>
+      <td>Map</td>
+      <td>
+        Named <code>latitude</code> and <code>longitude</code>, or <code>lat</code> and <code>lon</code>, or <code>lat</code> and <code>lng</code>
+        <% if !blazer_maps? %>
+          <br />
+          <strong>Needs configured</strong>
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Use the column name <code>target</code> to draw a line for goals.</p>
+
+<% if @data_source.supports_cohort_analysis? %>
+  <h2>Cohort Analysis</h2>
+
+  <p>Create a query with the comment <code>/* cohort analysis */</code>. The result should have columns named <code>user_id</code> and <code>conversion_time</code> and optionally <code>cohort_time</code>.</p>
+<% end %>

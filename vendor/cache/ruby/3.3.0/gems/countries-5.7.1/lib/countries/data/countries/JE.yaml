@@ -1,0 +1,48 @@
+---
+JE:
+  alpha2: JE
+  alpha3: JEY
+  continent: Europe
+  country_code: '44'
+  currency_code: GBP
+  distance_unit: KM
+  gec: JE
+  geo:
+    latitude: 49.214439
+    longitude: -2.13125
+    max_latitude: 49.26650009999999
+    max_longitude: -2.0013001
+    min_latitude: 49.1582
+    min_longitude: -2.2602001
+    bounds:
+      northeast:
+        lat: 49.26650009999999
+        lng: -2.0013001
+      southwest:
+        lat: 49.1582
+        lng: -2.2602001
+  international_prefix: ''
+  ioc:
+  iso_long_name: The Bailiwick of Jersey
+  iso_short_name: Jersey
+  languages_official:
+  - en
+  - fr
+  languages_spoken:
+  - en
+  - fr
+  national_destination_code_lengths: []
+  national_number_lengths: []
+  national_prefix: ''
+  nationality: Channel Islander
+  number: '832'
+  postal_code: true
+  postal_code_format: JE\d[\dA-Z]? ?\d[ABD-HJLN-UW-Z]{2}
+  region: Europe
+  start_of_week: monday
+  subregion: Northern Europe
+  un_locode: JE
+  unofficial_names:
+  - Jersey
+  - ジャージー
+  world_region: EMEA

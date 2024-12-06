@@ -1,0 +1,54 @@
+HTTP/1.1 200 OK
+Age: 13
+Cache-Control: max-age=120
+Content-Type: text/html
+Date: Mon, 06 Jan 2014 12:47:42 GMT
+Expires: Mon, 06 Jan 2014 12:49:28 GMT
+Server: Apache/2.2.14 (Ubuntu)
+Vary: Accept-Encoding
+Via: 1.1 varnish
+X-Powered-By: PHP/5.3.2-1ubuntu4.22
+X-Varnish: 1188792404 1188790413
+Content-Length: 40571
+Connection: keep-alive
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head>
+    <!-- meta name examples -->
+
+    <meta name="keywords"       content="one, two, three" />
+    <meta name="description"    content="the description" />
+    <meta name="author"         content="Joe Sample" />
+    <meta name="robots"         content="index,follow" />
+    <meta name="revisit"        content="15 days" />
+    <meta name="DC.date.issued" content="2011-09-15">
+
+    <!-- meta http-equiv examples -->
+
+    <meta http-equiv="Content-Type"       content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+
+    <!-- meta charset examples -->
+
+    <meta charset="UTF-8" />
+
+    <!-- meta property examples -->
+
+    <meta property="og:title" content="An OG title" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://example.com/meta-tags" />
+
+    <!-- meta properties can be repeated, like in this example from http://open.me -->
+
+    <meta property="og:image" content="http://example.com/rock.jpg" />
+    <meta property="og:image:width" content="300" />
+    <meta property="og:image:height" content="300" />
+    <meta property="og:image" content="http://example.com/rock2.jpg" />
+    <meta property="og:image" content="http://example.com/rock3.jpg" />
+    <meta property="og:image:height" content="1000" />
+  </head>
+  <body>
+    <p>A sample page with many types of meta tags</p>
+  </body>
+</html>

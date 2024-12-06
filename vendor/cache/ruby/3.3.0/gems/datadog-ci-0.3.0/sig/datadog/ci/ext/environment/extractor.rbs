@@ -1,0 +1,27 @@
+module Datadog
+  module CI
+    module Ext
+      module Environment
+        class Extractor
+          @env: Hash[String, String?]
+          @provider: Providers::Base
+          @tags: Hash[String, untyped]
+
+          def initialize: (Hash[String, String?] env, ?provider_klass: singleton(Providers::Base)?) -> void
+
+          def tags: () -> Hash[String, untyped]
+
+          private
+
+          attr_reader env: untyped
+
+          def normalize_git!: () -> void
+
+          def expand_workspace!: () -> void
+
+          def filter_sensitive_info: (String? url) -> String?
+        end
+      end
+    end
+  end
+end

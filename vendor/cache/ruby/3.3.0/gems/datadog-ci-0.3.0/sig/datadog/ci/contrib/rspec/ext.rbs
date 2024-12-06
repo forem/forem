@@ -1,0 +1,23 @@
+module Datadog
+  module CI
+    module Contrib
+      module RSpec
+        module Ext
+          APP: String
+
+          ENV_ENABLED: String
+
+          ENV_OPERATION_NAME: String
+
+          FRAMEWORK: String
+
+          OPERATION_NAME: String
+
+          SERVICE_NAME: String
+
+          TEST_TYPE: String
+        end
+      end
+    end
+  end
+end

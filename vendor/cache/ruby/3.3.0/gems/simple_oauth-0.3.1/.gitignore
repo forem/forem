@@ -1,0 +1,10 @@
+*.rbc
+.DS_Store
+.bundle
+.yardoc
+Gemfile.lock
+coverage
+doc
+measurement
+pkg
+rdoc

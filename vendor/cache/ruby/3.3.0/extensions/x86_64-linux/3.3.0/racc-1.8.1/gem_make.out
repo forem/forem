@@ -1,0 +1,18 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-imrop6 sitelibdir\=./.gem.20241205-149352-imrop6 clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-imrop6 sitelibdir\=./.gem.20241205-149352-imrop6
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-imrop6 sitelibdir\=./.gem.20241205-149352-imrop6 install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20241205-149352-imrop6/racc
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-imrop6 sitelibdir\=./.gem.20241205-149352-imrop6 clean

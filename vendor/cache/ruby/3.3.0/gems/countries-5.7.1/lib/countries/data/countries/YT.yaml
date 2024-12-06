@@ -1,0 +1,50 @@
+---
+YT:
+  alpha2: YT
+  alpha3: MYT
+  continent: Africa
+  country_code: '262'
+  currency_code: EUR
+  distance_unit: KM
+  eu_member: true
+  euvat_member: false
+  gec: MF
+  geo:
+    latitude: -12.8275
+    longitude: 45.166244
+    max_latitude: -12.5772665
+    max_longitude: 45.32014849999999
+    min_latitude: -13.0358332
+    min_longitude: 44.9914169
+    bounds:
+      northeast:
+        lat: -12.5772665
+        lng: 45.32014849999999
+      southwest:
+        lat: -13.0358332
+        lng: 44.9914169
+  international_prefix: '00'
+  ioc:
+  iso_long_name: The Department of Mayotte
+  iso_short_name: Mayotte
+  languages_official:
+  - fr
+  languages_spoken:
+  - fr
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  national_prefix: None
+  nationality: French
+  number: '175'
+  postal_code: true
+  postal_code_format: 976\d{2}
+  region: Africa
+  start_of_week: monday
+  subregion: Eastern Africa
+  un_locode: YT
+  unofficial_names:
+  - Mayotte
+  - マヨット
+  world_region: EMEA

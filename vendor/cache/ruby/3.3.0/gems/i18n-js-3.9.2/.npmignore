@@ -1,0 +1,27 @@
+# https://docs.npmjs.com/misc/developers#keeping-files-out-of-your-package
+
+# tests
+spec
+coverage
+
+# build tools
+.travis.yml
+
+# linters
+.jscsrc
+.jshintrc
+.eslintrc*
+
+# editor settings
+.idea
+.editorconfig
+
+# Ruby code
+app/assets/javascripts/i18n/
+gemfiles
+lib
+Gemfile*
+*.gemspec
+Rakefile
+Appraisals
+

@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
+$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
+
+require 'trollop'
+
+opts = Trollop::options do
+  opt :port, "Listening port", :type => :int, :default => 4999
+  opt :host, "Host to listen on", :type => :string, :default => '0.0.0.0'
+  opt :server, "Server to use", :type => :string, :default => 'thin'
+  opt :debug, "Request and response output", :default => true
+  opt :pid_path, "Location to put server pid file", :type => :string, :default => './stripe-mock-server.pid'
+end
+
+require 'stripe_mock'
+require 'stripe_mock/server'
+
+StripeMock::Server.start_new(opts)

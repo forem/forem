@@ -1,0 +1,16 @@
+module A {
+  const i: int := 56_78
+}
+
+method m(b: bool, s: string) {
+  var x: string;
+  var i: int;
+  if b then i := 1; else i := 2;
+  i := if b 1 else 2;
+  assert b;
+  assume b;
+  print s;
+  expect b;
+}
+
+function f(i: int): int { i + 1 }

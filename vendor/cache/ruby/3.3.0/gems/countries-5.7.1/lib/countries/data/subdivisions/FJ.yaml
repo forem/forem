@@ -1,0 +1,780 @@
+---
+'01':
+  name: Ba
+  code: '01'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    de: Ba (Provinz)
+    en: Ba
+    fr: province de Ba
+    hi: बा प्रांत्
+    it: Provincia di Ba
+    ja: バ州
+    ka: მბის პროვინცია
+    kn: ಬಾ ಪ್ರಾಂತ್ಯ
+    ko: 바 주
+    nb: Ba Province
+    nl: Ba
+    pl: Ba (prowincja)
+    pt: Ba (Fiji)
+    ru: Мба (провинция)
+    sv: Ba Province
+    ta: இம்பா மாகாணம்
+    vi: Ba (tỉnh)
+    zh: 巴省
+    ceb: Ba Province
+    ar: با
+    ccp: "\U0001111D"
+    'no': Ba Province
+    ca: Ba
+    es: Ba
+  comments:
+  type: province
+'02':
+  name: Bua
+  code: '02'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Bua
+    fr: province de Bua
+    hi: बुआ प्रन्त्
+    it: Provincia di Bua
+    ja: ブア州
+    kn: ಬುವಾ ಪ್ರಾಂತ್ಯ
+    ko: 부아 주
+    nl: Bua
+    pt: Bua
+    sv: Bua Province
+    ta: இம்புவா மாகாணம்
+    vi: Bua
+    ceb: Bua Province
+    ar: محافظة بوا
+    zh: 布阿省
+    ru: Мбуа
+    ccp: "\U0001111D\U00011131"
+    nb: Bua Province
+    'no': Bua Province
+    de: Bua (Provinz)
+    pl: Bua
+  comments:
+  type: province
+'03':
+  name: Cakaudrove
+  code: '03'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    ar: كاكاودروف
+    en: Cakaudrove
+    es: Cakaudrove
+    fr: Cakaudrove
+    hi: थकाउन्द्रोवे प्रान्त
+    it: Provincia di Cakaudrove
+    ja: ザカウドロベ州
+    ko: 다카운드로베 주
+    nb: Cakaudrove Province
+    nl: Cakaudrove
+    pt: Cakaudrove
+    sv: Thakaundrove Province
+    ta: தகாந்துரோவ் மாகாணம்
+    vi: Cakaudrove
+    ceb: Thakaundrove Province
+    zh: 卡考德罗韦省
+    ccp: "\U00011107\U0001112C\U00011107\U00011105\U0001112A\U00011113\U00011133\U00011122\U0001112E\U0001111B\U00011134"
+    'no': Cakaudrove Province
+    de: Cakaudrove
+    he: קקאודרווה
+    pl: Cakaudrove
+  comments:
+  type: province
+'04':
+  name: Kadavu
+  code: '04'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Kadavu
+    es: Kadavu
+    fr: province de Kadavu
+    hi: काडावऊ प्रान्त
+    it: Provincia di Kadavu
+    ja: カンダブ水路
+    kn: ಕಡವ ಪ್ರಾಂತ್ಯ
+    ko: 칸다부 주
+    nl: Kadavu
+    pt: Kadavu
+    ta: கன்டவு மாகாணம்
+    vi: Kadavu
+    zh: 坎達武省
+    ru: Кандаву
+    ccp: "\U00011107\U00011127\U00011113\U0001111E\U0001112A"
+    nb: Kadavu Province
+    'no': Kadavu Province
+    ca: Kadavu
+    de: Kadavu (Provinz)
+    pl: Kadavu (prowincja)
+  comments:
+  type: province
+'05':
+  name: Lau
+  code: '05'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Lau
+    fr: province de Lau
+    hi: लओओ प्रान्त्
+    it: Provincia di Lau
+    ja: ラウ州
+    kn: ಲಾವ್ ಪ್ರೋವಿನ್ಸ್
+    ko: 라우 주
+    nb: Lau Province
+    nl: Lau
+    sv: Lau Province
+    ta: லவு மாகாணம்
+    vi: Lau
+    ceb: Lau Province
+    zh: 劳省
+    ru: Лау
+    ccp: "\U00011123\U00011105\U0001112A"
+    'no': Lau Province
+    pl: Lau (prowincja)
+  comments:
+  type: province
+'06':
+  name: Lomaiviti
+  code: '06'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Lomaiviti
+    es: Lomaiviti
+    fr: province de Lomaiviti
+    hi: लोमाइविती प्रान्त
+    it: Provincia di Lomaiviti
+    ja: ロマイビティ州
+    kn: ಪ್ರಾಂತ್ಯ
+    ko: 로마이비치 주
+    nl: Lomaiviti
+    sv: Lomaiviti Province
+    ta: லோமாய்விட்டி மாகாணம்
+    vi: Lomaiviti
+    ceb: Lomaiviti Province
+    zh: 洛迈维提省
+    ru: Ломаивичи
+    ccp: "\U00011123\U0001112E\U0001111F\U0001112D\U0001111E\U00011128\U00011111\U00011128"
+    uk: Ломаївіті
+    nb: Lomaiviti Province
+    'no': Lomaiviti Province
+    pl: Lomaiviti
+  comments:
+  type: province
+'07':
+  name: Macuata
+  code: '07'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Macuata
+    es: Macuata
+    fr: province de Macuata
+    hi: मचुअत प्रन्त्
+    it: Provincia di Macuata
+    ja: マズアタ州
+    kn: ಮ್ಯಾಕುವಾಟಾ ಪ್ರಾಂತ್ಯ
+    ko: 마두아타 주
+    nl: Macuata
+    pt: Macuata
+    sv: Mathuata Province
+    ta: மதுவாட்டா மாகாணம்
+    vi: Macuata
+    ceb: Mathuata Province
+    zh: 馬庫阿塔省
+    ccp: "\U0001111F\U00011133\U00011120\U00011107\U00011131\U00011111"
+    nb: Macuata Province
+    'no': Macuata Province
+    de: Macuata
+    pl: Macuata
+  comments:
+  type: province
+'08':
+  name: Nadroga-Navosa
+  code: '08'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Nadroga-Navosa
+    es: Nadroga-Navosa
+    fr: province de Nadroga et de Navosa
+    hi: नदरोग़ा-नर्वोसा प्रोविंस
+    it: Provincia di Nadroga-Navosa
+    ja: ナドロガ・ナボサ州
+    ko: 난드로가나보사 주
+    nb: Nadroga-Navosa Province
+    nl: Nadroga-Navosa
+    pl: Nadroga-Navosa
+    pt: Nadroga-Navosa
+    sv: Nandronga and Navosa Province
+    ta: நண்டுரோங்கா நவோசா மாகாணம்
+    vi: Nadroga-Navosa
+    ceb: Nandronga and Navosa Province
+    zh: 那德羅加諾沃薩省
+    ru: Нандронга-Навоса (провинция)
+    ccp: "\U0001111A\U00011113\U00011133\U00011122\U0001112E\U00011109-\U0001111A\U0001111E\U0001112E\U00011125"
+    'no': Nadroga-Navosa Province
+    de: Nadroga-Navosa
+  comments:
+  type: province
+'09':
+  name: Naitasiri
+  code: '09'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Naitasiri
+    es: Naitasiri
+    fr: province de Naitasiri
+    hi: नाइतसिरि प्रन्त्
+    it: Provincia di Naitasiri
+    ja: ナイタシリ州
+    ka: ნაიტასირის პროვინცია
+    kn: ನಿಟಸರಿ ಪ್ರಾಂತ್ಯ
+    ko: 나이타시리 주
+    nl: Naitasiri
+    pt: Naitasiri
+    sv: Naitasiri Province
+    ta: நைடாசிரி மாகாணம்
+    vi: Naitasiri
+    ceb: Naitasiri Province
+    zh: 奈塔西里省
+    ccp: "\U0001111A\U0001112D\U00011111\U00011125\U00011128\U00011122\U00011128"
+    nb: Naitasiri Province
+    'no': Naitasiri Province
+    de: Naitasiri
+    pl: Naitasiri
+  comments:
+  type: province
+'10':
+  name: Namosi
+  code: '10'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Namosi
+    es: Namosi
+    fr: province de Namosi
+    hi: नमोसि प्रन्त्
+    it: Provincia di Namosi
+    ja: ナモシ州
+    kn: ನಮೋಸಿ ಪ್ರಾಂತ್ಯ
+    ko: 나모시 주
+    nl: Namosi
+    pt: Namosi
+    sv: Namosi Province
+    ta: நமோசி மாகாணம்
+    vi: Namosi
+    ceb: Namosi Province
+    zh: 納莫西省
+    ccp: "\U0001111A\U0001111F\U0001112E\U00011125\U00011128"
+    nb: Namosi Province
+    'no': Namosi Province
+    de: Namosi
+    pl: Namosi
+  comments:
+  type: province
+'11':
+  name: Ra
+  code: '11'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Ra
+    es: Ra
+    fr: province de Ra
+    hi: रा प्रान्त
+    it: Provincia di Ra
+    ja: ラ州
+    kn: ರಾ ಪ್ರಾಂತ್ಯ
+    ko: 라 주
+    nl: Ra
+    pl: Ra
+    pt: Ra
+    sv: Ra Province
+    ta: ரா மாகாணம்
+    vi: Ra
+    ceb: Ra Province
+    zh: 拉省
+    ru: Ра
+    ccp: "\U00011122"
+    nb: Ra Province
+    'no': Ra Province
+    de: Ra (Provinz)
+  comments:
+  type: province
+'12':
+  name: Rewa
+  code: '12'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Rewa
+    es: Rewa (Fiyi)
+    fr: province de Rewa
+    hi: रेव प्रन्त्
+    it: Provincia di Rewa
+    ja: レワ州
+    ka: რევის პროვინცია
+    kn: ರೇವಾ ಪ್ರಾಂತ್ಯ
+    ko: 레와 주
+    nb: Rewa Province
+    nl: Rewa
+    pt: Rewa
+    sv: Rewa Province
+    ta: ரெவா மாகாணம்
+    vi: Rewa
+    ceb: Rewa Province
+    zh: 雷瓦省
+    ccp: "\U00011122\U0001112C\U00011124"
+    'no': Rewa Province
+    de: Rewa
+    pl: Rewa (prowincja)
+  comments:
+  type: province
+'13':
+  name: Serua
+  code: '13'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    en: Serua
+    es: Serua
+    fr: province de Serua
+    hi: वफादार प्रान्त
+    it: Provincia di Serua
+    ja: セルア州
+    ka: სერუის პროვინცია
+    kn: ಸೆರುವಾ ಪ್ರಾಂತ್ಯ
+    ko: 세루아 주
+    nl: Serua
+    pt: Serua
+    ru: Серуа
+    sv: Serua Province
+    ta: செருவா மாகாணம்
+    vi: Serua
+    ceb: Serua Province
+    zh: 塞魯阿省
+    ccp: "\U00011125\U0001112C\U00011122\U0001112A\U00011120"
+    nb: Serua Province
+    'no': Serua Province
+    de: Serua (Fidschi)
+    pl: Serua
+  comments:
+  type: province
+'14':
+  name: Tailevu
+  code: '14'
+  unofficial_names:
+  geo:
+    latitude:
+    longitude:
+    min_latitude:
+    min_longitude:
+    max_latitude:
+    max_longitude:
+  translations:
+    da: Tailevu Province
+    en: Tailevu
+    es: Tailevu
+    fr: province de Tailevu
+    hi: ताळीव प्रांत्
+    it: Provincia di Tailevu
+    ja: タイレブ州
+    kn: ತೈಲೆವ್ ಪ್ರಾಂತ್ಯ
+    ko: 타일레부 주
+    nl: Tailevu
+    pt: Tailevu
+    sv: Tailevu Province
+    ta: தைலிவு மாகாணம்
+    vi: Tailevu
+    ceb: Tailevu Province
+    zh: 泰萊武省
+    ccp: "\U00011111\U0001112D\U00011123\U0001112C\U0001111E\U0001112A"
+    nb: Tailevu Province
+    'no': Tailevu Province
+    de: Tailevu
+    pl: Tailevu
+  comments:
+  type: province
+C:
+  name: Central
+  code: C
+  unofficial_names: Central
+  geo:
+    latitude: -17.9453123
+    longitude: 178.2461183
+    min_latitude: -18.423275
+    min_longitude: 177.772764
+    max_latitude: -17.376591
+    max_longitude: 178.772931
+  translations:
+    en: Central
+    ar: القسم المركزي
+    bn: সেন্ট্রাল ডিভিশন
+    da: Central Division
+    de: Central Division (Fidschi)
+    el: Σέντραλ Ντιβίζιον, Φίτζι
+    es: División Central (Fiyi)
+    fi: Central Division
+    fr: Division centrale (Fidji)
+    gl: División Central, Fidxi
+    gu: સેન્ટ્રલ ડિવિઝન
+    hi: केंद्रीय प्रभाग
+    id: Central Division
+    it: divisione Centrale
+    ja: 中央地域 (フィジー)
+    ka: ცენტრალური ოლქი
+    kn: ಕೇಂದ್ರ ವಿಭಾಗ
+    ko: 중부 구
+    lt: Centrinis Fidžio padalinys
+    mr: सेंट्रल डिव्हिजन
+    ms: Central Division
+    nb: Central
+    nl: Central
+    pl: Dystrykt Centralny (Fidżi)
+    pt: Divisão Central (Fiji)
+    ro: Diviziunea Centrală
+    ru: Центральный округ
+    si: මද්‍යම කලාපය
+    sv: Centrala divisionen
+    ta: சென்ட்ரல் டிவிசன்
+    te: సెంట్రల్ డివిజన్
+    th: แคว้นเลนินกราด
+    tr: Central Division
+    ur: سینٹرل ڈویژن
+    vi: Khu vực Trung tâm, Fiji
+    lv: Centrālais apgabals
+    ceb: Central Division
+    zh: 中央大区 (斐济)
+    ccp: "\U00011125\U0001112C\U0001111A\U00011134\U00011111\U00011133\U00011122\U00011123\U00011134"
+    uk: Центральний округ
+    ca: Divisió Central
+    'no': Central
+  comments:
+  type: division
+E:
+  name: Eastern
+  code: E
+  unofficial_names: Eastern
+  geo:
+    latitude: -17.688972
+    longitude: 178.8070886
+    min_latitude: -20.6694303
+    min_longitude: 177.9588489
+    max_latitude: -17.0019299
+    max_longitude: -178.3928847
+  translations:
+    en: Eastern
+    ar: القسم الشرقي، فيجي
+    bn: ইস্টার্ন ডিভিশন
+    da: Eastern Division
+    de: Eastern Division (Fidschi)
+    el: Ίστερν Ντιβίζιον, Φίτζι
+    es: División Este
+    fi: Itäinen alue
+    fr: Division orientale
+    gl: División Oriental, Fidxi
+    gu: ઇસ્ટર્ન ડિવિઝન
+    hi: पूर्वी मंडल, फिजी
+    id: Divisi Timur, Fiji
+    it: divisione Orientale
+    ja: 東部地域 (フィジー)
+    ka: აღმოსავლეთის ოლქი
+    kn: ಪೂರ್ವ ವಿಭಾಗ
+    ko: 동부 구
+    lt: Rytinis Fidžio padalinys
+    mr: ईस्टर्न डिव्हिजन
+    ms: Eastern Division
+    nb: Eastern
+    nl: Eastern
+    pl: Dystrykt Wschodni
+    pt: Divisão do Leste
+    ru: Восточный округ
+    si: නැගෙනහිර බෙදුම
+    sv: Östra divisionen
+    ta: கிழக்கு டிவிசன்
+    te: తూర్పు డివిజన్
+    th: อีสเตอร์ ดิวิชั่น
+    tr: Eastern Division
+    ur: یاستیرن ڈویژن
+    vi: Khu vực Đông, Fiji
+    lv: Austrumu apgabals
+    ceb: Eastern Division
+    zh: 东部大区
+    ccp: "\U0001111B\U0001112A\U00011107\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    uk: Східний округ
+    ca: Divisió Est
+    'no': Eastern
+    ro: Diviziunea Orientală
+  comments:
+  type: division
+N:
+  name: Northern
+  code: N
+  unofficial_names: Northern
+  geo:
+    latitude: -16.6268225
+    longitude: 179.0179332
+    min_latitude: -17.1142062
+    min_longitude: 178.2716609
+    max_latitude: -15.7159274
+    max_longitude: -179.1542306
+  translations:
+    en: Northern
+    ar: الشعبة الشمالية
+    bn: নর্দান ডিভিশন
+    da: Northern Division
+    de: Northern Division
+    el: Βόρειο Τμήμα, Φίτζι
+    es: División Norte
+    fi: Northern Division
+    fr: Division septentrionale
+    gl: División Norte
+    gu: નધર્ન ડિવિજન
+    hi: उत्तरी मंडल
+    id: Divisi Utara, Fiji
+    it: divisione Nord
+    ja: 北部地域 (フィジー)
+    ka: ჩრდილოეთის ოლქი
+    kn: ಉತ್ತರ ವಿಭಾಗ
+    ko: 북부 구
+    lt: Šiaurinis Fidžio padalinys
+    mr: उत्तर डिव्हिजन
+    ms: Northern Division
+    nb: Northern
+    nl: Northern
+    pl: Dystrykt Północny
+    pt: Divisão do Norte
+    ru: Северный округ
+    si: උතුරු කලාපය
+    sv: Norra divisionen
+    ta: வடக்கு டிவிசன்
+    te: ఉత్తరా డివిజన్
+    th: นอร์ทเทิร์น ดีพาทเม้น
+    tr: Northern Division
+    ur: ناردرن ڈویژن
+    vi: Khu vực Bắc
+    lv: Ziemeļu apgabals
+    ceb: Northern Division (dibisyon)
+    zh: 北部大区
+    ccp: "\U00011105\U0001112A\U00011116\U00011133\U00011126\U00011127\U00011122\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    uk: Північний округ
+    ca: Divisió Nord
+    'no': Northern
+    ro: Diviziunea de Nord
+  comments:
+  type: division
+R:
+  name: Rotuma
+  code: R
+  unofficial_names: Rotuma
+  geo:
+    latitude: -12.5025069
+    longitude: 177.0724164
+    min_latitude: -12.5226892
+    min_longitude: 177.0109157
+    max_latitude: -12.4795352
+    max_longitude: 177.1373037
+  translations:
+    en: Rotuma
+    ar: روتوما
+    be: Востраў Ратума
+    bn: রোতূমা
+    ca: Rotuma
+    cs: Rotuma
+    da: Rotuma
+    de: Rotuma
+    el: Ροτούμα
+    es: Rotuma
+    eu: Rotuma
+    fa: روتوما
+    fi: Rotuma
+    fr: Rotuma
+    gl: Rotuma
+    gu: રોટુમા
+    he: רוטומה
+    hi: रोटुमा
+    hy: Ռոտումա
+    id: Rotuma
+    is: Rotuma
+    it: Rotuma
+    ja: ロツマ島
+    ka: როტუმა
+    kn: ರೊಟುಮಾ
+    ko: 로투마 섬
+    lt: Rotuma
+    mr: रोटुमा
+    ms: Rotuma
+    nb: Rotuma
+    nl: Rotuma
+    pl: Rotuma
+    pt: Rotuma
+    ru: Ротума
+    si: රෝටුමා
+    sr: Ротума
+    sv: Rotuma
+    ta: ரொட்டுமா
+    te: రోటుమా
+    th: โรตูมา
+    tr: Rotuma
+    uk: Ротума
+    ur: روتوما
+    vi: Rotuma
+    lv: Rotuma
+    ceb: Rotuma Island
+    sr_Latn: Rotuma
+    zh: 罗图马岛
+    ccp: "\U00011122\U00011127\U00011111\U00011128\U00011105\U0001112A\U0001111F"
+    yo: Rotuma
+    mk: Ротума
+    bg: Ротума
+    'no': Rotuma
+    yo_BJ: Rotuma
+    az: Rotuma
+  comments:
+  type: dependency
+W:
+  name: Western
+  code: W
+  unofficial_names: Western
+  geo:
+    latitude: -17.7510845
+    longitude: 177.7763333
+    min_latitude: -18.5983401
+    min_longitude: 176.921122
+    max_latitude: -16.6962956
+    max_longitude: 178.454681
+  translations:
+    en: Western
+    ar: القسم الغربي
+    bn: ওয়েস্টার্ন ডিভিশন
+    da: Western Division
+    de: Western Division
+    el: Γουέστερν Ντιβίζιον, Φίτζι
+    es: División Oeste
+    fi: Western Division
+    fr: Division occidentale
+    gl: División Occidental
+    gu: વેસ્ટર્ન ડિવિઝન
+    hi: पश्चिमी मंडल
+    id: Divisi Barat, Fiji
+    it: divisione Occidentale
+    ja: 西部地域 (フィジー)
+    ka: დასავლეთის ოლქი
+    kn: ಪಶ್ಚಿಮ ವಿಭಾಗ
+    ko: 서부 구
+    lt: Vakarinis Fidžio padalinys
+    mr: वेस्टर्न डिव्हिजन
+    ms: Western Division
+    nb: Western
+    nl: Western
+    pl: Dystrykt Zachodni
+    pt: Divisão do Oeste
+    ru: Западный округ
+    si: බටහිර කලාපය
+    sv: Västra divisionen
+    ta: மேற்கு டிவிசன்
+    te: పశ్చిమ డివిజన్
+    th: เวสเทิร์น ดิวิชัน
+    tr: Western Division
+    ur: ویسٹرن ڈویژن
+    vi: Khu vực Tây
+    lv: Rietumu apgabals
+    ceb: Western Division (dibisyon sa Fiji)
+    zh: 西部大区
+    ccp: "\U0001111B\U00011127\U0001110F\U00011128\U0001111F\U00011134\U0001111F\U0001112C\U00011107\U00011134\U00011108\U0001112C"
+    uk: Західний округ
+    ca: Divisió Oest
+    'no': Western
+    ro: Diviziunea Occidentală
+  comments:
+  type: division

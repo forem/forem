@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'pathname'
+ROOT_DIR = Pathname.new(__FILE__).dirname.parent
+Kernel::load ROOT_DIR.join('lib/rouge.rb')
+Kernel::load ROOT_DIR.join('lib/rouge/cli.rb')
+Signal.trap('PIPE', 'SYSTEM_DEFAULT') if Signal.list.include? 'PIPE'
+
+begin
+  Rouge::CLI.parse(ARGV).run
+rescue Rouge::CLI::Error => e
+  puts e.message
+  exit e.status
+rescue Interrupt
+  $stderr.puts "\nrouge: interrupted"
+  exit 2
+end

@@ -1,0 +1,18 @@
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/bindex-0.8.1/ext/skiptrace
+/home/organicelectronics/.rbenv/versions/3.3.0/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j6vu6r sitelibdir\=./.gem.20241205-149352-j6vu6r clean
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j6vu6r sitelibdir\=./.gem.20241205-149352-j6vu6r
+compiling cruby.c
+linking shared-object skiptrace/internal/cruby.so
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j6vu6r sitelibdir\=./.gem.20241205-149352-j6vu6r install
+/usr/bin/install -c -m 0755 cruby.so ./.gem.20241205-149352-j6vu6r/skiptrace/internal
+
+current directory: /home/organicelectronics/forem/vendor/cache/ruby/3.3.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20241205-149352-j6vu6r sitelibdir\=./.gem.20241205-149352-j6vu6r clean

@@ -1,0 +1,20 @@
+require: rubocop-rubycw
+AllCops:
+  TargetRubyVersion: 2.7
+  DisabledByDefault: true
+  Exclude:
+    - 'vendor/bundle/**/*'
+Rubycw/Rubycw:
+  Enabled: true
+  Exclude:
+    - 'test/**/*_test.rb'
+
+Lint/DuplicateMethods:
+  Enabled: true
+  Include:
+    - 'test/**/*_test.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Include:
+    - 'lib/**/*.rb'

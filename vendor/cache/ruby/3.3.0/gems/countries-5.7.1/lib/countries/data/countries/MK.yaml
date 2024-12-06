@@ -1,0 +1,61 @@
+---
+MK:
+  address_format: |-
+    {{recipient}}
+    {{street}}
+    {{city}} {{postalcode}}
+    {{country}}
+  alpha2: MK
+  alpha3: MKD
+  continent: Europe
+  country_code: '389'
+  currency_code: MKD
+  distance_unit: KM
+  gec: MK
+  geo:
+    latitude: 41.608635
+    longitude: 21.745275
+    max_latitude: 42.373646
+    max_longitude: 23.0340441
+    min_latitude: 40.8537826
+    min_longitude: 20.452423
+    bounds:
+      northeast:
+        lat: 42.373646
+        lng: 23.0340441
+      southwest:
+        lat: 40.8537826
+        lng: 20.452423
+  international_prefix: '00'
+  ioc: MKD
+  iso_long_name: The Republic of North Macedonia
+  iso_short_name: North Macedonia
+  languages_official:
+  - mk
+  languages_spoken:
+  - mk
+  national_destination_code_lengths:
+  - 2
+  national_number_lengths:
+  - 7
+  - 8
+  national_prefix: '0'
+  nationality: Macedonian
+  number: '807'
+  postal_code: true
+  postal_code_format: "\\d{4}"
+  region: Europe
+  start_of_week: monday
+  subregion: Southern Europe
+  un_locode: MK
+  unofficial_names:
+  - Macedonia
+  - Mazedonien
+  - Macédoine
+  - F.Y.R.O.M (Macedonia)
+  - マケドニア旧ユーゴスラビア共和国
+  - Macedonië [FYROM]
+  - Macedonia (The Former Yugoslav Republic of)
+  - North Macedonia
+  - Macedonia (FYROM)
+  world_region: EMEA

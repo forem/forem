@@ -1,0 +1,54 @@
+<header class="row">
+  <div class="col-sm-5">
+    <h3>
+    <%= t('Locks') %>
+    </h3>
+  </div>
+  <form action="<%= root_path %>locks" class="form form-inline" method="get">
+    <%= csrf_tag %>
+    <input name="filter" class="form-control" type="text" value="<%= @filter %>" />
+    <button class="btn btn-default" type="submit">
+    <%= t('Filter') %>
+    </button>
+  </form>
+  <% if @locks.any? && @total_size > @count %>
+  <div class="col-sm-4">
+    <%= erb unique_template(:_paging), locals: { url: "#{root_path}locks" } %>
+  </div>
+  <% end %>
+</header>
+<% if @locks.any? %>
+<div class="table_container">
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th><%= t('Delete') %></th>
+        <th><%= t('Digest') %></th>
+        <th><%= t('Lock') %></th>
+        <th><%= t('Locks') %></th>
+        <th><%= t('Since') %></th>
+      </tr>
+    </thead>
+    <% @locks.each do |lock| %>
+    <tbody>
+      <tr class="lock-row">
+        <td>
+          <form action="<%= root_path %>locks/<%= lock.key %>/delete" method="get">
+            <%= csrf_tag %>
+            <input name="lock" value="<%= h lock.key %>" type="hidden" />
+            <input class="btn btn-danger btn-xs" type="submit" name="delete" value="<%= t('Delete') %>" data-confirm="<%= t('AreYouSure') %>" />
+          </form>
+        </td>
+        <td><a href="<%= root_path %>locks/<%= lock.key %>"><%= lock.key %></a></td>
+        <td><%= lock.info["lock"] %></td>
+        <td><%= lock.locked.count %></td>
+        <td><%= safe_relative_time(lock.created_at) %></td>
+      </tr>
+    </tbody>
+    <% end %>
+</table>
+<form action="<%= root_path %>locks/delete_all" method="get">
+  <input class="btn btn-danger btn-xs" type="submit" name="delete_all" value="<%= t('DeleteAll') %>" data-confirm="<%= t('AreYouSure') %>" />
+</form>
+</div>
+<% end %>

@@ -1,0 +1,17 @@
+en:
+  ancestry:
+    unknown_depth_option: "Unknown depth option: %{scope_name}."
+    invalid_orphan_strategy: "Invalid orphan strategy, valid ones are :rootify, :adopt, :restrict and :destroy."
+    invalid_ancestry_column: "Invalid format for ancestry column of node %{node_id}: %{ancestry_column}."
+    reference_nonexistent_node: "Reference to nonexistent node in node %{node_id}: %{ancestor_id}."
+    conflicting_parent_id: "Conflicting parent id found in node %{node_id}: %{parent_id} for node %{node_id} while expecting %{expected}"
+    cannot_rebuild_depth_cache: "Cannot rebuild depth cache for model without depth caching."
+
+    option_must_be_hash: "Options for has_ancestry must be in a hash."
+    unknown_option: "Unknown option for has_ancestry: %{key} => %{value}."
+    unknown_format: "Unknown ancestry format: %{value}."
+    named_scope_depth_cache: "Named scope '%{scope_name}' is only available when depth caching is enabled."
+
+    exclude_self: "%{class_name} cannot be a descendant of itself."
+    cannot_delete_descendants: "Cannot delete record because it has descendants."
+    no_child_for_new_record: "No child ancestry for new record. Save record before performing tree operations."
