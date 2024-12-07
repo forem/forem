@@ -197,6 +197,7 @@ RSpec.describe Billboard do
       username_ad = create(:billboard, body_markdown: "Hello! {% embed #{url}} %}")
       expect(username_ad.processed_html).to include("/#{user.username}")
       expect(username_ad.processed_html).to include("ltag__user__link")
+      # reverse allow unified embed
     end
   end
 

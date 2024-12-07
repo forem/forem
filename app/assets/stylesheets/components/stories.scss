@@ -15,7 +15,29 @@
   #main-status-form-controls {
     line-height: 24px;
   }
+  .ltag__link__content {
+    line-height: 1.2em;
+    h2 {
+      line-height: 1.08em;
+    }
+  }
 }
+
+.feed-dropdown {
+  font-size: var(--fs-base);
+  padding: var(--su-4);
+  hr {
+    border: 0.5px solid var(--divider);
+    margin: 8px;
+  }
+  a {
+    display: block !important;
+    &:hover {
+      color: var(--accent-brand);
+    }  
+  }
+}
+
 #article_title {
   height: auto;
   resize: none;
@@ -227,6 +249,19 @@
     background: var(--base-60);
     margin-right: var(--su-1);
     color: var(--base-inverted);
+  }
+
+  &__contentpreview {
+    padding: var(--su-4) 0;
+    .ltag__link {
+      margin: 0;
+    }
+    .ltag__link .ltag__link__content h2 {
+      font-size: calc(1.15em + 0.09vw)
+    }
+    .ltag__link .ltag__link__content .ltag__link__tag {
+      font-size: 0.75em;
+    }
   }
 
   &__bottom {

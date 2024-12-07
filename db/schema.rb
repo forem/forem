@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -34,6 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
   create_table "ahoy_messages", force: :cascade do |t|
     t.datetime "clicked_at", precision: nil
     t.text "content"
+    t.bigint "email_id"
     t.bigint "feedback_message_id"
     t.string "mailer"
     t.datetime "sent_at", precision: nil
@@ -47,6 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
     t.string "utm_medium"
     t.string "utm_source"
     t.string "utm_term"
+    t.index ["email_id"], name: "index_ahoy_messages_on_email_id"
     t.index ["feedback_message_id"], name: "index_ahoy_messages_on_feedback_message_id"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
@@ -1355,6 +1357,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_143557) do
     t.integer "score", default: 0
     t.string "secret"
     t.integer "sign_in_count", default: 0, null: false
+    t.string "sign_in_token"
+    t.datetime "sign_in_token_sent_at"
     t.string "signup_cta_variant"
     t.integer "spent_credits_count", default: 0, null: false
     t.string "stripe_id_code"

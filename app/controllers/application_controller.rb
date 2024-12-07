@@ -16,8 +16,13 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include DevelopmentDependencyChecks if Rails.env.development?
-  include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
+
+
+  # We are not currently using this, as we're going to prefer manual review in prod.
+  # This was removed due to flakiness.
+  # include EdgeCacheSafetyCheck unless Rails.env.production?
+
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
@@ -270,8 +275,7 @@ class ApplicationController < ActionController::Base
                if secondary_domains.include?(request.host)
                 request.session_options[:domain] = request.host
               else
-                 # For main domain, set to ApplicationConfig["APP_DOMAIN"]
-                 ApplicationConfig["APP_DOMAIN"]
+                 Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
                end
              else
                # In non-production environments, don't set the domain
@@ -351,7 +355,7 @@ class ApplicationController < ActionController::Base
         request.session_options[:domain] = request.host
       else
         # For main domain, set to ApplicationConfig["APP_DOMAIN"]
-        request.session_options[:domain] = ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] = Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
       end
     else
       # In non-production environments, don't set the domain

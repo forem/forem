@@ -47,12 +47,13 @@ module Articles
       # @param seed [Number] used in the `setseed` Postgresql function to set the randomization
       #        seed.  This parameter allows the caller (and debugger) to use the same randomization
       #        order in the queries; the hope being that this might help in any debugging.
-      def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil, seed: nil)
+      def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil, seed: nil, type_of: "discover")
         @user = user
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
         @config = config
+        @type_of = type_of
         @seed = randomizer_seed_for(seed: seed, user: user)
         oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
@@ -283,9 +284,14 @@ module Articles
         where_clauses = "articles.published = true"
         where_clauses += " AND articles.published_at < :now"
         where_clauses += " AND articles.score >= 0"
-        where_clauses += " AND ((articles.published_at > :oldest_published_at)
-          OR (articles.published_at > :conditional_lookback
-          AND articles.last_comment_at > :conditional_comment_timeframe))"
+        if @type_of == "discover"
+          where_clauses += " AND ((articles.published_at > :oldest_published_at)
+            OR (articles.published_at > :conditional_lookback
+            AND articles.last_comment_at > :conditional_comment_timeframe))"
+        elsif @user
+          user_ids = @user.cached_following_users_ids + @user.cached_following_organizations_ids + [0] # Adding one that will never be reached so we can have a valid SQL statement
+          where_clauses += " AND articles.user_id IN (#{user_ids.join(',')})"
+        end
         where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.compact.empty?
         where_clauses += " AND articles.featured = true" if only_featured
         where_clauses += " AND articles.main_image IS NOT NULL" if must_have_main_image

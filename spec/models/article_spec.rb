@@ -186,6 +186,81 @@ RSpec.describe Article do
       end
     end
 
+    describe "#restrict_attributes_with_status_types" do
+      context "when the article is persisted and body_markdown hasn't changed" do
+        it "does not run validation" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.title = "Updated Title"
+          expect(article).to be_valid
+        end
+    
+        it "runs validation if body_markdown has changed" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.body_markdown = "New body content"
+          expect(article).not_to be_valid
+          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+        end
+      end
+    
+      context "when type_of is not 'status'" do
+        it "does not add an error" do
+          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content", main_image: nil, user: user)
+          expect(article).to be_valid
+        end
+      end
+    
+      context "when body_url is present" do
+        it "does not add an error even if other attributes are present" do
+          stub_request(:any, /example.com/) # Stubbing the HTTP request
+    
+          article = build(
+            :article,
+            type_of: "status",
+            body_url: "http://example.com",
+            body_markdown: "Content",
+            main_image: "http://image.com/img.png",
+            collection_id: 1,
+            user: user,
+          )
+          expect(article).to be_valid
+        end
+      end
+    
+      context "when body_url is blank" do
+        context "and body_markdown is present" do
+          it "adds an error" do
+            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil, user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and main_image is present" do
+          it "adds an error" do
+            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png", user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and collection_id is present" do
+          it "adds an error" do
+            collection = create(:collection)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, collection_id: collection.id, user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and body_markdown, main_image, and collection_id are blank" do
+          it "does not add an error" do
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+            expect(article).to be_valid
+          end
+        end
+      end
+    end  
+
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
         article.main_image_background_hex_color = "hello"
@@ -303,6 +378,67 @@ RSpec.describe Article do
 
         expect(test_article).not_to be_valid
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
+      end
+    end
+
+    describe "before_validation :set_markdown_from_body_url" do
+      context "when body_url is present" do
+        it "sets body_markdown to '{% embed body_url %}'" do
+          url = article_url(article)
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+          article = build(:article, body_url: url, body_markdown: nil)
+          article.valid?
+          expect(article.body_markdown).to eq("{% embed #{url} %}")
+        end
+
+        it "overwrites existing body_markdown with embedded body_url" do
+          url = article_url(article)
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+          article = build(:article, body_url: url, body_markdown: "Existing content")
+          article.valid?
+          expect(article.body_markdown).to eq("{% embed #{url} %}")
+        end
+      end
+
+      context "when body_url is not present" do
+        it "does not change body_markdown" do
+          article = build(:article, body_url: nil, body_markdown: "Existing content")
+          article.valid?
+          expect(article.body_markdown).to eq("Existing content")
+        end
+      end
+    end
+
+    # Tests for replace_blank_title_for_status functionality
+    describe "before_validation :replace_blank_title_for_status" do
+      context "when title is blank and type_of is 'status'" do
+        it "sets title to '[Boost]'" do
+          article = build(:article, title: nil, type_of: "status")
+          article.valid?
+          expect(article.title).to eq("[Boost]")
+        end
+
+        it "sets title to '[Boost]' when title is an empty string" do
+          article = build(:article, title: "", type_of: "status")
+          article.valid?
+          expect(article.title).to eq("[Boost]")
+        end
+      end
+
+      context "when title is present and type_of is 'status'" do
+        it "does not change the title" do
+          article = build(:article, title: "Some title", type_of: "status")
+          article.valid?
+          expect(article.title).to eq("Some title")
+        end
+      end
+
+      context "when title is blank and type_of is not 'status'" do
+        it "does not change the title" do
+          article = build(:article, title: nil, type_of: "full_post")
+          article.valid?
+          expect(article.title).to be_nil
+        end
       end
     end
 

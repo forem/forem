@@ -44,6 +44,9 @@ fr:
       jump_to_comments:
         aria_label: Jump to Comments
         label: Jump to Comments
+      boost:
+        label: Boost
+        aria_label: Boost
       lock:
         meta:
           title: Confirm Discussion Lock

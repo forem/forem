@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
+import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
@@ -27,8 +28,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     //  * @returns {Promise} A promise containing the JSON response for the feed data.
     //  */
     async function fetchFeedItems(timeFrame = '', page = 1) {
+      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const promises = [
-        fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -397,6 +399,12 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 };
 
 function initializeMainStatusForm() {
+
+  initializeDropdown({
+    triggerElementId: 'feed-dropdown-trigger',
+    dropdownContentId: 'feed-dropdown-menu',
+  });  
+
   let lastClickedElement = null;
   document.addEventListener("mousedown", (event) => {
     lastClickedElement = event.target;
@@ -406,7 +414,7 @@ function initializeMainStatusForm() {
     return;
   }
 
-  let waitingForCSRF = setInterval(() => {
+  const waitingForCSRF = setInterval(() => {
     if (window.csrfToken !== undefined) {
       mainForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
       clearInterval(waitingForCSRF);
@@ -414,7 +422,7 @@ function initializeMainStatusForm() {
   }, 25);
 
   document.getElementById('article_title').onfocus = function (e) {
-    let textarea = e.target;
+    const textarea = e.target;
     textarea.classList.add('element-focused')
     document.getElementById('main-status-form-controls').classList.add('flex');
     document.getElementById('main-status-form-controls').classList.remove('hidden');
@@ -434,23 +442,6 @@ function initializeMainStatusForm() {
   }
   // Prevent return element from creating linebreak
 
-  const ENTER_KEY_CODE = 13;
-  document.getElementById('article_title').onkeydown = function (e) {
-    if (window.Forem.Runtime.hasOSSpecificModifier(e) && e.keyCode === ENTER_KEY_CODE) {
-      document.getElementById('main-status-form').submit();
-    }
-    else if (e.keyCode === ENTER_KEY_CODE) {
-      e.preventDefault();
-    }
-
-  }
-
-  document.getElementById('article_title').onkeyup = function (e) {
-    let textarea = e.target;
-    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
-    console.log('article_title onkeyup');
-    document.getElementById('main-status-form-char-count').innerText = document.getElementById('article_title').value.length;
-  }
 }
 
 Feed.defaultProps = {
@@ -471,4 +462,3 @@ if (window && window.InstantClick) {
 }
 
 initializeMainStatusForm();
-

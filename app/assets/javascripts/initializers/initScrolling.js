@@ -433,8 +433,10 @@ function paginate(tag, params, requiresApproval) {
   // Below is a some code to be able to toggle on the stories endpoint.
   // And if we do, we need to change the URL and adjust some misalignment with the API
   // And the nextpage incrementing.
-  let useStoriesFeed = homeEl.dataset.feed === 'base-feed' && homeEl.dataset.feedContextType === 'home' && homeEl.dataset.feedUseStoriesEndpoint === 'true';
-  let url = useStoriesFeed ? `stories/feed/?page=${nextPage + 2}` : `/search/feed_content?${searchParams.toString()}`;
+  let useStoriesFeed = (homeEl.dataset.feed === 'base-feed' || homeEl.dataset.feed === 'latest') && homeEl.dataset.feedContextType === 'home' && homeEl.dataset.feedUseStoriesEndpoint === 'true';
+  let feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+  let latestString = homeEl.dataset.feed === 'latest' ? '/latest' : '';
+  let url = useStoriesFeed ? `/stories/feed${latestString}/?page=${nextPage + 2}&type_of=${feedTypeOf}` : `/search/feed_content?${searchParams.toString()}`;
   fetch(url, {
     method: 'GET',
     headers: {

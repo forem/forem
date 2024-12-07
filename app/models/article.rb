@@ -32,6 +32,7 @@ class Article < ApplicationRecord
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series
+  attr_accessor :body_url
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -236,8 +237,10 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
+  before_validation :set_markdown_from_body_url, if: :body_url?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
+  before_validation :replace_blank_title_for_status
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
   before_save :set_cached_entities
@@ -375,7 +378,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -656,6 +659,10 @@ class Article < ApplicationRecord
     followers.uniq.compact
   end
 
+  def body_url?
+    body_url.present?  # Returns true if body_url is not nil or an empty string
+  end  
+
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
     # true if unpublished, or spammy,
@@ -696,8 +703,20 @@ class Article < ApplicationRecord
     result = content_renderer.process_article
     self.update_column(:processed_html, result.processed_html)
   end
+  
+  def body_preview
+    return unless type_of == "status"
+
+    processed_html_final
+  end
 
   private
+
+  def set_markdown_from_body_url
+    return unless body_url.present?
+
+    self.body_markdown = "{% embed #{body_url} %}"
+  end
 
   def collection_cleanup
     # Should only check to cleanup if Article was removed from collection
@@ -776,9 +795,17 @@ class Article < ApplicationRecord
     end
   end
 
+  def replace_blank_title_for_status
+    # Get content within H2 tags via regex
+    self.title = "[Boost]" if title.blank? && type_of == "status"
+  end
+
   def restrict_attributes_with_status_types
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted? && !body_markdown_changed?
+
     # For now, there is no body allowed for status types
-    if type_of == "status" && (body_markdown.present? || main_image.present? || collection_id.present?)
+    if type_of == "status" && body_url.blank? && (body_markdown.present? || main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end

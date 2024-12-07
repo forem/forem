@@ -45,77 +45,13 @@
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
       <% if user_signed_in? %>
-        <form id="main-status-form" action="/articles" accept-charset="UTF-8" data-remote="true" method="post">
-          <input name="utf8" type="hidden" value="✓" autocomplete="off">
-          <input type="hidden" name="authenticity_token" value="NOTHING" autocomplete="off">
-          <div class="crayons-card p-2">
-            <textarea class="crayons-textfield element-focused"
-              placeholder="<%= t("views.stories.status_placeholder") %>" aria-label="<%= t("views.stories.status_placeholder") %>" maxlength="256" rows="1" name="article[title]" id="article_title" style="height: 40px;"></textarea>
-            <input value="" autocomplete="off" type="hidden" name="article[body_markdown]" id="article_body_markdown">
-            <input value="status" autocomplete="off" type="hidden" name="article[type_of]" id="article_type_of">
-            <input value="1" autocomplete="off" type="hidden" name="article[published]" id="article_published">
-            <div id="main-status-form-controls" class="justify-between items-center pt-2 hidden">
-              <div class="fs-xs color-base-60">
-                <%= t("views.stories.status_hint_html") %>
-              </div>
-              <div class="flex items-center">
-                <div class="fs-s color-base-60 pr-2 align-right pr-1" style="min-width:65px">
-                  <span id="main-status-form-char-count">0</span>/256
-                </div>
-                <input type="submit" name="commit" value="<%= t("views.stories.submit") %>" class="crayons-btn crayons-btn--primary py-1" data-disable-with="Post">
-              </div>
-            </div>
-          </div>
-        </form>
+        <%= render "articles/quickie_form", expanded: false %>
       <% end %>
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">
         <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
-        <nav class="-mx-3 m:mx-0 s:flex items-center justify-between" aria-label="<%= t("views.stories.sort.aria_label") %>">
-          <ul class="crayons-navigation crayons-navigation--horizontal">
-            <li>
-              <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path.presence || "/" %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
-                <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("views.stories.sort.relevant") %></a>
-            </li>
-            <li>
-              <a data-text="<%= t("views.stories.sort.latest") %>" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
-                <%= t("views.stories.sort.latest") %>
-              </a>
-            </li>
-            <li>
-              <a data-text="<%= t("views.stories.sort.top") %>" href="<%= list_path %>/top/week"
-                class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>"
-                <%= timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-                  <%= t("views.stories.sort.top") %>
-              </a>
-            </li>
-          </ul>
-          <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
-            <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
-              <li>
-                <a data-text="<%= t("views.stories.sort.week") %>" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
-                  <%= t("views.stories.sort.week") %>
-                </a>
-              </li>
-              <li>
-                <a data-text="<%= t("views.stories.sort.month") %>" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
-                  <%= t("views.stories.sort.month") %>
-                </a>
-              </li>
-              <li>
-                <a data-text="<%= t("views.stories.sort.year") %>" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
-                  <%= t("views.stories.sort.year") %>
-                </a>
-              </li>
-              <li>
-                <a data-text="<%= t("views.stories.sort.infinity") %>" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-                  <%= t("views.stories.sort.infinity") %>
-                </a>
-              </li>
-            </ul>
-          <% end %>
-        </nav>
+        <%= render "articles/feed_nav" %>
       </header>
 
       <% if user_signed_in? %>

@@ -40,7 +40,7 @@ RSpec.describe Articles::Feeds do
       it { is_expected.to be_a ActiveSupport::TimeWithZone }
     end
 
-    context "when the user has page views" do
+    context "when the user has recent page views" do
       let(:user) { instance_double(User) }
       let(:page_viewed_at) { Time.current }
       let(:expected_result) do
@@ -59,6 +59,20 @@ RSpec.describe Articles::Feeds do
       end
 
       it { is_expected.to eq(expected_result) }
+    end
+
+    context "when the user has very old page views" do
+      let(:user) { instance_double(User) }
+      let(:page_viewed_at) { 35.days.ago } # Very old page view
+      let(:expected_result) do
+        18.days.ago
+      end
+
+      before do
+        allow(user).to receive_message_chain(:page_views, :second_to_last, :created_at).and_return(page_viewed_at)
+      end
+
+      it { is_expected.to be_within(24.hours).of(expected_result) }
     end
   end
 end

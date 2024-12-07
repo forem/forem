@@ -25,8 +25,13 @@ module Stories
     end
 
     def assign_feed_stories
+      params[:type_of] = "discover" if params[:type_of].blank?
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
+                elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+                  latest_following_feed
+                elsif params[:type_of] == "following" && user_signed_in?
+                  relevant_following_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_feed
                 elsif user_signed_in?
@@ -39,7 +44,7 @@ module Stories
     end
 
     def signed_in_base_feed
-      feed = if Settings::UserExperience.feed_strategy == "basic"
+      feed = if Settings::UserExperience.feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              else
                Articles::Feeds.feed_for(
@@ -48,6 +53,7 @@ module Stories
                  page: @page,
                  tag: params[:tag],
                  number_of_articles: 35,
+                 type_of: params[:type_of] || "discover",
                )
              end
       Datadog::Tracing.trace("feed.query",
@@ -74,6 +80,7 @@ module Stories
                  page: @page,
                  tag: params[:tag],
                  number_of_articles: 25,
+                 type_of: "discover",
                )
              end
       Datadog::Tracing.trace("feed.query",
@@ -95,6 +102,48 @@ module Stories
 
     def latest_feed
       Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
+    end
+
+    def latest_following_feed
+      Article.where(
+          "user_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'User'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          ) OR organization_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'Organization'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          )",
+          user_id: current_user.id
+        ).published
+        .where("score > -10")
+        .order("published_at DESC")
+        .page(@page)
+        .per(25)
+    end
+
+    def relevant_following_feed
+      Article.where(
+          "user_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'User'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          ) OR organization_id IN (
+            SELECT followable_id FROM follows
+            WHERE followable_type = 'Organization'
+              AND follower_type = 'User'
+              AND follower_id = :user_id
+          )",
+          user_id: current_user.id
+        ).published
+        .where("score > -10")
+        .order("hotness_score DESC")
+        .page(@page)
+        .per(25)
     end
   end
 end

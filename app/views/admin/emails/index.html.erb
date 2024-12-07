@@ -33,7 +33,7 @@
     </thead>
     <tbody class="crayons-card">
       <% @emails.each do |email| %>
-        <tr data-row-id="<%= email.id %>">
+        <tr data-row-id="<%= email.id %>" style="background: <%= email.bg_color %> !important">
           <td><%= email.type_of %> <%= "(#{email.drip_day})" if email.type_of == "onboarding_drip" %></td>
           <td><%= link_to email.subject, admin_email_path(email) %></td>
           <td><%= email.created_at %></td>
