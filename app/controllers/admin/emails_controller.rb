@@ -34,11 +34,17 @@ module Admin
 
     def update
       @email = Email.find(params[:id])
-      if @email.update(email_params)
+      test_email_string = email_params[:test_email_addresses]
+      if test_email_string.present?
+        @email.deliver_to_test_emails(test_email_string)
+        flash[:success] = "Test email delivering to #{test_email_string}"
+        redirect_to admin_email_path(@email.id)
+      elsif @email.update(email_params)
         flash[:success] = I18n.t("admin.emails_controller.updated")
         redirect_to admin_email_path(@email.id)
       else
-        flash[:danger] = email.errors_as_sentence
+        @audience_segments = AudienceSegment.all
+        flash[:danger] = @email.errors_as_sentence
         render :edit
       end
     end
@@ -46,7 +52,7 @@ module Admin
     private
 
     def email_params
-      params.permit(:subject, :body, :audience_segment_id, :type_of, :drip_day, :status)
+      params.require(:email).permit(:subject, :body, :audience_segment_id, :type_of, :drip_day, :status, :test_email_addresses)
     end
   end
 end
