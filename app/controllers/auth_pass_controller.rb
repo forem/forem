@@ -51,8 +51,24 @@ class AuthPassController < ApplicationController
     if payload && payload["user_id"]
       user = User.find_by(id: payload["user_id"])
       if user
-        # Authenticate the user
+        # Sign the user in
         session[:user_id] = user.id
+    
+        # Set remember_created_at and remember_token
+        user.remember_me!
+        # Get Devise’s default cookie values
+        base_values = Devise::Controllers::Rememberable.cookie_values
+        # Dynamically adjust the domain to match the request domain
+        custom_domain = request.domain
+        adjusted_values = base_values.merge!(domain: custom_domain)
+        # Set the actual remember cookie values as Devise does
+        cookie_values = adjusted_values.merge!(
+          value: user.class.serialize_into_cookie(user),
+          expires: user.remember_expires_at
+        )
+        # Set the cookie with the dynamically adjusted domain
+        cookies.signed["remember_user_token"] = cookie_values
+  
         render json: { success: true, user: { id: user.id, email: user.email } }
       else
         render json: { success: false, error: "User not found" }, status: :unauthorized
@@ -61,7 +77,6 @@ class AuthPassController < ApplicationController
       render json: { success: false, error: "Invalid or expired token" }, status: :unauthorized
     end
   end
-
   private
 
   def use_iframe_session_store
