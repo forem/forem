@@ -6,8 +6,8 @@ module Devise
       # We need to use Settings::General.app_domain instead of default Rails config on boot
       def remember_cookie_values(resource)
         secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
-        domain = if request && secondary_domains.include?(request.domain)
-                   request.domain
+        domain = if request && secondary_domains.include?(request.host)
+                   request.host
                  else
                    Settings::General.app_domain
                  end
