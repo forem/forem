@@ -1,8 +1,8 @@
 # spec/requests/admin/emails_controller_spec.rb
 
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe "/admin/content_manager/emails" do
+RSpec.describe "/admin/emails" do
   let(:admin_user) { create(:user, :admin) }
   let(:audience_segment) { create(:audience_segment) }
 
@@ -23,7 +23,7 @@ RSpec.describe "/admin/content_manager/emails" do
   describe "GET /admin/emails/new" do
     it "renders the new template with a form" do
       get new_admin_email_path
-      expect(response.body).to include('name="subject"', 'name="body"', 'name="audience_segment_id"')
+      expect(response.body).to include('name="email[subject]"', 'name="email[body]"', 'name="email[audience_segment_id]"')
     end
   end
 
@@ -31,9 +31,11 @@ RSpec.describe "/admin/content_manager/emails" do
     context "with valid parameters" do
       it "creates a new email and redirects to its page" do
         valid_attributes = {
-          subject: "Test Subject",
-          body: "Test Body",
-          audience_segment_id: audience_segment.id
+          email: {
+            subject: "Test Subject",
+            body: "Test Body",
+            audience_segment_id: audience_segment.id
+          }
         }
         expect {
           post admin_emails_path, params: valid_attributes
@@ -47,9 +49,11 @@ RSpec.describe "/admin/content_manager/emails" do
     context "with invalid parameters" do
       it "does not create a new email and re-renders the new template" do
         invalid_attributes = {
-          subject: "",
-          body: "",
-          audience_segment_id: nil
+          email: {
+            subject: "",
+            body: "",
+            audience_segment_id: nil
+          }
         }
         expect {
           post admin_emails_path, params: invalid_attributes
@@ -83,6 +87,72 @@ RSpec.describe "/admin/content_manager/emails" do
       # Optionally, check that the raw subject and body still contain the merge tags
       expect(response.body).to include CGI.escapeHTML(email.subject)
       expect(response.body).to include CGI.escapeHTML(email.body)
+    end
+  end
+
+  describe "PATCH /admin/emails/:id" do
+    let!(:email) { create(:email, subject: "Old Subject", body: "Old Body") }
+
+    context "with valid parameters" do
+      let(:valid_attributes) do
+        {
+          email: {
+            subject: "Updated Subject",
+            body: "Updated Body"
+          }
+        }
+      end
+
+      it "updates the email and redirects to its page" do
+        patch admin_email_path(email), params: valid_attributes
+        expect(response).to redirect_to(admin_email_path(email))
+        follow_redirect!
+        expect(response.body).to include("Updated Subject", "Updated Body")
+        expect(flash[:success]).to eq(I18n.t("admin.emails_controller.updated"))
+        email.reload
+        expect(email.subject).to eq("Updated Subject")
+        expect(email.body).to eq("Updated Body")
+      end
+    end
+
+    context "with invalid parameters" do
+      let(:invalid_attributes) do
+        {
+          email: {
+            subject: "",
+            body: ""
+          }
+        }
+      end
+
+      it "does not update the email and re-renders the edit template" do
+        patch admin_email_path(email), params: invalid_attributes
+        expect(response.body).to include(">Subject can&#39;t be blank")
+        expect(flash[:danger]).to be_present
+        email.reload
+        expect(email.subject).to eq("Old Subject")
+        expect(email.body).to eq("Old Body")
+      end
+    end
+
+    context "with test_email_addresses provided" do
+      let(:valid_attributes_with_test) do
+        {
+          email: {
+            subject: "New Subject",
+            body: "New Body",
+            test_email_addresses: "test@example.com,another@example.com"
+          }
+        }
+      end
+
+      it "calls deliver_to_test_emails" do
+        expect_any_instance_of(Email).to receive(:deliver_to_test_emails).with("test@example.com,another@example.com")
+        patch admin_email_path(email), params: valid_attributes_with_test
+        expect(response).to redirect_to(admin_email_path(email))
+        follow_redirect!
+        expect(flash[:success]).to eq("Test email delivering to test@example.com,another@example.com")
+      end
     end
   end
 end

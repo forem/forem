@@ -12,6 +12,8 @@ class Email < ApplicationRecord
 
   BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
+  attr_accessor :test_email_addresses
+
   def self.replace_merge_tags(content, user)
     return content unless user
   
@@ -52,6 +54,17 @@ class Email < ApplicationRecord
     when "onboarding_drip"
       "Onboarding"
     end
+  end
+
+  def deliver_to_test_emails(addresses_string)
+    addresses_string ||= test_email_addresses
+    return if addresses_string.blank?
+
+    email_array = addresses_string.gsub(/\s+/, "").split(",")
+    users_batch = User.where(email: email_array)
+    return if users_batch.empty?
+
+    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), subject, body, type_of, id)
   end
 
   def deliver_to_users

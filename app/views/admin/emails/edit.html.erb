@@ -5,8 +5,8 @@
   </div>
 <% end %>
 <div class="crayons-card p-6">
-  <%= form_for([:admin, @email], url: admin_email_path(@email), method: :patch) do %>
-    <%= render "form" %>
+  <%= form_with(model: [:admin, @email], url: admin_email_path(@email), method: :patch, local: true) do |form| %>
+    <%= render "form", form: form %>
     <%= submit_tag "Update Email", class: "c-btn c-btn--primary" %>
   <% end %>
 </div>

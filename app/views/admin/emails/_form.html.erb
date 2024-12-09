@@ -1,34 +1,33 @@
 <div class="grid l:grid-cols-2 gap-6 mb-4">
     <div class="crayons-field">
     <div class="crayons-field">
-      <%= label_tag :type_of, "Type:", class: "crayons-field__label" %>
-      <%= select_tag :type_of, options_for_select(Email.type_ofs.keys, selected: @email.type_of), class: "crayons-textfield", autocomplete: "off" %>
+      <%= form.label :type_of, "Type:", class: "crayons-field__label" %>
+      <%= form.select :type_of, options_for_select(Email.type_ofs.keys, selected: @email.type_of), {}, { class: "crayons-textfield", autocomplete: "off" } %>
     </div>
 
     <div class="crayons-field">
-      <%= label_tag :audience_segment_id, "Audience Segment:", class: "crayons-field__label" %>
-      <%= select_tag :audience_segment_id, options_for_select([["Entire list", nil]] + @audience_segments.map { |s| [s.name || s.type_of, s.id]}), class: "crayons-textfield", autocomplete: "off" %>
+      <%= form.label :audience_segment_id, "Audience Segment:", class: "crayons-field__label" %>
+      <%= form.select :audience_segment_id, options_for_select([["Entire list", nil]] + @audience_segments.map { |s| [s.name || s.type_of, s.id]}), {}, { class: "crayons-textfield", autocomplete: "off" }  %>
     </div>
 
     <div class="crayons-field">
-      <%= label_tag :subject, "Subject:", class: "crayons-field__label" %>
-      <%= text_field_tag :subject, @email.subject, class: "crayons-textfield", autocomplete: "off" %>
+      <%= form.label :subject, "Subject:", class: "crayons-field__label" %>
+      <%= form.text_field :subject, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
-      <%= label_tag :drip_day, "Drip Day (onboarding drip only):", class: "crayons-field__label" %>
-      <%= number_field_tag :drip_day, @email.drip_day, class: "crayons-textfield", autocomplete: "off" %>
-    </div>
-
-    <%# status select %>
-    <div class="crayons-field">
-      <%= label_tag :status, "Status:", class: "crayons-field__label" %>
-      <%= select_tag :status, options_for_select(Email.statuses.keys, selected: @email.status), class: "crayons-textfield", autocomplete: "off" %>
+      <%= form.label :drip_day, "Drip Day (onboarding drip only):", class: "crayons-field__label" %>
+      <%= form.number_field :drip_day, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
-      <%= label_tag :body, "Body Content:", class: "crayons-field__label" %>
-      <%= text_area_tag :body, @email.body, size: "100x5", class: "crayons-textfield" %>
+      <%= form.label :status, "Status:", class: "crayons-field__label" %>
+      <%= form.select :status, options_for_select(Email.statuses.keys, selected: @email.status), {}, { class: "crayons-textfield", autocomplete: "off" } %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :body, "Body Content:", class: "crayons-field__label" %>
+      <%= form.text_area :body, size: "100x5", class: "crayons-textfield" %>
     </div>
   </div>
 

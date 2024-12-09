@@ -150,4 +150,60 @@ RSpec.describe Email, type: :model do
       end
     end
   end
+
+  describe "#deliver_to_test_emails" do
+    let(:email) { create(:email, subject: "Test Subject", body: "Test Body", type_of: "newsletter") }
+
+    before do
+      allow(Emails::BatchCustomSendWorker).to receive(:perform_async).and_return(true)
+    end
+
+    context "when a list of addresses is provided" do
+      let!(:user_1) { create(:user, email: "test1@example.com") }
+      let!(:user_2) { create(:user, email: "test2@example.com") }
+
+      it "enqueues a job with the matching users" do
+        addresses_string = "test1@example.com, test2@example.com"
+        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+          [user_1.id, user_2.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id
+        )
+        email.deliver_to_test_emails(addresses_string)
+      end
+    end
+
+    context "when no addresses are passed in but test_email_addresses is set" do
+      let!(:user_1) { create(:user, email: "tester@example.com") }
+
+      it "falls back to using test_email_addresses and enqueues a job" do
+        email.test_email_addresses = "tester@example.com"
+        expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
+          [user_1.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id
+        )
+        email.deliver_to_test_emails(nil)
+      end
+    end
+
+    context "when the provided addresses do not match any user" do
+      it "does not enqueue any jobs" do
+        addresses_string = "nonexistent@example.com"
+        expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
+        email.deliver_to_test_emails(addresses_string)
+      end
+    end
+
+    context "when the addresses are blank" do
+      it "does not enqueue any jobs" do
+        expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
+        email.deliver_to_test_emails("")
+      end
+    end
+  end
 end

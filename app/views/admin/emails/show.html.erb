@@ -18,3 +18,16 @@
     <%= @email.body %>
   </pre>
 </div>
+
+<div class="crayons-card p-6 mb-4">
+  <h2 class="crayons-title mb-4">Send test email</h2>
+  <%= form_with(model: [:admin, @email], local: true) do |f| %>
+    <div class="crayons-field">
+      <%= f.label :test_email_addresses, class: "crayons-field__label" %>
+      <%= f.text_field :test_email_addresses, class: "crayons-textfield", placeholder: "email@address.com, email2@other.com" %>
+    </div>
+    <div class="crayons-field mt-2">
+      <%= f.submit "Send Test Email", class: "crayons-btn crayons-btn--primary" %>
+    </div>
+  <% end %>
+</div>
