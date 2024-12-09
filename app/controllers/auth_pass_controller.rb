@@ -59,7 +59,7 @@ class AuthPassController < ApplicationController
         # Get Devise’s default cookie values
         base_values = Devise::Controllers::Rememberable.cookie_values
         # Dynamically adjust the domain to match the request domain
-        custom_domain = request.domain
+        custom_domain = request.host
         adjusted_values = base_values.merge!(domain: custom_domain)
         # Set the actual remember cookie values as Devise does
         cookie_values = adjusted_values.merge!(
