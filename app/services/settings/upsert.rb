@@ -13,7 +13,7 @@ module Settings
       @settings = settings
       @settings_class = settings_class
       @errors = []
-      @subforem_id = RequestStore.store[:subforem_id].to_i
+      @subforem_id = RequestStore.store[:subforem_id]
     end
 
     def call
