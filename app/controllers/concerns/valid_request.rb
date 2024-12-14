@@ -11,6 +11,7 @@ module ValidRequest
     return if Rails.env.test?
 
     if (referer = request.referer).present?
+      Rails.logger.info "Referer: #{referer}, URL: #{URL.url}"
       referer.start_with?(URL.url)
     else
       origin = request.origin
