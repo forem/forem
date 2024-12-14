@@ -19,15 +19,15 @@ class SidebarsController < ApplicationController
     languages = current_user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
     order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC") # Determined via field test
-    @active_discussions = Article.published
+    @active_discussions = Article.published.from_subforem
       .where("published_at > ?", 1.week.ago)
       .where("comments_count > ?", 0)
       .with_at_least_home_feed_minimum_score
       .cached_tagged_with_any(tag_names)
       .where(language: languages)
-      .or(Article.featured.published.where("published_at > ?", 1.week.ago)
+      .or(Article.featured.published.from_subforem.where("published_at > ?", 1.week.ago)
         .with_at_least_home_feed_minimum_score)
-      .or(Article.where(id: cached_recent_pageview_article_ids).published
+      .or(Article.where(id: cached_recent_pageview_article_ids).published.from_subforem
         .where("published_at > ?", 1.week.ago)
         .where("comments_count > ?", 1)
           .with_at_least_home_feed_minimum_score)

@@ -44,7 +44,7 @@ module Articles
     end
 
     def published_articles_with_users_and_organizations
-      Article.published
+      Article.published.from_subforem
         .includes([{ user: :profile }, :organization])
         .where("score >= ?", Settings::UserExperience.index_minimum_score)
         .order(hotness_score: :desc)

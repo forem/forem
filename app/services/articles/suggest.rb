@@ -9,7 +9,7 @@ module Articles
     def initialize(article, max: MAX_DEFAULT)
       @article = article
       @max = max
-      @total_articles_count = Article.published.estimated_count
+      @total_articles_count = Article.published.from_subforem.estimated_count
     end
 
     def call

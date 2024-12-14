@@ -49,11 +49,11 @@
     <% end %>
   <% end %>
 
-  <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}-#{@user.articles.published.size}", expires_in: 10.days do %>
+  <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}-#{@user.articles.published.from_subforem.size}", expires_in: 10.days do %>
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
         <%= crayons_icon_tag(:post, class: "mr-3 color-base-50", title: t("views.users.side.post.icon")) %>
-        <%= t "views.users.side.post.text", count: @user.articles.published.size %>
+        <%= t "views.users.side.post.text", count: @user.articles.published.from_subforem.size %>
       </div>
       <div class="flex items-center mb-4">
         <%= crayons_icon_tag(:comment, class: "mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>

@@ -6,6 +6,7 @@ module Articles
         articles = ::Articles::Feeds::Tag.call(tag)
 
         articles
+          .published.from_subforem
           .where("published_at > ?", ::Timeframe.datetime(timeframe))
           .includes(:distinct_reaction_categories)
           .where("score > ?", minimum_score)

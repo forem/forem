@@ -16,18 +16,20 @@ module URL
 
   private_class_method :has_site_configs?
 
-  def self.domain
-    if database_available?
+  def self.domain(subforem = nil)
+    if subforem
+      subforem.domain
+    elsif database_available?
       Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
     end
   end
 
-  def self.url(uri = nil)
-    base_url = "#{protocol}#{domain}"
+  def self.url(uri = nil, subforem = nil)
+    base_url = "#{protocol}#{domain(subforem)}"
+    base_url = base_url + ":3000" if Rails.env.development? && !base_url.include?(":3000")
     return base_url unless uri
-
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
 
@@ -35,7 +37,7 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    url(article.path)
+    url(article.path, article.subforem)
   end
 
   # Creates a comment URL

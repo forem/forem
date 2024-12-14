@@ -7,6 +7,7 @@ module Articles
         @page = [page, 1].max
         @tag = tag
         @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: @user)
+        @subforem_id = RequestStore.store[:subforem_id].to_i
       end
 
       def default_home_feed(**_kwargs)
@@ -17,6 +18,8 @@ module Articles
           .offset((@page - 1) * @number_of_articles)
           .limited_column_select.includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
+          .from_subforem(@subforem_id)
+
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))

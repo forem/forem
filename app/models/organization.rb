@@ -140,7 +140,7 @@ class Organization < ApplicationRecord
 
   def generate_social_images
     change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.size.positive?
+    return unless change && articles.published.from_subforem.size.positive?
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
   end

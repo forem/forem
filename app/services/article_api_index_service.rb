@@ -50,13 +50,13 @@ class ArticleApiIndexService
           end
 
     if (user = User.includes(:profile).find_by(username: username))
-      user.articles.published
+      user.articles.published.from_subforem
         .includes(:organization)
         .order(published_at: :desc)
         .page(page)
         .per(per_page || num)
     elsif (organization = Organization.find_by(slug: username))
-      organization.articles.published
+      organization.articles.published.from_subforem
         .includes(user: :profile)
         .order(published_at: :desc)
         .page(page)
