@@ -11,7 +11,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_default_id
     Rails.cache.fetch('subforem_default_id', expires_in: 12.hours) do
-      Subforem.first&.id.to_i
+      Subforem.first&.id
     end
   end
 end
