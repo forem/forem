@@ -37,7 +37,8 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    url(article.path, article.subforem)
+    subforem = article.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+    url(article.path, subforem)
   end
 
   # Creates a comment URL
