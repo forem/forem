@@ -17,7 +17,7 @@ class CommentsController < ApplicationController
     @podcast = Podcast.find_by(slug: params[:username])
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
-    redirect_if_different_subforem
+    redirect_if_different_subforem if @root_comment
 
     if @root_comment
       # 404 for all low-quality for not signed in
@@ -355,7 +355,10 @@ class CommentsController < ApplicationController
   end
 
   def redirect_if_different_subforem
-    if should_redirect_to_subforem?(@root_comment.commentable)
+    commentable = @root_comment.commentable
+    return unless commentable.present? && commentable.class.name == "Article"
+
+    if should_redirect_to_subforem?(commentable)
       redirect_to URL.comment(@root_comment), allow_other_host: true, status: :moved_permanently
     end
   end
