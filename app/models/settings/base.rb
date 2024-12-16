@@ -159,7 +159,7 @@ module Settings
       end
 
       def value_of(var_name, subforem_id = nil)
-        subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id])
+        subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
         unless table_exists?
           Rails.logger.warn("'#{table_name}' does not exist, '#{name}.#{var_name}' will return the default value.")
           return

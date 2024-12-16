@@ -9,10 +9,6 @@ module ValidRequest
     # Not sure why, but once we work it out, we can delete this method.
     # We are at least secure for now.
     return if Rails.env.test?
-    log_string = "Referer: #{request&.referer}, URL: #{URL.url}, origin: #{request&.origin}, base_url: #{request&.base_url}"
-    Rails.logger.info log_string
-    p log_string
-    p request.host
 
     if (referer = request.referer).present?
       subforem = Subforem.find_by(domain: request.host)
