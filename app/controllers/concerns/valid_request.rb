@@ -9,7 +9,9 @@ module ValidRequest
     # Not sure why, but once we work it out, we can delete this method.
     # We are at least secure for now.
     return if Rails.env.test?
-    Rails.logger.info "Referer: #{request&.referer}, URL: #{URL.url}, origin: #{request&.origin}, base_url: #{request&.base_url}"
+    log_string = "Referer: #{request&.referer}, URL: #{URL.url}, origin: #{request&.origin}, base_url: #{request&.base_url}"
+    Rails.logger.info log_string
+    p log_string
 
     if (referer = request.referer).present?
       referer.start_with?(URL.url)
