@@ -45,7 +45,11 @@ module URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
-    subforem = comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+    subforem =  if comment.commentable.class.name == "Article"
+                  comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+                else
+                  Subforem.find_by(id: RequestStore.store[:subforem_id])
+                end
     url(comment.path, subforem)
   end
 

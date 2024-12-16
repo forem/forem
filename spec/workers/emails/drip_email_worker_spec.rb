@@ -28,13 +28,25 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       @user_day_1_in_window = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
       @user_day_1_out_of_window = create(:user, registered_at: ((1 * 24) + 2).hours.ago)
 
+
       # Users for drip_day 2
       @user_day_2_in_window = create(:user, registered_at: ((2 * 24) + 0.5).hours.ago)
       @user_day_2_out_of_window = create(:user, registered_at: ((2 * 24) + 2).hours.ago)
 
+      # Email settings
+      @user_day_1_in_window.notification_setting.email_newsletter = true
+      @user_day_1_in_window.notification_setting.save
+      @user_day_1_out_of_window.notification_setting.email_newsletter = true
+      @user_day_1_out_of_window.notification_setting.save
+      @user_day_2_in_window.notification_setting.email_newsletter = true
+      @user_day_2_in_window.notification_setting.save
+      @user_day_2_out_of_window.notification_setting.email_newsletter = true
+      @user_day_2_out_of_window.notification_setting.save      
+
       # User who received an email in the last 12 hours
       @user_recent_email = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
       create(:email_message, user: @user_recent_email, sent_at: 11.hours.ago)
+
     end
 
     it 'sends emails to users for drip days with email templates' do
@@ -102,7 +114,7 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
     it "does not send email to user who is unsubscribed to user.notification_setting.email_newsletter" do
       user = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
       user.notification_setting.email_newsletter = false
-      user.save
+      user.notification_setting.save
 
       worker.perform
 
@@ -118,6 +130,8 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
     it 'sends emails to users who have not received an email in the last 12 hours' do
       # User who received an email more than 12 hours ago
       user_old_email = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
+      user_old_email.notification_setting.email_newsletter = true
+      user_old_email.notification_setting.save
       create(:email_message, user: user_old_email, sent_at: 13.hours.ago)
 
       worker.perform
