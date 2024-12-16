@@ -15,7 +15,8 @@ module ValidRequest
     p request.host
 
     if (referer = request.referer).present?
-      referer.start_with?(URL.url(nil, request.host))
+      subforem = Subforem.find_by(domain: request.host)
+      referer.start_with?(URL.url(nil, subforem))
     else
       origin = request.origin
       if origin == "null"
