@@ -231,11 +231,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_appropriate
-    subforem_not_same = @article.subforem_id.present? && @article.subforem_id != RequestStore.store[:subforem_id]
-    subforem_not_default_and_no_subforem_id = @article.subforem_id.blank? &&
-      RequestStore.store[:subforem_id].present? &&
-      (RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id])
-    if subforem_not_same || subforem_not_default_and_no_subforem_id
+    if should_redirect_to_subforem?(@article)
       redirect_to URL.article(@article), allow_other_host: true, status: :moved_permanently
     end
     redirect_to admin_article_path(@article.id) if params[:view] == "moderate"
@@ -319,6 +315,8 @@ class StoriesController < ApplicationController
     return unless user_signed_in? && @user.comments_count.positive?
 
     @comments = @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)

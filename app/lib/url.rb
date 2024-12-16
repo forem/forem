@@ -45,7 +45,8 @@ module URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
-    url(comment.path)
+    subforem = comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+    url(comment.path, subforem)
   end
 
   # Creates a fragment URL for a comment on an article page

@@ -174,6 +174,14 @@ class ApplicationController < ActionController::Base
     RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
   end
 
+  def should_redirect_to_subforem?(article)
+    subforem_not_same = article.subforem_id.present? && article.subforem_id != RequestStore.store[:subforem_id]
+    subforem_not_default_and_no_subforem_id = article.subforem_id.blank? &&
+      RequestStore.store[:subforem_id].present? &&
+      (RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id])
+      subforem_not_same || subforem_not_default_and_no_subforem_id
+  end
+
   def respond_with_request_for_authentication
     respond_to do |format|
       format.html { redirect_to sign_up_path }
