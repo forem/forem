@@ -12,9 +12,10 @@ module ValidRequest
     log_string = "Referer: #{request&.referer}, URL: #{URL.url}, origin: #{request&.origin}, base_url: #{request&.base_url}"
     Rails.logger.info log_string
     p log_string
+    p request.host
 
     if (referer = request.referer).present?
-      referer.start_with?(URL.url)
+      referer.start_with?(URL.url(nil, request.host))
     else
       origin = request.origin
       if origin == "null"
