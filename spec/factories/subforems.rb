@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :subforem do
-    domain { "localhost" }
+    domain { "forem.test" }
   end
 end
