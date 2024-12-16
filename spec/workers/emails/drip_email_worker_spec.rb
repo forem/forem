@@ -99,6 +99,22 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       )
     end
 
+    it "does not send email to user who is unsubscribed to user.notification_setting.email_newsletter" do
+      user = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
+      user.notification_setting.email_newsletter = false
+      user.save
+
+      worker.perform
+
+      expect(CustomMailer).not_to have_received(:with).with(
+        user: user,
+        subject: email_template_day_1.subject,
+        content: email_template_day_1.body,
+        type_of: email_template_day_1.type_of,
+        email_id: email_template_day_1.id
+      )
+    end
+
     it 'sends emails to users who have not received an email in the last 12 hours' do
       # User who received an email more than 12 hours ago
       user_old_email = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
