@@ -64,7 +64,6 @@ module Articles
           conditional_lookback: oldest_published_at - 12.hours,
           conditional_comment_timeframe: 6.hours.ago
         }
-        @subforem_id = RequestStore.store[:subforem_id].to_i
         configure!
       end
 

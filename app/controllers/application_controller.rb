@@ -169,7 +169,7 @@ class ApplicationController < ActionController::Base
 
   def set_subforem
     domain = request.host
-    domain = params[:domain] if params[:domain].present? && Rails.env.development?
+    domain = params[:passed_domain] if params[:passed_domain].present? && Rails.env.development?
     RequestStore.store[:default_subforem_id] = Subforem.cached_default_id || nil
     RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
   end

@@ -75,7 +75,7 @@ module Homepage
       @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
       @relation = @relation.includes(:distinct_reaction_categories)
       @relation = @relation.where("score >= 0") # Never return negative score articles
-      @relation = @relation.from_subforem(RequestStore.store[:subforem_id].to_i)
+      @relation = @relation.from_subforem
 
       relation
     end

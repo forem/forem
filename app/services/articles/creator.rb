@@ -62,7 +62,6 @@ module Articles
     def create_article
       @article = Article.create(article_params) do |article|
         article.user_id = user.id
-        article.subforem_id = RequestStore.store[:subforem_id]
         article.show_comments = true
         article.collection = series if series.present?
       end
