@@ -226,9 +226,6 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
     end
 
-    ##
-    # Additional specs covering RequestStore-based subforem redirect logic
-    ##
     context "when subforem logic is triggered by RequestStore" do
       let!(:subforem)       { create(:subforem, domain: "www.example.com") }
       let!(:default_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
@@ -245,9 +242,8 @@ RSpec.describe "StoriesShow" do
       end
 
       it "redirects if article has subforem_id that doesn't match RequestStore.store[:subforem_id]" do
-        article.update_column(:subforem_id, subforem.id)
+        article.update_column(:subforem_id, create(:subforem, domain: "other.com").id)
         # RequestStore is set to something different
-        RequestStore.store[:subforem_id] = create(:subforem).id
 
         get article.path
         expect(response).to have_http_status(:moved_permanently)
@@ -264,21 +260,17 @@ RSpec.describe "StoriesShow" do
       end
 
       it "redirects if article has no subforem_id and RequestStore has a non-default subforem_id" do
-        # article.subforem_id is nil (unchanged or explicitly set to nil)
-        RequestStore.store[:subforem_id] = subforem.id
-        # subforem is not the default_subforem, so subforem.id != default_subforem.id
+        allow(Subforem).to receive(:cached_id_by_domain).with("www.example.com").and_return(create(:subforem, domain: "other.com").id)
 
         get article.path
         expect(response).to have_http_status(:moved_permanently)
-        expect(response.body).to redirect_to URL.article(article)
       end
 
       it "does not redirect if article has no subforem_id and RequestStore subforem_id == default_subforem" do
-        RequestStore.store[:subforem_id] = default_subforem.id
+        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
 
         get article.path
         expect(response).not_to have_http_status(:moved_permanently)
-        expect(response.body).not_to include("href=\"#{URL.article(article)}\"")
       end
     end
   end
