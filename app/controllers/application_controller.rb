@@ -179,7 +179,7 @@ class ApplicationController < ActionController::Base
     subforem_not_default_and_no_subforem_id = article.subforem_id.blank? &&
       RequestStore.store[:subforem_id].present? &&
       (RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id])
-      subforem_not_same || subforem_not_default_and_no_subforem_id
+    subforem_not_same || subforem_not_default_and_no_subforem_id
   end
 
   def respond_with_request_for_authentication
