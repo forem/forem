@@ -20,7 +20,16 @@ module Settings
     class << self
       def clear_cache
         RequestStore.delete(cache_key)
+        # Also clear subforem-specific caches if we've stored them
+        RequestStore.keys.each do |k|
+          RequestStore.delete(k) if k.to_s.start_with?("#{cache_key}-")
+        end
+
         Rails.cache.delete(cache_key)
+        # Clear subforem-specific caches in Rails.cache
+        # If needed, you could store known subforem IDs or handle this differently.
+        # For simplicity, we assume only a few known subforem caches, or that this
+        # is called rarely enough that we handle them dynamically as needed.
       end
 
       def setting(key, default: nil, type: :string, separator: nil, validates: nil)
@@ -45,8 +54,8 @@ module Settings
         @defined_settings.pluck(:key)
       end
 
-      def to_h
-        keys.to_h { |k| [k.to_sym, public_send(k)] }
+      def to_h(subforem_id: nil)
+        keys.to_h { |k| [k.to_sym, public_send(k, subforem_id: subforem_id)] }
       end
 
       private
@@ -67,36 +76,40 @@ module Settings
           type: type || :string
         }
 
-        # Getter
+        # Getter with subforem_id support
         define_singleton_method(key) do |subforem_id: nil|
           result = __send__(:value_of, key, subforem_id)
-          if result.nil? # fallback to default if no subforem-specific setting exists
+
+          if result.nil?
             result ||= default.is_a?(Proc) ? default.call : default
           end
-        
+
           read_as_type = type == :markdown ? :string : type
-          result = __send__(:convert_string_to_value_type, read_as_type, result, separator: separator)
-        
-          result
+          __send__(:convert_string_to_value_type, read_as_type, result, separator: separator)
         end
 
-        # Explicit setter
-          define_singleton_method(:"set_#{key}") do |value, subforem_id: nil|
+        # Explicit setter that takes subforem_id
+        define_singleton_method(:"set_#{key}") do |value, subforem_id: nil|
           var_name = key
-
           record = find_by(var: var_name, subforem_id: subforem_id) || new(var: var_name, subforem_id: subforem_id)
 
-          value = __send__(:convert_string_to_value_type, type, value, separator: separator)
-          record.value = value
-          record.save!
+          if type == :markdown
+            processed = __send__(:convert_string_to_value_type, type, value)
+            record.value = value
+            record.save!
+            __send__(:"#{key}_processed_html=", processed)
+          else
+            value = __send__(:convert_string_to_value_type, type, value, separator: separator)
+            record.value = value
+            record.save!
+          end
 
           value
         end
 
-        # Alternative setting for current subforem (Fits pre-existing interface)
+        # Setter without explicitly passing subforem_id (uses RequestStore)
         define_singleton_method(:"#{key}=") do |value|
           var_name = key
-
           subforem_id = RequestStore.store[:subforem_id]
 
           record = find_by(var: var_name, subforem_id: subforem_id) || new(var: var_name, subforem_id: subforem_id)
@@ -120,7 +133,7 @@ module Settings
           validates[:if] = proc { |item| item.var.to_s == key }
           __send__(:validates, key, **validates)
 
-          define_method(:read_attribute_for_validation) { |_key| self.value }
+          define_method(:read_attribute_for_validation) { |_attr_key| self.value }
         end
 
         return unless type == :boolean
@@ -138,13 +151,13 @@ module Settings
         when :array
           value.split(separator || SEPARATOR_REGEXP).compact_blank.map(&:strip)
         when :hash
-          value = begin
+          val = begin
             YAML.safe_load(value).to_h
           rescue StandardError
             {}
           end
-          value.deep_stringify_keys!
-          ActiveSupport::HashWithIndifferentAccess.new(value)
+          val.deep_stringify_keys!
+          ActiveSupport::HashWithIndifferentAccess.new(val)
         when :integer
           value.to_i
         when :float
@@ -159,46 +172,36 @@ module Settings
       end
 
       def value_of(var_name, subforem_id = nil)
-        subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
-        unless table_exists?
-          Rails.logger.warn("'#{table_name}' does not exist, '#{name}.#{var_name}' will return the default value.")
-          return
-        end
-      
-        if ActiveRecord::Base.connection.column_exists?(table_name, :subforem_id)
-          record = unscoped
-                     .where(var: var_name)
-                     .where("subforem_id = ? OR subforem_id IS NULL", subforem_id)
-                     .order(Arel.sql("CASE WHEN subforem_id IS NULL THEN 1 ELSE 0 END"))
-                     .first
-        else
-          record = unscoped
-                     .where(var: var_name)
-                     .first
-        end
-      
-        record&.value
+        # Pull from cached hash of settings for this subforem_id (or global)
+        all = all_settings(subforem_id)
+        all[var_name]
       end
 
-      def all_settings(var_name, subforem_id = nil)
-        RequestStore[cache_key] ||= {}
-        cache_key_with_subforem = "#{cache_key}-#{subforem_id}"
-      
+      # Modified all_settings to handle subforem_id caching
+      def all_settings(subforem_id = nil)
+        # Use a subforem-specific cache key
+        cache_key_with_subforem = subforem_id.present? ? "#{cache_key}-#{subforem_id}" : cache_key
         RequestStore[cache_key_with_subforem] ||= Rails.cache.fetch(cache_key_with_subforem, expires_in: 1.week) do
-          if subforem_id
-            # Fetch settings for the specific subforem or fallback to global settings
-            query = unscoped
-                      .where(var: var_name)
+          # If subforem_id is provided, we fetch both subforem-specific and global (nil) rows
+          # Prioritize subforem_id values over global by ordering.
+          query = if subforem_id
+                    unscoped
+                      .select(:var, :value, :subforem_id)
                       .where(subforem_id: [subforem_id, nil])
                       .order(Arel.sql("CASE WHEN subforem_id IS NULL THEN 1 ELSE 0 END"))
-          else
-            # Fetch global settings only
-            query = unscoped.where(var: var_name, subforem_id: nil)
+                  else
+                    # Only global settings if no subforem_id
+                    unscoped.select(:var, :value).where(subforem_id: nil)
+                  end
+
+          # Build a hash with var => value prioritizing subforem-specific rows over global
+          result = {}
+          query.each do |record|
+            # Only set the var if not already set (subforem_id rows come first, global after)
+            result[record.var] ||= record.value
           end
-      
-          query.each_with_object({}) do |record, result|
-            result[record.var] = record.value
-          end.with_indifferent_access
+
+          result.with_indifferent_access
         end
       end
     end
