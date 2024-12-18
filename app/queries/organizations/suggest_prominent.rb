@@ -26,7 +26,7 @@ module Organizations
     end
 
     def fetch_and_pluck_org_ids
-      Article.published.cached_tagged_with_any(tags_to_consider).where.not(organization_id: nil)
+      Article.published.from_subforem.cached_tagged_with_any(tags_to_consider).where.not(organization_id: nil)
         .order("hotness_score DESC").limit(MAX * 2).pluck(:organization_id)
     end
   end

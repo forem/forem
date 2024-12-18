@@ -146,6 +146,7 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
     @user = current_user
+    article_params_json[:subforem_id] = RequestStore.store[:subforem_id]
     article = Articles::Creator.call(@user, article_params_json)
 
     if article.persisted?
@@ -316,7 +317,7 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url
+                         published_at_date published_at_time type_of body_url subforem_id
                        ]
                      end
 

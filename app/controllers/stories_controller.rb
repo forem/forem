@@ -171,7 +171,7 @@ class StoriesController < ApplicationController
 
   def handle_organization_index
     @user = @organization
-    @stories = ArticleDecorator.decorate_collection(@organization.articles.published
+    @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
@@ -230,14 +230,17 @@ class StoriesController < ApplicationController
     redirect_to admin_user_path(@user.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
   end
 
-  def redirect_if_show_view_param
+  def redirect_if_appropriate
+    if should_redirect_to_subforem?(@article)
+      redirect_to URL.article(@article), allow_other_host: true, status: :moved_permanently
+    end
     redirect_to admin_article_path(@article.id) if params[:view] == "moderate"
   end
 
   def handle_article_show
     assign_article_show_variables
     set_surrogate_key_header @article.record_key
-    redirect_if_show_view_param
+    redirect_if_appropriate
     return if performed?
 
     render template: "articles/show"
@@ -285,7 +288,7 @@ class StoriesController < ApplicationController
       # original publication date appear in the correct order in the collection,
       # considering non cross posted articles with a more recent publication date
       @collection_articles = @article.collection.articles
-        .published
+        .published.from_subforem
         .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
     end
 
@@ -312,16 +315,18 @@ class StoriesController < ApplicationController
     return unless user_signed_in? && @user.comments_count.positive?
 
     @comments = @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
   end
 
   def assign_user_stories
-    @pinned_stories = Article.published.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
+    @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
       .order(published_at: :desc).decorate
-    @stories = ArticleDecorator.decorate_collection(@user.articles.published.full_posts
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
       .includes(:distinct_reaction_categories)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))

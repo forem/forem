@@ -16,18 +16,20 @@ module URL
 
   private_class_method :has_site_configs?
 
-  def self.domain
-    if database_available?
+  def self.domain(subforem = nil)
+    if subforem
+      subforem.domain
+    elsif database_available?
       Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
     end
   end
 
-  def self.url(uri = nil)
-    base_url = "#{protocol}#{domain}"
+  def self.url(uri = nil, subforem = nil)
+    base_url = "#{protocol}#{domain(subforem)}"
+    base_url += ":3000" if Rails.env.development? && !base_url.include?(":3000")
     return base_url unless uri
-
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
 
@@ -35,14 +37,20 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    url(article.path)
+    subforem = article.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+    url(article.path, subforem)
   end
 
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
-    url(comment.path)
+    subforem =  if comment.commentable.class.name == "Article"
+                  comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+                else
+                  Subforem.find_by(id: RequestStore.store[:subforem_id])
+                end
+    url(comment.path, subforem)
   end
 
   # Creates a fragment URL for a comment on an article page

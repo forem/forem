@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_12_151249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -153,6 +153,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.boolean "show_comments", default: true
     t.text "slug"
     t.string "social_image"
+    t.bigint "subforem_id"
     t.string "title"
     t.integer "type_of", default: 0
     t.datetime "updated_at", precision: nil, null: false
@@ -182,6 +183,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
+    t.index ["subforem_id"], name: "index_articles_on_subforem_id"
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
@@ -1093,58 +1095,79 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
 
   create_table "settings_authentications", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_authentications_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_authentications_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_authentications_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_campaigns", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_campaigns_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_campaigns_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_campaigns_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_communities", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_communities_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_communities_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_communities_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_rate_limits", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_rate_limits_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_rate_limits_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_smtp", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_smtp_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_smtp_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_smtp_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_user_experiences", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_user_experiences_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_user_experiences_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_user_experiences_on_var_and_subforem_id", unique: true
   end
 
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_site_configs_on_var", unique: true
+    t.index ["subforem_id"], name: "index_site_configs_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_site_configs_on_var_and_subforem_id", unique: true
+  end
+
+  create_table "subforems", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "domain", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_subforems_on_domain", unique: true
   end
 
   create_table "tag_adjustments", force: :cascade do |t|

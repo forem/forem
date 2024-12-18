@@ -43,6 +43,7 @@ class Article < ApplicationRecord
 
   belongs_to :organization, optional: true
   belongs_to :user
+  belongs_to :subforem, optional: true
 
   counter_culture :user
   counter_culture :organization
@@ -348,6 +349,16 @@ class Article < ApplicationRecord
   #            that in the future.
   scope :approved, -> { where(approved: true) }
 
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    if [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id])
+    else
+      # where(subforem_id: subforem_id)
+      where("articles.subforem_id = ?", subforem_id)
+    end
+  }
+
   scope :admin_published_with, lambda { |tag_name|
     published
       .where(user_id: User.with_role(:super_admin)
@@ -459,7 +470,7 @@ class Article < ApplicationRecord
     # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
     time_ago = 75.days.ago if time_ago.nil?
 
-    relation = Article.published
+    relation = Article.published.from_subforem
       .order(organic_page_views_past_month_count: :desc)
       .where("score > ?", 8)
       .where("published_at > ?", time_ago)
@@ -474,7 +485,7 @@ class Article < ApplicationRecord
   end
 
   def self.search_optimized(tag = nil)
-    relation = Article.published
+    relation = Article.published.from_subforem
       .order(updated_at: :desc)
       .where.not(search_optimized_title_preamble: nil)
       .limit(20)
@@ -1080,7 +1091,7 @@ class Article < ApplicationRecord
   def set_nth_published_at
     return unless nth_published_by_author.zero? && published
 
-    published_article_ids = user.articles.published.order(published_at: :asc).ids
+    published_article_ids = user.articles.published.from_subforem.order(published_at: :asc).ids
     index = published_article_ids.index(id)
 
     self.nth_published_by_author = (index || published_article_ids.size) + 1

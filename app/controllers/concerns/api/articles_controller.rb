@@ -36,7 +36,7 @@ module Api
     end
 
     def show
-      @article = Article.published
+      @article = Article.published.from_subforem
         .includes(user: :profile)
         .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find(params[:id])
@@ -46,7 +46,7 @@ module Api
     end
 
     def show_by_slug
-      @article = Article.published
+      @article = Article.published.from_subforem
         .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
         .decorate
@@ -90,13 +90,13 @@ module Api
 
       @articles = case params[:status]
                   when "published"
-                    @user.articles.published
+                    @user.articles.published.from_subforem
                   when "unpublished"
-                    @user.articles.unpublished
+                    @user.articles.unpublished.from_subforem
                   when "all"
-                    @user.articles
+                    @user.articles.from_subforem
                   else
-                    @user.articles.published
+                    @user.articles.published.from_subforem
                   end
 
       @articles = @articles

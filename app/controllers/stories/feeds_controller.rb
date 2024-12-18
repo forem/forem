@@ -118,7 +118,7 @@ module Stories
               AND follower_id = :user_id
           )",
           user_id: current_user.id
-        ).published
+        ).published.from_subforem
         .where("score > -10")
         .order("published_at DESC")
         .page(@page)
@@ -139,7 +139,7 @@ module Stories
               AND follower_id = :user_id
           )",
           user_id: current_user.id
-        ).published
+        ).published.from_subforem
         .where("score > -10")
         .order("hotness_score DESC")
         .page(@page)

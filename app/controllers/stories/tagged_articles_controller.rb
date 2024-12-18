@@ -34,7 +34,7 @@ module Stories
 
     def set_number_of_articles(tag:)
       @num_published_articles = if tag.requires_approval?
-                                  tag.articles.published.approved.count
+                                  tag.articles.published.from_subforem.approved.count
                                 elsif Settings::UserExperience.feed_strategy == "basic"
                                   tagged_count(tag: tag)
                                 else
@@ -58,12 +58,12 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts
+      stories = stories.full_posts.from_subforem
       @stories = stories.decorate
     end
 
     def tagged_count(tag:)
-      tag.articles.published.where(score: Settings::UserExperience.tag_feed_minimum_score..).count
+      tag.articles.published.from_subforem.where(score: Settings::UserExperience.tag_feed_minimum_score..).count
     end
 
     # Do we have an established tag?  That means it's supported OR we have at least one published story.
@@ -74,7 +74,7 @@ module Stories
     # @return [FalseClass] if we do not
     def established?(stories:, tag:)
       return true if tag.supported?
-      return true if stories.published.exists?
+      return true if stories.published.from_subforem.exists?
 
       false
     end

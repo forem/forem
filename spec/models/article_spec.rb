@@ -81,6 +81,71 @@ RSpec.describe Article do
       end
     end
 
+    describe ".from_subforem" do
+      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let!(:article_in_subforem) { create(:article, subforem_id: subforem.id) }
+      let!(:article_in_second_subforem) { create(:article, subforem_id: second_subforem.id) }
+      let!(:article_in_null_subforem) { create(:article, subforem_id: nil) }
+      let!(:article_in_other_subforem) { create(:article, subforem_id: third_subforem.id) }
+
+      after do
+        RequestStore.store[:subforem_id] = nil
+        RequestStore.store[:default_subforem_id] = nil
+      end
+
+      context "when a specific subforem_id is provided" do
+        it "returns articles matching the provided subforem_id" do
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_other_subforem)
+        end
+      end
+    
+      context "when subforem_id is nil" do
+        before { RequestStore.store[:subforem_id] = nil }
+    
+        it "returns articles with null subforem_id or subforem_id <= 1" do
+          expect(described_class.from_subforem).to include(article_in_null_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_other_subforem)
+        end
+      end
+    
+      context "when subforem_id is the default subforem_id" do
+        let(:subforem_id) { subforem.id }
+    
+        it "returns articles with null subforem_id or matching the provided subforem_id" do
+          RequestStore.store[:default_subforem_id] = subforem_id
+          expect(described_class.from_subforem(subforem_id)).to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem_id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem_id)).not_to include(article_in_other_subforem)
+        end
+      end
+    
+      context "when subforem_id is greater than 1" do
+        let(:subforem_id) { third_subforem.id }
+    
+        it "returns only articles with the exact matching subforem_id" do
+          expect(described_class.from_subforem(subforem_id)).to include(article_in_other_subforem)
+          expect(described_class.from_subforem(subforem_id)).not_to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem_id)).not_to include(article_in_null_subforem)
+        end
+      end
+    
+      context "when subforem_id is stored in RequestStore" do
+        before { RequestStore.store[:subforem_id] = second_subforem.id }
+    
+        it "uses the subforem_id from RequestStore if none is passed" do
+          expect(described_class.from_subforem).to include(article_in_second_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_other_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_null_subforem)
+        end
+      end
+    end
+
     describe "#body_markdown" do
       # using https://unicode-table.com/en/11A15/ multibyte char
       it "is valid if its bytesize is less than 800 kilobytes" do
@@ -512,7 +577,6 @@ RSpec.describe Article do
 
       it "truncates a long slug" do
         long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "", published: true)
-        p long_title_article.slug
         expect(long_title_article.slug.length).to be <= 106
       end
     end

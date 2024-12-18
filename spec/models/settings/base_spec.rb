@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe Settings::Base do
   with_model :TestSetting, superclass: described_class do
     table do |t|
       t.string :var, null: false
-      t.text :value, null: true
+      t.text   :value, null: true
+      t.string :subforem_id, null: true  # Added for subforem-scoped settings
       t.timestamps
     end
 
@@ -186,10 +189,77 @@ RSpec.describe Settings::Base do
     it "can be converted to a hash", :aggregate_failures do
       result = TestSetting.to_h
       expect(result).to be_an_instance_of(Hash)
-      # Chill Rubocop, it's not a hash
       # rubocop:disable Style/HashEachMethods
       TestSetting.keys.each { |key| expect(result).to have_key(key.to_sym) }
       # rubocop:enable Style/HashEachMethods
+    end
+  end
+
+  #
+  # NEW TESTS FOR SUBFOREM-SCOPED SETTINGS
+  #
+  describe "subforem-scoped settings" do
+    context "when subforem_id is set in RequestStore" do
+      before do
+        RequestStore.store[:subforem_id] = "some_subforem"
+      end
+
+      after do
+        RequestStore.store[:subforem_id] = nil  # Unset after the test
+      end
+
+      it "can store and retrieve a subforem-specific setting" do
+        expect(TestSetting.host).to eq("http://example.com")
+        TestSetting.host = "http://subforem.example.com"
+
+        expect(TestSetting.host).to eq("http://subforem.example.com")
+      end
+
+      it "overrides global setting with a subforem-specific one" do
+        # First, set a global setting (subforem_id = nil)
+        RequestStore.store[:subforem_id] = nil
+        TestSetting.host = "http://global.example.com"
+
+        # Now enable subforem-scoped setting
+        RequestStore.store[:subforem_id] = "some_subforem"
+        TestSetting.host = "http://subforem.example.com"
+
+        expect(TestSetting.host).to eq("http://subforem.example.com")
+      end
+    end
+
+    context "when accessing a subforem_id-specific setting from a different subforem" do
+      before do
+        # Set up a subforem-specific setting
+        RequestStore.store[:subforem_id] = "subforem_one"
+        TestSetting.host = "http://subforem-one.example.com"
+
+        # Set up a different subforem-specific setting
+        RequestStore.store[:subforem_id] = "subforem_two"
+        TestSetting.host = "http://subforem-two.example.com"
+      end
+
+      after do
+        RequestStore.store[:subforem_id] = nil
+      end
+
+      it "does not leak subforem_one settings into subforem_two" do
+        RequestStore.store[:subforem_id] = "subforem_one"
+        expect(TestSetting.host).to eq("http://subforem-one.example.com")
+
+        RequestStore.store[:subforem_id] = "subforem_two"
+        expect(TestSetting.host).to eq("http://subforem-two.example.com")
+      end
+
+      it "falls back to global setting if none is found for the specified subforem" do
+        # Set a global setting
+        RequestStore.store[:subforem_id] = nil
+        TestSetting.host = "http://global.example.com"
+
+        # Query with a new subforem_id that has no record
+        RequestStore.store[:subforem_id] = "fresh_subforem"
+        expect(TestSetting.host).to eq("http://global.example.com")
+      end
     end
   end
 end

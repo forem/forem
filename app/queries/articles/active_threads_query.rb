@@ -25,7 +25,7 @@ module Articles
     #
     # @see `./app/views/articles/_widget_list_item.html.erb` for the
     #      importance of maintaining position of these parameters.
-    def self.call(relation: Article.published, **options)
+    def self.call(relation: Article.published.from_subforem, **options)
       minimum_score = Settings::UserExperience.home_feed_minimum_score.to_i
       options = DEFAULT_OPTIONS.merge(options)
       tags, time_ago, count = options.values_at(:tags, :time_ago, :count)

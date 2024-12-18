@@ -68,23 +68,38 @@ module Settings
         }
 
         # Getter
-        define_singleton_method(key) do
-          result = __send__(:value_of, key)
-          if result.nil? # we don't want to accidentally do this for "false"
+        define_singleton_method(key) do |subforem_id: nil|
+          result = __send__(:value_of, key, subforem_id)
+          if result.nil? # fallback to default if no subforem-specific setting exists
             result ||= default.is_a?(Proc) ? default.call : default
           end
-
+        
           read_as_type = type == :markdown ? :string : type
           result = __send__(:convert_string_to_value_type, read_as_type, result, separator: separator)
-
+        
           result
         end
 
-        # Setter
+        # Explicit setter
+          define_singleton_method(:"set_#{key}") do |value, subforem_id: nil|
+          var_name = key
+
+          record = find_by(var: var_name, subforem_id: subforem_id) || new(var: var_name, subforem_id: subforem_id)
+
+          value = __send__(:convert_string_to_value_type, type, value, separator: separator)
+          record.value = value
+          record.save!
+
+          value
+        end
+
+        # Alternative setting for current subforem (Fits pre-existing interface)
         define_singleton_method(:"#{key}=") do |value|
           var_name = key
 
-          record = find_by(var: var_name) || new(var: var_name)
+          subforem_id = RequestStore.store[:subforem_id]
+
+          record = find_by(var: var_name, subforem_id: subforem_id) || new(var: var_name, subforem_id: subforem_id)
 
           if type == :markdown
             processed = __send__(:convert_string_to_value_type, type, value)
@@ -143,19 +158,45 @@ module Settings
         end
       end
 
-      def value_of(var_name)
+      def value_of(var_name, subforem_id = nil)
+        subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
         unless table_exists?
-          # Fallback to default value if table was not ready (before migrate)
           Rails.logger.warn("'#{table_name}' does not exist, '#{name}.#{var_name}' will return the default value.")
           return
         end
-
-        all_settings[var_name]
+      
+        if ActiveRecord::Base.connection.column_exists?(table_name, :subforem_id)
+          record = unscoped
+                     .where(var: var_name)
+                     .where("subforem_id = ? OR subforem_id IS NULL", subforem_id)
+                     .order(Arel.sql("CASE WHEN subforem_id IS NULL THEN 1 ELSE 0 END"))
+                     .first
+        else
+          record = unscoped
+                     .where(var: var_name)
+                     .first
+        end
+      
+        record&.value
       end
 
-      def all_settings
-        RequestStore[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 1.week) do
-          unscoped.select(:var, :value).each_with_object({}) do |record, result|
+      def all_settings(var_name, subforem_id = nil)
+        RequestStore[cache_key] ||= {}
+        cache_key_with_subforem = "#{cache_key}-#{subforem_id}"
+      
+        RequestStore[cache_key_with_subforem] ||= Rails.cache.fetch(cache_key_with_subforem, expires_in: 1.week) do
+          if subforem_id
+            # Fetch settings for the specific subforem or fallback to global settings
+            query = unscoped
+                      .where(var: var_name)
+                      .where(subforem_id: [subforem_id, nil])
+                      .order(Arel.sql("CASE WHEN subforem_id IS NULL THEN 1 ELSE 0 END"))
+          else
+            # Fetch global settings only
+            query = unscoped.where(var: var_name, subforem_id: nil)
+          end
+      
+          query.each_with_object({}) do |record, result|
             result[record.var] = record.value
           end.with_indifferent_access
         end
