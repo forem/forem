@@ -38,6 +38,10 @@ RSpec.describe Settings::Base do
     end
   end
 
+  after do
+    RequestStore.clear!
+  end
+
   context "when using protected setting names" do
     it "does not allow 'var' as setting name" do
       expect do
@@ -210,9 +214,12 @@ RSpec.describe Settings::Base do
 
       it "can store and retrieve a subforem-specific setting" do
         expect(TestSetting.host).to eq("http://example.com")
+        RequestStore.store[:subforem_id] = create(:subforem).id
         TestSetting.host = "http://subforem.example.com"
 
         expect(TestSetting.host).to eq("http://subforem.example.com")
+        RequestStore.store[:subforem_id] = nil
+        expect(TestSetting.host).to eq("http://example.com")
       end
 
       it "overrides global setting with a subforem-specific one" do

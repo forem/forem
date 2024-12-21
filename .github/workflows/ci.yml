@@ -99,8 +99,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [8]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7]
+        ci_node_total: [10]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     steps:
       - uses: actions/checkout@v4
@@ -253,8 +253,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [8]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, non-seed]
+        ci_node_total: [10]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, non-seed]
 
     steps:
       - uses: actions/checkout@v4

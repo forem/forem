@@ -266,6 +266,22 @@ module ApplicationHelper
     "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}"
   end
 
+  def social_media_constructed_url(social_media_type, handle)
+    if social_media_type == :mastodon
+      handle
+    elsif social_media_type == :twitter
+      "https://x.com/#{handle}"
+    elsif social_media_type == :bluesky
+      "https://bsky.app/profile/#{handle}"
+    elsif social_media_type == :linkedin
+      "https://www.linkedin.com/in/#{handle}"
+    elsif social_media_type == :youtube
+      "https://www.youtube.com/@#{handle}"
+    else
+      "https://#{social_media_type}.com/#{handle}"
+    end
+  end
+
   def copyright_notice
     start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s
