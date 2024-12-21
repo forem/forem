@@ -146,6 +146,16 @@ RSpec.describe "StoriesIndex" do
       expect(response.headers["Surrogate-Key"]).to be_nil
     end
 
+    it "renders social media handles if set" do
+      allow(Settings::General).to receive(:social_media_handles)
+        .and_return({ twitter: "twix", facebook: "fb", linkedin: "lnkdn", youtube: "whytube" })
+      get "/"
+      expect(response.body).to include("x.com/twix")
+      expect(response.body).to include("facebook.com/fb")
+      expect(response.body).to include("linkedin.com/in/lnkdn")
+      expect(response.body).to include("youtube.com/@whytube")
+    end
+
     it "sets correct cache headers", :aggregate_failures do
       get "/"
 
