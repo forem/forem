@@ -202,6 +202,10 @@ class Comment < ApplicationRecord
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
+  def subforem_id
+    commentable&.subforem_id
+  end
+
   private
 
   def remove_notifications?
@@ -283,10 +287,6 @@ class Comment < ApplicationRecord
     else
       touch
     end
-  end
-
-  def subforem_id
-    commentable&.subforem_id
   end
 
   def after_destroy_actions
