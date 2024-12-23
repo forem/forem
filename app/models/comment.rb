@@ -285,6 +285,10 @@ class Comment < ApplicationRecord
     end
   end
 
+  def subforem_id
+    commentable&.subforem_id
+  end
+
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at)

@@ -37,6 +37,7 @@ module Notifications
         notification_params = {
           notifiable_type: reaction.reactable_type,
           notifiable_id: reaction.reactable_id,
+          subforem_id: reaction.reactable.subforem_id,
           action: "Reaction"
         }
         case receiver

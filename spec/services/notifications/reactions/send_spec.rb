@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe Notifications::Reactions::Send, type: :service do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user: user) }
+  let(:subforem) { create(:subforem) }
+  let(:article) { create(:article, user: user, subforem: subforem) }
   let(:user2) { create(:user) }
   let(:article_reaction) { create(:reaction, reactable: article, user: user2) }
   let(:user3) { create(:user) }
@@ -30,6 +31,7 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     it "creates a correct notification" do
       result = described_class.call(reaction_data(article_reaction), user)
       notification = Notification.find(result.notification_id)
+      expect(notification.subforem_id).to eq(subforem.id)
       expect(notification.user_id).to eq(user.id)
       expect(notification.notifiable).to eq(article)
     end
