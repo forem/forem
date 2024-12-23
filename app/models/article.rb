@@ -352,7 +352,7 @@ class Article < ApplicationRecord
   scope :from_subforem, lambda { |subforem_id = nil|
     subforem_id ||= RequestStore.store[:subforem_id]
     if [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id])
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
     else
       # where(subforem_id: subforem_id)
       where("articles.subforem_id = ?", subforem_id)

@@ -26,7 +26,6 @@ class NotificationsController < ApplicationController
                      else
                        @user.notifications
                      end
-
     @notifications = @notifications.from_subforem.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
