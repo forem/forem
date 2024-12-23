@@ -17,6 +17,12 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_root_id
+    Rails.cache.fetch('subforem_root_id', expires_in: 12.hours) do
+      Subforem.find_by(root: true)&.id
+    end
+  end
+
   private
 
   def bust_caches

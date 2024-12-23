@@ -172,6 +172,7 @@ class ApplicationController < ActionController::Base
     domain = params[:passed_domain] if params[:passed_domain].present? && Rails.env.development?
     RequestStore.store[:default_subforem_id] = Subforem.cached_default_id || nil
     RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
+    RequestStore.store[:root_subforem_id] = Subforem.cached_root_id || nil
   end
 
   def should_redirect_to_subforem?(article)
