@@ -179,6 +179,9 @@ class StoriesController < ApplicationController
     if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
       not_found
     end
+    redirect_if_inactive_in_subforem_for_organization
+    return if performed?
+
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
@@ -202,6 +205,9 @@ class StoriesController < ApplicationController
     assign_user_stories
     @list_of = "articles"
     redirect_if_view_param
+    return if performed?
+
+    redirect_if_inactive_in_subforem_for_user
     return if performed?
 
     assign_user_github_repositories
@@ -228,6 +234,24 @@ class StoriesController < ApplicationController
 
   def redirect_if_view_param
     redirect_to admin_user_path(@user.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
+  end
+
+  def redirect_if_inactive_in_subforem_for_user
+    return unless @comments.none? &&
+                    @pinned_stories.none? &&
+                    @stories.none? &&
+                    RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+
+    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
+    redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
+  end
+
+  def redirect_if_inactive_in_subforem_for_organization
+    return unless @stories.none? &&
+                    RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    
+    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
+    redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_appropriate
