@@ -114,7 +114,7 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
 
   context "when a reaction is destroyed" do
     let(:destroyed_reaction) { article_reaction.destroy }
-    let(:notification) { create(:notification, user: user, notifiable: article, action: "Reaction") }
+    let(:notification) { create(:notification, user: user, notifiable: article, action: "Reaction", subforem_id: subforem.id) }
 
     it "doesn't change notifications count" do
       expect do
