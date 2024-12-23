@@ -351,7 +351,7 @@ class Article < ApplicationRecord
 
   scope :from_subforem, lambda { |subforem_id = nil|
     subforem_id ||= RequestStore.store[:subforem_id]
-    if subforem_id == RequestStore.store[:root_subforem_id]
+    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # No additional conditions; just return the current scope
       where(nil)
     elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
