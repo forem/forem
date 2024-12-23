@@ -10,7 +10,7 @@ RSpec.describe "UserShow" do
   end
   let(:user) { profile.user }
 
-  let!(:default_subforem) { create(:subforem) }
+  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
   let!(:other_subforem)   { create(:subforem, domain: "other.com") }
 
   describe "GET /:slug (user)" do

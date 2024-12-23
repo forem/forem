@@ -5,7 +5,7 @@ RSpec.describe "UserProfiles" do
   let(:organization) { create(:organization) }
   let(:current_user) { create(:user) }
 
-  let!(:default_subforem) { create(:subforem, domain: "dev.to") }
+  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
   let!(:other_subforem)   { create(:subforem, domain: "other.com") }
 
   describe "GET /:username" do
