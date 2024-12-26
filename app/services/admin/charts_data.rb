@@ -5,30 +5,34 @@ module Admin
     end
 
     def call
-      period = (@length + 1).days.ago..1.day.ago
-      previous_period = (@length * 2).days.ago..(@length + 1).days.ago
-
-      grouped_posts = Article.where(published_at: period).group("DATE(published_at)").size
-      grouped_comments = Comment.where(created_at: period).group("DATE(created_at)").size
-      grouped_reactions = Reaction.where(created_at: period).group("DATE(created_at)").size
-      grouped_users = User.where(registered_at: period).group("DATE(registered_at)").size
-
-      days_range = @length.downto(1)
-      posts_values = days_range.map { |n| grouped_posts[n.days.ago.to_date] || 0 }
-      comments_values = days_range.map { |n| grouped_comments[n.days.ago.to_date] || 0 }
-      reactions_values = days_range.map { |n| grouped_reactions[n.days.ago.to_date] || 0 }
-      new_members_values = days_range.map { |n| grouped_users[n.days.ago.to_date] || 0 }
+      period = create_period(@length + 1, 1)
+      previous_period = create_period(@length * 2, @length + 1)
 
       [
-        ["Posts", posts_values.sum, Article.where(published_at: previous_period).size,
-         posts_values],
-        ["Comments", comments_values.sum, Comment.where(created_at: previous_period).size,
-         comments_values],
-        ["Reactions", reactions_values.sum, Reaction.where(created_at: previous_period).size,
-         reactions_values],
-        ["New members", new_members_values.sum, User.where(registered_at: previous_period).size,
-         new_members_values],
-      ]
+        { label: "Posts", model: Article, time_column: :published_at },
+        { label: "Comments", model: Comment, time_column: :created_at },
+        { label: "Reactions", model: Reaction, time_column: :created_at },
+        { label: "New members", model: User, time_column: :registered_at },
+      ].map { |dataset| build_data(dataset[:label], dataset[:model], dataset[:time_column], period, previous_period) }
+    end
+
+    private
+
+    def create_period(start_days_ago, end_days_ago)
+      start_days_ago.days.ago..end_days_ago.days.ago
+    end
+
+    def build_data(label, model, time_column, period, previous_period)
+      grouped_data = model.where(time_column => period).group("DATE(#{time_column})").size
+      previous_period_count = model.where(time_column => previous_period).size
+
+      values = extract_values(grouped_data)
+
+      [label, values.sum, previous_period_count, values]
+    end
+
+    def extract_values(grouped_data)
+      @length.downto(1).map { |n| grouped_data[n.days.ago.to_date] || 0 }
     end
   end
 end
