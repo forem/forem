@@ -26,6 +26,7 @@ class Subforem < ApplicationRecord
   private
 
   def bust_caches
+    Rails.cache.delete('subforem_root_id')
     Rails.cache.delete('subforem_default_id')
     Rails.cache.delete("subforem_id_by_domain_#{domain}")
   end
