@@ -85,7 +85,7 @@ export const Meta = ({ article, organization }) => {
             })}</div>)}
           {article.type_of === 'status' && article.edited_at > article.published_timestamp && (<div class='color-base-60 pl-1 inline-block fs-xs'>(Edited)</div>)}
         </div>
-        {article.type_of !== 'status' && (<a href={article.path} className="crayons-story__tertiary fs-xs">
+        {article.type_of !== 'status' && (<a href={article.url} className="crayons-story__tertiary fs-xs">
           <PublishDate
             readablePublishDate={article.readable_publish_date}
             publishedTimestamp={article.published_timestamp}
