@@ -73,7 +73,7 @@ export const Article = ({
               // Indicates should open in _blank
               window.open(article.url, '_blank');
             } else {
-              const fullUrl = window.location.origin + article.url; // InstantClick deals with full urls
+              const fullUrl = article.url; // InstantClick deals with full urls
               InstantClick.preload(fullUrl);
               InstantClick.display(fullUrl);
             }
