@@ -23,9 +23,16 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_domains
+    Rails.cache.fetch('subforem_domains', expires_in: 12.hours) do
+      Subforem.pluck(:domain)
+    end
+  end
+
   private
 
   def bust_caches
+    Rails.cache.delete("cached_domains")
     Rails.cache.delete('subforem_root_id')
     Rails.cache.delete('subforem_default_id')
     Rails.cache.delete("subforem_id_by_domain_#{domain}")

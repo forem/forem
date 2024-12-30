@@ -175,6 +175,18 @@ class ApplicationController < ActionController::Base
     RequestStore.store[:root_subforem_id] = Subforem.cached_root_id || nil
   end
 
+  def set_subforem_cors_headers
+    allowed_origins = Subforem.cached_domains.map { |domain| "https://#{domain}" }
+
+    if allowed_origins.include?(request.origin)
+      response.set_header('Access-Control-Allow-Origin', request.origin)
+    end
+
+    response.set_header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD')
+    response.set_header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
+    response.set_header('Access-Control-Allow-Credentials', 'true') # If credentials (cookies) are needed
+  end
+
   def should_redirect_to_subforem?(article)
     subforem_not_same = article.subforem_id.present? && article.subforem_id != RequestStore.store[:subforem_id]
     subforem_not_default_and_no_subforem_id = article.subforem_id.blank? &&
