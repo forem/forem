@@ -7,6 +7,7 @@ namespace :sidekiq do
     # Environment variables
     heroku_api_key = ENV["HEROKU_API_KEY"]
     heroku_app_name = ENV["HEROKU_APP_NAME"]
+    process_type = "sidekiq_worker" # Update this to match your Procfile process name
     min_workers = ENV.fetch("MIN_WORKERS", 1).to_i
     max_workers = ENV.fetch("MAX_WORKERS", 10).to_i
     queue_thresholds = ENV.fetch("QUEUE_THRESHOLDS", "20,100").split(",").map(&:to_i)
@@ -25,7 +26,7 @@ namespace :sidekiq do
     puts "Desired worker count: #{desired_workers}"
 
     # Heroku API URL
-    formation_url = "https://api.heroku.com/apps/#{heroku_app_name}/formation/worker"
+    formation_url = "https://api.heroku.com/apps/#{heroku_app_name}/formation/#{process_type}"
 
     # Get current worker count
     response = HTTParty.get(
