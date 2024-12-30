@@ -38,7 +38,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
             <img src='#{article.user.profile_image_url_for(length: 150)}' alt='#{article.user.username}'>
           </div>
         </a>
-        <a href='#{article.path}' class='ltag__link__link'>
+        <a href='#{URL.article(article)}' class='ltag__link__link'>
           <div class='ltag__link__content'>
             <h2>#{CGI.escapeHTML(article.title)}</h2>
             <h3>#{CGI.escapeHTML(article.user.name)} ・ #{article.readable_publish_date}</h3>
@@ -64,7 +64,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
             </div>
           </div>
         </a>
-        <a href='#{article.path}' class='ltag__link__link'>
+        <a href='#{URL.article(article)}' class='ltag__link__link'>
           <div class='ltag__link__content'>
             <h2>#{CGI.escapeHTML(article.title)}</h2>
             <h3>#{CGI.escapeHTML(article.user.name)} for #{CGI.escapeHTML(article.organization.name)} ・ #{article.readable_publish_date}</h3>

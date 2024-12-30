@@ -93,6 +93,7 @@ RSpec.describe Article do
       after do
         RequestStore.store[:subforem_id] = nil
         RequestStore.store[:default_subforem_id] = nil
+        RequestStore.store[:root_subforem_id] = nil
       end
 
       context "when a specific subforem_id is provided" do
@@ -133,6 +134,27 @@ RSpec.describe Article do
           expect(described_class.from_subforem(subforem_id)).not_to include(article_in_null_subforem)
         end
       end
+
+      context "when subforem_id is the root_subforem_id" do
+        before do
+          RequestStore.store[:root_subforem_id] = subforem.id
+        end
+    
+        it "returns all articles with no conditions" do
+          expect(described_class.from_subforem(subforem.id)).to contain_exactly(
+            article,
+            article_in_subforem,
+            article_in_second_subforem,
+            article_in_null_subforem,
+            article_in_other_subforem,
+          )
+        end
+
+        it "returns proper query with additional conditions" do
+          expect(described_class.from_subforem(subforem.id).where(id: [article_in_subforem.id, article_in_null_subforem.id]))
+            .to contain_exactly(article_in_subforem, article_in_null_subforem)
+        end
+      end    
     
       context "when subforem_id is stored in RequestStore" do
         before { RequestStore.store[:subforem_id] = second_subforem.id }
