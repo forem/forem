@@ -11,7 +11,7 @@
       <%= billboard.processed_html_final.html_safe %>
   </div>
 <% elsif billboard.placement_area.start_with?("feed_") %>
-  <div class="crayons-story crayons-story__billboard billboard js-billboard"
+  <div class="crayons-story crayons-story__billboard bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
@@ -111,7 +111,7 @@
     </div>
   </div>
 <% else %>
-  <div class="crayons-card crayons-card--secondary crayons-bb billboard js-billboard"
+  <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"

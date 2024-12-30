@@ -31,6 +31,7 @@ module Notifications
             user_id: user_id,
             notifiable_id: comment.id,
             notifiable_type: comment.class.name,
+            subforem_id: comment.commentable.subforem_id,
             action: nil,
             json_data: json_data,
           )

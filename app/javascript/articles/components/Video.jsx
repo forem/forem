@@ -4,7 +4,7 @@ import { articlePropTypes } from '../../common-prop-types';
 export const Video = ({ article }) => {
   return (
     <a
-      href={article.path}
+      href={article.url}
       className="crayons-story__video"
       style={`background-image:url(${article.cloudinary_video_url})`}
     >

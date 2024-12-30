@@ -136,8 +136,10 @@ module Articles
         # create a sub-query that we can use to help ensure that we can use all of the ActiveRecord
         # goodness of scopes (e.g., limited_column_select) and eager includes.
         scope = Article.joins(join_fragment)
+          .from_subforem
           .limited_column_select
           .includes(:distinct_reaction_categories)
+          .includes(:subforem)
           .order(config.order_by.to_sql)
 
         scope = case comments_variant

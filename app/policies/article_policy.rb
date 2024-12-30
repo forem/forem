@@ -112,7 +112,7 @@ class ArticlePolicy < ApplicationPolicy
   #       rendering.
   def has_existing_articles_or_can_create_new_ones?
     require_user!
-    return true if user.articles.published.exists?
+    return true if user.articles.published.from_subforem.exists?
 
     create?
   rescue ApplicationPolicy::NotAuthorizedError

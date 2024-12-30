@@ -20,11 +20,15 @@ module Emails
         users = User.where(registered_at: start_time..end_time)
 
         users.each do |user|
+          next unless user.notification_setting.email_newsletter # Stop sending if user not subscribed to newsletter field
+
           recent_email_sent = EmailMessage.where(user: user).where("sent_at >= ?", 12.hours.ago).exists?
           next if recent_email_sent
 
           CustomMailer.with(user: user, subject: email_template.subject, content: email_template.body, type_of: email_template.type_of, email_id: email_template.id)
             .custom_email.deliver_now
+        rescue StandardError => e
+          Rails.logger.error("Error sending drip email to user #{user.id}: #{e.message}")
         end
       end
     end

@@ -24,7 +24,7 @@ module Stories
     end
 
     def update
-      article = Article.published.find(params[:id])
+      article = Article.published.from_subforem.find(params[:id])
 
       PinnedArticle.set(article)
     rescue ActiveRecord::RecordNotFound => e

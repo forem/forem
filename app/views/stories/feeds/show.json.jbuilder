@@ -29,6 +29,8 @@ json.array!(@stories) do |article|
     json.main_image nil
   end
 
+  json.url URL.article(article)
+
   json.tag_list article.cached_tag_list_array
   json.extract! article, *article_methods_to_include
 
