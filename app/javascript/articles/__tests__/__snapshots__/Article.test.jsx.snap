@@ -258,7 +258,7 @@ Object {
                     aria-label="Add a comment to post - Unbranded Home Loan Account"
                     class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                     data-testid="add-a-comment"
-                    href="/some-post/path#comments"
+                    href="http://example.com/some-post/path#comments"
                   >
                     <svg
                       class="crayons-icon"
@@ -529,7 +529,7 @@ Object {
                   aria-label="Add a comment to post - Unbranded Home Loan Account"
                   class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                   data-testid="add-a-comment"
-                  href="/some-post/path#comments"
+                  href="http://example.com/some-post/path#comments"
                 >
                   <svg
                     class="crayons-icon"
