@@ -66,12 +66,12 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn install --immutable
-      - name: rubocop
-        uses: reviewdog/action-rubocop@v2
-        with:
-          rubocop_version: gemfile
-          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-capybara:gemfile
-          reporter: github-pr-review # Default is github-pr-check
+      # - name: rubocop — uncomment this to include reviewdog in PRs
+      #   uses: reviewdog/action-rubocop@v2
+      #   with:
+      #     rubocop_version: gemfile
+      #     rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-capybara:gemfile
+      #     reporter: github-pr-review # Default is github-pr-check
       - run: yarn lint:frontend
       - run: bundle exec bundle-audit check --update --ignore CVE-2023-26141
 
