@@ -65,7 +65,7 @@ namespace :sidekiq do
     else
       puts "No scaling needed."
     end
-  rescue => e
+  rescue StandardError => e
     puts "Error: #{e.message}"
   end
 end
