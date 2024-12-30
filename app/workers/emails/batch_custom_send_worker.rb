@@ -2,7 +2,7 @@ module Emails
   class BatchCustomSendWorker
     include Sidekiq::Job
 
-    sidekiq_options queue: :medium_priority, retry: 15
+    sidekiq_options queue: :low_priority
 
     def perform(user_ids, subject, content, type_of, email_id)
       user_ids.each do |id|
