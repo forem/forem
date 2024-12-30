@@ -5,8 +5,8 @@ namespace :sidekiq do
   desc "Scale Heroku workers based on Sidekiq queue size"
   task scale_workers: :environment do
     # Environment variables
-    heroku_api_key = ENV["HEROKU_API_KEY"]
-    heroku_app_name = ENV["HEROKU_APP_NAME"]
+    heroku_api_key = ENV.fetch("HEROKU_API_KEY", nil)
+    heroku_app_name = ENV.fetch("HEROKU_APP_NAME", nil)
     process_type = "sidekiq_worker" # Update this to match your Procfile process name
     min_workers = ENV.fetch("MIN_WORKERS", 1).to_i
     max_workers = ENV.fetch("MAX_WORKERS", 10).to_i
