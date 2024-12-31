@@ -175,6 +175,7 @@ class StoriesController < ApplicationController
   def handle_organization_index
     @user = @organization
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
+      .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
@@ -354,7 +355,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
-      .includes(:distinct_reaction_categories)
+      .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
