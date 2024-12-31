@@ -42,7 +42,7 @@ module URL
   end
 
   def self.page(page)
-    subforem = Subforem.find_by(id: RequestStore.store[:subforem_id])
+    subforem = page.subforem || Subforem.find_by(id: RequestStore.store[:subforem_id])
     url(page.path, subforem)
   end
 

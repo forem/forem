@@ -1,6 +1,8 @@
 class NavigationLink < ApplicationRecord
   SVG_REGEXP = /\A<svg .*>[\s]*\z/im
 
+  belongs_to :subforem, optional: true
+
   before_validation :allow_relative_url, if: :url?
   before_save :strip_local_hostname, if: :url?
 

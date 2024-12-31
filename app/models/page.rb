@@ -7,6 +7,7 @@ class Page < ApplicationRecord
   PRIVACY_SLUG = "privacy".freeze
 
   has_many :billboards, dependent: :nullify
+  belongs_to :subforem, optional: true
 
   validates :title, presence: true
   validates :description, presence: true

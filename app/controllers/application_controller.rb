@@ -195,6 +195,14 @@ class ApplicationController < ActionController::Base
     subforem_not_same || subforem_not_default_and_no_subforem_id
   end
 
+  def redirect_page_if_different_subforem
+    return unless @page.subforem_id.present? &&
+      RequestStore.store[:subforem_id].present? &&
+      @page.subforem_id != RequestStore.store[:subforem_id]
+  
+    redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
+  end
+
   def respond_with_request_for_authentication
     respond_to do |format|
       format.html { redirect_to sign_up_path }
