@@ -157,7 +157,7 @@ RSpec.describe "Api::V1::Pages" do
     context "when providing a social image url" do
       let(:image_url) { "https://example.com/image.jpg" }
       let(:mocked_image_file) { Images::ProfileImageGenerator.call }
-      # forced binary encoding to avoid encoding issues
+      # forced binary encoding to avoid encoding issues.
       let(:mocked_image_data) { mocked_image_file.read.force_encoding("BINARY") }
 
       before do
