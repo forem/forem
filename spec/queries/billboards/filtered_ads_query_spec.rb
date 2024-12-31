@@ -385,4 +385,35 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
     end
   end
+
+  context "when considering subforem ads" do
+    let!(:no_subforem) { create_billboard(include_subforem_ids: nil) }
+    let!(:subforem_42) { create_billboard(include_subforem_ids: [42]) }
+    let!(:subforem_2_and_3) { create_billboard(include_subforem_ids: [2, 3]) }
+
+    it "includes only ads that either have no subforem or explicitly list the requested subforem_id" do
+      filtered = filter_billboards(subforem_id: 42)
+      expect(filtered).to include(no_subforem, subforem_42)
+      expect(filtered).not_to include(subforem_2_and_3)
+    end
+
+    it "falls back to no-subforem ads if the requested subforem_id is not in include_subforem_ids" do
+      filtered = filter_billboards(subforem_id: 999)
+      expect(filtered).to include(no_subforem)
+      expect(filtered).not_to include(subforem_42, subforem_2_and_3)
+    end
+
+    it "includes subforem_2_and_3 if subforem_id = 3" do
+      filtered = filter_billboards(subforem_id: 3)
+      expect(filtered).to include(no_subforem, subforem_2_and_3)
+      expect(filtered).not_to include(subforem_42)
+    end
+
+    # Also test the scenario when subforem_id is not passed at all.
+    it "includes only no_subforem billboard if no subforem_id was provided" do
+      filtered = filter_billboards
+      expect(filtered).to include(no_subforem)
+      expect(filtered).not_to include(subforem_42, subforem_2_and_3)
+    end
+  end
 end

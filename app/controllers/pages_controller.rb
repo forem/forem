@@ -8,6 +8,8 @@ class PagesController < ApplicationController
     not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
 
+    redirect_if_different_subforem
+
     case @page.template
     when "txt"
       render plain: @page.processed_html, content_type: "text/plain"
@@ -140,5 +142,13 @@ class PagesController < ApplicationController
 
   def combined_fragmented_slug
     (0..5).filter_map { |i| params["slug_#{i}"] }.join("/")
+  end
+
+  def redirect_if_different_subforem
+    return unless @page.subforem_id.present? &&
+      RequestStore.store[:subforem_id].present? &&
+      @page.subforem_id != RequestStore.store[:subforem_id]
+  
+    redirect_to URL.page(@page)
   end
 end

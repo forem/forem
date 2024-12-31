@@ -14,6 +14,12 @@ class NavigationLink < ApplicationRecord
 
   scope :ordered, -> { order(position: :asc, name: :asc) }
 
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    where(subforem_id: [subforem_id, nil])
+  }
+
+
   # With the given :url either create a NavigationLink or update an existing NavigationLink with the
   # given :attributes.
   #

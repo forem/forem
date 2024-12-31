@@ -309,6 +309,12 @@ class Billboard < ApplicationRecord
     write_attribute :target_role_names, (adjusted_input || [])
   end
 
+  def include_subforem_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :include_subforem_ids, (adjusted_input || [])
+  end
+
   def style_string
     return "" if color.blank?
 

@@ -24,6 +24,11 @@ class Page < ApplicationRecord
   mount_uploader :social_image, ProfileImageUploader
   resourcify
 
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    where(subforem_id: [subforem_id, nil])
+  }
+
   # @param slug [String]
   #
   # @return An HTML safe String.
