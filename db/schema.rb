@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_23_201958) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -496,6 +496,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_23_201958) do
     t.integer "exclude_article_ids", default: [], array: true
     t.string "exclude_role_names", default: [], array: true
     t.integer "impressions_count", default: 0
+    t.integer "include_subforem_ids", default: [], array: true
     t.string "name"
     t.bigint "organization_id"
     t.bigint "page_id"
@@ -517,6 +518,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_23_201958) do
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["exclude_role_names"], name: "index_display_ads_on_exclude_role_names", using: :gin
+    t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
@@ -714,8 +716,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_23_201958) do
     t.string "name", null: false
     t.integer "position"
     t.integer "section", default: 0, null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.index ["subforem_id"], name: "index_navigation_links_on_subforem_id"
     t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
   end
 
@@ -838,10 +842,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_23_201958) do
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
+    t.bigint "subforem_id"
     t.string "template"
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+    t.index ["subforem_id"], name: "index_pages_on_subforem_id"
   end
 
   create_table "pghero_query_stats", force: :cascade do |t|

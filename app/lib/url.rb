@@ -41,6 +41,11 @@ module URL
     url(article.path, subforem)
   end
 
+  def self.page(page)
+    subforem = page.subforem || Subforem.find_by(id: RequestStore.store[:subforem_id])
+    url(page.path, subforem)
+  end
+
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for

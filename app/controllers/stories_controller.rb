@@ -126,6 +126,9 @@ class StoriesController < ApplicationController
   end
 
   def handle_page_display
+    redirect_page_if_different_subforem
+    return if performed?
+
     @story_show = true
     set_surrogate_key_header "show-page-#{params[:username]}"
 

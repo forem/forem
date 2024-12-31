@@ -9,8 +9,8 @@ module Admin
     layout "admin"
 
     def index
-      @default_nav_links = NavigationLink.default_section.ordered
-      @other_nav_links = NavigationLink.other_section.ordered
+      @default_nav_links = NavigationLink.from_subforem.default_section.ordered
+      @other_nav_links = NavigationLink.from_subforem.other_section.ordered
     end
 
     def create

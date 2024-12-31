@@ -1,5 +1,7 @@
 class Subforem < ApplicationRecord
   has_many :articles, dependent: :nullify
+  has_many :navigation_links, dependent: :nullify
+  has_many :pages, dependent: :nullify
 
   validates :domain, presence: true, uniqueness: true
 
