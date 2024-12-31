@@ -267,15 +267,15 @@ module ApplicationHelper
   end
 
   def social_media_constructed_url(social_media_type, handle)
-    if social_media_type == :mastodon
+    if social_media_type.to_s == "mastodon"
       handle
-    elsif social_media_type == :twitter
+    elsif social_media_type.to_s == "twitter"
       "https://x.com/#{handle}"
-    elsif social_media_type == :bluesky
+    elsif social_media_type.to_s == "bluesky"
       "https://bsky.app/profile/#{handle}"
-    elsif social_media_type == :linkedin
+    elsif social_media_type.to_s == "linkedin"
       "https://www.linkedin.com/in/#{handle}"
-    elsif social_media_type == :youtube
+    elsif social_media_type.to_s == "youtube"
       "https://www.youtube.com/@#{handle}"
     else
       "https://#{social_media_type}.com/#{handle}"
