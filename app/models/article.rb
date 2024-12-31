@@ -353,12 +353,12 @@ class Article < ApplicationRecord
     subforem_id ||= RequestStore.store[:subforem_id]
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # No additional conditions; just return the current scope
-      where(nil)
+      includes(:subforem).where(nil)
     elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+      includes(:subforem).where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
     else
       # where(subforem_id: subforem_id)
-      where("articles.subforem_id = ?", subforem_id)
+      includes(:subforem).where("articles.subforem_id = ?", subforem_id)
     end
   }
 
