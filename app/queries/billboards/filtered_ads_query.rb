@@ -33,7 +33,7 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
-      @filtered_billboards = included_subforem_ads
+      @filtered_billboards = included_subforem_ads #if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
@@ -122,7 +122,7 @@ module Billboards
     end
 
     def included_subforem_ads
-      @filtered_billboards.where("include_subforem_ids IS NULL OR :subforem_id = ANY(include_subforem_ids)",
+      @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
                                   subforem_id: @subforem_id)
     end
 
