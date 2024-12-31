@@ -20,8 +20,8 @@
         <div id="sidebarWidget__pack" data-tag-info="<%= @tag.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
         </div>
       <% else %>
-        <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}", expires_in: 18.hours) do %>
-          <% boostable_posts = Article.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe])) %>
+        <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
+          <% boostable_posts = Article.from_subforem.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe])) %>
           <% if boostable_posts.present? %>
             <div class="widget">
               <header>

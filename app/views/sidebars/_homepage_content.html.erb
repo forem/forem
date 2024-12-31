@@ -52,8 +52,8 @@
     <%= render partial: "shared/billboard", locals: { billboard: @billboards.third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
   <% unless user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] %>
-    <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}", expires_in: 18.hours) do %>
-      <% boostable_posts = Article.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
+    <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
+      <% boostable_posts = Article.from_subforem.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
       <% if boostable_posts.present? %>
         <section class="widget">
           <header>
