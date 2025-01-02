@@ -57,11 +57,11 @@
   --card-tertiary-bg-hover: rgba(var(--grey-200), 0.55);
   --card-secondary-color: rgb(var(--grey-700));
   --card-border: rgba(var(--grey-900), 0.1);
-  --card-secondary-border: rgba(var(--grey-900), 0.05);
+  --card-secondary-border: rgba(var(--grey-900), 0.033);
 
   /* Header */
   --header-bg: rgb(var(--white));
-  --header-shadow: rgba(var(--black), 0.1);
+  --header-shadow: rgba(var(--black), 0.066);
 
   /* Footer */
   --footer-bg: rgb(var(--grey-200));
@@ -117,8 +117,8 @@
   /* Forms */
   --form-bg: rgb(var(--white));
   --form-bg-focus: rgb(var(--white));
-  --form-border: rgb(var(--grey-300));
-  --form-border-hover: rgb(var(--grey-400));
+  --form-border: rgb(var(--grey-200));
+  --form-border-hover: rgb(var(--grey-300));
   --form-border-focus: var(--focus);
   --form-placeholder-color: rgb(var(--grey-600));
 

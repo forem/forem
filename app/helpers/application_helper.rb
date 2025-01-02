@@ -263,7 +263,7 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}-#{RequestStore.store[:subforem_id]}"
   end
 
   def social_media_constructed_url(social_media_type, handle)
