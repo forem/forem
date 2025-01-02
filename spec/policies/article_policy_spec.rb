@@ -58,7 +58,13 @@ RSpec.describe ArticlePolicy do
         allow(described_class).to receive(:is_root_subforem?).and_return(true)
       end
 
-      it "returns an empty result for create actions" do
+      it "returns users authorized to create in a root subforem" do
+        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        expect(results.map(&:id)).to eq User.with_any_role(:admin, :super_admin).map(&:id)
+      end
+
+      it "returns an empty result for create actions when no admins" do
+        User.with_any_role(:admin, :super_admin).map { |u| u.remove_role(:super_admin); u.remove_role(:admin) }
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
         expect(results).to be_empty
       end

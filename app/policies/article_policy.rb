@@ -24,11 +24,8 @@ class ArticlePolicy < ApplicationPolicy
     case action.to_sym
     when :create?, :new?, :create, :new
       users_scope = users_scope.without_role(:suspended)
-      return users_scope if is_root_subforem? # No one can create in a root subforem
-
-      # If feature-flagged to allow only admins:
-      return users_scope unless limit_post_creation_to_admins?
-
+      return users_scope unless is_root_subforem? || limit_post_creation_to_admins?
+        
       users_scope.with_any_role(*Authorizer::RoleBasedQueries::ANY_ADMIN_ROLES)
     else
       raise "Unhandled predicate: #{action} for #{self}.#{__method__}"
