@@ -19,7 +19,7 @@
   }
 }
 
-.billboard .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.sponsorship-dropdown {
+.billboard .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.bb-dropdown {
   @media (min-width: $breakpoint-m) {
     max-width: 200px;
     min-width: auto;
@@ -79,7 +79,7 @@
 }
 
 .popover-billboard--menuopenupwards {
-  .sponsorship-dropdown {
+  .sponsorship-dropdown, .bb-dropdown {
     top: auto;
     bottom: var(--su-8);
   }
