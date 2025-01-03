@@ -131,7 +131,7 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def article_url
-    @article_url ||= json_data.dig "article", "url"
+    @article_url ||= json_data.dig("article", "url") || json_data.dig("article", "path")
   end
 
   def article_title
