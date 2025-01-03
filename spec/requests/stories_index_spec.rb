@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex" do
+
   it "redirects to the lowercase route", :aggregate_failures do
     get "/Bad_name"
     expect(response).to have_http_status(:moved_permanently)
@@ -14,6 +15,18 @@ RSpec.describe "StoriesIndex" do
   describe "GET stories index" do
     let(:user) { create(:user) }
     let(:org) { create(:organization) }
+
+    it "redirects www to non-www if ENV var set" do
+      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      get "http://www.example.com/"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://example.com/")
+    end
+
+    it "does not redirect www to non-www if ENV var not set" do
+      get "http://www.example.com/"
+      expect(response).to have_http_status(:ok)
+    end
 
     it "renders head content if present" do
       allow(Settings::UserExperience).to receive(:head_content).and_return("head content")
