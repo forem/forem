@@ -773,6 +773,19 @@ RSpec.describe "Api::V1::Articles" do
         expect(article.collection.user).to eq(user)
       end
 
+      it "creates an article belonging to a subforem" do
+        subforem = create(:subforem)
+        second_subforem = create(:subforem, domain: "other-domain.com")
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          subforem_id: second_subforem.id,
+        )
+        expect(response).to have_http_status(:created)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.subforem).to eq(second_subforem)
+      end
+
       it "creates article within a series using the front matter" do
         body_markdown = file_fixture("article_published_series.txt").read
         expect do
