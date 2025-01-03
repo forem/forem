@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :redirect_www_to_root
   before_action :set_subforem
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
@@ -378,6 +379,16 @@ class ApplicationController < ActionController::Base
   helper_method :feature_flag_enabled?
 
   private
+
+  def redirect_www_to_root
+    # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
+    return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
+
+    if request.host.start_with?("www.")
+      new_host = request.host.sub(/^www\./i, "")
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+    end
+  end
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
