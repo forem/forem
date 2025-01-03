@@ -173,6 +173,7 @@ class ApplicationController < ActionController::Base
     RequestStore.store[:default_subforem_id] = Subforem.cached_default_id || nil
     RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
     RequestStore.store[:root_subforem_id] = Subforem.cached_root_id || nil
+    RequestStore.store[:root_subforem_domain] = Subforem.cached_root_domain || nil
   end
 
   def set_subforem_cors_headers

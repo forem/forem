@@ -7,6 +7,11 @@ class AuthPassController < ApplicationController
   before_action :use_iframe_session_store, only: [:iframe]
 
   def iframe
+    unless Subforem.cached_all_domains.include?(request.host)
+      render plain: "Unauthorized", status: :unauthorized
+      return
+    end
+
     if user_signed_in?
       # User is authenticated on the main domain
       session[:user_id] = current_user.id
