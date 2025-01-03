@@ -1,0 +1,60 @@
+<% root_url_component = "#{URL.protocol}//#{RequestStore.store[:root_subforem_domain]}" %>
+<script>
+  var userSignedIn = <%= user_signed_in? %>
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initAuth();
+  } else {
+    document.addEventListener('DOMContentLoaded', initAuth);
+  }
+
+  function initAuth() {
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = '<%= root_url_component %>/auth_pass/iframe';
+
+    document.body.appendChild(iframe);
+
+    window.addEventListener('message', function(event) {
+      if (event.origin !== '<%= root_url_component %>') {
+        console.error('Received message from unauthorized origin:', event.origin);
+        return;
+      }
+
+      var data = event.data;
+
+      if (data.authenticated && !userSignedIn) {
+        authenticateUser(data.token);
+      }
+    });
+
+    function authenticateUser(token) {
+      fetch('/auth_pass/token_login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': getMetaContent('csrf-token'),
+        },
+        body: JSON.stringify({ token: token }),
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        if (data.success) {
+          console.log('User authenticated successfully.');
+        } else {
+          console.error('Authentication failed:', data.error);
+        }
+      })
+      .catch(function(error) {
+        console.error('Error during authentication:', error);
+      });
+    }
+
+    function getMetaContent(name) {
+      var element = document.querySelector('meta[name="' + name + '"]');
+      return element ? element.getAttribute('content') : '';
+    }
+  }
+</script>

@@ -282,6 +282,13 @@ module ApplicationHelper
     end
   end
 
+  def signed_in_default_subforem_or_signed_out_non_default?
+    return false if RequestStore.store[:default_subforem_id].blank?
+    return true if user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
+    return true if !user_signed_in? && RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    false
+  end
+
   def copyright_notice
     start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s
