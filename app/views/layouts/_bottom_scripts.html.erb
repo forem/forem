@@ -1,4 +1,4 @@
-<% default_url_component = "#{URL.protocol}//#{RequestStore.store[:default_subforem_domain]}" %>
+<% default_url_component = "#{URL.protocol}#{RequestStore.store[:default_subforem_domain]}" %>
 <script>
   var userSignedIn = <%= user_signed_in? %>
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
