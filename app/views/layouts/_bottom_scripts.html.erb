@@ -1,4 +1,4 @@
-<% root_url_component = "#{URL.protocol}//#{RequestStore.store[:root_subforem_domain]}" %>
+<% default_url_component = "#{URL.protocol}//#{RequestStore.store[:default_subforem_domain]}" %>
 <script>
   var userSignedIn = <%= user_signed_in? %>
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
@@ -10,12 +10,12 @@
   function initAuth() {
     var iframe = document.createElement('iframe');
     iframe.style.display = 'none';
-    iframe.src = '<%= root_url_component %>/auth_pass/iframe';
+    iframe.src = '<%= default_url_component %>/auth_pass/iframe';
 
     document.body.appendChild(iframe);
 
     window.addEventListener('message', function(event) {
-      if (event.origin !== '<%= root_url_component %>') {
+      if (event.origin !== '<%= default_url_component %>') {
         console.error('Received message from unauthorized origin:', event.origin);
         return;
       }
