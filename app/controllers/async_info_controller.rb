@@ -5,7 +5,7 @@ class AsyncInfoController < ApplicationController
 
   def base_data
     flash.discard(:notice)
-    if user_signed_in?
+    if user_signed_in? && verify_state_of_user_session?
       @user = current_user.decorate
       respond_to do |format|
         format.json do
@@ -58,5 +58,11 @@ class AsyncInfoController < ApplicationController
     # We're sending HTML over the wire hence 'render layout: false' enforces rails NOT TO look for a layout file to wrap
     # the view file - it allows us to not include the HTML headers for sending back to client.
     render layout: false
+  end
+
+  def verify_state_of_user_session?
+    return true unless current_user.last_sign_in_at.present? && current_user.current_sign_in_at.blank?
+    sign_out(current_user)
+    false
   end
 end
