@@ -58,6 +58,9 @@ function fetchBaseData() {
               gtag('set', 'user_Id', JSON.parse(user).id);
             }
           }, 400);
+        } else if (user){
+          // Reload page if user is present but document user check is not
+          location.reload();
         } else {
           // Ensure user data is not exposed if no one is logged in
           delete document.body.dataset.user;
