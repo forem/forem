@@ -7,8 +7,6 @@ class AuthPassController < ApplicationController
   before_action :use_iframe_session_store, only: [:iframe]
 
   def iframe
-    Rails.logger.info request.host
-    Rails.logger.info Subforem.cached_all_domains
     unless Subforem.cached_all_domains.include?(request.host)
       render plain: "Unauthorized", status: :unauthorized
       return
@@ -57,7 +55,7 @@ class AuthPassController < ApplicationController
 
     if payload && payload["user_id"]
       user = User.find_by(id: payload["user_id"])
-      if user
+      if user && user_not_signed_out?(user)
         # Sign the user in
         session[:user_id] = user.id
     
@@ -132,4 +130,13 @@ class AuthPassController < ApplicationController
       headers["Access-Control-Allow-Credentials"] = "true"
     end
   end
+
+  def user_not_signed_out?(user)
+    # This is just checking that they have not explicitely signed out lately.
+    return true if user.current_sign_in_at.present?
+    return true if user.last_sign_in_at.blank? && user.current_sign_in_at.blank? # User never signed out.
+
+    false
+  end
+
 end
