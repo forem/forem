@@ -545,6 +545,10 @@ class Article < ApplicationRecord
     ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
   end
 
+  def url
+    URL.article(self)
+  end
+
   def username
     return organization.slug if organization
 

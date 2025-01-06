@@ -7,7 +7,7 @@ module Api
       title description main_image published_at crossposted_at social_image
       cached_tag_list slug path canonical_url comments_count
       public_reactions_count created_at edited_at last_comment_at published
-      updated_at video_thumbnail_url reading_time
+      updated_at video_thumbnail_url reading_time subforem_id
     ].freeze
 
     ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION = [
@@ -25,6 +25,7 @@ module Api
       title description main_image published published_at cached_tag_list
       slug path canonical_url comments_count public_reactions_count
       page_views_count crossposted_at body_markdown updated_at reading_time
+      subforem_id
     ].freeze
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -148,7 +149,7 @@ module Api
       allowed_params = [
         :title, :body_markdown, :published, :series,
         :main_image, :canonical_url, :description, { tags: [] },
-        :published_at
+        :published_at, :subforem_id
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
       allowed_params << :clickbait_score if @user.super_admin?
