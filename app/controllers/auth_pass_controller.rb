@@ -12,7 +12,7 @@ class AuthPassController < ApplicationController
       return
     end
 
-    if user_signed_in? && user_not_signed_out?(user)
+    if user_signed_in? && user_not_signed_out?(current_user)
       # User is authenticated on the main domain
       session[:user_id] = current_user.id
       @token = generate_auth_token(current_user)
