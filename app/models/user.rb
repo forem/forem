@@ -120,7 +120,7 @@ class User < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
-         :recoverable, :lockable
+         :recoverable, :lockable, :trackable
 
   validates :articles_count, presence: true
   validates :badge_achievements_count, presence: true
