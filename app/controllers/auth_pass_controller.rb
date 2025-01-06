@@ -7,6 +7,8 @@ class AuthPassController < ApplicationController
   before_action :use_iframe_session_store, only: [:iframe]
 
   def iframe
+    Rails.logger.info request.host
+    Rails.logger.info Subforem.cached_all_domains
     unless Subforem.cached_all_domains.include?(request.host)
       render plain: "Unauthorized", status: :unauthorized
       return
