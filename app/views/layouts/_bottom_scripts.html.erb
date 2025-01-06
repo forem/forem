@@ -43,6 +43,10 @@
       .then(function(data) {
         if (data.success) {
           console.log('User authenticated successfully.');
+          if (document.head.querySelector('meta[name="user-signed-in"][content="false"]')) {
+            // Reload the page to update the user's state
+            location.reload();
+          }
         } else {
           console.error('Authentication failed:', data.error);
         }
