@@ -768,7 +768,7 @@ GEM
     rspec-support (3.12.2)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rss (0.2.9)
+    rss (0.3.1)
       rexml
     rswag-specs (2.5.1)
       activesupport (>= 3.1, < 7.1)
@@ -1108,7 +1108,7 @@ DEPENDENCIES
   rspec-rails (~> 6.0, >= 6.0.3)
   rspec-retry (~> 0.6)
   rspec_junit_formatter (~> 0.6)
-  rss (~> 0.2.9)
+  rss (~> 0.3.1)
   rswag-specs (~> 2.5.1)
   rubocop (~> 1.42)
   rubocop-performance (~> 1.14)
