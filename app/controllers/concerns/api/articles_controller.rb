@@ -149,7 +149,7 @@ module Api
       allowed_params = [
         :title, :body_markdown, :published, :series,
         :main_image, :canonical_url, :description, { tags: [] },
-        :published_at, :subforem_id
+        :published_at, :subforem_id, :language
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
       allowed_params << :clickbait_score if @user.super_admin?
