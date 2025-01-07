@@ -16,7 +16,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       let!(:user_outside_segment) { create(:user, :with_newsletters) }
 
       before do
-        audience_segment.segmented_users.create! user: user_in_segment
+        audience_segment.segmented_users.create!(user: user_in_segment)
         # Stub out the segment to return only user_in_segment
         allow(audience_segment).to receive(:users).and_return(User.where(id: user_in_segment.id))
       end
@@ -61,7 +61,6 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
     context "when there are more users than BATCH_SIZE" do
       before do
         # Suppose it's non-production environment => BATCH_SIZE = 10
-        # We'll create 15 users => 2 batches
         @batch_size = described_class::BATCH_SIZE
         create_list(:user, @batch_size, :with_newsletters)
         create_list(:user, 5, :with_newsletters)
@@ -72,7 +71,6 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
         # We expect two sets of arguments:
         #  1) first 10 user IDs
         #  2) next 5 user IDs
-        # The exact user IDs might vary, so we can check the call count or partial matching
         expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).exactly(2).times
       end
     end
@@ -88,6 +86,38 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       it "uses BATCH_SIZE = 10" do
         allow(Rails.env).to receive(:production?).and_return(false)
         expect(described_class::BATCH_SIZE).to eq(10)
+      end
+    end
+
+    context "when users are suspended or spam" do
+      let!(:user_suspended) do
+        # Example factory usage — adjust to match your app’s role assignment
+        create(:user, :with_newsletters).tap { |u| u.add_role(:suspended) }
+      end
+      let!(:user_spam) do
+        create(:user, :with_newsletters).tap { |u| u.add_role(:spam) }
+      end
+      let!(:user_regular) { create(:user, :with_newsletters) }
+
+      it "excludes those users from the scope" do
+        described_class.new.perform(email.id)
+
+        # The only user who should be enqueued is user_regular
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [user_regular.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id
+        )
+
+        # Check that suspended or spam users were not passed
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(user_suspended.id), anything, anything, anything, anything
+        )
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(user_spam.id), anything, anything, anything, anything
+        )
       end
     end
   end
