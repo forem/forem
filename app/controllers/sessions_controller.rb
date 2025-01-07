@@ -3,6 +3,7 @@ class SessionsController < Devise::SessionsController
     if user_signed_in?
       current_user.update_columns(current_sign_in_at: nil, current_sign_in_ip: nil)
       cookies.delete(:forem_user_signed_in)
-    super
+      super
+    end
   end
 end
