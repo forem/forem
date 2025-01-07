@@ -516,7 +516,6 @@ RSpec.describe "Api::V1::Articles" do
           comments_count public_reactions_count page_views_count
           published_timestamp body_markdown positive_reactions_count cover_image
           tag_list canonical_url reading_time_minutes user organization flare_tag
-          language subforem_id
         ]
 
         expect(response.parsed_body.first.keys).to match_array(keys)
@@ -1387,7 +1386,7 @@ RSpec.describe "Api::V1::Articles" do
           type_of id title description cover_image readable_publish_date social_image
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
-          published_timestamp user organization flare_tag reading_time_minutes language subfoem_id
+          published_timestamp user organization flare_tag reading_time_minutes language subforem_id
         ]
 
         expect(response.parsed_body.first.keys).to match_array keys
