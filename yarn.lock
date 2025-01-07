@@ -2667,16 +2667,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@honeybadger-io/js@npm:^6.9.1":
-  version: 6.9.1
-  resolution: "@honeybadger-io/js@npm:6.9.1"
+"@honeybadger-io/js@npm:^6.10.1":
+  version: 6.10.1
+  resolution: "@honeybadger-io/js@npm:6.10.1"
   dependencies:
     "@honeybadger-io/core": "npm:^6.6.0"
     "@types/aws-lambda": "npm:^8.10.89"
     "@types/express": "npm:^4.17.13"
   bin:
-    honeybadger-checkins-sync: dist/server/check-ins-sync-exec.js
-  checksum: 10c0/098c8694706874e91dc8ebcd71463de50175f91ad9b901e24d0f19a66f6549109e8e8a49568241d9b9c955dd96c2a6c5edd6edf9a34cc0e992a7aa123450af8a
+    honeybadger-checkins-sync: scripts/check-ins-sync-bin.js
+  checksum: 10c0/603955bd3925625e835bec8cde4a60be6e1b3ed72d73ac946183a41b88d8d3371d617d37e4ae30e1c20cd59b60de83c3426d3330788e7206fc1dd4d2b890346e
   languageName: node
   linkType: hard
 
@@ -9324,7 +9324,7 @@ __metadata:
     "@cypress/code-coverage": "npm:^3.12.36"
     "@etchteam/storybook-addon-css-variables-theme": "npm:^1.6.0"
     "@faker-js/faker": "npm:^7.6.0"
-    "@honeybadger-io/js": "npm:^6.9.1"
+    "@honeybadger-io/js": "npm:^6.10.1"
     "@hotwired/stimulus": "npm:3.2.2"
     "@knapsack-pro/cypress": "npm:^7.4.0"
     "@rails/ujs": "npm:7.1.3"
