@@ -41,7 +41,7 @@ function fetchBaseData() {
           document.body.dataset.broadcast = broadcast;
         }
 
-        if (checkUserLoggedIn()) {
+        if (checkUserLoggedIn() && user) {
           document.body.dataset.user = user;
           document.body.dataset.creator = creator;
           document.body.dataset.clientGeolocation =
@@ -58,6 +58,12 @@ function fetchBaseData() {
               gtag('set', 'user_Id', JSON.parse(user).id);
             }
           }, 400);
+        } else if (checkUserLoggedIn()){
+          // Reload page if user is present but document user check is not
+          delete document.body.dataset.user;
+          delete document.body.dataset.creator;
+          browserStoreCache('remove');
+          location.reload();
         } else {
           // Ensure user data is not exposed if no one is logged in
           delete document.body.dataset.user;

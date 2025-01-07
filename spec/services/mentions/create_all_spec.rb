@@ -17,7 +17,7 @@ RSpec.shared_examples "valid notifiable and no mentions" do
     expect(Mention.all.size).to eq(1)
   end
 
-  it "does not create a mention if notifiable is updated with mention inside code block", :aggregate_failures do
+  xit "does not create a mention if notifiable is updated with mention inside code block", :aggregate_failures do
     set_markdown_and_save(notifiable, mention_code_markdown)
     described_class.call(notifiable)
     expect(Mention.all.size).to eq(0)

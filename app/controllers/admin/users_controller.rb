@@ -10,6 +10,9 @@ module Admin
       organization_id identity_id
       credit_action credit_amount
       reputation_modifier
+      max_score
+      tag_name
+      email
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -60,6 +63,9 @@ module Admin
       set_banishable_user
       set_feedback_messages
       set_related_reactions
+      @articles = @user.articles.order(created_at: :desc)
+      # Remove the .includes(:commentable)
+      @comments = @user.comments.order(created_at: :desc)
       set_user_details
     end
 
@@ -103,18 +109,60 @@ module Admin
       redirect_to admin_user_path(@user)
     end
 
+    def update_email
+      @user = User.find(params[:id])
+      old_email = @user.email
+      new_email = user_params[:email]
+      if @user.update_columns(email: new_email)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "Update Email",
+          content: "Updated email from #{old_email} to #{new_email}",
+        )
+        flash[:success] = I18n.t("views.admin.users.update_email.success")
+      else
+        flash[:error] = I18n.t("views.admin.users.update_email.error")
+      end
+      redirect_to admin_user_path(@user)
+    end
+
+    def max_score
+      @user = User.find(params[:id])
+      max_score_value = user_params[:max_score]
+      note_content = if user_params[:new_note].present?
+                       "Changed user's maximum score to #{max_score_value}. " \
+                         "Reason: #{user_params[:new_note]}"
+                     else
+                       "Changed user's maximum score to #{max_score_value}."
+                     end
+      if @user.update(max_score: max_score_value)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "max_score_change",
+          content: note_content,
+        )
+        flash[:success] = I18n.t("views.admin.users.max_score.success", max_score: max_score_value)
+      else
+        flash[:error] = I18n.t("views.admin.users.max_score.error")
+      end
+      redirect_to admin_user_path(@user)
+    end
+
     def destroy
       role = Role.find(params[:role_id])
       authorize(role, :remove_role?)
-
-      resource_type = params[:resource_type]
 
       @user = User.find(params[:user_id])
 
       response = ::Users::RemoveRole.call(
         user: @user,
         role: role.name,
-        resource_type: resource_type,
+        resource_type: params[:resource_type],
+        resource_id: params[:resource_id],
       )
 
       if response.success
@@ -172,6 +220,29 @@ module Admin
         end
       end
       Credits::Manage.call(@user, credit_params)
+    end
+
+    def add_tag_mod_role
+      user = User.find(params[:id])
+      tag = Tag.find_by(name: user_params[:tag_name])
+
+      unless tag
+        flash[:error] = I18n.t("errors.messages.general",
+                               errors: I18n.t("admin.users_controller.tag_not_found",
+                                              tag_name: user_params[:tag_name]))
+        return redirect_to admin_user_path(user.id)
+      end
+
+      result = TagModerators::Add.call(user.id, tag.id)
+      if result.success?
+        flash[:success] = I18n.t("admin.tags.moderators_controller.added", username: user.username)
+      else
+        flash[:error] = I18n.t("errors.messages.general", errors:
+          I18n.t("admin.tags.moderators_controller.not_found_or",
+                 user_id: user.id,
+                 errors: result.errors))
+      end
+      redirect_to admin_user_path(user.id)
     end
 
     def export_data

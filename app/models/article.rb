@@ -32,6 +32,7 @@ class Article < ApplicationRecord
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series
+  attr_accessor :body_url
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -42,6 +43,7 @@ class Article < ApplicationRecord
 
   belongs_to :organization, optional: true
   belongs_to :user
+  belongs_to :subforem, optional: true
 
   counter_culture :user
   counter_culture :organization
@@ -118,6 +120,11 @@ class Article < ApplicationRecord
   def self.unique_url_error
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
+
+  enum type_of: {
+    full_post: 0,
+    status: 1,
+}
 
   has_one :discussion_lock, dependent: :delete
 
@@ -207,7 +214,6 @@ class Article < ApplicationRecord
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
-  validates :title, presence: true, length: { maximum: 128 }
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -216,9 +222,13 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
+  validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
+  validate :title_length_based_on_type_of
+  validate :title_unique_for_user_past_five_minutes
+  validate :restrict_attributes_with_status_types
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
   validate :validate_tag
@@ -228,8 +238,10 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
+  before_validation :set_markdown_from_body_url, if: :body_url?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
+  before_validation :replace_blank_title_for_status
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
   before_save :set_cached_entities
@@ -327,12 +339,28 @@ class Article < ApplicationRecord
   }
   scope :unpublished, -> { where(published: false) }
 
+  scope :full_posts, -> { where(type_of: :full_post) }
+  scope :statuses, -> { where(type_of: :status) }
+
   scope :not_authored_by, ->(user_id) { where.not(user_id: user_id) }
 
   # [@jeremyf] For approved articles is there always an assumption of
   #            published?  Regardless, the scope helps us deal with
   #            that in the future.
   scope :approved, -> { where(approved: true) }
+
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+      # No additional conditions; just return the current scope
+      where(nil)
+    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+    else
+      # where(subforem_id: subforem_id)
+      where("articles.subforem_id = ?", subforem_id)
+    end
+  }
 
   scope :admin_published_with, lambda { |tag_name|
     published
@@ -363,18 +391,18 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
-           :last_comment_at, :main_image_height)
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at,
+           :main_image, :main_image_background_hex_color, :updated_at, :max_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-           :published_from_feed, :crossposted_at, :published_at, :created_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score)
+           :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
   }
 
   scope :sorting, lambda { |value|
@@ -445,7 +473,7 @@ class Article < ApplicationRecord
     # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
     time_ago = 75.days.ago if time_ago.nil?
 
-    relation = Article.published
+    relation = Article.published.from_subforem
       .order(organic_page_views_past_month_count: :desc)
       .where("score > ?", 8)
       .where("published_at > ?", time_ago)
@@ -460,7 +488,7 @@ class Article < ApplicationRecord
   end
 
   def self.search_optimized(tag = nil)
-    relation = Article.published
+    relation = Article.published.from_subforem
       .order(updated_at: :desc)
       .where.not(search_optimized_title_preamble: nil)
       .limit(20)
@@ -471,6 +499,17 @@ class Article < ApplicationRecord
     else
       relation.pluck(*fields)
     end
+  end
+
+  def processed_html_final
+    # This is a final non-database-driven step to adjust processed html
+    # It is sort of a hack to avoid having to reprocess all articles
+    # It is currently only for this one cloudflare domain change
+    # It is duplicated across article, bullboard and comment where it is most needed
+    # In the future this could be made more customizable. For now it's just this one thing.
+    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
+
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def scheduled?
@@ -504,6 +543,10 @@ class Article < ApplicationRecord
     return "" if comments_count.zero?
 
     ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+  end
+
+  def url
+    URL.article(self)
   end
 
   def username
@@ -593,9 +636,14 @@ class Article < ApplicationRecord
   end
 
   def update_score
+    base_subscriber_adjustment = user.base_subscriber? ? Settings::UserExperience.index_minimum_score : 0
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment
+    accepted_max = [max_score, user&.max_score.to_i].min
+    accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
+    self.score = accepted_max if accepted_max.positive? && accepted_max < score
+
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
@@ -628,6 +676,10 @@ class Article < ApplicationRecord
 
     followers.uniq.compact
   end
+
+  def body_url?
+    body_url.present?  # Returns true if body_url is not nil or an empty string
+  end  
 
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
@@ -662,7 +714,27 @@ class Article < ApplicationRecord
     Articles::ScoreCalcWorker.perform_async(id)
   end
 
+  def evaluate_and_update_column_from_markdown
+    content_renderer = processed_content
+    return unless content_renderer
+
+    result = content_renderer.process_article
+    self.update_column(:processed_html, result.processed_html)
+  end
+  
+  def body_preview
+    return unless type_of == "status"
+
+    processed_html_final
+  end
+
   private
+
+  def set_markdown_from_body_url
+    return unless body_url.present?
+
+    self.body_markdown = "{% embed #{body_url} %}"
+  end
 
   def collection_cleanup
     # Should only check to cleanup if Article was removed from collection
@@ -724,6 +796,48 @@ class Article < ApplicationRecord
 
     @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
   end
+
+  def title_length_based_on_type_of
+    max_length = case type_of
+                 when "full_post"
+                   128
+                 when "status"
+                   256
+                 else
+                   128 # Default length if type_of is nil or another value
+                 end
+    if title.blank?
+      errors.add(:title, "can't be blank")
+    elsif title.to_s.length > max_length
+      errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
+    end
+  end
+
+  def replace_blank_title_for_status
+    # Get content within H2 tags via regex
+    self.title = "[Boost]" if title.blank? && type_of == "status"
+  end
+
+  def restrict_attributes_with_status_types
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted? && !body_markdown_changed?
+
+    # For now, there is no body allowed for status types
+    if type_of == "status" && body_url.blank? && (body_markdown.present? || main_image.present? || collection_id.present?)
+      errors.add(:body_markdown, "is not allowed for status types")
+    end
+  end
+
+  def title_unique_for_user_past_five_minutes
+    # Validates that the user did not create an article with the same title in the last five minutes
+    return unless user_id && title
+    return unless new_record?
+
+    if Article.where(user_id: user_id, title: title).where("created_at > ?", 5.minutes.ago).exists?
+      errors.add(:title, "has already been used in the last five minutes")
+    end
+  end
+
 
   def evaluate_markdown
     content_renderer = processed_content
@@ -984,14 +1098,15 @@ class Article < ApplicationRecord
   def set_nth_published_at
     return unless nth_published_by_author.zero? && published
 
-    published_article_ids = user.articles.published.order(published_at: :asc).ids
+    published_article_ids = user.articles.published.from_subforem.order(published_at: :asc).ids
     index = published_article_ids.index(id)
 
     self.nth_published_by_author = (index || published_article_ids.size) + 1
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
+    truncated_title = title.size > 100 ? title[0..100].split[0...-1].join(" ") : title
+    "#{Sterile.sluggerize(truncated_title)}-#{rand(100_000).to_s(26)}"
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)

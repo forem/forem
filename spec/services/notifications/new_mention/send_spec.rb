@@ -25,7 +25,8 @@ end
 
 RSpec.describe Notifications::NewMention::Send, type: :service do
   let(:user) { create(:user) }
-  let!(:article) { create(:article) }
+  let(:subforem) { create(:subforem) }
+  let!(:article) { create(:article, subforem: subforem) }
   let(:article_author) { article.user }
   let!(:mention) { create(:mention, mentionable: article, user: user) }
 
@@ -44,6 +45,7 @@ RSpec.describe Notifications::NewMention::Send, type: :service do
     expect(notification.notifiable_id).to eq(mention.id)
     expect(notification.user_id).to eq(mention.user.id)
     expect(notification.action).to be_nil
+    expect(notification.subforem_id).to eq(article.subforem_id)
     expect(notification.json_data["user"]["id"]).to eq(article.user.id)
     expect(notification.json_data["user"]["username"]).to eq(article.user.username)
   end

@@ -106,6 +106,7 @@
     "svgo": "2.8.0"
   },
   "dependencies": {
+    "@algolia/recommend": "4.24.0",
     "@babel/core": "^7.23.3",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@babel/plugin-proposal-export-default-from": "^7.23.3",

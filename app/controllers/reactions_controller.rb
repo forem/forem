@@ -50,6 +50,7 @@ class ReactionsController < ApplicationController
     result = ReactionHandler.toggle(params, current_user: current_user)
 
     if result.success?
+      send_algolia_insight if result.action == "create"
       render json: { result: result.action, category: result.category }
     else
       render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
@@ -101,5 +102,21 @@ class ReactionsController < ApplicationController
     return unless params[:reactable_type] == "Article"
 
     Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+  end
+
+  def send_algolia_insight
+    return unless session_current_user_id &&
+      params[:reactable_type] == "Article" &&
+      Settings::General.algolia_application_id.present? &&
+      Settings::General.algolia_api_key.present?
+
+    AlgoliaInsightsService.new.track_event(
+      "conversion",
+      "Reaction Created",
+      session_current_user_id,
+      params[:reactable_id].to_i,
+      "Article_#{Rails.env}",
+      Time.current.to_i * 1000,
+    )
   end
 end

@@ -5,6 +5,9 @@ RSpec.describe "UserProfiles" do
   let(:organization) { create(:organization) }
   let(:current_user) { create(:user) }
 
+  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
+  let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+
   describe "GET /:username" do
     it "renders to appropriate page" do
       get "/#{user.username}"
@@ -18,6 +21,20 @@ RSpec.describe "UserProfiles" do
       create(:profile_pin, pinnable: last_article, profile: user)
       get "/#{user.username}"
       expect(response.body).to include "Pinned"
+    end
+
+    context "when has articles" do
+      before do
+        create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")
+        Article.create(user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "", main_image: "")
+      end
+
+      it "displays only 'full_post' articles and excludes 'status' articles", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("Super Article")
+        expect(response.body).not_to include("Status Update")
+      end
     end
 
     it "calls user by their username in the 'more info' area" do
@@ -65,18 +82,6 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include("/feed/#{user.username}")
     end
 
-    it "renders user payment pointer if set" do
-      user.update_column(:payment_pointer, "test-payment-pointer")
-      get "/#{user.username}"
-      expect(response.body).to include "author-payment-pointer"
-      expect(response.body).to include "test-payment-pointer"
-    end
-
-    it "does not render payment pointer if not set" do
-      get "/#{user.username}"
-      expect(response.body).not_to include "author-payment-pointer"
-    end
-
     it "renders sidebar profile field elements in sidebar" do
       create(:profile_field, label: "whoaaaa", display_area: "left_sidebar")
       get "/#{user.username}"
@@ -91,6 +96,13 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include "<p>Location</p>"
       expect(response.body).to include user.profile.location
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
+    end
+
+    it "creates profile on the fly if doesn't exist" do
+      user.profile.destroy
+      expect(user.reload.profile).to be_nil
+      get "/#{user.username}"
+      expect(user.reload.profile).not_to be_nil
     end
 
     context "when has comments" do
@@ -112,6 +124,20 @@ RSpec.describe "UserProfiles" do
         get user.path
         expect(response.body).not_to include("nice_comment")
         expect(response.body).not_to include("bad_comment")
+      end
+    end
+
+    context "when has articles" do
+      before do
+        create(:article, user: user, title: "Super Article", published: true)
+        create(:article, user: user, score: -500, title: "Spam Article", published: true)
+      end
+
+      it "displays articles with good and bad score", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("Super Article")
+        expect(response.body).to include("Spam Article")
       end
     end
 
@@ -160,6 +186,119 @@ RSpec.describe "UserProfiles" do
       it "does not render feed link if no stories" do
         get organization.path
         expect(response.body).not_to include("/feed/#{organization.slug}")
+      end
+
+      it "shows noindex when org has no articles" do
+        get organization.path
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "shows noindex when org has articles with negative total score" do
+        create(:article, organization_id: organization.id, score: 2)
+        create(:article, organization_id: organization.id, score: -4)
+        get organization.path
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "shows noindex when org has only articles with no score" do
+        create(:article, organization_id: organization.id, score: 0)
+        get organization.path
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "does not show noindex when org has articles with positive score" do
+        create(:article, organization_id: organization.id, score: 4)
+        get organization.path
+        expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "raises not found if articles have 0 total score and org users have negative total score" do
+        user.update_column(:score, -1)
+        create(:article, organization_id: organization.id, score: 0)
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        expect { get organization.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "does not raise not found if articles have positive total score even if users have negative total score" do
+        user.update_column(:score, -1)
+        create(:article, organization_id: organization.id, score: 1)
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        get organization.path
+        expect(response).to be_successful
+      end
+
+      it "does not raise not found if user signed in" do
+        sign_in current_user
+        user.update_column(:score, -1)
+        create(:article, organization_id: organization.id, score: 0)
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        get organization.path
+        expect(response).to be_successful
+      end
+
+      context "redirect_if_inactive_in_subforem_for_organization" do
+        context "when the organization is 'inactive' in the current subforem" do
+          before do
+            organization.articles.delete_all
+          end
+
+          after do
+            RequestStore.store[:default_subforem_id] = nil
+            RequestStore.store[:subforem_id] = nil
+          end
+
+          it "redirects to the organization's path in the default subforem" do
+            get organization.path, headers: { "Host" => other_subforem.domain }
+            expect(response).to have_http_status(:moved_permanently)
+            expect(response).to redirect_to(
+              URL.url(organization.slug, default_subforem)
+            )
+          end
+        end
+
+        context "when the organization has stories in the current subforem" do
+          before do
+            # Give the organization a story so it is 'active' in other_subforem
+            create(:article, organization: organization, subforem: other_subforem)
+
+            RequestStore.store[:default_subforem_id] = default_subforem.id
+            RequestStore.store[:subforem_id] = other_subforem.id
+          end
+
+          after do
+            RequestStore.store[:default_subforem_id] = nil
+            RequestStore.store[:subforem_id] = nil
+          end
+
+          it "does not redirect away from the current subforem" do
+            get organization.path, headers: { "Host" => other_subforem.domain }
+            expect(response).to have_http_status(:ok)
+            expect(response).not_to be_redirect
+          end
+        end
+
+        context "when the organization only has stories in the default subforem" do
+          before do
+            # Org is empty in 'other_subforem', but has a story in default_subforem
+            create(:article, organization: organization, subforem: default_subforem)
+
+            RequestStore.store[:default_subforem_id] = default_subforem.id
+            RequestStore.store[:subforem_id] = other_subforem.id
+          end
+
+          after do
+            RequestStore.store[:default_subforem_id] = nil
+            RequestStore.store[:subforem_id] = nil
+          end
+
+          it "redirects to the default subforem since it's 'inactive' in current subforem" do
+            get organization.path, headers: { "Host" => other_subforem.domain }
+            expect(response).to have_http_status(:moved_permanently)
+            expect(response).to redirect_to(
+              URL.url(organization.slug, default_subforem)
+            )
+          end
+        end
       end
     end
 

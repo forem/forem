@@ -4,6 +4,8 @@ import { articlePropTypes } from '../../common-prop-types';
 import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
+/* global timeAgo */
+
 export const Meta = ({ article, organization }) => {
   const orgArticleIndexClassAbsent = !document.getElementById(
     'organization-article-index',
@@ -52,8 +54,7 @@ export const Meta = ({ article, organization }) => {
                 ? article.user.username
                 : article.user.name,
             )}
-          </a>
-
+          </a>          
           <MinimalProfilePreviewCard
             triggerId={`story-author-preview-trigger-${article.id}`}
             contentId={`story-author-preview-content-${article.id}`}
@@ -61,6 +62,7 @@ export const Meta = ({ article, organization }) => {
             name={article.user.name}
             profileImage={article.user.profile_image_90}
             userId={article.user_id}
+            subscriber={article.user.cached_base_subscriber ? 'true' : 'false'}
           />
           {organization &&
             !document.getElementById('organization-article-index') && (
@@ -76,14 +78,20 @@ export const Meta = ({ article, organization }) => {
                 </a>
               </span>
             )}
+          {article.type_of === 'status' && (<div class='color-base-60 pl-1 inline-block fs-xs'>{timeAgo({
+              oldTimeInSeconds: article.published_at_int,
+              formatter: (x) => x,
+              maxDisplayedAge: 60 * 60 * 24 * 7,
+            })}</div>)}
+          {article.type_of === 'status' && article.edited_at > article.published_timestamp && (<div class='color-base-60 pl-1 inline-block fs-xs'>(Edited)</div>)}
         </div>
-        <a href={article.path} className="crayons-story__tertiary fs-xs">
+        {article.type_of !== 'status' && (<a href={article.url} className="crayons-story__tertiary fs-xs">
           <PublishDate
             readablePublishDate={article.readable_publish_date}
             publishedTimestamp={article.published_timestamp}
             publishedAtInt={article.published_at_int}
           />
-        </a>
+        </a>)}
       </div>
     </div>
   );

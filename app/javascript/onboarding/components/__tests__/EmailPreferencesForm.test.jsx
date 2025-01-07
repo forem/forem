@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent, waitFor } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { axe } from 'jest-axe';
 
@@ -80,19 +80,64 @@ describe('EmailPreferencesForm', () => {
 
   it('should render a stepper', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
-
-    expect(queryByTestId('stepper')).toExist();
+    expect(queryByTestId('stepper')).not.toBeNull();
   });
 
   it('should render a back button', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
-
-    expect(queryByTestId('back-button')).toExist();
+    expect(queryByTestId('back-button')).not.toBeNull();
   });
 
   it('should render a button that says Finish', () => {
     const { queryByText } = renderEmailPreferencesForm();
+    expect(queryByText('Finish')).not.toBeNull();
+  });
 
-    expect(queryByText('Finish')).toExist();
+  it('should show the reconsideration prompt when the checkbox is not checked', async () => {
+    const { getByText } = renderEmailPreferencesForm();
+    const finishButton = getByText('Finish');
+
+    fireEvent.click(finishButton);
+
+    await waitFor(() => {
+      expect(getByText(/We Recommend Subscribing to Emails/i)).not.toBeNull();
+    });
+  });
+
+  it('should handle "No thank you" button click in the reconsideration prompt', async () => {
+    const { getByText, findByLabelText } = renderEmailPreferencesForm();
+    const checkbox = await findByLabelText(/receive weekly newsletter/i);
+    const finishButton = getByText('Finish');
+
+    fireEvent.click(finishButton);
+
+    await waitFor(() => {
+      expect(getByText(/We Recommend Subscribing to Emails/i)).not.toBeNull();
+    });
+
+    const noThankYouButton = getByText('No thank you');
+    fireEvent.click(noThankYouButton);
+
+    // Verify that the `finishWithoutEmail` function is called
+    expect(checkbox.checked).toBe(false);
+  });
+
+  it('should handle "Count me in" button click in the reconsideration prompt', async () => {
+    const { getByText } = renderEmailPreferencesForm();
+    const finishButton = getByText('Finish');
+
+    fireEvent.click(finishButton);
+
+    await waitFor(() => {
+      expect(getByText(/We Recommend Subscribing to Emails/i)).not.toBeNull();
+    });
+
+    const countMeInButton = getByText('Count me in');
+    fireEvent.click(countMeInButton);
+
+    // Verify that the `finishWithEmail` function is called
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith('/onboarding/notifications', expect.any(Object));
+    });
   });
 });

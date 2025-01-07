@@ -8,6 +8,49 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     described_class.new(raw_markdown).finalize
   end
 
+  it "renders complex markdown content without Liquid syntax errors" do
+    markdown_content = <<~MARKDOWN
+      GitHub Copilot, the AI-powered coding assistant, has recently introduced [Copilot Extensions](https://github.com/features/copilot/extensions) to enhance its ecosystem. This feature, now in [public beta](https://github.blog/news-insights/product-news/enhancing-the-github-copilot-ecosystem-with-copilot-extensions-now-in-public-beta/), allows developers to create custom extensions that integrate with Copilot. In this blog post, we'll walk through the process of creating your first GitHub Copilot extension.
+  
+      Before we begin, it's important to note that you need to have an active GitHub Copilot subscription to create and use Copilot extensions.
+  
+      ## Creating the Endpoint for Your Copilot Extension
+  
+      A Copilot extension is essentially a GitHub app with a specific endpoint. Let's set up the project and create this endpoint, which together will form your Copilot extension.
+  
+      ### Setting Up Your Project
+  
+      In this guide, we're using [Hono.js](https://hono.dev/) as our web framework, but you can use any web framework or web server of your choice. The core concepts will remain the same regardless of the framework you choose. The only thing to be aware of about the SDK is, for the moment, the only languages supported are TypeScript and JavaScript.
+  
+      1. Create a new Hono project using the Hono CLI:
+  
+          ```bash
+          npm create hono@latest
+          ```
+  
+          Follow the prompts to set up your project. This will create a new TypeScript project using [Hono.js](https://hono.dev/), a lightweight and fast web framework.
+  
+      2. Install the preview SDK for Copilot extensions and Octokit's core package:
+  
+          ```bash
+          npm install @copilot-extensions/preview-sdk @octokit/core
+          ```
+    MARKDOWN
+  
+    # Ensure that rendering does not raise any errors
+    expect { generate_and_parse_markdown(markdown_content) }.not_to raise_error
+  
+    # Generate the HTML output
+    output = generate_and_parse_markdown(markdown_content)
+  
+    # Check that the output does not contain any Liquid syntax errors
+    expect(output).not_to include("Liquid syntax error: Unknown tag")
+  
+    # Optionally, you can check if the output contains expected HTML elements
+    expect(output).to include('<pre class="highlight shell"><code>npm create hono@latest
+</code></pre>')
+  end
+
   it "renders plain text as-is" do
     expect(basic_parsed_markdown.finalize).to include(random_word)
   end
@@ -33,9 +76,21 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   it "escapes some triple backticks within a codeblock when using tildes" do
-    code_block = "​~~~\nhello\n// ```\nwhatever\n// ```\n~~~"
+    code_block = "~~~\nhello\n// ```\nwhatever\n// ```\n~~~"
     number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
     expect(number_of_triple_backticks).to eq(2)
+  end
+
+  xit "allows more than 1 codeblock written separately" do
+    code_block = "~~~\n Hello my name is  \n~~~   \n ```\n whatever too \n```"
+    number_of_code_blocks = generate_and_parse_markdown(code_block).scan("<code>").count
+    expect(number_of_code_blocks).to eq(2)
+  end
+
+  it "does not throw an error if code in codeblock does not match language" do
+    code_block = "```javascript\n print(123) \n```"
+    generated_code_block = generate_and_parse_markdown(code_block)
+    expect(generated_code_block).to include("print", "123")
   end
 
   it "does not remove the non-'raw tag related' four dashes" do
@@ -154,13 +209,15 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "renders properly if protocol http is included" do
       code_span = "[github](http://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"http://github.com\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"http://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol https is included" do
       code_span = "[github](https://github.com)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"https://github.com\">github</a></p>\n\n")
+      expect(test)
+        .to eq("<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol is not included" do
@@ -187,6 +244,68 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(generate_and_parse_markdown("<center class=\"w-100\"></center>"))
         .to exclude("class")
         .and exclude("w-100")
+    end
+  end
+
+  describe "image URL processing" do
+    let(:original_url) { "https://example.com/image.jpg" }
+    let(:modified_url) { "https://modified.com/image.jpg" }
+
+    before do
+      allow(MediaStore).to receive(:find_by).with(original_url: original_url)
+        .and_return(double(output_url: modified_url)) # rubocop:disable RSpec/VerifiedDoubles
+    end
+
+    it "replaces the image URL in the HTML but not in the Markdown" do
+      markdown = "![alt text](#{original_url})"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).not_to include(original_url)
+      expect(markdown).to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has alt and title" do
+      markdown = "[<img src='#{original_url}' alt='test' title='test' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).to include('alt="test"')
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has alt and no title" do
+      markdown = "[<img src='#{original_url}' alt='test' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).to include('alt="test"')
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "replaces the image if the markdown is a nested <img> within a markdown link that has no alt or title" do
+      markdown = "[<img src='#{original_url}' />](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).not_to include(original_url)
+    end
+
+    it "does not replace image if malformed <img" do
+      markdown = "[<img src='#{original_url}](https://random-other-url.com)"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      p rendered_html
+      expect(rendered_html).not_to include(modified_url)
+    end
+
+    it "falls back to the original URL if no modified URL is found" do
+      allow(MediaStore).to receive(:find_by).with(original_url: original_url)
+        .and_return(nil)
+      markdown = "![alt text](#{original_url})"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(original_url)
     end
   end
 
@@ -222,7 +341,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(result).to eq(expected_result)
     end
 
-    it "will not work in code tag" do
+    it "does not work in code tag" do
       mention = "this is a chunk of text `@#{user.username}`"
       result = generate_and_parse_markdown(mention)
       expect(result).to include "<code"
@@ -347,7 +466,8 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "does not generated nested link tags" do
       nested_links = generate_and_parse_markdown("[[](http://b)](http://a)")
       nested_links = Nokogiri::HTML(nested_links).at("p").inner_html
-      expect(nested_links).to eq('[<a href="http://b"></a>](<a href="http://a">http://a</a>)')
+      attrs = "target=\"_blank\" rel=\"noopener noreferrer\""
+      expect(nested_links).to eq("[<a href=\"http://b\" #{attrs}></a>](<a href=\"http://a\" #{attrs}>http://a</a>)")
     end
   end
 
@@ -417,6 +537,19 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     end
   end
 
+  context "when plain html image is used" do
+    let(:markdown_with_img) { "<img src='https://image.com/image.jpg' />" }
+
+    it "wraps image in link" do
+      expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
+    end
+
+    it "wraps the image with Cloudinary", :cloudinary do
+      expect(generate_and_parse_markdown(markdown_with_img))
+        .to include("https://res.cloudinary.com")
+    end
+  end
+
   context "when a colon emoji is used" do
     it "doesn't change text in codeblock" do
       result = generate_and_parse_markdown("<span>:o:<code>:o:</code>:o:<code>:o:</code>:o:<span>:o:</span>:o:</span>")
@@ -425,11 +558,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   context "when using Liquid variables" do
-    it "prevents Liquid variables" do
-      expect { generate_and_parse_markdown("{{ 'something' }}") }.to raise_error(StandardError)
+    it "allows Liquid variables syntax outside of codeblocks, but does not render them" do
+      expect { generate_and_parse_markdown("{{ 'something' }}") }.not_to raise_error
     end
 
-    it "allows Liquid variables in codeblocks" do
+    it "allows Liquid variables syntax in codeblocks, but does not render them" do
       expect { generate_and_parse_markdown("```\n{{ 'something' }}\n```") }.not_to raise_error
     end
 
@@ -474,12 +607,12 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     end
 
     it "adds correct syntax highlighting to codeblocks when the hint is not lowercase" do
-      code_block = "```Ada\nwith Ada.Directories;\n````"
+      code_block = "```Ada\n with Ada.Directories;\n```"
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
     end
 
     it "adds correct syntax highlighting to codeblocks when the hint is lowercase" do
-      code_block = "```ada\nwith Ada.Directories;\n````"
+      code_block = "```ada\n with Ada.Directories;\n```"
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
     end
   end

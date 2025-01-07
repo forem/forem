@@ -168,6 +168,13 @@
           <input id="co_author_ids_list_<%= article.id %>" class="js-coauthor_username_id_input crayons-textfield" size="6" name="article[co_author_ids_list]" placeholder="Comma separated"
             value="<%= article.co_author_ids&.join(", ") %>">
         </div>
+        <div class="crayons-field flex-1">
+          <label for="max_score_<%= article.id %>" class="crayons-field__label">
+            <%= t("views.moderations.article.max_score") %>
+            <span class="c-indicator"><%= t("views.moderations.article.no_max_if_zero") %></span>
+          </label>
+          <input id="max_score_<%= article.id %>" class="crayons-textfield" type="number" name="article[max_score]" value="<%= article.max_score %>">
+        </div>
       </div>
       <% if article.published? %>
         <div class="flex">

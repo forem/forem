@@ -111,25 +111,24 @@ class StoriesController < ApplicationController
     @organization = Organization.find_by(slug: params[:username])
     @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
-      Honeycomb.add_field("stories_route", "podcast")
       handle_podcast_index
     elsif @organization
-      Honeycomb.add_field("stories_route", "org")
       handle_organization_index
     elsif @page
       if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
-        Honeycomb.add_field("stories_route", "page")
         handle_page_display
       else
         not_found
       end
     else
-      Honeycomb.add_field("stories_route", "user")
       handle_user_index
     end
   end
 
   def handle_page_display
+    redirect_page_if_different_subforem
+    return if performed?
+
     @story_show = true
     set_surrogate_key_header "show-page-#{params[:username]}"
 
@@ -175,11 +174,18 @@ class StoriesController < ApplicationController
 
   def handle_organization_index
     @user = @organization
-    @stories = ArticleDecorator.decorate_collection(@organization.articles.published
+    @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
+      .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
     @organization_users = @organization.users.order(badge_achievements_count: :desc)
+    if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
+      not_found
+    end
+    redirect_if_inactive_in_subforem_for_organization
+    return if performed?
+
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
@@ -205,10 +211,13 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
 
+    redirect_if_inactive_in_subforem_for_user
+    return if performed?
+
     assign_user_github_repositories
 
     @grouped_badges = @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id)
-    @profile = @user.profile.decorate
+    @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
@@ -231,14 +240,35 @@ class StoriesController < ApplicationController
     redirect_to admin_user_path(@user.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
   end
 
-  def redirect_if_show_view_param
+  def redirect_if_inactive_in_subforem_for_user
+    return unless @comments.none? &&
+                    @pinned_stories.none? &&
+                    @stories.none? &&
+                    RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+
+    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
+    redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
+  end
+
+  def redirect_if_inactive_in_subforem_for_organization
+    return unless @stories.none? &&
+                    RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    
+    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
+    redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
+  end
+
+  def redirect_if_appropriate
+    if should_redirect_to_subforem?(@article)
+      redirect_to URL.article(@article), allow_other_host: true, status: :moved_permanently
+    end
     redirect_to admin_article_path(@article.id) if params[:view] == "moderate"
   end
 
   def handle_article_show
     assign_article_show_variables
     set_surrogate_key_header @article.record_key
-    redirect_if_show_view_param
+    redirect_if_appropriate
     return if performed?
 
     render template: "articles/show"
@@ -286,12 +316,12 @@ class StoriesController < ApplicationController
       # original publication date appear in the correct order in the collection,
       # considering non cross posted articles with a more recent publication date
       @collection_articles = @article.collection.articles
-        .published
+        .published.from_subforem
         .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
-    @comments_to_show_count = 15 unless user_signed_in?
+    @comments_to_show_count = 10 unless user_signed_in?
     set_article_json_ld
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
@@ -313,17 +343,19 @@ class StoriesController < ApplicationController
     return unless user_signed_in? && @user.comments_count.positive?
 
     @comments = @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
   end
 
   def assign_user_stories
-    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id))
+    @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
       .order(published_at: :desc).decorate
-    @stories = ArticleDecorator.decorate_collection(@user.articles.published
-      .includes(:distinct_reaction_categories)
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
+      .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
@@ -436,7 +468,7 @@ class StoriesController < ApplicationController
     [
       @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
-      @user.profile.website_url,
+      @user&.profile&.website_url,
     ].compact_blank
   end
 

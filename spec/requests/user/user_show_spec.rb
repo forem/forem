@@ -10,7 +10,15 @@ RSpec.describe "UserShow" do
   end
   let(:user) { profile.user }
 
+  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
+  let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+
   describe "GET /:slug (user)" do
+    before do
+      FeatureFlag.add(:subscriber_icon)
+      FeatureFlag.enable(:subscriber_icon)
+    end
+
     it "returns a 200 status when navigating to the user's page" do
       get user.path
       expect(response).to have_http_status(:ok)
@@ -39,6 +47,17 @@ RSpec.describe "UserShow" do
         "email" => user.email,
         "description" => user.tag_line,
       )
+    end
+
+    it "includes a subscription icon if user is subscribed" do
+      user.add_role("base_subscriber")
+      get user.path
+      expect(response.body).to include('class="subscription-icon"')
+    end
+
+    it "does not include a subscription icon if user is not subscribed" do
+      get user.path
+      expect(response.body).not_to include('class="subscription-icon"')
     end
 
     it "does not render a key if no value is given" do
@@ -110,6 +129,67 @@ RSpec.describe "UserShow" do
         get user_path(user, format: "json")
         parsed = response.parsed_body
         expect(parsed.keys).to match_array(%w[id username suspended])
+      end
+    end
+  end
+
+  context "redirect_if_inactive_in_subforem_for_user" do
+    context "when user is 'inactive' in the current subforem" do
+      before do
+        # Ensure user has no pinned stories, no stories, no comments
+        user.articles.delete_all
+        user.profile_pins.delete_all
+        user.comments.delete_all
+      end
+
+      after do
+        RequestStore.store[:default_subforem_id] = nil
+        RequestStore.store[:subforem_id] = nil
+      end
+
+      it "redirects to the user's path in the default subforem" do
+        get user.path, headers: { "Host" => other_subforem.domain }
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to(
+          URL.url(user.username, default_subforem)
+        )
+      end
+    end
+
+    context "when user has pinned stories, stories, or comments for the subforem" do
+      before do
+        create(:article, user: user, subforem: other_subforem)
+      end
+
+      after do
+        RequestStore.store[:default_subforem_id] = nil
+        RequestStore.store[:subforem_id] = nil
+      end
+
+      it "does not redirect away from the current subforem" do
+        get user.path, headers: { "Host" => other_subforem.domain }
+        expect(response).to have_http_status(:ok)
+        # Or you could also ensure it does *not* redirect:
+        expect(response).not_to be_redirect
+      end
+    end
+
+    context "when the user has pinned stories, stories, or comments for the default subforem" do
+      before do
+        create(:article, user: user, subforem: default_subforem)
+      end
+
+      after do
+        RequestStore.store[:default_subforem_id] = nil
+        RequestStore.store[:subforem_id] = nil
+      end
+
+      it "rediects away from the current subforem" do
+        get user.path, headers: { "Host" => other_subforem.domain }
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to(
+          URL.url(user.username, default_subforem)
+        )
       end
     end
   end

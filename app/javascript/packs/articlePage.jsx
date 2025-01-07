@@ -1,20 +1,33 @@
-import { h, render } from 'preact';
-import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import { embedGists } from '../utilities/gist';
-import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
-import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
 import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
 
-const animatedImages = document.querySelectorAll('[data-animated="true"]');
-if (animatedImages.length > 0) {
-  import('@utilities/animatedImageUtils').then(
-    ({ initializePausableAnimatedImages }) => {
-      initializePausableAnimatedImages(animatedImages);
-    },
-  );
+// Open in new tab backfill
+// We added this behavior on rendering, so this is a backfill for the existing articles
+function backfillLinkTarget() {
+  const links = document.querySelectorAll('a[href]');
+  const appDomain = window.location.hostname;
+
+  links.forEach((link) => {
+    const href = link.getAttribute('href');
+
+    if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(appDomain)) {
+      link.setAttribute('target', '_blank');
+      
+      const existingRel = link.getAttribute('rel');
+      const newRelValues = ["noopener", "noreferrer"];
+
+      if (existingRel) {
+        const existingRelValues = existingRel.split(" ");
+        const mergedRelValues = [...new Set([...existingRelValues, ...newRelValues])].join(" ");
+        link.setAttribute('rel', mergedRelValues);
+      } else {
+        link.setAttribute('rel', newRelValues.join(" "));
+      }
+    }
+  });
 }
 
 const fullscreenActionElements = document.getElementsByClassName(
@@ -24,15 +37,6 @@ const fullscreenActionElements = document.getElementsByClassName(
 if (fullscreenActionElements) {
   addFullScreenModeControl(fullscreenActionElements);
 }
-
-// The Snackbar for the article page
-const snackZone = document.getElementById('snack-zone');
-if (snackZone) {
-  render(<Snackbar lifespan={3} />, snackZone);
-}
-
-// eslint-disable-next-line no-restricted-globals
-top.addSnackbarItem = addSnackbarItem;
 
 const multiReactionDrawerTrigger = document.getElementById(
   'reaction-drawer-trigger',
@@ -108,59 +112,10 @@ document
   .getElementById('copy-post-url-button')
   ?.addEventListener('click', copyArticleLink);
 
-// Comment Subscription
-getCsrfToken().then(async () => {
-  const { user = null, userStatus } = document.body.dataset;
-  const root = document.getElementById('comment-subscription');
-  const isLoggedIn = userStatus === 'logged-in';
-
-  if (!root) {
-    return;
-  }
-  try {
-    const {
-      getCommentSubscriptionStatus,
-      setCommentSubscriptionStatus,
-      CommentSubscription,
-    } = await import('../CommentSubscription');
-
-    const { articleId } = document.getElementById('article-body').dataset;
-
-    let subscriptionType = 'not_subscribed';
-
-    if (isLoggedIn && user !== null) {
-      ({ config: subscriptionType } = await getCommentSubscriptionStatus(
-        articleId,
-      ));
-    }
-
-    const subscriptionRequestHandler = async (type) => {
-      const message = await setCommentSubscriptionStatus(articleId, type);
-
-      addSnackbarItem({ message, addCloseButton: true });
-    };
-
-    render(
-      <CommentSubscription
-        subscriptionType={subscriptionType}
-        positionType="static"
-        onSubscribe={subscriptionRequestHandler}
-        onUnsubscribe={subscriptionRequestHandler}
-        isLoggedIn={isLoggedIn}
-      />,
-      root,
-    );
-  } catch (e) {
-    root.innerHTML =
-      '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
-  }
-});
-
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
 setupBillboardInteractivity();
-initializeUserSubscriptionLiquidTagContent();
 focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls
-trackCommentClicks('comments');
+backfillLinkTarget();

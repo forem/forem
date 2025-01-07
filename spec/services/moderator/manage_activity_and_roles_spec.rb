@@ -176,6 +176,12 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     expect(user).not_to be_limited
   end
 
+  it "updates user to base subscriber" do
+    expect(user).not_to be_base_subscriber
+    manage_roles_for(user, user_status: "Base Subscriber")
+    expect(user).to be_base_subscriber
+  end
+
   it "updates user to super admin" do
     expect(user).not_to be_super_admin
     expect(user.has_trusted_role?).to be false
@@ -302,6 +308,17 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
         manage_roles_for(spam_user, user_status: "Spam")
       end
       expect(flag.reload.status).to eq("confirmed")
+    end
+  end
+
+  describe "busts user profile header cache when adding the spam role" do
+    it "touches profile" do
+      spam_user = create(:user)
+      profile = instance_double(Profile)
+      allow(spam_user).to receive(:profile).and_return(profile)
+      allow(profile).to receive(:touch)
+      manage_roles_for(spam_user, user_status: "Spam")
+      expect(profile).to have_received(:touch)
     end
   end
 

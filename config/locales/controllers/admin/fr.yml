@@ -33,6 +33,13 @@ fr:
       deleted: L'annonce a été supprimée !
       updated: L'annonce publicitaire a été mise à jour !
       wrong: Quelque chose s'est mal passé avec la suppression de l'annonce publicitaire.
+    emails_controller:
+      created: Emails are being sent!
+      drafted: Email has been drafted!
+      activated: Email has been activated!
+      deleted: Email has been deleted!
+      updated: Email has been updated!
+      wrong: Something went wrong with deleting the Email.
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:
@@ -130,6 +137,7 @@ fr:
       email_sent: Courriel envoyé !
       confirm_sent: Courriel de Confirmation Envoyé!
       verify_sent: E-mail de vérification envoyé !
+      manual_verification_sent: E-mail vérifié manuellement !
       full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) a été entièrement supprimé. S'il s'agit d'une suppression GDPR, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
       no_email: Aucun e-mail
       parameter_missing: Le sujet et le corps sont tous deux requis !
@@ -143,6 +151,7 @@ fr:
       updated_json: Succès ! %{username} a été mis à jour.
       credits_added: Les crédits ont été ajoutés !
       credits_removed: Les crédits ont été supprimés.
+      tag_not_found: 'Tag "%{tag_name}" non trouvée'
     welcome_controller:
       thread_content: |
         ---

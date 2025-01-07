@@ -38,8 +38,24 @@
     </div>
 
     <div class="crayons-field">
+      <%# styles below are a hack to line this up properly%>
+      <%= label_tag :color, "Border hex color:", class: "crayons-field__label" %>
+      <div class="flex items-center w-100" style="margin-top: -26px;">
+        <style>
+          #color-popover-btn-color { top: 36px; }
+        </style>
+        <%= text_field_tag :color, @billboard.color, class: "crayons-textfield", placeholder: "#000000", data: { color_picker: true, label_text: "Border color" } %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
       <%= label_tag :placement_area, "Placement Area:", class: "crayons-field__label" %>
       <%= select_tag :placement_area, options_for_select(billboards_placement_area_options_array, selected: @billboard.placement_area), include_blank: "Select...", class: "crayons-select js-placement-area" %>
+    </div>
+
+    <div class="crayons-field billboard-requires-precision-targeting hidden">
+      <%= label_tag :browser_context, "Browser context:", class: "crayons-field__label" %>
+      <%= select_tag :browser_context, options_for_select([["All browsers", "all_browsers"], ["Desktop", "desktop"], ["Mobile web", "mobile_web"], ["Mobile in-app", "mobile_in_app"]], selected: @billboard.browser_context), class: "crayons-select js-placement-area" %>
     </div>
 
     <div class="crayons-field">
@@ -47,7 +63,7 @@
     </div>
 
     <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
-      <div class="crayons-field">
+      <div class="crayons-field billboard-requires-precision-targeting hidden">
         <%= label_tag :target_geolocations, "Target Geolocations:", class: "crayons-field__label" %>
         <%= text_field_tag :target_geolocations, @billboard.target_geolocations.map(&:to_iso3166).join(", "), class: "crayons-textfield", placeholder: "US-NY, CA-ON", autocomplete: "off" %>
       </div>
@@ -85,19 +101,29 @@
       </fieldset>
     </div>
 
-    <div class="crayons-field <%= "hidden" if @billboard.audience_segment.blank? %>">
-      <%= label_tag :audience_segment_id, "Users who:", class: "crayons-field__label" %>
+    <div class="crayons-field <%= "hidden" unless @billboard.display_to_logged_in? %>">
+      <%= label_tag :audience_segment_id, "Users in segment:", class: "crayons-field__label" %>
       <% if @billboard.audience_segment&.manual? %>
         <%= select_tag :audience_segment_id,
                        options_for_select(single_audience_segment_option(@billboard), selected: @billboard.audience_segment_id),
                        disabled: true,
-                       class: "crayons-select js-audience-segment" %>
+                       class: "crayons-select js-user-target" %>
       <% else %>
         <%= select_tag :audience_segment_id,
                        options_for_select(automatic_audience_segments_options_array, selected: @billboard.audience_segment_id),
                        include_blank: "All users",
-                       class: "crayons-select js-audience-segment" %>
+                       class: "crayons-select js-user-target" %>
       <% end %>
+    </div>
+
+    <div class="crayons-field <%= "hidden" unless @billboard.display_to_logged_in? %>">
+      <%= label_tag :target_role_names, "Target Role Names:", class: "crayons-field__label" %>
+      <%= text_field_tag :target_role_names, @billboard.target_role_names.join(", "), class: "crayons-textfield js-user-target", autocomplete: "off", placeholder: "e.g. admin, tag_moderator" %>
+    </div>
+
+    <div class="crayons-field <%= "hidden" unless @billboard.display_to_logged_in? %>">
+      <%= label_tag :exclude_role_names, "Exclude Role Names:", class: "crayons-field__label" %>
+      <%= text_field_tag :exclude_role_names, @billboard.exclude_role_names.join(", "), class: "crayons-textfield js-user-target", autocomplete: "off" , placeholder: "e.g. admin, tag_moderator" %>
     </div>
 
     <div class="crayons-field">
@@ -137,7 +163,7 @@
     </div>
   </div>
   <div>
-    <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--billboard">
+    <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard" style="<%= @billboard.style_string %>">
       <% if @billboard.persisted? %>
         <%= @billboard.processed_html.html_safe %>
       <% else %>
@@ -158,3 +184,4 @@
 </div>
 
 <%= javascript_include_tag "admin/billboards", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>

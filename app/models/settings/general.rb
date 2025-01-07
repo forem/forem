@@ -5,7 +5,7 @@ module Settings
 
     self.table_name = "site_configs"
     SOCIAL_MEDIA_SERVICES = %w[
-      twitter facebook github instagram twitch mastodon
+      twitter facebook github instagram twitch mastodon youtube linkedin bluesky
     ].freeze
 
     # Forem Team
@@ -30,6 +30,7 @@ module Settings
     # Analytics and tracking
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
     setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
+    setting :ga_api_secret, type: :string, default: ApplicationConfig["GA_API_SECRET"]
     setting :cookie_banner_user_context, type: :string, default: "off", validates: {
       inclusion: { in: BANNER_USER_CONFIGS }
     }
@@ -54,6 +55,7 @@ module Settings
 
     setting :original_logo, type: :string
     setting :resized_logo, type: :string
+    setting :resized_logo_aspect_ratio, type: :string
 
     setting :enable_video_upload, type: :boolean, default: false
 
@@ -78,7 +80,6 @@ module Settings
     }
 
     # Monetization
-    setting :payment_pointer, type: :string
     setting :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     setting :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
     # Billboard-related. Not sure this is the best place for it, but it's a start.
@@ -106,7 +107,10 @@ module Settings
       github: nil,
       instagram: nil,
       twitch: nil,
-      mastodon: nil
+      mastodon: nil,
+      youtube: nil,
+      linkedin: nil,
+      bluesky: nil
     }
     setting :twitter_hashtag, type: :string
 

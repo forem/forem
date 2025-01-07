@@ -39,7 +39,6 @@ RSpec.describe Article do
 
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(0) }
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
-    it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
     it { is_expected.to validate_presence_of(:comments_count) }
     it { is_expected.to validate_presence_of(:positive_reactions_count) }
@@ -82,13 +81,94 @@ RSpec.describe Article do
       end
     end
 
-    describe "#body_markdown" do
-      it "is not unique scoped for user_id and title" do
-        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
+    describe ".from_subforem" do
+      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let!(:article_in_subforem) { create(:article, subforem_id: subforem.id) }
+      let!(:article_in_second_subforem) { create(:article, subforem_id: second_subforem.id) }
+      let!(:article_in_null_subforem) { create(:article, subforem_id: nil) }
+      let!(:article_in_other_subforem) { create(:article, subforem_id: third_subforem.id) }
 
-        expect(art2).to be_valid
+      after do
+        RequestStore.store[:subforem_id] = nil
+        RequestStore.store[:default_subforem_id] = nil
+        RequestStore.store[:root_subforem_id] = nil
       end
 
+      context "when a specific subforem_id is provided" do
+        it "returns articles matching the provided subforem_id" do
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_other_subforem)
+        end
+      end
+    
+      context "when subforem_id is nil" do
+        before { RequestStore.store[:subforem_id] = nil }
+    
+        it "returns articles with null subforem_id or subforem_id <= 1" do
+          expect(described_class.from_subforem).to include(article_in_null_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_other_subforem)
+        end
+      end
+    
+      context "when subforem_id is the default subforem_id" do
+        let(:subforem_id) { subforem.id }
+    
+        it "returns articles with null subforem_id or matching the provided subforem_id" do
+          RequestStore.store[:default_subforem_id] = subforem_id
+          expect(described_class.from_subforem(subforem_id)).to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem_id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem_id)).not_to include(article_in_other_subforem)
+        end
+      end
+    
+      context "when subforem_id is greater than 1" do
+        let(:subforem_id) { third_subforem.id }
+    
+        it "returns only articles with the exact matching subforem_id" do
+          expect(described_class.from_subforem(subforem_id)).to include(article_in_other_subforem)
+          expect(described_class.from_subforem(subforem_id)).not_to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem_id)).not_to include(article_in_null_subforem)
+        end
+      end
+
+      context "when subforem_id is the root_subforem_id" do
+        before do
+          RequestStore.store[:root_subforem_id] = subforem.id
+        end
+    
+        it "returns all articles with no conditions" do
+          expect(described_class.from_subforem(subforem.id)).to contain_exactly(
+            article,
+            article_in_subforem,
+            article_in_second_subforem,
+            article_in_null_subforem,
+            article_in_other_subforem,
+          )
+        end
+
+        it "returns proper query with additional conditions" do
+          expect(described_class.from_subforem(subforem.id).where(id: [article_in_subforem.id, article_in_null_subforem.id]))
+            .to contain_exactly(article_in_subforem, article_in_null_subforem)
+        end
+      end    
+    
+      context "when subforem_id is stored in RequestStore" do
+        before { RequestStore.store[:subforem_id] = second_subforem.id }
+    
+        it "uses the subforem_id from RequestStore if none is passed" do
+          expect(described_class.from_subforem).to include(article_in_second_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_other_subforem)
+          expect(described_class.from_subforem).not_to include(article_in_null_subforem)
+        end
+      end
+    end
+
+    describe "#body_markdown" do
       # using https://unicode-table.com/en/11A15/ multibyte char
       it "is valid if its bytesize is less than 800 kilobytes" do
         article.body_markdown = "𑨕" * 204_800 # 4 bytes x 204800 = 800 kilobytes
@@ -192,6 +272,81 @@ RSpec.describe Article do
         expect(article.search_id).to eq("article_#{article.id}")
       end
     end
+
+    describe "#restrict_attributes_with_status_types" do
+      context "when the article is persisted and body_markdown hasn't changed" do
+        it "does not run validation" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.title = "Updated Title"
+          expect(article).to be_valid
+        end
+    
+        it "runs validation if body_markdown has changed" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.body_markdown = "New body content"
+          expect(article).not_to be_valid
+          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+        end
+      end
+    
+      context "when type_of is not 'status'" do
+        it "does not add an error" do
+          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content", main_image: nil, user: user)
+          expect(article).to be_valid
+        end
+      end
+    
+      context "when body_url is present" do
+        it "does not add an error even if other attributes are present" do
+          stub_request(:any, /example.com/) # Stubbing the HTTP request
+    
+          article = build(
+            :article,
+            type_of: "status",
+            body_url: "http://example.com",
+            body_markdown: "Content",
+            main_image: "http://image.com/img.png",
+            collection_id: 1,
+            user: user,
+          )
+          expect(article).to be_valid
+        end
+      end
+    
+      context "when body_url is blank" do
+        context "and body_markdown is present" do
+          it "adds an error" do
+            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil, user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and main_image is present" do
+          it "adds an error" do
+            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png", user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and collection_id is present" do
+          it "adds an error" do
+            collection = create(:collection)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, collection_id: collection.id, user: user)
+            expect(article).not_to be_valid
+            expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          end
+        end
+    
+        context "and body_markdown, main_image, and collection_id are blank" do
+          it "does not add an error" do
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+            expect(article).to be_valid
+          end
+        end
+      end
+    end  
 
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
@@ -312,6 +467,116 @@ RSpec.describe Article do
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
     end
+
+    describe "before_validation :set_markdown_from_body_url" do
+      context "when body_url is present" do
+        it "sets body_markdown to '{% embed body_url %}'" do
+          url = article_url(article)
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+          article = build(:article, body_url: url, body_markdown: nil)
+          article.valid?
+          expect(article.body_markdown).to eq("{% embed #{url} %}")
+        end
+
+        it "overwrites existing body_markdown with embedded body_url" do
+          url = article_url(article)
+          allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+          article = build(:article, body_url: url, body_markdown: "Existing content")
+          article.valid?
+          expect(article.body_markdown).to eq("{% embed #{url} %}")
+        end
+      end
+
+      context "when body_url is not present" do
+        it "does not change body_markdown" do
+          article = build(:article, body_url: nil, body_markdown: "Existing content")
+          article.valid?
+          expect(article.body_markdown).to eq("Existing content")
+        end
+      end
+    end
+
+    # Tests for replace_blank_title_for_status functionality
+    describe "before_validation :replace_blank_title_for_status" do
+      context "when title is blank and type_of is 'status'" do
+        it "sets title to '[Boost]'" do
+          article = build(:article, title: nil, type_of: "status")
+          article.valid?
+          expect(article.title).to eq("[Boost]")
+        end
+
+        it "sets title to '[Boost]' when title is an empty string" do
+          article = build(:article, title: "", type_of: "status")
+          article.valid?
+          expect(article.title).to eq("[Boost]")
+        end
+      end
+
+      context "when title is present and type_of is 'status'" do
+        it "does not change the title" do
+          article = build(:article, title: "Some title", type_of: "status")
+          article.valid?
+          expect(article.title).to eq("Some title")
+        end
+      end
+
+      context "when title is blank and type_of is not 'status'" do
+        it "does not change the title" do
+          article = build(:article, title: nil, type_of: "full_post")
+          article.valid?
+          expect(article.title).to be_nil
+        end
+      end
+    end
+
+    describe "#title_length_based_on_type_of" do
+      it "validates title length for 'full_post' articles" do
+        article = Article.create(type_of: "full_post", title: "A" * 129, user: user)
+        expect(article).not_to be_valid
+        expect(article.errors[:title]).to include("is too long (maximum is 128 characters for full_post)")
+      end
+
+      it "validates title length for 'status' articles" do
+        article = Article.create(type_of: "status", title: "A" * 257, body_markdown: "xxxx", user: user)
+        expect(article).not_to be_valid
+        expect(article.errors[:title]).to include("is too long (maximum is 256 characters for status)")
+      end
+
+      it "allows title length within limits for specified type" do
+        article = Article.create(type_of: "status", title: "A" * 256, body_markdown: "", user: user, main_image: "")
+        expect(article).to be_valid
+      end
+    end
+
+    describe "#no_body_with_status_types" do
+      it "adds an error if body is present for 'status' articles" do
+        article = build(:article, type_of: "status", body_markdown: "This should not be allowed")
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+      end
+
+      it "does not add an error if body is absent for 'status' articles" do
+        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true, main_image: "")
+        expect(article).to be_valid
+      end
+    end
+
+    describe "#title_unique_for_user_past_five_minutes" do
+      it "adds an error if the same title is used by the same user within five minutes" do
+        create(:article, user: user, title: "Unique Title", created_at: 2.minutes.ago)
+        duplicate_article = build(:article, user: user, title: "Unique Title")
+
+        expect(duplicate_article).not_to be_valid
+        expect(duplicate_article.errors[:title]).to include("has already been used in the last five minutes")
+      end
+
+      it "does not add an error if the same title is used by the same user after five minutes" do
+        create(:article, user: user, title: "Unique Title", created_at: 6.minutes.ago)
+        duplicate_article = build(:article, user: user, title: "Unique Title")
+
+        expect(duplicate_article).to be_valid
+      end
+    end
   end
 
   context "when data is extracted from evaluation of the front matter during validation" do
@@ -330,6 +595,11 @@ RSpec.describe Article do
     describe "#slug" do
       it "produces a proper slug similar to the title" do
         expect(test_article.slug).to start_with(slug)
+      end
+
+      it "truncates a long slug" do
+        long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "", published: true)
+        expect(long_title_article.slug.length).to be <= 106
       end
     end
 
@@ -1389,25 +1659,76 @@ RSpec.describe Article do
   end
 
   describe "#update_score" do
-    it "stably sets the correct blackbox values" do
-      create(:reaction, reactable: article, points: 1)
+    before do
+      allow(article).to receive(:reactions).and_return(reactions)
+      allow(article).to receive_messages(reactions: reactions, comments: comments)
+      allow(BlackBox).to receive(:article_hotness_score).and_return(100)
+    end
 
+    let(:reactions) { double("reactions", sum: 10, privileged_category: double("privileged_category", sum: 5)) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:comments) { double("comments", sum: 3) } # rubocop:disable RSpec/VerifiedDoubles
+
+    it "stably sets the correct blackbox values" do
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
     end
 
     it "caches the privileged score values" do
-      user = create(:user, :trusted)
-
-      create(:thumbsdown_reaction, reactable: article, user: user)
-
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
 
     it "includes user marked as spam punishment" do
-      article.user.add_role(:spam)
+      user.add_role(:spam)
       article.update_score
-      expect(article.reload.score).to eq(-500)
+      expect(article.reload.score).to eq(-490)
+    end
+
+    it "includes the user_subscriber? baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      user.add_role(:base_subscriber)
+      article.update_score
+      expect(article.reload.score).to eq(22)
+    end
+
+    context "when max_score is set" do
+      it "uses the max score if the natural score exceeds max_score" do
+        article.update_column(:max_score, 2)
+
+        article.update_score
+        expect(article.reload.score).to eq(2)
+      end
+
+      it "uses the natural score if it is lower than max_score" do
+        article.update_column(:max_score, 25)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "uses the natural score if max_score is 0" do
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+    end
+
+    context "when user.max_score is set" do
+      it "uses the user's max score if it is lower than the article's max score" do
+        user.update_column(:max_score, 5)
+        article.update_column(:max_score, 10)
+
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
+
+      it "uses the article's max score if it is lower than the user's max score" do
+        user.update_column(:max_score, 10)
+        article.update_column(:max_score, 5)
+
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
     end
   end
 
@@ -1673,12 +1994,56 @@ RSpec.describe Article do
     end
   end
 
+  describe "#evaluate_and_update_column_from_markdown" do
+    let(:article) { create(:article) }
+
+    it "updates the processed_html column" do
+      article.body_markdown = "## Hello World!"
+      article.evaluate_and_update_column_from_markdown
+      expect(article.processed_html).to include("Hello World!")
+    end
+  end
+
   context "when indexing with Algolia", :algolia do
     it "indexes the article" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:article)
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Article", kind_of(Integer),
                                                                                      false).once
+    end
+  end
+
+  describe "#processed_html_final" do
+    let(:prior_domain) { "https://old.cdn.com" }
+    let(:new_domain) { "https://new.cdn.com" }
+
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
+    end
+
+    context "when the prior domain and new domain are both present" do
+      it "replaces instances of the prior domain with the new domain" do
+        article.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+        expect(article.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+      end
+
+      it "does not modify text if the prior domain is not present in the processed_html" do
+        article.processed_html = "Content with no images or domains."
+        expect(article.processed_html_final).to eq("Content with no images or domains.")
+      end
+    end
+
+    context "when the application configuration for the domains is blank" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "returns the original processed_html unchanged" do
+        article.processed_html = "Content with the old domain #{prior_domain}."
+        expect(article.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+      end
     end
   end
 end

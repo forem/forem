@@ -7,6 +7,72 @@ RSpec.describe Billboard do
 
   it_behaves_like "Taggable"
 
+  describe "#update_links_with_bb_param" do
+    let(:billboard) do
+      create(:billboard,
+             body_markdown: "Some content with [a link](https://example.com).",
+             processed_html: '<p>Some content with <a href="https://example.com">a link</a>.</p>')
+    end
+
+    it "modifies links to include the bb param with the model id" do
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= (URL encoded format)
+      expect(billboard.processed_html).to include("href=\"https://example.com?bb=#{billboard.id}")
+    end
+
+    it "does not modify the processed_html if no links are present" do
+      no_links_html = "<p>Some content with no links.</p>"
+      billboard.update(processed_html: no_links_html)
+      billboard.update_links_with_bb_param
+      expect(billboard.processed_html).to eq(no_links_html)
+    end
+
+    it "Modifies instead of appending when bb already exists" do
+      html_with_bb = "<p>Check this <a href='https://example.com?bb=123'>link</a>.</p>"
+      billboard.update(processed_html: html_with_bb)
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= and 123, encoded format for &
+      expect(billboard.processed_html).to include("href=\"https://example.com?bb=#{billboard.id}\"")
+    end
+
+    it "properly appends the bb param when the URL already contains query params" do
+      html_with_query = "<p>Check this <a href='https://example.com?foo=bar'>link</a>.</p>"
+      billboard.update(processed_html: html_with_query)
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= and foo=bar, encoded format for &
+      expect(billboard.processed_html).to include('href="https://example.com?foo=bar&bb=')
+    end
+
+    it "does not modify non-http/https links" do
+      non_http_html = "<p>Check this <a href='mailto:test@example.com'>email link</a>.</p>"
+      billboard.update(processed_html: non_http_html)
+      billboard.update_links_with_bb_param
+      expect(billboard.processed_html).to eq("<p>Check this <a href=\"mailto:test@example.com\">email link</a>.</p>")
+    end
+
+    it "modifies relative links" do
+      html_with_query = "<p>Check this <a href='/example.com?foo=bar'>link</a>.</p>"
+      billboard.update(processed_html: html_with_query)
+      billboard.update_links_with_bb_param
+      # Expecting href with bb= and foo=bar, encoded format for &
+      expect(billboard.processed_html).to include('href="/example.com?foo=bar&bb=')
+    end
+  end
+
+  describe "after_save callback" do
+    it "calls #update_links_with_bb_param after save" do
+      # Set up the expectation
+      allow(billboard).to receive(:update_links_with_bb_param).and_call_original
+
+      # Update the markdown (which triggers processing of processed_html)
+      new_markdown = "Some content with [a new link](https://newexample.com)"
+      billboard.update(body_markdown: new_markdown)
+
+      # Check if the method was called
+      expect(billboard).to have_received(:update_links_with_bb_param).twice
+    end
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { billboard }
@@ -131,14 +197,16 @@ RSpec.describe Billboard do
       username_ad = create(:billboard, body_markdown: "Hello! {% embed #{url}} %}")
       expect(username_ad.processed_html).to include("/#{user.username}")
       expect(username_ad.processed_html).to include("ltag__user__link")
+      # reverse allow unified embed
     end
   end
 
   context "when render_mode is set to raw" do
-    it "outputs processed html that matches the body input" do
-      raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
+    it "outputs processed html that matches the body input with appended param for links" do
+      raw_input = "<style>.billyb { color: red }</style><div class=\"billyb\">This is a raw div <a href=\"https://example.com\">hello</a></div>"
       raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
-      expect(raw_billboard.processed_html).to eq raw_input
+      changed_input = "<style>.billyb { color: red }</style>\n<div class=\"billyb\">This is a raw div <a href=\"https://example.com?bb=#{raw_billboard.id}\">hello</a>\n</div>"
+      expect(raw_billboard.processed_html).to eq changed_input
     end
 
     it "still processes images in raw mode" do
@@ -626,6 +694,40 @@ RSpec.describe Billboard do
 
           expect(observed_probability).to be_within(0.025).of(expected_probability)
         end
+      end
+    end
+  end
+
+  describe "#processed_html_final" do
+    let(:prior_domain) { "https://old.cdn.com" }
+    let(:new_domain) { "https://new.cdn.com" }
+
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
+    end
+
+    context "when the prior domain and new domain are both present" do
+      it "replaces instances of the prior domain with the new domain" do
+        billboard.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+        expect(billboard.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+      end
+
+      it "does not modify text if the prior domain is not present in the processed_html" do
+        billboard.processed_html = "Content with no images or domains."
+        expect(billboard.processed_html_final).to eq("Content with no images or domains.")
+      end
+    end
+
+    context "when the application configuration for the domains is blank" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "returns the original processed_html unchanged" do
+        billboard.processed_html = "Content with the old domain #{prior_domain}."
+        expect(billboard.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
       end
     end
   end

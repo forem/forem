@@ -34,17 +34,4 @@ RSpec.describe "User edits their extensions", js: true do
       expect(page).to have_text("Feed url is not a valid RSS/Atom feed")
     end
   end
-
-  describe "PaymentPointer" do
-    before do
-      visit user_settings_path(:extensions)
-    end
-
-    it "fails if the payment pointer is invalid" do
-      fill_in "user[payment_pointer]", with: "invalid_example/value"
-      click_on "Save Web Monetization Settings"
-
-      expect(page).to have_text("Payment pointer is invalid")
-    end
-  end
 end

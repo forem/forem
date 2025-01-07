@@ -12,23 +12,45 @@ module Redcarpet
         super(code, language.to_s.downcase)
       end
 
-      def link(link, _title, content)
-        # Probably not the best fix but it does it's job of preventing
-        # a nested links.
-        return if %r{<a\s.+/a>}.match?(content)
-
-        link_attributes = ""
-        @options[:link_attributes]&.each do |attribute, value|
-          link_attributes += %( #{attribute}="#{value}")
-        end
-        if (%r{https?://\S+}.match? link) || link.nil?
-          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
-        elsif /\.{1}/.match? link
-          %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
-        elsif link.start_with?("#")
-          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+      def image(link, title, alt_text)
+        # Check if the URL is an image and process accordingly
+        if %r{\Ahttps?://}.match?(link)
+          modified_url = MediaStore.find_by(original_url: link)&.output_url || link
+          title_attr = title ? %( title="#{title}") : ""
+          alt_text_attr = alt_text ? %( alt="#{alt_text}") : ""
+          %(<img src="#{modified_url}"#{title_attr}#{alt_text_attr}/>)
         else
-          %(<a href="#{app_protocol}#{app_domain}#{link}"#{link_attributes}>#{content}</a>)
+          title_attr = title ? %( title="#{title}") : ""
+          alt_text_attr = alt_text ? %( alt="#{alt_text}") : ""
+          %(<img src="#{link}"#{title_attr}#{alt_text_attr}/>)
+        end
+      end
+
+      def link(link, _title, content) # rubocop:disable Metrics/PerceivedComplexity
+        # Regex to capture src, alt, and title attributes from an img tag
+        if content&.include?("<img") && (doc = Nokogiri::HTML(content))
+          image_url = doc.at_css("img")["src"]
+          alt_text = doc.at_css("img")["alt"] || nil
+          title = doc.at_css("img")["title"] || nil
+          modified_content = image(image_url, title, alt_text) # Call your image method with title and alt text
+          %(<a href="#{link}">#{modified_content}</a>)
+        else
+          # Proceed with normal link rendering if no image is detected
+          return if %r{<a\s.+/a>}.match?(content)
+
+          link_attributes = ""
+          @options[:link_attributes]&.each do |attribute, value|
+            link_attributes += %( #{attribute}="#{value}")
+          end
+          if (%r{https?://\S+}.match? link) || link.nil?
+            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+          elsif /\.{1}/.match? link
+            %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
+          elsif link.start_with?("#")
+            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+          else
+            %(<a href="#{app_protocol}#{app_domain}#{link}"#{link_attributes}>#{content}</a>)
+          end
         end
       end
 

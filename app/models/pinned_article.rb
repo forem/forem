@@ -19,7 +19,7 @@ class PinnedArticle
     def get
       return unless valid?
 
-      Article.published.find_by(id: pinned_article_id)
+      Article.published.from_subforem.find_by(id: pinned_article_id)
     end
 
     def set(article)
@@ -37,7 +37,7 @@ class PinnedArticle
     end
 
     def pinned_article_id=(article_id)
-      Settings::General.feed_pinned_article_id = article_id
+      Settings::General.set_feed_pinned_article_id(article_id)
     end
 
     def setting

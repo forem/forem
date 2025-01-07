@@ -621,7 +621,7 @@ RSpec.describe "Api::V1::Articles" do
     end
 
     describe "when authorized" do
-      let(:default_params) { { body_markdown: "" } }
+      let(:default_params) { { body_markdown: "", main_image: "" } }
       let(:tomorrow) { Date.tomorrow }
       let(:formatted_date) { tomorrow.strftime("%Y-%m-%d") }
 
@@ -771,6 +771,19 @@ RSpec.describe "Api::V1::Articles" do
         article = Article.find(response.parsed_body["id"])
         expect(article.collection).to eq(Collection.find_by(slug: series))
         expect(article.collection.user).to eq(user)
+      end
+
+      it "creates an article belonging to a subforem" do
+        subforem = create(:subforem)
+        second_subforem = create(:subforem, domain: "other-domain.com")
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          subforem_id: second_subforem.id,
+        )
+        expect(response).to have_http_status(:created)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.subforem).to eq(second_subforem)
       end
 
       it "creates article within a series using the front matter" do

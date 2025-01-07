@@ -12,10 +12,13 @@ fr:
       other_community_posts: d'autres posts de la %{community} que vous pourriez aimer
       other_top_posts: d'autres articles tendance de la %{community}
       other_trending_posts: d'autres articles tendance de la %{community}.
+    custom_mailer:
+      from: Newsletter
     notify_mailer:
       account_deleted: "%{community} - Confirmation de la suppression du compte"
       deletion_requested: "%{community} - Suppression du compte demandée"
       trusted: Félicitations ! Vous êtes maintenant un utilisateur "de confiance" sur %{community} !
+      base_subscriber: Congrats! You're now subscribed to DEV++
       moderator: "Congrats! You're now a moderator for #%{tag_name}"
       new_follower: vous suit sur %{community}
       new_mention: "%{name} vient de vous mentionner sur %{type}"

@@ -224,6 +224,18 @@ module ApplicationHelper
     )
   end
 
+  def subscription_icon(user, modifier = nil)
+    return unless user.respond_to?(:cached_base_subscriber?)
+    return unless FeatureFlag.enabled?("subscriber_icon") && user.cached_base_subscriber?
+    return image_tag("subscription-icon.png", class: "subscription-icon") if modifier == "no_link"
+
+    link_to image_tag("subscription-icon.png",
+                      alt: "Subscriber",
+                      class: "subscription-icon"),
+            "/++",
+            style: "display: inline;"
+  end
+
   def user_colors_style(user)
     "border: 2px solid #{user.decorate.darker_color}; \
     box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
@@ -251,7 +263,30 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}-#{RequestStore.store[:subforem_id]}"
+  end
+
+  def social_media_constructed_url(social_media_type, handle)
+    if social_media_type.to_s == "mastodon"
+      handle
+    elsif social_media_type.to_s == "twitter"
+      "https://x.com/#{handle}"
+    elsif social_media_type.to_s == "bluesky"
+      "https://bsky.app/profile/#{handle}"
+    elsif social_media_type.to_s == "linkedin"
+      "https://www.linkedin.com/in/#{handle}"
+    elsif social_media_type.to_s == "youtube"
+      "https://www.youtube.com/@#{handle}"
+    else
+      "https://#{social_media_type}.com/#{handle}"
+    end
+  end
+
+  def signed_in_default_subforem_or_signed_out_non_default?
+    return false if RequestStore.store[:default_subforem_id].blank?
+    return true if user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
+    return true if !user_signed_in? && RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    false
   end
 
   def copyright_notice
@@ -264,7 +299,7 @@ module ApplicationHelper
   end
 
   def collection_link(collection, **kwargs)
-    size_string = I18n.t("views.articles.series.size", count: collection.articles.published.size)
+    size_string = I18n.t("views.articles.series.size", count: collection.articles.published.from_subforem.size)
     body = if collection.slug.present?
              I18n.t("views.articles.series.subtitle", slug: collection.slug,
                                                       size: size_string)

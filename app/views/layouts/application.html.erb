@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <% if user_signed_in? && current_page?(root_path) %>
+      <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
+      <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
+      <link rel="prefetch" href="/billboards/feed_first">
+      <link rel="prefetch" href="/billboards/feed_second">
+      <link rel="prefetch" href="/billboards/feed_third">
+      <link rel="prefetch" href="/sidebars/home">
+    <% end %>
     <meta charset="utf-8">
     <% title = yield(:title) %>
     <title><%= title || community_name.to_s %></title>
@@ -8,17 +16,16 @@
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
-      <% if Settings::General.payment_pointer.present? %>
-        <!-- Experimental web monetization payment pointer for micropayments -->
-        <!-- It lets readers make micropayments to websites they visit. -->
-        <!-- This is step 1: Get live in production to test for platform-wide payment pointer. -->
-        <!-- Step 2: Allow authors to set their payment pointer so they can directly monetize their content based on visitors. -->
-        <!-- Step 3: Enable further functionality based on what we learn from this experimentation and how the ecosystem evolves. -->
-        <meta name="monetization" content="<%= Settings::General.payment_pointer %>">
-      <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "base", "application", "baseInitializers", "Search", "baseTracking", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", defer: true %>
+
+      <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
+      <% if controller_name == "articles_search" || Rails.env.test? %>
+        <%= javascript_include_tag "Search", defer: true %>
+      <% else %>
+        <meta name="search-script" content="<%= asset_path 'Search.js' %>">
+      <% end %>
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -47,11 +54,12 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
-    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
+    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{@article.present?}")) do %>
       <body
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-user-status="<%= j(user_logged_in_status) %>"
         data-community-name="<%= j(community_name) %>"
+        data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
         data-locale="<%= j(I18n.locale) %>"
         data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
         data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
@@ -84,16 +92,13 @@
         <div id="active-broadcast" class="broadcast-wrapper"></div>
     <% end %>
   <% end %>
-<% if Settings::General.payment_pointer.present? %>
-  <div id="base-payment-pointer" data-payment-pointer="<%= Settings::General.payment_pointer %>"></div>
-<% end %>
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" id="setup-banner" aria-live="polite">
       <%== flash[:global_notice] %>
     </div>
   <% end %>
-  <div id="page-content-inner">
+  <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
     <% if @hero_html && @hero_billboard.blank? %>
@@ -119,6 +124,9 @@
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   <%= render "articles/reaction_category_resources" %>
+  <% if signed_in_default_subforem_or_signed_out_non_default? %>
+    <%= render "layouts/bottom_scripts"  %>
+  <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
   </body>
   </html>

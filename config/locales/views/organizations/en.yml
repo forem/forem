@@ -2,6 +2,7 @@
 en:
   views:
     organizations:
+      dropdown: Organization actions
       empty: 404 bio not found
       external:
         icon: External link icon

@@ -8,7 +8,7 @@ function initializeBillboardVisibility() {
   var user = userData();
 
   billboards.forEach((ad) => {
-    if (user && !user.display_sponsors && ad.dataset['typeOf'] == 'external') {
+    if (user && !user.display_sponsors && ['external','partner'].includes(ad.dataset['typeOf'])) {
       ad.classList.add('hidden');
     } else {
       ad.classList.remove('hidden');
@@ -38,7 +38,7 @@ function trackAdImpression(adBox) {
   };
 
   window
-    .fetch('/billboard_events', {
+    .fetch('/bb_tabulations', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -83,7 +83,7 @@ function trackAdClick(adBox, event, currentPath) {
   var tokenMeta = document.querySelector("meta[name='csrf-token']");
   var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
-  window.fetch('/billboard_events', {
+  window.fetch('/bb_tabulations', {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrfToken,
@@ -106,7 +106,7 @@ function observeBillboards() {
           if (entry.intersectionRatio >= 0.25) {
             setTimeout(function () {
               trackAdImpression(elem);
-            }, 1);
+            }, 200);
           }
         }
       });

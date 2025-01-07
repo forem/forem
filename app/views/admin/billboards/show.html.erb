@@ -1,0 +1,151 @@
+<%= stylesheet_link_tag "minimal", media: "all" %>
+
+<h1 class="crayons-title mb-6 flex justify-between">
+  Details and Data: <%= @billboard.name %>
+  <%= link_to "Edit", edit_admin_billboard_path(@billboard), class: "crayons-btn crayons-btn--secondary ml-2" %>
+</h1>
+
+<div class="crayons-card p-6">
+  <%# Main content %>
+  
+  <!-- Billboard Overview -->
+  <div class="grid l:grid-cols-2 gap-6 mb-4">
+    <div class="flex flex-col gap-4">
+      <% if @billboard.creator.present? %>
+        <div class="crayons-field">
+          <strong>Created by:</strong>
+          <p><%= @billboard.creator.name %></p>
+        </div>
+      <% end %>
+
+      <div class="crayons-field">
+        <strong>Name:</strong>
+        <p><%= @billboard.name %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Organization ID:</strong>
+        <p><%= @billboard.organization_id.present? ? @billboard.organization_id : "N/A" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Custom Author Display Name:</strong>
+        <p><%= @billboard.custom_display_label.present? ? @billboard.custom_display_label : "N/A" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Body Content:</strong>
+        <pre><%= @billboard.body_markdown %></pre>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Render Mode:</strong>
+        <p><%= @billboard.render_mode == "forem_markdown" ? "Forem Markdown" : "Raw" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Template:</strong>
+        <p><%= @billboard.template == "authorship_box" ? "Authorship Box" : "Plain" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Border Color:</strong>
+        <p><%= @billboard.color.present? ? @billboard.color : "#000000" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Placement Area:</strong>
+        <p><%= @billboard.placement_area %></p>
+      </div>
+
+      <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+        <div class="crayons-field">
+          <strong>Target Geolocations:</strong>
+          <p><%= @billboard.target_geolocations.present? ? @billboard.target_geolocations.map(&:to_iso3166).join(", ") : "N/A" %></p>
+        </div>
+      <% end %>
+
+      <div class="crayons-field">
+        <strong>Display to:</strong>
+        <p>
+          <% if @billboard.display_to_all? %>
+            All users
+          <% elsif @billboard.display_to_logged_in? %>
+            Logged in users
+          <% else %>
+            Logged out users
+          <% end %>
+        </p>
+      </div>
+
+      <% if @billboard.display_to_logged_in? %>
+        <div class="crayons-field">
+          <strong>Target Role Names:</strong>
+          <p><%= @billboard.target_role_names.join(", ") %></p>
+        </div>
+
+        <div class="crayons-field">
+          <strong>Exclude Role Names:</strong>
+          <p><%= @billboard.exclude_role_names.join(", ") %></p>
+        </div>
+      <% end %>
+
+      <div class="crayons-field">
+        <strong>Published:</strong>
+        <p><%= @billboard.published ? "Yes" : "No" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Approved:</strong>
+        <p><%= @billboard.approved ? "Yes" : "No" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Prioritized:</strong>
+        <p><%= @billboard.priority ? "Yes" : "No" %></p>
+      </div>
+
+      <div class="crayons-field">
+        <strong>Type:</strong>
+        <p>
+          <% if @billboard.in_house? %>
+            In-House Ad
+          <% elsif @billboard.community? %>
+            Community
+          <% else %>
+            External
+          <% end %>
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard" style="<%= @billboard.style_string %>">
+        <% if @billboard.persisted? %>
+          <%= @billboard.processed_html.html_safe %>
+        <% end %>
+      </div>
+      <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard mt-4" style="<%= @billboard.style_string %>">
+        <div class="crayons-field">
+          <strong>Impressions Count:</strong>
+          <p><%= @billboard.impressions_count %></p>
+        </div>
+        <div class="crayons-field">
+          <strong>Clicks Count:</strong>
+          <p><%= @billboard.clicks_count %></p>
+        </div>
+        <div class="crayons-field">
+          <strong>Success Rate:</strong>
+          <p><%= @billboard.success_rate %></p>
+        </div>
+        <% @events.each do |event| %>
+          <% next unless event.user %>
+          <div class="crayonds-card fs-xs">
+            <strong><%= event.category %></strong> by @<%= event.user&.username %> at <%= event.created_at %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

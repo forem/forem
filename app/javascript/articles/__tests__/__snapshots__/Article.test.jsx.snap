@@ -60,7 +60,7 @@ Object {
         <a
           aria-labelledby="article-link-62407"
           class="crayons-story__hidden-navigation-link"
-          href="/some-post/path"
+          href="http://example.com/some-post/path"
         >
           Unbranded Home Loan Account
         </a>
@@ -72,7 +72,7 @@ Object {
           >
             <a
               class="crayons-article__cover__image__feed crayons-story__cover__image"
-              href="/some-post/path"
+              href="http://example.com/some-post/path"
               title="Unbranded Home Loan Account"
             >
               <img
@@ -84,7 +84,7 @@ Object {
             </a>
           </div>
           <div
-            class="crayons-story__body"
+            class="crayons-story__body crayons-story__body-"
           >
             <div
               class="crayons-story__top"
@@ -125,6 +125,8 @@ Object {
                         id="story-author-preview-trigger-62407"
                       >
                         Stella Macejkovic
+                         
+                        
                       </button>
                       <div
                         class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
@@ -181,7 +183,7 @@ Object {
                   </div>
                   <a
                     class="crayons-story__tertiary fs-xs"
-                    href="/some-post/path"
+                    href="http://example.com/some-post/path"
                   >
                     <time
                       datetime="Tue, 18 Feb 2020 14:59:24 GMT"
@@ -197,10 +199,10 @@ Object {
               class="crayons-story__indention"
             >
               <h3
-                class="crayons-story__title"
+                class="crayons-story__title crayons-story__title-"
               >
                 <a
-                  href="/some-post/path"
+                  href="http://example.com/some-post/path"
                   id="article-link-62407"
                 >
                   <span>
@@ -256,7 +258,7 @@ Object {
                     aria-label="Add a comment to post - Unbranded Home Loan Account"
                     class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                     data-testid="add-a-comment"
-                    href="/some-post/path#comments"
+                    href="http://example.com/some-post/path#comments"
                   >
                     <svg
                       class="crayons-icon"
@@ -329,7 +331,7 @@ Object {
       <a
         aria-labelledby="article-link-62407"
         class="crayons-story__hidden-navigation-link"
-        href="/some-post/path"
+        href="http://example.com/some-post/path"
       >
         Unbranded Home Loan Account
       </a>
@@ -341,7 +343,7 @@ Object {
         >
           <a
             class="crayons-article__cover__image__feed crayons-story__cover__image"
-            href="/some-post/path"
+            href="http://example.com/some-post/path"
             title="Unbranded Home Loan Account"
           >
             <img
@@ -353,7 +355,7 @@ Object {
           </a>
         </div>
         <div
-          class="crayons-story__body"
+          class="crayons-story__body crayons-story__body-"
         >
           <div
             class="crayons-story__top"
@@ -394,6 +396,8 @@ Object {
                       id="story-author-preview-trigger-62407"
                     >
                       Stella Macejkovic
+                       
+                      
                     </button>
                     <div
                       class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
@@ -450,7 +454,7 @@ Object {
                 </div>
                 <a
                   class="crayons-story__tertiary fs-xs"
-                  href="/some-post/path"
+                  href="http://example.com/some-post/path"
                 >
                   <time
                     datetime="Tue, 18 Feb 2020 14:59:24 GMT"
@@ -466,10 +470,10 @@ Object {
             class="crayons-story__indention"
           >
             <h3
-              class="crayons-story__title"
+              class="crayons-story__title crayons-story__title-"
             >
               <a
-                href="/some-post/path"
+                href="http://example.com/some-post/path"
                 id="article-link-62407"
               >
                 <span>
@@ -525,7 +529,7 @@ Object {
                   aria-label="Add a comment to post - Unbranded Home Loan Account"
                   class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                   data-testid="add-a-comment"
-                  href="/some-post/path#comments"
+                  href="http://example.com/some-post/path#comments"
                 >
                   <svg
                     class="crayons-icon"

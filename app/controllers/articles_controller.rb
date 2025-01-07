@@ -146,10 +146,15 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
     @user = current_user
+    article_params_json[:subforem_id] = RequestStore.store[:subforem_id]
     article = Articles::Creator.call(@user, article_params_json)
 
     if article.persisted?
-      render json: { id: article.id, current_state_path: article.decorate.current_state_path }, status: :ok
+      if article.type_of == "status"
+        redirect_to article.path
+      else
+        render json: { id: article.id, current_state_path: article.decorate.current_state_path }, status: :ok
+      end
     else
       render json: article.errors.to_json, status: :unprocessable_entity
     end
@@ -273,10 +278,8 @@ class ArticlesController < ApplicationController
 
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
-      Honeycomb.add_field("articles_route", "user")
       @articles = @articles.where(user_id: @user.id)
     elsif (@user = Organization.find_by(slug: params[:username]))
-      Honeycomb.add_field("articles_route", "org")
       @articles = @articles.where(organization_id: @user.id).includes(:user)
     end
   end
@@ -297,7 +300,6 @@ class ArticlesController < ApplicationController
                       Article.includes(:user).find(params[:id])
                     end
     @article = found_article || not_found
-    Honeycomb.add_field("article_id", @article.id)
   end
 
   # TODO: refactor all of this update logic into the Articles::Updater possibly,
@@ -315,7 +317,7 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time
+                         published_at_date published_at_time type_of body_url subforem_id
                        ]
                      end
 

@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex" do
+
   it "redirects to the lowercase route", :aggregate_failures do
     get "/Bad_name"
     expect(response).to have_http_status(:moved_permanently)
@@ -14,6 +15,18 @@ RSpec.describe "StoriesIndex" do
   describe "GET stories index" do
     let(:user) { create(:user) }
     let(:org) { create(:organization) }
+
+    it "redirects www to non-www if ENV var set" do
+      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      get "http://www.example.com/"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://example.com/")
+    end
+
+    it "does not redirect www to non-www if ENV var not set" do
+      get "http://www.example.com/"
+      expect(response).to have_http_status(:ok)
+    end
 
     it "renders head content if present" do
       allow(Settings::UserExperience).to receive(:head_content).and_return("head content")
@@ -119,13 +132,19 @@ RSpec.describe "StoriesIndex" do
 
       get "/"
       expect(response.body).to include(billboard.processed_html).or(include(second_billboard.processed_html))
-      expect(response.body).to include("crayons-card crayons-card--secondary crayons-sponsorship").once
+      expect(response.body).to include("crayons-card crayons-card--secondary crayons-bb").once
       expect(response.body).to include("sponsorship-dropdown-trigger-").once
     end
 
     it "renders a hero billboard" do
       allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
       billboard = create(:billboard, published: true, approved: true, placement_area: "home_hero", organization: org)
+      get "/"
+      expect(response.body).to include(billboard.processed_html)
+    end
+
+    it "renders a footer billboard" do
+      billboard = create(:billboard, published: true, approved: true, placement_area: "footer", organization: org)
       get "/"
       expect(response.body).to include(billboard.processed_html)
     end
@@ -138,6 +157,16 @@ RSpec.describe "StoriesIndex" do
       expect(response.headers["X-Accel-Expires"]).to be_nil
       expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
       expect(response.headers["Surrogate-Key"]).to be_nil
+    end
+
+    it "renders social media handles if set" do
+      allow(Settings::General).to receive(:social_media_handles)
+        .and_return({ twitter: "twix", facebook: "fb", linkedin: "lnkdn", youtube: "whytube" })
+      get "/"
+      expect(response.body).to include("x.com/twix")
+      expect(response.body).to include("facebook.com/fb")
+      expect(response.body).to include("linkedin.com/in/lnkdn")
+      expect(response.body).to include("youtube.com/@whytube")
     end
 
     it "sets correct cache headers", :aggregate_failures do

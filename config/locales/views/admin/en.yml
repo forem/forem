@@ -162,6 +162,13 @@ en:
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Only Super Admins are allowed to delete users.
           submit: Delete now
+        update_email:
+          heading: Update User Email
+          desc_html: User's current email is %{email}.
+          new_email: New email
+          submit: Update email
+          success: Email updated successfully.
+          error: Failed to update email.
         export:
           heading: Export %{user}'s data
           desc1_html: Choose between sending the exported data to either your Admin contact email, %{contact}, or to %{user}'s %{user_email} directly.
@@ -225,7 +232,8 @@ en:
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
-          verify: Verify email address
+          verify: Send new verification email email
+          manually_verify: Manually verify email
           verified_html: Last verified on %{time}
           reverify: Reverify
         flags:
@@ -328,7 +336,7 @@ en:
             icon: Mod
             desc: "Add a tag that this member can moderate. "
             remove: "Remove tag:"
-            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the username (%{username}).
+            notice_html: Adding tags for moderation is also possible through a particular %{tag_page}, by providing the username (%{username}).
             tag_page: tag's page
         priviliged_actions:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
@@ -348,6 +356,7 @@ en:
           visit: Visit profile
           options:
             icon: Options
+            update_email: Update User Email
             export: Export data
             merge: Merge users
             unpublish: Unpublished all posts
@@ -378,6 +387,15 @@ en:
           submit: Change reputation modifier
           success: Successfully changed user's reputation modifier to %{reputation_modifier}.
           error: Failed to change user's reptuation modifier (select between 0 and 5)
+        max_score:
+          change: Change maximum score
+          change_note: Reason for change
+          desc_html: This changes the maximum score a user can achieve. 0 means unlimited. The user's current maximum score is <strong>%{max_score}</strong>.
+          heading: Change maximum score
+          max_score: New maximum score
+          submit: Change maximum score
+          success: Successfully changed user's maximum score to %{max_score}.
+          error: Failed to change user's maximum score (select between 0 and 100)
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -392,6 +410,8 @@ en:
           emails: Emails
           reports: Reports
           flags: Flags
+          articles: Articles
+          comments: Comments
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
@@ -426,6 +446,9 @@ en:
           Good Standing: Good Standing
           Good standing: Good standing
           Trusted: Trusted
+          Base Subscriber: Base Subscriber
+        max_score_title: Maximum score
+        max_score_reader: "Maximum score:"
         identities:
           facebook: Facebook
           github: GitHub

@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import { forwardRef, useState, useEffect, useRef } from 'preact/compat';
+import { forwardRef, useState, useEffect, useRef, useMemo, useCallback } from 'preact/compat';
 import PropTypes from 'prop-types';
-import algoliasearch from 'algoliasearch/lite';
 import { locale } from '../utilities/locale';
 import { ButtonNew as Button } from '@crayons';
 import SearchIcon from '@images/search.svg';
 import AlgoliaIcon from '@images/algolia.svg';
+import { debounceAction } from '@utilities/debounceAction';
 
 export const SearchForm = forwardRef(
   (
@@ -13,32 +13,112 @@ export const SearchForm = forwardRef(
     ref,
   ) => {
     const env = 'production';
-    const client = algoliaId
-      ? algoliasearch(algoliaId, algoliaSearchKey)
-      : null;
-    const index = client ? client.initIndex(`Article_${env}`) : null;
+    const [algoliaClient, setAlgoliaClient] = useState(null);
+    const [recommendClient, setRecommendClient] = useState(null);
+    const articleContainer = document.getElementById('article-show-container');
+
     const [inputValue, setInputValue] = useState(searchTerm);
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const suggestionsRef = useRef();
 
-    // Fetch suggestions from Algolia if client is initialized
+    // Load Algolia and recommend dynamically
+    const loadAlgoliaClients = useCallback(async () => {
+      if (algoliaId && algoliaSearchKey && !algoliaClient) {
+        try {
+          const [algoliasearchModule, recommendModule] = await Promise.all([
+            import('algoliasearch/lite'),
+            import('@algolia/recommend'),
+          ]);
+    
+          // Check whether to use .default or the direct import for algoliasearch
+          const algoliasearch = algoliasearchModule.default || algoliasearchModule;
+          const recommend = recommendModule.default || recommendModule;
+    
+          const client = algoliasearch(algoliaId, algoliaSearchKey);
+          const recommendClientInstance = recommend(algoliaId, algoliaSearchKey);
+    
+          setAlgoliaClient(client);
+          setRecommendClient(recommendClientInstance);
+        } catch (error) {
+          console.error("Error loading Algolia or Recommend modules: ", error);
+        }
+      }
+    }, [algoliaId, algoliaSearchKey, algoliaClient]);
+
+    const index = useMemo(() => (algoliaClient ? algoliaClient.initIndex(`Article_${env}`) : null), [algoliaClient]);
+
+    // Handle clicks outside the dropdown
+    const handleClickOutside = useCallback((event) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target) &&
+        !ref.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    }, [ref]);
+
     useEffect(() => {
-      if (inputValue && index) {
-        index.search(inputValue, { hitsPerPage: 5 }).then(({ hits }) => {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [handleClickOutside]);
+
+    // Fetch initial recommendations
+    const fetchRecommendations = useCallback(() => {
+      if (recommendClient && articleContainer?.dataset?.articleId) {
+        recommendClient.getRelatedProducts([
+          {
+            indexName: `Article_${env}`,
+            objectID: articleContainer?.dataset?.articleId,
+            maxRecommendations: 5,
+            threshold: 10,
+          },
+        ]).then(({ results }) => {
+          setSuggestions(results[0].hits);
+        });
+      }
+    }, [recommendClient]);
+
+    // Debounced search function
+    const debouncedSearch = useCallback(debounceAction((value) => {
+      if (value && index) {
+        index.search(value, { hitsPerPage: 5 }).then(({ hits }) => {
           setSuggestions(hits); // Assuming 'title' is the field to display
         });
-      } else {
+      } else if (!articleContainer?.dataset?.articleId) {
         setSuggestions([]);
       }
-    }, [inputValue, index]);
+    }, 200), [index]);
+
+    useEffect(() => {
+      debouncedSearch(inputValue);
+    }, [inputValue, debouncedSearch]);
 
     // Handle input changes
     const handleInputChange = (e) => {
       setInputValue(e.target.value);
       setShowSuggestions(true);
       setActiveSuggestionIndex(-1);
+      if (e.target.value.length === 0 && articleContainer) {
+        fetchRecommendations();
+      }
+    };
+
+    // Load Algolia clients on focus
+    const handleFocus = () => {
+      loadAlgoliaClients();
+      const typeahead = document.getElementById('search-typeahead');
+      if (typeahead) {
+        typeahead.classList.remove('hidden');
+      }
+      setShowSuggestions(true);
+      if (articleContainer) {
+        fetchRecommendations();
+      }
     };
 
     // Handle keyboard navigation and selection
@@ -69,24 +149,6 @@ export const SearchForm = forwardRef(
       }
     };
 
-    // Handle clicks outside the dropdown
-    const handleClickOutside = (event) => {
-      if (
-        suggestionsRef.current &&
-        !suggestionsRef.current.contains(event.target) &&
-        !ref.current.contains(event.target)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-
-    useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, []);
-
     return (
       <form
         action="/search"
@@ -107,17 +169,12 @@ export const SearchForm = forwardRef(
               className="crayons-header--search-input crayons-textfield"
               type="text"
               name="q"
-              placeholder={`${locale('core.search')}...`}
+              placeholder={articleContainer?.dataset?.articleId ? 'Find related posts...' : `${locale('core.search')}...`}
               autoComplete="off"
               aria-label="Search term"
               value={inputValue}
               onChange={handleInputChange}
-              onFocus={() => {
-                document
-                  .getElementById('search-typeahead')
-                  .classList.remove('hidden');
-                setShowSuggestions(true);
-              }}
+              onFocus={handleFocus}
               onKeyDown={handleKeyDown}
             />
             {showSuggestions &&
@@ -130,7 +187,6 @@ export const SearchForm = forwardRef(
                   ref={suggestionsRef}
                 >
                   {suggestions.map((suggestion, index) => (
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                     <li
                       key={index}
                       className={
@@ -152,8 +208,7 @@ export const SearchForm = forwardRef(
                   ))}
                   <div class="crayons-header--search-typeahead-footer">
                     <span>
-                      Displaying Posts — Submit search to filter by Users,
-                      Comments, etc.
+                      { inputValue.length > 0 ? 'Submit search for advanced filtering.' : 'Displaying Algolia Recommendations — Start typing to search' }
                     </span>
                     <a
                       href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral"

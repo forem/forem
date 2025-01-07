@@ -80,6 +80,7 @@ module Moderator
         remove_notifications
         resolve_spam_reports
         confirm_flag_reactions
+        user.profile.touch
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
@@ -103,6 +104,8 @@ module Moderator
         TagModerators::AddTrustedRole.call(user)
       when "Warned"
         warned
+      when "Base Subscriber"
+        base_subscriber
       end
       create_note(role, note)
 
@@ -147,6 +150,13 @@ module Moderator
       user.remove_role(:suspended) if user.suspended?
       user.remove_role(:spam) if user.spam?
       remove_privileges
+    end
+
+    def base_subscriber
+      user.add_role(:base_subscriber)
+      user.touch
+      user.profile&.touch
+      NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
     end
 
     def remove_negative_roles

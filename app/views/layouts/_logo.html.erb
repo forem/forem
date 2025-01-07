@@ -1,6 +1,9 @@
 <a href="<%= root_path %>" class="site-logo" aria-label="<%= t("views.main.aria_home", community: community_name) %>">
   <% if Settings::General.resized_logo.present? %>
-    <img class="site-logo__img" src="<%= Settings::General.resized_logo %>" alt="<%= community_name %>">
+    <img class="site-logo__img"
+         src="<%= Settings::General.resized_logo %>"
+         style="<%= "aspect-ratio: #{Settings::General.resized_logo_aspect_ratio}" if Settings::General.resized_logo_aspect_ratio.present? %>"
+         alt="<%= community_name %>">
   <% else %>
     <span class="site-logo__community-name truncate-at-2">
       <%= community_name %>

@@ -84,7 +84,7 @@ describe('<Onboarding />', () => {
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        '/billboard_events',
+        '/bb_tabulations',
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({

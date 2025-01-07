@@ -9,14 +9,14 @@ import debounce from 'lodash.debounce';
  *
  *
  * @param {Function} action - The function that should be wrapped with `debounce`.
- * @param {Number} [time=300] - The number of milliseconds to wait.
+ * @param {Number} [time=200] - The number of milliseconds to wait.
  * @param {Object} [config={ leading: false }] - Any configuration for the debounce function.
  *
  * @returns {Function} A function wrapped in `debounce`.
  */
 export function debounceAction(
   action,
-  { time = 300, config = { leading: false } } = {},
+  { time = 200, config = { leading: false } } = {},
 ) {
   const configs = { ...config };
   return debounce(action, time, configs);

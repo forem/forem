@@ -11,9 +11,113 @@ RSpec.describe "Billboards" do
     defaults = {
       approved: true,
       published: true,
-      display_to: :all
+      display_to: :all,
+      color: "#FF5733"
     }
     create(:billboard, **options.reverse_merge(defaults))
+  end
+
+  describe "GET /:username/:slug/billboards/:placement_area with role-based filtering" do
+    before do
+      allow(user).to receive(:cached_role_names).and_return(%w[editor moderator])
+      sign_in user
+    end
+
+    context "when target_role_names includes user's role" do
+      let!(:targeted_billboard) { create_billboard(placement_area: "post_comments", target_role_names: ["editor"]) }
+
+      it "includes billboards that target user's role" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to include(targeted_billboard.processed_html)
+      end
+    end
+
+    context "when exclude_role_names includes user's role" do
+      let!(:excluded_billboard) { create_billboard(placement_area: "post_comments", exclude_role_names: ["moderator"]) }
+
+      it "excludes billboards that should not be shown to user's role" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).not_to include(excluded_billboard.processed_html)
+      end
+    end
+
+    context "when target_role_names does not include user's role" do
+      let!(:non_targeted_billboard) do
+        create_billboard(placement_area: "post_comments", target_role_names: ["admin"],
+                         body_markdown: rand(10_000).to_s)
+      end
+
+      it "excludes billboards that do not target user's role" do
+        p non_targeted_billboard.target_role_names
+        p user.cached_role_names
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).not_to include(non_targeted_billboard.processed_html)
+      end
+    end
+
+    context "when exclude_role_names does not include user's role" do
+      let!(:non_excluded_billboard) { create_billboard(placement_area: "post_comments", exclude_role_names: ["admin"]) }
+
+      it "includes billboards that are not excluded for user's role" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to include(non_excluded_billboard.processed_html)
+      end
+    end
+
+    context "when both target_role_names and exclude_role_names are empty" do
+      let!(:open_billboard) { create_billboard(placement_area: "post_comments") }
+
+      it "includes billboards that have no role restrictions" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to include(open_billboard.processed_html)
+      end
+    end
+  end
+
+  describe "GET /:username/:slug/billboards/:color" do
+    context "when placement_area includes 'fixed_'" do
+      let!(:billboard) { create_billboard(placement_area: "post_fixed_bottom") }
+
+      it "includes the correct style string" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("border-top: calc(9px + 0.5vw) solid #{billboard.color}")
+      end
+    end
+
+    context "when placement_area does not include 'fixed_'" do
+      let!(:billboard) { create_billboard(placement_area: "post_comments") }
+
+      it "includes the correct style string" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("border: 5px solid #{billboard.color}")
+      end
+    end
+
+    context "when color is blank" do
+      let!(:billboard) { create_billboard(placement_area: "post_comments", color: "") }
+
+      it "returns an empty style string" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("border-top: calc(9px + 0.5vw) solid")
+        expect(response.body).not_to include("border: 5px solid")
+      end
+    end
   end
 
   describe "GET /:username/:slug/billboards/:placement_area" do
@@ -151,7 +255,7 @@ RSpec.describe "Billboards" do
 
       it "includes authorship box html" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-        expect(response.body).to include "crayons-sponsorship__header relative"
+        expect(response.body).to include "crayons-bb__header relative"
       end
 
       it "includes custom_display_label if set" do
@@ -168,7 +272,7 @@ RSpec.describe "Billboards" do
 
       it "includes authorship box html" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-        expect(response.body).not_to include "crayons-sponsorship__header relative"
+        expect(response.body).not_to include "crayons-bb__header relative"
       end
     end
 

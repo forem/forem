@@ -15,6 +15,7 @@ class Billboard < ApplicationRecord
                                feed_second
                                feed_third
                                home_hero
+                               footer
                                page_fixed_bottom
                                post_fixed_bottom
                                post_body_bottom
@@ -32,6 +33,7 @@ class Billboard < ApplicationRecord
                                             "Home Feed Second",
                                             "Home Feed Third",
                                             "Home Hero",
+                                            "Footer",
                                             "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
                                             "Below the post body",
@@ -43,12 +45,15 @@ class Billboard < ApplicationRecord
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
 
+  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+
   MAX_TAG_LIST_SIZE = 25
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
   LOW_IMPRESSION_COUNT = 1_000
   RANDOM_RANGE_MAX_FALLBACK = 5
   NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
+  NEW_ONLY_RANGE_MAX_FALLBACK = 40
 
   attribute :target_geolocations, :geolocation_array
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
@@ -56,6 +61,7 @@ class Billboard < ApplicationRecord
   enum render_mode: { forem_markdown: 0, raw: 1 }
   enum template: { authorship_box: 0, plain: 1 }
   enum :special_behavior, { nothing: 0, delayed: 1 }
+  enum :browser_context, { all_browsers: 0, desktop: 1, mobile_web: 2, mobile_in_app: 3 }
 
   belongs_to :organization, optional: true
   has_many :billboard_events, foreign_key: :display_ad_id, inverse_of: :billboard, dependent: :destroy
@@ -68,6 +74,7 @@ class Billboard < ApplicationRecord
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
+  validates :color, format: COLOR_HEX_REGEXP, allow_blank: true
   validate :valid_audience_segment_match,
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
@@ -77,6 +84,7 @@ class Billboard < ApplicationRecord
   before_save :process_markdown
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
+  after_save :update_links_with_bb_param
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -86,11 +94,13 @@ class Billboard < ApplicationRecord
                      }
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
+  scope :new_only, ->(area) { where("impressions_count < ?", low_impression_count(area)) }
 
   self.table_name = "display_ads"
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
-                       location: nil, cookies_allowed: false, page_id: nil)
+                       location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
+                       role_names: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -106,6 +116,8 @@ class Billboard < ApplicationRecord
       user_tags: user_tags,
       location: location,
       cookies_allowed: cookies_allowed,
+      user_agent: user_agent,
+      role_names: role_names,
     )
 
     case rand(99) # output integer from 0-99
@@ -120,6 +132,9 @@ class Billboard < ApplicationRecord
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
       weighted_random_selection(relation, article&.id) || billboards_for_display.sample
+    when (new_and_priority_range_max(area)..new_only_range_max(area)) # 5% by default
+      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+      billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -201,6 +216,28 @@ class Billboard < ApplicationRecord
     selected_number.to_i
   end
 
+  def self.new_only_range_max(placement_area)
+    selected_number = ApplicationConfig["NEW_ONLY_MAX_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["NEW_ONLY_MAX"] ||
+      NEW_ONLY_RANGE_MAX_FALLBACK
+    selected_number.to_i
+  end
+
+  def processed_html_final
+    # This is a final non-database-driven step to adjust processed html
+    # It is sort of a hack to avoid having to reprocess all articles
+    # It is currently only for this one cloudflare domain change
+    # It is duplicated across article, bullboard and comment where it is most needed
+    # In the future this could be made more customizable. For now it's just this one thing.
+    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
+
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+  end
+
+  def type_of_display
+    type_of.gsub("external", "partner")
+  end
+
   def human_readable_placement_area
     ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[ALLOWED_PLACEMENT_AREAS.find_index(placement_area)]
   end
@@ -260,6 +297,66 @@ class Billboard < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :preferred_article_ids, (adjusted_input || [])
+  end
+
+  def exclude_role_names=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    write_attribute :exclude_role_names, (adjusted_input || [])
+  end
+
+  def target_role_names=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    write_attribute :target_role_names, (adjusted_input || [])
+  end
+
+  def include_subforem_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :include_subforem_ids, (adjusted_input || [])
+  end
+
+  def style_string
+    return "" if color.blank?
+
+    if placement_area.include?("fixed_")
+      "border-top: calc(9px + 0.5vw) solid #{color}"
+    else
+      "border: 5px solid #{color}"
+    end
+  end
+
+  def update_links_with_bb_param
+    # Parse the processed_html with Nokogiri
+    full_html = "<html><head></head><body>#{processed_html}</body></html>"
+    doc = Nokogiri::HTML(full_html)
+    # Iterate over all the <a> tags
+    doc.css("a").each do |link|
+      href = link["href"]
+      next unless href.present? && href.start_with?("http", "/")
+
+      uri = URI.parse(href)
+      existing_params = URI.decode_www_form(uri.query || "")
+      # Check if 'bb' parameter exists and update it or append if not exists
+      bb_param_index = existing_params.find_index { |param| param[0] == "bb" }
+      if bb_param_index
+        existing_params[bb_param_index][1] = id.to_s # Update existing 'bb' parameter
+      else
+        existing_params << ["bb", id.to_s] # Append new 'bb' parameter
+      end
+      uri.query = URI.encode_www_form(existing_params)
+      link["href"] = uri.to_s
+    end
+
+    # Extract and save only the inner HTML of the body
+    modified_html = doc.at("body").inner_html
+
+    modified_html.gsub!(/href="([^"]*)&amp;([^"]*)"/, 'href="\1&\2"')
+
+    # Early return if the new HTML is the same as the old one
+    return if modified_html == processed_html
+
+    # Update the processed_html column with the new HTML
+    update_column(:processed_html, modified_html)
   end
 
   private

@@ -6,9 +6,7 @@ import {
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { initializePodcastPlayback } from '../utilities/podcastPlayback';
-import { initializeVideoPlayback } from '../utilities/videoPlayback';
 import { createRootFragment } from '../shared/preact/preact-root-fragment';
-import { initializeDashboardSort } from './initializers/initializeDashboardSort';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
@@ -66,13 +64,33 @@ window.Forem = {
   Runtime,
 };
 
-initializeDashboardSort();
+if (document.location.pathname.startsWith('/dashboard')) {
+  import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
+    initializeDashboardSort();
+  });
+}
+
+if (document.getElementById('video-player-source')) {
+  import('../utilities/videoPlayback').then(({ initializeVideoPlayback }) => {
+    initializeVideoPlayback();
+  });
+}
+
 initializePodcastPlayback();
-initializeVideoPlayback();
 InstantClick.on('change', () => {
-  initializeDashboardSort();
+  if (document.location.pathname.startsWith('/dashboard')) {
+    import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
+      initializeDashboardSort();
+    });
+  }
+
+  if (document.getElementById('video-player-source')) {
+    import('../utilities/videoPlayback').then(({ initializeVideoPlayback }) => {
+      initializeVideoPlayback();
+    });
+  }
+
   initializePodcastPlayback();
-  initializeVideoPlayback();
 });
 
 // Initialize data-runtime context to the body data-attribute
@@ -107,7 +125,7 @@ if (memberMenu) {
 }
 
 /**
- * Fetches the html for the navigation_links from an endpoint and dynamically insterts it in the DOM.
+ * Fetches the html for the navigation_links from an endpoint and dynamically inserts it in the DOM.
  */
 async function getNavigation() {
   const placeholderElement = document.getElementsByClassName(
@@ -170,11 +188,6 @@ if (document.location.pathname === '/admin/creator_settings/new') {
 }
 
 document.ready.then(() => {
-  // Our infinite scroll pattern causes problems with the browser's back button:
-  // specifically, if you've scrolled into page 2+, click into a post, then back
-  // to the feed, the browser scroll position will not be where you had previously
-  // scrolled. This seems to fix it, even though it seems like it should have
-  // the opposite effect.
   setTimeout(() => {
     history.scrollRestoration = 'manual';
   }, 0);
@@ -183,6 +196,26 @@ document.ready.then(() => {
     'js-hamburger-trigger',
   )[0];
   hamburgerTrigger.addEventListener('click', getNavigation);
+
+  // Dynamically loading the script.js.
+  // We don't currently have dynamic insert working, so using this
+  // method instead.
+  const hoverElement = document.querySelector("#search-input");
+
+  const scriptElement = document.querySelector('meta[name="search-script"]');
+  if (scriptElement) {
+    hoverElement.addEventListener("mouseenter", function() {
+      const scriptPath = scriptElement.getAttribute("content");
+
+      // Check if the script is already added to the head
+      if (scriptPath && !document.querySelector(`script[src="${scriptPath}"]`)) {
+        const script = document.createElement("script");
+        script.src = scriptPath;
+        script.defer = true; // Optional, if you want it to load in deferred mode
+        document.head.appendChild(script);
+      }
+    }, { once: true }); // Ensures the hover event only triggers once
+  }
 });
 
 trackCreateAccountClicks('authentication-hamburger-actions');

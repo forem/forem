@@ -20,7 +20,7 @@ fr:
         reddit:
           text: Partager sur Reddit
         twitter:
-          text: Partager sur Twitter
+          text: Partager sur X
           query: '"%{article}" by %{author}'
         link: Share Post via...
         report: Report Abuse

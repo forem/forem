@@ -51,20 +51,6 @@
             target="_blank"
             class="crayons-link crayons-link--block"
             rel="noopener"
-            href="https://www.reddit.com/submit?url=<%= u article_url(@article) %>&title=<%= u @article.title %>">
-            <%= t("views.actions.share.reddit.text") %>
-          </a>
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
-            href="https://news.ycombinator.com/submitlink?u=<%= u article_url(@article) %>&t=<%= u @article.title %>">
-            <%= t("views.actions.share.hackernews.text") %>
-          </a>
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
             href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
             <%= t("views.actions.share.facebook.text") %>
           </a>

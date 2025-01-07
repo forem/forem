@@ -24,7 +24,7 @@
     <%= render partial: "shared/billboard", locals: { billboard: @billboards.second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
 
-  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
 
     <% Tag.where(name: Settings::General.sidebar_tags).find_each do |tag| %>
       <section class="crayons-card crayons-card--secondary crayons-layout__content">
@@ -51,9 +51,9 @@
   <% if @billboards.third %>
     <%= render partial: "shared/billboard", locals: { billboard: @billboards.third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
-  <% unless user_signed_in? %>
-    <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}", expires_in: 18.hours) do %>
-      <% boostable_posts = Article.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
+  <% if !user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] %>
+    <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
+      <% boostable_posts = Article.from_subforem.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
       <% if boostable_posts.present? %>
         <section class="widget">
           <header>

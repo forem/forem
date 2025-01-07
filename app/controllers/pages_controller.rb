@@ -5,8 +5,10 @@ class PagesController < ApplicationController
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = Page.find_by!(slug: params[:slug])
+    redirect_page_if_different_subforem
     not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
+
 
     case @page.template
     when "txt"

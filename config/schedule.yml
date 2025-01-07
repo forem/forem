@@ -170,3 +170,7 @@ audience_segment_refresh:
   description: "Refresh audience segmentation for all segments"
   cron: "10 3 * * *"
   class: "AudienceSegmentRefreshAllWorker"
+drip_email_worker:
+  description: "Send drip emails to users based on their registration date"
+  cron: "37 * * * *" # Every hour on the 37 minute
+  class: "Emails::DripEmailWorker"

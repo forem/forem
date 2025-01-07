@@ -68,6 +68,65 @@ RSpec.describe FeedEvent do
     end
   end
 
+  describe "after_create .record_field_test_event" do
+    let(:user) { create(:user) }
+    let(:category) { "click" }
+    let(:context_type) { "home" }
+    let(:goal) { AbExperiment::GoalConversionHandler::USER_CREATES_EMAIL_FEED_EVENT_GOAL }
+
+    before do
+      allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      allow(FieldTest).to receive(:config).and_return({ "experiments" => { "some_experiment" => true } })
+    end
+
+    it "records a field test event if the conditions are met" do
+      create(:feed_event, user: user, category: category, context_type: "email")
+
+      expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(
+        user.id,
+        goal,
+      )
+    end
+
+    it "does not record a field test event if experiments are nil" do
+      allow(FieldTest).to receive(:config).and_return({ "experiments" => nil })
+      create(:feed_event, user: user, category: category, context_type: "email")
+
+      expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async).with(
+        user.id,
+        goal,
+      )
+
+    end
+
+    it "does not record a field test event if category is impression" do
+      create(:feed_event, user: user, category: "impression", context_type: "email")
+
+      expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async).with(
+        user.id,
+        goal,
+      )
+    end
+
+    it "does not record a field test event if user_id is nil" do
+      create(:feed_event, user: nil, category: category, context_type: "email")
+
+      expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async).with(
+        user.id,
+        goal,
+      )
+    end
+
+    it "does not record a field test event if context_type is not email" do
+      create(:feed_event, user: user, category: category, context_type: "home")
+
+      expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async).with(
+        user.id,
+        goal,
+      )
+    end
+  end
+
   describe "after_save .update_article_counters_and_scores" do
     let!(:article) { create(:article) }
     let!(:user1) { create(:user) }

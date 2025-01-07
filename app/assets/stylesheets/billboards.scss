@@ -3,8 +3,8 @@
 @import '_mixins';
 
 .crayons-layout__comments-billboard {
-  .crayons-sponsorship {
-    .c-indicator.crayons-sponsorship__indicator {
+  .crayons-bb, .crayons-unit {
+    .c-indicator.crayons-bb__indicator, .c-indicator.crayons-unit__indicator {
       line-height: 15px;
     }
 
@@ -19,7 +19,7 @@
   }
 }
 
-.billboard .crayons-dropdown.sponsorship-dropdown {
+.billboard .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.bb-dropdown {
   @media (min-width: $breakpoint-m) {
     max-width: 200px;
     min-width: auto;
@@ -35,7 +35,7 @@
   }
 }
 
-.billboard .ltag_cta {
+.billboard .ltag_cta, .bb-placement .ltag_cta {
   padding-top: var(--su-2);
   padding-bottom: var(--su-2);
 
@@ -45,7 +45,7 @@
 }
 
 // refers to the sidebar billboards where we use cards
-.crayons-card.billboard .ltag_cta {
+.crayons-card.billboard .ltag_cta, .crayons-card.bb-placement .ltag_cta {
   display: block;
 }
 
@@ -67,9 +67,10 @@
     max-height: calc(100vh - var(--header-height) - var(--su-8));
   }
   @media (min-width: $breakpoint-xl) {
-    .crayons-sponsorship__header,
+    .crayons-bb__header,
+    .crayons-unit__header,
     .text-styles {
-      margin-left: calc(50% - (var(--site-width) / 2));
+      margin-left: calc(54% - (var(--site-width) / 2));
     }
     .text-styles {
       font-size: 1.22em;
@@ -78,7 +79,7 @@
 }
 
 .popover-billboard--menuopenupwards {
-  .sponsorship-dropdown {
+  .sponsorship-dropdown, .bb-dropdown {
     top: auto;
     bottom: var(--su-8);
   }
@@ -141,7 +142,8 @@
 //refers to the below the comments billboard on the article page
 //refers to the feed/stories where we use story
 .crayons-layout__comments-billboard .crayons-card.billboard .ltag_cta,
-.crayons-story.billboard .ltag_cta {
+.crayons-story.billboard .ltag_cta, .crayons-layout__comments-billboard .crayons-card.bb-placement .ltag_cta,
+.crayons-story.bb-placement .ltag_cta {
   padding-right: var(--su-7);
   padding-left: var(--su-7);
 }

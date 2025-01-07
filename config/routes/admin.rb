@@ -49,9 +49,12 @@ namespace :admin do
       member do
         post "banish"
         patch "reputation_modifier"
+        patch "max_score"
+        patch "update_email"
         post "export_data"
         post "full_delete"
         patch "user_status"
+        post "add_tag_mod_role"
         post "merge"
         delete "remove_identity"
         post "send_email"
@@ -93,6 +96,7 @@ namespace :admin do
         patch "update_org_credits"
       end
     end
+    resources :emails
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :fetch
@@ -107,7 +111,7 @@ namespace :admin do
   scope :customization do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
-    resources :billboards, only: %i[index edit update new create destroy]
+    resources :billboards
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]

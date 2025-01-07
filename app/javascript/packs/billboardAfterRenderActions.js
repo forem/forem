@@ -48,15 +48,9 @@ export function implementSpecialBehavior(element) {
     element.querySelector('.js-billboard').dataset.special === 'delayed'
   ) {
     element.classList.add('hidden');
-    const observerOptions = {
-      root: null,
-      rootMargin: '-150px',
-      threshold: 0.2,
-    };
-
-    const observer = new IntersectionObserver(showDelayed, observerOptions);
-    const target = document.getElementById('new_comment');
-    observer.observe(target);    
+    setTimeout(() => {
+      showDelayed();
+    }, 10000);
   }
 }
 
@@ -69,7 +63,7 @@ export function observeBillboards() {
           if (entry.intersectionRatio >= 0.25) {
             setTimeout(() => {
               trackAdImpression(elem);
-            }, 1);
+            }, 200);
           }
         }
       });
@@ -89,16 +83,9 @@ export function observeBillboards() {
   });
 }
 
-function showDelayed(entries) {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      // The target element has come into the viewport
-      // Place the behavior you want to trigger here
-      // query for data-special "delayed"
-      document.querySelectorAll("[data-special='delayed']").forEach((el) => {
-        el.closest('.hidden').classList.remove('hidden');
-      });
-    }
+function showDelayed() {
+  document.querySelectorAll("[data-special='delayed']").forEach((el) => {
+    el.closest('.hidden').classList.remove('hidden');
   });
 }
 
@@ -125,7 +112,7 @@ function trackAdImpression(adBox) {
   };
 
   window
-    .fetch('/billboard_events', {
+    .fetch('/bb_tabulations', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -171,7 +158,7 @@ function trackAdClick(adBox, event, currentPath) {
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
-  window.fetch('/billboard_events', {
+  window.fetch('/bb_tabulations', {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrfToken,

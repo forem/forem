@@ -49,14 +49,15 @@ within our community. ❤️
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Vulnerability disclosure](#vulnerability-disclosure)
+- [Vulnerability Disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
 ## Community
 
 For a place to have open discussions on features, voice your ideas, or get help
-with general questions please visit the [discussions](https://github.com/forem/forem/discussions) section.
+with general questions please visit the
+[discussions](https://github.com/forem/forem/discussions) section.
 
 ## Contributing
 
@@ -68,7 +69,7 @@ for guidelines about how to proceed.
 
 This section provides a high-level quick start guide. If you're looking for a
 more thorough installation guide (for example
-[with macOS](https://developers.forem.com/getting-started/installation/mac),
+[with macOS](https://developers.forem.com/getting-started/installation/mac)),
 you'll want to refer to our complete
 [Developer Documentation](https://developers.forem.com/).
 
@@ -92,7 +93,7 @@ Please see our installation guides:
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
 
-## Vulnerability disclosure
+## Vulnerability Disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).
 
@@ -124,7 +125,8 @@ Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
 Any questions, please refer to our
-[license FAQ](https://developers.forem.com/licensing/) doc or email yo@dev.to.
+[license FAQ](https://developers.forem.com/licensing/) doc or email
+support@dev.to.
 
 <br>
 

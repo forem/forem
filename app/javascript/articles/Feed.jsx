@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
+import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
@@ -27,8 +28,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     //  * @returns {Promise} A promise containing the JSON response for the feed data.
     //  */
     async function fetchFeedItems(timeFrame = '', page = 1) {
+      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const promises = [
-        fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -396,6 +398,52 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   );
 };
 
+function initializeMainStatusForm() {
+
+  initializeDropdown({
+    triggerElementId: 'feed-dropdown-trigger',
+    dropdownContentId: 'feed-dropdown-menu',
+  });  
+
+  let lastClickedElement = null;
+  document.addEventListener("mousedown", (event) => {
+    lastClickedElement = event.target;
+  });
+  const mainForm = document.getElementById('main-status-form');
+  if (!mainForm) {
+    return;
+  }
+
+  const waitingForCSRF = setInterval(() => {
+    if (window.csrfToken !== undefined) {
+      mainForm.querySelector('input[name="authenticity_token"]').value = window.csrfToken;
+      clearInterval(waitingForCSRF);
+    }
+  }, 25);
+
+  document.getElementById('article_title').onfocus = function (e) {
+    const textarea = e.target;
+    textarea.classList.add('element-focused')
+    document.getElementById('main-status-form-controls').classList.add('flex');
+    document.getElementById('main-status-form-controls').classList.remove('hidden');
+    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
+    
+  }
+  document.getElementById('article_title').onblur = function (e) {
+    if (mainForm.contains(lastClickedElement)) {
+      e.preventDefault();
+      e.target.focus();
+    }
+    else {
+      e.target.classList.remove('element-focused')
+      document.getElementById('main-status-form-controls').classList.remove('flex');
+      document.getElementById('main-status-form-controls').classList.add('hidden');
+    }
+  }
+  // Prevent return element from creating linebreak
+
+}
+
 Feed.defaultProps = {
   timeFrame: '',
 };
@@ -406,3 +454,11 @@ Feed.propTypes = {
 };
 
 Feed.displayName = 'Feed';
+
+if (window && window.InstantClick) {
+  window.InstantClick.on('change', () => {
+    initializeMainStatusForm();
+  });
+}
+
+initializeMainStatusForm();

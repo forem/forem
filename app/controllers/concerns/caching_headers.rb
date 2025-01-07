@@ -18,7 +18,7 @@ module CachingHeaders
   #
   # @see {EdgeCacheSafetyCheck#current_user} for impact on "current_user"
   def set_cache_control_headers(
-    max_age = 1.day.to_i,
+    max_age = ((ApplicationConfig["EDGE_CACHE_DURATION_IN_HOURS"] || 24).to_i).hours.to_i,
     surrogate_control: nil,
     stale_while_revalidate: nil,
     stale_if_error: 26_400

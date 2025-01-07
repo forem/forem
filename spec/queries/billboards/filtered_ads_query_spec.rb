@@ -176,7 +176,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(other_community)
 
       filtered = filter_billboards organization_id: no_ads_org.id
-      expect(filtered).to contain_exactly(in_house_ad)
+      expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_billboards organization_id: nil
@@ -349,6 +349,85 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         expect(filtered).not_to include(requires_cookies_ad)
         expect(filtered).to include(no_cookies_required_ad)
       end
+    end
+  end
+
+  context "when considering browser context" do
+    let!(:all_browsers_ad) { create_billboard browser_context: :all_browsers }
+    let!(:mobile_in_app_ad) { create_billboard browser_context: :mobile_in_app }
+    let!(:mobile_web_ad) { create_billboard browser_context: :mobile_web }
+    let!(:desktop_ad) { create_billboard browser_context: :desktop }
+
+    it "filters ads based on user_agent string for mobile in-app context" do
+      filtered = filter_billboards(user_agent: "DEV-Native-ios")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+
+      filtered = filter_billboards(user_agent: "DEV-Native-android")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+    end
+
+    it "filters ads based on user_agent string for mobile web context" do
+      filtered = filter_billboards(user_agent: "Mobile Safari")
+      expect(filtered).to include(all_browsers_ad, mobile_web_ad)
+      expect(filtered).not_to include(mobile_in_app_ad, desktop_ad)
+    end
+
+    it "filters ads based on user_agent string for desktop context" do
+      filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
+      expect(filtered).to include(all_browsers_ad, desktop_ad)
+      expect(filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
+    end
+
+    it "includes all ads for unknown user_agent contexts" do
+      filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
+    end
+  end
+
+  context "when considering subforem ads" do
+    let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+    let(:subforem_2) { create(:subforem, domain: "#{rand(1000)}.com") }
+    let(:subforem_3) { create(:subforem, domain: "#{rand(1000)}.com") }
+    let!(:no_subforem) { create_billboard(include_subforem_ids: nil) }
+    let!(:subforem_first) { create_billboard(include_subforem_ids: [subforem.id]) }
+    let!(:subforem_2_and_3) { create_billboard(include_subforem_ids: [subforem_2.id, subforem_3.id]) }
+
+    before do
+      RequestStore.store[:subforem_id] = nil
+    end
+
+    it "includes only ads that either have no subforem or explicitly list the requested subforem_id" do
+      filtered = filter_billboards(subforem_id: subforem.id)
+      expect(filtered).to include(no_subforem, subforem_first)
+      expect(filtered).not_to include(subforem_2_and_3)
+    end
+
+    it "falls back to no-subforem ads if the requested subforem_id is not in include_subforem_ids" do
+      filtered = filter_billboards(subforem_id: 9_999)
+      expect(filtered).to include(no_subforem)
+      expect(filtered).not_to include(subforem_first, subforem_2_and_3)
+    end
+
+    it "includes subforem_2_and_3 if subforem_id = 3" do
+      filtered = filter_billboards(subforem_id: subforem_3.id)
+      expect(filtered).to include(no_subforem, subforem_2_and_3)
+      expect(filtered).not_to include(subforem_first)
+    end
+
+    # Also test the scenario when subforem_id is not passed at all.
+    it "includes only no_subforem billboard if no subforem_id was provided" do
+      filtered = filter_billboards
+      expect(filtered).to include(no_subforem)
+      expect(filtered).not_to include(subforem_first, subforem_2_and_3)
+    end
+
+    it "Falls back to request store if subforem_id is not passed" do
+      RequestStore.store[:subforem_id] = subforem_2.id
+      filtered = filter_billboards
+      expect(filtered).to include(no_subforem, subforem_2_and_3)
+      expect(filtered).not_to include(subforem_first)
     end
   end
 end

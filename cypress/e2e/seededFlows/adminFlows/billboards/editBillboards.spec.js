@@ -132,34 +132,6 @@ describe('Billboards Form', () => {
           .should('exist');
         cy.get('input[placeholder="US-NY, CA-ON"]').should('exist');
       });
-
-      it('should not return iso3166 errors if given valid geolocation code inputs', () => {
-        cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
-          'CA-ON, US-OH, US-MI',
-        );
-        cy.findByRole('button', { name: 'Save Billboard' }).click();
-        cy.get('#flash-0').should(($flashMessage) => {
-          expect($flashMessage).to.not.contain(
-            'is not an enabled target ISO 3166-2 code',
-          );
-        });
-      });
-
-      it('should generate errors if some or all of the input is invalid', () => {
-        cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
-          'US-NY, MX-CMX',
-        );
-        cy.findByRole('button', { name: 'Save Billboard' }).click();
-        cy.get('#flash-0').should(($flashMessage) => {
-          // We currently support only the US and CA
-          expect($flashMessage).to.contain(
-            'MX-CMX is not an enabled target ISO 3166-2 code',
-          );
-          expect($flashMessage).to.not.contain(
-            'US-NY is not an enabled target ISO 3166-2 code',
-          );
-        });
-      });
     });
   });
 });

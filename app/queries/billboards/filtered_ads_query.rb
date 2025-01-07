@@ -11,7 +11,8 @@ module Billboards
     # @param location [Geolocation|String] the visitor's geographic location
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [], page_id: nil,
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
-                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false)
+                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil,
+                   role_names: nil, subforem_id: nil)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -22,13 +23,18 @@ module Billboards
       @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
       @user_tags = user_tags
+      @user_agent = user_agent
       @location = Geolocation.from_iso3166(location)
       @cookies_allowed = cookies_allowed
+      @role_names = role_names
+      @subforem_id = subforem_id || RequestStore.store[:subforem_id]
     end
 
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+      @filtered_billboards = included_subforem_ads #if @subforem_id.present?
+      @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
 
@@ -56,6 +62,7 @@ module Billboards
       end
 
       @filtered_billboards = user_targeting_ads
+      @filtered_billboards = role_filtered_ads if @user_signed_in
 
       @filtered_billboards = if @user_signed_in
                                authenticated_ads(%w[all logged_in])
@@ -85,6 +92,19 @@ module Billboards
       @filtered_billboards.where(placement_area: @area)
     end
 
+    def browser_context_ads
+      case @user_agent
+      when /DEV-Native-ios|DEV-Native-android|ForemWebView/
+        @filtered_billboards.where(browser_context: %i[all_browsers mobile_in_app])
+      when /Mobile|iPhone|Android/
+        @filtered_billboards.where(browser_context: %i[all_browsers mobile_web])
+      when /Windows|Macintosh|Mac OS X|Linux/
+        @filtered_billboards.where(browser_context: %i[all_browsers desktop])
+      else
+        @filtered_billboards
+      end
+    end
+
     def page_ads
       @filtered_billboards.where(page_id: @page_id)
     end
@@ -99,6 +119,11 @@ module Billboards
 
     def unexcluded_article_ads
       @filtered_billboards.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+    end
+
+    def included_subforem_ads
+      @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
+                                  subforem_id: @subforem_id)
     end
 
     def authenticated_ads(display_auth_audience)
@@ -116,6 +141,14 @@ module Billboards
       else
         @filtered_billboards.where(audience_segment_id: nil)
       end
+    end
+
+    def role_filtered_ads
+      @filtered_billboards.where(
+        "(cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
+        AND (cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+        role_names: @role_names,
+      )
     end
 
     def location_targeted_ads
@@ -140,10 +173,8 @@ module Billboards
       # Always match in-house-type ads
       types_matching << :in_house
 
-      # If the article is an organization's article (non-nil organization_id),
-      # or if the current_user has opted-out of sponsors,
-      # then do not show external ads
-      if @organization_id.blank? && @permit_adjacent_sponsors
+      # If the author or current_user has opted out of seeing adjacent sponsors, do not show them
+      if @permit_adjacent_sponsors
         types_matching << :external
       end
 

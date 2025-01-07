@@ -91,13 +91,13 @@ class RateLimitChecker
 
   def check_published_article_creation_limit
     # TODO: We should make this time frame configurable.
-    user.articles.published.where("created_at > ?", 30.seconds.ago).size >
+    user.articles.published.from_subforem.where("created_at > ?", 30.seconds.ago).size >
       Settings::RateLimit.published_article_creation
   end
 
   def check_published_article_antispam_creation_limit
     # TODO: We should make this time frame configurable.
-    user.articles.published.where("created_at > ?", 5.minutes.ago).size >
+    user.articles.published.from_subforem.where("created_at > ?", 5.minutes.ago).size >
       Settings::RateLimit.published_article_antispam_creation
   end
 
