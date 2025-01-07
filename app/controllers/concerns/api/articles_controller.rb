@@ -25,7 +25,7 @@ module Api
       title description main_image published published_at cached_tag_list
       slug path canonical_url comments_count public_reactions_count
       page_views_count crossposted_at body_markdown updated_at reading_time
-      subforem_id
+      language subforem_id
     ].freeze
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 

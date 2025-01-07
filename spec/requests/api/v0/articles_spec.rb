@@ -345,6 +345,7 @@ RSpec.describe "Api::V0::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
+        language subforem_id
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
