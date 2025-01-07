@@ -34,7 +34,7 @@ jobs:
         if: ${{ github.event_name != 'push' && github.event_name != 'workflow_dispatch' }}
         run: echo "SKIP_PUSH=1" >> $GITHUB_ENV
       - name: Set up QEMU for cross-compiling to ARM64
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker BuildX
         id: buildx
         uses: docker/setup-buildx-action@v2
