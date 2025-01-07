@@ -12,10 +12,14 @@ module Emails
   
       user_scope = if email.audience_segment
               email.audience_segment.users.registered.joins(:notification_setting)
+                              .without_role(:suspended)
+                              .without_role(:spam)
                               .where(notification_setting: { email_newsletter: true })
                               .where.not(email: "")
             else
               User.registered.joins(:notification_setting)
+                            .without_role(:suspended)
+                            .without_role(:spam)
                             .where(notification_setting: { email_newsletter: true })
                             .where.not(email: "")
             end

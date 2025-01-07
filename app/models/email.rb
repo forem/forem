@@ -62,7 +62,7 @@ class Email < ApplicationRecord
     users_batch = User.where(email: email_array)
     return if users_batch.empty?
 
-    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), subject, body, type_of, id)
+    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), "[TEST] #{subject}", body, type_of, id)
   end
 
   def deliver_to_users

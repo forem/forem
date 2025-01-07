@@ -79,7 +79,7 @@ RSpec.describe Email, type: :model do
         addresses_string = "test1@example.com, test2@example.com"
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           [user_1.id, user_2.id],
-          email.subject,
+          "[TEST] #{email.subject}",
           email.body,
           email.type_of,
           email.id
@@ -95,7 +95,7 @@ RSpec.describe Email, type: :model do
         email.test_email_addresses = "tester@example.com"
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
           [user_1.id],
-          email.subject,
+          "[TEST] #{email.subject}",
           email.body,
           email.type_of,
           email.id
