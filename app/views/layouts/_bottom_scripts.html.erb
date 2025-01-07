@@ -1,3 +1,5 @@
+<% # This script is used to authenticate the user in the subforum iframe %>
+<% # Could be moved to a separate file with some re-factoring %>
 <% default_url_component = "#{URL.protocol}#{RequestStore.store[:default_subforem_domain]}" %>
 <script>
   var userSignedIn = <%= user_signed_in? %>
@@ -16,7 +18,6 @@
 
     window.addEventListener('message', function(event) {
       if (event.origin !== '<%= default_url_component %>') {
-        console.error('Received message from unauthorized origin:', event.origin);
         return;
       }
 
@@ -42,13 +43,10 @@
       })
       .then(function(data) {
         if (data.success) {
-          console.log('User authenticated successfully.');
           if (document.head.querySelector('meta[name="user-signed-in"][content="false"]')) {
             // Reload the page to update the user's state
             location.reload();
           }
-        } else {
-          console.error('Authentication failed:', data.error);
         }
       })
       .catch(function(error) {
