@@ -124,6 +124,9 @@
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   <%= render "articles/reaction_category_resources" %>
+  <% if signed_in_default_subforem_or_signed_out_non_default? %>
+    <%= render "layouts/bottom_scripts"  %>
+  <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
   </body>
   </html>

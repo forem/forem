@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     registrations: "registrations",
     invitations: "invitations",
     passwords: "passwords",
+    sessions: "sessions",
     confirmations: "confirmations"
   }
 
