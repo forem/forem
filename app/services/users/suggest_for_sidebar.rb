@@ -30,7 +30,7 @@ module Users
     end
 
     def active_authors_for_given_tags
-      @active_authors_for_given_tags ||= Article.published.tagged_with([given_tag], any: true)
+      @active_authors_for_given_tags ||= Article.published.from_subforem.tagged_with([given_tag], any: true)
         .where(public_reactions_count: minimum_reaction_count..)
         .where(published_at: 4.months.ago..)
         .not_authored_by([user.id] + user.following_by_type("User"))
