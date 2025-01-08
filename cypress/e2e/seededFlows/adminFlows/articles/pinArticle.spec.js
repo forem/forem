@@ -70,7 +70,7 @@ describe('Pin an article from the admin area', () => {
     cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     cy.createArticle({
-      title: `Another Article ${new Date().getTime()}`,
+      title: `A new article ${new Date().getTime()}`,
       tags: ['beginner', 'ruby', 'go'],
       content: `This is another test article's contents.`,
       published: true,
