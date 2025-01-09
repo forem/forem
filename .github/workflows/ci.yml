@@ -9,7 +9,7 @@ on:
       - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{  github.ref != 'refs/heads/main' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   COVERAGE: true
@@ -99,8 +99,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [10]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        ci_node_total: [15]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 
     steps:
       - uses: actions/checkout@v4
@@ -138,7 +138,7 @@ jobs:
           name: coverage-rspec-${{ matrix.ci_node_index }}
           path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
-        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        if: '!cancelled()'
         uses: Workshop64/buildpulse-action@master
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
@@ -161,7 +161,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
-        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        if: '!cancelled()'
         uses: Workshop64/buildpulse-action@master
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
@@ -253,8 +253,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [10]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, non-seed]
+        ci_node_total: [30]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, non-seed]
 
     steps:
       - uses: actions/checkout@v4
@@ -300,7 +300,7 @@ jobs:
             tmp/cypress_screenshots
             cypress/logs
       - name: Upload test results to BuildPulse for flaky test detection
-        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        if: '!cancelled()'
         uses: Workshop64/buildpulse-action@master
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
@@ -353,3 +353,4 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+
