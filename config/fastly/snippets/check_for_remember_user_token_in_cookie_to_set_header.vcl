@@ -1,5 +1,5 @@
 sub vcl_recv {
-  if (req.http.Cookie ~ "remember_user_token" || req.http.Cookie ~ "forem_user_signed_in") {
+  if (req.http.Cookie ~ "remember_user_token") {
     set req.http.X-Loggedin = "logged-in";
   } else {
     set req.http.X-Loggedin = "logged-out";

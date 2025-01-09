@@ -20,7 +20,7 @@ class ModerationsController < ApplicationController
 
     # exclude articles from users that have suspended or spam role
     role_ids = Role.where(name: %i[spam suspended]).ids
-    articles = Article.published
+    articles = Article.published.from_subforem
       .where("NOT EXISTS (SELECT 1 FROM users_roles WHERE users_roles.user_id = articles.user_id AND
              role_id IN (?))", role_ids)
       .order(published_at: :desc).limit(70)

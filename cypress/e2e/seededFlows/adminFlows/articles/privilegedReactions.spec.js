@@ -7,7 +7,7 @@ describe('New article has empty flags, quality reactions and score', () => {
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.createArticle({
-          title: 'Test article',
+          title: `Test article ${new Date().getTime()}`,
           tags: ['beginner', 'ruby', 'go'],
           content: `This is another test article's contents.`,
           published: true,
