@@ -89,6 +89,7 @@ module Admin
         .where(category: "vomit", status: status)
         .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
+        .where("reactions.created_at > ?", 2.week.ago)
         .order(Arel.sql("
           CASE reactable_type
             WHEN 'User' THEN 0
@@ -100,6 +101,8 @@ module Admin
         .limit(limit)
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
+      # Map over reactions and do not include reactions where the reactable's score is less than 150
+      q.select { |reaction| reaction.reactable.score > -150 }
     end
 
     def send_slack_message(params)

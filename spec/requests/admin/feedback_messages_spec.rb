@@ -17,13 +17,33 @@ RSpec.describe "/admin/moderation/reports" do
       end
     end
 
-    context "when there is a vomit reaction on a user" do
+    context "when there is a vomit reaction on a user with score > -150 and created in the last two weeks" do
       it "renders with status 200" do
         trusted_user
-        create(:reaction, category: "vomit", reactable: user, user: trusted_user)
+        # Assume User model has a score attribute
+        user.update!(score: -100) # Ensure the user's score is greater than -150
+        create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 1.week.ago)
         sign_in admin
         get admin_reports_path
         expect(response).to have_http_status :ok
+      end
+
+      it "does not render if the reaction is older than two weeks" do
+        trusted_user
+        user.update!(score: -100)
+        create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 3.weeks.ago)
+        sign_in admin
+        get admin_reports_path
+        expect(response.body).not_to include("vomit")
+      end
+
+      it "does not render if the reactable score is <= -150" do
+        trusted_user
+        user.update!(score: -200) # Ensure the user's score is less than or equal to -150
+        create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 1.week.ago)
+        sign_in admin
+        get admin_reports_path
+        expect(response.body).not_to include("vomit")
       end
     end
   end
