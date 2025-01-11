@@ -86,18 +86,20 @@ module Admin
                         ["invalid", 10]
                       end
       q = Reaction.includes(:user, :reactable)
-        .where(category: "vomit", status: status)
-        .live_reactable
-        .select(:id, :user_id, :reactable_type, :reactable_id)
-        .order(Arel.sql("
-          CASE reactable_type
-            WHEN 'User' THEN 0
-            WHEN 'Comment' THEN 1
-            WHEN 'Article' THEN 2
-            ELSE 3
-          END,
-          reactions.reactable_id ASC"))
-        .limit(limit)
+            .where(category: "vomit", status: status)
+            .where("reactables.score > ?", -150)
+            .where("reactions.created_at >= ?", 2.weeks.ago)
+            .live_reactable
+            .select(:id, :user_id, :reactable_type, :reactable_id)
+            .order(Arel.sql("
+              CASE reactable_type
+                WHEN 'User' THEN 0
+                WHEN 'Comment' THEN 1
+                WHEN 'Article' THEN 2
+                ELSE 3
+              END,
+              reactions.reactable_id ASC"))
+            .limit(limit)
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
     end
