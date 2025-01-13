@@ -2,12 +2,14 @@ module Admin
   class FeedbackMessagesController < Admin::ApplicationController
     layout "admin"
 
+    SCORE_MIN = -125
+
     def index
       reconcile_ransack_params
       @q = FeedbackMessage.includes(:reporter, :offender, :affected, :reported)
         .order(created_at: :desc)
         .ransack(params[:q])
-      @feedback_messages = @q.result.page(params[:page] || 1).per(10)
+      @feedback_messages = @q.result
       @feedback_messages = if params[:status] == "Resolved"
                              @feedback_messages.where(status: "Resolved")
                            elsif params[:status] == "Invalid"
@@ -15,7 +17,7 @@ module Admin
                            else
                              @feedback_messages = @feedback_messages.where(status: "Open")
                            end
-      @feedback_messsages = @feedback_messages.select { |fm| fm.reported&.score.to_i > -150 }
+      @feedback_messages = @feedback_messages.select { |fm| fm.reported&.score.to_i > SCORE_MIN }
 
       @feedback_type = params[:state] || "abuse-reports"
       @status = params[:status].presence || "Open"
@@ -103,7 +105,7 @@ module Admin
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
       # Map over reactions and do not include reactions where the reactable's score is less than 150
-      q.select { |reaction| reaction.reactable.score > -150 }
+      q.select { |reaction| reaction.reactable.score > SCORE_MIN }
     end
 
     def send_slack_message(params)
