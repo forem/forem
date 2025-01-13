@@ -359,6 +359,10 @@ class Billboard < ApplicationRecord
     update_column(:processed_html, modified_html)
   end
 
+  def score
+    0 # Just to allow this to repond to .score for abuse reports
+  end
+
   private
 
   def generate_billboard_name
@@ -377,10 +381,6 @@ class Billboard < ApplicationRecord
       self.processed_html = Html::Parser.new(body_markdown)
         .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
     end
-  end
-
-  def score
-    0 # Just to allow this to repond to .score for abuse reports
   end
 
   def extracted_process_markdown
