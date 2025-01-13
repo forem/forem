@@ -379,6 +379,10 @@ class Billboard < ApplicationRecord
     end
   end
 
+  def score
+    0 # Just to allow this to repond to .score for abuse reports
+  end
+
   def extracted_process_markdown
     renderer = ContentRenderer.new(body_markdown || "", source: self)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
