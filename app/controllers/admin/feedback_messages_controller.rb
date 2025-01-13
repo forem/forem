@@ -4,7 +4,7 @@ module Admin
 
     def index
       reconcile_ransack_params
-      @q = FeedbackMessage.includes(:reporter, :offender, :affected)
+      @q = FeedbackMessage.includes(:reporter, :offender, :affected, :reported)
         .order(created_at: :desc)
         .ransack(params[:q])
       @feedback_messages = @q.result.page(params[:page] || 1).per(10)
@@ -15,6 +15,7 @@ module Admin
                            else
                              @feedback_messages = @feedback_messages.where(status: "Open")
                            end
+      @feedback_messsages = @feedback_messages.select { |fm| fm.reported&.score.to_i > -150 }
 
       @feedback_type = params[:state] || "abuse-reports"
       @status = params[:status].presence || "Open"
