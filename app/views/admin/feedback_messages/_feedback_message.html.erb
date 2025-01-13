@@ -57,13 +57,43 @@
             </p>
           <% else %>
             <h3 class="crayons-subtitle-3">
-              Reported URL (new tab):
+              Reported URL:
             </h3>
             <p>
               <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
             </p>
           <% end %>
         </div>
+
+        <% reported = feedback_message.reported %>
+        <% if reported.present? %>
+          <div class="w-100 max-w-100 px-4">
+            <h3 class="crayons-subtitle-3">
+              Reported <%= reported.class.name %>
+            </h3>
+            <% if reported&.class&.name == "User" %>
+              <p>
+                <div class="flex flex-1 items-center">
+                  <%= feedback_message.reported.name %>
+                  (<a href="<%= feedback_message.reported.path %>"> @<%= feedback_message.reported.username %></a>)
+                  <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.reported } %>
+                </div>
+              </p>
+            <% elsif reported.class&.name == "Article" %>
+              <p>
+                <a href="<%= feedback_message.reported.path %>" target="_blank" rel="noopener"><%= feedback_message.reported.title %></a>
+              </p>
+            <% elsif reported.class&.name == "Comment" %>
+              <p>
+                <a href="<%= feedback_message.reported.path %>" target="_blank" rel="noopener"><%= feedback_message.reported.body %></a>
+              </p>
+            <% elsif reported.class.name == "Billboard" %>
+              <p>
+                <a href="<%= feedback_message.reported.path %>" target="_blank" rel="noopener"><%= feedback_message.reported.title %></a>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
 
         <div class="w-100 max-w-100 px-4">
           <% if feedback_message.offender %>
