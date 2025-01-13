@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_12_155929) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -571,6 +571,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
     t.string "feedback_type"
     t.text "message"
     t.bigint "offender_id"
+    t.bigint "reported_id"
+    t.string "reported_type"
     t.string "reported_url"
     t.bigint "reporter_id"
     t.string "status", default: "Open"
