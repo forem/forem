@@ -85,7 +85,7 @@
               </p>
             <% elsif reported.class&.name == "Comment" %>
               <p>
-                <a href="<%= feedback_message.reported.path %>" target="_blank" rel="noopener"><%= feedback_message.reported.body %></a>
+                <a href="<%= feedback_message.reported.path %>" target="_blank" rel="noopener"><%= feedback_message.reported.title %></a>
               </p>
             <% elsif reported.class.name == "Billboard" %>
               <p>
