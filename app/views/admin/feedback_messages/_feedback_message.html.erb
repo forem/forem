@@ -89,7 +89,7 @@
               </p>
             <% elsif reported.class.name == "Billboard" %>
               <p>
-                <a href="<%= feedback_message.reported.path %>" target="_blank" rel="noopener"><%= feedback_message.reported.title %></a>
+                <a href="/admin/customization/billboards/<%= feedback_message.reported_id %>" target="_blank" rel="noopener"><%= feedback_message.reported.name %></a>
               </p>
             <% end %>
           </div>
