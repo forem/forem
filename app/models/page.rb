@@ -13,9 +13,8 @@ class Page < ApplicationRecord
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
-  validates :slug, presence: true, uniqueness: { scope: :subforem_id }
 
-  unique_across_models :slug, if: :ready_for_unique_validation?
+  validate :validate_slug_uniqueness
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -107,7 +106,17 @@ class Page < ApplicationRecord
     Pages::BustCacheWorker.perform_async(slug)
   end
 
-  def ready_for_unique_validation?
-    return true if Page.where(slug: slug).none?
+  def validate_slug_uniqueness
+    # Custom cross-model validation to allow for the same slug in different subforems for pages
+    return if Page.where(slug: slug).exists? && Page.where(slug: slug, subforem_id: subforem_id).none?
+
+    if Page.where(slug: slug, subforem_id: subforem_id).exists?
+      errors.add(:slug, "has already been taken")
+      return
+    end
+
+    if User.where(username: slug).exists? || Organization.where(slug: slug).exists? || Podcast.where(slug: slug).exists?
+      errors.add(:slug, "is already taken by another entity")
+    end
   end
 end

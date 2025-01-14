@@ -8,7 +8,7 @@ module Admin
     ].freeze
 
     def index
-      @pages = Page.order(created_at: :desc)
+      @pages = Page.from_subforem.order(created_at: :desc)
       @code_of_conduct = Page.find_by(slug: Page::CODE_OF_CONDUCT_SLUG)
       @privacy = Page.find_by(slug: Page::PRIVACY_SLUG)
       @terms = Page.find_by(slug: Page::TERMS_SLUG)
@@ -31,7 +31,6 @@ module Admin
 
     def create
       @page = Page.new(page_params)
-
       if @page.save
         flash[:success] = I18n.t("admin.pages_controller.created")
         redirect_to admin_pages_path
