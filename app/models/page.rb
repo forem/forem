@@ -13,8 +13,9 @@ class Page < ApplicationRecord
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
+  validates :slug, presence: true, uniqueness: { scope: :subforem_id }
 
-  unique_across_models :slug
+  unique_across_models :slug, if: :ready_for_unique_validation?
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -104,5 +105,9 @@ class Page < ApplicationRecord
 
   def bust_cache
     Pages::BustCacheWorker.perform_async(slug)
+  end
+
+  def ready_for_unique_validation?
+    return true if Page.where(slug: slug).none?
   end
 end
