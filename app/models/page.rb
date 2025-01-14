@@ -5,6 +5,7 @@ class Page < ApplicationRecord
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
   PRIVACY_SLUG = "privacy".freeze
+  PAGE_DIRECTORY_LIMIT = 6
 
   has_many :billboards, dependent: :nullify
   belongs_to :subforem, optional: true
@@ -117,6 +118,17 @@ class Page < ApplicationRecord
 
     if User.where(username: slug).exists? || Organization.where(slug: slug).exists? || Podcast.where(slug: slug).exists?
       errors.add(:slug, "is already taken by another entity")
+      return
+    end
+
+    if slug.include?("sitemap-")
+      errors.add(:slug, "is taken by sitemap directory")
+      return
+    end
+
+    if slug.split("/").count > PAGE_DIRECTORY_LIMIT
+      errors.add(:slug, "has too many subdirectories")
+      return
     end
   end
 end
