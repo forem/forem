@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_12_155929) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_14_210301) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -848,7 +848,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_12_155929) do
     t.string "template"
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["slug"], name: "index_pages_on_slug", unique: true
+    t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
   end
 
