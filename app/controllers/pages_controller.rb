@@ -4,7 +4,7 @@ class PagesController < ApplicationController
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
-    @page = Page.find_by!(slug: params[:slug])
+    @page = proper_page_by_slug
     redirect_page_if_different_subforem
     not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
@@ -130,6 +130,10 @@ class PagesController < ApplicationController
   end
 
   private
+
+  def proper_page_by_slug
+    Page.from_subforem.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
+  end
 
   def redirect_daily_thread_request(daily_thread)
     if daily_thread
