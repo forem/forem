@@ -6,6 +6,7 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
 
   before do
     allow(article).to receive(:purge)
+    allow(article.user).to receive(:purge)
     allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
     allow(cache_bust).to receive(:call)
     allow(described_class).to receive(:bust_home_pages)
@@ -28,6 +29,7 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
   it "busts the cache" do
     described_class.call(article)
     expect(article).to have_received(:purge).once
+    allow(article.user).to receive(:purge)
     expect(described_class).to have_received(:bust_home_pages).with(cache_bust, article).once
     expect(described_class).to have_received(:bust_tag_pages).with(cache_bust, article).once
   end
@@ -36,6 +38,7 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
     it "busts the organization slug" do
       organization = create(:organization)
       article.organization = organization
+      allow(organization).to receive(:purge)
 
       described_class.call(article)
       expect(organization).to have_received(:purge).once
