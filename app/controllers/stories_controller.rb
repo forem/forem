@@ -187,7 +187,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_organization_json_ld
-    set_surrogate_key_header "articles-org-#{@organization.id}"
+    set_surrogate_key_header @organization.record_key
     render template: "organizations/show"
   end
 

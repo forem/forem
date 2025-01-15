@@ -11,6 +11,7 @@ module EdgeCache
 
       article.purge
       article.user&.purge
+      article.organization&.purge
 
       cache_bust = EdgeCache::Bust.new
 
