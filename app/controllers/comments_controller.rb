@@ -39,7 +39,7 @@ class CommentsController < ApplicationController
 
     @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
+    set_surrogate_key_header @commentable.record_key if @commentable
   end
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
