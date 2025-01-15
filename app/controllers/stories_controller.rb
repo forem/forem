@@ -220,7 +220,7 @@ class StoriesController < ApplicationController
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
-    set_surrogate_key_header "articles-user-#{@user.id}"
+    set_surrogate_key_header @user.record_key
     set_user_json_ld
 
     render template: "users/show"
