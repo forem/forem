@@ -132,7 +132,7 @@ class PagesController < ApplicationController
   private
 
   def proper_page_by_slug
-    Page.from_subforem.find_by!(slug: params[:slug]) || Page.find_by!(slug: params[:slug]) || not_found
+    Page.from_subforem.find_by!(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
   end
 
   def redirect_daily_thread_request(daily_thread)
