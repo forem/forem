@@ -21,7 +21,7 @@ class PagesController < ApplicationController
   end
 
   def about
-    @page = Page.find_by(slug: "about")
+    @page = Page.from_subforem.find_by(slug: "about")
     render :show if @page
     set_surrogate_key_header "about_page"
   end
