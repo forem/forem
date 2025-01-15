@@ -3,7 +3,7 @@
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <aside class="side-bar sidebar-additional showing" id="sidebar-additional">
       <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
-      <% if active_threads.present? %>
+      <% if user_signed_in? && active_threads.present? %>
         <div class="widget">
           <header>
             <h4><%= t("views.stories.discuss") %></h4>
