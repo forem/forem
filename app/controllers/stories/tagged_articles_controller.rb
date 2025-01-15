@@ -16,9 +16,11 @@ module Stories
 
       @page = (params[:page] || 1).to_i
 
-      @moderators = User.with_role(:tag_moderator, @tag)
-        .order(badge_achievements_count: :desc)
-        .select(:username, :profile_image, :id)
+      if user_signed_in?
+        @moderators = User.with_role(:tag_moderator, @tag)
+          .order(badge_achievements_count: :desc)
+          .select(:username, :profile_image, :id)
+      end
 
       set_number_of_articles(tag: @tag)
 
@@ -58,7 +60,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.from_subforem
+      stories = stories.full_posts.includes(:subforem).from_subforem
       @stories = stories.decorate
     end
 

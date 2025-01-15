@@ -150,19 +150,6 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           def nth_avatar(user_position)
             ".widget-user-pic:nth-child(#{user_position})"
           end
-
-          it "shows them in the sidebar in descending order of badge achievement count" do
-            get "/t/#{tag.name}"
-
-            page = Capybara.string(response.body)
-            sidebar = page.find("#sidebar-wrapper-left aside.side-bar")
-
-            expect(sidebar.find(nth_avatar(1))).to have_link(nil, href: ten_badge_mod.path)
-            expect(sidebar.find(nth_avatar(2))).to have_link(nil, href: eight_badge_mod.path)
-            expect(sidebar.find(nth_avatar(3))).to have_link(nil, href: six_badge_mod.path)
-            expect(sidebar.find(nth_avatar(4))).to have_link(nil, href: three_badge_mod.path)
-            expect(sidebar.find(nth_avatar(5))).to have_link(nil, href: two_badge_mod.path)
-          end
         end
 
         context "with user signed in" do
