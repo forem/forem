@@ -52,7 +52,7 @@ module Admin
     private
 
     def email_params
-      params.require(:email).permit(:subject, :body, :audience_segment_id, :type_of, :drip_day, :status, :test_email_addresses)
+      params.require(:email).permit(:subject, :body, :audience_segment_id, :type_of, :drip_day, :status, :test_email_addresses, :targeted_tags)
     end
   end
 end

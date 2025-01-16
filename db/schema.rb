@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_14_210301) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_15_200745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -544,6 +544,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_210301) do
     t.integer "drip_day", default: 0
     t.integer "status", default: 0
     t.string "subject", null: false
+    t.string "targeted_tags", default: [], array: true
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
