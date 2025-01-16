@@ -1,6 +1,6 @@
 Contribution License Agreement
 
-This Contribution License Agreement (“Agreement”) is agreed to by the party
+This PC License Agreement (“Agreement”) is agreed to by the party
 signing below (“You”), and conveys certain license rights to Dev Community Inc.
 and its affiliates (“DEV”) for Your contributions to DEV open source projects.
 This Agreement is effective upon Your acknowledgment via the CLA Assistant tool.
