@@ -19,14 +19,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   const [onError, setOnError] = useState(false);
 
   useEffect(() => {
-    // /**
-    //  * Retrieves data for the feed. The data will include articles and billboards.
-    //  *
-    //  * @param {number} [page=1] Page of feed data to retrieve
-    //  * @param {string} The time frame of feed data to retrieve
-    //  *
-    //  * @returns {Promise} A promise containing the JSON response for the feed data.
-    //  */
     async function fetchFeedItems(timeFrame = '', page = 1) {
       const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const promises = [
@@ -61,28 +53,15 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
           Honeybadger.notify(
             `failed to fetch some items on the home feed: ${result.reason}`,
           );
-          // we push an undefined item because we want to maintain the placement of the deconstructed array.
-          // it gets removed before display when we further organize.
           feedItems.push(undefined);
         }
       }
       return feedItems;
     }
 
-    // /**
-    //  * Sets the Pinned Item into state.
-    //  *
-    //  * @param {Object} The pinnedPost
-    //  * @param {Object} The imagePost
-    //  *
-    //  * @returns {boolean} If we set the pinned post we return true else we return false
-    //  */
     function setPinnedPostItem(pinnedPost, imagePost) {
-      // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
       if (!pinnedPost || timeFrame !== '') return false;
 
-      // If the pinned and the image post aren't the same, (either because imagePost is missing or
-      // because they represent two different posts), we set the pinnedPost
       if (pinnedPost.id !== imagePost?.id) {
         setPinnedItem(pinnedPost);
         return true;
@@ -97,11 +76,25 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 
         fetchFeedItems(timeFrame).then(
           ([
-            feedPosts,
+            feedPosts = [],
             feedFirstBillboard,
             feedSecondBillboard,
             feedThirdBillboard,
           ]) => {
+            if (feedPosts.length === 0) {
+              feedPosts.push({
+                id: 'dummy-story',
+                title: '👻 Nothing to see here',
+                description: 'Check back later for updates.',
+                type_of: 'status',
+                body_preview: '<strong>Follow some members and tags to make the most of your feed</strong>',
+                main_image: null,
+                pinned: false,
+                url: '/welcome',
+                reading_time: 0
+              });
+            }
+
             const imagePost = getImagePost(feedPosts);
             const pinnedPost = getPinnedPost(feedPosts);
             const podcastPost = getPodcastEpisodes();
@@ -114,17 +107,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
               imagePost,
               pinnedPost,
             );
-
-            // We implement the following organization for the feed:
-            // 1. Place the pinned post first (if the timeframe is relevant)
-            // 2. Place the image post next
-            // 3. If you follow podcasts, place the podcast episodes that are
-            // published today (this is an array)
-            // 4. Place the rest of the stories for the feed
-            // 5. Insert the billboards in that array accordingly
-            // - feed_first: Before all home page posts
-            // - feed_second: Between 2nd and 3rd posts in the feed
-            // - feed_third: Between 7th and 8th posts in the feed
 
             const organizedFeedItems = [
               ...insertInArrayIf(hasSetPinnedPost, pinnedPost),
@@ -156,36 +138,14 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     }
   }, [afterRender, feedItems.length]);
 
-  // /**
-  //  * Retrieves the imagePost which will later appear at the top of the feed,
-  //  * with a larger main_image than any of the stories or feed elements.
-  //  *
-  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
-  //  *
-  //  * @returns {Object} The first post with a main_image
-  //  */
   function getImagePost(feedPosts) {
     return feedPosts.find((post) => post.main_image !== null);
   }
 
-  // /**
-  //  * Retrieves the pinnedPost which will later appear at the top the feed with a pin.
-  //  *
-  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
-  //  *
-  //  * @returns {Object} The first post that has pinned set to true
-  //  */
   function getPinnedPost(feedPosts) {
     return feedPosts.find((post) => post.pinned === true);
   }
 
-  // /**
-  //  * Sets the Image Item into state.
-  //  *
-  //  * @param {Object} The imagePost
-  //  *
-  //  * @returns {boolean} If we set the pinned post we return true
-  //  */
   function setImagePostItem(imagePost) {
     if (imagePost) {
       setimageItem(imagePost);
@@ -193,17 +153,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     }
   }
 
-  // /**
-  //  * Updates the feedPosts to remove the relevant items like the pinned
-  //  * post and the image post that will be added to the top of final organized feed
-  //  * items separately. We do not want duplication.
-  //  *
-  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
-  //  * @param {Object} The imagePost
-  //  * @param {Object} The pinnedPost
-  //  *
-  //  * @returns {Array} We return the new array that no longer contains the pinned post or the image post.
-  //  */
   function updateFeedPosts(feedPosts, imagePost, pinnedPost) {
     let filteredFeedPost = feedPosts;
     if (pinnedPost) {
@@ -218,16 +167,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     return filteredFeedPost;
   }
 
-  // /**
-  //  * Inserts the billboards (if they exist) into the feed.
-  //  *
-  //  * @param {organizedFeedItems} The partially organized feed items.
-  //  * @param {String} feedFirstBillboard is the feed_first billboard retrieved from an endpoint.
-  //  * @param {String} feedSecondBillboard is the feed_second billboard retrieved from an endpoint.
-  //  * @param {String} feedThirdBillboard is the feed_third billboard retrieved from an endpoint.
-  //  *
-  //  * @returns {Array} We return the array containing the billboards slotted into the correct positions.
-  //  */
   function insertBillboardsInFeed(
     organizedFeedItems,
     feedFirstBillboard,
@@ -287,15 +226,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     }
   }
 
-  // /**
-  //  * Retrieves the podcasts for the feed from the user data and the `followed-podcasts`
-  //  * div item.
-  //  *
-  //  * @returns {Object} An Object containing today's podcast episodes for the podcasts found in followed_podcast_ids.
-  //  */
   function getPodcastEpisodes() {
     const el = document.getElementById('followed-podcasts');
-    const user = userData(); // Global
+    const user = userData();
     const episodes = [];
     if (
       user &&
@@ -312,14 +245,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     return episodes;
   }
 
-  /**
-   * Dispatches a click event to bookmark/unbookmark an article and sets the ID's of the
-   * updated bookmark feed items.
-   *
-   * @param {Event} event
-   */
   async function bookmarkClick(event) {
-    // The assumption is that the user is logged on at this point.
     const { userStatus } = document.body;
     event.preventDefault();
     sendHapticMessage('medium');
@@ -399,11 +325,10 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 };
 
 function initializeMainStatusForm() {
-
   initializeDropdown({
     triggerElementId: 'feed-dropdown-trigger',
     dropdownContentId: 'feed-dropdown-menu',
-  });  
+  });
 
   let lastClickedElement = null;
   document.addEventListener("mousedown", (event) => {
@@ -427,7 +352,6 @@ function initializeMainStatusForm() {
     document.getElementById('main-status-form-controls').classList.add('flex');
     document.getElementById('main-status-form-controls').classList.remove('hidden');
     textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set height to content height
-    
   }
   document.getElementById('article_title').onblur = function (e) {
     if (mainForm.contains(lastClickedElement)) {
@@ -440,8 +364,6 @@ function initializeMainStatusForm() {
       document.getElementById('main-status-form-controls').classList.add('hidden');
     }
   }
-  // Prevent return element from creating linebreak
-
 }
 
 Feed.defaultProps = {
