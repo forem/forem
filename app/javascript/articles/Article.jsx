@@ -85,7 +85,7 @@ export const Article = ({
         {showCover && <ArticleCoverImage article={article} />}
         <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
           <div className="crayons-story__top">
-            <Meta article={article} organization={article.organization} />
+            {article.user && (<Meta article={article} organization={article.organization} />)}
             {pinned && (
               <div
                 className="pinned color-accent-brand fw-bold"
@@ -120,7 +120,7 @@ export const Article = ({
             )}
 
             <div className="crayons-story__bottom">
-              {article.class_name !== 'User' && (
+              {(article.class_name !== 'User' && article.user) && (
                 <div className="crayons-story__details">
                   <ReactionsCount article={article} />
                   <CommentsCount
