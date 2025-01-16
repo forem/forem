@@ -26,6 +26,7 @@ RSpec.describe "/admin/moderation/reports" do
         sign_in admin
         get admin_reports_path
         expect(response).to have_http_status :ok
+        expect(response.body).to include(user.username)
       end
 
       it "does not render if the reaction is older than two weeks" do
@@ -34,7 +35,7 @@ RSpec.describe "/admin/moderation/reports" do
         create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 3.weeks.ago)
         sign_in admin
         get admin_reports_path
-        expect(response.body).not_to include("vomit")
+        expect(response.body).not_to include(user.username)
       end
 
       it "does not render if the reactable score is <= -150" do
@@ -43,7 +44,7 @@ RSpec.describe "/admin/moderation/reports" do
         create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 1.week.ago)
         sign_in admin
         get admin_reports_path
-        expect(response.body).not_to include("vomit")
+        expect(response.body).not_to include(user.username)
       end
     end
   end

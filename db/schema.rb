@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_15_200745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -544,6 +544,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
     t.integer "drip_day", default: 0
     t.integer "status", default: 0
     t.string "subject", null: false
+    t.string "targeted_tags", default: [], array: true
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
@@ -571,6 +572,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
     t.string "feedback_type"
     t.text "message"
     t.bigint "offender_id"
+    t.bigint "reported_id"
+    t.string "reported_type"
     t.string "reported_url"
     t.bigint "reporter_id"
     t.string "status", default: "Open"
@@ -846,7 +849,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_31_130507) do
     t.string "template"
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["slug"], name: "index_pages_on_slug", unique: true
+    t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
   end
 

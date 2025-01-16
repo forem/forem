@@ -359,6 +359,10 @@ class Billboard < ApplicationRecord
     update_column(:processed_html, modified_html)
   end
 
+  def score
+    0 # Just to allow this to repond to .score for abuse reports
+  end
+
   private
 
   def generate_billboard_name

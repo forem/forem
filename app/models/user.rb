@@ -217,6 +217,13 @@ class User < ApplicationRecord
     order(updated_at: :desc).limit(active_limit)
   }
 
+  scope :following_tags, lambda { |tags|
+    tags = tags.gsub(" ", "").split(",") if tags.is_a?(String)
+    joins("INNER JOIN follows ON follows.follower_id = users.id AND follows.follower_type = 'User'")
+      .joins("INNER JOIN tags ON tags.id = follows.followable_id AND follows.followable_type = 'ActsAsTaggableOn::Tag'")
+      .where(tags: { name: tags })
+      .distinct
+  }
   scope :above_average, lambda {
     where(
       articles_count: average_articles_count..,
