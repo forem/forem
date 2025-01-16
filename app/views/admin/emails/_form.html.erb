@@ -11,6 +11,11 @@
     </div>
 
     <div class="crayons-field">
+      <%= form.label :targeted_tags, "Targeted tags:", class: "crayons-field__label" %>
+      <%= form.text_field :targeted_tags, class: "crayons-textfield", autocomplete: "off", value: @email.targeted_tags.join(", ") %>
+    </div>
+
+    <div class="crayons-field">
       <%= form.label :subject, "Subject:", class: "crayons-field__label" %>
       <%= form.text_field :subject, class: "crayons-textfield", autocomplete: "off" %>
     </div>
