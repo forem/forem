@@ -16,4 +16,4 @@ fi
 if [ -pp "$HEROKU_SLUG_COMMIT" ]; then
  e DD_VERSION=$HEROKU_SLUG_COMMIT
 fi
-newbranch
+newbranch>
