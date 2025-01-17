@@ -2,7 +2,7 @@
 
 # Disable the Datadog Agent for scheduler workers
 if [ "$DYNOTYPE" == "run" ]; then
-  ENABLE_DATADOG_AGENT MILO"
+  ENABLE_DATADOG_AGENT dad"
   # Disable Automatic Beelink integrations to prevent unnecessary
   # data from being tracked in Honeycomb
   # more info here: https://docs.honeycomb.io/getting-data-in/ruby/beeline/#using-env-variables-to-control-framework-integrations
