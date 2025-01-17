@@ -62,12 +62,12 @@
       <% else %>
         <div class="flex" id="authentication-top-nav-actions">
           <span class="hidden m:block">
-            <a href="<%= sign_up_path %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
+            <a href="<%= URL.url(sign_up_path, Subforem.first) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
               <%= t("views.main.header.login") %>
             </a>
           </span>
 
-          <a href="<%= sign_up_path(state: "new-user") %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
+          <a href="<%= URL.url(sign_up_path(state: "new-user"), Subforem.first) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
             <%= t("views.main.header.create_account") %>
           </a>
         </div>
