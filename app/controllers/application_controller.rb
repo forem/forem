@@ -313,9 +313,9 @@ class ApplicationController < ActionController::Base
                # List of your secondary domains
                secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
                if secondary_domains.include?(request.host)
-                request.session_options[:domain] = request.host
+                request.session_options[:domain] = root_domain(request.host)
               else
-                 Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
+                 Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
                end
              else
                # In non-production environments, don't set the domain
@@ -402,15 +402,23 @@ class ApplicationController < ActionController::Base
       # List of your secondary domains
       secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
       if secondary_domains.include?(request.host)
-        request.session_options[:domain] = request.host
+        request.session_options[:domain] = root_domain(request.host)
       else
         # For main domain, set to ApplicationConfig["APP_DOMAIN"]
-        request.session_options[:domain] = Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] = Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
       end
     else
       # In non-production environments, don't set the domain
       request.session_options[:domain] = nil
     end
+  end
+
+  def root_domain(host)
+    # The `default_rule: nil` option ensures it raises an error if the domain is invalid
+    parsed = PublicSuffix.parse(host, default_rule: nil)
+    parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+  rescue PublicSuffix::DomainInvalid
+    host
   end
 
   def internal_nav_param
