@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/user/block/android
 
 # Disable the Datadog Agent for scheduler workers
 if [ "$DYNOTYPE" == "run" ]; then
