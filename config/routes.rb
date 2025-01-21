@@ -176,6 +176,7 @@ Rails.application.routes.draw do
     resources :tag_adjustments, only: %i[create destroy]
     resources :rating_votes, only: [:create]
     resources :page_views, only: %i[create update]
+    resources :insights, only: %i[create]
     resources :feed_events, only: %i[create]
     resources :credits, only: %i[index new create] do
       get "purchase", on: :collection, to: "credits#new"
