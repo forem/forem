@@ -2,7 +2,7 @@ module Stories
   class TaggedArticlesController < ApplicationController
     before_action :set_cache_control_headers, only: :index
 
-    SIGNED_OUT_RECORD_COUNT = 60
+    SIGNED_OUT_RECORD_COUNT = 40
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -37,8 +37,6 @@ module Stories
     def set_number_of_articles(tag:)
       @num_published_articles = if tag.requires_approval?
                                   tag.articles.published.from_subforem.approved.count
-                                elsif Settings::UserExperience.feed_strategy == "basic"
-                                  tagged_count(tag: tag)
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
                                                     expires_in: 2.hours) do
