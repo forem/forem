@@ -10,7 +10,6 @@ RSpec.describe "Insights", type: :request do
   end
 
   describe "POST /insights" do
-    let(:timestamp) { (Time.now.to_i * 1000).to_s } # Simulate string from frontend
     let(:valid_params) do
       {
         insight: {
@@ -19,7 +18,6 @@ RSpec.describe "Insights", type: :request do
           object_id: "12345",
           index_name: "Article_production",
           query_id: "abcdef123456",
-          timestamp: timestamp
         }
       }
     end
@@ -38,7 +36,7 @@ RSpec.describe "Insights", type: :request do
           user.id.to_s, # Coerced to string
           "12345",
           "Article_production",
-          timestamp.to_i, # Converted to integer
+          Time.current.to_i * 1000, # Converted to integer
           "abcdef123456"
         )
       end
@@ -56,7 +54,7 @@ RSpec.describe "Insights", type: :request do
           nil, # No user ID
           "12345",
           "Article_production",
-          timestamp.to_i, # Converted to integer
+          Time.current.to_i * 1000, # Converted to integer
           "abcdef123456"
         )
       end
@@ -69,7 +67,7 @@ RSpec.describe "Insights", type: :request do
         post "/insights", params: invalid_params
     
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include("Missing required parameters: event_name, object_id, index_name, timestamp")
+        expect(response.body).to include("Missing required parameters: event_name, object_id, index_name")
         expect(algolia_service_instance).not_to have_received(:track_event)
       end
     end

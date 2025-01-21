@@ -21,7 +21,7 @@ class AlgoliaInsightsService
           index: index_name,
           userToken: user_id.to_s,
           objectIDs: [object_id.to_s],
-          timestamp: timestamp || (Time.now.to_i * 1000),
+          timestamp: timestamp || (Time.current.to_i * 1000),
           queryID: query_id
         },
       ]
