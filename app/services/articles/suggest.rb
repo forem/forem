@@ -43,6 +43,7 @@ module Articles
         .not_authored_by(article.user_id)
         .order(hotness_score: :desc)
         .offset(rand(0..offset))
+        .where("score > ?", Settings::UserExperience.index_minimum_score)
         .select(:id, :title, :path, :cached_tag_list, :cached_user, :main_image, :published, :published_at, :crossposted_at)
         .first(max)
     end
@@ -56,6 +57,7 @@ module Articles
         .where(tag_suggestion_query)
         .order(hotness_score: :desc)
         .offset(rand(0..offset))
+        .where("score > ?", Settings::UserExperience.index_minimum_score)
         .select(:id, :title, :path, :cached_tag_list, :cached_user, :main_image, :published, :published_at, :crossposted_at)
         .first(max)
     end
