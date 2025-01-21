@@ -37,7 +37,7 @@ module Articles
 
     def other_suggestions(max: MAX_DEFAULT, ids_to_ignore: [])
       ids_to_ignore << article.id
-      Article.published.from_subforem
+      Article.published.where(subforem_id: article.subforem_id)
         .where("published_at > ?", 3.months.ago)
         .where.not(id: ids_to_ignore)
         .not_authored_by(article.user_id)
@@ -49,7 +49,7 @@ module Articles
 
     def suggestions_by_tag(max: MAX_DEFAULT)
       Article
-        .published.from_subforem
+        .published.where(subforem_id: article.subforem_id)
         .where("published_at > ?", 3.months.ago)
         .cached_tagged_with_any(cached_tag_list_array)
         .not_authored_by(article.user_id)
