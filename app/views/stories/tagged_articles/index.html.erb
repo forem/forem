@@ -1,142 +1,138 @@
 <%= content_for :page_meta do %>
   <%= render "stories/tagged_articles/meta" %>
 <% end %>
-<% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 10 : 35 %>
-<% flag = true %>
-<% cache("tag-stories-index-#{params}-#{flag}-#{@tag.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
-  <div data-tag-id="<%= @tag.id %>" data-tag-name="<%= @tag.name %>" id="tag-<%= @tag.id %>" class="crayons-layout js-tag-card">
-    <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.bg_color_hex %> ">
-      <div class="flex">
-        <% if @tag.badge_id && @tag.badge %>
-            <img src="<%= optimized_image_url(@tag.badge.badge_image_url, width: 64) %>" alt="" class="mr-4" style="transform: rotate(<%= -25 + (@tag.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
-        <% end %>
-        <div class="flex flex-col w-100 justify-center">
-          <div class="flex justify-between items-center">
-            <h1 class="crayons-title">
-              <% if @tag && @tag.pretty_name.present? %>
-                <%= @tag.pretty_name %>
-              <% else %>
-                <span class="opacity-50">#</span>
-                <%= @tag.name %>
-              <% end %>
-            </h1>
-            <% if @tag %>
-              <div id="tag-buttons-<%= @tag.id %>" class="mt-auto flex items-end justify-between">
-                <div class="flex gap-2">
-                  <button
-                    class="c-btn c-btn--primary js-follow-tag-button"
-                    aria-label="<%= t("views.tags.aria_labels.follow", tag_name: @tag.name) %>">
-                    <%= t("views.tags.follow") %>
-                  </button>
-                  <button
-                    class="c-btn js-hide-tag-button"
-                    aria-label="<%= t("views.tags.aria_labels.hide", tag_name: @tag.name) %>">
-                    <%= t("views.tags.hide") %>
-                  </button>
-                </div>
-              </div>
+<div data-tag-id="<%= @tag.id %>" data-tag-name="<%= @tag.name %>" id="tag-<%= @tag.id %>" class="crayons-layout js-tag-card">
+  <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.bg_color_hex %> ">
+    <div class="flex">
+      <% if @tag.badge_id && @tag.badge %>
+          <img src="<%= optimized_image_url(@tag.badge.badge_image_url, width: 64) %>" alt="" class="mr-4" style="transform: rotate(<%= -25 + (@tag.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
+      <% end %>
+      <div class="flex flex-col w-100 justify-center">
+        <div class="flex justify-between items-center">
+          <h1 class="crayons-title">
+            <% if @tag && @tag.pretty_name.present? %>
+              <%= @tag.pretty_name %>
+            <% else %>
+              <span class="opacity-50">#</span>
+              <%= @tag.name %>
             <% end %>
-          </div>
-          <% if @tag && @tag.short_summary.present? %>
-            <p class="max-w-100 m:max-w-75 pt-2 s:pt-4">
-              <%= strip_tags(@tag.short_summary) %>
-            </p>
+          </h1>
+          <% if @tag %>
+            <div id="tag-buttons-<%= @tag.id %>" class="mt-auto flex items-end justify-between">
+              <div class="flex gap-2">
+                <button
+                  class="c-btn c-btn--primary js-follow-tag-button"
+                  aria-label="<%= t("views.tags.aria_labels.follow", tag_name: @tag.name) %>">
+                  <%= t("views.tags.follow") %>
+                </button>
+                <button
+                  class="c-btn js-hide-tag-button"
+                  aria-label="<%= t("views.tags.aria_labels.hide", tag_name: @tag.name) %>">
+                  <%= t("views.tags.hide") %>
+                </button>
+              </div>
+            </div>
           <% end %>
         </div>
+        <% if @tag && @tag.short_summary.present? %>
+          <p class="max-w-100 m:max-w-75 pt-2 s:pt-4">
+            <%= strip_tags(@tag.short_summary) %>
+          </p>
+        <% end %>
       </div>
-      <% if @tag && @tag.short_summary.present? %>
+    </div>
+    <% if @tag && @tag.short_summary.present? %>
+    <% end %>
+  </header>
+</div>
+
+<div class="home sub-home" id="index-container"
+    data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username sort_by sort_direction]) %>" data-which=""
+    data-tag="<%= @tag.name %>"
+    data-feed="<%= params[:timeframe] || "base-feed" %>"
+    data-requires-approval="<%= @tag.requires_approval %>"
+    data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
+  <%= render "stories/tagged_articles/sidebar" %>
+  <main class="articles-list" id="main-content" data-follow-button-container="true">
+    <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
+      <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
+      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden mb-auto" id="on-page-nav-butt-left" aria-label="<%= t("views.stories.menu.aria_left") %>">
+        <div class="crayons-icon nav-icon ">
+          <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_left")) %>
+        </div>
+      </button>
+      <% if user_signed_in? %>
+        <div class="flex-1 flex items-center justify-between">
+          <nav class="-mx-3 m:mx-0 s:flex items-center justify-between w-100" aria-label="<%= t("views.stories.sort.aria_tagged") %>">
+            <ul class="crayons-navigation crayons-navigation--horizontal">
+              <li>
+                <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
+                  <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("views.stories.sort.relevant") %></a>
+              </li>
+              <li>
+                <a data-text="<%= t("views.stories.sort.latest") %>" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
+                  <%= t("views.stories.sort.latest") %>
+                </a>
+              </li>
+              <li>
+                <a data-text="<%= t("views.stories.sort.top") %>" href="<%= list_path %>/top/week"
+                  class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>"
+                  <%= timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+                    <%= t("views.stories.sort.top") %>
+                </a>
+              </li>
+            </ul>
+            <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
+            <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
+              <li>
+                <a data-text="<%= t("views.stories.sort.week") %>" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
+                  <%= t("views.stories.sort.week") %>
+                </a>
+              </li>
+              <li>
+                <a data-text="<%= t("views.stories.sort.month") %>" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
+                  <%= t("views.stories.sort.month") %>
+                </a>
+              </li>
+              <li>
+                <a data-text="<%= t("views.stories.sort.year") %>" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
+                  <%= t("views.stories.sort.year") %>
+                </a>
+              </li>
+              <li>
+                <a data-text="<%= t("views.stories.sort.infinity") %>" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
+                  <%= t("views.stories.sort.infinity") %>
+                </a>
+              </li>
+            </ul>
+            <% end %>
+          </nav>
+        </div>
+      <% else %>
+        <div class="flex-1 flex items-center justify-between">
+          <div class="crayons-notice w-100" aria-live="polite"><%= t("views.stories.sort.signin_html", path: sign_up_path) %></div>
+        </div>
       <% end %>
+
+      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon ml-2 inline-block l:hidden mb-auto" id="on-page-nav-butt-right" aria-label="<%= t("views.stories.menu.aria_right") %>">
+        <div class="crayons-icon nav-icon ">
+          <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_right")) %>
+        </div>
+      </button>
     </header>
-  </div>
 
-  <div class="home sub-home" id="index-container"
-      data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username sort_by sort_direction]) %>" data-which=""
-      data-tag="<%= @tag.name %>"
-      data-feed="<%= params[:timeframe] || "base-feed" %>"
-      data-requires-approval="<%= @tag.requires_approval %>"
-      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-    <%= render "stories/tagged_articles/sidebar" %>
-    <main class="articles-list" id="main-content" data-follow-button-container="true">
-      <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
-        <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
-        <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden mb-auto" id="on-page-nav-butt-left" aria-label="<%= t("views.stories.menu.aria_left") %>">
-          <div class="crayons-icon nav-icon ">
-            <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_left")) %>
-          </div>
-        </button>
-        <% if user_signed_in? %>
-          <div class="flex-1 flex items-center justify-between">
-            <nav class="-mx-3 m:mx-0 s:flex items-center justify-between w-100" aria-label="<%= t("views.stories.sort.aria_tagged") %>">
-              <ul class="crayons-navigation crayons-navigation--horizontal">
-                <li>
-                  <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
-                    <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("views.stories.sort.relevant") %></a>
-                </li>
-                <li>
-                  <a data-text="<%= t("views.stories.sort.latest") %>" href="<%= list_path %>/latest" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("latest") %>"<%= timeframe_check("latest") ? ' aria-current="page"'.html_safe : "" %>>
-                    <%= t("views.stories.sort.latest") %>
-                  </a>
-                </li>
-                <li>
-                  <a data-text="<%= t("views.stories.sort.top") %>" href="<%= list_path %>/top/week"
-                    class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>"
-                    <%= timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-                      <%= t("views.stories.sort.top") %>
-                  </a>
-                </li>
-              </ul>
-              <% if timeframe_check("week") || timeframe_check("month") || timeframe_check("year") || timeframe_check("infinity") %>
-              <ul class="crayons-navigation crayons-navigation--horizontal fs-base">
-                <li>
-                  <a data-text="<%= t("views.stories.sort.week") %>" href="<%= list_path %>/top/week" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
-                    <%= t("views.stories.sort.week") %>
-                  </a>
-                </li>
-                <li>
-                  <a data-text="<%= t("views.stories.sort.month") %>" href="<%= list_path %>/top/month" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
-                    <%= t("views.stories.sort.month") %>
-                  </a>
-                </li>
-                <li>
-                  <a data-text="<%= t("views.stories.sort.year") %>" href="<%= list_path %>/top/year" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
-                    <%= t("views.stories.sort.year") %>
-                  </a>
-                </li>
-                <li>
-                  <a data-text="<%= t("views.stories.sort.infinity") %>" href="<%= list_path %>/top/infinity" class="crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-                    <%= t("views.stories.sort.infinity") %>
-                  </a>
-                </li>
-              </ul>
-              <% end %>
-            </nav>
-          </div>
-        <% else %>
-          <div class="flex-1 flex items-center justify-between">
-            <div class="crayons-notice w-100" aria-live="polite"><%= t("views.stories.sort.signin_html", path: sign_up_path) %></div>
-          </div>
-        <% end %>
+    <div class="substories" id="substories">
+      <%# stories/tagged_articles/main_feed will iterate on stories with .each_with_index,
+          thus by using .present? here we preload the items %>
+      <% if @stories.present? %>
+        <%= render "stories/tagged_articles/main_feed" %>
+      <% end %>
+    </div>
+    <div class="loading-articles" id="loading-articles">
+      <%= t("core.loading") %>
+    </div>
+  </main>
+  <%= render "stories/tagged_articles/sidebar_additional" %>
+</div>
 
-        <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon ml-2 inline-block l:hidden mb-auto" id="on-page-nav-butt-right" aria-label="<%= t("views.stories.menu.aria_right") %>">
-          <div class="crayons-icon nav-icon ">
-            <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_right")) %>
-          </div>
-        </button>
-      </header>
-
-      <div class="substories" id="substories">
-        <%# stories/tagged_articles/main_feed will iterate on stories with .each_with_index,
-            thus by using .present? here we preload the items %>
-        <% if @stories.present? %>
-          <%= render "stories/tagged_articles/main_feed" %>
-        <% end %>
-      </div>
-      <div class="loading-articles" id="loading-articles">
-        <%= t("core.loading") %>
-      </div>
-    </main>
-    <%= render "stories/tagged_articles/sidebar_additional" %>
-  </div>
-
-  <%= javascript_include_tag "storiesList", "followButtons", "tagFollows", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
-<% end %>
+<%= javascript_include_tag "storiesList", "followButtons", "tagFollows", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
