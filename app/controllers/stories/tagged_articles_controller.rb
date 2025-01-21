@@ -26,7 +26,7 @@ module Stories
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
-      set_surrogate_key_header @stories.map(&:record_key)
+      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
       set_cache_control_headers(86400,
                                 stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
