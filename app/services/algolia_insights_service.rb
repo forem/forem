@@ -7,7 +7,7 @@ class AlgoliaInsightsService
     @api_key = api_key || Settings::General.algolia_api_key
   end
 
-  def track_event(event_type, event_name, user_id, object_id, index_name, timestamp = nil)
+  def track_event(event_type, event_name, user_id, object_id, index_name, timestamp = nil, query_id = nil)
     headers = {
       "X-Algolia-Application-Id" => @application_id,
       "X-Algolia-API-Key" => @api_key,
@@ -21,7 +21,8 @@ class AlgoliaInsightsService
           index: index_name,
           userToken: user_id.to_s,
           objectIDs: [object_id.to_s],
-          timestamp: timestamp || (Time.now.to_i * 1000)
+          timestamp: timestamp || (Time.now.to_i * 1000),
+          queryID: query_id
         },
       ]
     }
@@ -31,30 +32,6 @@ class AlgoliaInsightsService
       Rails.logger.debug { "Event tracked: #{response.body}" }
     else
       Rails.logger.debug { "Failed to track event: #{response.body}" }
-    end
-  end
-
-  # WIP, this is for backfilling data, but not something we are doing now due to potential de-dupe problems.
-  def track_insights_for_article(article)
-    article.page_views.where.not(user_id: nil).find_each do |page_view|
-      track_event(
-        "view",
-        "Article Viewed",
-        page_view.user_id,
-        page_view.article_id,
-        "Article_#{Rails.env}",
-        page_view.created_at.to_i * 1000, # Adding timestamp from the page view
-      )
-    end
-    article.reactions.public_category.each do |reaction|
-      track_event(
-        "conversion",
-        "Reaction Created",
-        reaction.user_id,
-        article.id,
-        "Article_#{Rails.env}",
-        reaction.created_at.to_i * 1000, # Adding timestamp from the reaction
-      )
     end
   end
 end

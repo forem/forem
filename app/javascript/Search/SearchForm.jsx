@@ -86,8 +86,8 @@ export const SearchForm = forwardRef(
     // Debounced search function
     const debouncedSearch = useCallback(debounceAction((value) => {
       if (value && index) {
-        index.search(value, { hitsPerPage: 5 }).then(({ hits }) => {
-          setSuggestions(hits); // Assuming 'title' is the field to display
+        index.search(value, { hitsPerPage: 5, clickAnalytics: true }).then(({ hits, queryID }) => {
+          setSuggestions(hits.map((hit) => ({ ...hit, queryID }))); // Attach queryID to each hit
         });
       } else if (!articleContainer?.dataset?.articleId) {
         setSuggestions([]);
@@ -149,6 +149,33 @@ export const SearchForm = forwardRef(
       }
     };
 
+    const sendInsightEvent = async (eventType, eventName, objectID, indexName, queryID) => {
+      try {
+        const response = await fetch('/insights', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+          },
+          body: JSON.stringify({
+            insight: {
+              event_type: eventType,
+              event_name: eventName,
+              object_id: objectID,
+              index_name: indexName,
+              query_id: queryID,
+            },
+          }),
+        });
+    
+        if (!response.ok) {
+          console.error('Failed to track insight:', await response.json());
+        }
+      } catch (error) {
+        console.error('Error sending tracking event:', error);
+      }
+    };
+
     return (
       <form
         action="/search"
@@ -195,20 +222,38 @@ export const SearchForm = forwardRef(
                           : ''
                       }
                     >
-                      <a href={suggestion.path}>
-                        <div class="crayons-header--search-typeahead-item-preheader">
+                      <a
+                        href={suggestion.path}
+                        onClick={(e) => {
+                          // Send tracking event before navigating
+                          e.preventDefault();
+                          sendInsightEvent(
+                            'click', // eventType
+                            'Result Clicked', // eventName
+                            suggestion.objectID, // objectID
+                            `Article_${env}`, // indexName
+                            suggestion.queryID // queryID from Algolia response
+                          ).finally(() => {
+                            // Navigate after tracking is sent
+                            window.location.href = suggestion.path;
+                          });
+                        }}
+                      >
+                        <div className="crayons-header--search-typeahead-item-preheader">
                           @{suggestion.user.username}
                         </div>
                         <strong>{suggestion.title}</strong>
-                        <div class="crayons-header--search-typeahead-item-subheader">
+                        <div className="crayons-header--search-typeahead-item-subheader">
                           {suggestion.readable_publish_date}
                         </div>
                       </a>
                     </li>
                   ))}
-                  <div class="crayons-header--search-typeahead-footer">
+                  <div className="crayons-header--search-typeahead-footer">
                     <span>
-                      { inputValue.length > 0 ? 'Submit search for advanced filtering.' : 'Displaying Algolia Recommendations — Start typing to search' }
+                      {inputValue.length > 0
+                        ? 'Submit search for advanced filtering.'
+                        : 'Displaying Algolia Recommendations — Start typing to search'}
                     </span>
                     <a
                       href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral"
