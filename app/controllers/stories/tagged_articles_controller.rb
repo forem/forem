@@ -60,7 +60,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.includes(:subforem).from_subforem
+      stories = stories.full_posts.includes(:subforem).from_subforem.limited_column_select
       @stories = stories.decorate
     end
 
