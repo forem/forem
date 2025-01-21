@@ -2,7 +2,7 @@ module Stories
   class TaggedArticlesController < ApplicationController
     before_action :set_cache_control_headers, only: :index
 
-    SIGNED_OUT_RECORD_COUNT = 40
+    SIGNED_OUT_RECORD_COUNT = 25
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -26,9 +26,9 @@ module Stories
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
-      set_surrogate_key_header "articles-#{@tag}"
-      set_cache_control_headers(600,
-                                stale_while_revalidate: 30,
+      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
+      set_cache_control_headers(86400,
+                                stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
     end
 
