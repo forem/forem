@@ -2,7 +2,7 @@ module Stories
   class TaggedArticlesController < ApplicationController
     before_action :set_cache_control_headers, only: :index
 
-    SIGNED_OUT_RECORD_COUNT = 40
+    SIGNED_OUT_RECORD_COUNT = 25
 
     rescue_from ArgumentError, with: :bad_request
 
