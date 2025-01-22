@@ -32,10 +32,10 @@
     </div>
 
     <div class="flex items-center h-100 ml-auto">
-      <a class="c-link c-link--icon-alone c-link--block m:hidden <% unless user_signed_in? %>mx-1<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= search_path %>">
-        <%= crayons_icon_tag(:search, title: t("views.search.icon.title")) %>
-      </a>
       <% if user_signed_in? %>
+        <a class="c-link c-link--icon-alone c-link--block m:hidden <% unless user_signed_in? %>mx-1<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= search_path %>">
+          <%= crayons_icon_tag(:search, title: t("views.search.icon.title")) %>
+        </a>
         <span class="hidden m:flex ml-auto">
           <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
             <%= t("views.main.create_post") %>
