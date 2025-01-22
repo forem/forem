@@ -8,7 +8,7 @@ module Emails
     BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
     def perform(email_id)
-      original_timeout = a["STATEMENT_TIMEOUT"].to_i
+      original_timeout = ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i
       ENV["STATEMENT_TIMEOUT"] = (original_timeout * 2).to_s
 
       ActiveRecord::Base.connection.execute("SET statement_timeout TO #{ENV['STATEMENT_TIMEOUT']}")
