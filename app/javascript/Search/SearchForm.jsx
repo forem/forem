@@ -83,6 +83,7 @@ export const SearchForm = forwardRef(
       if (!recommendClientInstance) return;
       const articleId = articleContainer?.dataset?.articleId;
       if (articleId) {
+        const queryID = `recommend-${Date.now()}`; // Generate a unique query ID
         recommendClientInstance
           .getRelatedProducts([
             {
@@ -93,7 +94,11 @@ export const SearchForm = forwardRef(
             },
           ])
           .then(({ results }) => {
-            setSuggestions(results[0].hits);
+            const recommendations = results[0].hits.map(hit => ({
+              ...hit,
+              queryID, // Add query ID to each recommendation
+            }));
+            setSuggestions(recommendations);
           })
           .catch((err) => console.error(err));
       }
