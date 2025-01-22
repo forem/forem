@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   before_action :redirect_www_to_root
-  before_action :set_subforem
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -166,16 +165,6 @@ class ApplicationController < ActionController::Base
     return true if authenticate_user
 
     respond_with_request_for_authentication
-  end
-
-  def set_subforem
-    domain = request.host
-    domain = params[:passed_domain] if params[:passed_domain].present? && Rails.env.development?
-    RequestStore.store[:default_subforem_id] = Subforem.cached_default_id || nil
-    RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
-    RequestStore.store[:root_subforem_id] = Subforem.cached_root_id || nil
-    RequestStore.store[:root_subforem_domain] = Subforem.cached_root_domain || nil
-    RequestStore.store[:default_subforem_domain] = Subforem.cached_default_domain || nil
   end
 
   def set_subforem_cors_headers
