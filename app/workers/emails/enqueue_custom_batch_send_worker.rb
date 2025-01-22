@@ -8,9 +8,14 @@ module Emails
     BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
     def perform(email_id)
+      original_timeout = ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i
+      ENV["STATEMENT_TIMEOUT"] = (original_timeout * 2).to_s
+
+      ActiveRecord::Base.connection.execute("SET statement_timeout TO #{ENV['STATEMENT_TIMEOUT']}")
+
       email = Email.find_by(id: email_id)
       return unless email
-  
+
       user_scope = if email.audience_segment
                      email.audience_segment.users
                           .registered
@@ -42,6 +47,11 @@ module Emails
           email.id
         )
       end
+
+    ensure
+      # Reset the statement timeout to its original value
+      ENV["STATEMENT_TIMEOUT"] = original_timeout.to_s
+      ActiveRecord::Base.connection.execute("SET statement_timeout TO #{ENV['STATEMENT_TIMEOUT']}")
     end
   end
 end
