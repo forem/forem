@@ -23,71 +23,51 @@ export const SearchForm = forwardRef(
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const suggestionsRef = useRef();
 
-    // Load Algolia and recommend dynamically
+    // Dynamically load Algolia and recommend, return them so we can use them immediately.
     const loadAlgoliaClients = useCallback(async () => {
-      if (algoliaId && algoliaSearchKey && !algoliaClient) {
-        try {
-          const [algoliasearchModule, recommendModule] = await Promise.all([
-            import('algoliasearch/lite'),
-            import('@algolia/recommend'),
-          ]);
-    
-          // Check whether to use .default or the direct import for algoliasearch
-          const algoliasearch = algoliasearchModule.default || algoliasearchModule;
-          const recommend = recommendModule.default || recommendModule;
-    
-          const client = algoliasearch(algoliaId, algoliaSearchKey);
-          const recommendClientInstance = recommend(algoliaId, algoliaSearchKey);
-    
-          setAlgoliaClient(client);
-          setRecommendClient(recommendClientInstance);
-        } catch (error) {
-          console.error("Error loading Algolia or Recommend modules: ", error);
+      // In case ID/Key are missing, bail out
+      if (!algoliaId || !algoliaSearchKey) {
+        return { client: null, recommendClientInstance: null };
+      }
+
+      try {
+        // If we already have both clients in state, just return them
+        if (algoliaClient && recommendClient) {
+          return { client: algoliaClient, recommendClientInstance: recommendClient };
         }
+
+        // Otherwise, dynamically import
+        const [algoliasearchModule, recommendModule] = await Promise.all([
+          import('algoliasearch/lite'),
+          import('@algolia/recommend'),
+        ]);
+
+        const algoliasearch = algoliasearchModule.default || algoliasearchModule;
+        const recommend = recommendModule.default || recommendModule;
+
+        const client = algoliasearch(algoliaId, algoliaSearchKey);
+        const recommendClientInstance = recommend(algoliaId, algoliaSearchKey);
+
+        // Update state, but also return so we can use them right away
+        setAlgoliaClient(client);
+        setRecommendClient(recommendClientInstance);
+        return { client, recommendClientInstance };
+      } catch (error) {
+        console.error('Error loading Algolia or Recommend modules: ', error);
+        return { client: null, recommendClientInstance: null };
       }
-    }, [algoliaId, algoliaSearchKey, algoliaClient]);
+    }, [algoliaId, algoliaSearchKey, algoliaClient, recommendClient]);
 
-    const index = useMemo(() => (algoliaClient ? algoliaClient.initIndex(`Article_${env}`) : null), [algoliaClient]);
-
-    // Handle clicks outside the dropdown
-    const handleClickOutside = useCallback((event) => {
-      if (
-        suggestionsRef.current &&
-        !suggestionsRef.current.contains(event.target) &&
-        !ref.current.contains(event.target)
-      ) {
-        setShowSuggestions(false);
-      }
-    }, [ref]);
-
-    useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [handleClickOutside]);
-
-    // Fetch initial recommendations
-    const fetchRecommendations = useCallback(() => {
-      if (recommendClient && articleContainer?.dataset?.articleId) {
-        recommendClient.getRelatedProducts([
-          {
-            indexName: `Article_${env}`,
-            objectID: articleContainer?.dataset?.articleId,
-            maxRecommendations: 5,
-            threshold: 10,
-          },
-        ]).then(({ results }) => {
-          setSuggestions(results[0].hits);
-        });
-      }
-    }, [recommendClient]);
+    // Memoize the index using algoliaClient from state
+    const index = useMemo(() => {
+      return algoliaClient ? algoliaClient.initIndex(`Article_${env}`) : null;
+    }, [algoliaClient]);
 
     // Debounced search function
     const debouncedSearch = useCallback(debounceAction((value) => {
       if (value && index) {
-        index.search(value, { hitsPerPage: 5 }).then(({ hits }) => {
-          setSuggestions(hits); // Assuming 'title' is the field to display
+        index.search(value, { hitsPerPage: 5, clickAnalytics: true }).then(({ hits, queryID }) => {
+          setSuggestions(hits.map((hit) => ({ ...hit, queryID }))); // Attach queryID to each hit
         });
       } else if (!articleContainer?.dataset?.articleId) {
         setSuggestions([]);
@@ -98,32 +78,73 @@ export const SearchForm = forwardRef(
       debouncedSearch(inputValue);
     }, [inputValue, debouncedSearch]);
 
-    // Handle input changes
-    const handleInputChange = (e) => {
-      setInputValue(e.target.value);
-      setShowSuggestions(true);
-      setActiveSuggestionIndex(-1);
-      if (e.target.value.length === 0 && articleContainer) {
-        fetchRecommendations();
+    // Grab recommended products from the local reference, so we don't rely on the updated state
+    const fetchRecommendations = useCallback((recommendClientInstance) => {
+      if (!recommendClientInstance) return;
+      const articleId = articleContainer?.dataset?.articleId;
+      if (articleId) {
+        const queryID = `recommend-${Date.now()}`; // Generate a unique query ID
+        recommendClientInstance
+          .getRelatedProducts([
+            {
+              indexName: `Article_${env}`,
+              objectID: articleId,
+              maxRecommendations: 5,
+              threshold: 10,
+            },
+          ])
+          .then(({ results }) => {
+            const recommendations = results[0].hits.map(hit => ({
+              ...hit,
+              queryID, // Add query ID to each recommendation
+            }));
+            setSuggestions(recommendations);
+          })
+          .catch((err) => console.error(err));
       }
-    };
+    }, [articleContainer]);
 
-    // Load Algolia clients on focus
-    const handleFocus = () => {
-      loadAlgoliaClients();
+    // On focus, we ensure clients are loaded, then fetch recommendations using local references
+    const handleFocus = useCallback(async () => {
+      const { client, recommendClientInstance } = await loadAlgoliaClients();
+
+      // Show the dropdown
       const typeahead = document.getElementById('search-typeahead');
       if (typeahead) {
         typeahead.classList.remove('hidden');
       }
       setShowSuggestions(true);
-      if (articleContainer) {
-        fetchRecommendations();
+
+      // If no input value and there's an article ID, fetch recommendations
+      if (inputValue.length === 0 && articleContainer) {
+        fetchRecommendations(recommendClientInstance);
       }
-    };
+    }, [articleContainer, inputValue, loadAlgoliaClients, fetchRecommendations]);
+
+    // Handle input changes
+    const handleInputChange = useCallback(
+      (e) => {
+        setInputValue(e.target.value);
+        setShowSuggestions(true);
+        setActiveSuggestionIndex(-1);
+
+        // If user clears input, show recommendations if possible
+        if (e.target.value.length === 0 && articleContainer) {
+          // We might not have loaded clients yet, so load them
+          loadAlgoliaClients().then(({ recommendClientInstance }) => {
+            if (recommendClientInstance) {
+              fetchRecommendations(recommendClientInstance);
+            }
+          });
+        }
+      },
+      [articleContainer, fetchRecommendations, loadAlgoliaClients],
+    );
 
     // Handle keyboard navigation and selection
     const handleKeyDown = (e) => {
       if (activeSuggestionIndex !== -1) {
+        // Preload link on arrow movement for instant nav
         InstantClick.preload(suggestions[activeSuggestionIndex].path);
       }
       if (e.key === 'ArrowDown') {
@@ -142,6 +163,7 @@ export const SearchForm = forwardRef(
         setActiveSuggestionIndex(prevIndex);
       } else if (e.key === 'Enter' && activeSuggestionIndex !== -1) {
         e.preventDefault();
+        // “Select” that suggestion
         setInputValue(suggestions[activeSuggestionIndex].title);
         setShowSuggestions(false);
         setActiveSuggestionIndex(-1);
@@ -149,15 +171,70 @@ export const SearchForm = forwardRef(
       }
     };
 
+    const sendInsightEvent = async (eventType, eventName, objectID, indexName, queryID) => {
+      try {
+        const response = await fetch('/insights', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+          },
+          body: JSON.stringify({
+            insight: {
+              event_type: eventType,
+              event_name: eventName,
+              object_id: objectID,
+              index_name: indexName,
+              query_id: queryID,
+            },
+          }),
+        });
+    
+        if (!response.ok) {
+          console.error('Failed to track insight:', await response.json());
+        }
+      } catch (error) {
+        console.error('Error sending tracking event:', error);
+      }
+    };
+
+    // Close the dropdown if user clicks outside
+    const handleClickOutside = useCallback(
+      (event) => {
+        if (
+          suggestionsRef.current &&
+          !suggestionsRef.current.contains(event.target) &&
+          !ref.current.contains(event.target)
+        ) {
+          setShowSuggestions(false);
+        }
+      },
+      [ref],
+    );
+
+    useEffect(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [handleClickOutside]);
+
+    // On submit, run onSubmitSearch, then hide suggestions
+    const handleSubmit = useCallback(
+      (e) => {
+        // e.preventDefault();
+        onSubmitSearch(inputValue);
+        setShowSuggestions(false);
+      },
+      [onSubmitSearch, inputValue],
+    );
+
     return (
       <form
         action="/search"
         acceptCharset="UTF-8"
         method="get"
-        onSubmit={() => {
-          onSubmitSearch(inputValue);
-          setShowSuggestions(false);
-        }}
+        onSubmit={handleSubmit}
         role="search"
       >
         <input name="utf8" type="hidden" value="✓" />
@@ -169,7 +246,11 @@ export const SearchForm = forwardRef(
               className="crayons-header--search-input crayons-textfield"
               type="text"
               name="q"
-              placeholder={articleContainer?.dataset?.articleId ? 'Find related posts...' : `${locale('core.search')}...`}
+              placeholder={
+                articleContainer?.dataset?.articleId
+                  ? 'Find related posts...'
+                  : `${locale('core.search')}...`
+              }
               autoComplete="off"
               aria-label="Search term"
               value={inputValue}
@@ -186,29 +267,47 @@ export const SearchForm = forwardRef(
                   className="crayons-header--search-typeahead"
                   ref={suggestionsRef}
                 >
-                  {suggestions.map((suggestion, index) => (
+                  {suggestions.map((suggestion, idx) => (
                     <li
-                      key={index}
+                      key={idx}
                       className={
-                        index === activeSuggestionIndex
+                        idx === activeSuggestionIndex
                           ? 'crayons-header--search-typeahead-item-selected'
                           : ''
                       }
                     >
-                      <a href={suggestion.path}>
-                        <div class="crayons-header--search-typeahead-item-preheader">
+                      <a
+                        href={suggestion.path}
+                        onClick={(e) => {
+                          // Send tracking event before navigating
+                          e.preventDefault();
+                          sendInsightEvent(
+                            'click', // eventType
+                            'Result Clicked', // eventName
+                            suggestion.objectID, // objectID
+                            `Article_${env}`, // indexName
+                            suggestion.queryID // queryID from Algolia response
+                          ).finally(() => {
+                            // Navigate after tracking is sent
+                            window.location.href = suggestion.path;
+                          });
+                        }}
+                      >
+                        <div className="crayons-header--search-typeahead-item-preheader">
                           @{suggestion.user.username}
                         </div>
                         <strong>{suggestion.title}</strong>
-                        <div class="crayons-header--search-typeahead-item-subheader">
+                        <div className="crayons-header--search-typeahead-item-subheader">
                           {suggestion.readable_publish_date}
                         </div>
                       </a>
                     </li>
                   ))}
-                  <div class="crayons-header--search-typeahead-footer">
+                  <div className="crayons-header--search-typeahead-footer">
                     <span>
-                      { inputValue.length > 0 ? 'Submit search for advanced filtering.' : 'Displaying Algolia Recommendations — Start typing to search' }
+                      {inputValue.length > 0
+                        ? 'Submit search for advanced filtering.'
+                        : 'Displaying Algolia Recommendations — Start typing to search'}
                     </span>
                     <a
                       href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral"
@@ -248,4 +347,7 @@ export const SearchForm = forwardRef(
 SearchForm.propTypes = {
   searchTerm: PropTypes.string.isRequired,
   onSubmitSearch: PropTypes.func.isRequired,
+  branding: PropTypes.string,
+  algoliaId: PropTypes.string,
+  algoliaSearchKey: PropTypes.string,
 };
