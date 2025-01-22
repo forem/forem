@@ -33,7 +33,7 @@ class SidebarsController < ApplicationController
           .with_at_least_home_feed_minimum_score)
       .order(order)
       .limit(ACTIVE_DISCUSSION_LIMIT)
-      .pluck(:path, :title, :comments_count, :created_at)
+      .pluck(:path, :title, :comments_count, :created_at, :subforem_id)
   end
 
   def cached_recent_pageview_article_ids

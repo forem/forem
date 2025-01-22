@@ -343,6 +343,13 @@ module ApplicationHelper
     tag.meta name: "keywords", content: "#{Settings::General.meta_keywords[:tag]}, #{tag_name}"
   end
 
+  def constructed_full_url(path, subforem_id)
+    return path unless subforem_id.present?
+
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    "#{URL.protocol}#{domain}#{path}"
+  end
+
   def app_url(uri = nil)
     URL.url(uri)
   end
