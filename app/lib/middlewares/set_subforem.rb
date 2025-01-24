@@ -17,6 +17,18 @@ class SetSubforem
       RequestStore.store[:root_subforem_domain]   = Subforem.cached_root_domain
       RequestStore.store[:default_subforem_domain]= Subforem.cached_default_domain
 
+      ## Clean subdomain
+      subdomain_regexp = /^([^.]+)\.example\.com$/
+
+      if request.host =~ subdomain_regexp
+        # Overwrite cookie with an expired one if it’s set on the subdomain.
+        Rack::Utils.delete_cookie_header!(
+          headers,
+          ApplicationConfig["SESSION_KEY"],
+          domain: request.host
+        )
+      end  
+
       @app.call(env)
     end
   end
