@@ -355,8 +355,8 @@ RSpec.describe "StoriesIndex" do
 
         # "Set-Cookie" won't exist if the middleware has deleted it
         # or you might see a blank or partial string. Let's just confirm it's not present:
-        expect(response.headers["Set-Cookie"]).not_to include(ENV["SESSION_KEY"])
-        expect(response.headers["Set-Cookie"]).not_to include("remember_user_token")
+        expect(response.headers["Set-Cookie"].to_s).not_to include(ENV["SESSION_KEY"])
+        expect(response.headers["Set-Cookie"].to_s).not_to include("remember_user_token")
       end
     end
   end
