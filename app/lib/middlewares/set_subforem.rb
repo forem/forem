@@ -20,26 +20,27 @@ module Middlewares
       status, headers, body = @app.call(env)
 
       begin
-        parsed = PublicSuffix.parse(request.host, default_rule: nil)
+        if RequestStore.store[:subforem_id].present?
+          parsed = PublicSuffix.parse(request.host, default_rule: nil)
 
-              # Now that we have 'headers', we can modify them.
-        subdomain_regexp = /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/
-        if request.host =~ subdomain_regexp
-          # Remove your session cookie (or any other cookie) from subdomain
-          Rack::Utils.delete_cookie_header!(
-            headers,
-            ApplicationConfig["SESSION_KEY"],
-            domain: request.host
-          )
+                # Now that we have 'headers', we can modify them.
+          subdomain_regexp = /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/
+          if request.host =~ subdomain_regexp
+            # Remove your session cookie (or any other cookie) from subdomain
+            Rack::Utils.delete_cookie_header!(
+              headers,
+              ApplicationConfig["SESSION_KEY"],
+              domain: request.host
+            )
 
-          # Also remove 'remember_user_token' or other cookies if needed
-          Rack::Utils.delete_cookie_header!(
-            headers,
-            "remember_user_token",
-            domain: request.host
-          )
+            # Also remove 'remember_user_token' or other cookies if needed
+            Rack::Utils.delete_cookie_header!(
+              headers,
+              "remember_user_token",
+              domain: request.host
+            )
+          end
         end
-
       rescue PublicSuffix::DomainInvalid
         Rails.logger.error("Invalid domain: #{request.host}")
       end
