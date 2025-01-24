@@ -31,6 +31,14 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_id_to_domain_hash
+    Rails.cache.fetch('subforem_id_to_domain_hash', expires_in: 12.hours) do
+      Subforem.all.each_with_object({}) do |subforem, hash|
+        hash[subforem.id] = subforem.domain
+      end
+    end
+  end
+
   def self.cached_default_domain
     Rails.cache.fetch('subforem_default_domain', expires_in: 12.hours) do
       Subforem.first&.domain
@@ -55,6 +63,7 @@ class Subforem < ApplicationRecord
 
   def bust_caches
     Rails.cache.delete("cached_domains")
+    Rails.cache.delete("subforem_id_to_domain_hash")
     Rails.cache.delete('subforem_root_id')
     Rails.cache.delete('subforem_default_domain')
     Rails.cache.delete('subforem_root_domain')

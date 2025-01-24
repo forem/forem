@@ -62,6 +62,7 @@ gem "kaminari", "~> 1.2" # A Scope and Engine based, clean, powerful, customizab
 gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
+gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 5.2" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
