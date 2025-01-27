@@ -13,11 +13,11 @@
     <input value="" autocomplete="off" type="hidden" name="article[body_markdown]" id="article_body_markdown">
   <% end %>
   <div id="main-status-form-controls" class="justify-between items-center pt-2 <%= expanded ? "flex " : "hidden" %>">
-    <% unless expanded %>
+    <% if !expanded %>
       <div class="fs-xs color-base-60">
         <%= t("views.stories.status_hint_html") %>
       </div>
-    <% elsif @article %>
+    <% elsif @article && Subforem.cached_postable_array.any? %>
       <div>
         <select name="article[subforem_id]" id="article_subforem_id" class="crayons-select">
           <% Subforem.cached_postable_array.each do |array| %>
