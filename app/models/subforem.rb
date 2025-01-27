@@ -61,7 +61,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_postable_array
     Rails.cache.fetch('subforem_postable_array', expires_in: 12.hours) do
-      Subforem.where.not(root: true).pluck(:id).map { |id| [id, Settings::Community.community_name(subforem_id: id)] }
+      Subforem.where(discoverable: true).pluck(:id).map { |id| [id, Settings::Community.community_name(subforem_id: id)] }
     end
   end
 
