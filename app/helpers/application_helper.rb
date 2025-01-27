@@ -283,9 +283,9 @@ module ApplicationHelper
   end
 
   def root_unless_default_subforem
-    if RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
+    if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
       Subforem.first
-    else
+    elsif RequestStore.store[:subforem_id].present?
       Subforem.where(root: true).first
     end
   end
