@@ -1,6 +1,6 @@
 <% # This script is used to authenticate the user in the subforum iframe %>
 <% # Could be moved to a separate file with some re-factoring %>
-<% default_url_component = "#{URL.protocol}#{RequestStore.store[:default_subforem_domain]}" %>
+<% default_url_component = RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] ? "#{URL.protocol}#{RequestStore.store[:root_subforem_domain]}" : "#{URL.protocol}#{RequestStore.store[:default_subforem_domain]}" %>
 <script>
   var userSignedIn = <%= user_signed_in? %>
   if (document.readyState === 'complete' || document.readyState === 'interactive') {

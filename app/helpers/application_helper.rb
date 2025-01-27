@@ -282,11 +282,12 @@ module ApplicationHelper
     end
   end
 
-  def signed_in_default_subforem_or_signed_out_non_default?
-    return false if RequestStore.store[:default_subforem_id].blank?
-    return true if user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
-    return true if !user_signed_in? && RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
-    false
+  def root_unless_default_subforem
+    if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
+      Subforem.first
+    elsif RequestStore.store[:subforem_id].present?
+      Subforem.where(root: true).first
+    end
   end
 
   def copyright_notice
