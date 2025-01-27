@@ -358,7 +358,7 @@ function initializeMainStatusForm() {
       e.preventDefault();
       e.target.focus();
     }
-    else {
+    else if (document.getElementById("index-container")) {
       e.target.classList.remove('element-focused')
       document.getElementById('main-status-form-controls').classList.remove('flex');
       document.getElementById('main-status-form-controls').classList.add('hidden');
