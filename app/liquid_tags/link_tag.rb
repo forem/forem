@@ -55,7 +55,3 @@ end
 
 Liquid::Template.register_tag("link", LinkTag)
 Liquid::Template.register_tag("post", LinkTag)
-UnifiedEmbed.register(
-  LinkTag,
-  regexp: %r{https?://(#{Subforem.cached_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)}
-)
