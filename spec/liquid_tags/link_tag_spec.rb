@@ -131,8 +131,15 @@ RSpec.describe LinkTag, type: :liquid_tag do
 
   it "raise error when url belongs to different domain" do
     expect do
-      generate_new_liquid(slug: "https://xkcd.com/2363/")
+      generate_new_liquid(slug: "https://xkcd.com#{article.path}")
     end.to raise_error(StandardError)
+  end
+
+  it "does not raise error if a subforem with domain exists" do
+    create(:subforem, domain: "xkcd.com")
+    expect do
+      generate_new_liquid(slug: "https://Xkcd.com#{article.path}")
+    end.not_to raise_error
   end
 
   it "renders with a full link with a trailing slash" do

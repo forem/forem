@@ -6,6 +6,7 @@ class Subforem < ApplicationRecord
   validates :domain, presence: true, uniqueness: true
 
   after_save :bust_caches
+  before_validation :downcase_domain
 
   def self.cached_id_by_domain(passed_domain)
     Rails.cache.fetch("subforem_id_by_domain_#{passed_domain}", expires_in: 12.hours) do
@@ -78,5 +79,9 @@ class Subforem < ApplicationRecord
     Rails.cache.delete('subforem_all_domains')
     Rails.cache.delete('subforem_default_id')
     Rails.cache.delete("subforem_id_by_domain_#{domain}")
+  end
+
+  def downcase_domain
+    self.domain = domain.downcase if domain
   end
 end

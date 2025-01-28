@@ -26,7 +26,7 @@ class LinkTag < LiquidTagBase
     path = url.path
 
     # If domain is present in url check if it belongs to the app
-    unless domain.blank? || domain&.casecmp?(Settings::General.app_domain)
+    unless domain.blank? || Subforem.cached_domains.include?(domain.downcase)
       raise StandardError, I18n.t("liquid_tags.link_tag.not_exist_link", slug: slug)
     end
 
@@ -55,3 +55,7 @@ end
 
 Liquid::Template.register_tag("link", LinkTag)
 Liquid::Template.register_tag("post", LinkTag)
+UnifiedEmbed.register(
+  LinkTag,
+  regexp: %r{https?://(#{Subforem.cached_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)}
+)
