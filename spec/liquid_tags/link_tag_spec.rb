@@ -153,6 +153,12 @@ RSpec.describe LinkTag, type: :liquid_tag do
     expect(liquid.render).to eq(missing_article_html)
   end
 
+  it "renders with another subforem domain" do
+    create(:subforem, domain: "xkcd.com")
+    liquid = generate_new_liquid(slug: "https://xkcd.com/#{user.username}/#{article.slug}/")
+    expect(liquid.render).to eq(correct_link_html(article))
+  end
+
   it "escapes title" do
     liquid = generate_new_liquid(slug: "/#{user.username}/#{escaped_article.slug}/")
     expect(liquid.render).to eq(correct_link_html(escaped_article))

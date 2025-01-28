@@ -387,9 +387,9 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   end
 
   context "when considering subforem ads" do
-    let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-    let(:subforem_2) { create(:subforem, domain: "#{rand(1000)}.com") }
-    let(:subforem_3) { create(:subforem, domain: "#{rand(1000)}.com") }
+    let(:subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
+    let(:subforem_2) { create(:subforem, domain: "#{rand(10_000)}.com") }
+    let(:subforem_3) { create(:subforem, domain: "#{rand(10_000)}.com") }
     let!(:no_subforem) { create_billboard(include_subforem_ids: nil) }
     let!(:subforem_first) { create_billboard(include_subforem_ids: [subforem.id]) }
     let!(:subforem_2_and_3) { create_billboard(include_subforem_ids: [subforem_2.id, subforem_3.id]) }
