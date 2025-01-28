@@ -16,4 +16,10 @@ RSpec.describe Subforem, type: :model do
     expect(Rails.cache).to receive(:delete).with("subforem_id_by_domain_#{subforem.domain}")
     subforem.save
   end
+
+  it "downcases domain before validation" do
+    subforem = build(:subforem, domain: "UPPERCASE.com")
+    subforem.valid?
+    expect(subforem.domain).to eq("uppercase.com")
+  end
 end

@@ -147,7 +147,6 @@ RSpec.describe UnifiedEmbed::Registry do
 
     it "returns ForemTag for a Forem-specific url", :aggregate_failures do
       valid_forem_specific_links = [
-        URL.url + article.path,
         "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}",
         "#{URL.url}/#{organization.slug}",
         "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}",
@@ -347,6 +346,23 @@ RSpec.describe UnifiedEmbed::Registry do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(YoutubeTag)
       end
+    end
+
+    it "returns LinkTag for a valid subforem-matching link" do
+      expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
+        .to eq(LinkTag)
+    end
+
+    it "returns link tag for another subforem-matching link and https" do
+      subforem = create(:subforem, domain: "domain-#{rand(1000)}.com")
+      expect(described_class.find_liquid_tag_for(link: "https://#{subforem.domain}#{article.path}"))
+        .to eq(LinkTag)
+    end
+
+    it "returns link tag for another subforem-matching link and http" do
+      subforem = create(:subforem, domain: "domain-#{rand(1000)}.com")
+      expect(described_class.find_liquid_tag_for(link: "http://#{subforem.domain}#{article.path}"))
+        .to eq(LinkTag)
     end
   end
 end
