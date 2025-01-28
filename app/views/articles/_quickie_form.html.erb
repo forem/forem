@@ -18,6 +18,7 @@
         <%= t("views.stories.status_hint_html") %>
       </div>
     <% elsif @article && Subforem.cached_postable_array.any? %>
+      <input value="<%= @article.cached_tag_list %>" autocomplete="off" type="hidden" name="article[tag_list]" id="article_tag_list">
       <div>
         <select name="article[subforem_id]" id="article_subforem_id" class="crayons-select">
           <% Subforem.cached_postable_array.each do |array| %>
