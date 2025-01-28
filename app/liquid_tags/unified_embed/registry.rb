@@ -40,7 +40,7 @@ module UnifiedEmbed
     end
 
     def find_liquid_tag_for(link:)
-      return LinkTag if link.match?(%r{(#{Subforem.cached_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)})
+      return LinkTag if link.match?(%r{https?://(#{Subforem.cached_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)})
       _regexp, klass = @registry.detect { |regexp, _tag_class| regexp.match?(link) }
       klass.presence || OpenGraphTag
     end
