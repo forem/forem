@@ -41,7 +41,8 @@ module UnifiedEmbed
 
     def find_liquid_tag_for(link:)
       possible_domains = Subforem.cached_domains + [Settings::General.app_domain]
-      return LinkTag if link.match?(%r{https?://(#{possible_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)})
+      link_path = Addressable::URI.parse(link).path
+      return LinkTag if link.match?(%r{https?://(#{possible_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)}) && Article.find_by(path: link_path)
       _regexp, klass = @registry.detect { |regexp, _tag_class| regexp.match?(link) }
       klass.presence || OpenGraphTag
     end

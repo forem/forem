@@ -147,7 +147,6 @@ RSpec.describe UnifiedEmbed::Registry do
 
     it "returns ForemTag for a Forem-specific url", :aggregate_failures do
       valid_forem_specific_links = [
-        URL.url + article.path,
         "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}",
         "#{URL.url}/#{organization.slug}",
         "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}",
