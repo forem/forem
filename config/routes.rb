@@ -250,12 +250,16 @@ Rails.application.routes.draw do
     # Billboards
     scope "/:username/:slug" do
       get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard_full
-      get "/bb/:placement_area", to: "billboards#show", as: :article_billboard
+      get "/bb/:placement_area", to: "billboards#show"
+      get "/#{ENV.fetch("PRIOR_BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show"
+      get "/#{ENV.fetch("BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show", as: :article_billboard
       # temporary keeping both routes while transitioning (renaming) display_ads => billboards
       get "/display_ads/:placement_area", to: "billboards#show"
     end
     get "/billboards/:placement_area", to: "billboards#show", as: :billboard_full
-    get "/bb/:placement_area", to: "billboards#show", as: :billboard
+    get "/bb/:placement_area", to: "billboards#show"
+    get "/#{ENV.fetch("PRIOR_BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show"
+    get "/#{ENV.fetch("BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show", as: :billboard
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
     get "/display_ads/:placement_area", to: "billboards#show"
 

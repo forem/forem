@@ -4,9 +4,9 @@
     <% if user_signed_in? && current_page?(root_path) %>
       <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
       <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
-      <link rel="prefetch" href="/bb/feed_first">
-      <link rel="prefetch" href="/bb/feed_second">
-      <link rel="prefetch" href="/bb/feed_third">
+      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first">
+      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second">
+      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_third">
       <link rel="prefetch" href="/sidebars/home">
     <% end %>
     <meta charset="utf-8">
@@ -70,6 +70,7 @@
         data-algolia-id="<%= j(Settings::General.algolia_application_id) if feature_flag_enabled?(:algolia_frontend) %>"
         data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) if feature_flag_enabled?(:algolia_frontend) %>"
         data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
+        data-dynamic-url-component="<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>"
         data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
