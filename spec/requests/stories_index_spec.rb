@@ -53,6 +53,15 @@ RSpec.describe "StoriesIndex" do
       renders_proper_sidebar(navigation_link)
     end
 
+    it "Does not render article with [Boost] as the title" do
+      boost_article = create(:article, title: "[Boost]", score: 1000, featured: true, type_of: "status", body_markdown: "", main_image: "")
+      non_boost_article = create(:article, title: "Not a boost article", score: 1000, featured: true)
+
+      get "/"
+      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
+      expect(response.body).to include(CGI.escapeHTML(non_boost_article.title))
+    end
+
     it "doesn't render a featured scheduled article" do
       article = create(:article, featured: true, published_at: 1.hour.from_now)
       get "/"

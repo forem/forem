@@ -38,7 +38,7 @@ class ModerationsController < ApplicationController
     elsif @members == "not_new"
       articles = articles.where("nth_published_by_author > 3")
     end
-    @articles = articles.includes(:user).to_json(JSON_OPTIONS)
+    @articles = articles.includes(:user).reject { |article| article.title == "[Boost]" }.to_json(JSON_OPTIONS)
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
     @current_user_tags = current_user.moderator_for_tags
     @current_user_following_tags = current_user.currently_following_tags.pluck(:name) - @current_user_tags
