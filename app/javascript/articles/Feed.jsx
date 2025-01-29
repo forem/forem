@@ -21,6 +21,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   useEffect(() => {
     async function fetchFeedItems(timeFrame = '', page = 1) {
       const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      const billboardUrlComponent = document.body.dataset.dynamicUrlComponent;
       const promises = [
         fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
           method: 'GET',
@@ -31,9 +32,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
           },
           credentials: 'same-origin',
         }),
-        fetch(`/bb/feed_first`),
-        fetch(`/bb/feed_second`),
-        fetch(`/bb/feed_third`),
+        fetch(`/${billboardUrlComponent}/feed_first`),
+        fetch(`/${billboardUrlComponent}/feed_second`),
+        fetch(`/${billboardUrlComponent}/feed_third`),
       ];
 
       const results = await Promise.allSettled(promises);
