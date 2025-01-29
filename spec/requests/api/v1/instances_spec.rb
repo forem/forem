@@ -28,6 +28,13 @@ RSpec.describe "Api::V1::Instances" do
 
         expect(response.parsed_body["visibility"]).to eq "public"
       end
+
+      it "sets Fastly Surrogate-Control headers" do
+        expected_surrogate_control_headers = %w[max-age=600 stale-if-error=26400]
+        get api_instance_path, headers: headers
+
+        expect(response.headers["Surrogate-Control"]).to eq(expected_surrogate_control_headers.join(", "))
+      end
     end
 
     context "when the Forem is not public" do

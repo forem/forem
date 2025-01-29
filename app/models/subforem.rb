@@ -6,6 +6,7 @@ class Subforem < ApplicationRecord
   validates :domain, presence: true, uniqueness: true
 
   after_save :bust_caches
+  before_validation :downcase_domain
 
   def self.cached_id_by_domain(passed_domain)
     Rails.cache.fetch("subforem_id_by_domain_#{passed_domain}", expires_in: 12.hours) do
@@ -31,6 +32,14 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_id_to_domain_hash
+    Rails.cache.fetch('subforem_id_to_domain_hash', expires_in: 12.hours) do
+      Subforem.all.each_with_object({}) do |subforem, hash|
+        hash[subforem.id] = subforem.domain
+      end
+    end
+  end
+
   def self.cached_default_domain
     Rails.cache.fetch('subforem_default_domain', expires_in: 12.hours) do
       Subforem.first&.domain
@@ -51,15 +60,28 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_postable_array
+    Rails.cache.fetch('subforem_postable_array', expires_in: 12.hours) do
+      Subforem.where(discoverable: true).pluck(:id).map { |id| [id, Settings::Community.community_name(subforem_id: id)] }
+    end
+  end
+
+
   private
 
   def bust_caches
     Rails.cache.delete("cached_domains")
+    Rails.cache.delete("subforem_id_to_domain_hash")
+    Rails.cache.delete('subforem_postable_array')
     Rails.cache.delete('subforem_root_id')
     Rails.cache.delete('subforem_default_domain')
     Rails.cache.delete('subforem_root_domain')
     Rails.cache.delete('subforem_all_domains')
     Rails.cache.delete('subforem_default_id')
     Rails.cache.delete("subforem_id_by_domain_#{domain}")
+  end
+
+  def downcase_domain
+    self.domain = domain.downcase if domain
   end
 end

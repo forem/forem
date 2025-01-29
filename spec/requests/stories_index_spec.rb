@@ -1,7 +1,8 @@
+# spec/requests/stories_index_spec.rb
+
 require "rails_helper"
 
 RSpec.describe "StoriesIndex" do
-
   it "redirects to the lowercase route", :aggregate_failures do
     get "/Bad_name"
     expect(response).to have_http_status(:moved_permanently)
@@ -272,7 +273,7 @@ RSpec.describe "StoriesIndex" do
   describe "GET stories index with timeframe" do
     describe "/latest" do
       let(:user) { create(:user) }
-      let!(:low_score) { create(:article, score: -10) }
+      let!(:low_score) { create(:article, score: Settings::UserExperience.home_feed_minimum_score - 50) }
 
       before do
         create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 1)
@@ -281,7 +282,6 @@ RSpec.describe "StoriesIndex" do
       it "includes a link to Relevant", :aggregate_failures do
         get "/latest"
 
-        # The link should be `/`
         expected_tag = "<a data-text=\"Relevant\" href=\"/\""
         expect(response.body).to include(expected_tag)
       end
@@ -302,7 +302,6 @@ RSpec.describe "StoriesIndex" do
       it "includes a link to Relevant", :aggregate_failures do
         get "/top/week"
 
-        # The link should be `/`
         expected_tag = "<a data-text=\"Relevant\" href=\"/\""
         expect(response.body).to include(expected_tag)
       end
@@ -332,6 +331,33 @@ RSpec.describe "StoriesIndex" do
       create(:podcast_episode, podcast: podcast)
       get "/#{podcast.slug}"
       expect(response.body).to include(podcast.title)
+    end
+  end
+
+  describe "Middleware: SetSubforem" do
+    context "when passed_domain param is provided" do
+      it "calls Subforem.cached_id_by_domain with the passed domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).and_call_original
+        allow(Subforem).to receive(:cached_default_id).and_return(999)
+        get "/", params: { passed_domain: "sub.mysite.com" }
+        # This ensures that the subforem logic tries to use "sub.mysite.com"
+        expect(Subforem).to have_received(:cached_id_by_domain).with("sub.mysite.com")
+      end
+    end
+
+    context "when host is a subdomain" do
+      it "removes session and remember_user_token cookies from the response" do
+        # Make sure you have an ApplicationConfig["SESSION_KEY"] defined
+        # in your test environment
+        # allow(ApplicationConfig).to receive(:[]).with("SESSION_KEY").and_return("_session_key")
+
+        get "/", headers: { "Host" => "sub.example.com" }
+
+        # "Set-Cookie" won't exist if the middleware has deleted it
+        # or you might see a blank or partial string. Let's just confirm it's not present:
+        expect(response.headers["Set-Cookie"].to_s).not_to include(ENV["SESSION_KEY"])
+        expect(response.headers["Set-Cookie"].to_s).not_to include("remember_user_token")
+      end
     end
   end
 end

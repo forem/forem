@@ -37,24 +37,28 @@ module Articles
 
     def other_suggestions(max: MAX_DEFAULT, ids_to_ignore: [])
       ids_to_ignore << article.id
-      Article.published.from_subforem
+      Article.published.where(subforem_id: article.subforem_id)
         .where("published_at > ?", 3.months.ago)
         .where.not(id: ids_to_ignore)
         .not_authored_by(article.user_id)
         .order(hotness_score: :desc)
         .offset(rand(0..offset))
+        .where("score > ?", Settings::UserExperience.index_minimum_score)
+        .select(:id, :title, :path, :cached_tag_list, :cached_user, :main_image, :published, :published_at, :crossposted_at)
         .first(max)
     end
 
     def suggestions_by_tag(max: MAX_DEFAULT)
       Article
-        .published.from_subforem
+        .published.where(subforem_id: article.subforem_id)
         .where("published_at > ?", 3.months.ago)
         .cached_tagged_with_any(cached_tag_list_array)
         .not_authored_by(article.user_id)
         .where(tag_suggestion_query)
         .order(hotness_score: :desc)
         .offset(rand(0..offset))
+        .where("score > ?", Settings::UserExperience.index_minimum_score)
+        .select(:id, :title, :path, :cached_tag_list, :cached_user, :main_image, :published, :published_at, :crossposted_at)
         .first(max)
     end
 
