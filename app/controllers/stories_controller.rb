@@ -284,6 +284,7 @@ class StoriesController < ApplicationController
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
       @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
       @stories = @stories.to_a
+      @stories = @stories.reject { |article| article.title == "[Boost]" }
     end
 
     @pinned_article = pinned_article&.decorate
