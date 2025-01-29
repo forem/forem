@@ -284,8 +284,8 @@
     <div class="crayons-modal">
       <div role="dialog" aria-modal="true" aria-label="modal" class="crayons-modal__box" style="max-width:800px">
         <header class="crayons-modal__box__header">
-          <h2 class="crayons-subtitle-2">Boost Post to Your Feed</h2>
-          <button id="quickie-modal-close" type="button" aria-label="Close" class="c-btn c-btn--icon-alone crayons-modal__dismiss">
+          <h2 class="crayons-subtitle-2">Boost Post to the Feed</h2>
+          <button id="quickie-modal-close" type="button" aria-label="Close" class="c-btn c-btn--icon-alone crayons-modal__dismiss modal-close-el">
             <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="crayons-icon c-btn__icon"><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"></path></svg>
           </button>
         </header><div class="crayons-modal__box__body">
@@ -294,11 +294,13 @@
         </div>
       </div>
     </div>
-    <div data-testid="modal-overlay" class="crayons-modal__backdrop"></div></div>
+    <div class="crayons-modal__backdrop modal-close-el"></div></div>
   </div>
   <script>
-    document.getElementById("quickie-modal-close").addEventListener("click", () => {
-      document.getElementById("quickie-wrapper").classList.add("hidden");
+    document.querySelectorAll(".modal-close-el").forEach((el) => {
+      el.addEventListener("click", () => {
+        document.getElementById("quickie-wrapper").classList.add("hidden");
+      });
     });
   </script>
 <% end %>

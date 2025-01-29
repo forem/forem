@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_15_200745) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1176,6 +1176,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_15_200745) do
 
   create_table "subforems", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.boolean "discoverable", default: false, null: false
     t.string "domain", null: false
     t.boolean "root", default: false
     t.datetime "updated_at", null: false

@@ -146,7 +146,7 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
     @user = current_user
-    article_params_json[:subforem_id] = RequestStore.store[:subforem_id]
+    article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
     article = Articles::Creator.call(@user, article_params_json)
 
     if article.persisted?

@@ -86,7 +86,7 @@
   --button-primary-inverted-color-hover: var(--base-0);
 
   /* Secondary buttons */
-  --button-secondary-bg: var(--base-20);
+  --button-secondary-bg: var(--base-10);
   --button-secondary-bg-hover: var(--base-30);
   --button-secondary-color: var(--base-80);
   --button-secondary-color-hover: var(--base-100);

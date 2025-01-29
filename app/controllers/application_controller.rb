@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   before_action :redirect_www_to_root
-  before_action :set_subforem
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -168,16 +167,6 @@ class ApplicationController < ActionController::Base
     respond_with_request_for_authentication
   end
 
-  def set_subforem
-    domain = request.host
-    domain = params[:passed_domain] if params[:passed_domain].present? && Rails.env.development?
-    RequestStore.store[:default_subforem_id] = Subforem.cached_default_id || nil
-    RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
-    RequestStore.store[:root_subforem_id] = Subforem.cached_root_id || nil
-    RequestStore.store[:root_subforem_domain] = Subforem.cached_root_domain || nil
-    RequestStore.store[:default_subforem_domain] = Subforem.cached_default_domain || nil
-  end
-
   def set_subforem_cors_headers
     allowed_origins = Subforem.cached_domains.map { |domain| "https://#{domain}" }
 
@@ -313,9 +302,9 @@ class ApplicationController < ActionController::Base
                # List of your secondary domains
                secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
                if secondary_domains.include?(request.host)
-                request.session_options[:domain] = request.host
+                request.session_options[:domain] = root_domain(request.host)
               else
-                 Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
+                 Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
                end
              else
                # In non-production environments, don't set the domain
@@ -402,15 +391,23 @@ class ApplicationController < ActionController::Base
       # List of your secondary domains
       secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
       if secondary_domains.include?(request.host)
-        request.session_options[:domain] = request.host
+        request.session_options[:domain] = root_domain(request.host)
       else
         # For main domain, set to ApplicationConfig["APP_DOMAIN"]
-        request.session_options[:domain] = Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] = Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
       end
     else
       # In non-production environments, don't set the domain
       request.session_options[:domain] = nil
     end
+  end
+
+  def root_domain(host)
+    # The `default_rule: nil` option ensures it raises an error if the domain is invalid
+    parsed = PublicSuffix.parse(host, default_rule: nil)
+    parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+  rescue PublicSuffix::DomainInvalid
+    host
   end
 
   def internal_nav_param
