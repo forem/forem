@@ -33,8 +33,14 @@ export function initializeActionsPanel(user, path) {
   // eslint-disable-next-line no-restricted-globals
   if (!isModerationPage()) {
     // don't show mod button in mod center page
-    document
-      .getElementsByClassName('mod-actions-menu-btn')[0]
-      .addEventListener('click', toggleModActionsMenu);
+
+    const modActionsMenuBtns = document.getElementsByClassName(
+      'mod-actions-menu-btn',
+    );
+    modActionsMenuBtns &&
+      Array.from(modActionsMenuBtns).forEach((btn) => {
+        console.log('click')
+        btn.addEventListener('click', toggleModActionsMenu);
+      });
   }
 }

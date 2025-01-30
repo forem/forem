@@ -252,11 +252,19 @@
       --reaction-bg: var(--reaction-comment-bg);
     }
   }
-  &--boost {
-    // No display for small screens for the moment
-    @media (max-width: $breakpoint-m) {
-      display: none;
-    }
+}
+
+.only-sidebar-menu-item {
+  display: none !important;
+  @media (min-width: $breakpoint-s) {
+    display: block !important;
+  }
+}
+
+.only-mobile-menu-item {
+  display: block !important;
+  @media (min-width: $breakpoint-s) {
+    display: none !important;
   }
 }
 
