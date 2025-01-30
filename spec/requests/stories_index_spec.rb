@@ -35,6 +35,18 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("head content")
     end
 
+    it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
+      allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return("#000000")
+      get "/"
+      expect(response.body).to include("body:not(.dark-theme) #topbar {background")
+    end
+
+    it "does not render topbar styles if Settings::UserExperience.accent_background_color_hex is not set" do
+      allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return(nil)
+      get "/"
+      expect(response.body).not_to include("body:not(.dark-theme) #topbar {background")
+    end
+
     it "renders bottom of body content if present" do
       allow(Settings::UserExperience).to receive(:bottom_of_body_content).and_return("bottom of body content")
       get "/"
