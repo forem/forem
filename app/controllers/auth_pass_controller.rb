@@ -120,7 +120,7 @@ class AuthPassController < ApplicationController
   end
 
   def allow_cross_origin_requests
-    allowed_domains = (ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",") + [Settings::General.app_domain]).compact
+    allowed_domains = (Subforem.cached_domains + [Settings::General.app_domain]).compact
     requesting_origin = request.headers["Origin"]
 
     if allowed_domains.present? && allowed_domains.include?(requesting_origin&.gsub(/https?:\/\//, ""))
