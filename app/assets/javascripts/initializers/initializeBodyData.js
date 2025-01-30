@@ -52,7 +52,7 @@ function fetchBaseData() {
           browserStoreCache('set', user);
           document.body.className = userJson.config_body_class;
 
-          if (userJson.config_body_class.includes('dark-theme') && document.getElementById('dark-mode-style')) {
+          if (userJson.config_body_class && userJson.config_body_class.includes('dark-theme') && document.getElementById('dark-mode-style')) {
             document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>'
           } else {
             document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
