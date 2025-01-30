@@ -13,6 +13,7 @@
         </header>
         <div>
           <% @active_discussions.each do |plucked_article| %>
+            <% next if plucked_article[1] == "[Boost]" %>
             <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
           <% end %>
         </div>
@@ -37,10 +38,12 @@
         <div>
           <% if tag.name == "help" %>
             <% Article.active_help.limit(5).pluck(:path, :title, :comments_count, :created_at, :subforem_id).each do |plucked_article| %>
+              <% next if plucked_article[1] == "[Boost]" %>
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           <% else %>
             <% active_threads(tags: [tag.name], time_ago: Timeframe.datetime(params[:timeframe]), count: 5).each do |plucked_article| %>
+              <% next if plucked_article[1] == "[Boost]" %>
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           <% end %>
@@ -62,6 +65,7 @@
           <div class="widget-body">
             <div class="widget-link-list">
               <% boostable_posts.each do |plucked_article| %>
+                <% next if plucked_article[1] == "[Boost]" %>
                 <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
               <% end %>
             </div>
