@@ -48,14 +48,23 @@ function fetchBaseData() {
             JSON.stringify(client_geolocation);
           document.body.dataset.default_email_optin_allowed =
             default_email_optin_allowed;
+          const userJson = JSON.parse(user);
           browserStoreCache('set', user);
+          document.body.className = userJson.config_body_class;
+
+          if (userJson.config_body_class && userJson.config_body_class.includes('dark-theme') && document.getElementById('dark-mode-style')) {
+            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>'
+          } else {
+            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
+          }
+    
 
           setTimeout(() => {
             if (typeof ga === 'function') {
-              ga('set', 'userId', JSON.parse(user).id);
+              ga('set', 'userId', userJson.id);
             }
             if (typeof gtag === 'function') {
-              gtag('set', 'user_Id', JSON.parse(user).id);
+              gtag('set', 'user_Id', userJson.id);
             }
           }, 400);
         } else if (checkUserLoggedIn()){

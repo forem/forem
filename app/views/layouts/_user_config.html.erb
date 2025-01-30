@@ -1,3 +1,13 @@
+<div id="dark-mode-style" style="display:none;">
+  <%= Rails.application.assets["themes/dark.css"].to_s.squish.html_safe %>
+</div>
+<div id="light-mode-style" style="display:none;">
+  :root {
+    --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
+    --accent-brand-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
+    --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
+  }
+</div>
 <script>
   try {
     const bodyClass = localStorage.getItem('config_body_class');
@@ -7,7 +17,7 @@
       document.body.className = bodyClass;
 
       if (bodyClass.includes('dark-theme')) {
-        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/dark.css"].to_s.squish.html_safe %></style>';
+        document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>';
       }
 
       if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
