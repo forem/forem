@@ -1,4 +1,13 @@
 <div class="navigation-progress" id="navigation-progress"></div>
+<% if Settings::UserExperience.accent_background_color_hex.present? && Settings::UserExperience.accent_background_color_hex != "#ffffff" %>
+  <style>
+    body:not(.dark-theme) #topbar {background: <%= Settings::UserExperience.accent_background_color_hex%> }
+    body:not(.dark-theme) #topbar .c-link, body:not(.dark-theme) #topbar .c-cta, body:not(.dark-theme) #topbar .c-btn {color: white !important; border-color: white !important}
+    body:not(.dark-theme) #topbar .crayons-header--search .c-btn { color: <%= Settings::UserExperience.accent_background_color_hex%> !important; }
+    body:not(.dark-theme) #topbar .crayons-dropdown .c-link { color: #333 !important; }
+    </style>
+<% end %>
+
 <header id="topbar" class="crayons-header topbar print-hidden">
   <span id="route-change-target" tabindex="-1"></span>
   <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
