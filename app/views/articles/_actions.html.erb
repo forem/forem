@@ -3,15 +3,17 @@
 
     <%= render partial: "articles/multiple_reactions" if @article.published? %>
 
-    <div id="mod-actions-menu-btn-area" class="print-hidden trusted-visible-block align-center">
-      <% if user_signed_in? %>
-        <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn">
-          <svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-labelledby="d6cd43ffbad3fe639e2e95c901ee88c8">
-            <title id="d6cd43ffbad3fe639e2e95c901ee88c8">Moderation</title>
-            <path d="M3.783 2.826L12 1l8.217 1.826a1 1 0 01.783.976v9.987a6 6 0 01-2.672 4.992L12 23l-6.328-4.219A6 6 0 013 13.79V3.802a1 1 0 01.783-.976zM5 4.604v9.185a4 4 0 001.781 3.328L12 20.597l5.219-3.48A4 4 0 0019 13.79V4.604L12 3.05 5 4.604zM13 10h3l-5 7v-5H8l5-7v5z" />
-          </svg>
-        </button>
-      <% end %>
+    <div class="only-sidebar-menu-item">
+      <div id="mod-actions-menu-btn-area" class="print-hidden trusted-visible-block align-center">
+        <% if user_signed_in? %>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn">
+            <svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-labelledby="d6cd43ffbad3fe639e2e95c901ee88c8">
+              <title id="d6cd43ffbad3fe639e2e95c901ee88c8">Moderation</title>
+              <path d="M3.783 2.826L12 1l8.217 1.826a1 1 0 01.783.976v9.987a6 6 0 01-2.672 4.992L12 23l-6.328-4.219A6 6 0 013 13.79V3.802a1 1 0 01.783-.976zM5 4.604v9.185a4 4 0 001.781 3.328L12 20.597l5.219-3.48A4 4 0 0019 13.79V4.604L12 3.05 5 4.604zM13 10h3l-5 7v-5H8l5-7v5z" />
+            </svg>
+          </button>
+        <% end %>
+      </div>
     </div>
     <div class="align-center m:relative">
       <button id="article-show-more-button" aria-controls="article-show-more-dropdown" aria-expanded="false" aria-haspopup="true" class="dropbtn crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded" aria-label="<%= t("views.actions.more.aria_label") %>">
@@ -19,6 +21,11 @@
       </button>
 
       <div id="article-show-more-dropdown" class="crayons-dropdown side-bar left-2 right-2 m:right-auto m:left-100 s:left-auto mb-1 m:mb-0 top-unset bottom-100 m:top-0 m:bottom-unset">
+        <div class="only-mobile-menu-item">
+          <button class="mod-actions-menu-btn crayons-link crayons-link--block w-100 bg-transparent border-0 fw-bold">
+            Moderate
+          </button>
+        </div>
         <div>
           <button
             id="copy-post-url-button"
