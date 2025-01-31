@@ -489,9 +489,17 @@
   padding: 0.5em 0;
   cursor: default;
   display: flex;
-  column-gap: 2.2em;
+  column-gap: 1.2em;
   flex-wrap: wrap;
   min-height: 40px;
+
+  @media (min-width: $breakpoint-xs) {
+    column-gap: 1.7em;
+  }
+
+  @media (min-width: $breakpoint-s) {
+    column-gap: 2.2em;
+  }
 
   & > span {
     &.hidden {
