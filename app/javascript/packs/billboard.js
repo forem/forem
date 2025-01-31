@@ -33,9 +33,10 @@ async function generateBillboard(element) {
       // This is a hardcoded feature which should become more dynamic later.
       const contentElement = document.getElementById('page-content-inner');
       const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true'
+      const isNativeUserAgent = navigator.userAgent.includes('Forem');
       if (
         asyncUrl?.includes('post_fixed_bottom') &&
-        (currentParams?.includes('context=digest') || isInternalNav)
+        (currentParams?.includes('context=digest') || isInternalNav || isNativeUserAgent)
       ) {     
         return;
       }
