@@ -23,7 +23,7 @@ class AuthPassController < ApplicationController
         @token = generate_auth_token(user)
       else
         session.delete(:user_id)
-        head :no_content
+        render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
         return
       end
     else
@@ -34,11 +34,11 @@ class AuthPassController < ApplicationController
           session[:user_id] = user.id
           @token = generate_auth_token(user)
         else
-          head :no_content
+          render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
           return
         end
       else
-        head :no_content
+        render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
         return
       end
     end  
