@@ -21,7 +21,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   useEffect(() => {
     async function fetchFeedItems(timeFrame = '', page = 1) {
       const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
-      const billboardUrlComponent = document.body.dataset.dynamicUrlComponent;
+      const billboardUrlComponent = document.body.dataset.dynamicUrlComponent || 'bb';
       const promises = [
         fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
           method: 'GET',
