@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: "CLA Assistant"
         if: ((github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target') && github.repository_owner == 'forem'
-        uses: contributor-assistant/github-action@v2.3.0
+        uses: contributor-assistant/github-action@v2.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
