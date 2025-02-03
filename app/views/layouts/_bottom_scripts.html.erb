@@ -22,7 +22,8 @@
       document.body.appendChild(iframe);
   
       window.addEventListener('message', function(event) {
-        if (event.origin !== '<%= default_url_component %>') {
+        // if event is not default and is not of the same origin, return
+        if (event.origin !== '<%= default_url_component %>' && event.origin !== window.location.origin) {
           return;
         }
   

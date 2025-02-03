@@ -329,6 +329,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def current_user_by_token
+    auth_header = request.headers["Authorization"]
+    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+    
+    token = auth_header.split(" ").last
+    payload = decode_auth_token(token)
+    return unless payload && payload["user_id"]
+
+    @current_user = User.find_by(id: payload["user_id"])
+  end
+
+  def decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue
+    nil
+  end
+
   def client_geolocation
     if session_current_user_id
       request.headers["X-Client-Geo"]

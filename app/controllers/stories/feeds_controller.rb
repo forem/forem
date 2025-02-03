@@ -2,6 +2,8 @@ module Stories
   class FeedsController < ApplicationController
     respond_to :json
 
+    before_action :current_user_by_token, only: [:show]
+
     def show
       @page = (params[:page] || 1).to_i
       # This most recent test has concluded with a winner. Preserved as a comment awaiting next test
