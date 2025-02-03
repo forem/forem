@@ -12,7 +12,7 @@
   function initAuth() {
     var paramToken = new URLSearchParams(window.location.search).get('jwt');
 
-    if (paramToken) {
+    if (paramToken && !userSignedIn) {
       authenticateUser(paramToken);
     } else {
       var iframe = document.createElement('iframe');
