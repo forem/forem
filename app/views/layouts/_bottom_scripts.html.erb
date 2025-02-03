@@ -30,7 +30,11 @@
   
         if (data.authenticated && !userSignedIn) {
           authenticateUser(data.token);
-        }
+        } else if(data.authenticated && window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            action: 'login',
+            token: data.token,
+          }));
       });  
     }
 
