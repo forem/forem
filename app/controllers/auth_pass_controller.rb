@@ -111,14 +111,6 @@ class AuthPassController < ApplicationController
     JWT.encode(payload, Rails.application.secret_key_base)
   end
 
-  def decode_auth_token(token)
-    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
-  rescue JWT::ExpiredSignature
-    nil
-  rescue
-    nil
-  end
-
   def allow_cross_origin_requests
     allowed_domains = (Subforem.cached_domains + [Settings::General.app_domain]).compact
     requesting_origin = request.headers["Origin"]
