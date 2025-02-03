@@ -10,23 +10,29 @@
   }
 
   function initAuth() {
-    var iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = '<%= default_url_component unless user_signed_in? %>/auth_pass/iframe';
+    var paramToken = new URLSearchParams(window.location.search).get('jwt');
 
-    document.body.appendChild(iframe);
-
-    window.addEventListener('message', function(event) {
-      if (event.origin !== '<%= default_url_component %>') {
-        return;
-      }
-
-      var data = event.data;
-
-      if (data.authenticated && !userSignedIn) {
-        authenticateUser(data.token);
-      }
-    });
+    if (paramToken) {
+      authenticateUser(paramToken);
+    } else {
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = '<%= default_url_component unless user_signed_in? %>/auth_pass/iframe';
+  
+      document.body.appendChild(iframe);
+  
+      window.addEventListener('message', function(event) {
+        if (event.origin !== '<%= default_url_component %>') {
+          return;
+        }
+  
+        var data = event.data;
+  
+        if (data.authenticated && !userSignedIn) {
+          authenticateUser(data.token);
+        }
+      });  
+    }
 
     function authenticateUser(token) {
       fetch('/auth_pass/token_login', {
