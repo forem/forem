@@ -62,6 +62,7 @@ async function generateBillboard(element) {
           element.innerHTML = '';
         }
       }
+
       executeBBScripts(element);
       implementSpecialBehavior(element);
       setupBillboardInteractivity();
@@ -69,6 +70,22 @@ async function generateBillboard(element) {
       // The original code is still in the asset pipeline, so is not importable.
       // This could be refactored to be importable as we continue that migration.
       // eslint-disable-next-line no-undef
+
+      document.querySelectorAll('.billboard-readmore-button').forEach((button) => {
+        // If the card is shorter than 100vh - 200px we immediately hide the button and related classes
+        if (button.closest('.crayons-card').querySelector('.text-styles').offsetHeight < window.innerHeight - 200) {
+          button.closest('.crayons-card').querySelector('.text-styles').classList.remove('long-bb-body');
+          button.closest('.crayons-card').querySelector('.long-bb-bottom').classList.add('hidden');
+          button.closest('.crayons-card').querySelector('.billboard-readmore-button').classList.add('hidden');
+        }
+
+        button.addEventListener('click', () => {
+          button.closest('.crayons-card').querySelector('.text-styles').classList.remove('long-bb-body');
+          button.closest('.crayons-card').querySelector('.long-bb-bottom').classList.add('hidden');
+          button.closest('.crayons-card').querySelector('.billboard-readmore-button').classList.add('hidden');
+        });
+      });  
+
       observeBillboards();
     } catch (error) {
       if (!/NetworkError/i.test(error.message)) {
