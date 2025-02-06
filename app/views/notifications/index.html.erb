@@ -44,7 +44,7 @@
 <% if user_signed_in? %>
   <main id="main-content">
     <div class="crayons-layout crayons-layout--header-inside crayons-layout--limited-l crayons-layout--2-cols" id="notifications-container" data-subscribe-button-container="true">
-      <header class="crayons-page-header">
+      <header class="crayons-page-header hidden-shell-innerhidden">
         <h1 class="crayons-title"><%= t("views.notifications.heading") %></h1>
         <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost"><%= t("views.notifications.settings") %></a>
       </header>

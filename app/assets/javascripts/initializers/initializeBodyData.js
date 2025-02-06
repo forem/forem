@@ -58,6 +58,13 @@ function fetchBaseData() {
             document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
           }
 
+          if (window && window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              action: 'user',
+              data: userJson,
+            }));  
+          }
+
           const isForemWebview = navigator.userAgent.includes('ForemWebView/1');
           if (isForemWebview || window.frameElement) { // Hide top bar and footer when loaded within iframe
             document.body.classList.add("hidden-shell");
