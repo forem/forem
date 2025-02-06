@@ -58,7 +58,7 @@ function fetchBaseData() {
             document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
           }
 
-          const isForemWebview = navigator.userAgent.includes('ForemWebview/1');
+          const isForemWebview = navigator.userAgent.includes('ForemWebView/1');
           if (isForemWebview || window.frameElement) { // Hide top bar and footer when loaded within iframe
             document.body.classList.add("hidden-shell");
           }
