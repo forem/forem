@@ -337,6 +337,7 @@ Rails.application.routes.draw do
     get "/settings/:tab/:org_id", to: "users#edit", constraints: { tab: /organization/ }
     get "/settings/:tab/:id", to: "users#edit", constraints: { tab: /response-templates/ }
     get "/signout_confirm", to: "users#signout_confirm"
+    get "/menu", to: "menus#show"
     get "/dashboard", to: "dashboards#show"
     get "/dashboard/sidebar", to: "dashboards#sidebar"
     get "/dashboard/analytics", to: "dashboards#analytics"
