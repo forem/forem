@@ -4,6 +4,10 @@
   .html-variant-wrapper { display: none}
 </style>
 
+<% if @article.processed_html.include?("https://embed.bsky.app/static/embed.js") %>
+  <link rel="preload" href="https://embed.bsky.app/static/embed.js" as="script">
+<% end %>
+
 <% if @article.processed_html.include?("data-animated") %>
   <%= javascript_include_tag "articleAnimations", defer: true %>
 <% end %>
