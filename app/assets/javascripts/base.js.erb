@@ -10,6 +10,8 @@
 I18n.defaultLocale = 'en';
 I18n.locale = document.body.dataset.locale;
 I18n.translations = JSON.parse(document.getElementById('i18n-translations').dataset.translations);
+const isForemWebview = navigator.userAgent.includes('ForemWebview/1');
+
 var instantClick
   , InstantClick = instantClick = function(document, location, $userAgent) {
   // Internal variables
@@ -64,6 +66,9 @@ var instantClick
     do {
       if (!elem.hasAttribute) { // Parent of <html>
         break
+      }
+      if (isForemWebview) {
+        return true
       }
       if (elem.hasAttribute('data-instant')) {
         return false
