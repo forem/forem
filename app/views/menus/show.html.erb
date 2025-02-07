@@ -1,5 +1,5 @@
 <ul class="m-0" id="crayons-header__menu__dropdown__list">
-  <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 pb-2 mb-2">
+  <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 py-3 mb-2">
     <a href="/<%= current_user.username %>" id="first-nav-link" class="c-link c-link--default c-link--block lh-tight">
       <div>
         <span class="fw-medium block">My Profile</span>
@@ -17,9 +17,6 @@
   <li>
     <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
   </li>
-  <%= application_policy_content_tag("li", record: Article, query: :create?) do %>
-    <a href="<%= new_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
-  <% end %>
   <li>
     <a href="<%= readinglist_path %>" class="c-link c-link--block"><%= t("views.main.nav.list") %></a>
   </li>
@@ -27,7 +24,15 @@
     <a href="<%= user_settings_path %>" class="c-link c-link--block" id="second-last-nav-link"><%= t("views.main.nav.settings") %></a>
   </li>
 
-  <li class="pt-2">
+  <li>
+    <nav class="border-0 border-b-1 border-solid border-base-20 py-2">
+      <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
+        <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: @navigation_links[:default_nav_ids]).where.not(name: ["Home", "Reading List"]).ordered, as: :link %>
+      </ul>
+    </nav>
+  </li>
+
+  <li class="py-4">
     <a href="<%= signout_confirm_path %>" class="c-link c-link--block" id="last-nav-link"><%= t("views.main.signout") %></a>
   </li>
 </ul>
