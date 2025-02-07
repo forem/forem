@@ -1,5 +1,7 @@
 module Notifications
   class ReadsController < ApplicationController
+    before_action :current_user_by_token, only: [:show]
+
     def create
       render plain: "" && return unless current_user
 
