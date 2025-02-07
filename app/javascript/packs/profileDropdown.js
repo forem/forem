@@ -19,16 +19,14 @@ function initDropdown() {
   }
   const currentUser = userData();
 
-  if (
-    !profileDropdownDiv ||
-    (currentUser &&
-      currentUser.username === profileDropdownDiv.dataset.username)
-  ) {
+  if (!profileDropdownDiv) {
     // Hide this menu when user views their own profile
     return;
   }
 
-  profileDropdownDiv.classList.remove('hidden');
+  if (currentUser && currentUser.username === profileDropdownDiv.dataset.username) {
+      profileDropdownDiv.style.display = 'none';
+  }
 
   initializeDropdown({
     triggerElementId: 'user-profile-dropdown',

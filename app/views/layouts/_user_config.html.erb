@@ -8,6 +8,7 @@
     --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
   }
 </div>
+<div id="user-prestyle"></div>
 <script>
   try {
     const bodyClass = localStorage.getItem('config_body_class');
@@ -45,6 +46,7 @@
       } else {
         document.body.classList.add("user-tags-followed-max");
       }
+      document.getElementById('user-prestyle').innerHTML += '<style>.hide-if-belongs-to-current-user-'+user.id+' { display: none !important; }</style>';
     }
   } catch (e) {
     setTimeout(function () {
