@@ -48,7 +48,7 @@
         <h1 class="crayons-title"><%= t("views.notifications.heading") %></h1>
         <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost"><%= t("views.notifications.settings") %></a>
       </header>
-      <div class="crayons-layout__sidebar-left">
+      <div class="crayons-layout__sidebar-left hidden-shell-innerhidden">
         <%= render "notifications/nav_menu" %>
       </div>
       <div class="crayons-layout__content" data-follow-button-container="true">
