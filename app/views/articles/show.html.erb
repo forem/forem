@@ -1,5 +1,7 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
+<link rel="prefetch" href="/reactions?article_id=<%= @article.id %>">
+
 <style>
   .html-variant-wrapper { display: none}
 </style>

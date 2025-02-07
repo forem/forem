@@ -33,10 +33,10 @@
       document.body.classList.add("dev-ios-native-body");
     }
 
-    const isForemWebview = navigator.userAgent.includes('ForemWebView/1');
-    if (window.frameElement) { // Hide top bar and footer when loaded within iframe
+    if (navigator.userAgent.includes('ForemWebView/1') || window.frameElement) {
       document.body.classList.add("hidden-shell");
     }
+
     if (userString && userString.length > 0) {
       const user = JSON.parse(userString)
       const numTags = JSON.parse(user.followed_tags).length

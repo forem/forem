@@ -73,6 +73,14 @@
         data-dynamic-url-component="<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>"
         data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
+        
+        <%# First script to run no matter what %>
+        <script>
+          if (navigator.userAgent.includes('ForemWebView/1') || window.frameElement) {
+            document.body.classList.add("hidden-shell");
+          }
+        </script>
+
         <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
           <style>
