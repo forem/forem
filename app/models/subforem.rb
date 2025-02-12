@@ -49,6 +49,8 @@ class Subforem < ApplicationRecord
   def self.cached_root_domain
     Rails.cache.fetch('subforem_root_domain', expires_in: 12.hours) do
       domain = Subforem.find_by(root: true)&.domain
+      return unless domain
+
       domain += ":3000" if Rails.env.development? && !domain.include?(":3000")
       domain
     end

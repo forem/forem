@@ -329,6 +329,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def after_sign_out_path_for(_resource_or_scope)
+    "/enter"
+  end
+
   def current_user_by_token
     auth_header = request.headers["Authorization"]
     return unless auth_header.present? && auth_header.start_with?("Bearer ")
