@@ -9,6 +9,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if RequestStore.store[:subforem_id] &&
+        RequestStore.store[:root_subforem_id] &&
         RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
         RequestStore.store[:subforem_id] != RequestStore.store[:root_subforem_id]
       subforem = Subforem.find_by(id: RequestStore.store[:root_subforem_id])
