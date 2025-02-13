@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_subforem
+  before_action :redirect_www_to_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -167,11 +167,16 @@ class ApplicationController < ActionController::Base
     respond_with_request_for_authentication
   end
 
-  def set_subforem
-    domain = request.host
-    domain = params[:passed_domain] if params[:passed_domain].present? && Rails.env.development?
-    RequestStore.store[:default_subforem_id] = Subforem.cached_default_id || nil
-    RequestStore.store[:subforem_id] = Subforem.cached_id_by_domain(domain) || nil
+  def set_subforem_cors_headers
+    allowed_origins = Subforem.cached_domains.map { |domain| "https://#{domain}" }
+
+    if allowed_origins.include?(request.origin)
+      response.set_header('Access-Control-Allow-Origin', request.origin)
+    end
+
+    response.set_header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD')
+    response.set_header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
+    response.set_header('Access-Control-Allow-Credentials', 'true') # If credentials (cookies) are needed
   end
 
   def should_redirect_to_subforem?(article)
@@ -180,6 +185,14 @@ class ApplicationController < ActionController::Base
       RequestStore.store[:subforem_id].present? &&
       (RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id])
     subforem_not_same || subforem_not_default_and_no_subforem_id
+  end
+
+  def redirect_page_if_different_subforem
+    return unless @page.subforem_id.present? &&
+      RequestStore.store[:subforem_id].present? &&
+      @page.subforem_id != RequestStore.store[:subforem_id]
+  
+    redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
   end
 
   def respond_with_request_for_authentication
@@ -289,9 +302,9 @@ class ApplicationController < ActionController::Base
                # List of your secondary domains
                secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
                if secondary_domains.include?(request.host)
-                request.session_options[:domain] = request.host
+                request.session_options[:domain] = root_domain(request.host)
               else
-                 Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
+                 Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
                end
              else
                # In non-production environments, don't set the domain
@@ -314,6 +327,38 @@ class ApplicationController < ActionController::Base
       current_user.remember_me!
       remember_me(current_user)
     end
+  end
+
+  def after_sign_out_path_for(_resource_or_scope)
+    "/enter"
+  end
+
+  def current_user_by_token
+    auth_header = request.headers["Authorization"]
+    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+    
+    token = auth_header.split(" ").last
+    payload = decode_auth_token(token)
+    return unless payload && payload["user_id"]
+
+    
+    user = User.find_by(id: payload["user_id"])
+    if user
+      @current_user = user
+      @token_authenticated = true
+    end
+  end
+
+  def token_authenticated?
+    @token_authenticated
+  end
+
+  def decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue
+    nil
   end
 
   def client_geolocation
@@ -358,6 +403,16 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def redirect_www_to_root
+    # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
+    return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
+
+    if request.host.start_with?("www.")
+      new_host = request.host.sub(/^www\./i, "")
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
@@ -368,15 +423,23 @@ class ApplicationController < ActionController::Base
       # List of your secondary domains
       secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
       if secondary_domains.include?(request.host)
-        request.session_options[:domain] = request.host
+        request.session_options[:domain] = root_domain(request.host)
       else
         # For main domain, set to ApplicationConfig["APP_DOMAIN"]
-        request.session_options[:domain] = Settings::General.app_domain.present? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] = Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
       end
     else
       # In non-production environments, don't set the domain
       request.session_options[:domain] = nil
     end
+  end
+
+  def root_domain(host)
+    # The `default_rule: nil` option ensures it raises an error if the domain is invalid
+    parsed = PublicSuffix.parse(host, default_rule: nil)
+    parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+  rescue PublicSuffix::DomainInvalid
+    host
   end
 
   def internal_nav_param

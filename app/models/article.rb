@@ -351,8 +351,11 @@ class Article < ApplicationRecord
 
   scope :from_subforem, lambda { |subforem_id = nil|
     subforem_id ||= RequestStore.store[:subforem_id]
-    if [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id])
+    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+      # No additional conditions; just return the current scope
+      where(nil)
+    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
     else
       # where(subforem_id: subforem_id)
       where("articles.subforem_id = ?", subforem_id)
@@ -389,7 +392,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -540,6 +543,10 @@ class Article < ApplicationRecord
     return "" if comments_count.zero?
 
     ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+  end
+
+  def url
+    URL.article(self)
   end
 
   def username
@@ -1110,10 +1117,7 @@ class Article < ApplicationRecord
   end
 
   def bust_cache(destroying: false)
-    cache_bust = EdgeCache::Bust.new
-    cache_bust.call(path)
-    cache_bust.call("#{path}?i=i")
-    cache_bust.call("#{path}?preview=#{password}")
+    purge
     async_bust
     touch_actor_latest_article_updated_at(destroying: destroying)
   end

@@ -62,6 +62,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       # Devise's Omniauthable does not automatically remember users
       # see <https://github.com/heartcombo/devise/wiki/Omniauthable,-sign-out-action-and-rememberable>
+      @user.update_tracked_fields!(request)
       remember_me(@user)
 
       sign_in_and_redirect(@user, event: :authentication)

@@ -57,6 +57,46 @@ RSpec.describe "Registrations" do
         expect(response).to redirect_to("/?signin=true")
       end
     end
+
+    context "when subforem redirect conditions are met" do
+      let!(:default_subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
+      let!(:subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
+      let!(:root_subforem) { create(:subforem, domain: "#{rand(10_000)}.com", root: true) }
+
+      before do
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: subforem.id,
+          default_subforem_id: default_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
+      end
+
+      it "redirects to the subforem enter path with the provided state" do
+        get sign_up_path, params: { state: "new-user" }, headers: { "HTTP_HOST" => "#{subforem.domain}" }
+        expected_url = URL.url("/enter?state=new-user", root_subforem)
+        expect(response).to redirect_to(expected_url)
+        expect(response.status).to eq 301
+      end
+    end
+
+    context "when subforem_id is set but subforem record is not found" do
+      let!(:subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
+      let!(:default_subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
+      let!(:root_subforem) { create(:subforem, domain: "#{rand(10_000)}.com", root: true) }
+      before do
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: subforem.id,
+          default_subforem_id: subforem.id,
+          root_subforem_id: root_subforem.id
+        )
+      end
+      it "falls through and renders the normal sign up page" do
+        get sign_up_path, params: { state: "new-user" }, headers: { "HTTP_HOST" => "#{subforem.domain}" }
+        # The sign up page should render the email sign up option
+        expect(response.status).to eq 200
+        expect(response.body).to include("Already have an account?")
+      end
+    end
   end
 
   describe "Create Account" do
@@ -522,8 +562,8 @@ RSpec.describe "Registrations" do
             { user: { name: "test #{rand(10)}",
                       username: "haha_#{rand(10)}",
                       email: "yoooo#{rand(100)}@yo.co",
-                      password: "PaSSw0rd_yo000",
                       forem_owner_secret: "test",
+                      password: "PaSSw0rd_yo000",
                       password_confirmation: "PaSSw0rd_yo000" } }
         end
       end

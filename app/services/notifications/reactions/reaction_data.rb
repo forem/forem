@@ -8,7 +8,7 @@ module Notifications
       include ActiveModel::Model
       include ActiveModel::Validations
 
-      attr_accessor :reactable_id, :reactable_type, :reactable_user_id
+      attr_accessor :reactable_id, :reactable_type, :reactable_user_id, :reactable_subforem_id
 
       validates :reactable_id, numericality: { only_integer: true }
       validates :reactable_type, inclusion: { in: %w[Article Comment] }
@@ -30,6 +30,7 @@ module Notifications
             reactable_id: object.reactable_id,
             reactable_type: object.reactable_type,
             reactable_user_id: object.reactable.user_id,
+            reactable_subforem_id: object.reactable.subforem_id
           )
         else
           new(object.symbolize_keys)
@@ -45,7 +46,8 @@ module Notifications
         {
           "reactable_id" => reactable_id,
           "reactable_type" => reactable_type,
-          "reactable_user_id" => reactable_user_id
+          "reactable_user_id" => reactable_user_id,
+          "reactable_subforem_id" => reactable_subforem_id
         }
       end
     end

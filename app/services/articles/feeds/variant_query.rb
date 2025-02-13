@@ -139,6 +139,7 @@ module Articles
           .from_subforem
           .limited_column_select
           .includes(:distinct_reaction_categories)
+          .includes(:subforem)
           .order(config.order_by.to_sql)
 
         scope = case comments_variant

@@ -234,6 +234,14 @@
         color: var(--card-color);
       }
     }
+    .crayons-story__innertitle-boost {
+      font-size: calc(var(--fs-xs) + 1px);
+      color: var(--color-secondary);
+      font-weight: var(--fw-medium);
+      a {
+        display: inline-block;
+      }
+    }
   }
 
   &__flare-tag {

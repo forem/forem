@@ -37,15 +37,20 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    subforem = article.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
+    subforem = article.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id]) if article.respond_to?(:subforem_id)
     url(article.path, subforem)
+  end
+
+  def self.page(page)
+    subforem = page.subforem || Subforem.find_by(id: RequestStore.store[:subforem_id])
+    url(page.path, subforem)
   end
 
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
-    subforem =  if comment.commentable.class.name == "Article"
+    subforem =  if comment.commentable.class.name == "Article" && comment.commentable.respond_to?(:subforem_id)
                   comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
                 else
                   Subforem.find_by(id: RequestStore.store[:subforem_id])

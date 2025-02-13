@@ -5,6 +5,9 @@ RSpec.describe "UserProfiles" do
   let(:organization) { create(:organization) }
   let(:current_user) { create(:user) }
 
+  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
+  let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+
   describe "GET /:username" do
     it "renders to appropriate page" do
       get "/#{user.username}"
@@ -231,6 +234,71 @@ RSpec.describe "UserProfiles" do
         create(:organization_membership, user_id: user.id, organization_id: organization.id)
         get organization.path
         expect(response).to be_successful
+      end
+
+      context "redirect_if_inactive_in_subforem_for_organization" do
+        context "when the organization is 'inactive' in the current subforem" do
+          before do
+            organization.articles.delete_all
+          end
+
+          after do
+            RequestStore.store[:default_subforem_id] = nil
+            RequestStore.store[:subforem_id] = nil
+          end
+
+          it "redirects to the organization's path in the default subforem" do
+            get organization.path, headers: { "Host" => other_subforem.domain }
+            expect(response).to have_http_status(:moved_permanently)
+            expect(response).to redirect_to(
+              URL.url(organization.slug, default_subforem)
+            )
+          end
+        end
+
+        context "when the organization has stories in the current subforem" do
+          before do
+            # Give the organization a story so it is 'active' in other_subforem
+            create(:article, organization: organization, subforem: other_subforem)
+
+            RequestStore.store[:default_subforem_id] = default_subforem.id
+            RequestStore.store[:subforem_id] = other_subforem.id
+          end
+
+          after do
+            RequestStore.store[:default_subforem_id] = nil
+            RequestStore.store[:subforem_id] = nil
+          end
+
+          it "does not redirect away from the current subforem" do
+            get organization.path, headers: { "Host" => other_subforem.domain }
+            expect(response).to have_http_status(:ok)
+            expect(response).not_to be_redirect
+          end
+        end
+
+        context "when the organization only has stories in the default subforem" do
+          before do
+            # Org is empty in 'other_subforem', but has a story in default_subforem
+            create(:article, organization: organization, subforem: default_subforem)
+
+            RequestStore.store[:default_subforem_id] = default_subforem.id
+            RequestStore.store[:subforem_id] = other_subforem.id
+          end
+
+          after do
+            RequestStore.store[:default_subforem_id] = nil
+            RequestStore.store[:subforem_id] = nil
+          end
+
+          it "redirects to the default subforem since it's 'inactive' in current subforem" do
+            get organization.path, headers: { "Host" => other_subforem.domain }
+            expect(response).to have_http_status(:moved_permanently)
+            expect(response).to redirect_to(
+              URL.url(organization.slug, default_subforem)
+            )
+          end
+        end
       end
     end
 

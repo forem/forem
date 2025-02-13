@@ -73,7 +73,7 @@
         <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
       </button>
       <div class="additional-subtext-section py-4 pt-2">
-        <% recent_featured_count = Article.featured.published.where(published_at: 1.day.ago..).size %>
+        <% recent_featured_count = Article.from_subforem.featured.published.where(published_at: 1.day.ago..).size %>
         <%= t("views.moderations.actions.featured_past_day", count: recent_featured_count) %>
       </div>
     <% end %>

@@ -13,8 +13,8 @@ updates:
       - "ruby"
     milestone: 1 # ID of the milestone to assign to the pull requests if needed
 
-  # Yarn dependency updates (for JavaScript packages)
-  - package-ecosystem: "yarn" # for Yarn packages
+  # JavaScript dependency updates (for both npm and Yarn)
+  - package-ecosystem: "npm" # for JavaScript packages
     directory: "/" # path to the directory containing the package.json and yarn.lock files
     schedule:
       interval: "weekly"
@@ -31,7 +31,7 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-      day: "first" # first day of the month
+      day: "monday" # change 'first' to a valid day of the week
       time: "04:00"
     labels:
       - "dependencies"
