@@ -26,9 +26,9 @@ module Users
 
     def fetch_and_pluck_user_ids
       filtered_articles = if tags_to_consider.any?
-                            Article.published.cached_tagged_with_any(tags_to_consider)
+                            Article.published.from_subforem.cached_tagged_with_any(tags_to_consider)
                           else
-                            Article.published.featured
+                            Article.published.from_subforem.featured
                           end
       user_ids = filtered_articles.order("hotness_score DESC").limit(RETURNING * 2).pluck(:user_id) - [user.id]
       if user_ids.size > (RETURNING / 2)

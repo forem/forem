@@ -58,7 +58,7 @@ export const Article = ({
       data-content-user-id={article.user_id}
     >
       <a
-        href={article.path}
+        href={article.url}
         aria-labelledby={`article-link-${article.id}`}
         className="crayons-story__hidden-navigation-link"
       >
@@ -71,9 +71,9 @@ export const Article = ({
           if (clickableClassList.includes(...classList)) {
             if (event.which > 1 || event.metaKey || event.ctrlKey) {
               // Indicates should open in _blank
-              window.open(article.path, '_blank');
+              window.open(article.url, '_blank');
             } else {
-              const fullUrl = window.location.origin + article.path; // InstantClick deals with full urls
+              const fullUrl = article.url; // InstantClick deals with full urls
               InstantClick.preload(fullUrl);
               InstantClick.display(fullUrl);
             }
@@ -85,7 +85,7 @@ export const Article = ({
         {showCover && <ArticleCoverImage article={article} />}
         <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
           <div className="crayons-story__top">
-            <Meta article={article} organization={article.organization} />
+            {article.user && (<Meta article={article} organization={article.organization} />)}
             {pinned && (
               <div
                 className="pinned color-accent-brand fw-bold"
@@ -120,12 +120,12 @@ export const Article = ({
             )}
 
             <div className="crayons-story__bottom">
-              {article.class_name !== 'User' && (
+              {(article.class_name !== 'User' && article.user) && (
                 <div className="crayons-story__details">
                   <ReactionsCount article={article} />
                   <CommentsCount
                     count={article.comments_count}
-                    articlePath={article.path}
+                    articlePath={article.url}
                     articleTitle={article.title}
                   />
                 </div>
@@ -148,7 +148,7 @@ export const Article = ({
         {article.top_comments && article.top_comments.length > 0 && (
           <CommentsList
             comments={article.top_comments}
-            articlePath={article.path}
+            articlePath={article.url}
             totalCount={article.comments_count}
           />
         )}

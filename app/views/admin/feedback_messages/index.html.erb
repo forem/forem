@@ -28,8 +28,6 @@
       <button id="toggleAll" class="crayons-btn crayons-btn--secondary m-1">Expand All</button>
     </div>
 
-    <%= paginate @feedback_messages %>
-
     <div class="grid gap-4">
       <% @feedback_messages.each do |feedback_message| %>
         <%= form_for [:admin, feedback_message] do |f| %>
@@ -39,8 +37,6 @@
     </div>
   </div>
 </div>
-
-<%= paginate @feedback_messages %>
 
 <script>
   document.getElementById('toggleAll').addEventListener('click', function() {

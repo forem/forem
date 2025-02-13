@@ -81,4 +81,56 @@ RSpec.describe FeedbackMessage do
       expect(described_class.all_user_reports(user).first.id).to eq(report.id)
     end
   end
+
+  describe "#determine_reported_from_url" do
+    let(:billboard) { create(:billboard) }
+    let(:article) { create(:article) }
+    let(:comment) { create(:comment) }
+    let(:user) { create(:user) }
+
+    context "when the URL matches a Billboard" do
+      let(:feedback_message) { create(:feedback_message, :abuse_report, reported_url: "/admin/customization/billboards/#{billboard.id}") }
+
+      it "sets the reported object to the corresponding Billboard" do
+        feedback_message.determine_reported_from_url
+        expect(feedback_message.reported).to eq(billboard)
+      end
+    end
+
+    context "when the URL matches an Article" do
+      let(:feedback_message) { create(:feedback_message, :abuse_report, reported_url: article.path) }
+
+      it "sets the reported object to the corresponding Article" do
+        feedback_message.determine_reported_from_url
+        expect(feedback_message.reported).to eq(article)
+      end
+    end
+
+    context "when the URL matches a Comment" do
+      let(:feedback_message) { create(:feedback_message, :abuse_report, reported_url: comment.path) }
+
+      it "sets the reported object to the corresponding Comment" do
+        feedback_message.determine_reported_from_url
+        expect(feedback_message.reported).to eq(comment)
+      end
+    end
+
+    context "when the URL matches a User" do
+      let(:feedback_message) { create(:feedback_message, :abuse_report, reported_url: "/#{user.username}") }
+
+      it "sets the reported object to the corresponding User" do
+        feedback_message.determine_reported_from_url
+        expect(feedback_message.reported).to eq(user)
+      end
+    end
+
+    context "when the URL does not match any entity" do
+      let(:feedback_message) { create(:feedback_message, :abuse_report, reported_url: "/nonexistent/path") }
+
+      it "does not set the reported object" do
+        feedback_message.determine_reported_from_url
+        expect(feedback_message.reported).to be_nil
+      end
+    end
+  end
 end

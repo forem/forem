@@ -7,7 +7,12 @@ class AuthPassController < ApplicationController
   before_action :use_iframe_session_store, only: [:iframe]
 
   def iframe
-    if user_signed_in?
+    unless Subforem.cached_all_domains.include?(request.host)
+      render plain: "Unauthorized", status: :unauthorized
+      return
+    end
+
+    if user_signed_in? && user_not_signed_out?(current_user)
       # User is authenticated on the main domain
       session[:user_id] = current_user.id
       @token = generate_auth_token(current_user)
@@ -18,7 +23,7 @@ class AuthPassController < ApplicationController
         @token = generate_auth_token(user)
       else
         session.delete(:user_id)
-        render plain: "Unauthorized", status: :unauthorized
+        render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
         return
       end
     else
@@ -29,11 +34,11 @@ class AuthPassController < ApplicationController
           session[:user_id] = user.id
           @token = generate_auth_token(user)
         else
-          render plain: "Unauthorized", status: :unauthorized
+          render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
           return
         end
       else
-        render plain: "Unauthorized", status: :unauthorized
+        render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
         return
       end
     end  
@@ -50,7 +55,7 @@ class AuthPassController < ApplicationController
 
     if payload && payload["user_id"]
       user = User.find_by(id: payload["user_id"])
-      if user
+      if user && user_not_signed_out?(user)
         # Sign the user in
         session[:user_id] = user.id
     
@@ -59,7 +64,7 @@ class AuthPassController < ApplicationController
         # Get Devise’s default cookie values
         base_values = Devise::Controllers::Rememberable.cookie_values
         # Dynamically adjust the domain to match the request domain
-        custom_domain = request.domain
+        custom_domain = root_domain(request.host)
         adjusted_values = base_values.merge!(domain: custom_domain)
         # Set the actual remember cookie values as Devise does
         cookie_values = adjusted_values.merge!(
@@ -68,7 +73,15 @@ class AuthPassController < ApplicationController
         )
         # Set the cookie with the dynamically adjusted domain
         cookies.signed["remember_user_token"] = cookie_values
-  
+
+        cookies[:forem_user_signed_in] = {
+          value: "true",
+          domain: ".#{custom_domain}",
+          httponly: true,
+          secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
+          expires: 2.year.from_now
+        }
+
         render json: { success: true, user: { id: user.id, email: user.email } }
       else
         render json: { success: false, error: "User not found" }, status: :unauthorized
@@ -98,16 +111,8 @@ class AuthPassController < ApplicationController
     JWT.encode(payload, Rails.application.secret_key_base)
   end
 
-  def decode_auth_token(token)
-    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
-  rescue JWT::ExpiredSignature
-    nil
-  rescue
-    nil
-  end
-
   def allow_cross_origin_requests
-    allowed_domains = (ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",") + [Settings::General.app_domain]).compact
+    allowed_domains = (Subforem.cached_domains + [Settings::General.app_domain]).compact
     requesting_origin = request.headers["Origin"]
 
     if allowed_domains.present? && allowed_domains.include?(requesting_origin&.gsub(/https?:\/\//, ""))
@@ -116,5 +121,13 @@ class AuthPassController < ApplicationController
       headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
       headers["Access-Control-Allow-Credentials"] = "true"
     end
+  end
+
+  def user_not_signed_out?(user)
+    # This is just checking that they have not explicitely signed out lately.
+    return true if user.current_sign_in_at.present?
+    return true if user.last_sign_in_at.blank? && user.current_sign_in_at.blank? # User never signed out.
+
+    false
   end
 end

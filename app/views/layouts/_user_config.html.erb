@@ -1,3 +1,14 @@
+<div id="dark-mode-style" style="display:none;">
+  <%= Rails.application.assets["themes/dark.css"].to_s.squish.html_safe %>
+</div>
+<div id="light-mode-style" style="display:none;">
+  :root {
+    --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
+    --accent-brand-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
+    --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
+  }
+</div>
+<div id="user-prestyle"></div>
 <script>
   try {
     const bodyClass = localStorage.getItem('config_body_class');
@@ -7,7 +18,7 @@
       document.body.className = bodyClass;
 
       if (bodyClass.includes('dark-theme')) {
-        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/dark.css"].to_s.squish.html_safe %></style>';
+        document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>';
       }
 
       if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
@@ -22,9 +33,11 @@
     if (navigator.userAgent === 'DEV-Native-ios') {
       document.body.classList.add("dev-ios-native-body");
     }
-    if (window.frameElement) { // Hide top bar and footer when loaded within iframe
+
+    if (navigator.userAgent.includes('ForemWebView/1') || window.frameElement) {
       document.body.classList.add("hidden-shell");
     }
+
     if (userString && userString.length > 0) {
       const user = JSON.parse(userString)
       const numTags = JSON.parse(user.followed_tags).length
@@ -33,6 +46,7 @@
       } else {
         document.body.classList.add("user-tags-followed-max");
       }
+      document.getElementById('user-prestyle').innerHTML += '<style>.hide-if-belongs-to-current-user-'+user.id+' { display: none !important; }</style>';
     }
   } catch (e) {
     setTimeout(function () {

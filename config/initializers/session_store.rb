@@ -10,6 +10,14 @@ servers = ApplicationConfig["REDIS_SESSIONS_URL"] || ApplicationConfig["REDIS_UR
 
 domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
 
+begin
+  parsed = PublicSuffix.parse(domain, default_rule: nil)
+  parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+  domain = parsed.domain
+rescue PublicSuffix::DomainInvalid
+  domain = nil
+end
+
 # Main session store
 Rails.application.config.session_store :redis_store,
                                        key: ApplicationConfig["SESSION_KEY"],

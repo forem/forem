@@ -29,14 +29,7 @@ RSpec.describe "AuthPassController", type: :request do
 
   # Simulate cross-origin requests by setting the Origin header
   let(:allowed_origin) { "the-other-domain.com" }
-
-  before do
-    ENV["SECONDARY_APP_DOMAINS"] = allowed_origin
-  end
-
-  after do
-    ENV["SECONDARY_APP_DOMAINS"] = nil
-  end
+  let!(:subforem) { create(:subforem, domain: allowed_origin) }
 
   describe "POST /auth_pass/token_login" do
     before do

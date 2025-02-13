@@ -61,6 +61,19 @@ RSpec.describe DeviseMailer, type: :mailer do
       it "renders proper URL" do
         expect(email.body.to_s).to include("confirmation_token=faketoken")
       end
+
+      it "includes name in welcome email" do
+        email = described_class.confirmation_instructions(user, "faketoken")
+        expect(email.body.to_s).to include("Welcome #{user.name}")
+      end
+        
+
+      it "does not include name in confirmation email if includes http" do
+        user.update!(name: "Testing https://example.com")
+        email = described_class.confirmation_instructions(user, "faketoken")
+        expect(email.body.to_s).not_to include("https://example.com")
+        expect(email.body.to_s).to include("Welcome!")
+      end
     end
   end
 

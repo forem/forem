@@ -27,6 +27,13 @@ module Settings
       },
       color_contrast: true
     }
+    setting :accent_background_color_hex, type: :string, default: nil, validates: {
+      format: {
+        with: HEX_COLOR_REGEX,
+        message: proc { I18n.t("models.settings.user_experience.message") }
+      },
+      color_contrast: true
+    }
 
     # cover images
     setting :cover_image_height, type: :integer, default: 420

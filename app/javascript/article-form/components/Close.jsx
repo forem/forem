@@ -4,7 +4,7 @@ import CloseIcon from '@images/x.svg';
 
 export const Close = ({ displayModal = () => {} }) => {
   return (
-    <div className="crayons-article-form__close">
+    <div className="crayons-article-form__close hidden-shell-innerhidden">
       <Button
         icon={CloseIcon}
         onClick={() => displayModal()}

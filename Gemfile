@@ -58,10 +58,11 @@ gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsbundling-rails", "~> 1.2" # A Rails plugin to bundle JavaScript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
-gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
+gem "kaminari", "~> 1.2" # A Scope and Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
+gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 5.2" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
@@ -76,9 +77,10 @@ gem "parallel", "~> 1.22" # Run any kind of code in parallel processes
 gem "pg", "~> 1.4" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 0.9.0" # Allows PGHero to analyze queries
 gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
-gem "pghero", "~> 3.1" # Dashboard for Postgres
+gem "pghero", "~> 3.6" # Dashboard for Postgres
 gem "puma", "~> 5.6.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
+gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix List
 gem "rack-attack", "~> 6.7.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
@@ -106,7 +108,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.55" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 1.2" # Catch unsafe migrations
+gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
 gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
@@ -171,7 +173,7 @@ group :test do
   gem "stripe-ruby-mock", "3.1.0.rc3", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 1.0" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
-  gem "vcr", "~> 6.1" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
+  gem "vcr", "~> 6.3" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webmock", "~> 3.17", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "with_model", "~> 2.1.7" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone

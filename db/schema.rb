@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -153,6 +153,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.boolean "show_comments", default: true
     t.text "slug"
     t.string "social_image"
+    t.bigint "subforem_id"
     t.string "title"
     t.integer "type_of", default: 0
     t.datetime "updated_at", precision: nil, null: false
@@ -182,6 +183,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
+    t.index ["subforem_id"], name: "index_articles_on_subforem_id"
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
@@ -494,6 +496,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.integer "exclude_article_ids", default: [], array: true
     t.string "exclude_role_names", default: [], array: true
     t.integer "impressions_count", default: 0
+    t.integer "include_subforem_ids", default: [], array: true
     t.string "name"
     t.bigint "organization_id"
     t.bigint "page_id"
@@ -515,6 +518,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["exclude_role_names"], name: "index_display_ads_on_exclude_role_names", using: :gin
+    t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
@@ -540,6 +544,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.integer "drip_day", default: 0
     t.integer "status", default: 0
     t.string "subject", null: false
+    t.string "targeted_tags", default: [], array: true
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
@@ -567,6 +572,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.string "feedback_type"
     t.text "message"
     t.bigint "offender_id"
+    t.bigint "reported_id"
+    t.string "reported_type"
     t.string "reported_url"
     t.bigint "reporter_id"
     t.string "status", default: "Open"
@@ -712,8 +719,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.string "name", null: false
     t.integer "position"
     t.integer "section", default: 0, null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.index ["subforem_id"], name: "index_navigation_links_on_subforem_id"
     t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
   end
 
@@ -747,6 +756,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.datetime "notified_at", precision: nil
     t.bigint "organization_id"
     t.boolean "read", default: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
@@ -755,6 +765,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["subforem_id"], name: "index_notifications_on_subforem_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
@@ -834,10 +845,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
+    t.bigint "subforem_id"
     t.string "template"
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["slug"], name: "index_pages_on_slug", unique: true
+    t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
+    t.index ["subforem_id"], name: "index_pages_on_subforem_id"
   end
 
   create_table "pghero_query_stats", force: :cascade do |t|
@@ -1093,58 +1106,81 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_02_170357) do
 
   create_table "settings_authentications", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_authentications_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_authentications_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_authentications_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_campaigns", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_campaigns_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_campaigns_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_campaigns_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_communities", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_communities_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_communities_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_communities_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_rate_limits", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_rate_limits_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_rate_limits_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_rate_limits_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_smtp", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_smtp_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_smtp_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_smtp_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_user_experiences", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_user_experiences_on_var", unique: true
+    t.index ["subforem_id"], name: "index_settings_user_experiences_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_user_experiences_on_var_and_subforem_id", unique: true
   end
 
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_site_configs_on_var", unique: true
+    t.index ["subforem_id"], name: "index_site_configs_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_site_configs_on_var_and_subforem_id", unique: true
+  end
+
+  create_table "subforems", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "discoverable", default: false, null: false
+    t.string "domain", null: false
+    t.boolean "root", default: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_subforems_on_domain", unique: true
   end
 
   create_table "tag_adjustments", force: :cascade do |t|

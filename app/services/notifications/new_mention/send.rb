@@ -22,6 +22,7 @@ module Notifications
           user_id: mention.user_id,
           notifiable_id: mention.id,
           notifiable_type: "Mention",
+          subforem_id: mention.mentionable.subforem_id,
           action: nil,
           json_data: json_data,
         )
