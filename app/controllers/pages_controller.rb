@@ -4,9 +4,11 @@ class PagesController < ApplicationController
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
-    @page = Page.find_by!(slug: params[:slug])
+    @page = proper_page_by_slug
+    redirect_page_if_different_subforem
     not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
+
 
     case @page.template
     when "txt"
@@ -19,7 +21,7 @@ class PagesController < ApplicationController
   end
 
   def about
-    @page = Page.find_by(slug: "about")
+    @page = Page.from_subforem.find_by(slug: "about")
     render :show if @page
     set_surrogate_key_header "about_page"
   end
@@ -105,10 +107,14 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    redirect_daily_thread_request(Article.admin_published_with("welcome").first)
+    article = Article.from_subforem.admin_published_with("welcome").first
+    article = Article.admin_published_with("welcome").first unless article
+    redirect_daily_thread_request(article)
   end
 
   def challenge
+    article = Article.from_subforem.admin_published_with("welcome").first
+    article = Article.admin_published_with("welcome").first unless article
     redirect_daily_thread_request(Article.admin_published_with("challenge").first)
   end
 
@@ -124,6 +130,10 @@ class PagesController < ApplicationController
   end
 
   private
+
+  def proper_page_by_slug
+    Page.from_subforem.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
+  end
 
   def redirect_daily_thread_request(daily_thread)
     if daily_thread

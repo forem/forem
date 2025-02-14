@@ -1,7 +1,12 @@
 <h1 class="crayons-title mb-4">
-  <%= Email.replace_merge_tags(@email.subject, current_user) %> [<%= @email.type_of %>] [<%= @email.status %>]
+  <%= Email.replace_merge_tags(@email.subject, current_user) %> [<%= @email.status %>]
   <%= link_to "Edit", edit_admin_email_path(@email), class: "crayons-btn ml-3" %>
 </h1>
+<div class="crayons-card p-6 mb-4">
+  <p>Type: <%= @email.type_of %></p>
+  <p>Audience Segment: <%= @email.audience_segment&.name || "Entire list" %></p>
+  <p>Targeted tags: <%= @email.targeted_tags.join(", ") %></p>
+</div>
 <div class="crayons-card p-6 mb-4">
   <h2 class="crayons-title mb-4">Rendered Email</h2>
   <div>
@@ -19,7 +24,7 @@
   </pre>
 </div>
 
-<div class="crayons-card p-6 mb-4">
+<div class="crayons-card p-6 mb-4 mt-4">
   <h2 class="crayons-title mb-4">Send test email</h2>
   <%= form_with(model: [:admin, @email], local: true) do |f| %>
     <div class="crayons-field">

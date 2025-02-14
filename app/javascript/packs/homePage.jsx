@@ -90,6 +90,7 @@ function renderSidebar() {
 }
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
+const homeFeedEl = document.getElementById('homepage-feed');
 
 if (document.getElementById('sidebar-nav-followed-tags')) {
   const waitingForDataLoad = setInterval(() => {
@@ -98,7 +99,7 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
       return;
     }
 
-    if (userStatus === 'logged-in' && user !== null) {
+    if (userStatus === 'logged-in' && user !== null && homeFeedEl) {
       clearInterval(waitingForDataLoad);
       if (document.getElementById('rendered-article-feed')) {
         return;

@@ -19,7 +19,7 @@ module Articles
       # Don't record views to unpublished articles.
       return false if Article.unpublished.exists?(id: article_id)
       # Don't record author's own views.
-      return false if Article.published.exists?(id: article_id, user_id: user_id)
+      return false if Article.published.from_subforem.exists?(id: article_id, user_id: user_id)
 
       page_view = PageView.order(created_at: :desc)
         .find_or_create_by(article_id: article_id, user_id: user_id)

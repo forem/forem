@@ -26,6 +26,18 @@ class Notification < ApplicationRecord
   }
   scope :unread, -> { where(read: false) }
 
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+      # No additional conditions; just return the current scope
+      where(nil)
+    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
+      where("notifications.subforem_id IN (?) OR notifications.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+    else
+      where("notifications.subforem_id = ?", subforem_id)
+    end
+  }
+
   class << self
     def send_new_follower_notification(follow, is_read: false)
       return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)

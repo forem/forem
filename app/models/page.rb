@@ -5,15 +5,17 @@ class Page < ApplicationRecord
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
   PRIVACY_SLUG = "privacy".freeze
+  PAGE_DIRECTORY_LIMIT = 6
 
   has_many :billboards, dependent: :nullify
+  belongs_to :subforem, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
 
-  unique_across_models :slug
+  validate :validate_slug_uniqueness
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -23,6 +25,11 @@ class Page < ApplicationRecord
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify
+
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    where(subforem_id: [subforem_id, nil])
+  }
 
   # @param slug [String]
   #
@@ -63,7 +70,7 @@ class Page < ApplicationRecord
   def as_json(...)
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
-                         social_image template ])
+                         social_image template subforem_id])
   end
 
   private
@@ -98,5 +105,30 @@ class Page < ApplicationRecord
 
   def bust_cache
     Pages::BustCacheWorker.perform_async(slug)
+  end
+
+  def validate_slug_uniqueness
+    # Custom cross-model validation to allow for the same slug in different subforems for pages
+    return if Page.where(slug: slug).exists? && Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).none?
+
+    if Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).exists?
+      errors.add(:slug, "has already been taken")
+      return
+    end
+
+    if User.where(username: slug).exists? || Organization.where(slug: slug).exists? || Podcast.where(slug: slug).exists?
+      errors.add(:slug, "is already taken by another entity")
+      return
+    end
+
+    if slug.include?("sitemap-")
+      errors.add(:slug, "is taken by sitemap directory")
+      return
+    end
+
+    if slug.split("/").count > PAGE_DIRECTORY_LIMIT
+      errors.add(:slug, "has too many subdirectories")
+      return
+    end
   end
 end

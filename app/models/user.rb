@@ -120,7 +120,7 @@ class User < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
-         :recoverable, :lockable
+         :recoverable, :lockable, :trackable
 
   validates :articles_count, presence: true
   validates :badge_achievements_count, presence: true
@@ -217,6 +217,13 @@ class User < ApplicationRecord
     order(updated_at: :desc).limit(active_limit)
   }
 
+  scope :following_tags, lambda { |tags|
+    tags = tags.gsub(" ", "").split(",") if tags.is_a?(String)
+    joins("INNER JOIN follows ON follows.follower_id = users.id AND follows.follower_type = 'User'")
+      .joins("INNER JOIN tags ON tags.id = follows.followable_id AND follows.followable_type = 'ActsAsTaggableOn::Tag'")
+      .where(tags: { name: tags })
+      .distinct
+  }
   scope :above_average, lambda {
     where(
       articles_count: average_articles_count..,
@@ -371,7 +378,7 @@ class User < ApplicationRecord
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
       readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
-      published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
+      published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
       readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
     end
   end
@@ -623,7 +630,7 @@ class User < ApplicationRecord
   end
 
   def has_no_published_content?
-    articles.published.empty? && comments_count.zero?
+    articles.published.from_subforem.empty? && comments_count.zero?
   end
 
   def send_magic_link!
@@ -651,7 +658,7 @@ class User < ApplicationRecord
 
   def generate_social_images
     change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.size.positive?
+    return unless change && articles.published.from_subforem.size.positive?
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
   end

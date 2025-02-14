@@ -45,7 +45,9 @@
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
       <% if user_signed_in? %>
-        <%= render "articles/quickie_form", expanded: false %>
+        <%= application_policy_content_tag("div", record: Article, query: :create?) do %>
+          <%= render "articles/quickie_form", expanded: false %>
+        <% end %>
       <% end %>
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 

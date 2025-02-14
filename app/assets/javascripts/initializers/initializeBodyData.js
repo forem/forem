@@ -41,23 +41,49 @@ function fetchBaseData() {
           document.body.dataset.broadcast = broadcast;
         }
 
-        if (checkUserLoggedIn()) {
+        if (checkUserLoggedIn() && user) {
           document.body.dataset.user = user;
           document.body.dataset.creator = creator;
           document.body.dataset.clientGeolocation =
             JSON.stringify(client_geolocation);
           document.body.dataset.default_email_optin_allowed =
             default_email_optin_allowed;
+          const userJson = JSON.parse(user);
           browserStoreCache('set', user);
+          document.body.className = userJson.config_body_class;
+
+          if (userJson.config_body_class && userJson.config_body_class.includes('dark-theme') && document.getElementById('dark-mode-style')) {
+            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>'
+          } else {
+            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
+          }
+
+          if (window && window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              action: 'user',
+              data: userJson,
+            }));  
+          }
+
+          const isForemWebview = navigator.userAgent.includes('ForemWebView/1');
+          if (isForemWebview || window.frameElement) { // Hide top bar and footer when loaded within iframe
+            document.body.classList.add("hidden-shell");
+          }
 
           setTimeout(() => {
             if (typeof ga === 'function') {
-              ga('set', 'userId', JSON.parse(user).id);
+              ga('set', 'userId', userJson.id);
             }
             if (typeof gtag === 'function') {
-              gtag('set', 'user_Id', JSON.parse(user).id);
+              gtag('set', 'user_Id', userJson.id);
             }
           }, 400);
+        } else if (checkUserLoggedIn()){
+          // Reload page if user is present but document user check is not
+          delete document.body.dataset.user;
+          delete document.body.dataset.creator;
+          browserStoreCache('remove');
+          location.reload();
         } else {
           // Ensure user data is not exposed if no one is logged in
           delete document.body.dataset.user;

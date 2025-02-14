@@ -356,3 +356,22 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 end
+
+module DeviseTrackableWithFastlyIp
+  def update_tracked_fields!(request)
+    # Use the custom IP logic
+    custom_ip = (request.env["HTTP_FASTLY_CLIENT_IP"] || request.remote_ip).to_s
+
+    # Update the fields using the custom IP
+    self.last_sign_in_at = Time.current
+    self.current_sign_in_at = Time.current
+
+    self.last_sign_in_ip = custom_ip
+    self.current_sign_in_ip = custom_ip
+
+    self.sign_in_count ||= 0
+    self.sign_in_count += 1
+  end
+end
+
+Devise::Models::Trackable.prepend(DeviseTrackableWithFastlyIp)
