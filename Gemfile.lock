@@ -405,7 +405,7 @@ GEM
     httpclient (2.8.3)
     hypershield (0.2.2)
       activerecord (>= 5)
-    i18n (1.14.7)
+        i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     i18n-js (3.9.2)
       i18n (>= 0.6.6)
