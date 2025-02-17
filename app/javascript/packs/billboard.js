@@ -102,13 +102,12 @@ async function generateBillboard(element) {
       
       // Select the target element(s). Here we assume they have the class "crayons-card"
       let delay = 1; // Start with 1ms
-      const maxDelay = 5000; // Set a reasonable cap to prevent infinite growth
+      const maxDelay = 10000; // Set a reasonable cap to prevent infinite growth
       
       function cleanAttributes() {
         document.querySelectorAll('.crayons-card').forEach(element => {
           // Convert the NamedNodeMap into an array to safely iterate while removing attributes
           Array.from(element.attributes).forEach(attr => {
-            console.log(attr.name);
             if (!allowedAttributes.includes(attr.name)) {
               element.removeAttribute(attr.name);
             }
@@ -116,9 +115,8 @@ async function generateBillboard(element) {
         });
       
         // Increase the delay with exponential backoff
-        delay = Math.min(delay * 2, maxDelay);
+        delay = delay < 15 ? delay + 0.5 : Math.min(delay * 2, maxDelay);
       
-        console.log(delay);
         // Schedule the next execution
         setTimeout(cleanAttributes, delay);
       }
