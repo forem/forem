@@ -1,18 +1,18 @@
 <div class="crayons-story <% if featured == true %>crayons-story--featured<% end %>" data-feed-content-id="<%= story.id %>" data-content-user-id="<%= story.user_id %>">
-  <a href="<%= story.path %>" aria-labelledby="article-link-<%= story.id %>" class="crayons-story__hidden-navigation-link"><%= story.title %></a>
+  <a href="<%= URL.article(story) %>" aria-labelledby="article-link-<%= story.id %>" class="crayons-story__hidden-navigation-link"><%= story.title %></a>
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
   <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <div class="crayons-article__cover crayons-article__cover__image__feed" style="aspect-ratio: auto 1000 / <%= story.main_image_height %>;">
-      <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
+      <a href="<%= URL.article(story) %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
         <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
       </a>
     </div>
   <% end %>
 
   <% if story.video.present? && story.video_thumbnail_url.present? %>
-  <a href="<%= story.path %>" class="crayons-story__video" style="background-image:url(<%= story.cloudinary_video_url %>)">
+  <a href="<%= URL.article(story) %>" class="crayons-story__video" style="background-image:url(<%= story.cloudinary_video_url %>)">
     <span class="crayons-story__video__time">
       <%= story.video_duration_in_minutes %>
     </span>
@@ -86,7 +86,7 @@
             </span>
             <% end %>
           </div>
-          <a href="<%= story.path %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
+          <a href="<%= URL.article(story) %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
         </div>
       </div>
 
@@ -101,7 +101,7 @@
 
     <div class="crayons-story__indention">
       <h2 class="crayons-story__title">
-        <a href="<%= story.path %>" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
+        <a href="<%= URL.article(story) %>" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
           <%= story.title %>
         </a>
       </h2>
@@ -121,7 +121,7 @@
       <div class="crayons-story__bottom">
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
-          <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+          <a href="<%= URL.article(story) %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
             <div class="multiple_reactions_aggregate">
               <span class="multiple_reactions_icons_container" dir="rtl">
                 <% story.public_reaction_categories.reverse_each do |reaction_type| %>
@@ -138,7 +138,7 @@
           </a>
           <% end %>
           <% if story.comments_count > 0 %>
-            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <%= t("views.comments.summary.count_html",
                     count: story.comments_count,
@@ -146,7 +146,7 @@
                     end: "</span>".html_safe) %>
             </a>
           <% else %>
-            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <span class="hidden s:inline"><%= t("views.comments.add") %></span>
             </a>

@@ -10,36 +10,13 @@ module EdgeCache
       return unless article
 
       article.purge
+      article.user&.purge
+      article.organization&.purge
 
       cache_bust = EdgeCache::Bust.new
 
-      paths_for(article) do |path|
-        cache_bust.call(path)
-      end
-
       bust_home_pages(cache_bust, article)
       bust_tag_pages(cache_bust, article)
-    end
-
-    def self.paths_for(article, &block)
-      paths = [
-        article.path,
-        "#{article.path}/",
-        "/#{article.user.username}",
-        "#{article.path}/comments",
-        "#{article.path}?preview=#{article.password}",
-        "/api/articles/#{article.id}",
-      ]
-
-      paths.each(&block)
-
-      yield "/#{article.organization.slug}" if article.organization.present?
-
-      return unless article.collection_id
-
-      article.collection.articles.find_each do |collection_article|
-        yield collection_article.path
-      end
     end
 
     def self.bust_home_pages(cache_bust, article)

@@ -5,7 +5,7 @@ module Settings
 
     self.table_name = "site_configs"
     SOCIAL_MEDIA_SERVICES = %w[
-      twitter facebook github instagram twitch mastodon
+      twitter facebook github instagram twitch mastodon youtube linkedin bluesky
     ].freeze
 
     # Forem Team
@@ -107,7 +107,10 @@ module Settings
       github: nil,
       instagram: nil,
       twitch: nil,
-      mastodon: nil
+      mastodon: nil,
+      youtube: nil,
+      linkedin: nil,
+      bluesky: nil
     }
     setting :twitter_hashtag, type: :string
 

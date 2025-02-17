@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Articles" do
         type_of id title description cover_image readable_publish_date social_image
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
-        published_timestamp user organization flare_tag reading_time_minutes
+        published_timestamp user organization flare_tag reading_time_minutes language subforem_id
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -349,6 +349,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
+        language subforem_id
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
@@ -771,6 +772,19 @@ RSpec.describe "Api::V1::Articles" do
         article = Article.find(response.parsed_body["id"])
         expect(article.collection).to eq(Collection.find_by(slug: series))
         expect(article.collection.user).to eq(user)
+      end
+
+      it "creates an article belonging to a subforem" do
+        subforem = create(:subforem)
+        second_subforem = create(:subforem, domain: "other-domain.com")
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          subforem_id: second_subforem.id,
+        )
+        expect(response).to have_http_status(:created)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.subforem).to eq(second_subforem)
       end
 
       it "creates article within a series using the front matter" do
@@ -1353,6 +1367,7 @@ RSpec.describe "Api::V1::Articles" do
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
           published_timestamp user organization flare_tag reading_time_minutes body_markdown
+          language subforem_id
         ]
 
         expect(response.parsed_body.first.keys).to match_array index_keys
@@ -1371,7 +1386,7 @@ RSpec.describe "Api::V1::Articles" do
           type_of id title description cover_image readable_publish_date social_image
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
-          published_timestamp user organization flare_tag reading_time_minutes
+          published_timestamp user organization flare_tag reading_time_minutes language subforem_id
         ]
 
         expect(response.parsed_body.first.keys).to match_array keys

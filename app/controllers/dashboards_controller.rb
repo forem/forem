@@ -33,7 +33,7 @@ class DashboardsController < ApplicationController
     if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
-      @articles = target.articles
+      @articles = target.articles.from_subforem
     else
       # This redirect assumes that the dashboards#show action renders article specific information.
       # When a user doesn't have articles nor can they create them, we want to send them somewhere
@@ -41,7 +41,7 @@ class DashboardsController < ApplicationController
       redirect_to dashboard_following_tags_path unless policy(Article).has_existing_articles_or_can_create_new_ones?
 
       # if the target is a user, we need to eager load the organization
-      @articles = target.articles.includes(:organization)
+      @articles = target.articles.from_subforem.includes(:organization)
       @articles = params[:state] == "status" ? @articles.statuses : @articles.full_posts
     end
 

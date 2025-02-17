@@ -144,13 +144,13 @@ class AbExperiment
     end
 
     def post_goal(experiment, time_start, min_count, goal)
-      return unless user.articles.published.where("published_at > ?", time_start).count >= min_count
+      return unless user.articles.published.from_subforem.where("published_at > ?", time_start).count >= min_count
 
       field_test_converted(experiment, participant: user, goal: goal)
     end
 
     def post_goal_with_group(experiment, time_start, group_value, min_count, goal)
-      post_publication_counts = user.articles.published.where("published_at > ?", time_start)
+      post_publication_counts = user.articles.published.from_subforem.where("published_at > ?", time_start)
         .group(group_value).count.values
       return unless post_publication_counts.size >= min_count
 
