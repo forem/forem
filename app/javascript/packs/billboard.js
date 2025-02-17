@@ -86,8 +86,9 @@ async function generateBillboard(element) {
         });
       });
 
-      // Clean up billboards if there are extra attributes
-      const allowedAttributes = [
+
+      // *** Beginning of where we guard against disallowed attributes
+      const allowedAttributes = new Set([
         "class",
         "style",
         "data-display-unit",
@@ -97,32 +98,61 @@ async function generateBillboard(element) {
         "data-context-type",
         "data-special",
         "data-article-id",
+        "data-impression-recorded",
         "data-type-of"
-      ];
+      ]);
       
-      // Select the target element(s). Here we assume they have the class "crayons-card"
-      let delay = 1; // Start with 1ms
-      const maxDelay = 10000; // Set a reasonable cap to prevent infinite growth
-      
-      function cleanAttributes() {
-        document.querySelectorAll('.crayons-card').forEach(element => {
-          // Convert the NamedNodeMap into an array to safely iterate while removing attributes
-          Array.from(element.attributes).forEach(attr => {
-            if (!allowedAttributes.includes(attr.name)) {
-              element.removeAttribute(attr.name);
+      // Callback to process attribute mutations
+      function handleAttributeMutations(mutations) {
+        mutations.forEach(mutation => {
+          if (mutation.type === "attributes") {
+            const { attributeName, target } = mutation;
+            if (!allowedAttributes.has(attributeName)) {
+              // Remove any attribute that isn't allowed
+              target.removeAttribute(attributeName);
             }
-          });
+          }
         });
-      
-        // Increase the delay with exponential backoff
-        delay = delay < 15 ? delay + 0.5 : Math.min(delay * 2, maxDelay);
-      
-        // Schedule the next execution
-        setTimeout(cleanAttributes, delay);
       }
       
-      // Start the loop
-      cleanAttributes();
+      // Observer configuration for attribute changes only (no subtree on the element itself)
+      const observerConfig = { attributes: true };
+      
+      // Attach a MutationObserver to a specific billboard element
+      function observeThisBillboard(element) {
+        // Avoid attaching multiple observers to the same element
+        if (element.__billboardObserverAttached) return;
+        const observer = new MutationObserver(handleAttributeMutations);
+        observer.observe(element, observerConfig);
+        // Mark the element so we don't attach another observer in the future
+        element.__billboardObserverAttached = true;
+      }
+      
+      // Initially attach observers to all existing billboard elements
+      document.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
+      
+      // To handle new billboard elements that are added dynamically,
+      // observe the document body for added nodes.
+      const bodyObserver = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                // If the added node itself is a billboard, attach an observer
+                if (node.matches('.js-billboard')) {
+                  observeThisBillboard(node);
+                }
+                // Also check if any descendants are billboards
+                node.querySelectorAll && node.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
+              }
+            });
+          }
+        });
+      });
+      
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
+
+      // *** End of guarding against disallowed attributes
 
       observeBillboards();
     } catch (error) {
