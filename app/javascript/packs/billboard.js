@@ -84,7 +84,47 @@ async function generateBillboard(element) {
           button.closest('.crayons-card').querySelector('.long-bb-bottom').classList.add('hidden');
           button.closest('.crayons-card').querySelector('.billboard-readmore-button').classList.add('hidden');
         });
-      });  
+      });
+
+      // Clean up billboards if there are extra attributes
+      const allowedAttributes = [
+        "class",
+        "style",
+        "data-display-unit",
+        "data-id",
+        "data-category-click",
+        "data-category-impression",
+        "data-context-type",
+        "data-special",
+        "data-article-id",
+        "data-type-of"
+      ];
+      
+      // Select the target element(s). Here we assume they have the class "crayons-card"
+      let delay = 1; // Start with 1ms
+      const maxDelay = 5000; // Set a reasonable cap to prevent infinite growth
+      
+      function cleanAttributes() {
+        document.querySelectorAll('.crayons-card').forEach(element => {
+          // Convert the NamedNodeMap into an array to safely iterate while removing attributes
+          Array.from(element.attributes).forEach(attr => {
+            console.log(attr.name);
+            if (!allowedAttributes.includes(attr.name)) {
+              element.removeAttribute(attr.name);
+            }
+          });
+        });
+      
+        // Increase the delay with exponential backoff
+        delay = Math.min(delay * 2, maxDelay);
+      
+        console.log(delay);
+        // Schedule the next execution
+        setTimeout(cleanAttributes, delay);
+      }
+      
+      // Start the loop
+      cleanAttributes();
 
       observeBillboards();
     } catch (error) {

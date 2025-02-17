@@ -1,4 +1,4 @@
-<ul class="m-0" id="crayons-header__menu__dropdown__list">
+<ul class="m-0 fw-medium fs-lg" id="crayons-header__menu__dropdown__list">
   <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 py-3 mb-2">
     <a href="/<%= current_user.username %>" id="first-nav-link" class="c-link c-link--default c-link--block lh-tight">
       <div>
@@ -32,7 +32,11 @@
     </nav>
   </li>
 
-  <li class="py-4">
+  <li class="pt-2">
+    <a href="<%= user_settings_path("account") %>" class="c-link c-link--block" id="second-last-nav-link"><%= t("views.main.nav.account") %></a>
+  </li>
+
+  <li class="pb-4">
     <a href="<%= signout_confirm_path %>" class="c-link c-link--block" id="last-nav-link"><%= t("views.main.signout") %></a>
   </li>
 </ul>
