@@ -19,5 +19,12 @@ RSpec.describe "/admin/customization/pages" do
       get new_admin_page_path
       expect(response.body).not_to include("Feature Flag")
     end
+
+    it "prefills the page when page param is passed to new" do
+      page = create(:page)
+      sign_in create(:user, :admin)
+      get new_admin_page_path, params: { page: page.id }
+      expect(response.body).to include(" (Forking <code style='margin-left: 8px;'>#{page.slug}</code>)")
+    end
   end
 end
