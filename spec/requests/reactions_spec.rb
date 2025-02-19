@@ -5,8 +5,8 @@ RSpec.describe "Reactions" do
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }
 
-  let(:max_age) { 1.day.to_i }
-  let(:stale_if_error) { 26_400 }
+  let(:max_age) { 2.weeks.to_i }
+  let(:stale_if_error) { 1.day.to_i }
 
   describe "GET /reactions?article_id=:article_id" do
     before do
@@ -146,7 +146,7 @@ RSpec.describe "Reactions" do
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
           "Cache-Control" => "public, no-cache",
-          "Surrogate-Control" => "max-age=#{2.weeks.to_i}, stale-if-error=#{1.day.to_i}",
+          "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
     end
