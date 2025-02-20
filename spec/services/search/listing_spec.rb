@@ -14,6 +14,16 @@ RSpec.describe Search::Listing, type: :service do
       expect(titles).to include(published_listing.title)
     end
 
+    it "returns no listings since listings are deprecated", :aggregate_failures do
+      create(:listing, title: "Some Listing", published: true)
+      create(:listing, title: "Another Listing", published: false)
+      result = described_class.search_documents(term: "Listing")
+    
+      pending("Expected failure until deprecation is complete")
+      expect(result).to be_empty
+    end
+    
+
     context "when describing the result format" do
       let(:result) { described_class.search_documents(term: listing.title) }
 
