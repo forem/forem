@@ -7,7 +7,7 @@ module Api
       title description main_image published_at crossposted_at social_image
       cached_tag_list slug path canonical_url comments_count
       public_reactions_count created_at edited_at last_comment_at published
-      updated_at video_thumbnail_url reading_time
+      updated_at video_thumbnail_url reading_time subforem_id language
     ].freeze
 
     ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION = [
@@ -36,7 +36,7 @@ module Api
     end
 
     def show
-      @article = Article.published
+      @article = Article.published.from_subforem
         .includes(user: :profile)
         .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find(params[:id])
@@ -46,7 +46,7 @@ module Api
     end
 
     def show_by_slug
-      @article = Article.published
+      @article = Article.published.from_subforem
         .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
         .decorate
@@ -90,13 +90,13 @@ module Api
 
       @articles = case params[:status]
                   when "published"
-                    @user.articles.published
+                    @user.articles.published.from_subforem
                   when "unpublished"
-                    @user.articles.unpublished
+                    @user.articles.unpublished.from_subforem
                   when "all"
-                    @user.articles
+                    @user.articles.from_subforem
                   else
-                    @user.articles.published
+                    @user.articles.published.from_subforem
                   end
 
       @articles = @articles
@@ -148,7 +148,7 @@ module Api
       allowed_params = [
         :title, :body_markdown, :published, :series,
         :main_image, :canonical_url, :description, { tags: [] },
-        :published_at
+        :published_at, :subforem_id, :language
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
       allowed_params << :clickbait_score if @user.super_admin?

@@ -5,7 +5,7 @@ module Metrics
 
     def perform
       # Articles published in the past 24 hours with at least 15 "score" (positive/negative reactions)
-      articles_min_15_score_past_24h = Article.published.where("score >= ? AND published_at > ?", 15, 1.day.ago).size
+      articles_min_15_score_past_24h = Article.published.from_subforem.where("score >= ? AND published_at > ?", 15, 1.day.ago).size
       ForemStatsClient.count(
         "articles.min_15_score_past_24h",
         articles_min_15_score_past_24h,
@@ -13,7 +13,7 @@ module Metrics
       )
 
       # Articles published in the past 24 hours with at least 15 "score" (positive/negative reactions)
-      articles_min_15_comment_score_past_24h = Article.published
+      articles_min_15_comment_score_past_24h = Article.published.from_subforem
         .where("comment_score >= ? AND published_at > ?", 15, 1.day.ago)
         .size
       ForemStatsClient.count(

@@ -10,7 +10,7 @@ export const ArticleCoverImage = ({ article }) => {
       }}
     >
       <a
-        href={article.path}
+        href={article.url}
         className="crayons-article__cover__image__feed crayons-story__cover__image"
         title={article.title}
       >

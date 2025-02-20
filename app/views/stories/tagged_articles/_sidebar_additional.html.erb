@@ -3,7 +3,7 @@
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <aside class="side-bar sidebar-additional showing" id="sidebar-additional">
       <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
-      <% if active_threads.present? %>
+      <% if user_signed_in? && active_threads.present? %>
         <div class="widget">
           <header>
             <h4><%= t("views.stories.discuss") %></h4>
@@ -20,8 +20,8 @@
         <div id="sidebarWidget__pack" data-tag-info="<%= @tag.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
         </div>
       <% else %>
-        <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}", expires_in: 18.hours) do %>
-          <% boostable_posts = Article.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe])) %>
+        <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
+          <% boostable_posts = Article.from_subforem.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe])) %>
           <% if boostable_posts.present? %>
             <div class="widget">
               <header>
@@ -30,19 +30,6 @@
               <div class="widget-body">
                 <div class="widget-link-list">
                   <%= render partial: "articles/widget_list_item", collection: boostable_posts, as: :plucked_article, locals: { show_comment_count: false } %>
-                </div>
-              </div>
-            </div>
-          <% end %>
-          <% recent_preamble_optimized_posts = Article.search_optimized(@tag.name) %>
-          <% if params[:timeframe].blank? && recent_preamble_optimized_posts.present? %>
-            <div class="widget">
-              <header>
-                <h4><%= t("views.main.side.recent") %></h4>
-              </header>
-              <div class="widget-body">
-                <div class="widget-link-list">
-                  <%= render partial: "articles/widget_list_item", collection: recent_preamble_optimized_posts, as: :plucked_article, locals: { show_comment_count: false } %>
                 </div>
               </div>
             </div>

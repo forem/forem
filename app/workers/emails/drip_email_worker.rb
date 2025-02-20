@@ -20,6 +20,8 @@ module Emails
         users = User.where(registered_at: start_time..end_time)
 
         users.each do |user|
+          next unless user.notification_setting.email_newsletter # Stop sending if user not subscribed to newsletter field
+
           recent_email_sent = EmailMessage.where(user: user).where("sent_at >= ?", 12.hours.ago).exists?
           next if recent_email_sent
 

@@ -88,7 +88,7 @@ class Comment < ApplicationRecord
                   }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
-  scope :good_quality, -> { where("score > ?", LOW_QUALITY_THRESHOLD) }
+  scope :good_quality, -> { where("comments.score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save
 
@@ -202,6 +202,10 @@ class Comment < ApplicationRecord
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
+  def subforem_id
+    commentable&.subforem_id
+  end
+
   private
 
   def remove_notifications?
@@ -303,7 +307,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    EdgeCache::Bust.call(commentable.path.to_s) if commentable
+    commentable.purge if commentable
     expire_root_fragment
   end
 

@@ -2,6 +2,8 @@ module Stories
   class FeedsController < ApplicationController
     respond_to :json
 
+    before_action :current_user_by_token, only: [:show]
+
     def show
       @page = (params[:page] || 1).to_i
       # This most recent test has concluded with a winner. Preserved as a comment awaiting next test
@@ -118,7 +120,7 @@ module Stories
               AND follower_id = :user_id
           )",
           user_id: current_user.id
-        ).published
+        ).published.from_subforem
         .where("score > -10")
         .order("published_at DESC")
         .page(@page)
@@ -139,7 +141,7 @@ module Stories
               AND follower_id = :user_id
           )",
           user_id: current_user.id
-        ).published
+        ).published.from_subforem
         .where("score > -10")
         .order("hotness_score DESC")
         .page(@page)

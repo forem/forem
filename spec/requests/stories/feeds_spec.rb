@@ -150,6 +150,32 @@ RSpec.describe "Stories::Feeds" do
       end
     end
 
+    context "when sign in is passed via token" do
+      let(:user) { create(:user) }
+
+      it "returns signed in feed" do
+
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+        get stories_feed_path, headers: { "Authorization" => "Bearer #{token}" }
+
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+          "current_user_signed_in" => true
+        )
+      end
+    end
+
+
     context "when there are no params passed (base feed) and user is signed in" do
       before do
         sign_in user
@@ -348,6 +374,12 @@ RSpec.describe "Stories::Feeds" do
 
         response_article_ids = response.parsed_body.map { |a| a["id"] }
         expect(response_article_ids).to include(article.id, followed_article.id)
+      end
+
+      it "returns current_user_signed_in false" do
+        get stories_feed_path(type_of: "following")
+
+        expect(response_article["current_user_signed_in"]).to eq(false)
       end
     end
   end

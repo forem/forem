@@ -41,6 +41,7 @@ class ReactionsController < ApplicationController
     }.merge(result).to_json
 
     set_surrogate_key_header params.to_s unless session_current_user_id
+    set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i) unless session_current_user_id
   end
 
   # @todo Extract this method into a service class (or classes)

@@ -362,12 +362,17 @@ RSpec.describe "NotificationsIndex" do
 
     context "when a user has a new comment notification" do
       let(:user2)    { create(:user) }
-      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
+      let(:subforem) { create(:subforem) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id, subforem_id: subforem.id) }
+      let(:second_subforem) { create(:subforem, domain: "seconds.domain") }
+      let(:second_article) { create(:article, :with_notification_subscription, user_id: user.id, subforem_id: second_subforem.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: second_article.id, commentable_type: "Article") }
 
       before do
         sign_in user
         Notification.send_new_comment_notifications_without_delay(comment)
+        Notification.send_new_comment_notifications_without_delay(second_comment)
         get "/notifications"
       end
 
@@ -388,6 +393,15 @@ RSpec.describe "NotificationsIndex" do
         Reaction.create(user: user, reactable: comment, category: "like")
         get "/notifications"
         expect(response.body).to include "reaction-button reacted"
+      end
+
+      it "renders the second article if second subforem is current" do
+        headers = { "Host" => second_subforem.domain }
+        get "/notifications", headers: headers
+
+        expect(response.body).not_to include article.path
+        expect(response.body).to include second_article.path
+        renders_comments_html(second_comment)
       end
     end
 
