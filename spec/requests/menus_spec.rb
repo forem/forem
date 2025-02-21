@@ -4,8 +4,7 @@ RSpec.describe "MenusShow" do
   context "when signed out" do
     it "renders the signin page" do
       get "/menu"
-
-      expect(response.body).to include("By signing in")
+      expect(response).to redirect_to("/enter")
     end
   end
 
