@@ -1,0 +1,230 @@
+---
+ar:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">تواصل معنا</a> إذا كان لديك أي أسئلة.
+    if_continued_trouble_html: <a href="/contact">تواصل معنا</a> إذا استمرت المشكلات.
+    if_we_can_help_html: <a href="/contact">تواصل معنا</a> إذا استطعنا مساعدتك.
+  core:
+    add_comment: إضافة تعليق
+    beta: بيتا
+    comment: تعليق
+    copy_link: نسخ الرابط
+    edit_profile: تعديل الملف الشخصي
+    follow: متابعة
+    follow_back: متابعة مرة أخرى
+    following: يتابع
+    like: إعجاب
+    loading: جارٍ التحميل...
+    reaction: تفاعل
+    report_abuse: الإبلاغ عن إساءة
+    search: بحث
+    success_settings: تم تحديث الإعدادات بنجاح.
+    counted_organization:
+      one: "منظمة واحدة"
+      other: "%{count} منظمة"
+    counted_user:
+      one: "شخص واحد"
+      other: "%{count} أشخاص"
+    not_following: "أنت لا تتابع أي شخص"
+    following_everyone: "أنت تتابع الجميع (الكل)"
+    you_are_following: "أنت تتابع"
+    and: "و"
+  date:
+    abbr_month_names:
+    -
+    - يناير
+    - فبراير
+    - مارس
+    - أبريل
+    - مايو
+    - يونيو
+    - يوليو
+    - أغسطس
+    - سبتمبر
+    - أكتوبر
+    - نوفمبر
+    - ديسمبر
+  datetime:
+    distance_in_words_ago:
+      about_x_hours:
+        one: "منذ حوالي ساعة واحدة"
+        other: "منذ حوالي %{count} ساعة"
+      about_x_months:
+        one: "منذ حوالي شهر واحد"
+        other: "منذ حوالي %{count} شهر"
+      about_x_years:
+        one: "منذ حوالي سنة واحدة"
+        other: "منذ حوالي %{count} سنة"
+      almost_x_years:
+        one: "منذ تقريبا سنة واحدة"
+        other: "منذ تقريبا %{count} سنة"
+      half_a_minute: "منذ نصف دقيقة"
+      less_than_x_seconds:
+        one: "منذ أقل من ثانية واحدة"
+        other: "منذ أقل من %{count} ثانية"
+      less_than_x_minutes:
+        one: "منذ أقل من دقيقة واحدة"
+        other: "منذ أقل من %{count} دقيقة"
+      over_x_years:
+        one: "منذ أكثر من سنة واحدة"
+        other: "منذ أكثر من %{count} سنة"
+      x_seconds:
+        one: "منذ ثانية واحدة"
+        other: "منذ %{count} ثانية"
+      x_minutes:
+        one: "منذ دقيقة واحدة"
+        other: "منذ %{count} دقيقة"
+      x_days:
+        one: "أمس"
+        other: "منذ %{count} يوم"
+      x_months:
+        one: "منذ شهر واحد"
+        other: "منذ %{count} شهر"
+      x_years:
+        one: "السنة الماضية"
+        other: "منذ %{count} سنة"
+    expired_ago:
+      about_x_hours:
+        one: "منتهي منذ حوالي ساعة واحدة"
+        other: "منتهي منذ حوالي %{count} ساعة"
+      about_x_months:
+        one: "منتهي منذ حوالي شهر واحد"
+        other: "منتهي منذ حوالي %{count} شهر"
+      about_x_years:
+        one: "منتهي منذ حوالي سنة واحدة"
+        other: "منتهي منذ حوالي %{count} سنة"
+      almost_x_years:
+        one: "منتهي منذ تقريبا سنة واحدة"
+        other: "منتهي منذ تقريبا %{count} سنة"
+      half_a_minute: "منتهي منذ نصف دقيقة"
+      less_than_x_seconds:
+        one: "منتهي منذ أقل من ثانية واحدة"
+        other: "منتهي منذ أقل من %{count} ثانية"
+      less_than_x_minutes:
+        one: "منتهي منذ أقل من دقيقة واحدة"
+        other: "منتهي منذ أقل من %{count} دقيقة"
+      over_x_years:
+        one: "منتهي منذ أكثر من سنة واحدة"
+        other: "منتهي منذ أكثر من %{count} سنة"
+      x_seconds:
+        one: "منتهي منذ ثانية واحدة"
+        other: "منتهي منذ %{count} ثانية"
+      x_minutes:
+        one: "منتهي منذ دقيقة واحدة"
+        other: "منتهي منذ %{count} دقيقة"
+      x_days:
+        one: "منتهي منذ يوم واحد"
+        other: "منتهي منذ %{count} يوم"
+      x_months:
+        one: "منتهي منذ شهر واحد"
+        other: "منتهي منذ %{count} شهر"
+      x_years:
+        one: "منتهي منذ سنة واحدة"
+        other: "منتهي منذ %{count} سنة"
+    expires_in:
+      about_x_hours:
+        one: "ينتهي في حوالي ساعة واحدة"
+        other: "ينتهي في حوالي %{count} ساعة"
+      about_x_months:
+        one: "ينتهي في حوالي شهر واحد"
+        other: "ينتهي في حوالي %{count} شهر"
+      about_x_years:
+        one: "ينتهي في حوالي سنة واحدة"
+        other: "ينتهي في حوالي %{count} سنة"
+      almost_x_years:
+        one: "ينتهي في تقريبا سنة واحدة"
+        other: "ينتهي في تقريبا %{count} سنة"
+      half_a_minute: "ينتهي في نصف دقيقة"
+      less_than_x_seconds:
+        one: "ينتهي في أقل من ثانية واحدة"
+        other: "ينتهي في أقل من %{count} ثانية"
+      less_than_x_minutes:
+        one: "ينتهي في أقل من دقيقة واحدة"
+        other: "ينتهي في أقل من %{count} دقيقة"
+      over_x_years:
+        one: "ينتهي في أكثر من سنة واحدة"
+        other: "ينتهي في أكثر من %{count} سنة"
+      x_seconds:
+        one: "ينتهي في ثانية واحدة"
+        other: "ينتهي في %{count} ثانية"
+      x_minutes:
+        one: "ينتهي في دقيقة واحدة"
+        other: "ينتهي في %{count} دقيقة"
+      x_days:
+        one: "ينتهي في يوم واحد"
+        other: "ينتهي في %{count} يوم"
+      x_months:
+        one: "ينتهي في شهر واحد"
+        other: "ينتهي في %{count} شهر"
+      x_years:
+        one: "ينتهي في سنة واحدة"
+        other: "ينتهي في %{count} سنة"
+  billboard:
+    promoted: تم الترقية
+    menu:
+      aria_label: تبديل القائمة المنسدلة
+      icon: القائمة المنسدلة
+      close: إغلاق
+      manage_preferences: إدارة التفضيلات
+      what_is_a_billboard: ما هو لوح الإعلان؟
+      report_billboard: الإبلاغ عن لوحة إعلانية
+  errors:
+    messages:
+      accepted: يجب أن يتم قبوله
+      already_confirmed: تم تأكيده بالفعل، يرجى محاولة تسجيل الدخول
+      bad_protocol: يجب أن يبدأ بـ %{protocols}
+      bad_uri: عنوان URL غير صالح
+      blank: لا يمكن أن يكون فارغاً
+      confirmation: لا يتطابق مع %{attribute}
+      confirmation_period_expired: يجب تأكيده في غضون %{period}، يرجى طلب واحد جديد
+      contains_prohibited_characters: يحتوي على أحرف غير صالحة أو غير الأبجدية أو الأرقام
+      empty: لا يمكن أن يكون فارغاً
+      equal_to: يجب أن يكون مساويًا لـ %{count}
+      even: يجب أن يكون زوجيًا
+      exclusion: محجوز
+      expired: منتهي الصلاحية، يرجى طلب واحد جديد
+      general: 'خطأ: %{errors}'
+      greater_than: يجب أن يكون أكبر من %{count}
+      greater_than_or_equal_to: يجب أن يكون أكبر من أو يساوي %{count}
+      inclusion: غير مضمن في القائمة
+      invalid: غير صالح
+      less_than: يجب أن يكون أقل من %{count}
+      less_than_or_equal_to: يجب أن يكون أقل من أو يساوي %{count}
+      model_invalid: 'فشل التحقق: %{errors}'
+      not_a_number: ليس رقمًا
+      not_an_integer: يجب أن يكون عددًا صحيحًا
+      not_found: غير موجود
+      not_locked: لم يتم قفله
+      not_saved:
+        one: 1 خطأ منع حفظ هذا %{resource}
+        other: "%{count} أخطاء منعت حفظ هذا %{resource}:"
+      odd: يجب أن يكون فرديًا
+      other_than: يجب أن يكون مختلفًا عن %{count}
+      present: يجب أن يكون فارغًا
+      required: يجب أن يكون موجودًا
+      taken: تم أخذه بالفعل
+      too_long:
+        one: طويل جدًا (الحد الأقصى هو 1 حرف)
+        other: طويل جدًا (الحد الأقصى هو %{count} حروف)
+      too_short:
+        one: قصير جدًا (على الأقل 1 حرف)
+        other: قصير جدًا (الحد الأدنى هو %{count} حروف)
+      try_again_email: "حدث خطأ. يرجى المحاولة مرة أخرى أو إرسال بريد إلكتروني إلى: %{email}"
+      wrong_length:
+        one: طول خاطئ (يجب أن يكون 1 حرف)
+        other: طول خاطئ (يجب أن يكون %{count} حروف)
+  time:
+    formats:
+      admin_user: "%Y-%m-%d، %H:%M"
+      comment: "%d %B، %Y"
+      email_verified: "%d %b '%y، %H:%M"
+      github: "%d %b، %Y"
+      json: "%d %b، %Y"
+      medium: "%d %b، %Y"
+      members: "%d %b"
+      members_with_year: "%d %b، %Y"
+      reddit: "%d %b '%y"
+      short: "%-e %b"
+      short_with_yy: "%-e %b '%y"
+      short_with_year: "%-e %b، %Y"
+      stackexchange: "%d %b '%y"
