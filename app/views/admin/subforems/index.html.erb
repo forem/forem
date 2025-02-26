@@ -1,0 +1,13 @@
+<header class="flex items-center mb-6">
+  <h1 class="crayons-title">Subforems</h1>
+  <%= link_to "New Subfoem", new_admin_subforem_path, class: "ml-auto crayons-btn crayons-btn--s" %>
+</header>
+
+<div class="crayons-card p-6 pages__table">
+  <% @subforems.each do |subforem| %>
+    <div class="flex py-2 items-center" data-testid="subforem">
+      <%= link_to subforem.domain %>
+      <%= link_to "Edit", edit_admin_subforem_path(subforem), class: "ml-auto crayons-btn crayons-btn--s" %>
+    </div>
+  <% end %>
+</div>
