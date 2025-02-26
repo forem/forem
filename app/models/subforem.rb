@@ -4,6 +4,9 @@ class Subforem < ApplicationRecord
   has_many :pages, dependent: :nullify
 
   validates :domain, presence: true, uniqueness: true
+  
+  # Only one total subforem can be the root
+  validates :root, uniqueness: { message: "Only one subforem can be the root" }, if: :root
 
   after_save :bust_caches
   before_validation :downcase_domain
