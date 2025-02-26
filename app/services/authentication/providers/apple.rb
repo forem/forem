@@ -46,10 +46,9 @@ module Authentication
         # the first login. To cover the case where a user disconnects their
         # Apple authorization, signs in again and then changes their name,
         # we update the username only if the name is not nil
-        apple_username = info.first_name&.downcase
-        return {} unless apple_username
+        return {} unless info.first_name&.downcase
 
-        { apple_username: apple_username }
+        { apple_username: user_nickname }
       end
 
       # For Apple we override this method because the `info` payload doesn't
@@ -64,13 +63,13 @@ module Authentication
           [
             info.first_name&.downcase,
             info.last_name&.downcase,
-            Digest::SHA512.hexdigest(info.email),
+            Digest::SHA512.hexdigest(info.email.to_s),
           ].join("_")[0...25]
         else
           # This covers an edge case where the Apple Id has already given
           # permissions to the forem auth and we don't have anything else
           # to work with other than the email
-          ["user", Digest::SHA512.hexdigest(info.email)].join("_")[0...15]
+          ["user", Digest::SHA512.hexdigest(info.email.to_s)].join("_")[0...15]
         end
       end
 
