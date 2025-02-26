@@ -117,6 +117,10 @@ en:
       confirmation: My username is @%{username} and this action is 100% safe and appropriate.
     spaces_controller:
       update_success: Space has been updated.
+    subforems_controller:
+      created: Subforum has been created!
+      updated: Subforum has been updated!
+      deleted: Subforum has been deleted!
     tags:
       moderators_controller:
         not_found: 'Username "%{username}" was not found'
