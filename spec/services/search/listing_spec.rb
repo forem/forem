@@ -19,7 +19,6 @@ RSpec.describe Search::Listing, type: :service do
       create(:listing, title: "Another Listing", published: false)
       result = described_class.search_documents(term: "Listing")
     
-      pending("Expected failure until deprecation is complete")
       expect(result).to be_empty
     end
     
