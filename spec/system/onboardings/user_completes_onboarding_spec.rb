@@ -77,6 +77,7 @@ RSpec.describe "Completing Onboarding", js: true do
       let(:user) { create(:user, password: password, password_confirmation: password) }
 
       it "does not render a Create a Post call to action in the onboarding task card", :aggregate_failures do
+        sign_in(user) # if not already signed in
         visit "/"
 
         wait_for_javascript
