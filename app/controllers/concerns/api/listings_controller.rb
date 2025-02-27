@@ -14,23 +14,9 @@ module Api
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
     def index
-      @listings = Listing.published
-        .select(ATTRIBUTES_FOR_SERIALIZATION)
-        .includes([{ user: :profile }, :organization, :taggings, :listing_category])
-
-      if params[:category].present?
-        @listings = @listings.in_category(params[:category])
-      end
-      @listings = @listings.order(bumped_at: :desc)
-
-      per_page = (params[:per_page] || 30).to_i
-      per_page_max = (ApplicationConfig["API_PER_PAGE_MAX"] || 100).to_i
-      num = [per_page, per_page_max].min
-      page = params[:page] || 1
-      @listings = @listings.page(page).per(num)
-
-      set_surrogate_key_header Listing.table_key, @listings.map(&:record_key)
+      render json: []
     end
+    
 
     def show
       relation = Listing.published
