@@ -61,14 +61,13 @@ module Stories
                  type_of: params[:type_of] || "discover",
                )
              end
-        # Hey, why the to_a you say?  Because the
-        # LargeForemExperimental has already done this.  But the
-        # weighted strategy has not.  I also don't want to alter the
-        # weighted query implementation as it returns a lovely
-        # ActiveRecord::Relation.  So this is a compromise.
+      # Hey, why the to_a you say?  Because the
+      # LargeForemExperimental has already done this.  But the
+      # weighted strategy has not.  I also don't want to alter the
+      # weighted query implementation as it returns a lovely
+      # ActiveRecord::Relation.  So this is a compromise.
 
-        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
-      end
+      feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
     end
 
     def signed_out_base_feed
