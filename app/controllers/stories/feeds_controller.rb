@@ -46,8 +46,11 @@ module Stories
     end
 
     def signed_in_base_feed
-      feed = if Settings::UserExperience.feed_strategy == "basic" && params[:type_of] != "following"
+      feed_strategy = params[:mode] || Settings::UserExperience.feed_strategy
+      feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
+             elsif feed_strategy == "custom" && params[:type_of] != "following"
+               Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag])
              else
                Articles::Feeds.feed_for(
                  user: current_user,
@@ -58,10 +61,6 @@ module Stories
                  type_of: params[:type_of] || "discover",
                )
              end
-      Datadog::Tracing.trace("feed.query",
-                             span_type: "db",
-                             resource: "#{self.class}.#{__method__}",
-                             tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
