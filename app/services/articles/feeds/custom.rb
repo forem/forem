@@ -1,55 +1,45 @@
 module Articles
   module Feeds
+    TIME_AGO_MAX = Rails.env.production? ? 10.days.ago : 90.days.ago
+
     class Custom
-      def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
+      def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil, feed_config: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = [page, 1].max
         @tag = tag
-        @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: @user)
+        @feed_config = feed_config
       end
 
       def default_home_feed(**_kwargs)
+        return [] if @feed_config.nil? || @user.nil?
+        # Build a raw SQL expression for the computed score.
+        # This expression multiplies article fields by weights from feed_config.        
+        # **CRITICAL CHANGE:** Use a subquery
         articles = Article.published
-          .order("feed_success_score DESC")
           .with_at_least_home_feed_minimum_score
+          .select("articles.*, (#{@feed_config.score_sql(@user)}) as computed_score")  # Keep parentheses here
+          .from("(#{Article.published.where("articles.published_at > ?", TIME_AGO_MAX).to_sql}) as articles") # Subquery!
+          .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
-          .limited_column_select.includes(top_comments: :user)
+          .limited_column_select
+          .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
-          .from_subforem
 
-        return articles unless @user
-
-        articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
-        if (hidden_tags = @user.cached_antifollowed_tag_names).any?
-          articles = articles.not_cached_tagged_with_any(hidden_tags)
+        if @user
+          articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+          if (hidden_tags = @user.cached_antifollowed_tag_names).any?
+            articles = articles.not_cached_tagged_with_any(hidden_tags)
+          end
         end
-        articles.sort_by.with_index do |article, index|
-          tag_score = score_followed_tags(article)
-          user_score = score_followed_user(article)
-          org_score = score_followed_organization(article)
 
-          # NOTE: Not quite understanding the purpose of the `-
-          # index`.  My guess is that it helps reduce the impact of the
-          # hotness score on the sort order.
-          tag_score + org_score + user_score - index
-        end.reverse!
+        articles
       end
 
-      # Alias :feed to preserve past implementations, but favoring a
-      # convergence of interface implementations.
+      # Preserve the public interface
       alias feed default_home_feed
-
-      # Creating :more_comments_minimal_weight_randomized to conform
-      # to the public interface of
-      # Articles::Feeds::LargeForemExperimental
       alias more_comments_minimal_weight_randomized default_home_feed
-
-      delegate(:score_followed_tags,
-               :score_followed_user,
-               :score_followed_organization,
-               to: :@article_score_applicator)
     end
   end
 end

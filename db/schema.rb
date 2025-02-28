@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_28_134835) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -550,6 +550,25 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
   end
 
+  create_table "feed_configs", force: :cascade do |t|
+    t.float "comment_recency_weight", default: 1.0
+    t.float "comment_score_weight", default: 1.0
+    t.datetime "created_at", null: false
+    t.bigint "feed_impressions_count", default: 0
+    t.float "feed_success_score", default: 0.0
+    t.float "feed_success_weight", default: 1.0
+    t.float "label_match_weight", default: 1.0
+    t.float "lookback_window_weight", default: 1.0
+    t.float "organization_follow_weight", default: 1.0
+    t.float "precomputed_selections_weight", default: 1.0
+    t.float "recency_weight", default: 1.0
+    t.float "score_weight", default: 1.0
+    t.float "tag_follow_weight", default: 1.0
+    t.datetime "updated_at", null: false
+    t.float "user_follow_weight", default: 1.0
+    t.index ["feed_success_score"], name: "index_feed_configs_on_feed_success_score"
+  end
+
   create_table "feed_events", force: :cascade do |t|
     t.bigint "article_id", null: false
     t.integer "article_position"
@@ -557,6 +576,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.string "context_type", null: false
     t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", null: false
+    t.bigint "feed_config_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"

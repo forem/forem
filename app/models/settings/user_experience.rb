@@ -4,7 +4,7 @@ module Settings
     self.table_name = :settings_user_experiences
 
     HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
-    FEED_STRATEGIES = %w[basic large_forem_experimental].freeze
+    FEED_STRATEGIES = %w[basic configured large_forem_experimental].freeze
     FEED_STYLES = %w[basic rich compact].freeze
     COVER_IMAGE_FITS = %w[crop limit].freeze
 
