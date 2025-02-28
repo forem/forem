@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_28_183206) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_28_200054) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -102,6 +102,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_28_183206) do
     t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
+    t.float "compellingness_score", default: 0.0, null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "crossposted_at", precision: nil
     t.string "description"
@@ -551,9 +552,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_28_183206) do
   end
 
   create_table "feed_configs", force: :cascade do |t|
+    t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
+    t.float "compellingness_score_weight", default: 0.0, null: false
     t.datetime "created_at", null: false
+    t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
@@ -561,6 +565,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_28_183206) do
     t.float "lookback_window_weight", default: 1.0
     t.float "organization_follow_weight", default: 1.0
     t.float "precomputed_selections_weight", default: 1.0
+    t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "score_weight", default: 1.0
     t.float "tag_follow_weight", default: 1.0
