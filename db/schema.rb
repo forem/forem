@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_28_134835) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_28_183206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -582,6 +582,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_28_134835) do
     t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"
     t.index ["article_id"], name: "index_feed_events_on_article_id"
     t.index ["created_at"], name: "index_feed_events_on_created_at"
+    t.index ["feed_config_id"], name: "index_feed_events_on_feed_config_id"
     t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
 
