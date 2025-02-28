@@ -5,6 +5,7 @@ class FeedEvent < ApplicationRecord
   # Rails-side association validation (which causes an N+1 query).
   belongs_to :article, optional: true
   belongs_to :user, optional: true
+  belongs_to :feed_config, optional: true
 
   after_save :update_article_counters_and_scores
   after_create_commit :record_field_test_event
@@ -44,7 +45,7 @@ class FeedEvent < ApplicationRecord
     last_click = where(user: user, category: :click).last
     return unless last_click&.article_id == article.id
 
-    create_with(last_click.slice(:article_position, :context_type))
+    create_with(last_click.slice(:article_position, :context_type, :feed_config_id))
       .find_or_create_by(
         category: category,
         user: user,
@@ -63,7 +64,7 @@ class FeedEvent < ApplicationRecord
     end
   end
 
-  def self.update_single_article_counters(article_id)
+  def self.update_single_article_counters(article_id, feed_config_id = nil)
     ThrottledCall.perform("article_feed_success_score_#{article_id}", throttle_for: 5.minutes) do
       impressions = FeedEvent.where(article_id: article_id, category: "impression")
       return if impressions.empty?
@@ -94,6 +95,13 @@ class FeedEvent < ApplicationRecord
         feed_clicks_count: clicks.size,
         feed_impressions_count: impressions.size,
       )
+
+      if feed_config_id
+         # We give a higher weight to clicks higher in the position rank when calculating for the success of feedconfig.
+        clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
+        score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+        FeedConfig.find_by(id: feed_config_id)&.update_column(:feed_success_score, score)
+      end
     end
   end
 
@@ -102,7 +110,7 @@ class FeedEvent < ApplicationRecord
   def update_article_counters_and_scores
     return unless article
 
-    self.class.update_single_article_counters(article_id)
+    self.class.update_single_article_counters(article_id, feed_config_id)
   end
 
   # @see AbExperiment::GoalConversionHandler

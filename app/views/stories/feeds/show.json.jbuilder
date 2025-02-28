@@ -42,4 +42,5 @@ json.array!(@stories) do |article|
   end
 
   json.current_user_signed_in user_signed_in?
+  json.feed_config @feed_config&.id
 end
