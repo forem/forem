@@ -58,7 +58,6 @@ module Stories
                                else
                                  FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.create
                                end
-                raise @feed_config.inspect
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag], feed_config: @feed_config)
              else
                Articles::Feeds.feed_for(
