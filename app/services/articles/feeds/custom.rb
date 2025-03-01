@@ -26,6 +26,7 @@ module Articles
           .limited_column_select
           .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
+          .from_subforem
 
         if @user
           articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
