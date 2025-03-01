@@ -17,7 +17,7 @@ RSpec.describe FeedConfig, type: :model do
 
   before do
     # Stub out the RecommendedArticlesList query chain to return an empty selection.
-    allow(RecommendedArticlesList).to receive_message_chain(:where, :where, :first, :article_ids).and_return([])
+    allow(RecommendedArticlesList).to receive_message_chain(:where, :where, :last, :article_ids).and_return([])
   end
 
   describe "#score_sql" do
@@ -46,8 +46,7 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
-        # Since precomputed selections are empty, its CASE should not appear,
-        # but the weight was positive.
+        # Since precomputed selections are empty, its CASE should not appear.
       end
     end
 
@@ -97,6 +96,60 @@ RSpec.describe FeedConfig, type: :model do
       it "returns 0 as the SQL expression" do
         expect(feed_config.score_sql(user)).to eq("(0)")
       end
+    end
+  end
+
+  describe "#create_slightly_modified_clone!" do
+    before do
+      # Set all initial weights.
+      feed_config.feed_success_weight           = 1.0
+      feed_config.comment_score_weight          = 2.0
+      feed_config.comment_recency_weight        = 3.0
+      feed_config.label_match_weight            = 4.0
+      feed_config.lookback_window_weight        = 5.0
+      feed_config.organization_follow_weight    = 6.0
+      feed_config.precomputed_selections_weight = 7.0
+      feed_config.recency_weight                = 8.0
+      feed_config.score_weight                  = 9.0
+      feed_config.tag_follow_weight             = 10.0
+      feed_config.user_follow_weight            = 11.0
+
+      # To make the clone deterministic, stub out rand to always return 0.1.
+      allow(feed_config).to receive(:rand).and_return(0.1)
+    end
+
+    it "creates a persisted clone with adjusted weights" do
+      expect { feed_config.create_slightly_modified_clone! }
+        .to change { FeedConfig.count }.by(1)
+
+      clone = FeedConfig.last
+
+      expect(clone.persisted?).to be true
+      # Each weight should be increased by 10% (i.e. multiplied by 1.1).
+      expect(clone.feed_success_weight).to eq(1.0 * 1.1)
+      expect(clone.comment_score_weight).to eq(2.0 * 1.1)
+      expect(clone.comment_recency_weight).to eq(3.0 * 1.1)
+      expect(clone.label_match_weight).to eq(4.0 * 1.1)
+      expect(clone.lookback_window_weight).to eq(5.0 * 1.1)
+      expect(clone.organization_follow_weight).to eq(6.0 * 1.1)
+      expect(clone.precomputed_selections_weight).to eq(7.0 * 1.1)
+      expect(clone.recency_weight).to eq(8.0 * 1.1)
+      expect(clone.score_weight).to eq(9.0 * 1.1)
+      expect(clone.tag_follow_weight).to eq(10.0 * 1.1)
+      expect(clone.user_follow_weight).to eq(11.0 * 1.1)
+    end
+
+    it "does not modify the original feed_config" do
+      original_attributes = feed_config.attributes.slice(
+        "feed_success_weight", "comment_score_weight", "comment_recency_weight",
+        "label_match_weight", "lookback_window_weight", "organization_follow_weight",
+        "precomputed_selections_weight", "recency_weight", "score_weight",
+        "tag_follow_weight", "user_follow_weight"
+      )
+
+      feed_config.create_slightly_modified_clone!
+
+      expect(feed_config.reload.attributes.slice(*original_attributes.keys)).to eq(original_attributes)
     end
   end
 end
