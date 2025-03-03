@@ -62,7 +62,7 @@ class FeedConfig < ApplicationRecord
     terms << "(articles.compellingness_score * #{compellingness_score_weight})" if compellingness_score_weight.positive?
 
     # Add language match score directly since higher is good.
-    terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)" if language_match_weight.positive?
+    terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)" if language_match_weight.positive? && score_weight.positive? # Tying this to score weight for now.
   
     # Inject a bit of randomness into the score.
     terms << "(RANDOM() * #{randomness_weight})" if randomness_weight.positive?
