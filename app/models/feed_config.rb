@@ -11,7 +11,7 @@ class FeedConfig < ApplicationRecord
                                                      .last&.article_ids || []
     lookback_window = time_of_second_latest_page_view - 18.hours
 
-    languages = current_user.languages.pluck(:language)
+    languages = user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
 
     language_match_weight = 1.0 # Not yet DB-configurable
