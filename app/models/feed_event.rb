@@ -65,7 +65,7 @@ class FeedEvent < ApplicationRecord
     end
   end
 
-  def self.update_single_article_counters(article_id, feed_config_id = nil)
+  def self.update_single_article_counters(article_id)
     ThrottledCall.perform("article_feed_success_score_#{article_id}", throttle_for: 5.minutes) do
       impressions = FeedEvent.where(article_id: article_id, category: "impression")
       return if impressions.empty?
@@ -90,30 +90,50 @@ class FeedEvent < ApplicationRecord
 
       score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
 
-      impressions_count = impressions.size
-
       # Update the article counters
       Article.where(id: article_id).update_all(
         feed_success_score: score,
         feed_clicks_count: clicks.size,
-        feed_impressions_count: impressions_count,
+        feed_impressions_count: impressions.size,
       )
+    end
+  end
 
-      if feed_config_id
-         # We give a higher weight to clicks higher in the position rank when calculating for the success of feedconfig.
-        clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
-        score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
-        FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions_count)
-      end
+  def self.update_single_feed_config_counters(feed_config_id)
+    ThrottledCall.perform("feed_config_feed_success_score_#{feed_config_id}", throttle_for: 5.minutes) do
+      impressions = FeedEvent.where(feed_config_id: feed_config_id, category: "impression")
+      return if impressions.empty?
+
+      clicks = FeedEvent.where(feed_config_id: feed_config_id, category: "click")
+      reactions = FeedEvent.where(feed_config_id: feed_config_id, category: "reaction")
+      comments = FeedEvent.where(feed_config_id: feed_config_id, category: "comment")
+      pageviews = FeedEvent.where(feed_config_id: feed_config_id, category: "extended_pageview")
+
+      # Count the distinct users for impressions and each event type
+      distinct_impressions_users = impressions.distinct.pluck(:user_id)
+      distinct_clicks_users = clicks.distinct.pluck(:user_id)
+      distinct_reactions_users = reactions.distinct.pluck(:user_id)
+      distinct_comments_users = comments.distinct.pluck(:user_id)
+      distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
+
+      # Calculate score based on distinct users
+      reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER * 2
+      clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
+      comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER * 2
+      pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
+
+      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+      
+      # Update the feed config counters
+      FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions.size)
     end
   end
 
   private
 
   def update_article_counters_and_scores
-    return unless article
-
-    self.class.update_single_article_counters(article_id, feed_config_id)
+    self.class.update_single_article_counters(article_id) if article_id
+    self.class.update_single_feed_config_counters(feed_config_id) if feed_config_id
   end
 
   def create_feed_config_offshoot
