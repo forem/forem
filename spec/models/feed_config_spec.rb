@@ -9,6 +9,7 @@ RSpec.describe FeedConfig, type: :model do
       cached_following_users_ids: [10, 20],
       cached_following_organizations_ids: [100, 200],
       cached_followed_tag_names: ["tech", "ruby"],
+      languages: double("Languages", pluck: ["en"]),
       page_views: double("PageViews", order: double("Ordered", second: double("PageView", created_at: Time.current - 1.day)))
     )
   end
