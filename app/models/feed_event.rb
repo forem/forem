@@ -96,7 +96,7 @@ class FeedEvent < ApplicationRecord
       Article.where(id: article_id).update_all(
         feed_success_score: score,
         feed_clicks_count: clicks.size,
-        feed_impressions_count: impressions.size,
+        feed_impressions_count: impressions_count,
       )
 
       if feed_config_id

@@ -5,7 +5,7 @@ class FeedConfig < ApplicationRecord
     user_follow_ids = user.cached_following_users_ids
     organization_follow_ids = user.cached_following_organizations_ids
     tag_names = user.cached_followed_tag_names
-    time_of_second_latest_page_view = user&.page_views&.order(created_at: :desc)&.second&.created_at || 6.days.ago
+    time_of_second_latest_page_view = user&.page_views&.order(created_at: :desc)&.second&.created_at || 4.days.ago
     precomputed_selections = RecommendedArticlesList.where(user_id: user.id)
                                                      .where("expires_at > ?", Time.current)
                                                      .last&.article_ids || []

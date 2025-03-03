@@ -50,10 +50,10 @@ RSpec.describe FeedEvent do
 
     it "does not record a feed event if the user's last click was not on the specified article" do
       click = create(:feed_event, user: user, article: article, category: :click)
-      create(:feed_event, user: user, category: :click)
+      other_click = create(:feed_event, user: user, category: :click)
 
       expect { record_journey }.not_to change(described_class, :count)
-      expect(user.feed_events).to contain_exactly(click)
+      expect(user.feed_events).to contain_exactly(click, other_click)
     end
 
     context "when the interaction is not a comment or reaction" do

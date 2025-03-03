@@ -134,7 +134,7 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     it "does not modify the original feed_config" do
-      original_attributes = feed_config.attributes.slice(
+      original_attributes = feed_config.reload.attributes.slice(
         "feed_success_weight", "comment_score_weight", "comment_recency_weight",
         "label_match_weight", "lookback_window_weight", "organization_follow_weight",
         "precomputed_selections_weight", "recency_weight", "score_weight",
