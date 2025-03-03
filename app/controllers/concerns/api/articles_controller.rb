@@ -152,6 +152,7 @@ module Api
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
       allowed_params << :clickbait_score if @user.super_admin?
+      allowed_params << :compellingness_score if @user.super_admin?
       params.require(:article).permit(allowed_params)
     end
 
