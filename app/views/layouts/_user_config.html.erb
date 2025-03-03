@@ -34,7 +34,7 @@
       document.body.classList.add("dev-ios-native-body");
     }
 
-    if (navigator.userAgent.includes('ForemWebView/1') || window.frameElement) {
+    if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
       document.body.classList.add("hidden-shell");
     }
 
