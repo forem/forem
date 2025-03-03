@@ -4,11 +4,11 @@ class FeedConfig < ApplicationRecord
   def score_sql(user)
     user_follow_ids = user.cached_following_users_ids
     organization_follow_ids = user.cached_following_organizations_ids
-    tag_names = user.cached_followed_tag_names.first(5)
-    time_of_second_latest_page_view = user&.page_views&.order(created_at: :desc)&.second&.created_at || 6.days.ago
+    tag_names = user.cached_followed_tag_names
+    time_of_second_latest_page_view = user&.page_views&.order(created_at: :desc)&.second&.created_at || 4.days.ago
     precomputed_selections = RecommendedArticlesList.where(user_id: user.id)
                                                      .where("expires_at > ?", Time.current)
-                                                     .first&.article_ids || []
+                                                     .last&.article_ids || []
     lookback_window = time_of_second_latest_page_view - 18.hours
   
     terms = []
@@ -66,19 +66,19 @@ class FeedConfig < ApplicationRecord
     SQL
   end
 
-  def create_slightly_modified_clone
+  def create_slightly_modified_clone!
     clone = dup
-    clone.comment_recency_weight = comment_recency_weight * (1 + rand(0.0..0.1))
-    clone.comment_score_weight = comment_score_weight * (1 + rand(0.0..0.1))
-    clone.feed_success_weight = feed_success_weight * (1 + rand(0.0..0.1))
-    clone.label_match_weight = label_match_weight * (1 + rand(0.0..0.1))
-    clone.lookback_window_weight = lookback_window_weight * (1 + rand(0.0..0.1))
-    clone.organization_follow_weight = organization_follow_weight * (1 + rand(0.0..0.1))
-    clone.precomputed_selections_weight = precomputed_selections_weight * (1 + rand(0.0..0.1))
-    clone.recency_weight = recency_weight * (1 + rand(0.0..0.1))
-    clone.score_weight = score_weight * (1 + rand(0.0..0.1))
-    clone.tag_follow_weight = tag_follow_weight * (1 + rand(0.0..0.1))
-    clone.user_follow_weight = user_follow_weight * (1 + rand(0.0..0.1))
-    clone
+    clone.comment_recency_weight = comment_recency_weight * (1 + rand(0.0..0.15))
+    clone.comment_score_weight = comment_score_weight * (1 + rand(0.0..0.15))
+    clone.feed_success_weight = feed_success_weight * (1 + rand(0.0..0.15))
+    clone.label_match_weight = label_match_weight * (1 + rand(0.0..0.15))
+    clone.lookback_window_weight = lookback_window_weight * (1 + rand(0.0..0.15))
+    clone.organization_follow_weight = organization_follow_weight * (1 + rand(0.0..0.15))
+    clone.precomputed_selections_weight = precomputed_selections_weight * (1 + rand(0.0..0.15))
+    clone.recency_weight = recency_weight * (1 + rand(0.0..0.15))
+    clone.score_weight = score_weight * (1 + rand(0.0..0.15))
+    clone.tag_follow_weight = tag_follow_weight * (1 + rand(0.0..0.15))
+    clone.user_follow_weight = user_follow_weight * (1 + rand(0.0..0.15))
+    clone.save
   end
 end

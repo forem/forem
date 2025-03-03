@@ -8,6 +8,7 @@ class FeedEvent < ApplicationRecord
   belongs_to :feed_config, optional: true
 
   after_save :update_article_counters_and_scores
+  after_save :create_feed_config_offshoot
   after_create_commit :record_field_test_event
 
   enum category: {
@@ -89,18 +90,20 @@ class FeedEvent < ApplicationRecord
 
       score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
 
+      impressions_count = impressions.size
+
       # Update the article counters
       Article.where(id: article_id).update_all(
         feed_success_score: score,
         feed_clicks_count: clicks.size,
-        feed_impressions_count: impressions.size,
+        feed_impressions_count: impressions_count,
       )
 
       if feed_config_id
          # We give a higher weight to clicks higher in the position rank when calculating for the success of feedconfig.
         clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
         score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
-        FeedConfig.find_by(id: feed_config_id)&.update_column(:feed_success_score, score)
+        FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions_count)
       end
     end
   end
@@ -111,6 +114,14 @@ class FeedEvent < ApplicationRecord
     return unless article
 
     self.class.update_single_article_counters(article_id, feed_config_id)
+  end
+
+  def create_feed_config_offshoot
+    # Any time we get a reaction or comment, we branch off a slightly modified feed based on the success of the current one
+    return unless feed_config
+    return unless %w[reaction comment].include?(category)
+
+    feed_config.create_slightly_modified_clone!
   end
 
   # @see AbExperiment::GoalConversionHandler

@@ -13,7 +13,7 @@ RSpec.describe FeedEvent do
 
     it { is_expected.to define_enum_for(:category).with_values(valid_categories) }
     it { is_expected.to validate_numericality_of(:article_position).is_greater_than(0).only_integer }
-    it { is_expected.to validate_inclusion_of(:context_type).in_array(%w[home search tag]) }
+    it { is_expected.to validate_inclusion_of(:context_type).in_array(%w[home search tag email]) }
   end
 
   describe ".record_journey_for" do
@@ -96,7 +96,6 @@ RSpec.describe FeedEvent do
         user.id,
         goal,
       )
-
     end
 
     it "does not record a field test event if category is impression" do
@@ -112,7 +111,7 @@ RSpec.describe FeedEvent do
       create(:feed_event, user: nil, category: category, context_type: "email")
 
       expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async).with(
-        user.id,
+        nil,
         goal,
       )
     end
@@ -133,21 +132,17 @@ RSpec.describe FeedEvent do
     let!(:user2) { create(:user) }
 
     it "updates article counters and scores when a FeedEvent is saved" do
-      # Create some feed events to simulate behavior
       create(:feed_event, category: "impression", article: article, user: user1)
       create(:feed_event, category: "click", article: article, user: user1)
       create(:feed_event, category: "reaction", article: article, user: user1)
       create(:feed_event, category: "comment", article: article, user: user2)
-
-      # Trigger the after_save
       create(:feed_event, category: "impression", article: article, user: user2)
 
-      # Reload the article to get the updated counters and scores
       article.reload
 
-      expect(article.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0) # Calculated score
-      expect(article.feed_impressions_count).to eq(2) # Two impressions
-      expect(article.feed_clicks_count).to eq(1) # One click
+      expect(article.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0)
+      expect(article.feed_impressions_count).to eq(2)
+      expect(article.feed_clicks_count).to eq(1)
     end
 
     it "returns early if article is nil" do
@@ -167,15 +162,13 @@ RSpec.describe FeedEvent do
 
     it "correctly updates when only one type of event occurs" do
       create(:feed_event, category: "reaction", article: article, user: user1)
-
-      # Trigger the after_save
       create(:feed_event, category: "impression", article: article, user: user1)
 
       article.reload
 
-      expect(article.feed_success_score).to eq(reaction_multiplier) # One reaction by one distinct user
-      expect(article.feed_impressions_count).to eq(1) # One impression
-      expect(article.feed_clicks_count).to eq(0) # Zero clicks
+      expect(article.feed_success_score).to eq(reaction_multiplier)
+      expect(article.feed_impressions_count).to eq(1)
+      expect(article.feed_clicks_count).to eq(0)
     end
 
     it "considers only distinct users for each type of event for score, but not count" do
@@ -184,8 +177,6 @@ RSpec.describe FeedEvent do
       create_list(:feed_event, 3, category: "reaction", article: article, user: user2)
       create_list(:feed_event, 2, category: "comment", article: article, user: user2)
       create_list(:feed_event, 3, category: "extended_pageview", article: article, user: user2)
-
-      # Trigger the after_save
       create(:feed_event, category: "impression", article: article, user: user2)
 
       article.reload
@@ -203,16 +194,14 @@ RSpec.describe FeedEvent do
     let!(:user2) { create(:user) }
 
     it "updates counters and scores for multiple articles" do
-      # Create some feed events for article1
       create(:feed_event, category: "impression", article: article1, user: user1)
       create(:feed_event, category: "impression", article: article1, user: user2)
-      create(:feed_event, category: "impression", article: article1, user: user2) # Duplicate
+      create(:feed_event, category: "impression", article: article1, user: user2)
       create(:feed_event, category: "click", article: article1, user: user1)
       create(:feed_event, category: "reaction", article: article1, user: user1)
       create(:feed_event, category: "comment", article: article1, user: user2)
       create(:feed_event, category: "extended_pageview", article: article1, user: user2)
 
-      # Create some feed events for article2
       create(:feed_event, category: "impression", article: article2, user: user2)
       create(:feed_event, category: "click", article: article2, user: user1)
       create(:feed_event, category: "reaction", article: article2, user: user2)
@@ -226,13 +215,12 @@ RSpec.describe FeedEvent do
       expect(article1.feed_impressions_count).to eq(3)
       expect(article1.feed_clicks_count).to eq(1)
 
-      expect(article2.feed_success_score).to eq((1 + reaction_multiplier) / 1.0) # Calculated score
+      expect(article2.feed_success_score).to eq((1 + reaction_multiplier) / 1.0)
       expect(article2.feed_impressions_count).to eq(1)
       expect(article2.feed_clicks_count).to eq(1)
     end
 
     it "skips articles with no impressions" do
-      # Create some feed events for article2, but none for article1
       create(:feed_event, category: "click", article: article2, user: user1)
       create(:feed_event, category: "reaction", article: article2, user: user2)
       create(:feed_event, category: "comment", article: article2, user: user2)
@@ -242,14 +230,49 @@ RSpec.describe FeedEvent do
       article1.reload
       article2.reload
 
-      expect(article1.feed_success_score).to eq(0.0) # Should remain uninitialized
+      expect(article1.feed_success_score).to eq(0.0)
       expect(article1.feed_impressions_count).to eq(0)
       expect(article1.feed_clicks_count).to eq(0)
 
-      # Scores and counters for article2 should remain uninitialized
       expect(article2.feed_success_score).to eq(0.0)
       expect(article2.feed_impressions_count).to eq(0)
       expect(article2.feed_clicks_count).to eq(0)
+    end
+  end
+
+  describe "after_save .create_feed_config_offshoot" do
+    let(:article) { create(:article) }
+    let(:user) { create(:user) }
+    let(:feed_config) { create(:feed_config) }
+
+    context "when a feed_config is present" do
+      context "and category is reaction" do
+        it "calls create_slightly_modified_clone! on the feed_config" do
+          expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
+          create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+        end
+      end
+
+      context "and category is comment" do
+        it "calls create_slightly_modified_clone! on the feed_config" do
+          expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
+          create(:feed_event, feed_config: feed_config, article: article, user: user, category: "comment")
+        end
+      end
+
+      context "and category is not reaction or comment" do
+        it "does not call create_slightly_modified_clone!" do
+          expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
+          create(:feed_event, feed_config: feed_config, article: article, user: user, category: "click")
+        end
+      end
+    end
+
+    context "when feed_config is nil" do
+      it "does not call create_slightly_modified_clone!" do
+        expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
+        create(:feed_event, feed_config: nil, article: article, user: user, category: "reaction")
+      end
     end
   end
 end
