@@ -10,6 +10,7 @@ RSpec.describe FeedConfig, type: :model do
       cached_following_organizations_ids: [100, 200],
       cached_followed_tag_names: ["tech", "ruby"],
       languages: double("Languages", pluck: ["en"]),
+      # page_views stub for original tests; not used for additional weights
       page_views: double("PageViews", order: double("Ordered", second: double("PageView", created_at: Time.current - 1.day))),
       user_activity: nil
     )
@@ -20,7 +21,7 @@ RSpec.describe FeedConfig, type: :model do
   end
 
   describe "#score_sql" do
-    context "when all weights are positive" do
+    context "when all base weights are positive" do
       before do
         feed_config.feed_success_weight           = 1.0
         feed_config.comment_score_weight          = 2.0
@@ -48,7 +49,7 @@ RSpec.describe FeedConfig, type: :model do
       end
     end
 
-    context "when some weights are zero" do
+    context "when some base weights are zero" do
       before do
         feed_config.feed_success_weight           = 1.0
         feed_config.comment_score_weight          = 0.0
@@ -77,7 +78,7 @@ RSpec.describe FeedConfig, type: :model do
       end
     end
 
-    context "when all weights are zero" do
+    context "when all base weights are zero" do
       before do
         feed_config.feed_success_weight           = 0.0
         feed_config.comment_score_weight          = 0.0
@@ -95,6 +96,69 @@ RSpec.describe FeedConfig, type: :model do
         expect(feed_config.score_sql(user)).to eq("(0)")
       end
     end
+
+    context "when additional weights are positive" do
+      let(:recently_viewed_articles) { [[101, Time.current - 1.hour, 30], [102, Time.current - 2.hours, 40]] }
+      let(:activity_store) do
+        double("ActivityStore",
+          recently_viewed_articles: recently_viewed_articles,
+          recent_users: [],
+          recent_organizations: [],
+          relevant_tags: []
+        )
+      end
+
+      before do
+        # Provide a user_activity that includes recently_viewed_articles.
+        allow(user).to receive(:user_activity).and_return(activity_store)
+        # Set additional weights.
+        feed_config.recent_article_suppression_rate = 2.0
+        feed_config.published_today_weight         = 3.0
+        feed_config.featured_weight                = 4.0
+        feed_config.clickbait_score_weight         = 5.0
+        feed_config.compellingness_score_weight    = 6.0
+        feed_config.language_match_weight          = 7.0
+        feed_config.randomness_weight              = 8.0
+      end
+
+      it "includes the suppression for recently viewed articles" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.id IN (101,102)")
+        expect(sql).to include("-2.0")
+      end
+
+      it "includes the published today weight" do
+        sql = feed_config.score_sql(user)
+        published_since = 24.hours.ago.utc.to_s(:db)
+        expect(sql).to include("articles.published_at >= '#{published_since}'")
+        expect(sql).to include("3.0")
+      end
+
+      it "includes the featured weight" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.featured = TRUE THEN 4.0")
+      end
+
+      it "includes the clickbait score subtraction" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("- (articles.clickbait_score * 5.0)")
+      end
+
+      it "includes the compellingness score" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("articles.compellingness_score * 6.0")
+      end
+
+      it "includes the language match weight" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.language IN ('en') THEN 7.0")
+      end
+
+      it "includes the randomness injection" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("RANDOM() * 8.0")
+      end
+    end
   end
 
   describe "#create_slightly_modified_clone!" do
@@ -110,6 +174,14 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.score_weight                  = 9.0
       feed_config.tag_follow_weight             = 10.0
       feed_config.user_follow_weight            = 11.0
+
+      feed_config.randomness_weight              = 12.0
+      feed_config.recent_article_suppression_rate = 13.0
+      feed_config.published_today_weight         = 14.0
+      feed_config.featured_weight                = 15.0
+      feed_config.clickbait_score_weight         = 16.0
+      feed_config.compellingness_score_weight    = 17.0
+      feed_config.language_match_weight          = 18.0
 
       # Stub rand to return 0.1 for a deterministic 10% increase.
       allow(feed_config).to receive(:rand).and_return(0.1)
@@ -133,6 +205,13 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.score_weight).to eq(9.0 * 1.1)
       expect(clone.tag_follow_weight).to eq(10.0 * 1.1)
       expect(clone.user_follow_weight).to eq(11.0 * 1.1)
+      expect(clone.randomness_weight).to eq(12.0 * 1.1)
+      expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
+      expect(clone.published_today_weight).to eq(14.0 * 1.1)
+      expect(clone.featured_weight).to eq(15.0 * 1.1)
+      expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
+      expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
+      expect(clone.language_match_weight).to eq(18.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -140,7 +219,9 @@ RSpec.describe FeedConfig, type: :model do
         "feed_success_weight", "comment_score_weight", "comment_recency_weight",
         "label_match_weight", "lookback_window_weight", "organization_follow_weight",
         "precomputed_selections_weight", "recency_weight", "score_weight",
-        "tag_follow_weight", "user_follow_weight"
+        "tag_follow_weight", "user_follow_weight", "randomness_weight",
+        "recent_article_suppression_rate", "published_today_weight", "featured_weight",
+        "clickbait_score_weight", "compellingness_score_weight", "language_match_weight"
       )
 
       feed_config.create_slightly_modified_clone!
