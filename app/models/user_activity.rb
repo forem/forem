@@ -19,4 +19,8 @@ class UserActivity < ApplicationRecord
     self.recent_users = recent_articles.map(&:user_id).uniq.compact
     self.alltime_tags = user.cached_followed_tag_names.first(10)
   end
+
+  def relevant_tags
+    recent_tags + alltime_tags
+  end
 end
