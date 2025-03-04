@@ -7,6 +7,7 @@ class PageView < ApplicationRecord
 
   before_create :extract_domain_and_path
   after_create_commit :record_field_test_event
+  after_create_commit :update_user_activities
 
   private
 
@@ -38,5 +39,11 @@ class PageView < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_PAGEVIEW_GOAL)
+  end
+
+  def update_user_activities
+    return unless user_id
+
+    Users::UpdateUserActivitiesWorker.perform_async(user_id)
   end
 end
