@@ -573,7 +573,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_04_214343) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
-    t.float "recent_article_supression_rate", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "tag_follow_weight", default: 1.0
     t.datetime "updated_at", null: false
