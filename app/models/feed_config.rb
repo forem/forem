@@ -2,10 +2,15 @@ class FeedConfig < ApplicationRecord
   has_many :feed_events, dependent: :nullify
 
   def score_sql(user)
-    user_follow_ids = user.cached_following_users_ids
-    organization_follow_ids = user.cached_following_organizations_ids
-    tag_names = user.cached_followed_tag_names.first(10)
-    time_of_second_latest_page_view = user&.page_views&.order(created_at: :desc)&.second&.created_at || 4.days.ago
+    activity_store = user.user_activity
+
+    user_follow_ids = user.cached_following_users_ids + (activity_store&.recent_users.compact || [])
+    organization_follow_ids = user.cached_following_organizations_ids + (activity_store&.recent_organizations.compact || [])
+    tag_names = (activity_store&.recent_tags + activity_store&.alltime_tags) || []
+
+    activity_tracked_pageview_time = activity_store&.recently_viewed_articles&.second
+
+    time_of_second_latest_page_view = activity_tracked_pageview_time ? activity_tracked_pageview_time[1].to_datetime : 4.days.ago
     precomputed_selections = RecommendedArticlesList.where(user_id: user.id)
                                                      .where("expires_at > ?", Time.current)
                                                      .last&.article_ids || []

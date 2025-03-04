@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_01_153350) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_04_171201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -90,6 +90,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_01_153350) do
     t.boolean "archived", default: false
     t.text "body_html"
     t.text "body_markdown"
+    t.string "cached_label_list", default: [], array: true
     t.text "cached_organization"
     t.string "cached_tag_list"
     t.text "cached_user"
@@ -167,6 +168,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_01_153350) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
@@ -718,6 +720,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_01_153350) do
     t.bigint "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
+  end
+
+  create_table "labels", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_labels_on_slug", unique: true
   end
 
   create_table "media_stores", force: :cascade do |t|
@@ -1304,6 +1315,21 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_01_153350) do
     t.boolean "user_is_verified"
   end
 
+  create_table "user_activities", force: :cascade do |t|
+    t.jsonb "alltime_labels", default: []
+    t.jsonb "alltime_tags", default: []
+    t.datetime "created_at", null: false
+    t.datetime "last_activity_at"
+    t.jsonb "recent_labels", default: []
+    t.jsonb "recent_organizations", default: []
+    t.jsonb "recent_tags", default: []
+    t.jsonb "recent_users", default: []
+    t.jsonb "recently_viewed_articles", default: []
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_user_activities_on_user_id"
+  end
+
   create_table "user_blocks", force: :cascade do |t|
     t.bigint "blocked_id", null: false
     t.bigint "blocker_id", null: false
@@ -1606,6 +1632,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_01_153350) do
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify
+  add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_languages", "users"

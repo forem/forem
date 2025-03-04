@@ -116,6 +116,7 @@ class User < ApplicationRecord
   # languages that user undestands
   has_many :languages, class_name: "UserLanguage", inverse_of: :user, dependent: :delete_all
   has_many :user_visit_contexts, dependent: :delete_all
+  has_one :user_activity, dependent: :delete
 
   mount_uploader :profile_image, ProfileImageUploader
 
