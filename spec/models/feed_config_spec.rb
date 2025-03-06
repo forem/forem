@@ -10,11 +10,14 @@ RSpec.describe FeedConfig, type: :model do
       cached_following_organizations_ids: [100, 200],
       cached_followed_tag_names: ["tech", "ruby"],
       languages: double("Languages", pluck: ["en"]),
-      # Stub label names for label matching tests.
-      label_names: nil,
-      # page_views stub for original tests; not used for additional weights
       page_views: double("PageViews", order: double("Ordered", second: double("PageView", created_at: Time.current - 1.day))),
-      user_activity: nil
+      user_activity:
+        double("UserActivity",
+          recent_labels: ["label1"],
+          recent_users: [],
+          recent_organizations: [],
+          relevant_tags: ["ruby"],
+          recently_viewed_articles: [],)
     )
   end
 
@@ -36,9 +39,6 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.comment_recency_weight        = 8.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 10.0
-
-        # Set label names so that the label condition is added.
-        allow(user).to receive(:label_names).and_return(["label1", "label2"])
       end
 
       it "includes all the expected SQL fragments including label matching" do
@@ -70,9 +70,6 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.comment_recency_weight        = 0.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 0.0
-
-        # Even if label names are provided, a zero weight should skip the condition.
-        allow(user).to receive(:label_names).and_return(["label1", "label2"])
       end
 
       it "skips SQL terms for weights that are zero including labels" do
@@ -119,7 +116,8 @@ RSpec.describe FeedConfig, type: :model do
           recently_viewed_articles: recently_viewed_articles,
           recent_users: [],
           recent_organizations: [],
-          relevant_tags: []
+          relevant_tags: [],
+          recent_labels: []
         )
       end
 
