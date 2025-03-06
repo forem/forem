@@ -34,8 +34,13 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
       create(:article, organization_id: dont_suggest_this.id, score: 15, tags: unfollowed.name)
     end
 
-    it "returns an empty array" do
-      expect(suggester.suggest).to eq([])
+    it "returns organizations with posts with at least an average score under followed tags" do
+      results = suggester.suggest
+      expect(results).not_to be_blank
+      expect(results).to include(suggest_this_org)
+      expect(results).not_to include(dont_suggest_this)
+      expect(results).not_to include(bad_organizations.first)
+      expect(results).not_to include(bad_organizations.last)
     end
   end
 
@@ -50,8 +55,9 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
       create(:article, organization_id: org_second.id, score: 15, tags: second_tag.name)
     end
 
-    it "returns an empty array" do
-      expect(suggester.suggest).to be_empty
+    it "does not return organizations if no tags" do
+      results = suggester.suggest
+      expect(results).to be_empty
     end
   end
 end
