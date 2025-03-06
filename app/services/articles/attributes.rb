@@ -1,6 +1,6 @@
 module Articles
   class Attributes
-    ATTRIBUTES = %i[archived body_markdown canonical_url description compellingness_score
+    ATTRIBUTES = %i[archived body_markdown canonical_url description compellingness_score labels
                     edited_at main_image organization_id user_id published clickbait_score
                     title video_thumbnail_url published_at co_author_ids_list].freeze
 

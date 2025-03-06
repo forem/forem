@@ -151,8 +151,11 @@ module Api
         :published_at, :subforem_id, :language
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
-      allowed_params << :clickbait_score if @user.super_admin?
-      allowed_params << :compellingness_score if @user.super_admin?
+      if @user.super_admin?
+        allowed_params << :clickbait_score
+        allowed_params << :compellingness_score
+        allowed_params << { labels: [] }
+      end
       params.require(:article).permit(allowed_params)
     end
 

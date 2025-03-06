@@ -12,6 +12,10 @@ RSpec.describe "Api::V1::Articles" do
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
+  def put_article(**params)
+    put path, params: { article: params }.to_json, headers: auth_headers
+  end
+
   describe "GET /api/articles" do
     before { article }
 
@@ -964,10 +968,6 @@ RSpec.describe "Api::V1::Articles" do
     end
 
     describe "when authorized" do
-      def put_article(**params)
-        put path, params: { article: params }.to_json, headers: auth_headers
-      end
-
       it "returns a 429 status code if the rate limit is reached" do
         rate_limit_checker = instance_double(RateLimitChecker)
         retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
@@ -1295,6 +1295,52 @@ RSpec.describe "Api::V1::Articles" do
         put_article(title: nil, body_markdown: nil)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "does not update the label because not admin" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            labels: %w[meta discussion],
+          )
+          article.reload
+        end.not_to change(article, :cached_label_list)
+      end
+
+    end
+
+    describe "when authorized as super_admin" do
+      before { user.add_role(:super_admin) }
+
+      it "updates the labels" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            labels: %w[meta discussion],
+          )
+          article.reload
+        end.to change(article, :body_markdown) && change(article, :cached_label_list)
+      end
+
+      it "does not update the labels if not included in the request" do
+        article.update_column(:cached_label_list, %w[meta discussion])
+        expect do
+          put_article(
+            body_markdown: "something here",
+          )
+          article.reload
+        end.not_to change(article, :cached_label_list)
+      end
+
+      it "does update the labels if empty string is provided" do
+        article.update_column(:cached_label_list, %w[meta discussion])
+        expect do
+          put_article(
+            body_markdown: "something here",
+            labels: %w[],
+          )
+          article.reload
+        end.to change(article, :cached_label_list)
       end
     end
   end
