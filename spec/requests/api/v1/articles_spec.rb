@@ -1322,6 +1322,18 @@ RSpec.describe "Api::V1::Articles" do
         end.to change(article, :body_markdown) && change(article, :cached_label_list)
       end
 
+      it "updates the labels when given a string" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            labels: "meta, discussion",
+          )
+          article.reload
+        end.to change(article, :body_markdown) && change(article, :cached_label_list)
+      end
+
+
+
       it "does not update the labels if not included in the request" do
         article.update_column(:cached_label_list, %w[meta discussion])
         expect do
