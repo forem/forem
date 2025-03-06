@@ -33,6 +33,7 @@ class Article < ApplicationRecord
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series
   attr_accessor :body_url
+  attr_writer :labels
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -727,6 +728,11 @@ class Article < ApplicationRecord
     return unless type_of == "status"
 
     processed_html_final
+  end
+
+  def labels=(input)
+    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
+    write_attribute :cached_label_list, (adjusted_input || [])
   end
 
   private
