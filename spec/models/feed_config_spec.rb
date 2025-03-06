@@ -184,7 +184,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.language_match_weight          = 18.0
 
       # Stub rand to return 0.1 for a deterministic 10% increase.
-      allow(feed_config).to receive(:rand).and_return(0.1)
+      allow(feed_config).to receive(:rand).and_return(1.1)
     end
 
     it "creates a persisted clone with adjusted weights" do

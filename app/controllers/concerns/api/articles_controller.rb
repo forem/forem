@@ -72,6 +72,7 @@ module Api
       articles_relation = @user.super_admin? ? Article.includes(:user) : @user.articles
       article = articles_relation.find(params[:id])
 
+      p article_params.inspect
       result = Articles::Updater.call(@user, article, article_params)
 
       @article = result.article
@@ -145,6 +146,7 @@ module Api
     end
 
     def article_params
+      convert_labels_param
       allowed_params = [
         :title, :body_markdown, :published, :series,
         :main_image, :canonical_url, :description, { tags: [] },
@@ -176,6 +178,14 @@ module Api
 
       message = I18n.t("api.v0.articles_controller.must_be_json", type: params[:article].class.name)
       render json: { error: message, status: 422 }, status: :unprocessable_entity
+    end
+
+    def convert_labels_param
+      labels = params.dig("article", "labels")
+      if labels.present?
+        labels = labels.is_a?(String) ? labels.gsub(" ", "").split(",") : labels
+        params[:article][:labels] = labels
+      end
     end
   end
 end
