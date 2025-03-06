@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_04_214343) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -574,6 +574,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_04_214343) do
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
     t.float "score_weight", default: 1.0
+    t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0

@@ -4,7 +4,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
   # In test environment, TIME_AGO_MAX is 90.days.ago.
   let(:user) { create(:user) }
   # Stub feed_config to return a string rather than a Proc.
-  let(:feed_config) { double("FeedConfig") }
+  let(:feed_config) { build(:feed_config) }
   before do
     allow(feed_config).to receive(:score_sql).with(user).and_return("articles.score")
   end
