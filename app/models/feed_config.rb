@@ -7,6 +7,7 @@ class FeedConfig < ApplicationRecord
     user_follow_ids = user.cached_following_users_ids + (activity_store&.recent_users&.compact || [])
     organization_follow_ids = user.cached_following_organizations_ids + (activity_store&.recent_organizations&.compact || [])
     tag_names = activity_store&.relevant_tags || user.cached_followed_tag_names
+    label_names = activity_store&.recent_labels || []
 
     activity_tracked_pageview_time = activity_store&.recently_viewed_articles&.second
     time_of_second_latest_page_view = activity_tracked_pageview_time ? activity_tracked_pageview_time[1].to_datetime : 4.days.ago
@@ -39,6 +40,14 @@ class FeedConfig < ApplicationRecord
         "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
       }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
       terms << "(#{tag_condition})"
+    end
+
+    ## Labels slightly different because we can use native Postgres array operators
+    if label_match_weight.positive? && label_names.present?
+      label_condition = "CASE WHEN " + label_names.map { |label|
+        "? = ANY(articles.cached_label_list)"
+      }.join(' OR ') + " THEN #{label_match_weight} ELSE 0 END"
+      terms << "(#{label_condition})"
     end
 
     terms << "((1.0 / (1.0 + (EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0))) * #{recency_weight})" if recency_weight.positive?

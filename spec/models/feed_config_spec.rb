@@ -10,6 +10,8 @@ RSpec.describe FeedConfig, type: :model do
       cached_following_organizations_ids: [100, 200],
       cached_followed_tag_names: ["tech", "ruby"],
       languages: double("Languages", pluck: ["en"]),
+      # Stub label names for label matching tests.
+      label_names: nil,
       # page_views stub for original tests; not used for additional weights
       page_views: double("PageViews", order: double("Ordered", second: double("PageView", created_at: Time.current - 1.day))),
       user_activity: nil
@@ -29,13 +31,17 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.organization_follow_weight    = 4.0
         feed_config.user_follow_weight            = 5.0
         feed_config.tag_follow_weight             = 6.0
+        feed_config.label_match_weight            = 4.0
         feed_config.recency_weight                = 7.0
         feed_config.comment_recency_weight        = 8.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 10.0
+
+        # Set label names so that the label condition is added.
+        allow(user).to receive(:label_names).and_return(["label1", "label2"])
       end
 
-      it "includes all the expected SQL fragments" do
+      it "includes all the expected SQL fragments including label matching" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("articles.feed_success_score * 1.0")
         expect(sql).to include("articles.comment_score * 2.0")
@@ -43,6 +49,8 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.organization_id IN")
         expect(sql).to include("CASE WHEN articles.user_id IN")
         expect(sql).to include("cached_tag_list")
+        # Expect the label match condition to reference cached_label_list.
+        expect(sql).to include("articles.cached_label_list")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
@@ -57,13 +65,17 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.organization_follow_weight    = 0.0
         feed_config.user_follow_weight            = 5.0
         feed_config.tag_follow_weight             = 0.0
+        feed_config.label_match_weight            = 0.0
         feed_config.recency_weight                = 7.0
         feed_config.comment_recency_weight        = 0.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 0.0
+
+        # Even if label names are provided, a zero weight should skip the condition.
+        allow(user).to receive(:label_names).and_return(["label1", "label2"])
       end
 
-      it "skips SQL terms for weights that are zero" do
+      it "skips SQL terms for weights that are zero including labels" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("articles.feed_success_score * 1.0")
         expect(sql).not_to include("articles.comment_score *")
@@ -71,6 +83,8 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("organization_id IN")
         expect(sql).to include("CASE WHEN articles.user_id IN")
         expect(sql).not_to include("cached_tag_list")
+        # Verify that the label condition is not present when label_match_weight is zero.
+        expect(sql).not_to include("cached_label_list")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).not_to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
@@ -86,6 +100,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.organization_follow_weight    = 0.0
         feed_config.user_follow_weight            = 0.0
         feed_config.tag_follow_weight             = 0.0
+        feed_config.label_match_weight            = 0.0
         feed_config.recency_weight                = 0.0
         feed_config.comment_recency_weight        = 0.0
         feed_config.lookback_window_weight        = 0.0
@@ -183,7 +198,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.compellingness_score_weight    = 17.0
       feed_config.language_match_weight          = 18.0
 
-      # Stub rand to return 0.1 for a deterministic 10% increase.
+      # Stub rand to return 1.1 for a deterministic 10% increase.
       allow(feed_config).to receive(:rand).and_return(1.1)
     end
 
