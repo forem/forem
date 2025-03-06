@@ -35,8 +35,19 @@ module Articles
           end
         end
 
+        articles = weighted_shuffle(articles, @feed_config.shuffle_weight) if @feed_config.shuffle_weight.positive?
         articles
       end
+
+      def weighted_shuffle(arr, shuffle_weight)
+        # Each element gets a new sort key: its original index plus a random offset.
+        # We choose the random offset uniformly from -2*shuffle_weight to 2*shuffle_weight.
+        # The average absolute offset then is (2*shuffle_weight)/2 = shuffle_weight.
+        arr.each_with_index.sort_by do |item, index|
+          index + (rand * (4 * shuffle_weight) - 2 * shuffle_weight)
+        end.map(&:first)
+      end
+      
 
       # Preserve the public interface
       alias feed default_home_feed
