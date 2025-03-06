@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
