@@ -62,6 +62,22 @@ RSpec.describe "Stories::Feeds" do
           "tag_list" => article.decorate.cached_tag_list_array,
         )
       end
+
+      it "returns feed when feed_strategy is configured" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+
+        get stories_feed_path
+
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
+      end
     end
 
     context "when rendering an article that is pinned" do
