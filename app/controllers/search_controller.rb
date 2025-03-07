@@ -59,15 +59,9 @@ class SearchController < ApplicationController
   end
 
   def listings
-    result = Search::Listing.search_documents(
-      category: listing_params[:category],
-      page: listing_params[:page],
-      per_page: listing_params[:per_page],
-      term: listing_params[:listing_search],
-    )
-
-    render json: { result: result }
+    render json: { result: [] }
   end
+  
 
   def usernames
     context = commentable_context(params[:context_type])&.find(params[:context_id])
