@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
@@ -33,6 +33,7 @@ class Article < ApplicationRecord
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series
   attr_accessor :body_url
+  attr_writer :labels
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -222,6 +223,7 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
+  validates :compellingness_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
@@ -726,6 +728,11 @@ class Article < ApplicationRecord
     return unless type_of == "status"
 
     processed_html_final
+  end
+
+  def labels=(input)
+    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
+    write_attribute :cached_label_list, (adjusted_input || [])
   end
 
   private

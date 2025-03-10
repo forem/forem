@@ -10,7 +10,7 @@
 I18n.defaultLocale = 'en';
 I18n.locale = document.body.dataset.locale;
 I18n.translations = JSON.parse(document.getElementById('i18n-translations').dataset.translations);
-const isForemWebview = navigator.userAgent.includes('ForemWebView/1');
+const isForemWebview = navigator.userAgent === 'ForemWebView/1';
 
 var instantClick
   , InstantClick = instantClick = function(document, location, $userAgent) {

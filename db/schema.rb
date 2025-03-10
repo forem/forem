@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -90,6 +90,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.boolean "archived", default: false
     t.text "body_html"
     t.text "body_markdown"
+    t.string "cached_label_list", default: [], array: true
     t.text "cached_organization"
     t.string "cached_tag_list"
     t.text "cached_user"
@@ -102,6 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
+    t.float "compellingness_score", default: 0.0, null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "crossposted_at", precision: nil
     t.string "description"
@@ -166,6 +168,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
@@ -177,6 +180,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["language"], name: "index_articles_on_language"
     t.index ["organic_page_views_past_month_count"], name: "index_articles_on_organic_page_views_past_month_count"
+    t.index ["organization_id"], name: "index_articles_on_organization_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
@@ -550,6 +554,33 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
   end
 
+  create_table "feed_configs", force: :cascade do |t|
+    t.float "clickbait_score_weight", default: 0.0, null: false
+    t.float "comment_recency_weight", default: 1.0
+    t.float "comment_score_weight", default: 1.0
+    t.float "compellingness_score_weight", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.float "featured_weight", default: 0.0, null: false
+    t.bigint "feed_impressions_count", default: 0
+    t.float "feed_success_score", default: 0.0
+    t.float "feed_success_weight", default: 1.0
+    t.float "label_match_weight", default: 1.0
+    t.float "language_match_weight", default: 1.0, null: false
+    t.float "lookback_window_weight", default: 1.0
+    t.float "organization_follow_weight", default: 1.0
+    t.float "precomputed_selections_weight", default: 1.0
+    t.float "published_today_weight", default: 0.0, null: false
+    t.float "randomness_weight", default: 0.0, null: false
+    t.float "recency_weight", default: 1.0
+    t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "score_weight", default: 1.0
+    t.float "shuffle_weight", default: 0.0, null: false
+    t.float "tag_follow_weight", default: 1.0
+    t.datetime "updated_at", null: false
+    t.float "user_follow_weight", default: 1.0
+    t.index ["feed_success_score"], name: "index_feed_configs_on_feed_success_score"
+  end
+
   create_table "feed_events", force: :cascade do |t|
     t.bigint "article_id", null: false
     t.integer "article_position"
@@ -557,11 +588,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.string "context_type", null: false
     t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", null: false
+    t.bigint "feed_config_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"
     t.index ["article_id"], name: "index_feed_events_on_article_id"
     t.index ["created_at"], name: "index_feed_events_on_created_at"
+    t.index ["feed_config_id"], name: "index_feed_events_on_feed_config_id"
     t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
 
@@ -691,6 +724,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.bigint "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
+  end
+
+  create_table "labels", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_labels_on_slug", unique: true
   end
 
   create_table "media_stores", force: :cascade do |t|
@@ -1277,6 +1319,21 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
     t.boolean "user_is_verified"
   end
 
+  create_table "user_activities", force: :cascade do |t|
+    t.jsonb "alltime_labels", default: []
+    t.jsonb "alltime_tags", default: []
+    t.datetime "created_at", null: false
+    t.datetime "last_activity_at"
+    t.jsonb "recent_labels", default: []
+    t.jsonb "recent_organizations", default: []
+    t.jsonb "recent_tags", default: []
+    t.jsonb "recent_users", default: []
+    t.jsonb "recently_viewed_articles", default: []
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_user_activities_on_user_id"
+  end
+
   create_table "user_blocks", force: :cascade do |t|
     t.bigint "blocked_id", null: false
     t.bigint "blocker_id", null: false
@@ -1579,6 +1636,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_27_210058) do
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify
+  add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_languages", "users"

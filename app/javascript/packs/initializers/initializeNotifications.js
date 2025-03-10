@@ -6,7 +6,7 @@ import { initializeSubscribeButton } from '../../packs/subscribeButton';
 /* global InstantClick, instantClick */
 
 function markNotificationsAsRead() {
-  if (navigator.userAgent.includes('ForemWebView/1')) {
+  if (navigator.userAgent === 'ForemWebView/1') {
     return;
   }
   setTimeout(() => {

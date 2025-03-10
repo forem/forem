@@ -76,7 +76,7 @@
         
         <%# First script to run no matter what %>
         <script>
-          if (navigator.userAgent.includes('ForemWebView/1') || window.frameElement) {
+          if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
             document.body.classList.add("hidden-shell");
           }
         </script>
