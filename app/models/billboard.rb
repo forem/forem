@@ -85,6 +85,7 @@ class Billboard < ApplicationRecord
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
+  after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -364,6 +365,28 @@ class Billboard < ApplicationRecord
   end
 
   private
+
+  def update_event_counts_when_taking_down
+    num_impressions = billboard_events.impressions.sum(:counts_for)
+    num_clicks = billboard_events.clicks.sum(:counts_for)
+    conversion_success = billboard_events.all_conversion_types.sum(:counts_for) * 0.5
+    rate = (num_clicks + conversion_success).to_f / num_impressions
+
+    update_columns(
+      success_rate: rate,
+      clicks_count: num_clicks,
+      impressions_count: num_impressions
+    )
+  end
+
+  def being_taken_down?
+    # Only trigger if both approved and published were true before this save.
+    return false unless approved_before_last_save && published_before_last_save
+  
+    # Check if approved changed from true to false or published changed from true to false.
+    (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
+  end
+  
 
   def generate_billboard_name
     return unless name.nil?
