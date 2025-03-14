@@ -37,6 +37,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       ],
     )
 
+    Honeybadger.notify(error) if error.present?
+
     super
   end
 
