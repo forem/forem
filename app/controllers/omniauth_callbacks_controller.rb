@@ -69,7 +69,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if @user&.id == 1
         # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
-        token = @user.authentication_token || @user.generate_authentication_token
+        token = generate_auth_token(@user)
   
         # Render a minimal HTML page that redirects via a custom scheme.
         render html: <<-HTML.html_safe
@@ -156,5 +156,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Try request.origin first, then fallback to referer.
     origin = request.origin.presence || request.referer
     origin && origin.start_with?(trusted_origin)
+  end
+
+  def generate_auth_token(user)
+    payload = {
+      user_id: user.id,
+      exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+    }
+    JWT.encode(payload, Rails.application.secret_key_base)
   end
 end
