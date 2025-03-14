@@ -71,7 +71,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Define the trusted ORIGIN for Facebook.
     trusted_origin = "https://www.facebook.com" # Verify if this is the correct value.
     # Define the expected callback path for Facebook.
-    facebook_callback_path = Authentication::Providers::Facebook::CALLBACK_PATH || "/users/auth/facebook/callback"
+    facebook_callback_path = "/users/auth/facebook/callback"
     # Check if the fullpath starts with the expected callback path and the ORIGIN matches.
     request.fullpath.start_with?(facebook_callback_path) &&
       request.headers["ORIGIN"] == trusted_origin
