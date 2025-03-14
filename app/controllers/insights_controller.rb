@@ -6,7 +6,7 @@ class InsightsController < ApplicationController
       :object_id,
       :index_name,
       :query_id,
-      position,
+      :position,
     )
 
     # Ensure all required parameters are present
