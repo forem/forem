@@ -137,22 +137,22 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def safe_facebook_callback_request?
-    # Define the trusted ORIGIN for Facebook.
-    trusted_origin = "https://m.facebook.com" # Verify if this is the correct value.
-    # Define the expected callback path for Facebook.
+    trusted_origin = "https://m.facebook.com"
     facebook_callback_path = "/users/auth/facebook/callback"
-    # Check if the fullpath starts with the expected callback path and the ORIGIN matches.
-    request&.fullpath&.start_with?(facebook_callback_path) && request.headers["ORIGIN"] &&
-      request.headers["ORIGIN"].start_with?(trusted_origin)
+    return false unless request&.fullpath&.start_with?(google_callback_path)
+    
+    # Try request.origin first, then fallback to referer.
+    origin = request.origin.presence || request.referer
+    origin && origin.start_with?(trusted_origin)
   end
 
   def safe_google_callback_request?
-    # Define the trusted ORIGIN for Google.
-    trusted_origin = "https://accounts.google.com" # Verify if this is the correct value.
-    # Define the expected callback path for Google.
+    trusted_origin = "https://accounts.google.com"
     google_callback_path = "/users/auth/google_oauth2/callback"
-    # Check if the fullpath starts with the expected callback path and the ORIGIN matches.
-    request&.fullpath&.start_with?(google_callback_path) && request.headers["ORIGIN"] &&
-      request.headers["ORIGIN"].start_with?(trusted_origin)
+    return false unless request&.fullpath&.start_with?(google_callback_path)
+    
+    # Try request.origin first, then fallback to referer.
+    origin = request.origin.presence || request.referer
+    origin && origin.start_with?(trusted_origin)
   end
 end
