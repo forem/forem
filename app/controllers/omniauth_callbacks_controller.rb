@@ -139,7 +139,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def safe_facebook_callback_request?
     trusted_origin = "https://m.facebook.com"
     facebook_callback_path = "/users/auth/facebook/callback"
-    return false unless request&.fullpath&.start_with?(google_callback_path)
+    return false unless request&.fullpath&.start_with?(facebook_callback_path)
     
     # Try request.origin first, then fallback to referer.
     origin = request.origin.presence || request.referer
