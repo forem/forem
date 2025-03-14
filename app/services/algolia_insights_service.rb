@@ -21,11 +21,11 @@ class AlgoliaInsightsService
       userToken:  user_id.to_s,
       objectIDs:  [object_id.to_s],
       timestamp:  timestamp || (Time.current.to_i * 1000),
-      positions:  positions,
       queryID:    query_id
     }
     # Only include authenticatedUserToken if user_id is present
     event[:authenticatedUserToken] = user_id.to_s if user_id.present?
+    event[:positions] = positions if positions.present?
 
     payload = { events: [event] }
 

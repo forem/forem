@@ -53,6 +53,7 @@ class PageViewsController < ApplicationMetalController
       params[:article_id].to_i,
       "Article_#{Rails.env}",
       Time.current.to_i * 1000,
+      nil
     )
   end
 end
