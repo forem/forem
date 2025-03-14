@@ -142,7 +142,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Define the expected callback path for Facebook.
     facebook_callback_path = "/users/auth/facebook/callback"
     # Check if the fullpath starts with the expected callback path and the ORIGIN matches.
-    request.fullpath.start_with?(facebook_callback_path) &&
+    request&.fullpath&.start_with?(facebook_callback_path) && request.headers["ORIGIN"] &&
       request.headers["ORIGIN"].start_with?(trusted_origin)
   end
 
@@ -152,7 +152,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Define the expected callback path for Google.
     google_callback_path = "/users/auth/google_oauth2/callback"
     # Check if the fullpath starts with the expected callback path and the ORIGIN matches.
-    request.fullpath.start_with?(google_callback_path) &&
+    request&.fullpath&.start_with?(google_callback_path) && request.headers["ORIGIN"] &&
       request.headers["ORIGIN"].start_with?(trusted_origin)
   end
 end
