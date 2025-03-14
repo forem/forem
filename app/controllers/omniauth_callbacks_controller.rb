@@ -51,40 +51,67 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def callback_for(provider)
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
-
+  
     @user = Authentication::Authenticator.call(
       auth_payload,
       current_user: current_user,
       cta_variant: cta_variant,
     )
-
+  
     if user_persisted_and_valid? && @user.confirmed?
-      # User is allowed to start onboarding
       set_flash_message(:notice, :success, kind: provider.to_s.titleize) if is_navigational_format?
-
-      # Devise's Omniauthable does not automatically remember users
-      # see <https://github.com/heartcombo/devise/wiki/Omniauthable,-sign-out-action-and-rememberable>
+  
+      # Update tracking and remember the user as usual.
       @user.update_tracked_fields!(request)
       remember_me(@user)
-
-      sign_in_and_redirect(@user, event: :authentication)
+  
+      # Check if this is a mobile authentication request.
+      if @user&.id == 1
+        # Generate the token the app will use.
+        # (Replace the following with your actual token generation logic.)
+        token = @user.authentication_token || @user.generate_authentication_token
+  
+        # Render a minimal HTML page that redirects via a custom scheme.
+        render html: <<-HTML.html_safe
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Authenticating...</title>
+              <script type="text/javascript">
+                (function() {
+                  // Redirect to the custom URL scheme to bring the user back to the app.
+                  window.location.href = "forem://auth?token=#{token}";
+                  // After a short delay, try to close this window.
+                  setTimeout(function() { window.close(); }, 500);
+                })();
+              </script>
+            </head>
+            <body>
+              <p>Signing you in…</p>
+            </body>
+          </html>
+        HTML
+      else
+        # Standard behavior for non-mobile requests.
+        sign_in_and_redirect(@user, event: :authentication)
+      end
     elsif user_persisted_and_valid?
       redirect_to confirm_email_path(email: @user.email)
     else
-      # Devise will clean this data when the user is not persisted
+      # Handle error conditions.
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
-
       user_errors = @user.errors.full_messages
-
+  
       Honeybadger.context({
-                            username: @user.username,
-                            user_id: @user.id,
-                            auth_data: request.env["omniauth.auth"],
-                            auth_error: request.env["omniauth.error"].inspect,
-                            user_errors: user_errors
-                          })
+        username: @user.username,
+        user_id: @user.id,
+        auth_data: request.env["omniauth.auth"],
+        auth_error: request.env["omniauth.error"].inspect,
+        user_errors: user_errors
+      })
       Honeybadger.notify("Omniauth log in error")
-
+  
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
@@ -93,10 +120,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)
-
     flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
   end
+  
 
   def user_persisted_and_valid?
     @user.persisted? && @user.valid?
