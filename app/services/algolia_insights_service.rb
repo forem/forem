@@ -20,6 +20,7 @@ class AlgoliaInsightsService
           eventName: event_name,
           index: index_name,
           userToken: user_id.to_s,
+          authenticatedUserToken: user_id.to_s,
           objectIDs: [object_id.to_s],
           timestamp: timestamp || (Time.current.to_i * 1000),
           positions: positions,
@@ -34,5 +35,6 @@ class AlgoliaInsightsService
     else
       Rails.logger.debug { "Failed to track event: #{response.body}" }
     end
+    response
   end
 end
