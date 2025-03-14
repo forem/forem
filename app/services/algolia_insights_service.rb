@@ -7,7 +7,7 @@ class AlgoliaInsightsService
     @api_key = api_key || Settings::General.algolia_api_key
   end
 
-  def track_event(event_type, event_name, user_id, object_id, index_name, timestamp = nil, query_id = nil)
+  def track_event(event_type, event_name, user_id, object_id, index_name, timestamp = nil, query_id = nil, positions = [1])
     headers = {
       "X-Algolia-Application-Id" => @application_id,
       "X-Algolia-API-Key" => @api_key,
@@ -22,6 +22,7 @@ class AlgoliaInsightsService
           userToken: user_id.to_s,
           objectIDs: [object_id.to_s],
           timestamp: timestamp || (Time.current.to_i * 1000),
+          positions: positions,
           queryID: query_id
         },
       ]
