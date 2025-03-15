@@ -28,26 +28,29 @@ RSpec.describe "/listings" do
   end
 
   describe "GET /listings" do
+    let(:user) { create(:user) }
+    let(:listing) { create(:listing, user: user, slug: "some-slug") }
+  
     before do
       sign_in user
     end
-
+  
     it "returns text/html and has status 200" do
       get "/listings"
       expect(response.media_type).to eq("text/html")
       expect(response).to have_http_status(:ok)
     end
-
+  
     it "listings have correct keys" do
       get "/listings"
-
+  
       parsed_response = Nokogiri.HTML(response.body)
-
+  
       listings = JSON.parse(parsed_response.xpath("//*[@id='listings-index-container']")[0]["data-listings"] || "[]")
-
+  
       expect(listings).to be_empty
     end
-
+  
     context "when the user has no params" do
       it "shows an empty listings container" do
         get "/listings"
@@ -55,7 +58,7 @@ RSpec.describe "/listings" do
         expect(response.body).not_to include("listing-item") # Assuming this is the class for individual listings
       end
     end
-
+  
     context "when the user has category and slug params for expired listing" do
       it "shows an empty listings container" do
         get "/listings", params: { category: "expired", slug: "expired-listing" }
@@ -63,13 +66,13 @@ RSpec.describe "/listings" do
         expect(response.body).not_to include("listing-item") # Assuming this is the class for individual listings
       end
     end
-
+  
     context "when view is moderate" do
       it "redirects to internal/listings/:id/edit" do
-        get "/listings", params: { view: "moderate", slug: "some-slug" }
+        get "/listings", params: { view: "moderate", slug: listing.slug }
         expect(response).to have_http_status(:found) # 302 status code
       end
-
+  
       it "without a slug raises an ActiveRecord::RecordNotFound error" do
         expect do
           get "/listings", params: { view: "moderate" }
