@@ -731,4 +731,77 @@ RSpec.describe Billboard do
       end
     end
   end
+
+  describe "#update_event_counts_when_taking_down" do
+    let!(:active_billboard) { create(:billboard, published: true, approved: true) }
+    let!(:impression_event) { create(:billboard_event, billboard: active_billboard, category: "impression", counts_for: 2) }
+    let!(:click_event) { create(:billboard_event, billboard: active_billboard, category: "click", counts_for: 1) }
+    let!(:conversion_event) do
+      create(:billboard_event, billboard: active_billboard, category: "conversion", counts_for: 3)
+    end
+
+    context "when transitioning from active to down" do
+      it "triggers the callback when only approved is set to false" do
+        expect(active_billboard).to receive(:update_event_counts_when_taking_down).and_call_original
+        active_billboard.update(approved: false)
+        active_billboard.reload
+
+        expect(active_billboard.impressions_count).to eq(2) # from impression_event
+        expect(active_billboard.clicks_count).to eq(1)       # from click_event
+        expected_success_rate = (1 + (3 * 0.5)).to_f / 2      # (clicks + conversion_success) / impressions
+        expect(active_billboard.success_rate).to eq(expected_success_rate)
+      end
+
+      it "triggers the callback when only published is set to false" do
+        expect(active_billboard).to receive(:update_event_counts_when_taking_down).and_call_original
+        active_billboard.update(published: false)
+        active_billboard.reload
+
+        expect(active_billboard.impressions_count).to eq(2)
+        expect(active_billboard.clicks_count).to eq(1)
+        expected_success_rate = (1 + (3 * 0.5)).to_f / 2
+        expect(active_billboard.success_rate).to eq(expected_success_rate)
+      end
+
+      it "triggers the callback when both approved and published are set to false" do
+        expect(active_billboard).to receive(:update_event_counts_when_taking_down).and_call_original
+        active_billboard.update(approved: false, published: false)
+        active_billboard.reload
+
+        expect(active_billboard.impressions_count).to eq(2)
+        expect(active_billboard.clicks_count).to eq(1)
+        expected_success_rate = (1 + (3 * 0.5)).to_f / 2
+        expect(active_billboard.success_rate).to eq(expected_success_rate)
+      end
+    end
+
+    context "when the billboard is already down" do
+      before do
+        # Transition the billboard to a down state
+        active_billboard.update(approved: false, published: false)
+      end
+
+      it "does not trigger the callback if approved remains false" do
+        expect(active_billboard).not_to receive(:update_event_counts_when_taking_down)
+        active_billboard.update(approved: false)
+      end
+
+      it "does not trigger the callback if published remains false" do
+        expect(active_billboard).not_to receive(:update_event_counts_when_taking_down)
+        active_billboard.update(published: false)
+      end
+
+      it "does not trigger the callback when updating unrelated attributes" do
+        expect(active_billboard).not_to receive(:update_event_counts_when_taking_down)
+        active_billboard.update(name: "New Billboard Name")
+      end
+    end
+
+    context "when no state changes occur" do
+      it "does not trigger the callback if both approved and published remain active" do
+        expect(active_billboard).not_to receive(:update_event_counts_when_taking_down)
+        active_billboard.update(name: "Updated Billboard")
+      end
+    end
+  end
 end

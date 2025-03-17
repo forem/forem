@@ -37,7 +37,8 @@ RSpec.describe "Insights", type: :request do
           "12345",
           "Article_production",
           Time.current.to_i * 1000, # Converted to integer
-          "abcdef123456"
+          "abcdef123456",
+          [1]
         )
       end
     end
@@ -55,7 +56,8 @@ RSpec.describe "Insights", type: :request do
           "12345",
           "Article_production",
           Time.current.to_i * 1000, # Converted to integer
-          "abcdef123456"
+          "abcdef123456",
+          [1]
         )
       end
     end

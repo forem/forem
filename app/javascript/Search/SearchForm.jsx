@@ -171,7 +171,7 @@ export const SearchForm = forwardRef(
       }
     };
 
-    const sendInsightEvent = async (eventType, eventName, objectID, indexName, queryID) => {
+    const sendInsightEvent = async (eventType, eventName, objectID, indexName, queryID, position) => {
       try {
         const response = await fetch('/insights', {
           method: 'POST',
@@ -186,6 +186,7 @@ export const SearchForm = forwardRef(
               object_id: objectID,
               index_name: indexName,
               query_id: queryID,
+              position: position,
             },
           }),
         });
@@ -286,7 +287,8 @@ export const SearchForm = forwardRef(
                             'Result Clicked', // eventName
                             suggestion.objectID, // objectID
                             `Article_${env}`, // indexName
-                            suggestion.queryID // queryID from Algolia response
+                            suggestion.queryID, // queryID from Algolia response
+                            idx + 1, // position
                           ).finally(() => {
                             // Navigate after tracking is sent
                             window.location.href = suggestion.path;
