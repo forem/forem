@@ -7,6 +7,12 @@ class BillboardsController < ApplicationController
 
   def show
     skip_authorization
+
+    if ApplicationConfig["disable_billboards"] == "yes"
+      render plain: ""
+      return
+    end
+
     unless session_current_user_id
       set_cache_control_headers(CACHE_EXPIRY_FOR_BILLBOARDS)
       if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG)
