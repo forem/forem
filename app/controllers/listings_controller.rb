@@ -1,6 +1,4 @@
 class ListingsController < ApplicationController
-  include ListingsToolkit
-
   INDEX_JSON_OPTIONS = {
     only: %i[
       title processed_html tag_list category id user_id slug location bumped_at
@@ -24,7 +22,6 @@ class ListingsController < ApplicationController
     }
   }.freeze
 
-  # actions `create` and `update` are defined in the module `ListingsToolkit`,
   # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
   # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_and_authorize_listing, only: %i[edit update destroy]
@@ -53,6 +50,14 @@ class ListingsController < ApplicationController
     @displayed_listing_json = @displayed_listing.to_json(INDEX_JSON_OPTIONS)
 
     set_surrogate_key_header "classified-listings-#{params[:category]}"
+  end
+
+  def create
+    head :ok
+  end
+
+  def update
+    head :ok
   end
 
   def new
@@ -89,10 +94,15 @@ class ListingsController < ApplicationController
 
   def destroy
     @listing.destroy!
-    redirect_to "/listings/dashboard", notice: I18n.t("listings_controller.deleted")
+    head :ok
   end
 
   private
+
+  def set_and_authorize_listing
+    @listing = Listing.find(params[:id])
+    authorize @listing # Or comment this out if not using Pundit for authorization
+  end
 
   def process_no_credit_left
     redirect_to credits_path, notice: I18n.t("listings_controller.no_credit")
@@ -119,15 +129,6 @@ class ListingsController < ApplicationController
   end
 
   def process_after_update
-    # The following sets variables used in the index view. We render the
-    # index view directly to avoid having to redirect.
-    #
-    # Redirects lead to a race condition where we redirect to a cached view
-    # after updating data and we don't bust the cache fast enough before
-    # hitting the view, therefore stale content ends up being served from
-    # cache.
-    #
-    # https://github.com/forem/forem/issues/10338#issuecomment-693401481
     @listings = listings_for_index_view
     @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
 
@@ -138,8 +139,6 @@ class ListingsController < ApplicationController
     redirect_to "/listings/dashboard"
   end
 
-  # This is a convenience method to query listings for use in the index view in
-  # the index action and process_after_update method
   def listings_for_index_view
     Listing.where(published: true)
       .order(bumped_at: :desc)
