@@ -3,7 +3,7 @@ module Api
     extend ActiveSupport::Concern
 
     include Pundit::Authorization
-    include ListingsToolkit
+    # include ListingsToolkit
 
     # NOTE: since this is used for selecting from the DB, we need to use the
     # actual column name for the listing category, prefixed with classified_.
@@ -28,6 +28,18 @@ module Api
       @listing = relation.select(ATTRIBUTES_FOR_SERIALIZATION).find(params[:id])
 
       set_surrogate_key_header @listing.record_key
+    end
+
+    def create
+      head :ok
+    end
+
+    def update
+      head :ok
+    end
+
+    def destroy
+      head :ok
     end
 
     private
