@@ -8,7 +8,7 @@ class BillboardsController < ApplicationController
   def show
     skip_authorization
 
-    if ApplicationConfig["DISABLE_BILLBOARDS"] == "yes"
+    if ApplicationConfig["DISABLE_BILLBOARDS"] == "yes" # Turned on if needed
       render plain: ""
       return
     end
