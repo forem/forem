@@ -56,6 +56,7 @@ RSpec.describe "PageViews" do
           article.id,
           "Article_#{Rails.env}",
           instance_of(Integer),
+          nil
         )
       end
 
