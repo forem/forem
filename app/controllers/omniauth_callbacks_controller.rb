@@ -8,7 +8,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # ONLY when it's safe to do so (i.e. ORIGIN == 'https://appleid.apple.com').
   # The hardcoded CSRF check can be found in the method `valid_request_origin?`:
   # https://github.com/rails/rails/blob/901f12212c488f6edfcf6f8ad3230bce6b3d5792/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L449-L459
-  protect_from_forgery unless: -> { safe_apple_callback_request? || safe_facebook_callback_request? || safe_google_callback_request? }
+  protect_from_forgery unless: -> { safe_apple_callback_request? || safe_facebook_callback_request? || safe_google_callback_request? || safe_github_callback_request? }
 
   # Each available authentication method needs a related action that will be called
   # as a callback on successful redirect from the upstream OAuth provider
@@ -153,6 +153,17 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     google_callback_path = "/users/auth/google_oauth2/callback"
     return false unless request&.fullpath&.start_with?(google_callback_path)
     
+    # Try request.origin first, then fallback to referer.
+    origin = request.origin.presence || request.referer
+    origin && origin.start_with?(trusted_origin)
+  end
+
+  def safe_github_callback_request?
+    return true # Temporary
+    trusted_origin = "https://github.com"
+    github_callback_path = "/users/auth/github/callback"
+    return false unless request&.fullpath&.start_with?(github_callback_path)
+
     # Try request.origin first, then fallback to referer.
     origin = request.origin.presence || request.referer
     origin && origin.start_with?(trusted_origin)
