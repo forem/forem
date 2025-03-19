@@ -1,0 +1,14 @@
+---
+ar:
+  xml:
+    opensearch:
+      short_name: "بحث %{community}"
+      description: اعثر على مشاركات %{community}.
+    user:
+      image: "صورة الملف الشخصي لـ %{user}"
+  json:
+    author: كاتب نشط في %{community}
+  mailer:
+    adjust: قم بضبط إعدادات بريدك الإلكتروني
+    adjust_only_html: هل لا ترغب في تلقي رسائل بريد إلكتروني مثل هذه؟ قم بضبط إعدادات بريدك الإلكتروني على العنوان %{path}
+    unsubscribe: إلغاء الاشتراك

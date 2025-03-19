@@ -1,0 +1,113 @@
+---
+ar:
+  liquid_tags:
+    asciinema_tag:
+      invalid_asciinema_id: "معرّف Asciinema غير صالح: %{id}"
+    blogcast_tag:
+      invalid_blogcast_id: معرّف Blogcast غير صالح
+    codepen_tag:
+      invalid_codepen_url: رابط CodePen غير صالح
+      invalid_options: خيارات غير صالحة
+    codesandbox_tag:
+      invalid_id: 'CodeSandbox خطأ: معرّف غير صالح'
+    comment_tag:
+      invalid_comment: معرّف أو رابط تعليق غير صالح
+    dotnet_fiddle_tag:
+      invalid_dotnetfiddle_url: رابط DotnetFiddle غير صالح
+    gist_tag:
+      invalid_filename: اسم ملف غير صالح
+      invalid_format: 'رابط Gist غير صالح: %{link} يجب أن تتبع الروابط هذا النمط: https://gist.github.com/username/gist_id'
+      invalid_gist_link: 'رابط Gist غير صالح: يجب عليك توفير رابط Gist'
+    git_pitch_tag:
+      invalid_gitpitch_url: رابط GitPitch غير صالح
+    github_tag:
+      github_issue_tag:
+        comment_for: تعليق لـ
+        commented_on: تعليق على
+        invalid_github_issue_pull: رابط لمشكلة GitHub، طلب سحب GitHub أو تعليق غير صالح
+        posted_on: نشر على
+      github_readme_tag:
+        invalid_options: 'علامة GitHub: خيارات غير صالحة: %{invalid} | الخيارات المدعومة: %{valid}'
+        invalid_github_repository: مسار أو رابط مستودع GitHub غير صالح
+    glitch_tag:
+      invalid_glitch_id: معرّف Glitch غير صالح
+      invalid_options: خيارات غير صالحة
+    instagram_tag:
+      invalid_instagram_id: معرّف Instagram غير صالح
+    js_fiddle_tag:
+      invalid_jsfiddle_url: رابط JSFiddle غير صالح
+      invalid_options: خيارات غير صالحة
+    jsitor_tag:
+      invalid_jsitor_link: رابط JSitor غير صالح. يرجى قراءة دليل المحرر لمزيد من المعلومات
+    kotlin_tag:
+      invalid_kotlin_playground: رابط Kotlin Playground غير صالح
+    link_tag:
+      not_exist: "المقال الذي تبحث عنه غير موجود: %{slug}"
+      not_exist_link: "المقال الذي تبحث عنه غير موجود: {% link %{slug} %}"
+    liquid_tag_base:
+      invalid_context: سياق غير صالح. يمكن استخدام هذه العلامة السائلة فقط في %{valid}.
+      no_source_found: لم يتم العثور على مصدر
+    listing_tag:
+      invalid_url_or_slug: رابط أو معرّف غير صالح. القائمة غير موجودة.
+    loom_tag:
+      invalid_loom_url: رابط Loom غير صالح
+    medium_tag:
+      invalid_link_url: رابط غير صالح أو رابط غير موجود
+    next_tech_tag:
+      invalid_url: رابط Next Tech غير صالح
+    null_tag:
+      liquid_tag_is_disabled: العلامة السائلة #%{tag_name} معطلة
+    organization_tag:
+      invalid_slug: اسم المنظمة غير صالح
+      invalid_url: رابط المنظمة غير صالح
+    parler_tag:
+      invalid_parler_url: رابط Parler غير صالح
+    podcast_tag:
+      invalid_podcast_link: رابط البودكاست غير صالح
+    reddit_tag:
+      invalid_reddit_link: 'رابط Reddit غير صالح: %{url}'
+    replit_tag:
+      invalid_replit_id: رابط Replit غير صالح أو @user/slug
+    runkit_tag:
+      runkit_tag_is_invalid: العلامة Runkit غير صالحة
+    slideshare_tag:
+      invalid_slideshare_key: مفتاح Slideshare غير صالح
+    soundcloud_tag:
+      invalid_soundcloud_url: "رابط Soundcloud غير صالح - جرّب إزالة المعلمات من الرابط: '?something=value'"
+    speakerdeck_tag:
+      invalid_speakerdeck_id: معرّف Speakerdeck غير صالح
+    spotify_tag:
+      invalid_spotify_uri: URI أو رابط Spotify غير صالح.
+    stackblitz_tag:
+      invalid_options: خيارات غير صالحة
+      invalid_stackblitz_id: معرّف Stackblitz غير صالح
+    stackery_tag:
+      missing_argument: Stackery - الوسائط المفقودة لاسم المالك و/أو المستودع
+    stackexchange_tag:
+      post_not_found: "تعذر العثور على المشاركة بهذا المعرّف: {% %{tag} %{input} %}"
+      invalid_id: 'معرّف Stack Exchange غير صالح: {% %{tag} %{input} %}'
+      invalid_site: 'موقع Stack Exchange غير صالح: {% %{tag} %{input} %}'
+    tag_tag:
+      invalid_tag_name: اسم العلامة غير صالح
+    tweet_tag:
+      invalid_twitter_id: معرّف أو رابط Twitter غير صالح
+    twitch_tag:
+      invalid_twitch_id: معرّف Twitch، Slug أو رابط غير صالح
+    twitter_timeline_tag:
+      invalid_url: رابط timeline من Twitter غير صالح.
+    unified_embed:
+      tag:
+        invalid_url: الرابط المقدم قد يحتوي على خطأ مطبعي أو خطأ؛ يرجى التحقق والمحاولة مرة أخرى
+        not_found: الرابط المقدم غير موجود. يرجى التحقق والمحاولة مرة أخرى
+        listings_disabled: القوائم معطلة على هذا Forem؛ لا يمكن تضمين رابط القائمة
+        too_many_redirects: تم توجيه الرابط المضمن لعدة مرات.
+    user_subscription_tag:
+      submit: إرسال
+      submitting: جارٍ الإرسال...
+      subscribed: أنت مشترك بالفعل.
+    wikipedia_tag:
+      section_not_found: تعذر العثور على قسم المقالة في ويكيبيديا - %{input}
+      article_not_found: "تعذر العثور على مقالة في ويكيبيديا - %{input}: %{response_detail}"
+      invalid_wikipedia_url: رابط ويكيبيديا غير صالح
+    youtube_tag:
+      invalid_youtube_id: معرّف أو رابط YouTube غير صالح
