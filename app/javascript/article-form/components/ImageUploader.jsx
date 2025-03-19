@@ -121,6 +121,7 @@ const V2EditorImageUpload = ({
         <input
           type="hidden"
           id="native-image-upload-message"
+          multiple
           value=""
           onChange={handleNativeMessage}
         />
@@ -128,6 +129,7 @@ const V2EditorImageUpload = ({
         <input
           type="file"
           tabindex="-1"
+          multiple
           aria-label="Upload image"
           id="image-upload-field"
           onChange={startNewRequest}
@@ -316,16 +318,29 @@ export const ImageUploader = ({
     }
   }
 
+  function formatUploadedImages(links) {
+    let articleImageLinks = [];
+    links.forEach(link => {
+      const formattedLink = `![Image description](${link})`;
+      articleImageLinks.push(formattedLink);
+    });
+
+    onImageUploadSuccess?.(articleImageLinks.join("\n"));
+  }
+
   function handleInsertImageUploadSuccess(response) {
     dispatch({
       type: 'upload_image_success',
       payload: { insertionImageUrls: response.links },
     });
 
-    onImageUploadSuccess?.(`![Image description](${response.links})`);
+    if (response?.links?.length > 0) {
 
-    document.getElementById('upload-success-info').innerText =
-      'image upload complete';
+      formatUploadedImages(response?.links)
+    
+        document.getElementById('upload-success-info').innerText =
+          'image upload complete';
+    }
   }
 
   function handleNativeMessage(e) {
@@ -349,11 +364,16 @@ export const ImageUploader = ({
         });
         break;
       case 'success':
-        onImageUploadSuccess?.(`![Image description](${message.link})`);
-        dispatch({
-          type: 'upload_image_success',
-          payload: { insertionImageUrls: [message.link] },
-        });
+        const links = (message.link) ? [message.link] : message.links
+
+        if (links.length > 0) {
+          formatUploadedImages(links)
+
+          dispatch({
+            type: 'upload_image_success',
+            payload: { insertionImageUrls: links },
+          });
+        }
         break;
     }
   }
