@@ -6,7 +6,7 @@ class PageView < ApplicationRecord
   belongs_to :article
 
   before_create :extract_domain_and_path
-  after_create_commit :record_field_test_event
+  # after_create_commit :record_field_test_event
   after_create_commit :update_user_activities
 
   private
