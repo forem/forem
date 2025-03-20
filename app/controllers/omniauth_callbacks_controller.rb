@@ -66,7 +66,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       remember_me(@user)
   
       # Check if this is a mobile authentication request.
-      if @user&.id == 1 || @user&.email.start_with?("bendhalpern")
+      if request.user_agent.to_s == "ForemWebView/1"
         # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
         token = generate_auth_token(@user)
@@ -137,7 +137,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def safe_facebook_callback_request?
-    return true # Temporary
     trusted_origin = "https://m.facebook.com"
     facebook_callback_path = "/users/auth/facebook/callback"
     return false unless request&.fullpath&.start_with?(facebook_callback_path)
@@ -148,7 +147,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def safe_google_callback_request?
-    return true # Temporary
     trusted_origin = "https://accounts.google.com"
     google_callback_path = "/users/auth/google_oauth2/callback"
     return false unless request&.fullpath&.start_with?(google_callback_path)
@@ -159,7 +157,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def safe_github_callback_request?
-    return true # Temporary
     trusted_origin = "https://github.com"
     github_callback_path = "/users/auth/github/callback"
     return false unless request&.fullpath&.start_with?(github_callback_path)
