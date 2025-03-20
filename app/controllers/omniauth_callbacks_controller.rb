@@ -65,8 +65,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       @user.update_tracked_fields!(request)
       remember_me(@user)
   
+      extra_params = request.env["omniauth.params"]
+      auth_origin = extra_params["auth_origin"]
       # Check if this is a mobile authentication request.
-      if request.user_agent.to_s == "ForemWebView/1"
+      if auth_origin == "forem_mobile_app"
         # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
         token = generate_auth_token(@user)
