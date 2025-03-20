@@ -12,6 +12,7 @@
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
     <% if params[:state] == "mobile" %>
       <form accept-charset="UTF-8" method="get" action="/search" role="search" class="p-2">
+        <input type="hidden" name="state" value="mobile" />
         <div class="crayons-fields crayons-fields--horizontal">
           <div class="crayons-field flex-1 relative">
             <input class="crayons-textfield landing-search-input" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
