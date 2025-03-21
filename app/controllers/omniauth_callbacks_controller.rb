@@ -80,6 +80,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
         token = generate_auth_token(@user)
+
+        if @user.username.downcase.include?("ben")
+          Honeybadger.notify("Token path", context: { token: token, username: @user.username })
+        end
+  
   
         # Render a minimal HTML page that redirects via a custom scheme.
         render html: <<-HTML.html_safe
@@ -103,6 +108,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
           </html>
         HTML
       else
+
+        if @user.username.downcase.include?("ben")
+          Honeybadger.notify("Standard path", context: { username: @user.username })
+        end
         # Standard behavior for non-mobile requests.
         sign_in_and_redirect(@user, event: :authentication)
       end
@@ -127,6 +136,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   rescue ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message
+
+    Honeybadger.notify(e)
+
     redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)
