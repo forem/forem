@@ -73,7 +73,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         Honeybadger.notify("Auth payload", context: { auth_payload: auth_payload })
       end
 
-      if auth_payload["provider"].include?("google") && %w[navbar_basic profile].exclude?(cta_variant)
+      user_agent = request.user_agent
+
+      if (auth_payload["provider"].include?("google") && %w[navbar_basic profile].exclude?(cta_variant)) || user_agent == "ForemWebView/1"
         # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
         token = generate_auth_token(@user)
