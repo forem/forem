@@ -357,15 +357,27 @@ class User < ApplicationRecord
 
   def cached_following_users_ids
     cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
-    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
-      Follow.follower_user(id).limit(150).pluck(:followable_id)
+    begin
+      Timeout.timeout(0.05) do
+        Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+          Follow.follower_user(id).limit(150).pluck(:followable_id)
+        end
+      end
+    rescue Timeout::Error
+      []
     end
   end
-
+  
   def cached_following_organizations_ids
     cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
-    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
-      Follow.follower_organization(id).limit(150).pluck(:followable_id)
+    begin
+      Timeout.timeout(0.05) do
+        Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+          Follow.follower_organization(id).limit(150).pluck(:followable_id)
+        end
+      end
+    rescue Timeout::Error
+      []
     end
   end
 

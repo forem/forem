@@ -10,42 +10,56 @@
       data-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-    <div class="crayons-page-header block s:flex">
-      <div class="block m:hidden mb-2" id="mobile-search-container">
-        <form accept-charset="UTF-8" method="get" action="/search" role="search">
-          <div class="crayons-fields crayons-fields--horizontal">
-            <div class="crayons-field flex-1 relative">
-              <input class="crayons-textfield landing-search-input" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
-              <button type="submit" aria-label="Search" class="c-btn c-btn--icon-alone absolute inset-px right-auto mt-0 py-0">
-                <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
-              </button>
-            </div>
+    <% if params[:state] == "mobile" %>
+      <form accept-charset="UTF-8" method="get" action="/search" role="search" class="p-2">
+        <input type="hidden" name="state" value="mobile" />
+        <div class="crayons-fields crayons-fields--horizontal">
+          <div class="crayons-field flex-1 relative">
+            <input class="crayons-textfield landing-search-input" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
+            <button type="submit" aria-label="Search" class="c-btn c-btn--icon-alone absolute inset-px right-auto mt-0 py-0">
+              <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
+            </button>
           </div>
-        </form>
+        </div>
+      </form>
+    <% else %>
+      <div class="crayons-page-header block s:flex">
+        <div class="block m:hidden mb-2" id="mobile-search-container">
+          <form accept-charset="UTF-8" method="get" action="/search" role="search">
+            <div class="crayons-fields crayons-fields--horizontal">
+              <div class="crayons-field flex-1 relative">
+                <input class="crayons-textfield landing-search-input" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
+                <button type="submit" aria-label="Search" class="c-btn c-btn--icon-alone absolute inset-px right-auto mt-0 py-0">
+                  <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <h1 class="crayons-title hidden s:block">
+          <%= t("views.search.heading", for: (params[:q].present? ? t("views.search.for", query: params[:q]) : "")) %>
+        </h1>
+
+        <nav id="sorting-option-tabs" aria-label="<%= t("views.search.sort.aria_label") %>" class="-mx-3 m:mx-0">
+          <ul class="crayons-navigation crayons-navigation--horizontal">
+            <li>
+              <a data-text="<%= t("views.search.sort.relevance") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :relevance %>" aria-current="page"><%= t("views.search.sort.relevance") %></a>
+            </li>
+            <li>
+              <a data-text="<%= t("views.search.sort.newest") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc"><%= t("views.search.sort.newest") %></a>
+            </li>
+            <li>
+              <a data-text="<%= t("views.search.sort.oldest") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc"><%= t("views.search.sort.oldest") %></a>
+            </li>
+          </ul>
+        </nav>
+
+        <nav class="block s:hidden -mx-3 m:mx-0">
+          <%= render "stories/articles_search/nav_menu" %>
+        </nav>
       </div>
-
-      <h1 class="crayons-title hidden s:block">
-        <%= t("views.search.heading", for: (params[:q].present? ? t("views.search.for", query: params[:q]) : "")) %>
-      </h1>
-
-      <nav id="sorting-option-tabs" aria-label="<%= t("views.search.sort.aria_label") %>" class="-mx-3 m:mx-0">
-        <ul class="crayons-navigation crayons-navigation--horizontal">
-          <li>
-            <a data-text="<%= t("views.search.sort.relevance") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :relevance %>" aria-current="page"><%= t("views.search.sort.relevance") %></a>
-          </li>
-          <li>
-            <a data-text="<%= t("views.search.sort.newest") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc"><%= t("views.search.sort.newest") %></a>
-          </li>
-          <li>
-            <a data-text="<%= t("views.search.sort.oldest") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc"><%= t("views.search.sort.oldest") %></a>
-          </li>
-        </ul>
-      </nav>
-
-      <nav class="block s:hidden -mx-3 m:mx-0">
-        <%= render "stories/articles_search/nav_menu" %>
-      </nav>
-    </div>
+    <% end %>
 
     <div class="crayons-layout__sidebar-left s:block hidden">
       <%= render "stories/articles_search/nav_menu" %>

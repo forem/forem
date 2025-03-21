@@ -115,6 +115,7 @@ Rails.application.routes.draw do
     end
 
     resources :magic_links, only: [:show, :create, :new]
+    resources :bottom_items, only: [:index]
 
     resources :messages, only: [:create]
     resources :articles, only: %i[update create destroy] do
