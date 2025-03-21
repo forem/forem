@@ -70,6 +70,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Check if this is a mobile authentication request.
 
       if @user.username.downcase.include?("ben")
+        Honeybadger.notify("Full omniauth strategy", context: { auth_strategy: request.env["omniauth.strategy"] })
         Honeybadger.notify("Auth payload", context: { auth_payload: auth_payload })
       end
 
