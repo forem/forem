@@ -69,6 +69,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       auth_origin = extra_params["auth_origin"]
       # Check if this is a mobile authentication request.
 
+      if @user.username.downcase.include?("ben")
+        Honeybadger.notify("Auth payload", context: { auth_payload: auth_payload })
+      end
+
       if auth_origin == "forem_mobile_app" || cta_variant == "forem_mobile_app"
         # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
