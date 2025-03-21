@@ -10,7 +10,7 @@ module Emails
         next unless user
 
         unless subject.start_with?("[TEST] ")
-          last_email_message = user.email_messages.where(email_id: email_id).last
+          last_email_message = user.email_messages.where("sent_at > ?", 12.hours.ago).where(email_id: email_id).last
           # Fix the "last_email" bug by referencing 'last_email_message'
           next if last_email_message && !last_email_message.subject.start_with?("[TEST] ")
         end
