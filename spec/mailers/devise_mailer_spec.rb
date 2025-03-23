@@ -1,19 +1,26 @@
 require "rails_helper"
 
-RSpec.describe DeviseMailer do
+RSpec.describe DeviseMailer, type: :mailer do
+  include Devise::Controllers::UrlHelpers  # Include Devise route helpers
+
   let(:user) { create(:user) }
+  let(:from_email_address) { "custom_noreply@forem.com" }
+  let(:reply_to_email_address) { "custom_reply@forem.com" }
+  let(:community_name) { "Forem Community" }
+  let(:app_domain) { "funky-one-of-a-kind-domain-#{rand(100)}.com" }
+
+  before do
+    allow(Settings::Community).to receive(:community_name).and_return(community_name)
+    allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
+    allow(Settings::General).to receive(:app_domain).and_return(app_domain)
+    allow(ForemInstance).to receive(:from_email_address).and_return(from_email_address)
+    allow(ForemInstance).to receive(:reply_to_email_address).and_return(reply_to_email_address)
+    ActionMailer::Base.default_url_options[:host] = app_domain
+    DeviseMailer.default_url_options[:host] = app_domain
+  end
 
   describe "#reset_password_instructions" do
     let(:email) { described_class.reset_password_instructions(user, "test") }
-    let(:from_email_address) { "custom_noreply@forem.com" }
-    let(:reply_to_email_address) { "custom_reply@forem.com" }
-
-    before do
-      allow(Settings::General).to receive(:app_domain).and_return("funky-one-of-a-kind-domain-#{rand(100)}.com")
-      allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
-      allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
-      allow(Settings::SMTP).to receive(:reply_to_email_address).and_return(reply_to_email_address)
-    end
 
     it "renders sender" do
       expected_from = "#{Settings::Community.community_name} <#{from_email_address}>"
@@ -54,6 +61,19 @@ RSpec.describe DeviseMailer do
       it "renders proper URL" do
         expect(email.body.to_s).to include("confirmation_token=faketoken")
       end
+
+      it "includes name in welcome email" do
+        email = described_class.confirmation_instructions(user, "faketoken")
+        expect(email.body.to_s).to include("Welcome #{user.name}")
+      end
+        
+
+      it "does not include name in confirmation email if includes http" do
+        user.update!(name: "Testing https://example.com")
+        email = described_class.confirmation_instructions(user, "faketoken")
+        expect(email.body.to_s).not_to include("https://example.com")
+        expect(email.body.to_s).to include("Welcome!")
+      end
     end
   end
 
@@ -73,13 +93,6 @@ RSpec.describe DeviseMailer do
 
     let(:email) { described_class.invitation_instructions(user, token, opts) }
 
-    before do
-      allow(Settings::SMTP).to receive_messages(
-        from_email_address: "custom_noreply@example.com",
-        reply_to_email_address: "custom_reply@example.com",
-      )
-    end
-
     it "uses the custom invite subject if provided" do
       expect(email.subject).to eq(custom_invite_subject)
     end
@@ -90,18 +103,15 @@ RSpec.describe DeviseMailer do
     end
 
     it "includes the custom invite message if provided" do
-      # Ensure your email view actually includes @message
-      expect(email.to_s).to include(custom_invite_message)
+      expect(email.body.encoded).to include(custom_invite_message)
     end
 
     it "does not include overridden default message if invite message is provided" do
-      # Ensure your email view actually includes @message
-      expect(email.to_s).not_to include("<p>#{I18n.t('devise.mailer.invitation_instructions.accept_instructions')}")
+      expect(email.body.encoded).not_to include("<p>#{I18n.t('devise.mailer.invitation_instructions.accept_instructions')}")
     end
 
     it "includes the custom invite footnote if provided" do
-      # Ensure your email view actually includes @footnote
-      expect(email.to_s).to include(custom_invite_footnote)
+      expect(email.body.encoded).to include(custom_invite_footnote)
     end
   end
 end

@@ -23,7 +23,7 @@ describe('Home page billboards', () => {
 
       it('shows billboards targeting their location', () => {
         cy.findByRole('main').within(() => {
-          cy.get('.billboard')
+          cy.get('.bb-placement')
             .should('contain', 'This is a billboard shown to people in Ontario')
             .and(
               'not.contain',
@@ -34,7 +34,7 @@ describe('Home page billboards', () => {
 
       it('shows billboards that do not target any location', () => {
         cy.findByLabelText('Primary sidebar').within(() => {
-          cy.get('.billboard').should('contain', 'This is a regular billboard');
+          cy.get('.bb-placement').should('contain', 'This is a regular billboard');
         });
       });
     });
@@ -46,13 +46,13 @@ describe('Home page billboards', () => {
 
       it('only shows billboards with a cacheable target geolocation', () => {
         cy.findByRole('main').within(() => {
-          cy.get('.billboard').should('not.exist');
+          cy.get('.bb-placement').should('not.exist');
         });
       });
 
       it('shows billboards that do not target any location', () => {
         cy.findByLabelText('Primary sidebar').within(() => {
-          cy.get('.billboard').should('contain', 'This is a regular billboard');
+          cy.get('.bb-placement').should('contain', 'This is a regular billboard');
         });
       });
     });

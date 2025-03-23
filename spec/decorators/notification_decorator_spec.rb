@@ -150,7 +150,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
     it "responds to article fields (even if blank)" do
       expect(decorated.article_id).to be_nil
-      expect(decorated.article_path).to be_nil
+      expect(decorated.article_url).to be_nil
       expect(decorated.article_title).to be_nil
       expect(decorated.article_tag_list).to eq([])
       expect(decorated.article_updated_at).to be_nil
@@ -235,7 +235,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
     it "responds to article fields (even if blank)" do
       expect(decorated.article_id).to be_nil
-      expect(decorated.article_path).to be_nil
+      expect(decorated.article_url).to be_nil
       expect(decorated.article_title).to be_nil
       expect(decorated.article_tag_list).to eq([])
       expect(decorated.article_updated_at).to be_nil
@@ -279,6 +279,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
               },
               "article" => {
                 "id" => article_id,
+                "url" => "https://example.com/a_user/article-here",
                 "path" => "/a_user/article-here",
                 "class" => { "name" => "Article" },
                 "title" => "Article Here",
@@ -324,7 +325,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       it "can find article's id, path title, tag_list and updated_at" do
         expect(decorated.article_id).to eq(article_id)
-        expect(decorated.article_path).to eq("/a_user/article-here")
+        expect(decorated.article_url).to eq("https://example.com/a_user/article-here")
         expect(decorated.article_title).to eq("Article Here")
         expect(decorated.article_tag_list).to eq([])
         expect(decorated.article_updated_at).to eq("2023-06-02T06:55:53.406Z")
@@ -415,7 +416,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       it "responds to article fields (even if blank)" do
         expect(decorated.article_id).to be_blank
-        expect(decorated.article_path).to be_blank
+        expect(decorated.article_url).to be_blank
         expect(decorated.article_title).to be_blank
         expect(decorated.article_tag_list).to eq([])
         expect(decorated.article_updated_at).to be_blank
@@ -527,7 +528,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       it "responds to article fields (even if blank)" do
         expect(decorated.article_id).to be_blank
-        expect(decorated.article_path).to be_blank
+        expect(decorated.article_url).to be_blank
         expect(decorated.article_title).to be_blank
         expect(decorated.article_tag_list).to eq([])
         expect(decorated.article_updated_at).to be_blank

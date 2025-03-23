@@ -129,7 +129,7 @@ export const initializeDropdown = ({
   const triggerButton = document.getElementById(triggerElementId);
   const dropdownContent = document.getElementById(dropdownContentId);
 
-  if (!triggerButton || !dropdownContent) {
+  if ((!triggerButton || !dropdownContent) || triggerButton.dataset.dropdownInitialized === 'true') {
     // The required props haven't been provided, do nothing
     return;
   }
@@ -138,6 +138,7 @@ export const initializeDropdown = ({
   triggerButton.setAttribute('aria-expanded', 'false');
   triggerButton.setAttribute('aria-controls', dropdownContentId);
   triggerButton.setAttribute('aria-haspopup', 'true');
+  triggerButton.setAttribute('data-dropdown-initialized', 'true');
 
   const keyUpListener = ({ key }) => {
     if (key === 'Escape') {

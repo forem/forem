@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe Notifications::NotifiableAction::Send, type: :service do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
-  let(:article) { create(:article, user: user, organization: organization) }
+  let(:subforem) { create(:subforem) }
+  let(:article) { create(:article, user: user, organization: organization, subforem: subforem) }
 
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -25,6 +26,7 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       notifications = Notification.where(user_id: user2.id, notifiable_id: article.id, notifiable_type: "Article")
       expect(notifications.size).to eq(1)
       notification = notifications.first
+      expect(notification.subforem_id).to eq(subforem.id)
       expect(notification.action).to eq("Published")
       expect(notification.json_data["article"]["id"]).to eq(article.id)
       expect(notification.json_data["user"]["id"]).to eq(user.id)

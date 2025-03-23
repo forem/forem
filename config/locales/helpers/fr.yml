@@ -116,11 +116,11 @@ fr:
       recently_created: Récemment créé
       recently_published: Récemment publié
     authentication_helper:
-      any_of_those: n'importe lequel de ces éléments
-      email_password: Email et mot de passe
-      reminder:  'Rappel : vous avez utilisé %{method} pour authentifier votre compte, veuillez donc utiliser %{dem} pour vous connecter si vous y êtes invité'
-      that: que
-      invite_only: Vous ne pouvez pas faire cela tant que vous n'avez pas désactivé le mode "Invite Only".
+      any_of_those: any of those
+      email_password: Email & Password
+      reminder: 'You used %{method} to authenticate your account originally, so you can use %{dem} — or send yourself a <a href="%{link}" style="color:black">magic link</a>.'
+      that: that
+      invite_only: You cannot do this until you disable Invite Only Mode
     comments_helper:
       ama: ama
       ask_me_anything: Demandez-moi n'importe quoi

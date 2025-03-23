@@ -35,6 +35,7 @@ RSpec.describe I18n do
   it "does not have inconsistent interpolations" do
     error_message = "#{inconsistent_interpolations.leaves.count} i18n keys have inconsistent interpolations.\n" \
                     "Run `i18n-tasks check-consistent-interpolations' to show them"
+    # p inconsistent_interpolations
     expect(inconsistent_interpolations).to be_empty, error_message
   end
 end

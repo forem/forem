@@ -1,10 +1,8 @@
 <% compact_margin = Settings::General.social_media_handles.values.compact_blank.count > 5 %>
 <% Settings::General.social_media_handles.each do |social_media_type, handle| %>
   <% next if handle.blank? %>
-  <%# There isn't a single Mastodon site to build the target URL so the setting should contain the complete URL %>
-  <% target_url = social_media_type == "mastodon" ? handle : "https://#{social_media_type}.com/#{handle}" %>
   <a
-    href="<%= target_url %>"
+    href="<%= social_media_constructed_url(social_media_type, handle) %>"
     target="_blank"
     class="c-link c-link--icon-alone c-link--block <%= compact_margin ? "" : "mx-1" %>"
     rel="noopener me">

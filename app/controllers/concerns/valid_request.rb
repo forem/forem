@@ -11,7 +11,8 @@ module ValidRequest
     return if Rails.env.test?
 
     if (referer = request.referer).present?
-      referer.start_with?(URL.url)
+      subforem = Subforem.find_by(domain: request.host)
+      referer.start_with?(URL.url(nil, subforem))
     else
       origin = request.origin
       if origin == "null"

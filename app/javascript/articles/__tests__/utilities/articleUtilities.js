@@ -4,6 +4,7 @@ export const article = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -34,6 +35,7 @@ export const articleWithOrganization = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -69,6 +71,7 @@ export const articleWithSnippetResult = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -104,6 +107,7 @@ export const articleWithReactions = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -170,6 +174,7 @@ export const articleWithComments = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -214,6 +219,7 @@ export const articleWithCommentWithLongParagraph = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -259,6 +265,7 @@ export const articleWithReadingTimeGreaterThan1 = {
   id: 62407,
   title: 'Unbranded Home Loan Account',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -289,6 +296,7 @@ export const videoArticle = {
   id: 49020,
   title: 'monitor recontextualize',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'Article',
   flare_tag: {
@@ -320,6 +328,7 @@ export const podcastArticle = {
   id: 49020,
   title: 'monitor recontextualize',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: 'podcast_episodes',
   class_name: 'Article',
   flare_tag: {
@@ -355,6 +364,7 @@ export const podcastEpisodeArticle = {
   id: 49020,
   title: 'monitor recontextualize',
   path: '/some-post/path',
+  url: 'http://example.com/some-post/path',
   type_of: '',
   class_name: 'PodcastEpisode',
   flare_tag: {

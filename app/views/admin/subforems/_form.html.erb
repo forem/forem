@@ -1,0 +1,13 @@
+<%= form_for [:admin, @subforem] do |form| %>
+  <div class="crayons-field">
+    <%= form.label :domain, class: "crayons-label" %>
+    <%= form.text_field :domain, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field crayons-field--checkbox py-4">
+    <%= form.label :discoverable, class: "crayons-label" %>
+    <%= form.check_box :discoverable, class: "crayons-checkbox" %>
+  </div>
+  <div>
+    <%= form.submit class: "c-btn c-btn--primary" %>
+  </div>
+<% end %>

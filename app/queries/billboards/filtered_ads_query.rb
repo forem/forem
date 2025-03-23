@@ -12,7 +12,7 @@ module Billboards
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [], page_id: nil,
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
                    user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil,
-                   role_names: nil)
+                   role_names: nil, subforem_id: nil)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -27,11 +27,13 @@ module Billboards
       @location = Geolocation.from_iso3166(location)
       @cookies_allowed = cookies_allowed
       @role_names = role_names
+      @subforem_id = subforem_id || RequestStore.store[:subforem_id]
     end
 
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+      @filtered_billboards = included_subforem_ads #if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
@@ -117,6 +119,11 @@ module Billboards
 
     def unexcluded_article_ads
       @filtered_billboards.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+    end
+
+    def included_subforem_ads
+      @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
+                                  subforem_id: @subforem_id)
     end
 
     def authenticated_ads(display_auth_audience)

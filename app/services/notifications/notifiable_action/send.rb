@@ -46,6 +46,7 @@ module Notifications
             user_id: follower.id,
             notifiable_id: notifiable.id,
             notifiable_type: notifiable.class.name,
+            subforem_id: notifiable.subforem_id,
             action: action,
             json_data: json_data,
             created_at: now,

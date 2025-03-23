@@ -25,6 +25,8 @@ class NotifyMailer < ApplicationMailer
 
     mail(to: @user.email,
          subject: I18n.t("mailers.notify_mailer.new_reply", name: @comment.user.name, type: @comment.parent_type))
+  rescue StandardError => e
+    Honeybadger.notify(e)
   end
 
   def new_follower_email

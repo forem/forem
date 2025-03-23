@@ -39,6 +39,7 @@ en:
     mention_notifications: mention notifications
     this_list: this list
     unread_notifications: unread notifications
+    newsletter: newsletter
   feedback_messages_controller:
     error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
     n_a: N/A

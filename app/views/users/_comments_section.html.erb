@@ -28,7 +28,7 @@
       <% if comment.commentable.present? && comment.commentable.published && !comment.deleted %>
         <a href="<%= comment.path %>" class="profile-comment-row ">
           <h4 class="fw-bold fs-base m-0 mb-1">
-            <%= comment.commentable.title %>
+            <%= truncate(comment.commentable.title, length: 75) %>
           </h4>
           <div class="flex items-center fs-s">
             <p class="color-base-80">

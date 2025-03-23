@@ -88,6 +88,10 @@ class PodcastEpisode < ApplicationRecord
     tags.pluck(:keywords_for_search).join
   end
 
+  def subforem_id
+    nil
+  end
+
   ## Useless stubs
   def nil_method
     nil

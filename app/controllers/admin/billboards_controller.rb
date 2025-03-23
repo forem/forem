@@ -66,7 +66,7 @@ module Admin
       params.permit(:organization_id, :body_markdown, :placement_area, :target_geolocations,
                     :published, :approved, :name, :display_to, :tag_list, :type_of, :color,
                     :exclude_article_ids, :audience_segment_id, :priority, :browser_context,
-                    :exclude_role_names, :target_role_names,
+                    :exclude_role_names, :target_role_names, :include_subforem_ids,
                     :render_mode, :template, :custom_display_label, :requires_cookies)
     end
 

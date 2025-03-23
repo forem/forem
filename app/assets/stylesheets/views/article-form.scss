@@ -204,6 +204,15 @@
         margin-right: var(--su-4);
       }
     }
+
+    @media (max-width: $breakpoint-s) {
+      .items-center {
+        width: 100%;
+      }
+      .crayons-btn {
+        width: 100%;
+      }
+    }
   }
 
   &__title {

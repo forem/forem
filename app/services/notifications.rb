@@ -41,6 +41,7 @@ module Notifications
       class: { name: "Article" },
       title: article.title,
       path: article.path,
+      url: article.url,
       updated_at: article.updated_at,
       published_at: article.published_at,
       readable_publish_date: article.readable_publish_date,

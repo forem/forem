@@ -65,7 +65,7 @@ module Articles
 
     # A helper method to ensure a consistent lookup
     def apply_common_scope(scope:, tags:)
-      scope.published
+      scope.published.from_subforem
         .cached_tagged_with_any(tags)
         .unscope(:select)
         .limited_column_select

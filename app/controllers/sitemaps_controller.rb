@@ -22,7 +22,7 @@ class SitemapsController < ApplicationController
 
   def sitemap_index
     set_surrogate_controls(Time.current)
-    @articles_count = Article.published
+    @articles_count = Article.published.from_subforem
       .where("score >= ?", Settings::UserExperience.index_minimum_score).size
     @page_limit = RESULTS_LIMIT
     @view_template = "index"
@@ -35,7 +35,7 @@ class SitemapsController < ApplicationController
         .where("score > -1") # Spam mitigation
         .limit(RESULTS_LIMIT).offset(offset).pluck(:username, :profile_updated_at)
     when "posts"
-      @articles = Article.published.order("published_at DESC")
+      @articles = Article.published.from_subforem.order("published_at DESC")
         .where("score >= ?", Settings::UserExperience.index_minimum_score)
         .limit(RESULTS_LIMIT).offset(offset).pluck(:path, :last_comment_at)
     when "tags" # tags
@@ -56,7 +56,7 @@ class SitemapsController < ApplicationController
       not_found
     end
 
-    @articles = Article.published
+    @articles = Article.published.from_subforem
       .where("published_at > ? AND published_at < ? AND score >= ?",
              date, date.end_of_month, Settings::UserExperience.index_minimum_score)
       .pluck(:path, :last_comment_at)

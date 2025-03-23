@@ -20,7 +20,7 @@ en:
         reddit:
           text: Share to Reddit
         twitter:
-          text: Share to Twitter
+          text: Share to X
           query: '"%{article}" by %{author}'
         link: Share Post via...
         report: Report Abuse

@@ -398,5 +398,5 @@
   --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.5),
     0 10px 10px -5px rgba(var(--black), 0.25),
     inset 0 0 0 1px rgba(var(--white), 0.1);
-  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.06);
+  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.05);
 }

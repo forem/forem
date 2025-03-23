@@ -3,7 +3,7 @@ module AlgoliaSearchable
     extend ActiveSupport::Concern
 
     included do
-      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_actor?) do
+      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_actor_or_empty_profile?) do
         attribute :name, :username, :badge_achievements_count
 
         add_attribute(:profile_image) { { url: profile_image_90 } }
@@ -22,8 +22,8 @@ module AlgoliaSearchable
       end
     end
 
-    def bad_actor?
-      score.negative? || banished? || spam_or_suspended?
+    def bad_actor_or_empty_profile?
+      score.negative? || banished? || spam_or_suspended? || (comments_count.zero? && articles_count.zero?)
     end
   end
 end

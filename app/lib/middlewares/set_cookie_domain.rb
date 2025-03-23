@@ -7,9 +7,17 @@ module Middlewares
     end
 
     def call(env)
-      env["rack.session.options"][:domain] = ".#{Settings::General.app_domain}"
+      env["rack.session.options"][:domain] = ".#{root_domain(Settings::General.app_domain)}"
 
       @app.call(env)
+    end
+
+    def root_domain(host)
+      # The `default_rule: nil` option ensures it raises an error if the domain is invalid
+      parsed = PublicSuffix.parse(host, default_rule: nil)
+      parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+    rescue PublicSuffix::DomainInvalid
+      host
     end
   end
 end

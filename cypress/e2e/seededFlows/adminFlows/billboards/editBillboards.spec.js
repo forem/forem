@@ -44,22 +44,22 @@ describe('Billboards Form', () => {
     describe('Audience Segment field', () => {
       it('should not show the audience segment field if the display to is logged-out users', () => {
         cy.findByRole('radio', { name: 'Only logged out users' }).click();
-        cy.findByLabelText('Users who:').should('not.be.visible');
+        cy.findByLabelText('Users in segment:').should('not.be.visible');
       });
 
       it('should not show the audience segment field if the display to is all users', () => {
         cy.findByRole('radio', { name: 'All users' }).click();
-        cy.findByLabelText('Users who:').should('not.be.visible');
+        cy.findByLabelText('Users in segment:').should('not.be.visible');
       });
 
       it('should show the audience segment field if the display to is logged-in users', () => {
         cy.findByRole('radio', { name: 'Only logged in users' }).click();
-        cy.findByLabelText('Users who:').should('be.visible');
+        cy.findByLabelText('Users in segment:').should('be.visible');
       });
 
       it('should not include manual segments in the audience segment field', () => {
         cy.findByRole('radio', { name: 'Only logged in users' }).click();
-        cy.findByLabelText('Users who:')
+        cy.findByLabelText('Users in segment:')
           .as('audienceSegments')
           .should('be.visible');
         // Unsure of the best way to separate the get/select chaining at the moment.
@@ -90,7 +90,7 @@ describe('Billboards Form', () => {
           });
 
           it('shows the audience segment field but disabled', () => {
-            cy.findByLabelText('Users who:')
+            cy.findByLabelText('Users in segment:')
               .as('audienceSegments')
               .should('be.disabled');
 

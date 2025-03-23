@@ -69,8 +69,8 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
+  # We have the option of a secondary cache store, but it is not required.
+  # The secondary store could be used for redundancy or to be used for swapping stores.
   redis_url = ENV.fetch("REDISCLOUD_URL", nil)
   redis_url ||= ENV.fetch("REDIS_URL", nil)
   default_expiration = 24.hours.to_i

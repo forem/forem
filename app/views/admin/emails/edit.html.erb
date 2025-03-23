@@ -1,0 +1,12 @@
+<h1 class="crayons-title mb-4">Make a new Email</h1>
+<% if @email.status != "draft" && @email.type_of != "onboarding_drip" %>
+  <div class="crayons-notice crayons-notice--danger p-4 my-2">
+    This email is not an onboarding drip email. It has already been sent, and updating it will not have any affect on sent emails.
+  </div>
+<% end %>
+<div class="crayons-card p-6">
+  <%= form_with(model: [:admin, @email], url: admin_email_path(@email), method: :patch, local: true) do |form| %>
+    <%= render "form", form: form %>
+    <%= submit_tag "Update Email", class: "c-btn c-btn--primary" %>
+  <% end %>
+</div>

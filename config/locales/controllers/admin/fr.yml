@@ -33,6 +33,13 @@ fr:
       deleted: L'annonce a été supprimée !
       updated: L'annonce publicitaire a été mise à jour !
       wrong: Quelque chose s'est mal passé avec la suppression de l'annonce publicitaire.
+    emails_controller:
+      created: Emails are being sent!
+      drafted: Email has been drafted!
+      activated: Email has been activated!
+      deleted: Email has been deleted!
+      updated: Email has been updated!
+      wrong: Something went wrong with deleting the Email.
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:
@@ -110,6 +117,10 @@ fr:
       confirmation: Mon nom d'utilisateur est @%{username} et cette action est 100% sûre et appropriée.
     spaces_controller:
       update_success: L'espace a été mis à jour.
+    subforems_controller:
+      created: Le sous-forum a été créé !
+      updated: Le sous-forum a été mis à jour !
+      deleted: Le sous-forum a été supprimé !
     tags:
       moderators_controller:
         not_found: "Le nom d'utilisateur %{username} n'a pas été trouvé"

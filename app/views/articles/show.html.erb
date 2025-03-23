@@ -1,12 +1,22 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
+<link rel="prefetch" href="/reactions?article_id=<%= @article.id %>">
+
 <style>
   .html-variant-wrapper { display: none}
 </style>
 
+<% if @article.processed_html.include?("https://embed.bsky.app/static/embed.js") %>
+  <link rel="preload" href="https://embed.bsky.app/static/embed.js" as="script">
+<% end %>
+
+<% if @article.processed_html.include?("data-animated") %>
+  <%= javascript_include_tag "articleAnimations", defer: true %>
+<% end %>
+
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
-  <%= javascript_include_tag "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
+  <%= javascript_include_tag "webShare", "articlePage", "articleSignedIn", "articleModerationTools", "commentDropdowns", defer: true %>
 <% else %>
   <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
@@ -159,24 +169,26 @@
 
             <%= render "articles/multiple_engagements" unless @article.public_reactions_count.zero? %>
 
-            <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-2 <%= @article.title_length_classification %>">
+            <h1 class=" <%= @article.type_of == "full_post" ? "fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy" : "fs-xl m:fs-2xl l:fs-3xl fw-normal" %> lh-tight mb-2 <%= @article.title_length_classification %>">
               <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                 <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
               <% end %>
               <%= @article.title %>
             </h1>
-
-            <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="spec__tags flex flex-wrap">
-                <% @article.cached_tag_list_array.each do |tag| %>
-                  <%= render_tag_link(tag) %>
-                <% end %>
-              </div>
+            
+            <% if @article.type_of == "full_post" %>
+              <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
+                <div class="spec__tags flex flex-wrap">
+                  <% @article.cached_tag_list_array.each do |tag| %>
+                    <%= render_tag_link(tag) %>
+                  <% end %>
+                </div>
+              <% end %>
             <% end %>
           </div>
         </header>
 
-        <div class="crayons-article__main">
+        <div class="crayons-article__main <%= "pt-0" if @article.type_of == "status" %>">
           <% if @collection %>
             <%= render "articles/collection",
                        rendered_article: @article,
@@ -185,7 +197,19 @@
           <% end %>
 
           <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
-            <%= @article.processed_html.html_safe %>
+            <% if @article.type_of == "status" && @article.processed_html_final.present? %>
+              <% if user_signed_in? %>
+                <div class="pt-2">
+                  <%= @article.processed_html_final.html_safe %>
+                </div>
+              <% else %>
+                <a href="/enter?state=new-user" class="crayons-card p-4 fs-s block mt-2">
+                  Sign in to view linked content
+                </a>
+              <% end %>
+            <% else %>
+              <%= @article.processed_html_final.html_safe %>
+            <% end %>
           </div>
 
           <% if @article.long_markdown? && @collection %>
@@ -206,7 +230,7 @@
         <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
       </div>
 
-      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
+      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 96.hours) do %>
         <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
@@ -247,9 +271,42 @@
 
 <script>
   <%# we consider these scripts safe for embedding as they come from our code %>
-  <%== PodcastTag.script %>
-  <%== PollTag.script %>
+  <% if @article.processed_html.include?("podcastliquidtag") %>
+    <%== PodcastTag.script %>
+  <% end %>
+  <% if @article.processed_html.include?("ltag-poll") %>
+    <%== PollTag.script %>
+  <% end %>
+  <% if @article.processed_html.include?("tweet-embed") %>
+    <%== TweetTag.script %>
+  <% end %>
+  <%# We should be able to make this conditional in future, but defines a global variable for now %>
   <%== RunkitTag.script %>
-  <%== TweetTag.script %>
 </script>
 <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_fixed_bottom) %>"></div>
+
+<% if user_signed_in? %>
+  <div id="quickie-wrapper" class="hidden">
+    <div class="crayons-modal">
+      <div role="dialog" aria-modal="true" aria-label="modal" class="crayons-modal__box" style="max-width:800px">
+        <header class="crayons-modal__box__header">
+          <h2 class="crayons-subtitle-2">Boost Post to the Feed</h2>
+          <button id="quickie-modal-close" type="button" aria-label="Close" class="c-btn c-btn--icon-alone crayons-modal__dismiss modal-close-el">
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="crayons-icon c-btn__icon"><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"></path></svg>
+          </button>
+        </header><div class="crayons-modal__box__body">
+        <div class="h-100 w-100">
+          <%= render "articles/quickie_form", expanded: true %>
+        </div>
+      </div>
+    </div>
+    <div class="crayons-modal__backdrop modal-close-el"></div></div>
+  </div>
+  <script>
+    document.querySelectorAll(".modal-close-el").forEach((el) => {
+      el.addEventListener("click", () => {
+        document.getElementById("quickie-wrapper").classList.add("hidden");
+      });
+    });
+  </script>
+<% end %>

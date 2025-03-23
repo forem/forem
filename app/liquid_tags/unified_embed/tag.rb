@@ -44,7 +44,7 @@ module UnifiedEmbed
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)
       uri = URI.parse(input.split.first)
-      return input if uri.host == "twitter.com" || uri.host == "x.com" # Twitter sends a forbidden like to codepen below
+      return input if uri.host == "twitter.com" || uri.host == "x.com" || uri.host == "bsky.app" # Twitter sends a forbidden like to codepen below
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443

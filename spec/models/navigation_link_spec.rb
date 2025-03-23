@@ -3,6 +3,42 @@ require "rails_helper"
 RSpec.describe NavigationLink do
   let(:navigation_link) { create(:navigation_link) }
 
+  describe ".from_subforem" do
+    let!(:link_subforem_1) { create(:navigation_link, subforem_id: 1) }
+    let!(:link_subforem_2) { create(:navigation_link, subforem_id: 2) }
+    let!(:link_no_subforem) { create(:navigation_link, subforem_id: nil) }
+
+    after do
+      RequestStore.store[:subforem_id] = nil
+    end
+
+    context "when subforem_id is not explicitly passed" do
+      before do
+        RequestStore.store[:subforem_id] = 1
+      end
+
+      it "defaults to RequestStore.store[:subforem_id]" do
+        expect(described_class.from_subforem)
+          .to contain_exactly(link_subforem_1, link_no_subforem)
+      end
+    end
+
+    context "when subforem_id is explicitly passed" do
+      it "uses the passed subforem_id" do
+        expect(described_class.from_subforem(2))
+          .to contain_exactly(link_subforem_2, link_no_subforem)
+      end
+    end
+
+    context "when RequestStore.store[:subforem_id] is nil" do
+      it "returns records where subforem_id is nil if no argument is passed" do
+        # subforem_id in store remains nil by default
+        expect(described_class.from_subforem)
+          .to contain_exactly(link_no_subforem)
+      end
+    end
+  end
+
   describe ".create_or_update_by_identity" do
     let(:attributes) { attributes_for(:navigation_link).except(:url, :id, :name).stringify_keys }
     let(:name) { navigation_link.name }

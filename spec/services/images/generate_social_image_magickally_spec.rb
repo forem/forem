@@ -173,6 +173,14 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         generator.send(:add_text, result_image, "title", "date", "author_name")
         expect(result_image).to have_received(:combine_options).exactly(3).times
       end
+
+      it "truncates text longer than 128" do
+        allow(generator).to receive(:wrap_text).and_return("whatever")
+        text = "This is a very long text that is definitely more than 128 characters long and should be wrapped over multiple lines. This is a very long text that is definitely more than 128 characters long and should be wrapped over multiple lines."
+        truncated_text = "This is a very long text that is definitely more than 128 characters long and should be wrapped over multiple lines. This is ..."
+        generator.send(:add_text, result_image, text, "date", "author_name")
+        expect(generator).to have_received(:wrap_text).with(truncated_text)
+      end
     end
 
     context "add_profile_image" do

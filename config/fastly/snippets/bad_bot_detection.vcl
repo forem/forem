@@ -43,6 +43,9 @@ sub vcl_recv {
     # DEV gets an order of magnitude more traffic from AhrefsBot than any other
     # search crawler.
     || req.http.user-agent ~ "AhrefsBot"
+    # Some unnecessary AI bots
+    || req.http.user-agent ~ "bytespider"
+    || req.http.user-agent ~ "amazonbot"
     || req.http.user-agent == "8484 Boston Project v 1.0"
     || req.http.user-agent == "Atomic_Email_Hunter/4.0"
     || req.http.user-agent == "atSpider/1.0"

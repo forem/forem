@@ -15,6 +15,8 @@ module Api
         version: release_version,
         visibility: visibility
       }, status: :ok
+
+      set_cache_control_headers(600) if Settings::UserExperience.public
     end
 
     private

@@ -5,7 +5,7 @@ class AsyncInfoController < ApplicationController
 
   def base_data
     flash.discard(:notice)
-    if user_signed_in?
+    if user_signed_in? && verify_state_of_user_session?
       @user = current_user.decorate
       respond_to do |format|
         format.json do
@@ -44,7 +44,7 @@ class AsyncInfoController < ApplicationController
   #       decorated version of the user.  It would be nice if we were using the same "variable" for
   #       the cache key and for that which we cache.
   def user_data
-    Rails.cache.fetch("#{current_user.cache_key_with_version}/user-info",
+    Rails.cache.fetch("#{current_user.cache_key_with_version}/user-info-#{RequestStore.store[:subforem_id]}",
                       expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
       AsyncInfo.to_hash(user: @user, context: self)
     end.to_json
@@ -58,5 +58,11 @@ class AsyncInfoController < ApplicationController
     # We're sending HTML over the wire hence 'render layout: false' enforces rails NOT TO look for a layout file to wrap
     # the view file - it allows us to not include the HTML headers for sending back to client.
     render layout: false
+  end
+
+  def verify_state_of_user_session?
+    return true unless current_user.last_sign_in_at.present? && current_user.current_sign_in_at.blank?
+    sign_out(current_user)
+    false
   end
 end

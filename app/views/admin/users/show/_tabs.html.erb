@@ -5,6 +5,8 @@
     <li><%= link_to t("views.admin.users.tabs.emails"), admin_user_path(@user.id, tab: :emails), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'emails'}", aria: @current_tab == "emails" ? { current: "page" } : {} %></li></li>
     <li><%= link_to t("views.admin.users.tabs.reports"), admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'reports'}", aria: @current_tab == "reports" ? { current: "page" } : {} %></li></li>
     <li><%= link_to t("views.admin.users.tabs.flags"), admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'flags'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li></li>
+    <li><%= link_to t("views.admin.users.tabs.articles"), admin_user_path(@user.id, tab: :articles), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'articles'}", aria: @current_tab == "articles" ? { current: "page" } : {} %></li></li>
+    <li><%= link_to t("views.admin.users.tabs.comments"), admin_user_path(@user.id, tab: :comments), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'comments'}", aria: @current_tab == "comments" ? { current: "page" } : {} %></li></li>
     <% if @unpublish_all_data.exists? %>
       <li><%= link_to t("views.admin.users.tabs.unpublish_logs"),
                       admin_user_path(@user.id, tab: :unpublish_logs),

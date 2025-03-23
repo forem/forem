@@ -29,7 +29,7 @@
           </div>
         <% end %>
       <% end %>
-      <% if @moderators.present? %>
+      <% if user_signed_in? && @moderators.present? %>
         <div class="widget">
           <header>
             <h4><%= t("views.tags.sidebar.mods") %></h4>

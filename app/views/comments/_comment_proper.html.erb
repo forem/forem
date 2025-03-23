@@ -43,6 +43,16 @@
       <% end %>
     </div>
 
+    <script>
+      <%# we consider these scripts safe for embedding as they come from our code %>
+      <% if comment.processed_html.include?("podcastliquidtag") %>
+        <%== PodcastTag.script %>
+      <% end %>
+      <% if comment.processed_html.include?("tweet-embed") %>
+        <%== TweetTag.script %>
+      <% end %>
+    </script>
+
     <%= unless comment.deleted || commentable.nil? || should_be_hidden?(comment, @root_comment)
           (render partial: "comments/comment_footer", locals: {
             comment: comment,

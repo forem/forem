@@ -91,7 +91,7 @@ module Admin
     private
 
     def articles_top(months_ago)
-      Article.published
+      Article.published.from_subforem
         .where("published_at > ?", months_ago)
         .includes(user: [:notes])
         .limited_columns_internal_select
@@ -101,7 +101,7 @@ module Admin
     end
 
     def articles_chronological
-      Article.published
+      Article.published.from_subforem
         .includes(user: [:notes])
         .limited_columns_internal_select
         .order(published_at: :desc)
@@ -110,7 +110,7 @@ module Admin
     end
 
     def articles_mixed
-      Article.published
+      Article.published.from_subforem
         .includes(user: [:notes])
         .limited_columns_internal_select
         .order(hotness_score: :desc)
@@ -120,7 +120,7 @@ module Admin
 
     def articles_featured
       Article.published.or(Article.where(published_from_feed: true))
-        .featured
+        .featured.from_subforem
         .where("published_at > ?", Time.current)
         .includes(:user)
         .limited_columns_internal_select

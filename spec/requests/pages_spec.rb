@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Pages" do
+  after do
+    # Make sure we reset this to avoid polluting any subsequent tests
+    RequestStore.store[:subforem_id] = nil
+  end
+
   describe "GET /:slug" do
     it "has proper headline for non-top-level" do
       page = create(:page, title: "Edna O'Brien96")
@@ -16,6 +21,46 @@ RSpec.describe "Pages" do
       expect(response.body).not_to include("/page/#{page.slug}")
       expect(response.body).to include("stories-show")
       expect(response.body).to include(" pageslug-#{page.slug}")
+    end
+
+    context "when redirect_if_different_subforem is triggered" do
+      let(:subforem) { create(:subforem) }
+      let!(:page) { create(:page, slug: "some-page", subforem_id: subforem.id) }
+
+      context "when RequestStore.store[:subforem_id] is set and differs" do
+
+        it "redirects to the subforem-based URL" do
+          get "/page/#{page.slug}", headers: { "Host" => create(:subforem, domain: "other.com").domain }
+
+          expect(response).to have_http_status(:redirect)
+        end
+      end
+
+      context "when RequestStore.store[:subforem_id] matches the page" do
+        before do
+          RequestStore.store[:subforem_id] = 42
+        end
+
+        it "does not redirect" do
+          get "/page/#{page.slug}"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(page.title))
+        end
+      end
+
+      context "when RequestStore.store[:subforem_id] or page.subforem_id is nil" do
+        it "does not redirect if page.subforem_id is nil" do
+          page.update!(subforem_id: nil)
+          get "/page/#{page.slug}"
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "does not redirect if RequestStore.store[:subforem_id] is nil" do
+          RequestStore.store[:subforem_id] = nil
+          get "/page/#{page.slug}"
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context "when json template" do

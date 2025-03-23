@@ -1032,33 +1032,38 @@ false).once
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", user.id, false).once
     end
 
-    describe "#bad_actor?" do
+    describe "#bad_actor_or_empty_profile?" do
       it "returns false to a regular user" do
+        user = build(:user, articles_count: 1)
+        expect(user.bad_actor_or_empty_profile?).to be(false)
+      end
+
+      it "returns true if no content" do
         user = build(:user)
-        expect(user.bad_actor?).to be(false)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "returns true if the user has negative score" do
         user = build(:user, score: -500)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "returns true if the user has spam role" do
         user = build(:user)
         user.add_role(:spam)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "return true if user is suspended" do
         user = build(:user)
         user.add_role(:suspended)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "return true if user is banished" do
         user = build(:user)
         allow(user).to receive(:banished?).and_return(true)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
     end
   end

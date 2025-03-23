@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Liquid::Variable, type: :lib do
-  it "does not allow instantiation" do
-    expect { described_class.new("", nil) }.to raise_error(StandardError, /variables are disabled/)
+  it "renders the raw Liquid variable as text" do
+    variable = described_class.new("user.name", nil)
+    expect(variable.render(nil)).to eq("{{user.name}}")
   end
 end

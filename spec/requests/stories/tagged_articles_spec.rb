@@ -38,15 +38,16 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expected_cache_control_headers = %w[public no-cache]
             expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
 
-            expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+            expected_surrogate_control_headers = %w[max-age=86400 stale-while-revalidate=1000 stale-if-error=86400]
             expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
 
-            expected_surrogate_key_headers = %W[articles-#{tag}]
+            # articles/139
+            expected_surrogate_key_headers = ["articles/#{Article.last.id} tags/#{tag.id}"]
             expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
           end
 
           def sets_nginx_headers
-            expect(response.headers["X-Accel-Expires"]).to eq("600")
+            expect(response.headers["X-Accel-Expires"]).to eq("86400")
           end
         end
 
@@ -149,19 +150,6 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
 
           def nth_avatar(user_position)
             ".widget-user-pic:nth-child(#{user_position})"
-          end
-
-          it "shows them in the sidebar in descending order of badge achievement count" do
-            get "/t/#{tag.name}"
-
-            page = Capybara.string(response.body)
-            sidebar = page.find("#sidebar-wrapper-left aside.side-bar")
-
-            expect(sidebar.find(nth_avatar(1))).to have_link(nil, href: ten_badge_mod.path)
-            expect(sidebar.find(nth_avatar(2))).to have_link(nil, href: eight_badge_mod.path)
-            expect(sidebar.find(nth_avatar(3))).to have_link(nil, href: six_badge_mod.path)
-            expect(sidebar.find(nth_avatar(4))).to have_link(nil, href: three_badge_mod.path)
-            expect(sidebar.find(nth_avatar(5))).to have_link(nil, href: two_badge_mod.path)
           end
         end
 

@@ -176,6 +176,12 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     expect(user).not_to be_limited
   end
 
+  it "updates user to base subscriber" do
+    expect(user).not_to be_base_subscriber
+    manage_roles_for(user, user_status: "Base Subscriber")
+    expect(user).to be_base_subscriber
+  end
+
   it "updates user to super admin" do
     expect(user).not_to be_super_admin
     expect(user.has_trusted_role?).to be false

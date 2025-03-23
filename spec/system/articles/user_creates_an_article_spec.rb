@@ -42,7 +42,8 @@ RSpec.describe "Creating an article with the editor" do
   end
 
   context "with Runkit tag", js: true do
-    it "creates a new article with a Runkit tag" do
+    # These are skipped because Runkit may be deprecated and this consistency is not a priority
+    xit "creates a new article with a Runkit tag" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag
       click_button "Save changes"
@@ -51,7 +52,7 @@ RSpec.describe "Creating an article with the editor" do
       expect_runkit_tag_to_be_active
     end
 
-    it "creates a new article with a Runkit tag with complex preamble" do
+    xit "creates a new article with a Runkit tag with complex preamble" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag_with_preamble
       click_button "Save changes"

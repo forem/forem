@@ -1,8 +1,11 @@
+# spec/requests/stories_show_spec.rb
+
 require "rails_helper"
+require "request_store"
 
 RSpec.describe "StoriesShow" do
   let(:user) { create(:user) }
-  let(:org)     { create(:organization) }
+  let(:org)  { create(:organization) }
   let(:article) { create(:article, user: user) }
 
   describe "GET /:username/:slug (articles)" do
@@ -40,8 +43,8 @@ RSpec.describe "StoriesShow" do
       article.update(organization: org)
       get "#{old_path}?i=j"
       expect(response.body).to redirect_to article.path
-      expect(response.body).not_to redirect_to  "#{article.path}?i=j"
-      expect(response.body).not_to redirect_to  "#{article.path}?i=j"
+      expect(response.body).not_to redirect_to "#{article.path}?i=j"
+      expect(response.body).not_to redirect_to "#{article.path}?i=j"
     end
 
     ## Title tag
@@ -221,6 +224,54 @@ RSpec.describe "StoriesShow" do
       article = create(:article, with_main_image: false, social_image: "https://example.com/image.jpg")
       get article.path
       expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
+    end
+
+    context "when subforem logic is triggered by RequestStore" do
+      let!(:subforem)       { create(:subforem, domain: "www.example.com") }
+      let!(:default_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+
+      before do
+        # Simulate a default_subforem stored in RequestStore
+        RequestStore.store[:default_subforem_id] = default_subforem.id
+      end
+
+      after do
+        # Clear RequestStore for isolation
+        RequestStore.store[:subforem_id] = nil
+        RequestStore.store[:default_subforem_id] = nil
+      end
+
+      it "redirects if article has subforem_id that doesn't match RequestStore.store[:subforem_id]" do
+        article.update_column(:subforem_id, create(:subforem, domain: "other.com").id)
+        # RequestStore is set to something different
+
+        get article.path
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response.body).to redirect_to URL.article(article)
+      end
+
+      it "does not redirect if article.subforem_id == RequestStore.store[:subforem_id]" do
+        article.update_column(:subforem_id, subforem.id)
+        RequestStore.store[:subforem_id] = subforem.id
+
+        get article.path
+        expect(response).not_to have_http_status(:moved_permanently)
+        expect(response.body).not_to include("href=\"#{URL.article(article)}\"")
+      end
+
+      it "redirects if article has no subforem_id and RequestStore has a non-default subforem_id" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("www.example.com").and_return(create(:subforem, domain: "other.com").id)
+
+        get article.path
+        expect(response).to have_http_status(:moved_permanently)
+      end
+
+      it "does not redirect if article has no subforem_id and RequestStore subforem_id == default_subforem" do
+        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
+
+        get article.path
+        expect(response).not_to have_http_status(:moved_permanently)
+      end
     end
   end
 

@@ -75,6 +75,14 @@ RSpec.describe "Moderations" do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
+    it "only includes articles which do not have [Boost] in as title" do
+      non_boost_article = create(:article, title: "Not Boost")
+      boost_article = create(:article, title: "[Boost]")
+      get "/mod"
+      expect(response.body).to include(CGI.escapeHTML(non_boost_article.title))
+      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
+    end
+
     it "renders not_found when an article can't be found" do
       expect do
         get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"

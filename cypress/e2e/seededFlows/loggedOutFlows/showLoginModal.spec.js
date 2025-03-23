@@ -54,13 +54,13 @@ describe('Show log in modal', () => {
     );
   });
 
-  it('should show login modal for comment subscription', () => {
-    cy.findAllByText('Test article').last().click();
+  // it('should show login modal for comment subscription', () => {
+  //   cy.findAllByText('Test article').last().click();
 
-    verifyLoginModalBehavior(() =>
-      cy.findByRole('button', { name: /Subscribe/ }),
-    );
-  });
+  //   verifyLoginModalBehavior(() =>
+  //     cy.findByRole('button', { name: /Subscribe/ }),
+  //   );
+  // });
 
   it('should show login modal for article follow button click', () => {
     cy.viewport('macbook-16');

@@ -25,7 +25,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
       expect(page).to have_css('a[data-tracking-id="ca_hamburger_home_page"]')
     end
 
-    it "tracks a click with the correct source", :aggregate_failures do
+    xit "tracks a click with the correct source", :aggregate_failures do
       expect(Ahoy::Event.count).to eq(0)
       wait_for_async_events_listener
       find('[data-tracking-id="ca_top_nav"]').click

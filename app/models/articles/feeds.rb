@@ -48,6 +48,8 @@ module Articles
       time_of_second_latest_page_view = user&.page_views&.second_to_last&.created_at
       return days_since_published.days.ago unless time_of_second_latest_page_view
 
+      # If they have a page view *well in the past*, let's go max 18 days look back.
+      time_of_second_latest_page_view = 18.days.ago if time_of_second_latest_page_view < 18.days.ago
       time_of_second_latest_page_view - number_of_hours_to_offset_users_latest_article_views.hours
     end
 
@@ -60,7 +62,7 @@ module Articles
     # @param tag [NilClass, String] not used but carried forward for interface conformance
     #
     # @return [Articles::Feeds::VariantQuery]
-    def self.feed_for(controller:, user:, number_of_articles:, page:, tag:)
+    def self.feed_for(controller:, user:, number_of_articles:, page:, tag:, type_of: "discover")
       variant = AbExperiment.get_feed_variant_for(controller: controller, user: user)
 
       VariantQuery.build_for(
@@ -69,6 +71,7 @@ module Articles
         number_of_articles: number_of_articles,
         page: page,
         tag: tag,
+        type_of: type_of
       )
     end
 

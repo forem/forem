@@ -6,10 +6,23 @@
           <%= yield %>
         </td>
       </tr>
-      <% if @user %>
+      <% if @user && action_name != "magic_link" %>
+        <% last_page_view = @user.page_views.last %>
+        <% unless last_page_view && last_page_view.created_at > 4.weeks.ago %>
+          <tr>
+            <td style="padding:2%;text-align:center">
+              <div style="padding-bottom:20px;font-weight:bold;">
+                Not signed-in on this device?
+              </div>
+              <a href="<%= new_magic_link_url(email: @user.email) %>" style="display:block;background:<%= Settings::UserExperience.primary_brand_color_hex %>;color:white;padding:12px 4px;border-radius:8px;font-weight:bold;text-decoration:none;">
+                Click here to trigger a magic sign-in link
+              </a>
+            </td>
+          </tr>
+        <% end %>
         <tr>
           <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#202121">
-            <%= signed_up_with(@user) %>
+            <%= signed_up_with(@user).html_safe %>
             <br /><br />
             <div style="font-size:0.78em">
               <% if @unsubscribe %>

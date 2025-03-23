@@ -7,7 +7,9 @@ RSpec.describe "StripeSubscriptions" do
   let(:default_item_code) { ENV.fetch("STRIPE_BASE_ITEM_CODE", "default_code") }
   let(:tag_moderator_item_code) { ENV.fetch("STRIPE_TAG_MODERATOR_ITEM_CODE", "tag_moderator_code") }
   let(:subscription_success_url) { ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing" }
+  let(:billing_portal_return_url) { ENV["BILLING_PORTAL_RETURN_URL"] || "/settings/billing" }
   let(:session_url) { "https://checkout.stripe.com/pay/test_session_id" }
+  let(:portal_session_url) { "https://billing.stripe.com/session/test_portal_session_id" }
 
   describe "GET /stripe_subscriptions/new" do
     before do
@@ -155,6 +157,56 @@ RSpec.describe "StripeSubscriptions" do
       end
     end
   end
+
+  describe "GET /stripe_subscriptions/edit" do
+    before do
+      StripeMock.start
+      Stripe.api_key = stripe_api_key
+    end
+
+    after { StripeMock.stop }
+
+    context "when the user is not signed in" do
+      it "redirects to the sign-in page" do
+        get edit_stripe_subscription_path("me")
+        expect(response).to redirect_to("/enter")
+      end
+    end
+
+    context "when the user is signed in" do
+      before { sign_in user }
+
+      context "when the user has a Stripe customer ID" do
+        before do
+          user.update(stripe_id_code: "cus_test123")
+          allow(Stripe::BillingPortal::Session).to receive(:create).and_return(OpenStruct.new(url: portal_session_url))
+        end
+
+        it "creates a Stripe Billing Portal session and redirects to it" do
+          get edit_stripe_subscription_path("me")
+
+          expect(Stripe::BillingPortal::Session).to have_received(:create).with(
+            customer: user.stripe_id_code,
+            return_url: URL.url(billing_portal_return_url)
+          )
+
+          expect(response).to redirect_to(portal_session_url)
+          expect(response).to have_http_status(:found)
+          expect(response.headers["Location"]).to eq(portal_session_url)
+        end
+      end
+
+      context "when the user does not have a Stripe customer ID" do
+        it "shows an error message and redirects back" do
+          get edit_stripe_subscription_path("me")
+
+          expect(flash[:error]).to eq("Unable to edit subscription self-serve. Please contact support.")
+          expect(response).to redirect_to(user_settings_path)
+        end
+      end
+    end
+  end
+
 
   describe "DELETE /stripe_subscriptions/destroy" do
     before do

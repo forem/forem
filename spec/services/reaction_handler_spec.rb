@@ -29,7 +29,8 @@ RSpec.describe ReactionHandler, type: :service do
     {
       reactable_id: article.id,
       reactable_type: "Article",
-      reactable_user_id: article.user.id
+      reactable_user_id: article.user.id,
+      reactable_subforem_id: article.subforem_id
     }
   end
 

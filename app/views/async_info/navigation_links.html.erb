@@ -1,2 +1,6 @@
+<a href="<%= search_path %>" class="sidebar-navigation-link c-link c-link--block c-link--icon-left mb-2 crayons-btn crayons-btn--secondary w-full align-left px-6">
+  <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title"), class: "mr-1") %>
+  <%= t("views.search.placeholder") %>
+</a>
 <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_hamburger_home_page", source: "mobile_hamburger_nav" } unless user_signed_in? %>
 <%= render partial: "layouts/main_nav", locals: { context: "hamburger" } %>

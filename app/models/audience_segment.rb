@@ -17,6 +17,7 @@ class AudienceSegment < ApplicationRecord
 
   has_many :segmented_users, dependent: :destroy
   has_many :users, through: :segmented_users
+  has_many :emails, dependent: :nullify
 
   after_validation :persist_recently_active_users, unless: :manual?
 

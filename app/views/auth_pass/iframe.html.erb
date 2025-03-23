@@ -1,0 +1,12 @@
+<!-- In app/views/auth/iframe.html.erb -->
+<script>
+  (function() {
+    var data = {
+      authenticated: <%= @token.present? ? 'true' : 'false' %>,
+      token: '<%= @token %>'
+    };
+
+    // Send the message to the parent window
+    window.parent.postMessage(data, '*');
+  })();
+</script>

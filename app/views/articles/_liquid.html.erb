@@ -1,7 +1,7 @@
 <% if article %>
 <div class='ltag__link'>
   <% if article.video && article.cloudinary_video_url %>
-  <a href='<%= article.path %>' class="video-image" style="background-image: url(<%= article.cloudinary_video_url %>)">
+  <a href='<%= URL.article(article) %>' class="video-image" style="background-image: url(<%= article.cloudinary_video_url %>)">
     <span class="video-timestamp">
       <img src="<%= asset_path("video-camera.svg") %>" alt="video camera">
       <%= article.video_duration_in_minutes %></span>
@@ -16,7 +16,7 @@
       </div>
     </div>
   </a>
-  <a href='<%= article.path %>' class='ltag__link__link'>
+  <a href='<%= URL.article(article) %>' class='ltag__link__link'>
     <div class='ltag__link__content'>
       <h2><%= title %></h2>
       <h3><%= article.user.name %><%= t("views.articles.for_org_html", org: article.organization.name, start: "", end: "") %> ・ <%= article.readable_publish_date %></h3>
@@ -33,7 +33,7 @@
       <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt='<%= article.user.username.to_s %>'>
     </div>
   </a>
-  <a href='<%= article.path %>' class='ltag__link__link'>
+  <a href='<%= URL.article(article) %>' class='ltag__link__link'>
     <div class='ltag__link__content'>
       <h2><%= title %></h2>
       <h3><%= article.user.name %> ・ <%= article.readable_publish_date %></h3>

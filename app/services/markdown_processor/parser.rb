@@ -46,6 +46,14 @@ module MarkdownProcessor
         parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, @liquid_tag_options)
 
         html = markdown.render(parsed_liquid.render)
+      rescue NoMethodError => e
+        if e.message.include?('line_number')
+          # Handle the specific NoMethodError
+          Rails.logger.error("Liquid rendering error: #{e.message}")
+          html = sanitized_content.to_str
+        else
+          raise e
+        end
       rescue Liquid::SyntaxError => e
         html = e.message
       end

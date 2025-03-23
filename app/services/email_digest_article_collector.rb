@@ -23,7 +23,7 @@ class EmailDigestArticleCollector
 
                    @user.followed_articles
                      .select(:title, :description, :path, :cached_user, :cached_tag_list)
-                     .published
+                     .published.from_subforem
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
@@ -35,7 +35,7 @@ class EmailDigestArticleCollector
                  else
                    tags = @user.cached_followed_tag_names_or_recent_tags
                    Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
-                     .published
+                     .published.from_subforem
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
@@ -48,7 +48,7 @@ class EmailDigestArticleCollector
       # Fallback if there are not enough articles
       if articles.length < 3
         articles = Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
-          .published
+          .published.from_subforem
           .where("published_at > ?", cutoff_date)
           .where(email_digest_eligible: true)
           .where("score > ?", 11)

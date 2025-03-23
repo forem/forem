@@ -209,3 +209,21 @@
     }
   }
 }
+
+.bluesky-embed {
+  min-height: 170px;
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid var(--form-border) !important;
+  border-radius: 8px !important;
+  margin-top: 10px !important;
+  display: block;
+  font-size: 1.125rem;
+  p {
+    padding-top: 60px !important;
+  }
+  iframe {
+    margin-bottom: 0px !important;
+    border-radius: 8px !important;
+  }
+}

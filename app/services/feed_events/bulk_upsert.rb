@@ -10,7 +10,7 @@ module FeedEvents
   #
   # This avoids inflating metrics (whether by accident or deliberately).
   class BulkUpsert
-    ATTRIBUTES_FOR_INSERT = %i[article_id user_id article_position category context_type].freeze
+    ATTRIBUTES_FOR_INSERT = %i[article_id user_id article_position category context_type feed_config_id].freeze
 
     def self.call(...)
       new(...).call

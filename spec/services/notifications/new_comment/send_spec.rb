@@ -6,7 +6,8 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
   let(:user3)                { create(:user) }
   let(:top_level_subscriber) { create(:user) }
   let(:organization)         { create(:organization) }
-  let(:article)              { create(:article, :with_notification_subscription, user_id: user.id) }
+  let(:subforem)             { create(:subforem) }
+  let(:article)              { create(:article, :with_notification_subscription, user_id: user.id, subforem_id: subforem.id) }
   let(:comment)              { create(:comment, commentable: article, user: user2) }
   let(:author_comment)       { create(:comment, commentable: article, user: user) }
   let!(:child_comment)       { create(:comment, commentable: article, parent: comment, user: user3) }
@@ -23,6 +24,7 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     notification = child_comment.notifications.last
 
     expect(notification.action).to be_nil
+    expect(notification.subforem_id).to eq(subforem.id)
     expect(notification.json_data["user"]["id"]).to eq(child_comment.user.id)
     expect(notification.json_data["user"]["username"]).to eq(child_comment.user.username)
   end

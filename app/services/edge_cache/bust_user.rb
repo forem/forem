@@ -3,13 +3,10 @@ module EdgeCache
     def self.call(user)
       return unless user
 
+      user.purge
       username = user.username
       user_id = user.id
       paths = [
-        "/#{username}",
-        "/#{username}/comments",
-        "/live/#{username}",
-        "/feed/#{username}",
         "/api/users/#{user_id}",
       ]
 

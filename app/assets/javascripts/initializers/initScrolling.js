@@ -429,7 +429,15 @@ function paginate(tag, params, requiresApproval) {
     }
   });
 
-  fetch(`/search/feed_content?${searchParams.toString()}`, {
+  // We load content from stories/feed but had been using search/feed_content.
+  // Below is a some code to be able to toggle on the stories endpoint.
+  // And if we do, we need to change the URL and adjust some misalignment with the API
+  // And the nextpage incrementing.
+  let useStoriesFeed = (homeEl.dataset.feed === 'base-feed' || homeEl.dataset.feed === 'latest') && homeEl.dataset.feedContextType === 'home' && homeEl.dataset.feedUseStoriesEndpoint === 'true';
+  let feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+  let latestString = homeEl.dataset.feed === 'latest' ? '/latest' : '';
+  let url = useStoriesFeed ? `/stories/feed${latestString}/?page=${nextPage + 2}&type_of=${feedTypeOf}` : `/search/feed_content?${searchParams.toString()}`;
+  fetch(url, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -441,11 +449,12 @@ function paginate(tag, params, requiresApproval) {
     .then((response) => response.json())
     .then((content) => {
       nextPage += 1;
-      insertArticles(content.result);
+      let resultsCollection = useStoriesFeed ? content : content.result
+      insertArticles(resultsCollection);
       const checkBlockedContentEvent = new CustomEvent('checkBlockedContent');
       window.dispatchEvent(checkBlockedContentEvent);
       initializeReadingListIcons();
-      if (content.result.length === 0) {
+      if (resultsCollection.length === 0) {
         const loadingElement = document.getElementById('loading-articles');
         if (loadingElement) {
           loadingElement.style.display = 'none';

@@ -61,3 +61,16 @@
              image_active_path: "save-filled.svg",
              aria_label: t("views.reactions.readingList.aria_label")
            } %>
+
+<button
+  id="reaction-butt-boost"
+  aria-label="<%= t("views.articles.boost.label") %>"
+  aria-pressed="false"
+  class="crayons-reaction crayons-reaction--boost crayons-tooltip__activator relative">
+    <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction__icon--inactive">
+      <%= crayons_icon_tag("boost.svg", aria_hidden: true) %>
+    </span>
+    <span data-testid="tooltip" class="crayons-tooltip__content">
+      <%= t("views.articles.boost.label") %>
+    </span>
+</button>

@@ -34,7 +34,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(articles.length).to eq(4)
       end
 
-      it "also provides articles tagged with career in addition to featured and viewed" do
+      it "provides articles tagged with career in addition to featured and viewed" do
         user.page_views.create(article: create(:article, tag_list: "ruby"))
         create_list(:article, 2, public_reactions_count: 40, featured: true, score: 40)
         create_list(:article, 2, tag_list: "ruby", public_reactions_count: 40, score: 40)

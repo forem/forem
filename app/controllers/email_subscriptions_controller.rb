@@ -24,7 +24,8 @@ class EmailSubscriptionsController < ApplicationController
       email_follower_notifications: -> { I18n.t("email_subscriptions_controller.follower_notifications") },
       email_mention_notifications: -> { I18n.t("email_subscriptions_controller.mention_notifications") },
       email_unread_notifications: -> { I18n.t("email_subscriptions_controller.unread_notifications") },
-      email_badge_notifications: -> { I18n.t("email_subscriptions_controller.badge_notifications") }
+      email_badge_notifications: -> { I18n.t("email_subscriptions_controller.badge_notifications") },
+      email_newsletter: -> { I18n.t("email_subscriptions_controller.newsletter") }
     }.freeze
   end
 end

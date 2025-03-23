@@ -1,0 +1,16 @@
+<main id="main-content">
+  <div class="crayons-layout crayons-layout--limited-l" style="min-height:80vh">
+    <div class="crayons-card text-padding" style="width:700px;max-width:100%;margin: 0 auto;border:8px solid <%= Settings::UserExperience.primary_brand_color_hex %>">
+      <h2 class="text-center pt-4" style="text-align:center;padding:8vh 0;font-size:calc(1.5em + 0.8vw)">Send me a magic sign-in link!</h2>
+      <%= form_with url: magic_links_path, method: :post do |f| %>
+        <div class="crayons-field pb-2">
+          <%= f.email_field :email, class: "crayons-textfield fs-2xl", value: params[:email], placeholder: "email" %>
+        </div>
+        <div class="crayons-field py-2">
+          <%= f.submit 'Send Link', class: "crayons-btn py-6 fs-xl fw-bold" %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</main>

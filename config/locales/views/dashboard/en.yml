@@ -129,6 +129,8 @@ en:
       posts:
         heading: Posts
         archived: Show archived
+        statuses: Show quickie posts
+        full: Show full posts
         option:
           creation-desc: Recently Created
           published-desc: Recently Published

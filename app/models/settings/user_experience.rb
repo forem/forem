@@ -4,7 +4,7 @@ module Settings
     self.table_name = :settings_user_experiences
 
     HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
-    FEED_STRATEGIES = %w[basic large_forem_experimental].freeze
+    FEED_STRATEGIES = %w[basic configured large_forem_experimental].freeze
     FEED_STYLES = %w[basic rich compact].freeze
     COVER_IMAGE_FITS = %w[crop limit].freeze
 
@@ -21,6 +21,13 @@ module Settings
     setting :index_minimum_score, type: :integer, default: 0
     setting :index_minimum_date, type: :integer, default: 1_500_000_000
     setting :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
+      format: {
+        with: HEX_COLOR_REGEX,
+        message: proc { I18n.t("models.settings.user_experience.message") }
+      },
+      color_contrast: true
+    }
+    setting :accent_background_color_hex, type: :string, default: nil, validates: {
       format: {
         with: HEX_COLOR_REGEX,
         message: proc { I18n.t("models.settings.user_experience.message") }

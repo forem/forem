@@ -28,13 +28,14 @@ export function observeFeedElements() {
 
   if (!(feedContainer && feedItemsRoot)) return;
 
-  const { feedCategoryClick, feedCategoryImpression, feedContextType } =
+  const { feedCategoryClick, feedCategoryImpression, feedContextType, feedConfigId } =
     feedContainer.dataset;
 
   // Reset all relevant state
   tracker.categoryClick = feedCategoryClick;
   tracker.categoryImpression = feedCategoryImpression;
   tracker.contextType = feedContextType;
+  tracker.feedConfigId = feedConfigId;
   tracker.processInterval ||= setInterval(submitEventsBatch, AUTOSEND_PERIOD);
   tracker.observer.disconnect();
   tracker.nextFeedPosition = 1;
@@ -129,6 +130,7 @@ function queueEvent(post, category) {
     article_id: feedContentId,
     article_position: feedPosition,
     category,
+    feed_config_id: tracker.feedConfigId,
     context_type: tracker.contextType,
   });
 

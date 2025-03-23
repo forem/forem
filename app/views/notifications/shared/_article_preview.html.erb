@@ -1,5 +1,5 @@
 <article class="notification__preview crayons-card">
-  <a href="<%= notification.article_path %>" class="crayons-link block notification__preview__inner">
+  <a href="<%= notification.article_url %>" class="crayons-link block notification__preview__inner">
     <h3 class="notification__preview__title"><%= h(notification.article_title) %></h3>
     <div class="flex flex-wrap fs-s">
       <% notification.article_tag_list.each do |tag| %>

@@ -2,84 +2,91 @@
 en:
   devise:
     confirmations:
-      confirmed: Your email address has been successfully confirmed.
-      send_instructions: You will receive an email with instructions for how to confirm your email address in a few minutes.
-      send_paranoid_instructions: If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes.
+      confirmed: "Your email address has been successfully confirmed."
+      send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
+      send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
     failure:
-      already_authenticated: You are already signed in.
-      inactive: Your account is not activated yet.
-      invalid: Unable to login.
-      last_attempt: You have one more attempt before your account is locked.
-      locked: Unable to login.
-      not_found_in_database: Unable to login.
-      timeout: Your session expired. Please sign in again to continue.
-      unauthenticated: You need to sign in or sign up before continuing.
-      unconfirmed: You have to confirm your email address before continuing.
+      already_authenticated: "You are already signed in."
+      inactive: "Your account is not activated yet."
+      invalid: "Unable to login."
+      last_attempt: "You have one more attempt before your account is locked."
+      locked: "Unable to login."
+      not_found_in_database: "Unable to login."
+      timeout: "Your session expired. Please sign in again to continue."
+      unauthenticated: "You need to sign in or sign up before continuing."
+      unconfirmed: "You have to confirm your email address before continuing."
+      magic_link_invalid: "Invalid or expired login link."
     mailer:
       confirmation_instructions:
-        subject: Confirmation instructions
+        subject: "Confirmation instructions"
       email_changed:
-        subject: Email Changed
+        subject: "Email Changed"
       password_change:
-        subject: Password Changed
+        subject: "Password Changed"
       reset_password_instructions:
-        subject: Reset password instructions
+        subject: "Reset password instructions"
       unlock_instructions:
-        subject: Unlock instructions
+        subject: "Unlock instructions"
+      magic_link:
+        subject: "Here's your magic login link ✨"
     omniauth_callbacks:
-      failure: Could not authenticate you from %{kind} because "%{reason}".
-      success: Successfully authenticated from %{kind} account.
+      failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
+      success: "Successfully authenticated from %{kind} account."
     passwords:
-      no_token: You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided.
-      reset_instructions_sent: Your password reset instructions have been sent.
+      no_token: "You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided."
+      reset_instructions_sent: "Your password reset instructions have been sent."
       reset_password:
-        email_placeholder: you@email.com
-        forgot_password: Forgot your password?
-        forgot_password_description: Enter the email address associated with your account, and we'll send you a link to reset your password.
-        go_back: Go back
-        send_reset_link_button: Send reset link
-      send_instructions: You will receive an email with instructions on how to reset your password in a few minutes.
-      send_paranoid_instructions: If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.
-      updated: Your password has been changed successfully. You are now signed in.
-      updated_not_active: Your password has been changed successfully.
+        email_placeholder: "you@email.com"
+        forgot_password: "Send me a Sign-in Link"
+        forgot_password_description: "Enter the email address associated with your account, and we'll send you a one-time link or password reset."
+        go_back: "Go back"
+        send_reset_link_button: "Send password reset link"
+      send_instructions: "You will receive an email with instructions on how to reset your password in a few minutes."
+      send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+      updated: "Your password has been changed successfully. You are now signed in."
+      updated_not_active: "Your password has been changed successfully."
     registrations:
-      agreement: 
-        sign_in_html: By signing in, you are agreeing to our <a href="%{privacy_path}">privacy policy</a>, <a href="%{terms_path}">terms of use</a> and <a href="%{code_of_conduct_path}">code of conduct</a>.
-        sign_up_html: By signing up, you are agreeing to our <a href="%{privacy_path}">privacy policy</a>, <a href="%{terms_path}">terms of use</a> and <a href="%{code_of_conduct_path}">code of conduct</a>.
-      already_have_an_account_html: Already have an account? <a href="%{sign_up_path}">Log in</a>.
-      create_account_html: New to %{community_name}? <a href="%{sign_up_path}">Create account</a>.
-      destroyed: Bye! Your account has been successfully cancelled. We hope to see you again soon.
+      agreement:
+        sign_in_html: "By signing in, you are agreeing to our <a href=\"%{privacy_path}\">privacy policy</a>, <a href=\"%{terms_path}\">terms of use</a> and <a href=\"%{code_of_conduct_path}\">code of conduct</a>."
+        sign_up_html: "By signing up, you are agreeing to our <a href=\"%{privacy_path}\">privacy policy</a>, <a href=\"%{terms_path}\">terms of use</a> and <a href=\"%{code_of_conduct_path}\">code of conduct</a>."
+      already_have_an_account_html: "Already have an account? <a href=\"%{sign_up_path}\">Log in</a>."
+      create_account_html: "New to %{community_name}? <a href=\"%{sign_up_path}\">Create account</a>."
+      destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
       errors:
-        bummer: Sorry to be a bummer...
-        mobile_app_no_new_account_html: Unfortunately, we do not support creating new accounts right now on our mobile app. If you want create a new account to join %{community_name}, please do that on the web at <a href="%{path}">%{path}></a> 
-      invite_only_disclaimer_html: Since this is an invite-only community, you cannot join without an invitation. If you would like to request an invitation, please contact the community admin at %{contact_link}
-      or: OR
-      signed_up: Welcome! You have signed up successfully.
-      signed_up_but_inactive: You have signed up successfully. However, we could not sign you in because your account is not yet activated.
-      signed_up_but_locked: You have signed up successfully. However, we could not sign you in because your account is locked.
-      signed_up_but_unconfirmed: A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.
+        bummer: "Sorry to be a bummer..."
+        mobile_app_no_new_account_html: "Unfortunately, we do not support creating new accounts right now on our mobile app. If you want create a new account to join %{community_name}, please do that on the web at <a href=\"%{path}\">%{path}></a>"
+      invite_only_disclaimer_html: "Since this is an invite-only community, you cannot join without an invitation. If you would like to request an invitation, please contact the community admin at %{contact_link}"
+      or: "OR"
+      signed_up: "Welcome! You have signed up successfully."
+      signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."
+      signed_up_but_locked: "You have signed up successfully. However, we could not sign you in because your account is locked."
+      signed_up_but_unconfirmed: "A message with a confirmation link has been sent to your email address. Please follow the link to activate your account."
       title:
-        invite_only_commuty: '%{community_name} is invite only.'
-        join_community: 'Join the %{community_name}'
-        welcome_back_community: 'Join the %{community_name}'
-      update_needs_confirmation: You updated your account successfully, but we need to verify your new email address. Please check your email and follow the confirmation link to confirm your new email address.
-      updated: Your account has been updated successfully.
-      updated_but_not_signed_in: Your account has been updated successfully, but since your password was changed, you need to sign in again.
+        invite_only_commuty: "%{community_name} is invite only."
+        join_community: "Join the %{community_name}"
+        welcome_back_community: "Join the %{community_name}"
+      update_needs_confirmation: "You updated your account successfully, but we need to verify your new email address. Please check your email and follow the confirmation link to confirm your new email address."
+      updated: "Your account has been updated successfully."
+      updated_but_not_signed_in: "Your account has been updated successfully, but since your password was changed, you need to sign in again."
     sessions:
-      already_signed_out: Signed out successfully.
-      signed_in: Signed in successfully.
-      signed_out: Signed out successfully.
+      already_signed_out: "Signed out successfully."
+      signed_in: "Signed in successfully."
+      signed_out: "Signed out successfully."
     unlocks:
-      send_instructions: You will receive an email with instructions for how to unlock your account in a few minutes.
-      send_paranoid_instructions: If your account exists, you will receive an email with instructions for how to unlock it in a few minutes.
-      unlocked: Your account has been unlocked successfully. Please sign in to continue.
+      send_instructions: "You will receive an email with instructions for how to unlock your account in a few minutes."
+      send_paranoid_instructions: "If your account exists, you will receive an email with instructions for how to unlock it in a few minutes."
+      unlocked: "Your account has been unlocked successfully. Please sign in to continue."
+    passwordless:
+      not_found_in_database: "Could not find a user for that email address"
+      magic_link_sent: "A login link has been sent to your email address. Please follow the link to log in to your account."
+      magic_link_sent_paranoid: "If your account exists, you will receive an email with a login link. Please follow the link to log in to your account."
   errors:
     messages:
-      already_confirmed: was already confirmed, please try signing in
-      confirmation_period_expired: needs to be confirmed within %{period}, please request a new one
-      expired: has expired, please request a new one
-      not_found: not found
-      not_locked: was not locked
+      already_confirmed: "was already confirmed, please try signing in"
+      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
+      expired: "has expired, please request a new one"
+      not_found: "not found"
+      not_locked: "was not locked"
       not_saved:
-        one: '1 error prohibited this %{resource} from being saved:'
-        other: '%{count} errors prohibited this %{resource} from being saved:'
+        one: "1 error prohibited this %{resource} from being saved:"
+        other: "%{count} errors prohibited this %{resource} from being saved:"

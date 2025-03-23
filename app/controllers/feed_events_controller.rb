@@ -6,6 +6,7 @@ class FeedEventsController < ApplicationMetalController
     article_position
     category
     context_type
+    feed_config_id
   ].freeze
 
   def create

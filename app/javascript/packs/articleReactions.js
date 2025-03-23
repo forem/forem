@@ -309,6 +309,21 @@ const initializeArticleReactions = () => {
         commentsSection.scrollIntoView({ behavior: 'smooth' });
       };
     }
+
+    const boostButt = document.getElementById('reaction-butt-boost');
+    if (boostButt) {
+      boostButt.onclick = function() {
+        if (document.body.getAttribute('data-user-status') === 'logged-out') {
+          showLoginModal({
+            referring_source: 'reactions_toolbar',
+            trigger: 'boost',
+          });
+          return;
+        }      
+        document.getElementById('quickie-wrapper').classList.remove('hidden');
+        document.getElementById('article_title').focus();
+      }
+    }
   }, 3);
 };
 
