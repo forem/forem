@@ -81,7 +81,8 @@ RSpec.describe "PageViews" do
         allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 
-      it "converts field test" do
+      # This field test conversion removed for now
+      xit "converts field test" do
         page_views_post(article_id: article.id, referrer: "test")
 
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async)
