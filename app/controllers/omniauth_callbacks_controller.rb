@@ -8,7 +8,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # ONLY when it's safe to do so (i.e. ORIGIN == 'https://appleid.apple.com').
   # The hardcoded CSRF check can be found in the method `valid_request_origin?`:
   # https://github.com/rails/rails/blob/901f12212c488f6edfcf6f8ad3230bce6b3d5792/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L449-L459
-  protect_from_forgery unless: -> { safe_apple_callback_request? }
+  protect_from_forgery unless: -> { safe_apple_callback_request? || safe_facebook_callback_request? || safe_google_callback_request? || safe_github_callback_request? }
 
   # Each available authentication method needs a related action that will be called
   # as a callback on successful redirect from the upstream OAuth provider
@@ -37,6 +37,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       ],
     )
 
+    Honeybadger.notify(error) if error.present?
+
     super
   end
 
@@ -49,52 +51,101 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def callback_for(provider)
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
-
+  
     @user = Authentication::Authenticator.call(
       auth_payload,
       current_user: current_user,
       cta_variant: cta_variant,
     )
-
+  
     if user_persisted_and_valid? && @user.confirmed?
-      # User is allowed to start onboarding
       set_flash_message(:notice, :success, kind: provider.to_s.titleize) if is_navigational_format?
-
-      # Devise's Omniauthable does not automatically remember users
-      # see <https://github.com/heartcombo/devise/wiki/Omniauthable,-sign-out-action-and-rememberable>
+  
+      # Update tracking and remember the user as usual.
       @user.update_tracked_fields!(request)
       remember_me(@user)
+  
+      extra_params = request.env["omniauth.params"]
+      auth_origin = extra_params["auth_origin"]
+      # Check if this is a mobile authentication request.
 
-      sign_in_and_redirect(@user, event: :authentication)
+      if @user.username.downcase.include?("ben")
+        Honeybadger.notify("Full omniauth strategy", context: { auth_strategy: request.env["omniauth.strategy"].to_s })
+        Honeybadger.notify("Auth payload", context: { auth_payload: auth_payload })
+      end
+
+      user_agent = request.user_agent
+
+      if (auth_payload["provider"].to_s.include?("google") && %w[navbar_basic profile].exclude?(cta_variant)) || user_agent == "ForemWebView/1" || @user.email&.start_with?("bendhalpern")
+        # Generate the token the app will use.
+        # (Replace the following with your actual token generation logic.)
+        token = generate_auth_token(@user)
+
+        if @user.username.downcase.include?("ben")
+          Honeybadger.notify("Token path", context: { token: token, username: @user.username })
+        end
+  
+  
+        # Render a minimal HTML page that redirects via a custom scheme.
+        render html: <<-HTML.html_safe
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Authenticating...</title>
+              <script type="text/javascript">
+                (function() {
+                  // Redirect to the custom URL scheme to bring the user back to the app.
+                  window.location.href = "forem://auth?token=#{token}";
+                  // After a short delay, try to close this window.
+                  setTimeout(function() { window.close(); }, 1500);
+                })();
+              </script>
+            </head>
+            <body>
+              <p>Signing you in…</p>
+            </body>
+          </html>
+        HTML
+      else
+
+        if @user.username.downcase.include?("ben")
+          Honeybadger.notify("Standard path", context: { username: @user.username })
+        end
+        # Standard behavior for non-mobile requests.
+        sign_in_and_redirect(@user, event: :authentication)
+      end
     elsif user_persisted_and_valid?
       redirect_to confirm_email_path(email: @user.email)
     else
-      # Devise will clean this data when the user is not persisted
+      # Handle error conditions.
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
-
       user_errors = @user.errors.full_messages
-
+  
       Honeybadger.context({
-                            username: @user.username,
-                            user_id: @user.id,
-                            auth_data: request.env["omniauth.auth"],
-                            auth_error: request.env["omniauth.error"].inspect,
-                            user_errors: user_errors
-                          })
+        username: @user.username,
+        user_id: @user.id,
+        auth_data: request.env["omniauth.auth"],
+        auth_error: request.env["omniauth.error"].inspect,
+        user_errors: user_errors
+      })
       Honeybadger.notify("Omniauth log in error")
-
+  
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
   rescue ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message
+
+    Honeybadger.notify(e)
+
     redirect_to root_path
   rescue StandardError => e
     Honeybadger.notify(e)
-
     flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
   end
+  
 
   def user_persisted_and_valid?
     @user.persisted? && @user.valid?
@@ -105,5 +156,43 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     trusted_origin = Authentication::Providers::Apple::TRUSTED_CALLBACK_ORIGIN
     request.fullpath == Authentication::Providers::Apple::CALLBACK_PATH &&
       request.headers["ORIGIN"] == trusted_origin
+  end
+
+  def safe_facebook_callback_request?
+    trusted_origin = "https://m.facebook.com"
+    facebook_callback_path = "/users/auth/facebook/callback"
+    return false unless request&.fullpath&.start_with?(facebook_callback_path)
+    
+    # Try request.origin first, then fallback to referer.
+    origin = request.origin.presence || request.referer
+    origin && origin.start_with?(trusted_origin)
+  end
+
+  def safe_google_callback_request?
+    trusted_origin = "https://accounts.google.com"
+    google_callback_path = "/users/auth/google_oauth2/callback"
+    return false unless request&.fullpath&.start_with?(google_callback_path)
+    
+    # Try request.origin first, then fallback to referer.
+    origin = request.origin.presence || request.referer
+    origin && origin.start_with?(trusted_origin)
+  end
+
+  def safe_github_callback_request?
+    trusted_origin = "https://github.com"
+    github_callback_path = "/users/auth/github/callback"
+    return false unless request&.fullpath&.start_with?(github_callback_path)
+
+    # Try request.origin first, then fallback to referer.
+    origin = request.origin.presence || request.referer
+    origin && origin.start_with?(trusted_origin)
+  end
+
+  def generate_auth_token(user)
+    payload = {
+      user_id: user.id,
+      exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+    }
+    JWT.encode(payload, Rails.application.secret_key_base)
   end
 end
