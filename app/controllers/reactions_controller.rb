@@ -118,6 +118,7 @@ class ReactionsController < ApplicationController
       params[:reactable_id].to_i,
       "Article_#{Rails.env}",
       Time.current.to_i * 1000,
+      nil,
       nil
     )
   end

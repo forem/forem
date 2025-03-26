@@ -36,7 +36,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if tag_follow_weight.positive? && tag_names.present?
-      tag_condition = "CASE WHEN " + tag_names.map { |tag|
+      tag_condition = "CASE WHEN " + tag_names.first(12).map { |tag|
         "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
       }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
       terms << "(#{tag_condition})"
