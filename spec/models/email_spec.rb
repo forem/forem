@@ -62,7 +62,7 @@ RSpec.describe Email, type: :model do
     end
   end
 
-  # The `#deliver_to_test_emails` method is unchanged 
+  # The `#deliver_to_test_emails` method is unchanged
   # because it still calls `Emails::BatchCustomSendWorker`.
   describe "#deliver_to_test_emails" do
     let(:email) { create(:email, subject: "Test Subject", body: "Test Body", type_of: "newsletter") }
@@ -78,7 +78,7 @@ RSpec.describe Email, type: :model do
       it "enqueues a job with the matching users" do
         addresses_string = "test1@example.com, test2@example.com"
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
-          [user_1.id, user_2.id],
+          match_array([user_1.id, user_2.id]), # <--- FIX APPLIED HERE
           "[TEST] #{email.subject}",
           email.body,
           email.type_of,
@@ -93,8 +93,10 @@ RSpec.describe Email, type: :model do
 
       it "falls back to using test_email_addresses and enqueues a job" do
         email.test_email_addresses = "tester@example.com"
+        # Note: match_array isn't strictly necessary for a single-element array,
+        # but using it here for consistency is fine.
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
-          [user_1.id],
+          match_array([user_1.id]),
           "[TEST] #{email.subject}",
           email.body,
           email.type_of,

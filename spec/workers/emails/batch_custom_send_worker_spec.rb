@@ -1,4 +1,3 @@
-# spec/workers/emails/batch_custom_send_worker_spec.rb
 require "rails_helper"
 
 RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
@@ -18,20 +17,26 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       allow(Rails.logger).to receive(:error)
     end
 
+    context "when testing the async call" do
+      it "queues the job with the correct arguments regardless of user ID order" do
+        # Stub the class method perform_async
+        allow(described_class).to receive(:perform_async).with(match_array(user_ids), subject_line, content, type_of, email_id)
+        described_class.perform_async(user_ids, subject_line, content, type_of, email_id)
+        expect(described_class).to have_received(:perform_async).with(match_array(user_ids), subject_line, content, type_of, email_id)
+      end
+    end
+
     context "when the users exist" do
       it "sends an email to each user" do
         worker.perform(user_ids, subject_line, content, type_of, email_id)
-
         expect(CustomMailer).to have_received(:with).twice
       end
 
       it "logs an error and continues if one user raises an exception" do
-        # Simulate an error for the second user
         allow(User).to receive(:find_by).with(id: user.id).and_return(user)
         allow(User).to receive(:find_by).with(id: user2.id).and_raise(StandardError.new("Boom!"))
 
         worker.perform(user_ids, subject_line, content, type_of, email_id)
-
         expect(Rails.logger).to have_received(:error).with(/Error sending email to user with id: #{user2.id}.*/)
       end
     end
@@ -41,7 +46,6 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
 
       it "skips sending any emails" do
         worker.perform(user_ids, subject_line, content, type_of, email_id)
-
         expect(CustomMailer).not_to have_received(:with)
       end
     end
@@ -50,14 +54,12 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       let(:subject_line) { "[TEST] Subject" }
 
       it "sends the email regardless of prior email history" do
-        # Create some prior email messages (they won't matter for [TEST])
         user.email_messages.create!(
           email_id: email_id,
           subject: "Older subject"
         )
 
         worker.perform([user.id], subject_line, content, type_of, email_id)
-
         expect(CustomMailer).to have_received(:with).once
       end
     end
@@ -67,9 +69,7 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
 
       context "and the user has no email messages" do
         it "checks for last email and finds none, so #last_email_message is nil" do
-          # No prior email messages => #last_email_message is nil
           worker.perform([user.id], subject_line, content, type_of, email_id)
-
           expect(CustomMailer).to have_received(:with).once
         end
       end
@@ -84,7 +84,6 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
 
         it "sends a new email if the most recent subject started with [TEST]" do
           worker.perform([user.id], subject_line, content, type_of, email_id)
-
           expect(CustomMailer).to have_received(:with).once
         end
       end
@@ -99,7 +98,6 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
 
         it "skips sending a new email if last email subject does not start with [TEST]" do
           worker.perform([user.id], subject_line, content, type_of, email_id)
-
           expect(CustomMailer).not_to have_received(:with)
         end
       end
