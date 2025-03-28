@@ -28,15 +28,4 @@
       Check out your profile
     </a>
   </p>
-
-  <% if @badge.credits_awarded > 0 && Listing.feature_enabled? %>
-    <hr style="opacity:0.4;width: 150px;margin: 30px auto;" />
-    <p>
-      You also get <strong><a href="<%= credits_url %>"><%= @badge.credits_awarded %> new credits</a></strong> to use for <strong><a href="<%= listings_url %>">community listings</a></strong><br />
-      if you have anything you'd like to promote. 🎉
-    </p>
-    <p>
-      <strong><a href="<%= app_url(about_listings_url) %>">More information about listings<a></strong>
-    </p>
-  <% end %>
 </center>

@@ -20,25 +20,6 @@ RSpec.describe "Search", :proper_status do
     end
   end
 
-  describe "GET /search/listings" do
-    it "returns an empty result" do
-      create(:listing)
-      get search_listings_path
-      expect(response.parsed_body["result"]).to eq([])
-    end
-
-    it "supports the search params and returns an empty result" do
-      listing = create(:listing)
-      get search_listings_path(
-        category: listing.category,
-        page: 0,
-        per_page: 1,
-        term: listing.title.downcase,
-      )
-      expect(response.parsed_body["result"]).to eq([])
-    end
-  end
-
   describe "GET /search/usernames" do
     before do
       sign_in authorized_user

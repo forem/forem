@@ -127,20 +127,6 @@ RSpec.describe NotifyMailer do
         expect(email.html_part.body).to include("/#{user.username}")
       end
 
-      it "doesn't include the listings URL" do
-        expect(email.html_part.body).not_to include(
-          CGI.escape(
-            Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-          ),
-        )
-      end
-
-      it "doesn't include the about listings URL" do
-        expect(email.html_part.body).not_to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain)),
-        )
-      end
-
       it "includes the click tracking parameters" do
         expect(email.html_part.body).to include("/hey?ahoy_click=true&t=")
       end
@@ -168,18 +154,6 @@ RSpec.describe NotifyMailer do
     context "when rendering the text email" do
       it "includes the user URL" do
         expect(email.text_part.body).to include(URL.user(user))
-      end
-
-      it "doesn't include the listings URL" do
-        expect(email.text_part.body).not_to include(
-          Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-        )
-      end
-
-      it "doesn't include the about listings URL" do
-        expect(email.text_part.body).not_to include(
-          Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain),
-        )
       end
 
       it "includes the rewarding_context_message in the email" do

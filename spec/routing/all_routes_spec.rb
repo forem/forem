@@ -10,22 +10,6 @@ RSpec.describe "all routes" do
     end
   end
 
-  describe "/listings" do
-    subject(:a_request) { { get: "/listings" } }
-
-    context "when enabled" do
-      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
-
-      it { is_expected.to route_to(controller: "listings", action: "index", locale: nil) }
-    end
-
-    context "when disabled" do
-      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
-
-      it { is_expected.not_to route_to(controller: "listings", action: "index", locale: nil) }
-    end
-  end
-
   it "renders a podcast index if there is a podcast with the slug successfully" do
     expect(get: "/#{podcast.slug}").to route_to(
       controller: "stories",

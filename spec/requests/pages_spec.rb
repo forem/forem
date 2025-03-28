@@ -155,13 +155,6 @@ RSpec.describe "Pages" do
     end
   end
 
-  describe "GET /about-listings" do
-    it "has proper headline" do
-      get "/about-listings"
-      expect(response.body).to include("About #{Settings::Community.community_name} Listings")
-    end
-  end
-
   describe "GET /community-moderation" do
     it "has proper headline" do
       get "/community-moderation"

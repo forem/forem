@@ -15,12 +15,11 @@
     </div>
 
   <p class="self-stretch"><a href="<%= json_data["user"]["path"] %>" class="crayons-btn w-100 m:w-50"><%= t("views.notifications.badge.profile") %></a></p>
+
   <% credits_awarded = json_data["badge_achievement"]["badge"]["credits_awarded"] %>
-  <% if credits_awarded.to_i > 0 && Listing.feature_enabled? %>
+  <% if credits_awarded.to_i > 0 %>
     <p class="max-w-75 mx-auto">
-      <%= t("views.notifications.badge.awarded_html", credits: link_to(t("views.notifications.badge.credits", count: json_data["badge_achievement"]["badge"]["credits_awarded"]), "/credits", class: "crayons-link crayons-link--brand fw-bold"),
-                                                      listings: link_to(t("views.notifications.badge.listings"), "/listings")) %>
+      You also received <%= link_to("#{credits_awarded} new credits", "/credits", class: "crayons-link crayons-link--brand fw-bold") %>. 🎉
     </p>
-    <p class="fs-s"><a href="<%= about_listings_url %>" class="crayons-link crayons-link--secondary"><%= t("views.notifications.badge.more") %><a></p>
   <% end %>
 </div>
