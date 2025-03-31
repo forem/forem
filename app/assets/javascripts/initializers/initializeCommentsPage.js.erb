@@ -1,321 +1,647 @@
+// Global variable from original script
 var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 13l-5 6-5-6h3.125c0-3.314 2.798-6 6.25-6 .17 0 .34.006.506.02-1.787.904-3.006 2.705-3.006 4.78V13H17z" /></svg>`;
 
-/**
- *
- * A function that triggers all the interactivity when a page with comments are loaded.
- * It calls sub-functions to define functionality for fetching async info, and attaching
- * event listeners related to rich UI interaction and form submission.
- *
- * When comment reaction data needs to be fetched and how we make those choices:
- * When no logged in user only need to fetch reaction numbers if there has been recent comment activity.
- * If no recent comments, we do not need the precision of fetching latest counts async. Static value is almost certainly good enough.
- * Always fetch when user is logged in because we need state of whether the user has reacted.
- *
- * @function initializeCommentsPage
- */
+// --- Event Handler Functions (defined outside initialize for clarity) ---
 
-function initializeCommentsPage() {
-  if (document.getElementById('comments-container')) {
-    toggleCodeOfConduct();
-    var userStatus = document.body.getAttribute('data-user-status');
-    var commentableId = document.getElementById('comments-container').dataset.commentableId;
-    var commentableType = document.getElementById('comments-container').dataset.commentableType;
-    var hasRecentCommentActivity = document.getElementById('comments-container').dataset.hasRecentCommentActivity;
-    commentableIdList = commentableId.split(",");
-
-    if (userStatus === 'logged-in' || hasRecentCommentActivity !== 'false') {
-      var f = (function() {
-        for (var i = 0; i < commentableIdList.length; i++) {
-          (function(i){
-            var ajaxReq;
-            ajaxReq = new XMLHttpRequest();
-            ajaxReq.onreadystatechange = function () {
-              if (ajaxReq.readyState === XMLHttpRequest.DONE) {
-                var responseObj = JSON.parse(ajaxReq.response);
-                var reactions = responseObj.reactions;
-                var allNodes = document.getElementsByClassName('single-comment-node');
-                var publicReactionCounts = responseObj.public_reaction_counts;
-                for (var i = 0; i < reactions.length; i++) {
-                  var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
-                  if (buttForComment) {
-                    buttForComment.classList.add('reacted');
-                    buttForComment.setAttribute('aria-pressed', 'true')
-                  }
-                }
-                for (var i = 0; i < publicReactionCounts.length; i++) {
-                  var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
-                  if (buttForComment) {
-                    var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
-                    var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
-                    if (publicReactionCounts[i].count > 0 && reactionsLabelWrapper) {
-
-                      if (publicReactionCounts[i].count > 1) {
-                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
-                      } else {
-                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}`;
-                      }
-
-                      reactionsCountWrapper.id = 'reactions-count-' + publicReactionCounts[i].id;
-                      reactionsCountWrapper.innerHTML = publicReactionCounts[i].count;
-                      reactionsCountWrapper.classList.remove("hidden");
-                    } else {
-                      reactionsCountWrapper.classList.add("hidden");
-                      reactionsCountWrapper.innerHTML = '0';
-                    }
-
-                    if (!buttForComment.classList.contains("reacted")) {
-                      buttForComment.setAttribute('aria-pressed', 'false');
-                    }
-                  }
-                }
-
-                for (var i = 0; i < allNodes.length; i++) {
-                  if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
-                    allNodes[i].dataset.currentUserComment = "true";
-                    var path = allNodes[i].dataset.path;
-                    var userActionsEl = allNodes[i].querySelector('.current-user-actions');
-                    var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
-                    if (userActionsEl && buttEl) {
-                      userActionsEl.innerHTML = `<li><a href="${ path }/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
-                                                <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`
-                      userActionsEl.classList.remove('hidden');
-                    }
-                  }
-                }
-              }
-            };
-
-            ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
-            ajaxReq.send();
-          })(i);
-        }
-      })();
+function handleReactionClick(event) {
+    const thisButt = event.target.closest('.reaction-button');
+    if (!thisButt) {
+        // Click was not on a reaction button or its descendant
+        return;
     }
 
-    var butts = document.getElementsByClassName('reaction-button');
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function (event) {
-        var thisButt = this;
-        event.preventDefault();
-        sendHapticMessage('medium');
-        var userStatus = document.body.getAttribute('data-user-status');
-        if (userStatus === 'logged-out') {
-          showLoginModal({ referring_source: 'comment', trigger: 'like' });
-          return;
+    // --- Start of original onclick logic (using 'thisButt') ---
+    event.preventDefault(); // Still prevent default if it was a link/button
+    sendHapticMessage('medium'); // Assumed global
+    var userStatus = document.body.getAttribute('data-user-status');
+    if (userStatus === 'logged-out') {
+        showLoginModal({ referring_source: 'comment', trigger: 'like' }); // Assumed global
+        return;
+    }
+
+    // Disable the specific button clicked
+    if (thisButt.disabled) return; // Prevent double clicks while processing
+    thisButt.classList.add('reacting');
+    thisButt.disabled = true;
+
+    function successCb(response) {
+        thisButt.classList.remove('reacting'); // Use thisButt
+        var reactionCount = thisButt.querySelector('.reactions-count');
+        var reactionLabel = thisButt.querySelector('.reactions-label');
+
+        if (!reactionCount || !reactionLabel) {
+           console.warn("Could not find reaction count/label wrappers for button:", thisButt.id);
+           thisButt.disabled = false; // Re-enable even if wrappers missing
+           return;
         }
 
-        thisButt.classList.add('reacted');
-        thisButt.disabled = true;
-
-        function successCb(response) {
-          var reactionCount = thisButt.querySelector('.reactions-count');
-          var reactionLabel = thisButt.querySelector('.reactions-label');
-          if (response.result === 'create') {
+        if (response.result === 'create') {
             thisButt.classList.add('reacted');
             thisButt.setAttribute('aria-pressed', 'true');
-            if (reactionCount) {
-              reactionCount.innerHTML = parseInt(reactionCount.innerHTML) + 1;
-              reactionCount.classList.remove("hidden");
-              if(parseInt(reactionCount.innerHTML) == 1) {
-                reactionLabel.innerHTML = "&nbsp;like"
-              } else if(parseInt(reactionCount.innerHTML) > 1) {
-                reactionLabel.innerHTML = "&nbsp;likes"
-              }
-            }
-          } else {
+            let newCount = parseInt(reactionCount.innerHTML || '0') + 1;
+            reactionCount.innerHTML = newCount;
+            reactionCount.classList.remove("hidden");
+            reactionLabel.innerHTML = `&nbsp;${newCount > 1 ? I18n.t('core.like').toLowerCase() + 's' : I18n.t('core.like').toLowerCase()}`; // Assumed I18n global
+        } else { // 'destroy'
             thisButt.classList.remove('reacted');
             thisButt.setAttribute('aria-pressed', 'false');
-            if (reactionCount) {
-              reactionCount.innerHTML = parseInt(reactionCount.innerHTML) - 1;
-              if(parseInt(reactionCount.innerHTML) == 0) {
+            let newCount = parseInt(reactionCount.innerHTML || '1') - 1;
+            reactionCount.innerHTML = newCount;
+            if (newCount <= 0) {
                 reactionCount.classList.add("hidden");
-                thisButt.classList.remove('crayons-btn--icon-left');
-                thisButt.classList.add('crayons-btn--icon');
-                reactionLabel.innerHTML = ""
-              }
-            }
-          }
-        }
-        var formData = new FormData();
-        formData.append('reactable_type', 'Comment');
-        formData.append('reactable_id', thisButt.dataset.commentId);
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
-            thisButt.disabled = false;
-            if (response.status === 200) {
-              response.json().then(successCb);
+                reactionCount.innerHTML = '0'; // Reset to 0
+                reactionLabel.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}`; // Keep base label
             } else {
-              showModalAfterError({
-                response,
-                element: 'reaction',
-                action_ing: 'making',
-                action_past: 'made',
-              });
+                reactionLabel.innerHTML = `&nbsp;${newCount > 1 ? I18n.t('core.like').toLowerCase() + 's' : I18n.t('core.like').toLowerCase()}`;
             }
-          });
-      };
+        }
+        thisButt.disabled = false; // Re-enable the specific button
     }
-    var replyButts = document.getElementsByClassName('toggle-reply-form');
-    for (var i = 0; i < replyButts.length; i++) {
-      var butt = replyButts[i];
-      butt.onclick = function (event) {
-        event.preventDefault();
-        if (event.target.classList.contains("thread-indication")) {
-          return false;
-        } else {
-          var userStatus = document.body.getAttribute('data-user-status');
-          if (userStatus == 'logged-out') {
-            showLoginModal({ referring_source: 'comment', trigger: 'reply' });
-            return;
-          }
-          var parentId = event.target.closest('.comment').dataset.commentId;
-          var waitingOnCSRF = setInterval(function () {
-            var metaTag = document.querySelector("meta[name='csrf-token']");
-            if (metaTag) {
-              clearInterval(waitingOnCSRF);
-              commentWrapper = event.target.closest('.comment__details');
-              commentWrapper.classList.add("replying");
-              commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
-              initializeCommentsPage();
 
-              setTimeout(function () {
-                commentWrapper.getElementsByTagName('textarea')[0].focus();
-              }, 30);
+    function errorCb(response) {
+        thisButt.classList.remove('reacting'); // Use thisButt
+        thisButt.disabled = false; // Re-enable the specific button
+        showModalAfterError({ // Assumed global
+            response,
+            element: 'reaction',
+            action_ing: 'making',
+            action_past: 'made',
+        });
+    }
+
+    var formData = new FormData();
+    formData.append('reactable_type', 'Comment');
+    formData.append('reactable_id', thisButt.dataset.commentId);
+
+    getCsrfToken() // Assumed global
+        .then(token => sendFetch('reaction-creation', formData, 'POST')) // Assumed global sendFetch
+        .then(response => {
+            if (!response) throw new Error("No response received from fetch.");
+            if (response.ok) {
+                response.json()
+                    .then(successCb)
+                    .catch(e => {
+                        console.error("JSON parsing error in reaction response", e);
+                        // Use response status for error reporting even if JSON fails
+                        const mockJsonResponse = { ...response, json: async () => ({error: "JSON parse error"}) };
+                        errorCb(mockJsonResponse);
+                    });
+            } else {
+                errorCb(response);
             }
-          }, 1);
-        };
-        return false;
-      }
-    }
-
-    if (document.getElementById('new_comment')) {
-      document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
-    }
-  }
-  listenForDetailsToggle();
-
-  handleHiddenComments(commentableType);
+        })
+        .catch(error => {
+            console.error("Fetch error during reaction:", error);
+            const mockResponse = { status: 0, statusText: error.message || 'Network Error', ok: false, json: async () => ({ error: error.message }) };
+            errorCb(mockResponse); // Ensure button is re-enabled via errorCb
+        });
+    // --- End of original onclick logic ---
 }
 
+
+function handleReplyClick(event) {
+    const butt = event.target.closest('.toggle-reply-form');
+    if (!butt) {
+        // Click was not on a reply button or its descendant
+        return;
+    }
+
+    // Check if the click originated from the thread indicator span within the button
+    if (event.target.closest(".fs-italic.color-base-50")) {
+        return; // Do nothing if clicking the "Thread" text/icon
+    }
+
+    // --- Start of original onclick logic (using 'butt') ---
+    event.preventDefault(); // Prevent default link behavior
+
+    var userStatus = document.body.getAttribute('data-user-status');
+    if (userStatus == 'logged-out') {
+        showLoginModal({ referring_source: 'comment', trigger: 'reply' }); // Assumed global
+        return;
+    }
+
+    var parentCommentNode = butt.closest('.single-comment-node'); // Use butt here
+    if (!parentCommentNode) {
+        console.error("Could not find parent comment node for reply button.");
+        return;
+    }
+    var parentId = parentCommentNode.dataset.commentId;
+    var commentWrapper = parentCommentNode.querySelector('.comment__details');
+    if (!commentWrapper) {
+        console.error("Could not find comment__details wrapper within the comment node.");
+        return;
+    }
+
+    // Check if already replying to this comment
+    const existingForm = commentWrapper.querySelector('.comment-form[data-parent-id="' + parentId + '"]');
+    if (existingForm) {
+        // Remove the form if the button is clicked again
+        existingForm.remove();
+        commentWrapper.classList.remove("replying");
+        return;
+    }
+
+    // Close other open reply forms (optional, improves UX)
+    document.querySelectorAll('#comments-container .comment__details.replying .comment-form').forEach(form => {
+        if (form.closest('.comment__details') !== commentWrapper) { // Don't close self if somehow still open
+            form.closest('.comment__details').classList.remove('replying');
+            form.remove();
+        }
+    });
+
+    // Add the new form
+    commentWrapper.classList.add("replying");
+    const commentableIdForForm = document.getElementById('comments-container').dataset.commentableId.split(",")[0];
+    const commentableTypeForForm = document.getElementById('comments-container').dataset.commentableType;
+
+    // --- Add HTML and Re-initialize ---
+    // buildCommentFormHTML needs to return the HTML string for the form
+    commentWrapper.insertAdjacentHTML('beforeend', buildCommentFormHTML(commentableIdForForm, commentableTypeForForm, parentId)); // Use insertAdjacentHTML
+    const newForm = commentWrapper.querySelector('.comment-form[data-parent-id="' + parentId + '"]'); // Find the newly added form
+
+    if (newForm) {
+        // Attach listeners SPECIFIC to this new form's elements
+        newForm.addEventListener('submit', handleCommentSubmit);
+        const newTextArea = newForm.querySelector('.comment-textarea');
+        if (newTextArea) {
+            newTextArea.addEventListener('focus', handleFocus);
+            newTextArea.addEventListener('keyup', handleKeyUp);
+            newTextArea.addEventListener('keydown', handleKeyDown);
+            newTextArea.addEventListener('change', handleChange);
+            setTimeout(() => {
+                 // Check if element still exists before focusing
+                 if (document.body.contains(newTextArea)) {
+                    newTextArea.focus();
+                 }
+            }, 30);
+        }
+        const closeButton = newForm.querySelector('.close-comment-form-butt');
+        if (closeButton) {
+            // handleFormClose needs to be able to find the form from the button
+            closeButton.addEventListener('click', handleFormClose);
+        }
+        const submitButton = newForm.querySelector('button[type="submit"]');
+        if (submitButton && newTextArea) {
+            handleButtonsActivation({ target: newTextArea });
+        }
+        toggleCodeOfConduct(); // Re-run CoC check for the new form
+    } else {
+        console.error("Could not find the newly added reply form to attach listeners. HTML structure from buildCommentFormHTML might be unexpected.");
+        // Clean up if form wasn't added correctly
+        commentWrapper.classList.remove("replying");
+    }
+    // --- End Re-initialization ---
+    // --- End of original onclick logic ---
+}
+
+
+/**
+ * =============================================================================
+ * MODIFIED initializeCommentsPage Function
+ * Uses event delegation for reactions/replies.
+ * =============================================================================
+ */
+function initializeCommentsPage() {
+    const commentsContainer = document.getElementById('comments-container');
+    if (commentsContainer) {
+        toggleCodeOfConduct(); // Original call
+
+        var userStatus = document.body.getAttribute('data-user-status');
+        var commentableId = commentsContainer.dataset.commentableId;
+        var commentableType = commentsContainer.dataset.commentableType;
+        var hasRecentCommentActivity = commentsContainer.dataset.hasRecentCommentActivity;
+        var commentableIdList = commentableId ? commentableId.split(",") : [];
+        var primaryCommentableId = commentableIdList.length > 0 ? commentableIdList[0] : null;
+
+        // --- Setup Event Delegation (once per container) ---
+        // Remove potentially existing listeners first to prevent duplicates if re-initialized
+        commentsContainer.removeEventListener('click', handleReactionClick);
+        commentsContainer.removeEventListener('click', handleReplyClick);
+        // Add delegated listeners
+        commentsContainer.addEventListener('click', handleReactionClick);
+        commentsContainer.addEventListener('click', handleReplyClick);
+        // ----------------------------------------------------
+
+
+        if (userStatus === 'logged-in' || hasRecentCommentActivity !== 'false') {
+
+            // Ensure we have an ID to fetch comments/reactions for
+            if (!primaryCommentableId || commentableIdList.length === 0) {
+                console.warn("Missing commentable ID for fetching async data.");
+                return; // Stop if no IDs are available
+            }
+
+
+            let commentsHtmlReady = false;
+            let reactionData = new Array(commentableIdList.length).fill(null); // Initialize array
+            let reactionsReceivedCount = 0;
+            const expectedReactionsCount = commentableIdList.length;
+
+            // --- Function to Apply Reaction Updates (to be called later) ---
+            function applyReactionUpdates() {
+                if (!commentsHtmlReady || reactionsReceivedCount < expectedReactionsCount) {
+                    return;
+                }
+                console.log("Applying reaction updates after comments loaded.");
+
+                reactionData.forEach(responseObj => {
+                    if (!responseObj) return;
+
+                    var reactions = responseObj.reactions;
+                    var publicReactionCounts = responseObj.public_reaction_counts;
+                    // Query nodes *after* HTML injection has happened
+                    var allNodes = document.getElementsByClassName('single-comment-node');
+
+                    // Apply user's specific reactions
+                    (reactions || []).forEach(reaction => {
+                        var buttForComment = document.getElementById('button-for-comment-' + reaction.reactable_id);
+                        if (buttForComment) {
+                            buttForComment.classList.add('reacted');
+                            buttForComment.setAttribute('aria-pressed', 'true');
+                        }
+                    });
+
+                    // Apply public reaction counts
+                    (publicReactionCounts || []).forEach(prc => {
+                        var buttForComment = document.getElementById('button-for-comment-' + prc.id);
+                        if (buttForComment) {
+                            var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
+                            var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
+
+                            if (reactionsCountWrapper && reactionsLabelWrapper) {
+                                if (prc.count > 0) {
+                                    reactionsLabelWrapper.innerHTML = `&nbsp;${prc.count > 1 ? I18n.t('core.like').toLowerCase() + 's' : I18n.t('core.like').toLowerCase()}`;
+                                    reactionsCountWrapper.id = 'reactions-count-' + prc.id;
+                                    reactionsCountWrapper.innerHTML = prc.count;
+                                    reactionsCountWrapper.classList.remove("hidden");
+                                } else {
+                                    reactionsCountWrapper.classList.add("hidden");
+                                    reactionsCountWrapper.innerHTML = '0';
+                                    reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}`;
+                                }
+                            } else if (reactionsCountWrapper) {
+                                reactionsCountWrapper.classList.add("hidden");
+                                reactionsCountWrapper.innerHTML = '0';
+                            }
+
+                            if (!buttForComment.classList.contains("reacted")) {
+                                buttForComment.setAttribute('aria-pressed', 'false');
+                            }
+                        }
+                    });
+
+                     // Update current user comment actions (Edit/Delete) only if current_user data is present
+                     if (responseObj.current_user) {
+                         for (let node of allNodes) { // Use for...of for NodeList iteration
+                             if (node.dataset.commentAuthorId == responseObj.current_user.id) {
+                                 node.dataset.currentUserComment = "true";
+                                 var path = node.dataset.path;
+                                 var userActionsEl = node.querySelector('.current-user-actions');
+                                 // Check button existence for safety, though button itself isn't strictly needed for showing edit/delete
+                                 // var buttEl = document.getElementById('button-for-comment-' + node.dataset.commentId);
+                                 if (userActionsEl && path) {
+                                     userActionsEl.innerHTML = `<li><a href="${path}/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
+                                                               <li><a data-no-instant href="${path}/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`;
+                                     userActionsEl.classList.remove('hidden');
+                                 }
+                             }
+                         }
+                     } // end if responseObj.current_user
+
+                }); // end reactionData.forEach
+
+            } // --- End of applyReactionUpdates ---
+
+
+            // --- Fetch Comments HTML (using fetch API) ---
+            const commentsUrl = `/comments/async/${primaryCommentableId}?commentable_type=${commentableType}`;
+            console.log("Fetching comments from:", commentsUrl);
+
+            window.fetch(commentsUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const container = document.getElementById('comment-trees-container');
+                    if (container) {
+                        container.innerHTML = html; // Replace content
+                        console.log("Comments HTML loaded.");
+                        commentsHtmlReady = true;
+
+                        // Initialize dynamic things *within* the new HTML
+                        initializeCommentDate();
+                        activateRunkitTags(); // Assumed global
+                        listenForDetailsToggle(); // Re-attach toggle listeners if needed (delegation might be better here too)
+                        handleHiddenComments(commentableType);
+
+                        // NO need to call attach...ButtonListeners here anymore because of delegation
+
+                        // Check if reactions have already arrived and apply them
+                        if (reactionsReceivedCount === expectedReactionsCount) {
+                            applyReactionUpdates();
+                        }
+
+                    } else {
+                        console.error("Target container 'comment-trees-container' not found.");
+                        commentsHtmlReady = true; // Mark as ready even if container missing to potentially allow reaction processing
+                         if (reactionsReceivedCount === expectedReactionsCount) {
+                             applyReactionUpdates();
+                         }
+                    }
+                })
+                .catch(error => {
+                    console.error("Failed to fetch comments:", error);
+                    // Even if comments fail, allow reactions to be processed if they succeed
+                    commentsHtmlReady = true; // Mark as 'ready' to unblock reactions
+                    if (reactionsReceivedCount === expectedReactionsCount) {
+                        applyReactionUpdates();
+                    }
+                });
+
+            // --- Fetch Reactions (using XMLHttpRequest in a loop) ---
+            commentableIdList.forEach((currentCommentableId, index) => {
+                var ajaxReq = new XMLHttpRequest();
+                ajaxReq.onreadystatechange = function() {
+                    if (ajaxReq.readyState === XMLHttpRequest.DONE) {
+                        if (ajaxReq.status === 200) {
+                            try {
+                                var responseObj = JSON.parse(ajaxReq.response);
+                                reactionData[index] = responseObj; // Store data at the correct index
+                                // console.log(`Reaction data received for ID: ${currentCommentableId}`);
+                            } catch (e) {
+                                console.error(`Failed to parse reaction JSON for ID ${currentCommentableId}:`, e);
+                                reactionData[index] = null; // Mark as failed/empty
+                            }
+                        } else {
+                            console.error(`Reaction request failed for ID ${currentCommentableId} with status: ${ajaxReq.status}`);
+                            reactionData[index] = null; // Mark as failed/empty
+                        }
+                        reactionsReceivedCount++;
+                        // Check if comments are ready and all reactions are received
+                        if (commentsHtmlReady && reactionsReceivedCount === expectedReactionsCount) {
+                            applyReactionUpdates();
+                        }
+                    }
+                };
+
+                const reactionsUrl = `/reactions?commentable_id=${currentCommentableId}&commentable_type=${commentableType}`;
+                // console.log("Fetching reactions from:", reactionsUrl);
+                ajaxReq.open("GET", reactionsUrl, true);
+                ajaxReq.send();
+            }); // End forEach loop for reactions
+        } // End if (userStatus === 'logged-in' || hasRecentCommentActivity !== 'false')
+
+        // Attach listener for the main comment form (if present)
+        const mainCommentForm = document.getElementById('new_comment');
+        if (mainCommentForm) {
+            // Check if listener already attached (simple flag)
+             if (!mainCommentForm.dataset.submitListenerAttached) {
+                mainCommentForm.addEventListener('submit', handleCommentSubmit);
+                mainCommentForm.dataset.submitListenerAttached = 'true';
+                 // Attach listeners to the main comment form's textarea as well
+                 const mainTextArea = mainCommentForm.querySelector('.comment-textarea:not([role=combobox])');
+                 if (mainTextArea) {
+                     // Check flags before attaching to prevent duplicates if init runs multiple times
+                      if (!mainTextArea.dataset.focusListenerAttached) {
+                         mainTextArea.addEventListener('focus', handleFocus);
+                         mainTextArea.dataset.focusListenerAttached = 'true';
+                      }
+                      if (!mainTextArea.dataset.keyupListenerAttached) {
+                         mainTextArea.addEventListener('keyup', handleKeyUp);
+                          mainTextArea.dataset.keyupListenerAttached = 'true';
+                      }
+                      if (!mainTextArea.dataset.keydownListenerAttached) {
+                         mainTextArea.addEventListener('keydown', handleKeyDown);
+                         mainTextArea.dataset.keydownListenerAttached = 'true';
+                      }
+                       if (!mainTextArea.dataset.changeListenerAttached) {
+                          mainTextArea.addEventListener('change', handleChange);
+                          mainTextArea.dataset.changeListenerAttached = 'true';
+                       }
+                 }
+             }
+        }
+    } // End if (commentsContainer)
+
+    // Initialize these globally for any elements present on initial load.
+    // listenForDetailsToggle might be better using delegation too if details elements are dynamic
+    listenForDetailsToggle();
+    handleHiddenComments(document.getElementById('comments-container')?.dataset.commentableType); // Pass type if available
+    initializeCommentDate();
+
+} // End initializeCommentsPage
+
+
+/**
+ * =============================================================================
+ * Functions from the Original Script (mostly unchanged, ensure they exist)
+ * =============================================================================
+ */
+
+// Includes:
+// toggleCodeOfConduct
+// handleCommentSubmit
+// handleFocus
+// handleKeyUp
+// handleSubmit (used by handleKeyDown)
+// handleKeyDown
+// handleFormClose
+// handleSizeChange
+// handleButtonsActivation
+// validateField
+// handleChange
+// generateUploadFormdata (unused but kept)
+// updateItemSummaryHtml
+// listenForDetailsToggle & handleDetailsToggleEvent (potentially improve with delegation)
+// updateCommentsCount
+// initializeCommentDate
+// handleHiddenComments
+// collapseCommentsHiddenByCommentableUser
+
+// --- Paste the definitions of all those functions here ---
+// (Using the versions from the previous 'fully rewritten file' response,
+// as they included some minor improvements)
+
 function toggleCodeOfConduct() {
-  var user = userData();
+  var user = userData(); // Assumed global function
   if (!user) {
     return;
   }
   var codeOfConduct = user.checked_code_of_conduct
-  var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
-  if (checkboxWrapper && !codeOfConduct) {
-    checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
-                                  <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>'
-  }
+  // Check within all potential comment forms (main + replies)
+  var checkboxWrappers = document.querySelectorAll('.toggle-code-of-conduct-checkbox');
+   checkboxWrappers.forEach(checkboxWrapper => {
+      // Only add if not already present and CoC not checked
+      if (checkboxWrapper && !codeOfConduct && checkboxWrapper.innerHTML.trim() === '') {
+          // Create unique ID for label/input association
+           const uniqueId = 'checked_code_of_conduct_' + Date.now() + Math.random().toString(36).substring(2, 7);
+          checkboxWrapper.innerHTML = `<input type="checkbox" id="${uniqueId}" name="checked_code_of_conduct" class="checkbox" required/>\
+                                        <label for="${uniqueId}">I've read the <a href="/code-of-conduct" target="_blank" rel="noopener noreferrer">code of conduct</a></label>`;
+      } else if (checkboxWrapper && codeOfConduct) {
+          checkboxWrapper.innerHTML = ''; // Clear if already checked
+      }
+   });
 }
 
 function handleCommentSubmit(event) {
   event.preventDefault();
   var form = event.target;
+  // Prevent double submission
+  if (form.classList.contains('submitting')) return false;
+
   form.classList.add('submitting');
-  var textarea = form.getElementsByClassName('comment-textarea')[0];
+  var textarea = form.querySelector('.comment-textarea:not([role=combobox])'); // Target the actual textarea, not autocomplete input
+
+  if (textarea && textarea.value.trim() === '') {
+      console.warn("Comment text cannot be empty.");
+      form.classList.remove('submitting');
+      textarea.focus();
+      return false; // Stop submission if empty
+  }
+
   if (textarea) {
-    textarea.style.height = null;
+    textarea.style.height = null; // Reset height
     textarea.blur();
   }
-  var parentComment = document.getElementById("comment-node-" + event.target.dataset.commentId);
 
-  // as there can be multiple forms rendered in the comments, we need to use querySelector to find descendants
-  var commentParentId = form.querySelector("#comment_parent_id");
+  var parentIdField = form.querySelector("#comment_parent_id");
+  var parentIdValue = parentIdField ? parentIdField.value : null;
+  var parentCommentNode = parentIdValue ? document.getElementById("comment-node-" + parentIdValue) : null;
+
+   const cocCheckbox = form.querySelector('input[name="checked_code_of_conduct"]');
+   if (cocCheckbox && cocCheckbox.required && !cocCheckbox.checked) {
+       console.warn("Code of Conduct must be accepted.");
+       form.classList.remove('submitting'); // Allow resubmission after checking
+       cocCheckbox.focus();
+       return false;
+   }
+
   var body = JSON.stringify({
     comment: {
-      body_markdown: form.getElementsByTagName("textarea")[0].value,
+      body_markdown: textarea ? textarea.value : '',
       commentable_id: form.querySelector("#comment_commentable_id").value,
       commentable_type: form.querySelector("#comment_commentable_type").value,
-      parent_id: commentParentId ? commentParentId.value : null,
+      parent_id: parentIdValue,
     }
   });
 
-  getCsrfToken()
-    .then(sendFetch('comment-creation', body))
+  getCsrfToken() // Assumed global
+    .then(token => sendFetch('comment-creation', body, 'POST')) // Assumed global sendFetch handles token/method/body type
     .then(function (response) {
-      if (response.status === 200) {
+      if (response.ok) {
         response.json().then(function (newComment) {
-          var newNode = document.createElement('div');
-          newNode.innerHTML = buildCommentHTML(newComment);
-          var docBody = document.body
+          // --- Comment Successfully Created ---
+          var newNodeContainer = document.createElement('div');
+          newNodeContainer.innerHTML = buildCommentHTML(newComment); // Assumed global
+          var newNode = newNodeContainer.firstElementChild; // Get the actual comment node element
 
-          var userData = JSON.parse(docBody.getAttribute('data-user'))
-          userData.checked_code_of_conduct = true;
+          if (!newNode) {
+             console.error("buildCommentHTML did not produce a valid element.");
+             form.classList.remove('submitting'); // Reset form state
+             return; // Stop processing
+          }
 
-          docBody.dataset.user = JSON.stringify(userData);
 
-          var checkbox = form.getElementsByClassName('code-of-conduct')[0]
-          if (checkbox) {
-            checkbox.innerHTML = ""
+          var userDataObj = userData(); // Assumed global
+          if (userDataObj && !userDataObj.checked_code_of_conduct) {
+              userDataObj.checked_code_of_conduct = true;
+              document.body.dataset.user = JSON.stringify(userDataObj);
+               document.querySelectorAll('.toggle-code-of-conduct-checkbox').forEach(wrapper => wrapper.innerHTML = '');
           }
 
           var mainCommentsForm = document.getElementById("new_comment");
-          if (parentComment) {
-            handleFormClose(event);
-            if (newComment.depth > 3) {
-              var replyTrigger = parentComment.getElementsByClassName("toggle-reply-form")[0];
-              var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
-              replyTrigger.classList.replace("inline-flex", "hidden");
-              replyTrigger.parentNode.innerHTML += threadIndicator;
-            }
-            var actionsNode = parentComment.getElementsByClassName("comment__inner")[0];
-            actionsNode.parentNode.insertBefore(newNode, actionsNode.nextSibling);
-          }
 
-          else if (mainCommentsForm) {
-            var mainCommentsForm = document.getElementById("new_comment");
+          if (parentCommentNode && newComment.parent_id) { // It's a reply
+            handleFormClose({ target: form.querySelector('button') }); // Close the reply form
+            if (newComment.depth > 3) {
+                var replyTrigger = parentCommentNode.querySelector(".toggle-reply-form");
+                if (replyTrigger && !parentCommentNode.querySelector(".fs-italic.color-base-50")) {
+                     var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
+                     replyTrigger.classList.replace("inline-flex", "hidden");
+                     replyTrigger.classList.add("hidden");
+                     if (replyTrigger.parentNode) {
+                        replyTrigger.parentNode.insertAdjacentHTML('beforeend', threadIndicator);
+                     }
+                }
+            }
+            var commentsInChildrenContainer = parentCommentNode.querySelector('.comment__children-container');
+             if (!commentsInChildrenContainer) {
+                 commentsInChildrenContainer = document.createElement('div');
+                 commentsInChildrenContainer.className = 'comment__children-container ml-xs-4 ml-md-l';
+                  parentCommentNode.querySelector('.comment__inner').insertAdjacentElement('afterend', commentsInChildrenContainer);
+             }
+             commentsInChildrenContainer.insertBefore(newNode, commentsInChildrenContainer.firstChild);
+
+          } else if (mainCommentsForm === form) { // It's the main comment form submission
             mainCommentsForm.classList.remove("submitting");
             mainCommentsForm.classList.remove('preview-open');
 
-            const commentInputs = [...form.getElementsByClassName("comment-textarea")]
-            commentInputs[0].closest('.comment-form').classList.remove('comment-form--initiated');
-
-            // Clearing out all comment textboxes and resetting their height because
-            // there is an additional one generated by the comment
-            // mention auto-complete component
-            commentInputs.forEach(input => {
-              input.value = newComment.comment_template || "";
-              input.style.height = null;
-            });
+            const mainTextarea = form.querySelector('.comment-textarea:not([role=combobox])');
+            if (mainTextarea) {
+                 mainTextarea.closest('.comment-form').classList.remove('comment-form--initiated');
+                 mainTextarea.value = newComment.comment_template || "";
+                 mainTextarea.style.height = null;
+                 handleButtonsActivation({target: mainTextarea});
+            }
 
             const preview = document.getElementById("preview-div");
             const togglePreview = document.querySelector('.preview-toggle');
-            preview.innerHTML = "";
-            togglePreview.innerHTML = "Preview";
+             if(preview) preview.innerHTML = "";
+             if(togglePreview) togglePreview.innerHTML = "Preview";
+
             const container = document.getElementById("comment-trees-container");
-            container.insertBefore(newNode, container.firstChild);
+            if(container) {
+                container.insertBefore(newNode, container.firstChild);
+            } else {
+                 console.error("#comment-trees-container not found for inserting new comment");
+            }
           }
-          else if (document.getElementById("notifications-container")) {
-            var newDiv = document.createElement("span")
-            newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice" aria-live="polite">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
-            form.replaceWith(newDiv);
+          else { // Fallback or different context
+             console.log("Comment submitted in unknown context:", form.id);
+             if (document.getElementById("notifications-container")) {
+                var newDiv = document.createElement("span");
+                newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice" aria-live="polite">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>';
+                form.replaceWith(newDiv);
+             } else {
+                 if (newComment.url) window.location.href = newComment.url;
+             }
           }
-          else {
-            window.location.replace(newComment.url)
+
+          updateCommentsCount(); // Increment count display
+
+          // Re-initialize things FOR THE NEW NODE using direct calls, not delegation helpers
+          if(newNode) {
+             // Reaction/Reply listeners are handled by DELEGATION, no need to call attach... here
+             initializeCommentDate(); // Ensure date formatting/tooltip works on new node
+             listenForDetailsToggle(); // Ensure collapse/expand works if the new node is a details element
+             activateRunkitTags(); // Assumed global
+             handleHiddenComments(newComment.commentable_type); // Apply hidden logic if needed
           }
-          updateCommentsCount();
-          initializeCommentsPage();
-          initializeCommentDate();
-          activateRunkitTags();
-        })
-      } else {
-        form.classList.remove('submitting');
-        showModalAfterError({
-          response,
-          element: 'comment',
-          action_ing: 'posting',
-          action_past: 'posted',
+
+        }).catch(e => {
+            console.error("Error processing successful comment response:", e);
+            form.classList.remove('submitting');
+             showModalAfterError({ response, element: 'comment', action_ing: 'processing', action_past: 'processed'}); // Assumed global
         });
+      } else { // response not ok
+        form.classList.remove('submitting');
+        showModalAfterError({ response, element: 'comment', action_ing: 'posting', action_past: 'posted'}); // Assumed global
         return false;
       }
-      return false;
+      // return false; // Redundant due to event.preventDefault()
+    }).catch(error => {
+         console.error("Network error during comment submission:", error);
+         form.classList.remove('submitting');
+         const mockResponse = { status: 0, statusText: error.message || 'Network Error', ok: false, json: async () => ({ error: error.message }) };
+          showModalAfterError({ response: mockResponse, element: 'comment', action_ing: 'posting', action_past: 'posted'}); // Assumed global
+          // return false; // Redundant
     });
-  return false;
+  // return false; // Redundant
 }
+
 
 function handleFocus(event) {
   handleButtonsActivation(event);
@@ -323,15 +649,17 @@ function handleFocus(event) {
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
-    showLoginModal({ referring_source: 'comments', trigger: 'new_comment'});
+    showLoginModal({ referring_source: 'comments', trigger: 'new_comment'}); // Assumed global
     area.blur();
   } else {
     var form = event.target.closest(".comment-form");
-    if (form) {
+    if (form && !form.classList.contains("comment-form--initiated")) {
       form.classList.add("comment-form--initiated");
+       handleSizeChange(event);
     }
-    handleSizeChange(event);
-    window.Forem.initializeEnhancedCommentTextArea(area);
+    if (window.Forem && window.Forem.initializeEnhancedCommentTextArea) {
+       window.Forem.initializeEnhancedCommentTextArea(area); // Assumed global
+    }
   }
 }
 
@@ -340,179 +668,205 @@ function handleKeyUp(event) {
   handleButtonsActivation(event);
 }
 
-// Handler for when Ctrl+Enter OR Command+Enter is pressed
-function handleSubmit(event) {
-  // Get user details and extract code of conduct & comment count
-  var user = userData();
-  if (!user) {
-    return;
-  }
+function handleSubmit(event) { // Called by handleKeyDown for Ctrl+Enter
+  var user = userData(); // Assumed global
+  if (!user) { return; }
+  var form = event.target.closest('form');
+  if (!form) { return; }
 
   var codeOfConduct = user.checked_code_of_conduct;
-  if (codeOfConduct && event.target.value.trim() !== '') {
-    event.target.closest('form').querySelector('button[type="submit"]').click();
+  const cocCheckbox = form.querySelector('input[name="checked_code_of_conduct"]');
+  const needsCocCheck = cocCheckbox && cocCheckbox.required;
+
+  if ((codeOfConduct || (needsCocCheck && cocCheckbox.checked)) && event.target.value.trim() !== '') {
+     const submitButton = form.querySelector('button[type="submit"]');
+     if (submitButton && !submitButton.disabled) {
+         // Trigger submit handler directly instead of click to avoid potential loops
+         // Create a mock event if handleCommentSubmit relies on it heavily
+          handleCommentSubmit({ target: form, preventDefault: () => {} });
+     }
+  } else if (needsCocCheck && !cocCheckbox.checked) {
+       cocCheckbox.focus();
   }
 }
 
 var ENTER_KEY_CODE = 13;
 function handleKeyDown(event) {
-  if (window.Forem.Runtime.hasOSSpecificModifier(event) && event.keyCode === ENTER_KEY_CODE) {
+  if (window.Forem && window.Forem.Runtime && window.Forem.Runtime.hasOSSpecificModifier(event) && event.keyCode === ENTER_KEY_CODE) { // Assumed global
     event.preventDefault();
     handleSubmit(event);
   }
 }
 
 function handleFormClose(event) {
-  event.target.closest('.inner-comment').classList.remove("replying");
-  event.target.closest('.comment-form').remove();
-  initializeCommentsPage();
+   const formToClose = event.target.closest('.comment-form');
+   if (formToClose) {
+       const detailsWrapper = formToClose.closest('.comment__details');
+       if (detailsWrapper) {
+           detailsWrapper.classList.remove("replying");
+       }
+       formToClose.remove();
+   }
 }
 
 function handleSizeChange(event) {
   var textarea = event.target;
-  var oldHeight = parseInt(textarea.style.height.replace('px',''));
-  textarea.style.height = textarea.scrollHeight + (textarea.scrollHeight > oldHeight ? 15 : 0) + "px";
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + "px";
 }
 
 function handleButtonsActivation(event) {
   var textarea = event.target;
   var commentForm = textarea.closest('.comment-form');
   if (commentForm) {
-    var buttons = textarea.closest('.comment-form').getElementsByClassName('js-btn-enable');
+    var buttons = commentForm.querySelectorAll('.js-btn-enable');
+    const isEmpty = textarea.value.trim().length === 0;
     Array.from(buttons).forEach(function(button) {
-      button.disabled = textarea.value.length === 0;
+      button.disabled = isEmpty;
     });
   };
 }
 
-function validateField(event) {
-  // We only need to validate the textarea that is not the comment mention auto-complete component
-  const textArea = event.target.form.querySelector('.comment-textarea:not([role=combobox])');
-
-  if (textArea.value === '') {
+function validateField(event) { // Likely unused if submit handler validates
+  const form = event.target.closest('form');
+  if (!form) return true; // Allow action if not in a form context
+  const textArea = form.querySelector('.comment-textarea:not([role=combobox])');
+  if (textArea && textArea.value.trim() === '') {
+    console.warn("Comment cannot be empty - validation");
     event.preventDefault();
-    return;
+    textArea.focus();
+    return false;
   }
+  return true;
 }
 
 function handleChange(event) {
   handleButtonsActivation(event);
 }
 
-function generateUploadFormdata(image) {
-  var token = document.querySelector("meta[name='csrf-token']").content;
+function generateUploadFormdata(image) { // Unused but kept
+  var token = document.querySelector("meta[name='csrf-token']")?.content; // Optional chaining
   var formData = new FormData();
-  formData.append('authenticity_token', token);
+  if (token) formData.append('authenticity_token', token);
   formData.append('image', image[0]);
   return formData;
 }
 
 function updateItemSummaryHtml(item) {
-  var itemSummaryContent = item.getElementsByClassName("js-collapse-comment-content")[0];
-  var usernames = item.getElementsByClassName("js-comment-username");
-  var number = "";
-  if (usernames.length > 1) {
-    number = " + " + (usernames.length - 1) + " replies"
-  }
-  var itemUsername = usernames[0].textContent + number
-  if (item.open) {
-    itemSummaryContent.textContent = "";
-  } else {
-    itemSummaryContent.textContent = itemUsername;
-  }
+   if (!item || !(item instanceof Element)) return;
+  var itemSummaryContent = item.querySelector(".js-collapse-comment-content");
+  var usernames = item.querySelectorAll(".js-comment-username");
+   if (!itemSummaryContent) return;
+
+  var number = usernames.length > 1 ? " + " + (usernames.length - 1) + " replies" : "";
+   var itemUsername = usernames.length > 0 ? usernames[0].textContent + number : "Comment hidden";
+
+  itemSummaryContent.textContent = item.open ? "" : itemUsername;
 }
 
+
+// Using event delegation for details toggle as well
 function listenForDetailsToggle() {
-  var detailItems = document.querySelectorAll(".js-comment-wrapper");
-  for (var i = 0; i < detailItems.length; i++) {
-    detailItems[i].addEventListener("toggle", event => {
-      var item = event.target;
-      updateItemSummaryHtml(item);
-    });
-  }
-}
+   const commentsContainer = document.getElementById('comments-container');
+   if (!commentsContainer) return;
+    // Use a flag to prevent multiple attachments if init runs again
+    if (commentsContainer.dataset.detailsListenerAttached) return;
 
-/**
- * Increment comment, stored in `.js-comments-count`, count by one.
- */
+    commentsContainer.addEventListener("toggle", event => {
+         if (event.target.matches(".js-comment-wrapper")) {
+             updateItemSummaryHtml(event.target);
+         }
+     }, true); // Use capture phase
+
+    commentsContainer.dataset.detailsListenerAttached = 'true';
+}
+// Remove handleDetailsToggleEvent function as logic is now inline
+
+
 function updateCommentsCount() {
   const commentsCountDiv = document.querySelector(".js-comments-count");
-
-  // if there's nowhere to put the count return early.
   if(!commentsCountDiv) return;
-
-  const commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount, 10) + 1;
+  let currentCount = 0;
+  try {
+     currentCount = parseInt(commentsCountDiv.dataset.commentsCount || '0', 10);
+  } catch (e) { console.error("Could not parse comments count data attribute:", e); }
+  const commentsCountData = currentCount + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
-  commentsCountDiv.innerHTML = `(${commentsCountData})`
+  commentsCountDiv.textContent = `(${commentsCountData})`;
 
   const commentsSidebarCountDiv = document.getElementById("reaction-number-comment");
-  if (!commentsSidebarCountDiv) return;
-  commentsSidebarCountDiv.innerHTML = `${commentsCountData}`;
+  if (commentsSidebarCountDiv) {
+    commentsSidebarCountDiv.textContent = `${commentsCountData}`;
+  }
 }
 
 function initializeCommentDate() {
   const commentsDates = document.querySelectorAll('.comment-date time');
-
-  if (commentsDates) {
-    addLocalizedDateTimeToElementsTitles(commentsDates, 'datetime');
+  if (commentsDates && commentsDates.length > 0) {
+      if (typeof addLocalizedDateTimeToElementsTitles === 'function') { // Assumed global
+        addLocalizedDateTimeToElementsTitles(commentsDates, 'datetime');
+      } else {
+         console.warn("Function addLocalizedDateTimeToElementsTitles not found for comment dates.");
+      }
   }
 }
 
 function handleHiddenComments(commentableType){
-  const currentUser = userData();
-  const commentableAuthorIds = [];
-  let coAuthorIds = '';
+  if (!commentableType) {
+     console.warn("commentableType not provided to handleHiddenComments");
+     // Try to get it from the container if possible
+      commentableType = document.getElementById('comments-container')?.dataset.commentableType;
+      if (!commentableType) return; // Exit if still not found
+  }
+
+  const currentUser = userData(); // Assumed global
+  const commentableAuthorIds = new Set();
+  let articleContainer = null;
+
   if(commentableType === "Article"){
-    const articleContainer = document.querySelector('#article-show-container');
-    if(articleContainer){
-      if (articleContainer.dataset) {
-        commentableAuthorIds.push(articleContainer.dataset.authorId);
-        coAuthorIds = articleContainer.dataset.coAuthorIds;
-        if(coAuthorIds){
-          coAuthorIds.split(',').forEach(coAuthorId => {
-            commentableAuthorIds.push(coAuthorId);
-          });
-        }
-      }
-    }
-    else {
-      const commentsContainer = document.querySelector('#comments-container');
-      if(commentsContainer){
-        if(commentsContainer.dataset) {
-          commentableAuthorIds.push(commentsContainer.dataset.commentableAuthorId);
-          coAuthorIds = commentsContainer.dataset.commentableCoAuthorIds;
-          if(coAuthorIds){
-            coAuthorIds.split(',').forEach(coAuthorId => {
-              commentableAuthorIds.push(coAuthorId);
-            });
-          }
-        }
-      }
+    articleContainer = document.querySelector('#article-show-container') || document.querySelector('#comments-container');
+    if(articleContainer?.dataset){ // Optional chaining
+        if(articleContainer.dataset.authorId) commentableAuthorIds.add(articleContainer.dataset.authorId);
+        if(articleContainer.dataset.coAuthorIds) articleContainer.dataset.coAuthorIds.split(',').forEach(id => commentableAuthorIds.add(id.trim()));
+        if(commentableAuthorIds.size === 0 && articleContainer.dataset.commentableAuthorId) commentableAuthorIds.add(articleContainer.dataset.commentableAuthorId);
+        if(commentableAuthorIds.size === 0 && articleContainer.dataset.commentableCoAuthorIds) articleContainer.dataset.commentableCoAuthorIds.split(',').forEach(id => commentableAuthorIds.add(id.trim()));
     }
   } else if(commentableType === "PodcastEpisode"){
     const podCastEpisodeContainer = document.querySelector('.podcast-episode-container');
-    if(podCastEpisodeContainer){
-      commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
+    if(podCastEpisodeContainer?.dataset?.creatorId){ // Optional chaining
+      commentableAuthorIds.add(podCastEpisodeContainer.dataset.creatorId);
     }
   }
-  if(currentUser && commentableAuthorIds.includes(currentUser.id.toString())){
+
+  const isCommentableAuthor = currentUser && commentableAuthorIds.has(currentUser.id.toString());
+
+  // Select elements within the comments container for specificity
+   const commentsContainerElement = document.getElementById('comments-container');
+   if (!commentsContainerElement) return; // Exit if container not found
+
+  if(isCommentableAuthor){
+     commentsContainerElement.querySelectorAll('.element-hidden-by-commentable-user').forEach(element => element.classList.remove('hidden'));
+     commentsContainerElement.querySelectorAll('.comment-hidden-by-author-text').forEach(element => element.classList.add('hidden'));
     collapseCommentsHiddenByCommentableUser();
   }
   else {
-    document.querySelectorAll('.element-hidden-by-commentable-user').forEach(element => {
-      element.classList.add('hidden');
-    })
-    document.querySelectorAll('.comment-hidden-by-author-text').forEach(element => {
-      element.classList.remove('hidden');
-    })
+     commentsContainerElement.querySelectorAll('.element-hidden-by-commentable-user').forEach(element => element.classList.add('hidden'));
+     commentsContainerElement.querySelectorAll('.comment-hidden-by-author-text').forEach(element => element.classList.remove('hidden'));
   }
 }
 
 function collapseCommentsHiddenByCommentableUser() {
-  document.querySelectorAll(".js-comment-wrapper.details-comment-hidden-by-commentable-user").forEach(item => {
+  document.querySelectorAll("#comments-container .js-comment-wrapper.details-comment-hidden-by-commentable-user").forEach(item => {
     if (item.querySelectorAll('.comment-form').length === 0){
       item.open = false;
       updateItemSummaryHtml(item);
     }
   })
 }
+
+// --- End of Pasted Original Functions ---
+
+
+// Example initialization call (ensure it runs after DOM is ready)
+// document.addEventListener('DOMContentLoaded', initializeCommentsPage);
+// or appropriate framework hook

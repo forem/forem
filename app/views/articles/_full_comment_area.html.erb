@@ -57,15 +57,14 @@
           <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
         <% end %>
 
-        <div class="comments" id="comment-trees-container">
-          <% if @article.comments_count > 0 %>
-            <% @current_comment_index = 0 %>
-            <%= render partial: "articles/comment_tree",
-                       collection: article_comment_tree(@article, @comments_to_show_count, @comments_order),
-                       as: :comment_node,
-                       cached: proc { |comment, _sub_comments| [comment, @comments_order, user_signed_in?] } %>
-          <% end %>
-        </div>
+        <% if user_signed_in? %>
+          <div class="comments" id="comment-trees-container">
+            COMMENTS GO HERE
+          </div>
+          <% else %>
+          <%= render "/comments/comment_tree", commentable: @article, commentable_type: "Article" %>
+          </div>
+        <% end %>
       </div>
 
       <%= render "articles/comments_actions" %>

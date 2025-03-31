@@ -33,6 +33,11 @@ class CommentPolicy < ApplicationPolicy
     true
   end
 
+  def async?
+    true
+  end
+
+
   def moderate?
     return true if user.trusted?
 
