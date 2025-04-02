@@ -10,26 +10,38 @@ module Api
       end
 
       def show
-        @page = Page.find params[:id]
+        @page = Page.find(params[:id])
         render json: @page
       end
 
       def create
-        @page = Page.new permitted_params
-        result = @page.save
-        render json: @page, status: (result ? :ok : :unprocessable_entity)
+        @page = Page.new(permitted_params)
+        if @page.save
+          render json: @page, status: :ok
+        else
+          response.headers["X-Error-Text"] = @page.errors.full_messages.join(', ')
+          render json: @page, status: :unprocessable_entity
+        end
       end
 
       def update
         @page = Page.find(params[:id])
-        result = @page.update permitted_params
-        render json: @page, status: (result ? :ok : :unprocessable_entity)
+        if @page.update(permitted_params)
+          render json: @page, status: :ok
+        else
+          response.headers["X-Error-Text"] = @page.errors.full_messages.join(', ')
+          render json: @page, status: :unprocessable_entity
+        end
       end
 
       def destroy
         @page = Page.find(params[:id])
-        result = @page.destroy
-        render json: @page, status: (result ? :ok : :unprocessable_entity)
+        if @page.destroy
+          render json: @page, status: :ok
+        else
+          response.headers["X-Error-Text"] = @page.errors.full_messages.join(', ')
+          render json: @page, status: :unprocessable_entity
+        end
       end
 
       private
@@ -43,7 +55,7 @@ module Api
           params[:remote_social_image_url] = params[:social_image][:url]
         end
         params.permit(*%i[title slug description is_top_level_path subforem_id
-                          body_json body_markdown body_html body_css remote_social_image_url template])
+                            body_json body_markdown body_html body_css remote_social_image_url template])
       end
     end
   end
