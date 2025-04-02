@@ -41,6 +41,14 @@ class CommentsController < ApplicationController
 
     set_surrogate_key_header @commentable.record_key if @commentable
   end
+
+  def async
+    skip_authorization
+    @article = Article.find_by(id: params[:article_id])
+    @comments_to_show_count = 10
+    @comments_order = "top"
+    render layout: false
+  end
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
 

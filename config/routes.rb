@@ -421,6 +421,7 @@ Rails.application.routes.draw do
     get "/:username/comment/:id_code/delete_confirm", to: "comments#delete_confirm"
     get "/:username/comment/:id_code/mod", to: "moderations#comment"
     get "/:username/comment/:id_code/settings", to: "comments#settings"
+    get "/comments/async/:article_id", to: "comments#async"
 
     get "/:username/:slug/:view", to: "stories#show",
                                   constraints: { view: /moderate|admin/ }
