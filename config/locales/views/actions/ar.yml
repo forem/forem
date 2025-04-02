@@ -1,0 +1,26 @@
+---
+ar:
+  views:
+    actions:
+      copy:
+        text: تم النسخ إلى الحافظة
+        button: نسخ الرابط
+      more:
+        title: المزيد...
+        aria_label: خيارات مشاركة المنشور
+      share:
+        facebook:
+          text: مشاركة على فيسبوك
+        hackernews:
+          text: مشاركة على Hacker News
+        linkedin:
+          text: مشاركة على LinkedIn
+        mastodon:
+          text: مشاركة على Mastodon
+        reddit:
+          text: مشاركة على Reddit
+        twitter:
+          text: مشاركة على تويتر
+          query: '"%{article}" بواسطة %{author}'
+        link: مشاركة المنشور عبر...
+        report: الإبلاغ عن إساءة استخدام

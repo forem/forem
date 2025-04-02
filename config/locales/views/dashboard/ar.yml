@@ -1,0 +1,156 @@
+---
+ar:
+  views:
+    dashboard:
+      meta:
+        title: لوحة القيادة - %{site}
+      heading: لوحة القيادة
+      actions:
+        mobile:
+          posts: المنشورات (%{num})
+          followers: المتابعون (%{num})
+          following_tags: الوسوم المتابعة (%{num})
+          following_users: المستخدمون المتابعة (%{num})
+          following_orgs: المنظمات المتابعة (%{num})
+          following_pods: البودكاست المتابعة (%{num})
+          hidden_tags: الوسوم المخفية (%{num})
+        posts: المنشورات
+        series: السلاسل
+        followers: المتابعون
+        following_tags: الوسوم المتابعة
+        following_users: المستخدمون المتابعة
+        following_orgs: المنظمات المتابعة
+        following_pods: البودكاست المتابعة
+        hidden_tags: الوسوم المخفية
+        listings: الإعلانات
+        analytics: التحليلات
+        for_org: تحليلات لـ %{org}
+        upload: تحميل فيديو
+      analytics:
+        meta:
+          title: التحليلات
+        heading: لوحة التحليلات لـ %{name}
+        back: "العودة إلى اللوحة الرئيسية"
+        your: لوحة التحليلات الخاصة بك
+        org: لوحة التحليلات لـ %{org}
+      article:
+        heading:
+          text_html: "%{archived}%{title}"
+          archived: "[مؤرشف] "
+        archived: مؤرشف
+        published: 'نشر:'
+        published_html: 'نشر: %{date}'
+        edited: 'تم التعديل:'
+        edited_html: 'تم التعديل: %{date}'
+        series: 'السلسلة:'
+        series_html: "<strong>السلسلة:</strong> %{series}"
+        draft: مسودة
+        scheduled: مجدول
+        scheduled_at: 'مجدول:'
+        reactions:
+          title: التفاعلات
+          icon: التفاعلات
+          text_html:
+            one: "%{num} تفاعل"
+            other: "%{num} تفاعلات"
+        comments:
+          title: التعليقات
+          icon: التعليقات
+          text_html:
+            one: "%{num} تعليق"
+            other: "%{num} تعليقات"
+        views:
+          title: المشاهدات
+          icon: المشاهدات
+          lt_25: "< 25"
+          text_html:
+            one: "%{scale} مشاهدة"
+            other: "%{scale} مشاهدة"
+          u_25: أقل من 25
+        subscriptions:
+          title: الاشتراكات
+          icon: بيانات
+          number: الاشتراكات (%{num})
+        delete: حذف
+        unpin: إلغاء التثبيت
+        pin:
+          title: تثبيت على الملف الشخصي
+          button: تثبيت على الملف الشخصي
+          text: تثبيت
+        manage:
+          aria_label: 'إدارة المنشور: %{title}'
+          text: إدارة
+        lock: قفل النقاش
+        unlock: فتح النقاش
+        edit:
+          aria_label: 'تعديل المنشور: %{title}'
+          text: تعديل
+        more:
+          title: 'المزيد من الخيارات للمنشور: %{title}'
+          icon: المزيد...
+        stats: الإحصائيات
+        archive: أرشفة المنشور
+        unarchive: إلغاء أرشفة المنشور
+        author: المؤلف
+        co_authors: المؤلفون المشاركون
+        series_author_change_warning: غير مسموح بتغيير المؤلف لمنشورات السلسلة.
+        icon: التفاصيل
+        author_is: 'المؤلف: '
+        save: حفظ
+        submit: تقديم تغيير المؤلف
+      followers:
+        heading: لوحة القيادة » المتابعون
+        empty: ليس لديك أي متابعين حتى الآن...
+      following_orgs:
+        heading: لوحة القيادة » المنظمات المتابعة
+        empty: لا تتابع أي منظمات حتى الآن...
+      following_pods:
+        heading: لوحة القيادة » البودكاست المتابعة
+        empty: لا تتابع أي بودكاست حتى الآن...
+      following_tags:
+        heading: لوحة القيادة » الوسوم المتابعة
+        empty_html: "<span>اتبع الوسوم لتخصيص تغذيتك. يمكنك استكشاف الوسوم الشائعة <a href=%{link}>هنا</a></span>."
+      following_users:
+        heading: لوحة القيادة » المستخدمون المتابعة
+        empty: لا تتابع أي مستخدمين...
+      hidden_tags:
+        heading: لوحة القيادة » الوسوم المخفية
+        empty_html: "<span>ليس لديك أي وسوم مخفية...</span>"
+      tags:
+        following_button: تتبع
+        options:
+          icon: خيارات
+          hide: إخفاء الوسم
+        unhide_button: إظهار
+      listings:
+        meta:
+          title: لوحة قوائم الإعلانات
+      posts:
+        heading: المنشورات
+        archived: إظهار المؤرشفة
+        option:
+          creation-desc: تم الإنشاء حديثاً
+          published-desc: تم النشر حديثاً
+          views-desc: الأكثر مشاهدة
+          reactions-desc: الأكثر تفاعلاً
+          comments-desc: الأكثر تعليقاً
+          aria_label: الفرز حسب
+        org: "%{name} (%{num})"
+        personal: شخصي
+        empty:
+          desc: هنا يمكنك إدارة مشاركاتك، لكنك لم تكتب شيئًا بعد.
+          new: اكتب أول مشاركة لك الآن
+      subscriptions:
+        meta:
+          title: الاشتراكات %{title}
+        heading: الاشتراكات
+        subhead:
+          text_html: "%{for} %{source}"
+          for: من أجل
+        empty: ليس لديك أي مشتركين لهذا %{kind} حتى الآن...
+      summary:
+        reactions: إجمالي تفاعلات المنشور
+        views: إجمالي مشاهدات المنشور
+        listings: القوائم التي تم إنشاؤها
+        credits: الرصيد المتاح
+        lt_500: "< 500"
