@@ -3,8 +3,6 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
-  include PgSearch::Model
-
   attr_accessor :action
 
   # NOTE: categories were hardcoded at first and the model was only added later.
@@ -25,10 +23,6 @@ class Listing < ApplicationRecord
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
-
-  pg_search_scope :search_listings,
-                  against: %i[body_markdown cached_tag_list location slug title],
-                  using: { tsearch: { prefix: true } }
 
   scope :published, -> { where(published: true) }
 
