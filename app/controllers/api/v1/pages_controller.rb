@@ -39,7 +39,7 @@ module Api
         if @page.destroy
           render json: @page, status: :ok
         else
-          response.headers["X-Error-Text"] = "Deletion error: " + @page.errors.full_messages.join(', ')
+          response.headers["X-Error-Text"] = @page.errors.full_messages.join(', ')
           render json: @page, status: :unprocessable_entity
         end
       end
