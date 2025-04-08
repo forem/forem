@@ -108,4 +108,22 @@ describe('<CommentSubscription />', () => {
       ),
     );
   });
+
+  it('should call showLoginModal if subscribe button is clicked and user is not logged in', () => {
+    global.showLoginModal = jest.fn();
+
+    const { getByText } = render(
+      <CommentSubscription
+        subscriptionType={"not_subscribed"}
+        isLoggedIn={false}
+      />,
+    );
+
+    const button = getByText(/subscribe/i, { selector: 'button' });
+    button.click();
+
+    expect(global.showLoginModal).toHaveBeenCalled();
+
+    delete global.showLoginModal;
+  });
 });
