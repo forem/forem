@@ -53,9 +53,6 @@ class Listing < ApplicationRecord
   #
   # @return [TrueClass] if the Listing is enabled for this Forem
   # @return [FalseClass] if the Listing is disabled for this Forem
-  def self.feature_enabled?
-    FeatureFlag.enabled?(:listing_feature)
-  end
 
   # Wrapping the column accessor names for consistency. Aliasing did not work.
   def listing_category_id

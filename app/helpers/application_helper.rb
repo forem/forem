@@ -51,12 +51,10 @@ module ApplicationHelper
   # @note [@jeremyf] - making an assumption, namely that the only navigation oriented feature is the
   #                    Listing.  If this changes, adjust this method accordingly.  Normally I like to have method return
   def navigation_link_is_for_an_enabled_feature?(link:)
-    return true if Listing.feature_enabled?
+    listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
-    # The "/listings" is an assumption on the routing.  So let's first try :listings_path.
-    listings_url = URL.url(try(:listings_path) || "/listings")
     return false if listings_url == URL.url(link.url)
-
+    
     true
   end
 
