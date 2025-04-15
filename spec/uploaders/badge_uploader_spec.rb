@@ -8,6 +8,7 @@ describe BadgeUploader, type: :uploader do
   let(:image_jpg) { fixture_file_upload("800x600.jpg", "image/jpeg") }
   let(:image_png) { fixture_file_upload("800x600.png", "image/png") }
   let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
+  let(:image_pdf) { fixture_file_upload("800x600.pdf", "application/pdf") }
   let(:image_with_gps) { fixture_file_upload("image_gps_data.jpg", "image/jpeg") }
 
   let(:badge) { create(:badge) }
@@ -32,7 +33,7 @@ describe BadgeUploader, type: :uploader do
 
   describe "formats" do
     it "permits a set of extensions" do
-      expect(uploader.extension_allowlist).to eq(%w[jpg jpeg gif png])
+      expect(uploader.extension_allowlist).to eq(%w[jpg jpeg gif png webp])
     end
 
     it "permits jpegs" do
@@ -45,8 +46,13 @@ describe BadgeUploader, type: :uploader do
       expect(uploader).to be_format("png")
     end
 
-    it "rejects unsupported formats like webp" do
-      expect { uploader.store!(image_webp) }.to raise_error(CarrierWave::IntegrityError)
+    it "permits webp" do
+      uploader.store!(image_webp)
+      expect(uploader).to be_format("webp")
+    end
+
+    it "rejects unsupported formats like pdf" do
+      expect { uploader.store!(image_pdf) }.to raise_error(CarrierWave::IntegrityError)
     end
   end
 
