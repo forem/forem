@@ -30,6 +30,12 @@ fr:
       unicorn:
         title: Licorne
         aria_label: React with unicorn
+      exploding_head:
+        title: Exploding head
+      raised_hands:
+        title: Raised hands
+      fire:
+        title: Fire
       readingList:
         title: Sauver
         aria_label: Add to reading list
