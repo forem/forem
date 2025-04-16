@@ -3,9 +3,10 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
+  # Assuming this will be removed by the other PR eventually
   include PgSearch::Model
 
-  attr_accessor :action
+  # attr_accessor :action REMOVED in previous step on this branch
 
   # NOTE: categories were hardcoded at first and the model was only added later.
   # The foreign_key and inverse_of options are used because of legacy table names.
@@ -16,7 +17,7 @@ class Listing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   acts_as_taggable_on :tags
-  has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  # has_many :credits association REMOVED in previous step (assumed)
 
   validates :organization_id, presence: true, unless: :user_id?
 
@@ -26,35 +27,23 @@ class Listing < ApplicationRecord
   validate :restrict_markdown_input
   validate :validate_tags
 
+  # Assuming this will be removed by the other PR eventually
   pg_search_scope :search_listings,
                   against: %i[body_markdown cached_tag_list location slug title],
                   using: { tsearch: { prefix: true } }
 
+  # Keep scopes for now - check API usage later
   scope :published, -> { where(published: true) }
-
-  # NOTE: we still need to use the old column name for the join query
   scope :in_category, lambda { |slug|
     joins(:listing_category).where("classified_listing_categories.slug" => slug)
   }
 
+  # Keep delegate for now - check API/Serializer usage later
   delegate :cost, to: :listing_category
 
-  # As part of making listings "optional", this is the current place to go for the answer "Is the
-  # Listing feature enabled?"  This approach will get us quite far, at least up until we flip this
-  # into a plugin (e.g. we won't be able to guarantee that we have the constant :Listing in the Ruby
-  # object space).
-  #
-  # @note As of <2022-01-28 Fri>, the assumption is that everyone will have this feature enabled.
-  #       In part because marking this feature as disabled won't yet properly disable all aspects of
-  #       the feature.
-  #
-  # @see https://github.com/forem/rfcs/issues/291 for discussion and rollout strategy
-  # @see FeatureFlag.accessible?
-  #
-  # @return [TrueClass] if the Listing is enabled for this Forem
-  # @return [FalseClass] if the Listing is disabled for this Forem
+  # self.feature_enabled? method REMOVED in previous PR/branch (assumed base)
 
-  # Wrapping the column accessor names for consistency. Aliasing did not work.
+  # Keep - Needed if category ID set/read via API
   def listing_category_id
     classified_listing_category_id
   end
@@ -63,41 +52,37 @@ class Listing < ApplicationRecord
     self.classified_listing_category_id = id
   end
 
+  # Keep - Likely used by Serializer
   def category
     listing_category&.slug
   end
 
+  # Keep - Likely used by Serializer
   def author
     organization || user
   end
 
-  def path
-    "/listings/#{category}/#{slug}"
-  end
+  # path method REMOVED in previous step on this branch
 
+  # Keep for now - investigate usage later
   def natural_expiration_date
     (bumped_at || created_at) + 30.days
   end
 
-  def publish
-    update(published: true)
-  end
+  # publish method REMOVED in THIS step
+  # unpublish method REMOVED in THIS step
 
-  def unpublish
-    update(published: false)
-  end
-
+  # Keep for now - investigate usage later
   def bump
     update(bumped_at: Time.current)
   end
 
+  # Keep for now - investigate usage later
   def clear_cache
     Listings::BustCacheWorker.perform_async(id)
   end
 
-  # First tries to purchase the listing with the org's credit. IF that doesn't
-  # work it tries to charge the user instead. The purchasers will be yielded
-  # to the provided block so it can be used for further processing.
+  # Keep for now - investigate usage later
   def purchase(user)
     purchaser = [organization, user].detect { |who| who&.enough_credits?(cost) }
     return false unless purchaser
@@ -106,7 +91,7 @@ class Listing < ApplicationRecord
     true
   end
 
-  private
+  private # Keep private methods supporting retained callbacks/validations
 
   def evaluate_markdown
     self.processed_html = MarkdownProcessor::Parser.new(body_markdown).evaluate_listings_markdown
