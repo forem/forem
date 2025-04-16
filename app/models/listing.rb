@@ -3,6 +3,10 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
+  # This is still here because removing it is part of a SEPARATE PR
+  include PgSearch::Model
+
+  # This is still here because removing it is part of a SEPARATE PR
   attr_accessor :action
 
   # NOTE: categories were hardcoded at first and the model was only added later.
@@ -14,7 +18,7 @@ class Listing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   acts_as_taggable_on :tags
-  has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  # has_many :credits REMOVED IN THIS STEP/PR
 
   validates :organization_id, presence: true, unless: :user_id?
 
@@ -23,6 +27,11 @@ class Listing < ApplicationRecord
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
+
+  # This is still here because removing it is part of a SEPARATE PR
+  pg_search_scope :search_listings,
+                  against: %i[body_markdown cached_tag_list location slug title],
+                  using: { tsearch: { prefix: true } }
 
   scope :published, -> { where(published: true) }
 
@@ -33,20 +42,7 @@ class Listing < ApplicationRecord
 
   delegate :cost, to: :listing_category
 
-  # As part of making listings "optional", this is the current place to go for the answer "Is the
-  # Listing feature enabled?"  This approach will get us quite far, at least up until we flip this
-  # into a plugin (e.g. we won't be able to guarantee that we have the constant :Listing in the Ruby
-  # object space).
-  #
-  # @note As of <2022-01-28 Fri>, the assumption is that everyone will have this feature enabled.
-  #       In part because marking this feature as disabled won't yet properly disable all aspects of
-  #       the feature.
-  #
-  # @see https://github.com/forem/rfcs/issues/291 for discussion and rollout strategy
-  # @see FeatureFlag.accessible?
-  #
-  # @return [TrueClass] if the Listing is enabled for this Forem
-  # @return [FalseClass] if the Listing is disabled for this Forem
+  # This is still here because removing it is part of a SEPARATE PR
   def self.feature_enabled?
     FeatureFlag.enabled?(:listing_feature)
   end
@@ -68,6 +64,7 @@ class Listing < ApplicationRecord
     organization || user
   end
 
+  # This is still here because removing it is part of a SEPARATE PR
   def path
     "/listings/#{category}/#{slug}"
   end
@@ -76,13 +73,8 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
-  def publish
-    update(published: true)
-  end
-
-  def unpublish
-    update(published: false)
-  end
+  # publish method REMOVED IN THIS STEP/PR
+  # unpublish method REMOVED IN THIS STEP/PR
 
   def bump
     update(bumped_at: Time.current)
@@ -92,9 +84,6 @@ class Listing < ApplicationRecord
     Listings::BustCacheWorker.perform_async(id)
   end
 
-  # First tries to purchase the listing with the org's credit. IF that doesn't
-  # work it tries to charge the user instead. The purchasers will be yielded
-  # to the provided block so it can be used for further processing.
   def purchase(user)
     purchaser = [organization, user].detect { |who| who&.enough_credits?(cost) }
     return false unless purchaser
