@@ -27,6 +27,11 @@ class Follow < ApplicationRecord
   scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
   scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
 
+  # Scope to exclude follows where the followable (user) no longer exists
+  scope :active_follows, -> {
+  joins("INNER JOIN users ON users.id = follows.followable_id AND follows.followable_type = 'User'")
+  }
+  
   # Follows from users who don't have suspended or spam role
   scope :non_suspended, lambda { |followable_type, followable_id|
     joins("INNER JOIN users ON users.id = follows.follower_id")
