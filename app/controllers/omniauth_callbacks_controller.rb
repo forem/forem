@@ -76,8 +76,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       user_agent = request.user_agent
 
-      if (auth_payload["provider"].to_s.include?("google") && %w[navbar_basic profile].exclude?(cta_variant)) || user_agent == "ForemWebView/1" || @user.email&.start_with?("bendhalpern")
-        # Generate the token the app will use.
+      if ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
+        token = generate_auth_token(@user)
+        test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
+        redirect_to "#{test_path}?jwt=#{token}"
+      elsif (auth_payload["provider"].to_s.include?("google") && %w[navbar_basic profile].exclude?(cta_variant)) || user_agent == "ForemWebView/1" || @user.email&.start_with?("bendhalpern")
+          # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
         token = generate_auth_token(@user)
 

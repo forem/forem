@@ -16,10 +16,12 @@ module Articles
         # Build a raw SQL expression for the computed score.
         # This expression multiplies article fields by weights from feed_config.        
         # **CRITICAL CHANGE:** Use a subquery
+        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+        lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
         articles = Article.published
           .with_at_least_home_feed_minimum_score
           .select("articles.*, (#{@feed_config.score_sql(@user)}) as computed_score")  # Keep parentheses here
-          .from("(#{Article.published.where("articles.published_at > ?", TIME_AGO_MAX).to_sql}) as articles") # Subquery!
+          .from("(#{Article.published.where("articles.published_at > ?", lookback).to_sql}) as articles") # Subquery!
           .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)

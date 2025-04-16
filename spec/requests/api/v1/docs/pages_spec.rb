@@ -219,6 +219,7 @@ RSpec.describe "api/v1/pages" do
           before do
             fake_page = instance_double(Page, destroy: false)
             allow(Page).to receive(:find).and_return(fake_page)
+            allow(fake_page).to receive(:errors).and_return(double(full_messages: ["error"]))
           end
 
           add_examples

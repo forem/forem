@@ -6,8 +6,6 @@ class Listing < ApplicationRecord
   # Assuming this will be removed by the other PR eventually
   include PgSearch::Model
 
-  # attr_accessor :action REMOVED in previous step on this branch
-
   # NOTE: categories were hardcoded at first and the model was only added later.
   # The foreign_key and inverse_of options are used because of legacy table names.
   belongs_to :listing_category, inverse_of: :listings, foreign_key: :classified_listing_category_id
@@ -31,8 +29,6 @@ class Listing < ApplicationRecord
   pg_search_scope :search_listings,
                   against: %i[body_markdown cached_tag_list location slug title],
                   using: { tsearch: { prefix: true } }
-
-  # Keep scopes for now - check API usage later
   scope :published, -> { where(published: true) }
   scope :in_category, lambda { |slug|
     joins(:listing_category).where("classified_listing_categories.slug" => slug)
