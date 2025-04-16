@@ -219,6 +219,9 @@ en:
           cover_image_fit:
             description: Determines the cropping strategy for cover images
             placeholder: crop, limit
+          feed_lookback_days:
+            description: Determines how far back the feed looks for new posts (in days)
+            placeholder: '10'
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
           index_minimum_date:
