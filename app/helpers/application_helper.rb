@@ -290,6 +290,11 @@ module ApplicationHelper
     end
   end
 
+  def is_root_subforem?
+    return false unless RequestStore.store[:subforem_id].present?
+    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+  end
+
   def copyright_notice
     start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s

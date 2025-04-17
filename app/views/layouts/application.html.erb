@@ -58,6 +58,7 @@
       <body
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-user-status="<%= j(user_logged_in_status) %>"
+        data-is-root-subforem="<%= j(is_root_subforem?) %>"
         data-community-name="<%= j(community_name) %>"
         data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
         data-locale="<%= j(I18n.locale) %>"
