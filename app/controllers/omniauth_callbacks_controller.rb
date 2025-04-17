@@ -78,8 +78,17 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
         token = generate_auth_token(@user)
-        test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
-        redirect_to "#{test_path}?jwt=#{token}"
+        # test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
+        # redirect_to "#{test_path}?jwt=#{token}"
+        render html: <<~HTML.html_safe
+          <!DOCTYPE html>
+          <html><head><meta charset="utf-8">
+            <script>
+              window.location = "forem://auth?jwt=#{token}";
+            </script>
+          </head><body></body></html>
+        HTML
+        return
       elsif (auth_payload["provider"].to_s.include?("google") && %w[navbar_basic profile].exclude?(cta_variant)) || user_agent == "ForemWebView/1" || @user.email&.start_with?("bendhalpern")
           # Generate the token the app will use.
         # (Replace the following with your actual token generation logic.)
@@ -88,11 +97,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         if @user.username.downcase.include?("ben")
           Honeybadger.notify("Token path", context: { token: token, username: @user.username })
         end
-  
-  
-        # Render a minimal HTML page that redirects via a custom scheme.
-        test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
-        redirect_to "#{test_path}?jwt=#{token}"
+        redirect_to "/menu?jwt=#{token}"
       else
 
         if @user.username.downcase.include?("ben")
