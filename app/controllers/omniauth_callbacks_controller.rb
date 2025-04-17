@@ -84,7 +84,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
           <!DOCTYPE html>
           <html><head><meta charset="utf-8">
             <script>
-              window.location = "forem://auth?jwt=#{token}";
+              window.location = "forem://auth?token=#{token}";
             </script>
           </head><body></body></html>
         HTML
