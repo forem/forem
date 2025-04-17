@@ -332,7 +332,17 @@ Devise.setup do |config|
   # Fun fact, unless Twitter is last, it doesn't work for some reason.
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIAUTH_SETUP
-  config.omniauth :google_oauth2, setup: GOOGLE_OAUTH2_OMNIAUTH_SETUP
+  config.omniauth(
+    :google_oauth2,
+    Settings::Authentication.google_oauth2_key,    # Ensure this is the correct key
+    Settings::Authentication.google_oauth2_secret, # Ensure this is the correct secret
+    {
+      scope:                "email,profile",
+      provider_ignores_state: true,
+      pkce:                 false,                 # <--- MUST be here
+      setup:                GOOGLE_OAUTH2_OMNIAUTH_SETUP # Keep if you need dynamic setup
+    }
+  )
   config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
   config.omniauth :forem, setup: FOREM_OMNIAUTH_SETUP, strategy_class: OmniAuth::Strategies::Forem
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
