@@ -1,10 +1,52 @@
-<main id="main-content">
-  <div class="crayons-layout crayons-layout--limited-l" style="min-height:80vh">
-  <div class="crayons-card text-padding fs-xl" style="width:700px;max-width:100%;margin: 0 auto;padding-top: 7vh; border:8px solid <%= Settings::UserExperience.primary_brand_color_hex %>">
-    <h1 class="py-4">Check your email! 🪄</h1>
-      <p class="py-4">If we were able to confirm an account with that email, you will receive a <strong>magic link</strong> for signing in.</p>
-      <p class="py-4">The link will remain valid for 20 minutes.</p>
+<main id="main-content" style="min-height:101vh">
+  <div class="crayons-layout crayons-layout--limited-l" style="min-height:60vh">
+    <div class="crayons-card text-padding fs-xl" style="width:700px;max-width:100%;margin: 0 auto;padding-top: 7vh; border:8px solid <%= Settings::UserExperience.primary_brand_color_hex %>">
+      
+      <h1 class="py-4">Check your email! 📨</h1>
+      
+      <p class="py-4">You will receive an <strong>email code</strong> for signing in.</p>
+      
+      <form action="/magic_links/show_placeholder" method="GET" id="code-entry-form">
+        <div class="crayons-field mb-4">
+          <input type="text" id="email-code" name="id" required 
+                 class="crayons-textfield fs-2xl" 
+                 placeholder="Enter code here">
+        </div>
+        
+        <div class="crayons-field">
+          <button type="submit" 
+                  class="crayons-btn py-6 fs-xl fw-bold">
+            Sign In with Code
+          </button>
+        </div>
+      </form>
+
+      <p class="py-4">The code will remain valid for 20 minutes.</p>
+      
+      <%# Simple JS to construct the correct GET URL path %>
+      <script>
+        const form = document.getElementById('code-entry-form');
+        const codeInput = document.getElementById('email-code');
+        // Store the base action URL (without the placeholder)
+        const baseUrl = form.action.replace('/show_placeholder', ''); 
+
+        form.addEventListener('submit', function(event) {
+          // Prevent the default form submission
+          event.preventDefault(); 
+          
+          const code = codeInput.value.trim();
+          if (code) {
+            // Construct the final URL: /magic_links/:code
+            const finalUrl = `${baseUrl}/${encodeURIComponent(code)}`;
+            // Redirect the browser to the 'show' action URL
+            window.location.href = finalUrl; 
+          } else {
+            // Optional: Add some user feedback if the code is empty
+            alert('Please enter the code from your email.'); 
+          }
+        });
+      </script>
+
     </div>
   </div>
 </main>
-  
