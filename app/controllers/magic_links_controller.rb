@@ -16,9 +16,9 @@ class MagicLinksController < ApplicationController
       @user.password = dummy_password
       @user.password_confirmation = dummy_password
       @user.skip_confirmation! # At first we skip confirmation to avoid sending the normal confirmation email.
-      name = Faker::Movie.quote
+      name = "member_#{Devise.friendly_token(8)}"
       # username remove all non alphanumeric characters and downcase
-      @user.username = name.downcase.gsub(/[^0-9a-z]/i, "")
+      @user.username = name
       @user.name = name
       @user.profile_image = Images::ProfileImageGenerator.call
       if  @user.save
