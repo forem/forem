@@ -85,13 +85,6 @@ module RateLimitCheckerHelper
         title: I18n.t("helpers.rate_limit_checker_helper.mention.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.mention.description")
       },
-      listing_creation: {
-        enabled: Listing.feature_enabled?,
-        min: 1,
-        placeholder: 1,
-        title: I18n.t("helpers.rate_limit_checker_helper.listing.title"),
-        description: I18n.t("helpers.rate_limit_checker_helper.listing.description")
-      },
       organization_creation: {
         enabled: true,
         min: 1,

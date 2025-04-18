@@ -189,9 +189,6 @@ RSpec.configure do |config|
   # We want our test suite to behave as though it's enabled by default.  This rspec configuration
   # helps with that.  I envision this to be a placeholder.  But we need something to get the RFC out
   # the door (https://github.com/forem/rfcs/issues/291).
-  config.before do
-    allow(Listing).to receive(:feature_enabled?).and_return(true)
-  end
 
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
