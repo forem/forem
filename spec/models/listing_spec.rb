@@ -9,12 +9,6 @@ RSpec.describe Listing do
   # This may apply default parser on area that should not use it.
   after { ActsAsTaggableOn.default_parser = ActsAsTaggableOn::DefaultParser }
 
-  describe "class methods" do
-    subject(:klass) { described_class }
-
-    it { is_expected.to respond_to(:feature_enabled?) }
-  end
-
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
   it { is_expected.to have_many(:credits) }
