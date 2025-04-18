@@ -33,13 +33,6 @@ class Listing < ApplicationRecord
     joins(:listing_category).where("classified_listing_categories.slug" => slug)
   }
 
-  # delegate :cost REMOVED IN THIS STEP/PR
-
-  # Keep: Removed in a different PR
-  def self.feature_enabled?
-    FeatureFlag.enabled?(:listing_feature)
-  end
-
   # Wrapping the column accessor names for consistency. Aliasing did not work.
   def listing_category_id
     classified_listing_category_id

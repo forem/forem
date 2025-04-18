@@ -6,7 +6,28 @@ class MagicLinksController < ApplicationController
     not_found if params[:email].blank?
 
     @user = User.find_by(email: params[:email])
-    @user.send_magic_link! if @user
+    if @user
+      @user.send_magic_link!
+    else # Register new user with this email
+      @user = User.new(email: params[:email])
+      @user.registered_at = Time.current
+      dummy_password = Devise.friendly_token(20)
+      @user.password = dummy_password
+      @user.password_confirmation = dummy_password
+      @user.skip_confirmation! # We don't need to confirm because we are sending a magic link
+      name = Faker::Movie.quote
+      # username remove all non alphanumeric characters and downcase
+      @user.username = name.downcase.gsub(/[^0-9a-z]/i, "")
+      @user.name = name
+      @user.profile_image = Images::ProfileImageGenerator.call
+      if  @user.save
+        @user.send_magic_link!
+      else
+        flash[:alert] = @user.errors.full_messages.join(", ")
+        redirect_to new_user_session_path
+        return
+      end
+    end
   end
 
   def show

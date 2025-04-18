@@ -1,15 +1,76 @@
+<style>
+.alternate-links {
+  text-align: center;
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 1.15em;
+  line-height: 1.5em;
+}
+#main-content {
+  min-height: 100vh;
+}
+body {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.999), <%= Settings::UserExperience.primary_brand_color_hex %>);
+}
+.crayons-card {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  margin: 1.5vw auto 20vh !important;
+}
+@media (max-width: 600px) {
+  .crayons-card {
+    margin-top: 0vh !important;
+    min-height: 100vh !important;
+  }
+}
+
+.logo-area {
+  text-align: center;
+  margin: 0 auto;
+}
+</style>
+
 <main id="main-content">
-  <div class="crayons-layout crayons-layout--limited-l" style="min-height:80vh">
-    <div class="crayons-card text-padding" style="width:700px;max-width:100%;margin: 0 auto;border:8px solid <%= Settings::UserExperience.primary_brand_color_hex %>">
-      <h2 class="text-center pt-4" style="text-align:center;padding:8vh 0;font-size:calc(1.5em + 0.8vw)">Send me a magic sign-in link!</h2>
-      <%= form_with url: magic_links_path, method: :post do |f| %>
-        <div class="crayons-field pb-2">
-          <%= f.email_field :email, class: "crayons-textfield fs-2xl", value: params[:email], placeholder: "email" %>
-        </div>
-        <div class="crayons-field py-2">
-          <%= f.submit 'Send Link', class: "crayons-btn py-6 fs-xl fw-bold" %>
+  <div class="crayons-layout crayons-layout--limited-l" style="min-height: 80vh">
+    <div class="crayons-card text-padding"
+         style="width: 700px; max-width: 100%; margin: 0 auto;">
+      <% if Settings::General.original_logo.present? %>
+        <div class="logo-area">
+          <a href="/">
+          <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+          </a>
         </div>
       <% end %>
+      <!-- Main heading -->
+      <h2 class="text-center pt-4" style="padding: 6vh 0 2vh; font-size: calc(1.35em + 0.85vw); line-height: alc(1.3em + 0.5vw);">
+        Sign in or create your account wth a one‑time email code
+      </h2>
+
+      <!-- Subheader / description -->
+      <p class="magic-subheader text-center pb-4" style="max-width: 600px; margin: 0 auto 2vh;font-size: 1.1em;">
+        The code works even if you registered a different way in the past <span style="display:inline-block"> — as long as you use the same email</span>.
+      </p>
+
+      <!-- Magic link form -->
+      <%= form_with url: magic_links_path, method: :post, local: true do |f| %>
+        <div class="crayons-field pb-2">
+          <%= f.email_field :email,
+                class: "crayons-textfield fs-2xl",
+                value: params[:email],
+                placeholder: "Email address",
+                required: true,
+                autofocus: true %>
+        </div>
+        <div class="crayons-field py-2">
+          <%= f.submit "Send me the code",
+                class: "crayons-btn py-6 fs-xl fw-bold" %>
+        </div>
+      <% end %>
+
+      <!-- Simple alternate links -->
+      <div class="alternate-links pt-8 pb-8">
+        <%= link_to "More ways to create your account", "/enter?state=new-user", class: "crayons-link fs-md my-2 block" %>
+        <%= link_to "More ways to sign in", "/enter", class: "crayons-link fs-md my-2 block" %>
+      </div>
 
     </div>
   </div>

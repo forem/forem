@@ -65,15 +65,6 @@
       </a>
     </li>
 
-    <%- if Listing.feature_enabled? %>
-    <li>
-      <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
-        <%= t("views.dashboard.actions.listings") %>
-        <%= crayons_icon_tag("external-link", class: "ml-1") %>
-      </a>
-    </li>
-    <%- end %>
-
     <%- if policy(Article).has_existing_articles_or_can_create_new_ones? %>
     <li>
       <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">

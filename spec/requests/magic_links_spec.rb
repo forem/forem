@@ -17,11 +17,23 @@ RSpec.describe "MagicLinks", type: :request do
     end
 
     context "when the email does not match any user" do
-      it "renders the create template without sending a magic link" do
-        allow(User).to receive(:find_by).and_return(nil)
+      it "creates a new user and sends a magic link" do
+        # stub find_by to force the "create new user" branch
+        allow(User).to receive(:find_by).with(email: "new@example.com").and_return(nil)
+        # stub Devise token to a known value
+        allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
+        # stub Faker for a deterministic username/name
+        allow(Faker::Movie).to receive(:quote).and_return("Test Quote")
 
-        post "/magic_links", params: { email: "nonexistent@example.com" }
+        expect {
+          expect_any_instance_of(User).to receive(:send_magic_link!).once
+          post "/magic_links", params: { email: "new@example.com" }
+        }.to change(User, :count).by(1)
 
+        new_user = User.order(:created_at).last
+        expect(new_user.email).to eq("new@example.com")
+        expect(new_user.username).to eq("testquote")
+        expect(new_user.name).to eq("Test Quote")
         expect(response.body).to include("Check your email")
       end
     end
@@ -38,7 +50,7 @@ RSpec.describe "MagicLinks", type: :request do
 
     context "when the token matches a user and is not expired" do
       it "signs in the user and redirects to root_path with notice" do
-        user.update(sign_in_token: "valid_token", sign_in_token_sent_at: Time.current)
+        user.update!(sign_in_token: "valid_token", sign_in_token_sent_at: Time.current)
 
         get "/magic_links/valid_token"
 
@@ -48,7 +60,7 @@ RSpec.describe "MagicLinks", type: :request do
 
     context "when the token matches a user but is expired" do
       it "redirects to new_user_session_path with alert" do
-        user.update(sign_in_token: "expired_token", sign_in_token_sent_at: 21.minutes.ago)
+        user.update!(sign_in_token: "expired_token", sign_in_token_sent_at: 21.minutes.ago)
 
         get "/magic_links/expired_token"
 
