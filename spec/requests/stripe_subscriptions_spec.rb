@@ -21,7 +21,7 @@ RSpec.describe "StripeSubscriptions" do
       it "redirects to the sign in page" do
         get new_stripe_subscription_path
 
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -169,7 +169,7 @@ RSpec.describe "StripeSubscriptions" do
     context "when the user is not signed in" do
       it "redirects to the sign-in page" do
         get edit_stripe_subscription_path("me")
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -222,7 +222,7 @@ RSpec.describe "StripeSubscriptions" do
 
       it "redirects to the sign in page" do
         delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 

@@ -7,7 +7,7 @@ RSpec.describe "UserSettings" do
     context "when not signed-in" do
       it "redirects them to login" do
         get "/settings"
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
