@@ -72,10 +72,6 @@ class Listing < ApplicationRecord
     "/listings/#{category}/#{slug}"
   end
 
-  def natural_expiration_date
-    (bumped_at || created_at) + 30.days
-  end
-
   def publish
     update(published: true)
   end
@@ -86,10 +82,6 @@ class Listing < ApplicationRecord
 
   def bump
     update(bumped_at: Time.current)
-  end
-
-  def clear_cache
-    Listings::BustCacheWorker.perform_async(id)
   end
 
   # First tries to purchase the listing with the org's credit. IF that doesn't
