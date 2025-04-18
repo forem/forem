@@ -4,7 +4,7 @@ RSpec.describe "MenusShow" do
   context "when signed out" do
     it "renders the signin page" do
       get "/menu"
-      expect(response).to redirect_to("/enter")
+      expect(response).to redirect_to("/magic_links/new")
     end
   end
 

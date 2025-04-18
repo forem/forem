@@ -31,7 +31,6 @@ RSpec.describe "MagicLinks", type: :request do
       before do
         allow(User).to receive(:find_by).with(email: email).and_return(nil)
         allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
-        allow(Faker::Movie).to receive(:quote).and_return("Test Quote")
         allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
     
         # <-- this is the *spy*, installed *before* the controller runs
@@ -46,8 +45,8 @@ RSpec.describe "MagicLinks", type: :request do
           new_user = User.order(:created_at).last
     
           expect(new_user.email).to          eq(email)
-          expect(new_user.username).to       eq("testquote")
-          expect(new_user.name).to           eq("Test Quote")
+          expect(new_user.username).to       include("member_")
+          expect(new_user.name).to           include("member_")
           expect(new_user.registered_at).to  eq(Time.current)
           expect(new_user.confirmed_at).to   be_nil
           expect(response.body).to include("Check your email")
