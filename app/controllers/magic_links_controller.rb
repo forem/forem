@@ -16,7 +16,7 @@ class MagicLinksController < ApplicationController
       @user.password = dummy_password
       @user.password_confirmation = dummy_password
       @user.skip_confirmation! # At first we skip confirmation to avoid sending the normal confirmation email.
-      name = "member_#{Devise.friendly_token(8)}"
+      name = "member_#{SecureRandom.hex.first(8)}"
       # username remove all non alphanumeric characters and downcase
       @user.username = name
       @user.name = name
