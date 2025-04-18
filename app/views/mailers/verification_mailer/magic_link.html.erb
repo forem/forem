@@ -1,33 +1,4 @@
-<style type="text/css">
-/* Basic inline styles for better email client compatibility */
-body { font-family: sans-serif; line-height: 1.5; }
-p { margin-bottom: 1em; }
-a { color: #007bff; text-decoration: none; }
-.code-display { 
-  font-size: 2em; /* Make the code significantly larger */
-  font-weight: bold; 
-  font-family: monospace; /* Use monospace for code-like appearance */
-  letter-spacing: 2px; /* Add spacing for readability */
-  color: #333; 
-  background-color: #f0f0f0; /* Light background to make it stand out */
-  padding: 10px 15px; 
-  border-radius: 5px; /* Rounded corners */
-  display: inline-block; /* Keep background contained */
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-.secondary-option {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid #ccc; /* Separator line */
-}
-.expiry-note {
-  font-size: 0.9em;
-  color: #555;
-}
-</style>
-</head>
-<body>
+
 <h1>Log in to <%= Settings::Community.community_name %></h1>
 
 <p>Hey <%= @user.name %>!</p>
@@ -36,28 +7,42 @@ a { color: #007bff; text-decoration: none; }
 To log in to your account, please use the following code:
 </p>
 
-<%# Display the sign-in token (code) prominently %>
-<div class="code-display">
-<%= @user.sign_in_token %> 
-</div>
+<p class="code-display"
+    style="font-size: 2.5em;
+    font-weight: bold; 
+    font-family: monospace;
+    letter-spacing: 2px;
+    color: #333; 
+    background-color: #f0f0f0;
+    padding: 10px 15px; 
+    border-radius: 5px; /* Rounded corners */
+    display: inline-block; /* Keep background contained */
+    border: 2px dashed #ccc;
+    margin-top: 5px;
+    margin-bottom: 15px;">
+  <%= @user.sign_in_token %> 
+</p>
 
 <p>
 Enter this code in the application or on the login page where prompted.
 </p>
 
 <%# Secondary option: Direct login link %>
-<div class="secondary-option">
+<div class="secondary-option"
+  style=" margin-top: 20px;
+          padding-top: 15px;
+          border-top: 1px solid #ccc;">
 <p>
   <strong>Alternatively</strong>, if you are on the device you wish to log in from, you can click this direct link:
 </p>
 <p>
-  <%= link_to "Log in now", magic_link_url(@user.sign_in_token) %>
+  <%= link_to "log in via magic link", magic_link_url(@user.sign_in_token) %>
 </p>
 </div>
 
 <%# Expiry information %>
-<p class="expiry-note">
+<p class="expiry-note" style="font-size: 0.85em">
 This code and the link will expire in 20 minutes. If they expire, please request a new one.
 </p>
 
-<p>If you didn't request this login, you can safely ignore this email.</p>
+<p style="font-size: 0.85em">If you didn't request this login, you can safely ignore this email.</p>
