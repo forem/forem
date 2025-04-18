@@ -19,6 +19,7 @@ class MagicLinksController < ApplicationController
       # username remove all non alphanumeric characters and downcase
       @user.username = name.downcase.gsub(/[^0-9a-z]/i, "")
       @user.name = name
+      @user.profile_image = Images::ProfileImageGenerator.call
       if  @user.save
         @user.send_magic_link!
       else
