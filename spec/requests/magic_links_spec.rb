@@ -4,6 +4,20 @@ require "rails_helper"
 RSpec.describe "MagicLinks", type: :request do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe "GET /magic_links/new" do
+    it "renders the new template" do
+      get "/magic_links/new"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Sign in or create your account wth a")
+    end
+
+    it "renders code page if params state is code" do
+      get "/magic_links/new?state=code"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Enter the code you received in your email!")
+    end
+  end
+
   describe "POST /magic_links" do
     let(:user) { create(:user, email: "test@example.com", confirmed_at: 1.day.ago) }
 
