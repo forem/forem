@@ -15,14 +15,13 @@ class MagicLinksController < ApplicationController
       dummy_password = Devise.friendly_token(20)
       @user.password = dummy_password
       @user.password_confirmation = dummy_password
-      @user.skip_confirmation! # At first we skip confirmation to avoid sending the normal confirmation email.
+      @user.skip_confirmation_notification! # At first we skip confirmation to avoid sending the normal confirmation email.
       name = "member_#{SecureRandom.hex.first(8)}"
       # username remove all non alphanumeric characters and downcase
       @user.username = name
       @user.name = name
       @user.profile_image = Images::ProfileImageGenerator.call
       if  @user.save
-        @user.update_column(:confirmed_at, nil) # But we still want confirmation to be nil until the user uses their magic link.
         @user.send_magic_link!
       else
         flash[:alert] = @user.errors.full_messages.join(", ")
