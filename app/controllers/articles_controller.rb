@@ -76,6 +76,9 @@ class ArticlesController < ApplicationController
 
     if needs_authorization
       authorize(Article)
+    elsif @prefill.blank?
+      skip_authorization
+      redirect_to new_magic_link_path and return
     else
       skip_authorization
 
