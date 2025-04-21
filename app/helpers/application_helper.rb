@@ -51,12 +51,10 @@ module ApplicationHelper
   # @note [@jeremyf] - making an assumption, namely that the only navigation oriented feature is the
   #                    Listing.  If this changes, adjust this method accordingly.  Normally I like to have method return
   def navigation_link_is_for_an_enabled_feature?(link:)
-    return true if Listing.feature_enabled?
+    listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
-    # The "/listings" is an assumption on the routing.  So let's first try :listings_path.
-    listings_url = URL.url(try(:listings_path) || "/listings")
     return false if listings_url == URL.url(link.url)
-
+    
     true
   end
 
@@ -288,6 +286,11 @@ module ApplicationHelper
     elsif RequestStore.store[:subforem_id].present?
       Subforem.where(root: true).first
     end
+  end
+
+  def is_root_subforem?
+    return false unless RequestStore.store[:subforem_id].present?
+    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice

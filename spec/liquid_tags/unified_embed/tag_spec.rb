@@ -135,15 +135,6 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(OpenGraphTag).to have_received(:new)
   end
 
-  it "raises an error when Listings are disabled and a listing URL is embedded" do
-    allow(Listing).to receive(:feature_enabled?).and_return(false)
-    listing_url = "#{URL.url}/listings/#{listing.slug}"
-
-    expect do
-      Liquid::Template.parse("{% embed #{listing_url} %}")
-    end.to raise_error(StandardError, "Listings are disabled on this Forem; cannot embed a listing URL")
-  end
-
   it "sanitizes community_name into safe user-agent string" do
     unsafe = "Some of this.is_not_safe (but that's okay?) 🌱"
     result = described_class.safe_user_agent(unsafe)

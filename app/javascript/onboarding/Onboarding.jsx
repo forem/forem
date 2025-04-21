@@ -13,7 +13,9 @@ export class Onboarding extends Component {
 
     this.recordBillboardConversion();
 
-    const slides = [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
+    const isRoot = document.body.dataset.isRootSubforem === 'true';
+
+    const slides = isRoot ? [ProfileForm, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);

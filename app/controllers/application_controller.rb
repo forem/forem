@@ -197,7 +197,7 @@ class ApplicationController < ActionController::Base
 
   def respond_with_request_for_authentication
     respond_to do |format|
-      format.html { redirect_to sign_up_path }
+      format.html { redirect_to new_magic_link_path }
       format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
