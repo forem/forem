@@ -68,6 +68,7 @@ body {
 
       <!-- Simple alternate links -->
       <div class="alternate-links pt-8 pb-8">
+        <%= link_to "Already have a code?", new_magic_link_path(state: "code"), class: "crayons-link fs-md my-2 block" %>
         <%= link_to "More ways to create your account", "/enter?state=new-user", class: "crayons-link fs-md my-2 block" %>
         <%= link_to "More ways to sign in", "/enter", class: "crayons-link fs-md my-2 block" %>
       </div>

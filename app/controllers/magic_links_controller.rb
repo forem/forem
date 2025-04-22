@@ -1,6 +1,9 @@
 class MagicLinksController < ApplicationController
 
-  def new; end
+  def new
+    # Render create if state is code
+    render :create if params[:state] == "code"
+  end
 
   def create
     not_found if params[:email].blank?
