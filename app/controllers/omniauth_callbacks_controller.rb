@@ -91,26 +91,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   
   
         # Render a minimal HTML page that redirects via a custom scheme.
-        render html: <<-HTML.html_safe
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <title>Authenticating...</title>
-              <script type="text/javascript">
-                (function() {
-                  // Redirect to the custom URL scheme to bring the user back to the app.
-                  window.location.href = "forem://auth?token=#{token}";
-                  // After a short delay, try to close this window.
-                  setTimeout(function() { window.close(); }, 1500);
-                })();
-              </script>
-            </head>
-            <body>
-              <p>Signing you in…</p>
-            </body>
-          </html>
-        HTML
+        test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
+        redirect_to "#{test_path}?jwt=#{token}"
       else
 
         if @user.username.downcase.include?("ben")

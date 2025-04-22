@@ -11,7 +11,7 @@ RSpec.describe "Onboardings" do
   describe "GET /onboarding" do
     it "redirects user if unauthenticated" do
       get onboarding_url
-      expect(response).to redirect_to("/enter")
+      expect(response).to redirect_to("/magic_links/new")
     end
 
     it "return 200 when authenticated" do

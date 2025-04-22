@@ -648,7 +648,8 @@ class User < ApplicationRecord
 
   def send_magic_link!
     # Generate random string
-    self.sign_in_token = SecureRandom.hex(20)
+    number = rand(10**8)
+    self.sign_in_token = number.to_s.rjust(8, "0")
     self.sign_in_token_sent_at = Time.now.utc
     if self.save
       VerificationMailer.with(user_id: id).magic_link.deliver_now

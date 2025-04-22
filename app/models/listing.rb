@@ -3,10 +3,6 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
-  # This is still here because removing it is part of a SEPARATE PR
-  include PgSearch::Model
-
-  # This is still here because removing it is part of a SEPARATE PR
   attr_accessor :action
 
   # NOTE: categories were hardcoded at first and the model was only added later.
@@ -18,7 +14,6 @@ class Listing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   acts_as_taggable_on :tags
-  # has_many :credits REMOVED IN THIS STEP/PR
 
   validates :organization_id, presence: true, unless: :user_id?
 
@@ -40,13 +35,6 @@ class Listing < ApplicationRecord
     joins(:listing_category).where("classified_listing_categories.slug" => slug)
   }
 
-  delegate :cost, to: :listing_category
-
-  # This is still here because removing it is part of a SEPARATE PR
-  def self.feature_enabled?
-    FeatureFlag.enabled?(:listing_feature)
-  end
-
   # Wrapping the column accessor names for consistency. Aliasing did not work.
   def listing_category_id
     classified_listing_category_id
@@ -64,7 +52,6 @@ class Listing < ApplicationRecord
     organization || user
   end
 
-  # This is still here because removing it is part of a SEPARATE PR
   def path
     "/listings/#{category}/#{slug}"
   end
@@ -73,23 +60,10 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
-  # publish method REMOVED IN THIS STEP/PR
-  # unpublish method REMOVED IN THIS STEP/PR
-
-  def bump
-    update(bumped_at: Time.current)
-  end
+  # bump method REMOVED IN THIS STEP/PR
 
   def clear_cache
     Listings::BustCacheWorker.perform_async(id)
-  end
-
-  def purchase(user)
-    purchaser = [organization, user].detect { |who| who&.enough_credits?(cost) }
-    return false unless purchaser
-
-    yield purchaser
-    true
   end
 
   private
