@@ -135,8 +135,8 @@ remove_old_notifications:
   cron: "0 5 * * *"
   class: "Notifications::RemoveOldNotificationsWorker"
 remove_old_emails:
-  description: "Deletes old emails we don't need to retain from the database (runs daily at 06:00 UTC)"
-  cron: "0 6 * * *"
+  description: "Deletes old emails we don't need to retain from the database (runs hourly at the 18th minute after the hour)"
+  cron: "18 * * * *"
   class: "Emails::RemoveOldEmailsWorker"
 sync_credits_counter_cache:
   description: "Synchronizes counter caches for credits (runs daily at 16:00 UTC)"
