@@ -55,10 +55,6 @@ class Listing < ApplicationRecord
     "/listings/#{category}/#{slug}"
   end
 
-  def natural_expiration_date
-    (bumped_at || created_at) + 30.days
-  end
-
   # Keep: Removed in a different PR
   def publish
     update(published: true)
