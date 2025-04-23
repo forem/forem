@@ -15,7 +15,7 @@ module Ahoy
         WHERE ahoy_visits.id IN (
           SELECT ahoy_visits.id
           FROM ahoy_visits
-          WHERE ahoy_visits.created_at < ? AND user_id IS NULL
+          WHERE ahoy_visits.started_at < ? AND user_id IS NULL
           LIMIT 50000
         )
       SQL
