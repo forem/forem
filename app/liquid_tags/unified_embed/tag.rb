@@ -25,10 +25,6 @@ module UnifiedEmbed
     def self.new(tag_name, input, parse_context)
       stripped_input = ActionController::Base.helpers.strip_tags(input).strip
 
-      # when Listings are disabled, it makes little sense to perform a validate_link
-      # network call.
-      handle_listings_disabled!(stripped_input)
-
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
@@ -80,12 +76,6 @@ module UnifiedEmbed
       end
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
-    end
-
-    def self.handle_listings_disabled!(link)
-      return unless link.start_with?("#{URL.url}/listings/") && !Listing.feature_enabled?
-
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.listings_disabled")
     end
 
     def self.safe_user_agent(agent = Settings::Community.community_name)

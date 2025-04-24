@@ -9,11 +9,8 @@ RSpec.describe Listing do
   # This may apply default parser on area that should not use it.
   after { ActsAsTaggableOn.default_parser = ActsAsTaggableOn::DefaultParser }
 
-  # describe "class methods" REMOVED
-
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
-  # it { is_expected.to have_many(:credits) } REMOVED
 
   describe "valid associations" do
     it "is not valid w/o user and org" do
@@ -62,6 +59,4 @@ RSpec.describe Listing do
       expect(listing.tag_list).to eq(%w[thebest taglist])
     end
   end
-
-  # describe "credits" REMOVED
 end

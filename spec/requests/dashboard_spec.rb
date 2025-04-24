@@ -13,7 +13,7 @@ RSpec.describe "Dashboards" do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard"
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -174,7 +174,7 @@ RSpec.describe "Dashboards" do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/organization"
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -212,7 +212,7 @@ RSpec.describe "Dashboards" do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/following"
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -331,7 +331,7 @@ RSpec.describe "Dashboards" do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/user_followers"
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -359,7 +359,7 @@ RSpec.describe "Dashboards" do
     context "when not logged in" do
       it "raises unauthorized" do
         get "/dashboard/analytics"
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
