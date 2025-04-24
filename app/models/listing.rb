@@ -3,7 +3,6 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
-  # Keep: Removed in a different PR
   attr_accessor :action
 
   # NOTE: categories were hardcoded at first and the model was only added later.
@@ -11,12 +10,10 @@ class Listing < ApplicationRecord
   belongs_to :listing_category, inverse_of: :listings, foreign_key: :classified_listing_category_id
   belongs_to :user
   belongs_to :organization, optional: true
-  before_validation :modify_inputs # Keep: related to tags/markdown normalization
-  before_save :evaluate_markdown   # Keep: related to processed_html needed by search serializer
-  before_create :create_slug       # Keep: related to slug needed by search serializer
-  acts_as_taggable_on :tags      # Keep: related to cached_tag_list needed by search serializer
-  # Keep: Removed in a different PR
-  has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  before_validation :modify_inputs
+  before_save :evaluate_markdown
+  before_create :create_slug
+  acts_as_taggable_on :tags
 
   # --- Validations REMOVED in this step ---
   # validates :organization_id, presence: true, unless: :user_id?
@@ -60,7 +57,6 @@ class Listing < ApplicationRecord
     organization || user
   end
 
-  # Keep: Removed in a different PR
   def path
     "/listings/#{category}/#{slug}"
   end
@@ -69,23 +65,9 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
-  # Keep: Removed in a different PR
-  def publish
-    update(published: true)
-  end
-
-  # Keep: Removed in a different PR
-  def unpublish
-    update(published: false)
-  end
-
-  # bump method REMOVED in previous step
-  # purchase method REMOVED in previous step
-
   def clear_cache
     Listings::BustCacheWorker.perform_async(id)
   end
-
 
   private
 

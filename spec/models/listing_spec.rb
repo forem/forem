@@ -9,9 +9,6 @@ RSpec.describe Listing do
   # This may apply default parser on area that should not use it.
   after { ActsAsTaggableOn.default_parser = ActsAsTaggableOn::DefaultParser }
 
-  it { is_expected.to have_many(:credits) }
-
-
   describe "body html" do
     it "converts markdown to html" do
       expect(listing.processed_html).to include("<p>")
@@ -26,17 +23,6 @@ RSpec.describe Listing do
       listing.tag_list = "the best, tag list"
       listing.save
       expect(listing.tag_list).to eq(%w[thebest taglist])
-    end
-  end
-
-  describe "credits" do
-    it "does not destroy associated credits if destroyed" do
-      credit = create(:credit)
-      listing.credits << credit
-      listing.save!
-
-      expect { listing.destroy }.not_to change(Credit, :count)
-      expect(credit.reload.purchase).to be_nil
     end
   end
 end
