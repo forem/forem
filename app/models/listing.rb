@@ -3,7 +3,6 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
-  # Keep: Removed in a different PR
   attr_accessor :action
 
   # NOTE: categories were hardcoded at first and the model was only added later.
@@ -15,8 +14,6 @@ class Listing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   acts_as_taggable_on :tags
-  # Keep: Removed in a different PR
-  has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
   validates :organization_id, presence: true, unless: :user_id?
 
@@ -50,7 +47,6 @@ class Listing < ApplicationRecord
     organization || user
   end
 
-  # Keep: Removed in a different PR
   def path
     "/listings/#{category}/#{slug}"
   end
@@ -59,23 +55,11 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
-  # Keep: Removed in a different PR
-  def publish
-    update(published: true)
-  end
-
-  # Keep: Removed in a different PR
-  def unpublish
-    update(published: false)
-  end
-
   # bump method REMOVED IN THIS STEP/PR
 
   def clear_cache
     Listings::BustCacheWorker.perform_async(id)
   end
-
-  # purchase method REMOVED IN THIS STEP/PR
 
   private
 
