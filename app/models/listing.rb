@@ -23,11 +23,6 @@ class Listing < ApplicationRecord
   validate :restrict_markdown_input
   validate :validate_tags
 
-  # This is still here because removing it is part of a SEPARATE PR
-  pg_search_scope :search_listings,
-                  against: %i[body_markdown cached_tag_list location slug title],
-                  using: { tsearch: { prefix: true } }
-
   scope :published, -> { where(published: true) }
 
   # NOTE: we still need to use the old column name for the join query
