@@ -1,4 +1,3 @@
-# spec/requests/magic_links_spec.rb
 require "rails_helper"
 
 RSpec.describe "MagicLinks", type: :request do
@@ -41,29 +40,42 @@ RSpec.describe "MagicLinks", type: :request do
 
     context "when the email does not match any user" do
       let(:email) { "new@example.com" }
-    
+      let!(:subforem) { create(:subforem, domain: "example.com") }
+
       before do
         allow(User).to receive(:find_by).with(email: email).and_return(nil)
         allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
         allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
-    
-        # <-- this is the *spy*, installed *before* the controller runs
+
+        # Spy on send_magic_link! for the new user instance
         expect_any_instance_of(User).to receive(:send_magic_link!).once
       end
-    
+
       it "creates a new user, skips confirmation and sends the magic link" do
         freeze_time do
-          expect { post "/magic_links", params: { email: email } }
-            .to change(User, :count).by(1)
-    
+          expect {
+            post "/magic_links", params: { email: email }
+          }.to change(User, :count).by(1)
+
           new_user = User.order(:created_at).last
-    
+
           expect(new_user.email).to          eq(email)
           expect(new_user.username).to       include("member_")
           expect(new_user.name).to           include("member_")
           expect(new_user.registered_at).to  eq(Time.current)
           expect(new_user.confirmed_at).to   be_nil
           expect(response.body).to include("Check your email")
+        end
+      end
+
+      it "assigns onboarding_subforem_id based on the referer header" do
+        freeze_time do
+          expect {
+            post "/magic_links", params: { email: email }, headers: { "Host" => subforem.domain }
+          }.to change(User, :count).by(1)
+
+          new_user = User.order(:created_at).last
+          expect(new_user.onboarding_subforem_id).to eq(subforem.id)
         end
       end
     end
@@ -77,7 +89,7 @@ RSpec.describe "MagicLinks", type: :request do
 
   describe "GET /magic_links/:id" do
     let(:token) { "valid_token" }
-  
+
     context "when the token matches a user and is not expired" do
       it "confirms the user and redirects to root_path" do
         freeze_time do
@@ -87,14 +99,14 @@ RSpec.describe "MagicLinks", type: :request do
             sign_in_token_sent_at:  10.minutes.ago,
             confirmed_at:           nil
           )
-  
+
           get "/magic_links/#{token}"
-  
+
           expect(response).to redirect_to(root_path)
           expect(user.reload.confirmed_at).to be_within(1.second).of(Time.current)
         end
       end
-  
+
       it "does **not** update confirmed_at if it was already present" do
         freeze_time do
           confirmed_time = 1.day.ago
@@ -104,9 +116,9 @@ RSpec.describe "MagicLinks", type: :request do
             sign_in_token_sent_at:  10.minutes.ago,
             confirmed_at:           confirmed_time
           )
-  
+
           get "/magic_links/#{token}"
-  
+
           expect(response).to redirect_to(root_path)
           expect(user.reload.confirmed_at).to be_within(1.second).of(confirmed_time)
         end
