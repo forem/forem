@@ -9,14 +9,6 @@ RSpec.describe Listing do
   # This may apply default parser on area that should not use it.
   after { ActsAsTaggableOn.default_parser = ActsAsTaggableOn::DefaultParser }
 
-<<<<<<< HEAD
-  it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to validate_presence_of(:body_markdown) }
-=======
-  it { is_expected.to have_many(:credits) }
->>>>>>> 67884c1f6 (Remove unused validations from Listing model)
-
-
   describe "body html" do
     it "converts markdown to html" do
       expect(listing.processed_html).to include("<p>")

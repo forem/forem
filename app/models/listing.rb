@@ -3,9 +3,6 @@ class Listing < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listings"
 
-  # Keep: Removed in a different PR
-  attr_accessor :action
-
   # NOTE: categories were hardcoded at first and the model was only added later.
   # The foreign_key and inverse_of options are used because of legacy table names.
   belongs_to :listing_category, inverse_of: :listings, foreign_key: :classified_listing_category_id
@@ -29,12 +26,6 @@ class Listing < ApplicationRecord
   # Keep: API might use? Check later.
   scope :published, -> { where(published: true) }
 
-  # NOTE: we still need to use the old column name for the join query
-  # Keep: API might use? Check later.
-  scope :in_category, lambda { |slug|
-    joins(:listing_category).where("classified_listing_categories.slug" => slug)
-  }
-
   # Wrapping the column accessor names for consistency. Aliasing did not work.
   def listing_category_id
     classified_listing_category_id
@@ -50,11 +41,6 @@ class Listing < ApplicationRecord
 
   def author
     organization || user
-  end
-
-  # Keep: Removed in a different PR
-  def path
-    "/listings/#{category}/#{slug}"
   end
 
   def natural_expiration_date
