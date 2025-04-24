@@ -11,25 +11,30 @@ class MagicLinksController < ApplicationController
     @user = User.find_by(email: params[:email])
     if @user
       @user.send_magic_link!
-    else # Register new user with this email
+    else
+      # Register new user with this email
       @user = User.new(email: params[:email])
-      @user.registered = true
-      @user.registered_at = Time.current
-      dummy_password = Devise.friendly_token(20)
-      @user.password = dummy_password
+      @user.registered       = true
+      @user.registered_at    = Time.current
+      dummy_password         = Devise.friendly_token(20)
+      @user.password        = dummy_password
       @user.password_confirmation = dummy_password
-      @user.skip_confirmation_notification! # At first we skip confirmation to avoid sending the normal confirmation email.
-      name = "member_#{SecureRandom.hex.first(8)}"
-      # username remove all non alphanumeric characters and downcase
-      @user.username = name
-      @user.name = name
-      @user.profile_image = Images::ProfileImageGenerator.call
-      if  @user.save
+
+      # skip the normal Devise confirmation email
+      @user.skip_confirmation_notification!
+
+      @user.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
+
+      name                  = "member_#{SecureRandom.hex.first(8)}"
+      @user.username        = name
+      @user.name            = name
+      @user.profile_image   = Images::ProfileImageGenerator.call
+
+      if @user.save
         @user.send_magic_link!
       else
         flash[:alert] = @user.errors.full_messages.join(", ")
-        redirect_to new_user_session_path
-        return
+        redirect_to new_user_session_path and return
       end
     end
   end
