@@ -174,6 +174,11 @@ export class ArticleForm extends Component {
   }
 
   localStoreContent = () => {
+    if (sessionStorage.getItem('isSigningOut') === 'true') {
+      sessionStorage.removeItem('isSigningOut');
+      return;
+    }
+
     const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
     const updatedAt = new Date();
     localStorage.setItem(
@@ -186,6 +191,7 @@ export class ArticleForm extends Component {
         updatedAt,
       }),
     );
+    console.log('This was called even after logging out.');
   };
 
   setCommonProps = ({
@@ -417,7 +423,8 @@ export class ArticleForm extends Component {
           helpPosition: event.target.getBoundingClientRect().y,
         }),
       });
-  }};
+    }
+  };
 
   render() {
     const {

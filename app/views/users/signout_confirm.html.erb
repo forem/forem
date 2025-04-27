@@ -15,6 +15,9 @@
 <script>
 function clearLocalStorageBeforeSignout(event) {
   event.preventDefault();
+  
+  sessionStorage.setItem('isSigningOut', 'true');
+
   localStorage.clear();
   document.getElementById('signout-form').submit();
 }
