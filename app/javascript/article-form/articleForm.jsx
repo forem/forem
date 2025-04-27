@@ -191,7 +191,6 @@ export class ArticleForm extends Component {
         updatedAt,
       }),
     );
-    console.log('This was called even after logging out.');
   };
 
   setCommonProps = ({
