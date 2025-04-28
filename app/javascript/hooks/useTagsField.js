@@ -1,44 +1,94 @@
-module AlgoliaSearchable
-  module SearchableTag
-    extend ActiveSupport::Concern
+import { useEffect, useState } from 'preact/hooks';
+import algoliasearch from 'algoliasearch/lite'
+import { fetchSearch } from '@utilities/search';
 
-    included do
-      include AlgoliaSearch
 
-      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS) do
-        attribute :name, :pretty_name, :short_summary, :hotness_score, :supported, :rules_html, :bg_color_hex
+/**
+ * Custom hook to manage the logic for the tags-fields based on the `MultiSelectAutocomplete` component
+ *
+ * @param {string} defaultValue The default value for the tags field, needs to be a comma separated string
+ * @param {Function} onInput The function to call when the input changes
+ * @returns {Object}
+ * An object containing `defaultSelections` list, `fetchSuggestions` function, and `syncSelections` function
+ */
+export const useTagsField = ({ defaultValue, onInput }) => {
+  const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
+  let algoliaIndex;
+  if (!useFetchSearch) {
+    const env = document.querySelector('meta[name="environment"]')?.content;
+    const {algoliaId, algoliaSearchKey} = document.body.dataset;
+    const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
+    algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
+  }
 
-        attribute :badge do
-          { badge_image: {
-            url: badge&.badge_image_url && ApplicationController
-                                  .helpers
-                                  .optimized_image_url(badge.badge_image_url, width: 64)
-          } }
-        end
+  const [defaultSelections, setDefaultSelections] = useState([]);
+  const [defaultsLoaded, setDefaultsLoaded] = useState(false);
 
-        attribute :subforem_ids do
-          subforem_relationships.map(&:id)
-        end
+  useEffect(() => {
+    // Previously selected tags are passed as a plain comma separated string
+    // Fetching further tag data allows us to display a richer UI
+    // This fetch only happens once on first component load
+    if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
+      const tagNames = defaultValue.split(', ');
 
-        add_attribute(:timestamp) { created_at.to_i }
+      const tagRequests = tagNames.map((tagName) => 
+        // Let's also use current subforem here
+        (useFetchSearch ? 
+          fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
+            const [potentialMatch = {}] = result;
+            return potentialMatch.name === tagName
+              ? potentialMatch
+              : { name: tagName };
+          }) :
+          algoliaIndex.search(tagName).then(({ hits }) => {
+            const [potentialMatch = {}] = hits;
+            return potentialMatch.name === tagName
+              ? potentialMatch
+              : { name: tagName };
+          })
+        )
+      );
 
-        customRanking ["desc(hotness_score)"]
-        add_replica("Tag_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
-        add_replica("Tag_timestamp_asc",  per_environment: true) { customRanking ["asc(timestamp)"] }
+      Promise.all(tagRequests).then((data) => {
+        setDefaultSelections(data);
+      });
+    }
+    setDefaultsLoaded(true);
+  }, [defaultValue, defaultsLoaded, useFetchSearch]);
 
-        # expose `subforem_ids` as a filterable facet:
-        #
-        attributesForFaceting [
-          "searchable(supported)",
-          "filterOnly(subforem_ids)"
-        ]
-      end
-    end
+  /**
+   * Converts the array of selected items into a plain string,
+   * and ensures the `onInput` callback is triggered with the new tags list
+   * @param {Array} selections
+   */
+  const syncSelections = (selections = []) => {
+    const selectionsString = selections
+      .map((selection) => selection.name)
+      .join(', ');
+    onInput(selectionsString);
+  };
 
-    class_methods do
-      def trigger_sidekiq_worker(record, delete)
-        AlgoliaSearch::SearchIndexWorker.perform_async(record.class.name, record.id, delete)
-      end
-    end
-  end
-end
+  /**
+   * Fetches tags for a given search term
+   *
+   * @param {string} searchTerm The text to search for
+   * @returns {Promise} Promise which resolves to the tag search results
+   */
+  const fetchSuggestions = (searchTerm) => 
+    (useFetchSearch ? 
+      fetchSearch('tags', { name: searchTerm }).then(
+        (response) => response.result,
+      ) : 
+      algoliaIndex.search(searchTerm, {
+        facetFilters: ["supported:true"]
+      }).then(
+        (response) => response.hits,
+      )
+    );
+
+  return {
+    defaultSelections,
+    fetchSuggestions,
+    syncSelections,
+  };
+};
