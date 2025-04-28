@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_24_133726) do
+ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1239,6 +1239,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_24_133726) do
     t.bigint "user_id"
   end
 
+  create_table "tag_subforem_relationships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "subforem_id", null: false
+    t.boolean "supported", default: true
+    t.bigint "tag_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subforem_id"], name: "index_tag_subforem_relationships_on_subforem_id"
+    t.index ["tag_id"], name: "index_tag_subforem_relationships_on_tag_id"
+  end
+
   create_table "taggings", force: :cascade do |t|
     t.string "context", limit: 128
     t.datetime "created_at", precision: nil
@@ -1637,6 +1647,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_24_133726) do
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
+  add_foreign_key "tag_subforem_relationships", "subforems"
+  add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify

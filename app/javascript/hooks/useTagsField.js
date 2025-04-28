@@ -32,6 +32,7 @@ export const useTagsField = ({ defaultValue, onInput }) => {
       const tagNames = defaultValue.split(', ');
 
       const tagRequests = tagNames.map((tagName) => 
+        // Let's also use current subforem here
         (useFetchSearch ? 
           fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
             const [potentialMatch = {}] = result;
