@@ -32,7 +32,7 @@ class Comment < ApplicationRecord
   counter_culture :commentable
   counter_culture :user
 
-  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   before_validation :evaluate_markdown, if: -> { body_markdown }
