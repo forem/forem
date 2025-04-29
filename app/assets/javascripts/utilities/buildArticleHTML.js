@@ -189,7 +189,7 @@ function buildArticleHTML(article, currentUserId = null) {
     var reactionsText = reactionsCount === 1 ? 'reaction' : 'reactions';
     var reactionIcons = document.getElementById('reaction-category-resources');
 
-    if (article.class_name !== 'User' && reactionsCount > 0) {
+    if (article.class_name !== 'User' && reactionsCount > 0 && reactionIcons) {
       var icons = [];
       for (var category of article.public_reaction_categories) {
         var icon = reactionIcons.querySelector(
