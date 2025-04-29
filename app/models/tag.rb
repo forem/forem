@@ -84,6 +84,20 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    # Include subforem_relationships and return tags that are in that relationship
+    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+      # No additional conditions; just return the current scope
+      where(supported: true)
+    elsif subforem_id.present?
+      joins(:subforem_relationships)
+        .where(subforem_relationships: { subforem_id: subforem_id })
+    else
+      # No subforem_id provided, so return all tags
+      where(supported: true)
+    end
+  }
 
   scope :suggested_for_onboarding, -> { where(suggested: true) }
 
@@ -254,6 +268,7 @@ class Tag < ActsAsTaggableOn::Tag
   # @deprecated [@jeremyf] in moving towards adding the :points attribute via ActiveRecord query
   #             instantiation, this is not needed.  But it's here for later removal
   attr_writer :points
+  attr_writer :subforem_ids
 
   private
 

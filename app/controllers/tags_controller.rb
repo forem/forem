@@ -63,14 +63,37 @@ class TagsController < ApplicationController
 
   def suggest
     skip_authorization
-    tags = Tag.supported.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
+    tags = Tag.from_subforem.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
     render json: tags, only: INDEX_API_ATTRIBUTES, include: [badge: { only: [:badge_image] }]
   end
 
   private
 
   def tags
-    @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
+    sub_id = RequestStore.store[:subforem_id].to_i
+
+    if sub_id.positive?
+      boost_sql = <<~SQL.squish
+        tags.hotness_score
+        + CASE
+            WHEN EXISTS (
+              SELECT 1
+              FROM tag_subforem_relationships tsr
+              WHERE tsr.tag_id      = tags.id
+                AND tsr.subforem_id = #{sub_id}
+            ) THEN 1000
+            ELSE 0
+          END
+        DESC
+      SQL
+
+      @tags ||= Tag
+        .direct
+        .order(Arel.sql(boost_sql))
+        .limit(100)
+    else
+      @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
+    end
   end
 
   def convert_empty_string_to_nil
