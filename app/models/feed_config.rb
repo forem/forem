@@ -73,6 +73,27 @@ class FeedConfig < ApplicationRecord
       terms << "(CASE WHEN articles.published_at >= '#{published_since}' THEN #{published_today_weight} ELSE 0 END)"
     end
 
+    if recent_subforem_weight.positive? && activity_store&.recent_subforems&.any?
+      ids     = activity_store.recent_subforems.compact
+      arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
+    
+      terms << <<~SQL.squish
+        (
+          CASE
+            WHEN articles.subforem_id = ANY(#{arr_sql})
+            THEN #{recent_subforem_weight}
+                 * COALESCE(
+                     cardinality(
+                       array_positions(#{arr_sql}, articles.subforem_id)
+                     ),
+                     0
+                   )
+            ELSE 0
+          END
+        )
+      SQL
+    end
+
     # Additional weights
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?

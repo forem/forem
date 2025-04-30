@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
+ActiveRecord::Schema[7.0].define(version: 2025_04_30_130048) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -575,6 +575,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "recent_subforem_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1338,6 +1339,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []
     t.jsonb "recent_organizations", default: []
+    t.jsonb "recent_subforems", default: []
     t.jsonb "recent_tags", default: []
     t.jsonb "recent_users", default: []
     t.jsonb "recently_viewed_articles", default: []
