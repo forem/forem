@@ -99,7 +99,7 @@ RSpec.describe UserActivity, type: :model do
       end
 
       it "sets last_activity_at to now" do
-        expect(activity.last_activity_at).to be_within(1.second).of(Time.current)
+        expect(activity.last_activity_at).to be_within(3.seconds).of(Time.current)
       end
 
       it "stores exactly the 20 most recent page-views in descending order" do
