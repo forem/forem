@@ -128,6 +128,7 @@ class FeedConfig < ApplicationRecord
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
+    clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
     clone.feed_impressions_count = 0
     clone.save
   end
