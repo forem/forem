@@ -175,9 +175,30 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("RANDOM() * 8.0")
       end
 
-      it "includes the recent subforem weight" do
+      it "includes the recent subforem weight if request is root" do
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        default_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: root_subforem.id,
+          default_subforem_id: default_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
         sql = feed_config.score_sql(user)
         expect(sql).to include("CASE WHEN articles.subforem_id = ANY(ARRAY[1]::bigint[])")
+      end
+
+      it "does not include recent subforem weight if request is not root" do
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        default_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: subforem.id,
+          default_subforem_id: default_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("CASE WHEN articles.subforem_id = ANY(ARRAY[1]::bigint[])")
       end
     end
   end

@@ -73,7 +73,10 @@ class FeedConfig < ApplicationRecord
       terms << "(CASE WHEN articles.published_at >= '#{published_since}' THEN #{published_today_weight} ELSE 0 END)"
     end
 
-    if recent_subforem_weight.positive? && activity_store&.recent_subforems&.any?
+    if recent_subforem_weight.positive? &&
+      activity_store&.recent_subforems&.any? &&
+      RequestStore.store[:root_subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
       ids     = activity_store.recent_subforems.compact
       arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
     
