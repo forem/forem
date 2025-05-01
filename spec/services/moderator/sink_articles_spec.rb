@@ -26,7 +26,7 @@ RSpec.describe Moderator::SinkArticles, type: :service do
         sidekiq_perform_enqueued_jobs do
           described_class.call(spam_user.id)
         end
-      end.to change(scores, :call).from([0, 0, 0]).to([-50, -51, -53]])
+      end.to change(scores, :call).from([0, 0, 0]).to([-50, -51, -53])
     end
 
     context "when removing a user vomit reaction" do
