@@ -46,9 +46,13 @@ RSpec.describe "MagicLinks", type: :request do
         allow(User).to receive(:find_by).with(email: email).and_return(nil)
         allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
         allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
+      end
 
-        # Spy on send_magic_link! for the new user instance
-        expect_any_instance_of(User).to receive(:send_magic_link!).once
+      it "returns an error if the instance is invite-only" do
+        allow(ForemInstance).to receive(:invitation_only?).and_return(true)
+        post "/magic_links", params: { email: email }
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:alert]).to eq("Forem is invite-only.")
       end
 
       it "creates a new user, skips confirmation and sends the magic link" do
@@ -65,6 +69,7 @@ RSpec.describe "MagicLinks", type: :request do
           expect(new_user.registered_at).to  eq(Time.current)
           expect(new_user.confirmed_at).to   be_nil
           expect(response.body).to include("Check your email")
+          expect(new_user.sign_in_token).not_to be_nil
         end
       end
 

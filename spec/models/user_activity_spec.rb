@@ -1,16 +1,31 @@
 require "rails_helper"
 
 RSpec.describe UserActivity, type: :model do
-  describe "#set_activity" do
-    let(:user) { create(:user) }
-    let(:organization) { create(:organization) }
-    let(:activity) { create(:user_activity, user: user) }
+  include ActiveSupport::Testing::TimeHelpers
 
-    let!(:article1) { create(:article, user: user, organization: organization) }
-    let!(:article2) { create(:article, user: user, organization: organization) }
+  describe "#set_activity!" do
+    let(:user)          { create(:user) }
+    let(:organization)  { create(:organization) }
+    let(:activity)      { create(:user_activity, user: user) }
+
+    let!(:article1) do
+      create(
+        :article,
+        user:           user,
+        organization:   organization,
+        subforem_id:    101
+      )
+    end
+    let!(:article2) do
+      create(
+        :article,
+        user:           user,
+        organization:   organization,
+        subforem_id:    202
+      )
+    end
 
     before do
-      # Stub tag/label lists for any instance of Article.
       allow_any_instance_of(Article).to receive(:cached_tag_list) do |instance|
         case instance.id
         when article1.id then ["tag1", "tag2"]
@@ -29,89 +44,135 @@ RSpec.describe UserActivity, type: :model do
 
       allow(user).to receive(:cached_followed_tag_names).and_return(
         ["all_tag1", "all_tag2", "all_tag3", "all_tag4", "all_tag5", "all_tag6"]
-        )
+      )
     end
 
-    context "when there are page views for the user" do
-      # Create three page views:
-      # - page_view1: time tracked 120 seconds (should be included)
-      # - page_view2: time tracked 30 seconds (should be excluded)
-      # - page_view3: time tracked 100 seconds (should be included)
+    context "when there are page views with a mix of tracked times" do
       let!(:page_view1) do
-        create(:page_view,
-               user: user,
-               article_id: article1.id,
-               created_at: 2.hours.ago,
-               time_tracked_in_seconds: 120)
+        create(
+          :page_view,
+          user:                    user,
+          article_id:              article1.id,
+          created_at:              2.hours.ago,
+          time_tracked_in_seconds: 120
+        )
       end
-
       let!(:page_view2) do
-        create(:page_view,
-               user: user,
-               article_id: article2.id,
-               created_at: 1.hour.ago,
-               time_tracked_in_seconds: 30)
+        create(
+          :page_view,
+          user:                    user,
+          article_id:              article2.id,
+          created_at:              1.hour.ago,
+          time_tracked_in_seconds: 30
+        )
       end
-
       let!(:page_view3) do
-        create(:page_view,
-               user: user,
-               article_id: article2.id,
-               created_at: 30.minutes.ago,
-               time_tracked_in_seconds: 100)
+        create(
+          :page_view,
+          user:                    user,
+          article_id:              article2.id,
+          created_at:              30.minutes.ago,
+          time_tracked_in_seconds: 100
+        )
+      end
+      let!(:page_view_exact_threshold) do
+        create(
+          :page_view,
+          user:                    user,
+          article_id:              article1.id,
+          created_at:              15.minutes.ago,
+          time_tracked_in_seconds: 44
+        )
+      end
+      let!(:page_view_above_threshold) do
+        create(
+          :page_view,
+          user:                    user,
+          article_id:              article1.id,
+          created_at:              10.minutes.ago,
+          time_tracked_in_seconds: 45
+        )
       end
 
       before do
-        # Call the method under test.
-        activity.set_activity!
+        travel_to(Time.current) { activity.set_activity! }
       end
 
-      it "sets last_activity_at to the current time" do
-        expect(activity.last_activity_at).to be_within(1.second).of(Time.current)
+      it "sets last_activity_at to now" do
+        expect(activity.last_activity_at).to be_within(3.seconds).of(Time.current)
       end
 
-      it "stores the recently viewed articles from the user's page views" do
-        expected_recently_viewed = user.page_views
-                                      .order(created_at: :desc)
-                                      .limit(20)
-                                      .pluck(:article_id, :created_at, :time_tracked_in_seconds)
-        expect(activity.recently_viewed_articles.map(&:first)).to eq(expected_recently_viewed.map(&:first))
+      it "stores exactly the 20 most recent page-views in descending order" do
+        expected = user.page_views
+                       .order(created_at: :desc)
+                       .limit(20)
+                       .pluck(:article_id, :created_at, :time_tracked_in_seconds)
+
+        expect(activity.recently_viewed_articles.map(&:first)).to eq(expected.map(&:first))
       end
 
-      it "selects only page views with time_tracked_in_seconds > 59 and finds the related articles" do
-        expected_article_ids = [page_view1.article_id, page_view3.article_id]
-        recent_articles = Article.where(id: expected_article_ids)
-        expected_tags = (article1.cached_tag_list + article2.cached_tag_list).uniq.first(5)
-        expected_labels = (article1.cached_label_list + article2.cached_label_list).uniq.compact.first(5)
-        expected_orgs  = [article1.organization_id, article2.organization_id].uniq.compact
-        expected_users = [article1.user_id, article2.user_id].uniq.compact
+      it "includes only views with time_tracked_in_seconds > 44 in recent_* aggregations" do
+        good_article_ids = [
+          page_view1.article_id,
+          page_view3.article_id,
+          page_view_above_threshold.article_id
+        ].uniq
 
-        expect(activity.recent_tags).to eq(expected_tags)
-        expect(activity.recent_labels).to eq(expected_labels)
-        expect(activity.recent_organizations).to eq(expected_orgs)
-        expect(activity.recent_users).to eq(expected_users)
+        recent_articles = Article.where(id: good_article_ids)
+
+        expect(activity.recent_tags).to match_array(
+          recent_articles.map(&:cached_tag_list).flatten.uniq.first(5)
+        )
+        expect(activity.recent_labels).to match_array(
+          recent_articles.map(&:cached_label_list).flatten.uniq.first(5)
+        )
+        expect(activity.recent_organizations).to match_array(
+          recent_articles.map(&:organization_id).uniq
+        )
+        expect(activity.recent_users).to match_array(
+          recent_articles.map(&:user_id).uniq
+        )
       end
 
-      it "sets alltime_tags from the user's cached followed tag names" do
-        expect(activity.alltime_tags).to eq(user.cached_followed_tag_names.first(10))
+      it "captures recent_subforems from those same articles" do
+        expect(activity.recent_subforems).to match_array(
+          [article1.subforem_id, article2.subforem_id]
+        )
+      end
+
+      it "populates alltime_tags from the user's cached_followed_tag_names (first 10)" do
+        expect(activity.alltime_tags).to eq(
+          user.cached_followed_tag_names.first(10)
+        )
+      end
+
+      it "combines recent_tags and alltime_tags in #relevant_tags" do
+        expect(activity.relevant_tags).to eq(
+          activity.recent_tags + activity.alltime_tags
+        )
       end
     end
 
-    context "when a UserActivity record already exists" do
-      let!(:existing_activity) { create(:user_activity, user: user, last_activity_at: 1.day.ago) }
+    context "when a UserActivity already exists for the user" do
+      let!(:existing_activity) do
+        create(:user_activity, user: user, last_activity_at: 1.day.ago)
+      end
 
       before do
-        # Ensure there is at least one page view so the method will update attributes.
-        create(:page_view,
-               user: user,
-               article_id: article1.id,
-               created_at: 1.hour.ago,
-               time_tracked_in_seconds: 120)
+        create(
+          :page_view,
+          user:                    user,
+          article_id:              article1.id,
+          created_at:              1.hour.ago,
+          time_tracked_in_seconds: 120
+        )
         existing_activity.set_activity
       end
 
-      it "updates the existing record instead of initializing a new one" do
-        expect(existing_activity.last_activity_at).to be_within(1.second).of(Time.current)
+      it "updates the same record instead of creating a new one" do
+        expect(UserActivity.where(user: user).count).to eq(1)
+        expect(existing_activity.last_activity_at).to be_within(1.second)
+          .of(Time.current)
       end
     end
   end

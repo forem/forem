@@ -11,6 +11,10 @@ class MagicLinksController < ApplicationController
     @user = User.find_by(email: params[:email])
     if @user
       @user.send_magic_link!
+    elsif ForemInstance.invitation_only?
+      # If the instance is invite-only, we don't want to create a new user and return early
+      flash[:alert] = "Forem is invite-only."
+      redirect_to new_user_session_path and return
     else
       # Register new user with this email
       @user = User.new(email: params[:email])

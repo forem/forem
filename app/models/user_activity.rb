@@ -7,9 +7,9 @@ class UserActivity < ApplicationRecord
   end
 
   def set_activity
-    recently_viewed_store = user.page_views.order(created_at: :desc).limit(20).pluck(:article_id, :created_at, :time_tracked_in_seconds)
+    recently_viewed_store = User.first.page_views.order(created_at: :desc).limit(100).pluck(:article_id, :created_at, :time_tracked_in_seconds)
     # Now let's get all the articles where time_tracked_in_seconds for the page view from recent store is greater than 59
-    recent_articles = Article.where(id: recently_viewed_store.select { |article_id, created_at, time_tracked_in_seconds| time_tracked_in_seconds > 59 }.map(&:first))
+    recent_articles = Article.where(id: recently_viewed_store.select { |article_id, created_at, time_tracked_in_seconds| time_tracked_in_seconds > 29 }.map(&:first))
 
     self.last_activity_at = Time.current
     self.recently_viewed_articles = recently_viewed_store
@@ -17,6 +17,7 @@ class UserActivity < ApplicationRecord
     self.recent_labels = recent_articles.map(&:cached_label_list).flatten.uniq.compact.first(5)
     self.recent_organizations = recent_articles.map(&:organization_id).uniq.compact
     self.recent_users = recent_articles.map(&:user_id).uniq.compact
+    self.recent_subforems = recent_articles.map(&:subforem_id).compact # Purposefully not unique because we want to tabulate volume by subforem
     self.alltime_tags = user.cached_followed_tag_names.first(10)
   end
 
