@@ -1,6 +1,8 @@
 class FeedEventsController < ApplicationMetalController
   before_action :current_user_by_token, only: [:create]
-  skip_before_action :verify_authenticity_token, if: :token_authenticated?
+  skip_before_action :verify_authenticity_token,
+                     if: :token_authenticated?,
+                     unless: -> { Rails.env.test? }
   include ActionController::Head
 
   FEED_EVENT_ALLOWED_PARAMS = %i[
