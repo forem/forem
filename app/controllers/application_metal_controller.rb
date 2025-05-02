@@ -24,4 +24,24 @@ class ApplicationMetalController < ActionController::Metal
     end
   end
   helper_method :client_geolocation
+
+  def current_user_by_token
+    auth_header = request.headers["Authorization"]
+    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+
+    token = auth_header.split(" ").last
+    payload = decode_auth_token(token)
+    return unless payload && payload["user_id"]
+
+
+    user = User.find_by(id: payload["user_id"])
+    if user
+      @current_user = user
+      @token_authenticated = true
+    end
+  end
+
+  def token_authenticated?
+    @token_authenticated
+  end
 end
