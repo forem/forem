@@ -1,0 +1,71 @@
+---
+es:
+  views:
+    main:
+      aria_home: "%{community} Inicio"
+      header:
+        create_account: Crear cuenta
+        login: Iniciar sesión
+        nav:
+          aria_label: Menú de navegación
+        moderation:
+          aria_label: Moderación
+          icon: Moderación
+        notifications:
+          aria_label: Notificaciones
+          icon: Notificaciones
+        skip: Ir al contenido
+      modal:
+        create_account:
+          aria_label: Crear nueva cuenta
+          text: Crear cuenta
+        login:
+          aria_label: Iniciar sesión
+          text: Iniciar sesión
+      nav:
+        admin: Admin
+        dashboard: Tablero
+        placeholder: "..."
+        list: Lista de lectura
+        moderator_center: Centro de moderación
+        other: Otro
+        settings: Configuración
+      nav_name:
+        About: Acerca de
+        Code of Conduct: Código de Conducta
+        Contact: Contacto
+        FAQ: Preguntas frecuentes
+        Home: Inicio
+        Listings: Listados
+        Podcasts: Podcasts
+        Privacy Policy: Política de Privacidad
+        Reading List: Lista de Lectura
+        Tags: Etiquetas
+        Terms of use: Términos de uso
+        Videos: Videos
+      side:
+        listings:
+          heading: Listados
+          all: Ver todo
+          new: Crear un Listado
+        trend: guías/recursos populares
+        recent: consultados recientemente
+      tags:
+        aria_label: Personalizar la prioridad de las etiquetas
+        follow: Seguir
+        my_tags: Mis Etiquetas
+        popular_tags: Etiquetas Populares
+      footer:
+        built:
+          text_html: Construido en %{forem} — el software %{opensource} que alimenta a %{dev} y otras comunidades inclusivas.
+          forem: Forem
+          opensource: de código abierto
+          dev: DEV
+        desc_html: "%{community} — %{desc}"
+        logo: Logotipo de Forem
+        powered:
+          text_html: Hecho con amor y %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: Ruby on Rails
+        sidebar_desc_html: "%{community}\n%{desc}"
+      create_post: Crear Post
+      signout: Cerrar sesión
