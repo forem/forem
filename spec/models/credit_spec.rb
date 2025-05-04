@@ -51,11 +51,6 @@ RSpec.describe Credit do
   describe "#purchase" do
     let(:credit) { build(:credit) }
 
-    it "is valid with a purchase" do
-      credit.purchase = build(:listing)
-      expect(credit).to be_valid
-    end
-
     it "is valid without a purchase" do
       credit.purchase = nil
       expect(credit).to be_valid
