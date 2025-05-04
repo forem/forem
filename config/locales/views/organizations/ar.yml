@@ -1,0 +1,44 @@
+---
+ar:
+  views:
+    organizations:
+      empty: 404 لم يتم العثور على السيرة الذاتية
+      external:
+        icon: أيقونة الرابط الخارجي
+      follow: متابعة
+      github:
+        icon: شعار GitHub
+      joined:
+        icon: انضم
+        text_html: "انضم في\_%{date}"
+      location:
+        icon: الموقع
+      logo: "صورة الملف الشخصي لـ %{org}"
+      size: الموظفين
+      sponsor:
+        text: "راعٍ للمجتمع %{level} ❤️"
+        level:
+          gold: ذهبي
+          silver: فضي
+          bronze: برونزي
+          tag: علامة
+          media: وسائط
+          devrel: علاقات المطورين
+      stack: تقنياتنا
+      story: قصتنا
+      side:
+        post:
+            icon: نشر
+            text:
+              one: منشور واحد تم نشره
+              other: "%{count} منشورات تم نشرها"
+        member:
+          icon: عضو
+          text:
+            one: عضو واحد
+            other: "%{count} أعضاء"
+      support: البريد الإلكتروني للدعم
+      team: تعرف على الفريق
+      all_members: عرض جميع الأعضاء
+      twitter:
+        icon: شعار تويتر
