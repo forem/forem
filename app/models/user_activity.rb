@@ -17,7 +17,7 @@ class UserActivity < ApplicationRecord
     self.recent_labels = recent_articles.map(&:cached_label_list).flatten.uniq.compact.first(5)
     self.recent_organizations = recent_articles.map(&:organization_id).uniq.compact
     self.recent_users = recent_articles.map(&:user_id).uniq.compact
-    self.recent_subforems = recent_articles.map(&:subforem_id).uniq.compact
+    self.recent_subforems = recent_articles.map(&:subforem_id).compact # Purposefully not unique because we want to tabulate volume by subforem
     self.alltime_tags = user.cached_followed_tag_names.first(10)
   end
 
