@@ -4,7 +4,6 @@ RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
   let(:article) { create(:article) }
-  let(:listing) { create(:listing) }
   let(:organization) { create(:organization) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) do
@@ -147,7 +146,6 @@ RSpec.describe UnifiedEmbed::Registry do
 
     it "returns ForemTag for a Forem-specific url", :aggregate_failures do
       valid_forem_specific_links = [
-        "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}",
         "#{URL.url}/#{organization.slug}",
         "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}",
         "#{URL.url}/t/#{tag.name}",
