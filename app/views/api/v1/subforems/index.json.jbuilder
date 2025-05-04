@@ -4,6 +4,6 @@ json.array! @subforems do |subforem|
   json.name             Settings::Community.community_name(subforem_id: subforem.id)
   json.description      Settings::Community.community_description(subforem_id: subforem.id)
   json.logo_image_url   Settings::General.logo_png(subforem_id: subforem.id)
-  json.cover_image_url  Settings::General.main_social_image
+  json.cover_image_url  Settings::General.main_social_image(subforem_id: subforem.id)
 end
 

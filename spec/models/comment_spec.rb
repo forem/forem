@@ -16,7 +16,7 @@ RSpec.describe Comment do
       it { is_expected.to belong_to(:user) }
       # it { is_expected.to belong_to(:commentable).optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:delete_all) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
 
@@ -617,7 +617,7 @@ RSpec.describe Comment do
     it "indexes on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:comment)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer), 
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer),
 false).once
     end
   end

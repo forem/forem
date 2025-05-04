@@ -10,7 +10,7 @@ module Articles
 
       article.destroy!
 
-      Notification.remove_all_without_delay(notifiable_ids: article.id, notifiable_type: "Article")
+      Notification.remove_all(notifiable_ids: article.id, notifiable_type: "Article")
 
       return if article_comments_ids.blank?
 

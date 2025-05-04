@@ -1713,6 +1713,37 @@ RSpec.describe Article do
       end
     end
 
+    context "when user has featured articles" do
+      it "adds the user featured article adjustment to the score" do
+        create_list(:article, 5, user: user, featured: true)
+        article.update_score
+        expect(article.reload.score).to eq(10 + 6) # 6 is 5 plus 1 for the log adjustment
+      end
+
+      it "adds the user featured article adjustment to the score when the user has many articles" do
+        current_score = article.score
+        create_list(:article, 52, user: user, featured: true)
+        article.update_score
+        expect(article.reload.score).to eq(10 + 13) # 10 for count, 3 for log adjustment
+      end
+    end
+
+    context "when user has negative articles" do
+      # negative_count = user.articles.where("score < -10").count
+      # user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+      it "adds the user negative article adjustment to the score" do
+        create_list(:article, 5, user: user, score: -20)
+        article.update_score
+        expect(article.reload.score).to eq(10 - 4) # 4 is 3 for count, 1 for log adjustment
+      end
+
+      it "adds the user negative article adjustment to the score when the user has many articles" do
+        create_list(:article, 52, user: user, score: -20)
+        article.update_score
+        expect(article.reload.score).to eq(10 - 6) # 6 is 3 for count, 3 for log adjustment
+      end
+    end
+
     context "when user.max_score is set" do
       it "uses the user's max score if it is lower than the article's max score" do
         user.update_column(:max_score, 5)
