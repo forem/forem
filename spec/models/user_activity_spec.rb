@@ -111,7 +111,7 @@ RSpec.describe UserActivity, type: :model do
         expect(activity.recently_viewed_articles.map(&:first)).to eq(expected.map(&:first))
       end
 
-      it "includes only views with time_tracked_in_seconds > 44 in recent_* aggregations" do
+      it "includes only views with time_tracked_in_seconds > 29 in recent_* aggregations" do
         good_article_ids = [
           page_view1.article_id,
           page_view3.article_id,
@@ -121,10 +121,10 @@ RSpec.describe UserActivity, type: :model do
         recent_articles = Article.where(id: good_article_ids)
 
         expect(activity.recent_tags).to match_array(
-          recent_articles.map(&:cached_tag_list).flatten.uniq.first(5)
+          recent_articles.map(&:cached_tag_list).flatten.uniq
         )
         expect(activity.recent_labels).to match_array(
-          recent_articles.map(&:cached_label_list).flatten.uniq.first(5)
+          recent_articles.map(&:cached_label_list).flatten.uniq
         )
         expect(activity.recent_organizations).to match_array(
           recent_articles.map(&:organization_id).uniq
@@ -147,9 +147,20 @@ RSpec.describe UserActivity, type: :model do
       end
 
       it "combines recent_tags and alltime_tags in #relevant_tags" do
+        # default: returns all of each
         expect(activity.relevant_tags).to eq(
-          activity.recent_tags + activity.alltime_tags
+          activity.recent_tags.first(5) + activity.alltime_tags.first(5)
         )
+
+        # custom limits: only first N of each
+        recent_limit   = 2
+        alltime_limit  = 4
+        expected_combo = activity.recent_tags.first(recent_limit) +
+                         activity.alltime_tags.first(alltime_limit)
+
+        expect(
+          activity.relevant_tags(recent_limit, alltime_limit)
+        ).to eq(expected_combo)
       end
     end
 

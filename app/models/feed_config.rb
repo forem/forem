@@ -6,7 +6,9 @@ class FeedConfig < ApplicationRecord
 
     user_follow_ids = user.cached_following_users_ids + (activity_store&.recent_users&.compact || [])
     organization_follow_ids = user.cached_following_organizations_ids + (activity_store&.recent_organizations&.compact || [])
-    tag_names = activity_store&.relevant_tags || user.cached_followed_tag_names
+    recent_tags_count = rand(recent_tag_count_min..recent_tag_count_max) if recent_tag_count_min.positive? && recent_tag_count_max.positive?
+    all_time_tags_count = rand(all_time_tag_count_min..all_time_tag_count_max) if all_time_tag_count_min.positive? && all_time_tag_count_max.positive?
+    tag_names = activity_store&.relevant_tags(recent_tags_count || 5, all_time_tags_count || 5) || user.cached_followed_tag_names
     label_names = activity_store&.recent_labels || []
 
     activity_tracked_pageview_time = activity_store&.recently_viewed_articles&.second
