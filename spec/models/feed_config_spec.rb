@@ -1,15 +1,17 @@
 require "rails_helper"
 
 RSpec.describe FeedConfig, type: :model do
-  subject(:feed_config) { described_class.create! }  # Ensure it is persisted
+  subject(:feed_config) { described_class.create! }
+
+  let(:cached_followed_tag_names) { ["tech", "ruby"] }
 
   let(:activity_store) do
     double("ActivityStore",
       recently_viewed_articles: [],
       recent_users: [],
       recent_organizations: [],
-      relevant_tags: user.cached_followed_tag_names,
-      recent_labels: [],
+      relevant_tags: ["tech", "ruby"],
+      recent_labels: ["label1"],
       recent_subforems: [1]
     )
   end
@@ -35,15 +37,15 @@ RSpec.describe FeedConfig, type: :model do
   describe "#score_sql" do
     context "when tag_follow_weight is positive and tag count configs present" do
       before do
-        feed_config.tag_follow_weight           = 6.0
-        feed_config.recent_tag_count_min        = 2
-        feed_config.recent_tag_count_max        = 2
-        feed_config.all_time_tag_count_min      = 3
-        feed_config.all_time_tag_count_max      = 3
+        feed_config.tag_follow_weight      = 6.0
+        feed_config.recent_tag_count_min   = 2
+        feed_config.recent_tag_count_max   = 2
+        feed_config.all_time_tag_count_min = 3
+        feed_config.all_time_tag_count_max = 3
         allow(activity_store)
           .to receive(:relevant_tags)
           .with(2, 3)
-          .and_return(["tagX", "tagY"]);
+          .and_return(["tagX", "tagY"])
       end
 
       it "invokes relevant_tags with configured counts and includes returned tags" do
@@ -56,18 +58,22 @@ RSpec.describe FeedConfig, type: :model do
 
     context "when tag_follow_weight is positive but no tag count configs" do
       before do
-        feed_config.tag_follow_weight           = 6.0
-        feed_config.recent_tag_count_min        = 0
-        feed_config.recent_tag_count_max        = 0
-        feed_config.all_time_tag_count_min      = 0
-        feed_config.all_time_tag_count_max      = 0
-        allow(activity_store).to receive(:relevant_tags)
+        feed_config.tag_follow_weight      = 6.0
+        feed_config.recent_tag_count_min   = 0
+        feed_config.recent_tag_count_max   = 0
+        feed_config.all_time_tag_count_min = 0
+        feed_config.all_time_tag_count_max = 0
+        # Stub relevant_tags to return nil so fallback is used
+        allow(activity_store)
+          .to receive(:relevant_tags)
+          .with(5, 5)
+          .and_return(nil)
       end
 
       it "falls back to user's cached_followed_tag_names" do
         sql = feed_config.score_sql(user)
-        expect(activity_store).not_to have_received(:relevant_tags)
-        user.cached_followed_tag_names.each do |tag|
+        expect(activity_store).to have_received(:relevant_tags).with(5, 5)
+        cached_followed_tag_names.each do |tag|
           expect(sql).to include("articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'")
         end
       end
@@ -96,7 +102,6 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.organization_id IN")
         expect(sql).to include("CASE WHEN articles.user_id IN")
         expect(sql).to include("cached_tag_list")
-        # Expect the label match condition to reference cached_label_list.
         expect(sql).to include("articles.cached_label_list")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
@@ -127,7 +132,6 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("organization_id IN")
         expect(sql).to include("CASE WHEN articles.user_id IN")
         expect(sql).not_to include("cached_tag_list")
-        # Verify that the label condition is not present when label_match_weight is zero.
         expect(sql).not_to include("cached_label_list")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).not_to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
@@ -157,7 +161,7 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     context "when additional weights are positive" do
-      let(:recently_viewed_articles) { [[101, Time.current - 1.hour, 30], [102, Time.current - 2.hours, 40]] }
+      let(:recently_viewed_articles) { [[101, Time.current - 1.hour], [102, Time.current - 2.hours]] }
       let(:activity_store) do
         double("ActivityStore",
           recently_viewed_articles: recently_viewed_articles,
@@ -170,9 +174,7 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       before do
-        # Provide a user_activity that includes recently_viewed_articles.
         allow(user).to receive(:user_activity).and_return(activity_store)
-        # Set additional weights.
         feed_config.recent_article_suppression_rate = 2.0
         feed_config.published_today_weight         = 3.0
         feed_config.featured_weight                = 4.0
@@ -223,11 +225,10 @@ RSpec.describe FeedConfig, type: :model do
 
       it "includes the recent subforem weight if request is root" do
         subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        default_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
         root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: root_subforem.id,
-          default_subforem_id: default_subforem.id,
+          default_subforem_id: root_subforem.id,
           root_subforem_id: root_subforem.id
         )
         sql = feed_config.score_sql(user)
@@ -250,81 +251,75 @@ RSpec.describe FeedConfig, type: :model do
   end
 
   describe "#create_slightly_modified_clone!" do
-  before do
-    # Base weight attributes
-    feed_config.feed_success_weight           = 1.0
-    feed_config.comment_score_weight          = 2.0
-    feed_config.comment_recency_weight        = 3.0
-    feed_config.label_match_weight            = 4.0
-    feed_config.lookback_window_weight        = 5.0
-    feed_config.organization_follow_weight    = 6.0
-    feed_config.precomputed_selections_weight = 7.0
-    feed_config.recency_weight                = 8.0
-    feed_config.score_weight                  = 9.0
-    feed_config.tag_follow_weight             = 10.0
-    feed_config.user_follow_weight            = 11.0
+    before do
+      feed_config.feed_success_weight           = 1.0
+      feed_config.comment_score_weight          = 2.0
+      feed_config.comment_recency_weight        = 3.0
+      feed_config.label_match_weight            = 4.0
+      feed_config.lookback_window_weight        = 5.0
+      feed_config.organization_follow_weight    = 6.0
+      feed_config.precomputed_selections_weight = 7.0
+      feed_config.recency_weight                = 8.0
+      feed_config.score_weight                  = 9.0
+      feed_config.tag_follow_weight             = 10.0
+      feed_config.user_follow_weight            = 11.0
+      feed_config.randomness_weight             = 12.0
+      feed_config.recent_article_suppression_rate = 13.0
+      feed_config.published_today_weight         = 14.0
+      feed_config.featured_weight                = 15.0
+      feed_config.clickbait_score_weight         = 16.0
+      feed_config.compellingness_score_weight    = 17.0
+      feed_config.language_match_weight          = 18.0
+      feed_config.recent_tag_count_min           = 2
+      feed_config.recent_tag_count_max           = 5
+      feed_config.all_time_tag_count_min         = 3
+      feed_config.all_time_tag_count_max         = 8
 
-    # Additional weight attributes
-    feed_config.randomness_weight              = 12.0
-    feed_config.recent_article_suppression_rate = 13.0
-    feed_config.published_today_weight         = 14.0
-    feed_config.featured_weight                = 15.0
-    feed_config.clickbait_score_weight         = 16.0
-    feed_config.compellingness_score_weight    = 17.0
-    feed_config.language_match_weight          = 18.0
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(1.1)
+      allow(feed_config).to receive(:rand).with(-1..1).and_return(1)
+    end
 
-    # New tag count boundary attributes
-    feed_config.recent_tag_count_min    = 2
-    feed_config.recent_tag_count_max    = 5
-    feed_config.all_time_tag_count_min  = 3
-    feed_config.all_time_tag_count_max  = 8
+    it "creates a persisted clone with adjusted weights" do
+      expect { feed_config.create_slightly_modified_clone! }
+        .to change { FeedConfig.count }.by(1)
 
-    # Stub rand for deterministic outputs
-    allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(1.1)
-    allow(feed_config).to receive(:rand).with(-1..1).and_return(1)
-  end
+      clone = FeedConfig.last
 
-  it "creates a persisted clone with adjusted weights" do
-    expect { feed_config.create_slightly_modified_clone! }
-      .to change { FeedConfig.count }.by(1)
+      expect(clone.persisted?).to be true
+      expect(clone.feed_success_weight).to eq(1.0 * 1.1)
+      expect(clone.comment_score_weight).to eq(2.0 * 1.1)
+      expect(clone.comment_recency_weight).to eq(3.0 * 1.1)
+      expect(clone.label_match_weight).to eq(4.0 * 1.1)
+      expect(clone.lookback_window_weight).to eq(5.0 * 1.1)
+      expect(clone.organization_follow_weight).to eq(6.0 * 1.1)
+      expect(clone.precomputed_selections_weight).to eq(7.0 * 1.1)
+      expect(clone.recency_weight).to eq(8.0 * 1.1)
+      expect(clone.score_weight).to eq(9.0 * 1.1)
+      expect(clone.tag_follow_weight).to eq(10.0 * 1.1)
+      expect(clone.user_follow_weight).to eq(11.0 * 1.1)
+      expect(clone.randomness_weight).to eq(12.0 * 1.1)
+      expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
+      expect(clone.published_today_weight).to eq(14.0 * 1.1)
+      expect(clone.featured_weight).to eq(15.0 * 1.1)
+      expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
+      expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
+      expect(clone.language_match_weight).to eq(18.0 * 1.1)
+    end
 
-    clone = FeedConfig.last
-
-    expect(clone.persisted?).to be true
-    expect(clone.feed_success_weight).to eq(1.0 * 1.1)
-    expect(clone.comment_score_weight).to eq(2.0 * 1.1)
-    expect(clone.comment_recency_weight).to eq(3.0 * 1.1)
-    expect(clone.label_match_weight).to eq(4.0 * 1.1)
-    expect(clone.lookback_window_weight).to eq(5.0 * 1.1)
-    expect(clone.organization_follow_weight).to eq(6.0 * 1.1)
-    expect(clone.precomputed_selections_weight).to eq(7.0 * 1.1)
-    expect(clone.recency_weight).to eq(8.0 * 1.1)
-    expect(clone.score_weight).to eq(9.0 * 1.1)
-    expect(clone.tag_follow_weight).to eq(10.0 * 1.1)
-    expect(clone.user_follow_weight).to eq(11.0 * 1.1)
-    expect(clone.randomness_weight).to eq(12.0 * 1.1)
-    expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
-    expect(clone.published_today_weight).to eq(14.0 * 1.1)
-    expect(clone.featured_weight).to eq(15.0 * 1.1)
-    expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
-    expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
-    expect(clone.language_match_weight).to eq(18.0 * 1.1)
-  end
-
-  it "does not modify the original feed_config" do
-    original_attrs = feed_config.reload.attributes.slice(
-      "feed_success_weight",
-      "comment_score_weight",
-      "comment_recency_weight",
-      "label_match_weight",
-      "lookback_window_weight",
-      "organization_follow_weight",
-      "precomputed_selections_weight",
-      "recency_weight",
-      "score_weight",
-      "tag_follow_weight",
-      "user_follow_weight",
-      "randomness_weight",
+    it "does not modify the original feed_config" do
+      original_attrs = feed_config.reload.attributes.slice(
+        "feed_success_weight",
+        "comment_score_weight",
+        "comment_recency_weight",
+        "label_match_weight",
+        "lookback_window_weight",
+        "organization_follow_weight",
+        "precomputed_selections_weight",
+        "recency_weight",
+        "score_weight",
+        "tag_follow_weight",
+        "user_follow_weight",
+        "randomness_weight",
         "recent_article_suppression_rate",
         "published_today_weight",
         "featured_weight",
@@ -346,13 +341,9 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
-      # recent_tag_count_min: 2 + 1 = 3
       expect(clone.recent_tag_count_min).to eq(3)
-      # recent_tag_count_max: 5 + 1 = 6
       expect(clone.recent_tag_count_max).to eq(6)
-      # all_time_tag_count_min: 3 + 1 = 4
       expect(clone.all_time_tag_count_min).to eq(4)
-      # all_time_tag_count_max: 8 + 1 = 9
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
     end

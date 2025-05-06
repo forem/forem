@@ -38,7 +38,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if tag_follow_weight.positive? && tag_names.present?
-      tag_condition = "CASE WHEN " + tag_names.first(12).map { |tag|
+      tag_condition = "CASE WHEN " + tag_names.first(24).map { |tag|
         "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
       }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
       terms << "(#{tag_condition})"
@@ -134,10 +134,12 @@ class FeedConfig < ApplicationRecord
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
-    clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max
-    clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min
-    clone.all_time_tag_count_min = [all_time_tag_count_min + rand(-1..1), 0].max
-    clone.all_time_tag_count_max = [all_time_tag_count_max + rand(-1..1), 12].min
+    clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max if recent_tag_count_min.positive?
+    clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min if recent_tag_count_max.positive?
+    clone.recent_tag_count_max = clone.recent_tag_count_min if clone.recent_tag_count_max < clone.recent_tag_count_min
+    clone.all_time_tag_count_min = [all_time_tag_count_min + rand(-1..1), 0].max if all_time_tag_count_min.positive?
+    clone.all_time_tag_count_max = [all_time_tag_count_max + rand(-1..1), 12].min if all_time_tag_count_max.positive?
+    clone.all_time_tag_count_max = clone.all_time_tag_count_min if clone.all_time_tag_count_max < clone.all_time_tag_count_min
     clone.feed_impressions_count = 0
     clone.save
   end
