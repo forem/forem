@@ -27,12 +27,16 @@ class ApplicationMetalController < ActionController::Metal
 
   def current_user_by_token
     auth_header = request.headers["Authorization"]
-    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+    return unless auth_header || params[:jwt]
 
-    token = auth_header.split(" ").last
-    payload = decode_auth_token(token)
+    if auth_header.present? && auth_header.start_with?("Bearer ")
+      token = auth_header.split(" ").last
+      payload = decode_auth_token(token)
+    elsif params[:jwt].present?
+      token = params[:jwt]
+      payload = decode_auth_token(token)
+    end
     return unless payload && payload["user_id"]
-
 
     user = User.find_by(id: payload["user_id"])
     if user
@@ -43,5 +47,13 @@ class ApplicationMetalController < ActionController::Metal
 
   def token_authenticated?
     @token_authenticated
+  end
+
+  def decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue
+    nil
   end
 end
