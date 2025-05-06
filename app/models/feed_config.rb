@@ -134,6 +134,10 @@ class FeedConfig < ApplicationRecord
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
+    clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max
+    clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min
+    clone.all_time_tag_count_min = [all_time_tag_count_min + rand(-1..1), 0].max
+    clone.all_time_tag_count_max = [all_time_tag_count_max + rand(-1..1), 12].min
     clone.feed_impressions_count = 0
     clone.save
   end
