@@ -32,7 +32,7 @@ module Authentication
 
       def existing_user_data
         {
-          facebook_username: @info.name
+          facebook_username: user_nickname
         }
       end
 
