@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_30_130048) do
+ActiveRecord::Schema[7.0].define(version: 2025_05_06_182913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -557,6 +557,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_30_130048) do
   end
 
   create_table "feed_configs", force: :cascade do |t|
+    t.integer "all_time_tag_count_max", default: 0
+    t.integer "all_time_tag_count_min", default: 0
     t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
@@ -576,6 +578,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_30_130048) do
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
     t.float "recent_subforem_weight", default: 0.0, null: false
+    t.integer "recent_tag_count_max", default: 0
+    t.integer "recent_tag_count_min", default: 0
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
