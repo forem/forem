@@ -7,13 +7,13 @@ class UserActivity < ApplicationRecord
   end
 
   def set_activity
-    recently_viewed_store = User.first.page_views.order(created_at: :desc).limit(100).pluck(:article_id, :created_at, :time_tracked_in_seconds)
+    recently_viewed_store = user.page_views.order(created_at: :desc).limit(100).pluck(:article_id, :created_at, :time_tracked_in_seconds)
     # Now let's get all the articles where time_tracked_in_seconds for the page view from recent store is greater than 29
     recent_articles = Article.where(id: recently_viewed_store.select { |article_id, created_at, time_tracked_in_seconds| time_tracked_in_seconds > 29 }.map(&:first))
 
     self.last_activity_at = Time.current
     self.recently_viewed_articles = recently_viewed_store
-    self.recent_tags = recent_articles.map(&:cached_tag_list).flatten.uniq.compact
+    self.recent_tags = recent_articles.map { |a| a.decorate.cached_tag_list_array }.flatten.uniq.compact
     self.recent_labels = recent_articles.map(&:cached_label_list).flatten.uniq.compact.first(5)
     self.recent_organizations = recent_articles.map(&:organization_id).uniq.compact
     self.recent_users = recent_articles.map(&:user_id).uniq.compact
