@@ -197,7 +197,7 @@ class ApplicationController < ActionController::Base
 
   def respond_with_request_for_authentication
     respond_to do |format|
-      format.html { redirect_to sign_up_path }
+      format.html { redirect_to new_magic_link_path }
       format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
@@ -219,6 +219,11 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
+
+      if URI.parse(path).path == "/signout_confirm"
+        path = root_path(signin: "true")
+      end
+
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)

@@ -101,6 +101,22 @@
         data-scheduled="<%= @article.scheduled? %>"
         <%= @article.language? ? "lang=#{@article.language}" : " " %>
         <%= @article.pinned? ? "data-pinned" : " " %>>
+        <script>
+          try {
+            if(localStorage) {
+              let currentUser = localStorage.getItem('current_user');
+
+              if (currentUser) {
+                currentUser = JSON.parse(currentUser);
+                if (currentUser.id === <%= @article.user_id %>) {
+                  document.getElementById('article-show-container').classList.add('current-user-is-article-author');
+                }
+              }
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        </script>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>

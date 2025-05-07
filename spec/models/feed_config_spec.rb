@@ -1,7 +1,20 @@
 require "rails_helper"
 
 RSpec.describe FeedConfig, type: :model do
-  subject(:feed_config) { described_class.create! }  # Ensure it is persisted
+  subject(:feed_config) { described_class.create! }
+
+  let(:cached_followed_tag_names) { ["tech", "ruby"] }
+
+  let(:activity_store) do
+    double("ActivityStore",
+      recently_viewed_articles: [],
+      recent_users: [],
+      recent_organizations: [],
+      relevant_tags: ["tech", "ruby"],
+      recent_labels: ["label1"],
+      recent_subforems: [1]
+    )
+  end
 
   let(:user) do
     double("User",
@@ -11,21 +24,61 @@ RSpec.describe FeedConfig, type: :model do
       cached_followed_tag_names: ["tech", "ruby"],
       languages: double("Languages", pluck: ["en"]),
       page_views: double("PageViews", order: double("Ordered", second: double("PageView", created_at: Time.current - 1.day))),
-      user_activity:
-        double("UserActivity",
-          recent_labels: ["label1"],
-          recent_users: [],
-          recent_organizations: [],
-          relevant_tags: ["ruby"],
-          recently_viewed_articles: [],)
+      user_activity: activity_store
     )
   end
 
   before do
-    allow(RecommendedArticlesList).to receive_message_chain(:where, :where, :last, :article_ids).and_return([])
+    allow(RecommendedArticlesList)
+      .to receive_message_chain(:where, :where, :last, :article_ids)
+      .and_return([])
   end
 
   describe "#score_sql" do
+    context "when tag_follow_weight is positive and tag count configs present" do
+      before do
+        feed_config.tag_follow_weight      = 6.0
+        feed_config.recent_tag_count_min   = 2
+        feed_config.recent_tag_count_max   = 2
+        feed_config.all_time_tag_count_min = 3
+        feed_config.all_time_tag_count_max = 3
+        allow(activity_store)
+          .to receive(:relevant_tags)
+          .with(2, 3)
+          .and_return(["tagX", "tagY"])
+      end
+
+      it "invokes relevant_tags with configured counts and includes returned tags" do
+        sql = feed_config.score_sql(user)
+        expect(activity_store).to have_received(:relevant_tags).with(2, 3)
+        expect(sql).to include("articles.cached_tag_list ~ '[[:<:]]tagX[[:>:]]'")
+        expect(sql).to include("articles.cached_tag_list ~ '[[:<:]]tagY[[:>:]]'")
+      end
+    end
+
+    context "when tag_follow_weight is positive but no tag count configs" do
+      before do
+        feed_config.tag_follow_weight      = 6.0
+        feed_config.recent_tag_count_min   = 0
+        feed_config.recent_tag_count_max   = 0
+        feed_config.all_time_tag_count_min = 0
+        feed_config.all_time_tag_count_max = 0
+        # Stub relevant_tags to return nil so fallback is used
+        allow(activity_store)
+          .to receive(:relevant_tags)
+          .with(5, 5)
+          .and_return(nil)
+      end
+
+      it "falls back to user's cached_followed_tag_names" do
+        sql = feed_config.score_sql(user)
+        expect(activity_store).to have_received(:relevant_tags).with(5, 5)
+        cached_followed_tag_names.each do |tag|
+          expect(sql).to include("articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'")
+        end
+      end
+    end
+
     context "when all base weights are positive" do
       before do
         feed_config.feed_success_weight           = 1.0
@@ -49,7 +102,6 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.organization_id IN")
         expect(sql).to include("CASE WHEN articles.user_id IN")
         expect(sql).to include("cached_tag_list")
-        # Expect the label match condition to reference cached_label_list.
         expect(sql).to include("articles.cached_label_list")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
@@ -80,7 +132,6 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("organization_id IN")
         expect(sql).to include("CASE WHEN articles.user_id IN")
         expect(sql).not_to include("cached_tag_list")
-        # Verify that the label condition is not present when label_match_weight is zero.
         expect(sql).not_to include("cached_label_list")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).not_to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
@@ -110,21 +161,20 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     context "when additional weights are positive" do
-      let(:recently_viewed_articles) { [[101, Time.current - 1.hour, 30], [102, Time.current - 2.hours, 40]] }
+      let(:recently_viewed_articles) { [[101, Time.current - 1.hour], [102, Time.current - 2.hours]] }
       let(:activity_store) do
         double("ActivityStore",
           recently_viewed_articles: recently_viewed_articles,
           recent_users: [],
           recent_organizations: [],
           relevant_tags: [],
-          recent_labels: []
+          recent_labels: [],
+          recent_subforems: [1],
         )
       end
 
       before do
-        # Provide a user_activity that includes recently_viewed_articles.
         allow(user).to receive(:user_activity).and_return(activity_store)
-        # Set additional weights.
         feed_config.recent_article_suppression_rate = 2.0
         feed_config.published_today_weight         = 3.0
         feed_config.featured_weight                = 4.0
@@ -132,6 +182,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.compellingness_score_weight    = 6.0
         feed_config.language_match_weight          = 7.0
         feed_config.randomness_weight              = 8.0
+        feed_config.recent_subforem_weight         = 0.5
       end
 
       it "includes the suppression for recently viewed articles" do
@@ -171,6 +222,31 @@ RSpec.describe FeedConfig, type: :model do
         sql = feed_config.score_sql(user)
         expect(sql).to include("RANDOM() * 8.0")
       end
+
+      it "includes the recent subforem weight if request is root" do
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: root_subforem.id,
+          default_subforem_id: root_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.subforem_id = ANY(ARRAY[1]::bigint[])")
+      end
+
+      it "does not include recent subforem weight if request is not root" do
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        default_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: subforem.id,
+          default_subforem_id: default_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("CASE WHEN articles.subforem_id = ANY(ARRAY[1]::bigint[])")
+      end
     end
   end
 
@@ -187,17 +263,20 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.score_weight                  = 9.0
       feed_config.tag_follow_weight             = 10.0
       feed_config.user_follow_weight            = 11.0
-
-      feed_config.randomness_weight              = 12.0
+      feed_config.randomness_weight             = 12.0
       feed_config.recent_article_suppression_rate = 13.0
       feed_config.published_today_weight         = 14.0
       feed_config.featured_weight                = 15.0
       feed_config.clickbait_score_weight         = 16.0
       feed_config.compellingness_score_weight    = 17.0
       feed_config.language_match_weight          = 18.0
+      feed_config.recent_tag_count_min           = 2
+      feed_config.recent_tag_count_max           = 5
+      feed_config.all_time_tag_count_min         = 3
+      feed_config.all_time_tag_count_max         = 8
 
-      # Stub rand to return 1.1 for a deterministic 10% increase.
-      allow(feed_config).to receive(:rand).and_return(1.1)
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(1.1)
+      allow(feed_config).to receive(:rand).with(-1..1).and_return(1)
     end
 
     it "creates a persisted clone with adjusted weights" do
@@ -228,19 +307,45 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     it "does not modify the original feed_config" do
-      original_attributes = feed_config.reload.attributes.slice(
-        "feed_success_weight", "comment_score_weight", "comment_recency_weight",
-        "label_match_weight", "lookback_window_weight", "organization_follow_weight",
-        "precomputed_selections_weight", "recency_weight", "score_weight",
-        "tag_follow_weight", "user_follow_weight", "randomness_weight",
-        "recent_article_suppression_rate", "published_today_weight", "featured_weight",
-        "clickbait_score_weight", "compellingness_score_weight", "language_match_weight"
+      original_attrs = feed_config.reload.attributes.slice(
+        "feed_success_weight",
+        "comment_score_weight",
+        "comment_recency_weight",
+        "label_match_weight",
+        "lookback_window_weight",
+        "organization_follow_weight",
+        "precomputed_selections_weight",
+        "recency_weight",
+        "score_weight",
+        "tag_follow_weight",
+        "user_follow_weight",
+        "randomness_weight",
+        "recent_article_suppression_rate",
+        "published_today_weight",
+        "featured_weight",
+        "clickbait_score_weight",
+        "compellingness_score_weight",
+        "language_match_weight",
+        "recent_tag_count_min",
+        "recent_tag_count_max",
+        "all_time_tag_count_min",
+        "all_time_tag_count_max"
       )
 
       feed_config.create_slightly_modified_clone!
 
-      # Reload the original feed_config to verify it hasn't changed.
-      expect(feed_config.reload.attributes.slice(*original_attributes.keys)).to eq(original_attributes)
+      expect(feed_config.reload.attributes.slice(*original_attrs.keys)).to eq(original_attrs)
+    end
+
+    it "adjusts tag count ranges with +/- offsets and resets impressions" do
+      feed_config.create_slightly_modified_clone!
+      clone = FeedConfig.last
+
+      expect(clone.recent_tag_count_min).to eq(3)
+      expect(clone.recent_tag_count_max).to eq(6)
+      expect(clone.all_time_tag_count_min).to eq(4)
+      expect(clone.all_time_tag_count_max).to eq(9)
+      expect(clone.feed_impressions_count).to eq(0)
     end
   end
 end

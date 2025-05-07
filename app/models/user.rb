@@ -389,7 +389,7 @@ class User < ApplicationRecord
   end
 
   def cached_reading_list_article_ids
-    Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
+    Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}_#{RequestStore.store[:subforem_id]}") do
       readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
       published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
       readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
@@ -648,7 +648,8 @@ class User < ApplicationRecord
 
   def send_magic_link!
     # Generate random string
-    self.sign_in_token = SecureRandom.hex(20)
+    number = rand(10**8)
+    self.sign_in_token = number.to_s.rjust(8, "0")
     self.sign_in_token_sent_at = Time.now.utc
     if self.save
       VerificationMailer.with(user_id: id).magic_link.deliver_now
