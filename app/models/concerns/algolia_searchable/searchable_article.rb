@@ -28,7 +28,7 @@ module AlgoliaSearchable
         add_replica("Article_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
 
         attributesForFaceting [
-          "searchable(subforem_id)"
+          "filterOnly(subforem_id)"
         ]
       end
     end
