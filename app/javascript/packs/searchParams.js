@@ -181,6 +181,13 @@ function search(query, filters, sortBy, sortDirection) {
     }
   });
 
+  // if search is empty
+  if ((getQueryParams(document.location.search).q === '' || getQueryParams(document.location.search).q === undefined) && searchParams.toString().includes('class_name=Article')) {
+    document.getElementById('substories').innerHTML =
+    '<div class="p-9 align-center crayons-card bold">Let\'s kick off a search!</div>';
+    return;
+  }
+
   // Run Algolia code only if the ID is live.
   if (document.body.dataset.algoliaId?.length > 0 && !searchParams.toString().includes('MY_POSTS') && !algoliaSearchCompleted) {
     algoliaSearch(searchParams.toString());
@@ -222,7 +229,7 @@ function search(query, filters, sortBy, sortDirection) {
 
 function algoliaSearch(searchParams) {
   const paramsObj = getQueryParams(searchParams);
-  const env = document.querySelector('meta[name="environment"]').content;
+  const env = 'production' //document.querySelector('meta[name="environment"]').content;
   const {algoliaId, algoliaSearchKey} = document.body.dataset;
   const client = algoliasearch(algoliaId, algoliaSearchKey);
   const indexName = paramsObj.sort_by ? `${paramsObj.class_name || 'Article'}_timestamp_${paramsObj.sort_direction}_${env}` : `${paramsObj.class_name || 'Article'}_${env}`;
