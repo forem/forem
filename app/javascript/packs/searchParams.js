@@ -185,6 +185,9 @@ function search(query, filters, sortBy, sortDirection) {
   if (document.body.dataset.algoliaId?.length > 0 && !searchParams.toString().includes('MY_POSTS') && !algoliaSearchCompleted) {
     algoliaSearch(searchParams.toString());
     algoliaSearchCompleted = true;
+    setTimeout(function() {
+      algoliaSearchCompleted = false;
+    }, 500);
     return;
   }
 
