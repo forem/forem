@@ -21,6 +21,7 @@ export const Article = ({
   isFeatured,
   isBookmarked,
   bookmarkClick,
+  isRoot,
   feedStyle,
   pinned,
   saveable,
@@ -44,6 +45,9 @@ export const Article = ({
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
     !article.cloudinary_video_url;
+
+  const parsedUrl = new URL(article.url);
+  const domain = parsedUrl.hostname.replace(".forem.com", "").replace(".to", "");
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
@@ -133,7 +137,7 @@ export const Article = ({
 
               <div className="crayons-story__save">
                 <ReadingTime readingTime={article.reading_time} typeOf={article.type_of} />
-
+                { isRoot && (<small class="crayons-story__tertiary mr-2 fs-xs fw-bold">{domain}</small>)}
                 <SaveButton
                   article={article}
                   isBookmarked={isBookmarked}
@@ -160,6 +164,7 @@ export const Article = ({
 Article.defaultProps = {
   isBookmarked: false,
   isFeatured: false,
+  isRoot: false,
   feedStyle: 'basic',
   saveable: true,
 };
@@ -168,6 +173,7 @@ Article.propTypes = {
   article: articlePropTypes.isRequired,
   isBookmarked: PropTypes.bool,
   isFeatured: PropTypes.bool,
+  isRoot: PropTypes.bool,
   feedStyle: PropTypes.string,
   bookmarkClick: PropTypes.func.isRequired,
   pinned: PropTypes.bool,
