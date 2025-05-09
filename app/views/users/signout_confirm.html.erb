@@ -4,10 +4,21 @@
   <h1 class="fs-2xl mb-2">
   <%= t("views.users.signout.heading") %>
   </h1>
-  <%= form_tag destroy_user_session_path, method: :delete do %>
-    <button class="crayons-btn crayons-btn--l">
+ <%= form_tag destroy_user_session_path, method: :delete, id: "signout-form" do %>
+    <button class="crayons-btn crayons-btn--l" onclick="clearLocalStorageBeforeSignout(event)">
       <%= t("views.users.signout.yes") %>
     </button>
   <% end %>
 
 </div>
+
+<script>
+function clearLocalStorageBeforeSignout(event) {
+  event.preventDefault();
+  
+  sessionStorage.setItem('isSigningOut', 'true');
+
+  localStorage.clear();
+  document.getElementById('signout-form').submit();
+}
+</script>
