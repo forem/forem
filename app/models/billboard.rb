@@ -101,7 +101,7 @@ class Billboard < ApplicationRecord
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
-                       role_names: nil)
+                       role_names: nil, prefer_paired_with_billboard_id: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -120,6 +120,12 @@ class Billboard < ApplicationRecord
       user_agent: user_agent,
       role_names: role_names,
     )
+
+    # if prefer_paired_with_billboard_id then return 
+    if prefer_paired_with_billboard_id.present?
+      best_paired_billboard = billboards_for_display.find { |bb| bb.id == prefer_paired_with_billboard_id }
+      return best_paired_billboard if best_paired_billboard.present?
+    end
 
     case rand(99) # output integer from 0-99
     when (0..random_range_max(area)) # smallest range, 5%

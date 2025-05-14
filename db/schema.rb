@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_05_06_182913) do
+ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -505,6 +505,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_06_182913) do
     t.bigint "organization_id"
     t.bigint "page_id"
     t.string "placement_area"
+    t.bigint "prefer_paired_with_billboard_id"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
     t.text "processed_html"
@@ -525,6 +526,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_06_182913) do
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
     t.index ["target_role_names"], name: "index_display_ads_on_target_role_names", using: :gin
