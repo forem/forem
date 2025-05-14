@@ -29,7 +29,8 @@
     <% if is_root_subforem? %>
       <% Subforem.where(discoverable: true, root: false).each do |subforem| %>
         <% order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC") %>
-        <% articles = Article.where(subforem_id: subforem.id)
+        <% articles = Article.where(subforem_id: subforem.id).published
+          .where("comments_count > ?", 0)
           .with_at_least_home_feed_minimum_score
           .where("published_at > ?", 1.week.ago)
           .limit(5)
