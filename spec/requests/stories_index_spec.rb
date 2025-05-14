@@ -35,6 +35,24 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("head content")
     end
 
+    it "redirects unfound subforem to root if ENV var set" do
+      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      get "http://not-found.example.com"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://example.com/")
+    end
+
+    it "does not redirect found subforem to root if ENV var set" do
+      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      get "http://found.example.com"
+      expect(response).to have_http_status(:ok)
+      expect(response).not_to redirect_to("http://example.com/")
+    end
+
     it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
       allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return("#000000")
       get "/"
