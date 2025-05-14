@@ -45,12 +45,13 @@ RSpec.describe "StoriesIndex" do
     end
 
     it "does not redirect found subforem to root if ENV var set" do
-      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
       allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
       allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
       get "http://found.example.com"
       expect(response).to have_http_status(:ok)
       expect(response).not_to redirect_to("http://example.com/")
+      ENV["REDIRECT_WWW_TO_ROOT"] = nil
     end
 
     it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
