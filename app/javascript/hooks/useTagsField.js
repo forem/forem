@@ -13,6 +13,7 @@ import { fetchSearch } from '@utilities/search';
  */
 export const useTagsField = ({ defaultValue, onInput }) => {
   const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
+  const subforemId = document.body.dataset.subforemId;
   let algoliaIndex;
   if (!useFetchSearch) {
     const env = document.querySelector('meta[name="environment"]')?.content;
@@ -80,7 +81,7 @@ export const useTagsField = ({ defaultValue, onInput }) => {
         (response) => response.result,
       ) : 
       algoliaIndex.search(searchTerm, {
-        facetFilters: ["supported:true"]
+        facetFilters: subforemId ? [`subforem_ids:${subforemId}`] : ['supported:true'],
       }).then(
         (response) => response.hits,
       )

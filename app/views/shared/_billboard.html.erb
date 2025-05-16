@@ -83,6 +83,7 @@
     data-context-type="<%= data_context_type %>"
     data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
+    data-browser-context="<%= billboard.browser_context %>"
     <% if billboard.placement_area == "post_fixed_bottom" && @article.present? %>
       data-article-id="<%= @article&.id %>"
     <% else %>

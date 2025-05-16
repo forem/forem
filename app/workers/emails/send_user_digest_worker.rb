@@ -18,6 +18,7 @@ module Emails
                                               user_signed_in: true)
       second_billboard = Billboard.for_display(area: "digest_second",
                                                user_id: user.id,
+                                               prefer_paired_with_billboard_id: first_billboard&.id,
                                                user_tags: tags,
                                                user_signed_in: true)
       begin

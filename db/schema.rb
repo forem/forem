@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
+ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -505,6 +505,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
     t.bigint "organization_id"
     t.bigint "page_id"
     t.string "placement_area"
+    t.bigint "prefer_paired_with_billboard_id"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
     t.text "processed_html"
@@ -525,6 +526,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
     t.index ["target_role_names"], name: "index_display_ads_on_target_role_names", using: :gin
@@ -557,6 +559,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
   end
 
   create_table "feed_configs", force: :cascade do |t|
+    t.integer "all_time_tag_count_max", default: 0
+    t.integer "all_time_tag_count_min", default: 0
     t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
@@ -575,6 +579,9 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "recent_subforem_weight", default: 0.0, null: false
+    t.integer "recent_tag_count_max", default: 0
+    t.integer "recent_tag_count_min", default: 0
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1338,6 +1345,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_04_25_122448) do
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []
     t.jsonb "recent_organizations", default: []
+    t.jsonb "recent_subforems", default: []
     t.jsonb "recent_tags", default: []
     t.jsonb "recent_users", default: []
     t.jsonb "recently_viewed_articles", default: []

@@ -70,30 +70,7 @@ class TagsController < ApplicationController
   private
 
   def tags
-    sub_id = RequestStore.store[:subforem_id].to_i
-
-    if sub_id.positive?
-      boost_sql = <<~SQL.squish
-        tags.hotness_score
-        + CASE
-            WHEN EXISTS (
-              SELECT 1
-              FROM tag_subforem_relationships tsr
-              WHERE tsr.tag_id      = tags.id
-                AND tsr.subforem_id = #{sub_id}
-            ) THEN 1000
-            ELSE 0
-          END
-        DESC
-      SQL
-
-      @tags ||= Tag
-        .direct
-        .order(Arel.sql(boost_sql))
-        .limit(100)
-    else
-      @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
-    end
+    @tags ||= Tag.from_subforem.direct.order("hotness_score DESC").limit(100)
   end
 
   def convert_empty_string_to_nil
