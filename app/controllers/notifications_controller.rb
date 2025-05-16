@@ -3,7 +3,9 @@ class NotificationsController < ApplicationController
   # rubocop:disable Metrics/PerceivedComplexity
   # No authorization required because we provide authentication on notifications page
   def index
-    return unless user_signed_in?
+    unless user_signed_in?
+      redirect_to new_magic_link_path and return
+    end
 
     @user = user_to_view
 

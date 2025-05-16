@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe "Sidebars" do
   describe "GET /sidebars/home" do
     it "includes relevant parts" do
-      listing = create(:listing, published: true)
       create(:tag, name: "rubymagoo")
       allow(Settings::General).to receive(:sidebar_tags).and_return(["rubymagoo"])
       get "/sidebars/home"

@@ -6,7 +6,9 @@ class FeedConfig < ApplicationRecord
 
     user_follow_ids = user.cached_following_users_ids + (activity_store&.recent_users&.compact || [])
     organization_follow_ids = user.cached_following_organizations_ids + (activity_store&.recent_organizations&.compact || [])
-    tag_names = activity_store&.relevant_tags || user.cached_followed_tag_names
+    recent_tags_count = rand(recent_tag_count_min..recent_tag_count_max) if recent_tag_count_min.positive? && recent_tag_count_max.positive?
+    all_time_tags_count = rand(all_time_tag_count_min..all_time_tag_count_max) if all_time_tag_count_min.positive? && all_time_tag_count_max.positive?
+    tag_names = activity_store&.relevant_tags(recent_tags_count || 5, all_time_tags_count || 5) || user.cached_followed_tag_names
     label_names = activity_store&.recent_labels || []
 
     activity_tracked_pageview_time = activity_store&.recently_viewed_articles&.second
@@ -36,7 +38,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if tag_follow_weight.positive? && tag_names.present?
-      tag_condition = "CASE WHEN " + tag_names.first(12).map { |tag|
+      tag_condition = "CASE WHEN " + tag_names.first(24).map { |tag|
         "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
       }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
       terms << "(#{tag_condition})"
@@ -73,6 +75,30 @@ class FeedConfig < ApplicationRecord
       terms << "(CASE WHEN articles.published_at >= '#{published_since}' THEN #{published_today_weight} ELSE 0 END)"
     end
 
+    if recent_subforem_weight.positive? &&
+      activity_store&.recent_subforems&.any? &&
+      RequestStore.store[:root_subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+      ids     = activity_store.recent_subforems.compact
+      arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
+    
+      terms << <<~SQL.squish
+        (
+          CASE
+            WHEN articles.subforem_id = ANY(#{arr_sql})
+            THEN #{recent_subforem_weight}
+                 * COALESCE(
+                     cardinality(
+                       array_positions(#{arr_sql}, articles.subforem_id)
+                     ),
+                     0
+                   )
+            ELSE 0
+          END
+        )
+      SQL
+    end
+
     # Additional weights
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
@@ -107,6 +133,13 @@ class FeedConfig < ApplicationRecord
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
+    clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
+    clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max if recent_tag_count_min.positive?
+    clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min if recent_tag_count_max.positive?
+    clone.recent_tag_count_max = clone.recent_tag_count_min if clone.recent_tag_count_max < clone.recent_tag_count_min
+    clone.all_time_tag_count_min = [all_time_tag_count_min + rand(-1..1), 0].max if all_time_tag_count_min.positive?
+    clone.all_time_tag_count_max = [all_time_tag_count_max + rand(-1..1), 12].min if all_time_tag_count_max.positive?
+    clone.all_time_tag_count_max = clone.all_time_tag_count_min if clone.all_time_tag_count_max < clone.all_time_tag_count_min
     clone.feed_impressions_count = 0
     clone.save
   end

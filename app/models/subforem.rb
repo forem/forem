@@ -2,6 +2,7 @@ class Subforem < ApplicationRecord
   has_many :articles, dependent: :nullify
   has_many :navigation_links, dependent: :nullify
   has_many :pages, dependent: :nullify
+  has_many :tag_relationships, class_name: "TagSubforemRelationship", dependent: :destroy
 
   validates :domain, presence: true, uniqueness: true
   

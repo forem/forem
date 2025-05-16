@@ -2,9 +2,13 @@
   <div class="crayons-layout crayons-layout--limited-l" style="min-height:60vh">
     <div class="crayons-card text-padding fs-xl" style="width:700px;max-width:100%;margin: 0 auto;padding-top: 7vh; border:8px solid <%= Settings::UserExperience.primary_brand_color_hex %>">
       
-      <h1 class="py-4">Check your email! 📨</h1>
-      
-      <p class="py-4">You will receive an <strong>email code</strong> for signing in.</p>
+      <% if params[:state] == "code" %>
+        <h1 class="py-4">Enter the code you received in your email! 📨</h1>
+      <% else %>
+        <h1 class="py-4">Check your email! 📨</h1>
+        
+        <p class="py-4">You will receive an <strong>email code</strong> for signing in.</p>
+      <% end %>
       
       <form action="/magic_links/show_placeholder" method="GET" id="code-entry-form">
         <div class="crayons-field mb-4">

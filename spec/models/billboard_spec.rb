@@ -804,4 +804,54 @@ RSpec.describe Billboard do
       end
     end
   end
+
+  describe ".for_display" do
+    let!(:paired_bb) do
+      create(
+        :billboard,
+        placement_area: "digest_second",
+        published: true,
+        approved: true
+      )
+    end
+
+    let!(:other_bb) do
+      create(
+        :billboard,
+        placement_area: "digest_second",
+        published: true,
+        approved: true
+      )
+    end
+
+    context "when prefer_paired_with_billboard_id is provided" do
+      it "returns the billboard matching that ID" do
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          prefer_paired_with_billboard_id: paired_bb.id,
+          user_tags: nil,
+          user_id: nil
+        )
+
+        expect(result).to eq(paired_bb)
+      end
+
+      it "falls back to normal selection if the paired ID isn't in the available set" do
+        # pick some ID that doesn't exist in billboards_for_display
+        missing_id = other_bb.id + paired_bb.id + 1
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          prefer_paired_with_billboard_id: missing_id,
+          user_tags: nil,
+          user_id: nil
+        )
+
+        # since only paired_bb and other_bb exist for this area, it must return one of them
+        expect([paired_bb, other_bb]).to include(result)
+      end
+    end
+  end
 end

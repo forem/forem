@@ -64,10 +64,14 @@ body {
           <%= f.submit "Send me the code",
                 class: "crayons-btn py-6 fs-xl fw-bold" %>
         </div>
+        <div class="mt-4 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
+          <%= t("devise.registrations.agreement.sign_up_html", privacy_path: privacy_path, terms_path: terms_path, code_of_conduct_path: code_of_conduct_path) %>
+        </div>
       <% end %>
 
       <!-- Simple alternate links -->
       <div class="alternate-links pt-8 pb-8">
+        <%= link_to "Already have a code?", new_magic_link_path(state: "code"), class: "crayons-link fs-md my-2 block" %>
         <%= link_to "More ways to create your account", "/enter?state=new-user", class: "crayons-link fs-md my-2 block" %>
         <%= link_to "More ways to sign in", "/enter", class: "crayons-link fs-md my-2 block" %>
       </div>

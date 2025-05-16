@@ -53,7 +53,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at", "color",
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id",
-                          "exclude_role_names", "target_role_names", "include_subforem_ids",
+                          "exclude_role_names", "target_role_names", "include_subforem_ids", "prefer_paired_with_billboard_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
@@ -73,7 +73,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at", "color",
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
-                          "audience_segment_type", "audience_segment_id", "page_id",
+                          "audience_segment_type", "audience_segment_id", "page_id", "prefer_paired_with_billboard_id",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
@@ -143,7 +143,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "special_behavior",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
-                          "priority", "weight", "target_geolocations")
+                          "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id")
       end
 
       it "also accepts target geolocations as an array" do

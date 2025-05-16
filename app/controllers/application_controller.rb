@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :redirect_www_to_root
+  before_action :redirect_www_and_unregistred_subforems_to_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -219,6 +219,11 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
+
+      if URI.parse(path).path == "/signout_confirm"
+        path = root_path(signin: "true")
+      end
+
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
@@ -403,12 +408,15 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def redirect_www_to_root
+  def redirect_www_and_unregistred_subforems_to_root
     # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
     return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
 
     if request.host.start_with?("www.")
       new_host = request.host.sub(/^www\./i, "")
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+    elsif request.host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") && RequestStore.store[:subforem_id].blank?
+      new_host = RequestStore.store[:root_subforem_domain]
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
     end
   end
