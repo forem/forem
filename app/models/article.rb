@@ -865,7 +865,7 @@ class Article < ApplicationRecord
 
     front_matter = result.front_matter
 
-    if front_matter.any?
+    if front_matter.respond_to?(:any?) && front_matter.any?
       evaluate_front_matter(front_matter)
     elsif tag_list.any?
       set_tag_list(tag_list)
