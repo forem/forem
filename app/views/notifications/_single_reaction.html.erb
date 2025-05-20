@@ -9,6 +9,8 @@
                    sanitize(notification.reactable_title)
                  elsif notification.reactable_type.present?
                    t("views.notifications.reacted.your.#{notification.reactable_type.downcase}")
+                 else
+                   t("views.notifications.reacted.your.unknown")
                  end %>
 
       <% title_link = link_to(title, notification.reactable_path, class: "crayons-link fw-bold") %>
