@@ -106,10 +106,6 @@ resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"
   class: "Tags::ResaveSupportedTagsWorker"
-expire_old_listings:
-  description: "Expires old listings (runs daily at 00:30 UTC)"
-  cron: "30 0 * * *"
-  class: "Listings::ExpireOldListingsWorker"
 send_welcome_notifications:
   description: "Sends welcome notifications to new users (runs daily at 16:30 UTC)"
   cron: "0 16 * * *"
