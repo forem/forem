@@ -9,9 +9,11 @@
   font-family: var(--ff-sans-serif);
   display: block;
   #progressBar {
+    --progress-bar-height: calc(43px + 1vh);
+
     color: #fff;
     width: 100%;
-    height: calc(48px + 1vh);
+    height: var(--progress-bar-height);
     margin-top: 100px;
     position: fixed;
     left: 0;
@@ -24,7 +26,7 @@
       display: block;
     }
     #episode-profile-image {
-      height: calc(48px + 1vh);
+      height: var(--progress-bar-height);
       width: calc(48px + 1vh);
     }
     #animated-bars {
@@ -39,7 +41,7 @@
       }
     }
     #barPlayPause {
-      height: calc(48px + 1vh);
+      height: var(--progress-bar-height);
       width: calc(48px + 1vh);
       background: rgb(32, 32, 32);
       position: absolute;
@@ -69,7 +71,7 @@
       display: none;
     }
     #volume {
-      height: calc(48px + 1vh);
+      height: var(--progress-bar-height);
       width: 36px;
       background: rgb(32, 32, 32);
       position: absolute;
@@ -125,7 +127,7 @@
       }
     }
     .buffer-wrapper {
-      height: calc(48px + 1vh);
+      height: var(--progress-bar-height);
       position: absolute;
       left: calc(136px + 1vh);
       right: 0;
@@ -133,14 +135,14 @@
       cursor: pointer;
       #progress {
         background-color: #00ffa3;
-        height: calc(48px + 1vh);
+        height: var(--progress-bar-height);
         display: inline-block;
         position: relative;
         transition: width 0.25s ease-in-out;
       }
       #buffer {
         background-color: #96ffd9;
-        height: calc(48px + 1vh);
+        height: var(--progress-bar-height);
         display: inline-block;
         position: absolute;
         bottom: 0;
