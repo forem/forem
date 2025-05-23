@@ -50,6 +50,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: "subscription",
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -80,6 +81,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: "subscription",
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -105,6 +107,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: "subscription",
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -141,6 +144,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: custom_mode,
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
