@@ -92,6 +92,6 @@ production:
   <<: *default
   url: <%= ENV.fetch("NEW_DATABASE_URL", ENV["DATABASE_URL"]) %>
   <% if ENV['NEW_DATABASE_URL'].present? %>
-    schema_search_path: "$user,public,heroku_ext"
+  schema_search_path: "$user,public,heroku_ext"
   <% end %>
   database: <%= ENV["DATABASE_NAME"] %>
