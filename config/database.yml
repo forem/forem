@@ -92,5 +92,5 @@ test:
 production:
   <<: *default
   url: <%= ENV.fetch("NEW_DATABASE_URL", ENV["DATABASE_URL"]) %>
-  schema_search_path: "<%= ENV['CUSTOM_SCHEMA_SEARCH_PATH'] || '\"$user\",public,heroku_ext' %>"
+  schema_search_path: "<%= ENV['CUSTOM_SCHEMA_SEARCH_PATH'] || '"$user",public,heroku_ext' %>"
   database: <%= ENV["DATABASE_NAME"] %>
