@@ -3,7 +3,7 @@ namespace :app_initializer do
   task setup: :environment do
     puts "\n== Preparing database =="
     system("bin/rails db:prepare") || exit!(1)
-    Rake::Task["db:migrate"].execute # it'll re-alphabetize the columns in `schema.rb`
+    Rake::Task["release:migrate_if_pending"].invoke
 
     puts "\n== Performing setup tasks =="
     Rake::Task["forem:setup"].execute
