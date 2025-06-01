@@ -22,6 +22,7 @@ default: &default
   pool: <%= ENV.fetch("DATABASE_POOL_SIZE") { ENV.fetch("RAILS_MAX_THREADS", 5).to_i } %>
   connect_timeout: 2
   checkout_timeout: 2
+  schema_search_path: "<%= ENV.fetch('CUSTOM_SCHEMA_SEARCH_PATH', '\"$user\",public,heroku_ext') %>"
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 2500).to_i %>
 
@@ -91,5 +92,5 @@ test:
 production:
   <<: *default
   url: <%= ENV.fetch("NEW_DATABASE_URL", ENV["DATABASE_URL"]) %>
-  schema_search_path: "<%= ENV.fetch("CUSTOM_SCHEMA_SEARCH_PATH", '\"$user\",public,heroku_ext') %>"
+  schema_search_path: "<%= ENV.fetch('CUSTOM_SCHEMA_SEARCH_PATH', '\"$user\",public,heroku_ext') %>"
   database: <%= ENV["DATABASE_NAME"] %>
