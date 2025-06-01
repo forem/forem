@@ -91,7 +91,9 @@ test:
 production:
   <<: *default
   url: <%= ENV.fetch("NEW_DATABASE_URL", ENV["DATABASE_URL"]) %>
+
   <% if ENV["CUSTOM_SCHEMA_SEARCH_PATH"] %>
   schema_search_path: <%= ENV["CUSTOM_SCHEMA_SEARCH_PATH"] %>
   <% end %>
+
   database: <%= ENV["DATABASE_NAME"] %>
