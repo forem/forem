@@ -23,6 +23,7 @@ default: &default
   connect_timeout: 15
   checkout_timeout: 20
   idle_timeout: 180
+  reaping_frequency: 40
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 2500).to_i %>
 
