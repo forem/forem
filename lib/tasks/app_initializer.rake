@@ -2,8 +2,11 @@ namespace :app_initializer do
   desc "Prepare Application on Boot Up"
   task setup: :environment do
     puts "\n== Preparing database =="
-    system("bin/rails db:prepare") || exit!(1)
-    Rake::Task["release:migrate_if_pending"].invoke
+
+    unless ENV["SKIP_MIGRATIONS"] == "yes"
+      system("bin/rails db:prepare") || exit!(1)
+      Rake::Task["release:migrate_if_pending"].invoke
+    end
 
     puts "\n== Performing setup tasks =="
     Rake::Task["forem:setup"].execute
