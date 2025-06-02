@@ -463,19 +463,18 @@ class Article < ApplicationRecord
   }
 
   scope :followed_by, ->(user) do
-    joins(<<~SQL.squish, id: user.id)
-      JOIN LATERAL (
+    where(<<~SQL.squish, user_id: user.id)
+      EXISTS (
         SELECT 1
-        FROM follows f
-        WHERE f.follower_id = :id
+        FROM follows AS f
+        WHERE f.follower_id = :user_id
           AND f.follower_type = 'User'
-          AND (
-               (f.followable_type = 'User'        AND f.followable_id = articles.user_id)
-            OR (f.followable_type = 'Organization' AND f.followable_id = articles.organization_id)
-          )
           AND f.blocked = FALSE
-        LIMIT 1
-      ) AS ff ON TRUE
+          AND (
+                (f.followable_type = 'User'         AND f.followable_id = articles.user_id)
+             OR (f.followable_type = 'Organization' AND f.followable_id = articles.organization_id)
+          )
+      )
     SQL
   end
 
