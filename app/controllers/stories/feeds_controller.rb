@@ -134,7 +134,6 @@ module Stories
     end
 
     def relevant_following_feed
-      Timeout.timeout(2.9) do
         Article.where(
             "user_id IN (
               SELECT followable_id FROM follows
@@ -154,8 +153,5 @@ module Stories
           .page(@page)
           .per(25)
       end
-    rescue Timeout::Error
-      Article.none
-    end
   end
 end

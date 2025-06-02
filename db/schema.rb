@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -492,6 +492,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.string "color"
+    t.datetime "counts_tabulated_at"
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
     t.string "custom_display_label"
