@@ -462,23 +462,6 @@ class Article < ApplicationRecord
     order(:score).where("score >= ?", average_score)
   }
 
-  scope :followed_by, ->(user) do
-    joins(<<~SQL.squish, id: user.id)
-      JOIN LATERAL (
-        SELECT 1
-        FROM follows f
-        WHERE f.follower_id = :id
-          AND f.follower_type = 'User'
-          AND (
-               (f.followable_type = 'User'        AND f.followable_id = articles.user_id)
-            OR (f.followable_type = 'Organization' AND f.followable_id = articles.organization_id)
-          )
-          AND f.blocked = FALSE
-        LIMIT 1
-      ) AS ff ON TRUE
-    SQL
-  end
-
   def self.average_score
     Rails.cache.fetch("article_average_score", expires_in: 1.day) do
       unscoped { where(score: 0..).average(:score) } || 0.0
