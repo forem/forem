@@ -134,24 +134,28 @@ module Stories
     end
 
     def relevant_following_feed
-      Article.where(
-          "user_id IN (
-            SELECT followable_id FROM follows
-            WHERE followable_type = 'User'
-              AND follower_type = 'User'
-              AND follower_id = :user_id
-          ) OR organization_id IN (
-            SELECT followable_id FROM follows
-            WHERE followable_type = 'Organization'
-              AND follower_type = 'User'
-              AND follower_id = :user_id
-          )",
-          user_id: current_user.id
-        ).published.from_subforem
-        .where("score > -10")
-        .order("hotness_score DESC")
-        .page(@page)
-        .per(25)
+      Timeout.timeout(2.9) do
+        Article.where(
+            "user_id IN (
+              SELECT followable_id FROM follows
+              WHERE followable_type = 'User'
+                AND follower_type = 'User'
+                AND follower_id = :user_id
+            ) OR organization_id IN (
+              SELECT followable_id FROM follows
+              WHERE followable_type = 'Organization'
+                AND follower_type = 'User'
+                AND follower_id = :user_id
+            )",
+            user_id: current_user.id
+          ).published.from_subforem
+          .where("score > -10")
+          .order("hotness_score DESC")
+          .page(@page)
+          .per(25)
+      end
+    rescue Timeout::Error
+      Article.none
     end
   end
 end
