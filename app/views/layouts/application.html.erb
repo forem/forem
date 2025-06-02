@@ -2,8 +2,11 @@
 <html lang="en">
   <head>
     <% if user_signed_in? && current_page?(root_path) %>
-      <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
-      <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
+      <% if params[:feed_type] == "discover" || params[:feed_type].blank? %>
+        <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
+      <% elsif params[:feed_type] == "following" %>
+        <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
+      <% end %>
       <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first">
       <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second">
       <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_third">
