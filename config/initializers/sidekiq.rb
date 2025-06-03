@@ -1,6 +1,6 @@
 require "sidekiq/honeycomb_middleware"
 require "sidekiq/worker_retries_exhausted_reporter"
-require "sidekiq/sidekiq_connection_cleanup"
+require Rails.root.join("lib/sidekiq/sidekiq_connection_cleanup.rb")
 
 module Sidekiq
   module Cron
