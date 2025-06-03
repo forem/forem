@@ -14,7 +14,7 @@ module Articles
     def perform(create_params)
       article = Article.find_by(id: create_params["article_id"])
       return unless article&.published?
-      return if create_params["user_id"] && article.user_id == create_params["user_id"]
+      return if create_params[:user_id] && article.user_id == create_params[:user_id]
 
       # --- START: MODIFIED CODE ---
       begin
