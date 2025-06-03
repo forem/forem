@@ -20,7 +20,7 @@ module Sidekiq
       # but the unhandled exception could still poison the transaction during
       # Sidekiq's own cleanup, leading back to the original problem.
       # This middleware PREVENTS the job from being marked as "failed".
-      Rails.logger.warn(
+      Sidekiq.logger.warn(
         "SIDEKIQ MIDDLEWARE: Rescued a #{e.class.name} in #{worker.class.name} (Job ID: #{job['jid']}). " \
         "Halting job to prevent transaction failure. " \
         "ERROR: #{e.message}"
