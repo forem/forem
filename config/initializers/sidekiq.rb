@@ -35,10 +35,10 @@ Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url }
 
   config.server_middleware do |chain|
+    chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
     chain.add Sidekiq::SidekiqConnectionCleanup
-    chain.add Sidekiq::TransactionSafeRescue
   end
 
   config.server_middleware do |chain|
