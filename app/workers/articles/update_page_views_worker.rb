@@ -33,11 +33,8 @@ module Articles
       # --- END: MODIFIED CODE ---
 
       updated_count = article.page_views.sum(:counts_for_number_of_views)
-      # Use update! instead of update_column to trigger callbacks if any,
-      # and it's generally safer unless you specifically need to skip validations/callbacks.
-      # This is less critical but good practice.
       if updated_count > article.page_views_count
-        article.update(page_views_count: updated_count)
+        article.update_column(:page_views_count, updated_count)
       end
 
       return unless create_params["referrer"] == GOOGLE_REFERRER
