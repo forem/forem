@@ -1,6 +1,6 @@
 require "sidekiq/honeycomb_middleware"
 require "sidekiq/worker_retries_exhausted_reporter"
-require_relative "../../app/lib/middlewares/sidekiq_connection_cleanup"
+require "sidekiq/sidekiq_connection_cleanup"
 
 module Sidekiq
   module Cron
