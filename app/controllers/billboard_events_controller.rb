@@ -9,7 +9,9 @@ class BillboardEventsController < ApplicationMetalController
     billboard_event_create_params = billboard_event_params.merge(user_id: session_current_user_id)
     @billboard_event = BillboardEvent.create(billboard_event_create_params)
 
-    update_billboards_data
+    unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
+      update_billboards_data
+    end
 
     head :ok
   end
