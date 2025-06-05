@@ -114,7 +114,13 @@ module Stories
 
     def latest_following_feed
       activity = current_user.user_activity
-      Article.published.from_subforem.where(user_id: activity.alltime_users).or(Article.where(organization_id: activity.alltime_organizations))
+      user_ids = activity&.alltime_users || current_user.cached_following_users_ids
+      organization_ids = activity&.alltime_organizations || current_user.cached_following_organizations_ids
+      left_scope  = Article.published.from_subforem.where(user_id: user_ids)
+      right_scope = Article.published.from_subforem.where(organization_id: organization_ids)      
+
+      @articles = left_scope
+        .or(right_scope)
         .where("score > -10")
         .order("published_at DESC")
         .page(@page)
@@ -123,10 +129,16 @@ module Stories
 
     def relevant_following_feed
       activity = current_user.user_activity
-      Article.published.from_subforem.where(user_id: activity.alltime_users).or(Article.where(organization_id: activity.alltime_organizations))
+      user_ids = activity&.alltime_users || current_user.cached_following_users_ids
+      organization_ids = activity&.alltime_organizations || current_user.cached_following_organizations_ids
+      left_scope  = Article.published.from_subforem.where(user_id: user_ids)
+      right_scope = Article.published.from_subforem.where(organization_id: organization_ids)
+      
+      @articles = left_scope
+        .or(right_scope)
         .where("score > -10")
         .order("hotness_score DESC")
-        .page(1)
+        .page(@page)
         .per(25)
     end
   end

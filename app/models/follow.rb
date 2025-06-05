@@ -44,6 +44,7 @@ class Follow < ApplicationRecord
   after_create :send_email_notification
   after_save :touch_follower
   after_create_commit :update_user_activities
+  after_destroy :update_user_activities
 
   validates :blocked, inclusion: { in: [true, false] }
   validates :followable_type, presence: true
