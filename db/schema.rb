@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_05_145211) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1341,7 +1341,9 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
 
   create_table "user_activities", force: :cascade do |t|
     t.jsonb "alltime_labels", default: []
+    t.jsonb "alltime_organizations", default: []
     t.jsonb "alltime_tags", default: []
+    t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []
