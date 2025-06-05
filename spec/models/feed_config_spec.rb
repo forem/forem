@@ -12,7 +12,9 @@ RSpec.describe FeedConfig, type: :model do
       recent_organizations: [],
       relevant_tags: ["tech", "ruby"],
       recent_labels: ["label1"],
-      recent_subforems: [1]
+      recent_subforems: [1],
+      alltime_users: [10, 20],
+      alltime_organizations: [100, 200],
     )
   end
 
@@ -170,6 +172,8 @@ RSpec.describe FeedConfig, type: :model do
           relevant_tags: [],
           recent_labels: [],
           recent_subforems: [1],
+          alltime_users: [10, 20],
+          alltime_organizations: [100, 200]
         )
       end
 

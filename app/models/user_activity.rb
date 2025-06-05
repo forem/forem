@@ -19,6 +19,8 @@ class UserActivity < ApplicationRecord
     self.recent_users = recent_articles.map(&:user_id).uniq.compact
     self.recent_subforems = recent_articles.map(&:subforem_id).compact # Purposefully not unique because we want to tabulate volume by subforem
     self.alltime_tags = user.cached_followed_tag_names
+    self.alltime_users = Follow.follower_user(user_id).pluck(:followable_id)
+    self.alltime_organizations = Follow.follower_organization(user_id).pluck(:followable_id)
   end
 
   def relevant_tags(recent_tag_count = 5, all_time_tag_count = 5)

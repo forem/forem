@@ -113,7 +113,8 @@ module Stories
     end
 
     def latest_following_feed
-      Article.published.from_subforem.followed_by(current_user)
+      activity = current_user.user_activity
+      Article.published.from_subforem.where(user_id: activity.alltime_users).or(Article.where(organization_id: activity.alltime_organizations))
         .where("score > -10")
         .order("published_at DESC")
         .page(@page)
@@ -121,11 +122,12 @@ module Stories
     end
 
     def relevant_following_feed
-        Article.published.from_subforem.followed_by(current_user)
-          .where("score > -10")
-          .order("hotness_score DESC")
-          .page(@page)
-          .per(25)
-      end
+      activity = current_user.user_activity
+      Article.published.from_subforem.where(user_id: activity.alltime_users).or(Article.where(organization_id: activity.alltime_organizations))
+        .where("score > -10")
+        .order("hotness_score DESC")
+        .page(1)
+        .per(25)
+    end
   end
 end

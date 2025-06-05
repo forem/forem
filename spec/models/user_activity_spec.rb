@@ -94,7 +94,14 @@ RSpec.describe UserActivity, type: :model do
         )
       end
 
+      let(:other_user) { create(:user) }
+      let(:other_org)  { create(:organization) }
+
       before do
+        # Set up follow relationships for alltime_users and alltime_organizations
+        create(:follow, follower: user, followable: other_user)
+        create(:follow, follower: user, followable: other_org)
+
         travel_to(Time.current) { activity.set_activity! }
       end
 
@@ -144,6 +151,14 @@ RSpec.describe UserActivity, type: :model do
         expect(activity.alltime_tags).to eq(
           user.cached_followed_tag_names.first(10)
         )
+      end
+
+      it "populates alltime_users from the user's follow relationships" do
+        expect(activity.alltime_users).to contain_exactly(other_user.id)
+      end
+
+      it "populates alltime_organizations from the user's follow relationships" do
+        expect(activity.alltime_organizations).to contain_exactly(other_org.id)
       end
 
       it "combines recent_tags and alltime_tags in #relevant_tags" do
