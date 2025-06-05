@@ -134,7 +134,6 @@ module Stories
       left_scope  = Article.published.from_subforem.where(user_id: user_ids)
       right_scope = Article.published.from_subforem.where(organization_id: organization_ids)
       
-
       @articles = left_scope
         .or(right_scope)
         .where("score > -10")
