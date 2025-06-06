@@ -346,7 +346,40 @@ RSpec.describe Article do
           end
         end
       end
-    end  
+    end
+
+    describe "#restrict_type_based_on_role" do
+      context "when user is an admin" do
+        before { article.user.add_role(:admin) }
+        it "allows setting type_of to 'fullscreen_embed'" do
+          article.type_of = "fullscreen_embed"
+          expect(article).to be_valid
+        end
+        it "allows setting type_of to 'status'" do
+          article.type_of = "status"
+          expect(article).to be_valid
+        end
+        it "allows setting type_of to 'full_post'" do
+          article.type_of = "full_post"
+          expect(article).to be_valid
+        end
+      end
+      context "when user is not an admin" do
+        before { article.user.remove_role(:admin) }
+        it "does not allow setting type_of to 'fullscreen_embed'" do
+          article.type_of = "fullscreen_embed"
+          expect(article).not_to be_valid
+        end
+        it "allows setting type_of to 'status'" do
+          article.type_of = "status"
+          expect(article).to be_valid
+        end
+        it "allows setting type_of to 'full_post'" do
+          article.type_of = "full_post"
+          expect(article).to be_valid
+        end
+      end
+    end
 
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
