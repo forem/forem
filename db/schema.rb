@@ -581,7 +581,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
-    t.float "recent_article_supression_rate", default: 0.0, null: false
     t.float "recent_page_views_shuffle_weight", default: 0.0, null: false
     t.float "recent_subforem_weight", default: 0.0, null: false
     t.integer "recent_tag_count_max", default: 0
