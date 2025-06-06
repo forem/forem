@@ -6,18 +6,9 @@ module Billboards
     sidekiq_options queue: :low_priority, retry: 10
 
     CONVERSION_SUCCESS_MODIFIER = 25
-    THROTTLE_TIME = 25 # minutes
 
-    def perform(billboard_id, forced: false)
-      if forced
-        perform_update(billboard_id)
-      else
-        throttle_minutes = (ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME).to_i
-
-        ThrottledCall.perform("billboards_data_update-#{billboard_id}", throttle_for: throttle_minutes.minutes) do
-          perform_update(billboard_id)
-        end
-      end
+    def perform(billboard_id)
+      perform_update(billboard_id)
     end
 
     private
@@ -26,11 +17,8 @@ module Billboards
       billboard = Billboard.find(billboard_id)
       timestamp = Time.current
 
-      # Random-skip logic only applies when not forced
-      if !Sidekiq::Context.current[:forced]
-        return if rand(3) > 0 && billboard.impressions_count > 500_000
-        return if rand(2).zero? && billboard.impressions_count > 100_000
-      end
+      return if rand(3) > 0 && billboard.impressions_count > 500_000
+      return if rand(2).zero? && billboard.impressions_count > 100_000
 
       if billboard.counts_tabulated_at.present?
         cutoff = billboard.counts_tabulated_at

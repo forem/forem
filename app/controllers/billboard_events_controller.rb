@@ -1,6 +1,7 @@
 # app/controllers/billboard_events_controller.rb
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
+  THROTTLE_TIME = 25 # minutes
 
   def create
     # Only tracking for logged‐in users at the moment
@@ -9,7 +10,10 @@ class BillboardEventsController < ApplicationMetalController
 
     unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
       # Enqueue the worker instead of doing the update inline
-      Billboards::DataUpdateWorker.perform_async(billboard_event_params[:billboard_id])
+      throttle_minutes = (ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME).to_i
+      ThrottledCall.perform("billboards_data_update-#{billboard_event_create_params[:billboard_id]}", throttle_for: throttle_minutes.minutes) do
+        Billboards::DataUpdateWorker.perform_async(billboard_event_params[:billboard_id])
+      end
     end
 
     head :ok

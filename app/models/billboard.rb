@@ -372,7 +372,7 @@ class Billboard < ApplicationRecord
   private
 
   def update_event_counts_when_taking_down
-    Billboards::DataUpdateWorker.perform_async(id, force: true)
+    Billboards::DataUpdateWorker.perform_async(id)
   end
 
   def being_taken_down?
