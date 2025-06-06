@@ -34,7 +34,6 @@ export const Options = ({
   let publishedAtField = '';
 
   const wasScheduled = publishedAtWas && moment(publishedAtWas) > moment();
-  // allow to edit published at if it was not set earlier or if it's in the future
   const editablePublishedAt = !publishedAtWas || wasScheduled;
 
   if (allSeries.length > 0) {
@@ -48,7 +47,6 @@ export const Options = ({
     existingSeries = (
       <div className="crayons-field__description">
         Existing series:
-        {` `}
         <select
           value=""
           name="series"
@@ -82,9 +80,7 @@ export const Options = ({
     } else {
       publishedField = (
         <div data-testid="options__danger-zone" className="crayons-field mb-6">
-          <div className="crayons-field__label color-accent-danger">
-            Danger Zone
-          </div>
+          <div className="crayons-field__label color-accent-danger">Danger Zone</div>
           <Button variant="primary" destructive onClick={onSaveDraft}>
             Unpublish post
           </Button>
@@ -95,6 +91,9 @@ export const Options = ({
 
   if (schedulingEnabled && editablePublishedAt) {
     const currentDate = moment().format('YYYY-MM-DD');
+    const localTime = moment().format('h:mm A');
+    const localDate = moment().format('MMMM D, YYYY');
+
     publishedAtField = (
       <div className="crayons-field mb-6">
         <label htmlFor="publishedAtDate" className="crayons-field__label">
@@ -104,7 +103,7 @@ export const Options = ({
           aria-label="Schedule publication date"
           type="date"
           min={currentDate}
-          value={publishedAtDate} // ""
+          value={publishedAtDate}
           className="crayons-textfield"
           name="publishedAtDate"
           onChange={onConfigChange}
@@ -114,7 +113,7 @@ export const Options = ({
         <input
           aria-label="Schedule publication time"
           type="time"
-          value={publishedAtTime} // "18:00"
+          value={publishedAtTime}
           className="crayons-textfield"
           name="publishedAtTime"
           onChange={onConfigChange}
@@ -123,12 +122,16 @@ export const Options = ({
         />
         <input
           type="hidden"
-          value={timezone} // "Asia/Magadan"
+          value={timezone}
           className="crayons-textfield"
           name="timezone"
           id="timezone"
           placeholder="..."
         />
+        <div className="crayons-field__description">
+          Post will be scheduled using your local time (<strong>{timezone}</strong>).
+          It is currently <strong>{localTime}</strong> on <strong>{localDate}</strong> in your timezone.
+        </div>
       </div>
     );
   }
@@ -142,7 +145,6 @@ export const Options = ({
         aria-label="Post options"
         disabled={previewLoading}
       />
-
       <Dropdown
         triggerButtonId="post-options-btn"
         dropdownContentId="post-options-dropdown"
@@ -155,11 +157,7 @@ export const Options = ({
             Canonical URL
           </label>
           <p className="crayons-field__description">
-            Change meta tag
-            {` `}
-            <code>canonical_url</code>
-            {` `}
-            if this post was first published elsewhere (like your own blog).
+            Change meta tag <code>canonical_url</code> if this post was first published elsewhere (like your own blog).
           </p>
           <input
             type="text"
@@ -178,8 +176,7 @@ export const Options = ({
             Series
           </label>
           <p className="crayons-field__description">
-            Will this post be part of a series? Give the series a unique name.
-            (Series visible once it has multiple posts)
+            Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)
           </p>
           <input
             type="text"
