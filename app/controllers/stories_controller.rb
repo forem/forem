@@ -363,7 +363,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_github_repositories
-    @github_repositories = @user.github_repos.featured.order(stargazers_count: :desc, name: :asc)
+    @github_repositories = @user.github_repos.featured
   end
 
   def assign_podcasts

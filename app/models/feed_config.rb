@@ -4,8 +4,8 @@ class FeedConfig < ApplicationRecord
   def score_sql(user)
     activity_store = user.user_activity
 
-    user_follow_ids = user.cached_following_users_ids + (activity_store&.recent_users&.compact || [])
-    organization_follow_ids = user.cached_following_organizations_ids + (activity_store&.recent_organizations&.compact || [])
+    user_follow_ids = (activity_store&.alltime_users&.first(200) || user.cached_following_users_ids) + (activity_store&.recent_users&.compact || [])
+    organization_follow_ids = (activity_store&.alltime_organizations&.first(200) || user.cached_following_organizations_ids) + (activity_store&.recent_organizations&.compact || [])
     recent_tags_count = rand(recent_tag_count_min..recent_tag_count_max) if recent_tag_count_min.positive? && recent_tag_count_max.positive?
     all_time_tags_count = rand(all_time_tag_count_min..all_time_tag_count_max) if all_time_tag_count_min.positive? && all_time_tag_count_max.positive?
     tag_names = activity_store&.relevant_tags(recent_tags_count || 5, all_time_tags_count || 5) || user.cached_followed_tag_names
