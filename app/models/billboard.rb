@@ -123,7 +123,7 @@ class Billboard < ApplicationRecord
 
     # if prefer_paired_with_billboard_id then return 
     if prefer_paired_with_billboard_id.present?
-      best_paired_billboard = billboards_for_display.find { |bb| bb.id == prefer_paired_with_billboard_id }
+      best_paired_billboard = billboards_for_display.find { |bb| bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id }
       return best_paired_billboard if best_paired_billboard.present?
     end
 
