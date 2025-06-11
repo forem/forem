@@ -1,25 +1,5 @@
-<%
-  appearance_params = [
-    "size=#{player_size}",
-    "bgcol=ffffff",
-    "linkcol=0687f5",
-    "transparent=true"
-  ]
-  if item_type == "album" && player_size == "large"
-    appearance_params << "tracklist=false"
-    appearance_params << "artwork=small"
-  elsif item_type == "track" && player_size == "grande"
-  end
-  
-  player_src = "https://bandcamp.com/EmbeddedPlayer/" \
-               "#{item_type}=#{numeric_id}/" \
-               "#{appearance_params.join('/')}/"
-%>
-
 <iframe
-  style="border: 0;"
-  width="<%= width %>"
-  height="<%= height %>"
+  style="border: 0; width: 100%; height: <%= height %>;"
   src="<%= player_src %>"
   allowfullscreen
   loading="lazy"
