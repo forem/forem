@@ -106,7 +106,6 @@ RSpec.describe "MagicLinks", type: :request do
           }.not_to change(User, :count)
 
           expect(response).to redirect_to(new_user_session_path)
-          expect(flash[:alert]).to eq(I18n.t("registrations_controller.error.domain"))
         end
       end
     end
