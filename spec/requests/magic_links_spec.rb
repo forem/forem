@@ -19,11 +19,19 @@ RSpec.describe "MagicLinks", type: :request do
 
   describe "POST /magic_links" do
     let(:user) { create(:user, email: "test@example.com", confirmed_at: 1.day.ago) }
+    let(:email) { "new@example.com" }
+    let!(:subforem) { create(:subforem, domain: "example.com") }
+
+    before do
+      allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
+      allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
+    end
 
     context "when the email matches an existing user" do
       before do
         allow(User).to receive(:find_by).with(email: user.email).and_return(user)
         allow(user).to receive(:send_magic_link!)
+        allow(Settings::Authentication).to receive(:acceptable_domain?).and_call_original
       end
 
       it "renders the create template and sends a magic link without altering confirmation" do
@@ -33,32 +41,31 @@ RSpec.describe "MagicLinks", type: :request do
 
         expect(response.body).to include("Check your email")
         expect(user).to have_received(:send_magic_link!).once
-        # confirmed_at should remain exactly what it was
         expect(user.reload.confirmed_at).to be_within(1.second).of(original_confirmed_at)
       end
     end
 
     context "when the email does not match any user" do
-      let(:email) { "new@example.com" }
-      let!(:subforem) { create(:subforem, domain: "example.com") }
-
       before do
         allow(User).to receive(:find_by).with(email: email).and_return(nil)
-        allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
-        allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
       end
 
       it "returns an error if the instance is invite-only" do
         allow(ForemInstance).to receive(:invitation_only?).and_return(true)
+
         post "/magic_links", params: { email: email }
+
         expect(response).to redirect_to(new_user_session_path)
         expect(flash[:alert]).to eq("Forem is invite-only.")
       end
 
       it "creates a new user, skips confirmation and sends the magic link" do
         freeze_time do
+          allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+          allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "example.com").and_return(true)
+
           expect {
-            post "/magic_links", params: { email: email }
+            post "/magic_links", params: { email: email }, headers: { "Host" => subforem.domain }
           }.to change(User, :count).by(1)
 
           new_user = User.order(:created_at).last
@@ -75,12 +82,30 @@ RSpec.describe "MagicLinks", type: :request do
 
       it "assigns onboarding_subforem_id based on the referer header" do
         freeze_time do
+          allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+          allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "example.com").and_return(true)
+
           expect {
             post "/magic_links", params: { email: email }, headers: { "Host" => subforem.domain }
           }.to change(User, :count).by(1)
 
           new_user = User.order(:created_at).last
           expect(new_user.onboarding_subforem_id).to eq(subforem.id)
+        end
+      end
+
+      context "when the email domain is not acceptable" do
+        before do
+          allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+          allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "example.com").and_return(false)
+        end
+
+        it "does not create a user and redirects with domain error" do
+          expect {
+            post "/magic_links", params: { email: email }
+          }.not_to change(User, :count)
+
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
