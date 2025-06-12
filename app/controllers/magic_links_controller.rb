@@ -18,6 +18,7 @@ class MagicLinksController < ApplicationController
     else
       # Register new user with this email
       @user = User.new(email: params[:email])
+      check_allowed_email(@user)
       @user.registered       = true
       @user.registered_at    = Time.current
       dummy_password         = Devise.friendly_token(20)
@@ -52,5 +53,18 @@ class MagicLinksController < ApplicationController
     else
       redirect_to new_user_session_path, alert: "Invalid or expired link"
     end
+  end
+
+  private
+
+  def check_allowed_email(user)
+    domain = user.email.split("@").last
+    return true if Settings::Authentication.acceptable_domain?(domain: domain)
+
+    user.email = nil
+    # Alright, this error message isn't quite correct.  Is the email
+    # from a blocked domain?  Or an explicitly allowed domain.  I
+    # think this is enough.
+    user.errors.add(:email, I18n.t("registrations_controller.error.domain"))
   end
 end
