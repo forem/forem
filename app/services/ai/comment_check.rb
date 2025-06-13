@@ -21,6 +21,7 @@ module Ai
       response = @ai_client.call(prompt)
       parse_response(response)
     rescue StandardError => e
+      Rails.logger.error(e)
       false
     end
 
@@ -43,17 +44,17 @@ module Ai
         - Gibberish or irrelevant text.
         - Out-of-context replies used for promotion.
         - Insertion of link in otherwise in-context reply.
-        - Repetitive, spam-likely messages posted across different content.
+        - Repetitive, promotional messages posted across different content.
 
         Here is the context:
 
         1.  **The Parent Content Post** (The post the comment was left in reply to):
             ---
             Title: #{@comment.commentable.title}
-            Body: #{@comment.commentable.body_markdown.first(5_000)}
+            Body#{ "(truncated)" if @comment.commentable.body_markdown.size > 1500}: #{@comment.commentable.body_markdown.first(1_500)}
             ---
 
-        2.  **The User's Recent Comment History** (Their last 10 comments):
+        2.  **The User's Recent Comment History**:
             ---
             #{user_history.empty? ? 'No comment history available.' : user_history}
             ---
