@@ -1,1 +1,1 @@
-::AI_AVAILABLE = ENV["GEMINI_API_KEY"].present? || Rails.env.test?
+::AI_AVAILABLE = ENV["GEMINI_API_KEY"].present?

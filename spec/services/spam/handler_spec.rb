@@ -12,6 +12,10 @@ RSpec.describe Spam::Handler, type: :service do
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
     end
 
+    after do
+      ENV["GEMINI_API_KEY"] = nil
+    end
+
     context "when non-spammy content" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
