@@ -47,9 +47,10 @@ module Ai
 
         Here is the context:
 
-        1.  **The Parent Content** (The post the comment was left on):
+        1.  **The Parent Content Post** (The post the comment was left in reply to):
             ---
-            #{@comment.commentable.body_markdown.first(5_000)}
+            Title: #{@comment.commentable.title}
+            Body: #{@comment.commentable.body_markdown.first(5_000)}
             ---
 
         2.  **The User's Recent Comment History** (Their last 10 comments):
