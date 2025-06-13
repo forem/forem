@@ -43,7 +43,7 @@ module Ai
         - Gibberish or irrelevant text.
         - Out-of-context replies used for promotion.
         - Insertion of link in otherwise in-context reply.
-        - Repetitive, low-quality messages posted across different content.
+        - Repetitive, spam-likely messages posted across different content.
 
         Here is the context:
 
@@ -57,12 +57,15 @@ module Ai
             #{user_history.empty? ? 'No comment history available.' : user_history}
             ---
 
-        3.  **The Comment to Check**:
+        3.  **COMMENT TO CHECK -- The Comment I ultimately want you to check and confirm is the following:**:
             ---
             #{@comment.body_markdown}
             ---
 
-        Based on all the context, is the "COMMENT TO CHECK" spam? Answer only with YES or NO.
+        If this comment is clearly not spam, and is a helpful part of the community, do not consider the history at all.
+        Only consider the comment history and the post it is replying to if the comment in question may be spam itself.
+
+        Based on all the context, is the "COMMENT TO CHECK" itself CLEARLY spam? Answer only with YES or NO.
       PROMPT
     end
 
