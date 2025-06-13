@@ -34,7 +34,8 @@ class MagicLinksController < ApplicationController
       @user.name            = name
       @user.profile_image   = Images::ProfileImageGenerator.call
 
-      if @user.save
+      domain = @user.email.split("@").last
+      if Settings::Authentication.acceptable_domain?(domain: domain) && @user.save
         @user.send_magic_link!
       else
         flash[:alert] = @user.errors.full_messages.join(", ")

@@ -41,14 +41,11 @@ module Spam
     #
     # @param comment [Comment] the comment to check for spamminess
     def self.handle_comment!(comment:)
-      # TODO: Is this correct logic?  I was trying to reason through
-      # the original logic and I think there's something off on that
-      # original logic.
-      #
-      # I believe the intention of the past logic was that we want to
-      # treat recently registered users with a bit of suspicion.
-      return :not_spam unless Settings::RateLimit.user_considered_new?(user: comment&.user)
-      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: comment.body_markdown)
+      return :not_spam if comment.user.badge_achievements_count > 6
+      return :not_spam if comment.user.base_subscriber?
+
+      ai_spam_check = comment.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && Ai::CommentCheck.new(comment).spam?
+      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: comment.body_markdown) || ai_spam_check
 
       issue_spam_reaction_for!(reactable: comment)
 
