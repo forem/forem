@@ -8,6 +8,7 @@ RSpec.describe Spam::Handler, type: :service do
     let(:mascot_user) { create(:user) }
 
     before do
+      ENV["GEMINI_API_KEY"] = "Present"
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
     end
 
@@ -107,7 +108,6 @@ RSpec.describe Spam::Handler, type: :service do
 
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
           .with(user: comment.user, include_user_profile: false).and_return(false)
-        ENV["GEMINI_API_KEY"] = "Present"
       end
 
       it "creates a reaction but does not suspend the user" do
