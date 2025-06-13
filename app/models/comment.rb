@@ -312,6 +312,9 @@ class Comment < ApplicationRecord
   end
 
   def create_conditional_autovomits
+    # return if nothing has changed in body markdown
+    return unless saved_change_to_body_markdown?
+
     Comments::HandleSpamWorker.perform_async(id)
   end
 
