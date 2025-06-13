@@ -3,10 +3,11 @@ module Ai
   class Base
     include HTTParty
     base_uri 'https://generativelanguage.googleapis.com/v1beta'
-    DEFAULT_MODEL = 'gemini-1.5-flash'.freeze
+    DEFAULT_MODEL = 'gemini-2.5-flash-preview-05-20'.freeze
+    DEFAULT_KEY = ENV["GEMINI_API_KEY"].freeze
     attr_reader :model
     attr_reader :last_response
-    def initialize(api_key: ENV["GEMINI_API_KEY"], model: DEFAULT_MODEL)
+    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL)
       raise ArgumentError, 'API key cannot be nil' if api_key.nil?
 
       @api_key = api_key

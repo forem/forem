@@ -8,12 +8,7 @@ RSpec.describe Spam::Handler, type: :service do
     let(:mascot_user) { create(:user) }
 
     before do
-      ENV["GEMINI_API_KEY"] = "Present"
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
-    end
-
-    after do
-      ENV["GEMINI_API_KEY"] = nil
     end
 
     context "when non-spammy content" do
@@ -68,8 +63,15 @@ RSpec.describe Spam::Handler, type: :service do
     let(:mascot_user) { create(:user) }
 
     before do
+      ENV["GEMINI_API_KEY"] = "Present"
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+      stub_const("Ai::Base::DEFAULT_KEY", "Present")
     end
+
+    after do
+      ENV["GEMINI_API_KEY"] = nil
+    end
+
 
     context "when user has more than 6 badge achievements" do
       before do
