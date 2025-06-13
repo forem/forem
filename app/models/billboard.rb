@@ -153,7 +153,6 @@ class Billboard < ApplicationRecord
       billboards_for_display.limit(rand(1..15)).sample
     end
   end
-
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
@@ -373,16 +372,7 @@ class Billboard < ApplicationRecord
   private
 
   def update_event_counts_when_taking_down
-    num_impressions = billboard_events.impressions.sum(:counts_for)
-    num_clicks = billboard_events.clicks.sum(:counts_for)
-    conversion_success = billboard_events.all_conversion_types.sum(:counts_for) * 0.5
-    rate = (num_clicks + conversion_success).to_f / num_impressions
-
-    update_columns(
-      success_rate: rate,
-      clicks_count: num_clicks,
-      impressions_count: num_impressions
-    )
+    Billboards::DataUpdateWorker.perform_async(id)
   end
 
   def being_taken_down?
