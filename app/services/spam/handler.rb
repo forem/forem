@@ -42,6 +42,7 @@ module Spam
     # @param comment [Comment] the comment to check for spamminess
     def self.handle_comment!(comment:)
       return :not_spam if comment.user.badge_achievements_count > 6
+      return :not_spam if comment.user.base_subscriber?
 
       ai_spam_check = comment.processed_html.include?("<a") && AI_AVAILABLE && Ai::CommentCheck.new(comment).spam?
       return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: comment.body_markdown) || ai_spam_check

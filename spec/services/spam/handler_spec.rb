@@ -77,6 +77,16 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
+    context "when user is base subscriber" do
+      before do
+        comment.user.add_role(:base_subscriber)
+      end
+      it "returns :not_spam and does not create a reaction" do
+        expect { handler }.not_to change { Reaction.where(reactable: comment).count }
+        is_expected.to eq(:not_spam)
+      end
+    end
+
     context "when non-spammy content" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?)
@@ -97,6 +107,7 @@ RSpec.describe Spam::Handler, type: :service do
 
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
           .with(user: comment.user, include_user_profile: false).and_return(false)
+        ENV["GEMINI_API_KEY"] = "Present"
       end
 
       it "creates a reaction but does not suspend the user" do
