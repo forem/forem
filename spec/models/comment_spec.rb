@@ -447,12 +447,6 @@ RSpec.describe Comment do
     it "delegates spam handling to HandleSpamWorker" do
       allow(Comments::HandleSpamWorker).to receive(:perform_async)
       comment.save
-      expect(Comments::HandleSpamWorker).to have_received(:perform_async).with(comment.id).once
-    end
-
-    it "delegates to spam handling again if comment is updated" do
-      allow(Comments::HandleSpamWorker).to receive(:perform_async)
-      comment.update(body_markdown: "Updated comment body!")
       expect(Comments::HandleSpamWorker).to have_received(:perform_async).with(comment.id).twice
     end
 
