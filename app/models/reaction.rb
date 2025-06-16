@@ -107,7 +107,9 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      article_vomits.where(reactable_id: user.articles.where("published_at > ?", 1.month.ago).ids).size > threshold
+      threshold = 4 if user.articles.published.count >= 8 && threshold < 4
+      article_vomits.where(reactable_id: user.articles.where("published_at > ?", 1.month.ago).ids).size > threshold &&
+        user.articles.where("published_at > ?", 1.month.ago).where("score < ?", -50).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -119,7 +121,9 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      comment_vomits.where(reactable_id: user.comments.where("created_at > ?", 1.month.ago).ids).size > threshold
+      threshold = 4 if user.comments.count >= 8 && threshold < 4
+      comment_vomits.where(reactable_id: user.comments.where("created_at > ?", 1.month.ago).ids).size > threshold &&
+        user.comments.where("created_at > ?", 1.month.ago).where("score < ?", -50).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
