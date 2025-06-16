@@ -23,7 +23,9 @@ module Spam
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
       text = attributes.map { |attr| article.public_send(attr) }.join("\n")
-      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: text)
+
+      ai_spam_check = article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && article.user.badge_achievements_count < 4 && Ai::ArticleCheck.new(article).spam?
+      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: text) || ai_spam_check
 
       issue_spam_reaction_for!(reactable: article)
 
