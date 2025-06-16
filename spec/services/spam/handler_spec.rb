@@ -6,22 +6,23 @@ RSpec.describe Spam::Handler, type: :service do
 
     let!(:article) { create(:article) }
     let(:mascot_user) { create(:user) }
+    let(:text_to_check) { [article.title, article.body_markdown].join("\n") }
 
     before do
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
     end
 
-    context "when non-spammy content" do
+    context "when content is not spam" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
       end
 
       it { is_expected.to eq(:not_spam) }
     end
 
-    context "when first time spammy content" do
+    shared_examples "first-time spam offender" do
       before do
-        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
           .with(user: article.user, include_user_profile: false).and_return(false)
       end
@@ -32,9 +33,8 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
-    context "when multiple offender of spammy" do
+    shared_examples "multiple spam offender" do
       before do
-        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
           .with(user: article.user, include_user_profile: false).and_return(true)
       end
@@ -54,8 +54,45 @@ RSpec.describe Spam::Handler, type: :service do
         expect(Note.where(noteable: article.user, reason: "automatic_suspend").count).to eq(1)
       end
     end
+
+    context "when spam is triggered by RateLimit" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: text_to_check).and_return(true)
+        # Ensure AI check doesn't interfere
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+      end
+
+      context "for a first-time offender" do
+        it_behaves_like "first-time spam offender"
+      end
+
+      context "for a multiple offender" do
+        it_behaves_like "multiple spam offender"
+      end
+    end
+
+    context "when spam is triggered by AI check" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+
+        # Set up conditions for AI check to be true
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        article.user.update!(badge_achievements_count: 3)
+        allow(article).to receive(:processed_html).and_return("<p>contains a <a href='spam.com'>link</a></p>")
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: true))
+      end
+
+      context "for a first-time offender" do
+        it_behaves_like "first-time spam offender"
+      end
+
+      context "for a multiple offender" do
+        it_behaves_like "multiple spam offender"
+      end
+    end
   end
 
+  # The rest of the spec remains unchanged
   describe ".handle_comment!" do
     subject(:handler) { described_class.handle_comment!(comment: comment) }
 
