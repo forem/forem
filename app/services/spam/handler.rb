@@ -97,14 +97,12 @@ module Spam
       # TODO: Should we send an email when we auto-suspend?  As a matter of practice, whenever we
       #       suspend someone should we notify.  Note, this is not the only place that we suspend
       #       someone.
-      user.add_role(:suspended)
-
-      Note.create(
-        author_id: Settings::General.mascot_user_id,
-        noteable: user,
-        reason: "automatic_suspend",
-        content: I18n.t("models.comment.suspended_too_many"),
-      )
+      mod = User.find(Settings::General.mascot_user_id)
+      return unless mod
+      manager = Moderator::ManageActivityAndRoles.new(admin: mod, user: user, user_params: {})
+      manager.handle_user_status("Spam", "Mark as Spam from automatic handler")
+      payload = { action: "mark_as_spam", target_user_id: user.id }
+      Audit::Logger.log(:admin, mod, payload)
 
       return unless unpublish_all_posts_when_user_auto_suspended?
 
