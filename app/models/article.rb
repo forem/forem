@@ -866,7 +866,7 @@ class Article < ApplicationRecord
     return if %w[full_post status].include?(type_of)
 
     # Only allow fullscreen_embed for super admins and admins
-    if type_of == "fullscreen_embed" && !user.has_role?(:super_admin) && !user.has_role?(:admin)
+    if type_of == "fullscreen_embed" && !user.any_admin?
       errors.add(:type_of, "fullscreen_embed is only allowed for super admins and admins")
     end
   end
