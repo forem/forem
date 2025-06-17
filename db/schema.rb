@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -571,6 +571,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
+    t.float "general_past_day_bonus_weight", default: 0.0, null: false
     t.float "label_match_weight", default: 1.0
     t.float "language_match_weight", default: 1.0, null: false
     t.float "lookback_window_weight", default: 1.0
@@ -580,9 +581,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "recent_page_views_shuffle_weight", default: 0.0, null: false
     t.float "recent_subforem_weight", default: 0.0, null: false
     t.integer "recent_tag_count_max", default: 0
     t.integer "recent_tag_count_min", default: 0
+    t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1341,7 +1344,9 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_02_123240) do
 
   create_table "user_activities", force: :cascade do |t|
     t.jsonb "alltime_labels", default: []
+    t.jsonb "alltime_organizations", default: []
     t.jsonb "alltime_tags", default: []
+    t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []

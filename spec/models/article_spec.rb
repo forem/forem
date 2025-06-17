@@ -1396,10 +1396,56 @@ RSpec.describe Article do
     end
 
     describe "spam" do
-      it "delegates spam handling to Spam::Handler.handle_article!" do
-        allow(Spam::Handler).to receive(:handle_article!).with(article: article).and_call_original
-        article.save
-        expect(Spam::Handler).to have_received(:handle_article!).with(article: article)
+      it "enqueues Articles::HandleSpamWorker on save" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::HandleSpamWorker) do
+          article.save
+        end
+      end
+    end
+
+    describe "create conditional autovomits" do
+      let(:worker)  { Articles::HandleSpamWorker }
+      let!(:article) { create(:article, published: true) }
+
+      context "within one minute of publishing" do
+        it "enqueues for body_markdown changes" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(body_markdown: "👀 fresh body change")
+          end
+        end
+
+        it "enqueues for any other attribute change" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(title: "fresh title tweak")
+          end
+        end
+      end
+
+      context "more than one minute after publishing" do
+        before { article.update_column(:published_at, 2.minutes.ago) }
+
+        it "enqueues for body_markdown changes" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(body_markdown: "🚽 delayed body change")
+          end
+        end
+
+        it "does not enqueue for non-body changes" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            article.update(title: "delayed title tweak")
+          end
+        end
+      end
+
+      context "when the article is not published" do
+        let(:draft) { create(:article, published: false) }
+
+        it "never enqueues" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            draft.save
+            draft.update(title: "still draft")
+          end
+        end
       end
     end
 

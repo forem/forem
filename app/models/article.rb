@@ -1179,7 +1179,10 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    Spam::Handler.handle_article!(article: self)
+    return unless published
+    return unless saved_change_to_body_markdown? || published_at > 1.minute.ago
+  
+    Articles::HandleSpamWorker.perform_async(id)
   end
 
   def async_bust

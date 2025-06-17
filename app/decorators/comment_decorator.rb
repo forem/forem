@@ -4,7 +4,7 @@ class CommentDecorator < ApplicationDecorator
   end
 
   def super_low_quality
-    score < Comment::HIDE_THRESHOLD
+    score < Comment::HIDE_THRESHOLD || (score < Comment::LOW_QUALITY_THRESHOLD && processed_html.include?("<a"))
   end
 
   def published_timestamp
