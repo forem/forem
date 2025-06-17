@@ -60,7 +60,7 @@ module Spam
 
       # Return if neither of the spam conditions are met.
       return :not_spam unless rate_limit_spam ||
-        (comment.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && Ai::CommentCheck.new(comment).spam?)
+        ((comment.processed_html.include?("<a") || comment.processed_html.include?("+")) && Ai::Base::DEFAULT_KEY.present? && Ai::CommentCheck.new(comment).spam?)
 
       issue_spam_reaction_for!(reactable: comment)
       suspend_if_user_is_repeat_offender(user: comment.user)
