@@ -25,8 +25,8 @@ class StackblitzTag < LiquidTagBase
 
     stripped_input  = strip_tags(input)
     unescaped_input = CGI.unescape_html(stripped_input)
-    @id, @params   = parsed_input(unescaped_input)
-    @height        = 500
+    @id, @params    = parsed_input(unescaped_input)
+    @height         = 500
   end
 
   def render(_context)
@@ -43,20 +43,21 @@ class StackblitzTag < LiquidTagBase
   private
 
   def parsed_input(input)
-    id, *params = input.split
-    match       = pattern_match_for(id, REGEXP_OPTIONS)
+    id, *params    = input.split
+    match          = pattern_match_for(id, REGEXP_OPTIONS)
     raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_stackblitz_id") unless match
 
-    return [match[:id], nil] unless params.any? || match[:params]
+    has_url_params = match.names.include?("params") && match[:params]
+    return [match[:id], nil] unless params.any? || has_url_params
 
-    build_link_with_params(match[:id], (url_params(match) || params))
+    build_link_with_params(match[:id], url_params(match) || params)
   end
 
   def url_params(match)
-    # Safely extract and strip leading '?' from params
-    param_str = match[:params]
-    return unless param_str
-    param_str.sub(/\A\?/, "")
+    return unless match.names.include?("params") && match[:params]
+
+    # Strip leading '?', return param string
+    match[:params].sub(/\A\?/, "")
   end
 
   def build_link_with_params(id, params)
