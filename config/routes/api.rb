@@ -1,3 +1,6 @@
+resources :badges, only: %i[index show create update destroy]
+resources :badge_achievements, only: %i[index show create destroy]
+
 namespace :admin do
   resources :users, only: [:create]
 end
