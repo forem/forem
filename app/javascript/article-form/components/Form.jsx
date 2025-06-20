@@ -19,9 +19,13 @@ export const Form = ({
   errors,
   coverImageCrop,
   coverImageHeight,
+  previewMode,
 }) => {
   return (
-    <div className="crayons-article-form__content crayons-card">
+    <div className="crayons-article-form__content crayons-card"
+      style={{ display: previewMode ? 'none' : 'block' }}
+    >
+      
       {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (
@@ -64,6 +68,7 @@ Form.propTypes = {
   errors: PropTypes.object,
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
+  previewMode: PropTypes.bool,
 };
 
 Form.displayName = 'Form';
