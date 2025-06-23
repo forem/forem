@@ -79,6 +79,27 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
             post "/incoming_webhooks/stripe_events", params: payload, headers: headers
           end.not_to change(BillboardEvent, :count)
         end
+
+        context "and the Stripe session has a customer id" do
+          let(:customer_id) { "cus_TEST123" }
+          let(:payload) do
+            {
+              "type" => "checkout.session.completed",
+              "data" => {
+                "object" => {
+                  "metadata" => { "user_id" => user.id.to_s },
+                  "customer" => customer_id
+                }
+              }
+            }.to_json
+          end
+          let(:event) { JSON.parse(payload) }
+
+          it "sets the user's stripe_id_code to that customer id" do
+            post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+            expect(user.reload.stripe_id_code).to eq(customer_id)
+          end
+        end
       end
     end
   end
