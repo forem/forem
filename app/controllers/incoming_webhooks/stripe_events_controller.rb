@@ -98,7 +98,11 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.add_role("base_subscriber") unless user.base_subscriber?
+      if metadata["cancel_at_period_end"] == true
+        user.add_role("impending_base_subscriber_cancellation") unless user.impending_base_subscriber_cancellation?
+      else
+        user.add_role("base_subscriber") unless user.base_subscriber?
+      end
     end
 
     def handle_subscription_deleted(subscription)
@@ -109,9 +113,7 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.remove_role("base_subscriber")
-      user.touch
-      user.profile&.touch
+      user.add_role("impending_base_subscriber_cancellation") unless user.impending_base_subscriber_cancellation?
     end
 
     def extract_metadata(obj)
