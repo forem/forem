@@ -82,13 +82,15 @@ RSpec.describe Article do
     end
 
     describe ".from_subforem" do
-      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:non_discoverable_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: false) }
       let!(:article_in_subforem) { create(:article, subforem_id: subforem.id) }
       let!(:article_in_second_subforem) { create(:article, subforem_id: second_subforem.id) }
       let!(:article_in_null_subforem) { create(:article, subforem_id: nil) }
       let!(:article_in_other_subforem) { create(:article, subforem_id: third_subforem.id) }
+      let!(:article_in_nondiscoverable_subforem) { create(:article, subforem_id: non_discoverable_subforem.id) }
 
       after do
         RequestStore.store[:subforem_id] = nil
@@ -140,14 +142,10 @@ RSpec.describe Article do
           RequestStore.store[:root_subforem_id] = subforem.id
         end
     
-        it "returns all articles with no conditions" do
-          expect(described_class.from_subforem(subforem.id)).to contain_exactly(
-            article,
-            article_in_subforem,
-            article_in_second_subforem,
-            article_in_null_subforem,
-            article_in_other_subforem,
-          )
+        it "articles with no subforem or subforem_id in Subforem.cached_discoverable_ids" do
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_nondiscoverable_subforem)
         end
 
         it "returns proper query with additional conditions" do

@@ -357,8 +357,8 @@ class Article < ApplicationRecord
   scope :from_subforem, lambda { |subforem_id = nil|
     subforem_id ||= RequestStore.store[:subforem_id]
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
-      # No additional conditions; just return the current scope
-      where(nil)
+      # Includes articles with no subforem or subforem_id in Subforem.cached_discoverable_ids
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil] + Subforem.cached_discoverable_ids)
     elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
       where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
     else
