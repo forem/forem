@@ -66,6 +66,12 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_discoverable_ids
+    Rails.cache.fetch('subforem_discoverable_ids', expires_in: 12.hours) do
+      Subforem.where(discoverable: true).pluck(:id)
+    end
+  end
+
   def self.cached_postable_array
     Rails.cache.fetch('subforem_postable_array', expires_in: 12.hours) do
       Subforem.where(discoverable: true).pluck(:id).map { |id| [id, Settings::Community.community_name(subforem_id: id)] }
@@ -79,6 +85,7 @@ class Subforem < ApplicationRecord
     Rails.cache.delete("cached_domains")
     Rails.cache.delete("subforem_id_to_domain_hash")
     Rails.cache.delete('subforem_postable_array')
+    Rails.cache.delete('subforem_discoverable_ids')
     Rails.cache.delete('subforem_root_id')
     Rails.cache.delete('subforem_default_domain')
     Rails.cache.delete('subforem_root_domain')
