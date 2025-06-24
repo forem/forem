@@ -8,6 +8,16 @@ class RegistrationsController < Devise::RegistrationsController
       store_location_for(:user, request.referer)
     end
 
+    if RequestStore.store[:subforem_id] &&
+        RequestStore.store[:root_subforem_id] &&
+        RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+        RequestStore.store[:subforem_id] != RequestStore.store[:root_subforem_id]
+      subforem = Subforem.find_by(id: RequestStore.store[:root_subforem_id])
+      return unless subforem
+
+      return redirect_to URL.url("/enter?state=#{params[:state]}", subforem), allow_other_host: true, status: :moved_permanently
+    end
+
     super
   end
 
@@ -76,6 +86,7 @@ class RegistrationsController < Devise::RegistrationsController
       resource.password_confirmation = resource.password
     end
     check_allowed_email(resource) if resource.email.present?
+    resource.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
     resource.save if resource.email.present?
   end
 end

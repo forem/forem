@@ -2,8 +2,12 @@ class Subforem < ApplicationRecord
   has_many :articles, dependent: :nullify
   has_many :navigation_links, dependent: :nullify
   has_many :pages, dependent: :nullify
+  has_many :tag_relationships, class_name: "TagSubforemRelationship", dependent: :destroy
 
   validates :domain, presence: true, uniqueness: true
+  
+  # Only one total subforem can be the root
+  validates :root, uniqueness: { message: "Only one subforem can be the root" }, if: :root
 
   after_save :bust_caches
   before_validation :downcase_domain
@@ -49,6 +53,8 @@ class Subforem < ApplicationRecord
   def self.cached_root_domain
     Rails.cache.fetch('subforem_root_domain', expires_in: 12.hours) do
       domain = Subforem.find_by(root: true)&.domain
+      return unless domain
+
       domain += ":3000" if Rails.env.development? && !domain.include?(":3000")
       domain
     end
@@ -57,6 +63,12 @@ class Subforem < ApplicationRecord
   def self.cached_all_domains
     Rails.cache.fetch('subforem_all_domains', expires_in: 12.hours) do
       Subforem.pluck(:domain)
+    end
+  end
+
+  def self.cached_discoverable_ids
+    Rails.cache.fetch('subforem_discoverable_ids', expires_in: 12.hours) do
+      Subforem.where(discoverable: true).pluck(:id)
     end
   end
 
@@ -73,6 +85,7 @@ class Subforem < ApplicationRecord
     Rails.cache.delete("cached_domains")
     Rails.cache.delete("subforem_id_to_domain_hash")
     Rails.cache.delete('subforem_postable_array')
+    Rails.cache.delete('subforem_discoverable_ids')
     Rails.cache.delete('subforem_root_id')
     Rails.cache.delete('subforem_default_domain')
     Rails.cache.delete('subforem_root_domain')

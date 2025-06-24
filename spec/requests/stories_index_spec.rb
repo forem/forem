@@ -35,6 +35,37 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("head content")
     end
 
+    it "redirects unfound subforem to root if ENV var set" do
+      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      get "http://not-found.example.com"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://example.com/")
+    end
+
+    it "does not redirect found subforem to root if ENV var set" do
+      ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      get "http://found.example.com"
+      expect(response).to have_http_status(:ok)
+      expect(response).not_to redirect_to("http://example.com/")
+      ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
+    it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
+      allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return("#000000")
+      get "/"
+      expect(response.body).to include("body:not(.dark-theme) #topbar {background")
+    end
+
+    it "does not render topbar styles if Settings::UserExperience.accent_background_color_hex is not set" do
+      allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return(nil)
+      get "/"
+      expect(response.body).not_to include("body:not(.dark-theme) #topbar {background")
+    end
+
     it "renders bottom of body content if present" do
       allow(Settings::UserExperience).to receive(:bottom_of_body_content).and_return("bottom of body content")
       get "/"
@@ -51,6 +82,15 @@ RSpec.describe "StoriesIndex" do
       renders_proper_description
       renders_min_read_time
       renders_proper_sidebar(navigation_link)
+    end
+
+    it "Does not render article with [Boost] as the title" do
+      boost_article = create(:article, title: "[Boost]", score: 1000, featured: true, type_of: "status", body_markdown: "", main_image: "")
+      non_boost_article = create(:article, title: "Not a boost article", score: 1000, featured: true)
+
+      get "/"
+      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
+      expect(response.body).to include(CGI.escapeHTML(non_boost_article.title))
     end
 
     it "doesn't render a featured scheduled article" do

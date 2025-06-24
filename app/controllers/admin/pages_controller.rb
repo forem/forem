@@ -19,6 +19,8 @@ module Admin
 
       if (slug = params[:slug])
         prepopulate_new_form(slug)
+      elsif (params[:page])
+        @page = Page.find_by(id: params[:page])&.dup || Page.new
       else
         @page = Page.new
       end

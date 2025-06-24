@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :redirect_www_to_root
+  before_action :redirect_www_and_unregistred_subforems_to_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -197,7 +197,7 @@ class ApplicationController < ActionController::Base
 
   def respond_with_request_for_authentication
     respond_to do |format|
-      format.html { redirect_to sign_up_path }
+      format.html { redirect_to new_magic_link_path }
       format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
@@ -219,6 +219,11 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
+
+      if URI.parse(path).path == "/signout_confirm"
+        path = root_path(signin: "true")
+      end
+
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
@@ -329,6 +334,38 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def after_sign_out_path_for(_resource_or_scope)
+    "/enter"
+  end
+
+  def current_user_by_token
+    auth_header = request.headers["Authorization"]
+    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+    
+    token = auth_header.split(" ").last
+    payload = decode_auth_token(token)
+    return unless payload && payload["user_id"]
+
+    
+    user = User.find_by(id: payload["user_id"])
+    if user
+      @current_user = user
+      @token_authenticated = true
+    end
+  end
+
+  def token_authenticated?
+    @token_authenticated
+  end
+
+  def decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue
+    nil
+  end
+
   def client_geolocation
     if session_current_user_id
       request.headers["X-Client-Geo"]
@@ -371,12 +408,15 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def redirect_www_to_root
+  def redirect_www_and_unregistred_subforems_to_root
     # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
     return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
 
     if request.host.start_with?("www.")
       new_host = request.host.sub(/^www\./i, "")
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+    elsif request.host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") && RequestStore.store[:subforem_id].blank?
+      new_host = RequestStore.store[:root_subforem_domain]
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
     end
   end

@@ -117,6 +117,10 @@ fr:
       confirmation: Mon nom d'utilisateur est @%{username} et cette action est 100% sûre et appropriée.
     spaces_controller:
       update_success: L'espace a été mis à jour.
+    subforems_controller:
+      created: Le sous-forum a été créé !
+      updated: Le sous-forum a été mis à jour !
+      deleted: Le sous-forum a été supprimé !
     tags:
       moderators_controller:
         not_found: "Le nom d'utilisateur %{username} n'a pas été trouvé"

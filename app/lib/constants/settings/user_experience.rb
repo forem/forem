@@ -25,6 +25,10 @@ module Constants
             description: I18n.t("lib.constants.settings.user_experience.cover_image_fit.description"),
             placeholder: I18n.t("lib.constants.settings.user_experience.cover_image_fit.placeholder")
           },
+          feed_lookback_days: {
+            description: I18n.t("lib.constants.settings.user_experience.feed_lookback_days.description"),
+            placeholder: I18n.t("lib.constants.settings.user_experience.feed_lookback_days.placeholder")
+          },
           home_feed_minimum_score: {
             description: I18n.t("lib.constants.settings.user_experience.home_feed.description"),
             placeholder: "0"

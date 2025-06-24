@@ -1,4 +1,14 @@
 <div class="navigation-progress" id="navigation-progress"></div>
+<% if Settings::UserExperience.accent_background_color_hex.present? && Settings::UserExperience.accent_background_color_hex != "#ffffff" %>
+  <style>
+    body:not(.dark-theme) #topbar {background: <%= Settings::UserExperience.accent_background_color_hex%> }
+    body:not(.dark-theme) #topbar .c-link, body:not(.dark-theme) #topbar .c-cta, body:not(.dark-theme) #topbar .c-btn {color: white !important; border-color: white !important}
+    body:not(.dark-theme) #topbar .crayons-header--search .c-btn { color: <%= Settings::UserExperience.accent_background_color_hex%> !important; }
+    body:not(.dark-theme) #topbar .c-link[aria-current='page'], body:not(.dark-theme) #topbar .c-link.c-link--current { background-color: rgba(255,255,255,0.1) !important; }
+    body:not(.dark-theme) #topbar .crayons-dropdown .c-link { color: #333 !important; }
+    </style>
+<% end %>
+
 <header id="topbar" class="crayons-header topbar print-hidden">
   <span id="route-change-target" tabindex="-1"></span>
   <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
@@ -101,16 +111,26 @@
               document
                 .getElementById('notifications-number')
                 .classList.add('hidden');
+                if (window && window.ReactNativeWebView) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: 0 }));
+                }
             } else if (count != '0' && count != undefined && count != '') {
               document.getElementById('notifications-number').innerHTML =
                 xmlhttp.response;
               document
                 .getElementById('notifications-number')
                 .classList.remove('hidden');
+                if (window && window.ReactNativeWebView) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: count }));
+                }
             } else {
               document
                 .getElementById('notifications-number')
                 .classList.add('hidden');
+              if (window && window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: 0 }));
+              }
+
             }
           }
         };

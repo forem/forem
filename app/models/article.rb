@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
@@ -33,6 +33,7 @@ class Article < ApplicationRecord
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series
   attr_accessor :body_url
+  attr_writer :labels
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -124,6 +125,7 @@ class Article < ApplicationRecord
   enum type_of: {
     full_post: 0,
     status: 1,
+    fullscreen_embed: 2,
 }
 
   has_one :discussion_lock, dependent: :delete
@@ -222,6 +224,7 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
+  validates :compellingness_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :max_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
@@ -229,6 +232,7 @@ class Article < ApplicationRecord
   validate :title_length_based_on_type_of
   validate :title_unique_for_user_past_five_minutes
   validate :restrict_attributes_with_status_types
+  validate :restrict_type_based_on_role
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
   validate :validate_tag
@@ -341,6 +345,7 @@ class Article < ApplicationRecord
 
   scope :full_posts, -> { where(type_of: :full_post) }
   scope :statuses, -> { where(type_of: :status) }
+  scope :fullscreen_embeds, -> { where(type_of: :fullscreen_embed) }
 
   scope :not_authored_by, ->(user_id) { where.not(user_id: user_id) }
 
@@ -352,8 +357,8 @@ class Article < ApplicationRecord
   scope :from_subforem, lambda { |subforem_id = nil|
     subforem_id ||= RequestStore.store[:subforem_id]
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
-      # No additional conditions; just return the current scope
-      where(nil)
+      # Includes articles with no subforem or subforem_id in Subforem.cached_discoverable_ids
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil] + Subforem.cached_discoverable_ids)
     elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
       where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
     else
@@ -459,6 +464,22 @@ class Article < ApplicationRecord
   scope :above_average, lambda {
     order(:score).where("score >= ?", average_score)
   }
+
+  scope :followed_by, ->(user) do
+    where(<<~SQL.squish, user_id: user.id)
+      EXISTS (
+        SELECT 1
+        FROM follows AS f
+        WHERE f.follower_id = :user_id
+          AND f.follower_type = 'User'
+          AND f.blocked = FALSE
+          AND (
+                (f.followable_type = 'User'         AND f.followable_id = articles.user_id)
+             OR (f.followable_type = 'Organization' AND f.followable_id = articles.organization_id)
+          )
+      )
+    SQL
+  end
 
   def self.average_score
     Rails.cache.fetch("article_average_score", expires_in: 1.day) do
@@ -639,7 +660,15 @@ class Article < ApplicationRecord
     base_subscriber_adjustment = user.base_subscriber? ? Settings::UserExperience.index_minimum_score : 0
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment
+
+    user_featured_count_adjustment = 0
+    featured_count = user.articles.featured.count
+    user_featured_count_adjustment = ([featured_count, 10].min + Math.log(featured_count + 1)).to_i
+    user_negative_count_adjustment = 0
+    negative_count = user.articles.where("score < -10").count
+    user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
@@ -726,6 +755,11 @@ class Article < ApplicationRecord
     return unless type_of == "status"
 
     processed_html_final
+  end
+
+  def labels=(input)
+    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
+    write_attribute :cached_label_list, (adjusted_input || [])
   end
 
   private
@@ -828,6 +862,15 @@ class Article < ApplicationRecord
     end
   end
 
+  def restrict_type_based_on_role
+    return if %w[full_post status].include?(type_of)
+
+    # Only allow fullscreen_embed for super admins and admins
+    if type_of == "fullscreen_embed" && !user.any_admin?
+      errors.add(:type_of, "fullscreen_embed is only allowed for super admins and admins")
+    end
+  end
+
   def title_unique_for_user_past_five_minutes
     # Validates that the user did not create an article with the same title in the last five minutes
     return unless user_id && title
@@ -850,7 +893,7 @@ class Article < ApplicationRecord
 
     front_matter = result.front_matter
 
-    if front_matter.any?
+    if front_matter.respond_to?(:any?) && front_matter.any?
       evaluate_front_matter(front_matter)
     elsif tag_list.any?
       set_tag_list(tag_list)
@@ -1136,7 +1179,10 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    Spam::Handler.handle_article!(article: self)
+    return unless published
+    return unless saved_change_to_body_markdown? || published_at > 1.minute.ago
+  
+    Articles::HandleSpamWorker.perform_async(id)
   end
 
   def async_bust
