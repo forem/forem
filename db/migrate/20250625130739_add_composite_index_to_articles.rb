@@ -1,4 +1,4 @@
-class AddCompositeIndexToArticles < ActiveRecord::Migration[7.0] # Or your Rails version
+class AddCompositeIndexToArticles < ActiveRecord::Migration[7.0]
   disable_ddl_transaction!
   def change
     add_index :articles,
