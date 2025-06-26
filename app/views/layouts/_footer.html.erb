@@ -10,7 +10,7 @@
   <div id="footer-container" class="crayons-footer__container">
 
 
-    <% cache "footer-billboard-#{user_signed_in?}-x_", expires_in: 3.minutes do %>
+    <% cache "footer-billboard-#{user_signed_in?}-#{request.host}", expires_in: 3.minutes do %>
       <% footer_billboard = Billboard.for_display(area: "footer", user_signed_in: user_signed_in?) %>
       <% if footer_billboard %>
         <%= render partial: "shared/billboard", locals: { billboard: footer_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
