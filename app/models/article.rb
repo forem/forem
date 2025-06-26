@@ -248,6 +248,7 @@ class Article < ApplicationRecord
   before_validation :replace_blank_title_for_status
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
+  before_validation :get_youtube_embed_url
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -762,6 +763,17 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def get_youtube_embed_url
+    return unless video_source_url.present? && video_source_url.include?("youtube.com")
+
+    begin
+      self.video = YoutubeParser.new(video_source_url).call
+      p "Parsed YouTube video URL: #{video}" if Rails.env.development?
+    rescue StandardError => e
+      Rails.logger.error("Error parsing YouTube video URL: #{e.message}")
+    end
+  end
 
   def set_markdown_from_body_url
     return unless body_url.present?
