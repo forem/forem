@@ -16,7 +16,8 @@
   data-community-description="<%= j(Settings::Community.community_description) %>"
   data-community-logo="<%= optimized_image_url(Settings::General.logo_png) %>"
   data-community-background-color="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:light] %>"
-  data-community-background-color2="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:dark] %>">
+  data-community-background-color2="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:dark] %>"
+  data-include-custom-slide="true">
   <%= javascript_include_tag "Onboarding", defer: true %>
 </div>
 
