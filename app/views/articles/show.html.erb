@@ -154,7 +154,17 @@
             }
           </script>
           <header class="crayons-article__header" id="main-title">
-            <% if @article.video.present? %>
+            <% if @article.video.include?("youtube.com") %>
+              <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
+                <iframe
+                  src="<%= @article.video %>"
+                  style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  title="<%= @article.title %>"
+                ></iframe>
+              </div>
+            <% elsif @article.video.present? %>
               <%= render "articles/video_player", meta_tags: true, article: @article %>
             <% elsif @article.main_image.present? %>
               <a class="crayons-article__cover" href="<%= cloud_cover_url(@article.main_image) %>">
