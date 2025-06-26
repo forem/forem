@@ -6,6 +6,7 @@ import { EmailPreferencesForm } from './components/EmailPreferencesForm';
 import { FollowTags } from './components/FollowTags';
 import { FollowUsers } from './components/FollowUsers';
 import { ProfileForm } from './components/ProfileForm';
+import { CustomSlide } from './components/CustomSlide';
 
 export class Onboarding extends Component {
   constructor(props) {
@@ -14,8 +15,29 @@ export class Onboarding extends Component {
     this.recordBillboardConversion();
 
     const isRoot = document.body.dataset.isRootSubforem === 'true';
+    const includeCustomSlide = true //document.getElementById('onboarding-container').includeCustomSlide === 'true';
 
     const slides = isRoot ? [ProfileForm, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
+
+    if (includeCustomSlide) {
+      // const CustomSlide = () => (
+      //   <div className="onboarding-main crayons-modal crayons-modal--large">
+      //     <div className="crayons-modal__box">
+      //       <h2>Welcome to the Custom Slide!</h2>
+      //       <p>This is a custom slide that can be used for additional onboarding information.</p>
+      //       <button onClick={this.nextSlide}>Next</button>
+      //     </div>
+      //   </div>
+      // );
+      slides.splice(slides.length - 1, 0,
+        <CustomSlide
+          next={this.nextSlide}
+          prev={this.prevSlide}
+          slidesCount={slides.length}
+          currentSlideIndex={slides.length - 1}
+          communityConfig={props.communityConfig}
+        />);
+    }
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
