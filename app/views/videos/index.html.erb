@@ -28,12 +28,24 @@
     <div class="js-video-collection grid gap-2 m:gap-4 s:grid-cols-2 m:grid-cols-3 mb-6">
       <% @video_articles.each do |video_article| %>
         <a href="<%= video_article.path %>" id="video-article-<%= video_article.id %>" class="crayons-card media-card">
-          <div class="media-card__artwork">
-            <%= optimized_image_tag(video_article.video_thumbnail_url,
-                                    optimizer_options: { crop: "crop", width: 320, height: 180 },
-                                    image_options: { alt: video_article.title, loading: "lazy", class: "w-100 object-cover block aspect-16-9 h-auto" }) %>
-            <span class="media-card__artwork__badge"><%= video_article.video_duration_in_minutes %></span>
-          </div>
+          <% if video_article.video&.include?("youtube.com") %>
+            <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
+              <iframe
+                src="<%= video_article.video %>"
+                style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="<%= video_article.title %>"
+              ></iframe>
+            </div>
+          <% else %>
+            <div class="media-card__artwork">
+              <%= optimized_image_tag(video_article.video_thumbnail_url,
+                                      optimizer_options: { crop: "crop", width: 320, height: 180 },
+                                      image_options: { alt: video_article.title, loading: "lazy", class: "w-100 object-cover block aspect-16-9 h-auto" }) %>
+              <span class="media-card__artwork__badge"><%= video_article.video_duration_in_minutes %></span>
+            </div>
+          <% end %>
           <div class="media-card__content">
             <h2 class="fs-base mb-2 fw-medium"><%= video_article.title %></h2>
             <small class="fs-s">
