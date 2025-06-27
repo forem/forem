@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_25_130739) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -183,6 +183,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
     t.index ["organization_id"], name: "index_articles_on_organization_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
+    t.index ["published", "canonical_url"], name: "index_articles_on_published_and_canonical_url"
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
@@ -492,6 +493,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.string "color"
+    t.datetime "counts_tabulated_at"
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
     t.string "custom_display_label"
@@ -570,6 +572,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
+    t.float "general_past_day_bonus_weight", default: 0.0, null: false
     t.float "label_match_weight", default: 1.0
     t.float "language_match_weight", default: 1.0, null: false
     t.float "lookback_window_weight", default: 1.0
@@ -579,9 +582,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "recent_page_views_shuffle_weight", default: 0.0, null: false
     t.float "recent_subforem_weight", default: 0.0, null: false
     t.integer "recent_tag_count_max", default: 0
     t.integer "recent_tag_count_min", default: 0
+    t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1340,7 +1345,9 @@ ActiveRecord::Schema[7.0].define(version: 2025_05_13_181655) do
 
   create_table "user_activities", force: :cascade do |t|
     t.jsonb "alltime_labels", default: []
+    t.jsonb "alltime_organizations", default: []
     t.jsonb "alltime_tags", default: []
+    t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []

@@ -394,6 +394,7 @@ Rails.application.routes.draw do
 
 
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
+    get "/t/:tag/videos", to: "videos#index"
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 

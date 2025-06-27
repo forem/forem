@@ -4,8 +4,9 @@ class FeedConfig < ApplicationRecord
   def score_sql(user)
     activity_store = user.user_activity
 
-    user_follow_ids = user.cached_following_users_ids + (activity_store&.recent_users&.compact || [])
-    organization_follow_ids = user.cached_following_organizations_ids + (activity_store&.recent_organizations&.compact || [])
+    recent_pageviews_count = activity_store&.recently_viewed_articles&.count { |_, timestamp| timestamp.to_datetime > 24.hours.ago } || 0
+    user_follow_ids = (activity_store&.alltime_users&.first(200) || user.cached_following_users_ids) + (activity_store&.recent_users&.compact || [])
+    organization_follow_ids = (activity_store&.alltime_organizations&.first(200) || user.cached_following_organizations_ids) + (activity_store&.recent_organizations&.compact || [])
     recent_tags_count = rand(recent_tag_count_min..recent_tag_count_max) if recent_tag_count_min.positive? && recent_tag_count_max.positive?
     all_time_tags_count = rand(all_time_tag_count_min..all_time_tag_count_max) if all_time_tag_count_min.positive? && all_time_tag_count_max.positive?
     tag_names = activity_store&.relevant_tags(recent_tags_count || 5, all_time_tags_count || 5) || user.cached_followed_tag_names
@@ -75,13 +76,24 @@ class FeedConfig < ApplicationRecord
       terms << "(CASE WHEN articles.published_at >= '#{published_since}' THEN #{published_today_weight} ELSE 0 END)"
     end
 
+    if general_past_day_bonus_weight.positive?
+      published_since = 24.hours.ago.utc.to_fs(:db)
+      terms << "(CASE WHEN articles.published_at >= '#{published_since}' THEN #{general_past_day_bonus_weight} ELSE 0 END)"
+    end
+
+    if recently_active_past_day_bonus_weight.positive? && recent_pageviews_count.positive?
+      bonus_value = recently_active_past_day_bonus_weight * recent_pageviews_count
+      published_since = 24.hours.ago.utc.to_fs(:db)
+      terms << "(CASE WHEN articles.published_at >= '#{published_since}' THEN #{bonus_value} ELSE 0 END)"
+    end
+
     if recent_subforem_weight.positive? &&
       activity_store&.recent_subforems&.any? &&
       RequestStore.store[:root_subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
       ids     = activity_store.recent_subforems.compact
       arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
-    
+
       terms << <<~SQL.squish
         (
           CASE
@@ -129,6 +141,8 @@ class FeedConfig < ApplicationRecord
     clone.randomness_weight = randomness_weight * rand(0.9..1.1)
     clone.recent_article_suppression_rate = recent_article_suppression_rate * rand(0.9..1.1)
     clone.published_today_weight = published_today_weight * rand(0.9..1.1)
+    clone.general_past_day_bonus_weight = general_past_day_bonus_weight * rand(0.9..1.1)
+    clone.recently_active_past_day_bonus_weight = recently_active_past_day_bonus_weight * rand(0.9..1.1)
     clone.featured_weight = featured_weight * rand(0.9..1.1)
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)

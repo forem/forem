@@ -12,7 +12,9 @@ RSpec.describe FeedConfig, type: :model do
       recent_organizations: [],
       relevant_tags: ["tech", "ruby"],
       recent_labels: ["label1"],
-      recent_subforems: [1]
+      recent_subforems: [1],
+      alltime_users: [10, 20],
+      alltime_organizations: [100, 200],
     )
   end
 
@@ -170,6 +172,8 @@ RSpec.describe FeedConfig, type: :model do
           relevant_tags: [],
           recent_labels: [],
           recent_subforems: [1],
+          alltime_users: [10, 20],
+          alltime_organizations: [100, 200]
         )
       end
 
@@ -183,6 +187,8 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.language_match_weight          = 7.0
         feed_config.randomness_weight              = 8.0
         feed_config.recent_subforem_weight         = 0.5
+        feed_config.general_past_day_bonus_weight      = 9.0
+        feed_config.recently_active_past_day_bonus_weight = 1.5
       end
 
       it "includes the suppression for recently viewed articles" do
@@ -196,6 +202,22 @@ RSpec.describe FeedConfig, type: :model do
         published_since = 24.hours.ago.utc.to_s(:db)
         expect(sql).to include("articles.published_at >= '#{published_since}'")
         expect(sql).to include("3.0")
+      end
+
+      it "includes the general past day bonus weight" do
+        sql = feed_config.score_sql(user)
+        published_since = 24.hours.ago.utc.to_s(:db)
+        expect(sql).to include("articles.published_at >= '#{published_since}'")
+        expect(sql).to include("THEN 9.0")
+      end
+
+      it "includes the recently active past day bonus weight" do
+        sql = feed_config.score_sql(user)
+        published_since = 24.hours.ago.utc.to_s(:db)
+        # 2 recent pageviews in `let(:recently_viewed_articles)`
+        bonus = 1.5 * 2
+        expect(sql).to include("articles.published_at >= '#{published_since}'")
+        expect(sql).to include("THEN #{bonus.to_f}")
       end
 
       it "includes the featured weight" do
@@ -248,6 +270,26 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("CASE WHEN articles.subforem_id = ANY(ARRAY[1]::bigint[])")
       end
     end
+
+    context "when recently active bonus is positive but user has no recent views" do
+      let(:activity_store) do
+        double("ActivityStore", recently_viewed_articles: [], recent_users: [], recent_organizations: [],
+                                relevant_tags: [], recent_labels: [], recent_subforems: [],
+                                alltime_users: [], alltime_organizations: [])
+      end
+
+      before do
+        # Turn off all other weights to isolate the test
+        described_class.new.attributes.each_key do |attr|
+          feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
+        end
+        feed_config.recently_active_past_day_bonus_weight = 1.5
+      end
+
+      it "does not add the bonus term" do
+        expect(feed_config.score_sql(user)).to eq("(0)")
+      end
+    end
   end
 
   describe "#create_slightly_modified_clone!" do
@@ -270,6 +312,8 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.clickbait_score_weight         = 16.0
       feed_config.compellingness_score_weight    = 17.0
       feed_config.language_match_weight          = 18.0
+      feed_config.general_past_day_bonus_weight = 19.0
+      feed_config.recently_active_past_day_bonus_weight = 20.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -304,6 +348,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
       expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
       expect(clone.language_match_weight).to eq(18.0 * 1.1)
+      expect(clone.general_past_day_bonus_weight).to eq(19.0 * 1.1)
+      expect(clone.recently_active_past_day_bonus_weight).to eq(20.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -322,6 +368,8 @@ RSpec.describe FeedConfig, type: :model do
         "randomness_weight",
         "recent_article_suppression_rate",
         "published_today_weight",
+        "general_past_day_bonus_weight",
+        "recently_active_past_day_bonus_weight",
         "featured_weight",
         "clickbait_score_weight",
         "compellingness_score_weight",

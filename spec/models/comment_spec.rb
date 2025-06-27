@@ -444,10 +444,10 @@ RSpec.describe Comment do
   end
 
   describe "spam" do
-    it "delegates spam handling to Spam::Handler.handle_comment!" do
-      allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
+    it "delegates spam handling to HandleSpamWorker" do
+      allow(Comments::HandleSpamWorker).to receive(:perform_async)
       comment.save
-      expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
+      expect(Comments::HandleSpamWorker).to have_received(:perform_async).with(comment.id).twice
     end
 
     it "marks score as negative 3 if new user and comment includes htttp" do

@@ -37,7 +37,7 @@ describe('User Logout', () => {
     // User data should not exist on the document or in localStorage
     cy.document().should((doc) => {
       expect(doc.body.dataset).not.to.have.property('user');
-      expect(localStorage.getItem('current_user')).to.be.null;
+      expect(localStorage.length).to.eq(0);
     });
   });
 });
