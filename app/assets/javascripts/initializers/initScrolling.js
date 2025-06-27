@@ -253,7 +253,14 @@ function fetchNextFollowersPage(el) {
 }
 
 function buildVideoArticleHTML(videoArticle) {
-  if (videoArticle.video && videoArticle.video.includes("youtube.com")) {
+  const allowedHostnames = ["youtube.com", "www.youtube.com"];
+  let videoUrl;
+  try {
+    videoUrl = new URL(videoArticle.video);
+  } catch (e) {
+    videoUrl = null;
+  }
+  if (videoUrl && allowedHostnames.includes(videoUrl.hostname)) {
     return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
       <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
         <iframe
