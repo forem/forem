@@ -922,6 +922,8 @@ class Article < ApplicationRecord
   end
 
   def fetch_video_duration
+    return if video_source_url.include?("youtube.com")
+
     if video.present? && video_duration_in_seconds.zero?
       url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
       duration = 0
