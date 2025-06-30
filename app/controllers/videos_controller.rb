@@ -9,7 +9,7 @@ class VideosController < ApplicationController
       .order(hotness_score: :desc)
       .page(params[:page].to_i).per(24)
 
-    @tag = Tag.find_by(name: params[:tag]) if params[:tag].present?
+    @tag = Tag.from_subforem.find_by(name: params[:tag]) if params[:tag].present?
     @video_articles = @video_articles.cached_tagged_with(params[:tag]) if @tag
     set_surrogate_key_header "videos", Article.table_key, @video_articles.map(&:record_key)
   end
