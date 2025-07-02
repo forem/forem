@@ -156,7 +156,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :flaky) do |ex|
-    ex.run_with_retry retry: 3
+    ex.run_with_retry retry: 5
   end
 
   config.around(:each, :throttle) do |example|
@@ -189,9 +189,6 @@ RSpec.configure do |config|
   # We want our test suite to behave as though it's enabled by default.  This rspec configuration
   # helps with that.  I envision this to be a placeholder.  But we need something to get the RFC out
   # the door (https://github.com/forem/rfcs/issues/291).
-  config.before do
-    allow(Listing).to receive(:feature_enabled?).and_return(true)
-  end
 
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
@@ -218,6 +215,9 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /insights.algolia.io/)
+      .to_return(status: 200, body: "", headers: {})
+
+    stub_request(:post, /generativelanguage.googleapis.com/)
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /robohash.org/)

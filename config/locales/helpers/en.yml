@@ -118,7 +118,7 @@ en:
     authentication_helper:
       any_of_those: any of those
       email_password: Email & Password
-      reminder: 'Reminder: you used %{method} to authenticate your account, so please use %{dem} to sign in if prompted.'
+      reminder: 'You used %{method} to authenticate your account originally, so you can use %{dem} — or send yourself a <a href="%{link}" style="color:black">magic link</a>.'
       that: that
       invite_only: You cannot do this until you disable Invite Only Mode
     comments_helper:

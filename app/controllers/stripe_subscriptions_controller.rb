@@ -20,6 +20,7 @@ class StripeSubscriptionsController < ApplicationController
         },
       ],
       mode: params[:mode] || "subscription",
+      allow_promotion_codes: true,
       success_url: URL.url(ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing"),
       cancel_url: URL.url(ENV["SUBSCRIPTION_CANCEL_URL"] || "/settings/billing"),
       consent_collection: {
@@ -31,6 +32,22 @@ class StripeSubscriptionsController < ApplicationController
       },
     )
     redirect_to session.url, allow_other_host: true
+  end
+
+  def edit
+    Stripe.api_key = Settings::General.stripe_api_key
+
+    if current_user.stripe_id_code.present?
+      portal_session = Stripe::BillingPortal::Session.create({
+        customer: current_user.stripe_id_code,
+        return_url: URL.url(ENV["SUBSCRIPTION_CANCEL_URL"] || "/settings/billing"),
+      })
+
+      redirect_to portal_session.url, allow_other_host: true
+    else
+      flash[:error] = "Unable to edit subscription self-serve. Please contact support."
+      redirect_back(fallback_location: user_settings_path)
+    end
   end
 
   def destroy
@@ -50,14 +67,14 @@ class StripeSubscriptionsController < ApplicationController
         current_user.profile&.touch
         flash[:notice] = "Your subscription has been canceled."
       else
-        flash[:alert] = "No active subscription found."
+        flash[:error] = "No active subscription found."
       end
     elsif current_user.stripe_id_code.present?
-      flash[:alert] = "Invalid verification parameter. Subscription was not canceled."
+      flash[:error] = "Invalid verification parameter. Subscription was not canceled."
     else
-      flash[:alert] = "No active subscription found. Please contact us if you believe this is an error."
+      flash[:error] = "No active subscription found. Please contact us if you believe this is an error."
     end
 
-    redirect_to user_settings_path(current_user)
+    redirect_back(fallback_location: user_settings_path)
   end
 end

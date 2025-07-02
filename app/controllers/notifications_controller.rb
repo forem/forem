@@ -3,7 +3,9 @@ class NotificationsController < ApplicationController
   # rubocop:disable Metrics/PerceivedComplexity
   # No authorization required because we provide authentication on notifications page
   def index
-    return unless user_signed_in?
+    unless user_signed_in?
+      redirect_to new_magic_link_path and return
+    end
 
     @user = user_to_view
 
@@ -26,8 +28,7 @@ class NotificationsController < ApplicationController
                      else
                        @user.notifications
                      end
-
-    @notifications = @notifications.order(notified_at: :desc)
+    @notifications = @notifications.from_subforem.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
     @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset

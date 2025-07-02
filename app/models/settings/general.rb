@@ -5,7 +5,7 @@ module Settings
 
     self.table_name = "site_configs"
     SOCIAL_MEDIA_SERVICES = %w[
-      twitter facebook github instagram twitch mastodon
+      twitter facebook github instagram twitch mastodon youtube linkedin bluesky
     ].freeze
 
     # Forem Team
@@ -107,7 +107,10 @@ module Settings
       github: nil,
       instagram: nil,
       twitch: nil,
-      mastodon: nil
+      mastodon: nil,
+      youtube: nil,
+      linkedin: nil,
+      bluesky: nil
     }
     setting :twitter_hashtag, type: :string
 
@@ -164,6 +167,31 @@ module Settings
     def self.social_media_services
       SOCIAL_MEDIA_SERVICES.index_with do |name|
         social_media_handles[name]
+      end
+    end
+
+    class << self
+      # 1) grab the DSL‐generated setter
+      alias_method :__orig_set_resized_logo, :set_resized_logo
+    
+      # 2) override it in the singleton class
+      def set_resized_logo(value, subforem_id: nil)
+        # a) write the URL as normal
+        __orig_set_resized_logo(value, subforem_id: subforem_id)
+    
+        # b) compute & persist the ratio
+        if value.present?
+          begin
+            if (w, h = FastImage.size(value))
+              set_resized_logo_aspect_ratio("#{w} / #{h}", subforem_id: subforem_id)
+            end
+          rescue StandardError => e
+            Rails.logger.warn("[Settings::General] FastImage failed for #{value}: #{e.message}")
+          end
+        end
+    
+        # c) return the raw value
+        value
       end
     end
   end

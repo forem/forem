@@ -284,6 +284,20 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is post_body_bottom" do
+      it "contains read more button when body is long" do
+        billboard = create_billboard(placement_area: "post_body_bottom", body_markdown: "a " * 800)
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_body_bottom")
+        expect(response.body).to include "text-styles--billboard long-bb-body"
+      end
+
+      it "does not contain read more button when body is short" do  
+        billboard = create_billboard(placement_area: "post_body_bottom", body_markdown: "a " * 100)
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_body_bottom")
+        expect(response.body).not_to include "text-styles--billboard long-bb-body"
+      end
+    end
+
     context "when the placement area is page_fixed_bottom" do
       let(:page) { create(:page) }
 

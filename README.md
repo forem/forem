@@ -49,7 +49,7 @@ within our community. ❤️
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Vulnerability disclosure](#vulnerability-disclosure)
+- [Vulnerability Disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
@@ -63,13 +63,13 @@ with general questions please visit the
 
 We encourage you to contribute to Forem! Please check out the
 [Contributing to Forem guide](https://developers.forem.com/contributing-guide/forem)
-for guidelines about how to proceed.
+for guidelines on how to proceed.
 
 ## Getting Started
 
 This section provides a high-level quick start guide. If you're looking for a
 more thorough installation guide (for example
-[with macOS](https://developers.forem.com/getting-started/installation/mac),
+[with macOS](https://developers.forem.com/getting-started/installation/mac)),
 you'll want to refer to our complete
 [Developer Documentation](https://developers.forem.com/).
 
@@ -93,7 +93,7 @@ Please see our installation guides:
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
 
-## Vulnerability disclosure
+## Vulnerability Disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).
 

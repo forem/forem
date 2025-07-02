@@ -127,20 +127,6 @@ RSpec.describe NotifyMailer do
         expect(email.html_part.body).to include("/#{user.username}")
       end
 
-      it "doesn't include the listings URL" do
-        expect(email.html_part.body).not_to include(
-          CGI.escape(
-            Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-          ),
-        )
-      end
-
-      it "doesn't include the about listings URL" do
-        expect(email.html_part.body).not_to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain)),
-        )
-      end
-
       it "includes the click tracking parameters" do
         expect(email.html_part.body).to include("/hey?ahoy_click=true&t=")
       end
@@ -170,18 +156,6 @@ RSpec.describe NotifyMailer do
         expect(email.text_part.body).to include(URL.user(user))
       end
 
-      it "doesn't include the listings URL" do
-        expect(email.text_part.body).not_to include(
-          Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-        )
-      end
-
-      it "doesn't include the about listings URL" do
-        expect(email.text_part.body).not_to include(
-          Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain),
-        )
-      end
-
       it "includes the rewarding_context_message in the email" do
         expect(email.text_part.body).to include("Hello Yoho")
         expect(email.text_part.body).not_to include("/hey")
@@ -199,6 +173,50 @@ RSpec.describe NotifyMailer do
 
         expect(email.text_part.body).not_to include("Hello Yoho")
         expect(email.text_part.body).not_to include("/hey")
+      end
+    end
+
+    context "when the rewarding_context_message includes internal and external links" do
+      before do
+        allow(badge_achievement).to receive(:rewarding_context_message_markdown).and_return(
+          "Hello [Internal Link](/internal-path) and [External Link](https://externaldomain.com/path)",
+        )
+        badge_achievement.save!
+      end
+
+      it "processes internal links correctly in the HTML email" do
+        doc = Nokogiri::HTML(email.html_part.body.to_s)
+        internal_link = doc.at_xpath("//a[contains(text(), 'Internal Link')]")
+        expect(internal_link).not_to be_nil
+        href = internal_link["href"]
+        expect(href).to include("/internal-path")
+        expect(href).to include("ahoy_click=true")
+        expect(href).to include("t=")
+        expect(href).to include("s=")
+        expect(href).to include("u=")
+        expect(href).not_to include("/ahoy/click")
+      end
+
+      it "processes external links correctly in the HTML email" do
+        doc = Nokogiri::HTML(email.html_part.body.to_s)
+        external_link = doc.at_xpath("//a[contains(text(), 'External Link')]")
+        expect(external_link).not_to be_nil
+        href = external_link["href"]
+        expect(href).to include("/ahoy/click")
+        expect(href).to include("t=")
+        expect(href).to include("s=")
+        expect(href).to include("u=")
+        expect(href).to include(CGI.escape("https://externaldomain.com/path"))
+        expect(href).not_to eq("https://externaldomain.com/path")
+      end
+
+      it "does not add UTM parameters to internal links" do
+        doc = Nokogiri::HTML(email.html_part.body.to_s)
+        internal_link = doc.at_xpath("//a[contains(text(), 'Internal Link')]")
+        href = internal_link["href"]
+        uri = Addressable::URI.parse(href)
+        query_params = uri.query_values || {}
+        expect(query_params.keys).not_to include("utm_source", "utm_medium", "utm_campaign")
       end
     end
   end

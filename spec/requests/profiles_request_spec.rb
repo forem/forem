@@ -7,7 +7,7 @@ RSpec.describe "Profiles" do
     context "when signed out" do
       it "redirects to the login page" do
         patch profile_path(profile), params: {}
-        expect(response).to redirect_to(sign_up_path)
+        expect(response).to redirect_to(new_magic_link_path)
       end
     end
 

@@ -57,6 +57,7 @@ function feedConstruct(
   };
 
   const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
+  const isRoot = document.body.dataset.isRootSubforem === 'true';
 
   if (imageItem) {
     sendFeaturedArticleGoogleAnalytics(imageItem.id);
@@ -89,6 +90,7 @@ function feedConstruct(
           article={item}
           pinned={item.id === pinnedItem?.id}
           isFeatured={item.id === imageItem?.id}
+          isRoot={isRoot}
           feedStyle={feedStyle}
           isBookmarked={bookmarkedFeedItems.has(item.id)}
           saveable={item.user_id != currentUserId}

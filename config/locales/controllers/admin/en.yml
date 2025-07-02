@@ -33,6 +33,13 @@ en:
       deleted: Billboard has been deleted!
       updated: Billboard has been updated!
       wrong: Something went wrong with deleting the Billboard.
+    emails_controller:
+      created: Emails has been created!
+      drafted: Email has been drafted!
+      activated: Email has been activated!
+      deleted: Email has been deleted!
+      updated: Email has been updated!
+      wrong: Something went wrong with deleting the Email.
     gdpr_delete_requests_controller:
       deleted: Successfully marked as deleted
     extensions_controller:
@@ -110,6 +117,10 @@ en:
       confirmation: My username is @%{username} and this action is 100% safe and appropriate.
     spaces_controller:
       update_success: Space has been updated.
+    subforems_controller:
+      created: Subforum has been created!
+      updated: Subforum has been updated!
+      deleted: Subforum has been deleted!
     tags:
       moderators_controller:
         not_found: 'Username "%{username}" was not found'

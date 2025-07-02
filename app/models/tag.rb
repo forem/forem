@@ -38,6 +38,7 @@ class Tag < ActsAsTaggableOn::Tag
 
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
   has_many :billboards, class_name: "Billboard", through: :taggings, source: :taggable, source_type: "Billboard"
+  has_many :subforem_relationships, class_name: "TagSubforemRelationship", dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -83,13 +84,22 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
+  scope :from_subforem, lambda { |subforem_id = nil|
+    subforem_id ||= RequestStore.store[:subforem_id]
+    # Include subforem_relationships and return tags that are in that relationship
+    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+      # No additional conditions; just return the current scope
+      where(supported: true)
+    elsif subforem_id.present?
+      joins(:subforem_relationships)
+        .where(subforem_relationships: { subforem_id: subforem_id })
+    else
+      # No subforem_id provided, so return all tags
+      where(supported: true)
+    end
+  }
 
   scope :suggested_for_onboarding, -> { where(suggested: true) }
-
-  # possible social previews templates for articles with a particular tag
-  def self.social_preview_templates
-    Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
-  end
 
   def self.valid_categories
     ALLOWED_CATEGORIES
@@ -258,6 +268,7 @@ class Tag < ActsAsTaggableOn::Tag
   # @deprecated [@jeremyf] in moving towards adding the :points attribute via ActiveRecord query
   #             instantiation, this is not needed.  But it's here for later removal
   attr_writer :points
+  attr_writer :subforem_ids
 
   private
 

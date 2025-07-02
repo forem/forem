@@ -7,7 +7,9 @@ RSpec.describe "StripeSubscriptions" do
   let(:default_item_code) { ENV.fetch("STRIPE_BASE_ITEM_CODE", "default_code") }
   let(:tag_moderator_item_code) { ENV.fetch("STRIPE_TAG_MODERATOR_ITEM_CODE", "tag_moderator_code") }
   let(:subscription_success_url) { ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing" }
+  let(:billing_portal_return_url) { ENV["BILLING_PORTAL_RETURN_URL"] || "/settings/billing" }
   let(:session_url) { "https://checkout.stripe.com/pay/test_session_id" }
+  let(:portal_session_url) { "https://billing.stripe.com/session/test_portal_session_id" }
 
   describe "GET /stripe_subscriptions/new" do
     before do
@@ -19,7 +21,7 @@ RSpec.describe "StripeSubscriptions" do
       it "redirects to the sign in page" do
         get new_stripe_subscription_path
 
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -48,6 +50,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: "subscription",
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -78,6 +81,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: "subscription",
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -103,6 +107,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: "subscription",
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -139,6 +144,7 @@ RSpec.describe "StripeSubscriptions" do
               },
             ],
             mode: custom_mode,
+            allow_promotion_codes: true,
             success_url: URL.url(subscription_success_url),
             cancel_url: URL.url("/settings/billing"),
             consent_collection: {
@@ -156,6 +162,56 @@ RSpec.describe "StripeSubscriptions" do
     end
   end
 
+  describe "GET /stripe_subscriptions/edit" do
+    before do
+      StripeMock.start
+      Stripe.api_key = stripe_api_key
+    end
+
+    after { StripeMock.stop }
+
+    context "when the user is not signed in" do
+      it "redirects to the sign-in page" do
+        get edit_stripe_subscription_path("me")
+        expect(response).to redirect_to("/magic_links/new")
+      end
+    end
+
+    context "when the user is signed in" do
+      before { sign_in user }
+
+      context "when the user has a Stripe customer ID" do
+        before do
+          user.update(stripe_id_code: "cus_test123")
+          allow(Stripe::BillingPortal::Session).to receive(:create).and_return(OpenStruct.new(url: portal_session_url))
+        end
+
+        it "creates a Stripe Billing Portal session and redirects to it" do
+          get edit_stripe_subscription_path("me")
+
+          expect(Stripe::BillingPortal::Session).to have_received(:create).with(
+            customer: user.stripe_id_code,
+            return_url: URL.url(billing_portal_return_url)
+          )
+
+          expect(response).to redirect_to(portal_session_url)
+          expect(response).to have_http_status(:found)
+          expect(response.headers["Location"]).to eq(portal_session_url)
+        end
+      end
+
+      context "when the user does not have a Stripe customer ID" do
+        it "shows an error message and redirects back" do
+          get edit_stripe_subscription_path("me")
+
+          expect(flash[:error]).to eq("Unable to edit subscription self-serve. Please contact support.")
+          expect(response).to redirect_to(user_settings_path)
+        end
+      end
+    end
+  end
+
+
   describe "DELETE /stripe_subscriptions/destroy" do
     before do
       StripeMock.start
@@ -170,7 +226,7 @@ RSpec.describe "StripeSubscriptions" do
 
       it "redirects to the sign in page" do
         delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
@@ -208,7 +264,7 @@ RSpec.describe "StripeSubscriptions" do
 
           delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
 
-          expect(response).to redirect_to(user_settings_path(user))
+          expect(response).to redirect_to(user_settings_path)
           expect(flash[:notice]).to eq("Your subscription has been canceled.")
         end
       end
@@ -221,8 +277,8 @@ RSpec.describe "StripeSubscriptions" do
 
           delete stripe_subscription_path("me"), params: { verification: "wrong_verification" }
 
-          expect(response).to redirect_to(user_settings_path(user))
-          expect(flash[:alert]).to eq("Invalid verification parameter. Subscription was not canceled.")
+          expect(response).to redirect_to(user_settings_path)
+          expect(flash[:error]).to eq("Invalid verification parameter. Subscription was not canceled.")
         end
       end
 
@@ -230,8 +286,8 @@ RSpec.describe "StripeSubscriptions" do
         it "does not cancel the subscription and shows an alert" do
           delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
 
-          expect(response).to redirect_to(user_settings_path(user))
-          expect(flash[:alert]).to eq("No active subscription found. Please contact us if you believe this is an error.")
+          expect(response).to redirect_to(user_settings_path)
+          expect(flash[:error]).to eq("No active subscription found. Please contact us if you believe this is an error.")
         end
       end
 
@@ -244,8 +300,8 @@ RSpec.describe "StripeSubscriptions" do
         it "does not cancel the subscription and shows an alert" do
           delete stripe_subscription_path("me"), params: { verification: "pleasecancelmyplusplus" }
 
-          expect(response).to redirect_to(user_settings_path(user))
-          expect(flash[:alert]).to eq("No active subscription found.")
+          expect(response).to redirect_to(user_settings_path)
+          expect(flash[:error]).to eq("No active subscription found.")
         end
       end
     end

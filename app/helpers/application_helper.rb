@@ -51,12 +51,10 @@ module ApplicationHelper
   # @note [@jeremyf] - making an assumption, namely that the only navigation oriented feature is the
   #                    Listing.  If this changes, adjust this method accordingly.  Normally I like to have method return
   def navigation_link_is_for_an_enabled_feature?(link:)
-    return true if Listing.feature_enabled?
+    listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
-    # The "/listings" is an assumption on the routing.  So let's first try :listings_path.
-    listings_url = URL.url(try(:listings_path) || "/listings")
     return false if listings_url == URL.url(link.url)
-
+    
     true
   end
 
@@ -263,7 +261,36 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}-#{RequestStore.store[:subforem_id]}"
+  end
+
+  def social_media_constructed_url(social_media_type, handle)
+    if social_media_type.to_s == "mastodon"
+      handle
+    elsif social_media_type.to_s == "twitter"
+      "https://x.com/#{handle}"
+    elsif social_media_type.to_s == "bluesky"
+      "https://bsky.app/profile/#{handle}"
+    elsif social_media_type.to_s == "linkedin"
+      "https://www.linkedin.com/in/#{handle}"
+    elsif social_media_type.to_s == "youtube"
+      "https://www.youtube.com/@#{handle}"
+    else
+      "https://#{social_media_type}.com/#{handle}"
+    end
+  end
+
+  def root_unless_default_subforem
+    if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
+      Subforem.first
+    elsif RequestStore.store[:subforem_id].present?
+      Subforem.where(root: true).first
+    end
+  end
+
+  def is_root_subforem?
+    return false unless RequestStore.store[:subforem_id].present?
+    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice
@@ -276,7 +303,7 @@ module ApplicationHelper
   end
 
   def collection_link(collection, **kwargs)
-    size_string = I18n.t("views.articles.series.size", count: collection.articles.published.size)
+    size_string = I18n.t("views.articles.series.size", count: collection.articles.published.from_subforem.size)
     body = if collection.slug.present?
              I18n.t("views.articles.series.subtitle", slug: collection.slug,
                                                       size: size_string)
@@ -318,6 +345,13 @@ module ApplicationHelper
     return if Settings::General.meta_keywords[:tag].blank?
 
     tag.meta name: "keywords", content: "#{Settings::General.meta_keywords[:tag]}, #{tag_name}"
+  end
+
+  def constructed_full_url(path, subforem_id)
+    return path unless subforem_id.present?
+
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    "#{URL.protocol}#{domain}#{path}"
   end
 
   def app_url(uri = nil)
@@ -371,7 +405,7 @@ module ApplicationHelper
     role.name.titlecase
   end
 
-  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
     label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
@@ -386,7 +420,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag), options)
+    link_to(label, tag_path(tag) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?

@@ -6,6 +6,7 @@ module Constants
       "Limited" => { name: "limited", resource_type: nil },
       "Suspended" => { name: "suspended", resource_type: nil },
       "Spam" => { name: "spam", resource_type: nil },
+      "Base Subscriber" => { name: "base_subscriber", resource_type: nil },
       # This "role" is a weird amalgamation of multiple roles.
       "Good standing" => :good_standing,
       "Trusted" => { name: "trusted", resource_type: nil }

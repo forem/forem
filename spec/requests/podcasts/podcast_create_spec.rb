@@ -6,7 +6,7 @@ RSpec.describe "Podcast Create" do
   context "when unauthorized user" do
     it "redirects" do
       get new_podcast_path
-      expect(response).to redirect_to(sign_up_path)
+      expect(response).to redirect_to(new_magic_link_path)
     end
   end
 

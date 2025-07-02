@@ -4,7 +4,7 @@ module Articles
       def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
-        @page = page
+        @page = [page, 1].max
         @tag = tag
         @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: @user)
       end
@@ -14,8 +14,11 @@ module Articles
           .order(hotness_score: :desc)
           .with_at_least_home_feed_minimum_score
           .limit(@number_of_articles)
+          .offset((@page - 1) * @number_of_articles)
           .limited_column_select.includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
+          .from_subforem
+
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))

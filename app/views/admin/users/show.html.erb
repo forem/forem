@@ -54,8 +54,16 @@
   <section class="crayons-card p-3 s:p-4 m:p-6">
     <%= render "admin/users/show/flags/index" %>
   </section>
+<% elsif @current_tab == "articles" %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/articles/index" %>
+  </section>
 <% elsif @current_tab == "unpublish_logs" %>
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/unpublish_logs/index" %>
+  </section>
+<% elsif @current_tab == 'comments' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/comments/index" %>
   </section>
 <% end %>

@@ -43,7 +43,8 @@
               <td><span class="crayons-icon" role="img" aria-label="Ad is not published or approved">❌</span></td>
             <% end %>
             <td><%= billboard.success_rate %></td>
-            <td><%= link_to "Edit", edit_admin_billboard_path(billboard), class: "crayons-btn" %></td>
+            <td><%= link_to "Details", admin_billboard_path(billboard), class: "crayons-btn" %></td>
+            <td><%= link_to "Edit", edit_admin_billboard_path(billboard), class: "crayons-btn crayons-btn--secondary" %></td>
             <td>
               <button
                 class="crayons-btn crayons-btn--danger"

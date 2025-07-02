@@ -94,6 +94,8 @@ Rails.application.configure do
   config.hosts << "www.example.com"
   config.hosts << /[a-zA-Z0-9\-]+\.preview\.app\.github\.dev\z/
 
+  config.hosts << /.+\.lvh\.me/
+
   config.app_domain = ENV.fetch("APP_DOMAIN", "localhost:3000")
 
   config.action_mailer.delivery_method = :smtp
@@ -127,6 +129,8 @@ Rails.application.configure do
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
+
+  config.logger = ActiveSupport::Logger.new("log/development.log", 1, 3.megabytes)
 
   config.after_initialize do
     # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options

@@ -53,7 +53,7 @@ module Api
       num = [per_page, per_page_max].min
       page = params[:page] || 1
 
-      @articles = @organization.articles.published
+      @articles = @organization.articles.published.from_subforem
         .select(ARTICLES_FOR_SERIALIZATION)
         .includes(:user)
         .order(published_at: :desc)

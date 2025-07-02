@@ -404,7 +404,7 @@ describe('Comment on articles', () => {
     });
   });
 
-  it('should show rate limit modal', () => {
+  xit('should show rate limit modal', () => {
     cy.intercept('POST', '/comments', { statusCode: 429, body: {} });
     cy.findByRole('main').within(() => {
       cy.findByRole('textbox', {

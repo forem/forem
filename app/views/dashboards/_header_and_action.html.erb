@@ -1,0 +1,91 @@
+<header class="crayons-page-header block">
+    <h1 class="crayons-title"><%= page_title %></h1>
+    <div id="dashboard-mobile-sidebar-wrapper">
+      <div class="block m:hidden pt-3">
+        <select class="crayons-select"></select>
+      </div>
+    </div>
+    <%= render "analytics" if params[:action] == "show" %>
+  </header>
+
+  <div class="crayons-layout__sidebar-left">
+    <div id="dashboard-main-sidebar-wrapper">
+      <nav class="hidden m:block" aria-label="Dashboards">
+        <ul class="list-none p-0">
+          <li>
+            <a class="crayons-link crayons-link--block" href="/dashboard">
+              <%= t("views.dashboard.actions.posts") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block " href="/admin_mcadmin/series">
+              <%= t("views.dashboard.actions.series") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block " href="/dashboard/user_followers">
+              <%= t("views.dashboard.actions.followers") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block js-following-tags-link " href="/dashboard/following_tags">
+              <%= t("views.dashboard.actions.following_tags") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block " href="/dashboard/following_users">
+              <%= t("views.dashboard.actions.following_users") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block " href="/dashboard/following_organizations">
+              <%= t("views.dashboard.actions.following_orgs") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block " href="/dashboard/following_podcasts">
+              <%= t("views.dashboard.actions.following_pods") %>
+            </a>
+          </li>
+          <li>
+            <a class="crayons-link crayons-link--block" href="/dashboard/analytics">
+              <%= t("views.dashboard.actions.analytics") %>
+            </a>
+          </li>
+      
+          <li>
+            <a class="crayons-link crayons-link--block js-hidden-tags-link " href="/dashboard/hidden_tags">
+              <%= t("views.dashboard.actions.hidden_tags") %>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    fetch('/dashboard/sidebar?state=<%= params[:action] %>&which=<%= params[:which] %>')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('dashboard-main-sidebar-wrapper').innerHTML = html;
+      });
+    window.fetch('/dashboard/sidebar?type_of=mobile&state=<%= params[:action] %>&which=<%= params[:which] %>')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('dashboard-mobile-sidebar-wrapper').innerHTML = html;
+        let navtrigger = document.getElementById('mobile_nav_dashboard');
+        if (navtrigger) {
+          navtrigger.addEventListener('change', (event) => {
+            let url = event.target.value;
+            InstantClick.preload(url);
+            InstantClick.display(url);
+          });
+        }
+      });
+  </script>

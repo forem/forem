@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Notifications::Reactions::ReactionData do
-  let(:valid_attributes) { { "reactable_id" => 1, "reactable_type" => "Comment", "reactable_user_id" => 2 } }
+  let(:valid_attributes) { { "reactable_id" => 1, "reactable_type" => "Comment", "reactable_user_id" => 2, "reactable_subforem_id" => nil } }
 
   describe ".coerce" do
     subject(:coercion) { described_class.coerce(coercible) }

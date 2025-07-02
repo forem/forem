@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
 
 export const ContentTitle = ({ article }) => (
-  <h3 className="crayons-story__title">
-    <a href={article.path} id={`article-link-${article.id}`}>
+  <h3 className={`crayons-story__title crayons-story__title-${article.type_of}`}>
+    <a href={article.url} id={`article-link-${article.id}`}>
       {article.class_name === 'PodcastEpisode' && (
         <span className="crayons-story__flare-tag">podcast</span>
       )}
@@ -16,7 +16,7 @@ export const ContentTitle = ({ article }) => (
         </span>
       )}
       {/* eslint-disable-next-line react/no-danger */}
-      <span dangerouslySetInnerHTML={{ __html: filterXSS(article.title) }} />
+      {article.title === '[Boost]' ? <span class='crayons-story__innertitle-boost'>Boosted by <a href={`/${article.user.username}`}>{article.user.name}</a></span> : <span dangerouslySetInnerHTML={{ __html: filterXSS(article.title) }} />}
     </a>
   </h3>
 );

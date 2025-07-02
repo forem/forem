@@ -197,6 +197,7 @@ RSpec.describe Billboard do
       username_ad = create(:billboard, body_markdown: "Hello! {% embed #{url}} %}")
       expect(username_ad.processed_html).to include("/#{user.username}")
       expect(username_ad.processed_html).to include("ltag__user__link")
+      # reverse allow unified embed
     end
   end
 
@@ -693,6 +694,155 @@ RSpec.describe Billboard do
 
           expect(observed_probability).to be_within(0.025).of(expected_probability)
         end
+      end
+    end
+  end
+
+  describe "#processed_html_final" do
+    let(:prior_domain) { "https://old.cdn.com" }
+    let(:new_domain) { "https://new.cdn.com" }
+
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
+    end
+
+    context "when the prior domain and new domain are both present" do
+      it "replaces instances of the prior domain with the new domain" do
+        billboard.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+        expect(billboard.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+      end
+
+      it "does not modify text if the prior domain is not present in the processed_html" do
+        billboard.processed_html = "Content with no images or domains."
+        expect(billboard.processed_html_final).to eq("Content with no images or domains.")
+      end
+    end
+
+    context "when the application configuration for the domains is blank" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "returns the original processed_html unchanged" do
+        billboard.processed_html = "Content with the old domain #{prior_domain}."
+        expect(billboard.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+      end
+    end
+  end
+
+  describe "#update_event_counts_when_taking_down" do
+    let!(:active_billboard) { create(:billboard, published: true, approved: true) }
+    let!(:impression_event)  { create(:billboard_event, billboard: active_billboard, category: "impression", counts_for: 2) }
+    let!(:click_event)       { create(:billboard_event, billboard: active_billboard, category: "click",     counts_for: 1) }
+    let!(:conversion_event)  { create(:billboard_event, billboard: active_billboard, category: "conversion", counts_for: 3) }
+
+    before do
+      # Make sure Sidekiq is in fake mode and clear any existing jobs
+      Sidekiq::Worker.clear_all
+    end
+
+    context "when transitioning from active to down" do
+      it "enqueues a DataUpdateWorker when approved goes from true to false" do
+        expect {
+          active_billboard.update(approved: false)
+        }.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
+      end
+
+      it "enqueues a DataUpdateWorker when published goes from true to false" do
+        expect {
+          active_billboard.update(published: false)
+        }.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
+      end
+
+      it "enqueues only one DataUpdateWorker when both approved and published go from true to false" do
+        expect {
+          active_billboard.update(approved: false, published: false)
+        }.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
+      end
+    end
+
+    context "when the billboard is already down" do
+      before do
+        active_billboard.update!(approved: false, published: false)
+        Sidekiq::Worker.clear_all
+      end
+
+      it "does not enqueue a worker if approved remains false" do
+        expect {
+          active_billboard.update(approved: false)
+        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+      end
+
+      it "does not enqueue a worker if published remains false" do
+        expect {
+          active_billboard.update(published: false)
+        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+      end
+
+      it "does not enqueue a worker when updating unrelated attributes" do
+        expect {
+          active_billboard.update(name: "New Name")
+        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+      end
+    end
+
+    context "when no state changes occur" do
+      it "does not enqueue a worker if approved and published both stay true" do
+        expect {
+          active_billboard.update(name: "Just Renaming")
+        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+      end
+    end
+  end
+
+  describe ".for_display" do
+    let!(:paired_bb) do
+      create(
+        :billboard,
+        placement_area: "digest_second",
+        published: true,
+        approved: true
+      )
+    end
+
+    let!(:other_bb) do
+      create(
+        :billboard,
+        placement_area: "digest_second",
+        published: true,
+        approved: true
+      )
+    end
+
+    context "when prefer_paired_with_billboard_id is provided" do
+      it "returns the billboard matching that ID" do
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          prefer_paired_with_billboard_id: paired_bb.id,
+          user_tags: nil,
+          user_id: nil
+        )
+
+        expect(result).to eq(paired_bb)
+      end
+
+      it "falls back to normal selection if the paired ID isn't in the available set" do
+        # pick some ID that doesn't exist in billboards_for_display
+        missing_id = other_bb.id + paired_bb.id + 1
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          prefer_paired_with_billboard_id: missing_id,
+          user_tags: nil,
+          user_id: nil
+        )
+
+        # since only paired_bb and other_bb exist for this area, it must return one of them
+        expect([paired_bb, other_bb]).to include(result)
       end
     end
   end

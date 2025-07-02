@@ -1,11 +1,15 @@
 class ApplicationController < ActionController::Base
+  before_action :redirect_www_and_unregistred_subforems_to_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
+  before_action :set_session_domain
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
+  before_action :set_devise_rememberable_options # Add this line
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
   before_action :determine_locale
+  after_action  :clear_request_store
 
   include SessionCurrentUser
   include ValidRequest
@@ -13,8 +17,13 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include DevelopmentDependencyChecks if Rails.env.development?
-  include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
+
+
+  # We are not currently using this, as we're going to prefer manual review in prod.
+  # This was removed due to flakiness.
+  # include EdgeCacheSafetyCheck unless Rails.env.production?
+
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
@@ -158,9 +167,37 @@ class ApplicationController < ActionController::Base
     respond_with_request_for_authentication
   end
 
+  def set_subforem_cors_headers
+    allowed_origins = Subforem.cached_domains.map { |domain| "https://#{domain}" }
+
+    if allowed_origins.include?(request.origin)
+      response.set_header('Access-Control-Allow-Origin', request.origin)
+    end
+
+    response.set_header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD')
+    response.set_header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
+    response.set_header('Access-Control-Allow-Credentials', 'true') # If credentials (cookies) are needed
+  end
+
+  def should_redirect_to_subforem?(article)
+    subforem_not_same = article.subforem_id.present? && article.subforem_id != RequestStore.store[:subforem_id]
+    subforem_not_default_and_no_subforem_id = article.subforem_id.blank? &&
+      RequestStore.store[:subforem_id].present? &&
+      (RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id])
+    subforem_not_same || subforem_not_default_and_no_subforem_id
+  end
+
+  def redirect_page_if_different_subforem
+    return unless @page.subforem_id.present? &&
+      RequestStore.store[:subforem_id].present? &&
+      @page.subforem_id != RequestStore.store[:subforem_id]
+  
+    redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
+  end
+
   def respond_with_request_for_authentication
     respond_to do |format|
-      format.html { redirect_to sign_up_path }
+      format.html { redirect_to new_magic_link_path }
       format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
@@ -182,6 +219,11 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
+
+      if URI.parse(path).path == "/signout_confirm"
+        path = root_path(signin: "true")
+      end
+
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
@@ -259,6 +301,29 @@ class ApplicationController < ActionController::Base
                   end
   end
 
+  def set_devise_rememberable_options
+    # Determine the domain based on the request
+    domain = if Rails.env.production?
+               # List of your secondary domains
+               secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
+               if secondary_domains.include?(request.host)
+                request.session_options[:domain] = root_domain(request.host)
+              else
+                 Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
+               end
+             else
+               # In non-production environments, don't set the domain
+               nil
+             end
+
+    # Set the rememberable options for Devise
+    request.env['devise.rememberable_options'] = {
+      domain: domain,
+      secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
+      httponly: true
+    }
+  end
+
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
     if user_signed_in? &&
@@ -267,6 +332,38 @@ class ApplicationController < ActionController::Base
       current_user.remember_me!
       remember_me(current_user)
     end
+  end
+
+  def after_sign_out_path_for(_resource_or_scope)
+    "/enter"
+  end
+
+  def current_user_by_token
+    auth_header = request.headers["Authorization"]
+    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+    
+    token = auth_header.split(" ").last
+    payload = decode_auth_token(token)
+    return unless payload && payload["user_id"]
+
+    
+    user = User.find_by(id: payload["user_id"])
+    if user
+      @current_user = user
+      @token_authenticated = true
+    end
+  end
+
+  def token_authenticated?
+    @token_authenticated
+  end
+
+  def decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue
+    nil
   end
 
   def client_geolocation
@@ -295,7 +392,7 @@ class ApplicationController < ActionController::Base
       # If the app domain config has now been set, let's go there instead.
       ENV["APP_DOMAIN"] != Settings::General.app_domain
 
-    redirect_to URL.url(request.fullpath)
+    redirect_to URL.url(request.fullpath), allow_other_host: true
   end
 
   def bust_content_change_caches
@@ -311,14 +408,56 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def redirect_www_and_unregistred_subforems_to_root
+    # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
+    return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
+
+    if request.host.start_with?("www.")
+      new_host = request.host.sub(/^www\./i, "")
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+    elsif request.host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") && RequestStore.store[:subforem_id].blank?
+      new_host = RequestStore.store[:root_subforem_domain]
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
+  end
+
+  def set_session_domain
+    if Rails.env.production?
+      # List of your secondary domains
+      secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
+      if secondary_domains.include?(request.host)
+        request.session_options[:domain] = root_domain(request.host)
+      else
+        # For main domain, set to ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] = Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
+      end
+    else
+      # In non-production environments, don't set the domain
+      request.session_options[:domain] = nil
+    end
+  end
+
+  def root_domain(host)
+    # The `default_rule: nil` option ensures it raises an error if the domain is invalid
+    parsed = PublicSuffix.parse(host, default_rule: nil)
+    parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+  rescue PublicSuffix::DomainInvalid
+    host
   end
 
   def internal_nav_param
     return "" unless params[:i] == "i"
 
     "?i=i"
+  end
+
+  def clear_request_store
+    # Clear RequestStore in development/test to avoid lingering. Not important in prod. 
+    RequestStore.clear! unless Rails.env.production?
   end
 end

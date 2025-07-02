@@ -16,7 +16,7 @@ RSpec.describe Comment do
       it { is_expected.to belong_to(:user) }
       # it { is_expected.to belong_to(:commentable).optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:delete_all) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
 
@@ -444,10 +444,10 @@ RSpec.describe Comment do
   end
 
   describe "spam" do
-    it "delegates spam handling to Spam::Handler.handle_comment!" do
-      allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
+    it "delegates spam handling to HandleSpamWorker" do
+      allow(Comments::HandleSpamWorker).to receive(:perform_async)
       comment.save
-      expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
+      expect(Comments::HandleSpamWorker).to have_received(:perform_async).with(comment.id).twice
     end
 
     it "marks score as negative 3 if new user and comment includes htttp" do
@@ -617,8 +617,43 @@ RSpec.describe Comment do
     it "indexes on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:comment)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer), 
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer),
 false).once
     end
   end
+
+  describe "#processed_html_final" do
+  let(:prior_domain) { "https://old.cdn.com" }
+  let(:new_domain) { "https://new.cdn.com" }
+
+  before do
+    allow(ApplicationConfig).to receive(:[]).and_call_original # allow all real calls by default
+    allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
+    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
+    end
+
+  context "when the prior domain and new domain are both present" do
+    it "replaces instances of the prior domain with the new domain" do
+      comment.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+      expect(comment.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+    end
+
+    it "does not modify text if the prior domain is not present in the processed_html" do
+      comment.processed_html = "Content with no images or domains."
+      expect(comment.processed_html_final).to eq("Content with no images or domains.")
+    end
+  end
+
+  context "when the application configuration for the domains is blank" do
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+    end
+
+    it "returns the original processed_html unchanged" do
+      comment.processed_html = "Content with the old domain #{prior_domain}."
+      expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+    end
+  end
+end
 end

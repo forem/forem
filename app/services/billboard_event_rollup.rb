@@ -4,16 +4,23 @@ class BillboardEventRollup
   STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 10_000).to_i.seconds / 1_000.to_f
 
   class EventAggregator
-    Compact = Struct.new(:events, :user_id, :billboard_id, :category, :context_type) do
+    Compact = Struct.new(:events, :user_id, :display_ad_id, :category, :context_type) do
       def to_h
-        super.except(:events).merge({ counts_for: events.sum(&:counts_for) })
+        {
+          user_id: user_id,
+          display_ad_id: display_ad_id,
+          category: category,
+          context_type: context_type,
+          counts_for: events.sum(&:counts_for),
+          created_at: events.first.created_at
+        }
       end
     end
 
     def initialize
       @aggregator = Hash.new do |level1, user_id|
-        level1[user_id] = Hash.new do |level2, billboard_id|
-          level2[billboard_id] = Hash.new do |level3, category|
+        level1[user_id] = Hash.new do |level2, display_ad_id|
+          level2[display_ad_id] = Hash.new do |level3, category|
             level3[category] = Hash.new do |level4, context_type|
               level4[context_type] = []
             end
@@ -23,17 +30,17 @@ class BillboardEventRollup
     end
 
     def <<(event)
-      @aggregator[event.user_id][event.billboard_id][event.category][event.context_type] << event
+      @aggregator[event.user_id][event.display_ad_id][event.category][event.context_type] << event
     end
 
     def each
-      @aggregator.each_pair do |user_id, grouped_by_user_id|
-        grouped_by_user_id.each_pair do |billboard_id, grouped_by_billboard_id|
-          grouped_by_billboard_id.each_pair do |category, grouped_by_category|
+      @aggregator.each_pair do |user_id, grouped_by_user|
+        grouped_by_user.each_pair do |display_ad_id, grouped_by_display_ad|
+          grouped_by_display_ad.each_pair do |category, grouped_by_category|
             grouped_by_category.each_pair do |context_type, events|
               next unless events.size > 1
 
-              yield Compact.new(events, user_id, billboard_id, category, context_type)
+              yield Compact.new(events, user_id, display_ad_id, category, context_type)
             end
           end
         end
@@ -50,62 +57,57 @@ class BillboardEventRollup
   end
 
   def initialize(relation:)
-    @aggregator = EventAggregator.new
     @relation = relation
   end
 
-  attr_reader :aggregator, :relation
+  attr_reader :relation
 
   def rollup(date, batch_size: 1000)
     created = []
-
-    # Ensure SET LOCAL is done within a transaction block
-    relation.transaction do
-      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
-
-      relation.where(created_at: date.all_day).in_batches(of: batch_size) do |rows_batch|
-        aggregate_into_groups(rows_batch).each do |compacted_events|
-          created << compact_records(date, compacted_events)
+    # Set statement_timeout for the initial query and then reset it
+    relation.connection.execute("SET statement_timeout = '#{STATEMENT_TIMEOUT}s'")
+    display_ad_ids = relation.where(created_at: date.all_day).distinct.pluck(:display_ad_id)
+    relation.connection.execute("RESET statement_timeout")
+  
+    display_ad_ids.each do |display_ad_id|
+      aggregator = EventAggregator.new
+  
+      # Each billboard is processed in its own transaction
+      relation.transaction(requires_new: true) do
+        relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'")
+  
+        relation.where(display_ad_id: display_ad_id, created_at: date.all_day).in_batches(of: batch_size) do |batch|
+          batch.each do |event|
+            aggregator << event
+          end
         end
+  
+        aggregator.each do |compacted_events|
+          created << compact_records(compacted_events)
+        end
+      ensure
+        relation.connection.execute("RESET statement_timeout")
       end
     end
-
+  
     created
-  ensure
-    relation.connection.execute("RESET statement_timeout") # Reset after fetching batches
   end
 
   private
 
-  def aggregate_into_groups(rows)
-    # SET LOCAL inside transaction
-    relation.transaction do
-      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
-
-      rows.in_batches.each_record do |event|
-        aggregator << event
-      end
-    end
-
-    aggregator
-  ensure
-    relation.connection.execute("RESET statement_timeout") # Reset after aggregation
-  end
-
-  def compact_records(date, compacted)
+  def compact_records(compacted)
     result = nil
 
     relation.transaction do
-      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'") # Set temp timeout
-      result = relation.create!(compacted.to_h) do |event|
-        event.created_at = date
-      end
+      relation.connection.execute("SET LOCAL statement_timeout = '#{STATEMENT_TIMEOUT}s'")
 
-      relation.where(id: compacted.events).delete_all
+      result = relation.create!(compacted.to_h)
+
+      relation.where(id: compacted.events.map(&:id)).delete_all
+    ensure
+      relation.connection.execute("RESET statement_timeout")
     end
 
     result
-  ensure
-    relation.connection.execute("RESET statement_timeout") # Reset to the default timeout
   end
 end

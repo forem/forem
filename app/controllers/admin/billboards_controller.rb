@@ -11,6 +11,12 @@ module Admin
       @billboards = @billboards.search_ads(params[:search])
     end
 
+    def show
+      @billboard = Billboard.find(params[:id])
+      @events = @billboard.billboard_events.order("created_at DESC").where.not(user_id: nil)
+        .where.not(category: "impression").includes(:user).limit(25)
+    end
+
     def new
       @billboard = Billboard.new
     end
@@ -60,7 +66,7 @@ module Admin
       params.permit(:organization_id, :body_markdown, :placement_area, :target_geolocations,
                     :published, :approved, :name, :display_to, :tag_list, :type_of, :color,
                     :exclude_article_ids, :audience_segment_id, :priority, :browser_context,
-                    :exclude_role_names, :target_role_names,
+                    :exclude_role_names, :target_role_names, :include_subforem_ids,
                     :render_mode, :template, :custom_display_label, :requires_cookies)
     end
 

@@ -39,7 +39,7 @@ module Homepage
       page: 0,
       per_page: DEFAULT_PER_PAGE
     )
-      @relation = Article.published.select(*ATTRIBUTES)
+      @relation = Article.published.from_subforem.select(*ATTRIBUTES)
         .includes(:distinct_reaction_categories)
 
       @approved = approved
@@ -66,6 +66,7 @@ module Homepage
                 :sort_by, :sort_direction, :page, :per_page
 
     def filter
+      @relation = @relation.full_posts
       @relation = @relation.where(approved: approved) unless approved.nil?
       @relation = @relation.where(published_at: published_at) if published_at.present?
       @relation = @relation.where(user_id: user_id) if user_id.present?
@@ -74,6 +75,7 @@ module Homepage
       @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
       @relation = @relation.includes(:distinct_reaction_categories)
       @relation = @relation.where("score >= 0") # Never return negative score articles
+      @relation = @relation.from_subforem
 
       relation
     end

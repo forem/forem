@@ -1,0 +1,21 @@
+<div class="flex flex-col h-100">
+  <h2>All published posts</h2>
+  <p>View unpublished posts by visiting the <a href="https://dev.to/dashboard/<%= @user.username %>">user dashboard.</a></p>
+  <% published_articles = @articles.published %>
+  <% if published_articles.empty? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      No Published Articles
+    </div>
+  <% else %>
+    <div class="pt-3">
+      <ul>
+        <% published_articles.each do |article| %>
+          <li>
+            <%= link_to article.title, article.path, target: "_blank", rel: "noopener" %>
+            <small>(<%= article.published_at.to_date %>)</small>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>
