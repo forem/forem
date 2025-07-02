@@ -82,13 +82,15 @@ RSpec.describe Article do
     end
 
     describe ".from_subforem" do
-      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:non_discoverable_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: false) }
       let!(:article_in_subforem) { create(:article, subforem_id: subforem.id) }
       let!(:article_in_second_subforem) { create(:article, subforem_id: second_subforem.id) }
       let!(:article_in_null_subforem) { create(:article, subforem_id: nil) }
       let!(:article_in_other_subforem) { create(:article, subforem_id: third_subforem.id) }
+      let!(:article_in_nondiscoverable_subforem) { create(:article, subforem_id: non_discoverable_subforem.id) }
 
       after do
         RequestStore.store[:subforem_id] = nil
@@ -140,14 +142,10 @@ RSpec.describe Article do
           RequestStore.store[:root_subforem_id] = subforem.id
         end
     
-        it "returns all articles with no conditions" do
-          expect(described_class.from_subforem(subforem.id)).to contain_exactly(
-            article,
-            article_in_subforem,
-            article_in_second_subforem,
-            article_in_null_subforem,
-            article_in_other_subforem,
-          )
+        it "articles with no subforem or subforem_id in Subforem.cached_discoverable_ids" do
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_nondiscoverable_subforem)
         end
 
         it "returns proper query with additional conditions" do
@@ -346,7 +344,40 @@ RSpec.describe Article do
           end
         end
       end
-    end  
+    end
+
+    describe "#restrict_type_based_on_role" do
+      context "when user is an admin" do
+        before { article.user.add_role(:admin) }
+        it "allows setting type_of to 'fullscreen_embed'" do
+          article.type_of = "fullscreen_embed"
+          expect(article).to be_valid
+        end
+        it "allows setting type_of to 'status'" do
+          article.type_of = "status"
+          expect(article).to be_valid
+        end
+        it "allows setting type_of to 'full_post'" do
+          article.type_of = "full_post"
+          expect(article).to be_valid
+        end
+      end
+      context "when user is not an admin" do
+        before { article.user.remove_role(:admin) }
+        it "does not allow setting type_of to 'fullscreen_embed'" do
+          article.type_of = "fullscreen_embed"
+          expect(article).not_to be_valid
+        end
+        it "allows setting type_of to 'status'" do
+          article.type_of = "status"
+          expect(article).to be_valid
+        end
+        it "allows setting type_of to 'full_post'" do
+          article.type_of = "full_post"
+          expect(article).to be_valid
+        end
+      end
+    end
 
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
@@ -1363,10 +1394,56 @@ RSpec.describe Article do
     end
 
     describe "spam" do
-      it "delegates spam handling to Spam::Handler.handle_article!" do
-        allow(Spam::Handler).to receive(:handle_article!).with(article: article).and_call_original
-        article.save
-        expect(Spam::Handler).to have_received(:handle_article!).with(article: article)
+      it "enqueues Articles::HandleSpamWorker on save" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::HandleSpamWorker) do
+          article.save
+        end
+      end
+    end
+
+    describe "create conditional autovomits" do
+      let(:worker)  { Articles::HandleSpamWorker }
+      let!(:article) { create(:article, published: true) }
+
+      context "within one minute of publishing" do
+        it "enqueues for body_markdown changes" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(body_markdown: "👀 fresh body change")
+          end
+        end
+
+        it "enqueues for any other attribute change" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(title: "fresh title tweak")
+          end
+        end
+      end
+
+      context "more than one minute after publishing" do
+        before { article.update_column(:published_at, 2.minutes.ago) }
+
+        it "enqueues for body_markdown changes" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(body_markdown: "🚽 delayed body change")
+          end
+        end
+
+        it "does not enqueue for non-body changes" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            article.update(title: "delayed title tweak")
+          end
+        end
+      end
+
+      context "when the article is not published" do
+        let(:draft) { create(:article, published: false) }
+
+        it "never enqueues" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            draft.save
+            draft.update(title: "still draft")
+          end
+        end
       end
     end
 
@@ -1710,6 +1787,37 @@ RSpec.describe Article do
 
         article.update_score
         expect(article.reload.score).to eq(10)
+      end
+    end
+
+    context "when user has featured articles" do
+      it "adds the user featured article adjustment to the score" do
+        create_list(:article, 5, user: user, featured: true)
+        article.update_score
+        expect(article.reload.score).to eq(10 + 6) # 6 is 5 plus 1 for the log adjustment
+      end
+
+      it "adds the user featured article adjustment to the score when the user has many articles" do
+        current_score = article.score
+        create_list(:article, 52, user: user, featured: true)
+        article.update_score
+        expect(article.reload.score).to eq(10 + 13) # 10 for count, 3 for log adjustment
+      end
+    end
+
+    context "when user has negative articles" do
+      # negative_count = user.articles.where("score < -10").count
+      # user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+      it "adds the user negative article adjustment to the score" do
+        create_list(:article, 5, user: user, score: -20)
+        article.update_score
+        expect(article.reload.score).to eq(10 - 4) # 4 is 3 for count, 1 for log adjustment
+      end
+
+      it "adds the user negative article adjustment to the score when the user has many articles" do
+        create_list(:article, 52, user: user, score: -20)
+        article.update_score
+        expect(article.reload.score).to eq(10 - 6) # 6 is 3 for count, 3 for log adjustment
       end
     end
 

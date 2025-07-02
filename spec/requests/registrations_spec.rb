@@ -286,6 +286,23 @@ RSpec.describe "Registrations" do
         expect(new_user).not_to be_limited
       end
 
+      it "registeres a user with appropriate subforem" do
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } },
+          headers: { "HOST" => "#{subforem.domain}" }
+        new_user = User.last
+        expect(new_user.registered).to be true
+        expect(new_user.registered_at).not_to be_nil
+        expect(new_user).not_to be_limited
+        expect(new_user.onboarding_subforem_id).to eq(subforem.id)
+      end
+
+
       it "limits the user if the admins have set new user status to limited" do
         allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
 

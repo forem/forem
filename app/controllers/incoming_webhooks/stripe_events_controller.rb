@@ -59,7 +59,7 @@ module IncomingWebhooks
       unless user.base_subscriber? # Don't add role if user is already a subscriber
         user.add_role("base_subscriber")
         user.stripe_id_code = extract_customer(invoice)
-        user.touch
+        user.save
         user.profile&.touch
         NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
       end
@@ -98,7 +98,11 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.add_role("base_subscriber") unless user.base_subscriber?
+      if metadata["cancel_at_period_end"] == true
+        user.add_role("impending_base_subscriber_cancellation") unless user.impending_base_subscriber_cancellation?
+      else
+        user.add_role("base_subscriber") unless user.base_subscriber?
+      end
     end
 
     def handle_subscription_deleted(subscription)
@@ -109,9 +113,7 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.remove_role("base_subscriber")
-      user.touch
-      user.profile&.touch
+      user.add_role("impending_base_subscriber_cancellation") unless user.impending_base_subscriber_cancellation?
     end
 
     def extract_metadata(obj)
@@ -123,7 +125,9 @@ module IncomingWebhooks
 
     def extract_customer(obj)
       obj.customer if obj.respond_to?(:customer)
-    rescue StandardError
+      obj["customer"] if obj.is_a?(Hash) && obj.key?("customer")
+    rescue StandardError => e
+      Honeybadger.notify(e, context: { object: obj })
       nil
     end
   end

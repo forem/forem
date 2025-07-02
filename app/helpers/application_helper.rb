@@ -51,12 +51,10 @@ module ApplicationHelper
   # @note [@jeremyf] - making an assumption, namely that the only navigation oriented feature is the
   #                    Listing.  If this changes, adjust this method accordingly.  Normally I like to have method return
   def navigation_link_is_for_an_enabled_feature?(link:)
-    return true if Listing.feature_enabled?
+    listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
-    # The "/listings" is an assumption on the routing.  So let's first try :listings_path.
-    listings_url = URL.url(try(:listings_path) || "/listings")
     return false if listings_url == URL.url(link.url)
-
+    
     true
   end
 
@@ -290,6 +288,11 @@ module ApplicationHelper
     end
   end
 
+  def is_root_subforem?
+    return false unless RequestStore.store[:subforem_id].present?
+    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+  end
+
   def copyright_notice
     start_year = Settings::Community.copyright_start_year.to_s
     current_year = Time.current.year.to_s
@@ -402,7 +405,7 @@ module ApplicationHelper
     role.name.titlecase
   end
 
-  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
     label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
@@ -417,7 +420,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag), options)
+    link_to(label, tag_path(tag) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?

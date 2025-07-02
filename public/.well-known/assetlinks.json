@@ -2,8 +2,8 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "to.dev.dev_android",
+    "package_name": "com.forem.android",
     "sha256_cert_fingerprints":
-    ["2B:A7:3D:9B:CE:6F:54:F9:B1:99:EC:45:E0:F2:D2:2E:2E:BF:3B:E8:89:5D:1C:30:B1:B9:C2:52:04:48:AD:48"]
+    ["01:7B:DF:23:02:21:78:49:46:EC:48:89:5B:B0:A2:08:04:D8:D1:AE:E7:80:78:FB:E1:00:40:56:8B:C9:D8:B0"]
   }
 }]

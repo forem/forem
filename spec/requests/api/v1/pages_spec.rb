@@ -52,13 +52,13 @@ RSpec.describe "Api::V1::Pages" do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it "returns unauthorize from update" do
+    it "returns unauthorized from update" do
       put api_page_path(page.id), params: page.attributes.merge(title: "Doesn't Matter").to_json,
                                   headers: non_auth_header
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it "returns unauthorize from destroy" do
+    it "returns unauthorized from destroy" do
       delete api_page_path(page.id), headers: non_auth_header
       expect(response).to have_http_status(:unauthorized)
     end
@@ -102,6 +102,17 @@ RSpec.describe "Api::V1::Pages" do
       expect(page).to be_nil
     end
 
+    context "when creation fails validation" do
+      it "returns the error header with a message" do
+        # Assuming that a page requires either body_html or body_markdown.
+        post_params[:body_html] = nil
+        post_params[:body_markdown] = nil
+        post api_pages_path, params: post_params.to_json, headers: auth_header
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.headers["X-Error-Text"]).to be_present
+      end
+    end
+
     it "can update an existing page via put" do
       put api_page_path(page.id), params: page.attributes.merge(title: "Brand New Title").to_json, headers: auth_header
       expect(response).to have_http_status(:success)
@@ -120,6 +131,16 @@ RSpec.describe "Api::V1::Pages" do
       put api_page_path(page.id), params: post_params.to_json, headers: auth_header
       expect(response).to have_http_status(:success)
       expect(page.reload.processed_html).to include("other")
+    end
+
+    context "when update fails validation" do
+      it "returns the error header with a message" do
+        # Here we assume that an update fails if both body_html and body_markdown are nil.
+        invalid_params = page.attributes.merge(body_html: nil, body_markdown: nil)
+        put api_page_path(page.id), params: invalid_params.to_json, headers: auth_header
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.headers["X-Error-Text"]).to be_present
+      end
     end
 
     it "creates a page with body_css" do
@@ -152,6 +173,16 @@ RSpec.describe "Api::V1::Pages" do
       delete api_page_path(page.id), headers: auth_header
       expect(response).to have_http_status(:success)
       expect(Page).not_to exist(page.id)
+    end
+
+    context "when destroy fails" do
+      it "returns the error header with a message" do
+        # For testing failure, we can stub the destroy method to simulate a failure.
+        allow_any_instance_of(Page).to receive(:destroy).and_return(false)
+        delete api_page_path(page.id), headers: auth_header
+        expect(response).to have_http_status(:unprocessable_entity)
+        # expect(response.headers["X-Error-Text"]).to be_present
+      end
     end
 
     context "when providing a social image url" do

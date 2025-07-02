@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_25_130739) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -183,6 +183,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.index ["organization_id"], name: "index_articles_on_organization_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
+    t.index ["published", "canonical_url"], name: "index_articles_on_published_and_canonical_url"
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
@@ -492,6 +493,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.string "color"
+    t.datetime "counts_tabulated_at"
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
     t.string "custom_display_label"
@@ -505,6 +507,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.bigint "organization_id"
     t.bigint "page_id"
     t.string "placement_area"
+    t.bigint "prefer_paired_with_billboard_id"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
     t.text "processed_html"
@@ -525,6 +528,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
     t.index ["target_role_names"], name: "index_display_ads_on_target_role_names", using: :gin
@@ -546,15 +550,19 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.integer "drip_day", default: 0
+    t.bigint "onboarding_subforem_id"
     t.integer "status", default: 0
     t.string "subject", null: false
     t.string "targeted_tags", default: [], array: true
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
+    t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
   end
 
   create_table "feed_configs", force: :cascade do |t|
+    t.integer "all_time_tag_count_max", default: 0
+    t.integer "all_time_tag_count_min", default: 0
     t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
@@ -564,6 +572,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
+    t.float "general_past_day_bonus_weight", default: 0.0, null: false
     t.float "label_match_weight", default: 1.0
     t.float "language_match_weight", default: 1.0, null: false
     t.float "lookback_window_weight", default: 1.0
@@ -573,6 +582,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "recent_page_views_shuffle_weight", default: 0.0, null: false
+    t.float "recent_subforem_weight", default: 0.0, null: false
+    t.integer "recent_tag_count_max", default: 0
+    t.integer "recent_tag_count_min", default: 0
+    t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1237,6 +1251,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.bigint "user_id"
   end
 
+  create_table "tag_subforem_relationships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "subforem_id", null: false
+    t.boolean "supported", default: true
+    t.bigint "tag_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subforem_id"], name: "index_tag_subforem_relationships_on_subforem_id"
+    t.index ["tag_id"], name: "index_tag_subforem_relationships_on_tag_id"
+  end
+
   create_table "taggings", force: :cascade do |t|
     t.string "context", limit: 128
     t.datetime "created_at", precision: nil
@@ -1321,11 +1345,14 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
 
   create_table "user_activities", force: :cascade do |t|
     t.jsonb "alltime_labels", default: []
+    t.jsonb "alltime_organizations", default: []
     t.jsonb "alltime_tags", default: []
+    t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []
     t.jsonb "recent_organizations", default: []
+    t.jsonb "recent_subforems", default: []
     t.jsonb "recent_tags", default: []
     t.jsonb "recent_users", default: []
     t.jsonb "recently_viewed_articles", default: []
@@ -1433,6 +1460,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.string "old_old_username"
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
+    t.integer "onboarding_subforem_id"
     t.datetime "organization_info_updated_at", precision: nil
     t.string "payment_pointer"
     t.string "profile_image"
@@ -1478,6 +1506,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
+    t.index ["onboarding_subforem_id"], name: "index_users_on_onboarding_subforem_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -1633,6 +1662,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_06_204509) do
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
+  add_foreign_key "tag_subforem_relationships", "subforems"
+  add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify

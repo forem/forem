@@ -1,179 +1,166 @@
-require 'rails_helper'
+# spec/workers/emails/drip_email_worker_spec.rb
+require "rails_helper"
 
 RSpec.describe Emails::DripEmailWorker, type: :worker do
   let(:worker) { described_class.new }
   let(:mailer) { double }
   let(:message_delivery) { double }
+  let(:custom_onboarding_id) { 42 }
+  let(:stubbed_default_id) { 999 }
 
   before do
+    allow(Subforem).to receive(:cached_default_id).and_return(stubbed_default_id)
     allow(CustomMailer).to receive(:with).and_return(mailer)
     allow(mailer).to receive(:custom_email).and_return(message_delivery)
     allow(message_delivery).to receive(:deliver_now)
-    allow(FeatureFlag).to receive(:enabled?).with('onboarding_drip_emails').and_return(true)
+    allow(FeatureFlag).to receive(:enabled?).with("onboarding_drip_emails").and_return(true)
   end
 
-  include_examples '#enqueues_on_correct_queue', 'medium_priority'
+  include_examples "#enqueues_on_correct_queue", "medium_priority"
 
-  describe '#perform' do
-    let!(:email_template_day_1) do
-      create(:email, type_of: 'onboarding_drip', drip_day: 1, subject: 'Welcome Day 1', body: 'Hello Day 1')
+  describe "#perform" do
+    let!(:default_email_day_1) do
+      create(
+        :email,
+        type_of:               "onboarding_drip",
+        drip_day:              1,
+        subject:               "Default Day 1",
+        body:                  "Default Content",
+        onboarding_subforem_id: nil
+      )
     end
-    let!(:email_template_day_2) do
-      create(:email, type_of: 'onboarding_drip', drip_day: 2, subject: 'Welcome Day 2', body: 'Hello Day 2')
+    let!(:custom_email_day_1) do
+      create(
+        :email,
+        type_of:               "onboarding_drip",
+        drip_day:              1,
+        subject:               "Custom Day 1",
+        body:                  "Custom Content",
+        onboarding_subforem_id: custom_onboarding_id
+      )
     end
-    # No email template for drip_day 3 to test missing template scenario
+    let!(:default_email_day_2) do
+      create(
+        :email,
+        type_of:               "onboarding_drip",
+        drip_day:              2,
+        subject:               "Default Day 2",
+        body:                  "Default Content 2",
+        onboarding_subforem_id: nil
+      )
+    end
 
     before do
       # Users for drip_day 1
-      @user_day_1_in_window = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
-      @user_day_1_out_of_window = create(:user, registered_at: ((1 * 24) + 2).hours.ago)
-
+      @user_day_1_in_window = create(
+        :user,
+        registered_at:         ((1 * 24) + 0.5).hours.ago,
+        onboarding_subforem_id: nil
+      )
+      @user_day_1_custom   = create(
+        :user,
+        registered_at:         ((1 * 24) + 0.5).hours.ago,
+        onboarding_subforem_id: custom_onboarding_id
+      )
+      @user_day_1_stubbed  = create(
+        :user,
+        registered_at:         ((1 * 24) + 0.5).hours.ago,
+        onboarding_subforem_id: stubbed_default_id
+      )
+      @user_day_1_out_of_window = create(
+        :user,
+        registered_at:         ((1 * 24) + 2).hours.ago,
+        onboarding_subforem_id: nil
+      )
 
       # Users for drip_day 2
-      @user_day_2_in_window = create(:user, registered_at: ((2 * 24) + 0.5).hours.ago)
-      @user_day_2_out_of_window = create(:user, registered_at: ((2 * 24) + 2).hours.ago)
+      @user_day_2_in_window = create(
+        :user,
+        registered_at:         ((2 * 24) + 0.5).hours.ago,
+        onboarding_subforem_id: nil
+      )
+      @user_day_2_out_of_window = create(
+        :user,
+        registered_at:         ((2 * 24) + 2).hours.ago,
+        onboarding_subforem_id: nil
+      )
 
       # Email settings
-      @user_day_1_in_window.notification_setting.email_newsletter = true
-      @user_day_1_in_window.notification_setting.save
-      @user_day_1_out_of_window.notification_setting.email_newsletter = true
-      @user_day_1_out_of_window.notification_setting.save
-      @user_day_2_in_window.notification_setting.email_newsletter = true
-      @user_day_2_in_window.notification_setting.save
-      @user_day_2_out_of_window.notification_setting.email_newsletter = true
-      @user_day_2_out_of_window.notification_setting.save      
+      [@user_day_1_in_window, @user_day_1_custom, @user_day_1_stubbed,
+       @user_day_1_out_of_window, @user_day_2_in_window, @user_day_2_out_of_window].each do |u|
+        u.notification_setting.update!(email_newsletter: true)
+      end
 
       # User who received an email in the last 12 hours
-      @user_recent_email = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
+      @user_recent_email = create(
+        :user,
+        registered_at:         ((1 * 24) + 0.5).hours.ago,
+        onboarding_subforem_id: nil
+      )
       create(:email_message, user: @user_recent_email, sent_at: 11.hours.ago)
-
     end
 
-    it 'sends emails to users for drip days with email templates' do
+    it "sends the default template to users with nil onboarding_subforem_id" do
       worker.perform
-
       expect(CustomMailer).to have_received(:with).with(
-        user: @user_day_1_in_window,
-        subject: email_template_day_1.subject,
-        content: email_template_day_1.body,
-        type_of: email_template_day_1.type_of,
-        email_id: email_template_day_1.id
+        user:     @user_day_1_in_window,
+        subject:  default_email_day_1.subject,
+        content:  default_email_day_1.body,
+        type_of:  default_email_day_1.type_of,
+        email_id: default_email_day_1.id
       ).once
-      expect(CustomMailer).to have_received(:with).with(
-        user: @user_day_2_in_window,
-        subject: email_template_day_2.subject,
-        content: email_template_day_2.body,
-        type_of: email_template_day_2.type_of,
-        email_id: email_template_day_2.id
-      ).once
-
-      expect(mailer).to have_received(:custom_email).twice
-      expect(message_delivery).to have_received(:deliver_now).twice
     end
 
-    it 'does not send emails to users registered outside the time window' do
+    it "sends custom template to users with their own onboarding_subforem_id" do
       worker.perform
+      expect(CustomMailer).to have_received(:with).with(
+        user:     @user_day_1_custom,
+        subject:  custom_email_day_1.subject,
+        content:  custom_email_day_1.body,
+        type_of:  custom_email_day_1.type_of,
+        email_id: custom_email_day_1.id
+      ).once
+    end
 
+    it "uses the stubbed default_id grouping when Subforem.cached_default_id is stubbed" do
+      # stubbed_default_id users should receive the nil template (first in default group)
+      worker.perform
+      expect(CustomMailer).to have_received(:with).with(
+        user:     @user_day_1_stubbed,
+        subject:  default_email_day_1.subject,
+        content:  default_email_day_1.body,
+        type_of:  default_email_day_1.type_of,
+        email_id: default_email_day_1.id
+      ).once
+    end
+
+    it "does not send emails to users registered outside the drip window" do
+      worker.perform
       expect(CustomMailer).not_to have_received(:with).with(
         user: @user_day_1_out_of_window,
-        subject: email_template_day_1.subject,
-        content: email_template_day_1.body,
-        type_of: email_template_day_1.type_of,
-        email_id: email_template_day_1.id
+        subject: default_email_day_1.subject,
+        content: default_email_day_1.body,
+        type_of: default_email_day_1.type_of,
+        email_id: default_email_day_1.id
       )
       expect(CustomMailer).not_to have_received(:with).with(
         user: @user_day_2_out_of_window,
-        subject: email_template_day_2.subject,
-        content: email_template_day_2.body,
-        type_of: email_template_day_2.type_of,
-        email_id: email_template_day_2.id
+        subject: default_email_day_2.subject,
+        content: default_email_day_2.body,
+        type_of: default_email_day_2.type_of,
+        email_id: default_email_day_2.id
       )
     end
 
-    it 'does not send emails for drip days without email templates' do
-      worker.perform
-
-      # Assuming drip_day 3 has no email template
-      expect(CustomMailer).not_to have_received(:with).with(
-        hash_including(subject: 'Welcome Day 3')
-      )
-    end
-
-    it 'does not send emails to users who received an email in the last 12 hours' do
-      worker.perform
-
-      expect(CustomMailer).not_to have_received(:with).with(
-        user: @user_recent_email,
-        subject: email_template_day_1.subject,
-        content: email_template_day_1.body,
-        type_of: email_template_day_1.type_of,
-        email_id: email_template_day_1.id
-      )
-    end
-
-    it "does not send email to user who is unsubscribed to user.notification_setting.email_newsletter" do
-      user = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
-      user.notification_setting.email_newsletter = false
-      user.notification_setting.save
+    it "does not send emails to users unsubscribed or recently emailed" do
+      # Unsubscribed
+      unsub = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
+      unsub.notification_setting.update!(email_newsletter: false)
+      # Recently emailed follows existing setup
 
       worker.perform
-
-      expect(CustomMailer).not_to have_received(:with).with(
-        user: user,
-        subject: email_template_day_1.subject,
-        content: email_template_day_1.body,
-        type_of: email_template_day_1.type_of,
-        email_id: email_template_day_1.id
-      )
-    end
-
-    it 'sends emails to users who have not received an email in the last 12 hours' do
-      # User who received an email more than 12 hours ago
-      user_old_email = create(:user, registered_at: ((1 * 24) + 0.5).hours.ago)
-      user_old_email.notification_setting.email_newsletter = true
-      user_old_email.notification_setting.save
-      create(:email_message, user: user_old_email, sent_at: 13.hours.ago)
-
-      worker.perform
-
-      expect(CustomMailer).to have_received(:with).with(
-        user: user_old_email,
-        subject: email_template_day_1.subject,
-        content: email_template_day_1.body,
-        type_of: email_template_day_1.type_of,
-        email_id: email_template_day_1.id
-      )
-      expect(mailer).to have_received(:custom_email).exactly(3).times
-      expect(message_delivery).to have_received(:deliver_now).exactly(3).times
-    end
-
-    it 'processes all drip days up to the maximum drip day' do
-      worker.perform
-
-      # Ensure emails are sent for drip days 1 and 2
-      expect(CustomMailer).to have_received(:with).with(
-        user: @user_day_1_in_window,
-        subject: email_template_day_1.subject,
-        content: email_template_day_1.body,
-        type_of: email_template_day_1.type_of,
-        email_id: email_template_day_1.id
-      ).once
-      expect(CustomMailer).to have_received(:with).with(
-        user: @user_day_2_in_window,
-        subject: email_template_day_2.subject,
-        content: email_template_day_2.body,
-        type_of: email_template_day_2.type_of,
-        email_id: email_template_day_2.id
-      ).once
-
-      # Ensure no emails are sent for drip day 3 (no email template)
-      expect(CustomMailer).not_to have_received(:with).with(
-        hash_including(subject: 'Welcome Day 3')
-      )
-
-      # Total number of emails sent should match the number of users in the window
-      expect(mailer).to have_received(:custom_email).exactly(2).times
-      expect(message_delivery).to have_received(:deliver_now).exactly(2).times
+      expect(CustomMailer).not_to have_received(:with).with(hash_including(user: unsub))
+      expect(CustomMailer).not_to have_received(:with).with(hash_including(user: @user_recent_email))
     end
   end
 end

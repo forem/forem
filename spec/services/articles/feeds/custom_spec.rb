@@ -24,7 +24,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
   let!(:low_score_article) do
     a = create(:article, published: true, score: 10)
-    a.update_column(:published_at, Time.current - 3.days)
+    a.update_column(:published_at, Time.current - 5.days)
     a
   end
 
@@ -67,6 +67,33 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
         # Since computed_score equals articles.score, the feed should be ordered by score descending.
         expect(result).to eq([high_score_article, medium_score_article, low_score_article])
+      end
+
+      it "limits returns older article if lookback is configured very long" do
+        # Set a long lookback period.
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(200)
+        
+        result = feed.default_home_feed.to_a
+
+        # Articles older than TIME_AGO_MAX (90 days) should be included.
+        expect(result).to include(high_score_article, medium_score_article, low_score_article, old_article)
+        expect(result).to include(old_article) # Also included due to window
+
+        # Since computed_score equals articles.score, the feed should be ordered by score descending.
+        expect(result).to eq([high_score_article, old_article, medium_score_article, low_score_article])
+      end      
+
+      it "returns only very new articles if lookback is configured very short" do
+        # Set a short lookback period.
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(3)
+
+        result = feed.default_home_feed.to_a
+
+        # Articles older than 3 days should be excluded.
+        expect(result).to include(high_score_article, medium_score_article)
+        expect(result).not_to include(low_score_article, old_article)
+
+        expect(result).to eq([high_score_article, medium_score_article])
       end
 
       it "applies pagination via limit and offset" do

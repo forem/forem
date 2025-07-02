@@ -182,6 +182,9 @@ fr:
           spam:
             description: Individual (case insensitive) phrases that trigger spam alerts, comma separated.
             placeholder: used cars near you, pokemon go hack
+          content_spec:
+            description: Internal description of content which is considered generally "on-topic" — be very descriptive to best differentiate from other communities..
+            placeholder: e.g. "A place for developers to share their work, ask questions, and learn from each other.... But much longer and more specific"
         smtp:
           address:
             description: Address of the remote mail server
@@ -219,6 +222,9 @@ fr:
           cover_image_fit:
             description: Determines the cropping strategy for cover images
             placeholder: crop, limit
+          feed_lookback_days:
+            description: Determines how far back the feed looks for new posts (in days)
+            placeholder: '10'
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
           index_minimum_date:

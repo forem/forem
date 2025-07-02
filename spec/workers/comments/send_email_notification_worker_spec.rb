@@ -20,6 +20,7 @@ RSpec.describe Comments::SendEmailNotificationWorker, type: :worker do
 
       before do
         allow(Comment).to receive(:find_by).with(id: 1).and_return(comment)
+        allow(comment).to receive(:score).and_return(1)
       end
 
       it "sends reply email" do

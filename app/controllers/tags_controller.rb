@@ -63,14 +63,14 @@ class TagsController < ApplicationController
 
   def suggest
     skip_authorization
-    tags = Tag.supported.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
+    tags = Tag.from_subforem.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
     render json: tags, only: INDEX_API_ATTRIBUTES, include: [badge: { only: [:badge_image] }]
   end
 
   private
 
   def tags
-    @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
+    @tags ||= Tag.from_subforem.direct.order("hotness_score DESC").limit(100)
   end
 
   def convert_empty_string_to_nil

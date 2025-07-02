@@ -111,16 +111,26 @@
               document
                 .getElementById('notifications-number')
                 .classList.add('hidden');
+                if (window && window.ReactNativeWebView) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: 0 }));
+                }
             } else if (count != '0' && count != undefined && count != '') {
               document.getElementById('notifications-number').innerHTML =
                 xmlhttp.response;
               document
                 .getElementById('notifications-number')
                 .classList.remove('hidden');
+                if (window && window.ReactNativeWebView) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: count }));
+                }
             } else {
               document
                 .getElementById('notifications-number')
                 .classList.add('hidden');
+              if (window && window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: 0 }));
+              }
+
             }
           }
         };

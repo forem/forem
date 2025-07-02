@@ -8,15 +8,18 @@
     </header>
     <div id="sidebar-nav-followed-tags" class="overflow-y-auto -m-1 p-1 mb-2 sidebar-nav-followed-tags" style="max-height: 42vh;"></div>
   <% else %>
-    <h3 class="crayons-subtitle-3 p-2"><%= t("views.main.tags.popular_tags") %></h3>
-    <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
-      <% Tag.supported.order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
-        <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-          <a class="c-link c-link--block" href="<%= tag_path(tag_array.second) %>">
-            #<%= tag_array.second %>
-          </a>
-        </div>
-      <% end %>
-    </div>
+    <% tags = Tag.from_subforem.order(hotness_score: :desc).limit(30).pluck(:id, :name) %>
+    <% if tags.any? %>
+      <h3 class="crayons-subtitle-3 p-2"><%= t("views.main.tags.popular_tags") %></h3>
+      <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
+        <% tags.each do |tag_array| %>
+          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+            <a class="c-link c-link--block" href="<%= tag_path(tag_array.second) %>">
+              #<%= tag_array.second %>
+            </a>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </nav>

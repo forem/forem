@@ -1,6 +1,6 @@
 class AsciinemaTag < LiquidTagBase
   PARTIAL = "liquids/asciinema".freeze
-  REGISTRY_REGEXP = %r{https://asciinema\.org/a/(?<id>\d+)}
+  REGISTRY_REGEXP = %r{https://asciinema\.org/a/(?<id>(?:\d+|[A-Za-z0-9_-]+))}
 
   def initialize(_tag_name, id, _parse_context)
     super
@@ -25,7 +25,10 @@ class AsciinemaTag < LiquidTagBase
   end
 
   def validate(id)
-    raise I18n.t("liquid_tags.asciinema_tag.invalid_asciinema_id", id: id) unless id.match?(/\A\d+\z/)
+    valid_id = id.match?(/\A\d+\z/) ||
+               id.match?(/\A[A-Za-z0-9_-]+\z/)
+
+    raise I18n.t("liquid_tags.asciinema_tag.invalid_asciinema_id", id: id) unless valid_id
 
     id
   end

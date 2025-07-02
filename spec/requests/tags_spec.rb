@@ -98,7 +98,7 @@ RSpec.describe "Tags", :proper_status do
 
     it "does not allow not logged-in users" do
       get "/t/#{tag}/edit"
-      expect(response).to redirect_to("/enter")
+      expect(response).to redirect_to("/magic_links/new")
     end
 
     it "does not allow users who are not tag moderators" do
@@ -141,7 +141,7 @@ RSpec.describe "Tags", :proper_status do
 
     it "does not allow not logged-in users" do
       patch "/tag/#{tag.id}"
-      expect(response).to redirect_to("/enter")
+      expect(response).to redirect_to("/magic_links/new")
     end
 
     it "does not allow unauthorized users" do

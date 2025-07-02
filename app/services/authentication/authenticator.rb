@@ -131,6 +131,7 @@ module Authentication
       User.new.tap do |user|
         user.assign_attributes(provider.new_user_data)
         user.assign_attributes(default_user_fields)
+        user.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
 
         user.set_remember_fields
         user.skip_confirmation!

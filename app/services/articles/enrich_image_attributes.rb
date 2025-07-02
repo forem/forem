@@ -42,7 +42,7 @@ module Articles
         img["data-animated"] = true if img_properties.type == :gif
       end
 
-      if article.main_image && Settings::UserExperience.cover_image_fit == "limit"
+      if article.main_image && Settings::UserExperience.cover_image_fit(subforem_id: article.subforem_id) == "limit"
         main_image_size = FastImage.size(article.main_image, timeout: 15, http_header: fast_image_headers)
         main_image_height = (main_image_size[1].to_f / main_image_size[0]) * 1000 if main_image_size
       end

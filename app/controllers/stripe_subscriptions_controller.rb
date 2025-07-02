@@ -20,6 +20,7 @@ class StripeSubscriptionsController < ApplicationController
         },
       ],
       mode: params[:mode] || "subscription",
+      allow_promotion_codes: true,
       success_url: URL.url(ENV["SUBSCRIPTION_SUCCESS_URL"] || "/settings/billing"),
       cancel_url: URL.url(ENV["SUBSCRIPTION_CANCEL_URL"] || "/settings/billing"),
       consent_collection: {

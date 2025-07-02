@@ -6,7 +6,7 @@
 <div class="crayons-card p-6 pages__table">
   <% @subforems.each do |subforem| %>
     <div class="flex py-2 items-center" data-testid="subforem">
-      <%= link_to subforem.domain %>
+      <%= link_to subforem.domain, "https://#{subforem.domain}", target: "_blank" %>
       <%= link_to "Edit", edit_admin_subforem_path(subforem), class: "ml-auto crayons-btn crayons-btn--s" %>
     </div>
   <% end %>

@@ -10,24 +10,24 @@ class AlgoliaInsightsService
   def track_event(event_type, event_name, user_id, object_id, index_name, timestamp = nil, query_id = nil, positions = [1])
     headers = {
       "X-Algolia-Application-Id" => @application_id,
-      "X-Algolia-API-Key" => @api_key,
-      "Content-Type" => "application/json"
+      "X-Algolia-API-Key"       => @api_key,
+      "Content-Type"            => "application/json"
     }
-    payload = {
-      events: [
-        {
-          eventType: event_type,
-          eventName: event_name,
-          index: index_name,
-          userToken: user_id.to_s,
-          authenticatedUserToken: user_id.to_s,
-          objectIDs: [object_id.to_s],
-          timestamp: timestamp || (Time.current.to_i * 1000),
-          positions: positions,
-          queryID: query_id
-        },
-      ]
+
+    event = {
+      eventType:  event_type,
+      eventName:  event_name,
+      index:      index_name,
+      userToken:  user_id.to_s,
+      objectIDs:  [object_id.to_s],
+      timestamp:  timestamp || (Time.current.to_i * 1000),
+      queryID:    query_id
     }
+    # Only include authenticatedUserToken if user_id is present
+    event[:authenticatedUserToken] = user_id.to_s if user_id.present?
+    event[:positions] = positions if positions.present?
+
+    payload = { events: [event] }
 
     response = self.class.post("/events", headers: headers, body: payload.to_json)
     if response.success?

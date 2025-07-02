@@ -607,7 +607,7 @@ RSpec.describe "Api::V1::Articles" do
       end
 
       it { is_expected.to have_http_status(:unauthorized) }
-    end
+    end      
 
     context "when security comparision fails" do
       before { allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_return(false) }
@@ -936,6 +936,28 @@ RSpec.describe "Api::V1::Articles" do
         post_article(title: Faker::Book.title, body_markdown: nil)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "allows video_source_url if youtube.com is passed" do
+        user.update_column(:created_at, 1.year.ago)
+        video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          video_source_url: video_source_url,
+        )
+        expect(Article.last.video_source_url).to eq(video_source_url)
+      end
+
+      it "does not allow video_source_url if not youtube.com" do
+        user.update_column(:created_at, 1.year.ago)
+        video_source_url = "https://www.vimeo.com/watch?v=dQw4w9WgXcQ"
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          video_source_url: video_source_url,
+        )
+        expect(Article.find(response.parsed_body["id"]).video_source_url).to be_nil
       end
     end
   end

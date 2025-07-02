@@ -18,6 +18,7 @@ class Role < ApplicationRecord
     warned
     limited
     base_subscriber
+    impending_base_subscriber_cancellation
   ].freeze
 
   ROLES.each do |role|

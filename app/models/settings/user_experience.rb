@@ -17,6 +17,7 @@ module Settings
     setting :feed_style, type: :string, default: "basic", validates: {
       inclusion: { in: FEED_STYLES }
     }
+    setting :feed_lookback_days, type: :integer, default: 10
     setting :home_feed_minimum_score, type: :integer, default: 0
     setting :index_minimum_score, type: :integer, default: 0
     setting :index_minimum_date, type: :integer, default: 1_500_000_000

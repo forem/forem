@@ -15,11 +15,4 @@
     <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= num_views > 500 ? number_with_delimiter(num_views, delimiter: ",") : t("views.dashboard.summary.lt_500") %></strong>
     <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.views") %></span>
   </div>
-
-  <%- if Listing.feature_enabled? %>
-  <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.listings.size %></strong>
-    <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.listings") %></span>
-  </div>
-  <%- end %>
 </div>

@@ -7,7 +7,7 @@ class OnboardingsController < ApplicationController
 
   SUGGESTED_USER_ATTRIBUTES = %i[id name username summary profile_image].freeze
   TAG_ONBOARDING_ATTRIBUTES = %i[id name taggings_count].freeze
-  ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page username name summary profile_image].freeze
   ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
   ALLOWED_NOTIFICATION_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 

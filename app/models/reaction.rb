@@ -107,7 +107,7 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      article_vomits.where(reactable_id: user.articles.ids).size > threshold
+      article_vomits.where(status: "confirmed").where(reactable_id: user.articles.where("published_at > ?", 1.month.ago).ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -119,7 +119,7 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      comment_vomits.where(reactable_id: user.comments.ids).size > threshold
+      comment_vomits.where(status: "confirmed").where(reactable_id: user.comments.where("created_at > ?", 1.month.ago).ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system

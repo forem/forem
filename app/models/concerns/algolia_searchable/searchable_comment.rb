@@ -6,7 +6,7 @@ module AlgoliaSearchable
       include AlgoliaSearch
 
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_comment?) do
-        attribute :commentable_id, :commentable_type, :path, :parent_id, :title
+        attribute :commentable_id, :commentable_type, :path, :parent_id, :title, :score
         attribute :body do
           title
         end

@@ -105,7 +105,7 @@ module Admin
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
       # Map over reactions and do not include reactions where the reactable's score is less than 150
-      q.select { |reaction| reaction.reactable.score > SCORE_MIN }
+      q.select { |reaction| reaction.reactable && reaction.reactable.score > SCORE_MIN }
     end
 
     def send_slack_message(params)

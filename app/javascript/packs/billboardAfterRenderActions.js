@@ -127,7 +127,7 @@ function trackAdImpression(adBox) {
 }
 
 function trackAdClick(adBox, event, currentPath) {
-  if (!event.target.closest('a')) {
+  if (!event.target.closest("a")) {
     return;
   }
 
@@ -140,32 +140,49 @@ function trackAdClick(adBox, event, currentPath) {
     },
   };
 
+  // Check if the current click is a duplicate
   if (localStorage) {
-    dataBody['path'] = currentPath;
-    dataBody['time'] = new Date();
-    localStorage.setItem('last_interacted_billboard', JSON.stringify(dataBody));
+    let lastClicked = localStorage.getItem("last_interacted_billboard");
+    if (lastClicked) {
+      try {
+        const lastData = JSON.parse(lastClicked);
+        if (
+          lastData.billboard_event &&
+          lastData.billboard_event.billboard_id === dataBody.billboard_event.billboard_id &&
+          lastData.path === currentPath
+        ) {
+          // The current click is the same as the last stored one, so exit early.
+          return;
+        }
+      } catch (error) {
+        // If parsing fails, ignore and proceed.
+      }
+    }
+    // Enrich the dataBody and update localStorage
+    dataBody.path = currentPath;
+    dataBody.time = new Date();
+    localStorage.setItem("last_interacted_billboard", JSON.stringify(dataBody));
   }
 
-  const isBot =
-    /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-      navigator.userAgent,
-    ); // is crawler
+  const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
+    navigator.userAgent
+  );
   const adClicked = adBox.dataset.clickRecorded;
   if (isBot || adClicked) {
     return;
   }
 
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
-  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+  const csrfToken = tokenMeta && tokenMeta.getAttribute("content");
 
-  window.fetch('/bb_tabulations', {
-    method: 'POST',
+  window.fetch("/bb_tabulations", {
+    method: "POST",
     headers: {
-      'X-CSRF-Token': csrfToken,
-      'Content-Type': 'application/json',
+      "X-CSRF-Token": csrfToken,
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(dataBody),
-    credentials: 'same-origin',
+    credentials: "same-origin",
   });
 
   adBox.dataset.clickRecorded = true;

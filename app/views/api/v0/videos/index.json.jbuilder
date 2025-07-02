@@ -6,6 +6,7 @@ json.array! @video_articles do |video_article|
     :id,
     :path,
     :cloudinary_video_url,
+    :video,
     :title,
     :user_id,
     :video_duration_in_minutes,

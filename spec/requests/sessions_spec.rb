@@ -41,6 +41,26 @@ RSpec.describe "Sessions", type: :request do
       expect(user.current_sign_in_at).to be_nil
       expect(user.current_sign_in_ip).to be_nil
     end
+
+    it "redirects to root path if stored location is /signout_confirm" do
+      allow_any_instance_of(ApplicationController).to receive(:stored_location_for).and_return("/signout_confirm")
+
+      post user_session_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      # Devise normally redirects to a default or configured path on success.
+      expect(response).to have_http_status(:found)
+      # Check that the user is redirected to the root path.
+      expect(response).to redirect_to(root_path(signin: 'true'))
+      # Reload from DB to observe changes from user.update_tracked_fields!(request).
+      user.reload
+      expect(user.current_sign_in_at).not_to be_nil
+      expect(user.current_sign_in_ip).not_to be_nil
+    end
   end
 
   describe "DELETE /users/sign_out" do

@@ -18,67 +18,157 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
 
   before do
     allow(Settings::General).to receive(:stripe_api_key).and_return(stripe_endpoint_secret)
-    allow(NotifyMailer).to receive_message_chain(:with, :base_subscriber_role_email, :deliver_now) # rubocop:disable RSpec/MessageChain
+    allow(NotifyMailer).to receive_message_chain(:with, :base_subscriber_role_email, :deliver_now)
   end
 
   describe "POST /incoming_webhooks/stripe_events" do
     let(:stripe_signature) { "test_signature" }
+    before { allow(Stripe::Webhook).to receive(:construct_event).and_return(event) }
 
-    context "with a valid event" do
-      before do
-        allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+    shared_examples "a successful stripe event" do
+      it "returns status :ok" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("status")
+      end
+    end
+
+    context "when checkout.session.completed" do
+      let(:payload) do
+        {
+          "type" => "checkout.session.completed",
+          "data" => {
+            "object" => {
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+      before { last_billboard_event }
+
+      it_behaves_like "a successful stripe event"
+
+      it "grants the base_subscriber role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(user.reload.roles.pluck(:name)).to include("base_subscriber")
       end
 
-      shared_examples "a successful stripe event" do
-        it "returns status :ok" do
+      it "creates a conversion BillboardEvent" do
+        expect {
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("status")
-        end
+        }.to change(BillboardEvent, :count).by(1)
+
+        new_ev = BillboardEvent.last
+        expect(new_ev.category).to eq("conversion")
+        expect(new_ev.geolocation).to eq(last_billboard_event.geolocation)
+        expect(new_ev.context_type).to eq(last_billboard_event.context_type)
+        expect(new_ev.billboard_id).to eq(last_billboard_event.billboard_id)
       end
 
-      context "when checkout.session.completed" do
+      it "sends the subscriber role email" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(NotifyMailer).to have_received(:with).with(user: user)
+        expect(NotifyMailer.with(user: user).base_subscriber_role_email).to have_received(:deliver_now)
+      end
+
+      it "skips conversion when the click is too old" do
+        last_billboard_event.update(created_at: 4.hours.ago)
+        expect {
+          post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        }.not_to change(BillboardEvent, :count)
+      end
+
+      context "with a customer id present" do
+        let(:customer_id) { "cus_TEST123" }
         let(:payload) do
-          { "type" => "checkout.session.completed",
-            "data" => { "object" => { "metadata" => { "user_id" => user.id.to_s } } } }.to_json
+          {
+            "type" => "checkout.session.completed",
+            "data" => {
+              "object" => {
+                "metadata" => { "user_id" => user.id.to_s },
+                "customer" => customer_id
+              }
+            }
+          }.to_json
         end
         let(:event) { JSON.parse(payload) }
 
-        before { last_billboard_event } # Ensure the last billboard event exists
+        it "stores stripe_id_code on the user" do
+          post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+          expect(user.reload.stripe_id_code).to eq(customer_id)
+        end
+      end
+    end
+
+    context "when customer.subscription.updated" do
+      context "and cancel_at_period_end is true" do
+        let(:payload) do
+          {
+            "type" => "customer.subscription.updated",
+            "data" => {
+              "object" => {
+                "metadata" => {
+                  "user_id" => user.id.to_s,
+                  "cancel_at_period_end" => true
+                }
+              }
+            }
+          }.to_json
+        end
+        let(:event) { JSON.parse(payload) }
 
         it_behaves_like "a successful stripe event"
 
-        it "adds the base_subscriber role to the user" do
+        it "adds the impending_base_subscriber_cancellation role" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(user.reload).to be_base_subscriber
+          expect(user.reload.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
         end
+      end
 
-        it "creates a BillboardEvent with category 'conversion'" do
-          expect do
-            post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          end.to change(BillboardEvent, :count).by(1)
-
-          new_event = BillboardEvent.last
-          expect(new_event.user_id).to eq(user.id)
-          expect(new_event.category).to eq("conversion")
-          expect(new_event.geolocation).to eq(last_billboard_event.geolocation)
-          expect(new_event.context_type).to eq(last_billboard_event.context_type)
-          expect(new_event.billboard_id).to eq(last_billboard_event.billboard_id)
+      context "and cancel_at_period_end is false" do
+        let(:payload) do
+          {
+            "type" => "customer.subscription.updated",
+            "data" => {
+              "object" => {
+                "metadata" => {
+                  "user_id" => user.id.to_s,
+                  "cancel_at_period_end" => false
+                }
+              }
+            }
+          }.to_json
         end
+        let(:event) { JSON.parse(payload) }
 
-        it "sends the base subscriber role email" do
+        it "ensures the user has only the base_subscriber role" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(NotifyMailer).to have_received(:with).with(user: user)
-          expect(NotifyMailer.with(user: user).base_subscriber_role_email).to have_received(:deliver_now)
+          names = user.reload.roles.pluck(:name)
+          expect(names).to include("base_subscriber")
+          expect(names).not_to include("impending_base_subscriber_cancellation")
         end
+      end
+    end
 
-        it "does not create a BillboardEvent if there is no recent click event" do
-          last_billboard_event.update(created_at: 4.hours.ago) # Make it too old
+    context "when customer.subscription.deleted" do
+      let(:payload) do
+        {
+          "type" => "customer.subscription.deleted",
+          "data" => {
+            "object" => {
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
 
-          expect do
-            post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          end.not_to change(BillboardEvent, :count)
-        end
+      it_behaves_like "a successful stripe event"
+
+      it "adds the impending_base_subscriber_cancellation role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(user.reload.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
       end
     end
   end

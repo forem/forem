@@ -7,7 +7,6 @@ RSpec.describe ForemTag do
   let(:comment) do
     create(:comment, commentable: article, user: user, body_markdown: "TheComment")
   end
-  let(:listing) { create(:listing) }
   let(:organization) { create(:organization) }
   let(:parse_context) { { source: article, user: user } }
   let(:podcast) { create(:podcast) }
@@ -38,11 +37,6 @@ RSpec.describe ForemTag do
       expect(described_class.determine_klass(link_url)).to eq(LinkTag)
     end
 
-    it "returns ListingTag if link starts with URL.url/listings/" do
-      listing_url = "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}"
-
-      expect(described_class.determine_klass(listing_url)).to eq(ListingTag)
-    end
 
     it "returns OrganizationTag if organization profile link" do
       org_url = "#{URL.url}/#{organization.slug}"

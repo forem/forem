@@ -29,7 +29,7 @@ RSpec.describe "Editor" do
     context "when not logged-in" do
       it "redirects to /enter" do
         get "/#{user.username}/#{article.slug}/edit"
-        expect(response).to redirect_to(sign_up_path)
+        expect(response).to redirect_to(new_magic_link_path)
       end
     end
 

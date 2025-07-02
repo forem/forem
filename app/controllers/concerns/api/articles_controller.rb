@@ -72,7 +72,6 @@ module Api
       articles_relation = @user.super_admin? ? Article.includes(:user) : @user.articles
       article = articles_relation.find(params[:id])
 
-      p article_params.inspect
       result = Articles::Updater.call(@user, article, article_params)
 
       @article = result.article
@@ -153,6 +152,8 @@ module Api
         :published_at, :subforem_id, :language
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
+      # allow only if a youtube.com URL — could be other sources in future
+      allowed_params << :video_source_url if params.dig("article", "video_source_url")&.match?(/\Ahttps?:\/\/(www\.)?youtube\.com\/watch\?v=/)
       if @user.super_admin?
         allowed_params << :clickbait_score
         allowed_params << :compellingness_score

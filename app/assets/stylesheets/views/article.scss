@@ -15,7 +15,7 @@
     border-radius: var(--radius-auto);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    max-height: calc(100vh - var(--header-height) - 2 * var(--layout-padding));
+    max-height: calc(88vh - var(--header-height) - 2 * var(--layout-padding));
     overflow: hidden;
     &__image {
       display: block;
@@ -35,7 +35,7 @@
         aspect-ratio: auto 650 / 273;
         object-fit: contain;
         border-radius: var(--radius-auto) var(--radius) 0 0;
-        max-height: calc(90vh - var(--header-height));
+        max-height: calc(77vh - var(--header-height));
       }
     }
   }

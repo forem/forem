@@ -8,7 +8,7 @@ function initializeBillboardVisibility() {
   var user = userData();
 
   billboards.forEach((ad) => {
-    if (user && !user.display_sponsors && ['external','partner'].includes(ad.dataset['typeOf'])) {
+    if (user && !user.display_sponsors && ['external', 'partner'].includes(ad.dataset['typeOf'])) {
       ad.classList.add('hidden');
     } else {
       ad.classList.remove('hidden');
@@ -18,7 +18,7 @@ function initializeBillboardVisibility() {
 
 function trackAdImpression(adBox) {
   var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-    navigator.userAgent,
+    navigator.userAgent
   ); // is crawler
   var adSeen = adBox.dataset.impressionRecorded;
   if (isBot || adSeen) {
@@ -57,7 +57,7 @@ function trackAdClick(adBox, event, currentPath) {
     return;
   }
 
-  const dataBody = {
+  var dataBody = {
     billboard_event: {
       billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
@@ -66,14 +66,32 @@ function trackAdClick(adBox, event, currentPath) {
     },
   };
 
+  // Duplicate check: Verify that the current click isn't the same as the last stored one.
   if (localStorage) {
+    var lastClicked = localStorage.getItem("last_interacted_billboard");
+    if (lastClicked) {
+      try {
+        var lastData = JSON.parse(lastClicked);
+        if (
+          lastData.billboard_event &&
+          lastData.billboard_event.billboard_id === dataBody.billboard_event.billboard_id &&
+          lastData.path === currentPath
+        ) {
+          // The current click is a duplicate; exit early.
+          return;
+        }
+      } catch (error) {
+        // If parsing fails, ignore and continue.
+      }
+    }
+    // Enrich the dataBody and update localStorage
     dataBody['path'] = currentPath;
     dataBody['time'] = new Date();
-    localStorage.setItem('last_interacted_billboard', JSON.stringify(dataBody));
+    localStorage.setItem("last_interacted_billboard", JSON.stringify(dataBody));
   }
 
   var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-    navigator.userAgent,
+    navigator.userAgent
   ); // is crawler
   var adClicked = adBox.dataset.clickRecorded;
   if (isBot || adClicked) {
@@ -102,7 +120,6 @@ function observeBillboards() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           let elem = entry.target;
-
           if (entry.intersectionRatio >= 0.25) {
             setTimeout(function () {
               trackAdImpression(elem);
@@ -115,7 +132,7 @@ function observeBillboards() {
       root: null, // defaults to browser viewport
       rootMargin: '0px',
       threshold: 0.25,
-    },
+    }
   );
 
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
@@ -133,5 +150,5 @@ window.addEventListener(
   (event) => {
     observeBillboards();
   },
-  false,
+  false
 );

@@ -6,7 +6,7 @@ module Admin
       id supported rules_markdown short_summary pretty_name bg_color_hex
       text_color_hex user_id alias_for badge_id requires_approval
       social_preview_template wiki_body_markdown submission_template
-      suggested
+      suggested subforem_ids
     ].freeze
 
     before_action :set_default_options, only: %i[index]
@@ -25,7 +25,9 @@ module Admin
     end
 
     def edit
+      @subforems = Subforem.all
       @tag = Tag.find(params[:id])
+      @existing_relationship_ids = @tag.subforem_relationships.pluck(:subforem_id)
       @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
     end
 
@@ -47,6 +49,14 @@ module Admin
       if @tag.update(tag_params)
         ::Tags::AliasRetagWorker.perform_async(@tag.id) if tag_alias_updated?
         flash[:success] = I18n.t("admin.tags_controller.updated", tag_name: @tag.name)
+
+        if tag_params[:subforem_ids].present? && tag_params[:subforem_ids].any?
+          tag_params[:subforem_ids].each do |subforem_id|
+            @tag.subforem_relationships.find_or_create_by(subforem_id: subforem_id.to_i)
+          end
+          # Remove subforem relationships that are not in the params
+          @tag.subforem_relationships.where.not(subforem_id: tag_params[:subforem_ids].map(&:to_i)).destroy_all
+        end
       else
         flash[:error] =
           I18n.t("admin.tags_controller.update_fail", errors: @tag.errors_as_sentence)
@@ -66,7 +76,7 @@ module Admin
     end
 
     def tag_params
-      params.require(:tag).permit(ALLOWED_PARAMS)
+      params.require(:tag).permit(ALLOWED_PARAMS, subforem_ids: [])
     end
 
     def tag_alias_updated?

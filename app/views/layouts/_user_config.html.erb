@@ -19,6 +19,13 @@
 
       if (bodyClass.includes('dark-theme')) {
         document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>';
+        if (window && window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'update_color_mode', value: 'dark' }));
+        }
+      } else {
+        if (window && window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'update_color_mode', value: 'light' }));
+        }
       }
 
       if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use

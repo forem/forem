@@ -169,5 +169,30 @@ module Settings
         social_media_handles[name]
       end
     end
+
+    class << self
+      # 1) grab the DSL‐generated setter
+      alias_method :__orig_set_resized_logo, :set_resized_logo
+    
+      # 2) override it in the singleton class
+      def set_resized_logo(value, subforem_id: nil)
+        # a) write the URL as normal
+        __orig_set_resized_logo(value, subforem_id: subforem_id)
+    
+        # b) compute & persist the ratio
+        if value.present?
+          begin
+            if (w, h = FastImage.size(value))
+              set_resized_logo_aspect_ratio("#{w} / #{h}", subforem_id: subforem_id)
+            end
+          rescue StandardError => e
+            Rails.logger.warn("[Settings::General] FastImage failed for #{value}: #{e.message}")
+          end
+        end
+    
+        # c) return the raw value
+        value
+      end
+    end
   end
 end

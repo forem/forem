@@ -16,6 +16,10 @@ module AlgoliaSearchable
           } }
         end
 
+        attribute :subforem_ids do
+          subforem_relationships.where(supported: true).pluck(:subforem_id)
+        end
+
         add_attribute(:timestamp) { created_at.to_i }
 
         customRanking ["desc(hotness_score)"]
@@ -23,7 +27,10 @@ module AlgoliaSearchable
         add_replica("Tag_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Tag_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
 
-        attributesForFaceting ["searchable(supported)"]
+        attributesForFaceting [
+          "searchable(supported)",
+          "filterOnly(subforem_ids)"
+        ]
       end
     end
 

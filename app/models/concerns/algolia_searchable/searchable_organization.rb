@@ -9,6 +9,8 @@ module AlgoliaSearchable
           { url: profile_image_90 }
         end
 
+        add_attribute(:score) { articles.published.sum(:score) }
+
         add_attribute(:timestamp) { created_at.to_i }
         add_replica("Organization_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Organization_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }

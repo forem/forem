@@ -36,7 +36,7 @@ RSpec.describe VerificationMailer do
       user.update_columns(sign_in_token: "valid_token", sign_in_token_sent_at: Time.current)
       email = described_class.with(user_id: user.id).magic_link
 
-      expect(email.subject).to eq("Sign in to #{community_name} with a magic link")
+      expect(email.subject).to eq("Sign in to #{community_name} with a magic code")
       expect(email.to).to eq([user.email])
       expect(email.reply_to).to eq([reply_to_email_address])
     end

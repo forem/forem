@@ -56,7 +56,6 @@ class AdminMenu
 
     scope :apps, "palette-line", [
       item(name: "consumer apps", controller: "consumer_apps"),
-      item(name: "listings", visible: -> { Listing.feature_enabled? }),
       item(name: "welcome"),
     ]
   end.freeze
@@ -79,7 +78,7 @@ class AdminMenu
   # @todo This method returns the nav_item, but we really only operate on that item's children.
   #       Consider replacing with a method that is "children of nav_item within scope".
   #
-  # @see AdminMenu.nested_menu_items_from_request
+  # @see AdminMenu.nested_menu_items_from_request 
   # @see AdminMenu::ITEMS
   def self.nested_menu_items(scope_name, nav_item)
     children = navigation_items[scope_name.to_sym]&.children

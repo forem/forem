@@ -403,6 +403,13 @@
     word-wrap: normal;
     word-break: keep-all;
   }
+  @media (min-width: $breakpoint-s) {
+    &[data-browser-context="mobile_web"] {
+      @media (min-width: $breakpoint-s) {
+        display: none !important;
+      }
+    }
+  }
 }
 
 .crayons-article-sticky,
