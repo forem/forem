@@ -1,15 +1,12 @@
 name: CI
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
-  merge_group:
-    branches:
-      - main
+      - '*'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{  github.ref != 'refs/heads/main' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   COVERAGE: true
