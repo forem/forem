@@ -96,6 +96,12 @@ jobs:
           bundler-cache: true
       - run: cp .env_sample .env
       - run: bundle exec rails db:test:prepare
+      - name: Configure Datadog Test Optimization
+        uses: datadog/test-visibility-github-action@v2
+        with:
+          languages: ruby
+          api_key: ${{ secrets.DD_API_KEY }}
+          site: datadoghq.eu
       - name: RSpec
         run: bin/knapsack_pro_rspec
 
