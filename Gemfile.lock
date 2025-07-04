@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/DataDog/datadog-ci-rb.git
+  revision: 454ee893d5b8ac22ce99d6adeb8aa04d3d7d51d2
+  branch: anmarchenko/fix_auto_instrumentation
+  specs:
+    datadog-ci (1.20.0)
+      datadog (~> 2.4)
+      drb
+      msgpack
+
+GIT
   remote: https://github.com/DataDog/dd-trace-rb.git
   revision: 7fbb42dc2459943d3939defe0d8b68b3b3afeb57
   ref: master
@@ -246,6 +256,7 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
+    drb (2.2.3)
     e2mmap (0.1.0)
     easy_translate (0.5.1)
       thread
@@ -1029,6 +1040,7 @@ DEPENDENCIES
   cuprite (~> 0.13)
   cypress-rails (~> 0.5)
   datadog!
+  datadog-ci!
   debug (>= 1.0.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)

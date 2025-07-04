@@ -157,6 +157,7 @@ group :development, :test do
 end
 
 group :test do
+  gem "datadog-ci", github: "DataDog/datadog-ci-rb", branch: "anmarchenko/fix_auto_instrumentation"
   gem "cuprite", "~> 0.13" # Capybara driver for Chrome
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
