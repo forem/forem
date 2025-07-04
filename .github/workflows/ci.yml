@@ -133,7 +133,7 @@ jobs:
       - name: Configure Datadog Test Optimization
         uses: datadog/test-visibility-github-action@v2
         with:
-          languages: javascript
+          languages: js
           api_key: ${{ secrets.DD_API_KEY }}
           site: datadoghq.eu
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
