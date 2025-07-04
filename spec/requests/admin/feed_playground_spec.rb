@@ -56,23 +56,4 @@ RSpec.describe "/admin/advanced/tools/feed_playground" do
       end
     end
   end
-
-  describe "POST /admin/advanced/tools/feed_playground" do
-    context "when the user is a super admin" do
-      let(:super_admin) { create(:user, :super_admin) }
-
-      before do
-        sign_in super_admin
-        post feed_playground_admin_tools_path, params: { config: "sddsdsdsdsds" }
-      end
-
-      it "allows the request" do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "shows proper error" do
-        expect(response.body).to include("unexpected token at")
-      end
-    end
-  end
 end

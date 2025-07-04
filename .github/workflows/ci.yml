@@ -130,7 +130,15 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn install --immutable
+      - name: Configure Datadog Test Optimization
+        uses: datadog/test-visibility-github-action@v2
+        with:
+          languages: javascript
+          api_key: ${{ secrets.DD_API_KEY }}
+          site: datadoghq.eu
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
+        env:
+          DD_TEST_SESSION_NAME: jest-tests
 
   # cypress:
   #   runs-on: ubuntu-latest
