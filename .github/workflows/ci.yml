@@ -18,6 +18,7 @@ env:
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
   YARN_ENABLE_HARDENED_MODE: 0
+  DD_TRACE_DEBUG: true
 
 jobs:
   build:
