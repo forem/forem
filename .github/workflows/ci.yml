@@ -18,7 +18,9 @@ env:
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
   YARN_ENABLE_HARDENED_MODE: 0
-  DD_TRACE_DEBUG: true
+  DD_TRACE_DEBUG: 0
+  DD_ENV: ci
+  DD_SERVICE: forem-unit-tests
 
 jobs:
   build:
@@ -105,6 +107,8 @@ jobs:
           site: datadoghq.eu
       - name: RSpec
         run: bin/knapsack_pro_rspec
+        env:
+          DD_TEST_SESSION_NAME: knapsack-pro-rspec-${{ matrix.ci_node_index }}
 
   jest:
     runs-on: ubuntu-latest
