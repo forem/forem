@@ -139,6 +139,7 @@ jobs:
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
         env:
           DD_TEST_SESSION_NAME: jest-tests
+          NODE_OPTIONS: -r ${{ env.DD_TRACE_PACKAGE }}
 
   # cypress:
   #   runs-on: ubuntu-latest
