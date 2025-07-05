@@ -40,7 +40,7 @@
     </header>
     <% unless @tag %>
       <div class="crayons-subtitle-2 mb-4" style="overflow-x: auto; white-space: nowrap;border-right: 2px solid #b5b5b5;">
-        <% Tag.order("hotness_score desc").limit(20).each do |tag| %>
+        <% Tag.from_subforem.order("hotness_score desc").limit(25).each do |tag| %>
           <%= render_tag_link(tag.accessible_name, path_suffix: "/videos") %>
         <% end %>
       </div>

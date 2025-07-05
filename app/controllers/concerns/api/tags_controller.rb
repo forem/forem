@@ -2,7 +2,7 @@ module Api
   module TagsController
     extend ActiveSupport::Concern
 
-    ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+    ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
     def index
@@ -12,6 +12,7 @@ module Api
       num = [per_page, per_page_max].min
 
       @tags = Tag.select(ATTRIBUTES_FOR_SERIALIZATION)
+        .from_subforem
         .order(taggings_count: :desc)
         .page(page).per(num)
 

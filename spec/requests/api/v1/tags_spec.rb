@@ -69,7 +69,7 @@ RSpec.describe "Api::V1::Tags" do
   private
 
   def expect_valid_json_body(body, tag)
-    expect(body.keys).to match_array(%w[id name bg_color_hex text_color_hex])
+    expect(body.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary])
     expect(body["id"]).to eq(tag.id)
     expect(body["name"]).to eq(tag.name)
     expect(body["bg_color_hex"]).to eq(tag.bg_color_hex)
