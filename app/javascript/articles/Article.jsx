@@ -44,7 +44,7 @@ export const Article = ({
 
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
-    !article.cloudinary_video_url;
+    !article.cloudinary_video_url && !article.video;
 
   const parsedUrl = new URL(article.url);
   const domain = parsedUrl.hostname.replace(".forem.com", "").replace(".to", "");
@@ -84,7 +84,7 @@ export const Article = ({
           }
         }}
       >
-        {article.cloudinary_video_url && <Video article={article} />}
+        {article.video && <Video article={article} />}
 
         {showCover && <ArticleCoverImage article={article} />}
         <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>

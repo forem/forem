@@ -505,6 +505,7 @@ class User < ApplicationRecord
     :vomited_on?,
     :warned?,
     :base_subscriber?,
+    :impending_base_subscriber_cancellation?,
     to: :authorizer,
   )
   alias suspended suspended?

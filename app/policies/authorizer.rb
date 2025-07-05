@@ -141,6 +141,10 @@ module Authorizer
       has_role?(:base_subscriber)
     end
 
+    def impending_base_subscriber_cancellation?
+      has_role?(:impending_base_subscriber_cancellation)
+    end
+
     def spam_or_suspended?
       has_any_role?(:spam, :suspended)
     end

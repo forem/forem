@@ -311,17 +311,20 @@ class Comment < ApplicationRecord
     expire_root_fragment
   end
 
+  def create_conditional_autovomits
+    # return if nothing has changed in body markdown
+    return unless saved_change_to_body_markdown? || created_at > 1.minute.ago
+
+    Comments::HandleSpamWorker.perform_async(id)
+  end
+
   def send_email_notification
-    Comments::SendEmailNotificationWorker.perform_async(id)
+    Comments::SendEmailNotificationWorker.perform_in(120.seconds, id)
   end
 
   def synchronous_spam_score_check
     self.score = -3 if user.registered_at > 48.hours.ago && body_markdown.include?("http")
     self.score = -5 if Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
-  end
-
-  def create_conditional_autovomits
-    Spam::Handler.handle_comment!(comment: self)
   end
 
   def should_send_email_notification?
