@@ -26,7 +26,7 @@
   <div class="crayons-story__body">
     <% note = story.context_notes.first %>
     <% if note && note.processed_html.present? %>
-      <a href={story.url} class="crayons-article__context-note crayons-article__context-note__feed"><%= note.processed_html.html_safe %></a>
+      <a href="<%= URL.article(story) %>" class="crayons-article__context-note crayons-article__context-note__feed"><%= note.processed_html.html_safe %></a>
     <% end %>
     <div class="crayons-story__top">
       <div class="crayons-story__meta">
