@@ -257,7 +257,11 @@
                         collection: @collection,
                         articles: @collection_articles %>
             <% end %>
-
+            <% if @context_note %>
+              <div class="crayons-article__context-note">
+                <%= @context_note.processed_html.html_safe %>
+              </div>
+            <% end %>
             <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
               <% if @article.type_of == "status" && @article.processed_html_final.present? %>
                 <% if user_signed_in? %>
