@@ -99,7 +99,7 @@ RSpec.describe "Api::V0::Videos" do
         )
       end
 
-      get api_tags_path, params: { per_page: 10 }
+      get api_videos_path, params: { per_page: 10 }
       expect(response.parsed_body.count).to eq(2)
     end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_06_25_130739) do
+ActiveRecord::Schema[7.0].define(version: 2025_07_08_151708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -413,6 +413,17 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_25_130739) do
     t.string "team_id"
     t.datetime "updated_at", null: false
     t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
+  end
+
+  create_table "context_notes", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.text "body_markdown", null: false
+    t.datetime "created_at", null: false
+    t.text "processed_html", null: false
+    t.bigint "tag_id"
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_context_notes_on_article_id"
+    t.index ["tag_id"], name: "index_context_notes_on_tag_id"
   end
 
   create_table "context_notifications", force: :cascade do |t|
@@ -1285,6 +1296,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_25_130739) do
     t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "category", default: "uncategorized", null: false
+    t.text "context_note_instructions"
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
@@ -1609,6 +1621,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_25_130739) do
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", on_delete: :cascade
+  add_foreign_key "context_notes", "articles"
+  add_foreign_key "context_notes", "tags"
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "devices", "consumer_apps"

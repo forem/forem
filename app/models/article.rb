@@ -147,6 +147,7 @@ class Article < ApplicationRecord
   #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
   has_many :tag_adjustments
+  has_many :context_notes, dependent: :delete_all
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -263,6 +264,7 @@ class Article < ApplicationRecord
   after_save :bust_cache
   after_save :collection_cleanup
   after_save :generate_social_image
+  after_save :generate_context_notes
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -762,6 +764,16 @@ class Article < ApplicationRecord
     write_attribute :cached_label_list, (adjusted_input || [])
   end
 
+  def generate_context_notes
+    tags.each do |tag|
+      next if !tag.respond_to?(:context_note_instructions) 
+      next if tag.context_note_instructions.blank?
+      next if context_notes.where(tag_id: tag.id).exists?
+
+      Articles::GenerateContextNoteWorker.perform_async(id, tag.id)
+    end
+  end
+
   private
 
   def get_youtube_embed_url
@@ -922,7 +934,7 @@ class Article < ApplicationRecord
   end
 
   def fetch_video_duration
-    return if video_source_url.include?("youtube.com")
+    return if video_source_url&.include?("youtube.com")
 
     if video.present? && video_duration_in_seconds.zero?
       url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
