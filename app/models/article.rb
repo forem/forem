@@ -766,6 +766,7 @@ class Article < ApplicationRecord
 
   def generate_context_notes
     tags.each do |tag|
+      next if !tag.respond_to?(:context_note_instructions) 
       next if tag.context_note_instructions.blank?
       next if context_notes.where(tag_id: tag.id).exists?
 
