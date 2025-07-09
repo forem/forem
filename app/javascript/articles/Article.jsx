@@ -88,6 +88,9 @@ export const Article = ({
 
         {showCover && <ArticleCoverImage article={article} />}
         <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
+          { article.context_note && article.context_note.length > 0 && (
+              <a href={article.url} className="crayons-article__context-note crayons-article__context-note__feed" dangerouslySetInnerHTML={{__html: article.context_note}} />
+            )}
           <div className="crayons-story__top">
             {article.user && (<Meta article={article} organization={article.organization} />)}
             {pinned && (

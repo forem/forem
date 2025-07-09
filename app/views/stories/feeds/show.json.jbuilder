@@ -41,6 +41,8 @@ json.array!(@stories) do |article|
     json.extract! comment.user, :username, :name, :profile_image_90
   end
 
+  json.context_note article.context_notes.first&.processed_html
+
   json.current_user_signed_in user_signed_in?
   json.feed_config @feed_config&.id
 end

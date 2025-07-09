@@ -17,6 +17,7 @@ module Articles
           .offset((@page - 1) * @number_of_articles)
           .limited_column_select.includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
+          .includes(:context_notes)
           .from_subforem
 
         return articles unless @user

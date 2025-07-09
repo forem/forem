@@ -987,6 +987,27 @@ RSpec.describe Article do
     end
   end
 
+  describe "#generate_context_notes" do
+
+    let(:tag) { create(:tag, name: "testtag", context_note_instructions: "context_note_instructions") }
+
+    before do
+      allow(Articles::GenerateContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "calls Articles::GenerateContextNoteWorker.perform_async" do
+      article = create(:article, user: user, tag_list: [tag.name])
+      expect(Articles::GenerateContextNoteWorker).to have_received(:perform_async).with(article.id, tag.id)
+    end
+
+    it "does not call Articles::GenerateContextNoteWorker if no tags with context note instructions are present" do
+      tag.update_column(:context_note_instructions, nil)
+      create(:article, user: user, tag_list: [tag.name])
+      expect(Articles::GenerateContextNoteWorker).not_to have_received(:perform_async)
+    end
+  end
+
+
   describe "#nth_published_by_author" do
     it "does not have a nth_published_by_author if not published" do
       unpublished_article = build(:article, published: false)

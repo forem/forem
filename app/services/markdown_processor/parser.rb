@@ -22,7 +22,7 @@ module MarkdownProcessor
 
     def initialize(content, source: nil, user: nil,
                    liquid_tag_options: {})
-      @content = content
+      @content = (content || "").gsub(/!\[Image Description\]/i, "![ ]")
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })

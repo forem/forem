@@ -3,7 +3,7 @@ module Ai
   class Base
     include HTTParty
     base_uri 'https://generativelanguage.googleapis.com/v1beta'
-    DEFAULT_MODEL = ENV.fetch("GEMINI_API_MODEL", "gemini-2.5-pro-preview-06-05").freeze
+    DEFAULT_MODEL = ENV.fetch("GEMINI_API_MODEL", "gemini-2.5-pro").freeze
     DEFAULT_KEY = ENV["GEMINI_API_KEY"].freeze
     attr_reader :model
     attr_reader :last_response

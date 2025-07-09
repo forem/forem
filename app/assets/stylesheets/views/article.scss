@@ -92,6 +92,26 @@
   .reaction-button[disabled] {
     cursor: pointer;
   }
+
+  &__context-note {
+    margin-top: -5px;
+    margin-bottom: var(--su-5);
+    padding: var(--su-2) var(--su-5);
+    background-color: var(--card-bg);
+    border-radius: 1000px;
+    box-shadow: var(--shadow-1);
+    color: var(--card-color);
+    font-size: calc(var(--fs-base) - 1px);
+    line-height: 1.5;
+    display: inline-block;
+  }
+  &__context-note__feed {
+    margin-bottom: var(--su-3);
+    padding: var(--su-1) var(--su-3);
+    font-size: var(--fs-s);
+    line-height: 1.5;
+    display: inline-block;
+  }
 }
 
 .crayons-article-actions {

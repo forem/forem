@@ -3,7 +3,11 @@
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
-  <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
+  <% if story.video.present? && story.video.include?("youtube") %>
+    <div class="crayons-article__cover crayons-article__cover__image__feed" style="width: 100%; aspect-ratio: 16 / 9; position: relative;">
+      <iframe src="<%= story.video %>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true" title="<%= story.title%>" style="border: 0px; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></iframe>
+    </div>
+  <% elsif featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <div class="crayons-article__cover crayons-article__cover__image__feed" style="aspect-ratio: auto 1000 / <%= story.main_image_height %>;">
       <a href="<%= URL.article(story) %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
         <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
@@ -11,7 +15,7 @@
     </div>
   <% end %>
 
-  <% if story.video.present? && story.video_thumbnail_url.present? %>
+  <% if story.video.present? && story.video_thumbnail_url.present? && story.video.exclude?("youtube") %>
   <a href="<%= URL.article(story) %>" class="crayons-story__video" style="background-image:url(<%= story.cloudinary_video_url %>)">
     <span class="crayons-story__video__time">
       <%= story.video_duration_in_minutes %>
@@ -20,6 +24,10 @@
   <% end %>
 
   <div class="crayons-story__body">
+    <% note = story.context_notes.first %>
+    <% if note && note.processed_html.present? %>
+      <a href="<%= URL.article(story) %>" class="crayons-article__context-note crayons-article__context-note__feed"><%= note.processed_html.html_safe %></a>
+    <% end %>
     <div class="crayons-story__top">
       <div class="crayons-story__meta">
         <div class="crayons-story__author-pic">

@@ -326,6 +326,7 @@ class StoriesController < ApplicationController
     set_article_json_ld
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
+    @context_note = @article.context_notes.first
   end
 
   def permission_denied?
