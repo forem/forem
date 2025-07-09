@@ -669,8 +669,10 @@ class Article < ApplicationRecord
     user_negative_count_adjustment = 0
     negative_count = user.articles.where("score < -10").count
     user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+    # Context notes are currently only a positive indicator. In the future, they could be negative and this should be changed.
+    context_note_adjustment = context_notes.size
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score

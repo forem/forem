@@ -1861,6 +1861,15 @@ RSpec.describe Article do
     end
   end
 
+  context "when the article has a context note" do
+    it "adds 1 to score" do
+      score = article.score
+      create(:context_note, article: article)
+      article.update_score
+      expect(article.reload.score).to eq(score + 1)
+    end
+  end
+
   describe "#feed_source_url and canonical_url must be unique for published articles" do
     let(:url) { "http://www.example.com" }
 
