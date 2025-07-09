@@ -367,6 +367,7 @@ body[data-side-nav-visible='true'] {
     height: auto; /* Maintain aspect ratio */
     border-radius: 8px; /* Optional: rounded corners for images */
     aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+    border: 1px solid var(--base-30); /* Optional border for images */
   }
   a {
     display: block; /* Make links block-level for easier clicking */
@@ -376,7 +377,7 @@ body[data-side-nav-visible='true'] {
     &:first-child {
       padding-top: 7px; /* Add space above the first link */
       padding-bottom: 8px; /* Add space below the first link */
-      border-bottom: 1px solid var(--base-10); /* Optional: border below the first link */
+      box-shadow: 0 1px 1px var(--header-shadow);
     }
     &:hover {
       background-color: var(--base-10); /* Change background on hover */
