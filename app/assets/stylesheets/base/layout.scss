@@ -333,3 +333,59 @@
     }
   }
 }
+
+// .layout-sidebar-visible .crayons-layout should shift layout to the right
+body[data-side-nav-visible='true'] {
+  .crayons-layout, .crayons-header__container {
+    @media (min-width: $breakpoint-m) {
+      max-width: calc(var(--site-width) - 50px);
+      width: calc(100% - 50px);
+      margin-left: 50px; /* Adjust this value to match the sidebar width */
+    }
+    @media (min-width: $breakpoint-2xl) {
+      max-width: var(--site-width);
+      width: 100%;
+      margin-left: auto; /* Reset margin on larger screens */
+      transform: translateX(20px);
+    }
+  }
+}
+
+.crayons-side-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50px; /* Adjust width as needed */
+  height: 100vh; /* Full height */
+  background-color: var(--base-0); /* Light background color */
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  border-right: 1px solid var(--base-10); /* Optional border for separation */
+  z-index: 1000; /* Ensure it stays above other content */
+  display: none; /* Initially hidden */
+  img {
+    max-width: 100%; /* Ensure images are responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Optional: rounded corners for images */
+    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+  }
+  a {
+    display: block; /* Make links block-level for easier clicking */
+    padding: 5px 4px; /* Space between links */
+    text-align: center; /* Center align images */
+    line-height: 0;
+    &:first-child {
+      padding-top: 7px; /* Add space above the first link */
+      padding-bottom: 8px; /* Add space below the first link */
+      border-bottom: 1px solid var(--base-10); /* Optional: border below the first link */
+    }
+    &:hover {
+      background-color: var(--base-10); /* Change background on hover */
+    }
+    &.active {
+      background-color: var(--base-20); /* Highlight active link */
+    }
+  }
+  @media (min-width: $breakpoint-m) {
+    display: block; /* Show sidebar on larger screens */
+  }
+}
