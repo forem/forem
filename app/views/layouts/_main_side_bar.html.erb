@@ -1,0 +1,53 @@
+<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).or(Subforem.where(id: RequestStore.store[:subforem_id])).order(root: :desc, id: :asc) %>
+
+<style>
+#main-side-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50px; /* Adjust width as needed */
+  height: 100vh; /* Full height */
+  background-color: #f8f9fa; /* Light background color */
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  border-right: 1px solid #dee2e6; /* Optional border for separation */
+  z-index: 1000; /* Ensure it stays above other content */
+  display: none; /* Initially hidden */
+}
+
+@media (min-width: 1460px) {
+  #main-side-bar {
+    display: block; /* Show sidebar on larger screens */
+  }
+}
+
+#main-side-bar img {
+  max-width: 100%; /* Ensure images are responsive */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Optional: rounded corners for images */
+}
+#main-side-bar a {
+  display: block; /* Make links block-level for easier clicking */
+  padding: 5px 4px; /* Space between links */
+  text-align: center; /* Center align images */
+  line-height: 0;
+}
+#main-side-bar a:first-child {
+  padding-top: 7px; /* Add space above the first link */
+  padding-bottom: 8px; /* Add space below the first link */
+  border-bottom: 1px solid #dee2e6; /* Optional: border below the first link */
+}
+#main-side-bar a:hover {
+  background-color: #d8dde3; /* Change background on hover */
+}
+#main-side-bar a.active {
+  background-color: #b7bfc9; /* Highlight active link */
+}
+</style>
+
+<nav id="main-side-bar">
+  <% @subforems.each do |subforem| %>
+    <a href="https://<%= subforem.domain %>" rel="noopener noreferrer" class="<%= "active" if subforem.id == RequestStore.store[:subforem_id] %>">
+      <img src="<%= Settings::General.logo_png(subforem_id: subforem.id) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
+    </a>
+  <% end %>
+</nav>

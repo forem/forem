@@ -104,6 +104,10 @@
         <div id="audiocontent" data-podcast="">
           <%= yield(:audio) %>
         </div>
+        <% # Purely experimental sidebar rendering, only for subforem 45 (experimental) %>
+        <% if RequestStore.store[:subforem_id] == 45 %>
+          <%= render "layouts/main_side_bar" %>
+        <% end %>
         <%= render "layouts/top_bar" %>
         <div id="active-broadcast" class="broadcast-wrapper"></div>
     <% end %>
