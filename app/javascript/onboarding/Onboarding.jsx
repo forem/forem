@@ -16,7 +16,10 @@ export class Onboarding extends Component {
 
     const isRoot = document.body.dataset.isRootSubforem === 'true';
 
-    const slides = isRoot ? [ProfileForm, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, CustomCta, EmailPreferencesForm];
+    const slides = isRoot ? [ProfileForm, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
+    if (document.getElementById('onboarding-container').dataset.includeCustomCtaSlide === 'true') {
+      slides.splice(3, 0, CustomCta);
+    }
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
