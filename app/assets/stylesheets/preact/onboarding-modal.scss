@@ -777,3 +777,76 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     }
   }
 }
+
+.onboarding-actions-list {
+  margin-top: var(--su-6);
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    padding: var(--su-3);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    background-color: var(--card-bg-color);
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    user-select: none;
+
+    &:not(:last-child) {
+      margin-bottom: var(--su-3);
+    }
+
+    &:hover {
+      border-color: rgba(var(--accent-brand-rgb), 1);
+      box-shadow: var(--shadow-smooth);
+    }
+
+    &.--selected {
+      background: rgba(var(--accent-brand-rgb), 0.1);
+      border: 1px solid rgba(var(--accent-brand-rgb), 1);
+
+      &:hover {
+        background: rgba(var(--accent-brand-rgb), 0.15);
+      }
+
+      .onboarding-actions-list__label-text::before {
+        background-color: rgba(var(--accent-brand-rgb), 1);
+        border-color: rgba(var(--accent-brand-rgb), 1);
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.157.933a.75.75 0 01.077 1.058L4.817 9.407a.75.75 0 01-1.134 0L.766 6.037a.75.75 0 011.135-.982L4.25 7.77l5.85-6.76a.75.75 0 011.057-.077z' fill='%23fff'/%3E%3C/svg%3E");
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+  }
+
+  &__checkbox {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+  }
+
+  &__label-text {
+    padding-left: var(--su-8);
+    position: relative;
+    font-size: var(--fs-base);
+    color: var(--body-color);
+    font-weight: var(--fw-medium);
+    line-height: 1.6em;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: var(--su-2);
+      top: 0.91em;
+      transform: translateY(-50%);
+      height: 26px;
+      width: 26px;
+      border: 1px solid var(--divider);
+      border-radius: 4px;
+      background-color: var(--checkbox-default-bg);
+      transition: all 0.2s ease;
+    }
+  }
+}

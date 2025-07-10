@@ -213,6 +213,7 @@ Rails.application.routes.draw do
       member do
         patch :checkbox, defaults: { format: :json }
         patch :notifications, defaults: { format: :json }
+        patch :custom_actions, defaults: { format: :json }
         get :tags, defaults: { format: :json }
         get :users_and_organizations, defaults: { format: :json }
         get :newsletter, defaults: { format: :json }
