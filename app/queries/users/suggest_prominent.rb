@@ -12,7 +12,7 @@ module Users
     end
 
     def suggest
-      User.joins(:profile).without_role(:suspended).where(id: fetch_and_pluck_user_ids.uniq)
+      User.joins(:profile).where(id: fetch_and_pluck_user_ids.uniq)
         .limit(RETURNING).select(attributes_to_select)
     end
 
@@ -33,7 +33,7 @@ module Users
                             Article.published.from_subforem.featured.where("published_at > ?", lookback).where("score > ?", Settings::UserExperience.index_minimum_score * 2)
                           end
       user_ids = filtered_articles.order("score DESC").limit(RETURNING * 2).pluck(:user_id) - [user.id]
-      if user_ids.size > (RETURNING / 2)
+      if user_ids.size > (RETURNING / 5)
         user_ids.sample(RETURNING)
       else
         # This is a fallback in case we don't have enough users to return
