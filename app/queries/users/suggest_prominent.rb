@@ -1,6 +1,6 @@
 module Users
   class SuggestProminent
-    RETURNING = 50
+    RETURNING = 20
 
     def self.call(user, attributes_to_select: [])
       new(user, attributes_to_select: attributes_to_select).suggest
@@ -25,12 +25,14 @@ module Users
     end
 
     def fetch_and_pluck_user_ids
+      lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+      lookback = lookback_setting.positive? ? lookback_setting.days.ago : 2.weeks.ago
       filtered_articles = if tags_to_consider.any?
-                            Article.published.from_subforem.cached_tagged_with_any(tags_to_consider)
+                            Article.published.from_subforem.cached_tagged_with_any(tags_to_consider).where("published_at > ?", lookback).where("score > ?", Settings::UserExperience.index_minimum_score * 2)
                           else
-                            Article.published.from_subforem.featured
+                            Article.published.from_subforem.featured.where("published_at > ?", lookback).where("score > ?", Settings::UserExperience.index_minimum_score * 2)
                           end
-      user_ids = filtered_articles.order("hotness_score DESC").limit(RETURNING * 2).pluck(:user_id) - [user.id]
+      user_ids = filtered_articles.order("score DESC").limit(RETURNING * 2).pluck(:user_id) - [user.id]
       if user_ids.size > (RETURNING / 2)
         user_ids.sample(RETURNING)
       else
