@@ -95,7 +95,15 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.comment_recency_weight        = 8.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 10.0
-        feed_config.subforem_follow_weight        = 11.0 # Added new weight
+        feed_config.subforem_follow_weight        = 11.0
+
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: root_subforem.id,
+          default_subforem_id: root_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
       end
 
       it "includes all the expected SQL fragments including label and subforem matching" do

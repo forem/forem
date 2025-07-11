@@ -151,7 +151,7 @@ RSpec.describe UserActivity, type: :model do
 
       it "captures recent_subforems from those same articles" do
         expect(activity.recent_subforems).to match_array(
-          [article1.subforem_id, article2.subforem_id, article2.subforem_id, article1.subforem_id, article1.subforem_id]
+          [article1.subforem_id, article2.subforem_id]
         )
       end
 
