@@ -13,7 +13,7 @@ en:
         name: Name
         slug: Username
         profile_image: Profile image
-        twitter_username: Twitter username
+        twitter_username: X username
         github_username: GitHub username
         url: Website url
         tag_line: Tag line
@@ -39,7 +39,7 @@ en:
         slug: Slug
         soundcloud_url: Soundcloud url
         title: Title
-        twitter_username: Twitter username
+        twitter_username: X username
         website_url: Website url
       response_template:
         title: Title
