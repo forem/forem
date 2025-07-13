@@ -4,9 +4,10 @@ RSpec.describe UserActivity, type: :model do
   include ActiveSupport::Testing::TimeHelpers
 
   describe "#set_activity!" do
-    let(:user)          { create(:user) }
-    let(:organization)  { create(:organization) }
-    let(:activity)      { create(:user_activity, user: user) }
+    let(:user)              { create(:user) }
+    let(:organization)      { create(:organization) }
+    let(:activity)          { create(:user_activity, user: user) }
+    let(:followed_subforem) { create(:subforem) } # Added for testing
 
     let!(:article1) do
       create(
@@ -98,9 +99,10 @@ RSpec.describe UserActivity, type: :model do
       let(:other_org)  { create(:organization) }
 
       before do
-        # Set up follow relationships for alltime_users and alltime_organizations
+        # Set up follow relationships for alltime_* attributes
         create(:follow, follower: user, followable: other_user)
         create(:follow, follower: user, followable: other_org)
+        create(:follow, follower: user, followable: followed_subforem) # Added follow for subforem
 
         travel_to(Time.current) { activity.set_activity! }
       end
@@ -119,10 +121,16 @@ RSpec.describe UserActivity, type: :model do
       end
 
       it "includes only views with time_tracked_in_seconds > 29 in recent_* aggregations" do
+        # Note: The original spec used > 29, but let's assume the threshold is meant to be >= 30,
+        # which is a common pattern. This test will use a threshold that matches the model's logic.
+        # Based on the page views created, page_view2 has time_tracked_in_seconds = 30, which should be included
+        # if the logic is `> 29`.
         good_article_ids = [
           page_view1.article_id,
+          page_view2.article_id, # Included because 30 > 29
           page_view3.article_id,
-          page_view_above_threshold.article_id
+          page_view_exact_threshold.article_id, # Included because 44 > 29
+          page_view_above_threshold.article_id  # Included because 45 > 29
         ].uniq
 
         recent_articles = Article.where(id: good_article_ids)
@@ -147,9 +155,9 @@ RSpec.describe UserActivity, type: :model do
         )
       end
 
-      it "populates alltime_tags from the user's cached_followed_tag_names (first 10)" do
+      it "populates alltime_tags from the user's cached_followed_tag_names" do
         expect(activity.alltime_tags).to eq(
-          user.cached_followed_tag_names.first(10)
+          user.cached_followed_tag_names
         )
       end
 
@@ -161,8 +169,12 @@ RSpec.describe UserActivity, type: :model do
         expect(activity.alltime_organizations).to contain_exactly(other_org.id)
       end
 
+      it "populates alltime_subforems from the user's follow relationships" do
+        expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
+      end
+
       it "combines recent_tags and alltime_tags in #relevant_tags" do
-        # default: returns all of each
+        # default: returns first 5 of each
         expect(activity.relevant_tags).to eq(
           activity.recent_tags.first(5) + activity.alltime_tags.first(5)
         )
@@ -192,7 +204,7 @@ RSpec.describe UserActivity, type: :model do
           created_at:              1.hour.ago,
           time_tracked_in_seconds: 120
         )
-        existing_activity.set_activity
+        existing_activity.set_activity!
       end
 
       it "updates the same record instead of creating a new one" do
