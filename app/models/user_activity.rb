@@ -21,6 +21,7 @@ class UserActivity < ApplicationRecord
     self.alltime_tags = user.cached_followed_tag_names
     self.alltime_users = Follow.follower_user(user_id).pluck(:followable_id)
     self.alltime_organizations = Follow.follower_organization(user_id).pluck(:followable_id)
+    self.alltime_subforems = Follow.follower_subforem(user_id).pluck(:followable_id)
   end
 
   def relevant_tags(recent_tag_count = 5, all_time_tag_count = 5)
