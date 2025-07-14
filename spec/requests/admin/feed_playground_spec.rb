@@ -15,7 +15,6 @@ RSpec.describe "/admin/advanced/tools/feed_playground" do
         end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
-
     context "when the user is a super admin" do
       let(:super_admin) { create(:user, :super_admin) }
 
