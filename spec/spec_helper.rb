@@ -24,6 +24,7 @@ require "zonebie/rspec"
 RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
 RSpec::Matchers.define_negated_matcher :exclude, :include
 RSpec::Matchers.define_negated_matcher :not_change, :change
+
 ############
 RSpec.configure do |config|
   # makes example fail if there's any output
