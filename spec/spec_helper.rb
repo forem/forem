@@ -1,4 +1,5 @@
 require "dotenv/load"
+require "logger"
 require "active_support"
 require "active_support/testing/time_helpers"
 require "zonebie/rspec"
