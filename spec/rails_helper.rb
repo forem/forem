@@ -23,6 +23,7 @@ KnapsackPro::Hooks::Queue.after_subset_queue do |_queue_id, _subset_queue_id|
 end
 
 require "spec_helper"
+
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 
