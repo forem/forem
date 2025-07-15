@@ -1034,7 +1034,7 @@ false).once
 
     describe "#bad_actor_or_empty_profile?" do
       it "returns false to a regular user" do
-        user = build(:user, articles_count: 1)
+        user = build(:user, articles_count: 5, comments_count: 10, badge_achievements_count: 6)
         expect(user.bad_actor_or_empty_profile?).to be(false)
       end
 
