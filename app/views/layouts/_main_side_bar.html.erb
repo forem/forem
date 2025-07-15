@@ -1,12 +1,8 @@
 <% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).or(Subforem.where(id: RequestStore.store[:subforem_id])).order(root: :desc, id: :asc) %>
-<style>
-
-</style>
-
 <nav id="main-side-bar" class="crayons-side-nav">
   <% @subforems.each_with_index do |subforem, i| %>
     <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
-      <a href="https://<%= subforem.domain %>" rel="noopener noreferrer" class="<%= "active" if subforem.id == RequestStore.store[:subforem_id] %>" id="root-subforem-link">
+      <a href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" class="<%= "active" if subforem.id == RequestStore.store[:subforem_id] %>" id="root-subforem-link">
         <img src="<%= Settings::General.logo_png(subforem_id: subforem.id) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
       </a>
       <% if i == 0 %>
