@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Subforems", type: :request do
   describe "GET /subforems" do
-    let!(:root_subforem)        { create(:subforem, root: true, discoverable: false) }
-    let!(:discoverable_subforem){ create(:subforem, root: false, discoverable: true) }
-    let!(:hidden_subforem)      { create(:subforem, root: false, discoverable: false) }
+    let!(:root_subforem)        { create(:subforem, root: true, discoverable: false, domain: "#{rand(1000).com}") }
+    let!(:discoverable_subforem){ create(:subforem, root: false, discoverable: true, domain: "#{rand(1000).com}") }
+    let!(:hidden_subforem)      { create(:subforem, root: false, discoverable: false, domain: "#{rand(1000).com}") }
 
     it "returns http success and only includes discoverable and root subforems" do
       get subforems_path
