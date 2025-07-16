@@ -1,8 +1,7 @@
 Datadog.configure do |c|
   c.env = ENV["DD_ENV"] || Rails.env
-  c.tracing.enabled = ENV["DD_API_KEY"].present?
+  c.tracing.enabled = ENV["DD_API_KEY"].present? && !Rails.env.test?
   c.tracing.partial_flush.enabled = true
-  c.diagnostics.startup_logs.enabled = Rails.env.production?
   c.tracing.log_injection = Rails.env.production?
   service_name = ENV.fetch("DD_SERVICE") { "rails-#{Rails.env}" }
 
@@ -19,15 +18,15 @@ Datadog.configure do |c|
   # Multiple Redis integrations to split Redis usage per-instance to
   # accommodate having a different Redis instance for each use case.
   c.tracing.instrument :redis, service_name: "#{service_name}-redis-rpush",
-                               describes: { url: ENV.fetch("REDIS_RPUSH_URL", nil) }
+                              describes: { url: ENV.fetch("REDIS_RPUSH_URL", nil) }
   c.tracing.instrument :redis, service_name: "#{service_name}-redis-sessions",
-                               describes: { url: ENV.fetch("REDIS_SESSIONS_URL", nil) }
+                              describes: { url: ENV.fetch("REDIS_SESSIONS_URL", nil) }
   # Sidekiq jobs that spin up thousands of other jobs end up consuming a
   # *lot* of memory on instrumentation alone. This env var allows us to
   # enable it only when needed.
   if ENV["DD_ENABLE_REDIS_SIDEKIQ"] == "true"
     c.tracing.instrument :redis, service_name: "#{service_name}-redis-sidekiq",
-                                 describes: { url: ENV.fetch("REDIS_SIDEKIQ_URL", nil) }
+                                describes: { url: ENV.fetch("REDIS_SIDEKIQ_URL", nil) }
   end
   # Generic REDIS_URL comes last, allowing it to overwrite any of the
   # above when multiple Redis use cases are backed by the same Redis URL.

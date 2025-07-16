@@ -129,3 +129,4 @@ doc/
 !/app/assets/builds/.keep
 
 test.rb
+*.log
