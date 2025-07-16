@@ -358,7 +358,6 @@ body[data-side-nav-visible='true'] {
   width: 50px; /* Adjust width as needed */
   height: 100vh; /* Full height */
   background-color: var(--base-0); /* Light background color */
-  overflow-y: auto; /* Allow scrolling if content overflows */
   border-right: 1px solid var(--base-10); /* Optional border for separation */
   z-index: 1000; /* Ensure it stays above other content */
   display: none; /* Initially hidden */
@@ -369,11 +368,12 @@ body[data-side-nav-visible='true'] {
     aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
     border: 1px solid var(--base-30); /* Optional border for images */
   }
-  a {
+  a:not(.crayons-link) {
     display: block; /* Make links block-level for easier clicking */
     padding: 5px 4px; /* Space between links */
     text-align: center; /* Center align images */
     line-height: 0;
+    overflow: visible;
     &:first-child {
       padding-top: 7px; /* Add space above the first link */
       padding-bottom: 8px; /* Add space below the first link */
@@ -389,4 +389,49 @@ body[data-side-nav-visible='true'] {
   @media (min-width: $breakpoint-m) {
     display: block; /* Show sidebar on larger screens */
   }
+
+  .crayons-side-nav__item {
+    position: relative;
+    overflow: visible;
+    z-index: 1001; /* Ensure it appears above other content */
+    .profile-preview-card__content {
+      &--list {
+        height: calc(100vh - 10px);
+        padding: 0;
+        overflow-y: auto;
+        .crayons-link {
+          line-height: 1.3em;
+          img {
+            height: 30px;
+            width: 30px;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+    &:hover {
+      z-index: 2000; /* Ensure it appears above other content */
+      .profile-preview-card__content {
+        position: absolute;
+        display: block; /* Show sidebar when hovered */
+        left: 45px;           
+        top: 0;
+        width: 290px;
+        z-index: 2000; /* Ensure it appears above other content */
+      }
+    }
+    &--menu {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 8px 0;
+      border-top: 1px solid var(--base-20);
+      cursor: pointer;
+      svg {
+        width: 100%;
+      }
+    }
+  }
+
 }
