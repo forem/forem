@@ -16,23 +16,19 @@ RSpec.describe "User searches users" do
   it "shows the correct follow buttons", js: true do
     visit "/search?q=&filters=class_name:User"
 
-    # Wait for the "Edit profile" button and then check its data
-    expect(page).to have_button(I18n.t("core.edit_profile"))
+    expect(page).to have_css("button.follow-action-button")
     edit_button_info = find_button(I18n.t("core.edit_profile"))['data-info']
     expect(JSON.parse(edit_button_info)["id"]).to eq(current_user.id)
 
-    # Wait for the "Following" button and then check its data
-    expect(page).to have_button(I18n.t("core.following"))
+    expect(page).to have_css("button.follow-action-button")
     following_button_info = find_button(I18n.t("core.following"))['data-info']
     expect(JSON.parse(following_button_info)["id"]).to eq(followed_user.id)
 
-    # Wait for the "Follow" button and then check its data
-    expect(page).to have_button(I18n.t("core.follow"))
+    expect(page).to have_css("button.follow-action-button")
     follow_button_info = find_button(I18n.t("core.follow"))['data-info']
     expect(JSON.parse(follow_button_info)["id"]).to eq(not_followed_user.id)
 
-    # Wait for the "Follow back" button and then check its data
-    expect(page).to have_button(I18n.t("core.follow_back"))
+    expect(page).to have_css("button.follow-action-button")
     follow_back_button_info = find_button(I18n.t("core.follow_back"))['data-info']
     expect(JSON.parse(follow_back_button_info)["id"]).to eq(follow_back_user.id)
   end
