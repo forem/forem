@@ -26,6 +26,7 @@ class Follow < ApplicationRecord
   scope :follower_organization, ->(id) { where(follower_id: id, followable_type: "Organization") }
   scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
   scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
+  scope :follower_subforem, ->(id) { where(follower_id: id, followable_type: "Subforem") }
 
   # Follows from users who don't have suspended or spam role
   scope :non_suspended, lambda { |followable_type, followable_id|

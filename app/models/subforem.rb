@@ -1,4 +1,6 @@
 class Subforem < ApplicationRecord
+  acts_as_followable
+
   has_many :articles, dependent: :nullify
   has_many :navigation_links, dependent: :nullify
   has_many :pages, dependent: :nullify

@@ -54,7 +54,7 @@ class FollowsController < ApplicationController
     authorize Follow
 
     followable_klass = case params[:followable_type].capitalize
-                       when "Organization", "Tag", "Podcast"
+                       when "Organization", "Tag", "Podcast", "Subforem"
                          params[:followable_type].capitalize.constantize
                        else
                          User

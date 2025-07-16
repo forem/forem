@@ -1,0 +1,13 @@
+<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).or(Subforem.where(id: RequestStore.store[:subforem_id])).order(root: :desc, id: :asc) %>
+
+<style>
+
+</style>
+
+<nav id="main-side-bar" class="crayons-side-nav">
+  <% @subforems.each do |subforem| %>
+    <a href="https://<%= subforem.domain %>" rel="noopener noreferrer" class="<%= "active" if subforem.id == RequestStore.store[:subforem_id] %>">
+      <img src="<%= Settings::General.logo_png(subforem_id: subforem.id) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
+    </a>
+  <% end %>
+</nav>
