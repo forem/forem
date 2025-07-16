@@ -37,7 +37,7 @@
           <div>
             <div class="mb-1 flex items-center justify-between">
               <h4 class="-ml-2">
-                <%= Settings::Community.community_name(subforem_id: subforem.id) %>
+                <a href="https://<%= subforem.domain %>"><%= Settings::Community.community_name(subforem_id: subforem.id) %></a>
               </h4>
             </div>
             <p class="mb-6 fs-s color-base-70 truncate-at-3">
