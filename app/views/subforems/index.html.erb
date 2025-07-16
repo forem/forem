@@ -1,21 +1,21 @@
-<% title t("views.tags.meta.title") %>
+<% title t("views.subforems.meta.title") %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/tags") %>" />
-  <meta name="description" content="<%= t("views.tags.meta.description", community: community_name) %>">
+  <meta name="description" content="<%= t("views.subforems.meta.description", community: community_name) %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/tags") %>" />
-  <meta property="og:title" content="<%= t("views.tags.meta.description", community: community_name) %>" />
+  <meta property="og:title" content="<%= t("views.subforems.meta.description", community: community_name) %>" />
   <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
-  <meta property="og:description" content="<%= t("views.tags.meta.og.description", community: community_name) %>" />
+  <meta property="og:description" content="<%= t("views.subforems.meta.og.description", community: community_name) %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="<%= t("views.tags.meta.description", community: community_name) %>">
-  <meta name="twitter:description" content="<%= t("views.tags.meta.og.description", community: community_name) %>">
+  <meta name="twitter:title" content="<%= t("views.subforems.meta.description", community: community_name) %>">
+  <meta name="twitter:description" content="<%= t("views.subforems.meta.og.description", community: community_name) %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
 
