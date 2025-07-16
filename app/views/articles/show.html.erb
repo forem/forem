@@ -100,7 +100,7 @@
       <%= @article.processed_html_final.html_safe %>
     </div>
   </div>
-  <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 <% else %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
     <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
@@ -337,7 +337,7 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>

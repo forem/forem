@@ -1,0 +1,55 @@
+<% title t("views.subforems.meta.title") %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/tags") %>" />
+  <meta name="description" content="<%= t("views.subforems.meta.description", community: community_name) %>">
+  <%= meta_keywords_default %>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="<%= app_url("/tags") %>" />
+  <meta property="og:title" content="<%= t("views.subforems.meta.description", community: community_name) %>" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
+  <meta property="og:description" content="<%= t("views.subforems.meta.og.description", community: community_name) %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="<%= t("views.subforems.meta.description", community: community_name) %>">
+  <meta name="twitter:description" content="<%= t("views.subforems.meta.og.description", community: community_name) %>">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--header-inside">
+  <header class="crayons-page-header">
+    <h1 class="crayons-title">
+      Subforems
+    </h1>
+  </header>
+  <% if @subforems.empty? %>
+    <div class="articles-list crayons-layout__content" id="articles-list" data-follow-button-container="true">
+      <div id="banner-section"></div>
+      <div class="substories search-results-loaded" id="substories"><div class="p-9 align-center crayons-card">No subforems available</div></div>
+    </div>
+  <% else %>
+    <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-4 px-3 m:px-0 pb-3" data-follow-button-container="true">
+      <% @subforems.each do |subforem| %>
+        <div id="subforem-<%= tag.id %>" class="crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
+          <div>
+            <div class="mb-1 flex items-center justify-between">
+              <h4 class="-ml-2">
+                <a href="https://<%= subforem.domain %>"><%= Settings::Community.community_name(subforem_id: subforem.id) %></a>
+              </h4>
+            </div>
+            <p class="mb-6 fs-s color-base-70 truncate-at-3">
+              <%= Settings::Community.community_description(subforem_id: subforem.id) %>
+            </p>
+          </div>
+          <div class="mt-auto flex items-end justify-between">
+            <%= follow_button(subforem, style = "", "follow-subforem") %>
+            <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 180) %>" class="tag-card__badge" alt="" loading="lazy" />
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</main>
