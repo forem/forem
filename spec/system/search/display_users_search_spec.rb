@@ -27,6 +27,12 @@ RSpec.describe "Display users search spec", js: true do
 
     expect(page).to have_content(found_user.name)
     expect(find(:xpath, "//img[@alt='#{found_user.username} profile']")["src"]).to include(found_user.profile_image_90)
-    expect(JSON.parse(find_button(I18n.t("core.follow"))["data-info"])["id"]).to eq(found_user.id)
+
+    # First, wait for the button with the text "Follow" to appear
+    expect(page).to have_button(I18n.t("core.follow"))
+    
+    # THEN, you can safely find it and check its data attribute
+    follow_button_info = find_button(I18n.t("core.follow"))['data-info']
+    expect(JSON.parse(follow_button_info)["id"]).to eq(found_user.id)
   end
 end
