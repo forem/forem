@@ -1,4 +1,4 @@
-const rootDomain = document.getElementById('root-subforem-link')?.getAttribute('href').replace(/https?:\/\//, '').replace(/\/$/, '');
+const rootDomain = document.getElementById('root-subforem-link')?.getAttribute('href').split('/')[2] || '';
 
 fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
   method: 'GET',
