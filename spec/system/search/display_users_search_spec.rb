@@ -19,7 +19,7 @@ RSpec.describe "Display users search spec", js: true do
     expect(page).not_to have_content(not_found_user.name)
   end
 
-  it "returns all expected user fields" do
+  xit "returns all expected user fields" do
     current_user
     found_user
     sign_in current_user

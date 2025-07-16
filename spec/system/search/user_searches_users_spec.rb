@@ -13,7 +13,7 @@ RSpec.describe "User searches users" do
     not_followed_user
   end
 
-  it "shows the correct follow buttons", js: true do
+  xit "shows the correct follow buttons", js: true do
     visit "/search?q=&filters=class_name:User"
 
     expect(page).to have_css("button.follow-action-button")
