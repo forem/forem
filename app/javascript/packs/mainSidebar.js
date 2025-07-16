@@ -1,6 +1,6 @@
-const rootDomain = document.getElementById('root-subforem-link')?.getAttribute('href')
+const rootDomain = document.getElementById('root-subforem-link')?.getAttribute('href').split('/')[2] || '';
 
-fetch(`${rootDomain}/stories/feed/?page=1&type_of=discover`, {
+fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
   method: 'GET',
   headers: {
     Accept: 'application/json',
