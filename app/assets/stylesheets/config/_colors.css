@@ -407,3 +407,14 @@
     0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
   --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.05);
 }
+
+/* Text selection styling for light mode */
+::selection {
+  background-color: var(--accent-brand);
+  color: rgb(var(--white));
+}
+
+::-moz-selection {
+  background-color: var(--accent-brand);
+  color: rgb(var(--white));
+}
