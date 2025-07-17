@@ -12,6 +12,7 @@
         </div>
       <% else %>
         <div class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7">
+          <img src="<%= Settings::General.main_social_image(subforem_id: subforem.id) %>" class="crayons-side-nav__item-cover" style="aspect-ratio: 10 / 5" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Main Image">
           <h3 class="py-2">
             <%= Settings::Community.community_name(subforem_id: subforem.id) %>
           </h3>
