@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FocusTrap } from '../shared/components/focusTrap';
 import { postReactions } from '../actionsPanel/services/reactions.js';
 import { EmailPreferencesForm } from './components/EmailPreferencesForm';
+import { CustomCta } from './components/CustomCta';
 import { FollowTags } from './components/FollowTags';
 import { FollowUsers } from './components/FollowUsers';
 import { ProfileForm } from './components/ProfileForm';
@@ -16,6 +17,9 @@ export class Onboarding extends Component {
     const isRoot = document.body.dataset.isRootSubforem === 'true';
 
     const slides = isRoot ? [ProfileForm, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
+    if (document.getElementById('onboarding-container').dataset.includeCustomCtaSlide === 'true') {
+      slides.splice(3, 0, CustomCta);
+    }
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);

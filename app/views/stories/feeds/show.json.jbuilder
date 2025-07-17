@@ -1,7 +1,8 @@
 article_attributes_to_include = %i[
   title path id user_id comments_count public_reactions_count organization_id
   reading_time video_thumbnail_url video video_duration_in_minutes edited_at
-  experience_level_rating experience_level_rating_distribution main_image_height type_of
+  experience_level_rating experience_level_rating_distribution main_image_height
+  type_of subforem_id
 ]
 article_methods_to_include = %i[
   readable_publish_date flare_tag class_name
@@ -40,6 +41,8 @@ json.array!(@stories) do |article|
     json.extract! comment, :user_id, :published_timestamp, :published_at_int, :safe_processed_html, :path
     json.extract! comment.user, :username, :name, :profile_image_90
   end
+
+  json.subforem_logo Settings::General.logo_png(subforem_id: article.subforem_id)
 
   json.context_note article.context_notes.first&.processed_html
 

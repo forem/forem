@@ -4,6 +4,7 @@ import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 import {
   observeBillboards,
   initializeBillboardVisibility,
+  executeBBScripts,
 } from '../packs/billboardAfterRenderActions';
 import { observeFeedElements } from '../packs/feedEvents';
 import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
@@ -109,6 +110,7 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
           initializeBillboardVisibility();
           observeBillboards();
           setupBillboardInteractivity();
+          executeBBScripts(homeFeedEl);
           observeFeedElements();
         };
 

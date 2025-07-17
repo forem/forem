@@ -7,6 +7,7 @@ class FeedConfig < ApplicationRecord
     recent_pageviews_count = activity_store&.recently_viewed_articles&.count { |_, timestamp| timestamp.to_datetime > 24.hours.ago } || 0
     user_follow_ids = (activity_store&.alltime_users&.first(200) || user.cached_following_users_ids) + (activity_store&.recent_users&.compact || [])
     organization_follow_ids = (activity_store&.alltime_organizations&.first(200) || user.cached_following_organizations_ids) + (activity_store&.recent_organizations&.compact || [])
+    subforem_follow_ids = activity_store&.alltime_subforems || []
     recent_tags_count = rand(recent_tag_count_min..recent_tag_count_max) if recent_tag_count_min.positive? && recent_tag_count_max.positive?
     all_time_tags_count = rand(all_time_tag_count_min..all_time_tag_count_max) if all_time_tag_count_min.positive? && all_time_tag_count_max.positive?
     tag_names = activity_store&.relevant_tags(recent_tags_count || 5, all_time_tags_count || 5) || user.cached_followed_tag_names
@@ -43,6 +44,13 @@ class FeedConfig < ApplicationRecord
         "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
       }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
       terms << "(#{tag_condition})"
+    end
+
+    if subforem_follow_weight.positive? &&
+      RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+      subforem_ids = subforem_follow_ids.empty? ? "-1" : subforem_follow_ids.join(',')
+      terms << "(CASE WHEN articles.subforem_id IN (#{subforem_ids}) THEN #{subforem_follow_weight} ELSE 0 END)"
     end
 
     ## Labels slightly different because we can use native Postgres array operators
@@ -148,6 +156,7 @@ class FeedConfig < ApplicationRecord
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
+    clone.subforem_follow_weight = subforem_follow_weight * rand(0.9..1.1)
     clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max if recent_tag_count_min.positive?
     clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min if recent_tag_count_max.positive?
     clone.recent_tag_count_max = clone.recent_tag_count_min if clone.recent_tag_count_max < clone.recent_tag_count_min

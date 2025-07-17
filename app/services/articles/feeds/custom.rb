@@ -29,6 +29,7 @@ module Articles
           .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
           .includes(:context_notes)
+          .includes(:subforem)
           .from_subforem
 
         if @user

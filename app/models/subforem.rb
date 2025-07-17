@@ -1,4 +1,6 @@
 class Subforem < ApplicationRecord
+  acts_as_followable
+
   has_many :articles, dependent: :nullify
   has_many :navigation_links, dependent: :nullify
   has_many :pages, dependent: :nullify
@@ -78,6 +80,13 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def data_info_to_json
+    DataInfo.to_json(object: self, class_name: "Subforem", id: id, style: "full")
+  end
+
+  def name
+    Settings::Community.community_name(subforem_id: id)
+  end
 
   private
 

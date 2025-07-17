@@ -15,6 +15,7 @@ RSpec.describe FeedConfig, type: :model do
       recent_subforems: [1],
       alltime_users: [10, 20],
       alltime_organizations: [100, 200],
+      alltime_subforems: [30, 40] # Added for subforem follow testing
     )
   end
 
@@ -94,9 +95,18 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.comment_recency_weight        = 8.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 10.0
+        feed_config.subforem_follow_weight        = 11.0
+
+        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        allow(RequestStore).to receive(:store).and_return(
+          subforem_id: root_subforem.id,
+          default_subforem_id: root_subforem.id,
+          root_subforem_id: root_subforem.id
+        )
       end
 
-      it "includes all the expected SQL fragments including label matching" do
+      it "includes all the expected SQL fragments including label and subforem matching" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("articles.feed_success_score * 1.0")
         expect(sql).to include("articles.comment_score * 2.0")
@@ -108,6 +118,7 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.published_at))")
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
+        expect(sql).to include("CASE WHEN articles.subforem_id IN (30,40) THEN 11.0") # Added expectation
       end
     end
 
@@ -124,9 +135,10 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.comment_recency_weight        = 0.0
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 0.0
+        feed_config.subforem_follow_weight        = 0.0 # Added new weight
       end
 
-      it "skips SQL terms for weights that are zero including labels" do
+      it "skips SQL terms for weights that are zero including labels and subforems" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("articles.feed_success_score * 1.0")
         expect(sql).not_to include("articles.comment_score *")
@@ -139,6 +151,7 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
         expect(sql).not_to include("articles.id IN (")
+        expect(sql).not_to include("subforem_id IN") # Added expectation
       end
     end
 
@@ -155,6 +168,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.comment_recency_weight        = 0.0
         feed_config.lookback_window_weight        = 0.0
         feed_config.precomputed_selections_weight = 0.0
+        feed_config.subforem_follow_weight        = 0.0 # Added new weight
       end
 
       it "returns 0 as the SQL expression" do
@@ -173,7 +187,8 @@ RSpec.describe FeedConfig, type: :model do
           recent_labels: [],
           recent_subforems: [1],
           alltime_users: [10, 20],
-          alltime_organizations: [100, 200]
+          alltime_organizations: [100, 200],
+          alltime_subforems: [30, 40]
         )
       end
 
@@ -275,7 +290,7 @@ RSpec.describe FeedConfig, type: :model do
       let(:activity_store) do
         double("ActivityStore", recently_viewed_articles: [], recent_users: [], recent_organizations: [],
                                 relevant_tags: [], recent_labels: [], recent_subforems: [],
-                                alltime_users: [], alltime_organizations: [])
+                                alltime_users: [], alltime_organizations: [], alltime_subforems: [])
       end
 
       before do
@@ -314,6 +329,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.language_match_weight          = 18.0
       feed_config.general_past_day_bonus_weight = 19.0
       feed_config.recently_active_past_day_bonus_weight = 20.0
+      feed_config.subforem_follow_weight        = 21.0 # Added new weight
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -350,6 +366,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.language_match_weight).to eq(18.0 * 1.1)
       expect(clone.general_past_day_bonus_weight).to eq(19.0 * 1.1)
       expect(clone.recently_active_past_day_bonus_weight).to eq(20.0 * 1.1)
+      expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
     end
 
     it "does not modify the original feed_config" do
@@ -374,6 +391,7 @@ RSpec.describe FeedConfig, type: :model do
         "clickbait_score_weight",
         "compellingness_score_weight",
         "language_match_weight",
+        "subforem_follow_weight", # Added new weight to check
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",

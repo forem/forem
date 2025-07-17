@@ -170,6 +170,7 @@ Rails.application.routes.draw do
       end
     end
     resources :videos, only: %i[index create new]
+    resources :subforems, only: [:index]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
     resources :tag_adjustments, only: %i[create destroy]
@@ -213,6 +214,7 @@ Rails.application.routes.draw do
       member do
         patch :checkbox, defaults: { format: :json }
         patch :notifications, defaults: { format: :json }
+        patch :custom_actions, defaults: { format: :json }
         get :tags, defaults: { format: :json }
         get :users_and_organizations, defaults: { format: :json }
         get :newsletter, defaults: { format: :json }

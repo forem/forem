@@ -226,7 +226,7 @@ function buildArticleHTML(article, currentUserId = null) {
       profileUsername = article.slug;
       userName = article.title;
     } else {
-      picUrl = article.user.profile_image_90;
+      picUrl = article.user.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/');
       profileUsername = article.user.username;
       userName = filterXSS(article.user.name);
       if (article.user.cached_base_subscriber) {
@@ -248,7 +248,7 @@ function buildArticleHTML(article, currentUserId = null) {
         '" class="crayons-logo crayons-logo--l"><img alt="' +
         article.organization.name +
         ' logo" src="' +
-        article.organization.profile_image_90 +
+        article.organization.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/') +
         '" class="crayons-logo__image" loading="lazy"/></a>';
       forOrganization =
         '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/' +
