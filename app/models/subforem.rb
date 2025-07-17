@@ -88,6 +88,12 @@ class Subforem < ApplicationRecord
     Settings::Community.community_name(subforem_id: id)
   end
 
+  def update_scores!
+    self.score = articles.published.where("published_at > ?", 6.months.ago).sum(:score)
+    self.hotness_score = articles.published.where("published_at > ?", 2.weeks.ago).sum(:hotness_score) + (self.score * 0.1)
+    save!
+  end
+
   private
 
   def bust_caches
