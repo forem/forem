@@ -395,6 +395,7 @@ body[data-side-nav-visible='true'] {
     overflow: visible;
     z-index: 1001; /* Ensure it appears above other content */
     .profile-preview-card__content {
+      overflow: hidden;
       &--list {
         height: calc(100vh - 10px);
         padding: 0;
@@ -411,6 +412,12 @@ body[data-side-nav-visible='true'] {
             border: 0;
           }
         }
+      }
+      .crayons-side-nav__item-cover--main {
+        border-radius: 0px;
+        width: calc(100% + 32px);
+        max-width: calc(100% + 32px);
+        margin-left: -16px;
       }
     }
     &:hover {
