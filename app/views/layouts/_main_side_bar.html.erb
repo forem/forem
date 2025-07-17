@@ -1,4 +1,4 @@
-<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).or(Subforem.where(id: RequestStore.store[:subforem_id])).order(root: :desc, id: :asc) %>
+<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).or(Subforem.where(id: RequestStore.store[:subforem_id])).order(root: :desc, score: :desc) %>
 <nav id="main-side-bar" class="crayons-side-nav">
   <% @subforems.each_with_index do |subforem, i| %>
     <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
