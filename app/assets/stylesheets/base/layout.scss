@@ -401,10 +401,14 @@ body[data-side-nav-visible='true'] {
         overflow-y: auto;
         .crayons-link {
           line-height: 1.3em;
-          img {
+          .crayons-side-nav__item-icon {
             height: 30px;
             width: 30px;
             margin-right: 8px;
+          }
+          .crayons-side-nav__item-cover {
+            border-radius: 2px;
+            border: 0;
           }
         }
       }
@@ -414,10 +418,11 @@ body[data-side-nav-visible='true'] {
       .profile-preview-card__content {
         position: absolute;
         display: block; /* Show sidebar when hovered */
-        left: 45px;           
+        left: 42px;           
         top: 0;
         width: 290px;
         z-index: 2000; /* Ensure it appears above other content */
+        border-top: 0px;
       }
     }
     &--menu {
@@ -427,6 +432,7 @@ body[data-side-nav-visible='true'] {
       width: 100%;
       padding: 8px 0;
       border-top: 1px solid var(--base-20);
+      z-index: 1999;
       cursor: pointer;
       svg {
         width: 100%;
