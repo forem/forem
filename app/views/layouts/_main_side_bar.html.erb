@@ -14,7 +14,7 @@
         <div class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7">
           <img src="<%= optimized_image_url(Settings::General.main_social_image(subforem_id: subforem.id), width: 440) %>" class="crayons-side-nav__item-cover crayons-side-nav__item-cover--main" style="aspect-ratio: 10 / 5" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Main Image">
           <h3 class="py-2">
-            xxx <%= Settings::Community.community_name(subforem_id: subforem.id) %>
+            <%= Settings::Community.community_name(subforem_id: subforem.id) %>
           </h3>
           <%= follow_button(subforem, style = "", "w-100 follow-subforem") %>
           <p class="crayons-text py-2 fs-s">
