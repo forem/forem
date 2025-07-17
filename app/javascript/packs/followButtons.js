@@ -4,6 +4,8 @@ import { locale } from '@utilities/locale';
 
 /* global showLoginModal  userData  showModalAfterError browserStoreCache */
 
+let observer;
+
 /**
  * Sets the text content of the button to the correct 'Follow' state
  *
@@ -264,24 +266,14 @@ function determineSecondarySource(target) {
 }
 
 /**
- * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
+ * Adds an event listener to the page to handle any and all follow button clicks with a single handler
  */
 function listenForFollowButtonClicks() {
-  document
-    .getElementById('page-content-inner')
-    .addEventListener('click', handleFollowButtonClick);
-
-  document.getElementById(
-    'page-content-inner',
-  ).dataset.followClicksInitialized = true;
-
-  document
-  .getElementById('main-side-bar')
-  .addEventListener('click', handleFollowButtonClick);
-
-  document.getElementById(
-    'main-side-bar',
-  ).dataset.followClicksInitialized = true;
+  if (document.body.dataset.followHandlerInitialized === 'true') {
+    return;
+  }
+  document.body.addEventListener('click', handleFollowButtonClick);
+  document.body.dataset.followHandlerInitialized = 'true';
 }
 
 /**
@@ -460,37 +452,43 @@ function initializeNonBulkFollowButtons() {
   });
 }
 
-initializeBulkFollowButtons();
-initializeNonBulkFollowButtons();
-listenForFollowButtonClicks();
+const setupFollowFunctionality = () => {
+  initializeBulkFollowButtons();
+  initializeNonBulkFollowButtons();
 
-// Some follow buttons are added to the DOM dynamically, e.g. search results,
-// So we listen for any new additions to be fetched
-const observer = new MutationObserver((mutationsList) => {
-  mutationsList.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      initializeBulkFollowButtons();
-      initializeNonBulkFollowButtons();
-    }
-  });
-});
+  if (observer) {
+    observer.disconnect();
+  }
 
-// Any element containing the given data-attribute will be monitored for new follow buttons
-document
-  .querySelectorAll('[data-follow-button-container]')
-  .forEach((followButtonContainer) => {
-    observer.observe(followButtonContainer, {
-      childList: true,
-      subtree: true,
+  observer = new MutationObserver((mutationsList) => {
+    mutationsList.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        initializeBulkFollowButtons();
+        initializeNonBulkFollowButtons();
+      }
     });
   });
 
+  document
+    .querySelectorAll('[data-follow-button-container]')
+    .forEach((followButtonContainer) => {
+      observer.observe(followButtonContainer, {
+        childList: true,
+        subtree: true,
+      });
+    });
+};
+
+listenForFollowButtonClicks();
+
+setupFollowFunctionality();
+
 getInstantClick().then((ic) => {
-  ic.on('change', () => {
-    observer.disconnect();
-  });
+  ic.on('change', setupFollowFunctionality);
 });
 
 window.addEventListener('beforeunload', () => {
-  observer.disconnect();
+  if (observer) {
+    observer.disconnect();
+  }
 });
