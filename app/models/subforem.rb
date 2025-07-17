@@ -89,9 +89,9 @@ class Subforem < ApplicationRecord
   end
 
   def update_scores!
-    super_duper_recent = articles.published.where("published_at > ?", 3.days.ago).sum(:score)
-    super_recent = articles.published.where("published_at > ?", 2.weeks.ago).sum(:score)
-    somewhat_recent = articles.published.where("published_at > ?", 6.months.ago).sum(:score)
+    super_duper_recent = articles.published.where("published_at > ?", 3.days.ago).where("score > 0").sum(:score)
+    super_recent = articles.published.where("published_at > ?", 2.weeks.ago).where("score > 0").sum(:score)
+    somewhat_recent = articles.published.where("published_at > ?", 6.months.ago).where("score > 0").sum(:score)
     self.score = somewhat_recent + (super_recent * 0.1)
     self.hotness_score = super_duper_recent + super_recent + (somewhat_recent * 0.1)
     save
