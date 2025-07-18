@@ -1,8 +1,8 @@
-<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).or(Subforem.where(id: RequestStore.store[:subforem_id])).order(root: :desc, score: :desc) %>
+<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).order(root: :desc, score: :desc) %>
 <nav id="main-side-bar" class="crayons-side-nav">
   <% @subforems.each_with_index do |subforem, i| %>
     <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
-      <a href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" class="<%= "active" if subforem.id == RequestStore.store[:subforem_id] %>" id="root-subforem-link">
+      <a href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
         <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 65) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
       </a>
       <% if i == 0 %>
@@ -28,4 +28,60 @@
     <%= crayons_icon_tag("small-overflow-horizontal", class: "", title: t("billboard.menu.icon")) %>
   </a>
 </nav>
+<script>
+  // Everything in this script is inline to ensure no latency.
+  const currentSubforemId = document.body.getAttribute('data-subforem-id');
+  // if  data-sidebar-subforem-id is present and matches currentSubforemId, add active class
+  if (currentSubforemId && document.querySelector(`[data-sidebar-subforem-id="${currentSubforemId}"]`)) {
+    document.querySelector(`[data-sidebar-subforem-id="${currentSubforemId}"]`).classList.add('active');
+  }
+
+
+  // re-order subforems based on user.ordered_subforem_ids
+  const userString = localStorage?.getItem('current_user');
+
+  if (userString) {
+    const user = JSON.parse(userString);
+    if (user?.ordered_subforem_ids?.length > 0) {
+      const subforemIds = user.ordered_subforem_ids;
+      const sidebar = document.getElementById('main-side-bar');
+      const rootLink = document.getElementById('root-subforem-link');
+      const rootItem = rootLink?.closest('.crayons-side-nav__item');
+      const rootSubforemId = rootLink?.getAttribute('data-sidebar-subforem-id');
+
+      const subforemElements = sidebar.querySelectorAll('[data-sidebar-subforem-id]');
+      const subforemMap = {};
+
+      subforemElements.forEach(el => {
+        const id = el.getAttribute('data-sidebar-subforem-id');
+        if (id !== rootSubforemId) {
+          subforemMap[id] = el.closest('.crayons-side-nav__item');
+        }
+      });
+
+      // Clear only non-root items
+      Object.values(subforemMap).forEach(item => item.remove());
+
+      // Append in the order of user.ordered_subforem_ids, skipping the root
+      subforemIds.forEach(id => {
+        if (id !== rootSubforemId && subforemMap[id]) {
+          sidebar.appendChild(subforemMap[id]);
+        }
+      });
+
+      // Re-append any remaining items not in the user's list
+      Object.keys(subforemMap).forEach(id => {
+        if (!subforemIds.includes(parseInt(id, 10))) {
+          sidebar.appendChild(subforemMap[id]);
+        }
+      });
+
+      // Ensure the menu is always last
+      const menu = sidebar.querySelector('.crayons-side-nav__item--menu');
+      if (menu) {
+        sidebar.appendChild(menu);
+      }
+    }
+  }
+</script>
 <%= javascript_include_tag "mainSidebar", defer: true %>

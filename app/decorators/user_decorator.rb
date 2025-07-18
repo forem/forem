@@ -72,6 +72,37 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
+  def ordered_subforems
+    activity_store = user_activity
+    return [] unless activity_store
+    recent_subforem_ids = activity_store.recent_subforems.compact
+    followed_subforem_ids = activity_store.alltime_subforems.compact
+    all_subforem_ids = Subforem.cached_discoverable_ids
+
+    scores = Hash.new(0)
+
+    # Iterate through recent subforems and increment score by 1 for each appearance.
+    recent_subforem_ids.each do |id|
+      scores[id] += 1
+    end
+  
+    # Iterate through followed subforems and increment score by 10 for each appearance.
+    followed_subforem_ids.each do |id|
+      scores[id] += 10
+    end
+  
+    # Sort the subforems from user activity in descending order based on their score.
+    user_activity_ids = scores.keys.sort { |a, b| scores[b] <=> scores[a] }
+  
+    # Get the remaining discoverable subforems that were not in the user's activity,
+    # preserving their original order from all_subforem_ids.
+    remaining_ids = all_subforem_ids - user_activity_ids
+  
+    # Concatenate the sorted user activity list with the remaining discoverable subforems.
+    user_activity_ids + remaining_ids
+  end
+
+
   def config_body_class
     body_class = [
       setting.config_theme.tr("_", "-"),
