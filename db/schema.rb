@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_07_11_153423) do
+ActiveRecord::Schema[7.0].define(version: 2025_07_17_144002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1246,9 +1246,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_07_11_153423) do
     t.datetime "created_at", null: false
     t.boolean "discoverable", default: false, null: false
     t.string "domain", null: false
+    t.integer "hotness_score", default: 0, null: false
     t.boolean "root", default: false
+    t.integer "score", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_subforems_on_domain", unique: true
+    t.index ["hotness_score"], name: "index_subforems_on_hotness_score"
+    t.index ["score"], name: "index_subforems_on_score"
   end
 
   create_table "tag_adjustments", force: :cascade do |t|
