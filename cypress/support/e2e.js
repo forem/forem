@@ -18,6 +18,7 @@ import '@cypress/code-coverage/support';
 import '@testing-library/cypress/add-commands';
 import 'cypress-file-upload';
 import 'cypress-failed-log';
+import 'cypress-real-events/support';
 
 // Custom assertions
 import './assertions';
