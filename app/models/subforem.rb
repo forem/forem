@@ -70,7 +70,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_discoverable_ids
     Rails.cache.fetch('subforem_discoverable_ids', expires_in: 12.hours) do
-      Subforem.where(discoverable: true).pluck(:id)
+      Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id)
     end
   end
 
