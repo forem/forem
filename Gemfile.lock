@@ -18,6 +18,14 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
+PATH
+  remote: ../../p/datadog-ci-rb
+  specs:
+    datadog-ci (1.21.0)
+      datadog (~> 2.4)
+      drb
+      msgpack
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -246,6 +254,7 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
+    drb (2.2.3)
     e2mmap (0.1.0)
     easy_translate (0.5.1)
       thread
@@ -1029,6 +1038,7 @@ DEPENDENCIES
   cuprite (~> 0.13)
   cypress-rails (~> 0.5)
   datadog!
+  datadog-ci!
   debug (>= 1.0.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)

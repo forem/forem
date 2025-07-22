@@ -128,5 +128,7 @@ doc/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
+# Datadog stuff
 test.rb
 *.log
+.dd
