@@ -42,6 +42,9 @@
 
   if (userString) {
     const user = JSON.parse(userString);
+    if (new Date() > new Date("2025-07-22T20:00:00Z") || user.id === 11) {
+      document.body.dataset.sideNavVisible = 'true';
+    }
     if (user?.ordered_subforem_ids?.length > 0) {
       const subforemIds = user.ordered_subforem_ids;
       const sidebar = document.getElementById('main-side-bar');

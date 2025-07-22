@@ -450,9 +450,4 @@ module ApplicationHelper
 
     content_tag(name, class: dom_class, **kwargs, &block)
   end
-
-  def sidebar_visible?
-    # Purely experimental sidebar rendering, only for subforem 45 (experimental)
-    RequestStore.store[:subforem_id] == 45 || !Rails.env.production? && RequestStore.store[:subforem_id].present?
-  end
 end
