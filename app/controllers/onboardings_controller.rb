@@ -85,22 +85,22 @@ class OnboardingsController < ApplicationController
   # The idea is that this could be a more custom endpoint later on, but now is just hardcoded.
   def custom_actions
     authorize User, :onboarding_update?
-
-    if params[:follow_challenges] && params[:follow_challenges] == "true"
+  
+    if params[:follow_challenges]
       tag = Tag.find_by(name: "devchallenge")
       current_user.follow(tag) if tag
     end
-
-    if params[:follow_education_tracks] && params[:follow_education_tracks] == "true"
+  
+    if params[:follow_education_tracks]
       tag = Tag.find_by(name: "deved")
       current_user.follow(tag) if tag
     end
-
-    if params[:follow_featured_accounts] && params[:follow_featured_accounts] == "true"
+  
+    if params[:follow_featured_accounts]
       org = Organization.find_by_username("googleai")
       current_user.follow(org) if org
     end
-
+  
     respond_to do |format|
       format.json { render json: {}, status: :ok }
     end

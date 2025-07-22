@@ -324,7 +324,7 @@ RSpec.describe "Onboardings" do
 
     context "when following challenges" do
       it "follows the 'devchallenge' tag" do
-        patch "/onboarding/custom_actions", params: { follow_challenges: "true" }, as: :json
+        patch "/onboarding/custom_actions", params: { follow_challenges: true }, as: :json
         expect(Follow.where(followable_id: challenge_tag.id, followable_type: "ActsAsTaggableOn::Tag", follower_id: user.id).size).to eq(1)
         expect(response).to have_http_status(:ok)
       end
@@ -332,7 +332,7 @@ RSpec.describe "Onboardings" do
 
     context "when following education tracks" do
       it "follows the 'deved' tag" do
-        patch "/onboarding/custom_actions", params: { follow_education_tracks: "true" }, as: :json
+        patch "/onboarding/custom_actions", params: { follow_education_tracks: true }, as: :json
         expect(Follow.where(followable_id: education_tag.id, followable_type: "ActsAsTaggableOn::Tag", follower_id: user.id).size).to eq(1)
         expect(response).to have_http_status(:ok)
       end
@@ -340,7 +340,7 @@ RSpec.describe "Onboardings" do
 
     context "when following featured accounts" do
       it "follows the 'googleai' organization" do
-        patch "/onboarding/custom_actions", params: { follow_featured_accounts: "true" }, as: :json
+        patch "/onboarding/custom_actions", params: { follow_featured_accounts: true }, as: :json
         expect(Follow.where(followable_id: featured_org.id, followable_type: "Organization", follower_id: user.id).size).to eq(1)
         expect(response).to have_http_status(:ok)
       end
@@ -349,9 +349,9 @@ RSpec.describe "Onboardings" do
     context "when multiple params are provided" do
       it "follows the appropriate tags and organizations" do
         patch "/onboarding/custom_actions", params: {
-          follow_challenges: "true",
-          follow_education_tracks: "true",
-          follow_featured_accounts: "true"
+          follow_challenges: true,
+          follow_education_tracks: true,
+          follow_featured_accounts: true
         }, as: :json
 
         expect(Follow.where(followable_type: "ActsAsTaggableOn::Tag", follower_id: user.id).count).to eq(2)
@@ -363,9 +363,9 @@ RSpec.describe "Onboardings" do
     context "when params are false or not present" do
       it "does not follow any tags or organizations" do
         patch "/onboarding/custom_actions", params: {
-          follow_challenges: "false",
-          follow_education_tracks: "false",
-          follow_featured_accounts: "false"
+          follow_challenges: false,
+          follow_education_tracks: false,
+          follow_featured_accounts: false
         }, as: :json
 
         expect(user.following_tags).to be_empty
