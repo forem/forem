@@ -18,7 +18,7 @@ module Emails
                                               user_signed_in: true)
       paired_billboard = Billboard.where(published: true,
                                          approved: true,
-                                         area: "digest_second",
+                                         placement_area: "digest_second",
                                          prefer_paired_with_billboard_id: first_billboard&.id).last
 
       second_billboard = paired_billboard || Billboard.for_display(area: "digest_second",
