@@ -13,7 +13,6 @@ class DiscussionLocksController < ApplicationController
 
     if @discussion_lock.save
       bust_article_cache(article)
-
       flash[:success] = I18n.t("discussion_locks_controller.locked")
     else
       flash[:error] = I18n.t("errors.messages.general", errors: @discussion_lock.errors_as_sentence)

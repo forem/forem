@@ -1,6 +1,7 @@
 class ArticleApprovalsController < ApplicationController
   def create
     @article = Article.find(params[:id])
+
     unless current_user.any_admin?
       # Check that the article can be moderated by the user
       authorize(@article, :moderate?)
@@ -13,6 +14,7 @@ class ArticleApprovalsController < ApplicationController
         authorize(Tag.find(tag.id), :update?) if tag.requires_approval
       end
     end
+
     @article.update(approved: params[:approved])
     redirect_to "#{Addressable::URI.parse(@article.path).path}/mod"
   end
