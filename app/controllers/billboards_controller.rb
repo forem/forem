@@ -31,6 +31,7 @@ class BillboardsController < ApplicationController
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
         page_id: params[:page_id],
+
         user_tags: user_tags,
         cookies_allowed: cookies_allowed?,
         location: client_geolocation,
