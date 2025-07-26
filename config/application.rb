@@ -57,7 +57,6 @@ module PracticalDeveloper
     config.action_controller.wrap_parameters_by_default = false
     ### END FRAMEWORK DEFAULT OVERIDES
     config.active_record.use_yaml_unsafe_load = true
-    config.active_record.partial_inserts = false
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
