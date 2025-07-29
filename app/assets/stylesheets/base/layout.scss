@@ -336,6 +336,12 @@
 
 // .layout-sidebar-visible .crayons-layout should shift layout to the right
 body[data-side-nav-visible='true'] {
+  @media (min-width: $breakpoint-m) {
+    .crayons-side-nav {
+      display: block; /* Show sidebar on larger screens */
+    }
+  }
+
   .crayons-layout, .crayons-header__container {
     @media (min-width: $breakpoint-m) {
       max-width: calc(var(--site-width) - 50px);
@@ -385,9 +391,6 @@ body[data-side-nav-visible='true'] {
     &.active {
       background-color: var(--base-20); /* Highlight active link */
     }
-  }
-  @media (min-width: $breakpoint-m) {
-    display: block; /* Show sidebar on larger screens */
   }
 
   .crayons-side-nav__item {
@@ -440,6 +443,7 @@ body[data-side-nav-visible='true'] {
       padding: 8px 0;
       border-top: 1px solid var(--base-20);
       z-index: 1999;
+      background-color: var(--base-0);
       cursor: pointer;
       svg {
         width: 100%;
