@@ -106,7 +106,9 @@
           <%= yield(:audio) %>
         </div>
         <% cache("main-side-bar-#{user_signed_in?}", expires_in: 5.minutes) do %>
-          <%= render "layouts/main_side_bar" %>
+          <% if Subforem.cached_discoverable_ids.any? %>
+            <%= render "layouts/main_side_bar" %>
+          <% end %>
         <% end %>
         <%= render "layouts/top_bar" %>
         <div id="active-broadcast" class="broadcast-wrapper"></div>
