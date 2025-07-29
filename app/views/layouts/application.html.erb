@@ -65,7 +65,7 @@
         <% if RequestStore.store[:subforem_id].present? %>
           data-subforem-id="<%= j(RequestStore.store[:subforem_id]) %>"
         <% end %>
-        data-side-nav-visible="<%= sidebar_visible? %>"
+        data-side-nav-visible="false"
         data-community-name="<%= j(community_name) %>"
         data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
         data-locale="<%= j(I18n.locale) %>"
@@ -105,8 +105,8 @@
         <div id="audiocontent" data-podcast="">
           <%= yield(:audio) %>
         </div>
-        <% if sidebar_visible? %>
-          <% cache("main-side-bar-#{user_signed_in?}", expires_in: 5.minutes) do %>
+        <% cache("main-side-bar-#{user_signed_in?}", expires_in: 5.minutes) do %>
+          <% if Subforem.cached_discoverable_ids.any? %>
             <%= render "layouts/main_side_bar" %>
           <% end %>
         <% end %>

@@ -15,7 +15,6 @@ RSpec.describe "Subforems", type: :request do
 
     it "renders only discoverable" do
       # should include the domains for root & discoverable, but not the hidden one
-      expect(response.body).not_to include(root_subforem.domain)
       expect(response.body).to include(discoverable_subforem.domain)
       expect(response.body).not_to include(hidden_subforem.domain)
     end
