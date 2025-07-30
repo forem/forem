@@ -374,7 +374,7 @@ body[data-side-nav-visible='true'] {
     aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
     border: 1px solid var(--base-30); /* Optional border for images */
   }
-  a:not(.crayons-link) {
+  a.crayons-side-nav-link {
     display: block; /* Make links block-level for easier clicking */
     padding: 5px 4px; /* Space between links */
     text-align: center; /* Center align images */
@@ -423,7 +423,7 @@ body[data-side-nav-visible='true'] {
         margin-left: -16px;
       }
     }
-    &:hover {
+    &.hovered {
       z-index: 2000; /* Ensure it appears above other content */
       .profile-preview-card__content {
         position: absolute;
@@ -433,6 +433,15 @@ body[data-side-nav-visible='true'] {
         width: 290px;
         z-index: 2000; /* Ensure it appears above other content */
         border-top: 0px;
+        &.profile-preview-card__upsidedown {
+          top: auto;
+          bottom: 0;
+        }
+      }
+    }
+    &.not-hovered {
+      .profile-preview-card__content {
+        display: none; /* Hide sidebar when not hovered */
       }
     }
     &--menu {
