@@ -31,3 +31,13 @@ fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
 .catch((error) => {
   console.error('Error fetching stories:', error);
 });
+
+
+window.InstantClick.on('change', () => {
+  // Remove active class from all .crayons-side-nav__item elements
+  const hoveredItems = document.querySelectorAll('.crayons-side-nav__item.hovered');
+  hoveredItems.forEach((item) => {
+    item.classList.remove('hovered');
+    item.classList.add('not-hovered');
+  });
+});
