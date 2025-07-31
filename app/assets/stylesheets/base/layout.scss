@@ -336,6 +336,12 @@
 
 // .layout-sidebar-visible .crayons-layout should shift layout to the right
 body[data-side-nav-visible='true'] {
+  @media (min-width: $breakpoint-m) {
+    .crayons-side-nav {
+      display: block; /* Show sidebar on larger screens */
+    }
+  }
+
   .crayons-layout, .crayons-header__container {
     @media (min-width: $breakpoint-m) {
       max-width: calc(var(--site-width) - 50px);
@@ -368,7 +374,7 @@ body[data-side-nav-visible='true'] {
     aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
     border: 1px solid var(--base-30); /* Optional border for images */
   }
-  a:not(.crayons-link) {
+  a.crayons-side-nav-link {
     display: block; /* Make links block-level for easier clicking */
     padding: 5px 4px; /* Space between links */
     text-align: center; /* Center align images */
@@ -386,9 +392,6 @@ body[data-side-nav-visible='true'] {
       background-color: var(--base-20); /* Highlight active link */
     }
   }
-  @media (min-width: $breakpoint-m) {
-    display: block; /* Show sidebar on larger screens */
-  }
 
   .crayons-side-nav__item {
     position: relative;
@@ -397,6 +400,7 @@ body[data-side-nav-visible='true'] {
     .profile-preview-card__content {
       overflow: hidden;
       &--list {
+        top: 0px !important;
         height: calc(100vh - 10px);
         padding: 0;
         overflow-y: auto;
@@ -420,16 +424,28 @@ body[data-side-nav-visible='true'] {
         margin-left: -16px;
       }
     }
-    &:hover {
+    &.hovered {
       z-index: 2000; /* Ensure it appears above other content */
       .profile-preview-card__content {
         position: absolute;
         display: block; /* Show sidebar when hovered */
         left: 42px;           
-        top: 0;
+        top: -30px;
         width: 290px;
         z-index: 2000; /* Ensure it appears above other content */
         border-top: 0px;
+        &.profile-preview-card__upsidedown {
+          top: auto;
+          bottom: -30px;
+        }
+        h3 a {
+          color: var(--base-100);
+        }
+      }
+    }
+    &.not-hovered {
+      .profile-preview-card__content {
+        display: none; /* Hide sidebar when not hovered */
       }
     }
     &--menu {
@@ -440,6 +456,7 @@ body[data-side-nav-visible='true'] {
       padding: 8px 0;
       border-top: 1px solid var(--base-20);
       z-index: 1999;
+      background-color: var(--base-0);
       cursor: pointer;
       svg {
         width: 100%;

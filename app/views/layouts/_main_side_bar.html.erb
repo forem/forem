@@ -2,7 +2,7 @@
 <nav id="main-side-bar" class="crayons-side-nav">
   <% @subforems.each_with_index do |subforem, i| %>
     <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
-      <a href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
+      <a class="crayons-side-nav-link" href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
         <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 65) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
       </a>
       <% if i == 0 %>
@@ -12,9 +12,11 @@
         </div>
       <% else %>
         <div class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7">
-          <img src="<%= optimized_image_url(Settings::General.main_social_image(subforem_id: subforem.id), width: 440) %>" class="crayons-side-nav__item-cover crayons-side-nav__item-cover--main" style="aspect-ratio: 10 / 5" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Main Image">
+          <a href="//<%= subforem.domain %>">
+            <img src="<%= optimized_image_url(Settings::General.main_social_image(subforem_id: subforem.id), width: 440) %>" class="crayons-side-nav__item-cover crayons-side-nav__item-cover--main" style="aspect-ratio: 10 / 5" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Main Image">
+          </a>
           <h3 class="py-2">
-            <%= Settings::Community.community_name(subforem_id: subforem.id) %>
+            <a href="//<%= subforem.domain %>"><%= Settings::Community.community_name(subforem_id: subforem.id) %></a>
           </h3>
           <%= follow_button(subforem, style = "", "w-100 follow-subforem") %>
           <p class="crayons-text py-2 fs-s">
@@ -42,6 +44,9 @@
 
   if (userString) {
     const user = JSON.parse(userString);
+    if (new Date() > new Date("2025-08-01T20:00:00Z") || user.config_body_class.includes("super_admin")) {
+      document.body.dataset.sideNavVisible = 'true';
+    }
     if (user?.ordered_subforem_ids?.length > 0) {
       const subforemIds = user.ordered_subforem_ids;
       const sidebar = document.getElementById('main-side-bar');
@@ -83,5 +88,86 @@
       }
     }
   }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('main-side-bar');
+    if (!sidebar) {
+      return;
+    }
+
+    const items = sidebar.querySelectorAll('.crayons-side-nav__item');
+    let hoverTimeout;
+
+    // Track the last known mouse coordinates to determine movement direction.
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    document.addEventListener('mousemove', e => {
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+
+    items.forEach(item => {
+      // Pass the event object 'e' to get current mouse coordinates.
+      item.addEventListener('mouseenter', function(e) {
+        const targetItem = this;
+        const currentActive = sidebar.querySelector('.crayons-side-nav__item.hovered');
+
+        const switchActiveState = () => {
+          // Deactivate the old item if it exists and is different from the new one.
+          if (currentActive && currentActive !== targetItem) {
+            currentActive.classList.remove('hovered');
+            currentActive.classList.add('not-hovered');
+          }
+          // Activate the new item.
+          targetItem.classList.remove('not-hovered');
+          targetItem.classList.add('hovered');
+
+          // --- NEW LOGIC START ---
+          // Check the position of the item and flip the preview card if it's near the bottom.
+          const previewCard = targetItem.querySelector('.profile-preview-card__content');
+          if (previewCard) {
+            const rect = targetItem.getBoundingClientRect();
+            // Check if the item's bottom edge is within 280px of the viewport's bottom edge.
+            if ((window.innerHeight - rect.bottom) < 280) {
+              previewCard.classList.add('profile-preview-card__upsidedown');
+            } else {
+              previewCard.classList.remove('profile-preview-card__upsidedown');
+            }
+          }
+          // --- NEW LOGIC END ---
+        };
+
+        clearTimeout(hoverTimeout);
+
+        // Determine the delay based on mouse direction.
+        let delay = 20; // Default small delay.
+        const deltaX = e.clientX - lastMouseX;
+        const deltaY = e.clientY - lastMouseY;
+
+        // Condition for mostly rightward movement (angle is within ~45 degrees of horizontal)
+        // A small threshold (deltaX > 10) prevents accidental triggers from minor jitter.
+        if (deltaX > 10 && deltaX >= Math.abs(deltaY)) {
+          delay = 250; // Longer delay for left-to-right movement.
+        }
+
+        if (currentActive && currentActive !== targetItem) {
+          hoverTimeout = setTimeout(switchActiveState, delay);
+        } else {
+          switchActiveState();
+        }
+      });
+    });
+
+    sidebar.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimeout);
+      const activeItem = sidebar.querySelector('.crayons-side-nav__item.hovered');
+      if (activeItem) {
+        activeItem.classList.remove('hovered');
+        activeItem.classList.add('not-hovered');
+      }
+    });
+  });
 </script>
 <%= javascript_include_tag "mainSidebar", defer: true %>
