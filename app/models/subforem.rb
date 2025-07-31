@@ -14,6 +14,13 @@ class Subforem < ApplicationRecord
   after_save :bust_caches
   before_validation :downcase_domain
 
+  def self.create_from_scratch(domain:, brain_dump:, name:)
+    subforem = Subforem.create!(domain: domain)
+    Settings::Community.set_community_name(name, subforem_id: subforem.id)
+    Ai::CommunityCopy.new(subforem.id, brain_dump).write!
+    Ai::SubforemTags.new(subforem.id, brain_dump).upsert!
+  end
+
   def self.cached_id_by_domain(passed_domain)
     Rails.cache.fetch("subforem_id_by_domain_#{passed_domain}", expires_in: 12.hours) do
       Subforem.find_by(domain: passed_domain)&.id
