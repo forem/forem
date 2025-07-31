@@ -36,6 +36,7 @@ module Emails
                              .without_role(:suspended)
                              .without_role(:spam)
                              .where(notification_setting: { email_newsletter: true })
+                             .where("users.id > 2107361")
                              .where.not(email: "")
                        end
 
