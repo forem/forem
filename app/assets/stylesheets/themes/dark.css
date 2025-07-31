@@ -400,3 +400,8 @@
     inset 0 0 0 1px rgba(var(--white), 0.1);
   --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.05);
 }
+
+::selection{
+  background:#339af0;
+  color: #ffffff;
+}
