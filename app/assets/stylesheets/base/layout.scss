@@ -429,7 +429,7 @@ body[data-side-nav-visible='true'] {
       .profile-preview-card__content {
         position: absolute;
         display: block; /* Show sidebar when hovered */
-        left: 42px;           
+        left: 48px;           
         top: -30px;
         width: 290px;
         z-index: 2000; /* Ensure it appears above other content */
