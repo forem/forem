@@ -56,7 +56,6 @@ fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
         l.classList.remove('hovered');
         l.classList.add('not-hovered');
       });
-      link.classList.add('hovered');
     });
   });
 })
@@ -72,4 +71,8 @@ window.InstantClick.on('change', () => {
     item.classList.remove('hovered');
     item.classList.add('not-hovered');
   });
+  let feedEl = document.getElementById('root-feed-card');
+  if (feedEl) {
+    feedEl.scrollTop = 0;
+  }
 });
