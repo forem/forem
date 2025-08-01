@@ -34,7 +34,6 @@ fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
     // --- START: ADDED TRACKING LOGIC ---
     // Ensure the FeedTracker class is available (e.g. via import or a global script tag)
     if (typeof FeedTracker !== 'undefined') {
-      console.log(data[0].feed_config);
       const sidebarTracker = new FeedTracker({
         feedItemsRoot: feedContainer, // The element containing the links
         contentIdAttribute: 'articleId', // The data attribute for the ID is 'data-article-id'

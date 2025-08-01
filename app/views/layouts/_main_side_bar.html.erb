@@ -38,110 +38,179 @@
     <%= crayons_icon_tag("small-overflow-horizontal", class: "", title: t("billboard.menu.icon")) %>
   </a>
 </nav>
+
 <script>
-  // Everything in this script is inline to ensure no latency.
-  const currentSubforemId = document.body.getAttribute('data-subforem-id');
-  // if  data-sidebar-subforem-id is present and matches currentSubforemId, add active class
-  if (currentSubforemId && document.querySelector(`[data-sidebar-subforem-id="${currentSubforemId}"]`)) {
-    document.querySelector(`[data-sidebar-subforem-id="${currentSubforemId}"]`).classList.add('active');
+  // Utility: base64 unicode decode (for cookie payload)
+  function base64DecodeUnicode(str) {
+    try {
+      return decodeURIComponent(
+        atob(str)
+          .split("")
+          .map((c) => {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join(""),
+      );
+    } catch (e) {
+      console.error("base64DecodeUnicode failed:", e);
+      return null;
+    }
   }
 
+  function getCookie(name) {
+    const match = document.cookie.match(
+      new RegExp("(^|; )" + name.replace(/([.*+?^${}()|[\]\\])/g, "\\$1") + "=([^;]*)"),
+    );
+    return match ? decodeURIComponent(match[2]) : null;
+  }
 
-  // re-order subforems based on user.ordered_subforem_ids
-  const userString = localStorage?.getItem('current_user');
-
-  if (userString) {
-    const user = JSON.parse(userString);
-    if (new Date() > new Date("2025-08-01T20:00:00Z") || user.config_body_class.includes("super_admin")) {
-      document.body.dataset.sideNavVisible = 'true';
+  function getUserFromCookie() {
+    const raw = getCookie("current_user");
+    if (!raw) return null;
+    const decoded = base64DecodeUnicode(raw);
+    if (!decoded) return null;
+    try {
+      return JSON.parse(decoded);
+    } catch (e) {
+      console.error("Parsing user from cookie failed:", e);
+      return null;
     }
-    if (user?.ordered_subforem_ids?.length > 0) {
-      const subforemIds = user.ordered_subforem_ids;
-      const sidebar = document.getElementById('main-side-bar');
-      const rootLink = document.getElementById('root-subforem-link');
-      const rootItem = rootLink?.closest('.crayons-side-nav__item');
-      const rootSubforemId = rootLink?.getAttribute('data-sidebar-subforem-id');
+  }
 
-      const subforemElements = sidebar.querySelectorAll('[data-sidebar-subforem-id]');
+  // --- user acquisition: prefer cookie, fallback to localStorage ---
+  const storedCurrentUser = (() => {
+    const fromCookie = getUserFromCookie();
+    if (fromCookie) return fromCookie;
+    const stored = localStorage?.getItem("current_user");
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error("Parsing user from localStorage failed:", e);
+      return null;
+    }
+  })();
+
+  // apply authorization/display logic and reorder if present
+  if (storedCurrentUser) {
+    if (new Date() > new Date("2025-08-01T20:00:00Z") || storedCurrentUser.config_body_class?.includes("super_admin")) {
+      document.body.dataset.sideNavVisible = "true";
+    }
+
+    if (storedCurrentUser?.ordered_subforem_ids?.length > 0) {
+      const subforemIds = storedCurrentUser.ordered_subforem_ids;
+      const sidebar = document.getElementById("main-side-bar");
+      const rootLink = document.getElementById("root-subforem-link");
+      const rootSubforemId = rootLink?.getAttribute("data-sidebar-subforem-id");
+
+      const subforemElements = sidebar.querySelectorAll("[data-sidebar-subforem-id]");
       const subforemMap = {};
 
-      subforemElements.forEach(el => {
-        const id = el.getAttribute('data-sidebar-subforem-id');
+      subforemElements.forEach((el) => {
+        const id = el.getAttribute("data-sidebar-subforem-id");
         if (id !== rootSubforemId) {
-          subforemMap[id] = el.closest('.crayons-side-nav__item');
+          subforemMap[id] = el.closest(".crayons-side-nav__item");
         }
       });
 
-      // Clear only non-root items
-      Object.values(subforemMap).forEach(item => item.remove());
+      // remove non-root existing items
+      Object.values(subforemMap).forEach((item) => {
+        if (item && item.parentNode) {
+          item.remove();
+        }
+      });
 
-      // Append in the order of user.ordered_subforem_ids, skipping the root
-      subforemIds.forEach(id => {
+      // append in user's order (excluding root)
+      subforemIds.forEach((id) => {
         if (id !== rootSubforemId && subforemMap[id]) {
           sidebar.appendChild(subforemMap[id]);
         }
       });
 
-      // Re-append any remaining items not in the user's list
-      Object.keys(subforemMap).forEach(id => {
-        if (!subforemIds.includes(parseInt(id, 10))) {
+      // append leftovers not in the user's list
+      Object.keys(subforemMap).forEach((id) => {
+        const parsedId = parseInt(id, 10);
+        if (!subforemIds.includes(parsedId) && subforemMap[id]) {
           sidebar.appendChild(subforemMap[id]);
         }
       });
 
-      // Ensure the menu is always last
-      const menu = sidebar.querySelector('.crayons-side-nav__item--menu');
+      // ensure menu is last
+      const menu = sidebar.querySelector(".crayons-side-nav__item--menu");
       if (menu) {
         sidebar.appendChild(menu);
       }
     }
   }
+
+  // active subforem highlight based on current context
+  const currentSubforemId = document.body.getAttribute("data-subforem-id");
+  if (currentSubforemId) {
+    const matching = document.querySelector(
+      `[data-sidebar-subforem-id="${currentSubforemId}"]`,
+    );
+    if (matching) {
+      matching.classList.add("active");
+    }
+  }
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.getElementById('main-side-bar');
-    if (!sidebar) {
-      return;
-    }
+  document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.getElementById("main-side-bar");
+    if (!sidebar) return;
 
-    const items = sidebar.querySelectorAll('.crayons-side-nav__item');
+    const items = sidebar.querySelectorAll(".crayons-side-nav__item");
     let hoverTimeout;
-
-    // Track the last known mouse coordinates to determine movement direction.
+    let hasMoved = false;
     let lastMouseX = 0;
     let lastMouseY = 0;
-    document.addEventListener('mousemove', e => {
+
+    document.addEventListener("mousemove", (e) => {
       lastMouseX = e.clientX;
       lastMouseY = e.clientY;
+      hasMoved = true;
     });
 
-    items.forEach(item => {
-      // Pass the event object 'e' to get current mouse coordinates.
-      item.addEventListener('mouseenter', function(e) {
+    items.forEach((item) => {
+      item.addEventListener("mouseleave", function () {
+        this.dataset.hasLeftOnce = "true";
+        if (this.classList.contains("hovered")) {
+          this.classList.remove("hovered");
+          this.classList.add("not-hovered");
+        }
+      });
+
+      item.addEventListener("mouseenter", function (e) {
+        if (!hasMoved && !this.dataset.hasLeftOnce) {
+          return;
+        }
+
         const targetItem = this;
-        const currentActive = sidebar.querySelector('.crayons-side-nav__item.hovered');
+        const currentActive = sidebar.querySelector(
+          ".crayons-side-nav__item.hovered",
+        );
 
         const switchActiveState = () => {
-          // Deactivate the old item if it exists and is different from the new one.
           if (currentActive && currentActive !== targetItem) {
-            currentActive.classList.remove('hovered');
-            currentActive.classList.add('not-hovered');
+            currentActive.classList.remove("hovered");
+            currentActive.classList.add("not-hovered");
           }
-          // Activate the new item.
-          targetItem.classList.remove('not-hovered');
-          targetItem.classList.add('hovered');
+          targetItem.classList.remove("not-hovered");
+          targetItem.classList.add("hovered");
 
           // --- NEW LOGIC START ---
-          // Check the position of the item and flip the preview card if it's near the bottom.
-          const previewCard = targetItem.querySelector('.profile-preview-card__content');
+          const previewCard = targetItem.querySelector(
+            ".profile-preview-card__content",
+          );
           if (previewCard) {
             const rect = targetItem.getBoundingClientRect();
-            // Check if the item's bottom edge is within 280px of the viewport's bottom edge.
-            if ((window.innerHeight - rect.bottom) < 280) {
-              previewCard.classList.add('profile-preview-card__upsidedown');
+            if (window.innerHeight - rect.bottom < 280) {
+              previewCard.classList.add("profile-preview-card__upsidedown");
             } else {
-              previewCard.classList.remove('profile-preview-card__upsidedown');
+              previewCard.classList.remove(
+                "profile-preview-card__upsidedown",
+              );
             }
           }
           // --- NEW LOGIC END ---
@@ -149,15 +218,12 @@
 
         clearTimeout(hoverTimeout);
 
-        // Determine the delay based on mouse direction.
-        let delay = 20; // Default small delay.
+        let delay = 20;
         const deltaX = e.clientX - lastMouseX;
         const deltaY = e.clientY - lastMouseY;
 
-        // Condition for mostly rightward movement (angle is within ~45 degrees of horizontal)
-        // A small threshold (deltaX > 10) prevents accidental triggers from minor jitter.
         if (deltaX > 10 && deltaX >= Math.abs(deltaY)) {
-          delay = 250; // Longer delay for left-to-right movement.
+          delay = 250;
         }
 
         if (currentActive && currentActive !== targetItem) {
@@ -168,14 +234,17 @@
       });
     });
 
-    sidebar.addEventListener('mouseleave', () => {
+    sidebar.addEventListener("mouseleave", () => {
       clearTimeout(hoverTimeout);
-      const activeItem = sidebar.querySelector('.crayons-side-nav__item.hovered');
+      const activeItem = sidebar.querySelector(
+        ".crayons-side-nav__item.hovered",
+      );
       if (activeItem) {
-        activeItem.classList.remove('hovered');
-        activeItem.classList.add('not-hovered');
+        activeItem.classList.remove("hovered");
+        activeItem.classList.add("not-hovered");
       }
     });
   });
 </script>
+
 <%= javascript_include_tag "mainSidebar", defer: true %>
