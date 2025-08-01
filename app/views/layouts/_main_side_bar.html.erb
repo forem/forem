@@ -6,7 +6,7 @@
         <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 65) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
       </a>
       <% if i == 0 %>
-        <div class="profile-preview-card__content profile-preview-card__content--list crayons-dropdown p-4 pt-0 branded-7">
+        <div class="profile-preview-card__content profile-preview-card__content--list crayons-dropdown p-4 pt-0 branded-7" id="root-feed-card">
           <header class="crayons-card__header">
             <h3 class="crayons-subtitle-2">
               Forem Feed
@@ -40,119 +40,121 @@
 </nav>
 
 <script>
-  // Utility: base64 unicode decode (for cookie payload)
-  function base64DecodeUnicode(str) {
-    try {
-      return decodeURIComponent(
-        atob(str)
-          .split("")
-          .map((c) => {
-            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join(""),
-      );
-    } catch (e) {
-      console.error("base64DecodeUnicode failed:", e);
-      return null;
-    }
-  }
-
-  function getCookie(name) {
-    const match = document.cookie.match(
-      new RegExp("(^|; )" + name.replace(/([.*+?^${}()|[\]\\])/g, "\\$1") + "=([^;]*)"),
-    );
-    return match ? decodeURIComponent(match[2]) : null;
-  }
-
-  function getUserFromCookie() {
-    const raw = getCookie("current_user");
-    if (!raw) return null;
-    const decoded = base64DecodeUnicode(raw);
-    if (!decoded) return null;
-    try {
-      return JSON.parse(decoded);
-    } catch (e) {
-      console.error("Parsing user from cookie failed:", e);
-      return null;
-    }
-  }
-
-  // --- user acquisition: prefer cookie, fallback to localStorage ---
-  const storedCurrentUser = (() => {
-    const fromCookie = getUserFromCookie();
-    if (fromCookie) return fromCookie;
-    const stored = localStorage?.getItem("current_user");
-    if (!stored) return null;
-    try {
-      return JSON.parse(stored);
-    } catch (e) {
-      console.error("Parsing user from localStorage failed:", e);
-      return null;
-    }
-  })();
-
-  // apply authorization/display logic and reorder if present
-  if (storedCurrentUser) {
-    if (new Date() > new Date("2025-08-01T20:00:00Z") || storedCurrentUser.config_body_class?.includes("super_admin")) {
-      document.body.dataset.sideNavVisible = "true";
-    }
-
-    if (storedCurrentUser?.ordered_subforem_ids?.length > 0) {
-      const subforemIds = storedCurrentUser.ordered_subforem_ids;
-      const sidebar = document.getElementById("main-side-bar");
-      const rootLink = document.getElementById("root-subforem-link");
-      const rootSubforemId = rootLink?.getAttribute("data-sidebar-subforem-id");
-
-      const subforemElements = sidebar.querySelectorAll("[data-sidebar-subforem-id]");
-      const subforemMap = {};
-
-      subforemElements.forEach((el) => {
-        const id = el.getAttribute("data-sidebar-subforem-id");
-        if (id !== rootSubforemId) {
-          subforemMap[id] = el.closest(".crayons-side-nav__item");
-        }
-      });
-
-      // remove non-root existing items
-      Object.values(subforemMap).forEach((item) => {
-        if (item && item.parentNode) {
-          item.remove();
-        }
-      });
-
-      // append in user's order (excluding root)
-      subforemIds.forEach((id) => {
-        if (id !== rootSubforemId && subforemMap[id]) {
-          sidebar.appendChild(subforemMap[id]);
-        }
-      });
-
-      // append leftovers not in the user's list
-      Object.keys(subforemMap).forEach((id) => {
-        const parsedId = parseInt(id, 10);
-        if (!subforemIds.includes(parsedId) && subforemMap[id]) {
-          sidebar.appendChild(subforemMap[id]);
-        }
-      });
-
-      // ensure menu is last
-      const menu = sidebar.querySelector(".crayons-side-nav__item--menu");
-      if (menu) {
-        sidebar.appendChild(menu);
+  (function () {
+    // Utility: base64 unicode decode (for cookie payload)
+    function base64DecodeUnicode(str) {
+      try {
+        return decodeURIComponent(
+          atob(str)
+            .split("")
+            .map((c) => {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join(""),
+        );
+      } catch (e) {
+        console.error("base64DecodeUnicode failed:", e);
+        return null;
       }
     }
-  }
 
-  // active subforem highlight based on current context
-  const currentSubforemId = document.body.getAttribute("data-subforem-id");
-  if (currentSubforemId) {
-    const matching = document.querySelector(
-      `[data-sidebar-subforem-id="${currentSubforemId}"]`,
-    );
-    if (matching) {
-      matching.classList.add("active");
+    function getCookie(name) {
+      const match = document.cookie.match(
+        new RegExp("(^|; )" + name.replace(/([.*+?^${}()|[\]\\])/g, "\\$1") + "=([^;]*)"),
+      );
+      return match ? decodeURIComponent(match[2]) : null;
     }
-  }
+
+    function getUserFromCookie() {
+      const raw = getCookie("current_user");
+      if (!raw) return null;
+      const decoded = base64DecodeUnicode(raw);
+      if (!decoded) return null;
+      try {
+        return JSON.parse(decoded);
+      } catch (e) {
+        console.error("Parsing user from cookie failed:", e);
+        return null;
+      }
+    }
+
+    // --- user acquisition: prefer cookie, fallback to localStorage ---
+    const storedCurrentUser = (() => {
+      const fromCookie = getUserFromCookie();
+      if (fromCookie) return fromCookie;
+      const stored = localStorage?.getItem("current_user");
+      if (!stored) return null;
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error("Parsing user from localStorage failed:", e);
+        return null;
+      }
+    })();
+
+    // apply authorization/display logic and reorder if present
+    if (storedCurrentUser) {
+      if (new Date() > new Date("2025-08-01T20:00:00Z") || storedCurrentUser.config_body_class?.includes("super_admin")) {
+        document.body.dataset.sideNavVisible = "true";
+      }
+
+      if (storedCurrentUser?.ordered_subforem_ids?.length > 0) {
+        const subforemIds = storedCurrentUser.ordered_subforem_ids;
+        const sidebar = document.getElementById("main-side-bar");
+        const rootLink = document.getElementById("root-subforem-link");
+        const rootSubforemId = rootLink?.getAttribute("data-sidebar-subforem-id");
+
+        const subforemElements = sidebar.querySelectorAll("[data-sidebar-subforem-id]");
+        const subforemMap = {};
+
+        subforemElements.forEach((el) => {
+          const id = el.getAttribute("data-sidebar-subforem-id");
+          if (id !== rootSubforemId) {
+            subforemMap[id] = el.closest(".crayons-side-nav__item");
+          }
+        });
+
+        // remove non-root existing items
+        Object.values(subforemMap).forEach((item) => {
+          if (item && item.parentNode) {
+            item.remove();
+          }
+        });
+
+        // append in user's order (excluding root)
+        subforemIds.forEach((id) => {
+          if (id !== rootSubforemId && subforemMap[id]) {
+            sidebar.appendChild(subforemMap[id]);
+          }
+        });
+
+        // append leftovers not in the user's list
+        Object.keys(subforemMap).forEach((id) => {
+          const parsedId = parseInt(id, 10);
+          if (!subforemIds.includes(parsedId) && subforemMap[id]) {
+            sidebar.appendChild(subforemMap[id]);
+          }
+        });
+
+        // ensure menu is last
+        const menu = sidebar.querySelector(".crayons-side-nav__item--menu");
+        if (menu) {
+          sidebar.appendChild(menu);
+        }
+      }
+    }
+
+    // active subforem highlight based on current context
+    const currentSubforemId = document.body.getAttribute("data-subforem-id");
+    if (currentSubforemId) {
+      const matching = document.querySelector(
+        `[data-sidebar-subforem-id="${currentSubforemId}"]`,
+      );
+      if (matching) {
+        matching.classList.add("active");
+      }
+    }
+  })();
 </script>
 
 <script>
@@ -198,6 +200,10 @@
           }
           targetItem.classList.remove("not-hovered");
           targetItem.classList.add("hovered");
+          let feedEl = document.getElementById('root-feed-card');
+          if (feedEl) {
+            feedEl.scrollTop = 0;
+          }
 
           // --- NEW LOGIC START ---
           const previewCard = targetItem.querySelector(
