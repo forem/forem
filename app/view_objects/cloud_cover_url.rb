@@ -13,6 +13,13 @@ class CloudCoverUrl
     width = 1000
     height = Settings::UserExperience.cover_image_height(subforem_id: @subforem_id)
     crop = Settings::UserExperience.cover_image_fit(subforem_id: @subforem_id)
+
+    # Hardcode for YouTube thumbnails
+    if (url&.include?("ytimg.com"))
+      height = 500
+      crop = "crop"
+    end
+
     img_src = url_without_prefix_nesting(url, width)
 
     Images::Optimizer.call(img_src, width: width, height: height, crop: crop)

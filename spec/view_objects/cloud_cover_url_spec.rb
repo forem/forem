@@ -52,4 +52,11 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
       .to start_with(cloudinary_prefix)
       .and include("/c_fill,f_auto,fl_progressive,h_902,q_auto,w_1000/https://robohash.org/")
   end
+
+  it "returns proper url when ytimg.com is used" do
+    article.update_column(:main_image, "https://i.ytimg.com/vi/some_video_id/maxresdefault.jpg")
+    expect(described_class.new(article.main_image).call)
+      .to start_with(cloudinary_prefix)
+      .and include("/c_fill,f_auto,fl_progressive,h_500,q_auto,w_1000/https://i.ytimg.com/vi/some_video_id/maxresdefault.jpg")
+  end
 end
