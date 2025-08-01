@@ -39,6 +39,10 @@ module Articles
           end
         end
 
+        if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+          articles = articles.where(type_of: :full_post)
+        end
+
         articles = weighted_shuffle(articles, @feed_config.shuffle_weight) if @feed_config.shuffle_weight.positive?
         articles
       end
