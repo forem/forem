@@ -25,7 +25,7 @@ json.array!(@stories) do |article|
   json.pinned article.pinned?
 
   if article.main_image?
-    json.main_image cloud_cover_url(article.main_image)
+    json.main_image cloud_cover_url(article.main_image, article.subforem_id)
   else
     json.main_image nil
   end

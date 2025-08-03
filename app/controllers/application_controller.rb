@@ -385,6 +385,9 @@ class ApplicationController < ActionController::Base
   helper_method :default_email_optin_allowed?
 
   def forward_to_app_config_domain
+    # Do not redirect if we are intentionally passing a domain for context.
+    return if params[:passed_domain].present?
+  
     # Let's only redirect get requests for this purpose.
     return unless request.get? &&
       # If the request equals the original set domain, e.g. forem-x.forem.cloud.

@@ -37,10 +37,26 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
       .and include("/c_limit,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/")
   end
 
+  it "returns proper url when a subforem_id is set" do
+    subforem_id = create(:subforem, domain: "#{rand(10_000)}.com").id
+    allow(Settings::UserExperience).to receive(:cover_image_height).with(subforem_id: subforem_id).and_return("450")
+    allow(Settings::UserExperience).to receive(:cover_image_fit).with(subforem_id: subforem_id).and_return("limit")
+    expect(described_class.new(article.main_image, subforem_id).call)
+      .to start_with(cloudinary_prefix)
+      .and include("/c_limit,f_auto,fl_progressive,h_450,q_auto,w_1000/https://robohash.org/")
+  end
+
   it "returns proper url when height is set" do
     allow(Settings::UserExperience).to receive(:cover_image_height).and_return("902")
     expect(described_class.new(article.main_image).call)
       .to start_with(cloudinary_prefix)
       .and include("/c_fill,f_auto,fl_progressive,h_902,q_auto,w_1000/https://robohash.org/")
+  end
+
+  it "returns proper url when ytimg.com is used" do
+    article.update_column(:main_image, "https://i.ytimg.com/vi/some_video_id/maxresdefault.jpg")
+    expect(described_class.new(article.main_image).call)
+      .to start_with(cloudinary_prefix)
+      .and include("/c_fill,f_auto,fl_progressive,h_500,q_auto,w_1000/https://i.ytimg.com/vi/some_video_id/maxresdefault.jpg")
   end
 end

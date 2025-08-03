@@ -158,8 +158,9 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, subforem_id = nil)
+    subforem_id ||= RequestStore.store[:subforem_id]
+    CloudCoverUrl.new(url, subforem_id).call
   end
 
   def tag_colors(tag)
@@ -449,10 +450,5 @@ module ApplicationHelper
     dom_class += " #{ApplicationPolicy.dom_classes_for(record: record, query: query)}"
 
     content_tag(name, class: dom_class, **kwargs, &block)
-  end
-
-  def sidebar_visible?
-    # Purely experimental sidebar rendering, only for subforem 45 (experimental)
-    RequestStore.store[:subforem_id] == 45 || !Rails.env.production? && RequestStore.store[:subforem_id].present?
   end
 end
