@@ -5,9 +5,9 @@
         <div class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
             <% if high_number_of_comments?(@user.comments_count) %>
-              <%= t("views.users.comments.last", count: number_of_comments_to_render) %>
+              <%= t("views.users.comments.last") %>
             <% else %>
-              <%= t("views.users.comments.all", count: @user.comments_count) %>
+              <%= t("views.users.comments.all") %>
             <% end %>
           </h3>
           <div class="crayons-card__actions">
