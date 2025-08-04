@@ -1,6 +1,12 @@
 <div class="crayons-card crayons-card--secondary p-4">
   <h2 class="crayons-subtitle-2 lh-tight mb-4">
-    <%= render "shared/authentication_title" %>
+    <% if RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] || RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id] %>
+      <%= render "shared/authentication_title" %>
+    <% elsif RequestStore.store[:subforem_id].present? %>
+      Welcome to <%= Settings::Community.community_name %> — part of the Forem network!
+    <% else %>
+      <%= render "shared/authentication_title" %>
+    <% end %>
   </h2>
   <% if Settings::Community.tagline.present? %>
     <p class="color-base-70 mb-4">
