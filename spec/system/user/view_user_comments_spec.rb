@@ -67,7 +67,7 @@ RSpec.describe "User comments" do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/user3000/comments"
       within("#substories div.profile-comment-card") do
-        expect(page).to have_content("Last 1 comments")
+        expect(page).to have_content("Recent comments")
       end
     end
   end
