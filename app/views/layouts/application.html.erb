@@ -65,7 +65,7 @@
         <% if RequestStore.store[:subforem_id].present? %>
           data-subforem-id="<%= j(RequestStore.store[:subforem_id]) %>"
         <% end %>
-        data-side-nav-visible="false"
+        data-side-nav-visible="<%= Subforem.cached_discoverable_ids.size > 1 %>"
         data-community-name="<%= j(community_name) %>"
         data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
         data-locale="<%= j(I18n.locale) %>"
