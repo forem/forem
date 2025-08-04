@@ -85,6 +85,22 @@
   }
 }
 
+body[data-side-nav-visible='true'] {
+  .home {
+    @media (min-width: $breakpoint-m) {
+      max-width: calc(var(--site-width) - 60px);
+      width: calc(100% - 70px);
+      margin-left: 60px; /* Adjust this value to match the sidebar width */
+    }
+    @media (min-width: $breakpoint-2xl) {
+      max-width: var(--site-width);
+      width: 100%;
+      margin-left: auto; /* Reset margin on larger screens */
+      transform: translateX(20px);
+    }
+  }
+}
+
 .sidebar-navigation-link .c-link__icon {
   display: inline-flex;
   flex-shrink: 0;
