@@ -21,11 +21,11 @@ en:
         recent: Recent comments
         view: View all activity
         view_all:
-          one: View all %{count} comments
-          other: View all %{count} comments
+          one: View all comments
+          other: View all comments
         view_last:
-          one: View last 1 Comment
-          other: View last %{count} Comments
+          one: View recent comments
+          other: View recent Comments
       github:
         heading: GitHub Repositories
         fork: Fork
