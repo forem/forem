@@ -132,7 +132,6 @@
       min-width: 25%;
     }
 
-
     &:hover:not(:disabled) {
       background-color: var(--theme-container-background-hover, $light-gray);
       border-color: var(--cta-border-hover);
