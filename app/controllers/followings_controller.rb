@@ -9,6 +9,7 @@ class FollowingsController < ApplicationController
     relation = current_user.follows_by_type("User")
       .select(ATTRIBUTES_FOR_SERIALIZATION)
       .order(created_at: :desc)
+
     @follows = load_follows_and_paginate(relation)
   end
 
