@@ -184,6 +184,12 @@ Rails.application.routes.draw do
     resources :reading_list_items, only: [:update]
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
+
+    resources :surveys, only: [:show] do # Or however you have it configured
+      get :votes, on: :member # This creates the route GET /surveys/:id/votes
+    end
+
+
     resources :profile_pins, only: %i[create update]
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
     resources :display_ad_events, only: [:create], controller: :billboard_events
