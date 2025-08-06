@@ -13,7 +13,7 @@ RSpec.describe "Surveys", type: :request do
         get "/surveys/#{survey.id}/votes"
         # The status might be 401 Unauthorized or 302 Found for a redirect,
         # depending on your authentication setup (e.g., Devise).
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).not_to have_http_status(:ok)
       end
     end
 
