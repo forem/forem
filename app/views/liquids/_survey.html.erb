@@ -1,0 +1,19 @@
+<div class="ltag-survey" id="survey_<%= survey.id %>" data-survey-id="<%= survey.id %>">
+  <h2 class="survey-title"><%= survey.title %></h2>
+  
+  <div class="survey-polls-container">
+    <% survey.polls.each_with_index do |poll, index| %>
+      <%= render partial: 'liquids/survey_poll', locals: { poll: poll, index: index } %>
+    <% end %>
+  </div>
+
+  <div class="survey-navigation">
+    <button class="survey-prev-btn" disabled>&larr; Previous</button>
+    <span class="survey-progress"></span>
+    <button class="survey-next-btn" disabled>Next &rarr;</button>
+  </div>
+
+  <div class="survey-complete-message" style="display: none;">
+    <h3>Thank you for completing the survey!</h3>
+  </div>
+</div>

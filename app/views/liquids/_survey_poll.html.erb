@@ -1,0 +1,25 @@
+<div 
+  class="survey-poll" 
+  id="survey-poll-<%= poll.id %>" 
+  data-poll-id="<%= poll.id %>" 
+  data-poll-index="<%= index %>"
+  style="display: none;"
+>
+  <h3><%= poll.prompt_html.html_safe %></h3>
+  
+  <ul class="survey-poll-answers">
+    <% poll.poll_options.each do |option| %>
+      <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
+        <span class="option-text"><%= option.processed_html.html_safe %></span>
+      </li>
+    <% end %>
+  </ul>
+  
+  <div class="survey-poll-feedback" style="display: none;">
+    ✓ Thank you for your response.
+  </div>
+
+  <div class="survey-poll-final-vote-feedback" style="display: none;">
+    ✓ Thank you for completing the survey!
+  </div>
+</div>
