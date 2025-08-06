@@ -130,5 +130,7 @@ doc/
 
 # Datadog stuff
 test.rb
+test-runner.rb
 *.log
 .dd
+knapsack-test-files.txt
