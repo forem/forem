@@ -5,21 +5,21 @@
         <div class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
             <% if high_number_of_comments?(@user.comments_count) %>
-              <%= t("views.users.comments.last") %>
+              <%= t("views.users.comments.last.other") %>
             <% else %>
-              <%= t("views.users.comments.all") %>
+              <%= t("views.users.comments.all.other") %>
             <% end %>
           </h3>
           <div class="crayons-card__actions">
             <a href="<%= @user.path %>" class="crayons-link--branded fs-base">
-              <%= t("views.users.comments.view") %>
+              <%= t("views.users.comments.view_last.other") %>
             </a>
           </div>
         </div>
       <% else %>
         <div class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            <%= t("views.users.comments.recent") %>
+            <%= t("views.users.comments.last.other") %>
           </h3>
         </div>
       <% end %>
