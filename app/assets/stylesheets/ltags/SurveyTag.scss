@@ -1,0 +1,157 @@
+@import 'variables';
+@import 'mixins';
+@import 'config/import';
+
+.ltag-survey {
+  width: 650px;
+  max-width: 98%;
+  margin: 2em auto !important;
+  // Using established variables for the main container
+  border: 1px solid var(--form-border, $light-medium-gray) !important;
+  box-shadow: var(--shadow-smooth, $shadow);
+  background-color: var(--theme-container-background, white);
+  border-radius: var(--radius-lg, 5px);
+  box-sizing: border-box;
+  padding: 15px 25px 25px;
+  font-family: var(--ff-sans-serif);
+  
+  .survey-title {
+    margin: 10px 0 25px;
+    text-align: center;
+    font-size: 1.4em;
+    color: var(--body-color);
+  }
+}
+
+.survey-poll {
+  padding-bottom: 1em;
+  border-bottom: 1px solid var(--form-border, #eee);
+  margin-bottom: 1em;
+
+  h3 {
+    margin: 15px 0px;
+    font-size: 1.1em;
+    color: var(--body-color);
+  }
+}
+
+.survey-poll-answers {
+  list-style-type: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .survey-poll-option {
+    border: 1px solid var(--form-border);
+    border-radius: var(--radius-md, 5px);
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+
+    .option-text {
+      color: var(--body-color);
+    }
+
+    &:hover {
+      // Use a standard hover variable for the background
+      background-color: var(--theme-container-background-hover, $light-gray);
+      // Use the hover state from the CTA button variables for an accent border
+      border-color: var(--cta-border-hover);
+    }
+
+    // State when a user has selected this option
+    &.user-selected {
+      // Map the selected state to the "branded" CTA variables.
+      // This is the strongest "special state" available in the theme.
+      background-color: var(--cta-branded-bg);
+      border-color: var(--cta-branded-border);
+      cursor: default;
+      
+      .option-text {
+        color: var(--cta-branded-color);
+        font-weight: var(--fw-bold, 700);
+      }
+    }
+
+    // State for disabled options (on locked-in polls)
+    &.disabled {
+      // Use opacity for a theme-agnostic disabled state
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: transparent;
+
+      &:hover {
+        // Prevent hover effects on disabled options
+        border-color: var(--form-border);
+      }
+    }
+  }
+}
+
+// Map both feedback types to the branded CTA state for consistency.
+// This indicates a "successful action" state using existing variables.
+.survey-poll-feedback,
+.survey-poll-final-vote-feedback {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: var(--cta-branded-bg);
+  border-left: 4px solid var(--cta-branded-border);
+  color: var(--cta-branded-color);
+  font-weight: var(--fw-medium);
+  border-radius: var(--radius-sm, 3px);
+}
+
+.survey-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1em;
+  padding: 0 5px;
+  
+  .survey-progress {
+    font-size: 0.9em;
+    color: var(--card-color-tertiary, $medium-gray);
+    display: none;
+    @media (min-width: $breakpoint-m) {
+      display: block;
+    }
+  }
+
+  button {
+    padding: 8px 16px;
+    border: 1px solid var(--form-border);
+    border-radius: var(--radius-md, 4px);
+    // Use a transparent background for a "secondary button" look
+    background-color: transparent;
+    color: var(--body-color);
+    cursor: pointer;
+    font-weight: var(--fw-medium, 500);
+    min-width: 44%;
+    @media (min-width: $breakpoint-m) {
+      min-width: 25%;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: var(--theme-container-background-hover, $light-gray);
+      border-color: var(--cta-border-hover);
+    }
+
+    &:disabled {
+      // Use opacity for the disabled state instead of specific colors
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.survey-complete-message {
+  text-align: center;
+  padding: 3em 1em;
+  
+  h3 {
+    // Also map the final success text to the branded color for consistency
+    color: var(--cta-branded-color);
+  }
+}

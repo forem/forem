@@ -3,7 +3,8 @@ class Poll < ApplicationRecord
 
   serialize :voting_data
 
-  belongs_to :article
+  belongs_to :article, optional: true
+  belongs_to :survey, optional: true
 
   has_many :poll_options, dependent: :delete_all
   has_many :poll_skips, dependent: :delete_all

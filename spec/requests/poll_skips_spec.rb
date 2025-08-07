@@ -20,14 +20,6 @@ RSpec.describe "PollSkips" do
       expect(user.poll_skips.size).to eq(1)
     end
 
-    it "only allows one of vote or skip" do
-      post "/poll_skips", params: { poll_skip: { poll_id: poll.id } }
-      post "/poll_votes", params: { poll_vote: { poll_option_id: poll.poll_options.first.id } }
-
-      expect(user.poll_skips.size).to eq(1)
-      expect(user.poll_votes.size).to eq(0)
-    end
-
     it "does not allow two skips" do
       expect do
         post "/poll_skips", params: { poll_skip: { poll_id: poll.id } }

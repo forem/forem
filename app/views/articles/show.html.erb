@@ -347,6 +347,9 @@
     <% if @article.processed_html.include?("ltag-poll") %>
       <%== PollTag.script %>
     <% end %>
+    <% if @article.processed_html.include?("ltag-survey") %>
+      <%== SurveyTag.script %>
+    <% end %>
     <% if @article.processed_html.include?("tweet-embed") %>
       <%== TweetTag.script %>
     <% end %>

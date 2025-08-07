@@ -14,12 +14,19 @@ class PollVotesController < ApplicationController
   end
 
   def create
-    @poll_option = PollOption.find(poll_vote_params[:poll_option_id])
-    @poll_vote = PollVote.create(poll_option_id: @poll_option&.id, user_id: current_user.id,
-                                 poll_id: @poll_option.poll_id)
-    @poll = @poll_option.reload.poll
-    render json: { voting_data: @poll.voting_data,
-                   poll_id: @poll.id,
+    poll_option = PollOption.find(poll_vote_params[:poll_option_id])
+    poll = poll_option.poll
+
+    poll_vote = PollVote.find_or_initialize_by(
+      user_id: current_user.id,
+      poll_id: poll.id,
+    )
+
+    poll_vote.poll_option_id = poll_option.id
+    poll_vote.save!
+
+    render json: { voting_data: poll.voting_data,
+                   poll_id: poll.id,
                    user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
                    voted: true }
   end
