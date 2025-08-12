@@ -29,9 +29,11 @@ module Articles
       minimum_score = Settings::UserExperience.home_feed_minimum_score.to_i
       options = DEFAULT_OPTIONS.merge(options)
       tags, time_ago, count = options.values_at(:tags, :time_ago, :count)
+      requires_approval = Tag.where(name: tags).pluck(:requires_approval).any?
 
       relation = relation.limit(count)
       relation = relation.cached_tagged_with(tags)
+      relation = relation.approved if requires_approval
       relation = if time_ago == "latest"
                    relation = relation.where(score: minimum_score..).presence || relation
                    relation.order(published_at: :desc)
