@@ -1,14 +1,14 @@
 require "rails_helper"
 
 RSpec.describe Articles::QualityReactionWorker, type: :worker do
-  let(:mascot_user) { create(:user, username: "mascot") }
+  let(:mascot_user) { create(:user, :trusted, username: "mascot") }
   let(:user) { create(:user, :trusted) }
   let(:spam_user) { create(:user, :spam) }
 
   before do
     allow(User).to receive(:mascot_account).and_return(mascot_user)
-    # Mock discoverable subforems
-    allow(Subforem).to receive(:cached_discoverable_ids).and_return([1, 2])
+    # Mock discoverable subforems - only return subforem 1 since that's where our test articles are
+    allow(Subforem).to receive(:cached_discoverable_ids).and_return([1])
   end
 
   describe "#perform" do
@@ -125,6 +125,26 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                past_published_at: 18.hours.ago)
       end
 
+      let!(:additional_article_1) do
+        create(:article, :past,
+               user: create(:user),
+               subforem_id: 1,
+               title: "Additional Article 1",
+               body_markdown: "---\ntitle: Additional Article 1\npublished: true\n---\n\nThis is additional content.",
+               score: 15,
+               past_published_at: 10.hours.ago)
+      end
+
+      let!(:additional_article_2) do
+        create(:article, :past,
+               user: create(:user),
+               subforem_id: 1,
+               title: "Additional Article 2",
+               body_markdown: "---\ntitle: Additional Article 2\npublished: true\n---\n\nThis is additional content.",
+               score: 12,
+               past_published_at: 8.hours.ago)
+      end
+
       before do
         # Mock the AI service to return predictable results
         allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:assess).and_return(
@@ -133,7 +153,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
       end
 
       it "issues thumbs up to the best article" do
-        expect { described_class.new.perform }.to change(Reaction, :count).by(2)
+        expect { described_class.new.perform }.to change(Reaction, :count).by(1)
 
         thumbs_up_reaction = Reaction.find_by(
           user: mascot_user,
@@ -170,11 +190,21 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
       end
 
       it "removes conflicting reactions before creating new ones" do
+        # Create more articles to ensure we have enough eligible articles even after filtering out existing reactions
+        9.times do |i|
+          create(:article, :past,
+                 user: create(:user),
+                 subforem_id: 1,
+                 title: "Extra Article #{i}",
+                 body_markdown: "---\ntitle: Extra Article #{i}\npublished: true\n---\n\nThis is extra content #{i}.",
+                 score: 10 + i,
+                 past_published_at: 12.hours.ago)
+        end
+
         # Create an existing thumbs down on the high quality article
-        create(:reaction,
+        create(:thumbsdown_reaction,
                user: mascot_user,
                reactable: high_quality_article,
-               category: "thumbsdown",
                status: "confirmed")
 
         # Create an existing thumbs up on the low quality article
@@ -208,8 +238,12 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
         described_class.new.perform
 
         expect(Rails.logger).to have_received(:info).with(
-          "QualityReactionWorker: Issued thumbs up to article #{high_quality_article.id} " \
-          "and thumbs down to article #{low_quality_article.id}",
+          "QualityReactionWorker: Subforem 1 - Issued thumbs up to article #{high_quality_article.id} " \
+          "(only #{Article.published.where(subforem_id: 1).where('published_at > ?',
+                                                                 1.day.ago).where('score >= 0').where.not(id: Reaction.where(user: mascot_user,
+                                                                                                                             category: %w[
+                                                                                                                               thumbsup thumbsdown
+                                                                                                                             ]).select(:reactable_id)).count} eligible articles, skipping thumbs down)",
         )
       end
     end
@@ -271,30 +305,32 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
     end
 
     context "when there are fewer than 25 articles" do
-      let!(:article) do
-        create(:article, :past,
-               user: user,
-               subforem_id: 1,
-               title: "Single Article",
-               body_markdown: "---\ntitle: Single Article\npublished: true\n---\n\nThis is the only article.",
-               score: 30,
-               past_published_at: 12.hours.ago)
+      let!(:articles) do
+        5.times.map do |i|
+          create(:article, :past,
+                 user: create(:user),
+                 subforem_id: 1,
+                 title: "Article #{i}",
+                 body_markdown: "---\ntitle: Article #{i}\npublished: true\n---\n\nThis is article #{i}.",
+                 score: 20 + i,
+                 past_published_at: 12.hours.ago)
+        end
       end
 
       before do
-        # Mock the AI service to return the single article as both best and worst
+        # Mock the AI service to return the first article as best and last as worst
         allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:assess).and_return(
-          { best: article, worst: article },
+          { best: articles.first, worst: articles.last },
         )
       end
 
       it "still processes the available articles" do
         expect { described_class.new.perform }.to change(Reaction, :count).by(1)
 
-        # Should issue thumbs up to the single article (best and worst are the same)
+        # Should issue thumbs up to the best article (only 5 articles, so no thumbs down)
         expect(Reaction.exists?(
                  user: mascot_user,
-                 reactable: article,
+                 reactable: articles.first,
                  category: "thumbsup",
                  status: "confirmed",
                )).to be true
