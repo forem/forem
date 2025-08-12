@@ -21,6 +21,7 @@ module Articles
         .where(subforem_id: subforem_id)
         .where("published_at > ?", 1.day.ago)
         .where("score >= 0")
+        .where(type_of: "full_post")
         .where.not(id: Reaction.where(user: mascot_user, category: %w[thumbsup thumbsdown]).select(:reactable_id))
         .order(score: :desc)
         .limit(25)
