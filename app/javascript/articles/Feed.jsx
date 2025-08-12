@@ -23,7 +23,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const billboardUrlComponent = document.body.dataset.dynamicUrlComponent || 'bb';
       const promises = [
-        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
+        fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}&search_fields=${searchFields}&sort_by=${sortBy}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
