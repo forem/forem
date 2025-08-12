@@ -1,0 +1,113 @@
+---
+es:
+  languages:
+    display_name:
+      af: Afrikáans
+      am: Amárico
+      ar: Árabe
+      az: Azerbaiyano
+      be: Bielorruso
+      bg: Búlgaro
+      bg-Latn: Búlgaro (latino)
+      bn: Bengalí
+      bs: Bosnio
+      ca: Catalán
+      ceb: Cebuano
+      co: Corso
+      cs: Checo
+      cy: Galés
+      da: Danés
+      de: Alemán
+      el: Griego
+      el-Latn: Griego (latino)
+      en: Inglés
+      eo: Esperanto
+      es: Español
+      et: Estonio
+      eu: Vasco
+      fa: Persa
+      fi: Finés
+      fil: Filipino
+      fr: Francés
+      fy: Frisón occidental
+      ga: Irlandés
+      gd: Gaélico escocés
+      gl: Gallego
+      gu: Guyaratí
+      ha: Hausa
+      haw: Hawaiano
+      hi: Hindi
+      hi-Latn: Hindi (latino)
+      hmn: Hmong
+      hr: Croata
+      ht: Criollo haitiano
+      hu: Húngaro
+      hy: Armenio
+      id: Indonesio
+      ig: Igbo
+      is: Islandés
+      it: Italiano
+      iw: Hebreo
+      ja: Japonés
+      ja-Latn: Japonés (latino)
+      jv: Javanés
+      ka: Georgiano
+      kk: Kazajo
+      km: Jemer
+      kn: Canarés
+      ko: Coreano
+      ku: Kurdo
+      ky: Kirguís
+      la: Latín
+      lb: Luxemburgués
+      lo: Laosiano
+      lt: Lituano
+      lv: Letón
+      mg: Malgache
+      mi: Maorí
+      mk: Macedonio
+      ml: Malayalam
+      mn: Mongol
+      mr: Maratí
+      ms: Malayo
+      mt: Maltés
+      my: Birmano
+      ne: Nepalí
+      nl: Neerlandés
+      "no": Noruego
+      ny: Nyanja
+      pa: Panyabí
+      pl: Polaco
+      ps: Pushto
+      pt: Portugués
+      ro: Rumano
+      ru: Ruso
+      ru-Latn: Ruso (latino)
+      sd: Sindhi
+      si: Cingalés
+      sk: Eslovaco
+      sl: Esloveno
+      sm: Samoano
+      sn: Shona
+      so: Somalí
+      sq: Albanés
+      sr: Serbio
+      st: Sesotho del Sur
+      su: Sundanés
+      sv: Sueco
+      sw: Suajili
+      ta: Tamil
+      te: Telugu
+      tg: Tayiko
+      th: Tailandés
+      tr: Turco
+      uk: Ucraniano
+      ur: Urdu
+      uz: Uzbeko
+      vi: Vietnamita
+      xh: Xhosa
+      yi: Yidis
+      yo: Yoruba
+      zh: Chino
+      zh-Latn: Chino (latino)
+      zu: Zulú
