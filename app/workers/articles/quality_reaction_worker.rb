@@ -24,7 +24,7 @@ module Articles
         .where(type_of: "full_post")
         .where.not(id: Reaction.where(user: mascot_user, category: %w[thumbsup thumbsdown]).select(:reactable_id))
         .order(score: :desc)
-        .limit(25)
+        .limit(20)
         .includes(:user, :comments)
 
       return if eligible_articles.count < 5
@@ -52,8 +52,6 @@ module Articles
       end
     end
 
-    private
-
     def mascot_user
       @mascot_user ||= User.mascot_account
     end
@@ -73,6 +71,9 @@ module Articles
         category: "thumbsup",
         status: "confirmed",
       )
+
+      # Mark article as featured
+      article.update(featured: true)
     end
 
     def issue_thumbs_down(article)
