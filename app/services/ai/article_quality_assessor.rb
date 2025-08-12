@@ -50,8 +50,8 @@ module Ai
           Article #{index}:
           Tags: #{article.cached_tag_list}
           Title: #{article.title}
-          Body: #{article.body_markdown}
-          #{"Top Comments: #{article.comments.order(score: :desc).limit(3).pluck(:body_markdown).join("\n")}" if article.comments.any?}
+          Body: #{article.body_markdown.truncate(10_000)} #{'(Truncated)' if article.body_markdown.length > 10_000}
+          #{"Top Comments: #{article.comments.order(score: :desc).limit(3).pluck(:body_markdown).truncate(200).join("\n")}" if article.comments.any?}
           ---
         ARTICLE
       end.join("\n")
