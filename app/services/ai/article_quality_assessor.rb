@@ -51,7 +51,7 @@ module Ai
           Tags: #{article.cached_tag_list}
           Title: #{article.title}
           Body: #{article.body_markdown.truncate(10_000)} #{'(Truncated)' if article.body_markdown.length > 10_000}
-          #{"Top Comments: #{article.comments.order(score: :desc).limit(3).pluck(:body_markdown).map { |content| content.truncate(500) }.join("\n")}" if article.comments.any?}
+          #{"Top Comments: #{article.comments.order(score: :desc).limit(3).pluck(:body_markdown).map { |content| content.truncate(750) }.join("\n")}" if article.comments.any?}
           ---
         ARTICLE
       end.join("\n")
