@@ -24,7 +24,7 @@ module Articles
         .where(type_of: "full_post")
         .where.not(id: Reaction.where(user: mascot_user, category: %w[thumbsup thumbsdown]).select(:reactable_id))
         .order(score: :desc)
-        .limit(20)
+        .limit(18)
         .includes(:user, :comments)
 
       return if eligible_articles.count < 5
