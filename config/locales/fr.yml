@@ -168,6 +168,7 @@ fr:
       manage_preferences: Gérer les préférences
       what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
       report_billboard: Report billboard
+      edit_billboard: Modifier le panneau publicitaire
   errors:
     messages:
       accepted: doit être accepté
