@@ -26,8 +26,6 @@ module Ai
       parse_response(response)
     rescue StandardError => e
       Rails.logger.error("Article Quality Assessment failed: #{e}")
-      # Fallback to simple score-based selection
-      fallback_assessment
     end
 
     private
