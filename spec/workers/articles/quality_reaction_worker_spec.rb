@@ -30,13 +30,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
 
     context "when there are fewer than 5 eligible articles" do
       let!(:article) do
-        create(:article,
+        create(:article, :past,
                user: user,
                subforem_id: 1,
                title: "Single Article",
                body_markdown: "---\ntitle: Single Article\npublished: true\n---\n\nThis is the only article.",
                score: 30,
-               published_at: 12.hours.ago)
+               past_published_at: 12.hours.ago)
       end
 
       it "does nothing" do
@@ -47,13 +47,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
     context "when there are between 5-11 eligible articles" do
       let!(:articles) do
         5.times.map do |i|
-          create(:article,
+          create(:article, :past,
                  user: create(:user),
                  subforem_id: 1,
                  title: "Article #{i}",
                  body_markdown: "---\ntitle: Article #{i}\npublished: true\n---\n\nThis is article #{i}.",
                  score: 20 + i,
-                 published_at: 12.hours.ago)
+                 past_published_at: 12.hours.ago)
         end
       end
 
@@ -87,7 +87,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
 
     context "when articles exist from the past day" do
       let!(:high_quality_article) do
-        create(:article,
+        create(:article, :past,
                user: user,
                subforem_id: 1,
                title: "How to Build a Great Community: A Comprehensive Guide",
@@ -96,11 +96,11 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                comments_count: 10,
                public_reactions_count: 25,
                reading_time: 8,
-               published_at: 12.hours.ago)
+               past_published_at: 12.hours.ago)
       end
 
       let!(:low_quality_article) do
-        create(:article,
+        create(:article, :past,
                user: spam_user,
                subforem_id: 1,
                title: "BUY NOW!!!",
@@ -109,11 +109,11 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                comments_count: 1,
                public_reactions_count: 2,
                reading_time: 1,
-               published_at: 6.hours.ago)
+               past_published_at: 6.hours.ago)
       end
 
       let!(:medium_quality_article) do
-        create(:article,
+        create(:article, :past,
                user: create(:user),
                subforem_id: 1,
                title: "Some Article",
@@ -122,7 +122,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                comments_count: 5,
                public_reactions_count: 10,
                reading_time: 3,
-               published_at: 18.hours.ago)
+               past_published_at: 18.hours.ago)
       end
 
       before do
@@ -148,13 +148,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
       it "issues thumbs down to the worst article when there are at least 12 articles" do
         # Create more articles to reach the 12+ threshold
         9.times do |i|
-          create(:article,
+          create(:article, :past,
                  user: create(:user),
                  subforem_id: 1,
                  title: "Additional Article #{i}",
                  body_markdown: "---\ntitle: Additional Article #{i}\npublished: true\n---\n\nThis is additional content #{i}.",
                  score: 10 + i,
-                 published_at: 12.hours.ago)
+                 past_published_at: 12.hours.ago)
         end
 
         expect { described_class.new.perform }.to change(Reaction, :count).by(2)
@@ -216,13 +216,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
 
     context "when articles are older than 1 day" do
       let!(:old_article) do
-        create(:article,
+        create(:article, :past,
                user: user,
                subforem_id: 1,
                title: "Old Article",
                body_markdown: "---\ntitle: Old Article\npublished: true\n---\n\nThis is an old article.",
                score: 100,
-               published_at: 2.days.ago)
+               past_published_at: 2.days.ago)
       end
 
       it "does not consider articles older than 1 day" do
@@ -232,13 +232,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
 
     context "when articles have negative scores" do
       let!(:negative_score_article) do
-        create(:article,
+        create(:article, :past,
                user: user,
                subforem_id: 1,
                title: "Negative Score Article",
                body_markdown: "---\ntitle: Negative Score Article\npublished: true\n---\n\nThis article has a negative score.",
                score: -10,
-               published_at: 12.hours.ago)
+               past_published_at: 12.hours.ago)
       end
 
       it "does not consider articles with negative scores" do
@@ -248,13 +248,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
 
     context "when articles already have mascot reactions" do
       let!(:article_with_reaction) do
-        create(:article,
+        create(:article, :past,
                user: user,
                subforem_id: 1,
                title: "Article with Reaction",
                body_markdown: "---\ntitle: Article with Reaction\npublished: true\n---\n\nThis article already has a mascot reaction.",
                score: 50,
-               published_at: 12.hours.ago)
+               past_published_at: 12.hours.ago)
       end
 
       before do
@@ -272,13 +272,13 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
 
     context "when there are fewer than 25 articles" do
       let!(:article) do
-        create(:article,
+        create(:article, :past,
                user: user,
                subforem_id: 1,
                title: "Single Article",
                body_markdown: "---\ntitle: Single Article\npublished: true\n---\n\nThis is the only article.",
                score: 30,
-               published_at: 12.hours.ago)
+               past_published_at: 12.hours.ago)
       end
 
       before do
