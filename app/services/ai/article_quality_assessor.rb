@@ -26,6 +26,8 @@ module Ai
       parse_response(response)
     rescue StandardError => e
       Rails.logger.error("Article Quality Assessment failed: #{e}")
+      # Fallback to simple score-based selection
+      fallback_assessment
     end
 
     private
@@ -136,14 +138,10 @@ module Ai
       }
     end
 
-    ##
-    # Fallback assessment method that uses simple score-based selection.
-    # @return [Hash] Hash with :best and :worst article objects.
     def fallback_assessment
-      sorted_articles = @articles.sort_by { |article| -article.score }
       {
-        best: sorted_articles.first,
-        worst: sorted_articles.last
+        best: nil,
+        worst: nil
       }
     end
   end
