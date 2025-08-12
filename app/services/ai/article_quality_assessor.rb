@@ -1,7 +1,8 @@
 module Ai
   ##
   # Analyzes a set of articles to determine which is the highest quality and which is the lowest quality.
-  #
+  # This assesses articles against one-another and using the content spec from configuration.
+  # It is ultimately used only for *nudging* purposes and should not be used for major actions.
   # This class uses AI to assess articles based on authenticity, community value, and non-promotional content.
   class ArticleQualityAssessor
     # @param articles [Array<Article>] The articles to be assessed.

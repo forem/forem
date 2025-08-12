@@ -34,7 +34,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: user,
                subforem_id: 1,
                title: "Single Article",
-               body_markdown: "This is the only article.",
+               body_markdown: "---\ntitle: Single Article\npublished: true\n---\n\nThis is the only article.",
                score: 30,
                published_at: 12.hours.ago)
       end
@@ -51,7 +51,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                  user: create(:user),
                  subforem_id: 1,
                  title: "Article #{i}",
-                 body_markdown: "This is article #{i}.",
+                 body_markdown: "---\ntitle: Article #{i}\npublished: true\n---\n\nThis is article #{i}.",
                  score: 20 + i,
                  published_at: 12.hours.ago)
         end
@@ -91,7 +91,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: user,
                subforem_id: 1,
                title: "How to Build a Great Community: A Comprehensive Guide",
-               body_markdown: "This is a detailed tutorial with code examples.\n\n```ruby\ndef hello_world\n  puts 'Hello, World!'\nend\n```\n\nThis guide will help you understand the fundamentals.",
+               body_markdown: "---\ntitle: How to Build a Great Community: A Comprehensive Guide\npublished: true\n---\n\nThis is a detailed tutorial with code examples.\n\n```ruby\ndef hello_world\n  puts 'Hello, World!'\nend\n```\n\nThis guide will help you understand the fundamentals.",
                score: 50,
                comments_count: 10,
                public_reactions_count: 25,
@@ -104,7 +104,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: spam_user,
                subforem_id: 1,
                title: "BUY NOW!!!",
-               body_markdown: "CLICK HERE TO GET AMAZING DEALS!!! LIMITED TIME OFFER!!! [Buy Now](https://spam-site.com) [Sign Up](https://another-spam.com) !!!",
+               body_markdown: "---\ntitle: BUY NOW!!!\npublished: true\n---\n\nCLICK HERE TO GET AMAZING DEALS!!! LIMITED TIME OFFER!!! [Buy Now](https://spam-site.com) [Sign Up](https://another-spam.com) !!!",
                score: 5,
                comments_count: 1,
                public_reactions_count: 2,
@@ -117,7 +117,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: create(:user),
                subforem_id: 1,
                title: "Some Article",
-               body_markdown: "This is a regular article with some content.",
+               body_markdown: "---\ntitle: Some Article\npublished: true\n---\n\nThis is a regular article with some content.",
                score: 20,
                comments_count: 5,
                public_reactions_count: 10,
@@ -152,7 +152,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                  user: create(:user),
                  subforem_id: 1,
                  title: "Additional Article #{i}",
-                 body_markdown: "This is additional content #{i}.",
+                 body_markdown: "---\ntitle: Additional Article #{i}\npublished: true\n---\n\nThis is additional content #{i}.",
                  score: 10 + i,
                  published_at: 12.hours.ago)
         end
@@ -220,7 +220,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: user,
                subforem_id: 1,
                title: "Old Article",
-               body_markdown: "This is an old article.",
+               body_markdown: "---\ntitle: Old Article\npublished: true\n---\n\nThis is an old article.",
                score: 100,
                published_at: 2.days.ago)
       end
@@ -236,7 +236,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: user,
                subforem_id: 1,
                title: "Negative Score Article",
-               body_markdown: "This article has a negative score.",
+               body_markdown: "---\ntitle: Negative Score Article\npublished: true\n---\n\nThis article has a negative score.",
                score: -10,
                published_at: 12.hours.ago)
       end
@@ -252,7 +252,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: user,
                subforem_id: 1,
                title: "Article with Reaction",
-               body_markdown: "This article already has a mascot reaction.",
+               body_markdown: "---\ntitle: Article with Reaction\npublished: true\n---\n\nThis article already has a mascot reaction.",
                score: 50,
                published_at: 12.hours.ago)
       end
@@ -276,7 +276,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                user: user,
                subforem_id: 1,
                title: "Single Article",
-               body_markdown: "This is the only article.",
+               body_markdown: "---\ntitle: Single Article\npublished: true\n---\n\nThis is the only article.",
                score: 30,
                published_at: 12.hours.ago)
       end
