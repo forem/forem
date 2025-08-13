@@ -1,6 +1,17 @@
 class MagicLinksController < ApplicationController
+  def show
+    user = User.find_by(sign_in_token: params[:id])
+    if user && user.sign_in_token_sent_at > 20.minutes.ago
+      user.update_column(:confirmed_at, Time.current) if user.confirmed_at.blank?
+      sign_in(user)
+      redirect_to root_path
+    else
+      redirect_to new_user_session_path, alert: "Invalid or expired link"
+    end
+  end
 
   def new
+    redirect_to root_path if user_signed_in?
     # Render create if state is code
     render :create if params[:state] == "code"
   end
@@ -21,7 +32,7 @@ class MagicLinksController < ApplicationController
       @user.registered       = true
       @user.registered_at    = Time.current
       dummy_password         = Devise.friendly_token(20)
-      @user.password        = dummy_password
+      @user.password = dummy_password
       @user.password_confirmation = dummy_password
 
       # skip the normal Devise confirmation email
@@ -41,17 +52,6 @@ class MagicLinksController < ApplicationController
         flash[:alert] = @user.errors.full_messages.join(", ")
         redirect_to new_user_session_path and return
       end
-    end
-  end
-
-  def show
-    user = User.find_by(sign_in_token: params[:id])
-    if user && user.sign_in_token_sent_at > 20.minutes.ago
-      user.update_column(:confirmed_at, Time.current) if user.confirmed_at.blank?
-      sign_in(user)
-      redirect_to root_path
-    else
-      redirect_to new_user_session_path, alert: "Invalid or expired link"
     end
   end
 end
