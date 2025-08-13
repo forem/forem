@@ -11,7 +11,10 @@ class MagicLinksController < ApplicationController
   end
 
   def new
-    redirect_to root_path if user_signed_in?
+    if user_signed_in?
+      redirect_to root_path
+      return
+    end
     # Render create if state is code
     render :create if params[:state] == "code"
   end
