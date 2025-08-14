@@ -119,6 +119,7 @@ fr:
       update_success: L'espace a été mis à jour.
     subforems_controller:
       created: Le sous-forum a été créé !
+      created_with_ai: Le sous-forum a été créé ! Les détails sont en cours de génération en arrière-plan.
       updated: Le sous-forum a été mis à jour !
       deleted: Le sous-forum a été supprimé !
     tags:
