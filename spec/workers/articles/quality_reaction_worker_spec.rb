@@ -165,7 +165,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
         expect(thumbs_up_reaction.reactable).to eq(high_quality_article)
       end
 
-      it "issues thumbs down to the worst article when there are at least 12 articles" do
+      it "applies max_score to the worst article when there are at least 12 articles" do
         # Create more articles to reach the 12+ threshold
         9.times do |i|
           create(:article, :past,
@@ -177,19 +177,21 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                  past_published_at: 12.hours.ago)
         end
 
-        expect { described_class.new.perform }.to change(Reaction, :count).by(2)
+        expect { described_class.new.perform }.to change(Reaction, :count).by(1)
 
-        thumbs_down_reaction = Reaction.find_by(
-          user: mascot_user,
-          category: "thumbsdown",
-          status: "confirmed",
-        )
+        # Should not have created a thumbs down reaction
+        expect(Reaction.exists?(
+                 user: mascot_user,
+                 category: "thumbsdown",
+                 status: "confirmed",
+               )).to be false
 
-        expect(thumbs_down_reaction).to be_present
-        expect(thumbs_down_reaction.reactable).to eq(low_quality_article)
+        # Should have applied max_score to the worst article
+        low_quality_article.reload
+        expect(low_quality_article.max_score).to eq(15)
       end
 
-      it "removes conflicting reactions before creating new ones" do
+      it "removes conflicting reactions and applies max_score" do
         # Create more articles to ensure we have enough eligible articles even after filtering out existing reactions
         9.times do |i|
           create(:article, :past,
@@ -214,9 +216,11 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                category: "thumbsup",
                status: "confirmed")
 
-        expect { described_class.new.perform }.not_to change(Reaction, :count) # 2 created, 2 destroyed
-
-        # Verify the reactions were swapped
+        # 1 created (thumbs up), 1 destroyed (thumbs down)
+        expect do
+          described_class.new.perform
+        end.not_to change(Reaction, :count)
+        # Verify the thumbs up reaction was created on the high quality article
         expect(Reaction.exists?(
                  user: mascot_user,
                  reactable: high_quality_article,
@@ -224,12 +228,9 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                  status: "confirmed",
                )).to be true
 
-        expect(Reaction.exists?(
-                 user: mascot_user,
-                 reactable: low_quality_article,
-                 category: "thumbsdown",
-                 status: "confirmed",
-               )).to be true
+        # Verify max_score was applied to the low quality article
+        low_quality_article.reload
+        expect(low_quality_article.max_score).to eq(15)
       end
 
       it "logs the actions" do
@@ -243,7 +244,7 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                                                                  1.day.ago).where('score >= 0').where.not(id: Reaction.where(user: mascot_user,
                                                                                                                              category: %w[
                                                                                                                                thumbsup thumbsdown
-                                                                                                                             ]).select(:reactable_id)).count} eligible articles, skipping thumbs down)",
+                                                                                                                             ]).select(:reactable_id)).count} eligible articles, skipping max_score)",
         )
       end
     end
