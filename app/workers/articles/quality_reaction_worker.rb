@@ -24,7 +24,8 @@ module Articles
         .where(type_of: "full_post")
         .where.not(id: Reaction.where(user: mascot_user, category: %w[thumbsup thumbsdown]).select(:reactable_id))
         .order(score: :desc)
-        .limit(18)
+        .where(max_score: 0)
+        .limit(12)
         .includes(:user, :comments)
 
       return if eligible_articles.count < 5
@@ -37,17 +38,17 @@ module Articles
       # Issue thumbs up to the best article
       issue_thumbs_up(assessment[:best])
 
-      # Only issue thumbs down if we have at least 12 articles
+      # Apply max_score of 15 to the worst article if we have at least 12 articles
       if eligible_articles.count >= 12 && assessment[:worst]
-        issue_thumbs_down(assessment[:worst])
+        apply_max_score(assessment[:worst])
         Rails.logger.info(
           "QualityReactionWorker: Subforem #{subforem_id} - Issued thumbs up to article #{assessment[:best].id} " \
-          "and thumbs down to article #{assessment[:worst].id}",
+          "and applied max_score to article #{assessment[:worst].id}",
         )
       else
         Rails.logger.info(
           "QualityReactionWorker: Subforem #{subforem_id} - Issued thumbs up to article #{assessment[:best].id} " \
-          "(only #{eligible_articles.count} eligible articles, skipping thumbs down)",
+          "(only #{eligible_articles.count} eligible articles, skipping max_score)",
         )
       end
     end
@@ -71,26 +72,11 @@ module Articles
         category: "thumbsup",
         status: "confirmed",
       )
-
-      # Mark article as featured
-      article.update(featured: true)
     end
 
-    def issue_thumbs_down(article)
-      # Remove any existing thumbs up from mascot
-      Reaction.where(
-        user: mascot_user,
-        reactable: article,
-        category: "thumbsup",
-      ).destroy_all
-
-      # Create thumbs down reaction
-      Reaction.create!(
-        user: mascot_user,
-        reactable: article,
-        category: "thumbsdown",
-        status: "confirmed",
-      )
+    def apply_max_score(article)
+      # Apply max_score of 15 to the article
+      article.update(max_score: 15)
     end
   end
 end
