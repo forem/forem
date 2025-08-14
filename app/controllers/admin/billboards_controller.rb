@@ -3,6 +3,7 @@ module Admin
     layout "admin"
 
     def index
+
       @billboards = Billboard.order(id: :desc)
         .page(params[:page]).per(50)
 

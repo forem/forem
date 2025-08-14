@@ -7,6 +7,7 @@ class AnalyticsService
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
 
+
     load_data
   end
 

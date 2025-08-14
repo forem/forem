@@ -2,6 +2,7 @@ class BadgesController < ApplicationController
   before_action :set_cache_control_headers, only: [:show]
   # No authorization required for entirely public controller
 
+
   def index
     @badges = Badge.order(:created_at)
     @earned_badge_achievements = user_signed_in? ? current_user.badge_achievements.pluck(:badge_id) : []

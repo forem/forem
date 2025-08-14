@@ -13,6 +13,7 @@
 # regarding authorization.  As of <2022-02-14 Mon> that is not the case.  But this is a documentation
 # and implementation refactor to begin addressing that.
 #
+
 # @note In an ideal setup our view and controller logic would **never** have the following
 #       construct: `do_it if user.admin?` However we presently have lots of places in our apps and
 #       views that ask those very questions.  An application's views and controllers should rarely
