@@ -119,6 +119,7 @@ en:
       update_success: Space has been updated.
     subforems_controller:
       created: Subforum has been created!
+      created_with_ai: Subforem has been created! Details are being generated in the background.
       updated: Subforum has been updated!
       deleted: Subforum has been deleted!
     tags:
