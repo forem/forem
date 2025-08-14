@@ -7,18 +7,29 @@ class Subforem < ApplicationRecord
   has_many :tag_relationships, class_name: "TagSubforemRelationship", dependent: :destroy
 
   validates :domain, presence: true, uniqueness: true
-  
+
   # Only one total subforem can be the root
   validates :root, uniqueness: { message: "Only one subforem can be the root" }, if: :root
 
-  after_save :bust_caches
-  before_validation :downcase_domain
+  # Virtual attributes for form
+  attr_accessor :name, :brain_dump, :logo_url, :bg_image_url
 
-  def self.create_from_scratch(domain:, brain_dump:, name:)
+  before_validation :downcase_domain
+  after_save :bust_caches
+
+  def self.create_from_scratch!(domain:, brain_dump:, name:, logo_url:, bg_image_url: nil)
     subforem = Subforem.create!(domain: domain)
-    Settings::Community.set_community_name(name, subforem_id: subforem.id)
-    Ai::CommunityCopy.new(subforem.id, brain_dump).write!
-    Ai::SubforemTags.new(subforem.id, brain_dump).upsert!
+
+    # Queue background job for AI services
+    Subforems::CreateFromScratchWorker.perform_async(
+      subforem.id,
+      brain_dump,
+      name,
+      logo_url,
+      bg_image_url,
+    )
+
+    subforem
   end
 
   def self.cached_id_by_domain(passed_domain)
@@ -28,25 +39,25 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_default_id
-    Rails.cache.fetch('subforem_default_id', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_default_id", expires_in: 12.hours) do
       Subforem.first&.id
     end
   end
 
   def self.cached_root_id
-    Rails.cache.fetch('subforem_root_id', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_root_id", expires_in: 12.hours) do
       Subforem.find_by(root: true)&.id
     end
   end
 
   def self.cached_domains
-    Rails.cache.fetch('subforem_domains', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_domains", expires_in: 12.hours) do
       Subforem.pluck(:domain)
     end
   end
 
   def self.cached_id_to_domain_hash
-    Rails.cache.fetch('subforem_id_to_domain_hash', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_id_to_domain_hash", expires_in: 12.hours) do
       Subforem.all.each_with_object({}) do |subforem, hash|
         hash[subforem.id] = subforem.domain
       end
@@ -54,13 +65,13 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_default_domain
-    Rails.cache.fetch('subforem_default_domain', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_default_domain", expires_in: 12.hours) do
       Subforem.first&.domain
     end
   end
 
   def self.cached_root_domain
-    Rails.cache.fetch('subforem_root_domain', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_root_domain", expires_in: 12.hours) do
       domain = Subforem.find_by(root: true)&.domain
       return unless domain
 
@@ -70,20 +81,22 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_all_domains
-    Rails.cache.fetch('subforem_all_domains', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_all_domains", expires_in: 12.hours) do
       Subforem.pluck(:domain)
     end
   end
 
   def self.cached_discoverable_ids
-    Rails.cache.fetch('subforem_discoverable_ids', expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_discoverable_ids", expires_in: 12.hours) do
       Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id)
     end
   end
 
   def self.cached_postable_array
-    Rails.cache.fetch('subforem_postable_array', expires_in: 12.hours) do
-      Subforem.where(discoverable: true).pluck(:id).map { |id| [id, Settings::Community.community_name(subforem_id: id)] }
+    Rails.cache.fetch("subforem_postable_array", expires_in: 12.hours) do
+      Subforem.where(discoverable: true).pluck(:id).map do |id|
+        [id, Settings::Community.community_name(subforem_id: id)]
+      end
     end
   end
 
@@ -109,13 +122,13 @@ class Subforem < ApplicationRecord
   def bust_caches
     Rails.cache.delete("cached_domains")
     Rails.cache.delete("subforem_id_to_domain_hash")
-    Rails.cache.delete('subforem_postable_array')
-    Rails.cache.delete('subforem_discoverable_ids')
-    Rails.cache.delete('subforem_root_id')
-    Rails.cache.delete('subforem_default_domain')
-    Rails.cache.delete('subforem_root_domain')
-    Rails.cache.delete('subforem_all_domains')
-    Rails.cache.delete('subforem_default_id')
+    Rails.cache.delete("subforem_postable_array")
+    Rails.cache.delete("subforem_discoverable_ids")
+    Rails.cache.delete("subforem_root_id")
+    Rails.cache.delete("subforem_default_domain")
+    Rails.cache.delete("subforem_root_domain")
+    Rails.cache.delete("subforem_all_domains")
+    Rails.cache.delete("subforem_default_id")
     Rails.cache.delete("subforem_id_by_domain_#{domain}")
   end
 
