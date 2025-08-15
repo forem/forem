@@ -1,6 +1,7 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
 
+  # This controller handles all article-related actions from creation to management
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
   before_action :authenticate_user!, except: %i[feed new]
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
@@ -25,6 +26,7 @@ class ArticlesController < ApplicationController
   #
   # rescue_from ApplicationPolicy::UserRequiredError, with: :respond_with_request_for_authentication
 
+  # Generates RSS/Atom feed for articles
   def feed
     # [@jeremyf] - I am a firm believer that we should check authorization.  However, in this case,
     #              based on our implementation constraints and assumptions, the `#feed` action will

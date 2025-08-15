@@ -1,5 +1,7 @@
 # The purpose of this module is provide a common place for logic
 # around Markdown processing.
+# 
+# Central service for handling markdown-to-HTML conversion with security controls
 #
 # The submodules AllowedTags and AllowedAttributes answer the
 # question: What HTML tags and attributes are allowed for what
@@ -13,7 +15,7 @@
 # modules has FEED then the other should have FEED as well.
 module MarkdownProcessor
   # A container module for the allowed tags in various rendering
-  # contexts.
+  # contexts. Each constant represents a different security context.
   module AllowedTags
     FEED = %w[a b blockquote br center cite code col colgroup dd del div dl dt em h1 h2
               h3 h4 h5 h6 i iframe img li ol p pre q small span strong sup table tbody td
