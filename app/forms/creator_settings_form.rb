@@ -17,6 +17,8 @@ class CreatorSettingsForm
   validates :invite_only_mode, inclusion: { in: [true, false] }
   validates :public, inclusion: { in: [true, false] }
 
+
+
   attr_accessor :success
 
   def save
