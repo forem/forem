@@ -3,10 +3,32 @@
     <%= form.label :domain, class: "crayons-label" %>
     <%= form.text_field :domain, class: "crayons-textfield" %>
   </div>
+  
+  <div class="crayons-field">
+    <%= form.label :name, "Community Name", class: "crayons-label" %>
+    <%= form.text_field :name, class: "crayons-textfield", placeholder: "Enter the community name" %>
+  </div>
+  
+  <div class="crayons-field">
+    <%= form.label :brain_dump, "Brain Dump", class: "crayons-label" %>
+    <%= form.text_area :brain_dump, class: "crayons-textfield", rows: 4, placeholder: "Describe the community, its purpose, topics, and target audience..." %>
+  </div>
+  
+  <div class="crayons-field">
+    <%= form.label :logo_url, "Logo URL", class: "crayons-label" %>
+    <%= form.text_field :logo_url, class: "crayons-textfield", placeholder: "https://example.com/logo.png" %>
+  </div>
+  
+  <div class="crayons-field">
+    <%= form.label :bg_image_url, "Background Image URL (Optional)", class: "crayons-label" %>
+    <%= form.text_field :bg_image_url, class: "crayons-textfield", placeholder: "https://example.com/background.jpg" %>
+  </div>
+  
   <div class="crayons-field crayons-field--checkbox py-4">
     <%= form.label :discoverable, class: "crayons-label" %>
     <%= form.check_box :discoverable, class: "crayons-checkbox" %>
   </div>
+  
   <div>
     <%= form.submit class: "c-btn c-btn--primary" %>
   </div>

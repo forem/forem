@@ -1,4 +1,6 @@
 class FollowsController < ApplicationController
+  before_action :current_user_by_token, only: [:create]
+  skip_before_action :verify_authenticity_token, if: :token_authenticated?
   after_action :verify_authorized
 
   def show

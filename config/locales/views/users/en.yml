@@ -25,7 +25,7 @@ en:
           other: View all comments
         view_last:
           one: View recent comments
-          other: View recent Comments
+          other: View recent comments
       github:
         heading: GitHub Repositories
         fork: Fork

@@ -62,7 +62,13 @@ function fetchBaseData() {
             window.ReactNativeWebView.postMessage(JSON.stringify({
               action: 'user',
               data: userJson,
-            }));  
+            }));
+            // If path is "/" send a "go_home" RN message
+            if (window.location.pathname === "/" && userJson.saw_onboarding === true) {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                action: 'go_home',
+              }));
+            }
           }
 
           const isForemWebview = navigator.userAgent === 'ForemWebView/1';
