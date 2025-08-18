@@ -120,21 +120,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_not_authorized
-    # For admin controllers, propagate the exception so specs expecting a raise can observe it
-    if self.class.module_parent.to_s == "Admin"
-      raise Pundit::NotAuthorizedError, "You are not authorized to perform this action."
-    end
-
-    respond_to do |format|
-      format.html do
-        render plain: "You are not authorized to perform this action.", status: :forbidden
-      end
-      format.json do
-        render json: { error: "You are not authorized to perform this action." }, status: :forbidden
-      end
-      # For other formats, default to forbidden to avoid double-render issues
-      format.all { head :forbidden }
-    end
+    raise Pundit::NotAuthorizedError, "You are not authorized to perform this action."
   end
 
   def bad_request

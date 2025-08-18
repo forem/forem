@@ -132,6 +132,7 @@ RSpec.configure do |config|
     allow(Settings::General).to receive_messages(
       algolia_application_id: "on", algolia_search_only_api_key: "on", algolia_api_key: "on",
     )
+    allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
   end
 
   config.before(:suite) do
@@ -141,6 +142,8 @@ RSpec.configure do |config|
   end
 
   config.before do
+    # Disable Algolia indexing by default in tests. Specs that need it can tag with :algolia
+    allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
     # Worker jobs shouldn't linger around between tests
     Sidekiq::Job.clear_all
     # Disable SSRF protection for CarrierWave specs

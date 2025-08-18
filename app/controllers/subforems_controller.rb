@@ -1,4 +1,5 @@
 class SubforemsController < ApplicationController
+  rescue_from Pundit::NotAuthorizedError, with: :render_forbidden
   before_action :authenticate_user!, only: %i[edit update]
   before_action :set_subforem, only: %i[edit update]
   before_action :authorize_subforem, only: %i[edit update]
@@ -77,5 +78,12 @@ class SubforemsController < ApplicationController
 
     Settings::RateLimit.set_internal_content_description_spec(params[:internal_content_description_spec],
                                                               subforem_id: @subforem.id)
+  end
+
+  def render_forbidden
+    respond_to do |format|
+      format.html { head :forbidden }
+      format.json { render json: { error: "forbidden" }, status: :forbidden }
+    end
   end
 end
