@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Subforems", type: :request do
-  let(:admin_user) { create(:user, :admin) }
+  let(:admin_user) { create(:user, :super_admin) }
 
   before do
     sign_in admin_user
