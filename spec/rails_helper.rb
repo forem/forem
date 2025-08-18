@@ -135,6 +135,13 @@ RSpec.configure do |config|
     allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
   end
 
+  config.before do
+    # Disable Algolia indexing by default in tests. Specs that need it can tag with :algolia
+    unless RSpec.current_example.metadata[:algolia]
+      allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
+    end
+  end
+
   config.before(:suite) do
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
@@ -142,8 +149,6 @@ RSpec.configure do |config|
   end
 
   config.before do
-    # Disable Algolia indexing by default in tests. Specs that need it can tag with :algolia
-    allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
     # Worker jobs shouldn't linger around between tests
     Sidekiq::Job.clear_all
     # Disable SSRF protection for CarrierWave specs
