@@ -8,7 +8,7 @@ class SubforemPolicy < ApplicationPolicy
   end
 
   def edit?
-    has_mod_permission?
+    has_mod_permission? || user_super_moderator?
   end
 
   alias update? edit?
@@ -21,7 +21,6 @@ class SubforemPolicy < ApplicationPolicy
 
   def has_mod_permission?
     user_super_admin? ||
-      user.super_moderator? ||
       user.subforem_moderator?(subforem: record)
   end
 end

@@ -45,7 +45,7 @@ module Admin
       end
 
       def ensure_admin_or_moderator
-        return if current_user.any_admin? || current_user.subforem_moderator?(subforem: @subforem)
+        return if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem)
 
         flash[:error] = "You don't have permission to manage moderators for this subforem"
         redirect_to admin_subforems_path
