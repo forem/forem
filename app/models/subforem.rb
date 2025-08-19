@@ -1,5 +1,6 @@
 class Subforem < ApplicationRecord
   acts_as_followable
+  resourcify
 
   has_many :articles, dependent: :nullify
   has_many :navigation_links, dependent: :nullify
@@ -106,6 +107,10 @@ class Subforem < ApplicationRecord
 
   def name
     Settings::Community.community_name(subforem_id: id)
+  end
+
+  def subforem_moderator_ids
+    User.with_role(:subforem_moderator, self).order(id: :asc).ids
   end
 
   def update_scores!
