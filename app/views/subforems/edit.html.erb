@@ -1,95 +1,133 @@
 <% title "Edit #{@subforem.domain}" %>
 
-<main id="main-content" class="crayons-layout crayons-layout--limited-m">
-  <header class="crayons-card flex items-center justify-between p-3 pr-1 m:pr-5 m:p-6 m:pt-5">
-    <h1 class="crayons-title">Edit <%= @subforem.domain %></h1>
-    <div class="flex gap-2">
-      <%= link_to "Back to Subforems", subforems_path, class: "crayons-btn crayons-btn--ghost" %>
-    </div>
-  </header>
+<main id="main-content">
+  <div class="crayons-layout crayons-layout--header-inside crayons-layout--limited-l crayons-layout--2-cols">
 
-  <div class="crayons-card p-4 m:p-6">
-    <%= form_for @subforem do |form| %>
-      <div class="flex flex-col gap-4">
-        <% if current_user.any_admin? %>
-          <div class="crayons-field">
-            <%= form.label :domain, class: "crayons-field__label" %>
-            <%= form.text_field :domain, class: "crayons-textfield" %>
-          </div>
-          
-          <div class="crayons-field">
-            <%= form.label :name, "Community Name", class: "crayons-field__label" %>
-            <%= form.text_field :name, class: "crayons-textfield", placeholder: "Enter the community name" %>
-          </div>
-          
-          <div class="crayons-field">
-            <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
-            <%= text_area_tag :internal_content_description_spec, 
-                Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id), 
-                class: "crayons-textfield", 
-                rows: 4, 
-                placeholder: "Describe the internal content description specification..." %>
-          </div>
-          
-          <div class="crayons-field">
-            <%= form.label :logo_url, "Logo URL", class: "crayons-field__label" %>
-            <%= form.text_field :logo_url, class: "crayons-textfield", placeholder: "https://example.com/logo.png" %>
-          </div>
-          
-          <div class="crayons-field">
-            <%= form.label :bg_image_url, "Background Image URL (Optional)", class: "crayons-field__label" %>
-            <%= form.text_field :bg_image_url, class: "crayons-textfield", placeholder: "https://example.com/background.jpg" %>
+    <header class="crayons-page-header">
+      <h1 class="crayons-title">Edit <%= @subforem.domain %></h1>
+      <div class="flex gap-2">
+        <%= link_to "Back to Subforems", subforems_path, class: "crayons-btn crayons-btn--ghost" %>
+      </div>
+    </header>
+
+    <!-- LEFT COLUMN: Sidebar (Tags) -->
+    <div class="crayons-layout__sidebar-left">
+      <div class="crayons-card p-4 m:p-6">
+        <h2 class="crayons-subtitle-2 mb-4">Supported Tags</h2>
+
+        <% if @supported_tags.any? %>
+          <div class="space-y-2 mb-6">
+            <% @supported_tags.each do |tag| %>
+              <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg">
+                <span class="crayons-tag crayons-tag--monochrome"><%= tag.name %></span>
+                <span class="text-xs color-base-60"><%= tag.taggings_count %> posts</span>
+              </div>
+            <% end %>
           </div>
         <% else %>
-          <div class="crayons-field">
-            <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
-            <%= text_area_tag :internal_content_description_spec, 
-                Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id), 
-                class: "crayons-textfield", 
-                rows: 4, 
-                placeholder: "Describe the internal content description specification..." %>
-          </div>
-          
-          <div class="crayons-field">
-            <%= form.label :logo_url, "Logo URL", class: "crayons-field__label" %>
-            <%= form.text_field :logo_url, class: "crayons-textfield", placeholder: "https://example.com/logo.png" %>
-          </div>
-          
-          <div class="crayons-field">
-            <%= form.label :bg_image_url, "Background Image URL (Optional)", class: "crayons-field__label" %>
-            <%= form.text_field :bg_image_url, class: "crayons-textfield", placeholder: "https://example.com/background.jpg" %>
-          </div>
-        <% end %>
-        
-        <% if current_user.any_admin? %>
-          <div class="crayons-field">
-            <%= form.label :discoverable, class: "crayons-field__label" %>
-            <%= form.check_box :discoverable, class: "crayons-checkbox" %>
-          </div>
+          <p class="text-sm color-base-60 mb-6">No tags supported yet.</p>
         <% end %>
 
-        <div class="crayons-field">
-          <%= form.label :community_description, "Community Description", class: "crayons-field__label" %>
-          <%= text_area_tag :community_description, 
-              Settings::Community.community_description(subforem_id: @subforem.id), 
-              class: "crayons-textfield", 
-              rows: 4, 
-              placeholder: "Describe your community..." %>
-        </div>
+        <h2 class="crayons-subtitle-2 mb-4">Top Unsupported Tags</h2>
 
-        <div class="crayons-field">
-          <%= form.label :tagline, "Tagline", class: "crayons-field__label" %>
-          <%= text_field_tag :tagline, 
-              Settings::Community.tagline(subforem_id: @subforem.id), 
-              class: "crayons-textfield", 
-              placeholder: "A short tagline for your community..." %>
-        </div>
-        
-        <div class="mt-6">
-          <%= form.submit "Update Subforem", class: "crayons-btn crayons-btn--primary" %>
-        </div>
+        <% if @unsupported_tags.any? %>
+          <div class="space-y-2">
+            <% @unsupported_tags.each do |tag| %>
+              <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg">
+                <span class="crayons-tag crayons-tag--monochrome"><%= tag.name %></span>
+                <span class="text-xs color-base-60"><%= tag.taggings_count %> posts</span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm color-base-60">No unsupported tags found.</p>
+        <% end %>
       </div>
-    <% end %>
+    </div>
+
+    <!-- RIGHT COLUMN: Main content (Form) -->
+    <div class="crayons-layout__content">
+      <div class="crayons-card p-4 m:p-6">
+        <%= form_for @subforem do |form| %>
+          <div class="flex flex-col gap-4">
+            <% if current_user.any_admin? %>
+              <div class="crayons-field">
+                <%= form.label :domain, class: "crayons-field__label" %>
+                <%= form.text_field :domain, class: "crayons-textfield" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :name, "Community Name", class: "crayons-field__label" %>
+                <%= form.text_field :name, class: "crayons-textfield", placeholder: "Enter the community name" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
+                <%= text_area_tag :internal_content_description_spec,
+                  Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
+                  class: "crayons-textfield", rows: 4,
+                  placeholder: "Describe the internal content description specification..." %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :logo_url, "Logo URL", class: "crayons-field__label" %>
+                <%= form.text_field :logo_url, class: "crayons-textfield", placeholder: "https://example.com/logo.png" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :bg_image_url, "Background Image URL (Optional)", class: "crayons-field__label" %>
+                <%= form.text_field :bg_image_url, class: "crayons-textfield", placeholder: "https://example.com/background.jpg" %>
+              </div>
+            <% else %>
+              <div class="crayons-field">
+                <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
+                <%= text_area_tag :internal_content_description_spec,
+                  Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
+                  class: "crayons-textfield", rows: 4,
+                  placeholder: "Describe the internal content description specification..." %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :logo_url, "Logo URL", class: "crayons-field__label" %>
+                <%= form.text_field :logo_url, class: "crayons-textfield", placeholder: "https://example.com/logo.png" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :bg_image_url, "Background Image URL (Optional)", class: "crayons-field__label" %>
+                <%= form.text_field :bg_image_url, class: "crayons-textfield", placeholder: "https://example.com/background.jpg" %>
+              </div>
+            <% end %>
+
+            <% if current_user.any_admin? %>
+              <div class="crayons-field">
+                <%= form.label :discoverable, class: "crayons-field__label" %>
+                <%= form.check_box :discoverable, class: "crayons-checkbox" %>
+              </div>
+            <% end %>
+
+            <div class="crayons-field">
+              <%= form.label :community_description, "Community Description", class: "crayons-field__label" %>
+              <%= text_area_tag :community_description,
+                Settings::Community.community_description(subforem_id: @subforem.id),
+                class: "crayons-textfield", rows: 4,
+                placeholder: "Describe your community..." %>
+            </div>
+
+            <div class="crayons-field">
+              <%= form.label :tagline, "Tagline", class: "crayons-field__label" %>
+              <%= text_field_tag :tagline,
+                Settings::Community.tagline(subforem_id: @subforem.id),
+                class: "crayons-textfield",
+                placeholder: "A short tagline for your community..." %>
+            </div>
+
+            <div class="mt-6">
+              <%= form.submit "Update Subforem", class: "crayons-btn crayons-btn--primary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
   </div>
 </main>
-

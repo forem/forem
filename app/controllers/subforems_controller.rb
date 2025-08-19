@@ -10,6 +10,16 @@ class SubforemsController < ApplicationController
 
   def edit
     @subforem_moderators = User.with_role(:subforem_moderator, @subforem).select(:id, :username)
+
+    # Get supported tags for this subforem
+    @supported_tags = @subforem.tag_relationships.includes(:tag).where(supported: true).map(&:tag)
+
+    # Get top 25 tags not supported by this subforem
+    supported_tag_ids = @subforem.tag_relationships.where(supported: true).pluck(:tag_id)
+    @unsupported_tags = Tag.where(supported: true)
+      .where.not(id: supported_tag_ids)
+      .order(taggings_count: :desc)
+      .limit(25)
   end
 
   def update
@@ -47,7 +57,7 @@ class SubforemsController < ApplicationController
   private
 
   def set_subforem
-    @subforem = Subforem.find(params[:id])
+    @subforem = Subforem.find(params[:id] || params[:subforem_id] || RequestStore.store[:subforem_id])
   end
 
   def authorize_subforem

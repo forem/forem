@@ -95,6 +95,57 @@ RSpec.describe "Subforems", type: :request do
     end
   end
 
+  describe "GET /manage" do
+    before do
+      # Set the host to match the subforem domain so the middleware sets the correct subforem_id
+      host! subforem.domain
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "returns a successful response" do
+        get manage_subforem_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Edit")
+        expect(response.body).to include("Supported Tags")
+        expect(response.body).to include("Top Unsupported Tags")
+      end
+    end
+
+    context "when user is subforem moderator for the current subforem" do
+      before { sign_in moderator_user }
+
+      it "returns a successful response" do
+        get manage_subforem_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Edit")
+      end
+    end
+
+    context "when user is not moderator for the current subforem" do
+      let(:other_moderator) { create(:user) }
+      let(:other_subforem) { create(:subforem, domain: "test2.com") }
+
+      before do
+        other_moderator.add_role(:subforem_moderator, other_subforem)
+        sign_in other_moderator
+      end
+
+      it "returns forbidden" do
+        get manage_subforem_path
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when user is not signed in" do
+      it "redirects to sign in" do
+        get manage_subforem_path
+        expect(response).to redirect_to(new_magic_link_path)
+      end
+    end
+  end
+
   describe "PATCH /subforems/:id" do
     context "when user is admin" do
       before { sign_in admin_user }
