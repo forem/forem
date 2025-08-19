@@ -31,9 +31,8 @@ class Article < ApplicationRecord
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
-  attr_writer :series
+  attr_writer :series, :labels
   attr_accessor :body_url
-  attr_writer :labels
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -125,8 +124,8 @@ class Article < ApplicationRecord
   enum type_of: {
     full_post: 0,
     status: 1,
-    fullscreen_embed: 2,
-}
+    fullscreen_embed: 2
+  }
 
   has_one :discussion_lock, dependent: :delete
 
@@ -250,6 +249,7 @@ class Article < ApplicationRecord
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
   before_validation :get_youtube_embed_url
+  before_validation :set_default_subforem_id
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -467,7 +467,7 @@ class Article < ApplicationRecord
     order(:score).where("score >= ?", average_score)
   }
 
-  scope :followed_by, ->(user) do
+  scope :followed_by, lambda { |user|
     where(<<~SQL.squish, user_id: user.id)
       EXISTS (
         SELECT 1
@@ -481,7 +481,7 @@ class Article < ApplicationRecord
           )
       )
     SQL
-  end
+  }
 
   def self.average_score
     Rails.cache.fetch("article_average_score", expires_in: 1.day) do
@@ -532,7 +532,8 @@ class Article < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def scheduled?
@@ -668,7 +669,10 @@ class Article < ApplicationRecord
     user_featured_count_adjustment = ([featured_count, 10].min + Math.log(featured_count + 1)).to_i
     user_negative_count_adjustment = 0
     negative_count = user.articles.where("score < -10").count
-    user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+    if negative_count.positive?
+      user_negative_count_adjustment = -([negative_count,
+                                          3].min + Math.log(negative_count + 1)).to_i
+    end
     # Context notes are currently only a positive indicator. In the future, they could be negative and this should be changed.
     context_note_adjustment = context_notes.size
 
@@ -711,8 +715,8 @@ class Article < ApplicationRecord
   end
 
   def body_url?
-    body_url.present?  # Returns true if body_url is not nil or an empty string
-  end  
+    body_url.present? # Returns true if body_url is not nil or an empty string
+  end
 
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
@@ -752,9 +756,9 @@ class Article < ApplicationRecord
     return unless content_renderer
 
     result = content_renderer.process_article
-    self.update_column(:processed_html, result.processed_html)
+    update_column(:processed_html, result.processed_html)
   end
-  
+
   def body_preview
     return unless type_of == "status"
 
@@ -762,13 +766,13 @@ class Article < ApplicationRecord
   end
 
   def labels=(input)
-    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
-    write_attribute :cached_label_list, (adjusted_input || [])
+    adjusted_input = input.is_a?(String) ? input.delete(" ").split(",") : input
+    self[:cached_label_list] = (adjusted_input || [])
   end
 
   def generate_context_notes
     tags.each do |tag|
-      next if !tag.respond_to?(:context_note_instructions) 
+      next unless tag.respond_to?(:context_note_instructions)
       next if tag.context_note_instructions.blank?
       next if context_notes.where(tag_id: tag.id).exists?
 
@@ -777,6 +781,14 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def set_default_subforem_id
+    # Set subforem_id to default subforem ID if not already set and a default subforem exists
+    return if subforem_id.present?
+    return unless RequestStore.store[:default_subforem_id].present?
+
+    self.subforem_id = RequestStore.store[:default_subforem_id]
+  end
 
   def get_youtube_embed_url
     return unless video_source_url.present? && video_source_url.include?("youtube.com")
@@ -891,9 +903,9 @@ class Article < ApplicationRecord
     return if %w[full_post status].include?(type_of)
 
     # Only allow fullscreen_embed for super admins and admins
-    if type_of == "fullscreen_embed" && !user.any_admin?
-      errors.add(:type_of, "fullscreen_embed is only allowed for super admins and admins")
-    end
+    return unless type_of == "fullscreen_embed" && !user.any_admin?
+
+    errors.add(:type_of, "fullscreen_embed is only allowed for super admins and admins")
   end
 
   def title_unique_for_user_past_five_minutes
@@ -901,11 +913,10 @@ class Article < ApplicationRecord
     return unless user_id && title
     return unless new_record?
 
-    if Article.where(user_id: user_id, title: title).where("created_at > ?", 5.minutes.ago).exists?
-      errors.add(:title, "has already been used in the last five minutes")
-    end
-  end
+    return unless Article.where(user_id: user_id, title: title).where("created_at > ?", 5.minutes.ago).exists?
 
+    errors.add(:title, "has already been used in the last five minutes")
+  end
 
   def evaluate_markdown
     content_renderer = processed_content
@@ -1208,7 +1219,7 @@ class Article < ApplicationRecord
   def create_conditional_autovomits
     return unless published
     return unless saved_change_to_body_markdown? || published_at > 1.minute.ago
-  
+
     Articles::HandleSpamWorker.perform_async(id)
   end
 

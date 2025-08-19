@@ -59,6 +59,7 @@ class SubforemsController < ApplicationController
 
   def add_tag
     tag = Tag.find(params[:tag_id])
+    tag.update(supported: true) unless tag.supported?
 
     # Check if relationship already exists
     existing_relationship = @subforem.tag_relationships.find_by(tag: tag)
