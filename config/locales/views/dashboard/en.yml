@@ -143,6 +143,7 @@ en:
         empty:
           desc: This is where you can manage your posts, but you haven't written anything yet.
           new: Write your first post now
+          status_desc: You don't have any quickie posts here yet...
       subscriptions:
         meta:
           title: Subscriptions %{title}

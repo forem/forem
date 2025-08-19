@@ -142,6 +142,7 @@ fr:
         empty:
           desc: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit.
           new: Écrivez votre premier message maintenant
+          status_desc: Vous n'avez pas encore de messages rapides ici...
       subscriptions:
         meta:
           title: Subscriptions %{title}
