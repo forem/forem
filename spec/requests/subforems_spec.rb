@@ -256,4 +256,178 @@ RSpec.describe "Subforems", type: :request do
       end
     end
   end
+
+  describe "POST /subforems/:id/add_tag" do
+    let(:subforem) { create(:subforem) }
+    let(:tag) { create(:tag) }
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "adds a tag to supported tags" do
+        expect do
+          post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        end.to change { subforem.tag_relationships.where(supported: true).count }.by(1)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include("success" => true)
+      end
+
+      it "updates existing unsupported relationship to supported" do
+        # Create an unsupported relationship first
+        relationship = subforem.tag_relationships.create!(tag: tag, supported: false)
+
+        expect do
+          post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        end.not_to change { subforem.tag_relationships.count }
+
+        expect(relationship.reload.supported).to be true
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include("success" => true)
+      end
+
+      it "returns error for already supported tag" do
+        subforem.tag_relationships.create!(tag: tag, supported: true)
+
+        post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to include("success" => false)
+      end
+
+      it "returns error for non-existent tag" do
+        post add_tag_subforem_path(subforem), params: { tag_id: 99_999 }
+
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to include("success" => false)
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "adds a tag to supported tags" do
+        expect do
+          post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        end.to change { subforem.tag_relationships.where(supported: true).count }.by(1)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include("success" => true)
+      end
+    end
+
+    context "when user is super moderator" do
+      before do
+        moderator_user.add_role(:super_moderator)
+        sign_in moderator_user
+      end
+
+      it "adds a tag to supported tags" do
+        expect do
+          post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        end.to change { subforem.tag_relationships.where(supported: true).count }.by(1)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include("success" => true)
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when user is not authenticated" do
+      it "redirects to sign in" do
+        post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+
+        expect(response).to redirect_to(new_magic_link_path)
+      end
+    end
+  end
+
+  describe "image upload functionality" do
+    let(:subforem) { create(:subforem) }
+    let(:image_file) { fixture_file_upload("800x600.png", "image/png") }
+
+    before do
+      # Stub FastImage to avoid HTTP requests in tests
+      allow(FastImage).to receive(:size).and_return([100, 100])
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "uploads main logo image" do
+        expect do
+          put subforem_path(subforem), params: {
+            subforem: { main_logo: image_file }
+          }
+        end.to change { Settings::General.logo_png(subforem_id: subforem.id) }
+
+        expect(response).to redirect_to(subforems_path)
+        expect(flash[:success]).to eq("Subforem updated successfully!")
+      end
+
+      it "uploads nav logo image" do
+        expect do
+          put subforem_path(subforem), params: {
+            subforem: { nav_logo: image_file }
+          }
+        end.to change { Settings::General.resized_logo(subforem_id: subforem.id) }
+
+        expect(response).to redirect_to(subforems_path)
+        expect(flash[:success]).to eq("Subforem updated successfully!")
+      end
+
+      it "uploads social card image" do
+        expect do
+          put subforem_path(subforem), params: {
+            subforem: { social_card: image_file }
+          }
+        end.to change { Settings::General.main_social_image(subforem_id: subforem.id) }
+
+        expect(response).to redirect_to(subforems_path)
+        expect(flash[:success]).to eq("Subforem updated successfully!")
+      end
+    end
+
+    context "when user is super moderator" do
+      before do
+        moderator_user.add_role(:super_moderator)
+        sign_in moderator_user
+      end
+
+      it "uploads main logo image" do
+        expect do
+          put subforem_path(subforem), params: {
+            subforem: { main_logo: image_file }
+          }
+        end.to change { Settings::General.logo_png(subforem_id: subforem.id) }
+
+        expect(response).to redirect_to(subforems_path)
+        expect(flash[:success]).to eq("Subforem updated successfully!")
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "cannot upload images" do
+        expect do
+          put subforem_path(subforem), params: {
+            subforem: { main_logo: image_file }
+          }
+        end.not_to change { Settings::General.logo_png(subforem_id: subforem.id) }
+
+        expect(response).to redirect_to(subforems_path)
+        expect(flash[:success]).to eq("Subforem updated successfully!")
+      end
+    end
+  end
 end

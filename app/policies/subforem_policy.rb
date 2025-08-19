@@ -13,6 +13,10 @@ class SubforemPolicy < ApplicationPolicy
 
   alias update? edit?
 
+  def add_tag?
+    has_mod_permission? || user_super_moderator?
+  end
+
   def admin?
     user_super_admin?
   end
