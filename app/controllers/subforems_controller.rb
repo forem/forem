@@ -34,7 +34,7 @@ class SubforemsController < ApplicationController
       if @subforem.update(admin_params)
         update_community_settings
         update_subforem_images
-        Settings::General.admin_action_taken_at = Time.current
+        Settings::General.set_admin_action_taken_at(Time.current, subforem_id: @subforem.id)
         flash[:success] = "Subforem updated successfully!"
         redirect_to subforems_path
       else
