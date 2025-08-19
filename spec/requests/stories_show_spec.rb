@@ -271,6 +271,7 @@ RSpec.describe "StoriesShow" do
       it "does not redirect if article has no subforem_id and RequestStore subforem_id == default_subforem" do
         allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
 
+        article.update_column(:subforem_id, nil)
         get article.path
         expect(response).not_to have_http_status(:moved_permanently)
       end

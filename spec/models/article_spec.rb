@@ -105,20 +105,20 @@ RSpec.describe Article do
           expect(described_class.from_subforem(subforem.id)).not_to include(article_in_other_subforem)
         end
       end
-    
+
       context "when subforem_id is nil" do
         before { RequestStore.store[:subforem_id] = nil }
-    
+
         it "returns articles with null subforem_id or subforem_id <= 1" do
           expect(described_class.from_subforem).to include(article_in_null_subforem)
           expect(described_class.from_subforem).not_to include(article_in_subforem)
           expect(described_class.from_subforem).not_to include(article_in_other_subforem)
         end
       end
-    
+
       context "when subforem_id is the default subforem_id" do
         let(:subforem_id) { subforem.id }
-    
+
         it "returns articles with null subforem_id or matching the provided subforem_id" do
           RequestStore.store[:default_subforem_id] = subforem_id
           expect(described_class.from_subforem(subforem_id)).to include(article_in_null_subforem)
@@ -126,10 +126,10 @@ RSpec.describe Article do
           expect(described_class.from_subforem(subforem_id)).not_to include(article_in_other_subforem)
         end
       end
-    
+
       context "when subforem_id is greater than 1" do
         let(:subforem_id) { third_subforem.id }
-    
+
         it "returns only articles with the exact matching subforem_id" do
           expect(described_class.from_subforem(subforem_id)).to include(article_in_other_subforem)
           expect(described_class.from_subforem(subforem_id)).not_to include(article_in_subforem)
@@ -141,7 +141,7 @@ RSpec.describe Article do
         before do
           RequestStore.store[:root_subforem_id] = subforem.id
         end
-    
+
         it "articles with no subforem or subforem_id in Subforem.cached_discoverable_ids" do
           expect(described_class.from_subforem(subforem.id)).to include(article_in_null_subforem)
           expect(described_class.from_subforem(subforem.id)).to include(article_in_subforem)
@@ -149,14 +149,15 @@ RSpec.describe Article do
         end
 
         it "returns proper query with additional conditions" do
-          expect(described_class.from_subforem(subforem.id).where(id: [article_in_subforem.id, article_in_null_subforem.id]))
+          expect(described_class.from_subforem(subforem.id).where(id: [article_in_subforem.id,
+                                                                       article_in_null_subforem.id]))
             .to contain_exactly(article_in_subforem, article_in_null_subforem)
         end
-      end    
-    
+      end
+
       context "when subforem_id is stored in RequestStore" do
         before { RequestStore.store[:subforem_id] = second_subforem.id }
-    
+
         it "uses the subforem_id from RequestStore if none is passed" do
           expect(described_class.from_subforem).to include(article_in_second_subforem)
           expect(described_class.from_subforem).not_to include(article_in_subforem)
@@ -278,7 +279,7 @@ RSpec.describe Article do
           article.title = "Updated Title"
           expect(article).to be_valid
         end
-    
+
         it "runs validation if body_markdown has changed" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.body_markdown = "New body content"
@@ -286,18 +287,19 @@ RSpec.describe Article do
           expect(article.errors[:body_markdown]).to include("is not allowed for status types")
         end
       end
-    
+
       context "when type_of is not 'status'" do
         it "does not add an error" do
-          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content", main_image: nil, user: user)
+          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content",
+                                   main_image: nil, user: user)
           expect(article).to be_valid
         end
       end
-    
+
       context "when body_url is present" do
         it "does not add an error even if other attributes are present" do
           stub_request(:any, /example.com/) # Stubbing the HTTP request
-    
+
           article = build(
             :article,
             type_of: "status",
@@ -310,33 +312,36 @@ RSpec.describe Article do
           expect(article).to be_valid
         end
       end
-    
+
       context "when body_url is blank" do
         context "and body_markdown is present" do
           it "adds an error" do
-            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil, user: user)
+            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil,
+                                      user: user)
             expect(article).not_to be_valid
             expect(article.errors[:body_markdown]).to include("is not allowed for status types")
           end
         end
-    
+
         context "and main_image is present" do
           it "adds an error" do
-            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png", user: user)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png",
+                                      user: user)
             expect(article).not_to be_valid
             expect(article.errors[:body_markdown]).to include("is not allowed for status types")
           end
         end
-    
+
         context "and collection_id is present" do
           it "adds an error" do
             collection = create(:collection)
-            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, collection_id: collection.id, user: user)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil,
+                                      collection_id: collection.id, user: user)
             expect(article).not_to be_valid
             expect(article.errors[:body_markdown]).to include("is not allowed for status types")
           end
         end
-    
+
         context "and body_markdown, main_image, and collection_id are blank" do
           it "does not add an error" do
             article = build(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
@@ -349,29 +354,36 @@ RSpec.describe Article do
     describe "#restrict_type_based_on_role" do
       context "when user is an admin" do
         before { article.user.add_role(:admin) }
+
         it "allows setting type_of to 'fullscreen_embed'" do
           article.type_of = "fullscreen_embed"
           expect(article).to be_valid
         end
+
         it "allows setting type_of to 'status'" do
           article.type_of = "status"
           expect(article).to be_valid
         end
+
         it "allows setting type_of to 'full_post'" do
           article.type_of = "full_post"
           expect(article).to be_valid
         end
       end
+
       context "when user is not an admin" do
         before { article.user.remove_role(:admin) }
+
         it "does not allow setting type_of to 'fullscreen_embed'" do
           article.type_of = "fullscreen_embed"
           expect(article).not_to be_valid
         end
+
         it "allows setting type_of to 'status'" do
           article.type_of = "status"
           expect(article).to be_valid
         end
+
         it "allows setting type_of to 'full_post'" do
           article.type_of = "full_post"
           expect(article).to be_valid
@@ -444,6 +456,59 @@ RSpec.describe Article do
         VCR.use_cassette("twitter_client_status_extended") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
+        end
+      end
+    end
+
+    describe "before_validation :set_default_subforem_id" do
+      let(:user) { create(:user) }
+      let(:default_subforem) { create(:subforem, domain: "default.com") }
+
+      after do
+        RequestStore.store[:default_subforem_id] = nil
+      end
+
+      context "when default_subforem_id is set in RequestStore" do
+        before do
+          RequestStore.store[:default_subforem_id] = default_subforem.id
+        end
+
+        it "sets subforem_id to default subforem ID when subforem_id is nil" do
+          article = build(:article, user: user, subforem_id: nil)
+          article.valid?
+          expect(article.subforem_id).to eq(default_subforem.id)
+        end
+
+        it "does not change subforem_id when it is already set" do
+          other_subforem = create(:subforem, domain: "other.com")
+          article = build(:article, user: user, subforem_id: other_subforem.id)
+          article.valid?
+          expect(article.subforem_id).to eq(other_subforem.id)
+        end
+
+        it "does not change subforem_id when it is already set to the default" do
+          article = build(:article, user: user, subforem_id: default_subforem.id)
+          article.valid?
+          expect(article.subforem_id).to eq(default_subforem.id)
+        end
+      end
+
+      context "when default_subforem_id is not set in RequestStore" do
+        before do
+          RequestStore.store[:default_subforem_id] = nil
+        end
+
+        it "does not change subforem_id when it is nil" do
+          article = build(:article, user: user, subforem_id: nil)
+          article.valid?
+          expect(article.subforem_id).to be_nil
+        end
+
+        it "does not change subforem_id when it is already set" do
+          other_subforem = create(:subforem, domain: "other.com")
+          article = build(:article, user: user, subforem_id: other_subforem.id)
+          article.valid?
+          expect(article.subforem_id).to eq(other_subforem.id)
         end
       end
     end
@@ -587,7 +652,8 @@ RSpec.describe Article do
       end
 
       it "does not add an error if body is absent for 'status' articles" do
-        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true, main_image: "")
+        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true,
+                                 main_image: "")
         expect(article).to be_valid
       end
     end
@@ -629,7 +695,8 @@ RSpec.describe Article do
       end
 
       it "truncates a long slug" do
-        long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "", published: true)
+        long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "",
+                                            published: true)
         expect(long_title_article.slug.length).to be <= 106
       end
     end
@@ -988,7 +1055,6 @@ RSpec.describe Article do
   end
 
   describe "#generate_context_notes" do
-
     let(:tag) { create(:tag, name: "testtag", context_note_instructions: "context_note_instructions") }
 
     before do
@@ -1006,7 +1072,6 @@ RSpec.describe Article do
       expect(Articles::GenerateContextNoteWorker).not_to have_received(:perform_async)
     end
   end
-
 
   describe "#nth_published_by_author" do
     it "does not have a nth_published_by_author if not published" do
@@ -1423,7 +1488,7 @@ RSpec.describe Article do
     end
 
     describe "create conditional autovomits" do
-      let(:worker)  { Articles::HandleSpamWorker }
+      let(:worker) { Articles::HandleSpamWorker }
       let!(:article) { create(:article, published: true) }
 
       context "within one minute of publishing" do
