@@ -20,6 +20,12 @@ class SubforemsController < ApplicationController
       .where.not(id: supported_tag_ids)
       .order(taggings_count: :desc)
       .limit(25)
+
+    # Get pages for this subforem
+    @pages = Page.where(subforem_id: @subforem.id).order(:title)
+
+    # Get navigation links for this subforem
+    @navigation_links = NavigationLink.where(subforem_id: @subforem.id).ordered
   end
 
   def update
@@ -28,6 +34,7 @@ class SubforemsController < ApplicationController
       if @subforem.update(admin_params)
         update_community_settings
         update_subforem_images
+        Settings::General.set_admin_action_taken_at(Time.current, subforem_id: @subforem.id)
         flash[:success] = "Subforem updated successfully!"
         redirect_to subforems_path
       else
@@ -39,6 +46,7 @@ class SubforemsController < ApplicationController
       if @subforem.update(super_moderator_params)
         update_community_settings
         update_subforem_images
+        Settings::General.admin_action_taken_at = Time.current
         flash[:success] = "Subforem updated successfully!"
         redirect_to subforems_path
       else
@@ -49,6 +57,7 @@ class SubforemsController < ApplicationController
       # Regular subforem moderators can only update limited fields
       update_community_settings
       update_subforem_images
+      Settings::General.admin_action_taken_at = Time.current
       flash[:success] = "Subforem updated successfully!"
       redirect_to subforems_path
     else
