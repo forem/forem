@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 
     # The lambda (e.g. `->`) allows for dynamic checking.  In other words we check with each
     # request.
-      draw :listing
+    draw :listing
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
@@ -112,7 +112,7 @@ Rails.application.routes.draw do
       resources :stripe_events, only: [:create]
     end
 
-    resources :magic_links, only: [:show, :create, :new]
+    resources :magic_links, only: %i[show create new]
     resources :bottom_items, only: [:index]
 
     resources :messages, only: [:create]
@@ -170,7 +170,7 @@ Rails.application.routes.draw do
       end
     end
     resources :videos, only: %i[index create new]
-    resources :subforems, only: [:index]
+    resources :subforems, only: %i[index edit update]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
     resources :tag_adjustments, only: %i[create destroy]
@@ -188,7 +188,6 @@ Rails.application.routes.draw do
     resources :surveys, only: [:show] do # Or however you have it configured
       get :votes, on: :member # This creates the route GET /surveys/:id/votes
     end
-
 
     resources :profile_pins, only: %i[create update]
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
@@ -258,15 +257,16 @@ Rails.application.routes.draw do
     scope "/:username/:slug" do
       get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard_full
       get "/bb/:placement_area", to: "billboards#show"
-      get "/#{ENV.fetch("PRIOR_BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show"
-      get "/#{ENV.fetch("BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show", as: :article_billboard
+      get "/#{ENV.fetch('PRIOR_BILLBOARD_URL_COMPONENT', 'bb')}/:placement_area", to: "billboards#show"
+      get "/#{ENV.fetch('BILLBOARD_URL_COMPONENT', 'bb')}/:placement_area", to: "billboards#show",
+                                                                            as: :article_billboard
       # temporary keeping both routes while transitioning (renaming) display_ads => billboards
       get "/display_ads/:placement_area", to: "billboards#show"
     end
     get "/billboards/:placement_area", to: "billboards#show", as: :billboard_full
     get "/bb/:placement_area", to: "billboards#show"
-    get "/#{ENV.fetch("PRIOR_BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show"
-    get "/#{ENV.fetch("BILLBOARD_URL_COMPONENT", "bb")}/:placement_area", to: "billboards#show", as: :billboard
+    get "/#{ENV.fetch('PRIOR_BILLBOARD_URL_COMPONENT', 'bb')}/:placement_area", to: "billboards#show"
+    get "/#{ENV.fetch('BILLBOARD_URL_COMPONENT', 'bb')}/:placement_area", to: "billboards#show", as: :billboard
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
     get "/display_ads/:placement_area", to: "billboards#show"
 
@@ -400,7 +400,6 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
                               constraints: { timeframe: /latest/ }
 
-
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/videos", to: "videos#index"
     get "/t/:tag/admin", to: "tags#admin"
@@ -408,10 +407,10 @@ Rails.application.routes.draw do
 
     get "/top/:timeframe", to: "stories#index"
 
-    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest/  }
+    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest/ }
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
-    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/}
+    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"
     get "/:username/series/:id", to: "collections#show"

@@ -33,11 +33,14 @@
   <% else %>
     <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-4 px-3 m:px-0 pb-3" data-follow-button-container="true">
       <% @subforems.each do |subforem| %>
-        <div id="subforem-<%= tag.id %>" class="crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
+        <div id="subforem-<%= subforem.id %>" class="crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
           <div>
             <div class="mb-1 flex items-center justify-between">
-              <h4 class="-ml-2">
+              <h4 class="mt-auto flex items-center justify-between w-full">
                 <a href="https://<%= subforem.domain %>"><%= Settings::Community.community_name(subforem_id: subforem.id) %></a>
+                <% if current_user&.any_admin? || current_user&.subforem_moderator?(subforem: subforem) %>
+                  <%= link_to "Edit", edit_subforem_path(subforem), class: "crayons-btn crayons-btn--s" %>
+                <% end %>
               </h4>
             </div>
             <p class="mb-6 fs-s color-base-70 truncate-at-3">

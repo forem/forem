@@ -219,7 +219,7 @@ class User < ApplicationRecord
   }
 
   scope :following_tags, lambda { |tags|
-    tags = tags.gsub(" ", "").split(",") if tags.is_a?(String)
+    tags = tags.delete(" ").split(",") if tags.is_a?(String)
     joins("INNER JOIN follows ON follows.follower_id = users.id AND follows.follower_type = 'User'")
       .joins("INNER JOIN tags ON tags.id = follows.followable_id AND follows.followable_type = 'ActsAsTaggableOn::Tag'")
       .where(tags: { name: tags })
@@ -367,7 +367,7 @@ class User < ApplicationRecord
       []
     end
   end
-  
+
   def cached_following_organizations_ids
     cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
     begin
@@ -493,6 +493,7 @@ class User < ApplicationRecord
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
+    :subforem_moderator?,
     :super_admin?,
     :support_admin?,
     :suspended?,
@@ -524,22 +525,38 @@ class User < ApplicationRecord
   #
   # @see #moderator_for_tags_not_cached
   def moderator_for_tags
-    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/moderator_for_tags", expires_in: 200.hours) do
       moderator_for_tags_not_cached
     end
   end
 
-  # When you need the "up to the moment" names of the tags moderated
-  # by this user.
+  # The name of the subforems moderated by the user.
   #
-  # @note Favor #moderator_for_tags
+  # @note This caches a relatively expensive query
+  #
+  # @return [Array<String>] an array of subforem domains
+  #
+  # @see #moderator_for_subforems_not_cached
+  def moderator_for_subforems
+    Rails.cache.fetch("user-#{id}/moderator_for_subforems", expires_in: 200.hours) do
+      moderator_for_subforems_not_cached
+    end
+  end
+
+  # When you need the "up to the moment" names of the tags moderated
+  # by the user, use this method.
   #
   # @return [Array<String>] an array of tag names
-  #
-  # @see #moderator_for_tags
   def moderator_for_tags_not_cached
-    tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
-    Tag.where(id: tag_ids).pluck(:name)
+    Tag.with_role(:tag_moderator, self).pluck(:name)
+  end
+
+  # When you need the "up to the moment" names of the subforems moderated
+  # by the user, use this method.
+  #
+  # @return [Array<String>] an array of subforem domains
+  def moderator_for_subforems_not_cached
+    Subforem.with_role(:subforem_moderator, self).pluck(:domain)
   end
 
   def admin_organizations
@@ -652,7 +669,7 @@ class User < ApplicationRecord
     number = rand(10**8)
     self.sign_in_token = number.to_s.rjust(8, "0")
     self.sign_in_token_sent_at = Time.now.utc
-    if self.save
+    if save
       VerificationMailer.with(user_id: id).magic_link.deliver_now
     else
       errors.add(:email, "Error sending magic link")
