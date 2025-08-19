@@ -1,6 +1,6 @@
 class SubforemPolicy < ApplicationPolicy
   def index?
-    true
+    user_super_admin? || user.roles.exists?(name: "subforem_moderator")
   end
 
   def show?
