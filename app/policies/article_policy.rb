@@ -13,8 +13,8 @@ class ArticlePolicy < ApplicationPolicy
   def self.include_hidden_dom_class_for?(query:)
     case query.to_sym
     when :create?, :new?, :create, :new
-      # Hide the DOM if post creation is limited to admins (but not for root subforem)
-      limit_post_creation_to_admins?
+      # Hide the DOM if post creation is limited to admins OR if it's a root subforem
+      limit_post_creation_to_admins? || is_root_subforem?
     else
       false
     end

@@ -36,6 +36,8 @@ RSpec.describe "Subforem Selection Modal", type: :request do
 
     it "does not include the modal when not on root subforem" do
       RequestStore.store[:subforem_id] = subforem1.id
+      # Also update the mocks to reflect the new subforem context
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(subforem1.id)
 
       get "/"
 
