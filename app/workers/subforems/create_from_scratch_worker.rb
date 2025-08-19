@@ -8,7 +8,7 @@ module Subforems
       subforem = Subforem.find(subforem_id)
 
       # Set admin_action_taken_at at start
-      Settings::General.admin_action_taken_at = Time.current
+      Settings::General.set_admin_action_taken_at(Time.current, subforem_id: subforem.id)
 
       # Set the community name
       Settings::Community.set_community_name(name, subforem_id: subforem.id)
@@ -22,7 +22,7 @@ module Subforems
       Ai::AboutPageGenerator.new(subforem.id, brain_dump, name).generate!
 
       # Set admin_action_taken_at at finish
-      Settings::General.admin_action_taken_at = Time.current
+      Settings::General.set_admin_action_taken_at(Time.current, subforem_id: subforem.id)
 
       Rails.logger.info("Successfully created subforem #{subforem.domain} with AI services")
     rescue StandardError => e
