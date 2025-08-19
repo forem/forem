@@ -2,7 +2,7 @@
 
 <main id="main-content">
   <header class="crayons-page-header crayons-layout crayons-layout--full">
-    <h1 class="crayons-title">Edit <%= @subforem.domain %></h1>
+    <h1 class="crayons-title">Manage <%= @subforem.domain %></h1>
     <div class="flex gap-2">
       <%= link_to "Back to Subforems", subforems_path, class: "crayons-btn crayons-btn--ghost" %>
     </div>
@@ -208,7 +208,7 @@
         <h2 class="crayons-subtitle-2 mb-4">Supported Tags</h2>
 
         <% if @supported_tags.any? %>
-          <div class="space-y-2 mb-6">
+          <div class="space-y-2 mb-6" style="max-height: 550px; overflow-y: auto;">
             <% @supported_tags.each do |tag| %>
               <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg">
                 <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
@@ -223,7 +223,7 @@
         <h2 class="crayons-subtitle-2 mb-4">Top Unsupported Tags</h2>
 
                  <% if @unsupported_tags.any? %>
-           <div class="space-y-2">
+           <div class="space-y-2" style="max-height: 550px; overflow-y: auto;">
              <% @unsupported_tags.each do |tag| %>
                <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-tag-id="<%= tag.id %>">
                  <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
