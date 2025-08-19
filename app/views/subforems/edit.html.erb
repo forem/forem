@@ -244,6 +244,66 @@
       </div>
     </div>
   </div>
+
+  <!-- PAGES SECTION -->
+  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
+    <h2 class="crayons-subtitle-2 mb-4">Dedicated Pages</h2>
+    
+    <% if @pages.any? %>
+      <div class="space-y-3">
+        <% @pages.each do |page| %>
+          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+            <div class="flex-1">
+              <div class="font-medium"><%= page.title %></div>
+              <div class="text-sm color-base-60"><%= page.description %></div>
+              <div class="text-xs color-base-50">
+                Slug: <%= page.slug %> | 
+                Path: <%= page.is_top_level_path ? "/#{page.slug}" : "/page/#{page.slug}" %>
+              </div>
+            </div>
+            <div class="text-xs color-base-60">
+              <%= page.created_at.strftime("%b %d, %Y") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm color-base-60">No dedicated pages found for this subforem (edit functionality coming soon).</p>
+    <% end %>
+  </div>
+
+  <!-- NAVIGATION LINKS SECTION -->
+  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
+    <h2 class="crayons-subtitle-2 mb-4">DedicatedNavigation Links</h2>
+    
+    <% if @navigation_links.any? %>
+      <div class="space-y-3">
+        <% @navigation_links.each do |link| %>
+          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+            <div class="flex-1">
+              <div class="font-medium flex items-center gap-2">
+                <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <%= link.name %>
+              </div>
+              <div class="text-sm color-base-60">
+                <a href="<%= link.url %>" target="_blank" class="c-link c-link--branded"><%= link.url %></a>
+              </div>
+              <div class="text-xs color-base-50">
+                Section: <%= link.section %> | 
+                Display: <%= link.display_to %> | 
+                Position: <%= link.position %>
+              </div>
+            </div>
+            <div class="text-xs color-base-60">
+              <%= link.created_at.strftime("%b %d, %Y") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm color-base-60">No dedicated navigation links found for this subforem (edit functionality coming soon).</p>
+    <% end %>
+  </div>
 </main>
 
 <script>
