@@ -355,6 +355,13 @@ body[data-side-nav-visible='true'] {
       transform: translateX(20px);
     }
   }
+  .crayons-layout--full {
+    @media (min-width: $breakpoint-m) {
+      max-width: calc(2000px - 100px);
+      width: calc(100% - 100px);
+      margin-left: 50px;
+    }
+  }
 }
 
 .crayons-side-nav {
