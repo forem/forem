@@ -170,7 +170,12 @@ Rails.application.routes.draw do
       end
     end
     resources :videos, only: %i[index create new]
-    resources :subforems, only: %i[index edit update]
+    resources :subforems, only: %i[index edit update] do
+      member do
+        post :add_tag
+      end
+    end
+    get "/manage", to: "subforems#edit", as: :manage_subforem
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
     resources :tag_adjustments, only: %i[create destroy]
