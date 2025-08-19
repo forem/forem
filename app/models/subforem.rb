@@ -95,7 +95,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_postable_array
     Rails.cache.fetch("subforem_postable_array", expires_in: 12.hours) do
-      Subforem.where(discoverable: true).pluck(:id).map do |id|
+      Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id).map do |id|
         [id, Settings::Community.community_name(subforem_id: id)]
       end
     end
