@@ -150,6 +150,11 @@
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
+  
+  <% if user_signed_in? && ArticlePolicy.is_root_subforem? %>
+    <%= render "shared/subforem_selection_modal" %>
+  <% end %>
+  
   </body>
   </html>
 <% end %>
