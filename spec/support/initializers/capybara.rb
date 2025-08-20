@@ -14,6 +14,15 @@ RSpec.configure do |config|
   config.before(:each, :js, type: :system) do
     driven_by :better_cuprite
   end
+
+  # Take screenshots on system test failures for debugging
+  config.after(:each, type: :system) do |example|
+    if example.exception.present? && !example.metadata[:skip_screenshot]
+      screenshot_path = Rails.root.join("tmp/capybara/screenshot_#{Time.current.to_i}.png")
+      page.save_screenshot(screenshot_path)
+      puts "Screenshot saved to: #{screenshot_path}"
+    end
+  end
 end
 
 # adapted from <https://medium.com/doctolib-engineering/hunting-flaky-tests-2-waiting-for-ajax-bd76d79d9ee9>

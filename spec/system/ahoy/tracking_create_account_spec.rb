@@ -2,8 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Tracking 'Clicked on Create Account'", :js do
   def wait_for_async_events_listener
-    # temp fix for flaky specs
-    sleep 5
+    # Wait for the tracking system to be ready instead of fixed sleep
+    wait_for_condition(timeout: 10) do
+      page.evaluate_script("typeof window.Ahoy !== 'undefined' && window.Ahoy.ready === true") rescue false
+    end
+  rescue => e
+    # Fallback to a shorter sleep if Ahoy tracking is not available in test
+    sleep 1
   end
 
   context "when on the homepage" do
@@ -25,11 +30,14 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
       expect(page).to have_css('a[data-tracking-id="ca_hamburger_home_page"]')
     end
 
-    xit "tracks a click with the correct source", :aggregate_failures do
+    it "tracks a click with the correct source", :aggregate_failures do
       expect(Ahoy::Event.count).to eq(0)
       wait_for_async_events_listener
       find('[data-tracking-id="ca_top_nav"]').click
 
+      # Wait for the event to be created
+      wait_for_condition(timeout: 5) { Ahoy::Event.count > 0 }
+      
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
       expect(Ahoy::Event.last.properties).to include("source", "page", "version", "source" => "top_navbar")
     end
