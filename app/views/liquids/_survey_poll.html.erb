@@ -1,16 +1,39 @@
 <div 
-  class="survey-poll" 
+  class="survey-poll <%= 'scale-horizontal scale-5-options' if poll.scale? && poll.poll_options.count == 5 %> <%= 'scale-horizontal scale-many-options' if poll.scale? && poll.poll_options.count > 5 %>" 
   id="survey-poll-<%= poll.id %>" 
   data-poll-id="<%= poll.id %>" 
   data-poll-index="<%= index %>"
+  data-poll-type="<%= poll.type_of %>"
   style="display: none;"
 >
   <h3><%= poll.prompt_html.html_safe %></h3>
   
   <ul class="survey-poll-answers">
-    <% poll.poll_options.each do |option| %>
+    <% 
+      # Sort scale options numerically by their markdown value
+      options = if poll.scale?
+        poll.poll_options.sort_by { |opt| opt.markdown.to_i }
+      else
+        poll.poll_options
+      end
+    %>
+    <% options.each do |option| %>
       <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
-        <span class="option-text"><%= option.processed_html.html_safe %></span>
+        <% if poll.single_choice? %>
+          <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+        <% elsif poll.multiple_choice? %>
+          <input type="checkbox" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+        <% elsif poll.scale? %>
+          <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+        <% end %>
+        
+        <label for="survey_poll_option_<%= option.id %>" class="option-text">
+          <% if poll.scale? %>
+            <span class="scale-value"><%= option.markdown %></span>
+          <% else %>
+            <%= option.processed_html.html_safe %>
+          <% end %>
+        </label>
       </li>
     <% end %>
   </ul>

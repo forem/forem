@@ -3,6 +3,13 @@ class Poll < ApplicationRecord
 
   serialize :voting_data
 
+  # Poll types enum
+  enum type_of: {
+    single_choice: 0,    # Current behavior - only one option can be selected
+    multiple_choice: 1,  # Multiple options can be selected
+    scale: 2            # Scale poll with numeric values
+  }
+
   belongs_to :article, optional: true
   belongs_to :survey, optional: true
 
@@ -15,6 +22,7 @@ class Poll < ApplicationRecord
   validates :poll_skips_count, presence: true
   validates :poll_votes_count, presence: true
   validates :prompt_markdown, presence: true, length: { maximum: 128 }
+  validates :type_of, presence: true
 
   before_save :evaluate_markdown
   after_create :create_poll_options
@@ -37,6 +45,22 @@ class Poll < ApplicationRecord
 
   def voting_data
     { votes_count: poll_votes_count, votes_distribution: poll_options.pluck(:id, :poll_votes_count) }
+  end
+
+  # Check if poll allows multiple votes
+  def allows_multiple_votes?
+    multiple_choice? || scale?
+  end
+
+  # Check if poll is a scale poll
+  def scale_poll?
+    scale?
+  end
+
+  # Get scale range for scale polls
+  def scale_range
+    return nil unless scale_poll?
+    poll_options.order(:id).pluck(:markdown).map(&:to_i)
   end
 
   private
