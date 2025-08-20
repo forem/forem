@@ -188,6 +188,9 @@ Rails.application.routes.draw do
     end
     resources :reading_list_items, only: [:update]
     resources :poll_votes, only: %i[show create]
+    resources :polls, only: [] do
+      resources :poll_text_responses, only: [:create]
+    end
     resources :poll_skips, only: [:create]
 
     resources :surveys, only: [:show] do # Or however you have it configured
