@@ -6,8 +6,9 @@ class PollVote < ApplicationRecord
   counter_culture :poll_option
   counter_culture :poll
 
-  validates :poll_id, uniqueness: { scope: :user_id }
-
+  # For single choice polls, ensure only one vote per user per poll
+  # For multiple choice and scale polls, allow multiple votes but ensure uniqueness per option
+  validates :poll_id, uniqueness: { scope: :user_id }, if: :single_choice_poll?
   validates :poll_option_id, uniqueness: { scope: :user_id }
 
   after_destroy :touch_poll_votes_count
@@ -16,6 +17,10 @@ class PollVote < ApplicationRecord
   delegate :poll, to: :poll_option, allow_nil: true
 
   private
+
+  def single_choice_poll?
+    poll&.single_choice?
+  end
 
   def touch_poll_votes_count
     poll.update_column(:poll_votes_count, poll.poll_votes.size)
