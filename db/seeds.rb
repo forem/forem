@@ -486,77 +486,6 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ListingCategory) do
-  categories = [
-    {
-      slug: "cfp",
-      cost: 1,
-      name: "Conference CFP",
-      rules: "Currently open for proposals, with link to form."
-    },
-    {
-      slug: "education",
-      cost: 1,
-      name: "Education/Courses",
-      rules: "Educational material and/or schools/bootcamps."
-    },
-    {
-      slug: "jobs",
-      cost: 25,
-      name: "Job Listings",
-      rules: "Companies offering employment right now."
-    },
-    {
-      slug: "forsale",
-      cost: 1,
-      name: "Stuff for Sale",
-      rules: "Personally owned physical items for sale."
-    },
-    {
-      slug: "events",
-      cost: 1,
-      name: "Upcoming Events",
-      rules: "In-person or online events with date included."
-    },
-    {
-      slug: "misc",
-      cost: 1,
-      name: "Miscellaneous",
-      rules: "Must not fit in any other category."
-    },
-  ].freeze
-
-  categories.each { |attributes| ListingCategory.create(attributes) }
-end
-
-##############################################################################
-
-seeder.create_if_none(Listing) do
-  users_in_random_order = User.order(Arel.sql("RANDOM()"))
-  users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
-  users = users_in_random_order.to_a
-
-  listings_categories = ListingCategory.ids
-  listings_categories.each.with_index(1) do |category_id, index|
-    # rotate users if they are less than the categories
-    user = users.at(index % users.length)
-    2.times do
-      Listing.create!(
-        user: user,
-        title: Faker::Lorem.sentence,
-        body_markdown: Faker::Markdown.random.lines.take(10).join,
-        location: Faker::Address.city,
-        organization_id: user.organizations.first&.id,
-        listing_category_id: category_id,
-        published: true,
-        originally_published_at: Time.current,
-        bumped_at: Time.current,
-        tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
-      )
-    end
-  end
-end
-
 ##############################################################################
 
 seeder.create_if_none(Billboard) do
@@ -598,6 +527,312 @@ seeder.create_if_none(Page) do
   end
 end
 Faker::Config.locale = loc
+
+##############################################################################
+
+seeder.create_if_none(Survey) do
+  # Marvel Movie Preferences Survey (Single Choice)
+  marvel_survey = Survey.create!(
+    title: "Marvel Movie Preferences",
+    active: true,
+    display_title: true,
+  )
+
+  # Poll 1: Favorite Marvel Movie (Single Choice)
+  Poll.create!(
+    prompt_markdown: "What is your favorite Marvel movie?",
+    article_id: nil,
+    survey_id: marvel_survey.id,
+    type_of: :single_choice,
+    poll_options_input_array: [
+      "Avengers: Endgame",
+      "Black Panther",
+      "Spider-man: No Way Home",
+      "Guardians of the Galaxy",
+    ],
+  )
+
+  # Poll 2: Preferred Marvel Hero (Single Choice)
+  Poll.create!(
+    prompt_markdown: "Who is your preferred Marvel hero?",
+    article_id: nil,
+    survey_id: marvel_survey.id,
+    type_of: :single_choice,
+    poll_options_input_array: [
+      "Iron Man",
+      "Captain America",
+      "Thor",
+      "Doctor Strange",
+    ],
+  )
+
+  # Poll 3: Most Compelling Villain (Single Choice)
+  Poll.create!(
+    prompt_markdown: "Who is the most compelling Marvel villain?",
+    article_id: nil,
+    survey_id: marvel_survey.id,
+    type_of: :single_choice,
+    poll_options_input_array: [
+      "Thanos",
+      "Loki",
+      "Erik Killmonger",
+      "Wanda Maximoff / Scarlet Witch",
+    ],
+  )
+
+  # Poll 4: Favorite Marvel Team (Single Choice)
+  Poll.create!(
+    prompt_markdown: "Which is your favorite Marvel team?",
+    article_id: nil,
+    survey_id: marvel_survey.id,
+    type_of: :single_choice,
+    poll_options_input_array: [
+      "The Avengers",
+      "Guardians of the Galaxy",
+      "The Revengers (from Thor: Ragnarok)",
+      "The X-Men",
+    ],
+  )
+
+  # Poll 5: Infinity Stone Choice (Single Choice)
+  Poll.create!(
+    prompt_markdown: "If you could wield one Infinity Stone, which would you choose?",
+    article_id: nil,
+    survey_id: marvel_survey.id,
+    type_of: :single_choice,
+    poll_options_input_array: [
+      "The Time Stone (to control time)",
+      "The Space Stone (for teleportation)",
+      "The Reality Stone (to alter reality)",
+      "The Power Stone (for immense strength)",
+    ],
+  )
+
+  # Tech Stack Preferences Survey (Multiple Choice)
+  tech_survey = Survey.create!(
+    title: "Tech Stack Preferences",
+    active: true,
+    display_title: true,
+  )
+
+  # Poll 1: Programming Languages (Multiple Choice)
+  Poll.create!(
+    prompt_markdown: "Which programming languages do you use regularly? (Select all that apply)",
+    article_id: nil,
+    survey_id: tech_survey.id,
+    type_of: :multiple_choice,
+    poll_options_input_array: [
+      "JavaScript/TypeScript",
+      "Python",
+      "Ruby",
+      "Java",
+      "C#",
+      "Go",
+      "Rust",
+      "PHP",
+    ],
+  )
+
+  # Poll 2: Frontend Frameworks (Multiple Choice)
+  Poll.create!(
+    prompt_markdown: "Which frontend frameworks have you worked with? (Select all that apply)",
+    article_id: nil,
+    survey_id: tech_survey.id,
+    type_of: :multiple_choice,
+    poll_options_input_array: [
+      "React",
+      "Vue.js",
+      "Angular",
+      "Svelte",
+      "Ember.js",
+      "Backbone.js",
+    ],
+  )
+
+  # Poll 3: Database Technologies (Multiple Choice)
+  Poll.create!(
+    prompt_markdown: "Which database technologies do you use? (Select all that apply)",
+    article_id: nil,
+    survey_id: tech_survey.id,
+    type_of: :multiple_choice,
+    poll_options_input_array: %w[
+      PostgreSQL
+      MySQL
+      MongoDB
+      Redis
+      SQLite
+      Elasticsearch
+      Cassandra
+    ],
+  )
+
+  # Developer Experience Survey (Scale)
+  dev_experience_survey = Survey.create!(
+    title: "Developer Experience Assessment",
+    active: true,
+    display_title: true,
+  )
+
+  # Poll 1: Code Review Experience (Scale)
+  Poll.create!(
+    prompt_markdown: "How would you rate your experience with code reviews?",
+    article_id: nil,
+    survey_id: dev_experience_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5],
+  )
+
+  # Poll 2: Documentation Quality (Scale)
+  Poll.create!(
+    prompt_markdown: "How would you rate the quality of documentation in your current project?",
+    article_id: nil,
+    survey_id: dev_experience_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5],
+  )
+
+  # Poll 3: Team Collaboration (Scale)
+  Poll.create!(
+    prompt_markdown: "How would you rate team collaboration in your current role?",
+    article_id: nil,
+    survey_id: dev_experience_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5],
+  )
+
+  # Poll 4: Work-Life Balance (Scale)
+  Poll.create!(
+    prompt_markdown: "How would you rate your work-life balance?",
+    article_id: nil,
+    survey_id: dev_experience_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5],
+  )
+
+  # Poll 5: Detailed Satisfaction (Scale with more than 10 options - vertical layout)
+  Poll.create!(
+    prompt_markdown: "Rate your satisfaction with each aspect of your development environment (1-15 scale)",
+    article_id: nil,
+    survey_id: dev_experience_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15],
+  )
+
+  # Mixed Survey (All Types)
+  mixed_survey = Survey.create!(
+    title: "Mixed Poll Types Demo",
+    active: true,
+    display_title: true,
+  )
+
+  # Poll 1: Single Choice
+  Poll.create!(
+    prompt_markdown: "What is your primary development environment?",
+    article_id: nil,
+    survey_id: mixed_survey.id,
+    type_of: :single_choice,
+    poll_options_input_array: [
+      "VS Code",
+      "IntelliJ IDEA",
+      "Vim/Neovim",
+      "Sublime Text",
+      "Atom",
+    ],
+  )
+
+  # Poll 2: Multiple Choice
+  Poll.create!(
+    prompt_markdown: "Which development practices do you follow? (Select all that apply)",
+    article_id: nil,
+    survey_id: mixed_survey.id,
+    type_of: :multiple_choice,
+    poll_options_input_array: [
+      "Test-Driven Development (TDD)",
+      "Continuous Integration/Deployment",
+      "Code Reviews",
+      "Pair Programming",
+      "Agile/Scrum",
+      "DevOps Practices",
+    ],
+  )
+
+  # Poll 3: Scale
+  Poll.create!(
+    prompt_markdown: "Rate your satisfaction with your current development tools",
+    article_id: nil,
+    survey_id: mixed_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5],
+  )
+
+  Poll.create!(
+    prompt_markdown: "Rate your satisfaction with your current development tools, really?",
+    article_id: nil,
+    survey_id: mixed_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5 6 7 8 9 10],
+  )
+
+  Poll.create!(
+    prompt_markdown: "Rate your satisfaction with your current development tools, really really?",
+    article_id: nil,
+    survey_id: mixed_survey.id,
+    type_of: :scale,
+    poll_options_input_array: %w[1 2 3 4 5 6 7 8 9 10 11 12 13 14],
+  )
+end
+
+##############################################################################
+
+# Create articles with survey tags
+seeder.create_if_none(Article) do
+  users_in_random_order = User.order(Arel.sql("RANDOM()"))
+  users = users_in_random_order.to_a
+
+  # Article with Marvel survey
+  user = users.first
+  Article.create!(
+    user: user,
+    title: "Marvel Movie Discussion",
+    body_markdown: "Let's discuss our favorite Marvel movies and characters!\n\n{% survey 1 %}",
+    published: true,
+    originally_published_at: Time.current,
+    tag_list: %w[marvel movies discussion],
+  )
+
+  # Article with Tech survey
+  user = users.second
+  Article.create!(
+    user: user,
+    title: "Tech Stack Discussion",
+    body_markdown: "What's your preferred tech stack? Let's share our experiences!\n\n{% survey 2 %}",
+    published: true,
+    originally_published_at: Time.current,
+    tag_list: %w[tech programming discussion],
+  )
+
+  # Article with Developer Experience survey
+  user = users.third
+  Article.create!(
+    user: user,
+    title: "Developer Experience Survey",
+    body_markdown: "How's your developer experience? Let's assess our current situation.\n\n{% survey 3 %}",
+    published: true,
+    originally_published_at: Time.current,
+    tag_list: %w[developer-experience survey discussion],
+  )
+
+  # Article with Mixed survey
+  user = users.fourth
+  Article.create!(
+    user: user,
+    title: "Mixed Poll Types Demo",
+    body_markdown: "This article demonstrates all three poll types: single choice, multiple choice, and scale.\n\n{% survey 4 %}",
+    published: true,
+    originally_published_at: Time.current,
+    tag_list: %w[demo polls survey],
+  )
+end
 
 ##############################################################################
 

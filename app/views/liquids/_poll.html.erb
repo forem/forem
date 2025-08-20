@@ -1,12 +1,34 @@
-<div class="ltag-poll" id="poll_<%= poll.id %>" data-poll-id="<%= poll.id %>">
+<div class="ltag-poll <%= 'scale-horizontal scale-5-options' if poll.scale? && poll.poll_options.count == 5 %> <%= 'scale-horizontal scale-many-options' if poll.scale? && poll.poll_options.count > 5 %>" id="poll_<%= poll.id %>" data-poll-id="<%= poll.id %>" data-poll-type="<%= poll.type_of %>">
   <h3><%= poll.prompt_html.html_safe %></h3>
   <ul class="ltag-pollanswers">
-    <% poll.poll_options.each do |option| %>
+    <% 
+      # Sort scale options numerically by their markdown value
+      options = if poll.scale?
+        poll.poll_options.sort_by { |opt| opt.markdown.to_i }
+      else
+        poll.poll_options
+      end
+    %>
+    <% options.each do |option| %>
       <li class="ltag-polloption" id="poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
-        <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
-        <label for="d" id="poll_option_label_<%= option.id %>" data-option-id="<%= option.id %>"><%= option.processed_html.html_safe %></label>
+        <% if poll.single_choice? %>
+          <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+        <% elsif poll.multiple_choice? %>
+          <input type="checkbox" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+        <% elsif poll.scale? %>
+          <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+        <% end %>
+        <label for="poll_option_<%= option.id %>" id="poll_option_label_<%= option.id %>" data-option-id="<%= option.id %>">
+          <% if poll.scale? %>
+            <span class="scale-value"><%= option.markdown %></span>
+          <% else %>
+            <%= option.processed_html.html_safe %>
+          <% end %>
+        </label>
       </li>
     <% end %>
-    <li class="ltag-polloption-justshowmetheresults" id="showmethemoney-<%= poll.id %>" data-poll-id="<%= poll.id %>"><button><%= t("views.liquids.poll.show_results") %></button>
+    <li class="ltag-polloption-justshowmetheresults" id="showmethemoney-<%= poll.id %>" data-poll-id="<%= poll.id %>">
+      <button><%= t("views.liquids.poll.show_results") %></button>
+    </li>
   </ul>
 </div>
