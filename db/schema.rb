@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_08_20_121847) do
+ActiveRecord::Schema[7.0].define(version: 2025_08_20_140630) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1030,6 +1030,17 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_20_121847) do
     t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
   end
 
+  create_table "poll_text_responses", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id", null: false
+    t.text "text_content"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["poll_id", "user_id"], name: "index_poll_text_responses_on_poll_id_and_user_id", unique: true
+    t.index ["poll_id"], name: "index_poll_text_responses_on_poll_id"
+    t.index ["user_id"], name: "index_poll_text_responses_on_user_id"
+  end
+
   create_table "poll_votes", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.bigint "poll_id", null: false
@@ -1678,6 +1689,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_20_121847) do
   add_foreign_key "poll_options", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "users", on_delete: :cascade
+  add_foreign_key "poll_text_responses", "polls"
+  add_foreign_key "poll_text_responses", "users"
   add_foreign_key "poll_votes", "poll_options", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "poll_votes", "users", on_delete: :cascade
