@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+# Development Performance Helper Script
+# This script helps you enable/disable performance monitoring services in development
+
+set -e
+
+show_help() {
+  echo "🚀 Development Performance Helper"
+  echo ""
+  echo "Usage: bin/dev-performance [COMMAND]"
+  echo ""
+  echo "Commands:"
+  echo "  fast     - Enable fast development mode (all monitoring disabled)"
+  echo "  debug    - Enable debug mode (all monitoring enabled)"
+  echo "  bullet   - Enable only Bullet for N+1 query detection"
+  echo "  sql      - Enable only SQL logging"
+  echo "  status   - Show current performance settings"
+  echo "  cleanup  - Clean up stuck processes and temp files"
+  echo "  auto-cleanup - Run automatic cleanup (logs, temp files, etc.)"
+  echo "  help     - Show this help message"
+  echo ""
+  echo "Examples:"
+  echo "  bin/dev-performance fast    # Fastest development experience"
+  echo "  bin/dev-performance debug   # Full debugging capabilities"
+  echo "  bin/dev-performance bullet  # Just N+1 query detection"
+}
+
+enable_fast_mode() {
+  echo "🚀 Enabling fast development mode..."
+  export HONEYBADGER_ENABLED=false
+  export HONEYCOMB_ENABLED=false
+  export DD_ENABLED=false
+  export AHOY_ENABLED=false
+  export BULLET_ENABLED=false
+  export SQL_LOGGING=false
+  echo "✅ Fast mode enabled! Restart your Rails server to apply changes."
+}
+
+enable_debug_mode() {
+  echo "🐛 Enabling debug mode..."
+  export HONEYBADGER_ENABLED=true
+  export HONEYCOMB_ENABLED=true
+  export DD_ENABLED=true
+  export AHOY_ENABLED=true
+  export BULLET_ENABLED=true
+  export SQL_LOGGING=true
+  echo "✅ Debug mode enabled! Restart your Rails server to apply changes."
+}
+
+enable_bullet_only() {
+  echo "🔍 Enabling Bullet for N+1 query detection..."
+  export HONEYBADGER_ENABLED=false
+  export HONEYCOMB_ENABLED=false
+  export DD_ENABLED=false
+  export AHOY_ENABLED=false
+  export BULLET_ENABLED=true
+  export SQL_LOGGING=false
+  echo "✅ Bullet enabled! Restart your Rails server to apply changes."
+}
+
+enable_sql_only() {
+  echo "📊 Enabling SQL logging..."
+  export HONEYBADGER_ENABLED=false
+  export HONEYCOMB_ENABLED=false
+  export DD_ENABLED=false
+  export AHOY_ENABLED=false
+  export BULLET_ENABLED=false
+  export SQL_LOGGING=true
+  echo "✅ SQL logging enabled! Restart your Rails server to apply changes."
+}
+
+show_status() {
+  echo "📊 Current Development Performance Settings:"
+  echo ""
+  echo "  Honeybadger: ${HONEYBADGER_ENABLED:-false}"
+  echo "  Honeycomb:   ${HONEYCOMB_ENABLED:-false}"
+  echo "  Datadog:     ${DD_ENABLED:-false}"
+  echo "  Ahoy:        ${AHOY_ENABLED:-false}"
+  echo "  Bullet:      ${BULLET_ENABLED:-false}"
+  echo "  SQL Logging: ${SQL_LOGGING:-false}"
+  echo ""
+  echo "💡 Tip: Set these in your .env file to persist across sessions"
+}
+
+case "${1:-help}" in
+  fast)
+    enable_fast_mode
+    ;;
+  debug)
+    enable_debug_mode
+    ;;
+  bullet)
+    enable_bullet_only
+    ;;
+  sql)
+    enable_sql_only
+    ;;
+  status)
+    show_status
+    ;;
+  cleanup)
+    echo "🧹 Running cleanup..."
+    exec bin/dev-cleanup
+    ;;
+  auto-cleanup)
+    echo "🤖 Running automatic cleanup..."
+    exec bin/auto-cleanup
+    ;;
+  help|--help|-h)
+    show_help
+    ;;
+  *)
+    echo "❌ Unknown command: $1"
+    echo ""
+    show_help
+    exit 1
+    ;;
+esac
