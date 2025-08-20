@@ -765,20 +765,47 @@ seeder.create_if_none(Survey) do
     poll_options_input_array: %w[1 2 3 4 5],
   )
 
+  # Poll 4: Text Input
   Poll.create!(
-    prompt_markdown: "Rate your satisfaction with your current development tools, really?",
+    prompt_markdown: "What's the biggest challenge you face in your development workflow?",
     article_id: nil,
     survey_id: mixed_survey.id,
-    type_of: :scale,
-    poll_options_input_array: %w[1 2 3 4 5 6 7 8 9 10],
+    type_of: :text_input,
+    poll_options_input_array: [],
   )
 
+  # Feedback Survey (Text Input Focus)
+  feedback_survey = Survey.create!(
+    title: "Developer Feedback Survey",
+    active: true,
+    display_title: true,
+  )
+
+  # Poll 1: Text Input - General Feedback
   Poll.create!(
-    prompt_markdown: "Rate your satisfaction with your current development tools, really really?",
+    prompt_markdown: "What features would you like to see added to your development tools?",
     article_id: nil,
-    survey_id: mixed_survey.id,
+    survey_id: feedback_survey.id,
+    type_of: :text_input,
+    poll_options_input_array: [],
+  )
+
+  # Poll 2: Text Input - Pain Points
+  Poll.create!(
+    prompt_markdown: "Describe the most frustrating part of your current development process:",
+    article_id: nil,
+    survey_id: feedback_survey.id,
+    type_of: :text_input,
+    poll_options_input_array: [],
+  )
+
+  # Poll 3: Scale - Overall Satisfaction
+  Poll.create!(
+    prompt_markdown: "How satisfied are you with your current development setup?",
+    article_id: nil,
+    survey_id: feedback_survey.id,
     type_of: :scale,
-    poll_options_input_array: %w[1 2 3 4 5 6 7 8 9 10 11 12 13 14],
+    poll_options_input_array: %w[1 2 3 4 5 6 7 8 9 10],
   )
 end
 
@@ -827,10 +854,21 @@ seeder.create_if_none(Article) do
   Article.create!(
     user: user,
     title: "Mixed Poll Types Demo",
-    body_markdown: "This article demonstrates all three poll types: single choice, multiple choice, and scale.\n\n{% survey 4 %}",
+    body_markdown: "This article demonstrates all three poll types: single choice, multiple choice, scale, and text input.\n\n{% survey 4 %}",
     published: true,
     originally_published_at: Time.current,
     tag_list: %w[demo polls survey],
+  )
+
+  # Article with Feedback survey
+  user = users.fifth
+  Article.create!(
+    user: user,
+    title: "Developer Feedback Survey",
+    body_markdown: "Share your thoughts on development tools and processes. We'd love to hear your feedback!\n\n{% survey 5 %}",
+    published: true,
+    originally_published_at: Time.current,
+    tag_list: %w[feedback development survey],
   )
 end
 

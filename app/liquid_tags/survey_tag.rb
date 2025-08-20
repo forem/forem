@@ -73,6 +73,14 @@ class SurveyTag < LiquidTagBase
                 if (checkbox) checkbox.checked = true;
               }
             });
+          } else if (typeof votedOptionIds === 'string' && poll.dataset.pollType === 'text_input') {
+            // Text input poll with existing response
+            const textarea = poll.querySelector('.survey-text-input');
+            if (textarea) {
+              textarea.value = votedOptionIds;
+              textarea.disabled = true;
+              poll.querySelector('.survey-text-input-feedback').style.display = 'block';
+            }
           } else {
             // Single choice poll
             const selectedOption = poll.querySelector(`.survey-poll-option[data-option-id="${votedOptionIds}"]`);
@@ -135,6 +143,22 @@ class SurveyTag < LiquidTagBase
           }
         }
 
+        function handleTextInput(pollElement) {
+          const pollId = pollElement.dataset.pollId;
+          const textarea = pollElement.querySelector('.survey-text-input');
+          const text = textarea.value.trim();
+
+          if (text.length > 0) {
+            // Store pending text response
+            pendingVotes[pollId] = { type: 'text', content: text };
+            pollElement.classList.add('is-answered');
+            updateUI();
+          } else {
+            pollElement.classList.remove('is-answered');
+            updateUI();
+          }
+        }
+
         async function submitPendingVotes() {
           const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
           const promises = [];
@@ -152,6 +176,20 @@ class SurveyTag < LiquidTagBase
                   })
                 );
               });
+            } else if (typeof voteData === 'object' && voteData.type === 'text') {
+              // Text input - submit text response
+              promises.push(
+                window.fetch(`/polls/${pollId}/poll_text_responses`, {
+                  method: 'POST',
+                  headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({#{' '}
+                    poll_text_response: {#{' '}
+                      text_content: voteData.content#{' '}
+                    }#{' '}
+                  }),
+                  credentials: 'same-origin',
+                })
+              );
             } else {
               // Single choice/scale - submit single vote
               promises.push(
@@ -243,9 +281,18 @@ class SurveyTag < LiquidTagBase
             }
             polls.forEach(poll => {
               if (!poll.classList.contains('is-answered')) {
-                poll.querySelectorAll('.survey-poll-option').forEach(option => {
-                  option.addEventListener('click', () => handleSelection(option));
-                });
+                if (poll.dataset.pollType === 'text_input') {
+                  // Handle text input polls
+                  const textarea = poll.querySelector('.survey-text-input');
+                  if (textarea) {
+                    textarea.addEventListener('input', () => handleTextInput(poll));
+                  }
+                } else {
+                  // Handle regular poll options
+                  poll.querySelectorAll('.survey-poll-option').forEach(option => {
+                    option.addEventListener('click', () => handleSelection(option));
+                  });
+                }
               }
             });
           })

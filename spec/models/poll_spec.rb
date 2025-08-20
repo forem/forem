@@ -23,7 +23,10 @@ RSpec.describe Poll, type: :model do
   end
 
   describe "enums" do
-    it { is_expected.to define_enum_for(:type_of).with_values(single_choice: 0, multiple_choice: 1, scale: 2) }
+    it {
+      expect(subject).to define_enum_for(:type_of).with_values(single_choice: 0, multiple_choice: 1, scale: 2,
+                                                               text_input: 3)
+    }
   end
 
   describe "callbacks" do
@@ -106,17 +109,36 @@ RSpec.describe Poll, type: :model do
         scale_poll = create(:poll, :scale)
         expect(scale_poll.allows_multiple_votes?).to be true
       end
+
+      it "returns true for text input polls" do
+        text_input_poll = create(:poll, :text_input)
+        expect(text_input_poll.allows_multiple_votes?).to be true
+      end
     end
 
     describe "#scale_poll?" do
       it "returns false for non-scale polls" do
         expect(poll.scale_poll?).to be false
         expect(create(:poll, :multiple_choice).scale_poll?).to be false
+        expect(create(:poll, :text_input).scale_poll?).to be false
       end
 
       it "returns true for scale polls" do
         scale_poll = create(:poll, :scale)
         expect(scale_poll.scale_poll?).to be true
+      end
+    end
+
+    describe "#text_input_poll?" do
+      it "returns false for non-text-input polls" do
+        expect(poll.text_input_poll?).to be false
+        expect(create(:poll, :multiple_choice).text_input_poll?).to be false
+        expect(create(:poll, :scale).text_input_poll?).to be false
+      end
+
+      it "returns true for text input polls" do
+        text_input_poll = create(:poll, :text_input)
+        expect(text_input_poll.text_input_poll?).to be true
       end
     end
 
