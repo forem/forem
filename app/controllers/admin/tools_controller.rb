@@ -43,6 +43,31 @@ module Admin
       end
     end
 
+    def close_spam_issues
+      dry_run = params[:dry_run] != "false"
+      
+      begin
+        result = SpamIssues::CloseObviousSpam.call(dry_run: dry_run)
+        
+        if result[:issues].any?
+          message = if dry_run
+                      "Found #{result[:issues].length} obvious spam issue(s). Use 'Close Issues' to actually close them."
+                    else
+                      "Successfully closed #{result[:closed]} obvious spam issue(s)."
+                    end
+          flash[:success] = message
+          @spam_issues = result[:issues]
+        else
+          flash[:info] = "No obvious spam issues found."
+        end
+      rescue StandardError => e
+        flash[:danger] = "Error processing spam issues: #{e.message}"
+        Rails.logger.error "Spam issue processing error: #{e.message}"
+      end
+      
+      redirect_to admin_tools_path
+    end
+
     private
 
     def handle_dead_path

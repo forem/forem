@@ -144,6 +144,7 @@ namespace :admin do
         post "bust_cache"
         get "feed_playground"
         post "feed_playground"
+        post "close_spam_issues"
       end
     end
 

@@ -30,4 +30,42 @@
   <% end %>
 </div>
 
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-4">Close Obvious Spam Issues</h2>
+  <p class="mb-4">This tool automatically identifies and closes obvious spam GitHub issues based on conservative detection patterns.</p>
+  <p class="mb-6 crayons-text--s crayons-text--secondary">
+    <strong>Note:</strong> Only extremely obvious spam is detected to avoid false positives. This includes issues with meaningless titles (like "Aaaa"), suspicious IP patterns, or completely empty template sections.
+  </p>
+  
+  <div class="flex gap-3">
+    <%= form_tag close_spam_issues_admin_tools_path do %>
+      <%= hidden_field_tag :dry_run, "true" %>
+      <%= submit_tag "Preview Spam Issues", class: "crayons-btn crayons-btn--outlined" %>
+    <% end %>
+    
+    <%= form_tag close_spam_issues_admin_tools_path, data: { confirm: "Are you sure you want to close the identified spam issues? This action cannot be undone." } do %>
+      <%= hidden_field_tag :dry_run, "false" %>
+      <%= submit_tag "Close Issues", class: "crayons-btn crayons-btn--danger" %>
+    <% end %>
+  </div>
+  
+  <% if @spam_issues&.any? %>
+    <div class="mt-6">
+      <h3 class="crayons-subtitle-2 mb-3">Identified Spam Issues:</h3>
+      <ul class="crayons-list">
+        <% @spam_issues.each do |issue| %>
+          <li class="p-2 border-l-4 border-danger-300 bg-danger-50">
+            <strong>#<%= issue[:number] %></strong>: <%= issue[:title] %>
+            <br>
+            <span class="crayons-text--s text-body-secondary">
+              by <%= issue[:author] %> • 
+              <a href="<%= issue[:url] %>" target="_blank" class="crayons-link">View Issue</a>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
 <%= render "admin/shared/image_uploader" %>
