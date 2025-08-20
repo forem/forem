@@ -19,14 +19,15 @@ RSpec.describe "Display users search spec", js: true do
     expect(page).not_to have_content(not_found_user.name)
   end
 
-  xit "returns all expected user fields" do
+  it "returns all expected user fields", js: true do
     current_user
     found_user
     sign_in current_user
     visit "/search?q=jane&filters=class_name:User"
+    wait_for_javascript
 
-    expect(page).to have_content(found_user.name)
-    expect(find(:xpath, "//img[@alt='#{found_user.username} profile']")["src"]).to include(found_user.profile_image_90)
+    expect(page).to have_content(found_user.name, wait: 10)
+    expect(find(:xpath, "//img[@alt='#{found_user.username} profile']", wait: 10)["src"]).to include(found_user.profile_image_90)
 
     expect(page).to have_css("button.follow-action-button")
     

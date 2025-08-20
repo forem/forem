@@ -47,11 +47,16 @@ RSpec.describe "Editing with an editor", js: true do
         .and_return(true)
     end
 
-    it "displays a rate limit warning", :flaky, js: true do
+    it "displays a rate limit warning", js: true do
       visit "/#{user.username}/#{article.slug}/edit"
+      wait_for_javascript
+      
       fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
+      
       click_button "Save changes"
-      expect(page).to have_text("Rate limit reached")
+      
+      # Wait for the rate limit message to appear
+      expect(page).to have_text("Rate limit reached", wait: 10)
     end
   end
 end

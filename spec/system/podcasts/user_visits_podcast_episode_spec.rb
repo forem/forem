@@ -14,11 +14,12 @@ RSpec.describe "User visits podcast show page", js: true do
     expect(result).to be false
   end
 
-  it "they see the content of the hero", :flaky, js: true do
+  it "they see the content of the hero", js: true do
     visit podcast_episode.path.to_s
+    wait_for_javascript
 
-    expect(page).to have_text(podcast_episode.title)
-    expect(page).to have_css ".record"
+    expect(page).to have_text(podcast_episode.title, wait: 10)
+    expect(page).to have_css ".record", wait: 10
   end
 
   it "see the new comment box on the page" do

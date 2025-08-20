@@ -22,12 +22,36 @@ def wait_for_javascript
   finished = false
 
   while Capybara::Helpers.monotonic_time < max_time
-    finished = page.evaluate_script("typeof initializeBaseApp") != "undefined"
+    begin
+      # Check if the base app is initialized and DOM is ready
+      finished = page.evaluate_script("typeof initializeBaseApp") != "undefined" &&
+                 page.evaluate_script("document.readyState") == "complete" &&
+                 page.evaluate_script("typeof $ !== 'undefined' ? $.active === 0 : true") # Check for jQuery AJAX completion if present
+    rescue Selenium::WebDriver::Error::JavaScriptError, Capybara::NotSupportedByDriverError
+      # Handle cases where JavaScript evaluation fails
+      finished = false
+    end
 
     break if finished
 
     sleep 0.1
   end
 
-  raise "wait_for_javascript timeout" unless finished
+  raise "wait_for_javascript timeout: initializeBaseApp not found or DOM not ready" unless finished
+end
+
+# Additional helper for waiting for specific elements to appear with better error messages
+def wait_for_element(selector, timeout: Capybara.default_max_wait_time)
+  page.find(selector, wait: timeout)
+rescue Capybara::ElementNotFound => e
+  raise "Element '#{selector}' not found within #{timeout} seconds: #{e.message}"
+end
+
+# Helper for waiting for AJAX requests to complete
+def wait_for_ajax
+  Timeout.timeout(Capybara.default_max_wait_time) do
+    loop until page.evaluate_script("typeof $ !== 'undefined' ? $.active === 0 : true")
+  end
+rescue Timeout::Error
+  raise "AJAX requests did not complete within #{Capybara.default_max_wait_time} seconds"
 end

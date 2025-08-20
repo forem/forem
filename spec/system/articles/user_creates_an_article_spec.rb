@@ -20,11 +20,16 @@ RSpec.describe "Creating an article with the editor" do
     sign_in user
   end
 
-  it "creates a new article", :flaky, js: true do
+  it "creates a new article", js: true do
     visit new_path
+    wait_for_javascript
+    
     fill_in "article_body_markdown", with: template
+    
     click_button "Save changes"
-    expect(page).to have_selector("header h1", text: "Sample Article")
+    
+    # Wait for navigation and content to load
+    expect(page).to have_selector("header h1", text: "Sample Article", wait: 15)
   end
 
   context "with an active announcement" do

@@ -36,14 +36,19 @@ RSpec.describe "Feedback report" do
         .and_return(true)
     end
 
-    it "displays a rate limit warning", :flaky, js: true do
+    it "displays a rate limit warning", js: true do
       visit report_abuse_path
+      wait_for_javascript
+      
       choose("Other")
       fill_in "feedback_message_message", with: message
       fill_in "feedback_message_reported_url", with: url
+      
       click_button "Send Feedback"
-      expect(page).to have_current_path("/feedback_messages")
-      expect(page).to have_text("Rate limit reached")
+      
+      # Wait for the redirect and content to load
+      expect(page).to have_current_path("/feedback_messages", wait: 10)
+      expect(page).to have_text("Rate limit reached", wait: 10)
     end
   end
 end

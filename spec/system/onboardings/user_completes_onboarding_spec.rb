@@ -10,9 +10,10 @@ RSpec.describe "Completing Onboarding", js: true do
 
   # rubocop:disable RSpec/PendingWithoutReason
   context "when the user hasn't seen onboarding" do
-    xit "does not render the onboarding task card on the feed" do
+    it "does not render the onboarding task card on the feed", js: true do
       sign_in(user)
       visit "/"
+      wait_for_javascript
 
       # Explicitly test that the task card element HTML is not on the page.
       expect(page.html).not_to include("onboarding-task-card")
@@ -27,16 +28,17 @@ RSpec.describe "Completing Onboarding", js: true do
       log_in_user(user)
     end
 
-    xit "logs in and renders the feed" do
+    it "logs in and renders the feed", js: true do
       expect(page).to have_current_path("/?signin=true")
+      wait_for_javascript
       expect(page.html).not_to include("onboarding-container")
     end
 
-    xit "renders the feed and onboarding task card" do
+    it "renders the feed and onboarding task card", js: true do
       visit "/"
 
       wait_for_javascript
-      expect(page).to have_css(".onboarding-task-card")
+      expect(page).to have_css(".onboarding-task-card", wait: 10)
     end
 
     it "shows a call to action for creating a post and can dismiss the onboarding task card", :aggregate_failures do
