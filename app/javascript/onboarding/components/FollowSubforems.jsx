@@ -150,7 +150,8 @@ export class FollowSubforems extends Component {
     const { selectedSubforems, allSubforems, loading, originalSubforemId } = this.state;
 
     // Show the same layout structure whether loading or not
-    const subforemsToShow = loading ? [] : allSubforems;
+    // Filter out the root subforem from the list
+    const subforemsToShow = loading ? [] : allSubforems.filter(subforem => !subforem.root);
 
     return (
       <div
