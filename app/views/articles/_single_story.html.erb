@@ -1,16 +1,16 @@
 <div class="crayons-story <% if featured == true %>crayons-story--featured<% end %>" data-feed-content-id="<%= story.id %>" data-content-user-id="<%= story.user_id %>">
-  <a href="<%= URL.article(story) %>" aria-labelledby="article-link-<%= story.id %>" class="crayons-story__hidden-navigation-link"><%= story.title %></a>
+  <a href="<%= URL.article(story) %>" aria-labelledby="article-link-<%= story.id %>" class="crayons-story__hidden-navigation-link"><%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %></a>
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
   <% if story.video.present? && story.video.include?("youtube") %>
     <div class="crayons-article__cover crayons-article__cover__image__feed" style="width: 100%; aspect-ratio: 16 / 9; position: relative;">
-      <iframe src="<%= story.video %>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true" title="<%= story.title%>" style="border: 0px; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></iframe>
+      <iframe src="<%= story.video %>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true" title="<%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title%>" style="border: 0px; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></iframe>
     </div>
   <% elsif featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <div class="crayons-article__cover crayons-article__cover__image__feed" style="aspect-ratio: auto 1000 / <%= story.main_image_height %>;">
-      <a href="<%= URL.article(story) %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
-        <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
+              <a href="<%= URL.article(story) %>" title="<%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
+        <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %>">
       </a>
     </div>
   <% end %>
@@ -23,7 +23,7 @@
   </a>
   <% end %>
 
-  <div class="crayons-story__body">
+  <div class="crayons-story__body crayons-story__body-<%= story.type_of %>">
     <% note = story.context_notes.first %>
     <% if note && note.processed_html.present? %>
       <a href="<%= URL.article(story) %>" class="crayons-article__context-note crayons-article__context-note__feed"><%= note.processed_html.html_safe %></a>
@@ -108,28 +108,35 @@
     </div>
 
     <div class="crayons-story__indention">
-      <h2 class="crayons-story__title">
+      <h2 class="crayons-story__title crayons-story__title-<%= story.type_of %>">
         <a href="<%= URL.article(story) %>" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
-          <%= story.title %>
+          <%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %>
         </a>
       </h2>
-      <div class="crayons-story__tags">
-        <% flare_tag = FlareTag.new(story, @tag).tag %>
-        <% if flare_tag %>
-          <%= render_tag_link(flare_tag.name, filled: true) %>
-        <% end %>
-        <% tags_to_display = story.cached_tag_list_array
-           if flare_tag
-             tags_to_display = tags_to_display.reject { |tag| tag == flare_tag.name }
-           end %>
-        <% tags_to_display.each do |tag| %>
-          <%= render_tag_link(tag, filled: false, monochrome: true) %>
-        <% end %>
-      </div>
+      <% if story.type_of != 'status' %>
+        <div class="crayons-story__tags">
+          <% flare_tag = FlareTag.new(story, @tag).tag %>
+          <% if flare_tag %>
+            <%= render_tag_link(flare_tag.name, filled: true) %>
+          <% end %>
+          <% tags_to_display = story.cached_tag_list_array
+             if flare_tag
+               tags_to_display = tags_to_display.reject { |tag| tag == flare_tag.name }
+             end %>
+          <% tags_to_display.each do |tag| %>
+            <%= render_tag_link(tag, filled: false, monochrome: true) %>
+          <% end %>
+        </div>
+      <% end %>
+      <% if story.type_of == 'status' && story.body_preview.present? && story.body_preview.length > 10 %>
+        <div class="crayons-story__contentpreview text-styles">
+          <%= story.body_preview.html_safe %>
+        </div>
+      <% end %>
       <div class="crayons-story__bottom">
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
-          <a href="<%= URL.article(story) %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+          <a href="<%= URL.article(story) %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
             <div class="multiple_reactions_aggregate">
               <span class="multiple_reactions_icons_container" dir="rtl">
                 <% story.public_reaction_categories.reverse_each do |reaction_type| %>
@@ -146,7 +153,7 @@
           </a>
           <% end %>
           <% if story.comments_count > 0 %>
-            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <%= t("views.comments.summary.count_html",
                     count: story.comments_count,
@@ -154,7 +161,7 @@
                     end: "</span>".html_safe) %>
             </a>
           <% else %>
-            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <span class="hidden s:inline"><%= t("views.comments.add") %></span>
             </a>
@@ -171,8 +178,8 @@
               class="c-btn c-btn--icon-alone bookmark-button"
               data-reactable-id="<%= story.id %>"
               data-article-author-id="<%= story.user_id %>"
-              aria-label="<%= t("views.articles.save.aria_label", title: story.title) %>"
-              title="<%= t("views.articles.save.title", title: story.title) %>">
+              aria-label="<%= t("views.articles.save.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>"
+              title="<%= t("views.articles.save.title", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
               <span class="bm-initial">
                 <%= inline_svg_tag("small-save.svg", alt: "", aria_hidden: true) %>
               </span>

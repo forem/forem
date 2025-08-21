@@ -566,12 +566,12 @@ RSpec.describe Article do
 
     describe "before_validation :set_markdown_from_body_url" do
       context "when body_url is present" do
-        it "sets body_markdown to '{% embed body_url %}'" do
+        it "sets body_markdown to '{% embed body_url minimal %}'" do
           url = article_url(article)
           allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
           article = build(:article, body_url: url, body_markdown: nil)
           article.valid?
-          expect(article.body_markdown).to eq("{% embed #{url} %}")
+          expect(article.body_markdown).to eq("{% embed #{url} minimal %}")
         end
 
         it "overwrites existing body_markdown with embedded body_url" do
@@ -579,7 +579,7 @@ RSpec.describe Article do
           allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
           article = build(:article, body_url: url, body_markdown: "Existing content")
           article.valid?
-          expect(article.body_markdown).to eq("{% embed #{url} %}")
+          expect(article.body_markdown).to eq("{% embed #{url} minimal %}")
         end
       end
 
@@ -2247,6 +2247,212 @@ RSpec.describe Article do
         article.processed_html = "Content with the old domain #{prior_domain}."
         expect(article.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
       end
+    end
+  end
+
+  describe "URL extraction from title for quickie posts" do
+    let(:user) { create(:user) }
+
+    before do
+      # Stub HTTP requests for URL validation in embed tags
+      stub_request(:head, "https://example.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example</title></head><body>Example content</body></html>", headers: {})
+
+      stub_request(:head, "https://another-example.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://another-example.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Another Example</title></head><body>Another example content</body></html>", headers: {})
+
+      stub_request(:head, "https://first.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://first.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>First</title></head><body>First content</body></html>", headers: {})
+
+      stub_request(:head, "https://second.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://second.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Second</title></head><body>Second content</body></html>", headers: {})
+
+      stub_request(:head, "https://third.net/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://third.net/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Third</title></head><body>Third content</body></html>", headers: {})
+
+      stub_request(:head, "https://example.com/path?param=value#fragment")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/path?param=value#fragment")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example with params</title></head><body>Example with params content</body></html>", headers: {})
+
+      stub_request(:head, "https://example.com/path?param=value")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/path?param=value")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example with params</title></head><body>Example with params content</body></html>", headers: {})
+    end
+
+    context "when creating a status post with URLs in title" do
+      it "adds embed tags to body_markdown for URLs found in title" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check out this cool site https://example.com and also https://another-example.org",
+                        body_markdown: "Some existing content")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://example.com minimal %}")
+        expect(article.body_markdown).to include("{% embed https://another-example.org minimal %}")
+        expect(article.body_markdown).to include("Some existing content")
+      end
+
+      it "creates embed tags when body_markdown is empty" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Look at this: https://example.com",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "does not add embed tags for non-status posts" do
+        article = build(:article,
+                        user: user,
+                        type_of: "full_post",
+                        title: "Check out this cool site https://example.com",
+                        body_markdown: "Some content")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("Some content")
+      end
+
+      it "does not add embed tags when title has no URLs" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Just a regular title with no URLs",
+                        body_markdown: "Some content")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("Some content")
+      end
+
+      it "handles multiple URLs in title correctly" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Multiple URLs: https://first.com and https://second.org and https://third.net",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://first.com minimal %}")
+        expect(article.body_markdown).to include("{% embed https://second.org minimal %}")
+        expect(article.body_markdown).to include("{% embed https://third.net minimal %}")
+      end
+
+      it "handles URLs with query parameters and fragments" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Complex URL: https://example.com/path?param=value#fragment",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
+      end
+    end
+  end
+
+  describe "#title_finalized" do
+    let(:user) { create(:user) }
+
+    it "returns the original title when no URLs are present" do
+      article = build(:published_article, user: user, title: "This is a normal title")
+      expect(article.title_finalized).to eq("This is a normal title")
+    end
+
+    it "truncates long URLs and strips protocol/www" do
+      article = build(:published_article, user: user, title: "Check out this link https://www.example.com/very/long/path/that/should/be/truncated")
+      expect(article.title_finalized).to eq("Check out this link <span style=\"text-decoration: underline;\">example.com/very/long/...</span>")
+    end
+
+    it "keeps short URLs unchanged but strips protocol/www" do
+      article = build(:published_article, user: user, title: "Short link https://ex.co")
+      expect(article.title_finalized).to eq("Short link <span style=\"text-decoration: underline;\">ex.co</span>")
+    end
+
+    it "handles multiple URLs in the same title" do
+      article = build(:published_article, user: user,
+                                          title: "First link https://example.com/very/long/path and second link https://another-example.com/also/very/long")
+      expect(article.title_finalized).to eq("First link <span style=\"text-decoration: underline;\">example.com/very/long/...</span> and second link <span style=\"text-decoration: underline;\">another-example.com/al...</span>")
+    end
+
+    it "handles URLs with query parameters and fragments" do
+      article = build(:published_article, user: user, title: "Link with params https://example.com/path?param=value&other=123#fragment")
+      expect(article.title_finalized).to eq("Link with params <span style=\"text-decoration: underline;\">example.com/path?param...</span>")
+    end
+
+    it "strips www from URLs" do
+      article = build(:published_article, user: user, title: "Link with www https://www.example.com")
+      expect(article.title_finalized).to eq("Link with www <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "handles http URLs" do
+      article = build(:published_article, user: user, title: "HTTP link http://example.com")
+      expect(article.title_finalized).to eq("HTTP link <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "returns nil when title is nil" do
+      article = build(:published_article, user: user, title: nil)
+      expect(article.title_finalized).to be_nil
+    end
+
+    it "returns empty string when title is empty" do
+      article = build(:published_article, user: user, title: "")
+      expect(article.title_finalized).to eq("")
+    end
+
+    it "returns HTML safe content" do
+      article = build(:published_article, user: user, title: "Link https://example.com")
+      expect(article.title_finalized).to be_html_safe
+    end
+
+    it "removes trailing slash from URLs" do
+      article = build(:published_article, user: user, title: "Link with trailing slash https://example.com/")
+      expect(article.title_finalized).to eq("Link with trailing slash <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "removes trailing slash from URLs with paths" do
+      article = build(:published_article, user: user, title: "Link with path and trailing slash https://example.com/path/")
+      expect(article.title_finalized).to eq("Link with path and trailing slash <span style=\"text-decoration: underline;\">example.com/path</span>")
     end
   end
 end
