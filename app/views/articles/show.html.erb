@@ -235,7 +235,7 @@
                 <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                   <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
                 <% end %>
-                <%= @article.title %>
+                <%= @article.type_of == "status" ? @article.title_finalized : @article.title %>
               </h1>
               
               <% if @article.type_of == "full_post" %>
