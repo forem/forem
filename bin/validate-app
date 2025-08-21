@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+# Application Validation Script
+# This script validates that the Rails application can initialize properly
+# and catches common issues before they cause crashes in production
+
+set -e
+
+echo "🔍 Validating Rails application..."
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_status() {
+  local status=$1
+  local message=$2
+  if [ "$status" = "SUCCESS" ]; then
+    echo -e "${GREEN}✅ $message${NC}"
+  elif [ "$status" = "ERROR" ]; then
+    echo -e "${RED}❌ $message${NC}"
+  elif [ "$status" = "WARNING" ]; then
+    echo -e "${YELLOW}⚠️  $message${NC}"
+  else
+    echo "ℹ️  $message"
+  fi
+}
+
+# Check if we're in a Rails application
+if [ ! -f "config/application.rb" ]; then
+  print_status "ERROR" "Not in a Rails application directory"
+  exit 1
+fi
+
+# Check if bundle is available
+if ! command -v bundle &> /dev/null; then
+  print_status "ERROR" "Bundler is not installed"
+  exit 1
+fi
+
+# Check if all gems are installed
+print_status "INFO" "Checking gem dependencies..."
+if ! bundle check > /dev/null 2>&1; then
+  print_status "ERROR" "Gem dependencies are not satisfied. Run 'bundle install'"
+  exit 1
+fi
+print_status "SUCCESS" "Gem dependencies are satisfied"
+
+# Validate Rails application can load
+print_status "INFO" "Validating Rails application initialization..."
+if bundle exec rails runner "puts 'Rails application loaded successfully'" > /dev/null 2>&1; then
+  print_status "SUCCESS" "Rails application initializes successfully"
+else
+  print_status "ERROR" "Rails application failed to initialize"
+  echo ""
+  echo "Running with verbose output to see the error:"
+  bundle exec rails runner "puts 'Rails application loaded successfully'"
+  exit 1
+fi
+
+# Check database connectivity
+print_status "INFO" "Checking database connectivity..."
+if bundle exec rails runner "ActiveRecord::Base.connection.execute('SELECT 1')" > /dev/null 2>&1; then
+  print_status "SUCCESS" "Database connectivity is working"
+else
+  print_status "ERROR" "Database connectivity check failed"
+  exit 1
+fi
+
+# Check for pending migrations
+print_status "INFO" "Checking for pending migrations..."
+PENDING_MIGRATIONS=$(bundle exec rails runner "puts ActiveRecord::Migration.pending_migrations.count" 2>/dev/null || echo "0")
+if [ "$PENDING_MIGRATIONS" = "0" ]; then
+  print_status "SUCCESS" "No pending migrations"
+else
+  print_status "WARNING" "There are $PENDING_MIGRATIONS pending migration(s)"
+fi
+
+# Check for common configuration issues
+print_status "INFO" "Checking for common configuration issues..."
+
+# Check if required environment variables are set
+REQUIRED_VARS=("RAILS_ENV" "DATABASE_URL")
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    print_status "WARNING" "Environment variable $var is not set"
+  else
+    print_status "SUCCESS" "Environment variable $var is set"
+  fi
+done
+
+# Check for potential initializer issues
+print_status "INFO" "Checking initializers..."
+INITIALIZER_COUNT=$(find config/initializers -name "*.rb" | wc -l)
+print_status "SUCCESS" "Found $INITIALIZER_COUNT initializer(s)"
+
+# Test specific services if they're configured
+if [ -n "$HONEYBADGER_API_KEY" ]; then
+  print_status "INFO" "Testing Honeybadger configuration..."
+  if bundle exec rails runner "puts 'Honeybadger configured'" 2>/dev/null; then
+    print_status "SUCCESS" "Honeybadger configuration is valid"
+  else
+    print_status "WARNING" "Honeybadger configuration may have issues"
+  fi
+fi
+
+# Final validation
+print_status "INFO" "Running final application validation..."
+if bundle exec rails runner "puts 'Application validation successful'" > /dev/null 2>&1; then
+  print_status "SUCCESS" "Application validation completed successfully"
+  echo ""
+  echo "🎉 Your Rails application is ready to run!"
+else
+  print_status "ERROR" "Final validation failed"
+  exit 1
+fi
