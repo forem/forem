@@ -60,6 +60,10 @@
     width: 100%;
   }
 
+  &--limited-xl {
+    --site-width: #{$breakpoint-xl};
+  }
+
   &--limited-l {
     --site-width: #{$breakpoint-l};
   }
@@ -347,6 +351,11 @@ body[data-side-nav-visible='true'] {
       max-width: calc(var(--site-width) - 50px);
       width: calc(100% - 50px);
       margin-left: 50px; /* Adjust this value to match the sidebar width */
+    }
+    @media (min-width: $breakpoint-l) {
+      &.crayons-layout--limited-l {
+        margin-left: auto;
+      }
     }
     @media (min-width: $breakpoint-2xl) {
       max-width: var(--site-width);
