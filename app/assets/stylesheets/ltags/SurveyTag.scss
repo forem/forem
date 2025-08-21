@@ -29,9 +29,14 @@
   margin-bottom: 1em;
 
   h3 {
-    margin: 15px 0px;
-    font-size: 1.1em;
+    margin: 15px 0px 20px !important;
+    font-size: 1.1em !important;
     color: var(--body-color);
+  }
+  &.survey-poll-long-question {
+    h3 {
+      font-size: 1em !important;
+    }
   }
 }
 

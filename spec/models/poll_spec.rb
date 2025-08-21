@@ -9,7 +9,7 @@ RSpec.describe Poll, type: :model do
     it { is_expected.to validate_presence_of(:poll_votes_count) }
     it { is_expected.to validate_presence_of(:prompt_markdown) }
     it { is_expected.to validate_presence_of(:type_of) }
-    it { is_expected.to validate_length_of(:prompt_markdown).is_at_most(128) }
+    it { is_expected.to validate_length_of(:prompt_markdown).is_at_most(500) }
     it { is_expected.to validate_length_of(:poll_options_input_array).is_at_least(2) }
     it { is_expected.to validate_length_of(:poll_options_input_array).is_at_most(15) }
   end

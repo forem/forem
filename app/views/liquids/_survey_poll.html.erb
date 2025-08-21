@@ -1,5 +1,5 @@
 <div 
-  class="survey-poll <%= 'scale-horizontal scale-5-options' if poll.scale? && poll.poll_options.count == 5 %> <%= 'scale-horizontal scale-many-options' if poll.scale? && poll.poll_options.count > 5 %>" 
+  class="survey-poll <%= 'survey-poll-long-question' if poll.prompt_markdown.length > 128 %> <%= 'scale-horizontal scale-5-options' if poll.scale? && poll.poll_options.count == 5 %> <%= 'scale-horizontal scale-many-options' if poll.scale? && poll.poll_options.count > 5 %>" 
   id="survey-poll-<%= poll.id %>" 
   data-poll-id="<%= poll.id %>" 
   data-poll-index="<%= index %>"

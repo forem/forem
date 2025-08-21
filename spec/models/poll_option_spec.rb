@@ -16,8 +16,8 @@ RSpec.describe PollOption do
       it { is_expected.to validate_presence_of(:poll_votes_count) }
     end
 
-    it "allows up to 128 markdown characters" do
-      poll_option.markdown = "0" * 128
+    it "allows up to 256 markdown characters" do
+      poll_option.markdown = "0" * 256
       expect(poll_option).to be_valid
     end
 
