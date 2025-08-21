@@ -3,6 +3,9 @@
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.reloader.to_prepare do
+  # Only configure Honeybadger if it's available and we have the necessary config
+  return unless defined?(Honeybadger) && defined?(ApplicationConfig)
+
   message_fingerprints = {
     "Rack::Timeout::RequestTimeoutException" => "rack_timeout",
     "Rack::Timeout::RequestTimeoutError" => "rack_timeout",
@@ -51,5 +54,8 @@ Rails.application.reloader.to_prepare do
                            end
     end
   end
+rescue StandardError => e
+  # Log the error but don't crash the application
+  Rails.logger.error "Failed to configure Honeybadger: #{e.message}" if defined?(Rails.logger)
 end
 # rubocop:enable Metrics/BlockLength

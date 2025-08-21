@@ -16,6 +16,7 @@ show_help() {
   echo "  bullet   - Enable only Bullet for N+1 query detection"
   echo "  sql      - Enable only SQL logging"
   echo "  status   - Show current performance settings"
+  echo "  validate - Validate application configuration and catch issues early"
   echo "  cleanup  - Clean up stuck processes and temp files"
   echo "  auto-cleanup - Run automatic cleanup (logs, temp files, etc.)"
   echo "  help     - Show this help message"
@@ -24,6 +25,7 @@ show_help() {
   echo "  bin/dev-performance fast    # Fastest development experience"
   echo "  bin/dev-performance debug   # Full debugging capabilities"
   echo "  bin/dev-performance bullet  # Just N+1 query detection"
+  echo "  bin/dev-performance validate # Check for configuration issues"
 }
 
 enable_fast_mode() {
@@ -98,6 +100,10 @@ case "${1:-help}" in
     ;;
   status)
     show_status
+    ;;
+  validate)
+    echo "🔍 Validating application configuration..."
+    exec bin/validate-app
     ;;
   cleanup)
     echo "🧹 Running cleanup..."

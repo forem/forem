@@ -4,7 +4,7 @@
 
 if Rails.env.development?
   # Disable Honeybadger in development unless explicitly enabled
-  unless ENV["HONEYBADGER_ENABLED"] == "true"
+  if !(ENV["HONEYBADGER_ENABLED"] == "true") && defined?(Honeybadger)
     Honeybadger.configure do |config|
       config.api_key = nil
       config.send_data_at_exit = false
@@ -20,7 +20,7 @@ if Rails.env.development?
   end
 
   # Disable Honeycomb in development unless explicitly enabled
-  unless ENV["HONEYCOMB_ENABLED"] == "true"
+  if !(ENV["HONEYCOMB_ENABLED"] == "true") && defined?(Honeycomb)
     Honeycomb.configure do |config|
       config.write_key = nil
       config.client = Libhoney::NullClient.new
@@ -28,7 +28,7 @@ if Rails.env.development?
   end
 
   # Disable Datadog tracing in development unless explicitly enabled
-  unless ENV["DD_ENABLED"] == "true"
+  if !(ENV["DD_ENABLED"] == "true") && defined?(Datadog)
     Datadog.configure do |c|
       c.tracing.enabled = false
       c.diagnostics.startup_logs.enabled = false
@@ -36,19 +36,27 @@ if Rails.env.development?
   end
 
   # Disable Ahoy tracking in development unless explicitly enabled
-  unless ENV["AHOY_ENABLED"] == "true"
-    Ahoy.api = false
-    Ahoy.server_side_visits = false
-    Ahoy.mask_ips = true
-    Ahoy.cookies = :none
-    Ahoy.geocode = false
+  if !(ENV["AHOY_ENABLED"] == "true") && defined?(Ahoy)
+    begin
+      Ahoy.api = false
+      Ahoy.server_side_visits = false
+      Ahoy.mask_ips = true
+      Ahoy.cookies = :none
+      Ahoy.geocode = false
+    rescue StandardError => e
+      # Log the error but don't crash the application
+      Rails.logger.warn "Failed to configure Ahoy in development: #{e.message}" if defined?(Rails.logger)
+    end
   end
 
   # Reduce logging verbosity for better performance
-  Rails.logger.level = Logger::INFO
+  Rails.logger.level = Logger::INFO if Rails.logger
 
   # Disable SQL logging in development for cleaner output
-  ActiveRecord::Base.logger = nil if ENV["SQL_LOGGING"] != "true"
+  # Only disable if explicitly requested and not in a rake task context
+  if ENV["SQL_LOGGING"] != "true" && !defined?(Rake)
+    ActiveRecord::Base.logger = nil
+  end
 
   puts "🚀 Development performance optimizations enabled!"
   puts "   - Honeybadger disabled (set HONEYBADGER_ENABLED=true to enable)"
