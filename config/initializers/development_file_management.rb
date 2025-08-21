@@ -3,7 +3,7 @@
 
 if Rails.env.development?
   # Reduce log verbosity for better performance
-  Rails.logger.level = Logger::INFO
+  Rails.logger.level = Logger::INFO if Rails.logger
 
   # Disable asset logging to reduce noise
   Rails.application.config.assets.quiet = true
@@ -41,9 +41,6 @@ if Rails.env.development?
       end
     end
   end
-
-  # Configure file watchers to be less aggressive
-  Rails.application.config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # NOTE: File watcher configuration is handled in config/environments/development.rb
   # The EventedFileUpdateChecker is already configured there
