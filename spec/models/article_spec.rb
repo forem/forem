@@ -566,12 +566,12 @@ RSpec.describe Article do
 
     describe "before_validation :set_markdown_from_body_url" do
       context "when body_url is present" do
-        it "sets body_markdown to '{% embed body_url %}'" do
+        it "sets body_markdown to '{% embed body_url minimal %}'" do
           url = article_url(article)
           allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
           article = build(:article, body_url: url, body_markdown: nil)
           article.valid?
-          expect(article.body_markdown).to eq("{% embed #{url} %}")
+          expect(article.body_markdown).to eq("{% embed #{url} minimal %}")
         end
 
         it "overwrites existing body_markdown with embedded body_url" do
@@ -579,7 +579,7 @@ RSpec.describe Article do
           allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
           article = build(:article, body_url: url, body_markdown: "Existing content")
           article.valid?
-          expect(article.body_markdown).to eq("{% embed #{url} %}")
+          expect(article.body_markdown).to eq("{% embed #{url} minimal %}")
         end
       end
 
@@ -2263,8 +2263,8 @@ RSpec.describe Article do
 
         article.valid?
 
-        expect(article.body_markdown).to include("{% embed https://example.com %}")
-        expect(article.body_markdown).to include("{% embed https://another-example.org %}")
+        expect(article.body_markdown).to include("{% embed https://example.com minimal %}")
+        expect(article.body_markdown).to include("{% embed https://another-example.org minimal %}")
         expect(article.body_markdown).to include("Some existing content")
       end
 
@@ -2277,7 +2277,7 @@ RSpec.describe Article do
 
         article.valid?
 
-        expect(article.body_markdown).to eq("{% embed https://example.com %}")
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
       end
 
       it "does not add embed tags for non-status posts" do
@@ -2313,9 +2313,9 @@ RSpec.describe Article do
 
         article.valid?
 
-        expect(article.body_markdown).to include("{% embed https://first.com %}")
-        expect(article.body_markdown).to include("{% embed https://second.org %}")
-        expect(article.body_markdown).to include("{% embed https://third.net %}")
+        expect(article.body_markdown).to include("{% embed https://first.com minimal %}")
+        expect(article.body_markdown).to include("{% embed https://second.org minimal %}")
+        expect(article.body_markdown).to include("{% embed https://third.net minimal %}")
       end
 
       it "handles URLs with query parameters and fragments" do
@@ -2327,8 +2327,73 @@ RSpec.describe Article do
 
         article.valid?
 
-        expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment %}")
+        expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
       end
+    end
+  end
+
+  describe "#title_finalized" do
+    let(:user) { create(:user) }
+
+    it "returns the original title when no URLs are present" do
+      article = build(:published_article, user: user, title: "This is a normal title")
+      expect(article.title_finalized).to eq("This is a normal title")
+    end
+
+    it "truncates long URLs and strips protocol/www" do
+      article = build(:published_article, user: user, title: "Check out this link https://www.example.com/very/long/path/that/should/be/truncated")
+      expect(article.title_finalized).to eq("Check out this link <span style=\"text-decoration: underline;\">example.com/very/long/...</span>")
+    end
+
+    it "keeps short URLs unchanged but strips protocol/www" do
+      article = build(:published_article, user: user, title: "Short link https://ex.co")
+      expect(article.title_finalized).to eq("Short link <span style=\"text-decoration: underline;\">ex.co</span>")
+    end
+
+    it "handles multiple URLs in the same title" do
+      article = build(:published_article, user: user,
+                                          title: "First link https://example.com/very/long/path and second link https://another-example.com/also/very/long")
+      expect(article.title_finalized).to eq("First link <span style=\"text-decoration: underline;\">example.com/very/long/...</span> and second link <span style=\"text-decoration: underline;\">another-example.com/al...</span>")
+    end
+
+    it "handles URLs with query parameters and fragments" do
+      article = build(:published_article, user: user, title: "Link with params https://example.com/path?param=value&other=123#fragment")
+      expect(article.title_finalized).to eq("Link with params <span style=\"text-decoration: underline;\">example.com/path?param...</span>")
+    end
+
+    it "strips www from URLs" do
+      article = build(:published_article, user: user, title: "Link with www https://www.example.com")
+      expect(article.title_finalized).to eq("Link with www <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "handles http URLs" do
+      article = build(:published_article, user: user, title: "HTTP link http://example.com")
+      expect(article.title_finalized).to eq("HTTP link <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "returns nil when title is nil" do
+      article = build(:published_article, user: user, title: nil)
+      expect(article.title_finalized).to be_nil
+    end
+
+    it "returns empty string when title is empty" do
+      article = build(:published_article, user: user, title: "")
+      expect(article.title_finalized).to eq("")
+    end
+
+    it "returns HTML safe content" do
+      article = build(:published_article, user: user, title: "Link https://example.com")
+      expect(article.title_finalized).to be_html_safe
+    end
+
+    it "removes trailing slash from URLs" do
+      article = build(:published_article, user: user, title: "Link with trailing slash https://example.com/")
+      expect(article.title_finalized).to eq("Link with trailing slash <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "removes trailing slash from URLs with paths" do
+      article = build(:published_article, user: user, title: "Link with path and trailing slash https://example.com/path/")
+      expect(article.title_finalized).to eq("Link with path and trailing slash <span style=\"text-decoration: underline;\">example.com/path</span>")
     end
   end
 end

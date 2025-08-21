@@ -5,7 +5,6 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
 
   # See https://github.com/forem/forem/issues/17679; Note the document has `og:title` but not
   # `og:url`; should we fallback to the given URL instead?
-  # rubocop:disable RSpec/ExampleLength
   it "handles https://guides.rubyonrails.org" do
     link = "https://guides.rubyonrails.org/routing.html"
     stub_request(:head, link)
@@ -47,7 +46,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(GistTag).to have_received(:new)
   end
 
-  it "delegates parsing to the link-matching class when there are options", vcr: true do
+  it "delegates parsing to the link-matching class when there are options", :vcr do
     link = "https://github.com/rust-lang/rust"
 
     allow(GithubTag).to receive(:new).and_call_original
@@ -70,7 +69,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided was not found; please check and try again")
   end
 
-  it "repeats validation when link returns not-allowed", vcr: true do
+  it "repeats validation when link returns not-allowed", :vcr do
     link = "https://takeonrules.com/not-allowed-response"
 
     allow(described_class).to receive(:validate_link).and_call_original
@@ -97,7 +96,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
 
-  it "repeats validation when link returns redirect", vcr: true do
+  it "repeats validation when link returns redirect", :vcr do
     link = "https://bit.ly/hoagintake"
 
     allow(described_class).to receive(:validate_link).and_call_original
@@ -109,7 +108,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end
   end
 
-  it "raises error when link redirects too many times in a row", vcr: true do
+  it "raises error when link redirects too many times in a row", :vcr do
     link = "https://bit.ly/hoagintake"
     stub_const("UnifiedEmbed::Tag::MAX_REDIRECTION_COUNT", 0)
 
@@ -120,7 +119,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end
   end
 
-  it "calls OpenGraphTag when no link-matching class is found", vcr: true do
+  it "calls OpenGraphTag when no link-matching class is found", :vcr do
     link = "https://takeonrules.com/about/"
 
     allow(OpenGraphTag).to receive(:new).and_call_original
@@ -139,5 +138,73 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     unsafe = "Some of this.is_not_safe (but that's okay?) 🌱"
     result = described_class.safe_user_agent(unsafe)
     expect(result).to eq("Some of this.is_not_safe (but that-s okay-) -")
+  end
+
+  describe "minimal keyword" do
+    let(:user) { create(:user, username: "testuser") }
+    let(:article) { create(:article, user: user, title: "Test Article") }
+    let(:youtube_url) { "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }
+    let(:forem_url) { "#{URL.url}/#{user.username}/#{article.slug}" }
+
+    it "uses OpenGraphTag for non-allowlisted URLs when minimal is specified" do
+      stub_network_request(url: youtube_url)
+      stub_metainspector_request(youtube_url)
+      stub_request(:get, youtube_url)
+        .with(
+          headers: {
+            "Accept" => "*/*",
+            "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+            "User-Agent" => "DEV(local) (http://forem.test)"
+          },
+        )
+        .to_return(status: 200, body: "", headers: {})
+      liquid = Liquid::Template.parse("{% embed #{youtube_url} minimal %}")
+      expect(liquid.render).to include("c-embed") # OpenGraphTag uses the c-embed class
+    end
+
+    it "uses LinkTag for allowlisted URLs when minimal is specified" do
+      stub_network_request(url: forem_url)
+      liquid = Liquid::Template.parse("{% embed #{forem_url} minimal %}")
+      expect(liquid.render).to include("ltag__link") # LinkTag uses the ltag__link class
+    end
+
+    it "uses normal embed behavior when minimal is not specified" do
+      stub_network_request(url: youtube_url)
+      liquid = Liquid::Template.parse("{% embed #{youtube_url} %}")
+      # Should use YoutubeTag which renders differently than OpenGraphTag
+      expect(liquid.render).not_to include("c-embed")
+    end
+
+    it "handles minimal keyword in any position" do
+      stub_network_request(url: youtube_url)
+      stub_metainspector_request(youtube_url)
+      stub_request(:get, youtube_url)
+        .with(
+          headers: {
+            "Accept" => "*/*",
+            "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+            "User-Agent" => "DEV(local) (http://forem.test)"
+          },
+        )
+        .to_return(status: 200, body: "", headers: {})
+      liquid = Liquid::Template.parse("{% embed minimal #{youtube_url} %}")
+      expect(liquid.render).to include("c-embed")
+    end
+
+    it "handles multiple spaces and minimal keyword" do
+      stub_network_request(url: youtube_url)
+      stub_metainspector_request(youtube_url)
+      stub_request(:get, youtube_url)
+        .with(
+          headers: {
+            "Accept" => "*/*",
+            "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+            "User-Agent" => "DEV(local) (http://forem.test)"
+          },
+        )
+        .to_return(status: 200, body: "", headers: {})
+      liquid = Liquid::Template.parse("{% embed   #{youtube_url}   minimal   %}")
+      expect(liquid.render).to include("c-embed")
+    end
   end
 end
