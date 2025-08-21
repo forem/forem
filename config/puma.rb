@@ -24,12 +24,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-# Use single worker in development for faster startup and less memory usage
-if Rails.env.development?
-  workers 0
-else
-  workers ENV.fetch("WEB_CONCURRENCY", 2)
-end
+workers ENV.fetch("WEB_CONCURRENCY", 2)
 
 # calls GC a handful of times and compacts the heap on Ruby 2.7+ before forking.
 # This may reduce memory usage of Puma on MRI.
@@ -40,8 +35,7 @@ nakayoshi_fork
 # before forking the application. This takes advantage of Copy On Write
 # process behavior so workers use less memory.
 #
-# Only preload in production for faster development startup
-preload_app! unless Rails.env.development?
+preload_app!
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart

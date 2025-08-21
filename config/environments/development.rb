@@ -52,8 +52,7 @@ Rails.application.configure do
   config.active_record.migration_error = :page_load
 
   # Highlight code that triggered database queries in logs.
-  # Disabled for performance in development
-  config.active_record.verbose_query_logs = false
+  config.active_record.verbose_query_logs = true
 
   # Allows setting a warning threshold for query result size.
   # If the number of records returned by a query exceeds the threshold, a warning is logged.
@@ -120,8 +119,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Debug is the default log_level, but can be changed per environment.
-  # Reduced logging for better performance
-  config.log_level = :info
+  config.log_level = :debug
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
@@ -135,37 +133,33 @@ Rails.application.configure do
   config.logger = ActiveSupport::Logger.new("log/development.log", 1, 3.megabytes)
 
   config.after_initialize do
-    # Only enable Bullet if explicitly requested for performance
-    if ENV["BULLET_ENABLED"] == "true"
-      Bullet.enable = true
-      Bullet.add_footer = true
-      Bullet.console = true
-      Bullet.rails_logger = true
+    # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
+    Bullet.enable = true
 
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
-      # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
-      Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
-      # Suppress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article",
-                          association: :distinct_reaction_categories)
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
-      # There were some warnings about eager loading the organization for a billboard, however since the code goes down
-      # different paths (in_house where we don't need the organization info vs external/community where we need the
-      # organization info), bullet was getting confused on whether we need the eager loading or not.
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Billboard", association: :organization)
+    Bullet.add_footer = true
+    Bullet.console = true
+    Bullet.rails_logger = true
 
-      # TODO: Temporarily ignoring this while working out user - profile relationship
-      Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    # Suppress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :distinct_reaction_categories)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # There were some warnings about eager loading the organization for a billboard, however since the code goes down
+    # different paths (in_house where we don’t need the organization info vs external/community where we need the
+    # organization info), bullet was getting confused on whether we need the eager loading or not.
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Billboard", association: :organization)
 
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "FeedbackMessage", association: :reporter)
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :reactions)
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Reaction", association: :user)
-      Bullet.add_safelist(type: :unused_eager_loading, class_name: "Tag", association: :badge)
-    else
-      Bullet.enable = false
-    end
+    # TODO: Temporarily ignoring this while working out user - profile relationship
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "FeedbackMessage", association: :reporter)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :reactions)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Reaction", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Tag", association: :badge)
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?

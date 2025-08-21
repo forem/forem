@@ -1,10 +1,17 @@
 namespace :release do
-  desc "Run migrations (always runs db:migrate for production reliability)"
+  desc "Run migrations only if there are pending migrations (acquires advisory lock only when needed)"
   task migrate_if_pending: :environment do
-    puts "[release] 🔄 Running database migrations..."
-    # Always run migrations for production reliability
-    # This ensures the database is in the correct state regardless of migration status
-    Rake::Task["db:migrate"].invoke
-    puts "[release] ✅ Database migrations completed successfully."
+    # Grab the migration context from ActiveRecord. In Rails 7+, `migration_context`
+    # knows about your `db/migrate` folder and the schema_migrations table.
+    migration_context = ActiveRecord::Base.connection.migration_context
+
+    if migration_context.needs_migration?
+      puts "[release] ⏳ Pending migrations detected. Running `db:migrate`…"
+      # Invoke the normal Rails migrations. Because we are invoking a Rake task, 
+      # it will obtain the advisory lock, run only the pending migrations, then release.
+      Rake::Task["db:migrate"].invoke
+    else
+      puts "[release] ✅ No pending migrations. Skipping `db:migrate`."
+    end
   end
 end
