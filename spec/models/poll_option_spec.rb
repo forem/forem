@@ -21,8 +21,8 @@ RSpec.describe PollOption do
       expect(poll_option).to be_valid
     end
 
-    it "disallows over 128 markdown characters" do
-      poll_option.markdown = "0" * 129
+    it "disallows over 256 markdown characters" do
+      poll_option.markdown = "0" * 257
       expect(poll_option).not_to be_valid
     end
   end
