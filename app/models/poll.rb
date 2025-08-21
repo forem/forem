@@ -23,7 +23,7 @@ class Poll < ApplicationRecord
   validates :poll_options_input_array, presence: true, length: { minimum: 2, maximum: 15 }, unless: :text_input?
   validates :poll_skips_count, presence: true
   validates :poll_votes_count, presence: true
-  validates :prompt_markdown, presence: true, length: { maximum: 128 }
+  validates :prompt_markdown, presence: true, length: { maximum: 500 }
   validates :type_of, presence: true
 
   before_save :evaluate_markdown
