@@ -243,6 +243,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :set_markdown_from_body_url, if: :body_url?
+  before_validation :add_urls_from_title_to_body, if: :should_add_urls_from_title?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
   before_validation :replace_blank_title_for_status
@@ -893,8 +894,13 @@ class Article < ApplicationRecord
     # Return early if this is already saved and the body_markdown hasn't changed
     return if persisted? && !body_markdown_changed?
 
-    # For now, there is no body allowed for status types
-    if type_of == "status" && body_url.blank? && (body_markdown.present? || main_image.present? || collection_id.present?)
+    # For status types, allow body_markdown only if it contains embed tags from URLs in title
+    if type_of == "status" && body_url.blank? && body_markdown.present?
+      # Allow body_markdown if it only contains embed tags that were added from URLs in title
+      unless body_markdown_only_contains_embed_tags_from_title?
+        errors.add(:body_markdown, "is not allowed for status types")
+      end
+    elsif type_of == "status" && body_url.blank? && (main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end
@@ -1258,5 +1264,62 @@ class Article < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
+  end
+
+  private
+
+  def should_add_urls_from_title?
+    # Only add URLs from title for quickie posts (status type) that have a title with URLs
+    type_of == "status" && title.present? && extract_urls_from_title.any?
+  end
+
+  def add_urls_from_title_to_body
+    urls = extract_urls_from_title
+    return if urls.empty?
+
+    # Create embed tags for each URL found in the title
+    embed_tags = urls.map { |url| "{% embed #{url} %}" }.join("\n")
+    
+    # Add the embed tags to the body_markdown
+    if body_markdown.present?
+      self.body_markdown = "#{body_markdown}\n\n#{embed_tags}"
+    else
+      self.body_markdown = embed_tags
+    end
+  end
+
+  def extract_urls_from_title
+    return [] unless title.present?
+
+    # Regex to match URLs in the title
+    # This regex matches http/https URLs, including those with query parameters and fragments
+    url_regex = %r{https?://[^\s<>"{}|\\^`\[\]]+}
+    
+    title.scan(url_regex).uniq
+  end
+
+  def body_markdown_only_contains_embed_tags_from_title?
+    return false unless body_markdown.present?
+    return false unless title.present?
+
+    # Get URLs from title
+    urls_from_title = extract_urls_from_title
+    return false if urls_from_title.empty?
+
+    # Create the expected embed tags
+    expected_embed_tags = urls_from_title.map { |url| "{% embed #{url} %}" }
+    
+    # Clean the body_markdown (remove extra whitespace and newlines)
+    cleaned_body = body_markdown.strip.gsub(/\n+/, "\n")
+    
+    # Check if the body_markdown contains only the expected embed tags
+    # Allow for some whitespace variations
+    expected_content = expected_embed_tags.join("\n")
+    
+    # Normalize both strings for comparison
+    normalized_body = cleaned_body.gsub(/\s+/, " ").strip
+    normalized_expected = expected_content.gsub(/\s+/, " ").strip
+    
+    normalized_body == normalized_expected
   end
 end

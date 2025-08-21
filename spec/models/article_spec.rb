@@ -2249,4 +2249,86 @@ RSpec.describe Article do
       end
     end
   end
+
+  describe "URL extraction from title for quickie posts" do
+    let(:user) { create(:user) }
+
+    context "when creating a status post with URLs in title" do
+      it "adds embed tags to body_markdown for URLs found in title" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check out this cool site https://example.com and also https://another-example.org",
+                        body_markdown: "Some existing content")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://example.com %}")
+        expect(article.body_markdown).to include("{% embed https://another-example.org %}")
+        expect(article.body_markdown).to include("Some existing content")
+      end
+
+      it "creates embed tags when body_markdown is empty" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Look at this: https://example.com",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com %}")
+      end
+
+      it "does not add embed tags for non-status posts" do
+        article = build(:article,
+                        user: user,
+                        type_of: "full_post",
+                        title: "Check out this cool site https://example.com",
+                        body_markdown: "Some content")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("Some content")
+      end
+
+      it "does not add embed tags when title has no URLs" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Just a regular title with no URLs",
+                        body_markdown: "Some content")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("Some content")
+      end
+
+      it "handles multiple URLs in title correctly" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Multiple URLs: https://first.com and https://second.org and https://third.net",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://first.com %}")
+        expect(article.body_markdown).to include("{% embed https://second.org %}")
+        expect(article.body_markdown).to include("{% embed https://third.net %}")
+      end
+
+      it "handles URLs with query parameters and fragments" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Complex URL: https://example.com/path?param=value#fragment",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment %}")
+      end
+    end
+  end
 end
