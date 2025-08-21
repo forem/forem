@@ -2253,9 +2253,68 @@ RSpec.describe Article do
   describe "URL extraction from title for quickie posts" do
     let(:user) { create(:user) }
 
+    before do
+      # Stub HTTP requests for URL validation in embed tags
+      stub_request(:head, "https://example.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example</title></head><body>Example content</body></html>", headers: {})
+
+      stub_request(:head, "https://another-example.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://another-example.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Another Example</title></head><body>Another example content</body></html>", headers: {})
+
+      stub_request(:head, "https://first.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://first.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>First</title></head><body>First content</body></html>", headers: {})
+
+      stub_request(:head, "https://second.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://second.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Second</title></head><body>Second content</body></html>", headers: {})
+
+      stub_request(:head, "https://third.net/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://third.net/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Third</title></head><body>Third content</body></html>", headers: {})
+
+      stub_request(:head, "https://example.com/path?param=value#fragment")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/path?param=value#fragment")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example with params</title></head><body>Example with params content</body></html>", headers: {})
+
+      stub_request(:head, "https://example.com/path?param=value")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/path?param=value")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example with params</title></head><body>Example with params content</body></html>", headers: {})
+    end
+
     context "when creating a status post with URLs in title" do
       it "adds embed tags to body_markdown for URLs found in title" do
-        article = build(:article,
+        article = build(:published_article,
                         user: user,
                         type_of: "status",
                         title: "Check out this cool site https://example.com and also https://another-example.org",
@@ -2269,7 +2328,7 @@ RSpec.describe Article do
       end
 
       it "creates embed tags when body_markdown is empty" do
-        article = build(:article,
+        article = build(:published_article,
                         user: user,
                         type_of: "status",
                         title: "Look at this: https://example.com",
@@ -2305,7 +2364,7 @@ RSpec.describe Article do
       end
 
       it "handles multiple URLs in title correctly" do
-        article = build(:article,
+        article = build(:published_article,
                         user: user,
                         type_of: "status",
                         title: "Multiple URLs: https://first.com and https://second.org and https://third.net",
@@ -2319,7 +2378,7 @@ RSpec.describe Article do
       end
 
       it "handles URLs with query parameters and fragments" do
-        article = build(:article,
+        article = build(:published_article,
                         user: user,
                         type_of: "status",
                         title: "Complex URL: https://example.com/path?param=value#fragment",

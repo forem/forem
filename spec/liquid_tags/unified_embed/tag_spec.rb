@@ -46,18 +46,30 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(GistTag).to have_received(:new)
   end
 
-  it "delegates parsing to the link-matching class when there are options", :vcr do
+  it "delegates parsing to the link-matching class when there are options" do
     link = "https://github.com/rust-lang/rust"
 
     allow(GithubTag).to receive(:new).and_call_original
 
-    VCR.use_cassette("github_client_repository_no_readme") do
-      stub_network_request(url: link)
-      parsed_tag = Liquid::Template.parse("{% embed #{link} noreadme %}")
+    # Mock the GitHub client to avoid complex API interactions
+    mock_owner = double("owner", login: "rust-lang")
+    mock_repository = double("repository", 
+      html_url: "https://github.com/rust-lang/rust",
+      name: "rust",
+      description: "Empowering everyone to build reliable and efficient software.",
+      owner: mock_owner
+    )
+    mock_github_client = double("github_client")
+    allow(mock_github_client).to receive(:repository).and_return(mock_repository)
+    allow(mock_github_client).to receive(:readme).and_return("<p>Mock README content</p>")
+    allow(Github::OauthClient).to receive(:new).and_return(mock_github_client)
 
-      expect { parsed_tag.render }.not_to raise_error
-      expect(GithubTag).to have_received(:new)
-    end
+    stub_network_request(url: link)
+    
+    parsed_tag = Liquid::Template.parse("{% embed #{link} noreadme %}")
+
+    expect { parsed_tag.render }.not_to raise_error
+    expect(GithubTag).to have_received(:new)
   end
 
   it "raises an error when link cannot be found" do
