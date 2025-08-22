@@ -25,6 +25,9 @@ module Moderations
       articles = apply_feed_filter(articles)
       articles = apply_member_filter(articles)
       
+      # Filter out [Boost] articles
+      articles = articles.reject { |article| article.title == "[Boost]" }
+      
       # Convert to JSON with optimized options
       articles.to_json(json_options)
     end
