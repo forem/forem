@@ -119,6 +119,7 @@ namespace :admin do
     resources :profile_fields, only: %i[index update create destroy]
     resources :subforems, only: %i[index new create edit update show] do
       resource :moderator, only: %i[create destroy], module: "subforem_moderators"
+      resources :community_bots, only: %i[index new create show destroy]
     end
   end
 
