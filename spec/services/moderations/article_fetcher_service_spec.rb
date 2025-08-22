@@ -63,5 +63,27 @@ RSpec.describe Moderations::ArticleFetcherService do
       expect(parsed_result.length).to eq(1)
       expect(parsed_result.first["id"]).to eq(high_score_article.id)
     end
+
+    it "filters by feed lookback period" do
+      # Create a recent article
+      recent_article = create(:published_article, user: create(:user))
+      recent_article.update_column(:published_at, 5.days.ago)
+      
+      # Create an old article (outside feed lookback period)
+      old_article = create(:published_article, user: create(:user))
+      old_article.update_column(:published_at, 15.days.ago)
+      
+      # Mock the feed lookback setting to 10 days
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      
+      latest_service = described_class.new(user: user, feed: "latest", members: "all")
+      result = latest_service.call
+      parsed_result = JSON.parse(result)
+      
+      # Should only include the recent article
+      expect(parsed_result.length).to eq(1)
+      expect(parsed_result.first["id"]).to eq(recent_article.id)
+      expect(parsed_result.map { |a| a["id"] }).not_to include(old_article.id)
+    end
   end
 end
