@@ -56,6 +56,37 @@
     </div>
   </div>
 
+  <!-- Community Bots Card -->
+  <div class="crayons-card p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="crayons-subtitle-1">Community Bots</h2>
+      <%= link_to "Manage Bots", admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+    </div>
+    
+    <% community_bots = User.community_bots_for_subforem(@subforem.id).limit(3) %>
+    <% if community_bots.any? %>
+      <div class="space-y-2">
+        <% community_bots.each do |bot| %>
+          <div class="flex items-center justify-between p-2 bg-base-5 rounded">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🤖</span>
+              <span class="fw-medium"><%= bot.name %></span>
+              <span class="text-sm color-secondary">@<%= bot.username %></span>
+            </div>
+            <%= link_to "View", admin_subforem_community_bot_path(@subforem, bot), class: "crayons-link crayons-link--secondary fs-s" %>
+          </div>
+        <% end %>
+        <% if User.community_bots_for_subforem(@subforem.id).count > 3 %>
+          <p class="text-sm color-secondary text-center">
+            <%= link_to "View all #{User.community_bots_for_subforem(@subforem.id).count} bots", admin_subforem_community_bots_path(@subforem), class: "crayons-link" %>
+          </p>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="color-secondary">No community bots found for this subforem.</p>
+    <% end %>
+  </div>
+
   <!-- Moderators Card -->
   <div class="crayons-card p-6">
     <h2 class="crayons-subtitle-1 mb-4">Moderators</h2>

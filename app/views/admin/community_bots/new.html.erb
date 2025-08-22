@@ -1,0 +1,58 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title">Create New Community Bot</h1>
+    <p class="color-secondary">Create a new bot for <%= @subforem.domain %></p>
+  </div>
+  <div class="ml-auto">
+    <%= link_to "Back to Bots", admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--outlined" %>
+  </div>
+</header>
+
+<div class="crayons-card p-6 max-w-2xl">
+  <%= form_for @bot, url: admin_subforem_community_bots_path(@subforem), html: { multipart: true } do |form| %>
+    <div class="crayons-field">
+      <%= form.label :name, "Bot Name", class: "crayons-field__label" %>
+      <p class="crayons-field__description">Choose a descriptive name for your community bot (e.g., "News Bot", "Welcome Bot")</p>
+      <%= form.text_field :name, 
+          class: "crayons-textfield", 
+          placeholder: "Enter bot name",
+          required: true %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :username, "Bot Username", class: "crayons-field__label" %>
+      <p class="crayons-field__description">Choose a unique username for your bot (optional - will be auto-generated if not provided)</p>
+      <%= form.text_field :username, 
+          class: "crayons-textfield", 
+          placeholder: "Enter bot username (optional)" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :profile_image, "Bot Profile Image", class: "crayons-field__label" %>
+      <p class="crayons-field__description">Upload a profile image for your bot (optional - will use subforem logo if not provided)</p>
+      <%= form.file_field :profile_image, 
+          accept: "image/*", 
+          class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+    </div>
+
+    <div class="mt-6 flex gap-3">
+      <%= form.submit "Create Bot", class: "crayons-btn" %>
+      <%= link_to "Cancel", admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="crayons-card p-6 mt-6 max-w-2xl">
+  <h3 class="crayons-subtitle-1 mb-4">About Community Bots</h3>
+  <div class="prose prose-sm">
+    <ul class="list-disc pl-4 space-y-2">
+      <li>Community bots are automated accounts that can post content to your subforem</li>
+      <li>Each bot gets its own API key for programmatic access</li>
+      <li>Bots are automatically assigned to this subforem</li>
+      <li>You can use the API key to integrate with external services or create automated workflows</li>
+      <li>Bots can post articles, comments, and interact with the community</li>
+      <li>If no profile image is provided, the bot will use this subforem's logo</li>
+    </ul>
+  </div>
+</div>
+

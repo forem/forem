@@ -34,6 +34,9 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
+  # User types enum
+  enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
+
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password, :custom_invite_subject, :custom_invite_message, :custom_invite_footnote
@@ -225,6 +228,10 @@ class User < ApplicationRecord
       .joins("INNER JOIN tags ON tags.id = follows.followable_id AND follows.followable_type = 'ActsAsTaggableOn::Tag'")
       .where(tags: { name: tags })
       .distinct
+  }
+
+  scope :community_bots_for_subforem, lambda { |subforem_id|
+    where(type_of: :community_bot, onboarding_subforem_id: subforem_id)
   }
   scope :above_average, lambda {
     where(
@@ -676,6 +683,18 @@ class User < ApplicationRecord
       errors.add(:email, "Error sending magic link")
       Rails.logger.error("Error sending magic link for user #{id}")
     end
+  end
+
+  def community_bot?
+    type_of == "community_bot"
+  end
+
+  def member_bot?
+    type_of == "member_bot"
+  end
+
+  def bot?
+    community_bot? || member_bot?
   end
 
   protected
