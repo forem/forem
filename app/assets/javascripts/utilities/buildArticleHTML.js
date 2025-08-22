@@ -191,7 +191,9 @@ function buildArticleHTML(article, currentUserId = null) {
 
     if (article.class_name !== 'User' && reactionsCount > 0 && reactionIcons) {
       var icons = [];
-      for (var category of article.public_reaction_categories) {
+      // Since the container has dir="rtl", we need to reverse the array to show highest count first
+      for (var i = article.public_reaction_categories.length - 1; i >= 0; i--) {
+        var category = article.public_reaction_categories[i];
         var icon = reactionIcons.querySelector(
           `img[data-slug=${category.slug}]`,
         ).outerHTML;
@@ -199,7 +201,6 @@ function buildArticleHTML(article, currentUserId = null) {
           `<span class="crayons_icon_container">${icon}</span>`,
         );
       }
-      icons.reverse();
 
       reactionsDisplay = `<a href="${
         article.path
