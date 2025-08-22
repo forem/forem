@@ -33,10 +33,15 @@ module Moderations
     end
 
     def build_base_query
+      # Use feed lookback setting to limit articles to recent ones only
+      lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+      lookback = lookback_setting.positive? ? lookback_setting.days.ago : 10.days.ago
+      
       Article.published
         .from_subforem
         .includes(:user) # Eager load to avoid N+1
         .where("articles.score >= ?", MINIMUM_ARTICLE_SCORE)
+        .where("articles.published_at > ?", lookback) # Only recent articles
         .order(published_at: :desc)
         .limit(50)
     end

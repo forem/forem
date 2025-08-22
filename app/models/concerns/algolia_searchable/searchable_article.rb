@@ -40,7 +40,7 @@ module AlgoliaSearchable
     end
 
     def indexable
-      published && score.positive?
+      published && score.positive? && published_at > Time.current
     end
 
     def indexable_changed?
