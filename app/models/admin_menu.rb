@@ -31,6 +31,7 @@ class AdminMenu
       item(name: "navigation links"),
       item(name: "pages"),
       item(name: "profile fields"),
+      item(name: "subforems"),
     ]
 
     scope :admin_team, "user-line", [
