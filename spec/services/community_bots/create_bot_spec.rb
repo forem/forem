@@ -61,6 +61,20 @@ RSpec.describe CommunityBots::CreateBot do
           username: "mycustombot",
         )
 
+        expect(result.bot_user.username).to eq("mycustombot")
+      end
+
+      it "creates a bot with provided username when username already exists" do
+        # Create a user with the same username first
+        create(:user, username: "mycustombot")
+
+        result = described_class.call(
+          subforem_id: subforem.id,
+          name: "Test Bot",
+          created_by: admin_user,
+          username: "mycustombot",
+        )
+
         expect(result.bot_user.username).to include("mycustombot")
         expect(result.bot_user.username).to match(/\d+$/)
       end

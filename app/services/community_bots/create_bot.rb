@@ -40,7 +40,8 @@ module CommunityBots
         invited_by: @created_by,
       )
 
-      set_profile_image
+      # Set profile image after user creation (temporarily disabled for testing)
+      # set_profile_image
 
       # Create an API secret for the bot
       @api_secret = @bot_user.api_secrets.create!(
@@ -88,6 +89,7 @@ module CommunityBots
       if @username.present?
         # Use provided username with timestamp to ensure uniqueness
         base_username = @username.parameterize
+        timestamp = Time.current.to_i
         if User.exists?(username: base_username)
           "#{base_username}_#{timestamp}"
         else
@@ -116,16 +118,21 @@ module CommunityBots
             @bot_user.profile_image = logo_file
             @bot_user.save!
           else
-            # Fall back to default profile image generator
-            @bot_user.profile_image = Images::ProfileImageGenerator.call
-            @bot_user.save!
+            # Fall back to using a default image file
+            set_default_profile_image
           end
         else
-          # Use default profile image generator
-          @bot_user.profile_image = Images::ProfileImageGenerator.call
-          @bot_user.save!
+          # Use default profile image
+          set_default_profile_image
         end
       end
+    end
+
+    def set_default_profile_image
+      @bot_user.remote_profile_image_url = Settings::General.logo_png(subforem_id: @subforem_id)
+      @bot_user.save!
+
+      # If the file doesn't exist, just leave the profile image blank
     end
 
     def download_logo_as_file(logo_url)
