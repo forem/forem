@@ -457,7 +457,7 @@ body[data-side-nav-visible='true'] {
         left: 48px;           
         top: -30px;
         width: 290px;
-        z-index: 2000; /* Ensure it appears above other content */
+        z-index: 3000; /* Ensure it appears above other content */
         border-top: 0px;
         &.profile-preview-card__upsidedown {
           top: auto;
@@ -480,7 +480,7 @@ body[data-side-nav-visible='true'] {
       width: 100%;
       padding: 8px 0;
       border-top: 1px solid var(--base-20);
-      z-index: 1999;
+      z-index: 2000;
       background-color: var(--base-0);
       cursor: pointer;
       svg {
