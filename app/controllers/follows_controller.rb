@@ -66,7 +66,11 @@ class FollowsController < ApplicationController
                          User
                        end
 
-    followable = followable_klass.find(params[:followable_id])
+    followable = followable_klass.where(id: params[:followable_id]).first
+    unless followable
+      render json: { error: "User no longer exists" }, status: :not_found
+      return
+    end
 
     need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
 
