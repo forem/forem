@@ -25,11 +25,6 @@ class AddModerationIndexesToArticles < ActiveRecord::Migration[7.0]
                 name: 'index_articles_on_subforem_published_score_published_at',
                 algorithm: :concurrently
 
-      # Index for reactions queries used in moderation
-      add_index :reactions,
-                [:reactable_id, :reactable_type, :user_id],
-                name: 'index_reactions_on_reactable_and_user_for_moderation',
-                algorithm: :concurrently
     end
   end
 end
