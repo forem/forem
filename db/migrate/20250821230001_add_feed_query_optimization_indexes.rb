@@ -3,6 +3,15 @@ class AddFeedQueryOptimizationIndexes < ActiveRecord::Migration[7.0]
 
   def change
     safety_assured do
+      execute "SET statement_timeout = 0;"
+
+      # Clean up after previous removal in case it was left behind
+      remove_index :reactions,
+                   name: 'index_reactions_on_reactable_and_user_for_moderation',
+                   if_exists: true,
+                   algorithm: :concurrently
+
+
       # Add index for featured articles (used in with_at_least_home_feed_minimum_score)
       # This is different from the moderation indexes and specific to feed queries
       add_index :articles, 
