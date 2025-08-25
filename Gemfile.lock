@@ -21,7 +21,7 @@ GIT
 PATH
   remote: ../../p/datadog-ci-rb
   specs:
-    datadog-ci (1.22.0)
+    datadog-ci (1.22.1)
       datadog (~> 2.4)
       drb
       msgpack
