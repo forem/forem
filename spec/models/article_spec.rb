@@ -1993,6 +1993,52 @@ RSpec.describe Article do
     end
   end
 
+  describe "#public_reaction_categories limits to 3 and orders by count" do
+    before do
+      # Create multiple reactions with different counts
+      # Each user can only have one reaction per category per article
+      user1 = create(:user)
+      user2 = create(:user)
+      user3 = create(:user)
+      user4 = create(:user)
+      user5 = create(:user)
+      user6 = create(:user)
+      user7 = create(:user)
+      
+      # 3 likes
+      create(:reaction, reactable: article, category: "like", user: user1)
+      create(:reaction, reactable: article, category: "like", user: user2)
+      create(:reaction, reactable: article, category: "like", user: user3)
+      
+      # 2 unicorns
+      create(:reaction, reactable: article, category: "unicorn", user: user4)
+      create(:reaction, reactable: article, category: "unicorn", user: user5)
+      
+      # 1 fire
+      create(:reaction, reactable: article, category: "fire", user: user6)
+      
+      # 1 exploding_head
+      create(:reaction, reactable: article, category: "exploding_head", user: user7)
+      
+      # 1 raised_hands
+      create(:reaction, reactable: article, category: "raised_hands", user: user1)
+    end
+
+    it "limits to 3 categories and orders by count descending" do
+      categories = article.public_reaction_categories
+      expect(categories.length).to eq(3)
+      # When there's a tie between fire (position 5) and exploding_head (position 3), 
+      # exploding_head comes first due to lower position
+      expect(categories.map(&:slug)).to eq(%i[like unicorn exploding_head])
+      
+      # Verify that the first category has the highest count
+      reaction_counts = article.reactions.group(:category).count
+      expect(reaction_counts[categories.first.slug.to_s]).to eq(3) # like has 3 reactions
+      expect(reaction_counts[categories.second.slug.to_s]).to eq(2) # unicorn has 2 reactions
+      expect(reaction_counts[categories.third.slug.to_s]).to eq(1) # exploding_head has 1 reaction
+    end
+  end
+
   describe ".above_average and .average_score" do
     context "when there are not yet any articles with score above 0" do
       it "works as expected" do
