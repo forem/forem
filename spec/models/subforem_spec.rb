@@ -59,6 +59,7 @@ RSpec.describe Subforem do
         name,
         logo_url,
         bg_image_url,
+        'en',
       )
     end
 
@@ -79,6 +80,7 @@ RSpec.describe Subforem do
         name,
         logo_url,
         nil,
+        'en',
       )
     end
 

@@ -1,5 +1,8 @@
 ---
 fr:
+  div: div
+  span: span
+  img: img
   contact_prompts:
     if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
     if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.

@@ -13,12 +13,12 @@ class Subforem < ApplicationRecord
   validates :root, uniqueness: { message: "Only one subforem can be the root" }, if: :root
 
   # Virtual attributes for form
-  attr_accessor :name, :brain_dump, :logo_url, :bg_image_url
+  attr_accessor :name, :brain_dump, :logo_url, :bg_image_url, :default_locale
 
   before_validation :downcase_domain
   after_save :bust_caches
 
-  def self.create_from_scratch!(domain:, brain_dump:, name:, logo_url:, bg_image_url: nil)
+  def self.create_from_scratch!(domain:, brain_dump:, name:, logo_url:, bg_image_url: nil, default_locale: 'en')
     subforem = Subforem.create!(domain: domain)
 
     # Queue background job for AI services
@@ -28,6 +28,7 @@ class Subforem < ApplicationRecord
       name,
       logo_url,
       bg_image_url,
+      default_locale,
     )
 
     subforem

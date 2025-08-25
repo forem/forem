@@ -1,0 +1,230 @@
+---
+pt:
+  div: div
+  span: span
+  img: img
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Entre em contato conosco</a> se você tiver alguma dúvida.
+    if_continued_trouble_html: <a href="/contact">Entre em contato conosco</a> se você continuar tendo problemas.
+    if_we_can_help_html: <a href="/contact">Entre em contato conosco</a> se houver algo que possamos ajudar.
+  core:
+    add_comment: Adicionar comentário
+    beta: beta
+    comment: Comentário
+    copy_link: Copiar link
+    edit_profile: Editar perfil
+    follow: Seguir
+    follow_back: Seguir de volta
+    following: Seguindo
+    like: Curtir
+    loading: carregando...
+    reaction: Reação
+    report_abuse: Reportar abuso
+    search: Pesquisar
+    success_settings: Configurações atualizadas com sucesso.
+    counted_organization:
+      one: "%{count} organização"
+      other: "%{count} organizações"
+    counted_user:
+      one: "%{count} pessoa"
+      other: "%{count} pessoas"
+    not_following: "Você não está seguindo ninguém"
+    following_everyone: "Você está seguindo %{details} (todos)"
+    you_are_following: "Você está seguindo"
+    and: "e"
+  date:
+    abbr_month_names:
+    -
+    - jan
+    - fev
+    - mar
+    - abr
+    - mai
+    - jun
+    - jul
+    - ago
+    - set
+    - out
+    - nov
+    - dez
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: há cerca de 1 hora
+        other: há cerca de %{count} horas
+      about_x_months:
+        one: há cerca de 1 mês
+        other: há cerca de %{count} meses
+      about_x_years:
+        one: há cerca de 1 ano
+        other: há cerca de %{count} anos
+      almost_x_years:
+        one: há quase 1 ano
+        other: há quase %{count} anos
+      half_a_minute: há meio minuto
+      less_than_x_seconds:
+        one: há menos de 1 segundo
+        other: há menos de %{count} segundos
+      less_than_x_minutes:
+        one: há menos de 1 minuto
+        other: há menos de %{count} minutos
+      over_x_years:
+        one: há mais de 1 ano
+        other: há mais de %{count} anos
+      x_seconds:
+        one: há 1 segundo
+        other: há %{count} segundos
+      x_minutes:
+        one: há 1 minuto
+        other: há %{count} minutos
+      x_days:
+        one: há 1 dia
+        other: há %{count} dias
+      x_months:
+        one: há 1 mês
+        other: há %{count} meses
+      x_years:
+        one: há 1 ano
+        other: há %{count} anos
+    expired_ago:
+      about_x_hours:
+        one: Expirado há cerca de 1 hora
+        other: Expirado há cerca de %{count} horas
+      about_x_months:
+        one: Expirado há cerca de 1 mês
+        other: Expirado há cerca de %{count} meses
+      about_x_years:
+        one: Expirado há cerca de 1 ano
+        other: Expirado há cerca de %{count} anos
+      almost_x_years:
+        one: Expirado há quase 1 ano
+        other: Expirado há quase %{count} anos
+      half_a_minute: Expirado há meio minuto
+      less_than_x_seconds:
+        one: Expirado há menos de 1 segundo
+        other: Expirado há menos de %{count} segundos
+      less_than_x_minutes:
+        one: Expirado há menos de 1 minuto
+        other: Expirado há menos de %{count} minutos
+      over_x_years:
+        one: Expirado há mais de 1 ano
+        other: Expirado há mais de %{count} anos
+      x_seconds:
+        one: Expirado há 1 segundo
+        other: Expirado há %{count} segundos
+      x_minutes:
+        one: Expirado há 1 minuto
+        other: Expirado há %{count} minutos
+      x_days:
+        one: Expirado há 1 dia
+        other: Expirado há %{count} dias
+      x_months:
+        one: Expirado há 1 mês
+        other: Expirado há %{count} meses
+      x_years:
+        one: Expirado há 1 ano
+        other: Expirado há %{count} anos
+    expires_in:
+      about_x_hours:
+        one: Expira em cerca de 1 hora
+        other: Expira em cerca de %{count} horas
+      about_x_months:
+        one: Expira em cerca de 1 mês
+        other: Expira em cerca de %{count} meses
+      about_x_years:
+        one: Expira em cerca de 1 ano
+        other: Expira em cerca de %{count} anos
+      almost_x_years:
+        one: Expira em quase 1 ano
+        other: Expira em quase %{count} anos
+      half_a_minute: Expira em meio minuto
+      less_than_x_seconds:
+        one: Expira em menos de 1 segundo
+        other: Expira em menos de %{count} segundos
+      less_than_x_minutes:
+        one: Expira em menos de 1 minuto
+        other: Expira em menos de %{count} minutos
+      over_x_years:
+        one: Expira em mais de 1 ano
+        other: Expira em mais de %{count} anos
+      x_seconds:
+        one: Expira em 1 segundo
+        other: Expira em %{count} segundos
+      x_minutes:
+        one: Expira em 1 minuto
+        other: Expira em %{count} minutos
+      x_days:
+        one: Expira em 1 dia
+        other: Expira em %{count} dias
+      x_months:
+        one: Expira em 1 mês
+        other: Expira em %{count} meses
+      x_years:
+        one: Expira em 1 ano
+        other: Expira em %{count} anos
+  billboard:
+    promoted: Promovido
+    menu:
+      aria_label: Alternar menu suspenso
+      icon: Menu suspenso
+      close: Fechar
+      manage_preferences: Gerenciar preferências
+      what_is_a_billboard: O que é um painel publicitário?
+      report_billboard: Reportar painel publicitário
+      edit_billboard: Editar painel publicitário
+  errors:
+    messages:
+      accepted: deve ser aceito
+      bad_protocol: deve começar com %{protocols}
+      bad_uri: é uma URL inválida
+      blank: não pode ficar em branco
+      confirmation: não corresponde a %{attribute}
+      contains_prohibited_characters: contém caracteres não alfanuméricos ou caracteres unicode proibidos
+      empty: não pode ficar vazio
+      equal_to: deve ser igual a %{count}
+      even: deve ser par
+      exclusion: está reservado
+      general: 'Erro: %{errors}'
+      greater_than: deve ser maior que %{count}
+      greater_than_or_equal_to: deve ser maior ou igual a %{count}
+      inclusion: não está incluído na lista
+      invalid: é inválido
+      less_than: deve ser menor que %{count}
+      less_than_or_equal_to: deve ser menor ou igual a %{count}
+      model_invalid: 'Falha na validação: %{errors}'
+      not_a_number: não é um número
+      not_an_integer: deve ser um número inteiro
+      odd: deve ser ímpar
+      other_than: deve ser diferente de %{count}
+      present: deve ficar em branco
+      required: deve existir
+      taken: já foi usado
+      too_long:
+        one: é muito longo (máximo é 1 caractere)
+        other: é muito longo (máximo é %{count} caracteres)
+      too_short:
+        one: é muito curto (mínimo é 1 caractere)
+        other: é muito curto (mínimo é %{count} caracteres)
+      try_again_email: 'Ocorreu um erro. Tente novamente ou envie um e-mail para: %{email}'
+      wrong_length:
+        one: tem o comprimento errado (deve ser 1 caractere)
+        other: tem o comprimento errado (deve ser %{count} caracteres)
+  time:
+    formats:
+      admin_user: "%Y-%m-%d, %H:%M"
+      comment: "%d de %B de %Y"
+      email_verified: "%d de %b de '%y, %H:%M"
+      github: "%d de %b de %Y"
+      json: "%d de %b de %Y"
+      medium: "%d de %b de %Y"
+      members: "%d de %b"
+      members_with_year: "%d de %b de %Y"
+      reddit: "%d de %b '%y"
+      short: "%d de %b"
+      short_with_yy: "%d de %b '%y"
+      short_with_year: "%d de %b de %Y"
+      stackexchange: "%d de %b '%y"
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%Y-%m-%d, %H:%M"
