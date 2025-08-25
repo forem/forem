@@ -13,4 +13,4 @@ pt:
   helpers:
     page_entries_info:
       more_pages:
-        display_entries: "Mostrando %{entry_name} %{from}-%{to} de %{count} no total"
+        display_entries: "%{first}&nbsp;-&nbsp;%{last} de %{total}"

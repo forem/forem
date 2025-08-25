@@ -103,8 +103,8 @@ pt:
         listings_disabled: Anúncios desabilitados
     wikipedia_tag:
       invalid_wikipedia_url: URL da Wikipedia inválida
-      article_not_found: Artigo não encontrado
-      section_not_found: Seção não encontrada
+      article_not_found: "Não foi possível encontrar o artigo da Wikipedia - %{input}: %{response_detail}"
+      section_not_found: "Não foi possível encontrar a seção do artigo da Wikipedia - %{input}"
     user_subscription_tag:
       submit: Enviar
       submitting: Enviando...

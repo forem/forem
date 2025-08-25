@@ -34,6 +34,7 @@ RSpec.describe "Admin Subforems About Page Generation", type: :request do
         "Test About Community",
         "https://example.com/logo.png",
         "https://example.com/background.jpg",
+        'en',
       )
 
       expect(response).to redirect_to(admin_subforems_path)
@@ -66,7 +67,8 @@ RSpec.describe "Admin Subforems About Page Generation", type: :request do
 
     before do
       allow(Ai::Base).to receive(:new).and_return(double(call: mock_ai_response))
-      allow(Settings::Community).to receive(:set_community_name)
+      allow(Settings::Community).to receive(:set_community_name).and_return(name)
+      allow(Settings::UserExperience).to receive(:set_default_locale)
       allow(Images::GenerateSubforemImages).to receive(:call)
       allow(Ai::CommunityCopy).to receive(:new).and_return(double(write!: true))
       allow(Ai::ForemTags).to receive(:new).and_return(double(upsert!: true))
@@ -80,6 +82,7 @@ RSpec.describe "Admin Subforems About Page Generation", type: :request do
           name,
           "https://example.com/logo.png",
           "https://example.com/background.jpg",
+          'en',
         )
       end.to change(Page, :count).by(1)
 

@@ -98,19 +98,19 @@ pt:
       scheduled: "Busca de episódios do podcast foi agendada (%{title}, #%{id})"
       updated: Podcast atualizado
     profile_field_groups_controller:
-      created: Grupo de campos de perfil foi criado!
-      updated: Grupo de campos de perfil foi atualizado!
-      deleted: Grupo de campos de perfil foi excluído!
+      created: 'Grupo criado com sucesso: %{group}'
+      updated: 'Grupo %{group} atualizado'
+      deleted: 'Grupo %{group} excluído'
     profile_fields_controller:
-      created: Campo de perfil foi criado!
-      updated: Campo de perfil foi atualizado!
-      deleted: Campo de perfil foi excluído!
+      created: 'Campo de perfil %{field} criado'
+      updated: 'Campo de perfil %{field} atualizado'
+      deleted: 'Campo de perfil %{field} excluído'
     response_templates_controller:
-      saved: Modelo de resposta salvo!
-      updated: Modelo de resposta atualizado!
-      deleted: Modelo de resposta excluído!
+      saved: 'Modelo de resposta: "%{title}" salvo com sucesso.'
+      updated: 'O modelo de resposta "%{title}" foi atualizado.'
+      deleted: 'O modelo de resposta "%{title}" foi excluído.'
     settings_controller:
-      confirmation: Configurações salvas com sucesso!
+      confirmation: Meu nome de usuário é @%{username} e esta ação é 100% segura e apropriada.
     spaces_controller:
       update_success: Espaços foram atualizados com sucesso.
     subforems_controller:
@@ -120,45 +120,57 @@ pt:
       deleted: Subforem excluído com sucesso!
     tags:
       moderators_controller:
-        not_found: Usuário não encontrado
-        added: Moderador adicionado com sucesso
-        not_found_or: Usuário não encontrado ou já é moderador
-        removed: Moderador removido com sucesso
+        not_found: 'Nome de usuário "%{username}" não foi encontrado'
+        added: '%{username} foi adicionado como moderador de tag!'
+        not_found_or: 'ID do usuário #%{user_id} não foi encontrado, ou sua conta tem erros: %{errors}'
+        removed: '@%{username} - ID #%{user_id} foi removido como moderador de tag.'
     tags_controller:
-      created: Tag criada com sucesso!
-      updated: Tag atualizada com sucesso!
-      update_fail: Falha ao atualizar tag
+      created: '%{tag_name} foi criada!'
+      updated: 'Tag %{tag_name} atualizada com sucesso!'
+      update_fail: 'A atualização da tag falhou: %{errors}'
     tools_controller:
-      link_busted: Link quebrado
-      user_busted: Usuário quebrado
-      article_busted: Artigo quebrado
+      link_busted: '%{link} foi quebrado com sucesso'
+      user_busted: 'Usuário #%{user} foi quebrado com sucesso'
+      article_busted: 'Artigo #%{article} foi quebrado com sucesso'
     users_controller:
-      role_removed: Função removida com sucesso
-      updated: Usuário atualizado com sucesso
-      updated_json: Usuário atualizado com sucesso
-      tag_not_found: Tag não encontrada
-      exported: Usuários exportados com sucesso
-      banished: Usuário banido com sucesso
+      role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
+      updated: Usuário foi atualizado
+      updated_json: 'Sucesso! %{username} foi atualizado.'
+      tag_not_found: 'Tag "%{tag_name}" não foi encontrada'
+      exported: 'Dados exportados para %{receiver}. O trabalho será concluído em breve.'
+      banished: Este usuário está sendo banido em segundo plano. O trabalho será concluído em breve.
       the_page: a página
-      full_delete_html: Usuário foi completamente excluído
-      no_email: Nenhum e-mail fornecido
-      unpublished: Usuário não publicado
-      identity_removed: Identidade removida com sucesso
-      email_sent: E-mail enviado com sucesso
-      email_fail: Falha ao enviar e-mail
-      parameter_missing: Parâmetro ausente
-      confirm_sent: Confirmação enviada com sucesso
-      verify_sent: Verificação enviada com sucesso
-      unlocked: Usuário desbloqueado com sucesso
-      credits_added: Créditos adicionados com sucesso
-      credits_removed: Créditos removidos com sucesso
-      manual_verification_sent: Verificação manual enviada com sucesso
+      full_delete_html: '@%{user} (e-mail: %{email}, ID do usuário: %{id}) foi completamente excluído. Se for uma exclusão GDPR, exclua-os do Mailchimp e Google Analytics e confirme em %{the_page}.'
+      no_email: sem e-mail
+      unpublished: As postagens estão sendo despublicadas em segundo plano. O trabalho será concluído em breve.
+      identity_removed: 'A identidade %{provider} foi excluída com sucesso e respaldada.'
+      email_sent: E-mail enviado!
+      email_fail: Falha ao enviar e-mail!
+      parameter_missing: Tanto o assunto quanto o corpo são obrigatórios!
+      confirm_sent: E-mail de confirmação enviado!
+      verify_sent: E-mail de verificação enviado!
+      unlocked: Conta de usuário desbloqueada!
+      credits_added: Créditos foram adicionados!
+      credits_removed: Créditos foram removidos.
+      manual_verification_sent: E-mail verificado manualmente!
     welcome_controller:
-      thread_content: Conteúdo do tópico de boas-vindas
+      thread_content: |
+        ---
+        title: Tópico de Boas-vindas - v0
+        published: false
+        description: Apresente-se à comunidade!
+        tags: boas-vindas
+        ---
+
+        Olá! Bem-vindo à %{community}!
+
+        ![BEM-VINDO À INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
+
+        Deixe um comentário abaixo para se apresentar à comunidade!✌️
     secrets_controller:
       not_in_vault: Não está no cofre
-      updated: Atualizado com sucesso
-      value: Valor
+      updated: 'Segredo %{key} foi atualizado com sucesso no Vault.'
+      value: '%{first8}******'
   admin_controller:
     dashboard:
       title: Painel de Administração

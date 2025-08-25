@@ -108,7 +108,7 @@ pt:
         email_mismatch: E-mail não corresponde
     users:
       remove_role:
-        error: Erro ao remover função
+        error: 'Houve um problema ao remover esta função. %{e_message}'
         remove_self: Você não pode remover sua própria função
     spam:
       article_handler:
