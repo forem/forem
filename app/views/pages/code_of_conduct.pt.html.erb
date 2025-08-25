@@ -1,0 +1,22 @@
+<% title "#{community_name} Code of Conduct" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(code_of_conduct_path) %>" />
+  <meta name="description" content="<%= community_name %> Code of Conduct">
+  <%= meta_keywords_default %>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="<%= app_url(code_of_conduct_path) %>" />
+  <meta property="og:title" content="<%= community_name %> Code of Conduct" />
+  <meta property="og:site_name" content="<%= community_name %>" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="<%= community_name %> Code of Conduct">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Code of Conduct</h1>
+    <%= Page.render_safe_html_for(slug: Page::CODE_OF_CONDUCT_SLUG) { render "pages/coc_text" } %>
+  </div>
+</main>

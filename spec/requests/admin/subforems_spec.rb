@@ -71,6 +71,7 @@ RSpec.describe "Admin::Subforems", type: :request do
           "Test Community",
           "https://example.com/logo.png",
           "https://example.com/background.jpg",
+          "en",
         )
 
         # Follow the redirect to the index page.
@@ -93,6 +94,7 @@ RSpec.describe "Admin::Subforems", type: :request do
           "Test Community",
           "https://example.com/logo.png",
           nil,
+          "en",
         )
       end
     end

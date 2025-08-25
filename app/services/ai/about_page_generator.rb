@@ -2,10 +2,11 @@ module Ai
   class AboutPageGenerator
     MAX_RETRIES = 3
 
-    def initialize(subforem_id, brain_dump, name)
+    def initialize(subforem_id, brain_dump, name, locale = 'en')
       @subforem_id = subforem_id
       @brain_dump = brain_dump
       @name = name
+      @locale = locale
       @subforem = Subforem.find(subforem_id)
     end
 
@@ -68,8 +69,12 @@ module Ai
     end
 
     def build_prompt
+      locale_instruction = get_locale_instruction
+      
       <<~PROMPT
         Generate an "About" page content for the subforem "#{@name}" with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}
+
+        #{locale_instruction}
 
         The content should be written in Markdown format and should include:
         - A welcoming introduction to the community
@@ -90,6 +95,17 @@ module Ai
 
         Provide ONLY the markdown content:
       PROMPT
+    end
+
+    def get_locale_instruction
+      case @locale
+      when 'pt'
+        "LANGUAGE REQUIREMENT: Generate ALL content in Brazilian Portuguese. Use proper Portuguese grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      when 'fr'
+        "LANGUAGE REQUIREMENT: Generate ALL content in French. Use proper French grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      else
+        "LANGUAGE REQUIREMENT: Generate ALL content in English. Use proper English grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      end
     end
 
     def parse_about_response(response)
