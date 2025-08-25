@@ -7,6 +7,7 @@ This directory contains documentation for the Forem project.
 ### Internationalization (i18n)
 - **[Portuguese Internationalization Summary](portuguese_internationalization_summary.md)** - Complete overview of Portuguese i18n implementation
 - **[Locale Analysis](locale_analysis.md)** - Analysis of locale file coverage and missing files
+- **[i18n Implementation Guide](i18n_implementation_guide.md)** - Comprehensive guide for future i18n work
 
 ### Performance Optimizations
 - **[Feed Query Optimization](feed_query_optimization.md)** - Performance improvements for feed queries
