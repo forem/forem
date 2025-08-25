@@ -98,10 +98,9 @@ pt:
             relator: %{username} - %{url}
             e-mail: <mailto:%{email}|%{email}>
         potential_spammer:
-          body: |
-            *Usuário potencial de spam:*
-            usuário: %{username} - %{url}
-            e-mail: <mailto:%{email}|%{email}>
+          body: 'Usuário potencial de spam! %{url}
+
+            '
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Fonte não encontrada
