@@ -1,0 +1,196 @@
+---
+pt:
+  admin:
+    articles_controller:
+      saved: Artigo salvo!
+      pinned: Artigo Fixado!
+      unpinned: Artigo Desfixado!
+    badge_achievements_controller:
+      deleted: Conquista de badge foi excluída!
+      rewarded: Badges estão sendo recompensados. A tarefa terminará em breve.
+      congrats: Parabéns pela sua conquista! 🎉 E obrigado por ser uma parte tão vital do %{community}!
+      award: Por favor, escolha um badge para conceder
+      wrong: Algo deu errado.
+    badges_controller:
+      created: Badge foi criado!
+      updated: Badge foi atualizado!
+    broadcasts_controller:
+      created: Transmissão foi criada!
+      deleted: Transmissão foi excluída!
+      updated: Transmissão foi atualizada!
+      wrong: Algo deu errado ao excluir a transmissão.
+    bulk_assign_role_controller:
+      role_assigment: Função %{role} atribuída ao usuário.
+      role_blank: Por favor, escolha uma função para adicionar.
+      success_message: Funções estão sendo adicionadas. A tarefa terminará em breve.
+    consumer_apps_controller:
+      created: '%{app} foi criado!'
+      deleted: '%{app} foi excluído!'
+      updated: '%{app} foi atualizado!'
+      wrong: Algo deu errado ao excluir %{app}.
+    billboards_controller:
+      created: Painel publicitário foi criado!
+      deleted: Painel publicitário foi excluído!
+      updated: Painel publicitário foi atualizado!
+      wrong: Algo deu errado ao excluir o painel publicitário.
+    emails_controller:
+      created: E-mails foram criados!
+      drafted: E-mail foi rascunhado!
+      activated: E-mail foi ativado!
+      deleted: E-mail foi excluído!
+      updated: E-mail foi atualizado!
+      wrong: Algo deu errado ao excluir o e-mail.
+    gdpr_delete_requests_controller:
+      deleted: Marcado como excluído com sucesso
+    extensions_controller:
+      update_success: Extensões foram atualizadas.
+    html_variants_controller:
+      fork: '%{name} FORK-%{rand}'
+      created: Variante HTML foi criada!
+      deleted: Variante HTML foi excluída!
+      updated: Variante HTML foi atualizada!
+      wrong: Algo deu errado ao excluir a variante HTML.
+    invitations_controller:
+      duplicate: 'Convite não foi enviado. Já existe um usuário registrado com o e-mail: %{email}'
+      create_success: O convite foi enviado para o e-mail do usuário.
+      destroy_success: Convite cancelado para %{email}.
+      resend_success: Convite reenviado para %{email}.
+    listing_categories_controller:
+      created: Categoria de anúncio foi criada!
+      updated: Categoria de anúncio foi atualizada!
+      deleted: Categoria de anúncio foi excluída!
+    listings_controller:
+      updated: Anúncio atualizado com sucesso
+      destroyed: "'%{title}' foi destruído com sucesso"
+      no_credit: Créditos disponíveis insuficientes
+    mods_controller:
+      trusted: '%{username} agora tem uma função Confiável!'
+    navigation_links_controller:
+      deleted: Link de navegação %{link} excluído
+      created: 'Link de navegação criado com sucesso: %{link}'
+      updated: 'Link de navegação atualizado com sucesso: %{link}'
+    organization_memberships_controller:
+      not_exist: 'Organização #%{org_id} não existe.'
+      wrong: Algo deu errado ao remover o usuário de %{org}
+      added: Usuário foi adicionado com sucesso a %{org}
+      removed: Usuário foi removido com sucesso de %{org}
+      updated: Usuário foi atualizado com sucesso para %{type}
+    organizations_controller:
+      credit_updated: Créditos atualizados com sucesso
+      deletion_scheduled: 'Exclusão da organização "%{organization_name}" está agendada.'
+      error: 'Sua organização, %{organization_name}, não pôde ser excluída: %{error}.'
+    pages_controller:
+      updated: Página foi atualizada com sucesso.
+      created: Página foi criada com sucesso.
+      deleted: Página foi excluída com sucesso.
+      code_of_conduct:
+        title: Código de Conduta
+        description: Uma página que descreve como se comportar nesta plataforma
+      privacy_policy:
+        title: Política de Privacidade
+        description: Uma página que descreve a política de privacidade
+      terms_of_use:
+        title: Termos de Uso
+        description: Uma página que descreve os termos de uso para a aplicação
+    podcasts_controller:
+      new_owner_added: Novo proprietário adicionado!
+      no_such_user: Usuário não encontrado
+      scheduled: "Busca de episódios do podcast foi agendada (%{title}, #%{id})"
+      updated: Podcast atualizado
+    profile_field_groups_controller:
+      created: Grupo de campos de perfil foi criado!
+      updated: Grupo de campos de perfil foi atualizado!
+      deleted: Grupo de campos de perfil foi excluído!
+    profile_fields_controller:
+      created: Campo de perfil foi criado!
+      updated: Campo de perfil foi atualizado!
+      deleted: Campo de perfil foi excluído!
+    response_templates_controller:
+      saved: Modelo de resposta salvo!
+      updated: Modelo de resposta atualizado!
+      deleted: Modelo de resposta excluído!
+    settings_controller:
+      confirmation: Configurações salvas com sucesso!
+    spaces_controller:
+      update_success: Espaços foram atualizados com sucesso.
+    subforems_controller:
+      created: Subforem criado com sucesso!
+      created_with_ai: Subforem criado com IA com sucesso!
+      updated: Subforem atualizado com sucesso!
+      deleted: Subforem excluído com sucesso!
+    tags:
+      moderators_controller:
+        not_found: Usuário não encontrado
+        added: Moderador adicionado com sucesso
+        not_found_or: Usuário não encontrado ou já é moderador
+        removed: Moderador removido com sucesso
+    tags_controller:
+      created: Tag criada com sucesso!
+      updated: Tag atualizada com sucesso!
+      update_fail: Falha ao atualizar tag
+    tools_controller:
+      link_busted: Link quebrado
+      user_busted: Usuário quebrado
+      article_busted: Artigo quebrado
+    users_controller:
+      role_removed: Função removida com sucesso
+      updated: Usuário atualizado com sucesso
+      updated_json: Usuário atualizado com sucesso
+      tag_not_found: Tag não encontrada
+      exported: Usuários exportados com sucesso
+      banished: Usuário banido com sucesso
+      the_page: a página
+      full_delete_html: Usuário foi completamente excluído
+      no_email: Nenhum e-mail fornecido
+      unpublished: Usuário não publicado
+      identity_removed: Identidade removida com sucesso
+      email_sent: E-mail enviado com sucesso
+      email_fail: Falha ao enviar e-mail
+      parameter_missing: Parâmetro ausente
+      confirm_sent: Confirmação enviada com sucesso
+      verify_sent: Verificação enviada com sucesso
+      unlocked: Usuário desbloqueado com sucesso
+      credits_added: Créditos adicionados com sucesso
+      credits_removed: Créditos removidos com sucesso
+      manual_verification_sent: Verificação manual enviada com sucesso
+    welcome_controller:
+      thread_content: Conteúdo do tópico de boas-vindas
+    secrets_controller:
+      not_in_vault: Não está no cofre
+      updated: Atualizado com sucesso
+      value: Valor
+  admin_controller:
+    dashboard:
+      title: Painel de Administração
+      welcome: Bem-vindo ao painel de administração
+    users:
+      title: Gerenciar Usuários
+      suspend: Suspender
+      unsuspend: Dessuspender
+      ban: Banir
+      unban: Desbanir
+      delete: Excluir
+      edit: Editar
+      view: Visualizar
+    articles:
+      title: Gerenciar Artigos
+      delete: Excluir
+      edit: Editar
+      view: Visualizar
+      publish: Publicar
+      unpublish: Despublicar
+    comments:
+      title: Gerenciar Comentários
+      delete: Excluir
+      edit: Editar
+      view: Visualizar
+      moderate: Moderar
+    reports:
+      title: Relatórios
+      view: Visualizar
+      resolve: Resolver
+      dismiss: Dispensar
+    settings:
+      title: Configurações
+      save: Salvar
+      cancel: Cancelar

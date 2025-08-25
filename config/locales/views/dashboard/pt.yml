@@ -1,0 +1,100 @@
+---
+pt:
+  views:
+    dashboard:
+      meta:
+        title: Painel - %{site}
+      heading: Painel
+      actions:
+        mobile:
+          posts: Posts (%{num})
+          followers: Seguidores (%{num})
+          following_tags: Tags seguidas (%{num})
+          following_users: Usuários seguidos (%{num})
+          following_orgs: Organizações seguidas (%{num})
+          following_pods: Podcasts seguidos (%{num})
+          hidden_tags: Tags ocultas (%{num})
+        posts: Posts
+        series: Séries
+        followers: Seguidores
+        following_tags: Tags seguidas
+        following_users: Usuários seguidos
+        following_orgs: Organizações seguidas
+        following_pods: Podcasts seguidos
+        hidden_tags: Tags ocultas
+        listings: Anúncios
+        analytics: Analytics
+        for_org: Analytics para %{org}
+        upload: Fazer upload de um vídeo
+      analytics:
+        meta:
+          title: Analytics
+        heading: Analytics para %{name}
+        back: "Voltar ao Painel Principal"
+        your: Seu Painel
+        org: "Painel de Analytics do %{org}"
+      article:
+        heading:
+          text_html: "%{archived}%{title}"
+          archived: "[Arquivado] "
+        archived: Arquivado
+        published: 'Publicado:'
+        published_html: 'Publicado: %{date}'
+        edited: 'Editado:'
+        edited_html: 'Editado: %{date}'
+        series: 'Série:'
+        series_html: "<strong>Série:</strong> %{series}"
+        draft: Rascunho
+        scheduled: Agendado
+        scheduled_at: 'Agendado:'
+        language: 'Idioma:'
+        reactions:
+          title: Reações
+          icon: Reações
+          text_html:
+            one: "%{num} reação"
+            other: "%{num} reações"
+        comments:
+          title: Comentários
+          icon: Comentários
+          text_html:
+            one: "%{num} comentário"
+            other: "%{num} comentários"
+        views:
+          title: Visualizações
+          icon: Visualizações
+          lt_25: "< 25"
+          text_html:
+            one: "%{scale} visualização"
+            other: "%{scale} visualizações"
+          u_25: menos de 25
+        subscriptions:
+          title: Inscrições
+          icon: Dados
+          number: Inscrições (%{num})
+        delete: Excluir
+        unpin: Desafixar
+        pin:
+          title: Fixar no perfil
+          button: Fixar no perfil
+          text: Fixar
+        manage:
+          aria_label: 'Gerenciar post: %{title}'
+          text: Gerenciar
+        lock: Bloquear discussão
+        unlock: Desbloquear discussão
+        edit:
+          aria_label: 'Editar post: %{title}'
+          text: Editar
+        more:
+          title: 'Mais opções para o post: %{title}'
+          icon: Mais...
+        stats: Estatísticas
+        archive: Arquivar post
+        unarchive: Desarquivar post
+        author: Autor
+        co_authors: Co-autores
+        series_author_change_warning: Mudanças de autor não são permitidas para posts de série.
+        icon: Detalhes
+        author_is: 'AUTOR: '
+        save: Salvar

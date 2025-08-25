@@ -24,6 +24,21 @@
       <%= form.label :bg_image_url, "Background Image URL (Optional)", class: "crayons-label" %>
       <%= form.text_field :bg_image_url, class: "crayons-textfield", placeholder: "https://example.com/background.jpg" %>
     </div>
+    
+    <div class="crayons-field">
+      <%= form.label :default_locale, "Default Language for Generated Content", class: "crayons-label" %>
+      <%= form.select :default_locale, 
+          options_for_select([
+            ['English', 'en'],
+            ['Portuguese (Brazilian)', 'pt'],
+            ['French', 'fr']
+          ], @subforem.default_locale || 'en'),
+          { prompt: 'Select the language for generated content' },
+          { class: "crayons-select" } %>
+      <small class="crayons-field__description">
+        This will determine the language of all AI-generated content (descriptions, tags, about page, etc.)
+      </small>
+    </div>
   <% end %>
   
   <div class="crayons-field">

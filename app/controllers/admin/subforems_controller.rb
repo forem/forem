@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     SUBFOREM_ALLOWED_PARAMS = %i[
-      domain discoverable root name brain_dump logo_url bg_image_url
+      domain discoverable root name brain_dump logo_url bg_image_url default_locale
     ].freeze
 
     MODERATOR_ALLOWED_PARAMS = %i[
@@ -45,6 +45,7 @@ module Admin
             name: subforem_params[:name],
             logo_url: subforem_params[:logo_url],
             bg_image_url: subforem_params[:bg_image_url],
+            default_locale: subforem_params[:default_locale] || 'en',
           )
           flash[:success] = I18n.t("admin.subforems_controller.created_with_ai")
           redirect_to admin_subforems_path
