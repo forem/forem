@@ -2,6 +2,8 @@ class AddModerationIndexesToArticles < ActiveRecord::Migration[7.0]
   disable_ddl_transaction!
 
   def change
+    execute "SET statement_timeout = 0;"
+
     safety_assured do
       # Composite index for the main moderation query pattern
       # This covers: published, score range, published_at ordering
