@@ -122,18 +122,17 @@
   justify-content: space-between;
   align-items: center;
   margin: 30px auto 24px;
-  padding: 0 10px;
-  max-width: 500px;
+  max-width: 560px;
 
   .scale-supplementary-text-left,
   .scale-supplementary-text-right {
-    font-size: 0.85em;
+    font-size: 0.8em;
     color: var(--card-color-tertiary, $medium-gray);
     font-weight: var(--fw-medium, 500);
     max-width: 40%;
     text-align: center;
     line-height: 1.2;
-    min-width: 200px;
+    min-width: 220px;
   }
 
   // .scale-supplementary-text-left {
