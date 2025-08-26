@@ -1485,6 +1485,36 @@ RSpec.describe Article do
           article.save
         end
       end
+
+      it "updates score after content moderation labeling" do
+        # Mock the content moderation labeler to return a specific label
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        
+        initial_score = article.score
+        
+        # Perform the worker job
+        Articles::HandleSpamWorker.new.perform(article.id)
+        
+        # The score should be updated with the automod_label adjustment
+        # clear_and_obvious_harmful has a -10 adjustment
+        expect(article.reload.score).to eq(initial_score - 10)
+      end
+
+      it "updates score with positive adjustment for high quality content" do
+        # Mock the content moderation labeler to return a high quality label
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        
+        initial_score = article.score
+        
+        # Perform the worker job
+        Articles::HandleSpamWorker.new.perform(article.id)
+        
+        # The score should be updated with the automod_label adjustment
+        # great_and_on_topic has a +20 adjustment
+        expect(article.reload.score).to eq(initial_score + 20)
+      end
     end
 
     describe "create conditional autovomits" do
@@ -1934,6 +1964,151 @@ RSpec.describe Article do
       expect(article.reload.score).to eq(score + 1)
     end
   end
+
+  describe "automod_label adjustments" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+    end
+
+    context "when automod_label is no_moderation_label" do
+      before { article.update_column(:automod_label, "no_moderation_label") }
+
+      it "adds 0 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_harmful" do
+      before { article.update_column(:automod_label, "clear_and_obvious_harmful") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is likely_harmful" do
+      before { article.update_column(:automod_label, "likely_harmful") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_inciting" do
+      before { article.update_column(:automod_label, "clear_and_obvious_inciting") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is likely_inciting" do
+      before { article.update_column(:automod_label, "likely_inciting") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_spam" do
+      before { article.update_column(:automod_label, "clear_and_obvious_spam") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is likely_spam" do
+      before { article.update_column(:automod_label, "likely_spam") }
+
+      it "subtracts 5 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_low_quality" do
+      before { article.update_column(:automod_label, "clear_and_obvious_low_quality") }
+
+      it "subtracts 5 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when automod_label is likely_low_quality" do
+      before { article.update_column(:automod_label, "likely_low_quality") }
+
+      it "subtracts 2 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-2)
+      end
+    end
+
+    context "when automod_label is ok_but_offtopic_for_subforem" do
+      before { article.update_column(:automod_label, "ok_but_offtopic_for_subforem") }
+
+      it "adds 0 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+
+    context "when automod_label is okay_and_on_topic" do
+      before { article.update_column(:automod_label, "okay_and_on_topic") }
+
+      it "adds 3 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(3)
+      end
+    end
+
+    context "when automod_label is very_good_but_offtopic_for_subforem" do
+      before { article.update_column(:automod_label, "very_good_but_offtopic_for_subforem") }
+
+      it "adds 3 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(3)
+      end
+    end
+
+    context "when automod_label is very_good_and_on_topic" do
+      before { article.update_column(:automod_label, "very_good_and_on_topic") }
+
+      it "adds 15 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(15)
+      end
+    end
+
+    context "when automod_label is great_and_on_topic" do
+      before { article.update_column(:automod_label, "great_and_on_topic") }
+
+      it "adds 20 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(20)
+      end
+    end
+
+    context "when automod_label is great_but_off_topic_for_subforem" do
+      before { article.update_column(:automod_label, "great_but_off_topic_for_subforem") }
+
+      it "adds 5 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
+    end
+  end
+
+
 
   describe "#feed_source_url and canonical_url must be unique for published articles" do
     let(:url) { "http://www.example.com" }
