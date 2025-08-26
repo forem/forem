@@ -3,10 +3,7 @@ name: CI with datadog test runner
 on:
   push:
     branches:
-      - 'main'
-  pull_request:
-    branches:
-      - 'main'
+      - '**'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-test-runner
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
