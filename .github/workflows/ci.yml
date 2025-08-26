@@ -123,7 +123,7 @@ jobs:
 
   oldjest:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [oldbuild]
     timeout-minutes: 20
 
     steps:
