@@ -32,6 +32,7 @@ class CreatorSettingsForm
       ::Settings::General.original_logo = logo_uploader.url
       ::Settings::General.resized_logo = logo_uploader.resized_logo.url
     end
+
     @success = true
   rescue StandardError => e
     errors.add(:base, e.message)
