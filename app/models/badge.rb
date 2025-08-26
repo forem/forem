@@ -23,6 +23,7 @@ class Badge < ApplicationRecord
     "/badge/#{slug}"
   end
 
+
   private
 
   def generate_slug
