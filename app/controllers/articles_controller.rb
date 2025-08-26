@@ -164,7 +164,6 @@ class ArticlesController < ApplicationController
     @user = @article.user || current_user
 
     updated = Articles::Updater.call(@user, @article, article_params_json)
-
     respond_to do |format|
       format.html do
         # TODO: JSON should probably not be returned in the format.html section
