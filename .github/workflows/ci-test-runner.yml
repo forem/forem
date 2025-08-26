@@ -99,7 +99,7 @@ jobs:
       - name: Setup Datadog Test Runner
         run: bin/ddruntest setup --platform ruby --framework rspec
         env:
-          DD_TRACE_DEBUG: 1
+          DD_TRACE_DEBUG: 0
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -169,4 +169,4 @@ jobs:
         run: bin/knapsack_pro_rspec
         env:
           DD_TEST_SESSION_NAME: knapsack-pro-rspec-${{ matrix.ci_node_index }}
-          DD_TRACE_DEBUG: 1
+          DD_TRACE_DEBUG: 0
