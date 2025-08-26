@@ -102,7 +102,7 @@ jobs:
       - name: Setup Datadog Test Runner
         run: bin/ddruntest setup --platform ruby --framework rspec
         env:
-          DD_TRACE_DEBUG: 1
+          DD_TRACE_DEBUG: 0
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
