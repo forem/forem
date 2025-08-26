@@ -17,6 +17,8 @@ class CreatorSettingsForm
   validates :invite_only_mode, inclusion: { in: [true, false] }
   validates :public, inclusion: { in: [true, false] }
 
+
+
   attr_accessor :success
 
   def save
@@ -30,6 +32,7 @@ class CreatorSettingsForm
       ::Settings::General.original_logo = logo_uploader.url
       ::Settings::General.resized_logo = logo_uploader.resized_logo.url
     end
+
     @success = true
   rescue StandardError => e
     errors.add(:base, e.message)

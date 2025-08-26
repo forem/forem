@@ -31,6 +31,7 @@ module Articles
     #       Article::Feeds::LargeForemExperimental, but may not be
     #       relevant.
     #
+    #
     # @param user [User]
     # @param days_since_published [Integer] if someone
     #        hasn't viewed any articles, give them things from the

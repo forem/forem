@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(grep:*)"
+    ]
+  }
+}

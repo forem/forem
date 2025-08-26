@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  # Core user model with authentication, profiles, and social features
   resourcify
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
@@ -6,6 +7,7 @@ class User < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
   include AlgoliaSearchable
+
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -32,6 +34,7 @@ class User < ApplicationRecord
   extend UniqueAcrossModels
   USERNAME_MAX_LENGTH = 30
 
+  # Limits for user activity tracking and performance
   RECENTLY_ACTIVE_LIMIT = 10_000
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,

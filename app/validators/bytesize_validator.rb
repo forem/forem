@@ -31,4 +31,5 @@ class BytesizeValidator < ActiveModel::EachValidator
 
     record.errors.add(attribute, MESSAGES[key], **errors_options)
   end
+
 end

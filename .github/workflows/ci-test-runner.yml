@@ -1,0 +1,174 @@
+name: CI with datadog test runner
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-test-runner
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  COVERAGE: true
+  RAILS_ENV: test
+  NODE_ENV: test
+  DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+  DATABASE_NAME_TEST: Forem_test
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  POSTGRES_PASSWORD: postgres
+  KNAPSACK_PRO_LOG_LEVEL: info
+  YARN_ENABLE_HARDENED_MODE: 0
+  DD_TRACE_DEBUG: 0
+  DD_ENV: ci
+  DD_SERVICE: forem-with-dd-test-runner
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      E2E: true
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick libmagickwand-dev
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Cache pre-compiled assets
+        uses: actions/cache@v4
+        id: assetscache
+        with:
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+        if: steps.assetscache.outputs.cache-hit != 'true'
+      - run: yarn install --immutable
+        if: steps.assetscache.outputs.cache-hit != 'true'
+      - run: bundle exec rails assets:precompile
+        if: steps.assetscache.outputs.cache-hit != 'true'
+
+  ddsetup:
+    runs-on: ubuntu-latest
+    needs: [build]
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: cp .env_sample .env
+      - run: bundle exec rails db:test:prepare
+      - name: Configure Datadog Test Optimization
+        uses: datadog/test-visibility-github-action@v2
+        with:
+          languages: ruby
+          api_key: ${{ secrets.DD_API_KEY }}
+          site: datadoghq.eu
+      - name: Setup Datadog Test Runner
+        run: bin/ddruntest setup --platform ruby --framework rspec
+        env:
+          DD_TRACE_DEBUG: 0
+      - name: Upload DD artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dd-artifacts
+          path: '.dd'
+          if-no-files-found: warn
+          include-hidden-files: true
+
+  rspec:
+    runs-on: ubuntu-latest
+    needs: [ddsetup]
+    timeout-minutes: 20
+    env:
+      KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+      KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+      KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [8]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick libmagickwand-dev
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: cp .env_sample .env
+      - run: bundle exec rails db:test:prepare
+      - name: Configure Datadog Test Optimization
+        uses: datadog/test-visibility-github-action@v2
+        with:
+          languages: ruby
+          api_key: ${{ secrets.DD_API_KEY }}
+          site: datadoghq.eu
+      - name: RSpec
+        run: bin/knapsack_pro_rspec
+        env:
+          DD_TEST_SESSION_NAME: knapsack-pro-rspec-${{ matrix.ci_node_index }}

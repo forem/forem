@@ -19,7 +19,6 @@ class BillboardEvent < ApplicationRecord
   CATEGORY_SIGNUP = "signup".freeze
   CATEGORY_CONVERSION = "conversion".freeze
   VALID_CATEGORIES = [CATEGORY_CLICK, CATEGORY_IMPRESSION, CATEGORY_SIGNUP, CATEGORY_CONVERSION].freeze
-
   CONTEXT_TYPE_HOME = "home".freeze
   CONTEXT_TYPE_ARTICLE = "article".freeze
   CONTEXT_TYPE_EMAIL = "email".freeze

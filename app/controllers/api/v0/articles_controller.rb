@@ -2,6 +2,7 @@ module Api
   module V0
     # @note This controller partially authorizes with the ArticlePolicy, in an ideal world, it would
     #       fully authorize.  However, that refactor would require significantly more work.
+
     class ArticlesController < ApiController
       include Api::ArticlesController
 

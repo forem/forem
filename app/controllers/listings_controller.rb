@@ -28,6 +28,7 @@ class ListingsController < ApplicationController
   # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
   # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_and_authorize_listing, only: %i[edit update destroy]
+
   before_action :set_cache_control_headers, only: %i[index]
   before_action :check_suspended, only: %i[new create update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
@@ -36,7 +37,6 @@ class ListingsController < ApplicationController
 
   def index
     @displayed_listing = Listing.where(published: true).find_by(slug: params[:slug]) if params[:slug]
-
     if params[:view] == "moderate"
       not_found unless @displayed_listing
       return redirect_to edit_admin_listing_path(id: @displayed_listing.id)
@@ -51,7 +51,6 @@ class ListingsController < ApplicationController
 
     @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
     @displayed_listing_json = @displayed_listing.to_json(INDEX_JSON_OPTIONS)
-
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 
@@ -76,6 +75,8 @@ class ListingsController < ApplicationController
       .pluck(:organization_id)
     orgs = Organization.where(id: organizations_ids)
     @orgs_json = orgs.to_json(only: %i[id name slug unspent_credits_count])
+
+
     org_listings = Listing.where(organization_id: organizations_ids)
     @org_listings_json = org_listings.to_json(DASHBOARD_JSON_OPTIONS)
     @user_credits = current_user.unspent_credits_count

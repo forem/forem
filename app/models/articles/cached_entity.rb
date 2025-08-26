@@ -3,6 +3,7 @@ module Articles
   CachedEntity = Struct.new(:name, :username, :slug, :profile_image_90, :profile_image_url, :cached_base_subscriber?) do
     include Images::Profile.for(:profile_image_url)
 
+
     def self.from_object(object)
       new(
         object.name,

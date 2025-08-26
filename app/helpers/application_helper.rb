@@ -1,4 +1,5 @@
 module ApplicationHelper
+  # Helper methods used across the entire application for common UI operations
   LARGE_USERBASE_THRESHOLD = 1000
 
   # @return [Hash<String, String>] the key is the timeframe name and the corresponding is the
@@ -14,6 +15,7 @@ module ApplicationHelper
   end
 
   # Provides a status string for HTML data attributes.
+  # Used for frontend JavaScript to determine user authentication state
   #
   # @return [String] "logged-in" or "logged-out" depending on the requesting user's current signin
   #         status.

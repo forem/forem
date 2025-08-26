@@ -1,4 +1,5 @@
 class ArticlePolicy < ApplicationPolicy
+  # Authorization policy for article creation, editing, and management
   MAX_TAG_LIST_SIZE = 4
   # @return [TrueClass] when only Forem admins can post an Article.
   # @return [FalseClass] when most any Forem user can post an Article.
@@ -89,6 +90,7 @@ class ArticlePolicy < ApplicationPolicy
     @record = record
   end
 
+  # RSS/Atom feeds are publicly accessible
   def feed?
     true
   end

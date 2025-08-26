@@ -1,9 +1,12 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - '*'
+# on:
+#   push:
+#     branches:
+#       - 'main'
+#   pull_request:
+#     branches:
+#       - 'main'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -23,7 +26,7 @@ env:
   DD_SERVICE: forem-unit-tests
 
 jobs:
-  build:
+  oldbuild:
     runs-on: ubuntu-latest
     env:
       E2E: true
@@ -56,9 +59,9 @@ jobs:
       - run: bundle exec rails assets:precompile
         if: steps.assetscache.outputs.cache-hit != 'true'
 
-  rspec:
+  oldrspec:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [oldbuild]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -118,9 +121,9 @@ jobs:
         env:
           DD_TEST_SESSION_NAME: knapsack-pro-rspec-${{ matrix.ci_node_index }}
 
-  jest:
+  oldjest:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [oldbuild]
     timeout-minutes: 20
 
     steps:
@@ -140,72 +143,3 @@ jobs:
         env:
           DD_TEST_SESSION_NAME: jest-tests
           NODE_OPTIONS: -r ${{ env.DD_TRACE_PACKAGE }}
-
-  # cypress:
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-  #   needs: [build]
-  #   env:
-  #     E2E: true
-
-  #   services:
-  #     postgres:
-  #       image: postgres:13-alpine
-  #       env:
-  #         POSTGRES_PASSWORD: postgres
-  #       ports:
-  #         - 5432:5432
-  #     redis:
-  #       image: redis
-  #       ports:
-  #         - 6379:6379
-
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       ci_node_total: [8]
-  #       ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, non-seed]
-
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Restore compiled assets
-  #       uses: actions/cache/restore@v4
-  #       with:
-  #         fail-on-cache-miss: true
-  #         path: |
-  #           public/assets
-  #         key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-  #         restore-keys: ${{ runner.os }}-compiled-assets-v3-
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version-file: '.nvmrc'
-  #         cache: yarn
-  #     - run: yarn install --immutable
-  #     - name: setup ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         bundler-cache: true
-  #     - run: cp .env_sample .env
-  #     - run: bundle exec rails db:test:prepare
-  #     - run: yarn cypress install
-  #     - name: cypress
-  #       env:
-  #         CYPRESS_RAILS_HOST: localhost
-  #         CYPRESS_RAILS_PORT: 3000
-  #         KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-  #         KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-  #         KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS }}
-  #         KNAPSACK_PRO_TEST_FILE_PATTERN: 'cypress/e2e/seededFlows/**/*.spec.js'
-  #       run: bin/knapsack_pro_cypress
-  #       if: ${{ matrix.ci_node_index != 'non-seed' }}
-  #     - name: cypress non-seed
-  #       run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
-  #       if: ${{ matrix.ci_node_index == 'non-seed' }}
-  #     - name: Upload Cypress artifacts
-  #       uses: actions/upload-artifact@v4
-  #       if: failure()
-  #       with:
-  #         name: cypress-artifacts-${{ matrix.ci_node_index }}
-  #         path: |
-  #           tmp/cypress_screenshots
-  #           cypress/logs

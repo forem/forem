@@ -36,4 +36,5 @@ class ApplicationDecorator
   def type_identifier
     class_name.downcase
   end
+
 end

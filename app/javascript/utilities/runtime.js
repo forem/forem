@@ -1,3 +1,4 @@
+// Runtime detection utilities for cross-platform compatibility
 /**
  * This function returns a string combining the current Medium and OS
  * that represents the current Context where the app is running.
@@ -20,6 +21,7 @@ export const currentMedium = () =>
  * This function returns a string that represents the current OS where the app
  * is currently running. The currently supported Operating Systems are
  * Windows, Linux, macOS, Android and iOS.
+ * Uses navigator.platform and userAgent for detection.
  *
  * @returns {String} One of the supported Operating Systems or 'Unsupported'
  */
