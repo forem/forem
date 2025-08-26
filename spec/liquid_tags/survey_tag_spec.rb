@@ -38,5 +38,15 @@ RSpec.describe SurveyTag, type: :liquid_tag do
       expect(result).to include("Very dissatisfied")
       expect(result).to include("Very satisfied")
     end
+
+    it "renders scale polls with vertical supplementary text within scale value buttons" do
+      scale_poll = create(:poll, :scale_with_supplementary_text, survey: survey)
+      result = Liquid::Template.parse("{% survey #{survey.id} %}", liquid_tag_options).render
+      
+      expect(result).to include("scale-supplementary-text-vertical")
+      expect(result).to include("scale-supplementary-text-horizontal")
+      expect(result).to include("Very dissatisfied")
+      expect(result).to include("Very satisfied")
+    end
   end
 end
