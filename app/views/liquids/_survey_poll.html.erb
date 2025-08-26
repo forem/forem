@@ -25,35 +25,56 @@
     </div>
   <% else %>
     <!-- Regular poll options -->
-    <ul class="survey-poll-answers">
+    <% if poll.scale? %>
       <% 
         # Sort scale options numerically by their markdown value
-        options = if poll.scale?
-          poll.poll_options.sort_by { |opt| opt.markdown.to_i }
-        else
-          poll.poll_options
-        end
+        options = poll.poll_options.sort_by { |opt| opt.markdown.to_i }
+        first_option = options.first
+        last_option = options.last
       %>
-      <% options.each do |option| %>
-        <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
-          <% if poll.single_choice? %>
-            <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
-          <% elsif poll.multiple_choice? %>
-            <input type="checkbox" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
-          <% elsif poll.scale? %>
-            <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+      
+      <% if first_option.supplementary_text.present? || last_option.supplementary_text.present? %>
+        <div class="scale-supplementary-text-container">
+          <% if first_option.supplementary_text.present? %>
+            <div class="scale-supplementary-text-left">← <%= first_option.supplementary_text %></div>
           <% end %>
-          
-          <label for="survey_poll_option_<%= option.id %>" class="option-text">
-            <% if poll.scale? %>
-              <span class="scale-value"><%= option.markdown %></span>
-            <% else %>
-              <%= option.processed_html.html_safe %>
-            <% end %>
-          </label>
-        </li>
+          <% if last_option.supplementary_text.present? %>
+            <div class="scale-supplementary-text-right"><%= last_option.supplementary_text %> →</div>
+          <% end %>
+        </div>
       <% end %>
-    </ul>
+      
+      <ul class="survey-poll-answers">
+        <% options.each do |option| %>
+          <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
+            <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+            <label for="survey_poll_option_<%= option.id %>" class="option-text">
+              <span class="scale-value"><%= option.markdown %></span>
+            </label>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <% options = poll.poll_options %>
+      <ul class="survey-poll-answers">
+        <% options.each do |option| %>
+          <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
+            <% if poll.single_choice? %>
+              <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+            <% elsif poll.multiple_choice? %>
+              <input type="checkbox" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
+            <% end %>
+            
+            <label for="survey_poll_option_<%= option.id %>" class="option-text">
+              <%= option.processed_html.html_safe %>
+              <% if option.supplementary_text.present? %>
+                <div class="option-supplementary-text"><%= option.supplementary_text %></div>
+              <% end %>
+            </label>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
   
   <div class="survey-poll-feedback" style="display: none;">
