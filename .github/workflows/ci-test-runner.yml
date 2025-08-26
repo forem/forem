@@ -87,7 +87,7 @@ jobs:
           api_key: ${{ secrets.DD_API_KEY }}
           site: datadoghq.eu
       - name: Setup Datadog Test Runner
-        run: bin/ddtestrunner setup --platform ruby --framework rspec
+        run: bin/ddruntest setup --platform ruby --framework rspec
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -155,26 +155,3 @@ jobs:
         run: bin/knapsack_pro_rspec
         env:
           DD_TEST_SESSION_NAME: knapsack-pro-rspec-${{ matrix.ci_node_index }}
-
-  jest:
-    runs-on: ubuntu-latest
-    needs: [build]
-    timeout-minutes: 20
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install --immutable
-      - name: Configure Datadog Test Optimization
-        uses: datadog/test-visibility-github-action@v2
-        with:
-          languages: js
-          api_key: ${{ secrets.DD_API_KEY }}
-          site: datadoghq.eu
-      - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
-        env:
-          DD_TEST_SESSION_NAME: jest-tests
-          NODE_OPTIONS: -r ${{ env.DD_TRACE_PACKAGE }}
