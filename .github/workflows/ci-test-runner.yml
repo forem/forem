@@ -101,11 +101,15 @@ jobs:
           site: datadoghq.eu
       - name: Setup Datadog Test Runner
         run: bin/ddruntest setup --platform ruby --framework rspec
+        env:
+          DD_TRACE_DEBUG: 1
+      - name: current folder
+        run: ls -la
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dd-artifacts
-          path: .dd
+          path: '.dd/*'
 
   rspec:
     runs-on: ubuntu-latest
