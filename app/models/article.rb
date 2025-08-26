@@ -127,6 +127,42 @@ class Article < ApplicationRecord
     fullscreen_embed: 2
   }
 
+  enum automod_label: {
+    no_moderation_label: 0,
+    clear_and_obvious_spam: 1,
+    likely_spam: 2,
+    clear_and_obvious_low_quality: 3,
+    likely_low_quality: 4,
+    clear_and_obvious_harmful: 5,
+    likely_harmful: 6,
+    clear_and_obvious_inciting: 7,
+    likely_inciting: 8,
+    ok_but_offtopic_for_subforem: 9,
+    okay_and_on_topic: 10,
+    very_good_but_offtopic_for_subforem: 11,
+    very_good_and_on_topic: 12,
+    great_and_on_topic: 13,
+    great_but_off_topic_for_subforem: 14
+  }
+
+  AUTOMOD_SCORE_ADJUSTMENTS = {
+    no_moderation_label: 0,
+    clear_and_obvious_spam: -10,
+    likely_spam: -5,
+    clear_and_obvious_low_quality: -5,
+    likely_low_quality: -2,
+    clear_and_obvious_harmful: -10,
+    likely_harmful: -10,
+    clear_and_obvious_inciting: -10,
+    likely_inciting: -10,
+    ok_but_offtopic_for_subforem: 0,
+    okay_and_on_topic: 3,
+    very_good_but_offtopic_for_subforem: 3,
+    very_good_and_on_topic: 15,
+    great_and_on_topic: 20,
+    great_but_off_topic_for_subforem: 5
+  }
+
   has_one :discussion_lock, dependent: :delete
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
@@ -703,7 +739,10 @@ class Article < ApplicationRecord
     # Context notes are currently only a positive indicator. In the future, they could be negative and this should be changed.
     context_note_adjustment = context_notes.size
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment
+          # Content moderation label adjustments
+      automod_label_adjustment = AUTOMOD_SCORE_ADJUSTMENTS[automod_label.to_sym] || 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score

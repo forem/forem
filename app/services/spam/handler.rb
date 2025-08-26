@@ -22,10 +22,41 @@ module Spam
     # @param article [Article] the article to check for spamminess
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
+      # First, run content moderation labeling
+      label_article_content!(article)
+
+      # Handle clear and obvious violations immediately
+      if %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(article.automod_label)
+        issue_spam_reaction_for!(reactable: article)
+
+        if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
+          user: article.user,
+          include_user_profile: more_rigorous_user_profile_spam_checking?,
+        )
+          suspend!(user: article.user)
+        end
+
+        return :spam
+      end
+
+      # High quality content bypasses spam checks entirely
+      if %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem great_but_off_topic_for_subforem].include?(article.automod_label)
+        return :not_spam
+      end
+
+      # For likely violations, bypass badge count and other restrictions but still run checks
+      bypass_restrictions = %w[likely_spam likely_harmful likely_inciting].include?(article.automod_label)
+
+      # Continue with existing spam detection logic
       text = attributes.map { |attr| article.public_send(attr) }.join("\n")
 
-      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: text) || 
-        (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && article.user.badge_achievements_count < 4 && Ai::ArticleCheck.new(article).spam?)
+      # Check if we should trigger spam detection
+      should_check = Settings::RateLimit.trigger_spam_for?(text: text) || 
+        (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && 
+         (bypass_restrictions || article.user.badge_achievements_count < 4) && 
+         Ai::ArticleCheck.new(article).spam?)
+
+      return :not_spam unless should_check
 
       issue_spam_reaction_for!(reactable: article)
 
@@ -163,8 +194,23 @@ module Spam
       suspend!(user: user)
     end
 
+    # NEW/private: Label article content using AI moderation.
+    def self.label_article_content!(article)
+      return unless Ai::Base::DEFAULT_KEY.present?
+
+      begin
+        labeler = Ai::ContentModerationLabeler.new(article)
+        label = labeler.label
+        article.update_column(:automod_label, label)
+                rescue StandardError => e
+            Rails.logger.error("Failed to label article content: #{e}")
+            # Set a safe default label
+            article.update_column(:automod_label, "no_moderation_label")
+          end
+    end
+
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
-                         :suspend_if_user_is_repeat_offender
+                         :suspend_if_user_is_repeat_offender, :label_article_content!
   end
 end
