@@ -14,7 +14,7 @@
   box-sizing: border-box;
   padding: 15px 25px 25px;
   font-family: var(--ff-sans-serif);
-  
+
   .survey-title {
     margin: 10px 0 25px;
     text-align: center;
@@ -33,6 +33,7 @@
     font-size: 1.1em !important;
     color: var(--body-color);
   }
+
   &.survey-poll-long-question {
     h3 {
       font-size: 1em !important;
@@ -68,6 +69,14 @@
       color: var(--body-color);
       flex: 1;
       cursor: pointer;
+
+      .option-supplementary-text {
+        font-size: 0.85em;
+        color: var(--card-color-tertiary, $medium-gray);
+        margin-top: 4px;
+        font-style: italic;
+        line-height: 1.3;
+      }
     }
 
     &:hover {
@@ -85,7 +94,7 @@
       border-color: var(--cta-branded-border);
       box-shadow: 1px 1px 1px var(--cta-branded-border);
       cursor: default;
-      
+
       .option-text {
         color: var(--cta-branded-color);
         font-weight: var(--fw-bold, 700);
@@ -107,13 +116,42 @@
   }
 }
 
+// Scale supplementary text container (above the scale)
+.scale-supplementary-text-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px auto 24px;
+  padding: 0 10px;
+  max-width: 500px;
+
+  .scale-supplementary-text-left,
+  .scale-supplementary-text-right {
+    font-size: 0.85em;
+    color: var(--card-color-tertiary, $medium-gray);
+    font-weight: var(--fw-medium, 500);
+    max-width: 40%;
+    text-align: center;
+    line-height: 1.2;
+    min-width: 200px;
+  }
+
+  // .scale-supplementary-text-left {
+  //   text-align: left;
+  // }
+
+  // .scale-supplementary-text-right {
+  //   text-align: right;
+  // }
+}
+
 // Scale poll specific styles for surveys
 .survey-poll[data-poll-type="scale"] {
   .survey-poll-answers {
     // Default vertical layout for more than 10 options
     .survey-poll-option {
       justify-content: space-between;
-      
+
       .scale-value {
         font-size: 1.2em;
         font-weight: bold;
@@ -127,7 +165,7 @@
       }
     }
   }
-  
+
   // Horizontal layout for 5 options (always horizontal)
   &.scale-5-options {
     .survey-poll-answers {
@@ -135,7 +173,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 8px;
-      
+
       .survey-poll-option {
         flex: 0 0 auto;
         min-width: 30px;
@@ -143,7 +181,7 @@
         padding: 4px 4px;
         justify-content: center;
         text-align: center;
-        
+
         .scale-value {
           font-size: 1.1em;
           font-weight: bold;
@@ -155,20 +193,21 @@
           border-radius: var(--radius-sm, 4px);
           margin: 0;
         }
-        
+
         input[type="radio"] {
           display: none; // Hide radio button for cleaner horizontal layout
         }
-        
+
         .option-text {
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
         }
       }
     }
   }
-  
+
   // Horizontal layout for more than 5 options (only at xl breakpoint)
   &.scale-many-options {
     .survey-poll-answers {
@@ -177,7 +216,7 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 8px;
-        
+
         .survey-poll-option {
           flex: 0 0 auto;
           min-width: 30px;
@@ -185,7 +224,7 @@
           padding: 4px 4px;
           justify-content: center;
           text-align: center;
-          
+
           .scale-value {
             font-size: 1.1em;
             font-weight: bold;
@@ -197,13 +236,14 @@
             border-radius: var(--radius-sm, 4px);
             margin: 0;
           }
-          
+
           input[type="radio"] {
             display: none; // Hide radio button for cleaner horizontal layout
           }
-          
+
           .option-text {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
           }
@@ -232,7 +272,7 @@
   align-items: center;
   margin-top: 1em;
   padding: 0 5px;
-  
+
   .survey-progress {
     font-size: 0.9em;
     color: var(--card-color-tertiary, $medium-gray);
@@ -272,7 +312,7 @@
 .survey-complete-message {
   text-align: center;
   padding: 3em 1em;
-  
+
   h3 {
     // Also map the final success text to the branded color for consistency
     color: var(--cta-branded-color);

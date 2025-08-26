@@ -6,4 +6,37 @@ RSpec.describe SurveyTag, type: :liquid_tag do
 
     it { is_expected.to eq(:any_admin?) }
   end
+
+  describe "#render" do
+    let(:survey) { create(:survey) }
+    let(:poll) { create(:poll, survey: survey) }
+    let(:admin_user) { create(:user, :admin) }
+    let(:source) { create(:article, user: admin_user) }
+    let(:liquid_tag_options) { { source: source, user: admin_user } }
+
+    it "renders survey with polls" do
+      result = Liquid::Template.parse("{% survey #{survey.id} %}", liquid_tag_options).render
+      expect(result).to include("survey_#{survey.id}")
+      expect(result).to include(survey.title)
+    end
+
+    it "renders polls with supplementary text" do
+      poll_with_supplementary = create(:poll, :with_supplementary_text, survey: survey)
+      result = Liquid::Template.parse("{% survey #{survey.id} %}", liquid_tag_options).render
+      
+      expect(result).to include("option-supplementary-text")
+      expect(result).to include("Desc 1")
+    end
+
+    it "renders scale polls with supplementary text on first and last options" do
+      scale_poll = create(:poll, :scale_with_supplementary_text, survey: survey)
+      result = Liquid::Template.parse("{% survey #{survey.id} %}", liquid_tag_options).render
+      
+      expect(result).to include("scale-supplementary-text-container")
+      expect(result).to include("scale-supplementary-text-left")
+      expect(result).to include("scale-supplementary-text-right")
+      expect(result).to include("Very dissatisfied")
+      expect(result).to include("Very satisfied")
+    end
+  end
 end

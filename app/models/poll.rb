@@ -1,5 +1,5 @@
 class Poll < ApplicationRecord
-  attr_accessor :poll_options_input_array
+  attr_accessor :poll_options_input_array, :poll_options_supplementary_text_array
 
   serialize :voting_data
 
@@ -14,7 +14,7 @@ class Poll < ApplicationRecord
   belongs_to :article, optional: true
   belongs_to :survey, optional: true
 
-  has_many :poll_options, dependent: :delete_all
+  has_many :poll_options, -> { order(:position) }, dependent: :delete_all
   has_many :poll_skips, dependent: :delete_all
   has_many :poll_votes, dependent: :delete_all
   has_many :poll_text_responses, dependent: :delete_all
@@ -27,6 +27,7 @@ class Poll < ApplicationRecord
   validates :type_of, presence: true
 
   before_save :evaluate_markdown
+  before_create :set_default_position
   after_create :create_poll_options
 
   # We only want a user to be able to vote (or abstain) once per poll.
@@ -68,7 +69,28 @@ class Poll < ApplicationRecord
   def scale_range
     return unless scale_poll?
 
-    poll_options.order(:id).pluck(:markdown).map(&:to_i)
+    poll_options.pluck(:markdown).map(&:to_i)
+  end
+
+  # Move poll to a specific position within its survey
+  def move_to_position(new_position)
+    return unless survey_id
+
+    transaction do
+      # Shift other polls in the same survey
+      if new_position < position
+        # Moving up: increment positions of polls between new_position and current position
+        survey.polls.where('position >= ? AND position < ?', new_position, position)
+              .update_all('position = position + 1')
+      elsif new_position > position
+        # Moving down: decrement positions of polls between current position and new_position
+        survey.polls.where('position > ? AND position <= ?', position, new_position)
+              .update_all('position = position - 1')
+      end
+
+      # Update this poll's position using update_column to skip validations
+      update_column(:position, new_position)
+    end
   end
 
   private
@@ -76,9 +98,22 @@ class Poll < ApplicationRecord
   def create_poll_options
     return if text_input? # Skip creating options for text input polls
 
-    poll_options_input_array.each do |input|
-      PollOption.create!(markdown: input, poll_id: id)
+    poll_options_input_array.each_with_index do |input, index|
+      supplementary_text = poll_options_supplementary_text_array&.dig(index)
+      PollOption.create!(
+        markdown: input, 
+        poll_id: id, 
+        position: index,
+        supplementary_text: supplementary_text
+      )
     end
+  end
+
+  def set_default_position
+    return unless survey_id && position.nil?
+
+    max_position = survey.polls.maximum(:position) || -1
+    self.position = max_position + 1
   end
 
   def evaluate_markdown

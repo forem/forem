@@ -550,6 +550,12 @@ seeder.create_if_none(Survey) do
       "Spider-man: No Way Home",
       "Guardians of the Galaxy",
     ],
+    poll_options_supplementary_text_array: [
+      "The epic conclusion to the Infinity Saga",
+      "Groundbreaking representation and storytelling",
+      "Multiverse adventure with emotional depth",
+      "Space adventure with heart and humor",
+    ],
   )
 
   # Poll 2: Preferred Marvel Hero (Single Choice)
@@ -563,6 +569,12 @@ seeder.create_if_none(Survey) do
       "Captain America",
       "Thor",
       "Doctor Strange",
+    ],
+    poll_options_supplementary_text_array: [
+      "Genius billionaire playboy philanthropist",
+      "The first Avenger, symbol of hope",
+      "God of Thunder with cosmic powers",
+      "Master of the Mystic Arts",
     ],
   )
 
@@ -578,6 +590,12 @@ seeder.create_if_none(Survey) do
       "Erik Killmonger",
       "Wanda Maximoff / Scarlet Witch",
     ],
+    poll_options_supplementary_text_array: [
+      "The Mad Titan with a twisted sense of purpose",
+      "The God of Mischief with complex motivations",
+      "Villain with understandable grievances",
+      "Hero turned villain through grief and trauma",
+    ],
   )
 
   # Poll 4: Favorite Marvel Team (Single Choice)
@@ -592,6 +610,12 @@ seeder.create_if_none(Survey) do
       "The Revengers (from Thor: Ragnarok)",
       "The X-Men",
     ],
+    poll_options_supplementary_text_array: [
+      "Earth's mightiest heroes",
+      "Cosmic misfits turned heroes",
+      "Thor's temporary team of gladiators",
+      "Mutant heroes fighting for coexistence",
+    ],
   )
 
   # Poll 5: Infinity Stone Choice (Single Choice)
@@ -605,6 +629,12 @@ seeder.create_if_none(Survey) do
       "The Space Stone (for teleportation)",
       "The Reality Stone (to alter reality)",
       "The Power Stone (for immense strength)",
+    ],
+    poll_options_supplementary_text_array: [
+      "Green stone - manipulate time flow",
+      "Blue stone - instant travel anywhere",
+      "Red stone - reshape reality itself",
+      "Purple stone - unlimited physical power",
     ],
   )
 
@@ -680,6 +710,13 @@ seeder.create_if_none(Survey) do
     survey_id: dev_experience_survey.id,
     type_of: :scale,
     poll_options_input_array: %w[1 2 3 4 5],
+    poll_options_supplementary_text_array: [
+      "Not at all satisfied",
+      nil,
+      nil,
+      nil,
+      "Extremely satisfied",
+    ],
   )
 
   # Poll 2: Documentation Quality (Scale)
@@ -689,6 +726,13 @@ seeder.create_if_none(Survey) do
     survey_id: dev_experience_survey.id,
     type_of: :scale,
     poll_options_input_array: %w[1 2 3 4 5],
+    poll_options_supplementary_text_array: [
+      "Very poor",
+      nil,
+      nil,
+      nil,
+      "Excellent",
+    ],
   )
 
   # Poll 3: Team Collaboration (Scale)
@@ -698,6 +742,13 @@ seeder.create_if_none(Survey) do
     survey_id: dev_experience_survey.id,
     type_of: :scale,
     poll_options_input_array: %w[1 2 3 4 5],
+    poll_options_supplementary_text_array: [
+      "Very difficult",
+      nil,
+      nil,
+      nil,
+      "Very smooth",
+    ],
   )
 
   # Poll 4: Work-Life Balance (Scale)
@@ -707,6 +758,13 @@ seeder.create_if_none(Survey) do
     survey_id: dev_experience_survey.id,
     type_of: :scale,
     poll_options_input_array: %w[1 2 3 4 5],
+    poll_options_supplementary_text_array: [
+      "Poor balance",
+      nil,
+      nil,
+      nil,
+      "Perfect balance",
+    ],
   )
 
   # Poll 5: Detailed Satisfaction (Scale with more than 10 options - vertical layout)
@@ -738,6 +796,13 @@ seeder.create_if_none(Survey) do
       "Sublime Text",
       "Atom",
     ],
+    poll_options_supplementary_text_array: [
+      "Microsoft's popular open-source editor",
+      "JetBrains' powerful IDE suite",
+      "Terminal-based editor with modal editing",
+      "Fast and lightweight text editor",
+      "GitHub's hackable text editor",
+    ],
   )
 
   # Poll 2: Multiple Choice
@@ -763,6 +828,13 @@ seeder.create_if_none(Survey) do
     survey_id: mixed_survey.id,
     type_of: :scale,
     poll_options_input_array: %w[1 2 3 4 5],
+    poll_options_supplementary_text_array: [
+      "Very dissatisfied",
+      nil,
+      nil,
+      nil,
+      "Very satisfied",
+    ],
   )
 
   # Poll 4: Text Input

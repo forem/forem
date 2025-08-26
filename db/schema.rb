@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_08_21_230001) do
+ActiveRecord::Schema[7.0].define(version: 2025_08_21_230004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1024,8 +1024,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230001) do
     t.string "markdown"
     t.bigint "poll_id"
     t.integer "poll_votes_count", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.string "processed_html"
+    t.string "supplementary_text"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["poll_id", "position"], name: "index_poll_options_on_poll_id_and_position"
   end
 
   create_table "poll_skips", force: :cascade do |t|
@@ -1062,11 +1065,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230001) do
     t.integer "poll_options_count", default: 0, null: false
     t.integer "poll_skips_count", default: 0, null: false
     t.integer "poll_votes_count", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.bigint "survey_id"
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["survey_id", "position"], name: "index_polls_on_survey_id_and_position"
     t.index ["survey_id"], name: "index_polls_on_survey_id"
     t.index ["type_of"], name: "index_polls_on_type_of"
   end
