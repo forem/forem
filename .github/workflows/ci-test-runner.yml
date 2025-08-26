@@ -103,19 +103,13 @@ jobs:
         run: bin/ddruntest setup --platform ruby --framework rspec
         env:
           DD_TRACE_DEBUG: 1
-      - name: current folder
-        run: ls -la
-      - name: Check .dd folder contents
-        run: |
-          echo "Contents of .dd folder:"
-          find .dd -type f || echo "No files found in .dd"
-          ls -la .dd/ || echo ".dd folder is empty or doesn't exist"
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dd-artifacts
           path: '.dd'
           if-no-files-found: warn
+          include-hidden-files: true
 
   rspec:
     runs-on: ubuntu-latest
