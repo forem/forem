@@ -88,6 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230004) do
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
+    t.integer "automod_label", default: 0, null: false
     t.text "body_html"
     t.text "body_markdown"
     t.string "cached_label_list", default: [], array: true
@@ -168,6 +169,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230004) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["automod_label"], name: "index_articles_on_automod_label"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
