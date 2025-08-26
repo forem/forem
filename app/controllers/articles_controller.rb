@@ -24,6 +24,7 @@ class ArticlesController < ApplicationController
   #              config/application.rb uses the config.consider_all_requests_local to determine if
   #              we bubble the exception up or handle it.
   #
+  #
   # rescue_from ApplicationPolicy::UserRequiredError, with: :respond_with_request_for_authentication
 
   # Generates RSS/Atom feed for articles
