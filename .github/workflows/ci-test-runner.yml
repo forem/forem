@@ -61,6 +61,7 @@ jobs:
 
   ddsetup:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/checkout@v4
       - name: Restore compiled assets
@@ -95,7 +96,7 @@ jobs:
 
   rspec:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [ddsetup]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
