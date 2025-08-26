@@ -121,6 +121,7 @@ class ArticlesController < ApplicationController
       front_matter = result.front_matter.to_h
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
+
       @article.errors.add(:base, ErrorMessages::Clean.call(e.message))
     end
 
