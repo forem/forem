@@ -34,7 +34,7 @@
       %>
       
       <% if first_option.supplementary_text.present? || last_option.supplementary_text.present? %>
-        <div class="scale-supplementary-text-container">
+        <div class="scale-supplementary-text-container scale-supplementary-text-horizontal">
           <% if first_option.supplementary_text.present? %>
             <div class="scale-supplementary-text-left">← <%= first_option.supplementary_text %></div>
           <% end %>
@@ -49,7 +49,12 @@
           <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
             <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>" data-option-id="<%= option.id %>">
             <label for="survey_poll_option_<%= option.id %>" class="option-text">
-              <span class="scale-value"><%= option.markdown %></span>
+              <span class="scale-value">
+                <%= option.markdown %>
+                <% if option.supplementary_text.present? %>
+                  <span class="scale-supplementary-text-vertical"><%= option.supplementary_text %></span>
+                <% end %>
+              </span>
             </label>
           </li>
         <% end %>
