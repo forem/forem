@@ -1,10 +1,3 @@
-#  @note When we destroy the related user, it's using dependent:
-#        :delete for the relationship.  That means no before/after
-#        destroy callbacks will be called on this object.
-#
-# @note When we destroy the related poll, it's using dependent:
-#       :delete for the relationship.  That means no before/after
-#       destroy callbacks will be called on this object.
 class PollVote < ApplicationRecord
   belongs_to :user
   belongs_to :poll_option
@@ -13,11 +6,10 @@ class PollVote < ApplicationRecord
   counter_culture :poll_option
   counter_culture :poll
 
-  # In the future we'll remove this constraint if/when we allow multi-answer polls
-  validates :poll_id, uniqueness: { scope: :user_id }
-
+  # For single choice polls, ensure only one vote per user per poll
+  # For multiple choice and scale polls, allow multiple votes but ensure uniqueness per option
+  validates :poll_id, uniqueness: { scope: :user_id }, if: :single_choice_poll?
   validates :poll_option_id, uniqueness: { scope: :user_id }
-  validate :one_vote_per_poll_per_user
 
   after_destroy :touch_poll_votes_count
   after_save :touch_poll_votes_count
@@ -26,11 +18,8 @@ class PollVote < ApplicationRecord
 
   private
 
-  def one_vote_per_poll_per_user
-    return false unless poll
-    return false unless poll.vote_previously_recorded_for?(user_id: user_id)
-
-    errors.add(:base, I18n.t("models.poll_vote.cannot_vote_more_than_once"))
+  def single_choice_poll?
+    poll&.single_choice?
   end
 
   def touch_poll_votes_count

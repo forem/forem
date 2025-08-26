@@ -47,8 +47,16 @@
           <%= crayons_icon_tag(:search, title: t("views.search.icon.title")) %>
         </a>
         <span class="hidden m:flex ml-auto">
-          <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
-            <%= t("views.main.create_post") %>
+          <% if ArticlePolicy.is_root_subforem? %>
+            <button 
+              class="c-cta c-cta--branded mr-2 whitespace-nowrap" 
+              onclick="window.openSubforemModal()">
+              <%= t("views.main.create_post") %>
+            </button>
+          <% else %>
+            <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
+              <%= t("views.main.create_post") %>
+            <% end %>
           <% end %>
 
           <span class="trusted-visible-block">
@@ -72,12 +80,12 @@
       <% else %>
         <div class="flex" id="authentication-top-nav-actions">
           <span class="hidden m:block">
-            <a href="<%= URL.url(sign_up_path, root_unless_default_subforem) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
+            <a href="<%= URL.url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id]), root_unless_default_subforem) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
               <%= t("views.main.header.login") %>
             </a>
           </span>
 
-          <a href="<%= URL.url(sign_up_path(state: "new-user"), root_unless_default_subforem) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
+          <a href="<%= URL.url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id]), root_unless_default_subforem) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
             <%= t("views.main.header.create_account") %>
           </a>
         </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
+ActiveRecord::Schema[7.0].define(version: 2025_08_21_230020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -88,6 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
+    t.integer "automod_label", default: 0, null: false
     t.text "body_html"
     t.text "body_markdown"
     t.string "cached_label_list", default: [], array: true
@@ -168,12 +169,14 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["automod_label"], name: "index_articles_on_automod_label"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
+    t.index ["featured", "published", "published_at"], name: "index_articles_on_featured_published_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
@@ -183,12 +186,18 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.index ["organization_id"], name: "index_articles_on_organization_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
+    t.index ["published", "canonical_url"], name: "index_articles_on_published_and_canonical_url"
+    t.index ["published", "nth_published_by_author"], name: "index_articles_on_published_nth_published_by_author"
+    t.index ["published", "score", "published_at"], name: "index_articles_on_published_score_published_at_for_moderation"
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
+    t.index ["subforem_id", "published", "score", "published_at"], name: "index_articles_on_subforem_published_score_published_at"
     t.index ["subforem_id"], name: "index_articles_on_subforem_id"
+    t.index ["type_of", "published", "score", "published_at"], name: "index_articles_on_type_of_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["type_of"], name: "index_articles_on_type_of"
+    t.index ["user_id", "published", "score", "published_at"], name: "index_articles_on_user_id_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
@@ -414,6 +423,17 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
   end
 
+  create_table "context_notes", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.text "body_markdown", null: false
+    t.datetime "created_at", null: false
+    t.text "processed_html", null: false
+    t.bigint "tag_id"
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_context_notes_on_article_id"
+    t.index ["tag_id"], name: "index_context_notes_on_tag_id"
+  end
+
   create_table "context_notifications", force: :cascade do |t|
     t.string "action"
     t.integer "context_id"
@@ -581,6 +601,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
+    t.float "recent_article_supression_rate", default: 0.0, null: false
     t.float "recent_page_views_shuffle_weight", default: 0.0, null: false
     t.float "recent_subforem_weight", default: 0.0, null: false
     t.integer "recent_tag_count_max", default: 0
@@ -588,6 +609,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "shuffle_weight", default: 0.0, null: false
+    t.float "subforem_follow_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0
@@ -1004,8 +1026,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.string "markdown"
     t.bigint "poll_id"
     t.integer "poll_votes_count", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.string "processed_html"
+    t.string "supplementary_text"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["poll_id", "position"], name: "index_poll_options_on_poll_id_and_position"
   end
 
   create_table "poll_skips", force: :cascade do |t|
@@ -1016,13 +1041,23 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
   end
 
+  create_table "poll_text_responses", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id", null: false
+    t.text "text_content"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["poll_id", "user_id"], name: "index_poll_text_responses_on_poll_id_and_user_id", unique: true
+    t.index ["poll_id"], name: "index_poll_text_responses_on_poll_id"
+    t.index ["user_id"], name: "index_poll_text_responses_on_user_id"
+  end
+
   create_table "poll_votes", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.bigint "poll_id", null: false
     t.bigint "poll_option_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
-    t.index ["poll_id", "user_id"], name: "index_poll_votes_on_poll_id_and_user_id", unique: true
     t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
   end
 
@@ -1032,9 +1067,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.integer "poll_options_count", default: 0, null: false
     t.integer "poll_skips_count", default: 0, null: false
     t.integer "poll_votes_count", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.string "prompt_html"
     t.string "prompt_markdown"
+    t.bigint "survey_id"
+    t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["survey_id", "position"], name: "index_polls_on_survey_id_and_position"
+    t.index ["survey_id"], name: "index_polls_on_survey_id"
+    t.index ["type_of"], name: "index_polls_on_type_of"
   end
 
   create_table "profile_field_groups", force: :cascade do |t|
@@ -1106,6 +1147,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
+    t.index ["reactable_id", "reactable_type", "user_id"], name: "index_reactions_on_reactable_and_user_for_moderation"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["status"], name: "index_reactions_on_status"
@@ -1233,9 +1275,21 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.datetime "created_at", null: false
     t.boolean "discoverable", default: false, null: false
     t.string "domain", null: false
+    t.integer "hotness_score", default: 0, null: false
     t.boolean "root", default: false
+    t.integer "score", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_subforems_on_domain", unique: true
+    t.index ["hotness_score"], name: "index_subforems_on_hotness_score"
+    t.index ["score"], name: "index_subforems_on_score"
+  end
+
+  create_table "surveys", force: :cascade do |t|
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.boolean "display_title", default: true
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tag_adjustments", force: :cascade do |t|
@@ -1284,6 +1338,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "category", default: "uncategorized", null: false
+    t.text "context_note_instructions"
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
@@ -1345,6 +1400,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
   create_table "user_activities", force: :cascade do |t|
     t.jsonb "alltime_labels", default: []
     t.jsonb "alltime_organizations", default: []
+    t.jsonb "alltime_subforems", default: []
     t.jsonb "alltime_tags", default: []
     t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
@@ -1484,6 +1540,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.string "stripe_id_code"
     t.integer "subscribed_to_user_subscriptions_count", default: 0, null: false
     t.string "twitter_username"
+    t.integer "type_of", default: 0, null: false
     t.string "unconfirmed_email"
     t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
@@ -1508,6 +1565,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.index ["onboarding_subforem_id"], name: "index_users_on_onboarding_subforem_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
+    t.index ["type_of"], name: "index_users_on_type_of"
     t.index ["username"], name: "index_users_on_username", unique: true
     t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end
@@ -1549,6 +1607,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_role_id_for_moderation"
   end
 
   create_table "users_settings", force: :cascade do |t|
@@ -1608,6 +1667,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", on_delete: :cascade
+  add_foreign_key "context_notes", "articles"
+  add_foreign_key "context_notes", "tags"
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
   add_foreign_key "devices", "consumer_apps"
@@ -1645,6 +1706,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_06_06_153122) do
   add_foreign_key "poll_options", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "users", on_delete: :cascade
+  add_foreign_key "poll_text_responses", "polls"
+  add_foreign_key "poll_text_responses", "users"
   add_foreign_key "poll_votes", "poll_options", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "poll_votes", "users", on_delete: :cascade

@@ -15,7 +15,7 @@
     border-radius: var(--radius-auto);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    max-height: calc(100vh - var(--header-height) - 2 * var(--layout-padding));
+    max-height: calc(88vh - var(--header-height) - 2 * var(--layout-padding));
     overflow: hidden;
     &__image {
       display: block;
@@ -35,7 +35,7 @@
         aspect-ratio: auto 650 / 273;
         object-fit: contain;
         border-radius: var(--radius-auto) var(--radius) 0 0;
-        max-height: calc(90vh - var(--header-height));
+        max-height: calc(77vh - var(--header-height));
       }
     }
   }
@@ -91,6 +91,27 @@
 
   .reaction-button[disabled] {
     cursor: pointer;
+  }
+
+  &__context-note {
+    margin-top: -5px;
+    margin-bottom: var(--su-5);
+    padding: var(--su-2) var(--su-5);
+    background-color: var(--card-bg);
+    border-radius: 19px;
+    box-shadow: var(--shadow-1);
+    color: var(--card-color);
+    font-size: calc(var(--fs-base) - 1px);
+    line-height: 1.5;
+    display: inline-block;
+  }
+  &__context-note__feed {
+    margin-bottom: var(--su-3);
+    padding: var(--su-1) var(--su-3);
+    font-size: var(--fs-s);
+    line-height: 1.5;
+    border-radius: 15px;
+    display: inline-block;
   }
 }
 

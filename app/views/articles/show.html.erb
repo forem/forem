@@ -100,7 +100,7 @@
       <%= @article.processed_html_final.html_safe %>
     </div>
   </div>
-  <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 <% else %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
     <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
@@ -154,7 +154,17 @@
             }
           </script>
           <header class="crayons-article__header" id="main-title">
-            <% if @article.video.present? %>
+            <% if @article.video&.include?("youtube.com") %>
+              <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
+                <iframe
+                  src="<%= @article.video %>"
+                  style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  title="<%= @article.title %>"
+                ></iframe>
+              </div>
+            <% elsif @article.video.present? %>
               <%= render "articles/video_player", meta_tags: true, article: @article %>
             <% elsif @article.main_image.present? %>
               <a class="crayons-article__cover" href="<%= cloud_cover_url(@article.main_image) %>">
@@ -225,7 +235,7 @@
                 <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                   <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
                 <% end %>
-                <%= @article.title %>
+                <%= @article.type_of == "status" ? @article.title_finalized : @article.title %>
               </h1>
               
               <% if @article.type_of == "full_post" %>
@@ -247,7 +257,11 @@
                         collection: @collection,
                         articles: @collection_articles %>
             <% end %>
-
+            <% if @context_note %>
+              <div class="crayons-article__context-note">
+                <%= @context_note.processed_html.html_safe %>
+              </div>
+            <% end %>
             <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
               <% if @article.type_of == "status" && @article.processed_html_final.present? %>
                 <% if user_signed_in? %>
@@ -323,7 +337,7 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>
@@ -332,6 +346,9 @@
     <% end %>
     <% if @article.processed_html.include?("ltag-poll") %>
       <%== PollTag.script %>
+    <% end %>
+    <% if @article.processed_html.include?("ltag-survey") %>
+      <%== SurveyTag.script %>
     <% end %>
     <% if @article.processed_html.include?("tweet-embed") %>
       <%== TweetTag.script %>

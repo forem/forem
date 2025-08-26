@@ -159,4 +159,87 @@ RSpec.describe UserDecorator, type: :decorator do
       expect(Settings::RateLimit).to have_received(:user_considered_new?).with(user: decorated_user)
     end
   end
+
+  # START: Added tests for ordered_subforems
+  describe "#ordered_subforems" do
+    let(:decorated_user) { user.decorate }
+    let(:activity_store) { instance_double("UserActivity") }
+
+    # Create some subforems to work with
+    let!(:sf1) { create(:subforem, domain: "#{rand(10000)}.com") }
+    let!(:sf2) { create(:subforem, domain: "#{rand(10000)}.com") }
+    let!(:sf3) { create(:subforem, domain: "#{rand(10000)}.com") }
+    let!(:sf4) { create(:subforem, domain: "#{rand(10000)}.com") }
+    let!(:sf5) { create(:subforem, domain: "#{rand(10000)}.com") }
+
+    before do
+      # Mock the user_activity call to return our test double
+      allow(decorated_user).to receive(:user_activity).and_return(activity_store)
+      
+      # Mock the class method to get all discoverable subforems
+      all_ids = [sf1.id, sf2.id, sf3.id, sf4.id, sf5.id]
+      allow(Subforem).to receive(:cached_discoverable_ids).and_return(all_ids)
+    end
+
+    context "when user has recent and followed activity" do
+      it "returns a properly weighted and sorted list of subforem IDs" do
+        # sf1 score: 2 (recent) + 10 (followed) = 12
+        # sf3 score: 1 (recent) = 1
+        # sf2 score: 10 (followed) = 10
+        # Expected user order: sf1, sf2, sf3
+        # Expected final order: sf1, sf2, sf3, sf4, sf5
+        allow(activity_store).to receive(:recent_subforems).and_return([sf1.id, sf1.id, sf3.id])
+        allow(activity_store).to receive(:alltime_subforems).and_return([sf1.id, sf2.id])
+        
+        expected_order = [sf1.id, sf2.id, sf3.id, sf4.id, sf5.id]
+        expect(decorated_user.ordered_subforems).to eq(expected_order)
+      end
+    end
+
+    context "when user has only recent activity" do
+      it "sorts by recent activity and appends the rest" do
+        # sf2 score: 2
+        # sf1 score: 1
+        # Expected user order: sf2, sf1
+        # Expected final order: sf2, sf1, sf3, sf4, sf5
+        allow(activity_store).to receive(:recent_subforems).and_return([sf2.id, sf1.id, sf2.id])
+        allow(activity_store).to receive(:alltime_subforems).and_return([])
+
+        expected_order = [sf2.id, sf1.id, sf3.id, sf4.id, sf5.id]
+        expect(decorated_user.ordered_subforems).to eq(expected_order)
+      end
+    end
+
+    context "when user has no activity" do
+      it "returns the default list of discoverable subforems" do
+        allow(activity_store).to receive(:recent_subforems).and_return([])
+        allow(activity_store).to receive(:alltime_subforems).and_return([])
+
+        expected_order = [sf1.id, sf2.id, sf3.id, sf4.id, sf5.id]
+        expect(decorated_user.ordered_subforems).to eq(expected_order)
+      end
+    end
+    
+    context "when activity store returns nil values" do
+      it "compacts the arrays and calculates scores correctly" do
+        # sf1 score: 1 (recent) + 10 (followed) = 11
+        # sf2 score: 10 (followed) = 10
+        # Expected user order: sf1, sf2
+        # Expected final order: sf1, sf2, sf3, sf4, sf5
+        allow(activity_store).to receive(:recent_subforems).and_return([sf1.id, nil])
+        allow(activity_store).to receive(:alltime_subforems).and_return([sf2.id, nil, sf1.id])
+
+        expected_order = [sf1.id, sf2.id, sf3.id, sf4.id, sf5.id]
+        expect(decorated_user.ordered_subforems).to eq(expected_order)
+      end
+    end
+
+    context "when there is no activity store" do
+      it "returns an empty array" do
+        allow(decorated_user).to receive(:user_activity).and_return(nil)
+        expect(decorated_user.ordered_subforems).to eq([])
+      end
+    end
+  end
+  # END: Added tests
 end

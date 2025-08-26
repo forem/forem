@@ -44,7 +44,7 @@ export const Article = ({
 
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
-    !article.cloudinary_video_url;
+    !article.cloudinary_video_url && !article.video;
 
   const parsedUrl = new URL(article.url);
   const domain = parsedUrl.hostname.replace(".forem.com", "").replace(".to", "");
@@ -84,10 +84,13 @@ export const Article = ({
           }
         }}
       >
-        {article.cloudinary_video_url && <Video article={article} />}
+        {article.video && <Video article={article} />}
 
         {showCover && <ArticleCoverImage article={article} />}
         <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
+          { article.context_note && article.context_note.length > 0 && (
+              <a href={article.url} className="crayons-article__context-note crayons-article__context-note__feed" dangerouslySetInnerHTML={{__html: article.context_note}} />
+            )}
           <div className="crayons-story__top">
             {article.user && (<Meta article={article} organization={article.organization} />)}
             {pinned && (

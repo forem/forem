@@ -158,8 +158,9 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, subforem_id = nil)
+    subforem_id ||= RequestStore.store[:subforem_id]
+    CloudCoverUrl.new(url, subforem_id).call
   end
 
   def tag_colors(tag)
@@ -405,7 +406,7 @@ module ApplicationHelper
     role.name.titlecase
   end
 
-  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
     label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
@@ -420,7 +421,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag), options)
+    link_to(label, tag_path(tag) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?

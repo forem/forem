@@ -20,6 +20,7 @@ en:
       trusted: Congrats! You're now a "trusted" user on %{community}!
       base_subscriber: Congrats! You're now subscribed to DEV++
       moderator: "Congrats! You're now a moderator for #%{tag_name}"
+      subforem_moderator: "Congrats! You're now a moderator for %{subforem_name}"
       new_follower: just followed you on %{community}
       new_mention: "%{name} just mentioned you in their %{type}"
       org_deleted: "%{community} - Organization Deletion Confirmation"

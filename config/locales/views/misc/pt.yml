@@ -1,0 +1,144 @@
+---
+en:
+  views:
+    badges:
+      meta:
+        title: Badges
+      all:
+        one: Show one badge
+        other: Show all %{count} badges
+      heading: Badges
+      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      icon_close: Close
+      gotit: Got it
+      indicator: "%{user} earned this badge %{number} times."
+    campaign:
+      subtitle: Stories (%{count})
+      view: See all posts
+    deep_links:
+      subtitle: Opening the mobile app...
+      alert:
+        subtitle: Whoops! Did you get stuck trying to open the mobile app?
+        desc_html: Make sure it's installed and try again. If the problem persists contact %{email}
+        back: Take me back
+        again: Try again
+        install: Install the app
+    email_subscriptions:
+      unsubscribe:
+        heading: "You have been unsubscribed from %{type}. 😔"
+        description_html: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
+        link: click here
+      invalid:
+        heading: Token expired or invalid
+        description_html: Please %{signin} to manage your email preferences.
+        signin: sign-in
+    hamburger:
+      icon: Navigation menu
+      icon_close: Close
+      icon_left: Left menu
+      icon_right: Right menu
+    logo:
+      color_1:
+        label: Brand color 1
+        description: Used for backgrounds, borders etc.
+      color_2:
+        label: Brand color 2
+        description_html: Used for texts (usually put on <em>Brand color 1</em>).
+      preview:
+        icon: App logo
+        text: 'Preview:'
+    mailers:
+      contact_mailto_html: Contact us at <a href="mailto:%{contact_email}">%{contact_email}</a> if there is anything more we can help with.
+    onboardings:
+      meta:
+        title: Welcome to %{community}
+      heading: You're now a part of the community!
+      subtitle: SUGGESTED THINGS YOU CAN DO
+      close: Close Welcome Message
+      settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
+      welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
+      write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
+      join_subscription_html: "<span class=\"emoji\">🚀</span>Join DEV++"
+    pins:
+      article: Pinned
+      pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
+      removed: "🗑 Pin removed"
+      error: You can only have five pins
+    profile:
+      color:
+        label: Brand color
+        description: Used for backgrounds, borders etc.
+    reading_list:
+      meta:
+        title: Reading List
+        description: My saved posts.
+        og:
+          title: Reading List - %{community}
+    search:
+      heading: Search results%{for}
+      for: " for %{query}"
+      placeholder: Search...
+      icon:
+        aria_label: Search
+        title: Search
+      nav:
+        posts: Posts
+        podcasts: Podcasts
+        people: People
+        comments: Comments
+        my_posts: My posts only
+        organizations: Organizations
+        tags: Tags
+      sort:
+        aria_label: Search result sort options
+        relevance: Most Relevant
+        newest: Newest
+        oldest: Oldest
+      meta:
+        title: Search Results%{for}
+        for: " for %{query}"
+        description: "%{site} => Search Results"
+    series:
+      meta:
+        description: View %{title} on %{site}
+      heading: "%{user}'s Series"
+      empty: This user doesn't have any series
+      list:
+        heading: "%{series} Series' Articles"
+        back: Back to %{user}'s Series
+        empty: This series doesn't have any articles
+    stats:
+      meta:
+        title: Stats for Your Article
+      heading_html: Stats for "%{article}"
+      period:
+        aria_label: Analytics period
+        week: Week
+        month: Month
+        infinity: Infinity
+      readers: Readers Summary
+      followers: New Followers Summary
+      reactions: "Reactions Summary"
+      comments: "Comments Summary"
+      traffic:
+        text: "Traffic Source Summary"
+        source: Source
+        views: Views
+      reactions_history: "Reactions History"
+    sticky:
+      joined: Joined
+      default_cta: Learn more
+      email: Email
+      hot: Hot
+      location: Location
+      more_from_html: More from %{actor}
+      no_summary: Posts in this tag
+      trending_html: Trending on %{app}
+    videos:
+      meta:
+        title: Videos
+        og:
+          description: All videos on %{community}
+      heading: "%{community} on Video"
+      beta_html: "<strong>Video is beta:</strong> %{contact}"
+      upload: "🎥 Upload Video File 🙌"

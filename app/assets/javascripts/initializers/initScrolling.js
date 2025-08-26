@@ -11,7 +11,7 @@ var client;
  * @param {Function} insertCallback is a function from the return of the callback function (insertNext). The function is passed the data as an argument to build the HTML.
  * @returns nil but calls the insertCallback (i.e. the insertEntries function) with the data as an argument to update the HTML. It also handles the loading spinner.
  */
-function fetchNext(el, endpoint, insertCallback) {
+function fetchNext(el, endpoint, insertCallback, suffix) {
   var indexParams = JSON.parse(el.dataset.params);
   // I change the name of the param from "action" to "controller_action" prior to the fetch because Rails ignores the
   // "action" param in the corresponding endpoint controller because it is a reserved word in Rails. Based on the above
@@ -30,7 +30,7 @@ function fetchNext(el, endpoint, insertCallback) {
   }
 
   var fetchUrl =
-    `${endpoint}?page=${nextPage}&${urlParams}&signature=${parseInt(
+    `${endpoint}?page=${nextPage}&${urlParams}${suffix}&signature=${parseInt(
       Date.now() / 400000,
       10,
     )}`.replace('&&', '&');
@@ -253,18 +253,45 @@ function fetchNextFollowersPage(el) {
 }
 
 function buildVideoArticleHTML(videoArticle) {
-  return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
-    <div class="media-card__artwork">
-      <img src="${videoArticle.cloudinary_video_url}" class="w-100 object-cover block aspect-16-9 h-auto" width="320" height="180" alt="${videoArticle.title}">
-      <span class="media-card__artwork__badge">${videoArticle.video_duration_in_minutes}</span>
-    </div>
-    <div class="media-card__content">
-      <h2 class="fs-base mb-2 fw-medium">${videoArticle.title}</h2>
-      <small class="fs-s">
-        ${videoArticle.user.name}
-      </small>
-    </div>
-  </a>`;
+  const allowedHostnames = ["youtube.com", "www.youtube.com"];
+  let videoUrl;
+  try {
+    videoUrl = new URL(videoArticle.video);
+  } catch (e) {
+    videoUrl = null;
+  }
+  if (videoUrl && allowedHostnames.includes(videoUrl.hostname)) {
+    return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
+      <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
+        <iframe
+          src="${videoArticle.video}"
+          style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          title="${videoArticle.title}"
+        ></iframe>
+      </div>
+      <div class="media-card__content">
+        <h2 class="fs-base mb-2 fw-medium">${videoArticle.title}</h2>
+        <small class="fs-s">
+          ${videoArticle.user.name}
+        </small>
+      </div>
+    </a>`;
+  } else {
+    return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
+      <div class="media-card__artwork">
+        <img src="${videoArticle.video_thumbnail_url}" class="w-100 object-cover block aspect-16-9 h-auto" width="320" height="180" alt="${videoArticle.title}" loading="lazy">
+        <span class="media-card__artwork__badge">${videoArticle.video_duration_in_minutes}</span>
+      </div>
+      <div class="media-card__content">
+        <h2 class="fs-base mb-2 fw-medium">${videoArticle.title}</h2>
+        <small class="fs-s">
+          ${videoArticle.user.name}
+        </small>
+      </div>
+    </a>`;
+  }
 }
 
 function insertVideos(videoArticles) {
@@ -292,8 +319,8 @@ function insertVideos(videoArticles) {
   }
 }
 
-function fetchNextVideoPage(el) {
-  fetchNext(el, '/api/videos', insertVideos);
+function fetchNextVideoPage(el, tag) {
+  fetchNext(el, `/api/videos`, insertVideos, `&tag=${tag}`);
 }
 
 function insertArticles(articles) {
@@ -479,7 +506,8 @@ function fetchNextPageIfNearBottom() {
   if (indexWhich === 'videos') {
     scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
-      fetchNextVideoPage(indexContainer);
+      const tag = JSON.parse(indexContainer.dataset.params).tag || '';
+      fetchNextVideoPage(indexContainer, tag);
     };
   } else if (indexWhich === 'followers') {
     scrollableElem = document.getElementById('user-dashboard');

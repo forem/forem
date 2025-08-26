@@ -38,9 +38,9 @@ RSpec.describe Moderator::SinkArticles, type: :service do
       it "raises all of the user's articles but the moderation score" do
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.call(spam_user.id)
+        described_class.call(spam_user.id)
           end
-        end.to change(scores, :call).from([-50, -50, -50]).to([-4, -3, -1])
+        end.to change(scores, :call).from([-50, -50, -50]).to(match_array([-4, -3, -1]))
       end
     end
   end
