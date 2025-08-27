@@ -1,6 +1,6 @@
 class SurveyTag < LiquidTagBase
   PARTIAL = "liquids/survey".freeze
-  VALID_CONTEXTS = %w[Article NilClass].freeze # Allow both Article and nil contexts
+  VALID_CONTEXTS = %w[Article Billboard NilClass].freeze # Allow Article, Billboard, and nil contexts
 
   # Using the same authorization as the PollTag for consistency
   # But allow arbitrary usage in non-article contexts
@@ -21,7 +21,14 @@ class SurveyTag < LiquidTagBase
     super
   end
 
-  # Override authorization to allow usage in arbitrary contexts
+  # Override the authorization check to be context-aware
+  def self.user_authorization_method_name
+    # Return nil to skip authorization check entirely
+    # We'll handle authorization in the user_authorized? method
+    nil
+  end
+
+  # Override the authorization check to be context-aware
   def self.user_authorized?(user)
     # Allow if user is admin (existing behavior)
     return true if user&.any_admin?
@@ -359,7 +366,7 @@ class SurveyTag < LiquidTagBase
     SCRIPT
   end
 
-  def initialize(_tag_name, id_code, _parse_context)
+  def initialize(_tag_name, id_code, parse_context)
     super
     # Eager load polls to avoid N+1 queries
     @survey = Survey.includes(polls: :poll_options).find(id_code)
