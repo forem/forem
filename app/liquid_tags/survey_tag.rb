@@ -1,12 +1,60 @@
 class SurveyTag < LiquidTagBase
   PARTIAL = "liquids/survey".freeze
-  VALID_CONTEXTS = %w[Article].freeze # Or wherever you plan to use this
+  VALID_CONTEXTS = %w[Article Billboard NilClass].freeze # Allow Article, Billboard, and nil contexts
 
   # Using the same authorization as the PollTag for consistency
+  # But allow arbitrary usage in non-article contexts
   VALID_ROLES = %i[
     admin
     super_admin
   ].freeze
+
+  # Override the validation to allow arbitrary usage
+  def self.valid_context?(context)
+    # Allow in articles (existing behavior)
+    return true if context[:source].is_a?(Article)
+
+    # Allow arbitrary usage (new behavior)
+    return true if context[:source].nil?
+
+    # Fall back to default validation
+    super
+  end
+
+  # Override the authorization check to be context-aware
+  def self.user_authorization_method_name
+    # Return nil to skip authorization check entirely
+    # We'll handle authorization in the user_authorized? method
+    nil
+  end
+
+  # Override the authorization check to be context-aware
+  def self.user_authorized?(user)
+    # Allow if user is admin (existing behavior)
+    return true if user&.any_admin?
+
+    # Allow in arbitrary contexts (new behavior)
+    true
+  end
+
+  # Override validate_contexts to allow nil sources
+  def validate_contexts
+    return unless self.class.const_defined? :VALID_CONTEXTS
+
+    source = parse_context.partial_options[:source]
+    # Allow nil sources for this tag
+    return if source.nil?
+
+    # For non-nil sources, use the standard validation
+    raise LiquidTags::Errors::InvalidParseContext, I18n.t("liquid_tags.liquid_tag_base.no_source_found") unless source
+
+    is_valid_source = self.class::VALID_CONTEXTS.include? source.class.name
+    return if is_valid_source
+
+    valid_contexts = self.class::VALID_CONTEXTS.map(&:pluralize).join(", ")
+    invalid_source_error_msg = I18n.t("liquid_tags.liquid_tag_base.invalid_context", valid: valid_contexts)
+    raise LiquidTags::Errors::InvalidParseContext, invalid_source_error_msg
+  end
 
   SCRIPT = <<~JAVASCRIPT.freeze
     // Initialize all surveys on the page for all users
@@ -314,15 +362,11 @@ class SurveyTag < LiquidTagBase
     }
   JAVASCRIPT
 
-  def self.user_authorization_method_name
-    :any_admin?
-  end
-
   def self.script
     SCRIPT
   end
 
-  def initialize(_tag_name, id_code, _parse_context)
+  def initialize(_tag_name, id_code, parse_context)
     super
     # Eager load polls to avoid N+1 queries
     @survey = Survey.includes(polls: :poll_options).find(id_code)

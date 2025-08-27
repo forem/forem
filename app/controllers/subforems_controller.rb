@@ -8,6 +8,11 @@ class SubforemsController < ApplicationController
     @subforems = Subforem.where(discoverable: true, root: false).order(score: :desc)
   end
 
+  def new
+    # Let's just not show the survey for now — still WIP
+    # @survey = Survey.find(ENV["SUBFOREM_SURVEY_ID"].to_i) if ENV["SUBFOREM_SURVEY_ID"].present?
+  end
+
   def edit
     @subforem_moderators = User.with_role(:subforem_moderator, @subforem).select(:id, :username)
 
