@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 require "sidekiq/honeycomb_middleware"
 require "sidekiq/worker_retries_exhausted_reporter"
+require "sidekiq/sidekiq_connection_cleanup"
+require "sidekiq/transaction_safe_rescue"
 
 module Sidekiq
   module Cron
@@ -33,8 +37,10 @@ Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url }
 
   config.server_middleware do |chain|
+    chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
+    chain.add Sidekiq::SidekiqConnectionCleanup
   end
 
   config.server_middleware do |chain|

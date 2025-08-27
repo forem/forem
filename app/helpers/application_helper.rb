@@ -51,12 +51,10 @@ module ApplicationHelper
   # @note [@jeremyf] - making an assumption, namely that the only navigation oriented feature is the
   #                    Listing.  If this changes, adjust this method accordingly.  Normally I like to have method return
   def navigation_link_is_for_an_enabled_feature?(link:)
-    return true if Listing.feature_enabled?
+    listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
-    # The "/listings" is an assumption on the routing.  So let's first try :listings_path.
-    listings_url = URL.url(try(:listings_path) || "/listings")
     return false if listings_url == URL.url(link.url)
-
+    
     true
   end
 
@@ -160,8 +158,9 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, subforem_id = nil)
+    subforem_id ||= RequestStore.store[:subforem_id]
+    CloudCoverUrl.new(url, subforem_id).call
   end
 
   def tag_colors(tag)
@@ -282,11 +281,17 @@ module ApplicationHelper
     end
   end
 
-  def signed_in_default_subforem_or_signed_out_non_default?
-    return false if RequestStore.store[:default_subforem_id].blank?
-    return true if user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
-    return true if !user_signed_in? && RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
-    false
+  def root_unless_default_subforem
+    if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
+      Subforem.first
+    elsif RequestStore.store[:subforem_id].present?
+      Subforem.where(root: true).first
+    end
+  end
+
+  def is_root_subforem?
+    return false unless RequestStore.store[:subforem_id].present?
+    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice
@@ -343,6 +348,13 @@ module ApplicationHelper
     tag.meta name: "keywords", content: "#{Settings::General.meta_keywords[:tag]}, #{tag_name}"
   end
 
+  def constructed_full_url(path, subforem_id)
+    return path unless subforem_id.present?
+
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    "#{URL.protocol}#{domain}#{path}"
+  end
+
   def app_url(uri = nil)
     URL.url(uri)
   end
@@ -394,7 +406,7 @@ module ApplicationHelper
     role.name.titlecase
   end
 
-  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
     label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
@@ -409,7 +421,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag), options)
+    link_to(label, tag_path(tag) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?

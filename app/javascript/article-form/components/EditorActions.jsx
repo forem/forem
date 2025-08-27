@@ -34,7 +34,7 @@ export const EditorActions = ({
         >
           {published && isVersion2
             ? 'Publishing...'
-            : `Saving ${isVersion2 ? 'draft' : ''}...`}
+            : `Saving ${isVersion2 ? 'post' : ''}...`}
         </Button>
       </div>
     );

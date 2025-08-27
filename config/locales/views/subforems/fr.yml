@@ -1,0 +1,65 @@
+---
+en:
+  views:
+    subforems:
+      meta:
+        title: Subforems
+        description: Subforems to follow on %{community}
+        og:
+          description: "%{community} is great!"
+      heading:
+        default: Subforems
+        search_results: Search results for %{q}
+      search:
+        aria_labels:
+          search_input: Tag search term
+          submit: Search subforems
+        placeholder: Search for subforem
+      edit:
+        meta:
+          title: Edit %{subforem}
+        admin: "Admin"
+        help: "Help"
+        view: "View"
+        form:
+          pretty_name:
+            label: Pretty name
+            placeholder: This is the name at the top of the show page.
+          bg_color_hex:
+            label: Tag color
+          short_summary:
+            label: Short summary
+            placeholder: Brief overview of what this subforem is all about.
+          wiki_body_markdown:
+            label: Wiki body markdown
+            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
+          rules_markdown:
+            label: Rules markdown
+            placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
+          submit: Save
+      follow: Follow
+      hide: Hide
+      aria_labels:
+        follow: "Follow subforem: %{subforem_name}"
+        hide: "Hide subforem: %{subforem_name}"
+      following_subforems: Following subforems
+      hidden_subforems: Hidden subforems
+      moderator:
+        text_html: "comma separated, space is optional. Example: %{code}"
+        code: 123
+        placeholder: "comma separated, space is optional. Example: 1,2,3"
+      published:
+        one: 1 post
+        other: "%{count} posts"
+      sidebar:
+        about: 'about #%{subforem}'
+        admin: Admin
+        edit: Edit
+        guidelines: submission guidelines
+        moderate: Moderate
+        mods: subforem moderators
+        new: Create Post
+        older: 'Older #%{subforem} posts'
+        published:
+          one: 1 Post Published
+          other: "%{count} Posts Published"

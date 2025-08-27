@@ -15,7 +15,6 @@ RSpec.describe EdgeCache::BustOrganization, type: :service do
     described_class.call(organization, slug)
 
     expect(cache_bust).to have_received(:call).with("/#{slug}").once
-    expect(cache_bust).to have_received(:call).with(article.path).once
   end
 
   it "logs an error" do

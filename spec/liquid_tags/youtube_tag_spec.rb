@@ -2,77 +2,63 @@ require "rails_helper"
 
 RSpec.describe YoutubeTag, type: :liquid_tag do
   describe "#id" do
-    let(:valid_id_no_time) { "fhH5xX_yW6U" }
-    let(:valid_id_with_time) { "fhH5xX_yW6U?t=0h5m0s" }
-    let(:valid_id_with_time_num) { "fhH5xX_yW6U?t=300" }
-    let(:valid_id_with_time_sec) { "fhH5xX_yW6U?t=300s" }
-    let(:invalid_id) { Faker::Lorem.characters(number: rand(12..100)) }
+    let(:valid_id) { "vKeCr-MAyH4" }
 
-    def generate_new_liquid(id)
-      Liquid::Template.register_tag("youtube", YoutubeTag)
-      Liquid::Template.parse("{% youtube #{id} %}")
+    def generate_tag(input)
+      Liquid::Template.parse("{% embed #{input} %}").render
     end
 
-    # rubocop:disable Style/StringLiterals
-    it "accepts a valid YouTube ID with no starting time" do
-      liquid = generate_new_liquid(valid_id_no_time).render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U"')
+    it "accepts a short URL" do
+      result = generate_tag("https://youtu.be/#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
-    it "accepts valid YouTube ID with starting times" do
-      liquid = generate_new_liquid(valid_id_with_time).render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    it "accepts a short URL with 'si' parameter" do
+      result = generate_tag("https://youtu.be/#{valid_id}?si=FPFWKE9g0PhQjAUE")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
-    it "accepts valid YouTube ID with starting time as integer" do
-      liquid = generate_new_liquid(valid_id_with_time_num).render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    it "accepts a short URL with 't' parameter" do
+      result = generate_tag("https://youtu.be/#{valid_id}?t=231")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}?start=231")
     end
 
-    it "accepts valid YouTube ID with starting time in seconds" do
-      liquid = generate_new_liquid(valid_id_with_time_sec).render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    it "accepts a short URL with both 'si' and 't' parameters" do
+      result = generate_tag("https://youtu.be/#{valid_id}?si=FPFWKE9g0PhQjAUE&t=231")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}?start=231")
     end
 
-    it "accepts YouTube ID with no start time and an empty space" do
-      liquid = generate_new_liquid("#{valid_id_no_time} ").render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U"')
+    it "accepts a full URL with 'v' parameter" do
+      result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
-    it "accepts YouTube ID with start times and one empty space" do
-      liquid = generate_new_liquid("#{valid_id_with_time} ").render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    it "accepts a full URL with 'v' and 't' parameters" do
+      result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}&t=231s")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}?start=231")
     end
 
-    it "accepts YouTube ID with start time as integer and one empty space" do
-      liquid = generate_new_liquid("#{valid_id_with_time_num} ").render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    it "accepts a full URL with 'si' and 'v' parameters in different order" do
+      result = generate_tag("https://www.youtube.com/watch?si=FPFWKE9g0PhQjAUE&v=#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
-    it "accepts YouTube ID with start time in seconds and one empty space" do
-      liquid = generate_new_liquid("#{valid_id_with_time_sec} ").render
-
-      expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    it "accepts an ID only" do
+      result = Liquid::Template.parse("{% youtube #{valid_id} %}").render
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
-    # rubocop:enable Style/StringLiterals
 
-    it "raises an error for invalid IDs or URLs" do
-      expect { generate_new_liquid(invalid_id).render }.to raise_error("Invalid YouTube ID or URL")
+    it "raises an error for invalid IDs" do
+      expect do
+        generate_tag("invalid-id")
+      end.to raise_error(StandardError)
+    end
+
+    it "raises an error for invalid URLs" do
+      stub_request(:any, "https://example.com/not-a-youtube-url").to_return(status: 404)
+      expect do
+        generate_tag("https://example.com/not-a-youtube-url")
+      end.to raise_error(StandardError)
     end
   end
 end

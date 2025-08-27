@@ -75,6 +75,14 @@ RSpec.describe "Moderations" do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
+    it "only includes articles which do not have [Boost] in as title" do
+      non_boost_article = create(:article, title: "Not Boost")
+      boost_article = create(:article, title: "[Boost]")
+      get "/mod"
+      expect(response.body).to include(CGI.escapeHTML(non_boost_article.title))
+      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
+    end
+
     it "renders not_found when an article can't be found" do
       expect do
         get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
@@ -174,7 +182,7 @@ RSpec.describe "Moderations" do
 
     context "when user is trusted" do
       let!(:first_article) { create(:article) }
-      let!(:second_article) { create(:article, score: -12) }
+      let!(:second_article) { create(:article, score: 0) } # Above minimum score threshold
       let(:spamer) { create(:user, :spam) }
       let(:suspended_user) { create(:user, :suspended) }
 
@@ -183,6 +191,9 @@ RSpec.describe "Moderations" do
       end
 
       it "does not show articles the user has already reacted to for inbox" do
+        # Create a reaction for second_article so it gets filtered out of inbox
+        create(:reaction, user: trusted_user, reactable: second_article, category: "like")
+        
         get "/mod"
 
         expect(response.body).to include(CGI.escapeHTML(first_article.title))
@@ -190,8 +201,8 @@ RSpec.describe "Moderations" do
       end
 
       it "doesn't include spam and suspended articles" do
-        spam_article = create(:article, user: spamer, score: 0)
-        suspended_article = create(:article, user: suspended_user, score: 0)
+        spam_article = create(:article, user: spamer, score: -10) # Below minimum score threshold
+        suspended_article = create(:article, user: suspended_user, score: -8) # Below minimum score threshold
 
         get "/mod"
 
@@ -201,8 +212,8 @@ RSpec.describe "Moderations" do
       end
 
       it "includes non-spam articles and doesn't include spam/suspended articles on latest" do
-        spam_article = create(:article, user: spamer, score: 0)
-        suspended_article = create(:article, user: suspended_user, score: 0)
+        spam_article = create(:article, user: spamer, score: -10) # Below minimum score threshold
+        suspended_article = create(:article, user: suspended_user, score: -8) # Below minimum score threshold
 
         get "/mod?state=latest"
 

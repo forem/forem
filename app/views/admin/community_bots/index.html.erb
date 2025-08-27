@@ -1,0 +1,59 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title">Community Bots for <%= @subforem.domain %></h1>
+    <p class="color-secondary">Manage community bots for this subforem</p>
+  </div>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "New Bot", new_admin_subforem_community_bot_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+    <%= link_to "Back to Subforem", admin_subforem_path(@subforem), class: "crayons-btn crayons-btn--outlined" %>
+  </div>
+</header>
+
+<div class="crayons-card p-6">
+  <% if @community_bots.empty? %>
+    <div class="text-center py-8">
+      <p class="color-secondary">No community bots found for this subforem.</p>
+      <%= link_to "Create your first bot", new_admin_subforem_community_bot_path(@subforem), class: "crayons-btn mt-4" %>
+    </div>
+  <% else %>
+    <div class="grid gap-4">
+      <% @community_bots.each do |bot| %>
+        <div class="border border-base-20 rounded-lg p-4" data-testid="community-bot">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-base-20 flex items-center justify-center">
+                <span class="text-lg">🤖</span>
+              </div>
+              <div>
+                <h3 class="font-semibold"><%= bot.name %></h3>
+                <p class="text-sm color-secondary">@<%= bot.username %></p>
+                <p class="text-xs color-secondary">Created <%= time_ago_in_words(bot.created_at) %> ago</p>
+              </div>
+            </div>
+            
+            <div class="flex gap-2">
+              <%= link_to "View Details", admin_subforem_community_bot_path(@subforem, bot), class: "crayons-btn crayons-btn--s" %>
+              <%= link_to "Delete", admin_subforem_community_bot_path(@subforem, bot), 
+                  method: :delete, 
+                  data: { confirm: "Are you sure you want to delete this bot? This action cannot be undone." },
+                  class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+            </div>
+          </div>
+          
+          <% if bot.api_secrets.any? %>
+            <div class="mt-4 p-3 bg-base-10 rounded">
+              <h4 class="text-sm font-semibold mb-2">API Secrets</h4>
+              <% bot.api_secrets.each do |secret| %>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="color-secondary"><%= secret.description %></span>
+                  <code class="bg-base-20 px-2 py-1 rounded text-xs font-mono"><%= secret.secret %></code>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+

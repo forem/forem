@@ -8,8 +8,8 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
     u
   end
   let(:author) { create(:user) }
-  let(:tag) { create(:tag) }
-  let(:mailer) { double }
+  let(:tag)    { create(:tag) }
+  let(:mailer)           { double }
   let(:message_delivery) { double }
 
   before do
@@ -55,7 +55,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
       it "includes billboards" do
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
-        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        bb_1 = create(:billboard, placement_area: "digest_first",  published: true, approved: true)
         bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
 
         worker.perform(user.id)
@@ -67,13 +67,62 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
       it "creates billboard events when billboards are present" do
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
-        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        bb_1 = create(:billboard, placement_area: "digest_first",  published: true, approved: true)
         bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
 
         worker.perform(user.id)
 
         expect(BillboardEvent.where(billboard_id: bb_1.id, category: "impression").size).to be(1)
         expect(BillboardEvent.where(billboard_id: bb_2.id, category: "impression").size).to be(1)
+      end
+
+      context "when there's a preferred paired billboard" do
+        let!(:bb_1) do
+          create(
+            :billboard,
+            placement_area: "digest_first",
+            published: true,
+            approved: true
+          )
+        end
+        let!(:paired_bb) do
+          create(
+            :billboard,
+            placement_area: "digest_second",
+            published: true,
+            approved: true,
+            prefer_paired_with_billboard_id: bb_1.id
+          )
+        end
+        let!(:other_bb) do
+          create(
+            :billboard,
+            placement_area: "digest_second",
+            published: true,
+            approved: true
+          )
+        end
+
+        it "selects the paired billboard for the second slot" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with) do |args|
+            expect(args[:billboards]).to eq([bb_1, paired_bb])
+          end
+        end
+
+        it "creates events for both the first and the paired second billboard" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(BillboardEvent.where(billboard_id: bb_1.id,      category: "impression").count).to eq(1)
+          expect(BillboardEvent.where(billboard_id: paired_bb.id, category: "impression").count).to eq(1)
+          # and it should *not* fire for the other_bb
+          expect(BillboardEvent.where(billboard_id: other_bb.id).count).to eq(0)
+        end
       end
     end
   end

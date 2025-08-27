@@ -100,6 +100,28 @@ function focusOnComments() {
   }
 }
 
+function renderBottomContent() {
+  const bottomContent = document.getElementById('aync-bottom-content');
+  const articleContainer = document.getElementById('article-show-container');
+  const commentsElement = document.getElementById('comments');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        // This returns HTML
+        window.fetch(`/bottom_items?article_id=${articleContainer.dataset.articleId}`).then((response) => {
+          response.text().then((html) => {
+            bottomContent.innerHTML = html;
+          });
+        });
+        observer.unobserve(commentsElement);
+      }
+    });
+  });
+
+  observer.observe(commentsElement);
+}
+
 function copyArticleLink() {
   const postUrlValue = document
     .getElementById('copy-post-url-button')
@@ -119,3 +141,4 @@ setupBillboardInteractivity();
 focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls
 backfillLinkTarget();
+renderBottomContent();

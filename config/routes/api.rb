@@ -1,3 +1,6 @@
+resources :badges, only: %i[index show create update destroy]
+resources :badge_achievements, only: %i[index show create destroy]
+
 namespace :admin do
   resources :users, only: [:create]
 end
@@ -11,6 +14,7 @@ resources :articles, only: %i[index show create update] do
   end
 end
 
+resources :subforems, only: [:index]
 resources :comments, only: %i[index show]
 resources :videos, only: [:index]
 resources :podcast_episodes, only: [:index]

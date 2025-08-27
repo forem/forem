@@ -143,6 +143,14 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: subject)
   end
 
+  def subforem_moderator_confirmation_email
+    @user = params[:user]
+    @subforem = params[:subforem]
+
+    subject = I18n.t("mailers.notify_mailer.subforem_moderator", subforem_name: @subforem.domain)
+    mail(to: @user.email, subject: subject)
+  end
+
   def trusted_role_email
     @user = params[:user]
 

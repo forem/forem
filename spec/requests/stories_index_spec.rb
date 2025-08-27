@@ -1,7 +1,8 @@
+# spec/requests/stories_index_spec.rb
+
 require "rails_helper"
 
 RSpec.describe "StoriesIndex" do
-
   it "redirects to the lowercase route", :aggregate_failures do
     get "/Bad_name"
     expect(response).to have_http_status(:moved_permanently)
@@ -34,6 +35,37 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("head content")
     end
 
+    it "redirects unfound subforem to root if ENV var set" do
+      allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      get "http://not-found.example.com"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://example.com/")
+    end
+
+    it "does not redirect found subforem to root if ENV var set" do
+      ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      get "http://found.example.com"
+      expect(response).to have_http_status(:ok)
+      expect(response).not_to redirect_to("http://example.com/")
+      ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
+    it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
+      allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return("#000000")
+      get "/"
+      expect(response.body).to include("body:not(.dark-theme) #topbar {background")
+    end
+
+    it "does not render topbar styles if Settings::UserExperience.accent_background_color_hex is not set" do
+      allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return(nil)
+      get "/"
+      expect(response.body).not_to include("body:not(.dark-theme) #topbar {background")
+    end
+
     it "renders bottom of body content if present" do
       allow(Settings::UserExperience).to receive(:bottom_of_body_content).and_return("bottom of body content")
       get "/"
@@ -50,6 +82,15 @@ RSpec.describe "StoriesIndex" do
       renders_proper_description
       renders_min_read_time
       renders_proper_sidebar(navigation_link)
+    end
+
+    it "Does not render article with [Boost] as the title" do
+      boost_article = create(:article, title: "[Boost]", score: 1000, featured: true, type_of: "status", body_markdown: "", main_image: "")
+      non_boost_article = create(:article, title: "Not a boost article", score: 1000, featured: true)
+
+      get "/"
+      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
+      expect(response.body).to include(CGI.escapeHTML(non_boost_article.title))
     end
 
     it "doesn't render a featured scheduled article" do
@@ -272,7 +313,7 @@ RSpec.describe "StoriesIndex" do
   describe "GET stories index with timeframe" do
     describe "/latest" do
       let(:user) { create(:user) }
-      let!(:low_score) { create(:article, score: -10) }
+      let!(:low_score) { create(:article, score: Settings::UserExperience.home_feed_minimum_score - 50) }
 
       before do
         create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 1)
@@ -281,7 +322,6 @@ RSpec.describe "StoriesIndex" do
       it "includes a link to Relevant", :aggregate_failures do
         get "/latest"
 
-        # The link should be `/`
         expected_tag = "<a data-text=\"Relevant\" href=\"/\""
         expect(response.body).to include(expected_tag)
       end
@@ -302,7 +342,6 @@ RSpec.describe "StoriesIndex" do
       it "includes a link to Relevant", :aggregate_failures do
         get "/top/week"
 
-        # The link should be `/`
         expected_tag = "<a data-text=\"Relevant\" href=\"/\""
         expect(response.body).to include(expected_tag)
       end
@@ -332,6 +371,33 @@ RSpec.describe "StoriesIndex" do
       create(:podcast_episode, podcast: podcast)
       get "/#{podcast.slug}"
       expect(response.body).to include(podcast.title)
+    end
+  end
+
+  describe "Middleware: SetSubforem" do
+    context "when passed_domain param is provided" do
+      it "calls Subforem.cached_id_by_domain with the passed domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).and_call_original
+        allow(Subforem).to receive(:cached_default_id).and_return(999)
+        get "/", params: { passed_domain: "sub.mysite.com" }
+        # This ensures that the subforem logic tries to use "sub.mysite.com"
+        expect(Subforem).to have_received(:cached_id_by_domain).with("sub.mysite.com")
+      end
+    end
+
+    context "when host is a subdomain" do
+      it "removes session and remember_user_token cookies from the response" do
+        # Make sure you have an ApplicationConfig["SESSION_KEY"] defined
+        # in your test environment
+        # allow(ApplicationConfig).to receive(:[]).with("SESSION_KEY").and_return("_session_key")
+
+        get "/", headers: { "Host" => "sub.example.com" }
+
+        # "Set-Cookie" won't exist if the middleware has deleted it
+        # or you might see a blank or partial string. Let's just confirm it's not present:
+        expect(response.headers["Set-Cookie"].to_s).not_to include(ENV["SESSION_KEY"])
+        expect(response.headers["Set-Cookie"].to_s).not_to include("remember_user_token")
+      end
     end
   end
 end

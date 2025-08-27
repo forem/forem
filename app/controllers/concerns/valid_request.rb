@@ -11,8 +11,11 @@ module ValidRequest
     return if Rails.env.test?
 
     if (referer = request.referer).present?
-      subforem = Subforem.find_by(domain: request.host)
-      referer.start_with?(URL.url(nil, subforem))
+      # -      subforem = Subforem.find_by(domain: request.host)
+      # -      referer.start_with?(URL.url(nil, subforem))
+      # only compare host (and port), regardless of http vs https
+      uri = URI.parse(referer)
+      uri.host == request.host && uri.port == request.port
     else
       origin = request.origin
       if origin == "null"

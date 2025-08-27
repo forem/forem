@@ -37,6 +37,7 @@ class PollTag < LiquidTagBase
       for (var i = 0; i < polls.length; i += 1) {
         var poll = polls[i]
         var pollId = poll.dataset.pollId
+        var pollType = poll.dataset.pollType
         window.fetch('/poll_votes/'+pollId)
         .then(function(response){
           response.json().then(
@@ -55,17 +56,29 @@ class PollTag < LiquidTagBase
                     }
                     var csrfToken = tokenMeta.getAttribute('content')
                     var optionId = e.target.dataset.optionId
-                    window.fetch('/poll_votes', {
-                      method: 'POST',
-                      headers: {
-                        'X-CSRF-Token': csrfToken,
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({poll_vote: { poll_option_id: optionId } }),
-                      credentials: 'same-origin',
-                    }).then(function(response){
-                      response.json().then(function(j){displayPollResults(j)})
-                    })
+                    
+                    // Handle different poll types
+                    if (pollType === 'multiple_choice') {
+                      // For multiple choice, toggle the checkbox and submit all selected options
+                      var checkbox = e.target.querySelector('input[type="checkbox"]')
+                      if (checkbox) {
+                        checkbox.checked = !checkbox.checked
+                        submitMultipleChoiceVotes(json.poll_id, csrfToken)
+                      }
+                    } else {
+                      // For single choice and scale polls, submit single vote
+                      window.fetch('/poll_votes', {
+                        method: 'POST',
+                        headers: {
+                          'X-CSRF-Token': csrfToken,
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({poll_vote: { poll_option_id: optionId } }),
+                        credentials: 'same-origin',
+                      }).then(function(response){
+                        response.json().then(function(j){displayPollResults(j)})
+                      })
+                    }
                   });
                 }
 
@@ -86,6 +99,29 @@ class PollTag < LiquidTagBase
               }
             }
           )
+        })
+      }
+
+      function submitMultipleChoiceVotes(pollId, csrfToken) {
+        var poll = document.getElementById('poll_'+pollId)
+        var selectedOptions = poll.querySelectorAll('input[type="checkbox"]:checked')
+        var optionIds = Array.from(selectedOptions).map(function(checkbox) {
+          return checkbox.dataset.optionId
+        })
+        
+        // Submit all selected options
+        optionIds.forEach(function(optionId) {
+          window.fetch('/poll_votes', {
+            method: 'POST',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({poll_vote: { poll_option_id: optionId } }),
+            credentials: 'same-origin',
+          }).then(function(response){
+            response.json().then(function(j){displayPollResults(j)})
+          })
         })
       }
     } else {
