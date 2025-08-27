@@ -41,6 +41,9 @@ module Articles
         # Apply weighted shuffle if needed
         articles = weighted_shuffle(articles, @feed_config.shuffle_weight) if @feed_config.shuffle_weight.positive?
         
+        # Randomly shuffle top 5 articles if all articles are recent (within a week)
+        articles = shuffle_top_five_if_recent(articles)
+        
         articles
       end
 
@@ -145,6 +148,26 @@ module Articles
         arr.each_with_index.sort_by do |item, index|
           index + (rand * (4 * shuffle_weight) - 2 * shuffle_weight)
         end.map(&:first)
+      end
+
+      def shuffle_top_five_if_recent(articles)
+        return articles if articles.empty?
+        
+        # Check if all articles are published within the last week
+        one_week_ago = 1.week.ago
+        all_recent = articles.all? { |article| article.published_at > one_week_ago }
+        
+        return articles unless all_recent
+        
+        # Split articles into top 5 and the rest
+        top_five = articles.first(5)
+        rest = articles[5..-1] || []
+        
+        # Randomly shuffle only the top 5 articles
+        shuffled_top_five = top_five.shuffle
+        
+        # Return shuffled top 5 + unshuffled rest
+        shuffled_top_five + rest
       end
 
       # Preserve the public interface
