@@ -121,9 +121,11 @@ class Billboard < ApplicationRecord
       role_names: role_names,
     )
 
-    # if prefer_paired_with_billboard_id then return 
+    # if prefer_paired_with_billboard_id then return
     if prefer_paired_with_billboard_id.present?
-      best_paired_billboard = billboards_for_display.find { |bb| bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id }
+      best_paired_billboard = billboards_for_display.find do |bb|
+        bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id
+      end
       return best_paired_billboard if best_paired_billboard.present?
     end
 
@@ -153,6 +155,7 @@ class Billboard < ApplicationRecord
       billboards_for_display.limit(rand(1..15)).sample
     end
   end
+
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
@@ -237,7 +240,8 @@ class Billboard < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def type_of_display
@@ -378,11 +382,10 @@ class Billboard < ApplicationRecord
   def being_taken_down?
     # Only trigger if both approved and published were true before this save.
     return false unless approved_before_last_save && published_before_last_save
-  
+
     # Check if approved changed from true to false or published changed from true to false.
     (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
   end
-  
 
   def generate_billboard_name
     return unless name.nil?
@@ -403,7 +406,7 @@ class Billboard < ApplicationRecord
   end
 
   def extracted_process_markdown
-    renderer = ContentRenderer.new(body_markdown || "", source: self)
+    renderer = ContentRenderer.new(body_markdown || "", source: self, user: creator)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
                                                                     quality: 100,
                                                                     synchronous_detail_detection: true }).processed_html

@@ -150,3 +150,6 @@
     </div>
   </div>
 <% end %>
+<% if billboard.processed_html_final.include?("ltag-survey") %>
+  <script><%= raw SurveyTag.script %></script>
+<% end %>
