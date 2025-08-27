@@ -25,6 +25,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
     env:
       E2E: true
     services:
@@ -78,6 +80,13 @@ jobs:
         run: bin/ddruntest setup --platform ruby --framework rspec
         env:
           DD_TRACE_DEBUG: 0
+      - name: Write matrix configuration
+        run: |
+          mkdir -p .dd
+          echo '{"include":[{"ci_node_index":0,"ci_node_total":2},{"ci_node_index":1,"ci_node_total":2}]}' > .dd/gha-matrix.json
+      - name: Set matrix output
+        id: matrix
+        run: echo "matrix=$(cat .dd/gha-matrix.json)" >> $GITHUB_OUTPUT
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -110,9 +119,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-        ci_node_total: [8]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7]
+      matrix: ${{ fromJson(needs.build.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v4
