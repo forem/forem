@@ -146,6 +146,104 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
           expect(result).to include(visible_article)
         end
       end
+
+      context "when all articles are recent (within a week)" do
+        let!(:recent_article_1) do
+          a = create(:article, published: true, score: 100)
+          a.update_column(:published_at, Time.current - 1.day)
+          a
+        end
+
+        let!(:recent_article_2) do
+          a = create(:article, published: true, score: 90)
+          a.update_column(:published_at, Time.current - 2.days)
+          a
+        end
+
+        let!(:recent_article_3) do
+          a = create(:article, published: true, score: 80)
+          a.update_column(:published_at, Time.current - 3.days)
+          a
+        end
+
+        let!(:recent_article_4) do
+          a = create(:article, published: true, score: 70)
+          a.update_column(:published_at, Time.current - 4.days)
+          a
+        end
+
+        let!(:recent_article_5) do
+          a = create(:article, published: true, score: 60)
+          a.update_column(:published_at, Time.current - 5.days)
+          a
+        end
+
+        let!(:recent_article_6) do
+          a = create(:article, published: true, score: 50)
+          a.update_column(:published_at, Time.current - 6.days)
+          a
+        end
+
+        let!(:recent_article_7) do
+          a = create(:article, published: true, score: 40)
+          a.update_column(:published_at, Time.current - 7.days)
+          a
+        end
+
+        it "randomly shuffles the top 5 articles while keeping the rest in order" do
+          result = feed.default_home_feed.to_a
+          
+          # All articles should be included since they're all recent
+          expect(result).to include(recent_article_1, recent_article_2, recent_article_3, 
+                                   recent_article_4, recent_article_5, recent_article_6, recent_article_7)
+          
+          # The top 5 articles should be shuffled (order may vary)
+          top_five = result.first(5)
+          expect(top_five).to contain_exactly(recent_article_1, recent_article_2, recent_article_3, 
+                                             recent_article_4, recent_article_5)
+          
+          # Articles after position 5 should remain in their original order (by score)
+          rest = result[5..-1]
+          expect(rest).to eq([recent_article_6, recent_article_7])
+        end
+
+        it "does not shuffle when not all articles are recent" do
+          # Create one old article to make the feed not entirely recent
+          old_recent_article = create(:article, published: true, score: 30)
+          old_recent_article.update_column(:published_at, Time.current - 10.days)
+          
+          result = feed.default_home_feed.to_a
+          
+          # Articles should be in original order by score (no shuffling)
+          expected_order = [recent_article_1, recent_article_2, recent_article_3, 
+                           recent_article_4, recent_article_5, recent_article_6, recent_article_7, old_recent_article]
+          expect(result).to eq(expected_order)
+        end
+
+        it "handles feeds with fewer than 5 articles correctly" do
+          # Create a feed with only 3 recent articles
+          small_feed = described_class.new(
+            user: user,
+            number_of_articles: 10,
+            page: 1,
+            feed_config: feed_config
+          )
+          
+          # Delete the extra articles to leave only 3
+          recent_article_4.destroy
+          recent_article_5.destroy
+          recent_article_6.destroy
+          recent_article_7.destroy
+          
+          result = small_feed.default_home_feed.to_a
+          
+          # Should contain all 3 articles
+          expect(result).to contain_exactly(recent_article_1, recent_article_2, recent_article_3)
+          
+          # All 3 should be shuffled (since they're all in the "top 5")
+          expect(result.size).to eq(3)
+        end
+      end
     end
   end
 
