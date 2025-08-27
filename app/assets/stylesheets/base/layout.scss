@@ -383,6 +383,48 @@ body[data-side-nav-visible='true'] {
   border-right: 1px solid var(--base-10); /* Optional border for separation */
   z-index: 1000; /* Ensure it stays above other content */
   display: none; /* Initially hidden */
+  overflow: visible; /* Allow pop-out cards to extend beyond bounds */
+  
+  /* Scrollable container for sidebar items */
+  .crayons-side-nav__scrollable {
+    height: calc(100vh - 82px); /* Full height minus menu space */
+    overflow-y: auto; /* Default - only show scrollbar when needed */
+    overflow-x: hidden;
+    
+    /* Custom scrollbar styling - respect system preferences */
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: transparent; /* Start transparent */
+      border-radius: 2px;
+      transition: background-color 0.2s ease;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--base-50);
+    }
+    
+    /* Show scrollbar thumb only when hovering over the container */
+    &:hover::-webkit-scrollbar-thumb {
+      background: var(--base-30);
+    }
+    
+    /* For Firefox and other browsers that support scrollbar-width */
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    
+    /* Show scrollbar on hover for better UX */
+    &:hover {
+      scrollbar-color: var(--base-30) transparent;
+    }
+  }
+  
   img {
     max-width: 100%; /* Ensure images are responsive */
     height: auto; /* Maintain aspect ratio */
@@ -411,7 +453,7 @@ body[data-side-nav-visible='true'] {
 
   .crayons-side-nav__item {
     position: relative;
-    overflow: visible;
+    overflow: visible; /* Allow pop-out cards to extend beyond bounds */
     z-index: 1001; /* Ensure it appears above other content */
     .profile-preview-card__content {
       overflow: hidden;
@@ -452,17 +494,8 @@ body[data-side-nav-visible='true'] {
     &.hovered {
       z-index: 2000; /* Ensure it appears above other content */
       .profile-preview-card__content {
-        position: absolute;
         display: block; /* Show sidebar when hovered */
-        left: 48px;           
-        top: -30px;
-        width: 290px;
-        z-index: 3000; /* Ensure it appears above other content */
         border-top: 0px;
-        &.profile-preview-card__upsidedown {
-          top: auto;
-          bottom: -30px;
-        }
         h3 a {
           color: var(--base-100);
         }
@@ -471,6 +504,21 @@ body[data-side-nav-visible='true'] {
     &.not-hovered {
       .profile-preview-card__content {
         display: none; /* Hide sidebar when not hovered */
+      }
+    }
+    &--add {
+      position: absolute;
+      bottom: 41px;
+      left: 0;
+      width: 100%;
+      padding: 8px 0;
+      border-top: 1px solid var(--base-20);
+      z-index: 2000;
+      background-color: var(--base-0);
+      cursor: pointer;
+      svg {
+        margin: 0 auto;
+        display: block;
       }
     }
     &--menu {

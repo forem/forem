@@ -170,7 +170,7 @@ Rails.application.routes.draw do
       end
     end
     resources :videos, only: %i[index create new]
-    resources :subforems, only: %i[index edit update] do
+    resources :subforems, only: %i[index new edit update] do
       member do
         post :add_tag
       end
