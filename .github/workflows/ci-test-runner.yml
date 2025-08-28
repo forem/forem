@@ -77,7 +77,7 @@ jobs:
           api_key: ${{ secrets.DD_API_KEY }}
           site: datadoghq.eu
       - name: Setup Datadog Test Runner
-        run: bin/ddruntest setup --platform ruby --framework rspec --min_parallelism 1 --max_parallelism 8
+        run: bin/ddruntest setup --platform ruby --framework rspec --min-parallelism 1 --max-parallelism 8
         env:
           DD_TRACE_DEBUG: 0
       - name: Set matrix output
