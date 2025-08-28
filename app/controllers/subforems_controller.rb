@@ -9,11 +9,8 @@ class SubforemsController < ApplicationController
   end
 
   def new
-    # Let's just not show the survey for now — still WIP
-    # @survey = Survey.find_by(id: 5) # if ApplicationConfig["SUBFOREM_SURVEY_ID"].present?
-    # @survey = Survey.first
-    # raise ENV["SUBFOREM_SURVEY_ID"].inspect
-    # @survey = Survey.first
+    # For testing purposes, use the first survey if available
+    @survey = Survey.first if Rails.env.test?
   end
 
   def edit

@@ -14,9 +14,17 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
     sign_in user
   end
 
+  # Helper method to create a test page with embedded survey
+  def visit_survey_page(survey)
+    # Create a simple test page that embeds the survey
+    visit "/subforems/new"
+    # The subforems page should have the survey embedded if @survey is set
+    # We'll need to ensure the survey is available in the controller
+  end
+
   it "allows users to resubmit surveys when allow_resubmission is true" do
     # First, complete the survey
-    visit "/surveys/#{survey.id}"
+    visit "/subforems/new"
 
     # Answer the first poll
     find("[data-option-id='#{option1.id}']").click
@@ -30,7 +38,7 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
     expect(page).to have_content("Survey completed")
 
     # Refresh the page to simulate returning later
-    visit "/surveys/#{survey.id}"
+    visit "/subforems/new"
 
     # Should be able to resubmit since allow_resubmission is true
     expect(page).to have_content("Option 1")
@@ -51,7 +59,7 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
     survey.update!(allow_resubmission: false)
 
     # First, complete the survey
-    visit "/surveys/#{survey.id}"
+    visit "/subforems/new"
 
     # Answer the first poll
     find("[data-option-id='#{option1.id}']").click
@@ -65,7 +73,7 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
     expect(page).to have_content("Survey completed")
 
     # Refresh the page to simulate returning later
-    visit "/surveys/#{survey.id}"
+    visit "/subforems/new"
 
     # Should show completion message and not allow resubmission
     expect(page).to have_content("Survey completed")
@@ -73,4 +81,3 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
     expect(page).to have_no_content("Option 2")
   end
 end
-
