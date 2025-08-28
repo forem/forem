@@ -70,7 +70,9 @@ RSpec.describe SurveysController, type: :controller do
             expect(response).to have_http_status(:ok)
             json_response = JSON.parse(response.body)
 
-            expect(json_response["votes"]).to have_key(poll.id.to_s)
+            # For resubmission surveys, the backend returns empty votes (new session)
+            # and the frontend will start fresh
+            expect(json_response["votes"]).to eq({})
             expect(json_response["can_submit"]).to be true
             expect(json_response["completed"]).to be true
             expect(json_response["allow_resubmission"]).to be true
