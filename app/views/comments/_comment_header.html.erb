@@ -3,7 +3,7 @@
     <span class="js-comment-username">
       <%= comment.user.name %>
       <% if (org_name = commenter_organization_membership(comment, commentable)) %>
-        <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed" title="Member of <%= org_name %>">
+        <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed p-1 px-2" title="Member of <%= org_name %>">
           <%= org_name %>
         </span>
       <% end %>
@@ -18,7 +18,7 @@
     <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger p-1 -my-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details", user: comment.user.name) %>">
       <%= comment.user.name %>
       <% if (org_name = commenter_organization_membership(comment, commentable)) %>
-        <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed" title="Member of <%= org_name %>">
+        <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed p-1 px-2" title="Member of <%= org_name %>">
           <%= org_name %>
         </span>
       <% end %>
