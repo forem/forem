@@ -136,6 +136,7 @@ class ArticlesController < ApplicationController
           if front_matter["tags"]
             tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
           end
+
           if front_matter["cover_image"]
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
