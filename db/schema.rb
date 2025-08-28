@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_08_21_230020) do
+ActiveRecord::Schema[7.0].define(version: 2025_08_28_133253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1036,19 +1036,23 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230020) do
   create_table "poll_skips", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.bigint "poll_id"
+    t.integer "session_start", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
+    t.index ["user_id", "poll_id", "session_start"], name: "index_poll_skips_on_user_poll_session"
   end
 
   create_table "poll_text_responses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "poll_id", null: false
+    t.integer "session_start", default: 0, null: false
     t.text "text_content"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["poll_id", "user_id"], name: "index_poll_text_responses_on_poll_id_and_user_id", unique: true
+    t.index ["poll_id", "user_id", "session_start"], name: "index_poll_text_responses_on_poll_user_session_unique", unique: true
     t.index ["poll_id"], name: "index_poll_text_responses_on_poll_id"
+    t.index ["user_id", "poll_id", "session_start"], name: "index_poll_text_responses_on_user_poll_session"
     t.index ["user_id"], name: "index_poll_text_responses_on_user_id"
   end
 
@@ -1056,9 +1060,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230020) do
     t.datetime "created_at", precision: nil, null: false
     t.bigint "poll_id", null: false
     t.bigint "poll_option_id", null: false
+    t.integer "session_start", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
-    t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
+    t.index ["poll_id", "user_id"], name: "index_poll_votes_on_poll_user_regular", where: "(session_start = 0)"
+    t.index ["poll_option_id", "user_id", "session_start"], name: "index_poll_votes_on_poll_option_user_session_unique", unique: true
+    t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_user_regular", where: "(session_start = 0)"
+    t.index ["user_id", "poll_id", "session_start"], name: "index_poll_votes_on_user_id_and_poll_id_and_session_start"
   end
 
   create_table "polls", force: :cascade do |t|
@@ -1286,6 +1294,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_21_230020) do
 
   create_table "surveys", force: :cascade do |t|
     t.boolean "active", default: true
+    t.boolean "allow_resubmission", default: false, null: false
     t.datetime "created_at", null: false
     t.boolean "display_title", default: true
     t.string "title", null: false

@@ -76,6 +76,7 @@ class SurveyTag < LiquidTagBase
       const totalPolls = polls.length;
       let currentPollIndex = 0; // Default to the first poll
       let pendingVotes = {}; // Store pending votes for submission
+      let currentSession = Math.floor(Math.random() * 1000000); // Generate random session number (0-999999)
 
       // --- Define UI update function (used by everyone) ---
       function updateUI() {
@@ -219,7 +220,7 @@ class SurveyTag < LiquidTagBase
                   window.fetch('/poll_votes', {
                     method: 'POST',
                     headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ poll_vote: { poll_option_id: optionId } }),
+                    body: JSON.stringify({ poll_vote: { poll_option_id: optionId, session_start: currentSession } }),
                     credentials: 'same-origin',
                   })
                 );
@@ -232,7 +233,7 @@ class SurveyTag < LiquidTagBase
                   headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
                   body: JSON.stringify({#{' '}
                     poll_text_response: {#{' '}
-                      text_content: voteData.content#{' '}
+                      text_content: voteData.content, session_start: currentSession#{' '}
                     }#{' '}
                   }),
                   credentials: 'same-origin',
@@ -244,7 +245,7 @@ class SurveyTag < LiquidTagBase
                 window.fetch('/poll_votes', {
                   method: 'POST',
                   headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ poll_vote: { poll_option_id: voteData } }),
+                  body: JSON.stringify({ poll_vote: { poll_option_id: voteData, session_start: currentSession } }),
                   credentials: 'same-origin',
                 })
               );
@@ -312,31 +313,90 @@ class SurveyTag < LiquidTagBase
           .then(response => response.ok ? response.json() : Promise.reject('Could not fetch survey votes.'))
           .then(json => {
             const userVotes = json.votes || {};
-            polls.forEach(poll => {
-              const votedOptionIds = userVotes[poll.dataset.pollId];
-              if (votedOptionIds) setAndLockAnsweredPoll(poll, votedOptionIds);
+            const canSubmit = json.can_submit !== false;
+            const completed = json.completed === true;
+            const allowResubmission = json.allow_resubmission === true;
+    #{'        '}
+            console.log('Survey state:', {
+              completed,
+              allowResubmission,
+              canSubmit,
+              currentSession,
+              userVotes: Object.keys(userVotes).length
             });
-            const correctStartingIndex = Array.from(polls).findIndex(p => !p.classList.contains('is-answered'));
-            if (correctStartingIndex === -1) {#{' '}
-              if (pollsContainer) pollsContainer.style.display = 'none';
-              if (navigation) navigation.style.display = 'none';
-              if (finalMessage) finalMessage.style.display = 'block';
-              return;
-            }
-            if (correctStartingIndex !== currentPollIndex) {
-              currentPollIndex = correctStartingIndex;
-              updateUI();
-            }
-            polls.forEach(poll => {
-              if (!poll.classList.contains('is-answered')) {
+    #{'        '}
+            // For resubmission surveys, always start fresh
+            if (allowResubmission) {
+              console.log('Resubmission survey - starting fresh from first poll');
+              // Clear all previous answers and start from first poll
+              polls.forEach(poll => {
+                poll.classList.remove('is-answered');
+                poll.querySelectorAll('.survey-poll-option').forEach(option => {
+                  option.classList.remove('user-selected');
+                  option.classList.remove('disabled');
+                  const input = option.querySelector('input');
+                  if (input) input.checked = false;
+                });
+                const textarea = poll.querySelector('.survey-text-input');
+                if (textarea) {
+                  textarea.value = '';
+                  textarea.disabled = false;
+                  const feedback = poll.querySelector('.survey-text-input-feedback');
+                  if (feedback) feedback.style.display = 'none';
+                }
+              });
+              currentPollIndex = 0;
+    #{'          '}
+              // Add event listeners to all polls
+              polls.forEach(poll => {
                 if (poll.dataset.pollType === 'text_input') {
-                  // Handle text input polls
                   const textarea = poll.querySelector('.survey-text-input');
                   if (textarea) {
                     textarea.addEventListener('input', () => handleTextInput(poll));
                   }
                 } else {
-                  // Handle regular poll options
+                  poll.querySelectorAll('.survey-poll-option').forEach(option => {
+                    option.addEventListener('click', () => handleSelection(option));
+                  });
+                }
+              });
+    #{'          '}
+              updateUI();
+              return; // Exit early - resubmission surveys always start fresh
+            }
+    #{'        '}
+            // For non-resubmission surveys, check if completed
+            if (completed) {
+              console.log('Non-resubmission survey completed - showing completion message');
+              if (pollsContainer) pollsContainer.style.display = 'none';
+              if (navigation) navigation.style.display = 'none';
+              if (finalMessage) finalMessage.style.display = 'block';
+              return;
+            }
+    #{'        '}
+            // Normal flow for non-resubmission surveys - show existing answers and jump to first unanswered
+            console.log('Normal survey flow - showing existing answers and jumping to first unanswered');
+            polls.forEach(poll => {
+              const votedOptionIds = userVotes[poll.dataset.pollId];
+              if (votedOptionIds) setAndLockAnsweredPoll(poll, votedOptionIds);
+            });
+            const correctStartingIndex = Array.from(polls).findIndex(p => !p.classList.contains('is-answered'));
+            console.log('Correct starting index:', correctStartingIndex, 'Current poll index:', currentPollIndex);
+            if (correctStartingIndex !== -1 && correctStartingIndex !== currentPollIndex) {
+              console.log('Adjusting poll index from', currentPollIndex, 'to', correctStartingIndex);
+              currentPollIndex = correctStartingIndex;
+              updateUI();
+            }
+    #{'        '}
+            // Add event listeners to polls that are not answered (for non-resubmission surveys)
+            polls.forEach(poll => {
+              if (!poll.classList.contains('is-answered')) {
+                if (poll.dataset.pollType === 'text_input') {
+                  const textarea = poll.querySelector('.survey-text-input');
+                  if (textarea) {
+                    textarea.addEventListener('input', () => handleTextInput(poll));
+                  }
+                } else {
                   poll.querySelectorAll('.survey-poll-option').forEach(option => {
                     option.addEventListener('click', () => handleSelection(option));
                   });
