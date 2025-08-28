@@ -120,6 +120,7 @@ class ArticlesController < ApplicationController
     begin
       renderer = ContentRenderer.new(params[:article_body], source: Article.new, user: current_user)
       result = renderer.process_article
+
       processed_html = result.processed_html
       front_matter = result.front_matter.to_h
     rescue StandardError => e

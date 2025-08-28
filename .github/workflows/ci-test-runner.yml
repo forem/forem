@@ -81,7 +81,7 @@ jobs:
         env:
           DD_TRACE_DEBUG: 0
       - name: Set matrix output
-        run: cat .dd/github/matrix >> $GITHUB_OUTPUT
+        run: cat .dd/github/config >> $GITHUB_OUTPUT
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
