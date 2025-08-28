@@ -8,6 +8,7 @@ module Notifications
 
       if params[:org_id] && current_user.org_member?(params[:org_id])
         org = Organization.find_by(id: params[:org_id])
+
         org.notifications.unread.update_all(read: true)
       end
 

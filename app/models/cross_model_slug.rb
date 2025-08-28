@@ -25,6 +25,7 @@ class CrossModelSlug
 
       value = value.downcase
 
+
       return true if value.include?("sitemap-") # https://github.com/forem/forem/pull/6704
 
       MODELS.detect do |class_name, attribute|
