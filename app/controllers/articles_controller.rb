@@ -12,6 +12,7 @@ class ArticlesController < ApplicationController
   after_action :verify_authorized
 
   ##
+  #
   # [@jeremyf] - My dreamiest of dreams is to move this to the ApplicationController.  But it's very
   #              presence could create some havoc with our edge caching.  So I'm scoping it to the
   #              place where the code is likely to raise an ApplicationPolicy::UserRequiredError.
@@ -24,7 +25,6 @@ class ArticlesController < ApplicationController
   #              config/application.rb uses the config.consider_all_requests_local to determine if
   #              we bubble the exception up or handle it.
   #
-  # #
   # rescue_from ApplicationPolicy::UserRequiredError, with: :respond_with_request_for_authentication
 
   # Generates RSS/Atom feed for articles

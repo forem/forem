@@ -77,16 +77,11 @@ jobs:
           api_key: ${{ secrets.DD_API_KEY }}
           site: datadoghq.eu
       - name: Setup Datadog Test Runner
-        run: bin/ddruntest setup --platform ruby --framework rspec
+        run: bin/ddruntest setup --platform ruby --framework rspec --min_parallelism 1 --max_parallelism 8
         env:
           DD_TRACE_DEBUG: 0
-      - name: Write matrix configuration
-        run: |
-          mkdir -p .dd
-          echo '{"include":[{"ci_node_index":0,"ci_node_total":2},{"ci_node_index":1,"ci_node_total":2}]}' > .dd/gha-matrix.json
       - name: Set matrix output
-        id: matrix
-        run: echo "matrix=$(cat .dd/gha-matrix.json)" >> $GITHUB_OUTPUT
+        run: echo cat .dd/github/matrix >> $GITHUB_OUTPUT
       - name: Upload DD artifacts
         uses: actions/upload-artifact@v4
         with:
