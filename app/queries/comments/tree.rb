@@ -4,7 +4,8 @@ module Comments
 
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false)
       collection = commentable.comments
-        .includes(user: %i[setting profile])
+        .includes(user: %i[setting profile organization_memberships])
+        .includes(commentable: :organization)
         .arrange(order: build_sort_query(order))
         .to_a[0..limit - 1]
         .to_h
@@ -13,7 +14,10 @@ module Comments
     end
 
     def for_root_comment(root_comment, include_negative: false)
-      sub_comments = root_comment.subtree.includes(user: %i[setting profile]).arrange[root_comment]
+      sub_comments = root_comment.subtree
+        .includes(user: %i[setting profile organization_memberships])
+        .includes(commentable: :organization)
+        .arrange[root_comment]
       sub_comments.reject! { |comment| comment.score.negative? } unless include_negative
       { root_comment => sub_comments }
     end
