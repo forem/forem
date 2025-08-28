@@ -3,6 +3,7 @@ class AnalyticsService
 
   def initialize(user_or_org, start_date: "", end_date: "", article_id: nil)
     @user_or_org = user_or_org
+
     @article_id = article_id
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day

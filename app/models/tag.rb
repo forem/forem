@@ -3,6 +3,7 @@
 #
 # These tags can be arbitrary or supported (e.g. `tag.supported ==
 # true`). Some tags have moderators.  These tags can create a
+
 # defacto "sub-community" within a Forem.
 #
 # Sometimes we need to consolidate tags (e.g. rubyonrails and rails).

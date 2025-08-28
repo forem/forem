@@ -3,6 +3,7 @@ class User < ApplicationRecord
   resourcify
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
+
   include CloudinaryHelper
 
   include Images::Profile.for(:profile_image_url)

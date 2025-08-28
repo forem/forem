@@ -1,4 +1,5 @@
 module ArticlesHelper
+
   def should_show_latest_spam_suppression?(stories)
     return false if user_signed_in?
     return false unless stories.size > 1

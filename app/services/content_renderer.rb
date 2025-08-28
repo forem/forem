@@ -3,6 +3,7 @@ class ContentRenderer
   Result = Struct.new(:front_matter, :reading_time, :processed_html, keyword_init: true)
 
   class_attribute :processor, default: MarkdownProcessor::Parser
+
   class_attribute :front_matter_parser, default: FrontMatterParser::Parser.new(:md)
 
   class ContentParsingError < StandardError

@@ -3,6 +3,7 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include Reactable
   include Taggable
+
   include UserSubscriptionSourceable
   include PgSearch::Model
   include AlgoliaSearchable

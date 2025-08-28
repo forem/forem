@@ -3,6 +3,7 @@ class Comment < ApplicationRecord
   resourcify
 
   include PgSearch::Model
+
   include Reactable
   include AlgoliaSearchable
 
