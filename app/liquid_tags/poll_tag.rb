@@ -55,8 +55,8 @@ class PollTag < LiquidTagBase
                       return
                     }
                     var csrfToken = tokenMeta.getAttribute('content')
-                    var optionId = e.target.dataset.optionId
-                    
+                    var optionId = e.target.closest('.ltag-polloption').dataset.optionId
+    #{'                '}
                     // Handle different poll types
                     if (pollType === 'multiple_choice') {
                       // For multiple choice, toggle the checkbox and submit all selected options
@@ -106,9 +106,9 @@ class PollTag < LiquidTagBase
         var poll = document.getElementById('poll_'+pollId)
         var selectedOptions = poll.querySelectorAll('input[type="checkbox"]:checked')
         var optionIds = Array.from(selectedOptions).map(function(checkbox) {
-          return checkbox.dataset.optionId
+          return checkbox.closest('.ltag-polloption').dataset.optionId
         })
-        
+    #{'    '}
         // Submit all selected options
         optionIds.forEach(function(optionId) {
           window.fetch('/poll_votes', {

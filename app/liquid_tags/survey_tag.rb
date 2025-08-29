@@ -166,7 +166,7 @@ class SurveyTag < LiquidTagBase
             }
     #{'        '}
             const selectedOptions = pollElement.querySelectorAll('input[type="checkbox"]:checked');
-            pendingVotes[pollId] = Array.from(selectedOptions).map(opt => opt.dataset.optionId);
+            pendingVotes[pollId] = Array.from(selectedOptions).map(opt => opt.closest('.survey-poll-option').dataset.optionId);
     #{'        '}
             // Check if any option is selected to enable next button
             const hasSelection = selectedOptions.length > 0;
