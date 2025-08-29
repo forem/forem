@@ -10,7 +10,10 @@ class SubforemsController < ApplicationController
 
   def new
     # For testing purposes, use the first survey if available
-    @survey = Survey.first if Rails.env.test?
+    return unless Rails.env.test?
+
+    # In test environment, use the first survey that allows resubmission
+    @survey = Survey.where(allow_resubmission: true).first || Survey.first
   end
 
   def edit
