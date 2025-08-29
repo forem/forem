@@ -26,6 +26,7 @@ class ArticlesController < ApplicationController
   #
   #
   #              The difference being that rescue_from is an ALWAYS use case.  Whereas the
+  #
   #              config/application.rb uses the config.consider_all_requests_local to determine if
   #              we bubble the exception up or handle it.
   #
