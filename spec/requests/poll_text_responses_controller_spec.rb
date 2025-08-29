@@ -99,24 +99,23 @@ RSpec.describe "PollText-responsesController", type: :request do
         expect(text_response.session_start).to eq(0)
       end
 
-      it "creates a new response even if one exists for the same user and poll" do
+      it "prevents creating a second response for the same user and poll" do
         existing_response = create(:poll_text_response, user: user, poll: poll, text_content: "First response")
 
-        expect do
-          post "/polls/#{poll.id}/poll_text_responses", params: {
-            poll_text_response: {
-              text_content: "New response"
-            }
+        post "/polls/#{poll.id}/poll_text_responses", params: {
+          poll_text_response: {
+            text_content: "New response"
           }
-        end.to change { PollTextResponse.count }.by(1)
+        }
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:unprocessable_entity)
+        json_response = JSON.parse(response.body)
+        expect(json_response["errors"]).to include("Poll has already been taken")
 
-        new_response = PollTextResponse.last
-        expect(new_response.text_content).to eq("New response")
-        expect(new_response.user).to eq(user)
-        expect(new_response.poll).to eq(poll)
-        expect(existing_response.reload.text_content).to eq("First response") # Original unchanged
+        # Verify the original response is unchanged
+        existing_response.reload
+        expect(existing_response.text_content).to eq("First response")
+        expect(PollTextResponse.count).to eq(1) # No new response created
       end
     end
   end

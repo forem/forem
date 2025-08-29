@@ -13,13 +13,16 @@ RSpec.describe Survey, type: :model do
         # Ensure polls are created
         expect(poll1).to be_persisted
         expect(poll2).to be_persisted
-        
+
         expect(survey.completed_by_user?(user)).to be false
       end
     end
 
     context "when user has responded to some polls but not all" do
       before do
+        # Ensure polls are created
+        expect(poll1).to be_persisted
+        expect(poll2).to be_persisted
         create(:poll_vote, user: user, poll: poll1, poll_option: option1, session_start: 1)
       end
 
@@ -80,6 +83,9 @@ RSpec.describe Survey, type: :model do
 
       context "when user has not completed the survey" do
         it "returns true" do
+          # Ensure polls are created
+          expect(poll1).to be_persisted
+          expect(poll2).to be_persisted
           expect(survey.can_user_submit?(user)).to be true
         end
       end
