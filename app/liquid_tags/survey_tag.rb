@@ -308,6 +308,20 @@ class SurveyTag < LiquidTagBase
           }#{' '}
         });
     #{'    '}
+        // Always attach event listeners first to ensure functionality
+        polls.forEach(poll => {
+          if (poll.dataset.pollType === 'text_input') {
+            const textarea = poll.querySelector('.survey-text-input');
+            if (textarea) {
+              textarea.addEventListener('input', () => handleTextInput(poll));
+            }
+          } else {
+            poll.querySelectorAll('.survey-poll-option').forEach(option => {
+              option.addEventListener('click', () => handleSelection(option));
+            });
+          }
+        });
+    #{'    '}
         // Fetch user's state and hydrate the UI
         window.fetch(`/surveys/${surveyId}/votes`)
           .then(response => response.ok ? response.json() : Promise.reject('Could not fetch survey votes.'))
@@ -347,20 +361,6 @@ class SurveyTag < LiquidTagBase
               });
               currentPollIndex = 0;
     #{'          '}
-              // Add event listeners to all polls
-              polls.forEach(poll => {
-                if (poll.dataset.pollType === 'text_input') {
-                  const textarea = poll.querySelector('.survey-text-input');
-                  if (textarea) {
-                    textarea.addEventListener('input', () => handleTextInput(poll));
-                  }
-                } else {
-                  poll.querySelectorAll('.survey-poll-option').forEach(option => {
-                    option.addEventListener('click', () => handleSelection(option));
-                  });
-                }
-              });
-    #{'          '}
               updateUI();
               return; // Exit early - resubmission surveys always start fresh
             }
@@ -387,26 +387,23 @@ class SurveyTag < LiquidTagBase
               currentPollIndex = correctStartingIndex;
               updateUI();
             }
-    #{'        '}
-            // Add event listeners to polls that are not answered (for non-resubmission surveys)
-            polls.forEach(poll => {
-              if (!poll.classList.contains('is-answered')) {
-                if (poll.dataset.pollType === 'text_input') {
-                  const textarea = poll.querySelector('.survey-text-input');
-                  if (textarea) {
-                    textarea.addEventListener('input', () => handleTextInput(poll));
-                  }
-                } else {
-                  poll.querySelectorAll('.survey-poll-option').forEach(option => {
-                    option.addEventListener('click', () => handleSelection(option));
-                  });
-                }
-              }
-            });
+
           })
           .catch(error => {
             console.error("Survey Error:", error);
-            surveyElement.innerHTML = "<p>Sorry, this survey could not be loaded.</p>";
+            // If survey state fetch fails, still attach event listeners for fresh start
+            polls.forEach(poll => {
+              if (poll.dataset.pollType === 'text_input') {
+                const textarea = poll.querySelector('.survey-text-input');
+                if (textarea) {
+                  textarea.addEventListener('input', () => handleTextInput(poll));
+                }
+              } else {
+                poll.querySelectorAll('.survey-poll-option').forEach(option => {
+                  option.addEventListener('click', () => handleSelection(option));
+                });
+              }
+            });
           });
 
       } else {

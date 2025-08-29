@@ -9,8 +9,10 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
   let(:option2) { create(:poll_option, poll: poll1, markdown: "Option 2") }
 
   before do
-    option1
-    option2
+    # Force creation of survey and all related objects
+    survey.reload # Ensure survey is in database
+    option1.reload # Ensure options are in database
+    option2.reload
     sign_in user
   end
 
@@ -23,6 +25,12 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
   end
 
   it "allows users to resubmit surveys when allow_resubmission is true" do
+    # Ensure survey is created and persisted before visiting the page
+    expect(survey).to be_persisted
+    expect(survey.allow_resubmission).to be true
+    expect(option1).to be_persisted
+    expect(option2).to be_persisted
+
     # First, complete the survey
     visit "/subforems/new"
 
@@ -57,6 +65,12 @@ RSpec.describe "Survey Resubmission", :js, type: :system do
 
   it "prevents resubmission when allow_resubmission is false" do
     survey.update!(allow_resubmission: false)
+
+    # Ensure survey is created and persisted before visiting the page
+    expect(survey).to be_persisted
+    expect(survey.allow_resubmission).to be false
+    expect(option1).to be_persisted
+    expect(option2).to be_persisted
 
     # First, complete the survey
     visit "/subforems/new"
