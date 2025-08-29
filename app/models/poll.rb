@@ -46,6 +46,22 @@ class Poll < ApplicationRecord
     false
   end
 
+  # We only want a user to be able to vote (or abstain) once per poll per session.
+  # This query helps validate that constraint for session-based voting.
+  #
+  # @param user_id [Integer]
+  # @param session_start [Integer]
+  #
+  # @return [TrueClass] if the given user has a registered vote or skip in this session
+  # @return [FalseClass] if the given user does not have a poll vote
+  #         nor poll skip in this session.
+  def vote_previously_recorded_for_in_session?(user_id:, session_start:)
+    return true if poll_votes.where(user_id: user_id, session_start: session_start).any?
+    return true if poll_skips.where(user_id: user_id, session_start: session_start).any?
+
+    false
+  end
+
   def voting_data
     { votes_count: poll_votes_count, votes_distribution: poll_options.pluck(:id, :poll_votes_count) }
   end
@@ -80,12 +96,12 @@ class Poll < ApplicationRecord
       # Shift other polls in the same survey
       if new_position < position
         # Moving up: increment positions of polls between new_position and current position
-        survey.polls.where('position >= ? AND position < ?', new_position, position)
-              .update_all('position = position + 1')
+        survey.polls.where("position >= ? AND position < ?", new_position, position)
+          .update_all("position = position + 1")
       elsif new_position > position
         # Moving down: decrement positions of polls between current position and new_position
-        survey.polls.where('position > ? AND position <= ?', position, new_position)
-              .update_all('position = position - 1')
+        survey.polls.where("position > ? AND position <= ?", position, new_position)
+          .update_all("position = position - 1")
       end
 
       # Update this poll's position using update_column to skip validations
@@ -101,10 +117,10 @@ class Poll < ApplicationRecord
     poll_options_input_array.each_with_index do |input, index|
       supplementary_text = poll_options_supplementary_text_array&.dig(index)
       PollOption.create!(
-        markdown: input, 
-        poll_id: id, 
+        markdown: input,
+        poll_id: id,
         position: index,
-        supplementary_text: supplementary_text
+        supplementary_text: supplementary_text,
       )
     end
   end

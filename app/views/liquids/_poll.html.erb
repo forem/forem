@@ -12,13 +12,13 @@
     <% options.each do |option| %>
       <li class="ltag-polloption" id="poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
         <% if poll.single_choice? %>
-          <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+          <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>">
         <% elsif poll.multiple_choice? %>
-          <input type="checkbox" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+          <input type="checkbox" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>">
         <% elsif poll.scale? %>
-          <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+          <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>">
         <% end %>
-        <label for="poll_option_<%= option.id %>" id="poll_option_label_<%= option.id %>" data-option-id="<%= option.id %>">
+        <label for="poll_option_<%= option.id %>" id="poll_option_label_<%= option.id %>">
           <% if poll.scale? %>
             <span class="scale-value"><%= option.markdown %></span>
           <% else %>

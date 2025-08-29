@@ -57,21 +57,27 @@ RSpec.describe "PollTextResponses", type: :request do
         expect(json_response["errors"]).to include("Text content is too long (maximum is 1000 characters)")
       end
 
-      it "returns error for duplicate response from same user" do
-        create(:poll_text_response, poll: poll, user: user, text_content: "First response")
+      it "creates a new text response when user submits again" do
+        create(:poll_text_response, poll: poll, user: user, text_content: "First response", session_start: 1)
 
         expect do
           post "/polls/#{poll.id}/poll_text_responses", params: {
             poll_text_response: {
-              text_content: "Second response"
+              text_content: "Second response",
+              session_start: 2
             }
           }
-        end.not_to change(PollTextResponse, :count)
+        end.to change(PollTextResponse, :count).by(1)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:success)
         json_response = JSON.parse(response.body)
-        expect(json_response["success"]).to be false
-        expect(json_response["errors"]).to include("Poll has already been taken")
+        expect(json_response["success"]).to be true
+        expect(json_response["message"]).to eq("Text response submitted successfully")
+
+        # Verify the new response was created
+        new_response = PollTextResponse.last
+        expect(new_response.text_content).to eq("Second response")
+        expect(new_response.session_start).to eq(2)
       end
     end
 

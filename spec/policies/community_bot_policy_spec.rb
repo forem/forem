@@ -93,3 +93,4 @@ RSpec.describe CommunityBotPolicy, type: :policy do
   end
 end
 
+
