@@ -1,0 +1,98 @@
+---
+ar:
+  views:
+    users:
+      meta:
+        og:
+          title: "%{user} — ملف تعريف %{community}"
+      comments_locked_cta:
+        title: هل ترغب في الاتصال بـ %{user}؟
+        description: قم بإنشاء حساب للاتصال بـ %{user}. يمكنك أيضًا تسجيل الدخول أدناه للمتابعة إذا كنت تمتلك حسابًا بالفعل.
+        create_account: إنشاء حساب
+        already_have_an_account: هل لديك حساب بالفعل؟
+        sign_in: تسجيل الدخول
+      comments:
+        all:
+          one: جميع التعليقات %{count}
+          other: جميع التعليقات %{count}
+        last:
+          one: آخر %{count} تعليق
+          other: آخر %{count} تعليقات
+        recent: التعليقات الأخيرة
+        view: عرض جميع الأنشطة
+        view_all:
+          one: عرض جميع التعليقات %{count}
+          other: عرض جميع التعليقات %{count}
+        view_last:
+          one: عرض آخر 1 تعليق
+          other: عرض آخر %{count} تعليق
+      github:
+        heading: مستودعات GitHub
+        fork: انشاء نسخة
+        stars:
+          one: نجمة 1
+          other: "%{count} نجمة"
+      pin_icon: تثبيت
+      pinned: مثبتة
+      profile_fields:
+        bio:
+          label: السيرة الذاتية
+          placeholder: سيرة ذاتية قصيرة...
+        display_email_on_profile: عرض البريد الإلكتروني على الملف الشخصي
+        location:
+          label: الموقع
+          placeholder: هاليفاكس، نوفا سكوشيا
+        website:
+          label: عنوان موقع الويب
+          placeholder: https://yoursite.com
+        education: التعليم
+        currently learning: يتعلم حاليًا
+        currently hacking on: يعمل حاليًا على
+        available for: متاح لـ
+        skills/languages: المهارات / اللغات
+        work: العمل
+      side:
+        comment:
+          icon: تعليق
+          text:
+            one: 1 تعليق مكتوب
+            other: "%{count} تعليقات مكتوبة"
+        org: المنظمات
+        post:
+          icon: مشاركة
+          text:
+            one: 1 مشاركة نشرت
+            other: "%{count} مشاركات نشرت"
+        tag:
+          icon: موضوع
+          text:
+            one: 1 موضوع متابع
+            other: "%{count} مواضيع متابعة"
+      signout:
+        meta:
+          title: تأكيد تسجيل الخروج - %{community}
+        heading: هل أنت متأكد أنك تريد تسجيل الخروج؟
+        'yes': نعم، قم بتسجيل الخروج
+      block: منع @%{user}
+      details: تفاصيل ملف تعريف %{user}
+      dropdown: إجراءات المستخدم
+      email_icon: عنوان البريد الإلكتروني
+      empty: 404 لم يتم العثور على السيرة الذاتية
+      flag: العلم @%{user}
+      follow: متابعة
+      joined:
+        icon: انضم
+        text_html: "انضم في\_%{date}"
+      location_icon: الموقع
+      logo: صورة ملف تعريف %{user}
+      more: مزيد من المعلومات حول @%{user}
+      send_pm:
+        code: قواعد السلوك
+        notice_html: جميع التفاعلات الخاصة <b>يجب</b> أن تتوافق مع %{code}.
+        placeholder: أدخل رسالتك هنا...
+        submit: إرسال
+      social: موقع الإنترنت %{service}
+      spam: وضع علامة على @%{user} كرسالة غير مرغوب فيها
+      unflag: إزالة العلم عن @%{user}
+      unspam: تعيين @%{user} في القواعد
+      website: موقع شخصي
