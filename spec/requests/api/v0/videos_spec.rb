@@ -51,11 +51,11 @@ RSpec.describe "Api::V0::Videos" do
       get api_videos_path
 
       response_video = response.parsed_body.first
-      expected_keys = %w[type_of id path cloudinary_video_url title user_id video_duration_in_minutes video_source_url
+      expected_keys = %w[type_of id path cloudinary_video_url title user_id video video_duration_in_minutes video_source_url
                          user]
       expect(response_video.keys).to match_array(expected_keys)
 
-      %w[id path cloudinary_video_url title user_id video_duration_in_minutes video_source_url].each do |attr|
+      %w[id path cloudinary_video_url title user_id video video_duration_in_minutes video_source_url].each do |attr|
         expect(response_video[attr]).to eq(video_article.public_send(attr))
       end
 
@@ -99,7 +99,7 @@ RSpec.describe "Api::V0::Videos" do
         )
       end
 
-      get api_tags_path, params: { per_page: 10 }
+      get api_videos_path, params: { per_page: 10 }
       expect(response.parsed_body.count).to eq(2)
     end
 

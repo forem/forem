@@ -78,5 +78,26 @@ RSpec.describe "/admin/content_manager/tags" do
     it "disallows updates to name" do
       expect { put_resource }.not_to change { tag.reload.name }
     end
+
+    context "when managing subforem relationships" do
+      let!(:subforem1) { create(:subforem, domain: "#{rand(10_000)}.com") }
+      let!(:subforem2) { create(:subforem, domain: "#{rand(10_000)}.com") }
+
+      before do
+        # existing relationship
+        tag.subforem_relationships.create!(subforem: subforem1)
+      end
+
+      it "creates new subforem relationships for provided subforem_ids" do
+        new_ids = [subforem1.id, subforem2.id]
+        put admin_tag_path(tag), params: { tag: params.merge(subforem_ids: new_ids.map(&:to_s)) }
+        expect(tag.reload.subforem_relationships.pluck(:subforem_id)).to match_array(new_ids)
+      end
+
+      it "removes subforem relationships not included in subforem_ids" do
+        put admin_tag_path(tag), params: { tag: params.merge(subforem_ids: [subforem2.id.to_s]) }
+        expect(tag.reload.subforem_relationships.pluck(:subforem_id)).to eq([subforem2.id])
+      end
+    end
   end
 end

@@ -91,6 +91,26 @@ module CommentsHelper
     URL.fragment_comment(comment, path: article&.path)
   end
 
+  def commenter_organization_membership(comment, commentable)
+    return unless commentable&.respond_to?(:organization)
+    return unless commentable.organization
+
+    # Use preloaded organization_memberships if available to avoid N+1 queries
+    if comment.user.organization_memberships.loaded?
+      if comment.user.organization_memberships.any? do |membership|
+        membership.organization_id == commentable.organization.id &&
+            %w[admin member].include?(membership.type_of_user)
+      end
+        commentable.organization.name
+      else
+        nil
+      end
+    else
+      # Fallback to the original method if not preloaded
+      comment.user.org_member?(commentable.organization) ? commentable.organization.name : nil
+    end
+  end
+
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)

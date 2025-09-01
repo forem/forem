@@ -17,44 +17,90 @@ class EmailDigestArticleCollector
       return [] unless should_receive_email?
 
       articles = if @user.cached_followed_tag_names.any?
-                   experience_level_rating = @user.setting.experience_level || 5
-                   experience_level_rating_min = experience_level_rating - 4
-                   experience_level_rating_max = experience_level_rating + 4
+                   # Set subforem context for followed subforems or default
+                   set_subforem_context
 
-                   @user.followed_articles
-                     .select(:title, :description, :path, :cached_user, :cached_tag_list)
-                     .published.from_subforem
+                   articles_query = @user.followed_articles
+                     .select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+                     .published
+                     .full_posts
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
                      .where("score > ?", 8)
-                     .where("experience_level_rating > ? AND experience_level_rating < ?",
-                            experience_level_rating_min, experience_level_rating_max)
-                     .order(order)
-                     .limit(RESULTS_COUNT)
+
+                   # Only filter by subforem if we're not skipping subforem filtering
+                   articles_query = articles_query.where(subforem_id: @subforem_ids) unless @skip_subforem_filtering
+
+                   articles_query.order(order).limit(RESULTS_COUNT)
                  else
                    tags = @user.cached_followed_tag_names_or_recent_tags
-                   Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
-                     .published.from_subforem
-                     .where("published_at > ?", cutoff_date)
-                     .where(email_digest_eligible: true)
-                     .not_authored_by(@user.id)
-                     .where("score > ?", 11)
-                     .order(order)
-                     .limit(RESULTS_COUNT)
-                     .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
+                   # Set subforem context for followed subforems or default
+                   set_subforem_context
+
+                   if @skip_subforem_filtering
+                     # If skipping subforem filtering, get articles from anywhere
+                     articles_query = Article.select(
+                       :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id
+                     )
+                       .published
+                       .full_posts
+                       .where("published_at > ?", cutoff_date)
+                       .where(email_digest_eligible: true)
+                       .not_authored_by(@user.id)
+                       .where("score > ?", 11)
+                       .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
+                       .order(order)
+                       .limit(RESULTS_COUNT)
+                   else
+                     # Normal logic with subforem filtering and tags
+                     articles_query = Article.select(
+                       :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id
+                     )
+                       .published
+                       .full_posts
+                       .where("published_at > ?", cutoff_date)
+                       .where(email_digest_eligible: true)
+                       .not_authored_by(@user.id)
+                       .where("score > ?", 11)
+                       .where(subforem_id: @subforem_ids)
+                       .order(order)
+                       .limit(RESULTS_COUNT)
+                       .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
+                   end
                  end
 
       # Fallback if there are not enough articles
       if articles.length < 3
-        articles = Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
-          .published.from_subforem
-          .where("published_at > ?", cutoff_date)
-          .where(email_digest_eligible: true)
-          .where("score > ?", 11)
-          .not_authored_by(@user.id)
+        if @skip_subforem_filtering
+          # If we're skipping subforem filtering, get articles from anywhere
+          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+            .published
+            .full_posts
+            .where("published_at > ?", cutoff_date)
+            .where(email_digest_eligible: true)
+            .where("score > ?", 11)
+        else
+          # For fallback, include both followed subforems and default subforem
+          fallback_subforem_ids = @subforem_ids.dup
+          default_subforem_id = Subforem.cached_default_id
+          if default_subforem_id && fallback_subforem_ids.exclude?(default_subforem_id)
+            fallback_subforem_ids << default_subforem_id
+          end
+
+          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+            .published
+            .full_posts
+            .where("published_at > ?", cutoff_date)
+            .where(email_digest_eligible: true)
+            .where("score > ?", 11)
+            .where(subforem_id: fallback_subforem_ids)
+        end
+
+        articles = articles_query.not_authored_by(@user.id)
           .order(order)
           .limit(RESULTS_COUNT)
+
         if @user.cached_antifollowed_tag_names.any?
           articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
         end
@@ -82,6 +128,31 @@ class EmailDigestArticleCollector
   end
 
   private
+
+  def set_subforem_context
+    # Get user's followed subforems from UserActivity
+    user_activity = @user.user_activity
+    followed_subforem_ids = user_activity&.alltime_subforems || []
+    default_subforem_id = Subforem.cached_default_id
+
+    # Check if user has a custom onboarding subforem (not nil and not default)
+    has_custom_onboarding = @user.onboarding_subforem_id.present? &&
+      @user.onboarding_subforem_id != default_subforem_id
+
+    if followed_subforem_ids.any?
+      # User follows subforems - use those
+      @subforem_ids = followed_subforem_ids
+      @skip_subforem_filtering = false
+    elsif has_custom_onboarding
+      # User has custom onboarding subforem - don't filter by subforem at all
+      @subforem_ids = []
+      @skip_subforem_filtering = true
+    else
+      # User doesn't follow any subforems and has no custom onboarding - use default subforem
+      @subforem_ids = default_subforem_id ? [default_subforem_id] : []
+      @skip_subforem_filtering = false
+    end
+  end
 
   def recent_tracked_click?
     @user.email_messages

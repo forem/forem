@@ -18,9 +18,11 @@ export const ReactionsCount = ({ article }) => {
     if (reversable === undefined) {
       return;
     }
-    reversable.reverse();
+    // Remove reverse() since we now sort by count in descending order
+    // reversable.reverse();
 
-    const icons = reversable.map((category) => {
+    // Since the container has dir="rtl", we need to reverse the array to show highest count first
+    const icons = reversable.slice().reverse().map((category) => {
       const path = reactionIcons.querySelector(
         `img[data-slug=${category.slug}]`,
       ).src;

@@ -50,6 +50,7 @@ class AsyncInfo
       feed_style: feed_style_preference_variable(user),
       created_at: user.created_at,
       admin: user.any_admin?,
+      ordered_subforem_ids: user.ordered_subforems,
       policies: [
         {
           dom_class: ApplicationPolicy.base_dom_class_for(record: Article, query: :create?),

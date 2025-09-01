@@ -12,12 +12,14 @@ class Role < ApplicationRecord
     support_admin
     suspended
     spam
+    subforem_moderator
     tag_moderator
     tech_admin
     trusted
     warned
     limited
     base_subscriber
+    impending_base_subscriber_cancellation
   ].freeze
 
   ROLES.each do |role|

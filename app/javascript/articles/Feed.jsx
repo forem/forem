@@ -94,6 +94,11 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
                 url: '/welcome',
                 reading_time: 0
               });
+            } else {
+              const firstPost = feedPosts[0];
+              if (firstPost.feed_config) {
+                document.getElementById('index-container').dataset.feedConfigId = firstPost.feed_config;
+              }
             }
 
             const imagePost = getImagePost(feedPosts);

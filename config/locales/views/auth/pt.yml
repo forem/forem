@@ -1,0 +1,80 @@
+---
+en:
+  views:
+    auth:
+      background: forem background
+      create:
+        aria_label: Create new account
+        text: Create account
+      creator:
+        text1: Let's start your Forem journey!
+        text2: Create your admin account first.
+        text3: Then we'll walk you through your Forem setup.
+        hint:
+          aria_label: Edit username
+          icon: Edit username
+          text_html: "%{start}Your username will be\_%{end}%{button}"
+        submit: Create my account
+      already_have_an_account: Already have an account?
+      sign_in: Sign in
+      login:
+        aria_label: Log in
+        text: Log in
+        forgot: Forgot password?
+      provider:
+        text: "%{action} with %{provider}"
+        login: Continue
+        signup: Sign up
+        email:
+          icon: email
+          text: Sign up with Email
+      register:
+        errors:
+          one: Whoops, we found %{count} problem
+          other: Whoops, we found %{count} problems
+        allow:
+          one_html: Registration restricted to <strong>@%{domain}</strong> emails.
+          list: Registration restricted to the following emails
+        create: Create your account
+        field:
+          name:
+            aria_label: Name
+            label: Name
+          username:
+            aria_label: Username
+            desc: A username can only contain letters, numbers and underscores. The maximum username length can be 30 characters.
+            label: Username
+          email:
+            aria_label: Email
+            label: Email
+            placeholder: john@example.com
+          password:
+            aria_label: Password
+            desc: Minimum 8 characters
+            label: Password
+            placeholder: "••••••••"
+            hide: Hide password
+            show: Show password
+          confirm:
+            aria_label: Password Confirmation
+            label: Password Confirmation
+          required: "* - required"
+        secret:
+          label: New Forem Secret
+          placeholder: As provided by your Forem host
+          hide: Hide new Forem secret
+          show: Show new Forem secret
+        submit: Sign up
+      wizard:
+        meta:
+          title: Let's get started with Forem
+        heading: Let's start your Forem journey
+        step_1: Create an account. It will be the first super admin account.
+        step_2_html: Once you sign up below, you can configure your community at %{path}.
+        step_3: There is lots you can do as an admin, but there is a learning curve.
+        step_4: Please reach out to the Forem team if you are unsure about anything!
+        step_5: "For Empowering Community 🌱"
+      tagline: We are a place where coders share, stay up-to-date and grow their careers.
+      title:
+        text_html: "%{name} is a community of %{maybe_size}amazing %{label}"
+        size: "%{num} "

@@ -1,0 +1,10 @@
+<% title "Editor Guide" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/p/editor_guide") %>" />
+  <meta name="description" content="<%= community_name %> | editor guideline">
+  <%= meta_keywords_default %>
+<% end %>
+
+<div class="blank-space"></div>
+<%= render "editor_guide_text", version: "1" %>

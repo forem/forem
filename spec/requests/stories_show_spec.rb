@@ -227,7 +227,7 @@ RSpec.describe "StoriesShow" do
     end
 
     context "when subforem logic is triggered by RequestStore" do
-      let!(:subforem)       { create(:subforem, domain: "www.example.com") }
+      let!(:subforem) { create(:subforem, domain: "www.example.com") }
       let!(:default_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
 
       before do
@@ -260,8 +260,10 @@ RSpec.describe "StoriesShow" do
       end
 
       it "redirects if article has no subforem_id and RequestStore has a non-default subforem_id" do
-        allow(Subforem).to receive(:cached_id_by_domain).with("www.example.com").and_return(create(:subforem, domain: "other.com").id)
+        allow(Subforem).to receive(:cached_id_by_domain).with("www.example.com").and_return(create(:subforem,
+                                                                                                   domain: "other.com").id)
 
+        article.update_column(:subforem_id, nil)
         get article.path
         expect(response).to have_http_status(:moved_permanently)
       end
@@ -269,6 +271,7 @@ RSpec.describe "StoriesShow" do
       it "does not redirect if article has no subforem_id and RequestStore subforem_id == default_subforem" do
         allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
 
+        article.update_column(:subforem_id, nil)
         get article.path
         expect(response).not_to have_http_status(:moved_permanently)
       end

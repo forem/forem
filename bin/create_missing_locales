@@ -1,0 +1,184 @@
+#!/usr/bin/env ruby
+require "optparse"
+require "pathname"
+require "fileutils"
+
+# ---------- CLI options ----------
+options = {
+  path: ".",
+  locales: %w[pt],
+  dry_run: false,
+  verbose: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/create_missing_locales [options]"
+
+  opts.on("--path=PATH", "Root path to scan (default: .)") do |v|
+    options[:path] = v
+  end
+
+  opts.on("--locales=L1,L2,...", Array, "Target locales to create (default: pt)") do |arr|
+    options[:locales] = arr.map(&:strip).reject(&:empty?)
+  end
+
+  opts.on("--dry-run", "Show what would be created without actually creating files") do
+    options[:dry_run] = true
+  end
+
+  opts.on("--verbose", "Show detailed information") do
+    options[:verbose] = true
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+ROOT = Pathname.new(options[:path]).expand_path
+
+# Directories to ignore
+IGNORE_DIRS = %w[
+  .git
+  .idea
+  .vscode
+  node_modules
+  vendor
+  log
+  tmp
+  storage
+  public
+  bin
+  .bundle
+  coverage
+  pkg
+  spec
+  test
+  db
+  lib
+].freeze
+
+# Only process these directories for locale files
+LOCALE_DIRS = %w[
+  app
+  config
+].freeze
+
+# Reuse the same patterns from the lookup script
+LOCALE_PATTERNS = {
+  'en' => /(?:(?<=\/|\.)en(?:-[A-Za-z0-9_]+)?(?=\/|\.))/,
+  'pt' => /(?:(?<=\/|\.)pt(?:-[A-Za-z0-9_]+)?(?=\/|\.))/,
+  'fr' => /(?:(?<=\/|\.)fr(?:-[A-Za-z0-9_]+)?(?=\/|\.))/
+}.freeze
+
+def swap_locale_segment(path, from_locale, to_locale)
+  dirname = File.dirname(path)
+  basename = File.basename(path)
+
+  # 1) Try in basename first (filename-scoped, e.g., foo.en.html.erb, devise.en.yml)
+  from_pattern = LOCALE_PATTERNS[from_locale]
+  if basename =~ from_pattern
+    new_basename = basename.sub(from_pattern, to_locale)
+    return File.join(dirname, new_basename)
+  end
+
+  # 2) Else try to replace the last directory segment equal to the locale
+  dir_parts = Pathname.new(dirname).each_filename.to_a
+  idx = dir_parts.rindex { |seg| seg.match?(from_pattern) }
+  if idx
+    dir_parts[idx] = to_locale
+    return File.join(File.join(*dir_parts), basename)
+  end
+
+  # 3) Fallback: replace first occurrence anywhere it appears as a valid segment
+  path.sub(from_pattern, to_locale)
+end
+
+def under_ignored_dir?(path)
+  parts = Pathname.new(path).each_filename.to_a
+  parts.any? { |seg| IGNORE_DIRS.include?(seg) }
+end
+
+def in_locale_dir?(path)
+  parts = Pathname.new(path).each_filename.to_a
+  parts.any? { |seg| LOCALE_DIRS.include?(seg) }
+end
+
+def collect_english_files(root)
+  files = []
+  Dir.chdir(root) do
+    Dir.glob("**/*", File::FNM_DOTMATCH).each do |rel|
+      next if rel == "." || rel == ".."
+      next unless File.file?(rel)
+      next if under_ignored_dir?(rel)
+      next unless in_locale_dir?(rel)
+      next unless rel.match?(LOCALE_PATTERNS['en'])
+      files << rel
+    end
+  end
+  files.sort
+end
+
+def create_missing_locales(target_locales, dry_run, verbose)
+  english_files = collect_english_files(ROOT)
+  created_count = 0
+  skipped_count = 0
+
+  puts "Scanning for English locale files..." if verbose
+  puts "Found #{english_files.size} English locale files" if verbose
+
+  english_files.each do |en_path|
+    target_locales.each do |target_locale|
+      candidate = swap_locale_segment(en_path, 'en', target_locale)
+      
+      if File.exist?(candidate)
+        puts "Skipping #{candidate} (already exists)" if verbose
+        skipped_count += 1
+        next
+      end
+
+      if dry_run
+        puts "Would create: #{candidate}"
+      else
+        # Ensure the directory exists
+        FileUtils.mkdir_p(File.dirname(candidate))
+        
+        # Copy the English file as a template
+        FileUtils.cp(en_path, candidate)
+        
+        puts "Created: #{candidate}" if verbose
+        created_count += 1
+      end
+    end
+  end
+
+  [created_count, skipped_count]
+end
+
+# Main execution
+puts "Creating missing locale files..." unless options[:dry_run]
+puts "DRY RUN - No files will be created" if options[:dry_run]
+puts "Target locales: #{options[:locales].join(', ')}"
+puts "Root path: #{ROOT}"
+puts
+
+created, skipped = create_missing_locales(options[:locales], options[:dry_run], options[:verbose])
+
+puts
+if options[:dry_run]
+  puts "Summary:"
+  puts "  Would create: #{created} files"
+  puts "  Would skip: #{skipped} files (already exist)"
+else
+  puts "Summary:"
+  puts "  Created: #{created} files"
+  puts "  Skipped: #{skipped} files (already exist)"
+end
+
+puts
+puts "Next steps:"
+puts "1. Edit the created files to translate the content"
+puts "2. Use Brazilian Portuguese dialect"
+puts "3. Test with: bundle exec rspec spec/i18n_spec.rb:15"
+puts "4. Check progress with: bin/locale_file_lookup --locales=pt,fr"

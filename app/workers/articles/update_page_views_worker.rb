@@ -1,3 +1,5 @@
+# [PROJECT_ROOT]/app/workers/articles/update_page_views_worker.rb
+
 module Articles
   class UpdatePageViewsWorker
     include Sidekiq::Job
@@ -9,27 +11,32 @@ module Articles
                     on_conflict: :replace,
                     retry: false
 
-    # @see Articles::PageViewUpdater
     def perform(create_params)
       article = Article.find_by(id: create_params["article_id"])
       return unless article&.published?
       return if create_params[:user_id] && article.user_id == create_params[:user_id]
 
-      PageView.create!(create_params)
+      # --- START: MODIFIED CODE ---
+      begin
+        PageView.create!(create_params)
+      rescue ActiveRecord::RecordNotUnique
+        # This is the most likely error. It happens when this job runs twice
+        # due to a race condition. It's safe to ignore it, because the page
+        # view has already been created. We can simply stop the worker.
+        return
+      rescue ActiveRecord::RecordInvalid => e
+        # This indicates a data problem. We should log it to understand why
+        # the params are bad, and then stop the worker.
+        Rails.logger.error("Articles::UpdatePageViewsWorker validation failed: #{e.message} for params: #{create_params}")
+        return
+      end
+      # --- END: MODIFIED CODE ---
 
       updated_count = article.page_views.sum(:counts_for_number_of_views)
       if updated_count > article.page_views_count
         article.update_column(:page_views_count, updated_count)
       end
 
-      # PageViewsController#create called the method update_organic_page_views
-      # at the end. The relationship between the two was 12.5% chance (rand(8))
-      # and 1% chance (rand(100)), or roughly 12x more likely for page view
-      # updates vs. organic page view updates. We kept a similar relationship
-      # between the two workers, this one here is schedule after 2 minutes,
-      # organic page view updates after 25 minutes.
-
-      # We also don't need to call this unless the new pageview is organic
       return unless create_params["referrer"] == GOOGLE_REFERRER
 
       Articles::UpdateOrganicPageViewsWorker.perform_at(
