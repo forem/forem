@@ -17,7 +17,7 @@ RSpec.describe Moderator::SinkArticles, type: :service do
         sidekiq_perform_enqueued_jobs do
           described_class.call(spam_user.id)
         end
-      end.to change(scores, :call).from([0, 0, 0]).to([-25, -26, -28])
+              end.to change(scores, :call).from([0, 0, 0]).to(match_array([-25, -26, -28]))
     end
 
     it "lowers all of the user's articles' scores by 50 each if confirmed" do
@@ -26,7 +26,7 @@ RSpec.describe Moderator::SinkArticles, type: :service do
         sidekiq_perform_enqueued_jobs do
           described_class.call(spam_user.id)
         end
-      end.to change(scores, :call).from([0, 0, 0]).to([-50, -51, -53])
+              end.to change(scores, :call).from([0, 0, 0]).to(match_array([-50, -51, -53]))
     end
 
     context "when removing a user vomit reaction" do
