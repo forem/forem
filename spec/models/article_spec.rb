@@ -82,13 +82,15 @@ RSpec.describe Article do
     end
 
     describe ".from_subforem" do
-      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
-      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
+      let(:non_discoverable_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: false) }
       let!(:article_in_subforem) { create(:article, subforem_id: subforem.id) }
       let!(:article_in_second_subforem) { create(:article, subforem_id: second_subforem.id) }
       let!(:article_in_null_subforem) { create(:article, subforem_id: nil) }
       let!(:article_in_other_subforem) { create(:article, subforem_id: third_subforem.id) }
+      let!(:article_in_nondiscoverable_subforem) { create(:article, subforem_id: non_discoverable_subforem.id) }
 
       after do
         RequestStore.store[:subforem_id] = nil
@@ -103,20 +105,20 @@ RSpec.describe Article do
           expect(described_class.from_subforem(subforem.id)).not_to include(article_in_other_subforem)
         end
       end
-    
+
       context "when subforem_id is nil" do
         before { RequestStore.store[:subforem_id] = nil }
-    
+
         it "returns articles with null subforem_id or subforem_id <= 1" do
           expect(described_class.from_subforem).to include(article_in_null_subforem)
           expect(described_class.from_subforem).not_to include(article_in_subforem)
           expect(described_class.from_subforem).not_to include(article_in_other_subforem)
         end
       end
-    
+
       context "when subforem_id is the default subforem_id" do
         let(:subforem_id) { subforem.id }
-    
+
         it "returns articles with null subforem_id or matching the provided subforem_id" do
           RequestStore.store[:default_subforem_id] = subforem_id
           expect(described_class.from_subforem(subforem_id)).to include(article_in_null_subforem)
@@ -124,10 +126,10 @@ RSpec.describe Article do
           expect(described_class.from_subforem(subforem_id)).not_to include(article_in_other_subforem)
         end
       end
-    
+
       context "when subforem_id is greater than 1" do
         let(:subforem_id) { third_subforem.id }
-    
+
         it "returns only articles with the exact matching subforem_id" do
           expect(described_class.from_subforem(subforem_id)).to include(article_in_other_subforem)
           expect(described_class.from_subforem(subforem_id)).not_to include(article_in_subforem)
@@ -139,26 +141,23 @@ RSpec.describe Article do
         before do
           RequestStore.store[:root_subforem_id] = subforem.id
         end
-    
-        it "returns all articles with no conditions" do
-          expect(described_class.from_subforem(subforem.id)).to contain_exactly(
-            article,
-            article_in_subforem,
-            article_in_second_subforem,
-            article_in_null_subforem,
-            article_in_other_subforem,
-          )
+
+        it "articles with no subforem or subforem_id in Subforem.cached_discoverable_ids" do
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_null_subforem)
+          expect(described_class.from_subforem(subforem.id)).to include(article_in_subforem)
+          expect(described_class.from_subforem(subforem.id)).not_to include(article_in_nondiscoverable_subforem)
         end
 
         it "returns proper query with additional conditions" do
-          expect(described_class.from_subforem(subforem.id).where(id: [article_in_subforem.id, article_in_null_subforem.id]))
+          expect(described_class.from_subforem(subforem.id).where(id: [article_in_subforem.id,
+                                                                       article_in_null_subforem.id]))
             .to contain_exactly(article_in_subforem, article_in_null_subforem)
         end
-      end    
-    
+      end
+
       context "when subforem_id is stored in RequestStore" do
         before { RequestStore.store[:subforem_id] = second_subforem.id }
-    
+
         it "uses the subforem_id from RequestStore if none is passed" do
           expect(described_class.from_subforem).to include(article_in_second_subforem)
           expect(described_class.from_subforem).not_to include(article_in_subforem)
@@ -280,7 +279,7 @@ RSpec.describe Article do
           article.title = "Updated Title"
           expect(article).to be_valid
         end
-    
+
         it "runs validation if body_markdown has changed" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.body_markdown = "New body content"
@@ -288,18 +287,19 @@ RSpec.describe Article do
           expect(article.errors[:body_markdown]).to include("is not allowed for status types")
         end
       end
-    
+
       context "when type_of is not 'status'" do
         it "does not add an error" do
-          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content", main_image: nil, user: user)
+          article = Article.create(type_of: "full_post", title: "Valid Title", body_markdown: "Content",
+                                   main_image: nil, user: user)
           expect(article).to be_valid
         end
       end
-    
+
       context "when body_url is present" do
         it "does not add an error even if other attributes are present" do
           stub_request(:any, /example.com/) # Stubbing the HTTP request
-    
+
           article = build(
             :article,
             type_of: "status",
@@ -312,33 +312,36 @@ RSpec.describe Article do
           expect(article).to be_valid
         end
       end
-    
+
       context "when body_url is blank" do
         context "and body_markdown is present" do
           it "adds an error" do
-            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil, user: user)
+            article = build(:article, type_of: "status", body_markdown: "This should not be allowed", main_image: nil,
+                                      user: user)
             expect(article).not_to be_valid
             expect(article.errors[:body_markdown]).to include("is not allowed for status types")
           end
         end
-    
+
         context "and main_image is present" do
           it "adds an error" do
-            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png", user: user)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: "http://image.com/img.png",
+                                      user: user)
             expect(article).not_to be_valid
             expect(article.errors[:body_markdown]).to include("is not allowed for status types")
           end
         end
-    
+
         context "and collection_id is present" do
           it "adds an error" do
             collection = create(:collection)
-            article = build(:article, type_of: "status", body_markdown: "", main_image: nil, collection_id: collection.id, user: user)
+            article = build(:article, type_of: "status", body_markdown: "", main_image: nil,
+                                      collection_id: collection.id, user: user)
             expect(article).not_to be_valid
             expect(article.errors[:body_markdown]).to include("is not allowed for status types")
           end
         end
-    
+
         context "and body_markdown, main_image, and collection_id are blank" do
           it "does not add an error" do
             article = build(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
@@ -346,7 +349,47 @@ RSpec.describe Article do
           end
         end
       end
-    end  
+    end
+
+    describe "#restrict_type_based_on_role" do
+      context "when user is an admin" do
+        before { article.user.add_role(:admin) }
+
+        it "allows setting type_of to 'fullscreen_embed'" do
+          article.type_of = "fullscreen_embed"
+          expect(article).to be_valid
+        end
+
+        it "allows setting type_of to 'status'" do
+          article.type_of = "status"
+          expect(article).to be_valid
+        end
+
+        it "allows setting type_of to 'full_post'" do
+          article.type_of = "full_post"
+          expect(article).to be_valid
+        end
+      end
+
+      context "when user is not an admin" do
+        before { article.user.remove_role(:admin) }
+
+        it "does not allow setting type_of to 'fullscreen_embed'" do
+          article.type_of = "fullscreen_embed"
+          expect(article).not_to be_valid
+        end
+
+        it "allows setting type_of to 'status'" do
+          article.type_of = "status"
+          expect(article).to be_valid
+        end
+
+        it "allows setting type_of to 'full_post'" do
+          article.type_of = "full_post"
+          expect(article).to be_valid
+        end
+      end
+    end
 
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
@@ -417,6 +460,59 @@ RSpec.describe Article do
       end
     end
 
+    describe "before_validation :set_default_subforem_id" do
+      let(:user) { create(:user) }
+      let(:default_subforem) { create(:subforem, domain: "default.com") }
+
+      after do
+        RequestStore.store[:default_subforem_id] = nil
+      end
+
+      context "when default_subforem_id is set in RequestStore" do
+        before do
+          RequestStore.store[:default_subforem_id] = default_subforem.id
+        end
+
+        it "sets subforem_id to default subforem ID when subforem_id is nil" do
+          article = build(:article, user: user, subforem_id: nil)
+          article.valid?
+          expect(article.subforem_id).to eq(default_subforem.id)
+        end
+
+        it "does not change subforem_id when it is already set" do
+          other_subforem = create(:subforem, domain: "other.com")
+          article = build(:article, user: user, subforem_id: other_subforem.id)
+          article.valid?
+          expect(article.subforem_id).to eq(other_subforem.id)
+        end
+
+        it "does not change subforem_id when it is already set to the default" do
+          article = build(:article, user: user, subforem_id: default_subforem.id)
+          article.valid?
+          expect(article.subforem_id).to eq(default_subforem.id)
+        end
+      end
+
+      context "when default_subforem_id is not set in RequestStore" do
+        before do
+          RequestStore.store[:default_subforem_id] = nil
+        end
+
+        it "does not change subforem_id when it is nil" do
+          article = build(:article, user: user, subforem_id: nil)
+          article.valid?
+          expect(article.subforem_id).to be_nil
+        end
+
+        it "does not change subforem_id when it is already set" do
+          other_subforem = create(:subforem, domain: "other.com")
+          article = build(:article, user: user, subforem_id: other_subforem.id)
+          article.valid?
+          expect(article.subforem_id).to eq(other_subforem.id)
+        end
+      end
+    end
+
     describe "title validation" do
       it "normalizes the title to a narrow set of allowable characters" do
         article = create(:article, title: "I⠀⠀Am⠀⠀Warning⠀⠀You⠀⠀Don't⠀⠀Click!")
@@ -470,12 +566,12 @@ RSpec.describe Article do
 
     describe "before_validation :set_markdown_from_body_url" do
       context "when body_url is present" do
-        it "sets body_markdown to '{% embed body_url %}'" do
+        it "sets body_markdown to '{% embed body_url minimal %}'" do
           url = article_url(article)
           allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
           article = build(:article, body_url: url, body_markdown: nil)
           article.valid?
-          expect(article.body_markdown).to eq("{% embed #{url} %}")
+          expect(article.body_markdown).to eq("{% embed #{url} minimal %}")
         end
 
         it "overwrites existing body_markdown with embedded body_url" do
@@ -483,7 +579,7 @@ RSpec.describe Article do
           allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
           article = build(:article, body_url: url, body_markdown: "Existing content")
           article.valid?
-          expect(article.body_markdown).to eq("{% embed #{url} %}")
+          expect(article.body_markdown).to eq("{% embed #{url} minimal %}")
         end
       end
 
@@ -556,7 +652,8 @@ RSpec.describe Article do
       end
 
       it "does not add an error if body is absent for 'status' articles" do
-        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true, main_image: "")
+        article = Article.create(title: "Title", body_markdown: "", type_of: "status", user: user, published: true,
+                                 main_image: "")
         expect(article).to be_valid
       end
     end
@@ -598,7 +695,8 @@ RSpec.describe Article do
       end
 
       it "truncates a long slug" do
-        long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "", published: true)
+        long_title_article = Article.create(title: "Hello this is a title" * 20, type_of: "status", body_markdown: "",
+                                            published: true)
         expect(long_title_article.slug.length).to be <= 106
       end
     end
@@ -953,6 +1051,25 @@ RSpec.describe Article do
         frontmatter_article.reload
         expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
       end
+    end
+  end
+
+  describe "#generate_context_notes" do
+    let(:tag) { create(:tag, name: "testtag", context_note_instructions: "context_note_instructions") }
+
+    before do
+      allow(Articles::GenerateContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "calls Articles::GenerateContextNoteWorker.perform_async" do
+      article = create(:article, user: user, tag_list: [tag.name])
+      expect(Articles::GenerateContextNoteWorker).to have_received(:perform_async).with(article.id, tag.id)
+    end
+
+    it "does not call Articles::GenerateContextNoteWorker if no tags with context note instructions are present" do
+      tag.update_column(:context_note_instructions, nil)
+      create(:article, user: user, tag_list: [tag.name])
+      expect(Articles::GenerateContextNoteWorker).not_to have_received(:perform_async)
     end
   end
 
@@ -1363,10 +1480,86 @@ RSpec.describe Article do
     end
 
     describe "spam" do
-      it "delegates spam handling to Spam::Handler.handle_article!" do
-        allow(Spam::Handler).to receive(:handle_article!).with(article: article).and_call_original
-        article.save
-        expect(Spam::Handler).to have_received(:handle_article!).with(article: article)
+      it "enqueues Articles::HandleSpamWorker on save" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::HandleSpamWorker) do
+          article.save
+        end
+      end
+
+      it "updates score after content moderation labeling" do
+        # Mock the content moderation labeler to return a specific label
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        
+        initial_score = article.score
+        
+        # Perform the worker job
+        Articles::HandleSpamWorker.new.perform(article.id)
+        
+        # The score should be updated with the automod_label adjustment
+        # clear_and_obvious_harmful has a -10 adjustment
+        expect(article.reload.score).to eq(initial_score - 10)
+      end
+
+      it "updates score with positive adjustment for high quality content" do
+        # Mock the content moderation labeler to return a high quality label
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        
+        initial_score = article.score
+        
+        # Perform the worker job
+        Articles::HandleSpamWorker.new.perform(article.id)
+        
+        # The score should be updated with the automod_label adjustment
+        # great_and_on_topic has a +20 adjustment
+        expect(article.reload.score).to eq(initial_score + 20)
+      end
+    end
+
+    describe "create conditional autovomits" do
+      let(:worker) { Articles::HandleSpamWorker }
+      let!(:article) { create(:article, published: true) }
+
+      context "within one minute of publishing" do
+        it "enqueues for body_markdown changes" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(body_markdown: "👀 fresh body change")
+          end
+        end
+
+        it "enqueues for any other attribute change" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(title: "fresh title tweak")
+          end
+        end
+      end
+
+      context "more than one minute after publishing" do
+        before { article.update_column(:published_at, 2.minutes.ago) }
+
+        it "enqueues for body_markdown changes" do
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(body_markdown: "🚽 delayed body change")
+          end
+        end
+
+        it "does not enqueue for non-body changes" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            article.update(title: "delayed title tweak")
+          end
+        end
+      end
+
+      context "when the article is not published" do
+        let(:draft) { create(:article, published: false) }
+
+        it "never enqueues" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            draft.save
+            draft.update(title: "still draft")
+          end
+        end
       end
     end
 
@@ -1713,6 +1906,37 @@ RSpec.describe Article do
       end
     end
 
+    context "when user has featured articles" do
+      it "adds the user featured article adjustment to the score" do
+        create_list(:article, 5, user: user, featured: true)
+        article.update_score
+        expect(article.reload.score).to eq(10 + 6) # 6 is 5 plus 1 for the log adjustment
+      end
+
+      it "adds the user featured article adjustment to the score when the user has many articles" do
+        current_score = article.score
+        create_list(:article, 52, user: user, featured: true)
+        article.update_score
+        expect(article.reload.score).to eq(10 + 13) # 10 for count, 3 for log adjustment
+      end
+    end
+
+    context "when user has negative articles" do
+      # negative_count = user.articles.where("score < -10").count
+      # user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+      it "adds the user negative article adjustment to the score" do
+        create_list(:article, 5, user: user, score: -20)
+        article.update_score
+        expect(article.reload.score).to eq(10 - 4) # 4 is 3 for count, 1 for log adjustment
+      end
+
+      it "adds the user negative article adjustment to the score when the user has many articles" do
+        create_list(:article, 52, user: user, score: -20)
+        article.update_score
+        expect(article.reload.score).to eq(10 - 6) # 6 is 3 for count, 3 for log adjustment
+      end
+    end
+
     context "when user.max_score is set" do
       it "uses the user's max score if it is lower than the article's max score" do
         user.update_column(:max_score, 5)
@@ -1731,6 +1955,160 @@ RSpec.describe Article do
       end
     end
   end
+
+  context "when the article has a context note" do
+    it "adds 1 to score" do
+      score = article.score
+      create(:context_note, article: article)
+      article.update_score
+      expect(article.reload.score).to eq(score + 1)
+    end
+  end
+
+  describe "automod_label adjustments" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+    end
+
+    context "when automod_label is no_moderation_label" do
+      before { article.update_column(:automod_label, "no_moderation_label") }
+
+      it "adds 0 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_harmful" do
+      before { article.update_column(:automod_label, "clear_and_obvious_harmful") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is likely_harmful" do
+      before { article.update_column(:automod_label, "likely_harmful") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_inciting" do
+      before { article.update_column(:automod_label, "clear_and_obvious_inciting") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is likely_inciting" do
+      before { article.update_column(:automod_label, "likely_inciting") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_spam" do
+      before { article.update_column(:automod_label, "clear_and_obvious_spam") }
+
+      it "subtracts 10 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-10)
+      end
+    end
+
+    context "when automod_label is likely_spam" do
+      before { article.update_column(:automod_label, "likely_spam") }
+
+      it "subtracts 5 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when automod_label is clear_and_obvious_low_quality" do
+      before { article.update_column(:automod_label, "clear_and_obvious_low_quality") }
+
+      it "subtracts 5 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when automod_label is likely_low_quality" do
+      before { article.update_column(:automod_label, "likely_low_quality") }
+
+      it "subtracts 2 from score" do
+        article.update_score
+        expect(article.reload.score).to eq(-2)
+      end
+    end
+
+    context "when automod_label is ok_but_offtopic_for_subforem" do
+      before { article.update_column(:automod_label, "ok_but_offtopic_for_subforem") }
+
+      it "adds 0 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+
+    context "when automod_label is okay_and_on_topic" do
+      before { article.update_column(:automod_label, "okay_and_on_topic") }
+
+      it "adds 3 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(3)
+      end
+    end
+
+    context "when automod_label is very_good_but_offtopic_for_subforem" do
+      before { article.update_column(:automod_label, "very_good_but_offtopic_for_subforem") }
+
+      it "adds 3 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(3)
+      end
+    end
+
+    context "when automod_label is very_good_and_on_topic" do
+      before { article.update_column(:automod_label, "very_good_and_on_topic") }
+
+      it "adds 15 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(15)
+      end
+    end
+
+    context "when automod_label is great_and_on_topic" do
+      before { article.update_column(:automod_label, "great_and_on_topic") }
+
+      it "adds 20 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(20)
+      end
+    end
+
+    context "when automod_label is great_but_off_topic_for_subforem" do
+      before { article.update_column(:automod_label, "great_but_off_topic_for_subforem") }
+
+      it "adds 5 to score" do
+        article.update_score
+        expect(article.reload.score).to eq(5)
+      end
+    end
+  end
+
+
 
   describe "#feed_source_url and canonical_url must be unique for published articles" do
     let(:url) { "http://www.example.com" }
@@ -1787,6 +2165,52 @@ RSpec.describe Article do
     it "reports accurately" do
       categories = article.public_reaction_categories
       expect(categories.map(&:slug)).to match_array(%i[like])
+    end
+  end
+
+  describe "#public_reaction_categories limits to 3 and orders by count" do
+    before do
+      # Create multiple reactions with different counts
+      # Each user can only have one reaction per category per article
+      user1 = create(:user)
+      user2 = create(:user)
+      user3 = create(:user)
+      user4 = create(:user)
+      user5 = create(:user)
+      user6 = create(:user)
+      user7 = create(:user)
+      
+      # 3 likes
+      create(:reaction, reactable: article, category: "like", user: user1)
+      create(:reaction, reactable: article, category: "like", user: user2)
+      create(:reaction, reactable: article, category: "like", user: user3)
+      
+      # 2 unicorns
+      create(:reaction, reactable: article, category: "unicorn", user: user4)
+      create(:reaction, reactable: article, category: "unicorn", user: user5)
+      
+      # 1 fire
+      create(:reaction, reactable: article, category: "fire", user: user6)
+      
+      # 1 exploding_head
+      create(:reaction, reactable: article, category: "exploding_head", user: user7)
+      
+      # 1 raised_hands
+      create(:reaction, reactable: article, category: "raised_hands", user: user1)
+    end
+
+    it "limits to 3 categories and orders by count descending" do
+      categories = article.public_reaction_categories
+      expect(categories.length).to eq(3)
+      # When there's a tie between fire (position 5) and exploding_head (position 3), 
+      # exploding_head comes first due to lower position
+      expect(categories.map(&:slug)).to eq(%i[like unicorn exploding_head])
+      
+      # Verify that the first category has the highest count
+      reaction_counts = article.reactions.group(:category).count
+      expect(reaction_counts[categories.first.slug.to_s]).to eq(3) # like has 3 reactions
+      expect(reaction_counts[categories.second.slug.to_s]).to eq(2) # unicorn has 2 reactions
+      expect(reaction_counts[categories.third.slug.to_s]).to eq(1) # exploding_head has 1 reaction
     end
   end
 
@@ -2044,6 +2468,212 @@ RSpec.describe Article do
         article.processed_html = "Content with the old domain #{prior_domain}."
         expect(article.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
       end
+    end
+  end
+
+  describe "URL extraction from title for quickie posts" do
+    let(:user) { create(:user) }
+
+    before do
+      # Stub HTTP requests for URL validation in embed tags
+      stub_request(:head, "https://example.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example</title></head><body>Example content</body></html>", headers: {})
+
+      stub_request(:head, "https://another-example.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://another-example.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Another Example</title></head><body>Another example content</body></html>", headers: {})
+
+      stub_request(:head, "https://first.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://first.com/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>First</title></head><body>First content</body></html>", headers: {})
+
+      stub_request(:head, "https://second.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://second.org/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Second</title></head><body>Second content</body></html>", headers: {})
+
+      stub_request(:head, "https://third.net/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://third.net/")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Third</title></head><body>Third content</body></html>", headers: {})
+
+      stub_request(:head, "https://example.com/path?param=value#fragment")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/path?param=value#fragment")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example with params</title></head><body>Example with params content</body></html>", headers: {})
+
+      stub_request(:head, "https://example.com/path?param=value")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "", headers: {})
+
+      stub_request(:get, "https://example.com/path?param=value")
+        .with(headers: { "Accept" => "*/*", "Accept-Encoding" => /.*/, "User-Agent" => /.*/ })
+        .to_return(status: 200, body: "<html><head><title>Example with params</title></head><body>Example with params content</body></html>", headers: {})
+    end
+
+    context "when creating a status post with URLs in title" do
+      it "adds embed tags to body_markdown for URLs found in title" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check out this cool site https://example.com and also https://another-example.org",
+                        body_markdown: "Some existing content")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://example.com minimal %}")
+        expect(article.body_markdown).to include("{% embed https://another-example.org minimal %}")
+        expect(article.body_markdown).to include("Some existing content")
+      end
+
+      it "creates embed tags when body_markdown is empty" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Look at this: https://example.com",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "does not add embed tags for non-status posts" do
+        article = build(:article,
+                        user: user,
+                        type_of: "full_post",
+                        title: "Check out this cool site https://example.com",
+                        body_markdown: "Some content")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("Some content")
+      end
+
+      it "does not add embed tags when title has no URLs" do
+        article = build(:article,
+                        user: user,
+                        type_of: "status",
+                        title: "Just a regular title with no URLs",
+                        body_markdown: "Some content")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("Some content")
+      end
+
+      it "handles multiple URLs in title correctly" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Multiple URLs: https://first.com and https://second.org and https://third.net",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://first.com minimal %}")
+        expect(article.body_markdown).to include("{% embed https://second.org minimal %}")
+        expect(article.body_markdown).to include("{% embed https://third.net minimal %}")
+      end
+
+      it "handles URLs with query parameters and fragments" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Complex URL: https://example.com/path?param=value#fragment",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
+      end
+    end
+  end
+
+  describe "#title_finalized" do
+    let(:user) { create(:user) }
+
+    it "returns the original title when no URLs are present" do
+      article = build(:published_article, user: user, title: "This is a normal title")
+      expect(article.title_finalized).to eq("This is a normal title")
+    end
+
+    it "truncates long URLs and strips protocol/www" do
+      article = build(:published_article, user: user, title: "Check out this link https://www.example.com/very/long/path/that/should/be/truncated")
+      expect(article.title_finalized).to eq("Check out this link <span style=\"text-decoration: underline;\">example.com/very/long/...</span>")
+    end
+
+    it "keeps short URLs unchanged but strips protocol/www" do
+      article = build(:published_article, user: user, title: "Short link https://ex.co")
+      expect(article.title_finalized).to eq("Short link <span style=\"text-decoration: underline;\">ex.co</span>")
+    end
+
+    it "handles multiple URLs in the same title" do
+      article = build(:published_article, user: user,
+                                          title: "First link https://example.com/very/long/path and second link https://another-example.com/also/very/long")
+      expect(article.title_finalized).to eq("First link <span style=\"text-decoration: underline;\">example.com/very/long/...</span> and second link <span style=\"text-decoration: underline;\">another-example.com/al...</span>")
+    end
+
+    it "handles URLs with query parameters and fragments" do
+      article = build(:published_article, user: user, title: "Link with params https://example.com/path?param=value&other=123#fragment")
+      expect(article.title_finalized).to eq("Link with params <span style=\"text-decoration: underline;\">example.com/path?param...</span>")
+    end
+
+    it "strips www from URLs" do
+      article = build(:published_article, user: user, title: "Link with www https://www.example.com")
+      expect(article.title_finalized).to eq("Link with www <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "handles http URLs" do
+      article = build(:published_article, user: user, title: "HTTP link http://example.com")
+      expect(article.title_finalized).to eq("HTTP link <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "returns nil when title is nil" do
+      article = build(:published_article, user: user, title: nil)
+      expect(article.title_finalized).to be_nil
+    end
+
+    it "returns empty string when title is empty" do
+      article = build(:published_article, user: user, title: "")
+      expect(article.title_finalized).to eq("")
+    end
+
+    it "returns HTML safe content" do
+      article = build(:published_article, user: user, title: "Link https://example.com")
+      expect(article.title_finalized).to be_html_safe
+    end
+
+    it "removes trailing slash from URLs" do
+      article = build(:published_article, user: user, title: "Link with trailing slash https://example.com/")
+      expect(article.title_finalized).to eq("Link with trailing slash <span style=\"text-decoration: underline;\">example.com</span>")
+    end
+
+    it "removes trailing slash from URLs with paths" do
+      article = build(:published_article, user: user, title: "Link with path and trailing slash https://example.com/path/")
+      expect(article.title_finalized).to eq("Link with path and trailing slash <span style=\"text-decoration: underline;\">example.com/path</span>")
     end
   end
 end

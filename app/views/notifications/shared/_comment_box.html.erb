@@ -57,14 +57,13 @@
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.done") %></span>
               </a>
             <% else %>
-              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+              <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
                  data-reactable-id="<%= notification.comment_id %>"
-                 href="#<%= notification.comment_path %>"
                  aria-label="<%= t("views.comments.footer.reply.text") %>">
                 <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
-              </a>
+              </button>
             <% end %>
           <% end %>
           <a href="<%= notification.comment_path %>" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s inline-flex">

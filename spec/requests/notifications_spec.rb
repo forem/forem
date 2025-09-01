@@ -37,16 +37,17 @@ RSpec.describe "NotificationsIndex" do
   end
 
   describe "GET /notifications" do
-    it "renders page with the proper heading" do
-      get "/notifications"
-      expect(response.body).to include("Notifications")
-    end
 
     context "when signed out" do
+
+      it "renders page with the proper heading" do
+        get "/notifications"
+        expect(response.body).to redirect_to(new_magic_link_path)
+      end  
       it "renders the signin page" do
         get "/notifications"
 
-        expect(response.body).to include("By signing in")
+        expect(response.body).to redirect_to(new_magic_link_path)
       end
     end
 

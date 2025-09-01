@@ -5,8 +5,10 @@ class FeedEvent < ApplicationRecord
   # Rails-side association validation (which causes an N+1 query).
   belongs_to :article, optional: true
   belongs_to :user, optional: true
+  belongs_to :feed_config, optional: true
 
   after_save :update_article_counters_and_scores
+  after_save :create_feed_config_offshoot
   after_create_commit :record_field_test_event
 
   enum category: {
@@ -21,11 +23,13 @@ class FeedEvent < ApplicationRecord
   CONTEXT_TYPE_SEARCH = "search".freeze
   CONTEXT_TYPE_TAG = "tag".freeze
   CONTEXT_TYPE_EMAIL = "email".freeze
+  CONTEXT_TYPE_SIDEBAR = "sidebar".freeze
   VALID_CONTEXT_TYPES = [
     CONTEXT_TYPE_HOME,
     CONTEXT_TYPE_SEARCH,
     CONTEXT_TYPE_TAG,
     CONTEXT_TYPE_EMAIL,
+    CONTEXT_TYPE_SIDEBAR
   ].freeze
   DEFAULT_TIMEBOX = 5.minutes.freeze
 
@@ -44,7 +48,7 @@ class FeedEvent < ApplicationRecord
     last_click = where(user: user, category: :click).last
     return unless last_click&.article_id == article.id
 
-    create_with(last_click.slice(:article_position, :context_type))
+    create_with(last_click.slice(:article_position, :context_type, :feed_config_id))
       .find_or_create_by(
         category: category,
         user: user,
@@ -97,12 +101,49 @@ class FeedEvent < ApplicationRecord
     end
   end
 
+  def self.update_single_feed_config_counters(feed_config_id)
+    ThrottledCall.perform("feed_config_feed_success_score_#{feed_config_id}", throttle_for: 5.minutes) do
+      impressions = FeedEvent.where(feed_config_id: feed_config_id, category: "impression")
+      return if impressions.empty?
+
+      clicks = FeedEvent.where(feed_config_id: feed_config_id, category: "click")
+      reactions = FeedEvent.where(feed_config_id: feed_config_id, category: "reaction")
+      comments = FeedEvent.where(feed_config_id: feed_config_id, category: "comment")
+      pageviews = FeedEvent.where(feed_config_id: feed_config_id, category: "extended_pageview")
+
+      # Count the distinct users for impressions and each event type
+      distinct_impressions_users = impressions.distinct.pluck(:user_id)
+      distinct_clicks_users = clicks.distinct.pluck(:user_id)
+      distinct_reactions_users = reactions.distinct.pluck(:user_id)
+      distinct_comments_users = comments.distinct.pluck(:user_id)
+      distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
+
+      # Calculate score based on distinct users
+      reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER * 2
+      clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
+      comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER * 2
+      pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
+
+      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+      
+      # Update the feed config counters
+      FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions.size)
+    end
+  end
+
   private
 
   def update_article_counters_and_scores
-    return unless article
+    self.class.update_single_article_counters(article_id) if article_id
+    self.class.update_single_feed_config_counters(feed_config_id) if feed_config_id
+  end
 
-    self.class.update_single_article_counters(article_id)
+  def create_feed_config_offshoot
+    # Any time we get a reaction or comment, we branch off a slightly modified feed based on the success of the current one
+    return unless feed_config
+    return unless %w[reaction comment].include?(category)
+
+    feed_config.create_slightly_modified_clone!
   end
 
   # @see AbExperiment::GoalConversionHandler

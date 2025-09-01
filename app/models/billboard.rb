@@ -85,6 +85,7 @@ class Billboard < ApplicationRecord
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
+  after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -100,7 +101,7 @@ class Billboard < ApplicationRecord
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
-                       role_names: nil)
+                       role_names: nil, prefer_paired_with_billboard_id: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -119,6 +120,14 @@ class Billboard < ApplicationRecord
       user_agent: user_agent,
       role_names: role_names,
     )
+
+    # if prefer_paired_with_billboard_id then return
+    if prefer_paired_with_billboard_id.present?
+      best_paired_billboard = billboards_for_display.find do |bb|
+        bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id
+      end
+      return best_paired_billboard if best_paired_billboard.present?
+    end
 
     case rand(99) # output integer from 0-99
     when (0..random_range_max(area)) # smallest range, 5%
@@ -231,7 +240,8 @@ class Billboard < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def type_of_display
@@ -359,7 +369,23 @@ class Billboard < ApplicationRecord
     update_column(:processed_html, modified_html)
   end
 
+  def score
+    0 # Just to allow this to repond to .score for abuse reports
+  end
+
   private
+
+  def update_event_counts_when_taking_down
+    Billboards::DataUpdateWorker.perform_async(id)
+  end
+
+  def being_taken_down?
+    # Only trigger if both approved and published were true before this save.
+    return false unless approved_before_last_save && published_before_last_save
+
+    # Check if approved changed from true to false or published changed from true to false.
+    (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
+  end
 
   def generate_billboard_name
     return unless name.nil?
@@ -380,7 +406,7 @@ class Billboard < ApplicationRecord
   end
 
   def extracted_process_markdown
-    renderer = ContentRenderer.new(body_markdown || "", source: self)
+    renderer = ContentRenderer.new(body_markdown || "", source: self, user: creator)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
                                                                     quality: 100,
                                                                     synchronous_detail_detection: true }).processed_html

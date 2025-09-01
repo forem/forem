@@ -25,7 +25,7 @@ module Follows
 
     def followable
       case followable_type
-      when "Tag", "Organization", "Podcast"
+      when "Tag", "Organization", "Podcast", "Subforem"
         followable_type.constantize
       else
         User

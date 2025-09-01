@@ -91,6 +91,14 @@ InstantClick.on('change', () => {
   }
 
   initializePodcastPlayback();
+
+  const searchElement = document.getElementById('search-input');
+  const articleContainer = document.getElementById('article-show-container');
+  if (searchElement && articleContainer?.dataset?.articleId) {
+    searchElement.placeholder = 'Find related posts...';
+  } else {
+    searchElement.placeholder = 'Search...';
+  }
 });
 
 // Initialize data-runtime context to the body data-attribute
@@ -196,6 +204,7 @@ document.ready.then(() => {
     'js-hamburger-trigger',
   )[0];
   hamburgerTrigger.addEventListener('click', getNavigation);
+
 
   // Dynamically loading the script.js.
   // We don't currently have dynamic insert working, so using this

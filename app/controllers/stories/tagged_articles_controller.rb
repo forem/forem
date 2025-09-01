@@ -2,7 +2,7 @@ module Stories
   class TaggedArticlesController < ApplicationController
     before_action :set_cache_control_headers, only: :index
 
-    SIGNED_OUT_RECORD_COUNT = 60
+    SIGNED_OUT_RECORD_COUNT = 25
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -16,17 +16,19 @@ module Stories
 
       @page = (params[:page] || 1).to_i
 
-      @moderators = User.with_role(:tag_moderator, @tag)
-        .order(badge_achievements_count: :desc)
-        .select(:username, :profile_image, :id)
+      if user_signed_in?
+        @moderators = User.with_role(:tag_moderator, @tag)
+          .order(badge_achievements_count: :desc)
+          .select(:username, :profile_image, :id)
+      end
 
       set_number_of_articles(tag: @tag)
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
-      set_surrogate_key_header "articles-#{@tag}"
-      set_cache_control_headers(600,
-                                stale_while_revalidate: 30,
+      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
+      set_cache_control_headers(86400,
+                                stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
     end
 
@@ -35,8 +37,6 @@ module Stories
     def set_number_of_articles(tag:)
       @num_published_articles = if tag.requires_approval?
                                   tag.articles.published.from_subforem.approved.count
-                                elsif Settings::UserExperience.feed_strategy == "basic"
-                                  tagged_count(tag: tag)
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
                                                     expires_in: 2.hours) do
@@ -58,7 +58,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.from_subforem
+      stories = stories.full_posts.includes(:subforem).from_subforem.limited_column_select
       @stories = stories.decorate
     end
 

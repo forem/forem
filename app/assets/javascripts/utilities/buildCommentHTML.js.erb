@@ -110,15 +110,13 @@ function buildCommentHTML(comment) {
 
 function reply(comment) {
   var iconSmallComment = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon not-reacted"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>`;
-  var replyButton = `<a class="js actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
-    href="#${ comment.url }"
+  var replyButton = `<button class="js actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
     data-comment-id="${ comment.id }"
     data-path="${ comment.url }"
     data-tracking-name="comment_reply_button"
-    rel="nofollow">
     ${ iconSmallComment }
     <span class="hidden m:inline-block">Reply</span>
-  </a>`;
+  </button>`;
   if (comment.newly_created) {
     return replyButton;
   }

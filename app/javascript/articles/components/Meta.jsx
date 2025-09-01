@@ -11,6 +11,10 @@ export const Meta = ({ article, organization }) => {
     'organization-article-index',
   );
 
+  if (article.title === '[Boost]') {
+    return '';
+  }
+
   return (
     <div className="crayons-story__meta">
       <div className="crayons-story__author-pic">

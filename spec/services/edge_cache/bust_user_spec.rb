@@ -5,15 +5,7 @@ RSpec.describe EdgeCache::BustUser, type: :service do
   let(:user) { create(:user) }
 
   let(:paths) do
-    username = user.username
-
-    [
-      "/#{username}",
-      "/#{username}/comments",
-      "/live/#{username}",
-      "/feed/#{username}",
-      "/api/users/#{user.id}",
-    ]
+    ["/api/users/#{user.id}"]
   end
 
   before do

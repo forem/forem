@@ -1,5 +1,40 @@
 ---
 en:
+  admin_controller:
+    dashboard:
+      title: Admin Dashboard
+      welcome: Welcome to the admin dashboard
+    users:
+      title: Manage Users
+      suspend: Suspend
+      unsuspend: Unsuspend
+      ban: Ban
+      unban: Unban
+      delete: Delete
+      edit: Edit
+      view: View
+    articles:
+      title: Manage Articles
+      delete: Delete
+      edit: Edit
+      view: View
+      publish: Publish
+      unpublish: Unpublish
+    comments:
+      title: Manage Comments
+      delete: Delete
+      edit: Edit
+      view: View
+      moderate: Moderate
+    reports:
+      title: Manage Reports
+      view: View
+      resolve: Resolve
+      dismiss: Dismiss
+    settings:
+      title: Manage Settings
+      save: Save
+      cancel: Cancel
   admin:
     articles_controller:
       saved: Article saved!
@@ -117,6 +152,11 @@ en:
       confirmation: My username is @%{username} and this action is 100% safe and appropriate.
     spaces_controller:
       update_success: Space has been updated.
+    subforems_controller:
+      created: Subforum has been created!
+      created_with_ai: Subforem has been created! Details are being generated in the background.
+      updated: Subforum has been updated!
+      deleted: Subforum has been deleted!
     tags:
       moderators_controller:
         not_found: 'Username "%{username}" was not found'

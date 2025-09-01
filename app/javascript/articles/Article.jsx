@@ -21,6 +21,7 @@ export const Article = ({
   isFeatured,
   isBookmarked,
   bookmarkClick,
+  isRoot,
   feedStyle,
   pinned,
   saveable,
@@ -43,7 +44,10 @@ export const Article = ({
 
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
-    !article.cloudinary_video_url;
+    !article.cloudinary_video_url && !article.video;
+
+  const parsedUrl = new URL(article.url);
+  const domain = parsedUrl.hostname.replace(".forem.com", "").replace(".to", "");
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
@@ -80,12 +84,15 @@ export const Article = ({
           }
         }}
       >
-        {article.cloudinary_video_url && <Video article={article} />}
+        {article.video && <Video article={article} />}
 
         {showCover && <ArticleCoverImage article={article} />}
         <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
+          { article.context_note && article.context_note.length > 0 && (
+              <a href={article.url} className="crayons-article__context-note crayons-article__context-note__feed" dangerouslySetInnerHTML={{__html: article.context_note}} />
+            )}
           <div className="crayons-story__top">
-            <Meta article={article} organization={article.organization} />
+            {article.user && (<Meta article={article} organization={article.organization} />)}
             {pinned && (
               <div
                 className="pinned color-accent-brand fw-bold"
@@ -120,7 +127,7 @@ export const Article = ({
             )}
 
             <div className="crayons-story__bottom">
-              {article.class_name !== 'User' && (
+              {(article.class_name !== 'User' && article.user) && (
                 <div className="crayons-story__details">
                   <ReactionsCount article={article} />
                   <CommentsCount
@@ -133,7 +140,7 @@ export const Article = ({
 
               <div className="crayons-story__save">
                 <ReadingTime readingTime={article.reading_time} typeOf={article.type_of} />
-
+                { isRoot && (<small class="crayons-story__tertiary mr-2 fs-xs fw-bold">{domain}</small>)}
                 <SaveButton
                   article={article}
                   isBookmarked={isBookmarked}
@@ -160,6 +167,7 @@ export const Article = ({
 Article.defaultProps = {
   isBookmarked: false,
   isFeatured: false,
+  isRoot: false,
   feedStyle: 'basic',
   saveable: true,
 };
@@ -168,6 +176,7 @@ Article.propTypes = {
   article: articlePropTypes.isRequired,
   isBookmarked: PropTypes.bool,
   isFeatured: PropTypes.bool,
+  isRoot: PropTypes.bool,
   feedStyle: PropTypes.string,
   bookmarkClick: PropTypes.func.isRequired,
   pinned: PropTypes.bool,

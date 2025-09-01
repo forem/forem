@@ -77,5 +77,44 @@ RSpec.describe "FeedEvents" do
         expect(response).to be_successful
       end
     end
+
+    context "when a token is provided" do
+      let(:token)          { "valid_token" }
+      let(:headers)        { { "Authorization" => "Bearer #{token}" } }
+
+      before do
+        # Stub the token decoder so that a valid token returns a payload with the user's id.
+        allow_any_instance_of(ApplicationMetalController)
+          .to receive(:decode_auth_token)
+          .with(token)
+          .and_return({ "user_id" => user.id })
+      end
+
+      it "creates a feed click event when passed as header" do
+        expect { post "/feed_events", params: { feed_events: [event_params] }, headers: headers }.to change(FeedEvent, :count).by(1)
+
+        expect(response).to be_successful
+        expect(article.feed_events.first).to have_attributes(
+          user_id: user.id,
+          article_id: article.id,
+          article_position: 4,
+          category: "click",
+          context_type: "home",
+        )
+      end
+
+      it "creates a feed impression event when passed as param" do
+        expect { post "/feed_events", params: { feed_events: [event_params], jwt: token } }.to change(FeedEvent, :count).by(1)
+
+        expect(response).to be_successful
+        expect(article.feed_events.first).to have_attributes(
+          user_id: user.id,
+          article_id: article.id,
+          article_position: 4,
+          category: "click",
+          context_type: "home",
+        )
+      end
+    end
   end
 end
