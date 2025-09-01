@@ -37,9 +37,8 @@ RSpec.describe "Articles" do
     end
 
     context "with caching headers" do
+      let!(:article) { create(:article, featured: true) }
       before do
-        create(:article, featured: true)
-
         get feed_path
       end
 
@@ -54,7 +53,7 @@ RSpec.describe "Articles" do
       end
 
       it "sets Fastly Surrogate-Key headers" do
-        expected_surrogate_key_headers = %w[feed]
+        expected_surrogate_key_headers = [" articles/#{article.id}"]
         expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
       end
 

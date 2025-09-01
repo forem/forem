@@ -50,7 +50,7 @@ module Authentication
     def self.enabled
       return [] if ForemInstance.invitation_only?
 
-      Settings::Authentication.providers.map(&:to_sym).sort
+      Settings::Authentication.providers.map(&:to_sym)
     end
 
     def self.enabled_for_user(user)

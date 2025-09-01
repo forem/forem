@@ -19,6 +19,25 @@
       <p class="crayons-field__description">Prioritizes the tag during user onboarding</p>
     </label>
   </div>
+  <% if @subforems.present? && @subforems.any? %>
+    <div class="crayons-field mt-3">
+      <label class="crayons-field__label">Assign to Subforems</label>
+      <div class="flex flex-wrap gap-4 mt-2">
+        <% @subforems.each do |sf| %>
+          <div class="crayons-field crayons-field--checkbox">
+            <%= check_box_tag "tag[subforem_ids][]",
+                              sf.id,
+                              @existing_relationship_ids.include?(sf.id),
+                              id: "tag_subforem_ids_#{sf.id}",
+                              class: "crayons-checkbox" %>
+            <%= label_tag "tag_subforem_ids_#{sf.id}",
+                          sf.domain,
+                          class: "crayons-field__label ml-2" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
   <div class="crayons-field mt-3">
     <%= f.label :badge_id, class: "crayons-field__label" %>
     <%= f.select(:badge_id, options_for_select(badges_for_options, tag.badge_id), { include_blank: true }, { class: "crayons-select" }) %>
@@ -50,6 +69,10 @@
   <div class="crayons-field mt-3">
     <%= f.label :wiki_body_markdown, class: "crayons-field__label" %>
     <%= f.text_area :wiki_body_markdown, value: tag.wiki_body_markdown, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field mt-3">
+    <%= f.label :context_note_instructions, class: "crayons-field__label" %>
+    <%= f.text_area :context_note_instructions, value: tag.context_note_instructions, class: "crayons-textfield" %>
   </div>
   <div class="crayons-field mt-3">
     <%= f.label :bg_color_hex, "Tag color", class: "crayons-field__label" %>

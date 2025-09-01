@@ -132,28 +132,31 @@ RSpec.describe ApplicationHelper do
   describe "#navigation_link_is_for_an_enabled_feature?" do
     subject(:method_call) { helper.navigation_link_is_for_an_enabled_feature?(link: link) }
 
-    let(:url) { URL.url("/somehwere") }
-    let(:link) { build(:navigation_link, url: url) }
+    context "when the link does NOT point to /listings" do
+      let(:link) { build(:navigation_link, url: URL.url("/some-other-path")) }
 
-    context "when Listing feature is enabled" do
-      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
-
+      # The method should now always return true for non-listing paths
       it { is_expected.to be_truthy }
     end
 
-    context "when Listing feature is disabled and link not for listing" do
-      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+    context "when the link DOES point to /listings" do
+      let(:link) { build(:navigation_link, url: URL.url("/listings")) }
 
-      it { is_expected.to be_truthy }
-    end
-
-    context "when Listing feature is disabled and link is for /listings" do
-      let(:url) { URL.url("/listings") }
-
-      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
-
+      # The method should now always return false for the /listings path
       it { is_expected.to be_falsey }
     end
+
+    # Optional: Add a test case if listings_path helper exists vs direct URL
+    # context "when the link uses listings_path helper" do
+    #   before do
+    #     # Stub listings_path if it still exists and you want to test it,
+    #     # otherwise this context isn't strictly needed if /listings URL covers it.
+    #     allow(helper).to receive(:try).with(:listings_path).and_return("/listings")
+    #   end
+    #   let(:link) { build(:navigation_link, url: URL.url("/listings")) }
+    #
+    #   it { is_expected.to be_falsey }
+    # end
   end
 
   describe "#beautified_url" do

@@ -5,7 +5,17 @@
         <!-- Header -->
         <tr>
           <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-            <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
+            <h1 style="margin: 0; font-size: 24px; color: #333;"> 
+              <% if ForemInstance.dev_to? %>
+                <% if @user_follows_any_subforems %>
+                  Forem Digest
+                <% else %>
+                  <%= community_name %> Digest
+                <% end %>
+              <% else %>
+                <%= community_name %> Digest
+              <% end %>
+            </h1>
           </td>
         </tr>
         <tr>

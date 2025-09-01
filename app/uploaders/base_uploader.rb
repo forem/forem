@@ -1,8 +1,8 @@
 class BaseUploader < CarrierWave::Uploader::Base
-  include CarrierWave::BombShelter # limits size to 4096x4096
-  include CarrierWave::MiniMagick # adds processing operations
+  include CarrierWave::BombShelter  # limits size to 4096x4096
+  include CarrierWave::MiniMagick   # adds processing operations
 
-  EXTENSION_ALLOWLIST = %w[jpg jpeg jpe gif png ico bmp dng].freeze
+  EXTENSION_ALLOWLIST = %w[jpg jpeg jpe gif png ico bmp dng webp].freeze
   FRAME_MAX = 500
   FRAME_STRIP_MAX = 150
 
@@ -10,7 +10,6 @@ class BaseUploader < CarrierWave::Uploader::Base
   process :strip_exif
 
   def store_dir
-    # eg. uploads/user/profile_image/1/e481b7ee.jpg
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
@@ -24,9 +23,7 @@ class BaseUploader < CarrierWave::Uploader::Base
 
   protected
 
-  # strip EXIF (and GPS) data
   def strip_exif
-    # There will be no exif data for an SVG
     return if file.content_type.include?("svg")
 
     manipulate! do |image|

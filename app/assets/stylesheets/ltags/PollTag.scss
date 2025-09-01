@@ -91,4 +91,159 @@
       z-index: 5;
     }
   }
+  
+  // Scale poll specific styles
+  &[data-poll-type="scale"] {
+    .ltag-pollanswers {
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        margin-bottom: 4px;
+        border: 1px solid $light-medium-gray;
+        border-radius: 6px;
+        transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          border-color: $green;
+        }
+
+        &.already-voted {
+          border-color: $green;
+          background: rgba($green, 0.1);
+          box-shadow: 1px 1px 1px $green;
+        }
+      }
+      
+      .scale-value {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: $green;
+        min-width: 40px;
+        text-align: center;
+        padding: 4px 8px;
+        background: rgba($green, 0.1);
+        border-radius: 4px;
+        margin-left: 10px;
+      }
+      
+      input[type="radio"] {
+        margin-right: 10px;
+      }
+      
+      label {
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+      }
+    }
+  }
+  
+  // Horizontal layout for 5 options (always horizontal)
+  &.scale-5-options {
+    .ltag-pollanswers {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      
+      li {
+        flex: 0 0 auto;
+        min-width: 30px;
+        max-width: 80px;
+        padding: 4px 4px;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 0;
+        
+        .scale-value {
+          font-size: 1.1em;
+          font-weight: bold;
+          color: $green;
+          min-width: 30px;
+          text-align: center;
+          padding: 2px 3px;
+          background: rgba($green, 0.1);
+          border-radius: 4px;
+          margin: 0;
+        }
+        
+        input[type="radio"] {
+          display: none; // Hide radio button for cleaner horizontal layout
+        }
+        
+        label {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 0;
+          padding: 0;
+        }
+      }
+      
+      // Keep the "show results" button in its own row
+      .ltag-polloption-justshowmetheresults {
+        flex-basis: 100%;
+        text-align: center;
+        margin-top: 10px;
+      }
+    }
+  }
+  
+  // Horizontal layout for more than 5 options (only at xl breakpoint)
+  &.scale-many-options {
+    .ltag-pollanswers {
+      @media (min-width: 1200px) { // xl breakpoint
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        
+        li {
+          flex: 0 0 auto;
+          min-width: 30px;
+          max-width: 80px;
+          padding: 4px 4px;
+          justify-content: center;
+          text-align: center;
+          margin-bottom: 0;
+          
+          .scale-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: $green;
+            min-width: 30px;
+            text-align: center;
+            padding: 2px 3px;
+            background: rgba($green, 0.1);
+            border-radius: 4px;
+            margin: 0;
+          }
+          
+          input[type="radio"] {
+            display: none; // Hide radio button for cleaner horizontal layout
+          }
+          
+          label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+          }
+        }
+        
+        // Keep the "show results" button in its own row
+        .ltag-polloption-justshowmetheresults {
+          flex-basis: 100%;
+          text-align: center;
+          margin-top: 10px;
+        }
+      }
+    }
+  }
 }

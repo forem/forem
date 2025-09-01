@@ -81,7 +81,7 @@ module Articles
             .where("score > ?", article_score_threshold)
             .limited_column_select.includes(top_comments: :user)
             .order(published_at: :desc)
-            .includes(:distinct_reaction_categories, :subforem)
+            .includes(:distinct_reaction_categories, :subforem, :context_notes)
             .limit(rand(min_rand_limit..max_rand_limit))
           hot_stories = hot_stories.to_a + new_stories.to_a
         else
@@ -106,7 +106,7 @@ module Articles
       def experimental_hot_story_grab
         start_time = Articles::Feeds.oldest_published_at_to_consider_for(user: @user)
         Article.published.limited_column_select.includes(top_comments: :user)
-          .includes(:distinct_reaction_categories, :subforem)
+          .includes(:distinct_reaction_categories, :subforem, :context_notes)
           .where("published_at > ?", start_time)
           .page(@page).per(@number_of_articles)
           .order(score: :desc)

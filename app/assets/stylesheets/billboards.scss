@@ -53,6 +53,18 @@
   display: block;
 }
 
+.long-bb-body {
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
+}
+.long-bb-bottom {
+  height: 180px;
+  background: linear-gradient(to top, var(--card-bg), transparent);
+  margin-top: -180px;
+  position:relative;
+  z-index: 5;
+}
+
 .popover-billboard {
   z-index: var(--z-popover);
   animation: popoverEnter 0.5s;

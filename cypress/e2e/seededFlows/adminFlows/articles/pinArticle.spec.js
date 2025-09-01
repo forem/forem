@@ -6,13 +6,13 @@ describe('Pin an article from the admin area', () => {
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/').then(() => {
         cy.createArticle({
-          title: 'Test Article',
+          title: `Test Article ${new Date().getTime()}`,
           tags: ['beginner', 'ruby', 'go'],
           content: `This is a test article's contents.`,
           published: true,
         }).then(() => {
           cy.createArticle({
-            title: 'Test Another Article',
+            title: `Test Another Article ${new Date().getTime()}`,
             tags: ['beginner', 'ruby', 'go'],
             content: `This is another test article's contents.`,
             published: true,
@@ -44,7 +44,7 @@ describe('Pin an article from the admin area', () => {
     cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     cy.createArticle({
-      title: 'A new article',
+      title: `Another Article ${new Date().getTime()}`,
       tags: ['beginner', 'ruby', 'go'],
       content: `This is another test article's contents.`,
       published: true,
@@ -70,7 +70,7 @@ describe('Pin an article from the admin area', () => {
     cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     cy.createArticle({
-      title: 'A new article',
+      title: `A new article ${new Date().getTime()}`,
       tags: ['beginner', 'ruby', 'go'],
       content: `This is another test article's contents.`,
       published: true,

@@ -1,0 +1,221 @@
+---
+pt:
+  views:
+    users:
+      profile:
+        title: Perfil do Usuário
+        bio: Biografia
+        location: Localização
+        website: Site
+        company: Empresa
+        title_field: Cargo
+        education: Educação
+        experience: Experiência
+        skills: Habilidades
+        interests: Interesses
+        looking_for_work: Procurando trabalho
+        available_for: Disponível para
+        contact_consent: Consentimento de contato
+        email_public: E-mail público
+        profile_image: Imagem do perfil
+        cover_image: Imagem de capa
+        followers: Seguidores
+        following: Seguindo
+        posts: Posts
+        comments: Comentários
+        likes: Curtidas
+        bookmarks: Favoritos
+        settings: Configurações
+        edit_profile: Editar perfil
+        view_profile: Visualizar perfil
+        follow: Seguir
+        unfollow: Deixar de seguir
+        block: Bloquear
+        unblock: Desbloquear
+        report: Reportar
+        message: Mensagem
+        share: Compartilhar
+        copy_link: Copiar link
+        save: Salvar
+        cancel: Cancelar
+        update: Atualizar
+        delete: Excluir
+        confirm: Confirmar
+        back: Voltar
+        next: Próximo
+        previous: Anterior
+        first: Primeiro
+        last: Último
+        loading: Carregando...
+        no_results: Nenhum resultado encontrado
+        error: Erro
+        success: Sucesso
+        warning: Aviso
+        info: Informação
+        help: Ajuda
+        close: Fechar
+        open: Abrir
+        expand: Expandir
+        collapse: Recolher
+        show: Mostrar
+        hide: Ocultar
+        edit: Editar
+        view: Visualizar
+        create: Criar
+        new: Novo
+        add: Adicionar
+        remove: Remover
+        delete: Excluir
+        save: Salvar
+        cancel: Cancelar
+        confirm: Confirmar
+        submit: Enviar
+        reset: Redefinir
+        clear: Limpar
+        search: Pesquisar
+        filter: Filtrar
+        sort: Ordenar
+        refresh: Atualizar
+        reload: Recarregar
+        download: Baixar
+        upload: Fazer upload
+        export: Exportar
+        import: Importar
+        print: Imprimir
+        share: Compartilhar
+        copy: Copiar
+        paste: Colar
+        cut: Recortar
+        undo: Desfazer
+        redo: Refazer
+        select_all: Selecionar tudo
+        deselect_all: Desselecionar tudo
+        invert_selection: Inverter seleção
+        select: Selecionar
+        deselect: Desselecionar
+        check: Marcar
+        uncheck: Desmarcar
+        enable: Habilitar
+        disable: Desabilitar
+        activate: Ativar
+        deactivate: Desativar
+        start: Iniciar
+        stop: Parar
+        pause: Pausar
+        resume: Retomar
+        play: Reproduzir
+        pause: Pausar
+        stop: Parar
+        record: Gravar
+        mute: Silenciar
+        unmute: Ativar som
+        volume_up: Aumentar volume
+        volume_down: Diminuir volume
+        fullscreen: Tela cheia
+        exit_fullscreen: Sair da tela cheia
+        zoom_in: Aumentar zoom
+        zoom_out: Diminuir zoom
+        reset_zoom: Redefinir zoom
+        rotate_left: Girar para a esquerda
+        rotate_right: Girar para a direita
+        flip_horizontal: Virar horizontalmente
+        flip_vertical: Virar verticalmente
+        crop: Recortar
+        resize: Redimensionar
+        brightness: Brilho
+        contrast: Contraste
+        saturation: Saturação
+        hue: Matiz
+        blur: Desfoque
+        sharpen: Nitidez
+        grayscale: Escala de cinza
+        sepia: Sépia
+        invert: Inverter
+        opacity: Opacidade
+        background: Fundo
+        foreground: Primeiro plano
+        border: Borda
+        shadow: Sombra
+        glow: Brilho
+        outline: Contorno
+        fill: Preenchimento
+        stroke: Traço
+        width: Largura
+        height: Altura
+        size: Tamanho
+        position: Posição
+        alignment: Alinhamento
+        spacing: Espaçamento
+        padding: Preenchimento
+        margin: Margem
+        color: Cor
+        font: Fonte
+        text: Texto
+        image: Imagem
+        video: Vídeo
+        audio: Áudio
+        file: Arquivo
+        folder: Pasta
+        link: Link
+        button: Botão
+        form: Formulário
+        table: Tabela
+        list: Lista
+        menu: Menu
+        toolbar: Barra de ferramentas
+        sidebar: Barra lateral
+        header: Cabeçalho
+        footer: Rodapé
+        navigation: Navegação
+        breadcrumb: Migalhas de pão
+        pagination: Paginação
+        tabs: Abas
+        accordion: Acordeão
+        modal: Modal
+        popup: Popup
+        tooltip: Dica
+        alert: Alerta
+        notification: Notificação
+        badge: Badge
+        progress: Progresso
+        slider: Controle deslizante
+        checkbox: Caixa de seleção
+        radio: Botão de opção
+        select: Seleção
+        input: Entrada
+        textarea: Área de texto
+        password: Senha
+        email: E-mail
+        url: URL
+        number: Número
+        date: Data
+        time: Hora
+        datetime: Data e hora
+        month: Mês
+        week: Semana
+        tel: Telefone
+        search: Pesquisa
+        file: Arquivo
+        range: Intervalo
+        color: Cor
+        submit: Enviar
+        reset: Redefinir
+        button: Botão
+        label: Rótulo
+        fieldset: Conjunto de campos
+        legend: Legenda
+        optgroup: Grupo de opções
+        option: Opção
+        datalist: Lista de dados
+        output: Saída
+        meter: Medidor
+        progress: Progresso
+        details: Detalhes
+        summary: Resumo
+        dialog: Diálogo
+        slot: Slot
+        template: Modelo
+        shadow: Sombra
+        host: Host
+        custom_element: Elemento personalizado
+        unknown: Desconhecido

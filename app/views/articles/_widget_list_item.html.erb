@@ -1,4 +1,6 @@
-<a class="crayons-link crayons-link--contentful" href="<%= plucked_article[0] %>">
+
+
+<a class="crayons-link crayons-link--contentful" href="<%= constructed_full_url(plucked_article[0],plucked_article[4]) %>">
   <%= truncate(plucked_article[1], length: 100) %>
   <% if show_comment_count %>
     <div class="crayons-link__secondary">
