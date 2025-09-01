@@ -22,6 +22,25 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     success_settings: Successfully updated settings.
+    search_placeholder: Rechercher...
+    search_find_related_posts: Trouver des articles liés...
+    search_powered_by: Propulsé par Algolia
+    search_submit_search: Soumettre la recherche pour un filtrage avancé.
+    search_displaying_recommendations: Affichage des recommandations Algolia — Commencez à taper pour rechercher
+    article_form_save_changes: Enregistrer les modifications
+    article_form_schedule: Programmer
+    article_form_publish: Publier
+    article_form_loading_preview: Chargement de l'aperçu
+    article_form_preview_loaded: Aperçu chargé
+    comments_preview: Aperçu
+    comments_continue_editing: Continuer l'édition
+    survey_enter_response: Entrez votre réponse ici...
+    survey_thank_you_response: Merci pour votre réponse.
+    survey_thank_you_completing: Merci d'avoir complété le sondage !
+    dashboard_analytics_readers: Lecteurs
+    dashboard_analytics_comments: Commentaires
+    dashboard_analytics_reactions: Réactions
+    stats_by: par
     counted_organization:
       one: "%{count} organisation"
       other: "%{count} organisations"

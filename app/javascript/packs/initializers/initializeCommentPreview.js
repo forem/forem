@@ -1,4 +1,5 @@
 /* global activateRunkitTags */
+import { locale } from '@utilities/locale';
 
 function getAndShowPreview(preview, editor) {
   function attachTwitterTimelineScript() {
@@ -46,12 +47,12 @@ function handleCommentPreview(event) {
   if (editor.value !== '') {
     if (form.classList.contains('preview-open')) {
       form.classList.toggle('preview-open');
-      trigger.innerHTML = 'Preview';
+      trigger.innerHTML = locale('core.comments_preview');
     } else {
       getAndShowPreview(preview, editor);
       const editorHeight = editor.offsetHeight + 43; // not ideal but prevents jumping screen
       preview.style.minHeight = `${editorHeight}px`;
-      trigger.innerHTML = 'Continue editing';
+      trigger.innerHTML = locale('core.comments_continue_editing');
       form.classList.toggle('preview-open');
     }
   }

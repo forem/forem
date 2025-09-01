@@ -103,6 +103,7 @@ en:
           personal: Personal
         submit: Submit
         preview: Preview
+        continue_editing: Continue editing
         cancel: Dismiss
       menu:
         aria_label: Toggle dropdown menu

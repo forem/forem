@@ -33,6 +33,9 @@ en:
         back: "Back to Main Dashboard"
         your: Your Dashboard
         org: "%{org} Analytics Dashboard"
+        readers: Readers
+        comments: Comments
+        reactions: Reactions
       article:
         heading:
           text_html: "%{archived}%{title}"
