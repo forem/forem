@@ -46,6 +46,9 @@
       .c-embed__cover {
         display: none;
       }
+      .c-embed__content {
+        display: block; // Override flex layout in comments
+      }
       .c-embed__body {
         font-size: var(--fs-s);
       }

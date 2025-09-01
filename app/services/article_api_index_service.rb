@@ -149,6 +149,6 @@ class ArticleApiIndexService
   end
 
   def published_articles_with_users_and_organizations
-    Article.published.includes([{ user: :profile }, :organization])
+    Article.published.from_subforem.includes([{ user: :profile }, :organization])
   end
 end

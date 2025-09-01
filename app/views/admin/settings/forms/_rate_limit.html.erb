@@ -37,6 +37,15 @@
                           value: Settings::RateLimit.spam_trigger_terms.join(","),
                           placeholder: Constants::Settings::RateLimit.details[:spam_trigger_terms][:placeholder] %>
         </div>
+        <div class="crayons-field">
+          <% # internal_content_description_spec %>
+          <%= admin_config_label :internal_content_description_spec, model: Settings::RateLimit %>
+          <%= admin_config_description Constants::Settings::RateLimit.details[:internal_content_description_spec][:description] %>
+          <%= f.text_area :internal_content_description_spec,
+                          class: "crayons-textfield",
+                          value: Settings::RateLimit.internal_content_description_spec,
+                          placeholder: Constants::Settings::RateLimit.details[:internal_content_description_spec][:placeholder] %>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

@@ -16,7 +16,7 @@ RSpec.describe Comment do
       it { is_expected.to belong_to(:user) }
       # it { is_expected.to belong_to(:commentable).optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:delete_all) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
 
@@ -444,10 +444,10 @@ RSpec.describe Comment do
   end
 
   describe "spam" do
-    it "delegates spam handling to Spam::Handler.handle_comment!" do
-      allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
+    it "delegates spam handling to HandleSpamWorker" do
+      allow(Comments::HandleSpamWorker).to receive(:perform_async)
       comment.save
-      expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
+      expect(Comments::HandleSpamWorker).to have_received(:perform_async).with(comment.id).twice
     end
 
     it "marks score as negative 3 if new user and comment includes htttp" do
@@ -617,7 +617,7 @@ RSpec.describe Comment do
     it "indexes on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:comment)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer), 
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer),
 false).once
     end
   end

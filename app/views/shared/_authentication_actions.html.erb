@@ -1,6 +1,6 @@
 <div>
   <div class="align-center">
-    <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn w-75" aria-label="<%= t("views.auth.create.aria_label") %>"  data-tracking-id="ca_feed_home_page" data-tracking-source="feed_card" data-no-instant>
+    <a href="<%= sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id]) %>" class="crayons-btn w-75" aria-label="<%= t("views.auth.create.aria_label") %>"  data-tracking-id="ca_feed_home_page" data-tracking-source="feed_card" data-no-instant>
       <%= t("views.auth.create.text") %>
     </a>
   </div>
@@ -8,7 +8,7 @@
     <span>
       <%= t("views.auth.already_have_an_account") %>
       <a
-        href="<%= sign_up_path %>"
+        href="<%= sign_up_path(signup_subforem: RequestStore.store[:subforem_id]) %>"
         aria-label="<%= t("views.auth.login.aria_label") %>"
         data-tracking-id="si_feed_home_page"
         data-tracking-source="feed_card"

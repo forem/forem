@@ -85,7 +85,7 @@
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-no-only-tests": "^3.1.0",
+    "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "^7.33.2",
     "husky": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",

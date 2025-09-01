@@ -43,6 +43,11 @@ class Email < ApplicationRecord
     end
   end
 
+  def targeted_tags=(input)
+    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
+    write_attribute(:targeted_tags, adjusted_input)
+  end
+
   def default_from_name_based_on_type
     case type_of
     when "one_off"

@@ -62,7 +62,7 @@ RSpec.describe "Admin manages pages" do
       click_on("Update Page")
       expect(page).not_to have_current_path(admin_pages_path)
       fill_in "page_description", with: "Walk without rhythm"
-      fill_in "page_slug", with: "不"
+      fill_in "page_slug", with: "/d/d/d/d/d/d/d/d/d/d/d/d"
       click_on("Update Page")
       expect(page).not_to have_current_path(admin_pages_path)
     end

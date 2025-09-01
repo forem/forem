@@ -187,7 +187,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_organization_json_ld
-    set_surrogate_key_header "articles-org-#{@organization.id}"
+    set_surrogate_key_header @organization.record_key
     render template: "organizations/show"
   end
 
@@ -220,7 +220,7 @@ class StoriesController < ApplicationController
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
-    set_surrogate_key_header "articles-user-#{@user.id}"
+    set_surrogate_key_header @user.record_key
     set_user_json_ld
 
     render template: "users/show"
@@ -284,6 +284,7 @@ class StoriesController < ApplicationController
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
       @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
       @stories = @stories.to_a
+      @stories = @stories.reject { |article| article.title == "[Boost]" }
     end
 
     @pinned_article = pinned_article&.decorate
@@ -325,6 +326,7 @@ class StoriesController < ApplicationController
     set_article_json_ld
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
+    @context_note = @article.context_notes.first
   end
 
   def permission_denied?
@@ -362,7 +364,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_github_repositories
-    @github_repositories = @user.github_repos.featured.order(stargazers_count: :desc, name: :asc)
+    @github_repositories = @user.github_repos.featured
   end
 
   def assign_podcasts

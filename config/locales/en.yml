@@ -1,5 +1,8 @@
 ---
 en:
+  div: div
+  span: span
+  img: img
   contact_prompts:
     if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
     if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
@@ -153,6 +156,7 @@ en:
       manage_preferences: Manage preferences
       what_is_a_billboard: What's a billboard?
       report_billboard: Report billboard
+      edit_billboard: Edit billboard
   errors:
     messages:
       accepted: must be accepted

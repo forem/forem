@@ -30,7 +30,7 @@ describe('Moderation Tools for Comments', () => {
           cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
           cy.findByRole('link', { name: 'Moderate' }).click();
         });
-        cy.wait(['@notificationCount', '@baseData', '@ahoy']);
+        cy.wait(['@notificationCount', '@baseData']);
       });
     });
 

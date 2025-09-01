@@ -48,14 +48,40 @@ function fetchBaseData() {
             JSON.stringify(client_geolocation);
           document.body.dataset.default_email_optin_allowed =
             default_email_optin_allowed;
+          const userJson = JSON.parse(user);
           browserStoreCache('set', user);
+          document.body.className = userJson.config_body_class;
+
+          if (userJson.config_body_class && userJson.config_body_class.includes('dark-theme') && document.getElementById('dark-mode-style')) {
+            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>'
+          } else {
+            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
+          }
+
+          if (window && window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              action: 'user',
+              data: userJson,
+            }));
+            // If path is "/" send a "go_home" RN message
+            if (window.location.pathname === "/" && userJson.saw_onboarding === true) {
+              window.ReactNativeWebView.postMessage(JSON.stringify({
+                action: 'go_home',
+              }));
+            }
+          }
+
+          const isForemWebview = navigator.userAgent === 'ForemWebView/1';
+          if (isForemWebview || window.frameElement) { // Hide top bar and footer when loaded within iframe
+            document.body.classList.add("hidden-shell");
+          }
 
           setTimeout(() => {
             if (typeof ga === 'function') {
-              ga('set', 'userId', JSON.parse(user).id);
+              ga('set', 'userId', userJson.id);
             }
             if (typeof gtag === 'function') {
-              gtag('set', 'user_Id', JSON.parse(user).id);
+              gtag('set', 'user_Id', userJson.id);
             }
           }, 400);
         } else if (checkUserLoggedIn()){

@@ -12,7 +12,10 @@
         <%= crayons_icon_tag(:lock, title: "Current locked screen") %>
       <% end %>
       <%= link_to page.title, page.path %>
-      <%= link_to "Edit", edit_admin_page_path(page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      <div class="ml-auto">
+        <%= link_to "Edit", edit_admin_page_path(page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+        <%= link_to "Fork", new_admin_page_path(page: page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      </div>
     </div>
   <% end %>
 </div>

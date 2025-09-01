@@ -42,7 +42,7 @@ module Articles
                    relation = relation.where(published_at: 3.days.ago.., score: minimum_score..).presence || relation
                    relation.order("last_comment_at DESC NULLS LAST")
                  end
-      relation.pluck(:path, :title, :comments_count, :created_at)
+      relation.pluck(:path, :title, :comments_count, :created_at, :subforem_id)
     end
   end
 end
