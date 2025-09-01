@@ -27,7 +27,7 @@ jobs:
           fetch-depth: "2" # Get current and preceding commit only
       - name: Detect relevant changed files in this job
         id: containerfile-changed
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v46
         with:
           files: Containerfile.base
       - name: Do not push to GHCR if this commit does not target the main branch
