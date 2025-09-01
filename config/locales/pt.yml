@@ -41,6 +41,10 @@ pt:
     dashboard_analytics_comments: Comentários
     dashboard_analytics_reactions: Reações
     stats_by: por
+    editor_new_title: Novo título do post aqui...
+    editor_body_placeholder: Escreva o conteúdo do seu post aqui...
+    tags_field_label: Adicionar até 4 tags
+    tags_field_placeholder: Adicionar até 4 tags...
     counted_organization:
       one: "%{count} organização"
       other: "%{count} organizações"

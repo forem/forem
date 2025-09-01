@@ -7,6 +7,7 @@ en:
         page: " Page %{page}"
         rss: "%{name} RSS Feed"
       status_placeholder: "What's on your mind?"
+      status_expanded_placeholder: "Anything to add?"
       submit: "Post"
       status_hint_html: "<strong>Quickie Posts (beta)</strong> show up in the feed but not notifications or your profile — <a href='/new'>Open Full Editor</a>"
       heading: Posts
