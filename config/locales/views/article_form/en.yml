@@ -1,0 +1,9 @@
+---
+en:
+  views:
+    article_form:
+      save_changes: Save changes
+      schedule: Schedule
+      publish: Publish
+      loading_preview: Loading preview
+      preview_loaded: Preview loaded

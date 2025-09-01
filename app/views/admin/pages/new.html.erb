@@ -1,2 +1,2 @@
-<h1 class="crayons-title mb-6">New page</h1>
+<h1 class="crayons-title mb-6">New page <%= " (Forking <code style='margin-left: 8px;'>#{@page.slug}</code>)".html_safe if @page.slug.present?%></h1>
 <%= render "form" %>

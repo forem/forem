@@ -6,6 +6,7 @@ class InsightsController < ApplicationController
       :object_id,
       :index_name,
       :query_id,
+      :position,
     )
 
     # Ensure all required parameters are present
@@ -28,7 +29,8 @@ class InsightsController < ApplicationController
       insights_params[:object_id],
       insights_params[:index_name],
       timestamp,
-      insights_params[:query_id]
+      insights_params[:query_id],
+      [(insights_params[:position] || 1).to_i],
     )
 
     render json: { message: "Insight processed" }, status: :ok

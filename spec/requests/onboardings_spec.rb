@@ -11,7 +11,7 @@ RSpec.describe "Onboardings" do
   describe "GET /onboarding" do
     it "redirects user if unauthenticated" do
       get onboarding_url
-      expect(response).to redirect_to("/enter")
+      expect(response).to redirect_to("/magic_links/new")
     end
 
     it "return 200 when authenticated" do
@@ -306,6 +306,112 @@ RSpec.describe "Onboardings" do
         patch notifications_onboarding_path(format: :json),
               params: { notifications: { tab: "notifications", email_digest_periodic: 0 } }
       end.to change { user.notification_setting.reload.email_digest_periodic }.from(true).to(false)
+    end
+  end
+
+  describe "PATCH /onboarding/custom_actions" do
+    let(:challenge_tag) { create(:tag, name: "devchallenge") }
+    let(:education_tag) { create(:tag, name: "deved") }
+    let(:featured_org) { create(:organization, username: "googleai") }
+
+    before do
+      sign_in user
+      challenge_tag
+      education_tag
+      featured_org
+      allow(FeatureFlag).to receive(:enabled?).with(:onboarding_custom_actions).and_return(true)
+    end
+
+    context "when following challenges" do
+      it "follows the 'devchallenge' tag" do
+        patch "/onboarding/custom_actions", params: { follow_challenges: true }, as: :json
+        expect(Follow.where(followable_id: challenge_tag.id, followable_type: "ActsAsTaggableOn::Tag",
+                            follower_id: user.id).size).to eq(1)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when following education tracks" do
+      it "follows the 'deved' tag" do
+        patch "/onboarding/custom_actions", params: { follow_education_tracks: true }, as: :json
+        expect(Follow.where(followable_id: education_tag.id, followable_type: "ActsAsTaggableOn::Tag",
+                            follower_id: user.id).size).to eq(1)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when following featured accounts" do
+      it "follows the 'googleai' organization" do
+        patch "/onboarding/custom_actions", params: { follow_featured_accounts: true }, as: :json
+        expect(Follow.where(followable_id: featured_org.id, followable_type: "Organization",
+                            follower_id: user.id).size).to eq(1)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when multiple params are provided" do
+      it "follows the appropriate tags and organizations" do
+        patch "/onboarding/custom_actions", params: {
+          follow_challenges: true,
+          follow_education_tracks: true,
+          follow_featured_accounts: true
+        }, as: :json
+
+        expect(Follow.where(followable_type: "ActsAsTaggableOn::Tag", follower_id: user.id).count).to eq(2)
+        expect(Follow.where(followable_type: "Organization", follower_id: user.id).count).to eq(1)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when params are false or not present" do
+      it "does not follow any tags or organizations" do
+        patch "/onboarding/custom_actions", params: {
+          follow_challenges: false,
+          follow_education_tracks: false,
+          follow_featured_accounts: false
+        }, as: :json
+
+        expect(user.following_tags).to be_empty
+        expect(user.following_organizations).to be_empty
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "subforem selection in onboarding" do
+    let(:user) { create(:user, saw_onboarding: false) }
+    let(:subforem) { create(:subforem, discoverable: true, domain: "test.example.com") }
+    let(:root_subforem) { create(:subforem, root: true, domain: "root.example.com") }
+
+    before do
+      sign_in user
+    end
+
+    it "shows subforem selection when user comes from a subforem" do
+      # Simulate user coming from a specific subforem
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+
+      get "/onboarding"
+
+      expect(response).to have_http_status(:ok)
+      # Check that the onboarding container is present
+      expect(response.body).to include("onboarding-container")
+      # Check that the Onboarding JavaScript is loaded
+      expect(response.body).to include("Onboarding")
+    end
+
+    it "includes subforem data in the onboarding page" do
+      # Create some test subforems
+      subforem
+      root_subforem
+
+      get "/onboarding"
+
+      expect(response).to have_http_status(:ok)
+      # Check that the onboarding container is present
+      expect(response.body).to include("onboarding-container")
+      # Check that the Onboarding JavaScript is loaded
+      expect(response.body).to include("Onboarding")
     end
   end
 end

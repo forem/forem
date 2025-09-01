@@ -39,7 +39,6 @@ export function initializeActionsPanel(user, path) {
     );
     modActionsMenuBtns &&
       Array.from(modActionsMenuBtns).forEach((btn) => {
-        console.log('click')
         btn.addEventListener('click', toggleModActionsMenu);
       });
   }

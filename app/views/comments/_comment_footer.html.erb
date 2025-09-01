@@ -17,9 +17,8 @@
 
   <% unless @discussion_lock %>
     <% if (comment.depth < 2 || is_childless) %>
-      <a
+      <button
         class="actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
-        href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>"
         data-comment-id="<%= comment.id %>"
         data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
         data-tracking-name="comment_reply_button"
@@ -27,7 +26,7 @@
         rel="nofollow">
         <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
         <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
-      </a>
+      </button>
     <% else %>
       <span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">
         <%= crayons_icon_tag("small-thread", title: t("views.comments.footer.thread.icon")) %>

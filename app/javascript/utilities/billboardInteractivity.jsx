@@ -33,6 +33,9 @@ export function setupBillboardInteractivity() {
       }
     });
   }
+
+  // Show admin billboard links for admin users
+  showAdminBillboardLinks();
   const sponsorshipCloseButtons = document.querySelectorAll(
     'button[id^=sponsorship-close-trigger-]',
   );
@@ -81,5 +84,28 @@ function dismissBillboard(sponsorshipCloseButton) {
         JSON.stringify(skuArray),
       );
     }
+  }
+}
+
+function showAdminBillboardLinks() {
+  // Check if user data is available
+  const userDataElement = document.body.dataset.user;
+  if (!userDataElement) {
+    return;
+  }
+
+  try {
+    const userData = JSON.parse(userDataElement);
+    
+    // Check if user is admin
+    if (userData.admin) {
+      const adminLinks = document.querySelectorAll('.js-admin-billboard-link');
+      adminLinks.forEach((link) => {
+        link.classList.remove('hidden');
+      });
+    }
+  } catch (error) {
+    // Silently handle JSON parsing errors
+    console.warn('Error parsing user data for admin billboard links:', error);
   }
 }

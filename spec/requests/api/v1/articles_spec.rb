@@ -12,6 +12,10 @@ RSpec.describe "Api::V1::Articles" do
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
+  def put_article(**params)
+    put path, params: { article: params }.to_json, headers: auth_headers
+  end
+
   describe "GET /api/articles" do
     before { article }
 
@@ -603,7 +607,7 @@ RSpec.describe "Api::V1::Articles" do
       end
 
       it { is_expected.to have_http_status(:unauthorized) }
-    end
+    end      
 
     context "when security comparision fails" do
       before { allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_return(false) }
@@ -933,6 +937,28 @@ RSpec.describe "Api::V1::Articles" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
       end
+
+      it "allows video_source_url if youtube.com is passed" do
+        user.update_column(:created_at, 1.year.ago)
+        video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          video_source_url: video_source_url,
+        )
+        expect(Article.last.video_source_url).to eq(video_source_url)
+      end
+
+      it "does not allow video_source_url if not youtube.com" do
+        user.update_column(:created_at, 1.year.ago)
+        video_source_url = "https://www.vimeo.com/watch?v=dQw4w9WgXcQ"
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          video_source_url: video_source_url,
+        )
+        expect(Article.find(response.parsed_body["id"]).video_source_url).to be_nil
+      end
     end
   end
 
@@ -964,10 +990,6 @@ RSpec.describe "Api::V1::Articles" do
     end
 
     describe "when authorized" do
-      def put_article(**params)
-        put path, params: { article: params }.to_json, headers: auth_headers
-      end
-
       it "returns a 429 status code if the rate limit is reached" do
         rate_limit_checker = instance_double(RateLimitChecker)
         retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
@@ -1009,6 +1031,21 @@ RSpec.describe "Api::V1::Articles" do
         params = { article: { title: "foobar", clickbait_score: 0.3 } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: auth_headers
         expect(article.reload.clickbait_score).not_to eq(0.3)
+      end
+
+      it "lets a super admin update an article's compellingness_score" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar", compellingness_score: 0.3 } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
+        expect(article.reload.compellingness_score).to eq(0.3)
+      end
+
+      it "does not update compellingness_score for non super-admins" do
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar", compellingness_score: 0.3 } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
+        expect(article.reload.compellingness_score).not_to eq(0.3)
       end
 
       it "does not update title if only given a title because the article has a front matter" do
@@ -1280,6 +1317,64 @@ RSpec.describe "Api::V1::Articles" do
         put_article(title: nil, body_markdown: nil)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "does not update the label because not admin" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            labels: %w[meta discussion],
+          )
+          article.reload
+        end.not_to change(article, :cached_label_list)
+      end
+
+    end
+
+    describe "when authorized as super_admin" do
+      before { user.add_role(:super_admin) }
+
+      it "updates the labels" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            labels: %w[meta discussion],
+          )
+          article.reload
+        end.to change(article, :body_markdown) && change(article, :cached_label_list)
+      end
+
+      it "updates the labels when given a string" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            labels: "meta, discussion",
+          )
+          article.reload
+        end.to change(article, :body_markdown) && change(article, :cached_label_list)
+      end
+
+
+
+      it "does not update the labels if not included in the request" do
+        article.update_column(:cached_label_list, %w[meta discussion])
+        expect do
+          put_article(
+            body_markdown: "something here",
+          )
+          article.reload
+        end.not_to change(article, :cached_label_list)
+      end
+
+      it "does update the labels if empty string is provided" do
+        article.update_column(:cached_label_list, %w[meta discussion])
+        expect do
+          put_article(
+            body_markdown: "something here",
+            labels: %w[],
+          )
+          article.reload
+        end.to change(article, :cached_label_list)
       end
     end
   end

@@ -84,6 +84,7 @@ fr:
         your:
           article: your article
           comment: your comment
+          unknown: you
       settings: Settings
       tag:
         heading: "Hey there 👋"

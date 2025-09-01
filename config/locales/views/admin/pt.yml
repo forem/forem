@@ -1,0 +1,331 @@
+---
+pt:
+  views:
+    admin:
+      dashboard:
+        title: Painel de Administração
+        welcome: Bem-vindo ao painel de administração
+        stats: Estatísticas
+        users: Usuários
+        articles: Artigos
+        comments: Comentários
+        reports: Relatórios
+        settings: Configurações
+      users:
+        title: Gerenciar Usuários
+        search: Pesquisar usuários
+        filter: Filtrar
+        actions: Ações
+        suspend: Suspender
+        unsuspend: Dessuspender
+        ban: Banir
+        unban: Desbanir
+        delete: Excluir
+        edit: Editar
+        view: Visualizar
+        status: Status
+        active: Ativo
+        suspended: Suspenso
+        banned: Banido
+        deleted: Excluído
+        role: Função
+        admin: Administrador
+        moderator: Moderador
+        user: Usuário
+        created_at: Criado em
+        last_seen: Visto por último
+        email: E-mail
+        username: Nome de usuário
+        name: Nome
+        bio: Biografia
+        location: Localização
+        website: Site
+        company: Empresa
+        title_field: Cargo
+        education: Educação
+        experience: Experiência
+        skills: Habilidades
+        interests: Interesses
+        looking_for_work: Procurando trabalho
+        available_for: Disponível para
+        contact_consent: Consentimento de contato
+        email_public: E-mail público
+        profile_image: Imagem do perfil
+        cover_image: Imagem de capa
+        two_factor_enabled: Autenticação de dois fatores habilitada
+        two_factor_disabled: Autenticação de dois fatores desabilitada
+        backup_codes_generated: Códigos de backup gerados
+        backup_codes_not_generated: Códigos de backup não gerados
+        subscription: Assinatura
+        subscription_active: Assinatura ativa
+        subscription_inactive: Assinatura inativa
+        subscription_cancelled: Assinatura cancelada
+        subscription_expired: Assinatura expirada
+        subscription_trial: Assinatura em teste
+        subscription_past_due: Assinatura em atraso
+        subscription_unpaid: Assinatura não paga
+        subscription_paid: Assinatura paga
+        subscription_refunded: Assinatura reembolsada
+        subscription_failed: Assinatura falhou
+        subscription_pending: Assinatura pendente
+        subscription_unknown: Status de assinatura desconhecido
+        payment_method: Método de pagamento
+        payment_method_added: Método de pagamento adicionado
+        payment_method_removed: Método de pagamento removido
+        payment_method_updated: Método de pagamento atualizado
+        payment_method_failed: Método de pagamento falhou
+        payment_method_pending: Método de pagamento pendente
+        payment_method_unknown: Status de método de pagamento desconhecido
+        billing_address: Endereço de cobrança
+        billing_address_added: Endereço de cobrança adicionado
+        billing_address_removed: Endereço de cobrança removido
+        billing_address_updated: Endereço de cobrança atualizado
+        billing_address_failed: Endereço de cobrança falhou
+        billing_address_pending: Endereço de cobrança pendente
+        billing_address_unknown: Status de endereço de cobrança desconhecido
+        data_export: Exportação de dados
+        data_export_requested: Exportação de dados solicitada
+        data_export_completed: Exportação de dados concluída
+        data_export_failed: Exportação de dados falhou
+        data_export_pending: Exportação de dados pendente
+        data_export_unknown: Status de exportação de dados desconhecido
+        account_deletion: Exclusão de conta
+        account_deletion_requested: Exclusão de conta solicitada
+        account_deletion_completed: Exclusão de conta concluída
+        account_deletion_failed: Exclusão de conta falhou
+        account_deletion_pending: Exclusão de conta pendente
+        account_deletion_unknown: Status de exclusão de conta desconhecido
+        notifications: Notificações
+        notifications_enabled: Notificações habilitadas
+        notifications_disabled: Notificações desabilitadas
+        notifications_partial: Notificações parciais
+        notifications_unknown: Status de notificações desconhecido
+        integrations: Integrações
+        github_connected: GitHub conectado
+        github_disconnected: GitHub desconectado
+        twitter_connected: Twitter conectado
+        twitter_disconnected: Twitter desconectado
+        linkedin_connected: LinkedIn conectado
+        linkedin_disconnected: LinkedIn desconectado
+        facebook_connected: Facebook conectado
+        facebook_disconnected: Facebook desconectado
+        instagram_connected: Instagram conectado
+        instagram_disconnected: Instagram desconectado
+        youtube_connected: YouTube conectado
+        youtube_disconnected: YouTube desconectado
+        twitch_connected: Twitch conectado
+        twitch_disconnected: Twitch desconectado
+        discord_connected: Discord conectado
+        discord_disconnected: Discord desconectado
+        slack_connected: Slack conectado
+        slack_disconnected: Slack desconectado
+        privacy: Privacidade
+        profile_public: Perfil público
+        profile_private: Perfil privado
+        profile_followers_only: Perfil apenas para seguidores
+        email_public: E-mail público
+        email_private: E-mail privado
+        location_public: Localização pública
+        location_private: Localização privada
+        company_public: Empresa pública
+        company_private: Empresa privada
+        title_public: Cargo público
+        title_private: Cargo privado
+        education_public: Educação pública
+        education_private: Educação privada
+        experience_public: Experiência pública
+        experience_private: Experiência privada
+        skills_public: Habilidades públicas
+        skills_private: Habilidades privadas
+        interests_public: Interesses públicos
+        interests_private: Interesses privados
+        looking_for_work_public: Procurando trabalho público
+        looking_for_work_private: Procurando trabalho privado
+        available_for_public: Disponível para público
+        available_for_private: Disponível para privado
+        contact_consent_given: Consentimento de contato dado
+        contact_consent_not_given: Consentimento de contato não dado
+        contact_consent_unknown: Status de consentimento de contato desconhecido
+        save_changes: Salvar alterações
+        cancel: Cancelar
+        update: Atualizar
+        delete: Excluir
+        confirm: Confirmar
+        back: Voltar
+        next: Próximo
+        previous: Anterior
+        first: Primeiro
+        last: Último
+        loading: Carregando...
+        no_results: Nenhum resultado encontrado
+        error: Erro
+        success: Sucesso
+        warning: Aviso
+        info: Informação
+        help: Ajuda
+        close: Fechar
+        open: Abrir
+        expand: Expandir
+        collapse: Recolher
+        show: Mostrar
+        hide: Ocultar
+        edit: Editar
+        view: Visualizar
+        create: Criar
+        new: Novo
+        add: Adicionar
+        remove: Remover
+        delete: Excluir
+        save: Salvar
+        cancel: Cancelar
+        confirm: Confirmar
+        submit: Enviar
+        reset: Redefinir
+        clear: Limpar
+        search: Pesquisar
+        filter: Filtrar
+        sort: Ordenar
+        refresh: Atualizar
+        reload: Recarregar
+        download: Baixar
+        upload: Fazer upload
+        export: Exportar
+        import: Importar
+        print: Imprimir
+        share: Compartilhar
+        copy: Copiar
+        paste: Colar
+        cut: Recortar
+        undo: Desfazer
+        redo: Refazer
+        select_all: Selecionar tudo
+        deselect_all: Desselecionar tudo
+        invert_selection: Inverter seleção
+        select: Selecionar
+        deselect: Desselecionar
+        check: Marcar
+        uncheck: Desmarcar
+        enable: Habilitar
+        disable: Desabilitar
+        activate: Ativar
+        deactivate: Desativar
+        start: Iniciar
+        stop: Parar
+        pause: Pausar
+        resume: Retomar
+        play: Reproduzir
+        pause: Pausar
+        stop: Parar
+        record: Gravar
+        mute: Silenciar
+        unmute: Ativar som
+        volume_up: Aumentar volume
+        volume_down: Diminuir volume
+        fullscreen: Tela cheia
+        exit_fullscreen: Sair da tela cheia
+        zoom_in: Aumentar zoom
+        zoom_out: Diminuir zoom
+        reset_zoom: Redefinir zoom
+        rotate_left: Girar para a esquerda
+        rotate_right: Girar para a direita
+        flip_horizontal: Virar horizontalmente
+        flip_vertical: Virar verticalmente
+        crop: Recortar
+        resize: Redimensionar
+        brightness: Brilho
+        contrast: Contraste
+        saturation: Saturação
+        hue: Matiz
+        blur: Desfoque
+        sharpen: Nitidez
+        grayscale: Escala de cinza
+        sepia: Sépia
+        invert: Inverter
+        opacity: Opacidade
+        background: Fundo
+        foreground: Primeiro plano
+        border: Borda
+        shadow: Sombra
+        glow: Brilho
+        outline: Contorno
+        fill: Preenchimento
+        stroke: Traço
+        width: Largura
+        height: Altura
+        size: Tamanho
+        position: Posição
+        alignment: Alinhamento
+        spacing: Espaçamento
+        padding: Preenchimento
+        margin: Margem
+        color: Cor
+        font: Fonte
+        text: Texto
+        image: Imagem
+        video: Vídeo
+        audio: Áudio
+        file: Arquivo
+        folder: Pasta
+        link: Link
+        button: Botão
+        form: Formulário
+        table: Tabela
+        list: Lista
+        menu: Menu
+        toolbar: Barra de ferramentas
+        sidebar: Barra lateral
+        header: Cabeçalho
+        footer: Rodapé
+        navigation: Navegação
+        breadcrumb: Migalhas de pão
+        pagination: Paginação
+        tabs: Abas
+        accordion: Acordeão
+        modal: Modal
+        popup: Popup
+        tooltip: Dica
+        alert: Alerta
+        notification: Notificação
+        badge: Badge
+        progress: Progresso
+        slider: Controle deslizante
+        checkbox: Caixa de seleção
+        radio: Botão de opção
+        select: Seleção
+        input: Entrada
+        textarea: Área de texto
+        password: Senha
+        email: E-mail
+        url: URL
+        number: Número
+        date: Data
+        time: Hora
+        datetime: Data e hora
+        month: Mês
+        week: Semana
+        tel: Telefone
+        search: Pesquisa
+        file: Arquivo
+        range: Intervalo
+        color: Cor
+        submit: Enviar
+        reset: Redefinir
+        button: Botão
+        label: Rótulo
+        fieldset: Conjunto de campos
+        legend: Legenda
+        optgroup: Grupo de opções
+        option: Opção
+        datalist: Lista de dados
+        output: Saída
+        meter: Medidor
+        progress: Progresso
+        details: Detalhes
+        summary: Resumo
+        dialog: Diálogo
+        slot: Slot
+        template: Modelo
+        shadow: Sombra
+        host: Host
+        custom_element: Elemento personalizado
+        unknown: Desconhecido

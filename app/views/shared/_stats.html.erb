@@ -78,7 +78,7 @@
           <div class="flex-1 flex items-center justify-between">
             <div>
               <strong><%= reaction.category %></strong>
-              by <a href="<%= URL.user(reaction.user) %>" class="fw-bold"><%= reaction.user.name %></a>
+              <%= t("views.stats.by") %> <a href="<%= URL.user(reaction.user) %>" class="fw-bold"><%= reaction.user.name %></a>
             </div>
             <div class="fs-xs">
               <%= reaction.readable_date %>
