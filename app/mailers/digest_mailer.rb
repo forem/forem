@@ -24,10 +24,21 @@ class DigestMailer < ApplicationMailer
   def generate_title
     # Winner of digest_title_03_11
     if ForemInstance.dev_to?
-      "#{@articles.first.title} | DEV Digest"
+      # Check if user follows any subforems
+      if user_follows_any_subforems?
+        "#{@articles.first.title} | Forem Digest"
+      else
+        "#{@articles.first.title} | DEV Digest"
+      end
     else
       @articles.first.title
     end
+  end
+
+  def user_follows_any_subforems?
+    user_activity = @user.user_activity
+    followed_subforem_ids = user_activity&.alltime_subforems || []
+    followed_subforem_ids.any?
   end
 
   def adjusted_title(article)

@@ -17,29 +17,31 @@ class EmailDigestArticleCollector
       return [] unless should_receive_email?
 
       articles = if @user.cached_followed_tag_names.any?
-                   experience_level_rating = @user.setting.experience_level || 5
-                   experience_level_rating_min = experience_level_rating - 4
-                   experience_level_rating_max = experience_level_rating + 4
+                   # Set subforem context for followed subforems or default
+                   set_subforem_context
 
                    @user.followed_articles
-                     .select(:title, :description, :path, :cached_user, :cached_tag_list)
-                     .published.from_subforem
+                     .select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+                     .published
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
                      .where("score > ?", 8)
-                     .where("experience_level_rating > ? AND experience_level_rating < ?",
-                            experience_level_rating_min, experience_level_rating_max)
+                     .where(subforem_id: @subforem_ids)
                      .order(order)
                      .limit(RESULTS_COUNT)
                  else
                    tags = @user.cached_followed_tag_names_or_recent_tags
-                   Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
-                     .published.from_subforem
+                   # Set subforem context for followed subforems or default
+                   set_subforem_context
+
+                   Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+                     .published
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
                      .where("score > ?", 11)
+                     .where(subforem_id: @subforem_ids)
                      .order(order)
                      .limit(RESULTS_COUNT)
                      .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
@@ -47,14 +49,21 @@ class EmailDigestArticleCollector
 
       # Fallback if there are not enough articles
       if articles.length < 3
-        articles = Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
-          .published.from_subforem
+        # For fallback, include both followed subforems and default subforem
+        fallback_subforem_ids = @subforem_ids.dup
+        default_subforem_id = Subforem.cached_default_id
+        fallback_subforem_ids << default_subforem_id if default_subforem_id && !fallback_subforem_ids.include?(default_subforem_id)
+
+        articles = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+          .published
           .where("published_at > ?", cutoff_date)
           .where(email_digest_eligible: true)
           .where("score > ?", 11)
+          .where(subforem_id: fallback_subforem_ids)
           .not_authored_by(@user.id)
           .order(order)
           .limit(RESULTS_COUNT)
+
         if @user.cached_antifollowed_tag_names.any?
           articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
         end
@@ -82,6 +91,21 @@ class EmailDigestArticleCollector
   end
 
   private
+
+  def set_subforem_context
+    # Get user's followed subforems from UserActivity
+    user_activity = @user.user_activity
+    followed_subforem_ids = user_activity&.alltime_subforems || []
+
+    if followed_subforem_ids.any?
+      # User follows subforems - use those
+      @subforem_ids = followed_subforem_ids
+    else
+      # User doesn't follow any subforems - use default subforem
+      default_subforem_id = Subforem.cached_default_id
+      @subforem_ids = default_subforem_id ? [default_subforem_id] : []
+    end
+  end
 
   def recent_tracked_click?
     @user.email_messages
