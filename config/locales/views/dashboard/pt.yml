@@ -33,6 +33,9 @@ pt:
         back: "Voltar ao Painel Principal"
         your: Seu Painel
         org: "Painel de Analytics do %{org}"
+        readers: Leitores
+        comments: Comentários
+        reactions: Reações
       article:
         heading:
           text_html: "%{archived}%{title}"

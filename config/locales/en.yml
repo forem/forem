@@ -22,6 +22,25 @@ en:
     report_abuse: Report abuse
     search: Search
     success_settings: Successfully updated settings.
+    search_placeholder: Search...
+    search_find_related_posts: Find related posts...
+    search_powered_by: Powered by Algolia
+    search_submit_search: Submit search for advanced filtering.
+    search_displaying_recommendations: Displaying Algolia Recommendations — Start typing to search
+    article_form_save_changes: Save changes
+    article_form_schedule: Schedule
+    article_form_publish: Publish
+    article_form_loading_preview: Loading preview
+    article_form_preview_loaded: Preview loaded
+    comments_preview: Preview
+    comments_continue_editing: Continue editing
+    survey_enter_response: Enter your response here...
+    survey_thank_you_response: Thank you for your response.
+    survey_thank_you_completing: Thank you for completing the survey!
+    dashboard_analytics_readers: Readers
+    dashboard_analytics_comments: Comments
+    dashboard_analytics_reactions: Reactions
+    stats_by: by
     counted_organization:
       one: "%{count} organization"
       other: "%{count} organizations"
