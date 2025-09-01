@@ -194,3 +194,6 @@ pt:
       host: Host
       custom_element: Elemento personalizado
       unknown: Desconhecido
+      write:
+        preview: Visualizar
+        continue_editing: Continuar editando

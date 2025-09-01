@@ -1,6 +1,14 @@
 ---
-en:
+pt:
   views:
+    auth:
+      welcome_to_subforem: "Bem-vindo ao %{community_name} — parte da rede Forem!"
+      create:
+        text: Criar conta
+        aria_label: Criar nova conta
+      login:
+        text: Entrar
+        aria_label: Entrar
     badges:
       meta:
         title: Badges
@@ -74,30 +82,7 @@ en:
         description: My saved posts.
         og:
           title: Reading List - %{community}
-    search:
-      heading: Search results%{for}
-      for: " for %{query}"
-      placeholder: Search...
-      icon:
-        aria_label: Search
-        title: Search
-      nav:
-        posts: Posts
-        podcasts: Podcasts
-        people: People
-        comments: Comments
-        my_posts: My posts only
-        organizations: Organizations
-        tags: Tags
-      sort:
-        aria_label: Search result sort options
-        relevance: Most Relevant
-        newest: Newest
-        oldest: Oldest
-      meta:
-        title: Search Results%{for}
-        for: " for %{query}"
-        description: "%{site} => Search Results"
+
     series:
       meta:
         description: View %{title} on %{site}
@@ -124,7 +109,8 @@ en:
         text: "Traffic Source Summary"
         source: Source
         views: Views
-      reactions_history: "Reactions History"
+      reactions_history: "Histórico de Reações"
+      by: por
     sticky:
       joined: Joined
       default_cta: Learn more
