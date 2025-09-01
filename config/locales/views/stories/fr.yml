@@ -6,8 +6,9 @@ fr:
         description_tagged: "%{tag} content on %{name}"
         page: " Page %{page}"
         rss: "%{name} RSS Feed"
-      status_placeholder: "What's on your mind?"
-      submit: "Post"
+      status_placeholder: "Qu'est-ce qui vous passe par la tête ?"
+      status_expanded_placeholder: "Quelque chose à ajouter ?"
+      submit: "Publier"
       status_hint_html: "<strong>Quickie Posts (beta)</strong> show up in the feed but not notifications or your profile — <a href='/new'>Open Full Editor</a>"
       heading: Posts
       discuss: "#discuss"
