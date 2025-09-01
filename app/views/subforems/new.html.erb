@@ -1,0 +1,46 @@
+<% content_for :page_title, "Create a New Subforem" %>
+
+<div class="crayons-layout crayons-layout--limited-m mb-8 mt-4">
+  <div class="crayons-card p-6 m:p-8">
+    <header class="mb-8">
+      <div class="crayons-notice crayons-notice--info">
+        <div class="flex items-start">
+          <div class="mr-3 mt-2">
+            <%= crayons_icon_tag("info", class: "crayons-icon", title: "Information") %>
+          </div>
+          <div>
+            <h2 class="crayons-notice__title mb-2">Subforems are New and Experimental</h2>
+            <p class="crayons-notice__body mt-4">
+              Subforems are a new feature that allows communities to create focused spaces within the larger Forem ecosystem. 
+            </p>
+            <p class="crayons-notice__body mt-4">
+              These networks are designed to empower our community to <strong>build intentional community</strong> around what they care about and the
+              ways they awant to express their interest. Some subforems will be run communally, and others will be run <strong>by you</strong>.
+            </p>
+          </div>
+        </div>
+        <div id="survey-wrapper" class="mt-6">
+          <% if @survey %>
+            <%= raw Liquid::Template.parse("{% survey #{@survey.id} %}").render(
+              source: nil,
+              user: current_user,
+              policy: LiquidTagPolicy.new(current_user, SurveyTag)
+            ) %>
+          <% else %>
+            <div class="crayons-notice crayons-notice--warning mt-6">
+              <div>
+                <p class="crayons-notice__body">
+                  We will soon be launching a form to accept ideas for new subforems. Check back soon!
+                </p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </header>
+  </div>
+</div>
+
+<script>
+<%= raw SurveyTag.script %>
+</script>

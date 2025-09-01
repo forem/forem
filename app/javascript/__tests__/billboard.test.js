@@ -8,8 +8,8 @@ describe('getBillboard', () => {
     global.Honeybadger = { notify: jest.fn() };
     document.body.innerHTML = `
       <div>
-        <div class="js-billboard-container" data-async-url="/billboards/sidebar_left"></div>
-        <div class="js-billboard-container" data-async-url="/billboards/sidebar_left_2"></div>
+        <div class="js-billboard-container" data-async-url="/bb/sidebar_left"></div>
+        <div class="js-billboard-container" data-async-url="/bb/sidebar_left_2"></div>
       </div>
     `;
     // Mock localStorage
@@ -48,8 +48,8 @@ describe('getBillboard', () => {
 
     await getBillboard();
 
-    expect(global.fetch).toHaveBeenCalledWith('/billboards/sidebar_left');
-    expect(global.fetch).toHaveBeenCalledWith('/billboards/sidebar_left_2');
+    expect(global.fetch).toHaveBeenCalledWith('/bb/sidebar_left');
+    expect(global.fetch).toHaveBeenCalledWith('/bb/sidebar_left_2');
   });
 
   test('should execute scripts in the fetched content', async () => {
@@ -116,7 +116,7 @@ describe('getBillboard', () => {
 
     document.body.innerHTML = `
       <div>
-        <div class="js-billboard-container" data-async-url="/billboards/post_sidebar"></div>
+        <div class="js-billboard-container" data-async-url="/bb/post_sidebar"></div>
       </div>
     `;
 
@@ -129,7 +129,7 @@ describe('getBillboard', () => {
     await getBillboard();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      '/billboards/post_sidebar?bb_test_placement_area=post_sidebar&bb_test_id=1',
+      '/bb/post_sidebar?bb_test_placement_area=post_sidebar&bb_test_id=1',
     );
   });
 

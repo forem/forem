@@ -16,12 +16,14 @@ GITHUB_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "user:email"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.github_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.github_secret
+  env["omniauth.strategy"].options[:provider_ignores_state] = true
 end
 
 GOOGLE_OAUTH2_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "email,profile"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.google_oauth2_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.google_oauth2_secret
+  env["omniauth.strategy"].options[:provider_ignores_state] = true
 end
 
 FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
@@ -29,6 +31,7 @@ FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.facebook_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.facebook_secret
   env["omniauth.strategy"].options[:token_params][:parse] = :json
+  env["omniauth.strategy"].options[:provider_ignores_state] = true
 end
 
 APPLE_OMNIAUTH_SETUP = lambda do |env|

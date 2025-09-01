@@ -7,7 +7,7 @@ class OnboardingsController < ApplicationController
 
   SUGGESTED_USER_ATTRIBUTES = %i[id name username summary profile_image].freeze
   TAG_ONBOARDING_ATTRIBUTES = %i[id name taggings_count].freeze
-  ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page username name summary profile_image].freeze
   ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
   ALLOWED_NOTIFICATION_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 
@@ -78,6 +78,32 @@ class OnboardingsController < ApplicationController
 
     success = current_user.notification_setting.save
     notifications_updated_response(success, current_user.notification_setting.errors_as_sentence)
+  end
+
+  # DEV-specific custom actions for onboarding.
+  # This path won't be used unless the feature flag is turned on.
+  # The idea is that this could be a more custom endpoint later on, but now is just hardcoded.
+  def custom_actions
+    authorize User, :onboarding_update?
+  
+    if params[:follow_challenges]
+      tag = Tag.find_by(name: "devchallenge")
+      current_user.follow(tag) if tag
+    end
+  
+    if params[:follow_education_tracks]
+      tag = Tag.find_by(name: "deved")
+      current_user.follow(tag) if tag
+    end
+  
+    if params[:follow_featured_accounts]
+      org = Organization.find_by_username("googleai")
+      current_user.follow(org) if org
+    end
+  
+    respond_to do |format|
+      format.json { render json: {}, status: :ok }
+    end
   end
 
   def newsletter

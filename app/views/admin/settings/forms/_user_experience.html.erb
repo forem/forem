@@ -21,6 +21,15 @@
                          multiple: false,
                          class: "crayons-select" %>
         </div>
+        <% #feed_lookback_days %>
+        <div class="crayons-field">
+          <%= admin_config_label :feed_lookback_days, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:feed_lookback_days][:description] %>
+          <%= f.number_field :feed_lookback_days,
+                             class: "crayons-textfield",
+                             value: Settings::UserExperience.feed_lookback_days,
+                             placeholder: Constants::Settings::UserExperience.details[:feed_lookback_days][:placeholder] %>
+        </div>
         <div class="crayons-field">
           <%= admin_config_label :cover_image_height, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience.details[:cover_image_height][:description] %>

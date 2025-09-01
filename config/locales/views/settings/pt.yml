@@ -1,0 +1,109 @@
+---
+pt:
+  views:
+    settings:
+      account:
+        title: Configurações da Conta
+        description: Gerencie suas configurações de conta
+        profile:
+          title: Perfil
+          name: Nome
+          username: Nome de usuário
+          email: E-mail
+          bio: Biografia
+          location: Localização
+          website: Site
+          company: Empresa
+          title_field: Cargo
+          education: Educação
+          experience: Experiência
+          skills: Habilidades
+          interests: Interesses
+          looking_for_work: Procurando trabalho
+          available_for: Disponível para
+          contact_consent: Consentimento de contato
+          email_public: E-mail público
+          email_public_description: Permitir que outros usuários vejam seu e-mail
+          profile_image: Imagem do perfil
+          cover_image: Imagem de capa
+          remove_image: Remover imagem
+          upload_image: Fazer upload de imagem
+          image_requirements: Requisitos de imagem
+          image_requirements_description: Imagens devem ser quadradas e menores que 2MB
+        security:
+          title: Segurança
+          password: Senha
+          current_password: Senha atual
+          new_password: Nova senha
+          confirm_password: Confirmar senha
+          two_factor: Autenticação de dois fatores
+          enable_2fa: Habilitar autenticação de dois fatores
+          disable_2fa: Desabilitar autenticação de dois fatores
+          backup_codes: Códigos de backup
+          generate_backup_codes: Gerar códigos de backup
+          download_backup_codes: Baixar códigos de backup
+        privacy:
+          title: Privacidade
+          profile_visibility: Visibilidade do perfil
+          public: Público
+          private: Privado
+          followers_only: Apenas seguidores
+          show_email: Mostrar e-mail
+          show_location: Mostrar localização
+          show_company: Mostrar empresa
+          show_education: Mostrar educação
+          show_experience: Mostrar experiência
+          show_skills: Mostrar habilidades
+          show_interests: Mostrar interesses
+          show_looking_for_work: Mostrar procurando trabalho
+        notifications:
+          title: Notificações
+          email_notifications: Notificações por e-mail
+          push_notifications: Notificações push
+          comment_notifications: Notificações de comentários
+          mention_notifications: Notificações de menções
+          follow_notifications: Notificações de seguidores
+          like_notifications: Notificações de curtidas
+          digest_emails: E-mails de resumo
+          weekly_digest: Resumo semanal
+          daily_digest: Resumo diário
+          no_digest: Sem resumo
+        integrations:
+          title: Integrações
+          github: GitHub
+          twitter: Twitter
+          linkedin: LinkedIn
+          facebook: Facebook
+          instagram: Instagram
+          youtube: YouTube
+          twitch: Twitch
+          discord: Discord
+          slack: Slack
+          connect_account: Conectar conta
+          disconnect_account: Desconectar conta
+          connected: Conectado
+          not_connected: Não conectado
+        billing:
+          title: Cobrança
+          subscription: Assinatura
+          current_plan: Plano atual
+          upgrade_plan: Atualizar plano
+          cancel_subscription: Cancelar assinatura
+          payment_method: Método de pagamento
+          add_payment_method: Adicionar método de pagamento
+          remove_payment_method: Remover método de pagamento
+          billing_address: Endereço de cobrança
+          update_billing_address: Atualizar endereço de cobrança
+        data:
+          title: Dados
+          export_data: Exportar dados
+          delete_account: Excluir conta
+          export_description: Baixe todos os seus dados em formato JSON
+          delete_description: Excluir permanentemente sua conta e todos os dados
+          confirm_delete: Confirmar exclusão
+          delete_warning: Esta ação não pode ser desfeita
+        save_changes: Salvar alterações
+        cancel: Cancelar
+        update: Atualizar
+        delete: Excluir
+        confirm: Confirmar

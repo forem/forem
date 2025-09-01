@@ -58,6 +58,89 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       end
     end
 
+    context "when email has targeted_tags" do
+      let!(:tag) { create(:tag, name: "scrud") }
+      let!(:email) { create(:email, targeted_tags: "scrud") }
+
+      let!(:user_following_ruby) do
+        create(:user, :with_newsletters).tap do |u|
+          Follow.create!(
+            follower_id: u.id,
+            follower_type: "User",
+            followable_id: tag.id,
+            followable_type: "ActsAsTaggableOn::Tag"
+          )
+        end
+      end
+
+      let!(:user_not_following_ruby) { create(:user, :with_newsletters) }
+
+      it "only includes users following the specified tags" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [user_following_ruby.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id
+        )
+        # Ensure user_not_following_ruby is excluded
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(user_not_following_ruby.id), anything, anything, anything, anything
+        )
+      end
+
+      context "with multiple tags" do
+        let!(:tag_rails) { create(:tag, name: "scruff") }
+        let!(:email) { create(:email, targeted_tags: "scrud,scruff") }
+
+        let!(:user_following_both) do
+          create(:user, :with_newsletters).tap do |u|
+            [tag, tag_rails].each do |tg|
+              Follow.create!(
+                follower_id: u.id,
+                follower_type: "User",
+                followable_id: tg.id,
+                followable_type: "ActsAsTaggableOn::Tag"
+              )
+            end
+          end
+        end
+
+        let!(:user_following_only_ruby) do
+          create(:user, :with_newsletters).tap do |u|
+            Follow.create!(
+              follower_id: u.id,
+              follower_type: "User",
+              followable_id: tag.id,
+              followable_type: "ActsAsTaggableOn::Tag"
+            )
+          end
+        end
+
+        it "includes users following any of the specified tags" do
+          described_class.new.perform(email.id)
+          create(:user, :with_newsletters).tap do |u|
+            Follow.create!(
+              follower_id: u.id,
+              follower_type: "User",
+              followable_id: tag_rails.id,
+              followable_type: "ActsAsTaggableOn::Tag"
+            )
+          end
+
+          # We expect both user_following_both and user_following_only_ruby to be included
+          expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+            match_array([user_following_ruby.id, user_following_both.id, user_following_only_ruby.id]),
+            email.subject,
+            email.body,
+            email.type_of,
+            email.id
+          )
+        end
+      end
+    end
+
     context "when there are more users than BATCH_SIZE" do
       before do
         # Suppose it's non-production environment => BATCH_SIZE = 10
@@ -91,7 +174,6 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
 
     context "when users are suspended or spam" do
       let!(:user_suspended) do
-        # Example factory usage — adjust to match your app’s role assignment
         create(:user, :with_newsletters).tap { |u| u.add_role(:suspended) }
       end
       let!(:user_spam) do
