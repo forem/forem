@@ -1,6 +1,14 @@
 ---
 en:
   views:
+    auth:
+      welcome_to_subforem: "Welcome to %{community_name} — part of the Forem network!"
+      create:
+        text: Create account
+        aria_label: Create new account
+      login:
+        text: Log in
+        aria_label: Log in
     badges:
       meta:
         title: Badges
