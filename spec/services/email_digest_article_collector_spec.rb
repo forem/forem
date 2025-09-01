@@ -121,6 +121,56 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
+    context "when user has custom onboarding subforem" do
+      let(:custom_onboarding_subforem) { create(:subforem, domain: "custom.test") }
+
+      before do
+        user.update!(onboarding_subforem_id: custom_onboarding_subforem.id)
+      end
+
+      it "does not filter articles by subforem when user has custom onboarding subforem" do
+        other_user = create(:user)
+        # Create articles in different subforems
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem, 
+                                 tag_list: "career", user: other_user, featured: true)
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: default_subforem, 
+                                 tag_list: "productivity", user: other_user, featured: true)
+        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: create(:subforem, domain: "other.test"), 
+                                 tag_list: "ruby", user: other_user, featured: true)
+
+        articles = described_class.new(user).articles_to_send
+        # Should get articles from all subforems since we're not filtering (limited to RESULTS_COUNT = 7)
+        expect(articles.length).to eq(7)
+        expect(articles.any? { |a| a.subforem_id == custom_onboarding_subforem.id }).to be true
+        expect(articles.any? { |a| a.subforem_id == default_subforem.id }).to be true
+        expect(articles.any? { |a| a.subforem_id != custom_onboarding_subforem.id && a.subforem_id != default_subforem.id }).to be true
+      end
+
+      it "still filters by subforem if user also follows subforems" do
+        other_user = create(:user)
+        followed_subforem = create(:subforem, domain: "followed.test")
+        
+        # Create user activity with followed subforems
+        user_activity = create(:user_activity, user: user)
+        user_activity.update!(alltime_subforems: [followed_subforem.id])
+
+        # Create articles in different subforems
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: followed_subforem, 
+                                 tag_list: "career", user: other_user, featured: true)
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem, 
+                                 tag_list: "productivity", user: other_user, featured: true)
+        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: default_subforem, 
+                                 tag_list: "ruby", user: other_user, featured: true)
+
+        articles = described_class.new(user).articles_to_send
+        # Should only get articles from followed subforems (following takes precedence)
+        expect(articles.length).to eq(3)
+        expect(articles.all? { |a| a.subforem_id == followed_subforem.id }).to be true
+        expect(articles.any? { |a| a.subforem_id == custom_onboarding_subforem.id }).to be false
+        expect(articles.any? { |a| a.subforem_id == default_subforem.id }).to be false
+      end
+    end
+
     context "when it's been less than the set number of digest email days" do
       before do
         author = create(:user)

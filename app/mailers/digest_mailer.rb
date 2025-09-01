@@ -6,6 +6,7 @@ class DigestMailer < ApplicationMailer
     @articles = params[:articles]
     @billboards = params[:billboards]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
+    @user_follows_any_subforems = user_follows_any_subforems?
 
     subject = generate_title
 
@@ -17,6 +18,16 @@ class DigestMailer < ApplicationMailer
     end
 
     mail(to: @user.email, subject: subject)
+  end
+
+  def user_follows_any_subforems?
+    user_activity = @user.user_activity
+    followed_subforem_ids = user_activity&.alltime_subforems || []
+    default_subforem_id = Subforem.cached_default_id
+
+    # Check if user follows any subforems OR has a custom onboarding subforem
+    followed_subforem_ids.any? ||
+      (@user.onboarding_subforem_id.present? && @user.onboarding_subforem_id != default_subforem_id)
   end
 
   private
@@ -33,12 +44,6 @@ class DigestMailer < ApplicationMailer
     else
       @articles.first.title
     end
-  end
-
-  def user_follows_any_subforems?
-    user_activity = @user.user_activity
-    followed_subforem_ids = user_activity&.alltime_subforems || []
-    followed_subforem_ids.any?
   end
 
   def adjusted_title(article)

@@ -86,5 +86,30 @@ RSpec.describe DigestMailer do
         expect(email.subject).not_to include("| Forem Digest")
       end
     end
+
+    context "when user has custom onboarding subforem" do
+      let(:custom_onboarding_subforem) { create(:subforem, domain: "custom.test") }
+      let(:default_subforem) { create(:subforem, domain: "default.test") }
+
+      before do
+        user.update!(onboarding_subforem_id: custom_onboarding_subforem.id)
+        allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      end
+
+      it "uses Forem Digest in subject when onboarding subforem is not default" do
+        # User has no followed subforems but has custom onboarding subforem
+        # The method should return true due to custom onboarding subforem
+        email = described_class.with(user: user, articles: [article]).digest_email
+        expect(email.subject).to include("| Forem Digest")
+      end
+
+      it "uses DEV Digest in subject when onboarding subforem is default" do
+        user.update!(onboarding_subforem_id: default_subforem.id)
+        # User has no followed subforems and onboarding subforem is default
+        # The method should return false
+        email = described_class.with(user: user, articles: [article]).digest_email
+        expect(email.subject).to include("| DEV Digest")
+      end
+    end
   end
 end
