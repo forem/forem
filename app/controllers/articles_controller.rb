@@ -22,11 +22,6 @@ class ArticlesController < ApplicationController
   #              I still want to enable this, but first want to get things mostly conformant with
   #              existing expectations.  Note, in config/application.rb, we're rescuing the below
   #              exception as though it was a Pundit::NotAuthorizedError.
-  #
-  #
-  #
-  #              The difference being that rescue_from is an ALWAYS use case.  Whereas the
-  #
   #              config/application.rb uses the config.consider_all_requests_local to determine if
   #              we bubble the exception up or handle it.
   #

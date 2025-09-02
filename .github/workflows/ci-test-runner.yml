@@ -14,13 +14,13 @@ env:
   NODE_ENV: test
   DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
   DATABASE_NAME_TEST: Forem_test
-  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
   POSTGRES_PASSWORD: postgres
-  KNAPSACK_PRO_LOG_LEVEL: info
   YARN_ENABLE_HARDENED_MODE: 0
   DD_TRACE_DEBUG: 0
   DD_ENV: ci
-  DD_SERVICE: forem-with-dd-test-runner
+  DD_SERVICE: forem-with-dd-test-runner-for-real
+  DATADOG_TEST_OPTIMIZATION_RUNNER_PLATFORM: ruby
+  DATADOG_TEST_OPTIMIZATION_RUNNER_FRAMEWORK: rspec
 
 jobs:
   build:
@@ -79,11 +79,8 @@ jobs:
       - name: Setup Datadog Test Runner
         run: bin/ddruntest setup
         env:
-          DATADOG_TEST_OPTIMIZATION_RUNNER_PLATFORM: ruby
-          DATADOG_TEST_OPTIMIZATION_RUNNER_FRAMEWORK: rspec
           DATADOG_TEST_OPTIMIZATION_RUNNER_MIN_PARALLELISM: 1
           DATADOG_TEST_OPTIMIZATION_RUNNER_MAX_PARALLELISM: 8
-          DD_TRACE_DEBUG: 0
       - name: Set matrix output
         id: matrix
         run: cat .dd/github/config >> $GITHUB_OUTPUT
@@ -101,8 +98,6 @@ jobs:
     timeout-minutes: 20
     env:
       DATADOG_TEST_OPTIMIZATION_RUNNER_CI_NODE: ${{ matrix.ci_node_index }}
-      DATADOG_TEST_OPTIMIZATION_RUNNER_PLATFORM: ruby
-      DATADOG_TEST_OPTIMIZATION_RUNNER_FRAMEWORK: rspec
 
     services:
       postgres:
@@ -159,4 +154,3 @@ jobs:
         run: bin/ddruntest run
         env:
           DD_TEST_SESSION_NAME: test-runner-${{ matrix.ci_node_index }}
-          DD_TRACE_DEBUG: 0
