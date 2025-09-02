@@ -77,8 +77,12 @@ jobs:
           api_key: ${{ secrets.DD_API_KEY }}
           site: datadoghq.eu
       - name: Setup Datadog Test Runner
-        run: bin/ddruntest setup --platform ruby --framework rspec --min-parallelism 1 --max-parallelism 8
+        run: bin/ddruntest setup
         env:
+          DATADOG_TEST_OPTIMIZATION_RUNNER_PLATFORM: ruby
+          DATADOG_TEST_OPTIMIZATION_RUNNER_FRAMEWORK: rspec
+          DATADOG_TEST_OPTIMIZATION_RUNNER_MIN_PARALLELISM: 1
+          DATADOG_TEST_OPTIMIZATION_RUNNER_MAX_PARALLELISM: 8
           DD_TRACE_DEBUG: 0
       - name: Set matrix output
         id: matrix
@@ -96,10 +100,9 @@ jobs:
     needs: [build]
     timeout-minutes: 20
     env:
-      KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-      KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-      KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
-      KNAPSACK_PRO_TEST_FILE_LIST_SOURCE_FILE: .dd/test-files.txt
+      DATADOG_TEST_OPTIMIZATION_RUNNER_CI_NODE: ${{ matrix.ci_node_index }}
+      DATADOG_TEST_OPTIMIZATION_RUNNER_PLATFORM: ruby
+      DATADOG_TEST_OPTIMIZATION_RUNNER_FRAMEWORK: rspec
 
     services:
       postgres:
@@ -153,7 +156,7 @@ jobs:
           api_key: ${{ secrets.DD_API_KEY }}
           site: datadoghq.eu
       - name: RSpec
-        run: bin/knapsack_pro_rspec
+        run: bin/ddruntest run
         env:
-          DD_TEST_SESSION_NAME: knapsack-pro-rspec-${{ matrix.ci_node_index }}
+          DD_TEST_SESSION_NAME: test-runner-${{ matrix.ci_node_index }}
           DD_TRACE_DEBUG: 0
