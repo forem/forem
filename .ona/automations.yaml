@@ -1,0 +1,50 @@
+tasks:
+  install-dependencies:
+    name: Install dependencies
+    command: |
+      echo "Installing Ruby dependencies..."
+      bundle install
+      echo "Installing Node.js dependencies..."
+      yarn install
+      echo "Setting up database..."
+      bin/setup
+      echo "Preparing test database..."
+      bin/rails db:test:prepare RAILS_ENV=test
+    triggeredBy:
+      - postDevcontainerStart
+      - manual
+
+  setup-environment:
+    name: Setup environment
+    command: |
+      if [ ! -f .env ]; then
+        echo "Creating .env file from sample..."
+        cp .env_sample .env
+      fi
+      
+      # Update .env with Ona-specific values
+      if [ -n "$ONA_ENVIRONMENT_NAME" ]; then
+        echo "Updating .env file with Ona-specific values..."
+        echo "APP_DOMAIN=\"${ONA_ENVIRONMENT_NAME}-3000.app.ona.dev\"" >> .env
+        echo 'APP_PROTOCOL="https://"' >> .env
+        echo 'COMMUNITY_NAME="DEV(Ona)"' >> .env
+      fi
+      
+      echo "Environment setup complete!"
+    triggeredBy:
+      - postDevcontainerStart
+      - manual
+
+  start-services:
+    name: Start development services
+    command: |
+      echo "Starting development services..."
+      dip up web
+    triggeredBy:
+      - manual
+
+  verify-setup:
+    name: Verify environment setup
+    command: .ona/verify-setup.sh
+    triggeredBy:
+      - manual
