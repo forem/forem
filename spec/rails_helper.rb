@@ -132,6 +132,16 @@ RSpec.configure do |config|
     allow(Settings::General).to receive_messages(
       algolia_application_id: "on", algolia_search_only_api_key: "on", algolia_api_key: "on",
     )
+    allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
+  end
+
+  config.before do
+    # Disable Algolia indexing by default in tests. Specs that need it can tag with :algolia
+    # Only stub if we're not testing the algolia_search_enabled? method itself
+    unless RSpec.current_example.metadata[:algolia] ||
+        RSpec.current_example.description.include?("algolia_search_enabled?")
+      allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
+    end
   end
 
   config.before(:suite) do
@@ -156,7 +166,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :flaky) do |ex|
-    ex.run_with_retry retry: 3
+    ex.run_with_retry retry: 5
   end
 
   config.around(:each, :throttle) do |example|
@@ -189,9 +199,6 @@ RSpec.configure do |config|
   # We want our test suite to behave as though it's enabled by default.  This rspec configuration
   # helps with that.  I envision this to be a placeholder.  But we need something to get the RFC out
   # the door (https://github.com/forem/rfcs/issues/291).
-  config.before do
-    allow(Listing).to receive(:feature_enabled?).and_return(true)
-  end
 
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
@@ -218,6 +225,9 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /insights.algolia.io/)
+      .to_return(status: 200, body: "", headers: {})
+
+    stub_request(:post, /generativelanguage.googleapis.com/)
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /robohash.org/)

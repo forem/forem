@@ -1032,34 +1032,128 @@ false).once
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", user.id, false).once
     end
 
-    describe "#bad_actor?" do
+    describe "#bad_actor_or_empty_profile?" do
       it "returns false to a regular user" do
+        user = build(:user, articles_count: 5, comments_count: 10, badge_achievements_count: 6)
+        expect(user.bad_actor_or_empty_profile?).to be(false)
+      end
+
+      it "returns true if no content" do
         user = build(:user)
-        expect(user.bad_actor?).to be(false)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "returns true if the user has negative score" do
         user = build(:user, score: -500)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "returns true if the user has spam role" do
         user = build(:user)
         user.add_role(:spam)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "return true if user is suspended" do
         user = build(:user)
         user.add_role(:suspended)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
 
       it "return true if user is banished" do
         user = build(:user)
         allow(user).to receive(:banished?).and_return(true)
-        expect(user.bad_actor?).to be(true)
+        expect(user.bad_actor_or_empty_profile?).to be(true)
       end
+    end
+  end
+
+  describe "type_of enum" do
+    it "has the correct enum values" do
+      expect(User.type_ofs).to eq({
+        "member" => 0,
+        "community_bot" => 1,
+        "member_bot" => 2
+      })
+    end
+
+    it "defaults to member" do
+      new_user = User.new
+      expect(new_user.type_of).to eq("member")
+    end
+
+    it "can be set to community_bot" do
+      user.type_of = :community_bot
+      expect(user.type_of).to eq("community_bot")
+    end
+
+    it "can be set to member_bot" do
+      user.type_of = :member_bot
+      expect(user.type_of).to eq("member_bot")
+    end
+  end
+
+  describe "bot methods" do
+    context "when user is a community bot" do
+      let(:community_bot) { create(:user, type_of: :community_bot) }
+
+      it "returns true for community_bot?" do
+        expect(community_bot.community_bot?).to be true
+      end
+
+      it "returns false for member_bot?" do
+        expect(community_bot.member_bot?).to be false
+      end
+
+      it "returns true for bot?" do
+        expect(community_bot.bot?).to be true
+      end
+    end
+
+    context "when user is a member bot" do
+      let(:member_bot) { create(:user, type_of: :member_bot) }
+
+      it "returns false for community_bot?" do
+        expect(member_bot.community_bot?).to be false
+      end
+
+      it "returns true for member_bot?" do
+        expect(member_bot.member_bot?).to be true
+      end
+
+      it "returns true for bot?" do
+        expect(member_bot.bot?).to be true
+      end
+    end
+
+    context "when user is a regular member" do
+      it "returns false for community_bot?" do
+        expect(user.community_bot?).to be false
+      end
+
+      it "returns false for member_bot?" do
+        expect(user.member_bot?).to be false
+      end
+
+      it "returns false for bot?" do
+        expect(user.bot?).to be false
+      end
+    end
+  end
+
+  describe "community_bots_for_subforem scope" do
+    let(:subforem) { create(:subforem) }
+    let!(:community_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: subforem.id) }
+    let!(:member_bot) { create(:user, type_of: :member_bot, onboarding_subforem_id: subforem.id) }
+    let!(:regular_user) { create(:user, type_of: :member, onboarding_subforem_id: subforem.id) }
+    let!(:other_subforem_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: create(:subforem, domain: "other.com").id) }
+
+    it "returns only community bots for the specified subforem" do
+      result = User.community_bots_for_subforem(subforem.id)
+      expect(result).to include(community_bot)
+      expect(result).not_to include(member_bot)
+      expect(result).not_to include(regular_user)
+      expect(result).not_to include(other_subforem_bot)
     end
   end
 end

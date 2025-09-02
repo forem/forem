@@ -4,6 +4,7 @@ import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 import {
   observeBillboards,
   initializeBillboardVisibility,
+  executeBBScripts,
 } from '../packs/billboardAfterRenderActions';
 import { observeFeedElements } from '../packs/feedEvents';
 import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
@@ -90,6 +91,7 @@ function renderSidebar() {
 }
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
+const homeFeedEl = document.getElementById('homepage-feed');
 
 if (document.getElementById('sidebar-nav-followed-tags')) {
   const waitingForDataLoad = setInterval(() => {
@@ -98,7 +100,7 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
       return;
     }
 
-    if (userStatus === 'logged-in' && user !== null) {
+    if (userStatus === 'logged-in' && user !== null && homeFeedEl) {
       clearInterval(waitingForDataLoad);
       if (document.getElementById('rendered-article-feed')) {
         return;
@@ -108,6 +110,7 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
           initializeBillboardVisibility();
           observeBillboards();
           setupBillboardInteractivity();
+          executeBBScripts(homeFeedEl);
           observeFeedElements();
         };
 

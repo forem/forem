@@ -13,12 +13,13 @@ module Api
       per_page_max = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
       num = [per_page, per_page_max].min
 
-      @video_articles = Article.with_video
+      @video_articles = Article.with_video.from_subforem
         .includes([:user])
         .select(INDEX_ATTRIBUTES_FOR_SERIALIZATION)
         .order(hotness_score: :desc)
         .page(page).per(num)
 
+      @video_articles = @video_articles.cached_tagged_with(params[:tag]) if params[:tag].present?
       set_surrogate_key_header "videos", Article.table_key, @video_articles.map(&:record_key)
     end
   end

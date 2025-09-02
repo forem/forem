@@ -26,6 +26,7 @@ class Follow < ApplicationRecord
   scope :follower_organization, ->(id) { where(follower_id: id, followable_type: "Organization") }
   scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
   scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
+  scope :follower_subforem, ->(id) { where(follower_id: id, followable_type: "Subforem") }
 
   # Follows from users who don't have suspended or spam role
   scope :non_suspended, lambda { |followable_type, followable_id|
@@ -43,6 +44,8 @@ class Follow < ApplicationRecord
   before_save :calculate_points
   after_create :send_email_notification
   after_save :touch_follower
+  after_create_commit :update_user_activities
+  after_destroy :update_user_activities
 
   validates :blocked, inclusion: { in: [true, false] }
   validates :followable_type, presence: true
@@ -68,5 +71,9 @@ class Follow < ApplicationRecord
     return unless followable.instance_of?(User) && followable.email?
 
     Follows::SendEmailNotificationWorker.perform_async(id)
+  end
+
+  def update_user_activities
+    UserActivity.find_or_create_by(user_id: follower_id).set_activity!
   end
 end

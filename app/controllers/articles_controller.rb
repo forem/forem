@@ -51,7 +51,7 @@ class ArticlesController < ApplicationController
 
     not_found unless @articles&.any?
 
-    set_surrogate_key_header "feed"
+    set_surrogate_key_header @user&.record_key, @articles.map(&:record_key)
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
     render layout: false, content_type: "application/xml", locals: {
@@ -146,7 +146,7 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
     @user = current_user
-    article_params_json[:subforem_id] = RequestStore.store[:subforem_id]
+    article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
     article = Articles::Creator.call(@user, article_params_json)
 
     if article.persisted?

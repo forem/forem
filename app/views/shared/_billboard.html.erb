@@ -1,3 +1,17 @@
+<style>
+  .long-bb-body {
+    max-height: calc(100vh - 200px);
+    overflow: hidden;
+  }
+  .long-bb-bottom {
+    height: 180px;
+    background: linear-gradient(to top, var(--card-bg), transparent);
+    margin-top: -180px;
+    position:relative;
+    z-index: 5;
+  }
+</style>
+
 <% if billboard.template == "plain" %>
   <div
     style="<%= billboard.style_string %>"
@@ -69,6 +83,7 @@
     data-context-type="<%= data_context_type %>"
     data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
+    data-browser-context="<%= billboard.browser_context %>"
     <% if billboard.placement_area == "post_fixed_bottom" && @article.present? %>
       data-article-id="<%= @article&.id %>"
     <% else %>
@@ -87,7 +102,8 @@
     </div>
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
-  <div class="crayons-card crayons-card--secondary crayons-bb billboard js-billboard body-billboard mb-2 mt-6"
+  <% long_bb = billboard.processed_html_final.size > 750 %>
+  <div class="crayons-card crayons-card--secondary crayons-bb js-billboard body-billboard mb-2 mt-6"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
@@ -106,9 +122,17 @@
         </button>
       <% end %>
     </div>
-    <div class="p-1 pt-3 text-styles text-styles--billboard">
+    <div class="p-1 pt-3 text-styles text-styles--billboard <%= "long-bb-body" if long_bb %>">
       <%= billboard.processed_html_final.html_safe %>
     </div>
+    <% if long_bb %>
+      <div class="long-bb-bottom"></div>
+      <div class="crayons-card__footer">
+        <button class="c-cta c-cta--branded billboard-readmore-button">
+          Read More
+        </button>
+      </div>
+    <% end %>
   </div>
 <% else %>
   <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
@@ -125,4 +149,7 @@
       <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
+<% end %>
+<% if billboard.processed_html_final.include?("ltag-survey") %>
+  <script><%= raw SurveyTag.script %></script>
 <% end %>

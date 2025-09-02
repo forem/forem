@@ -26,7 +26,8 @@ class LinkTag < LiquidTagBase
     path = url.path
 
     # If domain is present in url check if it belongs to the app
-    unless domain.blank? || domain&.casecmp?(Settings::General.app_domain)
+    possible_domains = Subforem.cached_domains + [Settings::General.app_domain]
+    unless domain.blank? || possible_domains.include?(domain.downcase)
       raise StandardError, I18n.t("liquid_tags.link_tag.not_exist_link", slug: slug)
     end
 

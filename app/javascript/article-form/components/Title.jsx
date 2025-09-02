@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useRef, useLayoutEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { locale } from '@utilities/locale';
 // We use this hook for the title field to automatically grow the height of the textarea.
 // It helps keep the entire layout the way it is without having unnecessary scrolling and white spaces.
 // Keep in mind this is what happens only here - in the Preact component.
@@ -32,7 +33,7 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
         type="text"
         id="article-form-title"
         aria-label="Post Title"
-        placeholder="New post title here..."
+        placeholder={locale('core.editor_new_title')}
         autoComplete="off"
         value={defaultValue}
         onFocus={switchHelpContext}

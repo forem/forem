@@ -162,4 +162,42 @@ RSpec.describe Page do
       expect(p1.reload.landing_page).to be(false)
     end
   end
+
+  describe "slug uniqueness across models" do
+    let(:subforem) { create(:subforem, domain: "d0.com") }
+    let!(:existing_page) { create(:page, slug: "existing-slug", subforem: subforem) }
+
+    context "when a Page with the same slug exists in the same subforem scope" do
+      it "does not check uniqueness across other models" do
+        allow(CrossModelSlugValidator).to receive(:new).and_call_original
+
+        new_page = build(:page, slug: "existing-slug", subforem: subforem)
+        expect(new_page).not_to be_valid
+        expect(new_page.errors[:slug]).to include("has already been taken")
+        expect(CrossModelSlugValidator).not_to have_received(:new)
+      end
+    end
+
+    context "when a Page with the same slug exists in a different subforem" do
+      it "allows page to exist if unique within scope" do
+        new_page = build(:page, slug: "existing-slug", subforem: create(:subforem, domain: "d3.com"))
+        expect(new_page).to be_valid
+      end
+    end
+
+    context "when no Page with the same slug exists" do
+      let!(:user) { create(:user, username: "unique-slug") }
+
+      it "checks uniqueness across other models" do
+        new_page = build(:page, slug: "unique-slug", subforem: create(:subforem, domain: "d1.com"))
+        expect(new_page).not_to be_valid
+        expect(new_page.errors[:slug]).to include("is already taken by another entity")
+      end
+
+      it "allows the slug if no conflicts exist" do
+        new_page = build(:page, slug: "completely-unique-slug", subforem: create(:subforem, domain: "d2.com"))
+        expect(new_page).to be_valid
+      end
+    end
+  end
 end

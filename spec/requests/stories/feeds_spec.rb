@@ -62,6 +62,31 @@ RSpec.describe "Stories::Feeds" do
           "tag_list" => article.decorate.cached_tag_list_array,
         )
       end
+
+      it "returns feed when feed_strategy is configured" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+
+        get stories_feed_path
+
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
+      end
+
+      it "sets cache control headers for edge caching" do
+        get stories_feed_path
+
+        expect(response.headers["Cache-Control"]).to eq("public, no-cache")
+        expect(response.headers["X-Accel-Expires"]).to eq("60")
+        expect(response.headers["Surrogate-Control"]).to include("max-age=60")
+        expect(response.headers["Surrogate-Control"]).to include("stale-if-error=26400")
+      end
     end
 
     context "when rendering an article that is pinned" do
@@ -86,12 +111,12 @@ RSpec.describe "Stories::Feeds" do
       let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
 
       it "renders main_image as a cloud link" do
-        allow(CloudCoverUrl).to receive(:new).with(article.main_image).and_return(cloud_cover)
+        allow(CloudCoverUrl).to receive(:new).with(article.main_image, nil).and_return(cloud_cover)
         allow(cloud_cover).to receive(:call).and_call_original
 
         get stories_feed_path
 
-        expect(CloudCoverUrl).to have_received(:new).with(article.main_image)
+        expect(CloudCoverUrl).to have_received(:new).with(article.main_image, nil)
         expect(cloud_cover).to have_received(:call)
       end
     end
@@ -150,6 +175,50 @@ RSpec.describe "Stories::Feeds" do
       end
     end
 
+    context "when sign in is passed via token" do
+      let(:user) { create(:user) }
+
+      it "returns signed in feed" do
+
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+        get stories_feed_path, headers: { "Authorization" => "Bearer #{token}" }
+
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+          "current_user_signed_in" => true
+        )
+      end
+
+      it "does not set cache control headers for edge caching" do
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+        get stories_feed_path, headers: { "Authorization" => "Bearer #{token}" }
+
+        # Should not have the specific edge caching headers we set for signed out users
+        expect(response.headers["X-Accel-Expires"]).to be_nil
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        
+        # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
+        if response.headers["Cache-Control"]
+          expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
+        end
+      end
+    end
+
+
     context "when there are no params passed (base feed) and user is signed in" do
       before do
         sign_in user
@@ -185,6 +254,19 @@ RSpec.describe "Stories::Feeds" do
           "organization" => hash_including("name" => organization.name),
           "tag_list" => article.decorate.cached_tag_list_array,
         )
+      end
+
+      it "does not set cache control headers for edge caching" do
+        get stories_feed_path
+
+        # Should not have the specific edge caching headers we set for signed out users
+        expect(response.headers["X-Accel-Expires"]).to be_nil
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        
+        # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
+        if response.headers["Cache-Control"]
+          expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
+        end
       end
     end
 
@@ -348,6 +430,12 @@ RSpec.describe "Stories::Feeds" do
 
         response_article_ids = response.parsed_body.map { |a| a["id"] }
         expect(response_article_ids).to include(article.id, followed_article.id)
+      end
+
+      it "returns current_user_signed_in false" do
+        get stories_feed_path(type_of: "following")
+
+        expect(response_article["current_user_signed_in"]).to eq(false)
       end
     end
   end
