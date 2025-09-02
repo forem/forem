@@ -79,7 +79,8 @@ class Billboard < ApplicationRecord
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
            :validate_tag,
-           :validate_geolocations
+           :validate_geolocations,
+           :validate_expiration_approval
 
   before_save :process_markdown
   after_save :generate_billboard_name
@@ -87,7 +88,7 @@ class Billboard < ApplicationRecord
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
 
-  scope :approved_and_published, -> { where(approved: true, published: true) }
+  scope :approved_and_published, -> { where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current) }
 
   scope :search_ads, lambda { |term|
                        where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
@@ -273,6 +274,12 @@ class Billboard < ApplicationRecord
     errors.add(:type_of, "must be in_house if billboard is a Home Hero")
   end
 
+  def validate_expiration_approval
+    return unless expires_at.present? && expires_at < Time.current && approved?
+
+    errors.add(:approved, "cannot be set to true if billboard has expired")
+  end
+
   def audience_segment_type
     @audience_segment_type ||= audience_segment&.type_of
   end
@@ -371,6 +378,12 @@ class Billboard < ApplicationRecord
 
   def score
     0 # Just to allow this to repond to .score for abuse reports
+  end
+
+  def check_and_handle_expiration
+    return unless expires_at.present? && expires_at < Time.current && approved?
+
+    update_column(:approved, false)
   end
 
   private
