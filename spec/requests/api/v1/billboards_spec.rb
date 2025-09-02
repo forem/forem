@@ -55,7 +55,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "page_id", "counts_tabulated_at",
                           "exclude_role_names", "target_role_names", "include_subforem_ids", "prefer_paired_with_billboard_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
-                          "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
+                          "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -76,7 +76,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "page_id", "prefer_paired_with_billboard_id",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
-                          "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
+                          "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -143,7 +143,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "special_behavior",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
-                          "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id")
+                          "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at")
       end
 
       it "also accepts target geolocations as an array" do
