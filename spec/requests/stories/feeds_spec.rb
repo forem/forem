@@ -78,6 +78,15 @@ RSpec.describe "Stories::Feeds" do
           "tag_list" => article.decorate.cached_tag_list_array,
         )
       end
+
+      it "sets cache control headers for edge caching" do
+        get stories_feed_path
+
+        expect(response.headers["Cache-Control"]).to eq("public, no-cache")
+        expect(response.headers["X-Accel-Expires"]).to eq("60")
+        expect(response.headers["Surrogate-Control"]).to include("max-age=60")
+        expect(response.headers["Surrogate-Control"]).to include("stale-if-error=26400")
+      end
     end
 
     context "when rendering an article that is pinned" do
@@ -189,6 +198,24 @@ RSpec.describe "Stories::Feeds" do
           "current_user_signed_in" => true
         )
       end
+
+      it "does not set cache control headers for edge caching" do
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+        get stories_feed_path, headers: { "Authorization" => "Bearer #{token}" }
+
+        # Should not have the specific edge caching headers we set for signed out users
+        expect(response.headers["X-Accel-Expires"]).to be_nil
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        
+        # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
+        if response.headers["Cache-Control"]
+          expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
+        end
+      end
     end
 
 
@@ -227,6 +254,19 @@ RSpec.describe "Stories::Feeds" do
           "organization" => hash_including("name" => organization.name),
           "tag_list" => article.decorate.cached_tag_list_array,
         )
+      end
+
+      it "does not set cache control headers for edge caching" do
+        get stories_feed_path
+
+        # Should not have the specific edge caching headers we set for signed out users
+        expect(response.headers["X-Accel-Expires"]).to be_nil
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        
+        # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
+        if response.headers["Cache-Control"]
+          expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
+        end
       end
     end
 
