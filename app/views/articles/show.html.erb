@@ -26,6 +26,7 @@
     <script type="application/ld+json">
       <%= @article_json_ld.to_json.html_safe %>
     </script>
+
   <% end %>
 <% end %>
 
@@ -66,41 +67,8 @@
   <% end %>
 <% end %>
 
-<% if @article.type_of == "fullscreen_embed" %>
-    <style>
-      footer {
-        display: none;
-      }
-      #fullscreen-body iframe {
-        width:calc(100% - 60px);
-        height: calc(100vh - 54px);
-        border: none;
-        position: absolute;
-        top: 54px;
-        left: 60px;
-      }
-      @media (max-width: 767px) {
-        #fullscreen-body iframe {
-          width: 100%;
-          left: 0;
-          height: calc(100vh - 100px);
-        }
-      }
-      .crayons-layout__sidebar-left {
-        padding-top: 20px;
-        width: 60px;
-        left: 0;
-      }
-    </style>
-  <div data-article-id="<%= @article.id %>" id="article-body">
-    <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
-      <%= render "articles/actions" %>
-    </aside>
-    <div id="fullscreen-body">
-      <%= @article.processed_html_final.html_safe %>
-    </div>
-  </div>
-  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+    <% if @article.type_of == "fullscreen_embed" %>
+      <%= render "articles/fullscreen_embed" %>
 <% else %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
     <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
