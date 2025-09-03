@@ -52,7 +52,7 @@
   <% end %>
 
   <% unless @root_comment %>
-    <article class="crayons-article crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0">
+    <article class="crayons-article crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0 hidden-shell-innerhidden">
       <header class="crayons-article__header">
         <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
           <div class="crayons-article__cover">
