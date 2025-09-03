@@ -9,6 +9,10 @@ RSpec.describe "ArticlesCreate" do
     sign_in user
   end
 
+  it "fails" do
+    expect(0).to eq(1)
+  end
+
   it "creates ordinary article with proper params" do
     post "/articles", params: {
       article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }

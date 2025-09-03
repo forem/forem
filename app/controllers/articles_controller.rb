@@ -59,8 +59,6 @@ class ArticlesController < ApplicationController
 
     render layout: false, content_type: "application/xml", locals: {
       articles: @articles,
-
-
       user: @user,
       tag: @tag,
       latest: @latest,
