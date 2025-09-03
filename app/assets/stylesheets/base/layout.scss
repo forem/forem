@@ -339,7 +339,7 @@
 }
 
 // .layout-sidebar-visible .crayons-layout should shift layout to the right
-body[data-side-nav-visible='true'] {
+body[data-side-nav-visible='true']:not(.hidden-shell) {
   @media (min-width: $breakpoint-m) {
     .crayons-side-nav {
       display: block; /* Show sidebar on larger screens */
