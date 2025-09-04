@@ -105,6 +105,12 @@ class Billboard < ApplicationRecord
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
                        role_names: nil, prefer_paired_with_billboard_id: nil)
+    # Check delivery rate configuration first - return nil early if rate check fails
+    return unless BillboardPlacementAreaConfig.should_fetch_billboard?(
+      placement_area: area,
+      user_signed_in: user_signed_in,
+    )
+
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
