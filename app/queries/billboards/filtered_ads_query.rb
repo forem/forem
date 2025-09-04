@@ -80,7 +80,9 @@ module Billboards
       @filtered_billboards = type_of_ads
 
       # Apply survey completion filtering if user is signed in
-      @filtered_billboards = survey_completion_filtered_ads if @user_signed_in
+      if @user_signed_in && ApplicationConfig["SKIP_SURVEY_COMPLETION_FILTERING"] != "yes"
+        @filtered_billboards = survey_completion_filtered_ads
+      end
 
       @filtered_billboards = @filtered_billboards.order(success_rate: :desc)
     end
