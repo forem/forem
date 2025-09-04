@@ -45,6 +45,9 @@ class PollVotesController < ApplicationController
       poll_vote.save!
     end
 
+    # Check if this vote completes a survey
+    SurveyCompletionService.check_and_mark_completion(user: current_user, poll: poll)
+
     render json: { voting_data: poll.voting_data,
                    poll_id: poll.id,
                    user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,

@@ -19,6 +19,9 @@ class PollTextResponsesController < ApplicationController
     )
 
     if @text_response.save
+      # Check if this response completes a survey
+      SurveyCompletionService.check_and_mark_completion(user: current_user, poll: @poll)
+
       render json: { success: true, message: "Text response submitted successfully" }
     else
       render json: { success: false, errors: @text_response.errors.full_messages }, status: :unprocessable_entity

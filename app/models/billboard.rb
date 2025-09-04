@@ -88,7 +88,9 @@ class Billboard < ApplicationRecord
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
 
-  scope :approved_and_published, -> { where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current) }
+  scope :approved_and_published, lambda {
+                                   where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
+                                 }
 
   scope :search_ads, lambda { |term|
                        where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
@@ -296,6 +298,7 @@ class Billboard < ApplicationRecord
       "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(","),
+      "exclude_survey_ids" => exclude_survey_ids.join(","),
       "target_geolocations" => target_geolocations.map(&:to_iso3166)
     }
     super(options.merge(except: %i[tags tag_list target_geolocations])).merge(overrides)
@@ -330,6 +333,12 @@ class Billboard < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :include_subforem_ids, (adjusted_input || [])
+  end
+
+  def exclude_survey_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :exclude_survey_ids, (adjusted_input || [])
   end
 
   def style_string
@@ -384,6 +393,15 @@ class Billboard < ApplicationRecord
     return unless expires_at.present? && expires_at < Time.current && approved?
 
     update_column(:approved, false)
+  end
+
+  # Check if a user should be excluded from seeing this billboard based on survey completion
+  def exclude_user_due_to_survey_completion?(user)
+    return false unless exclude_survey_completions?
+    return false if user.blank?
+    return false if exclude_survey_ids.blank?
+
+    SurveyCompletion.user_completed_any?(user: user, survey_ids: exclude_survey_ids)
   end
 
   private
