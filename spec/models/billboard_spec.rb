@@ -870,6 +870,86 @@ RSpec.describe Billboard do
       )
     end
 
+    context "when delivery rate configuration is set" do
+      let!(:config) do
+        BillboardPlacementAreaConfig.create!(placement_area: "digest_second", signed_in_rate: 0, signed_out_rate: 50)
+      end
+
+      it "returns nil when delivery rate is 0%" do
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_nil
+      end
+
+      it "returns nil when delivery rate is 0% for signed out users" do
+        config.update!(signed_out_rate: 0)
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: false,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_nil
+      end
+
+      it "returns a billboard when delivery rate is 100%" do
+        config.update!(signed_in_rate: 100, signed_out_rate: 100)
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_present
+        expect([paired_bb, other_bb]).to include(result)
+      end
+
+      it "respects different rates for signed in vs signed out users" do
+        config.update!(signed_in_rate: 100, signed_out_rate: 0)
+
+        # Signed in user should get a billboard
+        signed_in_result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+        expect(signed_in_result).to be_present
+
+        # Signed out user should get nil
+        signed_out_result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: false,
+          user_tags: nil,
+          user_id: nil,
+        )
+        expect(signed_out_result).to be_nil
+      end
+
+      it "uses default 100% rate when no config exists for placement area" do
+        config.destroy!
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_present
+        expect([paired_bb, other_bb]).to include(result)
+      end
+    end
+
     context "when prefer_paired_with_billboard_id is provided" do
       xit "returns the billboard matching that ID" do
         result = described_class.for_display(
