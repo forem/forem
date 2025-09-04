@@ -102,7 +102,7 @@
     </div>
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
-  <% long_bb = billboard.processed_html_final.size > 750 %>
+  <% long_bb = billboard.processed_html_final.size > 750 && billboard.processed_html_final.exclude?("ltag-survey") %>
   <div class="crayons-card crayons-card--secondary crayons-bb js-billboard body-billboard mb-2 mt-6"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
