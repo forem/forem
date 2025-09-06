@@ -1,8 +1,5 @@
 {
   "name": "Forem DEVcontainer",
-  "runArgs": [
-    "--network=host"
-  ],
   "dockerComposeFile": "../docker-compose.yml",
   "service": "devcontainer",
   "runServices": [
