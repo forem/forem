@@ -66,6 +66,7 @@ services:
       - history:/usr/local/hist
       - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
       - /var/run/docker.sock:/var/run/docker-host.sock
+    network_mode: host
     command: sleep infinity
     tmpfs:
       - /workspaces/forem/tmp/pids
@@ -160,4 +161,3 @@ volumes:
   redis:
   assets:
   builds:
-
