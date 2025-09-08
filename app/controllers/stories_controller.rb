@@ -242,9 +242,9 @@ class StoriesController < ApplicationController
 
   def redirect_if_inactive_in_subforem_for_user
     return unless @comments.none? &&
-                    @pinned_stories.none? &&
-                    @stories.none? &&
-                    RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+      @pinned_stories.none? &&
+      @stories.none? &&
+      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
     subforem = Subforem.find(RequestStore.store[:default_subforem_id])
     redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
@@ -252,8 +252,8 @@ class StoriesController < ApplicationController
 
   def redirect_if_inactive_in_subforem_for_organization
     return unless @stories.none? &&
-                    RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
-    
+      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+
     subforem = Subforem.find(RequestStore.store[:default_subforem_id])
     redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
   end
@@ -404,7 +404,13 @@ class StoriesController < ApplicationController
   end
 
   def set_article_json_ld
-    @article_json_ld = {
+    @article_json_ld = build_article_json_ld
+  end
+
+  private
+
+  def build_article_json_ld
+    json_ld = {
       "@context": "http://schema.org",
       "@type": "Article",
       mainEntityOfPage: {
@@ -436,6 +442,98 @@ class StoriesController < ApplicationController
       datePublished: @article.published_timestamp,
       dateModified: @article.edited_at&.iso8601 || @article.published_timestamp
     }
+
+    # Add discussion forum structured data if article has comments
+    return json_ld unless @article.comments_count.positive?
+
+    # Add main discussion forum posting for the article
+    json_ld[:mainEntity] = {
+      "@type": "DiscussionForumPosting",
+      "@id": "#article-discussion-#{@article.id}",
+      headline: @article.title,
+      text: @article.processed_html_final,
+      author: {
+        "@type": "Person",
+        name: @user.name,
+        url: URL.user(@user)
+      },
+      datePublished: @article.published_timestamp,
+      dateModified: @article.edited_at&.iso8601 || @article.published_timestamp,
+      url: URL.article(@article),
+      interactionStatistic: [
+        {
+          "@type": "InteractionCounter",
+          interactionType: "https://schema.org/CommentAction",
+          userInteractionCount: @article.comments_count
+        },
+        {
+          "@type": "InteractionCounter",
+          interactionType: "https://schema.org/LikeAction",
+          userInteractionCount: @article.public_reactions_count
+        },
+      ]
+    }
+
+    # Add comment structured data
+    comments_data = fetch_comments_for_json_ld
+    return json_ld unless comments_data.any?
+
+    json_ld[:mainEntity][:comment] = comments_data
+    json_ld
+  end
+
+  private
+
+  def fetch_comments_for_json_ld
+    # Fetch top-level comments with their nested replies
+    comments_tree = Comments::Tree.for_commentable(@article, limit: 10, order: "top", include_negative: false)
+
+    comments_data = []
+    comments_tree.each do |root_comment, sub_comments|
+      comment_data = build_comment_json_ld(root_comment)
+
+      # Add nested replies
+      if sub_comments.any?
+        comment_data[:comment] = sub_comments.map { |comment, _| build_comment_json_ld(comment) }
+      end
+
+      comments_data << comment_data
+    end
+
+    comments_data
+  end
+
+  def build_comment_json_ld(comment)
+    comment_data = {
+      "@type": "Comment",
+      "@id": "#comment-#{comment.id}",
+      text: comment.processed_html_final,
+      author: {
+        "@type": "Person",
+        name: comment.user.name,
+        url: URL.user(comment.user)
+      },
+      datePublished: comment.created_at.iso8601,
+      dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
+      url: URL.comment(comment),
+      interactionStatistic: [
+        {
+          "@type": "InteractionCounter",
+          interactionType: "https://schema.org/LikeAction",
+          userInteractionCount: comment.public_reactions_count
+        },
+      ]
+    }
+
+    # Add parent comment reference if this is a reply
+    if comment.ancestry.present?
+      comment_data[:parentItem] = {
+        "@type": "Comment",
+        "@id": "#comment-#{comment.parent.id}"
+      }
+    end
+
+    comment_data
   end
 
   def seo_optimized_images
@@ -478,5 +576,38 @@ class StoriesController < ApplicationController
     return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
 
     "top"
+  end
+
+  def build_comment_json_ld(comment)
+    comment_data = {
+      "@type": "Comment",
+      "@id": "#comment-#{comment.id}",
+      text: comment.processed_html_final,
+      author: {
+        "@type": "Person",
+        name: comment.user.name,
+        url: URL.user(comment.user)
+      },
+      datePublished: comment.created_at.iso8601,
+      dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
+      url: URL.comment(comment),
+      interactionStatistic: [
+        {
+          "@type": "InteractionCounter",
+          interactionType: "https://schema.org/LikeAction",
+          userInteractionCount: comment.public_reactions_count
+        },
+      ]
+    }
+
+    # Add parent comment reference if this is a reply
+    if comment.ancestry.present?
+      comment_data[:parentItem] = {
+        "@type": "Comment",
+        "@id": "#comment-#{comment.parent.id}"
+      }
+    end
+
+    comment_data
   end
 end

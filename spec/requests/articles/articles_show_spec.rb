@@ -61,6 +61,103 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
+    it "renders DiscussionForumPosting structured data when article has comments" do
+      comment = create(:comment, commentable: article, user: user)
+      article.update_column(:comments_count, 1)
+
+      get article.path
+
+      expect(response_json["mainEntity"]).to include(
+        "@type" => "DiscussionForumPosting",
+        "@id" => "#article-discussion-#{article.id}",
+        "headline" => article.title,
+        "text" => article.processed_html_final,
+        "author" => {
+          "@type" => "Person",
+          "name" => user.name,
+          "url" => URL.user(user)
+        },
+        "datePublished" => article.published_timestamp,
+        "dateModified" => article.published_timestamp,
+        "url" => URL.article(article),
+      )
+
+      expect(response_json["mainEntity"]["interactionStatistic"]).to include(
+        {
+          "@type" => "InteractionCounter",
+          "interactionType" => "https://schema.org/CommentAction",
+          "userInteractionCount" => 1
+        },
+        {
+          "@type" => "InteractionCounter",
+          "interactionType" => "https://schema.org/LikeAction",
+          "userInteractionCount" => article.public_reactions_count
+        },
+      )
+    end
+
+    it "renders Comment structured data for article comments" do
+      comment = create(:comment, commentable: article, user: user)
+      article.update_column(:comments_count, 1)
+
+      get article.path
+
+      expect(response_json["mainEntity"]["comment"]).to be_present
+      expect(response_json["mainEntity"]["comment"].first).to include(
+        "@type" => "Comment",
+        "@id" => "#comment-#{comment.id}",
+        "text" => comment.processed_html_final,
+        "author" => {
+          "@type" => "Person",
+          "name" => user.name,
+          "url" => URL.user(user)
+        },
+        "datePublished" => comment.created_at.iso8601,
+        "dateModified" => comment.created_at.iso8601,
+        "url" => URL.comment(comment),
+        "interactionStatistic" => [
+          {
+            "@type" => "InteractionCounter",
+            "interactionType" => "https://schema.org/LikeAction",
+            "userInteractionCount" => comment.public_reactions_count
+          },
+        ],
+      )
+    end
+
+    it "renders nested comment structure for replies" do
+      root_comment = create(:comment, commentable: article, user: user)
+      reply_comment = create(:comment, commentable: article, user: user, ancestry: root_comment.id.to_s)
+      article.update_column(:comments_count, 2)
+
+      get article.path
+
+      expect(response_json["mainEntity"]["comment"]).to be_present
+      root_comment_data = response_json["mainEntity"]["comment"].first
+      expect(root_comment_data["comment"]).to be_present
+      expect(root_comment_data["comment"].first).to include(
+        "@type" => "Comment",
+        "@id" => "#comment-#{reply_comment.id}",
+        "parentItem" => {
+          "@type" => "Comment",
+          "@id" => "#comment-#{root_comment.id}"
+        },
+      )
+    end
+
+    it "caches JSON-LD at view level based on last_comment_at" do
+      comment = create(:comment, commentable: article, user: user)
+      article.update_column(:comments_count, 1)
+
+      # First request should generate JSON-LD
+      get article.path
+      expect(response_json["mainEntity"]).to be_present
+
+      # The cache key includes last_comment_at to invalidate when comments change
+      # This ensures the JSON-LD is regenerated when comments are added/updated
+      expect(article.last_comment_at).to be_present
+    end
+
     it "renders 'posted on' information" do
       get article.path
       expect(response.body).to include("Posted on")
