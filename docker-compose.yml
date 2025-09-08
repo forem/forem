@@ -69,6 +69,7 @@ services:
     command: sleep infinity
     tmpfs:
       - /workspaces/forem/tmp/pids
+    network_mode: host
     ports:
       - '3000:3000'
 
@@ -100,6 +101,7 @@ services:
     environment:
       PSQL_HISTFILE: /usr/local/hist/.psql_history
       POSTGRES_PASSWORD: postgres
+    network_mode: host
     ports:
       - 5432
     healthcheck:
@@ -110,6 +112,7 @@ services:
     image: redis:7.0-alpine
     volumes:
       - redis:/data
+    network_mode: host
     ports:
       - 6379
     healthcheck:
@@ -160,4 +163,3 @@ volumes:
   redis:
   assets:
   builds:
-
