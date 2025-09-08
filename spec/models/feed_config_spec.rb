@@ -330,6 +330,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.general_past_day_bonus_weight = 19.0
       feed_config.recently_active_past_day_bonus_weight = 20.0
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
+      feed_config.recent_page_views_shuffle_weight = 22.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -367,6 +368,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.general_past_day_bonus_weight).to eq(19.0 * 1.1)
       expect(clone.recently_active_past_day_bonus_weight).to eq(20.0 * 1.1)
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
+      expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -392,6 +394,7 @@ RSpec.describe FeedConfig, type: :model do
         "compellingness_score_weight",
         "language_match_weight",
         "subforem_follow_weight", # Added new weight to check
+        "recent_page_views_shuffle_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",

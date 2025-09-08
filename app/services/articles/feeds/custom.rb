@@ -159,15 +159,48 @@ module Articles
         
         return articles unless all_recent
         
-        # Split articles into top 5 and the rest
-        top_five = articles.first(5)
-        rest = articles[5..-1] || []
+        # Use dynamic shuffle count only if recent_page_views_shuffle_weight > 0
+        shuffle_count = if @feed_config.recent_page_views_shuffle_weight > 0.0
+                          calculate_dynamic_shuffle_count
+                        else
+                          5 # Default behavior
+                        end
         
-        # Randomly shuffle only the top 5 articles
-        shuffled_top_five = top_five.shuffle
+        # Split articles into top N (based on shuffle count) and the rest
+        top_articles = articles.first(shuffle_count)
+        rest = articles[shuffle_count..-1] || []
         
-        # Return shuffled top 5 + unshuffled rest
-        shuffled_top_five + rest
+        # Randomly shuffle the top articles
+        shuffled_top_articles = top_articles.shuffle
+        
+        # Return shuffled top articles + unshuffled rest
+        shuffled_top_articles + rest
+      end
+
+      def calculate_dynamic_shuffle_count
+        return 5 unless @user&.user_activity&.recently_viewed_articles&.any?
+        
+        # Get the most recent page view timestamp
+        most_recent_page_view = @user.user_activity.recently_viewed_articles.first
+        return 5 unless most_recent_page_view&.size >= 2
+        
+        begin
+          most_recent_timestamp = most_recent_page_view[1].to_datetime
+          hours_since_last_view = ((Time.current - most_recent_timestamp) / 1.hour).ceil
+          
+          # Calculate base shuffle count: 20 for within 1 hour, decreasing by 1 for each additional hour
+          # Minimum of 5 (original behavior)
+          base_shuffle_count = [21 - hours_since_last_view, 5].max
+          
+          # Apply the weight multiplier
+          weighted_shuffle_count = (base_shuffle_count * @feed_config.recent_page_views_shuffle_weight).round
+          
+          # Ensure minimum of 5 and maximum of 20
+          [[weighted_shuffle_count, 5].max, 20].min
+        rescue StandardError
+          # If there's any error parsing the timestamp, fall back to default
+          5
+        end
       end
 
       # Preserve the public interface
