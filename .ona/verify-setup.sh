@@ -12,7 +12,7 @@ fi
 # Check if .env file exists
 if [ -f .env ]; then
     echo "✅ .env file exists"
-    
+
     # Check for Ona-specific configurations
     if grep -q "app.ona.dev" .env; then
         echo "✅ Ona domain configuration found"
