@@ -12,16 +12,30 @@ module Ai
 
     ##
     # Asks the AI to label the article and returns the label.
+    # Retries up to 2 times on error before falling back to default.
     #
     # @return [String] The moderation label for the article.
     def label
-      prompt = build_prompt
-      response = @ai_client.call(prompt)
-      parse_response(response)
-    rescue StandardError => e
-      Rails.logger.error("Content Moderation Labeling failed: #{e}")
-      # Fallback to a safe default
-      "no_moderation_label"
+      attempt = 0
+      max_retries = 2
+
+      begin
+        attempt += 1
+        prompt = build_prompt
+        response = @ai_client.call(prompt)
+        parse_response(response)
+      rescue StandardError => e
+        Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
+        
+        if attempt <= max_retries
+          Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1})")
+          retry
+        else
+          Rails.logger.error("Content Moderation Labeling failed after #{max_retries + 1} attempts, falling back to default")
+          # Fallback to a safe default after all retries exhausted
+          "no_moderation_label"
+        end
+      end
     end
 
     private
