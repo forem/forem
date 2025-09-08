@@ -510,8 +510,8 @@ class StoriesController < ApplicationController
       text: comment.processed_html_final,
       author: {
         "@type": "Person",
-        name: comment.user.name,
-        url: URL.user(comment.user)
+        name: comment&.user&.name,
+        url: URL.user(comment&.user)
       },
       datePublished: comment.created_at.iso8601,
       dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
@@ -529,7 +529,7 @@ class StoriesController < ApplicationController
     if comment.ancestry.present?
       comment_data[:parentItem] = {
         "@type": "Comment",
-        "@id": "#comment-#{comment.parent.id}"
+        "@id": "#comment-#{comment&.parent&.id}"
       }
     end
 
@@ -604,7 +604,7 @@ class StoriesController < ApplicationController
     if comment.ancestry.present?
       comment_data[:parentItem] = {
         "@type": "Comment",
-        "@id": "#comment-#{comment.parent.id}"
+        "@id": "#comment-#{comment&.parent&.id}"
       }
     end
 
