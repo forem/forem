@@ -511,7 +511,7 @@ class StoriesController < ApplicationController
       author: {
         "@type": "Person",
         name: comment&.user&.name,
-        url: URL.user(comment&.user&)
+        url: URL.user(comment&.user)
       },
       datePublished: comment.created_at.iso8601,
       dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
