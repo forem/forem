@@ -1,6 +1,7 @@
 class Survey < ApplicationRecord
   has_many :polls, -> { order(:position) }, dependent: :nullify
   has_many :poll_votes, through: :polls
+  has_many :survey_completions, dependent: :destroy
 
   # Check if a user has completed all polls in this survey in their latest session
   def completed_by_user?(user)
@@ -47,5 +48,20 @@ class Survey < ApplicationRecord
   # Generate a new session number for a user
   def generate_new_session(user)
     get_latest_session(user) + 1
+  end
+
+  # Mark a survey as completed for a user and create a SurveyCompletion record
+  def mark_completed_by_user!(user)
+    return false unless user
+    return false unless completed_by_user?(user)
+
+    SurveyCompletion.mark_completed!(user: user, survey: self)
+  end
+
+  # Check if a user has a completion record for this survey
+  def completion_recorded_for_user?(user)
+    return false unless user
+
+    survey_completions.exists?(user: user)
   end
 end

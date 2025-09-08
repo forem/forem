@@ -20,18 +20,23 @@
     text-align: left;
     font-size: 1.4em;
     color: var(--body-color);
+    padding-top: 10px;
   }
 }
 
 .survey-poll {
-  padding-bottom: 1em;
+  padding-bottom: 1.8em;
   border-bottom: 1px solid var(--form-border, #eee);
   margin-bottom: 1em;
 
   h3 {
     margin: 15px 0px 20px !important;
-    font-size: 1.1em !important;
+    font-size: 1.05em !important;
+    font-weight: 500 !important;
     color: var(--body-color);
+    padding: 28px 0;
+    border-bottom: 1px solid var(--form-border, #eee);
+    border-top: 1px solid var(--form-border, #eee);
   }
 
   &.survey-poll-long-question {
