@@ -36,7 +36,11 @@ module Stories
 
     def set_number_of_articles(tag:)
       @num_published_articles = if tag.requires_approval?
-                                  tag.articles.published.from_subforem.approved.count
+                                  # Use a more specific cache key for approval-required tags
+                                  Rails.cache.fetch("#{tag.cache_key}/approved-article-count",
+                                                    expires_in: 1.hour) do
+                                    tag.articles.published.from_subforem.approved.count
+                                  end
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
                                                     expires_in: 2.hours) do
@@ -49,7 +53,8 @@ module Stories
 
     # @raise [ActiveRecord::NotFound] if we don't have an "established" tag
     def set_stories(number_of_articles:, page:, tag:)
-      stories = Articles::Feeds::Tag.call(tag.name, number_of_articles: number_of_articles, page: page)
+      # Pass the tag object to avoid double lookup
+      stories = Articles::Feeds::Tag.call(tag, number_of_articles: number_of_articles, page: page)
 
       stories = stories.approved if tag.requires_approval?
 
@@ -58,7 +63,8 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.includes(:subforem).from_subforem.limited_column_select
+      # Remove redundant includes since they're already in the service
+      stories = stories.full_posts.from_subforem.limited_column_select
       @stories = stories.decorate
     end
 
@@ -74,6 +80,12 @@ module Stories
     # @return [FalseClass] if we do not
     def established?(stories:, tag:)
       return true if tag.supported?
+      
+      # Use cached count instead of exists? query for better performance
+      # If we have a cached count > 0, we know there are published stories
+      return true if @num_published_articles&.positive?
+      
+      # Fallback to exists? check only if we don't have cached count
       return true if stories.published.from_subforem.exists?
 
       false

@@ -25,9 +25,14 @@ module Taggable
       when String, Symbol
         cached_tagged_with(tags)
       when Array
-        tags
-          .map { |tag| cached_tagged_with(tag) }
-          .reduce { |acc, elem| acc.or(elem) }
+        # Optimize for multiple tags by using a single regex with alternation
+        # This is more efficient than multiple OR queries
+        if tags.size == 1
+          cached_tagged_with(tags.first)
+        else
+          tag_pattern = tags.map { |tag| "[[:<:]]#{Regexp.escape(tag.to_s)}[[:>:]]" }.join("|")
+          where("cached_tag_list ~ ?", "(#{tag_pattern})")
+        end
       when Tag
         cached_tagged_with(tags.name)
       else
