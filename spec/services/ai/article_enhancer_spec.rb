@@ -88,11 +88,11 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
     let!(:react_tag) { create(:tag, name: "react", supported: true, hotness_score: 80, short_summary: "React JavaScript library") }
 
     context "when article has no tags and candidate tags exist" do
+      let(:enhancer) { described_class.new(article) }
+      
       before do
-        # Mock Tag.from_subforem to return our test tags
-        allow(Tag).to receive(:from_subforem).and_return(
-          double(supported: double(order: double(limit: [javascript_tag, webdev_tag, react_tag])))
-        )
+        # Mock the get_candidate_tags method directly
+        allow(enhancer).to receive(:get_candidate_tags).and_return([javascript_tag, webdev_tag, react_tag])
         
         # Mock the two AI calls for the two-pass approach
         allow(ai_client).to receive(:call)
@@ -100,12 +100,12 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
       end
 
       it "returns suggested tags from two-pass selection" do
-        result = described_class.new(article).generate_tags
+        result = enhancer.generate_tags
         expect(result).to eq(["javascript", "webdev"])
       end
 
       it "calls AI twice for two-pass selection" do
-        described_class.new(article).generate_tags
+        enhancer.generate_tags
         expect(ai_client).to have_received(:call).exactly(2).times
       end
     end
@@ -124,52 +124,52 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
     end
 
     context "when no candidate tags exist" do
+      let(:enhancer) { described_class.new(article) }
+      
       before do
-        # Mock Tag.from_subforem to return empty result
-        allow(Tag).to receive(:from_subforem).and_return(
-          double(supported: double(order: double(limit: [])))
-        )
+        # Mock get_candidate_tags to return empty result
+        allow(enhancer).to receive(:get_candidate_tags).and_return([])
         allow(ai_client).to receive(:call)
       end
 
       it "returns empty array without calling AI" do
-        result = described_class.new(article).generate_tags
+        result = enhancer.generate_tags
         expect(result).to eq([])
         expect(ai_client).not_to have_received(:call)
       end
     end
 
     context "when first pass returns no valid tags" do
+      let(:enhancer) { described_class.new(article) }
+      
       before do
-        allow(Tag).to receive(:from_subforem).and_return(
-          double(supported: double(order: double(limit: [javascript_tag, webdev_tag])))
-        )
+        allow(enhancer).to receive(:get_candidate_tags).and_return([javascript_tag, webdev_tag])
         # AI returns tags that don't match our candidate tags
         allow(ai_client).to receive(:call).and_return("invalidtag,anotherbadtag")
       end
 
       it "returns empty array after first pass" do
-        result = described_class.new(article).generate_tags
+        result = enhancer.generate_tags
         expect(result).to eq([])
         expect(ai_client).to have_received(:call).once
       end
     end
 
     context "when AI raises an error" do
+      let(:enhancer) { described_class.new(article) }
+      
       before do
-        allow(Tag).to receive(:from_subforem).and_return(
-          double(supported: double(order: double(limit: [javascript_tag, webdev_tag])))
-        )
+        allow(enhancer).to receive(:get_candidate_tags).and_return([javascript_tag, webdev_tag])
         allow(ai_client).to receive(:call).and_raise(StandardError, "API Error")
       end
 
       it "returns empty array as fallback after retries" do
-        result = described_class.new(article).generate_tags
+        result = enhancer.generate_tags
         expect(result).to eq([])
       end
 
       it "retries once before falling back" do
-        described_class.new(article).generate_tags
+        enhancer.generate_tags
         expect(ai_client).to have_received(:call).exactly(2).times
       end
 
@@ -177,7 +177,7 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
         allow(Rails.logger).to receive(:error)
         allow(Rails.logger).to receive(:info)
         
-        described_class.new(article).generate_tags
+        enhancer.generate_tags
         
         expect(Rails.logger).to have_received(:error).with(/Tag generation failed \(attempt 1\/2\)/)
         expect(Rails.logger).to have_received(:info).with(/Retrying tag generation \(attempt 2\/2\)/)

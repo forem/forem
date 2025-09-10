@@ -45,15 +45,15 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         javascript_tag = Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
         webdev_tag = Tag.find_or_create_by(name: "webdev") { |tag| tag.supported = true }
         
-        # Mock the AI and tag selection
+        # Mock the AI client
         ai_client = instance_double(Ai::Base)
         allow(Ai::Base).to receive(:new).and_return(ai_client)
         allow(ai_client).to receive(:call).and_return("0.4", "javascript,webdev", "javascript,webdev")
         
-        # Mock tag selection to return our test tags
-        allow(Tag).to receive(:from_subforem).and_return(
-          double(supported: double(order: double(limit: [javascript_tag, webdev_tag])))
-        )
+        # Mock the enhancer's get_candidate_tags method
+        enhancer = Ai::ArticleEnhancer.new(article)
+        allow(Ai::ArticleEnhancer).to receive(:new).and_return(enhancer)
+        allow(enhancer).to receive(:get_candidate_tags).and_return([javascript_tag, webdev_tag])
         
         allow(Spam::Handler).to receive(:handle_article!)
         allow(article).to receive(:update_score)
@@ -94,10 +94,10 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       it "logs error but continues processing" do
         allow(Spam::Handler).to receive(:handle_article!)
         
-        # Mock AI to raise an error
-        ai_client = instance_double(Ai::Base)
-        allow(Ai::Base).to receive(:new).and_return(ai_client)
-        allow(ai_client).to receive(:call).and_raise(StandardError, "Enhancement error")
+        # Mock enhancer to raise an error during enhancement
+        enhancer = instance_double(Ai::ArticleEnhancer)
+        allow(Ai::ArticleEnhancer).to receive(:new).and_return(enhancer)
+        allow(enhancer).to receive(:calculate_clickbait_score).and_raise(StandardError, "Enhancement error")
         allow(Rails.logger).to receive(:error)
         
         expect { worker.perform(article.id) }.not_to raise_error
