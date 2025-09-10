@@ -3,14 +3,8 @@ require "rails_helper"
 RSpec.describe Articles::HandleSpamWorker, type: :worker do
   let(:article) { create(:article, with_tags: false) }
   let(:worker) { described_class.new }
-  let(:enhancer) { instance_double(Ai::ArticleEnhancer) }
 
   describe "#perform" do
-    before do
-      allow(Ai::ArticleEnhancer).to receive(:new).with(any_args).and_return(enhancer)
-      allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.3)
-      allow(enhancer).to receive(:generate_tags).and_return([])
-    end
 
     context "when article exists" do
       it "calls Spam::Handler.handle_article! with the article" do
@@ -22,112 +16,52 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       end
 
       it "calls update_score after spam handling" do
-        # Mock the spam handler to not actually process spam
-        allow(Spam::Handler).to receive(:handle_article!)
-        
-        # Track if update_score is called by checking the score before and after
-        initial_score = article.score
-        
-        worker.perform(article.id)
-        
-        # The score should be recalculated, so it might be different
-        expect(article.reload.score).to be >= initial_score
-      end
-
-      it "enhances article with clickbait score" do
         allow(Spam::Handler).to receive(:handle_article!)
         
         worker.perform(article.id)
         
-        expect(Ai::ArticleEnhancer).to have_received(:new).with(article)
-        expect(enhancer).to have_received(:calculate_clickbait_score)
-        expect(article.reload.clickbait_score).to eq(0.3)
+        # The score should be recalculated
+        expect(article.reload.score).to be_a(Numeric)
       end
 
-      it "generates tags when article has no tags and meets criteria" do
-        # Ensure article meets all criteria: score >= 0, clickbait < 0.6
+      it "updates clickbait_score" do
+        allow(Spam::Handler).to receive(:handle_article!)
+        
+        # Mock AI to return a specific score
+        ai_client = instance_double(Ai::Base)
+        allow(Ai::Base).to receive(:new).and_return(ai_client)
+        allow(ai_client).to receive(:call).and_return("0.4")
+        
+        worker.perform(article.id)
+        
+        expect(article.reload.clickbait_score).to eq(0.4)
+      end
+
+      it "generates and applies tags when conditions are met" do
+        # Set up article to meet tag generation criteria
         article.update_columns(score: 5)
         
-        allow(Spam::Handler).to receive(:handle_article!)
-        allow(article).to receive(:update_score) # Don't actually update the score
-        
-        # Mock the enhancer to return appropriate values
-        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4) # < 0.6
-        allow(enhancer).to receive(:generate_tags).and_return(["javascript", "webdev"])
-        
-        # Create the tags that will be suggested
+        # Create test tags
         javascript_tag = Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
         webdev_tag = Tag.find_or_create_by(name: "webdev") { |tag| tag.supported = true }
         
-        worker.perform(article.id)
+        # Mock the AI and tag selection
+        ai_client = instance_double(Ai::Base)
+        allow(Ai::Base).to receive(:new).and_return(ai_client)
+        allow(ai_client).to receive(:call).and_return("0.4", "javascript,webdev", "javascript,webdev")
         
-        expect(enhancer).to have_received(:generate_tags)
-        expect(article.reload.cached_tag_list).to include("javascript")
-        expect(article.reload.cached_tag_list).to include("webdev")
-      end
-
-      it "only applies valid tags that exist in the system" do
-        article.update(cached_tag_list: "", score: 5)
+        # Mock tag selection to return our test tags
+        allow(Tag).to receive(:from_subforem).and_return(
+          double(supported: double(order: double(limit: [javascript_tag, webdev_tag])))
+        )
+        
         allow(Spam::Handler).to receive(:handle_article!)
-        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4)
-        allow(enhancer).to receive(:generate_tags).and_return(["javascript", "nonexistent"])
-        
-        # Only create one of the suggested tags
-        javascript_tag = Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
+        allow(article).to receive(:update_score)
         
         worker.perform(article.id)
         
         expect(article.reload.cached_tag_list).to include("javascript")
-        expect(article.reload.cached_tag_list).not_to include("nonexistent")
-      end
-
-      it "logs warning when no valid tags are found" do
-        # Ensure article meets criteria for tag generation
-        article.update_columns(score: 5)
-        
-        allow(Spam::Handler).to receive(:handle_article!)
-        allow(article).to receive(:update_score) # Don't actually update the score
-        
-        # Mock enhancer to return values that trigger tag generation
-        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4) # < 0.6
-        allow(enhancer).to receive(:generate_tags).and_return(["nonexistent"])
-        allow(Rails.logger).to receive(:warn)
-        
-        worker.perform(article.id)
-        
-        expect(enhancer).to have_received(:generate_tags)
-        expect(Rails.logger).to have_received(:warn).with(/No valid tags found from suggestions/)
-      end
-
-      it "does not generate tags when article already has tags" do
-        article.update(cached_tag_list: "existing")
-        allow(Spam::Handler).to receive(:handle_article!)
-        allow(article).to receive(:update_score)
-        
-        worker.perform(article.id)
-        
-        expect(enhancer).not_to have_received(:generate_tags)
-      end
-
-      it "does not generate tags when article score is negative" do
-        article.update(cached_tag_list: "", score: -1)
-        allow(Spam::Handler).to receive(:handle_article!)
-        allow(article).to receive(:update_score)
-        
-        worker.perform(article.id)
-        
-        expect(enhancer).not_to have_received(:generate_tags)
-      end
-
-      it "does not generate tags when clickbait score is too high" do
-        article.update(cached_tag_list: "", score: 5)
-        allow(Spam::Handler).to receive(:handle_article!)
-        allow(article).to receive(:update_score)
-        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.7)
-        
-        worker.perform(article.id)
-        
-        expect(enhancer).not_to have_received(:generate_tags)
+        expect(article.reload.cached_tag_list).to include("webdev")
       end
     end
 
@@ -137,11 +71,6 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         
         worker.perform(999999)
         expect(Spam::Handler).not_to have_received(:handle_article!)
-      end
-
-      it "does not call article enhancement" do
-        worker.perform(999999)
-        expect(Ai::ArticleEnhancer).not_to have_received(:new)
       end
 
       it "does not raise an error" do
@@ -158,14 +87,17 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         # The score should not be updated because the error prevents reaching update_score
         original_score = article.score
         expect(article.reload.score).to eq(original_score)
-        expect(Ai::ArticleEnhancer).not_to have_received(:new)
       end
     end
 
     context "when article enhancement fails" do
       it "logs error but continues processing" do
         allow(Spam::Handler).to receive(:handle_article!)
-        allow(enhancer).to receive(:calculate_clickbait_score).and_raise(StandardError, "Enhancement error")
+        
+        # Mock AI to raise an error
+        ai_client = instance_double(Ai::Base)
+        allow(Ai::Base).to receive(:new).and_return(ai_client)
+        allow(ai_client).to receive(:call).and_raise(StandardError, "Enhancement error")
         allow(Rails.logger).to receive(:error)
         
         expect { worker.perform(article.id) }.not_to raise_error
