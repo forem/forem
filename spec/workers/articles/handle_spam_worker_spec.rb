@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Articles::HandleSpamWorker, type: :worker do
-  let(:article) { create(:article) }
+  let(:article) { create(:article, with_tags: false) }
   let(:worker) { described_class.new }
   let(:enhancer) { instance_double(Ai::ArticleEnhancer) }
 
   describe "#perform" do
     before do
-      allow(Ai::ArticleEnhancer).to receive(:new).and_return(enhancer)
+      allow(Ai::ArticleEnhancer).to receive(:new).with(any_args).and_return(enhancer)
       allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.3)
       allow(enhancer).to receive(:generate_tags).and_return([])
     end
@@ -45,8 +45,9 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       end
 
       it "generates tags when article has no tags and meets criteria" do
-        # Ensure article meets all criteria: no tags, score >= 0, clickbait < 0.6
-        article.update(cached_tag_list: "", score: 5)
+        # Ensure article meets all criteria: score >= 0, clickbait < 0.6
+        article.update_columns(score: 5)
+        
         allow(Spam::Handler).to receive(:handle_article!)
         allow(article).to receive(:update_score) # Don't actually update the score
         
@@ -82,7 +83,8 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
 
       it "logs warning when no valid tags are found" do
         # Ensure article meets criteria for tag generation
-        article.update(cached_tag_list: "", score: 5)
+        article.update_columns(score: 5)
+        
         allow(Spam::Handler).to receive(:handle_article!)
         allow(article).to receive(:update_score) # Don't actually update the score
         

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Ai::ArticleEnhancer, type: :service do
   let(:user) { create(:user, :trusted) }
-  let(:article) { create(:article, user: user, title: "How to Build Amazing Apps") }
+  let(:article) { create(:article, user: user, title: "How to Build Amazing Apps", with_tags: false) }
   let(:ai_client) { instance_double(Ai::Base) }
 
   before do
@@ -218,8 +218,6 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
       let(:enhancer) { described_class.new(article) }
       
       before do
-        # Ensure article has no tags so the method proceeds
-        article.update(cached_tag_list: "")
         allow(ai_client).to receive(:call).and_raise(StandardError, "API Error")
         # Mock get_candidate_tags to return our test tags
         allow(enhancer).to receive(:get_candidate_tags).and_return([javascript_tag, webdev_tag, react_tag])
