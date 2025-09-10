@@ -5,11 +5,10 @@ RSpec.describe "Stories::TaggedArticlesController Performance", type: :request d
   let!(:articles) do
     # Create multiple articles to test performance with realistic data
     10.times.map do |i|
-      create(:article, 
-             published: true, 
-             tags: [tag.name], 
-             score: 10 - i,
-             published_at: i.days.ago)
+      article = create(:article, published: true, tags: [tag.name], score: 10 - i)
+      # Use update_column to bypass published_at validation for past dates
+      article.update_column(:published_at, i.days.ago)
+      article
     end
   end
 
@@ -49,7 +48,7 @@ RSpec.describe "Stories::TaggedArticlesController Performance", type: :request d
 
     context "with approval required tag" do
       let(:approval_tag) { create(:tag, name: "moderated", requires_approval: true) }
-      let!(:approved_article) { create(:article, published: true, tags: [approval_tag.name]) }
+      let!(:approved_article) { create(:article, published: true, approved: true, tags: [approval_tag.name]) }
 
       it "caches approved article count separately" do
         expect(Rails.cache).to receive(:fetch)
@@ -64,7 +63,7 @@ RSpec.describe "Stories::TaggedArticlesController Performance", type: :request d
 
   describe "established? optimization" do
     let(:controller) { Stories::TaggedArticlesController.new }
-    let(:stories) { Article.tagged_with(tag.name) }
+    let(:stories) { Article.cached_tagged_with(tag.name) }
 
     before do
       controller.instance_variable_set(:@num_published_articles, 5)
