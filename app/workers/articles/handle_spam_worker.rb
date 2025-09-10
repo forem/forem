@@ -8,10 +8,13 @@ module Articles
       article = Article.find_by(id: article_id)
       return unless article
 
+      # Always run spam handling and score update
       Spam::Handler.handle_article!(article: article)
       article.reload.update_score
 
-      # Enhance article with clickbait score and tags
+      # Only enhance if clickbait score is 0 (not already processed) and score is >= 0 (good quality after spam check)
+      return unless article.clickbait_score.zero? && article.score >= 0
+
       enhance_article(article)
     end
 
@@ -22,7 +25,7 @@ module Articles
       ai_client = Ai::Base.new
       enhancer = Ai::ArticleEnhancer.new(article, ai_client: ai_client)
 
-      # Update clickbait score
+      # Calculate and update clickbait score
       clickbait_score = enhancer.calculate_clickbait_score
       article.update_column(:clickbait_score, clickbait_score)
 

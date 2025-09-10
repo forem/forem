@@ -23,8 +23,11 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         expect(article.reload.score).to be_a(Numeric)
       end
 
-      it "updates clickbait_score" do
+      it "updates clickbait_score when it's 0 and score is at least 0 after spam handling" do
         allow(Spam::Handler).to receive(:handle_article!)
+
+        # Ensure article has clickbait_score is 0 initially
+        article.update_columns(clickbait_score: 0)
 
         # Mock AI to return a specific score
         ai_client = instance_double(Ai::Base)
@@ -33,7 +36,48 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
 
         worker.perform(article.id)
 
+        # The score should be recalculated by update_score, and if it's >= 0, clickbait should be updated
         expect(article.reload.clickbait_score).to eq(0.4)
+      end
+
+      it "does not update clickbait_score when it's already greater than 0" do
+        allow(Spam::Handler).to receive(:handle_article!)
+
+        # Set clickbait_score to a non-zero value
+        article.update_columns(score: 5, clickbait_score: 0.3)
+
+        # Mock AI to return a different score
+        ai_client = instance_double(Ai::Base)
+        allow(Ai::Base).to receive(:new).and_return(ai_client)
+        allow(ai_client).to receive(:call).and_return("0.8")
+
+        worker.perform(article.id)
+
+        # Clickbait score should remain unchanged
+        expect(article.reload.clickbait_score).to eq(0.3)
+      end
+
+      it "does not update clickbait_score when article score is negative after spam handling" do
+        allow(Spam::Handler).to receive(:handle_article!)
+
+        # Set clickbait_score to 0 initially
+        article.update_columns(clickbait_score: 0)
+
+        # Mock reload to return the article with a negative score after update_score
+        allow(article).to receive(:reload).and_return(article)
+        allow(article).to receive(:update_score) do
+          article.update_column(:score, -5)
+        end
+
+        # Mock AI to return a specific score
+        ai_client = instance_double(Ai::Base)
+        allow(Ai::Base).to receive(:new).and_return(ai_client)
+        allow(ai_client).to receive(:call).and_return("0.4")
+
+        worker.perform(article.id)
+
+        # Clickbait score should remain 0 because score is negative after spam handling
+        expect(article.reload.clickbait_score).to eq(0)
       end
 
       it "generates and applies tags when conditions are met" do
@@ -41,8 +85,8 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         article.update_columns(score: 5)
 
         # Create test tags
-        javascript_tag = Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
-        webdev_tag = Tag.find_or_create_by(name: "webdev") { |tag| tag.supported = true }
+        Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
+        Tag.find_or_create_by(name: "webdev") { |tag| tag.supported = true }
 
         # Mock the AI client
         ai_client = instance_double(Ai::Base)
@@ -50,9 +94,8 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         allow(ai_client).to receive(:call).and_return("0.4", "javascript,webdev", "javascript,webdev")
 
         # Mock the enhancer's get_candidate_tags method to return the actual tags from the database
-        allow_any_instance_of(Ai::ArticleEnhancer).to receive(:get_candidate_tags).and_return(Tag.where(name: %w[
-                                                                                                          javascript webdev
-                                                                                                        ]))
+        allow_any_instance_of(Ai::ArticleEnhancer).to receive(:get_candidate_tags)
+          .and_return(Tag.where(name: %w[javascript webdev]))
 
         allow(Spam::Handler).to receive(:handle_article!)
         allow(article).to receive(:update_score)
