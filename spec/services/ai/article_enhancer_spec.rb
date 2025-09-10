@@ -112,8 +112,7 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
       before do
         # Mock the two AI calls for the two-pass approach
         allow(ai_client).to receive(:call)
-          .and_return("javascript,webdev,react") # First pass: top 10 selection
-          .then.return("javascript,webdev") # Second pass: final selection
+          .and_return("javascript,webdev,react", "javascript,webdev") # First pass, then second pass
       end
 
       it "returns suggested tags from two-pass selection" do
@@ -143,8 +142,7 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
       it "filters tags by subforem relationship" do
         # python_tag is not associated with the subforem
         allow(ai_client).to receive(:call)
-          .and_return("javascript,python") # First pass
-          .then.return("javascript") # Second pass
+          .and_return("javascript,python", "javascript") # First pass, then second pass
         
         result = described_class.new(article).generate_tags
         expect(result).to eq(["javascript"])
@@ -154,6 +152,7 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
     context "when article already has tags" do
       before do
         article.update(cached_tag_list: "existing,tags")
+        allow(ai_client).to receive(:call) # Set up spy
       end
 
       it "returns empty array without calling AI" do
@@ -165,21 +164,22 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
 
     context "when first pass returns no valid tags" do
       before do
+        # Mock AI to return invalid tags that don't exist in our test setup
         allow(ai_client).to receive(:call).and_return("invalidtag,anotherbadtag")
       end
 
-      it "returns empty array without second pass" do
+      it "returns empty array after first pass" do
         result = described_class.new(article).generate_tags
         expect(result).to eq([])
-        expect(ai_client).to have_received(:call).once # Only first pass
+        # Should call AI once for first pass, but no valid tags found so no second pass
+        expect(ai_client).to have_received(:call).once
       end
     end
 
     context "when second pass returns empty result" do
       before do
         allow(ai_client).to receive(:call)
-          .and_return("javascript,webdev") # First pass
-          .then.return("") # Second pass returns empty
+          .and_return("javascript,webdev", "") # First pass, then second pass returns empty
       end
 
       it "returns empty array" do
@@ -202,6 +202,8 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
 
     context "when AI raises an error" do
       before do
+        # Ensure article has no tags so the method proceeds
+        article.update(cached_tag_list: "")
         allow(ai_client).to receive(:call).and_raise(StandardError, "API Error")
       end
 

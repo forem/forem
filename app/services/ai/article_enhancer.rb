@@ -98,8 +98,8 @@ module Ai
     def parse_clickbait_score(response)
       return 0.0 unless response
 
-      # Extract the first number from the response
-      score = response.strip.match(/\d+\.?\d*/)&.to_s&.to_f
+      # Extract the first number from the response (including negative numbers)
+      score = response.strip.match(/-?\d+\.?\d*/)&.to_s&.to_f
       return 0.0 unless score
 
       # Ensure score is between 0.0 and 1.0

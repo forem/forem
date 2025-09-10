@@ -51,8 +51,8 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         allow(enhancer).to receive(:generate_tags).and_return(["javascript", "webdev"])
         
         # Create the tags that will be suggested
-        create(:tag, name: "javascript", supported: true)
-        create(:tag, name: "webdev", supported: true)
+        javascript_tag = Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
+        webdev_tag = Tag.find_or_create_by(name: "webdev") { |tag| tag.supported = true }
         
         worker.perform(article.id)
         
@@ -68,7 +68,7 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         allow(enhancer).to receive(:generate_tags).and_return(["javascript", "nonexistent"])
         
         # Only create one of the suggested tags
-        create(:tag, name: "javascript", supported: true)
+        javascript_tag = Tag.find_or_create_by(name: "javascript") { |tag| tag.supported = true }
         
         worker.perform(article.id)
         
