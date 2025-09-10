@@ -45,9 +45,13 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       end
 
       it "generates tags when article has no tags and meets criteria" do
+        # Ensure article meets all criteria: no tags, score >= 0, clickbait < 0.6
         article.update(cached_tag_list: "", score: 5)
         allow(Spam::Handler).to receive(:handle_article!)
-        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4)
+        allow(article).to receive(:update_score) # Don't actually update the score
+        
+        # Mock the enhancer to return appropriate values
+        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4) # < 0.6
         allow(enhancer).to receive(:generate_tags).and_return(["javascript", "webdev"])
         
         # Create the tags that will be suggested
@@ -77,20 +81,26 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       end
 
       it "logs warning when no valid tags are found" do
+        # Ensure article meets criteria for tag generation
         article.update(cached_tag_list: "", score: 5)
         allow(Spam::Handler).to receive(:handle_article!)
-        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4)
+        allow(article).to receive(:update_score) # Don't actually update the score
+        
+        # Mock enhancer to return values that trigger tag generation
+        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4) # < 0.6
         allow(enhancer).to receive(:generate_tags).and_return(["nonexistent"])
         allow(Rails.logger).to receive(:warn)
         
         worker.perform(article.id)
         
+        expect(enhancer).to have_received(:generate_tags)
         expect(Rails.logger).to have_received(:warn).with(/No valid tags found from suggestions/)
       end
 
       it "does not generate tags when article already has tags" do
         article.update(cached_tag_list: "existing")
         allow(Spam::Handler).to receive(:handle_article!)
+        allow(article).to receive(:update_score)
         
         worker.perform(article.id)
         
@@ -100,6 +110,7 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       it "does not generate tags when article score is negative" do
         article.update(cached_tag_list: "", score: -1)
         allow(Spam::Handler).to receive(:handle_article!)
+        allow(article).to receive(:update_score)
         
         worker.perform(article.id)
         
@@ -109,6 +120,7 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
       it "does not generate tags when clickbait score is too high" do
         article.update(cached_tag_list: "", score: 5)
         allow(Spam::Handler).to receive(:handle_article!)
+        allow(article).to receive(:update_score)
         allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.7)
         
         worker.perform(article.id)
