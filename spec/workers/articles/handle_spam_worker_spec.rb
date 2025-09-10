@@ -3,8 +3,15 @@ require "rails_helper"
 RSpec.describe Articles::HandleSpamWorker, type: :worker do
   let(:article) { create(:article) }
   let(:worker) { described_class.new }
+  let(:enhancer) { instance_double(Ai::ArticleEnhancer) }
 
   describe "#perform" do
+    before do
+      allow(Ai::ArticleEnhancer).to receive(:new).and_return(enhancer)
+      allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.3)
+      allow(enhancer).to receive(:generate_tags).and_return([])
+    end
+
     context "when article exists" do
       it "calls Spam::Handler.handle_article! with the article" do
         allow(Spam::Handler).to receive(:handle_article!)
@@ -26,6 +33,88 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         # The score should be recalculated, so it might be different
         expect(article.reload.score).to be >= initial_score
       end
+
+      it "enhances article with clickbait score" do
+        allow(Spam::Handler).to receive(:handle_article!)
+        
+        worker.perform(article.id)
+        
+        expect(Ai::ArticleEnhancer).to have_received(:new).with(article)
+        expect(enhancer).to have_received(:calculate_clickbait_score)
+        expect(article.reload.clickbait_score).to eq(0.3)
+      end
+
+      it "generates tags when article has no tags and meets criteria" do
+        article.update(cached_tag_list: "", score: 5)
+        allow(Spam::Handler).to receive(:handle_article!)
+        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4)
+        allow(enhancer).to receive(:generate_tags).and_return(["javascript", "webdev"])
+        
+        # Create the tags that will be suggested
+        create(:tag, name: "javascript", supported: true)
+        create(:tag, name: "webdev", supported: true)
+        
+        worker.perform(article.id)
+        
+        expect(enhancer).to have_received(:generate_tags)
+        expect(article.reload.cached_tag_list).to include("javascript")
+        expect(article.reload.cached_tag_list).to include("webdev")
+      end
+
+      it "only applies valid tags that exist in the system" do
+        article.update(cached_tag_list: "", score: 5)
+        allow(Spam::Handler).to receive(:handle_article!)
+        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4)
+        allow(enhancer).to receive(:generate_tags).and_return(["javascript", "nonexistent"])
+        
+        # Only create one of the suggested tags
+        create(:tag, name: "javascript", supported: true)
+        
+        worker.perform(article.id)
+        
+        expect(article.reload.cached_tag_list).to include("javascript")
+        expect(article.reload.cached_tag_list).not_to include("nonexistent")
+      end
+
+      it "logs warning when no valid tags are found" do
+        article.update(cached_tag_list: "", score: 5)
+        allow(Spam::Handler).to receive(:handle_article!)
+        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.4)
+        allow(enhancer).to receive(:generate_tags).and_return(["nonexistent"])
+        allow(Rails.logger).to receive(:warn)
+        
+        worker.perform(article.id)
+        
+        expect(Rails.logger).to have_received(:warn).with(/No valid tags found from suggestions/)
+      end
+
+      it "does not generate tags when article already has tags" do
+        article.update(cached_tag_list: "existing")
+        allow(Spam::Handler).to receive(:handle_article!)
+        
+        worker.perform(article.id)
+        
+        expect(enhancer).not_to have_received(:generate_tags)
+      end
+
+      it "does not generate tags when article score is negative" do
+        article.update(cached_tag_list: "", score: -1)
+        allow(Spam::Handler).to receive(:handle_article!)
+        
+        worker.perform(article.id)
+        
+        expect(enhancer).not_to have_received(:generate_tags)
+      end
+
+      it "does not generate tags when clickbait score is too high" do
+        article.update(cached_tag_list: "", score: 5)
+        allow(Spam::Handler).to receive(:handle_article!)
+        allow(enhancer).to receive(:calculate_clickbait_score).and_return(0.7)
+        
+        worker.perform(article.id)
+        
+        expect(enhancer).not_to have_received(:generate_tags)
+      end
     end
 
     context "when article does not exist" do
@@ -36,13 +125,18 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         expect(Spam::Handler).not_to have_received(:handle_article!)
       end
 
+      it "does not call article enhancement" do
+        worker.perform(999999)
+        expect(Ai::ArticleEnhancer).not_to have_received(:new)
+      end
+
       it "does not raise an error" do
         expect { worker.perform(999999) }.not_to raise_error
       end
     end
 
     context "when Spam::Handler.handle_article! raises an error" do
-      it "does not call update_score" do
+      it "does not call update_score or enhancement" do
         allow(Spam::Handler).to receive(:handle_article!).and_raise(StandardError.new("Spam handler error"))
         
         expect { worker.perform(article.id) }.to raise_error(StandardError)
@@ -50,6 +144,18 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         # The score should not be updated because the error prevents reaching update_score
         original_score = article.score
         expect(article.reload.score).to eq(original_score)
+        expect(Ai::ArticleEnhancer).not_to have_received(:new)
+      end
+    end
+
+    context "when article enhancement fails" do
+      it "logs error but continues processing" do
+        allow(Spam::Handler).to receive(:handle_article!)
+        allow(enhancer).to receive(:calculate_clickbait_score).and_raise(StandardError, "Enhancement error")
+        allow(Rails.logger).to receive(:error)
+        
+        expect { worker.perform(article.id) }.not_to raise_error
+        expect(Rails.logger).to have_received(:error).with(/Article enhancement failed/)
       end
     end
   end
