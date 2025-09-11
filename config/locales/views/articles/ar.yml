@@ -1,0 +1,113 @@
+---
+ar:
+  views:
+    articles:
+      meta:
+        description: مقالة من المجتمع
+      actions:
+        aria_label: إجراءات المقالة
+      comments:
+        aria_label: أضف تعليقًا إلى المنشور - %{title}
+        sort:
+          heading: "فرز المناقشة: "
+          title:
+            top: الأعلى
+            latest: الأحدث
+            oldest: الأقدم
+          desc:
+            top: سيتم عرض التعليقات الأكثر تصويتًا والمتعلقة أولاً
+            latest: سيتم عرض التعليقات الأحدث أولاً
+            oldest: سيتم عرض التعليقات الأقدم أولاً
+        sort_button:
+          aria_label: فرز التعليقات
+        subtitle:
+          top_html: التعليقات الأعلى %{num}
+          latest_html: التعليقات الأحدث %{num}
+          oldest_html: التعليقات الأقدم %{num}
+        num: "(%{num})"
+        subscribe: اشتراك
+      conduct:
+        aria_label: ضوابط السلوك
+        code: نظام السلوك
+        report: الإبلاغ عن إساءة
+      delete:
+        heading: هل أنت متأكد أنك تريد حذف هذه المقالة؟
+        desc:
+          text_html: لا يمكنك التراجع عن هذا الإجراء، ربما تريد فقط %{action} بدلاً من ذلك؟
+          edit: تحرير
+          unpublish: إلغاء النشر
+        action:
+          button: حذف
+          cancel: تجاهل
+          edit: تحرير
+          unpublish: إلغاء النشر
+      jump_to_comments:
+        aria_label: الانتقال إلى التعليقات
+        label: الانتقال إلى التعليقات
+      lock:
+        meta:
+          title: تأكيد قفل المناقشة
+        heading: هل أنت متأكد أنك تريد قفل المناقشة على هذا المنشور؟
+        desc_html: لن يتمكن المستخدمون من إضافة تعليقات جديدة. هذا لن <em class="fw-bold">يحذف</em> التعليقات الموجودة بالفعل. يمكنك فتح المناقشة في أي وقت للسماح للمستخدمين بترك تعليقات مرة أخرى.
+        cancel: إلغاء
+        notes:
+          label: ملاحظات (اختياري) - هذا مرئي فقط لك وللمسؤولين
+          placeholder: المزيد من التفاصيل حول سبب قفل المناقشة.
+        reason:
+          label: سبب قفل المناقشة (اختياري) - سيتم عرض هذا علنًا
+          placeholder: السبب الذي يدفعك لقفل هذه المناقشة.
+        submit: قفل المناقشة
+      preview_discuss_html:
+        zero: مناقشة جديدة!
+        one: '#ناقش <img src="%{image}" />%{count}'
+        other: '#ناقش <img src="%{image}" />%{count}'
+      save:
+        title: "حفظ المنشور %{title} في قائمة القراءة"
+        aria_label: "حفظ المنشور %{title} في قائمة القراءة"
+        initial: حفظ
+        success: تم الحفظ
+      series:
+        subtitle: "%{slug} (%{size})"
+        size:
+          one: "%{count} جزء من السلسلة"
+          other: "%{count} جزء من السلسلة"
+        published: نُشر في %{date}
+        inbetween:
+          num: "..."
+          text:
+            one: جزء آخر...
+            other: "%{count} أجزاء أخرى..."
+          title: عرض المزيد
+      unlock:
+        meta:
+          title: تأكيد فتح المناقشة
+        heading: هل أنت متأكد أنك تريد فتح المناقشة على هذا المنشور؟
+        desc: سيتمكن المستخدمون من إضافة تعليقات جديدة. يمكنك قفل المناقشة في أي وقت لمنع المستخدمين من ترك تعليقات مرة أخرى.
+        cancel: إلغاء
+        notes: 'ملاحظات منذ قفل هذه المناقشة (مرئي فقط لك وللمسؤولين):'
+        reason: 'السبب الذي جعلك تقوم بقفل هذه المناقشة (مرئي علانية):'
+        submit: فتح المناقشة
+      unpublished:
+        subtitle: منشور غير منشور.
+        text: " هذا الرابط عام ولكن سري، لذا قم بمشاركته بحذر."
+        edit: انقر للتعديل
+      scheduled:
+        subtitle: منشور مجدول.
+        text: " هذا الرابط عام ولكن سري، لذا قم بمشاركته بحذر."
+        edit: انقر للتعديل
+      co_authors_html: مع %{names}
+      crossposted:
+        text_html: نُشرت أصلاً على %{url} %{on}
+        on_html: على %{date}
+      edited: تم التحديث في %{date}
+      edited_html: تم التحديث في %{date}
+      for_org_html: "%{start} لـ %{end}%{org}"
+      missing: المقالة غير متوفرة بعد الآن
+      published_html: نُشر في %{date}
+      scheduled_html: مجدول لـ %{date}
+      sign_in_for_full_latest_html: بعض المنشورات الأحدث متاحة فقط للأعضاء. <a href="%{link}">تسجيل الدخول</a> لمشاهدة جميع الأحدث.
+      read_next: اقرأ المزيد
+      reading_time:
+        one: "دقيقة واحدة للقراءة"
+        other: "%{count} دقائق للقراءة"
+      right_nav: تفاصيل المؤلف
