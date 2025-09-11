@@ -1,0 +1,25 @@
+es:
+  views:
+    actions:
+      copy:
+        text: Copiado al portapapeles
+        button: Copiar enlace
+      more:
+        title: Más...
+        aria_label: Opciones para compartir la publicación
+      share:
+        facebook:
+          text: Compartir en Facebook
+        hackernews:
+          text: Compartir en Hacker News
+        linkedin:
+          text: Compartir en LinkedIn
+        mastodon:
+          text: Compartir en Mastodon
+        reddit:
+          text: Compartir en Reddit
+        twitter:
+          text: Compartir en Twitter
+          query: '"%{article}" por %{author}'
+        link: Compartir publicación a través de...
+        report: Informar abuso
