@@ -2469,6 +2469,80 @@ RSpec.describe Article do
         expect(article.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
       end
     end
+
+    context "when CONVERT_GIF_TO_VID environment variable is present" do
+      before do
+        allow(ENV).to receive(:[]).with("CONVERT_GIF_TO_VID").and_return("true")
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "converts animated images to autoplay videos" do
+        article.processed_html = '<img src="https://example.com/animated.gif" data-animated="true" width="300" height="200" alt="Animated GIF">'
+        result = article.processed_html_final
+        
+        expect(result).to include('<video autoplay="true" loop="true" muted="true" playsinline="true" controls="false" preload="metadata"')
+        expect(result).to include('width="300" height="200" alt="Animated GIF"')
+        expect(result).to include('<source src="https://example.com/animated.gif?vid=true" type="video/mp4">')
+        expect(result).to include('<img src="https://example.com/animated.gif" width="300" height="200" alt="Animated GIF">')
+      end
+
+      it "appends vid=true parameter to URLs with existing parameters" do
+        article.processed_html = '<img src="https://example.com/animated.gif?size=large" data-animated="true">'
+        result = article.processed_html_final
+        
+        expect(result).to include('src="https://example.com/animated.gif?size=large&vid=true"')
+      end
+
+      it "preserves CSS classes on video elements" do
+        article.processed_html = '<img src="https://example.com/animated.gif" data-animated="true" class="responsive-image center">'
+        result = article.processed_html_final
+        
+        expect(result).to include('class="responsive-image center"')
+      end
+
+      it "does not convert non-animated images" do
+        article.processed_html = '<img src="https://example.com/static.jpg" width="300" height="200">'
+        result = article.processed_html_final
+        
+        expect(result).not_to include('<video')
+        expect(result).to include('<img src="https://example.com/static.jpg" width="300" height="200">')
+      end
+
+      it "handles multiple animated images" do
+        article.processed_html = '<img src="https://example.com/gif1.gif" data-animated="true"><img src="https://example.com/gif2.gif" data-animated="true">'
+        result = article.processed_html_final
+        
+        expect(result.scan(/<video/).length).to eq(2)
+        expect(result).to include('src="https://example.com/gif1.gif?vid=true"')
+        expect(result).to include('src="https://example.com/gif2.gif?vid=true"')
+      end
+
+      it "removes data-animated attribute from fallback images" do
+        article.processed_html = '<img src="https://example.com/animated.gif" data-animated="true">'
+        result = article.processed_html_final
+        
+        # The fallback img should not have data-animated
+        fallback_img = result.match(/<img[^>]*src="https:\/\/example\.com\/animated\.gif"[^>]*>/)[0]
+        expect(fallback_img).not_to include('data-animated')
+      end
+    end
+
+    context "when CONVERT_GIF_TO_VID environment variable is not present" do
+      before do
+        allow(ENV).to receive(:[]).with("CONVERT_GIF_TO_VID").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "does not convert animated images to videos" do
+        article.processed_html = '<img src="https://example.com/animated.gif" data-animated="true" width="300" height="200">'
+        result = article.processed_html_final
+        
+        expect(result).not_to include('<video')
+        expect(result).to include('<img src="https://example.com/animated.gif" data-animated="true" width="300" height="200">')
+      end
+    end
   end
 
   describe "URL extraction from title for quickie posts" do
