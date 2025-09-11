@@ -567,10 +567,15 @@ class Article < ApplicationRecord
     # It is currently only for this one cloudflare domain change
     # It is duplicated across article, bullboard and comment where it is most needed
     # In the future this could be made more customizable. For now it's just this one thing.
-    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
+    html = if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
+             processed_html
+           else
+             processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                                 ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+           end
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
-                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    # Convert animated images to videos if ENV var is present
+    convert_animated_images_to_videos(html)
   end
 
   def scheduled?
@@ -829,6 +834,56 @@ class Article < ApplicationRecord
     return unless type_of == "status"
 
     processed_html_final
+  end
+
+  private
+
+  def convert_animated_images_to_videos(html)
+    return html unless ENV["CONVERT_GIF_TO_VID"].present?
+
+    # Parse the HTML
+    doc = Nokogiri::HTML::DocumentFragment.parse(html)
+    
+    # Find all images with data-animated="true"
+    animated_images = doc.css('img[data-animated="true"]')
+    
+    animated_images.each do |img|
+      src = img["src"]
+      next unless src
+      
+      # Create video element with autoplay
+      video = doc.document.create_element("video")
+      video["autoplay"] = "true"
+      video["loop"] = "true"
+      video["muted"] = "true"
+      video["playsinline"] = "true"
+      video["controls"] = "false"
+      video["preload"] = "metadata"
+      
+      # Copy relevant attributes from img to video
+      video["width"] = img["width"] if img["width"]
+      video["height"] = img["height"] if img["height"]
+      video["alt"] = img["alt"] if img["alt"]
+      video["class"] = img["class"] if img["class"]
+      
+      # Create source element with ?vid=true parameter
+      source = doc.document.create_element("source")
+      video_src = src.include?("?") ? "#{src}&vid=true" : "#{src}?vid=true"
+      source["src"] = video_src
+      source["type"] = "video/mp4"
+      
+      video.add_child(source)
+      
+      # Add fallback img element for browsers that don't support video
+      fallback_img = img.dup
+      fallback_img.remove_attribute("data-animated")
+      video.add_child(fallback_img)
+      
+      # Replace the img with video
+      img.replace(video)
+    end
+    
+    doc.to_html
   end
 
   def labels=(input)
