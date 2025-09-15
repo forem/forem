@@ -31,7 +31,7 @@ Sidekiq.configure_server do |config|
   # every 30 seconds which the gem defaults to
   config[:poll_interval] = 10
 
-  sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]
+  sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"] || "redis://localhost:6379"
   # On Heroku this configuration is overridden and Sidekiq will point at the redis
   # instance given by the ENV variable REDIS_PROVIDER
   config.redis = { url: sidekiq_url }
