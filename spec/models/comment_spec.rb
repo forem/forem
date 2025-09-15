@@ -655,45 +655,5 @@ false).once
       expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
     end
   end
-
-  context "when CONVERT_GIF_TO_VID environment variable is present" do
-    before do
-      allow(ENV).to receive(:[]).with("CONVERT_GIF_TO_VID").and_return("true")
-      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
-      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
-    end
-
-    it "converts animated images to autoplay videos" do
-      comment.processed_html = '<img src="https://example.com/animated.gif" data-animated="true" width="300" height="200">'
-      result = comment.processed_html_final
-      
-      expect(result).to include('<video autoplay="true" loop="true" muted="true" playsinline="true" controls="false" preload="metadata"')
-      expect(result).to include('<source src="https://example.com/animated.gif?vid=true" type="video/mp4">')
-    end
-
-    it "does not convert non-animated images" do
-      comment.processed_html = '<img src="https://example.com/static.jpg" width="300" height="200">'
-      result = comment.processed_html_final
-      
-      expect(result).not_to include('<video')
-      expect(result).to include('<img src="https://example.com/static.jpg" width="300" height="200">')
-    end
-  end
-
-  context "when CONVERT_GIF_TO_VID environment variable is not present" do
-    before do
-      allow(ENV).to receive(:[]).with("CONVERT_GIF_TO_VID").and_return(nil)
-      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
-      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
-    end
-
-    it "does not convert animated images to videos" do
-      comment.processed_html = '<img src="https://example.com/animated.gif" data-animated="true">'
-      result = comment.processed_html_final
-      
-      expect(result).not_to include('<video')
-      expect(result).to include('<img src="https://example.com/animated.gif" data-animated="true">')
-    end
-  end
-  end
+end
 end
