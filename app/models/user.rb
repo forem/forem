@@ -249,6 +249,7 @@ class User < ApplicationRecord
   after_update :refresh_auto_audience_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
+  before_destroy :enqueue_stripe_subscription_cancellation, prepend: true
 
   after_create_commit :send_welcome_notification
 
@@ -759,6 +760,26 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def enqueue_stripe_subscription_cancellation
+    return unless stripe_id_code.present?
+
+    Rails.logger.info("Enqueuing Stripe subscription cancellation for user #{id} (customer: #{stripe_id_code})")
+
+    begin
+      Users::StripeSubscriptionCancellationWorker.perform_async(id, stripe_id_code)
+      Rails.logger.info("Successfully enqueued Stripe subscription cancellation job for user #{id}")
+    rescue Redis::BaseError => e
+      # Redis/Sidekiq connection issues - log but don't fail user deletion
+      Rails.logger.error("Redis error enqueuing Stripe cancellation for user #{id}: #{e.message}")
+      Rails.logger.error("User deletion will continue, but Stripe subscriptions may need manual cleanup")
+    rescue StandardError => e
+      # Any other job enqueuing errors - log but don't fail user deletion
+      Rails.logger.error("Failed to enqueue Stripe subscription cancellation for user #{id}: #{e.class.name} - #{e.message}")
+      Rails.logger.error("User deletion will continue, but Stripe subscriptions may need manual cleanup")
+      Rails.logger.error(e.backtrace.join("\n"))
+    end
   end
 
   def can_send_confirmation_email
