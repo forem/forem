@@ -10,9 +10,22 @@ module DevelopmentDependencyChecks
   private
 
   def verify_sidekiq_running
-    return if Sidekiq::ProcessSet.new.size.positive?
+    # Check if Sidekiq is running with a small retry mechanism
+    # This helps with timing issues where Sidekiq might not be fully registered yet
+    sidekiq_running = false
+    3.times do |i|
+      sidekiq_running = Sidekiq::ProcessSet.new.size.positive?
+      break if sidekiq_running
+
+      sleep(0.1) if i < 2 # Small delay before retry
+    rescue StandardError => e
+      Rails.logger.debug { "Sidekiq health check attempt #{i + 1} failed: #{e.message}" }
+      sleep(0.1) if i < 2
+    end
+
+    return if sidekiq_running
 
     flash[:global_notice] = "Sidekiq is not running and is needed for the app to function properly. \
-                           Use bin/startup to start the application properly.".html_safe
+                           Use bin/startup-local to start the application properly.".html_safe
   end
 end
