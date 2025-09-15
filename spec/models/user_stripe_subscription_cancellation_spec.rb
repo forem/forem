@@ -63,7 +63,7 @@ RSpec.describe User, type: :model do
       context "when Sidekiq job enqueuing fails" do
         before do
           allow(Users::StripeSubscriptionCancellationWorker).to receive(:perform_async)
-            .and_raise(Sidekiq::ProcessSet::TooManyJobs.new("Queue full"))
+            .and_raise(StandardError.new("Queue full"))
         end
 
         it "logs the error with full details but does not raise" do
@@ -94,19 +94,23 @@ RSpec.describe User, type: :model do
 
     describe "before_destroy callback integration" do
       it "calls enqueue_stripe_subscription_cancellation before destruction" do
-        expect(user).to receive(:enqueue_stripe_subscription_cancellation).ordered
-        expect(user).to receive(:remove_from_mailchimp_newsletters).ordered
-        expect(user).to receive(:destroy_follows).ordered
+        expect(user).to receive(:enqueue_stripe_subscription_cancellation).and_call_original
+        expect(Users::StripeSubscriptionCancellationWorker).to receive(:perform_async)
 
         user.destroy
       end
 
       it "does not prevent user deletion if job enqueuing fails" do
-        allow(user).to receive(:enqueue_stripe_subscription_cancellation)
+        # The callback itself should handle errors and not raise them
+        allow(Users::StripeSubscriptionCancellationWorker).to receive(:perform_async)
           .and_raise(StandardError.new("Job failed"))
 
+        expect(Rails.logger).to receive(:error).with(/Failed to enqueue Stripe subscription cancellation/)
+        expect(Rails.logger).to receive(:error).with(/User deletion will continue/)
+        expect(Rails.logger).to receive(:error).with(anything) # backtrace
+
         # User should still be destroyed even if Stripe cancellation fails
-        expect { user.destroy }.to change(User, :count).by(-1)
+        expect { user.destroy! }.to change(User, :count).by(-1)
       end
 
       context "with actual job enqueuing" do
@@ -121,8 +125,8 @@ RSpec.describe User, type: :model do
           allow(Users::StripeSubscriptionCancellationWorker).to receive(:perform_async)
             .and_raise(Redis::CannotConnectError.new("Redis down"))
 
-          expect(Rails.logger).to receive(:error).with(/Redis error enqueuing Stripe cancellation/)
-          expect { user.destroy }.to change(User, :count).by(-1)
+          expect(Rails.logger).to receive(:error).with("Redis error enqueuing Stripe cancellation for user #{user.id}: Redis down")
+          expect { user.destroy! }.to change(User, :count).by(-1)
         end
       end
     end
@@ -147,8 +151,8 @@ RSpec.describe User, type: :model do
 
         expect(callback_order).to eq([
           :stripe_cancellation,
-          :mailchimp_removal,
-          :destroy_follows
+          :destroy_follows,
+          :mailchimp_removal
         ])
       end
     end

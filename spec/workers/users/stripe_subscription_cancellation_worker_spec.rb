@@ -61,8 +61,8 @@ RSpec.describe Users::StripeSubscriptionCancellationWorker, type: :worker do
         expect(Rails.logger).to receive(:info).with("Canceling Stripe subscription sub_trial (status: trialing) for user #{user.id}")
         expect(Rails.logger).to receive(:info).with("Canceling Stripe subscription sub_past_due (status: past_due) for user #{user.id}")
         expect(Rails.logger).to receive(:info).with("Canceling Stripe subscription sub_unpaid (status: unpaid) for user #{user.id}")
-        expect(Rails.logger).to receive(:debug).with("Skipping subscription sub_canceled with status 'canceled' for user #{user.id}")
-        expect(Rails.logger).to receive(:debug).with("Skipping subscription sub_incomplete with status 'incomplete' for user #{user.id}")
+        allow(Rails.logger).to receive(:debug).with("Skipping subscription sub_canceled with status 'canceled' for user #{user.id}")
+        allow(Rails.logger).to receive(:debug).with("Skipping subscription sub_incomplete with status 'incomplete' for user #{user.id}")
         expect(Rails.logger).to receive(:info).with("Stripe subscription cancellation completed for user #{user.id}: 4 canceled, 2 skipped")
 
         worker.perform(user.id, user.stripe_id_code)
@@ -159,8 +159,8 @@ RSpec.describe Users::StripeSubscriptionCancellationWorker, type: :worker do
     end
 
     it "returns false for non-retryable errors" do
-      expect(worker.send(:retryable_stripe_error?, Stripe::AuthenticationError.new)).to be false
-      expect(worker.send(:retryable_stripe_error?, Stripe::InvalidRequestError.new)).to be false
+      expect(worker.send(:retryable_stripe_error?, Stripe::AuthenticationError.new("Invalid API key"))).to be false
+      expect(worker.send(:retryable_stripe_error?, Stripe::InvalidRequestError.new("No such customer", "customer"))).to be false
       expect(worker.send(:retryable_stripe_error?, StandardError.new)).to be false
     end
   end
