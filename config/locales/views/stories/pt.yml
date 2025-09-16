@@ -34,3 +34,19 @@ pt:
         top_this_month: Top deste mês
         top_this_year: Top deste ano
         top_this_infinity: Top de todos os tempos
+        no_results:
+          discover:
+            title: "Nenhum post encontrado"
+            description: "Volte mais tarde ou crie seu próprio post!"
+            action_text: "Criar Post"
+            action_href: "/new"
+          following:
+            title: "Nenhum post das pessoas que você segue"
+            description: "Siga alguns membros para ver suas últimas postagens no seu feed."
+            action_text: "Voltar à aba Descobrir"
+            action_href: "/discover"
+          default:
+            title: "Nenhum post encontrado"
+            description: "Volte mais tarde ou crie seu próprio post!"
+            action_text: "Criar Post"
+            action_href: "/new"

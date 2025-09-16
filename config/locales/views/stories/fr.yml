@@ -34,3 +34,19 @@ fr:
         top_this_month: Top ce mois
         top_this_year: Top cette année
         top_this_infinity: Top de tous les temps
+        no_results:
+          discover:
+            title: "Aucun post trouvé"
+            description: "Revenez plus tard ou créez votre propre post !"
+            action_text: "Créer un Post"
+            action_href: "/new"
+          following:
+            title: "Aucun post des personnes que vous suivez"
+            description: "Suivez quelques membres pour voir leurs derniers posts dans votre fil d'actualité."
+            action_text: "Retour à l'onglet Découvrir"
+            action_href: "/discover"
+          default:
+            title: "Aucun post trouvé"
+            description: "Revenez plus tard ou créez votre propre post !"
+            action_text: "Créer un Post"
+            action_href: "/new"
