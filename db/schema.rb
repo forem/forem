@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_09_04_154635) do
+ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1298,11 +1298,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_04_154635) do
     t.boolean "discoverable", default: false, null: false
     t.string "domain", null: false
     t.integer "hotness_score", default: 0, null: false
+    t.boolean "misc", default: false, null: false
     t.boolean "root", default: false
     t.integer "score", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_subforems_on_domain", unique: true
     t.index ["hotness_score"], name: "index_subforems_on_hotness_score"
+    t.index ["misc"], name: "index_subforems_on_misc"
     t.index ["score"], name: "index_subforems_on_score"
   end
 

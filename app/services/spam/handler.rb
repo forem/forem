@@ -40,7 +40,8 @@ module Spam
       end
 
       # High quality content bypasses spam checks entirely
-      if %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem great_but_off_topic_for_subforem].include?(article.automod_label)
+      if %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
+            great_but_off_topic_for_subforem].include?(article.automod_label)
         return :not_spam
       end
 
@@ -51,9 +52,9 @@ module Spam
       text = attributes.map { |attr| article.public_send(attr) }.join("\n")
 
       # Check if we should trigger spam detection
-      should_check = Settings::RateLimit.trigger_spam_for?(text: text) || 
-        (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && 
-         (bypass_restrictions || article.user.badge_achievements_count < 4) && 
+      should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
+        (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? &&
+         (bypass_restrictions || article.user.badge_achievements_count < 4) &&
          Ai::ArticleCheck.new(article).spam?)
 
       return :not_spam unless should_check
@@ -74,17 +75,15 @@ module Spam
     #
     # @param comment [Comment] the comment to check for spamminess
     def self.handle_comment!(comment:)
-
       # Existing checks for trusted users.
       return :not_spam if comment.user.badge_achievements_count > 6
       return :not_spam if comment.user.base_subscriber?
 
-      if (domain = extract_first_domain_from(comment.processed_html))
-        if extensive_domain_spam?(domain: domain, current_comment: comment)
-          issue_spam_reaction_for!(reactable: comment)
-          suspend_if_user_is_repeat_offender(user: comment.user)
-          return :spam # Return early as it's confirmed spam.
-        end
+      if (domain = extract_first_domain_from(comment.processed_html)) && extensive_domain_spam?(domain: domain,
+                                                                                                current_comment: comment)
+        issue_spam_reaction_for!(reactable: comment)
+        suspend_if_user_is_repeat_offender(user: comment.user)
+        return :spam # Return early as it's confirmed spam.
       end
 
       rate_limit_spam = Settings::RateLimit.trigger_spam_for?(text: comment.body_markdown)
@@ -175,7 +174,7 @@ module Spam
     # NEW/private: Helper method to extract the first domain from processed HTML.
     def self.extract_first_domain_from(html)
       href = html&.match(/<a\s+href="([^"]+)"/i)
-      return nil unless href
+      return unless href
 
       begin
         URI.parse(href[1]).host
@@ -202,15 +201,42 @@ module Spam
         labeler = Ai::ContentModerationLabeler.new(article)
         label = labeler.label
         article.update_column(:automod_label, label)
-                rescue StandardError => e
-            Rails.logger.error("Failed to label article content: #{e}")
-            # Set a safe default label
-            article.update_column(:automod_label, "no_moderation_label")
-          end
+
+        # Only check for subforem reassignment if the article is marked as offtopic
+        if offtopic_label?(label)
+          check_subforem_reassignment(article)
+        end
+      rescue StandardError => e
+        Rails.logger.error("Failed to label article content: #{e}")
+        # Set a safe default label
+        article.update_column(:automod_label, "no_moderation_label")
+      end
+    end
+
+    # NEW/private: Check if a label indicates the content is offtopic
+    def self.offtopic_label?(label)
+      %w[
+        ok_but_offtopic_for_subforem
+        very_good_but_offtopic_for_subforem
+        great_but_off_topic_for_subforem
+      ].include?(label)
+    end
+
+    # NEW/private: Check if article should be reassigned to a different subforem
+    def self.check_subforem_reassignment(article)
+      return unless Ai::Base::DEFAULT_KEY.present?
+
+      begin
+        reassignment_service = SubforemReassignmentService.new(article)
+        reassignment_service.check_and_reassign
+      rescue StandardError => e
+        Rails.logger.error("Failed to check subforem reassignment for article #{article.id}: #{e}")
+      end
     end
 
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
-                         :suspend_if_user_is_repeat_offender, :label_article_content!
+                         :suspend_if_user_is_repeat_offender, :label_article_content!,
+                         :offtopic_label?, :check_subforem_reassignment
   end
 end
