@@ -6,6 +6,7 @@ import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
 import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { NoResults } from '../shared/components/NoResults';
 
 /**
  * Sends analytics about the featured article.
@@ -145,10 +146,28 @@ export const renderFeed = async (timeFrame, afterRender) => {
     feedItems,
     bookmarkedFeedItems,
     bookmarkClick,
+    isLoading,
   }) => {
-    if (feedItems.length === 0) {
-      // Fancy loading ✨
+    // Show loading state while fetching data
+    if (isLoading) {
       return <FeedLoading />;
+    }
+
+    // Check if we have actual content (not just billboards)
+    const hasActualContent = feedItems.some(item => 
+      typeof item === 'object' && item.id && item.id !== 'dummy-story'
+    );
+
+    if (feedItems.length === 0 || !hasActualContent) {
+      // Determine feed type from localStorage or URL
+      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
+      
+      return (
+        <NoResults 
+          feedType={feedType}
+        />
+      );
     }
 
     return (
