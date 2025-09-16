@@ -94,3 +94,10 @@ pt:
         reason: 'Motivo da ação:'
         remove_html: Moderadores removeram a tag <strong>%{tag}</strong> do seu post %{title}. Certas tags têm diretrizes especiais de submissão, e os mods precisam ajustar as tags para melhor se adequar à comunidade.
         support_html: "Obrigado por fazer parte do %{community}! %{email} 🤗"
+      subforem:
+        heading: "Seu artigo foi movido 👋"
+        change_html: Seu artigo %{title} foi automaticamente movido de %{old_community_link} para %{new_community_link}.
+        reason: 'Motivo da movimentação:'
+        misc_explanation: Este é o nosso espaço de discussão aberta onde todos os tipos de conteúdo são bem-vindos para conversas gerais e interação da comunidade.
+        explanation_html: Isso ajuda a garantir que seu conteúdo alcance o público mais apropriado e mantenha a qualidade de cada comunidade.
+        support_html: "Obrigado por fazer parte do %{community}! %{email} 🤗"

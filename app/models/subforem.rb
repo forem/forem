@@ -18,7 +18,7 @@ class Subforem < ApplicationRecord
   before_validation :downcase_domain
   after_save :bust_caches
 
-  def self.create_from_scratch!(domain:, brain_dump:, name:, logo_url:, bg_image_url: nil, default_locale: 'en')
+  def self.create_from_scratch!(domain:, brain_dump:, name:, logo_url:, bg_image_url: nil, default_locale: "en")
     subforem = Subforem.create!(domain: domain)
 
     # Queue background job for AI services
@@ -102,6 +102,18 @@ class Subforem < ApplicationRecord
     end
   end
 
+  def self.cached_misc_subforem_id
+    Rails.cache.fetch("subforem_misc_id", expires_in: 12.hours) do
+      Subforem.find_by(misc: true)&.id
+    end
+  end
+
+  def self.misc_subforem
+    Rails.cache.fetch("subforem_misc_object", expires_in: 12.hours) do
+      Subforem.find_by(misc: true)
+    end
+  end
+
   def data_info_to_json
     DataInfo.to_json(object: self, class_name: "Subforem", id: id, style: "full")
   end
@@ -136,6 +148,8 @@ class Subforem < ApplicationRecord
     Rails.cache.delete("subforem_all_domains")
     Rails.cache.delete("subforem_default_id")
     Rails.cache.delete("subforem_id_by_domain_#{domain}")
+    Rails.cache.delete("subforem_misc_id")
+    Rails.cache.delete("subforem_misc_object")
   end
 
   def downcase_domain
