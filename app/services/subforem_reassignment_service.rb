@@ -8,6 +8,13 @@ class SubforemReassignmentService
     great_but_off_topic_for_subforem
   ].freeze
 
+  # Mapping from offtopic labels to their on-topic equivalents
+  OFFTopic_TO_ON_TOPIC_MAPPING = {
+    "ok_but_offtopic_for_subforem" => "okay_and_on_topic",
+    "very_good_but_offtopic_for_subforem" => "very_good_and_on_topic",
+    "great_but_off_topic_for_subforem" => "great_and_on_topic"
+  }.freeze
+
   def initialize(article)
     @article = article
   end
@@ -57,6 +64,14 @@ class SubforemReassignmentService
   end
 
   ##
+  # Gets the on-topic equivalent of the current offtopic automod label.
+  #
+  # @return [String, nil] the on-topic label equivalent, or nil if no mapping exists
+  def on_topic_equivalent_label
+    OFFTopic_TO_ON_TOPIC_MAPPING[article.automod_label]
+  end
+
+  ##
   # Uses AI to find the most appropriate subforem for the article.
   #
   # @return [Integer, nil] the ID of the most appropriate subforem, or nil if none found
@@ -78,12 +93,21 @@ class SubforemReassignmentService
     old_subforem_id = article.subforem_id
     new_subforem = Subforem.find(new_subforem_id)
 
-    article.update!(subforem_id: new_subforem_id)
+    # Update both subforem and automod label
+    update_attributes = { subforem_id: new_subforem_id }
+    
+    # Update automod label to on-topic equivalent if available
+    if on_topic_equivalent_label
+      update_attributes[:automod_label] = on_topic_equivalent_label
+    end
+
+    article.update!(update_attributes)
 
     # Send notification about the subforem change
     send_subforem_change_notification(old_subforem_id, new_subforem_id)
 
-    Rails.logger.info("Article #{article.id} reassigned from subforem #{old_subforem_id} to #{new_subforem_id}")
+    Rails.logger.info("Article #{article.id} reassigned from subforem #{old_subforem_id} to #{new_subforem_id}" \
+                     "#{on_topic_equivalent_label ? " and automod label updated to #{on_topic_equivalent_label}" : ""}")
   end
 
   ##
