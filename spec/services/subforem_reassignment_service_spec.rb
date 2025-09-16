@@ -9,6 +9,7 @@ RSpec.describe SubforemReassignmentService do
   let(:article) { create(:article, user: user, subforem_id: current_subforem.id) }
 
   describe "#check_and_reassign" do
+
     context "when article has an offtopic automod label" do
       before do
         article.update!(automod_label: "ok_but_offtopic_for_subforem")
@@ -16,9 +17,7 @@ RSpec.describe SubforemReassignmentService do
 
       context "when AI finds an appropriate subforem" do
         before do
-          allow(Ai::SubforemFinder).to receive(:new).and_return(
-            double(find_appropriate_subforem: target_subforem.id),
-          )
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
         end
 
         it "reassigns the article to the new subforem" do
@@ -47,9 +46,7 @@ RSpec.describe SubforemReassignmentService do
 
       context "when AI does not find an appropriate subforem" do
         before do
-          allow(Ai::SubforemFinder).to receive(:new).and_return(
-            double(find_appropriate_subforem: nil),
-          )
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(nil)
         end
 
         it "does not reassign the article" do
@@ -69,9 +66,7 @@ RSpec.describe SubforemReassignmentService do
 
       context "when AI finds a misc subforem as fallback" do
         before do
-          allow(Ai::SubforemFinder).to receive(:new).and_return(
-            double(find_appropriate_subforem: misc_subforem.id),
-          )
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(misc_subforem.id)
         end
 
         it "reassigns the article to the misc subforem" do
@@ -93,9 +88,7 @@ RSpec.describe SubforemReassignmentService do
 
       context "when AI finds a non-discoverable subforem" do
         before do
-          allow(Ai::SubforemFinder).to receive(:new).and_return(
-            double(find_appropriate_subforem: non_discoverable_subforem.id),
-          )
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(non_discoverable_subforem.id)
         end
 
         it "reassigns the article to the non-discoverable subforem" do
@@ -113,7 +106,7 @@ RSpec.describe SubforemReassignmentService do
 
       context "when AI service raises an error" do
         before do
-          allow(Ai::SubforemFinder).to receive(:new).and_raise(StandardError, "AI service error")
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_raise(StandardError, "AI service error")
         end
 
         it "does not reassign the article" do

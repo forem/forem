@@ -61,8 +61,6 @@ class SubforemReassignmentService
   #
   # @return [Integer, nil] the ID of the most appropriate subforem, or nil if none found
   def find_appropriate_subforem
-    return unless Ai::Base::DEFAULT_KEY.present?
-
     begin
       finder = Ai::SubforemFinder.new(article)
       finder.find_appropriate_subforem
