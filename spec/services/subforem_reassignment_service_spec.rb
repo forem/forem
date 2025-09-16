@@ -1,0 +1,277 @@
+require "rails_helper"
+
+RSpec.describe SubforemReassignmentService do
+  let(:user) { create(:user) }
+  let(:current_subforem) { create(:subforem, domain: "tech.example.com", discoverable: true) }
+  let(:target_subforem) { create(:subforem, domain: "dev.example.com", discoverable: true) }
+  let(:misc_subforem) { create(:subforem, domain: "misc.example.com", misc: true, discoverable: true) }
+  let(:non_discoverable_subforem) { create(:subforem, domain: "private.example.com", discoverable: false) }
+  let(:article) { create(:article, user: user, subforem_id: current_subforem.id) }
+
+  describe "#check_and_reassign" do
+
+    context "when article has an offtopic automod label" do
+      before do
+        article.update!(automod_label: "ok_but_offtopic_for_subforem")
+      end
+
+      context "when AI finds an appropriate subforem" do
+        before do
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
+        end
+
+        it "reassigns the article to the new subforem" do
+          expect { described_class.new(article).check_and_reassign }.to change { article.reload.subforem_id }
+            .from(current_subforem.id).to(target_subforem.id)
+        end
+
+        it "sends a notification about the change" do
+          expect(Notifications::SubforemChangeNotificationWorker).to receive(:perform_async)
+            .with(article.id, current_subforem.id, target_subforem.id)
+
+          described_class.new(article).check_and_reassign
+        end
+
+        it "logs the reassignment" do
+          expect(Rails.logger).to receive(:info)
+            .with("Article #{article.id} reassigned from subforem #{current_subforem.id} to #{target_subforem.id}")
+
+          described_class.new(article).check_and_reassign
+        end
+
+        it "returns true" do
+          expect(described_class.new(article).check_and_reassign).to be true
+        end
+      end
+
+      context "when AI does not find an appropriate subforem" do
+        before do
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(nil)
+        end
+
+        it "does not reassign the article" do
+          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
+        end
+
+        it "does not send a notification" do
+          expect(Notifications::SubforemChangeNotificationWorker).not_to receive(:perform_async)
+
+          described_class.new(article).check_and_reassign
+        end
+
+        it "returns false" do
+          expect(described_class.new(article).check_and_reassign).to be false
+        end
+      end
+
+      context "when AI finds a misc subforem as fallback" do
+        before do
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(misc_subforem.id)
+        end
+
+        it "reassigns the article to the misc subforem" do
+          expect { described_class.new(article).check_and_reassign }.to change { article.reload.subforem_id }
+            .from(current_subforem.id).to(misc_subforem.id)
+        end
+
+        it "sends a notification about the change to misc subforem" do
+          expect(Notifications::SubforemChangeNotificationWorker).to receive(:perform_async)
+            .with(article.id, current_subforem.id, misc_subforem.id)
+
+          described_class.new(article).check_and_reassign
+        end
+
+        it "returns true" do
+          expect(described_class.new(article).check_and_reassign).to be true
+        end
+      end
+
+      context "when AI finds a non-discoverable subforem" do
+        before do
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(non_discoverable_subforem.id)
+        end
+
+        it "reassigns the article to the non-discoverable subforem" do
+          expect { described_class.new(article).check_and_reassign }.to change { article.reload.subforem_id }
+            .from(current_subforem.id).to(non_discoverable_subforem.id)
+        end
+
+        it "sends a notification about the change" do
+          expect(Notifications::SubforemChangeNotificationWorker).to receive(:perform_async)
+            .with(article.id, current_subforem.id, non_discoverable_subforem.id)
+
+          described_class.new(article).check_and_reassign
+        end
+      end
+
+      context "when AI service raises an error" do
+        before do
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_raise(StandardError, "AI service error")
+        end
+
+        it "does not reassign the article" do
+          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
+        end
+
+        it "logs the error" do
+          expect(Rails.logger).to receive(:error)
+            .with("Failed to find appropriate subforem for article #{article.id}: AI service error")
+
+          described_class.new(article).check_and_reassign
+        end
+
+        it "returns false" do
+          expect(described_class.new(article).check_and_reassign).to be false
+        end
+      end
+    end
+
+    context "when article does not have an offtopic automod label" do
+      context "with on-topic labels" do
+        %w[
+          okay_and_on_topic
+          very_good_and_on_topic
+          great_and_on_topic
+        ].each do |label|
+          context "with #{label}" do
+            before { article.update!(automod_label: label) }
+
+            it "does not reassign the article" do
+              expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
+            end
+
+            it "does not call the AI service" do
+              expect(Ai::SubforemFinder).not_to receive(:new)
+              described_class.new(article).check_and_reassign
+            end
+
+            it "returns false" do
+              expect(described_class.new(article).check_and_reassign).to be false
+            end
+          end
+        end
+      end
+
+      context "with spam labels" do
+        %w[
+          clear_and_obvious_spam
+          likely_spam
+          clear_and_obvious_harmful
+          likely_harmful
+          clear_and_obvious_inciting
+          likely_inciting
+          clear_and_obvious_low_quality
+          likely_low_quality
+        ].each do |label|
+          context "with #{label}" do
+            before { article.update!(automod_label: label) }
+
+            it "does not reassign the article" do
+              expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
+            end
+
+            it "does not call the AI service" do
+              expect(Ai::SubforemFinder).not_to receive(:new)
+              described_class.new(article).check_and_reassign
+            end
+
+            it "returns false" do
+              expect(described_class.new(article).check_and_reassign).to be false
+            end
+          end
+        end
+      end
+
+      context "with no moderation label" do
+        before { article.update!(automod_label: "no_moderation_label") }
+
+        it "does not reassign the article" do
+          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
+        end
+
+        it "does not call the AI service" do
+          expect(Ai::SubforemFinder).not_to receive(:new)
+          described_class.new(article).check_and_reassign
+        end
+
+        it "returns false" do
+          expect(described_class.new(article).check_and_reassign).to be false
+        end
+      end
+    end
+  end
+
+  describe "#should_reassign?" do
+    it "returns true for offtopic labels that are not spam" do
+      %w[
+        ok_but_offtopic_for_subforem
+        very_good_but_offtopic_for_subforem
+        great_but_off_topic_for_subforem
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:should_reassign?)).to be true
+      end
+    end
+
+    it "returns false for non-offtopic labels" do
+      %w[
+        no_moderation_label
+        okay_and_on_topic
+        very_good_and_on_topic
+        great_and_on_topic
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:should_reassign?)).to be false
+      end
+    end
+
+    it "returns false for spam labels even if they are offtopic" do
+      %w[
+        clear_and_obvious_spam
+        likely_spam
+        clear_and_obvious_harmful
+        likely_harmful
+        clear_and_obvious_inciting
+        likely_inciting
+        clear_and_obvious_low_quality
+        likely_low_quality
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:should_reassign?)).to be false
+      end
+    end
+  end
+
+  describe "#spam_label?" do
+    it "returns true for spam labels" do
+      %w[
+        clear_and_obvious_spam
+        likely_spam
+        clear_and_obvious_harmful
+        likely_harmful
+        clear_and_obvious_inciting
+        likely_inciting
+        clear_and_obvious_low_quality
+        likely_low_quality
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:spam_label?)).to be true
+      end
+    end
+
+    it "returns false for non-spam labels" do
+      %w[
+        no_moderation_label
+        ok_but_offtopic_for_subforem
+        okay_and_on_topic
+        very_good_but_offtopic_for_subforem
+        very_good_and_on_topic
+        great_but_off_topic_for_subforem
+        great_and_on_topic
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:spam_label?)).to be false
+      end
+    end
+  end
+end

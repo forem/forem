@@ -10,9 +10,12 @@ module Notifications
         @tag_adjustment = tag_adjustment
       end
 
+      delegate :user_data, to: Notifications
+
       def call
         article = tag_adjustment.article
         json_data = {
+          user: user_data(User.mascot_account),
           article: { title: article.title, path: article.path },
           adjustment_type: tag_adjustment.adjustment_type,
           status: tag_adjustment.status,
