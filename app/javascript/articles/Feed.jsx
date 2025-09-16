@@ -17,6 +17,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   const [imageItem, setimageItem] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
   const [onError, setOnError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchFeedItems(timeFrame = '', page = 1) {
@@ -74,6 +75,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     const organizeFeedItems = async () => {
       try {
         if (onError) setOnError(false);
+        setIsLoading(true);
 
         fetchFeedItems(timeFrame).then(
           ([
@@ -82,19 +84,8 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
             feedSecondBillboard,
             feedThirdBillboard,
           ]) => {
-            if (feedPosts.length === 0) {
-              feedPosts.push({
-                id: 'dummy-story',
-                title: '👻 Nothing to see here',
-                description: 'Check back later for updates.',
-                type_of: 'status',
-                body_preview: '<strong>Follow some members and tags to make the most of your feed</strong>',
-                main_image: null,
-                pinned: false,
-                url: '/welcome',
-                reading_time: 0
-              });
-            } else {
+            // Set feed config if available
+            if (feedPosts.length > 0) {
               const firstPost = feedPosts[0];
               if (firstPost.feed_config) {
                 document.getElementById('index-container').dataset.feedConfigId = firstPost.feed_config;
@@ -128,11 +119,24 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
               feedThirdBillboard,
             );
 
-            setFeedItems(organizedFeedItemsWithBillboards);
+            // Only set feed items if we have actual content (not just billboards)
+            // This allows the parent component to handle empty states properly
+            const hasActualContent = organizedFeedItemsWithBillboards.some(item => 
+              typeof item === 'object' && item.id && item.id !== 'dummy-story'
+            );
+            
+            if (hasActualContent || organizedFeedItemsWithBillboards.length === 0) {
+              setFeedItems(organizedFeedItemsWithBillboards);
+            } else {
+              // If we only have billboards, still set them but mark as empty content
+              setFeedItems([]);
+            }
+            setIsLoading(false);
           },
         );
       } catch {
         if (!onError) setOnError(true);
+        setIsLoading(false);
       }
     };
     organizeFeedItems();
@@ -324,6 +328,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
           feedItems,
           bookmarkedFeedItems,
           bookmarkClick,
+          isLoading,
         })
       )}
     </div>

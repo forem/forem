@@ -42,6 +42,13 @@ RSpec.describe SubforemReassignmentService do
         it "returns true" do
           expect(described_class.new(article).check_and_reassign).to be true
         end
+
+        it "updates the automod label to on-topic equivalent" do
+          expect { described_class.new(article).check_and_reassign }
+            .to change { article.reload.automod_label }
+            .from("ok_but_offtopic_for_subforem").to("okay_and_on_topic")
+        end
+
       end
 
       context "when AI does not find an appropriate subforem" do
@@ -84,6 +91,12 @@ RSpec.describe SubforemReassignmentService do
         it "returns true" do
           expect(described_class.new(article).check_and_reassign).to be true
         end
+
+        it "updates the automod label to on-topic equivalent for misc subforem" do
+          expect { described_class.new(article).check_and_reassign }
+            .to change { article.reload.automod_label }
+            .from("ok_but_offtopic_for_subforem").to("okay_and_on_topic")
+        end
       end
 
       context "when AI finds a non-discoverable subforem" do
@@ -101,6 +114,13 @@ RSpec.describe SubforemReassignmentService do
             .with(article.id, current_subforem.id, non_discoverable_subforem.id)
 
           described_class.new(article).check_and_reassign
+        end
+
+
+        it "updates the automod label to on-topic equivalent for non-discoverable subforem" do
+          expect { described_class.new(article).check_and_reassign }
+            .to change { article.reload.automod_label }
+            .from("ok_but_offtopic_for_subforem").to("okay_and_on_topic")
         end
       end
 
@@ -199,6 +219,35 @@ RSpec.describe SubforemReassignmentService do
         end
       end
     end
+
+
+    context "with different offtopic automod labels" do
+      context "with very_good_but_offtopic_for_subforem" do
+        before do
+          article.update!(automod_label: "very_good_but_offtopic_for_subforem")
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
+        end
+
+        it "updates automod label to very_good_and_on_topic" do
+          expect { described_class.new(article).check_and_reassign }
+            .to change { article.reload.automod_label }
+            .from("very_good_but_offtopic_for_subforem").to("very_good_and_on_topic")
+        end
+      end
+
+      context "with great_but_off_topic_for_subforem" do
+        before do
+          article.update!(automod_label: "great_but_off_topic_for_subforem")
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
+        end
+
+        it "updates automod label to great_and_on_topic" do
+          expect { described_class.new(article).check_and_reassign }
+            .to change { article.reload.automod_label }
+            .from("great_but_off_topic_for_subforem").to("great_and_on_topic")
+        end
+      end
+    end
   end
 
   describe "#should_reassign?" do
@@ -271,6 +320,33 @@ RSpec.describe SubforemReassignmentService do
       ].each do |label|
         article.update!(automod_label: label)
         expect(described_class.new(article).send(:spam_label?)).to be false
+      end
+    end
+  end
+
+
+  describe "#on_topic_equivalent_label" do
+    it "returns the correct on-topic equivalent for offtopic labels" do
+      article.update!(automod_label: "ok_but_offtopic_for_subforem")
+      expect(described_class.new(article).send(:on_topic_equivalent_label)).to eq("okay_and_on_topic")
+
+      article.update!(automod_label: "very_good_but_offtopic_for_subforem")
+      expect(described_class.new(article).send(:on_topic_equivalent_label)).to eq("very_good_and_on_topic")
+
+      article.update!(automod_label: "great_but_off_topic_for_subforem")
+      expect(described_class.new(article).send(:on_topic_equivalent_label)).to eq("great_and_on_topic")
+    end
+
+    it "returns nil for non-offtopic labels" do
+      %w[
+        no_moderation_label
+        clear_and_obvious_spam
+        okay_and_on_topic
+        very_good_and_on_topic
+        great_and_on_topic
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:on_topic_equivalent_label)).to be_nil
       end
     end
   end
