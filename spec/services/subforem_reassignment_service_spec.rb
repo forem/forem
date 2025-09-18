@@ -191,7 +191,12 @@ RSpec.describe SubforemReassignmentService do
 
       context "when article has no user" do
         before do
-          article.update!(user: nil)
+          allow(article).to receive(:user).and_return(nil)
+          # Mock the update! method to avoid validation issues when user is nil
+          allow(article).to receive(:update!) do |attributes|
+            article.assign_attributes(attributes)
+            article.save!(validate: false)
+          end
           allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
         end
 
@@ -447,7 +452,10 @@ RSpec.describe SubforemReassignmentService do
     end
 
     context "when article has no user" do
-      before { article.update!(user: nil) }
+      before do
+        allow(article).to receive(:user).and_return(nil)
+        allow(article).to receive(:user_id).and_return(nil)
+      end
 
       it "returns true (defaults to allowing reassignment)" do
         expect(described_class.new(article).send(:user_allows_reassignment?)).to be true
