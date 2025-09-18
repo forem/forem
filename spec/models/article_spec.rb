@@ -1341,17 +1341,33 @@ RSpec.describe Article do
 
   describe ".active_help" do
     it "returns properly filtered articles under the 'help' tag" do
+      minimum_score = Settings::UserExperience.home_feed_minimum_score
       filtered_article = create(:article, :past, user: user, tags: "help",
-                                                 past_published_at: 13.hours.ago, comments_count: 5, score: -3)
+                                                 past_published_at: 13.hours.ago, comments_count: 5, score: minimum_score)
       articles = described_class.active_help
       expect(articles).to include(filtered_article)
     end
 
     it "returns any published articles tagged with 'help' when there are no articles that fit the criteria" do
+      minimum_score = Settings::UserExperience.home_feed_minimum_score
       unfiltered_article = create(:article, :past, user: user, tags: "help",
-                                                   past_published_at: 10.hours.ago, comments_count: 8, score: -5)
+                                                   past_published_at: 10.hours.ago, comments_count: 8, score: minimum_score - 1)
       articles = described_class.active_help
       expect(articles).to include(unfiltered_article)
+    end
+
+    it "respects the configured home feed minimum score" do
+      # Set a higher minimum score
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(5)
+      
+      low_score_article = create(:article, :past, user: user, tags: "help",
+                                                  past_published_at: 1.hour.ago, comments_count: 2, score: 3)
+      high_score_article = create(:article, :past, user: user, tags: "help",
+                                                   past_published_at: 1.hour.ago, comments_count: 2, score: 6)
+      
+      articles = described_class.active_help
+      expect(articles).to include(high_score_article)
+      expect(articles).not_to include(low_score_article)
     end
   end
 
