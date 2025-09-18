@@ -425,8 +425,9 @@ class Article < ApplicationRecord
 
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
+    minimum_score = Settings::UserExperience.home_feed_minimum_score
 
-    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: -3..).presence || stories
+    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: minimum_score..).presence || stories
   }
 
   scope :limited_column_select, lambda {
