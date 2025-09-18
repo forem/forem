@@ -41,9 +41,11 @@ class SubforemReassignmentService
   ##
   # Determines if the article should be reassigned based on its automod label.
   #
-  # @return [Boolean] true if the article has an offtopic label and is not spam
+  # @return [Boolean] true if the article has an offtopic label, is not spam, and user allows reassignment
   def should_reassign?
-    OFFTOPIC_LABELS.include?(article.automod_label) && !spam_label?
+    OFFTOPIC_LABELS.include?(article.automod_label) && 
+      !spam_label? && 
+      user_allows_reassignment?
   end
 
   ##
@@ -61,6 +63,14 @@ class SubforemReassignmentService
       clear_and_obvious_low_quality
       likely_low_quality
     ].include?(article.automod_label)
+  end
+
+  ##
+  # Checks if the user allows automatic subforem reassignment.
+  #
+  # @return [Boolean] true if the user allows reassignment, false otherwise
+  def user_allows_reassignment?
+    article.user&.setting&.disallow_subforem_reassignment != true
   end
 
   ##
