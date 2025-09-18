@@ -113,6 +113,24 @@
     </fieldset>
   </div>
 
+  <div class="crayons-card crayons-card--content-rows">
+    <header>
+      <h2 class="crayons-subtitle-1">
+        <%= t("views.settings.custom.subforem_reassignment") %>
+      </h2>
+      <p>
+        <%= t("views.settings.custom.subforem_reassignment_desc") %>
+      </p>
+    </header>
+
+    <fieldset class="grid gap-4">
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :disallow_subforem_reassignment, class: "crayons-checkbox" %>
+        <%= f.label :disallow_subforem_reassignment, t("views.settings.custom.subforem_reassignment_field"), class: "crayons-field__label" %>
+      </div>
+    </fieldset>
+  </div>
+
   <div class="save-footer crayons-card crayons-card--content-rows">
     <button class="crayons-btn" type="submit"><%= t("views.settings.custom.save") %></button>
   </div>

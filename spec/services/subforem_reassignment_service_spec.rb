@@ -142,6 +142,68 @@ RSpec.describe SubforemReassignmentService do
           expect(described_class.new(article).check_and_reassign).to be false
         end
       end
+
+      context "when user has disabled subforem reassignment" do
+        before do
+          user.setting.update!(disallow_subforem_reassignment: true)
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
+        end
+
+        it "does not reassign the article" do
+          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
+        end
+
+        it "does not send a notification" do
+          expect(Notifications::SubforemChangeNotificationWorker).not_to receive(:perform_async)
+
+          described_class.new(article).check_and_reassign
+        end
+
+        it "does not call the AI service" do
+          expect(Ai::SubforemFinder).not_to receive(:new)
+          described_class.new(article).check_and_reassign
+        end
+
+        it "returns false" do
+          expect(described_class.new(article).check_and_reassign).to be false
+        end
+
+        it "does not update the automod label" do
+          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.automod_label }
+        end
+      end
+
+      context "when user has no setting record" do
+        before do
+          user.setting.destroy!
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
+        end
+
+        it "reassigns the article (defaults to allowing reassignment)" do
+          expect { described_class.new(article).check_and_reassign }.to change { article.reload.subforem_id }
+            .from(current_subforem.id).to(target_subforem.id)
+        end
+
+        it "returns true" do
+          expect(described_class.new(article).check_and_reassign).to be true
+        end
+      end
+
+      context "when article has no user" do
+        before do
+          article.update!(user: nil)
+          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
+        end
+
+        it "reassigns the article (defaults to allowing reassignment)" do
+          expect { described_class.new(article).check_and_reassign }.to change { article.reload.subforem_id }
+            .from(current_subforem.id).to(target_subforem.id)
+        end
+
+        it "returns true" do
+          expect(described_class.new(article).check_and_reassign).to be true
+        end
+      end
     end
 
     context "when article does not have an offtopic automod label" do
@@ -248,7 +310,7 @@ RSpec.describe SubforemReassignmentService do
   end
 
   describe "#should_reassign?" do
-    it "returns true for offtopic labels that are not spam" do
+    it "returns true for offtopic labels that are not spam and user allows reassignment" do
       %w[
         ok_but_offtopic_for_subforem
         very_good_but_offtopic_for_subforem
@@ -256,6 +318,18 @@ RSpec.describe SubforemReassignmentService do
       ].each do |label|
         article.update!(automod_label: label)
         expect(described_class.new(article).send(:should_reassign?)).to be true
+      end
+    end
+
+    it "returns false for offtopic labels when user disallows reassignment" do
+      user.setting.update!(disallow_subforem_reassignment: true)
+      %w[
+        ok_but_offtopic_for_subforem
+        very_good_but_offtopic_for_subforem
+        great_but_off_topic_for_subforem
+      ].each do |label|
+        article.update!(automod_label: label)
+        expect(described_class.new(article).send(:should_reassign?)).to be false
       end
     end
 
@@ -343,6 +417,40 @@ RSpec.describe SubforemReassignmentService do
       ].each do |label|
         article.update!(automod_label: label)
         expect(described_class.new(article).send(:on_topic_equivalent_label)).to be_nil
+      end
+    end
+  end
+
+  describe "#user_allows_reassignment?" do
+    context "when user has setting with disallow_subforem_reassignment false" do
+      before { user.setting.update!(disallow_subforem_reassignment: false) }
+
+      it "returns true" do
+        expect(described_class.new(article).send(:user_allows_reassignment?)).to be true
+      end
+    end
+
+    context "when user has setting with disallow_subforem_reassignment true" do
+      before { user.setting.update!(disallow_subforem_reassignment: true) }
+
+      it "returns false" do
+        expect(described_class.new(article).send(:user_allows_reassignment?)).to be false
+      end
+    end
+
+    context "when user has no setting record" do
+      before { user.setting.destroy! }
+
+      it "returns true (defaults to allowing reassignment)" do
+        expect(described_class.new(article).send(:user_allows_reassignment?)).to be true
+      end
+    end
+
+    context "when article has no user" do
+      before { article.update!(user: nil) }
+
+      it "returns true (defaults to allowing reassignment)" do
+        expect(described_class.new(article).send(:user_allows_reassignment?)).to be true
       end
     end
   end
