@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
+ActiveRecord::Schema[7.0].define(version: 2025_09_18_134444) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -615,7 +615,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0
     t.float "recent_article_suppression_rate", default: 0.0, null: false
-    t.float "recent_article_supression_rate", default: 0.0, null: false
     t.float "recent_page_views_shuffle_weight", default: 0.0, null: false
     t.float "recent_subforem_weight", default: 0.0, null: false
     t.integer "recent_tag_count_max", default: 0
@@ -1080,7 +1079,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
     t.index ["poll_id", "user_id"], name: "index_poll_votes_on_poll_user_regular", where: "(session_start = 0)"
     t.index ["poll_option_id", "user_id", "session_start"], name: "index_poll_votes_on_poll_option_user_session_unique", unique: true
     t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_user_regular", where: "(session_start = 0)"
-    t.index ["user_id", "poll_id", "session_start"], name: "index_poll_votes_on_user_id_and_poll_id_and_session_start"
+    t.index ["user_id", "poll_id", "session_start"], name: "index_poll_votes_on_user_poll_session"
   end
 
   create_table "polls", force: :cascade do |t|
@@ -1169,7 +1168,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
-    t.index ["reactable_id", "reactable_type", "user_id"], name: "index_reactions_on_reactable_and_user_for_moderation"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["status"], name: "index_reactions_on_status"
@@ -1540,7 +1538,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at", precision: nil
-    t.datetime "last_moderation_notification", precision: nil, default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", precision: nil, default: "2017-01-01 00:00:00"
     t.datetime "last_notification_activity", precision: nil
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at", precision: nil
@@ -1645,7 +1643,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
-    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_role_id_for_moderation"
   end
 
   create_table "users_settings", force: :cascade do |t|
@@ -1657,6 +1654,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_16_132332) do
     t.text "content_preferences_input"
     t.datetime "content_preferences_updated_at"
     t.datetime "created_at", null: false
+    t.boolean "disallow_subforem_reassignment", default: false, null: false
     t.boolean "display_announcements", default: true, null: false
     t.boolean "display_email_on_profile", default: false, null: false
     t.boolean "display_sponsors", default: true, null: false
