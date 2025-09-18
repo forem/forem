@@ -44,7 +44,7 @@ RSpec.describe "UserSettings" do
       it "displays content on Customization tab properly" do
         get user_settings_path(:customization)
 
-        expect(response.body).to include("Appearance", "Writing", "Content", "Sponsors", "Announcements")
+        expect(response.body).to include("Appearance", "Writing", "Content", "Sponsors", "Announcements", "Content Relocation")
       end
 
       it "displays content on Notifications tab properly" do
@@ -268,6 +268,41 @@ RSpec.describe "UserSettings" do
       end.to change { user.setting.reload.display_announcements }.from(true).to(false)
 
       expect(user.setting.reload.display_announcements).to be(false)
+    end
+
+    it "updates the users subforem reassignment preferences" do
+      expect(user.setting.disallow_subforem_reassignment).to be(false)
+
+      expect do
+        put users_settings_path(user.setting.id), params: { users_setting: { disallow_subforem_reassignment: 1 } }
+      end.to change { user.setting.reload.disallow_subforem_reassignment }.from(false).to(true)
+
+      expect(user.setting.reload.disallow_subforem_reassignment).to be(true)
+    end
+
+    it "allows users to enable subforem reassignment" do
+      user.setting.update!(disallow_subforem_reassignment: true)
+
+      expect do
+        put users_settings_path(user.setting.id), params: { users_setting: { disallow_subforem_reassignment: 0 } }
+      end.to change { user.setting.reload.disallow_subforem_reassignment }.from(true).to(false)
+
+      expect(user.setting.reload.disallow_subforem_reassignment).to be(false)
+    end
+
+    it "displays the subforem reassignment setting in the customization form" do
+      get user_settings_path(:customization)
+
+      expect(response.body).to include("disallow_subforem_reassignment")
+      expect(response.body).to include("Disable automatic relocation of my content to other subforems")
+    end
+
+    it "shows the correct checkbox state for subforem reassignment setting" do
+      user.setting.update!(disallow_subforem_reassignment: true)
+
+      get user_settings_path(:customization)
+
+      expect(response.body).to include('checked="checked"')
     end
 
     it "updates username to too short username" do
