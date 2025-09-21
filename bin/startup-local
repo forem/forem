@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Set environment variables for local development
+export DATABASE_URL="postgres://postgres:postgres@localhost:5432/Forem_development"
+export DATABASE_URL_TEST="postgres://postgres:postgres@localhost:5432/Forem_test"
+export REDIS_URL="redis://localhost:6379/"
+export REDIS_SIDEKIQ_URL="redis://localhost:6379"
+export REDIS_SESSIONS_URL="redis://localhost:6379"
+export REDIS_RPUSH_URL="redis://localhost:6379"
+
+# Start the application with the correct environment variables
+exec bin/startup

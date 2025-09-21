@@ -34,3 +34,19 @@ en:
         top_this_month: Top this month
         top_this_year: Top this year
         top_this_infinity: Top of all time
+        no_results:
+          discover:
+            title: "No posts found"
+            description: "Check back later for or make your own post!"
+            action_text: "Create Post"
+            action_href: "/new"
+          following:
+            title: "No posts from people you follow"
+            description: "Follow some members to see their latest posts in your feed."
+            action_text: "Back to discover tab"
+            action_href: "/discover"
+          default:
+            title: "No posts found"
+            description: "Check back later for ore make your own post!"
+            action_text: "Create Post"
+            action_href: "/new"
