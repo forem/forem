@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useLayoutEffect, useRef, useCallback } from 'preact/hooks';
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
@@ -22,19 +22,6 @@ export const EditorBody = ({
   version,
 }) => {
   const textAreaRef = useRef(null);
-
-  const scrollToBottom = useCallback(() => {
-    if (textAreaRef.current) {
-      const textarea = textAreaRef.current;
-      textarea.scrollTop = textarea.scrollHeight;
-    }
-  }, []);
-
-  const handleChange = useCallback((e) => {
-    onChange(e);
-    // Scroll to bottom after content change
-    setTimeout(scrollToBottom, 50);
-  }, [onChange, scrollToBottom]);
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
@@ -77,8 +64,7 @@ export const EditorBody = ({
             result.map((user) => ({ ...user, value: user.username })),
           )
         }
-        autoResize
-        onChange={handleChange}
+        onChange={onChange}
         onFocus={switchHelpContext}
         aria-label="Post Content"
         name="body_markdown"
