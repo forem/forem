@@ -256,6 +256,28 @@ module Html
       self
     end
 
+    def enforce_gif_like_videos
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.css("video").each do |video|
+        # Mark as gif-like for JS to attach behavior
+        video["data-gif-video"] = "true"
+        # Default attributes to mimic GIF behavior, unless explicitly overridden
+        video["autoplay"] = video["autoplay"] || "autoplay"
+        video["loop"] = video["loop"] || "loop"
+        video["muted"] = video["muted"] || "muted"
+        video["playsinline"] = video["playsinline"] || "playsinline"
+        # Remove controls by default unless explicitly present
+        video.remove_attribute("controls") unless video["controls"]
+        # Avoid preloading to save bandwidth if not provided
+        video["preload"] = video["preload"] || "metadata"
+      end
+
+      @html = doc.to_html
+
+      self
+    end
+
     private
 
     def img_of_size(source, width = 880, quality: "auto")
