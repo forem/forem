@@ -1,11 +1,16 @@
 require "rails_helper"
 
 RSpec.describe Badges::AwardTopSeven, type: :service do
-  let(:badge) { create(:badge, title: "Top 7", slug: "top-7") }
+  let(:badge) { create(:badge, title: "Top 7") }
   let(:user) { create(:user, reputation_modifier: 1.0) }
   let(:other_user) { create(:user, reputation_modifier: 1.5) }
 
   describe ".call" do
+    before do
+      # Ensure the badge is created before running tests
+      badge
+    end
+
     context "when awarding badges" do
       it "awards top seven badge to users" do
         expect do
