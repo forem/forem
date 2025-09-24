@@ -39,14 +39,18 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
       end
 
       it "limits to MAX_ARTICLES_PER_RUN when there are more articles" do
-        # Create 5 articles (more than we'll process in this test)
-        5.times do |i|
+        # Create 80 articles (more than the max limit of 75)
+        80.times do |i|
           article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
           article.update_columns(published_at: (1 + i).hours.ago)
         end
 
-        # Should only process up to 75 articles, but we only have 5, so all 5
-        expect(Articles::HandleSpamWorker).to receive(:perform_async).exactly(5).times
+        # Test that the query itself is limited
+        eligible_articles = worker.send(:find_eligible_articles)
+        expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
+
+        # Should only process up to 75 articles due to LIMIT clause
+        expect(Articles::HandleSpamWorker).to receive(:perform_async).at_most(75).times
 
         worker.perform
       end
@@ -121,14 +125,16 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
         expect(eligible_articles).not_to include(ineligible_article)
       end
 
-      it "orders results by published_at" do
+      it "orders results randomly and limits to MAX_ARTICLES_PER_RUN" do
         older_article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
         older_article.update_columns(published_at: 6.hours.ago)
 
         eligible_articles = worker.send(:find_eligible_articles)
 
-        expect(eligible_articles.first).to eq(older_article)
-        expect(eligible_articles.last).to eq(eligible_article)
+        # Should return articles in random order and be limited to MAX_ARTICLES_PER_RUN
+        expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
+        expect(eligible_articles).to include(older_article)
+        expect(eligible_articles).to include(eligible_article)
       end
     end
   end

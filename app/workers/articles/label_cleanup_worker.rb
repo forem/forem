@@ -8,14 +8,11 @@ module Articles
     MAX_ARTICLES_PER_RUN = 75
 
     def perform
-      # Find articles published in the last 12 hours but not in the last 15 minutes
+      # Find and randomly select articles published in the last 12 hours but not in the last 15 minutes
       # that have the automod_label of "no_moderation_label"
-      eligible_articles = find_eligible_articles
+      selected_articles = find_eligible_articles
 
-      if eligible_articles.any?
-        # Randomly select up to MAX_ARTICLES_PER_RUN articles
-        selected_articles = eligible_articles.sample([eligible_articles.size, MAX_ARTICLES_PER_RUN].min)
-
+      if selected_articles.any?
         Rails.logger.info("LabelCleanupWorker: Processing #{selected_articles.size} articles with no_moderation_label")
 
         # Process each selected article
@@ -43,8 +40,10 @@ module Articles
       
       Article.published
              .where(automod_label: "no_moderation_label")
+             .where("score > -75")
              .where("published_at >= ? AND published_at < ?", twelve_hours_ago, fifteen_minutes_ago)
-             .order(:published_at)
+             .order(Arel.sql("RANDOM()"))
+             .limit(MAX_ARTICLES_PER_RUN)
     end
   end
 end
