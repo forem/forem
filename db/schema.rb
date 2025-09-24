@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_09_18_134444) do
+ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -315,6 +315,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_18_134444) do
     t.text "statement"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "blocked_email_domains", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "domain"
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_blocked_email_domains_on_domain", unique: true
   end
 
   create_table "broadcasts", force: :cascade do |t|
