@@ -156,11 +156,11 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
       it "detects the ring and adjusts reputation modifiers" do
         expect(detector.call).to be true
 
-        # Check that reputation modifiers were set to 0
-        expect(user.reload.reputation_modifier).to eq(0.0)
-        expect(ring_member1.reload.reputation_modifier).to eq(0.0)
-        expect(ring_member2.reload.reputation_modifier).to eq(0.0)
-        expect(ring_member3.reload.reputation_modifier).to eq(0.0)
+        # Check that reputation modifiers were halved (multiplied by 0.5)
+        expect(user.reload.reputation_modifier).to eq(0.5)
+        expect(ring_member1.reload.reputation_modifier).to eq(0.5)
+        expect(ring_member2.reload.reputation_modifier).to eq(0.5)
+        expect(ring_member3.reload.reputation_modifier).to eq(0.5)
 
         # Check that notes were created
         expect(Note.where(noteable: user, reason: "reaction_ring_detection")).to exist

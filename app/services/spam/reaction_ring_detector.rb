@@ -119,22 +119,17 @@ module Spam
       shared_author_reactions = member_reactions.count { |author_id| shared_authors.include?(author_id) }
       total_reactions = member_reactions.size
       
-      Rails.logger.info "Member #{member.id}: total_reactions=#{total_reactions}, shared_author_reactions=#{shared_author_reactions}"
-      
       return false if total_reactions < MIN_REACTIONS_THRESHOLD
 
       # Check if concentration is suspiciously high
       concentration = shared_author_reactions.to_f / total_reactions
-      Rails.logger.info "Member #{member.id}: concentration=#{concentration}, threshold=#{MIN_AUTHOR_CONCENTRATION}"
       return false if concentration < MIN_AUTHOR_CONCENTRATION
 
       # Check self-reaction percentage (should not be too high)
       self_reactions = member_reactions.count { |author_id| author_id == member.id }
       self_reaction_percentage = self_reactions.to_f / total_reactions
-      Rails.logger.info "Member #{member.id}: self_reaction_percentage=#{self_reaction_percentage}, threshold=#{MAX_SELF_REACTION_PERCENTAGE}"
       return false if self_reaction_percentage > MAX_SELF_REACTION_PERCENTAGE
 
-      Rails.logger.info "Member #{member.id}: meets all criteria"
       true
     end
 
@@ -195,8 +190,9 @@ module Spam
       ring_members.each do |member|
         member_user = User.find(member.id)
         
-        # Set reputation modifier to 0 for ring members
-        member_user.update!(reputation_modifier: 0.0)
+        # Halve reputation modifier for ring members (multiply by 0.5)
+        new_modifier = (member_user.reputation_modifier * 0.5).round(2)
+        member_user.update!(reputation_modifier: new_modifier)
         
         # Log the action for audit purposes
         Note.create!(
@@ -204,18 +200,19 @@ module Spam
           noteable_id: member_user.id,
           noteable_type: "User",
           reason: "reaction_ring_detection",
-          content: "User detected as part of reaction ring. Reputation modifier set to 0.0."
+          content: "User detected as part of reaction ring. Reputation modifier halved to #{new_modifier}."
         )
       end
 
       # Also adjust the original user
-      user.update!(reputation_modifier: 0.0)
+      new_modifier = (user.reputation_modifier * 0.5).round(2)
+      user.update!(reputation_modifier: new_modifier)
       Note.create!(
         author_id: user_id,
         noteable_id: user_id,
         noteable_type: "User", 
         reason: "reaction_ring_detection",
-        content: "User detected as part of reaction ring. Reputation modifier set to 0.0."
+        content: "User detected as part of reaction ring. Reputation modifier halved to #{new_modifier}."
       )
     end
   end
