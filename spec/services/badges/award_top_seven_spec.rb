@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Badges::AwardTopSeven, type: :service do
-  let(:badge) { create(:badge, title: "Top 7") }
+  let(:badge) { create(:badge, title: "Top 7", slug: "top-7") }
   let(:user) { create(:user, reputation_modifier: 1.0) }
   let(:other_user) { create(:user, reputation_modifier: 1.5) }
 
@@ -26,7 +26,7 @@ RSpec.describe Badges::AwardTopSeven, type: :service do
       let(:article) { create(:article, user: badge_recipient, created_at: 3.days.ago) }
       let(:positive_reactor1) { create(:user, reputation_modifier: 1.0) }
       let(:positive_reactor2) { create(:user, reputation_modifier: 2.0) }
-      let(:negative_reactor) { create(:user, reputation_modifier: 1.0) }
+      let(:negative_reactor) { create(:user, :trusted, reputation_modifier: 1.0) }
 
       before do
         # Create positive reactions
@@ -35,7 +35,7 @@ RSpec.describe Badges::AwardTopSeven, type: :service do
         create(:reaction, user: positive_reactor1, reactable: article, category: "fire")
         
         # Create negative reaction (should not be affected)
-        create(:reaction, user: negative_reactor, reactable: article, category: "vomit")
+        create(:vomit_reaction, user: negative_reactor, reactable: article)
       end
 
       it "doubles the badge recipient's reputation modifier" do
@@ -154,7 +154,10 @@ RSpec.describe Badges::AwardTopSeven, type: :service do
         expect do
           described_class.call([badge_recipient.username])
         end.not_to change { badge_recipient.reload.reputation_modifier }
-        .and not_change { positive_reactor.reload.reputation_modifier }
+        
+        expect do
+          described_class.call([badge_recipient.username])
+        end.not_to change { positive_reactor.reload.reputation_modifier }
       end
     end
 
