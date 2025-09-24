@@ -40,7 +40,7 @@ module Articles
       
       Article.published
              .where(automod_label: "no_moderation_label")
-             .where("score > -75")
+             .where("score > -80")
              .where("published_at >= ? AND published_at < ?", twelve_hours_ago, fifteen_minutes_ago)
              .order(Arel.sql("RANDOM()"))
              .limit(MAX_ARTICLES_PER_RUN)
