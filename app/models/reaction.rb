@@ -63,6 +63,7 @@ class Reaction < ApplicationRecord
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
+  after_commit :check_for_reaction_ring, on: :create
 
   class << self
     def count_for_article(id)
@@ -239,5 +240,16 @@ class Reaction < ApplicationRecord
 
   def should_notify?
     ReactionCategory.notifiable.include?(category.to_sym)
+  end
+
+  def check_for_reaction_ring
+    # Only check for public reactions on articles
+    return unless visible_to_public? && reactable_type == "Article"
+    
+    # Only check if user has enough reactions to potentially be in a ring
+    return unless user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count >= 50
+    
+    # Schedule ring detection asynchronously
+    Spam::ReactionRingDetectionWorker.perform_async(user_id)
   end
 end
