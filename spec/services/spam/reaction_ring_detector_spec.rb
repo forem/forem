@@ -30,8 +30,9 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when user is admin" do
+      let(:user) { create(:user, :admin) }
+
       before do
-        user.update!(any_admin: true)
         create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
@@ -41,8 +42,9 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+
       before do
-        user.update!(trusted: true)
         create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
@@ -145,10 +147,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
           articles_author3.each { |article| create(:reaction, user: member, reactable: article, category: "like", created_at: 2.months.ago) }
         end
 
-        # Add some diverse reactions to avoid false positive detection
-        other_author = create(:user)
-        other_articles = create_list(:article, 5, user: other_author, published: true)
-        other_articles.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
+        # Don't add diverse reactions for the main user to create a focused ring scenario
+        # The ring members will have diverse reactions to show they're not coordinated
       end
 
       it "detects the ring and adjusts reputation modifiers" do
@@ -214,11 +214,12 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when users are in the same organization" do
       let(:organization) { create(:organization) }
       let(:author1) { create(:user) }
-      let(:org_member1) { create(:user, organization: organization, reputation_modifier: 1.0) }
-      let(:org_member2) { create(:user, organization: organization, reputation_modifier: 1.0) }
+      let(:org_member1) { create(:user, :org_member, reputation_modifier: 1.0) }
+      let(:org_member2) { create(:user, :org_member, reputation_modifier: 1.0) }
 
       before do
-        user.update!(organization: organization)
+        # Add user to organization
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
 
         # Create articles by target author
         articles_author1 = create_list(:article, 10, user: author1, published: true)
@@ -410,11 +411,12 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
       let(:organization) { create(:organization) }
       let(:author1) { create(:user) }
       let(:author2) { create(:user) }
-      let(:org_member1) { create(:user, organization: organization, reputation_modifier: 1.0) }
-      let(:org_member2) { create(:user, organization: organization, reputation_modifier: 1.0) }
+      let(:org_member1) { create(:user, :org_member, reputation_modifier: 1.0) }
+      let(:org_member2) { create(:user, :org_member, reputation_modifier: 1.0) }
 
       before do
-        user.update!(organization: organization)
+        # Add user to organization
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
 
         # Create articles by target authors
         articles_author1 = create_list(:article, 10, user: author1, published: true)

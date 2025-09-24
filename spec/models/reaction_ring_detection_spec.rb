@@ -11,7 +11,8 @@ RSpec.describe "Reaction ring detection", type: :model do
       it "does not trigger ring detection" do
         expect(Spam::ReactionRingDetectionWorker).not_to receive(:perform_async)
         
-        create(:reaction, user: user, reactable: article, category: "vomit")
+        # Create a privileged reaction (not public)
+        create(:reaction, user: user, reactable: article, category: "thumbsdown")
       end
     end
 

@@ -8,7 +8,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
   describe "#perform" do
     context "when user does not exist" do
       it "returns early" do
-        expect(described_class).not_to receive(:new)
+        expect(Spam::ReactionRingDetector).not_to receive(:new)
         described_class.new.perform(999999)
       end
     end
@@ -25,8 +25,9 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
     end
 
     context "when user is admin" do
+      let(:user) { create(:user, :admin) }
+
       before do
-        user.update!(any_admin: true)
         create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
@@ -37,8 +38,9 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
     end
 
     context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+
       before do
-        user.update!(trusted: true)
         create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 

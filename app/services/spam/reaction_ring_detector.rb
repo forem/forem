@@ -96,8 +96,6 @@ module Spam
           })
           .where("articles.user_id IN (?)", shared_authors)
           .where.not(id: user_id)
-          .where.not(any_admin: true)
-          .where.not(trusted: true)
           .group("users.id")
           .having("COUNT(DISTINCT articles.user_id) >= ?", MIN_SHARED_AUTHORS)
           .select("users.id, COUNT(DISTINCT articles.user_id) as shared_author_count")
@@ -105,6 +103,9 @@ module Spam
 
     def meets_ring_criteria?(member, shared_authors)
       member_user = User.find(member.id)
+      
+      # Skip admin and trusted users
+      return false if member_user.any_admin? || member_user.trusted?
       
       # Get this member's recent reactions
       member_reactions = member_user.reactions
@@ -152,8 +153,8 @@ module Spam
         (all_authors - shared_authors - [member.id]).size > 2
       end
 
-      # If no one in the ring has diverse patterns, it's likely a legitimate ring
-      # If some do, we need to be more careful
+      # If most members have diverse patterns, it's likely a legitimate community
+      # If they don't have diverse patterns, it's likely a ring
       !has_diverse_patterns || validate_ring_legitimacy(potential_ring)
     end
 
