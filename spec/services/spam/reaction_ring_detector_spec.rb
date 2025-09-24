@@ -124,31 +124,33 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when a legitimate reaction ring is detected" do
       let(:author1) { create(:user) }
       let(:author2) { create(:user) }
-      let(:author3) { create(:user) }
       let(:ring_member1) { create(:user, reputation_modifier: 1.0) }
       let(:ring_member2) { create(:user, reputation_modifier: 1.0) }
       let(:ring_member3) { create(:user, reputation_modifier: 1.0) }
 
       before do
         # Create articles by the target authors
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
-        articles_author2 = create_list(:article, 10, user: author2, published: true)
-        articles_author3 = create_list(:article, 10, user: author3, published: true)
+        articles_author1 = create_list(:article, 15, user: author1, published: true)
+        articles_author2 = create_list(:article, 15, user: author2, published: true)
 
-        # Create reactions by the main user to these authors' articles
+        # Create reactions by the main user to these authors' articles (focused pattern)
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
         articles_author2.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
-        articles_author3.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
+        
+        # Add more reactions to meet the 50 reaction threshold
+        additional_articles = create_list(:article, 20, user: author1, published: true)
+        additional_articles.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
 
-        # Create reactions by ring members to the same authors' articles
+        # Create reactions by ring members to the same authors' articles (coordinated pattern)
         [ring_member1, ring_member2, ring_member3].each do |member|
           articles_author1.each { |article| create(:reaction, user: member, reactable: article, category: "like", created_at: 2.months.ago) }
           articles_author2.each { |article| create(:reaction, user: member, reactable: article, category: "like", created_at: 2.months.ago) }
-          articles_author3.each { |article| create(:reaction, user: member, reactable: article, category: "like", created_at: 2.months.ago) }
+          # Add more reactions to meet the 50 reaction threshold
+          additional_articles.each { |article| create(:reaction, user: member, reactable: article, category: "like", created_at: 2.months.ago) }
         end
 
-        # Don't add diverse reactions for the main user to create a focused ring scenario
-        # The ring members will have diverse reactions to show they're not coordinated
+        # Ring members have NO diverse reactions - they only react to the same authors
+        # This creates a clear ring pattern
       end
 
       it "detects the ring and adjusts reputation modifiers" do

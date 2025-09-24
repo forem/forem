@@ -119,17 +119,22 @@ module Spam
       shared_author_reactions = member_reactions.count { |author_id| shared_authors.include?(author_id) }
       total_reactions = member_reactions.size
       
+      Rails.logger.info "Member #{member.id}: total_reactions=#{total_reactions}, shared_author_reactions=#{shared_author_reactions}"
+      
       return false if total_reactions < MIN_REACTIONS_THRESHOLD
 
       # Check if concentration is suspiciously high
       concentration = shared_author_reactions.to_f / total_reactions
+      Rails.logger.info "Member #{member.id}: concentration=#{concentration}, threshold=#{MIN_AUTHOR_CONCENTRATION}"
       return false if concentration < MIN_AUTHOR_CONCENTRATION
 
       # Check self-reaction percentage (should not be too high)
       self_reactions = member_reactions.count { |author_id| author_id == member.id }
       self_reaction_percentage = self_reactions.to_f / total_reactions
+      Rails.logger.info "Member #{member.id}: self_reaction_percentage=#{self_reaction_percentage}, threshold=#{MAX_SELF_REACTION_PERCENTAGE}"
       return false if self_reaction_percentage > MAX_SELF_REACTION_PERCENTAGE
 
+      Rails.logger.info "Member #{member.id}: meets all criteria"
       true
     end
 

@@ -73,6 +73,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
           allow(detector).to receive(:call).and_return(true)
 
           expect(Rails.logger).to receive(:info).with("Reaction ring detected for user #{user.id}")
+          expect(Rails.logger).to receive(:info).with("Reaction ring detected for user #{user.id} - moderators should be notified")
 
           described_class.new.perform(user.id)
         end

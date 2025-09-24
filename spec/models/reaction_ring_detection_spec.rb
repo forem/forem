@@ -8,6 +8,8 @@ RSpec.describe "Reaction ring detection", type: :model do
 
   describe "check_for_reaction_ring callback" do
     context "when reaction is not public" do
+      let(:user) { create(:user, :trusted) }  # Trusted users can create privileged reactions
+      
       it "does not trigger ring detection" do
         expect(Spam::ReactionRingDetectionWorker).not_to receive(:perform_async)
         
@@ -47,7 +49,7 @@ RSpec.describe "Reaction ring detection", type: :model do
       end
     end
 
-    context "when user creates a readinglist reaction" do
+    context "when user creates a public reaction" do
       before do
         create_list(:reaction, 50, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
@@ -55,7 +57,7 @@ RSpec.describe "Reaction ring detection", type: :model do
       it "triggers ring detection" do
         expect(Spam::ReactionRingDetectionWorker).to receive(:perform_async).with(user.id)
         
-        create(:reaction, user: user, reactable: article, category: "readinglist")
+        create(:reaction, user: user, reactable: article, category: "unicorn")
       end
     end
 
