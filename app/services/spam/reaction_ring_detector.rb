@@ -4,7 +4,7 @@ module Spam
   # Detects reaction rings where multiple users consistently react to the same authors
   # without reacting to other authors, indicating coordinated behavior.
   class ReactionRingDetector
-    # Minimum number of article reactions in the past month to trigger analysis
+    # Minimum number of article reactions in the past 3 months to trigger analysis
     MIN_REACTIONS_THRESHOLD = 50
 
     # Minimum number of users in a potential ring
@@ -45,7 +45,7 @@ module Spam
       return false if user.any_admin? || user.super_moderator?
       return false if user.trusted?
 
-      # Check if user has enough reactions in the past month
+      # Check if user has enough reactions in the past 3 months
       recent_reactions_count >= MIN_REACTIONS_THRESHOLD
     end
 
@@ -53,7 +53,7 @@ module Spam
       @recent_reactions_count ||= user.reactions
                                     .public_category
                                     .only_articles
-                                    .where(created_at: 1.month.ago..)
+                                    .where(created_at: 3.months.ago..)
                                     .count
     end
 
@@ -72,11 +72,11 @@ module Spam
     end
 
     def find_shared_authors
-      # Get authors of articles that our user has reacted to in the past month
+      # Get authors of articles that our user has reacted to in the past 3 months
       user_reacted_article_authors = user.reactions
                                         .public_category
                                         .only_articles
-                                        .where(created_at: 1.month.ago..)
+                                        .where(created_at: 3.months.ago..)
                                         .joins("JOIN articles ON reactions.reactable_id = articles.id")
                                         .pluck("articles.user_id")
                                         .uniq
@@ -92,7 +92,7 @@ module Spam
           .where(reactions: { 
             reactable_type: "Article",
             category: ReactionCategory.public.map(&:to_s),
-            created_at: 1.month.ago..
+            created_at: 3.months.ago..
           })
           .where("articles.user_id IN (?)", shared_authors)
           .where.not(id: user_id)
@@ -110,7 +110,7 @@ module Spam
       member_reactions = member_user.reactions
                                    .public_category
                                    .only_articles
-                                   .where(created_at: 1.month.ago..)
+                                   .where(created_at: 3.months.ago..)
                                    .joins("JOIN articles ON reactions.reactable_id = articles.id")
                                    .pluck("articles.user_id")
 
@@ -142,7 +142,7 @@ module Spam
         all_authors = member_user.reactions
                                 .public_category
                                 .only_articles
-                                .where(created_at: 1.month.ago..)
+                                .where(created_at: 3.months.ago..)
                                 .joins("JOIN articles ON reactions.reactable_id = articles.id")
                                 .pluck("articles.user_id")
                                 .uniq

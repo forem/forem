@@ -247,7 +247,7 @@ class Reaction < ApplicationRecord
     return unless visible_to_public? && reactable_type == "Article"
     
     # Only check if user has enough reactions to potentially be in a ring
-    return unless user.reactions.public_category.only_articles.where(created_at: 1.month.ago..).count >= 50
+    return unless user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count >= 50
     
     # Schedule ring detection asynchronously
     Spam::ReactionRingDetectionWorker.perform_async(user_id)

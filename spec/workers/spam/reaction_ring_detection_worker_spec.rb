@@ -15,7 +15,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
 
     context "when user has insufficient reactions" do
       before do
-        create_list(:reaction, 30, user: user, reactable_type: "Article", category: "like")
+        create_list(:reaction, 30, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns early without running detection" do
@@ -27,7 +27,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
     context "when user is admin" do
       before do
         user.update!(any_admin: true)
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like")
+        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns early without running detection" do
@@ -39,7 +39,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
     context "when user is trusted" do
       before do
         user.update!(trusted: true)
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like")
+        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns early without running detection" do
@@ -50,7 +50,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
 
     context "when user meets criteria for analysis" do
       before do
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like")
+        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "runs the ring detection" do

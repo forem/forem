@@ -35,8 +35,8 @@ RSpec.describe "Reaction ring detection", type: :model do
 
     context "when user has sufficient reactions and creates a public reaction on article" do
       before do
-        # Create enough reactions to meet the threshold
-        create_list(:reaction, 50, user: user, reactable_type: "Article", category: "like")
+        # Create enough reactions to meet the threshold over 3 months
+        create_list(:reaction, 50, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "triggers ring detection" do
@@ -48,13 +48,26 @@ RSpec.describe "Reaction ring detection", type: :model do
 
     context "when user creates a readinglist reaction" do
       before do
-        create_list(:reaction, 50, user: user, reactable_type: "Article", category: "like")
+        create_list(:reaction, 50, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "triggers ring detection" do
         expect(Spam::ReactionRingDetectionWorker).to receive(:perform_async).with(user.id)
         
         create(:reaction, user: user, reactable: article, category: "readinglist")
+      end
+    end
+
+    context "when user has old reactions outside 3-month window" do
+      before do
+        # Create reactions older than 3 months
+        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 4.months.ago)
+      end
+
+      it "does not trigger ring detection" do
+        expect(Spam::ReactionRingDetectionWorker).not_to receive(:perform_async)
+        
+        create(:reaction, user: user, reactable: article, category: "like")
       end
     end
   end

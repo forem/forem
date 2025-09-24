@@ -34,11 +34,11 @@ module Spam
       return false if user.any_admin? || user.super_moderator?
       return false if user.trusted?
 
-      # Check if user has enough reactions in the past month
+      # Check if user has enough reactions in the past 3 months
       user.reactions
           .public_category
           .only_articles
-          .where(created_at: 1.month.ago..)
+          .where(created_at: 3.months.ago..)
           .count >= 50
     end
 
