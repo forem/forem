@@ -3,15 +3,15 @@ require "rails_helper"
 RSpec.describe "User spam detection", type: :model do
   describe "spam detection callback" do
     let(:user) { create(:user, email: "test@spamdomain.com") }
-    let!(:spam_user1) { create(:user, email: user.email, created_at: 1.week.ago) }
-    let!(:spam_user2) { create(:user, email: user.email, created_at: 1.week.ago) }
-    let!(:spam_user3) { create(:user, email: user.email, created_at: 1.week.ago) }
+    let!(:spam_user1) { create(:user, email: "user1@spamdomain.com", created_at: 1.week.ago) }
+    let!(:spam_user2) { create(:user, email: "user2@spamdomain.com", created_at: 1.week.ago) }
+    let!(:spam_user3) { create(:user, email: "user3@spamdomain.com", created_at: 1.week.ago) }
 
     before do
       # Set up spam users with spam roles
       [spam_user1, spam_user2, spam_user3].each do |spam_user|
         spam_user.add_role(:spam)
-        spam_user.update!(updated_at: 1.week.ago)
+        spam_user.update!(registered_at: 1.week.ago, updated_at: 1.week.ago)
       end
     end
 

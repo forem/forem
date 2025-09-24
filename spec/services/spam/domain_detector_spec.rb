@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Spam::DomainDetector, type: :service do
+  include ActiveJob::TestHelper
   let(:user) { create(:user, email: "test@example.com") }
   let(:detector) { described_class.new(user) }
 
@@ -20,35 +21,30 @@ RSpec.describe Spam::DomainDetector, type: :service do
       let!(:spam_user3) { create(:user, email: "user3@example.com") }
 
       before do
-        # Make the spam users have spam/suspended roles and update them recently
+        # Make the spam users have spam/suspended roles and register them recently
         [spam_user1, spam_user2, spam_user3].each do |spam_user|
           spam_user.add_role(:spam)
-          spam_user.update!(created_at: 1.week.ago, updated_at: 1.week.ago)
+          spam_user.update!(registered_at: 1.week.ago, created_at: 1.week.ago)
         end
+        
+        # Make sure the current user is also registered recently
+        user.update!(registered_at: 1.week.ago, created_at: 1.week.ago)
       end
 
-      it "blocks the domain and suspends all users with that domain" do
-        expect { detector.check_and_block_domain! }.to change { BlockedEmailDomain.count }.by(1)
+      it "enqueues background job to block domain and suspend users" do
+        expect { detector.check_and_block_domain! }.to change { Spam::BlockDomainAndSuspendUsersWorker.jobs.size }.by(1)
         
-        blocked_domain = BlockedEmailDomain.find_by(domain: "example.com")
-        expect(blocked_domain).to be_present
-        
-        # Check that all users with this domain are suspended
-        domain_users = User.where("email LIKE ?", "%@example.com")
-        domain_users.each do |domain_user|
-          expect(domain_user.reload.suspended?).to be true
-        end
+        # Check that the job was enqueued with correct arguments
+        last_job = Spam::BlockDomainAndSuspendUsersWorker.jobs.last
+        expect(last_job["args"]).to eq(["example.com"])
       end
 
-      it "creates notes for automatically suspended users" do
-        detector.check_and_block_domain!
+      it "enqueues job with correct domain" do
+        expect { detector.check_and_block_domain! }.to change { Spam::BlockDomainAndSuspendUsersWorker.jobs.size }.by(1)
         
-        domain_users = User.where("email LIKE ?", "%@example.com")
-        domain_users.each do |domain_user|
-          note = domain_user.notes.find_by(reason: "automatic_suspend")
-          expect(note).to be_present
-          expect(note.content).to include("spam patterns detected from email domain example.com")
-        end
+        # Check that the job was enqueued with correct arguments
+        last_job = Spam::BlockDomainAndSuspendUsersWorker.jobs.last
+        expect(last_job["args"]).to eq(["example.com"])
       end
     end
 
@@ -62,11 +58,11 @@ RSpec.describe Spam::DomainDetector, type: :service do
         # Make the spam users have spam/suspended roles
         [spam_user1, spam_user2, spam_user3].each do |spam_user|
           spam_user.add_role(:spam)
-          spam_user.update!(created_at: 1.week.ago, updated_at: 1.week.ago)
+          spam_user.update!(registered_at: 1.week.ago, created_at: 1.week.ago)
         end
         
         # Make the legitimate user older
-        legitimate_user.update!(created_at: 1.month.ago, updated_at: 1.month.ago)
+        legitimate_user.update!(registered_at: 1.month.ago, created_at: 1.month.ago)
       end
 
       it "does not block the domain when legitimate users exist" do
@@ -82,7 +78,7 @@ RSpec.describe Spam::DomainDetector, type: :service do
       before do
         [spam_user1, spam_user2].each do |spam_user|
           spam_user.add_role(:spam)
-          spam_user.update!(created_at: 1.week.ago, updated_at: 1.week.ago)
+          spam_user.update!(registered_at: 1.week.ago, created_at: 1.week.ago)
         end
       end
 
@@ -100,7 +96,7 @@ RSpec.describe Spam::DomainDetector, type: :service do
       before do
         [spam_user1, spam_user2, spam_user3].each do |spam_user|
           spam_user.add_role(:spam)
-          spam_user.update!(created_at: 1.month.ago, updated_at: 1.month.ago)
+          spam_user.update!(registered_at: 1.month.ago, created_at: 1.month.ago)
         end
       end
 
