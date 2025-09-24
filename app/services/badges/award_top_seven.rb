@@ -3,8 +3,12 @@ module Badges
     BADGE_SLUG = "top-7".freeze
 
     def self.call(usernames, message_markdown = default_message_markdown)
+      users = User.where(username: usernames)
+      
+      # The reputation modifier changes are now handled automatically 
+      # via the BadgeAchievement callback when badges are awarded
       ::Badges::Award.call(
-        User.where(username: usernames),
+        users,
         BADGE_SLUG,
         message_markdown,
       )

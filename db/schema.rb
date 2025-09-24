@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_09_18_134444) do
+ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -169,7 +169,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_18_134444) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
-    t.index ["automod_label"], name: "index_articles_on_automod_label"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
@@ -316,6 +315,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_18_134444) do
     t.text "statement"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+  end
+
+  create_table "blocked_email_domains", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "domain"
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_blocked_email_domains_on_domain", unique: true
   end
 
   create_table "broadcasts", force: :cascade do |t|

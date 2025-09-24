@@ -789,11 +789,16 @@ class User < ApplicationRecord
     ForemInstance.smtp_enabled?
   end
 
-  def update_user_roles_cache(...)
+  def update_user_roles_cache(role)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
     Rails.cache.delete("user-#{id}/role_names")
     refresh_auto_audience_segments
     trusted?
+    
+    # Check for spam patterns when user gets spam or suspended role
+    if role.name.in?(%w[spam suspended])
+      Spam::DomainDetector.new(self).check_and_block_domain!
+    end
   end
 end
