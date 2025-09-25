@@ -122,8 +122,8 @@
                   window.ReactNativeWebView.postMessage(JSON.stringify({ action: "update_notification_count", count: 0 }));
                 }
             } else if (count != '0' && count != undefined && count != '') {
-              document.getElementById('notifications-number').innerHTML =
-                xmlhttp.response;
+              var displayCount = parseInt(count) > 50 ? '50+' : count;
+              document.getElementById('notifications-number').innerHTML = displayCount;
               document
                 .getElementById('notifications-number')
                 .classList.remove('hidden');
