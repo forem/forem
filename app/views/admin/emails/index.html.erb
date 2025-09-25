@@ -8,8 +8,28 @@
   data-confirmation-modal-size-value="m">
   
   <nav class="flex mb-4" aria-label="Emails navigation">
-    <%= form_tag(admin_emails_path, method: "get") do %>
+    <%= form_tag(admin_emails_path, method: "get", class: "flex gap-2 items-end") do %>
       <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search", autocomplete: "off") %>
+      
+      <%= select_tag(:type_of, 
+          options_for_select([
+            ["All Types", ""],
+            ["One Off", "one_off"],
+            ["Newsletter", "newsletter"],
+            ["Onboarding Drip", "onboarding_drip"]
+          ], params[:type_of]), 
+          { class: "crayons-select" }) %>
+      
+      <%= select_tag(:status, 
+          options_for_select([
+            ["All Statuses", ""],
+            ["Draft", "draft"],
+            ["Active", "active"],
+            ["Delivered", "delivered"]
+          ], params[:status]), 
+          { class: "crayons-select" }) %>
+      
+      <%= submit_tag("Filter", class: "crayons-btn") %>
     <% end %>
     <div class="ml-auto">
       <div class="justify-end">
@@ -25,28 +45,37 @@
     <thead>
       <tr>
         <th scope="col">Type</th>
+        <th scope="col">Status</th>
         <th scope="col">Subject</th>
         <th scope="col">Sent At</th>
         <th scope="col">Segment</th>
         <th scope="col">Body</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody class="crayons-card">
       <% @emails.each do |email| %>
         <tr data-row-id="<%= email.id %>" style="background: <%= email.bg_color %> !important">
-          <td><%= email.type_of %> <%= "(#{email.drip_day})" if email.type_of == "onboarding_drip" %></td>
+          <td><%= email.type_of.humanize %> <%= "(#{email.drip_day})" if email.type_of == "onboarding_drip" %></td>
+          <td>
+            <span class="crayons-indicator crayons-indicator--<%= email.status == 'draft' ? 'warning' : email.status == 'active' ? 'success' : 'info' %>">
+              <%= email.status.humanize %>
+            </span>
+          </td>
           <td><%= link_to email.subject, admin_email_path(email) %></td>
-          <td><%= email.created_at %></td>
+          <td><%= email.created_at.strftime("%Y-%m-%d %H:%M") %></td>
           <td><%= email.audience_segment&.name || email.audience_segment&.type_of || "All" %></td>
           <td><%= truncate(email.body, length: 100) %></td>
-          <td><%= link_to "Details", admin_email_path(email), class: "crayons-btn" %></td>
           <td>
-            <button
-              class="crayons-btn crayons-btn--danger"
-              data-item-id="<%= email.id %>"
-              data-endpoint="/admin/emails"
-              data-username="<%= current_user.username %>"
-              data-action="click->confirmation-modal#openModal">Destroy</button>
+            <div class="flex gap-1">
+              <%= link_to "Details", admin_email_path(email), class: "crayons-btn crayons-btn--s" %>
+              <button
+                class="crayons-btn crayons-btn--danger crayons-btn--s"
+                data-item-id="<%= email.id %>"
+                data-endpoint="/admin/emails"
+                data-username="<%= current_user.username %>"
+                data-action="click->confirmation-modal#openModal">Destroy</button>
+            </div>
           </td>
         </tr>
       <% end %>
