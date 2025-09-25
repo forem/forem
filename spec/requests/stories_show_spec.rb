@@ -228,7 +228,7 @@ RSpec.describe "StoriesShow" do
 
     context "when subforem logic is triggered by RequestStore" do
       let!(:subforem) { create(:subforem, domain: "www.example.com") }
-      let!(:default_subforem) { create(:subforem, domain: "#{rand(1000)}.com") }
+      let!(:default_subforem) { create(:subforem) }
 
       before do
         # Simulate a default_subforem stored in RequestStore
