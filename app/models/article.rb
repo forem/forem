@@ -748,9 +748,17 @@ class Article < ApplicationRecord
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
 
+    # Calculate comment_score and apply max_score limits
+    calculated_comment_score = comments.sum(:score)
+    comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
+                      accepted_max
+                    else
+                      calculated_comment_score
+                    end
+
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
-                   comment_score: comments.sum(:score),
+                   comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
   end
 
