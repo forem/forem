@@ -166,11 +166,11 @@ RSpec.describe UserDecorator, type: :decorator do
     let(:activity_store) { instance_double("UserActivity") }
 
     # Create some subforems to work with
-    let!(:sf1) { create(:subforem, domain: "#{rand(10000)}.com") }
-    let!(:sf2) { create(:subforem, domain: "#{rand(10000)}.com") }
-    let!(:sf3) { create(:subforem, domain: "#{rand(10000)}.com") }
-    let!(:sf4) { create(:subforem, domain: "#{rand(10000)}.com") }
-    let!(:sf5) { create(:subforem, domain: "#{rand(10000)}.com") }
+    let!(:sf1) { create(:subforem) }
+    let!(:sf2) { create(:subforem) }
+    let!(:sf3) { create(:subforem) }
+    let!(:sf4) { create(:subforem) }
+    let!(:sf5) { create(:subforem) }
 
     before do
       # Mock the user_activity call to return our test double

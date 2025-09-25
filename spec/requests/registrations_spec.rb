@@ -59,9 +59,9 @@ RSpec.describe "Registrations" do
     end
 
     context "when subforem redirect conditions are met" do
-      let!(:default_subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
-      let!(:subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
-      let!(:root_subforem) { create(:subforem, domain: "#{rand(10_000)}.com", root: true) }
+      let!(:default_subforem) { create(:subforem) }
+      let!(:subforem) { create(:subforem) }
+      let!(:root_subforem) { create(:subforem, root: true) }
 
       before do
         allow(RequestStore).to receive(:store).and_return(
@@ -80,9 +80,9 @@ RSpec.describe "Registrations" do
     end
 
     context "when subforem_id is set but subforem record is not found" do
-      let!(:subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
-      let!(:default_subforem) { create(:subforem, domain: "#{rand(10_000)}.com") }
-      let!(:root_subforem) { create(:subforem, domain: "#{rand(10_000)}.com", root: true) }
+      let!(:subforem) { create(:subforem) }
+      let!(:default_subforem) { create(:subforem) }
+      let!(:root_subforem) { create(:subforem, root: true) }
       before do
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: subforem.id,
@@ -287,7 +287,7 @@ RSpec.describe "Registrations" do
       end
 
       it "registeres a user with appropriate subforem" do
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",

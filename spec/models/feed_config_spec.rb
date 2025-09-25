@@ -97,8 +97,8 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.precomputed_selections_weight = 10.0
         feed_config.subforem_follow_weight        = 11.0
 
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
+        root_subforem = create(:subforem)
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: root_subforem.id,
           default_subforem_id: root_subforem.id,
@@ -261,8 +261,8 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       it "includes the recent subforem weight if request is root" do
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
+        root_subforem = create(:subforem)
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: root_subforem.id,
           default_subforem_id: root_subforem.id,
@@ -273,9 +273,9 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       it "does not include recent subforem weight if request is not root" do
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        default_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
+        default_subforem = create(:subforem)
+        root_subforem = create(:subforem)
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: subforem.id,
           default_subforem_id: default_subforem.id,

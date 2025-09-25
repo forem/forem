@@ -8,8 +8,8 @@ RSpec.describe "Admin::Subforems", type: :request do
   end
 
   describe "GET /admin/subforems" do
-    let!(:subforem1) { create(:subforem, domain: "#{rand(10_000)}.com") }
-    let!(:subforem2) { create(:subforem, domain: "#{rand(10_000)}.com") }
+    let!(:subforem1) { create(:subforem) }
+    let!(:subforem2) { create(:subforem) }
 
     it "returns a successful response and lists subforems" do
       get admin_subforems_path
