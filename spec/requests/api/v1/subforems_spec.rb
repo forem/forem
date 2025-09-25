@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe "Api::V1::Subforems" do
   describe "GET /api/subforems" do
     let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
-    let!(:discoverable_subforem) { create(:subforem, discoverable: true, domain: "#{rand(1000)}.com") }
-    let!(:non_discoverable_subforem) { create(:subforem, discoverable: false, domain: "#{rand(1000)}.com") }
+    let!(:discoverable_subforem) { create(:subforem, discoverable: true) }
+    let!(:non_discoverable_subforem) { create(:subforem, discoverable: false) }
 
     it "returns a list of discoverable subforems with correct attributes", :aggregate_failures do
       get api_subforems_path, headers: headers

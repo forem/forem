@@ -82,10 +82,10 @@ RSpec.describe Article do
     end
 
     describe ".from_subforem" do
-      let(:subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
-      let(:second_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
-      let(:third_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: true) }
-      let(:non_discoverable_subforem) { create(:subforem, domain: "#{rand(1000)}.com", discoverable: false) }
+      let(:subforem) { create(:subforem, discoverable: true) }
+      let(:second_subforem) { create(:subforem, discoverable: true) }
+      let(:third_subforem) { create(:subforem, discoverable: true) }
+      let(:non_discoverable_subforem) { create(:subforem, discoverable: false) }
       let!(:article_in_subforem) { create(:article, subforem_id: subforem.id) }
       let!(:article_in_second_subforem) { create(:article, subforem_id: second_subforem.id) }
       let!(:article_in_null_subforem) { create(:article, subforem_id: nil) }

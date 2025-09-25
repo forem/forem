@@ -38,7 +38,7 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
   end
 
   it "returns proper url when a subforem_id is set" do
-    subforem_id = create(:subforem, domain: "#{rand(10_000)}.com").id
+    subforem_id = create(:subforem).id
     allow(Settings::UserExperience).to receive(:cover_image_height).with(subforem_id: subforem_id).and_return("450")
     allow(Settings::UserExperience).to receive(:cover_image_fit).with(subforem_id: subforem_id).and_return("limit")
     expect(described_class.new(article.main_image, subforem_id).call)
