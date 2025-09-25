@@ -3,7 +3,14 @@ module Admin
     layout "admin"
 
     def index
-      @emails = Email.page(params[:page] || 1).includes([:audience_segment]).order("id DESC").per(25)
+      @emails = Email.includes([:audience_segment]).order("id DESC")
+      
+      # Apply filters
+      @emails = @emails.where(type_of: params[:type_of]) if params[:type_of].present?
+      @emails = @emails.where(status: params[:status]) if params[:status].present?
+      @emails = @emails.where("subject ILIKE ? OR body ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%") if params[:search].present?
+      
+      @emails = @emails.page(params[:page] || 1).per(25)
     end
 
     def new
