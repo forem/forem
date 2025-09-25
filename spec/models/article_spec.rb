@@ -1970,6 +1970,78 @@ RSpec.describe Article do
         expect(article.reload.score).to eq(5)
       end
     end
+
+    context "comment_score with max_score limits" do
+      before do
+        allow(article).to receive(:reactions).and_return(double(sum: 10, privileged_category: double(sum: 5)))
+        allow(BlackBox).to receive(:article_hotness_score).and_return(100)
+        # Override the comments mock to allow real comment creation
+        allow(article).to receive(:comments).and_call_original
+      end
+
+      it "limits comment_score to article max_score when sum of comment scores exceeds it" do
+        # Create comments with scores that sum to more than the max_score
+        create(:comment, commentable: article, score: 15)
+        create(:comment, commentable: article, score: 10)
+        article.update_column(:max_score, 20)
+
+        article.update_score
+        expect(article.reload.comment_score).to eq(20)
+      end
+
+      it "does not limit comment_score when sum of comment scores is below article max_score" do
+        # Create comments with scores that sum to less than the max_score
+        create(:comment, commentable: article, score: 5)
+        create(:comment, commentable: article, score: 8)
+        article.update_column(:max_score, 20)
+
+        article.update_score
+        expect(article.reload.comment_score).to eq(13)
+      end
+
+      it "does not limit comment_score when article max_score is 0" do
+        # Create comments with scores
+        create(:comment, commentable: article, score: 15)
+        create(:comment, commentable: article, score: 10)
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        expect(article.reload.comment_score).to eq(25)
+      end
+
+      it "limits comment_score to user max_score when it's lower than article max_score" do
+        # Create comments with scores that would exceed user max_score
+        create(:comment, commentable: article, score: 15)
+        create(:comment, commentable: article, score: 10)
+        article.update_column(:max_score, 30)
+        user.update_column(:max_score, 20)
+
+        article.update_score
+        expect(article.reload.comment_score).to eq(20)
+      end
+
+      it "limits comment_score to article max_score when it's lower than user max_score" do
+        # Create comments with scores that would exceed article max_score
+        create(:comment, commentable: article, score: 15)
+        create(:comment, commentable: article, score: 10)
+        article.update_column(:max_score, 15)
+        user.update_column(:max_score, 30)
+
+        article.update_score
+        expect(article.reload.comment_score).to eq(15)
+      end
+
+      it "does not limit comment_score when both max_scores are 0" do
+        # Create comments with scores
+        create(:comment, commentable: article, score: 15)
+        create(:comment, commentable: article, score: 10)
+        article.update_column(:max_score, 0)
+        user.update_column(:max_score, 0)
+
+        article.update_score
+        expect(article.reload.comment_score).to eq(25)
+      end
+    end
   end
 
   context "when the article has a context note" do
