@@ -8,35 +8,37 @@ RSpec.describe UserQuery, type: :model do
       description: "A test query for users",
       query: "SELECT id FROM users WHERE created_at > '2023-01-01'",
       created_by: user,
-      max_execution_time_ms: 30000
+      max_execution_time_ms: 30_000
     }
   end
 
   describe "associations" do
-    it { should belong_to(:created_by).class_name("User") }
-    it { should have_many(:emails).dependent(:nullify) }
+    it { is_expected.to belong_to(:created_by).class_name("User") }
+    it { is_expected.to have_many(:emails).dependent(:nullify) }
   end
 
   describe "validations" do
     subject { UserQuery.new(valid_attributes) }
 
-    it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:query) }
-    it { should validate_presence_of(:created_by) }
-    it { should validate_presence_of(:max_execution_time_ms) }
-    
-    it { should validate_uniqueness_of(:name) }
-    it { should validate_length_of(:name).is_at_most(255) }
-    it { should validate_length_of(:description).is_at_most(1000) }
-    it { should validate_length_of(:query).is_at_most(10000) }
-    
-    it { should validate_numericality_of(:max_execution_time_ms).is_greater_than(0).is_less_than_or_equal_to(300000) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:query) }
+    it { is_expected.to belong_to(:created_by) }
+    it { is_expected.to validate_presence_of(:max_execution_time_ms) }
+
+    it { is_expected.to validate_uniqueness_of(:name) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to validate_length_of(:description).is_at_most(1000) }
+    it { is_expected.to validate_length_of(:query).is_at_most(10_000) }
+
+    it {
+      expect(subject).to validate_numericality_of(:max_execution_time_ms).is_greater_than(0).is_less_than_or_equal_to(300_000)
+    }
 
     describe "query validation" do
       it "rejects queries that don't start with SELECT" do
         subject.query = "UPDATE users SET name = 'test'"
         expect(subject).not_to be_valid
-        expect(subject.errors[:query]).to include("must start with SELECT")
+        expect(subject.errors[:query]).to include("Query must start with SELECT")
       end
 
       it "rejects queries that don't target users table" do
@@ -60,13 +62,13 @@ RSpec.describe UserQuery, type: :model do
       it "rejects queries with suspicious patterns" do
         subject.query = "SELECT id FROM users -- comment"
         expect(subject).not_to be_valid
-        expect(subject.errors[:query]).to include("contains suspicious pattern: /--/")
+        expect(subject.errors[:query]).to include("Query contains suspicious pattern: (?-mix:--)")
       end
 
       it "rejects queries with unbalanced parentheses" do
         subject.query = "SELECT id FROM users WHERE (created_at > '2023-01-01'"
         expect(subject).not_to be_valid
-        expect(subject.errors[:query]).to include("contains unbalanced parentheses")
+        expect(subject.errors[:query]).to include("Query contains unbalanced parentheses")
       end
 
       it "accepts valid queries" do
@@ -82,8 +84,8 @@ RSpec.describe UserQuery, type: :model do
   end
 
   describe "scopes" do
-    let!(:active_query) { create(:user_query, active: true) }
-    let!(:inactive_query) { create(:user_query, active: false) }
+    let!(:active_query) { create(:user_query, active: true, name: "Active Query #{SecureRandom.hex(4)}") }
+    let!(:inactive_query) { create(:user_query, active: false, name: "Inactive Query #{SecureRandom.hex(4)}") }
 
     describe ".active" do
       it "returns only active queries" do
@@ -137,7 +139,7 @@ RSpec.describe UserQuery, type: :model do
     it "handles query timeout" do
       user_query.update!(max_execution_time_ms: 1)
       allow_any_instance_of(UserQueryExecutor).to receive(:execute).and_raise(PG::QueryCanceled.new("timeout"))
-      
+
       expect { user_query.execute_safely }.to raise_error(UserQuery::QueryTimeoutError)
     end
   end
@@ -173,8 +175,7 @@ RSpec.describe UserQuery, type: :model do
       query = UserQuery.create!(valid_attributes)
       expect(query.active).to be true
       expect(query.execution_count).to eq(0)
-      expect(query.max_execution_time_ms).to eq(30000)
+      expect(query.max_execution_time_ms).to eq(30_000)
     end
   end
 end
-

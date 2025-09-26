@@ -156,9 +156,10 @@ class UserQueryExecutor
     # Ensure query ends with semicolon
     query_text += ";" unless query_text.end_with?(";")
 
-    # Add LIMIT if specified and not already present
-    if limit && !query_text.upcase.include?("LIMIT")
-      # Remove trailing semicolon, add LIMIT, then add semicolon back
+    # Add LIMIT if specified
+    if limit
+      # Remove any existing LIMIT clause and add our limit
+      query_text = query_text.gsub(/\s+LIMIT\s+\d+;?$/i, "")
       query_text = query_text.chomp(";") + " LIMIT #{[limit, MAX_USER_LIMIT].min};"
     end
 
