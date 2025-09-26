@@ -225,9 +225,10 @@ class UserQuery < ApplicationRecord
     # Ensure query ends with semicolon
     query_with_limit += ";" unless query_with_limit.end_with?(";")
 
-    # Add LIMIT if specified and not already present
-    if limit && !query_with_limit.upcase.include?("LIMIT")
-      # Remove trailing semicolon, add LIMIT, then add semicolon back
+    # Add LIMIT if specified
+    if limit
+      # Remove any existing LIMIT clause and add our limit
+      query_with_limit = query_with_limit.gsub(/\s+LIMIT\s+\d+;?$/i, "")
       query_with_limit = query_with_limit.chomp(";") + " LIMIT #{[limit, MAX_USER_LIMIT].min};"
     end
 
