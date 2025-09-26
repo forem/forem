@@ -1,12 +1,12 @@
 class UserQueryValidator
   include ActiveModel::Validations
-  
+
   # Maximum query length
-  MAX_QUERY_LENGTH = 10000
-  
+  MAX_QUERY_LENGTH = 10_000
+
   # Maximum number of users that can be returned
   MAX_USER_LIMIT = 100_000
-  
+
   # Allowed SQL keywords for read-only queries
   ALLOWED_KEYWORDS = %w[
     SELECT FROM WHERE AND OR NOT IN EXISTS BETWEEN IS NULL IS NOT NULL
@@ -18,7 +18,7 @@ class UserQueryValidator
     LIKE ILIKE SIMILAR TO
     ASC DESC
   ].freeze
-  
+
   # Dangerous SQL keywords that are forbidden
   FORBIDDEN_KEYWORDS = %w[
     INSERT UPDATE DELETE DROP CREATE ALTER TRUNCATE
@@ -32,7 +32,7 @@ class UserQueryValidator
     LOCK UNLOCK
     VACUUM ANALYZE REINDEX
   ].freeze
-  
+
   # Allowed table names for joins
   ALLOWED_TABLES = %w[
     users
@@ -57,12 +57,12 @@ class UserQueryValidator
     segmented_users
     audience_segments
   ].freeze
-  
+
   # Suspicious patterns that indicate potential SQL injection or dangerous operations
   SUSPICIOUS_PATTERNS = [
     /;\s*\w+/i,                    # Multiple statements
     /--/,                          # SQL comments
-    /\/\*.*\*\//,                  # Block comments
+    %r{/\*.*\*/},                  # Block comments
     /xp_/i,                        # Extended procedures
     /sp_/i,                        # Stored procedures
     /@@/i,                         # System variables
@@ -125,7 +125,7 @@ class UserQueryValidator
     /\bxp_instance_regenumvalues/i,  # Extended procedure
     /\bxp_instance_regaddmultistring/i, # Extended procedure
     /\bxp_instance_regremovemultistring/i, # Extended procedure
-    /\bxp_instance_regdeletekey/i,  # Extended procedure
+    /\bxp_instance_regdeletekey/i, # Extended procedure
     /\bxp_mkdir/i,                 # Extended procedure
     /\bxp_subdirs/i,               # Extended procedure
     /\bxp_dirtree/i,               # Extended procedure
@@ -173,7 +173,7 @@ class UserQueryValidator
     /\bxp_instance_regenumvalues/i,  # Extended procedure
     /\bxp_instance_regaddmultistring/i, # Extended procedure
     /\bxp_instance_regremovemultistring/i, # Extended procedure
-    /\bxp_instance_regdeletekey/i,  # Extended procedure
+    /\bxp_instance_regdeletekey/i, # Extended procedure
     /\bxp_mkdir/i,                 # Extended procedure
     /\bxp_subdirs/i,               # Extended procedure
     /\bxp_dirtree/i,               # Extended procedure
@@ -200,14 +200,14 @@ class UserQueryValidator
     /\bxp_enum_oledb_providers/i,  # Extended procedure
     /\bxp_enumdsn/i,               # Extended procedure
   ].freeze
-  
+
   attr_reader :query, :errors
-  
+
   def initialize(query)
     @query = query.to_s.strip
     @errors = []
   end
-  
+
   def valid?
     @errors.clear
     validate_query_presence
@@ -219,56 +219,56 @@ class UserQueryValidator
     validate_read_only_operations
     @errors.empty?
   end
-  
+
   def error_messages
     @errors
   end
-  
+
   private
-  
+
   def validate_query_presence
-    if @query.blank?
-      @errors << "Query cannot be blank"
-    end
+    return if @query.present?
+
+    @errors << "Query cannot be blank"
   end
-  
+
   def validate_query_length
-    if @query.length > MAX_QUERY_LENGTH
-      @errors << "Query exceeds maximum length of #{MAX_QUERY_LENGTH} characters"
-    end
+    return unless @query.length > MAX_QUERY_LENGTH
+
+    @errors << "Query exceeds maximum length of #{MAX_QUERY_LENGTH} characters"
   end
-  
+
   def validate_query_structure
     return if @query.blank?
-    
+
     query_upper = @query.upcase
-    
+
     # Must start with SELECT
-    unless query_upper.start_with?('SELECT')
+    unless query_upper.start_with?("SELECT")
       @errors << "Query must start with SELECT"
     end
-    
+
     # Must select from users table or join with users
-    unless query_upper.include?('USERS') || query_upper.include?('FROM users')
+    unless query_upper.include?("USERS") || query_upper.include?("FROM users")
       @errors << "Query must target the users table"
     end
-    
+
     # Must select user ID
-    unless query_upper.include?('ID') || query_upper.include?('USERS.ID')
+    unless query_upper.include?("ID") || query_upper.include?("USERS.ID")
       @errors << "Query must select user ID (id or users.id)"
     end
-    
+
     # Check for balanced parentheses
-    unless balanced_parentheses?
-      @errors << "Query contains unbalanced parentheses"
-    end
+    return if balanced_parentheses?
+
+    @errors << "Query contains unbalanced parentheses"
   end
-  
+
   def validate_forbidden_keywords
     return if @query.blank?
-    
+
     query_upper = @query.upcase
-    
+
     FORBIDDEN_KEYWORDS.each do |keyword|
       # Use word boundaries to avoid false positives
       pattern = /\b#{Regexp.escape(keyword)}\b/i
@@ -277,78 +277,80 @@ class UserQueryValidator
       end
     end
   end
-  
+
   def validate_suspicious_patterns
     return if @query.blank?
-    
+
     SUSPICIOUS_PATTERNS.each do |pattern|
       if @query.match?(pattern)
-        @errors << "Query contains suspicious pattern: #{pattern}"
+        @errors << "Query contains suspicious pattern: #{pattern.inspect}"
       end
     end
   end
-  
+
   def validate_table_access
     return if @query.blank?
-    
+
     # Extract table names from FROM and JOIN clauses
     table_names = extract_table_names(@query)
-    
+
     # Check that all referenced tables are allowed
     unauthorized_tables = table_names - ALLOWED_TABLES
-    
-    unless unauthorized_tables.empty?
-      @errors << "Query references unauthorized tables: #{unauthorized_tables.join(', ')}"
-    end
+
+    return if unauthorized_tables.empty?
+
+    @errors << "Query references unauthorized tables: #{unauthorized_tables.join(', ')}"
   end
-  
+
   def validate_read_only_operations
     return if @query.blank?
-    
+
     query_upper = @query.upcase
-    
+
     # Check for data modification keywords
     modifying_keywords = %w[INSERT UPDATE DELETE DROP CREATE ALTER TRUNCATE]
-    
+
     modifying_keywords.each do |keyword|
-      if query_upper.include?(keyword)
+      # Use word boundaries to avoid false positives
+      pattern = /\b#{Regexp.escape(keyword)}\b/i
+      if query_upper.match?(pattern)
         @errors << "Query cannot modify data - read-only queries only"
         break
       end
     end
   end
-  
+
   def balanced_parentheses?
     count = 0
     @query.each_char do |char|
       case char
-      when '('
+      when "("
         count += 1
-      when ')'
+      when ")"
         count -= 1
         return false if count < 0
       end
     end
     count == 0
   end
-  
+
   def extract_table_names(query)
     # Simple regex to extract table names from FROM and JOIN clauses
     # This is a basic implementation and could be enhanced with a proper SQL parser
     table_names = []
-    
+
     # Extract FROM clause tables
     from_matches = query.scan(/\bFROM\s+(\w+)/i)
     table_names.concat(from_matches.flatten.map(&:downcase))
-    
+
     # Extract JOIN clause tables
     join_matches = query.scan(/\bJOIN\s+(\w+)/i)
     table_names.concat(join_matches.flatten.map(&:downcase))
-    
+
     # Extract LEFT/RIGHT/INNER JOIN tables
     lr_join_matches = query.scan(/\b(?:LEFT|RIGHT|INNER)\s+JOIN\s+(\w+)/i)
     table_names.concat(lr_join_matches.flatten.map(&:downcase))
-    
+
     table_names.uniq
   end
 end
