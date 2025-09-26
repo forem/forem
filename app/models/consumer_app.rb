@@ -1,7 +1,10 @@
 class ConsumerApp < ApplicationRecord
   resourcify
 
-  FOREM_BUNDLE = "com.forem.app".freeze
+  FOREM_IOS_BUNDLE = "com.forem.app".freeze  
+  FOREM_ANDROID_BUNDLE = "com.forem.android".freeze
+  FOREM_BUNDLES = [FOREM_IOS_BUNDLE, FOREM_ANDROID_BUNDLE].freeze
+
   FOREM_APP_PLATFORMS = %w[ios android].freeze
   FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
@@ -16,7 +19,7 @@ class ConsumerApp < ApplicationRecord
   after_update :clear_rpush_app
 
   def forem_app?
-    app_bundle == FOREM_BUNDLE && FOREM_APP_PLATFORMS.include?(platform)
+    FOREM_BUNDLES.include?(app_bundle) && FOREM_APP_PLATFORMS.include?(platform)
   end
 
   def creator_app?
