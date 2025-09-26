@@ -1,4 +1,5 @@
 require "net/http"
+require "ipaddr"
 
 module UnifiedEmbed
   class Tag < LiquidTagBase
@@ -41,12 +42,19 @@ module UnifiedEmbed
       uri = URI.parse(input.split.first)
       return input if uri.host == "twitter.com" || uri.host == "x.com" || uri.host == "bsky.app"
 
+      # Prevent SSRF attacks on internal networks
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if private_ip?(uri.host)
+
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
+      
+      # Set security timeouts to prevent hanging requests
+      http.open_timeout = 10
+      http.read_timeout = 15
 
       path = uri.path.empty? ? "/" : uri.path
       req = method.new(path + (uri.query ? "?#{uri.query}" : ""))
-      req["User-Agent"] = "#{safe_user_agent} (#{URL.url})"
+      req["User-Agent"] = "ForemLinkValidator/1.0 (+#{URL.url}; #{safe_user_agent})"
 
       response = http.request(req)
 
@@ -76,6 +84,17 @@ module UnifiedEmbed
 
     def self.safe_user_agent(agent = Settings::Community.community_name)
       agent.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
+    end
+
+    # Prevent SSRF attacks by blocking requests to private IP ranges
+    def self.private_ip?(hostname)
+      return true if %w[localhost 127.0.0.1 ::1].include?(hostname)
+      
+      ip = IPAddr.new(hostname)
+      ip.private? || ip.loopback? || ip.link_local?
+    rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
+      # If hostname resolution fails, allow it (will fail during HTTP request)
+      false
     end
   end
 end
