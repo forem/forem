@@ -38,7 +38,7 @@ RSpec.describe UserQuery, type: :model do
       it "rejects queries that don't start with SELECT" do
         subject.query = "UPDATE users SET name = 'test'"
         expect(subject).not_to be_valid
-        expect(subject.errors[:query]).to include("Query contains forbidden keyword: UPDATE")
+        expect(subject.errors[:query]).to include("contains forbidden keyword: UPDATE")
       end
 
       it "rejects queries that don't target users table" do
@@ -142,7 +142,8 @@ RSpec.describe UserQuery, type: :model do
 
     it "handles query timeout" do
       user_query.update!(max_execution_time_ms: 1)
-      allow_any_instance_of(UserQueryExecutor).to receive(:execute).and_raise(PG::QueryCanceled.new("timeout"))
+      # Mock the ReadOnlyDatabaseService to raise a timeout error
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_raise(PG::QueryCanceled.new("timeout"))
 
       result = user_query.execute_safely
       expect(result).to be_empty
