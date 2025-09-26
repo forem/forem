@@ -58,8 +58,6 @@ module Emails
           conn.execute("SET LOCAL statement_timeout TO 0")
 
           # 5) Run your batches inside the same transaction, so every SELECT is "no timeout"
-          Rails.logger.debug("user_scope class: #{user_scope.class}")
-          Rails.logger.debug("user_scope responds to find_in_batches: #{user_scope.respond_to?(:find_in_batches)}")
           user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
             # (Just printing the first ID so you can see progress.)
             p users_batch.first.id
