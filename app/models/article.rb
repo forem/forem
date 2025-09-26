@@ -278,6 +278,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
+  before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
   before_validation :add_urls_from_title_to_body, if: :should_add_urls_from_title?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
@@ -1008,6 +1009,21 @@ class Article < ApplicationRecord
     rescue StandardError => e
       Rails.logger.error("Error parsing YouTube video URL: #{e.message}")
     end
+  end
+
+  def extract_url_from_status_title
+    return unless status? && title.present? && body_url.blank?
+
+    url_pattern = %r{https?://[^\s]+}
+    url_match = title.match(url_pattern)
+    return unless url_match
+
+    extracted_url = url_match[0]
+    # Remove trailing punctuation that might not be part of the URL
+    extracted_url = extracted_url.sub(/[.,;:!?)]+$/, '')
+    
+    # Set the extracted URL as body_url so it gets processed by set_markdown_from_body_url
+    self.body_url = extracted_url
   end
 
   def set_markdown_from_body_url
