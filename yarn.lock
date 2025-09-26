@@ -8876,6 +8876,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cypress-real-events@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "cypress-real-events@npm:1.14.0"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x
+  checksum: 10c0/da81f8f5bf829f3bcd2c26a532656d7c588807df7198b2eb72b882895ca0265c8bab49eaea5c78374fd52c196ec3f3f0937245af421ee13f8ce3bf06631b43af
+  languageName: node
+  linkType: hard
+
 "cypress@npm:^13.7.2":
   version: 13.7.2
   resolution: "cypress@npm:13.7.2"
@@ -9365,6 +9374,7 @@ __metadata:
     cypress-file-upload: "npm:^5.0.8"
     cypress-multi-reporters: "npm:^1.6.4"
     cypress-pipe: "npm:^2.0.0"
+    cypress-real-events: "npm:^1.14.0"
     esbuild: "npm:^0.19.12"
     esbuild-plugin-stimulus: "npm:^0.1.5"
     esbuild-plugin-svgr: "npm:^2.1.0"
