@@ -59,9 +59,19 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
     end
 
     context "when email has user_query" do
-      let!(:recent_user) { create(:user, :with_newsletters) }
-      let!(:old_user) { create(:user, :with_newsletters) }
-      let!(:user_query) { create(:user_query) }
+      let!(:recent_user) do
+        create(:user, :with_newsletters, email: "recent_#{SecureRandom.hex(4)}@example.com",
+                                         username: "recent_#{SecureRandom.hex(4)}", github_username: "recent_#{SecureRandom.hex(4)}", twitter_username: "recent_#{SecureRandom.hex(4)}")
+      end
+      let!(:old_user) do
+        create(:user, :with_newsletters, email: "old_#{SecureRandom.hex(4)}@example.com",
+                                         username: "old_#{SecureRandom.hex(4)}", github_username: "old_#{SecureRandom.hex(4)}", twitter_username: "old_#{SecureRandom.hex(4)}")
+      end
+      let!(:query_creator) do
+        create(:user, email: "creator_#{SecureRandom.hex(4)}@example.com", username: "creator_#{SecureRandom.hex(4)}",
+                      github_username: "creator_#{SecureRandom.hex(4)}", twitter_username: "creator_#{SecureRandom.hex(4)}")
+      end
+      let!(:user_query) { create(:user_query, name: "Test Query #{SecureRandom.hex(4)}", created_by: query_creator) }
       let!(:email) { create(:email, user_query: user_query) }
 
       before do
