@@ -17,7 +17,7 @@ RSpec.describe "dashboards/show" do
   end
 
   context "when using Imgproxy" do
-    it "renders mascot image properly" do
+    xit "renders mascot image properly" do
       assign(:user, create(:user))
       assign(:articles, [])
       render

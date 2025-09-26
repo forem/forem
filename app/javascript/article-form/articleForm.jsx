@@ -8,6 +8,7 @@ import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
+import { locale } from '@utilities/locale';
 import {
   noDefaultAltTextRule,
   noEmptyAltTextRule,
@@ -479,8 +480,8 @@ export class ArticleForm extends Component {
         />
 
         <span aria-live="polite" className="screen-reader-only">
-          {previewLoading ? 'Loading preview' : null}
-          {previewShowing && !previewLoading ? 'Preview loaded' : null}
+          {previewLoading ? locale('core.article_form_loading_preview') : null}
+          {previewShowing && !previewLoading ? locale('core.article_form_preview_loaded') : null}
         </span>
 
         {previewShowing || previewLoading ? (

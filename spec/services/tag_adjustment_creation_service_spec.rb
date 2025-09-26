@@ -15,8 +15,11 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
     )
   end
 
+  let(:mascot_account) { create(:user) }
+
   before do
     user.add_role(:tag_moderator, tag)
+    allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 
   describe "creates tag adjustment" do

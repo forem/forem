@@ -6,8 +6,9 @@ fr:
         description_tagged: "%{tag} content on %{name}"
         page: " Page %{page}"
         rss: "%{name} RSS Feed"
-      status_placeholder: "What's on your mind?"
-      submit: "Post"
+      status_placeholder: "Qu'est-ce qui vous passe par la tête ?"
+      status_expanded_placeholder: "Quelque chose à ajouter ?"
+      submit: "Publier"
       status_hint_html: "<strong>Quickie Posts (beta)</strong> show up in the feed but not notifications or your profile — <a href='/new'>Open Full Editor</a>"
       heading: Posts
       discuss: "#discuss"
@@ -26,3 +27,26 @@ fr:
         latest: Récent
         signin_html: "👋 <a href=\"%{path}\">Sign in</a> for the ability to sort posts by <strong>relevant</strong>, <strong>latest</strong>, or <strong>top</strong>."
         top: Top
+      feed:
+        discover: Découvrir
+        following: Suivi
+        top_this_week: Top cette semaine
+        top_this_month: Top ce mois
+        top_this_year: Top cette année
+        top_this_infinity: Top de tous les temps
+        no_results:
+          discover:
+            title: "Aucun post trouvé"
+            description: "Revenez plus tard ou créez votre propre post !"
+            action_text: "Créer un Post"
+            action_href: "/new"
+          following:
+            title: "Aucun post des personnes que vous suivez"
+            description: "Suivez quelques membres pour voir leurs derniers posts dans votre fil d'actualité."
+            action_text: "Retour à l'onglet Découvrir"
+            action_href: "/discover"
+          default:
+            title: "Aucun post trouvé"
+            description: "Revenez plus tard ou créez votre propre post !"
+            action_text: "Créer un Post"
+            action_href: "/new"

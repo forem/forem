@@ -1,0 +1,9 @@
+---
+fr:
+  views:
+    article_form:
+      save_changes: Enregistrer les modifications
+      schedule: Programmer
+      publish: Publier
+      loading_preview: Chargement de l'aperçu
+      preview_loaded: Aperçu chargé

@@ -1,0 +1,32 @@
+---
+en:
+  views:
+    search:
+      heading: Search results%{for}
+      for: " for %{query}"
+      placeholder: Search...
+      find_related_posts: Find related posts...
+      icon:
+        aria_label: Search
+        title: Search
+      powered_by: Powered by Algolia
+      suggestions:
+        submit_search: Submit search for advanced filtering.
+        displaying_recommendations: Displaying Algolia Recommendations — Start typing to search
+      nav:
+        posts: Posts
+        podcasts: Podcasts
+        people: People
+        comments: Comments
+        my_posts: My posts only
+        organizations: Organizations
+        tags: Tags
+      sort:
+        aria_label: Search result sort options
+        relevance: Most Relevant
+        newest: Newest
+        oldest: Oldest
+      meta:
+        title: Search Results%{for}
+        for: " for %{query}"
+        description: "%{site} => Search Results"

@@ -1,5 +1,5 @@
 <% title t("views.dashboard.heading") %>
-<main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
+<main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols mb-10">
   <%= render("header_and_action", page_title: t("views.dashboard.heading")) %>
   
   <div class="crayons-layout__content">
@@ -49,15 +49,15 @@
       </div>
 
     <% else %>
-      <div class="p-6 m:p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center flex-1">
+      <div class="p-6 m:p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center flex-1 mt-4">
         <div>
-          <% if Settings::General.mascot_image_url.present? %>
-            <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "crop") %>
-            <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
-          <% end %>
-          <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>
-          <% if policy(Article).create? %>
-            <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("views.dashboard.posts.empty.new") %></a></p>
+          <% if params[:state] == "status" %>
+            <p class="mb-6"><%= t("views.dashboard.posts.empty.status_desc") %></p>
+          <% else %>
+            <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>
+            <% if policy(Article).create? %>
+              <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("views.dashboard.posts.empty.new") %></a></p>
+            <% end %>
           <% end %>
         </div>
       </div>

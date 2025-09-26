@@ -1,4 +1,5 @@
 import { callHistoricalAPI, callReferrersAPI } from './client';
+import { locale } from '@utilities/locale';
 
 const activeCharts = {};
 
@@ -36,9 +37,9 @@ function writeCards(data, timeRangeLabel) {
   const commentCard = document.getElementById('comments-card');
   const readerCard = document.getElementById('readers-card');
 
-  readerCard.innerHTML = cardHTML(readers, `Readers ${timeRangeLabel}`);
-  commentCard.innerHTML = cardHTML(comments, `Comments ${timeRangeLabel}`);
-  reactionCard.innerHTML = cardHTML(reactions, `Reactions ${timeRangeLabel}`);
+  readerCard.innerHTML = cardHTML(readers, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
+  commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
+  reactionCard.innerHTML = cardHTML(reactions, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
 }
 
 function drawChart({ id, showPoints = true, title, labels, datasets }) {

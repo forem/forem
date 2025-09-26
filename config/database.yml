@@ -94,3 +94,5 @@ production:
   <<: *default
   url: <%= ENV.fetch("NEW_DATABASE_URL", ENV["DATABASE_URL"]) %>
   schema_search_path: "\"$user\",public,heroku_ext"
+  prepared_statements: false
+  advisory_locks: <%= ENV.fetch("RAILS_ADVISORY_LOCKS", "true") == "true" %>

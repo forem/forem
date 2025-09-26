@@ -13,6 +13,11 @@ module Stories
       @stories = assign_feed_stories
 
       add_pinned_article
+
+      # Add edge cache headers for signed out users only
+      unless user_signed_in?
+        set_cache_control_headers(60) # 1 minute expiration
+      end
     end
 
     private

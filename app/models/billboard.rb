@@ -79,7 +79,8 @@ class Billboard < ApplicationRecord
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
            :validate_tag,
-           :validate_geolocations
+           :validate_geolocations,
+           :validate_expiration_approval
 
   before_save :process_markdown
   after_save :generate_billboard_name
@@ -87,7 +88,9 @@ class Billboard < ApplicationRecord
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
 
-  scope :approved_and_published, -> { where(approved: true, published: true) }
+  scope :approved_and_published, lambda {
+                                   where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
+                                 }
 
   scope :search_ads, lambda { |term|
                        where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
@@ -102,6 +105,12 @@ class Billboard < ApplicationRecord
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
                        role_names: nil, prefer_paired_with_billboard_id: nil)
+    # Check delivery rate configuration first - return nil early if rate check fails
+    return unless BillboardPlacementAreaConfig.should_fetch_billboard?(
+      placement_area: area,
+      user_signed_in: user_signed_in,
+    )
+
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -121,9 +130,11 @@ class Billboard < ApplicationRecord
       role_names: role_names,
     )
 
-    # if prefer_paired_with_billboard_id then return 
+    # if prefer_paired_with_billboard_id then return
     if prefer_paired_with_billboard_id.present?
-      best_paired_billboard = billboards_for_display.find { |bb| bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id }
+      best_paired_billboard = billboards_for_display.find do |bb|
+        bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id
+      end
       return best_paired_billboard if best_paired_billboard.present?
     end
 
@@ -153,6 +164,7 @@ class Billboard < ApplicationRecord
       billboards_for_display.limit(rand(1..15)).sample
     end
   end
+
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
@@ -237,7 +249,8 @@ class Billboard < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def type_of_display
@@ -269,6 +282,12 @@ class Billboard < ApplicationRecord
     errors.add(:type_of, "must be in_house if billboard is a Home Hero")
   end
 
+  def validate_expiration_approval
+    return unless expires_at.present? && expires_at < Time.current && approved?
+
+    errors.add(:approved, "cannot be set to true if billboard has expired")
+  end
+
   def audience_segment_type
     @audience_segment_type ||= audience_segment&.type_of
   end
@@ -285,6 +304,7 @@ class Billboard < ApplicationRecord
       "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(","),
+      "exclude_survey_ids" => exclude_survey_ids.join(","),
       "target_geolocations" => target_geolocations.map(&:to_iso3166)
     }
     super(options.merge(except: %i[tags tag_list target_geolocations])).merge(overrides)
@@ -319,6 +339,12 @@ class Billboard < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :include_subforem_ids, (adjusted_input || [])
+  end
+
+  def exclude_survey_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :exclude_survey_ids, (adjusted_input || [])
   end
 
   def style_string
@@ -369,6 +395,21 @@ class Billboard < ApplicationRecord
     0 # Just to allow this to repond to .score for abuse reports
   end
 
+  def check_and_handle_expiration
+    return unless expires_at.present? && expires_at < Time.current && approved?
+
+    update_column(:approved, false)
+  end
+
+  # Check if a user should be excluded from seeing this billboard based on survey completion
+  def exclude_user_due_to_survey_completion?(user)
+    return false unless exclude_survey_completions?
+    return false if user.blank?
+    return false if exclude_survey_ids.blank?
+
+    SurveyCompletion.user_completed_any?(user: user, survey_ids: exclude_survey_ids)
+  end
+
   private
 
   def update_event_counts_when_taking_down
@@ -378,11 +419,10 @@ class Billboard < ApplicationRecord
   def being_taken_down?
     # Only trigger if both approved and published were true before this save.
     return false unless approved_before_last_save && published_before_last_save
-  
+
     # Check if approved changed from true to false or published changed from true to false.
     (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
   end
-  
 
   def generate_billboard_name
     return unless name.nil?
@@ -403,7 +443,7 @@ class Billboard < ApplicationRecord
   end
 
   def extracted_process_markdown
-    renderer = ContentRenderer.new(body_markdown || "", source: self)
+    renderer = ContentRenderer.new(body_markdown || "", source: self, user: creator)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
                                                                     quality: 100,
                                                                     synchronous_detail_detection: true }).processed_html

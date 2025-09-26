@@ -1,0 +1,65 @@
+---
+pt:
+  views:
+    tags:
+      meta:
+        title: Tags
+        description: Tags para seguir no %{community}
+        og:
+          description: "%{community} é ótimo!"
+      heading:
+        default: Tags
+        search_results: Resultados da pesquisa para %{q}
+      search:
+        aria_labels:
+          search_input: Termo de pesquisa de tag
+          submit: Pesquisar tags
+        placeholder: Pesquisar por tag
+      edit:
+        meta:
+          title: Editar %{tag}
+        admin: "Admin"
+        help: "Ajuda"
+        view: "Visualizar"
+        form:
+          pretty_name:
+            label: Nome bonito
+            placeholder: Este é o nome no topo da página de exibição.
+          bg_color_hex:
+            label: Cor da tag
+          short_summary:
+            label: Resumo curto
+            placeholder: Visão geral breve do que esta tag é sobre.
+          wiki_body_markdown:
+            label: Corpo do wiki em markdown
+            placeholder: Esta é uma seção 'sobre'. Sinta-se livre para adicionar um FAQ, recursos adicionais, etc.
+          rules_markdown:
+            label: Regras em markdown
+            placeholder: Opcional - Pode ser usado para desafios, ou seja, diretrizes de submissão.
+          submit: Salvar
+      follow: Seguir
+      hide: Ocultar
+      aria_labels:
+        follow: "Seguir tag: %{tag_name}"
+        hide: "Ocultar tag: %{tag_name}"
+      following_tags: Tags seguidas
+      hidden_tags: Tags ocultas
+      moderator:
+        text_html: "separado por vírgula, espaço é opcional. Exemplo: %{code}"
+        code: 123
+        placeholder: "separado por vírgula, espaço é opcional. Exemplo: 1,2,3"
+      published:
+        one: 1 post
+        other: "%{count} posts"
+      sidebar:
+        about: 'sobre #%{tag}'
+        admin: Admin
+        edit: Editar
+        guidelines: diretrizes de submissão
+        moderate: Moderar
+        mods: moderadores da tag
+        new: Criar Post
+        older: 'Posts mais antigos #%{tag}'
+        published:
+          one: 1 Post Publicado
+          other: "%{count} Posts Publicados"

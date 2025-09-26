@@ -4,6 +4,8 @@ import { locale } from '@utilities/locale';
 
 /* global showLoginModal  userData  showModalAfterError browserStoreCache */
 
+let observer;
+
 /**
  * Sets the text content of the button to the correct 'Follow' state
  *
@@ -105,11 +107,11 @@ function optimisticallyUpdateButtonUI(button) {
   // We collect all buttons which match the click, and update them all
   const matchingFollowButtons = Array.from(
     document.getElementsByClassName('follow-action-button'),
-  ).filter((button) => {
-    const { info } = button.dataset;
+  ).filter((btn) => {
+    const { info } = btn.dataset;
     if (info) {
-      const { id } = JSON.parse(info);
-      return id === buttonInfo.id;
+      const { id, className } = JSON.parse(info);
+      return id === buttonInfo.id && className === buttonInfo.className;
     }
     return false;
   });
@@ -204,7 +206,8 @@ function updateFollowButton(button, newState, buttonInfo) {
 function handleFollowButtonClick({ target }) {
   if (
     target.classList.contains('follow-action-button') ||
-    target.classList.contains('follow-user')
+    target.classList.contains('follow-user') ||
+    target.classList.contains('follow-subforem')
   ) {
     const userStatus = document.body.getAttribute('data-user-status');
     if (userStatus === 'logged-out') {
@@ -263,16 +266,14 @@ function determineSecondarySource(target) {
 }
 
 /**
- * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
+ * Adds an event listener to the page to handle any and all follow button clicks with a single handler
  */
 function listenForFollowButtonClicks() {
-  document
-    .getElementById('page-content-inner')
-    .addEventListener('click', handleFollowButtonClick);
-
-  document.getElementById(
-    'page-content-inner',
-  ).dataset.followClicksInitialized = true;
+  if (document.body.dataset.followHandlerInitialized === 'true') {
+    return;
+  }
+  document.body.addEventListener('click', handleFollowButtonClick);
+  document.body.dataset.followHandlerInitialized = 'true';
 }
 
 /**
@@ -306,17 +307,18 @@ function updateInitialButtonUI(followStatus, button) {
 }
 
 /**
- * Fetches all user 'follow statuses' for the given userIds, and then updates the UI for all buttons related to each user
+ * Fetches all 'follow statuses' for the given IDs and type, and then updates the UI for all related buttons.
  *
- * @param {Object} idButtonHash A hash of user IDs and the array buttons which relate to them
+ * @param {Object} idButtonHash A hash of IDs and the array of buttons which relate to them
+ * @param {string} followableType The type of followable (e.g. 'User', 'Subforem')
  */
-function fetchUserFollowStatuses(idButtonHash) {
+function fetchBulkFollowStatuses(idButtonHash, followableType) {
   const url = new URL('/follows/bulk_show', document.location);
   const searchParams = new URLSearchParams();
   Object.keys(idButtonHash).forEach((id) => {
     searchParams.append('ids[]', id);
   });
-  searchParams.append('followable_type', 'User');
+  searchParams.append('followable_type', followableType);
   url.search = searchParams;
 
   fetch(url, {
@@ -339,19 +341,19 @@ function fetchUserFollowStatuses(idButtonHash) {
 }
 
 /**
- * Sets up the initial state of all user follow buttons on the page,
- * by obtaining the 'follow status' of each user and updating the associated buttons' UI.
+ * Sets up the initial state of all bulk-eligible follow buttons on the page (e.g. users, subforems).
+ * It obtains the 'follow status' of each item and updates the associated buttons' UI.
  */
-function initializeAllUserFollowButtons() {
+function initializeBulkFollowButtons() {
   const buttons = document.querySelectorAll(
-    '.follow-action-button.follow-user:not([data-fetched])',
+    '.follow-action-button.follow-user:not([data-fetched]), .follow-action-button.follow-subforem:not([data-fetched])',
   );
 
   if (buttons.length === 0) {
     return;
   }
 
-  const userIds = {};
+  const followables = {};
 
   Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
@@ -364,17 +366,23 @@ function initializeAllUserFollowButtons() {
       addButtonFollowText(button, style);
     } else {
       addAriaLabelToButton({ button, followType: className, followName: name });
-      const { id: userId } = buttonInfo;
-      if (userIds[userId]) {
-        userIds[userId].push(button);
+      const { id } = buttonInfo;
+      if (!followables[className]) {
+        followables[className] = {};
+      }
+      const idHash = followables[className];
+      if (idHash[id]) {
+        idHash[id].push(button);
       } else {
-        userIds[userId] = [button];
+        idHash[id] = [button];
       }
     }
   });
 
-  if (Object.keys(userIds).length > 0) {
-    fetchUserFollowStatuses(userIds);
+  if (Object.keys(followables).length > 0) {
+    Object.keys(followables).forEach((followableType) => {
+      fetchBulkFollowStatuses(followables[followableType], followableType);
+    });
   }
 }
 
@@ -404,11 +412,11 @@ function fetchFollowButtonStatus(button, buttonInfo) {
 
 /**
  * Makes sure the initial state of follow buttons is fetched and presented in the UI.
- * User follow buttons are initialized separately via bulk request
+ * Buttons eligible for bulk fetching are initialized separately.
  */
-function initializeNonUserFollowButtons() {
-  const nonUserFollowButtons = document.querySelectorAll(
-    '.follow-action-button:not(.follow-user):not([data-fetched])',
+function initializeNonBulkFollowButtons() {
+  const nonBulkFollowButtons = document.querySelectorAll(
+    '.follow-action-button:not(.follow-user):not(.follow-subforem):not([data-fetched])',
   );
 
   waitOnBaseData().then(() => {
@@ -422,7 +430,7 @@ function initializeNonUserFollowButtons() {
 
     const followedTagIds = new Set(followedTags);
 
-    nonUserFollowButtons.forEach((button) => {
+    nonBulkFollowButtons.forEach((button) => {
       const { info } = button.dataset;
       const buttonInfo = JSON.parse(info);
       const { className, name } = buttonInfo;
@@ -431,7 +439,7 @@ function initializeNonUserFollowButtons() {
         return; // No need to fetch the status if the user is logged out
       }
       if (className === 'Tag' && user) {
-        // We don't need to make a network request to 'fetch' the status of tag buttons
+        // We don't need a network request to 'fetch' the status of tag buttons
         button.dataset.fetched = true;
         const initialButtonFollowState = followedTagIds.has(buttonInfo.id)
           ? 'true'
@@ -444,37 +452,43 @@ function initializeNonUserFollowButtons() {
   });
 }
 
-initializeAllUserFollowButtons();
-initializeNonUserFollowButtons();
-listenForFollowButtonClicks();
+const setupFollowFunctionality = () => {
+  initializeBulkFollowButtons();
+  initializeNonBulkFollowButtons();
 
-// Some follow buttons are added to the DOM dynamically, e.g. search results,
-// So we listen for any new additions to be fetched
-const observer = new MutationObserver((mutationsList) => {
-  mutationsList.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      initializeAllUserFollowButtons();
-      initializeNonUserFollowButtons();
-    }
-  });
-});
+  if (observer) {
+    observer.disconnect();
+  }
 
-// Any element containing the given data-attribute will be monitored for new follow buttons
-document
-  .querySelectorAll('[data-follow-button-container]')
-  .forEach((followButtonContainer) => {
-    observer.observe(followButtonContainer, {
-      childList: true,
-      subtree: true,
+  observer = new MutationObserver((mutationsList) => {
+    mutationsList.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        initializeBulkFollowButtons();
+        initializeNonBulkFollowButtons();
+      }
     });
   });
 
+  document
+    .querySelectorAll('[data-follow-button-container]')
+    .forEach((followButtonContainer) => {
+      observer.observe(followButtonContainer, {
+        childList: true,
+        subtree: true,
+      });
+    });
+};
+
+listenForFollowButtonClicks();
+
+setupFollowFunctionality();
+
 getInstantClick().then((ic) => {
-  ic.on('change', () => {
-    observer.disconnect();
-  });
+  ic.on('change', setupFollowFunctionality);
 });
 
 window.addEventListener('beforeunload', () => {
-  observer.disconnect();
+  if (observer) {
+    observer.disconnect();
+  }
 });

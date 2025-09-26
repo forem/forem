@@ -5,12 +5,12 @@
     <div class="flex gap-1">
       <li>
         <a data-feed-nav="discover" href="/discover" class="crayons-navigation__item p-1 px-4 <%= "crayons-navigation__item--current" if params[:feed_type] == "discover" %>">
-          Discover
+          <%= t("views.stories.feed.discover") %>
         </a>
       </li>
       <li>
         <a data-feed-nav="following" href="/following" class="crayons-navigation__item p-1 px-4 <%= "crayons-navigation__item--current" if params[:feed_type] == "following" %>">
-          Following
+          <%= t("views.stories.feed.following") %>
         </a>
       </li>
     </div>
@@ -24,8 +24,8 @@
       </li>
       <ul id="feed-dropdown-menu" class="crayons-dropdown feed-dropdown right-0">
         <li data-feed-submenu-item="following" class="<%= params[:feed_type] == "following" ? "showing" : "hidden" %> ">
-          <a data-text="<%= t("views.stories.sort.latest") %>" href="/following" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if params[:timeframe].blank? %>">
-            Relevant
+          <a data-text="<%= t("views.stories.sort.relevant") %>" href="/following" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if params[:timeframe].blank? %>">
+            <%= t("views.stories.sort.relevant") %>
           </a>
         </li>
         <li data-feed-submenu-item="following" class="<%= params[:feed_type] == "following" ? "showing" : "hidden" %> ">
@@ -36,29 +36,29 @@
 
 
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
-          <a data-text="<%= t("views.stories.sort.week") %>" href="/discover" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if params[:timeframe].blank? %>">
-            Relevant
+          <a data-text="<%= t("views.stories.sort.relevant") %>" href="/discover" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if params[:timeframe].blank? %>">
+            <%= t("views.stories.sort.relevant") %>
           </a>
         </li>
         <hr data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.week") %>" href="/top/week" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("week") %>"<%= timeframe_check("week") ? ' aria-current="page"'.html_safe : "" %>>
-            Top this <%= t("views.stories.sort.week") %>
+            <%= t("views.stories.feed.top_this_week") %>
           </a>
         </li>
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.month") %>" href="/top/month" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("month") %>"<%= timeframe_check("month") ? ' aria-current="page"'.html_safe : "" %>>
-            Top this <%= t("views.stories.sort.month") %>
+            <%= t("views.stories.feed.top_this_month") %>
           </a>
         </li>
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.year") %>" href="/top/year" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
-            Top this <%= t("views.stories.sort.year") %>
+            <%= t("views.stories.feed.top_this_year") %>
           </a>
         </li>
         <li data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
           <a data-text="<%= t("views.stories.sort.infinity") %>" href="/top/infinity" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
-          Top this <%= t("views.stories.sort.infinity") %>
+          <%= t("views.stories.feed.top_this_infinity") %>
           </a>
         </li>
         <hr data-feed-submenu-item="discover" class="<%= params[:feed_type] == "discover" ? "showing" : "hidden" %> ">
@@ -76,36 +76,38 @@
   <% end %>
   </nav>
   <script>
-    var currentPath = window.location.pathname;
-    var currentFeedNav = "";
+    document.addEventListener('DOMContentLoaded', function() {
+      var currentPath = window.location.pathname;
+      var currentFeedNav = "";
 
-    if (currentPath === "/following" || currentPath === "/discover") {
-      currentFeedNav = currentPath.substring(1);
-      localStorage.setItem("current_feed", currentFeedNav);
-    } else if (currentPath === "/" && localStorage.getItem("current_feed") === null) {
-      currentFeedNav = "discover";
-    } else {
-      currentFeedNav = localStorage.getItem("current_feed");
-    }
-
-    var feedNavItems = document.querySelectorAll("[data-feed-nav]");
-    feedNavItems.forEach(function(item) {
-      if (item.getAttribute("data-feed-nav") === currentFeedNav) {
-        item.classList.add("crayons-navigation__item--current");
+      if (currentPath === "/following" || currentPath === "/discover") {
+        currentFeedNav = currentPath.substring(1);
+        localStorage.setItem("current_feed", currentFeedNav);
+      } else if (currentPath === "/" && localStorage.getItem("current_feed") === null) {
+        currentFeedNav = "discover";
       } else {
-        item.classList.remove("crayons-navigation__item--current");
+        currentFeedNav = localStorage.getItem("current_feed") || "discover";
       }
-    });
 
-    var subMenuItems = document.querySelectorAll("[data-feed-submenu-item]");
-    subMenuItems.forEach(function(item) {
-      if (item.getAttribute("data-feed-submenu-item") === currentFeedNav) {
-        item.classList.add("showing");
-        item.classList.remove("hidden");
-      } else {
-        item.classList.add("hidden");
-        item.classList.remove("showing");
-      }
+      var feedNavItems = document.querySelectorAll("[data-feed-nav]");
+      feedNavItems.forEach(function(item) {
+        if (item.getAttribute("data-feed-nav") === currentFeedNav) {
+          item.classList.add("crayons-navigation__item--current");
+        } else {
+          item.classList.remove("crayons-navigation__item--current");
+        }
+      });
+
+      var subMenuItems = document.querySelectorAll("[data-feed-submenu-item]");
+      subMenuItems.forEach(function(item) {
+        if (item.getAttribute("data-feed-submenu-item") === currentFeedNav) {
+          item.classList.add("showing");
+          item.classList.remove("hidden");
+        } else {
+          item.classList.add("hidden");
+          item.classList.remove("showing");
+        }
+      });
     });
   </script>
 <% else %>

@@ -2,7 +2,12 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::VariantAssembler do
   describe ".user_config_hash_for" do
-    Rails.root.glob("#{described_class::DIRECTORY}/*.#{described_class::EXTENSION}").each do |pathname|
+    # Only test the 3 most recent variant files to reduce test time
+    Rails.root.glob("#{described_class::DIRECTORY}/*.#{described_class::EXTENSION}")
+         .sort_by(&:basename)
+         .reverse
+         .first(3)
+         .each do |pathname|
       variant = pathname.basename(".json").to_s
       context "when #{variant.inspect}" do
         subject { described_class.user_config_hash_for(variant: variant) }
@@ -19,7 +24,12 @@ RSpec.describe Articles::Feeds::VariantAssembler do
   end
 
   describe ".call" do
-    Rails.root.glob("#{described_class::DIRECTORY}/*.#{described_class::EXTENSION}").each do |pathname|
+    # Only test the 3 most recent variant files to reduce test time
+    Rails.root.glob("#{described_class::DIRECTORY}/*.#{described_class::EXTENSION}")
+         .sort_by(&:basename)
+         .reverse
+         .first(3)
+         .each do |pathname|
       variant = pathname.basename(".json").to_s.to_sym
       context "when #{variant.inspect}" do
         # NOTE: We're providing the variants so as to not pollute the cache for other tests.

@@ -1,0 +1,69 @@
+h = '<style>
+.gmn-ctx-note-container {
+}
+
+.gmn-ctx-note-header {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and title */
+    margin-bottom: 12px;
+}
+
+.gmn-ctx-note-icon {
+    width: 20px;
+    height: 20px;
+    color: #4285F4; /* Match the icon color to the border */
+    flex-shrink: 0; /* Prevents the icon from shrinking */
+}
+
+.gmn-ctx-note-title {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.gmn-ctx-note-body {
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+.gmn-ctx-note-body p {
+    margin: 0; /* Remove default paragraph margin */
+}
+
+.gmn-ctx-note-footer {
+    margin-top: 16px;
+    text-align: right;
+    font-size: 0.75em; /* Smaller text size */
+    color: var(--card-secondary-color, #70757a);
+    font-style: italic;
+}
+
+.gmn-ctx-note-index-fallback {
+    display: none;
+}
+
+#rendered-article-feed .gmn-ctx-note-container {
+    display: none;
+}
+
+#rendered-article-feed .gmn-ctx-note-index-fallback {
+    display: block;
+}
+</style>
+
+<div class="gmn-ctx-note-container" role="note" aria-labelledby="gmn-ctx-note-title-1">
+    <div class="gmn-ctx-note-header">
+        <svg class="gmn-ctx-note-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+        <span class="gmn-ctx-note-title" id="gmn-ctx-note-title-1">A Note for Our Readers</span>
+    </div>
+    <div class="gmn-ctx-note-body">
+        <p>This is a demonstration of a context note. This feature is designed to provide readers with helpful, additional information, clarifications, or disclaimers relevant to the content below. Its purpose is to enrich understanding and ensure accuracy.</p>
+    </div>
+    <div class="gmn-ctx-note-footer">
+        <span>Powered by Google AI</span>
+    </div>
+</div>
+
+<p class="gmn-ctx-note-index-fallback">This is a test context note</p>'

@@ -23,7 +23,7 @@ module AlgoliaSearchable
     end
 
     def bad_actor_or_empty_profile?
-      score.negative? || banished? || spam_or_suspended? || (comments_count.zero? && articles_count.zero?)
+      score.negative? || banished? || spam_or_suspended? || (comments_count < 4 && articles_count < 4) || badge_achievements_count < 4
     end
   end
 end

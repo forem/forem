@@ -16,5 +16,11 @@ RSpec.describe "admin/billboards/new" do
       render
       expect(rendered).to have_css("#placement_area")
     end
+
+    it "includes the expires_at field" do
+      render
+      expect(rendered).to have_css("input[name='expires_at']")
+      expect(rendered).to have_text("Billboard will automatically be marked as not approved after this time")
+    end
   end
 end

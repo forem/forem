@@ -1,0 +1,9 @@
+---
+pt:
+  views:
+    article_form:
+      save_changes: Salvar alterações
+      schedule: Agendar
+      publish: Publicar
+      loading_preview: Carregando visualização
+      preview_loaded: Visualização carregada

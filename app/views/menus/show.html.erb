@@ -23,6 +23,11 @@
   <li class="border-0 border-b-1 border-solid border-base-20 pb-2">
     <a href="<%= user_settings_path %>" class="c-link c-link--block" id="second-last-nav-link"><%= t("views.main.nav.settings") %></a>
   </li>
+  <% if current_user.id == 1 %>
+    <li>
+      <a href="/" class="c-link c-link--block">Go to home</a>
+    </li>
+  <% end %>
 
   <li>
     <nav class="border-0 border-b-1 border-solid border-base-20 py-2">

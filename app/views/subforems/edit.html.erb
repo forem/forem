@@ -1,0 +1,431 @@
+<% title "Edit #{@subforem.domain}" %>
+
+<main id="main-content">
+  <header class="crayons-page-header crayons-layout crayons-layout--full">
+    <h1 class="crayons-title">Manage <%= @subforem.domain %></h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Subforems", subforems_path, class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+  </header>
+  <div class="crayons-layout grid l:grid-cols-2 gap-6 mb-4">
+
+    <!-- RIGHT COLUMN: Main content (Form) -->
+    <div class="crayons-layout__content">
+      <div class="crayons-card p-4 m:p-6">
+        <%= form_for @subforem, html: { multipart: true } do |form| %>
+          <div class="flex flex-col gap-4">
+            <% if current_user.any_admin? %>
+              <div class="crayons-field">
+                <%= form.label :domain, class: "crayons-field__label" %>
+                <%= form.text_field :domain, class: "crayons-textfield" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :name, "Community Name", class: "crayons-field__label" %>
+                <%= form.text_field :name, class: "crayons-textfield", placeholder: "Enter the community name" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
+                <%= text_area_tag :internal_content_description_spec,
+                  Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
+                  class: "crayons-textfield", rows: 4,
+                  placeholder: "Describe the internal content description specification..." %>
+              </div>
+
+              <div class="crayons-field" data-controller="subforem-image-upload">
+                <%= form.label :main_logo, "Main Square Logo", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Upload a square logo (128x128px) for main branding. PNG or JPEG, max 8MB.</p>
+                <div class="flex flex-1 gap-4">
+                  <%= form.file_field :main_logo, 
+                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
+                      data: { 
+                        "max-file-size-mb": "8",
+                        action: "change->subforem-image-upload#previewImage",
+                        "image-type": "main_logo"
+                      } %>
+                  <div data-subforem-image-upload-target="preview" class="w-25 h-25" style="width: 100px">
+                    <% if Settings::General.logo_png(subforem_id: @subforem.id).present? %>
+                      <img src="<%= Settings::General.logo_png(subforem_id: @subforem.id) %>" 
+                           alt="Main logo preview" 
+                           style="width: 100px"
+                           class="object-cover rounded">
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="crayons-field" data-controller="subforem-image-upload">
+                <%= form.label :nav_logo, "Navigation Bar Logo", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Upload a smaller logo (80x80px) for navigation bars. PNG or JPEG, max 8MB.</p>
+                <div class="flex flex-1 gap-4">
+                  <%= form.file_field :nav_logo, 
+                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
+                      data: { 
+                        "max-file-size-mb": "8",
+                        action: "change->subforem-image-upload#previewImage",
+                        "image-type": "nav_logo"
+                      } %>
+                  <div data-subforem-image-upload-target="preview" class="w-25 h-25" style="width: 100px">
+                    <% if Settings::General.resized_logo(subforem_id: @subforem.id).present? %>
+                      <img src="<%= Settings::General.resized_logo(subforem_id: @subforem.id) %>" 
+                           alt="Nav logo preview" 
+                           style="width: 100px"
+                           class="object-cover rounded">
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="crayons-field" data-controller="subforem-image-upload">
+                <%= form.label :social_card, "Social Card Image", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Upload a social media card image (1200x630px) for sharing. PNG or JPEG, max 8MB.</p>
+                <div class="flex flex-1 gap-4">
+                  <%= form.file_field :social_card, 
+                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
+                      data: { 
+                        "max-file-size-mb": "8",
+                        action: "change->subforem-image-upload#previewImage",
+                        "image-type": "social_card"
+                      } %>
+                  <div data-subforem-image-upload-target="preview" class="w-25" style="width: 100px">
+                    <% if Settings::General.main_social_image(subforem_id: @subforem.id).present? %>
+                      <img src="<%= Settings::General.main_social_image(subforem_id: @subforem.id) %>" 
+                           alt="Social card preview" 
+                           style="width: 100px"
+                           class="object-cover rounded">
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="crayons-field">
+                <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
+                <%= text_area_tag :internal_content_description_spec,
+                  Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
+                  class: "crayons-textfield", rows: 4,
+                  placeholder: "Describe the internal content description specification..." %>
+              </div>
+
+              <div class="crayons-field" data-controller="subforem-image-upload">
+                <%= form.label :main_logo, "Main Square Logo", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Upload a square logo (128x128px) for main branding. PNG or JPEG, max 8MB.</p>
+                <div class="flex flex-1 gap-4">
+                  <%= form.file_field :main_logo, 
+                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
+                      data: { 
+                        "max-file-size-mb": "8",
+                        action: "change->subforem-image-upload#previewImage",
+                        "image-type": "main_logo"
+                      } %>
+                  <div data-subforem-image-upload-target="preview" class="w-20 h-20">
+                    <% if Settings::General.logo_png(subforem_id: @subforem.id).present? %>
+                      <img src="<%= Settings::General.logo_png(subforem_id: @subforem.id) %>" 
+                           alt="Main logo preview" 
+                           class="w-full h-full object-cover rounded">
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="crayons-field" data-controller="subforem-image-upload">
+                <%= form.label :nav_logo, "Navigation Bar Logo", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Upload a smaller logo (80x80px) for navigation bars. PNG or JPEG, max 8MB.</p>
+                <div class="flex flex-1 gap-4">
+                  <%= form.file_field :nav_logo, 
+                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
+                      data: { 
+                        "max-file-size-mb": "8",
+                        action: "change->subforem-image-upload#previewImage",
+                        "image-type": "nav_logo"
+                      } %>
+                  <div data-subforem-image-upload-target="preview" class="w-16 h-16">
+                    <% if Settings::General.resized_logo(subforem_id: @subforem.id).present? %>
+                      <img src="<%= Settings::General.resized_logo(subforem_id: @subforem.id) %>" 
+                           alt="Nav logo preview" 
+                           class="w-full h-full object-cover rounded">
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="crayons-field" data-controller="subforem-image-upload">
+                <%= form.label :social_card, "Social Card Image", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Upload a social media card image (1200x630px) for sharing. PNG or JPEG, max 8MB.</p>
+                <div class="flex flex-1 gap-4">
+                  <%= form.file_field :social_card, 
+                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
+                      data: { 
+                        "max-file-size-mb": "8",
+                        action: "change->subforem-image-upload#previewImage",
+                        "image-type": "social_card"
+                      } %>
+                  <div data-subforem-image-upload-target="preview" class="w-32 h-16">
+                    <% if Settings::General.main_social_image(subforem_id: @subforem.id).present? %>
+                      <img src="<%= Settings::General.main_social_image(subforem_id: @subforem.id) %>" 
+                           alt="Social card preview" 
+                           class="w-full h-full object-cover rounded">
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <% if current_user.any_admin? %>
+              <div class="crayons-field">
+                <%= form.label :discoverable, class: "crayons-field__label" %>
+                <%= form.check_box :discoverable, class: "crayons-checkbox" %>
+              </div>
+            <% end %>
+
+            <div class="crayons-field">
+              <%= form.label :community_description, "Community Description", class: "crayons-field__label" %>
+              <%= text_area_tag :community_description,
+                Settings::Community.community_description(subforem_id: @subforem.id),
+                class: "crayons-textfield", rows: 4,
+                placeholder: "Describe your community..." %>
+            </div>
+
+            <div class="crayons-field">
+              <%= form.label :tagline, "Tagline", class: "crayons-field__label" %>
+              <%= text_field_tag :tagline,
+                Settings::Community.tagline(subforem_id: @subforem.id),
+                class: "crayons-textfield",
+                placeholder: "A short tagline for your community..." %>
+            </div>
+
+            <div class="mt-6">
+              <%= form.submit "Update Subforem", class: "crayons-btn crayons-btn--primary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- LEFT COLUMN: Sidebar (Tags) -->
+    <div class="crayons-layout__sidebar-right">
+      <div class="crayons-card p-4 m:p-6">
+        <h2 class="crayons-subtitle-2 mb-4">Supported Tags</h2>
+
+        <% if @supported_tags.any? %>
+          <div class="space-y-2 mb-6" style="max-height: 550px; overflow-y: auto;">
+            <% @supported_tags.each do |tag| %>
+              <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg">
+                <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
+                <span class="text-xs color-base-60"><%= tag.taggings_count %> posts</span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm color-base-60 mb-6">No tags supported yet.</p>
+        <% end %>
+
+        <h2 class="crayons-subtitle-2 mb-4">Top Unsupported Tags</h2>
+
+                 <% if @unsupported_tags.any? %>
+           <div class="space-y-2" style="max-height: 550px; overflow-y: auto;">
+             <% @unsupported_tags.each do |tag| %>
+               <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-tag-id="<%= tag.id %>">
+                 <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
+                 <div class="flex items-center gap-2">
+                   <span class="text-xs color-base-60"><%= tag.taggings_count %> posts</span>
+                   <button class="crayons-btn crayons-btn--s crayons-btn--primary add-tag-btn" 
+                           data-tag-id="<%= tag.id %>" 
+                           data-tag-name="<%= tag.name %>">
+                     Add
+                   </button>
+                 </div>
+               </div>
+             <% end %>
+           </div>
+        <% else %>
+          <p class="text-sm color-base-60">No unsupported tags found.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGES SECTION -->
+  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
+    <h2 class="crayons-subtitle-2 mb-4">Dedicated Pages</h2>
+    
+    <% if @pages.any? %>
+      <div class="space-y-3">
+        <% @pages.each do |page| %>
+          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+            <div class="flex-1">
+              <div class="font-medium"><%= page.title %></div>
+              <div class="text-sm color-base-60"><%= page.description %></div>
+              <div class="text-xs color-base-50">
+                Slug: <%= page.slug %> | 
+                Path: <%= page.is_top_level_path ? "/#{page.slug}" : "/page/#{page.slug}" %>
+              </div>
+            </div>
+            <div class="text-xs color-base-60">
+              <%= page.created_at.strftime("%b %d, %Y") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm color-base-60">No dedicated pages found for this subforem (edit functionality coming soon).</p>
+    <% end %>
+  </div>
+
+  <!-- NAVIGATION LINKS SECTION -->
+  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
+    <h2 class="crayons-subtitle-2 mb-4">DedicatedNavigation Links</h2>
+    
+    <% if @navigation_links.any? %>
+      <div class="space-y-3">
+        <% @navigation_links.each do |link| %>
+          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+            <div class="flex-1">
+              <div class="font-medium flex items-center gap-2">
+                <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <%= link.name %>
+              </div>
+              <div class="text-sm color-base-60">
+                <a href="<%= link.url %>" target="_blank" class="c-link c-link--branded"><%= link.url %></a>
+              </div>
+              <div class="text-xs color-base-50">
+                Section: <%= link.section %> | 
+                Display: <%= link.display_to %> | 
+                Position: <%= link.position %>
+              </div>
+            </div>
+            <div class="text-xs color-base-60">
+              <%= link.created_at.strftime("%b %d, %Y") %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm color-base-60">No dedicated navigation links found for this subforem (edit functionality coming soon).</p>
+    <% end %>
+  </div>
+
+  <!-- COMMUNITY BOTS SECTION -->
+  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="crayons-subtitle-2">Community Bots</h2>
+      <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+        <%= link_to "Manage Bots", admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+      <% end %>
+    </div>
+    
+    <% community_bots = User.community_bots_for_subforem(@subforem.id).includes(:api_secrets).order(created_at: :desc) %>
+    
+    <% if community_bots.any? %>
+      <div class="space-y-3">
+        <% community_bots.each do |bot| %>
+          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+            <div class="flex-1">
+              <div class="font-medium flex items-center gap-2">
+                <span class="text-lg">🤖</span>
+                <%= bot.name %>
+                <span class="text-sm color-base-60">@<%= bot.username %></span>
+              </div>
+              <div class="text-sm color-base-60">
+                <%= bot.email %>
+              </div>
+              <div class="text-xs color-base-50">
+                Created: <%= bot.created_at.strftime("%b %d, %Y") %> | 
+                API Secrets: <%= bot.api_secrets.count %>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+                <%= link_to "View", admin_subforem_community_bot_path(@subforem, bot), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm color-base-60">No community bots found for this subforem.</p>
+    <% end %>
+  </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const addTagButtons = document.querySelectorAll('.add-tag-btn');
+  
+  addTagButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const tagId = this.dataset.tagId;
+      const tagName = this.dataset.tagName;
+      const button = this;
+      
+      // Disable button and show loading state
+      button.disabled = true;
+      button.textContent = 'Adding...';
+      
+      // Make AJAX request
+      fetch(`/subforems/<%= @subforem.id %>/add_tag`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ tag_id: tagId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Move the tag from unsupported to supported section
+          const tagElement = button.closest('[data-tag-id]');
+          const supportedSection = document.querySelector('.space-y-2.mb-6');
+          
+          if (supportedSection) {
+            // Create new supported tag element
+            const newSupportedTag = document.createElement('div');
+            newSupportedTag.className = 'flex items-center justify-between p-2 bg-base-5 rounded-lg';
+            newSupportedTag.innerHTML = `
+              <span class="crayons-tag crayons-tag--monochrome">${tagName}</span>
+              <span class="text-xs color-base-60">0 posts</span>
+            `;
+            
+            // Add to supported section
+            supportedSection.appendChild(newSupportedTag);
+            
+            // Remove from unsupported section
+            tagElement.remove();
+            
+            // Show success message
+            showNotification('Tag added successfully!', 'success');
+          }
+        } else {
+          showNotification(data.message || 'Failed to add tag', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while adding the tag', 'error');
+      })
+      .finally(() => {
+        // Re-enable button
+        button.disabled = false;
+        button.textContent = 'Add';
+      });
+    });
+  });
+  
+  function showNotification(message, type) {
+    // Create a simple notification
+    const notification = document.createElement('div');
+    notification.className = `crayons-notice crayons-notice--${type === 'success' ? 'success' : 'error'} fixed top-4 right-4 z-50`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+});
+</script>

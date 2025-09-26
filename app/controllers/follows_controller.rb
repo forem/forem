@@ -1,4 +1,6 @@
 class FollowsController < ApplicationController
+  before_action :current_user_by_token, only: [:create]
+  skip_before_action :verify_authenticity_token, if: :token_authenticated?
   after_action :verify_authorized
 
   def show
@@ -31,18 +33,22 @@ class FollowsController < ApplicationController
     render(plain: "not-logged-in") && return unless current_user
 
     response = params.require(:ids).map(&:to_i).index_with do |id|
-      if current_user.id == id
+      if current_user.id == id && params[:followable_type] == "User"
         "self"
       else
         following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], id)
-        following_you_check = Follows::CheckCached.call(User.find_by(id: id), params[:followable_type],
-                                                        current_user.id)
-        if following_them_check && following_you_check
-          "mutual"
-        elsif following_you_check
-          "follow-back"
-        else
+        if params[:followable_type] != "User"
           following_them_check.to_s
+        else
+          following_you_check = Follows::CheckCached.call(User.find_by(id: id), params[:followable_type],
+                                                          current_user.id)
+          if following_them_check && following_you_check
+            "mutual"
+          elsif following_you_check
+            "follow-back"
+          else
+            following_them_check.to_s
+          end
         end
       end
     end
@@ -54,7 +60,7 @@ class FollowsController < ApplicationController
     authorize Follow
 
     followable_klass = case params[:followable_type].capitalize
-                       when "Organization", "Tag", "Podcast"
+                       when "Organization", "Tag", "Podcast", "Subforem"
                          params[:followable_type].capitalize.constantize
                        else
                          User

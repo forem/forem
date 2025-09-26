@@ -77,6 +77,9 @@ en:
         sponsor_desc_html: You have the option to disable billboards from external sponsors. Our wonderful partners help sustain the platform, and we strive to ensure that their presence is constructive and valuable to the community, but you are welcome to make use of this setting if you wish. More details in our <a href="/billboards">billboards FAQ</a>.
         sponsor_field: Display External Sponsors (When browsing)
         static: Static top of page
+        subforem_reassignment: Content Relocation
+        subforem_reassignment_desc: When your content is marked as off-topic for its current subforem, it may be automatically moved to a more appropriate subforem. You can disable this automatic relocation if you prefer to keep your content in its original location.
+        subforem_reassignment_field: Disable automatic relocation of my content to other subforems
         theme: Site Theme
         writing: Writing
       danger: Danger Zone

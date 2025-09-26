@@ -4669,6 +4669,12 @@
             "type": "boolean",
             "description": "Ad must be both published and approved to be in rotation"
           },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp when the billboard expires. After this time, the billboard will automatically be marked as not approved."
+          },
           "organization_id": {
             "type": "integer",
             "description": "Identifies the organization to which the ad belongs",

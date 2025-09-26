@@ -105,7 +105,7 @@ RSpec.describe Settings::General do
     end
 
     describe "::algolia_search_enabled?" do
-      it "returns true if all algolia settings are present" do
+      it "returns true if all algolia settings are present", :algolia do
         described_class.algolia_application_id = "app_id"
         described_class.algolia_api_key = "api_key"
         described_class.algolia_search_only_api_key = "search_only_api_key"
@@ -120,75 +120,75 @@ RSpec.describe Settings::General do
 
     describe "::set_resized_logo" do
       let(:url) { "https://example.com/logo.png" }
-  
+
       before do
         # clear any previous settings
         described_class.set_resized_logo(nil)
         described_class.set_resized_logo_aspect_ratio(nil)
       end
-  
+
       context "when FastImage.size returns dimensions" do
         before do
           allow(FastImage).to receive(:size).with(url).and_return([10, 8])
           described_class.set_resized_logo(url)
         end
-  
+
         it "persists the resized_logo value" do
           expect(described_class.resized_logo).to eq(url)
         end
-  
+
         it "computes and persists the aspect ratio as a string" do
           expect(described_class.resized_logo_aspect_ratio).to eq("10 / 8")
         end
       end
-  
+
       context "when FastImage.size returns nil" do
         before do
           allow(FastImage).to receive(:size).with(url).and_return(nil)
         end
-  
+
         it "does not raise, and leaves aspect_ratio unchanged" do
-          expect {
+          expect do
             described_class.set_resized_logo(url)
-          }.not_to raise_error
-  
+          end.not_to raise_error
+
           # since we never set it, it should still be nil
           expect(described_class.resized_logo_aspect_ratio).to be_nil
         end
       end
-  
+
       context "when FastImage.size raises an error" do
         before do
           allow(FastImage).to receive(:size).with(url).and_raise(FastImage::ImageFetchFailure)
         end
-  
+
         it "rescues and does not raise, and leaves aspect_ratio unchanged" do
-          expect {
+          expect do
             described_class.set_resized_logo(url)
-          }.not_to raise_error
-  
+          end.not_to raise_error
+
           expect(described_class.resized_logo_aspect_ratio).to be_nil
         end
       end
-  
+
       context "with subforem_id" do
         let(:sub_id) { 42 }
-  
+
         before do
           allow(FastImage).to receive(:size).with(url).and_return([20, 5])
           described_class.set_resized_logo(url, subforem_id: sub_id)
         end
-  
+
         it "writes both values scoped to that subforem" do
           expect(described_class.resized_logo(subforem_id: sub_id)).to eq(url)
           expect(described_class.resized_logo_aspect_ratio(subforem_id: sub_id)).to eq("20 / 5")
         end
-  
+
         it "does not affect the global (nil) subforem values" do
           expect(described_class.resized_logo(subforem_id: nil)).to be_nil
           expect(described_class.resized_logo_aspect_ratio(subforem_id: nil)).to be_nil
         end
       end
-    end  
+    end
   end
 end

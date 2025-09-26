@@ -3,6 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
 import { ButtonNew as Button } from '@crayons';
+import { locale } from '@utilities/locale';
 
 export const EditorActions = ({
   onSaveDraft,
@@ -49,15 +50,15 @@ export const EditorActions = ({
 
   let saveButtonText;
   if (isVersion1) {
-    saveButtonText = 'Save changes';
+    saveButtonText = locale('core.article_form_save_changes');
   } else if (schedule) {
-    saveButtonText = 'Schedule';
+    saveButtonText = locale('core.article_form_schedule');
   } else if (wasScheduled || !published) {
     // if the article was saved as scheduled, and the user clears publishedAt in the post options, the save button text is changed to "Publish"
     // to make it clear that the article is going to be published right away
-    saveButtonText = 'Publish';
+    saveButtonText = locale('core.article_form_publish');
   } else {
-    saveButtonText = 'Save changes';
+    saveButtonText = locale('core.article_form_save_changes');
   }
 
   return (

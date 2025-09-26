@@ -6,6 +6,7 @@ module Tags
 
     def perform
       Tag.supported.find_each(&:save)
+      Subforem.find_each(&:update_scores!)
     end
   end
 end

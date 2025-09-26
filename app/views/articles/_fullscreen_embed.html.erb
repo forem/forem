@@ -1,0 +1,586 @@
+<style>
+  /* Fullscreen embed specific styles */
+  #article-body {
+    position: fixed;
+    top: 55px;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--base-0);
+    z-index: 100;
+    overflow: hidden;
+  }
+  
+  /* Actions sidebar - fixed left position */
+  #article-body .crayons-layout__sidebar-left {
+    position: fixed;
+    left: 10px;
+    top: 55px;
+    width: 50px;
+    height: calc(100vh - 55px);
+    border-right: 0;
+    padding-top: 20px;
+    overflow-y: auto;
+    z-index: 101;
+  }
+  
+  /* When main_side_bar is visible, shift actions sidebar right */
+  body[data-side-nav-visible='true'] #article-body .crayons-layout__sidebar-left {
+    left: 50px;
+  }
+  
+  /* Main content area - compatible with main_side_bar */
+  #article-body #fullscreen-body {
+    position: fixed;
+    left: 60px;
+    top: 55px;
+    width: calc(100vw - 60px);
+    height: calc(100vh - 55px);
+    overflow: hidden;
+    transition: left 0.3s ease;
+  }
+  
+  /* When main_side_bar is visible, shift main content right */
+  body[data-side-nav-visible='true'] #article-body #fullscreen-body {
+    left: 110px;
+    width: calc(100vw - 110px);
+  }
+  
+  /* Iframe styling */
+  #article-body #fullscreen-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Ensure iframe content is properly contained */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  /* Mobile responsive */
+  @media (max-width: 767px) {
+    #article-body .crayons-layout__sidebar-left {
+      width: 50px;
+    }
+    
+    /* On narrow screens, make fullscreen-body truly edge-to-edge */
+    #article-body #fullscreen-body {
+      left: 0;
+      width: 100vw;
+      top: 0;
+      height: calc(100vh - 80px); /* Leave room for bottom actions bar */
+    }
+    
+    /* When main_side_bar is visible on mobile */
+    body[data-side-nav-visible='true'] #article-body .crayons-layout__sidebar-left {
+      border-right: 0;
+    }
+    body[data-side-nav-visible='true'] #article-body #fullscreen-body {
+      left: 0px;
+      width: 100vw;
+      top: 55px;
+      height: calc(100vh - 113px); /* Leave room for bottom actions bar */
+    }
+  }
+  
+  /* Comments modal */
+  .comments-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 103;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.1s ease, visibility 0.1s ease;
+    pointer-events: none;
+  }
+  
+  /* Responsive modal positioning for edge-to-edge layout */
+  @media (min-width: 768px) { /* $breakpoint-m */
+    body[data-side-nav-visible='true'] .comments-modal {
+      left: 50px;
+      width: calc(100vw - 50px);
+    }
+  }
+  
+  @media (min-width: 1024px) { /* $breakpoint-l */
+    body[data-side-nav-visible='true'] .comments-modal {
+      left: 50px;
+      width: calc(100vw - 50px);
+    }
+  }
+  
+  @media (min-width: 1460px) { /* $breakpoint-2xl */
+    body[data-side-nav-visible='true'] .comments-modal {
+      left: 20px;
+      width: calc(100vw - 20px);
+    }
+  }
+  
+  .comments-modal.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  
+  .comments-modal-content {
+    background: var(--base-inverted);
+    border-radius: 8px;
+    width: 96%;
+    max-width: 1180px;
+    height: 96vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+  }
+  
+  .comments-modal.show .comments-modal-content {
+    transform: scale(1);
+  }
+  
+  .comments-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px 10px 20px;
+    border-bottom: 1px solid var(--base-10);
+    position: sticky;
+    top: 0;
+    background: var(--base-inverted);
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  
+  .comments-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--base-60);
+    padding: 5px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  
+  .comments-modal-close:hover {
+    background: var(--base-10);
+    color: var(--base-90);
+  }
+  
+  .comments-modal-body {
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    flex: 1;
+  }
+  
+  /* Mobile adjustments - when sidebar isn't visible and actions are at bottom */
+  @media (max-width: 767px) {
+    .comments-modal {
+      align-items: flex-start; /* Align to top instead of center */
+      justify-content: flex-start; /* Align to left instead of center */
+    }
+    
+    .comments-modal-content {
+      height: calc(100vh - 80px); /* Leave room for bottom actions bar */
+      margin: 0; /* Remove all margins */
+      border-radius: 0; /* Full edge-to-edge on mobile */
+      width: 100vw; /* Full viewport width */
+      max-width: 100vw; /* Ensure no max-width constraint */
+    }
+    
+    .comments-modal-header {
+      padding: 10px 15px 8px 15px;
+    }
+    
+    .comments-modal-body {
+      padding: 0;
+      margin: 0;
+    }
+  }
+  
+  /* Custom scrollbar for sidebar */
+  #article-body .crayons-layout__sidebar-left::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  #article-body .crayons-layout__sidebar-left::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  #article-body .crayons-layout__sidebar-left::-webkit-scrollbar-thumb {
+    background: var(--base-20);
+    border-radius: 2px;
+  }
+  
+  #article-body .crayons-layout__sidebar-left::-webkit-scrollbar-thumb:hover {
+    background: var(--base-30);
+  }
+</style>
+
+<div data-article-id="<%= @article.id %>" id="article-body" data-type-of="fullscreen_embed">
+  <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
+    <%= render "articles/actions" %>
+  </aside>
+  
+  <div id="fullscreen-body">
+    <%= @article.processed_html_final.html_safe %>
+  </div>
+</div>
+
+<!-- Universal modal for comments, mod actions, and extra menu -->
+<div class="comments-modal" id="comments-modal">
+  <div class="comments-modal-content">
+    <div class="comments-modal-header">
+      <h2 class="crayons-subtitle-1" id="modal-title">
+        Comments
+        <% if @comments_count > 0 %>
+          <span class="js-comments-count" data-comments-count="<%= @comments_count %>">
+            (<%= @comments_count %>)
+          </span>
+        <% end %>
+      </h2>
+      <button 
+        class="comments-modal-close" 
+        id="comments-modal-close" 
+        aria-label="Close modal"
+        type="button">
+        ×
+      </button>
+    </div>
+    <div class="comments-modal-body" id="modal-body">
+      <%# Load comments in iframe to avoid encoding issues %>
+      <iframe 
+        src="<%= @article.path %>/comments"
+        frameborder="0"
+        style="width: 100%; height: 100%; min-height: 400px; border: none;"
+        title="Article comments"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Quickie boost modal -->
+<% if user_signed_in? %>
+  <div id="quickie-wrapper" class="hidden">
+    <div class="crayons-modal">
+      <div role="dialog" aria-modal="true" aria-label="modal" class="crayons-modal__box" style="max-width:800px">
+        <header class="crayons-modal__box__header">
+          <h2 class="crayons-subtitle-2">Boost Post to the Feed</h2>
+          <button id="quickie-modal-close" type="button" aria-label="Close" class="c-btn c-btn--icon-alone crayons-modal__dismiss modal-close-el">
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="crayons-icon c-btn__icon"><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"></path></svg>
+          </button>
+        </header><div class="crayons-modal__box__body">
+        <div class="h-100 w-100">
+          <%= render "articles/quickie_form", expanded: true %>
+        </div>
+      </div>
+    </div>
+    <div class="crayons-modal__backdrop modal-close-el"></div></div>
+  </div>
+  <script>
+    document.querySelectorAll(".modal-close-el").forEach((el) => {
+      el.addEventListener("click", () => {
+        document.getElementById("quickie-wrapper").classList.add("hidden");
+      });
+    });
+  </script>
+<% end %>
+
+<!-- Mod actions menu -->
+<div class="mod-actions-menu print-hidden"></div>
+
+<!-- Hidden extra menu content for modal -->
+<div id="extra-menu-content" style="display: none;">
+  <div style="padding: 20px;">
+    <div class="crayons-dropdown">
+      <div class="only-mobile-menu-item">
+        <button class="mod-actions-menu-btn crayons-link crayons-link--block w-100 bg-transparent border-0 fw-bold">
+          Moderate
+        </button>
+      </div>
+      <div>
+        <button
+          id="copy-post-url-button"
+          class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0"
+          data-postUrl="<%= article_url(@article) %>">
+          <span class="fw-bold"><%= t("views.actions.copy.button") %></span>
+          <%= crayons_icon_tag(:copy, class: "mx-2 shrink-0", id: "article-copy-icon", aria_hidden: true, title: t("views.actions.copy.button")) %>
+        </button>
+        <div id="article-copy-link-announcer" aria-live="polite" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden><%= t("views.actions.copy.text") %></div>
+      </div>
+      <div class="Desktop-only">
+        <a
+          target="_blank"
+          class="crayons-link crayons-link--block"
+          rel="noopener"
+          href='https://twitter.com/intent/tweet?text=<%= u t("views.actions.share.twitter.query", article: @article.title.strip, author: @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name) %><%= u " #{Settings::General.twitter_hashtag}" %><%= u " #{article_url(@article)}" %>'>
+          <%= t("views.actions.share.twitter.text") %>
+        </a>
+        <a
+          target="_blank"
+          class="crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://www.linkedin.com/shareArticle?mini=true&url=<%= u article_url(@article) %>&title=<%= u @article.title %>&summary=<%= u @article.description %>&source=<%= u community_name %>">
+          <%= t("views.actions.share.linkedin.text") %>
+        </a>
+        <a
+          target="_blank"
+          class="crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
+          <%= t("views.actions.share.facebook.text") %>
+        </a>
+        <a
+          target="_blank"
+          class="crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://toot.kytta.dev/?text=<%= u article_url(@article) %>">
+          <%= t("views.actions.share.mastodon.text") %>
+        </a>
+      </div>
+      <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetitle="<%= @article.title %>" sharetext="<%= @article.description %>" template="web-share-button">
+      </web-share-wrapper>
+      <template id="web-share-button">
+        <a href="#" class="dropdown-link-row crayons-link crayons-link--block"><%= t("views.actions.share.link") %></a>
+      </template>
+      <a href="/report-abuse" class="crayons-link crayons-link--block"><%= t("views.actions.share.report") %></a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Fullscreen embed functionality
+  function initializeFullscreenEmbed() {
+    // Only run this for fullscreen embeds
+    if (document.querySelector('#article-body[data-type-of="fullscreen_embed"]')) {
+      // Wait a bit for articleReactions.js to finish processing, then override
+      setTimeout(() => {
+        const commentsToggle = document.getElementById('reaction-butt-comment');
+        const commentsModal = document.getElementById('comments-modal');
+        const commentsModalClose = document.getElementById('comments-modal-close');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        
+        console.log('Fullscreen embed detected, modal elements found:', { commentsToggle, commentsModal, commentsModalClose });
+        
+        if (commentsModal && commentsModalClose && modalTitle && modalBody) {
+          // Helper function to show modal with custom content
+          function showModal(title, content) {
+            modalTitle.innerHTML = title;
+            modalBody.innerHTML = content;
+            commentsModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            commentsModalClose.focus();
+            
+            // Initialize interactive elements within the modal
+            initializeModalContent();
+          }
+          
+          // Initialize interactive elements within the modal
+          function initializeModalContent() {
+            // Copy button functionality
+            const copyButton = document.getElementById('copy-post-url-button');
+            if (copyButton) {
+              copyButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const postUrl = this.getAttribute('data-postUrl');
+                navigator.clipboard.writeText(postUrl).then(() => {
+                  const announcer = document.getElementById('article-copy-link-announcer');
+                  if (announcer) {
+                    announcer.hidden = false;
+                    setTimeout(() => {
+                      announcer.hidden = true;
+                    }, 3000);
+                  }
+                });
+              });
+            }
+            
+            // Mod actions button within the extra menu
+            const modalModButtons = modalBody.querySelectorAll('.mod-actions-menu-btn');
+            modalModButtons.forEach(button => {
+              button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Opening mod actions modal from extra menu');
+                
+                const modTitle = 'Moderation Actions';
+                const modContent = `<iframe 
+                  src="<%= @article.path %>/actions_panel"
+                  frameborder="0"
+                  style="width: 100%; height: 100%; min-height: 400px; border: none;"
+                  title="Moderation panel actions"
+                  loading="lazy">
+                </iframe>`;
+                
+                showModal(modTitle, modContent);
+              });
+            });
+          }
+          
+          // Helper function to close modal
+          function closeModal() {
+            commentsModal.classList.remove('show');
+            document.body.style.overflow = '';
+            console.log('Modal closed, classes:', commentsModal.className);
+          }
+          
+          // Comments button functionality
+          if (commentsToggle && !commentsToggle.hasAttribute('data-fullscreen-embed')) {
+            commentsToggle.onclick = null;
+            commentsToggle.removeAttribute('data-category');
+            commentsToggle.setAttribute('data-fullscreen-embed', 'true');
+            
+            commentsToggle.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+              console.log('Opening comments modal');
+              
+              const commentsTitle = `Comments${document.querySelector('.js-comments-count') ? ' ' + document.querySelector('.js-comments-count').outerHTML : ''}`;
+              const commentsContent = `<iframe 
+                src="<%= @article.path %>/comments"
+                frameborder="0"
+                style="width: 100%; height: 100%; min-height: 400px; border: none;"
+                title="Article comments"
+                loading="lazy">
+              </iframe>`;
+              
+              showModal(commentsTitle, commentsContent);
+            });
+          }
+          
+          // Mod actions button functionality
+          const modButtons = document.querySelectorAll('.mod-actions-menu-btn');
+          modButtons.forEach(button => {
+            if (!button.hasAttribute('data-fullscreen-embed')) {
+              button.setAttribute('data-fullscreen-embed', 'true');
+              button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                console.log('Opening mod actions modal');
+                
+                const modTitle = 'Moderation Actions';
+                const modContent = `<iframe 
+                  src="<%= @article.path %>/actions_panel"
+                  frameborder="0"
+                  style="width: 100%; height: 100%; min-height: 400px; border: none;"
+                  title="Moderation panel actions"
+                  loading="lazy">
+                </iframe>`;
+                
+                showModal(modTitle, modContent);
+              });
+            }
+          });
+          
+          // Extra menu (more options) functionality
+          const moreButton = document.getElementById('article-show-more-button');
+          if (moreButton && !moreButton.hasAttribute('data-fullscreen-embed')) {
+            moreButton.setAttribute('data-fullscreen-embed', 'true');
+            moreButton.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+              console.log('Opening extra menu modal');
+              
+              const moreTitle = 'More Options';
+              const moreContent = document.getElementById('extra-menu-content').innerHTML;
+              
+              showModal(moreTitle, moreContent);
+            });
+          }
+          
+          // Modal close functionality
+          commentsModalClose.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Closing modal via close button');
+            closeModal();
+          });
+          
+          // Close modal when clicking outside
+          commentsModal.addEventListener('click', function(e) {
+            if (e.target === commentsModal) {
+              console.log('Closing modal via outside click');
+              closeModal();
+            }
+          });
+          
+          // Close modal with Escape key
+          document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && commentsModal.classList.contains('show')) {
+              console.log('Closing modal via Escape key');
+              closeModal();
+            }
+          });
+        } else {
+          console.error('Missing modal elements:', { commentsModal, commentsModalClose, modalTitle, modalBody });
+        }
+      }, 100); // Wait for articleReactions.js to finish
+    }
+    
+    // Ensure the fullscreen layout takes up the full viewport
+    const articleBody = document.getElementById('article-body');
+    if (articleBody) {
+      // Set viewport height for mobile browsers
+      const setViewportHeight = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      };
+      setViewportHeight();
+      window.addEventListener('resize', setViewportHeight);
+      // Handle orientation change on mobile
+      window.addEventListener('orientationchange', function() {
+        setTimeout(setViewportHeight, 100);
+      });
+      
+      // Handle main_side_bar visibility changes
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'data-side-nav-visible') {
+            // Force reflow to ensure proper positioning
+            articleBody.offsetHeight;
+          }
+        });
+      });
+      
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-side-nav-visible']
+      });
+    }
+  }
+
+  // Initialize on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', initializeFullscreenEmbed);
+  
+  // Also initialize on InstantClick navigation
+  if (typeof InstantClick !== 'undefined') {
+    InstantClick.on('change', initializeFullscreenEmbed);
+  }
+</script>
+
+<%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+
+<% if user_signed_in? %>
+  <%= javascript_include_tag "articlePage", "articleModerationTools", defer: true %>
+<% else %>
+  <%= javascript_include_tag "articlePage", defer: true %>
+<% end %>

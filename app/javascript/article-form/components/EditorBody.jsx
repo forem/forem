@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useLayoutEffect, useRef } from 'preact/hooks';
+import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import {
@@ -70,7 +71,7 @@ export const EditorBody = ({
         name="body_markdown"
         id="article_body_markdown"
         defaultValue={defaultValue}
-        placeholder="Write your post content here..."
+        placeholder={locale('core.editor_body_placeholder')}
         className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
       />
     </div>

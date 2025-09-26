@@ -83,9 +83,6 @@
       <% end %>
     <% end %>
   <% end %>
-  <% if @billboards.third %>
-    <%= render partial: "shared/billboard", locals: { billboard: @billboards.third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
-  <% end %>
   <% if !user_signed_in? && RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] %>
     <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
       <% boostable_posts = Article.from_subforem.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
@@ -106,4 +103,11 @@
       <% end %>
     <% end %>
   <% end %>
+  
+  <% if @billboards.third %>
+    <div class="sidebar-sticky-element" id="sticky-billboard">
+      <%= render partial: "shared/billboard", locals: { billboard: @billboards.third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+    </div>
+  <% end %>
+
 </aside>

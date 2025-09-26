@@ -13,7 +13,7 @@ class ArticlePolicy < ApplicationPolicy
   def self.include_hidden_dom_class_for?(query:)
     case query.to_sym
     when :create?, :new?, :create, :new
-      # Hide the DOM if post creation is limited to admins OR if it is a root subforem
+      # Hide the DOM if post creation is limited to admins OR if it's a root subforem
       limit_post_creation_to_admins? || is_root_subforem?
     else
       false
@@ -25,7 +25,7 @@ class ArticlePolicy < ApplicationPolicy
     when :create?, :new?, :create, :new
       users_scope = users_scope.without_role(:suspended)
       return users_scope unless is_root_subforem? || limit_post_creation_to_admins?
-        
+
       users_scope.with_any_role(*Authorizer::RoleBasedQueries::ANY_ADMIN_ROLES)
     else
       raise "Unhandled predicate: #{action} for #{self}.#{__method__}"
@@ -52,6 +52,9 @@ class ArticlePolicy < ApplicationPolicy
 
   def create?
     require_user_in_good_standing!
+    # Allow creation if a specific subforem_id is provided, even in root subforem
+    # This is handled in the controller by checking article_params[:subforem_id]
+
     # Disallow creation if it is a root subforem
     return false if self.class.is_root_subforem?
 

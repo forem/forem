@@ -13,19 +13,19 @@ en:
         sign_in: Sign in
       comments:
         all:
-          one: All %{count} comments
-          other: All %{count} comments
+          one: All comments
+          other: All comments
         last:
-          one: Last %{count} comments
-          other: Last %{count} comments
+          one: Recent comments
+          other: Recent comments
         recent: Recent comments
         view: View all activity
         view_all:
-          one: View all %{count} comments
-          other: View all %{count} comments
+          one: View all comments
+          other: View all comments
         view_last:
-          one: View last 1 Comment
-          other: View last %{count} Comments
+          one: View recent comments
+          other: View recent comments
       github:
         heading: GitHub Repositories
         fork: Fork

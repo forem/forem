@@ -370,8 +370,35 @@ body {
     padding: var(--su-5);
   }
 
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--su-4);
+  }
+
   &__cover {
     margin-bottom: var(--su-4);
+    flex-shrink: 0;
+    
+    // New horizontal layout styles
+    .c-embed__content & {
+      margin-bottom: 0;
+      width: 80px;
+      height: 80px;
+      text-align: center;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: var(--radius);
+      }
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0; // Allows text to truncate properly
   }
 
   h2,

@@ -158,8 +158,9 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, subforem_id = nil)
+    subforem_id ||= RequestStore.store[:subforem_id]
+    CloudCoverUrl.new(url, subforem_id).call
   end
 
   def tag_colors(tag)

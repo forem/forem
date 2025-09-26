@@ -28,15 +28,4 @@
       </div>
     <% end %>
   <% end %>
-
-  <% if @user_unspent_credits_count.positive? %>
-    <center>
-      <p>
-        <a href="<%= new_listing_path %>"><%= t("views.credits.listing.create") %></a>
-      </p>
-      <p>
-        <a href="/listings/dashboard"><%= t("views.credits.listing.dashboard") %></a>
-      </p>
-    </center>
-  <% end %>
 </div>

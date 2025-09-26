@@ -1,0 +1,45 @@
+<% json_data = notification.json_data %>
+<% data = notification.json_data %>
+
+<% 
+  # Create linked community names
+  old_community_link = if data["old_subforem"]
+    link_to(data["old_subforem"]["name"], "https://#{data["old_subforem"]["domain"]}", class: "crayons-link fw-bold")
+  else
+    "the previous community"
+  end
+  
+  new_community_link = link_to(data["new_subforem"]["name"], "https://#{data["new_subforem"]["domain"]}", class: "crayons-link fw-bold")
+%>
+
+<h3 class="mb-2 color-base-90"><%= t("views.notifications.subforem.heading") %></h3>
+<p class="mb-4">
+  <%= t(
+        "views.notifications.subforem.change_html",
+        title: link_to(h(data["article"]["title"]), data["article"]["path"], class: "crayons-link fw-bold"),
+        old_community_link: old_community_link,
+        new_community_link: new_community_link
+      ) %>
+</p>
+<div class="crayons-card crayons-card--secondary p-4 mb-4">
+  <p class="color-base-70">
+    <strong><%= t("views.notifications.subforem.reason") %></strong>
+    <em><%= data["reason"] %></em>
+  </p>
+</div>
+
+<% if data["new_subforem"]["misc"] %>
+  <div class="crayons-card crayons-card--highlighted p-4 mb-4">
+    <p class="color-base-70">
+      <strong>📢 Open Discussion Space:</strong>
+      <%= t("views.notifications.subforem.misc_explanation") %>
+    </p>
+  </div>
+<% end %>
+
+<p class="mb-2">
+  <%= t("views.notifications.subforem.explanation_html") %>
+</p>
+<p>
+  <%= t("views.notifications.subforem.support_html", community: community_name, email: t("contact_prompts.if_any_questions_html")) %>
+</p>

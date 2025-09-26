@@ -1,0 +1,148 @@
+#!/usr/bin/env ruby
+require "yaml"
+require "optparse"
+
+# ---------- CLI options ----------
+options = {
+  dry_run: false,
+  verbose: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/add_missing_helper_keys [options]"
+
+  opts.on("--dry-run", "Show what would be changed without actually changing files") do
+    options[:dry_run] = true
+  end
+
+  opts.on("--verbose", "Show detailed information") do
+    options[:verbose] = true
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+def add_missing_keys_to_pt_helpers(dry_run, verbose)
+  puts "Adding missing keys to Portuguese helpers file..." unless dry_run
+  puts "DRY RUN - No files will be changed" if dry_run
+  puts
+  
+  # Read the English helpers file to get the complete structure
+  en_content = File.read('config/locales/helpers/en.yml')
+  en_data = YAML.load(en_content)
+  
+  # Read the Portuguese helpers file
+  pt_content = File.read('config/locales/helpers/pt.yml')
+  pt_data = YAML.load(pt_content)
+  
+  en_helpers = en_data['en']['helpers']
+  pt_helpers = pt_data['pt']['helpers']
+  
+  puts "English helpers structure: #{en_helpers.keys.join(', ')}" if verbose
+  puts "Portuguese helpers structure: #{pt_helpers.keys.join(', ')}" if verbose
+  
+  # Add missing top-level sections
+  missing_sections = en_helpers.keys - pt_helpers.keys
+  if missing_sections.any?
+    puts "Missing sections in Portuguese: #{missing_sections.join(', ')}" if verbose
+    
+    missing_sections.each do |section|
+      if dry_run
+        puts "  Would add section: #{section}"
+      else
+        pt_helpers[section] = en_helpers[section]
+        puts "  Added section: #{section}"
+      end
+    end
+  end
+  
+  # Add missing keys within existing sections
+  en_helpers.each do |section, section_data|
+    next unless pt_helpers[section]
+    
+    if section_data.is_a?(Hash)
+      missing_keys = find_missing_keys(section_data, pt_helpers[section])
+      if missing_keys.any?
+        puts "Missing keys in #{section}: #{missing_keys.join(', ')}" if verbose
+        
+        missing_keys.each do |key_path|
+          if dry_run
+            puts "  Would add key: #{section}.#{key_path}"
+          else
+            add_nested_key(pt_helpers[section], key_path, get_nested_value(section_data, key_path))
+            puts "  Added key: #{section}.#{key_path}"
+          end
+        end
+      end
+    end
+  end
+  
+  if dry_run
+    puts "Would update Portuguese helpers file"
+  else
+    # Write the updated Portuguese data back
+    File.write('config/locales/helpers/pt.yml', YAML.dump(pt_data))
+    puts "Updated Portuguese helpers file"
+  end
+end
+
+def find_missing_keys(en_data, pt_data, prefix = "")
+  missing_keys = []
+  
+  en_data.each do |key, value|
+    current_path = prefix.empty? ? key : "#{prefix}.#{key}"
+    
+    if value.is_a?(Hash)
+      if pt_data[key].is_a?(Hash)
+        # Recursively check nested keys
+        missing_keys.concat(find_missing_keys(value, pt_data[key], current_path))
+      else
+        # Missing nested structure
+        missing_keys << current_path
+      end
+    else
+      # Missing leaf key
+      unless pt_data.key?(key)
+        missing_keys << current_path
+      end
+    end
+  end
+  
+  missing_keys
+end
+
+def get_nested_value(data, key_path)
+  keys = key_path.split('.')
+  current = data
+  
+  keys.each do |key|
+    current = current[key]
+    return nil unless current
+  end
+  
+  current
+end
+
+def add_nested_key(data, key_path, value)
+  keys = key_path.split('.')
+  current = data
+  
+  keys[0...-1].each do |key|
+    current[key] ||= {}
+    current = current[key]
+  end
+  
+  current[keys.last] = value
+end
+
+# Main execution
+add_missing_keys_to_pt_helpers(options[:dry_run], options[:verbose])
+
+puts
+puts "Next steps:"
+puts "1. Run the i18n test: bundle exec rspec spec/i18n_spec.rb:15"
+puts "2. Check for any remaining issues"
+puts "3. Continue with missing locale files if needed"

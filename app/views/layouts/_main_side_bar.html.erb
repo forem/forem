@@ -1,0 +1,290 @@
+<% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).order(root: :desc, score: :desc) %>
+<nav id="main-side-bar" class="crayons-side-nav">
+  <div class="crayons-side-nav__scrollable">
+    <% @subforems.each_with_index do |subforem, i| %>
+    <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
+      <a class="crayons-side-nav-link" href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
+        <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 65) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
+      </a>
+      <% if i == 0 %>
+        <div class="profile-preview-card__content profile-preview-card__content--list crayons-dropdown p-4 pt-0 branded-7" id="root-feed-card">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-2">
+              Forem Feed
+            </h3>
+            <div class="fs-xs color-base-70">
+              Follow new Subforems to improve your feed
+            </div>
+          </header>
+          <div id="main-side-feed" class="crayons-card crayons-card--secondary crayons-layout__content">
+          </div>
+        </div>
+      <% else %>
+        <div class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7">
+          <a href="//<%= subforem.domain %>">
+            <img src="<%= optimized_image_url(Settings::General.main_social_image(subforem_id: subforem.id), width: 440) %>" class="crayons-side-nav__item-cover crayons-side-nav__item-cover--main" style="aspect-ratio: 10 / 5" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Main Image">
+          </a>
+          <h3 class="py-2">
+            <a href="//<%= subforem.domain %>"><%= Settings::Community.community_name(subforem_id: subforem.id) %></a>
+          </h3>
+          <%= follow_button(subforem, style = "", "w-100 follow-subforem") %>
+          <p class="crayons-text py-2 fs-s">
+            <%= Settings::Community.community_description(subforem_id: subforem.id) %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+  </div>
+  <a class="crayons-side-nav__item crayons-side-nav__item--add subforems-menu-tooltip" href="<%= new_subforem_path %>" data-tooltip="New subforem">
+    <%= crayons_icon_tag("plus", class: "", title: t("billboard.menu.icon")) %>
+  </a>
+  <a class="crayons-side-nav__item crayons-side-nav__item--menu subforems-menu-tooltip" href="<%= subforems_path %>" data-tooltip="View all Subforems">
+    <%= crayons_icon_tag("small-overflow-horizontal", class: "", title: t("billboard.menu.icon")) %>
+  </a>
+</nav>
+
+<script>
+  (function () {
+    // Utility: base64 unicode decode (for cookie payload)
+    function base64DecodeUnicode(str) {
+      try {
+        return decodeURIComponent(
+          atob(str)
+            .split("")
+            .map((c) => {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join(""),
+        );
+      } catch (e) {
+        console.error("base64DecodeUnicode failed:", e);
+        return null;
+      }
+    }
+
+    function getCookie(name) {
+      const match = document.cookie.match(
+        new RegExp("(^|; )" + name.replace(/([.*+?^${}()|[\]\\])/g, "\\$1") + "=([^;]*)"),
+      );
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    function getUserFromCookie() {
+      const raw = getCookie("current_user");
+      if (!raw) return null;
+      const decoded = base64DecodeUnicode(raw);
+      if (!decoded) return null;
+      try {
+        return JSON.parse(decoded);
+      } catch (e) {
+        console.error("Parsing user from cookie failed:", e);
+        return null;
+      }
+    }
+
+    // --- user acquisition: prefer cookie, fallback to localStorage ---
+    const storedCurrentUser = (() => {
+      const fromCookie = getUserFromCookie();
+      if (fromCookie) return fromCookie;
+      const stored = localStorage?.getItem("current_user");
+      if (!stored) return null;
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error("Parsing user from localStorage failed:", e);
+        return null;
+      }
+    })();
+
+    // apply authorization/display logic and reorder if present
+    if (storedCurrentUser) {
+
+      if (storedCurrentUser?.ordered_subforem_ids?.length > 0) {
+        const subforemIds = storedCurrentUser.ordered_subforem_ids;
+        const sidebar = document.getElementById("main-side-bar");
+        const rootLink = document.getElementById("root-subforem-link");
+        const rootSubforemId = rootLink?.getAttribute("data-sidebar-subforem-id");
+
+        const subforemElements = sidebar.querySelectorAll("[data-sidebar-subforem-id]");
+        const subforemMap = {};
+
+        subforemElements.forEach((el) => {
+          const id = el.getAttribute("data-sidebar-subforem-id");
+          if (id !== rootSubforemId) {
+            subforemMap[id] = el.closest(".crayons-side-nav__item");
+          }
+        });
+
+        // remove non-root existing items
+        Object.values(subforemMap).forEach((item) => {
+          if (item && item.parentNode) {
+            item.remove();
+          }
+        });
+
+        // append in user's order (excluding root)
+        const scrollableContainer = sidebar.querySelector(".crayons-side-nav__scrollable");
+        subforemIds.forEach((id) => {
+          if (id !== rootSubforemId && subforemMap[id]) {
+            scrollableContainer.appendChild(subforemMap[id]);
+          }
+        });
+
+        // append leftovers not in the user's list
+        Object.keys(subforemMap).forEach((id) => {
+          const parsedId = parseInt(id, 10);
+          if (!subforemIds.includes(parsedId) && subforemMap[id]) {
+            scrollableContainer.appendChild(subforemMap[id]);
+          }
+        });
+
+        // ensure menu is last
+        const menu = sidebar.querySelector(".crayons-side-nav__item--menu");
+        if (menu) {
+          sidebar.appendChild(menu);
+        }
+      }
+    }
+
+    // active subforem highlight based on current context
+    const currentSubforemId = document.body.getAttribute("data-subforem-id");
+    if (currentSubforemId) {
+      const matching = document.querySelector(
+        `[data-sidebar-subforem-id="${currentSubforemId}"]`,
+      );
+      if (matching) {
+        matching.classList.add("active");
+      }
+    }
+  })();
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.getElementById("main-side-bar");
+    if (!sidebar) return;
+
+    const items = sidebar.querySelectorAll(".crayons-side-nav__item");
+    let hoverTimeout;
+    let hasMoved = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+
+    document.addEventListener("mousemove", (e) => {
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      hasMoved = true;
+    });
+
+    items.forEach((item) => {
+      item.addEventListener("mouseleave", function () {
+        this.dataset.hasLeftOnce = "true";
+        if (this.classList.contains("hovered")) {
+          this.classList.remove("hovered");
+          this.classList.add("not-hovered");
+        }
+      });
+
+      item.addEventListener("mouseenter", function (e) {
+        if (!hasMoved && !this.dataset.hasLeftOnce) {
+          return;
+        }
+
+        const targetItem = this;
+        const currentActive = sidebar.querySelector(
+          ".crayons-side-nav__item.hovered",
+        );
+
+        const switchActiveState = () => {
+          if (currentActive && currentActive !== targetItem) {
+            currentActive.classList.remove("hovered");
+            currentActive.classList.add("not-hovered");
+            
+            // Reset styles on the previous active item's pop-out card
+            const previousPreviewCard = currentActive.querySelector(".profile-preview-card__content");
+            if (previousPreviewCard) {
+              previousPreviewCard.style.position = '';
+              previousPreviewCard.style.left = '';
+              previousPreviewCard.style.top = '';
+              previousPreviewCard.style.bottom = '';
+              previousPreviewCard.style.width = '';
+              previousPreviewCard.style.zIndex = '';
+            }
+          }
+          targetItem.classList.remove("not-hovered");
+          targetItem.classList.add("hovered");
+          let feedEl = document.getElementById('root-feed-card');
+          if (feedEl) {
+            feedEl.scrollTop = 0;
+          }
+
+          // --- NEW LOGIC START ---
+          const previewCard = targetItem.querySelector(
+            ".profile-preview-card__content",
+          );
+          if (previewCard) {
+            const rect = targetItem.getBoundingClientRect();
+            
+            // Position the card relative to the viewport
+            previewCard.style.position = 'fixed';
+            previewCard.style.left = '48px';
+            previewCard.style.width = '290px';
+            previewCard.style.zIndex = '3000';
+            
+            if (window.innerHeight - rect.bottom < 280) {
+              previewCard.classList.add("profile-preview-card__upsidedown");
+              previewCard.style.top = 'auto';
+              previewCard.style.bottom = `${window.innerHeight - rect.bottom - 30}px`;
+            } else {
+              previewCard.classList.remove("profile-preview-card__upsidedown");
+              previewCard.style.top = `${rect.top - 30}px`;
+              previewCard.style.bottom = 'auto';
+            }
+          }
+          // --- NEW LOGIC END ---
+        };
+
+        clearTimeout(hoverTimeout);
+
+        let delay = 20;
+        const deltaX = e.clientX - lastMouseX;
+        const deltaY = e.clientY - lastMouseY;
+
+        if (deltaX > 10 && deltaX >= Math.abs(deltaY)) {
+          delay = 250;
+        }
+
+        if (currentActive && currentActive !== targetItem) {
+          hoverTimeout = setTimeout(switchActiveState, delay);
+        } else {
+          switchActiveState();
+        }
+      });
+    });
+
+    sidebar.addEventListener("mouseleave", () => {
+      clearTimeout(hoverTimeout);
+      const activeItem = sidebar.querySelector(
+        ".crayons-side-nav__item.hovered",
+      );
+      if (activeItem) {
+        activeItem.classList.remove("hovered");
+        activeItem.classList.add("not-hovered");
+        
+        // Reset any inline styles on the pop-out card
+        const previewCard = activeItem.querySelector(".profile-preview-card__content");
+        if (previewCard) {
+          previewCard.style.position = '';
+          previewCard.style.left = '';
+          previewCard.style.top = '';
+          previewCard.style.bottom = '';
+          previewCard.style.width = '';
+          previewCard.style.zIndex = '';
+        }
+      }
+    });
+  });
+</script>
+
+<%= javascript_include_tag "mainSidebar", defer: true %>

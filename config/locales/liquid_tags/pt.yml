@@ -1,0 +1,113 @@
+---
+pt:
+  liquid_tags:
+    asciinema_tag:
+      invalid_asciinema_id: 'ID do Asciinema inválido: %{id}'
+    blogcast_tag:
+      invalid_blogcast_id: ID do Blogcast inválido
+    codepen_tag:
+      invalid_codepen_url: URL do CodePen inválida
+      invalid_options: Opções inválidas
+    codesandbox_tag:
+      invalid_id: 'Erro do CodeSandbox: ID inválido'
+    comment_tag:
+      invalid_comment: ID ou URL do comentário inválido
+    dotnet_fiddle_tag:
+      invalid_dotnetfiddle_url: URL do DotnetFiddle inválida
+    gist_tag:
+      invalid_filename: Nome do arquivo inválido
+      invalid_format: 'Link do Gist inválido: %{link} Links devem seguir este formato: https://gist.github.com/username/gist_id'
+      invalid_gist_link: 'Link do Gist inválido: Você deve fornecer um link do Gist'
+    git_pitch_tag:
+      invalid_gitpitch_url: URL do GitPitch inválida
+    github_tag:
+      github_issue_tag:
+        comment_for: Comentário para
+        commented_on: comentou em
+        invalid_github_issue_pull: Link inválido de issue, pull request ou comentário do GitHub
+        posted_on: postado em
+      github_readme_tag:
+        invalid_options: 'Tag GitHub: opções inválidas: %{invalid} | opções suportadas: %{valid}'
+        invalid_github_repository: Caminho ou URL do repositório GitHub inválido
+    glitch_tag:
+      invalid_glitch_id: ID do Glitch inválido
+      invalid_options: Opções inválidas
+    instagram_tag:
+      invalid_instagram_id: ID do Instagram inválido
+    js_fiddle_tag:
+      invalid_jsfiddle_url: URL do JSFiddle inválida
+      invalid_options: Opções inválidas
+    jsitor_tag:
+      invalid_jsitor_link: Link do JSitor inválido. Por favor, leia o guia do editor para mais informações
+    kotlin_tag:
+      invalid_kotlin_playground: URL do Kotlin Playground inválida
+    link_tag:
+      not_exist: "O artigo que você está procurando não existe: %{slug}"
+      not_exist_link: "O artigo que você está procurando não existe: {% link %{slug} %}"
+    liquid_tag_base:
+      invalid_context: Contexto inválido. Esta tag liquid só pode ser usada em %{valid}.
+      no_source_found: Nenhuma fonte encontrada
+    listing_tag:
+      invalid_url_or_slug: URL ou slug inválido. Anúncio não encontrado.
+    loom_tag:
+      invalid_loom_url: URL do Loom inválida.
+    medium_tag:
+      invalid_link_url: URL do link inválida ou URL do link não existe
+    next_tech_tag:
+      invalid_url: URL de compartilhamento do Next Tech inválida
+    null_tag:
+      liquid_tag_is_disabled: Tag Liquid#%{tag_name} está desabilitada
+    organization_tag:
+      invalid_slug: Slug da organização inválido
+      invalid_url: URL da organização inválida
+    parler_tag:
+      invalid_parler_url: URL do Parler inválida
+    podcast_tag:
+      invalid_podcast_link: Link do podcast inválido
+    reddit_tag:
+      invalid_reddit_link: 'Link do Reddit inválido: %{url}'
+    replit_tag:
+      invalid_replit_id: URL do Replit inválida ou @user/slug
+    runkit_tag:
+      runkit_tag_is_invalid: Tag do Runkit é inválida
+    slideshare_tag:
+      invalid_slideshare_key: Chave do Slideshare inválida
+    soundcloud_tag:
+      invalid_soundcloud_url: "URL do Soundcloud inválida - tente remover qualquer parâmetro de URL: '?something=value'"
+    speakerdeck_tag:
+      invalid_speakerdeck_id: ID do Speakerdeck inválido
+    spotify_tag:
+      invalid_spotify_uri: URI ou URL do Spotify inválida.
+    stackblitz_tag:
+      invalid_options: Opções inválidas
+      invalid_stackblitz_id: ID do Stackblitz inválido
+    stackery_tag:
+      missing_argument: Stackery - Argumentos de nome do proprietário e/ou repositório ausentes
+    stackexchange_tag:
+      post_not_found: "Não foi possível encontrar um post com esse ID: {% %{tag} %{input} %}"
+      invalid_id: 'ID do Stack Exchange inválido: {% %{tag} %{input} %}'
+      invalid_site: 'Site do Stack Exchange inválido: {% %{tag} %{input} %}'
+    tag_tag:
+      invalid_tag_name: nome da tag inválido
+    tweet_tag:
+      invalid_twitter_id: ID ou URL do Twitter inválido
+    twitch_tag:
+      invalid_twitch_id: ID, Slug ou URL do Twitch inválido
+    twitter_timeline_tag:
+      invalid_url: URL da Timeline do Twitter inválida
+    unified_embed:
+      tag:
+        invalid_url: URL fornecida pode ter um erro de digitação ou erro; por favor, verifique e tente novamente
+        too_many_redirects: Muitos redirecionamentos
+        not_found: Não encontrado
+        listings_disabled: Anúncios desabilitados
+    wikipedia_tag:
+      invalid_wikipedia_url: URL da Wikipedia inválida
+      article_not_found: "Não foi possível encontrar o artigo da Wikipedia - %{input}: %{response_detail}"
+      section_not_found: "Não foi possível encontrar a seção do artigo da Wikipedia - %{input}"
+    user_subscription_tag:
+      submit: Enviar
+      submitting: Enviando...
+      subscribed: Inscrito
+    youtube_tag:
+      invalid_youtube_id: ID do YouTube inválido

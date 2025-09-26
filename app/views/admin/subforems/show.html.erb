@@ -1,0 +1,137 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title"><%= @subforem.domain %></h1>
+    <p class="color-secondary">Subforem Details</p>
+  </div>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "View Site", "https://#{@subforem.domain}", target: "_blank", class: "crayons-btn crayons-btn--outlined" %>
+    <%= link_to "Edit", edit_admin_subforem_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+  </div>
+</header>
+
+<div class="grid gap-6">
+  <!-- Subforem Details Card -->
+  <div class="crayons-card p-6">
+    <h2 class="crayons-subtitle-1 mb-4">Subforem Details</h2>
+    <div class="grid gap-4 m:grid-cols-2">
+      <div class="crayons-field">
+        <strong class="crayons-field__label">Domain:</strong>
+        <p class="mt-1"><%= @subforem.domain %></p>
+      </div>
+      
+      <div class="crayons-field">
+        <strong class="crayons-field__label">Name:</strong>
+        <p class="mt-1"><%= Settings::Community.community_name(subforem_id: @subforem.id) || "Not set" %></p>
+      </div>
+      
+      <div class="crayons-field">
+        <strong class="crayons-field__label">Description:</strong>
+        <p class="mt-1"><%= Settings::Community.community_description(subforem_id: @subforem.id) || "No description set" %></p>
+      </div>
+      
+      <div class="crayons-field">
+        <strong class="crayons-field__label">Tagline:</strong>
+        <p class="mt-1"><%= Settings::Community.tagline(subforem_id: @subforem.id) || "No tagline set" %></p>
+      </div>
+      
+      <div class="crayons-field">
+        <strong class="crayons-field__label">Member Label:</strong>
+        <p class="mt-1"><%= Settings::Community.member_label(subforem_id: @subforem.id) || "Not set" %></p>
+      </div>
+      
+      <div class="crayons-field">
+        <strong class="crayons-field__label">Status:</strong>
+        <div class="mt-1 flex gap-2">
+          <% if @subforem.discoverable? %>
+            <span class="crayons-indicator crayons-indicator--success">Discoverable</span>
+          <% else %>
+            <span class="crayons-indicator crayons-indicator--warning">Not Discoverable</span>
+          <% end %>
+          
+          <% if @subforem.root? %>
+            <span class="crayons-indicator crayons-indicator--info">Root Subforem</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Community Bots Card -->
+  <div class="crayons-card p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="crayons-subtitle-1">Community Bots</h2>
+      <%= link_to "Manage Bots", admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+    </div>
+    
+    <% community_bots = User.community_bots_for_subforem(@subforem.id).limit(3) %>
+    <% if community_bots.any? %>
+      <div class="space-y-2">
+        <% community_bots.each do |bot| %>
+          <div class="flex items-center justify-between p-2 bg-base-5 rounded">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🤖</span>
+              <span class="fw-medium"><%= bot.name %></span>
+              <span class="text-sm color-secondary">@<%= bot.username %></span>
+            </div>
+            <%= link_to "View", admin_subforem_community_bot_path(@subforem, bot), class: "crayons-link crayons-link--secondary fs-s" %>
+          </div>
+        <% end %>
+        <% if User.community_bots_for_subforem(@subforem.id).count > 3 %>
+          <p class="text-sm color-secondary text-center">
+            <%= link_to "View all #{User.community_bots_for_subforem(@subforem.id).count} bots", admin_subforem_community_bots_path(@subforem), class: "crayons-link" %>
+          </p>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="color-secondary">No community bots found for this subforem.</p>
+    <% end %>
+  </div>
+
+  <!-- Moderators Card -->
+  <div class="crayons-card p-6">
+    <h2 class="crayons-subtitle-1 mb-4">Moderators</h2>
+    
+    <% if @subforem_moderators.any? %>
+      <div class="mb-4">
+        <h3 class="crayons-subtitle-2 mb-3">Current Moderators</h3>
+        <ul class="space-y-2">
+          <% @subforem_moderators.each do |moderator| %>
+            <li class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+              <div class="flex items-center gap-2">
+                <span class="fw-medium">@<%= moderator.username %></span>
+                <%= link_to "View Profile", admin_user_path(moderator), class: "crayons-link crayons-link--secondary fs-s", target: "_blank" %>
+              </div>
+              <% if current_user.any_admin? %>
+                <%= form_with url: admin_subforem_moderator_path(@subforem), method: :delete, local: true do |form| %>
+                  <%= form.hidden_field :user_id, value: moderator.id %>
+                  <%= form.submit "Remove", 
+                      class: "crayons-btn crayons-btn--danger crayons-btn--s",
+                      data: { confirm: "Are you sure you want to remove #{moderator.username} as a moderator?" } %>
+                <% end %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% else %>
+      <div class="crayons-notice crayons-notice--warning p-4 mb-4">
+        <p>This subforem currently has no moderators assigned.</p>
+      </div>
+    <% end %>
+
+    <% if current_user.any_admin? %>
+      <div class="border-t pt-4">
+        <h3 class="crayons-subtitle-2 mb-3">Add New Moderator</h3>
+        <%= form_with url: admin_subforem_moderator_path(@subforem), method: :post, local: true do |form| %>
+          <div class="flex gap-2">
+            <%= form.text_field :username, 
+                placeholder: "Enter username", 
+                class: "crayons-textfield flex-1" %>
+            <%= form.submit "Add Moderator", class: "crayons-btn crayons-btn--primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

@@ -270,6 +270,18 @@
     .ltag__link .ltag__link__content .ltag__link__tag {
       font-size: 0.75em;
     }
+    br {
+      display: none;
+    }
+    .c-embed {
+      padding: 9px 16px !important;
+      margin: 0 !important;
+      font-size: 14px !important;
+    }
+    // Hide all crayons-cards after the first two
+    .c-embed:nth-child(n+3) {
+      display: none;
+    }
   }
 
   &__bottom {

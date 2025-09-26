@@ -16,7 +16,7 @@ export const ContentTitle = ({ article }) => (
         </span>
       )}
       {/* eslint-disable-next-line react/no-danger */}
-      {article.title === '[Boost]' ? <span class='crayons-story__innertitle-boost'>Boosted by <a href={`/${article.user.username}`}>{article.user.name}</a></span> : <span dangerouslySetInnerHTML={{ __html: filterXSS(article.title) }} />}
+      {article.title === '[Boost]' ? <span class='crayons-story__innertitle-boost'>Boosted by <a href={`/${article.user.username}`}>{article.user.name}</a></span> : <span dangerouslySetInnerHTML={{ __html: article.type_of === 'status' && article.title_finalized ? article.title_finalized : filterXSS(article.title) }} />}
     </a>
   </h3>
 );

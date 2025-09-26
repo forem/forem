@@ -43,7 +43,7 @@ describe('<Search />', () => {
     const searchInput = getByRole('textbox', { name: /search/i });
 
     expect(searchInput.value).toEqual('fish');
-    expect(searchInput.getAttribute('placeholder')).toEqual(`${locale('core.search')}...`);
+    expect(searchInput.getAttribute('placeholder')).toEqual(locale('core.search_placeholder'));
     expect(searchInput.getAttribute('autocomplete')).toEqual('off');
   });
 

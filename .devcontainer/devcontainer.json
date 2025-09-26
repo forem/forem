@@ -2,7 +2,10 @@
   "name": "Forem DEVcontainer",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "devcontainer",
-  "runServices": ["postgres", "redis"],
+  "runServices": [
+    "postgres",
+    "redis"
+  ],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
@@ -28,7 +31,7 @@
       "onAutoForward": "silent"
     }
   },
-  "updateContentCommand": "bin/setup && bin/rails db:test:prepare RAILS_ENV=test",
+  "privileged": true,
   "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "customizations": {

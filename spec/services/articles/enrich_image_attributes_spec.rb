@@ -33,6 +33,12 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
   end
 
   context "when the body has a main image" do
+    it "sets a hardcoded image height for YouTube images" do
+      article.update!(main_image: "https://i.ytimg.com/vi/some_video_id/maxresdefault.jpg")
+      described_class.call(article)
+      expect(article.reload.main_image_height).to eq(500)
+    end
+
     it "sets image height when settings are limit" do
       allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
       allow(FastImage).to receive(:size).and_return([100, 50])

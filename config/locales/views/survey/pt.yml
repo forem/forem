@@ -1,0 +1,7 @@
+---
+pt:
+  views:
+    survey:
+      enter_response: Digite sua resposta aqui...
+      thank_you_response: Obrigado pela sua resposta.
+      thank_you_completing: Obrigado por completar a pesquisa!

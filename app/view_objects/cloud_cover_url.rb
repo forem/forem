@@ -1,7 +1,8 @@
 class CloudCoverUrl
   include ActionView::Helpers::AssetUrlHelper
 
-  def initialize(url)
+  def initialize(url, subforem_id = nil)
+    @subforem_id = subforem_id || RequestStore.store[:subforem_id]
     @url = url
   end
 
@@ -10,8 +11,15 @@ class CloudCoverUrl
     return url if Rails.env.development?
 
     width = 1000
-    height = Settings::UserExperience.cover_image_height
-    crop = Settings::UserExperience.cover_image_fit
+    height = Settings::UserExperience.cover_image_height(subforem_id: @subforem_id)
+    crop = Settings::UserExperience.cover_image_fit(subforem_id: @subforem_id)
+
+    # Hardcode for YouTube thumbnails
+    if (url&.include?("ytimg.com"))
+      height = 500
+      crop = "crop"
+    end
+
     img_src = url_without_prefix_nesting(url, width)
 
     Images::Optimizer.call(img_src, width: width, height: height, crop: crop)

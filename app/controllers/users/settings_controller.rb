@@ -4,7 +4,8 @@ module Users
     before_action :authenticate_user!
     after_action :verify_authorized
 
-    ALLOWED_PARAMS = %i[config_theme
+    ALLOWED_PARAMS = %i[disallow_subforem_reassignment
+                        config_theme
                         config_font
                         config_navbar
                         content_preferences_input

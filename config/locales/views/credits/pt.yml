@@ -1,0 +1,58 @@
+---
+en:
+  views:
+    credits:
+      meta:
+        title: Credits
+      ledger:
+        class:
+          listing: Listing
+        category: Category
+        item: Item
+        cost: Cost (credits)
+        date: Date
+        misc: Miscellaneous items
+      listing:
+        create: Create a Listing
+        dashboard: Go to Listings Dashboard
+      new:
+        meta:
+          title: Purchase Credits
+        heading: Purchase credits for @%{name}
+        hook:
+          text_html: Credits are used for %{listings} as well as upcoming products and services.
+          listings: "%{community} listings"
+        form:
+          amount:
+            label: Amount to Purchase
+            placeholder: Enter any amount
+          method:
+            label: Payment Method
+            number: "**** **** **** %{last}"
+            exp: "%{mm}/%{yy}"
+            add: Add New Card
+          submit: Complete Purchase
+          submitting: Submitting...
+          note_org: "*All org admins have access to credits owned by organization"
+        switch:
+          org: Switch to %{name}
+          user: Switch to personal purchase
+        status:
+          subtitle:
+            org: How many credits does %{name} have?
+            user: How many credits do I currently have?
+          desc:
+            org: "%{name} has %{count} credits."
+            user: You have %{count} credits.
+        how:
+          subtitle: How can I earn credits?
+          desc_html: Members receive <strong>5 credits</strong> for every profile badge you earn.
+      purchase: Purchase additional credits
+      tag: 'Tag: %{name}'
+      status:
+        user:
+          one: "You have %{count} personal credit to spend"
+          other: "You have %{count} personal credits to spend"
+        org_html:
+          one: "%{name} has %{num} credit to spend"
+          other: "%{name} has %{num} credits to spend"
