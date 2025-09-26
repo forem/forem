@@ -6,13 +6,15 @@
     </div>
 
     <div class="crayons-field">
-      <%= form.label :audience_segment_id, "Audience Segment:", class: "crayons-field__label" %>
-      <%= form.select :audience_segment_id, options_for_select([["Entire list", nil]] + @audience_segments.map { |s| [s.name || s.type_of, s.id]}), {}, { class: "crayons-textfield", autocomplete: "off" }  %>
+      <%= form.label :user_query_id, "User Query:", class: "crayons-field__label" %>
+      <%= form.select :user_query_id, options_for_select([["Select a user query", nil]] + @user_queries.map { |q| [q.name, q.id]}), {}, { class: "crayons-textfield", autocomplete: "off", id: "user_query_select" }  %>
+      <p class="crayons-field__description">Choose a user query to target specific users</p>
     </div>
 
-    <div class="crayons-field">
-      <%= form.label :targeted_tags, "Targeted tags:", class: "crayons-field__label" %>
-      <%= form.text_field :targeted_tags, class: "crayons-textfield", autocomplete: "off", value: @email.targeted_tags.join(", ") %>
+    <div class="crayons-field" id="variables_section" style="display: none;">
+      <%= form.label :variables, "Query Variables (JSON):", class: "crayons-field__label" %>
+      <%= form.text_area :variables, rows: 4, class: "crayons-textfield font-mono", placeholder: '{"date_from": "2023-01-01", "status": "active"}' %>
+      <p class="crayons-field__description">Enter variables as JSON for the selected user query</p>
     </div>
 
     <div class="crayons-field">
@@ -67,4 +69,23 @@
   </div>
 </div>
 
-<%#= javascript_include_tag "admin/emails", defer: true %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const userQuerySelect = document.getElementById('user_query_select');
+  const variablesSection = document.getElementById('variables_section');
+  
+  function toggleVariablesSection() {
+    if (userQuerySelect.value && userQuerySelect.value !== '') {
+      variablesSection.style.display = 'block';
+    } else {
+      variablesSection.style.display = 'none';
+    }
+  }
+  
+  // Show/hide variables section based on user query selection
+  userQuerySelect.addEventListener('change', toggleVariablesSection);
+  
+  // Initialize on page load
+  toggleVariablesSection();
+});
+</script>

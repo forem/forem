@@ -97,6 +97,21 @@ namespace :admin do
       end
     end
     resources :emails
+    resources :user_queries do
+      member do
+        post :test_execute
+        patch :toggle_active
+      end
+      collection do
+        post :validate
+      end
+    end
+    resources :read_only_database, only: [:show] do
+      collection do
+        post :test_connection
+        post :reset_pool
+      end
+    end
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :fetch

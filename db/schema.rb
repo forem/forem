@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
+ActiveRecord::Schema[7.0].define(version: 2025_09_25_202027) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -595,8 +595,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
     t.string "targeted_tags", default: [], array: true
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
+    t.bigint "user_query_id"
+    t.text "variables"
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
     t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
+    t.index ["user_query_id"], name: "index_emails_on_user_query_id"
   end
 
   create_table "feed_configs", force: :cascade do |t|
@@ -1475,6 +1478,25 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
     t.index ["user_id"], name: "index_user_languages_on_user_id"
   end
 
+  create_table "user_queries", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.text "description"
+    t.integer "execution_count", default: 0, null: false
+    t.datetime "last_executed_at"
+    t.integer "max_execution_time_ms", default: 30000, null: false
+    t.string "name", null: false
+    t.text "query", null: false
+    t.datetime "updated_at", null: false
+    t.text "variable_definitions"
+    t.text "variables"
+    t.index ["active"], name: "index_user_queries_on_active"
+    t.index ["created_by_id"], name: "index_user_queries_on_created_by_id"
+    t.index ["last_executed_at"], name: "index_user_queries_on_last_executed_at"
+    t.index ["name"], name: "index_user_queries_on_name", unique: true
+  end
+
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", null: false
@@ -1722,6 +1744,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
+  add_foreign_key "emails", "user_queries"
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
@@ -1777,6 +1800,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_09_24_131831) do
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_languages", "users"
+  add_foreign_key "user_queries", "users", column: "created_by_id"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "user_visit_contexts", "users"

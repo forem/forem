@@ -1,0 +1,27 @@
+# Read-Only Database Configuration
+# Copy this file to your environment configuration and set the appropriate values
+
+# READ_ONLY_DATABASE_URL: The URL for the read-only database connection
+# This should be a PostgreSQL connection string in the format:
+# postgres://username:password@host:port/database_name
+# 
+# Example:
+# READ_ONLY_DATABASE_URL=postgres://readonly_user:password@readonly-db.example.com:5432/forem_readonly
+
+# Optional: Connection pool size for read-only database (default: 5)
+# READ_ONLY_DATABASE_POOL_SIZE=10
+
+# Optional: Statement timeout for read-only database queries in milliseconds (default: 30000)
+# READ_ONLY_STATEMENT_TIMEOUT=60000
+
+# Security Notes:
+# - The read-only database user should have SELECT permissions only
+# - Consider using a read replica of your main database
+# - The read-only database should be kept in sync with the main database
+# - Monitor the read-only database for performance and availability
+
+# Benefits:
+# - Reduces load on the main database
+# - Provides additional security for user queries
+# - Allows for better performance optimization of read-only queries
+# - Enables geographic distribution of read-only queries
