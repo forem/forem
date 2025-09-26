@@ -4,8 +4,10 @@
 </h1>
 <div class="crayons-card p-6 mb-4">
   <p>Type: <%= @email.type_of %></p>
-  <p>Audience Segment: <%= @email.audience_segment&.name || "Entire list" %></p>
-  <p>Targeted tags: <%= @email.targeted_tags.join(", ") %></p>
+  <p>User Query: <%= @email.user_query&.name || "No query selected" %></p>
+  <% if @email.variables.present? %>
+    <p>Variables: <code><%= @email.variables %></code></p>
+  <% end %>
 </div>
 <div class="crayons-card p-6 mb-4">
   <h2 class="crayons-title mb-4">Rendered Email</h2>
