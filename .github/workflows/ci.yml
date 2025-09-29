@@ -102,7 +102,10 @@ jobs:
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
       - run: cp .env_sample .env
-      - run: bundle exec rails db:test:prepare
+      - name: Set up test database
+        run: |
+          bundle exec rails db:create RAILS_ENV=test
+          bundle exec rails db:schema:load RAILS_ENV=test
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - name: Upload RSpec artifacts
