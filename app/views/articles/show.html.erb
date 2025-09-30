@@ -46,12 +46,12 @@
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
-    <meta property="og:title" content="<%= @article.title %>" />
+    <meta property="og:title" content="<%= @article.title_for_metadata %>" />
     <meta property="og:description" content="<%= @article.description || t("views.articles.meta.description") %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
     <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
-    <meta name="twitter:title" content="<%= @article.title %>">
+    <meta name="twitter:title" content="<%= @article.title_for_metadata %>">
     <meta name="twitter:description" content="<%= @article.description || t("views.articles.meta.description") %>">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
@@ -129,7 +129,7 @@
                   style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowfullscreen
-                  title="<%= @article.title %>"
+                  title="<%= @article.title_for_metadata %>"
                 ></iframe>
               </div>
             <% elsif @article.video.present? %>

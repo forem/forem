@@ -28,6 +28,9 @@ module Homepage
       :title,
       :user_id,
       :public_reaction_categories,
+      :title_finalized,
+      :title_finalized_for_feed,
+      :title_for_metadata,
     )
 
     # return displayed_comments_count (excluding low score comments) if it was calculated earlier

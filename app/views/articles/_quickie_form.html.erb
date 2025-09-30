@@ -3,7 +3,7 @@
 <input type="hidden" name="authenticity_token" value="NOTHING" autocomplete="off">
 <div class="<%= "crayons-card p-2" unless expanded %>">
   <textarea class="crayons-textfield element-focused"
-    placeholder="<%= expanded ? t("views.stories.status_expanded_placeholder") : t("views.stories.status_placeholder") %>" aria-label="<%= t("views.stories.status_placeholder") %>" maxlength="256" rows="1" name="article[title]" id="article_title" style="height: 40px;"></textarea>
+    placeholder="<%= expanded ? t("views.stories.status_expanded_placeholder") : t("views.stories.status_placeholder") %>" aria-label="<%= t("views.stories.status_placeholder") %>" maxlength="256" rows="<%= expanded ? "4" : "1" %>" name="article[title]" id="article_title" style="height: <%= expanded ? "120px" : "40px" %>;"></textarea>
   <input value="status" autocomplete="off" type="hidden" name="article[type_of]" id="article_type_of">
   <input value="1" autocomplete="off" type="hidden" name="article[published]" id="article_published">
   <% if @article && @article.published == true && @user && !Rails.env.test? %>
@@ -48,31 +48,60 @@
   }, 25);
 
   var enterKey = 13;
+  
+  // Function to handle textarea auto-resize and character count
+  function updateTextareaHeight(textarea) {
+    textarea.style.height = 'auto'; // Reset the height
+    var newHeight = Math.max(textarea.scrollHeight + 3, parseInt(textarea.style.minHeight || '40px'));
+    textarea.style.height = `${newHeight}px`; // Set the new height
+    document.getElementById('main-status-form-char-count').innerText = textarea.value.length;
+  }
+  
   document.getElementById('article_title').onkeydown = function (e) {
+    // Handle Cmd+Enter (Mac) or Ctrl+Enter (other systems) to submit
     if (window.Forem.Runtime.hasOSSpecificModifier(e) && e.keyCode === enterKey) {
       document.getElementById('main-status-form').submit();
+      return;
     }
-    else if (e.keyCode === enterKey) {
-      e.preventDefault();
-    }
+    
+    // Allow regular Enter for line breaks - no preventDefault needed
+    // Handle textarea auto-resize after input
+    setTimeout(() => {
+      updateTextareaHeight(e.target);
+    }, 1);
+  }
 
+  document.getElementById('article_title').oninput = function (e) {
+    updateTextareaHeight(e.target);
   }
 
   document.getElementById('article_title').onkeyup = function (e) {
-    var textarea = e.target;
-    textarea.style.height = 'auto'; // Reset the height
-    textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set the new height
-    document.getElementById('main-status-form-char-count').innerText = textarea.value.length;
+    updateTextareaHeight(e.target);
   }
 
-  document.getElementById('article_title').onkeydown = function (e) {
-    setTimeout(() => {
-      var textarea = e.target;
-      textarea.style.height = 'auto'; // Reset the height
-      textarea.style.height = `${textarea.scrollHeight + 3}px`; // Set the new height
-      document.getElementById('main-status-form-char-count').innerText = textarea.value.length;
-    }, 1);
-  }
+  // Handle focus behavior for non-expanded forms (main feed)
+  <% unless expanded %>
+  var textarea = document.getElementById('article_title');
+  var isExpanded = false;
+  
+  textarea.addEventListener('focus', function() {
+    if (!isExpanded) {
+      isExpanded = true;
+      // Set minimum height to 4 lines when focused
+      this.style.minHeight = '120px';
+      this.style.height = '120px';
+    }
+  });
+  
+  textarea.addEventListener('blur', function() {
+    // Only collapse if there's no content
+    if (this.value.trim() === '') {
+      isExpanded = false;
+      this.style.minHeight = '40px';
+      this.style.height = '40px';
+    }
+  });
+  <% end %>
 
 
 </script>

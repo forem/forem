@@ -1359,12 +1359,12 @@ RSpec.describe Article do
     it "respects the configured home feed minimum score" do
       # Set a higher minimum score
       allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(5)
-      
+
       low_score_article = create(:article, :past, user: user, tags: "help",
                                                   past_published_at: 1.hour.ago, comments_count: 2, score: 3)
       high_score_article = create(:article, :past, user: user, tags: "help",
                                                    past_published_at: 1.hour.ago, comments_count: 2, score: 6)
-      
+
       articles = described_class.active_help
       expect(articles).to include(high_score_article)
       expect(articles).not_to include(low_score_article)
@@ -1506,12 +1506,12 @@ RSpec.describe Article do
         # Mock the content moderation labeler to return a specific label
         allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        
+
         initial_score = article.score
-        
+
         # Perform the worker job
         Articles::HandleSpamWorker.new.perform(article.id)
-        
+
         # The score should be updated with the automod_label adjustment
         # clear_and_obvious_harmful has a -10 adjustment
         expect(article.reload.score).to eq(initial_score - 10)
@@ -1521,12 +1521,12 @@ RSpec.describe Article do
         # Mock the content moderation labeler to return a high quality label
         allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        
+
         initial_score = article.score
-        
+
         # Perform the worker job
         Articles::HandleSpamWorker.new.perform(article.id)
-        
+
         # The score should be updated with the automod_label adjustment
         # great_and_on_topic has a +20 adjustment
         expect(article.reload.score).to eq(initial_score + 20)
@@ -2196,8 +2196,6 @@ RSpec.describe Article do
     end
   end
 
-
-
   describe "#feed_source_url and canonical_url must be unique for published articles" do
     let(:url) { "http://www.example.com" }
 
@@ -2267,22 +2265,22 @@ RSpec.describe Article do
       user5 = create(:user)
       user6 = create(:user)
       user7 = create(:user)
-      
+
       # 3 likes
       create(:reaction, reactable: article, category: "like", user: user1)
       create(:reaction, reactable: article, category: "like", user: user2)
       create(:reaction, reactable: article, category: "like", user: user3)
-      
+
       # 2 unicorns
       create(:reaction, reactable: article, category: "unicorn", user: user4)
       create(:reaction, reactable: article, category: "unicorn", user: user5)
-      
+
       # 1 fire
       create(:reaction, reactable: article, category: "fire", user: user6)
-      
+
       # 1 exploding_head
       create(:reaction, reactable: article, category: "exploding_head", user: user7)
-      
+
       # 1 raised_hands
       create(:reaction, reactable: article, category: "raised_hands", user: user1)
     end
@@ -2290,10 +2288,10 @@ RSpec.describe Article do
     it "limits to 3 categories and orders by count descending" do
       categories = article.public_reaction_categories
       expect(categories.length).to eq(3)
-      # When there's a tie between fire (position 5) and exploding_head (position 3), 
+      # When there's a tie between fire (position 5) and exploding_head (position 3),
       # exploding_head comes first due to lower position
       expect(categories.map(&:slug)).to eq(%i[like unicorn exploding_head])
-      
+
       # Verify that the first category has the highest count
       reaction_counts = article.reactions.group(:category).count
       expect(reaction_counts[categories.first.slug.to_s]).to eq(3) # like has 3 reactions
@@ -2701,67 +2699,247 @@ RSpec.describe Article do
   end
 
   describe "#title_finalized" do
-    let(:user) { create(:user) }
+    let(:article) { Article.new }
 
     it "returns the original title when no URLs are present" do
-      article = build(:published_article, user: user, title: "This is a normal title")
+      article.title = "This is a normal title"
       expect(article.title_finalized).to eq("This is a normal title")
     end
 
     it "truncates long URLs and strips protocol/www" do
-      article = build(:published_article, user: user, title: "Check out this link https://www.example.com/very/long/path/that/should/be/truncated")
+      article.title = "Check out this link https://www.example.com/very/long/path/that/should/be/truncated"
       expect(article.title_finalized).to eq("Check out this link <span style=\"text-decoration: underline;\">example.com/very/long/...</span>")
     end
 
     it "keeps short URLs unchanged but strips protocol/www" do
-      article = build(:published_article, user: user, title: "Short link https://ex.co")
+      article.title = "Short link https://ex.co"
       expect(article.title_finalized).to eq("Short link <span style=\"text-decoration: underline;\">ex.co</span>")
     end
 
     it "handles multiple URLs in the same title" do
-      article = build(:published_article, user: user,
-                                          title: "First link https://example.com/very/long/path and second link https://another-example.com/also/very/long")
+      article.title = "First link https://example.com/very/long/path and second link https://another-example.com/also/very/long"
       expect(article.title_finalized).to eq("First link <span style=\"text-decoration: underline;\">example.com/very/long/...</span> and second link <span style=\"text-decoration: underline;\">another-example.com/al...</span>")
     end
 
     it "handles URLs with query parameters and fragments" do
-      article = build(:published_article, user: user, title: "Link with params https://example.com/path?param=value&other=123#fragment")
+      article.title = "Link with params https://example.com/path?param=value&other=123#fragment"
       expect(article.title_finalized).to eq("Link with params <span style=\"text-decoration: underline;\">example.com/path?param...</span>")
     end
 
     it "strips www from URLs" do
-      article = build(:published_article, user: user, title: "Link with www https://www.example.com")
+      article.title = "Link with www https://www.example.com"
       expect(article.title_finalized).to eq("Link with www <span style=\"text-decoration: underline;\">example.com</span>")
     end
 
     it "handles http URLs" do
-      article = build(:published_article, user: user, title: "HTTP link http://example.com")
+      article.title = "HTTP link http://example.com"
       expect(article.title_finalized).to eq("HTTP link <span style=\"text-decoration: underline;\">example.com</span>")
     end
 
     it "returns nil when title is nil" do
-      article = build(:published_article, user: user, title: nil)
+      article.title = nil
       expect(article.title_finalized).to be_nil
     end
 
     it "returns empty string when title is empty" do
-      article = build(:published_article, user: user, title: "")
+      article.title = ""
       expect(article.title_finalized).to eq("")
     end
 
     it "returns HTML safe content" do
-      article = build(:published_article, user: user, title: "Link https://example.com")
+      article.title = "Link https://example.com"
       expect(article.title_finalized).to be_html_safe
     end
 
     it "removes trailing slash from URLs" do
-      article = build(:published_article, user: user, title: "Link with trailing slash https://example.com/")
+      article.title = "Link with trailing slash https://example.com/"
       expect(article.title_finalized).to eq("Link with trailing slash <span style=\"text-decoration: underline;\">example.com</span>")
     end
 
     it "removes trailing slash from URLs with paths" do
-      article = build(:published_article, user: user, title: "Link with path and trailing slash https://example.com/path/")
+      article.title = "Link with path and trailing slash https://example.com/path/"
       expect(article.title_finalized).to eq("Link with path and trailing slash <span style=\"text-decoration: underline;\">example.com/path</span>")
+    end
+
+    it "converts single line breaks to br tags" do
+      article.title = "Line one\nLine two"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one<br>Line two</p>")
+    end
+
+    it "converts double line breaks to paragraph breaks" do
+      article.title = "First paragraph\n\nSecond paragraph"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">First paragraph</p><p class=\"quickie-paragraph\">Second paragraph</p>")
+    end
+
+    it "handles mixed single and double line breaks" do
+      article.title = "Line one\nLine two\n\nNew paragraph\nAnother line"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one<br>Line two</p><p class=\"quickie-paragraph\">New paragraph<br>Another line</p>")
+    end
+
+    it "handles line breaks with URLs" do
+      article.title = "Check this out\nhttps://example.com"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Check this out<br><span style=\"text-decoration: underline;\">example.com</span></p>")
+    end
+
+    it "handles paragraph breaks with URLs" do
+      article.title = "First part\n\nSecond part with https://example.com"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">First part</p><p class=\"quickie-paragraph\">Second part with <span style=\"text-decoration: underline;\">example.com</span></p>")
+    end
+
+    it "does not wrap single line titles without breaks in paragraph tags" do
+      article.title = "Simple title"
+      expect(article.title_finalized).to eq("Simple title")
+    end
+
+    it "cleans up empty paragraphs" do
+      article.title = "Text\n\n\nMore text"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Text</p><p class=\"quickie-paragraph\">More text</p>")
+    end
+
+    it "handles whitespace around line breaks" do
+      article.title = "Line one\n  \n  Line two"
+      expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
+    end
+  end
+
+  describe "#title_finalized_for_feed" do
+    let(:article) { Article.new }
+
+    it "returns full title_finalized for short quickies" do
+      article.type_of = "status"
+      article.title = "Line one\nLine two\nLine three"
+      expect(article.title_finalized_for_feed).to eq(article.title_finalized)
+    end
+
+    it "truncates long quickies with 8+ line breaks" do
+      article.type_of = "status"
+      article.title = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10"
+      result = article.title_finalized_for_feed
+      expect(result).to include("...read more")
+      expect(result).to include("Line 1")
+      expect(result).to include("Line 6")
+      expect(result).not_to include("Line 7")
+    end
+
+    it "returns regular title for non-status posts" do
+      article.type_of = "full_post"
+      article.title = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10"
+      expect(article.title_finalized_for_feed).to eq(article.title_finalized)
+    end
+
+    it "handles URLs in truncated content" do
+      article.type_of = "status"
+      article.title = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nhttps://example.com\nLine 7\nLine 8\nLine 9\nLine 10"
+      result = article.title_finalized_for_feed
+      expect(result).to include("...read more")
+      expect(result).to include("example.com")
+    end
+
+    it "preserves paragraph structure in truncated content" do
+      article.type_of = "status"
+      article.title = "First paragraph\n\nSecond paragraph\n\nThird paragraph\n\nFourth paragraph\n\nFifth paragraph\n\nSixth paragraph\n\nSeventh paragraph\n\nEighth paragraph"
+      result = article.title_finalized_for_feed
+      expect(result).to include("...read more")
+      expect(result).to include("First paragraph")
+      expect(result).to include("Third paragraph")
+      expect(result).not_to include("Fourth paragraph")
+    end
+  end
+
+  describe "#normalize_title" do
+    let(:article) { Article.new }
+
+    it "preserves line breaks for status posts" do
+      article.type_of = "status"
+      article.title = "Line one\nLine two\n\nParagraph two"
+      article.valid? # triggers normalize_title
+      expect(article.title).to eq("Line one\nLine two\n\nParagraph two")
+    end
+
+    it "normalizes whitespace but preserves line breaks for status posts" do
+      article.type_of = "status"
+      article.title = "Line one  \n  Line two  \n  \n  Paragraph two"
+      article.valid? # triggers normalize_title
+      expect(article.title).to eq("Line one \n Line two \n \n Paragraph two")
+    end
+
+    it "normalizes all whitespace including line breaks for full_post" do
+      article.type_of = "full_post"
+      article.title = "Line one\nLine two\n\nParagraph two"
+      article.valid? # triggers normalize_title
+      expect(article.title).to eq("Line one Line two Paragraph two")
+    end
+
+    it "removes unwanted characters while preserving line breaks for status posts" do
+      article.type_of = "status"
+      article.title = "Line one\nLine two\n\nParagraph two"
+      article.valid? # triggers normalize_title
+      expect(article.title).to eq("Line one\nLine two\n\nParagraph two")
+    end
+  end
+
+  describe "#title_for_metadata" do
+    let(:article) { Article.new }
+
+    it "returns original title for non-status posts" do
+      article.type_of = "full_post"
+      article.title = "This is a regular title"
+      expect(article.title_for_metadata).to eq("This is a regular title")
+    end
+
+    it "returns original title when title is nil" do
+      article.type_of = "status"
+      article.title = nil
+      expect(article.title_for_metadata).to be_nil
+    end
+
+    it "returns original title when title is empty" do
+      article.type_of = "status"
+      article.title = ""
+      expect(article.title_for_metadata).to eq("")
+    end
+
+    it "converts line breaks to spaces for status posts" do
+      article.type_of = "status"
+      article.title = "Line one\nLine two"
+      expect(article.title_for_metadata).to eq("Line one Line two")
+    end
+
+    it "converts paragraph breaks to spaces for status posts" do
+      article.type_of = "status"
+      article.title = "First paragraph\n\nSecond paragraph"
+      expect(article.title_for_metadata).to eq("First paragraph Second paragraph")
+    end
+
+    it "normalizes multiple spaces to single spaces" do
+      article.type_of = "status"
+      article.title = "Line one\n\n\nLine two"
+      expect(article.title_for_metadata).to eq("Line one Line two")
+    end
+
+    it "strips leading and trailing whitespace" do
+      article.type_of = "status"
+      article.title = "  \nLine one\nLine two\n  "
+      expect(article.title_for_metadata).to eq("Line one Line two")
+    end
+
+    it "handles mixed line breaks and whitespace" do
+      article.type_of = "status"
+      article.title = "Line one  \n  Line two  \n  \n  Paragraph two"
+      expect(article.title_for_metadata).to eq("Line one Line two Paragraph two")
+    end
+
+    it "handles complex quickie with multiple paragraphs" do
+      article.type_of = "status"
+      article.title = "These are the best ways to write a quickie:\n\n- Make it short\n- Make it great\n- Make it magoo\n\nThis is how you do it.\n\nOr is it how you do it?\n\nI don't know, is it really?\n\nReally?\nReally?\nI dunno."
+      expected = "These are the best ways to write a quickie: - Make it short - Make it great - Make it magoo This is how you do it. Or is it how you do it? I don't know, is it really? Really? Really? I dunno."
+      expect(article.title_for_metadata).to eq(expected)
+    end
+
+    it "preserves URLs in the clean title" do
+      article.type_of = "status"
+      article.title = "Check this out\nhttps://example.com\n\nMore text"
+      expect(article.title_for_metadata).to eq("Check this out https://example.com More text")
     end
   end
 end

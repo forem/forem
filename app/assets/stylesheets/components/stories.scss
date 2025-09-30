@@ -41,6 +41,8 @@
 #article_title {
   height: auto;
   resize: none;
+  transition: height 0.15s ease-out;
+  min-height: 40px;
 }
 
 .crayons-story {
@@ -241,6 +243,21 @@
       a {
         display: inline-block;
       }
+    }
+    // Add spacing between paragraphs in quickie titles
+    .quickie-paragraph {
+      margin-bottom: var(--su-2);
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    // Style for "read more" indicator in truncated quickies
+    .quickie-read-more {
+      color: var(--color-secondary);
+      font-style: italic;
+      font-size: 0.9em;
+      margin-left: var(--su-1);
     }
   }
 
