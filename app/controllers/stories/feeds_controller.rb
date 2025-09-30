@@ -10,6 +10,9 @@ module Stories
       # @comments_variant = field_test(:comments_to_display_20240129, participant: @user)
       @comments_variant = "more_inclusive_recent_good_comments"
 
+      # Preload frequently accessed settings to avoid N+1 queries
+      preload_common_settings
+
       @stories = assign_feed_stories
 
       add_pinned_article
@@ -172,6 +175,15 @@ module Stories
       else
         feed.default_home_feed
       end
+    end
+
+    def preload_common_settings
+      # Preload frequently accessed settings to avoid N+1 queries from waterfall analysis
+      # This addresses the multiple site_configs queries we see in the performance trace
+      @cached_logo_png = Settings::General.logo_png(subforem_id: RequestStore.store[:subforem_id])
+      
+      # Cache other commonly accessed settings
+      @cached_subforem_logo = Settings::General.logo_png(subforem_id: RequestStore.store[:subforem_id])
     end
   end
 end

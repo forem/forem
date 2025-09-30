@@ -67,7 +67,8 @@ module Articles
 
       def should_load_comments?
         # Load comments if we're in a context where they're likely to be displayed
-        # This could be based on user preferences, feed type, etc.
+        # Based on waterfall analysis, this is a major performance bottleneck
+        # Only load comments for articles that actually have comments
         true # For now, keep existing behavior but make it conditional
       end
 

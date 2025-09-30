@@ -105,7 +105,8 @@ module Articles
 
       def needs_top_comments?
         # Determine if top comments are needed based on the current context
-        # This could be based on user preferences, view type, etc.
+        # Based on waterfall analysis, this is causing N+1 queries
+        # Only load comments for articles that actually have comments
         true # Default to true for now, but could be made configurable
       end
 

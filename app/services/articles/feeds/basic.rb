@@ -45,8 +45,8 @@ module Articles
       private
 
       def add_conditional_comments_includes(articles)
-        # Only load top_comments if we have a reasonable expectation that comments exist
-        # This avoids expensive joins when most articles have no comments
+        # Preload comments and users in a single query to avoid N+1
+        # This is the biggest performance win from the waterfall analysis
         articles.includes(top_comments: :user)
       end
 

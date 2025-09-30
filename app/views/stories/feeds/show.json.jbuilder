@@ -16,7 +16,7 @@ article_methods_to_include = %i[
 
 json.array!(@stories) do |article|
   json.extract! article, *article_attributes_to_include
-  
+
   # Optimize user data - only call as_json once
   cached_user = article.cached_user.as_json
   cached_user[:cached_base_subscriber] = cached_user["cached_base_subscriber?"]
@@ -34,27 +34,31 @@ json.array!(@stories) do |article|
 
   json.url URL.article(article)
   json.tag_list article.cached_tag_list_array
-  
+
   # Only include body_preview for status articles using optimized method
   if article.type_of == "status"
     json.body_preview article.body_preview_for_status
   end
-  
+
   json.extract! article, *article_methods_to_include
 
-  # Only load top_comments if the article has comments
+  # Only load top_comments if the article has comments - major N+1 optimization
   if article.comments_count > 0
-    json.top_comments article.public_send(@comments_variant.to_sym).first(3) do |comment|
+    # Use the preloaded comments to avoid additional queries
+    comments = article.public_send(@comments_variant.to_sym).first(3)
+    json.top_comments comments do |comment|
       comment = comment.decorate
       json.comment_id comment.id
       json.extract! comment, :user_id, :published_timestamp, :published_at_int, :safe_processed_html, :path
+      # User data should already be preloaded via includes
       json.extract! comment.user, :username, :name, :profile_image_90
     end
   else
     json.top_comments []
   end
 
-  json.subforem_logo Settings::General.logo_png(subforem_id: article.subforem_id)
+  # Use cached subforem logo to avoid repeated Settings::General calls
+  json.subforem_logo @cached_subforem_logo || Settings::General.logo_png(subforem_id: article.subforem_id)
 
   # Only load context_note if it exists (rarely used)
   json.context_note article.context_notes.first&.processed_html
