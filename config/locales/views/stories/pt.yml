@@ -9,7 +9,7 @@ pt:
       status_placeholder: "O que está em sua mente?"
       status_expanded_placeholder: "Algo a adicionar?"
       submit: "Publicar"
-      status_hint_html: "<strong>Quickie Posts (beta)</strong> show up in the feed but not notifications or your profile — <a href='/new'>Open Full Editor</a>"
+      status_hint_html: "<strong>Quickie Posts</strong> show up in the feed but not notifications or your profile — <a href='/new'>Open Full Editor</a>"
       heading: Posts
       discuss: "#discuss"
       follow: Seguir
