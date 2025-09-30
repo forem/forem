@@ -5,7 +5,7 @@ module Emails
 
     sidekiq_options queue: :medium_priority, retry: 15
 
-    BATCH_SIZE = Rails.env.production? ? 1000 : 10
+    BATCH_SIZE = Rails.env.production? ? 500 : 10
 
     def perform(email_id)
       # 1) Remember the old ENV timeout (milliseconds)
@@ -67,21 +67,21 @@ module Emails
           # 5) Run your batches inside the same transaction, so every SELECT is "no timeout"
           batch_count = 0
           total_users = 0
-          
+
           user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
             batch_count += 1
-            
+
             # Skip empty batches
             next if users_batch.empty?
-            
+
             # Validate we have valid user IDs
             user_ids = users_batch.map(&:id).compact
             next if user_ids.empty?
-            
+
             total_users += user_ids.size
-            
+
             Rails.logger.info("Processing email batch #{batch_count} for email #{email.id}: #{user_ids.size} users (first ID: #{user_ids.first})")
-            
+
             begin
               Emails::BatchCustomSendWorker.perform_async(
                 user_ids,
@@ -96,7 +96,7 @@ module Emails
               next
             end
           end
-          
+
           Rails.logger.info("Completed email processing for email #{email.id}: #{batch_count} batches, #{total_users} total users")
         end
       # As soon as this transaction block ends, Postgres automatically reverts
