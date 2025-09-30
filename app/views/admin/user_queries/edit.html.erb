@@ -1,0 +1,209 @@
+<% content_for :title, "Edit User Query" %>
+
+<div class="crayons-card p-6">
+  <h1 class="crayons-title mb-6">Edit User Query</h1>
+
+  <%= form_with model: [:admin, @user_query], local: true, class: "space-y-6" do |f| %>
+    <% if @user_query.errors.any? %>
+      <div class="crayons-notice crayons-notice--danger">
+        <h4><%= pluralize(@user_query.errors.count, "error") %> prohibited this user query from being saved:</h4>
+        <ul class="list-disc list-inside">
+          <% @user_query.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="crayons-field">
+      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.text_field :name, class: "crayons-textfield", placeholder: "Enter a descriptive name for this query" %>
+      <p class="crayons-field__description">A unique name to identify this user query</p>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :description, class: "crayons-field__label" %>
+      <%= f.text_area :description, rows: 3, class: "crayons-textfield", placeholder: "Describe what this query targets" %>
+      <p class="crayons-field__description">Optional description of what users this query targets</p>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :query, "SQL Query", class: "crayons-field__label" %>
+      <%= f.text_area :query, rows: 15, class: "crayons-textfield font-mono", placeholder: "SELECT id FROM users WHERE ..." %>
+      <p class="crayons-field__description">
+        Write a SQL query that selects user IDs. The query must:
+        <ul class="list-disc list-inside mt-2 text-sm">
+          <li>Start with SELECT</li>
+          <li>Target the users table</li>
+          <li>Select user ID (id or users.id)</li>
+          <li>Be read-only (no INSERT, UPDATE, DELETE, etc.)</li>
+          <li>Not exceed 10,000 characters</li>
+        </ul>
+      </p>
+      
+      <!-- Examples Section -->
+      <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+        <h4 class="crayons-subtitle-3 mb-3">Examples</h4>
+        
+        <div class="space-y-4">
+          <div>
+            <h5 class="font-semibold text-green-600 mb-2">✅ Good Examples:</h5>
+            <div class="space-y-2 text-sm">
+              <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                <code class="text-green-800">SELECT id FROM users WHERE created_at > '2023-01-01';</code>
+                <p class="text-gray-600 mt-1">📅 Simple query selecting recent users</p>
+              </div>
+              <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                <code class="text-green-800">SELECT users.id FROM users INNER JOIN articles ON users.id = articles.user_id WHERE articles.published = true;</code>
+                <p class="text-gray-600 mt-1">🔗 Join query selecting users with published articles</p>
+              </div>
+              <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                <code class="text-green-800">SELECT id FROM users WHERE username LIKE 'admin%' AND active = true;</code>
+                <p class="text-gray-600 mt-1">🔍 Query with multiple conditions</p>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="font-semibold text-red-600 mb-2">❌ Bad Examples:</h5>
+            <div class="space-y-2 text-sm">
+              <div class="bg-white p-3 rounded border-l-4 border-red-400">
+                <code class="text-red-800">UPDATE users SET name = 'test';</code>
+                <p class="text-gray-600 mt-1">❌ Modifies data (UPDATE not allowed)</p>
+              </div>
+              <div class="bg-white p-3 rounded border-l-4 border-red-400">
+                <code class="text-red-800">SELECT * FROM posts;</code>
+                <p class="text-gray-600 mt-1">❌ Doesn't target users table</p>
+              </div>
+              <div class="bg-white p-3 rounded border-l-4 border-red-400">
+                <code class="text-red-800">SELECT username FROM users;</code>
+                <p class="text-gray-600 mt-1">❌ Doesn't select user ID</p>
+              </div>
+              <div class="bg-white p-3 rounded border-l-4 border-red-400">
+                <code class="text-red-800">INSERT INTO users (name) VALUES ('test');</code>
+                <p class="text-gray-600 mt-1">❌ Modifies data (INSERT not allowed)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Variables Section -->
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h5 class="font-semibold text-blue-800 mb-3">🔧 How Variables Work</h5>
+          <div class="space-y-3 text-sm">
+            <p class="text-blue-700">
+              <strong>Variables make your queries dynamic!</strong> You can use placeholders in your SQL that get replaced with actual values when the query runs.
+            </p>
+            
+            <div class="bg-white p-3 rounded border-l-4 border-blue-400">
+              <h6 class="font-semibold text-blue-800 mb-2">📝 Example Query with Variables:</h6>
+              <code class="text-blue-800">SELECT id FROM users WHERE created_at > '{{date_from}}' AND status = '{{user_status}}';</code>
+              <p class="text-gray-600 mt-1">🎯 This query uses <code>{{date_from}}</code> and <code>{{user_status}}</code> as variables</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border-l-4 border-blue-400">
+              <h6 class="font-semibold text-blue-800 mb-2">⚙️ Variable Values (JSON format):</h6>
+              <code class="text-blue-800">{"date_from": "2023-01-01", "user_status": "active"}</code>
+              <p class="text-gray-600 mt-1">🔄 When executed, the query becomes: <code>SELECT id FROM users WHERE created_at > '2023-01-01' AND status = 'active';</code></p>
+            </div>
+            
+            <div class="bg-white p-3 rounded border-l-4 border-green-400">
+              <h6 class="font-semibold text-green-800 mb-2">✅ Variable Best Practices:</h6>
+              <ul class="list-disc list-inside text-gray-600 space-y-1">
+                <li>Use double curly braces: <code>{{variable_name}}</code></li>
+                <li>Use descriptive names: <code>{{start_date}}</code> not <code>{{x}}</code></li>
+                <li>Always provide default values in your JSON</li>
+                <li>Test your queries with different variable values</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :variable_definitions, "Variable Definitions (JSON):", class: "crayons-field__label" %>
+      <%= f.text_area :variable_definitions, rows: 4, class: "crayons-textfield font-mono", placeholder: '{"date_from": "2023-01-01", "user_status": "active"}' %>
+      <p class="crayons-field__description">Define the variables your query expects. Use double curly braces in your query: <code>{{variable_name}}</code></p>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :max_execution_time_ms, "Maximum Execution Time (ms)", class: "crayons-field__label" %>
+      <%= f.number_field :max_execution_time_ms, min: 1000, max: 300000, class: "crayons-textfield" %>
+      <p class="crayons-field__description">Maximum time allowed for query execution (1,000 - 300,000 ms)</p>
+    </div>
+
+    <div class="crayons-field">
+      <div class="flex items-center">
+        <%= f.check_box :active, class: "crayons-checkbox" %>
+        <%= f.label :active, "Active", class: "crayons-field__label ml-2" %>
+      </div>
+      <p class="crayons-field__description">Only active queries can be executed</p>
+    </div>
+
+    <!-- Query Validation Preview -->
+    <div id="query-validation" class="crayons-card p-4 bg-gray-50" style="display: none;">
+      <h4 class="crayons-subtitle-3 mb-2">Query Validation</h4>
+      <div id="validation-results"></div>
+    </div>
+
+    <div class="flex gap-4">
+      <%= f.submit "Update User Query", class: "crayons-btn crayons-btn--primary" %>
+      <%= link_to "Cancel", admin_user_query_path(@user_query), class: "crayons-btn crayons-btn--secondary" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const queryField = document.querySelector('#user_query_query');
+  const validationDiv = document.getElementById('query-validation');
+  const resultsDiv = document.getElementById('validation-results');
+  let validationTimeout;
+
+  function validateQuery() {
+    const query = queryField.value.trim();
+    
+    if (query.length === 0) {
+      validationDiv.style.display = 'none';
+      return;
+    }
+
+    // Clear previous timeout
+    if (validationTimeout) {
+      clearTimeout(validationTimeout);
+    }
+
+    // Debounce validation
+    validationTimeout = setTimeout(() => {
+      fetch('/admin/user_queries/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ query: query })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.valid) {
+          resultsDiv.innerHTML = '<div class="text-green-600">✓ Query syntax is valid</div>';
+          resultsDiv.className = 'text-green-600';
+        } else {
+          resultsDiv.innerHTML = '<div class="text-red-600">✗ Query validation failed:</div><ul class="list-disc list-inside mt-2">' +
+            data.errors.map(error => '<li>' + error + '</li>').join('') + '</ul>';
+          resultsDiv.className = 'text-red-600';
+        }
+        validationDiv.style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Validation error:', error);
+        validationDiv.style.display = 'none';
+      });
+    }, 500);
+  }
+
+  queryField.addEventListener('input', validateQuery);
+});
+</script>
+
