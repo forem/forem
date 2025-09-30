@@ -2500,7 +2500,7 @@ RSpec.describe Article do
       article.score = 6
       article.featured = true
       article.published_at = 1.day.ago
-      expect(article.skip_indexing_reason).to eq("unknown")
+      expect(article.skip_indexing_reason).to eq("indexed")
     end
   end
 
