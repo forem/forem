@@ -91,7 +91,7 @@ class ReadOnlyDatabaseService
 
       # Create a new connection pool for read-only database
       ActiveRecord::ConnectionAdapters::ConnectionPool.new(
-        ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.new(config),
+        ActiveRecord::Base.configurations.resolve(config)
       )
     end
   end
