@@ -76,7 +76,7 @@ module Emails
       ensure
         # 6) Just to be safe, set ENV back and explicitly restore on the connection
         ENV["STATEMENT_TIMEOUT"] = original_timeout.to_s
-        conn.execute("SET statement_timeout TO #{ENV.fetch('STATEMENT_TIMEOUT', nil)}")
+        conn.execute("SET statement_timeout TO #{ENV.fetch('STATEMENT_TIMEOUT', 10_000)}")
       end
     end
   end
