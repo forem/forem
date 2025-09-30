@@ -58,7 +58,17 @@ json.array!(@stories) do |article|
   end
 
   # Use cached subforem logo to avoid repeated Settings::General calls
-  json.subforem_logo @cached_subforem_logo || Settings::General.logo_png(subforem_id: article.subforem_id)
+  # Handle both single subforem and root subforem scenarios
+  if @cached_subforem_logo
+    # Single subforem - use cached value
+    json.subforem_logo @cached_subforem_logo
+  elsif @cached_subforem_logos
+    # Root subforem - cache per subforem_id to avoid repeated queries
+    json.subforem_logo @cached_subforem_logos[article.subforem_id] ||= Settings::General.logo_png(subforem_id: article.subforem_id)
+  else
+    # Fallback - direct call (should rarely happen)
+    json.subforem_logo Settings::General.logo_png(subforem_id: article.subforem_id)
+  end
 
   # Only load context_note if it exists (rarely used)
   json.context_note article.context_notes.first&.processed_html
