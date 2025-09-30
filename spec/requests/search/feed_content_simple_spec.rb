@@ -3,13 +3,15 @@ require "rails_helper"
 RSpec.describe "Search::FeedContent (Simple)" do
   describe "GET search/feed_content" do
     context "when the new attributes are included in the serializer" do
-      it "includes title_finalized_for_feed, title_for_metadata, and title_finalized in the Homepage::ArticleSerializer" do
-        # Test that the serializer includes the new attributes by checking the source code
+      it "includes conditional title_finalized_for_feed and title_for_metadata for status articles in the Homepage::ArticleSerializer" do
+        # Test that the serializer includes the new attributes conditionally by checking the source code
         serializer_source = File.read(Rails.root.join("app/serializers/homepage/article_serializer.rb"))
 
-        expect(serializer_source).to include("title_finalized")
         expect(serializer_source).to include("title_finalized_for_feed")
         expect(serializer_source).to include("title_for_metadata")
+        expect(serializer_source).to include("article.type_of == \"status\"")
+        # title_finalized should not be included in the main attributes list anymore
+        expect(serializer_source).not_to match(/attributes\(\s*:title_finalized/)
       end
     end
 

@@ -295,13 +295,14 @@ RSpec.describe "Stories::Feeds" do
       end
     end
 
-      context "when rendering quickie articles with line breaks" do
-        let(:quickie_title) { "Line one\nLine two\n\nParagraph two\n\nParagraph three" }
-        let(:quickie_article) do
-          article = create(:article, type_of: "status", title: quickie_title, featured: true, body_markdown: "", main_image: nil)
-          article.update!(published: true, title: quickie_title)
-          article
-        end
+    context "when rendering quickie articles with line breaks" do
+      let(:quickie_title) { "Line one\nLine two\n\nParagraph two\n\nParagraph three" }
+      let(:quickie_article) do
+        article = create(:article, type_of: "status", title: quickie_title, featured: true, body_markdown: "",
+                                   main_image: nil)
+        article.update!(published: true, title: quickie_title)
+        article
+      end
 
       before do
         quickie_article
@@ -394,19 +395,20 @@ RSpec.describe "Stories::Feeds" do
         get stories_feed_path
 
         quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("title_finalized")
-        expect(quickie_response["title_finalized"]).to include("<br>")
-        expect(quickie_response["title_finalized"]).to include("quickie-paragraph")
+        expect(quickie_response).to include("title_finalized_for_feed")
+        expect(quickie_response["title_finalized_for_feed"]).to include("<br>")
+        expect(quickie_response["title_finalized_for_feed"]).to include("quickie-paragraph")
       end
     end
 
-      context "when rendering long quickie articles (truncation test)" do
-        let(:long_quickie_title) { "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10" }
-        let(:long_quickie_article) do
-          article = create(:article, type_of: "status", title: long_quickie_title, featured: true, body_markdown: "", main_image: nil)
-          article.update!(published: true, title: long_quickie_title)
-          article
-        end
+    context "when rendering long quickie articles (truncation test)" do
+      let(:long_quickie_title) { "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10" }
+      let(:long_quickie_article) do
+        article = create(:article, type_of: "status", title: long_quickie_title, featured: true, body_markdown: "",
+                                   main_image: nil)
+        article.update!(published: true, title: long_quickie_title)
+        article
+      end
 
       before do
         long_quickie_article

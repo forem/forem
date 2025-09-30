@@ -738,7 +738,16 @@ class Article < ApplicationRecord
   def body_preview
     return "" if processed_html.blank?
 
-    ActionView::Base.full_sanitizer.sanitize(processed_html)[0..200]
+    # Cache the sanitized preview to avoid repeated sanitization
+    @body_preview ||= ActionView::Base.full_sanitizer.sanitize(processed_html)[0..200]
+  end
+
+  def body_preview_for_status
+    # Optimized version specifically for status articles
+    # Only call this for status articles to avoid unnecessary processing
+    return "" if type_of != "status" || processed_html.blank?
+
+    @body_preview_for_status ||= ActionView::Base.full_sanitizer.sanitize(processed_html)[0..200]
   end
 
   def readable_publish_date

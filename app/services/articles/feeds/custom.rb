@@ -70,8 +70,8 @@ module Articles
           .includes(:subforem) # Only include essential associations
           .from_subforem
 
-        # Add conditional includes based on what's actually needed
-        base_query = add_conditional_includes(base_query)
+        # Include necessary associations for performance
+        base_query = base_query.includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
         
         base_query
       end
@@ -80,44 +80,6 @@ module Articles
         @feed_config.score_sql(@user)
       end
 
-      def add_conditional_includes(base_query)
-        # Only include associations that are actually used in the view
-        # This reduces memory usage and query complexity
-        includes = [:subforem]
-        
-        # Add top_comments only if needed for the current view
-        if needs_top_comments?
-          includes << { top_comments: :user }
-        end
-        
-        # Add reaction categories only if needed
-        if needs_reaction_categories?
-          includes << :distinct_reaction_categories
-        end
-        
-        # Add context notes only if needed
-        if needs_context_notes?
-          includes << :context_notes
-        end
-        
-        base_query.includes(*includes)
-      end
-
-      def needs_top_comments?
-        # Determine if top comments are needed based on the current context
-        # This could be based on user preferences, view type, etc.
-        true # Default to true for now, but could be made configurable
-      end
-
-      def needs_reaction_categories?
-        # Determine if reaction categories are needed
-        true # Default to true for now
-      end
-
-      def needs_context_notes?
-        # Determine if context notes are needed
-        true # Default to true for now
-      end
 
       def apply_user_filters(articles, user_data)
         # Apply user-specific filters early to reduce dataset size

@@ -10,14 +10,20 @@ module Stories
       # @comments_variant = field_test(:comments_to_display_20240129, participant: @user)
       @comments_variant = "more_inclusive_recent_good_comments"
 
+      # Preload frequently accessed settings to avoid N+1 queries
+      preload_common_settings
+
       @stories = assign_feed_stories
+
+      # After getting stories, preload settings for any additional subforems if in root
+      preload_additional_subforem_settings
 
       add_pinned_article
 
       # Add edge cache headers for signed out users only
-      unless user_signed_in?
-        set_cache_control_headers(60) # 1 minute expiration
-      end
+      return if user_signed_in?
+
+      set_cache_control_headers(60) # 1 minute expiration
     end
 
     private
@@ -33,6 +39,7 @@ module Stories
 
     def assign_feed_stories
       params[:type_of] = "discover" if params[:type_of].blank?
+
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
                 elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -56,14 +63,15 @@ module Stories
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
 
-                @feed_config = if params[:item]
-                                 FeedConfig.find_by(id: params[:item]) || FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
-                               elsif rand(20) == 0 # 5% of the time, we'll just pick a random feed config
-                                 FeedConfig.where("feed_impressions_count < 100").order("RANDOM()").limit(1).first || FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
-                               else
-                                 FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
-                               end
-               Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag], feed_config: @feed_config)
+               @feed_config = if params[:item]
+                                FeedConfig.find_by(id: params[:item]) || FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
+                              elsif rand(20) == 0 # 5% of the time, we'll just pick a random feed config
+                                FeedConfig.where("feed_impressions_count < 100").order("RANDOM()").limit(1).first || FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
+                              else
+                                FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
+                              end
+               Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
+                                           feed_config: @feed_config)
              else
                Articles::Feeds.feed_for(
                  user: current_user,
@@ -122,7 +130,7 @@ module Stories
       user_ids = activity&.alltime_users || current_user.cached_following_users_ids
       organization_ids = activity&.alltime_organizations || current_user.cached_following_organizations_ids
       left_scope  = Article.published.from_subforem.where(user_id: user_ids)
-      right_scope = Article.published.from_subforem.where(organization_id: organization_ids)      
+      right_scope = Article.published.from_subforem.where(organization_id: organization_ids)
 
       @articles = left_scope
         .or(right_scope)
@@ -138,13 +146,47 @@ module Stories
       organization_ids = activity&.alltime_organizations || current_user.cached_following_organizations_ids
       left_scope  = Article.published.from_subforem.where(user_id: user_ids)
       right_scope = Article.published.from_subforem.where(organization_id: organization_ids)
-      
+
       @articles = left_scope
         .or(right_scope)
         .where("score > -10")
         .order("hotness_score DESC")
         .page(@page)
         .per(25)
+    end
+
+    def preload_common_settings
+      # Preload frequently accessed settings to avoid N+1 queries from waterfall analysis
+      # This addresses the multiple site_configs queries we see in the performance trace
+      current_subforem_id = RequestStore.store[:subforem_id]
+      root_subforem_id = RequestStore.store[:root_subforem_id]
+
+      if current_subforem_id == root_subforem_id
+        # We're in root subforem - need to handle multiple subforems dynamically
+        # We'll cache settings for the most common subforems to avoid repeated queries
+        @cached_subforem_logos = {}
+        @cached_logo_png = Settings::General.logo_png(subforem_id: current_subforem_id)
+      else
+        # Single subforem - simple caching
+        @cached_logo_png = Settings::General.logo_png(subforem_id: current_subforem_id)
+        @cached_subforem_logo = @cached_logo_png
+      end
+    end
+
+    def preload_additional_subforem_settings
+      # Only needed when we're in root subforem and have multiple subforems in the feed
+      return unless @cached_subforem_logos && @stories.any?
+
+      # Get unique subforem IDs from the stories
+      unique_subforem_ids = @stories.map(&:subforem_id).uniq.compact
+      current_subforem_id = RequestStore.store[:subforem_id]
+
+      # Preload settings for all unique subforems (excluding current one which is already cached)
+      unique_subforem_ids.each do |subforem_id|
+        next if subforem_id == current_subforem_id
+
+        @cached_subforem_logos[subforem_id] ||= Settings::General.logo_png(subforem_id: subforem_id)
+      end
     end
   end
 end
