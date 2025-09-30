@@ -841,8 +841,6 @@ class Article < ApplicationRecord
     title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
   end
 
-  private
-
   def series
     # name of series article is part of
     collection&.slug
@@ -959,8 +957,6 @@ class Article < ApplicationRecord
       Articles::GenerateContextNoteWorker.perform_async(id, tag.id)
     end
   end
-
-  private
 
   def set_default_subforem_id
     # Set subforem_id to default subforem ID if not already set and a default subforem exists
