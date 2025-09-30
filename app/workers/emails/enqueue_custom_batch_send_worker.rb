@@ -65,17 +65,39 @@ module Emails
           conn.execute("SET LOCAL statement_timeout TO 0")
 
           # 5) Run your batches inside the same transaction, so every SELECT is "no timeout"
+          batch_count = 0
+          total_users = 0
+          
           user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
-            # (Just printing the first ID so you can see progress.)
-
-            Emails::BatchCustomSendWorker.perform_async(
-              users_batch.map(&:id),
-              email.subject,
-              email.body,
-              email.type_of,
-              email.id,
-            )
+            batch_count += 1
+            
+            # Skip empty batches
+            next if users_batch.empty?
+            
+            # Validate we have valid user IDs
+            user_ids = users_batch.map(&:id).compact
+            next if user_ids.empty?
+            
+            total_users += user_ids.size
+            
+            Rails.logger.info("Processing email batch #{batch_count} for email #{email.id}: #{user_ids.size} users (first ID: #{user_ids.first})")
+            
+            begin
+              Emails::BatchCustomSendWorker.perform_async(
+                user_ids,
+                email.subject,
+                email.body,
+                email.type_of,
+                email.id,
+              )
+            rescue StandardError => e
+              Rails.logger.error("Failed to enqueue batch #{batch_count} for email #{email.id}: #{e.message}")
+              # Continue processing other batches even if one fails
+              next
+            end
           end
+          
+          Rails.logger.info("Completed email processing for email #{email.id}: #{batch_count} batches, #{total_users} total users")
         end
       # As soon as this transaction block ends, Postgres automatically reverts
       # statement_timeout back to the previous session value (original_timeout).
