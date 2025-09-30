@@ -441,7 +441,6 @@ class Article < ApplicationRecord
            :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
   }
 
-
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
