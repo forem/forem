@@ -1,14 +1,14 @@
 article_attributes_to_include = %i[
   title path id user_id comments_count public_reactions_count organization_id
-  reading_time video_thumbnail_url video video_duration_in_minutes edited_at
+  reading_time video_thumbnail_url video edited_at
   experience_level_rating experience_level_rating_distribution main_image_height
   type_of subforem_id
 ]
 article_methods_to_include = %i[
-  readable_publish_date flare_tag class_name
-  cloudinary_video_url video_duration_in_minutes published_at_int
+  flare_tag class_name cloudinary_video_url published_at_int
   published_timestamp main_image_background_hex_color
-  public_reaction_categories body_preview title_finalized
+  public_reaction_categories body_preview title_finalized title_finalized_for_feed
+  title_for_metadata readable_publish_date video_duration_in_minutes
 ]
 
 json.array!(@stories) do |article|

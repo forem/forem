@@ -179,7 +179,6 @@ RSpec.describe "Stories::Feeds" do
       let(:user) { create(:user) }
 
       it "returns signed in feed" do
-
         payload = {
           user_id: user.id,
           exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
@@ -195,7 +194,7 @@ RSpec.describe "Stories::Feeds" do
           "organization_id" => organization.id,
           "organization" => hash_including("name" => organization.name),
           "tag_list" => article.decorate.cached_tag_list_array,
-          "current_user_signed_in" => true
+          "current_user_signed_in" => true,
         )
       end
 
@@ -210,14 +209,13 @@ RSpec.describe "Stories::Feeds" do
         # Should not have the specific edge caching headers we set for signed out users
         expect(response.headers["X-Accel-Expires"]).to be_nil
         expect(response.headers["Surrogate-Control"]).to be_nil
-        
+
         # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
         if response.headers["Cache-Control"]
           expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
         end
       end
     end
-
 
     context "when there are no params passed (base feed) and user is signed in" do
       before do
@@ -262,7 +260,7 @@ RSpec.describe "Stories::Feeds" do
         # Should not have the specific edge caching headers we set for signed out users
         expect(response.headers["X-Accel-Expires"]).to be_nil
         expect(response.headers["Surrogate-Control"]).to be_nil
-        
+
         # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
         if response.headers["Cache-Control"]
           expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
@@ -294,6 +292,142 @@ RSpec.describe "Stories::Feeds" do
         response_array = response.parsed_body.pluck("title")
         expect(response_array).to contain_exactly(article.title, article_with_mid_score.title)
         expect(response_array).not_to include(article_with_low_score.title)
+      end
+    end
+
+      context "when rendering quickie articles with line breaks" do
+        let(:quickie_title) { "Line one\nLine two\n\nParagraph two\n\nParagraph three" }
+        let(:quickie_article) do
+          article = create(:article, type_of: "status", title: quickie_title, featured: true, body_markdown: "", main_image: nil)
+          article.update!(published: true, title: quickie_title)
+          article
+        end
+
+      before do
+        quickie_article
+      end
+
+      it "includes title_finalized_for_feed in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("title_finalized_for_feed")
+        expect(quickie_response["title_finalized_for_feed"]).to include("<br>")
+        expect(quickie_response["title_finalized_for_feed"]).to include("quickie-paragraph")
+      end
+
+      it "includes title_for_metadata in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("title_for_metadata")
+        expect(quickie_response["title_for_metadata"]).not_to include("\n")
+        expect(quickie_response["title_for_metadata"]).to include("Line one Line two")
+      end
+
+      it "includes readable_publish_date in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("readable_publish_date")
+        expect(quickie_response["readable_publish_date"]).to be_present
+      end
+
+      it "includes video_duration_in_minutes in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("video_duration_in_minutes")
+      end
+
+      it "includes flare_tag in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("flare_tag")
+      end
+
+      it "includes class_name in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("class_name")
+        expect(quickie_response["class_name"]).to eq("Article")
+      end
+
+      it "includes cloudinary_video_url in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("cloudinary_video_url")
+      end
+
+      it "includes published_timestamp in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("published_timestamp")
+      end
+
+      it "includes main_image_background_hex_color in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("main_image_background_hex_color")
+      end
+
+      it "includes public_reaction_categories in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("public_reaction_categories")
+      end
+
+      it "includes body_preview in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("body_preview")
+      end
+
+      it "includes title_finalized in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("title_finalized")
+        expect(quickie_response["title_finalized"]).to include("<br>")
+        expect(quickie_response["title_finalized"]).to include("quickie-paragraph")
+      end
+    end
+
+      context "when rendering long quickie articles (truncation test)" do
+        let(:long_quickie_title) { "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10" }
+        let(:long_quickie_article) do
+          article = create(:article, type_of: "status", title: long_quickie_title, featured: true, body_markdown: "", main_image: nil)
+          article.update!(published: true, title: long_quickie_title)
+          article
+        end
+
+      before do
+        long_quickie_article
+      end
+
+      it "truncates title_finalized_for_feed with read more indicator" do
+        get stories_feed_path
+
+        long_quickie_response = response.parsed_body.find { |item| item["id"] == long_quickie_article.id }
+        expect(long_quickie_response).to include("title_finalized_for_feed")
+        expect(long_quickie_response["title_finalized_for_feed"]).to include("quickie-read-more")
+        expect(long_quickie_response["title_finalized_for_feed"]).to include("read more")
+      end
+
+      it "includes title_for_metadata without truncation" do
+        get stories_feed_path
+
+        long_quickie_response = response.parsed_body.find { |item| item["id"] == long_quickie_article.id }
+        expect(long_quickie_response).to include("title_for_metadata")
+        expect(long_quickie_response["title_for_metadata"]).not_to include("read more")
+        expect(long_quickie_response["title_for_metadata"]).to include("Line 1 Line 2")
       end
     end
 

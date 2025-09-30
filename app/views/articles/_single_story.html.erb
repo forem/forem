@@ -110,7 +110,7 @@
     <div class="crayons-story__indention">
       <h2 class="crayons-story__title crayons-story__title-<%= story.type_of %>">
         <a href="<%= URL.article(story) %>" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
-          <%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %>
+          <%= story.type_of == "status" && story.title_finalized_for_feed ? story.title_finalized_for_feed : story.title %>
         </a>
       </h2>
       <% if story.type_of != 'status' %>
