@@ -33,7 +33,11 @@ module Stories
 
     def assign_feed_stories
       params[:type_of] = "discover" if params[:type_of].blank?
-      stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+      
+      # Use optimized feed strategy when appropriate
+      stories = if should_use_optimized_feed?
+                  optimized_feed
+                elsif params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
                 elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_following_feed
@@ -145,6 +149,29 @@ module Stories
         .order("hotness_score DESC")
         .page(@page)
         .per(25)
+    end
+
+    def should_use_optimized_feed?
+      # Use optimized feed for high-traffic scenarios
+      # This could be based on request parameters, user type, or other factors
+      params[:optimized] == "true" || 
+        (!user_signed_in? && params[:type_of] == "discover") ||
+        Rails.env.production?
+    end
+
+    def optimized_feed
+      # Use the optimized feed service for better performance
+      feed = Articles::Feeds::Optimized.new(
+        user: current_user, 
+        page: @page, 
+        tag: params[:tag]
+      )
+      
+      if user_signed_in?
+        feed.default_home_feed
+      else
+        feed.default_home_feed
+      end
     end
   end
 end

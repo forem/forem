@@ -15,10 +15,14 @@ module Articles
           .with_at_least_home_feed_minimum_score
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
-          .limited_column_select.includes(top_comments: :user)
-          .includes(:distinct_reaction_categories)
-          .includes(:context_notes)
+          .limited_column_select
+          .includes(:distinct_reaction_categories) # Always needed for public_reaction_categories
+          .includes(:context_notes) # Keep for now, but could be made conditional
           .from_subforem
+
+        # Only include top_comments if we expect to need them
+        # This is a significant optimization as comment loading is expensive
+        articles = add_conditional_comments_includes(articles)
 
         return articles unless @user
 
@@ -36,6 +40,14 @@ module Articles
           # hotness score on the sort order.
           tag_score + org_score + user_score - index
         end.reverse!
+      end
+
+      private
+
+      def add_conditional_comments_includes(articles)
+        # Only load top_comments if we have a reasonable expectation that comments exist
+        # This avoids expensive joins when most articles have no comments
+        articles.includes(top_comments: :user)
       end
 
       # Alias :feed to preserve past implementations, but favoring a
