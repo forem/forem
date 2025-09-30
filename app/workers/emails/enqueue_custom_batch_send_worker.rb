@@ -28,7 +28,14 @@ module Emails
                          # Extract variables from email if available
                          variables = extract_email_variables(email)
                          executor = UserQueryExecutor.new(email.user_query, variables: variables)
+                         # Apply the same filtering as other paths to ensure proper notification settings and roles
                          executor.execute
+                           .registered
+                           .joins(:notification_setting)
+                           .without_role(:suspended)
+                           .without_role(:spam)
+                           .where(notification_setting: { email_newsletter: true })
+                           .where.not(email: "")
                        rescue StandardError => e
                          Rails.logger.error("UserQuery execution failed for email #{email.id}: #{e.message}")
                          User.none
@@ -60,7 +67,6 @@ module Emails
           # 5) Run your batches inside the same transaction, so every SELECT is "no timeout"
           user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
             # (Just printing the first ID so you can see progress.)
-            p users_batch.first.id
 
             Emails::BatchCustomSendWorker.perform_async(
               users_batch.map(&:id),
