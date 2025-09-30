@@ -10,8 +10,7 @@ article_attributes_to_include = %i[
 article_methods_to_include = %i[
   flare_tag class_name cloudinary_video_url published_at_int
   published_timestamp main_image_background_hex_color
-  public_reaction_categories title_finalized title_finalized_for_feed
-  title_for_metadata readable_publish_date video_duration_in_minutes
+  public_reaction_categories readable_publish_date video_duration_in_minutes
 ]
 
 json.array!(@stories) do |article|
@@ -38,6 +37,9 @@ json.array!(@stories) do |article|
   # Only include body_preview for status articles using optimized method
   if article.type_of == "status"
     json.body_preview article.body_preview_for_status
+    # Only include special title methods for status articles
+    json.title_finalized_for_feed article.title_finalized_for_feed
+    json.title_for_metadata article.title_for_metadata
   end
 
   json.extract! article, *article_methods_to_include

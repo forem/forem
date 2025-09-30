@@ -155,7 +155,6 @@ module Stories
         .per(25)
     end
 
-
     def preload_common_settings
       # Preload frequently accessed settings to avoid N+1 queries from waterfall analysis
       # This addresses the multiple site_configs queries we see in the performance trace
