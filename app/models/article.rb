@@ -441,16 +441,6 @@ class Article < ApplicationRecord
            :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
   }
 
-  # Optimized column select for feed endpoints that only need essential data
-  scope :feed_optimized_select, lambda {
-    select(:path, :title, :id, :published,
-           :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :slug,
-           :video, :user_id, :organization_id, :video_thumbnail_url,
-           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :reading_time, :video_duration_in_seconds, :score,
-           :main_image_height, :type_of, :edited_at, :subforem_id)
-  }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
