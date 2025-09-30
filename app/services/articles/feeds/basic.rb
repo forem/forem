@@ -16,13 +16,8 @@ module Articles
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
           .limited_column_select
-          .includes(:distinct_reaction_categories) # Always needed for public_reaction_categories
-          .includes(:context_notes) # Keep for now, but could be made conditional
+          .includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
           .from_subforem
-
-        # Only include top_comments if we expect to need them
-        # This is a significant optimization as comment loading is expensive
-        articles = add_conditional_comments_includes(articles)
 
         return articles unless @user
 
@@ -43,12 +38,6 @@ module Articles
       end
 
       private
-
-      def add_conditional_comments_includes(articles)
-        # Preload comments and users in a single query to avoid N+1
-        # This is the biggest performance win from the waterfall analysis
-        articles.includes(top_comments: :user)
-      end
 
       # Alias :feed to preserve past implementations, but favoring a
       # convergence of interface implementations.

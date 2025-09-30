@@ -14,7 +14,7 @@ module Stories
       preload_common_settings
 
       @stories = assign_feed_stories
-      
+
       # After getting stories, preload settings for any additional subforems if in root
       preload_additional_subforem_settings
 
@@ -40,10 +40,7 @@ module Stories
     def assign_feed_stories
       params[:type_of] = "discover" if params[:type_of].blank?
 
-      # Use optimized feed strategy when appropriate
-      stories = if should_use_optimized_feed?
-                  optimized_feed
-                elsif params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+      stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
                 elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_following_feed
@@ -158,35 +155,13 @@ module Stories
         .per(25)
     end
 
-    def should_use_optimized_feed?
-      # Use optimized feed for high-traffic scenarios
-      # This could be based on request parameters, user type, or other factors
-      params[:optimized] == "true" ||
-        (!user_signed_in? && params[:type_of] == "discover") ||
-        Rails.env.production?
-    end
-
-    def optimized_feed
-      # Use the optimized feed service for better performance
-      feed = Articles::Feeds::Optimized.new(
-        user: current_user,
-        page: @page,
-        tag: params[:tag],
-      )
-
-      if user_signed_in?
-        feed.default_home_feed
-      else
-        feed.default_home_feed
-      end
-    end
 
     def preload_common_settings
       # Preload frequently accessed settings to avoid N+1 queries from waterfall analysis
       # This addresses the multiple site_configs queries we see in the performance trace
       current_subforem_id = RequestStore.store[:subforem_id]
       root_subforem_id = RequestStore.store[:root_subforem_id]
-      
+
       if current_subforem_id == root_subforem_id
         # We're in root subforem - need to handle multiple subforems dynamically
         # We'll cache settings for the most common subforems to avoid repeated queries
@@ -202,14 +177,15 @@ module Stories
     def preload_additional_subforem_settings
       # Only needed when we're in root subforem and have multiple subforems in the feed
       return unless @cached_subforem_logos && @stories.any?
-      
+
       # Get unique subforem IDs from the stories
       unique_subforem_ids = @stories.map(&:subforem_id).uniq.compact
       current_subforem_id = RequestStore.store[:subforem_id]
-      
+
       # Preload settings for all unique subforems (excluding current one which is already cached)
       unique_subforem_ids.each do |subforem_id|
         next if subforem_id == current_subforem_id
+
         @cached_subforem_logos[subforem_id] ||= Settings::General.logo_png(subforem_id: subforem_id)
       end
     end
