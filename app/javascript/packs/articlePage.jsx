@@ -105,6 +105,11 @@ function renderBottomContent() {
   const articleContainer = document.getElementById('article-show-container');
   const commentsElement = document.getElementById('comments');
 
+  // Early return if bottom content container doesn't exist (SKIP_BOTTOM_CONTENT enabled)
+  if (!bottomContent) {
+    return;
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
