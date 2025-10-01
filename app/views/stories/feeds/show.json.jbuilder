@@ -34,9 +34,9 @@ json.array!(@stories) do |article|
   json.url URL.article(article)
   json.tag_list article.cached_tag_list_array
 
-  # Only include body_preview for status articles using optimized method
+  # Only include body_preview for status articles
   if article.type_of == "status"
-    json.body_preview article.body_preview_for_status
+    json.body_preview article.body_preview
     # Only include special title methods for status articles
     json.title_finalized_for_feed article.title_finalized_for_feed
     json.title_for_metadata article.title_for_metadata
