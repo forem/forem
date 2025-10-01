@@ -67,58 +67,17 @@ module Rack
       end
     end
 
-    # Helper method to check if user is signed in
-    def self.user_signed_in?(request)
-      # Check for session-based authentication
-      session = request.env["rack.session"]
-      return true if session && session["warden.user.user.key"]
-      
-      # Check for API key authentication
-      return true if request.env["HTTP_API_KEY"].present?
-      
-      false
-    end
+    # Removed user_signed_in? helper method - no longer needed
+    # since we removed authentication-based throttling rules
 
-    # More aggressive throttling for signed-out users
-    throttle("site_hits_signed_out", limit: 20, period: 2) do |request|
-      unless user_signed_in?(request)
-        request.track_and_return_ip
-      end
-    end
-
-    # Keep current limits for signed-in users
-    throttle("site_hits_signed_in", limit: 40, period: 2) do |request|
-      if user_signed_in?(request)
-        request.track_and_return_ip
-      end
-    end
-
-    # More aggressive tag throttling for signed-out users
-    throttle("tag_throttle_signed_out", limit: 1, period: 1) do |request|
-      if request.path.include?("/t/") && !user_signed_in?(request)
-        request.track_and_return_ip
-      end
-    end
-
-    # Keep current tag limits for signed-in users
-    throttle("tag_throttle_signed_in", limit: 2, period: 1) do |request|
-      if request.path.include?("/t/") && user_signed_in?(request)
-        request.track_and_return_ip
-      end
-    end
-
-    # Additional aggressive throttling for anonymous users on high-traffic endpoints
-    throttle("homepage_signed_out", limit: 10, period: 1) do |request|
-      if (request.path == "/" || request.path == "/latest") && !user_signed_in?(request)
-        request.track_and_return_ip
-      end
-    end
-
-    # Throttle article show pages more aggressively for anonymous users
-    throttle("article_show_signed_out", limit: 5, period: 1) do |request|
-      if request.path.match?(/\A\/[^\/]+\/[^\/]+\z/) && !user_signed_in?(request)
-        request.track_and_return_ip
-      end
-    end
+    # Removed edge-cached page throttling rules to reduce Redis overhead
+    # These pages are edge-cached globally (signed-in vs signed-out only)
+    # so Rack Attack rarely applies and wastes Redis resources:
+    # - Homepage (/)
+    # - Latest (/latest) 
+    # - Article pages (/:username/:slug)
+    # - Tag pages (/t/:tag)
+    # 
+    # Focus Rack Attack on dynamic, non-cached content only
   end
 end
