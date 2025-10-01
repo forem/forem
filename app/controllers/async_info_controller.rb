@@ -30,6 +30,8 @@ class AsyncInfoController < ApplicationController
   end
 
   def broadcast_data
+    return if ApplicationConfig["DISABLE_BROADCASTS"] == "yes"
+
     broadcast = Broadcast.announcement.active.first.presence
     return unless broadcast
 
