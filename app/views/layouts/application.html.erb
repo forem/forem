@@ -3,14 +3,14 @@
   <head>
     <% if user_signed_in? && current_page?(root_path) %>
       <% if params[:feed_type] == "discover" || params[:feed_type].blank? %>
-        <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
+        <link rel="preload" href="/stories/feed/?page=1&type_of=discover" as="fetch" crossorigin="same-origin">
       <% elsif params[:feed_type] == "following" %>
-        <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
+        <link rel="preload" href="/stories/feed/?page=1&type_of=following" as="fetch" crossorigin="same-origin">
       <% end %>
-      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first">
-      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second">
-      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_third">
-      <link rel="prefetch" href="/sidebars/home">
+      <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first" as="fetch" crossorigin="same-origin">
+      <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second" as="fetch" crossorigin="same-origin">
+      <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_third" as="fetch" crossorigin="same-origin">
+      <link rel="preload" href="/sidebars/home" as="fetch" crossorigin="same-origin">
     <% end %>
     <meta charset="utf-8">
     <% title = yield(:title) %>
