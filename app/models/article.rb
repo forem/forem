@@ -737,7 +737,7 @@ class Article < ApplicationRecord
 
   def body_preview
     return unless type_of == "status"
-    return if body_markdown.blank?
+    return if processed_html.blank?
 
     processed_html_final
   end
