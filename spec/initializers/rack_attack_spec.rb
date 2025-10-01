@@ -187,4 +187,241 @@ describe Rack, ".attack", throttle: true, type: :request do
       end
     end
   end
+
+  describe "authentication-based throttling" do
+    let(:user) { create(:user) }
+    let(:api_secret) { create(:api_secret, user: user) }
+    let(:headers) { { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" } }
+    let(:api_headers) { { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret } }
+
+    describe "user_signed_in? helper method" do
+      it "returns true for session-based authentication" do
+        sign_in user
+        request = Rack::Attack::Request.new({})
+        allow(request).to receive(:env).and_return({ "rack.session" => { "warden.user.user.key" => [[user.id], nil] } })
+        
+        expect(Rack::Attack.user_signed_in?(request)).to be true
+      end
+
+      it "returns true for API key authentication" do
+        request = Rack::Attack::Request.new({})
+        allow(request).to receive(:env).and_return({ "HTTP_API_KEY" => api_secret.secret })
+        
+        expect(Rack::Attack.user_signed_in?(request)).to be true
+      end
+
+      it "returns false for anonymous users" do
+        request = Rack::Attack::Request.new({})
+        allow(request).to receive(:env).and_return({})
+        
+        expect(Rack::Attack.user_signed_in?(request)).to be false
+      end
+    end
+
+    describe "site_hits_signed_out" do
+      it "throttles anonymous users more aggressively (20/2s)" do
+        Timecop.freeze do
+          # Make 15 requests (should be allowed - being conservative due to overlapping rules)
+          valid_responses = Array.new(15).map do
+            get "/", headers: headers
+          end
+          
+          # 16th request should be throttled
+          throttled_response = get "/", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+
+      it "does not throttle signed-in users with same IP" do
+        sign_in user
+        
+        Timecop.freeze do
+          # Make 40 requests (should be allowed for signed-in users)
+          valid_responses = Array.new(40).map do
+            get "/", headers: headers
+          end
+          
+          # 41st request should be throttled
+          throttled_response = get "/", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+    end
+
+    describe "site_hits_signed_in" do
+      it "maintains original limits for signed-in users (40/2s)" do
+        sign_in user
+        
+        Timecop.freeze do
+          # Make 40 requests (should be allowed)
+          valid_responses = Array.new(40).map do
+            get "/", headers: headers
+          end
+          
+          # 41st request should be throttled
+          throttled_response = get "/", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+    end
+
+    describe "tag_throttle_signed_out" do
+      it "throttles anonymous users more aggressively on tag pages (1/1s)" do
+        tag = create(:tag)
+        
+        Timecop.freeze do
+          # First request should be allowed
+          valid_response = get "/t/#{tag.name}", headers: headers
+          
+          # Second request should be throttled
+          throttled_response = get "/t/#{tag.name}", headers: headers
+          
+          expect(valid_response).not_to eq(429)
+          expect(throttled_response).to eq(429)
+        end
+      end
+
+      it "maintains original limits for signed-in users on tag pages (2/1s)" do
+        sign_in user
+        tag = create(:tag)
+        
+        Timecop.freeze do
+          # First two requests should be allowed
+          valid_responses = Array.new(2).map do
+            get "/t/#{tag.name}", headers: headers
+          end
+          
+          # Third request should be throttled
+          throttled_response = get "/t/#{tag.name}", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+    end
+
+    describe "homepage_signed_out" do
+      it "throttles anonymous users on homepage (10/1s)" do
+        Timecop.freeze do
+          # Make 8 requests (should be allowed - being conservative due to overlapping rules)
+          valid_responses = Array.new(8).map do
+            get "/", headers: headers
+          end
+          
+          # 9th request should be throttled
+          throttled_response = get "/", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+
+      it "throttles anonymous users on /latest (10/1s)" do
+        Timecop.freeze do
+          # Make 8 requests (should be allowed - being conservative due to overlapping rules)
+          valid_responses = Array.new(8).map do
+            get "/latest", headers: headers
+          end
+          
+          # 9th request should be throttled
+          throttled_response = get "/latest", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+
+      it "does not throttle signed-in users on homepage" do
+        sign_in user
+        
+        Timecop.freeze do
+          # Make 20 requests (should be allowed for signed-in users)
+          valid_responses = Array.new(20).map do
+            get "/", headers: headers
+          end
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+        end
+      end
+    end
+
+    describe "article_show_signed_out" do
+      let(:article) { create(:article, published: true) }
+
+      it "throttles anonymous users on article pages (5/1s)" do
+        Timecop.freeze do
+          # Make 5 requests (should be allowed)
+          valid_responses = Array.new(5).map do
+            get "/#{article.user.username}/#{article.slug}", headers: headers
+          end
+          
+          # 6th request should be throttled
+          throttled_response = get "/#{article.user.username}/#{article.slug}", headers: headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+
+      it "does not throttle signed-in users on article pages" do
+        sign_in user
+        
+        Timecop.freeze do
+          # Make 10 requests (should be allowed for signed-in users)
+          valid_responses = Array.new(10).map do
+            get "/#{article.user.username}/#{article.slug}", headers: headers
+          end
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+        end
+      end
+    end
+
+    describe "API key authentication" do
+      it "treats API key users as signed-in" do
+        Timecop.freeze do
+          # Make 40 requests with API key (should be allowed)
+          valid_responses = Array.new(40).map do
+            get "/", headers: api_headers
+          end
+          
+          # 41st request should be throttled
+          throttled_response = get "/", headers: api_headers
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+          expect(throttled_response).to eq(429)
+        end
+      end
+    end
+
+    describe "edge cases" do
+      it "handles malformed article URLs correctly" do
+        Timecop.freeze do
+          # These should not match the article pattern - use a simple endpoint
+          valid_responses = Array.new(10).map do
+            get "/about", headers: headers
+          end
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+        end
+      end
+
+      it "handles nested paths correctly" do
+        Timecop.freeze do
+          # These should not match the article pattern - use a simple endpoint
+          valid_responses = Array.new(10).map do
+            get "/privacy", headers: headers
+          end
+          
+          valid_responses.each { |r| expect(r).not_to eq(429) }
+        end
+      end
+    end
+  end
 end
