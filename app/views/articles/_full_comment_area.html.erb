@@ -1,76 +1,74 @@
-<% cache("whole-comment-area-#{@article.id}-#{@article.comments.cache_key_with_version}-#{@article.show_comments}-#{@discussion_lock&.updated_at}-#{@comments_order}-#{user_signed_in?}", expires_in: 2.hours) do %>
-  <section id="comments" data-follow-button-container="true" data-updated-at="<%= Time.current %>" class="text-padding mb-4 border-t-1 border-0 border-solid border-base-10">
-    <% if @article.show_comments %>
-      <header class="relative flex justify-between items-center mb-6">
-        <div class="flex items-center">
-          <h2 class="crayons-subtitle-1">
-            <%= t("views.articles.comments.subtitle.#{@comments_order}_html",
-                  num: tag.span(t("views.articles.comments.num", num: @comments_count), class: "js-comments-count", data: { comments_count: @comments_count })) %>
-          </h2>
-          <% if user_signed_in? %>
-            <button class="c-btn c-btn--ghost crayons-btn--icon-left" id="toggle-comments-sort-dropdown" aria-controls="comments-sort-dropdown-container" aria-expanded="false" aria-label="<%= t("views.articles.comments.sort_button.aria_label") %>" aria-haspopup="true">
-              <%= inline_svg_tag("expand.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon"), class: "mt-2") %>
-            </button>
-          <% end %>
-        </div>
-
+<section id="comments" data-follow-button-container="true" data-updated-at="<%= Time.current %>" class="text-padding mb-4 border-t-1 border-0 border-solid border-base-10">
+  <% if @article.show_comments %>
+    <header class="relative flex justify-between items-center mb-6">
+      <div class="flex items-center">
+        <h2 class="crayons-subtitle-1">
+          <%= t("views.articles.comments.subtitle.#{@comments_order}_html",
+                num: tag.span(t("views.articles.comments.num", num: @comments_count), class: "js-comments-count", data: { comments_count: @comments_count })) %>
+        </h2>
         <% if user_signed_in? %>
-          <nav class="crayons-dropdown p-4" id="comments-sort-dropdown-container" aria-labelledby="comments-sort-title">
-              <h3 id="comments-sort-title" class="mb-3"><%= t("views.articles.comments.sort.heading") %></h3>
-              <ul class="comments-sort-dropdown__list">
-                <%= render "comments/sort_option",
-                           sort_order: "top",
-                           sort_title: t("views.articles.comments.sort.title.top"),
-                           sort_description: t("views.articles.comments.sort.desc.top"),
-                           show_selected: @comments_order == "top" %>
-                <%= render "comments/sort_option",
-                           sort_order: "latest",
-                           sort_title: t("views.articles.comments.sort.title.latest"),
-                           sort_description: t("views.articles.comments.sort.desc.latest"),
-                           show_selected: @comments_order == "latest" %>
-                <%= render "comments/sort_option",
-                           sort_order: "oldest",
-                           sort_title: t("views.articles.comments.sort.title.oldest"),
-                           sort_description: t("views.articles.comments.sort.desc.oldest"),
-                           show_selected: @comments_order == "oldest" %>
-              </ul>
-          </nav>
+          <button class="c-btn c-btn--ghost crayons-btn--icon-left" id="toggle-comments-sort-dropdown" aria-controls="comments-sort-dropdown-container" aria-expanded="false" aria-label="<%= t("views.articles.comments.sort_button.aria_label") %>" aria-haspopup="true">
+            <%= inline_svg_tag("expand.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon"), class: "mt-2") %>
+          </button>
         <% end %>
-
-        <div id="comment-subscription" class="print-hidden">
-          <div class="crayons-btn-group">
-            <span class="crayons-btn crayons-btn--outlined"><%= t("views.articles.comments.subscribe") %></span>
-          </div>
-        </div>
-      </header>
-      <div id="billboard_delay_trigger"></div>
-      <div
-        id="comments-container"
-        data-testid="comments-container"
-        data-commentable-id="<%= @article.id %>"
-        data-commentable-type="Article"
-        data-has-recent-comment-activity="<%= @article.has_recent_comment_activity? %>">
-
-        <% if @discussion_lock %>
-          <%= render "/comments/discussion_lock_reason" %>
-        <% else %>
-          <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
-        <% end %>
-
-        <div class="comments" id="comment-trees-container">
-          <% if @article.comments_count > 0 %>
-            <% @current_comment_index = 0 %>
-            <%= render partial: "articles/comment_tree",
-                       collection: article_comment_tree(@article, @comments_to_show_count, @comments_order),
-                       as: :comment_node,
-                       cached: proc { |comment, _sub_comments| [comment, @comments_order, user_signed_in?] } %>
-          <% end %>
-        </div>
       </div>
 
-      <%= render "articles/comments_actions" %>
-    <% end %>
-  </section>
-  <%= render "comments/hide_comments_modal" %>
-<% end %>
+      <% if user_signed_in? %>
+        <nav class="crayons-dropdown p-4" id="comments-sort-dropdown-container" aria-labelledby="comments-sort-title">
+            <h3 id="comments-sort-title" class="mb-3"><%= t("views.articles.comments.sort.heading") %></h3>
+            <ul class="comments-sort-dropdown__list">
+              <%= render "comments/sort_option",
+                         sort_order: "top",
+                         sort_title: t("views.articles.comments.sort.title.top"),
+                         sort_description: t("views.articles.comments.sort.desc.top"),
+                         show_selected: @comments_order == "top" %>
+              <%= render "comments/sort_option",
+                         sort_order: "latest",
+                         sort_title: t("views.articles.comments.sort.title.latest"),
+                         sort_description: t("views.articles.comments.sort.desc.latest"),
+                         show_selected: @comments_order == "latest" %>
+              <%= render "comments/sort_option",
+                         sort_order: "oldest",
+                         sort_title: t("views.articles.comments.sort.title.oldest"),
+                         sort_description: t("views.articles.comments.sort.desc.oldest"),
+                         show_selected: @comments_order == "oldest" %>
+            </ul>
+        </nav>
+      <% end %>
+
+      <div id="comment-subscription" class="print-hidden">
+        <div class="crayons-btn-group">
+          <span class="crayons-btn crayons-btn--outlined"><%= t("views.articles.comments.subscribe") %></span>
+        </div>
+      </div>
+    </header>
+    <div id="billboard_delay_trigger"></div>
+    <div
+      id="comments-container"
+      data-testid="comments-container"
+      data-commentable-id="<%= @article.id %>"
+      data-commentable-type="Article"
+      data-has-recent-comment-activity="<%= @article.has_recent_comment_activity? %>">
+
+      <% if @discussion_lock %>
+        <%= render "/comments/discussion_lock_reason" %>
+      <% else %>
+        <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
+      <% end %>
+
+      <div class="comments" id="comment-trees-container">
+        <% if @article.comments_count > 0 %>
+          <% @current_comment_index = 0 %>
+          <%= render partial: "articles/comment_tree",
+                     collection: article_comment_tree(@article, @comments_to_show_count, @comments_order),
+                     as: :comment_node,
+                     cached: proc { |comment, _sub_comments| [comment, @comments_order, user_signed_in?] } %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= render "articles/comments_actions" %>
+  <% end %>
+</section>
+<%= render "comments/hide_comments_modal" %>
 <% return if @warm_only %>
