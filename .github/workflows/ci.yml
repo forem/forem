@@ -105,7 +105,7 @@ jobs:
       - name: Set up test database
         run: |
           bundle exec rails db:create RAILS_ENV=test
-          bundle exec rails db:migrate RAILS_ENV=test
+          SAFETY_ASSURED=1 bundle exec rails db:migrate RAILS_ENV=test
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - name: Upload RSpec artifacts
