@@ -39,6 +39,10 @@ class MemoryFirstCache
       memory_store.clear
     end
 
+    def reset_memory_store!
+      @memory_store = nil
+    end
+
     private
 
     def convert_type(value, return_type)

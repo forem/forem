@@ -162,6 +162,7 @@ RSpec.describe MemoryFirstCache do
 
   describe ".clear" do
     it "clears the memory store" do
+      # The memory store is already mocked in the before block
       expect(memory_store).to receive(:clear)
 
       described_class.clear
