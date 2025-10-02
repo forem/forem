@@ -21,13 +21,10 @@
   <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{@article.last_comment_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
-  <% unless internal_navigation? || user_signed_in? %>
-    <script type="application/ld+json">
-      <%= @article_json_ld.to_json.html_safe %>
-    </script>
-
-  <% end %>
+<% unless internal_navigation? || user_signed_in? %>
+  <script type="application/ld+json">
+    <%= @article_json_ld.to_json.html_safe %>
+  </script>
 <% end %>
 
 <% if internal_navigation? %>
@@ -207,7 +204,7 @@
               </h1>
               
               <% if @article.type_of == "full_post" %>
-                <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
+                <% cache("main-article-tags-#{@article.cached_tag_list_array.sort.join('-')}", expires_in: 72.hours) do %>
                   <div class="spec__tags flex flex-wrap">
                     <% @article.cached_tag_list_array.each do |tag| %>
                       <%= render_tag_link(tag) %>
@@ -282,19 +279,6 @@
     </aside>
   </div>
 
-  <% cache("specific-article-extra-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 24.hours) do %>
-    <% if has_vid?(@article) %>
-      <%= render "articles/fitvids" %>
-    <% end %>
-    <% if @article.processed_html.include?('class="twitter-tweet"') ||
-        @article.processed_html.include?("ltag_twitter_timeline-liquid-tag") %>
-      <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <% end %>
-    <% if @article.processed_html.include? "instagram-media" %>
-      <script async defer src="//platform.instagram.com/en_US/embeds.js"></script>
-    <% end %>
-  <% end %>
-
   <div class="mod-actions-menu print-hidden"></div>
   <div data-testid="unpublish-post-modal-container" class="unpublish-post-modal-container hidden"></div>
   <% if user_signed_in? %>
@@ -311,6 +295,15 @@
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>
+    <% if has_vid?(@article) %>
+      if (document.getElementsByClassName('fluidvids').length === 0) {
+        window.Fluidvids=function(a,b){"use strict";var c,d,e=b.head||b.head,f=".fluidvids-elem{position:absolute;top:0px;left:0px;width:100%;height:100%;border:none;}.fluidvids{width:100%;position:relative;}",g=function(a){return c=new RegExp("^(https?:)?//(?:"+d.join("|")+").*$","i"),c.test(a)},h=function(a){var c=b.createElement("div"),d=a.parentNode,e=100*(parseInt(a.height?a.height:a.offsetHeight,10)/parseInt(a.width?a.width:a.offsetWidth,10));d.insertBefore(c,a),a.className+=" fluidvids-elem",c.className+=" fluidvids",c.style.paddingTop=e+"%",c.appendChild(a)},i=function(){var a=b.createElement("div");a.innerHTML="<p>x</p><style>"+f+"</style>",e.appendChild(a.childNodes[1])},j=function(a){var c=a||{},e=c.selector||"iframe";d=c.players||["www.youtube.com","player.vimeo.com","clips.twitch.tv"];for(var f=b.querySelectorAll(e),j=0;j<f.length;j++){var k=f[j];g(k.src)&&h(k)}i()};return{init:j}}(window,document);
+        Fluidvids.init({
+          selector: ['iframe', 'object'], // runs querySelectorAll()
+          players: ['www.youtube.com', 'player.vimeo.com', 'clips.twitch.tv'] // players to support
+        });
+      }
+    <% end %>
     <% if @article.processed_html.include?("podcastliquidtag") %>
       <%== PodcastTag.script %>
     <% end %>
