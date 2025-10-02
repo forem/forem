@@ -174,10 +174,10 @@ module Spam
         follows_original = member_user.following_users.exists?(id: user_id)
         followed_by_original = user.following_users.exists?(id: member_user.id)
         
-        # Check if they're in the same organization
-        same_organization = member_user.organization_id.present? && 
-                           user.organization_id.present? && 
-                           member_user.organization_id == user.organization_id
+        # Check if they're in the same organization (users can belong to multiple orgs)
+        same_organization = user.organizations.exists? && 
+                           member_user.organizations.exists? && 
+                           (user.organizations & member_user.organizations).any?
         
         follows_original || followed_by_original || same_organization
       end

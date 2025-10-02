@@ -216,12 +216,14 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when users are in the same organization" do
       let(:organization) { create(:organization) }
       let(:author1) { create(:user) }
-      let(:org_member1) { create(:user, :org_member, reputation_modifier: 1.0) }
-      let(:org_member2) { create(:user, :org_member, reputation_modifier: 1.0) }
+      let(:org_member1) { create(:user, reputation_modifier: 1.0) }
+      let(:org_member2) { create(:user, reputation_modifier: 1.0) }
 
       before do
-        # Add user to organization
+        # Add all users to the same organization
         create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member1, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member2, organization: organization, type_of_user: "member")
 
         # Create articles by target author
         articles_author1 = create_list(:article, 10, user: author1, published: true)
@@ -413,12 +415,14 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
       let(:organization) { create(:organization) }
       let(:author1) { create(:user) }
       let(:author2) { create(:user) }
-      let(:org_member1) { create(:user, :org_member, reputation_modifier: 1.0) }
-      let(:org_member2) { create(:user, :org_member, reputation_modifier: 1.0) }
+      let(:org_member1) { create(:user, reputation_modifier: 1.0) }
+      let(:org_member2) { create(:user, reputation_modifier: 1.0) }
 
       before do
-        # Add user to organization
+        # Add all users to the same organization
         create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member1, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member2, organization: organization, type_of_user: "member")
 
         # Create articles by target authors
         articles_author1 = create_list(:article, 10, user: author1, published: true)
@@ -444,6 +448,46 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       it "does not detect a ring due to organization membership" do
         expect(detector.call).to be false
+      end
+    end
+
+    context "when users share multiple organizations" do
+      let(:organization1) { create(:organization) }
+      let(:organization2) { create(:organization) }
+      let(:author1) { create(:user) }
+      let(:org_member1) { create(:user, reputation_modifier: 1.0) }
+      let(:org_member2) { create(:user, reputation_modifier: 1.0) }
+
+      before do
+        # Add users to multiple organizations, with some overlap
+        create(:organization_membership, user: user, organization: organization1, type_of_user: "member")
+        create(:organization_membership, user: user, organization: organization2, type_of_user: "member")
+        
+        create(:organization_membership, user: org_member1, organization: organization1, type_of_user: "member")
+        create(:organization_membership, user: org_member1, organization: organization2, type_of_user: "member")
+        
+        create(:organization_membership, user: org_member2, organization: organization1, type_of_user: "member")
+        # org_member2 is only in organization1, not organization2
+
+        # Create articles by target author
+        articles_author1 = create_list(:article, 10, user: author1, published: true)
+
+        # Create reactions by the main user
+        articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
+
+        # Create reactions by organization members
+        [org_member1, org_member2].each do |member|
+          articles_author1.each { |article| create(:reaction, user: member, reactable: article, category: "like", created_at: 2.months.ago) }
+        end
+      end
+
+      it "does not detect a ring due to shared organization membership" do
+        expect(detector.call).to be false
+
+        # Check that reputation modifiers were not changed
+        expect(user.reload.reputation_modifier).to eq(1.0)
+        expect(org_member1.reload.reputation_modifier).to eq(1.0)
+        expect(org_member2.reload.reputation_modifier).to eq(1.0)
       end
     end
   end
