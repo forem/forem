@@ -35,24 +35,21 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_id_by_domain(passed_domain)
-    result = MemoryFirstCache.fetch("subforem_id_by_domain_#{passed_domain}", redis_expires_in: 12.hours) do
+    MemoryFirstCache.fetch("subforem_id_by_domain_#{passed_domain}", redis_expires_in: 12.hours, return_type: :integer) do
       Subforem.find_by(domain: passed_domain)&.id
     end
-    result&.to_i
   end
 
   def self.cached_default_id
-    result = MemoryFirstCache.fetch("subforem_default_id", redis_expires_in: 12.hours) do
+    MemoryFirstCache.fetch("subforem_default_id", redis_expires_in: 12.hours, return_type: :integer) do
       Subforem.first&.id
     end
-    result&.to_i
   end
 
   def self.cached_root_id
-    result = MemoryFirstCache.fetch("subforem_root_id", redis_expires_in: 12.hours) do
+    MemoryFirstCache.fetch("subforem_root_id", redis_expires_in: 12.hours, return_type: :integer) do
       Subforem.find_by(root: true)&.id
     end
-    result&.to_i
   end
 
   def self.cached_domains
@@ -106,10 +103,9 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_misc_subforem_id
-    result = Rails.cache.fetch("subforem_misc_id", expires_in: 12.hours) do
+    Rails.cache.fetch("subforem_misc_id", expires_in: 12.hours) do
       Subforem.find_by(misc: true)&.id
-    end
-    result&.to_i
+    end&.to_i
   end
 
   def self.misc_subforem

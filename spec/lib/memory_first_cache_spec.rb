@@ -278,6 +278,58 @@ RSpec.describe MemoryFirstCache do
     end
   end
 
+  describe "return_type conversion" do
+    it "converts to integer type correctly" do
+      expect(memory_store).to receive(:read).with(memory_key).and_return(nil)
+      expect(rails_cache).to receive(:read).with(redis_key).and_return(nil)
+      expect(rails_cache).to receive(:write).with(redis_key, 42)
+      expect(memory_store).to receive(:write).with(memory_key, 42, expires_in: described_class::DEFAULT_MEMORY_EXPIRES_IN)
+      
+      result = described_class.fetch(redis_key, return_type: :integer) { 42 }
+      expect(result).to eq(42)
+    end
+
+    it "handles nil values with integer type" do
+      expect(memory_store).to receive(:read).with(memory_key).and_return(nil)
+      expect(rails_cache).to receive(:read).with(redis_key).and_return(nil)
+      expect(rails_cache).to receive(:write).with(redis_key, nil)
+      expect(memory_store).to receive(:write).with(memory_key, nil, expires_in: described_class::DEFAULT_MEMORY_EXPIRES_IN)
+      
+      result = described_class.fetch(redis_key, return_type: :integer) { nil }
+      expect(result).to be_nil
+    end
+
+    it "handles empty string with integer type" do
+      expect(memory_store).to receive(:read).with(memory_key).and_return(nil)
+      expect(rails_cache).to receive(:read).with(redis_key).and_return(nil)
+      expect(rails_cache).to receive(:write).with(redis_key, "")
+      expect(memory_store).to receive(:write).with(memory_key, "", expires_in: described_class::DEFAULT_MEMORY_EXPIRES_IN)
+      
+      result = described_class.fetch(redis_key, return_type: :integer) { "" }
+      expect(result).to be_nil
+    end
+
+    it "converts to boolean type correctly" do
+      expect(memory_store).to receive(:read).with(memory_key).and_return(nil)
+      expect(rails_cache).to receive(:read).with(redis_key).and_return(nil)
+      expect(rails_cache).to receive(:write).with(redis_key, "true")
+      expect(memory_store).to receive(:write).with(memory_key, "true", expires_in: described_class::DEFAULT_MEMORY_EXPIRES_IN)
+      
+      result = described_class.fetch(redis_key, return_type: :boolean) { "true" }
+      expect(result).to be(true)
+    end
+
+    it "converts to string type correctly" do
+      expect(memory_store).to receive(:read).with(memory_key).and_return(nil)
+      expect(rails_cache).to receive(:read).with(redis_key).and_return(nil)
+      expect(rails_cache).to receive(:write).with(redis_key, 42)
+      expect(memory_store).to receive(:write).with(memory_key, 42, expires_in: described_class::DEFAULT_MEMORY_EXPIRES_IN)
+      
+      result = described_class.fetch(redis_key, return_type: :string) { 42 }
+      expect(result).to eq("42")
+    end
+  end
+
   describe "performance characteristics" do
     it "memory store is faster than Redis for repeated reads" do
       # This is more of a behavioral test than a performance test
