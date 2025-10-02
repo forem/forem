@@ -139,14 +139,18 @@ RSpec.describe "UserDestroy" do
       end
 
       it "renders not_found if destroy_token != token" do
-        allow(Rails.cache).to receive(:read).and_return(SecureRandom.hex(8))
+        cache_key = "user-destroy-token-#{user.id}"
+        allow(Rails.cache).to receive(:read).with(cache_key).and_return(SecureRandom.hex(8))
+        allow(Rails.cache).to receive(:read).and_call_original
         expect do
           get user_confirm_destroy_path(token: token)
         end.to raise_error(ActionController::RoutingError)
       end
 
       it "renders template if destroy_token is correct" do
-        allow(Rails.cache).to receive(:read).and_return(token)
+        cache_key = "user-destroy-token-#{user.id}"
+        allow(Rails.cache).to receive(:read).with(cache_key).and_return(token)
+        allow(Rails.cache).to receive(:read).and_call_original
         get user_confirm_destroy_path(token: token)
         expect(response).to have_http_status(:ok)
       end

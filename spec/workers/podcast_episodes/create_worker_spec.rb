@@ -14,7 +14,8 @@ RSpec.describe PodcastEpisodes::CreateWorker, type: :worker do
     end
 
     it "creates a podcast episode" do
-      allow(Rails.cache).to receive(:read).and_return({})
+      allow(Rails.cache).to receive(:read).with(cache_key).and_return({})
+      allow(Rails.cache).to receive(:read).and_call_original
       worker.perform(podcast_id, cache_key)
 
       expect(Podcasts::CreateEpisode).to have_received(:call).with(podcast_id, {}).once
