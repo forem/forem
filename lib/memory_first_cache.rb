@@ -28,14 +28,8 @@ class MemoryFirstCache
       # 2) Fall back to Redis-backed Rails.cache (L2 cache)
       val = Rails.cache.read(redis_key)
       unless val.nil?
-        # In test environments, Rails.cache.read might return unexpected types due to mocking
-        # Skip caching and fall through to computation if we get an unexpected type
-        if block_given? && !val.is_a?(String) && !val.is_a?(Numeric) && !val.is_a?(Array) && !val.is_a?(Hash) && !val.is_a?(TrueClass) && !val.is_a?(FalseClass)
-          Rails.logger.debug "MemoryFirstCache: Skipping cache due to unexpected type #{val.class} for key #{redis_key}"
-        else
-          memory_store.write(memory_key, val, expires_in: memory_expires_in)
-          return convert_type(val, return_type)
-        end
+        memory_store.write(memory_key, val, expires_in: memory_expires_in)
+        return convert_type(val, return_type)
       end
 
       # 3) Compute-and-store if block provided
