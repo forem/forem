@@ -33,9 +33,7 @@ RSpec.describe "User destroys their profile", js: true do
   it "raises a 'Not Found' error if there is a token mismatch" do
     visit "/settings/account"
     click_button "Delete Account"
-    cache_key = "user-destroy-token-#{user.id}"
-    allow(Rails.cache).to receive(:read).with(cache_key).and_return(token)
-    allow(Rails.cache).to receive(:read).and_call_original
+    allow(Rails.cache).to receive(:read).and_return(token)
     expect do
       get user_confirm_destroy_path(token: mismatch_token)
     end.to raise_error(ActionController::RoutingError)
@@ -44,9 +42,7 @@ RSpec.describe "User destroys their profile", js: true do
   end
 
   it "destroys an account" do
-    cache_key = "user-destroy-token-#{user.id}"
-    allow(Rails.cache).to receive(:read).with(cache_key).and_return(token)
-    allow(Rails.cache).to receive(:read).and_call_original
+    allow(Rails.cache).to receive(:read).and_return(token)
     visit "/users/confirm_destroy/#{token}"
     fill_in "delete__account__username__field", with: user.username
     fill_in "delete__account__verification__field", with: "delete my account"
