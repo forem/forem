@@ -29,10 +29,7 @@ Rails.application.configure do
       # leave as-is
     end
   end
-  # Two-tier cache: fast in-process memory with short TTL + Redis as the source of truth
-  memory_store = ActiveSupport::Cache::MemoryStore.new(expires_in: 10.minutes)
-  redis_store = ActiveSupport::Cache.lookup_store(:redis_cache_store, { url: dev_cache_url, expires_in: 1.hour.to_i })
-  config.cache_store = MultiStoreCache.new(memory_store, redis_store)
+  config.cache_store = :redis_cache_store, { url: dev_cache_url, expires_in: 1.hour.to_i }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

@@ -74,10 +74,7 @@ Rails.application.configure do
   redis_url = ENV.fetch("REDISCLOUD_URL", nil)
   redis_url ||= ENV.fetch("REDIS_URL", nil)
   default_expiration = 24.hours.to_i
-  # Two-tier cache: fast in-process memory with short TTL + Redis as the source of truth
-  memory_store = ActiveSupport::Cache::MemoryStore.new(expires_in: 10.minutes)
-  redis_store = ActiveSupport::Cache.lookup_store(:redis_cache_store, { url: redis_url, expires_in: default_expiration })
-  config.cache_store = MultiStoreCache.new(memory_store, redis_store)
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
 
   config.action_mailer.perform_caching = false
 
