@@ -1,7 +1,5 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
-<link rel="prefetch" href="/reactions?article_id=<%= @article.id %>">
-
 <style>
   .html-variant-wrapper { display: none}
 </style>
@@ -37,6 +35,7 @@
   <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
+    <link rel="preload" href="/reactions?article_id=<%= @article.id %>" as="fetch" crossorigin="same-origin">
     <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
     <%= meta_keywords_article(@article.cached_tag_list) %>

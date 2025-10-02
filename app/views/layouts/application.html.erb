@@ -15,6 +15,7 @@
     <meta charset="utf-8">
     <% title = yield(:title) %>
     <title><%= title || community_name.to_s %></title>
+    <%= yield(:page_meta) %>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
@@ -35,7 +36,6 @@
       <% if user_signed_in? %>
         <%= javascript_include_tag "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
-      <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
       <%= favicon_link_tag Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>
       <link rel="apple-touch-icon" href="<%= optimized_image_url(Settings::General.logo_png, width: 180, fetch_format: "png") %>">
