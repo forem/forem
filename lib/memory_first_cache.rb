@@ -1,6 +1,9 @@
 class MemoryFirstCache
   DEFAULT_MEMORY_EXPIRES_IN = 10.minutes
 
+  # Thread safety for memory store initialization
+  @memory_store_mutex = Mutex.new
+
   class << self
     def fetch(redis_key, memory_expires_in: DEFAULT_MEMORY_EXPIRES_IN, redis_expires_in: nil, return_type: nil)
       memory_key = memory_key_for(redis_key)
@@ -43,11 +46,22 @@ class MemoryFirstCache
       @memory_store = nil
     end
 
+    # For cross-process cache invalidation
+    # In production, consider using Redis Pub/Sub to notify other processes
+    # when keys are invalidated to prevent stale data in L1 caches
+    def invalidate_key(redis_key)
+      memory_key = memory_key_for(redis_key)
+      memory_store.delete(memory_key)
+      Rails.cache.delete(redis_key)
+    end
+
     private
 
     def convert_type(value, return_type)
       return value if return_type.nil? || value.nil?
       
+      # Handle type conversion for cases where Redis or other cache stores
+      # may stringify values, or when we need explicit type coercion
       case return_type
       when :integer
         return nil if value == ""
@@ -75,7 +89,13 @@ class MemoryFirstCache
     end
 
     def memory_store
-      @memory_store ||= ActiveSupport::Cache::MemoryStore.new(expires_in: DEFAULT_MEMORY_EXPIRES_IN)
+      # First check is an optimization to avoid the mutex lock on every call
+      return @memory_store if @memory_store
+
+      @memory_store_mutex.synchronize do
+        # Second check is the critical one to prevent the race condition
+        @memory_store ||= ActiveSupport::Cache::MemoryStore.new(expires_in: DEFAULT_MEMORY_EXPIRES_IN)
+      end
     end
   end
 end
