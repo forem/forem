@@ -151,7 +151,10 @@ RSpec.describe "feedback_messages" do
       end
 
       it "doesn't queue an email when cache is set" do
-        allow(Rails.cache).to receive(:read).and_return(Time.current)
+        cache_key = "#{user.cache_key}/feedback-response-sent-at"
+        allow(Rails.cache).to receive(:fetch).with(cache_key, anything).and_return(Time.current)
+        allow(Rails.cache).to receive(:fetch).and_call_original
+        
         expect do
           perform_enqueued_jobs do
             post feedback_messages_path, params: valid_abuse_report_params, headers: headers
