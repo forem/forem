@@ -13,7 +13,7 @@ RSpec.describe MultiStoreCache do
 
   describe "#read" do
     it "reads from the primary store only" do
-      expect(primary_store).to receive(:read).with(key, nil).and_return(value)
+      expect(primary_store).to receive(:read).with(key, {}).and_return(value)
       expect(secondary_store).not_to receive(:read)
 
       result = multi_store_cache.read(key)
@@ -23,8 +23,8 @@ RSpec.describe MultiStoreCache do
 
   describe "#write" do
     it "writes to both primary and secondary stores" do
-      expect(primary_store).to receive(:write).with(key, value, nil)
-      expect(secondary_store).to receive(:write).with(key, value, nil)
+      expect(primary_store).to receive(:write).with(key, value, {})
+      expect(secondary_store).to receive(:write).with(key, value, {})
 
       multi_store_cache.write(key, value)
     end

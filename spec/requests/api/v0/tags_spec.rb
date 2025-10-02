@@ -2,6 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Tags" do
   describe "GET /api/tags" do
+    before do
+      # Clear RequestStore to ensure clean state
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      RequestStore.store[:root_subforem_id] = nil
+    end
+
     it "returns tags" do
       create(:tag, taggings_count: 10)
 
