@@ -89,7 +89,7 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_discoverable_ids
-    MemoryFirstCache.fetch("subforem_discoverable_ids", redis_expires_in: 12.hours, return_type: :integer) do
+    MemoryFirstCache.fetch("subforem_discoverable_ids", redis_expires_in: 12.hours) do
       Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id)
     end
   end
