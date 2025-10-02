@@ -169,14 +169,6 @@ RSpec.describe MemoryFirstCache do
     end
   end
 
-  describe ".invalidate_key" do
-    it "invalidates key from both memory and Redis" do
-      expect(memory_store).to receive(:delete).with(memory_key)
-      expect(rails_cache).to receive(:delete).with(redis_key)
-
-      described_class.invalidate_key(redis_key)
-    end
-  end
 
   describe "memory key generation" do
     it "generates correct memory key format" do

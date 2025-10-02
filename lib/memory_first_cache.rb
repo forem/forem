@@ -1,3 +1,9 @@
+# MemoryFirstCache provides an L1/L2 cache pattern:
+# - L1: In-process memory cache (fast, local)
+# - L2: Redis cache (shared, distributed)
+#
+# This reduces latency and lessens load on Redis for frequently accessed data.
+# The cache tries memory first, then Redis, then computes the value if needed.
 class MemoryFirstCache
   DEFAULT_MEMORY_EXPIRES_IN = 10.minutes
 
@@ -5,14 +11,21 @@ class MemoryFirstCache
   @memory_store_mutex = Mutex.new
 
   class << self
+    # Main method for fetching cached values with L1/L2 fallback
+    # 
+    # @param redis_key [String] The key to fetch from cache
+    # @param memory_expires_in [Integer] TTL for memory cache (default: 10 minutes)
+    # @param redis_expires_in [Integer] TTL for Redis cache (default: Rails cache behavior)
+    # @param return_type [Symbol] Type conversion (:integer, :boolean, :string, :float, :symbol)
+    # @return [Object] The cached value, converted to specified type if requested
     def fetch(redis_key, memory_expires_in: DEFAULT_MEMORY_EXPIRES_IN, redis_expires_in: nil, return_type: nil)
       memory_key = memory_key_for(redis_key)
 
-      # 1) Try in-process memory first
+      # 1) Try in-process memory first (L1 cache)
       mem = memory_store.read(memory_key)
       return convert_type(mem, return_type) unless mem.nil?
 
-      # 2) Fall back to Redis-backed Rails.cache
+      # 2) Fall back to Redis-backed Rails.cache (L2 cache)
       val = Rails.cache.read(redis_key)
       unless val.nil?
         memory_store.write(memory_key, val, expires_in: memory_expires_in)
@@ -33,26 +46,21 @@ class MemoryFirstCache
       convert_type(computed, return_type)
     end
 
+    # Delete a key from both memory and Redis caches
     def delete(redis_key)
       memory_store.delete(memory_key_for(redis_key))
       Rails.cache.delete(redis_key)
     end
 
+    # Clear all keys from the memory store
     def clear
       memory_store.clear
     end
 
+    # Reset the memory store instance (primarily for testing)
+    # This forces a new memory store to be created on next access
     def reset_memory_store!
       @memory_store = nil
-    end
-
-    # For cross-process cache invalidation
-    # In production, consider using Redis Pub/Sub to notify other processes
-    # when keys are invalidated to prevent stale data in L1 caches
-    def invalidate_key(redis_key)
-      memory_key = memory_key_for(redis_key)
-      memory_store.delete(memory_key)
-      Rails.cache.delete(redis_key)
     end
 
     private
