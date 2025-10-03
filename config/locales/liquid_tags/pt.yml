@@ -5,6 +5,8 @@ pt:
       invalid_asciinema_id: 'ID do Asciinema inválido: %{id}'
     blogcast_tag:
       invalid_blogcast_id: ID do Blogcast inválido
+    cloud_run_tag:
+      invalid_cloud_run_url: URL do Cloud Run inválida
     codepen_tag:
       invalid_codepen_url: URL do CodePen inválida
       invalid_options: Opções inválidas
