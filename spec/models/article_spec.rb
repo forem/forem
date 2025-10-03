@@ -2300,6 +2300,68 @@ RSpec.describe Article do
     end
   end
 
+  describe "#public_reaction_categories cache invalidation" do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+
+    before do
+      # Create initial reactions
+      create(:reaction, reactable: article, category: "like", user: user1)
+      create(:reaction, reactable: article, category: "unicorn", user: user2)
+    end
+
+    it "invalidates cache when reactions are created" do
+      # Get initial categories
+      initial_categories = article.public_reaction_categories
+      expect(initial_categories.map(&:slug)).to match_array(%i[like unicorn])
+
+      # Create a new reaction
+      create(:reaction, reactable: article, category: "fire", user: user3)
+
+      # Verify cache is invalidated and new categories are returned
+      updated_categories = article.public_reaction_categories
+      expect(updated_categories.map(&:slug)).to match_array(%i[like unicorn fire])
+    end
+
+    it "invalidates cache when reactions are destroyed" do
+      # Get initial categories
+      initial_categories = article.public_reaction_categories
+      expect(initial_categories.map(&:slug)).to match_array(%i[like unicorn])
+
+      # Destroy a reaction
+      article.reactions.find_by(category: "like", user: user1).destroy
+
+      # Verify cache is invalidated and categories are updated
+      updated_categories = article.public_reaction_categories
+      expect(updated_categories.map(&:slug)).to match_array(%i[unicorn])
+    end
+
+    it "does not use instance variable memoization" do
+      # Call the method multiple times
+      categories1 = article.public_reaction_categories
+      categories2 = article.public_reaction_categories
+
+      # Should not be the same object (no memoization)
+      expect(categories1).not_to be(categories2)
+      # But should have the same content
+      expect(categories1.map(&:slug)).to eq(categories2.map(&:slug))
+    end
+
+    it "uses the correct cache key for reaction counts" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Clear any existing cache
+      Rails.cache.delete(cache_key)
+      
+      # Call the method to populate cache
+      article.public_reaction_categories
+      
+      # Verify cache was created
+      expect(Rails.cache.exist?(cache_key)).to be true
+    end
+  end
+
   describe ".above_average and .average_score" do
     context "when there are not yet any articles with score above 0" do
       it "works as expected" do

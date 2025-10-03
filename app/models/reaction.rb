@@ -59,9 +59,10 @@ class Reaction < ApplicationRecord
   before_save :assign_points
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_destroy :bust_reactable_cache_without_delay
+  before_destroy :bust_reaction_counts_cache
   before_destroy :update_reactable, unless: :destroyed_by_association
   after_commit :async_bust
-  after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
+  after_commit :bust_reactable_cache, :update_reactable, :bust_reaction_counts_cache, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
   after_commit :check_for_reaction_ring, on: :create
 
@@ -201,6 +202,10 @@ class Reaction < ApplicationRecord
 
   def bust_reactable_cache_without_delay
     Reactions::BustReactableCacheWorker.new.perform(id)
+  end
+
+  def bust_reaction_counts_cache
+    Rails.cache.delete "reaction_counts_for_reactable-#{reactable_type}-#{reactable_id}"
   end
 
   def assign_points

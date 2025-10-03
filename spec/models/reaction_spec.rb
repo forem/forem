@@ -372,4 +372,78 @@ RSpec.describe Reaction do
       expect(described_class.live_reactable.to_a).to eq([])
     end
   end
+
+  describe "cache invalidation" do
+    let(:article) { create(:article) }
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+
+    before do
+      # Create initial reactions to populate cache
+      create(:reaction, reactable: article, category: "like", user: user1)
+      create(:reaction, reactable: article, category: "unicorn", user: user2)
+    end
+
+    it "invalidates reaction_counts_for_reactable cache on create" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Ensure cache exists
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Create a new reaction
+      expect do
+        create(:reaction, reactable: article, category: "fire", user: user1)
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "invalidates reaction_counts_for_reactable cache on destroy" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Ensure cache exists
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Destroy a reaction
+      reaction = article.reactions.find_by(category: "like", user: user1)
+      expect do
+        reaction.destroy
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "invalidates reaction_counts_for_reactable cache on update" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Ensure cache exists
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Update a reaction
+      reaction = article.reactions.find_by(category: "like", user: user1)
+      expect do
+        reaction.update!(category: "fire")
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "calls bust_reaction_counts_cache method" do
+      reaction = build(:reaction, reactable: article, category: "fire", user: user1)
+      
+      expect(reaction).to receive(:bust_reaction_counts_cache).and_call_original
+      reaction.save!
+    end
+
+    it "bust_reaction_counts_cache deletes the correct cache key" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Populate cache
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Create reaction which should bust cache
+      create(:reaction, reactable: article, category: "fire", user: user1)
+      
+      # Cache should be deleted
+      expect(Rails.cache.exist?(cache_key)).to be false
+    end
+  end
 end

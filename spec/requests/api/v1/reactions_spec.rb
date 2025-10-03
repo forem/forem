@@ -120,4 +120,54 @@ RSpec.describe "Api::V1::Reactions" do
       end
     end
   end
+
+  describe "cache invalidation" do
+    include_context "when user is authorized"
+    
+    let(:article) { create(:article) }
+    let(:params) do
+      {
+        reactable_type: "Article",
+        reactable_id: article.id.to_s,
+        category: "like"
+      }
+    end
+
+    it "invalidates reaction_counts_for_reactable cache when creating a reaction" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Populate cache
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Create reaction via API
+      expect do
+        post api_reactions_create_path, params: params.to_json, headers: auth_header
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "invalidates reaction_counts_for_reactable cache when toggling a reaction" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Create initial reaction
+      create(:reaction, reactable: article, category: "like", user: user)
+      
+      # Populate cache
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Toggle reaction (destroy) via API
+      expect do
+        post api_reactions_toggle_path, params: params.to_json, headers: auth_header
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "calls remove_reaction_counts_cache_key method" do
+      allow_any_instance_of(Api::V1::ReactionsController).to receive(:remove_reaction_counts_cache_key).and_call_original
+      
+      post api_reactions_create_path, params: params.to_json, headers: auth_header
+      
+      expect_any_instance_of(Api::V1::ReactionsController).to have_received(:remove_reaction_counts_cache_key)
+    end
+  end
 end

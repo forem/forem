@@ -575,4 +575,74 @@ RSpec.describe "Stories::Feeds" do
       end
     end
   end
+
+  describe "public_reaction_categories cache invalidation" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+
+    before do
+      # Create initial reactions
+      create(:reaction, reactable: article, category: "like", user: user2)
+      create(:reaction, reactable: article, category: "unicorn", user: user3)
+    end
+
+    it "returns fresh public_reaction_categories after reactions are added" do
+      # Get initial feed response
+      get stories_feed_path
+      initial_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(initial_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn])
+
+      # Add a new reaction
+      create(:reaction, reactable: article, category: "fire", user: user)
+
+      # Get updated feed response
+      get stories_feed_path
+      updated_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(updated_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
+    end
+
+    it "returns fresh public_reaction_categories after reactions are removed" do
+      # Get initial feed response
+      get stories_feed_path
+      initial_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(initial_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn])
+
+      # Remove a reaction
+      article.reactions.find_by(category: "like", user: user2).destroy
+
+      # Get updated feed response
+      get stories_feed_path
+      updated_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(updated_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[unicorn])
+    end
+
+    it "returns empty public_reaction_categories when no public reactions exist" do
+      # Remove all public reactions
+      article.reactions.public_category.destroy_all
+
+      get stories_feed_path
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["public_reaction_categories"]).to eq([])
+    end
+
+    it "does not return stale cached data" do
+      # Populate cache with initial data
+      article.public_reaction_categories
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      expect(Rails.cache.exist?(cache_key)).to be true
+
+      # Add a new reaction (should invalidate cache)
+      create(:reaction, reactable: article, category: "fire", user: user)
+
+      # Verify cache was invalidated
+      expect(Rails.cache.exist?(cache_key)).to be false
+
+      # Get feed response should show fresh data
+      get stories_feed_path
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
+    end
+  end
 end

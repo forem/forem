@@ -432,4 +432,50 @@ RSpec.describe "Reactions" do
       end
     end
   end
+
+  describe "cache invalidation" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+
+    before do
+      sign_in user
+    end
+
+    it "invalidates reaction_counts_for_reactable cache when creating a reaction" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Populate cache
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Create reaction via controller
+      expect do
+        post "/reactions", params: { reactable_type: "Article", reactable_id: article.id, category: "like" }
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "invalidates reaction_counts_for_reactable cache when toggling a reaction" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Create initial reaction
+      create(:reaction, reactable: article, category: "like", user: user)
+      
+      # Populate cache
+      article.public_reaction_categories
+      expect(Rails.cache.exist?(cache_key)).to be true
+      
+      # Toggle reaction (destroy) via controller
+      expect do
+        post "/reactions", params: { reactable_type: "Article", reactable_id: article.id, category: "like" }
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+    end
+
+    it "calls remove_reaction_counts_cache_key method" do
+      allow_any_instance_of(ReactionsController).to receive(:remove_reaction_counts_cache_key).and_call_original
+      
+      post "/reactions", params: { reactable_type: "Article", reactable_id: article.id, category: "like" }
+      
+      expect_any_instance_of(ReactionsController).to have_received(:remove_reaction_counts_cache_key)
+    end
+  end
 end
