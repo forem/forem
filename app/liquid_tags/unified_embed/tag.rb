@@ -90,11 +90,25 @@ module UnifiedEmbed
     def self.private_ip?(hostname)
       return true if %w[localhost 127.0.0.1 ::1].include?(hostname)
       
-      ip = IPAddr.new(hostname)
-      ip.private? || ip.loopback? || ip.link_local?
-    rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
-      # If hostname resolution fails, allow it (will fail during HTTP request)
-      false
+      # First try to parse as IP address directly
+      begin
+        ip = IPAddr.new(hostname)
+        return ip.private? || ip.loopback? || ip.link_local?
+      rescue IPAddr::InvalidAddressError
+        # Not an IP address, try to resolve hostname
+      end
+      
+      # Resolve hostname to IP addresses and check each one
+      begin
+        Addrinfo.getaddrinfo(hostname, nil, nil, :STREAM).each do |addr|
+          ip = IPAddr.new(addr.ip_address)
+          return true if ip.private? || ip.loopback? || ip.link_local?
+        end
+        false
+      rescue SocketError, IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
+        # If hostname resolution fails, allow it (will fail during HTTP request anyway)
+        false
+      end
     end
   end
 end

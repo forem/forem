@@ -219,4 +219,144 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       expect(liquid.render).to include("c-embed")
     end
   end
+
+  describe "SSRF protection" do
+    describe "#private_ip?" do
+      it "blocks localhost variations" do
+        expect(described_class.private_ip?("localhost")).to be_truthy
+        expect(described_class.private_ip?("127.0.0.1")).to be_truthy
+        expect(described_class.private_ip?("::1")).to be_truthy
+      end
+
+      it "blocks private IPv4 ranges" do
+        expect(described_class.private_ip?("192.168.1.1")).to be_truthy
+        expect(described_class.private_ip?("10.0.0.1")).to be_truthy
+        expect(described_class.private_ip?("172.16.0.1")).to be_truthy
+      end
+
+      it "blocks loopback addresses" do
+        expect(described_class.private_ip?("127.0.0.2")).to be_truthy
+      end
+
+      it "allows public IP addresses" do
+        expect(described_class.private_ip?("8.8.8.8")).to be_falsy
+        expect(described_class.private_ip?("1.1.1.1")).to be_falsy
+        expect(described_class.private_ip?("208.67.222.222")).to be_falsy
+      end
+
+      it "allows public domain names" do
+        # Stub DNS resolution to return public IP
+        allow(Addrinfo).to receive(:getaddrinfo).with("github.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "140.82.112.3")])
+        
+        expect(described_class.private_ip?("github.com")).to be_falsy
+      end
+
+      it "blocks domain names that resolve to private IPs" do
+        # Stub DNS resolution to return private IP
+        allow(Addrinfo).to receive(:getaddrinfo).with("internal.company.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "192.168.1.100")])
+        
+        expect(described_class.private_ip?("internal.company.com")).to be_truthy
+      end
+
+      it "allows domains that fail to resolve" do
+        allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError.new("Name resolution failure"))
+        
+        expect(described_class.private_ip?("nonexistent.domain")).to be_falsy
+      end
+    end
+
+    describe "validate_link with SSRF protection" do
+      it "raises error for private IP addresses" do
+        expect do
+          described_class.validate_link(input: "http://192.168.1.1/test")
+        end.to raise_error(StandardError, /invalid_url/)
+      end
+
+      it "raises error for localhost" do
+        expect do
+          described_class.validate_link(input: "http://localhost:3000/test")
+        end.to raise_error(StandardError, /invalid_url/)
+      end
+
+      it "allows public domains" do
+        link = "https://github.com/forem/forem"
+        
+        # Stub DNS resolution to return public IP
+        allow(Addrinfo).to receive(:getaddrinfo).with("github.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "140.82.112.3")])
+        
+        stub_network_request(url: link)
+        
+        expect do
+          described_class.validate_link(input: link)
+        end.not_to raise_error
+      end
+
+      it "bypasses SSRF protection for Twitter/X URLs" do
+        twitter_link = "https://twitter.com/user/status/123"
+        
+        expect do
+          described_class.validate_link(input: twitter_link)
+        end.not_to raise_error
+      end
+
+      it "bypasses SSRF protection for Bluesky URLs" do
+        bsky_link = "https://bsky.app/profile/user.bsky.social/post/abc123"
+        
+        expect do
+          described_class.validate_link(input: bsky_link)
+        end.not_to raise_error
+      end
+    end
+
+    describe "HTTP timeout settings" do
+      it "sets proper timeout values during validation" do
+        link = "https://example.com/test"
+        
+        # Stub DNS resolution
+        allow(Addrinfo).to receive(:getaddrinfo).with("example.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "93.184.216.34")])
+        
+        # Mock the HTTP object to verify timeouts are set
+        http_mock = instance_double(Net::HTTP)
+        allow(Net::HTTP).to receive(:new).and_return(http_mock)
+        allow(http_mock).to receive(:use_ssl=)
+        allow(http_mock).to receive(:open_timeout=).with(10)
+        allow(http_mock).to receive(:read_timeout=).with(15)
+        allow(http_mock).to receive(:request).and_return(Net::HTTPSuccess.new("1.1", "200", "OK"))
+        
+        described_class.validate_link(input: link)
+        
+        expect(http_mock).to have_received(:open_timeout=).with(10)
+        expect(http_mock).to have_received(:read_timeout=).with(15)
+      end
+    end
+
+    describe "CloudFlare-compatible User-Agent" do
+      it "uses ForemLinkValidator User-Agent format" do
+        link = "https://example.com/test"
+        
+        # Stub DNS resolution
+        allow(Addrinfo).to receive(:getaddrinfo).with("example.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "93.184.216.34")])
+        
+        # Mock HTTP request to capture User-Agent
+        http_mock = instance_double(Net::HTTP)
+        request_mock = instance_double(Net::HTTP::Head)
+        allow(Net::HTTP).to receive(:new).and_return(http_mock)
+        allow(Net::HTTP::Head).to receive(:new).and_return(request_mock)
+        allow(http_mock).to receive(:use_ssl=)
+        allow(http_mock).to receive(:open_timeout=)
+        allow(http_mock).to receive(:read_timeout=)
+        allow(http_mock).to receive(:request).and_return(Net::HTTPSuccess.new("1.1", "200", "OK"))
+        
+        # Capture User-Agent assignment
+        expect(request_mock).to receive(:[]=).with("User-Agent", match(/^ForemLinkValidator\/1\.0 \(/))
+        
+        described_class.validate_link(input: link)
+      end
+    end
+  end
 end

@@ -2920,6 +2920,55 @@ RSpec.describe Article do
         expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
       end
 
+      it "handles URLs with trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check out this site: https://example.com! Amazing stuff.",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "handles URLs with multiple trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Wow... https://example.com!!!",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "preserves URLs that don't have trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check this https://example.com/path endpoint",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com/path minimal %}")
+      end
+
+      it "handles mixed URLs with and without trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Sites: https://first.com, and https://second.org! Plus https://third.net here",
+                        body_markdown: "")
+
+        article.valid?
+
+        expected = "{% embed https://first.com minimal %}\n{% embed https://second.org minimal %}\n{% embed https://third.net minimal %}"
+        expect(article.body_markdown).to eq(expected)
+      end
+
       it "does not re-add embed tags when updating other attributes" do
         article = create(:published_article,
                          user: user,
@@ -3055,6 +3104,68 @@ RSpec.describe Article do
     it "handles whitespace around line breaks" do
       article.title = "Line one\n  \n  Line two"
       expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
+    end
+  end
+
+  describe "#extract_url_from_status_title" do
+    let(:article) { build(:article, type_of: "status", body_url: nil) }
+
+    it "extracts first URL from title and sets body_url" do
+      article.title = "Check this out: https://example.com"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "extracts only first URL when multiple URLs present" do
+      article.title = "Sites: https://first.com and https://second.org"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://first.com")
+    end
+
+    it "removes trailing punctuation from URLs" do
+      article.title = "Amazing site: https://example.com!"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "handles URLs with multiple trailing punctuation" do
+      article.title = "Wow... https://example.com!!!"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "preserves URLs without trailing punctuation" do
+      article.title = "Check https://example.com/path endpoint"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com/path")
+    end
+
+    it "handles URLs with query parameters and fragments" do
+      article.title = "Complex: https://example.com/path?param=value#fragment"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com/path?param=value#fragment")
+    end
+
+    it "does not change body_url when no URLs found" do
+      article.title = "Just a regular title with no URLs"
+      original_body_url = article.body_url
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq(original_body_url)
+    end
+
+    it "does not extract URLs when body_url is already set" do
+      article.title = "Check this: https://example.com"
+      article.body_url = "https://existing.com"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://existing.com")
+    end
+
+    it "does not extract URLs for non-status type articles" do
+      regular_article = build(:article, type_of: "full_post")
+      regular_article.title = "Check this: https://example.com"
+      original_body_url = regular_article.body_url
+      regular_article.extract_url_from_status_title
+      expect(regular_article.body_url).to eq(original_body_url)
     end
   end
 
