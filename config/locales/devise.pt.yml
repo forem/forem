@@ -1,0 +1,41 @@
+---
+pt:
+  devise:
+    confirmations:
+      confirmed: "Sua conta foi confirmada com sucesso."
+      send_instructions: "Você receberá um e-mail com instruções para confirmar sua conta em alguns minutos."
+    failure:
+      already_authenticated: "Você já está logado."
+      inactive: "Sua conta não foi ativada ainda."
+      invalid: "E-mail ou senha inválidos."
+      locked: "Sua conta está bloqueada."
+      unauthenticated: "Você precisa fazer login ou se registrar antes de continuar."
+      unconfirmed: "Você precisa confirmar sua conta antes de continuar."
+    mailer:
+      confirmation_instructions:
+        subject: "Instruções de confirmação"
+      reset_password_instructions:
+        subject: "Instruções para redefinir senha"
+    passwords:
+      send_instructions: "Você receberá um e-mail com instruções para redefinir sua senha em alguns minutos."
+      updated: "Sua senha foi alterada com sucesso. Você está logado agora."
+    registrations:
+      destroyed: "Tchau! Sua conta foi cancelada com sucesso."
+      signed_up: "Bem-vindo! Você se registrou com sucesso."
+      updated: "Sua conta foi atualizada com sucesso."
+    sessions:
+      signed_in: "Logado com sucesso."
+      signed_out: "Deslogado com sucesso."
+    unlocks:
+      send_instructions: "Você receberá um e-mail com instruções para desbloquear sua conta em alguns minutos."
+      unlocked: "Sua conta foi desbloqueada com sucesso. Por favor, faça login para continuar."
+  errors:
+    messages:
+      not_saved:
+        one: "1 erro impediu que %{resource} fosse salvo:"
+        other: "%{count} erros impediram que %{resource} fosse salvo:"
+      already_confirmed: já foi confirmado, por favor tente fazer login
+      confirmation_period_expired: expirou em %{period}, por favor solicite um novo
+      expired: expirou, por favor solicite um novo
+      not_found: não encontrado
+      not_locked: não estava bloqueado

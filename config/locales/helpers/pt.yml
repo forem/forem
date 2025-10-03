@@ -1,0 +1,620 @@
+---
+pt:
+  helpers:
+    label:
+      listing:
+        body_markdown: Markdown do Corpo
+        expires_at: Data de Expiração Personalizada
+        location: Localização
+        organization_id: Postar sob uma organização
+        tag_list: Tags
+        title: Título
+      organization:
+        name: Nome
+        slug: Nome de usuário
+        profile_image: Imagem do perfil
+        twitter_username: Nome de usuário do Twitter
+        github_username: Nome de usuário do GitHub
+        url: URL do site
+        tag_line: Slogan
+        summary: Resumo
+        location: Localização
+        email: E-mail de suporte
+        company_size: Tamanho da organização
+        story: Nossa história
+        tech_stack: Nossa stack
+        cta_body_markdown: Texto do corpo
+        cta_button_text: Texto do link
+        cta_button_url: URL do link
+        proof: Prova
+      podcast:
+        android_url: URL do Android
+        description: Descrição
+        feed_url: URL do feed
+        image: Imagem
+        itunes_url: URL do iTunes
+        main_color_hex: Cor principal hex
+        overcast_url: URL do Overcast
+        pattern_image: Imagem do padrão
+        slug: Slug
+        soundcloud_url: URL do Soundcloud
+        title: Título
+        twitter_username: Nome de usuário do Twitter
+        website_url: URL do site
+      response_template:
+        title: Título
+        content: Corpo do comentário (Markdown)
+      user:
+        name: Nome
+        email: E-mail
+        username: Nome de usuário
+        profile_image: Imagem do perfil
+      users_notification_setting:
+        email_newsletter: Envie-me e-mails de newsletter semanais
+        email_digest_periodic: Envie-me um resumo periódico dos principais posts das
+          minhas tags
+        email_tag_mod_newsletter: Envie-me e-mails de newsletter de moderador de tags
+        email_community_mod_newsletter: Envie-me e-mails de newsletter de moderador
+          da comunidade
+        email_comment_notifications: Envie-me um e-mail quando alguém responder a
+          mim em um thread de comentário
+        email_follower_notifications: Envie-me um e-mail quando alguém novo me seguir
+        email_mention_notifications: Envie-me um e-mail quando alguém me mencionar
+        email_badge_notifications: Envie-me um e-mail quando eu receber um badge
+        email_unread_notifications: Envie-me lembretes ocasionais de que tenho notificações
+          não lidas no %{community}
+        mobile_mention_notifications: Envie-me uma notificação push quando alguém
+          me mencionar
+        mobile_comment_notifications: Envie-me uma notificação push quando alguém
+          responder a mim em um thread de comentário
+        welcome_notifications: Envie-me dicas ocasionais sobre como melhorar minha
+          experiência no %{community}
+        email_community_broadcast: Envie-me e-mails de transmissão da comunidade
+        mobile_new_follower_notifications: Envie-me notificações push quando alguém
+          novo me seguir
+        mobile_unread_notifications: Envie-me notificações push quando eu tiver notificações
+          não lidas no %{community}
+        mod_team_notifications: Envie-me notificações da equipe de moderação
+        reaction_notifications: Envie notificações quando alguém reagir ao meu conteúdo,
+          como comentários ou posts
+        mod_roundrobin_notifications: Envie-me notificações sobre nova atividade de
+          membros
+      users_setting:
+        email_community_broadcast: Envie-me e-mails de transmissão da comunidade
+        mobile_new_follower_notifications: Envie-me notificações push quando alguém
+          novo me seguir
+        mobile_unread_notifications: Envie-me notificações push quando eu tiver notificações
+          não lidas no %{community}
+        mod_team_notifications: Envie-me notificações da equipe de moderação
+        reaction_notifications: Envie notificações quando alguém reagir ao meu conteúdo,
+          como comentários ou posts
+        feed_url: URL do Feed RSS
+      placeholder:
+        user:
+          name: João Silva
+          email: joao.silva@exemplo.com
+          username: joaosilva
+          feed_url: https://seusite.com/feed
+        organization:
+          name: Empresa Exemplo Ltda.
+          slug: empresaexemplo
+          url: https://seusite.com
+          location: São Paulo, Brasil
+          email: contato@exemplo.com
+          company_size: "..."
+          story: "..."
+          tech_stack: "..."
+          cta_body_markdown: "..."
+          cta_button_text: Visitar Site da Empresa
+          cta_button_url: https://exemplo.com
+          proof: "..."
+        response_template:
+          title: "..."
+      page_entries_info:
+        more_pages:
+          display_entries: Mostrando %{entry_name} %{from}-%{to} de %{count} no total
+      listing_helper:
+        option:
+          one: "%{count} opção"
+          other: "%{count} opções"
+      video:
+        title: Title
+        description: Description
+        video_url: Video URL
+        video_source_url_key: Video source URL key
+        video_thumbnail_url: Video thumbnail URL
+        video_closed_caption_track_url: Video closed caption track URL
+        video_source_url: Video source URL
+        video_code: Video code
+        video_source: Video source
+        video_embed: Video embed
+        video_embed_html: Video embed HTML
+        video_embed_html_5: Video embed HTML5
+        video_embed_html_5_with_caption: Video embed HTML5 with caption
+        video_embed_html_5_with_caption_and_autoplay: Video embed HTML5 with caption
+          and autoplay
+        video_embed_html_5_with_autoplay: Video embed HTML5 with autoplay
+        video_embed_html_5_with_caption_and_autoplay_and_loop: Video embed HTML5 with
+          caption, autoplay and loop
+        video_embed_html_5_with_autoplay_and_loop: Video embed HTML5 with autoplay
+          and loop
+        video_embed_html_5_with_caption_and_loop: Video embed HTML5 with caption and
+          loop
+        video_embed_html_5_with_loop: Video embed HTML5 with loop
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted: Video embed
+          HTML5 with caption, autoplay, loop and muted
+        video_embed_html_5_with_autoplay_and_loop_and_muted: Video embed HTML5 with
+          autoplay, loop and muted
+        video_embed_html_5_with_caption_and_loop_and_muted: Video embed HTML5 with
+          caption, loop and muted
+        video_embed_html_5_with_loop_and_muted: Video embed HTML5 with loop and muted
+        video_embed_html_5_with_caption_and_autoplay_and_muted: Video embed HTML5
+          with caption, autoplay and muted
+        video_embed_html_5_with_autoplay_and_muted: Video embed HTML5 with autoplay
+          and muted
+        video_embed_html_5_with_caption_and_muted: Video embed HTML5 with caption
+          and muted
+        video_embed_html_5_with_muted: Video embed HTML5 with muted
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_controls: Video
+          embed HTML5 with caption, autoplay, loop, muted and controls
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_controls: Video embed
+          HTML5 with autoplay, loop, muted and controls
+        video_embed_html_5_with_caption_and_loop_and_muted_and_controls: Video embed
+          HTML5 with caption, loop, muted and controls
+        video_embed_html_5_with_loop_and_muted_and_controls: Video embed HTML5 with
+          loop, muted and controls
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_controls: Video
+          embed HTML5 with caption, autoplay, muted and controls
+        video_embed_html_5_with_autoplay_and_muted_and_controls: Video embed HTML5
+          with autoplay, muted and controls
+        video_embed_html_5_with_caption_and_muted_and_controls: Video embed HTML5
+          with caption, muted and controls
+        video_embed_html_5_with_muted_and_controls: Video embed HTML5 with muted and
+          controls
+        video_embed_html_5_with_caption_and_autoplay_and_controls: Video embed HTML5
+          with caption, autoplay and controls
+        video_embed_html_5_with_autoplay_and_controls: Video embed HTML5 with autoplay
+          and controls
+        video_embed_html_5_with_caption_and_controls: Video embed HTML5 with caption
+          and controls
+        video_embed_html_5_with_controls: Video embed HTML5 with controls
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_controls: Video
+          embed HTML5 with caption, autoplay, loop and controls
+        video_embed_html_5_with_autoplay_and_loop_and_controls: Video embed HTML5
+          with autoplay, loop and controls
+        video_embed_html_5_with_caption_and_loop_and_controls: Video embed HTML5 with
+          caption, loop and controls
+        video_embed_html_5_with_loop_and_controls: Video embed HTML5 with loop and
+          controls
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with caption, autoplay, loop, muted, controls and playsinline
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with autoplay, loop, muted, controls and playsinline
+        video_embed_html_5_with_caption_and_loop_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with caption, loop, muted, controls and playsinline
+        video_embed_html_5_with_loop_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with loop, muted, controls and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with caption, autoplay, muted, controls and playsinline
+        video_embed_html_5_with_autoplay_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with autoplay, muted, controls and playsinline
+        video_embed_html_5_with_caption_and_muted_and_controls_and_playsinline: Video
+          embed HTML5 with caption, muted, controls and playsinline
+        video_embed_html_5_with_muted_and_controls_and_playsinline: Video embed HTML5
+          with muted, controls and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_controls_and_playsinline: Video
+          embed HTML5 with caption, autoplay, controls and playsinline
+        video_embed_html_5_with_autoplay_and_controls_and_playsinline: Video embed
+          HTML5 with autoplay, controls and playsinline
+        video_embed_html_5_with_caption_and_controls_and_playsinline: Video embed
+          HTML5 with caption, controls and playsinline
+        video_embed_html_5_with_controls_and_playsinline: Video embed HTML5 with controls
+          and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_controls_and_playsinline: Video
+          embed HTML5 with caption, autoplay, loop, controls and playsinline
+        video_embed_html_5_with_autoplay_and_loop_and_controls_and_playsinline: Video
+          embed HTML5 with autoplay, loop, controls and playsinline
+        video_embed_html_5_with_caption_and_loop_and_controls_and_playsinline: Video
+          embed HTML5 with caption, loop, controls and playsinline
+        video_embed_html_5_with_loop_and_controls_and_playsinline: Video embed HTML5
+          with loop, controls and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_playsinline: Video
+          embed HTML5 with caption, autoplay, loop, muted and playsinline
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_playsinline: Video
+          embed HTML5 with autoplay, loop, muted and playsinline
+        video_embed_html_5_with_caption_and_loop_and_muted_and_playsinline: Video
+          embed HTML5 with caption, loop, muted and playsinline
+        video_embed_html_5_with_loop_and_muted_and_playsinline: Video embed HTML5
+          with loop, muted and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_playsinline: Video
+          embed HTML5 with caption, autoplay, muted and playsinline
+        video_embed_html_5_with_autoplay_and_muted_and_playsinline: Video embed HTML5
+          with autoplay, muted and playsinline
+        video_embed_html_5_with_caption_and_muted_and_playsinline: Video embed HTML5
+          with caption, muted and playsinline
+        video_embed_html_5_with_muted_and_playsinline: Video embed HTML5 with muted
+          and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_playsinline: Video embed
+          HTML5 with caption, autoplay and playsinline
+        video_embed_html_5_with_autoplay_and_playsinline: Video embed HTML5 with autoplay
+          and playsinline
+        video_embed_html_5_with_caption_and_playsinline: Video embed HTML5 with caption
+          and playsinline
+        video_embed_html_5_with_playsinline: Video embed HTML5 with playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_playsinline: Video
+          embed HTML5 with caption, autoplay, loop and playsinline
+        video_embed_html_5_with_autoplay_and_loop_and_playsinline: Video embed HTML5
+          with autoplay, loop and playsinline
+        video_embed_html_5_with_caption_and_loop_and_playsinline: Video embed HTML5
+          with caption, loop and playsinline
+        video_embed_html_5_with_loop_and_playsinline: Video embed HTML5 with loop
+          and playsinline
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, loop, muted, controls, playsinline and
+          poster
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, loop, muted, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_loop_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, loop, muted, controls, playsinline and poster
+        video_embed_html_5_with_loop_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with loop, muted, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, muted, controls, playsinline and poster
+        video_embed_html_5_with_autoplay_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, muted, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, muted, controls, playsinline and poster
+        video_embed_html_5_with_muted_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with muted, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_autoplay_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, controls, playsinline and poster
+        video_embed_html_5_with_autoplay_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, controls, playsinline and poster
+        video_embed_html_5_with_controls_and_playsinline_and_poster: Video embed HTML5
+          with controls, playsinline and poster
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, loop, controls, playsinline and poster
+        video_embed_html_5_with_autoplay_and_loop_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, loop, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_loop_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with caption, loop, controls, playsinline and poster
+        video_embed_html_5_with_loop_and_controls_and_playsinline_and_poster: Video
+          embed HTML5 with loop, controls, playsinline and poster
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, loop, muted, playsinline and poster
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, loop, muted, playsinline and poster
+        video_embed_html_5_with_caption_and_loop_and_muted_and_playsinline_and_poster: Video
+          embed HTML5 with caption, loop, muted, playsinline and poster
+        video_embed_html_5_with_loop_and_muted_and_playsinline_and_poster: Video embed
+          HTML5 with loop, muted, playsinline and poster
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, muted, playsinline and poster
+        video_embed_html_5_with_autoplay_and_muted_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, muted, playsinline and poster
+        video_embed_html_5_with_caption_and_muted_and_playsinline_and_poster: Video
+          embed HTML5 with caption, muted, playsinline and poster
+        video_embed_html_5_with_muted_and_playsinline_and_poster: Video embed HTML5
+          with muted, playsinline and poster
+        video_embed_html_5_with_caption_and_autoplay_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, playsinline and poster
+        video_embed_html_5_with_autoplay_and_playsinline_and_poster: Video embed HTML5
+          with autoplay, playsinline and poster
+        video_embed_html_5_with_caption_and_playsinline_and_poster: Video embed HTML5
+          with caption, playsinline and poster
+        video_embed_html_5_with_playsinline_and_poster: Video embed HTML5 with playsinline
+          and poster
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_playsinline_and_poster: Video
+          embed HTML5 with caption, autoplay, loop, playsinline and poster
+        video_embed_html_5_with_autoplay_and_loop_and_playsinline_and_poster: Video
+          embed HTML5 with autoplay, loop, playsinline and poster
+        video_embed_html_5_with_caption_and_loop_and_playsinline_and_poster: Video
+          embed HTML5 with caption, loop, playsinline and poster
+        video_embed_html_5_with_loop_and_playsinline_and_poster: Video embed HTML5
+          with loop, playsinline and poster
+      admin:
+        user_helper:
+          today: Today
+          yesterday: Yesterday
+          org_join: Joined organization
+          org_overflow:
+            one: "%{count} other"
+            other: "%{count} others"
+      application_helper:
+        subtitle:
+          week: week
+          month: month
+          year: year
+          infinity: infinity
+          latest: latest
+        title_text: Title
+        follow:
+          text:
+            default: Follow
+            Organization: Follow
+            Tag: Follow
+            User: Follow
+          aria_label:
+            default: 'Follow %{type}: %{name}'
+            Organization: 'Follow organization: %{name}'
+            Tag: 'Follow tag: %{name}'
+            User: 'Follow user: %{name}'
+        app_logo: App logo
+        required: required
+      articles_helper:
+        recently_created: Recently created
+        recently_published: Recently published
+        most_views: Most views
+        most_reactions: Most reactions
+        most_comments: Most comments
+        logo: Logo
+      authentication_helper:
+        email_password: Email or password
+        any_of_those: any of those
+        that: that
+        reminder: Reminder
+        invite_only: Invite only
+      comments_helper:
+        ama: AMA
+        ask_me_anything: Ask me anything
+        author: Author
+        nbsp_likes_html:
+          one: "&nbsp;%{count} like"
+          other: "&nbsp;%{count} likes"
+      feedback_messages_helper:
+        offender:
+          body: Message body for offender
+          subject: Message subject for offender
+        reporter:
+          body: Message body for reporter
+          subject: Message subject for reporter
+        affected:
+          body: Message body for affected
+          subject: Message subject for affected
+      organization_helper:
+        option: Option
+      rate_limit_checker_helper:
+        day:
+          one: "%{count} day"
+          other: "%{count} days"
+        general: General
+        published:
+          title: Published title
+          description: Published description
+        antispam:
+          title: Antispam title
+        thing:
+          posts: posts
+          comments: comments
+        update:
+          title: Update title
+          description: Update description
+        upload:
+          title: Upload title
+          description: Upload description
+        user:
+          title: User title
+          description: User description
+        follow:
+          title: Follow title
+          description: Follow description
+        reaction:
+          title: Reaction title
+          description: Reaction description
+        feedback:
+          title: Feedback title
+          description: Feedback description
+        comment:
+          title: Comment title
+          description: Comment description
+        comment_antispam:
+          title: Comment antispam title
+        mention:
+          title: Mention title
+          description: Mention description
+        organization:
+          title: Organization title
+          description: Organization description
+        subscription:
+          title: Subscription title
+          description: Subscription description
+        recipient:
+          title: Recipient title
+          description: Recipient description
+        confirmation:
+          title: Confirmation title
+          description: Confirmation description
+        listing:
+          title: Listing title
+          description: Listing description
+      settings_helper:
+        novice: Novice
+        beginner: Beginner
+        mid_level: Mid level
+        advanced: Advanced
+        expert: Expert
+      social_link_helper:
+        n_a: N/A
+    social_link_helper:
+      n_a: N/A
+    placeholder:
+      organization:
+        name: Acme Inc.
+        slug: acmeinc
+        url: https://yoursite.com
+        location: Halifax, Nova Scotia
+        email: mail@example.com
+        company_size: "..."
+        story: "..."
+        tech_stack: "..."
+        cta_body_markdown: "..."
+        cta_button_text: Visit Acme Site
+        cta_button_url: https://example.com
+        proof: "..."
+      response_template:
+        title: "..."
+      user:
+        name: John Doe
+        email: john.doe@example.com
+        username: johndoe
+        feed_url: https://yoursite.com/feed
+    application_helper:
+      app_logo: App logo
+      follow:
+        aria_label:
+          Organization: 'Follow organization: %{name}'
+          Tag: 'Follow tag: %{name}'
+          User: 'Follow user: %{name}'
+          default: 'Follow %{type}: %{name}'
+        text:
+          Organization: Follow
+          Tag: Follow
+          User: Follow
+          default: Follow
+      required: Required
+      subtitle:
+        week: Top posts this week
+        month: Top posts this month
+        year: Top posts this year
+        infinity: All posts
+        latest: Latest posts
+      title_text: "%{title} - %{timeframe}"
+    articles_helper:
+      logo: "%{service_name} logo"
+      most_comments: Most Comments
+      most_reactions: Most Reactions
+      most_views: Most Views
+      recently_created: Recently Created
+      recently_published: Recently Published
+    authentication_helper:
+      any_of_those: any of those
+      email_password: Email & Password
+      reminder: You used %{method} to authenticate your account originally, so you
+        can use %{dem} — or send yourself a <a href="%{link}" style="color:black">magic
+        link</a>.
+      that: that
+      invite_only: You cannot do this until you disable Invite Only Mode
+    comments_helper:
+      ama: ama
+      ask_me_anything: Ask Me Anything
+      author: Author
+      nbsp_likes_html:
+        one: "&nbsp;like"
+        other: "&nbsp;likes"
+    feedback_messages_helper:
+      offender:
+        body: |
+          Hello,
+
+          It has been brought to our attention that you have violated the %{community} Code of Conduct and/or Terms of Use.
+
+          If this behavior continues, we may need to suspend your %{community} account.
+
+          If you think that there's been a mistake, please reply to this email and we will take another look.
+
+          %{community} Team
+        subject: "%{community} Code of Conduct Violation"
+      reporter:
+        body: |
+          Hi there,
+          Thank you for flagging content that may be in violation of the %{community} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate
+          action.
+          We appreciate your help as we work to foster a positive and inclusive environment for all!
+          %{community} Team
+        subject: "%{community} Report"
+      affected:
+        body: |
+          Hi there,
+
+          We noticed some comments (made by others) on your post that violate the %{community} Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are
+          taking appropriate action.
+
+          Thanks for being awesome, and please don't hesitate to email us with any questions! We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
+
+          %{community} Team
+        subject: Courtesy Notice from %{community}
+    listing_helper:
+      option:
+        one: "%{cl_name} (%{count} Credit)"
+        other: "%{cl_name} (%{count} Credits)"
+    organization_helper:
+      option: "%{org_name} (%{unspent})"
+    rate_limit_checker_helper:
+      day:
+        one: day
+        other: days
+      general: How many %{thing} can a new member (%{timeframe} or less) create within
+        any 5 minute period?
+      published:
+        title: Limit number of posts created
+        description: How many posts can someone create within any 30 second period?
+      antispam:
+        title: Limit number of posts created by a new member
+      update:
+        title: Limit number of updates to a post
+        description: How many updates can someone make within any 30 second period?
+          Update API docs when changed.
+      upload:
+        title: Limit number of images uploaded
+        description: How many images can someone upload within any 30 second period?
+      user:
+        title: Limit number of changes someone can make to their account
+        description: How many changes can someone make to their user account within
+          any 30 second period?
+      follow:
+        title: Limit number of followers someone can follow daily
+        description: How many people can someone follow in a day?
+      reaction:
+        title: Limit number of reactions to a post or comment
+        description: How many times can someone react to a post or comment within
+          any 30 second period?
+      feedback:
+        title: Limit number of times someone can report abuse
+        description: How many times can someone report abuse within any 5 minute period?
+      comment:
+        title: Limit number of comments created
+        description: How many comments can someone create within any 30 second period?
+      comment_antispam:
+        title: Limit number of comments created by a new member
+      mention:
+        title: Limit number of @-mentions in a post or comment
+        description: How many times can someone @-mention other users in a post or
+          comment?
+      listing:
+        title: Limit number of listings created
+        description: How many listings can someone create within any 1 minute period?
+      organization:
+        title: Limit number of organizations created
+        description: How many organizations can someone create within any 5 minute
+          period?
+      subscription:
+        title: Limit number of times someone can subscribe to mailing list liquid
+          tag
+        description: How many times can someone subscribe to a mailing list within
+          any 30 second period?
+      recipient:
+        title: Limit number of general emails we send
+        description: How many emails can we send to someone within any 2 minute period?
+      confirmation:
+        title: Limit number of confirmation emails we send
+        description: How many times can we send a confirmation email to someone within
+          a 2 minute period?
+      thing:
+        posts: posts
+        comments: comments
+    settings_helper:
+      advanced: Advanced
+      beginner: Beginner
+      expert: Expert
+      mid_level: Mid-level
+      novice: Novice
+    admin:
+      user_helper:
+        today: Today, %{date}
+        yesterday: Yesterday, %{date}
+        org_join: ", "
+        org_overflow:
+          one: "%{orgs} & %{count} other"
+          other: "%{orgs} & %{count} others"

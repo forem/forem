@@ -170,3 +170,11 @@ drip_email_worker:
   description: "Send drip emails to users based on their registration date"
   cron: "37 * * * *" # Every hour on the 37 minute
   class: "Emails::DripEmailWorker"
+article_quality_reactions:
+  description: "Assess article quality and issue thumbs up/down reactions using mascot account (Once per hour on the 8 minute)"
+  cron: "8 * * * *"
+  class: "Articles::QualityReactionWorker"
+article_label_cleanup:
+  description: "Processes articles with no_moderation_label that may have been missed (runs hourly on the 35th minute after the hour)"
+  cron: "35 * * * *"
+  class: "Articles::LabelCleanupWorker"

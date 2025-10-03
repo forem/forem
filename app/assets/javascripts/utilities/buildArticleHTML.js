@@ -191,7 +191,9 @@ function buildArticleHTML(article, currentUserId = null) {
 
     if (article.class_name !== 'User' && reactionsCount > 0 && reactionIcons) {
       var icons = [];
-      for (var category of article.public_reaction_categories) {
+      // Since the container has dir="rtl", we need to reverse the array to show highest count first
+      for (var i = article.public_reaction_categories.length - 1; i >= 0; i--) {
+        var category = article.public_reaction_categories[i];
         var icon = reactionIcons.querySelector(
           `img[data-slug=${category.slug}]`,
         ).outerHTML;
@@ -199,7 +201,6 @@ function buildArticleHTML(article, currentUserId = null) {
           `<span class="crayons_icon_container">${icon}</span>`,
         );
       }
-      icons.reverse();
 
       reactionsDisplay = `<a href="${
         article.path
@@ -226,7 +227,7 @@ function buildArticleHTML(article, currentUserId = null) {
       profileUsername = article.slug;
       userName = article.title;
     } else {
-      picUrl = article.user.profile_image_90;
+      picUrl = article.user.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/');
       profileUsername = article.user.username;
       userName = filterXSS(article.user.name);
       if (article.user.cached_base_subscriber) {
@@ -248,7 +249,7 @@ function buildArticleHTML(article, currentUserId = null) {
         '" class="crayons-logo crayons-logo--l"><img alt="' +
         article.organization.name +
         ' logo" src="' +
-        article.organization.profile_image_90 +
+        article.organization.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/') +
         '" class="crayons-logo__image" loading="lazy"/></a>';
       forOrganization =
         '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/' +
@@ -419,7 +420,7 @@ function buildArticleHTML(article, currentUserId = null) {
         aria-labelledby="article-link-${article.id}"
         class="crayons-story__hidden-navigation-link"
       >
-        ${filterXSS(article.title)}
+        ${filterXSS(article.type_of === 'status' && article.title_finalized ? article.title_finalized : article.title)}
       </a>
     `;
 
@@ -443,7 +444,7 @@ function buildArticleHTML(article, currentUserId = null) {
             <div class="crayons-story__indention">
               <h3 class="crayons-story__title crayons-story__title-${article.type_of}">
                 <a href="${article.path}" id="article-link-${article.id}">
-                  ${filterXSS(article.title)}
+                  ${filterXSS(article.type_of === 'status' && article.title_finalized_for_feed ? article.title_finalized_for_feed : article.title)}
                 </a>
               </h3>\
               ${article.type_of !== 'status' ? `<div class="crayons-story__tags">${tagString}</div>` : ''}\

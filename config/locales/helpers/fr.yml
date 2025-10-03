@@ -51,21 +51,429 @@ fr:
         profile_image: Image de profil
       users_notification_setting:
         email_newsletter: Envoyez-moi une newsletter hebdomadaire
-        email_digest_periodic: Envoyez-moi un condensé périodique des meilleurs messages de mes tags
-        email_tag_mod_newsletter: Envoyez-moi des e-mails de newsletter pour les modérateurs de tags
-        email_community_mod_newsletter: Envoyez-moi les e-mails de la newsletter des modérateurs de communauté
-        email_comment_notifications: Envoyez-moi un e-mail lorsque quelqu'un me répond dans un fil de commentaires
+        email_digest_periodic: Envoyez-moi un condensé périodique des meilleurs messages
+          de mes tags
+        email_tag_mod_newsletter: Envoyez-moi des e-mails de newsletter pour les modérateurs
+          de tags
+        email_community_mod_newsletter: Envoyez-moi les e-mails de la newsletter des
+          modérateurs de communauté
+        email_comment_notifications: Envoyez-moi un e-mail lorsque quelqu'un me répond
+          dans un fil de commentaires
         email_follower_notifications: Envoyez-moi un e-mail lorsque quelqu'un me suit
         email_mention_notifications: Envoyez-moi un e-mail lorsque quelqu'un me mentionne
         email_badge_notifications: Envoyez-moi un e-mail lorsque je reçois un badge
-        email_unread_notifications: Envoyez-moi des rappels occasionnels lorsque j'ai des notifications non lues sur %{community}
-        mobile_mention_notifications: Envoyez-moi une notification push lorsque quelqu'un me mentionne
-        mobile_comment_notifications: Envoyez-moi une notification push lorsque quelqu'un me répond dans un fil de commentaires
-        welcome_notifications: Envoyez-moi de temps en temps des conseils pour améliorer mon expérience sur %{community}
-        reaction_notifications: Envoyer des notifications lorsque quelqu'un réagit à mon contenu, comme des commentaires ou des messages
-        mod_roundrobin_notifications: Envoyez-moi des notifications sur l'activité des nouveaux membres
+        email_unread_notifications: Envoyez-moi des rappels occasionnels lorsque j'ai
+          des notifications non lues sur %{community}
+        mobile_mention_notifications: Envoyez-moi une notification push lorsque quelqu'un
+          me mentionne
+        mobile_comment_notifications: Envoyez-moi une notification push lorsque quelqu'un
+          me répond dans un fil de commentaires
+        welcome_notifications: Envoyez-moi de temps en temps des conseils pour améliorer
+          mon expérience sur %{community}
+        email_community_broadcast: Envoyez-moi des e-mails de diffusion communautaire
+        mobile_new_follower_notifications: Envoyez-moi des notifications push quand
+          quelqu'un de nouveau me suit
+        mobile_unread_notifications: Envoyez-moi des notifications push quand j'ai
+          des notifications non lues sur %{community}
+        mod_team_notifications: Envoyez-moi des notifications de l'équipe de modération
+        reaction_notifications: Envoyer des notifications lorsque quelqu'un réagit
+          à mon contenu, comme des commentaires ou des messages
+        mod_roundrobin_notifications: Envoyez-moi des notifications sur l'activité
+          des nouveaux membres
       users_setting:
         feed_url: URL du flux RSS
+        email_community_broadcast: Envoyez-moi des e-mails de diffusion communautaire
+        mobile_new_follower_notifications: Envoyez-moi des notifications push quand
+          quelqu'un de nouveau me suit
+        mobile_unread_notifications: Envoyez-moi des notifications push quand j'ai
+          des notifications non lues sur %{community}
+        mod_team_notifications: Envoyez-moi des notifications de l'équipe de modération
+        reaction_notifications: Envoyez des notifications quand quelqu'un réagit à
+          mon contenu, comme des commentaires ou des posts
+      video:
+        title: Titre
+        description: Description
+        video_url: URL de la vidéo
+        video_source_url_key: Clé de l'URL de la source de la vidéo
+        video_thumbnail_url: URL de la miniature de la vidéo
+        video_closed_caption_track_url: URL de la piste de sous-titres de la vidéo
+        video_source_url: URL de la source de la vidéo
+        video_code: Code de la vidéo
+        video_source: Source de la vidéo
+        video_embed: Intégrer la vidéo
+        video_embed_html: HTML d'intégration de la vidéo
+        video_embed_html_5: HTML5 d'intégration de la vidéo
+        video_embed_html_5_with_caption: HTML5 d'intégration de la vidéo avec légende
+        video_embed_html_5_with_caption_and_autoplay: HTML5 d'intégration de la vidéo
+          avec légende et lecture automatique
+        video_embed_html_5_with_autoplay: HTML5 d'intégration de la vidéo avec lecture
+          automatique
+        video_embed_html_5_with_caption_and_autoplay_and_loop: HTML5 d'intégration
+          de la vidéo avec légende, lecture automatique et boucle
+        video_embed_html_5_with_autoplay_and_loop: HTML5 d'intégration de la vidéo
+          avec lecture automatique et boucle
+        video_embed_html_5_with_caption_and_loop: HTML5 d'intégration de la vidéo
+          avec légende et boucle
+        video_embed_html_5_with_loop: HTML5 d'intégration de la vidéo avec boucle
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted: HTML5 d'intégration
+          de la vidéo avec légende, lecture automatique, boucle et muet
+        video_embed_html_5_with_autoplay_and_loop_and_muted: HTML5 d'intégration de
+          la vidéo avec lecture automatique, boucle et muet
+        video_embed_html_5_with_caption_and_loop_and_muted: HTML5 d'intégration de
+          la vidéo avec légende, boucle et muet
+        video_embed_html_5_with_loop_and_muted: HTML5 d'intégration de la vidéo avec
+          boucle et muet
+        video_embed_html_5_with_caption_and_autoplay_and_muted: HTML5 d'intégration
+          de la vidéo avec légende, lecture automatique et muet
+        video_embed_html_5_with_autoplay_and_muted: HTML5 d'intégration de la vidéo
+          avec lecture automatique et muet
+        video_embed_html_5_with_caption_and_muted: HTML5 d'intégration de la vidéo
+          avec légende et muet
+        video_embed_html_5_with_muted: HTML5 d'intégration de la vidéo avec muet
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_controls: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, muet
+          et contrôles
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_controls: HTML5 d'intégration
+          de la vidéo avec lecture automatique, boucle, muet et contrôles
+        video_embed_html_5_with_caption_and_loop_and_muted_and_controls: HTML5 d'intégration
+          de la vidéo avec légende, boucle, muet et contrôles
+        video_embed_html_5_with_loop_and_muted_and_controls: HTML5 d'intégration de
+          la vidéo avec boucle, muet et contrôles
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_controls: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, muet et contrôles
+        video_embed_html_5_with_autoplay_and_muted_and_controls: HTML5 d'intégration
+          de la vidéo avec lecture automatique, muet et contrôles
+        video_embed_html_5_with_caption_and_muted_and_controls: HTML5 d'intégration
+          de la vidéo avec légende, muet et contrôles
+        video_embed_html_5_with_muted_and_controls: HTML5 d'intégration de la vidéo
+          avec muet et contrôles
+        video_embed_html_5_with_caption_and_autoplay_and_controls: HTML5 d'intégration
+          de la vidéo avec légende, lecture automatique et contrôles
+        video_embed_html_5_with_autoplay_and_controls: HTML5 d'intégration de la vidéo
+          avec lecture automatique et contrôles
+        video_embed_html_5_with_caption_and_controls: HTML5 d'intégration de la vidéo
+          avec légende et contrôles
+        video_embed_html_5_with_controls: HTML5 d'intégration de la vidéo avec contrôles
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_controls: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle et contrôles
+        video_embed_html_5_with_autoplay_and_loop_and_controls: HTML5 d'intégration
+          de la vidéo avec lecture automatique, boucle et contrôles
+        video_embed_html_5_with_caption_and_loop_and_controls: HTML5 d'intégration
+          de la vidéo avec légende, boucle et contrôles
+        video_embed_html_5_with_loop_and_controls: HTML5 d'intégration de la vidéo
+          avec boucle et contrôles
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, muet,
+          contrôles et lecture en ligne
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, muet, contrôles
+          et lecture en ligne
+        video_embed_html_5_with_caption_and_loop_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, boucle, muet, contrôles et lecture
+          en ligne
+        video_embed_html_5_with_loop_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec boucle, muet, contrôles et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, muet, contrôles
+          et lecture en ligne
+        video_embed_html_5_with_autoplay_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec lecture automatique, muet, contrôles et lecture
+          en ligne
+        video_embed_html_5_with_caption_and_muted_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, muet, contrôles et lecture en ligne
+        video_embed_html_5_with_muted_and_controls_and_playsinline: HTML5 d'intégration
+          de la vidéo avec muet, contrôles et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, contrôles et
+          lecture en ligne
+        video_embed_html_5_with_autoplay_and_controls_and_playsinline: HTML5 d'intégration
+          de la vidéo avec lecture automatique, contrôles et lecture en ligne
+        video_embed_html_5_with_caption_and_controls_and_playsinline: HTML5 d'intégration
+          de la vidéo avec légende, contrôles et lecture en ligne
+        video_embed_html_5_with_controls_and_playsinline: HTML5 d'intégration de la
+          vidéo avec contrôles et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, contrôles
+          et lecture en ligne
+        video_embed_html_5_with_autoplay_and_loop_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, contrôles et
+          lecture en ligne
+        video_embed_html_5_with_caption_and_loop_and_controls_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, boucle, contrôles et lecture en
+          ligne
+        video_embed_html_5_with_loop_and_controls_and_playsinline: HTML5 d'intégration
+          de la vidéo avec boucle, contrôles et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, muet
+          et lecture en ligne
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_playsinline: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, muet et lecture
+          en ligne
+        video_embed_html_5_with_caption_and_loop_and_muted_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, boucle, muet et lecture en ligne
+        video_embed_html_5_with_loop_and_muted_and_playsinline: HTML5 d'intégration
+          de la vidéo avec boucle, muet et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, muet et lecture
+          en ligne
+        video_embed_html_5_with_autoplay_and_muted_and_playsinline: HTML5 d'intégration
+          de la vidéo avec lecture automatique, muet et lecture en ligne
+        video_embed_html_5_with_caption_and_muted_and_playsinline: HTML5 d'intégration
+          de la vidéo avec légende, muet et lecture en ligne
+        video_embed_html_5_with_muted_and_playsinline: HTML5 d'intégration de la vidéo
+          avec muet et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_playsinline: HTML5 d'intégration
+          de la vidéo avec légende, lecture automatique et lecture en ligne
+        video_embed_html_5_with_autoplay_and_playsinline: HTML5 d'intégration de la
+          vidéo avec lecture automatique et lecture en ligne
+        video_embed_html_5_with_caption_and_playsinline: HTML5 d'intégration de la
+          vidéo avec légende et lecture en ligne
+        video_embed_html_5_with_playsinline: HTML5 d'intégration de la vidéo avec
+          lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_playsinline: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle et lecture
+          en ligne
+        video_embed_html_5_with_autoplay_and_loop_and_playsinline: HTML5 d'intégration
+          de la vidéo avec lecture automatique, boucle et lecture en ligne
+        video_embed_html_5_with_caption_and_loop_and_playsinline: HTML5 d'intégration
+          de la vidéo avec légende, boucle et lecture en ligne
+        video_embed_html_5_with_loop_and_playsinline: HTML5 d'intégration de la vidéo
+          avec boucle et lecture en ligne
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, muet,
+          contrôles, lecture en ligne et poster
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, muet, contrôles,
+          lecture en ligne et poster
+        video_embed_html_5_with_caption_and_loop_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, boucle, muet, contrôles, lecture
+          en ligne et poster
+        video_embed_html_5_with_loop_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec boucle, muet, contrôles, lecture en ligne
+          et poster
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, muet, contrôles,
+          lecture en ligne et poster
+        video_embed_html_5_with_autoplay_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, muet, contrôles, lecture
+          en ligne et poster
+        video_embed_html_5_with_caption_and_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, muet, contrôles, lecture en ligne
+          et poster
+        video_embed_html_5_with_muted_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec muet, contrôles, lecture en ligne et poster
+        video_embed_html_5_with_caption_and_autoplay_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, contrôles,
+          lecture en ligne et poster
+        video_embed_html_5_with_autoplay_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, contrôles, lecture en
+          ligne et poster
+        video_embed_html_5_with_caption_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, contrôles, lecture en ligne et poster
+        video_embed_html_5_with_controls_and_playsinline_and_poster: HTML5 d'intégration
+          de la vidéo avec contrôles, lecture en ligne et poster
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, contrôles,
+          lecture en ligne et poster
+        video_embed_html_5_with_autoplay_and_loop_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, contrôles, lecture
+          en ligne et poster
+        video_embed_html_5_with_caption_and_loop_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, boucle, contrôles, lecture en ligne
+          et poster
+        video_embed_html_5_with_loop_and_controls_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec boucle, contrôles, lecture en ligne et poster
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_muted_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, muet,
+          lecture en ligne et poster
+        video_embed_html_5_with_autoplay_and_loop_and_muted_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, muet, lecture
+          en ligne et poster
+        video_embed_html_5_with_caption_and_loop_and_muted_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, boucle, muet, lecture en ligne et
+          poster
+        video_embed_html_5_with_loop_and_muted_and_playsinline_and_poster: HTML5 d'intégration
+          de la vidéo avec boucle, muet, lecture en ligne et poster
+        video_embed_html_5_with_caption_and_autoplay_and_muted_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, muet, lecture
+          en ligne et poster
+        video_embed_html_5_with_autoplay_and_muted_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, muet, lecture en ligne
+          et poster
+        video_embed_html_5_with_caption_and_muted_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, muet, lecture en ligne et poster
+        video_embed_html_5_with_muted_and_playsinline_and_poster: HTML5 d'intégration
+          de la vidéo avec muet, lecture en ligne et poster
+        video_embed_html_5_with_caption_and_autoplay_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, lecture en
+          ligne et poster
+        video_embed_html_5_with_autoplay_and_playsinline_and_poster: HTML5 d'intégration
+          de la vidéo avec lecture automatique, lecture en ligne et poster
+        video_embed_html_5_with_caption_and_playsinline_and_poster: HTML5 d'intégration
+          de la vidéo avec légende, lecture en ligne et poster
+        video_embed_html_5_with_playsinline_and_poster: HTML5 d'intégration de la
+          vidéo avec lecture en ligne et poster
+        video_embed_html_5_with_caption_and_autoplay_and_loop_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, lecture automatique, boucle, lecture
+          en ligne et poster
+        video_embed_html_5_with_autoplay_and_loop_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec lecture automatique, boucle, lecture en ligne
+          et poster
+        video_embed_html_5_with_caption_and_loop_and_playsinline_and_poster: HTML5
+          d'intégration de la vidéo avec légende, boucle, lecture en ligne et poster
+        video_embed_html_5_with_loop_and_playsinline_and_poster: HTML5 d'intégration
+          de la vidéo avec boucle, lecture en ligne et poster
+      admin:
+        user_helper:
+          today: Aujourd'hui
+          yesterday: Hier
+          org_join: A rejoint l'organisation
+          org_overflow:
+            one: "%{count} autre"
+            other: "%{count} autres"
+      application_helper:
+        subtitle:
+          week: semaine
+          month: mois
+          year: année
+          infinity: infini
+          latest: plus récent
+        title_text: Titre
+        follow:
+          text:
+            default: Suivre
+            Organization: Suivre
+            Tag: Suivre
+            User: Suivre
+          aria_label:
+            default: 'Suivre %{type}: %{name}'
+            Organization: 'Suivre organisation: %{name}'
+            Tag: 'Suivre tag: %{name}'
+            User: 'Suivre utilisateur: %{name}'
+        app_logo: Logo de l'app
+        required: requis
+      articles_helper:
+        recently_created: Récemment créé
+        recently_published: Récemment publié
+        most_views: Plus de vues
+        most_reactions: Plus de réactions
+        most_comments: Plus de commentaires
+        logo: Logo
+      authentication_helper:
+        email_password: E-mail ou mot de passe
+        any_of_those: n'importe lequel de ceux-ci
+        that: cela
+        reminder: Rappel
+        invite_only: Invitation uniquement
+      comments_helper:
+        ama: AMA
+        ask_me_anything: Posez-moi n'importe quoi
+        author: Auteur
+        nbsp_likes_html:
+          one: "&nbsp;%{count} j'aime"
+          other: "&nbsp;%{count} j'aime"
+      feedback_messages_helper:
+        offender:
+          body: Corps du message pour l'infracteur
+          subject: Sujet du message pour l'infracteur
+        reporter:
+          body: Corps du message pour le rapporteur
+          subject: Sujet du message pour le rapporteur
+        affected:
+          body: Corps du message pour l'affecté
+          subject: Sujet du message pour l'affecté
+      organization_helper:
+        option: Option
+      rate_limit_checker_helper:
+        day:
+          one: "%{count} jour"
+          other: "%{count} jours"
+        general: Général
+        published:
+          title: Titre publié
+          description: Description publiée
+        antispam:
+          title: Titre antispam
+        thing:
+          posts: posts
+          comments: commentaires
+        update:
+          title: Titre de mise à jour
+          description: Description de mise à jour
+        upload:
+          title: Titre de téléchargement
+          description: Description de téléchargement
+        user:
+          title: Titre d'utilisateur
+          description: Description d'utilisateur
+        follow:
+          title: Titre de suivi
+          description: Description de suivi
+        reaction:
+          title: Titre de réaction
+          description: Description de réaction
+        feedback:
+          title: Titre de feedback
+          description: Description de feedback
+        comment:
+          title: Titre de commentaire
+          description: Description de commentaire
+        comment_antispam:
+          title: Titre de commentaire antispam
+        mention:
+          title: Titre de mention
+          description: Description de mention
+        organization:
+          title: Titre d'organisation
+          description: Description d'organisation
+        subscription:
+          title: Titre d'abonnement
+          description: Description d'abonnement
+        recipient:
+          title: Titre de destinataire
+          description: Description de destinataire
+        confirmation:
+          title: Titre de confirmation
+          description: Description de confirmation
+        listing:
+          title: Titre d'annonce
+          description: Description d'annonce
+      settings_helper:
+        novice: Novice
+        beginner: Débutant
+        mid_level: Niveau intermédiaire
+        advanced: Avancé
+        expert: Expert
+      social_link_helper:
+        n_a: N/A
+      placeholder:
+        user:
+          name: Jean Dupont
+          email: jean.dupont@exemple.com
+          username: jeandupont
+          feed_url: https://votresite.com/feed
+        organization:
+          name: Entreprise Exemple SARL
+          slug: entrepriseexemple
+          url: https://votresite.com
+          location: France, Toulouse
+          email: contact@exemple.com
+          company_size: "..."
+          story: "..."
+          tech_stack: "..."
+          cta_body_markdown: "..."
+          cta_button_text: Visiter le site de l'entreprise
+          cta_button_url: https://exemple.com
+          proof: "..."
+        response_template:
+          title: "..."
+      page_entries_info:
+        more_pages:
+          display_entries: "Affichage de %{entry_name} %{from}-%{to} sur %{count} au total"
+      listing_helper:
+        option:
+          one: "%{count} option"
+          other: "%{count} options"
     placeholder:
       organization:
         name: Acme Inc.
@@ -77,7 +485,7 @@ fr:
         story: "..."
         tech_stack: "..."
         cta_body_markdown: "..."
-        cta_button_text: Visiter le site Acme 
+        cta_button_text: Visiter le site Acme
         cta_button_url: https://votresite.com
         proof: "..."
       response_template:
@@ -91,10 +499,10 @@ fr:
       app_logo: Logo de l'application
       follow:
         aria_label:
-          Organization: "Suivre l'organisation: %{name}"
+          Organization: 'Suivre l''organisation: %{name}'
           Tag: 'Suivre le tag: %{name}'
-          User: "Suivre L'utilisateur : %{name}"
-          default: "Suivre %{type}: %{name}"
+          User: 'Suivre L''utilisateur : %{name}'
+          default: 'Suivre %{type}: %{name}'
         text:
           Organization: Suivre
           Tag: Suivre
@@ -118,7 +526,9 @@ fr:
     authentication_helper:
       any_of_those: any of those
       email_password: Email & Password
-      reminder: 'You used %{method} to authenticate your account originally, so you can use %{dem} — or send yourself a <a href="%{link}" style="color:black">magic link</a>.'
+      reminder: You used %{method} to authenticate your account originally, so you
+        can use %{dem} — or send yourself a <a href="%{link}" style="color:black">magic
+        link</a>.
       that: that
       invite_only: You cannot do this until you disable Invite Only Mode
     comments_helper:
@@ -140,14 +550,14 @@ fr:
           Si vous pensez qu'il s'agit d'une erreur, veuillez répondre à cet e-mail et nous réexaminerons la situation.
 
           L'équipe %{community}
-        subject: "Violation du code de conduite de %{community}"
+        subject: Violation du code de conduite de %{community}
       reporter:
         body: |
           Bonjour,
           Merci de signaler un contenu qui pourrait être en violation du %{community} Code de conduite et/ou nos conditions d'utilisation. Nous examinons votre rapport et prendrons les mesures appropriées.
           Nous apprécions votre aide car nous nous efforçons de favoriser un environnement positif et inclusif pour tous !
           L'équipe %{community}
-        subject: "Reporter %{community}"
+        subject: Reporter %{community}
       affected:
         body: |
           Bonjour,
@@ -169,53 +579,69 @@ fr:
       day:
         one: jour
         other: jours
-      general: Combien de %{thing} un nouveau membre (%{timeframe} ou moins) peut-il créer sur une période de 5 minutes ?
+      general: Combien de %{thing} un nouveau membre (%{timeframe} ou moins) peut-il
+        créer sur une période de 5 minutes ?
       published:
         title: Limiter le nombre de postes créés
-        description: Combien de messages peut-on créer sur une période de 30 secondes ?
+        description: Combien de messages peut-on créer sur une période de 30 secondes
+          ?
       antispam:
         title: Limiter le nombre de postes créés par un nouveau membre
       update:
         title: Limiter le nombre de mises à jour d'un article
-        description: Combien de mises à jour peut-on faire sur une période de 30 secondes ? Mettre à jour la documentation de l'API en cas de modification.
+        description: Combien de mises à jour peut-on faire sur une période de 30 secondes
+          ? Mettre à jour la documentation de l'API en cas de modification.
       upload:
         title: Limiter le nombre d'images téléchargées
-        description: Combien d'images peut-on télécharger sur une période de 30 secondes ?
+        description: Combien d'images peut-on télécharger sur une période de 30 secondes
+          ?
       user:
-        title: Limiter le nombre de modifications qu'une personne peut apporter à son compte
-        description: Combien de changements une personne peut-elle apporter à son compte utilisateur sur une période de 30 secondes ?
+        title: Limiter le nombre de modifications qu'une personne peut apporter à
+          son compte
+        description: Combien de changements une personne peut-elle apporter à son
+          compte utilisateur sur une période de 30 secondes ?
       follow:
         title: Limiter le nombre de followers qu'une personne peut suivre par jour
         description: Combien de personnes peut-on suivre en une journée ?
       reaction:
         title: Limiter le nombre de réactions à un message ou à un commentaire
-        description: Combien de fois une personne peut-elle réagir à un message ou à un commentaire sur une période de 30 secondes ?
+        description: Combien de fois une personne peut-elle réagir à un message ou
+          à un commentaire sur une période de 30 secondes ?
       feedback:
         title: Limiter le nombre de fois où une personne peut signaler un abus
-        description: Combien de fois une personne peut-elle signaler un abus sur une période de 5 minutes ?
+        description: Combien de fois une personne peut-elle signaler un abus sur une
+          période de 5 minutes ?
       comment:
         title: Limiter le nombre de commentaires créés
-        description: Combien de commentaires une personne peut-elle créer dans une période de 30 secondes ?
+        description: Combien de commentaires une personne peut-elle créer dans une
+          période de 30 secondes ?
       comment_antispam:
         title: Limiter le nombre de commentaires créés par un nouveau utilisateur
       mention:
         title: Limiter le nombre de @-mentions dans un message ou un commentaire
-        description: Combien de fois une personne peut-elle @-mentionner d'autres utilisateurs dans un message ou un commentaire ?
+        description: Combien de fois une personne peut-elle @-mentionner d'autres
+          utilisateurs dans un message ou un commentaire ?
       listing:
         title: Limiter le nombre de listings créés
-        description: Combien d'annonces peuvent être créées pendant une période d'une minute ?
+        description: Combien d'annonces peuvent être créées pendant une période d'une
+          minute ?
       organization:
         title: Limiter le nombre d'organisations créées
-        description: Combien d'organisations une personne peut-elle créer sur une période de 5 minutes ?
+        description: Combien d'organisations une personne peut-elle créer sur une
+          période de 5 minutes ?
       subscription:
-        title: Limiter le nombre de fois qu'une personne peut s'abonner à une liste de diffusion tag liquide
-        description: Combien de fois une personne peut-elle s'abonner à une liste de diffusion sur une période de 30 secondes ?
+        title: Limiter le nombre de fois qu'une personne peut s'abonner à une liste
+          de diffusion tag liquide
+        description: Combien de fois une personne peut-elle s'abonner à une liste
+          de diffusion sur une période de 30 secondes ?
       recipient:
         title: Limiter le nombre d'e-mails généraux que nous envoyons
-        description: Combien d'emails pouvons-nous envoyer à une personne dans une période de 2 minutes ?
+        description: Combien d'emails pouvons-nous envoyer à une personne dans une
+          période de 2 minutes ?
       confirmation:
         title: Limiter le nombre d'e-mails de confirmation que nous envoyons
-        description: Combien de fois pouvons-nous envoyer un email de confirmation à quelqu'un dans une période de 2 minutes ?
+        description: Combien de fois pouvons-nous envoyer un email de confirmation
+          à quelqu'un dans une période de 2 minutes ?
       thing:
         posts: articles
         comments: commentaires

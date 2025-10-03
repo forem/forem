@@ -53,10 +53,15 @@ module Settings
     #
     # @return [Boolean] do we allow this domain?
     def self.acceptable_domain?(domain:)
+      # Check both the old setting and the new BlockedEmailDomain model
       return false if blocked_registration_email_domains.detect do |blocked|
         domain == blocked ||
           domain.ends_with?(".#{blocked}")
       end
+
+      # Also check the new BlockedEmailDomain model
+      return false if BlockedEmailDomain.blocked?(domain)
+
       return true if allowed_registration_email_domains.empty?
       return true if allowed_registration_email_domains.include?(domain)
 

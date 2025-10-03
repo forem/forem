@@ -72,9 +72,10 @@ module MarkdownProcessor
 
     BILLBOARD = %w[alt class height href src width].freeze
 
-    RENDERED_MARKDOWN_SCRUBBER = %w[alt colspan controls data-conversation data-lang
-                                    data-no-instant data-url href id loop name ref rel
-                                    rowspan span src start title type value].freeze
+    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls data-conversation data-lang
+                                    data-gif-video data-no-instant data-url href id loop muted name
+                                    playsinline preload poster ref rel rowspan span src start title
+                                    type value].freeze
 
     MARKDOWN_PROCESSOR = %w[alt href src].freeze
 

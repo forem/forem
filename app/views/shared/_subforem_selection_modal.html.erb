@@ -1,0 +1,45 @@
+<div id="subforem-selection-modal" class="subforem-modal hidden">
+  <div class="subforem-modal__backdrop"></div>
+  <div class="subforem-modal__container">
+    <div class="subforem-modal__box">
+      <header class="subforem-modal__header">
+        <h2 class="subforem-modal__title">Choose a community to post to</h2>
+        <button class="subforem-modal__close" aria-label="Close modal">
+          <%= crayons_icon_tag(:x, aria_hidden: true) %>
+        </button>
+      </header>
+      
+      <div class="subforem-modal__body">
+        <p class="subforem-modal__description">
+          Choose the most relevant main audience for your post. You can boost to other communities later.
+        </p>
+        
+        <div class="subforem-modal__options">
+          <% subforems = Subforem.cached_postable_array %>
+          <% subforems.each do |subforem_id, community_name| %>
+            <% subforem = Subforem.find(subforem_id) %>
+            <a 
+              href="<%= "https://#{subforem.domain}/new" %>"
+              class="subforem-modal__option">
+              <div class="subforem-modal__option-content">
+                <div class="subforem-modal__option-left">
+                  <img 
+                    src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem_id), width: 32) %>" 
+                    alt="<%= community_name %> logo" 
+                    class="subforem-modal__option-logo"
+                    onerror="this.style.display='none'">
+                  <div class="subforem-modal__option-text">
+                    <div class="subforem-modal__option-name"><%= community_name %></div>
+                    <div class="subforem-modal__option-description"><%= Settings::Community.community_description(subforem_id: subforem_id) %></div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= javascript_include_tag "subforemSelectionModal", defer: true %>

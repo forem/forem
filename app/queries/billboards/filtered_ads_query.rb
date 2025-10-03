@@ -33,7 +33,7 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
-      @filtered_billboards = included_subforem_ads #if @subforem_id.present?
+      @filtered_billboards = included_subforem_ads # if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
@@ -79,6 +79,11 @@ module Billboards
       # filters applied up to this point, thus near the end is best)
       @filtered_billboards = type_of_ads
 
+      # Apply survey completion filtering if user is signed in
+      if @user_signed_in && ApplicationConfig["SKIP_SURVEY_COMPLETION_FILTERING"] != "yes"
+        @filtered_billboards = survey_completion_filtered_ads
+      end
+
       @filtered_billboards = @filtered_billboards.order(success_rate: :desc)
     end
 
@@ -123,7 +128,7 @@ module Billboards
 
     def included_subforem_ads
       @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
-                                  subforem_id: @subforem_id)
+                                 subforem_id: @subforem_id)
     end
 
     def authenticated_ads(display_auth_audience)
@@ -179,6 +184,30 @@ module Billboards
       end
 
       @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
+    end
+
+    def survey_completion_filtered_ads
+      return @filtered_billboards unless @user_id.present?
+
+      # Get billboards that either don't exclude survey completions or
+      # exclude survey completions but the user hasn't completed any of the specified surveys
+      billboards_without_survey_exclusion = @filtered_billboards.where(exclude_survey_completions: false)
+
+      # For billboards that do exclude survey completions, we need to check if the user
+      # has completed any of the surveys specified in exclude_survey_ids
+      billboards_with_survey_exclusion = @filtered_billboards.where(exclude_survey_completions: true)
+
+      if billboards_with_survey_exclusion.any?
+        # Get survey IDs that the user has completed
+        completed_survey_ids = SurveyCompletion.completed_survey_ids_for_user(@user_id)
+
+        # Filter out billboards where the user has completed any of the excluded surveys
+        billboards_with_survey_exclusion = billboards_with_survey_exclusion.where(
+          "NOT (exclude_survey_ids && ARRAY[?]::integer[])", completed_survey_ids
+        )
+      end
+
+      billboards_without_survey_exclusion.or(billboards_with_survey_exclusion)
     end
   end
 end

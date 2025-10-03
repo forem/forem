@@ -78,6 +78,15 @@ RSpec.describe "Stories::Feeds" do
           "tag_list" => article.decorate.cached_tag_list_array,
         )
       end
+
+      it "sets cache control headers for edge caching" do
+        get stories_feed_path
+
+        expect(response.headers["Cache-Control"]).to eq("public, no-cache")
+        expect(response.headers["X-Accel-Expires"]).to eq("60")
+        expect(response.headers["Surrogate-Control"]).to include("max-age=60")
+        expect(response.headers["Surrogate-Control"]).to include("stale-if-error=26400")
+      end
     end
 
     context "when rendering an article that is pinned" do
@@ -102,12 +111,12 @@ RSpec.describe "Stories::Feeds" do
       let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
 
       it "renders main_image as a cloud link" do
-        allow(CloudCoverUrl).to receive(:new).with(article.main_image).and_return(cloud_cover)
+        allow(CloudCoverUrl).to receive(:new).with(article.main_image, nil).and_return(cloud_cover)
         allow(cloud_cover).to receive(:call).and_call_original
 
         get stories_feed_path
 
-        expect(CloudCoverUrl).to have_received(:new).with(article.main_image)
+        expect(CloudCoverUrl).to have_received(:new).with(article.main_image, nil)
         expect(cloud_cover).to have_received(:call)
       end
     end
@@ -170,7 +179,6 @@ RSpec.describe "Stories::Feeds" do
       let(:user) { create(:user) }
 
       it "returns signed in feed" do
-
         payload = {
           user_id: user.id,
           exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
@@ -186,11 +194,28 @@ RSpec.describe "Stories::Feeds" do
           "organization_id" => organization.id,
           "organization" => hash_including("name" => organization.name),
           "tag_list" => article.decorate.cached_tag_list_array,
-          "current_user_signed_in" => true
+          "current_user_signed_in" => true,
         )
       end
-    end
 
+      it "does not set cache control headers for edge caching" do
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+        get stories_feed_path, headers: { "Authorization" => "Bearer #{token}" }
+
+        # Should not have the specific edge caching headers we set for signed out users
+        expect(response.headers["X-Accel-Expires"]).to be_nil
+        expect(response.headers["Surrogate-Control"]).to be_nil
+
+        # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
+        if response.headers["Cache-Control"]
+          expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
+        end
+      end
+    end
 
     context "when there are no params passed (base feed) and user is signed in" do
       before do
@@ -228,6 +253,19 @@ RSpec.describe "Stories::Feeds" do
           "tag_list" => article.decorate.cached_tag_list_array,
         )
       end
+
+      it "does not set cache control headers for edge caching" do
+        get stories_feed_path
+
+        # Should not have the specific edge caching headers we set for signed out users
+        expect(response.headers["X-Accel-Expires"]).to be_nil
+        expect(response.headers["Surrogate-Control"]).to be_nil
+
+        # Cache-Control might be set by other parts of the system, so we check it doesn't contain our specific values
+        if response.headers["Cache-Control"]
+          expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
+        end
+      end
     end
 
     context "when there are highly rated comments" do
@@ -254,6 +292,144 @@ RSpec.describe "Stories::Feeds" do
         response_array = response.parsed_body.pluck("title")
         expect(response_array).to contain_exactly(article.title, article_with_mid_score.title)
         expect(response_array).not_to include(article_with_low_score.title)
+      end
+    end
+
+    context "when rendering quickie articles with line breaks" do
+      let(:quickie_title) { "Line one\nLine two\n\nParagraph two\n\nParagraph three" }
+      let(:quickie_article) do
+        article = create(:article, type_of: "status", title: quickie_title, featured: true, body_markdown: "",
+                                   main_image: nil)
+        article.update!(published: true, title: quickie_title)
+        article
+      end
+
+      before do
+        quickie_article
+      end
+
+      it "includes title_finalized_for_feed in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("title_finalized_for_feed")
+        expect(quickie_response["title_finalized_for_feed"]).to include("<br>")
+        expect(quickie_response["title_finalized_for_feed"]).to include("quickie-paragraph")
+      end
+
+      it "includes title_for_metadata in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("title_for_metadata")
+        expect(quickie_response["title_for_metadata"]).not_to include("\n")
+        expect(quickie_response["title_for_metadata"]).to include("Line one Line two")
+      end
+
+      it "includes readable_publish_date in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("readable_publish_date")
+        expect(quickie_response["readable_publish_date"]).to be_present
+      end
+
+      it "includes video_duration_in_minutes in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("video_duration_in_minutes")
+      end
+
+      it "includes flare_tag in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("flare_tag")
+      end
+
+      it "includes class_name in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("class_name")
+        expect(quickie_response["class_name"]).to eq("Article")
+      end
+
+      it "includes cloudinary_video_url in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("cloudinary_video_url")
+      end
+
+      it "includes published_timestamp in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("published_timestamp")
+      end
+
+      it "includes main_image_background_hex_color in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("main_image_background_hex_color")
+      end
+
+      it "includes public_reaction_categories in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("public_reaction_categories")
+      end
+
+      it "includes body_preview in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("body_preview")
+      end
+
+      it "includes title_finalized in the response" do
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
+        expect(quickie_response).to include("title_finalized_for_feed")
+        expect(quickie_response["title_finalized_for_feed"]).to include("<br>")
+        expect(quickie_response["title_finalized_for_feed"]).to include("quickie-paragraph")
+      end
+    end
+
+    context "when rendering long quickie articles (truncation test)" do
+      let(:long_quickie_title) { "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10" }
+      let(:long_quickie_article) do
+        article = create(:article, type_of: "status", title: long_quickie_title, featured: true, body_markdown: "",
+                                   main_image: nil)
+        article.update!(published: true, title: long_quickie_title)
+        article
+      end
+
+      before do
+        long_quickie_article
+      end
+
+      it "truncates title_finalized_for_feed with read more indicator" do
+        get stories_feed_path
+
+        long_quickie_response = response.parsed_body.find { |item| item["id"] == long_quickie_article.id }
+        expect(long_quickie_response).to include("title_finalized_for_feed")
+        expect(long_quickie_response["title_finalized_for_feed"]).to include("quickie-read-more")
+        expect(long_quickie_response["title_finalized_for_feed"]).to include("read more")
+      end
+
+      it "includes title_for_metadata without truncation" do
+        get stories_feed_path
+
+        long_quickie_response = response.parsed_body.find { |item| item["id"] == long_quickie_article.id }
+        expect(long_quickie_response).to include("title_for_metadata")
+        expect(long_quickie_response["title_for_metadata"]).not_to include("read more")
+        expect(long_quickie_response["title_for_metadata"]).to include("Line 1 Line 2")
       end
     end
 
@@ -397,6 +573,78 @@ RSpec.describe "Stories::Feeds" do
 
         expect(response_article["current_user_signed_in"]).to eq(false)
       end
+    end
+  end
+
+  describe "public_reaction_categories cache invalidation" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+
+    before do
+      # Create initial reactions
+      create(:reaction, reactable: article, category: "like", user: user2)
+      create(:reaction, reactable: article, category: "unicorn", user: user3)
+    end
+
+    it "returns fresh public_reaction_categories after reactions are added" do
+      # Get initial feed response
+      get stories_feed_path
+      initial_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(initial_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn])
+
+      # Add a new reaction
+      create(:reaction, reactable: article, category: "fire", user: user)
+
+      # Get updated feed response
+      get stories_feed_path
+      updated_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(updated_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
+    end
+
+    it "returns fresh public_reaction_categories after reactions are removed" do
+      # Get initial feed response
+      get stories_feed_path
+      initial_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(initial_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn])
+
+      # Remove a reaction
+      article.reactions.find_by(category: "like", user: user2).destroy
+
+      # Get updated feed response
+      get stories_feed_path
+      updated_response = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(updated_response["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[unicorn])
+    end
+
+    it "returns empty public_reaction_categories when no public reactions exist" do
+      # Remove all public reactions
+      article.reactions.public_category.destroy_all
+
+      get stories_feed_path
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["public_reaction_categories"]).to eq([])
+    end
+
+    it "does not return stale cached data" do
+      # Populate cache with initial data (we have reactions from before block)
+      article.public_reaction_categories
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      cache_existed = Rails.cache.exist?(cache_key)
+
+      # Add a new reaction (should invalidate cache)
+      create(:reaction, reactable: article, category: "fire", user: user)
+
+      # Verify cache was invalidated if it existed
+      if cache_existed
+        expect(Rails.cache.exist?(cache_key)).to be false
+      end
+
+      # Get feed response should show fresh data
+      get stories_feed_path
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
     end
   end
 end

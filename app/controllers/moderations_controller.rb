@@ -18,28 +18,22 @@ class ModerationsController < ApplicationController
     @feed = params[:state] == "latest" ? "latest" : "inbox"
     @members = params[:members].in?(%w[new not_new]) ? params[:members] : "all"
 
-    # exclude articles from users that have suspended or spam role
-    role_ids = Role.where(name: %i[spam suspended]).ids
-    articles = Article.published.from_subforem
-      .where("NOT EXISTS (SELECT 1 FROM users_roles WHERE users_roles.user_id = articles.user_id AND
-             role_id IN (?))", role_ids)
-      .order(published_at: :desc).limit(70)
+    # Use the optimized service to fetch articles
+    @articles = Moderations::ArticleFetcherService.new(
+      user: current_user,
+      feed: @feed,
+      members: @members,
+      tag: params[:tag]
+    ).call
 
-    articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
-    if @feed == "inbox"
-      articles = articles
-        .joins("LEFT OUTER JOIN reactions ON articles.id = reactions.reactable_id AND
-               reactions.reactable_type = 'Article' AND reactions.user_id = #{current_user.id}")
-        .where("articles.score >= ? AND articles.score <= ?", SCORE_MIN, SCORE_MAX)
-        .where(reactions: { id: nil })
+    # Cache tag-related queries
+    if params[:tag].present?
+      @tag = Rails.cache.fetch("moderations_tag_#{params[:tag]}", expires_in: 1.hour) do
+        Tag.find_by(name: params[:tag]) || not_found
+      end
     end
-    if @members == "new"
-      articles = articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4")
-    elsif @members == "not_new"
-      articles = articles.where("nth_published_by_author > 3")
-    end
-    @articles = articles.includes(:user).reject { |article| article.title == "[Boost]" }.to_json(JSON_OPTIONS)
-    @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
+
+    # Cache user tag queries
     @current_user_tags = current_user.moderator_for_tags
     @current_user_following_tags = current_user.currently_following_tags.pluck(:name) - @current_user_tags
   end

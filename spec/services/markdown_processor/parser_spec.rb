@@ -662,4 +662,14 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
         )
     end
   end
+
+  it "removes alt text if it's the default 'Image Description'" do
+      markdown = '![Image Description](https://example.com/image.jpg)'
+      rendered_html = generate_and_parse_markdown(markdown)
+    
+      expect(rendered_html).to include('<img')
+      expect(rendered_html).to include('src="https://example.com/image.jpg"')
+      expect(rendered_html).not_to include('alt="Image Description"')
+  end
+
 end

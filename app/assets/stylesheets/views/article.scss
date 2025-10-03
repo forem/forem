@@ -61,6 +61,12 @@
       padding: var(--content-padding-y) var(--content-padding-x) 0
         var(--content-padding-x);
     }
+    .quickie-paragraph {
+      margin-bottom: var(--su-3);
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__actions {
@@ -91,6 +97,27 @@
 
   .reaction-button[disabled] {
     cursor: pointer;
+  }
+
+  &__context-note {
+    margin-top: -5px;
+    margin-bottom: var(--su-5);
+    padding: var(--su-2) var(--su-5);
+    background-color: var(--card-bg);
+    border-radius: 19px;
+    box-shadow: var(--shadow-1);
+    color: var(--card-color);
+    font-size: calc(var(--fs-base) - 1px);
+    line-height: 1.5;
+    display: inline-block;
+  }
+  &__context-note__feed {
+    margin-bottom: var(--su-3);
+    padding: var(--su-1) var(--su-3);
+    font-size: var(--fs-s);
+    line-height: 1.5;
+    border-radius: 15px;
+    display: inline-block;
   }
 }
 

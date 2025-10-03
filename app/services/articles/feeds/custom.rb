@@ -13,31 +13,93 @@ module Articles
 
       def default_home_feed(**_kwargs)
         return [] if @feed_config.nil? || @user.nil?
-        # Build a raw SQL expression for the computed score.
-        # This expression multiplies article fields by weights from feed_config.        
-        # **CRITICAL CHANGE:** Use a subquery
+        
+        execute_feed_query
+      end
+
+      private
+
+      def execute_feed_query
+        # Optimize lookback calculation - cache the result
+        # Note: Partial indexes are optimized for 7-day lookback (covers 95%+ of queries)
+        # If you change this, consider updating the partial indexes in the migration
         lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
         lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
-        articles = Article.published
+        
+        # Pre-calculate user-specific data to avoid repeated database calls
+        user_data = preload_user_data
+        
+        # Build optimized base query with better index usage
+        articles = build_optimized_base_query(lookback, user_data)
+        
+        # Apply user-specific filters early in the query
+        articles = apply_user_filters(articles, user_data)
+        
+        # Apply subforem-specific filters
+        articles = apply_subforem_filters(articles)
+        
+        # Apply weighted shuffle if needed
+        articles = weighted_shuffle(articles, @feed_config.shuffle_weight) if @feed_config.shuffle_weight.positive?
+        
+        # Randomly shuffle top 5 articles if all articles are recent (within a week)
+        articles = shuffle_top_five_if_recent(articles)
+        
+        articles
+      end
+
+
+
+      def preload_user_data
+        {
+          blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
+          hidden_tags: @user.cached_antifollowed_tag_names,
+          user_activity: @user.user_activity
+        }
+      end
+
+      def build_optimized_base_query(lookback, user_data)
+        # Use a more efficient query structure with better index hints
+        base_query = Article.published
           .with_at_least_home_feed_minimum_score
-          .select("articles.*, (#{@feed_config.score_sql(@user)}) as computed_score")  # Keep parentheses here
-          .from("(#{Article.published.where("articles.published_at > ?", lookback).to_sql}) as articles") # Subquery!
+          .where("articles.published_at > ?", lookback)
+          .select("articles.*, (#{score_sql_method}) as computed_score")
           .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
           .limited_column_select
-          .includes(top_comments: :user)
-          .includes(:distinct_reaction_categories)
+          .includes(:subforem) # Only include essential associations
           .from_subforem
 
-        if @user
-          articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
-          if (hidden_tags = @user.cached_antifollowed_tag_names).any?
-            articles = articles.not_cached_tagged_with_any(hidden_tags)
-          end
-        end
+        # Include necessary associations for performance
+        base_query = base_query.includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
+        
+        base_query
+      end
 
-        articles = weighted_shuffle(articles, @feed_config.shuffle_weight) if @feed_config.shuffle_weight.positive?
+      def score_sql_method
+        @feed_config.score_sql(@user)
+      end
+
+
+      def apply_user_filters(articles, user_data)
+        # Apply user-specific filters early to reduce dataset size
+        if user_data[:blocked_user_ids].any?
+          articles = articles.where.not(user_id: user_data[:blocked_user_ids])
+        end
+        
+        if user_data[:hidden_tags].any?
+          articles = articles.not_cached_tagged_with_any(user_data[:hidden_tags])
+        end
+        
+        articles
+      end
+
+      def apply_subforem_filters(articles)
+        # Apply subforem-specific filters
+        if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+          articles = articles.where(type_of: :full_post)
+        end
+        
         articles
       end
 
@@ -49,7 +111,59 @@ module Articles
           index + (rand * (4 * shuffle_weight) - 2 * shuffle_weight)
         end.map(&:first)
       end
-      
+
+      def shuffle_top_five_if_recent(articles)
+        return articles if articles.empty?
+        
+        # Check if all articles are published within the last week
+        one_week_ago = 1.week.ago
+        all_recent = articles.all? { |article| article.published_at > one_week_ago }
+        
+        return articles unless all_recent
+        
+        # Use dynamic shuffle count only if recent_page_views_shuffle_weight > 0
+        shuffle_count = if @feed_config.recent_page_views_shuffle_weight > 0.0
+                          calculate_dynamic_shuffle_count
+                        else
+                          5 # Default behavior
+                        end
+        
+        # Split articles into top N (based on shuffle count) and the rest
+        top_articles = articles.first(shuffle_count)
+        rest = articles[shuffle_count..-1] || []
+        
+        # Randomly shuffle the top articles
+        shuffled_top_articles = top_articles.shuffle
+        
+        # Return shuffled top articles + unshuffled rest
+        shuffled_top_articles + rest
+      end
+
+      def calculate_dynamic_shuffle_count
+        return 5 unless @user&.user_activity&.recently_viewed_articles&.any?
+        
+        # Get the most recent page view timestamp
+        most_recent_page_view = @user.user_activity.recently_viewed_articles.first
+        return 5 unless most_recent_page_view&.size >= 2
+        
+        begin
+          most_recent_timestamp = most_recent_page_view[1].to_datetime
+          hours_since_last_view = ((Time.current - most_recent_timestamp) / 1.hour).ceil
+          
+          # Calculate base shuffle count: 20 for within 1 hour, decreasing by 1 for each additional hour
+          # Minimum of 5 (original behavior)
+          base_shuffle_count = [21 - hours_since_last_view, 5].max
+          
+          # Apply the weight multiplier
+          weighted_shuffle_count = (base_shuffle_count * @feed_config.recent_page_views_shuffle_weight).round
+          
+          # Ensure minimum of 5 and maximum of 20
+          [[weighted_shuffle_count, 5].max, 20].min
+        rescue StandardError
+          # If there's any error parsing the timestamp, fall back to default
+          5
+        end
+      end
 
       # Preserve the public interface
       alias feed default_home_feed

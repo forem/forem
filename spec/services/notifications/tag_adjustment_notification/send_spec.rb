@@ -14,8 +14,11 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   end
   let(:notification) { described_class.call(tag_adjustment) }
 
+  let(:mascot_account) { create(:user) }
+
   before do
     mod_user.add_role(:tag_moderator, tag)
+    allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 
   it "returns a valid notification" do

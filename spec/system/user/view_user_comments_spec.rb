@@ -20,7 +20,7 @@ RSpec.describe "User comments" do
 
     it "shows user's comments", js: true do
       within("#substories div.profile-comment-card") do
-        expect(page).to have_content("All 2 comments")
+        expect(page).to have_content("All comments")
         expect(page).to have_link(nil, href: comment.path)
         expect(page).to have_link(nil, href: comment2.path)
       end
@@ -44,7 +44,7 @@ RSpec.describe "User comments" do
 
     it "hides user's comments", js: true do
       within("#substories") do
-        expect(page).not_to have_content("All 2 comments")
+        expect(page).not_to have_content("All comments")
         expect(page).not_to have_link(nil, href: comment.path)
         expect(page).not_to have_link(nil, href: comment2.path)
       end
@@ -67,7 +67,7 @@ RSpec.describe "User comments" do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/user3000/comments"
       within("#substories div.profile-comment-card") do
-        expect(page).to have_content("Last 1 comments")
+        expect(page).to have_content("Recent comments")
       end
     end
   end

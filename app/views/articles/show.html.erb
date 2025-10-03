@@ -1,7 +1,5 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
-<link rel="prefetch" href="/reactions?article_id=<%= @article.id %>">
-
 <style>
   .html-variant-wrapper { display: none}
 </style>
@@ -21,12 +19,10 @@
   <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
-  <% unless internal_navigation? || user_signed_in? %>
-    <script type="application/ld+json">
-      <%= @article_json_ld.to_json.html_safe %>
-    </script>
-  <% end %>
+<% unless internal_navigation? || user_signed_in? %>
+  <script type="application/ld+json">
+    <%= @article_json_ld.to_json.html_safe %>
+  </script>
 <% end %>
 
 <% if internal_navigation? %>
@@ -39,18 +35,19 @@
   <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
+    <link rel="preload" href="/reactions?article_id=<%= @article.id %>" as="fetch" crossorigin="same-origin">
     <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
     <%= meta_keywords_article(@article.cached_tag_list) %>
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
-    <meta property="og:title" content="<%= @article.title %>" />
+    <meta property="og:title" content="<%= @article.title_for_metadata %>" />
     <meta property="og:description" content="<%= @article.description || t("views.articles.meta.description") %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
     <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
-    <meta name="twitter:title" content="<%= @article.title %>">
+    <meta name="twitter:title" content="<%= @article.title_for_metadata %>">
     <meta name="twitter:description" content="<%= @article.description || t("views.articles.meta.description") %>">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
@@ -66,41 +63,8 @@
   <% end %>
 <% end %>
 
-<% if @article.type_of == "fullscreen_embed" %>
-    <style>
-      footer {
-        display: none;
-      }
-      #fullscreen-body iframe {
-        width:calc(100% - 60px);
-        height: calc(100vh - 54px);
-        border: none;
-        position: absolute;
-        top: 54px;
-        left: 60px;
-      }
-      @media (max-width: 767px) {
-        #fullscreen-body iframe {
-          width: 100%;
-          left: 0;
-          height: calc(100vh - 100px);
-        }
-      }
-      .crayons-layout__sidebar-left {
-        padding-top: 20px;
-        width: 60px;
-        left: 0;
-      }
-    </style>
-  <div data-article-id="<%= @article.id %>" id="article-body">
-    <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
-      <%= render "articles/actions" %>
-    </aside>
-    <div id="fullscreen-body">
-      <%= @article.processed_html_final.html_safe %>
-    </div>
-  </div>
-  <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+    <% if @article.type_of == "fullscreen_embed" %>
+      <%= render "articles/fullscreen_embed" %>
 <% else %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
     <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
@@ -161,7 +125,7 @@
                   style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowfullscreen
-                  title="<%= @article.title %>"
+                  title="<%= @article.title_for_metadata %>"
                 ></iframe>
               </div>
             <% elsif @article.video.present? %>
@@ -235,11 +199,11 @@
                 <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
                   <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
                 <% end %>
-                <%= @article.title %>
+                <%= @article.type_of == "status" ? @article.title_finalized : @article.title %>
               </h1>
               
               <% if @article.type_of == "full_post" %>
-                <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
+                <% cache("main-article-tags-#{@article.cached_tag_list_array.sort.join('-')}", expires_in: 72.hours) do %>
                   <div class="spec__tags flex flex-wrap">
                     <% @article.cached_tag_list_array.each do |tag| %>
                       <%= render_tag_link(tag) %>
@@ -257,7 +221,11 @@
                         collection: @collection,
                         articles: @collection_articles %>
             <% end %>
-
+            <% if @context_note %>
+              <div class="crayons-article__context-note">
+                <%= @context_note.processed_html.html_safe %>
+              </div>
+            <% end %>
             <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
               <% if @article.type_of == "status" && @article.processed_html_final.present? %>
                 <% if user_signed_in? %>
@@ -292,7 +260,9 @@
           <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
         </div>
 
-        <% if user_signed_in? || internal_navigation? || ApplicationConfig["ASYNC_BOTTOM_CONTENT"] == "yes" %>
+        <% if ApplicationConfig["SKIP_BOTTOM_CONTENT"] == "yes" %>
+          <!-- Bottom content skipped via SKIP_BOTTOM_CONTENT config -->
+        <% elsif user_signed_in? || internal_navigation? || ApplicationConfig["ASYNC_BOTTOM_CONTENT"] == "yes" %>
           <div id="aync-bottom-content" class="pb-4"></div>
         <% else %>
           <% cache("article-bottom-content-#{@article.id}-#{false}-#{(@organization || @user).latest_article_updated_at}", expires_in: 96.hours) do %>
@@ -308,19 +278,6 @@
     </aside>
   </div>
 
-  <% cache("specific-article-extra-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 24.hours) do %>
-    <% if has_vid?(@article) %>
-      <%= render "articles/fitvids" %>
-    <% end %>
-    <% if @article.processed_html.include?('class="twitter-tweet"') ||
-        @article.processed_html.include?("ltag_twitter_timeline-liquid-tag") %>
-      <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <% end %>
-    <% if @article.processed_html.include? "instagram-media" %>
-      <script async defer src="//platform.instagram.com/en_US/embeds.js"></script>
-    <% end %>
-  <% end %>
-
   <div class="mod-actions-menu print-hidden"></div>
   <div data-testid="unpublish-post-modal-container" class="unpublish-post-modal-container hidden"></div>
   <% if user_signed_in? %>
@@ -333,15 +290,27 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>
+    <% if has_vid?(@article) %>
+      if (document.getElementsByClassName('fluidvids').length === 0) {
+        window.Fluidvids=function(a,b){"use strict";var c,d,e=b.head||b.head,f=".fluidvids-elem{position:absolute;top:0px;left:0px;width:100%;height:100%;border:none;}.fluidvids{width:100%;position:relative;}",g=function(a){return c=new RegExp("^(https?:)?//(?:"+d.join("|")+").*$","i"),c.test(a)},h=function(a){var c=b.createElement("div"),d=a.parentNode,e=100*(parseInt(a.height?a.height:a.offsetHeight,10)/parseInt(a.width?a.width:a.offsetWidth,10));d.insertBefore(c,a),a.className+=" fluidvids-elem",c.className+=" fluidvids",c.style.paddingTop=e+"%",c.appendChild(a)},i=function(){var a=b.createElement("div");a.innerHTML="<p>x</p><style>"+f+"</style>",e.appendChild(a.childNodes[1])},j=function(a){var c=a||{},e=c.selector||"iframe";d=c.players||["www.youtube.com","player.vimeo.com","clips.twitch.tv"];for(var f=b.querySelectorAll(e),j=0;j<f.length;j++){var k=f[j];g(k.src)&&h(k)}i()};return{init:j}}(window,document);
+        Fluidvids.init({
+          selector: ['iframe', 'object'], // runs querySelectorAll()
+          players: ['www.youtube.com', 'player.vimeo.com', 'clips.twitch.tv'] // players to support
+        });
+      }
+    <% end %>
     <% if @article.processed_html.include?("podcastliquidtag") %>
       <%== PodcastTag.script %>
     <% end %>
     <% if @article.processed_html.include?("ltag-poll") %>
       <%== PollTag.script %>
+    <% end %>
+    <% if @article.processed_html.include?("ltag-survey") %>
+      <%== SurveyTag.script %>
     <% end %>
     <% if @article.processed_html.include?("tweet-embed") %>
       <%== TweetTag.script %>
