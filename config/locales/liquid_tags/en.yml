@@ -5,6 +5,8 @@ en:
       invalid_asciinema_id: 'Invalid Asciinema ID: %{id}'
     blogcast_tag:
       invalid_blogcast_id: Invalid Blogcast ID
+    cloud_run_tag:
+      invalid_cloud_run_url: Invalid Cloud Run URL
     codepen_tag:
       invalid_codepen_url: Invalid CodePen URL
       invalid_options: Invalid Options
