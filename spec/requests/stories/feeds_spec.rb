@@ -628,7 +628,7 @@ RSpec.describe "Stories::Feeds" do
     end
 
     it "does not return stale cached data" do
-      # Populate cache with initial data
+      # Populate cache with initial data (we have reactions from before block)
       article.public_reaction_categories
       cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
       expect(Rails.cache.exist?(cache_key)).to be true

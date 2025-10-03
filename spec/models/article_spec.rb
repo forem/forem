@@ -2354,10 +2354,10 @@ RSpec.describe Article do
       # Clear any existing cache
       Rails.cache.delete(cache_key)
       
-      # Call the method to populate cache
+      # Call the method to populate cache (this should create cache since we have reactions)
       article.public_reaction_categories
       
-      # Verify cache was created
+      # Verify cache was created (should be true since we have reactions from before block)
       expect(Rails.cache.exist?(cache_key)).to be true
     end
   end

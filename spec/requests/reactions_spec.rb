@@ -444,13 +444,16 @@ RSpec.describe "Reactions" do
     it "invalidates reaction_counts_for_reactable cache when creating a reaction" do
       cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
       
+      # Create initial reactions to populate cache
+      create(:reaction, reactable: article, category: "like", user: user)
+      
       # Populate cache
       article.public_reaction_categories
       expect(Rails.cache.exist?(cache_key)).to be true
       
       # Create reaction via controller
       expect do
-        post "/reactions", params: { reactable_type: "Article", reactable_id: article.id, category: "like" }
+        post "/reactions", params: { reactable_type: "Article", reactable_id: article.id, category: "unicorn" }
       end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
     end
 
@@ -471,11 +474,13 @@ RSpec.describe "Reactions" do
     end
 
     it "calls remove_reaction_counts_cache_key method" do
-      allow_any_instance_of(ReactionsController).to receive(:remove_reaction_counts_cache_key).and_call_original
+      controller = ReactionsController.new
+      allow(controller).to receive(:remove_reaction_counts_cache_key).and_call_original
+      allow(ReactionsController).to receive(:new).and_return(controller)
       
       post "/reactions", params: { reactable_type: "Article", reactable_id: article.id, category: "like" }
       
-      expect_any_instance_of(ReactionsController).to have_received(:remove_reaction_counts_cache_key)
+      expect(controller).to have_received(:remove_reaction_counts_cache_key)
     end
   end
 end
