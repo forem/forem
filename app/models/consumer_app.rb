@@ -1,10 +1,7 @@
 class ConsumerApp < ApplicationRecord
   resourcify
 
-  FOREM_BUNDLE = "com.forem.app".freeze  # Kept for backward compatibility
-  FOREM_IOS_BUNDLE = "com.forem.app".freeze  
-  FOREM_ANDROID_BUNDLE = "com.forem.android".freeze
-  FOREM_BUNDLES = [FOREM_IOS_BUNDLE, FOREM_ANDROID_BUNDLE].freeze
+  FOREM_BUNDLE = "com.forem.app".freeze
   FOREM_APP_PLATFORMS = %w[ios android].freeze
   FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
