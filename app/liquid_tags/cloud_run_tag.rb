@@ -1,6 +1,6 @@
 class CloudRunTag < LiquidTagBase
   PARTIAL = "liquids/cloud_run".freeze
-  REGISTRY_REGEXP = %r{\Ahttps?://[a-z0-9]+(?:-[a-z0-9]+)*\.run\.app/?\z}
+  REGISTRY_REGEXP = %r{\Ahttps?://[a-zA-Z0-9.-]+\.run\.app/?\z}
 
   def initialize(_tag_name, input, _parse_context)
     super
