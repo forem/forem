@@ -41,7 +41,7 @@
         <% if billboard.dismissal_sku.present? %>
           <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
             class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-              <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+              <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
           </button>
         <% end %>
       </div>
@@ -67,7 +67,7 @@
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
         class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-          <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+          <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
@@ -94,7 +94,7 @@
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
         class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-          <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+          <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
@@ -118,7 +118,7 @@
       <% if billboard.dismissal_sku.present? %>
         <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
           class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-            <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+            <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
         </button>
       <% end %>
     </div>

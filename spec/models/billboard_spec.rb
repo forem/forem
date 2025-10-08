@@ -1025,4 +1025,87 @@ RSpec.describe Billboard do
       end
     end
   end
+
+  describe "#content_updated_at" do
+    let(:billboard) { create(:billboard) }
+
+    it "is set on creation" do
+      expect(billboard.content_updated_at).not_to be_nil
+    end
+
+    it "updates when body_markdown changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(body_markdown: "New content")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "updates when name changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(name: "New Name")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "updates when placement_area changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(placement_area: "sidebar_right")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "updates when color changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(color: "#FF0000")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "does not update when approved changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(approved: !billboard.approved)
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when published changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(published: !billboard.published)
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when impressions_count changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update_column(:impressions_count, 1000)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when clicks_count changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update_column(:clicks_count, 100)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when success_rate changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update_column(:success_rate, 0.5)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+  end
 end
