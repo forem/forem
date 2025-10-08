@@ -83,6 +83,7 @@ class Billboard < ApplicationRecord
            :validate_expiration_approval
 
   before_save :process_markdown
+  before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
@@ -411,6 +412,15 @@ class Billboard < ApplicationRecord
   end
 
   private
+
+  def update_content_updated_at_if_needed
+    # Only update content_updated_at when content-related fields change
+    content_fields = %w[body_markdown name placement_area color template render_mode]
+    
+    return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
+    
+    self.content_updated_at = Time.current
+  end
 
   def update_event_counts_when_taking_down
     Billboards::DataUpdateWorker.perform_async(id)
