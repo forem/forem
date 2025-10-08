@@ -56,7 +56,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "exclude_role_names", "target_role_names", "include_subforem_ids", "prefer_paired_with_billboard_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at",
-                          "exclude_survey_completions", "exclude_survey_ids")
+                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -78,7 +78,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at",
-                          "exclude_survey_completions", "exclude_survey_ids")
+                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -146,7 +146,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
-                          "exclude_survey_completions", "exclude_survey_ids")
+                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at")
       end
 
       it "also accepts target geolocations as an array" do
