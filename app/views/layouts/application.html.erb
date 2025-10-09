@@ -105,7 +105,7 @@
         <div id="audiocontent" data-podcast="">
           <%= yield(:audio) %>
         </div>
-        <% cache("main-side-bar-#{user_signed_in?}", expires_in: 10.minutes) do %>
+        <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
           <% if Subforem.cached_discoverable_ids.any? %>
             <%= render "layouts/main_side_bar" %>
           <% end %>
