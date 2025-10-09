@@ -255,9 +255,7 @@ module ApplicationHelper
   end
 
   def community_name
-    # Use a subforem-aware cache key to prevent cross-subforem pollution
-    cache_key = :"@community_name_#{RequestStore.store[:subforem_id]}"
-    instance_variable_get(cache_key) || instance_variable_set(cache_key, Settings::Community.community_name)
+    @community_name ||= Settings::Community.community_name
   end
 
   def release_adjusted_cache_key(path)
