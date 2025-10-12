@@ -1,4 +1,4 @@
-import { addSnackbarItem } from '../Snackbar';
+import { showSnackbar } from '../utilities/showSnackbar';
 
 /**
  * @file Manages logic to validate file uploads client-side. In general, the
@@ -46,21 +46,7 @@ const MAX_FILE_NAME_LENGTH = 250;
  * @returns {HTMLElement} The error element that was added to the DOM
  */
 function addErrorMessage(msg) {
-  if (top.addSnackbarItem) {
-    // The Comment editor's context (MarkdownToolbar component) doesn't have
-    // access to the Snackbar element in the DOM, so it needs to use `top`
-    top.addSnackbarItem({
-      message: msg,
-      addCloseButton: true,
-    });
-  } else {
-    // The Post editor (Toolbar component) doesn't have access to
-    // `top.addSnackbarItem` so we need to check to ensure if it's undefined
-    addSnackbarItem({
-      message: msg,
-      addCloseButton: true,
-    });
-  }
+  showSnackbar(msg);
 }
 
 /**
