@@ -80,6 +80,22 @@ class SearchController < ApplicationController
       feed_params[:sort_by].present?
     )
 
+    # If Algolia is configured and it's not a homepage search, return blank response
+    algolia_configured = (ApplicationConfig["ALGOLIA_APPLICATION_ID"].present? &&
+                          ApplicationConfig["ALGOLIA_API_KEY"].present?) ||
+                         (Settings::General.algolia_application_id.present? &&
+                          Settings::General.algolia_api_key.present?)
+    
+    if algolia_configured && !is_homepage_search
+      render json: { result: [] }
+      return
+    end
+
+    # Add edge caching headers for homepage searches (10 minutes)
+    if is_homepage_search
+      response.headers["Cache-Control"] = "public, s-maxage=600, max-age=600"
+    end
+
     result =
       if class_name.blank?
         search_postgres_article
