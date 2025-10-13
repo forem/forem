@@ -91,10 +91,8 @@ class SearchController < ApplicationController
       return
     end
 
-    # Add edge caching headers for homepage searches (10 minutes)
-    if is_homepage_search
-      response.headers["Cache-Control"] = "public, s-maxage=600, max-age=600"
-    end
+    # Add surrogate/edge caching headers for homepage searches (10 minutes)
+    set_cache_control_headers(600) if is_homepage_search
 
     result =
       if class_name.blank?
