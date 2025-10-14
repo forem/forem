@@ -110,7 +110,7 @@
         </div>
       <% else %>
         <div class="flex-1 flex items-center justify-between">
-          <div class="crayons-notice w-100" aria-live="polite"><%= t("views.stories.sort.signin_html", path: sign_up_path) %></div>
+          <div class="crayons-notice w-100" aria-live="polite"><%= t("views.stories.sort.signin_html", path: subforem_aware_sign_up_url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id]))) %></div>
         </div>
       <% end %>
 

@@ -289,6 +289,15 @@ module ApplicationHelper
     end
   end
 
+  def subforem_aware_sign_up_url(path_with_params)
+    subforem = root_unless_default_subforem
+    if subforem
+      URL.url(path_with_params, subforem)
+    else
+      path_with_params
+    end
+  end
+
   def is_root_subforem?
     return false unless RequestStore.store[:subforem_id].present?
     return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
