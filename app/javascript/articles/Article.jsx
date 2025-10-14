@@ -31,16 +31,6 @@ export const Article = ({
   }
 
   const isArticle = article.class_name === 'Article';
-  const clickableClassList = [
-    'crayons-story',
-    'crayons-story__top',
-    'crayons-story__body',
-    'crayons-story__indention',
-    'crayons-story__title',
-    'crayons-story__tags',
-    'crayons-story__bottom',
-    'crayons-story__tertiary',
-  ];
 
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
@@ -54,45 +44,53 @@ export const Article = ({
 
   return (
     <article
-      className={`crayons-story cursor-pointer${
+      className={`crayons-story${
         isFeatured ? ' crayons-story--featured' : ''
       }`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-feed-content-id={isArticle ? article.id : null}
       data-content-user-id={article.user_id}
+      style={{ position: 'relative' }}
     >
       <a
         href={article.url}
         aria-labelledby={`article-link-${article.id}`}
-        className="crayons-story__hidden-navigation-link"
-      >
-        {article.title}
-      </a>
-      <div
-        role="presentation"
+        className="crayons-story__stretched-link"
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 1,
+        }}
         onClick={(event) => {
-          const { classList } = event.target;
-          if (clickableClassList.includes(...classList)) {
-            if (event.which > 1 || event.metaKey || event.ctrlKey) {
-              // Indicates should open in _blank
-              window.open(article.url, '_blank');
-            } else {
-              const fullUrl = article.url; // InstantClick deals with full urls
-              InstantClick.preload(fullUrl);
-              InstantClick.display(fullUrl);
-            }
+          // Only intercept for InstantClick on normal clicks
+          if (!(event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey)) {
+            event.preventDefault();
+            const fullUrl = article.url;
+            InstantClick.preload(fullUrl);
+            InstantClick.display(fullUrl);
           }
+          // For modified clicks (ctrl/cmd/middle), browser handles naturally
         }}
       >
+        <span className="sr-only">{article.title}</span>
+      </a>
+      <div>
         {article.video && <Video article={article} />}
 
         {showCover && <ArticleCoverImage article={article} />}
-        <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
+        <div className={`crayons-story__body crayons-story__body-${article.type_of}`} style={{ position: 'relative', zIndex: 2 }}>
           { article.context_note && article.context_note.length > 0 && (
-              <a href={article.url} className="crayons-article__context-note crayons-article__context-note__feed" dangerouslySetInnerHTML={{__html: article.context_note}} />
+              <a href={article.url} className="crayons-article__context-note crayons-article__context-note__feed" style={{ position: 'relative', zIndex: 2 }} dangerouslySetInnerHTML={{__html: article.context_note}} />
             )}
           <div className="crayons-story__top">
-            {article.user && (<Meta article={article} organization={article.organization} />)}
+            {article.user && (
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <Meta article={article} organization={article.organization} />
+              </div>
+            )}
             {pinned && (
               <div
                 className="pinned color-accent-brand fw-bold"
@@ -117,7 +115,11 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             <ContentTitle article={article} />
-            {article.type_of !== 'status' && (<TagList tags={article.tag_list} flare_tag={article.flare_tag} />)}
+            {article.type_of !== 'status' && (
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
+              </div>
+            )}
 
             {article.type_of === 'status' && article.body_preview && article.body_preview.length > 0 && (<div className='crayons-story__contentpreview text-styles' dangerouslySetInnerHTML={{__html: article.body_preview}} />)}
 
@@ -128,7 +130,7 @@ export const Article = ({
 
             <div className="crayons-story__bottom">
               {(article.class_name !== 'User' && article.user) && (
-                <div className="crayons-story__details">
+                <div className="crayons-story__details" style={{ position: 'relative', zIndex: 2 }}>
                   <ReactionsCount article={article} />
                   <CommentsCount
                     count={article.comments_count}
@@ -138,7 +140,7 @@ export const Article = ({
                 </div>
               )}
 
-              <div className="crayons-story__save">
+              <div className="crayons-story__save" style={{ position: 'relative', zIndex: 2 }}>
                 <ReadingTime readingTime={article.reading_time} typeOf={article.type_of} />
                 { isRoot && (<small class="crayons-story__tertiary mr-2 fs-xs fw-bold">{domain}</small>)}
                 <SaveButton
@@ -153,11 +155,13 @@ export const Article = ({
         </div>
 
         {article.top_comments && article.top_comments.length > 0 && (
-          <CommentsList
-            comments={article.top_comments}
-            articlePath={article.url}
-            totalCount={article.comments_count}
-          />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <CommentsList
+              comments={article.top_comments}
+              articlePath={article.url}
+              totalCount={article.comments_count}
+            />
+          </div>
         )}
       </div>
     </article>
