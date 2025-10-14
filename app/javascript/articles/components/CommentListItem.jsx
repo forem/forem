@@ -41,23 +41,35 @@ function contentAwareComments(comment) {
 
 export const CommentListItem = ({ comment }) => (
   <div
-    className="crayons-comment cursor-pointer"
-    role="presentation"
-    onClick={(_event) => {
-      if (_event.target.closest('a')) {
-        return;
-      }
-      if (_event.which > 1 || _event.metaKey || _event.ctrlKey) {
-        // Indicates should open in _blank
-        window.open(comment.path, '_blank');
-      } else {
-        const fullUrl = window.location.origin + comment.path; // InstantClick deals with full urls
-        InstantClick.preload(fullUrl);
-        InstantClick.display(fullUrl);
-      }
-    }}
+    className="crayons-comment"
+    style={{ position: 'relative' }}
   >
-    <div className="crayons-comment__meta">
+    <a
+      href={comment.path}
+      className="crayons-comment__stretched-link"
+      style={{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: 1,
+      }}
+      onClick={(event) => {
+        // Only intercept for InstantClick on normal clicks
+        if (!(event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey)) {
+          event.preventDefault();
+          const fullUrl = window.location.origin + comment.path;
+          InstantClick.preload(fullUrl);
+          InstantClick.display(fullUrl);
+        }
+        // For modified clicks (ctrl/cmd/middle), browser handles naturally
+      }}
+      aria-label={`View comment by ${comment.name}`}
+    >
+      <span className="sr-only">View comment</span>
+    </a>
+    <div className="crayons-comment__meta" style={{ position: 'relative', zIndex: 2 }}>
       <a
         href={userProfilePage(comment.username)}
         className="crayons-story__secondary fw-medium"
@@ -71,10 +83,10 @@ export const CommentListItem = ({ comment }) => (
         </span>
       </a>
     </div>
-    <div className="crayons-comment__body">
+    <div className="crayons-comment__body" style={{ position: 'relative', zIndex: 2 }}>
       <div class="crayons-comment__metainner">
         <span class="fw-medium">{comment.name}</span>
-        <a href={comment.path} className="crayons-story__tertiary ml-1">
+        <a href={comment.path} className="crayons-story__tertiary ml-1" style={{ position: 'relative', zIndex: 2 }}>
           <time>
             {timeAgo({
               oldTimeInSeconds: comment.published_at_int,
