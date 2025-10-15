@@ -1,0 +1,71 @@
+# Ona (formerly Gitpod) Configuration
+# This configuration file sets up cloud development environments for Forem
+
+# Uses the existing Dockerfile/Containerfile
+image:
+  file: Dockerfile
+
+ports:
+  - name: Rails Server
+    port: 3000
+    onOpen: notify
+    visibility: public
+  - name: Webpack Dev Server
+    port: 3035
+    onOpen: ignore
+    visibility: private
+  - name: PostgreSQL
+    port: 5432
+    onOpen: ignore
+    visibility: private
+  - name: Redis
+    port: 6379
+    onOpen: ignore
+    visibility: private
+
+tasks:
+  - name: Setup Environment
+    before: |
+      # Create .env file if it doesn't exist
+      if [ ! -f .env ]; then
+        cp .env_sample .env
+      fi
+      
+      # Configure for Ona environment
+      echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
+      echo 'APP_PROTOCOL="https://"' >> .env
+      echo 'COMMUNITY_NAME="DEV(Ona Preview)"' >> .env
+      
+      # Install required gems
+      gem install dip
+      gem install solargraph
+    init: |
+      # Provision the development environment
+      dip provision
+    command: |
+      # Start the Rails server and open preview
+      gp ports await 3000
+      printf "🚀 Forem development environment is ready!\n"
+      printf "Opening preview at $(gp url 3000)...\n"
+      gp preview $(gp url 3000)
+      dip up web
+
+vscode:
+  extensions:
+    - Shopify.ruby-lsp
+    - KoichiSasada.vscode-rdbg
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
+    - eamodio.gitlens
+
+github:
+  prebuilds:
+    master: true
+    branches: false
+    pullRequests: true
+    pullRequestsFromForks: true
+    addComment: true
+    addBadge: true
+    addLabel: prebuilt-in-ona
+    addCheck: true
+

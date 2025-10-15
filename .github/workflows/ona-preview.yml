@@ -1,0 +1,95 @@
+name: Ona Preview Environment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  add-ona-preview-link:
+    name: Add Ona Preview Link
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    
+    steps:
+      - name: Add Ona Preview Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const repoOwner = context.repo.owner;
+            const repoName = context.repo.repo;
+            const branch = context.payload.pull_request.head.ref;
+            const headRepo = context.payload.pull_request.head.repo.full_name;
+            
+            // Construct the Ona preview URL
+            // For Gitpod/Ona, the URL format is: https://gitpod.io/#<repository-url>
+            const gitpodUrl = `https://gitpod.io/#https://github.com/${headRepo}/tree/${branch}`;
+            
+            // Alternative Ona URL format (if using ona.dev domain)
+            const onaUrl = `https://ona.dev/#https://github.com/${headRepo}/tree/${branch}`;
+            
+            const comment = `## 🚀 Ona Preview Environment
+            
+            This pull request can be previewed in a cloud development environment:
+            
+            **Option 1: Using Gitpod (Ona)**
+            [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](${gitpodUrl})
+            
+            **Option 2: Using Ona**
+            [🌐 Open in Ona](${onaUrl})
+            
+            **Direct URLs:**
+            - Gitpod: ${gitpodUrl}
+            - Ona: ${onaUrl}
+            
+            ### Getting Started
+            
+            1. Click one of the buttons above to open this PR in a cloud development environment
+            2. Wait for the environment to build (first time may take ~10 minutes)
+            3. The Forem server will automatically start and open at port 3000
+            4. All dependencies (PostgreSQL, Redis, etc.) are pre-configured
+            
+            ### Notes
+            
+            - The environment is fully configured with all necessary services
+            - Database will be seeded automatically on first run
+            - Changes you make in the preview environment are not persisted to this PR
+            - Use this for testing and reviewing changes before merging
+            
+            ---
+            
+            *This preview environment is provided via Ona/Gitpod integration*`;
+            
+            // Check if we already added a comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: repoOwner,
+              repo: repoName,
+              issue_number: prNumber,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Ona Preview Environment')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: repoOwner,
+                repo: repoName,
+                comment_id: botComment.id,
+                body: comment
+              });
+              console.log('Updated existing Ona preview comment');
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: repoOwner,
+                repo: repoName,
+                issue_number: prNumber,
+                body: comment
+              });
+              console.log('Added new Ona preview comment');
+            }
+
