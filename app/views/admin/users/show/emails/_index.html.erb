@@ -1,4 +1,22 @@
 <div class="flex flex-col h-100">
+  <div class="mb-6">
+    <h2 class="crayons-subtitle-1 mb-4"><%= t("views.settings.account.emails") %></h2>
+    <ul class="list-none">
+      <li class="mb-2">
+        <strong class="color-base-60"><%= t("views.settings.account.primary") %></strong>
+        <span class="pl-2"><%= @user.email %></span>
+      </li>
+
+      <% @user.identities_enabled.each do |identity| %>
+        <% provider = authentication_provider(identity.provider) %>
+        <li class="mb-2">
+          <strong class="color-base-60"><%= t("views.settings.account.provider_email", provider: provider.official_name) %></strong>
+          <span class="pl-2"><%= identity.email %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
   <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.previous", num: @user.email_messages.count) %></h2>
   <% if @user.email_messages.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
