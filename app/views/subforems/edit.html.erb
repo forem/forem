@@ -9,30 +9,135 @@
   </header>
   <div class="crayons-layout grid l:grid-cols-2 gap-6 mb-4">
 
-    <!-- RIGHT COLUMN: Main content (Form) -->
+    <!-- LEFT COLUMN: Main content (Form) -->
     <div class="crayons-layout__content">
-      <div class="crayons-card p-4 m:p-6">
-        <%= form_for @subforem, html: { multipart: true } do |form| %>
-          <div class="flex flex-col gap-4">
-            <% if current_user.any_admin? %>
+      <%= form_for @subforem, html: { multipart: true } do |form| %>
+        
+        <!-- SECTION 1: Basic Information (Admin only) -->
+        <% if current_user.any_admin? %>
+          <div class="crayons-card p-4 m:p-6 mb-4">
+            <h2 class="crayons-subtitle-2 mb-4">Basic Information</h2>
+            <div class="flex flex-col gap-4">
               <div class="crayons-field">
                 <%= form.label :domain, class: "crayons-field__label" %>
                 <%= form.text_field :domain, class: "crayons-textfield" %>
               </div>
 
               <div class="crayons-field">
-                <%= form.label :name, "Community Name", class: "crayons-field__label" %>
-                <%= form.text_field :name, class: "crayons-textfield", placeholder: "Enter the community name" %>
+                <%= label_tag :community_name, "Community Name", class: "crayons-field__label" %>
+                <%= text_field_tag :community_name,
+                  Settings::Community.community_name(subforem_id: @subforem.id),
+                  class: "crayons-textfield",
+                  placeholder: "Enter the community name" %>
+                <p class="crayons-field__description">The name of your community as it appears throughout the site.</p>
               </div>
+            </div>
+          </div>
+        <% end %>
 
-              <div class="crayons-field">
-                <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
-                <%= text_area_tag :internal_content_description_spec,
-                  Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
-                  class: "crayons-textfield", rows: 4,
-                  placeholder: "Describe the internal content description specification..." %>
+        <!-- SECTION 1.5: Discoverability (All Moderators) -->
+        <div class="crayons-card p-4 m:p-6 mb-4">
+          <h2 class="crayons-subtitle-2 mb-4">Discoverability</h2>
+          <div class="flex flex-col gap-4">
+            <div class="crayons-field">
+              <%= form.label :discoverable, "Discoverable in Directory", class: "crayons-field__label" %>
+              <%= form.check_box :discoverable, class: "crayons-checkbox" %>
+              <p class="crayons-field__description">Allow this community to appear in the subforems directory.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Community Settings -->
+        <div class="crayons-card p-4 m:p-6 mb-4">
+          <h2 class="crayons-subtitle-2 mb-4">Community Settings</h2>
+          <div class="flex flex-col gap-4">
+            <div class="crayons-field">
+              <%= label_tag :community_description, "Community Description", class: "crayons-field__label" %>
+              <%= text_area_tag :community_description,
+                Settings::Community.community_description(subforem_id: @subforem.id),
+                class: "crayons-textfield", rows: 4,
+                placeholder: "Describe your community..." %>
+              <p class="crayons-field__description">A brief description of what your community is about.</p>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag :tagline, "Tagline", class: "crayons-field__label" %>
+              <%= text_field_tag :tagline,
+                Settings::Community.tagline(subforem_id: @subforem.id),
+                class: "crayons-textfield",
+                placeholder: "A short tagline for your community..." %>
+              <p class="crayons-field__description">A catchy one-liner that summarizes your community.</p>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag :member_label, "Member Label", class: "crayons-field__label" %>
+              <%= text_field_tag :member_label,
+                Settings::Community.member_label(subforem_id: @subforem.id),
+                class: "crayons-textfield",
+                placeholder: "user" %>
+              <p class="crayons-field__description">What you call your community members (e.g., "user", "member", "developer").</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Feed & Content Settings -->
+        <div class="crayons-card p-4 m:p-6 mb-4">
+          <h2 class="crayons-subtitle-2 mb-4">Feed & Content Settings</h2>
+          <div class="flex flex-col gap-4">
+            <div class="crayons-field">
+              <%= label_tag :feed_style, "Feed Style", class: "crayons-field__label" %>
+              <%= select_tag :feed_style,
+                options_for_select(
+                  [["Basic", "basic"], ["Rich (with cover images)", "rich"], ["Compact", "compact"]],
+                  Settings::UserExperience.feed_style(subforem_id: @subforem.id)
+                ),
+                class: "crayons-select" %>
+              <p class="crayons-field__description">Choose how articles appear in the feed.</p>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag :feed_lookback_days, "Feed Lookback Days", class: "crayons-field__label" %>
+              <%= number_field_tag :feed_lookback_days,
+                Settings::UserExperience.feed_lookback_days(subforem_id: @subforem.id),
+                class: "crayons-textfield",
+                min: 1,
+                max: 365,
+                placeholder: "10" %>
+              <p class="crayons-field__description">Number of days to look back when fetching feed content (1-365).</p>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
+              <%= text_area_tag :internal_content_description_spec,
+                Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
+                class: "crayons-textfield", rows: 4,
+                placeholder: "Describe the internal content description specification..." %>
+              <p class="crayons-field__description">Guidelines for AI-generated content descriptions.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Branding -->
+        <div class="crayons-card p-4 m:p-6 mb-4">
+          <h2 class="crayons-subtitle-2 mb-4">Branding</h2>
+          <div class="flex flex-col gap-4">
+            <div class="crayons-field">
+              <%= label_tag :primary_brand_color_hex, "Primary Brand Color", class: "crayons-field__label" %>
+              <div class="flex items-center gap-2">
+                <%= text_field_tag :primary_brand_color_hex,
+                  Settings::UserExperience.primary_brand_color_hex(subforem_id: @subforem.id),
+                  class: "crayons-textfield",
+                  placeholder: "#3b49df",
+                  pattern: "#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}" %>
+                <input type="color" 
+                       value="<%= Settings::UserExperience.primary_brand_color_hex(subforem_id: @subforem.id) %>"
+                       onchange="document.getElementById('primary_brand_color_hex').value = this.value"
+                       class="h-10 w-10 rounded cursor-pointer">
               </div>
+              <p class="crayons-field__description">The main color for your community's branding (hex format).</p>
+            </div>
 
+            <% if current_user.any_admin? || current_user.super_moderator? %>
               <div class="crayons-field" data-controller="subforem-image-upload">
                 <%= form.label :main_logo, "Main Square Logo", class: "crayons-field__label" %>
                 <p class="crayons-field__description">Upload a square logo (128x128px) for main branding. PNG or JPEG, max 8MB.</p>
@@ -98,111 +203,17 @@
                   </div>
                 </div>
               </div>
-            <% else %>
-              <div class="crayons-field">
-                <%= form.label :internal_content_description_spec, "Internal Content Description Spec", class: "crayons-field__label" %>
-                <%= text_area_tag :internal_content_description_spec,
-                  Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem.id),
-                  class: "crayons-textfield", rows: 4,
-                  placeholder: "Describe the internal content description specification..." %>
-              </div>
-
-              <div class="crayons-field" data-controller="subforem-image-upload">
-                <%= form.label :main_logo, "Main Square Logo", class: "crayons-field__label" %>
-                <p class="crayons-field__description">Upload a square logo (128x128px) for main branding. PNG or JPEG, max 8MB.</p>
-                <div class="flex flex-1 gap-4">
-                  <%= form.file_field :main_logo, 
-                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
-                      data: { 
-                        "max-file-size-mb": "8",
-                        action: "change->subforem-image-upload#previewImage",
-                        "image-type": "main_logo"
-                      } %>
-                  <div data-subforem-image-upload-target="preview" class="w-20 h-20">
-                    <% if Settings::General.logo_png(subforem_id: @subforem.id).present? %>
-                      <img src="<%= Settings::General.logo_png(subforem_id: @subforem.id) %>" 
-                           alt="Main logo preview" 
-                           class="w-full h-full object-cover rounded">
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="crayons-field" data-controller="subforem-image-upload">
-                <%= form.label :nav_logo, "Navigation Bar Logo", class: "crayons-field__label" %>
-                <p class="crayons-field__description">Upload a smaller logo (80x80px) for navigation bars. PNG or JPEG, max 8MB.</p>
-                <div class="flex flex-1 gap-4">
-                  <%= form.file_field :nav_logo, 
-                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
-                      data: { 
-                        "max-file-size-mb": "8",
-                        action: "change->subforem-image-upload#previewImage",
-                        "image-type": "nav_logo"
-                      } %>
-                  <div data-subforem-image-upload-target="preview" class="w-16 h-16">
-                    <% if Settings::General.resized_logo(subforem_id: @subforem.id).present? %>
-                      <img src="<%= Settings::General.resized_logo(subforem_id: @subforem.id) %>" 
-                           alt="Nav logo preview" 
-                           class="w-full h-full object-cover rounded">
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="crayons-field" data-controller="subforem-image-upload">
-                <%= form.label :social_card, "Social Card Image", class: "crayons-field__label" %>
-                <p class="crayons-field__description">Upload a social media card image (1200x630px) for sharing. PNG or JPEG, max 8MB.</p>
-                <div class="flex flex-1 gap-4">
-                  <%= form.file_field :social_card, 
-                      accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", 
-                      data: { 
-                        "max-file-size-mb": "8",
-                        action: "change->subforem-image-upload#previewImage",
-                        "image-type": "social_card"
-                      } %>
-                  <div data-subforem-image-upload-target="preview" class="w-32 h-16">
-                    <% if Settings::General.main_social_image(subforem_id: @subforem.id).present? %>
-                      <img src="<%= Settings::General.main_social_image(subforem_id: @subforem.id) %>" 
-                           alt="Social card preview" 
-                           class="w-full h-full object-cover rounded">
-                    <% end %>
-                  </div>
-                </div>
-              </div>
             <% end %>
-
-            <% if current_user.any_admin? %>
-              <div class="crayons-field">
-                <%= form.label :discoverable, class: "crayons-field__label" %>
-                <%= form.check_box :discoverable, class: "crayons-checkbox" %>
-              </div>
-            <% end %>
-
-            <div class="crayons-field">
-              <%= form.label :community_description, "Community Description", class: "crayons-field__label" %>
-              <%= text_area_tag :community_description,
-                Settings::Community.community_description(subforem_id: @subforem.id),
-                class: "crayons-textfield", rows: 4,
-                placeholder: "Describe your community..." %>
-            </div>
-
-            <div class="crayons-field">
-              <%= form.label :tagline, "Tagline", class: "crayons-field__label" %>
-              <%= text_field_tag :tagline,
-                Settings::Community.tagline(subforem_id: @subforem.id),
-                class: "crayons-textfield",
-                placeholder: "A short tagline for your community..." %>
-            </div>
-
-            <div class="mt-6">
-              <%= form.submit "Update Subforem", class: "crayons-btn crayons-btn--primary" %>
-            </div>
           </div>
-        <% end %>
-      </div>
+        </div>
+
+        <div class="mt-6 mb-4">
+          <%= form.submit "Update Subforem", class: "crayons-btn crayons-btn--primary" %>
+        </div>
+      <% end %>
     </div>
 
-    <!-- LEFT COLUMN: Sidebar (Tags) -->
+    <!-- RIGHT COLUMN: Sidebar (Tags) -->
     <div class="crayons-layout__sidebar-right">
       <div class="crayons-card p-4 m:p-6">
         <h2 class="crayons-subtitle-2 mb-4">Supported Tags</h2>
@@ -274,7 +285,7 @@
 
   <!-- NAVIGATION LINKS SECTION -->
   <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
-    <h2 class="crayons-subtitle-2 mb-4">DedicatedNavigation Links</h2>
+    <h2 class="crayons-subtitle-2 mb-4">Navigation Links</h2>
     
     <% if @navigation_links.any? %>
       <div class="space-y-3">
@@ -351,6 +362,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const addTagButtons = document.querySelectorAll('.add-tag-btn');
+  
+  // Sync color picker with text input
+  const colorInput = document.getElementById('primary_brand_color_hex');
+  const colorPicker = document.querySelector('input[type="color"]');
+  
+  if (colorInput && colorPicker) {
+    colorInput.addEventListener('input', function() {
+      if (this.value.match(/^#[0-9A-Fa-f]{6}$/)) {
+        colorPicker.value = this.value;
+      }
+    });
+  }
   
   addTagButtons.forEach(button => {
     button.addEventListener('click', function(e) {
