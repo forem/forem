@@ -35,17 +35,19 @@
           </div>
         <% end %>
 
-        <!-- SECTION 1.5: Discoverability (All Moderators) -->
-        <div class="crayons-card p-4 m:p-6 mb-4">
-          <h2 class="crayons-subtitle-2 mb-4">Discoverability</h2>
-          <div class="flex flex-col gap-4">
-            <div class="crayons-field">
-              <%= form.label :discoverable, "Discoverable in Directory", class: "crayons-field__label" %>
-              <%= form.check_box :discoverable, class: "crayons-checkbox" %>
-              <p class="crayons-field__description">Allow this community to appear in the subforems directory.</p>
+        <!-- SECTION 1.5: Discoverability (Admin only) -->
+        <% if current_user.any_admin? %>
+          <div class="crayons-card p-4 m:p-6 mb-4">
+            <h2 class="crayons-subtitle-2 mb-4">Discoverability</h2>
+            <div class="flex flex-col gap-4">
+              <div class="crayons-field">
+                <%= form.label :discoverable, "Discoverable in Directory", class: "crayons-field__label" %>
+                <%= form.check_box :discoverable, class: "crayons-checkbox" %>
+                <p class="crayons-field__description">Allow this community to appear in the subforems directory.</p>
+              </div>
             </div>
           </div>
-        </div>
+        <% end %>
 
         <!-- SECTION 2: Community Settings -->
         <div class="crayons-card p-4 m:p-6 mb-4">
@@ -113,6 +115,16 @@
                 class: "crayons-textfield", rows: 4,
                 placeholder: "Describe the internal content description specification..." %>
               <p class="crayons-field__description">Guidelines for AI-generated content descriptions.</p>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag :sidebar_tags, "Sidebar Tags", class: "crayons-field__label" %>
+              <%= text_field_tag :sidebar_tags,
+                Settings::General.sidebar_tags(subforem_id: @subforem.id).join(","),
+                class: "crayons-textfield",
+                placeholder: "help,discuss,explainlikeimfive,meta",
+                pattern: "[a-z0-9,]+" %>
+              <p class="crayons-field__description">Comma-separated list of tags to display in the homepage sidebar (lowercase, no spaces).</p>
             </div>
           </div>
         </div>
@@ -221,9 +233,16 @@
         <% if @supported_tags.any? %>
           <div class="space-y-2 mb-6" style="max-height: 550px; overflow-y: auto;">
             <% @supported_tags.each do |tag| %>
-              <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg">
-                <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
-                <span class="text-xs color-base-60"><%= tag.taggings_count %> posts</span>
+              <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-supported-tag-id="<%= tag.id %>">
+                <div class="flex items-center gap-2">
+                  <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
+                  <span class="text-xs color-base-60"><%= tag.taggings_count %> posts</span>
+                </div>
+                <button class="crayons-btn crayons-btn--s crayons-btn--danger remove-tag-btn" 
+                        data-tag-id="<%= tag.id %>" 
+                        data-tag-name="<%= tag.name %>">
+                  Remove
+                </button>
               </div>
             <% end %>
           </div>
@@ -285,12 +304,114 @@
 
   <!-- NAVIGATION LINKS SECTION -->
   <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
-    <h2 class="crayons-subtitle-2 mb-4">Navigation Links</h2>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="crayons-subtitle-2">Navigation Links</h2>
+      <button class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()">Add Navigation Link</button>
+    </div>
+    
+    <!-- Add Navigation Link Form -->
+    <div id="nav-link-form" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
+      <%= form_with url: create_navigation_link_subforem_path(@subforem), method: :post, local: true do |form| %>
+        <div class="grid gap-4">
+          <div class="crayons-field">
+            <%= label_tag 'navigation_link[name]', "Name", class: "crayons-field__label" %>
+            <%= text_field_tag 'navigation_link[name]', nil, class: "crayons-textfield", placeholder: "Reading List", required: true %>
+          </div>
+
+          <div class="crayons-field">
+            <%= label_tag 'navigation_link[url]', "URL", class: "crayons-field__label" %>
+            <%= text_field_tag 'navigation_link[url]', nil, class: "crayons-textfield", placeholder: "/readinglist", required: true %>
+          </div>
+
+          <div class="crayons-field">
+            <%= label_tag 'navigation_link[icon]', "Icon SVG", class: "crayons-field__label" %>
+            <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: '<svg ...>', required: true %>
+            <p class="crayons-field__description">Paste the full SVG code for the icon.</p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[section]', "Section", class: "crayons-field__label" %>
+              <%= select_tag 'navigation_link[section]', 
+                  options_for_select([["Default", "default"], ["Other", "other"]], "default"),
+                  class: "crayons-select" %>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[display_to]', "Display To", class: "crayons-field__label" %>
+              <%= select_tag 'navigation_link[display_to]', 
+                  options_for_select([["All", "all"], ["Logged In", "logged_in"], ["Logged Out", "logged_out"]], "all"),
+                  class: "crayons-select" %>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[position]', "Position", class: "crayons-field__label" %>
+              <%= number_field_tag 'navigation_link[position]', 0, class: "crayons-textfield", min: 0 %>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <%= submit_tag "Create Link", class: "crayons-btn crayons-btn--primary" %>
+            <button type="button" class="crayons-btn crayons-btn--ghost" onclick="toggleNavLinkForm()">Cancel</button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Edit Navigation Link Forms (Hidden by default) -->
+    <% @navigation_links.each do |link| %>
+      <div id="edit-nav-link-form-<%= link.id %>" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
+        <%= form_with url: update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, local: true do |form| %>
+          <div class="grid gap-4">
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[name]', "Name", class: "crayons-field__label" %>
+              <%= text_field_tag 'navigation_link[name]', link.name, class: "crayons-textfield", required: true %>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[url]', "URL", class: "crayons-field__label" %>
+              <%= text_field_tag 'navigation_link[url]', link.url, class: "crayons-textfield", required: true %>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[icon]', "Icon SVG", class: "crayons-field__label" %>
+              <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3, required: true %>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+              <div class="crayons-field">
+                <%= label_tag 'navigation_link[section]', "Section", class: "crayons-field__label" %>
+                <%= select_tag 'navigation_link[section]', 
+                    options_for_select([["Default", "default"], ["Other", "other"]], link.section),
+                    class: "crayons-select" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= label_tag 'navigation_link[display_to]', "Display To", class: "crayons-field__label" %>
+                <%= select_tag 'navigation_link[display_to]', 
+                    options_for_select([["All", "all"], ["Logged In", "logged_in"], ["Logged Out", "logged_out"]], link.display_to),
+                    class: "crayons-select" %>
+              </div>
+
+              <div class="crayons-field">
+                <%= label_tag 'navigation_link[position]', "Position", class: "crayons-field__label" %>
+                <%= number_field_tag 'navigation_link[position]', link.position, class: "crayons-textfield", min: 0 %>
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <%= submit_tag "Update Link", class: "crayons-btn crayons-btn--primary" %>
+              <button type="button" class="crayons-btn crayons-btn--ghost" onclick="toggleEditNavLinkForm(<%= link.id %>)">Cancel</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
     
     <% if @navigation_links.any? %>
       <div class="space-y-3">
         <% @navigation_links.each do |link| %>
-          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
+          <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg" id="nav-link-<%= link.id %>">
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
                 <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
@@ -305,14 +426,19 @@
                 Position: <%= link.position %>
               </div>
             </div>
-            <div class="text-xs color-base-60">
-              <%= link.created_at.strftime("%b %d, %Y") %>
+            <div class="flex items-center gap-2">
+              <button class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)">Edit</button>
+              <%= button_to "Delete", 
+                  destroy_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), 
+                  method: :delete, 
+                  data: { confirm: "Are you sure you want to delete this navigation link?" },
+                  class: "crayons-btn crayons-btn--s crayons-btn--danger" %>
             </div>
           </div>
         <% end %>
       </div>
     <% else %>
-      <p class="text-sm color-base-60">No dedicated navigation links found for this subforem (edit functionality coming soon).</p>
+      <p class="text-sm color-base-60">No navigation links found for this subforem. Click "Add Navigation Link" to create one.</p>
     <% end %>
   </div>
 
@@ -360,8 +486,29 @@
 </main>
 
 <script>
+// Toggle navigation link form
+function toggleNavLinkForm() {
+  const form = document.getElementById('nav-link-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+// Toggle edit navigation link form
+function toggleEditNavLinkForm(linkId) {
+  const form = document.getElementById(`edit-nav-link-form-${linkId}`);
+  const navLink = document.getElementById(`nav-link-${linkId}`);
+  
+  if (form.style.display === 'none') {
+    form.style.display = 'block';
+    navLink.style.display = 'none';
+  } else {
+    form.style.display = 'none';
+    navLink.style.display = 'flex';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const addTagButtons = document.querySelectorAll('.add-tag-btn');
+  const removeTagButtons = document.querySelectorAll('.remove-tag-btn');
   
   // Sync color picker with text input
   const colorInput = document.getElementById('primary_brand_color_hex');
@@ -375,6 +522,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  // Add tag functionality
   addTagButtons.forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -407,13 +555,25 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create new supported tag element
             const newSupportedTag = document.createElement('div');
             newSupportedTag.className = 'flex items-center justify-between p-2 bg-base-5 rounded-lg';
+            newSupportedTag.setAttribute('data-supported-tag-id', tagId);
             newSupportedTag.innerHTML = `
-              <span class="crayons-tag crayons-tag--monochrome">${tagName}</span>
-              <span class="text-xs color-base-60">0 posts</span>
+              <div class="flex items-center gap-2">
+                <a href="/t/${tagName}" class="crayons-tag crayons-tag--monochrome">${tagName}</a>
+                <span class="text-xs color-base-60">0 posts</span>
+              </div>
+              <button class="crayons-btn crayons-btn--s crayons-btn--danger remove-tag-btn" 
+                      data-tag-id="${tagId}" 
+                      data-tag-name="${tagName}">
+                Remove
+              </button>
             `;
             
             // Add to supported section
             supportedSection.appendChild(newSupportedTag);
+            
+            // Attach event listener to new remove button
+            const newRemoveBtn = newSupportedTag.querySelector('.remove-tag-btn');
+            attachRemoveTagListener(newRemoveBtn);
             
             // Remove from unsupported section
             tagElement.remove();
@@ -435,6 +595,62 @@ document.addEventListener('DOMContentLoaded', function() {
         button.textContent = 'Add';
       });
     });
+  });
+  
+  // Remove tag functionality
+  function attachRemoveTagListener(button) {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      if (!confirm('Are you sure you want to remove this tag from the supported tags?')) {
+        return;
+      }
+      
+      const tagId = this.dataset.tagId;
+      const tagName = this.dataset.tagName;
+      const button = this;
+      
+      // Disable button and show loading state
+      button.disabled = true;
+      button.textContent = 'Removing...';
+      
+      // Make AJAX request
+      fetch(`/subforems/<%= @subforem.id %>/remove_tag`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ tag_id: tagId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Remove the tag element
+          const tagElement = button.closest('[data-supported-tag-id]');
+          tagElement.remove();
+          
+          // Show success message
+          showNotification('Tag removed successfully!', 'success');
+        } else {
+          showNotification(data.message || 'Failed to remove tag', 'error');
+          // Re-enable button
+          button.disabled = false;
+          button.textContent = 'Remove';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while removing the tag', 'error');
+        // Re-enable button
+        button.disabled = false;
+        button.textContent = 'Remove';
+      });
+    });
+  }
+  
+  removeTagButtons.forEach(button => {
+    attachRemoveTagListener(button);
   });
   
   function showNotification(message, type) {

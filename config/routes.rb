@@ -173,6 +173,10 @@ Rails.application.routes.draw do
     resources :subforems, only: %i[index new edit update] do
       member do
         post :add_tag
+        delete :remove_tag
+        post :create_navigation_link
+        patch :update_navigation_link
+        delete :destroy_navigation_link
       end
     end
     get "/manage", to: "subforems#edit", as: :manage_subforem

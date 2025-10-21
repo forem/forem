@@ -279,7 +279,7 @@ RSpec.describe "Subforems", type: :request do
         expect(Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id)).to eq("New spec for moderators")
       end
 
-      it "can update discoverable field" do
+      it "cannot update discoverable field (admin-only)" do
         subforem.update!(discoverable: false)
         
         patch subforem_path(subforem), params: {
@@ -288,7 +288,16 @@ RSpec.describe "Subforems", type: :request do
         expect(response).to redirect_to(manage_subforem_path)
         
         subforem.reload
-        expect(subforem.discoverable).to be true
+        # Moderators can no longer update discoverable
+        expect(subforem.discoverable).to be false
+      end
+
+      it "can update sidebar_tags" do
+        patch subforem_path(subforem), params: {
+          sidebar_tags: "ruby,rails,javascript"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(Settings::General.sidebar_tags(subforem_id: subforem.id)).to eq(%w[ruby rails javascript])
       end
     end
 
@@ -556,6 +565,279 @@ RSpec.describe "Subforems", type: :request do
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
+      end
+    end
+  end
+
+  describe "DELETE /subforems/:id/remove_tag" do
+    let(:subforem) { create(:subforem) }
+    let(:tag) { create(:tag) }
+
+    context "when user is admin" do
+      before do
+        sign_in admin_user
+        subforem.tag_relationships.create!(tag: tag, supported: true)
+      end
+
+      it "removes a tag from supported tags" do
+        expect do
+          delete remove_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        end.to change { subforem.tag_relationships.where(supported: true).count }.by(-1)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include("success" => true)
+      end
+
+      it "returns error for tag that is not supported" do
+        unsupported_tag = create(:tag)
+
+        delete remove_tag_subforem_path(subforem), params: { tag_id: unsupported_tag.id }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to include("success" => false)
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before do
+        sign_in moderator_user
+        subforem.tag_relationships.create!(tag: tag, supported: true)
+      end
+
+      it "removes a tag from supported tags" do
+        expect do
+          delete remove_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        end.to change { subforem.tag_relationships.where(supported: true).count }.by(-1)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include("success" => true)
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        delete remove_tag_subforem_path(subforem), params: { tag_id: tag.id }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "POST /subforems/:id/create_navigation_link" do
+    let(:subforem) { create(:subforem) }
+    let(:valid_params) do
+      {
+        navigation_link: {
+          name: "Test Link",
+          url: "/test",
+          icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>",
+          section: "default",
+          display_to: "all",
+          position: 1
+        }
+      }
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "creates a navigation link" do
+        expect do
+          post create_navigation_link_subforem_path(subforem), params: valid_params
+        end.to change { NavigationLink.count }.by(1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq("Navigation link created successfully!")
+        
+        link = NavigationLink.last
+        expect(link.subforem_id).to eq(subforem.id)
+        expect(link.name).to eq("Test Link")
+      end
+
+      it "handles validation errors" do
+        invalid_params = { navigation_link: { name: "", url: "", icon: "" } }
+        
+        expect do
+          post create_navigation_link_subforem_path(subforem), params: invalid_params
+        end.not_to change { NavigationLink.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "creates a navigation link" do
+        expect do
+          post create_navigation_link_subforem_path(subforem), params: valid_params
+        end.to change { NavigationLink.count }.by(1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq("Navigation link created successfully!")
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        post create_navigation_link_subforem_path(subforem), params: valid_params
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "PATCH /subforems/:id/update_navigation_link" do
+    let(:subforem) { create(:subforem) }
+    let!(:navigation_link) do
+      NavigationLink.create!(
+        subforem: subforem,
+        name: "Original Link",
+        url: "/original",
+        icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>",
+        section: "default",
+        display_to: "all",
+        position: 1
+      )
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "updates a navigation link" do
+        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+              params: { navigation_link: { name: "Updated Link", url: "/updated" } }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq("Navigation link updated successfully!")
+        
+        navigation_link.reload
+        expect(navigation_link.name).to eq("Updated Link")
+        expect(navigation_link.url).to eq("/updated")
+      end
+
+      it "prevents updating navigation link from different subforem" do
+        other_subforem = create(:subforem)
+        other_link = NavigationLink.create!(
+          subforem: other_subforem,
+          name: "Other Link",
+          url: "/other",
+          icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>",
+          section: "default",
+          display_to: "all",
+          position: 1
+        )
+
+        patch update_navigation_link_subforem_path(subforem, navigation_link_id: other_link.id),
+              params: { navigation_link: { name: "Hacked" } }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq("Navigation link not found")
+        
+        other_link.reload
+        expect(other_link.name).to eq("Other Link")
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "updates a navigation link" do
+        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+              params: { navigation_link: { name: "Updated by Mod" } }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq("Navigation link updated successfully!")
+        
+        navigation_link.reload
+        expect(navigation_link.name).to eq("Updated by Mod")
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+              params: { navigation_link: { name: "Hacked" } }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "DELETE /subforems/:id/destroy_navigation_link" do
+    let(:subforem) { create(:subforem) }
+    let!(:navigation_link) do
+      NavigationLink.create!(
+        subforem: subforem,
+        name: "Link to Delete",
+        url: "/delete",
+        icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>",
+        section: "default",
+        display_to: "all",
+        position: 1
+      )
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "deletes a navigation link" do
+        expect do
+          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+        end.to change { NavigationLink.count }.by(-1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq("Navigation link deleted successfully!")
+      end
+
+      it "prevents deleting navigation link from different subforem" do
+        other_subforem = create(:subforem)
+        other_link = NavigationLink.create!(
+          subforem: other_subforem,
+          name: "Other Link",
+          url: "/other",
+          icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>",
+          section: "default",
+          display_to: "all",
+          position: 1
+        )
+
+        expect do
+          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: other_link.id)
+        end.not_to change { NavigationLink.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq("Navigation link not found")
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "deletes a navigation link" do
+        expect do
+          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+        end.to change { NavigationLink.count }.by(-1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq("Navigation link deleted successfully!")
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
