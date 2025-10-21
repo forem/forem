@@ -37,10 +37,11 @@ class SubforemsController < ApplicationController
       # Admins can update all fields
       if @subforem.update(admin_params)
         update_community_settings
+        update_user_experience_settings
         update_subforem_images
         Settings::General.set_admin_action_taken_at(Time.current, subforem_id: @subforem.id)
         flash[:success] = "Subforem updated successfully!"
-        redirect_to subforems_path
+        redirect_to manage_subforem_path
       else
         flash.now[:error] = @subforem.errors_as_sentence
         render :edit
@@ -49,10 +50,11 @@ class SubforemsController < ApplicationController
       # Super moderators can update most fields except domain, name, and discoverable
       if @subforem.update(super_moderator_params)
         update_community_settings
+        update_user_experience_settings
         update_subforem_images
         Settings::General.admin_action_taken_at = Time.current
         flash[:success] = "Subforem updated successfully!"
-        redirect_to subforems_path
+        redirect_to manage_subforem_path
       else
         flash.now[:error] = @subforem.errors_as_sentence
         render :edit
@@ -60,10 +62,11 @@ class SubforemsController < ApplicationController
     elsif @subforem.update(moderator_params)
       # Regular subforem moderators can only update limited fields
       update_community_settings
+      update_user_experience_settings
       update_subforem_images
       Settings::General.admin_action_taken_at = Time.current
       flash[:success] = "Subforem updated successfully!"
-      redirect_to subforems_path
+      redirect_to manage_subforem_path
     else
       flash.now[:error] = @subforem.errors_as_sentence
       render :edit
@@ -117,17 +120,49 @@ class SubforemsController < ApplicationController
   end
 
   def update_community_settings
-    return unless params[:community_description].present? || params[:tagline].present? || params[:internal_content_description_spec].present?
+    return unless params[:community_name].present? || params[:community_description].present? || 
+                  params[:tagline].present? || params[:member_label].present? || 
+                  params[:internal_content_description_spec].present?
 
+    # Only admins can update community_name
+    if params[:community_name].present? && current_user.any_admin?
+      Settings::Community.set_community_name(params[:community_name], subforem_id: @subforem.id)
+    end
+    
     if params[:community_description].present?
       Settings::Community.set_community_description(params[:community_description],
                                                     subforem_id: @subforem.id)
     end
-    Settings::Community.set_tagline(params[:tagline], subforem_id: @subforem.id) if params[:tagline].present?
+    
+    if params[:tagline].present?
+      Settings::Community.set_tagline(params[:tagline], subforem_id: @subforem.id)
+    end
+    
+    if params[:member_label].present?
+      Settings::Community.set_member_label(params[:member_label], subforem_id: @subforem.id)
+    end
+    
     return unless params[:internal_content_description_spec].present?
 
     Settings::RateLimit.set_internal_content_description_spec(params[:internal_content_description_spec],
                                                               subforem_id: @subforem.id)
+  end
+
+  def update_user_experience_settings
+    return unless params[:feed_style].present? || params[:feed_lookback_days].present? || 
+                  params[:primary_brand_color_hex].present?
+
+    if params[:feed_style].present?
+      Settings::UserExperience.set_feed_style(params[:feed_style], subforem_id: @subforem.id)
+    end
+    
+    if params[:feed_lookback_days].present?
+      Settings::UserExperience.set_feed_lookback_days(params[:feed_lookback_days].to_i, subforem_id: @subforem.id)
+    end
+    
+    if params[:primary_brand_color_hex].present?
+      Settings::UserExperience.set_primary_brand_color_hex(params[:primary_brand_color_hex], subforem_id: @subforem.id)
+    end
   end
 
   def update_subforem_images

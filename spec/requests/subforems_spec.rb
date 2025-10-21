@@ -150,48 +150,145 @@ RSpec.describe "Subforems", type: :request do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "updates the subforem and redirects to index" do
+      it "updates the subforem and redirects to manage page" do
         patch subforem_path(subforem), params: { subforem: { discoverable: true } }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
 
-      it "can update all fields" do
+      it "can update all fields including community settings" do
+        # Allow the actual Settings methods to be called instead of using stubs
+        allow(Settings::Community).to receive(:community_description).and_call_original
+        allow(Settings::Community).to receive(:community_name).and_call_original
+        allow(Settings::Community).to receive(:tagline).and_call_original
+        allow(Settings::Community).to receive(:member_label).and_call_original
+        
         patch subforem_path(subforem), params: {
           subforem: { domain: "newdomain.com", discoverable: true },
+          community_name: "New Community Name",
           community_description: "New description",
-          tagline: "New tagline"
+          tagline: "New tagline",
+          member_label: "developer"
         }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq("New Community Name")
+        expect(Settings::Community.community_description(subforem_id: subforem.id)).to eq("New description")
+        expect(Settings::Community.tagline(subforem_id: subforem.id)).to eq("New tagline")
+        expect(Settings::Community.member_label(subforem_id: subforem.id)).to eq("developer")
+      end
+
+      it "can update user experience settings" do
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true },
+          feed_style: "rich",
+          feed_lookback_days: "30",
+          primary_brand_color_hex: "#1a1a1a"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        # Reload subforem to clear any cached settings
+        subforem.reload
+        
+        expect(Settings::UserExperience.feed_style(subforem_id: subforem.id)).to eq("rich")
+        expect(Settings::UserExperience.feed_lookback_days(subforem_id: subforem.id)).to eq(30)
+        expect(Settings::UserExperience.primary_brand_color_hex(subforem_id: subforem.id)).to eq("#1a1a1a")
       end
     end
 
     context "when user is subforem moderator for the subforem" do
       before { sign_in moderator_user }
 
-      it "updates the subforem and redirects to index" do
+      it "updates the subforem and redirects to manage page" do
         patch subforem_path(subforem), params: { subforem: { discoverable: true } }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
 
       it "can update community settings" do
+        # Allow the actual Settings methods to be called instead of using stubs
+        allow(Settings::Community).to receive(:community_description).and_call_original
+        allow(Settings::Community).to receive(:tagline).and_call_original
+        allow(Settings::Community).to receive(:member_label).and_call_original
+        
         patch subforem_path(subforem), params: {
           subforem: { discoverable: true },
           community_description: "New description",
-          tagline: "New tagline"
+          tagline: "New tagline",
+          member_label: "user"
         }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        expect(Settings::Community.community_description(subforem_id: subforem.id)).to eq("New description")
+        expect(Settings::Community.tagline(subforem_id: subforem.id)).to eq("New tagline")
+        expect(Settings::Community.member_label(subforem_id: subforem.id)).to eq("user")
       end
 
-      it "cannot update restricted fields" do
+      it "can update user experience settings" do
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true },
+          feed_style: "compact",
+          feed_lookback_days: "15"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(Settings::UserExperience.feed_style(subforem_id: subforem.id)).to eq("compact")
+        expect(Settings::UserExperience.feed_lookback_days(subforem_id: subforem.id)).to eq(15)
+      end
+
+      it "cannot update restricted fields like domain" do
+        original_domain = subforem.domain
         patch subforem_path(subforem), params: {
           subforem: { domain: "newdomain.com", discoverable: true }
         }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         # The domain should not be updated
         subforem.reload
+        expect(subforem.domain).to eq(original_domain)
         expect(subforem.domain).not_to eq("newdomain.com")
+      end
+
+      it "cannot update community_name even if parameter is provided" do
+        original_name = Settings::Community.community_name(subforem_id: subforem.id)
+        
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true },
+          community_name: "Hacked Community Name"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        # Community name should NOT be updated
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq(original_name)
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).not_to eq("Hacked Community Name")
+      end
+
+      it "can update primary_brand_color_hex" do
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true },
+          primary_brand_color_hex: "#1a1a1a"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(Settings::UserExperience.primary_brand_color_hex(subforem_id: subforem.id)).to eq("#1a1a1a")
+      end
+
+      it "can update internal_content_description_spec" do
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true },
+          internal_content_description_spec: "New spec for moderators"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id)).to eq("New spec for moderators")
+      end
+
+      it "can update discoverable field" do
+        subforem.update!(discoverable: false)
+        
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true }
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        subforem.reload
+        expect(subforem.discoverable).to be true
       end
     end
 
@@ -222,22 +319,40 @@ RSpec.describe "Subforems", type: :request do
 
       before { sign_in super_moderator_user }
 
-      it "can update logo and background image" do
+      it "can update settings and redirects to manage page" do
         patch subforem_path(subforem), params: {
           subforem: { logo_url: "https://example.com/new-logo.png", bg_image_url: "https://example.com/new-bg.jpg" }
         }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
 
-      it "can update community settings" do
+      it "can update community settings and user experience settings" do
+        # Allow the actual Settings methods to be called instead of using stubs
+        allow(Settings::Community).to receive(:community_description).and_call_original
+        allow(Settings::Community).to receive(:tagline).and_call_original
+        allow(Settings::Community).to receive(:member_label).and_call_original
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_call_original
+        allow(Settings::UserExperience).to receive(:feed_style).and_call_original
+        allow(Settings::UserExperience).to receive(:primary_brand_color_hex).and_call_original
+        
         patch subforem_path(subforem), params: {
           subforem: { logo_url: "https://example.com/logo.png" },
           community_description: "New description",
           tagline: "New tagline",
-          internal_content_description_spec: "New content spec"
+          member_label: "contributor",
+          internal_content_description_spec: "New content spec",
+          feed_style: "basic",
+          primary_brand_color_hex: "#0a0a0a"
         }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        expect(Settings::Community.community_description(subforem_id: subforem.id)).to eq("New description")
+        expect(Settings::Community.tagline(subforem_id: subforem.id)).to eq("New tagline")
+        expect(Settings::Community.member_label(subforem_id: subforem.id)).to eq("contributor")
+        expect(Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id)).to eq("New content spec")
+        expect(Settings::UserExperience.feed_style(subforem_id: subforem.id)).to eq("basic")
+        expect(Settings::UserExperience.primary_brand_color_hex(subforem_id: subforem.id)).to eq("#0a0a0a")
       end
 
       it "cannot update domain, name, or discoverable" do
@@ -247,12 +362,26 @@ RSpec.describe "Subforems", type: :request do
         patch subforem_path(subforem), params: {
           subforem: { domain: "newdomain.com", discoverable: false }
         }
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
 
         # The restricted fields should not be updated
         subforem.reload
         expect(subforem.domain).to eq(original_domain)
         expect(subforem.discoverable).to eq(original_discoverable)
+      end
+
+      it "cannot update community_name even if parameter is provided" do
+        original_name = Settings::Community.community_name(subforem_id: subforem.id)
+        
+        patch subforem_path(subforem), params: {
+          subforem: { logo_url: "https://example.com/logo.png" },
+          community_name: "Super Moderator Hack Attempt"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        
+        # Community name should NOT be updated (only admins can update this)
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq(original_name)
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).not_to eq("Super Moderator Hack Attempt")
       end
     end
   end
@@ -370,7 +499,7 @@ RSpec.describe "Subforems", type: :request do
           }
         end.to change { Settings::General.logo_png(subforem_id: subforem.id) }
 
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
 
@@ -381,7 +510,7 @@ RSpec.describe "Subforems", type: :request do
           }
         end.to change { Settings::General.resized_logo(subforem_id: subforem.id) }
 
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
 
@@ -392,7 +521,7 @@ RSpec.describe "Subforems", type: :request do
           }
         end.to change { Settings::General.main_social_image(subforem_id: subforem.id) }
 
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
     end
@@ -410,7 +539,7 @@ RSpec.describe "Subforems", type: :request do
           }
         end.to change { Settings::General.logo_png(subforem_id: subforem.id) }
 
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
     end
@@ -425,7 +554,7 @@ RSpec.describe "Subforems", type: :request do
           }
         end.not_to change { Settings::General.logo_png(subforem_id: subforem.id) }
 
-        expect(response).to redirect_to(subforems_path)
+        expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq("Subforem updated successfully!")
       end
     end
