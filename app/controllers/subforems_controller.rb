@@ -1,8 +1,9 @@
 class SubforemsController < ApplicationController
   rescue_from Pundit::NotAuthorizedError, with: :render_forbidden
-  before_action :authenticate_user!, only: %i[edit update add_tag]
-  before_action :set_subforem, only: %i[edit update add_tag]
-  before_action :authorize_subforem, only: %i[edit update add_tag]
+  before_action :authenticate_user!, only: %i[edit update add_tag remove_tag create_navigation_link update_navigation_link destroy_navigation_link]
+  before_action :set_subforem, only: %i[edit update add_tag remove_tag create_navigation_link update_navigation_link destroy_navigation_link]
+  before_action :authorize_subforem, only: %i[edit update add_tag remove_tag]
+  before_action :authorize_navigation_link_action, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
 
   def index
     @subforems = Subforem.where(discoverable: true, root: false).order(score: :desc)
@@ -97,6 +98,72 @@ class SubforemsController < ApplicationController
     render json: { success: false, message: e.message }, status: :unprocessable_entity
   end
 
+  def remove_tag
+    tag = Tag.find(params[:tag_id])
+    
+    # Find and remove the relationship
+    relationship = @subforem.tag_relationships.find_by(tag: tag)
+    
+    if relationship
+      relationship.destroy!
+      render json: { success: true, message: "Tag removed from supported tags" }
+    else
+      render json: { success: false, message: "Tag is not supported by this subforem" }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { success: false, message: "Tag not found" }, status: :not_found
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { success: false, message: e.message }, status: :unprocessable_entity
+  end
+
+  def create_navigation_link
+    navigation_link = NavigationLink.new(navigation_link_params.merge(subforem_id: @subforem.id))
+    
+    if navigation_link.save
+      flash[:success] = "Navigation link created successfully!"
+      redirect_to manage_subforem_path
+    else
+      flash[:error] = navigation_link.errors_as_sentence
+      redirect_to manage_subforem_path
+    end
+  end
+
+  def update_navigation_link
+    navigation_link = NavigationLink.find(params[:navigation_link_id])
+    
+    # Ensure the link belongs to this subforem
+    unless navigation_link.subforem_id == @subforem.id
+      flash[:error] = "Navigation link not found"
+      redirect_to manage_subforem_path
+      return
+    end
+    
+    if navigation_link.update(navigation_link_params)
+      flash[:success] = "Navigation link updated successfully!"
+    else
+      flash[:error] = navigation_link.errors_as_sentence
+    end
+    redirect_to manage_subforem_path
+  end
+
+  def destroy_navigation_link
+    navigation_link = NavigationLink.find(params[:navigation_link_id])
+    
+    # Ensure the link belongs to this subforem
+    unless navigation_link.subforem_id == @subforem.id
+      flash[:error] = "Navigation link not found"
+      redirect_to manage_subforem_path
+      return
+    end
+    
+    if navigation_link.destroy
+      flash[:success] = "Navigation link deleted successfully!"
+    else
+      flash[:error] = navigation_link.errors_as_sentence
+    end
+    redirect_to manage_subforem_path
+  end
+
   private
 
   def set_subforem
@@ -105,6 +172,22 @@ class SubforemsController < ApplicationController
 
   def authorize_subforem
     authorize @subforem
+  end
+
+  def authorize_navigation_link_action
+    # Use the specific policy method based on the action
+    case action_name
+    when "create_navigation_link"
+      authorize @subforem, :create_navigation_link?
+    when "update_navigation_link"
+      authorize @subforem, :update_navigation_link?
+    when "destroy_navigation_link"
+      authorize @subforem, :destroy_navigation_link?
+    end
+  end
+
+  def navigation_link_params
+    params.require(:navigation_link).permit(:name, :url, :icon, :display_to, :position, :section)
   end
 
   def admin_params
@@ -116,13 +199,14 @@ class SubforemsController < ApplicationController
   end
 
   def moderator_params
-    params.require(:subforem).permit(:discoverable)
+    # Moderators can't update subforem fields directly, only through settings
+    params.fetch(:subforem, {}).permit
   end
 
   def update_community_settings
     return unless params[:community_name].present? || params[:community_description].present? || 
                   params[:tagline].present? || params[:member_label].present? || 
-                  params[:internal_content_description_spec].present?
+                  params[:internal_content_description_spec].present? || params[:sidebar_tags].present?
 
     # Only admins can update community_name
     if params[:community_name].present? && current_user.any_admin?
@@ -142,10 +226,18 @@ class SubforemsController < ApplicationController
       Settings::Community.set_member_label(params[:member_label], subforem_id: @subforem.id)
     end
     
-    return unless params[:internal_content_description_spec].present?
+    if params[:internal_content_description_spec].present?
+      Settings::RateLimit.set_internal_content_description_spec(params[:internal_content_description_spec],
+                                                                subforem_id: @subforem.id)
+    end
 
-    Settings::RateLimit.set_internal_content_description_spec(params[:internal_content_description_spec],
-                                                              subforem_id: @subforem.id)
+    return unless params[:sidebar_tags].present?
+
+    # Parse and set sidebar tags
+    sidebar_tags = params[:sidebar_tags].to_s.downcase.delete(" ").split(",").reject(&:blank?)
+    Settings::General.set_sidebar_tags(sidebar_tags, subforem_id: @subforem.id)
+    # Create tags if they don't exist
+    Tag.find_or_create_all_with_like_by_name(sidebar_tags)
   end
 
   def update_user_experience_settings
