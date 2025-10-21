@@ -2,7 +2,6 @@ module Admin
   class OverviewController < Admin::ApplicationController
     layout "admin"
     def index
-      @data_counts = Admin::DataCounts.call
     end
 
     def stats
