@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 namespace :admin do
   get "/", to: "overview#index"
+  get "/stats", to: "overview#stats"
 
   authenticate :user, ->(user) { user.tech_admin? } do
     mount Blazer::Engine, at: "blazer"
