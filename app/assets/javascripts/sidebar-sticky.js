@@ -14,6 +14,11 @@ function initializeStickyBillboard() {
   const sidebarWidth = sidebar.offsetWidth;
   const sidebarLeft = sidebar.offsetLeft;
   
+  // Create a placeholder element to maintain space when sticky
+  const placeholder = document.createElement('div');
+  placeholder.style.display = 'none';
+  stickyElement.parentNode.insertBefore(placeholder, stickyElement);
+  
   // Use requestAnimationFrame for smooth performance
   let ticking = false;
   let isSticky = false;
@@ -24,11 +29,20 @@ function initializeStickyBillboard() {
   function updateStickyPosition() {
     if (!ticking) {
       requestAnimationFrame(() => {
-        const stickyRect = stickyElement.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
-        // Check if element should be sticky (when it hits 72px from top)
-        if (stickyRect.top <= 72 && !isSticky) {
+        // Calculate the trigger point based on original position
+        const triggerPoint = originalOffsetTop - 72;
+        
+        // Check if element should be sticky (when scrolled past trigger point)
+        if (scrollTop > triggerPoint && !isSticky) {
+          // Get the height before making it sticky
+          const elementHeight = stickyElement.offsetHeight;
+          
+          // Show placeholder to maintain space
+          placeholder.style.display = 'block';
+          placeholder.style.height = elementHeight + 'px';
+          
           // Make it sticky
           stickyElement.style.position = 'fixed';
           stickyElement.style.top = '72px';
@@ -36,19 +50,15 @@ function initializeStickyBillboard() {
           stickyElement.style.left = sidebarLeft + 'px';
           stickyElement.style.zIndex = '1000';
           isSticky = true;
-        } else if (isSticky) {
-          // Check if we should unstick - when scrolling back up to original position
-          const shouldUnstick = scrollTop < (originalOffsetTop - 72);
-          
-          if (shouldUnstick) {
-            // Return to normal position
-            stickyElement.style.position = '';
-            stickyElement.style.top = '';
-            stickyElement.style.width = '';
-            stickyElement.style.left = '';
-            stickyElement.style.zIndex = '';
-            isSticky = false;
-          }
+        } else if (isSticky && scrollTop <= triggerPoint) {
+          // Return to normal position
+          placeholder.style.display = 'none';
+          stickyElement.style.position = '';
+          stickyElement.style.top = '';
+          stickyElement.style.width = '';
+          stickyElement.style.left = '';
+          stickyElement.style.zIndex = '';
+          isSticky = false;
         }
         
         ticking = false;
