@@ -100,7 +100,6 @@ body[data-side-nav-visible='true']:not(.hidden-shell) {
     @media (min-width: $breakpoint-2xl) {
       left: 0;
       width: 100%;
-      transform: translateX(20px);
     }
   }
 }
