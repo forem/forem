@@ -85,6 +85,8 @@ module ApplicationHelper
   end
 
   def page_view_classes
+    return "" unless @page.slug.present?
+    
     " pageslug-#{@page.slug.gsub('/', '__SLASH__')}"
   end
 
