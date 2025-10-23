@@ -31,6 +31,18 @@ class SubforemPolicy < ApplicationPolicy
     has_mod_permission? || user_super_moderator?
   end
 
+  def create_page?
+    has_mod_permission? || user_super_moderator?
+  end
+
+  def update_page?
+    has_mod_permission? || user_super_moderator?
+  end
+
+  def destroy_page?
+    has_mod_permission? || user_super_moderator?
+  end
+
   def admin?
     user_super_admin?
   end

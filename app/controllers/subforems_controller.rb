@@ -1,9 +1,10 @@
 class SubforemsController < ApplicationController
   rescue_from Pundit::NotAuthorizedError, with: :render_forbidden
-  before_action :authenticate_user!, only: %i[edit update add_tag remove_tag create_navigation_link update_navigation_link destroy_navigation_link]
-  before_action :set_subforem, only: %i[edit update add_tag remove_tag create_navigation_link update_navigation_link destroy_navigation_link]
+  before_action :authenticate_user!, only: %i[edit update add_tag remove_tag create_navigation_link update_navigation_link destroy_navigation_link new_page create_page edit_page update_page destroy_page]
+  before_action :set_subforem, only: %i[edit update add_tag remove_tag create_navigation_link update_navigation_link destroy_navigation_link new_page create_page edit_page update_page destroy_page]
   before_action :authorize_subforem, only: %i[edit update add_tag remove_tag]
   before_action :authorize_navigation_link_action, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
+  before_action :authorize_page_action, only: %i[new_page create_page edit_page update_page destroy_page]
 
   def index
     @subforems = Subforem.where(discoverable: true, root: false).order(score: :desc)
@@ -41,7 +42,7 @@ class SubforemsController < ApplicationController
         update_user_experience_settings
         update_subforem_images
         Settings::General.set_admin_action_taken_at(Time.current, subforem_id: @subforem.id)
-        flash[:success] = "Subforem updated successfully!"
+        flash[:success] = I18n.t("views.subforems.edit.messages.updated")
         redirect_to manage_subforem_path
       else
         flash.now[:error] = @subforem.errors_as_sentence
@@ -54,7 +55,7 @@ class SubforemsController < ApplicationController
         update_user_experience_settings
         update_subforem_images
         Settings::General.admin_action_taken_at = Time.current
-        flash[:success] = "Subforem updated successfully!"
+        flash[:success] = I18n.t("views.subforems.edit.messages.updated")
         redirect_to manage_subforem_path
       else
         flash.now[:error] = @subforem.errors_as_sentence
@@ -66,7 +67,7 @@ class SubforemsController < ApplicationController
       update_user_experience_settings
       update_subforem_images
       Settings::General.admin_action_taken_at = Time.current
-      flash[:success] = "Subforem updated successfully!"
+      flash[:success] = I18n.t("views.subforems.edit.messages.updated")
       redirect_to manage_subforem_path
     else
       flash.now[:error] = @subforem.errors_as_sentence
@@ -120,7 +121,7 @@ class SubforemsController < ApplicationController
     navigation_link = NavigationLink.new(navigation_link_params.merge(subforem_id: @subforem.id))
     
     if navigation_link.save
-      flash[:success] = "Navigation link created successfully!"
+      flash[:success] = I18n.t("views.subforems.edit.navigation_links.messages.created")
       redirect_to manage_subforem_path
     else
       flash[:error] = navigation_link.errors_as_sentence
@@ -133,13 +134,13 @@ class SubforemsController < ApplicationController
     
     # Ensure the link belongs to this subforem
     unless navigation_link.subforem_id == @subforem.id
-      flash[:error] = "Navigation link not found"
+      flash[:error] = I18n.t("views.subforems.edit.navigation_links.messages.not_found")
       redirect_to manage_subforem_path
       return
     end
     
     if navigation_link.update(navigation_link_params)
-      flash[:success] = "Navigation link updated successfully!"
+      flash[:success] = I18n.t("views.subforems.edit.navigation_links.messages.updated")
     else
       flash[:error] = navigation_link.errors_as_sentence
     end
@@ -151,15 +152,98 @@ class SubforemsController < ApplicationController
     
     # Ensure the link belongs to this subforem
     unless navigation_link.subforem_id == @subforem.id
-      flash[:error] = "Navigation link not found"
+      flash[:error] = I18n.t("views.subforems.edit.navigation_links.messages.not_found")
       redirect_to manage_subforem_path
       return
     end
     
     if navigation_link.destroy
-      flash[:success] = "Navigation link deleted successfully!"
+      flash[:success] = I18n.t("views.subforems.edit.navigation_links.messages.deleted")
     else
       flash[:error] = navigation_link.errors_as_sentence
+    end
+    redirect_to manage_subforem_path
+  end
+
+  def new_page
+    @page = Page.new(subforem_id: @subforem.id)
+  end
+
+  def create_page
+    @page = Page.new(page_params.merge(subforem_id: @subforem.id))
+    
+    # Force markdown-only pages, no top-level paths for subforem moderators
+    @page.body_html = nil
+    @page.body_json = nil
+    @page.body_css = nil
+    @page.template = "contained"
+    @page.is_top_level_path = false
+    
+    if @page.save
+      flash[:success] = I18n.t("views.subforems.pages.created")
+      redirect_to manage_subforem_path
+    else
+      flash.now[:error] = @page.errors_as_sentence
+      render :new_page
+    end
+  end
+
+  def edit_page
+    @page = Page.find(params[:page_id])
+    
+    # Ensure the page belongs to this subforem
+    unless @page.subforem_id == @subforem.id
+      flash[:error] = I18n.t("views.subforems.pages.not_found")
+      redirect_to manage_subforem_path
+      return
+    end
+  end
+
+  def update_page
+    @page = Page.find(params[:page_id])
+    
+    # Ensure the page belongs to this subforem
+    unless @page.subforem_id == @subforem.id
+      flash[:error] = I18n.t("views.subforems.pages.not_found")
+      redirect_to manage_subforem_path
+      return
+    end
+    
+    # Determine allowed params based on page type and user role
+    allowed_params = if @page.is_top_level_path
+                       # For top-level pages, only allow title, description, and social_image
+                       page_params.slice(:title, :description, :social_image)
+                     else
+                       # For subforem pages, allow full markdown editing
+                       params_to_use = page_params
+                       # Force markdown-only, no HTML/JSON/CSS for subforem moderators
+                       params_to_use = params_to_use.except(:body_html, :body_json, :body_css)
+                       params_to_use.merge(template: "contained", is_top_level_path: false)
+                     end
+    
+    if @page.update(allowed_params)
+      flash[:success] = I18n.t("views.subforems.pages.updated")
+      redirect_to manage_subforem_path
+    else
+      flash.now[:error] = @page.errors_as_sentence
+      render :edit_page
+    end
+  end
+
+  def destroy_page
+    @page = Page.find(params[:page_id])
+    
+    # Ensure the page belongs to this subforem and is not a top-level page
+    unless @page.subforem_id == @subforem.id && !@page.is_top_level_path
+      flash[:error] = I18n.t("views.subforems.pages.cannot_delete")
+      redirect_to manage_subforem_path
+      return
+    end
+    
+    if @page.destroy
+      flash[:success] = I18n.t("views.subforems.pages.deleted")
+    else
+      flash[:error] = @page.errors_as_sentence
     end
     redirect_to manage_subforem_path
   end
@@ -186,8 +270,24 @@ class SubforemsController < ApplicationController
     end
   end
 
+  def authorize_page_action
+    # Use the specific policy method based on the action
+    case action_name
+    when "new_page", "create_page"
+      authorize @subforem, :create_page?
+    when "edit_page", "update_page"
+      authorize @subforem, :update_page?
+    when "destroy_page"
+      authorize @subforem, :destroy_page?
+    end
+  end
+
   def navigation_link_params
     params.require(:navigation_link).permit(:name, :url, :icon, :display_to, :position, :section)
+  end
+
+  def page_params
+    params.require(:page).permit(:title, :slug, :description, :body_markdown, :social_image)
   end
 
   def admin_params
