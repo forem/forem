@@ -177,6 +177,11 @@ Rails.application.routes.draw do
         post :create_navigation_link
         patch :update_navigation_link
         delete :destroy_navigation_link
+        get :new_page
+        post :create_page
+        get 'edit_page/:page_id', to: 'subforems#edit_page', as: :edit_page
+        patch 'update_page/:page_id', to: 'subforems#update_page', as: :update_page
+        delete 'destroy_page/:page_id', to: 'subforems#destroy_page', as: :destroy_page
       end
     end
     get "/manage", to: "subforems#edit", as: :manage_subforem

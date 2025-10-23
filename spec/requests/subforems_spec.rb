@@ -153,7 +153,7 @@ RSpec.describe "Subforems", type: :request do
       it "updates the subforem and redirects to manage page" do
         patch subforem_path(subforem), params: { subforem: { discoverable: true } }
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
 
       it "can update all fields including community settings" do
@@ -202,7 +202,7 @@ RSpec.describe "Subforems", type: :request do
       it "updates the subforem and redirects to manage page" do
         patch subforem_path(subforem), params: { subforem: { discoverable: true } }
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
 
       it "can update community settings" do
@@ -333,7 +333,7 @@ RSpec.describe "Subforems", type: :request do
           subforem: { logo_url: "https://example.com/new-logo.png", bg_image_url: "https://example.com/new-bg.jpg" }
         }
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
 
       it "can update community settings and user experience settings" do
@@ -509,7 +509,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { Settings::General.logo_png(subforem_id: subforem.id) }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
 
       it "uploads nav logo image" do
@@ -520,7 +520,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { Settings::General.resized_logo(subforem_id: subforem.id) }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
 
       it "uploads social card image" do
@@ -531,7 +531,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { Settings::General.main_social_image(subforem_id: subforem.id) }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
     end
 
@@ -549,7 +549,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { Settings::General.logo_png(subforem_id: subforem.id) }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
     end
 
@@ -564,7 +564,7 @@ RSpec.describe "Subforems", type: :request do
         end.not_to change { Settings::General.logo_png(subforem_id: subforem.id) }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Subforem updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
       end
     end
   end
@@ -649,7 +649,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { NavigationLink.count }.by(1)
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Navigation link created successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.created"))
         
         link = NavigationLink.last
         expect(link.subforem_id).to eq(subforem.id)
@@ -677,7 +677,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { NavigationLink.count }.by(1)
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Navigation link created successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.created"))
       end
     end
 
@@ -714,7 +714,7 @@ RSpec.describe "Subforems", type: :request do
               params: { navigation_link: { name: "Updated Link", url: "/updated" } }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Navigation link updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.updated"))
         
         navigation_link.reload
         expect(navigation_link.name).to eq("Updated Link")
@@ -737,7 +737,7 @@ RSpec.describe "Subforems", type: :request do
               params: { navigation_link: { name: "Hacked" } }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:error]).to eq("Navigation link not found")
+        expect(flash[:error]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.not_found"))
         
         other_link.reload
         expect(other_link.name).to eq("Other Link")
@@ -752,7 +752,7 @@ RSpec.describe "Subforems", type: :request do
               params: { navigation_link: { name: "Updated by Mod" } }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Navigation link updated successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.updated"))
         
         navigation_link.reload
         expect(navigation_link.name).to eq("Updated by Mod")
@@ -794,7 +794,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { NavigationLink.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Navigation link deleted successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.deleted"))
       end
 
       it "prevents deleting navigation link from different subforem" do
@@ -814,7 +814,7 @@ RSpec.describe "Subforems", type: :request do
         end.not_to change { NavigationLink.count }
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:error]).to eq("Navigation link not found")
+        expect(flash[:error]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.not_found"))
       end
     end
 
@@ -827,7 +827,7 @@ RSpec.describe "Subforems", type: :request do
         end.to change { NavigationLink.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:success]).to eq("Navigation link deleted successfully!")
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.deleted"))
       end
     end
 
@@ -837,6 +837,501 @@ RSpec.describe "Subforems", type: :request do
       it "returns forbidden" do
         delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
 
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "GET /subforems/:id/new_page" do
+    let(:subforem) { create(:subforem) }
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "returns a successful response" do
+        get new_page_subforem_path(subforem)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Create New Page")
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "returns a successful response" do
+        get new_page_subforem_path(subforem)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Create New Page")
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        get new_page_subforem_path(subforem)
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when user is not signed in" do
+      it "redirects to sign in" do
+        get new_page_subforem_path(subforem)
+        expect(response).to redirect_to(new_magic_link_path)
+      end
+    end
+  end
+
+  describe "POST /subforems/:id/create_page" do
+    let(:subforem) { create(:subforem) }
+    let(:valid_page_params) do
+      {
+        page: {
+          title: "Test Page",
+          slug: "test-page",
+          description: "A test page",
+          body_markdown: "# Welcome\n\nThis is test content."
+        }
+      }
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "creates a page" do
+        expect do
+          post create_page_subforem_path(subforem), params: valid_page_params
+        end.to change { Page.count }.by(1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.created"))
+
+        page = Page.last
+        expect(page.subforem_id).to eq(subforem.id)
+        expect(page.title).to eq("Test Page")
+        expect(page.slug).to eq("test-page")
+        expect(page.template).to eq("contained")
+        expect(page.is_top_level_path).to be false
+        expect(page.body_markdown).to be_present
+        expect(page.body_html).to be_nil
+        expect(page.body_json).to be_nil
+        expect(page.body_css).to be_nil
+      end
+
+      it "forces markdown-only content" do
+        post create_page_subforem_path(subforem), params: {
+          page: {
+            title: "HTML Test",
+            slug: "html-test",
+            description: "Test",
+            body_markdown: "# Test",
+            body_html: "<div>Should be ignored</div>",
+            body_json: { test: "Should be ignored" }.to_json
+          }
+        }
+
+        page = Page.last
+        expect(page.body_markdown).to eq("# Test")
+        expect(page.body_html).to be_nil
+        expect(page.body_json).to be_nil
+      end
+
+      it "forces contained template and non-top-level path" do
+        post create_page_subforem_path(subforem), params: {
+          page: {
+            title: "Template Test",
+            slug: "template-test",
+            description: "Test",
+            body_markdown: "# Test",
+            template: "full_within_layout",
+            is_top_level_path: true
+          }
+        }
+
+        page = Page.last
+        expect(page.template).to eq("contained")
+        expect(page.is_top_level_path).to be false
+      end
+
+      it "handles validation errors" do
+        invalid_params = { page: { title: "", slug: "", description: "" } }
+
+        expect do
+          post create_page_subforem_path(subforem), params: invalid_params
+        end.not_to change { Page.count }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Create New Page")
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "creates a page" do
+        expect do
+          post create_page_subforem_path(subforem), params: valid_page_params
+        end.to change { Page.count }.by(1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.created"))
+
+        page = Page.last
+        expect(page.subforem_id).to eq(subforem.id)
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        post create_page_subforem_path(subforem), params: valid_page_params
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "GET /subforems/:id/edit_page/:page_id" do
+    let(:subforem) { create(:subforem) }
+    let!(:subforem_page) do
+      create(:page, subforem: subforem, title: "Subforem Page", slug: "subforem-page",
+                    description: "Test", body_markdown: "# Test", is_top_level_path: false)
+    end
+    let!(:top_level_page) do
+      create(:page, subforem: subforem, title: "Top Level", slug: "top-level",
+                    description: "Test", body_markdown: "# Test", is_top_level_path: true)
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "returns a successful response for subforem page" do
+        get edit_page_subforem_path(subforem, page_id: subforem_page.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Edit #{subforem_page.title}")
+      end
+
+      it "returns a successful response for top-level page that belongs to subforem" do
+        get edit_page_subforem_path(subforem, page_id: top_level_page.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Edit #{top_level_page.title}")
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "returns a successful response for regular page" do
+        get edit_page_subforem_path(subforem, page_id: subforem_page.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Edit #{subforem_page.title}")
+      end
+
+      it "can edit top-level pages that belong to their subforem" do
+        get edit_page_subforem_path(subforem, page_id: top_level_page.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Edit #{top_level_page.title}")
+      end
+    end
+
+    context "when page belongs to different subforem" do
+      let(:other_subforem) { create(:subforem, domain: "other.com") }
+      let!(:other_regular_page) do
+        create(:page, subforem: other_subforem, title: "Other Page", slug: "other-page",
+                      description: "Test", body_markdown: "# Test", is_top_level_path: false)
+      end
+      let!(:other_top_level_page) do
+        create(:page, subforem: other_subforem, title: "Other Top Level", slug: "other-top",
+                      description: "Test", body_markdown: "# Test", is_top_level_path: true)
+      end
+
+      before { sign_in moderator_user }
+
+      it "blocks editing regular pages from other subforems" do
+        get edit_page_subforem_path(subforem, page_id: other_regular_page.id)
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
+      end
+
+      it "blocks editing top-level pages from other subforems" do
+        get edit_page_subforem_path(subforem, page_id: other_top_level_page.id)
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        get edit_page_subforem_path(subforem, page_id: subforem_page.id)
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "PATCH /subforems/:id/update_page/:page_id" do
+    let(:subforem) { create(:subforem) }
+    let!(:subforem_page) do
+      create(:page, subforem: subforem, title: "Original Title", slug: "original-slug",
+                    description: "Original description", body_markdown: "# Original", is_top_level_path: false)
+    end
+    let!(:top_level_page) do
+      create(:page, subforem: subforem, title: "Top Level", slug: "top-level",
+                    description: "Top level page", body_markdown: "# Top Level", is_top_level_path: true)
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "updates a subforem page" do
+        patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
+          page: {
+            title: "Updated Title",
+            slug: "updated-slug",
+            description: "Updated description",
+            body_markdown: "# Updated Content"
+          }
+        }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
+
+        subforem_page.reload
+        expect(subforem_page.title).to eq("Updated Title")
+        expect(subforem_page.slug).to eq("updated-slug")
+        expect(subforem_page.description).to eq("Updated description")
+        expect(subforem_page.body_markdown).to eq("# Updated Content")
+      end
+
+      it "can only update title, description, and social_image for top-level pages" do
+        patch update_page_subforem_path(subforem, page_id: top_level_page.id), params: {
+          page: {
+            title: "Updated Top Level",
+            slug: "hacked-slug",
+            description: "Updated description",
+            body_markdown: "# Hacked content"
+          }
+        }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
+
+        top_level_page.reload
+        expect(top_level_page.title).to eq("Updated Top Level")
+        expect(top_level_page.description).to eq("Updated description")
+        # Slug and body_markdown should NOT be updated for top-level pages
+        expect(top_level_page.slug).to eq("top-level")
+        expect(top_level_page.body_markdown).to eq("# Top Level")
+      end
+
+      it "prevents HTML/JSON/CSS in updates" do
+        patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
+          page: {
+            title: "Updated",
+            body_markdown: "# Test",
+            body_html: "<div>Should be ignored</div>",
+            body_json: { test: "ignored" }.to_json
+          }
+        }
+
+        subforem_page.reload
+        expect(subforem_page.body_markdown).to eq("# Test")
+        expect(subforem_page.body_html).to be_nil
+        expect(subforem_page.body_json).to be_nil
+      end
+
+      it "maintains contained template and non-top-level path" do
+        patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
+          page: {
+            title: "Updated",
+            template: "full_within_layout",
+            is_top_level_path: true
+          }
+        }
+
+        subforem_page.reload
+        expect(subforem_page.template).to eq("contained")
+        expect(subforem_page.is_top_level_path).to be false
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "updates a subforem page" do
+        patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
+          page: {
+            title: "Mod Updated",
+            body_markdown: "# Mod Content"
+          }
+        }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
+
+        subforem_page.reload
+        expect(subforem_page.title).to eq("Mod Updated")
+        expect(subforem_page.body_markdown).to eq("# Mod Content")
+      end
+
+      it "can only update limited fields for top-level pages" do
+        patch update_page_subforem_path(subforem, page_id: top_level_page.id), params: {
+          page: {
+            title: "Mod Updated Top",
+            description: "Mod description"
+          }
+        }
+
+        top_level_page.reload
+        expect(top_level_page.title).to eq("Mod Updated Top")
+        expect(top_level_page.description).to eq("Mod description")
+      end
+    end
+
+    context "when page belongs to different subforem" do
+      let(:other_subforem) { create(:subforem, domain: "other.com") }
+      let!(:other_regular_page) do
+        create(:page, subforem: other_subforem, title: "Other", slug: "other",
+                      description: "Test", body_markdown: "# Test", is_top_level_path: false)
+      end
+      let!(:other_top_level_page) do
+        create(:page, subforem: other_subforem, title: "Other Top", slug: "other-top",
+                      description: "Test", body_markdown: "# Test", is_top_level_path: true)
+      end
+
+      before { sign_in moderator_user }
+
+      it "prevents updating regular pages from other subforems" do
+        patch update_page_subforem_path(subforem, page_id: other_regular_page.id), params: {
+          page: { title: "Hacked" }
+        }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
+
+        other_regular_page.reload
+        expect(other_regular_page.title).to eq("Other")
+      end
+
+      it "prevents updating top-level pages from other subforems" do
+        patch update_page_subforem_path(subforem, page_id: other_top_level_page.id), params: {
+          page: { title: "Hacked Top Level" }
+        }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
+
+        other_top_level_page.reload
+        expect(other_top_level_page.title).to eq("Other Top")
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
+          page: { title: "Hacked" }
+        }
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "DELETE /subforems/:id/destroy_page/:page_id" do
+    let(:subforem) { create(:subforem) }
+    let!(:subforem_page) do
+      create(:page, subforem: subforem, title: "To Delete", slug: "to-delete",
+                    description: "Test", body_markdown: "# Test", is_top_level_path: false)
+    end
+    let!(:top_level_page) do
+      create(:page, subforem: subforem, title: "Top Level", slug: "top-level",
+                    description: "Test", body_markdown: "# Test", is_top_level_path: true)
+    end
+
+    context "when user is admin" do
+      before { sign_in admin_user }
+
+      it "deletes a subforem page" do
+        expect do
+          delete destroy_page_subforem_path(subforem, page_id: subforem_page.id)
+        end.to change { Page.count }.by(-1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.deleted"))
+      end
+
+      it "prevents deleting top-level pages" do
+        expect do
+          delete destroy_page_subforem_path(subforem, page_id: top_level_page.id)
+        end.not_to change { Page.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.cannot_delete"))
+      end
+    end
+
+    context "when user is subforem moderator" do
+      before { sign_in moderator_user }
+
+      it "deletes a subforem page" do
+        expect do
+          delete destroy_page_subforem_path(subforem, page_id: subforem_page.id)
+        end.to change { Page.count }.by(-1)
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.deleted"))
+      end
+
+      it "prevents deleting top-level pages" do
+        expect do
+          delete destroy_page_subforem_path(subforem, page_id: top_level_page.id)
+        end.not_to change { Page.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.cannot_delete"))
+      end
+    end
+
+    context "when page belongs to different subforem" do
+      let(:other_subforem) { create(:subforem, domain: "other.com") }
+      let!(:other_regular_page) do
+        create(:page, subforem: other_subforem, title: "Other", slug: "other",
+                      description: "Test", body_markdown: "# Test", is_top_level_path: false)
+      end
+      let!(:other_top_level_page) do
+        create(:page, subforem: other_subforem, title: "Other Top", slug: "other-top",
+                      description: "Test", body_markdown: "# Test", is_top_level_path: true)
+      end
+
+      before { sign_in moderator_user }
+
+      it "prevents deleting regular pages from other subforems" do
+        expect do
+          delete destroy_page_subforem_path(subforem, page_id: other_regular_page.id)
+        end.not_to change { Page.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.cannot_delete"))
+      end
+
+      it "prevents deleting top-level pages from other subforems" do
+        expect do
+          delete destroy_page_subforem_path(subforem, page_id: other_top_level_page.id)
+        end.not_to change { Page.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to eq(I18n.t("views.subforems.pages.cannot_delete"))
+      end
+    end
+
+    context "when user is not authorized" do
+      before { sign_in regular_user }
+
+      it "returns forbidden" do
+        delete destroy_page_subforem_path(subforem, page_id: subforem_page.id)
         expect(response).to have_http_status(:forbidden)
       end
     end

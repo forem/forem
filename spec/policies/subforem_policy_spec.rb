@@ -98,4 +98,106 @@ RSpec.describe SubforemPolicy do
       end
     end
   end
+
+  describe "#create_page?" do
+    context "when user is a super admin" do
+      let(:user) { create(:user, :super_admin) }
+
+      it "returns true" do
+        expect(policy.create_page?).to be true
+      end
+    end
+
+    context "when user is a super moderator" do
+      let(:user) { create(:user, :super_moderator) }
+
+      it "returns true" do
+        expect(policy.create_page?).to be true
+      end
+    end
+
+    context "when user is a subforem moderator for the subforem" do
+      before do
+        user.add_role(:subforem_moderator, subforem)
+      end
+
+      it "returns true" do
+        expect(policy.create_page?).to be true
+      end
+    end
+
+    context "when user is not authorized" do
+      it "returns false" do
+        expect(policy.create_page?).to be false
+      end
+    end
+  end
+
+  describe "#update_page?" do
+    context "when user is a super admin" do
+      let(:user) { create(:user, :super_admin) }
+
+      it "returns true" do
+        expect(policy.update_page?).to be true
+      end
+    end
+
+    context "when user is a super moderator" do
+      let(:user) { create(:user, :super_moderator) }
+
+      it "returns true" do
+        expect(policy.update_page?).to be true
+      end
+    end
+
+    context "when user is a subforem moderator for the subforem" do
+      before do
+        user.add_role(:subforem_moderator, subforem)
+      end
+
+      it "returns true" do
+        expect(policy.update_page?).to be true
+      end
+    end
+
+    context "when user is not authorized" do
+      it "returns false" do
+        expect(policy.update_page?).to be false
+      end
+    end
+  end
+
+  describe "#destroy_page?" do
+    context "when user is a super admin" do
+      let(:user) { create(:user, :super_admin) }
+
+      it "returns true" do
+        expect(policy.destroy_page?).to be true
+      end
+    end
+
+    context "when user is a super moderator" do
+      let(:user) { create(:user, :super_moderator) }
+
+      it "returns true" do
+        expect(policy.destroy_page?).to be true
+      end
+    end
+
+    context "when user is a subforem moderator for the subforem" do
+      before do
+        user.add_role(:subforem_moderator, subforem)
+      end
+
+      it "returns true" do
+        expect(policy.destroy_page?).to be true
+      end
+    end
+
+    context "when user is not authorized" do
+      it "returns false" do
+        expect(policy.destroy_page?).to be false
+      end
+    end
+  end
 end
