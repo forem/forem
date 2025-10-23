@@ -243,7 +243,7 @@ RSpec.describe FeedConfig, type: :model do
       it "includes the status weight" do
         feed_config.status_weight = 2.5
         sql = feed_config.score_sql(user)
-        expect(sql).to include("CASE WHEN articles.type_of = 'status' THEN 2.5")
+        expect(sql).to include("CASE WHEN articles.type_of = 1 THEN 2.5")
       end
 
       it "includes the clickbait score subtraction" do
