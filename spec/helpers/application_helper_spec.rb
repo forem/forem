@@ -254,6 +254,42 @@ RSpec.describe ApplicationHelper do
       uri = URI::Generic.build(path: "resource_admin", fragment: "test").to_s
       expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
     end
+
+    context "when subforem domain is in RequestStore" do
+      before do
+        RequestStore.store[:subforem_domain] = "community.example.com"
+      end
+
+      after do
+        RequestStore.clear!
+      end
+
+      it "creates the correct base URL with subforem domain" do
+        expect(app_url).to eq("https://community.example.com")
+      end
+
+      it "creates a URL with a path using subforem domain" do
+        expect(app_url("/feed")).to eq("https://community.example.com/feed")
+      end
+
+      it "creates the correct URL for RSS feed with subforem domain" do
+        expect(app_url("feed")).to eq("https://community.example.com/feed")
+      end
+    end
+
+    context "when no subforem domain is in RequestStore" do
+      before do
+        RequestStore.store[:subforem_domain] = nil
+      end
+
+      after do
+        RequestStore.clear!
+      end
+
+      it "falls back to default domain" do
+        expect(app_url("/feed")).to eq("https://dev.to/feed")
+      end
+    end
   end
 
   describe "#collection_link" do

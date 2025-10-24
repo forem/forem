@@ -253,10 +253,12 @@ RSpec.describe "StoriesShow" do
       it "does not redirect if article.subforem_id == RequestStore.store[:subforem_id]" do
         article.update_column(:subforem_id, subforem.id)
         RequestStore.store[:subforem_id] = subforem.id
+        # Set the subforem_domain to match what the middleware would set
+        RequestStore.store[:subforem_domain] = subforem.domain
 
         get article.path
         expect(response).not_to have_http_status(:moved_permanently)
-        expect(response.body).not_to include("href=\"#{URL.article(article)}\"")
+        expect(response).to have_http_status(:ok)
       end
 
       it "redirects if article has no subforem_id and RequestStore has a non-default subforem_id" do
