@@ -672,4 +672,26 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(rendered_html).not_to include('alt="Image Description"')
   end
 
+  context "when rendering tables" do
+    it "preserves table alignment from markdown syntax" do
+      table_markdown = <<~MARKDOWN
+        | Left | Right | Center | Right |
+        |:-----|------:|:------:|------:|
+        | Apple | 100 | Test | 1000 |
+        | Banana | 200 | Demo | 20000 |
+      MARKDOWN
+
+      rendered_html = generate_and_parse_markdown(table_markdown)
+
+      # Check that the table is rendered
+      expect(rendered_html).to include("<table>")
+      expect(rendered_html).to include("<thead>")
+      expect(rendered_html).to include("<tbody>")
+
+      # Verify specific cells have correct alignment
+      expect(rendered_html).to match(%r{<th.*style="text-align:left;".*>Left</th>})
+      expect(rendered_html).to match(%r{<th.*style="text-align:right;".*>Right</th>})
+      expect(rendered_html).to match(%r{<th.*style="text-align:center;".*>Center</th>})
+    end
+  end
 end
