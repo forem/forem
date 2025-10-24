@@ -367,7 +367,7 @@ module ApplicationHelper
   end
 
   def app_url(uri = nil)
-    URL.url(uri)
+    URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
   def article_url(article)

@@ -16,9 +16,10 @@ module URL
 
   private_class_method :has_site_configs?
 
-  def self.domain(subforem = nil)
-    if subforem
-      subforem.domain
+  def self.domain(domain_or_subforem = nil)
+    if domain_or_subforem
+      # Accept either a Subforem object or a domain string
+      domain_or_subforem.is_a?(String) ? domain_or_subforem : domain_or_subforem.domain
     elsif database_available?
       Settings::General.app_domain
     else
@@ -26,8 +27,8 @@ module URL
     end
   end
 
-  def self.url(uri = nil, subforem = nil)
-    base_url = "#{protocol}#{domain(subforem)}"
+  def self.url(uri = nil, domain_or_subforem = nil)
+    base_url = "#{protocol}#{domain(domain_or_subforem)}"
     base_url += ":3000" if Rails.env.development? && !base_url.include?(":3000")
     return base_url unless uri
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
