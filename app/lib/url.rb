@@ -38,25 +38,41 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    subforem = article.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id]) if article.respond_to?(:subforem_id)
-    url(article.path, subforem)
+    return url(article.path) unless article.respond_to?(:subforem_id)
+    
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = article.subforem_id || RequestStore.store[:default_subforem_id]
+    return url(article.path) unless subforem_id
+    
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    url(article.path, domain)
   end
 
   def self.page(page)
-    subforem = page.subforem || Subforem.find_by(id: RequestStore.store[:subforem_id])
-    url(page.path, subforem)
+    return url(page.path) unless page.respond_to?(:subforem_id)
+    
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = page.subforem_id || RequestStore.store[:subforem_id]
+    return url(page.path) unless subforem_id
+    
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    url(page.path, domain)
   end
 
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
-    subforem =  if comment.commentable.class.name == "Article" && comment.commentable.respond_to?(:subforem_id)
-                  comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
-                else
-                  Subforem.find_by(id: RequestStore.store[:subforem_id])
-                end
-    url(comment.path, subforem)
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = if comment.commentable.class.name == "Article" && comment.commentable.respond_to?(:subforem_id)
+                    comment.commentable.subforem_id || RequestStore.store[:default_subforem_id]
+                  else
+                    RequestStore.store[:subforem_id]
+                  end
+    return url(comment.path) unless subforem_id
+    
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    url(comment.path, domain)
   end
 
   # Creates a fragment URL for a comment on an article page
