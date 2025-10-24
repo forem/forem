@@ -9,7 +9,7 @@ module Push
   class FcmV1Client
     SCOPE = 'https://www.googleapis.com/auth/firebase.messaging'
 
-    def initialize(project_id:, service_account_path:)
+    def initialize(project_id:, service_account_path: ENV['GOOGLE_APPLICATION_CREDENTIALS'] || ENV['FIREBASE_SA_PATH'] || File.expand_path('../../../firebase-service-account.json', __dir__))
       @project_id = project_id
       @service_account_path = service_account_path
     end

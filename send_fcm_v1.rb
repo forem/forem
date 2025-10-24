@@ -3,7 +3,7 @@ require 'json'
 require 'googleauth'
 
 def get_access_token
-  json_key_path = File.expand_path('firebase-service-account.json', __dir__)
+  json_key_path = ENV['GOOGLE_APPLICATION_CREDENTIALS'] || ENV['FIREBASE_SA_PATH'] || File.expand_path('firebase-service-account.json', __dir__)
   scope = 'https://www.googleapis.com/auth/firebase.messaging'
 
   begin
@@ -21,7 +21,7 @@ def get_access_token
 end
 
 def send_fcm_notification(token, access_token)
-  project_id = 'forem-5d94b'
+  project_id = ENV['FIREBASE_PROJECT_ID'] || 'forem-5d94b'
   url = URI("https://fcm.googleapis.com/v1/projects/#{project_id}/messages:send")
 
   http = Net::HTTP.new(url.host, url.port)

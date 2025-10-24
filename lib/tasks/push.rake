@@ -9,8 +9,8 @@ namespace :push do
     data  = {}
     data[:url] = ENV['URL'] if ENV['URL']
 
-    project_id = 'forem-5d94b'
-    sa_path    = File.expand_path('../../firebase-service-account.json', __dir__)
+  project_id = ENV['FIREBASE_PROJECT_ID'] || 'forem-5d94b'
+  sa_path    = ENV['GOOGLE_APPLICATION_CREDENTIALS'] || ENV['FIREBASE_SA_PATH'] || File.expand_path('../../firebase-service-account.json', __dir__)
 
     client = Push::FcmV1Client.new(project_id: project_id, service_account_path: sa_path)
     res = client.send_to_token(token: token, title: title, body: body, data: data)

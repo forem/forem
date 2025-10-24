@@ -116,6 +116,9 @@ gem "vault", "~> 0.17" # Used to store secrets
 gem "warning", "~> 1.3" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 
+# Needed for Firebase Cloud Messaging v1 (server-side OAuth token minting)
+gem "googleauth", "~> 1.6"
+
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
 
