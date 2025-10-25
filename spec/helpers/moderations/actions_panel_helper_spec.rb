@@ -9,7 +9,7 @@ describe Moderations::ActionsPanelHelper do
     let(:admin) { create(:user, :admin) }
     let(:user) { create(:user) }
 
-    let(:article) { create(:article, tags: "tag2") }
+  let(:article) { create(:article, tags: tag2.name) }
 
     it "returns false if the last adjustment was made by a non-admin" do
       user.add_role(:tag_moderator, tag2)
