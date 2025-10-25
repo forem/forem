@@ -3,8 +3,8 @@ require "securerandom"
 
 describe Moderations::ActionsPanelHelper do
   describe "#last_adjusted_by_admin?" do
-    let(:tag1) { create(:tag, name: "tag1-#{SecureRandom.hex(6)}") }
-    let(:tag2) { create(:tag, name: "tag2-#{SecureRandom.hex(6)}") }
+    let(:tag1) { create(:tag, name: "tag1#{SecureRandom.alphanumeric(6)}") }
+    let(:tag2) { create(:tag, name: "tag2#{SecureRandom.alphanumeric(6)}") }
 
     let(:admin) { create(:user, :admin) }
     let(:user) { create(:user) }
