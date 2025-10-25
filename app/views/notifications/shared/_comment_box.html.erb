@@ -36,7 +36,7 @@
       <footer class="comment-actions">
         <div class="notification__actions">
           <button
-            class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button <%= notification.any_cached_reactions_for_object?(current_user, "comment") ? "reacted" : "" %>"
+            class="crayons-tooltip__activator relative crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button <%= notification.any_cached_reactions_for_object?(current_user, "comment") ? "reacted" : "" %>"
             data-reactable-id="<%= notification.comment_id %>"
             data-category="like"
             data-reactable-type="Comment"
