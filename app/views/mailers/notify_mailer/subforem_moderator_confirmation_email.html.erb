@@ -1,0 +1,27 @@
+<p>Hey <%= @user.name %>!</p>
+
+<p>Thanks for volunteering to be a <%= community_name %> subforem moderator. We've added you as a moderator for <%= link_to @subforem.domain, "https://#{@subforem.domain}" %>.</p>
+
+<p>With great power comes great... you know the saying. As a subforem moderator, you are able to:</p>
+
+<ul>
+  <li>Manage the discoverability of the subforem</li>
+  <li>Update community settings like description and tagline</li>
+  <li>Help maintain the quality and relevance of content within the subforem</li>
+  <li>Use moderation tools to ensure the community follows our Code of Conduct</li>
+  <li>Contribute to fostering a warm, welcoming, and inclusive environment</li>
+</ul>
+
+<p>For details on all available features and how to access them, visit our <%= link_to "Community Moderation", community_moderation_path %> pages.</p>
+
+<p>Subforem moderation is something we're continuously iterating on, so you can expect adjustments and expanding features over time as we receive feedback.</p>
+
+<p>Of course, if you have any questions, please hit "reply" to this email.</p>
+
+<p>Thanks so much for volunteering your time to benefit <%= community_name %>. Your participation will assist us in better organizing the site via subforems, and help us to foster a warm, welcoming, inclusive, spam-free-as-can-be platform.</p>
+
+<p>
+  Happy Modding!
+  <br>
+  - <%= community_name %> Team
+</p>

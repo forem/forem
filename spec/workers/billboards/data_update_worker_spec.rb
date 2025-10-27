@@ -114,6 +114,9 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
         # Stub random behavior so neither early-return branch triggers
         allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).with(3).and_return(0)
         allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).with(2).and_return(1)
+        
+        # Ensure the worker actually processes the billboard by stubbing rand calls
+        allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).and_call_original
       end
 
       it "aggregates only new events and increments counters accordingly" do
@@ -197,6 +200,98 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
           expect(billboard.slice(
             "impressions_count", "clicks_count", "success_rate", "counts_tabulated_at"
           )).to eq(original_attributes)
+        end
+      end
+    end
+
+    context "when handling billboard expiration" do
+      let!(:billboard) do
+        create(
+          :billboard,
+          approved: true,
+          published: true,
+          impressions_count: 100,
+          clicks_count: 10,
+          counts_tabulated_at: now - 1.day
+        )
+      end
+
+      before do
+        # Stub random behavior so neither early-return branch triggers
+        allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).with(3).and_return(0)
+        allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).with(2).and_return(1)
+      end
+
+      it "handles expiration when billboard has expired" do
+        # Create some events to ensure the worker processes the billboard
+        create(:billboard_event,
+          billboard: billboard,
+          category: "impression",
+          counts_for: 5,
+          created_at: now - 1.hour
+        )
+        
+        # Set the billboard to expired
+        billboard.update_column(:expires_at, 1.day.ago)
+        
+        # Mock the random behavior to ensure the worker doesn't return early
+        allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).with(3).and_return(0)
+        allow_any_instance_of(Billboards::DataUpdateWorker).to receive(:rand).with(2).and_return(1)
+        
+        # The worker should mark the billboard as not approved
+        expect { worker.perform(billboard.id) }.to change { billboard.reload.approved }.from(true).to(false)
+      end
+
+      context "when billboard has expired" do
+        before do
+          billboard.update_column(:expires_at, 1.day.ago)
+        end
+
+        it "marks the billboard as not approved" do
+          expect { worker.perform(billboard.id) }.to change { billboard.reload.approved }.from(true).to(false)
+        end
+
+        it "still processes other updates normally" do
+          # Create some new events to ensure they're processed
+          create(:billboard_event,
+            billboard: billboard,
+            category: "impression",
+            counts_for: 5,
+            created_at: now - 1.hour
+          )
+          create(:billboard_event,
+            billboard: billboard,
+            category: "click",
+            counts_for: 2,
+            created_at: now - 30.minutes
+          )
+
+          worker.perform(billboard.id)
+          billboard.reload
+
+          # Should still update counts even after expiration
+          expect(billboard.impressions_count).to eq(105) # 100 + 5
+          expect(billboard.clicks_count).to eq(12) # 10 + 2
+        end
+      end
+
+      context "when billboard has not expired" do
+        before do
+          billboard.update_column(:expires_at, 1.day.from_now)
+        end
+
+        it "does not change the billboard approval status" do
+          expect { worker.perform(billboard.id) }.not_to change { billboard.reload.approved }
+        end
+      end
+
+      context "when billboard has no expiration" do
+        before do
+          billboard.update_column(:expires_at, nil)
+        end
+
+        it "does not change the billboard approval status" do
+          expect { worker.perform(billboard.id) }.not_to change { billboard.reload.approved }
         end
       end
     end

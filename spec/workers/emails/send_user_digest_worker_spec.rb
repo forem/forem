@@ -9,13 +9,23 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
   end
   let(:author) { create(:user) }
   let(:tag)    { create(:tag) }
+  let(:default_subforem) { create(:subforem, domain: "default.test") }
   let(:mailer)           { double }
   let(:message_delivery) { double }
 
   before do
+    # Set up default subforem for testing
+    RequestStore.store[:default_subforem_id] = default_subforem.id
+    allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+
     allow(DigestMailer).to receive(:with).and_return(mailer)
     allow(mailer).to receive(:digest_email).and_return(message_delivery)
     allow(message_delivery).to receive(:deliver_now)
+  end
+
+  after do
+    # Clean up RequestStore after each test
+    RequestStore.store[:default_subforem_id] = nil
   end
 
   include_examples "#enqueues_on_correct_queue", "low_priority"
@@ -82,7 +92,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
             :billboard,
             placement_area: "digest_first",
             published: true,
-            approved: true
+            approved: true,
           )
         end
         let!(:paired_bb) do
@@ -91,7 +101,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
             placement_area: "digest_second",
             published: true,
             approved: true,
-            prefer_paired_with_billboard_id: bb_1.id
+            prefer_paired_with_billboard_id: bb_1.id,
           )
         end
         let!(:other_bb) do
@@ -99,7 +109,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
             :billboard,
             placement_area: "digest_second",
             published: true,
-            approved: true
+            approved: true,
           )
         end
 

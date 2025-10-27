@@ -1,0 +1,162 @@
+#!/usr/bin/env ruby
+require "yaml"
+require "optparse"
+
+# ---------- CLI options ----------
+options = {
+  dry_run: false,
+  verbose: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/fix_helpers_structure [options]"
+
+  opts.on("--dry-run", "Show what would be changed without actually changing files") do
+    options[:dry_run] = true
+  end
+
+  opts.on("--verbose", "Show detailed information") do
+    options[:verbose] = true
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+def fix_helpers_structure(file_path, dry_run, verbose)
+  puts "Processing #{file_path}..." if verbose
+  
+  # Read the current file
+  content = File.read(file_path)
+  yaml_data = YAML.load(content)
+  
+  # Get the locale key (en, pt, fr)
+  locale_key = yaml_data.keys.first
+  helpers_data = yaml_data[locale_key]['helpers']
+  
+  if verbose
+    puts "  Locale: #{locale_key}"
+    puts "  Current structure: #{helpers_data.keys.join(', ')}"
+  end
+  
+  # Check if there's a problematic nested structure
+  if helpers_data['settings_helper'] && 
+     helpers_data['settings_helper']['social_link_helper'] && 
+     helpers_data['settings_helper']['social_link_helper']['label']
+    
+    puts "  Found problematic nested structure!" if verbose
+    
+    # Extract the nested label data
+    nested_label_data = helpers_data['settings_helper']['social_link_helper']['label']
+    
+    # Remove the problematic nested structure
+    helpers_data['settings_helper'].delete('social_link_helper')
+    
+    # If there's already a label section, merge the data
+    if helpers_data['label']
+      puts "  Merging with existing label structure..." if verbose
+      helpers_data['label'] = helpers_data['label'].merge(nested_label_data)
+    else
+      puts "  Creating new label structure..." if verbose
+      helpers_data['label'] = nested_label_data
+    end
+    
+    # Clean up empty settings_helper if it's now empty
+    if helpers_data['settings_helper'].empty?
+      helpers_data.delete('settings_helper')
+    end
+    
+    if dry_run
+      puts "  Would fix nested structure in #{file_path}"
+    else
+      # Write the fixed data back
+      File.write(file_path, YAML.dump(yaml_data))
+      puts "  Fixed nested structure in #{file_path}"
+    end
+    
+    return true
+  else
+    puts "  No problematic nested structure found" if verbose
+    return false
+  end
+end
+
+def fix_duplicate_label_keys(file_path, dry_run, verbose)
+  puts "Checking for duplicate label keys in #{file_path}..." if verbose
+  
+  # Read the current file
+  content = File.read(file_path)
+  yaml_data = YAML.load(content)
+  
+  # Get the locale key (en, pt, fr)
+  locale_key = yaml_data.keys.first
+  helpers_data = yaml_data[locale_key]['helpers']
+  
+  if helpers_data['label'] && helpers_data['label']['label']
+    puts "  Found duplicate 'label' keys!" if verbose
+    
+    # Merge the nested label data with the parent label data
+    nested_label_data = helpers_data['label']['label']
+    helpers_data['label'] = helpers_data['label'].merge(nested_label_data)
+    helpers_data['label'].delete('label')
+    
+    if dry_run
+      puts "  Would fix duplicate label keys in #{file_path}"
+    else
+      # Write the fixed data back
+      File.write(file_path, YAML.dump(yaml_data))
+      puts "  Fixed duplicate label keys in #{file_path}"
+    end
+    
+    return true
+  else
+    puts "  No duplicate label keys found" if verbose
+    return false
+  end
+end
+
+# Main execution
+puts "Fixing helpers structure..." unless options[:dry_run]
+puts "DRY RUN - No files will be changed" if options[:dry_run]
+puts
+
+helper_files = [
+  'config/locales/helpers/en.yml',
+  'config/locales/helpers/pt.yml',
+  'config/locales/helpers/fr.yml'
+]
+
+fixed_count = 0
+
+helper_files.each do |file_path|
+  next unless File.exist?(file_path)
+  
+  puts "Processing #{file_path}..." if options[:verbose]
+  
+  # Fix nested structure issues
+  if fix_helpers_structure(file_path, options[:dry_run], options[:verbose])
+    fixed_count += 1
+  end
+  
+  # Fix duplicate label keys
+  if fix_duplicate_label_keys(file_path, options[:dry_run], options[:verbose])
+    fixed_count += 1
+  end
+  
+  puts if options[:verbose]
+end
+
+puts
+if options[:dry_run]
+  puts "Summary: Would fix #{fixed_count} issues"
+else
+  puts "Summary: Fixed #{fixed_count} issues"
+end
+
+puts
+puts "Next steps:"
+puts "1. Run the i18n test: bundle exec rspec spec/i18n_spec.rb:15"
+puts "2. Check for any remaining issues"
+puts "3. Continue with missing locale files if needed"

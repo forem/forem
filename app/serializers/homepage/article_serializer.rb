@@ -38,6 +38,10 @@ module Homepage
     attribute :published_at_int, ->(article) { article.published_at.to_i }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
+    
+    # Only include special title methods for status articles
+    attribute :title_finalized_for_feed, if: proc { |article| article.type_of == "status" }
+    attribute :title_for_metadata, if: proc { |article| article.type_of == "status" }
 
     attribute :user do |article|
       user = article.user

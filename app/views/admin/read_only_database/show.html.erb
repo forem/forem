@@ -1,0 +1,66 @@
+<% content_for :title, "Read-Only Database Status" %>
+
+<div class="crayons-card p-6">
+  <h1 class="crayons-title mb-6">Read-Only Database Status</h1>
+  
+  <div class="space-y-6">
+    <!-- Status Overview -->
+    <div class="crayons-card p-4 <%= @available ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200' %>">
+      <h2 class="crayons-subtitle-3 mb-3">
+        <%= @available ? '✅ Read-Only Database Configured' : '❌ Read-Only Database Not Configured' %>
+      </h2>
+      
+      <div class="space-y-2">
+        <p><strong>Status:</strong> <span class="<%= @health_check[:status] == 'healthy' ? 'text-green-600' : 'text-red-600' %>"><%= @health_check[:status].humanize %></span></p>
+        <p><strong>Message:</strong> <%= @health_check[:message] %></p>
+      </div>
+    </div>
+    
+    <!-- Connection Information -->
+    <% if @available && @connection_info %>
+      <div class="crayons-card p-4 bg-blue-50 border-blue-200">
+        <h3 class="crayons-subtitle-3 mb-3">🔗 Connection Information</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p><strong>Host:</strong> <%= @connection_info[:host] %></p>
+            <p><strong>Port:</strong> <%= @connection_info[:port] %></p>
+          </div>
+          <div>
+            <p><strong>Database:</strong> <%= @connection_info[:database] %></p>
+            <p><strong>Username:</strong> <%= @connection_info[:username] %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    
+    <!-- Actions -->
+    <div class="flex gap-4">
+      <%= link_to "Test Connection", admin_read_only_database_test_path, 
+          method: :post, 
+          class: "crayons-btn crayons-btn--primary",
+          data: { confirm: "This will execute a simple query to test the connection. Continue?" } %>
+      
+      <%= link_to "Reset Connection Pool", admin_read_only_database_reset_path, 
+          method: :post, 
+          class: "crayons-btn crayons-btn--secondary",
+          data: { confirm: "This will reset the connection pool. Continue?" } %>
+      
+      <%= link_to "Back to Admin", admin_path, class: "crayons-btn crayons-btn--outlined" %>
+    </div>
+    
+    <!-- Configuration Help -->
+    <div class="crayons-card p-4 bg-yellow-50 border-yellow-200">
+      <h3 class="crayons-subtitle-3 mb-3">⚙️ Configuration</h3>
+      <p class="mb-3">To enable read-only database support, set the following environment variable:</p>
+      <code class="block p-3 bg-gray-100 rounded text-sm">READ_ONLY_DATABASE_URL=postgres://username:password@host:port/database_name</code>
+      
+      <div class="mt-4">
+        <h4 class="font-semibold mb-2">Optional Configuration:</h4>
+        <ul class="list-disc list-inside text-sm space-y-1">
+          <li><code>READ_ONLY_DATABASE_POOL_SIZE</code> - Connection pool size (default: 5)</li>
+          <li><code>READ_ONLY_STATEMENT_TIMEOUT</code> - Query timeout in milliseconds (default: 30000)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

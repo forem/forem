@@ -6,6 +6,7 @@ import { EmailPreferencesForm } from './components/EmailPreferencesForm';
 import { CustomCta } from './components/CustomCta';
 import { FollowTags } from './components/FollowTags';
 import { FollowUsers } from './components/FollowUsers';
+import { FollowSubforems } from './components/FollowSubforems';
 import { ProfileForm } from './components/ProfileForm';
 
 export class Onboarding extends Component {
@@ -16,7 +17,7 @@ export class Onboarding extends Component {
 
     const isRoot = document.body.dataset.isRootSubforem === 'true';
 
-    const slides = isRoot ? [ProfileForm, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
+    const slides = isRoot ? [ProfileForm, FollowSubforems, EmailPreferencesForm] : [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
     if (document.getElementById('onboarding-container').dataset.includeCustomCtaSlide === 'true') {
       slides.splice(3, 0, CustomCta);
     }

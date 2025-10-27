@@ -6,6 +6,7 @@ module Api
 
       def create
         remove_count_cache_key
+        remove_reaction_counts_cache_key
 
         result = ReactionHandler.create(params, current_user: current_user || @user)
 
@@ -25,6 +26,7 @@ module Api
 
       def toggle
         remove_count_cache_key
+        remove_reaction_counts_cache_key
 
         result = ReactionHandler.toggle(params, current_user: current_user || @user)
 
@@ -48,6 +50,13 @@ module Api
         return unless params[:reactable_type] == "Article"
 
         Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+        Rails.cache.delete "reaction_counts_for_reactable-Article-#{params[:reactable_id]}"
+      end
+
+      def remove_reaction_counts_cache_key
+        return unless params[:reactable_type] && params[:reactable_id]
+
+        Rails.cache.delete "reaction_counts_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
       end
 
       def require_admin

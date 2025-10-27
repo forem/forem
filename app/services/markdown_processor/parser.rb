@@ -47,13 +47,11 @@ module MarkdownProcessor
 
         html = markdown.render(parsed_liquid.render)
       rescue NoMethodError => e
-        if e.message.include?('line_number')
-          # Handle the specific NoMethodError
-          Rails.logger.error("Liquid rendering error: #{e.message}")
-          html = sanitized_content.to_str
-        else
-          raise e
-        end
+        raise e unless e.message.include?("line_number")
+
+        # Handle the specific NoMethodError
+        Rails.logger.error("Liquid rendering error: #{e.message}")
+        html = sanitized_content.to_str
       rescue Liquid::SyntaxError => e
         html = e.message
       end
@@ -167,6 +165,7 @@ module MarkdownProcessor
         .remove_nested_linebreak_in_list
         .prefix_all_images(**prefix_images_options)
         .wrap_all_images_in_links
+        .enforce_gif_like_videos
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock
         .add_fullscreen_button_to_panel

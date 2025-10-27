@@ -1,4 +1,3 @@
-import Chart from 'chart.js/auto';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 initializeDropdown({
@@ -6,86 +5,51 @@ initializeDropdown({
   dropdownContentId: 'timeperiods-dropdown',
 });
 
-// Color sets depending on graph trend
-const positiveTrend = {
-  backgroundColor: '#ECFDF5',
-  borderColor: '#10B981',
-};
-const negativeTrend = {
-  backgroundColor: '#FEF2F2',
-  borderColor: '#DC2626',
-};
+// Fetch and display stats
+async function fetchStats(period = 7) {
+  try {
+    const response = await fetch(`/admin/stats?period=${period}`);
+    const data = await response.json();
+    updateStatsDisplay(data);
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    showError();
+  }
+}
 
-const charts = document.getElementsByClassName('js-chart');
+function updateStatsDisplay(data) {
+  const statElements = {
+    published_posts: document.querySelector('[data-stat="published_posts"]'),
+    comments: document.querySelector('[data-stat="comments"]'),
+    public_reactions: document.querySelector('[data-stat="public_reactions"]'),
+    new_users: document.querySelector('[data-stat="new_users"]'),
+  };
 
-for (const chart of charts) {
-  const labels = chart.dataset.days.split(',');
-  const data = chart.dataset.values.split(',');
-
-  const trend =
-    parseInt(data[data.length - 1], 10) >= parseInt(data[0], 10)
-      ? positiveTrend
-      : negativeTrend;
-
-  new Chart(chart, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          data,
-          fill: true,
-          tension: 0.5,
-          borderWidth: 2,
-          ...trend,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      elements: {
-        point: {
-          radius: 3,
-          hitRadius: 20,
-          hoverBorderWidth: 4,
-        },
-      },
-      layout: {
-        padding: 0,
-      },
-      plugins: {
-        legend: false,
-        tooltip: {
-          mode: 'nearest',
-          intersect: true,
-          position: 'nearest',
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            display: false,
-          },
-          grid: {
-            display: false,
-            drawBorder: false,
-            drawOnChartArea: false,
-            drawTicks: false,
-          },
-        },
-        y: {
-          ticks: {
-            display: false,
-          },
-          beginAtZero: true,
-          grid: {
-            display: false,
-            drawBorder: false,
-            drawOnChartArea: false,
-            drawTicks: false,
-          },
-        },
-      },
-    },
+  Object.keys(statElements).forEach((key) => {
+    if (statElements[key]) {
+      statElements[key].textContent = data[key].toLocaleString();
+    }
   });
 }
+
+function showError() {
+  const container = document.getElementById('admin-stats-container');
+  if (container) {
+    container.innerHTML = '<div class="color-accent-danger">Error loading statistics. Please try again.</div>';
+  }
+}
+
+// Handle period selector changes
+document.addEventListener('DOMContentLoaded', () => {
+  // Load initial stats
+  fetchStats(7);
+
+  // Add event listeners to period selectors
+  const periodSelectors = document.querySelectorAll('.js-period-selector');
+  periodSelectors.forEach((selector) => {
+    selector.addEventListener('change', (e) => {
+      const period = e.target.dataset.period;
+      fetchStats(period);
+    });
+  });
+});

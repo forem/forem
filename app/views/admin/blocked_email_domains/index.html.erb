@@ -1,0 +1,51 @@
+<h1 class="crayons-title mb-3">Blocked Email Domains</h1>
+
+<div class="mb-6">
+  <%= link_to "Add New Blocked Domain", new_admin_blocked_email_domain_path, class: "crayons-btn crayons-btn--primary" %>
+</div>
+
+<% if @blocked_email_domains.any? %>
+  <div class="crayons-card">
+    <div class="crayons-card__header">
+      <h2 class="crayons-subtitle-2">Currently Blocked Domains</h2>
+    </div>
+    <div class="crayons-card__body">
+      <div class="grid gap-4">
+        <% @blocked_email_domains.each do |blocked_domain| %>
+          <div class="flex items-center justify-between p-4 border border-base-20 rounded">
+            <div>
+              <span class="font-medium"><%= blocked_domain.domain %></span>
+              <span class="text-xs text-base-60 ml-2">
+                Added <%= time_ago_in_words(blocked_domain.created_at) %> ago
+              </span>
+            </div>
+            <div>
+              <%= link_to "Remove", 
+                  admin_blocked_email_domain_path(blocked_domain), 
+                  method: :delete,
+                  class: "crayons-btn crayons-btn--outlined crayons-btn--danger",
+                  data: { 
+                    confirm: "Are you sure you want to remove #{blocked_domain.domain} from the blocked domains list?",
+                    "testid": "remove-blocked-domain-#{blocked_domain.domain.parameterize}"
+                  } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="crayons-notice crayons-notice--warning">
+    <p>No email domains are currently blocked. <%= link_to "Add one", new_admin_blocked_email_domain_path, class: "crayons-link" %> to get started.</p>
+  </div>
+<% end %>
+
+<div class="mt-6 p-4 bg-base-10 rounded-lg">
+  <h3 class="crayons-subtitle-3 mb-2">How it works</h3>
+  <ul class="list-disc list-inside space-y-1 text-sm text-base-70">
+    <li>Blocked domains prevent users from registering with email addresses from those domains</li>
+    <li>Subdomains are automatically blocked (e.g., blocking "example.com" also blocks "sub.example.com")</li>
+    <li>This works alongside the existing "Blocked Registration Email Domains" setting in Authentication settings</li>
+    <li>Both the setting and these individual domains are checked during registration</li>
+  </ul>
+</div>

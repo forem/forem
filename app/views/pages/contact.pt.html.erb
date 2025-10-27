@@ -1,0 +1,45 @@
+<% title "Contact #{community_name}" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/contact") %>" />
+  <meta name="description" content="Contact #{community_name}">
+  <%= meta_keywords_default %>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="<%= app_url("/contact") %>" />
+  <meta property="og:title" content="Contact #{community_name}" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
+  <meta property="og:description" content="<%= community_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_name %>" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="Contact #{community_name}">
+  <meta name="twitter:description" content="<%= community_name %> is great!">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
+<% end %>
+
+<div class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Contacts</h1>
+
+    <p>
+      <%= community_name %> would love to hear from you!
+    </p>
+    <p>
+      Email: <%= contact_link %> 😁
+    </p>
+    <p>
+      Twitter: <a href="http://twitter.com/<%= Settings::General.social_media_handles["twitter"] %>">@<%= Settings::General.social_media_handles["twitter"] %></a> 👻
+    </p>
+    <p>
+      Report a vulnerability: <a href="https://dev.to/security">dev.to/security</a> 🐛
+    </p>
+    <p>
+      To report a bug, please create <a href="https://github.com/forem/forem/issues/new/choose">a bug report</a> in our open source repository.
+    </p>
+    <p>
+      To request a feature, please <a href="https://github.com/forem/forem/discussions">start a new GitHub Discussion</a> in the Forem repo!
+    </p>
+  </div>
+</div>

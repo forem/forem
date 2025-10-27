@@ -10,7 +10,7 @@ RSpec.describe Role do
       expected_roles = %w[
         admin base_subscriber impending_base_subscriber_cancellation codeland_admin comment_suspended limited podcast_admin
         restricted_liquid_tag single_resource_admin super_admin support_admin suspended spam tag_moderator tech_admin
-        trusted warned creator super_moderator
+        trusted warned creator super_moderator subforem_moderator
       ]
       expect(described_class::ROLES).to match_array(expected_roles)
     end

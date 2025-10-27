@@ -44,7 +44,7 @@
 
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
-      <% if user_signed_in? %>
+      <% if user_signed_in? && !ArticlePolicy.is_root_subforem? %>
         <%= application_policy_content_tag("div", record: Article, query: :create?) do %>
           <%= render "articles/quickie_form", expanded: false %>
         <% end %>
@@ -71,5 +71,5 @@
     <%= render "articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_include_tag "storiesList", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", "feedEvents", defer: true %>
+  <%= javascript_include_tag "storiesList", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", "feedEvents", "sidebar-sticky", defer: true %>
 <% end %>

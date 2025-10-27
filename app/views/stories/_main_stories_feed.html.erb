@@ -2,7 +2,7 @@
   <div class="crayons-story">
     <p class="crayons-story__body">
       <%= t "views.articles.sign_in_for_full_latest_html",
-            link: sign_up_path(state: "new-user") %>
+            link: subforem_aware_sign_up_url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id])) %>
     </p>
   </div>
 <% end %>

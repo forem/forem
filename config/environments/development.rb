@@ -17,7 +17,19 @@ Rails.application.configure do
   # Enable server timing
   config.server_timing = true
 
-  config.cache_store = :redis_cache_store, { url: ENV.fetch("REDIS_URL", nil), expires_in: 1.hour.to_i }
+  # Use a dedicated Redis DB for cache in development to avoid cross-talk with other services
+  dev_cache_url = ENV.fetch("REDIS_URL", nil)
+  if dev_cache_url
+    begin
+      require "uri"
+      uri = URI.parse(dev_cache_url)
+      uri.path = "/2" if uri.path.nil? || uri.path == "" || uri.path == "/"
+      dev_cache_url = uri.to_s
+    rescue URI::InvalidURIError
+      # leave as-is
+    end
+  end
+  config.cache_store = :redis_cache_store, { url: dev_cache_url, expires_in: 1.hour.to_i }
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

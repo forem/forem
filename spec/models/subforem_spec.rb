@@ -32,6 +32,36 @@ RSpec.describe Subforem do
     end
   end
 
+  describe "misc subforem functionality" do
+    it "finds misc subforem" do
+      misc_subforem = create(:subforem, misc: true, domain: "misc.example.com")
+      regular_subforem = create(:subforem, misc: false, domain: "regular.example.com")
+
+      expect(Subforem.misc_subforem).to eq(misc_subforem)
+      expect(Subforem.cached_misc_subforem_id).to eq(misc_subforem.id)
+    end
+
+    it "returns nil when no misc subforem exists" do
+      create(:subforem, misc: false, domain: "regular.example.com")
+
+      expect(Subforem.misc_subforem).to be_nil
+      expect(Subforem.cached_misc_subforem_id).to be_nil
+    end
+
+    it "busts misc subforem cache when subforem is updated" do
+      misc_subforem = create(:subforem, misc: true, domain: "misc.example.com")
+
+      # Verify cache is populated
+      expect(Subforem.cached_misc_subforem_id).to eq(misc_subforem.id)
+
+      # Update the subforem
+      misc_subforem.update!(domain: "updated.example.com")
+
+      # Cache should be busted and repopulated
+      expect(Subforem.cached_misc_subforem_id).to eq(misc_subforem.id)
+    end
+  end
+
   describe ".create_from_scratch!" do
     let(:domain) { "test.com" }
     let(:brain_dump) { "A test community" }
@@ -59,6 +89,7 @@ RSpec.describe Subforem do
         name,
         logo_url,
         bg_image_url,
+        "en",
       )
     end
 
@@ -79,6 +110,7 @@ RSpec.describe Subforem do
         name,
         logo_url,
         nil,
+        "en",
       )
     end
 

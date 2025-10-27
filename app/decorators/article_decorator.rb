@@ -60,10 +60,11 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def title_with_query_preamble(user_signed_in)
+    clean_title = title_for_metadata
     if search_optimized_title_preamble.present? && !user_signed_in
-      "#{search_optimized_title_preamble}: #{title}"
+      "#{search_optimized_title_preamble}: #{clean_title}"
     else
-      title
+      clean_title
     end
   end
 
@@ -124,4 +125,29 @@ class ArticleDecorator < ApplicationDecorator
 
     id == PinnedArticle.id
   end
+
+  delegate :readable_publish_date, to: :object
+
+  delegate :video_duration_in_minutes, to: :object
+
+  delegate :flare_tag, to: :object
+
+  delegate :class_name, to: :object
+
+  delegate :cloudinary_video_url, to: :object
+
+  delegate :published_timestamp, to: :object
+
+  delegate :main_image_background_hex_color, to: :object
+
+  delegate :public_reaction_categories, to: :object
+
+  delegate :body_preview, to: :object
+
+  delegate :title_finalized, to: :object
+
+  delegate :title_finalized_for_feed, to: :object
+  delegate :skip_indexing?, to: :object
+  delegate :displayable_published_at, to: :object
+  delegate :title_for_metadata, to: :object
 end

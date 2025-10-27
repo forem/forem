@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { locale } from '@utilities/locale';
 import { useTagsField } from '../../hooks/useTagsField';
 import { TagAutocompleteOption } from '@crayons/MultiSelectAutocomplete/TagAutocompleteOption';
 import { TagAutocompleteSelection } from '@crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
@@ -34,9 +35,9 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
       staticSuggestionsHeading={
         <h2 className="c-autocomplete--multi__top-tags-heading">Top tags</h2>
       }
-      labelText="Add up to 4 tags"
+      labelText={locale('core.tags_field_label')}
       showLabel={false}
-      placeholder="Add up to 4 tags..."
+      placeholder={locale('core.tags_field_placeholder')}
       border={false}
       maxSelections={4}
       SuggestionTemplate={TagAutocompleteOption}

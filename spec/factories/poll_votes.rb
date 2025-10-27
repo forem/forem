@@ -3,5 +3,6 @@ FactoryBot.define do
     user
     poll
     poll_option
+    session_start { 0 }
   end
 end

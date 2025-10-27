@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage:
+#   bin/db-reset [--clear-redis] [--skip-seed] [--seed-multiplier N]
+#
+# Drops, creates, migrates, and seeds the development database by default.
+# Options:
+#   --clear-redis         Also clears Redis DBs (sessions=1, cache=2, sidekiq=3) and Sidekiq queues.
+#   --skip-seed           Skip running db:seed.
+#   --seed-multiplier N   Set SEEDS_MULTIPLIER=N when seeding.
+
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+cd "$ROOT_DIR"
+
+CLEAR_REDIS=0
+SKIP_SEED=0
+SEEDS_MULTIPLIER=""
+for arg in "$@"; do
+  case "$arg" in
+    --clear-redis)
+      CLEAR_REDIS=1
+      shift
+      ;;
+    --skip-seed)
+      SKIP_SEED=1
+      shift
+      ;;
+    --seed-multiplier)
+      shift
+      SEEDS_MULTIPLIER=${1:-}
+      shift || true
+      ;;
+    *)
+      ;;
+  esac
+done
+
+echo "== Resetting database =="
+
+# Ensure Rails is available
+if ! command -v bin/rails >/dev/null 2>&1; then
+  echo "bin/rails not found" >&2
+  exit 1
+fi
+
+# Drop, create, migrate
+bin/rails db:drop db:create db:migrate
+
+# Seed unless skipped
+if [ "$SKIP_SEED" -eq 0 ]; then
+  if [ -n "$SEEDS_MULTIPLIER" ]; then
+    SEEDS_MULTIPLIER="$SEEDS_MULTIPLIER" bin/rails db:seed || true
+  else
+    bin/rails db:seed || true
+  fi
+fi
+
+if [ "$CLEAR_REDIS" -eq 1 ]; then
+  echo "== Clearing Redis (dev) and Sidekiq queues =="
+  # Use redis-cli if available; otherwise try via Rails runner
+  if command -v redis-cli >/dev/null 2>&1; then
+    # Sessions (db 1), Cache (db 2), Sidekiq (db 3)
+    for db in 1 2 3; do
+      redis-cli -n "$db" FLUSHDB || true
+    done
+  else
+    # Fallback: use Rails to clear queues and best-effort flush via Redis client
+    bin/rails runner "
+      begin
+        require 'redis'
+        [1,2,3].each do |db|
+          url = ENV.fetch('REDIS_URL', 'redis://localhost:6379')
+          uri = URI.parse(url)
+          uri.path = "/#{db}"
+          Redis.new(url: uri.to_s).flushdb
+        end
+      rescue => e
+        Rails.logger.warn("[dev] Redis flush fallback failed: #{e.message}")
+      end
+    "
+  fi
+
+  # Clear Sidekiq queues/retries/dead using Rails runner
+  bin/rails runner "
+    begin
+      Sidekiq::Queue.all.each(&:clear)
+      Sidekiq::RetrySet.new.clear
+      Sidekiq::DeadSet.new.clear
+      puts '[dev] Cleared Sidekiq queues, retries, and dead sets.'
+    rescue => e
+      warn \"[dev] Failed to clear Sidekiq sets: #{e.message}\"
+    end
+  "
+fi
+
+echo "== Database reset complete =="
+
+

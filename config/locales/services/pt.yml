@@ -1,0 +1,114 @@
+---
+pt:
+  services:
+    analytics_service:
+      no_stats: Você não pode visualizar as estatísticas deste artigo
+    article_with_video_creation_service:
+      unpublished_video: Vídeo Não Publicado ~ %{rand}
+    authentication:
+      authenticator:
+        not_allowed: Desculpe, mas o domínio do seu endereço de e-mail não é permitido. Este Forem pode ter limitado o cadastro apenas a domínios de e-mail específicos ou bloqueado este domínio específico de participar.
+      providers:
+        apple:
+          name: "%{first} %{last}"
+        not_available: Provedor %{name} não está disponível!
+        not_enabled: Provedor %{name} não está habilitado!
+    badges:
+      award_beloved_comment:
+        message: "Você é famoso! [Este é o comentário](%{comment}) pelo qual você está sendo reconhecido. 😄"
+      award_streak:
+        longest: 16 semanas! Você alcançou a sequência de escrita mais longa possível. Continue com as contribuições incríveis para nossa comunidade!
+        message:
+          one: "Parabéns por alcançar esta sequência! Escrever consistentemente é difícil. O próximo badge de sequência que você pode obter é o Badge de %{count} Semana. 😉"
+          other: "Parabéns por alcançar esta sequência! Escrever consistentemente é difícil. O próximo badge de sequência que você pode obter é o Badge de %{count} Semanas. 😉"
+      award_yearly_club:
+        message:
+          one: Feliz aniversário do %{community}! Você acredita que já se passou %{count} ano?!
+          other: Feliz aniversário do %{community}! Você acredita que já se passaram %{count} anos?!
+      congrats: Parabéns pela sua conquista! 🎉 E obrigado por ser uma parte tão vital do %{community}!
+      thank_you: Muito obrigado pelas suas contribuições!
+      community_wellness:
+        first: Obrigado por participar de conversas construtivas! Você postou dois ou mais comentários esta semana. Continue assim para manter a sequência!
+        longest: 32 semanas! Você alcançou a sequência mais longa possível para o badge de Bem-estar da Comunidade. Trabalho incrível engajando na comunidade. Continue com suas contribuições incríveis para nossa comunidade!
+        other: Parabéns por alcançar uma sequência de %{weeks} semanas para o Badge de Bem-estar da Comunidade! Mantenha os comentários construtivos fluindo para continuar a sequência!
+      thumbs_up: Obrigado pelos seus esforços revisando posts e alcançando %{count} reações de polegar para cima!
+    broadcasts:
+      welcome_notification:
+        generator:
+          welcome: 'Notificação de Boas-vindas: %{key}'
+    error_messages:
+      clean:
+        parse_error: Houve um problema analisando o YAML front-matter. Talvez você precise escapar uma aspas ou dois pontos ou algo assim. Envie um e-mail para %{email} se estiver tendo problemas.
+    html:
+      parser:
+        enter_fullscreen_mode: Entrar no modo tela cheia
+        exit_fullscreen_mode: Sair do modo tela cheia
+    markdown_processor:
+      parser:
+        invalid_markdown_detected: Markdown inválido detectado!
+    moderator:
+      banish_user:
+        spam_account: conta de spam
+      manage_activity_and_roles:
+        need_super: Você precisa de status de super admin para realizar esta ação
+      merge_user:
+        duplicate: O usuário tem métodos de autenticação duplicados nas duas contas. Por favor, verifique novamente e exclua a identidade que o usuário não está mais usando. Geralmente é a conta social já excluída, ou o método de autenticação vinculado ao usuário a ser excluído.
+        multiple: O usuário sendo excluído já tem dois ou mais métodos de autenticação. Tem certeza de que este é o usuário correto a ser excluído? Se sim, um super admin precisará fazer isso do console para ser seguro.
+        same_user: Você não pode mesclar os mesmos dois IDs de usuário
+    notifications:
+      new_comment:
+        new: "💬 Novo Comentário"
+      new_mention:
+        new: "🗣️ Nova Menção"
+    payments:
+      customer:
+        usd: usd
+      errors:
+        select_payment_method: "Por favor, selecione um método de pagamento"
+      process_credit_purchase:
+        charge:
+          one: Compra de %{count} crédito.
+          other: Compra de %{count} créditos.
+    rate_limit_checker:
+      invalid_key: 'Chave de Cache Inválida: nenhum componente único presente'
+      limit_reached:
+        one: Limite de taxa atingido, tente novamente em %{count} segundo
+        other: Limite de taxa atingido, tente novamente em %{count} segundos
+    slack:
+      messengers:
+        article_fetched_feed:
+          body: |
+            Novo Artigo Recuperado via RSS: %{title}
+            %{url}
+        article_published:
+          body: |
+            Novo Artigo Publicado: %{title}
+            %{url}
+        feedback:
+          anonymous_report: "*Relatório anônimo:"
+          final_message: |-
+            %{user_detail}
+            Categoria: %{category}
+            Relatório Interno: %{reports_url}
+            *_ URL Reportada: %{reported_url} _*
+            -----
+            *Mensagem:* %{message}
+          body: |
+            *Usuário logado:*
+            relator: %{username} - %{url}
+            e-mail: <mailto:%{email}|%{email}>
+        potential_spammer:
+          body: 'Usuário potencial de spam! %{url}
+
+            '
+    user_subscriptions:
+      create_from_controller_params:
+        source_not_found: Fonte não encontrada
+        email_mismatch: E-mail não corresponde
+    users:
+      remove_role:
+        error: 'Houve um problema ao remover esta função. %{e_message}'
+        remove_self: Você não pode remover sua própria função
+    spam:
+      article_handler:
+        suspended_too_many: Muitos artigos suspensos

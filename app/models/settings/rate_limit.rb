@@ -21,7 +21,7 @@ module Settings
     setting :user_considered_new_days, type: :integer, default: 3
     setting :user_subscription_creation, type: :integer, default: 3
     setting :user_update, type: :integer, default: 15
-    
+
     # Moderation
     setting :internal_content_description_spec, type: :string
 

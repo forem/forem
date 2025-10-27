@@ -7,7 +7,10 @@
   <% @subforems.each do |subforem| %>
     <div class="flex py-2 items-center" data-testid="subforem">
       <%= link_to subforem.domain, "https://#{subforem.domain}", target: "_blank" %>
-      <%= link_to "Edit", edit_admin_subforem_path(subforem), class: "ml-auto crayons-btn crayons-btn--s" %>
+      <div class="ml-auto flex gap-2">
+        <%= link_to "View", admin_subforem_path(subforem), class: "crayons-btn crayons-btn--s" %>
+        <%= link_to "Edit", edit_admin_subforem_path(subforem), class: "crayons-btn crayons-btn--s" %>
+      </div>
     </div>
   <% end %>
 </div>

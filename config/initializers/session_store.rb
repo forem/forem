@@ -7,12 +7,21 @@ expires_after = app_config_expires_after.positive? ? app_config_expires_after : 
 
 # See https://github.com/redis-store/redis-rails#session-storage for configuration options
 servers = ApplicationConfig["REDIS_SESSIONS_URL"] || ApplicationConfig["REDIS_URL"]
+if Rails.env.development?
+  begin
+    require "uri"
+    uri = URI.parse(servers)
+    uri.path = "/1" if uri.path.nil? || uri.path == "" || uri.path == "/"
+    servers = uri.to_s
+  rescue URI::InvalidURIError
+  end
+end
 
 domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
 
 begin
   parsed = PublicSuffix.parse(domain, default_rule: nil)
-  parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+  parsed.domain # Returns the domain with TLD, e.g. "example.com"
   domain = parsed.domain
 rescue PublicSuffix::DomainInvalid
   domain = nil

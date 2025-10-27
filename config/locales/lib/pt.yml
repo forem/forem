@@ -1,0 +1,243 @@
+---
+pt:
+  lib:
+    constants:
+      settings:
+        authentication:
+          allowed:
+            description: Restringir registro apenas a certos e-mails? (lista separada por vírgulas)
+            placeholder: dev.to, forem.com, codenewbie.org
+          apple_client:
+            description: O código "App Bundle" para o Serviço de Autenticação configurado no Portal do Desenvolvedor Apple
+          apple_key:
+            description: O "Key ID" do Serviço de Autenticação configurado no Portal do Desenvolvedor Apple
+          apple_pem:
+            description: A chave "PEM" do Serviço de Autenticação configurado no Portal do Desenvolvedor Apple
+          apple_team:
+            description: O "Team ID" da sua Conta de Desenvolvedor Apple
+          blocked:
+            description: Bloquear registro de domínios específicos? (lista separada por vírgulas)
+          display_list:
+            description: Você quer exibir a lista de domínios permitidos ou mantê-la privada?
+          facebook_key:
+            description: A parte "App ID" da seção Configurações Básicas da página do App no Portal do Desenvolvedor Facebook
+          facebook_secret:
+            description: A parte "App Secret" da seção Configurações Básicas da página do App no Portal do Desenvolvedor Facebook
+          forem_key:
+            description: Chave do Forem
+          forem_secret:
+            description: Segredo do Forem
+          github_key:
+            description: A parte "Client ID" do portal GitHub Oauth Apps
+          github_secret:
+            description: A parte "Client Secret" do portal GitHub Oauth Apps
+          google_key:
+            description: A parte "Client ID" da página OAuth 2.0 no portal Google Cloud Platform
+          google_secret:
+            description: A parte "Client Secret" da página OAuth 2.0 no portal Google Cloud Platform
+          invite_only:
+            description: Apenas usuários convidados por e-mail podem entrar nesta comunidade.
+          new_user_status:
+            description: Que status você quer aplicar aos novos usuários?
+            placeholder: Boa reputação
+          providers:
+            description: Como os usuários podem fazer login?
+          recaptcha_secret:
+            description: Adicione a chave secreta do Google reCAPTCHA, que é usada para reportar abuso
+            placeholder: Qual é a chave secreta do Google reCAPTCHA?
+          recaptcha_site:
+            description: Adicione a chave do site do Google reCAPTCHA, que é usada para reportar abuso
+            placeholder: Qual é a chave do site do Google reCAPTCHA?
+          require_recaptcha:
+            description: As pessoas serão obrigadas a preencher um captcha quando estiverem criando uma nova conta na sua comunidade
+          twitter_key:
+            description: A parte "API key" das chaves de consumidor no portal de desenvolvedor do Twitter.
+          twitter_secret:
+            description: A parte "API secret key" das chaves de consumidor no portal de desenvolvedor do Twitter.
+        campaign:
+          articles_approval:
+            placeholder: Histórias da campanha aparecem na barra lateral com aprovação?
+          articles_expiry:
+            description: Define o tempo de expiração para artigos (em semanas) a serem exibidos na barra lateral da campanha
+          call_to_action:
+            description: Este texto preenche o botão de call to action na barra lateral da campanha
+            placeholder: Compartilhe seu projeto
+          display_name:
+            description: Este texto é exibido em referência à campanha em títulos, etc.
+            placeholder: Minha grande campanha
+          featured:
+            description: Posts com quais tags serão destacados na barra lateral da campanha (separados por vírgula, apenas letras)
+            placeholder: 'Lista de tags da campanha: separadas por vírgula, apenas letras ex. shecoded,theycoded'
+          hero_html:
+            description: Nome do Hero HtmlVariant
+          sidebar_enabled:
+            placeholder: Barra lateral da campanha habilitada ou não
+          sidebar_image:
+            placeholder: Usado no topo da barra lateral da campanha
+          url:
+            description: https://url.com/lander
+            placeholder: URL para onde a imagem da barra lateral da campanha irá linkar
+        community:
+          copyright:
+            description: Usado para marcar o ano em que este forem foi iniciado.
+          description:
+            description: Usado em tags de meta descrição etc.
+            placeholder: Uma comunidade fabulosa de pessoas gentis e acolhedoras.
+          emoji:
+            description: Usado nas tags de título em todo o site junto com o nome da comunidade
+          member:
+            description: Usado para determinar como um membro será chamado ex. desenvolvedor, hobbyista etc.
+            placeholder: usuário
+          name:
+            description: Usado como o nome principal para seu Forem, ex. DEV, DEV Community, The DEV Community, etc.
+            placeholder: Novo Forem
+          staff:
+            description: Conta que atua como 'staff' automatizado — usado principalmente para tópico de boas-vindas.
+          tagline:
+            description: Usado no modal de cadastro.
+            placeholder: Somos um lugar onde programadores compartilham, se mantêm atualizados e crescem em suas carreiras.
+        general:
+          ahoy_tracking:
+            description: Enable Ahoy tracking
+          billboard_enabled_countries:
+            description: Countries where billboards are enabled
+          contact_email:
+            description: Contact email for the community
+          credit:
+            small:
+              description: Small credit amount
+            medium:
+              description: Medium credit amount
+            large:
+              description: Large credit amount
+            xlarge:
+              description: Extra large credit amount
+          favicon:
+            description: Favicon for the community
+          ga_tracking:
+            description: Google Analytics tracking ID
+          ga_analytics_4:
+            description: Google Analytics 4 tracking ID
+          cookie_banner_user_context:
+            description: Cookie banner user context
+          coolie_banner_platform_context:
+            description: Cookie banner platform context
+          health:
+            description: Health check endpoint
+            placeholder: Health check endpoint
+          logo_png:
+            description: PNG logo for the community
+          logo_svg:
+            description: SVG logo for the community
+          main_social:
+            description: Main social media account
+          mailchimp_api:
+            description: Mailchimp API key
+          mailchimp_news:
+            description: Mailchimp newsletter list ID
+          mailchimp_tag_mod:
+            description: Mailchimp tag moderator list ID
+          mailchimp_mod:
+            description: Mailchimp moderator list ID
+          mascot_image:
+            description: Mascot image for the community
+          mascot_user:
+            description: Mascot user for the community
+          meta_keywords:
+            description: Meta keywords for SEO
+          onboarding_newsletter_content:
+            description: Onboarding newsletter content
+            placeholder: Onboarding newsletter content
+          onboarding_newsletter_opt_in_head:
+            description: Onboarding newsletter opt-in headline
+            placeholder: Onboarding newsletter opt-in headline
+          onboarding_newsletter_opt_in_subhead:
+            description: Onboarding newsletter opt-in subheadline
+            placeholder: Onboarding newsletter opt-in subheadline
+          geos_with_allowed_default_email_opt_in:
+            description: Geos with allowed default email opt-in
+            placeholder: Geos with allowed default email opt-in
+          periodic:
+            description: Periodic settings
+          sidebar:
+            description: Sidebar content
+            placeholder: Sidebar content
+          stripe_api:
+            description: Stripe API key
+          stripe_key:
+            description: Stripe publishable key
+          tags:
+            description: Default tags for the community
+            placeholder: Default tags for the community
+          hashtag:
+            description: Default hashtag for the community
+            placeholder: Default hashtag for the community
+          video:
+            description: Video settings
+          payment:
+            description: Payment settings
+        rate_limit:
+          spam:
+            description: Spam rate limit settings
+            placeholder: Spam rate limit settings
+          new_days:
+            description: New days rate limit settings
+          content_spec:
+            description: Content specification rate limit settings
+            placeholder: Content specification rate limit settings
+        smtp:
+          address:
+            description: SMTP server address
+            placeholder: SMTP server address
+          port:
+            description: SMTP server port
+            placeholder: SMTP server port
+          authentication:
+            description: SMTP authentication method
+            placeholder: SMTP authentication method
+          user_name:
+            description: SMTP username
+          password:
+            description: SMTP password
+          domain:
+            description: SMTP domain
+          from_email:
+            description: SMTP from email
+          reply_to:
+            description: SMTP reply-to email
+        user_experience:
+          default_font:
+            description: Default font for the community
+          default_locale:
+            description: Default locale for the community
+          feed_strategy:
+            description: Feed strategy for the community
+            placeholder: Feed strategy for the community
+          feed_style:
+            description: Feed style for the community
+            placeholder: Feed style for the community
+          cover_image_height:
+            description: Cover image height for posts
+            placeholder: Cover image height for posts
+          cover_image_fit:
+            description: Cover image fit for posts
+            placeholder: Cover image fit for posts
+          feed_lookback_days:
+            description: Feed lookback days
+            placeholder: Feed lookback days
+          home_feed:
+            description: Home feed settings
+          index_minimum_score:
+            description: Minimum score for index
+          index_minimum_date:
+            description: Minimum date for index
+          primary_hex:
+            description: Primary hex color for the community
+          tag_feed:
+            description: Tag feed settings
+          head_content:
+            description: Head content for pages
+            placeholder: Head content for pages
+          bottom_of_body_content:
+            description: Bottom of body content for pages
+            placeholder: Bottom of body content for pages

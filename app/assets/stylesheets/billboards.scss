@@ -90,6 +90,20 @@
   }
 }
 
+// Adjust popover-billboard position when main sidebar is visible
+body[data-side-nav-visible='true']:not(.hidden-shell) {
+  .popover-billboard {
+    @media (min-width: $breakpoint-m) {
+      left: 50px;
+      width: calc(100% - 50px);
+    }
+    @media (min-width: $breakpoint-2xl) {
+      left: 0;
+      width: 100%;
+    }
+  }
+}
+
 .popover-billboard--menuopenupwards {
   .sponsorship-dropdown, .bb-dropdown {
     top: auto;

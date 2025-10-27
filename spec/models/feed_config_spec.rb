@@ -97,8 +97,8 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.precomputed_selections_weight = 10.0
         feed_config.subforem_follow_weight        = 11.0
 
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
+        root_subforem = create(:subforem)
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: root_subforem.id,
           default_subforem_id: root_subforem.id,
@@ -240,6 +240,12 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.featured = TRUE THEN 4.0")
       end
 
+      it "includes the status weight" do
+        feed_config.status_weight = 2.5
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.type_of = 1 THEN 2.5")
+      end
+
       it "includes the clickbait score subtraction" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("- (articles.clickbait_score * 5.0)")
@@ -261,8 +267,8 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       it "includes the recent subforem weight if request is root" do
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
+        root_subforem = create(:subforem)
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: root_subforem.id,
           default_subforem_id: root_subforem.id,
@@ -273,9 +279,9 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       it "does not include recent subforem weight if request is not root" do
-        subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        default_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
-        root_subforem = create(:subforem, domain: "#{rand(10_000)}.com")
+        subforem = create(:subforem)
+        default_subforem = create(:subforem)
+        root_subforem = create(:subforem)
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: subforem.id,
           default_subforem_id: default_subforem.id,
@@ -324,12 +330,14 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.recent_article_suppression_rate = 13.0
       feed_config.published_today_weight         = 14.0
       feed_config.featured_weight                = 15.0
+      feed_config.status_weight                  = 15.5
       feed_config.clickbait_score_weight         = 16.0
       feed_config.compellingness_score_weight    = 17.0
       feed_config.language_match_weight          = 18.0
       feed_config.general_past_day_bonus_weight = 19.0
       feed_config.recently_active_past_day_bonus_weight = 20.0
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
+      feed_config.recent_page_views_shuffle_weight = 22.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -361,12 +369,14 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
       expect(clone.published_today_weight).to eq(14.0 * 1.1)
       expect(clone.featured_weight).to eq(15.0 * 1.1)
+      expect(clone.status_weight).to eq(15.5 * 1.1)
       expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
       expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
       expect(clone.language_match_weight).to eq(18.0 * 1.1)
       expect(clone.general_past_day_bonus_weight).to eq(19.0 * 1.1)
       expect(clone.recently_active_past_day_bonus_weight).to eq(20.0 * 1.1)
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
+      expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -388,10 +398,12 @@ RSpec.describe FeedConfig, type: :model do
         "general_past_day_bonus_weight",
         "recently_active_past_day_bonus_weight",
         "featured_weight",
+        "status_weight",
         "clickbait_score_weight",
         "compellingness_score_weight",
         "language_match_weight",
         "subforem_follow_weight", # Added new weight to check
+        "recent_page_views_shuffle_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",

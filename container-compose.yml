@@ -18,9 +18,9 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://localhost:6379
+      REDIS_SIDEKIQ_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6379
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
@@ -35,9 +35,9 @@ services:
     container_name: forem_bundle
     environment:
       RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://localhost:6379
+      REDIS_SIDEKIQ_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z
@@ -48,9 +48,9 @@ services:
     container_name: forem_yarn
     environment:
       RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://localhost:6379
+      REDIS_SIDEKIQ_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z
@@ -64,9 +64,9 @@ services:
       - yarn
     environment:
       RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://localhost:6379
+      REDIS_SIDEKIQ_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z
@@ -85,9 +85,9 @@ services:
         condition: service_healthy
     environment:
       RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://localhost:6379
+      REDIS_SIDEKIQ_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z
@@ -105,9 +105,9 @@ services:
         condition: service_healthy
     environment:
       RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://localhost:6379
+      REDIS_SIDEKIQ_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z

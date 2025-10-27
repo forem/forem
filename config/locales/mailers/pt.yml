@@ -1,0 +1,37 @@
+---
+pt:
+  mailers:
+    digest_mailer:
+      from: Resumo
+      more_top_posts: mais posts em alta do %{community}
+      more_top_posts_based: mais posts em alta do %{community} baseados nos seus interesses
+      more_top_posts_from: mais leituras em alta da comunidade
+      more_trending_posts: mais posts em tendência do %{community}
+      more_trending_posts_picked: mais posts em tendência do %{community} escolhidos para você
+      other_posts: outros posts que você pode gostar
+      other_community_posts: outros posts do %{community} que você pode gostar
+      other_top_posts: outros posts em alta do %{community}
+      other_trending_posts: outros posts em tendência do %{community}
+    custom_mailer:
+      from: Newsletter
+    notify_mailer:
+      account_deleted: "%{community} - Confirmação de Exclusão de Conta"
+      deletion_requested: "%{community} - Exclusão de Conta Solicitada"
+      trusted: Parabéns! Você agora é um usuário "confiável" no %{community}!
+      base_subscriber: Parabéns! Você agora está inscrito no DEV++
+      moderator: "Parabéns! Você agora é um moderador para #%{tag_name}"
+      subforem_moderator: "Parabéns! Você agora é um moderador para %{subforem_name}"
+      new_follower: acabou de seguir você no %{community}
+      new_mention: "%{name} acabou de mencionar você no %{type}"
+      org_deleted: "%{community} - Confirmação de Exclusão da Organização"
+      new_reply: "%{name} respondeu ao seu %{type}"
+      feedback: Obrigado pelo seu relatório no %{community}
+      export: A exportação do seu conteúdo está pronta
+      unread_notifications:
+        one: "🔥 Você tem %{count} notificação não lida no %{community}"
+        other: "🔥 Você tem %{count} notificações não lidas no %{community}"
+      new_badge: Você acabou de receber um badge
+      video_upload: O upload do seu vídeo está completo
+    verification_mailer:
+      from: "%{community} Verificação de E-mail <%{email}>"
+      verify_ownership: Verifique a Propriedade da Sua Conta %{community}

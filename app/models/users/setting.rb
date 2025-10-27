@@ -26,6 +26,7 @@ module Users
               allow_nil: true
     validates :experience_level, numericality: { in: 1..10 }, allow_blank: true
     validates :feed_referential_link, inclusion: { in: [true, false] }
+    validates :disallow_subforem_reassignment, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
     validates :content_preferences_input, length: { maximum: 1250 }, allow_nil: true

@@ -61,6 +61,12 @@
       padding: var(--content-padding-y) var(--content-padding-x) 0
         var(--content-padding-x);
     }
+    .quickie-paragraph {
+      margin-bottom: var(--su-3);
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__actions {

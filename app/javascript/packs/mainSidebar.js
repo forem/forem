@@ -2,6 +2,13 @@
 // Assuming you are using JS modules, you would do:
 import { FeedTracker } from '../packs/feedEvents.js';
 
+// Helper function to escape HTML entities
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 const rootDomain = document.getElementById('root-subforem-link')?.getAttribute('href').split('/')[2] || '';
 
 fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
@@ -26,7 +33,7 @@ fetch(`/stories/feed/?page=1&type_of=discover&passed_domain=${rootDomain}`, {
       ${article.main_image ? `<img src="${article.main_image}" loading="lazy" alt="Cover Image" class="crayons-side-nav__item-cover" width="1000" height="${article.main_image_height}" style="aspect-ratio: 1000 / ${article.main_image_height}">` : ''}
       <div class="flex ${article.title.length < 40 ? 'items-center' : ''}">
         <img src="${article.subforem_logo}" alt="Logo" class="crayons-side-nav__item-icon">
-        <span class="crayons-side-nav__item-text">${article.title}</span>
+        <span class="crayons-side-nav__item-text">${escapeHtml(article.title)}</span>
       </div>
       </a>
     `).join('');

@@ -60,6 +60,10 @@
     width: 100%;
   }
 
+  &--limited-xl {
+    --site-width: #{$breakpoint-xl};
+  }
+
   &--limited-l {
     --site-width: #{$breakpoint-l};
   }
@@ -335,7 +339,7 @@
 }
 
 // .layout-sidebar-visible .crayons-layout should shift layout to the right
-body[data-side-nav-visible='true'] {
+body[data-side-nav-visible='true']:not(.hidden-shell) {
   @media (min-width: $breakpoint-m) {
     .crayons-side-nav {
       display: block; /* Show sidebar on larger screens */
@@ -348,11 +352,23 @@ body[data-side-nav-visible='true'] {
       width: calc(100% - 50px);
       margin-left: 50px; /* Adjust this value to match the sidebar width */
     }
+    @media (min-width: $breakpoint-l) {
+      &.crayons-layout--limited-l {
+        margin-left: auto;
+      }
+    }
     @media (min-width: $breakpoint-2xl) {
       max-width: var(--site-width);
       width: 100%;
       margin-left: auto; /* Reset margin on larger screens */
       transform: translateX(20px);
+    }
+  }
+  .crayons-layout--full {
+    @media (min-width: $breakpoint-m) {
+      max-width: calc(2000px - 100px);
+      width: calc(100% - 100px);
+      margin-left: 50px;
     }
   }
 }
@@ -367,6 +383,48 @@ body[data-side-nav-visible='true'] {
   border-right: 1px solid var(--base-10); /* Optional border for separation */
   z-index: 1000; /* Ensure it stays above other content */
   display: none; /* Initially hidden */
+  overflow: visible; /* Allow pop-out cards to extend beyond bounds */
+  
+  /* Scrollable container for sidebar items */
+  .crayons-side-nav__scrollable {
+    height: calc(100vh - 82px); /* Full height minus menu space */
+    overflow-y: auto; /* Default - only show scrollbar when needed */
+    overflow-x: hidden;
+    
+    /* Custom scrollbar styling - respect system preferences */
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: transparent; /* Start transparent */
+      border-radius: 2px;
+      transition: background-color 0.2s ease;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--base-50);
+    }
+    
+    /* Show scrollbar thumb only when hovering over the container */
+    &:hover::-webkit-scrollbar-thumb {
+      background: var(--base-30);
+    }
+    
+    /* For Firefox and other browsers that support scrollbar-width */
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    
+    /* Show scrollbar on hover for better UX */
+    &:hover {
+      scrollbar-color: var(--base-30) transparent;
+    }
+  }
+  
   img {
     max-width: 100%; /* Ensure images are responsive */
     height: auto; /* Maintain aspect ratio */
@@ -395,7 +453,7 @@ body[data-side-nav-visible='true'] {
 
   .crayons-side-nav__item {
     position: relative;
-    overflow: visible;
+    overflow: visible; /* Allow pop-out cards to extend beyond bounds */
     z-index: 1001; /* Ensure it appears above other content */
     .profile-preview-card__content {
       overflow: hidden;
@@ -404,8 +462,14 @@ body[data-side-nav-visible='true'] {
         height: calc(100vh - 10px);
         padding: 0;
         overflow-y: auto;
+        .crayons-card__header {
+          padding: var(--su-1) var(--su-4);
+        }
         .crayons-link {
           line-height: 1.3em;
+          &:hover {
+            background-color: var(--base-10);
+          }
           .crayons-side-nav__item-icon {
             height: 30px;
             width: 30px;
@@ -415,6 +479,9 @@ body[data-side-nav-visible='true'] {
             border-radius: 2px;
             border: 0;
           }
+        }
+        .crayons-side-nav__item-text {
+          font-weight: 600;
         }
       }
       .crayons-side-nav__item-cover--main {
@@ -427,17 +494,8 @@ body[data-side-nav-visible='true'] {
     &.hovered {
       z-index: 2000; /* Ensure it appears above other content */
       .profile-preview-card__content {
-        position: absolute;
         display: block; /* Show sidebar when hovered */
-        left: 48px;           
-        top: -30px;
-        width: 290px;
-        z-index: 2000; /* Ensure it appears above other content */
         border-top: 0px;
-        &.profile-preview-card__upsidedown {
-          top: auto;
-          bottom: -30px;
-        }
         h3 a {
           color: var(--base-100);
         }
@@ -448,6 +506,21 @@ body[data-side-nav-visible='true'] {
         display: none; /* Hide sidebar when not hovered */
       }
     }
+    &--add {
+      position: absolute;
+      bottom: 41px;
+      left: 0;
+      width: 100%;
+      padding: 8px 0;
+      border-top: 1px solid var(--base-20);
+      z-index: 2000;
+      background-color: var(--base-0);
+      cursor: pointer;
+      svg {
+        margin: 0 auto;
+        display: block;
+      }
+    }
     &--menu {
       position: absolute;
       bottom: 0;
@@ -455,7 +528,7 @@ body[data-side-nav-visible='true'] {
       width: 100%;
       padding: 8px 0;
       border-top: 1px solid var(--base-20);
-      z-index: 1999;
+      z-index: 2000;
       background-color: var(--base-0);
       cursor: pointer;
       svg {

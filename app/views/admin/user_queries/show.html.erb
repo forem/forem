@@ -1,0 +1,170 @@
+<% content_for :title, @user_query.name %>
+
+<div class="crayons-card p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="crayons-title"><%= @user_query.name %></h1>
+    <div class="flex gap-2">
+      <%= link_to "Edit", edit_admin_user_query_path(@user_query), class: "crayons-btn crayons-btn--secondary" %>
+      <%= link_to @user_query.active? ? "Deactivate" : "Activate", 
+          toggle_active_admin_user_query_path(@user_query), 
+          method: :patch,
+          class: "crayons-btn crayons-btn--#{@user_query.active? ? 'warning' : 'success'}" %>
+      <%= link_to "Delete", admin_user_query_path(@user_query), 
+          method: :delete, 
+          data: { confirm: "Are you sure you want to delete this user query?" },
+          class: "crayons-btn crayons-btn--danger" %>
+    </div>
+  </div>
+
+  <!-- Query Information -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="crayons-card p-4">
+      <h3 class="crayons-subtitle-2 mb-4">Query Information</h3>
+      <dl class="flex flex-col gap-2">
+        <div class="flex justify-between">
+          <dt class="font-medium">Status:</dt>
+          <dd>
+            <span class="crayons-tag crayons-tag--<%= @user_query.active? ? 'success' : 'secondary' %>">
+              <%= @user_query.active? ? 'Active' : 'Inactive' %>
+            </span>
+          </dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Created By:</dt>
+          <dd><%= @user_query.created_by&.name || "Unknown" %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Created At:</dt>
+          <dd><%= @user_query.created_at.strftime("%Y-%m-%d %H:%M") %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Updated At:</dt>
+          <dd><%= @user_query.updated_at.strftime("%Y-%m-%d %H:%M") %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Execution Count:</dt>
+          <dd><%= @user_query.execution_count %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Last Executed:</dt>
+          <dd><%= @user_query.last_executed_at&.strftime("%Y-%m-%d %H:%M") || "Never" %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Max Timeout:</dt>
+          <dd><%= @user_query.max_execution_time_ms %>ms</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="crayons-card p-4">
+      <h3 class="crayons-subtitle-2 mb-4">Query Statistics</h3>
+      <dl class="flex flex-col gap-2">
+        <div class="flex justify-between">
+          <dt class="font-medium">Estimated Users:</dt>
+          <dd><%= @estimated_count || "Unknown" %></dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Query Length:</dt>
+          <dd><%= @user_query.query.length %> characters</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="font-medium">Description:</dt>
+          <dd><%= @user_query.description.present? ? truncate(@user_query.description, length: 100) : "No description" %></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <!-- SQL Query -->
+  <div class="crayons-card p-4 mb-6">
+    <h3 class="crayons-subtitle-2 mb-4">SQL Query</h3>
+    <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto"><code class="language-sql"><%= @user_query.query %></code></pre>
+  </div>
+
+  <!-- Test Execution -->
+  <div class="crayons-card p-4 mb-6">
+    <h3 class="crayons-subtitle-2 mb-4">Test Execution</h3>
+    <p class="text-gray-600 mb-4">Test this query with a limited number of users to verify it works correctly.</p>
+    
+    <%= form_with url: test_execute_admin_user_query_path(@user_query), method: :post, local: true, class: "flex gap-4 items-end mb-4" do |f| %>
+      <div class="flex flex-col">
+        <%= f.label :limit, "Limit", class: "crayons-field__label" %>
+        <%= f.number_field :limit, value: 10, min: 1, max: 100, class: "crayons-textfield" %>
+      </div>
+      <%= f.submit "Test Execute", class: "crayons-btn crayons-btn--primary" %>
+    <% end %>
+
+    <% if @test_users.present? %>
+      <div class="mt-4">
+        <h4 class="crayons-subtitle-3 mb-2">Test Results (<%= @test_users.count %> users found)</h4>
+        <div class="overflow-x-auto">
+          <table class="crayons-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @test_users.limit(10).each do |user| %>
+                <tr>
+                  <td><%= user.id %></td>
+                  <td><%= user.name %></td>
+                  <td><%= user.username %></td>
+                  <td><%= user.email %></td>
+                  <td><%= user.created_at.strftime("%Y-%m-%d") %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <% if @test_users.count > 10 %>
+            <p class="text-gray-600 mt-2">Showing first 10 of <%= @test_users.count %> results</p>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Associated Emails -->
+  <div class="crayons-card p-4">
+    <h3 class="crayons-subtitle-2 mb-4">Associated Emails</h3>
+    <% if @user_query.emails.any? %>
+      <div class="overflow-x-auto">
+        <table class="crayons-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user_query.emails.each do |email| %>
+              <tr>
+                <td><%= email.subject %></td>
+                <td><%= email.type_of.humanize %></td>
+                <td>
+                  <span class="crayons-tag crayons-tag--<%= email.status == 'active' ? 'success' : 'secondary' %>">
+                    <%= email.status.humanize %>
+                  </span>
+                </td>
+                <td><%= email.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td>
+                  <%= link_to "View", admin_email_path(email), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-gray-600">No emails are currently using this user query.</p>
+    <% end %>
+  </div>
+</div>
+

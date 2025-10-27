@@ -2,9 +2,10 @@ module Ai
   class CommunityCopy
     MAX_RETRIES = 3
 
-    def initialize(subforem_id, brain_dump)
+    def initialize(subforem_id, brain_dump, locale = 'en')
       @subforem_id = subforem_id
       @brain_dump = brain_dump
+      @locale = locale
       @subforem = Subforem.find(subforem_id)
     end
 
@@ -141,11 +142,15 @@ module Ai
     end
 
     def build_description_prompt(comparable_descriptions)
+      locale_instruction = get_locale_instruction
+      
       <<~PROMPT
         Generate a community description for the subforem with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}
 
         Use the following examples as a reference:
         #{comparable_descriptions.join(', ')}
+
+        #{locale_instruction}
 
         IMPORTANT RULES:
         - Return ONLY the community description text
@@ -160,11 +165,15 @@ module Ai
     end
 
     def build_tagline_prompt(comparable_taglines)
+      locale_instruction = get_locale_instruction
+      
       <<~PROMPT
         Generate a tagline for the subforem with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}
 
         Use the following examples as a reference:
         #{comparable_taglines.join(', ')}
+
+        #{locale_instruction}
 
         IMPORTANT RULES:
         - Return ONLY the tagline text
@@ -179,10 +188,14 @@ module Ai
     end
 
     def build_content_description_prompt
+      locale_instruction = get_locale_instruction
+      
       <<~PROMPT
         Generate an internal content specification for the purpose of moderation for the subforem with domain #{@subforem.domain}
 
         Base the document on the following brain dump: #{@brain_dump}
+
+        #{locale_instruction}
 
         IMPORTANT RULES:
         - Return ONLY the content specification text
@@ -231,6 +244,17 @@ module Ai
       return if cleaned_response.length < 50 || cleaned_response.length > 2000
 
       cleaned_response
+    end
+
+    def get_locale_instruction
+      case @locale
+      when 'pt'
+        "LANGUAGE REQUIREMENT: Generate ALL content in Brazilian Portuguese. Use proper Portuguese grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      when 'fr'
+        "LANGUAGE REQUIREMENT: Generate ALL content in French. Use proper French grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      else
+        "LANGUAGE REQUIREMENT: Generate ALL content in English. Use proper English grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      end
     end
 
     def clean_response(response)

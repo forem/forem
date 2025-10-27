@@ -1,0 +1,305 @@
+#!/usr/bin/env ruby
+require "optparse"
+require "pathname"
+require "set"
+require "json"
+
+# ---------- CLI options ----------
+options = {
+  path: ".",
+  locales: %w[pt fr],
+  json: false,
+  verbose: false,
+  check_all: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/locale_file_lookup [options]"
+
+  opts.on("--path=PATH", "Root path to scan (default: .)") do |v|
+    options[:path] = v
+  end
+
+  opts.on("--locales=L1,L2,...", Array, "Target locales to check (default: pt,fr)") do |arr|
+    options[:locales] = arr.map(&:strip).reject(&:empty?)
+  end
+
+  opts.on("--json", "Emit JSON instead of human-readable output") do
+    options[:json] = true
+  end
+
+  opts.on("--verbose", "Show detailed information about each file") do
+    options[:verbose] = true
+  end
+
+  opts.on("--check-all", "Check all locale files, not just English ones") do
+    options[:check_all] = true
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+ROOT = Pathname.new(options[:path]).expand_path
+
+IGNORE_DIRS = %w[
+  .git
+  .idea
+  .vscode
+  node_modules
+  vendor
+  log
+  tmp
+  storage
+  public
+  bin
+  .bundle
+  coverage
+  pkg
+  spec
+  test
+  db
+  lib
+].freeze
+
+# Deny-list clearly non-text/binary extensions
+BINARY_EXTS = %w[png jpg jpeg gif webp svg ico pdf mp3 mp4 mov avi zip tar gz bz2 7z bin exe dylib so dll].to_set
+
+# Consider as "template engines" for Rails views
+TEMPLATE_TERMINALS = %w[erb haml slim jbuilder rabl liquid].to_set
+
+# Consider as translation file extensions
+TRANSLATION_TERMINALS = %w[yml yaml json].to_set
+
+# Locale patterns for different languages
+LOCALE_PATTERNS = {
+  'en' => /(?:(?<=\/|\.)en(?:-[A-Za-z0-9_]+)?(?=\/|\.))/,
+  'pt' => /(?:(?<=\/|\.)pt(?:-[A-Za-z0-9_]+)?(?=\/|\.))/,
+  'fr' => /(?:(?<=\/|\.)fr(?:-[A-Za-z0-9_]+)?(?=\/|\.))/
+}.freeze
+
+def textish_file?(path)
+  # Filter by extension(s) to avoid matching random binaries that happen to include locale patterns
+  basename = File.basename(path)
+  exts = basename.split(".")[1..] || []
+  return false if exts.empty?
+
+  # If any terminal extension is a known binary -> skip
+  return false if exts.any? { |e| BINARY_EXTS.include?(e.downcase) }
+
+  # Heuristic: treat as text if it ends with a known template or translation terminal,
+  # or has multiple dots (most Rails templates do) and isn't obviously binary.
+  last = exts.last.downcase
+  TEMPLATE_TERMINALS.include?(last) || TRANSLATION_TERMINALS.include?(last) || exts.size >= 2
+end
+
+def under_ignored_dir?(path)
+  parts = Pathname.new(path).each_filename.to_a
+  parts.any? { |seg| IGNORE_DIRS.include?(seg) }
+end
+
+def locale_file?(path, locale)
+  return false unless File.file?(path)
+  return false if under_ignored_dir?(path)
+  return false unless textish_file?(path)
+
+  pattern = LOCALE_PATTERNS[locale]
+  return false unless pattern
+
+  path.match?(pattern)
+end
+
+def english_locale_file?(path)
+  locale_file?(path, 'en')
+end
+
+# Build candidate equivalent path by swapping the FIRST locale segment occurrence.
+# Prefer replacing in the basename if present (filename-scoped locale).
+def swap_locale_segment(path, from_locale, to_locale)
+  dirname = File.dirname(path)
+  basename = File.basename(path)
+
+  # 1) Try in basename first (filename-scoped, e.g., foo.en.html.erb, devise.en.yml)
+  from_pattern = LOCALE_PATTERNS[from_locale]
+  if basename =~ from_pattern
+    new_basename = basename.sub(from_pattern, to_locale)
+    return File.join(dirname, new_basename)
+  end
+
+  # 2) Else try to replace the last directory segment equal to the locale
+  dir_parts = Pathname.new(dirname).each_filename.to_a
+  idx = dir_parts.rindex { |seg| seg.match?(from_pattern) }
+  if idx
+    dir_parts[idx] = to_locale
+    return File.join(File.join(*dir_parts), basename)
+  end
+
+  # 3) Fallback: replace first occurrence anywhere it appears as a valid segment
+  path.sub(from_pattern, to_locale)
+end
+
+def collect_locale_files(root, locale)
+  files = []
+  Dir.chdir(root) do
+    Dir.glob("**/*", File::FNM_DOTMATCH).each do |rel|
+      next if rel == "." || rel == ".."
+      next unless locale_file?(rel, locale)
+      files << rel
+    end
+  end
+  files.sort
+end
+
+def collect_english_files(root)
+  collect_locale_files(root, 'en')
+end
+
+def analyze_locale_coverage(target_locales)
+  english_files = collect_english_files(ROOT)
+  
+  missing = []
+  present_equivalents = 0
+  checked_equivalents = 0
+  coverage_stats = {}
+
+  Dir.chdir(ROOT) do
+    english_files.each do |en_path|
+      missing_locales = []
+      candidates = {}
+
+      target_locales.each do |target_locale|
+        candidate = swap_locale_segment(en_path, 'en', target_locale)
+        checked_equivalents += 1
+        candidates[target_locale] = candidate
+        
+        if File.exist?(candidate)
+          present_equivalents += 1
+        else
+          missing_locales << target_locale
+        end
+      end
+
+      unless missing_locales.empty?
+        missing << { 
+          source: en_path, 
+          missing: missing_locales, 
+          candidates: candidates
+        }
+      end
+    end
+  end
+
+  coverage_stats = {
+    english_files_count: english_files.size,
+    checked_equivalents: checked_equivalents,
+    present_equivalents: present_equivalents,
+    missing_count: missing.size,
+    coverage_percentage: english_files.empty? ? 0 : (present_equivalents.to_f / checked_equivalents * 100).round(2)
+  }
+
+  [missing, coverage_stats]
+end
+
+def analyze_all_locales
+  all_files = {}
+  missing_equivalents = {}
+  
+  # Collect all locale files
+  ['en', 'pt', 'fr'].each do |locale|
+    all_files[locale] = collect_locale_files(ROOT, locale)
+  end
+
+  # For each locale, check what's missing in other locales
+  ['en', 'pt', 'fr'].each do |source_locale|
+    missing_equivalents[source_locale] = {}
+    
+    all_files[source_locale].each do |source_path|
+      missing_in_others = {}
+      
+      ['en', 'pt', 'fr'].each do |target_locale|
+        next if source_locale == target_locale
+        
+        candidate = swap_locale_segment(source_path, source_locale, target_locale)
+        unless File.exist?(candidate)
+          missing_in_others[target_locale] = candidate
+        end
+      end
+      
+      unless missing_in_others.empty?
+        missing_equivalents[source_locale][source_path] = missing_in_others
+      end
+    end
+  end
+
+  missing_equivalents
+end
+
+# Main execution
+if options[:check_all]
+  puts "Analyzing all locale files..." if options[:verbose]
+  missing_equivalents = analyze_all_locales
+  
+  if options[:json]
+    puts JSON.pretty_generate({
+      root: ROOT.to_s,
+      analysis_type: "all_locales",
+      missing_equivalents: missing_equivalents
+    })
+  else
+    puts "Scan root: #{ROOT}"
+    puts "Analysis: All locale files"
+    puts
+    
+    missing_equivalents.each do |source_locale, missing_files|
+      if missing_files.empty?
+        puts "✅ #{source_locale.upcase}: All files have equivalents in other locales"
+      else
+        puts "❌ #{source_locale.upcase}: Missing equivalents in other locales:"
+        missing_files.each do |source_path, missing_in_others|
+          puts "  - #{source_path}"
+          missing_in_others.each do |target_locale, candidate|
+            puts "    • missing #{target_locale}: #{candidate}"
+          end
+        end
+        puts
+      end
+    end
+  end
+else
+  puts "Analyzing English locale files..." if options[:verbose]
+  missing, coverage_stats = analyze_locale_coverage(options[:locales])
+
+  if options[:json]
+    puts JSON.pretty_generate({
+      root: ROOT.to_s,
+      analysis_type: "english_to_others",
+      coverage_stats: coverage_stats,
+      missing: missing
+    })
+  else
+    puts "Scan root: #{ROOT}"
+    puts "English files found: #{coverage_stats[:english_files_count]}"
+    puts "Locales checked for each: #{options[:locales].join(", ")}"
+    puts "Equivalent candidates checked: #{coverage_stats[:checked_equivalents]}, present: #{coverage_stats[:present_equivalents]}"
+    puts "Coverage: #{coverage_stats[:coverage_percentage]}%"
+    puts
+
+    if missing.empty?
+      puts "✅ No missing equivalents for the requested locales."
+    else
+      puts "❌ Missing equivalents:"
+      missing.each do |entry|
+        puts "- #{entry[:source]}"
+        entry[:missing].each do |loc|
+          candidate = entry[:candidates][loc]
+          puts "    • missing #{loc}: #{candidate}"
+        end
+        puts if options[:verbose]
+      end
+      puts
+      puts "Total with missing equivalents: #{missing.size}"
+    end
+  end
+end

@@ -254,4 +254,107 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expect(article.decorate.permit_adjacent_sponsors?).to be(false)
     end
   end
+
+  describe "delegated methods" do
+    let(:article) do
+      Article.new(
+        type_of: "status",
+        title: "Line one\nLine two\n\nParagraph two",
+        body_markdown: nil,
+      )
+    end
+    let(:decorated_article) { article.decorate }
+
+    describe "#title_finalized" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.title_finalized).to eq(article.title_finalized)
+      end
+
+      it "returns formatted HTML with paragraph tags" do
+        expect(decorated_article.title_finalized).to include("<p class=\"quickie-paragraph\">")
+      end
+    end
+
+    describe "#title_finalized_for_feed" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.title_finalized_for_feed).to eq(article.title_finalized_for_feed)
+      end
+    end
+
+    describe "#title_for_metadata" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.title_for_metadata).to eq(article.title_for_metadata)
+      end
+
+      it "returns clean single-line title" do
+        expect(decorated_article.title_for_metadata).to eq("Line one Line two Paragraph two")
+      end
+    end
+
+    describe "#skip_indexing?" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.skip_indexing?).to eq(article.skip_indexing?)
+      end
+    end
+
+    describe "#displayable_published_at" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.displayable_published_at).to eq(article.displayable_published_at)
+      end
+    end
+
+    describe "#readable_publish_date" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.readable_publish_date).to eq(article.readable_publish_date)
+      end
+    end
+
+    describe "#video_duration_in_minutes" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.video_duration_in_minutes).to eq(article.video_duration_in_minutes)
+      end
+    end
+
+    describe "#flare_tag" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.flare_tag).to eq(article.flare_tag)
+      end
+    end
+
+    describe "#class_name" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.class_name).to eq(article.class_name)
+      end
+    end
+
+    describe "#cloudinary_video_url" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.cloudinary_video_url).to eq(article.cloudinary_video_url)
+      end
+    end
+
+    describe "#published_timestamp" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.published_timestamp).to eq(article.published_timestamp)
+      end
+    end
+
+    describe "#main_image_background_hex_color" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.main_image_background_hex_color).to eq(article.main_image_background_hex_color)
+      end
+    end
+
+    describe "#public_reaction_categories" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.public_reaction_categories).to eq(article.public_reaction_categories)
+      end
+    end
+
+    describe "#body_preview" do
+      it "delegates to the underlying article" do
+        expect(decorated_article.body_preview).to eq(article.body_preview)
+      end
+    end
+  end
 end

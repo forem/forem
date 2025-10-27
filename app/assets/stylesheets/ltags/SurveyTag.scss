@@ -14,24 +14,35 @@
   box-sizing: border-box;
   padding: 15px 25px 25px;
   font-family: var(--ff-sans-serif);
-  
+
   .survey-title {
     margin: 10px 0 25px;
-    text-align: center;
+    text-align: left;
     font-size: 1.4em;
     color: var(--body-color);
+    padding-top: 10px;
   }
 }
 
 .survey-poll {
-  padding-bottom: 1em;
+  padding-bottom: 1.8em;
   border-bottom: 1px solid var(--form-border, #eee);
   margin-bottom: 1em;
 
   h3 {
-    margin: 15px 0px;
-    font-size: 1.1em;
+    margin: 15px 0px 20px !important;
+    font-size: 1.05em !important;
+    font-weight: 500 !important;
     color: var(--body-color);
+    padding: 28px 0;
+    border-bottom: 1px solid var(--form-border, #eee);
+    border-top: 1px solid var(--form-border, #eee);
+  }
+
+  &.survey-poll-long-question {
+    h3 {
+      font-size: 1em !important;
+    }
   }
 }
 
@@ -48,10 +59,29 @@
     border-radius: var(--radius-md, 5px);
     padding: 12px 15px;
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin: 0;
+      cursor: pointer;
+    }
 
     .option-text {
       color: var(--body-color);
+      flex: 1;
+      cursor: pointer;
+
+      .option-supplementary-text {
+        font-size: 0.85em;
+        color: var(--card-color-tertiary, $medium-gray);
+        margin-top: 4px;
+        font-style: italic;
+        line-height: 1.3;
+      }
     }
 
     &:hover {
@@ -67,8 +97,9 @@
       // This is the strongest "special state" available in the theme.
       background-color: var(--cta-branded-bg);
       border-color: var(--cta-branded-border);
+      box-shadow: 1px 1px 1px var(--cta-branded-border);
       cursor: default;
-      
+
       .option-text {
         color: var(--cta-branded-color);
         font-weight: var(--fw-bold, 700);
@@ -85,6 +116,184 @@
       &:hover {
         // Prevent hover effects on disabled options
         border-color: var(--form-border);
+      }
+    }
+  }
+}
+
+// Scale supplementary text container (above the scale)
+.scale-supplementary-text-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px auto 24px;
+  max-width: 560px;
+
+  .scale-supplementary-text-left,
+  .scale-supplementary-text-right {
+    font-size: 0.8em;
+    color: var(--card-color-tertiary, $medium-gray);
+    font-weight: var(--fw-medium, 500);
+    max-width: 40%;
+    text-align: center;
+    line-height: 1.2;
+    min-width: 220px;
+  }
+
+  // .scale-supplementary-text-left {
+  //   text-align: left;
+  // }
+
+  // .scale-supplementary-text-right {
+  //   text-align: right;
+  // }
+}
+
+// Show/hide supplementary text based on layout
+.scale-supplementary-text-horizontal {
+  // Show horizontal version by default
+  display: flex;
+  
+  // Hide for scale-many-options on smaller screens (vertical layout)
+  .survey-poll.scale-many-options & {
+    @media (max-width: $breakpoint-xl - 1px) {
+      display: none;
+    }
+  }
+}
+
+.scale-supplementary-text-vertical {
+  // Hide vertical version by default
+  display: none;
+  font-size: 0.7em;
+  color: var(--card-color-tertiary, $medium-gray);
+  font-weight: var(--fw-normal, 400);
+  margin-top: 2px;
+  line-height: 1.1;
+  
+  // Show for scale-many-options on smaller screens (vertical layout)
+  .survey-poll.scale-many-options & {
+    @media (max-width: $breakpoint-xl - 1px) {
+      display: block;
+    }
+  }
+}
+
+// Scale poll specific styles for surveys
+.survey-poll[data-poll-type="scale"] {
+  .survey-poll-answers {
+    // Default vertical layout for more than 10 options
+    .survey-poll-option {
+      justify-content: space-between;
+
+      .scale-value {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: var(--cta-branded-color);
+        min-width: 40px;
+        text-align: center;
+        padding: 4px 8px;
+        background: rgba(var(--cta-branded-bg-rgb), 0.1);
+        border-radius: var(--radius-sm, 4px);
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  // Horizontal layout for 5 options (always horizontal)
+  &.scale-5-options {
+    .survey-poll-answers {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+
+      .survey-poll-option {
+        flex: 0 0 auto;
+        min-width: 30px;
+        max-width: 80px;
+        padding: 4px 4px;
+        justify-content: center;
+        text-align: center;
+
+        .scale-value {
+          font-size: 1.1em;
+          font-weight: bold;
+          color: var(--cta-branded-color);
+          min-width: 30px;
+          text-align: center;
+          padding: 2px 3px;
+          background: rgba(var(--cta-branded-bg-rgb), 0.1);
+          border-radius: var(--radius-sm, 4px);
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        input[type="radio"] {
+          display: none; // Hide radio button for cleaner horizontal layout
+        }
+
+        .option-text {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  // Horizontal layout for more than 5 options (only at xl breakpoint)
+  &.scale-many-options {
+    .survey-poll-answers {
+      @media (min-width: $breakpoint-xl) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+
+        .survey-poll-option {
+          flex: 0 0 auto;
+          min-width: 30px;
+          max-width: 80px;
+          padding: 4px 4px;
+          justify-content: center;
+          text-align: center;
+
+          .scale-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--cta-branded-color);
+            min-width: 30px;
+            text-align: center;
+            padding: 2px 3px;
+            background: rgba(var(--cta-branded-bg-rgb), 0.1);
+            border-radius: var(--radius-sm, 4px);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+
+          input[type="radio"] {
+            display: none; // Hide radio button for cleaner horizontal layout
+          }
+
+          .option-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+        }
       }
     }
   }
@@ -109,7 +318,7 @@
   align-items: center;
   margin-top: 1em;
   padding: 0 5px;
-  
+
   .survey-progress {
     font-size: 0.9em;
     color: var(--card-color-tertiary, $medium-gray);
@@ -149,7 +358,7 @@
 .survey-complete-message {
   text-align: center;
   padding: 3em 1em;
-  
+
   h3 {
     // Also map the final success text to the branded color for consistency
     color: var(--cta-branded-color);

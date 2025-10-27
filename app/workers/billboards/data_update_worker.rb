@@ -17,6 +17,9 @@ module Billboards
       billboard = Billboard.find(billboard_id)
       timestamp = Time.current
 
+      # Check and handle expiration before processing other updates
+      billboard.check_and_handle_expiration
+
       return if rand(3) > 0 && billboard.impressions_count > 500_000
       return if rand(2).zero? && billboard.impressions_count > 100_000
 

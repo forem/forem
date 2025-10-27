@@ -1,3 +1,5 @@
 <% if @billboard %>
-  <%= render partial: "shared/billboard", locals: { billboard: @billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_ARTICLE } %>
+  <% cache "billboard-#{@billboard.id}-#{@billboard.content_updated_at}", expires_in: 12.hours do %>
+    <%= render partial: "shared/billboard", locals: { billboard: @billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_ARTICLE } %>
+  <% end %>
 <% end %>

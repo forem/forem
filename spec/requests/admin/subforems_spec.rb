@@ -1,15 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Subforems", type: :request do
-  let(:admin_user) { create(:user, :admin) }
+  let(:admin_user) { create(:user, :super_admin) }
 
   before do
     sign_in admin_user
   end
 
   describe "GET /admin/subforems" do
-    let!(:subforem1) { create(:subforem, domain: "#{rand(10_000)}.com") }
-    let!(:subforem2) { create(:subforem, domain: "#{rand(10_000)}.com") }
+    let!(:subforem1) { create(:subforem) }
+    let!(:subforem2) { create(:subforem) }
 
     it "returns a successful response and lists subforems" do
       get admin_subforems_path
@@ -71,6 +71,7 @@ RSpec.describe "Admin::Subforems", type: :request do
           "Test Community",
           "https://example.com/logo.png",
           "https://example.com/background.jpg",
+          "en",
         )
 
         # Follow the redirect to the index page.
@@ -93,6 +94,7 @@ RSpec.describe "Admin::Subforems", type: :request do
           "Test Community",
           "https://example.com/logo.png",
           nil,
+          "en",
         )
       end
     end

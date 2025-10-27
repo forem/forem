@@ -1,0 +1,34 @@
+name: Close Stale Pull Requests
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # This runs the workflow every day at midnight UTC
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # The number of days of inactivity before a pull request is marked as stale.
+          days-before-pr-stale: 365
+
+          # The number of days to wait before closing a stale pull request.
+          # Set to 0 to close it immediately after being marked as stale.
+          days-before-pr-close: 0
+
+          # The label to apply to stale pull requests.
+          stale-pr-label: 'stale'
+
+          # The message to post on a pull request when it's marked as stale.
+          stale-pr-message: 'This PR is stale because it has been open for over a year with no activity. This is part of general clean up.  It will soon be closed.'
+
+          # The message to post when closing a stale pull request.
+          close-pr-message: 'This PR was closed because it has been stale for an extended period. This is part of general clean up. Please feel free to revisit this issue with a new PR if appropriate!'
+
+          # Set to 'pull-requests' to only process pull requests and not issues.
+          only: 'pull-requests'

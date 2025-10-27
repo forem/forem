@@ -1,0 +1,39 @@
+<% title "Add New Blocked Email Domain" %>
+
+<div class="crayons-card">
+  <div class="crayons-card__header">
+    <h1 class="crayons-title">Add New Blocked Email Domain</h1>
+    <p class="text-base-70">Block users from registering with email addresses from this domain</p>
+  </div>
+  
+  <div class="crayons-card__body">
+    <%= form_with model: [:admin, @blocked_email_domain], local: true, class: "space-y-4" do |form| %>
+      <% if @blocked_email_domain.errors.any? %>
+        <div class="crayons-notice crayons-notice--danger">
+          <h4><%= pluralize(@blocked_email_domain.errors.count, "error") %> prohibited this domain from being saved:</h4>
+          <ul class="list-disc list-inside mt-2">
+            <% @blocked_email_domain.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= form.label :domain, "Domain", class: "crayons-field__label" %>
+        <%= form.text_field :domain, 
+            class: "crayons-textfield", 
+            placeholder: "example.com",
+            "aria-describedby": "domain-help" %>
+        <div id="domain-help" class="crayons-field__description">
+          Enter the domain to block (e.g., "example.com"). This will also block all subdomains like "sub.example.com"
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <%= form.submit "Block Domain", class: "crayons-btn crayons-btn--primary" %>
+        <%= link_to "Cancel", admin_blocked_email_domains_path, class: "crayons-btn crayons-btn--secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

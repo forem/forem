@@ -65,3 +65,27 @@
     right: 0;
   }
 }
+
+// Custom tooltip for subforems menu that appears to the right
+.subforems-menu-tooltip[data-tooltip] {
+  &:after {
+    @extend .crayons-tooltip__content;
+    content: attr(data-tooltip);
+    left: 100%;
+    top: 50%;
+    bottom: unset;
+    transform: translateY(-50%);
+    margin-left: var(--su-2);
+    pointer-events: none;
+    width: max-content;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    &:after {
+      opacity: 1;
+      transform: translateY(-50%);
+      transition-delay: 0s;
+    }
+  }
+}

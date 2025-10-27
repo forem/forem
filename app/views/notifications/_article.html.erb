@@ -26,6 +26,8 @@
         <p><%= t("views.notifications.article.mod_opt_out") %></p>
         <%= link_to t("views.notifications.article.change_settings"), user_settings_path(:notifications) %>
       </div>
+    <% elsif notification.action == "subforem_change" %>
+      <%= render "notifications/subforemchange", notification: notification %>
     <% end %>
   </div>
 </div>

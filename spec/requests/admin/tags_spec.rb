@@ -80,8 +80,8 @@ RSpec.describe "/admin/content_manager/tags" do
     end
 
     context "when managing subforem relationships" do
-      let!(:subforem1) { create(:subforem, domain: "#{rand(10_000)}.com") }
-      let!(:subforem2) { create(:subforem, domain: "#{rand(10_000)}.com") }
+      let!(:subforem1) { create(:subforem) }
+      let!(:subforem2) { create(:subforem) }
 
       before do
         # existing relationship

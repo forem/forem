@@ -53,6 +53,7 @@ module Api
                       :audience_segment_type, :audience_segment_id, :priority, :special_behavior,
                       :custom_display_label, :template, :render_mode, :preferred_article_ids,
                       :exclude_role_names, :target_role_names, :include_subforem_ids, :prefer_paired_with_billboard_id,
+                      :expires_at, :exclude_survey_completions, :exclude_survey_ids,
                       # Permitting twice allows both comma-separated string and array values
                       :target_geolocations, target_geolocations: []
       end

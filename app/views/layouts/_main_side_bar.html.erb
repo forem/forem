@@ -1,6 +1,7 @@
 <% @subforems = Subforem.where(discoverable: true).or(Subforem.where(root: true)).order(root: :desc, score: :desc) %>
 <nav id="main-side-bar" class="crayons-side-nav">
-  <% @subforems.each_with_index do |subforem, i| %>
+  <div class="crayons-side-nav__scrollable">
+    <% @subforems.each_with_index do |subforem, i| %>
     <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
       <a class="crayons-side-nav-link" href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
         <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 65) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
@@ -34,7 +35,11 @@
       <% end %>
     </div>
   <% end %>
-  <a class="crayons-side-nav__item crayons-side-nav__item--menu" href="<%= subforems_path %>">
+  </div>
+  <a class="crayons-side-nav__item crayons-side-nav__item--add subforems-menu-tooltip" href="<%= new_subforem_path %>" data-tooltip="New subforem">
+    <%= crayons_icon_tag("plus", class: "", title: t("billboard.menu.icon")) %>
+  </a>
+  <a class="crayons-side-nav__item crayons-side-nav__item--menu subforems-menu-tooltip" href="<%= subforems_path %>" data-tooltip="View all Subforems">
     <%= crayons_icon_tag("small-overflow-horizontal", class: "", title: t("billboard.menu.icon")) %>
   </a>
 </nav>
@@ -119,9 +124,10 @@
         });
 
         // append in user's order (excluding root)
+        const scrollableContainer = sidebar.querySelector(".crayons-side-nav__scrollable");
         subforemIds.forEach((id) => {
           if (id !== rootSubforemId && subforemMap[id]) {
-            sidebar.appendChild(subforemMap[id]);
+            scrollableContainer.appendChild(subforemMap[id]);
           }
         });
 
@@ -129,7 +135,7 @@
         Object.keys(subforemMap).forEach((id) => {
           const parsedId = parseInt(id, 10);
           if (!subforemIds.includes(parsedId) && subforemMap[id]) {
-            sidebar.appendChild(subforemMap[id]);
+            scrollableContainer.appendChild(subforemMap[id]);
           }
         });
 
@@ -194,6 +200,17 @@
           if (currentActive && currentActive !== targetItem) {
             currentActive.classList.remove("hovered");
             currentActive.classList.add("not-hovered");
+            
+            // Reset styles on the previous active item's pop-out card
+            const previousPreviewCard = currentActive.querySelector(".profile-preview-card__content");
+            if (previousPreviewCard) {
+              previousPreviewCard.style.position = '';
+              previousPreviewCard.style.left = '';
+              previousPreviewCard.style.top = '';
+              previousPreviewCard.style.bottom = '';
+              previousPreviewCard.style.width = '';
+              previousPreviewCard.style.zIndex = '';
+            }
           }
           targetItem.classList.remove("not-hovered");
           targetItem.classList.add("hovered");
@@ -208,12 +225,21 @@
           );
           if (previewCard) {
             const rect = targetItem.getBoundingClientRect();
+            
+            // Position the card relative to the viewport
+            previewCard.style.position = 'fixed';
+            previewCard.style.left = '48px';
+            previewCard.style.width = '290px';
+            previewCard.style.zIndex = '3000';
+            
             if (window.innerHeight - rect.bottom < 280) {
               previewCard.classList.add("profile-preview-card__upsidedown");
+              previewCard.style.top = 'auto';
+              previewCard.style.bottom = `${window.innerHeight - rect.bottom - 30}px`;
             } else {
-              previewCard.classList.remove(
-                "profile-preview-card__upsidedown",
-              );
+              previewCard.classList.remove("profile-preview-card__upsidedown");
+              previewCard.style.top = `${rect.top - 30}px`;
+              previewCard.style.bottom = 'auto';
             }
           }
           // --- NEW LOGIC END ---
@@ -245,6 +271,17 @@
       if (activeItem) {
         activeItem.classList.remove("hovered");
         activeItem.classList.add("not-hovered");
+        
+        // Reset any inline styles on the pop-out card
+        const previewCard = activeItem.querySelector(".profile-preview-card__content");
+        if (previewCard) {
+          previewCard.style.position = '';
+          previewCard.style.left = '';
+          previewCard.style.top = '';
+          previewCard.style.bottom = '';
+          previewCard.style.width = '';
+          previewCard.style.zIndex = '';
+        }
       }
     });
   });

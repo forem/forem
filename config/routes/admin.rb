@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 namespace :admin do
   get "/", to: "overview#index"
+  get "/stats", to: "overview#stats"
 
   authenticate :user, ->(user) { user.tech_admin? } do
     mount Blazer::Engine, at: "blazer"
@@ -97,6 +98,21 @@ namespace :admin do
       end
     end
     resources :emails
+    resources :user_queries do
+      member do
+        post :test_execute
+        patch :toggle_active
+      end
+      collection do
+        post :validate
+      end
+    end
+    resources :read_only_database, only: [:show] do
+      collection do
+        post :test_connection
+        post :reset_pool
+      end
+    end
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :fetch
@@ -117,7 +133,10 @@ namespace :admin do
     resources :pages, only: %i[index new create edit update destroy]
     resources :profile_field_groups, only: %i[update create destroy]
     resources :profile_fields, only: %i[index update create destroy]
-    resources :subforems, only: %i[index new create edit update]
+    resources :subforems, only: %i[index new create edit update show] do
+      resource :moderator, only: %i[create destroy], module: "subforem_moderators"
+      resources :community_bots, only: %i[index new create show destroy]
+    end
   end
 
   scope :moderation do
@@ -132,6 +151,7 @@ namespace :admin do
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
+    resources :blocked_email_domains, only: %i[index new create destroy]
   end
 
   scope :advanced do

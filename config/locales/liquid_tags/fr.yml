@@ -5,6 +5,8 @@ fr:
       invalid_asciinema_id: "ID d'Asciinema non valide : %{id}"
     blogcast_tag:
       invalid_blogcast_id: ID de blogcast non valide
+    cloud_run_tag:
+      invalid_cloud_run_url: URL Cloud Run non valide
     codepen_tag:
       invalid_codepen_url: URL du CodePen non valide
       invalid_options: Options non valides

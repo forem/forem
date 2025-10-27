@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :subforem do
-    domain { "forem.test" }
+    sequence(:domain) { |n| "subforem-#{n}.test" }
   end
 end

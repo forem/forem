@@ -352,13 +352,13 @@ RSpec.describe UnifiedEmbed::Registry do
     end
 
     it "returns link tag for another subforem-matching link and https" do
-      subforem = create(:subforem, domain: "domain-#{rand(1000)}.com")
+      subforem = create(:subforem)
       expect(described_class.find_liquid_tag_for(link: "https://#{subforem.domain}#{article.path}"))
         .to eq(LinkTag)
     end
 
     it "returns link tag for another subforem-matching link and http" do
-      subforem = create(:subforem, domain: "domain-#{rand(1000)}.com")
+      subforem = create(:subforem)
       expect(described_class.find_liquid_tag_for(link: "http://#{subforem.domain}#{article.path}"))
         .to eq(LinkTag)
     end

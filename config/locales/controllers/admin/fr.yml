@@ -1,5 +1,40 @@
 ---
 fr:
+  admin_controller:
+    dashboard:
+      title: Tableau de bord d'administration
+      welcome: Bienvenue au tableau de bord d'administration
+    users:
+      title: Gérer les utilisateurs
+      suspend: Suspendre
+      unsuspend: Désuspendre
+      ban: Bannir
+      unban: Débannir
+      delete: Supprimer
+      edit: Modifier
+      view: Voir
+    articles:
+      title: Gérer les articles
+      delete: Supprimer
+      edit: Modifier
+      view: Voir
+      publish: Publier
+      unpublish: Dépublier
+    comments:
+      title: Gérer les commentaires
+      delete: Supprimer
+      edit: Modifier
+      view: Voir
+      moderate: Modérer
+    reports:
+      title: Gérer les signalements
+      view: Voir
+      resolve: Résoudre
+      dismiss: Rejeter
+    settings:
+      title: Gérer les paramètres
+      save: Sauvegarder
+      cancel: Annuler
   admin:
     articles_controller:
       saved: Article sauvegardé !

@@ -3,9 +3,10 @@ module Ai
     MAX_RETRIES = 3
     TARGET_TAG_COUNT = 60
 
-    def initialize(subforem_id, brain_dump)
+    def initialize(subforem_id, brain_dump, locale = 'en')
       @subforem_id = subforem_id
       @brain_dump = brain_dump
+      @locale = locale
       @subforem = Subforem.find(subforem_id)
     end
 
@@ -66,9 +67,13 @@ module Ai
     end
 
     def build_prompt
+      locale_instruction = get_locale_instruction
+      
       <<~PROMPT
         Generate #{TARGET_TAG_COUNT} tags for the subforem with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}.
         The tags should be relevant to the community's focus and interests.
+
+        #{locale_instruction}
 
         Please output the tags as a line-break-separated list with each line representing the tag and a short description after a colon,
         example:
@@ -210,6 +215,17 @@ module Ai
         Rails.logger.warn("AI similarity check failed, falling back to word overlap: #{e.message}")
         # Fallback to simple word overlap method
         fallback_similarity_check(existing_description, new_description)
+      end
+    end
+
+    def get_locale_instruction
+      case @locale
+      when 'pt'
+        "LANGUAGE REQUIREMENT: Generate ALL content in Brazilian Portuguese. Use proper Portuguese grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      when 'fr'
+        "LANGUAGE REQUIREMENT: Generate ALL content in French. Use proper French grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
+      else
+        "LANGUAGE REQUIREMENT: Generate ALL content in English. Use proper English grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
       end
     end
 

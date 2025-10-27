@@ -44,6 +44,7 @@
   }
 </style>
 
+<% @editor_context = true %>
 <main id="main-content"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
@@ -59,8 +60,8 @@
         <%= render "layouts/logo" %>
       </span>
 
-      <div class="crayons-field__label">
-        <span class="hidden s:inline-block mr-2"><%= t("views.editor.create") %></span>
+      <div class="crayons-field__label flex items-center flex-1">
+        <span class="hidden s:inline-block mr-2 whitespace-nowrap"><%= t("views.editor.create") %></span>
         <% if organizations && organizations.size > 0 %>
           <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto mt-0">
             <%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>

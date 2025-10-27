@@ -132,6 +132,16 @@ RSpec.configure do |config|
     allow(Settings::General).to receive_messages(
       algolia_application_id: "on", algolia_search_only_api_key: "on", algolia_api_key: "on",
     )
+    allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
+  end
+
+  config.before do
+    # Disable Algolia indexing by default in tests. Specs that need it can tag with :algolia
+    # Only stub if we're not testing the algolia_search_enabled? method itself
+    unless RSpec.current_example.metadata[:algolia] ||
+        RSpec.current_example.description.include?("algolia_search_enabled?")
+      allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
+    end
   end
 
   config.before(:suite) do

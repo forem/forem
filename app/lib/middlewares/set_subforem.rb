@@ -14,6 +14,11 @@ module Middlewares
       RequestStore.store[:root_subforem_id]        = Subforem.cached_root_id
       RequestStore.store[:root_subforem_domain]    = Subforem.cached_root_domain
       RequestStore.store[:default_subforem_domain] = Subforem.cached_default_domain
+      
+      # Cache the current subforem's domain for URL generation
+      if RequestStore.store[:subforem_id].present?
+        RequestStore.store[:subforem_domain] = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+      end
 
       # Call Rails (or next middleware) to get the response
       status, headers, body = @app.call(env)
