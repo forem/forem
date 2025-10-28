@@ -44,6 +44,9 @@ module Redcarpet
           end
           if (%r{https?://\S+}.match? link) || link.nil?
             %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+          elsif %r{\w+:}.match?(link)
+            # Handle links with protocols (mailto:, tel:, ftp:, etc.)
+            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
           elsif /\.{1}/.match? link
             %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
           elsif link.start_with?("#")
