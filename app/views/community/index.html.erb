@@ -38,51 +38,88 @@
 
   <div class="crayons-layout crayons-layout--2-cols">
     <div class="crayons-layout__content">
-      <!-- Tags Section -->
-      <section class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="crayons-subtitle-2">
-            <%= crayons_icon_tag(:hashtag, class: "mr-2", width: 20, height: 20) %>
-            Trending Tags
-          </h2>
-          <%= link_to "View all", tags_path, class: "crayons-link fs-s s:fs-base" %>
-        </div>
-        <% if @tags.any? %>
-          <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-3" data-follow-button-container="true">
-            <% @tags.includes(:badge).each do |tag| %>
-              <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="js-tag-card tag-card crayons-card p-3 pt-2 relative flex flex-col">
-                <div>
-                  <div class="mb-1 flex items-center justify-between">
-                    <h4 class="-ml-2">
-                      <%= render_tag_link(tag.accessible_name) %>
-                    </h4>
-                    <div class="fs-xs color-base-60"><%= number_with_delimiter(tag.taggings_count, delimiter: ",") %></div>
-                  </div>
-                  <% if tag.short_summary.present? %>
-                    <p class="mb-4 fs-s color-base-70 truncate-at-2"><%= sanitize tag.short_summary %></p>
-                  <% end %>
-                </div>
-                <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
-                  <div class="flex gap-2">
-                    <button
-                      class="c-btn c-btn--primary c-btn--s js-follow-tag-button"
-                      aria-label="Follow <%= tag.name %>">
-                      Follow
-                    </button>
-                  </div>
-                  <% if tag.badge_id && tag.badge %>
-                    <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 140) %>" class="tag-card__badge" alt="" loading="lazy" />
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
+      <% if @is_root_subforem %>
+        <!-- Subforems Section (Root Only) -->
+        <section class="mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="crayons-subtitle-2">
+              <%= crayons_icon_tag(:globe, class: "mr-2", width: 20, height: 20) %>
+              Explore Communities
+            </h2>
           </div>
-        <% else %>
-          <div class="crayons-card p-4 s:p-6">
-            <p class="color-base-60">No tags available yet.</p>
+          <% if @subforems.any? %>
+            <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-3" data-follow-button-container="true">
+              <% @subforems.each do |subforem| %>
+                <div class="crayons-card p-4 flex flex-col">
+                  <div class="mb-3">
+                    <h3 class="fs-l fw-bold mb-2">
+                      <a href="<%= URL.url("/", subforem.domain) %>" class="crayons-link">
+                        <%= subforem.name %>
+                      </a>
+                    </h3>
+                    <p class="fs-s color-base-70 mb-2">
+                      <%= subforem.domain %>
+                    </p>
+                  </div>
+                  <div class="mt-auto">
+                    <%= follow_button(subforem, "full", "crayons-btn--secondary w-100") %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="crayons-card p-4 s:p-6">
+              <p class="color-base-60">No communities available yet.</p>
+            </div>
+          <% end %>
+        </section>
+      <% else %>
+        <!-- Tags Section (Regular Subforem) -->
+        <section class="mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="crayons-subtitle-2">
+              <%= crayons_icon_tag(:hashtag, class: "mr-2", width: 20, height: 20) %>
+              Trending Tags
+            </h2>
+            <%= link_to "View all", tags_path, class: "crayons-link fs-s s:fs-base" %>
           </div>
-        <% end %>
-      </section>
+          <% if @tags&.any? %>
+            <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-3" data-follow-button-container="true">
+              <% @tags.each do |tag| %>
+                <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="js-tag-card tag-card crayons-card p-3 pt-2 relative flex flex-col">
+                  <div>
+                    <div class="mb-1 flex items-center justify-between">
+                      <h4 class="-ml-2">
+                        <%= render_tag_link(tag.accessible_name) %>
+                      </h4>
+                      <div class="fs-xs color-base-60"><%= number_with_delimiter(tag.taggings_count, delimiter: ",") %></div>
+                    </div>
+                    <% if tag.short_summary.present? %>
+                      <p class="mb-4 fs-s color-base-70 truncate-at-2"><%= sanitize tag.short_summary %></p>
+                    <% end %>
+                  </div>
+                  <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
+                    <div class="flex gap-2">
+                      <button
+                        class="c-btn c-btn--primary c-btn--s js-follow-tag-button"
+                        aria-label="Follow <%= tag.name %>">
+                        Follow
+                      </button>
+                    </div>
+                    <% if tag.badge_id && tag.badge %>
+                      <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 140) %>" class="tag-card__badge" alt="" loading="lazy" />
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="crayons-card p-4 s:p-6">
+              <p class="color-base-60">No tags available yet.</p>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
 
       <!-- Top Authors Section -->
       <section class="mb-6">
@@ -97,7 +134,7 @@
             <% @top_authors.each do |author| %>
               <div class="crayons-card p-4 flex flex-col items-center text-center">
                 <a href="/<%= author.username %>" class="mb-2">
-                  <img src="<%= ProfileImage.new(author).get(90) %>" 
+                  <img src="<%= author.profile_image_url_for(length: 90) %>" 
                        alt="<%= author.name %> profile" 
                        class="crayons-avatar crayons-avatar--xl" 
                        loading="lazy" />
@@ -155,7 +192,7 @@
                   </h3>
                   <div class="flex items-center gap-2">
                     <a href="/<%= video.user.username %>">
-                      <img src="<%= ProfileImage.new(video.user).get(32) %>" 
+                      <img src="<%= video.user.profile_image_url_for(length: 32) %>" 
                            alt="<%= video.user.name %>" 
                            class="crayons-avatar crayons-avatar--s" 
                            loading="lazy" />
@@ -217,24 +254,10 @@
           About <%= community_name %>
         </h3>
         <% if Settings::Community.community_description.present? %>
-          <p class="color-base-70 fs-s mb-3">
+          <p class="color-base-70 fs-s">
             <%= Settings::Community.community_description %>
           </p>
         <% end %>
-        <div class="mb-0">
-          <div class="fs-s mb-2">
-            <span class="fw-bold"><%= number_with_delimiter(Article.from_subforem.published.count, delimiter: ",") %></span>
-            <span class="color-base-60">posts published</span>
-          </div>
-          <div class="fs-s mb-2">
-            <span class="fw-bold"><%= number_with_delimiter(User.joins(:articles).merge(Article.from_subforem.published).distinct.count, delimiter: ",") %></span>
-            <span class="color-base-60">authors</span>
-          </div>
-          <div class="fs-s">
-            <span class="fw-bold"><%= number_with_delimiter(Tag.from_subforem.count, delimiter: ",") %></span>
-            <span class="color-base-60">tags</span>
-          </div>
-        </div>
       </div>
     </aside>
   </div>
