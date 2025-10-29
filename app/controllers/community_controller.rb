@@ -11,10 +11,21 @@ class CommunityController < ApplicationController
     
     # Get current subforem
     subforem_id = RequestStore.store[:subforem_id]
+    root_subforem_id = RequestStore.store[:root_subforem_id]
     @current_subforem = Subforem.find_by(id: subforem_id) if subforem_id
+    @is_root_subforem = subforem_id.present? && subforem_id == root_subforem_id
     
-    # Get top tags by hotness
-    @tags = Tag.from_subforem.direct.order(hotness_score: :desc).limit(12)
+    if @is_root_subforem
+      # For root subforem: Show discoverable subforems instead of tags
+      @subforems = Subforem
+        .where(discoverable: true)
+        .where.not(id: root_subforem_id)
+        .order(hotness_score: :desc)
+        .limit(12)
+    else
+      # For regular subforem: Show top tags by hotness
+      @tags = Tag.from_subforem.direct.includes(:badge).order(hotness_score: :desc).limit(12)
+    end
     
     # Get top recent authors (users with most recent published articles)
     @top_authors = User
@@ -30,7 +41,6 @@ class CommunityController < ApplicationController
       .with_video
       .from_subforem
       .includes(:user)
-      .select(:id, :video, :path, :title, :video_thumbnail_url, :user_id, :video_duration_in_seconds, :published_at)
       .order(published_at: :desc)
       .limit(8)
     

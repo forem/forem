@@ -39,4 +39,3 @@ RSpec.describe "Community", :proper_status do
     end
   end
 end
-
