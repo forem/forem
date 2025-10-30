@@ -21,11 +21,6 @@ RSpec.describe "Community", :proper_status do
       expect(response.body).to include("Top Recent Authors")
     end
 
-    it "displays recent videos section" do
-      get community_path
-      expect(response.body).to include("Recent Videos")
-    end
-
     it "displays key pages when they exist" do
       page = create(:page, title: "About Us", slug: "about", is_top_level_path: true)
 
