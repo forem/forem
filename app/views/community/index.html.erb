@@ -22,15 +22,9 @@
 <main id="main-content" class="crayons-layout">
   <div class="crayons-layout__content">
     <!-- Top Recent Authors Section -->
-    <section class="mb-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="crayons-subtitle-2">
-          <%= crayons_icon_tag(:star, class: "mr-2", width: 20, height: 20) %>
-          Top Recent Authors
-        </h2>
-      </div>
+    <section class="mb-6 mt-2">
       <% if @top_authors.any? %>
-        <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
+        <div class="grid gap-2 grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
           <% @top_authors.each do |author| %>
             <div class="crayons-card p-4 flex flex-col items-center text-center">
               <a href="/<%= author.username %>" class="mb-2">
@@ -85,10 +79,6 @@
     <% if @welcome_article %>
       <section class="mb-6">
         <div class="crayons-card p-4 s:p-6">
-          <h3 class="fs-xl fw-bold mb-2 flex items-center">
-            <%= crayons_icon_tag(:wave, class: "mr-2", width: 20, height: 20) %>
-            New Here?
-          </h3>
           <p class="color-base-70 mb-3 fs-base">
             Welcome to <%= community_name %>! Start by introducing yourself to the community.
           </p>
@@ -118,12 +108,6 @@
     <% if @is_root_subforem %>
       <!-- Subforems Section (Root Only) -->
       <section class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="crayons-subtitle-2">
-            <%= crayons_icon_tag(:globe, class: "mr-2", width: 20, height: 20) %>
-            Explore Communities
-          </h2>
-        </div>
         <% if @subforems.any? %>
           <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
             <% @subforems.each do |subforem| %>
@@ -153,13 +137,6 @@
     <% else %>
       <!-- Tags Section (Regular Subforem) -->
       <section class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="crayons-subtitle-2">
-            <%= crayons_icon_tag(:hashtag, class: "mr-2", width: 20, height: 20) %>
-            Trending Tags
-          </h2>
-          <%= link_to "View all", tags_path, class: "crayons-link fs-s s:fs-base" %>
-        </div>
         <% if @tags&.any? %>
           <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
             <% @tags.each do |tag| %>
