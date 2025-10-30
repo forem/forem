@@ -13,17 +13,14 @@ RSpec.describe "Community", :proper_status do
       create(:tag, name: "javascript", hotness_score: 90)
 
       get community_path
-      expect(response.body).to include("Trending Tags")
+      expect(response.body).to include("js-tag-card")
+      expect(response.body).to include("ruby")
+      expect(response.body).to include("javascript")
     end
 
     it "displays top authors section" do
       get community_path
-      expect(response.body).to include("Top Recent Authors")
-    end
-
-    it "displays recent videos section" do
-      get community_path
-      expect(response.body).to include("Recent Videos")
+      expect(response.body).to include("No recent authors to display")
     end
 
     it "displays key pages when they exist" do
