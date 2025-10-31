@@ -42,6 +42,12 @@ class ApplicationMailer < ActionMailer::Base
     
     # Set the host for URL generation
     ActionMailer::Base.default_url_options[:host] = @subforem_domain
+  rescue ActiveRecord::StatementInvalid, ActiveRecord::NoDatabaseError => e
+    # Handle cases where database/tables don't exist yet (e.g., during initial setup)
+    Rails.logger.warn("ApplicationMailer: Could not setup subforem context: #{e.message}")
+    @subforem_id = nil
+    @subforem_domain = Settings::General.app_domain rescue ApplicationConfig["APP_DOMAIN"]
+    ActionMailer::Base.default_url_options[:host] = @subforem_domain if @subforem_domain.present?
   end
 
   # Helper to make subforem_id available in views
@@ -64,11 +70,16 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def determine_subforem_id(user)
+    return nil unless ActiveRecord::Base.connection.table_exists?('subforems')
+    
     if user.respond_to?(:onboarding_subforem_id)
       user.onboarding_subforem_id || Subforem.cached_default_id
     else
       Subforem.cached_default_id
     end
+  rescue ActiveRecord::StatementInvalid
+    # Table might exist but have schema issues
+    nil
   end
 
   def determine_subforem_domain(subforem_id)
@@ -79,7 +90,10 @@ class ApplicationMailer < ActionMailer::Base
              end
     
     # Fall back to Settings::General.app_domain if no subforem domain is available
-    domain ||= Settings::General.app_domain
+    domain ||= Settings::General.app_domain rescue nil
+    
+    # Ultimate fallback to ApplicationConfig if Settings table doesn't exist
+    domain ||= ApplicationConfig["APP_DOMAIN"]
     
     # Add port for development
     if Rails.env.development? && domain && !domain.include?(":3000")
@@ -87,6 +101,9 @@ class ApplicationMailer < ActionMailer::Base
     end
     
     domain
+  rescue ActiveRecord::StatementInvalid
+    # If there's a database error, fall back to ApplicationConfig
+    ApplicationConfig["APP_DOMAIN"]
   end
 
   # Deprecated: use setup_subforem_context instead
