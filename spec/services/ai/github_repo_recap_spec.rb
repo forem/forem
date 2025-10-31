@@ -58,10 +58,10 @@ RSpec.describe Ai::GithubRepoRecap do
 
     before do
       allow(github_client).to receive(:pull_requests)
-        .with(repo_name, state: "closed", sort: "updated", direction: "desc")
+        .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
         .and_return([pull_request])
       allow(github_client).to receive(:commits)
-        .with(repo_name, since: anything)
+        .with(repo_name, since: anything, per_page: 100, page: 1)
         .and_return([commit])
       allow(ai_client).to receive(:call).and_return(ai_response)
     end
@@ -89,8 +89,12 @@ RSpec.describe Ai::GithubRepoRecap do
 
     context "when there is no activity" do
       before do
-        allow(github_client).to receive(:pull_requests).and_return([])
-        allow(github_client).to receive(:commits).and_return([])
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .and_return([])
+        allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
+          .and_return([])
       end
 
       it "returns nil" do
@@ -113,8 +117,12 @@ RSpec.describe Ai::GithubRepoRecap do
       end
 
       before do
-        allow(github_client).to receive(:pull_requests).and_return([old_pr])
-        allow(github_client).to receive(:commits).and_return([])
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .and_return([old_pr])
+        allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
+          .and_return([])
       end
 
       it "returns nil as there's no recent activity" do
@@ -126,8 +134,12 @@ RSpec.describe Ai::GithubRepoRecap do
 
     context "when there are only commits (no PRs)" do
       before do
-        allow(github_client).to receive(:pull_requests).and_return([])
-        allow(github_client).to receive(:commits).and_return([commit])
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .and_return([])
+        allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
+          .and_return([commit])
       end
 
       it "generates a recap with commits only" do
@@ -159,8 +171,12 @@ RSpec.describe Ai::GithubRepoRecap do
       end
 
       before do
-        allow(github_client).to receive(:pull_requests).and_return([])
-        allow(github_client).to receive(:commits).and_return(many_commits)
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .and_return([])
+        allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
+          .and_return(many_commits)
       end
 
       it "limits commits in the prompt to avoid token limits" do
@@ -179,8 +195,10 @@ RSpec.describe Ai::GithubRepoRecap do
     context "when GitHub API returns an error" do
       before do
         allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
           .and_raise(Github::Errors::NotFound.new("Repository not found"))
         allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
           .and_raise(Github::Errors::Unauthorized.new("Unauthorized"))
       end
 
@@ -236,6 +254,63 @@ RSpec.describe Ai::GithubRepoRecap do
       end
     end
 
+    context "when there are multiple pages of pull requests" do
+      let(:recent_pr) do
+        double(
+          number: 200,
+          title: "Recent PR",
+          html_url: "https://github.com/forem/forem/pull/200",
+          merged_at: 2.days.ago,
+          user: double(login: "recentuser"),
+        )
+      end
+
+      let(:old_pr) do
+        double(
+          number: 100,
+          title: "Old PR",
+          html_url: "https://github.com/forem/forem/pull/100",
+          merged_at: 30.days.ago,
+          user: double(login: "olduser"),
+        )
+      end
+
+      before do
+        # First page has recent PR
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .and_return([recent_pr, old_pr])
+        # Should not request page 2 because we found an old PR
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 2)
+          .and_return([])
+        allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
+          .and_return([])
+      end
+
+      it "stops fetching when it encounters PRs before the timeframe" do
+        service.generate
+
+        # Should only call page 1 and stop because old_pr is before timeframe
+        expect(github_client).to have_received(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .once
+        expect(github_client).not_to have_received(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 2)
+      end
+
+      it "includes only recent PRs in the recap" do
+        result = service.generate
+
+        expect(result).to be_a(Ai::GithubRepoRecap::RecapResult)
+        expect(ai_client).to have_received(:call) do |prompt|
+          expect(prompt).to include("#200: Recent PR")
+          expect(prompt).not_to include("#100: Old PR")
+        end
+      end
+    end
+
     context "with different timeframes" do
       let(:service_30_days) do
         described_class.new(
@@ -244,6 +319,16 @@ RSpec.describe Ai::GithubRepoRecap do
           github_client: github_client,
           ai_client: ai_client,
         )
+      end
+
+      before do
+        # Mock for the 30-day service
+        allow(github_client).to receive(:pull_requests)
+          .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
+          .and_return([pull_request])
+        allow(github_client).to receive(:commits)
+          .with(repo_name, since: anything, per_page: 100, page: 1)
+          .and_return([commit])
       end
 
       it "uses the specified timeframe in the prompt" do

@@ -161,16 +161,23 @@ All errors are logged and the service returns `nil` gracefully.
 ## Performance Considerations
 
 ### Token Limits
-- Commits are limited to the first 50 to avoid AI token limits
+- Commits are limited to the first 50 in the prompt to avoid AI token limits
+- Commit fetching is capped at 300 total commits to prevent excessive API calls
 - For repositories with high activity, consider shorter timeframes
 
 ### API Rate Limits
 - GitHub API has rate limits (5,000/hour for authenticated, 60/hour for unauthenticated)
+- Service uses smart pagination to minimize API calls:
+  - Fetches PRs in pages of 100
+  - Stops when encountering PRs before the timeframe
+  - Maximum of 5 pages (500 PRs) to prevent hanging on repos with long histories
+  - Commits limited to 300 maximum across all pages
 - Consider caching results for frequently accessed recaps
 
 ### Response Time
 - Typical generation time: 3-10 seconds
 - Factors: Number of PRs/commits, AI model speed, network latency
+- Optimized pagination prevents hanging on repositories with thousands of PRs
 
 ## Integration Examples
 
