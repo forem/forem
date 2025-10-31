@@ -358,5 +358,48 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         described_class.validate_link(input: link)
       end
     end
+
+    describe "redirect and auth handling" do
+      it "resolves relative redirects into absolute URLs" do
+        link = "https://iwantmyname.com"
+
+        # Ensure SSRF resolution allows the host
+        allow(Addrinfo).to receive(:getaddrinfo).with("iwantmyname.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "93.184.216.34")])
+
+        # First HEAD returns a relative Location
+        stub_request(:head, link)
+          .to_return(status: 302, headers: { "Location" => "/en/" })
+
+        # Second HEAD hits the resolved absolute URL
+        stub_request(:head, "https://iwantmyname.com/en/")
+          .to_return(status: 200)
+
+        expect(described_class.validate_link(input: link)).to eq("https://iwantmyname.com/en/")
+      end
+
+      it "treats 403 Forbidden as valid for validation purposes" do
+        link = "https://tonethreads.com/artists/new"
+
+        allow(Addrinfo).to receive(:getaddrinfo).with("tonethreads.com", nil, nil, :STREAM)
+          .and_return([double(ip_address: "93.184.216.34")])
+
+        stub_request(:head, link).to_return(status: 403)
+
+        expect(described_class.validate_link(input: link)).to eq(link)
+      end
+
+      it "handles AddressFamilyError gracefully in private_ip?" do
+        link_host = "weird.host"
+
+        # Simulate AddressFamilyError on the first IPAddr.new(hostname) attempt
+        allow(IPAddr).to receive(:new).with(link_host).and_raise(IPAddr::AddressFamilyError)
+        # Then resolving the hostname yields a public IP
+        allow(Addrinfo).to receive(:getaddrinfo).with(link_host, nil, nil, :STREAM)
+          .and_return([double(ip_address: "93.184.216.34")])
+
+        expect(described_class.private_ip?(link_host)).to be_falsey
+      end
+    end
   end
 end

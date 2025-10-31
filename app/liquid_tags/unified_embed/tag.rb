@@ -45,8 +45,10 @@ module UnifiedEmbed
       # Prevent SSRF attacks on internal networks
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if private_ip?(uri.host)
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if http.port == 443
+  # Build HTTP client with correct port and TLS based on scheme
+  port = uri.port || (uri.scheme == "https" ? 443 : 80)
+  http = Net::HTTP.new(uri.host, port)
+  http.use_ssl = (uri.scheme == "https")
       
       # Set security timeouts to prevent hanging requests
       http.open_timeout = 10
@@ -65,10 +67,21 @@ module UnifiedEmbed
       case response
       when Net::HTTPSuccess
         input
+      when Net::HTTPUnauthorized, Net::HTTPForbidden
+        # Some sites block bots or require auth; consider the URL valid but we won't be able to fetch metadata
+        input
       when Net::HTTPRedirection
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if retries.zero?
 
-        validate_link(input: response["location"], retries: retries - 1)
+        # Resolve relative redirects against the current URI
+        location = response["location"]
+        begin
+          next_url = URI.join(uri, location).to_s
+        rescue
+          next_url = location
+        end
+
+        validate_link(input: next_url, retries: retries - 1)
       when Net::HTTPMethodNotAllowed
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if retries.zero?
 
@@ -94,8 +107,8 @@ module UnifiedEmbed
       begin
         ip = IPAddr.new(hostname)
         return ip.private? || ip.loopback? || ip.link_local?
-      rescue IPAddr::InvalidAddressError
-        # Not an IP address, try to resolve hostname
+      rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
+        # Not an IP address (or family unspecified), try to resolve hostname
       end
       
       # Resolve hostname to IP addresses and check each one
