@@ -56,7 +56,7 @@ class DigestMailer < ApplicationMailer
   end
 
   def email_end_phrase
-    community_name = Settings::Community.community_name
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
     # "more trending posts" won the previous split test
     # Included more often as per explore-exploit algorithm
     [
