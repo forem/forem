@@ -11,13 +11,16 @@ module Images
 
     def initialize(resource)
       @resource = resource
-      @logo_url = Settings::General.logo_png
+      @cached_subforem_id = nil
+      @cached_logo_url = nil
+      @cached_user_id = nil
+      @cached_author_image_url = nil
     end
 
     def call
       if @resource.is_a?(Article)
         @user = @resource.user
-        read_files
+        read_files(@resource)
         url = generate_magickally(title: @resource.title,
                                   date: @resource.readable_publish_date,
                                   author_name: @user.name,
@@ -27,8 +30,8 @@ module Images
         EdgeCache::BustArticle.call(@resource)
       elsif @resource.is_a?(User)
         @user = @resource
-        read_files
         @resource.articles.published.where(organization_id: nil, main_image: nil).find_each do |article|
+          read_files(article)
           url = generate_magickally(title: article.title,
                                     date: article.readable_publish_date,
                                     author_name: @user.name,
@@ -37,8 +40,8 @@ module Images
         end
       else # Organization
         @user = @resource
-        read_files
         @resource.articles.published.where(main_image: nil).find_each do |article|
+          read_files(article)
           url = generate_magickally(title: article.title,
                                     date: article.readable_publish_date,
                                     author_name: @user.name,
@@ -186,13 +189,28 @@ module Images
       end * "\n"
     end
 
-    def read_files
-      # These are files we can open once for all the images we are generating within the loop.
+    def read_files(article)
+      # Get the subforem_id for this article
+      subforem_id = article.subforem_id || Subforem.cached_default_id
+      user_id = @user&.id
+
+      # Fetch logo URL only if subforem has changed
+      if @cached_subforem_id != subforem_id
+        @cached_logo_url = Settings::General.logo_png(subforem_id: subforem_id)
+        @cached_subforem_id = subforem_id
+      end
+
+      # Fetch author image URL only if user has changed
+      if @cached_user_id != user_id
+        image = @user&.profile_image_90.to_s
+        @cached_author_image_url = image.start_with?("http") ? image : Images::Profile::BACKUP_LINK
+        @cached_user_id = user_id
+      end
+
+      # Always create fresh image objects since MiniMagick modifies them in place
       @background_image = MiniMagick::Image.open(TEMPLATE_PATH)
-      @logo_image = MiniMagick::Image.open(@logo_url) if @logo_url.present?
-      image = @user&.profile_image_90.to_s
-      author_image_url = image.start_with?("http") ? image : Images::Profile::BACKUP_LINK
-      @author_image = MiniMagick::Image.open(author_image_url)
+      @logo_image = @cached_logo_url.present? ? MiniMagick::Image.open(@cached_logo_url) : nil
+      @author_image = MiniMagick::Image.open(@cached_author_image_url)
       @rounded_mask = MiniMagick::Image.open(ROUNDED_MASK_PATH)
     end
   end
