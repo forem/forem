@@ -57,6 +57,10 @@ RSpec.describe Ai::GithubRepoRecap do
     end
 
     before do
+      # Stub auto_paginate for manual pagination control
+      allow(github_client).to receive(:auto_paginate).and_return(true)
+      allow(github_client).to receive(:auto_paginate=)
+      
       allow(github_client).to receive(:pull_requests)
         .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
         .and_return([pull_request])
@@ -89,6 +93,9 @@ RSpec.describe Ai::GithubRepoRecap do
 
     context "when there is no activity" do
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
           .and_return([])
@@ -117,6 +124,9 @@ RSpec.describe Ai::GithubRepoRecap do
       end
 
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
           .and_return([old_pr])
@@ -134,6 +144,9 @@ RSpec.describe Ai::GithubRepoRecap do
 
     context "when there are only commits (no PRs)" do
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
           .and_return([])
@@ -171,6 +184,9 @@ RSpec.describe Ai::GithubRepoRecap do
       end
 
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
           .and_return([])
@@ -194,6 +210,9 @@ RSpec.describe Ai::GithubRepoRecap do
 
     context "when GitHub API returns an error" do
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
           .and_raise(Github::Errors::NotFound.new("Repository not found"))
@@ -276,6 +295,9 @@ RSpec.describe Ai::GithubRepoRecap do
       end
 
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         # First page has recent PR
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
@@ -322,6 +344,9 @@ RSpec.describe Ai::GithubRepoRecap do
       end
 
       before do
+        allow(github_client).to receive(:auto_paginate).and_return(true)
+        allow(github_client).to receive(:auto_paginate=)
+        
         # Mock for the 30-day service
         allow(github_client).to receive(:pull_requests)
           .with(repo_name, state: "closed", sort: "updated", direction: "desc", per_page: 100, page: 1)
