@@ -106,9 +106,12 @@ class EmailDigestArticleCollector
         end
       end
 
+      # Ensure we operate on an array to avoid relation-slicing surprises
+      articles = articles.to_a
+
       # Pop second article to front if the first article is the same as the last email
       if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
-        articles = articles[1..] + [articles.first]
+        articles = articles.rotate(1)
       end
 
       articles.length < 3 ? [] : articles

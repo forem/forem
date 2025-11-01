@@ -78,6 +78,28 @@ RSpec.describe NotifyMailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
+
+    context "with subforem-specific user" do
+      let!(:subforem) { create(:subforem, domain: "notify.example.com") }
+      let(:subforem_community_name) { "Notify Community" }
+      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:email) { described_class.with(user: user_with_subforem).unread_notifications_email }
+
+      before do
+        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
+        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
+        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
+        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+      end
+
+      it "uses subforem's community name in subject" do
+        expect(email.subject).to eq("🔥 You have 0 unread notifications on #{subforem_community_name}")
+      end
+
+      it "uses subforem's domain in links" do
+        expect(email.body.encoded).to include(subforem.domain)
+      end
+    end
   end
 
   describe "#video_upload_complete_email" do
@@ -320,6 +342,30 @@ RSpec.describe NotifyMailer do
     it "includes contact email" do
       expect(email.html_part.body).to include(ForemInstance.contact_email)
     end
+
+    context "with subforem-specific user" do
+      let!(:subforem) { create(:subforem, domain: "deleted.example.com") }
+      let(:subforem_community_name) { "Deleted Community" }
+      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:email) { described_class.with(name: user_with_subforem.name, email: user_with_subforem.email).account_deleted_email }
+
+      before do
+        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
+        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
+        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
+        allow(Settings::Community).to receive(:community_name).and_call_original
+        allow(Settings::Community).to receive(:community_name).with(no_args).and_return(subforem_community_name)
+        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+      end
+
+      it "uses subforem's community name in subject" do
+        expect(email.subject).to eq("#{subforem_community_name} - Account Deletion Confirmation")
+      end
+
+      it "uses subforem's community name in email body" do
+        expect(email.body.encoded).to include(subforem_community_name)
+      end
+    end
   end
 
   describe "#account_deletion_requested_email" do
@@ -408,6 +454,31 @@ RSpec.describe NotifyMailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
+
+    context "with subforem-specific user" do
+      let!(:subforem) { create(:subforem, domain: "trusted.example.com") }
+      let(:subforem_community_name) { "Trusted Community" }
+      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:email) { described_class.with(user: user_with_subforem).trusted_role_email }
+
+      before do
+        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
+        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
+        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
+        allow(Settings::Community).to receive(:community_name).and_call_original
+        allow(Settings::Community).to receive(:community_name).with(no_args).and_return(subforem_community_name)
+        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+      end
+
+      it "uses subforem's community name in subject" do
+        expected_subject = "Congrats! You're now a \"trusted\" user on #{subforem_community_name}!"
+        expect(email.subject).to eq(expected_subject)
+      end
+
+      it "uses subforem's domain in links" do
+        expect(email.body.encoded).to include(subforem.domain)
+      end
+    end
   end
 
   describe "#base_subscriber_role_email" do
@@ -422,6 +493,24 @@ RSpec.describe NotifyMailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
+    end
+
+    context "with subforem-specific user" do
+      let!(:subforem) { create(:subforem, domain: "subscriber.example.com") }
+      let(:subforem_community_name) { "Subscriber Community" }
+      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:email) { described_class.with(user: user_with_subforem).base_subscriber_role_email }
+
+      before do
+        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
+        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
+        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
+        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+      end
+
+      it "uses subforem's domain in links" do
+        expect(email.body.encoded).to include(subforem.domain)
+      end
     end
   end
 end
