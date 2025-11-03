@@ -73,7 +73,7 @@ class ArticleApiIndexService
                  articles.approved.order(published_at: :desc)
                elsif top.present?
                  articles.where("published_at > ?", top.to_i.days.ago)
-                   .order(public_reactions_count: :desc)
+                   .order(score: :desc)
                else
                  articles.order(hotness_score: :desc)
                end
@@ -87,14 +87,14 @@ class ArticleApiIndexService
     articles = articles.tagged_with(tags_exclude, exclude: true) if tags_exclude
 
     articles
-      .order(public_reactions_count: :desc)
+      .order(score: :desc)
       .page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def top_articles
     published_articles_with_users_and_organizations
       .where("published_at > ?", top.to_i.days.ago)
-      .order(public_reactions_count: :desc)
+      .order(score: :desc)
       .page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
