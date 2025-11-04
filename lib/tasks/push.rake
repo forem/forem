@@ -1,8 +1,10 @@
+require_relative '../../app/services/push/fcm_v1_client'
+
 namespace :push do
   desc 'Send a test FCM notification: rake push:send_token FCM_TOKEN=... TITLE=... BODY=... URL=...'
   task :send_token do
     token = ENV['FCM_TOKEN']
-    abort 'FCM_TOKEN is required' if token.nil? || token.strip.empty()
+    abort 'FCM_TOKEN is required' if token.nil? || token.strip.empty?
 
     title = ENV['TITLE'] || 'Forem test'
     body  = ENV['BODY']  || 'Hello from Rails via FCM v1'

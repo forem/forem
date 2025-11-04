@@ -5,7 +5,6 @@ require 'json'
 require 'googleauth'
 
 module Push
-  # Minimal Firebase Cloud Messaging v1 client
   class FcmV1Client
     SCOPE = 'https://www.googleapis.com/auth/firebase.messaging'
 
