@@ -329,12 +329,12 @@
   <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
     <div class="flex items-center justify-between mb-4">
       <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.navigation_links.heading") %></h2>
-      <button class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()"><%= t("views.subforems.edit.navigation_links.add_button") %></button>
+      <button type="button" class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()"><%= t("views.subforems.edit.navigation_links.add_button") %></button>
     </div>
     
     <!-- Add Navigation Link Form -->
     <div id="nav-link-form" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-      <%= form_with url: create_navigation_link_subforem_path(@subforem), method: :post, local: true, multipart: true do |form| %>
+      <%= form_tag(create_navigation_link_subforem_path(@subforem), method: :post, multipart: true) do %>
         <div class="grid gap-4">
           <div class="crayons-field">
             <%= label_tag 'navigation_link[name]', t("views.subforems.edit.navigation_links.form.name.label"), class: "crayons-field__label" %>
@@ -355,7 +355,7 @@
           <div class="crayons-field">
             <%= label_tag 'navigation_link[image]', "Or Upload Image (PNG, JPG, JPEG)", class: "crayons-field__label" %>
             <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
-            <p class="crayons-field__description">Upload an image file (PNG, JPG, JPEG) instead of using an SVG icon. Image will be automatically resized to 24x24 pixels for the sidebar.</p>
+            <p class="crayons-field__description">Upload an image file (PNG, JPG, JPEG) instead of using an SVG icon. Image will be automatically optimized for display.</p>
           </div>
 
           <div class="grid grid-cols-3 gap-4">
@@ -393,7 +393,7 @@
     <!-- Edit Navigation Link Forms (Hidden by default) -->
     <% @navigation_links.each do |link| %>
       <div id="edit-nav-link-form-<%= link.id %>" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-        <%= form_with url: update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, local: true, multipart: true do |form| %>
+        <%= form_tag(update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, multipart: true) do %>
           <div class="grid gap-4">
             <div class="crayons-field">
               <%= label_tag 'navigation_link[name]', "Name", class: "crayons-field__label" %>
@@ -407,7 +407,7 @@
 
             <% if link.respond_to?(:image) && link.image.present? %>
               <div class="crayons-field">
-                <%= label_tag 'Current Image', class: "crayons-field__label" %>
+                <div class="crayons-field__label">Current Image</div>
                 <div class="mb-2">
                   <%= optimized_image_tag(link.image.url, optimizer_options: { width: 48, height: 48, crop: "fill" }, image_options: { alt: "Current icon", style: "width: 48px; height: 48px;" }) %>
                 </div>
@@ -479,7 +479,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)"><%= t("views.subforems.edit.navigation_links.edit_button") %></button>
+              <button type="button" class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)"><%= t("views.subforems.edit.navigation_links.edit_button") %></button>
               <%= button_to t("views.subforems.edit.navigation_links.delete_button"), 
                   destroy_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), 
                   method: :delete, 

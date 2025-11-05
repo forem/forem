@@ -66,7 +66,7 @@ pt:
           internal_content_spec:
             label: Especificação de Descrição de Conteúdo Interno
             placeholder: Descreva a especificação de descrição de conteúdo interno...
-            description: Diretrizes para descrições de conteúdo geradas por IA.
+            description: Descreva o tipo de conteúdo que deve ser exibido ou priorizado no feed. Isso ajuda a IA a determinar o que deve e não deve aparecer neste feed para ajudar a lidar com spam.
           sidebar_tags:
             label: Tags da Barra Lateral
             placeholder: "help,discuss,explainlikeimfive,meta"
