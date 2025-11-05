@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_03_190150) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_05_154309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -824,7 +824,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_03_190150) do
     t.datetime "created_at", null: false
     t.boolean "display_only_when_signed_in", default: false
     t.integer "display_to", default: 0, null: false
-    t.string "icon", null: false
+    t.string "icon"
+    t.string "image"
     t.string "name", null: false
     t.integer "position"
     t.integer "section", default: 0, null: false

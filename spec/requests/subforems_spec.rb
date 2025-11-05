@@ -690,6 +690,70 @@ RSpec.describe "Subforems", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
+
+    context "with image upload" do
+      before do
+        sign_in admin_user
+        # Allow MiniMagick operations to be skipped in tests
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
+      end
+
+      it "creates a navigation link with an image instead of SVG" do
+        image_file = fixture_file_upload("800x600.png", "image/png")
+        params = {
+          navigation_link: {
+            name: "Image Link",
+            url: "/image-test",
+            image: image_file,
+            section: "default",
+            display_to: "all",
+            position: 1
+          }
+        }
+
+        expect do
+          post create_navigation_link_subforem_path(subforem), params: params
+        end.to change { NavigationLink.count }.by(1)
+
+        link = NavigationLink.last
+        expect(link.subforem_id).to eq(subforem.id)
+        expect(link.name).to eq("Image Link")
+        expect(link.read_attribute(:image)).to be_present
+      end
+
+      it "validates that either icon or image is present" do
+        params = {
+          navigation_link: {
+            name: "No Icon Link",
+            url: "/no-icon",
+            section: "default",
+            display_to: "all",
+            position: 1
+          }
+        }
+
+        expect do
+          post create_navigation_link_subforem_path(subforem), params: params
+        end.not_to change { NavigationLink.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context "cache busting" do
+      before { sign_in admin_user }
+
+      it "busts navigation links cache on create" do
+        allow(EdgeCache::Bust).to receive(:call)
+        
+        post create_navigation_link_subforem_path(subforem), params: valid_params
+        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+      end
+    end
   end
 
   describe "PATCH /subforems/:id/update_navigation_link" do
@@ -769,6 +833,42 @@ RSpec.describe "Subforems", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
+
+    context "cache busting" do
+      before { sign_in admin_user }
+
+      it "busts navigation links cache on update" do
+        allow(EdgeCache::Bust).to receive(:call)
+        
+        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+              params: { navigation_link: { name: "Updated Link" } }
+        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+      end
+    end
+
+    context "with image upload" do
+      before do
+        sign_in admin_user
+        # Allow MiniMagick operations to be skipped in tests
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
+      end
+
+      it "updates a navigation link with an image" do
+        image_file = fixture_file_upload("800x600.png", "image/png")
+        
+        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+              params: { navigation_link: { image: image_file } }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.updated"))
+        
+        navigation_link.reload
+        expect(navigation_link.read_attribute(:image)).to be_present
+      end
+    end
   end
 
   describe "DELETE /subforems/:id/destroy_navigation_link" do
@@ -838,6 +938,19 @@ RSpec.describe "Subforems", type: :request do
         delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
 
         expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "cache busting" do
+      before { sign_in admin_user }
+
+      it "busts navigation links cache on delete" do
+        allow(EdgeCache::Bust).to receive(:call)
+        
+        delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
     end
   end
