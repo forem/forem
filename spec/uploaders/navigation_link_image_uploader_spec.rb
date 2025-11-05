@@ -50,13 +50,15 @@ RSpec.describe NavigationLinkImageUploader, type: :uploader do
     end
   end
 
-  describe "versions" do
-    it "defines an icon version" do
-      expect(uploader.versions.keys).to include(:icon)
+  describe "filename" do
+    it "uses a secure token" do
+      uploader.store!(image_png)
+      expect(uploader.filename).to match(/\A[a-f0-9\-]+\.png\z/)
     end
 
-    it "defines a medium version" do
-      expect(uploader.versions.keys).to include(:medium)
+    it "contains the original file extension when a file is stored" do
+      uploader.store!(image_jpg)
+      expect(uploader.filename).to match(/\.jpg\z/)
     end
   end
 

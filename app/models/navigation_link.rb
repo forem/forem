@@ -17,18 +17,16 @@ class NavigationLink < ApplicationRecord
   validate :icon_or_image_present
 
   def icon_url
-    # Return image URL if available, otherwise return the SVG icon
-    if image.present?
-      image.icon.url
-    else
-      nil
-    end
+    # Return optimized image URL if available, otherwise return nil
+    return nil if image.blank?
+    
+    Images::Optimizer.call(image.url, width: 24, height: 24, crop: "fill")
   end
 
   def icon_display
-    # Return image URL if available, otherwise return the SVG icon
+    # Return image URL if available (to be optimized client-side), otherwise return the SVG icon
     if image.present?
-      image.icon.url
+      image.url
     else
       icon
     end
