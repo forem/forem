@@ -405,7 +405,7 @@
               <%= text_field_tag 'navigation_link[url]', link.url, class: "crayons-textfield", required: true %>
             </div>
 
-            <% if link.image.present? %>
+            <% if link.respond_to?(:image) && link.image.present? %>
               <div class="crayons-field">
                 <%= label_tag 'Current Image', class: "crayons-field__label" %>
                 <div class="mb-2">
@@ -462,7 +462,7 @@
           <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg" id="nav-link-<%= link.id %>">
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
-                <% if link.image.present? %>
+                <% if link.respond_to?(:image) && link.image.present? %>
                   <img src="<%= link.image.icon.url %>" alt="<%= link.name %> icon" style="width: 16px; height: 16px;">
                 <% else %>
                   <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>

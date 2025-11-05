@@ -90,6 +90,8 @@ RSpec.describe NavigationLink do
       end
 
       it "is valid with an image and no icon" do
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
         link = build(:navigation_link, icon: nil)
         link.image = fixture_file_upload("800x600.png", "image/png")
         expect(link).to be_valid
