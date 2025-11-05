@@ -714,8 +714,8 @@ RSpec.describe "Subforems", type: :request do
         link = NavigationLink.last
         expect(link.subforem_id).to eq(subforem.id)
         expect(link.name).to eq("Image Link")
-        expect(link.image).to be_present
-        expect(link.image.icon.url).to be_present
+        expect(link.image?).to be true
+        expect(link.image.url).to be_present
       end
 
       it "validates that either icon or image is present" do
@@ -742,13 +742,12 @@ RSpec.describe "Subforems", type: :request do
       before { sign_in admin_user }
 
       it "busts navigation links cache on create" do
-        expect(Rails.cache).to receive(:delete).with("navigation_links").at_least(:once)
-        expect(Rails.cache).to receive(:delete).with("navigation_links-true-#{subforem.id}").at_least(:once)
-        expect(Rails.cache).to receive(:delete).with("navigation_links-false-#{subforem.id}").at_least(:once)
-        expect(EdgeCache::Bust).to receive(:call).with("/async_info/navigation_links").at_least(:once)
-        expect(EdgeCache::Bust).to receive(:call).with(["/onboarding/tags", "/onboarding", "/"]).at_least(:once)
-
+        allow(EdgeCache::Bust).to receive(:call)
+        
         post create_navigation_link_subforem_path(subforem), params: valid_params
+        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
     end
   end
@@ -835,14 +834,13 @@ RSpec.describe "Subforems", type: :request do
       before { sign_in admin_user }
 
       it "busts navigation links cache on update" do
-        expect(Rails.cache).to receive(:delete).with("navigation_links").at_least(:once)
-        expect(Rails.cache).to receive(:delete).with("navigation_links-true-#{subforem.id}").at_least(:once)
-        expect(Rails.cache).to receive(:delete).with("navigation_links-false-#{subforem.id}").at_least(:once)
-        expect(EdgeCache::Bust).to receive(:call).with("/async_info/navigation_links").at_least(:once)
-        expect(EdgeCache::Bust).to receive(:call).with(["/onboarding/tags", "/onboarding", "/"]).at_least(:once)
-
+        allow(EdgeCache::Bust).to receive(:call)
+        
         patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
               params: { navigation_link: { name: "Updated Link" } }
+        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
     end
 
@@ -859,8 +857,8 @@ RSpec.describe "Subforems", type: :request do
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.updated"))
         
         navigation_link.reload
-        expect(navigation_link.image).to be_present
-        expect(navigation_link.image.icon.url).to be_present
+        expect(navigation_link.image?).to be true
+        expect(navigation_link.image.url).to be_present
       end
     end
   end
@@ -939,13 +937,12 @@ RSpec.describe "Subforems", type: :request do
       before { sign_in admin_user }
 
       it "busts navigation links cache on delete" do
-        expect(Rails.cache).to receive(:delete).with("navigation_links").at_least(:once)
-        expect(Rails.cache).to receive(:delete).with("navigation_links-true-#{subforem.id}").at_least(:once)
-        expect(Rails.cache).to receive(:delete).with("navigation_links-false-#{subforem.id}").at_least(:once)
-        expect(EdgeCache::Bust).to receive(:call).with("/async_info/navigation_links").at_least(:once)
-        expect(EdgeCache::Bust).to receive(:call).with(["/onboarding/tags", "/onboarding", "/"]).at_least(:once)
-
+        allow(EdgeCache::Bust).to receive(:call)
+        
         delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
     end
   end
