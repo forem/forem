@@ -409,7 +409,7 @@
               <div class="crayons-field">
                 <%= label_tag 'Current Image', class: "crayons-field__label" %>
                 <div class="mb-2">
-                  <img src="<%= link.image.icon.url %>" alt="Current icon" style="width: 24px; height: 24px;">
+                  <%= optimized_image_tag(link.image.url, optimizer_options: { width: 48, height: 48, crop: "fill" }, image_options: { alt: "Current icon", style: "width: 48px; height: 48px;" }) %>
                 </div>
               </div>
             <% end %>
@@ -463,7 +463,7 @@
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
                 <% if link.respond_to?(:image) && link.image.present? %>
-                  <img src="<%= link.image.icon.url %>" alt="<%= link.name %> icon" style="width: 16px; height: 16px;">
+                  <%= optimized_image_tag(link.image.url, optimizer_options: { width: 24, height: 24, crop: "fill" }, image_options: { alt: "#{link.name} icon", style: "width: 16px; height: 16px;" }) %>
                 <% else %>
                   <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
                 <% end %>
