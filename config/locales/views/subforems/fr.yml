@@ -66,7 +66,7 @@ fr:
           internal_content_spec:
             label: Spécification de Description de Contenu Interne
             placeholder: Décrivez la spécification de description de contenu interne...
-            description: Directives pour les descriptions de contenu générées par IA.
+            description: Décrivez le type de contenu qui doit être affiché ou priorisé dans le fil. Cela aide l'IA à déterminer ce qui devrait et ne devrait pas apparaître dans ce fil pour aider à gérer le spam.
           sidebar_tags:
             label: Tags de la Barre Latérale
             placeholder: "help,discuss,explainlikeimfive,meta"

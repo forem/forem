@@ -66,7 +66,7 @@ en:
           internal_content_spec:
             label: Internal Content Description Spec
             placeholder: Describe the internal content description specification...
-            description: Guidelines for AI-generated content descriptions.
+            description: Describe the type of content that should be displayed or prioritized in the feed. This helps AI sort out what should and shouldn't show up in this feed to help deal with spam.
           sidebar_tags:
             label: Sidebar Tags
             placeholder: "help,discuss,explainlikeimfive,meta"
