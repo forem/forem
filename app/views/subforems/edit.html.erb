@@ -334,7 +334,7 @@
     
     <!-- Add Navigation Link Form -->
     <div id="nav-link-form" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-      <%= form_with url: create_navigation_link_subforem_path(@subforem), method: :post, local: true do |form| %>
+      <%= form_with url: create_navigation_link_subforem_path(@subforem), method: :post, local: true, multipart: true do |form| %>
         <div class="grid gap-4">
           <div class="crayons-field">
             <%= label_tag 'navigation_link[name]', t("views.subforems.edit.navigation_links.form.name.label"), class: "crayons-field__label" %>
@@ -348,8 +348,14 @@
 
           <div class="crayons-field">
             <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
-            <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: t("views.subforems.edit.navigation_links.form.icon.placeholder"), required: true %>
+            <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: t("views.subforems.edit.navigation_links.form.icon.placeholder") %>
             <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+          </div>
+
+          <div class="crayons-field">
+            <%= label_tag 'navigation_link[image]', "Or Upload Image (PNG, JPG, JPEG)", class: "crayons-field__label" %>
+            <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
+            <p class="crayons-field__description">Upload an image file (PNG, JPG, JPEG) instead of using an SVG icon. Image will be automatically resized to 24x24 pixels for the sidebar.</p>
           </div>
 
           <div class="grid grid-cols-3 gap-4">
@@ -387,7 +393,7 @@
     <!-- Edit Navigation Link Forms (Hidden by default) -->
     <% @navigation_links.each do |link| %>
       <div id="edit-nav-link-form-<%= link.id %>" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-        <%= form_with url: update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, local: true do |form| %>
+        <%= form_with url: update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, local: true, multipart: true do |form| %>
           <div class="grid gap-4">
             <div class="crayons-field">
               <%= label_tag 'navigation_link[name]', "Name", class: "crayons-field__label" %>
@@ -399,9 +405,25 @@
               <%= text_field_tag 'navigation_link[url]', link.url, class: "crayons-textfield", required: true %>
             </div>
 
+            <% if link.image.present? %>
+              <div class="crayons-field">
+                <%= label_tag 'Current Image', class: "crayons-field__label" %>
+                <div class="mb-2">
+                  <img src="<%= link.image.icon.url %>" alt="Current icon" style="width: 24px; height: 24px;">
+                </div>
+              </div>
+            <% end %>
+
             <div class="crayons-field">
               <%= label_tag 'navigation_link[icon]', "Icon SVG", class: "crayons-field__label" %>
-              <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3, required: true %>
+              <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3 %>
+              <p class="crayons-field__description">Leave blank if using an image</p>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag 'navigation_link[image]', "Or Upload Image (PNG, JPG, JPEG)", class: "crayons-field__label" %>
+              <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
+              <p class="crayons-field__description">Upload a new image to replace the current icon/image</p>
             </div>
 
             <div class="grid grid-cols-3 gap-4">
@@ -440,7 +462,11 @@
           <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg" id="nav-link-<%= link.id %>">
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
-                <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <% if link.image.present? %>
+                  <img src="<%= link.image.icon.url %>" alt="<%= link.name %> icon" style="width: 16px; height: 16px;">
+                <% else %>
+                  <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <% end %>
                 <%= link.name %>
               </div>
               <div class="text-sm color-base-60">
