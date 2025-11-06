@@ -2784,6 +2784,38 @@ RSpec.describe Article do
 
         expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
       end
+
+      it "does not re-add embed tags when updating other attributes" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Body markdown should have the embed tag after creation
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+
+        # Update a different attribute (e.g., featured)
+        article.featured = true
+        expect(article).to be_valid
+        article.save!
+
+        # Body markdown should remain the same, not duplicated
+        expect(article.reload.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "still prevents actual body_markdown changes on persisted status posts" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Try to change the body_markdown
+        article.body_markdown = "This is different content"
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
+      end
     end
   end
 
