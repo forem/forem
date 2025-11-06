@@ -1457,7 +1457,8 @@ class Article < ApplicationRecord
 
   def should_add_urls_from_title?
     # Only add URLs from title for quickie posts (status type) that have a title with URLs
-    type_of == "status" && title.present? && extract_urls_from_title.any?
+    # Only run this when the title has changed or it's a new record to avoid duplicating embed tags
+    type_of == "status" && title.present? && extract_urls_from_title.any? && (new_record? || title_changed?)
   end
 
   def add_urls_from_title_to_body
