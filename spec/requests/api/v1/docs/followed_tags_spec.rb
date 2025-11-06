@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   end
 
   describe "GET /follows/tags" do
-    path "/api/follows/tags" do
+    path "/follows/tags" do
       get "Followed Tags" do
         tags "followed_tags", "tags"
         description(<<-DESCRIBE.strip)

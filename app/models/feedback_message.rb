@@ -26,6 +26,18 @@ class FeedbackMessage < ApplicationRecord
       .or(user.offender_feedback_messages)
   }
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      id feedback_type category status message reported_url
+      offender_id reporter_id affected_id reported_id reported_type
+      reviewer_id created_at updated_at
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[offender reporter affected reported email_message notes]
+  end
+
   validates :feedback_type, :message, presence: true
   validates :reported_url, :category, presence: { if: :abuse_report? }, length: { maximum: 250 }
   validates :message, length: { maximum: 2500 }

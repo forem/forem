@@ -13,7 +13,7 @@ RSpec.describe "Api::V1::Docs::Readinglist" do
   before { user.add_role(:admin) }
 
   describe "GET /readinglist" do
-    path "/api/readinglist" do
+    path "/readinglist" do
       get "Readinglist" do
         tags "readinglist"
         description(<<-DESCRIBE.strip)

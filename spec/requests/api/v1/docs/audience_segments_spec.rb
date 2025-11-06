@@ -25,7 +25,7 @@ RSpec.describe "Api::V1::Docs::AudienceSegments" do
     admin_api_secret.user.add_role(:admin)
   end
 
-  path "/api/segments" do
+  path "/segments" do
     describe "GET /segments" do
       get "Manually managed audience segments" do
         tags "segments"
@@ -109,7 +109,7 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     end
   end
 
-  path "/api/segments/{id}" do
+  path "/segments/{id}" do
     describe "GET /segments/:id" do
       get "A manually managed audience segment" do
         tags "segments"
@@ -228,7 +228,7 @@ The endpoint supports pagination, and each page will contain `30` segments by de
   end
 
   describe "GET /segments/:id/users" do
-    path "/api/segments/{id}/users" do
+    path "/segments/{id}/users" do
       get "Users in a manually managed audience segment" do
         tags "segments"
         description "This endpoint allows the client to retrieve a list of the users in an audience segment specified by ID. The endpoint supports pagination, and each page will contain `30` users by default."
@@ -285,7 +285,7 @@ The endpoint supports pagination, and each page will contain `30` segments by de
   end
 
   describe "PUT /segments/:id/add_users" do
-    path "/api/segments/{id}/add_users" do
+    path "/segments/{id}/add_users" do
       put "Add users to a manually managed audience segment" do
         tags "segments"
         description "This endpoint allows the client to add users in bulk to an audience segment specified by ID.\n\nSuccesses are users that were included in the segment (even if they were already in it), and failures are users that could not be added to the segment."
@@ -362,7 +362,7 @@ The endpoint supports pagination, and each page will contain `30` segments by de
   end
 
   describe "PUT /segments/:id/remove_users" do
-    path "/api/segments/{id}/remove_users" do
+    path "/segments/{id}/remove_users" do
       put "Remove users from a manually managed audience segment" do
         tags "segments"
         description "This endpoint allows the client to remove users in bulk from an audience segment specified by ID.\n\nSuccesses are users that were removed; failures are users that weren't a part of the segment."

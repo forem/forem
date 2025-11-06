@@ -12,7 +12,7 @@ RSpec.describe "api/v1/billboards" do
 
   before { user.add_role(:admin) }
 
-  path "/api/billboards" do
+  path "/billboards" do
     describe "GET /billboards" do
       get("Billboards") do
         tags "billboards"
@@ -93,7 +93,7 @@ RSpec.describe "api/v1/billboards" do
     end
   end
 
-  path "/api/billboards/{id}" do
+  path "/billboards/{id}" do
     describe "GET /billboards/:id" do
       get "A billboard (by id)" do
         tags "billboards"
@@ -194,7 +194,7 @@ RSpec.describe "api/v1/billboards" do
     end
   end
 
-  path "/api/billboards/{id}/unpublish" do
+  path "/billboards/{id}/unpublish" do
     describe "PUT /billboards/:id/unpublish" do
       put "Unpublish a billboard" do
         tags "billboards"

@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::Docs::Followers" do
   end
 
   describe "GET /followers/users" do
-    path "/api/followers/users" do
+    path "/followers/users" do
       get "Followers" do
         tags "followers"
         description(<<-DESCRIBE.strip)

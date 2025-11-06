@@ -10,7 +10,7 @@ RSpec.describe "Api::V1::Docs::ProfileImages" do
   let(:user) { api_secret.user }
 
   describe "GET /profile_images/{username}" do
-    path "/api/profile_images/{username}" do
+    path "/profile_images/{username}" do
       get "A Users or organizations profile image" do
         tags "profile images"
         description(<<-DESCRIBE.strip)

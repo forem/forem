@@ -4,12 +4,10 @@ module Admin
 
     SCORE_MIN = -125
 
-    def index
-      reconcile_ransack_params
-      @q = FeedbackMessage.includes(:reporter, :offender, :affected, :reported)
-        .order(created_at: :desc)
-        .ransack(params[:q])
-      @feedback_messages = @q.result
+  def index
+    reconcile_ransack_params
+    @q = FeedbackMessage.ransack(params[:q])
+    @feedback_messages = @q.result.includes(:reporter, :offender, :affected, :reported).order(created_at: :desc)
       @feedback_messages = if params[:status] == "Resolved"
                              @feedback_messages.where(status: "Resolved")
                            elsif params[:status] == "Invalid"

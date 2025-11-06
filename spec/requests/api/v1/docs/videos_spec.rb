@@ -6,7 +6,7 @@ require "swagger_helper"
 describe "GET /videos" do
   before { create_list(:article, 2, :video) }
 
-  path "/api/videos" do
+  path "/videos" do
     get "Articles with a video" do
       tags "videos", "articles"
       security []

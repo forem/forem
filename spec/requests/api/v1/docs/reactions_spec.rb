@@ -20,7 +20,7 @@ RSpec.describe "api/v1/reactions" do
     allow(ReactionHandler).to receive(:toggle).and_return(result)
   end
 
-  path "/api/reactions/toggle" do
+  path "/reactions/toggle" do
     describe "post to toggle reaction" do
       post("toggle reaction") do
         tags "reactions"
@@ -68,7 +68,7 @@ RSpec.describe "api/v1/reactions" do
     end
   end
 
-  path "/api/reactions" do
+  path "/reactions" do
     describe "post to create reaction" do
       post("create reaction") do
         tags "reactions"

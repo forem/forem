@@ -22,7 +22,7 @@ RSpec.describe "Api::V1::Docs::Users" do
       user.add_role(:admin)
     end
 
-    path "/api/users/{id}/suspend" do
+    path "/users/{id}/suspend" do
       put "Suspend a User" do
         tags "users"
         description "This endpoint allows the client to suspend a user.
@@ -78,7 +78,7 @@ in the UI, so if you want them to know about this, you must notify them."
       user.add_role(:admin)
     end
 
-    path "/api/users/{id}/limited" do
+    path "/users/{id}/limited" do
       put "Add limited role for a User" do
         tags "users"
         description "This endpoint allows the client to limit a user.
@@ -134,7 +134,7 @@ in the UI, so if you want them to know about this, you must notify them."
       user.add_role(:admin)
     end
 
-    path "/api/users/{id}/limited" do
+    path "/users/{id}/limited" do
       delete "Remove limited for a User" do
         tags "users"
         description "This endpoint allows the client to remove limits for a user.
@@ -188,7 +188,7 @@ notify them."
         user.add_role(:admin)
       end
 
-      path "/api/users/{id}/spam" do
+      path "/users/{id}/spam" do
         put "Add spam role for a User" do
           tags "users"
           description "This endpoint allows the client to add the spam role to a user.
@@ -244,7 +244,7 @@ notify them."
         user.add_role(:admin)
       end
 
-      path "/api/users/{id}/spam" do
+      path "/users/{id}/spam" do
         delete "Remove spam role from a User" do
           tags "users"
           description "This endpoint allows the client to remove the spam role for a user.
@@ -299,7 +299,7 @@ notify them."
         user.add_role(:admin)
       end
 
-      path "/api/users/{id}/trusted" do
+      path "/users/{id}/trusted" do
         put "Add trusted role for a User" do
           tags "users"
           description "This endpoint allows the client to add the trusted role to a user.
@@ -352,7 +352,7 @@ notify them."
         user.add_role(:admin)
       end
 
-      path "/api/users/{id}/trusted" do
+      path "/users/{id}/trusted" do
         delete "Remove trusted role from a User" do
           tags "users"
           description "This endpoint allows the client to remove the trusted role for a user.

@@ -257,6 +257,25 @@ class User < ApplicationRecord
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      id name username email twitter_username github_username
+      summary location website_url created_at updated_at
+      registered_at score reputation_modifier following_tags_count
+      following_users_count following_orgs_count following_podcasts_count
+      comments_count articles_count reactions_count badge_achievements_count
+      credits_count spam_posts_count type_of
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[
+      articles comments reactions badge_achievements badges
+      organization_memberships organizations profile setting notification_setting
+      affected_feedback_messages offender_feedback_messages reporter_feedback_messages
+    ]
+  end
+
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
       unscoped { where(articles_count: 1..).average(:articles_count) || average(:articles_count) } || 0.0
