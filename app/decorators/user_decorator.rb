@@ -114,9 +114,9 @@ class UserDecorator < ApplicationDecorator
 
     # Add subforem moderator status for current subforem
     if RequestStore.store[:subforem_id].present?
-      current_subforem = Subforem.find_by(id: RequestStore.store[:subforem_id])
-      if current_subforem
-        is_subforem_moderator = any_admin? || moderator_for_subforems.include?(current_subforem.domain)
+      current_subforem_domain = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+      if current_subforem_domain
+        is_subforem_moderator = any_admin? || moderator_for_subforems.include?(current_subforem_domain)
         body_class << "subforem-moderator-status-#{is_subforem_moderator}"
       end
     end
