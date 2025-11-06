@@ -19,12 +19,21 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
         expect(result.first.first).to eq(article.path)
       end
 
-      it "returns any article if no higher-quality article is found", :aggregate_failures do
-        article = create(:article, tags: "discuss", score: min_score - 10)
+      it "does not return articles below the minimum score threshold", :aggregate_failures do
+        create(:article, tags: "discuss", score: min_score - 10)
+        create(:article, tags: "discuss", score: min_score - 1)
+
+        result = described_class.call(tags: "discuss", time_ago: "latest", count: 10)
+        expect(result.length).to eq(0)
+      end
+
+      it "returns only articles at or above the minimum score", :aggregate_failures do
+        good_article = create(:article, tags: "discuss", score: min_score)
+        create(:article, tags: "discuss", score: min_score - 1)
 
         result = described_class.call(tags: "discuss", time_ago: "latest", count: 10)
         expect(result.length).to eq(1)
-        expect(result.first.first).to eq(article.path)
+        expect(result.first.first).to eq(good_article.path)
       end
     end
 
@@ -42,15 +51,28 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
         expect(result.first.first).to eq(article.path)
       end
 
-      it "returns any article when no higher-quality article could be found", :aggregate_failures do
+      it "excludes articles below minimum score even with high comment counts", :aggregate_failures do
         time = 2.days.ago
-        article = create(:article, :past, comments_count: 20, past_published_at: time - 5.days, tags: "discuss",
-                                          score: min_score)
-        create(:article, comments_count: 10, tags: "discuss", score: min_score - 10)
+        good_article = create(:article, :past, comments_count: 5, past_published_at: time, tags: "discuss",
+                                               score: min_score)
+        create(:article, comments_count: 100, tags: "discuss", score: min_score - 10)
 
         result = described_class.call(tags: "discuss", time_ago: time, count: 10)
-        expect(result.length).to eq(2)
-        expect(result.first.first).to eq(article.path)
+        expect(result.length).to eq(1)
+        expect(result.first.first).to eq(good_article.path)
+      end
+
+      it "respects both time and score filters", :aggregate_failures do
+        time = 2.days.ago
+        # Article before the time threshold
+        create(:article, :past, comments_count: 20, past_published_at: time - 1.day, tags: "discuss",
+                                score: min_score + 10)
+        # Article after time threshold but below score threshold
+        create(:article, :past, comments_count: 10, past_published_at: time + 1.hour, tags: "discuss",
+                                score: min_score - 1)
+
+        result = described_class.call(tags: "discuss", time_ago: time, count: 10)
+        expect(result.length).to eq(0)
       end
     end
 
@@ -65,14 +87,30 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
         expect(result.first.first).to eq(article.path)
       end
 
-      it "returns any article, with nil articles last, if no higher-quality articles exist", :aggregate_failures do
-        article = create(:article, last_comment_at: Time.zone.now, tags: "discuss",
-                                   score: min_score - 10)
-        create(:article, last_comment_at: 2.days.ago, tags: "discuss", score: min_score - 10)
+      it "excludes articles below minimum score regardless of last_comment_at", :aggregate_failures do
+        good_article = create(:article, last_comment_at: 2.days.ago, tags: "discuss",
+                                         score: min_score)
+        create(:article, last_comment_at: Time.zone.now, tags: "discuss", score: min_score - 10)
+        create(:article, last_comment_at: 1.day.ago, tags: "discuss", score: min_score - 1)
 
         result = described_class.call(tags: "discuss", time_ago: nil, count: 10)
-        expect(result.length).to eq(2)
-        expect(result.first.first).to eq(article.path)
+        expect(result.length).to eq(1)
+        expect(result.first.first).to eq(good_article.path)
+      end
+
+      it "respects published_at threshold of 3 days when time_ago is nil", :aggregate_failures do
+        # Article published 2 days ago (within threshold)
+        recent_article = create(:article, :past, past_published_at: 2.days.ago, 
+                                          last_comment_at: 1.day.ago, tags: "discuss",
+                                          score: min_score)
+        # Article published 4 days ago (outside threshold)
+        create(:article, :past, past_published_at: 4.days.ago,
+                               last_comment_at: Time.zone.now, tags: "discuss",
+                               score: min_score + 10)
+
+        result = described_class.call(tags: "discuss", time_ago: nil, count: 10)
+        expect(result.length).to eq(1)
+        expect(result.first.first).to eq(recent_article.path)
       end
     end
   end
