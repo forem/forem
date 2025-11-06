@@ -2053,6 +2053,20 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.comment_score).to eq(25)
       end
+
+      it "ensures no individual comment contributes less than -1 to the total score" do
+        # Create comments with very negative scores
+        create(:comment, commentable: article, score: -177)
+        create(:comment, commentable: article, score: -50)
+        create(:comment, commentable: article, score: 10)
+        create(:comment, commentable: article, score: -1)
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        # -177 counts as -1, -50 counts as -1, 10 counts as 10, -1 counts as -1
+        # Total: -1 + -1 + 10 + -1 = 7
+        expect(article.reload.comment_score).to eq(7)
+      end
     end
   end
 

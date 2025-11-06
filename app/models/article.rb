@@ -879,7 +879,8 @@ class Article < ApplicationRecord
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
 
     # Calculate comment_score and apply max_score limits
-    calculated_comment_score = comments.sum(:score)
+    # Each comment can contribute a minimum of -1 to the total score
+    calculated_comment_score = comments.sum { |comment| [comment.score, -1].max }
     comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
                       accepted_max
                     else
