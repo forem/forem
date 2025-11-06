@@ -30,14 +30,18 @@ module Push
 
     # Dry-run only: builds headers/payload and returns them without sending unless dry_run: false and IOS_PUSH_ENABLED present.
     def send_token(token:, title:, body:, data: {}, dry_run: true)
-      jwt = build_jwt
       payload = build_payload(title: title, body: body, data: data)
-      headers = build_headers(jwt: jwt, token: token)
 
       if dry_run || !ios_push_enabled?
+        # In dry-run, skip JWT building (requires .p8 file); show what would be sent
+        mock_jwt = '[JWT would be generated from .p8 key here]'
+        headers = build_headers(jwt: mock_jwt, token: token)
         return { status: :dry_run, endpoint: endpoint_url(token), headers: headers, payload: payload }
       end
 
+      # Real send: build JWT and perform HTTP/2 request
+      jwt = build_jwt
+      headers = build_headers(jwt: jwt, token: token)
       perform_http2_request(token: token, jwt: jwt, payload: payload, headers: headers)
     end
 
