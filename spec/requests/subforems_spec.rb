@@ -1035,10 +1035,10 @@ RSpec.describe "Subforems", type: :request do
           post create_page_subforem_path(subforem), params: valid_page_params
         end.to change { Page.count }.by(1)
 
-        expect(response).to redirect_to(manage_subforem_path)
+        page = Page.last
+        expect(response).to redirect_to("/page/#{page.slug}")
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.created"))
 
-        page = Page.last
         expect(page.subforem_id).to eq(subforem.id)
         expect(page.title).to eq("Test Page")
         expect(page.slug).to eq("test-page")
@@ -1105,10 +1105,10 @@ RSpec.describe "Subforems", type: :request do
           post create_page_subforem_path(subforem), params: valid_page_params
         end.to change { Page.count }.by(1)
 
-        expect(response).to redirect_to(manage_subforem_path)
+        page = Page.last
+        expect(response).to redirect_to("/page/#{page.slug}")
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.created"))
 
-        page = Page.last
         expect(page.subforem_id).to eq(subforem.id)
       end
     end
@@ -1226,10 +1226,10 @@ RSpec.describe "Subforems", type: :request do
           }
         }
 
-        expect(response).to redirect_to(manage_subforem_path)
+        subforem_page.reload
+        expect(response).to redirect_to("/page/#{subforem_page.slug}")
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
 
-        subforem_page.reload
         expect(subforem_page.title).to eq("Updated Title")
         expect(subforem_page.slug).to eq("updated-slug")
         expect(subforem_page.description).to eq("Updated description")
@@ -1246,10 +1246,10 @@ RSpec.describe "Subforems", type: :request do
           }
         }
 
-        expect(response).to redirect_to(manage_subforem_path)
+        top_level_page.reload
+        expect(response).to redirect_to("/#{top_level_page.slug}")
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
 
-        top_level_page.reload
         expect(top_level_page.title).to eq("Updated Top Level")
         expect(top_level_page.description).to eq("Updated description")
         # Slug and body_markdown should NOT be updated for top-level pages
@@ -1299,10 +1299,10 @@ RSpec.describe "Subforems", type: :request do
           }
         }
 
-        expect(response).to redirect_to(manage_subforem_path)
+        subforem_page.reload
+        expect(response).to redirect_to("/page/#{subforem_page.slug}")
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
 
-        subforem_page.reload
         expect(subforem_page.title).to eq("Mod Updated")
         expect(subforem_page.body_markdown).to eq("# Mod Content")
       end
