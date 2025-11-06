@@ -11,7 +11,7 @@ group :production do
 end
 
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts-as-taggable-on", "~> 10.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "acts-as-taggable-on", "~> 13.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
@@ -84,7 +84,7 @@ gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix Li
 gem "rack-attack", "~> 6.7.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 7.0.8.4" # Ruby on Rails
+gem "rails", "~> 7.1.5" # Ruby on Rails
 gem "ransack", "~> 3.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
@@ -150,7 +150,7 @@ group :development, :test do
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 6.0", ">= 6.0.3" # rspec-rails is a testing framework for Rails 3+
   gem "rspec_junit_formatter", "~> 0.6" # RSpec formatter for JUnit XML output
-  gem "rswag-specs", "~> 2.5.1" # RSwag - Swagger-based DSL for rspec & accompanying rake task for generating Swagger files
+  gem "rswag-specs", "~> 2.17" # RSwag - Swagger-based DSL for rspec & accompanying rake task for generating Swagger files
   gem "rubocop", "~> 1.42", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.14", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.15", require: false # Automatic Rails code style checking tool

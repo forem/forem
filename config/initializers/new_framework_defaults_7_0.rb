@@ -36,10 +36,10 @@ Rails.application.config.active_support.remove_deprecated_time_with_zone_name = 
 
 # Change the format of the cache entry.
 # Changing this default means that all new cache entries added to the cache
-# will have a different format that is not supported by Rails 6.1 applications.
-# Only change this value after your application is fully deployed to Rails 7.0
+# will have a different format that is not supported by Rails 7.0 applications.
+# Only change this value after your application is fully deployed to Rails 7.1
 # and you have no plans to rollback.
-Rails.application.config.active_support.cache_format_version = 7.0
+Rails.application.config.active_support.cache_format_version = 7.1
 
 # Calls `Rails.application.executor.wrap` around test cases.
 # This makes test cases behave closer to an actual request or job.
