@@ -86,7 +86,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
 
           get "/t/#{tag.name}"
           expect(response.body).to include(tag.name)
-          expected_args = ["#{tag.cache_key}/article-cached-tagged-count", { expires_in: 2.hours }]
+          expected_args = ["#{tag.cache_key}/article-cached-tagged-count", { expires_in: 72.hours }]
           expect(Rails.cache).to have_received(:fetch).with(*expected_args).once
         end
 

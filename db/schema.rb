@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_05_154309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -757,6 +757,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.integer "watchers_count"
     t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
     t.index ["url"], name: "index_github_repos_on_url", unique: true
+    t.index ["user_id", "featured"], name: "index_github_repos_on_user_id_and_featured"
   end
 
   create_table "html_variants", force: :cascade do |t|
@@ -823,7 +824,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.datetime "created_at", null: false
     t.boolean "display_only_when_signed_in", default: false
     t.integer "display_to", default: 0, null: false
-    t.string "icon", null: false
+    t.string "icon"
+    t.string "image"
     t.string "name", null: false
     t.integer "position"
     t.integer "section", default: 0, null: false

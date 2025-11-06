@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 18
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
@@ -1068,16 +1068,26 @@ class Article < ApplicationRecord
   end
 
   def restrict_attributes_with_status_types
-    # Return early if this is already saved and the body_markdown hasn't changed
-    return if persisted? && !body_markdown_changed?
+    return unless type_of == "status"
 
-    # For status types, allow body_markdown only if it contains embed tags from URLs in title
-    if type_of == "status" && body_url.blank? && body_markdown.present?
+    # If the article is already persisted and body_markdown is being changed, 
+    # show a different error about edit restrictions
+    # Check if the value actually changed, not just if Rails marked it as changed
+    if persisted? && body_markdown_changed? && body_markdown_was != body_markdown
+      errors.add(:body_markdown, "cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
+      return
+    end
+
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted?
+
+    # For new status types, allow body_markdown only if it contains embed tags from URLs in title
+    if body_url.blank? && body_markdown.present?
       # Allow body_markdown if it only contains embed tags that were added from URLs in title
       unless body_markdown_only_contains_embed_tags_from_title?
         errors.add(:body_markdown, "is not allowed for status types")
       end
-    elsif type_of == "status" && body_url.blank? && (main_image.present? || collection_id.present?)
+    elsif body_url.blank? && (main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end

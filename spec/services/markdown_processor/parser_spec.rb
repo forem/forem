@@ -240,6 +240,24 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(test).to eq("<p><a href=\"#chapter-1\">Chapter 1</a></p>\n\n")
     end
 
+    it "renders mailto links correctly" do
+      code_span = "[Contact us](mailto:test@example.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"mailto:test@example.com\">Contact us</a></p>\n\n")
+    end
+
+    it "renders tel links correctly" do
+      code_span = "[Call us](tel:+1234567890)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"tel:+1234567890\">Call us</a></p>\n\n")
+    end
+
+    it "renders other protocol links correctly" do
+      code_span = "[FTP Server](ftp://files.example.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"ftp://files.example.com\">FTP Server</a></p>\n\n")
+    end
+
     it "does not render CSS classes" do
       expect(generate_and_parse_markdown("<center class=\"w-100\"></center>"))
         .to exclude("class")

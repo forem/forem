@@ -75,10 +75,30 @@ RSpec.describe NavigationLink do
     describe "presence validations" do
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_presence_of(:icon) }
     end
 
-    it "validates the icon" do
+    describe "icon or image validation" do
+      it "is invalid without either icon or image" do
+        link = build(:navigation_link, icon: nil, image: nil)
+        expect(link).not_to be_valid
+        expect(link.errors[:base]).to include("Either an icon (SVG) or an image must be provided")
+      end
+
+      it "is valid with an icon and no image" do
+        link = build(:navigation_link, icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>", image: nil)
+        expect(link).to be_valid
+      end
+
+      it "is valid with an image and no icon" do
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
+        link = build(:navigation_link, icon: nil)
+        link.image = fixture_file_upload("800x600.png", "image/png")
+        expect(link).to be_valid
+      end
+    end
+
+    it "validates the icon format" do
       navigation_link.icon = "test.png"
       expect(navigation_link).not_to be_valid
 

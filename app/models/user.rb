@@ -793,6 +793,8 @@ class User < ApplicationRecord
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
     Rails.cache.delete("user-#{id}/role_names")
+    Rails.cache.delete("user-#{id}/moderator_for_tags")
+    Rails.cache.delete("user-#{id}/moderator_for_subforems")
     refresh_auto_audience_segments
     trusted?
     

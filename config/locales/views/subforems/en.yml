@@ -66,7 +66,7 @@ en:
           internal_content_spec:
             label: Internal Content Description Spec
             placeholder: Describe the internal content description specification...
-            description: Guidelines for AI-generated content descriptions.
+            description: Describe the type of content that should be displayed or prioritized in the feed. This helps AI sort out what should and shouldn't show up in this feed to help deal with spam.
           sidebar_tags:
             label: Sidebar Tags
             placeholder: "help,discuss,explainlikeimfive,meta"
@@ -114,6 +114,7 @@ en:
           heading: Dedicated Pages
           subheading_html: "You can create basic markdown pages for this subforem. <strong>Note:</strong> Advanced page features (HTML, custom templates) may be added in the future."
           create_button: Create Page
+          view_button: View
           edit_button: Edit
           delete_button: Delete
           delete_confirm: Are you sure you want to delete this page?
@@ -143,10 +144,16 @@ en:
             url:
               label: URL
               placeholder: /readinglist
+            image:
+              label: Icon Image (PNG, JPG, JPEG)
+              description: Upload an image file for the navigation link icon. Image will be automatically optimized for display.
+              description_edit: Upload a new image to replace the current icon.
+              current: Current image
             icon:
               label: Icon SVG
               placeholder: '<svg ...>'
               description: Paste the full SVG code for the icon.
+              alternative: Use SVG icon instead of image
             section:
               label: Section
               options:
@@ -166,6 +173,7 @@ en:
         community_bots:
           heading: Community Bots
           manage_button: Manage Bots
+          moderator_notice_html: "<strong>Note:</strong> Community bot management is currently only available to site admins. This feature will be coming to community leaders soon."
           created_label: Created
           api_secrets_label: API Secrets
           view_button: View
@@ -194,6 +202,7 @@ en:
             label: Slug
             placeholder: about-us
             description: URL-safe identifier (lowercase letters, numbers, and hyphens only).
+            description_with_prefix_html: "URL-safe identifier (lowercase letters, numbers, and hyphens only). Your page will be accessible at <code>/page/your-slug</code> (ability to create top-level pages coming in future)."
           description:
             label: Description
             placeholder: A brief description of this page...

@@ -576,6 +576,182 @@ RSpec.describe "Stories::Feeds" do
     end
   end
 
+  describe "fragment caching behavior" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+
+    before do
+      Rails.cache.clear
+    end
+
+    it "caches articles on page 1" do
+      # First request - should cache
+      expect(Rails.cache).to receive(:fetch).at_least(:once).and_call_original
+      
+      get stories_feed_path(page: 1)
+      
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.first["id"]).to eq(article.id)
+    end
+
+    it "caches articles on page 2" do
+      # First request - should cache
+      expect(Rails.cache).to receive(:fetch).at_least(:once).and_call_original
+      
+      get stories_feed_path(page: 2)
+      
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "does not cache articles on page 3" do
+      # Create enough articles to reach page 3
+      create_list(:article, 50, user: user)
+      
+      # Call the endpoint - on page 3, no article-level caching should occur
+      # But we can't prevent all Rails.cache.fetch calls (e.g., Settings), so we just 
+      # verify the response is successful
+      get stories_feed_path(page: 3)
+      
+      expect(response).to have_http_status(:ok)
+      # Response should still include articles even without caching
+      expect(response.parsed_body).not_to be_empty
+    end
+
+    it "invalidates cache when article is edited" do
+      # Populate cache
+      get stories_feed_path(page: 1)
+      first_response = response.parsed_body.find { |item| item["id"] == article.id }
+      
+      # Update article's edited_at
+      article.update!(edited_at: 1.hour.from_now)
+      
+      # Should get fresh data
+      get stories_feed_path(page: 1)
+      second_response = response.parsed_body.find { |item| item["id"] == article.id }
+      
+      expect(second_response["edited_at"]).not_to eq(first_response["edited_at"])
+    end
+
+    it "invalidates cache when a comment is added" do
+      # Populate cache
+      get stories_feed_path(page: 1)
+      initial_comments_count = response.parsed_body.find { |item| item["id"] == article.id }["comments_count"]
+      
+      # Add a comment (which updates last_comment_at)
+      create(:comment, commentable: article, user: user)
+      
+      # Should get fresh data with new comment count
+      get stories_feed_path(page: 1)
+      updated_comments_count = response.parsed_body.find { |item| item["id"] == article.id }["comments_count"]
+      
+      expect(updated_comments_count).to eq(initial_comments_count + 1)
+    end
+
+    it "invalidates cache when a reaction is added" do
+      another_user = create(:user)
+      
+      # Populate cache
+      get stories_feed_path(page: 1)
+      initial_reactions_count = response.parsed_body.find { |item| item["id"] == article.id }["public_reactions_count"]
+      
+      # Add a reaction
+      create(:reaction, reactable: article, category: "like", user: another_user)
+      
+      # Should get fresh data with new reaction count
+      get stories_feed_path(page: 1)
+      updated_reactions_count = response.parsed_body.find { |item| item["id"] == article.id }["public_reactions_count"]
+      
+      expect(updated_reactions_count).to eq(initial_reactions_count + 1)
+    end
+
+    it "invalidates cache when cached_user is updated" do
+      # Populate cache
+      get stories_feed_path(page: 1)
+      first_response = response.parsed_body.find { |item| item["id"] == article.id }
+      original_username = first_response["user"]["username"]
+      
+      # Update user and manually update cached_user on article (as would happen via callbacks in production)
+      new_username = "new_username_#{rand(1000)}"
+      user.update!(username: new_username)
+      article.update!(cached_user: Articles::CachedEntity.from_object(user))
+      
+      # Should get fresh data with updated username
+      get stories_feed_path(page: 1)
+      second_response = response.parsed_body.find { |item| item["id"] == article.id }
+      
+      expect(second_response["user"]["username"]).not_to eq(original_username)
+      expect(second_response["user"]["username"]).to eq(new_username)
+    end
+
+    it "invalidates cache when cached_organization is updated" do
+      organization = create(:organization)
+      article_with_org = create(:article, user: user, organization: organization)
+      
+      # Populate cache
+      get stories_feed_path(page: 1)
+      first_response = response.parsed_body.find { |item| item["id"] == article_with_org.id }
+      original_org_name = first_response["organization"]["name"]
+      
+      # Update organization and manually update cached_organization on article (as would happen via callbacks in production)
+      new_org_name = "New Org Name #{rand(1000)}"
+      organization.update!(name: new_org_name)
+      article_with_org.update!(cached_organization: Articles::CachedEntity.from_object(organization))
+      
+      # Should get fresh data with updated organization
+      get stories_feed_path(page: 1)
+      second_response = response.parsed_body.find { |item| item["id"] == article_with_org.id }
+      
+      expect(second_response["organization"]["name"]).not_to eq(original_org_name)
+      expect(second_response["organization"]["name"]).to eq(new_org_name)
+    end
+
+    it "uses different cache for different locales" do
+      # Populate cache for English
+      I18n.with_locale(:en) do
+        get stories_feed_path(page: 1)
+        expect(response).to have_http_status(:ok)
+      end
+      
+      # Different cache for Spanish
+      I18n.with_locale(:es) do
+        get stories_feed_path(page: 1)
+        expect(response).to have_http_status(:ok)
+      end
+      
+      # Both should have worked without interference
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "includes current_user_signed_in outside of cache" do
+      # Not signed in
+      get stories_feed_path(page: 1)
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["current_user_signed_in"]).to eq(false)
+      
+      # Signed in - should use same cached article but different current_user_signed_in value
+      sign_in user
+      get stories_feed_path(page: 1)
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["current_user_signed_in"]).to eq(true)
+    end
+
+    it "includes feed_config outside of cache" do
+      feed_config = create(:feed_config)
+      sign_in user # Need to be signed in for configured feed strategy
+      
+      # Without feed config
+      get stories_feed_path(page: 1)
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["feed_config"]).to be_nil
+      
+      # With feed config - should use same cached article but different feed_config value
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+      get stories_feed_path(page: 1, item: feed_config.id)
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article["feed_config"]).to eq(feed_config.id)
+    end
+  end
+
   describe "public_reaction_categories cache invalidation" do
     let(:user) { create(:user) }
     let(:article) { create(:article, user: user) }

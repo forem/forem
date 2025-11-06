@@ -195,6 +195,22 @@
     margin: 0; //todo remove
   }
 
+  &__addon {
+    display: flex;
+    align-items: center;
+    padding: calc(0.5em - var(--border-width)) 0.5em;
+    background-color: var(--body-bg);
+    border: var(--border-width) solid var(--form-border);
+    border-radius: var(--radius);
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    color: var(--label-secondary);
+    font-family: var(--ff-monospace);
+    font-size: var(--fs-s);
+    white-space: nowrap;
+  }
+
   > * + * {
     margin-top: var(--su-2);
   }

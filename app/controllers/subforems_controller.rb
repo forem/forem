@@ -5,6 +5,8 @@ class SubforemsController < ApplicationController
   before_action :authorize_subforem, only: %i[edit update add_tag remove_tag]
   before_action :authorize_navigation_link_action, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
   before_action :authorize_page_action, only: %i[new_page create_page edit_page update_page destroy_page]
+  after_action :bust_navigation_links_cache, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
+  after_action :bust_content_change_caches, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
 
   def index
     @subforems = Subforem.where(discoverable: true, root: false).order(score: :desc)
@@ -181,7 +183,7 @@ class SubforemsController < ApplicationController
     
     if @page.save
       flash[:success] = I18n.t("views.subforems.pages.created")
-      redirect_to manage_subforem_path
+      redirect_to @page.path
     else
       flash.now[:error] = @page.errors_as_sentence
       render :new_page
@@ -223,7 +225,7 @@ class SubforemsController < ApplicationController
     
     if @page.update(allowed_params)
       flash[:success] = I18n.t("views.subforems.pages.updated")
-      redirect_to manage_subforem_path
+      redirect_to @page.path
     else
       flash.now[:error] = @page.errors_as_sentence
       render :edit_page
@@ -283,7 +285,7 @@ class SubforemsController < ApplicationController
   end
 
   def navigation_link_params
-    params.require(:navigation_link).permit(:name, :url, :icon, :display_to, :position, :section)
+    params.require(:navigation_link).permit(:name, :url, :icon, :image, :display_to, :position, :section)
   end
 
   def page_params
@@ -385,6 +387,14 @@ class SubforemsController < ApplicationController
       uploader.set_image_type(image_type)
       uploader.store!(image)
     end
+  end
+
+  def bust_navigation_links_cache
+    # Bust the cache for navigation links
+    Rails.cache.delete("navigation_links")
+    Rails.cache.delete("navigation_links-true-#{@subforem.id}")
+    Rails.cache.delete("navigation_links-false-#{@subforem.id}")
+    EdgeCache::Bust.call("/async_info/navigation_links")
   end
 
   def render_forbidden

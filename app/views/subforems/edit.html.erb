@@ -4,7 +4,7 @@
   <header class="crayons-page-header crayons-layout crayons-layout--full">
     <h1 class="crayons-title">
       <%= t("views.subforems.edit.heading", subforem: @subforem.domain) %>
-      <span class="crayons-tag crayons-tag--s crayons-tag--monochrome ml-2"><%= t("views.subforems.edit.beta_badge") %></span>
+      <span class="crayons-tag crayons-tag--s crayons-tag--monochrome ml-2 fs-s"><%= t("views.subforems.edit.beta_badge") %></span>
     </h1>
     <div class="flex gap-2">
       <%= link_to t("views.subforems.edit.back_link"), subforems_path, class: "crayons-btn crayons-btn--ghost" %>
@@ -308,6 +308,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
+              <%= link_to t("views.subforems.edit.pages.view_button"), page.path, class: "crayons-btn crayons-btn--s crayons-btn--outlined", target: "_blank" %>
               <%= link_to t("views.subforems.edit.pages.edit_button"), edit_page_subforem_path(@subforem, page_id: page.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% unless page.is_top_level_path %>
                 <%= button_to t("views.subforems.edit.pages.delete_button"), 
@@ -329,12 +330,12 @@
   <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
     <div class="flex items-center justify-between mb-4">
       <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.navigation_links.heading") %></h2>
-      <button class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()"><%= t("views.subforems.edit.navigation_links.add_button") %></button>
+      <button type="button" class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()"><%= t("views.subforems.edit.navigation_links.add_button") %></button>
     </div>
     
     <!-- Add Navigation Link Form -->
     <div id="nav-link-form" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-      <%= form_with url: create_navigation_link_subforem_path(@subforem), method: :post, local: true do |form| %>
+      <%= form_tag(create_navigation_link_subforem_path(@subforem), method: :post, multipart: true) do %>
         <div class="grid gap-4">
           <div class="crayons-field">
             <%= label_tag 'navigation_link[name]', t("views.subforems.edit.navigation_links.form.name.label"), class: "crayons-field__label" %>
@@ -347,9 +348,20 @@
           </div>
 
           <div class="crayons-field">
-            <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
-            <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: t("views.subforems.edit.navigation_links.form.icon.placeholder"), required: true %>
-            <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+            <%= label_tag 'navigation_link[image]', t("views.subforems.edit.navigation_links.form.image.label"), class: "crayons-field__label" %>
+            <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.image.description") %></p>
+          </div>
+
+          <div class="crayons-field">
+            <button type="button" class="c-link c-link--block mb-2" onclick="toggleSvgIconField('create')">
+              <span id="svg-toggle-create">+ <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %></span>
+            </button>
+            <div id="svg-icon-field-create" style="display: none;">
+              <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
+              <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: t("views.subforems.edit.navigation_links.form.icon.placeholder") %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+            </div>
           </div>
 
           <div class="grid grid-cols-3 gap-4">
@@ -387,7 +399,7 @@
     <!-- Edit Navigation Link Forms (Hidden by default) -->
     <% @navigation_links.each do |link| %>
       <div id="edit-nav-link-form-<%= link.id %>" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-        <%= form_with url: update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, local: true do |form| %>
+        <%= form_tag(update_navigation_link_subforem_path(@subforem, link.id), method: :patch, multipart: true) do %>
           <div class="grid gap-4">
             <div class="crayons-field">
               <%= label_tag 'navigation_link[name]', "Name", class: "crayons-field__label" %>
@@ -400,8 +412,26 @@
             </div>
 
             <div class="crayons-field">
-              <%= label_tag 'navigation_link[icon]', "Icon SVG", class: "crayons-field__label" %>
-              <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3, required: true %>
+              <%= label_tag 'navigation_link[image]', t("views.subforems.edit.navigation_links.form.image.label"), class: "crayons-field__label" %>
+              <% if link.respond_to?(:image) && link.image.present? %>
+                <div class="mb-2">
+                  <div class="text-sm color-base-60 mb-1"><%= t("views.subforems.edit.navigation_links.form.image.current") %></div>
+                  <%= optimized_image_tag(link.image.url, optimizer_options: { width: 48, height: 48, crop: "fill" }, image_options: { alt: "Current icon", style: "width: 48px; height: 48px;" }) %>
+                </div>
+              <% end %>
+              <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.image.description_edit") %></p>
+            </div>
+
+            <div class="crayons-field">
+              <button type="button" class="c-link c-link--block mb-2" onclick="toggleSvgIconField('edit-<%= link.id %>')">
+                <span id="svg-toggle-edit-<%= link.id %>">+ <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %></span>
+              </button>
+              <div id="svg-icon-field-edit-<%= link.id %>" style="display: none;">
+                <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
+                <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3 %>
+                <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+              </div>
             </div>
 
             <div class="grid grid-cols-3 gap-4">
@@ -440,7 +470,11 @@
           <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg" id="nav-link-<%= link.id %>">
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
-                <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <% if link.respond_to?(:image) && link.image.present? %>
+                  <%= optimized_image_tag(link.image.url, optimizer_options: { width: 24, height: 24, crop: "fill" }, image_options: { alt: "#{link.name} icon", style: "width: 16px; height: 16px;" }) %>
+                <% else %>
+                  <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <% end %>
                 <%= link.name %>
               </div>
               <div class="text-sm color-base-60">
@@ -453,7 +487,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)"><%= t("views.subforems.edit.navigation_links.edit_button") %></button>
+              <button type="button" class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)"><%= t("views.subforems.edit.navigation_links.edit_button") %></button>
               <%= button_to t("views.subforems.edit.navigation_links.delete_button"), 
                   destroy_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), 
                   method: :delete, 
@@ -472,10 +506,16 @@
   <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
     <div class="flex items-center justify-between mb-4">
       <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.community_bots.heading") %></h2>
-      <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+      <% if current_user.any_admin? %>
         <%= link_to t("views.subforems.edit.community_bots.manage_button"), admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
       <% end %>
     </div>
+
+    <% unless current_user.any_admin? %>
+      <div class="crayons-notice crayons-notice--info mb-4">
+        <%= t("views.subforems.edit.community_bots.moderator_notice_html") %>
+      </div>
+    <% end %>
     
     <% community_bots = User.community_bots_for_subforem(@subforem.id).includes(:api_secrets).order(created_at: :desc) %>
     
@@ -498,7 +538,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+              <% if current_user.any_admin? %>
                 <%= link_to t("views.subforems.edit.community_bots.view_button"), admin_subforem_community_bot_path(@subforem, bot), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% end %>
             </div>
@@ -692,5 +732,18 @@ document.addEventListener('DOMContentLoaded', function() {
       notification.remove();
     }, 3000);
   }
+  
+  window.toggleSvgIconField = function(formId) {
+    const field = document.getElementById(`svg-icon-field-${formId}`);
+    const toggle = document.getElementById(`svg-toggle-${formId}`);
+    
+    if (field.style.display === 'none') {
+      field.style.display = 'block';
+      toggle.textContent = '- <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %>';
+    } else {
+      field.style.display = 'none';
+      toggle.textContent = '+ <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %>';
+    }
+  };
 });
 </script>

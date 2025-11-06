@@ -29,8 +29,11 @@
         <% unless @page.is_top_level_path %>
           <div class="crayons-field">
             <%= form.label :slug, t("views.subforems.pages.form.slug.label"), class: "crayons-field__label" %>
-            <%= form.text_field :slug, class: "crayons-textfield", placeholder: t("views.subforems.pages.form.slug.placeholder"), required: true, pattern: "[a-z0-9-]+" %>
-            <p class="crayons-field__description"><%= t("views.subforems.pages.form.slug.description") %></p>
+            <div class="flex items-center">
+              <span class="crayons-field__addon">/page/</span>
+              <%= form.text_field :slug, class: "crayons-textfield flex-1", style: "border-top-left-radius: 0; border-bottom-left-radius: 0;", placeholder: t("views.subforems.pages.form.slug.placeholder"), required: true, pattern: "[a-z0-9-]+" %>
+            </div>
+            <p class="crayons-field__description"><%= t("views.subforems.pages.form.slug.description_with_prefix_html") %></p>
           </div>
         <% end %>
 
