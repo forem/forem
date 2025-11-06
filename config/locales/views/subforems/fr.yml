@@ -143,10 +143,16 @@ fr:
             url:
               label: URL
               placeholder: /readinglist
+            image:
+              label: Image d'Icône (PNG, JPG, JPEG)
+              description: Téléchargez un fichier image pour l'icône du lien de navigation. L'image sera automatiquement optimisée pour l'affichage.
+              description_edit: Téléchargez une nouvelle image pour remplacer l'icône actuelle.
+              current: Image actuelle
             icon:
               label: Icône SVG
               placeholder: '<svg ...>'
               description: Collez le code SVG complet de l'icône.
+              alternative: Utiliser une icône SVG au lieu d'une image
             section:
               label: Section
               options:
