@@ -175,7 +175,7 @@ Rails.application.routes.draw do
         post :add_tag
         delete :remove_tag
         post :create_navigation_link
-        match :update_navigation_link, via: %i[post patch]
+        patch 'update_navigation_link/:navigation_link_id', to: 'subforems#update_navigation_link', as: :update_navigation_link
         delete :destroy_navigation_link
         get :new_page
         post :create_page

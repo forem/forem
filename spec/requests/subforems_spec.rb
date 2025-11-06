@@ -771,11 +771,28 @@ RSpec.describe "Subforems", type: :request do
       )
     end
 
+    context "route structure" do
+      it "uses path parameter for navigation_link_id" do
+        # Verify the route includes navigation_link_id as a path parameter, not query parameter
+        expected_path = "/subforems/#{subforem.id}/update_navigation_link/#{navigation_link.id}"
+        generated_path = update_navigation_link_subforem_path(subforem, navigation_link.id)
+        
+        expect(generated_path).to eq(expected_path)
+      end
+
+      it "accepts positional argument for navigation_link_id" do
+        # This confirms the fix for the 404 issue - path parameter instead of query parameter
+        path = update_navigation_link_subforem_path(subforem, navigation_link.id)
+        expect(path).to include("/update_navigation_link/#{navigation_link.id}")
+        expect(path).not_to include("navigation_link_id=")
+      end
+    end
+
     context "when user is admin" do
       before { sign_in admin_user }
 
       it "updates a navigation link" do
-        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+        patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { name: "Updated Link", url: "/updated" } }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -798,7 +815,7 @@ RSpec.describe "Subforems", type: :request do
           position: 1
         )
 
-        patch update_navigation_link_subforem_path(subforem, navigation_link_id: other_link.id),
+        patch update_navigation_link_subforem_path(subforem, other_link.id),
               params: { navigation_link: { name: "Hacked" } }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -813,7 +830,7 @@ RSpec.describe "Subforems", type: :request do
       before { sign_in moderator_user }
 
       it "updates a navigation link" do
-        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+        patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { name: "Updated by Mod" } }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -828,7 +845,7 @@ RSpec.describe "Subforems", type: :request do
       before { sign_in regular_user }
 
       it "returns forbidden" do
-        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+        patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { name: "Hacked" } }
 
         expect(response).to have_http_status(:forbidden)
@@ -841,7 +858,7 @@ RSpec.describe "Subforems", type: :request do
       it "busts navigation links cache on update" do
         allow(EdgeCache::Bust).to receive(:call)
         
-        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+        patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { name: "Updated Link" } }
         
         expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
@@ -860,7 +877,7 @@ RSpec.describe "Subforems", type: :request do
       it "updates a navigation link with an image" do
         image_file = fixture_file_upload("800x600.png", "image/png")
         
-        patch update_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id),
+        patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { image: image_file } }
 
         expect(response).to redirect_to(manage_subforem_path)
