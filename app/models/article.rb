@@ -1072,7 +1072,8 @@ class Article < ApplicationRecord
 
     # If the article is already persisted and body_markdown is being changed, 
     # show a different error about edit restrictions
-    if persisted? && body_markdown_changed?
+    # Check if the value actually changed, not just if Rails marked it as changed
+    if persisted? && body_markdown_changed? && body_markdown_was != body_markdown
       errors.add(:body_markdown, "cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
       return
     end
