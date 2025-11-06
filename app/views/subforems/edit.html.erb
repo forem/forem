@@ -4,7 +4,7 @@
   <header class="crayons-page-header crayons-layout crayons-layout--full">
     <h1 class="crayons-title">
       <%= t("views.subforems.edit.heading", subforem: @subforem.domain) %>
-      <span class="crayons-tag crayons-tag--s crayons-tag--monochrome ml-2"><%= t("views.subforems.edit.beta_badge") %></span>
+      <span class="crayons-tag crayons-tag--s crayons-tag--monochrome ml-2 fs-s"><%= t("views.subforems.edit.beta_badge") %></span>
     </h1>
     <div class="flex gap-2">
       <%= link_to t("views.subforems.edit.back_link"), subforems_path, class: "crayons-btn crayons-btn--ghost" %>
@@ -308,6 +308,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
+              <%= link_to t("views.subforems.edit.pages.view_button"), page.path, class: "crayons-btn crayons-btn--s crayons-btn--outlined", target: "_blank" %>
               <%= link_to t("views.subforems.edit.pages.edit_button"), edit_page_subforem_path(@subforem, page_id: page.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% unless page.is_top_level_path %>
                 <%= button_to t("views.subforems.edit.pages.delete_button"), 
@@ -505,10 +506,16 @@
   <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
     <div class="flex items-center justify-between mb-4">
       <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.community_bots.heading") %></h2>
-      <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+      <% if current_user.any_admin? %>
         <%= link_to t("views.subforems.edit.community_bots.manage_button"), admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
       <% end %>
     </div>
+
+    <% unless current_user.any_admin? %>
+      <div class="crayons-notice crayons-notice--info mb-4">
+        <%= t("views.subforems.edit.community_bots.moderator_notice_html") %>
+      </div>
+    <% end %>
     
     <% community_bots = User.community_bots_for_subforem(@subforem.id).includes(:api_secrets).order(created_at: :desc) %>
     
@@ -531,7 +538,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+              <% if current_user.any_admin? %>
                 <%= link_to t("views.subforems.edit.community_bots.view_button"), admin_subforem_community_bot_path(@subforem, bot), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% end %>
             </div>

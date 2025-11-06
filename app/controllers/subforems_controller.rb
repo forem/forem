@@ -183,7 +183,7 @@ class SubforemsController < ApplicationController
     
     if @page.save
       flash[:success] = I18n.t("views.subforems.pages.created")
-      redirect_to manage_subforem_path
+      redirect_to @page.path
     else
       flash.now[:error] = @page.errors_as_sentence
       render :new_page
@@ -225,7 +225,7 @@ class SubforemsController < ApplicationController
     
     if @page.update(allowed_params)
       flash[:success] = I18n.t("views.subforems.pages.updated")
-      redirect_to manage_subforem_path
+      redirect_to @page.path
     else
       flash.now[:error] = @page.errors_as_sentence
       render :edit_page

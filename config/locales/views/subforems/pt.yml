@@ -114,6 +114,7 @@ pt:
           heading: Páginas Dedicadas
           subheading_html: "Você pode criar páginas básicas em markdown para este subforem. <strong>Nota:</strong> Recursos avançados de página (HTML, templates personalizados) podem ser adicionados no futuro."
           create_button: Criar Página
+          view_button: Ver
           edit_button: Editar
           delete_button: Excluir
           delete_confirm: Tem certeza de que deseja excluir esta página?
@@ -172,6 +173,7 @@ pt:
         community_bots:
           heading: Bots da Comunidade
           manage_button: Gerenciar Bots
+          moderator_notice_html: "<strong>Nota:</strong> O gerenciamento de bots da comunidade está atualmente disponível apenas para administradores do site. Este recurso estará disponível para líderes da comunidade em breve."
           created_label: Criado
           api_secrets_label: Segredos de API
           view_button: Visualizar
@@ -200,6 +202,7 @@ pt:
             label: Slug
             placeholder: sobre-nos
             description: Identificador seguro para URL (apenas letras minúsculas, números e hífens).
+            description_with_prefix_html: "Identificador seguro para URL (apenas letras minúsculas, números e hífens). Sua página estará acessível em <code>/page/seu-slug</code> (capacidade de criar páginas de nível superior chegando no futuro)."
           description:
             label: Descrição
             placeholder: Uma breve descrição desta página...
