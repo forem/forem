@@ -143,10 +143,16 @@ en:
             url:
               label: URL
               placeholder: /readinglist
+            image:
+              label: Icon Image (PNG, JPG, JPEG)
+              description: Upload an image file for the navigation link icon. Image will be automatically optimized for display.
+              description_edit: Upload a new image to replace the current icon.
+              current: Current image
             icon:
               label: Icon SVG
               placeholder: '<svg ...>'
               description: Paste the full SVG code for the icon.
+              alternative: Use SVG icon instead of image
             section:
               label: Section
               options:
