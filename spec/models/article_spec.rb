@@ -274,17 +274,29 @@ RSpec.describe Article do
 
     describe "#restrict_attributes_with_status_types" do
       context "when the article is persisted and body_markdown hasn't changed" do
-        it "does not run validation" do
+        it "does not run validation when changing title" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.title = "Updated Title"
           expect(article).to be_valid
         end
 
-        it "runs validation if body_markdown has changed" do
+        it "does not run validation when changing featured" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.featured = true
+          expect(article).to be_valid
+        end
+
+        it "does not run validation when changing other attributes" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.approved = true
+          expect(article).to be_valid
+        end
+
+        it "shows edit restriction error if body_markdown has changed" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.body_markdown = "New body content"
           expect(article).not_to be_valid
-          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
         end
       end
 
