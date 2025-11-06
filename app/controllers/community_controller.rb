@@ -45,7 +45,7 @@ class CommunityController < ApplicationController
       .limit(8)
     
     # Get key pages for this subforem
-    @key_pages = Page.from_subforem.where(is_top_level_path: true).limit(6)
+    @key_pages = Page.where(subforem_id: RequestStore.store[:subforem_id]).where(is_top_level_path: true).limit(6)
     
     # Get welcome article if it exists
     @welcome_article = Article.from_subforem.admin_published_with("welcome").first ||

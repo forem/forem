@@ -23,8 +23,9 @@
   <div class="crayons-layout__content">
     <!-- Top Recent Authors Section -->
     <section class="mb-6 mt-2">
+      <h2 class="mb-6 px-2 m:px-0">Popular Community Members</h2>
       <% if @top_authors.any? %>
-        <div class="grid gap-2 grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
+        <div class="px-2 m:px-0 grid gap-2 grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
           <% @top_authors.each do |author| %>
             <div class="crayons-card p-4 flex flex-col items-center text-center">
               <a href="/<%= author.username %>" class="mb-2">
