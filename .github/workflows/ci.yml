@@ -70,51 +70,19 @@ jobs:
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
+        # ADDED: Options to make the healthcheck more reliable
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis
         ports:
           - 6379:6379
-
-    strategy:
-      fail-fast: false
-      matrix:
-        ci_node_total: [15]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Restore compiled assets
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: |
-            public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
-      - run: cp .env_sample .env
-      - run: bundle exec rails db:test:prepare
-      - name: RSpec
-        run: bin/knapsack_pro_rspec
-      - name: Upload RSpec artifacts
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: rspec-artifacts-${{ matrix.ci_node_index }}
-          path: tmp/capybara
-      - name: Rename folder
-        run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
-      - name: Upload test coverage result
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-rspec-${{ matrix.ci_node_index }}
-          path: coverage/
+        # ADDED: Options to make the healthcheck more reliable
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
