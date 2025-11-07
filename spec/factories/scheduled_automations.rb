@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :scheduled_automation do
-    association :user, factory: :user, type_of: :community_bot
     frequency { "daily" }
     frequency_config { { "hour" => 9, "minute" => 0 } }
     action { "create_draft" }
@@ -9,6 +8,10 @@ FactoryBot.define do
     state { "active" }
     enabled { true }
     next_run_at { 1.day.from_now }
+
+    after(:build) do |scheduled_automation|
+      scheduled_automation.user ||= build(:user, type_of: :community_bot)
+    end
 
     trait :hourly do
       frequency { "hourly" }
