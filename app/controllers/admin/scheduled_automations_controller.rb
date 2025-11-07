@@ -19,20 +19,20 @@ module Admin
       @automation = @bot.scheduled_automations.build
     end
 
-    def create
-      @automation = @bot.scheduled_automations.build(automation_params)
+  def create
+    @automation = @bot.scheduled_automations.build(automation_params)
 
-      # Calculate and set the next run time
+    if @automation.valid?
+      # Calculate and set the next run time only if valid
       @automation.set_next_run_time!
-
-      if @automation.save
-        flash[:success] = "Scheduled automation created successfully!"
-        redirect_to admin_subforem_community_bot_scheduled_automations_path(@subforem, @bot)
-      else
-        flash.now[:error] = @automation.errors.full_messages.join(", ")
-        render :new
-      end
+      @automation.save!
+      flash[:success] = "Scheduled automation created successfully!"
+      redirect_to admin_subforem_community_bot_scheduled_automations_path(@subforem, @bot)
+    else
+      flash.now[:error] = @automation.errors.full_messages.join(", ")
+      render :new
     end
+  end
 
     def edit
       # Edit form for automation

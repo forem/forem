@@ -90,7 +90,7 @@ module ScheduledAutomations
     def call_github_repo_recap_service
       # Extract service configuration
       repo_name = @automation.action_config["repo_name"]
-      days_ago = @automation.action_config["days_ago"] || 7
+      days_ago = (@automation.action_config["days_ago"] || 7).to_i
 
       unless repo_name.present?
         raise ArgumentError, "repo_name is required in action_config for github_repo_recap service"
@@ -173,16 +173,13 @@ module ScheduledAutomations
 
       # Set organization if specified
       if config["organization_id"].present?
-        article.organization_id = config["organization_id"]
+        article.organization_id = config["organization_id"].to_i
       end
 
       # Set subforem if specified
       if config["subforem_id"].present?
-        article.subforem_id = config["subforem_id"]
+        article.subforem_id = config["subforem_id"].to_i
       end
-
-      # Set as main feed eligible by default unless specified
-      article.main_feed_eligible = config.fetch("main_feed_eligible", true)
     end
   end
 end
