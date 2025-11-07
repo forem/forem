@@ -70,10 +70,22 @@ jobs:
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
+        # ADDED: Options to make the healthcheck more reliable
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis
         ports:
           - 6379:6379
+        # ADDED: Options to make the healthcheck more reliable
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     strategy:
       fail-fast: false
@@ -99,10 +111,34 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
+
+      # MODIFIED: Added postgresql-client and redis-tools for the wait step
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y imagemagick postgresql-client redis-tools
+
+      # NEW: This is the fix. It waits until Postgres and Redis are fully ready
+      - name: Wait for services
+        run: |
+          echo "Waiting for Postgres..."
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            sleep 2
+          done
+          echo "Postgres is ready."
+
+          echo "Waiting for Redis..."
+          until redis-cli -h localhost -p 6379 ping; do
+            sleep 2
+          done
+          echo "Redis is ready."
+
       - run: cp .env_sample .env
-      - run: bundle exec rails db:test:prepare
+
+      # MODIFIED: Replaced db:test:prepare with the more explicit, modern commands
+      - name: Setup Database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - name: Upload RSpec artifacts
