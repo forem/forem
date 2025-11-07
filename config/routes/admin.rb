@@ -136,7 +136,13 @@ namespace :admin do
     resources :profile_fields, only: %i[index update create destroy]
     resources :subforems, only: %i[index new create edit update show] do
       resource :moderator, only: %i[create destroy], module: "subforem_moderators"
-      resources :community_bots, only: %i[index new create show destroy]
+      resources :community_bots, only: %i[index new create show destroy] do
+        resources :scheduled_automations, only: %i[index new create edit update destroy] do
+          member do
+            post :toggle_enabled
+          end
+        end
+      end
     end
   end
 
