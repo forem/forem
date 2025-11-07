@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_05_154309) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -256,6 +256,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_05_154309) do
   create_table "billboard_placement_area_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "placement_area", null: false
+    t.jsonb "selection_weights", default: {}, null: false
     t.integer "signed_in_rate", default: 100, null: false
     t.integer "signed_out_rate", default: 100, null: false
     t.datetime "updated_at", null: false
@@ -1232,6 +1233,26 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_05_154309) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "scheduled_automations", force: :cascade do |t|
+    t.string "action", null: false
+    t.jsonb "action_config", default: {}
+    t.text "additional_instructions"
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: true, null: false
+    t.string "frequency", null: false
+    t.jsonb "frequency_config", default: {}
+    t.datetime "last_run_at"
+    t.datetime "next_run_at"
+    t.string "service_name", null: false
+    t.string "state", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["next_run_at"], name: "index_scheduled_automations_on_next_run_at"
+    t.index ["state", "next_run_at"], name: "index_scheduled_automations_on_state_and_next_run_at"
+    t.index ["user_id", "enabled"], name: "index_scheduled_automations_on_user_id_and_enabled"
+    t.index ["user_id"], name: "index_scheduled_automations_on_user_id"
+  end
+
   create_table "segmented_users", force: :cascade do |t|
     t.bigint "audience_segment_id", null: false
     t.datetime "created_at", null: false
@@ -1790,6 +1811,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_05_154309) do
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
+  add_foreign_key "scheduled_automations", "users"
   add_foreign_key "segmented_users", "audience_segments"
   add_foreign_key "segmented_users", "users"
   add_foreign_key "survey_completions", "surveys"
