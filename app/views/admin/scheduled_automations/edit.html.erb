@@ -204,8 +204,16 @@ function updateServiceFields() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-  updateFrequencyFields();
-  updateServiceFields();
+  const frequency = document.getElementById('frequency').value;
+  const serviceName = document.getElementById('service_name').value;
+  
+  // Always update fields on edit page since values are already selected
+  if (frequency) {
+    updateFrequencyFields();
+  }
+  if (serviceName) {
+    updateServiceFields();
+  }
 });
 </script>
 

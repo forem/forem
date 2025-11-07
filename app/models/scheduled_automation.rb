@@ -79,8 +79,11 @@ class ScheduledAutomation < ApplicationRecord
     minute = frequency_config["minute"]
     if minute.nil?
       errors.add(:frequency_config, "must include 'minute' for hourly frequency")
-    elsif !minute.is_a?(Integer) || minute < 0 || minute > 59
-      errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+    else
+      minute = minute.to_i
+      if minute < 0 || minute > 59
+        errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+      end
     end
   end
 
@@ -91,14 +94,20 @@ class ScheduledAutomation < ApplicationRecord
     
     if hour.nil?
       errors.add(:frequency_config, "must include 'hour' for daily frequency")
-    elsif !hour.is_a?(Integer) || hour < 0 || hour > 23
-      errors.add(:frequency_config, "hour must be an integer between 0 and 23")
+    else
+      hour = hour.to_i
+      if hour < 0 || hour > 23
+        errors.add(:frequency_config, "hour must be an integer between 0 and 23")
+      end
     end
 
     if minute.nil?
       errors.add(:frequency_config, "must include 'minute' for daily frequency")
-    elsif !minute.is_a?(Integer) || minute < 0 || minute > 59
-      errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+    else
+      minute = minute.to_i
+      if minute < 0 || minute > 59
+        errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+      end
     end
   end
 
@@ -110,20 +119,29 @@ class ScheduledAutomation < ApplicationRecord
 
     if day_of_week.nil?
       errors.add(:frequency_config, "must include 'day_of_week' for weekly frequency")
-    elsif !day_of_week.is_a?(Integer) || day_of_week < 0 || day_of_week > 6
-      errors.add(:frequency_config, "day_of_week must be an integer between 0 (Sunday) and 6 (Saturday)")
+    else
+      day_of_week = day_of_week.to_i
+      if day_of_week < 0 || day_of_week > 6
+        errors.add(:frequency_config, "day_of_week must be an integer between 0 (Sunday) and 6 (Saturday)")
+      end
     end
 
     if hour.nil?
       errors.add(:frequency_config, "must include 'hour' for weekly frequency")
-    elsif !hour.is_a?(Integer) || hour < 0 || hour > 23
-      errors.add(:frequency_config, "hour must be an integer between 0 and 23")
+    else
+      hour = hour.to_i
+      if hour < 0 || hour > 23
+        errors.add(:frequency_config, "hour must be an integer between 0 and 23")
+      end
     end
 
     if minute.nil?
       errors.add(:frequency_config, "must include 'minute' for weekly frequency")
-    elsif !minute.is_a?(Integer) || minute < 0 || minute > 59
-      errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+    else
+      minute = minute.to_i
+      if minute < 0 || minute > 59
+        errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+      end
     end
   end
 
@@ -135,20 +153,29 @@ class ScheduledAutomation < ApplicationRecord
 
     if interval_days.nil?
       errors.add(:frequency_config, "must include 'interval_days' for custom_interval frequency")
-    elsif !interval_days.is_a?(Integer) || interval_days < 1
-      errors.add(:frequency_config, "interval_days must be a positive integer")
+    else
+      interval_days = interval_days.to_i
+      if interval_days < 1
+        errors.add(:frequency_config, "interval_days must be a positive integer")
+      end
     end
 
     if hour.nil?
       errors.add(:frequency_config, "must include 'hour' for custom_interval frequency")
-    elsif !hour.is_a?(Integer) || hour < 0 || hour > 23
-      errors.add(:frequency_config, "hour must be an integer between 0 and 23")
+    else
+      hour = hour.to_i
+      if hour < 0 || hour > 23
+        errors.add(:frequency_config, "hour must be an integer between 0 and 23")
+      end
     end
 
     if minute.nil?
       errors.add(:frequency_config, "must include 'minute' for custom_interval frequency")
-    elsif !minute.is_a?(Integer) || minute < 0 || minute > 59
-      errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+    else
+      minute = minute.to_i
+      if minute < 0 || minute > 59
+        errors.add(:frequency_config, "minute must be an integer between 0 and 59")
+      end
     end
   end
 
@@ -161,7 +188,7 @@ class ScheduledAutomation < ApplicationRecord
   end
 
   def calculate_hourly_next_run(from_time)
-    minute = frequency_config["minute"]
+    minute = frequency_config["minute"].to_i
     next_run = from_time.change(min: minute, sec: 0)
     
     # If the time has already passed this hour, schedule for next hour
@@ -171,8 +198,8 @@ class ScheduledAutomation < ApplicationRecord
   end
 
   def calculate_daily_next_run(from_time)
-    hour = frequency_config["hour"]
-    minute = frequency_config["minute"]
+    hour = frequency_config["hour"].to_i
+    minute = frequency_config["minute"].to_i
     
     next_run = from_time.change(hour: hour, min: minute, sec: 0)
     
@@ -183,9 +210,9 @@ class ScheduledAutomation < ApplicationRecord
   end
 
   def calculate_weekly_next_run(from_time)
-    day_of_week = frequency_config["day_of_week"]
-    hour = frequency_config["hour"]
-    minute = frequency_config["minute"]
+    day_of_week = frequency_config["day_of_week"].to_i
+    hour = frequency_config["hour"].to_i
+    minute = frequency_config["minute"].to_i
     
     # Calculate days until target day of week
     current_wday = from_time.wday
@@ -202,9 +229,9 @@ class ScheduledAutomation < ApplicationRecord
   end
 
   def calculate_custom_interval_next_run(from_time)
-    interval_days = frequency_config["interval_days"]
-    hour = frequency_config["hour"]
-    minute = frequency_config["minute"]
+    interval_days = frequency_config["interval_days"].to_i
+    hour = frequency_config["hour"].to_i
+    minute = frequency_config["minute"].to_i
     
     # If this is the first run, schedule for the specified time today or tomorrow
     if last_run_at.nil?
