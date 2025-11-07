@@ -50,6 +50,7 @@ class User < ApplicationRecord
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
+  has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
