@@ -3,6 +3,8 @@ import { JSDOM } from 'jsdom';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { Preview } from '../Preview';
+import { useState } from 'preact/hooks';
+import { Form } from '../Form';
 import '@testing-library/jest-dom';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -210,4 +212,65 @@ describe('<Preview />', () => {
   });
 
   // TODO: need to write a test for the cover image for v1
+});
+
+// Integration test: Form stays mounted (invisible) when switching to Preview
+describe('Preview + Form integration', () => {
+  /**
+   * This test simulates the real scenario where the Form is always rendered,
+   * but hidden (display: none) when in Preview mode.
+   * This ensures the browser keeps the undo/redo history alive.
+   */
+  function TestWrapper() {
+    const [preview, setPreview] = useState(false);
+
+    return (
+      <div>
+        <button onClick={() => setPreview((p) => !p)}>Toggle Preview</button>
+        <div
+          data-testid="form-container"
+          style={{ display: preview ? 'none' : 'block' }}
+        >
+          <Form
+            titleDefaultValue="Test"
+            titleOnChange={() => {}}
+            tagsDefaultValue="tag"
+            tagsOnInput={() => {}}
+            bodyDefaultValue="markdown"
+            bodyOnChange={() => {}}
+            bodyHasFocus={false}
+            version="v2"
+            mainImage={null}
+            onMainImageUrlChange={() => {}}
+            errors={null}
+            switchHelpContext={() => {}}
+            coverImageHeight="400"
+            coverImageCrop="center"
+            previewMode={preview}
+          />
+        </div>
+        {preview && (
+          <Preview
+            previewLoading={false}
+            previewResponse={{ processed_html: '<p>preview</p>' }}
+            articleState={{}}
+            errors={null}
+          />
+        )}
+      </div>
+    );
+  }
+
+  it('keeps the Form mounted in the DOM (but hidden) when switching to Preview mode', () => {
+    const { getByText, getByTestId } = render(<TestWrapper />);
+    // Form is visible initially
+    expect(getByTestId('form-container')).toBeVisible();
+
+    // Switch to preview mode
+    getByText('Toggle Preview').click();
+
+    // Form is still in the DOM, but not visible
+    expect(getByTestId('form-container')).toBeInTheDocument();
+    expect(getByTestId('form-container')).not.toBeVisible();
+  });
 });

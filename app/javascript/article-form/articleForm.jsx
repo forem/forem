@@ -158,13 +158,20 @@ export class ArticleForm extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.localStoreContent);
+    window.addEventListener('keydown', this.handleBlockUndoRedo);
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.localStoreContent);
+    window.removeEventListener('keydown', this.handleBlockUndoRedo);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.previewShowing && !prevState.previewShowing) {
+      window.addEventListener('keydown', this.handleBlockUndoRedo);
+    } else if (!this.state.previewShowing && prevState.previewShowing) {
+      window.removeEventListener('keydown', this.handleBlockUndoRedo);
+    }
     const { previewResponse } = this.state;
 
     if (previewResponse?.processed_html) {
@@ -173,6 +180,16 @@ export class ArticleForm extends Component {
       this.constructor.handleAsciinemaPreview();
     }
   }
+  
+  handleBlockUndoRedo = (e) => {
+    if (
+      this.state.previewShowing &&
+      ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'y'))
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 
   localStoreContent = () => {
     if (sessionStorage.getItem('isSigningOut') === 'true') {
@@ -484,6 +501,27 @@ export class ArticleForm extends Component {
           {previewShowing && !previewLoading ? locale('core.article_form_preview_loaded') : null}
         </span>
 
+
+        <Form
+          key={formKey}
+          titleDefaultValue={title}
+          titleOnChange={linkState(this, 'title')}
+          tagsDefaultValue={tagList}
+          tagsOnInput={linkState(this, 'tagList')}
+          bodyDefaultValue={bodyMarkdown}
+          bodyOnChange={linkState(this, 'bodyMarkdown')}
+          bodyHasFocus={false}
+          version={version}
+          mainImage={mainImage}
+          onMainImageUrlChange={this.handleMainImageUrlChange}
+          errors={errors}
+          switchHelpContext={this.switchHelpContext}
+          coverImageHeight={coverImageHeight}
+          coverImageCrop={coverImageCrop}
+          previewMode={previewShowing || previewLoading}
+        />
+
+
         {previewShowing || previewLoading ? (
           <Preview
             previewLoading={previewLoading}
@@ -492,25 +530,9 @@ export class ArticleForm extends Component {
             errors={errors}
             markdownLintErrors={markdownLintErrors}
           />
-        ) : (
-          <Form
-            key={formKey}
-            titleDefaultValue={title}
-            titleOnChange={linkState(this, 'title')}
-            tagsDefaultValue={tagList}
-            tagsOnInput={linkState(this, 'tagList')}
-            bodyDefaultValue={bodyMarkdown}
-            bodyOnChange={linkState(this, 'bodyMarkdown')}
-            bodyHasFocus={false}
-            version={version}
-            mainImage={mainImage}
-            onMainImageUrlChange={this.handleMainImageUrlChange}
-            errors={errors}
-            switchHelpContext={this.switchHelpContext}
-            coverImageHeight={coverImageHeight}
-            coverImageCrop={coverImageCrop}
-          />
-        )}
+        ) : null}
+
+
 
         <Help
           previewShowing={previewShowing}

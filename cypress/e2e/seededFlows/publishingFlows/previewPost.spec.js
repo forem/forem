@@ -184,6 +184,113 @@ describe('Post Editor', () => {
           );
         });
     });
+
+    /*
+    We use realType and realPress to simulate real keyboard input events.
+    This ensures native undo/redo (e.g., Ctrl+Z) works as expected during the test.
+    Info on cypress-real-events (https://github.com/dmtrKovalenko/cypress-real-events?tab=readme-ov-file)
+    */
+    it('should preserve undo history after switching to preview and back', () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
+
+      // Clear and select title 
+      cy.get('@articleForm')
+        .findByLabelText('Post Title')
+        .click();
+
+      // Type "Title" using realType
+      cy.realType('Title');
+    
+      // Clear and select publication body
+      cy.get('@articleForm')
+        .findByLabelText('Post Content')
+        .as('editorField')
+        .clear()
+        .click();
+
+      cy.realType("Body");
+
+      // Switch to Preview Mode
+      cy.get('@articleForm')
+        .findByRole('button', { name: /^Preview$/i })
+        .should('exist')
+        .click();
+
+      cy.contains('Loading preview').should('exist');
+      cy.contains('Loading preview').should('not.exist');
+      cy.contains('Create Post').should('exist');
+      cy.contains('Title').should('exist');
+      cy.contains('Body').should('exist');
+
+      // Switch to Edit Mode
+      cy.get('@articleForm')
+        .findByRole('button', { name: /^Edit$/i })
+        .should('exist')
+        .click();
+
+      cy.get('@articleForm')
+        .findByLabelText('Post Content')
+        .should('have.value', 'Body')
+        .as('editorField')
+        .click();
+
+      // Press Ctrl+Z 6 times using realPress to undo word "Body" and sufix "-le" from Title
+      Cypress._.times(6, () => {
+        cy.realPress(['Control', 'z']);
+      });
+
+      cy.get('@articleForm')
+        .findByLabelText('Post Content')
+        .should('have.value', '');
+
+      //Prefix "Tit" from word "Title should remain in markdown"
+        cy.get('@articleForm')
+        .findByLabelText('Post Title')
+        .should('have.value', 'Tit');
+    });
+    
+    it('should not be able to use undo while in preview', () => {
+      cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
+
+      cy.get('@articleForm')
+        .findByLabelText('Post Content')
+        .as('editorField')
+        .clear()
+        .click();
+
+      // Type using realType
+      cy.realType("Can only Undo on Edit Mode");
+
+      // Switch to Preview Mode
+      cy.get('@articleForm')
+        .findByRole('button', { name: /^Preview$/i })
+        .should('exist')
+        .click();
+
+      cy.contains('Loading preview').should('exist');
+      cy.contains('Loading preview').should('not.exist');
+      cy.contains('Can only Undo on Edit Mode').should('exist');
+
+      // Press ctrl+z any number of times, there should be no changes
+      Cypress._.times(7, () => {
+        cy.realPress(['Control', 'z']);
+      });
+
+      cy.contains('Can only Undo on Edit Mode').should('exist');
+
+      // Switch to Edit Mode
+      cy.get('@articleForm')
+        .findByRole('button', { name: /^Edit$/i })
+        .should('exist')
+        .click();
+
+      cy.realPress(['Control', 'z']);
+
+      // Last written caracter should be removed
+      cy.get('@articleForm')
+        .findByLabelText('Post Content')
+        .should('have.value', 'Can only Undo on Edit Mod');
+    });
   });
 
   describe('Accessibility suggestions', () => {
