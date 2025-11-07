@@ -86,3 +86,71 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [15]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      # MODIFIED: Added postgresql-client and redis-tools for the wait step
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y imagemagick postgresql-client redis-tools
+
+      # NEW: This is the fix. It waits until Postgres and Redis are fully ready
+      - name: Wait for services
+        run: |
+          echo "Waiting for Postgres..."
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            sleep 2
+          done
+          echo "Postgres is ready."
+
+          echo "Waiting for Redis..."
+          until redis-cli -h localhost -p 6379 ping; do
+            sleep 2
+          done
+          echo "Redis is ready."
+
+      - run: cp .env_sample .env
+
+      # MODIFIED: Replaced db:test:prepare with the more explicit, modern commands
+      - name: Setup Database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+
+      - name: RSpec
+        run: bin/knapsack_pro_rspec
+      - name: Upload RSpec artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rspec-artifacts-${{ matrix.ci_node_index }}
+          path: tmp/capybara
+      - name: Rename folder
+        run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
+      - name: Upload test coverage result
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-rspec-${{ matrix.ci_node_index }}
+          path: coverage/
