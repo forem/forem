@@ -1,0 +1,94 @@
+<header class="mb-6">
+  <h1 class="crayons-title">Edit Configuration: <%= @human_readable_area %></h1>
+  <%= link_to "← Back to all configs", admin_billboard_placement_area_configs_path, class: "crayons-link" %>
+</header>
+
+<div class="crayons-card p-6">
+  <%= form_for [:admin, @config], method: :patch do |f| %>
+    <div class="grid gap-6">
+      <div class="crayons-field">
+        <%= f.label :signed_in_rate, "Delivery Rate for Signed-In Users (%)", class: "crayons-field__label" %>
+        <%= f.number_field :signed_in_rate, min: 0, max: 100, class: "crayons-textfield", required: true %>
+        <p class="crayons-field__description">
+          Percentage of signed-in users who will be shown billboards in this placement area (0-100).
+        </p>
+      </div>
+
+      <div class="crayons-field">
+        <%= f.label :signed_out_rate, "Delivery Rate for Signed-Out Users (%)", class: "crayons-field__label" %>
+        <%= f.number_field :signed_out_rate, min: 0, max: 100, class: "crayons-textfield", required: true %>
+        <p class="crayons-field__description">
+          Percentage of signed-out users who will be shown billboards in this placement area (0-100).
+        </p>
+      </div>
+
+      <hr class="my-4">
+
+      <h2 class="crayons-subtitle-2">Selection Strategy Weights</h2>
+      <p class="color-base-60 mb-4">
+        These weights are relative to each other and control how billboards are selected. 
+        For example, if "Random Selection" is 5 and "Weighted Performance" is 60, 
+        then weighted performance will be chosen 12 times more often than random selection.
+      </p>
+
+      <%= f.fields_for :selection_weights, OpenStruct.new(@config.selection_weights || {}) do |weights_form| %>
+        <div class="grid gap-4">
+          <div class="crayons-field">
+            <%= weights_form.label :random_selection, "Random Selection Weight", class: "crayons-field__label" %>
+            <%= weights_form.number_field :random_selection, 
+                value: @config.selection_weights["random_selection"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["random_selection"],
+                min: 0, 
+                class: "crayons-textfield" %>
+            <p class="crayons-field__description">
+              Completely random selection. Gives all billboards equal chance regardless of performance.
+            </p>
+          </div>
+
+          <div class="crayons-field">
+            <%= weights_form.label :new_and_priority, "New and Priority Weight", class: "crayons-field__label" %>
+            <%= weights_form.number_field :new_and_priority, 
+                value: @config.selection_weights["new_and_priority"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["new_and_priority"],
+                min: 0, 
+                class: "crayons-textfield" %>
+            <p class="crayons-field__description">
+              Weighted selection for billboards with fewer impressions or marked as priority.
+            </p>
+          </div>
+
+          <div class="crayons-field">
+            <%= weights_form.label :new_only, "New Only Weight", class: "crayons-field__label" %>
+            <%= weights_form.number_field :new_only, 
+                value: @config.selection_weights["new_only"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["new_only"],
+                min: 0, 
+                class: "crayons-textfield" %>
+            <p class="crayons-field__description">
+              Only shows billboards with fewer than <%= @config.low_impression_count %> impressions.
+            </p>
+          </div>
+
+          <div class="crayons-field">
+            <%= weights_form.label :weighted_performance, "Weighted Performance Weight", class: "crayons-field__label" %>
+            <%= weights_form.number_field :weighted_performance, 
+                value: @config.selection_weights["weighted_performance"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["weighted_performance"],
+                min: 0, 
+                class: "crayons-textfield" %>
+            <p class="crayons-field__description">
+              Favors billboards with better engagement and success rates.
+            </p>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="crayons-notice crayons-notice--info" aria-live="polite">
+        <strong>Example:</strong> If you set Random=5, New&Priority=30, NewOnly=5, Performance=60, 
+        then 60% of billboard selections will use performance-based selection, 30% will use new/priority, etc.
+      </div>
+
+      <div class="flex gap-2">
+        <%= f.submit "Update Configuration", class: "crayons-btn" %>
+        <%= link_to "Cancel", admin_billboard_placement_area_configs_path, class: "crayons-btn crayons-btn--secondary" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+

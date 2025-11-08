@@ -66,7 +66,7 @@ fr:
           internal_content_spec:
             label: Spécification de Description de Contenu Interne
             placeholder: Décrivez la spécification de description de contenu interne...
-            description: Directives pour les descriptions de contenu générées par IA.
+            description: Décrivez le type de contenu qui doit être affiché ou priorisé dans le fil. Cela aide l'IA à déterminer ce qui devrait et ne devrait pas apparaître dans ce fil pour aider à gérer le spam.
           sidebar_tags:
             label: Tags de la Barre Latérale
             placeholder: "help,discuss,explainlikeimfive,meta"
@@ -114,6 +114,7 @@ fr:
           heading: Pages Dédiées
           subheading_html: "Vous pouvez créer des pages markdown de base pour ce subforem. <strong>Note :</strong> Des fonctionnalités de page avancées (HTML, modèles personnalisés) peuvent être ajoutées à l'avenir."
           create_button: Créer une Page
+          view_button: Voir
           edit_button: Modifier
           delete_button: Supprimer
           delete_confirm: Êtes-vous sûr de vouloir supprimer cette page ?
@@ -143,10 +144,16 @@ fr:
             url:
               label: URL
               placeholder: /readinglist
+            image:
+              label: Image d'Icône (PNG, JPG, JPEG)
+              description: Téléchargez un fichier image pour l'icône du lien de navigation. L'image sera automatiquement optimisée pour l'affichage.
+              description_edit: Téléchargez une nouvelle image pour remplacer l'icône actuelle.
+              current: Image actuelle
             icon:
               label: Icône SVG
               placeholder: '<svg ...>'
               description: Collez le code SVG complet de l'icône.
+              alternative: Utiliser une icône SVG au lieu d'une image
             section:
               label: Section
               options:
@@ -166,6 +173,7 @@ fr:
         community_bots:
           heading: Bots de la Communauté
           manage_button: Gérer les Bots
+          moderator_notice_html: "<strong>Note :</strong> La gestion des bots communautaires est actuellement disponible uniquement pour les administrateurs du site. Cette fonctionnalité sera bientôt disponible pour les leaders de communauté."
           created_label: Créé
           api_secrets_label: Secrets API
           view_button: Voir
@@ -194,6 +202,7 @@ fr:
             label: Slug
             placeholder: a-propos-de-nous
             description: Identifiant sécurisé pour l'URL (lettres minuscules, chiffres et tirets uniquement).
+            description_with_prefix_html: "Identifiant sécurisé pour l'URL (lettres minuscules, chiffres et tirets uniquement). Votre page sera accessible à <code>/page/votre-slug</code> (la possibilité de créer des pages de niveau supérieur arrive dans le futur)."
           description:
             label: Description
             placeholder: Une brève description de cette page...

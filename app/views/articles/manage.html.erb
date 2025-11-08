@@ -1,63 +1,270 @@
 <% title t("views.manager.meta.title", title: @article.title) %>
-<main id="main-content">
-  <div class="dashboard-manage-header">
-    <div class="dashboard-manage-header-inner-container">
-      <div class="dashboard-manage-nav">
-        <a href="/dashboard"><%= t("views.manager.nav.dashboard") %></a><%= t("views.manager.nav.text") %>
+<main id="main-content" class="manage-page-with-sidebar">
+  <!-- Sidebar Navigation -->
+  <aside class="manage-sidebar crayons-card" id="manage-sidebar">
+    <nav class="manage-sidebar-nav">
+      <h3 class="manage-sidebar-title">Sections</h3>
+        <ul class="manage-sidebar-list">
+        <li><a href="#section-overview" class="manage-sidebar-link" data-section="section-overview">Overview</a></li>
+        <li><a href="#section-stats" class="manage-sidebar-link" data-section="section-stats">Statistics</a></li>
+        <li><a href="#section-edit" class="manage-sidebar-link" data-section="section-edit">Edit Post</a></li>
+        <li><a href="#section-pin" class="manage-sidebar-link" data-section="section-pin">Pin to Profile</a></li>
+        <li><a href="#section-discussion" class="manage-sidebar-link" data-section="section-discussion">Discussion Lock</a></li>
+        <li><a href="#section-delete" class="manage-sidebar-link" data-section="section-delete">Delete Post</a></li>
+        <li><a href="#section-tips" class="manage-sidebar-link" data-section="section-tips">Tips</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="manage-main-content">
+    <nav class="mb-4">
+      <a href="/dashboard" class="crayons-link"><%= t("views.manager.nav.dashboard") %></a><%= t("views.manager.nav.text") %>
+    </nav>
+
+    <% if flash[:error] %>
+      <div class="crayons-notice crayons-notice--danger mb-4" role="alert">
+        <%= t("views.manager.error.pins", error: flash[:pins_error]) %>
       </div>
-      <% if flash[:error] %>
-        <div role="alert">
-          <h3 class="manage-page-error"><%= t("views.manager.error.pins", error: flash[:pins_error]) %></h3>
+    <% end %>
+    
+    <% if flash[:success] %>
+      <div class="crayons-notice crayons-notice--success mb-4" role="alert">
+        <%= flash[:success] %>
+      </div>
+    <% end %>
+
+    <!-- Post Overview -->
+    <div class="crayons-card p-6 mb-4" id="section-overview">
+      <h2 class="crayons-title mb-4">Post Overview</h2>
+      
+      <div class="mb-4">
+        <% if @article.organization_id %>
+          <span class="crayons-tag"><%= @article.organization&.name %></span>
+        <% end %>
+        <% if @article.collection_id %>
+          <span class="crayons-tag">Series: <%= @article.series %></span>
+        <% end %>
+      </div>
+
+      <h3 class="mb-3 fs-xl"><a href="<%= @article.current_state_path %>" class="crayons-link"><%= @article.title %></a></h3>
+      
+      <% if @article.published %>
+        <div class="color-base-60 mb-3">
+          Published <%= tag.time(@article.readable_publish_date, datetime: @article.published_timestamp) %>
+          <% if @article.edited? %>
+            · Edited <%= tag.time(@article.readable_edit_date, datetime: @article.edited_at.utc.iso8601) %>
+          <% end %>
+        </div>
+
+        <% if @article.cached_tag_list_array.any? %>
+          <div class="mb-4">
+            <% @article.cached_tag_list_array.each do |tag| %>
+              <a href="/t/<%= tag %>" class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="crayons-notice crayons-notice--warning mb-3">
+          <strong>Draft</strong> - This post is not published yet.
         </div>
       <% end %>
-      <% if flash[:success] %>
-        <div role="alert">
-          <h3 class="manage-page-success"><%= flash[:success] %></h3>
+
+      <% if @organization && @user.org_admin?(@organization) %>
+        <div class="crayons-card p-4 mt-4" style="background: var(--card-secondary-bg);">
+          <h4 class="mb-2 fw-bold">Organization Admin: Change Author</h4>
+          <%= form_for(@article) do |f| %>
+            <%= f.hidden_field :from_dashboard, value: 1 %>
+            <input type="hidden" name="destination" value="/dashboard/organization/<%= @organization.id %>" />
+            <div class="flex items-center gap-3">
+              <label class="mb-0">Author:</label>
+              <%= f.select(:user_id, options_for_select(@organization.users.pluck(:name, :id), @article.user_id), {}, class: "crayons-select") %>
+              <%= f.submit "Update Author", class: "crayons-btn crayons-btn--secondary" %>
+            </div>
+          <% end %>
         </div>
       <% end %>
-      <h2><%= t("views.manager.tools.heading") %></h2>
-      <p><strong><%= t("views.manager.tools.subtitle") %></strong><%= t("views.manager.tools.text_html") %>
-      <h2><%= t("views.manager.tips.heading") %></h2>
-      <ol>
-        <li>
+    </div>
+
+    <!-- Statistics -->
+    <% if @article.published %>
+      <div class="crayons-card p-6 mb-4" id="section-stats">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="crayons-title mb-0">Statistics</h2>
+          <a href="<%= @article.path %>/stats" data-no-instant class="crayons-btn crayons-btn--outlined">View Detailed Stats</a>
+        </div>
+        
+        <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+          <div class="crayons-card p-4" style="background: var(--card-secondary-bg);">
+            <div class="color-base-60 fs-s mb-1">Page Views</div>
+            <div class="fs-3xl fw-bold"><%= number_with_delimiter(@article.page_views_count) %></div>
+          </div>
+          
+          <div class="crayons-card p-4" style="background: var(--card-secondary-bg);">
+            <div class="color-base-60 fs-s mb-1">Reactions</div>
+            <div class="fs-3xl fw-bold"><%= number_with_delimiter(@article.public_reactions_count) %></div>
+          </div>
+          
+          <div class="crayons-card p-4" style="background: var(--card-secondary-bg);">
+            <div class="color-base-60 fs-s mb-1">Comments</div>
+            <div class="fs-3xl fw-bold"><%= number_with_delimiter(@article.comments_count) %></div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Edit Post -->
+    <div class="crayons-card p-6 mb-4" id="section-edit">
+      <h2 class="crayons-title mb-2">Edit Post</h2>
+      <p class="color-base-70 mb-4">
+        Make changes to your post content, title, tags, or cover image.
+      </p>
+      <a href="<%= @article.path %>/edit" class="crayons-btn">Edit Post</a>
+    </div>
+
+    <!-- Pin to Profile -->
+    <div class="crayons-card p-6 mb-4" id="section-pin">
+      <h2 class="crayons-title mb-2">Pin to Profile</h2>
+      <p class="color-base-70 mb-4">
+        Pinning a post to your profile makes it appear at the top of your profile page. You can pin up to 5 posts to highlight your best work.
+      </p>
+      <% if @article.profile_pins.any? %>
+        <%= form_for(@article.profile_pins.first, html: { class: "mb-3" }) do |f| %>
+          <button type="submit" class="crayons-btn crayons-btn--outlined" style="width: auto;">
+            Unpin from Profile
+          </button>
+        <% end %>
+        <p class="color-base-60 fs-s">
+          This post is currently pinned to your profile.
+        </p>
+      <% else %>
+        <%= form_for(ProfilePin.new) do |f| %>
+          <%= f.hidden_field :pinnable_id, value: @article.id %>
+          <button type="submit" class="crayons-btn" style="width: auto;">
+            Pin to Profile
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Discussion Lock -->
+    <div class="crayons-card p-6 mb-4" id="section-discussion">
+      <h2 class="crayons-title mb-2">Discussion Lock</h2>
+      <p class="color-base-70 mb-4">
+        Locking the discussion prevents new comments from being posted. Existing comments will remain visible. This is useful if you want to close the conversation on your article.
+      </p>
+      <% if @discussion_lock %>
+        <a href="<%= @article.path %>/discussion_unlock_confirm" data-no-instant class="crayons-btn crayons-btn--outlined">
+          <%= crayons_icon_tag("unlock", class: "mr-1") %>
+          Unlock Discussion
+        </a>
+        <p class="color-base-60 mt-2 fs-s">
+          <%= crayons_icon_tag("lock", class: "mr-1") %>
+          Discussion is currently locked. No new comments can be posted.
+        </p>
+      <% else %>
+        <a href="<%= @article.path %>/discussion_lock_confirm" data-no-instant class="crayons-btn">
+          <%= crayons_icon_tag("lock", class: "mr-1") %>
+          Lock Discussion
+        </a>
+      <% end %>
+    </div>
+
+    <!-- Delete Post -->
+    <div class="crayons-card p-6 mb-4" id="section-delete">
+      <h2 class="crayons-title mb-2">Delete Post</h2>
+      
+      <div class="crayons-notice crayons-notice--warning mb-4">
+        <strong>Recommendation:</strong> Instead of deleting, consider unpublishing your post. This keeps your content and its history while removing it from public view. You can always republish it later.
+      </div>
+      
+      <p class="color-base-70 mb-4">
+        <strong>Warning:</strong> Deleting your post is permanent and cannot be undone. All comments, reactions, and statistics will be lost.
+      </p>
+      
+      <div>
+        <a href="<%= @article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--danger">
+          Delete Post
+        </a>
+      </div>
+    </div>
+
+    <!-- Tips for Promotion -->
+    <div class="crayons-card p-6" id="section-tips" style="margin-bottom: 140px">
+      <h2 class="crayons-title mb-3"><%= t("views.manager.tips.heading") %></h2>
+      <ol class="list-decimal ml-6">
+        <li class="mb-3 color-base-80">
           <%= t("views.manager.tips.text_1") %>
         </li>
-        <li>
+        <li class="mb-3 color-base-80">
           <%= t("views.manager.tips.text_2_html") %>
         </li>
-        <li>
+        <li class="mb-3 color-base-80">
           <%= t("views.manager.tips.text_3") %>
         </li>
       </ol>
     </div>
   </div>
-
-  <div class="dashboard-container crayons-layout">
-    <%= render "dashboards/dashboard_article", article: @article, discussion_lock: @discussion_lock, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
-    <div class="single-article single-article-manage-form-wrapper">
-      <%= form_for(RatingVote.new) do |f| %>
-        <h2><%= t("views.manager.rating.heading") %></h2>
-        <%= f.hidden_field :article_id, value: @article.id %>
-        <%= f.hidden_field :group, value: "experience_level" %>
-        <span class="button-section button-section-newbie">
-          <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 1.0.to_d %>">1</button>
-          <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 2.0.to_d %>">2</button>
-          <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 3.0.to_d %>">3</button>
-        </span>
-        <span class="button-section button-section-intermediate">
-          <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 4.0.to_d %>">4</button>
-          <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 5.0.to_d %>">5</button>
-          <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 6.0.to_d %>">6</button>
-          <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 7.0.to_d %>">7</button>
-        </span>
-        <span class="button-section button-section-senior">
-          <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 8.0.to_d %>">8</button>
-          <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 9.0.to_d %>">9</button>
-          <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 10.0.to_d %>">10</button>
-        </span>
-        <p><%= t("views.manager.rating.text") %></p>
-        <p><span class="scale-pod"><%= t("views.manager.rating.lower") %></span><span class="scale-pod"><%= t("views.manager.rating.higher") %></span></p>
-      <% end %>
-    </div>
-  </div>
 </main>
+
+<script>
+(function() {
+  'use strict';
+
+  // Smooth scroll to section
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Update active link based on scroll position
+  function updateActiveLink() {
+    const sections = document.querySelectorAll('[id^="section-"]');
+    const links = document.querySelectorAll('.manage-sidebar-link');
+    
+    let currentSection = '';
+    const scrollPosition = window.scrollY + 100; // Offset for better UX
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSection = section.id;
+      }
+    });
+    
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.dataset.section === currentSection) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // Handle sidebar link clicks
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebarLinks = document.querySelectorAll('.manage-sidebar-link');
+    
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const sectionId = this.dataset.section;
+        scrollToSection(sectionId);
+        
+        // Update active state immediately
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // Update active link on scroll
+    window.addEventListener('scroll', updateActiveLink);
+    
+    // Set initial active state
+    updateActiveLink();
+  });
+})();
+</script>

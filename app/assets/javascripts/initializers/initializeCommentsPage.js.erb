@@ -363,7 +363,16 @@ function handleKeyDown(event) {
 }
 
 function handleFormClose(event) {
-  event.target.closest('.inner-comment').classList.remove("replying");
+  // When closing the inline reply form, remove the temporary
+  // "replying" state from the correct container. The class is
+  // added on `.comment__details` when the reply form is opened,
+  // but previously we attempted to remove it from `.inner-comment`,
+  // which left the comment in a semi-disabled visual state (e.g.,
+  // faded/hidden footer and odd tooltip stacking) until page reload.
+  var detailsEl = event.target.closest('.comment__details');
+  if (detailsEl) {
+    detailsEl.classList.remove('replying');
+  }
   event.target.closest('.comment-form').remove();
   initializeCommentsPage();
 }

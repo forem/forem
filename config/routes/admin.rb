@@ -128,6 +128,7 @@ namespace :admin do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
     resources :billboards
+    resources :billboard_placement_area_configs, only: %i[index edit update]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
@@ -135,7 +136,13 @@ namespace :admin do
     resources :profile_fields, only: %i[index update create destroy]
     resources :subforems, only: %i[index new create edit update show] do
       resource :moderator, only: %i[create destroy], module: "subforem_moderators"
-      resources :community_bots, only: %i[index new create show destroy]
+      resources :community_bots, only: %i[index new create show destroy] do
+        resources :scheduled_automations, only: %i[index show new create edit update destroy] do
+          member do
+            patch :toggle_enabled
+          end
+        end
+      end
     end
   end
 

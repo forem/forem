@@ -66,7 +66,7 @@ pt:
           internal_content_spec:
             label: Especificação de Descrição de Conteúdo Interno
             placeholder: Descreva a especificação de descrição de conteúdo interno...
-            description: Diretrizes para descrições de conteúdo geradas por IA.
+            description: Descreva o tipo de conteúdo que deve ser exibido ou priorizado no feed. Isso ajuda a IA a determinar o que deve e não deve aparecer neste feed para ajudar a lidar com spam.
           sidebar_tags:
             label: Tags da Barra Lateral
             placeholder: "help,discuss,explainlikeimfive,meta"
@@ -114,6 +114,7 @@ pt:
           heading: Páginas Dedicadas
           subheading_html: "Você pode criar páginas básicas em markdown para este subforem. <strong>Nota:</strong> Recursos avançados de página (HTML, templates personalizados) podem ser adicionados no futuro."
           create_button: Criar Página
+          view_button: Ver
           edit_button: Editar
           delete_button: Excluir
           delete_confirm: Tem certeza de que deseja excluir esta página?
@@ -143,10 +144,16 @@ pt:
             url:
               label: URL
               placeholder: /readinglist
+            image:
+              label: Imagem do Ícone (PNG, JPG, JPEG)
+              description: Envie um arquivo de imagem para o ícone do link de navegação. A imagem será automaticamente otimizada para exibição.
+              description_edit: Envie uma nova imagem para substituir o ícone atual.
+              current: Imagem atual
             icon:
               label: Ícone SVG
               placeholder: '<svg ...>'
               description: Cole o código SVG completo do ícone.
+              alternative: Usar ícone SVG em vez de imagem
             section:
               label: Seção
               options:
@@ -166,6 +173,7 @@ pt:
         community_bots:
           heading: Bots da Comunidade
           manage_button: Gerenciar Bots
+          moderator_notice_html: "<strong>Nota:</strong> O gerenciamento de bots da comunidade está atualmente disponível apenas para administradores do site. Este recurso estará disponível para líderes da comunidade em breve."
           created_label: Criado
           api_secrets_label: Segredos de API
           view_button: Visualizar
@@ -194,6 +202,7 @@ pt:
             label: Slug
             placeholder: sobre-nos
             description: Identificador seguro para URL (apenas letras minúsculas, números e hífens).
+            description_with_prefix_html: "Identificador seguro para URL (apenas letras minúsculas, números e hífens). Sua página estará acessível em <code>/page/seu-slug</code> (capacidade de criar páginas de nível superior chegando no futuro)."
           description:
             label: Descrição
             placeholder: Uma breve descrição desta página...

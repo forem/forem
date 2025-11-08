@@ -11,14 +11,15 @@ const getWaitOnUserDataHandler = ({
   waitTime = 20,
 }) => {
   let totalTimeWaiting = 0;
+  const maxWaitTime = 5000; // Extended from 3000ms to 5000ms for slower networks
 
   return function waitingOnUserData() {
-    if (totalTimeWaiting === 3000) {
+    if (totalTimeWaiting >= maxWaitTime) {
       if (!safe) {
         reject(new Error("Couldn't find user data on page."));
         return;
       } 
-        resolve({ user, csrfToken });
+        resolve({ user: null, csrfToken: getCsrfToken(document) });
         return;
       
     }
@@ -27,10 +28,15 @@ const getWaitOnUserDataHandler = ({
     const { user } = document.body.dataset;
 
     if (user && csrfToken !== undefined) {
-      const currentUser = JSON.parse(user);
-
-      resolve({ currentUser, csrfToken });
-      return;
+      try {
+        const currentUser = JSON.parse(user);
+        resolve({ currentUser, csrfToken });
+        return;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        reject(new Error('Failed to parse user data'));
+        return;
+      }
     }
 
     totalTimeWaiting += waitTime;

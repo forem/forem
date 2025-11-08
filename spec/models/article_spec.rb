@@ -274,17 +274,29 @@ RSpec.describe Article do
 
     describe "#restrict_attributes_with_status_types" do
       context "when the article is persisted and body_markdown hasn't changed" do
-        it "does not run validation" do
+        it "does not run validation when changing title" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.title = "Updated Title"
           expect(article).to be_valid
         end
 
-        it "runs validation if body_markdown has changed" do
+        it "does not run validation when changing featured" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.featured = true
+          expect(article).to be_valid
+        end
+
+        it "does not run validation when changing other attributes" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.approved = true
+          expect(article).to be_valid
+        end
+
+        it "shows edit restriction error if body_markdown has changed" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.body_markdown = "New body content"
           expect(article).not_to be_valid
-          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
         end
       end
 
@@ -2041,6 +2053,20 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.comment_score).to eq(25)
       end
+
+      it "ensures no individual comment contributes less than -1 to the total score" do
+        # Create comments with very negative scores
+        create(:comment, commentable: article, score: -177)
+        create(:comment, commentable: article, score: -50)
+        create(:comment, commentable: article, score: 10)
+        create(:comment, commentable: article, score: -1)
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        # -177 counts as -1, -50 counts as -1, 10 counts as 10, -1 counts as -1
+        # Total: -1 + -1 + 10 + -1 = 7
+        expect(article.reload.comment_score).to eq(7)
+      end
     end
   end
 
@@ -2771,6 +2797,38 @@ RSpec.describe Article do
         article.valid?
 
         expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
+      end
+
+      it "does not re-add embed tags when updating other attributes" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Body markdown should have the embed tag after creation
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+
+        # Update a different attribute (e.g., featured)
+        article.featured = true
+        expect(article).to be_valid
+        article.save!
+
+        # Body markdown should remain the same, not duplicated
+        expect(article.reload.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "still prevents actual body_markdown changes on persisted status posts" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Try to change the body_markdown
+        article.body_markdown = "This is different content"
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
       end
     end
   end

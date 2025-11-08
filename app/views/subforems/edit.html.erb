@@ -1,61 +1,77 @@
 <% title t("views.subforems.edit.meta.title", subforem: @subforem.domain) %>
 
-<main id="main-content">
-  <header class="crayons-page-header crayons-layout crayons-layout--full">
-    <h1 class="crayons-title">
-      <%= t("views.subforems.edit.heading", subforem: @subforem.domain) %>
-      <span class="crayons-tag crayons-tag--s crayons-tag--monochrome ml-2"><%= t("views.subforems.edit.beta_badge") %></span>
-    </h1>
-    <div class="flex gap-2">
-      <%= link_to t("views.subforems.edit.back_link"), subforems_path, class: "crayons-btn crayons-btn--ghost" %>
-    </div>
-  </header>
-  <div class="crayons-layout grid l:grid-cols-2 gap-6 mb-4">
-
-    <!-- LEFT COLUMN: Main content (Form) -->
-    <div class="crayons-layout__content">
-      <%= form_for @subforem, html: { multipart: true } do |form| %>
-        
-        <!-- SECTION 1: Basic Information (Admin only) -->
+<main id="main-content" class="manage-page-with-sidebar">
+  <!-- Sidebar Navigation -->
+  <aside class="manage-sidebar crayons-card" id="manage-sidebar">
+    <nav class="manage-sidebar-nav">
+      <h3 class="manage-sidebar-title">Sections</h3>
+      <ul class="manage-sidebar-list">
         <% if current_user.any_admin? %>
-          <div class="crayons-card p-4 m:p-6 mb-4">
-            <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.sections.basic_information") %></h2>
-            <div class="flex flex-col gap-4">
-              <div class="crayons-field">
-                <%= form.label :domain, class: "crayons-field__label" %>
-                <%= form.text_field :domain, class: "crayons-textfield" %>
-              </div>
-
-              <div class="crayons-field">
-                <%= label_tag :community_name, t("views.subforems.edit.form.community_name.label"), class: "crayons-field__label" %>
-                <%= text_field_tag :community_name,
-                  Settings::Community.community_name(subforem_id: @subforem.id),
-                  class: "crayons-textfield",
-                  placeholder: t("views.subforems.edit.form.community_name.placeholder") %>
-                <p class="crayons-field__description"><%= t("views.subforems.edit.form.community_name.description") %></p>
-              </div>
-            </div>
-          </div>
+          <li><a href="#section-basic" class="manage-sidebar-link" data-section="section-basic">Basic Info</a></li>
+          <li><a href="#section-discoverability" class="manage-sidebar-link" data-section="section-discoverability">Discoverability</a></li>
         <% end %>
+        <li><a href="#section-community" class="manage-sidebar-link" data-section="section-community">Community Settings</a></li>
+        <li><a href="#section-feed" class="manage-sidebar-link" data-section="section-feed">Feed & Content</a></li>
+        <li><a href="#section-branding" class="manage-sidebar-link" data-section="section-branding">Branding</a></li>
+        <li><a href="#section-tags" class="manage-sidebar-link" data-section="section-tags">Supported Tags</a></li>
+        <li><a href="#section-pages" class="manage-sidebar-link" data-section="section-pages">Pages</a></li>
+        <li><a href="#section-nav-links" class="manage-sidebar-link" data-section="section-nav-links">Navigation Links</a></li>
+        <li><a href="#section-bots" class="manage-sidebar-link" data-section="section-bots">Community Bots</a></li>
+      </ul>
+    </nav>
+  </aside>
 
-        <!-- SECTION 1.5: Discoverability (Admin only) -->
-        <% if current_user.any_admin? %>
-          <div class="crayons-card p-4 m:p-6 mb-4">
-            <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.sections.discoverability") %></h2>
-            <div class="flex flex-col gap-4">
-              <div class="crayons-field">
-                <%= form.label :discoverable, t("views.subforems.edit.form.discoverable.label"), class: "crayons-field__label" %>
-                <%= form.check_box :discoverable, class: "crayons-checkbox" %>
-                <p class="crayons-field__description"><%= t("views.subforems.edit.form.discoverable.description") %></p>
-              </div>
-            </div>
-          </div>
-        <% end %>
+  <!-- Main Content -->
+  <div class="manage-main-content">
+    <nav class="mb-4">
+      <h1 class="crayons-title mb-2">
+        <%= t("views.subforems.edit.heading", subforem: @subforem.domain) %>
+        <span class="crayons-tag crayons-tag--s crayons-tag--monochrome ml-2 fs-s"><%= t("views.subforems.edit.beta_badge") %></span>
+      </h1>
+    </nav>
 
-        <!-- SECTION 2: Community Settings -->
-        <div class="crayons-card p-4 m:p-6 mb-4">
-          <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.sections.community_settings") %></h2>
+    <%= form_for @subforem, html: { multipart: true } do |form| %>
+      
+      <!-- SECTION 1: Basic Information (Admin only) -->
+      <% if current_user.any_admin? %>
+        <div class="crayons-card p-6 mb-4" id="section-basic">
+          <h2 class="crayons-title mb-4"><%= t("views.subforems.edit.sections.basic_information") %></h2>
           <div class="flex flex-col gap-4">
+            <div class="crayons-field">
+              <%= form.label :domain, class: "crayons-field__label" %>
+              <%= form.text_field :domain, class: "crayons-textfield" %>
+            </div>
+
+            <div class="crayons-field">
+              <%= label_tag :community_name, t("views.subforems.edit.form.community_name.label"), class: "crayons-field__label" %>
+              <%= text_field_tag :community_name,
+                Settings::Community.community_name(subforem_id: @subforem.id),
+                class: "crayons-textfield",
+                placeholder: t("views.subforems.edit.form.community_name.placeholder") %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.form.community_name.description") %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- SECTION 1.5: Discoverability (Admin only) -->
+      <% if current_user.any_admin? %>
+        <div class="crayons-card p-6 mb-4" id="section-discoverability">
+          <h2 class="crayons-title mb-4"><%= t("views.subforems.edit.sections.discoverability") %></h2>
+          <div class="flex flex-col gap-4">
+            <div class="crayons-field">
+              <%= form.label :discoverable, t("views.subforems.edit.form.discoverable.label"), class: "crayons-field__label" %>
+              <%= form.check_box :discoverable, class: "crayons-checkbox" %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.form.discoverable.description") %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- SECTION 2: Community Settings -->
+      <div class="crayons-card p-6 mb-4" id="section-community">
+        <h2 class="crayons-title mb-4"><%= t("views.subforems.edit.sections.community_settings") %></h2>
+        <div class="flex flex-col gap-4">
             <div class="crayons-field">
               <%= label_tag :community_description, t("views.subforems.edit.form.community_description.label"), class: "crayons-field__label" %>
               <%= text_area_tag :community_description,
@@ -81,14 +97,14 @@
                 class: "crayons-textfield",
                 placeholder: t("views.subforems.edit.form.member_label.placeholder") %>
               <p class="crayons-field__description"><%= t("views.subforems.edit.form.member_label.description") %></p>
-            </div>
           </div>
         </div>
+      </div>
 
-        <!-- SECTION 3: Feed & Content Settings -->
-        <div class="crayons-card p-4 m:p-6 mb-4">
-          <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.sections.feed_settings") %></h2>
-          <div class="flex flex-col gap-4">
+      <!-- SECTION 3: Feed & Content Settings -->
+      <div class="crayons-card p-6 mb-4" id="section-feed">
+        <h2 class="crayons-title mb-4"><%= t("views.subforems.edit.sections.feed_settings") %></h2>
+        <div class="flex flex-col gap-4">
             <div class="crayons-field">
               <%= label_tag :feed_style, t("views.subforems.edit.form.feed_style.label"), class: "crayons-field__label" %>
               <%= select_tag :feed_style,
@@ -130,14 +146,14 @@
                 placeholder: t("views.subforems.edit.form.sidebar_tags.placeholder"),
                 pattern: "[a-z0-9,]+" %>
               <p class="crayons-field__description"><%= t("views.subforems.edit.form.sidebar_tags.description") %></p>
-            </div>
           </div>
         </div>
+      </div>
 
-        <!-- SECTION 4: Branding -->
-        <div class="crayons-card p-4 m:p-6 mb-4">
-          <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.sections.branding") %></h2>
-          <div class="flex flex-col gap-4">
+      <!-- SECTION 4: Branding -->
+      <div class="crayons-card p-6 mb-4" id="section-branding">
+        <h2 class="crayons-title mb-4"><%= t("views.subforems.edit.sections.branding") %></h2>
+        <div class="flex flex-col gap-4">
             <div class="crayons-field">
               <%= label_tag :primary_brand_color_hex, t("views.subforems.edit.form.primary_color.label"), class: "crayons-field__label" %>
               <div class="flex items-center gap-2">
@@ -220,79 +236,76 @@
                   </div>
                 </div>
               </div>
-            <% end %>
-          </div>
+          <% end %>
         </div>
+      </div>
 
-        <div class="mt-6 mb-4">
-          <%= form.submit t("views.subforems.edit.form.submit_button"), class: "crayons-btn crayons-btn--primary" %>
+      <div class="mt-6 mb-4">
+        <%= form.submit t("views.subforems.edit.form.submit_button"), class: "crayons-btn crayons-btn--primary" %>
+      </div>
+    <% end %>
+
+    <!-- SECTION: Supported Tags -->
+    <div class="crayons-card p-6 mb-4" id="section-tags">
+      <h2 class="crayons-title mb-4"><%= t("views.subforems.edit.tags.supported_heading") %></h2>
+
+      <% if @supported_tags.any? %>
+        <div class="space-y-2 mb-6" style="max-height: 550px; overflow-y: auto;">
+          <% @supported_tags.each do |tag| %>
+            <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-supported-tag-id="<%= tag.id %>">
+              <div class="flex items-center gap-2">
+                <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
+                <span class="text-xs color-base-60"><%= t("views.subforems.edit.tags.posts_count", count: tag.taggings_count) %></span>
+              </div>
+              <button class="crayons-btn crayons-btn--s crayons-btn--danger remove-tag-btn" 
+                      data-tag-id="<%= tag.id %>" 
+                      data-tag-name="<%= tag.name %>">
+                <%= t("views.subforems.edit.tags.remove_button") %>
+              </button>
+            </div>
+          <% end %>
         </div>
+      <% else %>
+        <p class="text-sm color-base-60 mb-6"><%= t("views.subforems.edit.tags.no_tags") %></p>
+      <% end %>
+
+      <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.tags.unsupported_heading") %></h2>
+
+      <% if @unsupported_tags.any? %>
+        <div class="space-y-2" style="max-height: 550px; overflow-y: auto;">
+          <% @unsupported_tags.each do |tag| %>
+            <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-tag-id="<%= tag.id %>">
+              <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
+              <div class="flex items-center gap-2">
+                <span class="text-xs color-base-60"><%= t("views.subforems.edit.tags.posts_count", count: tag.taggings_count) %></span>
+                <button class="crayons-btn crayons-btn--s crayons-btn--primary add-tag-btn" 
+                        data-tag-id="<%= tag.id %>" 
+                        data-tag-name="<%= tag.name %>">
+                  <%= t("views.subforems.edit.tags.add_button") %>
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm color-base-60"><%= t("views.subforems.edit.tags.no_unsupported_tags") %></p>
       <% end %>
     </div>
 
-    <!-- RIGHT COLUMN: Sidebar (Tags) -->
-    <div class="crayons-layout__sidebar-right">
-      <div class="crayons-card p-4 m:p-6">
-        <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.tags.supported_heading") %></h2>
-
-        <% if @supported_tags.any? %>
-          <div class="space-y-2 mb-6" style="max-height: 550px; overflow-y: auto;">
-            <% @supported_tags.each do |tag| %>
-              <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-supported-tag-id="<%= tag.id %>">
-                <div class="flex items-center gap-2">
-                  <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
-                  <span class="text-xs color-base-60"><%= t("views.subforems.edit.tags.posts_count", count: tag.taggings_count) %></span>
-                </div>
-                <button class="crayons-btn crayons-btn--s crayons-btn--danger remove-tag-btn" 
-                        data-tag-id="<%= tag.id %>" 
-                        data-tag-name="<%= tag.name %>">
-                  <%= t("views.subforems.edit.tags.remove_button") %>
-                </button>
-              </div>
-            <% end %>
-          </div>
-        <% else %>
-          <p class="text-sm color-base-60 mb-6"><%= t("views.subforems.edit.tags.no_tags") %></p>
-        <% end %>
-
-        <h2 class="crayons-subtitle-2 mb-4"><%= t("views.subforems.edit.tags.unsupported_heading") %></h2>
-
-                 <% if @unsupported_tags.any? %>
-           <div class="space-y-2" style="max-height: 550px; overflow-y: auto;">
-             <% @unsupported_tags.each do |tag| %>
-               <div class="flex items-center justify-between p-2 bg-base-5 rounded-lg" data-tag-id="<%= tag.id %>">
-                 <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--monochrome"><%= tag.name %></a>
-                 <div class="flex items-center gap-2">
-                   <span class="text-xs color-base-60"><%= t("views.subforems.edit.tags.posts_count", count: tag.taggings_count) %></span>
-                   <button class="crayons-btn crayons-btn--s crayons-btn--primary add-tag-btn" 
-                           data-tag-id="<%= tag.id %>" 
-                           data-tag-name="<%= tag.name %>">
-                     <%= t("views.subforems.edit.tags.add_button") %>
-                   </button>
-                 </div>
-               </div>
-             <% end %>
-           </div>
-        <% else %>
-          <p class="text-sm color-base-60"><%= t("views.subforems.edit.tags.no_unsupported_tags") %></p>
-        <% end %>
+    <!-- PAGES SECTION -->
+    <div class="crayons-card p-6 mb-4" id="section-pages">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="crayons-title"><%= t("views.subforems.edit.pages.heading") %></h2>
+        </div>
+        <%= link_to t("views.subforems.edit.pages.create_button"), new_page_subforem_path(@subforem), class: "crayons-btn crayons-btn--s crayons-btn--primary" %>
       </div>
-    </div>
-  </div>
-
-  <!-- PAGES SECTION -->
-  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.pages.heading") %></h2>
+      <div class="mb-4">
         <p class="text-sm color-base-60 mt-1"><%= t("views.subforems.edit.pages.subheading_html") %></p>
       </div>
-      <%= link_to t("views.subforems.edit.pages.create_button"), new_page_subforem_path(@subforem), class: "crayons-btn crayons-btn--s crayons-btn--primary" %>
-    </div>
-    
-    <% if @pages.any? %>
-      <div class="space-y-3">
-        <% @pages.each do |page| %>
+      <% if @pages.any? %>
+        <div class="space-y-3">
+          <% @pages.each do |page| %>
           <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
             <div class="flex-1">
               <div class="font-medium">
@@ -308,6 +321,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
+              <%= link_to t("views.subforems.edit.pages.view_button"), page.path, class: "crayons-btn crayons-btn--s crayons-btn--outlined", target: "_blank" %>
               <%= link_to t("views.subforems.edit.pages.edit_button"), edit_page_subforem_path(@subforem, page_id: page.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% unless page.is_top_level_path %>
                 <%= button_to t("views.subforems.edit.pages.delete_button"), 
@@ -317,24 +331,24 @@
                     class: "crayons-btn crayons-btn--s crayons-btn--danger" %>
               <% end %>
             </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="text-sm color-base-60"><%= t("views.subforems.edit.pages.no_pages") %></p>
-    <% end %>
-  </div>
-
-  <!-- NAVIGATION LINKS SECTION -->
-  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.navigation_links.heading") %></h2>
-      <button class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()"><%= t("views.subforems.edit.navigation_links.add_button") %></button>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm color-base-60"><%= t("views.subforems.edit.pages.no_pages") %></p>
+      <% end %>
     </div>
-    
-    <!-- Add Navigation Link Form -->
+
+    <!-- NAVIGATION LINKS SECTION -->
+    <div class="crayons-card p-6 mb-4" id="section-nav-links">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="crayons-title"><%= t("views.subforems.edit.navigation_links.heading") %></h2>
+        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--primary" onclick="toggleNavLinkForm()"><%= t("views.subforems.edit.navigation_links.add_button") %></button>
+      </div>
+      
+      <!-- Add Navigation Link Form -->
     <div id="nav-link-form" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-      <%= form_with url: create_navigation_link_subforem_path(@subforem), method: :post, local: true do |form| %>
+      <%= form_tag(create_navigation_link_subforem_path(@subforem), method: :post, multipart: true) do %>
         <div class="grid gap-4">
           <div class="crayons-field">
             <%= label_tag 'navigation_link[name]', t("views.subforems.edit.navigation_links.form.name.label"), class: "crayons-field__label" %>
@@ -347,9 +361,20 @@
           </div>
 
           <div class="crayons-field">
-            <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
-            <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: t("views.subforems.edit.navigation_links.form.icon.placeholder"), required: true %>
-            <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+            <%= label_tag 'navigation_link[image]', t("views.subforems.edit.navigation_links.form.image.label"), class: "crayons-field__label" %>
+            <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.image.description") %></p>
+          </div>
+
+          <div class="crayons-field">
+            <button type="button" class="c-link c-link--block mb-2" onclick="toggleSvgIconField('create')">
+              <span id="svg-toggle-create">+ <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %></span>
+            </button>
+            <div id="svg-icon-field-create" style="display: none;">
+              <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
+              <%= text_area_tag 'navigation_link[icon]', nil, class: "crayons-textfield", rows: 3, placeholder: t("views.subforems.edit.navigation_links.form.icon.placeholder") %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+            </div>
           </div>
 
           <div class="grid grid-cols-3 gap-4">
@@ -387,7 +412,7 @@
     <!-- Edit Navigation Link Forms (Hidden by default) -->
     <% @navigation_links.each do |link| %>
       <div id="edit-nav-link-form-<%= link.id %>" class="mb-4 p-4 bg-base-5 rounded-lg" style="display: none;">
-        <%= form_with url: update_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), method: :patch, local: true do |form| %>
+        <%= form_tag(update_navigation_link_subforem_path(@subforem, link.id), method: :patch, multipart: true) do %>
           <div class="grid gap-4">
             <div class="crayons-field">
               <%= label_tag 'navigation_link[name]', "Name", class: "crayons-field__label" %>
@@ -400,8 +425,26 @@
             </div>
 
             <div class="crayons-field">
-              <%= label_tag 'navigation_link[icon]', "Icon SVG", class: "crayons-field__label" %>
-              <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3, required: true %>
+              <%= label_tag 'navigation_link[image]', t("views.subforems.edit.navigation_links.form.image.label"), class: "crayons-field__label" %>
+              <% if link.respond_to?(:image) && link.image.present? %>
+                <div class="mb-2">
+                  <div class="text-sm color-base-60 mb-1"><%= t("views.subforems.edit.navigation_links.form.image.current") %></div>
+                  <%= optimized_image_tag(link.image.url, optimizer_options: { width: 48, height: 48, crop: "fill" }, image_options: { alt: "Current icon", style: "width: 48px; height: 48px;" }) %>
+                </div>
+              <% end %>
+              <%= file_field_tag 'navigation_link[image]', accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg", class: "crayons-textfield" %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.image.description_edit") %></p>
+            </div>
+
+            <div class="crayons-field">
+              <button type="button" class="c-link c-link--block mb-2" onclick="toggleSvgIconField('edit-<%= link.id %>')">
+                <span id="svg-toggle-edit-<%= link.id %>">+ <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %></span>
+              </button>
+              <div id="svg-icon-field-edit-<%= link.id %>" style="display: none;">
+                <%= label_tag 'navigation_link[icon]', t("views.subforems.edit.navigation_links.form.icon.label"), class: "crayons-field__label" %>
+                <%= text_area_tag 'navigation_link[icon]', link.icon, class: "crayons-textfield", rows: 3 %>
+                <p class="crayons-field__description"><%= t("views.subforems.edit.navigation_links.form.icon.description") %></p>
+              </div>
             </div>
 
             <div class="grid grid-cols-3 gap-4">
@@ -440,7 +483,11 @@
           <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg" id="nav-link-<%= link.id %>">
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
-                <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <% if link.respond_to?(:image) && link.image.present? %>
+                  <%= optimized_image_tag(link.image.url, optimizer_options: { width: 24, height: 24, crop: "fill" }, image_options: { alt: "#{link.name} icon", style: "width: 16px; height: 16px;" }) %>
+                <% else %>
+                  <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                <% end %>
                 <%= link.name %>
               </div>
               <div class="text-sm color-base-60">
@@ -453,7 +500,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)"><%= t("views.subforems.edit.navigation_links.edit_button") %></button>
+              <button type="button" class="crayons-btn crayons-btn--s crayons-btn--secondary" onclick="toggleEditNavLinkForm(<%= link.id %>)"><%= t("views.subforems.edit.navigation_links.edit_button") %></button>
               <%= button_to t("views.subforems.edit.navigation_links.delete_button"), 
                   destroy_navigation_link_subforem_path(@subforem, navigation_link_id: link.id), 
                   method: :delete, 
@@ -461,27 +508,33 @@
                   class: "crayons-btn crayons-btn--s crayons-btn--danger" %>
             </div>
           </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="text-sm color-base-60"><%= t("views.subforems.edit.navigation_links.no_links") %></p>
-    <% end %>
-  </div>
-
-  <!-- COMMUNITY BOTS SECTION -->
-  <div class="crayons-layout crayons-card p-4 m:p-6 mb-4">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="crayons-subtitle-2"><%= t("views.subforems.edit.community_bots.heading") %></h2>
-      <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
-        <%= link_to t("views.subforems.edit.community_bots.manage_button"), admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm color-base-60"><%= t("views.subforems.edit.navigation_links.no_links") %></p>
       <% end %>
     </div>
-    
-    <% community_bots = User.community_bots_for_subforem(@subforem.id).includes(:api_secrets).order(created_at: :desc) %>
-    
-    <% if community_bots.any? %>
-      <div class="space-y-3">
-        <% community_bots.each do |bot| %>
+
+    <!-- COMMUNITY BOTS SECTION -->
+    <div class="crayons-card p-6 mb-4" id="section-bots">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="crayons-title"><%= t("views.subforems.edit.community_bots.heading") %></h2>
+        <% if current_user.any_admin? %>
+          <%= link_to t("views.subforems.edit.community_bots.manage_button"), admin_subforem_community_bots_path(@subforem), class: "crayons-btn crayons-btn--s" %>
+        <% end %>
+      </div>
+
+      <% unless current_user.any_admin? %>
+        <div class="crayons-notice crayons-notice--info mb-4">
+          <%= t("views.subforems.edit.community_bots.moderator_notice_html") %>
+        </div>
+      <% end %>
+      
+      <% community_bots = User.community_bots_for_subforem(@subforem.id).includes(:api_secrets).order(created_at: :desc) %>
+      
+      <% if community_bots.any? %>
+        <div class="space-y-3">
+          <% community_bots.each do |bot| %>
           <div class="flex items-center justify-between p-3 bg-base-5 rounded-lg">
             <div class="flex-1">
               <div class="font-medium flex items-center gap-2">
@@ -498,16 +551,30 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <% if current_user.any_admin? || current_user.super_moderator? || current_user.subforem_moderator?(subforem: @subforem) %>
+              <% if current_user.any_admin? %>
                 <%= link_to t("views.subforems.edit.community_bots.view_button"), admin_subforem_community_bot_path(@subforem, bot), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% end %>
             </div>
-          </div>
-        <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm color-base-60"><%= t("views.subforems.edit.community_bots.no_bots") %></p>
+      <% end %>
+    </div>
+
+    <!-- COMING SOON SECTION -->
+    <div class="crayons-card p-6 mb-12" id="section-coming-soon" style="margin-bottom: 200px">
+      <h2 class="crayons-title mb-4">Coming Soon</h2>
+      <div class="crayons-notice crayons-notice--info">
+        <p class="mb-2">
+          <strong>These features are rapidly evolving!</strong>
+        </p>
+        <p>
+          Visit <a href="https://core.forem.com" target="_blank" rel="noopener noreferrer" class="crayons-link underline">core.forem.com</a> for up-to-date information about what is being shipped and to stay informed about new subforem capabilities.
+        </p>
       </div>
-    <% else %>
-      <p class="text-sm color-base-60"><%= t("views.subforems.edit.community_bots.no_bots") %></p>
-    <% end %>
+    </div>
   </div>
 </main>
 
@@ -692,5 +759,72 @@ document.addEventListener('DOMContentLoaded', function() {
       notification.remove();
     }, 3000);
   }
+  
+  window.toggleSvgIconField = function(formId) {
+    const field = document.getElementById(`svg-icon-field-${formId}`);
+    const toggle = document.getElementById(`svg-toggle-${formId}`);
+    
+    if (field.style.display === 'none') {
+      field.style.display = 'block';
+      toggle.textContent = '- <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %>';
+    } else {
+      field.style.display = 'none';
+      toggle.textContent = '+ <%= t("views.subforems.edit.navigation_links.form.icon.alternative") %>';
+    }
+  };
+  
+  // Smooth scroll to section
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Update active link based on scroll position
+  function updateActiveLink() {
+    const sections = document.querySelectorAll('[id^="section-"]');
+    const links = document.querySelectorAll('.manage-sidebar-link');
+    
+    let currentSection = '';
+    const scrollPosition = window.scrollY + 100; // Offset for better UX
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSection = section.id;
+      }
+    });
+    
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.dataset.section === currentSection) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // Handle sidebar link clicks
+  const sidebarLinks = document.querySelectorAll('.manage-sidebar-link');
+  
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const sectionId = this.dataset.section;
+      scrollToSection(sectionId);
+      
+      // Update active state immediately
+      sidebarLinks.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  
+  // Update active link on scroll
+  window.addEventListener('scroll', updateActiveLink);
+  
+  // Set initial active state
+  updateActiveLink();
 });
 </script>
