@@ -139,23 +139,54 @@ class Billboard < ApplicationRecord
       return best_paired_billboard if best_paired_billboard.present?
     end
 
-    case rand(99) # output integer from 0-99
-    when (0..random_range_max(area)) # smallest range, 5%
+    # Select billboard using weighted random selection based on placement area config
+    select_billboard_by_weighted_strategy(billboards_for_display, area, article&.id)
+  end
+
+  def self.select_billboard_by_weighted_strategy(billboards_for_display, area, article_id = nil)
+    # Return nil if no billboards available
+    return nil if billboards_for_display.blank? || billboards_for_display.empty?
+    
+    # Get weights from placement area config
+    weights = BillboardPlacementAreaConfig.selection_weights_for(area)
+    
+    # Calculate total weight, filtering out any nil or negative values
+    total_weight = weights.values.compact.map { |v| [v.to_i, 0].max }.sum
+    return billboards_for_display.sample if total_weight.zero?
+
+    # Generate random number and select strategy based on weight
+    random_value = rand(total_weight)
+    cumulative_weight = 0
+    selected_strategy = nil
+
+    weights.each do |strategy, weight|
+      # Skip strategies with zero or negative weight
+      weight_value = [weight.to_i, 0].max
+      next if weight_value.zero?
+      
+      cumulative_weight += weight_value
+      if random_value < cumulative_weight
+        selected_strategy = strategy
+        break
+      end
+    end
+
+    # Execute the selected strategy
+    case selected_strategy
+    when "random_selection"
       # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
-      # rise to the top. 5 out of every 100 times we show an ad (5%), it is totally random. This gives "not yet
-      # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
-      # stays in this area.
+      # rise to the top. This gives "not yet evaluated" stuff a chance to get some engagement and start showing up more.
+      # If it doesn't get engagement, it stays in this area.
       billboards_for_display.sample
-    when (random_range_max(area)..new_and_priority_range_max(area)) # medium range, 30%
-      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+    when "new_and_priority"
+      # Here we sample from only billboards with fewer impressions or priority billboards (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation, article&.id) || billboards_for_display.sample
-    when (new_and_priority_range_max(area)..new_only_range_max(area)) # 5% by default
-      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+      weighted_random_selection(relation, article_id) || billboards_for_display.sample
+    when "new_only"
+      # Here we sample from only billboards with fewer impressions (with a fallback)
       billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
-    else # large range, 65%
-
+    when "weighted_performance"
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
       # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
       # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
@@ -163,6 +194,9 @@ class Billboard < ApplicationRecord
       # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
+    else
+      # Fallback to random if strategy is unknown
+      billboards_for_display.sample
     end
   end
 
