@@ -24,9 +24,17 @@ export const updateOnboarding = (lastPage) => {
  * A util function to fetch the user's data from off of the document's body.
  *
  *
- * @returns {Object} A JSON object with the parsed user data.
+ * @returns {Object|null} A JSON object with the parsed user data, or null if unavailable.
  */
 export const userData = () => {
   const { user = null } = document.body.dataset;
-  return JSON.parse(user);
+  if (!user) {
+    return null;
+  }
+  try {
+    return JSON.parse(user);
+  } catch (error) {
+    console.error('Error parsing user data:', error);
+    return null;
+  }
 };
