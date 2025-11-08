@@ -8,11 +8,15 @@ module Admin
       # Create configs for any missing placement areas
       missing_areas = Billboard::ALLOWED_PLACEMENT_AREAS - @configs.pluck(:placement_area)
       missing_areas.each do |area|
-        BillboardPlacementAreaConfig.create!(
-          placement_area: area,
-          signed_in_rate: 100,
-          signed_out_rate: 100
-        )
+        begin
+          BillboardPlacementAreaConfig.create!(
+            placement_area: area,
+            signed_in_rate: 100,
+            signed_out_rate: 100
+          )
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.warn("Failed to create config for #{area}: #{e.message}")
+        end
       end
       
       @configs = BillboardPlacementAreaConfig.order(:placement_area) if missing_areas.any?
@@ -38,7 +42,7 @@ module Admin
     private
 
     def config_params
-      params.require(:billboard_placement_area_config).permit(
+      permitted = params.require(:billboard_placement_area_config).permit(
         :signed_in_rate,
         :signed_out_rate,
         selection_weights: [
@@ -48,6 +52,15 @@ module Admin
           :weighted_performance
         ]
       )
+      
+      # Sanitize selection_weights to ensure all values are non-negative integers
+      if permitted[:selection_weights].present?
+        permitted[:selection_weights] = permitted[:selection_weights].transform_values do |v|
+          [v.to_i, 0].max
+        end
+      end
+      
+      permitted
     end
 
     def authorize_admin

@@ -144,11 +144,14 @@ class Billboard < ApplicationRecord
   end
 
   def self.select_billboard_by_weighted_strategy(billboards_for_display, area, article_id = nil)
+    # Return nil if no billboards available
+    return nil if billboards_for_display.blank? || billboards_for_display.empty?
+    
     # Get weights from placement area config
     weights = BillboardPlacementAreaConfig.selection_weights_for(area)
     
-    # Calculate total weight
-    total_weight = weights.values.sum
+    # Calculate total weight, filtering out any nil or negative values
+    total_weight = weights.values.compact.map { |v| [v.to_i, 0].max }.sum
     return billboards_for_display.sample if total_weight.zero?
 
     # Generate random number and select strategy based on weight
@@ -157,7 +160,11 @@ class Billboard < ApplicationRecord
     selected_strategy = nil
 
     weights.each do |strategy, weight|
-      cumulative_weight += weight
+      # Skip strategies with zero or negative weight
+      weight_value = [weight.to_i, 0].max
+      next if weight_value.zero?
+      
+      cumulative_weight += weight_value
       if random_value < cumulative_weight
         selected_strategy = strategy
         break

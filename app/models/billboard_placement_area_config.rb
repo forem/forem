@@ -9,6 +9,7 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     greater_than_or_equal_to: 0,
     less_than_or_equal_to: 100
   }
+  validate :validate_selection_weights
 
   # Cache key for storing all configs
   CACHE_KEY = "billboard_placement_area_configs".freeze
@@ -67,8 +68,13 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     config = config_for_placement_area(placement_area)
     weights = config&.selection_weights || {}
     
+    # Return defaults if weights is empty or nil
+    return DEFAULT_SELECTION_WEIGHTS.dup if weights.blank?
+    
     # Merge with defaults so any missing keys get default values
-    DEFAULT_SELECTION_WEIGHTS.merge(weights.symbolize_keys.transform_keys(&:to_s))
+    # Filter out any negative values and replace with 0
+    merged_weights = DEFAULT_SELECTION_WEIGHTS.merge(weights.symbolize_keys.transform_keys(&:to_s))
+    merged_weights.transform_values { |v| [v.to_i, 0].max }
   end
 
   # Get or initialize weights from legacy ApplicationConfig
@@ -128,5 +134,30 @@ class BillboardPlacementAreaConfig < ApplicationRecord
 
   def bust_cache
     self.class.bust_cache
+  end
+
+  def validate_selection_weights
+    return if selection_weights.blank?
+    
+    unless selection_weights.is_a?(Hash)
+      errors.add(:selection_weights, "must be a hash")
+      return
+    end
+
+    # Check that all values are non-negative integers
+    selection_weights.each do |key, value|
+      unless value.is_a?(Integer) || value.is_a?(String) && value.to_i.to_s == value
+        errors.add(:selection_weights, "#{key} must be an integer")
+      end
+      
+      if value.to_i.negative?
+        errors.add(:selection_weights, "#{key} cannot be negative")
+      end
+    end
+
+    # Warn if all weights are zero (but don't fail validation)
+    if selection_weights.values.all? { |v| v.to_i.zero? }
+      Rails.logger.warn("All selection weights are zero for placement area #{placement_area}")
+    end
   end
 end
