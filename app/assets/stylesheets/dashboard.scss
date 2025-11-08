@@ -452,3 +452,20 @@ $column-flex: 1;
     width: 100%;
   }
 }
+
+// Handle main sidebar overlap on medium-sized screens
+body[data-side-nav-visible='true']:not(.hidden-shell) {
+  .manage-page-with-sidebar {
+    @media (min-width: $breakpoint-m) {
+      max-width: calc(1280px - 50px);
+      width: calc(100% - 50px);
+      margin-left: 50px;
+    }
+    @media (min-width: $breakpoint-2xl) {
+      max-width: 1280px;
+      width: 100%;
+      margin-left: auto;
+      transform: translateX(20px);
+    }
+  }
+}
