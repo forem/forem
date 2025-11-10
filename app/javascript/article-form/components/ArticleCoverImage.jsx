@@ -2,7 +2,7 @@ import { h, Fragment } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
-import { generateMainImage } from '../actions';
+import { generateMainImage, generateAiImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { onDragOver, onDragExit } from './dragAndDropHelpers';
 import { Button } from '@crayons';
@@ -34,10 +34,13 @@ const StandardImageUpload = ({
   isUploadingImage,
   coverImageHeight,
   coverImageCrop,
-}) =>
-  isUploadingImage ? null : (
+  onGenerateClick,
+}) => {
+  const isAdmin = window.currentUser?.admin;
+  
+  return isUploadingImage ? null : (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator">
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator mr-2">
         {uploadLabel}
         <input
           data-testid="cover-image-input"
@@ -53,13 +56,107 @@ const StandardImageUpload = ({
          for best results. 
         </span>
       </label>
+      {isAdmin && (
+        <Button 
+          variant="outlined" 
+          onClick={onGenerateClick}
+          className="mr-2"
+          data-testid="generate-ai-image-btn"
+        >
+          🍌 Generate Image
+        </Button>
+      )}
     </Fragment>
   );
+};
+
+const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
+  const [prompt, setPrompt] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (prompt.trim()) {
+      onGenerate(prompt);
+    }
+  };
+
+  return (
+    <div className="crayons-modal crayons-modal--m" data-testid="ai-prompt-modal">
+      <div 
+        className="crayons-modal__box" 
+        role="dialog" 
+        aria-labelledby="ai-modal-title"
+        aria-describedby="ai-modal-desc"
+      >
+        <div className="crayons-modal__box__header">
+          <h2 id="ai-modal-title" className="crayons-subtitle-2">Generate Cover Image with Instructions 🍌</h2>
+          {!isGenerating && (
+            <button 
+              onClick={onClose} 
+              className="crayons-btn crayons-btn--ghost crayons-btn--icon" 
+              aria-label="Close"
+              type="button"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/>
+              </svg>
+            </button>
+          )}
+        </div>
+        <div className="crayons-modal__box__body">
+          <p id="ai-modal-desc" className="color-base-70 mb-4">
+            Describe the image you want to generate. Be specific about style, colors, and content. Or just go with vibes.
+          </p>
+          <form onSubmit={handleSubmit}>
+            <div className="crayons-field mb-4">
+              <label htmlFor="ai-prompt-input" className="crayons-field__label">
+                Image Description
+              </label>
+              <textarea
+                id="ai-prompt-input"
+                data-testid="ai-prompt-input"
+                className="crayons-textfield"
+                rows="4"
+                value={prompt}
+                onInput={(e) => setPrompt(e.target.value)}
+                placeholder="Example: A futuristic cityscape at sunset with flying cars and neon lights"
+                disabled={isGenerating}
+                required
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                type="submit" 
+                disabled={isGenerating || !prompt.trim()}
+                data-testid="generate-submit-btn"
+              >
+                {isGenerating ? (
+                  <Fragment>
+                    <Spinner /> Generating...
+                  </Fragment>
+                ) : (
+                  'Generate Image'
+                )}
+              </Button>
+              {!isGenerating && (
+                <Button variant="secondary" onClick={onClose} type="button">
+                  Cancel
+                </Button>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageHeight, coverImageCrop }) => {
   const [uploadError, setUploadError] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [showAiPrompt, setShowAiPrompt] = useState(false);
+  const [generatingAiImage, setGeneratingAiImage] = useState(false);
 
   const onImageUploadSuccess = (...args) => {
     onMainImageUrlChange(...args);
@@ -95,6 +192,43 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
     setUploadingImage(false);
     setUploadError(true);
     setUploadErrorMessage(error.message);
+  };
+
+  const handleGenerateClick = (e) => {
+    e.preventDefault();
+    setShowAiPrompt(true);
+    clearUploadError();
+  };
+
+  const handleAiGenerate = (prompt) => {
+    setGeneratingAiImage(true);
+    clearUploadError();
+
+    generateAiImage({
+      prompt,
+      aspectRatio: '16:9',
+      successCb: (response) => {
+        onMainImageUrlChange(response);
+        setGeneratingAiImage(false);
+        setShowAiPrompt(false);
+        addSnackbarItem({
+          message: 'AI image generated successfully!',
+          addCloseButton: true,
+        });
+      },
+      failureCb: (error) => {
+        setGeneratingAiImage(false);
+        setUploadError(true);
+        setUploadErrorMessage(error.message || 'Failed to generate image. Please try again.');
+      },
+    });
+  };
+
+  const handleCloseAiPrompt = () => {
+    if (!generatingAiImage) {
+      setShowAiPrompt(false);
+      clearUploadError();
+    }
   };
 
   const useNativeUpload = () => {
@@ -175,57 +309,68 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
   document.addEventListener('ForemMobile', handleNativeMessage);
 
   return (
-    <DragAndDropZone
-      onDragOver={onDragOver}
-      onDragExit={onDragExit}
-      onDrop={onDropImage}
-    >
-      <div className="crayons-article-form__cover" role="presentation">
-        {!uploadingImage && mainImage && (
-          <img
-            src={mainImage}
-            className="crayons-article-form__cover__image"
-            width="250"
-            height="105"
-            alt="Post cover"
-          />
-        )}
-        <div className="flex items-center">
-          {uploadingImage && (
-            <span class="lh-base pl-1 border-0 py-2 inline-block">
-              <Spinner /> Uploading...
-            </span>
+    <Fragment>
+      <DragAndDropZone
+        onDragOver={onDragOver}
+        onDragExit={onDragExit}
+        onDrop={onDropImage}
+      >
+        <div className="crayons-article-form__cover" role="presentation">
+          {!uploadingImage && mainImage && (
+            <img
+              src={mainImage}
+              className="crayons-article-form__cover__image"
+              width="250"
+              height="105"
+              alt="Post cover"
+            />
           )}
-
-          <Fragment>
-            {useNativeUpload() ? (
-              <NativeIosImageUpload
-                isUploadingImage={uploadingImage}
-                extraProps={extraProps}
-                uploadLabel={uploadLabel}
-              />
-            ) : (
-              <StandardImageUpload
-                isUploadingImage={uploadingImage}
-                uploadLabel={uploadLabel}
-                coverImageHeight={coverImageHeight}
-                coverImageCrop={coverImageCrop}
-                handleImageUpload={handleMainImageUpload}
-              />
+          <div className="flex items-center">
+            {uploadingImage && (
+              <span class="lh-base pl-1 border-0 py-2 inline-block">
+                <Spinner /> Uploading...
+              </span>
             )}
 
-            {mainImage && !uploadingImage && (
-              <Button variant="ghost-danger" onClick={triggerMainImageRemoval}>
-                Remove
-              </Button>
-            )}
-          </Fragment>
+            <Fragment>
+              {useNativeUpload() ? (
+                <NativeIosImageUpload
+                  isUploadingImage={uploadingImage}
+                  extraProps={extraProps}
+                  uploadLabel={uploadLabel}
+                />
+              ) : (
+                <StandardImageUpload
+                  isUploadingImage={uploadingImage}
+                  uploadLabel={uploadLabel}
+                  coverImageHeight={coverImageHeight}
+                  coverImageCrop={coverImageCrop}
+                  handleImageUpload={handleMainImageUpload}
+                  onGenerateClick={handleGenerateClick}
+                />
+              )}
+
+              {mainImage && !uploadingImage && (
+                <Button variant="ghost-danger" onClick={triggerMainImageRemoval}>
+                  Remove
+                </Button>
+              )}
+            </Fragment>
+          </div>
+          {uploadError && (
+            <p className="articleform__uploaderror">{uploadErrorMessage}</p>
+          )}
         </div>
-        {uploadError && (
-          <p className="articleform__uploaderror">{uploadErrorMessage}</p>
-        )}
-      </div>
-    </DragAndDropZone>
+      </DragAndDropZone>
+      
+      {showAiPrompt && (
+        <AiImagePromptModal 
+          onClose={handleCloseAiPrompt}
+          onGenerate={handleAiGenerate}
+          isGenerating={generatingAiImage}
+        />
+      )}
+    </Fragment>
   );
 };
 

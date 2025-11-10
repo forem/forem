@@ -52,6 +52,11 @@ en:
   github_repos_controller:
     repo_not_found: GitHub repository not found
     github_unauthorized: 'GitHub Unauthorized: %{e_message}'
+  ai_image_generations_controller:
+    prompt_required: Image prompt is required
+    generation_failed: Failed to generate image. Please try again.
+    timeout: Image generation timed out. Please try again.
+    unexpected_error: An unexpected error occurred while generating the image.
   image_uploads_controller:
     server_error: A server error has occurred!
   listings_controller:

@@ -106,6 +106,52 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
 }
 
 /**
+ * Generates an AI image from a text prompt.
+ *
+ * @param {Object} options - The options object.
+ * @param {string} options.prompt - The text prompt for image generation.
+ * @param {string} options.aspectRatio - Optional aspect ratio (e.g., "16:9", "1:1").
+ * @param {Function} options.successCb - The handler that runs when the image is generated successfully.
+ * @param {Function} options.failureCb - The handler that runs when the image generation fails.
+ * @param {AbortSignal} options.signal - Optional abort signal for canceling the request.
+ */
+export function generateAiImage({ prompt, aspectRatio, successCb, failureCb, signal }) {
+  // Set a client-side timeout of 35 seconds (slightly longer than server timeout)
+  const timeoutId = setTimeout(() => {
+    if (signal && !signal.aborted) {
+      failureCb(new Error('Image generation timed out. Please try again.'));
+    }
+  }, 35000);
+
+  fetch('/ai_image_generations', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      prompt: prompt,
+      aspect_ratio: aspectRatio || '16:9',
+    }),
+    credentials: 'same-origin',
+    signal,
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      clearTimeout(timeoutId);
+      if (json.error) {
+        throw new Error(json.error);
+      }
+      const { url } = json;
+      return successCb({ links: [url] });
+    })
+    .catch((error) => {
+      clearTimeout(timeoutId);
+      failureCb(error);
+    });
+}
+
+/**
  * Processes images for upload.
  *
  * @param {FileList} images Images to be uploaded.
