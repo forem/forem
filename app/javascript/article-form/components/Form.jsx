@@ -19,6 +19,7 @@ export const Form = ({
   errors,
   coverImageCrop,
   coverImageHeight,
+  aiAvailable,
 }) => {
   return (
     <div className="crayons-article-form__content crayons-card">
@@ -35,6 +36,7 @@ export const Form = ({
           switchHelpContext={switchHelpContext}
           coverImageCrop={coverImageCrop}
           coverImageHeight={coverImageHeight}
+          aiAvailable={aiAvailable}
         />
       )}
 
@@ -64,6 +66,7 @@ Form.propTypes = {
   errors: PropTypes.object,
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
+  aiAvailable: PropTypes.bool.isRequired,
 };
 
 Form.displayName = 'Form';
