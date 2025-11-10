@@ -326,7 +326,9 @@ module Ai
         BODY:
         [Your markdown body here with {% embed URL %} tags for important PRs]
 
-        **Important:** Do not include triple backticks or markdown code blocks in your response. Just provide the title and body as plain text/markdown.
+        Do not use nested lists at all. Quick bullet points are fine, but never include anything complicated in a bullet point. Use headers, paragraphs, code blocks, etc. as needed.
+
+        **Important:** Do not have the body markdown itself encapsulated in backticks etc. It should *just* include the markdown itself as plaint text output.
       PROMPT
     end
 
