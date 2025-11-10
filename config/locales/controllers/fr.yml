@@ -52,6 +52,11 @@ fr:
   github_repos_controller:
     repo_not_found: Dépôt GitHub non trouvé
     github_unauthorized: 'GitHub non autorisé : %{e_message}'
+  ai_image_generations_controller:
+    prompt_required: Le prompt d'image est requis
+    generation_failed: Échec de la génération de l'image. Veuillez réessayer.
+    timeout: La génération de l'image a expiré. Veuillez réessayer.
+    unexpected_error: Une erreur inattendue s'est produite lors de la génération de l'image.
   image_uploads_controller:
     server_error: Une erreur de serveur s'est produite !
   listings_controller:

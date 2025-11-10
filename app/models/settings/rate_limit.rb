@@ -2,6 +2,7 @@ module Settings
   class RateLimit < Base
     self.table_name = :settings_rate_limits
 
+    setting :ai_image_generation, type: :integer, default: 5
     setting :article_update, type: :integer, default: 30
     setting :comment_antispam_creation, type: :integer, default: 1
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
