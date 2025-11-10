@@ -2,6 +2,9 @@ class ScheduledAutomation < ApplicationRecord
   # Associations
   belongs_to :user
 
+  # Callbacks
+  before_validation :normalize_frequency_config
+
   # Validations
   validates :frequency, presence: true, inclusion: { in: %w[daily weekly hourly custom_interval] }
   validates :action, presence: true, inclusion: { in: %w[create_draft publish_article] }
@@ -60,6 +63,18 @@ class ScheduledAutomation < ApplicationRecord
   end
 
   private
+
+  def normalize_frequency_config
+    return if frequency_config.blank?
+
+    # Convert all numeric values in frequency_config to integers
+    # This ensures consistent data types when values come from forms as strings
+    normalized = frequency_config.transform_values do |value|
+      value.to_s.match?(/^\d+$/) ? value.to_i : value
+    end
+    
+    self.frequency_config = normalized
+  end
 
   def validate_frequency_config
     case frequency

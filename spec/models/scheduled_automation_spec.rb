@@ -37,6 +37,48 @@ RSpec.describe ScheduledAutomation, type: :model do
     end
   end
 
+  describe "frequency_config normalization" do
+    it "converts string values to integers before validation" do
+      automation = build(:scheduled_automation,
+                        user: bot,
+                        frequency: "daily",
+                        frequency_config: { "hour" => "9", "minute" => "30" })
+      expect(automation).to be_valid
+      expect(automation.frequency_config["hour"]).to eq(9)
+      expect(automation.frequency_config["minute"]).to eq(30)
+    end
+
+    it "keeps integer values as integers" do
+      automation = build(:scheduled_automation,
+                        user: bot,
+                        frequency: "weekly",
+                        frequency_config: { "day_of_week" => 5, "hour" => 9, "minute" => 0 })
+      expect(automation).to be_valid
+      expect(automation.frequency_config["day_of_week"]).to eq(5)
+      expect(automation.frequency_config["hour"]).to eq(9)
+      expect(automation.frequency_config["minute"]).to eq(0)
+    end
+
+    it "preserves non-numeric string values" do
+      automation = build(:scheduled_automation, user: bot)
+      automation.frequency_config = { "hour" => "9", "note" => "test note" }
+      automation.valid? # Trigger before_validation callback
+      expect(automation.frequency_config["hour"]).to eq(9)
+      expect(automation.frequency_config["note"]).to eq("test note")
+    end
+
+    it "handles mixed integer and string values" do
+      automation = build(:scheduled_automation,
+                        user: bot,
+                        frequency: "weekly",
+                        frequency_config: { "day_of_week" => "5", "hour" => 9, "minute" => "0" })
+      expect(automation).to be_valid
+      expect(automation.frequency_config["day_of_week"]).to eq(5)
+      expect(automation.frequency_config["hour"]).to eq(9)
+      expect(automation.frequency_config["minute"]).to eq(0)
+    end
+  end
+
   describe "frequency_config validations" do
     context "with hourly frequency" do
       it "is valid with correct minute" do
