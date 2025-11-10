@@ -2,15 +2,23 @@ module ScheduledAutomationsHelper
   def format_frequency(automation)
     case automation.frequency
     when "hourly"
-      "Every hour at minute #{automation.frequency_config['minute']}"
+      minute = automation.frequency_config['minute'].to_i
+      "Every hour at minute #{minute}"
     when "daily"
-      "Daily at #{format_time(automation.frequency_config['hour'], automation.frequency_config['minute'])}"
+      hour = automation.frequency_config['hour'].to_i
+      minute = automation.frequency_config['minute'].to_i
+      "Daily at #{format_time(hour, minute)}"
     when "weekly"
-      day_name = Date::DAYNAMES[automation.frequency_config['day_of_week']]
-      "Every #{day_name} at #{format_time(automation.frequency_config['hour'], automation.frequency_config['minute'])}"
+      day_of_week = automation.frequency_config['day_of_week'].to_i
+      hour = automation.frequency_config['hour'].to_i
+      minute = automation.frequency_config['minute'].to_i
+      day_name = Date::DAYNAMES[day_of_week]
+      "Every #{day_name} at #{format_time(hour, minute)}"
     when "custom_interval"
-      interval = automation.frequency_config['interval_days']
-      "Every #{interval} #{'day'.pluralize(interval)} at #{format_time(automation.frequency_config['hour'], automation.frequency_config['minute'])}"
+      interval = automation.frequency_config['interval_days'].to_i
+      hour = automation.frequency_config['hour'].to_i
+      minute = automation.frequency_config['minute'].to_i
+      "Every #{interval} #{'day'.pluralize(interval)} at #{format_time(hour, minute)}"
     else
       "Unknown frequency"
     end

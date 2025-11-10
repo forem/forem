@@ -91,12 +91,13 @@ RSpec.describe Admin::ScheduledAutomationsController do
         expect(flash[:success]).to eq("Scheduled automation created successfully!")
       end
 
-      it "handles string values in frequency_config" do
+      it "handles string values in frequency_config by normalizing them to integers" do
         post admin_subforem_community_bot_scheduled_automations_path(subforem, bot),
              params: valid_params
         automation = ScheduledAutomation.last
-        expect(automation.frequency_config["hour"]).to eq("9")
-        expect(automation.next_run_at).to be_present # Should calculate correctly despite strings
+        expect(automation.frequency_config["hour"]).to eq(9)
+        expect(automation.frequency_config["minute"]).to eq(0)
+        expect(automation.next_run_at).to be_present # Should calculate correctly with normalized integers
       end
     end
 
