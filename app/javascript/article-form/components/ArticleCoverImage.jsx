@@ -35,8 +35,10 @@ const StandardImageUpload = ({
   coverImageHeight,
   coverImageCrop,
   onGenerateClick,
+  aiAvailable,
 }) => {
   const isAdmin = window.currentUser?.admin;
+  const showAiButton = isAdmin && aiAvailable;
   
   return isUploadingImage ? null : (
     <Fragment>
@@ -56,7 +58,7 @@ const StandardImageUpload = ({
          for best results. 
         </span>
       </label>
-      {isAdmin && (
+      {showAiButton && (
         <Button 
           variant="outlined" 
           onClick={onGenerateClick}
@@ -151,7 +153,7 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
   );
 };
 
-export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageHeight, coverImageCrop }) => {
+export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageHeight, coverImageCrop, aiAvailable }) => {
   const [uploadError, setUploadError] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -347,6 +349,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
                   coverImageCrop={coverImageCrop}
                   handleImageUpload={handleMainImageUpload}
                   onGenerateClick={handleGenerateClick}
+                  aiAvailable={aiAvailable}
                 />
               )}
 
@@ -379,6 +382,7 @@ ArticleCoverImage.propTypes = {
   onMainImageUrlChange: PropTypes.func.isRequired,
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
+  aiAvailable: PropTypes.bool.isRequired,
 };
 
 ArticleCoverImage.displayName = 'ArticleCoverImage';
