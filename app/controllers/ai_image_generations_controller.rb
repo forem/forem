@@ -20,8 +20,17 @@ class AiImageGenerationsController < ApplicationController
       return
     end
 
-    # Get subforem-specific aesthetic instructions
+    # Get aesthetic instructions with fallback hierarchy:
+    # 1. Current subforem's aesthetic instructions
+    # 2. Default subforem's aesthetic instructions  
+    # 3. Blank
     aesthetic_instructions = Settings::UserExperience.cover_image_aesthetic_instructions
+    
+    if aesthetic_instructions.blank? && RequestStore.store[:default_subforem_id].present?
+      aesthetic_instructions = Settings::UserExperience.cover_image_aesthetic_instructions(
+        subforem_id: RequestStore.store[:default_subforem_id]
+      )
+    end
     
     # Combine user prompt with aesthetic instructions if they exist
     full_prompt = if aesthetic_instructions.present?
