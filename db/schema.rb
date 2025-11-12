@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_12_171855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1376,10 +1376,14 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
   end
 
   create_table "tag_subforem_relationships", force: :cascade do |t|
+    t.string "bg_color_hex"
     t.datetime "created_at", null: false
+    t.string "pretty_name"
+    t.text "short_summary"
     t.bigint "subforem_id", null: false
     t.boolean "supported", default: true
     t.bigint "tag_id", null: false
+    t.string "text_color_hex"
     t.datetime "updated_at", null: false
     t.index ["subforem_id"], name: "index_tag_subforem_relationships_on_subforem_id"
     t.index ["tag_id"], name: "index_tag_subforem_relationships_on_tag_id"

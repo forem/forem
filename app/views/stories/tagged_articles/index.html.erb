@@ -2,7 +2,7 @@
   <%= render "stories/tagged_articles/meta" %>
 <% end %>
 <div data-tag-id="<%= @tag.id %>" data-tag-name="<%= @tag.name %>" id="tag-<%= @tag.id %>" class="crayons-layout js-tag-card">
-  <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.bg_color_hex %> ">
+  <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.display_bg_color_hex %> ">
     <div class="flex">
       <% if @tag.badge_id && @tag.badge %>
           <img src="<%= optimized_image_url(@tag.badge.badge_image_url, width: 64) %>" alt="" class="mr-4" style="transform: rotate(<%= -25 + (@tag.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
@@ -10,8 +10,8 @@
       <div class="flex flex-col w-100 justify-center">
         <div class="flex justify-between items-center">
           <h1 class="crayons-title">
-            <% if @tag && @tag.pretty_name.present? %>
-              <%= @tag.pretty_name %>
+            <% if @tag && @tag.display_pretty_name.present? %>
+              <%= @tag.display_pretty_name %>
             <% else %>
               <span class="opacity-50">#</span>
               <%= @tag.name %>
@@ -34,15 +34,13 @@
             </div>
           <% end %>
         </div>
-        <% if @tag && @tag.short_summary.present? %>
+        <% if @tag && @tag.display_short_summary.present? %>
           <p class="max-w-100 m:max-w-75 pt-2 s:pt-4">
-            <%= strip_tags(@tag.short_summary) %>
+            <%= strip_tags(@tag.display_short_summary) %>
           </p>
         <% end %>
       </div>
     </div>
-    <% if @tag && @tag.short_summary.present? %>
-    <% end %>
   </header>
 </div>
 

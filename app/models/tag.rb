@@ -105,6 +105,32 @@ class Tag < ActsAsTaggableOn::Tag
     ALLOWED_CATEGORIES
   end
 
+  # Get the subforem relationship for the current subforem context
+  def current_subforem_relationship
+    subforem_id = RequestStore.store[:subforem_id]
+    return nil unless subforem_id.present?
+    return nil if subforem_id == RequestStore.store[:root_subforem_id]
+    
+    @current_subforem_relationship ||= subforem_relationships.find_by(subforem_id: subforem_id)
+  end
+
+  # Methods to get display values with fallback to relationship-specific data
+  def display_short_summary
+    current_subforem_relationship&.display_short_summary || short_summary
+  end
+
+  def display_pretty_name
+    current_subforem_relationship&.display_pretty_name || pretty_name
+  end
+
+  def display_bg_color_hex
+    current_subforem_relationship&.display_bg_color_hex || bg_color_hex
+  end
+
+  def display_text_color_hex
+    current_subforem_relationship&.display_text_color_hex || text_color_hex
+  end
+
   def self.aliased_name(word)
     tag = find_by(name: word.downcase)
     return unless tag

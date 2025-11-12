@@ -70,7 +70,7 @@ class TagsController < ApplicationController
   private
 
   def tags
-    @tags ||= Tag.from_subforem.direct.order("hotness_score DESC").limit(100)
+    @tags ||= Tag.from_subforem.direct.includes(:badge, :subforem_relationships).order("hotness_score DESC").limit(100)
   end
 
   def convert_empty_string_to_nil

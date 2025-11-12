@@ -124,7 +124,7 @@ class DashboardsController < ApplicationController
   def follows_for_tag(user:, order_by: :created_at, explicit_points: (0...))
     user.follows_by_type("ActsAsTaggableOn::Tag").order(order_by => :desc)
       .where(explicit_points: explicit_points)
-      .includes(:followable)
+      .includes(followable: :subforem_relationships)
       .limit(follows_limit)
   end
 
