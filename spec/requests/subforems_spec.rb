@@ -723,7 +723,7 @@ RSpec.describe "Subforems", type: :request do
         expect(link.image.url).to be_present
       end
 
-      it "validates that either icon or image is present" do
+      it "creates navigation link with default icon when neither icon nor image is provided" do
         params = {
           navigation_link: {
             name: "No Icon Link",
@@ -736,10 +736,13 @@ RSpec.describe "Subforems", type: :request do
 
         expect do
           post create_navigation_link_subforem_path(subforem), params: params
-        end.not_to change { NavigationLink.count }
+        end.to change { NavigationLink.count }.by(1)
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:error]).to be_present
+        expect(flash[:success]).to be_present
+        
+        link = NavigationLink.last
+        expect(link.icon).to eq(NavigationLink.default_icon_svg)
       end
     end
 

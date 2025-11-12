@@ -5,6 +5,7 @@ class NavigationLink < ApplicationRecord
   mount_uploader :image, NavigationLinkImageUploader
 
   before_validation :allow_relative_url, if: :url?
+  before_validation :set_default_icon_if_blank
   before_save :strip_local_hostname, if: :url?
 
   enum section: { default: 0, other: 1 }, _suffix: true
@@ -12,9 +13,8 @@ class NavigationLink < ApplicationRecord
 
   validates :name, :url, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }
-  validates :icon, format: SVG_REGEXP, if: -> { image.blank? }
+  validates :icon, format: SVG_REGEXP, if: :icon?
   validates :display_only_when_signed_in, inclusion: { in: [true, false] }
-  validate :icon_or_image_present
 
   def icon_url
     # Return optimized image URL if available, otherwise return nil
@@ -32,11 +32,15 @@ class NavigationLink < ApplicationRecord
     end
   end
 
+  def self.default_icon_svg
+    @default_icon_svg ||= Rails.root.join("app/assets/images/link.svg").read.strip
+  end
+
   private
 
-  def icon_or_image_present
+  def set_default_icon_if_blank
     if icon.blank? && image.blank?
-      errors.add(:base, "Either an icon (SVG) or an image must be provided")
+      self.icon = self.class.default_icon_svg
     end
   end
 
