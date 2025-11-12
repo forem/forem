@@ -20,6 +20,7 @@ const NativeIosImageUpload = ({
       <Button
         variant="outlined"
         className="mr-2 whitespace-nowrap"
+        style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
         {...extraProps}
       >
         {uploadLabel}
@@ -42,7 +43,7 @@ const StandardImageUpload = ({
   
   return isUploadingImage ? null : (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator mr-2">
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator mr-2 whitespace-nowrap" style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}>
         {uploadLabel}
         <input
           data-testid="cover-image-input"
@@ -62,8 +63,9 @@ const StandardImageUpload = ({
         <Button 
           variant="outlined" 
           onClick={onGenerateClick}
-          className="mr-2"
+          className="mr-2 whitespace-nowrap"
           data-testid="generate-ai-image-btn"
+          style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
         >
           🍌 Generate Image
         </Button>
@@ -107,7 +109,7 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
         </div>
         <div className="crayons-modal__box__body">
           <p id="ai-modal-desc" className="color-base-70 mb-4">
-            Describe the image you want to generate. Be specific about style, colors, and content. Or just go with vibes.
+            Describe the image you want to generate. Be as specific as you want, or just go with vibes.
           </p>
           <form onSubmit={handleSubmit}>
             <div className="crayons-field mb-4">
@@ -147,6 +149,19 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
               )}
             </div>
           </form>
+        </div>
+        <div className="crayons-modal__box__footer" style={{borderTop: '1px solid var(--base-20)', paddingTop: '1rem'}}>
+          <p className="color-base-60 fs-s pb-4" style={{paddingLeft: '5%'}}>
+            Curious how this works? The Forem codebase is{' '}
+            <a 
+              href="https://github.com/forem/forem/blob/main/app/services/ai/image_generator.rb" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="c-link"
+            >
+              open source 🍌
+            </a>
+          </p>
         </div>
       </div>
     </div>
@@ -208,7 +223,6 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
 
     generateAiImage({
       prompt,
-      aspectRatio: '16:9',
       successCb: (response) => {
         onMainImageUrlChange(response);
         setGeneratingAiImage(false);
@@ -294,7 +308,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
     handleMainImageUpload(event);
   };
 
-  const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
+  const uploadLabel = mainImage ? 'Change' : 'Upload Cover Image';
 
   // When the component is rendered in an environment that supports a native
   // image picker for image upload we want to add the aria-label attr and the
@@ -354,7 +368,12 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
               )}
 
               {mainImage && !uploadingImage && (
-                <Button variant="ghost-danger" onClick={triggerMainImageRemoval}>
+                <Button 
+                  variant="ghost-danger" 
+                  onClick={triggerMainImageRemoval}
+                  className="whitespace-nowrap"
+                  style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+                >
                   Remove
                 </Button>
               )}

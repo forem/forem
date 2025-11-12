@@ -75,6 +75,10 @@ en:
             label: Primary Brand Color
             placeholder: "#3b49df"
             description: The main color for your community's branding (hex format).
+          cover_image_aesthetic:
+            label: Cover Image Aesthetic Instructions
+            placeholder: "e.g., vibrant and modern, minimalist and clean, warm and welcoming..."
+            description: Optional instructions for AI-generated cover images. This will be added to user prompts to maintain a consistent aesthetic for your community.
           main_logo:
             label: Main Square Logo
             description: Upload a square logo (128x128px) for main branding. PNG or JPEG, max 8MB.

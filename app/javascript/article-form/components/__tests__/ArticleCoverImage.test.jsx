@@ -288,7 +288,6 @@ describe('<ArticleCoverImage />', () => {
         }),
         body: JSON.stringify({
           prompt: 'A beautiful sunset',
-          aspect_ratio: '16:9',
         }),
       }));
     });
@@ -347,6 +346,34 @@ describe('<ArticleCoverImage />', () => {
 
       // Modal should be closed
       expect(queryByTestId('ai-prompt-modal')).not.toBeInTheDocument();
+    });
+
+    it('displays footer with GitHub link in the modal', async () => {
+      const { getByTestId, findByTestId, getByText } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+        />,
+      );
+
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      const modal = await findByTestId('ai-prompt-modal');
+      expect(modal).toBeInTheDocument();
+
+      // Check for footer text
+      expect(getByText(/Curious how this works/i)).toBeInTheDocument();
+      expect(getByText(/open source/i)).toBeInTheDocument();
+
+      // Check for GitHub link
+      const githubLink = modal.querySelector('a[href*="github.com"]');
+      expect(githubLink).toBeInTheDocument();
+      expect(githubLink.href).toContain('github.com/forem/forem/blob/main/app/services/ai/image_generator.rb');
+      expect(githubLink.target).toBe('_blank');
+      expect(githubLink.rel).toContain('noopener');
     });
 
     it('disables submit button when prompt is empty', async () => {

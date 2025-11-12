@@ -170,6 +170,15 @@
               <p class="crayons-field__description"><%= t("views.subforems.edit.form.primary_color.description") %></p>
             </div>
 
+            <div class="crayons-field">
+              <%= label_tag :cover_image_aesthetic_instructions, t("views.subforems.edit.form.cover_image_aesthetic.label"), class: "crayons-field__label" %>
+              <%= text_area_tag :cover_image_aesthetic_instructions,
+                Settings::UserExperience.cover_image_aesthetic_instructions(subforem_id: @subforem.id),
+                class: "crayons-textfield", rows: 3,
+                placeholder: t("views.subforems.edit.form.cover_image_aesthetic.placeholder") %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.form.cover_image_aesthetic.description") %></p>
+            </div>
+
             <% if current_user.any_admin? || current_user.super_moderator? %>
               <div class="crayons-field" data-controller="subforem-image-upload">
                 <%= form.label :main_logo, t("views.subforems.edit.form.main_logo.label"), class: "crayons-field__label" %>

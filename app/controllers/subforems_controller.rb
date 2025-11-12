@@ -344,7 +344,7 @@ class SubforemsController < ApplicationController
 
   def update_user_experience_settings
     return unless params[:feed_style].present? || params[:feed_lookback_days].present? || 
-                  params[:primary_brand_color_hex].present?
+                  params[:primary_brand_color_hex].present? || params[:cover_image_aesthetic_instructions].present?
 
     if params[:feed_style].present?
       Settings::UserExperience.set_feed_style(params[:feed_style], subforem_id: @subforem.id)
@@ -356,6 +356,10 @@ class SubforemsController < ApplicationController
     
     if params[:primary_brand_color_hex].present?
       Settings::UserExperience.set_primary_brand_color_hex(params[:primary_brand_color_hex], subforem_id: @subforem.id)
+    end
+    
+    if params.key?(:cover_image_aesthetic_instructions)
+      Settings::UserExperience.set_cover_image_aesthetic_instructions(params[:cover_image_aesthetic_instructions], subforem_id: @subforem.id)
     end
   end
 

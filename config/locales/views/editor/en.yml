@@ -11,7 +11,7 @@ en:
         icon: Close
         title: Close the editor
       cover_image:
-        add: Add a cover image
+        add: Upload Cover Image
         change: Change
       edit: Edit
       modes: View post modes

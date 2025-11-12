@@ -52,16 +52,113 @@ RSpec.describe "AiImageGenerations" do
         expect(response.parsed_body["url"]).to eq(image_url)
       end
 
-      it "accepts optional aspect_ratio parameter" do
+      it "calculates aspect ratio from subforem settings (crop mode)" do
+        allow(Settings::UserExperience).to receive(:cover_image_height).and_return(420)
+        allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("crop")
+        
+        expect(Ai::ImageGenerator).to receive(:new).with(
+          anything,
+          hash_including(aspect_ratio: "16:9")
+        ).and_call_original
+        
         allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
           Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
         )
 
-        params_with_ratio = valid_params.merge(aspect_ratio: "1:1")
-        post "/ai_image_generations", headers: headers, params: params_with_ratio.to_json
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body["url"]).to eq(image_url)
+      end
+
+      it "calculates aspect ratio from subforem settings (limit mode)" do
+        allow(Settings::UserExperience).to receive(:cover_image_height).and_return(420)
+        allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
+        
+        expect(Ai::ImageGenerator).to receive(:new).with(
+          anything,
+          hash_including(aspect_ratio: "16:9")
+        ).and_call_original
+        
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "uses 4:3 aspect ratio for square-ish cover images" do
+        allow(Settings::UserExperience).to receive(:cover_image_height).and_return(750)
+        allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("crop")
+        
+        # 1000/750 = 1.33, which should map to 4:3
+        expect(Ai::ImageGenerator).to receive(:new).with(
+          anything,
+          hash_including(aspect_ratio: "4:3")
+        ).and_call_original
+        
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "caps height at 500 for aspect ratio calculation" do
+        allow(Settings::UserExperience).to receive(:cover_image_height).and_return(1000)
+        allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("crop")
+        
+        # Height should be capped at 500, so 1000/500 = 2.0, which should map to 16:9
+        expect(Ai::ImageGenerator).to receive(:new).with(
+          anything,
+          hash_including(aspect_ratio: "16:9")
+        ).and_call_original
+        
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "includes aesthetic instructions when set" do
+        aesthetic = "vibrant and modern with bold colors"
+        allow(Settings::UserExperience).to receive(:cover_image_aesthetic_instructions).and_return(aesthetic)
+        
+        expect(Ai::ImageGenerator).to receive(:new).with(
+          "#{valid_params[:prompt]}. Style: #{aesthetic}",
+          anything
+        ).and_call_original
+        
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not modify prompt when aesthetic instructions are blank" do
+        allow(Settings::UserExperience).to receive(:cover_image_aesthetic_instructions).and_return("")
+        
+        expect(Ai::ImageGenerator).to receive(:new).with(
+          valid_params[:prompt],
+          anything
+        ).and_call_original
+        
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns error when prompt is blank" do
