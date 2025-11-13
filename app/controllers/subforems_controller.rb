@@ -213,8 +213,9 @@ class SubforemsController < ApplicationController
     
     # Determine allowed params based on page type and user role
     allowed_params = if @page.is_top_level_path
-                       # For top-level pages, only allow title, description, and social_image
-                       page_params.slice(:title, :description, :social_image)
+                       # For top-level pages, mods can update title, description, body_markdown, and social_image
+                       # but cannot change slug, template, or is_top_level_path
+                       page_params.slice(:title, :description, :body_markdown, :social_image)
                      else
                        # For subforem pages, allow full markdown editing
                        params_to_use = page_params

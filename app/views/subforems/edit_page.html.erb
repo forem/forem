@@ -14,11 +14,11 @@
         <div class="crayons-notice crayons-notice--warning mb-4">
           <%= t("views.subforems.pages.edit.top_level_notice_html") %>
         </div>
-      <% else %>
-        <div class="crayons-notice crayons-notice--info mb-4">
-          <%= t("views.subforems.pages.edit.markdown_only_notice_html") %>
-        </div>
       <% end %>
+      
+      <div class="crayons-notice crayons-notice--info mb-4">
+        <%= t("views.subforems.pages.edit.markdown_only_notice_html") %>
+      </div>
 
       <%= form_for @page, url: update_page_subforem_path(@subforem, page_id: @page.id), method: :patch, html: { class: "flex flex-col gap-4", multipart: true } do |form| %>
         <div class="crayons-field">
@@ -43,13 +43,11 @@
           <p class="crayons-field__description"><%= t("views.subforems.pages.form.description.description") %></p>
         </div>
 
-        <% unless @page.is_top_level_path %>
-          <div class="crayons-field">
-            <%= form.label :body_markdown, t("views.subforems.pages.form.body_markdown.label"), class: "crayons-field__label" %>
-            <%= form.text_area :body_markdown, class: "crayons-textfield", rows: 20, placeholder: t("views.subforems.pages.form.body_markdown.placeholder"), required: true %>
-            <p class="crayons-field__description"><%= t("views.subforems.pages.form.body_markdown.description") %></p>
-          </div>
-        <% end %>
+        <div class="crayons-field">
+          <%= form.label :body_markdown, t("views.subforems.pages.form.body_markdown.label"), class: "crayons-field__label" %>
+          <%= form.text_area :body_markdown, class: "crayons-textfield", rows: 20, placeholder: t("views.subforems.pages.form.body_markdown.placeholder"), required: true %>
+          <p class="crayons-field__description"><%= t("views.subforems.pages.form.body_markdown.description") %></p>
+        </div>
 
         <div class="crayons-field">
           <%= form.label :social_image, t("views.subforems.pages.form.social_image.label"), class: "crayons-field__label" %>

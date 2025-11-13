@@ -582,6 +582,8 @@
         <p>
           Visit <a href="https://core.forem.com" target="_blank" rel="noopener noreferrer" class="crayons-link underline">core.forem.com</a> for up-to-date information about what is being shipped and to stay informed about new subforem capabilities.
         </p>
+        <p>
+          Contact the Forem team for any additional support.
       </div>
     </div>
   </div>
@@ -608,7 +610,7 @@ function toggleEditNavLinkForm(linkId) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initializeSubforemEditPage() {
   const addTagButtons = document.querySelectorAll('.add-tag-btn');
   const removeTagButtons = document.querySelectorAll('.remove-tag-btn');
   
@@ -835,5 +837,17 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Set initial active state
   updateActiveLink();
-});
+}
+
+// Initialize on DOMContentLoaded for direct page loads
+document.addEventListener('DOMContentLoaded', initializeSubforemEditPage);
+
+// Initialize on InstantClick change for navigation via InstantClick
+if (typeof InstantClick !== 'undefined') {
+  InstantClick.on('change', function() {
+    if (document.getElementById('main-content')?.classList.contains('manage-page-with-sidebar')) {
+      initializeSubforemEditPage();
+    }
+  });
+}
 </script>
