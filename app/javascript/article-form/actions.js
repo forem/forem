@@ -130,12 +130,19 @@ export function generateAiImage({ prompt, successCb, failureCb, signal }) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      prompt: prompt,
+      prompt,
     }),
     credentials: 'same-origin',
     signal,
   })
-    .then((response) => response.json())
+    .then((response) => {
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        // For non-2xx responses, throw a generic error instead of trying to parse HTML
+        throw new Error('An error occurred, please try again later');
+      }
+      return response.json();
+    })
     .then((json) => {
       clearTimeout(timeoutId);
       if (json.error) {
@@ -146,7 +153,11 @@ export function generateAiImage({ prompt, successCb, failureCb, signal }) {
     })
     .catch((error) => {
       clearTimeout(timeoutId);
-      failureCb(error);
+      // Ensure the error message is a clean string, not HTML
+      const errorMessage = error.message && !error.message.includes('<html') 
+        ? error.message 
+        : 'An error occurred, please try again later';
+      failureCb(new Error(errorMessage));
     });
 }
 

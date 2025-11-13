@@ -41,8 +41,8 @@ const resetNativeIOSCapabilities = () => {
 
 describe('<ArticleCoverImage />', () => {
   beforeEach(() => {
-    // Mock window.currentUser for admin checks
-    global.window.currentUser = { admin: true };
+    // Mock window.currentUser
+    global.window.currentUser = {};
   });
 
   afterEach(() => {
@@ -71,11 +71,11 @@ describe('<ArticleCoverImage />', () => {
 
   it('displays a generate with AI button when there is no main image', () => {
     const { getByTestId } = render(
-      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} coverImageHeight="420" coverImageCrop="no_crop" />,
+      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} coverImageHeight="420" coverImageCrop="no_crop" aiAvailable={true} />,
     );
     const generateButton = getByTestId('generate-ai-image-btn');
     expect(generateButton).toBeInTheDocument();
-    expect(generateButton.textContent).toContain('Generate with AI');
+    expect(generateButton.textContent).toContain('Generate Image');
   });
 
   describe('when an image is uploaded', () => {
@@ -219,6 +219,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -236,6 +237,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -260,6 +262,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={onMainImageUrlChange}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -303,6 +306,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -330,6 +334,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -355,6 +360,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -383,6 +389,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -405,6 +412,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
           coverImageHeight="420"
           coverImageCrop="no_crop"
+          aiAvailable={true}
         />,
       );
 
@@ -424,23 +432,10 @@ describe('<ArticleCoverImage />', () => {
     });
   });
 
-  describe('when user is not an admin', () => {
-    beforeEach(() => {
-      global.window.currentUser = { admin: false };
-    });
-
-    it('does not show the generate AI image button', () => {
-      const { queryByTestId } = render(
-        <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} coverImageHeight="420" coverImageCrop="no_crop" />,
-      );
-      expect(queryByTestId('generate-ai-image-btn')).not.toBeInTheDocument();
-    });
-  });
-
   describe('when rendered in native iOS with imageUpload support', () => {
     beforeAll(() => {
       stubNativeIOSCapabilities();
-      global.window.currentUser = { admin: true };
+      global.window.currentUser = {};
     });
 
     afterAll(() => {

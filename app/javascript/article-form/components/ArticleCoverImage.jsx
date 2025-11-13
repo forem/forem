@@ -38,8 +38,7 @@ const StandardImageUpload = ({
   onGenerateClick,
   aiAvailable,
 }) => {
-  const isAdmin = window.currentUser?.admin;
-  const showAiButton = isAdmin && aiAvailable;
+  const showAiButton = aiAvailable;
   
   return isUploadingImage ? null : (
     <Fragment>
