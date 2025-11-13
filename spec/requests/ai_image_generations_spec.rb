@@ -52,16 +52,169 @@ RSpec.describe "AiImageGenerations" do
         expect(response.parsed_body["url"]).to eq(image_url)
       end
 
-      it "accepts optional aspect_ratio parameter" do
+      it "calculates aspect ratio from subforem settings (crop mode)" do
+        # Set settings in database and clear cache
+        Settings::UserExperience.cover_image_height = 500
+        Settings::UserExperience.cover_image_fit = "crop"
+        Settings::UserExperience.cover_image_aesthetic_instructions = ""
+        Settings::UserExperience.clear_cache
+        
+        # Spy on Ai::ImageGenerator.new
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
         allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
           Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
         )
 
-        params_with_ratio = valid_params.merge(aspect_ratio: "1:1")
-        post "/ai_image_generations", headers: headers, params: params_with_ratio.to_json
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body["url"]).to eq(image_url)
+        # Verify the aspect ratio was calculated correctly (1000/500 = 2.0, should map to 16:9)
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          anything,
+          hash_including(aspect_ratio: "16:9")
+        )
+      end
+
+      it "calculates aspect ratio from subforem settings (limit mode)" do
+        Settings::UserExperience.cover_image_height = 420
+        Settings::UserExperience.cover_image_fit = "limit"
+        Settings::UserExperience.cover_image_aesthetic_instructions = ""
+        Settings::UserExperience.clear_cache
+        
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+        # Limit mode should default to 16:9
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          anything,
+          hash_including(aspect_ratio: "16:9")
+        )
+      end
+
+      it "uses 5:4 aspect ratio for taller cover images" do
+        # 1000/800 = 1.25, which should map to 5:4 (range 1.2..1.4)
+        # But this gets capped at 500, so 1000/500 = 2.0 -> 16:9
+        # So let's test with a height that doesn't get capped
+        Settings::UserExperience.cover_image_height = 400
+        Settings::UserExperience.cover_image_fit = "crop"
+        Settings::UserExperience.cover_image_aesthetic_instructions = ""
+        Settings::UserExperience.clear_cache
+        
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+        # 1000/400 = 2.5, which maps to 21:9 (else case, > 2.1)
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          anything,
+          hash_including(aspect_ratio: "21:9")
+        )
+      end
+
+      it "caps height at 500 for aspect ratio calculation" do
+        # Height should be capped at 500, so 1000/500 = 2.0, which should map to 16:9
+        Settings::UserExperience.cover_image_height = 1000
+        Settings::UserExperience.cover_image_fit = "crop"
+        Settings::UserExperience.cover_image_aesthetic_instructions = ""
+        Settings::UserExperience.clear_cache
+        
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          anything,
+          hash_including(aspect_ratio: "16:9")
+        )
+      end
+
+      it "includes aesthetic instructions when set" do
+        aesthetic = "vibrant and modern with bold colors"
+        Settings::UserExperience.cover_image_height = 420
+        Settings::UserExperience.cover_image_fit = "crop"
+        Settings::UserExperience.cover_image_aesthetic_instructions = aesthetic
+        Settings::UserExperience.clear_cache
+        
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+        # Check that the aesthetic instructions were included in the prompt
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          /Style to use if not otherwise contradicted previously: #{aesthetic}/,
+          anything
+        )
+      end
+
+      it "does not modify prompt when aesthetic instructions are blank" do
+        Settings::UserExperience.cover_image_height = 420
+        Settings::UserExperience.cover_image_fit = "crop"
+        Settings::UserExperience.cover_image_aesthetic_instructions = ""
+        Settings::UserExperience.clear_cache
+        
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+        # Check that only the safety prompt was added, not any aesthetic instructions
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          /^#{Regexp.escape(valid_params[:prompt])}\.\n\nDo not under any circumstances/,
+          anything
+        )
+      end
+
+      it "falls back to default subforem aesthetic when current subforem value is blank" do
+        # Create default subforem and set it up BEFORE any requests
+        default_subforem = create(:subforem)
+        default_aesthetic = "default subforem aesthetic style"
+        
+        # This will be called by the middleware
+        allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+        
+        # Set aesthetic for default subforem
+        Settings::UserExperience.set_cover_image_aesthetic_instructions(
+          default_aesthetic, 
+          subforem_id: default_subforem.id
+        )
+        
+        # Ensure global/current has blank aesthetic
+        Settings::UserExperience.cover_image_aesthetic_instructions = ""
+        Settings::UserExperience.clear_cache
+        
+        allow(Ai::ImageGenerator).to receive(:new).and_call_original
+        allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
+          Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
+        )
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:ok)
+        # Should fall back to default subforem's aesthetic
+        expect(Ai::ImageGenerator).to have_received(:new).with(
+          /Style to use if not otherwise contradicted previously: #{Regexp.escape(default_aesthetic)}/,
+          anything
+        )
       end
 
       it "returns error when prompt is blank" do

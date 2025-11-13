@@ -211,6 +211,13 @@
       }
       .crayons-btn {
         width: 100%;
+        font-size: var(--fs-s);
+      }
+    }
+    
+    @media (max-width: $breakpoint-xs) {
+      .crayons-btn {
+        font-size: var(--fs-xs);
       }
     }
   }

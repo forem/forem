@@ -75,6 +75,10 @@ fr:
             label: Couleur Principale de la Marque
             placeholder: "#3b49df"
             description: La couleur principale pour l'image de marque de votre communauté (format hexadécimal).
+          cover_image_aesthetic:
+            label: Instructions Esthétiques pour l'Image de Couverture
+            placeholder: "par exemple, vibrant et moderne, minimaliste et épuré, chaleureux et accueillant..."
+            description: Instructions optionnelles pour les images de couverture générées par l'IA. Cela sera ajouté aux invites des utilisateurs pour maintenir une esthétique cohérente pour votre communauté.
           main_logo:
             label: Logo Principal Carré
             description: Téléchargez un logo carré (128x128px) pour l'image de marque principale. PNG ou JPEG, max 8 Mo.
