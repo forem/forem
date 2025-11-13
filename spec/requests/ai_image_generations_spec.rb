@@ -2,8 +2,7 @@ require "rails_helper"
 
 RSpec.describe "AiImageGenerations" do
   describe "POST /ai_image_generations" do
-    let(:admin_user) { create(:user, :admin) }
-    let(:regular_user) { create(:user) }
+    let(:user) { create(:user) }
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
     let(:valid_params) { { prompt: "A beautiful sunset over mountains" } }
     let(:image_url) { "https://example.com/generated-image.png" }
@@ -15,21 +14,9 @@ RSpec.describe "AiImageGenerations" do
       end
     end
 
-    context "when logged-in as non-admin" do
+    context "when logged-in" do
       before do
-        sign_in regular_user
-      end
-
-      it "does not allow non-admin users to generate images" do
-        expect do
-          post "/ai_image_generations", headers: headers, params: valid_params.to_json
-        end.to raise_error(Pundit::NotAuthorizedError)
-      end
-    end
-
-    context "when logged-in as admin" do
-      before do
-        sign_in admin_user
+        sign_in user
       end
 
       it "returns json" do
@@ -262,10 +249,10 @@ RSpec.describe "AiImageGenerations" do
     context "when rate limiting works" do
       let(:cache_store) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
       let(:cache) { Rails.cache }
-      let(:cache_key) { "#{admin_user.id}_ai_image_generation" }
+      let(:cache_key) { "#{user.id}_ai_image_generation" }
 
       before do
-        sign_in admin_user
+        sign_in user
         allow(Rails).to receive(:cache).and_return(cache_store)
         allow_any_instance_of(Ai::ImageGenerator).to receive(:generate).and_return(
           Ai::ImageGenerator::GenerationResult.new(url: image_url, text_response: nil)
