@@ -1,0 +1,84 @@
+<% web_hosts = ENV.fetch("KAMAL_WEB_HOSTS", "1.2.3.4").split(",") %>
+<% worker_hosts = ENV.fetch("KAMAL_WORKER_HOSTS", ENV.fetch("KAMAL_WEB_HOSTS", "1.2.3.4")).split(",") %>
+
+service: forem
+
+# Build a Containerfile-based image that can be pushed anywhere. Override via KAMAL_IMAGE.
+image: <%= ENV.fetch("KAMAL_IMAGE", "ghcr.io/forem/forem:latest") %>
+
+servers:
+  web:
+    hosts: <%= web_hosts %>
+    cmd: bundle exec puma -C config/puma.rb
+    options:
+      - "--publish"
+      - "<%= ENV.fetch("KAMAL_WEB_PUBLISH", "3000:3000") %>"
+      - "--restart"
+      - "unless-stopped"
+  worker:
+    hosts: <%= worker_hosts %>
+    cmd: bundle exec sidekiq -t 25
+    options:
+      - "--restart"
+      - "unless-stopped"
+
+# BYO nginx (or ALB/ELB/etc). We intentionally skip Kamal's built-in proxy to make it easier
+# to terminate TLS in a dedicated reverse proxy that can sit in front of multiple Forem apps.
+
+registry:
+  server: <%= ENV.fetch("KAMAL_REGISTRY_SERVER", "ghcr.io") %>
+  username: <%= ENV.fetch("KAMAL_REGISTRY_USERNAME", "my-ghcr-username") %>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  dockerfile: Containerfile
+  context: .
+  args:
+    VCS_REF: <%= ENV.fetch("KAMAL_VCS_REF") { `git rev-parse HEAD`.strip rescue "local-dev" } %>
+
+env:
+  clear:
+    RAILS_ENV: production
+    NODE_ENV: production
+    APP_DOMAIN: <%= ENV.fetch("APP_DOMAIN", "example.com") %>
+    APP_PROTOCOL: <%= ENV.fetch("APP_PROTOCOL", "https://") %>
+    WEB_CONCURRENCY: <%= ENV.fetch("WEB_CONCURRENCY", "2") %>
+    MALLOC_ARENA_MAX: 2
+    REDIS_URL: <%= ENV.fetch("REDIS_URL", "redis://redis:6379/0") %>
+    PORT: <%= ENV.fetch("PORT", "3000") %>
+  secret:
+    - RAILS_MASTER_KEY
+    - DATABASE_URL
+    - POSTGRES_PASSWORD
+    - FOREM_OWNER_SECRET
+    - HONEYBADGER_API_KEY
+
+volumes:
+  - "forem_public:/opt/apps/forem/public"
+  - "forem_uploads:/opt/apps/forem/public/uploads"
+  - "forem_storage:/opt/apps/forem/storage"
+
+boot:
+  limit: 50%
+  wait: 5
+
+accessories:
+  postgres:
+    image: postgres:15
+    host: <%= ENV.fetch("KAMAL_POSTGRES_HOST", web_hosts.first) %>
+    port: 5432
+    env:
+      clear:
+        POSTGRES_DB: forem_production
+        POSTGRES_USER: forem
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - forem_pg:/var/lib/postgresql/data
+  redis:
+    image: valkey/valkey:8
+    host: <%= ENV.fetch("KAMAL_REDIS_HOST", web_hosts.first) %>
+    port: 6379
+    directories:
+      - forem_redis:/data

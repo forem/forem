@@ -95,6 +95,12 @@ Please see our installation guides:
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
 
+## Deployment
+
+To build and ship Forem with [Kamal](https://kamal-deploy.org/), follow the step-by-step
+guide in `docs/deployment/kamal.md`. It covers container builds, secrets, accessory
+services, and running behind an Nginx reverse proxy.
+
 ## Vulnerability Disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).
