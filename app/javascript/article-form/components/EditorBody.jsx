@@ -64,7 +64,6 @@ export const EditorBody = ({
             result.map((user) => ({ ...user, value: user.username })),
           )
         }
-        autoResize
         onChange={onChange}
         onFocus={switchHelpContext}
         aria-label="Post Content"
