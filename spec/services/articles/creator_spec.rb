@@ -95,7 +95,7 @@ RSpec.describe Articles::Creator, type: :service do
     end
 
     it "creates an organization collection when series and organization_id are provided" do
-      article_params = attributes_for(:article, series: "org-series", organization_id: organization.id)
+      article_params = attributes_for(:article).merge(series: "org-series", organization_id: organization.id)
       article = described_class.call(org_member, article_params)
       expect(article.persisted?).to be true
       collection = article.collection
@@ -105,7 +105,7 @@ RSpec.describe Articles::Creator, type: :service do
     end
 
     it "creates a personal collection when series is provided but no organization_id" do
-      article_params = attributes_for(:article, series: "personal-series", organization_id: nil)
+      article_params = attributes_for(:article).merge(series: "personal-series", organization_id: nil)
       article = described_class.call(org_member, article_params)
       expect(article.persisted?).to be true
       collection = article.collection
@@ -116,7 +116,7 @@ RSpec.describe Articles::Creator, type: :service do
 
     it "finds existing organization collection when series already exists" do
       existing_collection = create(:collection, user: org_member, organization: organization, slug: "existing-series")
-      article_params = attributes_for(:article, series: "existing-series", organization_id: organization.id)
+      article_params = attributes_for(:article).merge(series: "existing-series", organization_id: organization.id)
       article = described_class.call(org_member, article_params)
       expect(article.collection).to eq(existing_collection)
     end

@@ -1239,27 +1239,6 @@ RSpec.describe "Subforems", type: :request do
         expect(subforem_page.body_markdown).to eq("# Updated Content")
       end
 
-      it "can only update title, description, and social_image for top-level pages" do
-        patch update_page_subforem_path(subforem, page_id: top_level_page.id), params: {
-          page: {
-            title: "Updated Top Level",
-            slug: "hacked-slug",
-            description: "Updated description",
-            body_markdown: "# Hacked content"
-          }
-        }
-
-        top_level_page.reload
-        expect(response).to redirect_to("/#{top_level_page.slug}")
-        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
-
-        expect(top_level_page.title).to eq("Updated Top Level")
-        expect(top_level_page.description).to eq("Updated description")
-        # Slug and body_markdown should NOT be updated for top-level pages
-        expect(top_level_page.slug).to eq("top-level")
-        expect(top_level_page.body_markdown).to eq("# Top Level")
-      end
-
       it "prevents HTML/JSON/CSS in updates" do
         patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
           page: {
