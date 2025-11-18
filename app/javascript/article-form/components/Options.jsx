@@ -23,6 +23,7 @@ export const Options = ({
     allSeries = [],
     canonicalUrl = '',
     series = '',
+    organizationId = null,
   },
   schedulingEnabled,
   onSaveDraft,
@@ -37,31 +38,61 @@ export const Options = ({
   const editablePublishedAt = !publishedAtWas || wasScheduled;
 
   if (allSeries.length > 0) {
-    const seriesNames = allSeries.map((name, index) => {
+    // Handle both old format (array of strings) and new format (array of objects)
+    const normalizedSeries = allSeries.map((item) => {
+      if (typeof item === 'string') {
+        // Backward compatibility: old format
+        return { slug: item, organization_id: null, organization_name: null, is_personal: true };
+      }
+      return item;
+    });
+
+    // Filter series based on selected organization
+    // Show personal collections when no org is selected, or org collections when org matches
+    const filteredSeries = normalizedSeries.filter((item) => {
+      if (!organizationId || organizationId === '') {
+        // No org selected - show only personal collections
+        return item.is_personal;
+      }
+      // Org selected - show collections for that org OR personal collections
+      return item.is_personal || item.organization_id === parseInt(organizationId, 10);
+    });
+
+    const seriesOptions = filteredSeries.map((item, index) => {
+      let label = item.slug;
+      if (!item.is_personal && item.organization_name) {
+        label = `${item.slug} (${item.organization_name})`;
+      } else if (item.is_personal) {
+        label = `${item.slug} (Personal)`;
+      }
+
       return (
-        <option key={`series-${index}`} value={name}>
-          {name}
+        <option key={`series-${index}`} value={item.slug}>
+          {label}
         </option>
       );
     });
-    existingSeries = (
-      <div className="crayons-field__description">
-        Existing series:
-        <select
-          value=""
-          name="series"
-          className="crayons-select"
-          onInput={onConfigChange}
-          required
-          aria-label="Select one of the existing series"
-        >
-          <option value="" disabled>
-            Select...
-          </option>
-          {seriesNames}
-        </select>
-      </div>
-    );
+
+    if (seriesOptions.length > 0) {
+      existingSeries = (
+        <div className="crayons-field__description">
+          Existing series:
+          <select
+            value=""
+            name="series"
+            className="crayons-select"
+            onInput={onConfigChange}
+            required
+            aria-label="Select one of the existing series"
+          >
+            <option value="" disabled>
+              Select...
+            </option>
+            {seriesOptions}
+          </select>
+        </div>
+      );
+    }
   }
 
   if (published) {
@@ -213,6 +244,7 @@ Options.propTypes = {
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
+    organizationId: PropTypes.string,
   }).isRequired,
   schedulingEnabled: PropTypes.bool.isRequired,
   onSaveDraft: PropTypes.func.isRequired,

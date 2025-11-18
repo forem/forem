@@ -10,7 +10,7 @@ RSpec.describe Collection do
     it { is_expected.to have_many(:articles).dependent(:nullify) }
 
     it { is_expected.to validate_presence_of(:slug) }
-    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
+    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(%i[user_id organization_id]) }
   end
 
   describe ".find_series" do
@@ -30,6 +30,39 @@ RSpec.describe Collection do
 
     it "creates a new series with an existing slug for a new user" do
       expect { described_class.find_series(series.slug, other_user) }.to change(described_class, :count).by(1)
+    end
+
+    context "with organization" do
+      let(:organization) { create(:organization) }
+
+      it "creates a new series for an organization" do
+        slug = Faker::Books::CultureSeries.book
+        expect do
+          collection = described_class.find_series(slug, user, organization: organization)
+          expect(collection.organization).to eq(organization)
+        end.to change(described_class, :count).by(1)
+      end
+
+      it "returns an existing series for an organization" do
+        org_collection = create(:collection, user: user, organization: organization, slug: "test-series")
+        expect do
+          expect(described_class.find_series("test-series", user, organization: organization)).to eq(org_collection)
+        end.not_to change(described_class, :count)
+      end
+
+      it "allows same slug for different organizations" do
+        org1 = create(:organization)
+        org2 = create(:organization)
+        slug = "shared-slug"
+
+        collection1 = described_class.find_series(slug, user, organization: org1)
+        collection2 = described_class.find_series(slug, user, organization: org2)
+
+        expect(collection1).not_to eq(collection2)
+        expect(collection1.slug).to eq(collection2.slug)
+        expect(collection1.organization).to eq(org1)
+        expect(collection2.organization).to eq(org2)
+      end
     end
   end
 
