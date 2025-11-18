@@ -62,26 +62,65 @@ export const Options = ({
       let label = item.slug;
       if (!item.is_personal && item.organization_name) {
         label = `${item.slug} (${item.organization_name})`;
-      } else if (item.is_personal) {
-        label = `${item.slug} (Personal)`;
       }
+      // For personal series, just show the slug without any label
+
+      // Store slug and organization_id in value, separated by | for parsing
+      const value = item.organization_id
+        ? `${item.slug}|${item.organization_id}`
+        : `${item.slug}|`;
 
       return (
-        <option key={`series-${index}`} value={item.slug}>
+        <option key={`series-${index}`} value={value}>
           {label}
         </option>
       );
     });
 
     if (seriesOptions.length > 0) {
+      const handleSeriesSelect = (e) => {
+        const selectedValue = e.target.value;
+        if (selectedValue) {
+          // Parse the value: format is "slug|organization_id" or "slug|" for personal
+          const [selectedSlug, selectedOrgId] = selectedValue.split('|');
+          
+          // Update series field
+          const seriesEvent = {
+            target: {
+              name: 'series',
+              value: selectedSlug,
+            },
+            preventDefault: () => {},
+          };
+          onConfigChange(seriesEvent);
+
+          // Update organizationId if needed
+          // Convert both to strings for comparison since organizationId might be a number or string
+          const currentOrgId = String(organizationId || '');
+          const newOrgId = selectedOrgId || '';
+          
+          // Only update if organizationId is actually changing
+          if (newOrgId !== currentOrgId) {
+            const orgEvent = {
+              target: {
+                name: 'organizationId',
+                value: newOrgId,
+              },
+              preventDefault: () => {},
+            };
+            onConfigChange(orgEvent);
+          }
+        }
+      };
+
       existingSeries = (
         <div className="crayons-field__description">
           Existing series:
           <select
             value=""
-            name="series"
+            name="existingSeries"
             className="crayons-select"
-            onInput={onConfigChange}
+            onChange={handleSeriesSelect}
             required
             aria-label="Select one of the existing series"
           >
