@@ -118,6 +118,10 @@ pt:
       created_with_ai: Subforem criado com IA com sucesso!
       updated: Subforem atualizado com sucesso!
       deleted: Subforem excluído com sucesso!
+    trends_controller:
+      created: Trend has been created!
+      updated: Trend has been updated!
+      deleted: Trend has been deleted!
     tags:
       moderators_controller:
         not_found: 'Nome de usuário "%{username}" não foi encontrado'

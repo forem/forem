@@ -157,6 +157,10 @@ en:
       created_with_ai: Subforem has been created! Details are being generated in the background.
       updated: Subforum has been updated!
       deleted: Subforum has been deleted!
+    trends_controller:
+      created: Trend has been created!
+      updated: Trend has been updated!
+      deleted: Trend has been deleted!
     tags:
       moderators_controller:
         not_found: 'Username "%{username}" was not found'

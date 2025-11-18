@@ -1,0 +1,48 @@
+<header class="flex items-center mb-6">
+  <h1 class="crayons-title">Trend: <%= @trend.short_title %></h1>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "Edit", edit_admin_trend_path(@trend), class: "crayons-btn crayons-btn--s" %>
+    <%= link_to "Back to Trends", admin_trends_path, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+  </div>
+</header>
+
+<div class="crayons-card p-6">
+  <div class="mb-4">
+    <strong>Subforem:</strong> <%= @trend.subforem.domain %>
+  </div>
+  
+  <div class="mb-4">
+    <strong>Short Title:</strong>
+    <p><%= @trend.short_title %></p>
+  </div>
+  
+  <div class="mb-4">
+    <strong>Public Description:</strong>
+    <p><%= simple_format(@trend.public_description) %></p>
+  </div>
+  
+  <div class="mb-4">
+    <strong>Full Content Description:</strong>
+    <p><%= simple_format(@trend.full_content_description) %></p>
+  </div>
+  
+  <div class="mb-4">
+    <strong>Expiry Date:</strong>
+    <p><%= @trend.expiry_date.strftime("%Y-%m-%d %H:%M") %></p>
+  </div>
+  
+  <div class="mb-4">
+    <strong>Status:</strong>
+    <% if @trend.current? %>
+      <span class="crayons-badge crayons-badge--success">Current</span>
+    <% else %>
+      <span class="crayons-badge crayons-badge--secondary">Expired</span>
+    <% end %>
+  </div>
+  
+  <div class="mb-4">
+    <strong>Context Notes Created:</strong>
+    <p><%= @trend.context_notes.count %></p>
+  </div>
+</div>
+

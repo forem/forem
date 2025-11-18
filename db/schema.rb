@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_18_115207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -445,9 +445,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
     t.datetime "created_at", null: false
     t.text "processed_html", null: false
     t.bigint "tag_id"
+    t.bigint "trend_id"
     t.datetime "updated_at", null: false
     t.index ["article_id"], name: "index_context_notes_on_article_id"
     t.index ["tag_id"], name: "index_context_notes_on_tag_id"
+    t.index ["trend_id"], name: "index_context_notes_on_trend_id"
   end
 
   create_table "context_notifications", force: :cascade do |t|
@@ -1437,6 +1439,18 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
     t.index ["taggings_count"], name: "index_tags_on_taggings_count"
   end
 
+  create_table "trends", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expiry_date", null: false
+    t.text "full_content_description", null: false
+    t.text "public_description", null: false
+    t.string "short_title", null: false
+    t.bigint "subforem_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expiry_date"], name: "index_trends_on_expiry_date"
+    t.index ["subforem_id"], name: "index_trends_on_subforem_id"
+  end
+
   create_table "tweets", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.text "extended_entities_serialized", default: "--- {}\n"
@@ -1823,6 +1837,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
   add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
+  add_foreign_key "trends", "subforems"
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"

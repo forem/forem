@@ -157,6 +157,10 @@ fr:
       created_with_ai: Le sous-forum a été créé ! Les détails sont en cours de génération en arrière-plan.
       updated: Le sous-forum a été mis à jour !
       deleted: Le sous-forum a été supprimé !
+    trends_controller:
+      created: Trend has been created!
+      updated: Trend has been updated!
+      deleted: Trend has been deleted!
     tags:
       moderators_controller:
         not_found: "Le nom d'utilisateur %{username} n'a pas été trouvé"

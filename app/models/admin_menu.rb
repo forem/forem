@@ -32,6 +32,7 @@ class AdminMenu
       item(name: "pages"),
       item(name: "profile fields"),
       item(name: "subforems"),
+      item(name: "trends"),
     ]
 
     scope :admin_team, "user-line", [

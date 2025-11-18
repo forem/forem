@@ -273,6 +273,41 @@ RSpec.describe Spam::Handler, type: :service do
         expect(handler).to eq(:not_spam)
       end
     end
+
+    context "when content moderation labeler identifies on-topic and good content" do
+      let(:subforem) { create(:subforem) }
+      let(:article) { create(:article, subforem_id: subforem.id) }
+
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("okay_and_on_topic")
+        allow(article).to receive(:update_column)
+      end
+
+      it "checks for trend matching" do
+        expect(described_class).to receive(:check_trend_matching).with(article)
+        handler
+      end
+
+      context "when a matching trend is found" do
+        let(:trend) { create(:trend, subforem: subforem, expiry_date: 1.month.from_now, short_title: "Test Trend") }
+
+        before do
+          matcher = instance_double(Ai::TrendMatcher)
+          allow(Ai::TrendMatcher).to receive(:new).with(article).and_return(matcher)
+          allow(matcher).to receive(:find_matching_trend).and_return(trend)
+        end
+
+        it "creates a context note with the trend's short_title" do
+          expect do
+            handler
+          end.to change { ContextNote.where(article: article, trend: trend).count }.by(1)
+
+          context_note = ContextNote.find_by(article: article, trend: trend)
+          expect(context_note.body_markdown).to eq("Test Trend")
+        end
+      end
+    end
   end
 
   describe ".handle_comment!" do
