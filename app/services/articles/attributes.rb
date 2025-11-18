@@ -4,11 +4,12 @@ module Articles
                     edited_at main_image organization_id user_id published clickbait_score
                     title video_thumbnail_url published_at co_author_ids_list].freeze
 
-    attr_reader :attributes, :article_user
+    attr_reader :attributes, :article_user, :organization
 
-    def initialize(attributes, article_user)
+    def initialize(attributes, article_user, organization: nil)
       @attributes = attributes
       @article_user = article_user
+      @organization = organization
     end
 
     def for_update(update_edited_at: false)
@@ -24,7 +25,15 @@ module Articles
     private
 
     def collection
-      Collection.find_series(attributes[:series], article_user) if attributes[:series].present?
+      return unless attributes[:series].present?
+
+      # Use organization from attributes if being changed, otherwise use the passed organization
+      org = if attributes[:organization_id].present?
+              Organization.find_by(id: attributes[:organization_id])
+            else
+              organization
+            end
+      Collection.find_series(attributes[:series], article_user, organization: org)
     end
 
     def tag_list

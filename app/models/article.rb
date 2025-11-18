@@ -1193,7 +1193,10 @@ class Article < ApplicationRecord
     self.description = hash["description"] if update_description
 
     self.collection_id = nil if hash["title"].present?
-    self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
+    if hash["series"].present?
+      collection = Collection.find_series(hash["series"], user, organization: organization)
+      self.collection_id = collection.id
+    end
   end
 
   def set_main_image(hash)
@@ -1259,6 +1262,14 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     return unless collection && collection.user_id != user_id
+
+    # Allow org members to add articles to org collections
+    if collection.organization_id.present?
+      org = collection.organization
+      # Check if user is a member/admin of the collection's organization
+      # and if the article is being published under that organization
+      return if user.org_member?(org) && organization_id == collection.organization_id
+    end
 
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end

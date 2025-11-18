@@ -71,7 +71,8 @@ module Articles
       @series ||= if article_params[:series].blank?
                     []
                   else
-                    Collection.find_series(article_params[:series], user)
+                    organization = article_params[:organization_id].present? ? Organization.find_by(id: article_params[:organization_id]) : nil
+                    Collection.find_series(article_params[:series], user, organization: organization)
                   end
     end
 

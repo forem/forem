@@ -53,6 +53,56 @@ RSpec.describe Article do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "#validate_collection_permission" do
+      let(:other_user) { create(:user) }
+      let(:collection) { create(:collection, user: other_user) }
+
+      it "allows article owner to add to their own collection" do
+        article = build(:article, user: user, collection: create(:collection, user: user))
+        expect(article).to be_valid
+      end
+
+      it "prevents user from adding article to another user's collection" do
+        article = build(:article, user: user, collection: collection)
+        expect(article).not_to be_valid
+        expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+      end
+
+      context "with organization collections" do
+        let(:organization) { create(:organization) }
+        let(:org_collection) { create(:collection, user: other_user, organization: organization) }
+        let(:org_member) { create(:user) }
+
+        before do
+          create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        end
+
+        it "allows org member to add article to org collection when publishing under org" do
+          article = build(:article, user: org_member, collection: org_collection, organization: organization)
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection when not publishing under org" do
+          article = build(:article, user: org_member, collection: org_collection, organization: nil)
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents non-org member from adding article to org collection" do
+          article = build(:article, user: user, collection: org_collection, organization: organization)
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "allows org admin to add article to org collection" do
+          org_admin = create(:user)
+          create(:organization_membership, user: org_admin, organization: organization, type_of_user: "admin")
+          article = build(:article, user: org_admin, collection: org_collection, organization: organization)
+          expect(article).to be_valid
+        end
+      end
+    end
+
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
         allow(Settings::General).to receive(:mascot_user_id).and_return(3)

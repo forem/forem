@@ -4,14 +4,18 @@ class Collection < ApplicationRecord
   belongs_to :user
   belongs_to :organization, optional: true
 
-  validates :slug, presence: true, uniqueness: { scope: :user_id }
+  validates :slug, presence: true, uniqueness: { scope: [:user_id, :organization_id] }
 
   scope :non_empty, -> { joins(:articles).distinct }
 
   after_touch :touch_articles
 
-  def self.find_series(slug, user)
-    Collection.find_or_create_by(slug: slug, user: user)
+  def self.find_series(slug, user, organization: nil)
+    if organization.present?
+      Collection.find_or_create_by(slug: slug, user: user, organization: organization)
+    else
+      Collection.find_or_create_by(slug: slug, user: user, organization_id: nil)
+    end
   end
 
   def path
