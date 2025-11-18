@@ -849,8 +849,38 @@ class Article < ApplicationRecord
   end
 
   def all_series
-    # all series names
-    user&.collections&.pluck(:slug)
+    # all series names - includes user's personal collections and organization collections
+    # Returns array of hashes with slug and organization info for UI display
+    return [] unless user
+
+    series_list = []
+
+    # Get user's personal collections (no organization)
+    user.collections.where(organization_id: nil).each do |collection|
+      series_list << {
+        slug: collection.slug,
+        organization_id: nil,
+        organization_name: nil,
+        is_personal: true
+      }
+    end
+
+    # Get collections from organizations the user is a member of
+    Collection.joins(organization: :organization_memberships)
+      .where(organization_memberships: { user_id: user.id })
+      .includes(:organization)
+      .each do |collection|
+        series_list << {
+          slug: collection.slug,
+          organization_id: collection.organization_id,
+          organization_name: collection.organization.name,
+          is_personal: false
+        }
+      end
+
+    # For backward compatibility, also support returning just slugs when called as array
+    # But when serialized to JSON, it will return the full hash
+    series_list
   end
 
   def update_score

@@ -100,6 +100,62 @@ RSpec.describe Article do
           article = build(:article, user: org_admin, collection: org_collection, organization: organization)
           expect(article).to be_valid
         end
+
+        it "prevents org member from adding article to org collection with different org_id" do
+          other_org = create(:organization)
+          article = build(:article, user: org_member, collection: org_collection, organization: other_org)
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents org member from adding article to org collection when org_id doesn't match" do
+          other_org = create(:organization)
+          create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+          article = build(:article, user: org_member, collection: org_collection, organization: other_org)
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+      end
+    end
+
+    describe "#all_series" do
+      let(:org_member) { create(:user) }
+      let(:organization) { create(:organization) }
+      let(:other_org) { create(:organization) }
+
+      before do
+        create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+      end
+
+      it "returns personal collections" do
+        personal_collection = create(:collection, user: org_member, organization: nil, slug: "personal-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "personal-series", is_personal: true))
+      end
+
+      it "returns organization collections for orgs the user is a member of" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id, is_personal: false))
+      end
+
+      it "does not return collections from orgs the user is not a member of" do
+        non_member_org = create(:organization)
+        create(:collection, user: create(:user), organization: non_member_org, slug: "other-org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series.map { |s| s[:slug] }).not_to include("other-org-series")
+      end
+
+      it "returns collections with organization name" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        org_series = series.find { |s| s[:slug] == "org-series" }
+        expect(org_series[:organization_name]).to eq(organization.name)
       end
     end
 
