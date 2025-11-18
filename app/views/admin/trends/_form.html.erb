@@ -1,0 +1,47 @@
+<%= form_for [:admin, @trend] do |form| %>
+  <div class="crayons-field">
+    <%= form.label :subforem_id, "Subforem", class: "crayons-label" %>
+    <%= form.select :subforem_id, 
+        options_from_collection_for_select(@subforems, :id, :domain, @trend.subforem_id),
+        { prompt: "Select a subforem" },
+        { class: "crayons-select", required: true } %>
+  </div>
+
+  <div class="crayons-field">
+    <%= form.label :short_title, "Short Title", class: "crayons-label" %>
+    <%= form.text_field :short_title, class: "crayons-textfield", required: true, maxlength: 75 %>
+    <small class="crayons-field__description">
+      The shortest possible description of the trend (max 75 characters). This will be used as the content of context notes.
+    </small>
+  </div>
+
+  <div class="crayons-field">
+    <%= form.label :public_description, "Public Description", class: "crayons-label" %>
+    <%= form.text_area :public_description, class: "crayons-textfield", rows: 4, required: true %>
+    <small class="crayons-field__description">
+      A one-paragraph description of the trend for public display.
+    </small>
+  </div>
+
+  <div class="crayons-field">
+    <%= form.label :full_content_description, "Full Content Description", class: "crayons-label" %>
+    <%= form.text_area :full_content_description, class: "crayons-textfield", rows: 8, required: true %>
+    <small class="crayons-field__description">
+      The underlying full brief that the system uses to understand the trend and match articles to it.
+    </small>
+  </div>
+
+  <div class="crayons-field">
+    <%= form.label :expiry_date, "Expiry Date", class: "crayons-label" %>
+    <%= form.datetime_local_field :expiry_date, class: "crayons-textfield", required: true %>
+    <small class="crayons-field__description">
+      The date and time when this trend expires. Only current (non-expired) trends will be checked for article matching.
+    </small>
+  </div>
+
+  <div>
+    <%= form.submit class: "c-btn c-btn--primary" %>
+    <%= link_to "Cancel", admin_trends_path, class: "c-btn c-btn--secondary ml-2" %>
+  </div>
+<% end %>
+

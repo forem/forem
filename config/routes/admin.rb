@@ -144,6 +144,7 @@ namespace :admin do
         end
       end
     end
+    resources :trends, only: %i[index new create edit update show destroy]
   end
 
   scope :moderation do

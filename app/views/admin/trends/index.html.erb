@@ -1,0 +1,60 @@
+<header class="flex items-center mb-6">
+  <h1 class="crayons-title">Trends</h1>
+  <%= link_to "New Trend", new_admin_trend_path, class: "ml-auto crayons-btn crayons-btn--s" %>
+</header>
+
+<% if @subforems.any? %>
+  <div class="crayons-card p-4 mb-6">
+    <label class="crayons-label mb-2">Filter by Subforem:</label>
+    <%= form_with url: admin_trends_path, method: :get, local: true, class: "flex gap-2" do |form| %>
+      <%= form.select :subforem_id, 
+          options_from_collection_for_select(@subforems, :id, :domain, params[:subforem_id]),
+          { include_blank: "All Subforems" },
+          { class: "crayons-select", onchange: "this.form.submit()" } %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="crayons-card p-6">
+  <% if @trends.any? %>
+    <table class="w-100">
+      <thead>
+        <tr>
+          <th>Short Title</th>
+          <th>Subforem</th>
+          <th>Expiry Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @trends.each do |trend| %>
+          <tr>
+            <td><%= trend.short_title %></td>
+            <td><%= trend.subforem.domain %></td>
+            <td><%= trend.expiry_date.strftime("%Y-%m-%d %H:%M") %></td>
+            <td>
+              <% if trend.current? %>
+                <span class="crayons-badge crayons-badge--success">Current</span>
+              <% else %>
+                <span class="crayons-badge crayons-badge--secondary">Expired</span>
+              <% end %>
+            </td>
+            <td>
+              <div class="flex gap-2">
+                <%= link_to "View", admin_trend_path(trend), class: "crayons-btn crayons-btn--s" %>
+                <%= link_to "Edit", edit_admin_trend_path(trend), class: "crayons-btn crayons-btn--s" %>
+                <%= link_to "Delete", admin_trend_path(trend), method: :delete, 
+                    data: { confirm: "Are you sure?" }, 
+                    class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No trends found.</p>
+  <% end %>
+</div>
+

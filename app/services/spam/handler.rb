@@ -206,6 +206,11 @@ module Spam
         if offtopic_label?(label)
           check_subforem_reassignment(article)
         end
+
+        # Check for trend matching if the article is on topic and good
+        if on_topic_and_good_label?(label)
+          check_trend_matching(article)
+        end
       rescue StandardError => e
         Rails.logger.error("Failed to label article content: #{e}")
         # Set a safe default label
@@ -234,9 +239,30 @@ module Spam
       end
     end
 
+    # NEW/private: Check if a label indicates the content is on topic and good
+    def self.on_topic_and_good_label?(label)
+      %w[
+        okay_and_on_topic
+        very_good_and_on_topic
+        great_and_on_topic
+      ].include?(label)
+    end
+
+    # NEW/private: Check if article matches any current trends and create context note
+    def self.check_trend_matching(article)
+      return unless Ai::Base::DEFAULT_KEY.present?
+
+      begin
+        TrendContextNoteService.check_and_create_context_note(article)
+      rescue StandardError => e
+        Rails.logger.error("Failed to check trend matching for article #{article.id}: #{e}")
+      end
+    end
+
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
                          :suspend_if_user_is_repeat_offender, :label_article_content!,
-                         :offtopic_label?, :check_subforem_reassignment
+                         :offtopic_label?, :check_subforem_reassignment,
+                         :on_topic_and_good_label?, :check_trend_matching
   end
 end
