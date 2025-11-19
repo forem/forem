@@ -23,6 +23,7 @@ InstantClick.on('change', () => {
   initializeCommentPreview();
   initializeSettings();
   initializeNotifications();
+  initializeDateHelpers(); // Re-format dates on page navigation
   initializeGifVideos(document);
 });
 
