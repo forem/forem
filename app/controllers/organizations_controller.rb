@@ -1,6 +1,7 @@
 class OrganizationsController < ApplicationController
+  skip_before_action :verify_private_forem, only: :confirm_invitation
   after_action :verify_authorized
-  skip_after_action :verify_authorized, only: :members
+  skip_after_action :verify_authorized, only: [:members, :confirm_invitation]
 
   ORGANIZATIONS_PERMITTED_PARAMS = %i[
     id

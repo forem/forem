@@ -188,7 +188,7 @@ RSpec.describe "Organizations Invite" do
         sign_in other_user
         get organization_confirm_invitation_path(token: pending_membership.invitation_token)
         expect(response).to redirect_to(root_path)
-        expect(flash[:error]).to include("wrong user")
+        expect(flash[:error]).to include("invited user")
       end
     end
 
