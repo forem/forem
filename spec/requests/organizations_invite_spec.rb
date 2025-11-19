@@ -25,10 +25,8 @@ RSpec.describe "Organizations Invite" do
       end
 
       it "sends an invitation email" do
-        allow(OrganizationInvitationMailer).to receive(:with).and_call_original
-        mail_double = double("mail")
-        allow(mail_double).to receive(:deliver_now)
-        allow(OrganizationInvitationMailer).to receive_message_chain(:with, :invitation_email).and_return(mail_double)
+        mail_double = double("mail", deliver_now: true)
+        allow(OrganizationInvitationMailer).to receive(:with).and_return(double(invitation_email: mail_double))
 
         post organization_invite_path(organization.id), params: { username: invited_user.username }
 
@@ -73,10 +71,8 @@ RSpec.describe "Organizations Invite" do
       end
 
       it "sends a notification email (not invitation)" do
-        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_call_original
-        mail_double = double("mail")
-        allow(mail_double).to receive(:deliver_now)
-        allow(OrganizationMembershipNotificationMailer).to receive_message_chain(:with, :member_added_email).and_return(mail_double)
+        mail_double = double("mail", deliver_now: true)
+        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_return(double(member_added_email: mail_double))
 
         post organization_invite_path(organization.id), params: { username: invited_user.username }
 
@@ -86,10 +82,8 @@ RSpec.describe "Organizations Invite" do
 
       it "does not send an invitation email" do
         allow(OrganizationInvitationMailer).to receive(:with)
-        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_call_original
-        mail_double = double("mail")
-        allow(mail_double).to receive(:deliver_now)
-        allow(OrganizationMembershipNotificationMailer).to receive_message_chain(:with, :member_added_email).and_return(mail_double)
+        mail_double = double("mail", deliver_now: true)
+        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_return(double(member_added_email: mail_double))
 
         post organization_invite_path(organization.id), params: { username: invited_user.username }
 

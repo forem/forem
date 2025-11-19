@@ -35,8 +35,18 @@ module Admin
 
     def update_fully_trusted
       org = Organization.find(params[:id])
+      old_status = org.fully_trusted?
       org.update!(fully_trusted: params[:fully_trusted] == "true")
-      add_note(org)
+      
+      if old_status != org.fully_trusted?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Fully trusted status #{org.fully_trusted? ? 'enabled' : 'disabled'}",
+        )
+      end
 
       status = org.fully_trusted? ? "enabled" : "disabled"
       flash[:notice] = I18n.t("admin.organizations_controller.fully_trusted_#{status}")

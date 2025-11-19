@@ -179,7 +179,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
-    @organization_users = @organization.active_users.order(badge_achievements_count: :desc)
+    @organization_users = @organization.active_users.distinct.order("users.badge_achievements_count DESC")
     if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
       not_found
     end

@@ -105,7 +105,8 @@ class OrganizationsController < ApplicationController
   end
 
   def invite
-    set_organization
+    @organization = Organization.find_by(id: params[:id])
+    not_found unless @organization
     authorize @organization, :update?
 
     username = params[:username]&.strip&.delete("@")
@@ -163,6 +164,7 @@ class OrganizationsController < ApplicationController
   end
 
   def confirm_invitation
+    skip_authorization # Public action - no authorization needed
     @membership = OrganizationMembership.find_by(invitation_token: params[:token])
     
     unless @membership
