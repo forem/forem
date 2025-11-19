@@ -182,7 +182,7 @@ class OrganizationsController < ApplicationController
 
     # If user is not signed in, show the confirmation page
     unless user_signed_in?
-      render :confirm_invitation
+      render :confirm_invitation, status: :ok
       return
     end
 
