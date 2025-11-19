@@ -299,6 +299,9 @@ Rails.application.routes.draw do
     get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
     delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
     post "organizations/generate_new_secret", to: "organizations#generate_new_secret"
+    post "organizations/:id/invite", to: "organizations#invite", as: :organization_invite
+    get "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation", as: :organization_confirm_invitation
+    post "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation"
     post "users/api_secrets", to: "api_secrets#create", as: :users_api_secrets
     delete "users/api_secrets/:id", to: "api_secrets#destroy", as: :users_api_secret
     post "users/update_password", to: "users#update_password", as: :user_update_password

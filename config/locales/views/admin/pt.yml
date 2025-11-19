@@ -329,3 +329,28 @@ pt:
         host: Host
         custom_element: Elemento personalizado
         unknown: Desconhecido
+      organizations:
+        profile:
+          id: ID %{organizationid}
+          since_html: Organização desde %{time}
+          email: E-mail
+          github: GitHub
+          twitter: Twitter
+          visit: Visitar organização
+          total_members: "%{count} membros"
+        delete:
+          heading: Excluir %{organization}
+          onsubmit: Tem certeza? Esta ação é irreversível.
+          desc2: "Nota: Excluir a organização, %{organization}, dissociará os membros e artigos existentes da organização, mas não os excluirá."
+          role_notice: Apenas Super Admins podem excluir organizações.
+          credits_notice: Você não pode excluir uma organização que tenha créditos associados.
+          submit: Excluir organização agora
+        options:
+          delete: Excluir organização
+          icon: Opções
+        fully_trusted:
+          label: Organização Totalmente Confiável
+          description: Quando habilitado, esta organização pode adicionar membros diretamente sem exigir confirmação. Os membros receberão um e-mail de notificação em vez de um convite.
+          enable: Habilitar Totalmente Confiável
+          disable: Desabilitar Totalmente Confiável
+          enabled_notice: Esta organização é totalmente confiável. Os membros podem ser adicionados diretamente sem confirmação.

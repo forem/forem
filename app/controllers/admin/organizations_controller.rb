@@ -33,6 +33,16 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
+    def update_fully_trusted
+      org = Organization.find(params[:id])
+      org.update!(fully_trusted: params[:fully_trusted] == "true")
+      add_note(org)
+
+      status = org.fully_trusted? ? "enabled" : "disabled"
+      flash[:notice] = I18n.t("admin.organizations_controller.fully_trusted_#{status}")
+      redirect_to admin_organization_path(org)
+    end
+
     def destroy
       organization = Organization.find_by(id: params[:id])
       Organizations::DeleteWorker.perform_async(organization.id, current_user.id, false)
