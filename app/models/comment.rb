@@ -53,6 +53,7 @@ class Comment < ApplicationRecord
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
+  validate :body_has_content
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
@@ -372,6 +373,17 @@ class Comment < ApplicationRecord
     errors.add(:base,
                I18n.t("models.comment.mention_too_many",
                       count: Settings::RateLimit.mention_creation))
+  end
+
+  def body_has_content
+    return if body_markdown.blank?
+
+    # Strip HTML tags and whitespace to check for actual text content
+    text_content = ActionController::Base.helpers.strip_tags(processed_html || "").strip
+
+    if text_content.blank?
+      errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
+    end
   end
 
   def record_field_test_event

@@ -46,6 +46,7 @@ en:
     broadcast:
       single_active: You can only have one active announcement broadcast
     comment:
+      cannot_be_empty: cannot be empty. Please enter some text before submitting.
       deleted: '[deleted]'
       has_been_deleted: '%{type} has been deleted.'
       hidden: '[hidden by post author]'
