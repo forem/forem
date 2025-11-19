@@ -53,6 +53,127 @@ RSpec.describe Article do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "#validate_collection_permission" do
+      let(:other_user) { create(:user) }
+      let(:collection) { create(:collection, user: other_user) }
+
+      it "allows article owner to add to their own collection" do
+        article = build(:article, user: user, collection: create(:collection, user: user))
+        expect(article).to be_valid
+      end
+
+      it "prevents user from adding article to another user's collection" do
+        # Build article with body_markdown that doesn't have title in frontmatter
+        # to avoid evaluate_front_matter clearing collection_id
+        article = build(:article, user: user, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+        article.collection_id = collection.id
+        expect(article).not_to be_valid
+        expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+      end
+
+      context "with organization collections" do
+        let(:organization) { create(:organization) }
+        let(:org_collection) { create(:collection, user: other_user, organization: organization) }
+        let(:org_member) { create(:user) }
+
+        before do
+          create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        end
+
+        it "allows org member to add article to org collection when publishing under org" do
+          article = build(:article, user: org_member, organization: organization)
+          # Set collection_id after building. Run valid? once to trigger callbacks, then set it again
+          article.collection_id = org_collection.id
+          article.valid? # This runs before_validation which may clear collection_id
+          article.collection_id = org_collection.id # Set it again after callbacks
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection when not publishing under org" do
+          article = build(:article, user: org_member, organization: nil, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents non-org member from adding article to org collection" do
+          article = build(:article, user: user, organization: organization, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "allows org admin to add article to org collection" do
+          org_admin = create(:user)
+          create(:organization_membership, user: org_admin, organization: organization, type_of_user: "admin")
+          article = build(:article, user: org_admin, organization: organization)
+          # Set collection_id after building. Run valid? once to trigger callbacks, then set it again
+          article.collection_id = org_collection.id
+          article.valid? # This runs before_validation which may clear collection_id
+          article.collection_id = org_collection.id # Set it again after callbacks
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection with different org_id" do
+          other_org = create(:organization)
+          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents org member from adding article to org collection when org_id doesn't match" do
+          other_org = create(:organization)
+          create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+      end
+    end
+
+    describe "#all_series" do
+      let(:org_member) { create(:user) }
+      let(:organization) { create(:organization) }
+      let(:other_org) { create(:organization) }
+
+      before do
+        create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+      end
+
+      it "returns personal collections" do
+        personal_collection = create(:collection, user: org_member, organization: nil, slug: "personal-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "personal-series", is_personal: true))
+      end
+
+      it "returns organization collections for orgs the user is a member of" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id, is_personal: false))
+      end
+
+      it "does not return collections from orgs the user is not a member of" do
+        non_member_org = create(:organization)
+        create(:collection, user: create(:user), organization: non_member_org, slug: "other-org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series.map { |s| s[:slug] }).not_to include("other-org-series")
+      end
+
+      it "returns collections with organization name" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        org_series = series.find { |s| s[:slug] == "org-series" }
+        expect(org_series[:organization_name]).to eq(organization.name)
+      end
+    end
+
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
         allow(Settings::General).to receive(:mascot_user_id).and_return(3)
