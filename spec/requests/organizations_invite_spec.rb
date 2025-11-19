@@ -193,6 +193,10 @@ RSpec.describe "Organizations Invite" do
     end
 
     context "when user is not signed in" do
+      before do
+        sign_out :user
+      end
+
       it "renders the confirmation page with sign in prompt" do
         get organization_confirm_invitation_path(token: pending_membership.invitation_token)
         expect(response).to have_http_status(:success)
