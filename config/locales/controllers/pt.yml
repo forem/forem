@@ -77,6 +77,8 @@ pt:
       already_pending: Este usuário já tem um convite pendente.
       success: "%{username} foi convidado com sucesso para a organização."
       added_success: "%{username} foi adicionado com sucesso à organização."
+      rate_limit_exceeded: Você atingiu o limite diário de convites de %{limit} convites por dia. Por favor, tente novamente amanhã.
+      max_outstanding_exceeded: Você atingiu o limite máximo de convites pendentes de %{limit}. Por favor, aguarde alguns convites serem aceitos ou cancelados antes de enviar mais.
     confirm_invitation:
       invalid_token: Token de convite inválido ou expirado.
       already_confirmed: Este convite já foi confirmado.

@@ -93,19 +93,19 @@
     <!-- Invite by Username Method -->
     <div class="crayons-card crayons-card--secondary p-6">
       <div class="flex items-center mb-4">
-        <%= crayons_icon_tag("user-line", class: "mr-3", title: t("views.settings.org.admin.invite_methods.username.icon")) %>
-        <h3 class="fs-l fw-bold"><%= t("views.settings.org.admin.invite_methods.username.title") %></h3>
+        <%= crayons_icon_tag("user-line", class: "mr-3", title: @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.icon") : t("views.settings.org.admin.invite_methods.username.icon")) %>
+        <h3 class="fs-l fw-bold"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.title") : t("views.settings.org.admin.invite_methods.username.title") %></h3>
       </div>
-      <p class="color-base-70 mb-4"><%= t("views.settings.org.admin.invite_methods.username.description") %></p>
+      <p class="color-base-70 mb-4"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.description") : t("views.settings.org.admin.invite_methods.username.description") %></p>
       
       <%= form_tag organization_invite_path(@organization.id), method: :post, class: "grid gap-4" do %>
         <%= hidden_field_tag "organization[id]", @organization.id %>
         <div class="crayons-field">
           <%= label_tag "username", t("views.settings.org.admin.username_label"), class: "crayons-field__label" %>
           <%= text_field_tag "username", nil, class: "crayons-textfield", placeholder: t("views.settings.org.admin.username_placeholder"), autocomplete: "off" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.username_description") %></p>
+          <p class="crayons-field__description"><%= @organization.fully_trusted? ? t("views.settings.org.admin.username_description_fully_trusted") : t("views.settings.org.admin.username_description") %></p>
         </div>
-        <button type="submit" class="crayons-btn crayons-btn--primary w-max"><%= t("views.settings.org.admin.invite_button") %></button>
+        <button type="submit" class="crayons-btn crayons-btn--primary w-max"><%= @organization.fully_trusted? ? t("views.settings.org.admin.add_button") : t("views.settings.org.admin.invite_button") %></button>
       <% end %>
     </div>
 

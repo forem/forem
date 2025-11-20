@@ -77,6 +77,8 @@ en:
       already_pending: This user already has a pending invitation.
       success: Successfully invited %{username} to the organization.
       added_success: Successfully added %{username} to the organization.
+      rate_limit_exceeded: You have reached the daily invitation limit of %{limit} invitations per day. Please try again tomorrow.
+      max_outstanding_exceeded: You have reached the maximum outstanding invitations limit of %{limit}. Please wait for some invitations to be accepted or cancelled before sending more.
     confirm_invitation:
       invalid_token: Invalid or expired invitation token.
       already_confirmed: This invitation has already been confirmed.
