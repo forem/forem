@@ -131,6 +131,32 @@ class OrganizationsController < ApplicationController
       return
     end
 
+    # Rate limit check: only applies to non-fully-trusted organizations
+    unless @organization.fully_trusted?
+      # Check daily invitation limit
+      today_start = Time.zone.now.beginning_of_day
+      today_pending_count = @organization.organization_memberships
+                                         .pending
+                                         .where(created_at: today_start..)
+                                         .count
+
+      if today_pending_count >= Settings::RateLimit.organization_invitation_daily
+        flash[:error] = I18n.t("organizations_controller.invite.rate_limit_exceeded",
+                               limit: Settings::RateLimit.organization_invitation_daily)
+        redirect_to user_settings_path(:organization, org_id: @organization.id)
+        return
+      end
+
+      # Check total outstanding invitations limit
+      total_pending_count = @organization.organization_memberships.pending.count
+      if total_pending_count >= Settings::RateLimit.organization_invitation_max_outstanding
+        flash[:error] = I18n.t("organizations_controller.invite.max_outstanding_exceeded",
+                               limit: Settings::RateLimit.organization_invitation_max_outstanding)
+        redirect_to user_settings_path(:organization, org_id: @organization.id)
+        return
+      end
+    end
+
     # If organization is fully trusted, add user directly as member
     if @organization.fully_trusted?
       membership = @organization.organization_memberships.create!(

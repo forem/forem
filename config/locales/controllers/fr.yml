@@ -77,6 +77,8 @@ fr:
       already_pending: Cet utilisateur a déjà une invitation en attente.
       success: "%{username} a été invité avec succès à rejoindre l'organisation."
       added_success: "%{username} a été ajouté avec succès à l'organisation."
+      rate_limit_exceeded: Vous avez atteint la limite quotidienne de %{limit} invitations par jour. Veuillez réessayer demain.
+      max_outstanding_exceeded: Vous avez atteint la limite maximale de invitations en attente de %{limit}. Veuillez attendre que certaines invitations soient acceptées ou annulées avant d'en envoyer d'autres.
     confirm_invitation:
       invalid_token: Jeton d'invitation invalide ou expiré.
       already_confirmed: Cette invitation a déjà été confirmée.

@@ -228,13 +228,17 @@ fr:
               title: Inviter par nom d'utilisateur
               description: Invitez un utilisateur spécifique par son nom d'utilisateur. Il recevra un e-mail d'invitation pour rejoindre.
               icon: Icône utilisateur
+              fully_trusted:
+                title: Ajouter par nom d'utilisateur
+                description: Ajoutez un utilisateur spécifique par son nom d'utilisateur. Il recevra un e-mail de notification l'informant qu'il a été ajouté à l'organisation. Comme cette organisation est de confiance totale, la vérification est ignorée et il sera ajouté immédiatement.
+                icon: Icône utilisateur
             secret:
               title: Partager le code secret
               description: Partagez le code secret de votre organisation. Toute personne ayant le code peut rejoindre votre organisation.
               icon: Icône clé
           fully_trusted_warning:
             title: Organisation de confiance totale
-            description: Votre organisation dispose de privilèges élevés. Lors de l'invitation par nom d'utilisateur, les membres sont ajoutés immédiatement sans confirmation. Veuillez vérifier que le nom d'utilisateur est 100% correct avant d'envoyer.
+            description: Votre organisation dispose de privilèges élevés. Lors de l'ajout par nom d'utilisateur, les membres sont ajoutés immédiatement sans confirmation. Ils recevront un e-mail de notification les informant qu'ils ont été ajoutés. Comme votre organisation est de confiance totale, la vérification est ignorée de leur côté. Veuillez vérifier que le nom d'utilisateur est 100% correct avant d'envoyer.
             icon: Icône d'avertissement
           make:
             confirm: Are you sure you want to give %{user} admin status?
@@ -249,7 +253,9 @@ fr:
           username_label: Nom d'utilisateur
           username_placeholder: "Entrez le nom d'utilisateur (ex: johndoe)"
           username_description: Entrez le nom d'utilisateur de l'utilisateur que vous souhaitez inviter (sans le symbole @).
+          username_description_fully_trusted: Entrez le nom d'utilisateur de l'utilisateur que vous souhaitez ajouter (sans le symbole @). Il recevra un e-mail de notification et sera ajouté immédiatement sans vérification.
           invite_button: Envoyer l'invitation
+          add_button: Ajouter un membre
           cancel_invite:
             title: Annuler l'invitation
             text: Annuler l'invitation

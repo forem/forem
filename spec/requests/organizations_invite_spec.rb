@@ -152,6 +152,165 @@ RSpec.describe "Organizations Invite" do
         end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
+
+    context "when daily invitation rate limit is reached" do
+      before do
+        # Create 3 pending invitations today (the limit is 3 per day)
+        today_start = Time.zone.now.beginning_of_day
+        3.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: today_start + i.minutes)
+        end
+      end
+
+      it "does not create a new membership" do
+        expect do
+          post organization_invite_path(organization.id), params: { username: invited_user.username }
+        end.not_to change(OrganizationMembership, :count)
+      end
+
+      it "redirects with rate limit error message" do
+        post organization_invite_path(organization.id), params: { username: invited_user.username }
+        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(flash[:error]).to include("daily invitation limit")
+        expect(flash[:error]).to include("3")
+      end
+    end
+
+    context "when total outstanding invitations limit is reached" do
+      before do
+        # Create 10 pending invitations (the limit is 10 outstanding)
+        # Create only 2 from today (so daily limit of 3 is not reached)
+        # Create 8 from previous days to reach the outstanding limit
+        today_start = Time.zone.now.beginning_of_day
+        2.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: today_start + i.minutes)
+        end
+        8.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: 2.days.ago + i.hours)
+        end
+      end
+
+      it "does not create a new membership" do
+        expect do
+          post organization_invite_path(organization.id), params: { username: invited_user.username }
+        end.not_to change(OrganizationMembership, :count)
+      end
+
+      it "redirects with max outstanding error message" do
+        post organization_invite_path(organization.id), params: { username: invited_user.username }
+        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(flash[:error]).to include("maximum outstanding invitations")
+        expect(flash[:error]).to include("10")
+      end
+    end
+
+    context "when daily limit is not reached but total outstanding limit is" do
+      before do
+        # Create 10 pending invitations, all from previous days
+        # This should hit the outstanding limit but not the daily limit
+        10.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: 2.days.ago + i.hours)
+        end
+      end
+
+      it "checks outstanding limit first and does not create a new membership" do
+        expect do
+          post organization_invite_path(organization.id), params: { username: invited_user.username }
+        end.not_to change(OrganizationMembership, :count)
+      end
+
+      it "redirects with max outstanding error message (not daily limit)" do
+        post organization_invite_path(organization.id), params: { username: invited_user.username }
+        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(flash[:error]).to include("maximum outstanding invitations")
+        expect(flash[:error]).not_to include("daily invitation limit")
+      end
+    end
+
+    context "when both limits are checked and daily limit is reached first" do
+      before do
+        # Create 3 pending invitations today (hits daily limit of 3)
+        today_start = Time.zone.now.beginning_of_day
+        3.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: today_start + i.minutes)
+        end
+        # Note: Total outstanding is only 3, so outstanding limit (10) is not reached
+      end
+
+      it "checks daily limit first and does not create a new membership" do
+        expect do
+          post organization_invite_path(organization.id), params: { username: invited_user.username }
+        end.not_to change(OrganizationMembership, :count)
+      end
+
+      it "redirects with daily limit error message" do
+        post organization_invite_path(organization.id), params: { username: invited_user.username }
+        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(flash[:error]).to include("daily invitation limit")
+      end
+    end
+
+    context "when fully trusted organization bypasses rate limits" do
+      before do
+        organization.update(fully_trusted: true)
+        # Create many pending invitations to test that limits are bypassed
+        today_start = Time.zone.now.beginning_of_day
+        5.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: today_start + i.minutes)
+        end
+        5.times do |i|
+          user = create(:user)
+          create(:organization_membership,
+                 user: user,
+                 organization: organization,
+                 type_of_user: "pending",
+                 created_at: 2.days.ago + i.hours)
+        end
+      end
+
+      it "creates a membership even when limits would normally be exceeded" do
+        expect do
+          post organization_invite_path(organization.id), params: { username: invited_user.username }
+        end.to change(OrganizationMembership, :count).by(1)
+      end
+
+      it "does not redirect with error message" do
+        post organization_invite_path(organization.id), params: { username: invited_user.username }
+        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(flash[:error]).to be_nil
+        expect(flash[:settings_notice]).to include("Successfully added")
+      end
+    end
   end
 
   describe "GET /organizations/confirm_invitation/:token" do
