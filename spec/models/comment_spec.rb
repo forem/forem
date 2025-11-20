@@ -107,6 +107,11 @@ RSpec.describe Comment do
         subject.body_markdown = "This is a plain text comment"
         expect(subject).to be_valid
       end
+
+      it "is valid when body_markdown contains only an image" do
+        subject.body_markdown = "![image](https://example.com/image.png)"
+        expect(subject).to be_valid
+      end
     end
 
     it "checks for commentable_type inclusion only if commentable_id is present" do

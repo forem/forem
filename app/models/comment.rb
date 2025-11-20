@@ -377,9 +377,13 @@ class Comment < ApplicationRecord
 
   def body_has_content
     return if body_markdown.blank?
+    return if processed_html.blank?
+
+    # Allow image-only comments (check for img tags in HTML)
+    return if processed_html.include?("<img")
 
     # Strip HTML tags and whitespace to check for actual text content
-    text_content = ActionController::Base.helpers.strip_tags(processed_html || "").strip
+    text_content = ActionController::Base.helpers.strip_tags(processed_html).strip
 
     if text_content.blank?
       errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
