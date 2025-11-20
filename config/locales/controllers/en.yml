@@ -71,6 +71,18 @@ en:
     not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
     created: Your organization was successfully created and you are an admin.
     updated: Your organization was successfully updated.
+    invite:
+      user_not_found: User with username "%{username}" not found.
+      already_member: This user is already a member of the organization.
+      already_pending: This user already has a pending invitation.
+      success: Successfully invited %{username} to the organization.
+      added_success: Successfully added %{username} to the organization.
+    confirm_invitation:
+      invalid_token: Invalid or expired invitation token.
+      already_confirmed: This invitation has already been confirmed.
+      wrong_user: You must be signed in as the invited user to confirm this invitation.
+      sign_in_required: Please sign in to confirm your organization membership.
+      success: Successfully joined %{organization_name}!
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

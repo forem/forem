@@ -36,6 +36,8 @@ class Organization < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
+  has_many :active_memberships, -> { where.not(type_of_user: "pending") }, class_name: "OrganizationMembership"
+  has_many :active_users, through: :active_memberships, source: :user
 
   validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -134,6 +136,10 @@ class Organization < ApplicationRecord
 
   def cached_base_subscriber?
     false
+  end
+
+  def fully_trusted?
+    fully_trusted == true
   end
 
   private

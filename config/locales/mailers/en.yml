@@ -35,3 +35,23 @@ en:
     verification_mailer:
       from: "%{community} Email Verification <%{email}>"
       verify_ownership: Verify Your %{community} Account Ownership
+    organization_invitation_mailer:
+      subject: "You've been invited to join %{organization_name} on %{community}"
+      greeting: "Hi %{name}!"
+      invited_by_html: "<strong>%{inviter_name}</strong> has invited you to join <strong>%{organization_name}</strong> as a member."
+      invited_by_text: "%{inviter_name} has invited you to join %{organization_name} as a member."
+      invited_html: "You've been invited to join <strong>%{organization_name}</strong> as a member."
+      invited_text: "You've been invited to join %{organization_name} as a member."
+      what_is_organization: "Organizations on %{community} allow teams and groups to collaborate, share content, and build a collective presence. As a member, you'll be able to publish articles on behalf of the organization and collaborate with your team."
+      confirm_button: "Accept Invitation"
+      alternative_link: "Or copy and paste this URL into your browser:"
+    organization_membership_notification_mailer:
+      subject: "You've been added to %{organization_name} on %{community}"
+      greeting: "Hi %{name}!"
+      added_by_html: "<strong>%{inviter_name}</strong> has added you to <strong>%{organization_name}</strong> as a member."
+      added_by_text: "%{inviter_name} has added you to %{organization_name} as a member."
+      added_html: "You've been added to <strong>%{organization_name}</strong> as a member."
+      added_text: "You've been added to %{organization_name} as a member."
+      what_is_organization: "Organizations on %{community} allow teams and groups to collaborate, share content, and build a collective presence. As a member, you'll be able to publish articles on behalf of the organization and collaborate with your team."
+      view_organization_button: "View Organization"
+      organization_url: "Visit your organization page"
