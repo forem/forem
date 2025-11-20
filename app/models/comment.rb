@@ -379,17 +379,15 @@ class Comment < ApplicationRecord
     return if body_markdown.blank?
     return if processed_html.blank?
 
-    # Allow image-only comments (check for img tags in HTML)
-# Check of all tags that could apply here
-media_tags = %w[img iframe video audio hr object embed script] 
-  
+    # Allow comments with media content (images, videos, iframes, etc.)
+    # Note: hr (horizontal rule) is not included as it's not meaningful content
+    media_tags = %w[img iframe video audio object embed script]
 
-return if processed_html.match?(/<(#{media_tags.join('|')})(>|\s)/i)
+    return if processed_html.match?(/<(#{media_tags.join('|')})(>|\s)/i)
 
-
-  text_content = ActionController::Base.helpers.strip_tags(processed_html)
-  text_content = CGI.unescapeHTML(text_content).strip
-
+    # Strip HTML tags and unescape HTML entities to check for actual text content
+    text_content = ActionController::Base.helpers.strip_tags(processed_html)
+    text_content = CGI.unescapeHTML(text_content).strip
 
     if text_content.blank?
       errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
