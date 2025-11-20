@@ -111,3 +111,57 @@ pt:
         update: Atualizar
         delete: Excluir
         confirm: Confirmar
+      org:
+        admin:
+          members: Membros da Organização
+          active_members: Membros Ativos
+          pending_members: Convites Pendentes
+          pending: Pendente
+          invite_member: Convidar um Membro
+          invite_member_description: Convide um usuário para se juntar à sua organização pelo nome de usuário. Eles receberão um e-mail de convite.
+          username_label: Nome de usuário
+          username_placeholder: "Digite o nome de usuário (ex: johndoe)"
+          username_description: Digite o nome de usuário do usuário que você deseja convidar (sem o símbolo @).
+          username_description_fully_trusted: Digite o nome de usuário do usuário que você deseja adicionar (sem o símbolo @). Eles receberão um e-mail de notificação e serão adicionados imediatamente sem verificação.
+          invite_button: Enviar Convite
+          add_button: Adicionar Membro
+          cancel_invite:
+            title: Cancelar convite
+            text: Cancelar Convite
+          you: Você
+          grow: Expandir a equipe
+          grow_description: Convide novos membros para sua organização usando um dos métodos abaixo.
+          secret_instructions: "Compartilhe estas instruções com seus colegas de equipe:"
+          invite_methods:
+            username:
+              title: Convidar por Nome de Usuário
+              description: Convide um usuário específico pelo nome de usuário. Eles receberão um e-mail de convite para participar.
+              icon: Ícone de usuário
+              fully_trusted:
+                title: Adicionar por Nome de Usuário
+                description: Adicione um usuário específico pelo nome de usuário. Eles receberão um e-mail de notificação informando que foram adicionados à organização. Como esta organização é totalmente confiável, a verificação é pulada e eles serão adicionados imediatamente.
+                icon: Ícone de usuário
+            secret:
+              title: Compartilhar Código Secreto
+              description: Compartilhe o código secreto da sua organização. Qualquer pessoa com o código pode participar da sua organização.
+              icon: Ícone de chave
+          fully_trusted_warning:
+            title: Organização Totalmente Confiável
+            description: Sua organização tem privilégios elevados. Ao adicionar por nome de usuário, os membros são adicionados imediatamente sem confirmação. Eles receberão um e-mail de notificação informando que foram adicionados. Como sua organização é totalmente confiável, a verificação é pulada no lado deles. Por favor, verifique se o nome de usuário está 100% correto antes de enviar.
+            icon: Ícone de aviso
+          copy:
+            button:
+              aria_label: Copiar código secreto da organização para a área de transferência
+              text: Copiar
+            icon: Copiar para a área de transferência
+            input:
+              aria_label: Segredo da organização (a ser rotacionado regularmente)
+            text: Copiado para a área de transferência!
+          secret_code: "Seu código secreto é:"
+          inst1_html: Inscreva-se em %{url}
+          inst2_html: Navegue até %{url}
+          inst3_html: Cole o código secreto abaixo e clique em <b>Participar da Organização</b>
+          gen:
+            confirm: Tem certeza de que deseja gerar um novo segredo? Todos os segredos pendentes serão inválidos.
+            text: Você deve rotacionar isso regularmente!
+            submit: Gerar novo segredo
