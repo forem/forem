@@ -184,9 +184,10 @@ RSpec.describe "Organizations Invite" do
     context "when total outstanding invitations limit is reached" do
       before do
         # Create 10 pending invitations (the limit is 10 outstanding)
-        # Mix some from today and some from previous days
+        # Create only 2 from today (so daily limit of 3 is not reached)
+        # Create 8 from previous days to reach the outstanding limit
         today_start = Time.zone.now.beginning_of_day
-        5.times do |i|
+        2.times do |i|
           user = create(:user)
           create(:organization_membership,
                  user: user,
@@ -194,7 +195,7 @@ RSpec.describe "Organizations Invite" do
                  type_of_user: "pending",
                  created_at: today_start + i.minutes)
         end
-        5.times do |i|
+        8.times do |i|
           user = create(:user)
           create(:organization_membership,
                  user: user,
