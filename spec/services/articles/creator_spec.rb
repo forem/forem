@@ -120,5 +120,22 @@ RSpec.describe Articles::Creator, type: :service do
       article = described_class.call(org_member, article_params)
       expect(article.collection).to eq(existing_collection)
     end
+
+    it "finds existing organization collection regardless of user_id" do
+      # Create collection with one user
+      original_user = create(:user)
+      create(:organization_membership, user: original_user, organization: organization, type_of_user: "member")
+      existing_collection = create(:collection, user: original_user, organization: organization, slug: "shared-series")
+      
+      # Try to use same series with different user in same organization
+      different_member = create(:user)
+      create(:organization_membership, user: different_member, organization: organization, type_of_user: "member")
+      article_params = attributes_for(:article).merge(series: "shared-series", organization_id: organization.id)
+      article = described_class.call(different_member, article_params)
+      
+      # Should find the existing collection, not create a new one
+      expect(article.collection).to eq(existing_collection)
+      expect(Collection.where(slug: "shared-series", organization: organization).count).to eq(1)
+    end
   end
 end

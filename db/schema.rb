@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_19_174541) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_20_190926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -389,7 +389,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_19_174541) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
-    t.index ["slug", "user_id", "organization_id"], name: "index_collections_on_slug_and_user_id_and_organization_id", unique: true
+    t.index ["slug", "organization_id"], name: "index_collections_on_slug_and_organization_id", unique: true, where: "(organization_id IS NOT NULL)"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true, where: "(organization_id IS NULL)"
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
