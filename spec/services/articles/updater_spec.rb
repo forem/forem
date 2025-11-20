@@ -74,6 +74,25 @@ RSpec.describe Articles::Updater, type: :service do
       expect(collection.organization).to eq(other_org)
       expect(collection.slug).to eq("other-org-series")
     end
+
+    it "finds existing organization collection regardless of user_id" do
+      # Create collection with one user
+      original_user = create(:user)
+      create(:organization_membership, user: original_user, organization: organization, type_of_user: "member")
+      existing_collection = create(:collection, user: original_user, organization: organization, slug: "shared-series")
+
+      # Try to update article with same series using different user in same organization
+      different_member = create(:user)
+      create(:organization_membership, user: different_member, organization: organization, type_of_user: "member")
+      different_article = create(:article, user: different_member, organization: organization)
+
+      attributes[:series] = "shared-series"
+      described_class.call(different_member, different_article, attributes)
+
+      # Should find the existing collection, not create a new one
+      expect(different_article.reload.collection).to eq(existing_collection)
+      expect(Collection.where(slug: "shared-series", organization: organization).count).to eq(1)
+    end
   end
 
   it "sets tags" do

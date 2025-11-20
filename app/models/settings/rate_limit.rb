@@ -14,6 +14,8 @@ module Settings
     setting :image_upload, type: :integer, default: 9
     setting :listing_creation, type: :integer, default: 1
     setting :organization_creation, type: :integer, default: 1
+    setting :organization_invitation_daily, type: :integer, default: 3
+    setting :organization_invitation_max_outstanding, type: :integer, default: 10
     setting :published_article_antispam_creation, type: :integer, default: 1
     setting :published_article_creation, type: :integer, default: 9
     setting :reaction_creation, type: :integer, default: 10
