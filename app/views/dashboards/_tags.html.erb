@@ -4,6 +4,7 @@
   <% tags.each do |follow| %>
     <% tag = follow.followable %>
     <% if tag %>
+      <% tag = Tag.find_by(id: tag.id) || tag if tag.is_a?(ActsAsTaggableOn::Tag) && !tag.is_a?(Tag) %>
       <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-<%= follow.id %>" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">
         <div class="mb-1 flex items-center justify-between">
           <h4 class="-ml-2">
@@ -11,7 +12,7 @@
           </h4>
           <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
         </div>
-        <% if tag.display_short_summary.present? %>
+        <% if tag.respond_to?(:display_short_summary) && tag.display_short_summary.present? %>
           <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.display_short_summary %></p>
         <% end %>
 
