@@ -61,8 +61,8 @@
               </h4>
               <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
             </div>
-            <% if tag.short_summary.present? %>
-              <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
+            <% if tag.display_short_summary.present? %>
+              <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.display_short_summary %></p>
             <% end %>
           </div>
           <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">

@@ -1380,10 +1380,14 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_20_190926) do
   end
 
   create_table "tag_subforem_relationships", force: :cascade do |t|
+    t.string "bg_color_hex"
     t.datetime "created_at", null: false
+    t.string "pretty_name"
+    t.text "short_summary"
     t.bigint "subforem_id", null: false
     t.boolean "supported", default: true
     t.bigint "tag_id", null: false
+    t.string "text_color_hex"
     t.datetime "updated_at", null: false
     t.index ["subforem_id"], name: "index_tag_subforem_relationships_on_subforem_id"
     t.index ["tag_id"], name: "index_tag_subforem_relationships_on_tag_id"
