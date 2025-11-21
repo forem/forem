@@ -1,7 +1,7 @@
 class AiImageGenerationPolicy < ApplicationPolicy
   def create?
-    # Only admins can generate AI images
-    user.any_admin?
+    # All users can generate AI images (as long as they're not spam)
+    !user.spam
   end
 end
 

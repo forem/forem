@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_12_171855) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_20_190926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -389,7 +389,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_12_171855) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
-    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
+    t.index ["slug", "organization_id"], name: "index_collections_on_slug_and_organization_id", unique: true, where: "(organization_id IS NOT NULL)"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true, where: "(organization_id IS NULL)"
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -884,10 +885,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_12_171855) do
 
   create_table "organization_memberships", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
+    t.string "invitation_token"
     t.bigint "organization_id", null: false
     t.string "type_of_user", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["invitation_token"], name: "index_organization_memberships_on_invitation_token", unique: true
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
@@ -902,6 +905,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_12_171855) do
     t.string "cta_button_url"
     t.text "cta_processed_html"
     t.string "email"
+    t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil

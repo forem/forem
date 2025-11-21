@@ -54,4 +54,28 @@ RSpec.describe "/admin/content_manager/organizations" do
       end.to change { organization.reload.unspent_credits_count }.by(-1)
     end
   end
+
+  describe "PATCH /admin/organizations/:id/update_fully_trusted" do
+    it "enables fully_trusted status" do
+      expect do
+        patch update_fully_trusted_admin_organization_path(organization),
+              params: { fully_trusted: "true" }
+      end.to change { organization.reload.fully_trusted }.from(false).to(true)
+
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("enabled")
+    end
+
+    it "disables fully_trusted status" do
+      organization.update(fully_trusted: true)
+
+      expect do
+        patch update_fully_trusted_admin_organization_path(organization),
+              params: { fully_trusted: "false" }
+      end.to change { organization.reload.fully_trusted }.from(true).to(false)
+
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("disabled")
+    end
+  end
 end

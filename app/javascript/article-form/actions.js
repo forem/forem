@@ -107,15 +107,15 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
 
 /**
  * Generates an AI image from a text prompt.
+ * The aspect ratio and aesthetic instructions are determined server-side based on subforem settings.
  *
  * @param {Object} options - The options object.
  * @param {string} options.prompt - The text prompt for image generation.
- * @param {string} options.aspectRatio - Optional aspect ratio (e.g., "16:9", "1:1").
  * @param {Function} options.successCb - The handler that runs when the image is generated successfully.
  * @param {Function} options.failureCb - The handler that runs when the image generation fails.
  * @param {AbortSignal} options.signal - Optional abort signal for canceling the request.
  */
-export function generateAiImage({ prompt, aspectRatio, successCb, failureCb, signal }) {
+export function generateAiImage({ prompt, successCb, failureCb, signal }) {
   // Set a client-side timeout of 35 seconds (slightly longer than server timeout)
   const timeoutId = setTimeout(() => {
     if (signal && !signal.aborted) {
@@ -130,13 +130,19 @@ export function generateAiImage({ prompt, aspectRatio, successCb, failureCb, sig
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      prompt: prompt,
-      aspect_ratio: aspectRatio || '16:9',
+      prompt,
     }),
     credentials: 'same-origin',
     signal,
   })
-    .then((response) => response.json())
+    .then((response) => {
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        // For non-2xx responses, throw a generic error instead of trying to parse HTML
+        throw new Error('An error occurred, please try again later');
+      }
+      return response.json();
+    })
     .then((json) => {
       clearTimeout(timeoutId);
       if (json.error) {
@@ -147,7 +153,11 @@ export function generateAiImage({ prompt, aspectRatio, successCb, failureCb, sig
     })
     .catch((error) => {
       clearTimeout(timeoutId);
-      failureCb(error);
+      // Ensure the error message is a clean string, not HTML
+      const errorMessage = error.message && !error.message.includes('<html') 
+        ? error.message 
+        : 'An error occurred, please try again later';
+      failureCb(new Error(errorMessage));
     });
 }
 

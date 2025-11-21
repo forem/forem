@@ -75,6 +75,10 @@ pt:
             label: Cor Primária da Marca
             placeholder: "#3b49df"
             description: A cor principal para a marca da sua comunidade (formato hexadecimal).
+          cover_image_aesthetic:
+            label: Instruções Estéticas para Imagem de Capa
+            placeholder: "por exemplo, vibrante e moderno, minimalista e limpo, caloroso e acolhedor..."
+            description: Instruções opcionais para imagens de capa geradas por IA. Isso será adicionado aos prompts dos usuários para manter uma estética consistente para sua comunidade.
           main_logo:
             label: Logo Principal Quadrado
             description: Faça upload de um logo quadrado (128x128px) para a marca principal. PNG ou JPEG, máx. 8MB.

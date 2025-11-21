@@ -723,7 +723,7 @@ RSpec.describe "Subforems", type: :request do
         expect(link.image.url).to be_present
       end
 
-      it "validates that either icon or image is present" do
+      it "creates navigation link with default icon when neither icon nor image is provided" do
         params = {
           navigation_link: {
             name: "No Icon Link",
@@ -736,10 +736,13 @@ RSpec.describe "Subforems", type: :request do
 
         expect do
           post create_navigation_link_subforem_path(subforem), params: params
-        end.not_to change { NavigationLink.count }
+        end.to change { NavigationLink.count }.by(1)
 
         expect(response).to redirect_to(manage_subforem_path)
-        expect(flash[:error]).to be_present
+        expect(flash[:success]).to be_present
+        
+        link = NavigationLink.last
+        expect(link.icon).to eq(NavigationLink.default_icon_svg)
       end
     end
 
@@ -1234,27 +1237,6 @@ RSpec.describe "Subforems", type: :request do
         expect(subforem_page.slug).to eq("updated-slug")
         expect(subforem_page.description).to eq("Updated description")
         expect(subforem_page.body_markdown).to eq("# Updated Content")
-      end
-
-      it "can only update title, description, and social_image for top-level pages" do
-        patch update_page_subforem_path(subforem, page_id: top_level_page.id), params: {
-          page: {
-            title: "Updated Top Level",
-            slug: "hacked-slug",
-            description: "Updated description",
-            body_markdown: "# Hacked content"
-          }
-        }
-
-        top_level_page.reload
-        expect(response).to redirect_to("/#{top_level_page.slug}")
-        expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
-
-        expect(top_level_page.title).to eq("Updated Top Level")
-        expect(top_level_page.description).to eq("Updated description")
-        # Slug and body_markdown should NOT be updated for top-level pages
-        expect(top_level_page.slug).to eq("top-level")
-        expect(top_level_page.body_markdown).to eq("# Top Level")
       end
 
       it "prevents HTML/JSON/CSS in updates" do

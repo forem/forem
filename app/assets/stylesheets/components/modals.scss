@@ -390,3 +390,198 @@
     transform: translateY(0) scale(1);
   }
 }
+
+// Post Options Modal - specific styling only for this modal
+.post-options-modal {
+  .crayons-modal__box__header {
+    padding-left: var(--su-3);
+
+    @media (min-width: $breakpoint-s) {
+      padding-left: var(--su-4);
+    }
+  }
+  // Reduce padding on modal body for this specific modal
+  .crayons-modal__box__body {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 85vh;
+    overflow: hidden;
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--su-3);
+    padding-bottom: var(--su-6);
+
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-4);
+      padding-bottom: var(--su-6);
+    }
+  }
+
+  &__footer {
+    flex-shrink: 0;
+    padding: var(--su-3);
+    padding-top: var(--su-3);
+    border-top: 1px solid var(--divider);
+    display: flex;
+    justify-content: flex-end;
+    background: var(--modal-bg);
+    
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-4);
+      padding-top: var(--su-4);
+    }
+  }
+
+  .crayons-field__label--small {
+    font-size: var(--fs-s);
+    font-weight: 500;
+    margin-bottom: var(--su-1);
+  }
+
+  // Scheduling section with accent border when active
+  .post-options-scheduling--active {
+    padding: var(--su-4);
+    border: 2px solid var(--accent-brand);
+    border-radius: var(--radius);
+    background: var(--accent-brand-bg);
+  }
+
+  // Series section with accent border when active
+  .post-options-series--active {
+    padding: var(--su-4);
+    border: 2px solid var(--accent-brand);
+    border-radius: var(--radius);
+    background: var(--accent-brand-bg);
+  }
+}
+
+// Series Selector (embedded component, not a modal)
+.series-selector {
+  &__existing {
+    margin-bottom: var(--su-6);
+  }
+
+  &__series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--su-3);
+    margin-bottom: var(--su-4);
+
+    @media (max-width: $breakpoint-s) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__series-card {
+    background: var(--card-bg);
+    border: 2px solid var(--base-20);
+    border-radius: var(--radius);
+    padding: var(--su-4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+    position: relative;
+
+    &:hover {
+      border-color: var(--accent-brand);
+      background: var(--base-5);
+      box-shadow: var(--shadow-1);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--selected {
+      border-color: var(--accent-brand);
+      background: var(--accent-brand-bg);
+      box-shadow: 0 0 0 3px var(--accent-brand-a10);
+
+      &:hover {
+        border-color: var(--accent-brand-darker);
+      }
+    }
+  }
+
+  &__series-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--su-2);
+    flex: 1;
+  }
+
+  &__series-name {
+    font-weight: 600;
+    color: var(--card-color);
+    font-size: var(--fs-base);
+    word-break: break-word;
+  }
+
+  &__series-badge {
+    display: inline-block;
+    padding: var(--su-1) var(--su-2);
+    border-radius: var(--radius);
+    font-size: var(--fs-s);
+    font-weight: 500;
+    background: var(--base-10);
+    color: var(--base-70);
+    align-self: flex-start;
+
+    &--personal {
+      background: var(--accent-brand-bg);
+      color: var(--accent-brand);
+    }
+  }
+
+  &__create-section {
+    padding: var(--su-4);
+    background: var(--base-5);
+    border-radius: var(--radius);
+    border: 2px dashed var(--base-30);
+    text-align: center;
+    margin-bottom: var(--su-4);
+  }
+
+  &__create-btn {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  &__create-form {
+    padding: var(--su-2) 0;
+  }
+
+  &__current {
+    border-top: 1px solid var(--divider);
+    padding-top: var(--su-4);
+    margin-top: var(--su-4);
+  }
+}
+
+// Series Selector Modal (for backward compatibility if still used elsewhere)
+.series-selector-modal {
+  &__content {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .series-selector {
+    // Reuse series-selector styles when embedded in modal
+  }
+}
