@@ -49,7 +49,8 @@ module Admin
           :random_selection,
           :new_and_priority,
           :new_only,
-          :weighted_performance
+          :weighted_performance,
+          :evenly_distributed
         ]
       )
       

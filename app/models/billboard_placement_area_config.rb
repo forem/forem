@@ -21,7 +21,8 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     "random_selection" => 5,           # Completely random selection (5%)
     "new_and_priority" => 30,          # New/priority billboards with fewer impressions (30%)
     "new_only" => 5,                   # Only new billboards (5%)
-    "weighted_performance" => 60       # Performance-based weighted selection (60%)
+    "weighted_performance" => 60,      # Performance-based weighted selection (60%)
+    "evenly_distributed" => 0          # Serves billboards with minimum impressions for even distribution (0% by default)
   }.freeze
 
   after_destroy :bust_cache
