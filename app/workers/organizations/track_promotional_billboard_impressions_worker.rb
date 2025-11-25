@@ -73,7 +73,7 @@ module Organizations
     def self.paused_organization_ids
       cached_ids = Rails.cache.read(CACHE_KEY)
       # Ensure we always return an array of integers
-      return [] if cached_ids.nil?
+      return [] if cached_ids.nil? || cached_ids.empty?
 
       Array(cached_ids).map(&:to_i).compact
     end

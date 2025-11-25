@@ -439,6 +439,8 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let(:active_org_billboard) { create_billboard organization: active_organization }
 
     before do
+      # Use memory store for tests to ensure cache operations work
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
       Rails.cache.clear
     end
 

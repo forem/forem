@@ -32,7 +32,6 @@ module Billboards
 
     def call
       @filtered_billboards = approved_and_published_ads
-      @filtered_billboards = exclude_paused_promotional_billboards
       @filtered_billboards = placement_area_ads
       @filtered_billboards = included_subforem_ads # if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
@@ -80,6 +79,9 @@ module Billboards
       # filters applied up to this point, thus near the end is best)
       @filtered_billboards = type_of_ads
 
+      # Exclude paused promotional billboards - apply after type_of_ads but before survey filtering
+      @filtered_billboards = exclude_paused_promotional_billboards
+
       # Apply survey completion filtering if user is signed in
       if @user_signed_in && ApplicationConfig["SKIP_SURVEY_COMPLETION_FILTERING"] != "yes"
         @filtered_billboards = survey_completion_filtered_ads
@@ -103,7 +105,8 @@ module Billboards
       return @filtered_billboards if valid_paused_ids.empty?
 
       # Exclude billboards from paused organizations, but include those with no organization
-      @filtered_billboards.where("organization_id IS NULL OR organization_id NOT IN (?)", valid_paused_ids)
+      # Use parentheses to ensure correct evaluation order
+      @filtered_billboards.where("(organization_id IS NULL) OR (organization_id NOT IN (?))", valid_paused_ids)
     end
 
     def placement_area_ads

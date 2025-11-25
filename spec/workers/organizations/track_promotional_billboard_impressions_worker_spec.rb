@@ -8,6 +8,8 @@ RSpec.describe Organizations::TrackPromotionalBillboardImpressionsWorker, type: 
 
   before do
     Sidekiq::Worker.clear_all
+    # Use memory store for tests to ensure cache operations work
+    allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
     Rails.cache.clear
   end
 
