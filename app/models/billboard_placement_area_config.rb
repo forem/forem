@@ -9,11 +9,19 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     greater_than_or_equal_to: 0,
     less_than_or_equal_to: 100
   }
+  validates :cache_expiry_seconds, numericality: {
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 86_400, # Max 24 hours
+    only_integer: true
+  }, allow_nil: true
   validate :validate_selection_weights
 
   # Cache key for storing all configs
   CACHE_KEY = "billboard_placement_area_configs".freeze
   CACHE_EXPIRY = 1.hour
+
+  # Default cache expiry for billboard responses (3 minutes)
+  DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS = 180
 
   # Default weights for billboard selection strategies
   # These are relative weights - they don't need to add up to 100
@@ -61,6 +69,16 @@ class BillboardPlacementAreaConfig < ApplicationRecord
   # Bust the cache when configs are modified
   def self.bust_cache
     Rails.cache.delete(CACHE_KEY)
+  end
+
+  # Get cache expiry seconds for a specific placement area
+  # Returns the configured value or the default if not set
+  def self.cache_expiry_seconds_for(placement_area)
+    config = config_for_placement_area(placement_area)
+    return DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS if config.blank?
+
+    # Use nil? check instead of presence to allow 0 (which disables caching)
+    config.cache_expiry_seconds.nil? ? DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS : config.cache_expiry_seconds
   end
 
   # Get selection weights for a specific placement area

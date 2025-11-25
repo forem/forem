@@ -1,7 +1,6 @@
 class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include BillboardHelper
-  CACHE_EXPIRY_FOR_BILLBOARDS = 3.minutes.to_i.freeze
   RANDOM_USER_TAG_RANGE_MIN = 5
   RANDOM_USER_TAG_RANGE_MAX = 32
 
@@ -14,7 +13,8 @@ class BillboardsController < ApplicationController
     end
 
     unless session_current_user_id
-      set_cache_control_headers(CACHE_EXPIRY_FOR_BILLBOARDS)
+      cache_expiry = BillboardPlacementAreaConfig.cache_expiry_seconds_for(placement_area)
+      set_cache_control_headers(cache_expiry)
       if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG)
         add_vary_header("X-Cacheable-Client-Geo")
       end
