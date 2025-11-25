@@ -94,6 +94,11 @@ pt:
       terms_of_use:
         title: Termos de Uso
         description: Uma página que descreve os termos de uso para a aplicação
+    page_templates_controller:
+      created: Modelo de página criado com sucesso!
+      updated: Modelo de página atualizado com sucesso!
+      deleted: Modelo de página excluído com sucesso!
+      cannot_delete_with_pages: Não é possível excluir o modelo enquanto ele tiver páginas associadas. Remova ou reatribua essas páginas primeiro.
     podcasts_controller:
       new_owner_added: Novo proprietário adicionado!
       no_such_user: Usuário não encontrado

@@ -2,19 +2,37 @@
 
 <header class="flex items-center mb-6">
   <h1 class="crayons-title">Pages</h1>
-  <%= link_to "New page", new_admin_page_path, class: "ml-auto crayons-btn crayons-btn--s" %>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "Page Templates", admin_page_templates_path, class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+    <%= link_to "New page", new_admin_page_path, class: "crayons-btn crayons-btn--s" %>
+  </div>
 </header>
+
+<% if @page_templates.any? %>
+  <div class="crayons-notice crayons-notice--info mb-6" aria-live="polite">
+    <strong>Tip:</strong> You have <%= @page_templates.count %> page template(s) available. 
+    <%= link_to "Create a page from a template", admin_page_templates_path, class: "crayons-link" %> 
+    to quickly spin up new pages with pre-defined layouts.
+  </div>
+<% end %>
 
 <div class="crayons-card p-6 pages__table">
   <% @pages.each do |page| %>
     <div class="flex py-2 items-center" data-testid="page">
-      <% if page.landing_page? %>
-        <%= crayons_icon_tag(:lock, title: "Current locked screen") %>
-      <% end %>
-      <%= link_to page.title, page.path %>
-      <div class="ml-auto">
-        <%= link_to "Edit", edit_admin_page_path(page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
-        <%= link_to "Fork", new_admin_page_path(page: page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      <div class="flex items-center gap-2">
+        <% if page.landing_page? %>
+          <%= crayons_icon_tag(:lock, title: "Current locked screen") %>
+        <% end %>
+        <%= link_to page.title, page.path %>
+        <% if page.page_template.present? %>
+          <span class="crayons-tag crayons-tag--monochrome fs-xs" title="Created from template">
+            <%= page.page_template.name %>
+          </span>
+        <% end %>
+      </div>
+      <div class="ml-auto flex gap-2">
+        <%= link_to "Edit", edit_admin_page_path(page.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+        <%= link_to "Fork", new_admin_page_path(page: page.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
       </div>
     </div>
   <% end %>
