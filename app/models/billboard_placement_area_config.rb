@@ -77,6 +77,9 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     config = config_for_placement_area(placement_area)
     return DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS if config.blank?
 
+    # Check if column exists (for backward compatibility before migration runs)
+    return DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS unless config.respond_to?(:cache_expiry_seconds)
+
     # Use nil? check instead of presence to allow 0 (which disables caching)
     config.cache_expiry_seconds.nil? ? DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS : config.cache_expiry_seconds
   end

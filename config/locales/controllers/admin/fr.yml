@@ -129,6 +129,11 @@ fr:
       terms_of_use:
         title: Conditions d'utilisation
         description: Une page qui décrit les conditions d'utilisation de l'application.
+    page_templates_controller:
+      created: Le modèle de page a été créé avec succès !
+      updated: Le modèle de page a été mis à jour avec succès !
+      deleted: Le modèle de page a été supprimé avec succès !
+      cannot_delete_with_pages: Impossible de supprimer ce modèle tant qu'il possède des pages associées. Veuillez supprimer ou réassigner ces pages d'abord.
     podcasts_controller:
       new_owner_added: Nouveau propriétaire ajouté !
       no_such_user: Aucun utilisateur n'existe

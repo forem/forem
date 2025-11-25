@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_25_150540) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_25_160001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -933,6 +933,20 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_150540) do
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
+  create_table "page_templates", force: :cascade do |t|
+    t.text "body_html"
+    t.text "body_markdown"
+    t.datetime "created_at", null: false
+    t.jsonb "data_schema", default: {}, null: false
+    t.text "description"
+    t.bigint "forked_from_id"
+    t.string "name", null: false
+    t.string "template_type", default: "contained"
+    t.datetime "updated_at", null: false
+    t.index ["forked_from_id"], name: "index_page_templates_on_forked_from_id"
+    t.index ["name"], name: "index_page_templates_on_name", unique: true
+  end
+
   create_table "page_views", force: :cascade do |t|
     t.bigint "article_id"
     t.integer "counts_for_number_of_views", default: 1
@@ -958,13 +972,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_150540) do
     t.string "description"
     t.boolean "is_top_level_path", default: false
     t.boolean "landing_page", default: false, null: false
+    t.bigint "page_template_id"
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
     t.bigint "subforem_id"
     t.string "template"
+    t.jsonb "template_data", default: {}
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
   end
