@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_20_190926) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_25_150540) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -254,6 +254,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_20_190926) do
   end
 
   create_table "billboard_placement_area_configs", force: :cascade do |t|
+    t.integer "cache_expiry_seconds", default: 180, null: false
     t.datetime "created_at", null: false
     t.string "placement_area", null: false
     t.jsonb "selection_weights", default: {}, null: false

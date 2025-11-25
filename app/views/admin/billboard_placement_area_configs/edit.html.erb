@@ -22,6 +22,21 @@
         </p>
       </div>
 
+      <div class="crayons-field">
+        <%= f.label :cache_expiry_seconds, "Cache Expiry (seconds)", class: "crayons-field__label" %>
+        <%= f.number_field :cache_expiry_seconds, 
+            min: 0, 
+            max: 86400, 
+            class: "crayons-textfield", 
+            value: @config.cache_expiry_seconds || BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS,
+            placeholder: BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS %>
+        <p class="crayons-field__description">
+          How long billboard responses should be cached for signed-out users (0-86400 seconds).
+          Default is <%= BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS %> seconds (3 minutes).
+          Set to 0 to disable caching for this placement area.
+        </p>
+      </div>
+
       <hr class="my-4">
 
       <h2 class="crayons-subtitle-2">Selection Strategy Weights</h2>
