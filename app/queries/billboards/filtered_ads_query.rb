@@ -79,7 +79,7 @@ module Billboards
       # filters applied up to this point, thus near the end is best)
       @filtered_billboards = type_of_ads
 
-      # Exclude paused promotional billboards - apply after type_of_ads but before survey filtering
+      # Exclude paused promotional billboards - apply after type_of_ads to ensure it's not overridden
       @filtered_billboards = exclude_paused_promotional_billboards
 
       # Apply survey completion filtering if user is signed in
@@ -105,8 +105,8 @@ module Billboards
       return @filtered_billboards if valid_paused_ids.empty?
 
       # Exclude billboards from paused organizations, but include those with no organization
-      # Use parentheses to ensure correct evaluation order
-      @filtered_billboards.where("(organization_id IS NULL) OR (organization_id NOT IN (?))", valid_paused_ids)
+      # Use a single WHERE clause - this pattern matches user_targeting_ads for consistency
+      @filtered_billboards.where("organization_id IS NULL OR organization_id NOT IN (?)", valid_paused_ids)
     end
 
     def placement_area_ads
