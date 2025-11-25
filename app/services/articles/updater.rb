@@ -42,7 +42,7 @@ module Articles
       article_params.delete :published_at if article.published_at && !article.scheduled?
 
       # NOTE: It's surprising that this is article.user and not @user
-      Articles::Attributes.new(article_params, article.user)
+      Articles::Attributes.new(article_params, article.user, organization: article.organization)
         .for_update(update_edited_at: update_edited_at)
     end
 

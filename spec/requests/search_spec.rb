@@ -218,5 +218,61 @@ RSpec.describe "Search", :proper_status do
       get search_reactions_path(page: 0, per_page: 1, status: %w[valid], tags: %w[ruby], term: "title")
       expect(response.parsed_body["result"].first["reactable"]).to include("title" => "Title")
     end
+
+    context "when filtering by subforem" do
+      let(:subforem_a) { create(:subforem, domain: "community-a.example.com", discoverable: true) }
+      let(:subforem_b) { create(:subforem, domain: "community-b.example.com", discoverable: true) }
+      let(:root_subforem) { create(:subforem, domain: "root.example.com", root: true) }
+      let(:article_in_subforem_a) { create(:article, subforem_id: subforem_a.id) }
+      let(:article_in_subforem_b) { create(:article, subforem_id: subforem_b.id) }
+
+      before do
+        # Remove the article from the outer context's reading list to avoid interference
+        authorized_user.reactions.readinglist.delete_all
+
+        create(:reaction, category: :readinglist, reactable: article_in_subforem_a, user: authorized_user)
+        create(:reaction, category: :readinglist, reactable: article_in_subforem_b, user: authorized_user)
+
+        # Mock Subforem caching methods to return the right values for the middleware
+        allow(Subforem).to receive(:cached_id_by_domain).with(subforem_a.domain).and_return(subforem_a.id)
+        allow(Subforem).to receive(:cached_id_by_domain).with(subforem_b.domain).and_return(subforem_b.id)
+        allow(Subforem).to receive(:cached_id_by_domain).with(root_subforem.domain).and_return(root_subforem.id)
+        allow(Subforem).to receive(:cached_root_id).and_return(root_subforem.id)
+      end
+
+      it "filters articles by current subforem" do
+        get search_reactions_path, params: { passed_domain: subforem_a.domain }
+        result = response.parsed_body["result"]
+        article_paths = result.map { |item| item.dig("reactable", "path") }
+
+        expect(article_paths).to include(article_in_subforem_a.path)
+        expect(article_paths).not_to include(article_in_subforem_b.path)
+      end
+
+      it "returns articles from all subforems when in root subforem context" do
+        get search_reactions_path, params: { passed_domain: root_subforem.domain }
+        result = response.parsed_body["result"]
+        article_paths = result.map { |item| item.dig("reactable", "path") }
+
+        expect(article_paths).to include(article_in_subforem_a.path)
+        expect(article_paths).to include(article_in_subforem_b.path)
+      end
+
+      it "returns all articles when no subforem context is set" do
+        allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+
+        get search_reactions_path
+        result = response.parsed_body["result"]
+        article_paths = result.map { |item| item.dig("reactable", "path") }
+
+        expect(article_paths).to include(article_in_subforem_a.path)
+        expect(article_paths).to include(article_in_subforem_b.path)
+      end
+
+      it "correctly counts total articles when filtering by subforem" do
+        get search_reactions_path, params: { passed_domain: subforem_a.domain }
+        expect(response.parsed_body["total"]).to eq(1)
+      end
+    end
   end
 end

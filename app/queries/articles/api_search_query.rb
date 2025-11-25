@@ -21,7 +21,7 @@ module Articles
       end
 
       if top.present?
-        @articles = top_articles.order(public_reactions_count: :desc)
+        @articles = top_articles.order(score: :desc)
       end
 
       @articles.page(page).per(per_page || DEFAULT_PER_PAGE)

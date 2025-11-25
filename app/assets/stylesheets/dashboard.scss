@@ -19,65 +19,6 @@
       font-size: 1.4em;
       font-weight: bold;
     }
-    &.single-article-manage-form-wrapper {
-      form {
-        text-align: center;
-        width: 490px;
-        max-width: 90%;
-        margin: 10px auto;
-        textarea {
-          width: 100%;
-          border: 1px solid $light-medium-gray;
-          height: 100px;
-          border-radius: 3px;
-        }
-        input[type='submit'] {
-          background: #1da1f2; // twitter blue
-          color: white;
-          font-size: 19px;
-          padding: 8px 35px;
-          border-radius: 100px;
-          font-family: $helvetica-condensed;
-          margin: 18px auto;
-        }
-        .button-section {
-          display: inline-block;
-          border-radius: 12px;
-          padding: 3px;
-          &.button-section-newbie {
-            background: lighten($green, 12%);
-          }
-          &.button-section-intermediate {
-            background: lighten($purple, 5%);
-          }
-          &.button-section-senior {
-            background: lighten($bold-blue, 19%);
-          }
-        }
-        button {
-          color: white;
-          font-size: 15px;
-          font-weight: bold;
-          border: 2px solid white;
-          background: $black;
-          padding: 5px 0px;
-          width: 38px;
-          border-radius: 8px;
-          &.selected {
-            background: $green;
-            padding: 15px 0px;
-            width: 70px;
-            font-size: 20px;
-          }
-        }
-        p {
-          .scale-pod {
-            display: inline-block;
-            width: 160px;
-          }
-        }
-      }
-    }
 
     .dashboard-collection-org-details {
       .dashboard-top-pill {
@@ -420,5 +361,111 @@ $column-flex: 1;
   .crayons-tag {
     padding-top: 0;
     padding-bottom: 0;
+  }
+}
+
+// Manage page with sidebar
+.manage-page-with-sidebar {
+  display: flex;
+  gap: var(--su-4);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--su-4);
+
+  @media screen and (max-width: 1023px) {
+    flex-direction: column;
+    padding: var(--su-2);
+  }
+}
+
+.manage-sidebar {
+  position: sticky;
+  top: var(--su-4);
+  flex: 0 0 240px;
+  height: fit-content;
+  padding: var(--su-4);
+
+  @media screen and (max-width: 1023px) {
+    position: static;
+    flex: 1;
+  }
+
+  @media screen and (max-width: 639px) {
+    padding: var(--su-3);
+  }
+}
+
+.manage-sidebar-title {
+  font-size: var(--fs-l);
+  font-weight: var(--fw-bold);
+  margin: 0 0 var(--su-4) 0;
+  color: var(--card-color);
+}
+
+.manage-sidebar-nav {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.manage-sidebar-list {
+  li {
+    margin: 0;
+  }
+}
+
+.manage-sidebar-link {
+  display: block;
+  padding: var(--su-2) var(--su-3);
+  margin-bottom: var(--su-1);
+  color: var(--card-color);
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: all var(--transition-props);
+  font-weight: var(--fw-medium);
+
+  &:hover {
+    background: var(--card-secondary-bg);
+    color: var(--card-color);
+    text-decoration: none;
+  }
+
+  &.active {
+    background: var(--accent-brand);
+    color: var(--base-inverted);
+    font-weight: var(--fw-bold);
+
+    &:hover {
+      background: var(--accent-brand-darker);
+      color: var(--base-inverted);
+    }
+  }
+}
+
+.manage-main-content {
+  flex: 1;
+  min-width: 0; // Prevents flex item from overflowing
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+  }
+}
+
+// Handle main sidebar overlap on medium-sized screens
+body[data-side-nav-visible='true']:not(.hidden-shell) {
+  .manage-page-with-sidebar {
+    @media (min-width: $breakpoint-m) {
+      max-width: calc(1280px - 50px);
+      width: calc(100% - 50px);
+      margin-left: 50px;
+    }
+    @media (min-width: $breakpoint-2xl) {
+      max-width: 1280px;
+      width: 100%;
+      margin-left: auto;
+      transform: translateX(20px);
+    }
   }
 }

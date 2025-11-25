@@ -113,7 +113,15 @@ module URL
   #
   # @param user [User] the user to create the URL for
   def self.user(user)
-    url(user.username)
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = RequestStore.store[:subforem_id]
+    
+    if subforem_id
+      domain = Subforem.cached_id_to_domain_hash[subforem_id]
+      url(user.username, domain)
+    else
+      url(user.username)
+    end
   rescue URI::InvalidURIError # invalid username containing spaces will result in an error
     nil
   end

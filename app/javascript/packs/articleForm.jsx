@@ -25,7 +25,7 @@ function loadForm() {
     window.csrfToken = csrfToken;
 
     const root = document.querySelector('main');
-    const { article, organizations, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop } =
+    const { article, organizations, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop, aiAvailable } =
       root.dataset;
     render(
       <ArticleForm
@@ -36,6 +36,7 @@ function loadForm() {
         coverImageHeight={coverImageHeight}
         coverImageCrop={coverImageCrop}
         schedulingEnabled={schedulingEnabled == 'true'}
+        aiAvailable={aiAvailable === 'true'}
       />,
       createRootFragment(root, root.firstElementChild),
     );

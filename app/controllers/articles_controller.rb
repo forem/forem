@@ -101,7 +101,6 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @discussion_lock = @article.discussion_lock
     @user = @article.user
-    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @organizations = @user&.organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization

@@ -112,6 +112,15 @@ class UserDecorator < ApplicationDecorator
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
 
+    # Add subforem moderator status for current subforem
+    if RequestStore.store[:subforem_id].present?
+      current_subforem_domain = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+      if current_subforem_domain
+        is_subforem_moderator = any_admin? || moderator_for_subforems.include?(current_subforem_domain)
+        body_class << "subforem-moderator-status-#{is_subforem_moderator}"
+      end
+    end
+
     cached_role_names.each do |name|
       body_class << "user-role--#{name}"
     end

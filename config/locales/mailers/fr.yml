@@ -35,3 +35,23 @@ fr:
     verification_mailer:
       from: "%{community} Vérification de l'e-mail <%{email}>"
       verify_ownership: Vérifiez la propriété de votre compte %{community}.
+    organization_invitation_mailer:
+      subject: "Vous avez été invité à rejoindre %{organization_name} sur %{community}"
+      greeting: "Bonjour %{name} !"
+      invited_by_html: "<strong>%{inviter_name}</strong> vous a invité à rejoindre <strong>%{organization_name}</strong> en tant que membre."
+      invited_by_text: "%{inviter_name} vous a invité à rejoindre %{organization_name} en tant que membre."
+      invited_html: "Vous avez été invité à rejoindre <strong>%{organization_name}</strong> en tant que membre."
+      invited_text: "Vous avez été invité à rejoindre %{organization_name} en tant que membre."
+      what_is_organization: "Les organisations sur %{community} permettent aux équipes et aux groupes de collaborer, de partager du contenu et de construire une présence collective. En tant que membre, vous pourrez publier des articles au nom de l'organisation et collaborer avec votre équipe."
+      confirm_button: "Accepter l'invitation"
+      alternative_link: "Ou copiez et collez cette URL dans votre navigateur :"
+    organization_membership_notification_mailer:
+      subject: "Vous avez été ajouté à %{organization_name} sur %{community}"
+      greeting: "Bonjour %{name} !"
+      added_by_html: "<strong>%{inviter_name}</strong> vous a ajouté à <strong>%{organization_name}</strong> en tant que membre."
+      added_by_text: "%{inviter_name} vous a ajouté à %{organization_name} en tant que membre."
+      added_html: "Vous avez été ajouté à <strong>%{organization_name}</strong> en tant que membre."
+      added_text: "Vous avez été ajouté à %{organization_name} en tant que membre."
+      what_is_organization: "Les organisations sur %{community} permettent aux équipes et aux groupes de collaborer, de partager du contenu et de construire une présence collective. En tant que membre, vous pourrez publier des articles au nom de l'organisation et collaborer avec votre équipe."
+      view_organization_button: "Voir l'organisation"
+      organization_url: "Visitez la page de votre organisation"

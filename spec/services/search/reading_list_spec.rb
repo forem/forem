@@ -358,5 +358,96 @@ RSpec.describe Search::ReadingList, type: :service do
         expect(result[:items].length).to eq(1)
       end
     end
+
+    context "when filtering by subforem" do
+      let(:subforem_a) { create(:subforem, discoverable: true) }
+      let(:subforem_b) { create(:subforem, discoverable: true) }
+      let(:root_subforem) { create(:subforem, root: true) }
+      let(:article_in_subforem_a) { create(:article, subforem_id: subforem_a.id) }
+      let(:article_in_subforem_b) { create(:article, subforem_id: subforem_b.id) }
+      let(:article_with_no_subforem) { create(:article, subforem_id: nil) }
+
+      before do
+        # Add all articles to the user's reading list
+        create(:reaction, user: user, reactable: article_in_subforem_a, category: :readinglist, status: :valid)
+        create(:reaction, user: user, reactable: article_in_subforem_b, category: :readinglist, status: :valid)
+        create(:reaction, user: user, reactable: article_with_no_subforem, category: :readinglist, status: :valid)
+      end
+
+      after do
+        RequestStore.store[:subforem_id] = nil
+        RequestStore.store[:root_subforem_id] = nil
+      end
+
+      it "filters articles by subforem_id when provided" do
+        result = described_class.search_documents(user, subforem_id: subforem_a.id)
+        paths = extract_from_results(result, :path)
+
+        expect(paths).to include(article_in_subforem_a.path)
+        expect(paths).not_to include(article_in_subforem_b.path)
+        expect(paths).not_to include(article_with_no_subforem.path)
+      end
+
+      it "returns articles from all subforems when subforem_id is the root subforem" do
+        RequestStore.store[:root_subforem_id] = root_subforem.id
+
+        result = described_class.search_documents(user, subforem_id: root_subforem.id)
+        paths = extract_from_results(result, :path)
+
+        expect(paths).to include(article_in_subforem_a.path)
+        expect(paths).to include(article_in_subforem_b.path)
+        expect(paths).to include(article_with_no_subforem.path)
+      end
+
+      it "returns all articles when subforem_id is not provided" do
+        result = described_class.search_documents(user, subforem_id: nil)
+        paths = extract_from_results(result, :path)
+
+        expect(paths).to include(article_in_subforem_a.path)
+        expect(paths).to include(article_in_subforem_b.path)
+        expect(paths).to include(article_with_no_subforem.path)
+      end
+
+      it "correctly counts total articles when filtering by subforem" do
+        result = described_class.search_documents(user, subforem_id: subforem_a.id)
+        expect(result[:total]).to eq(1)
+      end
+
+      it "works with other filters (tags) when filtering by subforem" do
+        article_in_subforem_a.update_columns(cached_tag_list: "ruby")
+        article_in_subforem_b.update_columns(cached_tag_list: "javascript")
+
+        result = described_class.search_documents(user, subforem_id: subforem_a.id, tags: [:ruby])
+        paths = extract_from_results(result, :path)
+
+        expect(paths).to include(article_in_subforem_a.path)
+        expect(paths).not_to include(article_in_subforem_b.path)
+      end
+
+      it "works with search term when filtering by subforem" do
+        article_in_subforem_a.update_columns(title: "Ruby on Rails Guide")
+        article_in_subforem_b.update_columns(title: "JavaScript Tips")
+
+        result = described_class.search_documents(user, subforem_id: subforem_a.id, term: "Rails")
+        paths = extract_from_results(result, :path)
+
+        expect(paths).to include(article_in_subforem_a.path)
+        expect(paths).not_to include(article_in_subforem_b.path)
+      end
+
+      it "works with status filter when filtering by subforem" do
+        valid_reaction = user.reactions.readinglist.find_by(reactable: article_in_subforem_a)
+        valid_reaction.update_columns(status: :valid)
+
+        archived_reaction = user.reactions.readinglist.find_by(reactable: article_in_subforem_b)
+        archived_reaction.update_columns(status: :archived)
+
+        result = described_class.search_documents(user, subforem_id: subforem_a.id, statuses: [:valid])
+        paths = extract_from_results(result, :path)
+
+        expect(paths).to include(article_in_subforem_a.path)
+        expect(paths).not_to include(article_in_subforem_b.path)
+      end
+    end
   end
 end

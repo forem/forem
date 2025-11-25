@@ -95,8 +95,8 @@
   .ltag__link__user__pic {
     display: inline-block;
     position: absolute;
-    right: 3px;
-    bottom: calc(1vw);
+    right: calc(10px - 0.7vw);
+    bottom: calc(10px - 0.3vw);
     border: 2px solid var(--base-inverted);
     border-radius: 100%;
     background-color: var(--card-color-tertiary);

@@ -22,7 +22,7 @@ function setReadingListButtonsState() {
 function highlightButton(button) {
   var user = userData();
   var buttonIdInt = parseInt(button.dataset.reactableId, 10);
-  if (user && user.reading_list_ids.indexOf(buttonIdInt) > -1) {
+  if (user && user.reading_list_ids && user.reading_list_ids.indexOf(buttonIdInt) > -1) {
     button.classList.add('selected');
   } else {
     button.classList.remove('selected');
@@ -36,7 +36,7 @@ function addReadingListCountToHomePage() {
   const readingListContainers = document.querySelectorAll(
     '.js-reading-list-count',
   );
-  if (user && readingListContainers) {
+  if (user && user.reading_list_ids && readingListContainers) {
     readingListContainers.forEach(function (e) {
       const readingListCount =
         user.reading_list_ids.length > 0 ? user.reading_list_ids.length : '';

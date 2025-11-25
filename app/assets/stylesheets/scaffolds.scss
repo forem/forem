@@ -101,6 +101,14 @@ body.trusted-status-true .trusted-visible-block {
   display: block !important;
 }
 
+.subforem-moderator-visible-block {
+  display: none !important;
+}
+
+body.subforem-moderator-status-true .subforem-moderator-visible-block {
+  display: block !important;
+}
+
 // The .admin-help-button class is included in this file since it
 // is referenced in both the admin and application layout.
 

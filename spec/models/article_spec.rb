@@ -53,6 +53,127 @@ RSpec.describe Article do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "#validate_collection_permission" do
+      let(:other_user) { create(:user) }
+      let(:collection) { create(:collection, user: other_user) }
+
+      it "allows article owner to add to their own collection" do
+        article = build(:article, user: user, collection: create(:collection, user: user))
+        expect(article).to be_valid
+      end
+
+      it "prevents user from adding article to another user's collection" do
+        # Build article with body_markdown that doesn't have title in frontmatter
+        # to avoid evaluate_front_matter clearing collection_id
+        article = build(:article, user: user, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+        article.collection_id = collection.id
+        expect(article).not_to be_valid
+        expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+      end
+
+      context "with organization collections" do
+        let(:organization) { create(:organization) }
+        let(:org_collection) { create(:collection, user: other_user, organization: organization) }
+        let(:org_member) { create(:user) }
+
+        before do
+          create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        end
+
+        it "allows org member to add article to org collection when publishing under org" do
+          article = build(:article, user: org_member, organization: organization)
+          # Set collection_id after building. Run valid? once to trigger callbacks, then set it again
+          article.collection_id = org_collection.id
+          article.valid? # This runs before_validation which may clear collection_id
+          article.collection_id = org_collection.id # Set it again after callbacks
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection when not publishing under org" do
+          article = build(:article, user: org_member, organization: nil, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents non-org member from adding article to org collection" do
+          article = build(:article, user: user, organization: organization, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "allows org admin to add article to org collection" do
+          org_admin = create(:user)
+          create(:organization_membership, user: org_admin, organization: organization, type_of_user: "admin")
+          article = build(:article, user: org_admin, organization: organization)
+          # Set collection_id after building. Run valid? once to trigger callbacks, then set it again
+          article.collection_id = org_collection.id
+          article.valid? # This runs before_validation which may clear collection_id
+          article.collection_id = org_collection.id # Set it again after callbacks
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection with different org_id" do
+          other_org = create(:organization)
+          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents org member from adding article to org collection when org_id doesn't match" do
+          other_org = create(:organization)
+          create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+      end
+    end
+
+    describe "#all_series" do
+      let(:org_member) { create(:user) }
+      let(:organization) { create(:organization) }
+      let(:other_org) { create(:organization) }
+
+      before do
+        create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+      end
+
+      it "returns personal collections" do
+        personal_collection = create(:collection, user: org_member, organization: nil, slug: "personal-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "personal-series", is_personal: true))
+      end
+
+      it "returns organization collections for orgs the user is a member of" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id, is_personal: false))
+      end
+
+      it "does not return collections from orgs the user is not a member of" do
+        non_member_org = create(:organization)
+        create(:collection, user: create(:user), organization: non_member_org, slug: "other-org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series.map { |s| s[:slug] }).not_to include("other-org-series")
+      end
+
+      it "returns collections with organization name" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        org_series = series.find { |s| s[:slug] == "org-series" }
+        expect(org_series[:organization_name]).to eq(organization.name)
+      end
+    end
+
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
         allow(Settings::General).to receive(:mascot_user_id).and_return(3)
@@ -274,17 +395,29 @@ RSpec.describe Article do
 
     describe "#restrict_attributes_with_status_types" do
       context "when the article is persisted and body_markdown hasn't changed" do
-        it "does not run validation" do
+        it "does not run validation when changing title" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.title = "Updated Title"
           expect(article).to be_valid
         end
 
-        it "runs validation if body_markdown has changed" do
+        it "does not run validation when changing featured" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.featured = true
+          expect(article).to be_valid
+        end
+
+        it "does not run validation when changing other attributes" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.approved = true
+          expect(article).to be_valid
+        end
+
+        it "shows edit restriction error if body_markdown has changed" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.body_markdown = "New body content"
           expect(article).not_to be_valid
-          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
         end
       end
 
@@ -2041,6 +2174,20 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.comment_score).to eq(25)
       end
+
+      it "ensures no individual comment contributes less than -1 to the total score" do
+        # Create comments with very negative scores
+        create(:comment, commentable: article, score: -177)
+        create(:comment, commentable: article, score: -50)
+        create(:comment, commentable: article, score: 10)
+        create(:comment, commentable: article, score: -1)
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        # -177 counts as -1, -50 counts as -1, 10 counts as 10, -1 counts as -1
+        # Total: -1 + -1 + 10 + -1 = 7
+        expect(article.reload.comment_score).to eq(7)
+      end
     end
   end
 
@@ -2771,6 +2918,38 @@ RSpec.describe Article do
         article.valid?
 
         expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
+      end
+
+      it "does not re-add embed tags when updating other attributes" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Body markdown should have the embed tag after creation
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+
+        # Update a different attribute (e.g., featured)
+        article.featured = true
+        expect(article).to be_valid
+        article.save!
+
+        # Body markdown should remain the same, not duplicated
+        expect(article.reload.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "still prevents actual body_markdown changes on persisted status posts" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Try to change the body_markdown
+        article.body_markdown = "This is different content"
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
       end
     end
   end

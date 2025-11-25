@@ -30,6 +30,71 @@ RSpec.describe Articles::Updater, type: :service do
     expect(article.reload.collection.user).to eq(article.user)
   end
 
+  context "with organization collections" do
+    let(:organization) { create(:organization) }
+    let(:org_member) { create(:user) }
+    let(:org_article) { create(:article, user: org_member, organization: organization) }
+
+    before do
+      create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+    end
+
+    it "creates an organization collection when series is provided and article is under org" do
+      attributes[:series] = "org-series"
+      described_class.call(org_member, org_article, attributes)
+      collection = org_article.reload.collection
+      expect(collection).to be_present
+      expect(collection.organization).to eq(organization)
+      expect(collection.slug).to eq("org-series")
+    end
+
+    it "creates a personal collection when series is provided and article has no org" do
+      personal_article = create(:article, user: org_member, organization: nil)
+      attributes[:series] = "personal-series"
+      described_class.call(org_member, personal_article, attributes)
+      collection = personal_article.reload.collection
+      expect(collection).to be_present
+      expect(collection.organization).to be_nil
+      expect(collection.slug).to eq("personal-series")
+    end
+
+    it "updates collection when organization_id changes" do
+      # Create article with org collection
+      org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+      org_article.update_column(:collection_id, org_collection.id)
+
+      # Change to different org
+      other_org = create(:organization)
+      create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+      attributes[:organization_id] = other_org.id
+      attributes[:series] = "other-org-series"
+
+      described_class.call(org_member, org_article, attributes)
+      collection = org_article.reload.collection
+      expect(collection.organization).to eq(other_org)
+      expect(collection.slug).to eq("other-org-series")
+    end
+
+    it "finds existing organization collection regardless of user_id" do
+      # Create collection with one user
+      original_user = create(:user)
+      create(:organization_membership, user: original_user, organization: organization, type_of_user: "member")
+      existing_collection = create(:collection, user: original_user, organization: organization, slug: "shared-series")
+
+      # Try to update article with same series using different user in same organization
+      different_member = create(:user)
+      create(:organization_membership, user: different_member, organization: organization, type_of_user: "member")
+      different_article = create(:article, user: different_member, organization: organization)
+
+      attributes[:series] = "shared-series"
+      described_class.call(different_member, different_article, attributes)
+
+      # Should find the existing collection, not create a new one
+      expect(different_article.reload.collection).to eq(existing_collection)
+      expect(Collection.where(slug: "shared-series", organization: organization).count).to eq(1)
+    end
+  end
+
   it "sets tags" do
     attributes[:tags] = %w[ruby productivity]
     described_class.call(user, article, attributes)

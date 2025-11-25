@@ -104,6 +104,48 @@
       </div>
     </div>
   </div>
+
+  <!-- Scheduled Automations Card -->
+  <div class="crayons-card p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="crayons-subtitle-1">Scheduled Automations</h2>
+      <div class="flex gap-2">
+        <span class="text-sm color-secondary"><%= pluralize(@bot.scheduled_automations.count, 'automation') %></span>
+        <%= link_to "Manage Automations", admin_subforem_community_bot_scheduled_automations_path(@subforem, @bot), class: "crayons-btn crayons-btn--s" %>
+      </div>
+    </div>
+    
+    <% if @bot.scheduled_automations.empty? %>
+      <p class="color-secondary">No scheduled automations configured for this bot.</p>
+      <%= link_to "Create your first automation", new_admin_subforem_community_bot_scheduled_automation_path(@subforem, @bot), class: "crayons-btn mt-4" %>
+    <% else %>
+      <div class="space-y-3">
+        <% @bot.scheduled_automations.limit(3).each do |automation| %>
+          <div class="border border-base-20 rounded-lg p-3 <%= 'opacity-50' unless automation.enabled? %>">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-semibold"><%= automation.service_name.titleize %> → <%= automation.action.humanize %></div>
+                <div class="text-sm color-secondary">
+                  <%= automation.frequency.humanize %> 
+                  <% if automation.next_run_at %>
+                    • Next run: <%= time_ago_in_words(automation.next_run_at) %> <%= automation.next_run_at > Time.current ? 'from now' : 'ago' %>
+                  <% end %>
+                </div>
+              </div>
+              <% unless automation.enabled? %>
+                <span class="crayons-tag crayons-tag--outlined">Disabled</span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <% if @bot.scheduled_automations.count > 3 %>
+          <div class="text-center pt-2">
+            <%= link_to "View all #{@bot.scheduled_automations.count} automations →", admin_subforem_community_bot_scheduled_automations_path(@subforem, @bot), class: "text-sm color-secondary hover:color-base-70" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 

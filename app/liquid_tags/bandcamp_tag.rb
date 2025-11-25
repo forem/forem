@@ -31,19 +31,33 @@ class BandcampTag < LiquidTagBase
     end
 
     player_path_segments = []
-    height = "120px"
-
     if @embed_type == "album"
       player_path_segments << "album=#{scraped_ids[:item_id]}"
       player_path_segments << "size=large"
       player_path_segments << "artwork=small"
-      player_path_segments << "tracklist=false"
+      player_path_segments << "tracklist=true"
+      # Try to get track count from metadata
+      track_count = nil
+      if scraped_ids[:track_count]
+        track_count = scraped_ids[:track_count].to_i
+      elsif @raw_input_url.present?
+        # Fallback: try to fetch again if not present
+        begin
+          page_data = fetch_bandcamp_ids_from_page_data(@raw_input_url)
+          track_count = page_data[:track_count].to_i if page_data && page_data[:track_count]
+        rescue; end
+      end
+      # Bandcamp sizing: base 200px + 21px per track, min 307px
+  height_px = 128 + (track_count ? track_count * 40 : 0)
+  height_px = [height_px, 480].min
+  height = "#{height_px}px"
     elsif @embed_type == "track"
       player_path_segments << "album=#{scraped_ids[:album_id]}"
       player_path_segments << "track=#{scraped_ids[:item_id]}"
       player_path_segments << "size=large"
       player_path_segments << "artwork=small"
       player_path_segments << "tracklist=false"
+      height = "120px"
     end
 
     player_path_segments << "bgcol=ffffff"
@@ -81,7 +95,7 @@ class BandcampTag < LiquidTagBase
     end
 
     doc = Nokogiri::HTML(response.body)
-    ids = { item_id: nil, album_id: nil }
+  ids = { item_id: nil, album_id: nil, track_count: nil }
 
     script_tag_with_data = doc.at_css('script[data-tralbum]')
     if script_tag_with_data && script_tag_with_data['data-tralbum']
@@ -90,15 +104,21 @@ class BandcampTag < LiquidTagBase
 
         if @embed_type == "album" && tralbum_data['current'] && tralbum_data['current']['type'] == 'album'
           ids[:item_id] = tralbum_data['current']['id']&.to_s
-        elsif @embed_type == "album" && tralbum_data['id'] && tralbum_data['item_type'] == 'album' # Fallback for album pages if structure is slightly different
+          if tralbum_data['trackinfo'].is_a?(Array)
+            ids[:track_count] = tralbum_data['trackinfo'].length
+          end
+        elsif @embed_type == "album" && tralbum_data['id'] && tralbum_data['item_type'] == 'album'
           ids[:item_id] = tralbum_data['id']&.to_s
+          if tralbum_data['trackinfo'].is_a?(Array)
+            ids[:track_count] = tralbum_data['trackinfo'].length
+          end
         elsif @embed_type == "track" && tralbum_data['current'] && tralbum_data['current']['type'] == 'track'
           ids[:item_id] = tralbum_data['current']['id']&.to_s
           ids[:album_id] = tralbum_data['current']['album_id']&.to_s
         end
 
         if ids[:item_id] && (@embed_type == "album" || (@embed_type == "track" && ids[:album_id]))
-           Rails.logger.info "[BandcampTag] Found IDs via data-tralbum: item_id=#{ids[:item_id]}, album_id=#{ids[:album_id]}"
+           Rails.logger.info "[BandcampTag] Found IDs via data-tralbum: item_id=#{ids[:item_id]}, album_id=#{ids[:album_id]}, track_count=#{ids[:track_count]}"
            return ids
         end
       rescue JSON::ParserError => e

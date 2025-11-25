@@ -3,72 +3,149 @@
 <div class="crayons-card crayons-card--content-rows">
   <h2><%= t("views.settings.org.admin.members") %></h2>
 
-  <div class="grid gap-2">
-    <% @org_organization_memberships.each do |org_membership| %>
-      <div class="crayons-card crayons-card--secondary p-4 flex items-center">
-        <p class="fw-medium flex-1">
-          <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
-          <% if org_membership.user == @user %>
-            <span class="c-indicator"><%= t("views.settings.org.admin.you") %></span>
-          <% end %>
+  <% active_memberships = @org_organization_memberships.reject(&:pending?) %>
+  <% pending_memberships = @org_organization_memberships.select(&:pending?) %>
 
-          <% if org_membership.type_of_user == "admin" %>
-            <span class="c-indicator c-indicator--danger"><%= t("views.settings.org.admin.admin") %></span>
-          <% end %>
-        </p>
+  <% if active_memberships.any? %>
+    <h3 class="fs-base fw-bold mb-2"><%= t("views.settings.org.admin.active_members") %></h3>
+    <div class="grid gap-2 mb-6">
+      <% active_memberships.each do |org_membership| %>
+        <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+          <p class="fw-medium flex-1">
+            <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
+            <% if org_membership.user == @user %>
+              <span class="c-indicator"><%= t("views.settings.org.admin.you") %></span>
+            <% end %>
 
-        <div class="flex">
-          <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
-          <!-- TODO: ? -->
-          <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
-            <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
-              <%= hidden_field_tag "user_id", org_membership.user_id %>
-              <%= hidden_field_tag "organization_id", @organization.id %>
-              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
+            <% if org_membership.type_of_user == "admin" %>
+              <span class="c-indicator c-indicator--danger"><%= t("views.settings.org.admin.admin") %></span>
             <% end %>
-          <% else %>
-            <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.make.confirm', user: org_membership.user.name)}');" do %>
-              <%= hidden_field_tag "user_id", org_membership.user_id %>
-              <%= hidden_field_tag "organization_id", @organization.id %>
-              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.make.title") %>" type="submit"><%= t("views.settings.org.admin.make.text") %></button>
+          </p>
+
+          <div class="flex">
+            <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
+            <!-- TODO: ? -->
+            <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
+              <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
+                <%= hidden_field_tag "user_id", org_membership.user_id %>
+                <%= hidden_field_tag "organization_id", @organization.id %>
+                <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
+              <% end %>
+            <% else %>
+              <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.make.confirm', user: org_membership.user.name)}');" do %>
+                <%= hidden_field_tag "user_id", org_membership.user_id %>
+                <%= hidden_field_tag "organization_id", @organization.id %>
+                <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.make.title") %>" type="submit"><%= t("views.settings.org.admin.make.text") %></button>
+              <% end %>
+              <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('#{t('views.settings.org.admin.remove.confirm', user: org_membership.user.name)}');" do %>
+                <%= hidden_field_tag "user_id", org_membership.user_id %>
+                <%= hidden_field_tag "organization_id", @organization.id %>
+                <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.remove.title") %>" type="submit"><%= t("views.settings.org.admin.remove.text") %></button>
+              <% end %>
             <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if pending_memberships.any? %>
+    <h3 class="fs-base fw-bold mb-2"><%= t("views.settings.org.admin.pending_members") %></h3>
+    <div class="grid gap-2 mb-6">
+      <% pending_memberships.each do |org_membership| %>
+        <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+          <p class="fw-medium flex-1">
+            <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
+            <span class="c-indicator c-indicator--warning"><%= t("views.settings.org.admin.pending") %></span>
+          </p>
+          <div class="flex">
             <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('#{t('views.settings.org.admin.remove.confirm', user: org_membership.user.name)}');" do %>
               <%= hidden_field_tag "user_id", org_membership.user_id %>
               <%= hidden_field_tag "organization_id", @organization.id %>
-              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.remove.title") %>" type="submit"><%= t("views.settings.org.admin.remove.text") %></button>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.cancel_invite.title") %>" type="submit"><%= t("views.settings.org.admin.cancel_invite.text") %></button>
             <% end %>
-          <% end %>
+          </div>
         </div>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
 
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h2 class="mb-2"><%= t("views.settings.org.admin.grow") %></h2>
-    <p><%= t("views.settings.org.admin.invite") %></p>
+    <p class="color-base-70"><%= t("views.settings.org.admin.grow_description") %></p>
   </header>
 
-  <div class="crayons-card crayons-card--secondary p-4">
-    <ol class="list-decimal pl-6 mb-2">
-      <li><%= t("views.settings.org.admin.inst1_html", url: link_to(app_url, app_url)) %></li>
-      <li><%= t("views.settings.org.admin.inst2_html", url: link_to(app_url(user_settings_path(:organization)), app_url(user_settings_path(:organization)))) %></li>
-      <li><%= t("views.settings.org.admin.inst3_html") %></li>
-    </ol>
-    <p>
-      <%= t("views.settings.org.admin.secret_code") %>
-      <div class="flex">
-        <input type="text" class="ff-monospace ff-s fw-medium" autocomplete="off" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
-        <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="c-btn"><%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true) %></button>
+  <% if @organization.fully_trusted? %>
+    <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
+      <div class="flex items-start">
+        <%= crayons_icon_tag("twemoji/warning", native: true, class: "mr-2 shrink-0", title: t("views.settings.org.admin.fully_trusted_warning.icon")) %>
+        <div>
+          <p class="fw-bold mb-1"><%= t("views.settings.org.admin.fully_trusted_warning.title") %></p>
+          <p class="fs-s"><%= t("views.settings.org.admin.fully_trusted_warning.description") %></p>
+        </div>
       </div>
-      <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
-  </div>
+    </div>
+  <% end %>
 
-  <div class="flex items-center">
-    <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('#{t('views.settings.org.admin.gen.confirm')}');" do %>
-      <%= hidden_field_tag "organization[id]", @organization.id %>
-      <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.org.admin.gen.submit") %></button>
-    <% end %>
-    <p class="fw-medium color-accent-danger ml-3"><%= t("views.settings.org.admin.gen.text") %></p>
+  <div class="grid gap-6">
+    <!-- Invite by Username Method -->
+    <div class="crayons-card crayons-card--secondary p-6">
+      <div class="flex items-center mb-4">
+        <%= crayons_icon_tag("user-line", class: "mr-3", title: @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.icon") : t("views.settings.org.admin.invite_methods.username.icon")) %>
+        <h3 class="fs-l fw-bold"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.title") : t("views.settings.org.admin.invite_methods.username.title") %></h3>
+      </div>
+      <p class="color-base-70 mb-4"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.description") : t("views.settings.org.admin.invite_methods.username.description") %></p>
+      
+      <%= form_tag organization_invite_path(@organization.id), method: :post, class: "grid gap-4" do %>
+        <%= hidden_field_tag "organization[id]", @organization.id %>
+        <div class="crayons-field">
+          <%= label_tag "username", t("views.settings.org.admin.username_label"), class: "crayons-field__label" %>
+          <%= text_field_tag "username", nil, class: "crayons-textfield", placeholder: t("views.settings.org.admin.username_placeholder"), autocomplete: "off" %>
+          <p class="crayons-field__description"><%= @organization.fully_trusted? ? t("views.settings.org.admin.username_description_fully_trusted") : t("views.settings.org.admin.username_description") %></p>
+        </div>
+        <button type="submit" class="crayons-btn crayons-btn--primary w-max"><%= @organization.fully_trusted? ? t("views.settings.org.admin.add_button") : t("views.settings.org.admin.invite_button") %></button>
+      <% end %>
+    </div>
+
+    <!-- Share Secret Code Method -->
+    <div class="crayons-card crayons-card--secondary p-6">
+      <div class="flex items-center mb-4">
+        <%= crayons_icon_tag("lock", class: "mr-3", title: t("views.settings.org.admin.invite_methods.secret.icon")) %>
+        <h3 class="fs-l fw-bold"><%= t("views.settings.org.admin.invite_methods.secret.title") %></h3>
+      </div>
+      <p class="color-base-70 mb-4"><%= t("views.settings.org.admin.invite_methods.secret.description") %></p>
+      
+      <div class="mb-4">
+        <p class="fw-medium mb-2"><%= t("views.settings.org.admin.secret_instructions") %></p>
+        <ol class="list-decimal pl-6 mb-4">
+          <li class="mb-1"><%= t("views.settings.org.admin.inst1_html", url: link_to(app_url, app_url, class: "crayons-link")) %></li>
+          <li class="mb-1"><%= t("views.settings.org.admin.inst2_html", url: link_to(app_url(user_settings_path(:organization)), app_url(user_settings_path(:organization)), class: "crayons-link")) %></li>
+          <li><%= t("views.settings.org.admin.inst3_html") %></li>
+        </ol>
+      </div>
+
+      <div class="crayons-field mb-4">
+        <%= label_tag "settings-org-secret", t("views.settings.org.admin.secret_code"), class: "crayons-field__label" %>
+        <div class="flex gap-2">
+          <input type="text" class="crayons-textfield ff-monospace ff-s fw-medium" autocomplete="off" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
+          <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="crayons-btn crayons-btn--secondary" type="button">
+            <%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true, class: "mr-1") %>
+            <span class="hidden s:inline-block"><%= t("views.settings.org.admin.copy.button.text") %></span>
+          </button>
+        </div>
+        <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('#{t('views.settings.org.admin.gen.confirm')}');" do %>
+          <%= hidden_field_tag "organization[id]", @organization.id %>
+          <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.org.admin.gen.submit") %></button>
+        <% end %>
+        <p class="fs-s color-base-60"><%= t("views.settings.org.admin.gen.text") %></p>
+      </div>
+    </div>
   </div>
 </div>
 

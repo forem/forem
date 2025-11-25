@@ -79,6 +79,8 @@ pt:
       credit_updated: Créditos atualizados com sucesso
       deletion_scheduled: 'Exclusão da organização "%{organization_name}" está agendada.'
       error: 'Sua organização, %{organization_name}, não pôde ser excluída: %{error}.'
+      fully_trusted_enabled: O status totalmente confiável foi habilitado para esta organização.
+      fully_trusted_disabled: O status totalmente confiável foi desabilitado para esta organização.
     pages_controller:
       updated: Página foi atualizada com sucesso.
       created: Página foi criada com sucesso.

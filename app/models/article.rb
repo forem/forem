@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 18
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
@@ -849,8 +849,38 @@ class Article < ApplicationRecord
   end
 
   def all_series
-    # all series names
-    user&.collections&.pluck(:slug)
+    # all series names - includes user's personal collections and organization collections
+    # Returns array of hashes with slug and organization info for UI display
+    return [] unless user
+
+    series_list = []
+
+    # Get user's personal collections (no organization)
+    user.collections.where(organization_id: nil).each do |collection|
+      series_list << {
+        slug: collection.slug,
+        organization_id: nil,
+        organization_name: nil,
+        is_personal: true
+      }
+    end
+
+    # Get collections from organizations the user is a member of
+    Collection.joins(organization: :organization_memberships)
+      .where(organization_memberships: { user_id: user.id })
+      .includes(:organization)
+      .each do |collection|
+        series_list << {
+          slug: collection.slug,
+          organization_id: collection.organization_id,
+          organization_name: collection.organization.name,
+          is_personal: false
+        }
+      end
+
+    # For backward compatibility, also support returning just slugs when called as array
+    # But when serialized to JSON, it will return the full hash
+    series_list
   end
 
   def update_score
@@ -879,7 +909,8 @@ class Article < ApplicationRecord
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
 
     # Calculate comment_score and apply max_score limits
-    calculated_comment_score = comments.sum(:score)
+    # Each comment can contribute a minimum of -1 to the total score
+    calculated_comment_score = comments.sum { |comment| [comment.score, -1].max }
     comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
                       accepted_max
                     else
@@ -1068,16 +1099,26 @@ class Article < ApplicationRecord
   end
 
   def restrict_attributes_with_status_types
-    # Return early if this is already saved and the body_markdown hasn't changed
-    return if persisted? && !body_markdown_changed?
+    return unless type_of == "status"
 
-    # For status types, allow body_markdown only if it contains embed tags from URLs in title
-    if type_of == "status" && body_url.blank? && body_markdown.present?
+    # If the article is already persisted and body_markdown is being changed, 
+    # show a different error about edit restrictions
+    # Check if the value actually changed, not just if Rails marked it as changed
+    if persisted? && body_markdown_changed? && body_markdown_was != body_markdown
+      errors.add(:body_markdown, "cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
+      return
+    end
+
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted?
+
+    # For new status types, allow body_markdown only if it contains embed tags from URLs in title
+    if body_url.blank? && body_markdown.present?
       # Allow body_markdown if it only contains embed tags that were added from URLs in title
       unless body_markdown_only_contains_embed_tags_from_title?
         errors.add(:body_markdown, "is not allowed for status types")
       end
-    elsif type_of == "status" && body_url.blank? && (main_image.present? || collection_id.present?)
+    elsif body_url.blank? && (main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end
@@ -1182,7 +1223,10 @@ class Article < ApplicationRecord
     self.description = hash["description"] if update_description
 
     self.collection_id = nil if hash["title"].present?
-    self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
+    if hash["series"].present?
+      collection = Collection.find_series(hash["series"], user, organization: organization)
+      self.collection_id = collection.id
+    end
   end
 
   def set_main_image(hash)
@@ -1248,6 +1292,14 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     return unless collection && collection.user_id != user_id
+
+    # Allow org members to add articles to org collections
+    if collection.organization_id.present?
+      org = collection.organization
+      # Check if user is a member/admin of the collection's organization
+      # and if the article is being published under that organization
+      return if user.org_member?(org) && organization_id == collection.organization_id
+    end
 
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
@@ -1447,7 +1499,8 @@ class Article < ApplicationRecord
 
   def should_add_urls_from_title?
     # Only add URLs from title for quickie posts (status type) that have a title with URLs
-    type_of == "status" && title.present? && extract_urls_from_title.any?
+    # Only run this when the title has changed or it's a new record to avoid duplicating embed tags
+    type_of == "status" && title.present? && extract_urls_from_title.any? && (new_record? || title_changed?)
   end
 
   def add_urls_from_title_to_body

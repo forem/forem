@@ -1,0 +1,33 @@
+<div style="font-size:18px;line-height:22px;color:#202121">
+  <h2 style="font-size:24px;margin-bottom:20px;">
+    <%= t("mailers.organization_invitation_mailer.greeting", name: @user.name) %>
+  </h2>
+
+  <p>
+    <% if @inviter %>
+      <%= t("mailers.organization_invitation_mailer.invited_by_html",
+            inviter_name: @inviter.name,
+            organization_name: @organization.name) %>
+    <% else %>
+      <%= t("mailers.organization_invitation_mailer.invited_html",
+            organization_name: @organization.name) %>
+    <% end %>
+  </p>
+
+  <p>
+    <%= t("mailers.organization_invitation_mailer.what_is_organization", community: Settings::Community.community_name) %>
+  </p>
+
+  <p style="margin-top:30px;margin-bottom:30px;">
+    <a href="<%= @confirmation_url %>" style="display:inline-block;background:<%= Settings::UserExperience.primary_brand_color_hex %>;color:white;padding:12px 24px;border-radius:8px;font-weight:bold;text-decoration:none;">
+      <%= t("mailers.organization_invitation_mailer.confirm_button") %>
+    </a>
+  </p>
+
+  <p style="font-size:14px;color:#7d7d7d;">
+    <%= t("mailers.organization_invitation_mailer.alternative_link") %>
+    <br />
+    <a href="<%= @confirmation_url %>" style="color:#7d7d7d;word-break:break-all;"><%= @confirmation_url %></a>
+  </p>
+</div>
+

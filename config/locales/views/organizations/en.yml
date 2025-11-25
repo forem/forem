@@ -43,3 +43,15 @@ en:
       all_members: See All Members
       twitter:
         icon: Twitter logo
+      confirm_invitation:
+        title: Confirm Organization Invitation
+        greeting: "Hi %{name}!"
+        invited_by_html: "<strong>%{inviter_name}</strong> has invited you to join <strong>%{organization_name}</strong> as a member."
+        invited_html: "You've been invited to join <strong>%{organization_name}</strong> as a member."
+        what_is_organization: "What is an organization?"
+        organization_explanation: "Organizations on %{community} allow teams and groups to collaborate, share content, and build a collective presence. As a member, you'll be able to publish articles on behalf of the organization and collaborate with your team."
+        confirm_button: "Accept Invitation"
+        wrong_user: "You must be signed in as the invited user to confirm this invitation."
+        sign_in_required: "Please sign in to confirm your organization membership."
+        sign_in_button: "Sign In"
+        invalid_token: "Invalid or expired invitation token."

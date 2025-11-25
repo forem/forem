@@ -52,7 +52,8 @@
   data-site-logo='<%= render "layouts/logo" %>'
   data-cover-image-height="<%= Settings::UserExperience.cover_image_height %>"
   data-cover-image-crop="<%= Settings::UserExperience.cover_image_fit %>"
-  data-scheduling-enabled="<%= FeatureFlag.enabled?(:schedule_articles) %>">
+  data-scheduling-enabled="true"
+  data-ai-available="<%= ::AI_AVAILABLE %>">
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
     <div class="crayons-article-form__header">
@@ -100,6 +101,11 @@
               </label>
               <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
             </button>
+            <% if ::AI_AVAILABLE %>
+              <button class="crayons-btn crayons-btn--outlined mr-2 whitespace-nowrap" data-testid="generate-ai-image-btn" style="min-height: 2.5rem; display: inline-flex; align-items: center;">
+                🍌 Generate Image
+              </button>
+            <% end %>
           </div>
           <div class="crayons-article-form__title">
             <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="<%= t("views.editor.new_title") %>" autocomplete="off"><%= article.title %></textarea>

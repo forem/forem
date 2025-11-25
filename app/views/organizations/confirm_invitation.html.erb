@@ -1,0 +1,67 @@
+<% title t("views.organizations.confirm_invitation.title") %>
+
+<div class="crayons-layout crayons-layout--limited">
+  <div class="crayons-card p-6">
+    <h1 class="crayons-title mb-4">
+      <%= t("views.organizations.confirm_invitation.title") %>
+    </h1>
+
+    <% if @membership %>
+      <div class="mb-6">
+        <p class="fs-l">
+          <%= t("views.organizations.confirm_invitation.greeting", name: @membership.user.name) %>
+        </p>
+
+        <p class="mb-4">
+          <% inviter = @membership.organization.organization_memberships
+                                   .where.not(type_of_user: "pending")
+                                   .order(created_at: :asc)
+                                   .first&.user %>
+          <% if inviter %>
+            <%= t("views.organizations.confirm_invitation.invited_by_html",
+                  inviter_name: inviter.name,
+                  organization_name: @membership.organization.name) %>
+          <% else %>
+            <%= t("views.organizations.confirm_invitation.invited_html",
+                  organization_name: @membership.organization.name) %>
+          <% end %>
+        </p>
+
+        <div class="crayons-card crayons-card--secondary p-4 mb-4">
+          <h2 class="fs-base fw-bold mb-2">
+            <%= t("views.organizations.confirm_invitation.what_is_organization") %>
+          </h2>
+          <p>
+            <%= t("views.organizations.confirm_invitation.organization_explanation", community: Settings::Community.community_name) %>
+          </p>
+        </div>
+
+        <% if user_signed_in? && current_user.id == @membership.user_id %>
+          <%= form_tag organization_confirm_invitation_path(token: params[:token]), method: :post, class: "mb-4" do %>
+            <button type="submit" class="crayons-btn crayons-btn--primary">
+              <%= t("views.organizations.confirm_invitation.confirm_button") %>
+            </button>
+          <% end %>
+        <% elsif user_signed_in? %>
+          <div class="crayons-notice crayons-notice--warning mb-4">
+            <%= t("views.organizations.confirm_invitation.wrong_user") %>
+          </div>
+        <% else %>
+          <div class="mb-4">
+            <p class="mb-2">
+              <%= t("views.organizations.confirm_invitation.sign_in_required") %>
+            </p>
+            <%= link_to t("views.organizations.confirm_invitation.sign_in_button"),
+                        new_user_session_path(invitation_token: params[:token]),
+                        class: "crayons-btn crayons-btn--primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="crayons-notice crayons-notice--danger">
+        <%= t("views.organizations.confirm_invitation.invalid_token") %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

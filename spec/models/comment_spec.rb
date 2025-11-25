@@ -67,32 +67,77 @@ RSpec.describe Comment do
 
         expect(subject).not_to be_valid
       end
+    end
 
-      it "checks for commentable_type inclusion only if commentable_id is present" do
-        subject.commentable = nil
-        subject.commentable_id = article.id
-
+    describe "#body_has_content" do
+      it "is invalid when body_markdown contains only bold formatting (****)" do
+        subject.body_markdown = "****"
         expect(subject).not_to be_valid
-        expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
       end
 
-      it "is valid with Article commentable type" do
-        subject.commentable_type = "Article"
+      it "is invalid when body_markdown contains only bold with spaces (** **)" do
+        subject.body_markdown = "** **"
+        expect(subject).not_to be_valid
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
+      end
 
+      it "is invalid when body_markdown contains only horizontal rule (---)" do
+        subject.body_markdown = "---"
+        expect(subject).not_to be_valid
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
+      end
+
+      it "is valid when body_markdown contains text with bold formatting" do
+        subject.body_markdown = "**This is a valid comment**"
         expect(subject).to be_valid
       end
 
-      it "is valid with PodcastEpisode commentable type" do
-        subject.commentable_type = "PodcastEpisode"
-
+      it "is valid when body_markdown contains text with italic formatting" do
+        subject.body_markdown = "_This is italic_"
         expect(subject).to be_valid
       end
 
-      it "is not valid with Podcast commentable type" do
-        subject.commentable_type = "Podcast"
-
-        expect(subject).not_to be_valid
+      it "is valid when body_markdown contains text with mixed formatting" do
+        subject.body_markdown = "**Bold text** and _italic text_"
+        expect(subject).to be_valid
       end
+
+      it "is valid when body_markdown contains only plain text" do
+        subject.body_markdown = "This is a plain text comment"
+        expect(subject).to be_valid
+      end
+
+      it "is valid when body_markdown contains only an image" do
+        subject.body_markdown = "![image](https://example.com/image.png)"
+        expect(subject).to be_valid
+      end
+    end
+
+    it "checks for commentable_type inclusion only if commentable_id is present" do
+      subject.commentable = nil
+      subject.commentable_id = article.id
+
+      expect(subject).not_to be_valid
+      expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+    end
+
+    it "is valid with Article commentable type" do
+      subject.commentable_type = "Article"
+
+      expect(subject).to be_valid
+    end
+
+    it "is valid with PodcastEpisode commentable type" do
+      subject.commentable_type = "PodcastEpisode"
+
+      expect(subject).to be_valid
+    end
+
+    it "is not valid with Podcast commentable type" do
+      subject.commentable_type = "Podcast"
+
+      expect(subject).not_to be_valid
     end
 
     describe "#user_mentions_in_markdown" do

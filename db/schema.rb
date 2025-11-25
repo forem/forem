@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_20_190926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -256,6 +256,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
   create_table "billboard_placement_area_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "placement_area", null: false
+    t.jsonb "selection_weights", default: {}, null: false
     t.integer "signed_in_rate", default: 100, null: false
     t.integer "signed_out_rate", default: 100, null: false
     t.datetime "updated_at", null: false
@@ -388,7 +389,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
-    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
+    t.index ["slug", "organization_id"], name: "index_collections_on_slug_and_organization_id", unique: true, where: "(organization_id IS NOT NULL)"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true, where: "(organization_id IS NULL)"
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -757,6 +759,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.integer "watchers_count"
     t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
     t.index ["url"], name: "index_github_repos_on_url", unique: true
+    t.index ["user_id", "featured"], name: "index_github_repos_on_user_id_and_featured"
   end
 
   create_table "html_variants", force: :cascade do |t|
@@ -823,7 +826,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.datetime "created_at", null: false
     t.boolean "display_only_when_signed_in", default: false
     t.integer "display_to", default: 0, null: false
-    t.string "icon", null: false
+    t.string "icon"
+    t.string "image"
     t.string "name", null: false
     t.integer "position"
     t.integer "section", default: 0, null: false
@@ -881,10 +885,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
 
   create_table "organization_memberships", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
+    t.string "invitation_token"
     t.bigint "organization_id", null: false
     t.string "type_of_user", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["invitation_token"], name: "index_organization_memberships_on_invitation_token", unique: true
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
@@ -899,6 +905,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.string "cta_button_url"
     t.text "cta_processed_html"
     t.string "email"
+    t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
@@ -1228,6 +1235,26 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
     t.datetime "updated_at", precision: nil
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "scheduled_automations", force: :cascade do |t|
+    t.string "action", null: false
+    t.jsonb "action_config", default: {}
+    t.text "additional_instructions"
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: true, null: false
+    t.string "frequency", null: false
+    t.jsonb "frequency_config", default: {}
+    t.datetime "last_run_at"
+    t.datetime "next_run_at"
+    t.string "service_name", null: false
+    t.string "state", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["next_run_at"], name: "index_scheduled_automations_on_next_run_at"
+    t.index ["state", "next_run_at"], name: "index_scheduled_automations_on_state_and_next_run_at"
+    t.index ["user_id", "enabled"], name: "index_scheduled_automations_on_user_id_and_enabled"
+    t.index ["user_id"], name: "index_scheduled_automations_on_user_id"
   end
 
   create_table "segmented_users", force: :cascade do |t|
@@ -1788,6 +1815,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_22_175824) do
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
+  add_foreign_key "scheduled_automations", "users"
   add_foreign_key "segmented_users", "audience_segments"
   add_foreign_key "segmented_users", "users"
   add_foreign_key "survey_completions", "surveys"

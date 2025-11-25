@@ -65,9 +65,10 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
-    schedulingEnabled: PropTypes.bool.isRequired,
+    schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but always true now
     coverImageHeight: PropTypes.string.isRequired,
     coverImageCrop: PropTypes.string.isRequired,
+    aiAvailable: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -83,6 +84,7 @@ export class ArticleForm extends Component {
       schedulingEnabled,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
     } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
@@ -148,6 +150,7 @@ export class ArticleForm extends Component {
       siteLogo,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
       helpFor: null,
       helpPosition: null,
       isModalOpen: false,
@@ -453,6 +456,7 @@ export class ArticleForm extends Component {
       formKey,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
     } = this.state;
 
     return (
@@ -509,6 +513,7 @@ export class ArticleForm extends Component {
             switchHelpContext={this.switchHelpContext}
             coverImageHeight={coverImageHeight}
             coverImageCrop={coverImageCrop}
+            aiAvailable={aiAvailable}
           />
         )}
 

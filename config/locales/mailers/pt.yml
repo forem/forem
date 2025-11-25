@@ -35,3 +35,23 @@ pt:
     verification_mailer:
       from: "%{community} Verificação de E-mail <%{email}>"
       verify_ownership: Verifique a Propriedade da Sua Conta %{community}
+    organization_invitation_mailer:
+      subject: "Você foi convidado para se juntar a %{organization_name} no %{community}"
+      greeting: "Olá %{name}!"
+      invited_by_html: "<strong>%{inviter_name}</strong> convidou você para se juntar a <strong>%{organization_name}</strong> como membro."
+      invited_by_text: "%{inviter_name} convidou você para se juntar a %{organization_name} como membro."
+      invited_html: "Você foi convidado para se juntar a <strong>%{organization_name}</strong> como membro."
+      invited_text: "Você foi convidado para se juntar a %{organization_name} como membro."
+      what_is_organization: "Organizações no %{community} permitem que equipes e grupos colaborem, compartilhem conteúdo e construam uma presença coletiva. Como membro, você poderá publicar artigos em nome da organização e colaborar com sua equipe."
+      confirm_button: "Aceitar Convite"
+      alternative_link: "Ou copie e cole esta URL no seu navegador:"
+    organization_membership_notification_mailer:
+      subject: "Você foi adicionado a %{organization_name} no %{community}"
+      greeting: "Olá %{name}!"
+      added_by_html: "<strong>%{inviter_name}</strong> adicionou você a <strong>%{organization_name}</strong> como membro."
+      added_by_text: "%{inviter_name} adicionou você a %{organization_name} como membro."
+      added_html: "Você foi adicionado a <strong>%{organization_name}</strong> como membro."
+      added_text: "Você foi adicionado a %{organization_name} como membro."
+      what_is_organization: "Organizações no %{community} permitem que equipes e grupos colaborem, compartilhem conteúdo e construam uma presença coletiva. Como membro, você poderá publicar artigos em nome da organização e colaborar com sua equipe."
+      view_organization_button: "Ver Organização"
+      organization_url: "Visite a página da sua organização"

@@ -1,0 +1,58 @@
+<header class="flex items-center mb-6">
+  <h1 class="crayons-title">Billboard Placement Area Configurations</h1>
+</header>
+
+<div class="crayons-notice crayons-notice--info mb-4" aria-live="polite">
+  <strong>Configure delivery rates and selection weights for each billboard placement area.</strong>
+  <p class="mt-2">
+    Selection weights control how billboards are chosen for display. The weights are relative to each other and don't need to add up to 100.
+  </p>
+</div>
+
+<div class="crayons-card p-6">
+  <table class="crayons-table">
+    <thead>
+      <tr>
+        <th scope="col">Placement Area</th>
+        <th scope="col">Signed In Rate (%)</th>
+        <th scope="col">Signed Out Rate (%)</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @configs.each do |config| %>
+        <tr>
+          <td><strong><%= config.human_readable_placement_area %></strong></td>
+          <td><%= config.signed_in_rate %>%</td>
+          <td><%= config.signed_out_rate %>%</td>
+          <td>
+            <%= link_to "Edit Configuration", edit_admin_billboard_placement_area_config_path(config), class: "crayons-btn crayons-btn--secondary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="crayons-card p-6 mt-6">
+  <h2 class="crayons-subtitle-2 mb-4">Selection Strategy Definitions</h2>
+  <dl class="grid gap-4">
+    <div>
+      <dt class="font-bold">Random Selection</dt>
+      <dd class="ml-4">Completely random selection giving all billboards equal chance. Good for testing new ads.</dd>
+    </div>
+    <div>
+      <dt class="font-bold">New and Priority</dt>
+      <dd class="ml-4">Weighted selection favoring billboards with fewer impressions or marked as priority. Helps new ads gain traction.</dd>
+    </div>
+    <div>
+      <dt class="font-bold">New Only</dt>
+      <dd class="ml-4">Only shows billboards with fewer impressions. Ensures new ads get visibility.</dd>
+    </div>
+    <div>
+      <dt class="font-bold">Weighted Performance</dt>
+      <dd class="ml-4">Favors billboards with better performance metrics. Shows top-performing ads more frequently.</dd>
+    </div>
+  </dl>
+</div>
+

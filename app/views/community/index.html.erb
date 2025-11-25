@@ -1,0 +1,182 @@
+<% title "Community Hub - #{community_name}" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/community") %>" />
+  <meta name="description" content="Explore the <%= community_name %> community hub - discover trending tags, top authors, recent videos, and key resources.">
+  <%= meta_keywords_default %>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= app_url("/community") %>" />
+  <meta property="og:title" content="Community Hub - <%= community_name %>" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
+  <meta property="og:description" content="Explore the <%= community_name %> community hub - discover trending tags, top authors, recent videos, and key resources." />
+  <meta property="og:site_name" content="<%= community_name %>" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="Community Hub - <%= community_name %>">
+  <meta name="twitter:description" content="Explore the <%= community_name %> community hub - discover trending tags, top authors, recent videos, and key resources.">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
+<% end %>
+
+<main id="main-content" class="crayons-layout">
+  <div class="crayons-layout__content">
+    <!-- Top Recent Authors Section -->
+    <section class="mb-6 mt-2">
+      <h2 class="mb-6 px-2 m:px-0">Popular Community Members</h2>
+      <% if @top_authors.any? %>
+        <div class="px-2 m:px-0 grid gap-2 grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
+          <% @top_authors.each do |author| %>
+            <div class="crayons-card p-4 flex flex-col items-center text-center">
+              <a href="/<%= author.username %>" class="mb-2">
+                <img src="<%= author.profile_image_url_for(length: 90) %>" 
+                     alt="<%= author.name %> profile" 
+                     class="crayons-avatar crayons-avatar--xl" 
+                     loading="lazy" />
+              </a>
+              <h3 class="fs-base fw-bold mb-1">
+                <a href="/<%= author.username %>" class="crayons-link">
+                  <%= author.name %>
+                </a>
+              </h3>
+              <p class="fs-xs color-base-60 mb-2">@<%= author.username %></p>
+              <p class="fs-xs color-base-70 mb-3">
+                <%= pluralize(author.recent_articles_count, "post") %> this month
+              </p>
+              <div class="mt-auto w-100">
+                <%= follow_button(author, "full", "crayons-btn--secondary w-100") %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="crayons-card p-4 s:p-6">
+          <p class="color-base-60">No recent authors to display.</p>
+        </div>
+      <% end %>
+    </section>
+
+    <!-- Community Info Section -->
+    <section class="mb-6">
+      <div class="crayons-card p-4 s:p-6">
+        <h2 class="fs-xl fw-bold mb-3 flex items-center">
+          <%= crayons_icon_tag(:info, class: "mr-2", width: 20, height: 20) %>
+          About <%= community_name %>
+        </h2>
+        <% if Settings::Community.community_description.present? %>
+          <p class="color-base-70 fs-base mb-4">
+            <%= Settings::Community.community_description %>
+          </p>
+        <% end %>
+        <% if Settings::Community.tagline.present? %>
+          <p class="color-base-60 fs-s italic">
+            <%= Settings::Community.tagline %>
+          </p>
+        <% end %>
+      </div>
+    </section>
+
+    <!-- Welcome Card -->
+    <% if @welcome_article %>
+      <section class="mb-6">
+        <div class="crayons-card p-4 s:p-6">
+          <p class="color-base-70 mb-3 fs-base">
+            Welcome to <%= community_name %>! Start by introducing yourself to the community.
+          </p>
+          <%= link_to "Visit Welcome Thread", @welcome_article.path, class: "crayons-btn crayons-btn--secondary" %>
+        </div>
+      </section>
+    <% end %>
+
+    <!-- Key Pages -->
+    <% if @key_pages.any? %>
+      <section class="mb-6">
+        <div class="crayons-card p-4 s:p-6">
+          <h3 class="fs-xl fw-bold mb-3">Key Resources</h3>
+          <nav>
+            <ul class="list-none p-0">
+              <% @key_pages.each do |page| %>
+                <li class="mb-2">
+                  <%= link_to page.title, "/#{page.slug}", class: "crayons-link fs-base" %>
+                </li>
+              <% end %>
+            </ul>
+          </nav>
+        </div>
+      </section>
+    <% end %>
+
+    <% if @is_root_subforem %>
+      <!-- Subforems Section (Root Only) -->
+      <section class="mb-6">
+        <% if @subforems.any? %>
+          <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
+            <% @subforems.each do |subforem| %>
+              <div class="crayons-card p-4 flex flex-col">
+                <div class="mb-3">
+                  <h3 class="fs-l fw-bold mb-2">
+                    <a href="<%= URL.url("/", subforem.domain) %>" class="crayons-link">
+                      <%= subforem.name %>
+                    </a>
+                  </h3>
+                  <p class="fs-s color-base-70 mb-2">
+                    <%= subforem.domain %>
+                  </p>
+                </div>
+                <div class="mt-auto">
+                  <%= follow_button(subforem, "full", "crayons-btn--secondary w-100") %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="crayons-card p-4 s:p-6">
+            <p class="color-base-60">No communities available yet.</p>
+          </div>
+        <% end %>
+      </section>
+    <% else %>
+      <!-- Tags Section (Regular Subforem) -->
+      <section class="mb-6">
+        <% if @tags&.any? %>
+          <div class="grid gap-3 s:grid-cols-2 m:gap-4 l:grid-cols-4" data-follow-button-container="true">
+            <% @tags.each do |tag| %>
+              <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="js-tag-card tag-card crayons-card p-3 pt-2 relative flex flex-col">
+                <div>
+                  <div class="mb-1 flex items-center justify-between">
+                    <h4 class="-ml-2">
+                      <%= render_tag_link(tag.accessible_name) %>
+                    </h4>
+                    <div class="fs-xs color-base-60"><%= number_with_delimiter(tag.taggings_count, delimiter: ",") %></div>
+                  </div>
+                  <% if tag.short_summary.present? %>
+                    <p class="mb-4 fs-s color-base-70 truncate-at-2"><%= sanitize tag.short_summary %></p>
+                  <% end %>
+                </div>
+                <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
+                  <div class="flex gap-2">
+                    <button
+                      class="c-btn c-btn--primary c-btn--s js-follow-tag-button"
+                      aria-label="Follow <%= tag.name %>">
+                      Follow
+                    </button>
+                  </div>
+                  <% if tag.badge_id && tag.badge %>
+                    <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 140) %>" class="tag-card__badge" alt="" loading="lazy" />
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="crayons-card p-4 s:p-6">
+            <p class="color-base-60">No tags available yet.</p>
+          </div>
+        <% end %>
+      </section>
+    <% end %>
+  </div>
+</main>
+
+<%= javascript_include_tag "tagFollows", defer: true %>
+

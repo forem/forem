@@ -52,6 +52,11 @@ pt:
   github_repos_controller:
     repo_not_found: Repositório GitHub não encontrado
     github_unauthorized: 'GitHub não autorizado: %{e_message}'
+  ai_image_generations_controller:
+    prompt_required: Prompt de imagem é obrigatório
+    generation_failed: Falha ao gerar imagem. Por favor, tente novamente.
+    timeout: A geração da imagem expirou. Por favor, tente novamente.
+    unexpected_error: Ocorreu um erro inesperado ao gerar a imagem.
   image_uploads_controller:
     server_error: Ocorreu um erro no servidor!
   listings_controller:
@@ -66,6 +71,20 @@ pt:
     not_deleted: Sua organização não foi excluída; você deve ser um administrador, o único membro da organização, e não ter artigos conectados à organização.
     created: Sua organização foi criada com sucesso e você é um administrador.
     updated: Sua organização foi atualizada com sucesso.
+    invite:
+      user_not_found: Usuário com nome de usuário "%{username}" não encontrado.
+      already_member: Este usuário já é membro da organização.
+      already_pending: Este usuário já tem um convite pendente.
+      success: "%{username} foi convidado com sucesso para a organização."
+      added_success: "%{username} foi adicionado com sucesso à organização."
+      rate_limit_exceeded: Você atingiu o limite diário de convites de %{limit} convites por dia. Por favor, tente novamente amanhã.
+      max_outstanding_exceeded: Você atingiu o limite máximo de convites pendentes de %{limit}. Por favor, aguarde alguns convites serem aceitos ou cancelados antes de enviar mais.
+    confirm_invitation:
+      invalid_token: Token de convite inválido ou expirado.
+      already_confirmed: Este convite já foi confirmado.
+      wrong_user: Você deve estar conectado como o usuário convidado para confirmar este convite.
+      sign_in_required: Por favor, faça login para confirmar sua associação à organização.
+      success: "Você se juntou a %{organization_name} com sucesso!"
   podcasts_controller:
     podcast_suggested: Podcast sugerido
   profiles_controller:

@@ -1,4 +1,4 @@
-<% cache "tag-sidebar-#{@tag.name}-#{@tag&.updated_at}-#{@tag&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
+<% cache "tag-sidebar-#{@tag.name}-#{@tag&.updated_at}-#{user_signed_in?}-#{@page}", expires_in: 72.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <aside class="side-bar">
@@ -46,9 +46,6 @@
         </div>
       <% end %>
       <div class="sidebar-data">
-        <div>
-          <%= t("views.tags.sidebar.published", count: @num_published_articles) %>
-        </div>
         <% if user_signed_in? %>
           <div class="crayons-btn-group mt-3">
             <a style="display:none;"
@@ -78,7 +75,7 @@
             </a>
           </div>
         <% else %>
-          <% number_of_pages = @num_published_articles / @number_of_articles %>
+          <% number_of_pages = (@num_published_articles.to_f / @number_of_articles).ceil %>
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
           <% if number_of_pages > 1 %>
             <hr />

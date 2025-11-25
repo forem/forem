@@ -1,6 +1,6 @@
 class VerificationMailer < ApplicationMailer
   default from: lambda {
-    I18n.t("mailers.verification_mailer.from", community: Settings::Community.community_name,
+    I18n.t("mailers.verification_mailer.from", community: Settings::Community.community_name(subforem_id: @subforem_id),
                                                email: ForemInstance.from_email_address)
   }
 
@@ -11,15 +11,15 @@ class VerificationMailer < ApplicationMailer
 
     mail(to: @user.email,
          subject: I18n.t("mailers.verification_mailer.verify_ownership",
-                         community: Settings::Community.community_name))
+                         community: Settings::Community.community_name(subforem_id: @subforem_id)))
   end
 
   def magic_link
     @user = User.find(params[:user_id])
     mail(
       to: @user.email,
-      subject: "Sign in to #{Settings::Community.community_name} with a magic code",
-      from: "#{Settings::Community.community_name} <#{ForemInstance.from_email_address}>",
+      subject: "Sign in to #{Settings::Community.community_name(subforem_id: @subforem_id)} with a magic code",
+      from: "#{Settings::Community.community_name(subforem_id: @subforem_id)} <#{ForemInstance.from_email_address}>",
       reply_to: ForemInstance.reply_to_email_address
     )
   end

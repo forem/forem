@@ -433,10 +433,10 @@ RSpec.describe Notification do
       end
   
       it "does not send a notification to mentioned user if article is of type status" do
-        article.update!(type_of: "status", body_markdown: "", main_image: "", main_image: "")
+        status_article = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_mentioned_users_and_followers(article) unless skip_notifications_for_status_article?(article)
+            described_class.send_to_mentioned_users_and_followers(status_article) unless skip_notifications_for_status_article?(status_article)
           end
         end.not_to change(user2.notifications, :count)
       end
@@ -469,12 +469,12 @@ RSpec.describe Notification do
       end
 
       it "does not send a notification to the author's followers if article is of type status" do
-        article.update!(type_of: "status", body_markdown: "", main_image: "")
+        status_article = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
         user2.follow(user)
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(article, "Published") unless skip_notifications_for_status_article?(article)
+            described_class.send_to_followers(status_article, "Published") unless skip_notifications_for_status_article?(status_article)
           end
         end.not_to change(user2.notifications, :count)
       end
@@ -495,12 +495,12 @@ RSpec.describe Notification do
       end
 
       it "does not send a notification to the author's followers if article is of type status" do
-        org_article.update!(type_of: "status", body_markdown: "", main_image: "")
+        status_org_article = create(:article, organization: organization, user: user, type_of: "status", body_markdown: "", main_image: nil)
         user2.follow(user)
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+            described_class.send_to_followers(status_org_article, "Published") unless skip_notifications_for_status_article?(status_org_article)
           end
         end.not_to change(user2.notifications, :count)
       end
@@ -517,12 +517,12 @@ RSpec.describe Notification do
       end
 
       it "does not send a notification to the organization's followers if article is of type status" do
-        org_article.update!(type_of: "status", body_markdown: "", main_image: "")
+        status_org_article = create(:article, organization: organization, user: user, type_of: "status", body_markdown: "", main_image: nil)
         user3.follow(organization)
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+            described_class.send_to_followers(status_org_article, "Published") unless skip_notifications_for_status_article?(status_org_article)
           end
         end.not_to change(user3.notifications, :count)
       end

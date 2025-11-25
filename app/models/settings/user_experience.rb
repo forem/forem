@@ -41,6 +41,7 @@ module Settings
     setting :cover_image_fit, type: :string, default: "crop", validates: {
       inclusion: { in: COVER_IMAGE_FITS }
     }
+    setting :cover_image_aesthetic_instructions, type: :string, default: ""
 
     # a non-public forem will redirect all unauthenticated pages to the registration page.
     # a public forem could have more fine-grained authentication (listings ar private etc.) in future

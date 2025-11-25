@@ -189,6 +189,7 @@ export class ReadingList extends Component {
     const {
       items = [],
       itemsTotal,
+      itemsLoaded,
       availableTags,
       selectedTag = '',
       showLoadMoreButton,
@@ -207,7 +208,7 @@ export class ReadingList extends Component {
           <div className="flex justify-between items-center flex-1 mb-2 s:mb-0">
             <h1 class="crayons-title flex-1">
               {isStatusViewValid ? 'Reading list' : 'Archive'}
-              {` (${itemsTotal})`}
+              {itemsLoaded ? ` (${itemsTotal})` : ''}
             </h1>
             <Link
               onClick={(e) => this.toggleStatusView(e)}
@@ -263,7 +264,7 @@ export class ReadingList extends Component {
                     />
                   </div>
                 )}
-                <section className="crayons-layout__content crayons-card pb-4">
+                <section className="crayons-layout__content crayons-card pb-4" style={{ minHeight: 'calc(100vh - 146px)' }}>
                   {items.length > 0 ? (
                     <Fragment>
                       <ItemList

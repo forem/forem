@@ -11,6 +11,9 @@ pt:
         moderation:
           aria_label: Moderação
           icon: Moderação
+        manage:
+          aria_label: Gerenciar Subfórum
+          icon: Gerenciar Subfórum
         notifications:
           aria_label: Notificações
           icon: Notificações
@@ -24,6 +27,7 @@ pt:
           text: Entrar
       nav:
         admin: Admin
+        manage_subforem: Gerenciar Subfórum
         dashboard: Painel
         placeholder: "..."
         list: Lista de leitura

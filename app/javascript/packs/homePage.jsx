@@ -30,10 +30,24 @@ const frontPageFeedPathNames = new Map([
  * @param {object} user The currently logged on user, null if not logged on.
  */
 
-function renderTagsFollowed(user = userData()) {
+function renderTagsFollowed(user = null) {
   const tagsFollowedContainer = document.getElementById(
     'sidebar-nav-followed-tags',
   );
+  
+  // Try to get user data if not provided
+  if (user === null) {
+    try {
+      const { user: userDataString = null } = document.body.dataset;
+      if (userDataString) {
+        user = JSON.parse(userDataString);
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      return false;
+    }
+  }
+  
   if (user === null || !tagsFollowedContainer) {
     // Return and do not render if the user is not logged in
     // or if this is not the home page.

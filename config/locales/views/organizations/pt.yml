@@ -1,5 +1,5 @@
 ---
-en:
+pt:
   views:
     organizations:
       dropdown: Organization actions
@@ -43,3 +43,15 @@ en:
       all_members: See All Members
       twitter:
         icon: Twitter logo
+      confirm_invitation:
+        title: Confirmar Convite da Organização
+        greeting: "Olá %{name}!"
+        invited_by_html: "<strong>%{inviter_name}</strong> convidou você para se juntar a <strong>%{organization_name}</strong> como membro."
+        invited_html: "Você foi convidado para se juntar a <strong>%{organization_name}</strong> como membro."
+        what_is_organization: "O que é uma organização?"
+        organization_explanation: "Organizações no %{community} permitem que equipes e grupos colaborem, compartilhem conteúdo e construam uma presença coletiva. Como membro, você poderá publicar artigos em nome da organização e colaborar com sua equipe."
+        confirm_button: "Aceitar Convite"
+        wrong_user: "Você deve estar conectado como o usuário convidado para confirmar este convite."
+        sign_in_required: "Por favor, faça login para confirmar sua associação à organização."
+        sign_in_button: "Entrar"
+        invalid_token: "Token de convite inválido ou expirado."

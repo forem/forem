@@ -178,3 +178,7 @@ article_label_cleanup:
   description: "Processes articles with no_moderation_label that may have been missed (runs hourly on the 35th minute after the hour)"
   cron: "35 * * * *"
   class: "Articles::LabelCleanupWorker"
+scheduled_automations_process:
+  description: "Processes scheduled automations that are due for execution (runs every 10 minutes)"
+  cron: "*/10 * * * *"
+  class: "ScheduledAutomations::ProcessWorker"

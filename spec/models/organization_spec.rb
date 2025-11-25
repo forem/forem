@@ -448,4 +448,38 @@ RSpec.describe Organization do
       expect(search_index_worker).to have_received(:perform_async).with("Organization", kind_of(Integer), false).once
     end
   end
+
+  describe "#fully_trusted?" do
+    it "returns true when fully_trusted is true" do
+      organization.update(fully_trusted: true)
+      expect(organization.fully_trusted?).to be true
+    end
+
+    it "returns false when fully_trusted is false" do
+      organization.update(fully_trusted: false)
+      expect(organization.fully_trusted?).to be false
+    end
+  end
+
+  describe "#active_users" do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+
+    before do
+      create(:organization_membership, organization: organization, user: user1, type_of_user: "admin")
+      create(:organization_membership, organization: organization, user: user2, type_of_user: "member")
+      create(:organization_membership, organization: organization, user: user3, type_of_user: "pending")
+    end
+
+    it "returns only active (non-pending) users" do
+      active_users = organization.active_users
+      expect(active_users.count).to eq(2)
+      expect(active_users.pluck(:id)).to contain_exactly(user1.id, user2.id)
+    end
+
+    it "excludes pending members" do
+      expect(organization.active_users.pluck(:id)).not_to include(user3.id)
+    end
+  end
 end

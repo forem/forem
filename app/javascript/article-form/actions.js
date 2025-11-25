@@ -106,6 +106,62 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
 }
 
 /**
+ * Generates an AI image from a text prompt.
+ * The aspect ratio and aesthetic instructions are determined server-side based on subforem settings.
+ *
+ * @param {Object} options - The options object.
+ * @param {string} options.prompt - The text prompt for image generation.
+ * @param {Function} options.successCb - The handler that runs when the image is generated successfully.
+ * @param {Function} options.failureCb - The handler that runs when the image generation fails.
+ * @param {AbortSignal} options.signal - Optional abort signal for canceling the request.
+ */
+export function generateAiImage({ prompt, successCb, failureCb, signal }) {
+  // Set a client-side timeout of 35 seconds (slightly longer than server timeout)
+  const timeoutId = setTimeout(() => {
+    if (signal && !signal.aborted) {
+      failureCb(new Error('Image generation timed out. Please try again.'));
+    }
+  }, 35000);
+
+  fetch('/ai_image_generations', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      prompt,
+    }),
+    credentials: 'same-origin',
+    signal,
+  })
+    .then((response) => {
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        // For non-2xx responses, throw a generic error instead of trying to parse HTML
+        throw new Error('An error occurred, please try again later');
+      }
+      return response.json();
+    })
+    .then((json) => {
+      clearTimeout(timeoutId);
+      if (json.error) {
+        throw new Error(json.error);
+      }
+      const { url } = json;
+      return successCb({ links: [url] });
+    })
+    .catch((error) => {
+      clearTimeout(timeoutId);
+      // Ensure the error message is a clean string, not HTML
+      const errorMessage = error.message && !error.message.includes('<html') 
+        ? error.message 
+        : 'An error occurred, please try again later';
+      failureCb(new Error(errorMessage));
+    });
+}
+
+/**
  * Processes images for upload.
  *
  * @param {FileList} images Images to be uploaded.

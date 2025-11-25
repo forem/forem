@@ -11,6 +11,9 @@ en:
         moderation:
           aria_label: Moderation
           icon: Moderation
+        manage:
+          aria_label: Manage Subforem
+          icon: Manage Subforem
         notifications:
           aria_label: Notifications
           icon: Notifications
@@ -24,6 +27,7 @@ en:
           text: Log in
       nav:
         admin: Admin
+        manage_subforem: Manage Subforem
         dashboard: Dashboard
         placeholder: "..."
         list: Reading list

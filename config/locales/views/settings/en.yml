@@ -178,6 +178,7 @@ en:
           copy:
             button:
               aria_label: Copy organization secret code to clipboard
+              text: Copy
             icon: Copy to clipboard
             input:
               aria_label: Organization secret (to be rotated regularly)
@@ -216,15 +217,48 @@ en:
             text: You should rotate this regularly!
             submit: Generate new secret
           grow: Grow the team
+          grow_description: Invite new members to your organization using one of the methods below.
           invite: 'Invite teammates by sending them the secret and the following instructions:'
           inst1_html: Sign up at %{url}
           inst2_html: Navigate to %{url}
           inst3_html: Paste the secret code below and click <b>Join Organization</b>
+          secret_instructions: "Share these instructions with your teammates:"
+          invite_methods:
+            username:
+              title: Invite by Username
+              description: Invite a specific user by their username. They'll receive an email invitation to join.
+              icon: User icon
+              fully_trusted:
+                title: Add by Username
+                description: Add a specific user by their username. They will receive an email notification that they've been added to the organization. Since this organization is fully trusted, verification is skipped and they'll be added immediately.
+                icon: User icon
+            secret:
+              title: Share Secret Code
+              description: Share your organization's secret code. Anyone with the code can join your organization.
+              icon: Key icon
+          fully_trusted_warning:
+            title: Fully Trusted Organization
+            description: Your organization has elevated privileges. When adding by username, members are added immediately without confirmation. They will receive an email notification that they've been added. Since your organization is fully trusted, verification is skipped on their end. Please verify the username is 100% correct before sending.
+            icon: Warning icon
           make:
             confirm: Are you sure you want to give %{user} admin status?
             title: Make admin
             text: Make admin
           members: Organization Members
+          active_members: Active Members
+          pending_members: Pending Invitations
+          pending: Pending
+          invite_member: Invite a Member
+          invite_member_description: Invite a user to join your organization by their username. They will receive an email invitation.
+          username_label: Username
+          username_placeholder: "Enter username (e.g., johndoe)"
+          username_description: Enter the username of the user you want to invite (without the @ symbol).
+          username_description_fully_trusted: Enter the username of the user you want to add (without the @ symbol). They will receive an email notification and be added immediately without verification.
+          invite_button: Send Invitation
+          add_button: Add Member
+          cancel_invite:
+            title: Cancel invitation
+            text: Cancel Invitation
           remove:
             confirm: Are you sure you want remove %{user} from the organization?
             title: Remove from org

@@ -5,6 +5,8 @@ class SubforemsController < ApplicationController
   before_action :authorize_subforem, only: %i[edit update add_tag remove_tag]
   before_action :authorize_navigation_link_action, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
   before_action :authorize_page_action, only: %i[new_page create_page edit_page update_page destroy_page]
+  after_action :bust_navigation_links_cache, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
+  after_action :bust_content_change_caches, only: %i[create_navigation_link update_navigation_link destroy_navigation_link]
 
   def index
     @subforems = Subforem.where(discoverable: true, root: false).order(score: :desc)
@@ -181,7 +183,7 @@ class SubforemsController < ApplicationController
     
     if @page.save
       flash[:success] = I18n.t("views.subforems.pages.created")
-      redirect_to manage_subforem_path
+      redirect_to @page.path
     else
       flash.now[:error] = @page.errors_as_sentence
       render :new_page
@@ -211,8 +213,9 @@ class SubforemsController < ApplicationController
     
     # Determine allowed params based on page type and user role
     allowed_params = if @page.is_top_level_path
-                       # For top-level pages, only allow title, description, and social_image
-                       page_params.slice(:title, :description, :social_image)
+                       # For top-level pages, mods can update title, description, body_markdown, and social_image
+                       # but cannot change slug, template, or is_top_level_path
+                       page_params.slice(:title, :description, :body_markdown, :social_image)
                      else
                        # For subforem pages, allow full markdown editing
                        params_to_use = page_params
@@ -223,7 +226,7 @@ class SubforemsController < ApplicationController
     
     if @page.update(allowed_params)
       flash[:success] = I18n.t("views.subforems.pages.updated")
-      redirect_to manage_subforem_path
+      redirect_to @page.path
     else
       flash.now[:error] = @page.errors_as_sentence
       render :edit_page
@@ -283,7 +286,7 @@ class SubforemsController < ApplicationController
   end
 
   def navigation_link_params
-    params.require(:navigation_link).permit(:name, :url, :icon, :display_to, :position, :section)
+    params.require(:navigation_link).permit(:name, :url, :icon, :image, :display_to, :position, :section)
   end
 
   def page_params
@@ -342,7 +345,7 @@ class SubforemsController < ApplicationController
 
   def update_user_experience_settings
     return unless params[:feed_style].present? || params[:feed_lookback_days].present? || 
-                  params[:primary_brand_color_hex].present?
+                  params[:primary_brand_color_hex].present? || params[:cover_image_aesthetic_instructions].present?
 
     if params[:feed_style].present?
       Settings::UserExperience.set_feed_style(params[:feed_style], subforem_id: @subforem.id)
@@ -354,6 +357,10 @@ class SubforemsController < ApplicationController
     
     if params[:primary_brand_color_hex].present?
       Settings::UserExperience.set_primary_brand_color_hex(params[:primary_brand_color_hex], subforem_id: @subforem.id)
+    end
+    
+    if params.key?(:cover_image_aesthetic_instructions)
+      Settings::UserExperience.set_cover_image_aesthetic_instructions(params[:cover_image_aesthetic_instructions], subforem_id: @subforem.id)
     end
   end
 
@@ -385,6 +392,14 @@ class SubforemsController < ApplicationController
       uploader.set_image_type(image_type)
       uploader.store!(image)
     end
+  end
+
+  def bust_navigation_links_cache
+    # Bust the cache for navigation links
+    Rails.cache.delete("navigation_links")
+    Rails.cache.delete("navigation_links-true-#{@subforem.id}")
+    Rails.cache.delete("navigation_links-false-#{@subforem.id}")
+    EdgeCache::Bust.call("/async_info/navigation_links")
   end
 
   def render_forbidden

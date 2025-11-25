@@ -176,6 +176,7 @@ class SearchController < ApplicationController
       statuses: reaction_params[:status],
       tags: reaction_params[:tag_names],
       term: reaction_params[:search_fields],
+      subforem_id: RequestStore.store[:subforem_id],
     )
 
     render json: { result: result[:items], total: result[:total] }

@@ -178,6 +178,7 @@ fr:
           copy:
             button:
               aria_label: Copy organization secret code to clipboard
+              text: Copier
             icon: Copy to clipboard
             input:
               aria_label: Organization secret (to be rotated regularly)
@@ -216,15 +217,48 @@ fr:
             text: You should rotate this regularly!
             submit: Generate new secret
           grow: Grow the team
+          grow_description: Invitez de nouveaux membres à votre organisation en utilisant l'une des méthodes ci-dessous.
           invite: 'Invite teammates by sending them the secret and the following instructions:'
           inst1_html: Sign up at %{url}
           inst2_html: Navigate to %{url}
           inst3_html: Paste the secret code below and click <b>Join Organization</b>
+          secret_instructions: "Partagez ces instructions avec vos coéquipiers :"
+          invite_methods:
+            username:
+              title: Inviter par nom d'utilisateur
+              description: Invitez un utilisateur spécifique par son nom d'utilisateur. Il recevra un e-mail d'invitation pour rejoindre.
+              icon: Icône utilisateur
+              fully_trusted:
+                title: Ajouter par nom d'utilisateur
+                description: Ajoutez un utilisateur spécifique par son nom d'utilisateur. Il recevra un e-mail de notification l'informant qu'il a été ajouté à l'organisation. Comme cette organisation est de confiance totale, la vérification est ignorée et il sera ajouté immédiatement.
+                icon: Icône utilisateur
+            secret:
+              title: Partager le code secret
+              description: Partagez le code secret de votre organisation. Toute personne ayant le code peut rejoindre votre organisation.
+              icon: Icône clé
+          fully_trusted_warning:
+            title: Organisation de confiance totale
+            description: Votre organisation dispose de privilèges élevés. Lors de l'ajout par nom d'utilisateur, les membres sont ajoutés immédiatement sans confirmation. Ils recevront un e-mail de notification les informant qu'ils ont été ajoutés. Comme votre organisation est de confiance totale, la vérification est ignorée de leur côté. Veuillez vérifier que le nom d'utilisateur est 100% correct avant d'envoyer.
+            icon: Icône d'avertissement
           make:
             confirm: Are you sure you want to give %{user} admin status?
             title: Make admin
             text: Make admin
           members: Organization Members
+          active_members: Membres actifs
+          pending_members: Invitations en attente
+          pending: En attente
+          invite_member: Inviter un membre
+          invite_member_description: Invitez un utilisateur à rejoindre votre organisation par son nom d'utilisateur. Il recevra un e-mail d'invitation.
+          username_label: Nom d'utilisateur
+          username_placeholder: "Entrez le nom d'utilisateur (ex: johndoe)"
+          username_description: Entrez le nom d'utilisateur de l'utilisateur que vous souhaitez inviter (sans le symbole @).
+          username_description_fully_trusted: Entrez le nom d'utilisateur de l'utilisateur que vous souhaitez ajouter (sans le symbole @). Il recevra un e-mail de notification et sera ajouté immédiatement sans vérification.
+          invite_button: Envoyer l'invitation
+          add_button: Ajouter un membre
+          cancel_invite:
+            title: Annuler l'invitation
+            text: Annuler l'invitation
           remove:
             confirm: Are you sure you want remove %{user} from the organization?
             title: Remove from org

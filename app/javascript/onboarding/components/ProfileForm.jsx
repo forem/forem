@@ -19,18 +19,18 @@ export class ProfileForm extends Component {
     this.handleFieldChange = this.handleFieldChange.bind(this)
     this.handleColorPickerChange = this.handleColorPickerChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
-    this.user = userData()
+    this.user = userData() || {}
 
     this.state = {
       groups: [],
       formValues: {
-        username: this.user.username,
-        name: this.user.name,
-        profile_image_90: this.user.profile_image_90,
+        username: this.user.username || '',
+        name: this.user.name || '',
+        profile_image_90: this.user.profile_image_90 || '',
       },
       canSkip: false,
       last_onboarding_page: 'v2: personal info form',
-      profile_image_90: this.user.profile_image_90,
+      profile_image_90: this.user.profile_image_90 || '',
     }
   }
 

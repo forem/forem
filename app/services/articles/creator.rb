@@ -63,15 +63,25 @@ module Articles
       @article = Article.create(article_params) do |article|
         article.user_id = user.id
         article.show_comments = true
-        article.collection = series if series.present?
       end
+      # Set collection after creation to avoid it being cleared by evaluate_front_matter
+      # which clears collection_id when title is present in frontmatter
+      if @article.persisted?
+        found_series = series
+        if found_series.present?
+          @article.update_column(:collection_id, found_series.id)
+          @article.association(:collection).reset
+        end
+      end
+      @article
     end
 
     def series
       @series ||= if article_params[:series].blank?
-                    []
+                    nil
                   else
-                    Collection.find_series(article_params[:series], user)
+                    organization = article_params[:organization_id].present? ? Organization.find_by(id: article_params[:organization_id]) : nil
+                    Collection.find_series(article_params[:series], user, organization: organization)
                   end
     end
 
