@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_25_160001) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_25_161333) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -569,6 +569,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_160001) do
     t.index ["exclude_survey_completions"], name: "idx_display_ads_survey_completions"
     t.index ["exclude_survey_ids"], name: "idx_display_ads_survey_ids", using: :gin
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
+    t.index ["organization_id"], name: "index_display_ads_on_organization_id"
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
@@ -905,15 +906,18 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_160001) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
+    t.boolean "currently_paused_promotional_billboards", default: false, null: false
     t.string "email"
     t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
+    t.integer "ideal_daily_promoted_billboard_impressions", default: 0, null: false
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
     t.string "location"
     t.string "name"
     t.string "old_old_slug"
     t.string "old_slug"
+    t.integer "past_24_hours_promoted_billboard_impressions", default: 0, null: false
     t.string "profile_image"
     t.datetime "profile_updated_at", precision: nil, default: "2017-01-01 05:00:00"
     t.text "proof"
@@ -929,6 +933,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_160001) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
+    t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end

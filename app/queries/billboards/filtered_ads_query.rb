@@ -32,6 +32,7 @@ module Billboards
 
     def call
       @filtered_billboards = approved_and_published_ads
+      @filtered_billboards = exclude_paused_promotional_billboards
       @filtered_billboards = placement_area_ads
       @filtered_billboards = included_subforem_ads # if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
@@ -91,6 +92,18 @@ module Billboards
 
     def approved_and_published_ads
       @filtered_billboards.approved_and_published
+    end
+
+    def exclude_paused_promotional_billboards
+      paused_org_ids = Organizations::TrackPromotionalBillboardImpressionsWorker.paused_organization_ids
+      return @filtered_billboards if paused_org_ids.blank?
+
+      # Ensure we have valid integer IDs
+      valid_paused_ids = Array(paused_org_ids).map(&:to_i).compact
+      return @filtered_billboards if valid_paused_ids.empty?
+
+      # Exclude billboards from paused organizations, but include those with no organization
+      @filtered_billboards.where("organization_id IS NULL OR organization_id NOT IN (?)", valid_paused_ids)
     end
 
     def placement_area_ads
