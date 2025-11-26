@@ -182,3 +182,7 @@ scheduled_automations_process:
   description: "Processes scheduled automations that are due for execution (runs every 10 minutes)"
   cron: "*/10 * * * *"
   class: "ScheduledAutomations::ProcessWorker"
+track_promotional_billboard_impressions:
+  description: "Tracks and updates promotional billboard impressions for organizations (runs every 10 minutes)"
+  cron: "*/10 * * * *"
+  class: "Organizations::TrackPromotionalBillboardImpressionsWorker"
