@@ -77,7 +77,7 @@ module Organizations
         FROM display_ad_events
         INNER JOIN display_ads AS billboards ON billboards.id = display_ad_events.display_ad_id
         WHERE display_ad_events.category = 'impression'
-          AND display_ad_events.created_at > '#{conn.quote_string(cutoff_time.iso8601)}'
+          AND display_ad_events.created_at > #{conn.quote(cutoff_time)}
           AND billboards.organization_id IS NOT NULL
         GROUP BY billboards.organization_id
       SQL
