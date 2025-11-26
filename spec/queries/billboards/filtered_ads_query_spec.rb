@@ -434,14 +434,19 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   context "when considering paused promotional billboards" do
     let(:paused_organization) { create(:organization) }
     let(:active_organization) { create(:organization) }
-    let(:no_org_billboard) { create_billboard organization: nil }
-    let(:paused_org_billboard) { create_billboard organization: paused_organization }
-    let(:active_org_billboard) { create_billboard organization: active_organization }
+    # Use let! to ensure billboards are created before filter_billboards is called
+    # This prevents issues with ActiveRecord::Relation caching results
+    let!(:no_org_billboard) { create_billboard organization: nil }
+    let!(:paused_org_billboard) { create_billboard organization: paused_organization }
+    let!(:active_org_billboard) { create_billboard organization: active_organization }
+
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
 
     before do
       # Use memory store for tests to ensure cache operations work
-      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
-      Rails.cache.clear
+      # Store in a variable so the same instance is returned for all calls
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      memory_store.clear
     end
 
     context "when no organizations are paused" do
