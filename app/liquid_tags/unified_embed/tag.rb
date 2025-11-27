@@ -1,4 +1,5 @@
 require "net/http"
+require "ipaddr"
 
 module UnifiedEmbed
   class Tag < LiquidTagBase
@@ -41,12 +42,21 @@ module UnifiedEmbed
       uri = URI.parse(input.split.first)
       return input if uri.host == "twitter.com" || uri.host == "x.com" || uri.host == "bsky.app"
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if http.port == 443
+      # Prevent SSRF attacks on internal networks
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if private_ip?(uri.host)
+
+  # Build HTTP client with correct port and TLS based on scheme
+  port = uri.port || (uri.scheme == "https" ? 443 : 80)
+  http = Net::HTTP.new(uri.host, port)
+  http.use_ssl = (uri.scheme == "https")
+      
+      # Set security timeouts to prevent hanging requests
+      http.open_timeout = 10
+      http.read_timeout = 15
 
       path = uri.path.empty? ? "/" : uri.path
       req = method.new(path + (uri.query ? "?#{uri.query}" : ""))
-      req["User-Agent"] = "#{safe_user_agent} (#{URL.url})"
+      req["User-Agent"] = "ForemLinkValidator/1.0 (+#{URL.url}; #{safe_user_agent})"
 
       response = http.request(req)
 
@@ -57,10 +67,21 @@ module UnifiedEmbed
       case response
       when Net::HTTPSuccess
         input
+      when Net::HTTPUnauthorized, Net::HTTPForbidden
+        # Some sites block bots or require auth; consider the URL valid but we won't be able to fetch metadata
+        input
       when Net::HTTPRedirection
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if retries.zero?
 
-        validate_link(input: response["location"], retries: retries - 1)
+        # Resolve relative redirects against the current URI
+        location = response["location"]
+        begin
+          next_url = URI.join(uri, location).to_s
+        rescue
+          next_url = location
+        end
+
+        validate_link(input: next_url, retries: retries - 1)
       when Net::HTTPMethodNotAllowed
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if retries.zero?
 
@@ -76,6 +97,31 @@ module UnifiedEmbed
 
     def self.safe_user_agent(agent = Settings::Community.community_name)
       agent.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
+    end
+
+    # Prevent SSRF attacks by blocking requests to private IP ranges
+    def self.private_ip?(hostname)
+      return true if %w[localhost 127.0.0.1 ::1].include?(hostname)
+      
+      # First try to parse as IP address directly
+      begin
+        ip = IPAddr.new(hostname)
+        return ip.private? || ip.loopback? || ip.link_local?
+      rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
+        # Not an IP address (or family unspecified), try to resolve hostname
+      end
+      
+      # Resolve hostname to IP addresses and check each one
+      begin
+        Addrinfo.getaddrinfo(hostname, nil, nil, :STREAM).each do |addr|
+          ip = IPAddr.new(addr.ip_address)
+          return true if ip.private? || ip.loopback? || ip.link_local?
+        end
+        false
+      rescue SocketError, IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
+        # If hostname resolution fails, allow it (will fail during HTTP request anyway)
+        false
+      end
     end
   end
 end
