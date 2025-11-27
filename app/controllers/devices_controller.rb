@@ -3,6 +3,7 @@ class DevicesController < ApplicationController
   # users are able to register devices. This replaces the Authenticated Users
   # Pusher Beams solution.
   # See: https://github.com/forem/forem/pull/12419/files#r563906038
+  before_action :current_user_by_token
   skip_before_action :verify_authenticity_token, only: [:destroy]
 
   rescue_from ActiveRecord::ActiveRecordError, ArgumentError do |exc|
