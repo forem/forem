@@ -1013,6 +1013,9 @@ class Article < ApplicationRecord
 
   def extract_url_from_status_title
     return unless status? && title.present? && body_url.blank?
+    
+    # Skip this if we're using the new add_urls_from_title_to_body path
+    return if should_add_urls_from_title?
 
     url_pattern = %r{https?://[^\s]+}
     url_match = title.match(url_pattern)
@@ -1028,8 +1031,16 @@ class Article < ApplicationRecord
 
   def set_markdown_from_body_url
     return unless body_url.present?
+    
+    # Don't run this for persisted articles - body_markdown should be immutable for status posts once created
+    return if persisted?
+    
+    # Don't overwrite if body_markdown already contains this URL's embed tag
+    # This prevents duplicating embed tags that were added by add_urls_from_title_to_body
+    embed_tag = "{% embed #{body_url} minimal %}"
+    return if body_markdown.to_s.include?(embed_tag)
 
-    self.body_markdown = "{% embed #{body_url} minimal %}"
+    self.body_markdown = embed_tag
   end
 
   def collection_cleanup
@@ -1541,7 +1552,9 @@ class Article < ApplicationRecord
     # This regex matches http/https URLs, including those with query parameters and fragments
     url_regex = %r{https?://[^\s<>"{}|\\^`\[\]]+}
 
-    title.scan(url_regex).uniq
+    urls = title.scan(url_regex).uniq
+    # Remove trailing punctuation that might not be part of the URL
+    urls.map { |url| url.sub(/[.,;:!?)]+$/, '') }
   end
 
   def body_markdown_only_contains_embed_tags_from_title?

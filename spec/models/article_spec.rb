@@ -2844,6 +2844,22 @@ RSpec.describe Article do
     end
 
     context "when creating a status post with URLs in title" do
+      before do
+        # Stub network requests for URL validation (HEAD requests)
+        stub_request(:head, %r{https?://example\.com}).to_return(status: 200)
+        stub_request(:head, %r{https?://another-example\.org}).to_return(status: 200)
+        stub_request(:head, %r{https?://first\.com}).to_return(status: 200)
+        stub_request(:head, %r{https?://second\.org}).to_return(status: 200)
+        stub_request(:head, %r{https?://third\.net}).to_return(status: 200)
+        
+        # Stub GET requests for metadata fetching (used by OpenGraph)
+        stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://another-example\.org}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://first\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://second\.org}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://third\.net}).to_return(status: 200, body: "<html></html>")
+      end
+
       it "adds embed tags to body_markdown for URLs found in title" do
         article = build(:published_article,
                         user: user,
@@ -3109,6 +3125,11 @@ RSpec.describe Article do
 
   describe "#extract_url_from_status_title" do
     let(:article) { build(:article, type_of: "status", body_url: nil) }
+
+    before do
+      # Stub to prevent the new path from running so we can test the old path in isolation
+      allow(article).to receive(:should_add_urls_from_title?).and_return(false)
+    end
 
     it "extracts first URL from title and sets body_url" do
       article.title = "Check this out: https://example.com"

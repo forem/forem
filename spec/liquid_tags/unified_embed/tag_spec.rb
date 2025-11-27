@@ -7,11 +7,12 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   # `og:url`; should we fallback to the given URL instead?
   it "handles https://guides.rubyonrails.org" do
     link = "https://guides.rubyonrails.org/routing.html"
+    safe_agent = Settings::Community.community_name.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
     stub_request(:head, link)
       .with(
         headers: {
           "Accept" => "*/*",
-          "User-Agent" => "DEV(local) (#{URL.url})"
+          "User-Agent" => "ForemLinkValidator/1.0 (+#{URL.url}; #{safe_agent})"
         },
       )
       .to_return(status: 200, body: "", headers: {})
@@ -271,13 +272,13 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       it "raises error for private IP addresses" do
         expect do
           described_class.validate_link(input: "http://192.168.1.1/test")
-        end.to raise_error(StandardError, /invalid_url/)
+        end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
       end
 
       it "raises error for localhost" do
         expect do
           described_class.validate_link(input: "http://localhost:3000/test")
-        end.to raise_error(StandardError, /invalid_url/)
+        end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
       end
 
       it "allows public domains" do
@@ -397,6 +398,8 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         # Then resolving the hostname yields a public IP
         allow(Addrinfo).to receive(:getaddrinfo).with(link_host, nil, nil, :STREAM)
           .and_return([double(ip_address: "93.184.216.34")])
+        # Allow the actual IP address check to proceed normally
+        allow(IPAddr).to receive(:new).with("93.184.216.34").and_call_original
 
         expect(described_class.private_ip?(link_host)).to be_falsey
       end
