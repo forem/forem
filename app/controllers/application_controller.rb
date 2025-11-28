@@ -469,4 +469,17 @@ class ApplicationController < ActionController::Base
     # Clear RequestStore in development/test to avoid lingering. Not important in prod.
     RequestStore.clear! unless Rails.env.production?
   end
+
+  def current_user_by_token
+    token = request.headers['Authorization']&.split(' ')&.last
+    return unless token
+
+    begin
+      decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: 'HS256' })
+      user_id = decoded[0]['user_id']
+      @current_user = User.find_by(id: user_id)
+    rescue JWT::DecodeError, JWT::ExpiredSignature
+      nil
+    end
+  end
 end
