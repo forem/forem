@@ -16,7 +16,7 @@ RSpec.describe "Api::V1::Docs::Organizations" do
       create(:article, organization: organization)
     end
 
-    path "/api/organizations/{username}" do
+    path "/organizations/{username}" do
       get "An organization (by username)" do
         tags "organizations"
         security []
@@ -41,7 +41,7 @@ RSpec.describe "Api::V1::Docs::Organizations" do
       end
     end
 
-    path "/api/organizations/{organization_id_or_username}/users" do
+    path "/organizations/{organization_id_or_username}/users" do
       get "Organization's users" do
         tags "organizations", "users"
         security []
@@ -78,7 +78,7 @@ It supports pagination, each page will contain `30` users by default."
       end
     end
 
-    path "/api/organizations/{organization_id_or_username}/articles" do
+    path "/organizations/{organization_id_or_username}/articles" do
       get "Organization's Articles" do
         tags "organizations", "articles"
         security []
@@ -121,7 +121,7 @@ It supports pagination, each page will contain `30` users by default."
       create(:organization)
     end
 
-    path "/api/organizations" do
+    path "/organizations" do
       get "Organizations" do
         tags "organizations"
         security []
@@ -147,7 +147,7 @@ It supports pagination, each page will contain `30` users by default."
   describe "GET /api/organizations/{id}" do
     let!(:organization) { create(:organization) }
 
-    path "/api/organizations/{id}" do
+    path "/organizations/{id}" do
       get "An organization (by id)" do
         tags "organizations"
         security []
@@ -189,7 +189,7 @@ It supports pagination, each page will contain `30` users by default."
       }
     end
 
-    path "/api/organizations" do
+    path "/organizations" do
       post "Create an Organization" do
         tags "organizations"
         description "This endpoint allows the client to create an organization with the provided parameters.
@@ -257,7 +257,7 @@ It supports pagination, each page will contain `30` users by default."
     let(:api_secret) { create(:api_secret, user: org_admin) }
     let!(:org_to_update) { org_admin.organizations.first }
 
-    path "/api/organizations/{id}" do
+    path "/organizations/{id}" do
       put "Update an organization by id" do
         tags "organizations"
         description "This endpoint allows the client to update an existing organization."
@@ -324,7 +324,7 @@ It supports pagination, each page will contain `30` users by default."
     let(:super_api_secret) { create(:api_secret, user: super_admin) }
     let!(:org_to_delete) { super_admin.organizations.first }
 
-    path "/api/organizations/{id}" do
+    path "/organizations/{id}" do
       delete "Delete an Organization by id" do
         tags "organizations"
         description "This endpoint allows the client to delete a single organization, specified by id"

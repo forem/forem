@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "GET /users/me" do
-    path "/api/users/me" do
+    path "/users/me" do
       get "The authenticated user" do
         tags "users"
         description "This endpoint allows the client to retrieve information about the authenticated user"
@@ -43,7 +43,7 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "GET /users/:id" do
-    path "/api/users/{id}" do
+    path "/users/{id}" do
       get "A User" do
         tags "users"
         description "This endpoint allows the client to retrieve a single user, either by id
@@ -71,7 +71,7 @@ For complete documentation, see the v0 API docs: https://developers.forem.com/ap
       user.add_role(:admin)
     end
 
-    path "/api/users/{id}/unpublish" do
+    path "/users/{id}/unpublish" do
       put "Unpublish a User's Articles and Comments" do
         tags "users"
         description "This endpoint allows the client to unpublish all of the articles and
@@ -132,7 +132,7 @@ request is completed on the server."
       user.add_role(:super_admin)
     end
 
-    path "/api/admin/users" do
+    path "/admin/users" do
       post "Invite a User" do
         tags "users"
         description "This endpoint allows the client to trigger an invitation to the provided email address.

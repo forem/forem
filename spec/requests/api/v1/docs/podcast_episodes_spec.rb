@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Docs::PodcastEpisodes" do
   before { create(:podcast_episode, podcast: podcast) }
 
   describe "GET /podcast_episodes" do
-    path "/api/podcast_episodes" do
+    path "/podcast_episodes" do
       get "Podcast Episodes" do
         security []
         tags "podcast_episodes"
