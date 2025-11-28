@@ -4,7 +4,8 @@ class DevicesController < ApplicationController
   # Pusher Beams solution.
   # See: https://github.com/forem/forem/pull/12419/files#r563906038
   before_action :current_user_by_token
-  skip_before_action :verify_authenticity_token, only: [:destroy]
+  skip_before_action :verify_authenticity_token
+  skip_before_action :authenticate_user!
 
   rescue_from ActiveRecord::ActiveRecordError, ArgumentError do |exc|
     render json: { error: exc.message, status: 422 }, status: :unprocessable_entity

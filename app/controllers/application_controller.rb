@@ -478,6 +478,7 @@ class ApplicationController < ActionController::Base
       decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: 'HS256' })
       user_id = decoded[0]['user_id']
       @current_user = User.find_by(id: user_id)
+      @token_authenticated = true if @current_user
     rescue JWT::DecodeError, JWT::ExpiredSignature
       nil
     end
