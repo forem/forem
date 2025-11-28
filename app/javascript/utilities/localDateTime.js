@@ -78,7 +78,7 @@ function timestampToLocalDateTimeLong(timestamp) {
   });
 }
 
-function timestampToLocalDateTimeShort(timestamp) {
+export function timestampToLocalDateTimeShort(timestamp) {
   // example: "10 Dec 2018" if it is not the current year
   // example: "6 Sep" if it is the current year
 
