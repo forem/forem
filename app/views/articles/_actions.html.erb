@@ -76,6 +76,17 @@
           <a href="#" class="dropdown-link-row crayons-link crayons-link--block"><%= t("views.actions.share.link") %></a>
         </template>
 
+        <% if forem_webview? %>
+          <a
+            href="<%= article_url(@article) %>"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex justify-between crayons-link crayons-link--block w-100">
+            <span class="fw-bold">Open in Browser</span>
+            <%= crayons_icon_tag("external-link", class: "mx-2 shrink-0", aria_hidden: true, title: "Open in Browser") %>
+          </a>
+        <% end %>
+
         <a href="/report-abuse" class="crayons-link crayons-link--block"><%= t("views.actions.share.report") %></a>
       </div>
     </div>
