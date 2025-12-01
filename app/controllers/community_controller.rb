@@ -24,7 +24,7 @@ class CommunityController < ApplicationController
         .limit(12)
     else
       # For regular subforem: Show top tags by hotness
-      @tags = Tag.from_subforem.direct.includes(:badge).order(hotness_score: :desc).limit(12)
+      @tags = Tag.from_subforem.direct.includes(:badge, :subforem_relationships).order(hotness_score: :desc).limit(12)
     end
     
     # Get top recent authors (users with most recent published articles)
